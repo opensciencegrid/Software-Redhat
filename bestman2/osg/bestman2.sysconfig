@@ -1,0 +1,69 @@
+###################################################
+# Bestman 2 sysconfig
+#
+# Environment variables that override /etc/bestman2.rc defaults
+###################################################
+
+
+# SRM_HOME: This is the directory of the bestman2 installation
+SRM_HOME=/usr/lib/bestman2
+
+# SRMOWNER = This user (unix account) will own and run bestman services
+SRMOWNER=bestman
+
+# BESTMAN_LOG:  The location of the bestman2 log. 
+# Bestman prints out relevant information to its stderr/stdout.  Capture it.
+BESTMAN_LOG=/var/log/bestman2/bestman2.log
+
+# BESTMAN_PID: The location of the process id file
+BESTMAN_PID=/var/run/bestman2.pid
+
+#BESTMAN_OPTIONS: Command line options to bestman.server.  Reserved for future.
+BESTMAN_OPTIONS=""
+
+#CERTPATH/KEYPATH: x509 Certificate pair for running bestman services
+#GUMSCERTPATH/GUMSKEYPATH: x509 Certificate pair to communicate with GUMS
+#CERTPATH=
+#KEYPATH=
+#GUMSCERTPATH=
+#GUMSKEYPATH=
+
+###################################################
+# Advanced Options
+###################################################
+
+# Port Ranges for Globus services
+#GLOBUS_TCP_PORT_RANGE=
+#GLOBUS_TCP_SOURCE_RANGE=
+
+#Certificate directory for CRLS
+#X509_CERT_DIR=/etc/grid-security/certificates
+
+#GSI Trusted CA Directory
+#GSI_DAEMON_TRUSTED_CA_DIR=$X509_CERT_DIR
+
+# Whether to use GUMS
+#GUMS_ENABLED=yes
+
+# Location of globus binaries
+GLOBUS_LOCATION=/usr
+
+# Java memory options
+#MAX_JAVA_HEAP=1024
+#MIN_JAVA_HEAP=32
+#JAVA_STACK_SIZE=
+
+# Log rotation options
+#EVENT_LOG_COUNT=
+#EVENT_LOG_SIZE=
+
+# Whether to run Bestman in gateway mode or fullmode
+#GATEWAYMODE_ENABLED=yes
+#FULLMODE_ENABLED=no
+
+#Other advanced options
+#PLUGIN=
+#EXTRALIB=
+#JETTY_DEBUG_ENABLED=
+#CONNECTOR_QUEUESIZE=
+#CONNECTION_ACCEPTORSIZE=
