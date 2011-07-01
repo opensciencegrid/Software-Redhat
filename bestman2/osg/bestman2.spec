@@ -109,10 +109,10 @@ mkdir -p $RPM_BUILD_ROOT%{install_root}/setup
 mkdir -p $RPM_BUILD_ROOT%{install_root}/sbin
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}
 mv conf/bestman2.rc $RPM_BUILD_ROOT%{_sysconfdir}/
-cp -ar conf $RPM_BUILD_ROOT%{install_root}
-cp -ar lib $RPM_BUILD_ROOT%{install_root}
-cp -ar properties $RPM_BUILD_ROOT%{install_root}
-cp -ar setup/bestman.in $RPM_BUILD_ROOT%{install_root}/setup
+cp -arp conf $RPM_BUILD_ROOT%{install_root}
+cp -arp lib $RPM_BUILD_ROOT%{install_root}
+cp -arp properties $RPM_BUILD_ROOT%{install_root}
+cp -arp setup/bestman.in $RPM_BUILD_ROOT%{install_root}/setup
 
 
 install -m 0755 version $RPM_BUILD_ROOT%{install_root}/
@@ -212,6 +212,9 @@ fi
 %attr(-,bestman,bestman) %dir %{_var}/log/%{name}
 
 %changelog
+* Mon Jul 01 2011 Doug Strain <dstrain@fnal.gov> 2.1.0.pre2
+Creating Bestman2 spec file based on Hadoop repository
+
 * Mon Jun 13 2011 Doug Strain <dstrain@fnal.gov> 2.0.13.t5-43
 Creating Bestman2 spec file based on Hadoop repository
 
