@@ -215,3 +215,50 @@ fi
 * Mon Jun 13 2011 Doug Strain <dstrain@fnal.gov> 2.0.13.t5-43
 Creating Bestman2 spec file based on Hadoop repository
 
+* Wed May 18 2011 Brian Bockelman <bbockelm@cse.unl.edu> 2.0.12-3
+- Add log4j.properties to Jetty, allowing the logging of GSI issues
+- Fix deps for bestman2-server and -libs
+
+* Tue May 17 2011 Brian Bockelman <bbockelm@cse.unl.edu> 2.0.12-2
+- Split packages into server, libs, and client
+- Move everything into FHS locations.
+
+* Tue May 17 2011 Brian Bockelman <bbockelm@cse.unl.edu> 2.0.12-1
+- Update to 2.0.12
+- Change bestman2 to a source build
+- Fix bestman.server.in so folks don't nuke their install if they run configure again.
+
+* Mon Apr 25 2011 Jeff Dost <jdost@ucsd.edu> 2.0.10-1
+- Update to 2.0.10
+
+* Mon Apr 25 2011 Jeff Dost <jdost@ucsd.edu> 2.0.5-2
+- Fix bestman.logrotate to point to /var/log/bestman2/*.log
+
+* Wed Jan 26 2011 Jeff Dost <jdost@ucsd.edu> 2.0.5-1
+- Update to 2.0.5
+
+* Thu Dec 23 2010 Brian Bockelman <bbockelm@cse.unl.edu> 2.0.4-2
+- Patch the configuration file to use the correct port and some initial
+  suggestions.
+
+* Tue Dec 21 2010 Brian Bockelman <bbockelm@cse.unl.edu> 2.0.4-1
+- Bump to latest upstream version.
+- Added "Obsoletes" for original bestman package since we have run
+  bestman2 stably for awhile.
+
+* Tue Oct 12 2010 Brian Bockelman <bbockelm@cse.unl.edu> 2.0.2-4
+- Fixed the init scripts to behave more like a RHEL init script.
+- Added condrestart upon upgrade.
+
+* Wed Sep 22 2010 Michael Thomas <thomas@hep.caltech.edu> 2.0.2-1
+- Update to 2.0.2
+
+* Thu Jul 1 2010 Michael Thomas <thomas@hep.caltech.edu> 2.0.0-3
+- Update log file locations so that they don't conflict with earlier bestman
+
+* Thu Jul 1 2010 Michael Thomas <thomas@hep.caltech.edu> 2.0.0-2
+- Fix path problems in init script
+
+* Tue Jun 8 2010 Michael Thomas <thomas@hep.caltech.edu> 2.0.0-1
+- Initial package of bestman2, based on original bestman spec file
+
