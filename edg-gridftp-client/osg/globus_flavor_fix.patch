@@ -1,0 +1,17 @@
+--- src/Makefile.am.orig	2011-07-03 13:26:43.000000000 -0500
++++ src/Makefile.am	2011-07-03 13:27:18.000000000 -0500
+@@ -6,11 +6,11 @@
+ 
+ # Only the ftp client library is needed to link against when linked
+ # dynamically.
+-LIBS = -L$(GLOBUS_LOCATION)/lib -lglobus_ftp_client_$(FLAVOR) -lglobus_common_$(FLAVOR)
++LIBS = -L$(GLOBUS_LOCATION)/lib -lglobus_ftp_client -lglobus_common
+ if HAVE_XIO
+-LIBS += -lglobus_xio_$(FLAVOR)
++LIBS += -lglobus_xio
+ endif
+-LIBS += -lgssapi_error_$(FLAVOR) -lglobus_io_$(FLAVOR) -lglobus_ftp_control_$(FLAVOR)
++LIBS += -lglobus_gssapi_error -lglobus_io -lglobus_ftp_control
+ 
+ # For static linking a whole lot more is needed. 
+ #CFLAGS = -g -O2 -static 
