@@ -1,0 +1,81 @@
+--- src/Makefile.am	14 Oct 2009 09:47:14 -0000	1.23
++++ src/Makefile.am	9 Sep 2010 20:47:57 -0000
+@@ -189,7 +189,6 @@
+ 
+ GFAL_SOURCE_FILES = \
+     gfal_utils.c \
+-    stdsoap2.c \
+     gfal_test_checksum.c \
+ 	checkprotolib.c \
+ 	gfal.c \
+@@ -212,8 +211,6 @@
+ 
+ GFAL_FLAGS = \
+ 	-I$(LFC_LOCATION)/include/lfc \
+-	-DGFAL_ENABLE_RFIO -I/usr/include/shift -I/usr/local/include/shift -I$(DPM_LOCATION)/include/dpm \
+-	-DGFAL_ENABLE_DCAP -I$(DCAP_LOCATION)/include \
+ 	-DGFAL_SECURE \
+ 	-fPIC -D_LARGEFILE64_SOURCE \
+ 	-DVERSION=\"$(VERSION)-$(RELEASE)\" \
+--- src/gfal.c	9 Dec 2009 13:18:13 -0000	1.141
++++ src/gfal.c	9 Sep 2010 21:44:34 -0000
+@@ -20,7 +20,7 @@
+ #include <dlfcn.h>
+ #include <time.h>
+ #include <uuid/uuid.h>
+-#include <glite/security/voms/voms_apic.h>
++#include <voms/voms_apic.h>
+ #include "gfal_api.h"
+ #include "gfal_internals.h"
+
+--- configure.ac	22 Jan 2010 15:25:54 -0000	1.12
++++ configure.ac	10 Sep 2010 00:35:13 -0000
+@@ -96,7 +96,7 @@
+ AC_GSOAP
+ 
+ # Set GSOAP Scripts names
+-AC_GSOAP_FIX
++# AC_GSOAP_FIX
+ 
+ # Set CGSI GSOAP Plugin Properties
+ AC_CGSI_GSOAP
+@@ -186,10 +186,10 @@
+     [VOMS_LOCATION=${withval}],
+     [VOMS_LOCATION="/opt/lcg"])
+ AC_MSG_RESULT([VOMS_LOCATION is ${VOMS_LOCATION}])
+-VOMS_CFLAGS="-I${VOMS_LOCATION}/include -I${GLOBUS_LOCATION}/include/${GLOBUS_FLAVOUR}"
++VOMS_CFLAGS="-I${VOMS_LOCATION}/include/voms"
+ AC_MSG_RESULT([VOMS_CFLAGS is ${VOMS_CFLAGS}])
+-VOMS_THR_LIBS="-L${VOMS_LOCATION}/lib -L${VOMS_LOCATION}/lib64 -lvomsc_${GLOBUS_THR_FLAVOR}"
+-VOMS_NOTHR_LIBS="-L${VOMS_LOCATION}/lib -L${VOMS_LOCATION}/lib64 -lvomsc_${GLOBUS_NOTHR_FLAVOR}"
++VOMS_THR_LIBS="-L${VOMS_LOCATION}/lib -L${VOMS_LOCATION}/lib64 -lvomsc"
++VOMS_NOTHR_LIBS="-L${VOMS_LOCATION}/lib -L${VOMS_LOCATION}/lib64 -lvomsc"
+ AC_MSG_RESULT([VOMS_THR_LIBS is ${VOMS_THR_LIBS}])
+ AC_MSG_RESULT([VOMS_NOTHR_LIBS is ${VOMS_NOTHR_LIBS}])
+ AC_SUBST(VOMS_LOCATION)
+--- src/Makefile.am	14 Oct 2009 09:47:14 -0000	1.23
++++ src/Makefile.am	10 Sep 2010 00:41:37 -0000
+@@ -238,6 +238,7 @@
+ libgfal_la_LIBADD = \
+ 	-luuid -lc -ldl \
+ 	$(CGSI_GSOAP_LIBS) \
++        $(GSOAP_LIBS) \
+ 	$(GLOBUS_GSS_NOTHR_LIBS) \
+ 	$(GLOBUS_FTP_CLIENT_NOTHR_LIBS) \
+ 	$(VOMS_NOTHR_LIBS) \
+@@ -247,6 +248,7 @@
+ 	$(GLOBUS_NOTHR_CFLAGS) \
+ 	$(GLITE_CFLAGS) \
+ 	$(GFAL_FLAGS) \
++        $(GSOAP_LIBS) \
+ 	$(GSOAP_CFLAGS) \
+ 	$(CGSI_GSOAP_CFLAGS) \
+ 	$(VOMS_CFLAGS)
+@@ -262,6 +264,7 @@
+ libgfal_pthr_la_LIBADD = \
+ 	-luuid -lc -ldl \
+ 	$(CGSI_GSOAP_LIBS) \
++        $(GSOAP_LIBS) \
+ 	$(GLOBUS_GSS_THR_LIBS) \
+ 	$(GLOBUS_FTP_CLIENT_THR_LIBS) \
+ 	$(VOMS_THR_LIBS) \
