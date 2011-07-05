@@ -1,6 +1,6 @@
 Name:		glite-data-transfer-interface
 Version:	3.7.0
-Release:	1
+Release:	2
 Summary:	WSDL and interface docs for FTS.
 
 Group:		Development/Languages/C and C++
@@ -27,8 +27,8 @@ rm -rf $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT%{_prefix}
 make install prefix=$RPM_BUILD_ROOT%{_prefix}
 
-mkdir -p $RPM_BUILD_ROOT%{_datadir}/%{name}-%{version}
-mv $RPM_BUILD_ROOT%{_prefix}/interface $RPM_BUILD_ROOT%{_datadir}/%{name}-%{version}
+mkdir -p $RPM_BUILD_ROOT%{_datadir}/%{name}
+mv $RPM_BUILD_ROOT%{_prefix}/interface $RPM_BUILD_ROOT%{_datadir}/%{name}
 
 mkdir -p $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
 mv $RPM_BUILD_ROOT%{_docdir}/html $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
@@ -41,11 +41,14 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root,-)
 %{_docdir}/%{name}-%{version}
-%{_datadir}/%{name}-%{version}/interface
+%{_datadir}/%{name}/interface
 %doc %{_docdir}/%{name}-%{version}/LICENSE
 %doc %{_docdir}/%{name}-%{version}/RELEASE-NOTES
 
 %changelog
-* Sat Jul  5 2011 Brian Bockelman <bbockelm@cse.unl.edu> 3.7.0-1
+* Tue Jul  5 2011 Brian Bockelman <bbockelm@cse.unl.edu> 3.7.0-2
+- Put the interface files in a well-known directory, not tied to the RPM version
+
+* Tue Jul  5 2011 Brian Bockelman <bbockelm@cse.unl.edu> 3.7.0-1
 - Initial OSG packaging.
 
