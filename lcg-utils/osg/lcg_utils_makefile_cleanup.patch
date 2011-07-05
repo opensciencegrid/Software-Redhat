@@ -1,0 +1,33 @@
+--- src/Makefile.am	18 Nov 2009 13:53:33 -0000	1.14
++++ src/Makefile.am	10 Sep 2010 01:18:38 -0000
+@@ -185,10 +185,10 @@
+ liblcg_util_la_LIBADD = \
+ 	$(VOMS_NOTHR_LIBS) \
+ 	$(GLOBUS_FTP_CLIENT_NOTHR_LIBS) \
+-	-lglobus_gass_copy_$(GLOBUS_NOTHR_FLAVOR) \
+-	-lglobus_gass_transfer_$(GLOBUS_NOTHR_FLAVOR) \
++	-lglobus_gass_copy \
++	-lglobus_gass_transfer \
+ 	$(GFAL_LIBS) \
+-	-lcgsi_plugin_gsoap_2.7 
++	-lcgsi_plugin
+ liblcg_util_la_LDFLAGS = \
+ 	-version-info $(INTERFACE_LIBTOOL_CURRENT):$(INTERFACE_LIBTOOL_REVISION):$(INTERFACE_LIBTOOL_AGE)	
+ 
+--- configure.ac	18 Jan 2010 15:15:06 -0000	1.9
++++ configure.ac	10 Sep 2010 01:15:10 -0000
+@@ -123,10 +123,10 @@
+     [VOMS_LOCATION=${withval}],
+     [VOMS_LOCATION="/opt/lcg"])
+ AC_MSG_RESULT([VOMS_LOCATION is ${VOMS_LOCATION}])
+-VOMS_CFLAGS="-I${VOMS_LOCATION}/include -I${GLOBUS_LOCATION}/include/${GLOBUS_FLAVOUR}"
++VOMS_CFLAGS="-I${VOMS_LOCATION}/include/voms"
+ AC_MSG_RESULT([VOMS_CFLAGS is ${VOMS_CFLAGS}])
+-VOMS_THR_LIBS="-L${VOMS_LOCATION}/lib -L${VOMS_LOCATION}/lib64 -lvomsc_${GLOBUS_THR_FLAVOR}"
+-VOMS_NOTHR_LIBS="-L${VOMS_LOCATION}/lib -L${VOMS_LOCATION}/lib64 -lvomsc_${GLOBUS_NOTHR_FLAVOR}"
++VOMS_THR_LIBS="-L${VOMS_LOCATION}/lib -L${VOMS_LOCATION}/lib64 -lvomsc"
++VOMS_NOTHR_LIBS="-L${VOMS_LOCATION}/lib -L${VOMS_LOCATION}/lib64 -lvomsc"
+ AC_MSG_RESULT([VOMS_THR_LIBS is ${VOMS_THR_LIBS}])
+ AC_MSG_RESULT([VOMS_NOTHR_LIBS is ${VOMS_NOTHR_LIBS}])
+ AC_SUBST(VOMS_LOCATION)
+
