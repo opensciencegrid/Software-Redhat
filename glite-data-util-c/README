@@ -1,0 +1,5 @@
+
+Two notes from the packager:
+1) Added the Fedora-compatible glite m4 macros to the bootstrap script.
+2) Could not find the GLITE_LIB64 macro; simply commented it out.
+
