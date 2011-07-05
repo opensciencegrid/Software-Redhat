@@ -1,3 +1,7 @@
 
 Packaging of the gLite project's libgfal.
 
+There are two patches here:
+1) A patch so automake can find the glite build macros that are compatible with the Fedora globus.
+2) gsoap 2.7 that ships with EPEL5 generates code with an interface that is incompatible with gfal.  The interface is patched back to the old behavior.
+
