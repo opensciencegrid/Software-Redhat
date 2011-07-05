@@ -1,0 +1,60 @@
+diff -uNr org.gridsite.core.ORIG/interface/gridsite-gacl.h org.gridsite.core/interface/gridsite-gacl.h
+--- org.gridsite.core.ORIG/interface/gridsite-gacl.h	2010-09-22 01:00:09.976742554 +0200
++++ org.gridsite.core/interface/gridsite-gacl.h	2010-09-22 01:01:04.304742031 +0200
+@@ -35,6 +35,9 @@
+ 
+ #ifndef HEADER_GACL_H
+ #define HEADER_GACL_H
++
++#ifdef __cplusplus
++extern "C" {
+ #endif
+ 
+ #ifndef GACL_LIB_VERSION
+@@ -186,3 +189,9 @@
+ 
+ GACLentry *GRSTgaclEntryParse(xmlNodePtr cur);
+ /*  special function for legacy EDG LB service */
++
++#ifdef __cplusplus
++} // extern "C"
++#endif
++
++#endif // HEADER_GACL_H
+diff -uNr org.gridsite.core.ORIG/interface/gridsite.h org.gridsite.core/interface/gridsite.h
+--- org.gridsite.core.ORIG/interface/gridsite.h	2010-09-22 01:00:09.976742554 +0200
++++ org.gridsite.core/interface/gridsite.h	2010-09-22 01:01:04.331492564 +0200
+@@ -35,6 +35,9 @@
+ 
+ #ifndef GRST_VERSION
+ #define GRST_VERSION 010500
++
++#ifdef __cplusplus
++extern "C" {
+ #endif
+ 
+ #ifndef HEADER_SSL_H
+@@ -419,3 +422,9 @@
+ int    GRSThtcpTSTrequestMake(char **, int *, unsigned int, char *, char *, char *);
+ int    GRSThtcpTSTresponseMake(char **, int *, unsigned int, char *, char *, char *);
+ int    GRSThtcpMessageParse(GRSThtcpMessage *, char *, int);
++
++#ifdef __cplusplus
++} // extern "C"
++#endif
++
++#endif // GRST_VERSION
+diff -uNr org.gridsite.core.ORIG/src/Makefile org.gridsite.core/src/Makefile
+--- org.gridsite.core.ORIG/src/Makefile	2010-09-22 01:00:09.988740935 +0200
++++ org.gridsite.core/src/Makefile	2010-09-22 01:04:20.963490070 +0200
+@@ -350,8 +350,8 @@
+                  $(prefix)/$(libdir)/httpd/modules \
+                  $(prefix)/share/doc/gridsite-$(MINOR_VERSION) \
+                  $(prefix)/libexec/gridsite/cgi-bin
+-	echo '#define' GRST_VERSION $(DEFVERSION) > $(prefix)/include/gridsite.h
+-	cat ../interface/gridsite.h >>$(prefix)/include/gridsite.h
++	sed 's/^\(#define GRST_VERSION\).*$$/\1 $(DEFVERSION)/' \
++	      ../interface/gridsite.h > $(prefix)/include/gridsite.h
+ 	cp -f ../interface/gridsite-gacl.h $(prefix)/include
+ 	cp -f urlencode $(prefix)/bin
+ 	cp -f findproxyfile $(prefix)/bin

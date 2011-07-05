@@ -1,0 +1,33 @@
+diff -uNr org.gridsite.core.ORIG/src/Makefile org.gridsite.core/src/Makefile
+--- org.gridsite.core.ORIG/src/Makefile	2009-07-23 20:59:20.863631673 +0200
++++ org.gridsite.core/src/Makefile	2009-07-23 21:14:46.450624936 +0200
+@@ -392,15 +392,16 @@
+                  $(prefix)/share/man/man1 \
+                  $(prefix)/share/man/man8 \
+                  $(prefix)/$(libdir)/httpd/modules \
+-                 $(prefix)/share/doc/gridsite-$(MINOR_VERSION)
++                 $(prefix)/share/doc/gridsite-$(MINOR_VERSION) \
++                 $(prefix)/libexec/gridsite/cgi-bin
+ 	echo '#define' GRST_VERSION $(DEFVERSION) > $(prefix)/include/gridsite.h
+ 	cat ../interface/gridsite.h >>$(prefix)/include/gridsite.h
+ 	cp -f ../interface/gridsite-gacl.h $(prefix)/include
+ 	cp -f urlencode $(prefix)/bin
+ 	cp -f findproxyfile $(prefix)/bin
+-	cp -f real-gridsite-admin.cgi $(prefix)/sbin
+-	cp -f gridsite-copy.cgi $(prefix)/sbin
+-	cp -f gridsite-storage.cgi $(prefix)/sbin
++	cp -f real-gridsite-admin.cgi $(prefix)/libexec/gridsite/cgi-bin
++	cp -f gridsite-copy.cgi $(prefix)/libexec/gridsite/cgi-bin
++	cp -f gridsite-storage.cgi $(prefix)/libexec/gridsite/cgi-bin
+ 	cp -f ../CHANGES ../README ../INSTALL ../LICENSE ../VERSION \
+                $(prefix)/share/doc/gridsite-$(MINOR_VERSION)
+ 	cp -f ../doc/index.html ../doc/*.conf ../doc/*.sh ../doc/*.spec \
+@@ -489,7 +490,7 @@
+ 	ln -sf htproxyput $(prefix)/bin/htproxyunixtime
+ 	ln -sf htproxyput $(prefix)/bin/htproxyrenew
+ 	ln -sf htproxyput $(prefix)/bin/htproxyinfo
+-	cp -f gridsite-delegation.cgi $(prefix)/sbin
++	cp -f gridsite-delegation.cgi $(prefix)/libexec/gridsite/cgi-bin
+ 	   
+ #
+ # Distributions
