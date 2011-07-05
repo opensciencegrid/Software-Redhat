@@ -1,0 +1,79 @@
+Name:		glite-data-delegation-cli
+Version:	2.0.1.3
+Release:	1
+Summary:	gLite delegation API command-line tools
+
+Group:		Development/Languages/C and C++
+License:	Apache 2.0
+URL:		http://glite.cvs.cern.ch/cgi-bin/glite.cgi/org.glite.data.delegation-cli
+# Retrieved on Jul 5 2011
+# http://glite.cvs.cern.ch/cgi-bin/glite.cgi/org.glite.data.delegation-cli.tar.gz?view=tar&pathrev=glite-data-delegation-cli_R_2_0_1_3
+Source0:        org.glite.data.delegation-cli.tar.gz
+Patch0:         glite_data_delegation_cli_fedora.patch
+Patch1:         testcase_new_gsoap.patch
+BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
+Requires:	CGSI-gSOAP
+BuildRequires:  automake autoconf libtool 
+BuildRequires:  CGSI-gSOAP-devel
+BuildRequires:  glite-build-common-cpp
+BuildRequires:  glite-data-build
+BuildRequires:  glite-data-util-c
+
+%description
+%{summary}
+
+%prep
+%setup -n org.glite.data.delegation-cli
+
+%patch0 -p0
+%patch1 -p0
+
+%build
+./bootstrap
+%configure --with-interface-version=2.0.0 --with-version=2.0.1 --with-gsoap-version=2.7.13
+
+make %{?_smp_mflags}
+
+%install
+rm -rf $RPM_BUILD_ROOT
+make install DESTDIR=$RPM_BUILD_ROOT
+
+rm $RPM_BUILD_ROOT%{_bindir}/test-glite-delegation-bug-33641
+rm -f $RPM_BUILD_ROOT%{_libdir}/*.a
+rm -f $RPM_BUILD_ROOT%{_libdir}/*.la
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+%files
+%defattr(-,root,root,-)
+%{_libdir}/lib*.so.*
+%{_mandir}/man1/*
+%{_bindir}/glite-*
+
+%changelog
+* Tue Jul  5 2011 Brian Bockelman <bbockelm@cse.unl.edu> 2.0.1.3-1
+- Initial OSG packaging.
+
+%package devel
+Summary: C libraries and headers for the gLite delegation CLI
+Group: System Environment/Libraries
+Requires: %{name} = %{version}-%{release}
+
+%description devel
+%{summary}
+
+%files devel
+%{_libdir}/libglite_data_delegation_api_simple_c.so
+%{_includedir}/glite/data/delegation
+
+%package doc
+Summary: Documentation for the gLite delegation CLI
+Group: Documentation
+
+%description doc
+%{summary}
+
+%files doc
+%{_docdir}/%{name}
+
