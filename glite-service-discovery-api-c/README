@@ -1,0 +1,7 @@
+
+This is a copy of the upstream glite-service-discovery-api-c from EMI.
+
+The ETICS-generated SRPM was not usable, however, because it hardcoded
+/usr/lib instead of using %{_libdir}.  Adding macros to the specfile was the
+only change I made.
+
