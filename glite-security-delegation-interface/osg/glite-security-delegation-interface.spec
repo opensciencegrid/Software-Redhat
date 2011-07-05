@@ -13,6 +13,7 @@ Patch0:         gsoap2_7_13_fix.patch
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildArch:      noarch
 BuildRequires:  /usr/bin/xsltproc
+BuildRequires:  docbook-style-xsl
 
 %description
 %{summary}
