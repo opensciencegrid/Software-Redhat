@@ -17,7 +17,7 @@ BuildRequires:  automake autoconf libtool
 BuildRequires:  CGSI-gSOAP-devel
 BuildRequires:  glite-build-common-cpp
 BuildRequires:  glite-data-build
-BuildRequires:  glite-data-util-c
+BuildRequires:  glite-data-util-c-devel
 
 %description
 %{summary}
