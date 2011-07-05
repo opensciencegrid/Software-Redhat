@@ -1,0 +1,20 @@
+--- interface/wsdl/www.gridsite.org-delegation-2.0.0.wsdl	2010-03-31 05:44:53.000000000 -0500
++++ interface/wsdl/www.gridsite.org-delegation-2.0.0.wsdl	2011-07-05 10:28:53.000000000 -0500
+@@ -36,8 +36,7 @@
+      </xsd:sequence>
+     </xsd:complexType>
+    </xsd:element>
+-   <xsd:element name="NewProxyReq">
+-    <xsd:complexType>
++    <xsd:complexType name="NewProxyReqType">
+      <xsd:annotation>
+          <xsd:documentation>
+              New proxy certificate request, containing the certificate
+@@ -62,6 +61,7 @@
+       </xsd:element>
+      </xsd:sequence>
+     </xsd:complexType>
++   <xsd:element name="NewProxyReq" type="tns:NewProxyReqType">
+    </xsd:element>
+   </xsd:schema>
+  </wsdl:types>
