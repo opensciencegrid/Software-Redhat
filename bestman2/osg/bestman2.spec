@@ -1,6 +1,6 @@
 Name:           bestman2
-Version:        2.1.0.pre2
-Release:        49
+Version:        2.1.0.pre4
+Release:        50
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -8,7 +8,7 @@ License:        https://sdm.lbl.gov/bestman/
 URL:            https://sdm.lbl.gov/bestman/
 
 %define install_root /usr/lib/%{name}
-%define bestman_url https://codeforge.lbl.gov/frs/download.php/316/bestman2-2.1.0-pre2.tar.gz
+%define bestman_url https://codeforge.lbl.gov/frs/download.php/326/bestman2-2.1.0-pre4.tar.gz
 
 Source0:        bestman2.tar.gz
 Source1:        bestman2.sysconfig
@@ -24,8 +24,18 @@ BuildRequires:  jdk wget ant
 Obsoletes: bestman
 
 %description
+BeStMan 2 - Berkeley Storage Manager
+
 Application server for exporting local file systems securely using the
-SRM protocol.
+SRM protocol.  
+
+BeStMan is a full implementation of SRM v2.2, developed by Lawrence Berkeley National Laboratory, for disk based storage systems and mass storage systems such as HPSS. End users may have their own personal BeStMan that manages and provides an SRM interface to their local disks or storage systems. It works on top of existing disk-based unix file system, and has been reported so far to work on file systems such as NFS, PVFS, AFS, GFS, GPFS, PNFS, and Lustre. It also works with any existing file transfer service, such as gsiftp, http, https and ftp.
+
+User's guide : http://sdm.lbl.gov/bestman
+General support and bug report to <srm@lbl.gov>
+Open Science Grid (OSG) support:  osg-storage@opensciencegrid.org
+BeStMan Copyright 2010-2011, The Regents of the University of California,
+through Lawrence Berkeley National Laboratory.  See LICENSE file for details.
 
 %package server
 Summary: BeStMan SRM server
@@ -63,6 +73,15 @@ The srm-* client tools
 
 %build
 
+# NOTE: Upstream package can be created with the following procedure:
+# svn checkout -r 50 https://codeforge.lbl.gov/anonscm/bestman
+# pushd bestman
+# wget https://codeforge.lbl.gov/frs/download.php/316/bestman2-2.1.0-pre2.tar.gz
+# tar xvzf bestman2-2.1.0-pre2.tar.gz
+# popd
+# mv bestman bestman2
+# tar cvzf bestman2.tar.gz bestman2
+# NOTE: Revision number (50) and url/tarball name may change per release.
 
 ./build.configure --with-bestman-url=%{bestman_url} --with-bestman2-version=%{version} --with-revision=%{release} --with-java-home=/usr/java/latest --enable-cached-src=yes --enable-cached-pkg=yes
 
