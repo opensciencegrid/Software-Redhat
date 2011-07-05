@@ -1,0 +1,51 @@
+Name:		glite-data-transfer-interface
+Version:	3.7.0
+Release:	1
+Summary:	WSDL and interface docs for FTS.
+
+Group:		Development/Languages/C and C++
+License:	Apache 2.0
+URL:		http://glite.cvs.cern.ch/cgi-bin/glite.cgi/org.glite.data.transfer-interface
+# Retrieved on Jul 5 2011
+# http://glite.cvs.cern.ch/cgi-bin/glite.cgi/org.glite.data.transfer-interface.tar.gz?view=tar&pathrev=glite-data-transfer-interface_R_3_7_0_1
+Source0:        org.glite.data.transfer-interface.tar.gz
+BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
+BuildArch:      noarch
+BuildRequires:  java-1.6.0-openjdk-devel
+
+%description
+%{summary}
+
+%prep
+%setup -n org.glite.data.transfer-interface
+
+%build
+make javadoc
+
+%install
+rm -rf $RPM_BUILD_ROOT
+mkdir -p $RPM_BUILD_ROOT%{_prefix}
+make install prefix=$RPM_BUILD_ROOT%{_prefix}
+
+mkdir -p $RPM_BUILD_ROOT%{_datadir}/%{name}-%{version}
+mv $RPM_BUILD_ROOT%{_prefix}/interface $RPM_BUILD_ROOT%{_datadir}/%{name}-%{version}
+
+mkdir -p $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
+mv $RPM_BUILD_ROOT%{_docdir}/html $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
+mv $RPM_BUILD_ROOT%{_docdir}/LICENSE $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
+mv $RPM_BUILD_ROOT%{_docdir}/RELEASE-NOTES $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+%files
+%defattr(-,root,root,-)
+%{_docdir}/%{name}-%{version}
+%{_datadir}/%{name}-%{version}/interface
+%doc %{_docdir}/%{name}-%{version}/LICENSE
+%doc %{_docdir}/%{name}-%{version}/RELEASE-NOTES
+
+%changelog
+* Sat Jul  5 2011 Brian Bockelman <bbockelm@cse.unl.edu> 3.7.0-1
+- Initial OSG packaging.
+
