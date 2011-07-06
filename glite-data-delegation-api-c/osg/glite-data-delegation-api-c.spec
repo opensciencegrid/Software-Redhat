@@ -18,10 +18,8 @@ BuildRequires:  CGSI-gSOAP-devel
 BuildRequires:  glite-build-common-cpp
 BuildRequires:  glite-security-delegation-interface
 BuildRequires:  glite-data-build
-BuildRequires:  globus-gsi-proxy-core-devel
 BuildRequires:  globus-gssapi-gsi-devel
 BuildRequires:  globus-gss-assist-devel
-BuildRequires:  globus-gsi-credential-devel
 
 %description
 %{summary}
