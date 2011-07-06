@@ -14,7 +14,7 @@
 Name:           gridsite
 Version:        1.7.15
 
-Release:        2%{?dist}.2
+Release:        3%{?dist}.2
 Summary:        Grid Security for the Web, Web platforms for Grids
 
 Group:          System Environment/Daemons
@@ -112,6 +112,7 @@ This package gridsite-setuid, contains the setuid gsexec program.
 Group:    System Environment/Daemons
 Summary:  Developers tools for gridsite
 Requires: gridsite-libs = %{version}-%{release}
+Requires: openssl-devel
 
 %description  devel
 GridSite was originally a web application developed for managing and formatting 
@@ -139,7 +140,7 @@ This package gridsite-doc, contains developer documentation for gridsite.
 Group:    System Environment/Daemons
 Summary:  Run time libraries for mod_gridsite and gridsite-clients
 Version:  %{vercompat}
-Release:  1%{?dist}.1
+Release:  3%{?dist}.1
 
 %description compat
 GridSite was originally a web application developed for managing and formatting 
@@ -338,6 +339,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Sun Jul 3 2011 Brian Bockelman <bbockelm@cse.unl.edu>  - 1.7.15-3
 - Add back libgridsite_globus.so, as they are needed by glite-data-util-c
+- Add dependency on openssl-devel for gridsite-devel.
 
 * Sun Jul 3 2011 Steve Traylen <steve.traylen@cern.ch>  - 1.7.15-2 2
 - Release of compat package must also be increased.
