@@ -20,6 +20,8 @@ BuildRequires:  glite-build-common-cpp
 BuildRequires:  glite-service-discovery-api-c-devel
 BuildRequires:  glite-service-discovery-build-common-cpp
 BuildRequires:  gridsite-devel
+BuildRequires:  globus-gsi-sysconfig-devel
+BuildRequires:  globus-core
 
 %description
 %{summary}
@@ -31,6 +33,7 @@ BuildRequires:  gridsite-devel
 
 %build
 ./bootstrap
+export CFLAGS="%{optflags} -I%{_libdir}/globus/include" 
 %configure --with-glite-location=/usr
 make
 
