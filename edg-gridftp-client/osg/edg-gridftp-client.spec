@@ -14,6 +14,9 @@ License: European DataGrid License
 Group: Applications/File
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
+BuildRequires: automake
+BuildRequires: autoconf
+BuildRequires: libtool
 BuildRequires: globus-common-devel
 BuildRequires: globus-ftp-client-devel
 BuildRequires: globus-xio-devel
