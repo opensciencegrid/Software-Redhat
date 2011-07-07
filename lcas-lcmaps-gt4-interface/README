@@ -1,0 +1,6 @@
+
+This is based on the developer tarball and spec file, but not the SRPM.
+
+This is because we need the lcas_lcmaps_gt4_interface_nochangeuser.patch patch
+to support gsissh and xrootd.
+

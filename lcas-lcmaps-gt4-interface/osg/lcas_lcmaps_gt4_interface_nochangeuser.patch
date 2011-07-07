@@ -1,0 +1,135 @@
+Index: src/lcmaps.c
+===================================================================
+RCS file: /cvs/glite/org.glite.security.lcas-lcmaps-gt4-interface/src/lcmaps.c,v
+retrieving revision 1.19
+diff -u -r1.19 lcmaps.c
+--- src/lcmaps.c	3 May 2010 09:03:47 -0000	1.19
++++ src/lcmaps.c	3 Jan 2011 15:15:59 -0000
+@@ -57,7 +57,7 @@
+ 
+ 
+ 
+-int run_lcmaps (char * pem_string, FILE * logfile)
++int run_lcmaps (char * pem_string, uid_t * uid, FILE * logfile)
+ {
+     int                     retval        = 0;
+     int                     mapcounter    = -1;
+@@ -72,6 +72,7 @@
+     int (*LcmapsTerm)();
+     int (*Lcmaps_Account_Info_Init)(lcmaps_account_info_t *);
+     int (*Lcmaps_Return_Account_From_Pem)(char *, int, lcmaps_account_info_t *);
++    int (*Lcmaps_Account_Info_Clean)(lcmaps_account_info_t *);
+     /* int (*Lcmaps_Run_With_Pem_And_Return_Account)(char *, char *, int, lcmaps_request_t, int, char **, uid_t *, gid_t **, int *, gid_t **, int *, char **); */
+ #endif
+ 
+@@ -111,6 +112,15 @@
+         return 1;
+     }
+ 
++
++    Lcmaps_Account_Info_Clean = dlsym(lcmaps_return_account_from_pem_handle, "lcmaps_account_info_clean");
++    if ((error = dlerror()) != NULL)
++    {
++        logmsg(LOG_ERR, "LCMAPS module not compliant: Symbol \"%s\" not found: %s", "lcmaps_account_info_clean", error);
++        dlclose(lcmaps_return_account_from_pem_handle);
++        return 1;
++    }
++
+     Lcmaps_Return_Account_From_Pem = dlsym(lcmaps_return_account_from_pem_handle, "lcmaps_return_account_from_pem");
+     if ((error = dlerror()) != NULL)
+     {
+@@ -159,7 +169,6 @@
+ #endif
+         return 1;
+     }
+-        
+ 
+     /* LCMAPS mapping call */
+ #ifdef LINKED_LCAS_LCMAPS
+@@ -188,6 +197,7 @@
+     {
+         logmsg(LOG_WARNING, "Warning: failed mapping. LCMAPS returned: %d\n", retval);
+         lcmaps_term();
++        lcmaps_account_info_clean(paccount_info);
+         free(paccount_info);
+         return 1;
+     }
+@@ -196,6 +206,7 @@
+     {
+         logmsg(LOG_WARNING, "Warning: failed mapping. LCMAPS returned: %d\n", retval);
+         (*LcmapsTerm)();
++        (*Lcmaps_Account_Info_Clean)(paccount_info);
+         dlclose(lcmaps_return_account_from_pem_handle);
+         free(paccount_info);
+         return 1;
+@@ -204,10 +215,13 @@
+ 
+ 
+     /* Mapping is succesful */
++    (*uid) = paccount_info->uid;
+ #ifdef LINKED_LCAS_LCMAPS
+     lcmaps_term();
++    lcmaps_account_info_clean(paccount_info);
+ #else
+     (*LcmapsTerm)();
++    (*Lcmaps_Account_Info_Clean)(paccount_info);
+     dlclose(lcmaps_return_account_from_pem_handle);
+ #endif
+ 
+Index: src/lcmaps_gt4_front.c
+===================================================================
+RCS file: /cvs/glite/org.glite.security.lcas-lcmaps-gt4-interface/src/lcmaps_gt4_front.c,v
+retrieving revision 1.29
+diff -u -r1.29 lcmaps_gt4_front.c
+--- src/lcmaps_gt4_front.c	3 May 2010 09:03:47 -0000	1.29
++++ src/lcmaps_gt4_front.c	3 Jan 2011 15:15:59 -0000
+@@ -110,7 +110,7 @@
+     X509 *           cert             = NULL;
+     char *           pem_string       = NULL;
+ #endif /* When not making use of the Globus interface to LCAS and LCMAPS */
+-
++    uid_t            uid              = -1;
+     struct passwd *  pwname           = NULL;
+ 
+     FILE * flog_lcas   = NULL;
+@@ -192,7 +192,7 @@
+ 
+     /* Execute LCMAPS */
+ #ifndef USE_GLOBUS_INTERFACE_TO_LCMAPS    /* Make use of the Globus interface to LCMAPS */
+-    if (llgt4_create_jobid() || run_lcmaps(pem_string, flog_lcmaps))
++    if (llgt4_create_jobid() || run_lcmaps(pem_string, &uid, flog_lcmaps))
+ #else  /* USE_GLOBUS_INTERFACE_TO_LCMAPS  :  Make use of the Globus interface to LCMAPS */
+     if (llgt4_create_jobid() || run_lcmaps(user_cred_handle, llgt4_get_client_name(context), flog_lcmaps))
+ #endif /* USE_GLOBUS_INTERFACE_TO_LCMAPS  :  Make use of the Globus interface to LCMAPS */
+@@ -214,6 +214,15 @@
+         logmsg(LOG_NOTICE, "Execution of LCMAPS Succeeded.\n");
+         return 0;
+     }
++    else if (getenv("LLGT4_NO_CHANGE_USER"))
++    {
++        if (uid == -1) {
++            *local_identity = NULL;
++            logmsg(LOG_ERR, "LCMAPS mapping failed (LLGT4_NO_CHANGE_USER env var is set).\n");
++        }
++        pwname = getpwuid(uid);
++        *local_identity = strdup (pwname->pw_name);
++    }
+     else
+     {
+         /* Meaning, I'm still root, meaning, no positive LCMAPS outcome */
+Index: src/utils.h
+===================================================================
+RCS file: /cvs/glite/org.glite.security.lcas-lcmaps-gt4-interface/src/utils.h,v
+retrieving revision 1.10
+diff -u -r1.10 utils.h
+--- src/utils.h	3 May 2010 09:03:47 -0000	1.10
++++ src/utils.h	3 Jan 2011 15:15:59 -0000
+@@ -124,7 +124,7 @@
+ 
+ #ifndef USE_GLOBUS_INTERFACE_TO_LCMAPS
+ int run_lcas   (char *, FILE *);
+-int run_lcmaps (char *, FILE *);
++int run_lcmaps (char *, uid_t *, FILE *);
+ #else
+ int run_lcas (gss_cred_id_t, char *, FILE *);
+ int run_lcmaps (gss_cred_id_t, char *, FILE *);
