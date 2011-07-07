@@ -1,0 +1,9 @@
+
+This package is based upon the NIKHEF package:
+
+https://ndpfsvn.nikhef.nl/repos/mwsec/packaging/fedora/trunk/
+
+The SRPMs were not used due to the issue fixed by upstream r15293.
+
+We also have to add "--enable-osg" to get OSG-style validation of VOMS servers (none).
+
