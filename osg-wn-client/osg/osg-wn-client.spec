@@ -24,7 +24,6 @@ Requires: bestman2-client
 Requires: /usr/bin/uberftp
 Requires: /usr/bin/wget
 Requires: osg-ca-certs
-Requires: pegasus
 
 %description
 %{summary}
