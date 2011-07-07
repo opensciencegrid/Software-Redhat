@@ -1,6 +1,6 @@
 Name:		glite-data-util-c
 Version:	1.2.3
-Release:	1
+Release:	2
 Summary:	gLite data C utilties
 
 Group:		System/Libraries
@@ -22,6 +22,7 @@ BuildRequires:  glite-service-discovery-build-common-cpp
 BuildRequires:  gridsite-devel
 BuildRequires:  globus-gsi-sysconfig-devel
 BuildRequires:  globus-core
+BuildRequires:  libxml2-devel
 
 %description
 %{summary}
@@ -56,12 +57,18 @@ rm -rf $RPM_BUILD_ROOT
 %{_docdir}/*
 
 %changelog
+* Wed Jul  6 2011 Brian Bockelman <bbockelm@cse.unl.edu> 1.2.3-2
+- Added glite-service-discovery-api-c-devel to the devel subpackage requirements
+  Necessary for including the header files.
+
 * Sun Jul  3 2011 Brian Bockelman <bbockelm@cse.unl.edu> 1.2.3-1
 - Initial RPM packaging.
 
 %package devel
 Summary: Development headers and libraries for the gLite data util package
 Group:   System Development/Libraries
+Requires: %{name} = %{version}-%{release}
+Requires: glite-service-discovery-api-c-devel
 
 %description devel
 %{summary}

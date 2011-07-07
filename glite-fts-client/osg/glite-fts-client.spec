@@ -22,6 +22,14 @@ BuildRequires:  glite-data-util-c-devel
 BuildRequires:  glite-data-delegation-cli-devel
 BuildRequires:  glite-data-transfer-interface
 BuildRequires:  /usr/bin/xsltproc
+BuildRequires:  glib2-devel
+BuildRequires:  e2fsprogs-devel
+BuildRequires:  globus-gssapi-gsi-devel
+BuildRequires:  globus-gss-assist-devel
+BuildRequires:  gridsite-devel
+BuildRequires:  python-devel
+BuildRequires:  docbook-style-xsl
+BuildRequires:  doxygen
 
 %description
 %{summary}

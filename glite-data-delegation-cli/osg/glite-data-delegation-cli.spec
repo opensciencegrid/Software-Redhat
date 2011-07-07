@@ -12,12 +12,24 @@ Source0:        org.glite.data.delegation-cli.tar.gz
 Patch0:         glite_data_delegation_cli_fedora.patch
 Patch1:         testcase_new_gsoap.patch
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
-Requires:	CGSI-gSOAP
+
 BuildRequires:  automake autoconf libtool 
 BuildRequires:  CGSI-gSOAP-devel
 BuildRequires:  glite-build-common-cpp
 BuildRequires:  glite-data-build
 BuildRequires:  glite-data-util-c-devel
+BuildRequires:  glite-data-delegation-api-c
+BuildRequires:  /usr/bin/xsltproc
+BuildRequires:  gridsite-devel
+BuildRequires:  docbook-style-xsl
+BuildRequires:  libxml2-devel
+BuildRequires:  glib2-devel
+BuildRequires:  globus-gsi-sysconfig-devel
+BuildRequires:  globus-core
+BuildRequires:  glite-service-discovery-api-c-devel
+BuildRequires:  globus-gssapi-gsi-devel
+BuildRequires:  globus-gss-assist-devel
+BuildRequires:  doxygen
 
 %description
 %{summary}
@@ -30,6 +42,7 @@ BuildRequires:  glite-data-util-c-devel
 
 %build
 ./bootstrap
+export CFLAGS="%{optflags} -I%{_libdir}/globus/include"
 %configure --with-interface-version=2.0.0 --with-version=2.0.1 --with-gsoap-version=2.7.13
 
 make %{?_smp_mflags}
