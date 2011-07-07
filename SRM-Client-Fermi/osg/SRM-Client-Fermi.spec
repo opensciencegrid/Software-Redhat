@@ -13,9 +13,9 @@ Summary: SRM clients from dCache.org
 License: http://www.dcache.org/manuals/dCacheSoftwareLicence.html
 Group:   Development/Tools
 
-BuildRequires: java-1.6.0-openjdk-devel
+BuildRequires: java-devel
 BuildRequires: ant
-Requires: java-1.6.0-openjdk
+Requires: java
 Requires: /usr/bin/globus-url-copy
 
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
