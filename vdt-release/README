@@ -1,0 +1,11 @@
+vdt-release is the yum repository setup required to install VDT software.  
+This release includes:
+ - Production (named 'vdt') (default)
+ - Testing
+ - Development
+
+By default, only the Production repo is enabled.  This can be changed by 
+editing the yum.repos.d/vdt-*.repo files and setting:
+enabled=1
+
+
