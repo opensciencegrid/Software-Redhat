@@ -13,9 +13,10 @@ URL:            http://vdt.cs.wisc.edu/repos
 
 #Source0:        http://download.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL
 #Source1:        GPL	
-Source2:        vdt.repo	
-Source3:        vdt-testing.repo	
-Source4:	vdt-development.repo
+#Source2:        vdt.repo	
+#Source3:        vdt-testing.repo	
+#Source4:	vdt-development.repo
+Source0:	vdt-repo.tar.gz
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -43,9 +44,12 @@ rm -rf $RPM_BUILD_ROOT
 #    $RPM_BUILD_ROOT%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-EPEL
 
 # yum
-install -dm 755 $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d
-install -pm 644 %{SOURCE2} %{SOURCE3} %{SOURCE4} \
-    $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d
+#install -dm 755 $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d
+#install -pm 644 %{SOURCE2} %{SOURCE3} %{SOURCE4} \
+#    $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d
+tar xzf %{SOURCE0}
+mkdir -p $RPM_BUILD_ROOT
+mv * $RPM_BUILD_ROOT
 
 %clean
 rm -rf $RPM_BUILD_ROOT
