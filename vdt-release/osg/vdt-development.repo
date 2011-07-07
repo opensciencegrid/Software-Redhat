@@ -1,6 +1,6 @@
 [vdt-development]
 name=Virtual Data Toolkit for Enterprise Linux 5 - Development - $basearch 
-baseurl=http://vdt.cs.wisc.edu/repos/3.0/el5/Development/$basearch
+baseurl=http://vdt.cs.wisc.edu/repos/3.0/el5/development/$basearch
 #mirrorlist=http://mirrors.fedoraproject.org/mirrorlist?repo=testing-epel5&arch=$basearch
 failovermethod=priority
 enabled=0
@@ -9,7 +9,7 @@ enabled=0
 
 [vdt-development-source]
 name=Virtual Data Toolkit for Enterprise Linux 5 - Development - $basearch - Source
-baseurl=http://vdt.cs.wisc.edu/repos/3.0/el5/Development/src
+baseurl=http://vdt.cs.wisc.edu/repos/3.0/el5/development/src
 #mirrorlist=http://mirrors.fedoraproject.org/mirrorlist?repo=testing-source-epel5&arch=$basearch
 failovermethod=priority
 enabled=0
