@@ -1,22 +1,24 @@
 Name:           bestman2
 Version:        2.1.0.pre4
-Release:        50
+Release:        1
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
 License:        https://sdm.lbl.gov/bestman/
 URL:            https://sdm.lbl.gov/bestman/
 
-%define install_root /usr/lib/%{name}
+%define install_root /etc/%{name}
+
+# NOTE: CHANGE THESE EACH RELEASE
 %define bestman_url https://codeforge.lbl.gov/frs/download.php/326/bestman2-2.1.0-pre4.tar.gz
+%define revision 50
 
 Source0:        bestman2.tar.gz
-Source1:        bestman2.sysconfig
+Source1:        bestman2.sh
 Source2:        bestman2.init
 Source3:        bestman.logrotate
-Source4:        bestman2.sh
 
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-roo1t-%(%{__id_u} -n)
+BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
 BuildRequires:  jdk wget ant
@@ -83,7 +85,7 @@ The srm-* client tools
 # tar cvzf bestman2.tar.gz bestman2
 # NOTE: Revision number (50) and url/tarball name may change per release.
 
-./build.configure --with-bestman-url=%{bestman_url} --with-bestman2-version=%{version} --with-revision=%{release} --with-java-home=/usr/java/latest --enable-cached-src=yes --enable-cached-pkg=yes
+./build.configure --with-bestman-url=%{bestman_url} --with-bestman2-version=%{version} --with-revision=%{revision} --with-java-home=/usr/java/latest --enable-cached-src=yes --enable-cached-pkg=yes
 
 make
 
@@ -109,12 +111,20 @@ pushd setup
     --with-keyfile-path=/etc/grid-security/http/httpkey.pem \
     --with-gums-certfile-path=/etc/grid-security/http/httpcert.pem \
     --with-gums-keyfile-path=/etc/grid-security/http/httpkey.pem \
-    --with-sysconf-path=/etc/sysconfig/bestman2 \
     --with-bestman2-conf-path=../conf/bestman2.rc
 popd
 
-SRM_HOME=/usr/lib/bestman2
-export SRM_HOME
+#Fix paths in bestman2.rc
+JAVADIR=`echo %{_javadir} |  sed 's/\//\\\\\//g'`
+sed -i "s/SRM_HOME=.*/SRM_HOME=\/etc\/bestman2/" conf/bestman2.rc
+sed -i "s/GridMapFileName=.*/GridMapFileName=\/etc\/bestman2\/conf\/grid-mapfile.empty/" conf/bestman2.rc
+sed -i "s/BESTMAN_SYSCONF=.*/BESTMAN_SYSCONF=\/etc\/bestman2\/conf\/bestman2.rc/" conf/bestman2.rc
+sed -i "s/BESTMAN_LOG=.*/BESTMAN_LOG=\/var\/log\/bestman2\/bestman2.log/" conf/bestman2.rc
+sed -i "s/BESTMAN_LIB=.*/BESTMAN_LIB=$JAVADIR\/bestman2/" conf/bestman2.rc
+sed -i "s/EventLogLocation=.*/EventLogLocation=\/var\/log\/bestman2/" conf/bestman2.rc
+
+#Fix paths in binaries.  Wish I could do this in configure...
+sed -i "s/SRM_HOME=\/.*/SRM_HOME=\/etc\/bestman2/" bin/*
 
 popd
 
@@ -123,20 +133,19 @@ rm -rf $RPM_BUILD_ROOT
 
 pushd bestman2
 
+
+
+mkdir -p $RPM_BUILD_ROOT%{_javadir}
+mkdir -p $RPM_BUILD_ROOT%{_sbindir}
 mkdir -p $RPM_BUILD_ROOT%{install_root}
-mkdir -p $RPM_BUILD_ROOT%{install_root}/setup
-mkdir -p $RPM_BUILD_ROOT%{install_root}/sbin
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}
-mv conf/bestman2.rc $RPM_BUILD_ROOT%{_sysconfdir}/
 cp -arp conf $RPM_BUILD_ROOT%{install_root}
-cp -arp lib $RPM_BUILD_ROOT%{install_root}
+cp -arp lib $RPM_BUILD_ROOT%{_javadir}/%{name}
 cp -arp properties $RPM_BUILD_ROOT%{install_root}
-cp -arp setup/bestman.in $RPM_BUILD_ROOT%{install_root}/setup
 
 
 install -m 0755 version $RPM_BUILD_ROOT%{install_root}/
-install -m 0755 setup/configure $RPM_BUILD_ROOT%{install_root}/setup/configure
-install -m 0755 sbin/bestman.server $RPM_BUILD_ROOT%{install_root}/sbin/bestman.server
+install -m 0755 sbin/bestman.server $RPM_BUILD_ROOT%{_sbindir}/bestman.server
 
 
 mkdir -p $RPM_BUILD_ROOT%{_bindir}
@@ -144,14 +153,12 @@ for i in `ls bin`; do
   install -m 0755 bin/$i $RPM_BUILD_ROOT%{_bindir}/
 done
 
-mkdir -p $RPM_BUILD_ROOT%{_sbindir}
 mkdir -p $RPM_BUILD_ROOT%{_initrddir}
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig
-install -m 0644 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/%{name}
+install -m 0755 %{SOURCE1} $RPM_BUILD_ROOT%{_sbindir}/%{name}
 install -m 0755 %{SOURCE2} $RPM_BUILD_ROOT%{_initrddir}/%{name}
 install -m 0644 %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/%{name}
-install -m 0755 %{SOURCE4} $RPM_BUILD_ROOT%{_sbindir}/%{name}
 
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/grid-security/vomsdir
 touch $RPM_BUILD_ROOT%{_sysconfdir}/grid-security/vomsdir/vdt-empty.pem
@@ -164,10 +171,10 @@ popd
 rm -rf $RPM_BUILD_ROOT
 
 %pre server
-getent group bestman >/dev/null || groupadd -r bestman
-getent passwd bestman >/dev/null || \
-       useradd -r -g bestman -d %{install_root} -c "Bestman SRM user" \
-       -s /bin/bash bestman
+getent group daemon >/dev/null || groupadd -r daemon
+getent passwd daemon >/dev/null || \
+       useradd -r -g daemon -d %{install_root} -c "General daemon user" \
+       -s /bin/bash daemon
 
 %post server
 /sbin/chkconfig --add %{name}
@@ -185,22 +192,21 @@ fi
 %files libs
 %defattr(-,root,root,-)
 %dir %{install_root}
-%{install_root}/lib/axis
-%{install_root}/lib/jglobus
-%{install_root}/lib/bestman2.jar
-%{install_root}/lib/bestman2-stub.jar
-%{install_root}/lib/bestman2-printintf.jar
-%{install_root}/lib/bestman2-transfer.jar
+%{_javadir}/bestman2/axis
+%{_javadir}/bestman2/jglobus
+%{_javadir}/bestman2/bestman2.jar
+%{_javadir}/bestman2/bestman2-stub.jar
+%{_javadir}/bestman2/bestman2-printintf.jar
+%{_javadir}/bestman2/bestman2-transfer.jar
 %{install_root}/version
 %{install_root}/properties
-%config(noreplace) %{_sysconfdir}/sysconfig/%{name}
 
 %files client
 %defattr(-,root,root,-)
-%{install_root}/lib/bestman2-aux.jar
-%{install_root}/lib/bestman2-client.jar
-%{install_root}/lib/bestman2-tester-driver.jar
-%{install_root}/lib/bestman2-tester-main.jar
+%{_javadir}/bestman2/bestman2-aux.jar
+%{_javadir}/bestman2/bestman2-client.jar
+%{_javadir}/bestman2/bestman2-tester-driver.jar
+%{_javadir}/bestman2/bestman2-tester-main.jar
 %config(noreplace) %{install_root}/conf/srmclient.conf
 %{install_root}/conf/srmclient.conf.sample
 %config(noreplace) %{install_root}/conf/srmtester.conf
@@ -209,28 +215,35 @@ fi
 
 %files server
 %defattr(-,root,root,-)
-%{install_root}/lib/others
-%{install_root}/lib/voms
-%{install_root}/lib/gums
-%{install_root}/lib/gums2
-%{install_root}/lib/jetty
-%{install_root}/lib/plugin
-%{install_root}/sbin/bestman.server
+%{_javadir}/bestman2/others
+%{_javadir}/bestman2/voms
+%{_javadir}/bestman2/gums
+%{_javadir}/bestman2/gums2
+%{_javadir}/bestman2/jetty
+%{_javadir}/bestman2/plugin
+%{_sbindir}/bestman.server
 %{install_root}/conf/WEB-INF
 %{install_root}/conf/bestman2.gateway.sample.rc
 %{install_root}/conf/grid-mapfile.empty
 %{install_root}/conf/bestman-diag-msg.conf
 %{install_root}/conf/bestman-diag.conf.sample
-%config(noreplace) %{_sysconfdir}/%{name}.rc
+%config(noreplace) %{install_root}/conf/bestman2.rc
 %{_initrddir}/%{name}
 %{_sbindir}/%{name}
-%{install_root}/setup/configure
-%{install_root}/setup/bestman.in/*
 %config(noreplace) %{_sysconfdir}/logrotate.d/%{name}
 %attr(0644,root,root) %{_sysconfdir}/grid-security/vomsdir/vdt-empty.pem
-%attr(-,bestman,bestman) %dir %{_var}/log/%{name}
+%attr(-,daemon,daemon) %dir %{_var}/log/%{name}
 
 %changelog
+* Mon Jul 07 2011 Doug Strain <dstrain@fnal.gov> 2.1.0.pre4
+Updated to bestman2.1.0pre4
+Changed the locations to be FHS compliant:
+- Moved java jar files to javadir/bestman2
+- Moved bestman.server to sbindir
+- Moved base location (now only configuration) to /etc/bestman2
+- Moved bestman2.rc to /etc/bestman2/conf
+- Deleted setup directory in favor of combined bestman2.rc/sysconfig
+
 * Mon Jul 01 2011 Doug Strain <dstrain@fnal.gov> 2.1.0.pre2
 Creating Bestman2 spec file based on Hadoop repository
 

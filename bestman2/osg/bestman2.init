@@ -14,8 +14,8 @@
 # Source function library.
 . /etc/rc.d/init.d/functions
 
-if [ -e /etc/sysconfig/bestman2 ] ; then
-    . /etc/sysconfig/bestman2
+if [ -e /etc/bestman2/conf/bestman2 ] ; then
+    . /etc/bestman2/conf/bestman2.rc
 fi
 
 if [ "x$BESTMAN_LOG" = "x" ]; then
@@ -27,7 +27,7 @@ if [ "x$BESTMAN_PID" = "x" ]; then
 fi
 
 if [ "x$SRMOWNER" = "x" ]; then
-    SRMOWNER=bestman
+    SRMOWNER=daemon
 fi
 
 start() {
