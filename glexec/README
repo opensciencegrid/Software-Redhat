@@ -1,0 +1,7 @@
+
+This package is based on the glexec.spec found at
+
+https://ndpfsvn.nikhef.nl/repos/mwsec/packaging/fedora/trunk/
+
+The upstream SRPM was not taken because 0.8.10 is not posted in SRPM form at this time.
+
