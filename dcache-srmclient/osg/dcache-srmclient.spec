@@ -5,13 +5,14 @@
 %define install_root %{_datadir}/java/%{name}
 %endif
 
-Name:    SRM-Client-Fermi
-Version: 1.9.5
-Release: 23
+Name:    dcache-srmclient 
+Version: 1.9.5.23
+Release: 1
 URL:     http://dcache.org
 Summary: SRM clients from dCache.org
 License: http://www.dcache.org/manuals/dCacheSoftwareLicence.html
 Group:   Development/Tools
+Obsoletes: SRM-Client-Fermi
 
 BuildRequires: java-devel
 BuildRequires: ant
@@ -20,8 +21,8 @@ Requires: /usr/bin/globus-url-copy
 
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
-Source0: srmclient-%{version}-%{release}.tar.gz
-Source1: SRM-Client-Fermi-config.xml
+Source0: srmclient-1.9.5-23.tar.gz
+Source1: dcache-srmclient-config.xml
 
 Patch0: remove-srm-path-warnings.patch
 
@@ -29,7 +30,7 @@ Patch0: remove-srm-path-warnings.patch
 %{summary}
 
 %prep
-%setup -q -n srmclient-%{version}-%{release}
+%setup -q -n srmclient-1.9.5-23
 
 %patch -p0
 
@@ -46,11 +47,11 @@ mkdir -p $RPM_BUILD_ROOT%{install_root}
 mv dist/package/srmclient/opt/d-cache/srm/{sbin,lib,conf} $RPM_BUILD_ROOT%{install_root}/
 
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig
-cat > $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/SRM-Client-Fermi << EOF
-export SRM_PATH=/usr/share/java/SRM-Client-Fermi
-export SRM_CONFIG=/etc/SRM-Client-Fermi-config.xml
+cat > $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/dcache-srmclient << EOF
+export SRM_PATH=/usr/share/java/dcache-srmclient
+export SRM_CONFIG=/etc/dcache-srmclient-config.xml
 EOF
-install -m 0644 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/SRM-Client-Fermi-config.xml
+install -m 0644 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/dcache-srmclient-config.xml
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -59,10 +60,14 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %{_bindir}/*
 %{install_root}/*
-%config(noreplace) %{_sysconfdir}/sysconfig/SRM-Client-Fermi
-%config(noreplace) %{_sysconfdir}/SRM-Client-Fermi-config.xml
+%config(noreplace) %{_sysconfdir}/sysconfig/dcache-srmclient
+%config(noreplace) %{_sysconfdir}/dcache-srmclient-config.xml
 
 %changelog
+* Fri Jul  7 2011 Brian Bockelman <bbockelm@cse.unl.edu> 1.9.5.23-1
+- Don't use upstream version number in release value.
+- Rename to use the upstream vendor's RPM name.
+
 * Fri Jul 1 2011 Brian Bockelman <bbockelm@cse.unl.edu> 1.9.5-23
 - Initial packaging
 - Allow client scripts to be packaged outside $SRM_PATH

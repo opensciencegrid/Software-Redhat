@@ -8,10 +8,10 @@
 	<debug> false </debug>
 
 	<!--path to srmcp product directory, default is ..-->
-	<!--<srmcphome> /usr/share/java/SRM-Client-Fermi </srmcphome>-->
+	<!--<srmcphome> /usr/share/java/dcache-srmclient </srmcphome>-->
 
 	<!--path to the urlcopy script, default is sbin/urlcopy.sh-->
-	<!--<urlcopy> /usr/share/java/SRM-Client-Fermi/sbin/url-copy.sh </urlcopy>-->
+	<!--<urlcopy> /usr/share/java/dcache-srmclient/sbin/url-copy.sh </urlcopy>-->
 
 	<!--name of ftp client "globus-url-copy" or "kftp", default is globus-url-copy-->
 	<gsiftpclient> globus-url-copy </gsiftpclient>
@@ -20,7 +20,7 @@
 	<gsissl> true </gsissl>
 
 	<!--path to the "glue" mapfile, default is conf/SRMServerV1.map-->
-	<!--<mapfile> /usr/share/java/SRM-Client-Fermi/conf/SRMServerV1.map </mapfile>-->
+	<!--<mapfile> /usr/share/java/dcache-srmclient/conf/SRMServerV1.map </mapfile>-->
 
 	<!--path to wsdl in web service url, default is null-->
 	<webservice_path> null </webservice_path>
