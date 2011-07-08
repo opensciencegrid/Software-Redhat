@@ -1,35 +1,6 @@
---- src/Makefile.am	14 Oct 2009 09:47:14 -0000	1.23
-+++ src/Makefile.am	9 Sep 2010 20:47:57 -0000
-@@ -189,7 +189,6 @@
- 
- GFAL_SOURCE_FILES = \
-     gfal_utils.c \
--    stdsoap2.c \
-     gfal_test_checksum.c \
- 	checkprotolib.c \
- 	gfal.c \
-@@ -212,8 +211,6 @@
- 
- GFAL_FLAGS = \
- 	-I$(LFC_LOCATION)/include/lfc \
--	-DGFAL_ENABLE_RFIO -I/usr/include/shift -I/usr/local/include/shift -I$(DPM_LOCATION)/include/dpm \
--	-DGFAL_ENABLE_DCAP -I$(DCAP_LOCATION)/include \
- 	-DGFAL_SECURE \
- 	-fPIC -D_LARGEFILE64_SOURCE \
- 	-DVERSION=\"$(VERSION)-$(RELEASE)\" \
---- src/gfal.c	9 Dec 2009 13:18:13 -0000	1.141
-+++ src/gfal.c	9 Sep 2010 21:44:34 -0000
-@@ -20,7 +20,7 @@
- #include <dlfcn.h>
- #include <time.h>
- #include <uuid/uuid.h>
--#include <glite/security/voms/voms_apic.h>
-+#include <voms/voms_apic.h>
- #include "gfal_api.h"
- #include "gfal_internals.h"
-
---- configure.ac	22 Jan 2010 15:25:54 -0000	1.12
-+++ configure.ac	10 Sep 2010 00:35:13 -0000
+diff -urB org.glite.data.gfal.orig/configure.ac org.glite.data.gfal/configure.ac
+--- org.glite.data.gfal.orig/configure.ac	2011-07-08 16:24:33.781880230 -0500
++++ org.glite.data.gfal/configure.ac	2011-07-08 16:27:11.033911177 -0500
 @@ -96,7 +96,7 @@
  AC_GSOAP
  
@@ -53,9 +24,39 @@
  AC_MSG_RESULT([VOMS_THR_LIBS is ${VOMS_THR_LIBS}])
  AC_MSG_RESULT([VOMS_NOTHR_LIBS is ${VOMS_NOTHR_LIBS}])
  AC_SUBST(VOMS_LOCATION)
---- src/Makefile.am	14 Oct 2009 09:47:14 -0000	1.23
-+++ src/Makefile.am	10 Sep 2010 00:41:37 -0000
-@@ -238,6 +238,7 @@
+diff -urB org.glite.data.gfal.orig/src/gfal.c org.glite.data.gfal/src/gfal.c
+--- org.glite.data.gfal.orig/src/gfal.c	2011-07-08 16:24:33.783880701 -0500
++++ org.glite.data.gfal/src/gfal.c	2011-07-08 16:26:30.277973771 -0500
+@@ -20,7 +20,7 @@
+ #include <dlfcn.h>
+ #include <time.h>
+ #include <uuid/uuid.h>
+-#include <glite/security/voms/voms_apic.h>
++#include <voms/voms_apic.h>
+ #include "gfal_api.h"
+ #include "gfal_internals.h"
+ 
+diff -urB org.glite.data.gfal.orig/src/Makefile.am org.glite.data.gfal/src/Makefile.am
+--- org.glite.data.gfal.orig/src/Makefile.am	2011-07-08 16:24:33.783880701 -0500
++++ org.glite.data.gfal/src/Makefile.am	2011-07-08 16:26:30.278973754 -0500
+@@ -189,7 +189,6 @@
+ 
+ GFAL_SOURCE_FILES = \
+     gfal_utils.c \
+-    stdsoap2.c \
+     gfal_test_checksum.c \
+ 	checkprotolib.c \
+ 	gfal.c \
+@@ -212,8 +211,6 @@
+ 
+ GFAL_FLAGS = \
+ 	-I$(LFC_LOCATION)/include/lfc \
+-	-DGFAL_ENABLE_RFIO -I/usr/include/shift -I/usr/local/include/shift -I$(DPM_LOCATION)/include/dpm \
+-	-DGFAL_ENABLE_DCAP -I$(DCAP_LOCATION)/include \
+ 	-DGFAL_SECURE \
+ 	-fPIC -D_LARGEFILE64_SOURCE \
+ 	-DVERSION=\"$(VERSION)-$(RELEASE)\" \
+@@ -238,6 +235,7 @@
  libgfal_la_LIBADD = \
  	-luuid -lc -ldl \
  	$(CGSI_GSOAP_LIBS) \
@@ -63,7 +64,7 @@
  	$(GLOBUS_GSS_NOTHR_LIBS) \
  	$(GLOBUS_FTP_CLIENT_NOTHR_LIBS) \
  	$(VOMS_NOTHR_LIBS) \
-@@ -247,6 +248,7 @@
+@@ -247,6 +245,7 @@
  	$(GLOBUS_NOTHR_CFLAGS) \
  	$(GLITE_CFLAGS) \
  	$(GFAL_FLAGS) \
@@ -71,7 +72,7 @@
  	$(GSOAP_CFLAGS) \
  	$(CGSI_GSOAP_CFLAGS) \
  	$(VOMS_CFLAGS)
-@@ -262,6 +264,7 @@
+@@ -262,6 +261,7 @@
  libgfal_pthr_la_LIBADD = \
  	-luuid -lc -ldl \
  	$(CGSI_GSOAP_LIBS) \
@@ -79,3 +80,4 @@
  	$(GLOBUS_GSS_THR_LIBS) \
  	$(GLOBUS_FTP_CLIENT_THR_LIBS) \
  	$(VOMS_THR_LIBS) \
+Only in org.glite.data.gfal/src: Makefile.am.orig
