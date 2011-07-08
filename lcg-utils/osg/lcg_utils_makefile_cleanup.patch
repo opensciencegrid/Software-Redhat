@@ -1,21 +1,15 @@
---- src/Makefile.am	18 Nov 2009 13:53:33 -0000	1.14
-+++ src/Makefile.am	10 Sep 2010 01:18:38 -0000
-@@ -185,10 +185,10 @@
- liblcg_util_la_LIBADD = \
- 	$(VOMS_NOTHR_LIBS) \
- 	$(GLOBUS_FTP_CLIENT_NOTHR_LIBS) \
--	-lglobus_gass_copy_$(GLOBUS_NOTHR_FLAVOR) \
--	-lglobus_gass_transfer_$(GLOBUS_NOTHR_FLAVOR) \
-+	-lglobus_gass_copy \
-+	-lglobus_gass_transfer \
- 	$(GFAL_LIBS) \
--	-lcgsi_plugin_gsoap_2.7 
-+	-lcgsi_plugin
- liblcg_util_la_LDFLAGS = \
- 	-version-info $(INTERFACE_LIBTOOL_CURRENT):$(INTERFACE_LIBTOOL_REVISION):$(INTERFACE_LIBTOOL_AGE)	
+diff -ruB org.glite.data.dm-util.orig/configure.ac org.glite.data.dm-util/configure.ac
+--- org.glite.data.dm-util.orig/configure.ac	2011-07-08 14:36:17.172936410 -0500
++++ org.glite.data.dm-util/configure.ac	2011-07-08 14:38:51.725077304 -0500
+@@ -22,7 +22,7 @@
  
---- configure.ac	18 Jan 2010 15:15:06 -0000	1.9
-+++ configure.ac	10 Sep 2010 01:15:10 -0000
+ AC_PREREQ(2.57)
+ # version 0.0.0 will be replaced by AC_GLITE_VERSION
+-AC_INIT([GLite Data Management Utilities], [0.0.0])
++AC_INIT([GLite Data Management Utilities], [1.11.14])
+ # auxiliary build tools directory
+ AC_CONFIG_AUX_DIR([./project])
+ AC_CONFIG_SRCDIR([src/Makefile.am])
 @@ -123,10 +123,10 @@
      [VOMS_LOCATION=${withval}],
      [VOMS_LOCATION="/opt/lcg"])
@@ -30,4 +24,20 @@
  AC_MSG_RESULT([VOMS_THR_LIBS is ${VOMS_THR_LIBS}])
  AC_MSG_RESULT([VOMS_NOTHR_LIBS is ${VOMS_NOTHR_LIBS}])
  AC_SUBST(VOMS_LOCATION)
-
+diff -ruB org.glite.data.dm-util.orig/src/Makefile.am org.glite.data.dm-util/src/Makefile.am
+--- org.glite.data.dm-util.orig/src/Makefile.am	2011-07-08 14:36:17.174083447 -0500
++++ org.glite.data.dm-util/src/Makefile.am	2011-07-08 14:37:49.712974000 -0500
+@@ -185,10 +185,10 @@
+ liblcg_util_la_LIBADD = \
+ 	$(VOMS_NOTHR_LIBS) \
+ 	$(GLOBUS_FTP_CLIENT_NOTHR_LIBS) \
+-	-lglobus_gass_copy_$(GLOBUS_NOTHR_FLAVOR) \
+-	-lglobus_gass_transfer_$(GLOBUS_NOTHR_FLAVOR) \
++	-lglobus_gass_copy \
++	-lglobus_gass_transfer \
+ 	$(GFAL_LIBS) \
+-	-lcgsi_plugin_gsoap_2.7 
++	-lcgsi_plugin
+ liblcg_util_la_LDFLAGS = \
+ 	-version-info $(INTERFACE_LIBTOOL_CURRENT):$(INTERFACE_LIBTOOL_REVISION):$(INTERFACE_LIBTOOL_AGE)	
+ 
