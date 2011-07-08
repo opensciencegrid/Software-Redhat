@@ -1,0 +1,34 @@
+Index: httpd-2.2.3/support/apachectl.in
+===================================================================
+--- httpd-2.2.3.orig/support/apachectl.in	2011-06-21 14:31:25.000000000 -0500
++++ httpd-2.2.3/support/apachectl.in	2011-06-21 14:56:18.000000000 -0500
+@@ -99,19 +99,28 @@
+ ERROR=$?
+ }
+ 
++REDHAT_LOCKFILE=/var/lock/subsys/apache
++
+ case $ARGV in
+ restart|graceful)
+     if $HTTPD $OPTIONS -t >&/dev/null; then
+        $HTTPD $OPTIONS -k $ARGV
+        ERROR=$?
++       [ $ERROR -eq 0 ] && touch $REDHAT_LOCKFILE
+     else
+        echo "apachectl: Configuration syntax error, will not run \"$ARGV\":"
+        testconfig
+     fi
+     ;;
+-start|stop|graceful-stop)
++start)
++    $HTTPD $OPTIONS -k $ARGV
++    ERROR=$?
++    [ $ERROR -eq 0 ] && touch $REDHAT_LOCKFILE
++    ;;
++stop|graceful-stop)
+     $HTTPD $OPTIONS -k $ARGV
+     ERROR=$?
++    [ $ERROR -eq 0 ] && rm -f $REDHAT_LOCKFILE
+     ;;
+ configtest)
+     testconfig
