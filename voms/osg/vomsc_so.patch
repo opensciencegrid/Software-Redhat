@@ -1,0 +1,20 @@
+--- voms.spec.orig	2011-07-07 18:43:55.000000000 -0500
++++ voms.spec	2011-07-07 18:37:08.000000000 -0500
+@@ -399,7 +399,7 @@
+ pushd %{name}-%{version1}
+ make install DESTDIR=$RPM_BUILD_ROOT
+ rm $RPM_BUILD_ROOT%{_libdir}/*.la
+-rm $RPM_BUILD_ROOT%{_libdir}/*.so
++#rm $RPM_BUILD_ROOT%{_libdir}/*.so
+ rm -rf $RPM_BUILD_ROOT%{_includedir}
+ rm -rf $RPM_BUILD_ROOT%{_datadir}
+ popd
+@@ -540,7 +540,7 @@
+ %if %{compat}
+ %files compat
+ %defattr(-,root,root,-)
+-%{_libdir}/libvoms*.so.0*
++%{_libdir}/libvoms*.so*
+ %doc %{name}-%{version1}/AUTHORS
+ %doc %{name}-%{version1}/LICENSE
+ %endif
