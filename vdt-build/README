@@ -10,9 +10,3 @@ Documentation can be found at:
 
 https://twiki.grid.iu.edu/bin/view/SoftwareTeam/RPMDevelopmentGuide
 
-Tarball was created using the following commands:
-
-svn co https://vdt.cs.wisc.edu/svn/native3 vdt_native
-cd vdt_native
-tar --exclude '.svn' -zcf vdt-build-0.0.1.tar.gz vdt-build RPM/
-

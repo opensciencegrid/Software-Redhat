@@ -47,7 +47,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/%{name}
 
 %changelog
-* Fri Jul 1 2011 Brian Bockelman <bbockelm@cse.unl.edu> 0.0.1-1
+* Thu Jul  7 2011 Brian Bockelman <bbockelm@cse.unl.edu> 0.0.1-2
+- Made vdt-build obey our own packaging guidelines.
+
+* Fri Jul  1 2011 Brian Bockelman <bbockelm@cse.unl.edu> 0.0.1-1
 - Created an initial vdt-build RPM for ease-of-use
 - Contains RPM::Toolbox::Spec for now.
 
