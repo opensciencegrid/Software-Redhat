@@ -19,7 +19,7 @@ Requires: lcg-utils
 Requires: lfc-client
 Requires: myproxy
 Requires: /usr/bin/ldapsearch
-Requires: SRM-Client-Fermi
+Requires: dcache-srmclient
 Requires: bestman2-client
 Requires: /usr/bin/uberftp
 Requires: /usr/bin/wget
