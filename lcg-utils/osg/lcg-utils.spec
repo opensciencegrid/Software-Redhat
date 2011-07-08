@@ -1,6 +1,6 @@
 Name:		lcg-utils
 Version:	1.11.14
-Release:	3
+Release:	5
 Summary:	gLite file transfer clients
 
 Group:		Productivity/File utilities
@@ -24,7 +24,7 @@ BuildRequires:  automake autoconf libtool swig gfal glite-build-common-cpp globu
 
 %build
 mkdir -p src/autogen build; aclocal -I /usr/share/glite-build-common-cpp/m4/; libtoolize --force; autoheader; automake --foreign --add-missing --copy; autoconf
-%configure --with-glite-location=/usr --with-globus-nothr-flavor=gcc64dbg --with-globus-thr-flavor=gcc64dbgpthr --with-gfal-location=/usr --with-voms-location=/usr --with-release=%{release}
+%configure --with-glite-location=/usr --with-globus-nothr-flavor=gcc64dbg --with-globus-thr-flavor=gcc64dbgpthr --with-gfal-location=/usr --with-voms-location=/usr --with-release=%{release} --with-version=%{version}
 make
 
 %install

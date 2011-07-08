@@ -1,15 +1,6 @@
 diff -ruB org.glite.data.dm-util.orig/configure.ac org.glite.data.dm-util/configure.ac
 --- org.glite.data.dm-util.orig/configure.ac	2011-07-08 14:36:17.172936410 -0500
 +++ org.glite.data.dm-util/configure.ac	2011-07-08 14:38:51.725077304 -0500
-@@ -22,7 +22,7 @@
- 
- AC_PREREQ(2.57)
- # version 0.0.0 will be replaced by AC_GLITE_VERSION
--AC_INIT([GLite Data Management Utilities], [0.0.0])
-+AC_INIT([GLite Data Management Utilities], [1.11.14])
- # auxiliary build tools directory
- AC_CONFIG_AUX_DIR([./project])
- AC_CONFIG_SRCDIR([src/Makefile.am])
 @@ -123,10 +123,10 @@
      [VOMS_LOCATION=${withval}],
      [VOMS_LOCATION="/opt/lcg"])
