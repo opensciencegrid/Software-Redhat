@@ -2,7 +2,7 @@
 Name:      osg-wn-client
 Summary:   OSG Worker-Node Client
 Version:   3.0.0
-Release:   1
+Release:   2
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -24,6 +24,7 @@ Requires: bestman2-client
 Requires: /usr/bin/uberftp
 Requires: /usr/bin/wget
 Requires: osg-ca-certs
+Requires: fetch-crl
 
 %description
 %{summary}
@@ -46,6 +47,9 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/osg/wn-client/setup.sh
 
 %changelog
+* Fri Jul 08 2011 Derek Weitzel <dweitzel@cse.unl.edu> 3.0.0-2
+- Added fetch-crl dependency
+
 * Wed Jul  6 2011 Brian Bockelman <bbockelm@cse.unl.edu> 3.0.0-1
 - Bump to correct version number.
 - Add osg-ca-certs to the requires.
