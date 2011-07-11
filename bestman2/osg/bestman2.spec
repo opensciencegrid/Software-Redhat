@@ -1,6 +1,6 @@
 Name:           bestman2
 Version:        2.1.0.pre4
-Release:        1
+Release:        3
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -107,12 +107,13 @@ pushd setup
     --with-plugin-path=$SRM_HOME/lib \
     --with-gums-url=https://GUMS_HOST:8443/gums/services/GUMSAuthorizationServicePort \
     --enable-backup=no \
-    --with-certfile-path=/etc/grid-security/http/httpcert.pem \
-    --with-keyfile-path=/etc/grid-security/http/httpkey.pem \
-    --with-gums-certfile-path=/etc/grid-security/http/httpcert.pem \
-    --with-gums-keyfile-path=/etc/grid-security/http/httpkey.pem \
     --with-bestman2-conf-path=../conf/bestman2.rc
 popd
+
+#    --with-certfile-path=/etc/grid-security/http/httpcert.pem \
+#    --with-keyfile-path=/etc/grid-security/http/httpkey.pem \
+#    --with-gums-certfile-path=/etc/grid-security/http/httpcert.pem \
+#    --with-gums-keyfile-path=/etc/grid-security/http/httpkey.pem \
 
 #Fix paths in bestman2.rc
 JAVADIR=`echo %{_javadir} |  sed 's/\//\\\\\//g'`
@@ -122,6 +123,11 @@ sed -i "s/BESTMAN_SYSCONF=.*/BESTMAN_SYSCONF=\/etc\/bestman2\/conf\/bestman2.rc/
 sed -i "s/BESTMAN_LOG=.*/BESTMAN_LOG=\/var\/log\/bestman2\/bestman2.log/" conf/bestman2.rc
 sed -i "s/BESTMAN_LIB=.*/BESTMAN_LIB=$JAVADIR\/bestman2/" conf/bestman2.rc
 sed -i "s/EventLogLocation=.*/EventLogLocation=\/var\/log\/bestman2/" conf/bestman2.rc
+sed -i "s/X509_CERT_DIR=.*/X509_CERT_DIR=\/etc\/grid-security\/certificates/" conf/bestman2.rc
+sed -i "s/BESTMAN_GUMSCERTPATH=.*/BESTMAN_GUMSCERTPATH=\/etc\/grid-security\/http\/httpcert.pem/" conf/bestman2.rc
+sed -i "s/BESTMAN_GUMSKEYPATH=.*/BESTMAN_GUMSKEYPATH=\/etc\/grid-security\/http\/httpkey.pem/" conf/bestman2.rc
+sed -i "s/CertFileName=.*/CertFileName=\/etc\/grid-security\/http\/httpcert.pem/" conf/bestman2.rc
+sed -i "s/KeyFileName=.*/KeyFileName=\/etc\/grid-security\/http\/httpkey.pem/" conf/bestman2.rc
 
 #Fix paths in binaries.  Wish I could do this in configure...
 sed -i "s/SRM_HOME=\/.*/SRM_HOME=\/etc\/bestman2/" bin/*
@@ -210,6 +216,7 @@ fi
 %config(noreplace) %{install_root}/conf/srmclient.conf
 %{install_root}/conf/srmclient.conf.sample
 %config(noreplace) %{install_root}/conf/srmtester.conf
+%config(noreplace) %{install_root}/conf/bestman2.rc
 %{install_root}/conf/srmtester.conf.sample
 %{_bindir}/*
 
@@ -235,13 +242,16 @@ fi
 %attr(-,daemon,daemon) %dir %{_var}/log/%{name}
 
 %changelog
+* Sun Jul 10 2011 Doug Strain <dstrain@fnal.gov> 2.1.0.pre4-3
+- Changed RPM to not require certs
+
 * Mon Jul 07 2011 Doug Strain <dstrain@fnal.gov> 2.1.0.pre4
 Updated to bestman2.1.0pre4
 Changed the locations to be FHS compliant:
 - Moved java jar files to javadir/bestman2
 - Moved bestman.server to sbindir
 - Moved base location (now only configuration) to /etc/bestman2
-- Moved bestman2.rc to /etc/bestman2/conf
+- Moved bestman2.rc to /etc/bestman2/conf and added to client package
 - Deleted setup directory in favor of combined bestman2.rc/sysconfig
 
 * Mon Jul 01 2011 Doug Strain <dstrain@fnal.gov> 2.1.0.pre2
