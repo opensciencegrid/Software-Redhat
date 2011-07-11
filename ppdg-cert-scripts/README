@@ -3,8 +3,6 @@ Packaging of the PPDG-Cert-Scripts
 Bad things:
 - Requires modified M2crypto for multi-cert-gridadmin.  Ignoring for now.
   Means multi-cert-gridadmin will probably fail tragically
-- Install CertUtil.py in the main site-packages directory, rather than
-  a sub directory.
 - Tar file is named differently from the package.
 
 

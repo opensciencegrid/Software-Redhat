@@ -1,0 +1,12 @@
+diff -ruB cert-scripts.orig/bin/cert-check-time cert-scripts/bin/cert-check-time
+--- cert-scripts.orig/bin/cert-check-time	2011-07-11 11:40:03.708949816 -0500
++++ cert-scripts/bin/cert-check-time	2011-07-11 11:41:52.486880028 -0500
+@@ -17,7 +17,7 @@
+ ldir=$hdir'/lib' # lib directory location
+ #echo ldir $ldir
+ #exit
+-scriptdir=${CERT_SCRIPT_DIR:-none}
++scriptdir=/usr/share/ppdg-cert-scripts/lib
+ if [ $scriptdir == 'none' ]
+ then
+     scriptdir=$ldir
