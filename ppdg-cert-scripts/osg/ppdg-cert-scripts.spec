@@ -16,6 +16,7 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Requires:       /usr/bin/ldapsearch
 Requires:       /usr/bin/openssl
+Requires:       osg-ca-certs
 
 Source0:        cert-scripts-2.7.tar.gz
 patch0:        change_awk_locations.patch  
