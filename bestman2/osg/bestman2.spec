@@ -1,6 +1,6 @@
 Name:           bestman2
-Version:        2.1.0.pre4
-Release:        3
+Version:        2.1.0
+Release:        2
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -10,8 +10,8 @@ URL:            https://sdm.lbl.gov/bestman/
 %define install_root /etc/%{name}
 
 # NOTE: CHANGE THESE EACH RELEASE
-%define bestman_url https://codeforge.lbl.gov/frs/download.php/326/bestman2-2.1.0-pre4.tar.gz
-%define revision 50
+%define bestman_url https://codeforge.lbl.gov/frs/download.php/333/bestman2-2.1.0.tar.gz
+%define revision 51
 
 Source0:        bestman2.tar.gz
 Source1:        bestman2.sh
@@ -118,6 +118,7 @@ popd
 #Fix paths in bestman2.rc
 JAVADIR=`echo %{_javadir} |  sed 's/\//\\\\\//g'`
 sed -i "s/SRM_HOME=.*/SRM_HOME=\/etc\/bestman2/" conf/bestman2.rc
+sed -i "s/SRM_OWNER=.*/SRM_OWNER=daemon/" conf/bestman2.rc
 sed -i "s/GridMapFileName=.*/GridMapFileName=\/etc\/bestman2\/conf\/grid-mapfile.empty/" conf/bestman2.rc
 sed -i "s/BESTMAN_SYSCONF=.*/BESTMAN_SYSCONF=\/etc\/bestman2\/conf\/bestman2.rc/" conf/bestman2.rc
 sed -i "s/BESTMAN_LOG=.*/BESTMAN_LOG=\/var\/log\/bestman2\/bestman2.log/" conf/bestman2.rc
