@@ -9,6 +9,7 @@ URL:            http://code.google.com/p/osg-discovery/
 Source:        osg-discovery.tar.gz
 
 BuildRoot:      %{_tmppath}/%{name}-root
+BuildArch:      noarch
 #BuildRequires:  maven2
 Requires:  java
 
@@ -28,6 +29,7 @@ popd
 popd
 tar xzvf osg/discovery/target/discovery-*.tar.gz
 mv discovery-1.0-r* discovery-built
+sed -i "s/XPATHCACHE_DIR=.*/XPATHCACHE_DIR=~\/.osg-discovery/" discovery-built/conf/xpathsearch.rc
 
 %install
 mkdir -p $RPM_BUILD_ROOT%{_bindir}/
@@ -51,7 +53,6 @@ mkdir -p $RPM_BUILD_ROOT/var/log/%{name}
 %files
 %{_bindir}/*
 %{_javadir}/%{name}/*
-%{_sysconfdir}/%{name}
 %{_sysconfdir}/%{name}/xpathsearch.rc
 %{_sysconfdir}/%{name}/xpathsearch.properties
 /var/run/%{name}
