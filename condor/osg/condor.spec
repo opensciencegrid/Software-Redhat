@@ -209,7 +209,9 @@ Requires: condor-procd = %{version}-%{release}
 Requires: blahp >= 1.16.1
 %endif
 # libcgroup < 0.37 has a bug that invalidates our accounting.
+%if %cgroups
 Requires: libcgroup >= 0.37
+%endif
 
 Requires: initscripts
 
