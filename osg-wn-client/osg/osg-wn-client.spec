@@ -2,7 +2,7 @@
 Name:      osg-wn-client
 Summary:   OSG Worker-Node Client
 Version:   3.0.0
-Release:   2
+Release:   3
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -12,8 +12,8 @@ BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
 Requires: /usr/bin/curl
 Requires: /usr/bin/dccp
+Requires: dcap-tunnel-gsi
 Requires: edg-gridftp-client
-Requires: fetch-crl
 Requires: glite-fts-client
 Requires: lcg-utils
 Requires: lfc-client
@@ -47,6 +47,9 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/osg/wn-client/setup.sh
 
 %changelog
+* Thu Jul 14 2011 Derek Weitzel <dweitzel@cse.unl.edu> - 3.0.0-3
+- Added dcap-tunnel-gsi to list of dependencies
+
 * Fri Jul 08 2011 Derek Weitzel <dweitzel@cse.unl.edu> 3.0.0-2
 - Added fetch-crl dependency
 
