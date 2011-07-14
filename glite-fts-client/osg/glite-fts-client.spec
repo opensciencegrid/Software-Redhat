@@ -43,7 +43,7 @@ cp %SOURCE1 .
 
 %build
 ./bootstrap
-%configure --with-channel-wsdl=/usr/share/glite-data-transfer-interface/interface/org.glite.data-channel-3.7.0.wsdl --with-fts-wsdl=/usr/share/glite-data-transfer-interface/interface/org.glite.data-fts-3.7.0.wsdl --with-gsoap-version=2.7.13 --with-version=%{version} 
+%configure --with-channel-wsdl=/usr/share/glite-data-transfer-interface/interface/org.glite.data-channel-3.7.0.wsdl --with-fts-wsdl=/usr/share/glite-data-transfer-interface/interface/org.glite.data-fts-3.7.0.wsdl --with-gsoap-version=2.7.13 --with-version=%{version}  --with-release=%{release}
 
 make %{?_smp_mflags}
 
