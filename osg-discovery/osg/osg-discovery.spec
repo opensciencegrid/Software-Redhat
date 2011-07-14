@@ -10,11 +10,14 @@ Source:        osg-discovery.tar.gz
 
 BuildRoot:      %{_tmppath}/%{name}-root
 BuildArch:      noarch
-#BuildRequires:  maven2
+BuildRequires:  maven2
 Requires:  java
 
 %description
-DSI module and POSIX preload libraries for Xrootd
+The OSG Discovery Tool allows users to discover the BDII information 
+they need in order to use grid resources. 
+Commands print out storage and computing resources for a given
+virtual organization (VO)
 
 %prep
 %setup -q -n %{name}

@@ -1,0 +1,11 @@
+The Open Science Grid provides a BDII service which aggregates LDAP information provided by sites. The information describes the resources being made available by the sites. For example, some site configuration parameters may be published from which it can be determined whether an application submitted by a VO may successfully run. In some applications, knowledge of site configuration values is needed in order to correctly use a resource. As an example, in the use of storage, a site may offer a Storage Element for which particular VOs are authorized. Each authorized VO would be able to access the Storage Element through a protocol published in the BDII, directing data to and from a storage area assigned to them.
+
+The OSG Discovery Tool allows users to discover the BDII information they need in order to use grid resources, with a focus on storage applications.
+
+The main source repository can be found:
+http://code.google.com/p/osg-discovery/
+svn checkout https://osg-discovery.googlecode.com/svn/trunk/ osg-discovery --username username@gmail.com
+
+The current maintainer is:
+Doug Strain <dstrain@fnal.gov>
+
