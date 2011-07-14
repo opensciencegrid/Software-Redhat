@@ -2,7 +2,7 @@
 Name:      osg-client
 Summary:   OSG Client
 Version:   3.0.0
-Release:   2
+Release:   3
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -18,9 +18,9 @@ Requires: gsissh
 Requires: nmap
 Requires: lcg-info
 Requires: lcg-infosites
-Requires: npad-client
+Requires: npad
 Requires: osg-discovery
-Requires: owamp
+Requires: owamp-client
 Requires: ppdg-cert-scripts
 
 %description
@@ -36,6 +36,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_sysconfdir}/osg
 
 %changelog
+* Thu Jul 14 2011 Derek Weitzel <dweitzel@cse.unl.edu> - 3.0.0-3
+- Changed npad-client to just npad.  no client package
+
 * Thu Jul 14 2011 Derek Weitzel <dweitzel@cse.unl.edu> 3.0.0-2
 - Changed name of gsiopenssh to gsissh
 
