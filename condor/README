@@ -1,0 +1,11 @@
+
+This Condor is used built by the spec file adapted from fedora's system:
+http://pkgs.fedoraproject.org/gitweb/?p=condor.git
+
+This was repackaged from Fedora because fedora split out the condor_procd,
+which is required by the wn/client/somewhere...
+
+Further, since it is from Fedora, we can follow fedora's packaging and 
+updates.
+
+
