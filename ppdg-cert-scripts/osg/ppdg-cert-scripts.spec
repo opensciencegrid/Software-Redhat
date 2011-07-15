@@ -6,21 +6,22 @@
 
 Name:           ppdg-cert-scripts
 Version:        2.7
-Release:        2
+Release:        3
 Summary:        Command-line interface to the DOEGrids CA web site, and more.
 
 Group:          Grid
 License:        Apache 2.0
 URL:            http://vdt.cs.wisc.edu/components/cert-scripts.html
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+BuildArch:      noarch
 
 Requires:       /usr/bin/ldapsearch
 Requires:       /usr/bin/openssl
 Requires:       osg-ca-certs
 
 Source0:        cert-scripts-2.7.tar.gz
-patch0:        change_awk_locations.patch  
-patch1:        make_correct_python_module.patch
+Patch0:         change_awk_locations.patch  
+Patch1:         make_correct_python_module.patch
 
 %description
 The Certificate Scripts package provides two things: a command-line interface 
@@ -31,8 +32,7 @@ Authority (RA), but it is now maintained by the OSG RA.
 
 %prep
 # Annoying that the name of the tar is different than the package
-tar xzf %{SOURCE0}
-cd cert-scripts
+%setup -q -n cert-scripts
 %patch0 -p1 
 %patch1 -p1
 
@@ -41,8 +41,6 @@ cd cert-scripts
 
 %install
 rm -rf $RPM_BUILD_ROOT
-
-cd cert-scripts
 
 install -d -m 0755 $RPM_BUILD_ROOT/%{_bindir}
 cp bin/* $RPM_BUILD_ROOT/%{_bindir}
@@ -70,6 +68,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Jul 15 2011 Brian Bockelman <bbockelm@cse.unl.edu> 2.7-3
+- Rebuild using setup macro
+- Mark as noarch
+
 * Mon Jul 11 2011 Derek Weitzel <dweitzel@cse.unl.edu> 2.7-2
 - Applied patch to look for awk files in /usr/share
 - Applied patch to put python CertLib.py in the right directory
