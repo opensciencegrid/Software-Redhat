@@ -1,6 +1,6 @@
 Name:           bestman2
 Version:        2.1.0
-Release:        2
+Release:        3
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -244,6 +244,9 @@ fi
 %attr(-,daemon,daemon) %dir %{_var}/log/%{name}
 
 %changelog
+* Fri Jul 15 2011 Brian Bockelman <bbockelm@cse.unl.edu> 2.1.0-3
+- Fixed java deps to reflect new java strategy.
+
 * Sun Jul 10 2011 Doug Strain <dstrain@fnal.gov> 2.1.0.pre4-3
 - Changed RPM to not require certs
 
