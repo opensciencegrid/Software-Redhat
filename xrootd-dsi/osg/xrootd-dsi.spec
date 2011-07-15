@@ -29,7 +29,7 @@ export FLAVOR='gcc32dbg'
 export GLOBUS_LOCATION=/opt/vdt/globus
 export GPT_LOCATION=/opt/vdt/gpt
 export GPT_INSTALL_LOCATION=/opt/vdt/globus
-/opt/vdt/gpt/sbin/gpt-build -force -nosrc $FLAVOR
+#/opt/vdt/gpt/sbin/gpt-build -force -nosrc $FLAVOR
 /opt/vdt/globus/bin/globus-makefile-header --flavor=$FLAVOR > makefile_header
 make
 
