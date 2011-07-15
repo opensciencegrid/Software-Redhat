@@ -2,7 +2,7 @@
 Name:      osg-client
 Summary:   OSG Client
 Version:   3.0.0
-Release:   4
+Release:   5
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -23,6 +23,7 @@ Requires: npad
 Requires: osg-discovery
 Requires: owamp-client
 Requires: ppdg-cert-scripts
+Requires: vo-client
 
 %description
 %{summary}
@@ -37,8 +38,11 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_sysconfdir}/osg
 
 %changelog
+* Fri Jul 15 2011 Derek Weitzel <dweitzel@cse.unl.edu> - 3.0.0-5
+- Added the vo-client to requires.
+
 * Fri Jul 15 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 3.0.0-4
-Force Oracle JDK for this meta-package.
+- Force Oracle JDK for this meta-package.
 
 * Thu Jul 14 2011 Derek Weitzel <dweitzel@cse.unl.edu> - 3.0.0-3
 - Changed npad-client to just npad.  no client package
