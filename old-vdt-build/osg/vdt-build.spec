@@ -1,6 +1,6 @@
 
 Name:           vdt-build
-Version:        0.0.2
+Version:        0.0.1
 Release:        1
 Summary:        Build tools for the VDT
 
@@ -16,28 +16,37 @@ BuildArch:      noarch
 %description
 %{summary}
 
+This package improperly contains RPM::Toolbox::Spec.  It will be fixed in the future.
+
+#Requires: perl(RPM::Spec)
+Requires: perl(:MODULE_COMPAT_%(eval "`%{__perl} -V:version`"; echo $version))
 
 %prep
-%setup -q
+%setup -q -c
 
 %install
 rm -rf $RPM_BUILD_ROOT
-make install DESTDIR=$RPM_BUILD_ROOT
+mkdir -p $RPM_BUILD_ROOT%{_bindir}
+install -m 0755 %{name} $RPM_BUILD_ROOT/%{_bindir}
+
+mkdir -p $RPM_BUILD_ROOT/%{perl_vendorlib}
+mv RPM $RPM_BUILD_ROOT/%{perl_vendorlib}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)
+%{perl_vendorlib}/RPM/Toolbox/Spec/Expander.pm
+%{perl_vendorlib}/RPM/Toolbox/Spec/Util.pm
+%{perl_vendorlib}/RPM/Toolbox/Spec/RPM.pm
+%{perl_vendorlib}/RPM/Toolbox/Spec/Workspace.pm
+%{perl_vendorlib}/RPM/Toolbox/Spec/Cache.pm
+%{perl_vendorlib}/RPM/Toolbox/Spec.pm
+%{perl_vendorlib}/RPM/Toolbox/Spec.pod
 %{_bindir}/%{name}
-%{_datadir}/%{name}/VDTBuildConstants.py*
-%{_datadir}/%{name}/VDTBuildUtils.py*
-%doc %{_datadir}/%{name}/sample-vdt-build.ini
 
 %changelog
-* Thu Jul 14 2011 Matyas Selmeci <matyas@cs.wisc.edu> 0.0.2-1
-- Python rewrite
-
 * Thu Jul  7 2011 Brian Bockelman <bbockelm@cse.unl.edu> 0.0.1-2
 - Made vdt-build obey our own packaging guidelines.
 
