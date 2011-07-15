@@ -43,9 +43,9 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root,-)
 %{_libdir}/modules/lcmaps_tracking.mod
+%{_libdir}/modules/liblcmaps_tracking.so
 %{_libdir}/modules/liblcmaps_tracking.so.0
 %{_libdir}/modules/liblcmaps_tracking.so.0.0.0
-%exclude %{_libdir}/modules/*.so
 
 %changelog
 * Mon Jul 15 2011 Brian Bockelman <bbockelm@cse.unl.edu> 0.0.4-1

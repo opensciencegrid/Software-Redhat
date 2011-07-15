@@ -24,6 +24,7 @@ BuildRequires:  automake autoconf libtool swig gfal glite-build-common-cpp globu
 
 %build
 mkdir -p src/autogen build; aclocal -I /usr/share/glite-build-common-cpp/m4/; libtoolize --force; autoheader; automake --foreign --add-missing --copy; autoconf
+export CFLAGS="%{optflags} -I%{_libdir}/globus/include"
 %configure --with-glite-location=/usr --with-globus-nothr-flavor=gcc64dbg --with-globus-thr-flavor=gcc64dbgpthr --with-gfal-location=/usr --with-voms-location=/usr --with-release=%{release} --with-version=%{version}
 make
 
