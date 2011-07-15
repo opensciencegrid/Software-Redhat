@@ -1,12 +1,12 @@
 Summary: Process tracking plugin for the LCMAPS authorization framework
-Name: lcmaps-plugins-tracking
+Name: lcmaps-plugins-glexec-tracking
 Version: 0.0.4
 Release: 1%{?dist}
 License: Unknown
 Group: System Environment/Libraries
 # The tarball was created from CVS using the following commands:
-# cvs -d :pserver:anonymous@cdcvs.fnal.gov:/cvs/cd_read_only export -d lcmaps-plugins-tracking-0.0.4 -r glite-security-lcas-plugins-tracking_R_0_0_4 privilege/glite-security-lcmaps-plugins-tracking
-# tar zcf lcmaps-plugins-tracking-0.0.4.tar.gz lcmaps-plugins-tracking-0.0.4/
+# cvs -d :pserver:anonymous@cdcvs.fnal.gov:/cvs/cd_read_only export -d lcmaps-plugins-glexec-tracking-0.0.4 -r glite-security-lcas-plugins-tracking_R_0_0_4 privilege/glite-security-lcmaps-plugins-tracking
+# tar zcf lcmaps-plugins-glexec-tracking-0.0.4.tar.gz lcmaps-plugins-glexec-tracking-0.0.4/
 Source0: %{name}-%{version}.tar.gz
 Patch0: fedora_file_locations.patch
 BuildRequires: lcmaps-interface
