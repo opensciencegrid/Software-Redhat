@@ -4,7 +4,10 @@ Release:        3
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
-License:        https://sdm.lbl.gov/bestman/
+
+#Note, licensing is CR-2404 under BSD license with a grant back provision 
+#copyright 2010-2011
+License:        BSD
 URL:            https://sdm.lbl.gov/bestman/
 
 %define install_root /etc/%{name}
@@ -24,6 +27,7 @@ BuildArch:      noarch
 BuildRequires:  java-1.6.0-sun-compat wget ant
 
 Obsoletes: bestman
+Provides: bestman
 
 %description
 BeStMan 2 - Berkeley Storage Manager
@@ -31,7 +35,14 @@ BeStMan 2 - Berkeley Storage Manager
 Application server for exporting local file systems securely using the
 SRM protocol.  
 
-BeStMan is a full implementation of SRM v2.2, developed by Lawrence Berkeley National Laboratory, for disk based storage systems and mass storage systems such as HPSS. End users may have their own personal BeStMan that manages and provides an SRM interface to their local disks or storage systems. It works on top of existing disk-based unix file system, and has been reported so far to work on file systems such as NFS, PVFS, AFS, GFS, GPFS, PNFS, and Lustre. It also works with any existing file transfer service, such as gsiftp, http, https and ftp.
+BeStMan is a full implementation of SRM v2.2, developed by 
+Lawrence Berkeley National Laboratory, for disk based storage systems 
+and mass storage systems such as HPSS. End users may have their own 
+personal BeStMan that manages and provides an SRM interface to their 
+local disks or storage systems. It works on top of existing disk-based 
+unix file system, and has been reported so far to work on file systems 
+such as NFS, PVFS, AFS, GFS, GPFS, PNFS, and Lustre. It also works with 
+any existing file transfer service, such as gsiftp, http, https and ftp.
 
 User's guide : http://sdm.lbl.gov/bestman
 General support and bug report to <srm@lbl.gov>
@@ -66,7 +77,7 @@ The BeStMan SRM Java libraries
 
 %package client
 Summary: SRM clients
-Group: System Environment/Applications
+Group: Applications/Internet
 Requires: %{name}-libs = %{version}-%{release}
 %description client
 The srm-* client tools
@@ -152,7 +163,6 @@ cp -arp lib $RPM_BUILD_ROOT%{_javadir}/%{name}
 cp -arp properties $RPM_BUILD_ROOT%{install_root}
 
 
-install -m 0755 version $RPM_BUILD_ROOT%{install_root}/
 install -m 0755 sbin/bestman.server $RPM_BUILD_ROOT%{_sbindir}/bestman.server
 
 
@@ -206,8 +216,13 @@ fi
 %{_javadir}/bestman2/bestman2-stub.jar
 %{_javadir}/bestman2/bestman2-printintf.jar
 %{_javadir}/bestman2/bestman2-transfer.jar
-%{install_root}/version
-%{install_root}/properties
+%config(noreplace) %{install_root}/properties
+%doc bestman2/LICENSE
+%doc bestman2/COPYRIGHT
+%doc bestman2/version
+%doc bestman2/CHANGE
+%doc bestman2/README
+
 
 %files client
 %defattr(-,root,root,-)
@@ -216,11 +231,16 @@ fi
 %{_javadir}/bestman2/bestman2-tester-driver.jar
 %{_javadir}/bestman2/bestman2-tester-main.jar
 %config(noreplace) %{install_root}/conf/srmclient.conf
-%{install_root}/conf/srmclient.conf.sample
+%config(noreplace) %{install_root}/conf/srmclient.conf.sample
 %config(noreplace) %{install_root}/conf/srmtester.conf
 %config(noreplace) %{install_root}/conf/bestman2.rc
-%{install_root}/conf/srmtester.conf.sample
+%config(noreplace) %{install_root}/conf/srmtester.conf.sample
 %{_bindir}/*
+%doc bestman2/LICENSE
+%doc bestman2/COPYRIGHT
+%doc bestman2/version
+%doc bestman2/CHANGE
+%doc bestman2/README
 
 %files server
 %defattr(-,root,root,-)
@@ -231,21 +251,29 @@ fi
 %{_javadir}/bestman2/jetty
 %{_javadir}/bestman2/plugin
 %{_sbindir}/bestman.server
-%{install_root}/conf/WEB-INF
-%{install_root}/conf/bestman2.gateway.sample.rc
-%{install_root}/conf/grid-mapfile.empty
-%{install_root}/conf/bestman-diag-msg.conf
-%{install_root}/conf/bestman-diag.conf.sample
+%config(noreplace) %{install_root}/conf/WEB-INF
+%config(noreplace) %{install_root}/conf/bestman2.gateway.sample.rc
+%config(noreplace) %{install_root}/conf/grid-mapfile.empty
+%config(noreplace) %{install_root}/conf/bestman-diag-msg.conf
+%config(noreplace) %{install_root}/conf/bestman-diag.conf.sample
 %config(noreplace) %{install_root}/conf/bestman2.rc
 %{_initrddir}/%{name}
 %{_sbindir}/%{name}
 %config(noreplace) %{_sysconfdir}/logrotate.d/%{name}
-%attr(0644,root,root) %{_sysconfdir}/grid-security/vomsdir/vdt-empty.pem
+%config(noreplace) %attr(0644,root,root) %{_sysconfdir}/grid-security/vomsdir/vdt-empty.pem
 %attr(-,daemon,daemon) %dir %{_var}/log/%{name}
+%doc bestman2/LICENSE
+%doc bestman2/COPYRIGHT
+%doc bestman2/version
+%doc bestman2/CHANGE
+%doc bestman2/README
 
 %changelog
+* Fri Jul 15 2011 Doug Strain <dstrain@fnal.gov> 2.1.0-3
+Fixing some rpmlint warnings and errors
+
 * Fri Jul 15 2011 Brian Bockelman <bbockelm@cse.unl.edu> 2.1.0-3
-- Fixed java deps to reflect new java strategy.
+Fixed java deps to reflect new java strategy.
 
 * Sun Jul 10 2011 Doug Strain <dstrain@fnal.gov> 2.1.0.pre4-3
 - Changed RPM to not require certs

@@ -8,7 +8,8 @@
 # Required-Stop: 
 # Default-Start: 3 4 5
 # Default-Stop: 1 2 6
-# Description: Bestman server
+# Description: Bestman SRM server for Grid Storage Elements
+# Short-Description: Bestman server
 ### END INIT INFO
 
 # Source function library.
