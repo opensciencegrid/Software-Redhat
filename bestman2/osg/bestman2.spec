@@ -21,7 +21,7 @@ Source3:        bestman.logrotate
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
-BuildRequires:  jdk wget ant
+BuildRequires:  java-1.6.0-sun-compat wget ant
 
 Obsoletes: bestman
 
@@ -44,6 +44,7 @@ Summary: BeStMan SRM server
 Group: System Environment/Daemons
 
 Obsoletes: bestman2
+Requires: java-1.6.0-sun-compat
 
 Requires: %{name}-libs = %{version}-%{release}
 Requires(pre): shadow-utils
@@ -59,7 +60,7 @@ BeStMan SRM server
 %package libs
 Summary: BeStMan SRM Java libraries
 Group: System Environment/Libraries
-Requires:  jdk
+Requires:  java
 %description libs
 The BeStMan SRM Java libraries
 
