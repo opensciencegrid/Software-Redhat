@@ -2,7 +2,7 @@
 Name:      osg-wn-client
 Summary:   OSG Worker-Node Client
 Version:   3.0.0
-Release:   3
+Release:   4
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -10,6 +10,7 @@ BuildArch: noarch
 
 BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
+Requires: java-1.6.0-sun-compat
 Requires: /usr/bin/curl
 Requires: /usr/bin/dccp
 Requires: dcap-tunnel-gsi
@@ -29,6 +30,19 @@ Requires: fetch-crl
 %description
 %{summary}
 
+%package glexec
+Summary: OSG meta-package for glexec
+Group: Grid
+Requires: %{name} = %{version}-%{release}
+Requires: glexec
+Requires: lcmaps-plugins-glexec-tracking
+Requires: lcmaps-plugins-basic
+Requires: lcmaps-plugins-scas-client
+Requires: lcmaps-plugins-verify-proxy
+
+%description glexec
+%{summary}
+
 %install
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/osg/wn-client/
 cat > $RPM_BUILD_ROOT%{_sysconfdir}/osg/wn-client/setup.sh << EOF
@@ -46,7 +60,12 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_sysconfdir}/osg/wn-client
 %config(noreplace) %{_sysconfdir}/osg/wn-client/setup.sh
 
+%files glexec
+
 %changelog
+* Fri Jul 15 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 3.0.0-4
+Add glexec sub-package.
+
 * Thu Jul 14 2011 Derek Weitzel <dweitzel@cse.unl.edu> - 3.0.0-3
 - Added dcap-tunnel-gsi to list of dependencies
 
