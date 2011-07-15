@@ -1,0 +1,12 @@
+
+The vomses file providing package.  This package will be maintained bo the GOC.
+
+Steps to make tarball (correctly packaged):
+Get GOC's tarball, vo-client-38.tar.gz
+tar xzf vo-client-38.tar.gz
+mkdir vo-client
+mv gums voms vo-client/
+tar czf vo-client-38.tar.gz vo-client/
+
+
+
