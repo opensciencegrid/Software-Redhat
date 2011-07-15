@@ -7,7 +7,7 @@
 
 Name:    dcache-srmclient 
 Version: 1.9.5.23
-Release: 1
+Release: 2
 URL:     http://dcache.org
 Summary: SRM clients from dCache.org
 License: http://www.dcache.org/manuals/dCacheSoftwareLicence.html
@@ -20,6 +20,7 @@ Requires: java
 Requires: /usr/bin/globus-url-copy
 
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
+BuildArch: noarch
 
 Source0: srmclient-1.9.5-23.tar.gz
 Source1: dcache-srmclient-config.xml
@@ -64,6 +65,9 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/dcache-srmclient-config.xml
 
 %changelog
+* Fri Jul  7 2011 Brian Bockelman <bbockelm@cse.unl.edu> 1.9.5.23-2
+- Set buildarch to noarch.
+
 * Fri Jul  7 2011 Brian Bockelman <bbockelm@cse.unl.edu> 1.9.5.23-1
 - Don't use upstream version number in release value.
 - Rename to use the upstream vendor's RPM name.
