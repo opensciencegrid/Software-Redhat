@@ -1,6 +1,5 @@
-path = /usr/lib64/modules
-
 # Module definitions
+path = @LIBDIR@/modules
 
 good = "lcmaps_dummy_good.mod"
 bad  = "lcmaps_dummy_bad.mod"
@@ -16,16 +15,22 @@ sazclient = "lcmaps_saz_client.mod"
             "-key    /etc/grid-security/hostkey.pem"
             "--cert-owner root"
             "-authorization-only"
+# Change this URL to your SAZ server if you have one
             "--endpoint https://fgdevsaz.fnal.gov:8443/saz/services/SAZXACMLAuthorizationServicePort"
+# Uncomment this to set a different expected host certificate name for server
+#            "--override-expected-hostname overridesazname.yourdomain"
 
-scasclient = "lcmaps_scas_client.mod"
+gumsclient = "lcmaps_gums_client.mod"
              "-resourcetype ce"
              "-actiontype execute-now"
              "-capath /etc/grid-security/certificates"
-             "-cert   /etc/grid-security/glexec/glexeccert.pem"
-             "-key    /etc/grid-security/glexec/glexeckey.pem"
-             "--cert-owner glexec"
+             "-cert   /etc/grid-security/hostcert.pem"
+             "-key    /etc/grid-security/hostkey.pem"
+             "--cert-owner root"
+# Change this URL to your GUMS server
              "--endpoint https://red-auth.unl.edu:8443/gums/services/GUMSXACMLAuthorizationServicePort"
+# Uncomment this to set a different expected host certificate name for server
+#            "--override-expected-hostname overridegumsname.yourdomain"
 
 verifyproxy = "lcmaps_verify_proxy.mod"
           "--allow-limited-proxy"
@@ -33,19 +38,32 @@ verifyproxy = "lcmaps_verify_proxy.mod"
 
 tracking = "lcmaps_tracking.mod"
            "-exec /usr/sbin/glexec_monitor"
+# Uncomment to write tracking info to glexec_monitor.log in the given dir
+#         "-logdir /var/log/glexec"
+# Uncomment to use local time in the file log (doesn't apply to syslog)
+#         "-datetime-local"
+# Uncomment to change the minimum tracking group id
+#         "-min-gid 65000"
+# Uncomment to change the maximum tracking group id
+#         "-max-gid 65049"
+# Uncomment to not kill processes still running after the main process finishes
+#         "-dont-kill-leftovers"
 
 # Mapping policies
 
 globus_gridftp_mapping:
 
-scasclient -> posix_enf
+gumsclient -> posix_enf
 
 osg_default:
 
-verifyproxy -> scasclient
+verifyproxy -> gumsclient
 
 glexec:
 
-verifyproxy -> scasclient
+##  If using SAZ, uncomment the following two lines and comment the next
+##verifyproxy -> sazclient
+##sazclient -> gumsclient
+verifyproxy -> gumsclient
 scasclient -> tracking
 

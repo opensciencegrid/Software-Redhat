@@ -1,12 +1,13 @@
 Summary: Grid (X.509) and VOMS credentials to local account mapping service
 Name: lcmaps
 Version: 1.4.28
-Release: 1%{?dist}
+Release: 2%{?dist}
 Vendor: Nikhef
 License: ASL 2.0
 Group: System Environment/Libraries
 URL: http://www.nikhef.nl/pub/projects/grid/gridwiki/index.php/Site_Access_Control
 Source0: http://software.nikhef.nl/security/lcmaps/%{name}-%{version}.tar.gz
+Source1: lcmaps.db
 Patch0: makefile_r15293.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
@@ -93,6 +94,10 @@ find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
 # clean up installed files
 rm -rf ${RPM_BUILD_ROOT}/usr/share/doc
 
+mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}
+cp %{SOURCE1} $RPM_BUILD_ROOT/%{_sysconfdir}
+%__sed -i -e 's|@LIBDIR@|%{_libdir}|' $RPM_BUILD_ROOT/%{_sysconfdir}/lcmaps.db
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -102,6 +107,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)
+%config(noreplace) %{_sysconfdir}/lcmaps.db
 %{_libdir}/lcmaps.mod
 %{_libdir}/lcmaps_gss_assist_gridmap.mod
 %{_libdir}/lcmaps_return_poolindex.mod
@@ -119,6 +125,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/modules/lcmaps_plugin_example.mod
 %{_libdir}/modules/liblcmaps_plugin_example.so.0
 %{_libdir}/modules/liblcmaps_plugin_example.so.0.0.0
+%{_libdir}/liblcmaps_return_account_from_pem.so
 
 %doc AUTHORS INSTALL doc/INSTALL_WITH_WORKSPACE_SERVICE LICENSE
 %doc README README.NO_LDAP
@@ -132,12 +139,14 @@ rm -rf $RPM_BUILD_ROOT
 %files devel
 %defattr(-,root,root,-)
 %{_libdir}/liblcmaps_gss_assist_gridmap.so
-%{_libdir}/liblcmaps_return_account_from_pem.so
 %{_libdir}/liblcmaps_return_poolindex.so
 %{_libdir}/liblcmaps_verify_account_from_pem.so
 %{_libdir}/modules/*.so
 
 %changelog
+* Fri Jul 15 2011 Brian Bockelman <bbockelm@cse.unl.edu> 1.4.28-2
+- Include OSG default lcmaps.db
+
 * Wed Mar  9 2011 Dennis van Dok <dennisvd@nikhef.nl> 1.4.28-1
 - Made examples out of config files
 

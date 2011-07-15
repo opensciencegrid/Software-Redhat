@@ -11,7 +11,7 @@ URL:		http://glite.cvs.cern.ch/cgi-bin/glite.cgi/org.glite.data.transfer-interfa
 Source0:        org.glite.data.transfer-interface.tar.gz
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildArch:      noarch
-BuildRequires:  java-1.6.0-openjdk-devel
+BuildRequires:  java-devel
 
 %description
 %{summary}

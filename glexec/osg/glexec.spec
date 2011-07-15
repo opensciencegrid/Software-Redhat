@@ -1,7 +1,7 @@
 Summary: User identity switching tool based on grid credentials
 Name: glexec
 Version: 0.8.10
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: ASL 2.0
 Group: Applications/System
 URL: http://www.nikhef.nl/pub/projects/grid/gridwiki/index.php/Site_Access_Control
@@ -34,6 +34,9 @@ rm -rf $RPM_BUILD_ROOT
 
 make DESTDIR=$RPM_BUILD_ROOT install
 
+# OSG default config
+cp %{SOURCE1} $RPM_BUILD_ROOT/%{_sysconfdir}/glexec.conf
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -48,6 +51,9 @@ rm -rf $RPM_BUILD_ROOT
 %attr(6755, root, root) /usr/sbin/glexec
 
 %changelog
+* Fri Jul 15 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 0.8.10-2
+- Use OSG default config.
+
 * Wed Jun 29 2011 Mattias Ellert <mattias.ellert@fysast.uu.se> - 0.8.10-1
 - Remove Vendor tag
 
