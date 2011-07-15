@@ -1,6 +1,6 @@
 Name:		glite-fts-client
 Version:	3.7.4
-Release:	1
+Release:	2
 Summary:	gLite FTS client
 
 Group:		Development/Languages/C and C++
@@ -43,7 +43,7 @@ cp %SOURCE1 .
 
 %build
 ./bootstrap
-%configure --with-channel-wsdl=/usr/share/glite-data-transfer-interface/interface/org.glite.data-channel-3.7.0.wsdl --with-fts-wsdl=/usr/share/glite-data-transfer-interface/interface/org.glite.data-fts-3.7.0.wsdl --with-gsoap-version=2.7.13 --with-version=%{version}  --with-release=%{release}
+%configure --with-channel-wsdl=/usr/share/glite-data-transfer-interface/interface/org.glite.data-channel-3.7.0.wsdl --with-fts-wsdl=/usr/share/glite-data-transfer-interface/interface/org.glite.data-fts-3.7.0.wsdl --with-gsoap-version=2.7.13 --with-version=%{version}  --with-release=%{release} --with-interface-version=3.7.0
 
 make %{?_smp_mflags}
 
@@ -98,4 +98,8 @@ Group: Documentation
 %files doc
 %defattr(-,root,root)
 %doc %{_docdir}/glite-data-transfer-cli
+
+%changelog
+* Fri Jul 15 2011 Brian Bockelman <bbockelm@cse.unl.edu> 3.7.4-2
+- Added interface-version to build script.
 
