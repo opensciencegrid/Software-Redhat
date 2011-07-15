@@ -1,6 +1,6 @@
 
 Name:           vdt-build
-Version:        0.0.2
+Version:        0.0.3
 Release:        1
 Summary:        Build tools for the VDT
 
@@ -35,6 +35,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_datadir}/%{name}/sample-vdt-build.ini
 
 %changelog
+* Fri Jul 15 2011 Matyas Selmeci <matyas@cs.wisc.edu> 0.0.3-1
+- Various bugfixes (SOFTWARE-{14,15,16})
+
 * Thu Jul 14 2011 Matyas Selmeci <matyas@cs.wisc.edu> 0.0.2-1
 - Python rewrite
 
