@@ -1,0 +1,51 @@
+path = /usr/lib64/modules
+
+# Module definitions
+
+good = "lcmaps_dummy_good.mod"
+bad  = "lcmaps_dummy_bad.mod"
+
+posix_enf = "lcmaps_posix_enf.mod"
+            "-maxuid 1 -maxpgid 1 -maxsgid 32"
+
+sazclient = "lcmaps_saz_client.mod"
+            "-resourcetype ce"
+            "-actiontype execute-now"
+            "-capath /etc/grid-security/certificates"
+            "-cert   /etc/grid-security/hostcert.pem"
+            "-key    /etc/grid-security/hostkey.pem"
+            "--cert-owner root"
+            "-authorization-only"
+            "--endpoint https://fgdevsaz.fnal.gov:8443/saz/services/SAZXACMLAuthorizationServicePort"
+
+scasclient = "lcmaps_scas_client.mod"
+             "-resourcetype ce"
+             "-actiontype execute-now"
+             "-capath /etc/grid-security/certificates"
+             "-cert   /etc/grid-security/glexec/glexeccert.pem"
+             "-key    /etc/grid-security/glexec/glexeckey.pem"
+             "--cert-owner glexec"
+             "--endpoint https://red-auth.unl.edu:8443/gums/services/GUMSXACMLAuthorizationServicePort"
+
+verifyproxy = "lcmaps_verify_proxy.mod"
+          "--allow-limited-proxy"
+          " -certdir /etc/grid-security/certificates"
+
+tracking = "lcmaps_tracking.mod"
+           "-exec /usr/sbin/glexec_monitor"
+
+# Mapping policies
+
+globus_gridftp_mapping:
+
+scasclient -> posix_enf
+
+osg_default:
+
+verifyproxy -> scasclient
+
+glexec:
+
+verifyproxy -> scasclient
+scasclient -> tracking
+
