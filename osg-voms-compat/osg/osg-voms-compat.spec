@@ -8,6 +8,7 @@ License:        Apache 2.0
 URL:            http://www.opensciencegrid.org/
 Source0:        osg-voms-compat-1.0.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+BuildArch:      noarch
 
 Requires:       voms-clients
 
@@ -15,8 +16,7 @@ Requires:       voms-clients
 %{summary}
 
 %prep
-%setup -q
-
+tar xzf %{SOURCE0}
 
 %build
 
