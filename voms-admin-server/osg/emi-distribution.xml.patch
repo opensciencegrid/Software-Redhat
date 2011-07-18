@@ -1,0 +1,10 @@
+--- ../v2/voms-admin-server-2.6.1/src/assemble/emi-distribution.xml    2011-02-16 09:54:33.000000000 -0600
++++ src/assemble/emi-distribution.xml    2011-07-18 10:02:35.000000000 -0500
+@@ -79,7 +79,7 @@
+ 
+     <dependencySets>
+         <dependencySet>
+-            <useProjectArtifact>false</useProjectArtifact>
++            <!--<useProjectArtifact>false</useProjectArtifact>-->
+             <outputDirectory>/usr/share/voms-admin/tools/lib</outputDirectory>
+         </dependencySet>
