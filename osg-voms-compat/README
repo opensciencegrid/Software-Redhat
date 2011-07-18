@@ -1,0 +1,10 @@
+This package is to fix compatibility issue between voms (EMI) and voms (OSG).
+
+This mostly relates to voms-proxy-init and the checking of AC certs.
+Current it's unclear if the voms in epel accepts the environment variable:
+VOMS_PROXY_INFO_DONT_VERIFY_AC=true
+It does however accept the command line option:
+--dont-verify-ac
+
+
+
