@@ -1,6 +1,6 @@
 Name:           osg-voms-compat
 Version:        1.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        OSG VOMS Compatibility package
 
 Group:          System Environment/Libraries
@@ -23,6 +23,7 @@ tar xzf %{SOURCE0}
 
 %install
 rm -rf $RPM_BUILD_ROOT
+install -d $RPM_BUILD_ROOT/%{_sysconfdir}/profile.d
 install -m 755 etc/profile.d/* $RPM_BUILD_ROOT/%{_sysconfdir}/profile.d/
 
 %clean
@@ -36,6 +37,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Jul 18 2011 Derek Weitzel <dweitzel@cse.unl.edu> - 1.0-2
+- Fixed the shell scripts to have =true
+
 * Mon Jul 18 2011 Derek Weitzel <dweitzel@cse.unl.edu> - 1.0-1
 - Initial packaging
 
