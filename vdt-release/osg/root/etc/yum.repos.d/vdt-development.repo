@@ -4,7 +4,7 @@ baseurl=http://vdt.cs.wisc.edu/repos/3.0/el5/development/$basearch
 #mirrorlist=http://mirrors.fedoraproject.org/mirrorlist?repo=testing-epel5&arch=$basearch
 failovermethod=priority
 enabled=0
-#gpgcheck=1
+gpgcheck=0
 #gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL
 
 [vdt-development-source]

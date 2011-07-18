@@ -1,6 +1,6 @@
 Name:           vdt-release       
 Version:        3.0 
-Release:        1
+Release:        2
 Summary:        Virtual Data Toolkit for Enterprise Linux repository configuration
 
 Group:          System Environment/Base 
@@ -62,6 +62,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Jul 18 2011 Derek Weitzel <dweitzel@cse.unl.edu> - 3.0-2
+- Changed vdt-development so that it doesn't force gpg checks
+
 * Wed Jul 06 2011 Derek Weitzel <dweitzel@cse.unl.edu> - 3-1
 - Adapted EPEL release rpm for use with the VDT
 
