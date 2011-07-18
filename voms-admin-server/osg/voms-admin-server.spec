@@ -6,7 +6,7 @@ License: Apache Software License
 Vendor: EMI
 Group: System Environment/Libraries
 Packager: ETICS
-BuildRequires: maven
+BuildRequires: maven2
 #BuildRequires: oracle-instantclient-basic
 BuildRequires: java-devel
 Requires: java
@@ -15,6 +15,7 @@ Requires: tomcat5
 BuildRoot: %{_builddir}/%{name}-root
 AutoReqProv: yes
 Source: voms-admin-server-2.6.1-1.src.tar.gz
+Patch0: maven-deps.patch
 
 %description
 emi.voms.voms-admin-server
@@ -23,6 +24,7 @@ emi.voms.voms-admin-server
  
 
 %setup  
+%patch0 -p0
 
 %build
  
@@ -32,10 +34,17 @@ emi.voms.voms-admin-server
 
 %install
 rm -rf $RPM_BUILD_ROOT
- mkdir -p $RPM_BUILD_ROOT
- mkdir -p $RPM_BUILD_ROOT; tar xzvf target/glite-security-voms-admin-server.tar.gz -C $RPM_BUILD_ROOT; cp `find /usr -name ojdbc14.jar` $RPM_BUILD_ROOT/usr/share/voms-admin/tools/lib
- find $RPM_BUILD_ROOT -name '*.la' -exec rm -rf {} \;
- find $RPM_BUILD_ROOT -name '*.pc' -exec sed -i -e "s|$RPM_BUILD_ROOT||g" {} \;
+mkdir -p $RPM_BUILD_ROOT
+tar xzvf target/glite-security-voms-admin-server.tar.gz -C $RPM_BUILD_ROOT;
+# Fix some randomly broken permissions
+chmod 644 $RPM_BUILD_ROOT/usr/share/webapps/glite-security-voms-siblings.war $RPM_BUILD_ROOT/usr/share/webapps/glite-security-voms-admin.war $RPM_BUILD_ROOT/usr/share/java/glite-security-voms-admin.jar $RPM_BUILD_ROOT/usr/share/voms-admin/tools/classes/logback.xml $RPM_BUILD_ROOT/usr/share/voms-admin/tools/classes/c3p0.properties 
+chmod 755 $RPM_BUILD_ROOT/usr/sbin/voms.py $RPM_BUILD_ROOT/usr/sbin/voms-admin-configure $RPM_BUILD_ROOT/etc/rc.d/init.d/voms-admin
+#cp `find /usr -name ojdbc14.jar` $RPM_BUILD_ROOT/usr/share/voms-admin/tools/lib
+find $RPM_BUILD_ROOT -name '*.la' -exec rm -rf {} \;
+find $RPM_BUILD_ROOT -name '*.pc' -exec sed -i -e "s|$RPM_BUILD_ROOT||g" {} \;
+
+# Where did this come from?
+rm $RPM_BUILD_ROOT/usr/share/voms-admin/tools/lib/voms-admin-server-%{version}.war
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -77,7 +86,7 @@ rm -rf $RPM_BUILD_ROOT
 /usr/share/voms-admin/tools/lib/commons-email-1.1.jar
 /usr/share/voms-admin/tools/lib/wsdl4j-1.5.1.jar
 /usr/share/voms-admin/tools/lib/xml-apis-2.9.1.jar
-/usr/share/voms-admin/tools/lib/ojdbc14.jar
+#/usr/share/voms-admin/tools/lib/ojdbc14.jar
 /usr/share/voms-admin/tools/lib/axis-saaj-1.2.1.jar
 /usr/share/voms-admin/tools/lib/hibernate-annotations-3.3.1.GA.jar
 /usr/share/voms-admin/tools/lib/commons-logging-1.0.4.jar

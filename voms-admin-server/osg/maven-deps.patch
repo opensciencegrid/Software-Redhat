@@ -1,0 +1,34 @@
+--- ../v2/voms-admin-server-2.6.1/pom.xml	2011-03-31 03:52:08.000000000 -0500
++++ pom.xml	2011-07-18 10:00:10.000000000 -0500
+@@ -403,6 +403,11 @@
+             <version>3.2.1</version>
+         </dependency>
+         <dependency>
++            <groupId>commons-lang</groupId>
++            <artifactId>commons-lang</artifactId>
++            <version>2.3</version>
++        </dependency>
++        <dependency>
+             <groupId>commons-configuration</groupId>
+             <artifactId>commons-configuration</artifactId>
+             <version>1.5</version>
+@@ -668,7 +673,7 @@
+                                 <descriptor>src/assemble/emi-distribution.xml</descriptor>
+                             </descriptors>
+                         </configuration>
+-                        <version>2.2</version>
++                        <version>2.1</version>
+                         <executions>
+                             <execution>
+                                 <phase>package</phase>
+--- ../v2/voms-admin-server-2.6.1/src/assemble/emi-distribution.xml	2011-02-16 09:54:33.000000000 -0600
++++ src/assemble/emi-distribution.xml	2011-07-18 10:02:35.000000000 -0500
+@@ -79,7 +79,7 @@
+ 
+     <dependencySets>
+         <dependencySet>
+-            <useProjectArtifact>false</useProjectArtifact>
++            <!--<useProjectArtifact>false</useProjectArtifact>-->
+             <outputDirectory>/usr/share/voms-admin/tools/lib</outputDirectory>
+         </dependencySet>
+         
