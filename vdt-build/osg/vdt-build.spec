@@ -1,7 +1,7 @@
 
 Name:           vdt-build
 Version:        0.0.4
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Build tools for the VDT
 
 Group:          System Environment/Tools
@@ -12,6 +12,9 @@ Source0:        %{name}-%{version}.tar.gz
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
+
+Requires:       mock
+Requires:       rpm-build
 
 %if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
 %{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
@@ -43,6 +46,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_docdir}/%{name}/sample-vdt-build.ini
 
 %changelog
+* Mon Jul 18 2011 Derek Weitzel <dweitzel@cse.unl.edu> - 0.0.4-4
+- Added mock and rpm-build to requires
+
 * Mon Jul 18 2011 Matyas Selmeci <matyas@cs.wisc.edu> 0.0.4-3
 - Small bugfixes.
 
