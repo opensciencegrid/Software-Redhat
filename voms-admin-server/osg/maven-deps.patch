@@ -1,6 +1,14 @@
 --- ../v2/voms-admin-server-2.6.1/pom.xml	2011-03-31 03:52:08.000000000 -0500
-+++ pom.xml	2011-07-18 10:00:10.000000000 -0500
-@@ -403,6 +403,11 @@
++++ pom.xml	2011-07-18 16:46:22.000000000 -0500
+@@ -152,7 +152,6 @@
+                            WEB-INF/lib/serializer-*.jar,
+                            WEB-INF/lib/xercesImpl-*.jar,
+                            WEB-INF/lib/xml-apis-*.jar,
+-                           WEB-INF/lib/xalan-*.jar
+                            </packagingExcludes>
+                             <webResources>
+                                 <resource>
+@@ -403,6 +402,11 @@
              <version>3.2.1</version>
          </dependency>
          <dependency>
@@ -12,7 +20,20 @@
              <groupId>commons-configuration</groupId>
              <artifactId>commons-configuration</artifactId>
              <version>1.5</version>
-@@ -668,7 +673,7 @@
+@@ -579,6 +583,12 @@
+         </dependency>
+ 
+         <dependency>
++            <groupId>org.apache.xalan</groupId>
++            <artifactId>serializer</artifactId>
++            <version>2.7.1</version>
++        </dependency>
++
++        <dependency>
+             <groupId>org.apache.xerces</groupId>
+             <artifactId>serializer</artifactId>
+             <version>2.9.1</version>
+@@ -668,7 +678,7 @@
                                  <descriptor>src/assemble/emi-distribution.xml</descriptor>
                              </descriptors>
                          </configuration>

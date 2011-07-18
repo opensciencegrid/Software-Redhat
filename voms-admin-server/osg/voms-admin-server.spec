@@ -1,7 +1,7 @@
 Summary: emi.voms.voms-admin-server
 Name: voms-admin-server
 Version: 2.6.1
-Release: 1.sl5
+Release: 2
 License: Apache Software License
 Vendor: EMI
 Group: System Environment/Libraries
@@ -13,9 +13,11 @@ Requires: java
 Requires: emi-trustmanager-tomcat
 Requires: tomcat5
 BuildRoot: %{_builddir}/%{name}-root
+BuildArch: noarch
 AutoReqProv: yes
 Source: voms-admin-server-2.6.1-1.src.tar.gz
 Patch0: maven-deps.patch
+Patch1: directory-defaults.patch
 
 %description
 emi.voms.voms-admin-server
@@ -25,6 +27,7 @@ emi.voms.voms-admin-server
 
 %setup  
 %patch0 -p0
+%patch1 -p0
 
 %build
  
@@ -46,11 +49,17 @@ find $RPM_BUILD_ROOT -name '*.pc' -exec sed -i -e "s|$RPM_BUILD_ROOT||g" {} \;
 # Where did this come from?
 rm $RPM_BUILD_ROOT/usr/share/voms-admin/tools/lib/voms-admin-server-%{version}.war
 
+mkdir -p $RPM_BUILD_ROOT/etc/voms-admin
+
+#mkdir -p $RPM_BUILD_ROOT/usr/share/tomcat5/common/lib
+#ln -s /usr/share/java/bcprov.jar $RPM_BUILD_ROOT/usr/share/tomcat5/common/lib/bcprov.jar
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root)
+%attr(-,tomcat,tomcat) /etc/voms-admin
 %dir /etc/rc.d/init.d/
 /etc/rc.d/init.d/voms-admin
 %dir /usr/share/webapps/
@@ -108,6 +117,7 @@ rm -rf $RPM_BUILD_ROOT
 /usr/share/voms-admin/tools/lib/jcip-annotations-1.0.jar
 /usr/share/voms-admin/tools/lib/ognl-3.0.jar
 /usr/share/voms-admin/tools/lib/xalan-2.7.1.jar
+/usr/share/voms-admin/tools/lib/serializer-2.7.1.jar
 /usr/share/voms-admin/tools/lib/antlr-2.7.6.jar
 /usr/share/voms-admin/tools/lib/freemarker-2.3.16.jar
 /usr/share/voms-admin/tools/lib/commons-lang-2.3.jar
