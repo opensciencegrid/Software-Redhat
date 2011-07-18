@@ -51,8 +51,8 @@ rm $RPM_BUILD_ROOT/usr/share/voms-admin/tools/lib/voms-admin-server-%{version}.w
 
 mkdir -p $RPM_BUILD_ROOT/etc/voms-admin
 
-#mkdir -p $RPM_BUILD_ROOT/usr/share/tomcat5/common/lib
-#ln -s /usr/share/java/bcprov.jar $RPM_BUILD_ROOT/usr/share/tomcat5/common/lib/bcprov.jar
+mkdir -p $RPM_BUILD_ROOT/usr/share/tomcat5/common/lib
+ln -s /usr/share/java/eclipse-ecj.jar $RPM_BUILD_ROOT/usr/share/tomcat5/common/lib/voms-admin-eclipse-ecj.jar
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -180,6 +180,7 @@ rm -rf $RPM_BUILD_ROOT
 /usr/sbin/init-voms-admin.pyo
 /usr/sbin/voms-admin-ping
 /usr/sbin/voms-admin-configure
+/usr/share/tomcat5/common/lib/voms-admin-eclipse-ecj.jar
 
 %changelog
  

@@ -1,7 +1,10 @@
 --- ../v2/voms-admin-server-2.6.1/pom.xml	2011-03-31 03:52:08.000000000 -0500
 +++ pom.xml	2011-07-18 16:46:22.000000000 -0500
-@@ -152,7 +152,6 @@
-                            WEB-INF/lib/serializer-*.jar,
+@@ -149,10 +149,8 @@
+                         </goals>
+                         <configuration>
+                            <packagingExcludes>WEB-INF/lib/resolver-*.jar,
+-                           WEB-INF/lib/serializer-*.jar,
                             WEB-INF/lib/xercesImpl-*.jar,
                             WEB-INF/lib/xml-apis-*.jar,
 -                           WEB-INF/lib/xalan-*.jar
