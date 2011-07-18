@@ -9,6 +9,7 @@ URL:            http://www.opensciencegrid.org/
 Source0:        osg-voms-compat-1.0.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
+Requires:       voms-clients
 
 %description
 %{summary}
