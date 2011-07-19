@@ -1,7 +1,7 @@
 
 Name:           vdt-build
-Version:        0.0.4
-Release:        4%{?dist}
+Version:        0.0.5
+Release:        1%{?dist}
 Summary:        Build tools for the VDT
 
 Group:          System Environment/Tools
@@ -15,6 +15,7 @@ BuildArch:      noarch
 
 Requires:       mock
 Requires:       rpm-build
+Requires:       createrepo
 
 %if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
 %{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
@@ -46,6 +47,10 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_docdir}/%{name}/sample-vdt-build.ini
 
 %changelog
+* Tue Jul 19 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 0.0.5-1
+- Bugfixes for batlab task to make it work with mock as it is installed in batlab.org.
+- createrepo added to requires.
+
 * Mon Jul 18 2011 Derek Weitzel <dweitzel@cse.unl.edu> - 0.0.4-4
 - Added mock and rpm-build to requires
 
