@@ -1,6 +1,6 @@
 Name:           vo-client
 Version:        38
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Vomses file for use with user authentication
 
 Group:          system environment/base
@@ -41,8 +41,6 @@ install -m 644 etc/vomses $RPM_BUILD_ROOT/%{_sysconfdir}/vomses
 install -d $RPM_BUILD_ROOT/%{_sysconfdir}/grid-security/vomsdir
 cp -r etc/grid-security/vomsdir/* $RPM_BUILD_ROOT/%{_sysconfdir}/grid-security/vomsdir/
 
-install -d $RPM_BUILD_ROOT/%{_sbindir}
-install -m 500 usr/sbin/vdt-make-vomsdir $RPM_BUILD_ROOT/%{_sbindir}/vdt-make-vomsdir
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -52,10 +50,12 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %{_sysconfdir}/vomses
 %{_sysconfdir}/grid-security/vomsdir
-%{_sbindir}/vdt-make-vomsdir
 
 
 %changelog
+* Tue Jul 19 2011 Derek Weitzel <dweitzel@cse.unl.edu> - 38-3
+- Removed vdt-make-vomsdir.  It now has it's own rpm
+
 * Mon Jul 18 2011 Derek Weitzel <dweitzel@cse.unl.edu> - 38-2
 - Added vdt-make-vomsdir and cleaned up packaging
 
