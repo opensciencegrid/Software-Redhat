@@ -6,17 +6,18 @@ Summary:        Vomses file for use with user authentication
 Group:          system environment/base
 License:        Apache 2.0
 URL:            http://www.opensciencegrid.org/osg/
-Source0:        %{name}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
 Requires:       osg-ca-certs
 
+Source0:        vomses
+Source1:        vomsdir.tar.gz
 
 # Steps to make tarball (correctly packaged):
 # Get GOC's tarball, vo-client-38.tar.gz
 # tar xzf vo-client-38.tar.gz
-# cp voms/etc/vomses osg/root/etc/vomses
+# cp voms/etc/vomses ./
 
 # Generate LSC files
 # ./osg/root/usr/sbin/vdt-make-vomsdir --vomsdir osg/root/etc/grid-security/vomsdir --vomses osg/root/etc/vomses
