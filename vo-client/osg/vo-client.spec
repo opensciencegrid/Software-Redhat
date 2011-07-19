@@ -12,7 +12,6 @@ BuildArch:      noarch
 Requires:       osg-ca-certs
 
 Source0:        vomses
-Source1:        vomsdir.tar.gz
 
 # Steps to make tarball (correctly packaged):
 # Get GOC's tarball, vo-client-38.tar.gz
@@ -28,8 +27,6 @@ Source1:        vomsdir.tar.gz
 %{summary}
 
 %prep
-tar xzf %{SOURCE0}
-
 
 %build
 
@@ -37,10 +34,10 @@ tar xzf %{SOURCE0}
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT/%{_sysconfdir}
-install -m 644 etc/vomses $RPM_BUILD_ROOT/%{_sysconfdir}/vomses
+install -m 644 %{SOURCE0} $RPM_BUILD_ROOT/%{_sysconfdir}/vomses
 
-install -d $RPM_BUILD_ROOT/%{_sysconfdir}/grid-security/vomsdir
-cp -r etc/grid-security/vomsdir/* $RPM_BUILD_ROOT/%{_sysconfdir}/grid-security/vomsdir/
+#install -d $RPM_BUILD_ROOT/%{_sysconfdir}/grid-security/vomsdir
+#cp -r etc/grid-security/vomsdir/* $RPM_BUILD_ROOT/%{_sysconfdir}/grid-security/vomsdir/
 
 
 %clean
@@ -50,7 +47,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root,-)
 %{_sysconfdir}/vomses
-%{_sysconfdir}/grid-security/vomsdir
+#%{_sysconfdir}/grid-security/vomsdir
 
 
 %changelog
