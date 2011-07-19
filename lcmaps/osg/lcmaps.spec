@@ -1,7 +1,7 @@
 Summary: Grid (X.509) and VOMS credentials to local account mapping service
 Name: lcmaps
 Version: 1.4.28
-Release: 2%{?dist}
+Release: 3%{?dist}
 Vendor: Nikhef
 License: ASL 2.0
 Group: System Environment/Libraries
@@ -144,6 +144,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/modules/*.so
 
 %changelog
+* Fri Jul 15 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.4.28-3
+A few config file tweaks discovered during testing of lcmaps.
+
 * Fri Jul 15 2011 Brian Bockelman <bbockelm@cse.unl.edu> 1.4.28-2
 - Include OSG default lcmaps.db
 

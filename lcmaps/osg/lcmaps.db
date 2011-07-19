@@ -38,6 +38,7 @@ verifyproxy = "lcmaps_verify_proxy.mod"
 
 tracking = "lcmaps_tracking.mod"
            "-exec /usr/sbin/glexec_monitor"
+           "-procddir /usr"
 # Uncomment to write tracking info to glexec_monitor.log in the given dir
 #         "-logdir /var/log/glexec"
 # Uncomment to use local time in the file log (doesn't apply to syslog)
@@ -65,5 +66,5 @@ glexec:
 ##verifyproxy -> sazclient
 ##sazclient -> gumsclient
 verifyproxy -> gumsclient
-scasclient -> tracking
+gumsclient -> tracking
 
