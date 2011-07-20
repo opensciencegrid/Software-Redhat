@@ -1,0 +1,8 @@
+edg-mkgridmap package
+
+It is a tool which consults a list of voms servers and a configuration file that describes how 
+to map the users in each virtual organization (VO) to local users to generate a globus gridmap file.
+
+SRC RPM obtained directly from http://emisoft.web.cern.ch/emisoft/dist/EMI/1/sl5/SRPMS/base/ 
+
+Neha Sharma <neha@fnal.gov>
