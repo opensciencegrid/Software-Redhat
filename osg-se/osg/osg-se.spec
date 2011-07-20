@@ -1,4 +1,4 @@
-Name:           OSG-SE
+Name:           osg-se
 Version:        3.0
 Release:        1
 Summary:        OSG Storage Element package for RPM distribution
