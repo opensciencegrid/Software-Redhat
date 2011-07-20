@@ -77,6 +77,11 @@ BuildRequires: gcc-c++
 
 %define configure_probeconfig_post(g:) s&MAGIC_VDT_LOCATION/gratia(/?)&$ENV{RPM_INSTALL_PREFIX1}${1}&; %{?vdt_loc_set: s&MAGIC_VDT_LOCATION&%{vdt_loc}&;} s&/opt/vdt/gratia(/?)&$ENV{RPM_INSTALL_PREFIX1}${1}&; my $grid = "%{-g*}" || "%{grid}"; s&(Grid\\s*=\\s*)\\\"[^\\\"]*\\\"&${1}"${grid}"&; m&%{ProbeConfig_template_marker}& or print; ' "$config_file" >/dev/null 2>&1; %{expand: %final_post_message $config_file }; %{__rm} -f "$config_file.orig"; done
 
+%if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
+%{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
+%{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
+%endif
+
 ########################################################################
 # Source and patch specifications
 Source0: %{name}-common-%{version}.tar.bz2
@@ -198,35 +203,36 @@ install -d $RPM_BUILD_ROOT/%{_sysconfdir}/gratia
 %else
 
   # PBS / LSF probe install
-  cp -pR pbs-lsf "${RPM_BUILD_ROOT}%{default_prefix}/probe"
-  %{__rm} -rf "${RPM_BUILD_ROOT}%{default_prefix}/probe/pbs-lsf/urCollector-src"
-  for probe_config in \
-      "${RPM_BUILD_ROOT}%{default_prefix}/probe/pbs-lsf/ProbeConfig" \
+  cp -pR pbs-lsf $RPM_BUILD_ROOT%{_datadir}/gratia/
+  rm -rf $RPM_BUILD_ROOT%{_datadir}/gratia/pbs-lsf/urCollector-src
+  for probe_dir in \
+      $RPM_BUILD_ROOT%{_sysconfdir}/gratia/pbs-lsf/ \
       ; do
-    %{__cp} -p "common/ProbeConfigTemplate" \
-          "$probe_config"
-    echo "%{ProbeConfig_template_marker}" >> "$probe_config"
+    install -d $probe_dir
+    cp -p common/ProbeConfigTemplate \
+          $probe_dir/ProbeConfig
+    #echo "%{ProbeConfig_template_marker}" >> "$probe_config"
   done
-  cd "${RPM_BUILD_ROOT}%{default_prefix}/probe/pbs-lsf"
+  cd $RPM_BUILD_ROOT%{_datadir}/gratia/pbs-lsf
   cd - >/dev/null
 
   # Install urCollector software
   cd pbs-lsf/urCollector-src
-  %{__cp} -p urCreator urCollector.pl \
-  "${RPM_BUILD_ROOT}%{default_prefix}/probe/pbs-lsf"
-  %{__install} -m 0644 LICENSE \
-  "${RPM_BUILD_ROOT}%{default_prefix}/probe/pbs-lsf"
-  %{__cp} -p urCollector.conf-template \
-  "${RPM_BUILD_ROOT}%{default_prefix}/probe/pbs-lsf/urCollector.conf"
-  %{__cp} -p urCollector.conf-template \
-  "${RPM_BUILD_ROOT}%{default_prefix}/probe/pbs-lsf/urCollector.conf-template"
+  cp -p urCreator urCollector.pl \
+  "$RPM_BUILD_ROOT%{_datadir}/gratia/pbs-lsf"
+  install -m 0644 LICENSE \
+  "$RPM_BUILD_ROOT%{_datadir}/gratia/pbs-lsf"
+  cp -p urCollector.conf-template \
+  "$RPM_BUILD_ROOT%{_datadir}/gratia/pbs-lsf/urCollector.conf"
+  cp -p urCollector.conf-template \
+  "$RPM_BUILD_ROOT%{_datadir}/gratia/pbs-lsf/urCollector.conf-template"
   echo "%{pbs_lsf_template_marker}" >> \
-       "${RPM_BUILD_ROOT}%{default_prefix}/probe/pbs-lsf/urCollector.conf"
-  %{__mkdir_p} "${RPM_BUILD_ROOT}%{default_prefix}/probe/pbs-lsf/urCollector"
-  %{__cp} -p urCollector/Common.pm \
-  "${RPM_BUILD_ROOT}%{default_prefix}/probe/pbs-lsf/urCollector"
-  %{__cp} -p urCollector/Configuration.pm \
-  "${RPM_BUILD_ROOT}%{default_prefix}/probe/pbs-lsf/urCollector"
+       "$RPM_BUILD_ROOT%{_datadir}/gratia/pbs-lsf/urCollector.conf"
+  mkdir -p "$RPM_BUILD_ROOT%{_datadir}/gratia/pbs-lsf/urCollector"
+  cp -p urCollector/Common.pm \
+  "$RPM_BUILD_ROOT%{_datadir}/gratia/pbs-lsf/urCollector"
+  cp -p urCollector/Configuration.pm \
+  "$RPM_BUILD_ROOT%{_datadir}/gratia/pbs-lsf/urCollector"
   cd - >/dev/null
 
 %if %{?no_dcache:0}%{!?no_dcache:1}
@@ -260,8 +266,25 @@ done
   install -d $RPM_BUILD_ROOT%{_localstatedir}/lib/gratia/pbs-lsf/{lock,tmp/urCollector}
 %endif
 
+# Ok, now the real packaging
+
+# Find python files, and put in site-packages/gratia/<package>/...
+install -d $RPM_BUILD_ROOT%{python_sitelib}
+# For the 
+for dir in `ls $RPM_BUILD_ROOT%{_datadir}/gratia`; do
+    project_initial=$RPM_BUILD_ROOT%{_datadir}/gratia/$dir
+    project_sitelib=$RPM_BUILD_ROOT%{python_sitelib}/gratia/$dir
+    install -d $project_sitelib
+    for file in `find $project_initial -name "*.py"`; do
+        install -m 644 $file $project_sitelib
+    done
+done
+#find $RPM_BUILD_ROOT%{_datadir} -name "*.py" -exec install {} $RPM_BUILD_ROOT%{python_sitelib} \;
+find $RPM_BUILD_ROOT%{_datadir} -name "*.py" -exec rm {} \;
+
+
 %clean
-%{__rm} -rf "${RPM_BUILD_ROOT}"
+rm -rf $RPM_BUILD_ROOT
 
 %description
 Probes for the Gratia OSG accounting system
@@ -312,7 +335,7 @@ This product includes software developed by The EU EGEE Project
 %doc %{_datadir}/gratia/pbs-lsf/urCollector.conf-template
 %doc %{_datadir}/gratia/pbs-lsf/README
 %{_datadir}/gratia/pbs-lsf/README
-%{_datadir}/gratia/pbs-lsf/pbs-lsf.py
+%{python_sitelib}/gratia/pbs-lsf
 %{_datadir}/gratia/pbs-lsf/pbs-lsf_meter.cron.sh
 %{_datadir}/gratia/pbs-lsf/pbs-lsf_meter.pl
 %{_datadir}/gratia/pbs-lsf/urCreator
@@ -398,23 +421,18 @@ Common files and examples for Gratia OSG accounting system probes.
 %doc common/ProbeConfigTemplate
 %{default_prefix}/probe/common/jlib/xalan.jar
 %{default_prefix}/probe/common/jlib/serializer.jar
-%{default_prefix}/probe/common/DebugPrint.py
+%{python_sitelib}/gratia/common
 %{default_prefix}/probe/common/GRAM/JobManagerGratia.pm
 %{default_prefix}/probe/common/GRAM/README.txt
 %{default_prefix}/probe/common/GRAM/globus-job-manager-script-real.pl.diff.4.0.5
 %{default_prefix}/probe/common/GRAM/globus-job-manager-script.in.diff.4.0.6
-%{default_prefix}/probe/common/GetProbeConfigAttribute.py
-%{default_prefix}/probe/common/Gratia.py
-%{default_prefix}/probe/common/GratiaCore.py
-%{default_prefix}/probe/common/GratiaPing.py
 %{default_prefix}/probe/common/ProbeConfigTemplate
-%{default_prefix}/probe/common/ProxyUtil.py
 %{default_prefix}/probe/common/README
 %{default_prefix}/probe/common/samplemeter.pl
 %{default_prefix}/probe/common/samplemeter.py
 %{default_prefix}/probe/common/samplemeter_multi.py
 %{default_prefix}/probe/common/test/db-find-job
-%config(noreplace) /etc/yum.repos.d/gratia.repo
+#%config(noreplace) /etc/yum.repos.d/gratia.repo
 
 %package psacct
 Summary: A ps-accounting probe
@@ -438,8 +456,7 @@ The psacct probe for the Gratia OSG accounting system.
 %config %{default_prefix}/probe/psacct/facct-turnoff.sh
 %config %{default_prefix}/probe/psacct/psacct_probe.cron.sh
 %config %{default_prefix}/probe/psacct/gratia-psacct
-%{default_prefix}/probe/psacct/PSACCTProbeLib.py
-%{default_prefix}/probe/psacct/PSACCTProbe.py      
+%{python_sitelib}/gratia/psacct
 %config(noreplace) %{default_prefix}/probe/psacct/ProbeConfig
 %config /etc/rc.d/init.d/gratia-psacct
 
@@ -621,7 +638,7 @@ The SGE probe for the Gratia OSG accounting system.
 %doc sge/README
 %{default_prefix}/probe/sge/README
 %{default_prefix}/probe/sge/sge_meter.cron.sh
-%{default_prefix}/probe/sge/sge_meter.py
+%{python_sitelib}/gratia/sge
 %{default_prefix}/probe/sge/test/2007-01-26.log.snippet
 %config(noreplace) %{default_prefix}/probe/sge/ProbeConfig
 
@@ -674,7 +691,7 @@ The gLExec probe for the Gratia OSG accounting system.
 %doc glexec/README
 %{default_prefix}/probe/glexec/README
 %{default_prefix}/probe/glexec/glexec_meter.cron.sh
-%{default_prefix}/probe/glexec/glexec_meter.py
+%{python_sitelib}/gratia/glexec
 %{default_prefix}/probe/glexec/gratia_glexec_parser.py
 %config(noreplace) %{default_prefix}/probe/glexec/ProbeConfig
 
@@ -732,8 +749,7 @@ The metric probe for the Gratia OSG accounting system.
 %doc metric/README
 %doc metric/samplemetric.py
 %{default_prefix}/probe/metric/README
-%{default_prefix}/probe/metric/Metric.py
-%{default_prefix}/probe/metric/samplemetric.py
+%{python_sitelib}/gratia/metric
 %config(noreplace) %{default_prefix}/probe/metric/ProbeConfig
 
 %post metric%{?maybe_itb_suffix}
@@ -775,20 +791,12 @@ Contributed by Greg Sharp and the dCache project.
 
 %files dCache-transfer%{?maybe_itb_suffix}
 %defattr(-,root,root,-)
-/etc/rc.d/init.d/gratia-dcache-transfer
+%{_initrddir}/gratia-dcache-transfer
 %doc dCache-transfer/README-experts-only.txt
 %doc dCache-transfer/README
 %{default_prefix}/probe/dCache-transfer/README-experts-only.txt
 %{default_prefix}/probe/dCache-transfer/README
-%{default_prefix}/probe/dCache-transfer/Alarm.py
-%{default_prefix}/probe/dCache-transfer/BillingRecSimulator.py
-%{default_prefix}/probe/dCache-transfer/Checkpoint.py
-%{default_prefix}/probe/dCache-transfer/CheckpointTest.py
-%{default_prefix}/probe/dCache-transfer/Collapse.py
-%{default_prefix}/probe/dCache-transfer/DCacheAggregator.py
-%{default_prefix}/probe/dCache-transfer/TestContainer.py
-%{default_prefix}/probe/dCache-transfer/TimeBinRange.py
-%{default_prefix}/probe/dCache-transfer/dCacheBillingAggregator.py
+%{python_sitelib}/gratia/dCache-transfer/
 %config(noreplace) %{default_prefix}/probe/dCache-transfer/ProbeConfig
 
 %post dCache-transfer%{?maybe_itb_suffix}
@@ -885,11 +893,9 @@ Contributed by Andrei Baranovksi of the OSG Storage team.
 %defattr(-,root,root,-)
 %doc dCache-storage/README.txt
 %{default_prefix}/probe/dCache-storage/README.txt
-%{default_prefix}/probe/dCache-storage/GratiaConnector.py
-%{default_prefix}/probe/dCache-storage/XmlBuilder.py
+%{python_sitelib}/gratia/dCache-storage
 %{default_prefix}/probe/dCache-storage/create_se_record.xsl
 %{default_prefix}/probe/dCache-storage/dCache-storage_meter.cron.sh
-%{default_prefix}/probe/dCache-storage/dCache_storage_probe.py
 %config(noreplace) %{default_prefix}/probe/dCache-storage/ProbeConfig
 
 %post dCache-storage%{?maybe_itb_suffix}
@@ -957,13 +963,7 @@ Contributed by Andrei Baranovski of the OSG storage team.
 
 %files gridftp-transfer%{?maybe_itb_suffix}
 %defattr(-,root,root,-)
-%{default_prefix}/probe/gridftp-transfer/ContextTransaction.py
-%{default_prefix}/probe/gridftp-transfer/FileDigest.py
-%{default_prefix}/probe/gridftp-transfer/GftpLogParserCorrelator.py
-%{default_prefix}/probe/gridftp-transfer/GratiaConnector.py
-%{default_prefix}/probe/gridftp-transfer/GridftpToGratiaEventTransformer.py
-%{default_prefix}/probe/gridftp-transfer/GridftpTransferProbeDriver.py
-%{default_prefix}/probe/gridftp-transfer/Logger.py
+%{python_sitelib}/gratia/gridftp-transfer
 %{default_prefix}/probe/gridftp-transfer/gridftp-transfer_meter.cron.sh
 %{default_prefix}/probe/gridftp-transfer/netlogger/
 %config(noreplace) %{default_prefix}/probe/gridftp-transfer/ProbeConfig
@@ -1027,11 +1027,7 @@ Contributed by University of Nebraska Lincoln.
 
 %files services
 %defattr(-,root,root,-)
-%{default_prefix}/probe/services/ComputeElement.py      
-%{default_prefix}/probe/services/ComputeElementRecord.py
-%{default_prefix}/probe/services/StorageElement.py      
-%{default_prefix}/probe/services/StorageElementRecord.py
-%{default_prefix}/probe/services/Subcluster.py          
+%{python_sitelib}/gratia/services
 %{default_prefix}/probe/services/storageReport          
 %config(noreplace) %{default_prefix}/probe/services/ProbeConfig
 
@@ -1130,7 +1126,7 @@ Contributed by University of Nebraska Lincoln.
 
 %files condor-events%{?maybe_itb_suffix}
 %defattr(-,root,root,-)
-%{default_prefix}/probe/condor-events/watchCondorEvents.py
+%{python_sitelib}/gratia/condor-events
 %config(noreplace) %{default_prefix}/probe/condor-events/ProbeConfig
 
 %post condor-events%{?maybe_itb_suffix}
@@ -1273,7 +1269,7 @@ Contributed by University of Nebraska Lincoln.
 %defattr(-,root,root,-)
 %{default_prefix}/probe/bdii-status/bdii_cese_record
 %{default_prefix}/probe/bdii-status/bdii_subcluster_record
-%{default_prefix}/probe/bdii-status/bdii_common.py
+%{python_sitelib}/gratia/bdii-status
 %config(noreplace) %{default_prefix}/probe/bdii-status/ProbeConfig
 
 %post bdii-status%{?maybe_itb_suffix}
