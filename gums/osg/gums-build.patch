@@ -1,0 +1,187 @@
+Index: gums-client/src/main/java/gov/bnl/gums/configuration/Configuration.java
+===================================================================
+--- gums-client/src/main/java/gov/bnl/gums/configuration/Configuration.java	(revision 1087)
++++ gums-client/src/main/java/gov/bnl/gums/configuration/Configuration.java	(working copy)
+@@ -792,7 +792,7 @@
+         elemField = new org.apache.axis.description.ElementDesc();
+         elemField.setFieldName("bannedUserGroups");
+         elemField.setXmlName(new javax.xml.namespace.QName("", "bannedUserGroups"));
+-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
++        elemField.setXmlType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
+         elemField.setNillable(true);
+         typeDesc.addFieldDesc(elemField);
+         elemField = new org.apache.axis.description.ElementDesc();
+@@ -822,13 +822,13 @@
+         elemField = new org.apache.axis.description.ElementDesc();
+         elemField.setFieldName("mergeHostToGroupMapping");
+         elemField.setXmlName(new javax.xml.namespace.QName("", "mergeHostToGroupMapping"));
+-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
++        elemField.setXmlType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
+         elemField.setNillable(true);
+         typeDesc.addFieldDesc(elemField);
+         elemField = new org.apache.axis.description.ElementDesc();
+         elemField.setFieldName("mergeURIs");
+         elemField.setXmlName(new javax.xml.namespace.QName("", "mergeURIs"));
+-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
++        elemField.setXmlType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
+         elemField.setNillable(true);
+         typeDesc.addFieldDesc(elemField);
+         elemField = new org.apache.axis.description.ElementDesc();
+@@ -840,7 +840,7 @@
+         elemField = new org.apache.axis.description.ElementDesc();
+         elemField.setFieldName("name");
+         elemField.setXmlName(new javax.xml.namespace.QName("", "name"));
+-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
++        elemField.setXmlType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
+         elemField.setNillable(true);
+         typeDesc.addFieldDesc(elemField);
+         elemField = new org.apache.axis.description.ElementDesc();
+@@ -864,31 +864,31 @@
+         elemField = new org.apache.axis.description.ElementDesc();
+         elemField.setFieldName("source");
+         elemField.setXmlName(new javax.xml.namespace.QName("", "source"));
+-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
++        elemField.setXmlType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
+         elemField.setNillable(true);
+         typeDesc.addFieldDesc(elemField);
+         elemField = new org.apache.axis.description.ElementDesc();
+         elemField.setFieldName("sslCAFiles");
+         elemField.setXmlName(new javax.xml.namespace.QName("", "sslCAFiles"));
+-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
++        elemField.setXmlType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
+         elemField.setNillable(true);
+         typeDesc.addFieldDesc(elemField);
+         elemField = new org.apache.axis.description.ElementDesc();
+         elemField.setFieldName("sslCertfile");
+         elemField.setXmlName(new javax.xml.namespace.QName("", "sslCertfile"));
+-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
++        elemField.setXmlType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
+         elemField.setNillable(true);
+         typeDesc.addFieldDesc(elemField);
+         elemField = new org.apache.axis.description.ElementDesc();
+         elemField.setFieldName("sslKey");
+         elemField.setXmlName(new javax.xml.namespace.QName("", "sslKey"));
+-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
++        elemField.setXmlType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
+         elemField.setNillable(true);
+         typeDesc.addFieldDesc(elemField);
+         elemField = new org.apache.axis.description.ElementDesc();
+         elemField.setFieldName("sslKeyPasswd");
+         elemField.setXmlName(new javax.xml.namespace.QName("", "sslKeyPasswd"));
+-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
++        elemField.setXmlType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
+         elemField.setNillable(true);
+         typeDesc.addFieldDesc(elemField);
+         elemField = new org.apache.axis.description.ElementDesc();
+@@ -906,7 +906,7 @@
+         elemField = new org.apache.axis.description.ElementDesc();
+         elemField.setFieldName("version");
+         elemField.setXmlName(new javax.xml.namespace.QName("", "version"));
+-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
++        elemField.setXmlType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
+         elemField.setNillable(true);
+         typeDesc.addFieldDesc(elemField);
+         elemField = new org.apache.axis.description.ElementDesc();
+Index: gums-client/pom.xml
+===================================================================
+--- gums-client/pom.xml	(revision 1087)
++++ gums-client/pom.xml	(working copy)
+@@ -53,14 +53,14 @@
+ 							<tasks>
+ 								<mkdir dir="target/temp"/>
+ 								<copy filtering="on" todir="target/temp">
+-									<fileset includes="*.jar" dir="${user.home}/.m2/repository/org/apache/axis/axis-ant/1.4"/>
+-									<fileset includes="*.jar" dir="${user.home}/.m2/repository/org/apache/axis/axis/1.4"/>
+-									<fileset includes="*.jar" dir="${user.home}/.m2/repository/org/apache/axis/axis-saaj/1.4"/>
+-									<fileset includes="*.jar" dir="${user.home}/.m2/repository/org/apache/axis/axis-jaxrpc/1.4"/>
+-									<fileset includes="*.jar" dir="${user.home}/.m2/repository/axis/axis-wsdl4j/1.5.1"/>
+-									<fileset includes="*.jar" dir="${user.home}/.m2/repository/commons-discovery/commons-discovery/0.2"/>
+-									<fileset includes="*.jar" dir="${user.home}/.m2/repository/commons-logging/commons-logging/1.0.4"/>
+-									<fileset includes="*.jar" dir="${user.home}/.m2/repository/log4j/log4j/1.2.12"/>
++									<fileset includes="*.jar" dir="${maven.repo.local}/org/apache/axis/axis-ant/1.4"/>
++									<fileset includes="*.jar" dir="${maven.repo.local}/org/apache/axis/axis/1.4"/>
++									<fileset includes="*.jar" dir="${maven.repo.local}/org/apache/axis/axis-saaj/1.4"/>
++									<fileset includes="*.jar" dir="${maven.repo.local}/org/apache/axis/axis-jaxrpc/1.4"/>
++									<fileset includes="*.jar" dir="${maven.repo.local}/axis/axis-wsdl4j/1.5.1"/>
++									<fileset includes="*.jar" dir="${maven.repo.local}/commons-discovery/commons-discovery/0.2"/>
++									<fileset includes="*.jar" dir="${maven.repo.local}/commons-logging/commons-logging/1.1.1"/>
++									<fileset includes="*.jar" dir="${maven.repo.local}/log4j/log4j/1.2.12"/>
+ 								</copy>
+ 								<ant antfile="wsdl2java.xml" target="createClientStub" inheritRefs="true"/>
+ 								<delete dir="target/temp"/>
+@@ -77,8 +77,8 @@
+ 							<tasks>
+ 								<mkdir dir="target/lib"/>
+ 								<copy filtering="on" todir="target/lib/endorsed">
+-							        <fileset includes="*.jar" dir="${user.home}/.m2/repository/xerces/xercesImpl/2.9.1"/>
+-							        <fileset includes="*.jar" dir="${user.home}/.m2/repository/org/apache/xerces/xml-apis/2.9.1"/>
++							        <fileset includes="*.jar" dir="${maven.repo.local}/xerces/xercesImpl/2.9.1"/>
++							        <fileset includes="*.jar" dir="${maven.repo.local}/org/apache/xerces/xml-apis/2.9.1"/>
+ 							    </copy>
+ 								<copy filtering="on" todir="target/lib">
+ 									<fileset includes="*.jar" dir="target"/>
+@@ -185,6 +185,7 @@
+ 					</execution>
+ 				</executions>
+ 			</plugin>
++<!--
+ 			<plugin>
+                 <groupId>org.codehaus.mojo</groupId>
+                 <artifactId>rpm-maven-plugin</artifactId>
+@@ -251,6 +252,7 @@
+                     </mappings>                    
+                 </configuration>
+             </plugin>
++-->
+ 		</plugins>
+     </build>
+ 	 
+Index: gums-client/wsdl2java.xml
+===================================================================
+--- gums-client/wsdl2java.xml	(revision 1087)
++++ gums-client/wsdl2java.xml	(working copy)
+@@ -5,12 +5,12 @@
+             <fileset dir="${basedir}/target/temp">
+                 <include name="*.jar"/>
+             </fileset>
++            <files>
++                <include name="${gov.bnl.racf:gums-core:jar}"/>
++            </files>
+         </path>
+         <taskdef classpathref="axis.classpath" resource="axis-tasks.properties"/>
+-        <axis-java2wsdl classname="gov.bnl.gums.admin.GUMSAPI" implClass="gov.bnl.gums.admin.GUMSAPIImpl" location="http://localhost:8080/gums/admin" namespace="http://www.bnl.gov/namespaces/2004/09/gums/GUMSService" output="${basedir}/target/temp/gums.wsdl">
+-            <mapping namespace="http://www.bnl.gov/namespaces/2004/09/gums/GUMSService" package="gov.bnl.gums.admin"/>
+-            <classpath refid="maven.dependency.classpath"/>
+-        </axis-java2wsdl>
++        <java classname="org.apache.axis.wsdl.Java2WSDL" classpathref="axis.classpath"><arg line="-i gov.bnl.gums.admin.GUMSAPIImpl -l http://localhost:8080/gums/admin -n http://www.bnl.gov/namespaces/2004/09/gums/GUMSService --PkgtoNS gov.bnl.gums.admin=http://www.bnl.gov/namespaces/2004/09/gums/GUMSService -o ${basedir}/target/temp/gums.wsdl gov.bnl.gums.admin.GUMSAPI"/></java>
+         <axis-wsdl2java deployscope="Application" output="${basedir}/src/main/java" serverside="false" url="${basedir}/target/temp/gums.wsdl">
+             <mapping namespace="http://www.bnl.gov/namespaces/2004/09/gums/GUMSService" package="gov.bnl.gums.admin"/>
+         </axis-wsdl2java>
+Index: pom.xml
+===================================================================
+--- pom.xml	(revision 1087)
++++ pom.xml	(working copy)
+@@ -26,6 +26,7 @@
+   	<url>http://www.racf.bnl.gov/experiments/usatlas/griddev</url>
+   </organization>
+   <repositories>
++
+     <repository>
+       <id>internal</id>
+       <name>Archiva Managed Internal Repository</name>
+@@ -37,7 +38,7 @@
+             <enabled>false</enabled>
+       </snapshots>
+     </repository>
+-    
++
+     <repository>
+        <id>snapshots</id>
+        <name>Archiva Managed Snapshot Repository</name>
+@@ -81,4 +82,4 @@
+ 
+ 
+ 
+-</project>
+\ No newline at end of file
++</project>
