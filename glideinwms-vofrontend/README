@@ -2,6 +2,11 @@ Package: glideinwms-vofrontend
 
 This is a glideinWMS VO Frontend package for OSG.
 
+We are re-publishing the srpm, taken from
+http://koji.hep.caltech.edu/public/packages/glideinwms-vofrontend/2.5.1/11/src/glideinwms-vofrontend-2.5.1-11.src.rpm
+
+More details:
+------------
 The glideinWMS sources can be found on
 http://tinyurl.com/glideinWMS/download.html
 
