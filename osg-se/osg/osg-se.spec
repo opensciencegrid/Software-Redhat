@@ -1,16 +1,13 @@
 Name:           osg-se
-Version:        3.0
-Release:        1
 Summary:        OSG Storage Element package for RPM distribution
-Group:          System Environment/Daemons
+Version:        3.0.0
+Release:        1
 License:        GPL
+Group:          System Environment/Daemons
 URL:            https://twiki.grid.iu.edu/twiki/bin/view/Storage/WebHome
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
-%description
-Open Science Grid Storage Element pacakge for RPM distribution
-
+BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Requires: java-1.6.0-sun-compat
 Requires: bestman2-client
 Requires: bestman2-libs
@@ -23,11 +20,9 @@ Requires: fetch-crl
 Requires: globus-gridftp-server-progs
 Requires: gums
 
-#%prep
+%description
+%{summary}
 
-#%setup -q -n %{name}
-
-#%build
 
 %install
 
@@ -35,6 +30,7 @@ Requires: gums
 rm -rf $RPM_BUILD_ROOT
 
 %files
+
 
 %changelog
 * Wed Jul 20 2011 Alex Sim <asim@lbl.gov>
