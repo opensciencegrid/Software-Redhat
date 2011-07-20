@@ -20,7 +20,7 @@ Requires: dcache-srmclient
 Requires: osg-ca-certs
 Requires: edg-mkgridmap
 Requires: fetch-crl
-Requires: globus-gridftp-server
+Requires: globus-gridftp-server-progs
 Requires: gums
 
 #%prep
