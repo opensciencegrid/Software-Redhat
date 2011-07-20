@@ -37,5 +37,5 @@ rm -rf $RPM_BUILD_ROOT
 %files
 
 %changelog
-* Wed Jul 20 12:38:22 PDT 2011 Alex Sim <asim@lbl.gov>
+* Wed Jul 20 2011 Alex Sim <asim@lbl.gov>
 - Created an initial osg-se RPM
