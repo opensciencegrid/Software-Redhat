@@ -29,7 +29,7 @@ Requires: /usr/bin/ldapsearch
 Requires: osg-ca-certs
 Requires: fetch-crl
 Requires: npad
-Requires: owanp
+Requires: owamp
 Requires: bwctl
 #Requires: gums-client
 #Requires: prima 
