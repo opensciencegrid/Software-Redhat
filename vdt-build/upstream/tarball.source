@@ -1,2 +1,2 @@
 # To generate the tarball, cd into tools/vdt-build in an SVN checkout and run 'make dist'
-vdt-build/0.0.5/vdt-build-0.0.5.tar.gz
+vdt-build/0.0.6/vdt-build-0.0.6.tar.gz
