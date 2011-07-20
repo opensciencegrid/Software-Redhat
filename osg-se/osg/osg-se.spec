@@ -1,5 +1,5 @@
 Name:           OSG-SE
-Version:        1.0
+Version:        3.0
 Release:        1
 Summary:        OSG Storage Element package for RPM distribution
 Group:          System Environment/Daemons
