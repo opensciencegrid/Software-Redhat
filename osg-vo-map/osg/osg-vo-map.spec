@@ -6,7 +6,7 @@ Release: 1%{?dist}
 Group: Grid
 URL: http://www.opensciencegrid.org
 BuildArch: noarch
-Source0: %{name}-%{version}-%{dist}.tar.gz
+Source0: %{name}-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 Requires: perl
 
