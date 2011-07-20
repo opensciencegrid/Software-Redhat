@@ -11,7 +11,7 @@ BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 #from epel
 Requires: java-1.6.0-sun-compat
 Requires: globus-gridftp-server 
-Requires: voms-client 
+Requires: voms-clients 
 Requires: uberftp 
 Requires: myproxy
 Requires: syslog-ng
