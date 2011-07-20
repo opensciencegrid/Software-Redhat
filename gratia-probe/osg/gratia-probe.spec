@@ -13,7 +13,6 @@ BuildRequires:      python >= 2.3
 BuildRequires:      python-devel >= 2.3
 %endif
 
-%define no_dcache 0
 
 %if %{?no_dcache:0}%{!?no_dcache:1}
 BuildRequires: postgresql-devel
@@ -55,8 +54,8 @@ BuildRequires: gcc-c++
 
 # VDT_LOCATION and associated settings for post-install
 %{?vdt_loc: %global vdt_loc_set 1}
-%{!?vdt_loc: %global vdt_loc /opt/vdt}
-%{!?default_prefix: %global default_prefix %{vdt_loc}/gratia}
+%{!?vdt_loc: %global vdt_loc %{_datadir}}
+%{!?default_prefix: %global default_prefix %{vdt_loc}}
 %global osg_attr %{vdt_loc}/monitoring/osg-attributes.conf
 %{!?site_name: %global site_name \$(( if [[ -r \"%{osg_attr}\" ]]; then . \"%{osg_attr}\" ; echo \"${OSG_SITE_NAME}\"; else echo \"Generic Site\"; fi ) )}
 
@@ -136,11 +135,6 @@ Prefix: /etc
 cd pbs-lsf/urCollector-src
 %{__make} clean
 %{__make}
-%if %{?no_dcache:0}%{!?no_dcache:1}
-cd -
-cd psycopg2-%{psycopg2_version}
-%{pexec} setup.py build
-%endif # dCache
 %endif
 
 %install
@@ -235,11 +229,6 @@ install -d $RPM_BUILD_ROOT/%{_sysconfdir}/gratia
   "$RPM_BUILD_ROOT%{_datadir}/gratia/pbs-lsf/urCollector"
   cd - >/dev/null
 
-%if %{?no_dcache:0}%{!?no_dcache:1}
-  # Get already-built psycopg2 software
-  %{__cp} -R psycopg2-%{psycopg2_version}/build/lib.* \
-  "${RPM_BUILD_ROOT}%{default_prefix}/probe/"
-%endif
 %endif
 
 #cd "${RPM_BUILD_ROOT}%{default_prefix}"
@@ -282,6 +271,11 @@ done
 #find $RPM_BUILD_ROOT%{_datadir} -name "*.py" -exec install {} $RPM_BUILD_ROOT%{python_sitelib} \;
 find $RPM_BUILD_ROOT%{_datadir} -name "*.py" -exec rm {} \;
 
+# Remove the test stuff
+rm -rf $RPM_BUILD_ROOT%{_datadir}/gratia/condor/test
+rm -f $RPM_BUILD_ROOT%{_datadir}/gratia/common/gratia.repo
+rm -f $RPM_BUILD_ROOT%{_datadir}/gratia/condor/condor_meter.pl.rej
+
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -308,7 +302,7 @@ see http://www.initd.org/pub/software/psycopg/ for details.
 
 %files extra-libs-arch-spec
 %defattr(-,root,root,-)
-%{default_prefix}/probe/lib.*
+#%{default_prefix}/probe/lib.*
 %endif # dCache
 
 %package pbs-lsf%{?maybe_itb_suffix}
@@ -327,15 +321,12 @@ This product includes software developed by The EU EGEE Project
 
 %files pbs-lsf%{?maybe_itb_suffix}
 %defattr(-,root,root,-)
-%dir %{_localstatedir}
-%dir %{_localstatedir}/lock
-%dir %{_tmppath}
-%dir %{_tmppath}/urCollector
+%dir %{_localstatedir}/lib/gratia/pbs-lsf/lock
+%dir %{_datadir}/gratia/pbs-lsf
+%{python_sitelib}/gratia/pbs-lsf
 %doc %{_datadir}/gratia/pbs-lsf/LICENSE
 %doc %{_datadir}/gratia/pbs-lsf/urCollector.conf-template
 %doc %{_datadir}/gratia/pbs-lsf/README
-%{_datadir}/gratia/pbs-lsf/README
-%{python_sitelib}/gratia/pbs-lsf
 %{_datadir}/gratia/pbs-lsf/pbs-lsf_meter.cron.sh
 %{_datadir}/gratia/pbs-lsf/pbs-lsf_meter.pl
 %{_datadir}/gratia/pbs-lsf/urCreator
@@ -345,7 +336,7 @@ This product includes software developed by The EU EGEE Project
 %{_datadir}/gratia/pbs-lsf/test/pbs-logdir/
 %{_datadir}/gratia/pbs-lsf/test/lsf-logdir/
 %config(noreplace) %{_datadir}/gratia/pbs-lsf/urCollector.conf
-%config(noreplace) %{_datadir}/gratia/pbs-lsf/ProbeConfig
+%config(noreplace) %{_sysconfdir}/gratia/pbs-lsf/ProbeConfig
 
 %post pbs-lsf%{?maybe_itb_suffix}
 # /usr -> "${RPM_INSTALL_PREFIX0}"
@@ -411,27 +402,23 @@ Common files and examples for Gratia OSG accounting system probes.
 
 %files common
 %defattr(-,root,root,-)
-%dir %{default_prefix}/var/logs
-%dir %{default_prefix}/var/data
-%dir %{default_prefix}/var/tmp
-%doc common/README
-%doc common/samplemeter.pl
-%doc common/samplemeter.py
-%doc common/samplemeter_multi.py
-%doc common/ProbeConfigTemplate
-%{default_prefix}/probe/common/jlib/xalan.jar
-%{default_prefix}/probe/common/jlib/serializer.jar
+#%dir %{default_prefix}/gratia//var/logs
+#%dir %{default_prefix}/var/data
+#%dir %{default_prefix}/var/tmp
+%doc %{default_prefix}/gratia/common/README
+%doc %{default_prefix}/gratia/common/samplemeter.pl
+#%doc %{default_prefix}/gratia/common/samplemeter.py
+#%doc %{default_prefix}/gratia/common/samplemeter_multi.py
+#%{_datadir}/gratia/common
 %{python_sitelib}/gratia/common
-%{default_prefix}/probe/common/GRAM/JobManagerGratia.pm
-%{default_prefix}/probe/common/GRAM/README.txt
-%{default_prefix}/probe/common/GRAM/globus-job-manager-script-real.pl.diff.4.0.5
-%{default_prefix}/probe/common/GRAM/globus-job-manager-script.in.diff.4.0.6
-%{default_prefix}/probe/common/ProbeConfigTemplate
-%{default_prefix}/probe/common/README
-%{default_prefix}/probe/common/samplemeter.pl
-%{default_prefix}/probe/common/samplemeter.py
-%{default_prefix}/probe/common/samplemeter_multi.py
-%{default_prefix}/probe/common/test/db-find-job
+%{default_prefix}/gratia/common/jlib/xalan.jar
+%{default_prefix}/gratia/common/jlib/serializer.jar
+%{default_prefix}/gratia/common/GRAM/JobManagerGratia.pm
+%{default_prefix}/gratia/common/GRAM/README.txt
+%{default_prefix}/gratia/common/GRAM/globus-job-manager-script-real.pl.diff.4.0.5
+%{default_prefix}/gratia/common/GRAM/globus-job-manager-script.in.diff.4.0.6
+%{default_prefix}/gratia/common/ProbeConfigTemplate
+%{default_prefix}/gratia/common/test/db-find-job
 #%config(noreplace) /etc/yum.repos.d/gratia.repo
 
 %package psacct
@@ -451,14 +438,14 @@ The psacct probe for the Gratia OSG accounting system.
 %files psacct
 %defattr(-,root,root,-)
 %doc psacct/README
-%{default_prefix}/probe/psacct/README
-%config %{default_prefix}/probe/psacct/facct-catchup
-%config %{default_prefix}/probe/psacct/facct-turnoff.sh
-%config %{default_prefix}/probe/psacct/psacct_probe.cron.sh
-%config %{default_prefix}/probe/psacct/gratia-psacct
+%{default_prefix}/gratia/psacct/README
+%config %{default_prefix}/gratia/psacct/facct-catchup
+%config %{default_prefix}/gratia/psacct/facct-turnoff.sh
+%config %{default_prefix}/gratia/psacct/psacct_probe.cron.sh
+%config %{default_prefix}/gratia/psacct/gratia-psacct
 %{python_sitelib}/gratia/psacct
-%config(noreplace) %{default_prefix}/probe/psacct/ProbeConfig
-%config /etc/rc.d/init.d/gratia-psacct
+%config(noreplace) %{_sysconfdir}/gratia/psacct/ProbeConfig
+%config %{_initrddir}/gratia-psacct
 
 %post psacct
 # /usr -> "${RPM_INSTALL_PREFIX0}"
@@ -536,7 +523,7 @@ Group: Applications/System
 %if %{?python:0}%{!?python:1}
 Requires: python >= 2.3
 %endif
-Requires: %{name}-common >= 0.12f
+Requires: %{name}-common >= %{version}-%{release}
 %{?config_itb:Obsoletes: %{name}-condor}
 %{!?config_itb:Obsoletes: %{name}-condor%{itb_suffix}}
 
@@ -545,12 +532,12 @@ The Condor probe for the Gratia OSG accounting system.
 
 %files condor%{?maybe_itb_suffix}
 %defattr(-,root,root,-)
-%doc condor/README
-%{default_prefix}/probe/condor/README
-%{default_prefix}/probe/condor/gram_mods
-%{default_prefix}/probe/condor/condor_meter.cron.sh
-%{default_prefix}/probe/condor/condor_meter.pl
-%config(noreplace) %{default_prefix}/probe/condor/ProbeConfig
+%doc %{default_prefix}/gratia/condor/README
+#%{default_prefix}/gratia/condor
+%{default_prefix}/gratia/condor/gram_mods
+%{default_prefix}/gratia/condor/condor_meter.cron.sh
+%{default_prefix}/gratia/condor/condor_meter.pl
+%config(noreplace) %{_sysconfdir}/gratia/condor/ProbeConfig
 
 %post condor%{?maybe_itb_suffix}
 # /usr -> "${RPM_INSTALL_PREFIX0}"
@@ -626,7 +613,7 @@ Group: Applications/System
 %if %{?python:0}%{!?python:1}
 Requires: python >= 2.3
 %endif
-Requires: %{name}-common >= 0.12e
+Requires: %{name}-common >= %{version}-%{release}
 %{?config_itb:Obsoletes: %{name}-sge}
 %{!?config_itb:Obsoletes: %{name}-sge%{itb_suffix}}
 
@@ -635,12 +622,11 @@ The SGE probe for the Gratia OSG accounting system.
 
 %files sge%{?maybe_itb_suffix}
 %defattr(-,root,root,-)
-%doc sge/README
-%{default_prefix}/probe/sge/README
-%{default_prefix}/probe/sge/sge_meter.cron.sh
+%doc %{default_prefix}/gratia/sge/README
+%{default_prefix}/gratia/sge/sge_meter.cron.sh
 %{python_sitelib}/gratia/sge
-%{default_prefix}/probe/sge/test/2007-01-26.log.snippet
-%config(noreplace) %{default_prefix}/probe/sge/ProbeConfig
+%{default_prefix}/gratia/sge/test/2007-01-26.log.snippet
+%config(noreplace) %{_sysconfdir}/gratia/sge/ProbeConfig
 
 %post sge%{?maybe_itb_suffix}
 # /usr -> "${RPM_INSTALL_PREFIX0}"
@@ -678,7 +664,7 @@ Group: Applications/System
 %if %{?python:0}%{!?python:1}
 Requires: python >= 2.3
 %endif
-Requires: %{name}-common >= 0.12e
+Requires: %{name}-common >= %{version}-%{release}
 %{?config_itb:Obsoletes: %{name}-glexec}
 %{!?config_itb:Obsoletes: %{name}-glexec%{itb_suffix}}
 Obsoletes: fnal_gratia_glexec_probe
@@ -688,12 +674,11 @@ The gLExec probe for the Gratia OSG accounting system.
 
 %files glexec%{?maybe_itb_suffix}
 %defattr(-,root,root,-)
-%doc glexec/README
-%{default_prefix}/probe/glexec/README
-%{default_prefix}/probe/glexec/glexec_meter.cron.sh
+%doc %{default_prefix}/gratia/glexec/README
+%{default_prefix}/gratia/glexec/glexec_meter.cron.sh
 %{python_sitelib}/gratia/glexec
-%{default_prefix}/probe/glexec/gratia_glexec_parser.py
-%config(noreplace) %{default_prefix}/probe/glexec/ProbeConfig
+#%{default_prefix}/gratia/glexec/gratia_glexec_parser.py
+%config(noreplace) %{_sysconfdir}/gratia/glexec/ProbeConfig
 
 %post glexec%{?maybe_itb_suffix}
 # /usr -> "${RPM_INSTALL_PREFIX0}"
@@ -737,7 +722,7 @@ Group: Applications/System
 %if %{?python:0}%{!?python:1}
 Requires: python >= 2.3
 %endif
-Requires: %{name}-common >= 1.06.15l
+Requires: %{name}-common >= %{version}-%{release}
 %{?config_itb:Obsoletes: %{name}-metric}
 %{!?config_itb:Obsoletes: %{name}-metric%{itb_suffix}}
 
@@ -746,11 +731,9 @@ The metric probe for the Gratia OSG accounting system.
 
 %files metric%{?maybe_itb_suffix}
 %defattr(-,root,root,-)
-%doc metric/README
-%doc metric/samplemetric.py
-%{default_prefix}/probe/metric/README
+%doc %{default_prefix}/gratia/metric/README
 %{python_sitelib}/gratia/metric
-%config(noreplace) %{default_prefix}/probe/metric/ProbeConfig
+%config(noreplace) %{_sysconfdir}/gratia/metric/ProbeConfig
 
 %post metric%{?maybe_itb_suffix}
 # /usr -> "${RPM_INSTALL_PREFIX0}"
@@ -792,12 +775,10 @@ Contributed by Greg Sharp and the dCache project.
 %files dCache-transfer%{?maybe_itb_suffix}
 %defattr(-,root,root,-)
 %{_initrddir}/gratia-dcache-transfer
-%doc dCache-transfer/README-experts-only.txt
-%doc dCache-transfer/README
-%{default_prefix}/probe/dCache-transfer/README-experts-only.txt
-%{default_prefix}/probe/dCache-transfer/README
-%{python_sitelib}/gratia/dCache-transfer/
-%config(noreplace) %{default_prefix}/probe/dCache-transfer/ProbeConfig
+%doc %{default_prefix}/gratia/dCache-transfer/README-experts-only.txt
+%doc %{default_prefix}/gratia/dCache-transfer/README
+%{python_sitelib}/gratia/dCache-transfer
+%config(noreplace) %{_sysconfdir}/gratia/dCache-transfer/ProbeConfig
 
 %post dCache-transfer%{?maybe_itb_suffix}
 # /usr -> "${RPM_INSTALL_PREFIX0}"
@@ -878,7 +859,7 @@ to start the service." 1>&2
 %package dCache-storage%{?maybe_itb_suffix}
 Summary: Gratia OSG accounting system probe for dCache storage.
 Group: Application/System
-Requires: %{name}-common >= 1.06.15c
+Requires: %{name}-common >= %{version}-%{release}
 Requires: %{name}-services
 Requires: python-psycopg2
 License: See LICENSE.
@@ -891,12 +872,11 @@ Contributed by Andrei Baranovksi of the OSG Storage team.
 
 %files dCache-storage%{?maybe_itb_suffix}
 %defattr(-,root,root,-)
-%doc dCache-storage/README.txt
-%{default_prefix}/probe/dCache-storage/README.txt
+%doc %{default_prefix}/gratia/dCache-storage/README.txt
 %{python_sitelib}/gratia/dCache-storage
-%{default_prefix}/probe/dCache-storage/create_se_record.xsl
-%{default_prefix}/probe/dCache-storage/dCache-storage_meter.cron.sh
-%config(noreplace) %{default_prefix}/probe/dCache-storage/ProbeConfig
+%{default_prefix}/gratia/dCache-storage/create_se_record.xsl
+%{default_prefix}/gratia/dCache-storage/dCache-storage_meter.cron.sh
+%config(noreplace) %{_sysconfdir}/gratia/dCache-storage/ProbeConfig
 
 %post dCache-storage%{?maybe_itb_suffix}
 # /usr -> "${RPM_INSTALL_PREFIX0}"
@@ -949,7 +929,7 @@ fi
 %package gridftp-transfer%{?maybe_itb_suffix}
 Summary: Gratia OSG accounting system probe for gridftp transfers.
 Group: Application/System
-Requires: %{name}-common >= 1.04.4e
+Requires: %{name}-common >= %{version}-%{release}
 %if %{?python:0}%{!?python:1}
 Requires: python >= 2.3
 %endif
@@ -964,9 +944,9 @@ Contributed by Andrei Baranovski of the OSG storage team.
 %files gridftp-transfer%{?maybe_itb_suffix}
 %defattr(-,root,root,-)
 %{python_sitelib}/gratia/gridftp-transfer
-%{default_prefix}/probe/gridftp-transfer/gridftp-transfer_meter.cron.sh
-%{default_prefix}/probe/gridftp-transfer/netlogger/
-%config(noreplace) %{default_prefix}/probe/gridftp-transfer/ProbeConfig
+%{default_prefix}/gratia/gridftp-transfer/gridftp-transfer_meter.cron.sh
+%{default_prefix}/gratia/gridftp-transfer/netlogger/
+%config(noreplace) %{_sysconfdir}/gratia/gridftp-transfer/ProbeConfig
 
 %post gridftp-transfer%{?maybe_itb_suffix}
 # /usr -> "${RPM_INSTALL_PREFIX0}"
@@ -1014,7 +994,7 @@ fi
 %package services
 Summary: Gratia OSG accounting system probe API for services.
 Group: Application/System
-Requires: %{name}-common >= 1.06.15l
+Requires: %{name}-common >= %{version}-%{release}
 %if %{?python:0}%{!?python:1}
 Requires: python >= 2.3
 %endif
@@ -1028,8 +1008,8 @@ Contributed by University of Nebraska Lincoln.
 %files services
 %defattr(-,root,root,-)
 %{python_sitelib}/gratia/services
-%{default_prefix}/probe/services/storageReport          
-%config(noreplace) %{default_prefix}/probe/services/ProbeConfig
+%{default_prefix}/gratia/services/storageReport          
+%config(noreplace) %{_sysconfdir}/gratia/services/ProbeConfig
 
 %post services
 # /usr -> "${RPM_INSTALL_PREFIX0}"
@@ -1058,7 +1038,7 @@ fi
 %package hadoop-storage%{?maybe_itb_suffix}
 Summary: HDFS Storage Probe for Gratia OSG accounting system.
 Group: Application/System
-Requires: %{name}-common >= 1.04.4e
+Requires: %{name}-common >= %{version}-%{release}
 %if %{?python:0}%{!?python:1}
 Requires: python >= 2.3
 %endif
@@ -1073,9 +1053,9 @@ Contributed by University of Nebraska Lincoln.
 
 %files hadoop-storage%{?maybe_itb_suffix}
 %defattr(-,root,root,-)
-%{default_prefix}/probe/hadoop-storage/hadoop_storage_probe
-%config(noreplace) %{default_prefix}/probe/hadoop-storage/storage.cfg
-%config(noreplace) %{default_prefix}/probe/hadoop-storage/ProbeConfig
+%{default_prefix}/gratia/hadoop-storage/hadoop_storage_probe
+%config(noreplace) %{default_prefix}/gratia/hadoop-storage/storage.cfg
+%config(noreplace) %{_sysconfdir}/gratia/hadoop-storage/ProbeConfig
 
 %post hadoop-storage%{?maybe_itb_suffix}
 # /usr -> "${RPM_INSTALL_PREFIX0}"
@@ -1111,11 +1091,10 @@ fi
 %package condor-events%{?maybe_itb_suffix}
 Summary: Probe that emits a record for each event in the Condor system.
 Group: Application/System
-Requires: %{name}-common >= 1.04.4e
+Requires: %{name}-common >= %{version}-%{release}
 %if %{?python:0}%{!?python:1}
 Requires: python >= 2.3
 %endif
-Requires: %{name}-common
 License: See LICENSE.
 %{?config_itb:Obsoletes: %{name}-condor-events}
 %{!?config_itb:Obsoletes: %{name}-condor-events%{itb_suffix}}
@@ -1127,7 +1106,7 @@ Contributed by University of Nebraska Lincoln.
 %files condor-events%{?maybe_itb_suffix}
 %defattr(-,root,root,-)
 %{python_sitelib}/gratia/condor-events
-%config(noreplace) %{default_prefix}/probe/condor-events/ProbeConfig
+%config(noreplace) %{_sysconfdir}/gratia/condor-events/ProbeConfig
 
 %post condor-events%{?maybe_itb_suffix}
 # /usr -> "${RPM_INSTALL_PREFIX0}"
@@ -1163,11 +1142,10 @@ fi
 %package xrootd-transfer%{?maybe_itb_suffix}
 Summary: Probe that emits a record for each file transfer in Xrootd.
 Group: Application/System
-Requires: %{name}-common >= 1.04.4e
+Requires: %{name}-common >= %{version}-%{release}
 %if %{?python:0}%{!?python:1}
 Requires: python >= 2.3
 %endif
-Requires: %{name}-common
 License: See LICENSE.
 %{?config_itb:Obsoletes: %{name}-xrootd-transfer}
 %{!?config_itb:Obsoletes: %{name}-xrootd-transfer%{itb_suffix}}
@@ -1178,10 +1156,11 @@ Contributed by University of Nebraska Lincoln.
 
 %files xrootd-transfer%{?maybe_itb_suffix}
 %defattr(-,root,root,-)
-/etc/rc.d/init.d/gratia-xrootd-transfer
-%{default_prefix}/probe/xrootd-transfer/xrd_transfer_probe
-%{default_prefix}/probe/xrootd-transfer/SL4_init_script_patches
-%config(noreplace) %{default_prefix}/probe/xrootd-transfer/ProbeConfig
+%{_initrddir}/gratia-xrootd-transfer
+%{default_prefix}/gratia/xrootd-transfer/xrd_transfer_probe
+#%{default_prefix}/gratia/xrootd-transfer/xrd_transfer_gratia
+%{default_prefix}/gratia/xrootd-transfer/SL4_init_script_patches
+%config(noreplace) %{_sysconfdir}/gratia/xrootd-transfer/ProbeConfig
 
 %post xrootd-transfer%{?maybe_itb_suffix}
 # /usr -> "${RPM_INSTALL_PREFIX0}"
@@ -1208,11 +1187,11 @@ Contributed by University of Nebraska Lincoln.
 %package xrootd-storage%{?maybe_itb_suffix}
 Summary: Gratia probe to monitor Xrootd storage usage.
 Group: Application/System
-Requires: %{name}-common >= 1.04.4e
+Requires: %{name}-common >= %{version}-%{release}
 %if %{?python:0}%{!?python:1}
 Requires: python >= 2.3
 %endif
-Requires: %{name}-services%{?maybe_itb_suffix}
+Requires: %{name}-services%{?maybe_itb_suffix} = %{version}-%{release}
 License: See LICENSE.
 %{?config_itb:Obsoletes: %{name}-xrootd-storage}
 %{!?config_itb:Obsoletes: %{name}-xrootd-storage%{itb_suffix}}
@@ -1224,10 +1203,11 @@ Contributed as effort from OSG-Storage.
 
 %files xrootd-storage%{?maybe_itb_suffix}
 %defattr(-,root,root,-)
-/etc/rc.d/init.d/gratia-xrootd-storage
-%{default_prefix}/probe/xrootd-storage/xrd_storage_probe
-%{default_prefix}/probe/xrootd-storage/SL4_init_script_patches
-%config(noreplace) %{default_prefix}/probe/xrootd-storage/ProbeConfig
+%{_initrddir}/gratia-xrootd-storage
+%{default_prefix}/gratia/xrootd-storage/xrd_storage_probe
+#%{default_prefix}/gratia/xrootd-storage/xrd_storage_gratia
+%{default_prefix}/gratia/xrootd-storage/SL4_init_script_patches
+%config(noreplace) %{_sysconfdir}/gratia/xrootd-storage/ProbeConfig
 
 %post xrootd-storage%{?maybe_itb_suffix}
 # /usr -> "${RPM_INSTALL_PREFIX0}"
@@ -1251,11 +1231,10 @@ Contributed as effort from OSG-Storage.
 %package bdii-status%{?maybe_itb_suffix}
 Summary: Probes that emits records of BDII status
 Group: Application/System
-Requires: %{name}-common >= 1.07.1
+Requires: %{name}-common >= %{version}-%{release}
 %if %{?python:0}%{!?python:1}
 Requires: python >= 2.3
 %endif
-Requires: %{name}-common
 License: See LICENSE.
 %{?config_itb:Obsoletes: %{name}-bdii-status}
 %{!?config_itb:Obsoletes: %{name}-bdii-status%{itb_suffix}}
@@ -1267,10 +1246,10 @@ Contributed by University of Nebraska Lincoln.
 
 %files bdii-status%{?maybe_itb_suffix}
 %defattr(-,root,root,-)
-%{default_prefix}/probe/bdii-status/bdii_cese_record
-%{default_prefix}/probe/bdii-status/bdii_subcluster_record
+%{default_prefix}/gratia/bdii-status/bdii_cese_record
+%{default_prefix}/gratia/bdii-status/bdii_subcluster_record
 %{python_sitelib}/gratia/bdii-status
-%config(noreplace) %{default_prefix}/probe/bdii-status/ProbeConfig
+%config(noreplace) %{_sysconfdir}/gratia/bdii-status/ProbeConfig
 
 %post bdii-status%{?maybe_itb_suffix}
 # /usr -> "${RPM_INSTALL_PREFIX0}"
