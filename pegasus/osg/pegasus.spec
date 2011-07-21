@@ -53,13 +53,19 @@ INSTALLROOT=`echo %{installroot} |  sed 's/\//\\\\\//g'`
 sed -i "s/common\.sh/pegasus-common.sh/" pegasus-build/bin/*
 sed -i "s/PEGASUS_HOME=\".*/PEGASUS_HOME=$INSTALLROOT/" pegasus-build/bin/pegasus-common.sh
 sed -i "s/pegasus_home = .*/pegasus_home = \"$INSTALLROOT\"/" pegasus-build/bin/common.py
+sed -i "s/dirname(.0), .common.pm./\'$INSTALLROOT\/lib\/perl\', \'common.pm\'/" pegasus-build/bin/*
+
+for file in pegasus-bug-report pegasus-remove pegasus-run pegasus-status pegasus-submit-dag
+do
+	sed -i "s/BEGIN {/BEGIN { push(@INC,\"$INSTALLROOT\/lib\/perl\");/" pegasus-build/bin/$file
+done
 
 %install
 
 #Deprecated and should be removed to avoid dependency issues
 rm pegasus-build/libexec/pegasus-delegationd
 
-
+mv pegasus-build/bin/common.pm pegasus-build/lib/perl
 mkdir -p $RPM_BUILD_ROOT/%{installroot}
 mkdir -p $RPM_BUILD_ROOT/%{_docdir}/%{name}
 mkdir -p $RPM_BUILD_ROOT/%{_bindir}
@@ -119,4 +125,9 @@ rm -Rf $RPM_BUILD_ROOT
 
 %changelog
 * Mon Jul 20 2011 Doug Strain <dstrain@fnal.gov> 3.0.3-1
-Initial creation of spec file
+- Initial creation of spec file
+- Installs into /usr/share/pegasus-3.0.3
+- Binaries into /usr/bin
+
+
+
