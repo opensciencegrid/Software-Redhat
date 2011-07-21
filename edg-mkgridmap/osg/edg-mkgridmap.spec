@@ -1,5 +1,5 @@
-Name:           edg-mkgridmap.spec
-Version:        10
+Name:           edg-mkgridmap
+Version:        4.0.0
 Release:        1%{?dist}
 Summary:        Contains the init.d script and crontab for edg-mkgridmap
 
@@ -14,7 +14,7 @@ Source1:	edg-mkgridmap-cron
 
 # Steps to make tarball (correctly packaged):
 # Get GOC's tarball, edg-mkgridmap-10.tar.gz
-# tar xzf edg-mkgridmap-10.tar.gz
+# tar xzf edg-mkgridmap-4.0.0.tar.gz
 # cp edg-mkgridmap ./
 # cp edg-mkgridmap-cron ./
 
@@ -44,7 +44,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/cron.d/edg-mkgridmap-cron
 
 %changelog
-* Thu Jul 21 2011 Neha Sharma <neha@fnal.gov> - 10-1
+* Thu Jul 21 2011 Neha Sharma <neha@fnal.gov> - 400-1
 - Initial build of edg-mkgridmap cron and init.d package
 
 
