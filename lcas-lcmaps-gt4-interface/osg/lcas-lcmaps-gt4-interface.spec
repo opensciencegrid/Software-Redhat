@@ -1,12 +1,13 @@
 Summary: Mapping interface between Globus Toolkit and LCAS/LCMAPS
 Name: lcas-lcmaps-gt4-interface
 Version: 0.1.4
-Release: 1%{?dist}
+Release: 2%{?dist}
 Vendor: Nikhef
 License: ASL 2.0
 Group: Applications/System
 URL: http://www.nikhef.nl/pub/projects/grid/gridwiki/index.php/Site_Access_Control
 Source0: http://software.nikhef.nl/security/%{name}/%{name}-%{version}.tar.gz
+Source1: gsi-authz.conf.in
 Patch0: lcas_lcmaps_gt4_interface_nochangeuser.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildRequires: globus-core
@@ -46,6 +47,9 @@ rm -rf $RPM_BUILD_ROOT
 make DESTDIR=$RPM_BUILD_ROOT install
 find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
 
+# Install the mapping by default
+mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/grid-security
+sed -e "s#@LIBDIR@#%{_libdir}#" %{SOURCE1} > $RPM_BUILD_ROOT%{_sysconfdir}/grid-security/gsi-authz.conf
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -61,9 +65,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/liblcas_lcmaps_gt4_mapping.so.0
 %{_libdir}/liblcas_lcmaps_gt4_mapping.so.0.0.0
 %{_sbindir}/gt4-interface-install.sh
-
+%config(noreplace) %{_sysconfdir}/grid-security/gsi-authz.conf
 
 %changelog
+* Thu Jul 21 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 0.1.4-2
+- Added default gsi-authz.conf
+
 * Thu Jun 30 2011 Dennis van Dok <dennisvd@nikhef.nl> 0.1.4-1
 - Updated to version 0.1.4
 
