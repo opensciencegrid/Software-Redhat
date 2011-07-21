@@ -1,0 +1,82 @@
+--- gratia-probe-1.07.02e.back/common/Gratia.py	2011-07-21 11:58:24.922880241 -0500
++++ gratia-probe-1.07.02e.orig/common/Gratia.py	2011-07-21 16:33:45.969880065 -0500
+@@ -6,7 +6,7 @@
+ Gratia Job Usage Record Library
+ """
+ 
+-import GratiaCore
++import gratia.common.GratiaCore
+ import re
+ import socket
+ import string
+@@ -14,21 +14,21 @@
+ import xml
+ 
+ # For Backward compatibility
+-from GratiaCore import Send
+-from GratiaCore import SendStatus
+-from GratiaCore import SendXMLFiles
+-from GratiaCore import Reprocess
+-from GratiaCore import ProcessBundle
+-from GratiaCore import DebugPrint
+-from GratiaCore import DebugPrintTraceback
+-from GratiaCore import Error
+-
+-from GratiaCore import ProbeConfiguration
+-from GratiaCore import Record
+-from GratiaCore import ProbeDetails
+-from GratiaCore import TimeToString
+-from GratiaCore import escapeXML
+-from GratiaCore import Mkdir
++from gratia.common.GratiaCore import Send
++from gratia.common.GratiaCore import SendStatus
++from gratia.common.GratiaCore import SendXMLFiles
++from gratia.common.GratiaCore import Reprocess
++from gratia.common.GratiaCore import ProcessBundle
++from gratia.common.GratiaCore import DebugPrint
++from gratia.common.GratiaCore import DebugPrintTraceback
++from gratia.common.GratiaCore import Error
++
++from gratia.common.GratiaCore import ProbeConfiguration
++from gratia.common.GratiaCore import Record
++from gratia.common.GratiaCore import ProbeDetails
++from gratia.common.GratiaCore import TimeToString
++from gratia.common.GratiaCore import escapeXML
++from gratia.common.GratiaCore import Mkdir
+ 
+ class ConfigProxy:
+     def __getattr__(self, attrname):
+@@ -46,20 +46,20 @@
+ CurrentBundle = BundleProxy()
+ RecordPid = RecordPidProxy()
+ 
+-from GratiaCore import XmlRecordCheckers
++from gratia.common.GratiaCore import XmlRecordCheckers
+ 
+-from GratiaCore import StandardCheckXmldoc
+-from GratiaCore import RegisterReporterLibrary
+-from GratiaCore import RegisterReporter
+-from GratiaCore import RegisterService
+-from GratiaCore import ExtractCvsRevision
+-from GratiaCore import ExtractCvsRevisionFromFile
+-from GratiaCore import ExtractSvnRevision
+-from GratiaCore import ExtractSvnRevisionFromFile
+-from GratiaCore import Initialize
+-from GratiaCore import Maintenance
+-from GratiaCore import setProbeBatchManager
+-from GratiaCore import pythonVersionRequire
++from gratia.common.GratiaCore import StandardCheckXmldoc
++from gratia.common.GratiaCore import RegisterReporterLibrary
++from gratia.common.GratiaCore import RegisterReporter
++from gratia.common.GratiaCore import RegisterService
++from gratia.common.GratiaCore import ExtractCvsRevision
++from gratia.common.GratiaCore import ExtractCvsRevisionFromFile
++from gratia.common.GratiaCore import ExtractSvnRevision
++from gratia.common.GratiaCore import ExtractSvnRevisionFromFile
++from gratia.common.GratiaCore import Initialize
++from gratia.common.GratiaCore import Maintenance
++from gratia.common.GratiaCore import setProbeBatchManager
++from gratia.common.GratiaCore import pythonVersionRequire
+ 
+ 
+ # Privates globals

@@ -34,18 +34,6 @@ diff -ru gratia-probe-1.07.02e.back/common/GratiaPing.py gratia-probe-1.07.02e.o
  
  class UsageError(Exception):
      def __init__(self, msg):
-diff -ru gratia-probe-1.07.02e.back/common/Gratia.py gratia-probe-1.07.02e.orig/common/Gratia.py
---- gratia-probe-1.07.02e.back/common/Gratia.py	2011-07-21 11:58:24.922880241 -0500
-+++ gratia-probe-1.07.02e.orig/common/Gratia.py	2011-07-21 11:59:11.638943555 -0500
-@@ -6,7 +6,7 @@
- Gratia Job Usage Record Library
- """
- 
--import GratiaCore
-+from gratia.common import GratiaCore
- import re
- import socket
- import string
 diff -ru gratia-probe-1.07.02e.back/dCache-storage/dCache-storage_meter.cron.sh gratia-probe-1.07.02e.orig/dCache-storage/dCache-storage_meter.cron.sh
 --- gratia-probe-1.07.02e.back/dCache-storage/dCache-storage_meter.cron.sh	2011-07-21 11:58:24.932880377 -0500
 +++ gratia-probe-1.07.02e.orig/dCache-storage/dCache-storage_meter.cron.sh	2011-07-21 14:18:10.273067986 -0500

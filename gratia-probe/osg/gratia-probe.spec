@@ -22,7 +22,7 @@ BuildRequires: gcc-c++
 Patch0: change-folders.patch 
 Patch1: change-imports.patch
 Patch2: condor-probe-change-probeconfig.patch
-
+Patch3: gratiapy-change-imports.patch
 
 # Required for dCache transfer probe.
 %global psycopg2_version 2.0.6
@@ -138,6 +138,7 @@ Prefix: /etc
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 %build
 %ifnarch noarch
