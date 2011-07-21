@@ -1,17 +1,17 @@
 Summary: emi.voms.voms-admin-server
 Name: voms-admin-server
 Version: 2.6.1
-Release: 4
+Release: 5
 License: Apache Software License
 Vendor: EMI
 Group: System Environment/Libraries
 Packager: ETICS
 BuildRequires: maven2
-#BuildRequires: oracle-instantclient-basic
-BuildRequires: java-devel
-Requires: java
+BuildRequires: java-devel-sun
+Requires: java-sun
 Requires: emi-trustmanager-tomcat
 Requires: tomcat5
+Requires: fetch-crl
 BuildRoot: %{_builddir}/%{name}-root
 BuildArch: noarch
 AutoReqProv: yes
@@ -183,6 +183,9 @@ rm -rf $RPM_BUILD_ROOT
 /usr/share/tomcat5/common/lib/voms-admin-eclipse-ecj.jar
 
 %changelog
+* Thu Jul 21 2011 Tanya Levshina <tlevshin@fnal.gov - 2.6.1-5
+added requires (java-sun,fetch-crl), buildrequires (java-sun-devel)
+
 * Thu Jul 21 2011 Tanya Levshina <tlevshin@fnal.gov - 2.6.1-4
 mock creates *.pyc, *.pyo files, so they should be in file
 
