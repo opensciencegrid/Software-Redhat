@@ -1,10 +1,10 @@
 Summary: Generic Information Provider
 Name: gip
-Version: 1.2.0alpha0
+Version: 1.3.0alpha2
 Release: 1%{?dist}
 License: TODO
 Group: Applications/Grid
-
+BuildArch: noarch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 Packager: VDT <vdt-support@opensciencegrid.org>
 #BuildRequires: 
@@ -16,16 +16,14 @@ Requires: python
 AutoReq: yes
 AutoProv: yes
 
-Source0: %{name}-%{version}.tar.gz
-#Source0: http://home.fnal.gov/~burt/%{name}-%{version}.tar.gz
-
+Source0: %{name}-%{version}.tgz
 
 %description
 
 The Generic Information Provider.  More text to go here.
 
 %prep
-%setup -n gip_1_2_0_alpha0 -q
+%setup -q
 
 %install
 rm -rf %{buildroot}
