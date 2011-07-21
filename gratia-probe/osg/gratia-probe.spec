@@ -19,6 +19,11 @@ BuildRequires: postgresql-devel
 %endif
 BuildRequires: gcc-c++
 
+Patch0: change-folders.patch 
+Patch1: change-imports.patch
+Patch2: condor-probe-change-probeconfig.patch
+
+
 # Required for dCache transfer probe.
 %global psycopg2_version 2.0.6
 
@@ -63,7 +68,7 @@ BuildRequires: gcc-c++
 %{!?meter_name: %global meter_name `hostname -f`}
 
 # Macro to scrub crontab
-%define scrub_root_crontab() tmpfile=`mktemp /tmp/gratia-cleanup.XXXXXXXXXX`; crontab -l 2>/dev/null | %{__grep} -v -e 'gratia/probe/%1' > "$tmpfile" 2>/dev/null; crontab "$tmpfile" 2>/dev/null 2>&1; %{__rm} -f "$tmpfile"; if %{__grep} -re '%1_meter.cron\.sh' ${RPM_INSTALL_PREFIX2}/crontab ${RPM_INSTALL_PREFIX2}/cron.??* >/dev/null 2>&1; then echo "WARNING: non-standard installation of %1 probe in ${RPM_INSTALL_PREFIX2}/crontab or ${RPM_INSTALL_PREFIX2}/cron.*. Please check and remove to avoid clashes with root's crontab" 1>&2; fi
+%define scrub_root_crontab() tmpfile=`mktemp /tmp/gratia-cleanup.XXXXXXXXXX`; crontab -l 2>/dev/null | %{__grep} -v -e 'gratia/%1' > "$tmpfile" 2>/dev/null; crontab "$tmpfile" 2>/dev/null 2>&1; %{__rm} -f "$tmpfile"; if %{__grep} -re '%1_meter.cron\.sh' ${RPM_INSTALL_PREFIX2}/crontab ${RPM_INSTALL_PREFIX2}/cron.??* >/dev/null 2>&1; then echo "WARNING: non-standard installation of %1 probe in ${RPM_INSTALL_PREFIX2}/crontab or ${RPM_INSTALL_PREFIX2}/cron.*. Please check and remove to avoid clashes with root's crontab" 1>&2; fi
 
 # Macro for post-install message.
 %define final_post_message() [[ "%1" == *ProbeConfig* ]] && echo "IMPORTANT: please check %1 and remember to set EnableProbe = \"1\" to start operation." 1>&2
@@ -72,7 +77,7 @@ BuildRequires: gcc-c++
 %define max_pending_files_check() (( mpf=`sed -ne 's/^[ 	]*MaxPendingFiles[ 	]*=[ 	]*\\"\\{0,1\\}\\([0-9]\\{1,\\}\\)\\"\\{0,1\\}.*$/\\1/p' "${RPM_INSTALL_PREFIX1}/probe/%1/ProbeConfig"` )); if (( $mpf < 100000 )); then printf "NOTE: Given the small size of gratia files (<1K), MaxPendingFiles can\\nbe safely increased to 100K or more to facilitate better tolerance of collector outages.\\n"; fi
 
 # Macros for configuring ProbeConfig.
-%define configure_probeconfig_pre(p:d:m:M:h:) site_name=%{site_name}; %{__grep} -le '^%{ProbeConfig_template_marker}\$' "${RPM_INSTALL_PREFIX1}/probe/%{-d*}/ProbeConfig"{,.rpmnew} %{*} 2>/dev/null | while read config_file; do test -n "$config_file" || continue; if [[ -n "%{-M*}" ]]; then chmod %{-M*} "$config_file"; fi; %{__perl} -wni.orig -e 'my $meter_name = %{meter_name}; chomp $meter_name; my $install_host = `hostname -f`; $install_host = "${meter_name}" unless $install_host =~ m&\\.&; chomp $install_host; my $collector_host = ($install_host =~ m&\\.fnal\\.&i)?"%{fnal_collector}":("%{-h*}" || "%{osg_collector}"); my $collector_port = "%{-p*}" || "%{collector_port}"; s&^(\\s*(?:CollectorHost|SOAPHost|SSLRegistrationHost)\\s*=\\s*).*$&${1}"${collector_host}:${collector_port}"&; s&^(\\s*SSLHost\\s*=\\s*).*$&${1}""&; s&((?:MeterName|ProbeName)\\s*=\\s*)\\"[^\\"]*\\"&${1}"%{-m*}:${meter_name}"&; s&(SiteName\\s*=\\s*)\\"[^\\"]*\\"&${1}"'"${site_name}"'"&;
+%define configure_probeconfig_pre(p:d:m:M:h:) site_name=%{site_name}; %{__grep} -le '^%{ProbeConfig_template_marker}\$' "%{_sysconfidr}gratia/%{-d*}/ProbeConfig"{,.rpmnew} %{*} 2>/dev/null | while read config_file; do test -n "$config_file" || continue; if [[ -n "%{-M*}" ]]; then chmod %{-M*} "$config_file"; fi; %{__perl} -wni.orig -e 'my $meter_name = %{meter_name}; chomp $meter_name; my $install_host = `hostname -f`; $install_host = "${meter_name}" unless $install_host =~ m&\\.&; chomp $install_host; my $collector_host = ($install_host =~ m&\\.fnal\\.&i)?"%{fnal_collector}":("%{-h*}" || "%{osg_collector}"); my $collector_port = "%{-p*}" || "%{collector_port}"; s&^(\\s*(?:CollectorHost|SOAPHost|SSLRegistrationHost)\\s*=\\s*).*$&${1}"${collector_host}:${collector_port}"&; s&^(\\s*SSLHost\\s*=\\s*).*$&${1}""&; s&((?:MeterName|ProbeName)\\s*=\\s*)\\"[^\\"]*\\"&${1}"%{-m*}:${meter_name}"&; s&(SiteName\\s*=\\s*)\\"[^\\"]*\\"&${1}"'"${site_name}"'"&;
 
 %define configure_probeconfig_post(g:) s&MAGIC_VDT_LOCATION/gratia(/?)&$ENV{RPM_INSTALL_PREFIX1}${1}&; %{?vdt_loc_set: s&MAGIC_VDT_LOCATION&%{vdt_loc}&;} s&/opt/vdt/gratia(/?)&$ENV{RPM_INSTALL_PREFIX1}${1}&; my $grid = "%{-g*}" || "%{grid}"; s&(Grid\\s*=\\s*)\\\"[^\\\"]*\\\"&${1}"${grid}"&; m&%{ProbeConfig_template_marker}& or print; ' "$config_file" >/dev/null 2>&1; %{expand: %final_post_message $config_file }; %{__rm} -f "$config_file.orig"; done
 
@@ -129,6 +134,10 @@ Prefix: /etc
 %setup -q -D -T -a 18
 %setup -q -D -T -a 19
 %setup -q -D -T -a 20
+
+%patch0 -p1
+%patch1 -p1
+%patch2 -p1
 
 %build
 %ifnarch noarch
@@ -268,8 +277,7 @@ for dir in `ls $RPM_BUILD_ROOT%{_datadir}/gratia`; do
         install -m 644 $file $project_sitelib
     done
 done
-#find $RPM_BUILD_ROOT%{_datadir} -name "*.py" -exec install {} $RPM_BUILD_ROOT%{python_sitelib} \;
-find $RPM_BUILD_ROOT%{_datadir} -name "*.py" -exec rm {} \;
+install -m 644 gratia/common/Gratia.py $RPM_BUILD_ROOT%{python_sitelib}/Gratia.py
 
 # Remove the test stuff
 rm -rf $RPM_BUILD_ROOT%{_datadir}/gratia/condor/test
@@ -411,6 +419,7 @@ Common files and examples for Gratia OSG accounting system probes.
 #%doc %{default_prefix}/gratia/common/samplemeter_multi.py
 #%{_datadir}/gratia/common
 %{python_sitelib}/gratia/common
+%{python_sitelib}/Gratia.py
 %{default_prefix}/gratia/common/jlib/xalan.jar
 %{default_prefix}/gratia/common/jlib/serializer.jar
 %{default_prefix}/gratia/common/GRAM/JobManagerGratia.pm
@@ -524,6 +533,7 @@ Group: Applications/System
 Requires: python >= 2.3
 %endif
 Requires: %{name}-common >= %{version}-%{release}
+Requires: /usr/bin/condor_history
 %{?config_itb:Obsoletes: %{name}-condor}
 %{!?config_itb:Obsoletes: %{name}-condor%{itb_suffix}}
 
@@ -551,7 +561,7 @@ The Condor probe for the Gratia OSG accounting system.
 
 # Configure GRAM perl modules
 vdt_setup_sh=`%{__perl} -ne 's&^\s*VDTSetupFile\s*=\s*\"([^\"]+)\".*$&$1& and print;' \
-"${RPM_INSTALL_PREFIX1}/probe/condor/ProbeConfig"`
+"%{_sysconfdir}/gratia/condor/ProbeConfig"`
 vdt_location=`dirname "$vdt_setup_sh"`
 
 %{__grep} -e '\$condor_version_number' `%{__grep} -le 'log_to_gratia' \
@@ -598,7 +608,7 @@ done
 (( min = $RANDOM % 15 ))
 %{__cat} >${RPM_INSTALL_PREFIX2}/cron.d/gratia-probe-condor.cron <<EOF
 $min,$(( $min + 15 )),$(( $min + 30 )),$(( $min + 45 )) * * * * root \
-"${RPM_INSTALL_PREFIX1}/probe/condor/condor_meter.cron.sh"
+"${RPM_INSTALL_PREFIX1}/gratia/condor/condor_meter.cron.sh"
 EOF
 
 %preun condor%{?maybe_itb_suffix}

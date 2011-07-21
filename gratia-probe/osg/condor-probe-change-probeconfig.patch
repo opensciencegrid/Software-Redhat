@@ -1,0 +1,24 @@
+--- gratia-probe-1.07.02e.back/condor/condor_meter.cron.sh	2011-07-21 11:58:24.927880495 -0500
++++ gratia-probe-1.07.02e.orig/condor/condor_meter.cron.sh	2011-07-21 14:55:23.851879980 -0500
+@@ -25,10 +25,11 @@
+ 
+ #Meter_BinDir='/home/kschu/src/osg'
+ Meter_BinDir=$(dirname $0)
++probeconfig_loc=/etc/gratia/condor/ProbeConfig
+ 
+ # Setup the proper Grid environment
+ # I need to know a default location to find this setup.sh script ??? ###
+-eval `grep VDTSetupFile ${Meter_BinDir}/ProbeConfig`
++eval `grep VDTSetupFile $probeconfig_loc`
+ for Setupsh in ${VDTSetupFile} '/root/setup.sh'
+ do
+   if [[ -f ${Setupsh} && -r ${Setupsh} ]]; then
+@@ -49,7 +50,7 @@
+ 
+ # Need to be sure there is not one of these running already
+ NCMeter=`ps -ef | grep condor_meter.pl | grep -v grep | wc -l`
+-eval `grep WorkingFolder ./ProbeConfig`
++eval `grep WorkingFolder $probeconfig_loc`
+ if [ ${NCMeter} -ne 0 -a -e ${WorkingFolder}/condor_meter.cron.pid ]; then
+   # We might have a condor_meter.pl running, let's verify that we 
+   # started it.
