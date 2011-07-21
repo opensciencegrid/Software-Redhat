@@ -1,5 +1,5 @@
-Name:           osg-se
-Summary:        OSG Storage Element package for RPM distribution
+Name:           osg-bestman-se
+Summary:        OSG BeStMan Storage Element package for RPM distribution
 Version:        3.0.0
 Release:        1
 License:        GPL
@@ -34,4 +34,4 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 * Wed Jul 20 2011 Alex Sim <asim@lbl.gov>
-- Created an initial osg-se RPM
+- Created an initial osg-bestman-se RPM
