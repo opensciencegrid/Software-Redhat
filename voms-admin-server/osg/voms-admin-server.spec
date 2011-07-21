@@ -1,7 +1,7 @@
 Summary: emi.voms.voms-admin-server
 Name: voms-admin-server
 Version: 2.6.1
-Release: 3
+Release: 4
 License: Apache Software License
 Vendor: EMI
 Group: System Environment/Libraries
@@ -183,6 +183,9 @@ rm -rf $RPM_BUILD_ROOT
 /usr/share/tomcat5/common/lib/voms-admin-eclipse-ecj.jar
 
 %changelog
+* Thu Jul 21 2011 Tanya Levshina <tlevshin@fnal.gov - 2.6.1-4
+mock creates *.pyc, *.pyo files, so they should be in file
+
 * Thu Jul 21 2011 Tanya Levshina <tlevshin@fnal.gov - 2.6.1-3
 Modified patch, get rid of *.pyc, *.pyo files
 
