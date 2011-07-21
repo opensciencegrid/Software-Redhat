@@ -1,10 +1,63 @@
-# Cron job running by default every 6 hours.
-# The lock file can be enabled or disabled via a
-# service edgmkgridmap-cron start
-# chkconfig edgmkgridmap-cron on
+#!/bin/bash
+#
+# edg-mkgridmap  This shell script enables the automatic use of edg-mkgridmap
+#
+# Author:       Neha Sharma <neha@fnal.gov>
+#
+# chkconfig:	- 51 01
+#
+# description:  Enable daily run of edg-mkgridmap
+# processname:  edg-mkgridmap
+#
 
-# Note the lock file not existing is success hence the the slightly odd logic
-# below.
-# run every 6 hours but sleep for random time every 5 hours
+# source function library
+. /etc/rc.d/init.d/functions
+lockfile=/var/lock/subsys/edg-mkgridmap
 
-0 */6 * * * root perl -e 'sleep rand 18000'; [ ! -f /var/lock/subsys/edgmkgridmap-cron ] || /usr/sbin/edg-mkgridmap
+RETVAL=0
+
+start() {
+	action $"Enabling periodic edg-mkgridmap: " touch "$lockfile" 
+	RETVAL=$?
+}
+
+stop() {
+	action $"Disabling periodic edg-mkgridmap: " rm -f "$lockfile" 
+	RETVAL=$?
+}
+
+restart() {
+	stop
+	start
+}
+
+case "$1" in
+  start)
+	start
+	;;
+  stop) 
+	stop
+	;;
+  restart|force-reload)
+	restart
+	;;
+  reload)
+	;;
+  condrestart)
+	[ -f "$lockfile" ] && restart
+	;;
+  status)
+	if [ -f $lockfile ]; then
+		echo $"Periodic edg-mkgridmap is enabled."
+		RETVAL=
+	else
+		echo $"Periodic edg-mkgridmap is disabled."
+		RETVAL=3
+	fi
+	;;
+  *)
+	echo $"Usage: $0 {start|stop|status|restart|reload|force-reload|condrestart}"
+	exit 1
+esac
+
+exit $RETVAL
