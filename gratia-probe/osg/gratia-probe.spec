@@ -251,9 +251,9 @@ done
 %ifarch noarch
   # Set up var area
   for probe_name in %{noarch_packs}; do
-  install -d $RPM_BUILD_ROOT%{_localstatedir}/log/gratia/$probe_name
-  install -d $RPM_BUILD_ROOT%{_localstatedir}/lib/gratia/$probe_name/{tmp,data}
-  chmod 1777  $RPM_BUILD_ROOT%{_localstatedir}/lib/gratia/$probe_name/data
+  install -d $RPM_BUILD_ROOT%{_localstatedir}/lib/gratia/
+  install -d $RPM_BUILD_ROOT%{_localstatedir}/lib/gratia/{tmp,data,logs}
+  chmod 1777  $RPM_BUILD_ROOT%{_localstatedir}/lib/gratia/data
   done
 
   # install psacct startup script.
@@ -267,12 +267,15 @@ done
 # Ok, now the real packaging
 
 # Find python files, and put in site-packages/gratia/<package>/...
-install -d $RPM_BUILD_ROOT%{python_sitelib}
+install -d $RPM_BUILD_ROOT%{python_sitelib}/gratia
+touch $RPM_BUILD_ROOT%{python_sitelib}/gratia/__init__.py
+
 # For the 
 for dir in `ls $RPM_BUILD_ROOT%{_datadir}/gratia`; do
     project_initial=$RPM_BUILD_ROOT%{_datadir}/gratia/$dir
     project_sitelib=$RPM_BUILD_ROOT%{python_sitelib}/gratia/$dir
     install -d $project_sitelib
+    touch $project_sitelib/__init__.py
     for file in `find $project_initial -name "*.py"`; do
         install -m 644 $file $project_sitelib
     done
@@ -410,16 +413,19 @@ Common files and examples for Gratia OSG accounting system probes.
 
 %files common
 %defattr(-,root,root,-)
-#%dir %{default_prefix}/gratia//var/logs
-#%dir %{default_prefix}/var/data
-#%dir %{default_prefix}/var/tmp
+#%dir %{default_prefix}/gratia/logs
+#%dir %{default_prefix}/gratia/data
+#%dir %{default_prefix}/gratia/tmp
 %doc %{default_prefix}/gratia/common/README
 %doc %{default_prefix}/gratia/common/samplemeter.pl
 #%doc %{default_prefix}/gratia/common/samplemeter.py
 #%doc %{default_prefix}/gratia/common/samplemeter_multi.py
 #%{_datadir}/gratia/common
+%{_localstatedir}/lib/gratia/
+%{python_sitelib}/gratia/__init__.py
 %{python_sitelib}/gratia/common
 %{python_sitelib}/Gratia.py
+%{default_prefix}/gratia/common
 %{default_prefix}/gratia/common/jlib/xalan.jar
 %{default_prefix}/gratia/common/jlib/serializer.jar
 %{default_prefix}/gratia/common/GRAM/JobManagerGratia.pm

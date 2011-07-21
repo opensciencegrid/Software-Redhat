@@ -1,5 +1,5 @@
 --- gratia-probe-1.07.02e.back/condor/condor_meter.cron.sh	2011-07-21 11:58:24.927880495 -0500
-+++ gratia-probe-1.07.02e.orig/condor/condor_meter.cron.sh	2011-07-21 14:55:23.851879980 -0500
++++ gratia-probe-1.07.02e.orig/condor/condor_meter.cron.sh	2011-07-21 15:34:42.686067605 -0500
 @@ -25,10 +25,11 @@
  
  #Meter_BinDir='/home/kschu/src/osg'
@@ -22,3 +22,37 @@
  if [ ${NCMeter} -ne 0 -a -e ${WorkingFolder}/condor_meter.cron.pid ]; then
    # We might have a condor_meter.pl running, let's verify that we 
    # started it.
+@@ -70,7 +71,7 @@
+ fi
+   
+ # We need to locate these files and they must be readable
+-for Needed_File in ProbeConfig
++for Needed_File in $probeconfig_loc
+ do
+   if [ ! -f ${Needed_File} ]; then
+     ${Logger} \
+@@ -91,7 +92,7 @@
+ fi
+ export PYTHONPATH
+ 
+-enabled=`${pp_dir}/GetProbeConfigAttribute.py EnableProbe`
++enabled=`${pp_dir}/GetProbeConfigAttribute.py -c $probeconfig_loc EnableProbe`
+ (( status = $? ))
+ if (( $status != 0 )); then
+   echo "ERROR checking probe configuration!" 1>&2
+@@ -103,13 +104,13 @@
+ fi
+ 
+ # This is what we expect in a normal Gratia install
+-DataFolder=`${pp_dir}/GetProbeConfigAttribute.py DataFolder`
++DataFolder=`${pp_dir}/GetProbeConfigAttribute.py -c $probeconfig_loc DataFolder`
+ if [ ! -d ${DataFolder} ]; then
+   ${Logger} "There is no ${DataFolder} directory (defined as DataFolder in ProbeConfig)."
+   exit -4
+ fi
+ 
+-WorkingFolder=`${pp_dir}/GetProbeConfigAttribute.py WorkingFolder`
++WorkingFolder=`${pp_dir}/GetProbeConfigAttribute.py -c $probeconfig_loc WorkingFolder`
+ if [ ! -d ${WorkingFolder} ]; then
+   ${Logger} "There is no ${WorkingFolder} directory (defined as WorkingFolder in ProbeConfig)."
+   exit -4
