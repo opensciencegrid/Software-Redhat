@@ -1,14 +1,13 @@
 
-The vomses file providing package.  This package will be maintained bo the GOC.
+This package is maintained by GOC and provides following files:
+- vomses 
+- edg-mkgridmap.conf
 
 Steps to make tarball (correctly packaged):
 Get GOC's tarball, vo-client-38.tar.gz
 tar xzf vo-client-38.tar.gz
-cp voms/etc/vomses osg/root/etc/vomses
+cp vomses osg/root/etc/vomses
 
 # Generate LSC files
 ./osg/root/usr/sbin/vdt-make-vomsdir --vomsdir osg/root/etc/grid-security/vomsdir --vomses osg/root/etc/vomses
-
-
-
 
