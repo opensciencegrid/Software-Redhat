@@ -1,0 +1,87 @@
+
+Name:      rsv-core
+Version:   3.4.0
+Release:   1%{?dist}
+Summary:   RSV Core Infrastructure
+
+Group:     Applications/Monitoring
+License:   Apache 2.0
+URL:       https://twiki.grid.iu.edu/bin/view/MonitoringInformation/RSV
+
+Source0:   %{name}-%{version}.tar.gz
+
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+BuildArch: noarch
+
+Requires:  mock
+Requires:  rpm-build
+Requires:  createrepo
+#Requires:  condor #TODO
+
+%if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
+%{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
+%{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
+%endif
+
+%description
+%{summary}
+
+
+%prep
+%setup -q
+
+
+%install
+rm -fr $RPM_BUILD_ROOT
+
+# Create the logging directories
+mkdir -p $RPM_BUILD_ROOT%{_var}/log/rsv/consumers
+mkdir -p $RPM_BUILD_ROOT%{_var}/log/rsv/metrics
+ln -s metrics $RPM_BUILD_ROOT%{_var}/log/rsv/probes
+
+# Install the executable
+mkdir -p $RPM_BUILD_ROOT%{_bindir}
+cp bin/rsv-control $RPM_BUILD_ROOT%{_bindir}/
+
+mkdir -p $RPM_BUILD_ROOT%{_libexecdir}/rsv
+cp -r libexec/misc $RPM_BUILD_ROOT%{_libexecdir}/rsv/
+
+# Install the configuration
+mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/rsv
+cp etc/consumers.conf $RPM_BUILD_ROOT%{_sysconfdir}/rsv/
+cp etc/rsv.conf $RPM_BUILD_ROOT%{_sysconfdir}/rsv/
+
+# Install python libraries
+mkdir -p $RPM_BUILD_ROOT%{python_sitelib}
+cp -r lib/python/rsv $RPM_BUILD_ROOT%{python_sitelib}/
+
+# Install the man page
+mkdir -p $RPM_BUILD_ROOT%{_mandir}/man1
+cp share/man/man1/rsv-control.1 $RPM_BUILD_ROOT%{_mandir}/man1/
+
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+
+%files
+%defattr(-,root,root,-)
+
+%{_var}/log/rsv/consumers
+%{_var}/log/rsv/metrics
+%{_var}/log/rsv/probes
+
+%{_bindir}/rsv-control
+%{_libexecdir}/rsv/misc/
+
+%config(noreplace) %{_sysconfdir}/rsv/consumers.conf
+%config(noreplace) %{_sysconfdir}/rsv/rsv.conf
+
+%{python_sitelib}/rsv/*
+
+%{_mandir}/man1/rsv-control.1*
+
+
+%changelog
+* Thu Jul 20 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.4.0-1
+- Creating a first RPM for rsv-core
