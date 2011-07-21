@@ -170,6 +170,14 @@ rm -rf $RPM_BUILD_ROOT
 /usr/sbin/voms-admin-configure.py
 /usr/sbin/voms.py
 /usr/sbin/init-voms-admin.py
+/usr/sbin/init-voms-admin.pyc
+/usr/sbin/init-voms-admin.pyo
+/usr/sbin/voms-admin-configure.pyc
+/usr/sbin/voms-admin-configure.pyo
+/usr/sbin/voms-db-deploy.pyc
+/usr/sbin/voms-db-deploy.pyo
+/usr/sbin/voms.pyc
+/usr/sbin/voms.pyo
 /usr/sbin/voms-admin-ping
 /usr/sbin/voms-admin-configure
 /usr/share/tomcat5/common/lib/voms-admin-eclipse-ecj.jar
