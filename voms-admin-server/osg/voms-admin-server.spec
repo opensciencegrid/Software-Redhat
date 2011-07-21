@@ -1,7 +1,7 @@
 Summary: emi.voms.voms-admin-server
 Name: voms-admin-server
 Version: 2.6.1
-Release: 2
+Release: 3
 License: Apache Software License
 Vendor: EMI
 Group: System Environment/Libraries
@@ -167,20 +167,15 @@ rm -rf $RPM_BUILD_ROOT
 /usr/share/voms-admin/templates/voms.database.properties.template
 /usr/share/voms-admin/templates/voms.service.properties.template
 /usr/sbin/voms-db-deploy.py
-/usr/sbin/voms-db-deploy.pyc
-/usr/sbin/voms-db-deploy.pyo
 /usr/sbin/voms-admin-configure.py
-/usr/sbin/voms-admin-configure.pyc
-/usr/sbin/voms-admin-configure.pyo
 /usr/sbin/voms.py
-/usr/sbin/voms.pyc
-/usr/sbin/voms.pyo
 /usr/sbin/init-voms-admin.py
-/usr/sbin/init-voms-admin.pyc
-/usr/sbin/init-voms-admin.pyo
 /usr/sbin/voms-admin-ping
 /usr/sbin/voms-admin-configure
 /usr/share/tomcat5/common/lib/voms-admin-eclipse-ecj.jar
 
 %changelog
+* Thu Jul 21 2011 Tanya Levshina <tlevshin@fnal.gov - 2.6.1-3
+Modified patch, get rid of *.pyc, *.pyo files
+
  
