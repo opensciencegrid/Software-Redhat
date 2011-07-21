@@ -29,6 +29,8 @@ Source1:	edg-mkgridmap-cron
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT/%{_sysconfdir}
+mkdir -p $RPM_BUILD_ROOT/%{_sysconfdir}/rc.d/init.d/
+mkdir -p $RPM_BUILD_ROOT/%{_sysconfdir}/cron.d/
 install -m 755 %{SOURCE0} $RPM_BUILD_ROOT/%{_sysconfdir}/rc.d/init.d/edg-mkgridmap
 install -m 644 %{SOURCE1} $RPM_BUILD_ROOT/%{_sysconfdir}/cron.d/edg-mkgridmap-cron
 
