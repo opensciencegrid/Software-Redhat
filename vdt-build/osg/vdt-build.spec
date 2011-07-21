@@ -1,6 +1,6 @@
 
 Name:           vdt-build
-Version:        0.0.8
+Version:        0.0.9
 Release:        1%{?dist}
 Summary:        Build tools for the VDT
 
@@ -48,6 +48,10 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_docdir}/%{name}/sample-vdt-build.ini
 
 %changelog
+* Thu Jul 21 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 0.0.9-1
+- Mock config fixes.
+- Changed distro tag to .osg
+
 * Wed Jul 20 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 0.0.8-1
 - Made submit-01.batlab.org be the default submit host.
 - Added push-rpm-to-vdt script
