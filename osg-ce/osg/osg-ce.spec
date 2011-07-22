@@ -31,6 +31,7 @@ Requires: fetch-crl
 Requires: npad
 Requires: owamp
 Requires: bwctl
+Requires: osg-system-profiler
 #Requires: gums-client
 #Requires: prima 
 #Requires: pegasus-worker 

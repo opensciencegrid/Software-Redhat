@@ -26,6 +26,7 @@ Requires: /usr/bin/uberftp
 Requires: /usr/bin/wget
 Requires: osg-ca-certs
 Requires: fetch-crl
+Requires: osg-system-profiler
 
 %description
 %{summary}

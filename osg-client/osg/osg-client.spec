@@ -26,6 +26,7 @@ Requires: ppdg-cert-scripts
 Requires: vo-client
 Requires: globus-gram-client-tools
 Requires: osg-voms-compat
+Requires: osg-system-profiler
 
 %description
 %{summary}
