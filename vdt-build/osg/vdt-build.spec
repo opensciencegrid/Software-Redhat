@@ -1,6 +1,6 @@
 
 Name:           vdt-build
-Version:        0.0.11
+Version:        0.0.13
 Release:        1%{?dist}
 Summary:        Build tools for the VDT
 
@@ -48,6 +48,13 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_docdir}/%{name}/sample-vdt-build.ini
 
 %changelog
+* Fri Jul 22 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 0.0.13-1
+- Added configurable dist tag
+
+* Fri Jul 22 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 0.0.12-1
+- KeyError on target_arch fix for mock task
+- SystemExit exception fixed
+
 * Fri Jul 22 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 0.0.11-1
 - os.path.walk bugfix for push task
 
