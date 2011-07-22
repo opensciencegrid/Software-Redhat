@@ -1,0 +1,14 @@
+--- edg-mkgridmap-4.0.0/sbin/edg-mkgridmap	2011-04-02 20:31:56.000000000 -0500
++++ edg-mkgridmap-4.0.0a/sbin/edg-mkgridmap	2011-07-22 11:37:06.000000000 -0500
+@@ -18,5 +18,9 @@
+ 
+ prog=/usr/libexec/edg-mkgridmap/edg-mkgridmap.pl
+ 
+-exec $prog $EDG_MKGRIDMAP_OPTIONS "$@"
+-
++#exec $prog $EDG_MKGRIDMAP_OPTIONS "$@"
++log=/var/log/osg/edg-mkgridmap/edg-mkgridmap.log
++if [ ! -d `dirname $log` ]; then
++    mkdir -p `dirname $log`
++fi
++exec $prog --safe --output ${GRIDMAP} $EDG_MKGRIDMAP_OPTIONS "$@" >> ${log} 2>&1
