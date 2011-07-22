@@ -1,18 +1,18 @@
-Summary: Profiles your system for install debugging
-Name: vdt-system-profiler
-Version: 0.0.2
-Release: 1%{?dist}
-License: Apache License, 2.0
-Group: Applications/Grid
-Packager: VDT <vdt-support@opensciencegrid.org>
-Source0: %{name}-%{version}.tar.gz
-AutoReq: yes
-AutoProv: yes
+Summary:   Profiles your system for debugging
+Name:      osg-system-profiler
+Version:   0.0.3
+Release:   1%{?dist}
+License:   Apache License, 2.0
+Group:     Applications/Grid
+Packager:  VDT <vdt-support@opensciencegrid.org>
+Source0:   %{name}-%{version}.tar.gz
+AutoReq:   yes
+AutoProv:  yes
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 BuildArch: noarch
 
 %description
-The VDT System Profiler runs a series of commands on your system to provide
+The OSG System Profiler runs a series of commands on your system to provide
 a clear picture of your environment for debugging.  If you report problems
 with your installation, there is a good chance that the person who helps
 you will ask for the output of the profiler.
@@ -32,6 +32,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/%{name}
 
 %changelog
+* Fri Jul 22 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 0.0.3-1
+- Renamed vdt-system-profiler to osg-system-profiler
+
 * Wed Jul 20 2011 Tim Cartwright <cat@cs.wisc.edu> - 0.0.2-1
 - New release of vdt-system-profiler, now as an upstream source tarball
 - Change to use Makefile for installation
