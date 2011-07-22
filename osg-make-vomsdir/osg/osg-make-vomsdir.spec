@@ -28,7 +28,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root)
-%{_bindir}/%{name}
+%{_sbindir}/%{name}
 
 %changelog
 * Thu Jun 09 2011 Igor Sfiligoi - 1.0.0-1
