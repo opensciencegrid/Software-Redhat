@@ -1,7 +1,7 @@
 
 Name:      rsv-core
-Version:   3.4.1
-Release:   1%{?dist}
+Version:   3.4.2
+Release:   2%{?dist}
 Summary:   RSV Core Infrastructure
 
 Group:     Applications/Monitoring
@@ -18,6 +18,13 @@ Requires:  rpm-build
 Requires:  createrepo
 #Requires:  condor #TODO
 
+Requires: /usr/bin/grid-proxy-info
+Requires: /usr/bin/globus-job-run
+
+#package('VDT-Logrotate')
+#package('Condor-Cron')
+
+
 %if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
 %{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
 %{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
@@ -25,6 +32,12 @@ Requires:  createrepo
 
 %description
 %{summary}
+
+
+%pre
+# Create the rsv user/group
+getent group rsv >/dev/null || groupadd -r rsv
+getent passwd rsv >/dev/null || useradd -r -g rsv -d /var/rsv -s /bin/sh -c "RSV monitoring" rsv
 
 
 %prep

@@ -1,7 +1,7 @@
 
 Name:      rsv-metrics
-Version:   3.4.1
-Release:   1%{?dist}
+Version:   3.4.2
+Release:   2%{?dist}
 Summary:   RSV metrics
 
 Group:     Applications/Monitoring
@@ -21,8 +21,29 @@ Requires:  createrepo
 # these probes so this dependency can probably go away at some point.
 Requires:  perl(Date::Manip)
 
+# TODO - add the following dependencies once we know their RPM names
+Requires: /usr/bin/grid-proxy-info
+Requires: /usr/bin/globus-job-run
+#package('Globus-Base-RM-Client')
+#package('SRM-Client-Fermi')
+#package('Dccp')
+#package('Gratia-Metric-Probe')
+#package('OpenLDAP')
+
+# Requested by Doug Strain for his new storage metrics 2010-10
+#package('SRM-Client-LBNL')
+#package('SRM-Tester-LBNL')
+#package('OSG-Discovery')
+#package('UberFTP')
+
 %description
 %{summary}
+
+
+%pre
+# Create the rsv user/group
+getent group rsv >/dev/null || groupadd -r rsv
+getent passwd rsv >/dev/null || useradd -r -g rsv -d /var/rsv -s /bin/sh -c "RSV monitoring" rsv
 
 
 %prep
@@ -42,6 +63,9 @@ mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/rsv/meta
 cp -r etc/meta/metrics $RPM_BUILD_ROOT%{_sysconfdir}/rsv/meta/
 cp -r etc/metrics $RPM_BUILD_ROOT%{_sysconfdir}/rsv/
 
+# Area for records awaiting processing
+mkdir -p $RPM_BUILD_ROOT%{_var}/spool/rsv
+
 
 %clean
 #rmdir %{_sysconfdir}/rsv/meta/metrics
@@ -59,6 +83,8 @@ rm -rf $RPM_BUILD_ROOT
 %config %{_sysconfdir}/rsv/meta/metrics/*
 %config(noreplace) %{_sysconfdir}/rsv/metrics/*
 
+# Metric records will be placed in spool
+%attr(-,rsv,rsv) %{_var}/spool/rsv
 
 %changelog
 * Wed Jul 20 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.4.0-1

@@ -1,7 +1,7 @@
 
 Name:      rsv-consumers
-Version:   3.4.1
-Release:   1%{?dist}
+Version:   3.4.2
+Release:   2%{?dist}
 Summary:   RSV Consumers Infrastructure
 
 Group:     Applications/Monitoring
@@ -27,6 +27,12 @@ Requires:  createrepo
 %{summary}
 
 
+%pre
+# Create the rsv user/group
+getent group rsv >/dev/null || groupadd -r rsv
+getent passwd rsv >/dev/null || useradd -r -g rsv -d /var/rsv -s /bin/sh -c "RSV monitoring" rsv
+
+
 %prep
 %setup -q
 
@@ -35,7 +41,7 @@ Requires:  createrepo
 rm -fr $RPM_BUILD_ROOT
 
 # Create the web output directory
-mkdir -p $RPM_BUILD_ROOT%{_datadir}/%{name}
+mkdir -p $RPM_BUILD_ROOT%{_datadir}/rsv
 
 # Install executables
 mkdir -p $RPM_BUILD_ROOT%{_libexecdir}/rsv
@@ -62,6 +68,7 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/rsv/consumers/*
 %config(noreplace) %{_sysconfdir}/rsv/rsv-nagios.conf
 
+%attr(-,rsv,rsv) %{_datadir}/rsv
 
 %changelog
 * Thu Jul 20 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.4.0-1
