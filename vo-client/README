@@ -1,13 +1,16 @@
 
-This package is maintained by GOC and provides following files:
+This is a pass-through package of the the tarball
+that is maintained by GOC and provides following files:
 - vomses 
 - edg-mkgridmap.conf
+- vomsdir (directory tree)
 
-Steps to make tarball (correctly packaged):
-Get GOC's tarball, vo-client-38.tar.gz
-tar xzf vo-client-38.tar.gz
-cp vomses osg/root/etc/vomses
 
-# Generate LSC files
-./osg/root/usr/sbin/vdt-make-vomsdir --vomsdir osg/root/etc/grid-security/vomsdir --vomses osg/root/etc/vomses
+This means the GOC now needs to add the creation of the vomsdir tree.
+This can be done with
+osg-make-vomsdir --vomsdir vomsdir --vomses vomses
+
+For this revision, I have created
+vo-client-38-1.tar.gz
+in the upstream area that extends the existing tarball with the vomsdir directory.
 
