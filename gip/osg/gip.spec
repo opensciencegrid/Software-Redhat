@@ -6,7 +6,7 @@ License: TODO
 Group: Applications/Grid
 BuildArch: noarch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
-Packager: VDT <vdt-support@opensciencegrid.org>
+#Packager: VDT <vdt-support@opensciencegrid.org>
 #BuildRequires: 
 Requires: python
 #Requires:           initscripts
@@ -47,6 +47,7 @@ install -d %{buildroot}%{_datadir}/%{name}
 install -d %{buildroot}%{_localstatedir}/%{name}
 install -d %{buildroot}%{_sysconfdir}/%{name}
 
+install -m 644 gip/etc/logging.conf %{buildroot}%{_sysconfdir}/%{name}
 cp -a gip/etc/logging.conf %{buildroot}%{_sysconfdir}/%{name}
 cp -a gip/plugins %{buildroot}%{_libexecdir}/%{name}
 cp -a gip/providers %{buildroot}%{_libexecdir}/%{name}
@@ -63,13 +64,13 @@ cp gip/bin/* %{buildroot}%{_bindir}
 %defattr(-,daemon,daemon,-)
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_libexecdir}/*
-%{python_sitelib}
-%{_datadir}
-%{_sysconfdir}
-%attr(-, daemon, daemon) %{_localstatedir}/*
+%{python_sitelib}/*
+%{_datadir}/%{name}
+%{_sysconfdir}/%{name}
+%attr(-, daemon, daemon) %{_localstatedir}/%{name}
 
 %clean
-[[ -n "%buildroot" && "%buildroot" != / ]] && rm -rf %buildroot
+rm -rf %buildroot
 
 
 %define _unpackaged_files_terminate_build 1
@@ -78,7 +79,7 @@ cp gip/bin/* %{buildroot}%{_bindir}
 
 
 %changelog
-* Wed Jul 20 2011 burt@fnal.gov 1.2.0alpha0
+* Wed Jul 20 2011 Burt Holzman <burt@fnal.gov> 1.3.0alpha2-1
 - Initial build
 
 
