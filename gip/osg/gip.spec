@@ -1,7 +1,7 @@
 Summary: Generic Information Provider
 Name: gip
 Version: 1.3.0alpha2
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: TODO
 Group: Applications/Grid
 BuildArch: noarch
@@ -20,7 +20,10 @@ Source0: %{name}-%{version}.tgz
 
 %description
 
-The Generic Information Provider.  More text to go here.
+The Open Science Grid (OSG) Generic Information Provider (GIP) is a core part of the OSG Information Infrastructure.
+The GIP is a grid information service that aggregates static and dynamic resource information for use with 
+LDAP-based information systems.  It produces information based on the GLUE schema.  This information
+then can be sent via external services to information collection servers such as
 
 %prep
 %setup -q
@@ -48,16 +51,12 @@ install -d %{buildroot}%{_localstatedir}/%{name}
 install -d %{buildroot}%{_sysconfdir}/%{name}
 
 install -m 644 gip/etc/logging.conf %{buildroot}%{_sysconfdir}/%{name}
-cp -a gip/etc/logging.conf %{buildroot}%{_sysconfdir}/%{name}
 cp -a gip/plugins %{buildroot}%{_libexecdir}/%{name}
 cp -a gip/providers %{buildroot}%{_libexecdir}/%{name}
 cp -a gip/templates %{buildroot}%{_datadir}/%{name}
 cp gip/libexec/* %{buildroot}%{_libexecdir}/%{name}
-
-
 cp -a gip/var/ldif %{buildroot}%{_localstatedir}/%{name}
 cp -a gip/var/tmp %{buildroot}%{_localstatedir}/%{name}
-
 cp gip/bin/* %{buildroot}%{_bindir}
 
 %files
@@ -72,13 +71,12 @@ cp gip/bin/* %{buildroot}%{_bindir}
 %clean
 rm -rf %buildroot
 
-
 %define _unpackaged_files_terminate_build 1
 
-
-
-
 %changelog
+* Fri Jul 22 2011 Burt Holzman <burt@fnal.gov> - 1.3.0alpha2-2
+- Added description and cleaned up specfile
+
 * Wed Jul 20 2011 Burt Holzman <burt@fnal.gov> 1.3.0alpha2-1
 - Initial build
 
