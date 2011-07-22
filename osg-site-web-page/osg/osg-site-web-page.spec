@@ -6,7 +6,7 @@ Group:          System Environment
 License:        ASL 2.0
 URL:            https://vdt.cs.wisc.edu/svn/software/osg-site-web-page/trunk/README
 
-Source0:         %{name}-%{version}.tar.gz
+Source0:        %{name}-%{version}.tar.gz
 
 #BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
@@ -34,6 +34,7 @@ It relies on information discovered at the site, mainly in the config.ini file.
 #   -D          Do not delete dir before unpacking
 #   -n DIR      Name of extract dir (instead of NAME-VERSION)
 #   -T          Do not autounpack Source0
+#   -q          quiet
 #%setup -q -n %{name}
 %setup -c 
 
@@ -48,10 +49,10 @@ mkdir -p $RPM_BUILD_ROOT%{_sbindir}/
 # from osg-config: mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/osg
 mkdir -p $RPM_BUILD_ROOT%{_libdir}/%{name}/www
 
-for i in `ls bin`; do
+for i in bin/*; do
 	install -m 0755 $i $RPM_BUILD_ROOT%{_sbindir}
 done
-for i in `ls web`; do
+for i in web/*; do
 	install -m 0644 $i $RPM_BUILD_ROOT%{_libdir}/%{name}/www
 done
 
@@ -63,7 +64,7 @@ done
 %files
 %{_sbindir}/*
 %{_libdir}/%{name}/www/*
-%{_sysconfdir}/siteindexconfig.ini
+#%{_sysconfdir}/siteindexconfig.ini
 
 
 %changelog
