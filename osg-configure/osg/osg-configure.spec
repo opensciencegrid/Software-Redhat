@@ -1,6 +1,6 @@
 %global name osg-configure
 %global version 0.0.2
-%global release 1%{?dist}
+%global release 2%{?dist}
 
 Summary: Package for configure-osg and associated scripts
 Name: %{name}
@@ -15,6 +15,13 @@ BuildArch: noarch
 Vendor: Suchandra Thapa <sthapa@ci.uchicago.edu>
 Url: http://www.opensciencegrid.org
 Requires: python
+
+%if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
+%{!?python_sitelib: %global python_sitelib %(%{__python} -c "from
+%distutils.sysconfig import get_python_lib; print(get_python_lib())")}
+%{!?python_sitearch: %global python_sitearch %(%{__python} -c "from
+%distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
+%endif
 
 %description
 %{summary}
@@ -35,9 +42,15 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -f INSTALLED_FILES
 %defattr(-,root,root)
+# Need the following for builds on batlab
+%{python_sitelib}/configure_osg/modules/*.pyo
+%{python_sitelib}/configure_osg/configure_modules/*.pyo
 %ghost /var/log/osg/configure-osg.log
 
 %changelog
+* Fri Jul  22 2011 Suchandra Thapa <sthapa@ci.uchicago.edu> 0.0.2-2
+- Include .pyo files in files
+
 * Fri Jul  22 2011 Suchandra Thapa <sthapa@ci.uchicago.edu> 0.0.2-1
 - Created initial configure-osg rpm using real source 
 
