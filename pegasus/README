@@ -1,4 +1,17 @@
 Pegasus Workload Management System
-Downloaded from: http://pegasus.isi.edu/wms/download.php
+Source Downloaded from: http://pegasus.isi.edu/wms/download.php
 
 RPM Development in progress
+
+------------------------------------------
+TASKS still to be completed:
+
+- PEGASUS_HOME in /usr/share/pegasus-3.0.3
+- Move PEGASUS_HOME/lib/*.jar to javadir
+- Move PEGASUS_HOME/lib/perl to correct perl libraries dir 
+- Move PEGASUS_HOME/lib/python to correct
+- Move PEGASUS_HOME configuration to /etc
+- Fix examples (they try to guess PEGASUS_HOME)
+- Look under other misc directions and fix misc paths.
+
+
