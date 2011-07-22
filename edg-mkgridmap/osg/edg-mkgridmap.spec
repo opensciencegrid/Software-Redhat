@@ -1,6 +1,6 @@
 Name:           edg-mkgridmap
 Version:        4.0.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Contains the init.d script and crontab for edg-mkgridmap
 
 Group:          system environment/base
@@ -12,6 +12,8 @@ BuildArch:      noarch
 Source0:	%{name}-%{version}.tar.gz
 Source1:        edg-mkgridmap
 Source2:	edg-mkgridmap-cron
+# build/scripts patches
+Patch0:		edg-mkgridmap-4.0.0-wrapper.patch
 
 # Steps to make tarball (correctly packaged):
 # Get GOC's tarball, edg-mkgridmap-10.tar.gz
@@ -25,7 +27,7 @@ Source2:	edg-mkgridmap-cron
 %prep
 
 %setup -q
-
+%patch0 -p1
 %build
 
 
@@ -60,6 +62,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man8/edg-mkgridmap.8*
 
 %changelog
+* Fri Jul 22 2011 Neha Sharma <neha@fnal.gov> - 400-2
+- Included a patch for wrapper script to redirect stdout and stderr properly
+
 * Thu Jul 21 2011 Neha Sharma <neha@fnal.gov> - 400-1
 - Initial build of edg-mkgridmap cron and init.d package
 
