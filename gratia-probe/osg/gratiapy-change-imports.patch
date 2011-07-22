@@ -1,11 +1,11 @@
 --- gratia-probe-1.07.02e.back/common/Gratia.py	2011-07-21 11:58:24.922880241 -0500
-+++ gratia-probe-1.07.02e.orig/common/Gratia.py	2011-07-21 16:33:45.969880065 -0500
++++ gratia-probe-1.07.02e.orig/common/Gratia.py	2011-07-21 18:11:18.932880634 -0500
 @@ -6,7 +6,7 @@
  Gratia Job Usage Record Library
  """
  
 -import GratiaCore
-+import gratia.common.GratiaCore
++import gratia.common.GratiaCore as GratiaCore
  import re
  import socket
  import string
