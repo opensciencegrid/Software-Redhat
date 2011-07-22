@@ -1,0 +1,6 @@
+
+This package provides the osg-make-vomsdir tool.
+
+This tool extracts the LSC files by contacting the VOMS servers
+starting with a user provided vomses file.
+
