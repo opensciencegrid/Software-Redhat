@@ -1,6 +1,6 @@
 Name:           osg-site-web-page
 Version:        0.14
-Release:        1
+Release:        2
 Summary:        OSG Site Web Page Generation Script
 Group:          System Environment
 License:        ASL 2.0
@@ -13,7 +13,7 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
 
 BuildArch:      noarch
 # BuildRequires:  /bin/hostname
-Requires:       apache perl python 
+Requires:       httpd python 
 Requires:       osg-configure
 
 # definitions
@@ -25,6 +25,7 @@ Requires:       osg-configure
 %description
 This package creates a site home page for OSG sites. 
 It relies on information discovered at the site, mainly in the config.ini file.
+Page can be viewed at https://your_hostname/site (or https://localhost/site)
 
 %prep
 # %%setup quick reference:
@@ -45,16 +46,26 @@ It relies on information discovered at the site, mainly in the config.ini file.
 %clean_buildroot
 # make install DESTDIR=$RPM_BUILD_ROOT
 
+mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/osg
+mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/httpd/conf.d
+mkdir -p $RPM_BUILD_ROOT%{_datadir}/osg/www.d/
 mkdir -p $RPM_BUILD_ROOT%{_sbindir}/
-# from osg-config: mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/osg
-mkdir -p $RPM_BUILD_ROOT%{_libdir}/%{name}/www
+mkdir -p $RPM_BUILD_ROOT%{_datadir}/%{name}/www
 
+install -m 0644 etc/%{name}.conf $RPM_BUILD_ROOT%{_sysconfdir}/httpd/conf.d
+install -m 0644 etc/%{name}.site $RPM_BUILD_ROOT%{_datadir}/osg/www.d/
 for i in bin/*; do
 	install -m 0755 $i $RPM_BUILD_ROOT%{_sbindir}
 done
 for i in web/*; do
-	install -m 0644 $i $RPM_BUILD_ROOT%{_libdir}/%{name}/www
+	install -m 0644 $i $RPM_BUILD_ROOT%{_datadir}/%{name}/www
 done
+
+# Touch files so that are removed with uninstall
+touch $RPM_BUILD_ROOT%{_sysconfdir}/osg/siteindexconfig.ini
+
+# restart apache if running to get the new configuration
+/sbin/service httpd condrestart 2>&1 > /dev/null
 
 %clean
 %if %is_false NOCLEAN
@@ -63,10 +74,13 @@ done
 
 %files
 %{_sbindir}/*
-%{_libdir}/%{name}/www/*
-#%{_sysconfdir}/siteindexconfig.ini
-
+%{_datadir}/%{name}/www/*
+%{_datadir}/osg/www.d/%{name}.site
+%{_sysconfdir}/osg/siteindexconfig.ini
+%{_sysconfdir}/httpd/conf.d/%{name}.conf
 
 %changelog
 * Thu Jul 21 2011 Marco Mambelli <marco@hep.uchicago.edu> 0.14
 Initial creation of spec file
+* Fri Jul 22 2011 Marco Mambelli <marco@hep.uchicago.edu> 0.14
+modification to eliminate setup-osg-portal
