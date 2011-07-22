@@ -3,4 +3,7 @@ Xrootd VDT package
 
 SRC RPM created by Xrootd Packaging tools
 
+Note that we make a single change from the defaults from upstream:
+we set things to use the "xrootd" user.
+
 Doug Strain <dstrain@fnal.gov> 
