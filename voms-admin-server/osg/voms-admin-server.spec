@@ -1,7 +1,7 @@
 Summary: emi.voms.voms-admin-server
 Name: voms-admin-server
 Version: 2.6.1
-Release: 6
+Release: 7
 License: Apache Software License
 Vendor: EMI
 Group: System Environment/Libraries
@@ -13,6 +13,7 @@ Requires: emi-trustmanager-tomcat
 Requires: tomcat5
 Requires: fetch-crl
 Requires: xml-commons-apis 
+Requires: grid-certificates 
 BuildRoot: %{_builddir}/%{name}-root
 BuildArch: noarch
 AutoReqProv: yes
@@ -184,6 +185,9 @@ rm -rf $RPM_BUILD_ROOT
 /usr/share/tomcat5/common/lib/voms-admin-eclipse-ecj.jar
 
 %changelog
+* Fri Jul 22 2011 Tanya Levshina <tlevshin@fnal.gov> - 2.6.1-7
+added requires grid-certificates
+
 * Fri Jul 22 2011 Tanya Levshina <tlevshin@fnal.gov> - 2.6.1-6
 added requires xmi-commons-api
 
