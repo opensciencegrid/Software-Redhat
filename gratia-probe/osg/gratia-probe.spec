@@ -74,7 +74,7 @@ Patch3: gratiapy-change-imports.patch
 %define final_post_message() [[ "%1" == *ProbeConfig* ]] && echo "IMPORTANT: please check %1 and remember to set EnableProbe = \"1\" to start operation." 1>&2
 
 # Macro for check of MaxPendingFiles variable
-%define max_pending_files_check() (( mpf=`sed -ne 's/^[ 	]*MaxPendingFiles[ 	]*=[ 	]*\\"\\{0,1\\}\\([0-9]\\{1,\\}\\)\\"\\{0,1\\}.*$/\\1/p' "${RPM_INSTALL_PREFIX1}/probe/%1/ProbeConfig"` )); if (( $mpf < 100000 )); then printf "NOTE: Given the small size of gratia files (<1K), MaxPendingFiles can\\nbe safely increased to 100K or more to facilitate better tolerance of collector outages.\\n"; fi
+%define max_pending_files_check() (( mpf=`sed -ne 's/^[ 	]*MaxPendingFiles[ 	]*=[ 	]*\\"\\{0,1\\}\\([0-9]\\{1,\\}\\)\\"\\{0,1\\}.*$/\\1/p' "${RPM_INSTALL_PREFIX1}/gratia/%1/ProbeConfig"` )); if (( $mpf < 100000 )); then printf "NOTE: Given the small size of gratia files (<1K), MaxPendingFiles can\\nbe safely increased to 100K or more to facilitate better tolerance of collector outages.\\n"; fi
 
 # Macros for configuring ProbeConfig.
 %define configure_probeconfig_pre(p:d:m:M:h:) site_name=%{site_name}; %{__grep} -le '^%{ProbeConfig_template_marker}\$' "%{_sysconfidr}gratia/%{-d*}/ProbeConfig"{,.rpmnew} %{*} 2>/dev/null | while read config_file; do test -n "$config_file" || continue; if [[ -n "%{-M*}" ]]; then chmod %{-M*} "$config_file"; fi; %{__perl} -wni.orig -e 'my $meter_name = %{meter_name}; chomp $meter_name; my $install_host = `hostname -f`; $install_host = "${meter_name}" unless $install_host =~ m&\\.&; chomp $install_host; my $collector_host = ($install_host =~ m&\\.fnal\\.&i)?"%{fnal_collector}":("%{-h*}" || "%{osg_collector}"); my $collector_port = "%{-p*}" || "%{collector_port}"; s&^(\\s*(?:CollectorHost|SOAPHost|SSLRegistrationHost)\\s*=\\s*).*$&${1}"${collector_host}:${collector_port}"&; s&^(\\s*SSLHost\\s*=\\s*).*$&${1}""&; s&((?:MeterName|ProbeName)\\s*=\\s*)\\"[^\\"]*\\"&${1}"%{-m*}:${meter_name}"&; s&(SiteName\\s*=\\s*)\\"[^\\"]*\\"&${1}"'"${site_name}"'"&;
@@ -271,17 +271,25 @@ done
 install -d $RPM_BUILD_ROOT%{python_sitelib}/gratia
 touch $RPM_BUILD_ROOT%{python_sitelib}/gratia/__init__.py
 
-# For the 
+# For each project in /usr/share/gratia/...
 for dir in `ls $RPM_BUILD_ROOT%{_datadir}/gratia`; do
     project_initial=$RPM_BUILD_ROOT%{_datadir}/gratia/$dir
     project_sitelib=$RPM_BUILD_ROOT%{python_sitelib}/gratia/$dir
+
+    # Install symbolic links
+    ln -s %{_sysconfdir}/gratia/$dir/ProbeConfig $project_initial/ProbeConfig
+
+    # Put the python files in site-packages/gratia
     install -d $project_sitelib
     touch $project_sitelib/__init__.py
     for file in `find $project_initial -name "*.py"`; do
         install -m 644 $file $project_sitelib
     done
 done
+
+%ifarch noarch
 install -m 644 gratia/common/Gratia.py $RPM_BUILD_ROOT%{python_sitelib}/Gratia.py
+%endif
 
 # Remove the test stuff
 rm -rf $RPM_BUILD_ROOT%{_datadir}/gratia/condor/test
@@ -421,7 +429,7 @@ Common files and examples for Gratia OSG accounting system probes.
 %doc %{default_prefix}/gratia/common/samplemeter.pl
 #%doc %{default_prefix}/gratia/common/samplemeter.py
 #%doc %{default_prefix}/gratia/common/samplemeter_multi.py
-#%{_datadir}/gratia/common
+%{_datadir}/gratia/common
 %{_localstatedir}/lib/gratia/
 %{python_sitelib}/gratia/__init__.py
 %{python_sitelib}/gratia/common
@@ -455,6 +463,7 @@ The psacct probe for the Gratia OSG accounting system.
 %defattr(-,root,root,-)
 %doc psacct/README
 %{default_prefix}/gratia/psacct/README
+%{default_prefix}/gratia/psacct
 %config %{default_prefix}/gratia/psacct/facct-catchup
 %config %{default_prefix}/gratia/psacct/facct-turnoff.sh
 %config %{default_prefix}/gratia/psacct/psacct_probe.cron.sh
@@ -550,7 +559,7 @@ The Condor probe for the Gratia OSG accounting system.
 %files condor%{?maybe_itb_suffix}
 %defattr(-,root,root,-)
 %doc %{default_prefix}/gratia/condor/README
-#%{default_prefix}/gratia/condor
+%{default_prefix}/gratia/condor
 %{default_prefix}/gratia/condor/gram_mods
 %{default_prefix}/gratia/condor/condor_meter.cron.sh
 %{default_prefix}/gratia/condor/condor_meter.pl
@@ -641,6 +650,7 @@ The SGE probe for the Gratia OSG accounting system.
 %defattr(-,root,root,-)
 %doc %{default_prefix}/gratia/sge/README
 %{default_prefix}/gratia/sge/sge_meter.cron.sh
+%{default_prefix}/gratia/sge
 %{python_sitelib}/gratia/sge
 %{default_prefix}/gratia/sge/test/2007-01-26.log.snippet
 %config(noreplace) %{_sysconfdir}/gratia/sge/ProbeConfig
@@ -694,6 +704,7 @@ The gLExec probe for the Gratia OSG accounting system.
 %doc %{default_prefix}/gratia/glexec/README
 %{default_prefix}/gratia/glexec/glexec_meter.cron.sh
 %{python_sitelib}/gratia/glexec
+%{default_prefix}/gratia/glexec
 #%{default_prefix}/gratia/glexec/gratia_glexec_parser.py
 %config(noreplace) %{_sysconfdir}/gratia/glexec/ProbeConfig
 
@@ -750,6 +761,7 @@ The metric probe for the Gratia OSG accounting system.
 %defattr(-,root,root,-)
 %doc %{default_prefix}/gratia/metric/README
 %{python_sitelib}/gratia/metric
+%{default_prefix}/gratia/metric
 %config(noreplace) %{_sysconfdir}/gratia/metric/ProbeConfig
 
 %post metric%{?maybe_itb_suffix}
@@ -795,6 +807,7 @@ Contributed by Greg Sharp and the dCache project.
 %doc %{default_prefix}/gratia/dCache-transfer/README-experts-only.txt
 %doc %{default_prefix}/gratia/dCache-transfer/README
 %{python_sitelib}/gratia/dCache-transfer
+%{default_prefix}/gratia/dCache-transfer
 %config(noreplace) %{_sysconfdir}/gratia/dCache-transfer/ProbeConfig
 
 %post dCache-transfer%{?maybe_itb_suffix}
@@ -891,6 +904,7 @@ Contributed by Andrei Baranovksi of the OSG Storage team.
 %defattr(-,root,root,-)
 %doc %{default_prefix}/gratia/dCache-storage/README.txt
 %{python_sitelib}/gratia/dCache-storage
+%{default_prefix}/gratia/dCache-storage
 %{default_prefix}/gratia/dCache-storage/create_se_record.xsl
 %{default_prefix}/gratia/dCache-storage/dCache-storage_meter.cron.sh
 %config(noreplace) %{_sysconfdir}/gratia/dCache-storage/ProbeConfig
@@ -917,8 +931,8 @@ EOF
 %configure_probeconfig_post
 
 perl -wapi.bak -e 's&^python &%{pexec} &g' \
-"${RPM_INSTALL_PREFIX1}"/probe/dCache-storage/dCache-storage_meter.cron.sh && \
-%{__rm} -f "${RPM_INSTALL_PREFIX1}/probe/dCache-storage/dCache-storage_meter.cron.sh.bak"
+"${RPM_INSTALL_PREFIX1}"/gratia/dCache-storage/dCache-storage_meter.cron.sh && \
+%{__rm} -f "${RPM_INSTALL_PREFIX1}/gratia/dCache-storage/dCache-storage_meter.cron.sh.bak"
 
 %max_pending_files_check dCache-storage
 
@@ -928,7 +942,7 @@ perl -wapi.bak -e 's&^python &%{pexec} &g' \
 (( min = $RANDOM % 60 ))
 %{__cat} >${RPM_INSTALL_PREFIX2}/cron.d/gratia-probe-dcache-storage.cron <<EOF
 $min * * * * root \
-"${RPM_INSTALL_PREFIX1}/probe/dCache-storage/dCache-storage_meter.cron.sh"
+"${RPM_INSTALL_PREFIX1}/gratia/dCache-storage/dCache-storage_meter.cron.sh"
 EOF
 
 # End of dCache-storage post
@@ -963,6 +977,7 @@ Contributed by Andrei Baranovski of the OSG storage team.
 %{python_sitelib}/gratia/gridftp-transfer
 %{default_prefix}/gratia/gridftp-transfer/gridftp-transfer_meter.cron.sh
 %{default_prefix}/gratia/gridftp-transfer/netlogger/
+%{default_prefix}/gratia/gridftp-transfer
 %config(noreplace) %{_sysconfdir}/gratia/gridftp-transfer/ProbeConfig
 
 %post gridftp-transfer%{?maybe_itb_suffix}
@@ -1026,6 +1041,7 @@ Contributed by University of Nebraska Lincoln.
 %defattr(-,root,root,-)
 %{python_sitelib}/gratia/services
 %{default_prefix}/gratia/services/storageReport          
+%{default_prefix}/gratia/services
 %config(noreplace) %{_sysconfdir}/gratia/services/ProbeConfig
 
 %post services
@@ -1092,7 +1108,7 @@ Contributed by University of Nebraska Lincoln.
 (( min = $RANDOM % 60 ))
 %{__cat} >${RPM_INSTALL_PREFIX2}/cron.d/gratia-probe-hadoop-storage.cron <<EOF
 $min * * * * root \
-"${RPM_INSTALL_PREFIX1}/probe/hadoop-storage/hadoop_storage_probe" -c "${RPM_INSTALL_PREFIX1}/probe/hadoop-storage/storage.cfg"
+"${RPM_INSTALL_PREFIX1}/gratia/hadoop-storage/hadoop_storage_probe" -c "${RPM_INSTALL_PREFIX1}/gratia/hadoop-storage/storage.cfg"
 EOF
 
 # End of hadoop-storage post
@@ -1142,7 +1158,7 @@ Contributed by University of Nebraska Lincoln.
 (( min = $RANDOM % 10 ))
 %{__cat} >${RPM_INSTALL_PREFIX2}/cron.d/gratia-probe-condor-events.cron <<EOF
 $min,$(( $min + 10 )),$(( $min + 20 )),$(( $min + 30 )),$(( $min + 40 )),$(( $min + 50 )) * * * * root \
-"${RPM_INSTALL_PREFIX1}/probe/condor-events/watchCondorEvents.py" 2> /dev/null > /dev/null
+"${RPM_INSTALL_PREFIX1}/gratia/condor-events/watchCondorEvents.py" 2> /dev/null > /dev/null
 EOF
 
 # End of condor-events post
@@ -1177,6 +1193,7 @@ Contributed by University of Nebraska Lincoln.
 %{default_prefix}/gratia/xrootd-transfer/xrd_transfer_probe
 #%{default_prefix}/gratia/xrootd-transfer/xrd_transfer_gratia
 %{default_prefix}/gratia/xrootd-transfer/SL4_init_script_patches
+%{default_prefix}/gratia/xrootd-transfer
 %config(noreplace) %{_sysconfdir}/gratia/xrootd-transfer/ProbeConfig
 
 %post xrootd-transfer%{?maybe_itb_suffix}
@@ -1222,6 +1239,7 @@ Contributed as effort from OSG-Storage.
 %defattr(-,root,root,-)
 %{_initrddir}/gratia-xrootd-storage
 %{default_prefix}/gratia/xrootd-storage/xrd_storage_probe
+%{default_prefix}/gratia/xrootd-storage
 #%{default_prefix}/gratia/xrootd-storage/xrd_storage_gratia
 %{default_prefix}/gratia/xrootd-storage/SL4_init_script_patches
 %config(noreplace) %{_sysconfdir}/gratia/xrootd-storage/ProbeConfig
@@ -1265,6 +1283,7 @@ Contributed by University of Nebraska Lincoln.
 %defattr(-,root,root,-)
 %{default_prefix}/gratia/bdii-status/bdii_cese_record
 %{default_prefix}/gratia/bdii-status/bdii_subcluster_record
+%{default_prefix}/gratia/bdii-status
 %{python_sitelib}/gratia/bdii-status
 %config(noreplace) %{_sysconfdir}/gratia/bdii-status/ProbeConfig
 
@@ -1286,7 +1305,7 @@ Contributed by University of Nebraska Lincoln.
 (( min = $RANDOM % 15 ))
 %{__cat} >${RPM_INSTALL_PREFIX2}/cron.d/gratia-probe-condor-events.cron <<EOF
 $min,$(( $min + 15 )),$(( $min + 30 )),$(( $min + 45 )) * * * * root \
-"${RPM_INSTALL_PREFIX1}/probe/bdii-status/bdii_cese_record" 2> /dev/null > /dev/null
+"${RPM_INSTALL_PREFIX1}/gratia/bdii-status/bdii_cese_record" 2> /dev/null > /dev/null
 EOF
 
 # One crontab for bdii_subcluster_status running once a day.
@@ -1294,7 +1313,7 @@ EOF
 (( hour = $RANDOM % 24 ))
 %{__cat} >${RPM_INSTALL_PREFIX2}/cron.d/gratia-probe-condor-events.cron <<EOF
 $min $hour * * * root \
-"${RPM_INSTALL_PREFIX1}/probe/bdii-status/bdii_subcluster_record" 2> /dev/null > /dev/null
+"${RPM_INSTALL_PREFIX1}/gratia/bdii-status/bdii_subcluster_record" 2> /dev/null > /dev/null
 EOF
 
 # End of bdii-status post
