@@ -1,0 +1,842 @@
+INFO backend.py:807:  Mock Version: 1.0.17
+DEBUG backend.py:272:  rootdir = /var/lib/mock/mock-auto-x86_64.110.22172/root/
+DEBUG backend.py:273:  resultdir = /opt/vdt_software/voms-admin-client/_build_results
+DEBUG util.py:58:  ensuring that dir exists: /var/cache/mock/mock-auto-x86_64.110.22172/root_cache/
+DEBUG util.py:61:  creating dir: /var/cache/mock/mock-auto-x86_64.110.22172/root_cache/
+DEBUG util.py:58:  ensuring that dir exists: /var/lib/mock/mock-auto-x86_64.110.22172/root/var/cache/yum
+DEBUG util.py:61:  creating dir: /var/lib/mock/mock-auto-x86_64.110.22172/root/var/cache/yum
+DEBUG util.py:58:  ensuring that dir exists: /var/lib/mock/mock-auto-x86_64.110.22172/root/tmp/ccache
+DEBUG util.py:61:  creating dir: /var/lib/mock/mock-auto-x86_64.110.22172/root/tmp/ccache
+DEBUG util.py:58:  ensuring that dir exists: /var/cache/mock/mock-auto-x86_64.110.22172/ccache/
+DEBUG util.py:61:  creating dir: /var/cache/mock/mock-auto-x86_64.110.22172/ccache/
+DEBUG backend.py:279:  create skeleton dirs
+DEBUG util.py:58:  ensuring that dir exists: /var/lib/mock/mock-auto-x86_64.110.22172/root/var/lib/rpm
+DEBUG util.py:61:  creating dir: /var/lib/mock/mock-auto-x86_64.110.22172/root/var/lib/rpm
+DEBUG util.py:58:  ensuring that dir exists: /var/lib/mock/mock-auto-x86_64.110.22172/root/var/lib/yum
+DEBUG util.py:61:  creating dir: /var/lib/mock/mock-auto-x86_64.110.22172/root/var/lib/yum
+DEBUG util.py:58:  ensuring that dir exists: /var/lib/mock/mock-auto-x86_64.110.22172/root/var/lib/dbus
+DEBUG util.py:61:  creating dir: /var/lib/mock/mock-auto-x86_64.110.22172/root/var/lib/dbus
+DEBUG util.py:58:  ensuring that dir exists: /var/lib/mock/mock-auto-x86_64.110.22172/root/var/log
+DEBUG util.py:61:  creating dir: /var/lib/mock/mock-auto-x86_64.110.22172/root/var/log
+DEBUG util.py:58:  ensuring that dir exists: /var/lib/mock/mock-auto-x86_64.110.22172/root/var/lock/rpm
+DEBUG util.py:61:  creating dir: /var/lib/mock/mock-auto-x86_64.110.22172/root/var/lock/rpm
+DEBUG util.py:58:  ensuring that dir exists: /var/lib/mock/mock-auto-x86_64.110.22172/root/etc/rpm
+DEBUG util.py:61:  creating dir: /var/lib/mock/mock-auto-x86_64.110.22172/root/etc/rpm
+DEBUG util.py:58:  ensuring that dir exists: /var/lib/mock/mock-auto-x86_64.110.22172/root/tmp
+DEBUG util.py:58:  ensuring that dir exists: /var/lib/mock/mock-auto-x86_64.110.22172/root/var/tmp
+DEBUG util.py:61:  creating dir: /var/lib/mock/mock-auto-x86_64.110.22172/root/var/tmp
+DEBUG util.py:58:  ensuring that dir exists: /var/lib/mock/mock-auto-x86_64.110.22172/root/etc/yum.repos.d
+DEBUG util.py:61:  creating dir: /var/lib/mock/mock-auto-x86_64.110.22172/root/etc/yum.repos.d
+DEBUG util.py:58:  ensuring that dir exists: /var/lib/mock/mock-auto-x86_64.110.22172/root/etc/yum
+DEBUG util.py:61:  creating dir: /var/lib/mock/mock-auto-x86_64.110.22172/root/etc/yum
+DEBUG util.py:58:  ensuring that dir exists: /var/lib/mock/mock-auto-x86_64.110.22172/root/proc
+DEBUG util.py:61:  creating dir: /var/lib/mock/mock-auto-x86_64.110.22172/root/proc
+DEBUG util.py:58:  ensuring that dir exists: /var/lib/mock/mock-auto-x86_64.110.22172/root/sys
+DEBUG util.py:61:  creating dir: /var/lib/mock/mock-auto-x86_64.110.22172/root/sys
+DEBUG backend.py:297:  touch required files
+DEBUG util.py:69:  touching file: /var/lib/mock/mock-auto-x86_64.110.22172/root/etc/mtab
+DEBUG util.py:69:  touching file: /var/lib/mock/mock-auto-x86_64.110.22172/root/etc/fstab
+DEBUG util.py:69:  touching file: /var/lib/mock/mock-auto-x86_64.110.22172/root/var/log/yum.log
+DEBUG backend.py:305:  configure yum
+DEBUG util.py:84:  remove tree: /var/lib/mock/mock-auto-x86_64.110.22172/root/dev
+DEBUG util.py:58:  ensuring that dir exists: /var/lib/mock/mock-auto-x86_64.110.22172/root/dev/pts
+DEBUG util.py:61:  creating dir: /var/lib/mock/mock-auto-x86_64.110.22172/root/dev/pts
+DEBUG util.py:58:  ensuring that dir exists: /var/lib/mock/mock-auto-x86_64.110.22172/root/dev/shm
+DEBUG util.py:61:  creating dir: /var/lib/mock/mock-auto-x86_64.110.22172/root/dev/shm
+DEBUG backend.py:402:  kver == 2.6.18-238.12.1.el5
+DEBUG backend.py:692:  mount -n -t proc   mock_chroot_proc   /var/lib/mock/mock-auto-x86_64.110.22172/root/proc
+DEBUG util.py:286:  Executing command: mount -n -t proc   mock_chroot_proc   /var/lib/mock/mock-auto-x86_64.110.22172/root/proc
+DEBUG util.py:325:  Child returncode was: 0
+DEBUG backend.py:692:  mount -n -t sysfs  mock_chroot_sysfs  /var/lib/mock/mock-auto-x86_64.110.22172/root/sys
+DEBUG util.py:286:  Executing command: mount -n -t sysfs  mock_chroot_sysfs  /var/lib/mock/mock-auto-x86_64.110.22172/root/sys
+DEBUG util.py:325:  Child returncode was: 0
+DEBUG backend.py:692:  mount -n --bind /var/cache/mock/mock-auto-x86_64.110.22172/yum_cache/  /var/lib/mock/mock-auto-x86_64.110.22172/root/var/cache/yum
+DEBUG util.py:286:  Executing command: mount -n --bind /var/cache/mock/mock-auto-x86_64.110.22172/yum_cache/  /var/lib/mock/mock-auto-x86_64.110.22172/root/var/cache/yum
+DEBUG util.py:325:  Child returncode was: 0
+DEBUG backend.py:692:  mount -n --bind /var/cache/mock/mock-auto-x86_64.110.22172/ccache/  /var/lib/mock/mock-auto-x86_64.110.22172/root/tmp/ccache
+DEBUG util.py:286:  Executing command: mount -n --bind /var/cache/mock/mock-auto-x86_64.110.22172/ccache/  /var/lib/mock/mock-auto-x86_64.110.22172/root/tmp/ccache
+DEBUG util.py:325:  Child returncode was: 0
+DEBUG backend.py:692:  mount -n -t devpts -o gid=5,mode=0620,ptmxmode=0666 mock_chroot_devpts /var/lib/mock/mock-auto-x86_64.110.22172/root/dev/pts
+DEBUG util.py:286:  Executing command: mount -n -t devpts -o gid=5,mode=0620,ptmxmode=0666 mock_chroot_devpts /var/lib/mock/mock-auto-x86_64.110.22172/root/dev/pts
+DEBUG util.py:325:  Child returncode was: 0
+DEBUG backend.py:692:  mount -n -t tmpfs mock_chroot_shmfs /var/lib/mock/mock-auto-x86_64.110.22172/root/dev/shm
+DEBUG util.py:286:  Executing command: mount -n -t tmpfs mock_chroot_shmfs /var/lib/mock/mock-auto-x86_64.110.22172/root/dev/shm
+DEBUG util.py:325:  Child returncode was: 0
+DEBUG backend.py:739:  ['/usr/bin/yum', '--installroot', '/var/lib/mock/mock-auto-x86_64.110.22172/root/', 'install', 'buildsys-build', 'yum-priorities']
+DEBUG util.py:286:  Executing command: ['/usr/bin/yum', '--installroot', '/var/lib/mock/mock-auto-x86_64.110.22172/root/', 'install', 'buildsys-build', 'yum-priorities']
+DEBUG util.py:251:  ftp://jpackage.hmdc.harvard.edu/JPackage/5.0/generic/free/repodata/filelists.sqlite.bz2: [Errno 4] Socket Error: timed out
+DEBUG util.py:251:  Trying other mirror.
+DEBUG util.py:251:  ================================================================================
+DEBUG util.py:251:   Package                   Arch     Version                      Repository
+DEBUG util.py:251:                                                                             Size
+DEBUG util.py:251:  ================================================================================
+DEBUG util.py:251:  Installing:
+DEBUG util.py:251:   buildsys-build            noarch   0.5-6.el5.centos.7           groups   2.6 k
+DEBUG util.py:251:   yum-priorities            noarch   1.1.16-14.el5.centos.1       os        14 k
+DEBUG util.py:251:  Installing for dependencies:
+DEBUG util.py:251:   MAKEDEV                   x86_64   3.23-1.2                     os       135 k
+DEBUG util.py:251:   SysVinit                  x86_64   2.86-15.el5                  os       117 k
+DEBUG util.py:251:   audit-libs                x86_64   1.7.18-2.el5                 os        78 k
+DEBUG util.py:251:   basesystem                noarch   8.0-5.1.1.el5.centos         os       2.8 k
+DEBUG util.py:251:   bash                      x86_64   3.2-24.el5                   os       1.9 M
+DEBUG util.py:251:   binutils                  x86_64   2.17.50.0.6-14.el5           os       2.9 M
+DEBUG util.py:251:   bzip2                     x86_64   1.0.3-6.el5_5                os        50 k
+DEBUG util.py:251:   bzip2-libs                x86_64   1.0.3-6.el5_5                os        35 k
+DEBUG util.py:251:   centos-release            x86_64   10:5-6.el5.centos.1          os        20 k
+DEBUG util.py:251:   centos-release-notes      x86_64   5.6-0                        os        40 k
+DEBUG util.py:251:   chkconfig                 x86_64   1.3.30.2-2.el5               os       159 k
+DEBUG util.py:251:   coreutils                 x86_64   5.97-23.el5_4.2              os       3.5 M
+DEBUG util.py:251:   cpio                      x86_64   2.6-23.el5_4.1               os       122 k
+DEBUG util.py:251:   cpp                       x86_64   4.1.2-50.el5                 os       2.9 M
+DEBUG util.py:251:   cracklib                  x86_64   2.8.9-3.3                    os        63 k
+DEBUG util.py:251:   cracklib-dicts            x86_64   2.8.9-3.3                    os       3.3 M
+DEBUG util.py:251:   crontabs                  noarch   1.10-8                       os       5.0 k
+DEBUG util.py:251:   db4                       x86_64   4.3.29-10.el5_5.2            os       899 k
+DEBUG util.py:251:   device-mapper             x86_64   1.02.55-2.el5                os       797 k
+DEBUG util.py:251:   device-mapper-event       x86_64   1.02.55-2.el5                os        21 k
+DEBUG util.py:251:   device-mapper-multipath   x86_64   0.4.7-42.el5                 os       3.0 M
+DEBUG util.py:251:   diffutils                 x86_64   2.8.1-15.2.3.el5             os       211 k
+DEBUG util.py:251:   dmraid                    x86_64   1.0.0.rc13-63.el5            os       741 k
+DEBUG util.py:251:   dmraid-events             x86_64   1.0.0.rc13-63.el5            os        24 k
+DEBUG util.py:251:   e2fsprogs                 x86_64   1.39-23.el5_5.1              os       995 k
+DEBUG util.py:251:   e2fsprogs-libs            x86_64   1.39-23.el5_5.1              os       118 k
+DEBUG util.py:251:   elfutils                  x86_64   0.137-3.el5                  os       215 k
+DEBUG util.py:251:   elfutils-libelf           x86_64   0.137-3.el5                  os        53 k
+DEBUG util.py:251:   elfutils-libs             x86_64   0.137-3.el5                  os       183 k
+DEBUG util.py:251:   ethtool                   x86_64   6-4.el5                      os        64 k
+DEBUG util.py:251:   expat                     x86_64   1.95.8-8.3.el5_5.3           os        76 k
+DEBUG util.py:251:   file                      x86_64   4.17-15.el5_3.1              os       318 k
+DEBUG util.py:251:   filesystem                x86_64   2.4.0-3.el5                  os       1.0 M
+DEBUG util.py:251:   findutils                 x86_64   1:4.2.27-6.el5               os       294 k
+DEBUG util.py:251:   gawk                      x86_64   3.1.5-14.el5                 os       1.8 M
+DEBUG util.py:251:   gcc                       x86_64   4.1.2-50.el5                 os       5.3 M
+DEBUG util.py:251:   gcc-c++                   x86_64   4.1.2-50.el5                 os       3.8 M
+DEBUG util.py:251:   gdbm                      x86_64   1.8.0-26.2.1                 os        27 k
+DEBUG util.py:251:   glib2                     x86_64   2.12.3-4.el5_3.1             os       693 k
+DEBUG util.py:251:   glibc                     x86_64   2.5-58                       os       4.8 M
+DEBUG util.py:251:   glibc-common              x86_64   2.5-58                       os        16 M
+DEBUG util.py:251:   glibc-devel               x86_64   2.5-58                       os       2.4 M
+DEBUG util.py:251:   glibc-headers             x86_64   2.5-58                       os       593 k
+DEBUG util.py:251:   grep                      x86_64   2.5.1-55.el5                 os       176 k
+DEBUG util.py:251:   gzip                      x86_64   1.3.5-11.el5.centos.1        os       104 k
+DEBUG util.py:251:   hmaccalc                  x86_64   0.9.6-3.el5                  os        21 k
+DEBUG util.py:251:   info                      x86_64   4.8-14.el5                   os       178 k
+DEBUG util.py:251:   initscripts               x86_64   8.45.33-1.el5.centos         os       1.6 M
+DEBUG util.py:251:   intltool                  x86_64   0.35.0-2                     os       116 k
+DEBUG util.py:251:   iproute                   x86_64   2.6.18-11.el5                os       822 k
+DEBUG util.py:251:   iputils                   x86_64   20020927-46.el5              os       131 k
+DEBUG util.py:251:   iscsi-initiator-utils     x86_64   6.2.0.872-6.el5              os       988 k
+DEBUG util.py:251:   kernel-headers            x86_64   2.6.18-238.el5               os       1.2 M
+DEBUG util.py:251:   keyutils-libs             x86_64   1.2-1.el5                    os        17 k
+DEBUG util.py:251:   kpartx                    x86_64   0.4.7-42.el5                 os       437 k
+DEBUG util.py:251:   krb5-libs                 x86_64   1.6.1-55.el5                 os       678 k
+DEBUG util.py:251:   less                      x86_64   436-7.el5                    os       108 k
+DEBUG util.py:251:   libacl                    x86_64   2.2.39-6.el5                 os        19 k
+DEBUG util.py:251:   libattr                   x86_64   2.4.32-1.1                   os        12 k
+DEBUG util.py:251:   libcap                    x86_64   1.10-26                      os        23 k
+DEBUG util.py:251:   libgcc                    x86_64   4.1.2-50.el5                 os        99 k
+DEBUG util.py:251:   libgomp                   x86_64   4.4.4-13.el5                 os        69 k
+DEBUG util.py:251:   libselinux                x86_64   1.33.4-5.7.el5               os        78 k
+DEBUG util.py:251:   libsepol                  x86_64   1.15.2-3.el5                 os       131 k
+DEBUG util.py:251:   libstdc++                 x86_64   4.1.2-50.el5                 os       353 k
+DEBUG util.py:251:   libstdc++-devel           x86_64   4.1.2-50.el5                 os       2.8 M
+DEBUG util.py:251:   libsysfs                  x86_64   2.0.0-6                      os        45 k
+DEBUG util.py:251:   libtermcap                x86_64   2.0.8-46.1                   os        14 k
+DEBUG util.py:251:   libutempter               x86_64   1.1.4-4.el5                  os        22 k
+DEBUG util.py:251:   libxml2                   x86_64   2.6.26-2.1.2.8.el5_5.1       os       807 k
+DEBUG util.py:251:   logrotate                 x86_64   3.7.4-9.el5_5.2              os        41 k
+DEBUG util.py:251:   lvm2                      x86_64   2.02.74-5.el5                os       2.9 M
+DEBUG util.py:251:   m2crypto                  x86_64   0.16-6.el5.8                 os       496 k
+DEBUG util.py:251:   make                      x86_64   1:3.81-3.el5                 os       470 k
+DEBUG util.py:251:   mcstrans                  x86_64   0.2.11-3.el5                 os        17 k
+DEBUG util.py:251:   mingetty                  x86_64   1.07-5.2.2                   os        19 k
+DEBUG util.py:251:   mkinitrd                  x86_64   5.1.19.6-68.el5              os       461 k
+DEBUG util.py:251:   mktemp                    x86_64   3:1.5-23.2.2                 os        14 k
+DEBUG util.py:251:   module-init-tools         x86_64   3.3-0.pre3.1.60.el5_5.1      os       443 k
+DEBUG util.py:251:   nash                      x86_64   5.1.19.6-68.el5              os       1.1 M
+DEBUG util.py:251:   ncurses                   x86_64   5.5-24.20060715              os       1.2 M
+DEBUG util.py:251:   net-tools                 x86_64   1.60-81.el5                  os       367 k
+DEBUG util.py:251:   nspr                      x86_64   4.8.6-1.el5                  os       119 k
+DEBUG util.py:251:   nss                       x86_64   3.12.8-1.el5.centos          os       1.1 M
+DEBUG util.py:251:   openssl                   x86_64   0.9.8e-12.el5_5.7            os       1.4 M
+DEBUG util.py:251:   pam                       x86_64   0.99.6.2-6.el5_5.2           os       978 k
+DEBUG util.py:251:   patch                     x86_64   2.5.4-31.el5                 os        63 k
+DEBUG util.py:251:   pcre                      x86_64   6.6-6.el5                    os       118 k
+DEBUG util.py:251:   perl                      x86_64   4:5.8.8-32.el5_5.2           os        12 M
+DEBUG util.py:251:   perl-Compress-Zlib        x86_64   1.42-1.fc6                   os        52 k
+DEBUG util.py:251:   perl-HTML-Parser          x86_64   3.55-1.fc6                   os        92 k
+DEBUG util.py:251:   perl-HTML-Tagset          noarch   3.10-2.1.1                   os        15 k
+DEBUG util.py:251:   perl-URI                  noarch   1.35-3                       os       116 k
+DEBUG util.py:251:   perl-XML-Parser           x86_64   2.34-6.1.2.2.1               os       210 k
+DEBUG util.py:251:   perl-libwww-perl          noarch   5.805-1.1.1                  os       376 k
+DEBUG util.py:251:   popt                      x86_64   1.10.2.3-22.el5              os        77 k
+DEBUG util.py:251:   procps                    x86_64   3.2.7-16.el5                 os       214 k
+DEBUG util.py:251:   psmisc                    x86_64   22.2-7                       os        62 k
+DEBUG util.py:251:   python                    x86_64   2.4.3-43.el5                 os        57 k
+DEBUG util.py:251:   python-elementtree        x86_64   1.2.6-5                      os        85 k
+DEBUG util.py:251:   python-iniparse           noarch   0.2.3-4.el5                  os        34 k
+DEBUG util.py:251:   python-libs               x86_64   2.4.3-43.el5                 os       6.0 M
+DEBUG util.py:251:   python-sqlite             x86_64   1.1.7-1.2.1                  os        39 k
+DEBUG util.py:251:   python-urlgrabber         noarch   3.1.0-6.el5                  os       132 k
+DEBUG util.py:251:   readline                  x86_64   5.1-3.el5                    os       228 k
+DEBUG util.py:251:   redhat-rpm-config         noarch   8.0.45-32.el5.centos         os        54 k
+DEBUG util.py:251:   rpm                       x86_64   4.4.2.3-22.el5               os       1.2 M
+DEBUG util.py:251:   rpm-build                 x86_64   4.4.2.3-22.el5               os       302 k
+DEBUG util.py:251:   rpm-libs                  x86_64   4.4.2.3-22.el5               os       923 k
+DEBUG util.py:251:   rpm-python                x86_64   4.4.2.3-22.el5               os        63 k
+DEBUG util.py:251:   rsyslog                   x86_64   3.22.1-3.el5_5.1             os       380 k
+DEBUG util.py:251:   sed                       x86_64   4.1.5-5.fc6                  os       176 k
+DEBUG util.py:251:   setup                     noarch   2.5.58-7.el5                 os       125 k
+DEBUG util.py:251:   sgpio                     x86_64   1.2.0_10-2.el5               os        11 k
+DEBUG util.py:251:   shadow-utils              x86_64   2:4.0.17-18.el5              os       1.1 M
+DEBUG util.py:251:   sqlite                    x86_64   3.3.6-5                      os       206 k
+DEBUG util.py:251:   tar                       x86_64   2:1.15.1-30.el5              os       747 k
+DEBUG util.py:251:   termcap                   noarch   1:5.5-1.20060701.1           os       265 k
+DEBUG util.py:251:   tzdata                    x86_64   2010l-1.el5                  os       796 k
+DEBUG util.py:251:   udev                      x86_64   095-14.24.el5                os       2.4 M
+DEBUG util.py:251:   unzip                     x86_64   5.52-3.el5                   os       165 k
+DEBUG util.py:251:   util-linux                x86_64   2.13-0.56.el5                os       1.8 M
+DEBUG util.py:251:   which                     x86_64   2.16-7                       os        24 k
+DEBUG util.py:251:   yum                       noarch   3.2.22-33.el5.centos         os       1.0 M
+DEBUG util.py:251:   yum-fastestmirror         noarch   1.1.16-14.el5.centos.1       os        19 k
+DEBUG util.py:251:   yum-metadata-parser       x86_64   1.1.2-3.el5.centos           os        25 k
+DEBUG util.py:251:   zlib                      x86_64   1.2.3-3                      os        51 k
+DEBUG util.py:251:  Transaction Summary
+DEBUG util.py:251:  ================================================================================
+DEBUG util.py:251:  Install     129 Package(s)
+DEBUG util.py:251:  Upgrade       0 Package(s)
+DEBUG util.py:251:  Total download size: 114 M
+DEBUG util.py:251:  warning: /etc/yum.conf created as /etc/yum.conf.rpmnew
+DEBUG util.py:251:  Installed:
+DEBUG util.py:251:    buildsys-build.noarch 0:0.5-6.el5.centos.7                                    
+DEBUG util.py:251:    yum-priorities.noarch 0:1.1.16-14.el5.centos.1                                
+DEBUG util.py:251:  Dependency Installed:
+DEBUG util.py:251:    MAKEDEV.x86_64 0:3.23-1.2                                                     
+DEBUG util.py:251:    SysVinit.x86_64 0:2.86-15.el5                                                 
+DEBUG util.py:251:    audit-libs.x86_64 0:1.7.18-2.el5                                              
+DEBUG util.py:251:    basesystem.noarch 0:8.0-5.1.1.el5.centos                                      
+DEBUG util.py:251:    bash.x86_64 0:3.2-24.el5                                                      
+DEBUG util.py:251:    binutils.x86_64 0:2.17.50.0.6-14.el5                                          
+DEBUG util.py:251:    bzip2.x86_64 0:1.0.3-6.el5_5                                                  
+DEBUG util.py:251:    bzip2-libs.x86_64 0:1.0.3-6.el5_5                                             
+DEBUG util.py:251:    centos-release.x86_64 10:5-6.el5.centos.1                                     
+DEBUG util.py:251:    centos-release-notes.x86_64 0:5.6-0                                           
+DEBUG util.py:251:    chkconfig.x86_64 0:1.3.30.2-2.el5                                             
+DEBUG util.py:251:    coreutils.x86_64 0:5.97-23.el5_4.2                                            
+DEBUG util.py:251:    cpio.x86_64 0:2.6-23.el5_4.1                                                  
+DEBUG util.py:251:    cpp.x86_64 0:4.1.2-50.el5                                                     
+DEBUG util.py:251:    cracklib.x86_64 0:2.8.9-3.3                                                   
+DEBUG util.py:251:    cracklib-dicts.x86_64 0:2.8.9-3.3                                             
+DEBUG util.py:251:    crontabs.noarch 0:1.10-8                                                      
+DEBUG util.py:251:    db4.x86_64 0:4.3.29-10.el5_5.2                                                
+DEBUG util.py:251:    device-mapper.x86_64 0:1.02.55-2.el5                                          
+DEBUG util.py:251:    device-mapper-event.x86_64 0:1.02.55-2.el5                                    
+DEBUG util.py:251:    device-mapper-multipath.x86_64 0:0.4.7-42.el5                                 
+DEBUG util.py:251:    diffutils.x86_64 0:2.8.1-15.2.3.el5                                           
+DEBUG util.py:251:    dmraid.x86_64 0:1.0.0.rc13-63.el5                                             
+DEBUG util.py:251:    dmraid-events.x86_64 0:1.0.0.rc13-63.el5                                      
+DEBUG util.py:251:    e2fsprogs.x86_64 0:1.39-23.el5_5.1                                            
+DEBUG util.py:251:    e2fsprogs-libs.x86_64 0:1.39-23.el5_5.1                                       
+DEBUG util.py:251:    elfutils.x86_64 0:0.137-3.el5                                                 
+DEBUG util.py:251:    elfutils-libelf.x86_64 0:0.137-3.el5                                          
+DEBUG util.py:251:    elfutils-libs.x86_64 0:0.137-3.el5                                            
+DEBUG util.py:251:    ethtool.x86_64 0:6-4.el5                                                      
+DEBUG util.py:251:    expat.x86_64 0:1.95.8-8.3.el5_5.3                                             
+DEBUG util.py:251:    file.x86_64 0:4.17-15.el5_3.1                                                 
+DEBUG util.py:251:    filesystem.x86_64 0:2.4.0-3.el5                                               
+DEBUG util.py:251:    findutils.x86_64 1:4.2.27-6.el5                                               
+DEBUG util.py:251:    gawk.x86_64 0:3.1.5-14.el5                                                    
+DEBUG util.py:251:    gcc.x86_64 0:4.1.2-50.el5                                                     
+DEBUG util.py:251:    gcc-c++.x86_64 0:4.1.2-50.el5                                                 
+DEBUG util.py:251:    gdbm.x86_64 0:1.8.0-26.2.1                                                    
+DEBUG util.py:251:    glib2.x86_64 0:2.12.3-4.el5_3.1                                               
+DEBUG util.py:251:    glibc.x86_64 0:2.5-58                                                         
+DEBUG util.py:251:    glibc-common.x86_64 0:2.5-58                                                  
+DEBUG util.py:251:    glibc-devel.x86_64 0:2.5-58                                                   
+DEBUG util.py:251:    glibc-headers.x86_64 0:2.5-58                                                 
+DEBUG util.py:251:    grep.x86_64 0:2.5.1-55.el5                                                    
+DEBUG util.py:251:    gzip.x86_64 0:1.3.5-11.el5.centos.1                                           
+DEBUG util.py:251:    hmaccalc.x86_64 0:0.9.6-3.el5                                                 
+DEBUG util.py:251:    info.x86_64 0:4.8-14.el5                                                      
+DEBUG util.py:251:    initscripts.x86_64 0:8.45.33-1.el5.centos                                     
+DEBUG util.py:251:    intltool.x86_64 0:0.35.0-2                                                    
+DEBUG util.py:251:    iproute.x86_64 0:2.6.18-11.el5                                                
+DEBUG util.py:251:    iputils.x86_64 0:20020927-46.el5                                              
+DEBUG util.py:251:    iscsi-initiator-utils.x86_64 0:6.2.0.872-6.el5                                
+DEBUG util.py:251:    kernel-headers.x86_64 0:2.6.18-238.el5                                        
+DEBUG util.py:251:    keyutils-libs.x86_64 0:1.2-1.el5                                              
+DEBUG util.py:251:    kpartx.x86_64 0:0.4.7-42.el5                                                  
+DEBUG util.py:251:    krb5-libs.x86_64 0:1.6.1-55.el5                                               
+DEBUG util.py:251:    less.x86_64 0:436-7.el5                                                       
+DEBUG util.py:251:    libacl.x86_64 0:2.2.39-6.el5                                                  
+DEBUG util.py:251:    libattr.x86_64 0:2.4.32-1.1                                                   
+DEBUG util.py:251:    libcap.x86_64 0:1.10-26                                                       
+DEBUG util.py:251:    libgcc.x86_64 0:4.1.2-50.el5                                                  
+DEBUG util.py:251:    libgomp.x86_64 0:4.4.4-13.el5                                                 
+DEBUG util.py:251:    libselinux.x86_64 0:1.33.4-5.7.el5                                            
+DEBUG util.py:251:    libsepol.x86_64 0:1.15.2-3.el5                                                
+DEBUG util.py:251:    libstdc++.x86_64 0:4.1.2-50.el5                                               
+DEBUG util.py:251:    libstdc++-devel.x86_64 0:4.1.2-50.el5                                         
+DEBUG util.py:251:    libsysfs.x86_64 0:2.0.0-6                                                     
+DEBUG util.py:251:    libtermcap.x86_64 0:2.0.8-46.1                                                
+DEBUG util.py:251:    libutempter.x86_64 0:1.1.4-4.el5                                              
+DEBUG util.py:251:    libxml2.x86_64 0:2.6.26-2.1.2.8.el5_5.1                                       
+DEBUG util.py:251:    logrotate.x86_64 0:3.7.4-9.el5_5.2                                            
+DEBUG util.py:251:    lvm2.x86_64 0:2.02.74-5.el5                                                   
+DEBUG util.py:251:    m2crypto.x86_64 0:0.16-6.el5.8                                                
+DEBUG util.py:251:    make.x86_64 1:3.81-3.el5                                                      
+DEBUG util.py:251:    mcstrans.x86_64 0:0.2.11-3.el5                                                
+DEBUG util.py:251:    mingetty.x86_64 0:1.07-5.2.2                                                  
+DEBUG util.py:251:    mkinitrd.x86_64 0:5.1.19.6-68.el5                                             
+DEBUG util.py:251:    mktemp.x86_64 3:1.5-23.2.2                                                    
+DEBUG util.py:251:    module-init-tools.x86_64 0:3.3-0.pre3.1.60.el5_5.1                            
+DEBUG util.py:251:    nash.x86_64 0:5.1.19.6-68.el5                                                 
+DEBUG util.py:251:    ncurses.x86_64 0:5.5-24.20060715                                              
+DEBUG util.py:251:    net-tools.x86_64 0:1.60-81.el5                                                
+DEBUG util.py:251:    nspr.x86_64 0:4.8.6-1.el5                                                     
+DEBUG util.py:251:    nss.x86_64 0:3.12.8-1.el5.centos                                              
+DEBUG util.py:251:    openssl.x86_64 0:0.9.8e-12.el5_5.7                                            
+DEBUG util.py:251:    pam.x86_64 0:0.99.6.2-6.el5_5.2                                               
+DEBUG util.py:251:    patch.x86_64 0:2.5.4-31.el5                                                   
+DEBUG util.py:251:    pcre.x86_64 0:6.6-6.el5                                                       
+DEBUG util.py:251:    perl.x86_64 4:5.8.8-32.el5_5.2                                                
+DEBUG util.py:251:    perl-Compress-Zlib.x86_64 0:1.42-1.fc6                                        
+DEBUG util.py:251:    perl-HTML-Parser.x86_64 0:3.55-1.fc6                                          
+DEBUG util.py:251:    perl-HTML-Tagset.noarch 0:3.10-2.1.1                                          
+DEBUG util.py:251:    perl-URI.noarch 0:1.35-3                                                      
+DEBUG util.py:251:    perl-XML-Parser.x86_64 0:2.34-6.1.2.2.1                                       
+DEBUG util.py:251:    perl-libwww-perl.noarch 0:5.805-1.1.1                                         
+DEBUG util.py:251:    popt.x86_64 0:1.10.2.3-22.el5                                                 
+DEBUG util.py:251:    procps.x86_64 0:3.2.7-16.el5                                                  
+DEBUG util.py:251:    psmisc.x86_64 0:22.2-7                                                        
+DEBUG util.py:251:    python.x86_64 0:2.4.3-43.el5                                                  
+DEBUG util.py:251:    python-elementtree.x86_64 0:1.2.6-5                                           
+DEBUG util.py:251:    python-iniparse.noarch 0:0.2.3-4.el5                                          
+DEBUG util.py:251:    python-libs.x86_64 0:2.4.3-43.el5                                             
+DEBUG util.py:251:    python-sqlite.x86_64 0:1.1.7-1.2.1                                            
+DEBUG util.py:251:    python-urlgrabber.noarch 0:3.1.0-6.el5                                        
+DEBUG util.py:251:    readline.x86_64 0:5.1-3.el5                                                   
+DEBUG util.py:251:    redhat-rpm-config.noarch 0:8.0.45-32.el5.centos                               
+DEBUG util.py:251:    rpm.x86_64 0:4.4.2.3-22.el5                                                   
+DEBUG util.py:251:    rpm-build.x86_64 0:4.4.2.3-22.el5                                             
+DEBUG util.py:251:    rpm-libs.x86_64 0:4.4.2.3-22.el5                                              
+DEBUG util.py:251:    rpm-python.x86_64 0:4.4.2.3-22.el5                                            
+DEBUG util.py:251:    rsyslog.x86_64 0:3.22.1-3.el5_5.1                                             
+DEBUG util.py:251:    sed.x86_64 0:4.1.5-5.fc6                                                      
+DEBUG util.py:251:    setup.noarch 0:2.5.58-7.el5                                                   
+DEBUG util.py:251:    sgpio.x86_64 0:1.2.0_10-2.el5                                                 
+DEBUG util.py:251:    shadow-utils.x86_64 2:4.0.17-18.el5                                           
+DEBUG util.py:251:    sqlite.x86_64 0:3.3.6-5                                                       
+DEBUG util.py:251:    tar.x86_64 2:1.15.1-30.el5                                                    
+DEBUG util.py:251:    termcap.noarch 1:5.5-1.20060701.1                                             
+DEBUG util.py:251:    tzdata.x86_64 0:2010l-1.el5                                                   
+DEBUG util.py:251:    udev.x86_64 0:095-14.24.el5                                                   
+DEBUG util.py:251:    unzip.x86_64 0:5.52-3.el5                                                     
+DEBUG util.py:251:    util-linux.x86_64 0:2.13-0.56.el5                                             
+DEBUG util.py:251:    which.x86_64 0:2.16-7                                                         
+DEBUG util.py:251:    yum.noarch 0:3.2.22-33.el5.centos                                             
+DEBUG util.py:251:    yum-fastestmirror.noarch 0:1.1.16-14.el5.centos.1                             
+DEBUG util.py:251:    yum-metadata-parser.x86_64 0:1.1.2-3.el5.centos                               
+DEBUG util.py:251:    zlib.x86_64 0:1.2.3-3                                                         
+DEBUG util.py:325:  Child returncode was: 0
+DEBUG util.py:84:  remove tree: /var/lib/mock/mock-auto-x86_64.110.22172/root/builddir
+DEBUG util.py:286:  Executing command: ['/usr/sbin/userdel', '-r', '-f', 'mockbuild']
+DEBUG util.py:325:  Child returncode was: 6
+DEBUG util.py:286:  Executing command: ['/usr/sbin/groupdel', 'mockbuild']
+DEBUG util.py:325:  Child returncode was: 6
+DEBUG util.py:286:  Executing command: ['/usr/sbin/groupadd', '-g', '109', 'mockbuild']
+DEBUG util.py:325:  Child returncode was: 0
+DEBUG util.py:286:  Executing command: /usr/sbin/useradd -o -m -u 110 -g 109 -d /builddir -n mockbuild
+DEBUG util.py:325:  Child returncode was: 0
+DEBUG util.py:58:  ensuring that dir exists: /var/lib/mock/mock-auto-x86_64.110.22172/root/builddir/build/RPMS
+DEBUG util.py:61:  creating dir: /var/lib/mock/mock-auto-x86_64.110.22172/root/builddir/build/RPMS
+DEBUG util.py:58:  ensuring that dir exists: /var/lib/mock/mock-auto-x86_64.110.22172/root/builddir/build/SRPMS
+DEBUG util.py:61:  creating dir: /var/lib/mock/mock-auto-x86_64.110.22172/root/builddir/build/SRPMS
+DEBUG util.py:58:  ensuring that dir exists: /var/lib/mock/mock-auto-x86_64.110.22172/root/builddir/build/SOURCES
+DEBUG util.py:61:  creating dir: /var/lib/mock/mock-auto-x86_64.110.22172/root/builddir/build/SOURCES
+DEBUG util.py:58:  ensuring that dir exists: /var/lib/mock/mock-auto-x86_64.110.22172/root/builddir/build/SPECS
+DEBUG util.py:61:  creating dir: /var/lib/mock/mock-auto-x86_64.110.22172/root/builddir/build/SPECS
+DEBUG util.py:58:  ensuring that dir exists: /var/lib/mock/mock-auto-x86_64.110.22172/root/builddir/build/BUILD
+DEBUG util.py:61:  creating dir: /var/lib/mock/mock-auto-x86_64.110.22172/root/builddir/build/BUILD
+DEBUG util.py:58:  ensuring that dir exists: /var/lib/mock/mock-auto-x86_64.110.22172/root/builddir/build/BUILDROOT
+DEBUG util.py:61:  creating dir: /var/lib/mock/mock-auto-x86_64.110.22172/root/builddir/build/BUILDROOT
+DEBUG util.py:58:  ensuring that dir exists: /var/lib/mock/mock-auto-x86_64.110.22172/root/builddir/build/originals
+DEBUG util.py:61:  creating dir: /var/lib/mock/mock-auto-x86_64.110.22172/root/builddir/build/originals
+DEBUG util.py:286:  Executing command: ['sync']
+DEBUG util.py:325:  Child returncode was: 0
+DEBUG util.py:286:  Executing command: ['tar', '--use-compress-program', 'gzip', '-cf', '/var/cache/mock/mock-auto-x86_64.110.22172/root_cache/cache.tar.gz', '-C', '/var/lib/mock/mock-auto-x86_64.110.22172/root/', '--exclude=./proc', '--exclude=./sys', '--exclude=./dev', '--exclude=./tmp/ccache', '--exclude=./var/cache/yum', '.']
+DEBUG util.py:325:  Child returncode was: 0
+DEBUG util.py:286:  Executing command: umount -n /var/lib/mock/mock-auto-x86_64.110.22172/root/dev/shm
+DEBUG util.py:325:  Child returncode was: 0
+DEBUG util.py:286:  Executing command: umount -n /var/lib/mock/mock-auto-x86_64.110.22172/root/dev/pts
+DEBUG util.py:325:  Child returncode was: 0
+DEBUG util.py:286:  Executing command: umount -n /var/lib/mock/mock-auto-x86_64.110.22172/root/tmp/ccache
+DEBUG util.py:325:  Child returncode was: 0
+DEBUG util.py:286:  Executing command: umount -n /var/lib/mock/mock-auto-x86_64.110.22172/root/var/cache/yum
+DEBUG util.py:325:  Child returncode was: 0
+DEBUG util.py:286:  Executing command: umount -n /var/lib/mock/mock-auto-x86_64.110.22172/root/sys
+DEBUG util.py:325:  Child returncode was: 0
+DEBUG util.py:286:  Executing command: umount -n /var/lib/mock/mock-auto-x86_64.110.22172/root/proc
+DEBUG util.py:325:  Child returncode was: 0
+DEBUG util.py:84:  remove tree: /var/lib/mock/mock-auto-x86_64.110.22172/root/dev
+DEBUG util.py:58:  ensuring that dir exists: /var/lib/mock/mock-auto-x86_64.110.22172/root/dev/pts
+DEBUG util.py:61:  creating dir: /var/lib/mock/mock-auto-x86_64.110.22172/root/dev/pts
+DEBUG util.py:58:  ensuring that dir exists: /var/lib/mock/mock-auto-x86_64.110.22172/root/dev/shm
+DEBUG util.py:61:  creating dir: /var/lib/mock/mock-auto-x86_64.110.22172/root/dev/shm
+DEBUG backend.py:402:  kver == 2.6.18-238.12.1.el5
+DEBUG backend.py:692:  mount -n -t proc   mock_chroot_proc   /var/lib/mock/mock-auto-x86_64.110.22172/root/proc
+DEBUG util.py:286:  Executing command: mount -n -t proc   mock_chroot_proc   /var/lib/mock/mock-auto-x86_64.110.22172/root/proc
+DEBUG util.py:325:  Child returncode was: 0
+DEBUG backend.py:692:  mount -n -t sysfs  mock_chroot_sysfs  /var/lib/mock/mock-auto-x86_64.110.22172/root/sys
+DEBUG util.py:286:  Executing command: mount -n -t sysfs  mock_chroot_sysfs  /var/lib/mock/mock-auto-x86_64.110.22172/root/sys
+DEBUG util.py:325:  Child returncode was: 0
+DEBUG backend.py:692:  mount -n --bind /var/cache/mock/mock-auto-x86_64.110.22172/yum_cache/  /var/lib/mock/mock-auto-x86_64.110.22172/root/var/cache/yum
+DEBUG util.py:286:  Executing command: mount -n --bind /var/cache/mock/mock-auto-x86_64.110.22172/yum_cache/  /var/lib/mock/mock-auto-x86_64.110.22172/root/var/cache/yum
+DEBUG util.py:325:  Child returncode was: 0
+DEBUG backend.py:692:  mount -n --bind /var/cache/mock/mock-auto-x86_64.110.22172/ccache/  /var/lib/mock/mock-auto-x86_64.110.22172/root/tmp/ccache
+DEBUG util.py:286:  Executing command: mount -n --bind /var/cache/mock/mock-auto-x86_64.110.22172/ccache/  /var/lib/mock/mock-auto-x86_64.110.22172/root/tmp/ccache
+DEBUG util.py:325:  Child returncode was: 0
+DEBUG backend.py:692:  mount -n -t devpts -o gid=5,mode=0620,ptmxmode=0666 mock_chroot_devpts /var/lib/mock/mock-auto-x86_64.110.22172/root/dev/pts
+DEBUG util.py:286:  Executing command: mount -n -t devpts -o gid=5,mode=0620,ptmxmode=0666 mock_chroot_devpts /var/lib/mock/mock-auto-x86_64.110.22172/root/dev/pts
+DEBUG util.py:325:  Child returncode was: 0
+DEBUG backend.py:692:  mount -n -t tmpfs mock_chroot_shmfs /var/lib/mock/mock-auto-x86_64.110.22172/root/dev/shm
+DEBUG util.py:286:  Executing command: mount -n -t tmpfs mock_chroot_shmfs /var/lib/mock/mock-auto-x86_64.110.22172/root/dev/shm
+DEBUG util.py:325:  Child returncode was: 0
+DEBUG util.py:286:  Executing command: ['rpm', '-Uvh', '--nodeps', '/builddir/build/originals/voms-admin-client-2.0.16-1.src.rpm']
+DEBUG util.py:251:  voms-admin-client           warning: user rpmbuild does not exist - using root
+DEBUG util.py:251:  warning: group rpmbuild does not exist - using root
+DEBUG util.py:251:  #warning: user rpmbuild does not exist - using root
+DEBUG util.py:251:  warning: group rpmbuild does not exist - using root
+DEBUG util.py:251:  #########################################warning: user rpmbuild does not exist - using root
+DEBUG util.py:251:  warning: group rpmbuild does not exist - using root
+DEBUG util.py:251:  ########
+DEBUG util.py:325:  Child returncode was: 0
+DEBUG backend.py:739:  ['/usr/bin/yum', '--installroot', '/var/lib/mock/mock-auto-x86_64.110.22172/root/', 'resolvedep', 'ccache']
+DEBUG util.py:286:  Executing command: ['/usr/bin/yum', '--installroot', '/var/lib/mock/mock-auto-x86_64.110.22172/root/', 'resolvedep', 'ccache']
+DEBUG util.py:251:  0:ccache-2.4-19.el5.x86_64
+DEBUG util.py:325:  Child returncode was: 0
+DEBUG backend.py:739:  ['/usr/bin/yum', '--installroot', '/var/lib/mock/mock-auto-x86_64.110.22172/root/', 'install', 'ccache']
+DEBUG util.py:286:  Executing command: ['/usr/bin/yum', '--installroot', '/var/lib/mock/mock-auto-x86_64.110.22172/root/', 'install', 'ccache']
+DEBUG util.py:251:  ================================================================================
+DEBUG util.py:251:   Package          Arch             Version                 Repository      Size
+DEBUG util.py:251:  ================================================================================
+DEBUG util.py:251:  Installing:
+DEBUG util.py:251:   ccache           x86_64           2.4-19.el5              epel            54 k
+DEBUG util.py:251:  Transaction Summary
+DEBUG util.py:251:  ================================================================================
+DEBUG util.py:251:  Install       1 Package(s)
+DEBUG util.py:251:  Upgrade       0 Package(s)
+DEBUG util.py:251:  Total download size: 54 k
+DEBUG util.py:251:  Installed:
+DEBUG util.py:251:    ccache.x86_64 0:2.4-19.el5                                                    
+DEBUG util.py:325:  Child returncode was: 0
+DEBUG backend.py:739:  ['/usr/bin/yum-builddep', '--installroot', '/var/lib/mock/mock-auto-x86_64.110.22172/root/', '/var/lib/mock/mock-auto-x86_64.110.22172/root///builddir/build/SRPMS/voms-admin-client-2.0.16-1.src.rpm']
+DEBUG util.py:286:  Executing command: ['/usr/bin/yum-builddep', '--installroot', '/var/lib/mock/mock-auto-x86_64.110.22172/root/', '/var/lib/mock/mock-auto-x86_64.110.22172/root///builddir/build/SRPMS/voms-admin-client-2.0.16-1.src.rpm']
+DEBUG util.py:251:  maven2-2.0.7-9.jpp5.noarch
+DEBUG util.py:251:  java-1.6.0-sun-compat-1.6.0.26-4.sl5.jpp.x86_64
+DEBUG util.py:251:  ================================================================================
+DEBUG util.py:251:   Package                   Arch   Version            Repository            Size
+DEBUG util.py:251:  ================================================================================
+DEBUG util.py:251:  Installing:
+DEBUG util.py:251:   java-1.6.0-sun-compat     x86_64 1.6.0.26-4.sl5.jpp vdt                   65 k
+DEBUG util.py:251:   maven2                    noarch 2.0.7-9.jpp5       jpackage-generic-5.0 711 k
+DEBUG util.py:251:  Installing for dependencies:
+DEBUG util.py:251:   alsa-lib                  x86_64 1.0.17-1.el5       os                   414 k
+DEBUG util.py:251:   ant                       noarch 1.7.1-7.jpp5       jpackage-generic-5.0 1.3 M
+DEBUG util.py:251:   antlr                     noarch 2.7.6-6.jpp5       jpackage-generic-5.0 345 k
+DEBUG util.py:251:   asm                       noarch 1.5.3-7.jpp5       jpackage-generic-5.0 217 k
+DEBUG util.py:251:   aspectj                   noarch 1.5.3-2jpp         jpackage-generic-5.0 8.1 M
+DEBUG util.py:251:   at                        x86_64 3.1.8-84.el5       os                    58 k
+DEBUG util.py:251:   atk                       x86_64 1.12.2-1.fc6       os                   224 k
+DEBUG util.py:251:   axis                      noarch 1.4-4.jpp5         jpackage-generic-5.0 9.9 M
+DEBUG util.py:251:   bc                        x86_64 1.06-21            os                   110 k
+DEBUG util.py:251:   bcel                      noarch 5.1-16.jpp5        jpackage-generic-5.0 459 k
+DEBUG util.py:251:   bea-stax                  x86_64 1.2.0-0.4.rc1.el5  epel                 430 k
+DEBUG util.py:251:   bea-stax-api              x86_64 1.2.0-0.4.rc1.el5  epel                  61 k
+DEBUG util.py:251:   bitstream-vera-fonts      noarch 1.10-7             os                   343 k
+DEBUG util.py:251:   bsf                       noarch 2.3.0-13.jpp5      jpackage-generic-5.0 1.2 M
+DEBUG util.py:251:   bsh                       noarch 1.3.0-13.jpp5      jpackage-generic-5.0 448 k
+DEBUG util.py:251:   cairo                     x86_64 1.2.4-5.el5        os                   386 k
+DEBUG util.py:251:   cglib                     noarch 2.1.3-4.jpp5       jpackage-generic-5.0 540 k
+DEBUG util.py:251:   classworlds               noarch 1.1-2.jpp5         jpackage-generic-5.0  39 k
+DEBUG util.py:251:   cssparser                 noarch 0.9.5-1.jpp5       jpackage-generic-5.0 246 k
+DEBUG util.py:251:   cups-libs                 x86_64 1:1.3.7-26.el5     os                   195 k
+DEBUG util.py:251:   cyrus-sasl-lib            x86_64 2.1.22-5.el5_4.3   os                   130 k
+DEBUG util.py:251:   dom4j                     noarch 1.6.1-10.jpp5      jpackage-generic-5.0 300 k
+DEBUG util.py:251:   easymock2                 noarch 2.3-1.jpp5         jpackage-generic-5.0  78 k
+DEBUG util.py:251:   eclipse-ecj               x86_64 1:3.2.1-19.el5.centos
+DEBUG util.py:251:                                                       os                   9.0 M
+DEBUG util.py:251:   ed                        x86_64 0.2-39.el5_2       os                    49 k
+DEBUG util.py:251:   excalibur                 noarch 1:1.0-0.r508111.13.jpp5
+DEBUG util.py:251:                                                       jpackage-generic-5.0  26 k
+DEBUG util.py:251:   excalibur-avalon-framework
+DEBUG util.py:251:                             noarch 1:4.3.1-0.r508111.13.jpp5
+DEBUG util.py:251:                                                       jpackage-generic-5.0  79 k
+DEBUG util.py:251:   excalibur-avalon-logkit   noarch 1:2.2.1-0.r508111.13.jpp5
+DEBUG util.py:251:                                                       jpackage-generic-5.0  79 k
+DEBUG util.py:251:   exim                      x86_64 4.63-5.el5_5.2     os                   1.2 M
+DEBUG util.py:251:   fontconfig                x86_64 2.4.1-7.el5        os                   175 k
+DEBUG util.py:251:   freetype                  x86_64 2.2.1-28.el5_5.1   os                   311 k
+DEBUG util.py:251:   ganymed-ssh2              noarch 210-5.jpp5         jpackage-generic-5.0 241 k
+DEBUG util.py:251:   geronimo-j2ee-1.4-apis    noarch 1.2-13.jpp5        jpackage-generic-5.0 948 k
+DEBUG util.py:251:   geronimo-specs-poms       noarch 1.2-13.jpp5        jpackage-generic-5.0  21 k
+DEBUG util.py:251:   geronimo-stax-1.0-api     noarch 1.2-13.jpp5        jpackage-generic-5.0  31 k
+DEBUG util.py:251:   gettext                   x86_64 0.17-1.el5         os                   2.4 M
+DEBUG util.py:251:   gjdoc                     x86_64 0.7.7-12.el5       os                   886 k
+DEBUG util.py:251:   glassfish-jaxb            noarch 2.1.4-7.jpp5       jpackage-generic-5.0 3.5 M
+DEBUG util.py:251:   gnutls                    x86_64 1.4.1-3.el5_4.8    os                   364 k
+DEBUG util.py:251:   groff                     x86_64 1.18.1.1-11.1      os                   1.9 M
+DEBUG util.py:251:   gtk2                      x86_64 2.10.4-21.el5_5.6  os                   6.6 M
+DEBUG util.py:251:   hamcrest                  noarch 1.1-8.jpp5         jpackage-generic-5.0 361 k
+DEBUG util.py:251:   hicolor-icon-theme        noarch 0.9-2.1            os                    25 k
+DEBUG util.py:251:   icu4j                     noarch 3.8.1-5.jpp5       jpackage-generic-5.0 4.0 M
+DEBUG util.py:251:   isorelax                  noarch 0.1-0.20041111.6.jpp5
+DEBUG util.py:251:                                                       jpackage-generic-5.0  71 k
+DEBUG util.py:251:   itext                     noarch 1.4-3.jpp5         jpackage-generic-5.0 1.2 M
+DEBUG util.py:251:   jakarta-commons-beanutils noarch 1.7.0-10.jpp5      jpackage-generic-5.0 342 k
+DEBUG util.py:251:   jakarta-commons-cli       noarch 1.1-1.jpp5         jpackage-generic-5.0  36 k
+DEBUG util.py:251:   jakarta-commons-cli10     noarch 1.0-9.jpp5         jpackage-generic-5.0  33 k
+DEBUG util.py:251:   jakarta-commons-codec     noarch 1.3-9.jpp5         jpackage-generic-5.0 179 k
+DEBUG util.py:251:   jakarta-commons-collections
+DEBUG util.py:251:                             x86_64 3.2-2jpp.3         os                   1.2 M
+DEBUG util.py:251:   jakarta-commons-digester  noarch 1.8-1jpp           jpackage-generic-5.0 152 k
+DEBUG util.py:251:   jakarta-commons-discovery noarch 1:0.4-6.jpp5       jpackage-generic-5.0  70 k
+DEBUG util.py:251:   jakarta-commons-httpclient
+DEBUG util.py:251:                             noarch 1:3.0.1-3.jpp5     jpackage-generic-5.0 200 k
+DEBUG util.py:251:   jakarta-commons-lang      noarch 2.1-7.jpp5         jpackage-generic-5.0 941 k
+DEBUG util.py:251:   jakarta-commons-logging   noarch 1.1-8.jpp5         jpackage-generic-5.0 116 k
+DEBUG util.py:251:   jakarta-commons-net       noarch 1.4.1-4.jpp5       jpackage-generic-5.0 166 k
+DEBUG util.py:251:   jakarta-commons-transaction
+DEBUG util.py:251:                             noarch 1.1-9.jpp5         jpackage-generic-5.0  81 k
+DEBUG util.py:251:   jakarta-oro               noarch 2.0.8-4.jpp5       jpackage-generic-5.0-updates
+DEBUG util.py:251:                                                                             72 k
+DEBUG util.py:251:   jakarta-slide-webdavclient
+DEBUG util.py:251:                             noarch 2.1-8.jpp5         jpackage-generic-5.0 215 k
+DEBUG util.py:251:   java-1.4.2-gcj-compat     x86_64 1.4.2.0-40jpp.115  os                    29 k
+DEBUG util.py:251:   jaxen                     noarch 1.1-3.jpp5         jpackage-generic-5.0 671 k
+DEBUG util.py:251:   jdk                       x86_64 2000:1.6.0_26-fcs  vdt                   68 M
+DEBUG util.py:251:   jdom                      noarch 1.0-5.jpp5         jpackage-generic-5.0 166 k
+DEBUG util.py:251:   jline                     noarch 0.9.94-1.jpp5      jpackage-generic-5.0  89 k
+DEBUG util.py:251:   jmock                     noarch 1.2.0-2.jpp5       jpackage-generic-5.0 280 k
+DEBUG util.py:251:   jpackage-utils            noarch 5.0.0-2.jpp5       jpackage-generic-5.0  72 k
+DEBUG util.py:251:   jpackage-utils-compat-el5 noarch 0.0.1-1            vdt                  2.6 k
+DEBUG util.py:251:   jsch                      noarch 0.1.40-1.jpp5      jpackage-generic-5.0 192 k
+DEBUG util.py:251:   jtidy                     noarch 1:8.0-0.813.1.jpp5 jpackage-generic-5.0 234 k
+DEBUG util.py:251:   junit                     noarch 3.8.2-7.jpp5       jpackage-generic-5.0 126 k
+DEBUG util.py:251:   junit4                    noarch 4.5-4.jpp5         jpackage-generic-5.0 193 k
+DEBUG util.py:251:   jzlib                     noarch 1.0.7-4.jpp5       jpackage-generic-5.0  37 k
+DEBUG util.py:251:   libICE                    x86_64 1.0.1-2.1          os                    54 k
+DEBUG util.py:251:   libSM                     x86_64 1.0.1-3.1          os                    28 k
+DEBUG util.py:251:   libX11                    x86_64 1.0.3-11.el5       os                   798 k
+DEBUG util.py:251:   libXau                    x86_64 1.0.1-3.1          os                    18 k
+DEBUG util.py:251:   libXcursor                x86_64 1.1.7-1.1          os                    32 k
+DEBUG util.py:251:   libXdmcp                  x86_64 1.0.1-2.1          os                    19 k
+DEBUG util.py:251:   libXext                   x86_64 1.0.1-2.1          os                    37 k
+DEBUG util.py:251:   libXfixes                 x86_64 4.0.1-2.1          os                    15 k
+DEBUG util.py:251:   libXft                    x86_64 2.1.10-1.1         os                    44 k
+DEBUG util.py:251:   libXi                     x86_64 1.0.1-4.el5_4      os                    26 k
+DEBUG util.py:251:   libXinerama               x86_64 1.0.1-2.1          os                   9.8 k
+DEBUG util.py:251:   libXrandr                 x86_64 1.1.1-3.3          os                    15 k
+DEBUG util.py:251:   libXrender                x86_64 0.9.1-3.1          os                    28 k
+DEBUG util.py:251:   libXtst                   x86_64 1.0.1-3.1          os                    16 k
+DEBUG util.py:251:   libart_lgpl               x86_64 2.3.17-4           os                    75 k
+DEBUG util.py:251:   libgcj                    x86_64 4.1.2-50.el5       os                    18 M
+DEBUG util.py:251:   libgcrypt                 x86_64 1.4.4-5.el5        os                   233 k
+DEBUG util.py:251:   libgpg-error              x86_64 1.4-2              os                    60 k
+DEBUG util.py:251:   libjpeg                   x86_64 6b-37              os                   139 k
+DEBUG util.py:251:   libpng                    x86_64 2:1.2.10-7.1.el5_5.3
+DEBUG util.py:251:                                                       os                   234 k
+DEBUG util.py:251:   libtiff                   x86_64 3.8.2-7.el5_5.5    os                   313 k
+DEBUG util.py:251:   libuser                   x86_64 0.54.7-2.1.el5_4.1 os                   450 k
+DEBUG util.py:251:   libxslt                   x86_64 1.1.17-2.el5_2.2   os                   488 k
+DEBUG util.py:251:   log4j                     noarch 1.2.14-15.jpp5     jpackage-generic-5.0 352 k
+DEBUG util.py:251:   m4                        x86_64 1.4.5-3.el5.1      os                   171 k
+DEBUG util.py:251:   man                       x86_64 1.6d-1.1           os                   265 k
+DEBUG util.py:251:   maven-doxia               noarch 1.0-0.a10.4.jpp5   jpackage-generic-5.0 486 k
+DEBUG util.py:251:   maven-shared              noarch 8-0.p8.5.jpp5      jpackage-generic-5.0 6.3 k
+DEBUG util.py:251:   maven-shared-monitor      noarch 1.0-0.p8.5.jpp5    jpackage-generic-5.0 9.3 k
+DEBUG util.py:251:   maven-surefire            noarch 2.3.1-3.jpp5       jpackage-generic-5.0  52 k
+DEBUG util.py:251:   maven-surefire-booter     noarch 2.3.1-3.jpp5       jpackage-generic-5.0  28 k
+DEBUG util.py:251:   maven-wagon               noarch 1.0-0.b2.3jpp      jpackage-generic-5.0 144 k
+DEBUG util.py:251:   maven2-common-poms        noarch 1.0-6.jpp5         jpackage-generic-5.0  47 k
+DEBUG util.py:251:   msv                       noarch 1.2-0.20050722.6.jpp5
+DEBUG util.py:251:                                                       jpackage-generic-5.0 585 k
+DEBUG util.py:251:   msv-xsdlib                noarch 1.2-0.20050722.6.jpp5
+DEBUG util.py:251:                                                       jpackage-generic-5.0 135 k
+DEBUG util.py:251:   mx4j                      x86_64 1:3.0.1-6jpp.4     os                   2.7 M
+DEBUG util.py:251:   mysql                     x86_64 5.0.77-4.el5_5.4   os                   4.8 M
+DEBUG util.py:251:   ognl                      noarch 2.6.9-3.jpp5       jpackage-generic-5.0 176 k
+DEBUG util.py:251:   openldap                  x86_64 2.3.43-12.el5_5.3  os                   303 k
+DEBUG util.py:251:   pango                     x86_64 1.14.9-8.el5.centos
+DEBUG util.py:251:                                                       os                   339 k
+DEBUG util.py:251:   passwd                    x86_64 0.73-2             os                    21 k
+DEBUG util.py:251:   pax                       x86_64 3.4-2.el5_4        os                    63 k
+DEBUG util.py:251:   perl-DBI                  x86_64 1.52-2.el5         os                   600 k
+DEBUG util.py:251:   plexus-ant-factory        noarch 1.0-0.a1.4.jpp5    jpackage-generic-5.0  12 k
+DEBUG util.py:251:   plexus-archiver           noarch 1.0-0.a8.1jpp      jpackage-generic-5.0 139 k
+DEBUG util.py:251:   plexus-bsh-factory        noarch 1.0-0.a7s.4.jpp5   jpackage-generic-5.0  11 k
+DEBUG util.py:251:   plexus-classworlds        noarch 1.2-0.a9.2.jpp5    jpackage-generic-5.0  41 k
+DEBUG util.py:251:   plexus-cli                noarch 1.2-2.jpp5         jpackage-generic-5.0  11 k
+DEBUG util.py:251:   plexus-compiler           noarch 1.5.3-3.jpp5       jpackage-generic-5.0  64 k
+DEBUG util.py:251:   plexus-container-default  noarch 1.0-0.a9s1.1jpp    jpackage-generic-5.0 162 k
+DEBUG util.py:251:   plexus-containers         noarch 1.0-0.a32.3.jpp5   jpackage-generic-5.0 5.8 k
+DEBUG util.py:251:   plexus-containers-component-api
+DEBUG util.py:251:                             noarch 1.0-0.a32.3.jpp5   jpackage-generic-5.0  29 k
+DEBUG util.py:251:   plexus-containers-container-default
+DEBUG util.py:251:                             noarch 1.0-0.a32.3.jpp5   jpackage-generic-5.0 200 k
+DEBUG util.py:251:   plexus-i18n               noarch 1.0-0.b6.5.jpp5    jpackage-generic-5.0  13 k
+DEBUG util.py:251:   plexus-interactivity      noarch 1.0-0.a5.6.jpp5    jpackage-generic-5.0  15 k
+DEBUG util.py:251:   plexus-io                 noarch 1.0-0.a1.1jpp      jpackage-generic-5.0  13 k
+DEBUG util.py:251:   plexus-utils              noarch 1.4.8-2.jpp5       jpackage-generic-5.0 194 k
+DEBUG util.py:251:   plexus-velocity           noarch 1.1.7-1jpp         jpackage-generic-5.0  11 k
+DEBUG util.py:251:   postgresql-libs           x86_64 8.1.22-1.el5_5.1   os                   196 k
+DEBUG util.py:251:   qdox                      noarch 1.6.1-5.jpp5       jpackage-generic-5.0  89 k
+DEBUG util.py:251:   redhat-lsb                x86_64 4.0-2.1.4.el5      os                    24 k
+DEBUG util.py:251:   regexp                    noarch 1.5-1.jpp5         jpackage-generic-5.0  40 k
+DEBUG util.py:251:   relaxngDatatype           noarch 1.0-3.jpp5         jpackage-generic-5.0 8.7 k
+DEBUG util.py:251:   sac                       noarch 1.3-4.jpp5         jpackage-generic-5.0  15 k
+DEBUG util.py:251:   saxon                     noarch 6.5.5-1.jpp5       jpackage-generic-5.0 415 k
+DEBUG util.py:251:   saxpath                   noarch 1.0-3.jpp5         jpackage-generic-5.0  34 k
+DEBUG util.py:251:   servletapi4               noarch 4.0.4-6.jpp5       jpackage-generic-5.0  76 k
+DEBUG util.py:251:   tcp_wrappers              x86_64 7.6-40.7.el5       os                   112 k
+DEBUG util.py:251:   time                      x86_64 1.7-27.2.2         os                    17 k
+DEBUG util.py:251:   tomcat5-jsp-2.0-api       noarch 5.5.27-7.jpp5      jpackage-generic-5.0  72 k
+DEBUG util.py:251:   tomcat5-servlet-2.4-api   noarch 5.5.27-7.jpp5      jpackage-generic-5.0 113 k
+DEBUG util.py:251:   velocity                  noarch 1.5-4.jpp5         jpackage-generic-5.0 363 k
+DEBUG util.py:251:   vixie-cron                x86_64 4:4.1-77.el5_4.1   os                    81 k
+DEBUG util.py:251:   werken-xpath              noarch 0.9.4-0.beta.13.jpp5
+DEBUG util.py:251:                                                       jpackage-generic-5.0  74 k
+DEBUG util.py:251:   ws-jaxme                  noarch 0.5.1-10.jpp5      jpackage-generic-5.0 1.2 M
+DEBUG util.py:251:   wsdl4j                    noarch 1.6.2-6.jpp5       jpackage-generic-5.0 177 k
+DEBUG util.py:251:   xalan-j2                  noarch 2.7.0-10.jpp5      jpackage-generic-5.0 1.7 M
+DEBUG util.py:251:   xerces-j2                 noarch 2.7.1-12.jpp5      jpackage-generic-5.0 1.0 M
+DEBUG util.py:251:   xml-commons               noarch 1.3.04-5.jpp5      jpackage-generic-5.0 9.0 k
+DEBUG util.py:251:   xml-commons-jaxp-1.2-apis noarch 1.3.04-5.jpp5      jpackage-generic-5.0 112 k
+DEBUG util.py:251:   xml-commons-jaxp-1.3-apis noarch 1.3.04-5.jpp5      jpackage-generic-5.0 224 k
+DEBUG util.py:251:   xml-commons-resolver      x86_64 1.1-1jpp.12        os                   170 k
+DEBUG util.py:251:   xml-im-exporter           noarch 1.1-4.jpp5         jpackage-generic-5.0  42 k
+DEBUG util.py:251:   xom                       noarch 1.2.1-1.jpp5       jpackage-generic-5.0 267 k
+DEBUG util.py:251:   xorg-x11-filesystem       noarch 7.1-2.fc6          os                   5.4 k
+DEBUG util.py:251:   xpp2                      noarch 2.1.10-6.jpp5      jpackage-generic-5.0 239 k
+DEBUG util.py:251:   xpp3                      noarch 1.1.3.8-1.jpp5     jpackage-generic-5.0 289 k
+DEBUG util.py:251:   zip                       x86_64 2.31-2.el5         os                   136 k
+DEBUG util.py:251:  Transaction Summary
+DEBUG util.py:251:  ================================================================================
+DEBUG util.py:251:  Install     163 Package(s)
+DEBUG util.py:251:  Upgrade       0 Package(s)
+DEBUG util.py:251:  Total download size: 173 M
+DEBUG util.py:251:  ftp://jpackage.hmdc.harvard.edu/JPackage/5.0/generic/free/RPMS/geronimo-j2ee-1.4-apis-1.2-13.jpp5.noarch.rpm: [Errno 4] Socket Error: timed out
+DEBUG util.py:251:  Trying other mirror.
+DEBUG util.py:251:  Unpacking JAR files...
+DEBUG util.py:251:  	rt.jar...
+DEBUG util.py:251:  	jsse.jar...
+DEBUG util.py:251:  	charsets.jar...
+DEBUG util.py:251:  	tools.jar...
+DEBUG util.py:251:  	localedata.jar...
+DEBUG util.py:251:  	plugin.jar...
+DEBUG util.py:251:  	javaws.jar...
+DEBUG util.py:251:  	deploy.jar...
+DEBUG util.py:251:  Installed:
+DEBUG util.py:251:    java-1.6.0-sun-compat.x86_64 0:1.6.0.26-4.sl5.jpp                             
+DEBUG util.py:251:    maven2.noarch 0:2.0.7-9.jpp5                                                  
+DEBUG util.py:251:  Dependency Installed:
+DEBUG util.py:251:    alsa-lib.x86_64 0:1.0.17-1.el5                                                
+DEBUG util.py:251:    ant.noarch 0:1.7.1-7.jpp5                                                     
+DEBUG util.py:251:    antlr.noarch 0:2.7.6-6.jpp5                                                   
+DEBUG util.py:251:    asm.noarch 0:1.5.3-7.jpp5                                                     
+DEBUG util.py:251:    aspectj.noarch 0:1.5.3-2jpp                                                   
+DEBUG util.py:251:    at.x86_64 0:3.1.8-84.el5                                                      
+DEBUG util.py:251:    atk.x86_64 0:1.12.2-1.fc6                                                     
+DEBUG util.py:251:    axis.noarch 0:1.4-4.jpp5                                                      
+DEBUG util.py:251:    bc.x86_64 0:1.06-21                                                           
+DEBUG util.py:251:    bcel.noarch 0:5.1-16.jpp5                                                     
+DEBUG util.py:251:    bea-stax.x86_64 0:1.2.0-0.4.rc1.el5                                           
+DEBUG util.py:251:    bea-stax-api.x86_64 0:1.2.0-0.4.rc1.el5                                       
+DEBUG util.py:251:    bitstream-vera-fonts.noarch 0:1.10-7                                          
+DEBUG util.py:251:    bsf.noarch 0:2.3.0-13.jpp5                                                    
+DEBUG util.py:251:    bsh.noarch 0:1.3.0-13.jpp5                                                    
+DEBUG util.py:251:    cairo.x86_64 0:1.2.4-5.el5                                                    
+DEBUG util.py:251:    cglib.noarch 0:2.1.3-4.jpp5                                                   
+DEBUG util.py:251:    classworlds.noarch 0:1.1-2.jpp5                                               
+DEBUG util.py:251:    cssparser.noarch 0:0.9.5-1.jpp5                                               
+DEBUG util.py:251:    cups-libs.x86_64 1:1.3.7-26.el5                                               
+DEBUG util.py:251:    cyrus-sasl-lib.x86_64 0:2.1.22-5.el5_4.3                                      
+DEBUG util.py:251:    dom4j.noarch 0:1.6.1-10.jpp5                                                  
+DEBUG util.py:251:    easymock2.noarch 0:2.3-1.jpp5                                                 
+DEBUG util.py:251:    eclipse-ecj.x86_64 1:3.2.1-19.el5.centos                                      
+DEBUG util.py:251:    ed.x86_64 0:0.2-39.el5_2                                                      
+DEBUG util.py:251:    excalibur.noarch 1:1.0-0.r508111.13.jpp5                                      
+DEBUG util.py:251:    excalibur-avalon-framework.noarch 1:4.3.1-0.r508111.13.jpp5                   
+DEBUG util.py:251:    excalibur-avalon-logkit.noarch 1:2.2.1-0.r508111.13.jpp5                      
+DEBUG util.py:251:    exim.x86_64 0:4.63-5.el5_5.2                                                  
+DEBUG util.py:251:    fontconfig.x86_64 0:2.4.1-7.el5                                               
+DEBUG util.py:251:    freetype.x86_64 0:2.2.1-28.el5_5.1                                            
+DEBUG util.py:251:    ganymed-ssh2.noarch 0:210-5.jpp5                                              
+DEBUG util.py:251:    geronimo-j2ee-1.4-apis.noarch 0:1.2-13.jpp5                                   
+DEBUG util.py:251:    geronimo-specs-poms.noarch 0:1.2-13.jpp5                                      
+DEBUG util.py:251:    geronimo-stax-1.0-api.noarch 0:1.2-13.jpp5                                    
+DEBUG util.py:251:    gettext.x86_64 0:0.17-1.el5                                                   
+DEBUG util.py:251:    gjdoc.x86_64 0:0.7.7-12.el5                                                   
+DEBUG util.py:251:    glassfish-jaxb.noarch 0:2.1.4-7.jpp5                                          
+DEBUG util.py:251:    gnutls.x86_64 0:1.4.1-3.el5_4.8                                               
+DEBUG util.py:251:    groff.x86_64 0:1.18.1.1-11.1                                                  
+DEBUG util.py:251:    gtk2.x86_64 0:2.10.4-21.el5_5.6                                               
+DEBUG util.py:251:    hamcrest.noarch 0:1.1-8.jpp5                                                  
+DEBUG util.py:251:    hicolor-icon-theme.noarch 0:0.9-2.1                                           
+DEBUG util.py:251:    icu4j.noarch 0:3.8.1-5.jpp5                                                   
+DEBUG util.py:251:    isorelax.noarch 0:0.1-0.20041111.6.jpp5                                       
+DEBUG util.py:251:    itext.noarch 0:1.4-3.jpp5                                                     
+DEBUG util.py:251:    jakarta-commons-beanutils.noarch 0:1.7.0-10.jpp5                              
+DEBUG util.py:251:    jakarta-commons-cli.noarch 0:1.1-1.jpp5                                       
+DEBUG util.py:251:    jakarta-commons-cli10.noarch 0:1.0-9.jpp5                                     
+DEBUG util.py:251:    jakarta-commons-codec.noarch 0:1.3-9.jpp5                                     
+DEBUG util.py:251:    jakarta-commons-collections.x86_64 0:3.2-2jpp.3                               
+DEBUG util.py:251:    jakarta-commons-digester.noarch 0:1.8-1jpp                                    
+DEBUG util.py:251:    jakarta-commons-discovery.noarch 1:0.4-6.jpp5                                 
+DEBUG util.py:251:    jakarta-commons-httpclient.noarch 1:3.0.1-3.jpp5                              
+DEBUG util.py:251:    jakarta-commons-lang.noarch 0:2.1-7.jpp5                                      
+DEBUG util.py:251:    jakarta-commons-logging.noarch 0:1.1-8.jpp5                                   
+DEBUG util.py:251:    jakarta-commons-net.noarch 0:1.4.1-4.jpp5                                     
+DEBUG util.py:251:    jakarta-commons-transaction.noarch 0:1.1-9.jpp5                               
+DEBUG util.py:251:    jakarta-oro.noarch 0:2.0.8-4.jpp5                                             
+DEBUG util.py:251:    jakarta-slide-webdavclient.noarch 0:2.1-8.jpp5                                
+DEBUG util.py:251:    java-1.4.2-gcj-compat.x86_64 0:1.4.2.0-40jpp.115                              
+DEBUG util.py:251:    jaxen.noarch 0:1.1-3.jpp5                                                     
+DEBUG util.py:251:    jdk.x86_64 2000:1.6.0_26-fcs                                                  
+DEBUG util.py:251:    jdom.noarch 0:1.0-5.jpp5                                                      
+DEBUG util.py:251:    jline.noarch 0:0.9.94-1.jpp5                                                  
+DEBUG util.py:251:    jmock.noarch 0:1.2.0-2.jpp5                                                   
+DEBUG util.py:251:    jpackage-utils.noarch 0:5.0.0-2.jpp5                                          
+DEBUG util.py:251:    jpackage-utils-compat-el5.noarch 0:0.0.1-1                                    
+DEBUG util.py:251:    jsch.noarch 0:0.1.40-1.jpp5                                                   
+DEBUG util.py:251:    jtidy.noarch 1:8.0-0.813.1.jpp5                                               
+DEBUG util.py:251:    junit.noarch 0:3.8.2-7.jpp5                                                   
+DEBUG util.py:251:    junit4.noarch 0:4.5-4.jpp5                                                    
+DEBUG util.py:251:    jzlib.noarch 0:1.0.7-4.jpp5                                                   
+DEBUG util.py:251:    libICE.x86_64 0:1.0.1-2.1                                                     
+DEBUG util.py:251:    libSM.x86_64 0:1.0.1-3.1                                                      
+DEBUG util.py:251:    libX11.x86_64 0:1.0.3-11.el5                                                  
+DEBUG util.py:251:    libXau.x86_64 0:1.0.1-3.1                                                     
+DEBUG util.py:251:    libXcursor.x86_64 0:1.1.7-1.1                                                 
+DEBUG util.py:251:    libXdmcp.x86_64 0:1.0.1-2.1                                                   
+DEBUG util.py:251:    libXext.x86_64 0:1.0.1-2.1                                                    
+DEBUG util.py:251:    libXfixes.x86_64 0:4.0.1-2.1                                                  
+DEBUG util.py:251:    libXft.x86_64 0:2.1.10-1.1                                                    
+DEBUG util.py:251:    libXi.x86_64 0:1.0.1-4.el5_4                                                  
+DEBUG util.py:251:    libXinerama.x86_64 0:1.0.1-2.1                                                
+DEBUG util.py:251:    libXrandr.x86_64 0:1.1.1-3.3                                                  
+DEBUG util.py:251:    libXrender.x86_64 0:0.9.1-3.1                                                 
+DEBUG util.py:251:    libXtst.x86_64 0:1.0.1-3.1                                                    
+DEBUG util.py:251:    libart_lgpl.x86_64 0:2.3.17-4                                                 
+DEBUG util.py:251:    libgcj.x86_64 0:4.1.2-50.el5                                                  
+DEBUG util.py:251:    libgcrypt.x86_64 0:1.4.4-5.el5                                                
+DEBUG util.py:251:    libgpg-error.x86_64 0:1.4-2                                                   
+DEBUG util.py:251:    libjpeg.x86_64 0:6b-37                                                        
+DEBUG util.py:251:    libpng.x86_64 2:1.2.10-7.1.el5_5.3                                            
+DEBUG util.py:251:    libtiff.x86_64 0:3.8.2-7.el5_5.5                                              
+DEBUG util.py:251:    libuser.x86_64 0:0.54.7-2.1.el5_4.1                                           
+DEBUG util.py:251:    libxslt.x86_64 0:1.1.17-2.el5_2.2                                             
+DEBUG util.py:251:    log4j.noarch 0:1.2.14-15.jpp5                                                 
+DEBUG util.py:251:    m4.x86_64 0:1.4.5-3.el5.1                                                     
+DEBUG util.py:251:    man.x86_64 0:1.6d-1.1                                                         
+DEBUG util.py:251:    maven-doxia.noarch 0:1.0-0.a10.4.jpp5                                         
+DEBUG util.py:251:    maven-shared.noarch 0:8-0.p8.5.jpp5                                           
+DEBUG util.py:251:    maven-shared-monitor.noarch 0:1.0-0.p8.5.jpp5                                 
+DEBUG util.py:251:    maven-surefire.noarch 0:2.3.1-3.jpp5                                          
+DEBUG util.py:251:    maven-surefire-booter.noarch 0:2.3.1-3.jpp5                                   
+DEBUG util.py:251:    maven-wagon.noarch 0:1.0-0.b2.3jpp                                            
+DEBUG util.py:251:    maven2-common-poms.noarch 0:1.0-6.jpp5                                        
+DEBUG util.py:251:    msv.noarch 0:1.2-0.20050722.6.jpp5                                            
+DEBUG util.py:251:    msv-xsdlib.noarch 0:1.2-0.20050722.6.jpp5                                     
+DEBUG util.py:251:    mx4j.x86_64 1:3.0.1-6jpp.4                                                    
+DEBUG util.py:251:    mysql.x86_64 0:5.0.77-4.el5_5.4                                               
+DEBUG util.py:251:    ognl.noarch 0:2.6.9-3.jpp5                                                    
+DEBUG util.py:251:    openldap.x86_64 0:2.3.43-12.el5_5.3                                           
+DEBUG util.py:251:    pango.x86_64 0:1.14.9-8.el5.centos                                            
+DEBUG util.py:251:    passwd.x86_64 0:0.73-2                                                        
+DEBUG util.py:251:    pax.x86_64 0:3.4-2.el5_4                                                      
+DEBUG util.py:251:    perl-DBI.x86_64 0:1.52-2.el5                                                  
+DEBUG util.py:251:    plexus-ant-factory.noarch 0:1.0-0.a1.4.jpp5                                   
+DEBUG util.py:251:    plexus-archiver.noarch 0:1.0-0.a8.1jpp                                        
+DEBUG util.py:251:    plexus-bsh-factory.noarch 0:1.0-0.a7s.4.jpp5                                  
+DEBUG util.py:251:    plexus-classworlds.noarch 0:1.2-0.a9.2.jpp5                                   
+DEBUG util.py:251:    plexus-cli.noarch 0:1.2-2.jpp5                                                
+DEBUG util.py:251:    plexus-compiler.noarch 0:1.5.3-3.jpp5                                         
+DEBUG util.py:251:    plexus-container-default.noarch 0:1.0-0.a9s1.1jpp                             
+DEBUG util.py:251:    plexus-containers.noarch 0:1.0-0.a32.3.jpp5                                   
+DEBUG util.py:251:    plexus-containers-component-api.noarch 0:1.0-0.a32.3.jpp5                     
+DEBUG util.py:251:    plexus-containers-container-default.noarch 0:1.0-0.a32.3.jpp5                 
+DEBUG util.py:251:    plexus-i18n.noarch 0:1.0-0.b6.5.jpp5                                          
+DEBUG util.py:251:    plexus-interactivity.noarch 0:1.0-0.a5.6.jpp5                                 
+DEBUG util.py:251:    plexus-io.noarch 0:1.0-0.a1.1jpp                                              
+DEBUG util.py:251:    plexus-utils.noarch 0:1.4.8-2.jpp5                                            
+DEBUG util.py:251:    plexus-velocity.noarch 0:1.1.7-1jpp                                           
+DEBUG util.py:251:    postgresql-libs.x86_64 0:8.1.22-1.el5_5.1                                     
+DEBUG util.py:251:    qdox.noarch 0:1.6.1-5.jpp5                                                    
+DEBUG util.py:251:    redhat-lsb.x86_64 0:4.0-2.1.4.el5                                             
+DEBUG util.py:251:    regexp.noarch 0:1.5-1.jpp5                                                    
+DEBUG util.py:251:    relaxngDatatype.noarch 0:1.0-3.jpp5                                           
+DEBUG util.py:251:    sac.noarch 0:1.3-4.jpp5                                                       
+DEBUG util.py:251:    saxon.noarch 0:6.5.5-1.jpp5                                                   
+DEBUG util.py:251:    saxpath.noarch 0:1.0-3.jpp5                                                   
+DEBUG util.py:251:    servletapi4.noarch 0:4.0.4-6.jpp5                                             
+DEBUG util.py:251:    tcp_wrappers.x86_64 0:7.6-40.7.el5                                            
+DEBUG util.py:251:    time.x86_64 0:1.7-27.2.2                                                      
+DEBUG util.py:251:    tomcat5-jsp-2.0-api.noarch 0:5.5.27-7.jpp5                                    
+DEBUG util.py:251:    tomcat5-servlet-2.4-api.noarch 0:5.5.27-7.jpp5                                
+DEBUG util.py:251:    velocity.noarch 0:1.5-4.jpp5                                                  
+DEBUG util.py:251:    vixie-cron.x86_64 4:4.1-77.el5_4.1                                            
+DEBUG util.py:251:    werken-xpath.noarch 0:0.9.4-0.beta.13.jpp5                                    
+DEBUG util.py:251:    ws-jaxme.noarch 0:0.5.1-10.jpp5                                               
+DEBUG util.py:251:    wsdl4j.noarch 0:1.6.2-6.jpp5                                                  
+DEBUG util.py:251:    xalan-j2.noarch 0:2.7.0-10.jpp5                                               
+DEBUG util.py:251:    xerces-j2.noarch 0:2.7.1-12.jpp5                                              
+DEBUG util.py:251:    xml-commons.noarch 0:1.3.04-5.jpp5                                            
+DEBUG util.py:251:    xml-commons-jaxp-1.2-apis.noarch 0:1.3.04-5.jpp5                              
+DEBUG util.py:251:    xml-commons-jaxp-1.3-apis.noarch 0:1.3.04-5.jpp5                              
+DEBUG util.py:251:    xml-commons-resolver.x86_64 0:1.1-1jpp.12                                     
+DEBUG util.py:251:    xml-im-exporter.noarch 0:1.1-4.jpp5                                           
+DEBUG util.py:251:    xom.noarch 0:1.2.1-1.jpp5                                                     
+DEBUG util.py:251:    xorg-x11-filesystem.noarch 0:7.1-2.fc6                                        
+DEBUG util.py:251:    xpp2.noarch 0:2.1.10-6.jpp5                                                   
+DEBUG util.py:251:    xpp3.noarch 0:1.1.3.8-1.jpp5                                                  
+DEBUG util.py:251:    zip.x86_64 0:2.31-2.el5                                                       
+DEBUG util.py:325:  Child returncode was: 0
+DEBUG util.py:286:  Executing command: ['ccache', '-M', '4G']
+DEBUG util.py:251:  Set cache size limit to 4194304k
+DEBUG util.py:325:  Child returncode was: 0
+DEBUG backend.py:578:  Copying packages to result dir
+DEBUG util.py:286:  Executing command: umount -n /var/lib/mock/mock-auto-x86_64.110.22172/root/dev/shm
+DEBUG util.py:325:  Child returncode was: 0
+DEBUG util.py:286:  Executing command: umount -n /var/lib/mock/mock-auto-x86_64.110.22172/root/dev/pts
+DEBUG util.py:325:  Child returncode was: 0
+DEBUG util.py:286:  Executing command: umount -n /var/lib/mock/mock-auto-x86_64.110.22172/root/tmp/ccache
+DEBUG util.py:325:  Child returncode was: 0
+DEBUG util.py:286:  Executing command: umount -n /var/lib/mock/mock-auto-x86_64.110.22172/root/var/cache/yum
+DEBUG util.py:325:  Child returncode was: 0
+DEBUG util.py:286:  Executing command: umount -n /var/lib/mock/mock-auto-x86_64.110.22172/root/sys
+DEBUG util.py:325:  Child returncode was: 0
+DEBUG util.py:286:  Executing command: umount -n /var/lib/mock/mock-auto-x86_64.110.22172/root/proc
+DEBUG util.py:251:  umount: /var/lib/mock/mock-auto-x86_64.110.22172/root/proc: device is busy
+DEBUG util.py:325:  Child returncode was: 1
+WARNING backend.py:704:  Command failed. See logs for output.
+ # umount -n /var/lib/mock/mock-auto-x86_64.110.22172/root/proc
+DEBUG backend.py:720:  using 'fuser' to find users of /var/lib/mock/mock-auto-x86_64.110.22172/root/proc
+DEBUG util.py:286:  Executing command: ['/sbin/fuser', '-a', '-v', '/var/lib/mock/mock-auto-x86_64.110.22172/root/proc']
+DEBUG util.py:251:                       USER        PID ACCESS COMMAND
+DEBUG util.py:251:  /var/lib/mock/mock-auto-x86_64.110.22172/root/proc:
+DEBUG util.py:325:  Child returncode was: 1
+DEBUG backend.py:722:  
+                     USER        PID ACCESS COMMAND
+/var/lib/mock/mock-auto-x86_64.110.22172/root/proc:
+
+WARNING backend.py:714:  Forcibly unmounting '/var/lib/mock/mock-auto-x86_64.110.22172/root/proc/sys/fs/binfmt_misc' from chroot.
+DEBUG util.py:286:  Executing command: umount -n /var/lib/mock/mock-auto-x86_64.110.22172/root/proc/sys/fs/binfmt_misc
+DEBUG util.py:325:  Child returncode was: 0
+WARNING backend.py:714:  Forcibly unmounting '/var/lib/mock/mock-auto-x86_64.110.22172/root/proc' from chroot.
+DEBUG util.py:286:  Executing command: umount -n /var/lib/mock/mock-auto-x86_64.110.22172/root/proc
+DEBUG util.py:325:  Child returncode was: 0
+DEBUG util.py:112:  kill orphans
+DEBUG util.py:84:  remove tree: /var/lib/mock/mock-auto-x86_64.110.22172.tmp
+INFO backend.py:170:  chroot (/var/lib/mock/mock-auto-x86_64.110.22172) unlocked and deleted
+DEBUG util.py:112:  kill orphans
