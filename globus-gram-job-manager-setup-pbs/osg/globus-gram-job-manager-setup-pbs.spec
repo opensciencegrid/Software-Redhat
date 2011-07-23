@@ -20,7 +20,6 @@ Source:		%{_name}-%{version}.tar.gz
 #		README file
 Source8:	GLOBUS-GRAM5
 Patch1000: teragrid-pbs.patch
-#Patch1001: osg-grid-location.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -69,7 +68,6 @@ PBS Job Manager Setup Documentation Files
 %prep
 %setup -q -n %{_name}-%{version}
 %patch1000 -p1
-#%patch1001 -p1
 
 %build
 # Remove files that should be replaced during bootstrap
