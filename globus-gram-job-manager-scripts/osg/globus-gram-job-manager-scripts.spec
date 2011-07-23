@@ -27,6 +27,8 @@ Patch0:		%{name}.patch
 Patch1:		%{name}-undefined.patch
 #       OSG patch: Allow Gratia to work. (Save certificate information)
 Patch1000: gratia.patch
+#       OSG patch: Read OSG job environment files, push to job environment
+Patch1001: osg-environment.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -63,6 +65,7 @@ GRAM Job ManagerScripts Documentation Files
 %patch0 -p1
 %patch1 -p1
 %patch1000 -p1
+%patch1001 -p1
 
 %build
 # Remove files that should be replaced during bootstrap
