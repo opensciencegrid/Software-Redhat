@@ -48,9 +48,7 @@ getent passwd rsv >/dev/null || useradd -r -g rsv -d /var/rsv -s /bin/sh -c "RSV
 rm -fr $RPM_BUILD_ROOT
 
 # Create the logging directories
-mkdir -p $RPM_BUILD_ROOT%{_var}/log/rsv/consumers
-mkdir -p $RPM_BUILD_ROOT%{_var}/log/rsv/metrics
-ln -s metrics $RPM_BUILD_ROOT%{_var}/log/rsv/probes
+mkdir -p $RPM_BUILD_ROOT%{_var}/log/rsv
 
 # Install the executable
 mkdir -p $RPM_BUILD_ROOT%{_bindir}
@@ -80,9 +78,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root,-)
 
-%{_var}/log/rsv/consumers
-%{_var}/log/rsv/metrics
-%{_var}/log/rsv/probes
+%attr(-,rsv,rsv) %{_var}/log/rsv
 
 %{_bindir}/rsv-control
 %{_libexecdir}/rsv/misc/
@@ -93,6 +89,7 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/rsv/*
 
 %{_mandir}/man1/rsv-control.1*
+
 
 
 %changelog

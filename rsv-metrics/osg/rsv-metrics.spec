@@ -66,6 +66,10 @@ cp -r etc/metrics $RPM_BUILD_ROOT%{_sysconfdir}/rsv/
 # Area for records awaiting processing
 mkdir -p $RPM_BUILD_ROOT%{_var}/spool/rsv
 
+# Create the logging directories
+mkdir -p $RPM_BUILD_ROOT%{_var}/log/rsv/metrics
+ln -s metrics $RPM_BUILD_ROOT%{_var}/log/rsv/probes
+
 
 %clean
 #rmdir %{_sysconfdir}/rsv/meta/metrics
@@ -85,6 +89,8 @@ rm -rf $RPM_BUILD_ROOT
 
 # Metric records will be placed in spool
 %attr(-,rsv,rsv) %{_var}/spool/rsv
+%attr(-,rsv,rsv) %{_var}/log/rsv/metrics
+%attr(-,rsv,rsv) %{_var}/log/rsv/probes
 
 %changelog
 * Wed Jul 20 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.4.0-1
