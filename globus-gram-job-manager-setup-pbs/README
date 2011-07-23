@@ -1,0 +1,4 @@
+This is a patched version from EPEL. It was patched to add two patches
+(patches #1000 & #1001). Other than that, the spec file is identical
+to the upstream EPEL spec file.
+
