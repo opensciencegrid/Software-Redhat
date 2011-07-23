@@ -37,7 +37,8 @@ Page can be viewed at https://your_hostname/site (or https://localhost/site)
 #   -T          Do not autounpack Source0
 #   -q          quiet
 #%setup -q -n %{name}
-%setup -c 
+#%setup -c 
+%setup
 
 %build
 # sed -i "s/HOSTNAME/`/bin/hostname`/" bin/setup-osg-portal
@@ -64,7 +65,11 @@ done
 # Touch files so that are removed with uninstall
 touch $RPM_BUILD_ROOT%{_sysconfdir}/osg/siteindexconfig.ini
 
+%post
 # restart apache if running to get the new configuration
+/sbin/service httpd condrestart 2>&1 > /dev/null
+
+%postun
 /sbin/service httpd condrestart 2>&1 > /dev/null
 
 %clean
@@ -80,7 +85,9 @@ touch $RPM_BUILD_ROOT%{_sysconfdir}/osg/siteindexconfig.ini
 %{_sysconfdir}/httpd/conf.d/%{name}.conf
 
 %changelog
-* Thu Jul 21 2011 Marco Mambelli <marco@hep.uchicago.edu> 0.14
-Initial creation of spec file
+* Sat Jul 23 2011 Marco Mambelli <marco@hep.uchicago.edu> 0.14
+pre and post-install added
 * Fri Jul 22 2011 Marco Mambelli <marco@hep.uchicago.edu> 0.14
 modification to eliminate setup-osg-portal
+* Thu Jul 21 2011 Marco Mambelli <marco@hep.uchicago.edu> 0.14
+Initial creation of spec file
