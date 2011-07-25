@@ -64,13 +64,16 @@ mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/rsv/meta
 cp -r etc/meta/metrics $RPM_BUILD_ROOT%{_sysconfdir}/rsv/meta/
 cp -r etc/metrics $RPM_BUILD_ROOT%{_sysconfdir}/rsv/
 
+# Install helper files
+mkdir -p $RPM_BUILD_ROOT%{_datadir}/rsv/
+cp -r usr/share/rsv/probe-helper-files $RPM_BUILD_ROOT%{_datadir}/rsv/
+
 # Area for records awaiting processing
 mkdir -p $RPM_BUILD_ROOT%{_var}/spool/rsv
 
 # Create the logging directories
 mkdir -p $RPM_BUILD_ROOT%{_var}/log/rsv/metrics
 ln -s metrics $RPM_BUILD_ROOT%{_var}/log/rsv/probes
-
 
 %clean
 #rmdir %{_sysconfdir}/rsv/meta/metrics
@@ -84,8 +87,9 @@ rm -rf $RPM_BUILD_ROOT
 # This package owns these directories and everything in them
 %{_libexecdir}/rsv/probes/
 %{_libexecdir}/rsv/metrics/
+%{_datadir}/rsv/probe-helper-files/
 
-%config %{_sysconfdir}/rsv/meta/metrics/*
+%config
 %config(noreplace) %{_sysconfdir}/rsv/metrics/*
 
 # Metric records will be placed in spool
