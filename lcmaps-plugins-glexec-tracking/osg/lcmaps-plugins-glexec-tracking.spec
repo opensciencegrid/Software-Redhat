@@ -37,9 +37,9 @@ make %{?_smp_mflags}
 rm -rf $RPM_BUILD_ROOT
 
 make DESTDIR=$RPM_BUILD_ROOT install
-mv $RPM_BUILD_ROOT/usr/lib64/lcmaps $RPM_BUILD_ROOT/usr/lib64/modules
-ln -s liblcmaps_glexec_tracking.so $RPM_BUILD_ROOT/usr/lib64/modules/liblcmaps_glexec_tracking.so.0
-ln -s liblcmaps_glexec_tracking.so.0 $RPM_BUILD_ROOT/usr/lib64/modules/liblcmaps_glexec_tracking.so.0.0.0
+mv $RPM_BUILD_ROOT/%{_libdir}/lcmaps $RPM_BUILD_ROOT/%{_libdir}/modules
+ln -s liblcmaps_glexec_tracking.so $RPM_BUILD_ROOT/%{_libdir}/modules/liblcmaps_glexec_tracking.so.0
+ln -s liblcmaps_glexec_tracking.so.0 $RPM_BUILD_ROOT/%{_libdir}/modules/liblcmaps_glexec_tracking.so.0.0.0
 find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
 
 %clean
