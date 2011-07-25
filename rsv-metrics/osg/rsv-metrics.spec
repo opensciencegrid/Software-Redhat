@@ -24,6 +24,7 @@ Requires:  perl(Date::Manip)
 # TODO - add the following dependencies once we know their RPM names
 Requires: /usr/bin/grid-proxy-info
 Requires: /usr/bin/globus-job-run
+Requires: /usr/bin/globusrun
 #package('Globus-Base-RM-Client')
 #package('SRM-Client-Fermi')
 #package('Dccp')
