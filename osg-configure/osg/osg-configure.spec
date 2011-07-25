@@ -1,6 +1,6 @@
 %global name osg-configure
-%global version 0.0.3
-%global release 2%{?dist}
+%global version 0.0.4
+%global release 1%{?dist}
 
 Summary: Package for configure-osg and associated scripts
 Name: %{name}
@@ -50,6 +50,9 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/configure_osg/configure_modules/*.pyo
 
 %changelog
+* Mon Jul 25 2011 Suchandra Thapa <sthapa@ci.uchicago.edu> - 0.0.3-1
+- Update to 0.0.4
+
 * Mon Jul 25 2011 Suchandra Thapa <sthapa@ci.uchicago.edu> - 0.0.3-1
 - Update to 0.0.3
 - Fix python_sitelab declaration
