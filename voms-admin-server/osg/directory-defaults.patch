@@ -10,18 +10,21 @@
  def voms_admin_config_dir_prefix():
      conf_dir_prefix = os.environ.get('VOMS_ADMIN_LOCATION_VAR')
      if conf_dir_prefix is None:
---- resources/scripts/voms-admin-configure.py.orig	2011-07-21 14:11:02.000000000 -0500
-+++ resources/scripts/voms-admin-configure.py	2011-07-21 13:37:28.000000000 -0500
-@@ -23,6 +23,12 @@
- #     Karoly Lorentey - karoly.lorentey@cern.ch
- import os.path,getopt,sys,exceptions,pwd,grp,socket
- from os import environ
-+
-+environ.setdefault("VOMS_ADMIN_LOCATION_VAR", "/")
-+environ.setdefault("VOMS_LOCATION_VAR", "/var/lib/voms")
-+environ.setdefault("VOMS_LOCATION", "/usr")
-+environ.setdefault("VOMS_ADMIN_LOCATION", "/usr/share/voms-admin")
-+environ.setdefault("VOMS_LOCATION_CONF", "/")
- from voms import *
+--- resources/scripts/voms.py.orig	2011-07-25 16:44:44.000000000 -0500
++++ resources/scripts/voms.py	2011-07-25 16:46:03.000000000 -0500
+@@ -20,6 +20,13 @@
  
- options = {}
+ import exceptions,re,os,os.path,commands,glob,socket,string,shutil,time,popen2
+ 
++os.environ.setdefault("VOMS_ADMIN_LOCATION_VAR", "/")
++os.environ.setdefault("VOMS_LOCATION_VAR", "/var/lib/voms")
++os.environ.setdefault("VOMS_LOCATION", "/usr")
++os.environ.setdefault("VOMS_ADMIN_LOCATION", "/usr/share/voms-admin")
++os.environ.setdefault("VOMS_LOCATION_CONF", "/")
++
++
+ voms_admin_server_version = "${server-version}"
+ 
+ def exit_status(status):
+         
+ 

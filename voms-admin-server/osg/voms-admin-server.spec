@@ -1,7 +1,7 @@
 Summary: emi.voms.voms-admin-server
 Name: voms-admin-server
 Version: 2.6.1
-Release: 7
+Release: 8
 License: Apache Software License
 Vendor: EMI
 Group: System Environment/Libraries
@@ -185,6 +185,9 @@ rm -rf $RPM_BUILD_ROOT
 /usr/share/tomcat5/common/lib/voms-admin-eclipse-ecj.jar
 
 %changelog
+* Mon Jul 25 2011 Tanya Levshina <tlevshin@fnal.gov> - 2.6.1-8
+changed patch1 - patches voms.py and not voms-admin-configure.py
+
 * Fri Jul 22 2011 Tanya Levshina <tlevshin@fnal.gov> - 2.6.1-7
 added requires grid-certificates
 
