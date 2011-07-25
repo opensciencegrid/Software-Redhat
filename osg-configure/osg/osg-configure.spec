@@ -1,5 +1,5 @@
 %global name osg-configure
-%global version 0.0.4
+%global version 0.5.0
 %global release 1%{?dist}
 
 Summary: Package for configure-osg and associated scripts
@@ -50,6 +50,9 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/configure_osg/configure_modules/*.pyo
 
 %changelog
+* Mon Jul 25 2011 Suchandra Thapa <sthapa@ci.uchicago.edu> - 0.0.3-1
+- Update to 0.5.0
+
 * Mon Jul 25 2011 Suchandra Thapa <sthapa@ci.uchicago.edu> - 0.0.3-1
 - Update to 0.0.4
 
