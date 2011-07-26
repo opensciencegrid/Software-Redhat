@@ -122,18 +122,6 @@ diff -ru gratia-probe-1.07.02e.back/hadoop-storage/hadoop_storage_probe gratia-p
  except:
      has_gratia = False
      Gratia = None
-diff -ru gratia-probe-1.07.02e.back/metric/Metric.py gratia-probe-1.07.02e.orig/metric/Metric.py
---- gratia-probe-1.07.02e.back/metric/Metric.py	2011-07-21 11:58:24.931880432 -0500
-+++ gratia-probe-1.07.02e.orig/metric/Metric.py	2011-07-21 14:29:52.667880054 -0500
-@@ -3,7 +3,7 @@
- ## Updated by Arvind Gopu, Indiana University (http://peart.ucs.indiana.edu)
- ## More Updates by Arvind Gopu 2007-10-19
- 
--import GratiaCore
-+import gratia.common.GratiaCore
- from GratiaCore import *
- 
- class MetricRecord(GratiaCore.Record):
 diff -ru gratia-probe-1.07.02e.back/services/ComputeElement.py gratia-probe-1.07.02e.orig/services/ComputeElement.py
 --- gratia-probe-1.07.02e.back/services/ComputeElement.py	2011-07-21 11:58:24.937880517 -0500
 +++ gratia-probe-1.07.02e.orig/services/ComputeElement.py	2011-07-21 14:30:43.942005359 -0500

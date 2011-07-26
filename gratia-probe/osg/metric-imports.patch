@@ -1,0 +1,12 @@
+--- gratia-probe-1.07.02e/metric/Metric.py	2011-05-19 08:28:52.000000000 -0500
++++ gratia-probe-1.07.02e.orig/metric/Metric.py	2011-07-25 10:49:55.917942574 -0500
+@@ -3,8 +3,7 @@
+ ## Updated by Arvind Gopu, Indiana University (http://peart.ucs.indiana.edu)
+ ## More Updates by Arvind Gopu 2007-10-19
+ 
+-import GratiaCore
+-from GratiaCore import *
++from gratia.common.GratiaCore import *
+ 
+ class MetricRecord(GratiaCore.Record):
+     """

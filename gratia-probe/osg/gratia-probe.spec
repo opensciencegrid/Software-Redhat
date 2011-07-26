@@ -2,7 +2,7 @@ Name:               gratia-probe
 Summary:            Gratia OSG accounting system probes
 Group:              Applications/System
 Version:            1.07.02e
-Release:            0.4.pre
+Release:            0.5.pre
 License:            GPL
 Group:              Applications/System
 URL:                http://sourceforge.net/projects/gratia/
@@ -23,6 +23,7 @@ Patch0: change-folders.patch
 Patch1: change-imports.patch
 Patch2: condor-probe-change-probeconfig.patch
 Patch3: gratiapy-change-imports.patch
+Patch4: metric-imports.patch
 
 # Required for dCache transfer probe.
 %global psycopg2_version 2.0.6
@@ -139,6 +140,7 @@ Prefix: /etc
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
 
 %build
 %ifnarch noarch
@@ -1329,6 +1331,9 @@ fi
 %endif # noarch
 
 %changelog
+* Fri Jul 22 2011 Derek Weitzel <dweitzel@cse.unl.edu> - 1.07.02e-0.5.pre
+- Changes to move things into FHS locations
+
 * Thu Jun 2 2011 Derek Weitzel <dweitzel@cse.unl.edu> - 1.07.02e-0.4.pre
 - Fixed hadoop probe for 0.20
 
