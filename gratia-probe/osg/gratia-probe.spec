@@ -791,7 +791,8 @@ EOF
 Summary: Gratia OSG accounting system probe for dCache billing.
 Group: Application/System
 Requires: %{name}-common >= 1.04.4e
-Requires: %{name}-extra-libs-arch-spec
+Requires:  python-psycopg2
+#Requires: %{name}-extra-libs-arch-spec
 Requires: python-psycopg2
 License: See LICENSE.
 Obsoletes: %{name}-dCache
