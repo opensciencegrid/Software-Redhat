@@ -1,0 +1,11 @@
+--- /usr/src/debug/globus_gram_job_manager-10.70/logging.c	2011-06-07 10:15:59.000000000 -0500
++++ logging.c	2011-07-26 20:17:44.000000000 -0500
+@@ -201,7 +201,7 @@
+ {
+     static char *                       DATE_SYMBOL = "DATE";
+     globus_gram_job_manager_config_t *  config = user_arg;
+-    const char *                        log_pattern;
++    const char *                        log_pattern = NULL;
+     time_t                              now;
+     struct tm *                         now_tm;
+     char                                now_str[9];

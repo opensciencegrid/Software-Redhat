@@ -1,0 +1,7 @@
+
+This is a repackaging of the EPEL globus-gram-job-manager
+
+There are two patches of note:
+1) logging_null.patch: Fixes a segfault when TRACE logs are turned on.
+2) double_lock.patch: Fixes a deadlock in job-manager upon startup.
+
