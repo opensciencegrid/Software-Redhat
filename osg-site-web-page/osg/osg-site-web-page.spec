@@ -1,6 +1,6 @@
 Name:           osg-site-web-page
 Version:        0.14
-Release:        2
+Release:        3
 Summary:        OSG Site Web Page Generation Script
 Group:          System Environment
 License:        ASL 2.0
@@ -85,6 +85,8 @@ touch $RPM_BUILD_ROOT%{_sysconfdir}/osg/siteindexconfig.ini
 %{_sysconfdir}/httpd/conf.d/%{name}.conf
 
 %changelog
+* Thu Jul 28 2011 Marco Mambelli <marco@hep.uchicago.edu> 0.14
+removed OSG_LOCATION options, improved Makefile
 * Sat Jul 23 2011 Marco Mambelli <marco@hep.uchicago.edu> 0.14
 pre and post-install added
 * Fri Jul 22 2011 Marco Mambelli <marco@hep.uchicago.edu> 0.14
