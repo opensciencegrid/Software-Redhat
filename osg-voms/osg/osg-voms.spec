@@ -16,9 +16,6 @@ Requires: mysql-server
 #from epel
 Requires: voms-server
 Requires: voms-mysql-plugin
-#from vdt
-Requires: voms-admin-server
-Requires: voms-admin-client
 
 %description
 %{summary}
