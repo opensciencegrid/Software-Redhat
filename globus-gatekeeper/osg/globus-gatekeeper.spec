@@ -129,7 +129,7 @@ install -p %{SOURCE2} $RPM_BUILD_ROOT%{_initrddir}
 
 # Install sysconfig defaults
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig
-install -p %{SOURCE9} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/globus-gatekeeper
+install -p %{SOURCE9} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/%{name}
 
 # Install license file
 mkdir -p $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
@@ -176,6 +176,7 @@ fi
 %dir %{_datadir}/globus/packages/%{_name}_setup
 %{_datadir}/globus/packages/setup/%{_name}_setup
 %{_initrddir}/%{name}
+%{_sysconfdir}/sysconfig/%{name}
 %doc %{_docdir}/%{name}-%{version}/README.Fedora
 
 %changelog
