@@ -36,7 +36,7 @@ verifyproxy = "lcmaps_verify_proxy.mod"
           "--allow-limited-proxy"
           " -certdir /etc/grid-security/certificates"
 
-tracking = "lcmaps_tracking.mod"
+tracking = "lcmaps_glexec_tracking.mod"
            "-exec /usr/sbin/glexec_monitor"
            "-procddir /usr"
 # Uncomment to write tracking info to glexec_monitor.log in the given dir
