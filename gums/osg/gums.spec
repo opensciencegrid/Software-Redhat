@@ -5,7 +5,7 @@
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.3.18.002
-Release: 1
+Release: 2
 License: Unknown
 Group: System Environment/Daemons
 BuildRequires: maven2
@@ -22,6 +22,8 @@ Source0: %{name}-core-%{version}.tar.gz
 # tar zcf gums-client-1.3.18.002.tar.gz gums-client
 Source1: %{name}-client-%{version}.tar.gz
 
+Source2: gums-host-cron
+
 Patch0: gums-build.patch
 
 %description
@@ -29,6 +31,7 @@ Patch0: gums-build.patch
 
 %package client
 Requires: %{name} = %{version}
+Requires: osg-vo-map
 Group: System Environment/Daemons
 Summary: Clients for GUMS
 
@@ -64,6 +67,7 @@ install -m 0644 gums-client/target/lib/endorsed/*.jar $RPM_BUILD_ROOT%{_noarchli
 # Scripts
 mkdir -p $RPM_BUILD_ROOT%{_bindir}
 install -m 0755 gums-client/src/main/scripts/* $RPM_BUILD_ROOT%{_bindir}/
+install -m 0755 %{SOURCE2} $RPM_BUILD_ROOT%{_bindir}/gums-host-cron
 
 # Configuration files
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/%{dirname}
@@ -71,6 +75,17 @@ install -m 0644 gums-client/src/main/config/*  $RPM_BUILD_ROOT%{_sysconfdir}/%{d
 
 # Log directory
 mkdir -p $RPM_BUILD_ROOT/var/log/%{dirname}
+
+mkdir -p $RPM_BUILD_ROOT/var/lib/osg
+cat > $RPM_BUILD_ROOT/var/lib/osg/user-vo-map << EOF
+# This is an empty user-vo-map.
+# Run gums-host-cron to generate a real one.
+EOF
+
+cat > $RPM_BUILD_ROOT/var/lib/osg/supported-vo-list << EOF
+# This is an empty supported-vo-list.
+# Run gums-host-cron to generate a real one.
+EOF
 
 %files
 %defattr(-,root,root,-)
@@ -81,9 +96,14 @@ mkdir -p $RPM_BUILD_ROOT/var/log/%{dirname}
 %config(noreplace) %{_sysconfdir}/%{dirname}/gums-client.properties
 %config(noreplace) %{_sysconfdir}/%{dirname}/gums-nagios.conf
 %config(noreplace) %{_sysconfdir}/%{dirname}/log4j.properties
+%config(noreplace) /var/lib/osg/user-vo-map
+%config(noreplace) /var/lib/osg/supported-vo-list
 %dir /var/log/%{dirname}
 
 %changelog
+* Fri Jul 29 2011 Brian Bockelman <bbockelm@cse.unl.edu> 1.3.18.002-2
+- Rewrite gums-host-cron to work with the RPM layout.
+
 * Thu Jun 2 2011 Brian Bockelman <bbockelm@cse.unl.edu> 1.3.17-2
 - Initial source RPM from GUMS website's binary tarball.
 
