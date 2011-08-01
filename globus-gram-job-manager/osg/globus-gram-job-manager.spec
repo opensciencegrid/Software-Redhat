@@ -49,6 +49,7 @@ Patch4:		%{name}-doxygen.patch
 Patch5:         logging_null.patch
 Patch6:         double_lock.patch
 Patch7:         close_deadlock.patch
+Patch8:         job_status.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -134,6 +135,7 @@ cd -
 %patch5 -p0
 %patch6 -p0
 %patch7 -p0
+%patch8 -p1
 
 %build
 # Remove files that should be replaced during bootstrap
