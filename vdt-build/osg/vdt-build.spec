@@ -1,7 +1,7 @@
 
 Name:           vdt-build
-Version:        0.0.13
-Release:        1%{?dist}
+Version:        0.0.14
+Release:        2%{?dist}
 Summary:        Build tools for the VDT
 
 Group:          System Environment/Tools
@@ -41,6 +41,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/%{name}
 %{_bindir}/push-rpm-to-vdt
 %{python_sitelib}/VDTBuildConstants.py*
+%{python_sitelib}/VDTBuildMockConfig.py*
 %{python_sitelib}/VDTBuildUtils.py*
 %{python_sitelib}/platform-post.py*
 %{python_sitelib}/remote-declare.py*
@@ -48,6 +49,13 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_docdir}/%{name}/sample-vdt-build.ini
 
 %changelog
+* Mon Aug 01 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 0.0.14-2
+- Dead code/comment removal
+
+* Fri Jul 29 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 0.0.14-1
+- Some code cleanup and bugfixes. Automatic koji importing and tagging
+  added to platform-post.py
+
 * Fri Jul 22 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 0.0.13-1
 - Added configurable dist tag
 
