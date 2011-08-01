@@ -1,6 +1,6 @@
 Name:           osg-site-web-page
 Version:        0.15
-Release:        1
+Release:        2
 Summary:        OSG Site Web Page Generation Script
 Group:          System Environment
 License:        ASL 2.0
@@ -66,12 +66,13 @@ done
 touch $RPM_BUILD_ROOT%{_sysconfdir}/osg/siteindexconfig.ini
 
 %post
-if [ ! -f /etc/osg/config.ini ]
+if [ -f /etc/osg/config.ini ]
 then
- cat /etc/osg/ce.ini /etc/osg/storage.ini /etc/osg/gums.ini /etc/osg/rsv.ini > /etc/osg/config.ini
+ # conditional execution instead of creating a temporary config.ini 
+ # cat /etc/osg/ce.ini /etc/osg/storage.ini /etc/osg/gums.ini /etc/osg/rsv.ini > /etc/osg/config.ini
+ /usr/sbin/osg-make-portal-config -q
+ /usr/sbin/osg-make-portal -q
 fi
-/sbin/osg-make-portal
-/sbin/osg-make-portal-config
 # restart apache if running to get the new configuration
 /sbin/service httpd condrestart 2>&1 > /dev/null
 
@@ -91,6 +92,13 @@ fi
 %{_sysconfdir}/httpd/conf.d/%{name}.conf
 
 %changelog
+* Mon Aug 1 2011 Marco Mambelli <marco@hep.uchicago.edu> 0.15
+running the scripts only is config.ini exists already 
+* Mon Aug 1 2011 Marco Mambelli <marco@hep.uchicago.edu> 0.15
+binaries renamed osg-make-... instead of make-osg-...
+some URL fixed in the tamplate
+warning added if configuration is incomplete
+running the scripts in post install
 * Thu Jul 28 2011 Marco Mambelli <marco@hep.uchicago.edu> 0.14
 removed OSG_LOCATION options, improved Makefile
 * Sat Jul 23 2011 Marco Mambelli <marco@hep.uchicago.edu> 0.14
