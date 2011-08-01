@@ -28,12 +28,12 @@
 +        return 2;
 +    }
 +    long i = BIO_get_mem_data(mem, &bptr);
-+    *certstring = (char *)malloc(i);
++    *certstring = (char *)malloc(i+1);
 +    if (!(*certstring)) {
 +        lcmaps_log (1, "Unable to allocate memory for new cert string.");
 +        return 3;
 +    }
-+    memcpy(*certstring, bptr, i);
++    memcpy(*certstring, bptr, i); *((*certstring)+i) = '\0';
 +    BIO_free_all(mem);
 +    return 0;
 +}
