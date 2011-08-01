@@ -8,6 +8,7 @@ Group: System Environment/Libraries
 URL: http://www.nikhef.nl/pub/projects/grid/gridwiki/index.php/Site_Access_Control
 Source0: http://software.nikhef.nl/security/%{name}/%{name}-%{version}.tar.gz
 Patch0: memory_corruption.patch
+Patch1: ca_only.patch
 BuildRequires: openssl-devel
 BuildRequires: lcmaps-interface, saml2-xacml2-c-lib-devel
 
@@ -26,6 +27,7 @@ Authorization Service (SCAS) or GUMS (new style) service.
 %prep
 %setup -q
 %patch0 -p0
+%patch1 -p0
 
 %build
 
@@ -54,6 +56,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Sun Jul 31 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 0.2.22-2
 - Fix memory corruption issue on an error condition.
+- Fix SEGV when no user certificate is present.
 
 * Wed Apr  6 2011 Dennis van Dok <dennisvd@nikhef.nl> 0.2.22-1
 - bumped version
