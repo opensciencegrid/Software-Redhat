@@ -1,0 +1,8 @@
+
+This is a copy of the EPEL globus-gatekeeper.
+
+I have added /etc/sysconfig/globus-gatekeeper which is sourced in the init script on startup.
+This is for programs like lcas-lcmaps-gt4-interface that require custom environment variables.
+
+globus-gatekeeper has been patched to properly handle signals in a multithreaded environment
+

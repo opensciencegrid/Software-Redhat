@@ -40,6 +40,7 @@ Patch0:		%{name}.patch
 #		Fixes for FHS installation:
 #		http://bugzilla.globus.org/bugzilla/show_bug.cgi?id=6821
 Patch1:		%{name}-setup.patch
+Patch2:         child_signals.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -69,6 +70,7 @@ Globus Gatekeeper Setup
 cd %{_name}_setup-%{setupversion}
 %patch1 -p1
 cd -
+%patch2 -p0
 
 %build
 # Remove files that should be replaced during bootstrap
@@ -182,6 +184,7 @@ fi
 %changelog
 * Sun Jul 31 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 5.7-5
 - Add a sysconfig environment script.
+- Fix child signal delivery.
 
 * Mon Apr 25 2011 Mattias Ellert <mattias.ellert@fysast.uu.se> - 5.7-4
 - Add README file

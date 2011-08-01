@@ -1,0 +1,103 @@
+--- _build_results/BUILD/globus_gatekeeper-5.7/globus_gatekeeper.c	2011-07-31 23:20:40.000000000 -0500
++++ globus_gatekeeper.c	2011-07-31 23:21:11.000000000 -0500
+@@ -516,6 +516,40 @@
+     return newfilename;
+ }
+ 
++void
++setup_signals()
++{
++    /*
++     * Setup signal handlers to reap processes that we create
++     * Note we explicitly unblock the signals, as Globus otherwise grabs them.
++     */
++    {
++        struct sigaction act;
++        act.sa_handler = reaper;
++        sigemptyset(&act.sa_mask);
++        sigaddset(&act.sa_mask, SIGCHLD);
++        act.sa_flags = 0;
++        sigaction(SIGCHLD, &act, NULL);
++        sigprocmask(SIG_UNBLOCK, &act.sa_mask, NULL);
++        if (!run_from_inetd)
++        {
++            act.sa_handler = terminate;
++            sigemptyset(&act.sa_mask);
++            sigaddset(&act.sa_mask, SIGTERM);
++            act.sa_flags = 0;
++            sigaction(SIGTERM, &act, NULL);
++            sigprocmask(SIG_UNBLOCK, &act.sa_mask, NULL);
++        }
++        act.sa_handler = rotatelog;
++        sigemptyset(&act.sa_mask);
++        sigaddset(&act.sa_mask, SIGUSR1);
++        act.sa_flags = 0;
++        sigaction(SIGUSR1, &act, NULL);
++        sigprocmask(SIG_UNBLOCK, &act.sa_mask, NULL);
++    }
++    
++}
++
+ /******************************************************************************
+ Function:       main()
+ Description:    
+@@ -979,33 +1013,9 @@
+     notice4(LOG_INFO, "%s pid=%d starting at %s",
+             argv[0], getpid(), timestamp());
+ 
+-    /*
+-     * Setup SIGCHLD signal handler to reap processes that we create
+-     */
+-    {
+-        struct sigaction act;
+-        act.sa_handler = reaper;
+-        sigemptyset(&act.sa_mask);
+-        sigaddset(&act.sa_mask, SIGCHLD);
+-        act.sa_flags = 0;
+-        sigaction(SIGCHLD, &act, NULL);
+-        if (!run_from_inetd)
+-        {
+-            act.sa_handler = terminate;
+-            sigemptyset(&act.sa_mask);
+-            sigaddset(&act.sa_mask, SIGTERM);
+-            act.sa_flags = 0;
+-            sigaction(SIGTERM, &act, NULL);
+-        }
+-	act.sa_handler = rotatelog;
+-	sigemptyset(&act.sa_mask);
+-	sigaddset(&act.sa_mask, SIGUSR1);
+-	act.sa_flags = 0;
+-	sigaction(SIGUSR1, &act, NULL);
+-    }
+-
+     if (run_from_inetd)
+     {
++        setup_signals();
+         logging_phase2();
+         dup2(2,1); /* point stdout at log as well */
+     }
+@@ -1123,15 +1133,22 @@
+     }
+     else
+     {
+-        if (!foreground)
++        if (foreground)
++        {
++            setup_signals();
++        }
++        else
+         {
++            setup_signals();
+             /*
+              * Fork off a child, terminate the parent, and detach
+              * the child from the tty.
+              */
+-            if (fork())
++            if (globus_libc_fork())
+                 exit(0);
+ 
++            setup_signals();
++
+ 	    gatekeeper_pid = getpid();
+ 
+             if (!logging_usrlog)
