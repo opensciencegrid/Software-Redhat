@@ -1,5 +1,5 @@
 %global name osg-configure
-%global version 0.5.0
+%global version 0.5.1
 %global release 1%{?dist}
 
 Summary: Package for configure-osg and associated scripts
@@ -34,6 +34,11 @@ Requires: python
 %{__python} setup.py install --root=$RPM_BUILD_ROOT --record=INSTALLED_FILES
 mkdir -p $RPM_BUILD_ROOT/var/log/osg/
 touch $RPM_BUILD_ROOT/var/log/osg/configure-osg.log
+mkdir -p $RPM_BUILD_ROOT/var/lib/osg
+touch $RPM_BUILD_ROOT/var/lib/osg/osg-attributes.conf
+touch $RPM_BUILD_ROOT/var/lib/osg/osg-local-job-environment.conf
+touch $RPM_BUILD_ROOT/var/lib/osg/osg-job-environment.conf
+ln -s /etc/osg/ce.ini $RPM_BUILD_ROOT/etc/osg/config.ini
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -44,16 +49,25 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/configure_osg/modules/*.pyo
 %{python_sitelib}/configure_osg/configure_modules/*.pyo
 %ghost /var/log/osg/configure-osg.log
+%ghost /var/lib/osg/osg-attributes.conf
+%ghost /var/lib/osg/osg-local-job-environment.conf
+%ghost /var/lib/osg/osg-job-environment.conf
 # Need the following for builds on batlab
 %{python_sitelib}/configure_osg/*.pyo
 %{python_sitelib}/configure_osg/modules/*.pyo
 %{python_sitelib}/configure_osg/configure_modules/*.pyo
+%config(noreplace) %{_sysconfdir}/osg/config.ini
 
 %changelog
-* Mon Jul 25 2011 Suchandra Thapa <sthapa@ci.uchicago.edu> - 0.0.3-1
+* Mon Aug 1 2011 Suchandra Thapa <sthapa@ci.uchicago.edu> - 0.5.1-1
+- Update to 0.5.1
+- Add symlink for config.ini
+- Make output files in /var/lib/osg ghost files
+
+* Mon Jul 25 2011 Suchandra Thapa <sthapa@ci.uchicago.edu> - 0.5.0-1
 - Update to 0.5.0
 
-* Mon Jul 25 2011 Suchandra Thapa <sthapa@ci.uchicago.edu> - 0.0.3-1
+* Mon Jul 25 2011 Suchandra Thapa <sthapa@ci.uchicago.edu> - 0.0.4-1
 - Update to 0.0.4
 
 * Mon Jul 25 2011 Suchandra Thapa <sthapa@ci.uchicago.edu> - 0.0.3-1
