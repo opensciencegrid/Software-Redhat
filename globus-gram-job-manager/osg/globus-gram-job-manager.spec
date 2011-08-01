@@ -8,7 +8,7 @@ Name:		globus-gram-job-manager
 %global _name %(tr - _ <<< %{name})
 Version:	10.70
 %global setupversion 4.3
-Release:	4%{?dist}
+Release:	5%{?dist}
 Summary:	Globus Toolkit - GRAM Jobmanager
 
 Group:		Applications/Internet
@@ -48,6 +48,7 @@ Patch4:		%{name}-doxygen.patch
 
 Patch5:         logging_null.patch
 Patch6:         double_lock.patch
+Patch7:         close_deadlock.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -132,6 +133,7 @@ cd -
 %patch4 -p1
 %patch5 -p0
 %patch6 -p0
+%patch7 -p0
 
 %build
 # Remove files that should be replaced during bootstrap
@@ -273,6 +275,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_docdir}/%{name}-setup-%{setupversion}/html
 
 %changelog
+* Mon Aug 01 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 10.70-5
+- Fix deadlock upon child process exit.
+
 * Sun Jun 05 2011 Mattias Ellert <mattias.ellert@fysast.uu.se> - 10.70-1
 - Update to Globus Toolkit 5.0.4
 - Fix doxygen markup
