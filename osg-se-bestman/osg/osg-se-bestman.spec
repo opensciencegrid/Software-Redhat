@@ -10,18 +10,16 @@ BuildArch:      noarch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 # from VDT
 Requires: java-1.6.0-sun-compat
-Requires: bestman2-client
-Requires: bestman2-libs
 Requires: bestman2-server
 Requires: dcache-srmclient
 Requires: osg-ca-certs
 Requires: edg-mkgridmap
 Requires: fetch-crl
+Requires: gratia-probe-gridftp-transfer
+Requires: gums
+Requires: gums-client
 # from EPEL
 Requires: globus-gridftp-server-progs
-# These are not there yet
-#Requires: gratia-probe
-#Requires: gums
 
 %description
 %{summary}
