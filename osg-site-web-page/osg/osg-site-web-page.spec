@@ -1,6 +1,6 @@
 Name:           osg-site-web-page
-Version:        0.14
-Release:        3
+Version:        0.15
+Release:        1
 Summary:        OSG Site Web Page Generation Script
 Group:          System Environment
 License:        ASL 2.0
@@ -66,6 +66,12 @@ done
 touch $RPM_BUILD_ROOT%{_sysconfdir}/osg/siteindexconfig.ini
 
 %post
+if [ ! -f /etc/osg/config.ini ]
+then
+ cat /etc/osg/ce.ini /etc/osg/storage.ini /etc/osg/gums.ini /etc/osg/rsv.ini > /etc/osg/config.ini
+fi
+/sbin/osg-make-portal
+/sbin/osg-make-portal-config
 # restart apache if running to get the new configuration
 /sbin/service httpd condrestart 2>&1 > /dev/null
 
