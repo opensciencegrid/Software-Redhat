@@ -1,0 +1,18 @@
+--- tmp/globus_gram_job_manager.c	2011-08-01 07:46:39.000000000 -0500
++++ globus_gram_job_manager.c	2011-08-01 18:24:48.000000000 -0500
+@@ -2840,6 +2840,7 @@
+         goto malloc_restart_rsl_failed;
+     }
+ 
++    GlobusGramJobManagerUnlock(manager);
+     rc = globus_gram_job_manager_request_init(
+             request,
+             manager,
+@@ -2850,6 +2851,7 @@
+             NULL,
+             NULL,
+             NULL);
++    GlobusGramJobManagerLock(manager);
+     free(restart_rsl);
+ malloc_restart_rsl_failed:
+     return rc;

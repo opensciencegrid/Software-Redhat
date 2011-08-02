@@ -8,7 +8,7 @@ Name:		globus-gram-job-manager
 %global _name %(tr - _ <<< %{name})
 Version:	10.70
 %global setupversion 4.3
-Release:	5%{?dist}
+Release:	7%{?dist}
 Summary:	Globus Toolkit - GRAM Jobmanager
 
 Group:		Applications/Internet
@@ -50,6 +50,10 @@ Patch5:         logging_null.patch
 Patch6:         double_lock.patch
 Patch7:         close_deadlock.patch
 Patch8:         job_status.patch
+Patch9:         unlock_init.patch
+Patch10:        unlock_register_job.patch
+Patch11:        null_old_jm.patch
+Patch12:        fd_leak.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -136,6 +140,10 @@ cd -
 %patch6 -p0
 %patch7 -p0
 %patch8 -p1
+%patch9 -p0
+%patch10 -p0
+%patch11 -p0
+%patch12 -p0
 
 %build
 # Remove files that should be replaced during bootstrap
@@ -277,6 +285,11 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_docdir}/%{name}-setup-%{setupversion}/html
 
 %changelog
+* Mon Aug 01 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 10.70-7
+- Fix deadlocks in loading restart files.
+- Forward-port job status patch from GT4 days.
+- Fix segfaults discovered in testing.
+
 * Mon Aug 01 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 10.70-5
 - Fix deadlock upon child process exit.
 
