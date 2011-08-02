@@ -5,7 +5,8 @@ This is a glideinWMS VO Frontend package for OSG.
 We are re-publishing the srpm, taken from
 http://koji.hep.caltech.edu/public/packages/glideinwms-vofrontend/2.5.1/12/src/glideinwms-vofrontend-2.5.1-12.src.rpm
 
-The spec file is taken directly from the upstream SRPM, so we don't have one in the osg subdir.
+#The spec file is taken directly from the upstream SRPM, so we don't have one in the osg subdir.
+The spec file is modified to include the dependencies that are in the vdt repos.
 
 More details:
 ------------
