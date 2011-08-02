@@ -1,5 +1,5 @@
---- globus_gram_job_manager_setup_condor-4.4/condor.in	2011-08-01 17:18:20.772000000 -0500
-+++ globus_gram_job_manager_setup_condor-4.4/condor.in	2011-08-01 17:24:30.347000000 -0500
+--- globus_gram_job_manager_setup_condor-4.4/condor.in	2011-08-02 11:33:00.613000000 -0500
++++ globus_gram_job_manager_setup_condor-4.4/condor.in	2011-08-02 11:34:29.855000000 -0500
 @@ -380,6 +380,13 @@
              "print: $script_filename: $!",
              Globus::GRAM::Error::TEMP_SCRIPT_FILE_FAILED());
@@ -30,7 +30,7 @@
          $state = Globus::GRAM::JobState::DONE;
      }
      elsif($num_run == 0)
-@@ -768,4 +777,39 @@
+@@ -768,4 +777,30 @@
      return $rc;
  }
  
@@ -39,16 +39,7 @@
 +{
 +    my $self = shift;
 +    my $log_filename = $self->{condor_logfile};
-+
-+    # Select the gratia location
-+    my $env = "$ENV{VDT_LOCATION}";
-+    if ( "x$env" eq "x" ) {
-+      $env = "$ENV{GLOBUS_LOCATION}/..";
-+    }
-+    if ( "x$env" eq "x" ) {
-+       $env = "/var/tmp";
-+    }
-+    my $log_dir = "$env/gratia/var/data/";
++    my $log_dir = "/var/lib/gratia/data/";
 +    
 +    if ( -d $log_dir ) {
 +      # For now assume that the existence of the directory means that
