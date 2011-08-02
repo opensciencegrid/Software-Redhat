@@ -1,0 +1,5 @@
+
+This is a copy of the EPEL SRPM.
+
+A deadlocking fix observed in Condor-G gahp_server has been included.
+
