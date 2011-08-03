@@ -54,6 +54,9 @@ Patch9:         unlock_init.patch
 Patch10:        unlock_register_job.patch
 Patch11:        null_old_jm.patch
 Patch12:        fd_leak.patch
+Patch13:        watchdog_timer.patch
+Patch14:        recvmsg_eagain.patch
+Patch15:        double_proxy_lock.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -144,6 +147,9 @@ cd -
 %patch10 -p0
 %patch11 -p0
 %patch12 -p0
+%patch13 -p0
+%patch14 -p0
+%patch15 -p0
 
 %build
 # Remove files that should be replaced during bootstrap
@@ -289,6 +295,7 @@ rm -rf $RPM_BUILD_ROOT
 - Fix deadlocks in loading restart files.
 - Forward-port job status patch from GT4 days.
 - Fix segfaults discovered in testing.
+- Add a watchdog timer.
 
 * Mon Aug 01 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 10.70-5
 - Fix deadlock upon child process exit.

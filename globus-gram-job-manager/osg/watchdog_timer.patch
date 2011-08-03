@@ -1,0 +1,114 @@
+--- /usr/src/debug/globus_gram_job_manager-10.70/main.c	2011-08-01 22:46:47.000000000 -0500
++++ main.c	2011-08-02 07:26:30.000000000 -0500
+@@ -61,6 +61,11 @@
+ 
+ static
+ void
++globus_l_watchdog_callback(
++    void *                              user_arg);
++
++static
++void
+ reply_and_exit(
+     globus_gram_job_manager_t *         manager,
+     int                                 rc,
+@@ -76,6 +81,12 @@
+ static
+ globus_callback_handle_t                globus_l_waitpid_callback_handle =
+         GLOBUS_NULL_HANDLE;
++
++static
++globus_mutex_t                          globus_l_watchdog_callback_lock;
++static
++globus_callback_handle_t                globus_l_watchdog_callback_handle =
++        GLOBUS_NULL_HANDLE;
+ #endif /* GLOBUS_DONT_DOCUMENT_INTERNAL */
+ 
+ int
+@@ -482,6 +493,7 @@
+     }
+ 
+     globus_mutex_init(&globus_l_waitpid_callback_lock, NULL);
++    globus_mutex_init(&globus_l_watchdog_callback_lock, NULL);
+ 
+     /*
+      * Register periodic event to clean up zombie if we forked a child
+@@ -500,6 +512,21 @@
+                 &period,
+                 globus_l_waitpid_callback,
+                 &forked_starter);
++
++    /*
++     * Register a watchdog timer to cause the process to _exit if we
++     * haven't heard from it lately
++     */
++
++        GlobusTimeReltimeSet(delay, 1, 0);
++        globus_callback_register_periodic(
++                &globus_l_watchdog_callback_handle,
++                &delay,
++                &period,
++                globus_l_watchdog_callback,
++                &manager
++                );
++
+     }
+ 
+     GlobusGramJobManagerLock(&manager);
+@@ -515,9 +542,16 @@
+      * terminated. For any other job manager, the monitor.done is set to
+      * GLOBUS_TRUE and this falls right through.
+      */
++    globus_abstime_t next_timeout;
+     while (! manager.done)
+     {
+-        GlobusGramJobManagerWait(&manager);
++        GlobusTimeAbstimeSet(next_timeout, 20, 0);
++        if (ETIMEDOUT == globus_cond_timedwait(&manager.cond, &manager.mutex, &next_timeout))
++        {
++            /* Something went horribly wrong and out watchdog became non-functional */
++            _exit(10);
++        }
++
+     }
+     GlobusGramJobManagerUnlock(&manager);
+ 
+@@ -533,6 +567,17 @@
+     }
+     globus_mutex_unlock(&globus_l_waitpid_callback_lock);
+ 
++    globus_mutex_lock(&globus_l_watchdog_callback_lock);
++    if (globus_l_watchdog_callback_handle != GLOBUS_NULL_HANDLE)
++    {
++        globus_callback_unregister(
++                globus_l_watchdog_callback_handle,
++                NULL,
++                NULL,
++                0);
++        globus_l_watchdog_callback_handle = GLOBUS_NULL_HANDLE;
++    }
++    globus_mutex_unlock(&globus_l_watchdog_callback_lock);
+ 
+     globus_gram_job_manager_log(
+             &manager,
+@@ -754,6 +799,20 @@
+ 
+ static
+ void
++globus_l_watchdog_callback(
++    void *                              user_arg)
++{
++    globus_gram_job_manager_t *         manager = (globus_gram_job_manager_t *)user_arg;
++
++    globus_mutex_lock(&globus_l_watchdog_callback_lock);
++    GlobusGramJobManagerLock(manager);  
++    globus_cond_signal(&manager->cond);
++    GlobusGramJobManagerUnlock(manager);  
++    globus_mutex_unlock(&globus_l_watchdog_callback_lock);
++}
++
++static
++void
+ reply_and_exit(
+     globus_gram_job_manager_t *         manager,
+     int                                 rc,

@@ -1,0 +1,12 @@
+--- /usr/src/debug/globus_gram_job_manager-10.70/globus_gram_job_manager_state_file.c	2011-08-02 12:45:50.000000000 -0500
++++ globus_gram_job_manager_state_file.c	2011-08-02 17:17:56.000000000 -0500
+@@ -1160,7 +1160,8 @@
+             "\n",
+             request->job_state_lock_file,
+             -rc,
+-            "Error reading state file");
++            "Error reading state file",
++            globus_gram_protocol_error_string(rc));
+ 
+     fclose(fp);
+ free_buffer_exit:

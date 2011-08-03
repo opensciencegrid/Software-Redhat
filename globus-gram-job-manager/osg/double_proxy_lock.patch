@@ -1,0 +1,12 @@
+--- /usr/src/debug/globus_gram_job_manager-10.70/globus_gram_job_manager_gsi.c	2011-08-02 17:19:05.000000000 -0500
++++ globus_gram_job_manager_gsi.c	2011-08-02 19:56:51.000000000 -0500
+@@ -825,9 +825,7 @@
+             "event=gram.proxy_expire.end level=WARN "
+             "msg=\"Proxy expired, stopping job manager\"\n");
+ 
+-    GlobusGramJobManagerLock(manager);
+     globus_gram_job_manager_stop_all_jobs(manager);
+-    GlobusGramJobManagerUnlock(manager);
+ }
+ /* globus_l_gram_job_manager_proxy_expiration() */
+ 
