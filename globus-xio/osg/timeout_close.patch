@@ -1,0 +1,23 @@
+--- /usr/src/debug/globus_xio-2.8/globus_xio_handle.c	2008-09-05 16:45:33.000000000 -0500
++++ globus_xio_handle.c	2011-08-01 16:46:57.000000000 -0500
+@@ -719,11 +719,19 @@
+         }
+     }
+ 
++    /*
++     * Timeout the close calls
++     * We allow 60s per open handle
++     */
++    globus_abstime_t next_timeout;
+     globus_mutex_lock(&globus_i_xio_mutex);
+     {
+         while(monitor.count != 0)
+         {
+-            globus_cond_wait(&globus_i_xio_cond, &globus_i_xio_mutex);
++            GlobusTimeAbstimeSet(next_timeout, 60, 0);
++            if (ETIMEDOUT == globus_cond_timedwait(&globus_i_xio_cond, &globus_i_xio_mutex, &next_timeout)) {
++                monitor.count--;
++            }
+         }
+     }
+     globus_mutex_unlock(&globus_i_xio_mutex);
