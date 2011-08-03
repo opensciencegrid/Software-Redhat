@@ -1,0 +1,58 @@
+--- /usr/src/debug/globus_gass_cache-5.4/globus_gass_cache.c	2011-04-30 02:37:54.000000000 -0500
++++ globus_gass_cache.c	2011-08-01 20:01:57.000000000 -0500
+@@ -1513,14 +1513,12 @@
+ 
+     if ( GLOBUS_SUCCESS == rc )
+     {
+-        int skip = 0;
++        int skip = strlen(names->local_root) + strlen(names->separator);
+ 
+         assert(mangle_prefix_end != NULL);
+ 
+         names->local_mangle_root = globus_libc_malloc(
+-                strlen(names->local_root) +
+-                strlen(names->separator) +
+-                mangle_prefix_len + 1);
++                skip + mangle_prefix_len + 1);
+ 
+         if (names->local_mangle_root == NULL)
+         {
+@@ -1529,8 +1527,8 @@
+         }
+         else
+         {
+-            sprintf(names->local_mangle_root, "%s%s%n",
+-                    names->local_root, names->separator, &skip);
++            sprintf(names->local_mangle_root, "%s%s",
++                    names->local_root, names->separator);
+             memcpy(&names->local_mangle_root[skip],
+                    mangle_prefix,
+                    mangle_prefix_len);
+@@ -1539,14 +1537,12 @@
+     }
+     if ( GLOBUS_SUCCESS == rc )
+     {
+-        int skip = 0;
++        int skip = strlen(names->global_root) + strlen(names->separator);
+ 
+         assert(mangle_prefix_end != NULL);
+ 
+         names->global_mangle_root = globus_libc_malloc(
+-                strlen(names->global_root) +
+-                strlen(names->separator) +
+-                mangle_prefix_len + 1);
++                skip + mangle_prefix_len + 1);
+ 
+         if (names->global_mangle_root == NULL)
+         {
+@@ -1555,8 +1551,8 @@
+         }
+         else
+         {
+-            sprintf(names->global_mangle_root, "%s%s%n",
+-                    names->global_root, names->separator, &skip);
++            sprintf(names->global_mangle_root, "%s%s",
++                    names->global_root, names->separator);
+             memcpy(&names->global_mangle_root[skip],
+                    mangle_prefix,
+                    mangle_prefix_len);
