@@ -1,6 +1,6 @@
 Name:           osg-discovery
 Version:        1.0.7
-Release:        1
+Release:        2
 Summary:        OSG Discovery Tools
 Group:          System Environment
 License:        Stanford (modified BSD with advert clause)
@@ -10,7 +10,7 @@ Source:        osg-discovery.tar.gz
 
 BuildRoot:      %{_tmppath}/%{name}-root
 BuildArch:      noarch
-BuildRequires:  maven2
+BuildRequires:  maven2 subversion
 Requires:  java
 
 %description
@@ -34,12 +34,17 @@ tar xzvf osg/discovery/target/discovery-*.tar.gz
 mv discovery-1.0-r* discovery-built
 sed -i "s/XPATHCACHE_DIR=.*/XPATHCACHE_DIR=~\/.osg-discovery/" discovery-built/conf/xpathsearch.rc
 
+#Patch java detection in order to remove locate dependency
+sed -i "s/\${JAVA_HOME}/\/usr/" discovery-built/bin/*
+sed -i "s/\. \$XPATHSEARCH_HOME\/bin\/detect-java.sh//" discovery-built/bin/*
+
 %install
 mkdir -p $RPM_BUILD_ROOT%{_bindir}/
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/%{name}
 mkdir -p $RPM_BUILD_ROOT%{_javadir}/%{name}
 
 pushd discovery-built
+rm bin/detect_java.sh
 for i in `ls bin`; do
 	install -m 0755 bin/$i $RPM_BUILD_ROOT%{_bindir}
 done
