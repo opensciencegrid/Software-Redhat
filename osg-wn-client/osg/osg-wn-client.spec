@@ -2,7 +2,7 @@
 Name:      osg-wn-client
 Summary:   OSG Worker-Node Client
 Version:   3.0.0
-Release:   5
+Release:   6
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -38,8 +38,8 @@ Requires: %{name} = %{version}-%{release}
 Requires: glexec
 Requires: lcmaps-plugins-glexec-tracking
 Requires: lcmaps-plugins-basic
-Requires: lcmaps-plugins-gums-client
-Requires: lcmaps-plugins-saz-client
+Requires: lcmaps-plugins-gums
+Requires: lcmaps-plugins-saz
 Requires: lcmaps-plugins-verify-proxy
 
 %description glexec
@@ -65,6 +65,9 @@ rm -rf $RPM_BUILD_ROOT
 %files glexec
 
 %changelog
+* Wed Aug 03 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 3.0.0-6
+- Correct plugin names in the glexec meta-package.
+
 * Fri Jul 15 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 3.0.0-5
 Update to reflect current plugin names.
 
