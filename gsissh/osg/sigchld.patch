@@ -1,68 +1,44 @@
---- gss-serv-gsi.c.orig	2011-07-07 13:43:32.000000000 -0500
-+++ gss-serv-gsi.c	2011-07-07 14:31:53.000000000 -0500
-@@ -53,6 +53,46 @@
+--- _build_results/BUILD/openssh-4.3p2/gss-serv-gsi.c	2011-08-03 12:45:12.000000000 -0500
++++ gss-serv-gsi.c	2011-08-03 12:20:53.000000000 -0500
+@@ -53,6 +53,22 @@
  	&ssh_gssapi_gsi_storecreds
  };
  
-+/* All this work is because threaded Globus varieties override OpenSSH's signal handlers */
-+static void globus_sigchld_handler(void *);
-+
 +static
 +void
-+install_globus_sighandlers()
-+{   logit("register sigchld handler");
-+    globus_callback_register_signal_handler(
-+        SIGCHLD,
-+        GLOBUS_TRUE,
-+        globus_sigchld_handler,
-+        NULL);
-+
-+}
-+
-+/* Copied from sshd.c */
-+/*
-+
-+ * SIGCHLD handler.  This is called whenever a child dies.  This will then
-+ * reap any zombies left by exited children.
-+ */
-+static void
-+globus_sigchld_handler(void * user_arg)
-+{       logit("in sigchld handler");
-+        int save_errno = errno;
-+        pid_t pid;
-+        int status;
-+
-+        while ((pid = waitpid(-1, &status, WNOHANG)) > 0 ||
-+            (pid < 0 && errno == EINTR))
-+                ;
-+
-+        /*globus_callback_register_signal_handler(
-+            SIGCHLD,
-+            GLOBUS_TRUE,
-+            globus_sigchld_handler,
-+            NULL);*/
-+        errno = save_errno;
++undo_globus_signal_blocking()
++{
++	sigset_t mysigset;
++	sigemptyset(&mysigset);
++	sigaddset(&mysigset, SIGCHLD);
++	sigaddset(&mysigset, SIGTERM);
++	sigaddset(&mysigset, SIGALRM);
++	sigaddset(&mysigset, SIGHUP);
++	sigaddset(&mysigset, SIGTERM);
++	sigaddset(&mysigset, SIGQUIT);
++	sigaddset(&mysigset, SIGINT);
++	sigprocmask(SIG_UNBLOCK, &mysigset, NULL);
 +}
 +
  /*
   * Check if this user is OK to login under GSI. User has been authenticated
   * as identity in global 'client_name.value' and is trying to log in as passed
-@@ -71,8 +111,9 @@
+@@ -71,8 +87,9 @@
      
  #ifdef GLOBUS_GSI_GSS_ASSIST_MODULE
      if (globus_module_activate(GLOBUS_GSI_GSS_ASSIST_MODULE) != 0) {
 -	return 0;
 +        return 0;
      }
-+    install_globus_sighandlers();
++    undo_globus_signal_blocking();
  #endif
  
  /* use new globus_gss_assist_map_and_authorize() interface if available */
-@@ -119,6 +160,7 @@
+@@ -119,6 +136,7 @@
      if (globus_module_activate(GLOBUS_GSI_GSS_ASSIST_MODULE) != 0) {
  	return 0;
      }
-+    install_globus_sighandlers();
++    undo_globus_signal_blocking();
  #endif
  
  /* use new globus_gss_assist_map_and_authorize() interface if available */
