@@ -9,7 +9,7 @@
 SRM_HOME=/usr/lib/bestman2
 
 # SRMOWNER = This user (unix account) will own and run bestman services
-SRMOWNER=daemon
+SRMOWNER=bestman
 
 # BESTMAN_LOG:  The location of the bestman2 log. 
 # Bestman prints out relevant information to its stderr/stdout.  Capture it.

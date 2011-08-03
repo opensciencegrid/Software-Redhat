@@ -28,7 +28,7 @@ if [ "x$BESTMAN_PID" = "x" ]; then
 fi
 
 if [ "x$SRMOWNER" = "x" ]; then
-    SRMOWNER=daemon
+    SRMOWNER=bestman
 fi
 
 start() {
