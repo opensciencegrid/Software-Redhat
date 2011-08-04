@@ -1,7 +1,7 @@
 Summary: Grid (X.509) and VOMS credentials to local account mapping service
 Name: lcmaps
 Version: 1.4.28
-Release: 5%{?dist}
+Release: 6%{?dist}
 Vendor: Nikhef
 License: ASL 2.0
 Group: System Environment/Libraries
@@ -25,6 +25,11 @@ Requires: globus-common
 Requires: globus-gssapi-gsi
 Requires: globus-gss-assist
 Requires: globus-gsi-credential
+Requires: lcmaps-plugins-basic
+Requires: lcmaps-plugins-glexec-tracking
+Requires: lcmaps-plugins-gums
+Requires: lcmaps-plugins-saz
+Requires: lcmaps-plugins-verify-proxy
 
 %description
 The Local Centre MAPping Service (LCMAPS) is a security middleware
@@ -146,6 +151,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/modules/*.so
 
 %changelog
+* Wed Aug 03 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.4.28-6
+- Fix dependencies so default config is usable out-of-the-box.
+
 * Sun Jul 31 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.4.28-5
 - Fill in appropriate x509 structs.
 
