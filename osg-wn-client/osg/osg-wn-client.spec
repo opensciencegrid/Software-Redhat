@@ -2,7 +2,7 @@
 Name:      osg-wn-client
 Summary:   OSG Worker-Node Client
 Version:   3.0.0
-Release:   6
+Release:   7
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -27,6 +27,7 @@ Requires: /usr/bin/wget
 Requires: osg-ca-certs
 Requires: fetch-crl
 Requires: osg-system-profiler
+Requires: vo-client
 
 %description
 %{summary}
@@ -65,6 +66,9 @@ rm -rf $RPM_BUILD_ROOT
 %files glexec
 
 %changelog
+* Thu Aug 04 2011 Derek Weitzel <dweitzel@cse.unl.edu> - 3.0.0-7
+- Added vo-client to dependencies
+
 * Wed Aug 03 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 3.0.0-6
 - Correct plugin names in the glexec meta-package.
 
