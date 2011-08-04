@@ -2,7 +2,7 @@ Name:               gratia-probe
 Summary:            Gratia OSG accounting system probes
 Group:              Applications/System
 Version:            1.07.02e
-Release:            0.5.pre
+Release:            0.6.pre
 License:            GPL
 Group:              Applications/System
 URL:                http://sourceforge.net/projects/gratia/
@@ -38,6 +38,8 @@ Patch4: metric-imports.patch
 %{?config_itb: %global maybe_itb_suffix -itb }
 %{?config_itb: %global itb 1}
 %{!?config_itb: %global itb 0}
+
+%global itb 0
 
 # Python version.
 %{?python: %global pexec %{python}}
@@ -106,6 +108,7 @@ Source17: %{name}-condor-events-%{version}.tar.bz2
 Source18: %{name}-xrootd-transfer-%{version}.tar.bz2
 Source19: %{name}-xrootd-storage-%{version}.tar.bz2
 Source20: %{name}-bdii-status-%{version}.tar.bz2
+Source30: 99_gratia.conf
 ########################################################################
 
 # Build settings.
@@ -293,6 +296,9 @@ done
 install -m 644 gratia/common/Gratia.py $RPM_BUILD_ROOT%{python_sitelib}/Gratia.py
 %endif
 
+install -d $RPM_BUILD_ROOT/%{_sysconfdir}/condor/config.d
+install -m 644 %{SOURCE30} $RPM_BUILD_ROOT/%{_sysconfdir}/condor/config.d/99_gratia.conf
+
 # Remove the test stuff
 rm -rf $RPM_BUILD_ROOT%{_datadir}/gratia/condor/test
 rm -f $RPM_BUILD_ROOT%{_datadir}/gratia/common/gratia.repo
@@ -344,11 +350,12 @@ This product includes software developed by The EU EGEE Project
 %files pbs-lsf%{?maybe_itb_suffix}
 %defattr(-,root,root,-)
 %dir %{_localstatedir}/lib/gratia/pbs-lsf/lock
-%dir %{_datadir}/gratia/pbs-lsf
-%{python_sitelib}/gratia/pbs-lsf
 %doc %{_datadir}/gratia/pbs-lsf/LICENSE
 %doc %{_datadir}/gratia/pbs-lsf/urCollector.conf-template
 %doc %{_datadir}/gratia/pbs-lsf/README
+%{_datadir}/gratia/pbs-lsf
+%{python_sitelib}/gratia/pbs-lsf
+%{_datadir}/gratia/pbs-lsf/ProbeConfig
 %{_datadir}/gratia/pbs-lsf/pbs-lsf_meter.cron.sh
 %{_datadir}/gratia/pbs-lsf/pbs-lsf_meter.pl
 %{_datadir}/gratia/pbs-lsf/urCreator
@@ -368,16 +375,16 @@ This product includes software developed by The EU EGEE Project
 # Configure urCollector.conf
 %{__cat} <<EOF | while read config_file; do
 `%{__grep} -le '^%{pbs_lsf_template_marker}$' \
-"${RPM_INSTALL_PREFIX1}"/probe/pbs-lsf/urCollector.conf{,.rpmnew} \
+"${RPM_INSTALL_PREFIX1}"/gratia/pbs-lsf/urCollector.conf{,.rpmnew} \
 2>/dev/null`
 EOF
 test -n "$config_file" || continue
 %{__perl} -wni.orig -e \
 '
-s&^\s*(URBox\s*=\s*).*$&${1}"$ENV{RPM_INSTALL_PREFIX1}/var/tmp/urCollector"&;
-s&^\s*(collectorLockFileName\s*=\s*).*$&${1}"$ENV{RPM_INSTALL_PREFIX1}/var/lock/urCollector.lock"&;
-s&^\s*(collectorLogFileName\s*=\s*).*$&${1}"$ENV{RPM_INSTALL_PREFIX1}/var/logs/urCollector.log"&;
-s&^\s*(collectorBufferFileName\s*=\s*).*$&${1}"$ENV{RPM_INSTALL_PREFIX1}/var/tmp/urCollectorBuffer"&;
+s&^\s*(URBox\s*=\s*).*$&${1}"%{_localstatedir}/lib/gratia/tmp/urCollector"&;
+s&^\s*(collectorLockFileName\s*=\s*).*$&${1}"%{_localstatedir}/lib/gratia/lock/urCollector.lock"&;
+s&^\s*(collectorLogFileName\s*=\s*).*$&${1}"%{_localstatedir}/lib/gratia/logs/urCollector.log"&;
+s&^\s*(collectorBufferFileName\s*=\s*).*$&${1}"%{_localstatedir}/lib/gratia/tmp/urCollectorBuffer"&;
 s&^\s*(jobPerTimeInterval\s*=\s*).*$&${1}"1000"&;
 s&^\s*(timeInterval\s*=\s*).*$&${1}"0"&;
 m&%{pbs_lsf_template_marker}& or print;
@@ -399,7 +406,7 @@ done
 (( min = $RANDOM % 15 ))
 %{__cat} >${RPM_INSTALL_PREFIX2}/cron.d/gratia-probe-pbs-lsf.cron <<EOF
 $min,$(( $min + 15 )),$(( $min + 30 )),$(( $min + 45 )) * * * * root \
-"${RPM_INSTALL_PREFIX1}/probe/pbs-lsf/pbs-lsf_meter.cron.sh"
+"${RPM_INSTALL_PREFIX1}/gratia/pbs-lsf/pbs-lsf_meter.cron.sh"
 EOF
 
 %preun pbs-lsf%{?maybe_itb_suffix}
@@ -565,6 +572,7 @@ The Condor probe for the Gratia OSG accounting system.
 %{default_prefix}/gratia/condor/gram_mods
 %{default_prefix}/gratia/condor/condor_meter.cron.sh
 %{default_prefix}/gratia/condor/condor_meter.pl
+%config(noreplace) %{_sysconfdir}/condor/config.d/99_gratia.conf
 %config(noreplace) %{_sysconfdir}/gratia/condor/ProbeConfig
 
 %post condor%{?maybe_itb_suffix}
@@ -582,26 +590,26 @@ vdt_setup_sh=`%{__perl} -ne 's&^\s*VDTSetupFile\s*=\s*\"([^\"]+)\".*$&$1& and pr
 "%{_sysconfdir}/gratia/condor/ProbeConfig"`
 vdt_location=`dirname "$vdt_setup_sh"`
 
-%{__grep} -e '\$condor_version_number' `%{__grep} -le 'log_to_gratia' \
-"${RPM_INSTALL_PREFIX1}/../globus/lib/perl/Globus/GRAM/JobManager/condor.pm" \
-"$vdt_location/globus/lib/perl/Globus/GRAM/JobManager/condor.pm" \
-2>/dev/null` >/dev/null 2>&1
-if (( $? != 0 )); then
-%{__cat} 1>&2 <<\EOF
-
-WARNING: please check that
-${VDT_LOCATION}/globus/lib/perl/Globus/GRAM/JobManager/{condor,managedfork}.pm
-contain *both* lines:
-my $condor_version_number = 0;
-sub log_to_gratia
-
-If not, please either install VDT:Gratia-Patch using pacman, or see the
-notes on the OSG accounting TWiki:
-
-https://twiki.grid.iu.edu/bin/view/Accounting/ProbeConfigCondor#GratiaCondorGramPatch
-
-EOF
-fi
+#%{__grep} -e '\$condor_version_number' `%{__grep} -le 'log_to_gratia' \
+#"${RPM_INSTALL_PREFIX1}/../globus/lib/perl/Globus/GRAM/JobManager/condor.pm" \
+#"$vdt_location/globus/lib/perl/Globus/GRAM/JobManager/condor.pm" \
+#2>/dev/null` >/dev/null 2>&1
+#if (( $? != 0 )); then
+#%{__cat} 1>&2 <<\EOF
+#
+#WARNING: please check that
+#${VDT_LOCATION}/globus/lib/perl/Globus/GRAM/JobManager/{condor,managedfork}.pm
+#contain *both* lines:
+#my $condor_version_number = 0;
+#sub log_to_gratia
+#
+#If not, please either install VDT:Gratia-Patch using pacman, or see the
+#notes on the OSG accounting TWiki:
+#
+#https://twiki.grid.iu.edu/bin/view/Accounting/ProbeConfigCondor#GratiaCondorGramPatch
+#
+#EOF
+#fi
 
 condor_pm="${RPM_INSTALL_PREFIX1}/../globus/lib/perl/Globus/GRAM/JobManager/condor.pm"
 [[ -f "$condor_pm" ]] || \
@@ -1332,6 +1340,10 @@ fi
 %endif # noarch
 
 %changelog
+* Wed Aug 03 2011 Derek Weitzel <dweitzel@cse.unl.edu> - 1.07.02e-0.6.pre
+- Removed echo message from condor probe
+- Added 99_gratia.conf to condor configuration
+
 * Fri Jul 22 2011 Derek Weitzel <dweitzel@cse.unl.edu> - 1.07.02e-0.5.pre
 - Changes to move things into FHS locations
 
