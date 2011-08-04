@@ -51,8 +51,8 @@ cp wrappers/condor_cron_version $RPM_BUILD_ROOT%{_bindir}/
 # Copy config into place
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/condor-cron
 cp etc/condor_config.local $RPM_BUILD_ROOT%{_sysconfdir}/condor-cron/
-cp etc/condor-cron.sh $RPM_BUILD_ROOT%{_sysconfdir}/condor-cron
-
+cp etc/condor-cron.sh $RPM_BUILD_ROOT%{_sysconfdir}/condor-cron/
+touch $RPM_BUILD_ROOT%{_sysconfdir}/condor-cron/condor_config
 
 # Make working directories
 mkdir -p $RPM_BUILD_ROOT%{_var}/run/condor-cron
@@ -79,7 +79,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/condor_cron_version
 
 
-%config %{_sysconfdir}/condor-cron/condor_config
+%ghost %{_sysconfdir}/condor-cron/condor_config
 %config %{_sysconfdir}/condor-cron/condor_config.local
 %{_sysconfdir}/condor-cron/condor-cron.sh
 
