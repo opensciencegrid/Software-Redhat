@@ -25,6 +25,12 @@ Requires:  perl(Date::Manip)
 Requires: /usr/bin/grid-proxy-info
 Requires: /usr/bin/globus-job-run
 Requires: /usr/bin/globusrun
+Requires: /usr/bin/globus-url-copy
+Requires: /usr/bin/uberftp
+Requires: /usr/bin/srm-ping
+Requires: /usr/bin/srm-copy
+Requires: /usr/bin/srm-ls
+Requires: /usr/bin/srm-rm
 #package('Globus-Base-RM-Client')
 #package('SRM-Client-Fermi')
 #package('Dccp')
