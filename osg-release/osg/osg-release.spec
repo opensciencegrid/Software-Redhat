@@ -1,22 +1,17 @@
-Name:           vdt-release       
+Name:           osg-release
 Version:        3.0 
-Release:        2
-Summary:        Virtual Data Toolkit for Enterprise Linux repository configuration
+Release:        3
+Summary:        OSG Software for Enterprise Linux repository configuration
 
 Group:          System Environment/Base 
 License:        GPL 
 URL:            http://vdt.cs.wisc.edu/repos
 
-# This is a Virtual Data Toolkit maintained package which is specific to
+# This is a OSG Software maintained package which is specific to
 # our distribution.  Thus the source is only available from
 # within this srpm.
 
-#Source0:        http://download.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL
-#Source1:        GPL	
-#Source2:        vdt.repo	
-#Source3:        vdt-testing.repo	
-#Source4:	vdt-development.repo
-Source0:	vdt-repo.tar.gz
+Source0:	osg-repo.tar.gz
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -24,8 +19,10 @@ BuildArch:     noarch
 Requires:      redhat-release >=  5
 Conflicts:     fedora-release
 
+Obsoletes:     vdt-release
+
 %description
-This package contains the Virtual Data Toolkit for Enterprise Linux repository
+This package contains the OSG Software for Enterprise Linux repository
 configuration for yum.
 
 %prep
@@ -62,6 +59,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Aug 04 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 3.0-3
+- Rename from VDT-* to OSG-*.
+
 * Mon Jul 18 2011 Derek Weitzel <dweitzel@cse.unl.edu> - 3.0-2
 - Changed vdt-development so that it doesn't force gpg checks
 

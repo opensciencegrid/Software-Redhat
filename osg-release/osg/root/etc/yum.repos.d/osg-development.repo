@@ -1,0 +1,18 @@
+[osg-development]
+name=OSG Software for Enterprise Linux 5 - Development - $basearch 
+baseurl=http://vdt.cs.wisc.edu/repos/3.0/el5/development/$basearch
+failovermethod=priority
+priority=98
+enabled=0
+gpgcheck=0
+#gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL
+
+[osg-development-source]
+name=OSG Software for Enterprise Linux 5 - Development - $basearch - Source
+baseurl=http://vdt.cs.wisc.edu/repos/3.0/el5/development/src
+failovermethod=priority
+priority=98
+enabled=0
+#gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL
+#gpgcheck=1
+
