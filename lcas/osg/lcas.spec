@@ -1,7 +1,7 @@
 Summary: Authorization service for grid credentials
 Name: lcas
 Version: 1.3.13
-Release: 2%{?dist}
+Release: 3%{?dist}
 Vendor: Nikhef
 License: ASL 2.0
 Group: System Environment/Libraries
@@ -15,6 +15,8 @@ BuildRequires: globus-gssapi-gsi-devel
 BuildRequires: globus-libtool-devel
 BuildRequires: libtool-ltdl-devel
 BuildRequires: globus-openssl-module-devel
+
+Requires: lcas-plugins-basic
 
 %description
 
@@ -74,6 +76,16 @@ rm $RPM_BUILD_ROOT/%{_libdir}/lcas.mod
 rm $RPM_BUILD_ROOT/%{_libdir}/modules/lcas_plugin_example.mod
 rm $RPM_BUILD_ROOT/%{_libdir}/modules/liblcas_plugin_example.*
 
+# Move config files to their own subdir
+mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/%{name}
+mv $RPM_BUILD_ROOT%{_sysconfdir}/*.in $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/
+
+cat > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/lcas.db << EOF
+pluginname=%{_libdir}/modules/lcas_userban.mod,pluginargs=/etc/lcas/ban_users.db
+EOF
+
+touch $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/ban_users.db
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -85,11 +97,13 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root,-)
 %doc INSTALL LICENSE README
-%{_sysconfdir}/allowed_users.db.in
-%{_sysconfdir}/ban_users.db.in
-%{_sysconfdir}/lcas.db.in
-%{_sysconfdir}/lcas_voms.gacl.in
-%{_sysconfdir}/timeslots.db.in
+%{_sysconfdir}/lcas/allowed_users.db.in
+%{_sysconfdir}/lcas/ban_users.db.in
+%config(noreplace) %{_sysconfdir}/lcas/ban_users.db
+%{_sysconfdir}/lcas/lcas.db.in
+%config(noreplace) %{_sysconfdir}/lcas/lcas.db
+%{_sysconfdir}/lcas/lcas_voms.gacl.in
+%{_sysconfdir}/lcas/timeslots.db.in
 %{_libdir}/liblcas.so
 %{_libdir}/liblcas.so.0
 %{_libdir}/liblcas.so.0.0.0
@@ -105,6 +119,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc README
 
 %changelog
+* Thu Aug 04 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.3.13-3
+- Add usable defaults for LCAS.
+
 * Wed Mar 23 2011 Dennis van Dok <dennisvd@nikhef.nl> 1.3.13-2
 - removed explicit requires
 
