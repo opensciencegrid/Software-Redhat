@@ -1,6 +1,6 @@
 
 Name:      condor-cron
-Version:   1.0.0
+Version:   1.0.1
 Release:   1%{?dist}
 Summary:   A framework to run cron-style jobs within Condor
 
@@ -53,14 +53,6 @@ mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/condor-cron
 cp etc/condor_config.local $RPM_BUILD_ROOT%{_sysconfdir}/condor-cron/
 cp etc/condor-cron.sh $RPM_BUILD_ROOT%{_sysconfdir}/condor-cron
 
-# Update CONDOR_IDS in the local config file
-
-
-# Use the condor_config.generic file to make the base file
-# WARNING: This command might pick up the wrong file if the wildcard picks
-#          up more than one condor-* directory.
-cp /usr/share/doc/condor-*/etc/examples/condor_config.generic $RPM_BUILD_ROOT%{_sysconfdir}/condor-cron/condor_config
-# Update the local config file location
 
 # Make working directories
 mkdir -p $RPM_BUILD_ROOT%{_var}/run/condor-cron
@@ -92,22 +84,30 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/condor-cron/condor-cron.sh
 
 # Metric records will be placed in spool
-%attr(-,rsv,rsv) %{_var}/run/condor-cron
-%attr(-,rsv,rsv) %{_var}/log/condor-cron
-%attr(-,rsv,rsv) %{_var}/lib/condor-cron
-%attr(-,rsv,rsv) %{_var}/lib/condor-cron/spool
-%attr(-,rsv,rsv) %{_var}/lib/condor-cron/execute
-%attr(-,rsv,rsv) %{_var}/lock/condor-cron
+%attr(-,cndrcron,cndrcron) %{_var}/run/condor-cron
+%attr(-,cndrcron,cndrcron) %{_var}/log/condor-cron
+%attr(-,cndrcron,cndrcron) %{_var}/lib/condor-cron
+%attr(-,cndrcron,cndrcron) %{_var}/lib/condor-cron/spool
+%attr(-,cndrcron,cndrcron) %{_var}/lib/condor-cron/execute
+%attr(-,cndrcron,cndrcron) %{_var}/lock/condor-cron
 
 
 %post
 /sbin/chkconfig --add condor-cron
 /sbin/ldconfig
 
+# Use the condor_config.generic file to make the base file
+# WARNING: This command might pick up the wrong file if the wildcard picks
+#          up more than one condor-* directory.
+cp /usr/share/doc/condor-*/etc/examples/condor_config.generic $RPM_BUILD_ROOT%{_sysconfdir}/condor-cron/condor_config
+# Update the local config file location
+perl -pi -e's|^(LOCAL_CONFIG_FILE\s*=).+$|$1 /etc/condor-cron/condor_config.local|' /etc/condor-cron/condor_config
+
 # Need to put the uid/gid of cndrcron into the config file as CONDOR_IDS
 CC_UID=`/usr/bin/id -u cndrcron`
 CC_GID=`/usr/bin/id -g cndrcron`
 echo "CONDOR_IDS = $CC_UID.$CC_GID" >> /etc/condor-cron/condor_config.local
+
 
 %preun
 if [ $1 = 0 ]; then
