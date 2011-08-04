@@ -1,7 +1,7 @@
 Summary: Generic Information Provider
 Name: gip
-Version: 1.3.0alpha2
-Release: 4%{?dist}
+Version: 1.3.0alpha3
+Release: 1%{?dist}
 License: TODO
 Group: Applications/Grid
 BuildArch: noarch
@@ -17,7 +17,6 @@ AutoReq: yes
 AutoProv: yes
 
 Source0: %{name}-%{version}.tgz
-Patch0: dir_locations.patch
 
 %description
 
@@ -28,7 +27,6 @@ then can be sent via external services to information collection servers such as
 
 %prep
 %setup -q
-%patch0 -p0
 
 %install
 rm -rf %{buildroot}
@@ -76,8 +74,8 @@ rm %{buildroot}%{_bindir}/gip-validator.py
 rm %{buildroot}%{_bindir}/TestRunner.py
 rm %{buildroot}%{_bindir}/run_gip.sh.se_only.example
 
-install -d %{buildroot}%{_libexecdir}/%{name}/plugins
-install -d %{buildroot}%{_libexecdir}/%{name}/providers
+#install -d %{buildroot}%{_libexecdir}/%{name}/plugins
+#install -d %{buildroot}%{_libexecdir}/%{name}/providers
 
 mkdir -p $RPM_BUILD_ROOT/var/log/%{name}
 
@@ -89,7 +87,7 @@ touch $RPM_BUILD_ROOT/%{_sysconfdir}/%{name}/remove-attributes.conf
 %files
 %defattr(-,root,root,-)
 %attr(755,root,root) %{_bindir}/*
-%attr(755,root,root) %{_libexecdir}/%{name}osg-info-wrapper
+%attr(755,root,root) %{_libexecdir}/%{name}/osg-info-wrapper
 %attr(744,root,root) %{_libexecdir}/%{name}/providers/*
 %{python_sitelib}/*
 %{_datadir}/%{name}
@@ -109,6 +107,9 @@ rm -rf %buildroot
 %define _unpackaged_files_terminate_build 1
 
 %changelog
+* Thu Aug 04 2011 Burt Holzman <burt@fnal.gov> - 1.3.0alpha3-1
+- Bump to alpha3
+
 * Wed Aug 03 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.3.0alpha2-4
 - Fix ownership of files.
 
