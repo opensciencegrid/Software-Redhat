@@ -1,5 +1,5 @@
 diff --git a/src/condor_examples/condor_config.generic b/src/condor_examples/condor_config.generic
-index 3375e11..b921459 100644
+index 403a043..ab05f07 100644
 --- a/src/condor_examples/condor_config.generic
 +++ b/src/condor_examples/condor_config.generic
 @@ -1,12 +1,31 @@
@@ -38,7 +38,7 @@ index 3375e11..b921459 100644
  ##
  ##  The file is divided into four main parts:
  ##  Part 1:  Settings you likely want to customize 
-@@ -53,7 +72,7 @@ CONDOR_HOST	= central-manager-hostname.your.domain
+@@ -53,25 +72,29 @@ CONDOR_HOST	= central-manager-hostname.your.domain
  ##  Pathnames:
  ##--------------------------------------------------------------------
  ##  Where have you installed the bin, sbin and lib condor directories?   
@@ -47,8 +47,10 @@ index 3375e11..b921459 100644
  
  ##  Where is the local condor directory for each host?  
  ##  This is where the local config file(s), logs and
-@@ -61,17 +80,20 @@ RELEASE_DIR		= /usr/local/condor
- LOCAL_DIR		= $(TILDE)
+ ##  spool/execute directories are located
+-LOCAL_DIR		= $(TILDE)
++LOCAL_DIR       = /var/lib/condor 
++#LOCAL_DIR		= $(TILDE)
  #LOCAL_DIR		= $(RELEASE_DIR)/hosts/$(HOSTNAME)
  
 -##  Where is the machine-specific local config file for each host?
@@ -74,7 +76,7 @@ index 3375e11..b921459 100644
  
  ## If the local config file is not present, is it an error?
  ## WARNING: This is a potential security issue. 
-@@ -409,7 +431,22 @@ ALLOW_READ_STARTD     = $(ALLOW_READ), $(FLOCK_FROM)
+@@ -409,7 +432,22 @@ ALLOW_READ_STARTD     = $(ALLOW_READ), $(FLOCK_FROM)
  ##  condor account, it's probably condor.  Otherwise, it's whatever
  ##  you've set in the CONDOR_IDS environment variable.  See the Admin
  ##  manual for details on this.
@@ -98,7 +100,7 @@ index 3375e11..b921459 100644
  
  ##  If you don't use a fully qualified name in your /etc/hosts file
  ##  (or NIS, etc.) for either your official hostname or as an alias,
-@@ -475,7 +512,8 @@ GLIDEIN_SERVER_URLS = \
+@@ -475,7 +513,8 @@ GLIDEIN_SERVER_URLS = \
  ##  the execute machine and just make sure the two strings match.  The
  ##  default for this setting is False, since it is more secure this
  ##  way.
@@ -108,7 +110,7 @@ index 3375e11..b921459 100644
  
  ## If you would like to be informed in near real-time via condor_q when
  ## a vanilla/standard/java job is in a suspension state, set this attribute to
-@@ -514,8 +552,9 @@ GLIDEIN_SERVER_URLS = \
+@@ -514,8 +553,9 @@ GLIDEIN_SERVER_URLS = \
  ## just disable it).
  #NEGOTIATOR_IGNORE_USER_PRIORITIES = False
  
@@ -120,7 +122,7 @@ index 3375e11..b921459 100644
  
  ## This setting tells Condor whether to delegate or copy GSI X509
  ## credentials when sending them over the wire between daemons.
-@@ -605,6 +644,9 @@ SHARED_PORT_DEBUG       =
+@@ -605,6 +645,9 @@ SHARED_PORT_DEBUG       =
  MAX_HDFS_LOG            = 1000000
  HDFS_DEBUG              =
  
@@ -130,7 +132,7 @@ index 3375e11..b921459 100644
  # High Availability Logs
  MAX_HAD_LOG		= 1000000
  HAD_DEBUG		=
-@@ -927,14 +969,18 @@ TESTINGMODE_CLAIM_WORKLIFE = 1200
+@@ -927,14 +970,18 @@ TESTINGMODE_CLAIM_WORKLIFE = 1200
  ######################################################################
  
  ##  Pathnames
@@ -152,7 +154,7 @@ index 3375e11..b921459 100644
  
  ## If you leave HISTORY undefined (comment it out), no history file
  ## will be created. 
-@@ -958,6 +1004,7 @@ HAD_LOG		= $(LOG)/HADLog
+@@ -958,6 +1005,7 @@ HAD_LOG		= $(LOG)/HADLog
  REPLICATION_LOG	= $(LOG)/ReplicationLog
  TRANSFERER_LOG	= $(LOG)/TransfererLog
  HDFS_LOG	= $(LOG)/HDFSLog
@@ -160,7 +162,7 @@ index 3375e11..b921459 100644
  
  ##  Lock files
  SHADOW_LOCK	= $(LOCK)/ShadowLock
-@@ -1078,7 +1125,7 @@ DAEMON_LIST			= MASTER, STARTD, SCHEDD
+@@ -1078,7 +1126,7 @@ DAEMON_LIST			= MASTER, STARTD, SCHEDD
  #DC_DAEMON_LIST = \
  #MASTER, STARTD, SCHEDD, KBDD, COLLECTOR, NEGOTIATOR, EVENTD, \
  #VIEW_SERVER, CONDOR_VIEW, VIEW_COLLECTOR, HAWKEYE, CREDD, HAD, \
@@ -169,7 +171,7 @@ index 3375e11..b921459 100644
  
  
  ##  Where are the binaries for these daemons?
-@@ -1094,6 +1141,7 @@ ROOSTER                         = $(LIBEXEC)/condor_rooster
+@@ -1094,6 +1142,7 @@ ROOSTER                         = $(LIBEXEC)/condor_rooster
  HDFS				= $(SBIN)/condor_hdfs
  SHARED_PORT			= $(LIBEXEC)/condor_shared_port
  TRANSFERER			= $(LIBEXEC)/condor_transferer
@@ -177,7 +179,7 @@ index 3375e11..b921459 100644
  
  ##  When the master starts up, it can place it's address (IP and port)
  ##  into a file.  This way, tools running on the local machine don't
-@@ -1170,11 +1218,13 @@ PREEN_ARGS			= -m -r
+@@ -1170,11 +1219,13 @@ PREEN_ARGS			= -m -r
  ##--------------------------------------------------------------------
  ## Address to which Condor will send a weekly e-mail with output of
  ## condor_status.
@@ -193,7 +195,7 @@ index 3375e11..b921459 100644
  
  
  ##--------------------------------------------------------------------
-@@ -1183,6 +1233,7 @@ PREEN_ARGS			= -m -r
+@@ -1183,6 +1234,7 @@ PREEN_ARGS			= -m -r
  ## Determine if the Negotiator will honor SlotWeight attributes, which
  ## may be used to give a slot greater weight when calculating usage.
  #NEGOTIATOR_USE_SLOT_WEIGHTS = True
@@ -201,7 +203,7 @@ index 3375e11..b921459 100644
  
  
  ## How often the Negotaitor starts a negotiation cycle, defined in
-@@ -1620,7 +1671,7 @@ QUEUE_SUPER_USERS	= root, condor
+@@ -1620,7 +1672,7 @@ QUEUE_SUPER_USERS	= root, condor
  ##--------------------------------------------------------------------
  ##  condor_starter
  ##--------------------------------------------------------------------
@@ -210,7 +212,7 @@ index 3375e11..b921459 100644
  ##  jobs on your execute machines.  If you want this, uncomment the
  ##  following entry and set it to how "nice" you want the user
  ##  jobs. (1-19)  The larger the number, the lower priority the
-@@ -1661,7 +1712,7 @@ PROCD = $(SBIN)/condor_procd
+@@ -1673,7 +1725,7 @@ PROCD = $(SBIN)/condor_procd
  #     UNIX); the name will be something like:
  #         \\.\pipe\condor_procd
  #
@@ -219,7 +221,7 @@ index 3375e11..b921459 100644
  
  # The procd currently uses a very simplistic logging system. Since this
  # log will not be rotated like other Condor logs, it is only recommended
-@@ -1770,7 +1821,7 @@ JAVA_MAXHEAP_ARGUMENT = -Xmx
+@@ -1774,7 +1826,7 @@ JAVA = /usr/bin/java
  ## them here.  However, do not remove the existing entries, as Condor
  ## needs them.
  
@@ -228,7 +230,7 @@ index 3375e11..b921459 100644
  
  ##  JAVA_CLASSPATH_ARGUMENT describes the command-line parameter
  ##  used to introduce a new classpath:
-@@ -2246,8 +2297,8 @@ MAX_VM_GAHP_LOG	= 1000000
+@@ -2250,8 +2302,8 @@ MAX_VM_GAHP_LOG	= 1000000
  
  ## What kind of virtual machine program will be used for 
  ## the VM universe?
@@ -239,7 +241,7 @@ index 3375e11..b921459 100644
  
  ## How much memory can be used for the VM universe? (Required)
  ## This value is the maximum amount of memory that can be used by the 
-@@ -2478,7 +2529,7 @@ KBDD_ADDRESS_FILE = $(LOG)/.kbdd_address
+@@ -2482,7 +2534,7 @@ KBDD_ADDRESS_FILE = $(LOG)/.kbdd_address
  #SSH_TO_JOB_SSHD_ARGS = "-i -e -f %f"
  
  # sshd configuration template used by condor_ssh_to_job_sshd_setup.

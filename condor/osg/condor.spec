@@ -54,7 +54,7 @@ Version: 7.6.2
 %else
 %define condor_release %condor_base_release
 %endif
-Release: %condor_release%{?dist}
+Release: %condor_release%{?dist}.1
 
 License: ASL 2.0
 Group: Applications/System
@@ -1044,6 +1044,9 @@ fi
 %endif
 
 %changelog
+* Thu Aug 04 2011 Derek Weitzel <dweitzel@cse.unl.edu> - 7.6.2-0.5.672537b1git.1
+- Made LOCAL_DIR always point to /var/lib/condor rather than TILDE
+
 * Tue Jun  8 2011 <bbockelm@cse.unl.edu> - 7.7.0-0.5
 - Start to break build products into conditionals for future EPEL5 support.
 - Begun integration of a systemd service file.
