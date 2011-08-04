@@ -8,7 +8,7 @@ Name:		globus-gram-job-manager
 %global _name %(tr - _ <<< %{name})
 Version:	10.70
 %global setupversion 4.3
-Release:	7%{?dist}
+Release:	8%{?dist}
 Summary:	Globus Toolkit - GRAM Jobmanager
 
 Group:		Applications/Internet
@@ -101,6 +101,9 @@ BuildRequires:	tex(latex)
 %else
 BuildRequires:	tetex-latex
 %endif
+
+# This gets referenced from the setup script
+Requires: globus-gsi-cert-utils-progs
 
 %package doc
 Summary:	Globus Toolkit - GRAM Jobmanager Documentation Files
@@ -291,6 +294,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_docdir}/%{name}-setup-%{setupversion}/html
 
 %changelog
+* Thu Aug 04 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 10.70-8
+- Fix requires to make sure the setup script works.
+
 * Mon Aug 01 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 10.70-7
 - Fix deadlocks in loading restart files.
 - Forward-port job status patch from GT4 days.
