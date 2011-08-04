@@ -1,6 +1,6 @@
 Name:           osg-ca-certs
 Version:        3
-Release:        1
+Release:        2
 Summary:        Metapackage to bring in the appropriate CA certs
 
 Group:          System Environment/Base
@@ -12,6 +12,8 @@ BuildArch:      noarch
 
 #BuildRequires:  
 Requires:       vdt-ca-certs
+Provides:       grid-certificates
+
 
 %description
 %{summary}
@@ -38,6 +40,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Jul 22 2011 Derek Weitzel <dweitzel@cse.unl.edu> - 3-2
+- Add provdes grid-certificates
+
 * Fri Jul 08 2011 Derek Weitzel <dweitzel@cse.unl.edu> - 3-1
 - Initial creation of RPM to pull in vdt-ca-certs.
 
