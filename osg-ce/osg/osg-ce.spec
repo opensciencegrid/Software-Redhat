@@ -1,7 +1,7 @@
 Name:      osg-ce
 Summary:   OSG Compute Element 
 Version:   3.0.0
-Release:   3
+Release:   4
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -23,6 +23,7 @@ Requires: osg-site-web-page
 Requires: globus-gram-job-manager-setup-fork
 Requires: gip
 Requires: osg-info-services
+Requires: gums-client
 
 # For the CE authz
 Requires: lcmaps-plugins-gums
@@ -85,6 +86,9 @@ rm -rf $RPM_BUILD_ROOT
 %files sge
 
 %changelog
+* Thu Aug 04 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 3.0.0-4
+- Add gums-client as a CE dependency.
+
 * Wed Aug 03 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 3.0.0-3
 - Add in the information services items.
 
