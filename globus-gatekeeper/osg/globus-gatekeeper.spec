@@ -8,7 +8,7 @@ Name:		globus-gatekeeper
 %global _name %(tr - _ <<< %{name})
 Version:	5.7
 %global setupversion 2.2
-Release:	5%{?dist}
+Release:	6%{?dist}
 Summary:	Globus Toolkit - Globus Gatekeeper
 
 Group:		Applications/Internet
@@ -52,6 +52,9 @@ BuildRequires:	grid-packaging-tools
 BuildRequires:	globus-gss-assist-devel%{?_isa} >= 3
 BuildRequires:	globus-gssapi-gsi-devel%{?_isa} >= 4
 BuildRequires:	globus-core%{?_isa} >= 4
+
+# This is required for running the setup script:
+Requires: grid-packaging-tools
 
 %description
 The Globus Toolkit is an open source software toolkit used for building Grid
@@ -182,6 +185,9 @@ fi
 %doc %{_docdir}/%{name}-%{version}/README.Fedora
 
 %changelog
+* Thu Aug 04 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 5.7-6
+- Add dependency for running the setup script.
+
 * Sun Jul 31 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 5.7-5
 - Add a sysconfig environment script.
 - Fix child signal delivery.
