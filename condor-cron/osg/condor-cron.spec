@@ -1,6 +1,6 @@
 
 Name:      condor-cron
-Version:   1.0.1
+Version:   1.0.2
 Release:   1%{?dist}
 Summary:   A framework to run cron-style jobs within Condor
 
@@ -47,12 +47,15 @@ cp wrappers/condor_cron_rm $RPM_BUILD_ROOT%{_bindir}/
 cp wrappers/condor_cron_submit $RPM_BUILD_ROOT%{_bindir}/
 cp wrappers/condor_cron_version $RPM_BUILD_ROOT%{_bindir}/
 
-
 # Copy config into place
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/condor-cron
 cp etc/condor_config.local $RPM_BUILD_ROOT%{_sysconfdir}/condor-cron/
 cp etc/condor-cron.sh $RPM_BUILD_ROOT%{_sysconfdir}/condor-cron/
 touch $RPM_BUILD_ROOT%{_sysconfdir}/condor-cron/condor_config
+
+# Copy init script into place
+mkdir -p $RPM_BUILD_ROOT%{_initrddir}
+cp etc/condor.init $RPM_BUILD_ROOT%{_initrddir}/condor-cron
 
 # Make working directories
 mkdir -p $RPM_BUILD_ROOT%{_var}/run/condor-cron
@@ -78,6 +81,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/condor_cron_submit
 %{_bindir}/condor_cron_version
 
+%{_initrddir}/condor-cron
 
 %ghost %{_sysconfdir}/condor-cron/condor_config
 %config %{_sysconfdir}/condor-cron/condor_config.local
