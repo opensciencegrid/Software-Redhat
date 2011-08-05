@@ -10,6 +10,7 @@ BuildArch: noarch
 
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
+Requires: condor-cron
 Requires: rsv-consumers
 Requires: rsv-core
 Requires: rsv-metrics
