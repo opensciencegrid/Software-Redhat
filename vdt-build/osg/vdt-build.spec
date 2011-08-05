@@ -1,7 +1,7 @@
 
 Name:           vdt-build
-Version:        0.0.14
-Release:        2%{?dist}
+Version:        0.0.15
+Release:        1%{?dist}
 Summary:        Build tools for the VDT
 
 Group:          System Environment/Tools
@@ -46,7 +46,13 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/platform-post.py*
 %{python_sitelib}/remote-declare.py*
 %{python_sitelib}/remote-task.py*
+%{python_sitelib}/vdtkoji.conf
 %doc %{_docdir}/%{name}/sample-vdt-build.ini
+
+%changelog
+* Fri Aug 05 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 0.0.15-1
+- VDTBuildMockConfig bug fixes
+- Added 'koji' task
 
 %changelog
 * Mon Aug 01 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 0.0.14-2
