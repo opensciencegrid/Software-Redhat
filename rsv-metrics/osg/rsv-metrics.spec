@@ -82,8 +82,6 @@ mkdir -p $RPM_BUILD_ROOT%{_var}/log/rsv/metrics
 ln -s metrics $RPM_BUILD_ROOT%{_var}/log/rsv/probes
 
 %clean
-#rmdir %{_sysconfdir}/rsv/meta/metrics
-#rmdir %{_sysconfdir}/rsv/metrics
 rm -rf $RPM_BUILD_ROOT
 
 
@@ -95,7 +93,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libexecdir}/rsv/metrics/
 %{_datadir}/rsv/probe-helper-files/
 
-%config
+%config %{_sysconfdir}/rsv/meta/metrics/*
 %config(noreplace) %{_sysconfdir}/rsv/metrics/*
 
 # Metric records will be placed in spool
