@@ -1,6 +1,6 @@
 Name:           bestman2
 Version:        2.1.1
-Release:        3
+Release:        4
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -70,8 +70,6 @@ Requires: java-1.6.0-sun-compat
 Requires: %{name}-common-libs = %{version}-%{release}
 Requires: %{name}-server-libs = %{version}-%{release}
 Requires: %{name}-server-dep-libs = %{version}-%{release}
-Requires: %{name}-client = %{version}-%{release}
-Requires: %{name}-tester = %{version}-%{release}
 Requires(pre): shadow-utils
 Requires(post): /sbin/chkconfig
 Requires(post): /sbin/service
@@ -422,6 +420,9 @@ fi
 
 
 %changelog
+* Fri Aug 05 2011 Tanya Levshina <tlevshin@fnal.gov> - 2.1.1-4
+get rid of bestman2 dependency of client and server
+
 * Wed Aug 3 2011 Doug Strain <dstrain@fnal.gov> 2.1.1-3
 - Changing to use bestman user instead of daemon user.
 
