@@ -1,7 +1,7 @@
 
 Name:      rsv-core
 Version:   3.4.3
-Release:   1%{?dist}
+Release:   2%{?dist}
 Summary:   RSV Core Infrastructure
 
 Group:     Applications/Monitoring
@@ -16,13 +16,11 @@ BuildArch: noarch
 Requires:  mock
 Requires:  rpm-build
 Requires:  createrepo
-#Requires:  condor #TODO
 
 Requires: /usr/bin/grid-proxy-info
 Requires: /usr/bin/globus-job-run
 
 #package('VDT-Logrotate')
-#package('Condor-Cron')
 
 
 %if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
@@ -57,6 +55,10 @@ cp bin/rsv-control $RPM_BUILD_ROOT%{_bindir}/
 mkdir -p $RPM_BUILD_ROOT%{_libexecdir}/rsv
 cp -r libexec/misc $RPM_BUILD_ROOT%{_libexecdir}/rsv/
 
+# Install the init script
+mkdir -p $RPM_BUILD_ROOT%{_initrddir}
+cp init/rsv.init $RPM_BUILD_ROOT%{_initrddir}/rsv
+
 # Install the configuration
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/rsv
 cp etc/consumers.conf $RPM_BUILD_ROOT%{_sysconfdir}/rsv/
@@ -83,6 +85,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/rsv-control
 %{_libexecdir}/rsv/misc/
 
+%{_initrddir}/rsv
+
 %config(noreplace) %{_sysconfdir}/rsv/consumers.conf
 %config(noreplace) %{_sysconfdir}/rsv/rsv.conf
 
@@ -90,6 +94,22 @@ rm -rf $RPM_BUILD_ROOT
 
 %{_mandir}/man1/rsv-control.1*
 
+
+%post
+/sbin/chkconfig --add rsv
+/sbin/ldconfig
+
+%preun
+if [ $1 = 0 ]; then
+  /sbin/service rsv stop >/dev/null 2>&1 || :
+  /sbin/chkconfig --del rsv
+fi
+
+%postun
+if [ "$1" -ge "1" ]; then
+  /sbin/service rsv restart >/dev/null 2>&1 || :
+fi
+/sbin/ldconfig
 
 
 %changelog
