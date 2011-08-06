@@ -1,11 +1,12 @@
---- bestman.server.in	2011-06-24 15:26:47.000000000 -0500
-+++ bestman.server.diff	2011-07-29 16:38:40.000000000 -0500
-@@ -96,6 +96,9 @@
+--- bestman.server.in	2011-06-24 13:26:47.000000000 -0700
++++ bestman.server.diff	2011-08-06 05:08:14.000000000 -0700
+@@ -96,6 +96,10 @@
  if [ "x$BESTMAN_GUMSPROXYPATH" = "x" ] ; then
      BESTMAN_GUMSPROXYPATH=`grep BESTMAN_GUMSPROXYPATH $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
  fi
 +if [ "x$BESTMAN_JAVA_SRM_OTHER_OPTS" = "x" ] ; then
-+    BESTMAN_JAVA_SRM_OTHER_OPTS=`grep BESTMAN_JAVA_SRM_OTHER_OPTS $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
++    # the above parsing method doesn't preserve = sign in java property definitions e.g. -Dprop=value
++    BESTMAN_JAVA_SRM_OTHER_OPTS=`grep BESTMAN_JAVA_SRM_OTHER_OPTS $BESTMAN_SYSCONF | sed -e 's/#.*//' -e 's/^[^=]*=//'`
 +fi
  
  ############################################################################
