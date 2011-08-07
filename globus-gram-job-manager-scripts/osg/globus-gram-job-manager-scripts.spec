@@ -3,7 +3,7 @@
 Name:		globus-gram-job-manager-scripts
 %global _name %(tr - _ <<< %{name})
 Version:	2.12
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	Globus Toolkit - GRAM Job ManagerScripts
 
 Group:		Applications/Internet
@@ -29,6 +29,8 @@ Patch1:		%{name}-undefined.patch
 Patch1000: gratia.patch
 #       OSG patch: Read OSG job environment files, push to job environment
 Patch1001: osg-environment.patch
+#       OSG patch: Add default PATH
+Patch1002: osg-path.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -66,6 +68,7 @@ GRAM Job ManagerScripts Documentation Files
 %patch1 -p1
 %patch1000 -p1
 %patch1001 -p1
+%patch1002 -p0
 
 %build
 # Remove files that should be replaced during bootstrap
@@ -131,6 +134,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_docdir}/%{name}-%{version}/perl/Globus/GRAM
 
 %changelog
+* Sun Aug 07 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 2.12-3
+- Added a default PATH.
+
 * Fri Jul 07 2011 Alain Roy <roy@cs.wisc.edu> 2.12-2
 - Patched to allow use of Gratia (patch 1000)
 

@@ -1,4 +1,9 @@
-This is a patched version from EPEL. It was patched to add one patch
-(patch #1000). Other than that, the spec file is identical to the
-upstream EPEL spec file. 
+This is a patched version from EPEL. 
+
+Notes:
+- Patch #1000 was applied.
+- Patch for SOFTWARE-133 was applied, adding PATH to the default environment.
+- Gratia integration patch was applied
+
+Other than that, the spec file is identical to the upstream EPEL spec file. 
 
