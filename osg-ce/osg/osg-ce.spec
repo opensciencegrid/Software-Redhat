@@ -1,7 +1,7 @@
 Name:      osg-ce
 Summary:   OSG Compute Element 
 Version:   3.0.0
-Release:   5
+Release:   6
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -25,6 +25,7 @@ Requires: gip
 Requires: osg-info-services
 Requires: gums-client
 Requires: edg-mkgridmap
+Requires: osg-site-verify
 
 # For the CE authz
 Requires: lcmaps-plugins-gums
@@ -87,6 +88,9 @@ rm -rf $RPM_BUILD_ROOT
 %files sge
 
 %changelog
+* Sun Aug 07 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 3.0.0-6
+- Add dependency on site-verify
+
 * Thu Aug 04 2011 Alain Roy <roy@cs.wisc.edu> - 3.0.0-5
 Added dependency on edg-mkgridmap
 
