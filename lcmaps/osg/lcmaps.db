@@ -38,7 +38,8 @@ verifyproxy = "lcmaps_verify_proxy.mod"
 
 tracking = "lcmaps_glexec_tracking.mod"
            "-exec /usr/sbin/glexec_monitor"
-           "-procddir /usr"
+# Uncomment if your procd is located in a non-standard directory
+#           "-procddir /usr"
 # Uncomment to write tracking info to glexec_monitor.log in the given dir
 #         "-logdir /var/log/glexec"
 # Uncomment to use local time in the file log (doesn't apply to syslog)

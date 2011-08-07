@@ -1,7 +1,7 @@
 Summary: Grid (X.509) and VOMS credentials to local account mapping service
 Name: lcmaps
 Version: 1.4.28
-Release: 6%{?dist}
+Release: 7%{?dist}
 Vendor: Nikhef
 License: ASL 2.0
 Group: System Environment/Libraries
@@ -151,6 +151,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/modules/*.so
 
 %changelog
+* Sun Aug 07 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.4.28-7
+- Let glexec-tracking find the procd in PATH, instead of specifying the directory.
+
 * Wed Aug 03 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.4.28-6
 - Fix dependencies so default config is usable out-of-the-box.
 
