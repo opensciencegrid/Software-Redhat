@@ -1,7 +1,7 @@
 Summary: Generic Information Provider
 Name: gip
 Version: 1.3.0alpha3
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: TODO
 Group: Applications/Grid
 BuildArch: noarch
@@ -86,9 +86,11 @@ touch $RPM_BUILD_ROOT/%{_sysconfdir}/%{name}/remove-attributes.conf
 
 %files
 %defattr(-,root,root,-)
-%attr(755,root,root) %{_bindir}/*
-%attr(755,root,root) %{_libexecdir}/%{name}/osg-info-wrapper
-%attr(744,root,root) %{_libexecdir}/%{name}/providers/*
+%attr(755,-,-) %{_bindir}/*
+%attr(755,-,-) %{_libexecdir}/%{name}/osg-info-wrapper
+%attr(755,-,-) %{_libexecdir}/%{name}/providers/*
+%dir %{_libexecdir}/%{name}/plugins
+%dir %{_libexecdir}/%{name}/providers
 %{python_sitelib}/*
 %{_datadir}/%{name}
 %dir %{_sysconfdir}/%{name}
@@ -104,9 +106,12 @@ touch $RPM_BUILD_ROOT/%{_sysconfdir}/%{name}/remove-attributes.conf
 %clean
 rm -rf %buildroot
 
-%define _unpackaged_files_terminate_build 1
+#%define _unpackaged_files_terminate_build 1
 
 %changelog
+* Thu Aug 04 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.3.0alpha3-2
+- Minor ownership issues found in testing
+
 * Thu Aug 04 2011 Burt Holzman <burt@fnal.gov> - 1.3.0alpha3-1
 - Bump to alpha3
 
