@@ -2,7 +2,7 @@
 
 Name:           globus-gram-job-manager-setup-condornfslite
 Version:        2.0.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Globus Toolkit - Condor NFS lite Job Manager Setup
 
 Group:          Applications/Internet
@@ -12,6 +12,8 @@ URL:            http://www.globus.org/
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Source:		Globus-CondorNFSLite-Setup.tar.gz
+Patch0:         default_locs.patch
+
 Requires:       globus-gram-job-manager-scripts
 Requires:       globus-gass-cache-program >= 2
 Requires:       globus-common-setup >= 2
@@ -28,6 +30,7 @@ jobs (stdout, stderr, etc).
 
 %prep
 %setup -q -n Globus-CondorNFSLite-Setup
+%patch0 -p0
 
 %build
 #Patch jobmanager file

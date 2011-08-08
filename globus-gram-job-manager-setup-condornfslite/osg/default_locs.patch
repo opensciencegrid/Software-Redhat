@@ -1,0 +1,13 @@
+--- /tmp/condornfslite.pm	2011-08-07 19:04:32.000000000 -0500
++++ condornfslite.pm	2011-08-07 19:04:51.000000000 -0500
+@@ -23,8 +23,8 @@
+ 
+ BEGIN
+ {
+-    $condor_submit 	= 'CONDOR_BIN/condor_submit';
+-    $condor_rm	 	= 'CONDOR_BIN/condor_rm';
++    $condor_submit 	= '/usr/bin/condor_submit';
++    $condor_rm	 	= '/usr/bin/condor_rm';
+ }
+ 
+ sub new
