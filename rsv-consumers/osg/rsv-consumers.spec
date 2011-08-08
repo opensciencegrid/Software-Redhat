@@ -51,7 +51,7 @@ cp -r etc/consumers $RPM_BUILD_ROOT%{_sysconfdir}/rsv/
 cp etc/rsv-nagios.conf $RPM_BUILD_ROOT%{_sysconfdir}/rsv/
 
 # Create the log dir
-mkdir -p $RPM_BUILD_ROOT%{_var}/log/rsv/consumers
+mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/log/rsv/consumers
 
 
 %clean
@@ -69,7 +69,7 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/rsv/rsv-nagios.conf
 
 %attr(-,rsv,rsv) %{_datadir}/rsv
-%attr(-,rsv,rsv) %{_var}/log/rsv/consumers
+%attr(-,rsv,rsv) %{_localstatedir}/log/rsv/consumers
 
 %changelog
 * Thu Jul 20 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.4.0-1

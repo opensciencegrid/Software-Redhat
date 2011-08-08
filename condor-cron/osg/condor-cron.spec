@@ -54,12 +54,12 @@ mkdir -p $RPM_BUILD_ROOT%{_initrddir}
 cp etc/condor.init $RPM_BUILD_ROOT%{_initrddir}/condor-cron
 
 # Make working directories
-mkdir -p $RPM_BUILD_ROOT%{_var}/run/condor-cron
-mkdir -p $RPM_BUILD_ROOT%{_var}/log/condor-cron
-mkdir -p $RPM_BUILD_ROOT%{_var}/lib/condor-cron
-mkdir -p $RPM_BUILD_ROOT%{_var}/lib/condor-cron/spool
-mkdir -p $RPM_BUILD_ROOT%{_var}/lib/condor-cron/execute
-mkdir -p $RPM_BUILD_ROOT%{_var}/lock/condor-cron
+mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/run/condor-cron
+mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/log/condor-cron
+mkdir -p $RPM_BUILD_ROOT%{_sharedstatedir}/condor-cron
+mkdir -p $RPM_BUILD_ROOT%{_sharedstatedir}/condor-cron/spool
+mkdir -p $RPM_BUILD_ROOT%{_sharedstatedir}/condor-cron/execute
+mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/lock/condor-cron
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -84,12 +84,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/condor-cron/condor-cron.sh
 
 # Metric records will be placed in spool
-%attr(-,cndrcron,cndrcron) %{_var}/run/condor-cron
-%attr(-,cndrcron,cndrcron) %{_var}/log/condor-cron
-%attr(-,cndrcron,cndrcron) %{_var}/lib/condor-cron
-%attr(-,cndrcron,cndrcron) %{_var}/lib/condor-cron/spool
-%attr(-,cndrcron,cndrcron) %{_var}/lib/condor-cron/execute
-%attr(-,cndrcron,cndrcron) %{_var}/lock/condor-cron
+%attr(-,cndrcron,cndrcron) %{_localstatedir}/run/condor-cron
+%attr(-,cndrcron,cndrcron) %{_localstatedir}/log/condor-cron
+%attr(-,cndrcron,cndrcron) %{_sharedstatedir}/condor-cron
+%attr(-,cndrcron,cndrcron) %{_sharedstatedir}/condor-cron/spool
+%attr(-,cndrcron,cndrcron) %{_sharedstatedir}/condor-cron/execute
+%attr(-,cndrcron,cndrcron) %{_localstatedir}/lock/condor-cron
 
 
 %post

@@ -42,7 +42,7 @@ getent passwd rsv >/dev/null || useradd -r -g rsv -d /var/rsv -s /bin/sh -c "RSV
 rm -fr $RPM_BUILD_ROOT
 
 # Create the logging directories
-mkdir -p $RPM_BUILD_ROOT%{_var}/log/rsv
+mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/log/rsv
 
 # Install the executable
 mkdir -p $RPM_BUILD_ROOT%{_bindir}
@@ -76,7 +76,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root,-)
 
-%attr(-,rsv,rsv) %{_var}/log/rsv
+%attr(-,rsv,rsv) %{_localstatedir}/log/rsv
 
 %{_bindir}/rsv-control
 %{_libexecdir}/rsv/misc/
