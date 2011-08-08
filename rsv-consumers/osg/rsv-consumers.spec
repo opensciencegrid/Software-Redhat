@@ -13,9 +13,6 @@ Source0:   %{name}-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch: noarch
 
-Requires:  mock
-Requires:  rpm-build
-Requires:  createrepo
 #Requires:  apache #TODO
 
 %if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)

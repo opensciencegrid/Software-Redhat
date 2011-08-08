@@ -15,10 +15,6 @@ Provides: perl(RSVMetric)
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch: noarch
 
-Requires:  mock
-Requires:  rpm-build
-Requires:  createrepo
-
 # Some of the "old" RSV probes rely on Date::Manip.  We intend to rewrite
 # these probes so this dependency can probably go away at some point.
 Requires:  perl(Date::Manip)

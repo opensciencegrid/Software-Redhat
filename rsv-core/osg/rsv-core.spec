@@ -13,10 +13,6 @@ Source0:   %{name}-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch: noarch
 
-Requires:  mock
-Requires:  rpm-build
-Requires:  createrepo
-
 Requires: /usr/bin/grid-proxy-info
 Requires: /usr/bin/globus-job-run
 
