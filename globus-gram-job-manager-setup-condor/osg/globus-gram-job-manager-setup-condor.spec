@@ -3,7 +3,7 @@
 Name:		globus-gram-job-manager-setup-condor
 %global _name %(tr - _ <<< %{name})
 Version:	4.4
-Release:	3%{?dist}
+Release:	4%{?dist}
 Summary:	Globus Toolkit - Condor Job Manager Setup
 
 Group:		Applications/Internet
@@ -25,11 +25,19 @@ Source:		%{_name}-%{version}.tar.gz
 Source1:	globus-condor-print-config
 #		README file
 Source8:	GLOBUS-GRAM5
+
+Source9:        condor_accounting_groups.pm
+
 #		Remove hardcoded paths:
 #		http://bugzilla.globus.org/bugzilla/show_bug.cgi?id=6826
 Patch0:		%{name}.patch
 Patch1000:  job_status.patch
 Patch1001:  gratia.patch
+Patch1002:  nfslite.patch
+Patch1003:  groupacct.patch
+Patch1004:  managedfork.patch
+Patch1005:  conf_location.patch
+
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Requires:	globus-gram-job-manager-scripts
@@ -79,6 +87,10 @@ Condor Job Manager Setup Documentation Files
 %patch0 -p1
 %patch1000 -p1
 %patch1001 -p1
+%patch1002 -p0
+%patch1003 -p0
+%patch1004 -p0
+%patch1005 -p0
 
 %build
 # Remove files that should be replaced during bootstrap
@@ -148,6 +160,19 @@ cat $GLOBUSPACKAGEDIR/%{_name}/noflavor_pgm.filelist \
 cat $GLOBUSPACKAGEDIR/%{_name}/noflavor_doc.filelist \
   | sed 's!^!%doc %{_prefix}!' > package-doc.filelist
 
+# Install configuration file
+mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/globus-condor/
+cat > $RPM_BUILD_ROOT%{_sysconfdir}/globus-condor/jobmanager.conf << EOF
+#Set to 0 to disable NFS-lite mode.
+isNFSLite=1
+EOF
+
+# Install the group accounting patch
+mkdir -p $RPM_BUILD_ROOT%{perl_vendorlib}/Globus/GRAM/JobManager/
+install -m 644 %{SOURCE9} $RPM_BUILD_ROOT%{perl_vendorlib}/Globus/GRAM/JobManager/
+touch $RPM_BUILD_ROOT%{_sysconfdir}/globus-condor/uid_table.txt
+touch $RPM_BUILD_ROOT%{_sysconfdir}/globus-condor/ea_table.txt
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -158,6 +183,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/globus/condor.rvf
 %{_datadir}/globus/setup/globus-condor-print-config
 %{perl_vendorlib}/Globus
+%dir %{_sysconfdir}/globus-condor
+%config(noreplace) %{_sysconfdir}/globus-condor/jobmanager.conf
+%config(noreplace) %{_sysconfdir}/globus-condor/ea_table.txt
+%config(noreplace) %{_sysconfdir}/globus-condor/uid_table.txt
 %dir %{_docdir}/%{name}-%{version}
 %doc %{_docdir}/%{name}-%{version}/GLOBUS_LICENSE
 %doc %{_docdir}/%{name}-%{version}/README
@@ -167,6 +196,12 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_docdir}/%{name}-%{version}/html
 
 %changelog
+* Mon Aug 08 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 4.4-4
+- Add OSG's NFS-lite patch.
+- Add OSG's group accounting patch.
+- Created a dedicated configuration directory.
+- Add Gratia patch
+
 * Mon Apr 25 2011 Mattias Ellert <mattias.ellert@fysast.uu.se> - 4.4-3
 - Add README file
 
