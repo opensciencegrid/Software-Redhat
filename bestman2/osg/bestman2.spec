@@ -1,6 +1,6 @@
 Name:           bestman2
 Version:        2.1.1
-Release:        4
+Release:        5
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -420,6 +420,9 @@ fi
 
 
 %changelog
+* Mon Aug 08 2011 Tanya Levshina <tlevshin@fnal.gov> - 2.1.1-5
+New bestman server patch
+
 * Fri Aug 05 2011 Tanya Levshina <tlevshin@fnal.gov> - 2.1.1-4
 get rid of bestman2 dependency of client and server
 
