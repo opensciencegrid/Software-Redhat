@@ -1,5 +1,5 @@
---- /tmp/condornfslite.pm	2011-08-07 19:04:32.000000000 -0500
-+++ condornfslite.pm	2011-08-07 19:04:51.000000000 -0500
+--- condornfslite.pm	2011-08-07 19:04:32.000000000 -0500
++++ globus/lib/perl/Globus/GRAM/JobManager/condornfslite.pm	2011-08-07 19:04:51.000000000 -0500
 @@ -23,8 +23,8 @@
  
  BEGIN
