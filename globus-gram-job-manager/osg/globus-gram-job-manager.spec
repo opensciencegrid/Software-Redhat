@@ -8,7 +8,7 @@ Name:		globus-gram-job-manager
 %global _name %(tr - _ <<< %{name})
 Version:	10.70
 %global setupversion 4.3
-Release:	8%{?dist}
+Release:	9%{?dist}
 Summary:	Globus Toolkit - GRAM Jobmanager
 
 Group:		Applications/Internet
@@ -57,6 +57,7 @@ Patch12:        fd_leak.patch
 Patch13:        watchdog_timer.patch
 Patch14:        recvmsg_eagain.patch
 Patch15:        double_proxy_lock.patch
+Patch16:        description_service_tag.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -153,6 +154,7 @@ cd -
 %patch13 -p0
 %patch14 -p0
 %patch15 -p0
+%patch16 -p0
 
 %build
 # Remove files that should be replaced during bootstrap
@@ -294,6 +296,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_docdir}/%{name}-setup-%{setupversion}/html
 
 %changelog
+* Mon Aug 08 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 10.70-9
+- Add the service tag description to the perl job description
+
 * Thu Aug 04 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 10.70-8
 - Fix requires to make sure the setup script works.
 
