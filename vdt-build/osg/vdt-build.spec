@@ -1,6 +1,6 @@
 
 Name:           vdt-build
-Version:        0.0.15
+Version:        0.0.16
 Release:        1%{?dist}
 Summary:        Build tools for the VDT
 
@@ -50,6 +50,11 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_docdir}/%{name}/sample-vdt-build.ini
 
 %changelog
+* Mon Aug 08 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 0.0.16-1
+- Fixed bug detecting group memebership in mock task.
+- Fixed koji task using '.' as the package name if '.' is given as the package
+  dir.
+
 * Fri Aug 05 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 0.0.15-1
 - VDTBuildMockConfig bug fixes
 - Added 'koji' task
