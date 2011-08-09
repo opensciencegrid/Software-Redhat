@@ -3,7 +3,7 @@
 Name:		globus-gram-job-manager-setup-condor
 %global _name %(tr - _ <<< %{name})
 Version:	4.4
-Release:	4%{?dist}
+Release:	5%{?dist}
 Summary:	Globus Toolkit - Condor Job Manager Setup
 
 Group:		Applications/Internet
@@ -171,7 +171,7 @@ EOF
 mkdir -p $RPM_BUILD_ROOT%{perl_vendorlib}/Globus/GRAM/JobManager/
 install -m 644 %{SOURCE9} $RPM_BUILD_ROOT%{perl_vendorlib}/Globus/GRAM/JobManager/
 touch $RPM_BUILD_ROOT%{_sysconfdir}/globus-condor/uid_table.txt
-touch $RPM_BUILD_ROOT%{_sysconfdir}/globus-condor/ea_table.txt
+touch $RPM_BUILD_ROOT%{_sysconfdir}/globus-condor/extattr_table.txt
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -185,7 +185,7 @@ rm -rf $RPM_BUILD_ROOT
 %{perl_vendorlib}/Globus
 %dir %{_sysconfdir}/globus-condor
 %config(noreplace) %{_sysconfdir}/globus-condor/jobmanager.conf
-%config(noreplace) %{_sysconfdir}/globus-condor/ea_table.txt
+%config(noreplace) %{_sysconfdir}/globus-condor/extattr_table.txt
 %config(noreplace) %{_sysconfdir}/globus-condor/uid_table.txt
 %dir %{_docdir}/%{name}-%{version}
 %doc %{_docdir}/%{name}-%{version}/GLOBUS_LICENSE
@@ -196,6 +196,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_docdir}/%{name}-%{version}/html
 
 %changelog
+* Mon Aug 08 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 4.4-5
+- Fixed location of the group accounting tables.
+
 * Mon Aug 08 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 4.4-4
 - Add OSG's NFS-lite patch.
 - Add OSG's group accounting patch.
