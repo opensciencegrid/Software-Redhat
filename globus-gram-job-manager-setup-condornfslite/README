@@ -1,7 +1,0 @@
-
-Globus Job Manager
-Condor NFS lite Fork Job Manager
-
-Extracted from:
-svn co https://vdt.cs.wisc.edu/svn/vdt/branches/vdt-2.0.0-prod/Globus-CondorNFSLite-Setup
-
