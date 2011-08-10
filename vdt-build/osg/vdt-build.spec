@@ -1,6 +1,6 @@
 
 Name:           vdt-build
-Version:        0.0.16
+Version:        0.0.17
 Release:        1%{?dist}
 Summary:        Build tools for the VDT
 
@@ -39,7 +39,6 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root,-)
 %{_bindir}/%{name}
-%{_bindir}/push-rpm-to-vdt
 %{python_sitelib}/VDTBuildConstants.py*
 %{python_sitelib}/VDTBuildMockConfig.py*
 %{python_sitelib}/VDTBuildUtils.py*
@@ -50,6 +49,16 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_docdir}/%{name}/sample-vdt-build.ini
 
 %changelog
+* Wed Aug 10 2011 <matyas@cs.wisc.edu> - 0.0.17-1
+- Removed push-rpm-to-vdt script.
+- Added koji-el5-osg-development repo (SOFTWARE-139).
+- Code cleanup.
+- Added detection of koji login from CN.
+- Made noarch rpms get copied to i386 and x86_64 repos, instead of being copied
+  to a noarch repo and symlinked to the arch-specific ones, to fit with how
+  mash does it.
+- Removed koji code from batlab task.
+
 * Mon Aug 08 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 0.0.16-1
 - Fixed bug detecting group memebership in mock task.
 - Fixed koji task using '.' as the package name if '.' is given as the package
