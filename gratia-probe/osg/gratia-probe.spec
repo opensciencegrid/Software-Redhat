@@ -2,7 +2,7 @@ Name:               gratia-probe
 Summary:            Gratia OSG accounting system probes
 Group:              Applications/System
 Version:            1.07.02e
-Release:            0.7.pre
+Release:            0.9.pre
 License:            GPL
 Group:              Applications/System
 URL:                http://sourceforge.net/projects/gratia/
@@ -294,10 +294,13 @@ done
 
 %ifarch noarch
 install -m 644 gratia/common/Gratia.py $RPM_BUILD_ROOT%{python_sitelib}/Gratia.py
+install -d $RPM_BUILD_ROOT%{perl_vendorlib}/Globus/GRAM
+install -m 644 gratia/common/GRAM/JobManagerGratia.pm $RPM_BUILD_ROOT%{perl_vendorlib}/Globus/GRAM/JobManagerGratia.pm
 %endif
 
 install -d $RPM_BUILD_ROOT/%{_sysconfdir}/condor/config.d
 install -m 644 %{SOURCE30} $RPM_BUILD_ROOT/%{_sysconfdir}/condor/config.d/99_gratia.conf
+
 
 # Remove the test stuff
 rm -rf $RPM_BUILD_ROOT%{_datadir}/gratia/condor/test
@@ -452,6 +455,7 @@ Common files and examples for Gratia OSG accounting system probes.
 %{default_prefix}/gratia/common/GRAM/globus-job-manager-script.in.diff.4.0.6
 %{default_prefix}/gratia/common/ProbeConfigTemplate
 %{default_prefix}/gratia/common/test/db-find-job
+%{perl_vendorlib}/Globus/GRAM/JobManagerGratia.pm
 #%config(noreplace) /etc/yum.repos.d/gratia.repo
 
 %package psacct
@@ -1340,6 +1344,12 @@ fi
 %endif # noarch
 
 %changelog
+* Thu Aug 11 2011 Derek Weitzel <dweitzel@cse.unl.edu> - 1.07.02e-0.9.pre
+- Removed requires on globus-scripts
+
+* Thu Aug 11 2011 Derek Weitzel <dweitzel@cse.unl.edu> - 1.07.02e-0.8.pre
+- Added JobManagerGratia.pm to perl sitelib
+
 * Wed Aug 10 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.07.02e-0.7.pre
 - Rebuild for noarch in Koji
 
