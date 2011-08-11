@@ -1,0 +1,11 @@
+
+This SRPM packages the IGTF CA certificates, based on the OSG re-packaging.
+The produced RPMs includes the distribution in the OpenSSL 0.9.8 format.
+
+The packages satisfy the virtual dependency of "grid-certificates" and purposely
+conflict with osg-ca-certs and osg-ca-manage
+
+For more information, see:
+
+http://twiki.grid.iu.edu/bin/view/Security/CreatingCADistributions
+
