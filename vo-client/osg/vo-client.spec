@@ -1,6 +1,6 @@
 Name:           vo-client
 Version:        38
-Release:        7%{?dist}
+Release:        8%{?dist}
 Summary:        Contains vomses file for use with user authentication and edg-mkgridmap.conf file that contains configuration information for edg-mkgridmap.
 
 Group:          system environment/base
@@ -9,7 +9,7 @@ URL:            http://www.opensciencegrid.org/osg/
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
-Requires:       osg-ca-certs
+Requires:       grid-certificates
 
 Source0:        %{name}-%{version}-1.tar.gz
 
@@ -69,6 +69,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Aug 10 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 38-8
+- Depend on virtual dependency grid-certificates, not specific package.
+
 * Wed Aug 03 2011 Derek Weitzel <dweitzel@cse.unl.edu> - 38-7
 - Fixed engage's lsc file
 

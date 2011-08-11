@@ -6,7 +6,7 @@
 
 Name:           ppdg-cert-scripts
 Version:        2.7
-Release:        3
+Release:        4
 Summary:        Command-line interface to the DOEGrids CA web site, and more.
 
 Group:          Grid
@@ -17,7 +17,7 @@ BuildArch:      noarch
 
 Requires:       /usr/bin/ldapsearch
 Requires:       /usr/bin/openssl
-Requires:       osg-ca-certs
+Requires:       grid-certificates
 
 Source0:        cert-scripts-2.7.tar.gz
 Patch0:         change_awk_locations.patch  
@@ -37,7 +37,6 @@ Authority (RA), but it is now maintained by the OSG RA.
 %patch1 -p1
 
 %build
-
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -66,8 +65,10 @@ rm -rf $RPM_BUILD_ROOT
 %{perl_vendorlib}/CertLib.pm
 
 
-
 %changelog
+* Wed Aug 10 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 2.7-4
+- Require virtual dep grid-certificates, not actual package osg-ca-certs.
+
 * Fri Jul 15 2011 Brian Bockelman <bbockelm@cse.unl.edu> 2.7-3
 - Rebuild using setup macro
 - Mark as noarch
@@ -78,6 +79,5 @@ rm -rf $RPM_BUILD_ROOT
 
 * Fri Jul 08 2011 Derek Weitzel <dweitzel@cse.unl.edu> 2.7-1
 - Initial build of the ppdg-cert-scripts package.
-
 
 
