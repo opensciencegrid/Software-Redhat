@@ -1,8 +1,8 @@
 
-Name:           vdt-build
-Version:        0.0.17
+Name:           osg-build
+Version:        0.0.18
 Release:        1%{?dist}
-Summary:        Build tools for the VDT
+Summary:        Build tools for the OSG
 
 Group:          System Environment/Tools
 License:        Apache 2.0
@@ -17,6 +17,9 @@ Requires:       mock
 Requires:       rpm-build
 Requires:       createrepo
 
+Obsoletes:      vdt-build <= 0.0.17
+Provides:       vdt-build = %{version}
+
 %if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
 %{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
 %{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
@@ -24,6 +27,7 @@ Requires:       createrepo
 
 %description
 %{summary}
+See %{url} for details.
 
 
 %prep
@@ -39,16 +43,21 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root,-)
 %{_bindir}/%{name}
-%{python_sitelib}/VDTBuildConstants.py*
-%{python_sitelib}/VDTBuildMockConfig.py*
-%{python_sitelib}/VDTBuildUtils.py*
-%{python_sitelib}/platform-post.py*
-%{python_sitelib}/remote-declare.py*
-%{python_sitelib}/remote-task.py*
-%{python_sitelib}/vdtkoji.conf
-%doc %{_docdir}/%{name}/sample-vdt-build.ini
+%{_bindir}/vdt-build
+%dir %{python_sitelib}/osg_build_lib
+%{python_sitelib}/osg_build_lib/*.py*
+%{_datadir}/%{name}/osg-koji.conf
+%doc %{_docdir}/%{name}/sample-osg-build.ini
 
 %changelog
+* Thu Aug 11 2011 <matyas@cs.wisc.edu> - 0.0.18-1
+- Renamed vdt-build to osg-build.
+- Moved supporting python files to their own subdirectory.
+- vdtkoji.conf moved to /usr/share/osg-build instead of being mixed in with the
+  .py files (and renamed to osg-koji.conf).
+- Added osg-minefield repository to the mock config.
+- Fixed logging (-v/-q weren't being obeyed).
+
 * Wed Aug 10 2011 <matyas@cs.wisc.edu> - 0.0.17-1
 - Removed push-rpm-to-vdt script.
 - Added koji-el5-osg-development repo (SOFTWARE-139).
