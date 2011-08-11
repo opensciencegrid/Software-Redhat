@@ -1,7 +1,7 @@
 
 Name:      condor-cron
-Version:   1.0.2
-Release:   3%{?dist}
+Version:   1.0.3
+Release:   1%{?dist}
 Summary:   A framework to run cron-style jobs within Condor
 
 Group:     Applications/System
@@ -40,31 +40,36 @@ rm -fr $RPM_BUILD_ROOT
 
 # Copy wrappers into place
 mkdir -p $RPM_BUILD_ROOT%{_bindir}/
-cp wrappers/condor_cron_history $RPM_BUILD_ROOT%{_bindir}/
-cp wrappers/condor_cron_hold $RPM_BUILD_ROOT%{_bindir}/
-cp wrappers/condor_cron_q $RPM_BUILD_ROOT%{_bindir}/
-cp wrappers/condor_cron_qedit $RPM_BUILD_ROOT%{_bindir}/
-cp wrappers/condor_cron_release $RPM_BUILD_ROOT%{_bindir}/
-cp wrappers/condor_cron_rm $RPM_BUILD_ROOT%{_bindir}/
-cp wrappers/condor_cron_submit $RPM_BUILD_ROOT%{_bindir}/
-cp wrappers/condor_cron_version $RPM_BUILD_ROOT%{_bindir}/
+install -m 0755 wrappers/condor_cron_history $RPM_BUILD_ROOT%{_bindir}/
+install -m 0755 wrappers/condor_cron_hold $RPM_BUILD_ROOT%{_bindir}/
+install -m 0755 wrappers/condor_cron_q $RPM_BUILD_ROOT%{_bindir}/
+install -m 0755 wrappers/condor_cron_qedit $RPM_BUILD_ROOT%{_bindir}/
+install -m 0755 wrappers/condor_cron_release $RPM_BUILD_ROOT%{_bindir}/
+install -m 0755 wrappers/condor_cron_rm $RPM_BUILD_ROOT%{_bindir}/
+install -m 0755 wrappers/condor_cron_submit $RPM_BUILD_ROOT%{_bindir}/
+install -m 0755 wrappers/condor_cron_version $RPM_BUILD_ROOT%{_bindir}/
+install -m 0755 wrappers/condor_cron_config_val $RPM_BUILD_ROOT%{_bindir}/
 
 # Copy config into place
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/condor-cron
-cp etc/condor_config.local $RPM_BUILD_ROOT%{_sysconfdir}/condor-cron/
-cp etc/condor-cron.sh $RPM_BUILD_ROOT%{_sysconfdir}/condor-cron/
+install -m 0644 etc/condor_config.local $RPM_BUILD_ROOT%{_sysconfdir}/condor-cron/
 touch $RPM_BUILD_ROOT%{_sysconfdir}/condor-cron/condor_config
+chmod 0644 $RPM_BUILD_ROOT%{_sysconfdir}/condor-cron/condor_config
+
+# Copy environment file into place 
+mkdir -p $RPM_BUILD_ROOT%{_libexecdir}/condor-cron
+install -m 0755 libexec/condor-cron.sh $RPM_BUILD_ROOT%{_libexecdir}/condor-cron/
 
 # Copy init script into place
 mkdir -p $RPM_BUILD_ROOT%{_initrddir}
-cp etc/condor.init $RPM_BUILD_ROOT%{_initrddir}/condor-cron
+install -m 0755 etc/condor.init $RPM_BUILD_ROOT%{_initrddir}/condor-cron
 
 # Make working directories
 mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/run/condor-cron
 mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/log/condor-cron
-mkdir -p $RPM_BUILD_ROOT%{_sharedstatedir}/condor-cron
-mkdir -p $RPM_BUILD_ROOT%{_sharedstatedir}/condor-cron/spool
-mkdir -p $RPM_BUILD_ROOT%{_sharedstatedir}/condor-cron/execute
+mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/lib/condor-cron
+mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/lib/condor-cron/spool
+mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/lib/condor-cron/execute
 mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/lock/condor-cron
 
 %clean
@@ -82,19 +87,21 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/condor_cron_rm
 %{_bindir}/condor_cron_submit
 %{_bindir}/condor_cron_version
+%{_bindir}/condor_cron_config_val
 
 %{_initrddir}/condor-cron
 
 %ghost %{_sysconfdir}/condor-cron/condor_config
 %config %{_sysconfdir}/condor-cron/condor_config.local
-%{_sysconfdir}/condor-cron/condor-cron.sh
+
+%{_libexecdir}/condor-cron/condor-cron.sh
 
 # Metric records will be placed in spool
 %attr(-,cndrcron,cndrcron) %{_localstatedir}/run/condor-cron
 %attr(-,cndrcron,cndrcron) %{_localstatedir}/log/condor-cron
-%attr(-,cndrcron,cndrcron) %{_sharedstatedir}/condor-cron
-%attr(-,cndrcron,cndrcron) %{_sharedstatedir}/condor-cron/spool
-%attr(-,cndrcron,cndrcron) %{_sharedstatedir}/condor-cron/execute
+%attr(-,cndrcron,cndrcron) %{_localstatedir}/lib/condor-cron
+%attr(-,cndrcron,cndrcron) %{_localstatedir}/lib/condor-cron/spool
+%attr(-,cndrcron,cndrcron) %{_localstatedir}/lib/condor-cron/execute
 %attr(-,cndrcron,cndrcron) %{_localstatedir}/lock/condor-cron
 
 
@@ -132,5 +139,8 @@ fi
 
 
 %changelog
+* Thu Aug 11 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 1.0.3-1
+- Numerous fixes based on feedback
+
 * Thu Aug 04 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.4.0-1
 - Created an initial condor cron spec file

@@ -1,6 +1,6 @@
 
 Name:      rsv-consumers
-Version:   3.4.3
+Version:   3.4.5
 Release:   1%{?dist}
 Summary:   RSV Consumers Infrastructure
 
@@ -13,7 +13,7 @@ Source0:   %{name}-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch: noarch
 
-#Requires:  apache #TODO
+Requires:  httpd
 
 %if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
 %{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
@@ -37,8 +37,15 @@ getent passwd rsv >/dev/null || useradd -r -g rsv -d /var/rsv -s /bin/sh -c "RSV
 %install
 rm -fr $RPM_BUILD_ROOT
 
-# Create the web output directory
+# Create the web areas
 mkdir -p $RPM_BUILD_ROOT%{_datadir}/rsv
+mkdir -p $RPM_BUILD_ROOT%{_datadir}/rsv/www
+
+# Install the Apache configuration and index files
+mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/httpd/conf.d
+mkdir -p $RPM_BUILD_ROOT%{_datadir}/osg/www.d/
+install -m 0644 httpd/rsv.conf $RPM_BUILD_ROOT%{_sysconfdir}/httpd/conf.d/
+install -m 0644 httpd/rsv.site $RPM_BUILD_ROOT%{_datadir}/osg/www.d/
 
 # Install executables
 mkdir -p $RPM_BUILD_ROOT%{_libexecdir}/rsv
@@ -68,7 +75,11 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/rsv/consumers/*
 %config(noreplace) %{_sysconfdir}/rsv/rsv-nagios.conf
 
+%config %{_sysconfdir}/httpd/conf.d/rsv.conf
+%config %{_datadir}/osg/www.d/rsv.site
+
 %attr(-,rsv,rsv) %{_datadir}/rsv
+%attr(-,rsv,rsv) %{_datadir}/rsv/www
 %attr(-,rsv,rsv) %{_localstatedir}/log/rsv/consumers
 
 %changelog
