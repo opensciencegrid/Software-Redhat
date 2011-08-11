@@ -7,6 +7,7 @@ License:        Stanford (modified BSD with advert clause)
 URL:            http://code.google.com/p/osg-discovery/
 
 Source:        osg-discovery.tar.gz
+Patch0:        avoid_npe.patch
 
 BuildRoot:      %{_tmppath}/%{name}-root
 BuildArch:      noarch
@@ -21,6 +22,7 @@ virtual organization (VO)
 
 %prep
 %setup -q -n %{name}
+%patch0 -p0
 
 %build
 # To download source
