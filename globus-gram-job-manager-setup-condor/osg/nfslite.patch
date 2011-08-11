@@ -55,7 +55,7 @@
      }
  
 +    # NFS lite start
-+    if ($isNFSLite) {
++    if ($isNFSLite && !$isManagedFork) {
 +
 +        my $osg_grid = '';
 +        my $use_osg_grid = 1;
@@ -101,7 +101,7 @@
              Globus::GRAM::Error::TEMP_SCRIPT_FILE_FAILED());
      }
 +    # NFS Lite mode
-+    if ($isNFSLite) {
++    if ($isNFSLite && !$isManagedFork) {
 +        print SCRIPT_FILE "should_transfer_files = YES\n";
 +        print SCRIPT_FILE "when_to_transfer_output = ON_EXIT\n";
 +        print SCRIPT_FILE "transfer_output = true\n";

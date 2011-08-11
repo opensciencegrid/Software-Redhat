@@ -3,7 +3,7 @@
 Name:		globus-gram-job-manager-setup-condor
 %global _name %(tr - _ <<< %{name})
 Version:	4.4
-Release:	5%{?dist}
+Release:	6%{?dist}
 Summary:	Globus Toolkit - Condor Job Manager Setup
 
 Group:		Applications/Internet
@@ -196,6 +196,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_docdir}/%{name}-%{version}/html
 
 %changelog
+* Mon Aug 08 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 4.4-6
+- Do not enable managed-fork and nfs-lite at the same time.
+
 * Mon Aug 08 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 4.4-5
 - Fixed location of the group accounting tables.
 
