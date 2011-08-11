@@ -1,7 +1,7 @@
 
 Name:      rsv-core
 Version:   3.4.3
-Release:   2%{?dist}
+Release:   4%{?dist}
 Summary:   RSV Core Infrastructure
 
 Group:     Applications/Monitoring
@@ -15,6 +15,11 @@ BuildArch: noarch
 
 Requires: /usr/bin/grid-proxy-info
 Requires: /usr/bin/globus-job-run
+
+Requires(post): chkconfig
+Requires(preun): chkconfig
+# This is for /sbin/service
+Requires(preun): initscripts
 
 #package('VDT-Logrotate')
 
@@ -43,6 +48,9 @@ rm -fr $RPM_BUILD_ROOT
 
 # Create the logging directories
 mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/log/rsv
+
+# Create the temp file area
+mkdir -p $RPM_BUILD_ROOT%{_tmppath}/rsv
 
 # Install the executable
 mkdir -p $RPM_BUILD_ROOT%{_bindir}
@@ -77,6 +85,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 
 %attr(-,rsv,rsv) %{_localstatedir}/log/rsv
+%attr(-,rsv,rsv) %{_tmppath}/rsv
 
 %{_bindir}/rsv-control
 %{_libexecdir}/rsv/misc/

@@ -1,7 +1,7 @@
 
 Name:      condor-cron
 Version:   1.0.2
-Release:   1%{?dist}
+Release:   3%{?dist}
 Summary:   A framework to run cron-style jobs within Condor
 
 Group:     Applications/System
@@ -14,6 +14,12 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch: noarch
 
 Requires:  condor
+
+Requires(post): chkconfig
+Requires(preun): chkconfig
+# This is for /sbin/service
+Requires(preun): initscripts
+
 
 %description
 %{summary}
