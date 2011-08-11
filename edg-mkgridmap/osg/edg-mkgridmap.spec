@@ -1,6 +1,6 @@
 Name:           edg-mkgridmap
 Version:        4.0.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Contains the init.d script and crontab for edg-mkgridmap
 
 Group:          system environment/base
@@ -14,12 +14,25 @@ Source1:        edg-mkgridmap
 Source2:	edg-mkgridmap-cron
 # build/scripts patches
 Patch0:		edg-mkgridmap-4.0.0-wrapper.patch
+Patch1:         edg-mkgridmap-wrapper-osg.patch
 
 # Steps to make tarball (correctly packaged):
 # Get GOC's tarball, edg-mkgridmap-10.tar.gz
 # tar xzf edg-mkgridmap-4.0.0.tar.gz
 # cp edg-mkgridmap ./
 # cp edg-mkgridmap-cron ./
+
+Requires:       vo-client-edgmkgridmap
+Requires:       osg-vo-map
+
+Requires:       perl-libwww-perl
+Requires:       perl-Net-SSLeay
+Requires:       perl-Crypt-SSLeay
+
+Requires(post): chkconfig
+Requires(preun): chkconfig
+# This is for /sbin/service
+Requires(preun): initscripts
 
 %description
 %{summary}
@@ -28,6 +41,7 @@ Patch0:		edg-mkgridmap-4.0.0-wrapper.patch
 
 %setup -q
 %patch0 -p1
+%patch1 -p0
 %build
 
 
@@ -43,6 +57,19 @@ install -m 644 %{SOURCE2} $RPM_BUILD_ROOT/%{_sysconfdir}/cron.d/edg-mkgridmap-cr
 %clean
 rm -rf $RPM_BUILD_ROOT
 
+%post
+/sbin/chkconfig --add edg-mkgridmap
+
+%preun
+if [ $1 -eq 0 ] ; then
+    /sbin/service edg-mkgridmap stop >/dev/null 2>&1
+    /sbin/chkconfig --del edg-mkgridmap
+fi
+
+%postun
+if [ "$1" -ge "1" ] ; then
+    /sbin/service edg-mkgridmap condrestart >/dev/null 2>&1 || :
+fi
 
 %files
 %defattr(-,root,root,-)
@@ -62,6 +89,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man8/edg-mkgridmap.8*
 
 %changelog
+* Thu Aug 11 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 4.0.0-3
+- Create VO map when edg-mkgridmap is run.
+- Correct the runtime requirements.
+- Properly register with chkconfig.
+
 * Fri Jul 22 2011 Neha Sharma <neha@fnal.gov> - 400-2
 - Included a patch for wrapper script to redirect stdout and stderr properly
 

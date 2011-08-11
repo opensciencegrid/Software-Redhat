@@ -5,4 +5,7 @@ to map the users in each virtual organization (VO) to local users to generate a 
 
 SRC RPM obtained directly from http://emisoft.web.cern.ch/emisoft/dist/EMI/1/sl5/SRPMS/base/ 
 
+This includes OSG patches to redirect log output, and to create a user-vo-map.
+
 Neha Sharma <neha@fnal.gov>
+Brian Bockelman <bbockelm@cse.unl.edu>
