@@ -1,0 +1,9 @@
+[osg-minefield]
+name=OSG Software for Enterprise Linux 5 - Build Repository - $basearch 
+baseurl=http://koji-hub.batlab.org/mnt/koji/repos/el5-osg-development/latest/$basearch/
+failovermethod=priority
+priority=98
+enabled=0
+gpgcheck=0
+#gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL
+

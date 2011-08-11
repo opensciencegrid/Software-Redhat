@@ -1,6 +1,6 @@
 Name:           osg-release
 Version:        3.0 
-Release:        3
+Release:        4
 Summary:        OSG Software for Enterprise Linux repository configuration
 
 Group:          System Environment/Base 
@@ -59,6 +59,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Aug 11 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 3.0-4
+- Added minefield repository, which reads directly from Koji.
+
 * Thu Aug 04 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 3.0-3
 - Rename from VDT-* to OSG-*.
 
