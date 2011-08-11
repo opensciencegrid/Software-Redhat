@@ -2,7 +2,7 @@ Name:               gratia-probe
 Summary:            Gratia OSG accounting system probes
 Group:              Applications/System
 Version:            1.07.02e
-Release:            0.6.pre
+Release:            0.7.pre
 License:            GPL
 Group:              Applications/System
 URL:                http://sourceforge.net/projects/gratia/
@@ -1340,6 +1340,9 @@ fi
 %endif # noarch
 
 %changelog
+* Wed Aug 10 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.07.02e-0.7.pre
+- Rebuild for noarch in Koji
+
 * Wed Aug 03 2011 Derek Weitzel <dweitzel@cse.unl.edu> - 1.07.02e-0.6.pre
 - Removed echo message from condor probe
 - Added 99_gratia.conf to condor configuration
