@@ -8,4 +8,6 @@ which is required by the wn/client/somewhere...
 Further, since it is from Fedora, we can follow fedora's packaging and 
 updates.
 
+NOTE:
+The Source0 is inside an 'if'.  Therefore, vdt-build has problems detecting which name to use (just uses the first, which is from a git build).  See http://jira.opensciencegrid.org/browse/SOFTWARE-147
 
