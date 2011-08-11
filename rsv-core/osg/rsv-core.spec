@@ -1,7 +1,7 @@
 
 Name:      rsv-core
-Version:   3.4.3
-Release:   4%{?dist}
+Version:   3.4.5
+Release:   1%{?dist}
 Summary:   RSV Core Infrastructure
 
 Group:     Applications/Monitoring
