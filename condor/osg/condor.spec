@@ -23,7 +23,7 @@
 
 # These flags are meant for developers; it allows one to build Condor
 # based upon a git-derived tarball, instead of an upstream release tarball
-%define git_build 1
+%define git_build 0
 # If building with git tarball, Fedora requests us to record the rev.  Use:
 # git log -1 --pretty=format:'%h'
 %define git_rev 672537b1
@@ -54,7 +54,7 @@ Version: 7.6.2
 %else
 %define condor_release %condor_base_release
 %endif
-Release: %condor_release%{?dist}.1
+Release: %condor_release%{?dist}.2
 
 License: ASL 2.0
 Group: Applications/System
@@ -99,7 +99,7 @@ Source1: condor_docs.tar.gz
 #   b482c4bfa350164427a1952113d53d03  condor_src-7.5.5-all-all.tar.gz
 #   2a1355cb24a56a71978d229ddc490bc5  condor_src-7.6.0-all-all.tar.gz
 # Note: The md5sum of each generated tarball may be different
-Source0: condor-7.6.0-327697-RH.tar.gz
+Source0: condor.tar.gz
 Source1: generate-tarball.sh
 %endif
 
@@ -1044,6 +1044,9 @@ fi
 %endif
 
 %changelog
+* Thu Aug 11 2011 Derek Weitzel <dweitzel@cse.unl.edu> - 7.6.2-0.5.2
+- Updated to upstream official 7.6.2 release
+
 * Thu Aug 04 2011 Derek Weitzel <dweitzel@cse.unl.edu> - 7.6.2-0.5.672537b1git.1
 - Made LOCAL_DIR always point to /var/lib/condor rather than TILDE
 
