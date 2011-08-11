@@ -2,7 +2,7 @@
 Name:      osg-wn-client
 Summary:   OSG Worker-Node Client
 Version:   3.0.0
-Release:   7
+Release:   8
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -24,7 +24,7 @@ Requires: dcache-srmclient
 Requires: bestman2-client
 Requires: /usr/bin/uberftp
 Requires: /usr/bin/wget
-Requires: osg-ca-certs
+Requires: grid-certificates
 Requires: fetch-crl
 Requires: osg-system-profiler
 Requires: vo-client
@@ -66,6 +66,9 @@ rm -rf $RPM_BUILD_ROOT
 %files glexec
 
 %changelog
+* Thu Aug 11 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 3.0.0-8
+- Require virtual dep grid-certificates, not actual package osg-ca-certs.
+
 * Thu Aug 04 2011 Derek Weitzel <dweitzel@cse.unl.edu> - 3.0.0-7
 - Added vo-client to dependencies
 
