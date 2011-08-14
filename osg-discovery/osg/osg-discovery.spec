@@ -1,6 +1,6 @@
 Name:           osg-discovery
 Version:        1.0.7
-Release:        2
+Release:        3
 Summary:        OSG Discovery Tools
 Group:          System Environment
 License:        Stanford (modified BSD with advert clause)
@@ -8,6 +8,7 @@ URL:            http://code.google.com/p/osg-discovery/
 
 Source:        osg-discovery.tar.gz
 Patch0:        avoid_npe.patch
+Patch1:        system.pom.patch
 
 BuildRoot:      %{_tmppath}/%{name}-root
 BuildArch:      noarch
@@ -23,12 +24,21 @@ virtual organization (VO)
 %prep
 %setup -q -n %{name}
 %patch0 -p0
+%patch1 -p0
 
 %build
 # To download source
 # svn checkout https://osg-discovery.googlecode.com/svn/osg/xpathsearch/trunk/  osg-discovery --username doug.strain
 pushd osg
 pushd discovery
+mvn install:install-file -Dfile=./external/el4j/lib/module-xml_merge-console-1.0.jar -DgroupId=ch.elca.el4j.modules -DartifactId=module-xml_merge-console -Dversion=1.0 -Dpackaging=jar
+mvn install:install-file -Dfile=./external/el4j/lib/module-xml_merge-common-1.0.jar -DgroupId=ch.elca.el4j.modules -DartifactId=module-xml_merge-common -Dversion=1.0 -Dpackaging=jar
+mvn install:install-file -Dfile=./external/xquery2007/lib/xqueryx-2007.jar -DgroupId=xquery -DartifactId=xqueryx -Dversion=2007 -Dpackaging=jar
+mvn install:install-file -Dfile=./external/saxon/lib/saxon-9.1.0.7.jar -DgroupId=saxon -DartifactId=saxon -Dversion=9.1.0.7 -Dpackaging=jar
+mvn install:install-file -Dfile=./external/dbxml/lib/dbxml-2.4.jar -DgroupId=oracle -DartifactId=dbxml -Dversion=2.4 -Dpackaging=jar
+mvn install:install-file -Dfile=./external/dbxml/lib/db-2.4.jar -DgroupId=oracle -DartifactId=db -Dversion=2.4 -Dpackaging=jar
+
+
 mvn -Pdev package assembly:attached
 popd
 popd
@@ -40,13 +50,19 @@ sed -i "s/XPATHCACHE_DIR=.*/XPATHCACHE_DIR=~\/.osg-discovery/" discovery-built/c
 sed -i "s/\${JAVA_HOME}/\/usr/" discovery-built/bin/*
 sed -i "s/\. \$XPATHSEARCH_HOME\/bin\/detect-java.sh//" discovery-built/bin/*
 
+#add back external libraries
+cp osg/discovery/external/dbxml/lib/*.jar discovery-built/lib
+cp osg/discovery/external/el4j/lib/*.jar discovery-built/lib
+cp osg/discovery/external/saxon/lib/*.jar discovery-built/lib
+cp osg/discovery/external/xquery2007/lib/*.jar discovery-built/lib
+
 %install
 mkdir -p $RPM_BUILD_ROOT%{_bindir}/
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/%{name}
 mkdir -p $RPM_BUILD_ROOT%{_javadir}/%{name}
 
 pushd discovery-built
-rm bin/detect_java.sh
+rm bin/detect-java.sh
 for i in `ls bin`; do
 	install -m 0755 bin/$i $RPM_BUILD_ROOT%{_bindir}
 done
