@@ -22,7 +22,7 @@ Requires: lcg-infosites
 Requires: npad
 Requires: osg-discovery
 Requires: owamp-client
-Requires: ppdg-cert-scripts
+Requires: osg-cert-scripts
 Requires: vo-client
 Requires: globus-gram-client-tools
 Requires: osg-voms-compat
