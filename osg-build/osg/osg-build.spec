@@ -1,6 +1,6 @@
 
 Name:           osg-build
-Version:        0.0.18
+Version:        0.0.19
 Release:        1%{?dist}
 Summary:        Build tools for the OSG
 
@@ -50,6 +50,10 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_docdir}/%{name}/sample-osg-build.ini
 
 %changelog
+* Mon Aug 15 2011 <matyas@cs.wisc.edu> - 0.0.19-1
+- Added 'prepare' task (Software-149).
+- Code cleanup. Logging, error handling tweaks.
+
 * Thu Aug 11 2011 <matyas@cs.wisc.edu> - 0.0.18-1
 - Renamed vdt-build to osg-build.
 - Moved supporting python files to their own subdirectory.
