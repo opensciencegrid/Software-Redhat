@@ -1,0 +1,4 @@
+
+This package currently includes all OSG CA certificates, in the OpenSSL 
+0.9.8 legacy format.
+

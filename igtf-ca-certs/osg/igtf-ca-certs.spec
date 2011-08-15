@@ -1,6 +1,6 @@
 Name:           igtf-ca-certs
 Version:        1.40
-Release:        1
+Release:        2
 Summary:        OSG Packaging of the IGTF CA Certs
 
 Group:          System Environment/Base
@@ -14,7 +14,7 @@ Source0:        osg-certificates-1.20IGTFOLD.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
-Provides:       grid-certificates
+Provides:       grid-certificates = 5
 
 Conflicts:      osg-ca-manage
 Obsoletes:      vdt-ca-certs
@@ -37,10 +37,14 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(0644,root,root,-)
-/etc/grid-security/certificates
+%dir %attr(0755,-,-) /etc/grid-security/certificates
+/etc/grid-security/certificates/*
 %doc
 
 %changelog
+* Mon Aug 15 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.40-2
+- Version the virtual provides.  Fix directory permissions
+
 * Wed Aug 10 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.40-1
 - Initial packaging of the IGTF CA certs from OSG.
 
