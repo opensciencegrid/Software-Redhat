@@ -9,7 +9,7 @@ enabled=1
 
 [osg-source]
 name=OSG Software for Enterprise Linux 5 - $basearch - Source
-baseurl=http://vdt.cs.wisc.edu/repos/3.0/el5/production/src
+baseurl=http://vdt.cs.wisc.edu/repos/3.0/el5/production/source/SRPMS
 failovermethod=priority
 priority=98
 enabled=0

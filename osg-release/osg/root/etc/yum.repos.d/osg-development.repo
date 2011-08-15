@@ -9,7 +9,7 @@ gpgcheck=0
 
 [osg-development-source]
 name=OSG Software for Enterprise Linux 5 - Development - $basearch - Source
-baseurl=http://vdt.cs.wisc.edu/repos/3.0/el5/development/src
+baseurl=http://vdt.cs.wisc.edu/repos/3.0/el5/development/source/SRPMS
 failovermethod=priority
 priority=98
 enabled=0
