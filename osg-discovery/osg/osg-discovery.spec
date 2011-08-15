@@ -31,6 +31,7 @@ virtual organization (VO)
 # svn checkout https://osg-discovery.googlecode.com/svn/osg/xpathsearch/trunk/  osg-discovery --username doug.strain
 pushd osg
 pushd discovery
+sed -i "s/<scope>compile<\/scope>//" pom.xml
 mvn install:install-file -Dfile=./external/el4j/lib/module-xml_merge-console-1.0.jar -DgroupId=ch.elca.el4j.modules -DartifactId=module-xml_merge-console -Dversion=1.0 -Dpackaging=jar
 mvn install:install-file -Dfile=./external/el4j/lib/module-xml_merge-common-1.0.jar -DgroupId=ch.elca.el4j.modules -DartifactId=module-xml_merge-common -Dversion=1.0 -Dpackaging=jar
 mvn install:install-file -Dfile=./external/xquery2007/lib/xqueryx-2007.jar -DgroupId=xquery -DartifactId=xqueryx -Dversion=2007 -Dpackaging=jar
