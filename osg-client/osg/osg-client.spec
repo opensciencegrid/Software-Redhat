@@ -2,7 +2,7 @@
 Name:      osg-client
 Summary:   OSG Client
 Version:   3.0.0
-Release:   7
+Release:   8
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -25,7 +25,6 @@ Requires: owamp-client
 Requires: osg-cert-scripts
 Requires: vo-client
 Requires: globus-gram-client-tools
-Requires: osg-voms-compat
 Requires: osg-system-profiler
 
 %description
@@ -41,6 +40,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_sysconfdir}/osg
 
 %changelog
+* Mon Aug 15 2011 Derek Weitzel <dweitzel@cse.unl.edu> - 3.0.0-8
+- Removed the osg-voms-compat package as a dependency.
+
 * Mon Jul 18 2011 Derek Weitzel <dweitzel@cse.unl.edu> - 3.0.0-7
 - Added osg-voms-compat to list of requires
 
