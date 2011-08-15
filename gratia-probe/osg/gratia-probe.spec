@@ -860,7 +860,7 @@ EOF
 %configure_probeconfig_post
 
 # Configure init script
-perl -wani.bak -e 'if (s&^(PROBE_DIR=).*$&$1'"${RPM_INSTALL_PREFIX1}"'/probe/dCache-transfer&) {
+perl -wani.bak -e 'if (s&^(PROBE_DIR=).*$&$1'"${RPM_INSTALL_PREFIX1}"'/gratia/dCache-transfer&) {
   print;
   print <<'"'"'EOF'"'"';
 arch_spec_dir=`echo "${PROBE_DIR}/../lib."*`
