@@ -1,4 +1,4 @@
-%define tarball_version 7.6.0
+%define tarball_version 7.6.2
 
 # Things for F15 or later
 %if 0%{?fedora} >= 15
@@ -64,7 +64,7 @@ URL: http://www.cs.wisc.edu/condor/
 %if %git_build
 # git clone http://condor-git.cs.wisc.edu/repos/condor.git
 # cd condor
-# git-archive master | gzip -7 > ~/rpmbuild/SOURCES/condor.tar.gz
+# git-archive master --prefix=condor-<version>/ | gzip -7 > ~/rpmbuild/SOURCES/condor.tar.gz
 Source0: condor.tar.gz
 
 # Also potentially allow a git-based doc tarball
@@ -99,7 +99,7 @@ Source1: condor_docs.tar.gz
 #   b482c4bfa350164427a1952113d53d03  condor_src-7.5.5-all-all.tar.gz
 #   2a1355cb24a56a71978d229ddc490bc5  condor_src-7.6.0-all-all.tar.gz
 # Note: The md5sum of each generated tarball may be different
-Source0: condor.tar.gz
+Source0: condor-7.6.2.tar.gz
 Source1: generate-tarball.sh
 %endif
 
@@ -110,7 +110,7 @@ Source3: condor.service
 Patch0: condor_config.generic.patch
 Patch3: chkconfig_off.patch
 %if !%git_build
-Patch4: 7.7.0-catch-up.patch
+#Patch4: 7.7.0-catch-up.patch
 %endif
 %if %shared
 Patch5: condor_shared_libs.patch
@@ -193,7 +193,7 @@ BuildRequires: qpid-qmf-devel
 BuildRequires: systemd-units
 %endif
 
-%if %git_build_man
+%if %git_build_man || %include_man
 BuildRequires: transfig
 BuildRequires: latex2html
 %endif
@@ -374,7 +374,7 @@ exit 0
 %patch3 -p1
 # Catch-up patch for release tarballs
 %if !%git_build
-%patch4 -p1
+#%patch4 -p1
 %endif
 %patch0 -p1
 %if %shared
@@ -391,7 +391,7 @@ find src -perm /a+x -type f -name "*.[Cch]" -exec chmod a-x {} \;
 %build
 
 # Possibly build man files
-%if %git_build_man
+%if %git_build_man || %include_man
 pushd doc
 make just-man-pages
 popd
@@ -485,7 +485,7 @@ populate %_libexecdir/condor %{buildroot}/usr/libexec/*
 %if %include_man
 mkdir -p %{buildroot}/%{_mandir}
 mv %{buildroot}/usr/man/man1 %{buildroot}/%{_mandir}
-%if %git_build_man
+%if %git_build_man || %include_man
 pushd %{buildroot}/%{_mandir}/man1
 for i in `ls`; do
   gzip $i
