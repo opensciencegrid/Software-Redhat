@@ -4,9 +4,9 @@
 %{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
 %endif
 
-Name:           ppdg-cert-scripts
+Name:           osg-cert-scripts
 Version:        2.7
-Release:        4
+Release:        5
 Summary:        Command-line interface to the DOEGrids CA web site, and more.
 
 Group:          Grid
@@ -22,6 +22,9 @@ Requires:       grid-certificates
 Source0:        cert-scripts-2.7.tar.gz
 Patch0:         change_awk_locations.patch  
 Patch1:         make_correct_python_module.patch
+
+Provides:       ppdg-cert-scripts = %{version}-%{release}
+Obsoletes:      ppdg-cert-scripts < 2.7-5
 
 %description
 The Certificate Scripts package provides two things: a command-line interface 
@@ -66,6 +69,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Aug 15 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 2.7-5
+Rename RPM to use the osg- prefix.
+
 * Wed Aug 10 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 2.7-4
 - Require virtual dep grid-certificates, not actual package osg-ca-certs.
 
