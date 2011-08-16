@@ -2,7 +2,7 @@ Name:               gratia-probe
 Summary:            Gratia OSG accounting system probes
 Group:              Applications/System
 Version:            1.07.02e
-Release:            0.9.pre
+Release:            0.11.pre
 License:            GPL
 Group:              Applications/System
 URL:                http://sourceforge.net/projects/gratia/
@@ -301,6 +301,8 @@ install -m 644 gratia/common/GRAM/JobManagerGratia.pm $RPM_BUILD_ROOT%{perl_vend
 install -d $RPM_BUILD_ROOT/%{_sysconfdir}/condor/config.d
 install -m 644 %{SOURCE30} $RPM_BUILD_ROOT/%{_sysconfdir}/condor/config.d/99_gratia.conf
 
+install -d $RPM_BUILD_ROOT/%{_localstatedir}/log/gratia
+
 
 # Remove the test stuff
 rm -rf $RPM_BUILD_ROOT%{_datadir}/gratia/condor/test
@@ -443,6 +445,7 @@ Common files and examples for Gratia OSG accounting system probes.
 #%doc %{default_prefix}/gratia/common/samplemeter_multi.py
 %{_datadir}/gratia/common
 %{_localstatedir}/lib/gratia/
+%{_localstatedir}/log/gratia/
 %{python_sitelib}/gratia/__init__.py
 %{python_sitelib}/gratia/common
 %{python_sitelib}/Gratia.py
@@ -802,7 +805,7 @@ EOF
 %package dCache-transfer%{?maybe_itb_suffix}
 Summary: Gratia OSG accounting system probe for dCache billing.
 Group: Application/System
-Requires: %{name}-common >= 1.04.4e
+Requires: %{name}-common >= %{version}-%{release}
 Requires:  python-psycopg2
 #Requires: %{name}-extra-libs-arch-spec
 Requires: python-psycopg2
@@ -1344,6 +1347,13 @@ fi
 %endif # noarch
 
 %changelog
+* Tue Aug 16 2011 Derek Weitzel <dweitzel@cse.unl.edu> - 1.07.02e-0.11.pre
+- Updated the logging directory to /var/log/gratia
+
+* Tue Aug 16 2011 Derek Weitzel <dweitzel@cse.unl.edu> - 1.07.02e-0.10.pre
+- Fixed probe-preconfig macro for new directory
+- Fixed system directory for dcache-transfer probeconfig
+
 * Thu Aug 11 2011 Derek Weitzel <dweitzel@cse.unl.edu> - 1.07.02e-0.9.pre
 - Removed requires on globus-scripts
 

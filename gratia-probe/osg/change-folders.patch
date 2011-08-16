@@ -9,6 +9,6 @@
 -    LogFolder="MAGIC_VDT_LOCATION/gratia/var/logs/"
 +    DataFolder="/var/lib/gratia/data/"
 +    WorkingFolder="/var/lib/gratia/tmp"
-+    LogFolder="/var/lib/gratia/logs/"
++    LogFolder="/var/log/gratia"
  
  />
