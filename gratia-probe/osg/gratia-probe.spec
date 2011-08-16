@@ -220,7 +220,7 @@ install -d $RPM_BUILD_ROOT/%{_sysconfdir}/gratia
     install -d $probe_dir
     cp -p common/ProbeConfigTemplate \
           $probe_dir/ProbeConfig
-    echo "%{ProbeConfig_template_marker}" >> "$probe_config"
+    echo "%{ProbeConfig_template_marker}" >> $probe_dir/ProbeConfig
   done
   cd $RPM_BUILD_ROOT%{_datadir}/gratia/pbs-lsf
   cd - >/dev/null
