@@ -2,7 +2,7 @@ Name:               gratia-probe
 Summary:            Gratia OSG accounting system probes
 Group:              Applications/System
 Version:            1.07.02e
-Release:            0.11.pre
+Release:            0.12.pre
 License:            GPL
 Group:              Applications/System
 URL:                http://sourceforge.net/projects/gratia/
@@ -24,6 +24,9 @@ Patch1: change-imports.patch
 Patch2: condor-probe-change-probeconfig.patch
 Patch3: gratiapy-change-imports.patch
 Patch4: metric-imports.patch
+
+# Location of the gums-host-cron user-vo-map file
+%global vo_map_file /var/lib/osg/user-vo-map
 
 # Required for dCache transfer probe.
 %global psycopg2_version 2.0.6
@@ -845,6 +848,7 @@ Contributed by Greg Sharp and the dCache project.
 %configure_probeconfig_pre -d dCache-transfer -m dcache-transfer -M 600
 (m&\bVDTSetupFile\b& or m&\bUserVOMapFile\b&) and next; # Skip, not needed.
 m&^/>& and print <<EOF;
+    UserVOMapFile="%{vo_map_file}"
     Summarize="0"
     UpdateFrequency="120"
     DBHostName="localhost"
@@ -1347,6 +1351,9 @@ fi
 %endif # noarch
 
 %changelog
+* Tue Aug 16 2011 Derek Weitzel <dweitzel@cse.unl.edu> - 1.07.02e-0.12.pre
+Added user-vo-map to the default ProbeConfig
+
 * Tue Aug 16 2011 Derek Weitzel <dweitzel@cse.unl.edu> - 1.07.02e-0.11.pre
 - Updated the logging directory to /var/log/gratia
 
