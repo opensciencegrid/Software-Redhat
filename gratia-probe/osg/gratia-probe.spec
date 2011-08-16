@@ -80,7 +80,7 @@ Patch4: metric-imports.patch
 %define max_pending_files_check() (( mpf=`sed -ne 's/^[ 	]*MaxPendingFiles[ 	]*=[ 	]*\\"\\{0,1\\}\\([0-9]\\{1,\\}\\)\\"\\{0,1\\}.*$/\\1/p' "${RPM_INSTALL_PREFIX1}/gratia/%1/ProbeConfig"` )); if (( $mpf < 100000 )); then printf "NOTE: Given the small size of gratia files (<1K), MaxPendingFiles can\\nbe safely increased to 100K or more to facilitate better tolerance of collector outages.\\n"; fi
 
 # Macros for configuring ProbeConfig.
-%define configure_probeconfig_pre(p:d:m:M:h:) site_name=%{site_name}; %{__grep} -le '^%{ProbeConfig_template_marker}\$' "%{_sysconfidr}gratia/%{-d*}/ProbeConfig"{,.rpmnew} %{*} 2>/dev/null | while read config_file; do test -n "$config_file" || continue; if [[ -n "%{-M*}" ]]; then chmod %{-M*} "$config_file"; fi; %{__perl} -wni.orig -e 'my $meter_name = %{meter_name}; chomp $meter_name; my $install_host = `hostname -f`; $install_host = "${meter_name}" unless $install_host =~ m&\\.&; chomp $install_host; my $collector_host = ($install_host =~ m&\\.fnal\\.&i)?"%{fnal_collector}":("%{-h*}" || "%{osg_collector}"); my $collector_port = "%{-p*}" || "%{collector_port}"; s&^(\\s*(?:CollectorHost|SOAPHost|SSLRegistrationHost)\\s*=\\s*).*$&${1}"${collector_host}:${collector_port}"&; s&^(\\s*SSLHost\\s*=\\s*).*$&${1}""&; s&((?:MeterName|ProbeName)\\s*=\\s*)\\"[^\\"]*\\"&${1}"%{-m*}:${meter_name}"&; s&(SiteName\\s*=\\s*)\\"[^\\"]*\\"&${1}"'"${site_name}"'"&;
+%define configure_probeconfig_pre(p:d:m:M:h:) site_name=%{site_name}; config_file="%{_sysconfdir}/gratia/%{-d*}/ProbeConfig"; %{__grep} -le '^%{ProbeConfig_template_marker}\$' $config_file{,.rpmnew} %{*} 2>/dev/null | while read config_file; do test -n "$config_file" || continue; if [[ -n "%{-M*}" ]]; then chmod %{-M*} "$config_file"; fi; %{__perl} -wni.orig -e 'my $meter_name = %{meter_name}; chomp $meter_name; my $install_host = `hostname -f`; $install_host = "${meter_name}" unless $install_host =~ m&\\.&; chomp $install_host; my $collector_host = ($install_host =~ m&\\.fnal\\.&i)?"%{fnal_collector}":("%{-h*}" || "%{osg_collector}"); my $collector_port = "%{-p*}" || "%{collector_port}"; s&^(\\s*(?:CollectorHost|SOAPHost|SSLRegistrationHost)\\s*=\\s*).*$&${1}"${collector_host}:${collector_port}"&; s&^(\\s*SSLHost\\s*=\\s*).*$&${1}""&; s&((?:MeterName|ProbeName)\\s*=\\s*)\\"[^\\"]*\\"&${1}"%{-m*}:${meter_name}"&; s&(SiteName\\s*=\\s*)\\"[^\\"]*\\"&${1}"'"${site_name}"'"&;
 
 %define configure_probeconfig_post(g:) s&MAGIC_VDT_LOCATION/gratia(/?)&$ENV{RPM_INSTALL_PREFIX1}${1}&; %{?vdt_loc_set: s&MAGIC_VDT_LOCATION&%{vdt_loc}&;} s&/opt/vdt/gratia(/?)&$ENV{RPM_INSTALL_PREFIX1}${1}&; my $grid = "%{-g*}" || "%{grid}"; s&(Grid\\s*=\\s*)\\\"[^\\\"]*\\\"&${1}"${grid}"&; m&%{ProbeConfig_template_marker}& or print; ' "$config_file" >/dev/null 2>&1; %{expand: %final_post_message $config_file }; %{__rm} -f "$config_file.orig"; done
 
@@ -186,7 +186,7 @@ install -d $RPM_BUILD_ROOT/%{_sysconfdir}/gratia
       ; do
     install -d $probe_dir
     install -m 644 common/ProbeConfigTemplate $probe_dir/ProbeConfig
-    #echo %{ProbeConfig_template_marker} >> $probe_dir/ProbeConfig
+    echo "%{ProbeConfig_template_marker}" >> $probe_dir/ProbeConfig
   done
 
   # dCache-transfer init script
@@ -220,7 +220,7 @@ install -d $RPM_BUILD_ROOT/%{_sysconfdir}/gratia
     install -d $probe_dir
     cp -p common/ProbeConfigTemplate \
           $probe_dir/ProbeConfig
-    #echo "%{ProbeConfig_template_marker}" >> "$probe_config"
+    echo "%{ProbeConfig_template_marker}" >> "$probe_config"
   done
   cd $RPM_BUILD_ROOT%{_datadir}/gratia/pbs-lsf
   cd - >/dev/null
