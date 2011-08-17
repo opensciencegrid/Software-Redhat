@@ -1,6 +1,6 @@
 Name:           osg-ca-certs-experimental
 Version:        1.20
-Release:        1
+Release:        2
 Summary:        OSG Packaging of the IGTF CA Certs and OSG-specific CAs, in the new OpenSSL 0.9.8/1.0.0 format
 
 Group:          System Environment/Base
@@ -36,11 +36,14 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(0644,root,root,-)
-%dir %attr(0755,-,-) /etc/grid-security/certificates
+%dir %attr(0755,root,root) /etc/grid-security/certificates
 /etc/grid-security/certificates/*
 %doc
 
 %changelog
+* Wed Aug 17 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.20-2
+- Fix directory ownership issue.
+
 * Mon Aug 15 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.20-1
 - Initial version, based on osg-ca-certs spec file.
 

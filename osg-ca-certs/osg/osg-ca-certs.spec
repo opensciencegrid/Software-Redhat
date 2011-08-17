@@ -1,6 +1,6 @@
 Name:           osg-ca-certs
 Version:        1.20
-Release:        1
+Release:        2
 Epoch:          1
 Summary:        OSG Packaging of the IGTF CA Certs and OSG-specific CAs
 
@@ -38,11 +38,14 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(0644,root,root,-)
-%dir %attr(0755,-,-) /etc/grid-security/certificates
+%dir %attr(0755,root,root) /etc/grid-security/certificates
 /etc/grid-security/certificates/*
 %doc
 
 %changelog
+* Wed Aug 17 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1:1.20-2
+- Fixed ownership issue.
+
 * Mon Aug 15 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.20-1
 - Update to use the package from osg-security.  Bumped epoch number to prevent confusion with old versioning.
 
