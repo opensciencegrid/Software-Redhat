@@ -1,7 +1,7 @@
 Summary: Authorization service for grid credentials
 Name: lcas
 Version: 1.3.13
-Release: 3%{?dist}
+Release: 4%{?dist}
 Vendor: Nikhef
 License: ASL 2.0
 Group: System Environment/Libraries
@@ -81,7 +81,7 @@ mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/%{name}
 mv $RPM_BUILD_ROOT%{_sysconfdir}/*.in $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/
 
 cat > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/lcas.db << EOF
-pluginname=%{_libdir}/modules/lcas_userban.mod,pluginargs=/etc/lcas/ban_users.db
+pluginname=%{_libdir}/lcas/lcas_userban.mod,pluginargs=/etc/lcas/ban_users.db
 EOF
 
 touch $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/ban_users.db
@@ -119,6 +119,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc README
 
 %changelog
+* Fri Aug 12 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.3.13-4
+- Fix user_ban module location.
+
 * Thu Aug 04 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.3.13-3
 - Add usable defaults for LCAS.
 
