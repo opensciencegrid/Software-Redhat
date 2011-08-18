@@ -1,7 +1,7 @@
 Name:      osg-ce
 Summary:   OSG Compute Element 
 Version:   3.0.0
-Release:   6
+Release:   7
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -20,7 +20,7 @@ Requires: vo-client
 #Requires: cemon-server
 #Requires: osg-site-verify
 Requires: osg-site-web-page
-Requires: globus-gram-job-manager-setup-fork
+Requires: globus-gram-job-manager-fork
 Requires: gip
 Requires: osg-info-services
 Requires: gums-client
@@ -43,7 +43,7 @@ Summary: Condor meta-package for the OSG-CE
 Requires: %{name} = %{version}-%{release}
 Requires: condor
 Requires: gratia-probe-condor
-Requires: globus-gram-job-manager-setup-condor
+Requires: globus-gram-job-manager-condor
 
 %description condor
 %{summary}
@@ -88,6 +88,9 @@ rm -rf $RPM_BUILD_ROOT
 %files sge
 
 %changelog
+* Thu Aug 18 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 3.0.0-7
+- Update dependencies to point at new-style GRAM jobmanager names.
+
 * Sun Aug 07 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 3.0.0-6
 - Add dependency on site-verify
 
