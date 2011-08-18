@@ -10,20 +10,22 @@ Source0: http://software.nikhef.nl/security/%{name}/%{name}-%{version}.tar.gz
 Source1: gsi-authz.conf.in
 Patch0: lcas_lcmaps_gt4_interface_nochangeuser.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
-BuildRequires: globus-core
-BuildRequires: globus-common-devel
-BuildRequires: globus-gridmap-callout-error-devel
-BuildRequires: globus-gsi-callback-devel
-BuildRequires: globus-gsi-credential-devel
-BuildRequires: globus-gsi-proxy-core-devel
-BuildRequires: globus-gssapi-error-devel
-BuildRequires: globus-gssapi-gsi-devel
-BuildRequires: globus-gss-assist-devel
-BuildRequires: lcas-devel, lcmaps-devel
-BuildRequires: openssl-devel
+BuildRequires: globus-core%{?_isa}
+BuildRequires: globus-common-devel%{?_isa}
+BuildRequires: globus-gridmap-callout-error-devel%{?_isa}
+BuildRequires: globus-gsi-callback-devel%{?_isa}
+BuildRequires: globus-gsi-credential-devel%{?_isa}
+BuildRequires: globus-gsi-proxy-core-devel%{?_isa}
+BuildRequires: globus-gssapi-error-devel%{?_isa}
+BuildRequires: globus-gssapi-gsi-devel%{?_isa}
+BuildRequires: globus-gss-assist-devel%{?_isa}
+BuildRequires: lcas-devel%{?_isa}
+BuildRequires: lcmaps-devel%{?_isa}
+BuildRequires: openssl-devel%{?_isa}
 
 # explicit requires as these are dlopen'd
-Requires: lcas, lcmaps
+Requires: lcas%{?_isa}
+Requires: lcmaps%{?_isa}
 
 %description
 

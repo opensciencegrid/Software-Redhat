@@ -12,12 +12,12 @@ Patch0: makefile_r15293.patch
 Patch1: fill_x509.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
-BuildRequires: globus-core
-BuildRequires: globus-common-devel
-BuildRequires: globus-gssapi-gsi-devel
-BuildRequires: globus-gss-assist-devel
-BuildRequires: globus-gsi-credential-devel
-BuildRequires: voms-devel
+BuildRequires: globus-core%{?_isa}
+BuildRequires: globus-common-devel%{?_isa}
+BuildRequires: globus-gssapi-gsi-devel%{?_isa}
+BuildRequires: globus-gss-assist-devel%{?_isa}
+BuildRequires: globus-gsi-credential-devel%{?_isa}
+BuildRequires: voms-devel%{?_isa}
 BuildRequires: flex, bison
 BuildRequires: automake, autoconf, libtool
 

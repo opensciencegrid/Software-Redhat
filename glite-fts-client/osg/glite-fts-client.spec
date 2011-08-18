@@ -15,19 +15,19 @@ Patch0:         glite_fts_client_fedora.patch
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 Requires:	CGSI-gSOAP
 BuildRequires:  automake autoconf libtool 
-BuildRequires:  CGSI-gSOAP-devel
+BuildRequires:  CGSI-gSOAP-devel%{?_isa}
 BuildRequires:  glite-build-common-cpp
 BuildRequires:  glite-data-build
-BuildRequires:  glite-data-util-c-devel
-BuildRequires:  glite-data-delegation-cli-devel
+BuildRequires:  glite-data-util-c-devel%{?_isa}
+BuildRequires:  glite-data-delegation-cli-devel%{?_isa}
 BuildRequires:  glite-data-transfer-interface
 BuildRequires:  /usr/bin/xsltproc
-BuildRequires:  glib2-devel
-BuildRequires:  e2fsprogs-devel
-BuildRequires:  globus-gssapi-gsi-devel
-BuildRequires:  globus-gss-assist-devel
-BuildRequires:  gridsite-devel
-BuildRequires:  python-devel
+BuildRequires:  glib2-devel%{?_isa}
+BuildRequires:  e2fsprogs-devel%{?_isa}
+BuildRequires:  globus-gssapi-gsi-devel%{?_isa}
+BuildRequires:  globus-gss-assist-devel%{?_isa}
+BuildRequires:  gridsite-devel%{?_isa}
+BuildRequires:  python-devel%{?_isa}
 BuildRequires:  docbook-style-xsl
 BuildRequires:  doxygen
 
