@@ -8,7 +8,7 @@ Name:		globus-gram-job-manager
 %global _name %(tr - _ <<< %{name})
 Version:	10.70
 %global setupversion 4.3
-Release:	9%{?dist}
+Release:	11%{?dist}
 Summary:	Globus Toolkit - GRAM Jobmanager
 
 Group:		Applications/Internet
@@ -58,6 +58,9 @@ Patch13:        watchdog_timer.patch
 Patch14:        recvmsg_eagain.patch
 Patch15:        double_proxy_lock.patch
 Patch16:        description_service_tag.patch
+Patch17:        file_cleanup_logging.patch
+Patch18:        restart_on_failure.patch
+Patch19:        load_requests_before_activating_socket.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -155,6 +158,9 @@ cd -
 %patch14 -p0
 %patch15 -p0
 %patch16 -p0
+%patch17 -p0
+%patch18 -p0
+%patch19 -p0
 
 %build
 # Remove files that should be replaced during bootstrap
@@ -296,6 +302,13 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_docdir}/%{name}-setup-%{setupversion}/html
 
 %changelog
+* Wed Aug 17 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 10.70-11
+- Fix race condition on jobmanager startup.
+
+* Mon Aug 15 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 10.70-10
+- Improved handling of file removal.
+- Fix restarting jobs with Condor-G.
+
 * Mon Aug 08 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 10.70-9
 - Add the service tag description to the perl job description
 
