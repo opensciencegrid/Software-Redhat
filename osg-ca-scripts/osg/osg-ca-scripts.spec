@@ -1,7 +1,7 @@
 
 Name:      osg-ca-scripts
 Version:   0.0.1
-Release:   1%{?dist}
+Release:   2%{?dist}
 Summary:   CA Certificate helper scripts
 
 Group:     System Environment/Base
@@ -10,12 +10,16 @@ URL:       http://vdt.cs.wisc.edu/releases/2.0.0/certificate_authorities.html
 
 Source0:   %{name}-%{version}.tar.gz
 
-Provides: perl(OSGCerts)
-
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch: noarch
 
 Requires: /usr/bin/openssl
+
+Provides: grid-certificates = 6
+Conflicts: osg-ca-certs
+Conflicts: osg-ca-certs-experimental
+Conflicts: igtf-ca-certs
+Conflicts: igtf-ca-certs-experimental
 
 %description
 %{summary}
@@ -61,5 +65,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Aug 18 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 0.0.1-2
+- Fix up RPM metadata to be compatible with other CA packages.
+
 * Wed Aug 17 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.4.0-1
 - Created an initial osg-ca-scripts RPM
