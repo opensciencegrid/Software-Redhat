@@ -1,60 +1,37 @@
 %ifarch alpha ia64 ppc64 s390x sparc64 x86_64
-%global flavor gcc64pthr
+%global flavor gcc64
 %else
-%global flavor gcc32pthr
+%global flavor gcc32
+%endif
+
+%if "%{?rhel}" == "5"
+%global docdiroption "with-docdir"
+%else
+%global docdiroption "docdir"
 %endif
 
 Name:		globus-gatekeeper
 %global _name %(tr - _ <<< %{name})
-Version:	5.7
-%global setupversion 2.2
-Release:	6%{?dist}
+Version:	7.3
+Release:	2%{?dist}
 Summary:	Globus Toolkit - Globus Gatekeeper
 
 Group:		Applications/Internet
 License:	ASL 2.0
 URL:		http://www.globus.org/
-#		Source is extracted from the globus toolkit installer:
-#		wget -N http://www-unix.globus.org/ftppub/gt5/5.0/5.0.3/installers/src/gt5.0.3-all-source-installer.tar.bz2
-#		tar -jxf gt5.0.3-all-source-installer.tar.bz2
-#		mv gt5.0.3-all-source-installer/source-trees/gatekeeper/source globus_gatekeeper-5.7
-#		cp -p gt5.0.3-all-source-installer/source-trees/core/source/GLOBUS_LICENSE globus_gatekeeper-5.7
-#		tar -zcf globus_gatekeeper-5.7.tar.gz globus_gatekeeper-5.7
-Source:		%{_name}-%{version}.tar.gz
-#		Source1 is extracted from the globus toolkit installer:
-#		wget -N http://www-unix.globus.org/ftppub/gt5/5.0/5.0.3/installers/src/gt5.0.3-all-source-installer.tar.bz2
-#		tar -jxf gt5.0.3-all-source-installer.tar.bz2
-#		mv gt5.0.3-all-source-installer/source-trees/gatekeeper/setup globus_gatekeeper_setup-2.2
-#		cp -p gt5.0.3-all-source-installer/source-trees/core/source/GLOBUS_LICENSE globus_gatekeeper_setup-2.2
-#		tar -zcf globus_gatekeeper_setup-2.2.tar.gz globus_gatekeeper_setup-2.2
-Source1:	%{_name}_setup-%{setupversion}.tar.gz
-Source2:	%{name}
-Source3:	%{name}.README
-#		README file
-Source8:	GLOBUS-GRAM5
+Source:         %{_name}-%{version}.tar.gz
 
-Source9:        %{name}.sysconfig
-#		Fixes for FHS installation:
-#		http://bugzilla.globus.org/bugzilla/show_bug.cgi?id=6820
-Patch0:		%{name}.patch
-#		Fixes for FHS installation:
-#		http://bugzilla.globus.org/bugzilla/show_bug.cgi?id=6821
-Patch1:		%{name}-setup.patch
-Patch2:         child_signals.patch
+# OSG customizations
+Source1:        globus-gatekeeper.sysconfig
+Patch0:         child_signals.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-Provides:	%{name}-setup = %{setupversion}
 Requires:	globus-common >= 11.5
-Requires:	globus-common-setup >= 2
-Requires:	globus-gatekeeper-setup >= 2
 BuildRequires:	grid-packaging-tools
 BuildRequires:	globus-gss-assist-devel%{?_isa} >= 3
 BuildRequires:	globus-gssapi-gsi-devel%{?_isa} >= 4
 BuildRequires:	globus-core%{?_isa} >= 4
-
-# This is required for running the setup script:
-Requires: grid-packaging-tools
 
 %description
 The Globus Toolkit is an open source software toolkit used for building Grid
@@ -68,12 +45,9 @@ Globus Gatekeeper Setup
 
 %prep
 %setup -q -n %{_name}-%{version}
-%setup -D -T -q -n %{_name}-%{version} -a 1
-%patch0 -p1
-cd %{_name}_setup-%{setupversion}
-%patch1 -p1
-cd -
-%patch2 -p0
+
+%patch0 -p0
+cat %{SOURCE1} >> config/globus-gatekeeper.in
 
 %build
 # Remove files that should be replaced during bootstrap
@@ -85,74 +59,31 @@ rm -rf autom4te.cache
 
 %{_datadir}/globus/globus-bootstrap.sh
 
-%configure --with-flavor=%{flavor}
+%configure --with-flavor=%{flavor} \
+           --%{docdiroption}=%{_docdir}/%{name}-%{version} \
+           --disable-static \
+	   --with-initscript-config-path=/etc/sysconfig/globus-gatekeeper
 
 make %{?_smp_mflags}
-
-# setup package
-cd %{_name}_setup-%{setupversion}
-
-# Remove files that should be replaced during bootstrap
-rm -f doxygen/Doxyfile*
-rm -f doxygen/Makefile.am
-rm -f pkgdata/Makefile.am
-rm -f globus_automake*
-rm -rf autom4te.cache
-
-%{_datadir}/globus/globus-bootstrap.sh
-
-%configure --without-flavor
-
-make %{?_smp_mflags}
-
-cd -
 
 %install
 rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
 
-# setup package
-cd %{_name}_setup-%{setupversion}
-make install DESTDIR=$RPM_BUILD_ROOT
-cd -
-
-# Register setup
-perl -MGrid::GPT::Setup <<EOF
-my \$metadata = new Grid::GPT::Setup(package_name => "%{_name}_setup",
-				     globusdir => "$RPM_BUILD_ROOT%{_prefix}");
-\$metadata->finish();
-EOF
-
-# This script is intended to be sourced, not executed
-chmod 644 $RPM_BUILD_ROOT%{_datadir}/globus/setup/setup-globus-gatekeeper.pl
-
 GLOBUSPACKAGEDIR=$RPM_BUILD_ROOT%{_datadir}/globus/packages
-
-# Install start-up script
-mkdir -p $RPM_BUILD_ROOT%{_initrddir}
-install -p %{SOURCE2} $RPM_BUILD_ROOT%{_initrddir}
-
-# Install sysconfig defaults
-mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig
-install -p %{SOURCE9} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/%{name}
-
-# Install license file
-mkdir -p $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
-install -m 644 -p GLOBUS_LICENSE $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
-
-# Install README file
-install -m 644 -p %{SOURCE8} \
-  $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/README
-
-# Install post installation instructions
-install -m 644 -p %{SOURCE3} \
-  $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/README.Fedora
 
 # Generate package filelists
 cat $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_pgm.filelist \
     $GLOBUSPACKAGEDIR/%{_name}/noflavor_doc.filelist \
-    $GLOBUSPACKAGEDIR/%{_name}_setup/noflavor_pgm.filelist \
+    $GLOBUSPACKAGEDIR/%{_name}/noflavor_data.filelist \
+  | grep -v '^/etc' \
   | sed -e s!^!%{_prefix}! -e 's!.*/man/.*!%doc &*!' > package.filelist
+cat $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_pgm.filelist \
+    $GLOBUSPACKAGEDIR/%{_name}/noflavor_doc.filelist \
+    $GLOBUSPACKAGEDIR/%{_name}/noflavor_data.filelist \
+  | grep '^/etc' >> package.filelist
+mkdir -p $RPM_BUILD_ROOT/etc/grid-services
+mkdir -p $RPM_BUILD_ROOT/etc/grid-services/available
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -176,21 +107,12 @@ fi
 %defattr(-,root,root,-)
 %dir %{_datadir}/globus/packages/%{_name}
 %dir %{_docdir}/%{name}-%{version}
-%doc %{_docdir}/%{name}-%{version}/GLOBUS_LICENSE
-%doc %{_docdir}/%{name}-%{version}/README
-%dir %{_datadir}/globus/packages/%{_name}_setup
-%{_datadir}/globus/packages/setup/%{_name}_setup
-%{_initrddir}/%{name}
-%{_sysconfdir}/sysconfig/%{name}
-%doc %{_docdir}/%{name}-%{version}/README.Fedora
+%dir /etc/grid-services
+%dir /etc/grid-services/available
 
 %changelog
-* Thu Aug 04 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 5.7-6
-- Add dependency for running the setup script.
-
-* Sun Jul 31 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 5.7-5
-- Add a sysconfig environment script.
-- Fix child signal delivery.
+* Thu Aug 18 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 7.3-2
+- Port OSG patches to released gatekeeper.
 
 * Mon Apr 25 2011 Mattias Ellert <mattias.ellert@fysast.uu.se> - 5.7-4
 - Add README file

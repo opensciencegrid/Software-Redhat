@@ -1,13 +1,19 @@
 %ifarch alpha ia64 ppc64 s390x sparc64 x86_64
-%global flavor gcc64pthr
+%global flavor gcc64
 %else
-%global flavor gcc32pthr
+%global flavor gcc32
+%endif
+
+%if "%{?rhel}" == "5"
+%global docdiroption "with-docdir"
+%else
+%global docdiroption "docdir"
 %endif
 
 Name:		globus-gass-transfer
 %global _name %(tr - _ <<< %{name})
-Version:	4.3
-Release:	4%{?dist}
+Version:	6.0
+Release:	2%{?dist}
 Summary:	Globus Toolkit - Globus Gass Transfer
 
 Group:		System Environment/Libraries
@@ -20,16 +26,11 @@ URL:		http://www.globus.org/
 #		cp -p gt5.0.0-all-source-installer/source-trees/core/source/GLOBUS_LICENSE globus_gass_transfer-4.3
 #		tar -zcf globus_gass_transfer-4.3.tar.gz globus_gass_transfer-4.3
 Source:		%{_name}-%{version}.tar.gz
-#		README file
-Source8:	GLOBUS-GRIDFTP
 #		This is a workaround for the broken epstopdf script in RHEL5
 #		See: https://bugzilla.redhat.com/show_bug.cgi?id=450388
 Source9:	epstopdf-2.9.5gw
-#		Remove some doxygen warnings:
-#		http://bugzilla.globus.org/bugzilla/show_bug.cgi?id=6591
-Patch0:		%{name}-doxygen.patch
 
-Patch1:         deadlock.patch
+Patch0:         deadlock.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -45,7 +46,7 @@ BuildRequires:	graphviz
 BuildRequires:	graphviz-gd
 %endif
 BuildRequires:	ghostscript
-%if %{?fedora}%{!?fedora:0} >= 9 || %{?rhel}%{!?rhel:0} >= 5
+%if %{?fedora}%{!?fedora:0} >= 9 || %{?rhel}%{!?rhel:0} >= 6
 BuildRequires:	tex(latex)
 %else
 BuildRequires:	tetex-latex
@@ -97,8 +98,8 @@ Globus Gass Transfer Documentation Files
 
 %prep
 %setup -q -n %{_name}-%{version}
-%patch0 -p1
-%patch1 -p0
+
+%patch0 -p0
 
 %if "%{rhel}" == "5"
 mkdir bin
@@ -116,19 +117,14 @@ rm -f doxygen/Makefile.am
 rm -f pkgdata/Makefile.am
 rm -f globus_automake*
 rm -rf autom4te.cache
-
-# Remove flavor tags
-for f in `find . -name Makefile.am` ; do
-  sed -e 's!^flavorinclude_HEADERS!include_HEADERS!' \
-      -e 's!\(lib[a-zA-Z_]*\)_$(GLOBUS_FLAVOR_NAME)\.la!\1.la!g' \
-      -e 's!^\(lib[a-zA-Z_]*\)___GLOBUS_FLAVOR_NAME__la_!\1_la_!' -i $f
-done
-sed -e "s!<With_Flavors!<With_Flavors ColocateLibraries=\"no\"!" \
-  -i pkgdata/pkg_data_src.gpt.in
+unset GLOBUS_LOCATION
+unset GPT_LOCATION
 
 %{_datadir}/globus/globus-bootstrap.sh
 
-%configure --with-flavor=%{flavor} --enable-doxygen
+%configure --with-flavor=%{flavor} --enable-doxygen \
+           --%{docdiroption}=%{_docdir}/%{name}-%{version} \
+           --disable-static
 
 make %{?_smp_mflags}
 
@@ -144,35 +140,12 @@ GLOBUSPACKAGEDIR=$RPM_BUILD_ROOT%{_datadir}/globus/packages
 
 # Remove libtool archives (.la files)
 find $RPM_BUILD_ROOT%{_libdir} -name 'lib*.la' -exec rm -v '{}' \;
-sed '/lib.*\.la$/d' -i $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_rtl.filelist
-
-# Remove static libraries (.a files)
-find $RPM_BUILD_ROOT%{_libdir} -name 'lib*.a' -exec rm -v '{}' \;
-sed '/lib.*\.a$/d' -i $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_dev.filelist
-
-# Generate pkg-config file from GPT metadata
-mkdir -p $RPM_BUILD_ROOT%{_libdir}/pkgconfig
-%{_datadir}/globus/globus-gpt2pkg-config pkgdata/pkg_data_%{flavor}_dev.gpt > \
-  $RPM_BUILD_ROOT%{_libdir}/pkgconfig/%{name}.pc
-
-# Move documentation to default RPM location
-mv $RPM_BUILD_ROOT%{_docdir}/%{_name} \
-  $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
-sed s!doc/%{_name}!doc/%{name}-%{version}! \
-  -i $GLOBUSPACKAGEDIR/%{_name}/noflavor_doc.filelist
+sed '/lib.*\.la$/d' -i $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_dev.filelist
 
 # Remove unwanted documentation (needed for RHEL4)
 rm -f $RPM_BUILD_ROOT%{_mandir}/man3/*_%{_name}-%{version}_*.3
 sed -e '/_%{_name}-%{version}_.*\.3/d' \
   -i $GLOBUSPACKAGEDIR/%{_name}/noflavor_doc.filelist
-
-# Install license file
-mkdir -p $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
-install -m 644 -p GLOBUS_LICENSE $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
-
-# Install README file
-install -m 644 -p %{SOURCE8} \
-  $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/README
 
 # Generate package filelists
 cat $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_rtl.filelist \
@@ -180,6 +153,7 @@ cat $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_rtl.filelist \
 cat $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_dev.filelist \
   | sed s!^!%{_prefix}! > package-devel.filelist
 cat $GLOBUSPACKAGEDIR/%{_name}/noflavor_doc.filelist \
+  | grep -v 'GLOBUS_LICENSE' \
   | sed -e 's!/man/.*!&*!' -e 's!^!%doc %{_prefix}!' > package-doc.filelist
 
 %clean
@@ -194,25 +168,17 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_datadir}/globus/packages/%{_name}
 %dir %{_docdir}/%{name}-%{version}
 %doc %{_docdir}/%{name}-%{version}/GLOBUS_LICENSE
-%doc %{_docdir}/%{name}-%{version}/README
 
 %files -f package-devel.filelist devel
 %defattr(-,root,root,-)
-%{_libdir}/pkgconfig/%{name}.pc
 
 %files -f package-doc.filelist doc
 %defattr(-,root,root,-)
 %dir %{_docdir}/%{name}-%{version}/html
 
 %changelog
-* Tue Aug 02 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 4.3-4
-- Remove deadlock.
-
-* Mon Apr 25 2011 Mattias Ellert <mattias.ellert@fysast.uu.se> - 4.3-3
-- Add README file
-
-* Tue Feb 08 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 4.3-2
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
+* Thu Aug 18 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 6.0-2
+- Forward-porting the OSG patches.
 
 * Sat Jan 23 2010 Mattias Ellert <mattias.ellert@fysast.uu.se> - 4.3-1
 - Update to Globus Toolkit 5.0.0

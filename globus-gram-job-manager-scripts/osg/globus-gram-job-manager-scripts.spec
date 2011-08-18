@@ -1,40 +1,31 @@
 %{!?perl_vendorlib: %global perl_vendorlib %(eval "`perl -V:installvendorlib`"; echo $installvendorlib)}
 
+%if "%{?rhel}" == "5"
+%global docdiroption "with-docdir"
+%else
+%global docdiroption "docdir"
+%endif
+
 Name:		globus-gram-job-manager-scripts
 %global _name %(tr - _ <<< %{name})
-Version:	2.12
-Release:	3%{?dist}
+Version:	3.1
+Release:	2%{?dist}
 Summary:	Globus Toolkit - GRAM Job ManagerScripts
 
 Group:		Applications/Internet
 BuildArch:	noarch
 License:	ASL 2.0
 URL:		http://www.globus.org/
-#		Source is extracted from the globus toolkit installer:
-#		wget -N http://www-unix.globus.org/ftppub/gt5/5.0/5.0.4/installers/src/gt5.0.4-all-source-installer.tar.bz2
-#		tar -jxf gt5.0.4-all-source-installer.tar.bz2
-#		mv gt5.0.4-all-source-installer/source-trees/gram/jobmanager/scripts globus_gram_job_manager_scripts-2.11
-#		cp -p gt5.0.4-all-source-installer/source-trees/core/source/GLOBUS_LICENSE globus_gram_job_manager_scripts-2.11
-#		tar -zcf globus_gram_job_manager_scripts-2.11.tar.gz globus_gram_job_manager_scripts-2.11
 Source:		%{_name}-%{version}.tar.gz
-#		README file
-Source8:	GLOBUS-GRAM5
-#		Fixes for FHS installation:
-#		http://bugzilla.globus.org/bugzilla/show_bug.cgi?id=6822
-Patch0:		%{name}.patch
-#		Undefined makefile variable:
-#		http://bugzilla.globus.org/bugzilla/show_bug.cgi?id=6855
-Patch1:		%{name}-undefined.patch
-#       OSG patch: Allow Gratia to work. (Save certificate information)
-Patch1000: gratia.patch
-#       OSG patch: Read OSG job environment files, push to job environment
-Patch1001: osg-environment.patch
-#       OSG patch: Add default PATH
-Patch1002: osg-path.patch
+
+# OSG-specific patches
+Patch0:         gratia.patch
+Patch1:         osg-environment.patch
+Patch2:         osg-path.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-Requires:	globus-common-setup >= 2
+Requires:	globus-common-progs >= 2
 Requires:	perl(:MODULE_COMPAT_%(eval "`perl -V:version`"; echo $version))
 BuildRequires:	grid-packaging-tools
 BuildRequires:	globus-core
@@ -64,11 +55,10 @@ GRAM Job ManagerScripts Documentation Files
 
 %prep
 %setup -q -n %{_name}-%{version}
+
 %patch0 -p1
 %patch1 -p1
-%patch1000 -p1
-%patch1001 -p1
-%patch1002 -p0
+%patch2 -p0
 
 %build
 # Remove files that should be replaced during bootstrap
@@ -80,7 +70,8 @@ rm -rf autom4te.cache
 
 %{_datadir}/globus/globus-bootstrap.sh
 
-%configure --without-flavor
+%configure --without-flavor \
+           --%{docdiroption}=%{_docdir}/%{name}-%{version}
 
 make %{?_smp_mflags}
 
@@ -90,26 +81,9 @@ make install DESTDIR=$RPM_BUILD_ROOT
 
 GLOBUSPACKAGEDIR=$RPM_BUILD_ROOT%{_datadir}/globus/packages
 
-# Don't use /usr/bin/env
-sed 's!/usr/bin/env perl!/usr/bin/perl!' \
-  -i $RPM_BUILD_ROOT%{_datadir}/globus/globus-job-manager-*
-
-# Move documentation to default RPM location
-mv $RPM_BUILD_ROOT%{_docdir}/%{_name} \
-  $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
-sed s!doc/%{_name}!doc/%{name}-%{version}! \
-  -i $GLOBUSPACKAGEDIR/%{_name}/noflavor_doc.filelist
-
-# Install license file
-mkdir -p $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
-install -m 644 -p GLOBUS_LICENSE $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
-
-# Install README file
-install -m 644 -p %{SOURCE8} \
-  $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/README
-
 # Generate package filelists
 cat $GLOBUSPACKAGEDIR/%{_name}/noflavor_rtl.filelist \
+    $GLOBUSPACKAGEDIR/%{_name}/noflavor_pgm.filelist \
     $GLOBUSPACKAGEDIR/%{_name}/noflavor_data.filelist \
   | sed s!^!%{_prefix}! > package.filelist
 cat $GLOBUSPACKAGEDIR/%{_name}/noflavor_doc.filelist \
@@ -124,8 +98,6 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{perl_vendorlib}/Globus
 %dir %{perl_vendorlib}/Globus/GRAM
 %dir %{_docdir}/%{name}-%{version}
-%doc %{_docdir}/%{name}-%{version}/GLOBUS_LICENSE
-%doc %{_docdir}/%{name}-%{version}/README
 
 %files doc -f package-doc.filelist
 %defattr(-,root,root,-)
@@ -134,11 +106,8 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_docdir}/%{name}-%{version}/perl/Globus/GRAM
 
 %changelog
-* Sun Aug 07 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 2.12-3
-- Added a default PATH.
-
-* Fri Jul 07 2011 Alain Roy <roy@cs.wisc.edu> 2.12-2
-- Patched to allow use of Gratia (patch 1000)
+* Thu Aug 18 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 3.1-2
+- Porting OSG patches to GT5.2.
 
 * Sun Jun 05 2011 Mattias Ellert <mattias.ellert@fysast.uu.se> - 2.12-1
 - Update to Globus Toolkit 5.0.4

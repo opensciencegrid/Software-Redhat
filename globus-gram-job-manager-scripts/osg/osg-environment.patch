@@ -1,5 +1,5 @@
 --- Globus_gram_job_manager_scripts-2.12/JobDescription.pm	2008-12-19 16:28:34.000000000 -0600
-+++ globus_gram_job_manager_scripts-2.12/JobDescription.pm	2011-07-23 08:45:40.000000000 -0500
++++ globus_gram_job_manager_scripts-2.12/JobDescription.pm.in	2011-07-23 08:45:40.000000000 -0500
 @@ -312,6 +312,136 @@
  
  =cut
