@@ -1,0 +1,7 @@
+
+This is a pass-through of the Globus SRPM with the following exception:
+
+- globus-common-devel obsoletes globus-libtool-devel, not globus-libtool
+
+This can be removed once the change is done upstream.
+
