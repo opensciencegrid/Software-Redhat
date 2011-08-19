@@ -1,0 +1,22 @@
+--- src/docs/forrest.properties.orig	2010-09-27 11:35:32.000000000 -0500
++++ src/docs/forrest.properties	2010-09-27 11:35:49.000000000 -0500
+@@ -65,7 +65,7 @@
+ # This set of properties determine if validation is performed
+ # Values are inherited unless overridden.
+ # e.g. if forrest.validate=false then all others are false unless set to true.
+-#forrest.validate=true
++forrest.validate=false
+ #forrest.validate.xdocs=${forrest.validate}
+ #forrest.validate.skinconf=${forrest.validate}
+ #forrest.validate.sitemap=${forrest.validate}
+--- src/docs/cn/forrest.properties.orig	2010-09-27 11:35:42.000000000 -0500
++++ src/docs/cn/forrest.properties	2010-09-27 11:36:01.000000000 -0500
+@@ -65,7 +65,7 @@
+ # This set of properties determine if validation is performed
+ # Values are inherited unless overridden.
+ # e.g. if forrest.validate=false then all others are false unless set to true.
+-#forrest.validate=true
++forrest.validate=false
+ #forrest.validate.xdocs=${forrest.validate}
+ #forrest.validate.skinconf=${forrest.validate}
+ #forrest.validate.sitemap=${forrest.validate}

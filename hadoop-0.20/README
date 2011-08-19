@@ -1,0 +1,10 @@
+Packager notes:
+
+- This build is inherited from the hadoop-0.20 package in the
+dist-el5-hadoop20 branch of the caltech koji repository:
+https://koji.hep.caltech.edu/koji/index
+
+- the original source rpm is copied from the cloudera repository:
+http://archive.cloudera.com/redhat/cdh/3b3/SRPMS/
+
+- OSG patches have been added
