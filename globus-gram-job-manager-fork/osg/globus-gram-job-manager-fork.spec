@@ -121,9 +121,11 @@ cat $GLOBUSPACKAGEDIR/%{_name}/noflavor_doc.filelist \
 rm -rf $RPM_BUILD_ROOT
 
 %post
+/sbin/ldconfig
 globus-gatekeeper-admin -e jobmanager-fork
 
 %postun
+/sbin/ldconfig
 globus-gatekeeper-admin -d jobmanager-fork || true
 
 %files -f package.filelist
