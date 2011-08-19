@@ -2,7 +2,7 @@ Name:               gratia-probe
 Summary:            Gratia OSG accounting system probes
 Group:              Applications/System
 Version:            1.07.02e
-Release:            0.12.pre
+Release:            0.13.pre
 License:            GPL
 Group:              Applications/System
 URL:                http://sourceforge.net/projects/gratia/
@@ -24,6 +24,7 @@ Patch1: change-imports.patch
 Patch2: condor-probe-change-probeconfig.patch
 Patch3: gratiapy-change-imports.patch
 Patch4: metric-imports.patch
+Patch5: JobManagerGratia-dirs.patch
 
 # Location of the gums-host-cron user-vo-map file
 %global vo_map_file /var/lib/osg/user-vo-map
@@ -147,6 +148,7 @@ Prefix: /etc
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
+%patch5 -p0
 
 %build
 %ifnarch noarch
@@ -320,26 +322,6 @@ rm -rf $RPM_BUILD_ROOT
 Probes for the Gratia OSG accounting system
 
 %ifnarch noarch
-%if %{?no_dcache:0}%{!?no_dcache:1}
-%package extra-libs-arch-spec
-Summary: Architecture-specific third-party libraries required by some Gratia probes.
-Group: Application/System
-Requires: postgresql-libs
-%if %{?python:0}%{!?python:1}
-Requires: python >= 2.3
-%endif
-License: See psycopg2-LICENSE.
-
-%description extra-libs-arch-spec
-Architecture-specific third-party libraries required by some Gratia probes.
-
-Currently this consists of the psycopg2 postgresql interface package;
-see http://www.initd.org/pub/software/psycopg/ for details.
-
-%files extra-libs-arch-spec
-%defattr(-,root,root,-)
-#%{default_prefix}/probe/lib.*
-%endif # dCache
 
 %package pbs-lsf%{?maybe_itb_suffix}
 Summary: Gratia OSG accounting system probe for PBS and LSF batch systems.
@@ -810,7 +792,6 @@ Summary: Gratia OSG accounting system probe for dCache billing.
 Group: Application/System
 Requires: %{name}-common >= %{version}-%{release}
 Requires:  python-psycopg2
-#Requires: %{name}-extra-libs-arch-spec
 Requires: python-psycopg2
 License: See LICENSE.
 Obsoletes: %{name}-dCache
@@ -1351,6 +1332,9 @@ fi
 %endif # noarch
 
 %changelog
+* Thu Aug 18 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.07.02e-0.13.pre
+- Fix directory locations for JobManagerGratia.  Remove empty extra-libs-arch-spec.
+
 * Tue Aug 16 2011 Derek Weitzel <dweitzel@cse.unl.edu> - 1.07.02e-0.12.pre
 Added user-vo-map to the default ProbeConfig
 
