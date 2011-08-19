@@ -9,7 +9,7 @@
 Name:		globus-gram-job-manager-scripts
 %global _name %(tr - _ <<< %{name})
 Version:	3.1
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	Globus Toolkit - GRAM Job ManagerScripts
 
 Group:		Applications/Internet
@@ -106,6 +106,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_docdir}/%{name}-%{version}/perl/Globus/GRAM
 
 %changelog
+* Thu Aug 18 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 3.1-3
+- Small syntax error in the default path patch.
+
 * Thu Aug 18 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 3.1-2
 - Porting OSG patches to GT5.2.
 
