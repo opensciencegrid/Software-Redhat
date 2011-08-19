@@ -9,7 +9,7 @@
 Name:		globus-gram-job-manager-condor
 %global _name %(tr - _ <<< %{name})
 Version:	0.0
-Release:	3%{?dist}
+Release:	4%{?dist}
 Summary:	Globus Toolkit - Condor Job Manager
 
 Group:		Applications/Internet
@@ -27,6 +27,7 @@ Patch4:         managedfork.patch
 Patch5:         conf_location.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+BuildArch:      noarch
 
 Requires:	globus-gram-job-manager-scripts
 Requires:	globus-gass-cache-program >= 2
@@ -107,6 +108,13 @@ cat $GLOBUSPACKAGEDIR/%{_name}/noflavor_data.filelist \
 
 cat package.filelist
 
+cat >> $RPM_BUILD_ROOT%{_sysconfdir}/globus/globus-condor.conf << EOF
+
+# Enable Condor file transfer mode by default on the OSG
+isNFSLite=1
+
+EOF
+
 # Install the group accounting patch
 mkdir -p $RPM_BUILD_ROOT%{perl_vendorlib}/Globus/GRAM/JobManager/
 install -m 644 %{SOURCE1} $RPM_BUILD_ROOT%{perl_vendorlib}/Globus/GRAM/JobManager/
@@ -131,6 +139,9 @@ globus-gatekeeper-admin -d jobmanager-condor || true
 %{perl_vendorlib}/Globus/GRAM/JobManager/condor_accounting_groups.pm
 
 %changelog
+* Thu Aug 18 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 0.0-4
+- Fix default configuration file.
+
 * Wed Aug 17 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 0.0-3
 - Port all OSG patches to GT52.
 

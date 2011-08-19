@@ -5,7 +5,7 @@
      my $stdout = $description->stdout();
      my $stderr = $description->stderr();
 -    my $globus_condor_conf = "$Globus::Core::Paths::sysconfdir/globus-condor.conf";
-+    my $globus_condor_conf = "$Globus::Core::Paths::sysconfdir/globus-condor/jobmanager.conf";
++    my $globus_condor_conf = "$Globus::Core::Paths::sysconfdir/globus/globus-condor.conf";
  
      if (-r $globus_condor_conf)
      {   
