@@ -1,6 +1,6 @@
 Name:           igtf-ca-certs
 Version:        1.40
-Release:        3
+Release:        4
 Summary:        OSG Packaging of the IGTF CA Certs
 
 Group:          System Environment/Base
@@ -42,6 +42,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc
 
 %changelog
+* Thu Aug 18 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.40-4
+Fix conflicts and obsoletes.
+
 * Wed Aug 17 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.40-3
 - Fix directory ownership issue.
 

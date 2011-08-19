@@ -1,6 +1,6 @@
 Name:           osg-ca-certs
 Version:        1.20
-Release:        2
+Release:        3
 Epoch:          1
 Summary:        OSG Packaging of the IGTF CA Certs and OSG-specific CAs
 
@@ -42,6 +42,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc
 
 %changelog
+* Thu Aug 18 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1:1.20-3
+Fix conflicts line.
+
 * Wed Aug 17 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1:1.20-2
 - Fixed ownership issue.
 

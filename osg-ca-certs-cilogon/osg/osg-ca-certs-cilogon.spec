@@ -1,6 +1,6 @@
 Name:           osg-ca-certs-cilogon
 Version:        1.21
-Release:        1
+Release:        2
 Summary:        OSG CA Certs, plus the unaccredited CILogon CAs
 
 Group:          System Environment/Base
@@ -41,6 +41,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc
 
 %changelog
+* Thu Aug 18 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.21-2
+Fix conflicts line and virtual provides version.
+
 * Thu Aug 18 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.21-1
 - Create cert package with cilogon.
 

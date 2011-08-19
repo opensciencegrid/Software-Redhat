@@ -1,6 +1,6 @@
 Name:           osg-ca-certs-experimental
 Version:        1.20
-Release:        2
+Release:        3
 Summary:        OSG Packaging of the IGTF CA Certs and OSG-specific CAs, in the new OpenSSL 0.9.8/1.0.0 format
 
 Group:          System Environment/Base
@@ -41,6 +41,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc
 
 %changelog
+* Thu Aug 18 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.20-3
+Fix conflicts line.
+
 * Wed Aug 17 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.20-2
 - Fix directory ownership issue.
 
