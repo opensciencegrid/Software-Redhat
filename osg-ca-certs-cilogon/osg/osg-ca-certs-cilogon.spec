@@ -14,10 +14,9 @@ Source0:        osg-certificates-1.21ITBEXPT.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
-Provides:       grid-certificates = 8
+Provides:       grid-certificates = 6
 
 Conflicts:      osg-ca-scripts
-Conflicts:      osg-ca-certs
 
 %description
 %{summary}

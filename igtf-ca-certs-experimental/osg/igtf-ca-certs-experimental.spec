@@ -16,8 +16,7 @@ BuildArch:      noarch
 
 Provides:       grid-certificates = 4
 
-Conflicts:      osg-ca-manage
-Obsoletes:      vdt-ca-certs
+Conflicts:      osg-ca-scripts
 
 %description
 %{summary}
