@@ -1,0 +1,1 @@
+0 * * * * root "perl -e 'sleep rand 3600' && /usr/share/gratia/dCache-storage/dCache-storage_meter.cron.sh"

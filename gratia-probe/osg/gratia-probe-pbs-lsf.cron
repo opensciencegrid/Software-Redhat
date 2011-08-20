@@ -1,0 +1,1 @@
+0,15,30,45 * * * * root "perl -e 'sleep rand 900' && /usr/share/gratia/pbs/pbs-lsf_meter.cron.sh"
