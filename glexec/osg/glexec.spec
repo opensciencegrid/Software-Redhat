@@ -1,7 +1,7 @@
 Summary: User identity switching tool based on grid credentials
 Name: glexec
 Version: 0.8.10
-Release: 4%{?dist}
+Release: 5%{?dist}
 License: ASL 2.0
 Group: Applications/System
 URL: http://www.nikhef.nl/pub/projects/grid/gridwiki/index.php/Site_Access_Control
@@ -15,6 +15,8 @@ Requires(pre): shadow-utils
 
 # Since liblcmaps.so is dlopen'd we need this explicit requirement.
 Requires: lcmaps
+
+Requires: lcmaps-plugins-glexec-tracking
 
 %description
 gLExec is a program that acts as a light-weight 'gatekeeper'. it takes
@@ -61,6 +63,10 @@ exit 0
 %attr(6755, root, root) /usr/sbin/glexec
 
 %changelog
+* Mon Aug 22 2011 Dave Dykstra <dwd@fnal.gov> - 0.8.10-5
+- Move lcmaps-plugins-glexec-tracking dependency to this package instead
+  of osg-wn-client-glexec
+
 * Mon Aug 22 2011 Dave Dykstra <dwd@fnal.gov> - 0.8.10-4
 - Update the default settings in glexec.conf
 
