@@ -29,6 +29,7 @@ Patch11: pbs-probe-locs.patch
 Patch12: glexec-probe.patch
 Patch13: sge-probe.patch
 Patch14: dCache-storage-probe.patch
+Patch15: dcache-transfer-main.patch
 
 %global ProbeConfig_template_marker <!-- This probe has not yet been configured -->
 
@@ -88,6 +89,8 @@ Source40: gratia-probe-hadoop-storage.cron
 Source41: gratia-probe-dcache-storage.cron
 
 Source42: ProbeConfigTemplate.osg
+Source43: gratia-dcache-transfer.init
+Source44: gratia-dcache-transfer
 
 ########################################################################
 
@@ -136,6 +139,7 @@ rm -f dCache-storage/test.xml
 %patch12 -p0
 %patch13 -p0
 %patch14 -p0
+%patch15 -p0
 
 %build
 %ifnarch noarch
@@ -223,8 +227,9 @@ install -d $RPM_BUILD_ROOT/%{_sysconfdir}/gratia
 
   # dCache-transfer init script
   install -d $RPM_BUILD_ROOT/%{_initrddir}
-  install -m 755 ${RPM_BUILD_ROOT}%{_datadir}/gratia/dCache-transfer/gratia-dcache-transfer $RPM_BUILD_ROOT%{_initrddir}/gratia-dcache-transfer
+  install -m 755 %{SOURCE43} $RPM_BUILD_ROOT%{_initrddir}/gratia-dcache-transfer
   rm -f "${RPM_BUILD_ROOT}%{_datadir}/gratia/dCache-transfer/gratia-dcache-transfer"
+  install -m 755 %{SOURCE44} $RPM_BUILD_ROOT%{_datadir}/gratia/dCache-transfer/gratia-dcache-transfer
 
   # Xrootd-storage init script
   install -m 755 "${RPM_BUILD_ROOT}%{_datadir}/gratia/xrootd-storage/gratia-xrootd-storage" "$RPM_BUILD_ROOT%{_initrddir}/gratia-xrootd-storage"
@@ -380,6 +385,8 @@ rm  -f $RPM_BUILD_ROOT%{_datadir}/gratia/xrootd-storage/SL4_init_script_patches
 rm  -f $RPM_BUILD_ROOT%{_datadir}/gratia/xrootd-transfer/SL4_init_script_patches
 rm -rf $RPM_BUILD_ROOT%{_datadir}/gratia/common/GRAM
 rm -rf $RPM_BUILD_ROOT%{_datadir}/gratia/common/jlib
+rm -f $RPM_BUILD_ROOT%{python_sitelib}/gratia/common/samplemeter.py
+rm -f $RPM_BUILD_ROOT%{python_sitelib}/gratia/common/samplemeter_multi.py
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -545,9 +552,6 @@ The SGE probe for the Gratia OSG accounting system.
 %package glexec
 Summary: A gLExec probe
 Group: Applications/System
-%if %{?python:0}%{!?python:1}
-Requires: python >= 2.3
-%endif
 Requires: %{name}-common >= %{version}-%{release}
 
 %description glexec
@@ -605,6 +609,7 @@ Contributed by Greg Sharp and the dCache project.
 %doc %{default_prefix}/gratia/dCache-transfer/README-experts-only.txt
 %doc %{default_prefix}/gratia/dCache-transfer/README
 %{default_prefix}/gratia/dCache-transfer/ProbeConfig
+%{default_prefix}/gratia/dCache-transfer/gratia-dcache-transfer
 %{python_sitelib}/gratia/dCache_transfer
 %dir %{default_prefix}/gratia/dCache-transfer
 %config(noreplace) %{_sysconfdir}/gratia/dCache-transfer/ProbeConfig

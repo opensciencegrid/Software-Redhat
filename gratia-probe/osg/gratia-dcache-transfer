@@ -1,0 +1,93 @@
+#!/usr/bin/python
+
+import gratia.dCache_transfer.dCacheBillingAggregator
+
+# This code is based on the following recipe:
+# http://code.activestate.com/recipes/278731/ (r6)
+# __author__ = "Chad J. Schroeder"
+# __copyright__ = "Copyright (C) 2005 Chad J. Schroeder"
+
+# Standard Python modules.
+import os               # Miscellaneous OS interfaces.
+import sys              # System-specific parameters and functions.
+
+# Default daemon parameters.
+# File mode creation mask of the daemon.
+UMASK = 0
+
+# Default working directory for the daemon.
+WORKDIR = "/usr/share/gratia/dCache-transfer"
+
+# Default maximum for the number of available file descriptors.
+MAXFD = 1024
+
+# The standard I/O file descriptors are redirected to /dev/null by default.
+if (hasattr(os, "devnull")):
+   REDIRECT_TO = os.devnull
+else:
+   REDIRECT_TO = "/dev/null"
+
+def createDaemon(fd):
+   """Detach a process from the controlling terminal and run it in the
+   background as a daemon.
+   """
+
+   try:
+      pid = os.fork()
+   except OSError, e:
+      raise Exception, "%s [%d]" % (e.strerror, e.errno)
+
+   if (pid == 0):	# The first child.
+      os.setsid()
+
+      # import signal           # Set handlers for asynchronous events.
+      # signal.signal(signal.SIGHUP, signal.SIG_IGN)
+
+      try:
+         pid = os.fork()	# Fork a second child.
+      except OSError, e:
+         raise Exception, "%s [%d]" % (e.strerror, e.errno)
+
+      if (pid == 0):	# The second child.
+         os.chdir(WORKDIR)
+         os.umask(UMASK)
+      else:
+         # exit() or _exit()?  See below.
+         os._exit(0)	# Exit parent (the first child) of the second child.
+   else:
+      os._exit(0)	# Exit parent of the first child.
+
+   fd.write(str(pid))
+
+   import resource		# Resource usage information.
+   maxfd = resource.getrlimit(resource.RLIMIT_NOFILE)[1]
+   if (maxfd == resource.RLIM_INFINITY):
+      maxfd = MAXFD
+  
+   # Iterate through and close all file descriptors.
+   for fd in range(0, maxfd):
+      try:
+         os.close(fd)
+      except OSError:	# ERROR, fd wasn't open to begin with (ignored)
+         pass
+
+   # This call to open is guaranteed to return the lowest file descriptor,
+   # which will be 0 (stdin), since it was closed above.
+   os.open(REDIRECT_TO, os.O_RDWR)	# standard input (0)
+
+   # Duplicate standard input to standard output and standard error.
+   os.dup2(0, 1)			# standard output (1)
+   os.dup2(0, 2)			# standard error (2)
+
+   return(0)
+
+def main():
+    fd = open("/var/run/gratia-dcache-transfer.pid", "w")
+    createDaemon(fd)
+
+    # Now, call the main method
+    gratia.dCache_transfer.dCacheBillingAggregator.main()
+
+if __name__ == '__main__':
+    main()
+

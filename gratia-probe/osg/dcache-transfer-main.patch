@@ -1,0 +1,19 @@
+--- dCache-transfer/dCacheBillingAggregator.py	2011-05-19 08:28:53.000000000 -0500
++++ dCache-transfer/dCacheBillingAggregator.py	2011-08-22 13:06:58.000000000 -0500
+@@ -145,8 +145,7 @@
+         terminationAlarm.event()
+     os._exit( 1 )
+ 
+-
+-if __name__ == '__main__':
++def main():
+     # We need the logger variable in the exception handler.
+     # So we create it here.
+     logger = logging.getLogger( 'DCacheAggregator' )
+@@ -284,3 +283,6 @@
+ 
+     sys.exit(1)
+ 
++if __name__ == '__main__':
++    main()
++
