@@ -2,7 +2,7 @@ Name:               gratia-probe
 Summary:            Gratia OSG accounting system probes
 Group:              Applications/System
 Version:            1.07.02e
-Release:            0.13.pre
+Release:            0.14.pre
 License:            GPL
 Group:              Applications/System
 URL:                http://sourceforge.net/projects/gratia/
@@ -31,10 +31,6 @@ Patch5: JobManagerGratia-dirs.patch
 
 %global ProbeConfig_template_marker <!-- This probe has not yet been configured -->
 %global pbs_lsf_template_marker # Temporary RPM-generated template marker
-
-# Python version.
-%{?python: %global pexec %{python}}
-%{!?python: %global pexec python }
 
 %define default_prefix /usr/share
 
@@ -162,6 +158,7 @@ install -d $RPM_BUILD_ROOT/%{_sysconfdir}/gratia
     mkdir -p $RPM_BUILD_ROOT/%{_datadir}/gratia/$probe/
     ln -s %{_sysconfdir}/gratia/$probe/ProbeConfig $RPM_BUILD_ROOT/%{_datadir}/gratia/$probe/ProbeConfig
   done
+  rm $RPM_BUILD_ROOT%{_sysconfdir}/gratia/common/ProbeConfig
 
   # dCache-transfer init script
   install -d $RPM_BUILD_ROOT/%{_initrddir}
@@ -178,6 +175,17 @@ install -d $RPM_BUILD_ROOT/%{_sysconfdir}/gratia
 
   # gridftp-transfer unneeded file.
   rm -f "${RPM_BUILD_ROOT}%{_datadir}/gratia/gridftp-transfer/GridftpTransferProbe.sh"
+
+  mv $RPM_BUILD_ROOT%{_datadir}/gratia/condor-events/watchCondorEvents.py \
+     $RPM_BUILD_ROOT%{_datadir}/gratia/condor-events/watchCondorEvents
+  mv $RPM_BUILD_ROOT%{_datadir}/gratia/hadoop-storage/storage.cfg \
+     $RPM_BUILD_ROOT%{_sysconfdir}/gratia/hadoop-storage/storage.cfg
+
+  # New cron files
+  mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/cron.d
+  install -m 644 %{SOURCE31} %{SOURCE32} %{SOURCE33} %{SOURCE35} \
+     %{SOURCE36} %{SOURCE37} %{SOURCE38} %{SOURCE39} %{SOURCE40} %{SOURCE41} \
+     $RPM_BUILD_ROOT%{_sysconfdir}/cron.d/
 
 %else
 
@@ -213,23 +221,22 @@ install -d $RPM_BUILD_ROOT/%{_sysconfdir}/gratia
   "$RPM_BUILD_ROOT%{_datadir}/gratia/pbs-lsf/urCollector"
   cd - >/dev/null
 
+  install -d $RPM_BUILD_ROOT%{_sysconfdir}/cron.d/
+  install -m 644 %{SOURCE34} $RPM_BUILD_ROOT%{_sysconfdir}/cron.d/
+
 %endif
 
-#cd "${RPM_BUILD_ROOT}%{default_prefix}"
-cd ${RPM_BUILD_ROOT}%{_datadir}
-
-grep -rIle '%%%%%%RPMVERSION%%%%%%' gratia | while read file; do \
+# Burn in the RPM version into the python files.
+grep -rIle '%%%%%%RPMVERSION%%%%%%' $RPM_BUILD_ROOT%{_datadir}/gratia $RPM_BUILD_ROOT%{python_sitelib} | while read file; do \
   perl -wpi.orig -e 's&%%%%%%RPMVERSION%%%%%%&%{version}-%{release}&g' "$file" && \
     rm -fv "$file.orig"
 done
 
 %ifarch noarch
   # Set up var area
-  for probe_name in %{noarch_packs}; do
   install -d $RPM_BUILD_ROOT%{_localstatedir}/lib/gratia/
   install -d $RPM_BUILD_ROOT%{_localstatedir}/lib/gratia/{tmp,data,logs}
   chmod 1777  $RPM_BUILD_ROOT%{_localstatedir}/lib/gratia/data
-  done
 
   # install psacct startup script.
   install -d "${RPM_BUILD_ROOT}%{_initrddir}"
@@ -243,10 +250,6 @@ done
 
 # Find python files, and put in site-packages/gratia/<package>/...
 install -d $RPM_BUILD_ROOT%{python_sitelib}/gratia
-touch $RPM_BUILD_ROOT%{python_sitelib}/gratia/__init__.py
-
-mv $RPM_BUILD_ROOT%{_datadir}/gratia/condor-events/watchCondorEvents.py \
-   $RPM_BUILD_ROOT%{_datadir}/gratia/condor-events/watchCondorEvents
 
 # For each project in /usr/share/gratia/...
 for dir in `ls $RPM_BUILD_ROOT%{_datadir}/gratia`; do
@@ -266,38 +269,31 @@ done
 rm -rf $RPM_BUILD_ROOT%{python_sitelib}/gratia/{hadoop-storage,xrootd-transfer,xrootd-storage,condor,condor-events}
 
 %ifarch noarch
-#install -m 644 gratia/common/Gratia.py $RPM_BUILD_ROOT%{python_sitelib}/Gratia.py
+touch $RPM_BUILD_ROOT%{python_sitelib}/gratia/__init__.py
+cp $RPM_BUILD_ROOT%{python_sitelib}/gratia/common/Gratia.py $RPM_BUILD_ROOT%{python_sitelib}/Gratia.py
 install -d $RPM_BUILD_ROOT%{perl_vendorlib}/Globus/GRAM
-install -m 644 gratia/common/GRAM/JobManagerGratia.pm $RPM_BUILD_ROOT%{perl_vendorlib}/Globus/GRAM/JobManagerGratia.pm
-%endif
-
+install -m 644 $RPM_BUILD_ROOT%{_datadir}/gratia/common/GRAM/JobManagerGratia.pm $RPM_BUILD_ROOT%{perl_vendorlib}/Globus/GRAM/JobManagerGratia.pm
 install -d $RPM_BUILD_ROOT/%{_sysconfdir}/condor/config.d
 install -m 644 %{SOURCE30} $RPM_BUILD_ROOT/%{_sysconfdir}/condor/config.d/99_gratia.conf
+%endif
 
 install -d $RPM_BUILD_ROOT/%{_localstatedir}/log/gratia
 
-
 # Remove the test stuff
 rm -rf $RPM_BUILD_ROOT%{_datadir}/gratia/condor/test
-rm -f $RPM_BUILD_ROOT%{_datadir}/gratia/common/gratia.repo
 rm -f $RPM_BUILD_ROOT%{_datadir}/gratia/condor/condor_meter.pl.rej
-
-# Incorrect ProbeConfig files
-mv $RPM_BUILD_ROOT%{_datadir}/gratia/hadoop-storage/storage.cfg \
-   $RPM_BUILD_ROOT%{_sysconfdir}/gratia/hadoop-storage/storage.cfg
+rm -rf $RPM_BUILD_ROOT%{_datadir}/gratia/sge/test
+rm -rf $RPM_BUILD_ROOT%{_datadir}/gratia/common/test
+rm -rf $RPM_BUILD_ROOT%{_datadir}/gratia/pbs-lsf/test
 
 # Remove remaining cruft
-rm -f %{_datadir}/gratia/sge/test
-rm -rf %{_sysconfdir}/gratia/common
-
-# New cron files
-mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/cron.d
-install -m 644 %{SOURCE31} %{SOURCE32} %{SOURCE33} %{SOURCE35} \
-   %{SOURCE36} %{SOURCE37} %{SOURCE38} %{SOURCE39} %{SOURCE40} %{SOURCE41} \
-   $RPM_BUILD_ROOT%{_sysconfdir}/cron.d/
-%ifnarch noarch
-install -m 644 %{SOURCE34} $RPM_BUILD_ROOT%{_sysconfdir}/cron.d/
-%endif
+rm  -f $RPM_BUILD_ROOT%{_datadir}/gratia/common/gratia.repo
+rm -rf $RPM_BUILD_ROOT%{_sysconfdir}/gratia/common
+rm -rf $RPM_BUILD_ROOT%{_datadir}/gratia/condor/gram_mods
+rm  -f $RPM_BUILD_ROOT%{_datadir}/gratia/xrootd-storage/SL4_init_script_patches
+rm  -f $RPM_BUILD_ROOT%{_datadir}/gratia/xrootd-transfer/SL4_init_script_patches
+rm -rf $RPM_BUILD_ROOT%{_datadir}/gratia/common/GRAM
+rm -rf $RPM_BUILD_ROOT%{_datadir}/gratia/common/jlib
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -325,7 +321,7 @@ This product includes software developed by The EU EGEE Project
 %doc %{_datadir}/gratia/pbs-lsf/LICENSE
 %doc %{_datadir}/gratia/pbs-lsf/urCollector.conf-template
 %doc %{_datadir}/gratia/pbs-lsf/README
-%{_datadir}/gratia/pbs-lsf
+%dir %{_datadir}/gratia/pbs-lsf
 %{python_sitelib}/gratia/pbs-lsf
 %{_datadir}/gratia/pbs-lsf/ProbeConfig
 %{_datadir}/gratia/pbs-lsf/pbs-lsf_meter.cron.sh
@@ -334,8 +330,6 @@ This product includes software developed by The EU EGEE Project
 %{_datadir}/gratia/pbs-lsf/urCollector.pl
 %{_datadir}/gratia/pbs-lsf/urCollector/Common.pm
 %{_datadir}/gratia/pbs-lsf/urCollector/Configuration.pm
-%{_datadir}/gratia/pbs-lsf/test/pbs-logdir/
-%{_datadir}/gratia/pbs-lsf/test/lsf-logdir/
 %config(noreplace) %{_datadir}/gratia/pbs-lsf/urCollector.conf
 %config(noreplace) %{_sysconfdir}/gratia/pbs-lsf/ProbeConfig
 %config(noreplace) %{_sysconfdir}/cron.d/gratia-probe-pbs-lsf.cron
@@ -386,14 +380,12 @@ Common files and examples for Gratia OSG accounting system probes.
 %defattr(-,root,root,-)
 %doc %{default_prefix}/gratia/common/README
 %doc %{default_prefix}/gratia/common/samplemeter.pl
-%{_datadir}/gratia/common
 %{_localstatedir}/lib/gratia/
 %{_localstatedir}/log/gratia/
 %{python_sitelib}/gratia/__init__.py*
 %{python_sitelib}/gratia/common
 %{python_sitelib}/Gratia.py*
 %dir %{default_prefix}/gratia/common
-%{default_prefix}/gratia/common/README
 %{default_prefix}/gratia/common/ProbeConfig
 %{default_prefix}/gratia/common/ProbeConfigTemplate
 %{perl_vendorlib}/Globus/GRAM/JobManagerGratia.pm
@@ -412,8 +404,9 @@ The psacct probe for the Gratia OSG accounting system.
 %files psacct
 %defattr(-,root,root,-)
 %doc psacct/README
-%{default_prefix}/gratia/psacct/README
-%{default_prefix}/gratia/psacct
+%doc %{default_prefix}/gratia/psacct/README
+%dir %{default_prefix}/gratia/psacct
+%{default_prefix}/gratia/psacct/ProbeConfig
 %config %{default_prefix}/gratia/psacct/facct-catchup
 %config %{default_prefix}/gratia/psacct/facct-turnoff.sh
 %config %{default_prefix}/gratia/psacct/psacct_probe.cron.sh
@@ -469,8 +462,8 @@ The Condor probe for the Gratia OSG accounting system.
 %files condor
 %defattr(-,root,root,-)
 %doc %{default_prefix}/gratia/condor/README
-%{default_prefix}/gratia/condor
-%{default_prefix}/gratia/condor/gram_mods
+%dir %{default_prefix}/gratia/condor
+%{default_prefix}/gratia/condor/ProbeConfig
 %{default_prefix}/gratia/condor/condor_meter.cron.sh
 %{default_prefix}/gratia/condor/condor_meter.pl
 %config(noreplace) %{_sysconfdir}/condor/config.d/99_gratia.conf
@@ -499,10 +492,10 @@ The SGE probe for the Gratia OSG accounting system.
 %files sge
 %defattr(-,root,root,-)
 %doc %{default_prefix}/gratia/sge/README
+%{default_prefix}/gratia/sge/ProbeConfig
 %{default_prefix}/gratia/sge/sge_meter.cron.sh
-%{default_prefix}/gratia/sge
+%dir %{default_prefix}/gratia/sge
 %{python_sitelib}/gratia/sge
-%{default_prefix}/gratia/sge/test/2007-01-26.log.snippet
 %config(noreplace) %{_sysconfdir}/gratia/sge/ProbeConfig
 %config(noreplace) %{_sysconfdir}/cron.d/gratia-probe-sge.cron
 
@@ -532,10 +525,10 @@ The gLExec probe for the Gratia OSG accounting system.
 
 %files glexec
 %defattr(-,root,root,-)
+%{default_prefix}/gratia/glexec/ProbeConfig
 %doc %{default_prefix}/gratia/glexec/README
 %{default_prefix}/gratia/glexec/glexec_meter.cron.sh
 %{python_sitelib}/gratia/glexec
-%{default_prefix}/gratia/glexec
 %config(noreplace) %{_sysconfdir}/cron.d/gratia-probe-glexec.cron
 %config(noreplace) %{_sysconfdir}/gratia/glexec/ProbeConfig
 
@@ -566,7 +559,8 @@ The metric probe for the Gratia OSG accounting system.
 %defattr(-,root,root,-)
 %doc %{default_prefix}/gratia/metric/README
 %{python_sitelib}/gratia/metric
-%{default_prefix}/gratia/metric
+%dir %{default_prefix}/gratia/metric
+%{default_prefix}/gratia/metric/ProbeConfig
 %config(noreplace) %{_sysconfdir}/gratia/metric/ProbeConfig
 
 %post metric
@@ -605,8 +599,9 @@ Contributed by Greg Sharp and the dCache project.
 %{_initrddir}/gratia-dcache-transfer
 %doc %{default_prefix}/gratia/dCache-transfer/README-experts-only.txt
 %doc %{default_prefix}/gratia/dCache-transfer/README
+%{default_prefix}/gratia/dCache-transfer/ProbeConfig
 %{python_sitelib}/gratia/dCache-transfer
-%{default_prefix}/gratia/dCache-transfer
+%dir %{default_prefix}/gratia/dCache-transfer
 %config(noreplace) %{_sysconfdir}/gratia/dCache-transfer/ProbeConfig
 
 %post dCache-transfer
@@ -659,7 +654,6 @@ EOF
   next;
 }
 s&gratia-d?cache-probe&gratia-dcache-transfer-probe&g;
-s&python &%{pexec} &g;
 print;
 ' "${RPM_INSTALL_PREFIX2}/rc.d/init.d/gratia-dcache-transfer" && \
 %{__rm} -f "${RPM_INSTALL_PREFIX2}/rc.d/init.d/gratia-dcache-transfer.bak"
@@ -697,7 +691,8 @@ Contributed by Andrei Baranovksi of the OSG Storage team.
 %defattr(-,root,root,-)
 %doc %{default_prefix}/gratia/dCache-storage/README.txt
 %{python_sitelib}/gratia/dCache-storage
-%{default_prefix}/gratia/dCache-storage
+%dir %{default_prefix}/gratia/dCache-storage
+%{default_prefix}/gratia/dCache-storage/ProbeConfig
 %{default_prefix}/gratia/dCache-storage/create_se_record.xsl
 %{default_prefix}/gratia/dCache-storage/dCache-storage_meter.cron.sh
 %config(noreplace) %{_sysconfdir}/gratia/dCache-storage/ProbeConfig
@@ -719,10 +714,6 @@ m&^/>& and print <<EOF;
     ReportPoolUsage="0"
 EOF
 %configure_probeconfig_post
-
-perl -wapi.bak -e 's&^python &%{pexec} &g' \
-"${RPM_INSTALL_PREFIX1}"/gratia/dCache-storage/dCache-storage_meter.cron.sh && \
-%{__rm} -f "${RPM_INSTALL_PREFIX1}/gratia/dCache-storage/dCache-storage_meter.cron.sh.bak"
 
 # End of dCache-storage section
 
@@ -761,10 +752,6 @@ m&^/>& and print <<EOF;
 EOF
 %configure_probeconfig_post
 
-perl -wapi.bak -e 's&^python &%{pexec} &g' \
-"${RPM_INSTALL_PREFIX1}"/probe/gridftp-transfer/gridftp-transfer_meter.cron.sh && \
-%{__rm} -f "${RPM_INSTALL_PREFIX1}/probe/gridftp-transfer/gridftp-transfer_meter.cron.sh.bak"
-
 # End of gridftp-transfer post
 
 # End of gridftp-transfer section
@@ -773,9 +760,6 @@ perl -wapi.bak -e 's&^python &%{pexec} &g' \
 Summary: Gratia OSG accounting system probe API for services.
 Group: Application/System
 Requires: %{name}-common >= %{version}-%{release}
-%if %{?python:0}%{!?python:1}
-Requires: python >= 2.3
-%endif
 License: See LICENSE.
 
 %description services
@@ -785,8 +769,9 @@ Contributed by University of Nebraska Lincoln.
 %files services
 %defattr(-,root,root,-)
 %{python_sitelib}/gratia/services
-%{default_prefix}/gratia/services/storageReport          
-%{default_prefix}/gratia/services
+%{default_prefix}/gratia/services/ProbeConfig
+%{default_prefix}/gratia/services/storageReport
+%dir %{default_prefix}/gratia/services
 %config(noreplace) %{_sysconfdir}/gratia/services/ProbeConfig
 
 %post services
@@ -805,9 +790,6 @@ Contributed by University of Nebraska Lincoln.
 Summary: HDFS Storage Probe for Gratia OSG accounting system.
 Group: Application/System
 Requires: %{name}-common >= %{version}-%{release}
-%if %{?python:0}%{!?python:1}
-Requires: python >= 2.3
-%endif
 Requires: %{name}-services
 License: See LICENSE.
 
@@ -840,9 +822,6 @@ Contributed by University of Nebraska Lincoln.
 Summary: Probe that emits a record for each event in the Condor system.
 Group: Application/System
 Requires: %{name}-common >= %{version}-%{release}
-%if %{?python:0}%{!?python:1}
-Requires: python >= 2.3
-%endif
 License: See LICENSE.
 
 %description condor-events
@@ -882,9 +861,8 @@ Contributed by University of Nebraska Lincoln.
 %defattr(-,root,root,-)
 %{_initrddir}/gratia-xrootd-transfer
 %{default_prefix}/gratia/xrootd-transfer/xrd_transfer_probe
-#%{default_prefix}/gratia/xrootd-transfer/xrd_transfer_gratia
-%{default_prefix}/gratia/xrootd-transfer/SL4_init_script_patches
-%{default_prefix}/gratia/xrootd-transfer
+%{default_prefix}/gratia/xrootd-transfer/ProbeConfig
+%dir %{default_prefix}/gratia/xrootd-transfer
 %config(noreplace) %{_sysconfdir}/gratia/xrootd-transfer/ProbeConfig
 
 %post xrootd-transfer
@@ -921,7 +899,6 @@ Contributed as effort from OSG-Storage.
 %{default_prefix}/gratia/xrootd-storage/xrd_storage_probe
 %{default_prefix}/gratia/xrootd-storage
 #%{default_prefix}/gratia/xrootd-storage/xrd_storage_gratia
-%{default_prefix}/gratia/xrootd-storage/SL4_init_script_patches
 %config(noreplace) %{_sysconfdir}/gratia/xrootd-storage/ProbeConfig
 
 %post xrootd-storage
@@ -951,9 +928,10 @@ Contributed by University of Nebraska Lincoln.
 
 %files bdii-status
 %defattr(-,root,root,-)
-%{default_prefix}/gratia/bdii-status/bdii_cese_record
+%{default_prefix}/gratia/bdii-status/ProbeConfig
 %{default_prefix}/gratia/bdii-status/bdii_subcluster_record
-%{default_prefix}/gratia/bdii-status
+%{default_prefix}/gratia/bdii-status/bdii_cese_record
+%dir %{default_prefix}/gratia/bdii-status
 %{python_sitelib}/gratia/bdii-status
 %config(noreplace) %{_sysconfdir}/gratia/bdii-status/ProbeConfig
 %config(noreplace) %{_sysconfdir}/cron.d/gratia-probe-bdii-cese.cron
@@ -974,6 +952,9 @@ Contributed by University of Nebraska Lincoln.
 %endif # noarch
 
 %changelog
+* Sun Aug 21 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.07.02e-0.14.pre
+Restructure spec file to simplify, and remove as many things from the post script as possible.
+
 * Thu Aug 18 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.07.02e-0.13.pre
 - Fix directory locations for JobManagerGratia.  Remove empty extra-libs-arch-spec.
 
