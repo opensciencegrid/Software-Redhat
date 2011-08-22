@@ -1,0 +1,156 @@
+--- _build_results/BUILD/gratia-probe-1.07.02e/dCache-storage/dCache-storage_meter.cron.sh	2011-08-22 11:55:45.000000000 -0500
++++ dCache-storage/dCache-storage_meter.cron.sh	2011-08-22 11:57:33.000000000 -0500
+@@ -10,17 +10,7 @@
+ Logger="/usr/bin/logger -s -t $PGM"
+ 
+ Meter_BinDir=$(dirname $0)
+-probeconfig_loc = /etc/gratia/dcache-storage/ProbeConfig
+-
+-eval `grep VDTSetupFile $probeconfig_loc`
+-for Setupsh in ${VDTSetupFile} '/opt/vdt/setup.sh' '/opt/osg-ce/setup.sh'
+-do
+-  if [[ -f ${Setupsh} && -r ${Setupsh} ]]; then
+-    # Should the output of this be directed to /dev/null?
+-    . ${Setupsh} >/dev/null
+-    break
+-  fi
+-done
++probeconfig_loc=/etc/gratia/dcache-storage/ProbeConfig
+ 
+ # Set the working directory, where we expect to find the following
+ #    necessary files.
+@@ -32,7 +22,7 @@
+ fi
+ 
+ # Need to be sure there is not one of these running already
+-NCMeter=`ps -ef | grep dCache_storage_probe.py | grep -v grep | wc -l`
++NCMeter=`ps -ef | grep dCache_storage_probe | grep -v grep | wc -l`
+ eval `grep WorkingFolder $probeconfig_loc`
+ if [ ${NCMeter} -ne 0 -a -e ${WorkingFolder}/dCache-storage_meter.cron.pid ]; then
+   # We might have a condor_meter.pl running, let's verify that we 
+@@ -42,19 +32,19 @@
+   NCCron=`ps -ef | grep ${otherpid} | grep dCache-storage_meter.cron | wc -l`
+   if [ ${NCCron} -ne 0 ]; then 
+  
+-    ${Logger} "There is a dCache_storage_probe.py running already"
++    ${Logger} "There is a dCache_storage_probe running already"
+     exit 1
+   fi
+ fi
+ 
+ # We need to locate the probe script
+-if [ ! -r ./dCache_storage_probe.py ]; then
+-  ${Logger} "The dCache_storage_probe.py file is not in this directory: $(pwd)"
++if [ ! -r ./dCache_storage_probe ]; then
++  ${Logger} "The dCache_storage_probe file is not in this directory: $(pwd)"
+   exit -2
+ fi
+ 
+ # We need to locate these files and they must be readable
+-for Needed_File in ProbeConfig
++for Needed_File in $probeconfig_loc
+ do
+   if [ ! -f ${Needed_File} ]; then
+     ${Logger} \
+@@ -64,30 +54,19 @@
+ done
+ 
+ pp_dir=$(cd "$Meter_BinDir/.."; pwd)
+-arch_spec_dir=`echo "${pp_dir}/lib."*`
+-if test -n "$PYTHONPATH" ; then
+-  if echo "$PYTHONPATH" | grep -e ':$' >/dev/null 2>&1; then
+-    PYTHONPATH="${PYTHONPATH}${pp_dir}/common:${arch_spec_dir}:"
+-  else
+-    PYTHONPATH="${PYTHONPATH}:${pp_dir}/common:${arch_spec_dir}"
+-  fi
+-else
+-  PYTHONPATH="${pp_dir}/common:${pp_dir}/common:${arch_spec_dir}"
+-fi
+-export PYTHONPATH
+ 
+-enabled=`${pp_dir}/common/GetProbeConfigAttribute.py EnableProbe`
++enabled=`${pp_dir}/common/GetProbeConfigAttribute -c $probeconfig_loc EnableProbe`
+ (( status = $? ))
+ if (( $status != 0 )); then
+   echo "ERROR checking probe configuration!" 1>&2
+   exit $status
+ fi
+ if [[ -n "$enabled" ]] && [[ "$enabled" == "0" ]]; then
+-  ${pp_dir}/common/DebugPrint.py -l 0 "Probe is not enabled: check $Meter_BinDir/ProbeConfig."
++  ${pp_dir}/common/DebugPrint -c $probeconfig_loc -l 0 "Probe is not enabled: check $Meter_BinDir/ProbeConfig."
+   exit 1
+ fi
+ 
+-WorkingFolder=`${pp_dir}/common/GetProbeConfigAttribute.py WorkingFolder`
++WorkingFolder=`${pp_dir}/common/GetProbeConfigAttribute -c $probeconfig_loc WorkingFolder`
+ if [ ! -d ${WorkingFolder} ]; then
+   if [ "x${WorkingFolder}" != "x" ] ; then 
+     mkdir -p ${WorkingFolder}
+@@ -105,13 +84,13 @@
+ fi 
+ 
+ #--- run the probes ----
+-python ./dCache_storage_probe.py -c storage.cfg
++./dCache_storage_probe -c storage.cfg
+ 
+ ExitCode=$?
+ 
+ # If the probe ended in error, report this in Syslog and exit
+ if [ $ExitCode != 0 ]; then
+-  ${pp_dir}/common/DebugPrint.py -l -1 "ALERT: $0 exited abnormally with [$ExitCode]"
++  ${pp_dir}/common/DebugPrint -c $probeconfig_loc -l -1 "ALERT: $0 exited abnormally with [$ExitCode]"
+   exit $ExitCode
+ fi
+   
+--- _build_results/BUILD/gratia-probe-1.07.02e/dCache-storage/dCache_storage_probe.py	2011-05-19 08:28:53.000000000 -0500
++++ dCache-storage/dCache_storage_probe.py	2011-08-22 12:01:42.000000000 -0500
+@@ -8,9 +8,9 @@
+ import datetime
+ import optparse
+ import ConfigParser
+-import GratiaConnector
++import gratia.dCache_storage.GratiaConnector as GratiaConnector
+ import Gratia
+-import XmlBuilder
++import gratia.dCache_storage.XmlBuilder as XmlBuilder
+ 
+ # Bootstrap hadoop
+ if 'JAVA_HOME' not in os.environ:
+@@ -27,24 +27,8 @@
+ def configure():
+     cp = Config()
+ 
+-    gratia_path = None
++    os.environ['CLASSPATH'] = '/usr/share/java/xalan.jar:/usr/share/java/serializer.jar'
+ 
+-    for pathElement in sys.path:
+-       if ( pathElement.find("probe/common") != -1 ):
+-           gratia_path = pathElement+"/../../"
+-           break
+-
+-    if ( gratia_path == None ):
+-      raise Exception("gratia_path can not be determined from python path")
+-
+-    if not os.path.exists(gratia_path):
+-       raise Exception("GratiaLocation attribute in ProbeConfig file must point to the corrent gratie probe directory")
+-
+-    cp.GratiaLocation = gratia_path
+-
+-    os.environ['CLASSPATH'] = gratia_path+"/probe/common/jlib/xalan.jar:"+gratia_path+"/probe/common/jlib/serializer.jar"
+-
+-    sys.path.append(gratia_path+"/probe/services")
+     return cp
+ 
+ def _get_se(cp):
+@@ -88,10 +72,9 @@
+     if ( poolsUsage != None and ynMap.has_key(poolsUsage.lower())):
+        noPoolsArg = "-PARAM nopools 1"
+ 
+-    import time
+     timeNow = int(time.time())
+ 
+-    cmd = "java  org.apache.xalan.xslt.Process %s -PARAM now %d -PARAM SE %s -XSL %s/probe/dCache-storage/create_se_record.xsl -IN %s " % ( noPoolsArg, timeNow, get_se(cp) ,cp.GratiaLocation, dCacheUrl )
++    cmd = "java  org.apache.xalan.xslt.Process %s -PARAM now %d -PARAM SE %s -XSL /usr/share/gratia/dCache-storage/create_se_record.xsl -IN %s " % ( noPoolsArg, timeNow, get_se(cp), dCacheUrl )
+ 
+     fd = os.popen(cmd)
+ 

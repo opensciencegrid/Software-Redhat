@@ -2,54 +2,51 @@ Name:               gratia-probe
 Summary:            Gratia OSG accounting system probes
 Group:              Applications/System
 Version:            1.07.02e
-Release:            0.14.pre
+Release:            0.15.pre
 License:            GPL
 Group:              Applications/System
 URL:                http://sourceforge.net/projects/gratia/
-Packager:           Neha Sharma <neha@fnal.gov>
 Vendor:             The Open Science Grid <http://www.opensciencegrid.org/>
 %if %{?python:0}%{!?python:1}
 BuildRequires:      python >= 2.3
 BuildRequires:      python-devel >= 2.3
 %endif
 
-
-%if %{?no_dcache:0}%{!?no_dcache:1}
-BuildRequires: postgresql-devel
-%endif
 BuildRequires: gcc-c++
 
 Patch0: change-folders.patch 
 Patch1: change-imports.patch
-Patch2: condor-probe-change-probeconfig.patch
+Patch2: condor-probe-cron.patch
 Patch3: gratiapy-change-imports.patch
 Patch4: metric-imports.patch
 Patch5: JobManagerGratia-dirs.patch
-
-# Location of the gums-host-cron user-vo-map file
-%global vo_map_file /var/lib/osg/user-vo-map
+Patch6: dcache-transfer-locs.patch
+Patch7: urCollector_defaults.patch
+Patch8: gridftp-transfer-wrapper.patch
+Patch9: gridftp_drive_imports.patch
+Patch10: gridftp_netlogger.patch
+Patch11: pbs-probe-locs.patch
+Patch12: glexec-probe.patch
+Patch13: sge-probe.patch
+Patch14: dCache-storage-probe.patch
 
 %global ProbeConfig_template_marker <!-- This probe has not yet been configured -->
-%global pbs_lsf_template_marker # Temporary RPM-generated template marker
 
 %define default_prefix /usr/share
 
 # Default probe configuration items for post-install.
 %global default_collector_port 80
 %global metric_port 8880
+%global ssl_port 443
 
-%global default_osg_collector gratia-osg-prod.opensciencegrid.org
-%global default_fnal_collector gratia-fermi-osg.fnal.gov
-%global grid OSG
-%global metric_collector rsv.grid.iu.edu
+%global osg_collector gratia-osg-prod.opensciencegrid.org
+%global osg_transfer_collector gratia-osg-transfer.opensciencegrid.org
+%global osg_metric_collector rsv.grid.iu.edu
 
 # Default ProbeName
 %{!?meter_name: %global meter_name `hostname -f`}
 
-# Macros for configuring ProbeConfig.
-%define configure_probeconfig_pre(p:d:m:M:h:) site_name=%{site_name}; config_file="%{_sysconfdir}/gratia/%{-d*}/ProbeConfig"; %{__grep} -le '^%{ProbeConfig_template_marker}\$' $config_file{,.rpmnew} %{*} 2>/dev/null | while read config_file; do test -n "$config_file" || continue; if [[ -n "%{-M*}" ]]; then chmod %{-M*} "$config_file"; fi; %{__perl} -wni.orig -e 'my $meter_name = %{meter_name}; chomp $meter_name; my $install_host = `hostname -f`; $install_host = "${meter_name}" unless $install_host =~ m&\\.&; chomp $install_host; my $collector_host = ($install_host =~ m&\\.fnal\\.&i)?"%{fnal_collector}":("%{-h*}" || "%{osg_collector}"); my $collector_port = "%{-p*}" || "%{collector_port}"; s&^(\\s*(?:CollectorHost|SOAPHost|SSLRegistrationHost)\\s*=\\s*).*$&${1}"${collector_host}:${collector_port}"&; s&^(\\s*SSLHost\\s*=\\s*).*$&${1}""&; s&((?:MeterName|ProbeName)\\s*=\\s*)\\"[^\\"]*\\"&${1}"%{-m*}:${meter_name}"&; s&(SiteName\\s*=\\s*)\\"[^\\"]*\\"&${1}"'"${site_name}"'"&;
-
-%define configure_probeconfig_post(g:) s&MAGIC_VDT_LOCATION/gratia(/?)&$ENV{RPM_INSTALL_PREFIX1}${1}&; %{?vdt_loc_set: s&MAGIC_VDT_LOCATION&%{vdt_loc}&;} s&/opt/vdt/gratia(/?)&$ENV{RPM_INSTALL_PREFIX1}${1}&; my $grid = "%{-g*}" || "%{grid}"; s&(Grid\\s*=\\s*)\\\"[^\\\"]*\\\"&${1}"${grid}"&; m&%{ProbeConfig_template_marker}& or print; ' "$config_file" >/dev/null 2>&1; %{__rm} -f "$config_file.orig"; done
+%define customize_probeconfig(d:) sed -i "s#@PROBE_HOST@#%{meter_name}#" %{_sysconfdir}/gratia/%{-d*}/ProbeConfig
 
 %if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
 %{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
@@ -90,6 +87,8 @@ Source39: gratia-probe-condor-events.cron
 Source40: gratia-probe-hadoop-storage.cron
 Source41: gratia-probe-dcache-storage.cron
 
+Source42: ProbeConfigTemplate.osg
+
 ########################################################################
 
 # Build settings.
@@ -122,10 +121,21 @@ rm -f dCache-storage/test.xml
 
 %patch0 -p1
 %patch1 -p1
-%patch2 -p1
+%patch2 -p0
 %patch3 -p1
 %patch4 -p1
 %patch5 -p0
+%patch6 -p0
+%ifnarch noarch
+%patch7 -p0
+%patch11 -p0
+%endif
+%patch8 -p0
+%patch9 -p0
+%patch10 -p0
+%patch12 -p0
+%patch13 -p0
+%patch14 -p0
 
 %build
 %ifnarch noarch
@@ -148,17 +158,68 @@ install -d $RPM_BUILD_ROOT/%{_sysconfdir}/gratia
 
   cp -pR %{noarch_packs}  $RPM_BUILD_ROOT/%{_datadir}/gratia
 
-  # Get uncustomized ProbeConfigTemplate files (see post below)
+  # Customize template for each probe
   for probe in %{noarch_packs}
   do
     PROBE_DIR=$RPM_BUILD_ROOT/%{_sysconfdir}/gratia/$probe
     install -d $PROBE_DIR
-    install -m 644 common/ProbeConfigTemplate $PROBE_DIR/ProbeConfig
+    install -m 644 %{SOURCE42} $PROBE_DIR/ProbeConfig
     echo "%{ProbeConfig_template_marker}" >> $PROBE_DIR/ProbeConfig
     mkdir -p $RPM_BUILD_ROOT/%{_datadir}/gratia/$probe/
     ln -s %{_sysconfdir}/gratia/$probe/ProbeConfig $RPM_BUILD_ROOT/%{_datadir}/gratia/$probe/ProbeConfig
+    sed -i -e "s#@PROBE_NAME@#$probe#" $PROBE_DIR/ProbeConfig
+
+    if [ $probe == *-transfer -o $probe == *-storage ]; then
+      endpoint=%{osg_transfer_collector}:%{default_collector_port}
+    elif [ $probe == metric ]; then
+      endpoint=%{osg_metric_collector}:%{metric_port}
+    else 
+      endpoint=%{osg_collector}:%{default_collector_port}
+    fi
+    sed -i -e "s#@COLLECTOR_ENDPOINT@#$endpoint#" \
+           -e "s#@SSL_ENDPOINT@#%{osg_collector}:%{ssl_port}#" \
+           -e "s#@SSL_REGISTRATION_ENDPOINT@#$endpoint#" \
+        $PROBE_DIR/ProbeConfig
+
+    # Probe-specific customizations
+    if [ $probe == "psacct" ]; then
+      sed -i -e 's#@PROBE_SPECIFIC_DATA@#PSACCTFileRepository="/usr/share/gratia/var/account/" \
+    PSACCTBackupFileRepository="/usr/share/gratia/var/backup/" \
+    PSACCTExceptionsRepository="/var/log/gratia/exceptions/"#' $PROBE_DIR/ProbeConfig
+    elif [ $probe == "sge" ]; then
+      sed -i -e 's#@PROBE_SPECIFIC_DATA@#SGEAccountingFile=""#' $PROBE_DIR/ProbeConfig
+    elif [ $probe == "glexec" ]; then
+      sed -i -e 's#@PROBE_SPECIFIC_DATA@#gLExecMonitorLog="/var/log/glexec/glexec_monitor.log"#' $PROBE_DIR/ProbeConfig
+    elif [ $probe == "metric" ]; then
+      sed -i -e 's#@PROBE_SPECIFIC_DATA@#metricMonitorLog="/var/log/metric/metric_monitor.log"#' $PROBE_DIR/ProbeConfig
+    elif [ $probe == "dCache-transfer" ]; then
+      sed -i -e 's#@PROBE_SPECIFIC_DATA@#Summarize="0" \
+    UpdateFrequency="120" \
+    DBHostName="localhost" \
+    DBLoginName="srmdcache" \
+    DBPassword="srmdcache" \
+    StopFileName="stopGratiaFeed" \
+    DCacheServerHost="BILLING_HOST" \
+    EmailServerHost="localhost" \
+    EmailFromAddress="dCacheProbe@localhost" \
+    EmailToList="" \
+    AggrLogLevel="warn" \
+    OnlySendInterSiteTransfers="true" \
+    MaxBillingHistoryDays="31" \
+    DBName="billing"#' $PROBE_DIR/ProbeConfig
+    elif [ $probe == "gridftp-transfer" ]; then
+      sed -i -e 's#@PROBE_SPECIFIC_DATA@#GridftpLogDir="/var/log/"#' $PROBE_DIR/ProbeConfig
+    elif [ $probe == "dCache-storage" ]; then
+      sed -i -e 's#@PROBE_SPECIFIC_DATA@#TitleDCacheStorage="dCache-storage-specific attributes" \
+    InfoProviderUrl="http://DCACHE_HOST:2288/info" \
+    ReportPoolUsage="0"#' $PROBE_DIR/ProbeConfig
+    else
+      sed -i -e 's#@PROBE_SPECIFIC_DATA@##' $PROBE_DIR/ProbeConfig
+    fi
+
   done
   rm $RPM_BUILD_ROOT%{_sysconfdir}/gratia/common/ProbeConfig
+  rm $RPM_BUILD_ROOT%{_datadir}/gratia/common/ProbeConfig
 
   # dCache-transfer init script
   install -d $RPM_BUILD_ROOT/%{_initrddir}
@@ -176,10 +237,32 @@ install -d $RPM_BUILD_ROOT/%{_sysconfdir}/gratia
   # gridftp-transfer unneeded file.
   rm -f "${RPM_BUILD_ROOT}%{_datadir}/gratia/gridftp-transfer/GridftpTransferProbe.sh"
 
+  # Move python scripts
   mv $RPM_BUILD_ROOT%{_datadir}/gratia/condor-events/watchCondorEvents.py \
      $RPM_BUILD_ROOT%{_datadir}/gratia/condor-events/watchCondorEvents
+  chmod +x $RPM_BUILD_ROOT%{_datadir}/gratia/condor-events/watchCondorEvents
+  mv $RPM_BUILD_ROOT%{_datadir}/gratia/common/GetProbeConfigAttribute.py \
+     $RPM_BUILD_ROOT%{_datadir}/gratia/common/GetProbeConfigAttribute
+  chmod +x $RPM_BUILD_ROOT%{_datadir}/gratia/common/GetProbeConfigAttribute
+  mv $RPM_BUILD_ROOT%{_datadir}/gratia/common/DebugPrint.py \
+     $RPM_BUILD_ROOT%{_datadir}/gratia/common/DebugPrint
+  chmod +x $RPM_BUILD_ROOT%{_datadir}/gratia/common/DebugPrint
+  mv $RPM_BUILD_ROOT%{_datadir}/gratia/gridftp-transfer/GridftpTransferProbeDriver.py \
+     $RPM_BUILD_ROOT%{_datadir}/gratia/gridftp-transfer/GridftpTransferProbeDriver
+  chmod +x $RPM_BUILD_ROOT%{_datadir}/gratia/gridftp-transfer/GridftpTransferProbeDriver
+  mv $RPM_BUILD_ROOT%{_datadir}/gratia/glexec/glexec_meter.py \
+     $RPM_BUILD_ROOT%{_datadir}/gratia/glexec/glexec_meter
+  chmod +x $RPM_BUILD_ROOT%{_datadir}/gratia/glexec/glexec_meter
+  mv $RPM_BUILD_ROOT%{_datadir}/gratia/sge/sge_meter.py \
+     $RPM_BUILD_ROOT%{_datadir}/gratia/sge/sge_meter
+  chmod +x $RPM_BUILD_ROOT%{_datadir}/gratia/sge/sge_meter
+  mv $RPM_BUILD_ROOT%{_datadir}/gratia/dCache-storage/dCache_storage_probe.py \
+     $RPM_BUILD_ROOT%{_datadir}/gratia/dCache-storage/dCache_storage_probe
+  chmod +x $RPM_BUILD_ROOT%{_datadir}/gratia/dCache-storage/dCache_storage_probe
+
   mv $RPM_BUILD_ROOT%{_datadir}/gratia/hadoop-storage/storage.cfg \
      $RPM_BUILD_ROOT%{_sysconfdir}/gratia/hadoop-storage/storage.cfg
+  rm -rf $RPM_BUILD_ROOT%{_datadir}/gratia/gridftp-transfer/netlogger
 
   # New cron files
   mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/cron.d
@@ -199,10 +282,14 @@ install -d $RPM_BUILD_ROOT/%{_sysconfdir}/gratia
   mkdir -p $RPM_BUILD_ROOT/%{_datadir}/gratia/pbs-lsf/
   ln -s %{_sysconfdir}/gratia/pbs-lsf/ProbeConfig $RPM_BUILD_ROOT/%{_datadir}/gratia/pbs-lsf/ProbeConfig
 
+  mv $RPM_BUILD_ROOT%{_datadir}/gratia/pbs-lsf/pbs-lsf.py \
+     $RPM_BUILD_ROOT%{_datadir}/gratia/pbs-lsf/pbs-lsf
+  chmod +x $RPM_BUILD_ROOT%{_datadir}/gratia/pbs-lsf/pbs-lsf
+
   cd $RPM_BUILD_ROOT%{_datadir}/gratia/pbs-lsf
   cd - >/dev/null
 
-  # Install urCollector software
+  # Install urCollector softwarepbs-lsf/pbs-lsf
   cd pbs-lsf/urCollector-src
   cp -p urCreator urCollector.pl \
   "$RPM_BUILD_ROOT%{_datadir}/gratia/pbs-lsf"
@@ -212,8 +299,6 @@ install -d $RPM_BUILD_ROOT/%{_sysconfdir}/gratia
   "$RPM_BUILD_ROOT%{_datadir}/gratia/pbs-lsf/urCollector.conf"
   cp -p urCollector.conf-template \
   "$RPM_BUILD_ROOT%{_datadir}/gratia/pbs-lsf/urCollector.conf-template"
-  echo "%{pbs_lsf_template_marker}" >> \
-       "$RPM_BUILD_ROOT%{_datadir}/gratia/pbs-lsf/urCollector.conf"
   mkdir -p "$RPM_BUILD_ROOT%{_datadir}/gratia/pbs-lsf/urCollector"
   cp -p urCollector/Common.pm \
   "$RPM_BUILD_ROOT%{_datadir}/gratia/pbs-lsf/urCollector"
@@ -254,7 +339,8 @@ install -d $RPM_BUILD_ROOT%{python_sitelib}/gratia
 # For each project in /usr/share/gratia/...
 for dir in `ls $RPM_BUILD_ROOT%{_datadir}/gratia`; do
     project_initial=$RPM_BUILD_ROOT%{_datadir}/gratia/$dir
-    project_sitelib=$RPM_BUILD_ROOT%{python_sitelib}/gratia/$dir
+    python_dir=`echo $dir | tr '-' '_'`
+    project_sitelib=$RPM_BUILD_ROOT%{python_sitelib}/gratia/$python_dir
 
     # Put the python files in site-packages/gratia
     install -d $project_sitelib
@@ -266,7 +352,7 @@ for dir in `ls $RPM_BUILD_ROOT%{_datadir}/gratia`; do
 done
 
 # Some of the probes dont have python packages
-rm -rf $RPM_BUILD_ROOT%{python_sitelib}/gratia/{hadoop-storage,xrootd-transfer,xrootd-storage,condor,condor-events}
+rm -rf $RPM_BUILD_ROOT%{python_sitelib}/gratia/{hadoop_storage,xrootd_transfer,xrootd_storage,condor,condor_events,pbs_lsf,sge}
 
 %ifarch noarch
 touch $RPM_BUILD_ROOT%{python_sitelib}/gratia/__init__.py
@@ -281,12 +367,12 @@ install -d $RPM_BUILD_ROOT/%{_localstatedir}/log/gratia
 
 # Remove the test stuff
 rm -rf $RPM_BUILD_ROOT%{_datadir}/gratia/condor/test
-rm -f $RPM_BUILD_ROOT%{_datadir}/gratia/condor/condor_meter.pl.rej
 rm -rf $RPM_BUILD_ROOT%{_datadir}/gratia/sge/test
 rm -rf $RPM_BUILD_ROOT%{_datadir}/gratia/common/test
 rm -rf $RPM_BUILD_ROOT%{_datadir}/gratia/pbs-lsf/test
 
 # Remove remaining cruft
+rm -f $RPM_BUILD_ROOT%{_datadir}/gratia/condor/condor_meter.pl.rej
 rm  -f $RPM_BUILD_ROOT%{_datadir}/gratia/common/gratia.repo
 rm -rf $RPM_BUILD_ROOT%{_sysconfdir}/gratia/common
 rm -rf $RPM_BUILD_ROOT%{_datadir}/gratia/condor/gram_mods
@@ -322,10 +408,10 @@ This product includes software developed by The EU EGEE Project
 %doc %{_datadir}/gratia/pbs-lsf/urCollector.conf-template
 %doc %{_datadir}/gratia/pbs-lsf/README
 %dir %{_datadir}/gratia/pbs-lsf
-%{python_sitelib}/gratia/pbs-lsf
 %{_datadir}/gratia/pbs-lsf/ProbeConfig
 %{_datadir}/gratia/pbs-lsf/pbs-lsf_meter.cron.sh
 %{_datadir}/gratia/pbs-lsf/pbs-lsf_meter.pl
+%{_datadir}/gratia/pbs-lsf/pbs-lsf
 %{_datadir}/gratia/pbs-lsf/urCreator
 %{_datadir}/gratia/pbs-lsf/urCollector.pl
 %{_datadir}/gratia/pbs-lsf/urCollector/Common.pm
@@ -333,37 +419,6 @@ This product includes software developed by The EU EGEE Project
 %config(noreplace) %{_datadir}/gratia/pbs-lsf/urCollector.conf
 %config(noreplace) %{_sysconfdir}/gratia/pbs-lsf/ProbeConfig
 %config(noreplace) %{_sysconfdir}/cron.d/gratia-probe-pbs-lsf.cron
-
-%post pbs-lsf
-# /usr -> "${RPM_INSTALL_PREFIX0}"
-# %{default_prefix} -> "${RPM_INSTALL_PREFIX1}"
-# /etc -> "${RPM_INSTALL_PREFIX2}",
-
-# Configure urCollector.conf
-cat <<EOF | while read config_file; do
-`%{__grep} -le '^%{pbs_lsf_template_marker}$' \
-"${RPM_INSTALL_PREFIX1}"/gratia/pbs-lsf/urCollector.conf{,.rpmnew} \
-2>/dev/null`
-EOF
-test -n "$config_file" || continue
-%{__perl} -wni.orig -e \
-'
-s&^\s*(URBox\s*=\s*).*$&${1}"%{_localstatedir}/lib/gratia/tmp/urCollector"&;
-s&^\s*(collectorLockFileName\s*=\s*).*$&${1}"%{_localstatedir}/lib/gratia/lock/urCollector.lock"&;
-s&^\s*(collectorLogFileName\s*=\s*).*$&${1}"%{_localstatedir}/lib/gratia/logs/urCollector.log"&;
-s&^\s*(collectorBufferFileName\s*=\s*).*$&${1}"%{_localstatedir}/lib/gratia/tmp/urCollectorBuffer"&;
-s&^\s*(jobPerTimeInterval\s*=\s*).*$&${1}"1000"&;
-s&^\s*(timeInterval\s*=\s*).*$&${1}"0"&;
-m&%{pbs_lsf_template_marker}& or print;
-' \
-"$config_file" >/dev/null 2>&1
-done
-
-%global osg_collector %{default_osg_collector}
-%global fnal_collector %{default_fnal_collector}
-%global collector_port %{default_collector_port}
-%configure_probeconfig_pre -d pbs-lsf -m pbs-lsf
-%configure_probeconfig_post
 
 %else
 
@@ -386,7 +441,8 @@ Common files and examples for Gratia OSG accounting system probes.
 %{python_sitelib}/gratia/common
 %{python_sitelib}/Gratia.py*
 %dir %{default_prefix}/gratia/common
-%{default_prefix}/gratia/common/ProbeConfig
+%{default_prefix}/gratia/common/DebugPrint
+%{default_prefix}/gratia/common/GetProbeConfigAttribute
 %{default_prefix}/gratia/common/ProbeConfigTemplate
 %{perl_vendorlib}/Globus/GRAM/JobManagerGratia.pm
 
@@ -421,21 +477,8 @@ The psacct probe for the Gratia OSG accounting system.
 # %{default_prefix} -> "${RPM_INSTALL_PREFIX1}"
 # /etc -> "${RPM_INSTALL_PREFIX2}"
 
-%global fnal_collector gratia-fermi-psacct.fnal.gov
-%global osg_collector %{fnal_collector}
-%global collector_port %{default_collector_port}
-%configure_probeconfig_pre -d psacct -m psacct ${RPM_INSTALL_PREFIX1}/probe/psacct/facct-catchup ${RPM_INSTALL_PREFIX1}/probe/psacct/facct-turnoff.sh ${RPM_INSTALL_PREFIX1}/probe/psacct/psacct_probe.cron.sh ${RPM_INSTALL_PREFIX1}/probe/psacct/gratia-psacct ${RPM_INSTALL_PREFIX2}/rc.d/init.d/gratia-psacct
-m&^/>& and print <<EOF;
-    PSACCTFileRepository="$ENV{RPM_INSTALL_PREFIX1}/var/account/"
-    PSACCTBackupFileRepository="$ENV{RPM_INSTALL_PREFIX1}/var/backup/"
-    PSACCTExceptionsRepository="$ENV{RPM_INSTALL_PREFIX1}/logs/exceptions/"
-EOF
-m&^\s*VDTSetupFile\s*=& and next;
-%configure_probeconfig_post -g Local
-
 # Configure boot-time activation of accounting.
 /sbin/chkconfig --add gratia-psacct
-/sbin/chkconfig --level 35 gratia-psacct on
 
 # Deal with legacy Fermilab psacct configuration:
 if grep -e 'fiscal/monacct\.log' >/dev/null 2>&1; then
@@ -449,6 +492,8 @@ if grep -e 'fiscal/monacct\.log' >/dev/null 2>&1; then
 fi
 
 rm -f "$tmpfile"
+
+%customize_probeconfig -d psacct
 
 %package condor
 Summary: A Condor probe
@@ -471,12 +516,7 @@ The Condor probe for the Gratia OSG accounting system.
 %config(noreplace) %{_sysconfdir}/cron.d/gratia-probe-condor.cron
 
 %post condor
-
-%global osg_collector %{default_osg_collector}
-%global fnal_collector %{default_fnal_collector}
-%global collector_port %{default_collector_port}
-%configure_probeconfig_pre -d condor -m condor
-%configure_probeconfig_post
+%customize_probeconfig -d condor
 
 %package sge
 Summary: An SGE probe
@@ -494,23 +534,13 @@ The SGE probe for the Gratia OSG accounting system.
 %doc %{default_prefix}/gratia/sge/README
 %{default_prefix}/gratia/sge/ProbeConfig
 %{default_prefix}/gratia/sge/sge_meter.cron.sh
+%{default_prefix}/gratia/sge/sge_meter
 %dir %{default_prefix}/gratia/sge
-%{python_sitelib}/gratia/sge
 %config(noreplace) %{_sysconfdir}/gratia/sge/ProbeConfig
 %config(noreplace) %{_sysconfdir}/cron.d/gratia-probe-sge.cron
 
 %post sge
-# /usr -> "${RPM_INSTALL_PREFIX0}"
-# %{default_prefix} -> "${RPM_INSTALL_PREFIX1}"
-
-%global osg_collector %{default_osg_collector}
-%global fnal_collector %{default_fnal_collector}
-%global collector_port %{default_collector_port}
-%configure_probeconfig_pre -d sge -m sge
-m&^/>& and print <<EOF;
-    SGEAccountingFile=""
-EOF
-%configure_probeconfig_post
+%customize_probeconfig -d sge
 
 %package glexec
 Summary: A gLExec probe
@@ -528,24 +558,13 @@ The gLExec probe for the Gratia OSG accounting system.
 %{default_prefix}/gratia/glexec/ProbeConfig
 %doc %{default_prefix}/gratia/glexec/README
 %{default_prefix}/gratia/glexec/glexec_meter.cron.sh
+%{default_prefix}/gratia/glexec/glexec_meter
 %{python_sitelib}/gratia/glexec
 %config(noreplace) %{_sysconfdir}/cron.d/gratia-probe-glexec.cron
 %config(noreplace) %{_sysconfdir}/gratia/glexec/ProbeConfig
 
 %post glexec
-# /usr -> "${RPM_INSTALL_PREFIX0}"
-# %{default_prefix} -> "${RPM_INSTALL_PREFIX1}"
-
-%global osg_collector %{default_osg_collector}
-%global fnal_collector %{default_fnal_collector}
-%global collector_port %{default_collector_port}
-%configure_probeconfig_pre -d glexec -m glexec
-s&(CertificateFile\s*=\s*)\"[^\"]*\"&${1}"/etc/grid-security/hostproxy.pem"&;
-s&(KeyFile\s*=\s*)\"[^\"]*\"&${1}"/etc/grid-security/hostproxykey.pem"&;
-m&^/>& and print <<EOF;
-    gLExecMonitorLog="/var/log/glexec/glexec_monitor.log"
-EOF
-%configure_probeconfig_post
+%customize_probeconfig -d glexec
 
 %package metric
 Summary: A probe for OSG metrics
@@ -564,160 +583,65 @@ The metric probe for the Gratia OSG accounting system.
 %config(noreplace) %{_sysconfdir}/gratia/metric/ProbeConfig
 
 %post metric
-# /usr -> "${RPM_INSTALL_PREFIX0}"
-# %{default_prefix} -> "${RPM_INSTALL_PREFIX1}"
+%customize_probeconfig -d metric
 
-%global osg_collector %{metric_collector}
-%global fnal_collector %{metric_collector}
-%global collector_port %{metric_port}
-%configure_probeconfig_pre -d metric -m metric
-s&(CertificateFile\s*=\s*)\"[^\"]*\"&${1}"${RPM_INSTALL_PREFIX2}/grid-security/hostproxy.pem"&;
-s&(KeyFile\s*=\s*)\"[^\"]*\"&${1}"${RPM_INSTALL_PREFIX2}/grid-security/hostproxykey.pem"&;
-m&^/>& and print <<EOF;
-    metricMonitorLog="/var/log/metric/metric_monitor.log"
-EOF
-%configure_probeconfig_post
-
-# End of metric post
-# End of metric section
-
-%if %{?no_dcache:0}%{!?no_dcache:1}
-%package dCache-transfer
+%package dcache-transfer
 Summary: Gratia OSG accounting system probe for dCache billing.
 Group: Application/System
 Requires: %{name}-common >= %{version}-%{release}
 Requires:  python-psycopg2
-Requires: python-psycopg2
 License: See LICENSE.
 
-%description dCache-transfer
+Obsoletes: dCache-transfer < 1.07.02e-15
+Provides: dCache-transfer = %{version}-%{release}
+
+%description dcache-transfer
 Gratia OSG accounting system probe for dCache transfers.
 Contributed by Greg Sharp and the dCache project.
 
-%files dCache-transfer
+%files dcache-transfer
 %defattr(-,root,root,-)
 %{_initrddir}/gratia-dcache-transfer
 %doc %{default_prefix}/gratia/dCache-transfer/README-experts-only.txt
 %doc %{default_prefix}/gratia/dCache-transfer/README
 %{default_prefix}/gratia/dCache-transfer/ProbeConfig
-%{python_sitelib}/gratia/dCache-transfer
+%{python_sitelib}/gratia/dCache_transfer
 %dir %{default_prefix}/gratia/dCache-transfer
 %config(noreplace) %{_sysconfdir}/gratia/dCache-transfer/ProbeConfig
 
-%post dCache-transfer
-# /usr -> "${RPM_INSTALL_PREFIX0}"
-# %{default_prefix} -> "${RPM_INSTALL_PREFIX1}"
-# /etc -> "${RPM_INSTALL_PREFIX2}"
-
-%global osg_collector gratia-osg-transfer.opensciencegrid.org
-%global fnal_collector gratia-fermi-transfer.fnal.gov
-
-%global collector_port %{default_collector_port}
-# Configure ProbeConfig
-%configure_probeconfig_pre -d dCache-transfer -m dcache-transfer -M 600
-(m&\bVDTSetupFile\b& or m&\bUserVOMapFile\b&) and next; # Skip, not needed.
-m&^/>& and print <<EOF;
-    UserVOMapFile="%{vo_map_file}"
-    Summarize="0"
-    UpdateFrequency="120"
-    DBHostName="localhost"
-    DBLoginName="srmdcache"
-    DBPassword="srmdcache"
-    StopFileName="stopGratiaFeed"
-    DCacheServerHost="BILLING_HOST"
-    EmailServerHost="localhost"
-    EmailFromAddress="dCacheProbe@localhost"
-    EmailToList=""
-    AggrLogLevel="warn"
-    OnlySendInterSiteTransfers="true"
-    MaxBillingHistoryDays="31"
-    DBName="billing"
-EOF
-%configure_probeconfig_post
-
-# Configure init script
-perl -wani.bak -e 'if (s&^(PROBE_DIR=).*$&$1'"${RPM_INSTALL_PREFIX1}"'/gratia/dCache-transfer&) {
-  print;
-  print <<'"'"'EOF'"'"';
-arch_spec_dir=`echo "${PROBE_DIR}/../lib."*`
-if test -n "$PYTHONPATH" ; then
-  if echo "$PYTHONPATH" | grep -e '"'"':$'"'"' >/dev/null 2>&1; then
-    PYTHONPATH="${PYTHONPATH}${PROBE_DIR}/../common:${arch_spec_dir}:"
-  else
-    PYTHONPATH="${PYTHONPATH}:${PROBE_DIR}/../common:${arch_spec_dir}"
-  fi
-else
-  PYTHONPATH="${PROBE_DIR}/../common:${arch_spec_dir}"
-fi
-export PYTHONPATH
-EOF
-  next;
-}
-s&gratia-d?cache-probe&gratia-dcache-transfer-probe&g;
-print;
-' "${RPM_INSTALL_PREFIX2}/rc.d/init.d/gratia-dcache-transfer" && \
-%{__rm} -f "${RPM_INSTALL_PREFIX2}/rc.d/init.d/gratia-dcache-transfer.bak"
-
-# Activate init script
+%post dcache-transfer
 /sbin/chkconfig --add gratia-dcache-transfer
+%customize_probeconfig -d dCache-transfer
 
-# Activate it
-#service gratia-dcache-transfer start
-echo "
-
-Execute:
-
-service gratia-dcache-transfer start
-
-to start the service." 1>&2
-
-# End of dCache-transfer post
-# End of dCache-transfer section
-
-%package dCache-storage
+%package dcache-storage
 Summary: Gratia OSG accounting system probe for dCache storage.
 Group: Application/System
 Requires: %{name}-common >= %{version}-%{release}
 Requires: %{name}-services
-Requires: python-psycopg2
 Requires: xalan-j2
 License: See LICENSE.
 
-%description dCache-storage
+Obsoletes: dCache-storage < 1.07.02e-15
+Provides: dCache-storage = %{version}-%{release}
+
+%description dcache-storage
 Gratia OSG accounting system probe for available space in dCache.
 Contributed by Andrei Baranovksi of the OSG Storage team. 
 
-%files dCache-storage
+%files dcache-storage
 %defattr(-,root,root,-)
 %doc %{default_prefix}/gratia/dCache-storage/README.txt
-%{python_sitelib}/gratia/dCache-storage
+%{python_sitelib}/gratia/dCache_storage
 %dir %{default_prefix}/gratia/dCache-storage
 %{default_prefix}/gratia/dCache-storage/ProbeConfig
 %{default_prefix}/gratia/dCache-storage/create_se_record.xsl
 %{default_prefix}/gratia/dCache-storage/dCache-storage_meter.cron.sh
+%{default_prefix}/gratia/dCache-storage/dCache_storage_probe
 %config(noreplace) %{_sysconfdir}/gratia/dCache-storage/ProbeConfig
 %config(noreplace) %{_sysconfdir}/cron.d/gratia-probe-dcache-storage.cron
 
-%post dCache-storage
-# /usr -> "${RPM_INSTALL_PREFIX0}"
-# %{default_prefix} -> "${RPM_INSTALL_PREFIX1}"
-
-%global osg_collector gratia-osg-transfer.opensciencegrid.org
-%global fnal_collector gratia-fermi-transfer.fnal.gov
-
-%global collector_port %{default_collector_port}
-%configure_probeconfig_pre -d dCache-storage -m dcache-storage -M 600
-(m&\bVDTSetupFile\b& or m&\bUserVOMapFile\b&) and next; # Skip, not needed
-m&^/>& and print <<EOF;
-    TitleDCacheStorage="dCache-storage-specific attributes"
-    InfoProviderUrl="http://DCACHE_HOST:2288/info"
-    ReportPoolUsage="0"
-EOF
-%configure_probeconfig_post
-
-# End of dCache-storage section
-
-%endif # dCache
+%post dcache-storage
+%customize_probeconfig -d dCache-storage
 
 %package gridftp-transfer
 Summary: Gratia OSG accounting system probe for gridftp transfers.
@@ -731,30 +655,16 @@ Contributed by Andrei Baranovski of the OSG storage team.
 
 %files gridftp-transfer
 %defattr(-,root,root,-)
-%{python_sitelib}/gratia/gridftp-transfer
+%{python_sitelib}/gratia/gridftp_transfer
 %{default_prefix}/gratia/gridftp-transfer/gridftp-transfer_meter.cron.sh
 %dir %{default_prefix}/gratia/gridftp-transfer
 %{default_prefix}/gratia/gridftp-transfer/ProbeConfig
+%{default_prefix}/gratia/gridftp-transfer/GridftpTransferProbeDriver
 %config(noreplace) %{_sysconfdir}/gratia/gridftp-transfer/ProbeConfig
 %config(noreplace) %{_sysconfdir}/cron.d/gratia-probe-gridftp-transfer.cron
 
 %post gridftp-transfer
-# /usr -> "${RPM_INSTALL_PREFIX0}"
-# %{default_prefix} -> "${RPM_INSTALL_PREFIX1}"
-
-%global osg_collector gratia-osg-transfer.opensciencegrid.org
-%global fnal_collector gratia-fermi-transfer.fnal.gov
-
-%global collector_port %{default_collector_port}
-%configure_probeconfig_pre -d gridftp-transfer -m gridftp-transfer -M 600
-m&^/>& and print <<EOF;
-    GridftpLogDir="/var/log/"
-EOF
-%configure_probeconfig_post
-
-# End of gridftp-transfer post
-
-# End of gridftp-transfer section
+%customize_probeconfig -d gridftp-transfer
 
 %package services
 Summary: Gratia OSG accounting system probe API for services.
@@ -775,16 +685,7 @@ Contributed by University of Nebraska Lincoln.
 %config(noreplace) %{_sysconfdir}/gratia/services/ProbeConfig
 
 %post services
-# /usr -> "${RPM_INSTALL_PREFIX0}"
-# %{default_prefix} -> "${RPM_INSTALL_PREFIX1}"
-
-%global osg_collector %{default_osg_collector}
-%global fnal_collector %{default_fnal_collector}
-%global collector_port %{default_collector_port}
-%configure_probeconfig_pre -d services -m services -M 600
-%configure_probeconfig_post
-
-# End of services section
+%customize_probeconfig -d services
 
 %package hadoop-storage
 Summary: HDFS Storage Probe for Gratia OSG accounting system.
@@ -806,17 +707,7 @@ Contributed by University of Nebraska Lincoln.
 %config(noreplace) %{_sysconfdir}/cron.d/gratia-probe-hadoop-storage.cron
 
 %post hadoop-storage
-# /usr -> "${RPM_INSTALL_PREFIX0}"
-# %{default_prefix} -> "${RPM_INSTALL_PREFIX1}"
-
-%global osg_collector %{default_osg_collector}
-%global fnal_collector %{default_fnal_collector}
-%global collector_port %{default_collector_port}
-%global collector_port %{default_collector_port}
-%configure_probeconfig_pre -d hadoop-storage -m hadoop-storage -M 600
-%configure_probeconfig_post
-
-# End of hadoop-storage section
+%customize_probeconfig -d hadoop-storage
 
 %package condor-events
 Summary: Probe that emits a record for each event in the Condor system.
@@ -836,16 +727,7 @@ Contributed by University of Nebraska Lincoln.
 %config(noreplace) %{_sysconfdir}/cron.d/gratia-probe-condor-events.cron
 
 %post condor-events
-# /usr -> "${RPM_INSTALL_PREFIX0}"
-# %{default_prefix} -> "${RPM_INSTALL_PREFIX1}"
-
-%global osg_collector %{default_osg_collector}
-%global fnal_collector %{default_fnal_collector}
-%global collector_port %{default_collector_port}
-%configure_probeconfig_pre -d condor-events -m condor-events -M 600
-%configure_probeconfig_post
-
-# End of condor-events section
+%customize_probeconfig -d condor-events
 
 %package xrootd-transfer
 Summary: Probe that emits a record for each file transfer in Xrootd.
@@ -866,21 +748,8 @@ Contributed by University of Nebraska Lincoln.
 %config(noreplace) %{_sysconfdir}/gratia/xrootd-transfer/ProbeConfig
 
 %post xrootd-transfer
-# /usr -> "${RPM_INSTALL_PREFIX0}"
-# %{default_prefix} -> "${RPM_INSTALL_PREFIX1}"
+%customize_probeconfig -d xrootd-transfer
 
-%global osg_collector gratia-osg-transfer.opensciencegrid.org
-%global fnal_collector gratia-fermi-transfer.fnal.gov
-
-%global collector_port %{default_collector_port}
-%configure_probeconfig_pre -d xrootd-transfer -m xrootd-transfer -M 600
-%configure_probeconfig_post
-
-# End of xrootd-transfer post
-
-# End of xrootd-transfer section
-
-# Start of xrootd-storage section
 %package xrootd-storage
 Summary: Gratia probe to monitor Xrootd storage usage.
 Group: Application/System
@@ -897,22 +766,12 @@ Contributed as effort from OSG-Storage.
 %defattr(-,root,root,-)
 %{_initrddir}/gratia-xrootd-storage
 %{default_prefix}/gratia/xrootd-storage/xrd_storage_probe
-%{default_prefix}/gratia/xrootd-storage
-#%{default_prefix}/gratia/xrootd-storage/xrd_storage_gratia
+%{default_prefix}/gratia/xrootd-storage/ProbeConfig
+%dir %{default_prefix}/gratia/xrootd-storage
 %config(noreplace) %{_sysconfdir}/gratia/xrootd-storage/ProbeConfig
 
 %post xrootd-storage
-# /usr -> "${RPM_INSTALL_PREFIX0}"
-# %{default_prefix} -> "${RPM_INSTALL_PREFIX1}"
-
-%global osg_collector gratia-osg-transfer.opensciencegrid.org
-%global fnal_collector gratia-fermi-transfer.fnal.gov
-
-%global collector_port %{default_collector_port}
-%configure_probeconfig_pre -d xrootd-storage -m xrootd-storage -M 600
-%configure_probeconfig_post
-
-# End of xrootd-storage post
+%customize_probeconfig -d xrootd-storage
 
 %package bdii-status
 Summary: Probes that emits records of BDII status
@@ -932,26 +791,20 @@ Contributed by University of Nebraska Lincoln.
 %{default_prefix}/gratia/bdii-status/bdii_subcluster_record
 %{default_prefix}/gratia/bdii-status/bdii_cese_record
 %dir %{default_prefix}/gratia/bdii-status
-%{python_sitelib}/gratia/bdii-status
+%{python_sitelib}/gratia/bdii_status
 %config(noreplace) %{_sysconfdir}/gratia/bdii-status/ProbeConfig
 %config(noreplace) %{_sysconfdir}/cron.d/gratia-probe-bdii-cese.cron
 %config(noreplace) %{_sysconfdir}/cron.d/gratia-probe-bdii-subcluster.cron
 
 %post bdii-status
-# /usr -> "${RPM_INSTALL_PREFIX0}"
-# %{default_prefix} -> "${RPM_INSTALL_PREFIX1}"
-
-%global osg_collector %{default_osg_collector}
-%global fnal_collector %{default_fnal_collector}
-%global collector_port %{default_collector_port}
-%configure_probeconfig_pre -d bdii-status -m bdii-status -M 900
-%configure_probeconfig_post
-
-# End of bdii-status section
+%customize_probeconfig -d bdii-status
 
 %endif # noarch
 
 %changelog
+* Mon Aug 22 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.07.02e-0.15.pre
+- Move probe customization into install section.
+
 * Sun Aug 21 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.07.02e-0.14.pre
 Restructure spec file to simplify, and remove as many things from the post script as possible.
 
