@@ -2,7 +2,7 @@
 Name:      osg-wn-client
 Summary:   OSG Worker-Node Client
 Version:   3.0.0
-Release:   8
+Release:   9
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -38,10 +38,7 @@ Group: Grid
 Requires: %{name} = %{version}-%{release}
 Requires: glexec
 Requires: lcmaps-plugins-glexec-tracking
-Requires: lcmaps-plugins-basic
-Requires: lcmaps-plugins-gums
-Requires: lcmaps-plugins-saz
-Requires: lcmaps-plugins-verify-proxy
+Requires: gratia-probe-glexec
 
 %description glexec
 %{summary}
@@ -66,6 +63,11 @@ rm -rf $RPM_BUILD_ROOT
 %files glexec
 
 %changelog
+* Mon Aug 22 2011 Dave Dykstra <dwd@fnal.gov> - 3.0.0-9
+- Remove redundant Requires from osg-wn-client-glexec which were
+  already Required by lcmaps (which is Required by glexec).
+- Added gratia-probe-glexec as Required by osg-wn-client-glexec
+
 * Thu Aug 11 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 3.0.0-8
 - Require virtual dep grid-certificates, not actual package osg-ca-certs.
 
