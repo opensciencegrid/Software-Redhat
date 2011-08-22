@@ -1,7 +1,7 @@
 Summary: User identity switching tool based on grid credentials
 Name: glexec
 Version: 0.8.10
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: ASL 2.0
 Group: Applications/System
 URL: http://www.nikhef.nl/pub/projects/grid/gridwiki/index.php/Site_Access_Control
@@ -61,6 +61,9 @@ exit 0
 %attr(6755, root, root) /usr/sbin/glexec
 
 %changelog
+* Mon Aug 22 2011 Dave Dykstra <dwd@fnal.gov> - 0.8.10-4
+- Update the default settings in glexec.conf
+
 * Wed Aug 03 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 0.8.10-3
 - Create glexec user if it does not exist.  Make glexec.conf readable by glexec user.
 
