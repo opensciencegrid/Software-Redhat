@@ -1,7 +1,7 @@
 Summary: Grid (X.509) and VOMS credentials to local account mapping service
 Name: lcmaps
 Version: 1.4.28
-Release: 7%{?dist}
+Release: 8%{?dist}
 Vendor: Nikhef
 License: ASL 2.0
 Group: System Environment/Libraries
@@ -27,8 +27,8 @@ Requires: globus-gss-assist
 Requires: globus-gsi-credential
 Requires: lcmaps-plugins-basic
 Requires: lcmaps-plugins-glexec-tracking
-Requires: lcmaps-plugins-gums
-Requires: lcmaps-plugins-saz
+Requires: lcmaps-plugins-gums-client
+Requires: lcmaps-plugins-saz-client
 Requires: lcmaps-plugins-verify-proxy
 
 %description
@@ -151,6 +151,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/modules/*.so
 
 %changelog
+* Mon Aug 22 2011 Dave Dykstra <dwd@fnal.gov> - 1.4.28-8
+- Change names of required lcmaps-plugins-{gums,saz}-client packages
+
 * Sun Aug 07 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.4.28-7
 - Let glexec-tracking find the procd in PATH, instead of specifying the directory.
 
