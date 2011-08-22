@@ -1,3 +1,0 @@
-
-LCMAPS only allows a module to be executed once.  Hence, if we want both GUMS and SAZ invoked, we must create a dummy module thats really a link to lcmaps_scas_client.mod.  It's silly, but it works.
-

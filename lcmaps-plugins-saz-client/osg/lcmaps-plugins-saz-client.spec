@@ -1,8 +1,8 @@
 
 %define modname lcmaps_saz_client.mod
 
-Name:           lcmaps-plugins-saz
-Version:        0.0.1
+Name:           lcmaps-plugins-saz-client
+Version:        0.0.2
 Release:        1
 Summary:        SAZ support for lcmaps
 
@@ -11,7 +11,8 @@ License:        Apache 2.0
 
 BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
-Requires:       lcmaps-plugins-scas-client
+BuildRequires:  lcmaps-plugins-scas-client
+Obsoletes:	lcmaps-plugins-saz
 
 %description
 %{summary}
@@ -22,8 +23,7 @@ Requires:       lcmaps-plugins-scas-client
 rm -rf $RPM_BUILD_ROOT
 
 mkdir -p $RPM_BUILD_ROOT%{_libdir}/modules
-cd $RPM_BUILD_ROOT%{_libdir}/modules
-ln -s lcmaps_scas_client.mod %{modname}
+cp %{_libdir}/modules/lcmaps_scas_client.mod $RPM_BUILD_ROOT%{_libdir}/modules/%{modname}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -33,6 +33,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/modules/%{modname}
 
 %changelog
+* Mon Aug 22 2011 Dave Dykstra <dwd@fnal.gov> 0.0.2-1
+- Rename package to lcmaps-plugins-saz-client
+- Turn .mod file into a copy instead of a symlink, because lcmaps 
+    cannot load the same physical module twice
+
 * Fri Jul 15 2011 Brian Bockelman <bbockelm@cse.unl.edu> 0.0.1-1
 - Initial packaging.
 
