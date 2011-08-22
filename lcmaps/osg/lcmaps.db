@@ -1,9 +1,6 @@
 # Module definitions
 path = @LIBDIR@/modules
 
-good = "lcmaps_dummy_good.mod"
-bad  = "lcmaps_dummy_bad.mod"
-
 posix_enf = "lcmaps_posix_enf.mod"
             "-maxuid 1 -maxpgid 1 -maxsgid 32"
 
@@ -16,7 +13,7 @@ sazclient = "lcmaps_saz_client.mod"
             "--cert-owner root"
             "-authorization-only"
 # Change this URL to your SAZ server if you have one
-            "--endpoint https://fgdevsaz.fnal.gov:8443/saz/services/SAZXACMLAuthorizationServicePort"
+            "--endpoint https://yoursaz.yourdomain:8443/saz/services/SAZXACMLAuthorizationServicePort"
 # Uncomment this to set a different expected host certificate name for server
 #            "--override-expected-hostname overridesazname.yourdomain"
 
@@ -28,7 +25,7 @@ gumsclient = "lcmaps_gums_client.mod"
              "-key    /etc/grid-security/hostkey.pem"
              "--cert-owner root"
 # Change this URL to your GUMS server
-             "--endpoint https://red-auth.unl.edu:8443/gums/services/GUMSXACMLAuthorizationServicePort"
+             "--endpoint https://yourgums.yourdomain:8443/gums/services/GUMSXACMLAuthorizationServicePort"
 # Uncomment this to set a different expected host certificate name for server
 #            "--override-expected-hostname overridegumsname.yourdomain"
 
@@ -37,7 +34,7 @@ verifyproxy = "lcmaps_verify_proxy.mod"
           " -certdir /etc/grid-security/certificates"
 
 # Uncomment the first two lines in order to enable glexec tracking
-#tracking = "lcmaps_glexec_tracking.mod"
+#glexectracking = "lcmaps_glexec_tracking.mod"
 #           "-exec /usr/sbin/glexec_monitor"
 # Uncomment if your procd is located in a non-standard directory
 #           "-procddir /usr"
@@ -69,5 +66,6 @@ glexec:
 ##verifyproxy -> sazclient
 ##sazclient -> gumsclient
 verifyproxy -> gumsclient
-gumsclient -> tracking
+# When using glexec tracking, uncomment the next line
+#gumsclient -> glexectracking
 
