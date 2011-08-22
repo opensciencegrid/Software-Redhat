@@ -2,7 +2,7 @@
 Name:      osg-wn-client
 Summary:   OSG Worker-Node Client
 Version:   3.0.0
-Release:   9
+Release:   10
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -37,7 +37,6 @@ Summary: OSG meta-package for glexec
 Group: Grid
 Requires: %{name} = %{version}-%{release}
 Requires: glexec
-Requires: lcmaps-plugins-glexec-tracking
 Requires: gratia-probe-glexec
 
 %description glexec
@@ -63,6 +62,10 @@ rm -rf $RPM_BUILD_ROOT
 %files glexec
 
 %changelog
+* Mon Aug 22 2011 Dave Dykstra <dwd@fnal.gov> - 3.0.0-10
+- Remove lcmaps-plugins-glexec-tracking from osg-wn-client-glexec
+  Requires because it has been moved down to glexec instead
+
 * Mon Aug 22 2011 Dave Dykstra <dwd@fnal.gov> - 3.0.0-9
 - Remove redundant Requires from osg-wn-client-glexec which were
   already Required by lcmaps (which is Required by glexec).
