@@ -73,11 +73,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/rc.d/init.d/osg-update-certs-cron
 %{_sysconfdir}/cron.d/osg-update-certs
 
-%config(noreplace) %{_sysconfdir}/osg-update-certs.conf
+%config(noreplace) %{_sysconfdir}/osg/osg-update-certs.conf
 
 
 %changelog
-* Wed Aug 17 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 0.0.2-1
+* Mon Aug 22 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 0.0.2-1
 - Added cron job
 
 * Thu Aug 18 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 0.0.1-2
