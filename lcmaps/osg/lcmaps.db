@@ -41,6 +41,7 @@ tracking = "lcmaps_glexec_tracking.mod"
 # Uncomment if your procd is located in a non-standard directory
 #           "-procddir /usr"
 # Uncomment to write tracking info to glexec_monitor.log in the given dir
+#     otherwise the default is to use syslog
 #         "-logdir /var/log/glexec"
 # Uncomment to use local time in the file log (doesn't apply to syslog)
 #         "-datetime-local"
