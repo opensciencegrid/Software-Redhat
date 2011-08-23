@@ -1,6 +1,6 @@
 Summary:   Profiles your system for debugging
 Name:      osg-system-profiler
-Version:   0.0.3
+Version:   0.0.4
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -32,6 +32,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/%{name}
 
 %changelog
+* Tue Aug 23 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 0.0.4-1
+- Added profiler info about CA Certificate installation
+
 * Fri Jul 22 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 0.0.3-1
 - Renamed vdt-system-profiler to osg-system-profiler
 
