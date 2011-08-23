@@ -56,7 +56,7 @@
 
 Name: %{hadoop_name}-%{apache_branch}
 Version: %{cloudera_version}
-Release: 13
+Release: 14
 Summary: Hadoop is a software platform for processing vast amounts of data
 License: Apache License v2.0
 URL: http://hadoop.apache.org/core/
@@ -494,6 +494,9 @@ fi
 %endif
 
 %changelog
+* Fri Aug 23 2011 Jeff Dost <jdost@ucsd.edu> 0.20.2+737-14
+- Release bump because of missing noarch rpms on previous build.
+
 * Fri Jun 05 2011 Jeff Dost <jdost@ucsd.edu> 0.20.2+737-13
 - Add hadoop-config.sh to alternatives to prevent hadoop-daemon from failing
 - Add triggerpostun section to fix alternatives links that break when
