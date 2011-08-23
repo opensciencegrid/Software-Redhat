@@ -11,6 +11,7 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Requires:       condor
 Requires:       gratia-probe-condor
 
+BuildArch:      noarch
 
 Source0:        98_flock_hosts.conf
 Source1:        99_osg_flock.conf
@@ -29,10 +30,10 @@ Source2:        README
 rm -rf $RPM_BUILD_ROOT
 
 install -d $RPM_BUILD_ROOT/%{_sysconfdir}/condor/config.d
-install -m 644 98_flock_hosts.conf 99_osg_flock.conf $RPM_BUILD_ROOT/%{_sysconfdir}/condor/config.d
+install -m 644 %{SOURCE0} %{SOURCE1} $RPM_BUILD_ROOT/%{_sysconfdir}/condor/config.d
 
 install -d $RPM_BUILD_ROOT/%{_docdir}/osg-condor-flock
-install -m 644 README $RPM_BUILD_ROOT/%{_docdir}/osg-condor-flock
+install -m 644 %{SOURCE2} $RPM_BUILD_ROOT/%{_docdir}/osg-condor-flock
 
 %clean
 rm -rf $RPM_BUILD_ROOT
