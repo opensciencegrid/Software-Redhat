@@ -1,12 +1,12 @@
 Summary: Process tracking plugin for the LCMAPS authorization framework
 Name: lcmaps-plugins-glexec-tracking
-Version: 0.0.5
+Version: 0.0.6
 Release: 1%{?dist}
 License: EGEE Middleware and ASL and Fermitools
 Group: System Environment/Libraries
 # The tarball was created from CVS using the following commands:
-# cvs -d :pserver:anonymous@cdcvs.fnal.gov:/cvs/cd_read_only export -d lcmaps-plugins-glexec-tracking-0.0.5 -r lcmaps-plugins-glexec-tracking_R_0_0_5 privilege/lcmaps-plugins-glexec-tracking
-# tar zcf lcmaps-plugins-glexec-tracking/0.0.5/lcmaps-plugins-glexec-tracking-0.0.5.tar.gz lcmaps-plugins-glexec-tracking-0.0.5/
+# cvs -d :pserver:anonymous@cdcvs.fnal.gov:/cvs/cd_read_only export -d lcmaps-plugins-glexec-tracking-0.0.6 -r lcmaps-plugins-glexec-tracking_R_0_0_6 privilege/lcmaps-plugins-glexec-tracking
+# tar zcf lcmaps-plugins-glexec-tracking/0.0.6/lcmaps-plugins-glexec-tracking-0.0.6.tar.gz lcmaps-plugins-glexec-tracking-0.0.6/
 Source0: %{name}-%{version}.tar.gz
 Patch0: glexec_location.patch
 BuildRequires: lcmaps-interface
@@ -54,6 +54,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_sbindir}/glexec_monitor
 
 %changelog
+* Tue Aug 23 2011 Dave Dykstra <dwd@fnal.gov> 0.0.6-1
+- Upgrade to upstream 0.0.6 which basically makes procd_ctl able to
+  be in either bin or sbin whether or not -procddir is set
+
 * Mon Jul 18 2011 Dave Dykstra <dwd@fnal.gov> 0.0.5-1
 - Based on CVS with glexec-tracking name
 - Make -procdir option default to '/usr', and if default is taken
