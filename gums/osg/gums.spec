@@ -5,7 +5,7 @@
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.3.18.002
-Release: 2
+Release: 3
 License: Unknown
 Group: System Environment/Daemons
 BuildRequires: maven2
@@ -24,6 +24,9 @@ Source1: %{name}-client-%{version}.tar.gz
 
 Source2: gums-host-cron
 
+Source3: gums-client-cron.cron
+Source4: gums-client-cron.init
+
 Patch0: gums-build.patch
 
 %description
@@ -32,6 +35,9 @@ Patch0: gums-build.patch
 %package client
 Requires: %{name} = %{version}
 Requires: osg-vo-map
+Requires(post): chkconfig
+Requires(preun): chkconfig
+Requires(postun): chkconfig
 Group: System Environment/Daemons
 Summary: Clients for GUMS
 
@@ -87,11 +93,17 @@ cat > $RPM_BUILD_ROOT/var/lib/osg/supported-vo-list << EOF
 # Run gums-host-cron to generate a real one.
 EOF
 
+mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/{init.d,cron.d}
+mv $RPM_SOURCE_DIR/gums-client-cron.cron $RPM_BUILD_ROOT%{_sysconfdir}/cron.d/gums-client-cron
+mv $RPM_SOURCE_DIR/gums-client-cron.init $RPM_BUILD_ROOT%{_sysconfdir}/init.d/gums-client-cron
+chmod +x $RPM_BUILD_ROOT%{_sysconfdir}/init.d/gums-client-cron
+
 %files
 %defattr(-,root,root,-)
 %{_noarchlib}/%{dirname}
 
 %files client
+%defattr(-,root,root,-)
 %{_bindir}/*
 %config(noreplace) %{_sysconfdir}/%{dirname}/gums-client.properties
 %config(noreplace) %{_sysconfdir}/%{dirname}/gums-nagios.conf
@@ -99,8 +111,27 @@ EOF
 %config(noreplace) /var/lib/osg/user-vo-map
 %config(noreplace) /var/lib/osg/supported-vo-list
 %dir /var/log/%{dirname}
+%config(noreplace) %{_sysconfdir}/cron.d/gums-client-cron
+%{_sysconfdir}/init.d/gums-client-cron
+
+%post client
+/sbin/chkconfig --add gums-client-cron
+
+%preun client
+if [ $1 -eq 0 ] ; then
+    /sbin/service gums-client-cron stop >/dev/null 2>&1
+    /sbin/chkconfig --del gums-client-cron
+fi
+
+%postun client
+if [ "$1" -ge "1" ] ; then
+    /sbin/service gums-client-cron condrestart >/dev/null 2>&1 || :
+fi
 
 %changelog
+* Mon Aug 22 2011 Matyas Selmeci <matyas@cs.wisc.edu> 1.3.18.002-3
+- Added init script for enabling/disabling gums-host-cron.
+
 * Fri Jul 29 2011 Brian Bockelman <bbockelm@cse.unl.edu> 1.3.18.002-2
 - Rewrite gums-host-cron to work with the RPM layout.
 
