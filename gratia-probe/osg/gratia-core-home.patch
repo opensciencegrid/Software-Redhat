@@ -1,0 +1,10 @@
+--- common/GratiaCore.py	2011-08-22 09:47:45.000000000 -0500
++++ common/GratiaCore.py	2011-08-24 13:32:33.000000000 -0500
+@@ -1857,7 +1857,6 @@
+     DirListAdd(os.getenv('TEMP', r''))
+     DirListAdd(os.getenv('TEMPDIR', r''))
+     DirListAdd(os.getenv('TEMP_DIR', r''))
+-    DirListAdd(os.environ['HOME'])
+     DebugPrint(1, 'List of backup directories: ', __backupDirList__)
+ 
+ 
