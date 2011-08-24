@@ -1,6 +1,6 @@
 
 Name:           osg-build
-Version:        0.0.19
+Version:        0.0.20
 Release:        1%{?dist}
 Summary:        Build tools for the OSG
 
@@ -50,6 +50,10 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_docdir}/%{name}/sample-osg-build.ini
 
 %changelog
+* Wed Aug 24 2011 <matyas@cs.wisc.edu> - 0.0.20-1
+- Added ability to pass koji tag and koji target on the command line or in
+  the config file.
+
 * Mon Aug 15 2011 <matyas@cs.wisc.edu> - 0.0.19-1
 - Added 'prepare' task (Software-149).
 - Code cleanup. Logging, error handling tweaks.
