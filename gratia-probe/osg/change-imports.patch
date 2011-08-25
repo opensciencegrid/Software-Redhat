@@ -60,14 +60,15 @@ diff -ru gratia-probe-1.07.02e.back/dCache-storage/dCache-storage_meter.cron.sh 
 diff -ru gratia-probe-1.07.02e.back/dCache-storage/GratiaConnector.py gratia-probe-1.07.02e.orig/dCache-storage/GratiaConnector.py
 --- gratia-probe-1.07.02e.back/dCache-storage/GratiaConnector.py	2011-07-21 11:58:24.932880377 -0500
 +++ gratia-probe-1.07.02e.orig/dCache-storage/GratiaConnector.py	2011-07-21 14:28:54.792052462 -0500
-@@ -13,8 +13,8 @@
+@@ -13,8 +13,9 @@
  has_gratia = True
  try:
      import Gratia
 -    import StorageElement
 -    import StorageElementRecord
-+    import gratia.services.StorageElement
-+    import gratia.services.StorageElementRecord
++    from gratia.services.StorageElement import StorageElement
++    from gratia.services.StorageElementRecord import StorageElementRecord
++
  except:
      has_gratia = False
      Gratia = None
@@ -151,33 +152,37 @@ diff -ru gratia-probe-1.07.02e.back/services/ComputeElementRecord.py gratia-prob
  class ComputeElementRecord(GratiaCore.Record):
      "Base class for the Gratia ComputeElementRecord"
 diff -ru gratia-probe-1.07.02e.back/services/StorageElement.py gratia-probe-1.07.02e.orig/services/StorageElement.py
---- gratia-probe-1.07.02e.back/services/StorageElement.py	2011-07-21 11:58:24.937880517 -0500
-+++ gratia-probe-1.07.02e.orig/services/StorageElement.py	2011-07-21 14:31:20.346083178 -0500
-@@ -4,8 +4,8 @@
+--- gratia-probe-1.07.02e.back/services/StorageElement.py	2011-05-19 08:28:52.000000000 -0500
++++ gratia-probe-1.07.02e.orig/services/StorageElement.py	2011-08-25 17:47:16.000000000 -0500
+@@ -4,10 +4,9 @@
  
  import types
  
 -import GratiaCore
 -from GratiaCore import *
-+import gratia.common.GratiaCore
 +from gratia.common.GratiaCore import *
  
- class StorageElement(GratiaCore.Record):
+-class StorageElement(GratiaCore.Record):
++class StorageElement(Record):
      "Base class for the Gratia StorageElement"
+ 
+     def __init__(self):
 diff -ru gratia-probe-1.07.02e.back/services/StorageElementRecord.py gratia-probe-1.07.02e.orig/services/StorageElementRecord.py
---- gratia-probe-1.07.02e.back/services/StorageElementRecord.py	2011-07-21 11:58:24.937880517 -0500
-+++ gratia-probe-1.07.02e.orig/services/StorageElementRecord.py	2011-07-21 14:31:39.906098883 -0500
-@@ -4,8 +4,8 @@
+--- gratia-probe-1.07.02e.back/services/StorageElementRecord.py	2011-05-19 08:28:52.000000000 -0500
++++ gratia-probe-1.07.02e.orig/services/StorageElementRecord.py	2011-08-25 17:47:04.000000000 -0500
+@@ -4,10 +4,9 @@
  
  import types
  
 -import GratiaCore
 -from GratiaCore import *
-+import gratia.common.GratiaCore
 +from gratia.common.GratiaCore import *
  
- class StorageElementRecord(GratiaCore.Record):
+-class StorageElementRecord(GratiaCore.Record):
++class StorageElementRecord(Record):
      "Base class for the Gratia StorageElementRecord"
+ 
+     def __init__(self):
 diff -ru gratia-probe-1.07.02e.back/services/storageReport gratia-probe-1.07.02e.orig/services/storageReport
 --- gratia-probe-1.07.02e.back/services/storageReport	2011-07-21 11:58:24.936880762 -0500
 +++ gratia-probe-1.07.02e.orig/services/storageReport	2011-07-21 14:38:02.630911164 -0500
