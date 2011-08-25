@@ -1,6 +1,6 @@
 
 Name:      osg-ca-scripts
-Version:   0.0.2
+Version:   0.0.4
 Release:   1%{?dist}
 Summary:   CA Certificate helper scripts
 
@@ -77,7 +77,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Mon Aug 22 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 0.0.2-1
+* Mon Aug 22 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 0.0.4-1
+- Bug fixes
+
+# Mon Aug 22 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 0.0.2-1
 - Added cron job
 
 * Thu Aug 18 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 0.0.1-2
