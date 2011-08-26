@@ -1,6 +1,6 @@
 Name:           vo-client
 Version:        38
-Release:        8%{?dist}
+Release:        9%{?dist}
 Summary:        Contains vomses file for use with user authentication and edg-mkgridmap.conf file that contains configuration information for edg-mkgridmap.
 
 Group:          system environment/base
@@ -11,7 +11,7 @@ BuildArch:      noarch
 
 Requires:       grid-certificates
 
-Source0:        %{name}-%{version}-1.tar.gz
+Source0:        %{name}-%{version}-2.tar.gz
 
 # Steps to make tarball (correctly packaged):
 # Get GOC's tarball, vo-client-38.tar.gz
