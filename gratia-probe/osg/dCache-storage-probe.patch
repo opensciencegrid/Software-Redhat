@@ -157,4 +157,111 @@
 
 --- _build_results/BUILD/gratia-probe-1.07.02e/dCache-storage/create_se_record.xsl	2011-08-25 16:46:50.000000000 -0500
 +++ dCache-storage/create_se_record.xsl	2011-08-25 16:40:22.000000000 -0500
-
+@@ -20,7 +20,7 @@
+ <Result>
+ 
+  <setArray><array>
+- <StorageElement.StorageElement>
++ <gratia.services.StorageElement.StorageElement>
+        <UniqueID><xsl:value-of select="$uniqId"/></UniqueID>
+        <ParentID><xsl:value-of select="$parentId"/></ParentID>
+        <Name><xsl:value-of select="$SE"/></Name>
+@@ -30,9 +30,9 @@
+        <Version><xsl:value-of select="$version"/></Version>
+        <Timestamp type="numeric" ><xsl:value-of select="$now"/></Timestamp>
+        <Status>Production</Status>
+-    </StorageElement.StorageElement>
++    </gratia.services.StorageElement.StorageElement>
+ 
+-    <StorageElementRecord.StorageElementRecord>
++    <gratia.services.StorageElementRecord.StorageElementRecord>
+        <UniqueID><xsl:value-of select="$uniqId"/></UniqueID>
+        <MeasurementType>raw</MeasurementType>
+        <StorageType>disk</StorageType>
+@@ -40,7 +40,7 @@
+        <FreeSpace><xsl:value-of select="$sspace[ @name = 'free' ]"/></FreeSpace>
+        <UsedSpace><xsl:value-of select="$sspace[ @name = 'used' ]"/></UsedSpace>
+        <Timestamp type="numeric" ><xsl:value-of select="$now"/></Timestamp>
+-    </StorageElementRecord.StorageElementRecord>
++    </gratia.services.StorageElementRecord.StorageElementRecord>
+ 
+ <xsl:if test="not($nopools)">
+ <xsl:for-each select="dc:pools/dc:pool">
+@@ -56,7 +56,7 @@
+ 
+     <xsl:variable name="space" select="dc:space/dc:metric"/>
+ 
+-    <StorageElement.StorageElement>
++    <gratia.services.StorageElement.StorageElement>
+        <UniqueID><xsl:value-of select="$uniqId"/></UniqueID>
+        <ParentID><xsl:value-of select="$parentId"/></ParentID>
+        <Name><xsl:value-of select="@name"/></Name>
+@@ -66,9 +66,9 @@
+        <Version><xsl:value-of select="$version"/></Version>
+        <Timestamp type="numeric" ><xsl:value-of select="$now"/></Timestamp>
+        <Status><xsl:value-of select="$status"/></Status>
+-    </StorageElement.StorageElement>
++    </gratia.services.StorageElement.StorageElement>
+     <xsl:if test="$status = 'Production'">
+-      <StorageElementRecord.StorageElementRecord>
++      <gratia.services.StorageElementRecord.StorageElementRecord>
+        <UniqueID><xsl:value-of select="$uniqId"/></UniqueID>
+        <MeasurementType>raw</MeasurementType>
+        <StorageType>disk</StorageType>
+@@ -76,7 +76,7 @@
+        <FreeSpace><xsl:value-of select="$space[ @name = 'free' ]"/></FreeSpace>
+        <UsedSpace><xsl:value-of select="$space[ @name = 'used' ]"/></UsedSpace>
+        <Timestamp type="numeric" ><xsl:value-of select="$now"/></Timestamp>
+-      </StorageElementRecord.StorageElementRecord>
++      </gratia.services.StorageElementRecord.StorageElementRecord>
+     </xsl:if>
+ 
+ </xsl:for-each>
+@@ -88,7 +88,7 @@
+   <xsl:variable name="linkUniqId" select="concat($SE,':Area:',$name)"/>
+ 
+ 
+-    <StorageElement.StorageElement>
++    <gratia.services.StorageElement.StorageElement>
+        <UniqueID><xsl:value-of select="$linkUniqId"/></UniqueID>
+        <ParentID><xsl:value-of select="$parentId"/></ParentID>
+        <Name><xsl:value-of select="$name"/></Name>
+@@ -98,7 +98,7 @@
+        <Version><xsl:value-of select="$version"/></Version>
+        <Timestamp type="numeric"><xsl:value-of select="$now"/></Timestamp>
+        <Status>Production</Status>
+-    </StorageElement.StorageElement>
++    </gratia.services.StorageElement.StorageElement>
+ 
+   <xsl:variable name="linkId" select="@lgid"/>
+ 
+@@ -116,7 +116,7 @@
+ 
+          <xsl:variable name="uniqId" select="concat($SE,':Quota:',$spaceName)"/>
+ 
+-         <StorageElement.StorageElement>
++         <gratia.services.StorageElement.StorageElement>
+            <UniqueID><xsl:value-of select="$uniqId"/></UniqueID>
+            <ParentID><xsl:value-of select="$linkUniqId"/></ParentID>
+            <Name><xsl:value-of select="$spaceName"/></Name>
+@@ -126,9 +126,9 @@
+            <Version><xsl:value-of select="$version"/></Version>
+            <Timestamp type="numeric"><xsl:value-of select="$now"/></Timestamp>
+            <Status>Production</Status>
+-         </StorageElement.StorageElement>
++         </gratia.services.StorageElement.StorageElement>
+ 
+-         <StorageElementRecord.StorageElementRecord>
++         <gratia.services.StorageElementRecord.StorageElementRecord>
+            <UniqueID><xsl:value-of select="$uniqId"/></UniqueID>
+            <MeasurementType>logical</MeasurementType>
+            <StorageType>disk</StorageType>
+@@ -136,7 +136,7 @@
+            <FreeSpace><xsl:value-of select="$freeSpace"/></FreeSpace>
+            <UsedSpace><xsl:value-of select="$usedSpace"/></UsedSpace>
+            <Timestamp type="numeric" ><xsl:value-of select="$now"/></Timestamp>
+-         </StorageElementRecord.StorageElementRecord>
++         </gratia.services.StorageElementRecord.StorageElementRecord>
+ 
+      </xsl:if>
+   </xsl:for-each>
