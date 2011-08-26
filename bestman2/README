@@ -18,8 +18,9 @@ Source package is created by the following procedure:
 
 - svn checkout https://codeforge.lbl.gov/anonscm/bestman
 - pushd bestman
-- wget https://codeforge.lbl.gov/frs/download.php/316/bestman2-2.1.0-pre2.tar.gz
-- tar xvzf bestman2-2.1.0-pre2.tar.gz
+- wget https://codeforge.lbl.gov/frs/download.php/346/bestman2-2.1.2.tar.gz
+- tar xvzf bestman2-2.1.2.tar.gz
+- rm bestman2-2.1.2.tar.gz
 - popd
 - mv bestman bestman2
 - tar cvzf bestman2.tar.gz bestman2
