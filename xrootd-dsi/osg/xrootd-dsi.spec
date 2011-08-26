@@ -9,7 +9,7 @@ URL:            http://xrootd.org/
 Source:        xrootd-dsi.tar.gz
 
 BuildRoot:      %{_tmppath}/%{name}-root
-BuildRequires: globus-common-devel globus-gridftp-server-devel
+BuildRequires: globus-common-devel globus-gridftp-server-devel zlib-devel
 Requires: xrootd-client xrootd-libs 
 #Hold off on these for now
 #vdt-compat globus-base-data-server
