@@ -2,7 +2,7 @@ Name:               gratia-probe
 Summary:            Gratia OSG accounting system probes
 Group:              Applications/System
 Version:            1.07.02e
-Release:            0.16.pre
+Release:            0.17.pre
 License:            GPL
 Group:              Applications/System
 URL:                http://sourceforge.net/projects/gratia/
@@ -31,6 +31,7 @@ Patch13: sge-probe.patch
 Patch14: dCache-storage-probe.patch
 Patch15: dcache-transfer-main.patch
 Patch16: gratia-core-home.patch
+Patch17: gratia-probe-gridftp-transfer.patch
 
 %global ProbeConfig_template_marker <!-- This probe has not yet been configured -->
 
@@ -142,6 +143,7 @@ rm -f dCache-storage/test.xml
 %patch14 -p0
 %patch15 -p0
 %patch16 -p0
+%patch17 -p0
 
 %build
 %ifnarch noarch
@@ -654,6 +656,7 @@ Contributed by Andrei Baranovksi of the OSG Storage team.
 Summary: Gratia OSG accounting system probe for gridftp transfers.
 Group: Application/System
 Requires: %{name}-common >= %{version}-%{release}
+Requires: netlogger 
 License: See LICENSE.
 
 %description gridftp-transfer
@@ -809,6 +812,9 @@ Contributed by University of Nebraska Lincoln.
 %endif # noarch
 
 %changelog
+* Fri Aug 26 2011 Tanya Levshina <tlevshin.fnal.gov> - 1.07.02e-0.17.pre
+fixed imports and other things related to dcache-storage-probes
+
 * Wed Aug 24 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.07.02e-0.16.pre
 Fix GratiaCore so it does not attempt to write into $HOME.
 
