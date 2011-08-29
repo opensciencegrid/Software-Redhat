@@ -1,4 +1,4 @@
-Name:      gridftp-standalone
+Name:      osg-gridftp
 Summary:   Standalone OSG GridFTP w/lcmaps gums client
 Version:   3.0.0
 Release:   1
