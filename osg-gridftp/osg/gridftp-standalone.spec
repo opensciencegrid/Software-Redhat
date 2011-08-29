@@ -13,7 +13,8 @@ Requires: globus-gridftp-server
 Requires: globus-gridftp-server-progs
 Requires: vo-client
 Requires: grid-certificates
-Requires: lcas-lcmaps-gt4-interface-0.1.4-2.osg
+Requires: lcas-lcmaps-gt4-interface
+
 # This should also pull in lcas, lcmaps, and various plugins
 # (basic, proxy verify, posix, etc)
 
