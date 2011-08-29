@@ -1,0 +1,11 @@
+--- gridftp-transfer/GftpLogParserCorrelator.py.orig     2011-08-29 17:53:02.000000000 -0500
++++ gridftp-transfer/GftpLogParserCorrelator.py  2011-08-29 17:53:32.000000000 -0500
+@@ -149,7 +149,7 @@
+                     break 
+                 else:
+                     binId = self.binInt(l['ts'])
+-                    authEventPlaceHolder = self.findAndCreateTimeBin(binId,correlationBins,l['id'])
++                    authEventPlaceHolder = self.findAndCreateTimeBin(binId,correlationBins,l['PID'])
+                     if ( authEventPlaceHolder != None):
+                         authEventPlaceHolder.append(l)
+
