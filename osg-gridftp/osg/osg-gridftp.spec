@@ -7,13 +7,12 @@ Group:     Grid
 URL:       http://www.opensciencegrid.org
 BuildArch: noarch
 
-BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
+BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
 
-Requires: globus-gridftp-server
 Requires: globus-gridftp-server-progs
+Requires: lcas-lcmaps-gt4-interface
 Requires: vo-client
 Requires: grid-certificates
-Requires: lcas-lcmaps-gt4-interface
 
 # This should also pull in lcas, lcmaps, and various plugins
 # (basic, proxy verify, posix, etc)
