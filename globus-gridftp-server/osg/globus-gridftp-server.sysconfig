@@ -1,0 +1,22 @@
+
+# LCAS environment variables
+#Set log levels to 0 in productions for performance
+export LCAS_LOG_LEVEL=0
+export LCAS_DEBUG_LEVEL=0
+export LCAS_DB_FILE=/etc/lcas/lcas.db
+export LCAS_DIR=/etc/lcas
+export LCAS_MOD_HOME=/usr/lib64/modules
+
+
+# LCMAPS environment variables
+#Set log levels to 0 in productions for performance
+export LCMAPS_LOG_LEVEL=0
+export LCMAPS_DEBUG_LEVEL=0
+export LCMAPS_DB_FILE=/etc/lcmaps.db
+export LCMAPS_MOD_HOME=/usr/lib64/modules
+export LCMAPS_POLICY_NAME=osg_default
+
+
+#Uncomment and modify for firewalls
+#export GLOBUS_TCP_PORT_RANGE=min,max
+#export GLOBUS_TCP_SOURCE_RANGE=min,max

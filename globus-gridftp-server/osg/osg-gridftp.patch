@@ -1,6 +1,6 @@
 diff -ru globus_gridftp_server-5.4-orig/gridftp.conf.default.in globus_gridftp_server-5.4/gridftp.conf.default.in
---- globus_gridftp_server-5.4-orig/gridftp.conf.default.in	2011-08-29 19:46:30.000000000 -0500
-+++ globus_gridftp_server-5.4/gridftp.conf.default.in	2011-08-29 19:51:17.000000000 -0500
+--- globus_gridftp_server-5.4-orig/gridftp.conf.default.in	2011-08-30 15:54:05.000000000 -0500
++++ globus_gridftp_server-5.4/gridftp.conf.default.in	2011-08-30 15:56:32.000000000 -0500
 @@ -2,4 +2,7 @@
  # todo: add common parameters
  
@@ -10,24 +10,14 @@ diff -ru globus_gridftp_server-5.4-orig/gridftp.conf.default.in globus_gridftp_s
 +log_transfer /var/log/gridftp.log
  
 diff -ru globus_gridftp_server-5.4-orig/init/globus-gridftp-server.in globus_gridftp_server-5.4/init/globus-gridftp-server.in
---- globus_gridftp_server-5.4-orig/init/globus-gridftp-server.in	2011-08-29 19:46:30.000000000 -0500
-+++ globus_gridftp_server-5.4/init/globus-gridftp-server.in	2011-08-29 19:49:49.000000000 -0500
-@@ -8,6 +8,18 @@
- 
- @GLOBUS_SCRIPT_INITIALIZER@
- 
-+      export LCAS_LOG_LEVEL=0
-+      export LCAS_DEBUG_LEVEL=0
-+      export LCAS_DB_FILE=/etc/lcas/lcas.db
-+      export LCAS_DIR=/etc/lcas
-+      export LCAS_MOD_HOME=/usr/lib64/modules
-+      export LCMAPS_LOG_LEVEL=0
-+      export LCMAPS_DEBUG_LEVEL=0
-+      export LCMAPS_DB_FILE=/etc/lcmaps.db
-+      export LCMAPS_MOD_HOME=/usr/lib64/modules
-+      export LCMAPS_POLICY_NAME=osg_default
-+
-+
- rc=0
- conf=${sysconfdir}/gridftp.conf
+--- globus_gridftp_server-5.4-orig/init/globus-gridftp-server.in	2011-08-30 15:54:05.000000000 -0500
++++ globus_gridftp_server-5.4/init/globus-gridftp-server.in	2011-08-30 16:09:54.000000000 -0500
+@@ -13,6 +13,8 @@
  pidfile=${localstatedir}/run/globus-gridftp-server.pid
+ gridftpd=${sbindir}/globus-gridftp-server
+ 
++[ -e ${sysconfdir}/sysconfig/$prog ] && . ${sysconfdir}/sysconfig/$prog
++
+ start() {
+ 	echo -n "Starting globus-gridftp-server: "
+ 	if [ ! -f $conf ]; then

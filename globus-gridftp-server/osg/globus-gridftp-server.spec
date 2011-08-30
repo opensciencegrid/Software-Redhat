@@ -9,7 +9,7 @@
 Name:		globus-gridftp-server
 %global _name %(tr - _ <<< %{name})
 Version:	5.4
-Release:	3%{?dist}
+Release:	4%{?dist}
 Summary:	Globus Toolkit - Globus GridFTP Server
 
 Group:		System Environment/Libraries
@@ -21,9 +21,10 @@ URL:		http://www.globus.org/
 #		mv gt5.0.2-all-source-installer/source-trees/gridftp/server/src globus_gridftp_server-3.23
 #		cp -p gt5.0.2-all-source-installer/source-trees/core/source/GLOBUS_LICENSE globus_gridftp_server-3.23
 #		tar -zcf globus_gridftp_server-3.23.tar.gz globus_gridftp_server-3.23
-Source:		%{_name}-%{version}.tar.gz
+Source0:	%{_name}-%{version}.tar.gz
+Source1:	globus-gridftp-server.sysconfig
+Source2:	globus-gridftp-server.i386.sysconfig
 Patch0:		osg-gridftp.patch
-Patch1:		osg-gridftp.i386.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Requires:	globus-xio-gsi-driver%{?_isa} >= 1
@@ -84,11 +85,7 @@ Globus GridFTP Server Development Files
 %prep
 %setup -q -n %{_name}-%{version}
 
-%ifarch alpha ia64 ppc64 s390x sparc64 x86_64
 %patch0 -p1
-%else
-%patch1 -p1
-%endif
 
 %build
 # Remove files that should be replaced during bootstrap
@@ -115,6 +112,12 @@ rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
 
 GLOBUSPACKAGEDIR=$RPM_BUILD_ROOT%{_datadir}/globus/packages
+mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig
+%ifarch alpha ia64 ppc64 s390x sparc64 x86_64
+install -m 0755 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/%{name}
+%else
+install -m 0755 %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/%{name}
+%endif
 
 # Remove libtool archives (.la files)
 find $RPM_BUILD_ROOT%{_libdir} -name 'lib*.la' -exec rm -v '{}' \;
@@ -160,11 +163,18 @@ fi
 
 %files -f package-progs.filelist progs
 %defattr(-,root,root,-)
+%{_sysconfdir}/sysconfig/%{name}
 
 %files -f package-devel.filelist devel
 %defattr(-,root,root,-)
 
 %changelog
+* Tue Aug 30 2011 Doug Strain <doug.strain@fnal.gov> - 5.4-4
+- Updated to work on RHEL5
+- Updated to patch conf to use log file options
+- Updated to patch init script to source sysconfig
+- Included sysconfig with lcas/lcmaps variables
+
 * Sat Jul 17 2010 Mattias Ellert <mattias.ellert@fysast.uu.se> - 3.23-1
 - Update to Globus Toolkit 5.0.2
 
