@@ -1,7 +1,7 @@
 Summary: Grid (X.509) and VOMS credentials to local account mapping service
 Name: lcmaps
 Version: 1.4.28
-Release: 9%{?dist}
+Release: 10%{?dist}
 Vendor: Nikhef
 License: ASL 2.0
 Group: System Environment/Libraries
@@ -158,8 +158,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/modules/*.so
 
 %changelog
-* Tue Aug 30 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.4.28-9
-Make dlopened requirements explicit.
+* Tue Aug 30 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.4.28-10
+- Make dlopened requirements explicit.
+- Default path to /usr/lib64 always until we have a better solution from upstream
+
+* Mon Aug 29 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.4.28-9
+- Rebuild against Globus 5.2
 
 * Mon Aug 22 2011 Dave Dykstra <dwd@fnal.gov> - 1.4.28-8
 - Change names of required lcmaps-plugins-{gums,saz}-client packages

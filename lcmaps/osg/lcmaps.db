@@ -1,5 +1,5 @@
 # Module definitions
-path = @LIBDIR@/modules
+path = /usr/lib64/modules
 
 posix_enf = "lcmaps_posix_enf.mod"
             "-maxuid 1 -maxpgid 1 -maxsgid 32"
