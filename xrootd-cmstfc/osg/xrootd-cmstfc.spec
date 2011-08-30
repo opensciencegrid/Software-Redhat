@@ -1,7 +1,7 @@
 
 Name: xrootd-cmstfc
 Version: 1.4.3
-Release: 2
+Release: 3
 Summary: CMS TFC plugin for xrootd
 
 Group: System Environment/Daemons
@@ -12,8 +12,6 @@ BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildRequires: xrootd-libs-devel
 BuildRequires: xerces-c-devel
 BuildRequires: pcre-devel
-
-#Requires: /usr/bin/xrootd pcre xerces-c
 
 %description
 %{summary}
@@ -28,6 +26,8 @@ make
 %install
 rm -rf $RPM_BUILD_ROOT
 %makeinstall
+rm $RPM_BUILD_ROOT%{_libdir}/*.a
+rm $RPM_BUILD_ROOT%{_libdir}/*.la
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -38,6 +38,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/xrootd/XrdCmsTfc/XrdCmsTfc.hh
 
 %changelog
+* Mon Aug 29 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.4.3-3
+Remove static libs.
+
 * Mon Aug 29 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.4.3-2
 Rebuild for OSG Koji.
 
