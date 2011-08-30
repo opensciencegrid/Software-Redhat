@@ -1,6 +1,6 @@
 Name:		lcg-utils
 Version:	1.11.14
-Release:	5
+Release:	6
 Summary:	gLite file transfer clients
 
 Group:		Productivity/File utilities
@@ -49,6 +49,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/*
 
 %changelog
+* Mon Aug 29 2011 Matyas Selmeci <matyas@cs.wisc.edu> 1.11.14-6
+- Rebuild against Globus 5.2
+
 * Fri Jul 8 2011 Derek Weitzel <dweitzel@cse.unl.edu> 1.11.14-2
 - Make lcg-utils give the right version.
 
