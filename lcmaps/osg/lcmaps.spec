@@ -1,7 +1,7 @@
 Summary: Grid (X.509) and VOMS credentials to local account mapping service
 Name: lcmaps
 Version: 1.4.28
-Release: 8%{?dist}
+Release: 9%{?dist}
 Vendor: Nikhef
 License: ASL 2.0
 Group: System Environment/Libraries
@@ -25,10 +25,18 @@ Requires: globus-common
 Requires: globus-gssapi-gsi
 Requires: globus-gss-assist
 Requires: globus-gsi-credential
-Requires: lcmaps-plugins-basic
+
 Requires: lcmaps-plugins-gums-client
 Requires: lcmaps-plugins-saz-client
-Requires: lcmaps-plugins-verify-proxy
+%ifarch %{ix86}
+Requires: liblcmaps_posix_enf.so.0()(32bit)
+Requires: liblcmaps_scas_client.so.0()(32bit)
+Requires: liblcmaps_verify_proxy.so.0()(32bit)
+%else
+Requires: liblcmaps_posix_enf.so.0()(64bit)
+Requires: liblcmaps_scas_client.so.0()(64bit)
+Requires: liblcmaps_verify_proxy.so.0()(64bit)
+%endif
 
 %description
 The Local Centre MAPping Service (LCMAPS) is a security middleware
@@ -150,6 +158,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/modules/*.so
 
 %changelog
+* Tue Aug 30 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.4.28-9
+Make dlopened requirements explicit.
+
 * Mon Aug 22 2011 Dave Dykstra <dwd@fnal.gov> - 1.4.28-8
 - Change names of required lcmaps-plugins-{gums,saz}-client packages
 - Remove lcmaps-plugins-glexec-tracking as a requirement at this level,
