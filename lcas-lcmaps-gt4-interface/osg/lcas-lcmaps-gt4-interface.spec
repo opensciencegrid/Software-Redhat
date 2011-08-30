@@ -1,7 +1,7 @@
 Summary: Mapping interface between Globus Toolkit and LCAS/LCMAPS
 Name: lcas-lcmaps-gt4-interface
 Version: 0.1.4
-Release: 2%{?dist}
+Release: 3%{?dist}
 Vendor: Nikhef
 License: ASL 2.0
 Group: Applications/System
@@ -24,8 +24,13 @@ BuildRequires: lcmaps-devel%{?_isa}
 BuildRequires: openssl-devel%{?_isa}
 
 # explicit requires as these are dlopen'd
-Requires: lcas%{?_isa}
-Requires: lcmaps%{?_isa}
+%ifarch %{ix86}
+Requires: liblcas.so.0()(32bit)
+Requires: liblcmaps.so.0()(32bit)
+%else
+Requires: liblcas.so.0()(64bit)
+Requires: liblcmaps.so.0()(64bit)
+%endif
 
 %description
 
@@ -70,6 +75,9 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/grid-security/gsi-authz.conf
 
 %changelog
+* Tue Aug 30 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 0.1.4-3
+Explicit requires for dlopened libraries.
+
 * Thu Jul 21 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 0.1.4-2
 - Added default gsi-authz.conf
 
