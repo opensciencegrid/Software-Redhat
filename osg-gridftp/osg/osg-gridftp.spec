@@ -12,6 +12,8 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
 Requires: globus-gridftp-server-progs
 Requires: vo-client
 Requires: grid-certificates
+Requires: gratia-probe-gridftp-transfer
+Requires: gums-client
 
 %ifarch %{ix86}
 Requires: liblcas_lcmaps_gt4_mapping.so.0()(32bit)
