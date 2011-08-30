@@ -9,3 +9,14 @@
                      if ( authEventPlaceHolder != None):
                          authEventPlaceHolder.append(l)
 
+--- gridftp-transfer/GridftpToGratiaEventTransformer.py.orig     2011-08-30 10:50:39.000000000 -0500
++++ gridftp-transfer/GridftpToGratiaEventTransformer.py  2011-08-30 10:53:40.000000000 -0500
+@@ -81,7 +81,7 @@
+         # Gratia will make a best effort to map this to the VO name.
+ 
+         r.LocalUserId( localUserName )
+-        r.LocalJobId( ftpEvent['guid'] )
++        r.LocalJobId(netlogger.parsers.base.getGuid(ftpEvent["start"],ftpEvent["end"],localUserName,dstHost))
+ 
+         return r
+
