@@ -1,6 +1,6 @@
 Name:           osg-condor-flock
 Version:        1.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Condor configuration to flock to OSG Submitters
 
 Group:          applications/grid
@@ -10,6 +10,7 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Requires:       condor
 Requires:       gratia-probe-condor
+Requires:       grid-certificates
 
 BuildArch:      noarch
 
@@ -48,6 +49,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Aug 30 2011 Derek Weitzel <dweitzel@cse.unl.edu> - 1.0-2
+- Made changes to conf files after testing
+- Added grid-certificates requirement
+
 * Mon Aug 22 2011 Derek Weitzel <dweitzel@cse.unl.edu> - 1.0-1
 - Initial build
 
