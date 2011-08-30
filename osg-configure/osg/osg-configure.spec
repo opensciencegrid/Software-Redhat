@@ -1,5 +1,5 @@
 %global name osg-configure
-%global version 0.5.2
+%global version 0.5.3
 %global release 1%{?dist}
 
 Summary: Package for configure-osg and associated scripts
