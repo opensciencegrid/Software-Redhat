@@ -75,7 +75,6 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/grid-security/gsi-authz.conf
 
 %changelog
-<<<<<<< .mine
 * Tue Aug 30 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 0.1.4-4
 - Rebuilt against Globus 5.2
 
