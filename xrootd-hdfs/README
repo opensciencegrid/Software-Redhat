@@ -1,0 +1,6 @@
+
+A HDFS plugin for Xrootd.
+
+This package is maintained by CMS.  The spec file is included upstream;
+any changes you make here should also be placed in upstream SVN.
+
