@@ -1,7 +1,7 @@
 Name:      osg-ce
 Summary:   OSG Compute Element 
 Version:   3.0.0
-Release:   7
+Release:   8
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -31,7 +31,11 @@ Requires: osg-site-verify
 Requires: lcmaps-plugins-gums
 Requires: lcmaps-plugins-verify-proxy
 Requires: lcmaps-plugins-basic
-Requires: lcas-lcmaps-gt4-interface
+%ifarch %{ix86}
+Requires: liblcas_lcmaps_gt4_mapping.so.0()(32bit)
+%else
+Requires: liblcas_lcmaps_gt4_mapping.so.0()(64bit)
+%endif
 
 %description
 %{summary}
@@ -88,6 +92,9 @@ rm -rf $RPM_BUILD_ROOT
 %files sge
 
 %changelog
+* Tue Aug 30 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 3.0.0-8
+Fix requirements for lcas-lcmaps-gt4-interface.
+
 * Thu Aug 18 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 3.0.0-7
 - Update dependencies to point at new-style GRAM jobmanager names.
 
