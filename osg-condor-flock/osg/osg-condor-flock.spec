@@ -1,6 +1,6 @@
 Name:           osg-condor-flock
 Version:        1.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Condor configuration to flock to OSG Submitters
 
 Group:          applications/grid
@@ -49,6 +49,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Aug 30 2011 Derek Weitzel <dweitzel@cse.unl.edu> - 1.0-3
+- Changed DN for engage submit host
+
 * Tue Aug 30 2011 Derek Weitzel <dweitzel@cse.unl.edu> - 1.0-2
 - Made changes to conf files after testing
 - Added grid-certificates requirement
