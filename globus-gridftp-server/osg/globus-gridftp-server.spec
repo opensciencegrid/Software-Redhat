@@ -22,7 +22,8 @@ URL:		http://www.globus.org/
 #		cp -p gt5.0.2-all-source-installer/source-trees/core/source/GLOBUS_LICENSE globus_gridftp_server-3.23
 #		tar -zcf globus_gridftp_server-3.23.tar.gz globus_gridftp_server-3.23
 Source:		%{_name}-%{version}.tar.gz
-Patch:		osg-gridftp.patch
+Patch0:		osg-gridftp.patch
+Patch1:		osg-gridftp.i386.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Requires:	globus-xio-gsi-driver%{?_isa} >= 1
@@ -82,7 +83,12 @@ Globus GridFTP Server Development Files
 
 %prep
 %setup -q -n %{_name}-%{version}
+
+%ifarch alpha ia64 ppc64 s390x sparc64 x86_64
 %patch0 -p1
+%else
+%patch1 -p1
+%endif
 
 %build
 # Remove files that should be replaced during bootstrap
