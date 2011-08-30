@@ -7,7 +7,7 @@
 
 Name:    dcache-srmclient 
 Version: 1.9.5.23
-Release: 2
+Release: 3
 URL:     http://dcache.org
 Summary: SRM clients from dCache.org
 License: http://www.dcache.org/manuals/dCacheSoftwareLicence.html
@@ -65,6 +65,9 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/dcache-srmclient-config.xml
 
 %changelog
+* Tue Aug 30 2011 Matyas Selmeci <matyas@cs.wisc.edu> 1.9.5.23-3
+- Rebuilt against Globus 5.2
+
 * Fri Jul  7 2011 Brian Bockelman <bbockelm@cse.unl.edu> 1.9.5.23-2
 - Set buildarch to noarch.
 
