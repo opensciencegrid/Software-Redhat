@@ -2,7 +2,7 @@ Name:               gratia-probe
 Summary:            Gratia OSG accounting system probes
 Group:              Applications/System
 Version:            1.07.02e
-Release:            0.19.pre
+Release:            0.20.pre
 License:            GPL
 Group:              Applications/System
 URL:                http://sourceforge.net/projects/gratia/
@@ -812,6 +812,9 @@ Contributed by University of Nebraska Lincoln.
 %endif # noarch
 
 %changelog
+* Tue Aug 30 2011 Tanya Levshina <tlevshin.fnal.gov> - 1.07.02e-0.20.pre
+ more fixes for gratia-probe-gridftp-transfer
+
 * Tue Aug 30 2011 Tanya Levshina <tlevshin.fnal.gov> - 1.07.02e-0.19.pre
  more fixes for gratia-probe-gridftp-transfer
 
