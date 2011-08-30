@@ -1,7 +1,7 @@
 Summary: Authorization service for grid credentials
 Name: lcas
 Version: 1.3.13
-Release: 4%{?dist}
+Release: 5%{?dist}
 Vendor: Nikhef
 License: ASL 2.0
 Group: System Environment/Libraries
@@ -16,7 +16,11 @@ BuildRequires: globus-libtool-devel
 BuildRequires: libtool-ltdl-devel
 BuildRequires: globus-openssl-module-devel
 
-Requires: lcas-plugins-basic
+%ifarch %{ix86}
+Requires: liblcas_userban.so()(32bit)
+%else
+Requires: liblcas_userban.so()(64bit)
+%endif
 
 %description
 
@@ -119,6 +123,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc README
 
 %changelog
+* Tue Aug 30 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.3.13-5
+Explicitly require dlopened modules.
+
 * Fri Aug 12 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.3.13-4
 - Fix user_ban module location.
 
