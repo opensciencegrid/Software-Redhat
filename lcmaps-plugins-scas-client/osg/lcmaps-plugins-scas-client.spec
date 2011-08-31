@@ -1,7 +1,7 @@
 Summary: SCAS client plugin for the LCMAPS authorization framework
 Name: lcmaps-plugins-scas-client
 Version: 0.2.22
-Release: 2%{?dist}
+Release: 3%{?dist}
 Vendor: Nikhef
 License: ASL 2.0
 Group: System Environment/Libraries
@@ -9,6 +9,7 @@ URL: http://www.nikhef.nl/pub/projects/grid/gridwiki/index.php/Site_Access_Contr
 Source0: http://software.nikhef.nl/security/%{name}/%{name}-%{version}.tar.gz
 Patch0: memory_corruption.patch
 Patch1: ca_only.patch
+Patch2: timeout.patch
 BuildRequires: openssl-devel
 BuildRequires: lcmaps-interface, saml2-xacml2-c-lib-devel
 
@@ -28,6 +29,7 @@ Authorization Service (SCAS) or GUMS (new style) service.
 %setup -q
 %patch0 -p0
 %patch1 -p0
+%patch2 -p0
 
 %build
 
@@ -54,6 +56,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Aug 31 2011 Dave Dykstra <dwd@fnal.gov> - 0.2.22-3
+- Increase socket connect timeout from 170 ms to 30 seconds and
+  increase total retry timeout from 1 second to 30*4+5 seconds.
+  This is necessary to survive the extremely heavy loads seen
+  at a Fermilab stress test.
+
 * Sun Jul 31 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 0.2.22-2
 - Fix memory corruption issue on an error condition.
 - Fix SEGV when no user certificate is present.
