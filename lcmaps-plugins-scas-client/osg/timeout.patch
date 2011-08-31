@@ -1,0 +1,14 @@
+--- src/saml2-xacml2/io_handler/xacml_io_ssl.c.O	2011-08-31 15:37:00.000000000 -0500
++++ src/saml2-xacml2/io_handler/xacml_io_ssl.c	2011-08-31 15:37:22.000000000 -0500
+@@ -207,9 +207,9 @@
+ #endif
+     ssl_io_state_t  *state = NULL;
+ 
+-    int              realtime_timeout      = 1; /* seconds */
++    int              realtime_timeout      = (30*4)+5; /* seconds */
+     int              backoff_milli_seconds = 50;  /* milli seconds */
+-    int              socket_timeout        = 170; /* milli seconds */
++    int              socket_timeout        = 30000; /* milli seconds */
+ 
+     int              err     = 0;
+     int              rc      = 0;
