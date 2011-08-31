@@ -9,7 +9,7 @@
 Name:		globus-gridftp-server
 %global _name %(tr - _ <<< %{name})
 Version:	5.4
-Release:	5%{?dist}
+Release:	6%{?dist}
 Summary:	Globus Toolkit - Globus GridFTP Server
 
 Group:		System Environment/Libraries
@@ -163,7 +163,7 @@ fi
 
 %files -f package-progs.filelist progs
 %defattr(-,root,root,-)
-%{_sysconfdir}/sysconfig/%{name}
+%config(noreplace) %{_sysconfdir}/sysconfig/%{name}
 
 %files -f package-devel.filelist devel
 %defattr(-,root,root,-)
