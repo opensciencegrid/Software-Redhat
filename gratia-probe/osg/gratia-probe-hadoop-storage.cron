@@ -1,1 +1,1 @@
-0 * * * * root "perl -e 'sleep rand 3600' && /usr/share/gratia/hadoop-storage/hadoop_storage_probe -c /etc/gratia/hadoop-storage/storage.cfg"
+0 * * * * root perl -e 'sleep rand 3600' && /usr/share/gratia/hadoop-storage/hadoop_storage_probe -c /etc/gratia/hadoop-storage/storage.cfg

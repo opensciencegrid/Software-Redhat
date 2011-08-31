@@ -1,1 +1,1 @@
-0,30 * * * * root "perl -e 'sleep rand 1800' && /usr/share/gratia/gridftp-transfer/gridftp-transfer_meter.cron.sh"
+0,30 * * * * root perl -e 'sleep rand 1800' && /usr/share/gratia/gridftp-transfer/gridftp-transfer_meter.cron.sh

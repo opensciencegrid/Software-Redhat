@@ -1,1 +1,1 @@
-0 1 * * * root "perl -e 'sleep rand 9600' && /usr/share/gratia/psacct/psacct_probe.cron.sh"
+0 1 * * * root perl -e 'sleep rand 9600' && /usr/share/gratia/psacct/psacct_probe.cron.sh
