@@ -1,7 +1,7 @@
 Summary: Grid (X.509) and VOMS credentials to local account mapping service
 Name: lcmaps
 Version: 1.4.28
-Release: 10%{?dist}
+Release: 11%{?dist}
 Vendor: Nikhef
 License: ASL 2.0
 Group: System Environment/Libraries
@@ -29,9 +29,9 @@ Requires: globus-gsi-credential
 Requires: lcmaps-plugins-gums-client
 Requires: lcmaps-plugins-saz-client
 %ifarch %{ix86}
-Requires: liblcmaps_posix_enf.so.0()(32bit)
-Requires: liblcmaps_scas_client.so.0()(32bit)
-Requires: liblcmaps_verify_proxy.so.0()(32bit)
+Requires: liblcmaps_posix_enf.so.0
+Requires: liblcmaps_scas_client.so.0
+Requires: liblcmaps_verify_proxy.so.0
 %else
 Requires: liblcmaps_posix_enf.so.0()(64bit)
 Requires: liblcmaps_scas_client.so.0()(64bit)
@@ -158,6 +158,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/modules/*.so
 
 %changelog
+* Wed Aug 31 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.4.28-11
+Another update to get Requires right for 32-bit modules
+
 * Tue Aug 30 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.4.28-10
 - Make dlopened requirements explicit.
 - Default path to /usr/lib64 always until we have a better solution from upstream

@@ -2,7 +2,7 @@
 Summary: CMS meta-RPM for Xrootd
 Name: cms-xrootd
 Version: 1.0
-Release: 1
+Release: 2
 Group: System Environment/Daemons
 License: Public Domain
 URL: https://twiki.cern.ch/twiki/bin/view/Main/CmsXrootdArchitecture
@@ -17,8 +17,8 @@ Requires: xrootd-server >= 3.0.5
 Conflicts: xrootd-server < 3.0.5
 
 %ifarch %{ix86}
-Requires: libXrdLcmaps.so.0()(32bit)
-Requires: libXrdCmsTfc.so.0()(32bit)
+Requires: libXrdLcmaps.so.0
+Requires: libXrdCmsTfc.so.0
 %else
 Requires: libXrdLcmaps.so.0()(64bit)
 Requires: libXrdCmsTfc.so.0()(64bit)
@@ -38,7 +38,7 @@ Group: System Environment/Daemons
 Requires: %{name} = %{version}-%{release}
 Requires: xrootd-hdfs >= 1.5.0-2
 %ifarch %{ix86}
-Requires: libXrdHdfs.so.0()(32bit)
+Requires: libXrdHdfs.so.0
 %else
 Requires: libXrdHdfs.so.0()(64bit)
 %endif

@@ -1,7 +1,7 @@
 Name:      osg-ce
 Summary:   OSG Compute Element 
 Version:   3.0.0
-Release:   8
+Release:   9
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -32,7 +32,7 @@ Requires: lcmaps-plugins-gums
 Requires: lcmaps-plugins-verify-proxy
 Requires: lcmaps-plugins-basic
 %ifarch %{ix86}
-Requires: liblcas_lcmaps_gt4_mapping.so.0()(32bit)
+Requires: liblcas_lcmaps_gt4_mapping.so.0
 %else
 Requires: liblcas_lcmaps_gt4_mapping.so.0()(64bit)
 %endif
@@ -92,6 +92,9 @@ rm -rf $RPM_BUILD_ROOT
 %files sge
 
 %changelog
+* Wed Aug 31 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 3.0.0-9
+Another update to get Requires right for 32-bit modules
+
 * Tue Aug 30 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 3.0.0-8
 Fix requirements for lcas-lcmaps-gt4-interface.
 

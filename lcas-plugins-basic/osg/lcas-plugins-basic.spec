@@ -1,7 +1,7 @@
 Summary: Basic plugins for the LCAS authorization framework
 Name: lcas-plugins-basic
 Version: 1.3.5
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: ASL 2.0
 Group: System Environment/Libraries
 URL: http://www.nikhef.nl/pub/projects/grid/gridwiki/index.php/Site_Access_Control
@@ -10,15 +10,6 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildRequires: globus-common-devel, globus-gssapi-gsi-devel
 BuildRequires: lcas-interface
 Requires: lcas
-%ifarch %{ix86}
-Provides: liblcas_timeslots.so()(32bit)
-Provides: liblcas_userallow.so()(32bit)
-Provides: liblcas_userban.so()(32bit)
-%else
-Provides: liblcas_timeslots.so()(64bit)
-Provides: liblcas_userallow.so()(64bit)
-Provides: liblcas_userban.so()(64bit)
-%endif
 
 %description
 LCAS makes binary ('yes' or 'no') authorization decisions at the site
@@ -52,6 +43,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/lcas/liblcas_userban.so
 
 %changelog
+* Wed Aug 31 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.3.5-4
+Another update to get Requires right for 32-bit modules
+
 * Tue Aug 30 2011 Matyas Selmeci <matyas@cs.wisc.edu> 1.3.5-3
 - fixed arch-specific provides
 
