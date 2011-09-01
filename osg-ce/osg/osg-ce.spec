@@ -1,11 +1,10 @@
 Name:      osg-ce
 Summary:   OSG Compute Element 
 Version:   3.0.0
-Release:   9
+Release:   10
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
-BuildArch: noarch
 
 BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
@@ -92,6 +91,9 @@ rm -rf $RPM_BUILD_ROOT
 %files sge
 
 %changelog
+* Wed Aug 31 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 3.0.0-10
+- Do not mark this as a noarch package, as we depend directly on a arch-specific RPM.
+
 * Wed Aug 31 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 3.0.0-9
 Another update to get Requires right for 32-bit modules
 

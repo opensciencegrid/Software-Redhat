@@ -1,11 +1,10 @@
 Name:      osg-gridftp
 Summary:   Standalone OSG GridFTP w/lcmaps gums client
 Version:   3.0.0
-Release:   4
+Release:   5
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
-BuildArch: noarch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
 
@@ -39,6 +38,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Aug 31 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 3.0.0-5
+- Do not mark this as a noarch package, as we depend directly on a arch-specific RPM.
+
 * Wed Aug 31 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 3.0.0-4
 Another update to get Requires right for 32-bit modules
 
