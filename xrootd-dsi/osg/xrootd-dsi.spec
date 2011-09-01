@@ -1,6 +1,6 @@
 Name:           xrootd-dsi
 Version:        3.0.4
-Release:        3
+Release:        4
 Summary:        xrootd DSI library and POSIX preload
 Group:          System Environment/Daemons
 License:        Stanford (modified BSD with advert clause)
@@ -28,8 +28,9 @@ make
 
 %install
 
-mkdir -p $RPM_BUILD_ROOT/opt/vdt/setup.d
-install -m 755 xrootd-gsiftp.sh $RPM_BUILD_ROOT/opt/vdt/setup.d/xrootd-gsiftp.sh
+#This script is no longer needed.  Variables added in gridftp package
+#mkdir -p $RPM_BUILD_ROOT/opt/vdt/setup.d
+#install -m 755 xrootd-gsiftp.sh $RPM_BUILD_ROOT/opt/vdt/setup.d/xrootd-gsiftp.sh
 
 %ifarch x86_64
 mkdir -p $RPM_BUILD_ROOT/usr/lib64
@@ -42,8 +43,8 @@ install -m 644 libglobus_gridftp_server_posix.so $RPM_BUILD_ROOT/usr/lib/libglob
 
 %files
 
-/opt/vdt/setup.d
-/opt/vdt/setup.d/xrootd-gsiftp.sh
+#/opt/vdt/setup.d
+#/opt/vdt/setup.d/xrootd-gsiftp.sh
 
 %ifarch x86_64
 /usr/lib64/libglobus_gridftp_server_posix.so
@@ -55,6 +56,9 @@ install -m 644 libglobus_gridftp_server_posix.so $RPM_BUILD_ROOT/usr/lib/libglob
 
 
 %changelog
+* Thu Sep 1 2011 Doug Strain <dstrain@fnal.gov> 3.0.4-4
+- Fixed build for Globus 5.2 and got rid of setup.sh script.
+
 * Tue Aug 16 2011 Doug Strain <dstrain@fnal.gov> 3.0.4-2
 - Modified package to use epel libraries and header files.
 - Now uses FHS locations
