@@ -1,7 +1,7 @@
 Name:           osg-se-bestman-xrootd
 Summary:        OSG BeStMan XRootd Storage Element package
 Version:        3.0.0
-Release:        1
+Release:        2
 License:        GPL
 Group:          System Environment/Daemons
 URL:            https://twiki.grid.iu.edu/twiki/bin/view/Storage/WebHome
@@ -30,8 +30,8 @@ Requires: liblcas_lcmaps_gt4_mapping.so.0()(64bit)
 #Xrootd stuff
 Requires: xrootd-dsi
 Requires: xrootd-fuse
-Requires: gratia-xrootd-transfer-probe
-Requires: gratia-xrootd-storage-probe
+Requires: gratia-probe-xrootd-transfer
+Requires: gratia-probe-xrootd-storage
 
 
 %description
