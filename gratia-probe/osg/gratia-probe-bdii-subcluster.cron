@@ -1,1 +1,0 @@
-0 1 * * * root perl -e 'sleep rand 9600' && /usr/share/gratia/bdii-status/bdii_subcluster_record
