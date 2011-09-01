@@ -1,12 +1,13 @@
 Name:           xrootd-dsi
 Version:        3.0.4
-Release:        2
+Release:        3
 Summary:        xrootd DSI library and POSIX preload
 Group:          System Environment/Daemons
 License:        Stanford (modified BSD with advert clause)
 URL:            http://xrootd.org/
 
 Source:        xrootd-dsi.tar.gz
+Patch0:        xrootd-dsi.patch
 
 BuildRoot:      %{_tmppath}/%{name}-root
 BuildRequires: globus-common-devel globus-gridftp-server-devel zlib-devel
@@ -19,6 +20,7 @@ DSI module and POSIX preload libraries for Xrootd
 
 %prep
 %setup -q -n %{name}
+%patch0 -p1
 
 %build
 
