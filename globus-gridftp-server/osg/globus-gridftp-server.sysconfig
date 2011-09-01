@@ -20,3 +20,23 @@ export LCMAPS_POLICY_NAME=osg_default
 #Uncomment and modify for firewalls
 #export GLOBUS_TCP_PORT_RANGE=min,max
 #export GLOBUS_TCP_SOURCE_RANGE=min,max
+
+#############################################
+# xrootd-dsi module support
+#############################################
+# Note: This defines the path of the posix preload mount and
+# which xrootd server it points.  
+# NOTE:  local_path is where the access via this node (ie GridFTP)
+# will be from.  remote_path refers to the path on the XRootD node.
+# Uncommenting this will set the XrootD location
+#export XROOTD_VMP="redirector_node:1094:/local_path=/remote_path"
+
+# Uncommenting these will enable xrootd posix preload support
+# Set XROOTDLIB to /usr/lib64 for 64 bit architectures
+# and /usr/lib for 32 bit architectures.
+#export XROOTDLIB=/usr/lib64
+#export LD_PRELOAD=$XROOTDLIB/libXrdPosixPreload.so
+
+
+
+

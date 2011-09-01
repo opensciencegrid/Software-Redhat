@@ -1,13 +1,14 @@
 diff -ru globus_gridftp_server-5.4-orig/gridftp.conf.default.in globus_gridftp_server-5.4/gridftp.conf.default.in
 --- globus_gridftp_server-5.4-orig/gridftp.conf.default.in	2011-08-30 15:54:05.000000000 -0500
 +++ globus_gridftp_server-5.4/gridftp.conf.default.in	2011-08-30 15:56:32.000000000 -0500
-@@ -2,4 +2,7 @@
+@@ -2,4 +2,8 @@
  # todo: add common parameters
  
  port 2811
 +log_level ERROR,WARN,INFO
 +log_single /var/log/gridftp-auth.log
 +log_transfer /var/log/gridftp.log
++#load_dsi_module posix
  
 diff -ru globus_gridftp_server-5.4-orig/init/globus-gridftp-server.in globus_gridftp_server-5.4/init/globus-gridftp-server.in
 --- globus_gridftp_server-5.4-orig/init/globus-gridftp-server.in	2011-08-30 15:54:05.000000000 -0500
