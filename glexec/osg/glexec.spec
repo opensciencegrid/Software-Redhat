@@ -1,7 +1,7 @@
 Summary: User identity switching tool based on grid credentials
 Name: glexec
 Version: 0.8.10
-Release: 5%{?dist}
+Release: 6%{?dist}
 License: ASL 2.0
 Group: Applications/System
 URL: http://www.nikhef.nl/pub/projects/grid/gridwiki/index.php/Site_Access_Control
@@ -49,7 +49,7 @@ rm -rf $RPM_BUILD_ROOT
 getent group glexec >/dev/null || groupadd -r glexec
 getent passwd glexec >/dev/null || \
     useradd -r -g glexec -d /tmp -s /sbin/nologin \
-    -c "Dropped-privilege account for the glexec binary" USERNAME
+    -c "Dropped-privilege account for the glexec binary" glexec
 exit 0
 
 %files
@@ -63,6 +63,10 @@ exit 0
 %attr(6755, root, root) /usr/sbin/glexec
 
 %changelog
+* Fri Sep 01 2011 Dave Dykstra <dwd@fnal.gov> - 0.8.10-6
+- Fix the adding of glexec user so it actually adds a "glexec" user rather
+  than a "USERNAME" user
+
 * Mon Aug 22 2011 Dave Dykstra <dwd@fnal.gov> - 0.8.10-5
 - Move lcmaps-plugins-glexec-tracking dependency to this package instead
   of osg-wn-client-glexec
