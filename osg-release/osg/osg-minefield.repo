@@ -5,5 +5,5 @@ failovermethod=priority
 priority=98
 enabled=0
 gpgcheck=0
-#gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL
+#gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-OSG
 
