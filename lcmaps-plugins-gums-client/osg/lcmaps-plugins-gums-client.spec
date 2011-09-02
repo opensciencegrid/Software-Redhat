@@ -3,7 +3,7 @@
 
 Name:           lcmaps-plugins-gums-client
 Version:        0.0.2
-Release:        1
+Release:        2%{?dist}
 Summary:        GUMS support for lcmaps
 
 Group:          System Environment/Tools
@@ -36,6 +36,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/modules/%{modname}
 
 %changelog
+* Fri Sep 01 2011 Dave Dykstra <dwd@fnal.gov> 0.0.2-2.osg
+- Just add the %{?dist} to the release to be like the others
+
 * Mon Aug 22 2011 Dave Dykstra <dwd@fnal.gov> 0.0.2-1
 - Change name from lcmaps-plugins-gums to lcmaps-plugins-gums-client
 
