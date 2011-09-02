@@ -21,7 +21,6 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildArch:     noarch
 Requires:      redhat-release >=  5
-Conflicts:     fedora-release
 
 Obsoletes:     vdt-release
 
@@ -60,6 +59,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Fri Sep 2 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 3.0-6
 - Files changed to point to GOC repos
+- Removed conflict with fedora-release
 
 * Mon Aug 15 2011 Derek Weitzel <dweitzel@cse.unl.edu> - 3.0-5
 - Corrected the source repos
@@ -76,18 +76,3 @@ rm -rf $RPM_BUILD_ROOT
 * Wed Jul 06 2011 Derek Weitzel <dweitzel@cse.unl.edu> - 3-1
 - Adapted EPEL release rpm for use with the VDT
 
-* Tue Aug 10 2010 Seth Vidal <skvidal at fedoraproject.org> - 5-4
-- conflict fedora-release so people don't indadvertently do something silly
-
-* Fri Apr 25 2008 Matt Domsch <Matt_Domsch@dell.com> - 5-3
-- use mirrorlists in epel-testing.repo
-- use download.fedoraproject.org in (commented out) baseurls
-
-* Mon Apr 02 2007 Michael Stahnke <mastahnke@gmail.com> - 5-2
-- Missed a syntax correction in epel-testing.repo
-
-* Mon Apr 02 2007 Michael Stahnke <mastahnke@gmail.com> - 5-1
-- Hard coded version '5' in epel yum repo files. 
-
-* Mon Apr 02 2007 Michael Stahnke <mastahnke@gmail.com> - 5-0
-- Initial Package for RHEL 5
