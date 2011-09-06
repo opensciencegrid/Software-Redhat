@@ -1,0 +1,44 @@
+diff --git a/frontend/glideinFrontendElement.py b/frontend/glideinFrontendElement.py
+index 4b097d9..03c2731 100755
+--- a/frontend/glideinFrontendElement.py
++++ b/frontend/glideinFrontendElement.py
+@@ -839,8 +839,8 @@ def main(parent_pid, work_dir, group_name):
+     glideinFrontendInterface.frontendConfig.advertise_use_multi=(elementDescript.frontend_data['AdvertiseWithMultiple'] in ('True','1'))
+ 
+     try:
+-        dir = os.path.dirname(os.path.dirname(sys.argv[0]))
+-        glideinFrontendInterface.frontendConfig.glideinwms_version = glideinWMSVersion.GlideinWMSDistro(dir, os.path.join(dir,'etc/checksum.frontend')).version()
++        dir = '/usr/lib/python2.4/site-packages'
++        glideinFrontendInterface.frontendConfig.glideinwms_version = glideinWMSVersion.GlideinWMSDistro(dir, os.path.join(work_dir,'checksum.frontend')).version()
+     except:
+         tb = traceback.format_exception(sys.exc_info()[0],sys.exc_info()[1],
+                                         sys.exc_info()[2])
+diff --git a/lib/glideinWMSVersion.py b/lib/glideinWMSVersion.py
+index f39d914..a801994 100644
+--- a/lib/glideinWMSVersion.py
++++ b/lib/glideinWMSVersion.py
+@@ -68,15 +68,18 @@ class GlideinWMSDistro:
+                 for file in distroFileHash.keys():
+                     fd = None
+                     try:
+-                        fd = open(os.path.join(dir,file), 'r')
++                        fd = open(os.path.join(dir,os.path.basename(file)), 'r')
+                         chksum = md5.new(fd.read()).hexdigest()
+                         if (chksum != distroFileHash[file]):
+                             modifiedFiles.append(file)
+-                            patch = 'PATCHED' 
+-                    finally:
+-                        if fd:
+-                            fd.close()
+-            
++                            patch = 'PATCHED'
++
++                    except: # ignore missing files
++                        pass
++
++                    if fd:
++                        fd.close()
++
+             #if len(modifiedFiles) > 0:
+             #    print "Modified files: %s" % string.join(modifiedFiles)
+             

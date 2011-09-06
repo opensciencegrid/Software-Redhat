@@ -1,6 +1,6 @@
 Name:           glideinwms-vofrontend
 Version:        2.5.2
-Release:        2
+Release:        3
 Summary:        The VOFrontend for glideinWMS submission host
 
 Group:          System Environment/Daemons
@@ -30,9 +30,11 @@ Source3:        gwms-frontend.conf.httpd
 Source4:        00_frontend.config
 Source5:        01_collectors.config
 Source6:	02_frontend-local.config
+Source7:	checksum.frontend
 patch0:         reconfig_frontend.patch
 patch1:         cvWParamDict.py.patch
 patch2: 	cvWParams.py.patch
+patch3:		glideinwms_version.patch
 
 Requires: httpd
 # We require Condor 7.6.0 (and newer) to support 
@@ -66,6 +68,7 @@ for scheduling and job control.
 %patch -P 0 -p1
 %patch -P 1 -p1
 %patch -P 2 -p1
+%patch -P 3 -p1
 
 %build
 #make %{?_smp_mflags}
@@ -180,6 +183,9 @@ for file in `ls tools/*.py`; do
 done
 cp tools/lib/*.py $RPM_BUILD_ROOT%{python_sitelib}
 
+# Install checksum file
+install -m 0644 %{SOURCE7} $RPM_BUILD_ROOT%{_datadir}/gwms-frontend/frontend-temp/checksum.frontend
+
 %post
 # $1 = 1 - Installation
 # $1 = 2 - Upgrade
@@ -243,6 +249,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Sep 06 2011 Burt Holzman <burt@fnal.gov> - 2.5.2-3
+- Fixed glideinWMS versioning advertisement
+
 * Wed Aug 31 2011 Burt Holzman <burt@fnal.gov> - 2.5.2-2
 - Fixed file location for frontend_support.js
 
