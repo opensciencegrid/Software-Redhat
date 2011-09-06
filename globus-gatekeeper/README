@@ -6,3 +6,4 @@ This is for programs like lcas-lcmaps-gt4-interface that require custom environm
 
 globus-gatekeeper has been patched to properly handle signals in a multithreaded environment
 
+Source downloaded from 'http://bamboo.globus.org/browse/GT512-RPMCENTOS5-7/artifact/SRPMS/globus-gatekeeper-8.0-2.src.rpm'
