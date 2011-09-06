@@ -1,0 +1,22 @@
+diff --git a/creation/reconfig_frontend b/creation/reconfig_frontend
+index d7b5359..cd5efaa 100755
+--- a/creation/reconfig_frontend
++++ b/creation/reconfig_frontend
+@@ -34,17 +34,10 @@ import cvWParamDict
+ ################################################################################
+ 
+ def main(params,old_params):
+-    # load old files
+-    old_frontend_dicts_obj=cvWParamDict.frontendDicts(old_params)
+-    old_frontend_dicts_obj.load()
+-
+     # create dictionaries for new params
+     frontend_dicts_obj=cvWParamDict.frontendDicts(params)
+     frontend_dicts_obj.populate()
+ 
+-    # merge them together
+-    frontend_dicts_obj.reuse(old_frontend_dicts_obj)
+-
+     # write to disk
+     frontend_dicts_obj.save()
+     frontend_dicts_obj.set_readonly(True)
