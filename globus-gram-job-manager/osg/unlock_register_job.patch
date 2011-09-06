@@ -1,6 +1,8 @@
---- /usr/src/debug/globus_gram_job_manager-10.70/globus_gram_job_manager.c	2011-08-01 18:39:02.000000000 -0500
-+++ globus_gram_job_manager.c	2011-08-01 18:47:05.000000000 -0500
-@@ -2335,10 +2335,13 @@
+Index: globus_gram_job_manager.c
+===================================================================
+--- globus_gram_job_manager.c.orig	2011-09-06 15:07:44.000000000 -0500
++++ globus_gram_job_manager.c	2011-09-06 15:08:27.000000000 -0500
+@@ -2336,10 +2336,13 @@
                   request->restart_state ==
                          GLOBUS_GRAM_JOB_MANAGER_STATE_POLL_QUERY2))
              {

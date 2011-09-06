@@ -1,5 +1,7 @@
---- /usr/src/debug/globus_gram_job_manager-10.70/main.c	2011-08-01 22:46:47.000000000 -0500
-+++ main.c	2011-08-02 07:26:30.000000000 -0500
+Index: main.c
+===================================================================
+--- main.c.orig	2011-09-06 15:04:55.000000000 -0500
++++ main.c	2011-09-06 15:13:07.000000000 -0500
 @@ -61,6 +61,11 @@
  
  static
@@ -12,7 +14,7 @@
  reply_and_exit(
      globus_gram_job_manager_t *         manager,
      int                                 rc,
-@@ -76,6 +81,12 @@
+@@ -81,6 +86,12 @@
  static
  globus_callback_handle_t                globus_l_waitpid_callback_handle =
          GLOBUS_NULL_HANDLE;
@@ -25,7 +27,7 @@
  #endif /* GLOBUS_DONT_DOCUMENT_INTERNAL */
  
  int
-@@ -482,6 +493,7 @@
+@@ -494,6 +505,7 @@
      }
  
      globus_mutex_init(&globus_l_waitpid_callback_lock, NULL);
@@ -33,7 +35,7 @@
  
      /*
       * Register periodic event to clean up zombie if we forked a child
-@@ -500,6 +512,21 @@
+@@ -512,6 +524,21 @@
                  &period,
                  globus_l_waitpid_callback,
                  &forked_starter);
@@ -55,7 +57,7 @@
      }
  
      GlobusGramJobManagerLock(&manager);
-@@ -515,9 +542,16 @@
+@@ -527,9 +554,16 @@
       * terminated. For any other job manager, the monitor.done is set to
       * GLOBUS_TRUE and this falls right through.
       */
@@ -73,7 +75,7 @@
      }
      GlobusGramJobManagerUnlock(&manager);
  
-@@ -533,6 +567,17 @@
+@@ -545,6 +579,17 @@
      }
      globus_mutex_unlock(&globus_l_waitpid_callback_lock);
  
@@ -91,7 +93,7 @@
  
      globus_gram_job_manager_log(
              &manager,
-@@ -754,6 +799,20 @@
+@@ -758,6 +803,20 @@
  
  static
  void

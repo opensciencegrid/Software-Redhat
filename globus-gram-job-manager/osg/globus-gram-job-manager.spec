@@ -12,9 +12,8 @@
 
 Name:		globus-gram-job-manager
 %global _name %(tr - _ <<< %{name})
-Version:	12.10
-%global setupversion 4.3
-Release:	2%{?dist}
+Version:	13.0
+Release:	3%{?dist}
 Summary:	Globus Toolkit - GRAM Jobmanager
 
 Group:		Applications/Internet
@@ -23,48 +22,44 @@ URL:		http://www.globus.org/
 Source:		%{_name}-%{version}.tar.gz
 
 # OSG-specific patches
-Patch7:         close_deadlock.patch
 Patch8:         job_status.patch
 Patch9:         unlock_init.patch
 Patch10:        unlock_register_job.patch
 Patch11:        null_old_jm.patch
-Patch12:        fd_leak.patch
 Patch13:        watchdog_timer.patch
 Patch14:        recvmsg_eagain.patch
 Patch15:        double_proxy_lock.patch
 Patch16:        description_service_tag.patch
 Patch17:        file_cleanup_logging.patch
-Patch18:        restart_on_failure.patch
 Patch19:        load_requests_before_activating_socket.patch
-
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-Requires:	globus-common >= 11.6
-Requires:	globus-xio-popen-driver%{?_isa} >= 0.7
+Requires:	globus-common >= 14
+Requires:	globus-xio-popen-driver%{?_isa} >= 2
 Requires:	libxml2%{?_isa}
-Requires:	globus-gram-protocol >= 9
+Requires:	globus-gram-protocol >= 11
 Requires:	globus-gram-job-manager-scripts
-Requires:	globus-gass-copy-progs >= 2
-Requires:	globus-proxy-utils
+Requires:	globus-gass-copy-progs >= 8
+Requires:	globus-proxy-utils >= 5
 Requires:	globus-gass-cache-program >= 2
-BuildRequires:	grid-packaging-tools
-BuildRequires:	globus-scheduler-event-generator-devel%{?_isa} >= 1
-BuildRequires:	globus-xio-popen-driver-devel%{?_isa} >= 0.7
-BuildRequires:	globus-xio-devel%{?_isa} >= 2
-BuildRequires:	globus-gss-assist-devel%{?_isa} >= 3
-BuildRequires:	globus-core%{?_isa} >= 4
-BuildRequires:	globus-gsi-sysconfig-devel%{?_isa} >= 1
-BuildRequires:	globus-callout-devel%{?_isa}
-BuildRequires:	globus-gram-job-manager-callout-error-devel%{?_isa}
-BuildRequires:	globus-gram-protocol-devel%{?_isa} >= 9
-BuildRequires:	globus-common-devel%{?_isa} >= 11.6
-BuildRequires:	globus-usage-devel%{?_isa} >= 1
-BuildRequires:	globus-rsl-devel%{?_isa} >= 8
-BuildRequires:	globus-gass-cache-devel%{?_isa} >= 5
-BuildRequires:	libxml2-devel%{?_isa}
-BuildRequires:	globus-gass-transfer-devel%{?_isa} >= 4
-BuildRequires:	globus-gram-protocol-doc >= 9
-BuildRequires:	globus-common-doc
+BuildRequires:	grid-packaging-tools >= 3.4
+BuildRequires:	globus-scheduler-event-generator-devel%{?_isa} >= 4
+BuildRequires:	globus-xio-popen-driver-devel%{?_isa} >= 2
+BuildRequires:	globus-xio-devel%{?_isa} >= 3
+BuildRequires:	globus-gss-assist-devel%{?_isa} >= 8
+BuildRequires:	globus-core%{?_isa} >= 8
+BuildRequires:	globus-gsi-sysconfig-devel%{?_isa} >= 5
+BuildRequires:	globus-callout-devel%{?_isa} >= 2
+BuildRequires:	globus-gram-job-manager-callout-error-devel%{?_isa} >= 2
+BuildRequires:	globus-gram-protocol-devel%{?_isa} >= 11
+BuildRequires:	globus-common-devel%{?_isa} >= 14
+BuildRequires:	globus-usage-devel%{?_isa} >= 3
+BuildRequires:	globus-rsl-devel%{?_isa} >= 9
+BuildRequires:	globus-gass-cache-devel%{?_isa} >= 8
+BuildRequires:	libxml2-devel%{?_isa} >= 2.6.11
+BuildRequires:	globus-gass-transfer-devel%{?_isa} >= 7
+BuildRequires:	globus-gram-protocol-doc >= 11
+BuildRequires:	globus-common-doc >= 14
 BuildRequires:	doxygen
 BuildRequires:	graphviz
 %if "%{?rhel}" == "5"
@@ -107,18 +102,15 @@ GRAM Jobmanager Documentation Files
 %prep
 %setup -q -n %{_name}-%{version}
 
-%patch7 -p0
-%patch8 -p1
+%patch8 -p0
 %patch9 -p0
 %patch10 -p0
 %patch11 -p0
-%patch12 -p0
 %patch13 -p0
 %patch14 -p0
 %patch15 -p0
 %patch16 -p0
 %patch17 -p0
-%patch18 -p0
 %patch19 -p0
 
 %build
@@ -182,12 +174,18 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_datadir}/globus/packages/%{_name}
 %dir %{_docdir}/%{name}-%{version}
 %dir %{_localstatedir}/lib/globus/gram_job_state
+%config(noreplace) %{_sysconfdir}/globus/globus-gram-job-manager.conf
 
 %files doc -f package-doc.filelist
 %defattr(-,root,root,-)
 %dir %{_docdir}/%{name}-%{version}/html
 
 %changelog
+* Tue Sep 06 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 13.0-3
+- Merged upstream 13.0-2:
+    * Thu Sep 01 2011 Joseph Bester <bester@mcs.anl.gov> - 13.0-2
+    - Update for 5.1.2 release
+
 * Thu Aug 18 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 12.10-2
 - Forward-port OSG patches.
 

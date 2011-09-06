@@ -1,6 +1,8 @@
---- globus_gram_job_manager-10.70/globus_gram_job_manager_state.c	2010-05-14 08:01:22.000000000 -0500
-+++ globus_gram_job_manager_state.c	2011-08-15 20:45:54.000000000 -0500
-@@ -2174,6 +2174,17 @@
+Index: globus_gram_job_manager_state.c
+===================================================================
+--- globus_gram_job_manager_state.c.orig	2011-09-06 15:04:52.000000000 -0500
++++ globus_gram_job_manager_state.c	2011-09-06 15:20:03.000000000 -0500
+@@ -2214,6 +2214,17 @@
  
          if (path)
          {
@@ -18,9 +20,11 @@
              remove(path);
          }
      }
---- globus_gram_job_manager-10.70/globus_gram_job_manager_request.c	2011-08-08 09:09:06.000000000 -0500
-+++ globus_gram_job_manager_request.c	2011-08-15 20:37:16.000000000 -0500
-@@ -3131,6 +3131,17 @@
+Index: globus_gram_job_manager_request.c
+===================================================================
+--- globus_gram_job_manager_request.c.orig	2011-09-06 15:09:02.000000000 -0500
++++ globus_gram_job_manager_request.c	2011-09-06 15:20:03.000000000 -0500
+@@ -3230,6 +3230,17 @@
              }
              else
              {
