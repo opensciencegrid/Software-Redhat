@@ -5,3 +5,4 @@ This is a pass-through of the Globus SRPM with the following exception:
 
 This can be removed once the change is done upstream.
 
+Source downloaded from 'http://bamboo.globus.org/browse/GT512-RPMCENTOS5-7/artifact/SRPMS/globus-common-14.0-2.src.rpm'

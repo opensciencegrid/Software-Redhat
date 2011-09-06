@@ -15,8 +15,8 @@
 
 Name:		globus-common
 %global _name %(tr - _ <<< %{name})
-Version:	13.4
-Release:	2%{?dist}
+Version:	14.0
+Release:	3%{?dist}
 Summary:	Globus Toolkit - Common Library
 
 Group:		System Environment/Libraries
@@ -43,8 +43,8 @@ Obsoletes:	globus-duct-control
 Obsoletes:	globus-duroc-common
 Obsoletes:	globus-duroc-control
 Obsoletes:	globus-libtool%{?_isa}
-BuildRequires:	grid-packaging-tools
-BuildRequires:	globus-core%{?_isa} >= 4
+BuildRequires:	grid-packaging-tools >= 3.4
+BuildRequires:	globus-core%{?_isa} >= 8
 BuildRequires:	doxygen
 BuildRequires:	graphviz
 BuildRequires:	libtool-ltdl-devel
@@ -70,7 +70,7 @@ Summary:	Globus Toolkit - Common Library Development Files
 Group:		Development/Libraries
 Requires:	%{name}%{?_isa} = %{version}-%{release}
 Obsoletes:	globus-libtool-devel%{?_isa}
-Requires:	globus-core%{?_isa} >= 4
+Requires:	globus-core%{?_isa} >= 8
 #		Obsolete dropped packages from Globus Toolkit 4.2.1
 Obsoletes:	globus-data-conversion-devel
 Obsoletes:	globus-mp-devel
@@ -240,6 +240,12 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_docdir}/%{name}-%{version}/html
 
 %changelog
+* Fri Sep 02 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 14.0-3
+- Merged upstream changes in 14.0-2:
+
+    * Thu Sep 01 2011 Joseph Bester <bester@mcs.anl.gov> - 14.0-2
+    - Update for 5.1.2 release
+
 * Thu Aug 18 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 13.4-2
 - Fix obsoletes line.
 
