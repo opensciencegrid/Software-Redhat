@@ -1,6 +1,8 @@
---- globus_gram_job_manager_setup_condor-4.4/condor.in	2011-08-02 11:33:00.613000000 -0500
-+++ globus_gram_job_manager_setup_condor-4.4/condor.pm	2011-08-02 11:34:29.855000000 -0500
-@@ -380,6 +380,13 @@
+Index: condor.pm
+===================================================================
+--- condor.pm.orig	2011-09-06 17:24:28.000000000 -0500
++++ condor.pm	2011-09-06 17:25:31.000000000 -0500
+@@ -414,6 +414,13 @@
              "print: $script_filename: $!",
              Globus::GRAM::Error::TEMP_SCRIPT_FILE_FAILED());
      }
@@ -14,7 +16,7 @@
      $rc = print SCRIPT_FILE "#Extra attributes specified by client\n";
      if (!$rc)
      {
-@@ -703,6 +710,7 @@
+@@ -737,6 +744,7 @@
  
      if($num_abort > 0)
      {
@@ -22,7 +24,7 @@
          return Globus::GRAM::Error::SYSTEM_CANCELLED();
      }
      elsif($num_done == $description->count())
-@@ -712,6 +720,7 @@
+@@ -746,6 +754,7 @@
          $self->nfssync( $description->stderr(), 0 )
              if $description->stderr() ne '';
  
@@ -30,7 +32,7 @@
          $state = Globus::GRAM::JobState::DONE;
      }
      elsif($num_run == 0)
-@@ -768,4 +777,30 @@
+@@ -802,4 +811,30 @@
      return $rc;
  }
  

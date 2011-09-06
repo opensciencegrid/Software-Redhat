@@ -1,5 +1,7 @@
---- _build_results/BUILD/globus_gram_job_manager_setup_condor-4.4/condor.in	2011-08-08 07:07:14.000000000 -0500
-+++ condor.pm	2011-08-08 07:13:55.000000000 -0500
+Index: condor.pm
+===================================================================
+--- condor.pm.orig	2011-09-06 17:25:31.000000000 -0500
++++ condor.pm	2011-09-06 17:26:35.000000000 -0500
 @@ -33,7 +33,7 @@
  
  @ISA = qw(Globus::GRAM::JobManager);
@@ -9,7 +11,7 @@
  
  BEGIN
  {
-@@ -48,6 +48,8 @@
+@@ -53,6 +53,8 @@
      {
          $ENV{CONDOR_CONFIG} = $condor_config;
      }
@@ -18,7 +20,7 @@
  }
  
  sub new
-@@ -61,6 +63,23 @@
+@@ -66,6 +68,23 @@
      my $stderr = $description->stderr();
      my $globus_condor_conf = "$Globus::Core::Paths::sysconfdir/globus-condor.conf";
  
@@ -42,7 +44,7 @@
      if (! exists($self->{condor_logfile}))
      {
          if(! exists($ENV{GLOBUS_SPOOL_DIR}))
-@@ -116,6 +135,7 @@
+@@ -122,6 +141,7 @@
      my $status;
      my ($condor_submit_out, $condor_submit_err);
      my $rc;
@@ -50,7 +52,7 @@
  
      # Reject jobs that want streaming, if so configured
      if ( $description->streamingrequested() &&
-@@ -199,6 +219,45 @@
+@@ -205,6 +225,45 @@
          }
      }
  
@@ -96,7 +98,7 @@
      $environment_string = join(';',
                                 map {$_->[0] . "=" . $_->[1]} @environment);
  
-@@ -387,6 +446,36 @@
+@@ -421,6 +480,36 @@
              "print: $script_filename: $!",
              Globus::GRAM::Error::TEMP_SCRIPT_FILE_FAILED());
      }
@@ -133,7 +135,7 @@
      $rc = print SCRIPT_FILE "#Extra attributes specified by client\n";
      if (!$rc)
      {
-@@ -401,6 +490,13 @@
+@@ -435,6 +524,13 @@
              "print: $script_filename: $!",
              Globus::GRAM::Error::TEMP_SCRIPT_FILE_FAILED());
      }

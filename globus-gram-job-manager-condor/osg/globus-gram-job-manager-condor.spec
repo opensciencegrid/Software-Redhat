@@ -8,8 +8,8 @@
 
 Name:		globus-gram-job-manager-condor
 %global _name %(tr - _ <<< %{name})
-Version:	0.0
-Release:	4%{?dist}
+Version:	1.0
+Release:	3%{?dist}
 Summary:	Globus Toolkit - Condor Job Manager
 
 Group:		Applications/Internet
@@ -28,16 +28,20 @@ Patch5:         conf_location.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
-
-Requires:	globus-gram-job-manager-scripts
+Obsoletes:      globus-gram-job-manager-setup-condor < 4.5
+Requires:	globus-gram-job-manager-scripts >= 3.4
 Requires:	globus-gass-cache-program >= 2
 Requires:	globus-common-progs >= 2
 Requires:	globus-gram-job-manager >= 10.59
 Requires:	globus-gatekeeper >= 7.3
 Requires:       condor
 Requires:	perl(:MODULE_COMPAT_%(eval "`perl -V:version`"; echo $version))
-BuildRequires:	grid-packaging-tools
-BuildRequires:	globus-core
+Requires(post): globus-gram-job-manager-scripts >= 4
+Requires(preun): globus-gram-job-manager-scripts >= 4
+Provides:       globus-gram-job-manager-setup
+Provides:       globus-gram-job-manager-setup-condor
+BuildRequires:	grid-packaging-tools >= 3.4
+BuildRequires:	globus-core >= 8
 BuildRequires:	doxygen
 BuildRequires:	graphviz
 %if "%{?rhel}" == "5"
@@ -49,9 +53,6 @@ BuildRequires:	tex(latex)
 %else
 BuildRequires:	tetex-latex
 %endif
-
-Provides:  globus-gram-job-manager-setup-condor
-Obsoletes: globus-gram-job-manager-setup-condor < 4.5
 
 %description
 The Globus Toolkit is an open source software toolkit used for building Grid
@@ -73,6 +74,7 @@ Condor Job Manager
 %patch5 -p0
 
 
+%build
 # Remove files that should be replaced during bootstrap
 rm -f doxygen/Doxyfile*
 rm -f doxygen/Makefile.am
@@ -82,9 +84,9 @@ rm -rf autom4te.cache
 
 %{_datadir}/globus/globus-bootstrap.sh
 
-CONDOR_RM=/usr/bin/condor_rm \
-CONDOR_SUBMIT=/usr/bin/condor_submit \
-    %configure --%{docdiroption}=%{_docdir}/%{name}-%{version}
+export CONDOR_RM=/usr/bin/condor_rm
+export CONDOR_SUBMIT=/usr/bin/condor_submit
+%configure --%{docdiroption}=%{_docdir}/%{name}-%{version}
 
 make %{?_smp_mflags}
 
@@ -108,6 +110,7 @@ cat $GLOBUSPACKAGEDIR/%{_name}/noflavor_data.filelist \
 
 cat package.filelist
 
+## OSG-specific additions
 cat >> $RPM_BUILD_ROOT%{_sysconfdir}/globus/globus-condor.conf << EOF
 
 # Enable Condor file transfer mode by default on the OSG
@@ -126,19 +129,38 @@ touch $RPM_BUILD_ROOT%{_sysconfdir}/osg/extattr_table.txt
 rm -rf $RPM_BUILD_ROOT
 
 %post
-globus-gatekeeper-admin -e jobmanager-condor
+if [ $1 -ge 1 ]; then
+    globus-gatekeeper-admin -e jobmanager-condor > /dev/null 2>&1 || :
+    if [ ! -f /etc/grid-services/jobmanager ]; then
+        globus-gatekeeper-admin -e jobmanager-condor -n jobmanager
+    fi
+fi
+
+%preun
+if [ $1 -eq 0 ]; then
+    globus-gatekeeper-admin -d jobmanager-condor > /dev/null 2>&1 || :
+fi
 
 %postun
-globus-gatekeeper-admin -d jobmanager-condor || true
+if [ $i -eq 0 -a ! -f /etc/grid-services/jobmanager ]; then
+    globus-gatekeeper-admin -E > /dev/null 2>&1 || :
+fi
 
 %files -f package.filelist
 %defattr(-,root,root,-)
 %dir %{_datadir}/globus/packages/%{_name}
+%dir %{_docdir}/%{name}-%{version}
+%config(noreplace) %{_sysconfdir}/grid-services/available/jobmanager-condor
 %config(noreplace) %{_sysconfdir}/osg/extattr_table.txt
 %config(noreplace) %{_sysconfdir}/osg/uid_table.txt
 %{perl_vendorlib}/Globus/GRAM/JobManager/condor_accounting_groups.pm
 
 %changelog
+* Tue Sep 06 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0-3
+- Merged upstream 1.0-2:
+    * Thu Sep 01 2011 Joseph Bester <bester@mcs.anl.gov> - 1.0-2
+    - Update for 5.1.2 release
+
 * Thu Aug 18 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 0.0-4
 - Fix default configuration file.
 
