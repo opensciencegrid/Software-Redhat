@@ -1,5 +1,1 @@
-
-This is a copy of the EPEL SRPM.
-
-A deadlocking fix observed in Condor-G gahp_server has been included.
-
+Source downloaded from 'http://bamboo.globus.org/browse/GT512-RPMCENTOS5-7/artifact/SRPMS/globus-gass-transfer-7.0-2.src.rpm'
