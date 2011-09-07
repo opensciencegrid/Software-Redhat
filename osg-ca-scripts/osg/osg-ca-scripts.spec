@@ -79,7 +79,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/cron.d/osg-update-certs
 
 %config(noreplace) %{_sysconfdir}/osg/osg-update-certs.conf
-%config{noreplace} %{_sysconfdir}/logrotate.d/osg-ca-scripts
+%config(noreplace) %{_sysconfdir}/logrotate.d/osg-ca-scripts
 
 
 %changelog
