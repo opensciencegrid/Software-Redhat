@@ -4,12 +4,16 @@
 %global flavor gcc32
 %endif
 
+%if "%{?rhel}" == "5"
 %global docdiroption "with-docdir"
+%else
+%global docdiroption "docdir"
+%endif
 
 Name:		globus-gridftp-server
 %global _name %(tr - _ <<< %{name})
-Version:	5.4
-Release:	7%{?dist}
+Version:	6.0
+Release:	4%{?dist}
 Summary:	Globus Toolkit - Globus GridFTP Server
 
 Group:		System Environment/Libraries
@@ -27,33 +31,33 @@ Source2:	globus-gridftp-server.i386.sysconfig
 Patch0:		osg-gridftp.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-Requires:	globus-xio-gsi-driver%{?_isa} >= 1
-BuildRequires:	grid-packaging-tools
-BuildRequires:	globus-gridftp-server-control-devel%{?_isa}
-BuildRequires:	globus-usage-devel%{?_isa} >= 1
-BuildRequires:	globus-xio-gsi-driver-devel%{?_isa} >= 1
-BuildRequires:	globus-xio-devel%{?_isa}
-BuildRequires:	globus-authz-devel%{?_isa}
-BuildRequires:	globus-gfork-devel%{?_isa}
-BuildRequires:	globus-ftp-control-devel%{?_isa} >= 1
+Requires:	globus-xio-gsi-driver%{?_isa} >= 2
+BuildRequires:	grid-packaging-tools >= 3.4
+BuildRequires:	globus-gridftp-server-control-devel%{?_isa} >= 2
+BuildRequires:	globus-usage-devel%{?_isa} >= 3
+BuildRequires:	globus-xio-gsi-driver-devel%{?_isa} >= 2
+BuildRequires:	globus-xio-devel%{?_isa} >= 3
+BuildRequires:	globus-authz-devel%{?_isa} >= 2
+BuildRequires:	globus-gfork-devel%{?_isa} >= 3
+BuildRequires:	globus-ftp-control-devel%{?_isa} >= 4
 
 %package progs
 Summary:	Globus Toolkit - Globus GridFTP Server Programs
 Group:		Applications/Internet
 Requires:	%{name}%{?_isa} = %{version}-%{release}
-Requires:	globus-xio-gsi-driver%{?_isa}
+Requires:	globus-xio-gsi-driver%{?_isa} >= 2
 
 %package devel
 Summary:	Globus Toolkit - Globus GridFTP Server Development Files
 Group:		Development/Libraries
 Requires:	%{name}%{?_isa} = %{version}-%{release}
-Requires:	globus-gridftp-server-control-devel%{?_isa}
-Requires:	globus-usage-devel%{?_isa} >= 1
-Requires:	globus-xio-gsi-driver-devel%{?_isa}
-Requires:	globus-xio-devel%{?_isa}
-Requires:	globus-authz-devel%{?_isa}
-Requires:	globus-gfork-devel%{?_isa}
-Requires:	globus-ftp-control-devel%{?_isa} >= 1
+Requires:	globus-gridftp-server-control-devel%{?_isa} >= 2
+Requires:	globus-usage-devel%{?_isa} >= 3
+Requires:	globus-xio-gsi-driver-devel%{?_isa} >= 2
+Requires:	globus-xio-devel%{?_isa} >= 3
+Requires:	globus-authz-devel%{?_isa} >= 2
+Requires:	globus-gfork-devel%{?_isa} >= 3
+Requires:	globus-ftp-control-devel%{?_isa} >= 4
 
 %description
 The Globus Toolkit is an open source software toolkit used for building Grid
@@ -104,12 +108,15 @@ export GRIDMAP=/etc/grid-security/grid-mapfile
            --%{docdiroption}=%{_docdir}/%{name}-%{version} \
            --disable-static
 
-
 make %{?_smp_mflags}
 
 %install
 rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
+mv $RPM_BUILD_ROOT%{_sysconfdir}/gridftp.conf.default $RPM_BUILD_ROOT%{_sysconfdir}/gridftp.conf
+mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/xinetd.d
+mv $RPM_BUILD_ROOT%{_sysconfdir}/gridftp.xinetd.default $RPM_BUILD_ROOT%{_sysconfdir}/xinetd.d/gridftp
+mv $RPM_BUILD_ROOT%{_sysconfdir}/gridftp.gfork.default $RPM_BUILD_ROOT%{_sysconfdir}/gridftp.gfork
 
 GLOBUSPACKAGEDIR=$RPM_BUILD_ROOT%{_datadir}/globus/packages
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig
@@ -129,6 +136,7 @@ cat $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_rtl.filelist \
   | sed s!^!%{_prefix}! > package.filelist
 cat $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_pgm.filelist \
     $GLOBUSPACKAGEDIR/%{_name}/noflavor_data.filelist \
+  | grep -Ev '(gridftp.conf.default|gridftp.xinetd.default|gridftp.gfork.default)' \
   | sed -e s!^!%{_prefix}! | sed -e s!^/usr/etc!/etc! \
   > package-progs.filelist
 cat $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_dev.filelist \
@@ -138,23 +146,27 @@ cat $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_dev.filelist \
 rm -rf $RPM_BUILD_ROOT
 
 %post -p /sbin/ldconfig
+%postun -p /sbin/ldconfig
 
 %post progs
-/sbin/chkconfig --add globus-gridftp-server
-/sbin/chkconfig --add globus-gridftp-sshftp
-/etc/init.d/globus-gridftp-sshftp start  >/dev/null
+if [ $1 -eq 1 ]; then
+    /sbin/chkconfig --add globus-gridftp-server
+    /sbin/chkconfig --add globus-gridftp-sshftp
+fi
 
 %preun progs
-if /etc/init.d/globus-gridftp-server status; then
-    /etc/init.d/globus-gridftp-server stop
+if [ $1 -eq 0 ]; then
+    /sbin/chkconfig --del globus-gridftp-server
+    /sbin/chkconfig --del globus-gridftp-sshftp
+    /sbin/service globus-gridftp-server stop
+    /sbin/service globus-gridftp-sshftp stop
 fi
-if /etc/init.d/globus-gridftp-sshftp status; then
-    /etc/init.d/globus-gridftp-sshftp stop
-fi
-/sbin/chkconfig --del globus-gridftp-server
-/sbin/chkconfig --del globus-gridftp-sshftp
 
-%postun -p /sbin/ldconfig
+%postun progs
+if [ $1 -ge 1 ]; then
+    /sbin/service globus-gridftp-server condrestart > /dev/null 2>&1 || :
+    /sbin/service globus-gridftp-sshftp condrestart > /dev/null 2>&1 || :
+fi
 
 %files -f package.filelist
 %defattr(-,root,root,-)
@@ -164,11 +176,21 @@ fi
 %files -f package-progs.filelist progs
 %defattr(-,root,root,-)
 %config(noreplace) %{_sysconfdir}/sysconfig/%{name}
+%config(noreplace) %{_sysconfdir}/gridftp.conf
+%config(noreplace) %{_sysconfdir}/gridftp.gfork
+%config(noreplace) %{_sysconfdir}/xinetd.d/gridftp
 
 %files -f package-devel.filelist devel
 %defattr(-,root,root,-)
 
 %changelog
+* Wed Sep 07 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 6.0-4
+- Merge upstream 6.0-3:
+    * Wed Aug 31 2011 Joseph Bester <bester@mcs.anl.gov> - 6.0-3
+    - Add more config files for xinetd or gfork startup
+    - Update to Globus Toolkit 5.1.2
+- Fix condition in post-script for progs
+
 * Tue Aug 30 2011 Doug Strain <doug.strain@fnal.gov> - 5.4-4
 - Updated to work on RHEL5
 - Updated to patch conf to use log file options
