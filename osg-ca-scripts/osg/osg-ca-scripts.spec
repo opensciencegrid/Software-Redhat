@@ -1,6 +1,6 @@
 
 Name:      osg-ca-scripts
-Version:   0.0.6
+Version:   0.0.7
 Release:   1%{?dist}
 Summary:   CA Certificate helper scripts
 
@@ -14,6 +14,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch: noarch
 
 Requires: /usr/bin/openssl
+Requires: logrotate
 
 Provides: grid-certificates = 6
 Conflicts: osg-ca-certs
@@ -55,6 +56,10 @@ install -d $RPM_BUILD_ROOT/%{_sysconfdir}/cron.d/
 install -m 755 init.d/osg-update-certs-cron $RPM_BUILD_ROOT/%{_sysconfdir}/rc.d/init.d/
 install -m 644 cron.d/osg-update-certs $RPM_BUILD_ROOT/%{_sysconfdir}/cron.d/
 
+# Log rotation
+install -d $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d
+install -m 0644 logrotate/osg-ca-scripts.logrotate $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/osg-ca-scripts
+
 # Create state directory
 install -d $RPM_BUILD_ROOT%{_localstatedir}/lib/osg
 
@@ -74,13 +79,17 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/cron.d/osg-update-certs
 
 %config(noreplace) %{_sysconfdir}/osg/osg-update-certs.conf
+%config{noreplace} %{_sysconfdir}/logrotate.d/osg-ca-scripts
 
 
 %changelog
+* Wed Sep 07 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 0.0.7-1
+- Added logrotation
+
 * Mon Aug 22 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 0.0.4-1
 - Bug fixes
 
-# Mon Aug 22 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 0.0.2-1
+* Mon Aug 22 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 0.0.2-1
 - Added cron job
 
 * Thu Aug 18 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 0.0.1-2
