@@ -1,6 +1,8 @@
---- JobDescription.pm.in	2011-07-23 10:27:29.000000000 -0500
-+++ JobDescription.pm.in	2011-08-07 13:48:34.000000000 -0500
-@@ -381,6 +381,9 @@
+Index: JobDescription.pm.in
+===================================================================
+--- JobDescription.pm.in.orig	2011-09-07 11:52:44.000000000 -0500
++++ JobDescription.pm.in	2011-09-07 11:53:10.000000000 -0500
+@@ -395,6 +395,9 @@
      } else {
          my %preset = ( %ENV ); # as meager as it may be
  
