@@ -2,7 +2,7 @@
 Name:      osg-client
 Summary:   OSG Client
 Version:   3.0.0
-Release:   8
+Release:   9
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -15,7 +15,7 @@ Requires: osg-wn-client
 Requires: ndt
 Requires: condor
 Requires: bwctl
-Requires: gsissh
+Requires: gsi-openssh
 Requires: nmap
 Requires: lcg-info
 Requires: lcg-infosites
@@ -40,6 +40,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_sysconfdir}/osg
 
 %changelog
+* Thu Sep 08 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 3.0.0-9
+- gsissh renamed to gsi-openssh
+
 * Mon Aug 15 2011 Derek Weitzel <dweitzel@cse.unl.edu> - 3.0.0-8
 - Removed the osg-voms-compat package as a dependency.
 
