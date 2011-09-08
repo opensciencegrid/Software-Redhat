@@ -15,9 +15,11 @@ Source0:        osg-certificates-1.22.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
-Provides:       grid-certificates = 7
+Provides:       grid-certificates = 6
 
 Conflicts:      osg-ca-scripts
+
+Obsoletes:      vdt-ca-certs
 
 %description
 %{summary}
@@ -45,6 +47,7 @@ rm -rf $RPM_BUILD_ROOT
 * Thu Sep 8 2011 Anand Padmanabhan <apadmana@uiuc.edu> - 1:1.22-1
 - Released 1.22
 - Changed name from osg-ca-certs to osg-ca-certs-compat
+- Added an Obsoletes line to vdt-ca-certs to make sure that there is an upgrade path for people using the VDT RPM
 
 * Thu Aug 18 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1:1.20-3
 Fix conflicts line.

@@ -1,22 +1,24 @@
-Name:           osg-ca-certs-experimental
-Version:        1.20
-Release:        3
-Summary:        OSG Packaging of the IGTF CA Certs and OSG-specific CAs, in the new OpenSSL 0.9.8/1.0.0 format
+Name:           igtf-ca-certs
+Version:        1.40
+Release:        4
+Summary:        OSG Packaging of the IGTF CA Certs
 
 Group:          System Environment/Base
 License:        Unknown
 URL:            http://software.grid.iu.edu/pacman/cadist/
 
 # Note: currently, one needs a valid client certificate to access the source tarball
-# https://osg-svn.rtinfo.indiana.edu/cadist/release/osg-certificates-1.20NEW.tar.gz
-Source0:        osg-certificates-1.20NEW.tar.gz
+# https://osg-svn.rtinfo.indiana.edu/cadist/release/osg-certificates-1.20IGTFNEW.tar.gz
+Source0:        osg-certificates-1.20IGTFNEW.tar.gz
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
-Provides:       grid-certificates = 6
+Provides:       grid-certificates = 5
 
 Conflicts:      osg-ca-scripts
+
+Obsoletes:      vdt-ca-certs
 
 %description
 %{summary}
@@ -41,12 +43,15 @@ rm -rf $RPM_BUILD_ROOT
 %doc
 
 %changelog
-* Thu Aug 18 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.20-3
+* Thu Sep 8 2011 Anand Padmanabhan <apadmana@uiuc.edu> - 1.40-5
+- Changed name from igtf-ca-certs-experimental to igtf-ca-certs
+
+* Thu Aug 18 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.40-3
 Fix conflicts line.
 
-* Wed Aug 17 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.20-2
+* Wed Aug 17 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.40-2
 - Fix directory ownership issue.
 
-* Mon Aug 15 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.20-1
-- Initial version, based on osg-ca-certs spec file.
+* Mon Aug 15 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.40-1
+- Initial packaging of the IGTF CA certs (new format) from OSG.
 
