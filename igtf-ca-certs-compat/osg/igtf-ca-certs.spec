@@ -1,6 +1,6 @@
-Name:           igtf-ca-certs
+Name:           igtf-ca-certs-compat
 Version:        1.40
-Release:        4
+Release:        5
 Summary:        OSG Packaging of the IGTF CA Certs
 
 Group:          System Environment/Base
@@ -42,6 +42,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc
 
 %changelog
+* Thu Sep 8 2011 Anand Padmanabhan <apadmana@uiuc.edu> - 1.40-5
+- Changed name from osg-ca-certs to igtf-ca-certs-compat
+
 * Thu Aug 18 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.40-4
 Fix conflicts and obsoletes.
 
