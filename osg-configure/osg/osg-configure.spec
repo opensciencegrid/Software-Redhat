@@ -1,5 +1,5 @@
 %global name osg-configure
-%global version 0.5.3
+%global version 0.5.4
 %global release 1%{?dist}
 
 Summary: Package for configure-osg and associated scripts
@@ -190,8 +190,8 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/osg/config.d/15-managedfork.ini
 
 %changelog
-* Thu Sep 8 2011 Suchandra Thapa <sthapa@ci.uchicago.edu> - 0.5.3-1
-- Update to 0.5.3
+* Thu Sep 8 2011 Suchandra Thapa <sthapa@ci.uchicago.edu> - 0.5.4-1
+- Update to 0.5.4
 - Add more subpackages for config files
 
 * Mon Aug 26 2011 Suchandra Thapa <sthapa@ci.uchicago.edu> - 0.5.2-1
