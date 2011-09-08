@@ -1,7 +1,7 @@
 Name:      osg-ce
 Summary:   OSG Compute Element 
 Version:   3.0.0
-Release:   10
+Release:   11
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -27,9 +27,6 @@ Requires: edg-mkgridmap
 Requires: osg-site-verify
 
 # For the CE authz
-Requires: lcmaps-plugins-gums
-Requires: lcmaps-plugins-verify-proxy
-Requires: lcmaps-plugins-basic
 %ifarch %{ix86}
 Requires: liblcas_lcmaps_gt4_mapping.so.0
 %else
@@ -91,6 +88,11 @@ rm -rf $RPM_BUILD_ROOT
 %files sge
 
 %changelog
+* Thu Sep 01 2011 Dave Dykstra <dwd@fnal.gov> - 3.0.0-11
+- Removed lcmaps-plugins-* requires.  A couple of them were now wrong,
+  and in any case they are pulled in by the lcmaps package which is
+  pulled in by lcas-lcmaps-gt4-interface.
+
 * Wed Aug 31 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 3.0.0-10
 - Do not mark this as a noarch package, as we depend directly on a arch-specific RPM.
 
