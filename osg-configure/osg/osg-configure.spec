@@ -73,6 +73,40 @@ Group: Grid
 Provides: configure-osg-sge
 %description sge
 This package includes the ini file for configuring sge using configure-osg
+%package monalisa
+Summary: Configure-osg configuration files for monalisa
+Group: Grid
+Provides: configure-osg-monalisa
+%description monalisa
+This package includes the ini files for configuring monalisa
+%package ce
+Summary: Configure-osg configuration files for CE
+Group: Grid
+Provides: configure-osg-ce
+%description ce
+This package includes the ini files for configuring a basic CE using 
+configure-osg.  One of the packages for the job manager configuration also 
+needs to be installed for the CE configuration.
+%package misc
+Summary: Configure-osg configuration files for misc software
+Group: Grid
+Provides: configure-osg-misc
+%description misc
+This package includes the ini files for various osg software including
+certificates setup and glexec
+%package squid
+Summary: Configure-osg configuration files for squid
+Group: Grid
+Provides: configure-osg-squid
+%description squid
+This package includes the ini files for configuring an OSG system to use squid
+%package managedfork
+Summary: Configure-osg configuration files for managedfork
+Group: Grid
+Provides: configure-osg-managedfork
+%description managedfork
+This package includes the ini files for configuring an OSG CE to use
+managedfork 
 
 %prep
 %setup
@@ -83,14 +117,21 @@ This package includes the ini file for configuring sge using configure-osg
 %install
 %{__python} setup.py install --root=$RPM_BUILD_ROOT --record=INSTALLED_FILES
 # delete config files for subpackges from file list
-/bin/sed "/[23]0-*/d" INSTALLED_FILES > tmp_file
+/bin/sed "/[01234][0125]-*/d" INSTALLED_FILES > tmp_file
+mv tmp_file INSTALLED_FILES
+/bin/sed "s_/usr/bin/osg-configure_/usr/sbin/osg-configure_" INSTALLED_FILES > tmp_file
 mv tmp_file INSTALLED_FILES
 mkdir -p $RPM_BUILD_ROOT/var/log/osg/
-touch $RPM_BUILD_ROOT/var/log/osg/configure-osg.log
+touch $RPM_BUILD_ROOT/var/log/osg/osg-configure.log
 mkdir -p $RPM_BUILD_ROOT/var/lib/osg
 touch $RPM_BUILD_ROOT/var/lib/osg/osg-attributes.conf
 touch $RPM_BUILD_ROOT/var/lib/osg/osg-local-job-environment.conf
 touch $RPM_BUILD_ROOT/var/lib/osg/osg-job-environment.conf
+# following is needed to move script to sbin directory
+mkdir -p $RPM_BUILD_ROOT/usr/sbin
+mv $RPM_BUILD_ROOT/usr/bin/osg-configure $RPM_BUILD_ROOT/usr/sbin/osg-configure
+ln -s /usr/sbin/osg-configure $RPM_BUILD_ROOT/usr/sbin/configure-osg 
+rmdir $RPM_BUILD_ROOT/usr/bin
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -98,19 +139,14 @@ rm -rf $RPM_BUILD_ROOT
 %files -f INSTALLED_FILES
 %defattr(-,root,root)
 # Need the following for builds on batlab
-%{python_sitelib}/configure_osg/modules/*.pyo
-%{python_sitelib}/configure_osg/configure_modules/*.pyo
-%ghost /var/log/osg/configure-osg.log
+%{python_sitelib}/osg_configure/*.pyo
+%{python_sitelib}/osg_configure/modules/*.pyo
+%{python_sitelib}/osg_configure/configure_modules/*.pyo
+/usr/sbin/configure-osg
+%ghost /var/log/osg/osg-configure.log
 %ghost /var/lib/osg/osg-attributes.conf
 %ghost /var/lib/osg/osg-local-job-environment.conf
 %ghost /var/lib/osg/osg-job-environment.conf
-# Need the following for builds on batlab
-%{python_sitelib}/configure_osg/*.pyo
-%{python_sitelib}/configure_osg/modules/*.pyo
-%{python_sitelib}/configure_osg/configure_modules/*.pyo
-%config(noreplace) %{_sysconfdir}/osg/config.d/0*.ini
-%config(noreplace) %{_sysconfdir}/osg/config.d/1*.ini
-%config(noreplace) %{_sysconfdir}/osg/config.d/4*.ini
 
 %files rsv
 %defattr(-,root,root)
@@ -136,8 +172,28 @@ rm -rf $RPM_BUILD_ROOT
 %files sge
 %defattr(-,root,root)
 %config(noreplace) %{_sysconfdir}/osg/config.d/20-sge.ini
+%files ce
+%defattr(-,root,root)
+%config(noreplace) %{_sysconfdir}/osg/config.d/40-*.ini
+%config(noreplace) %{_sysconfdir}/osg/config.d/10-storage.ini
+%files misc
+%defattr(-,root,root)
+%config(noreplace) %{_sysconfdir}/osg/config.d/10-misc.ini
+%files squid
+%defattr(-,root,root)
+%config(noreplace) %{_sysconfdir}/osg/config.d/01-squid.ini
+%files monalisa
+%defattr(-,root,root)
+%config(noreplace) %{_sysconfdir}/osg/config.d/02-monalisa.ini
+%files managedfork
+%defattr(-,root,root)
+%config(noreplace) %{_sysconfdir}/osg/config.d/15-managedfork.ini
 
 %changelog
+* Thu Sep 8 2011 Suchandra Thapa <sthapa@ci.uchicago.edu> - 0.5.3-1
+- Update to 0.5.3
+- Add more subpackages for config files
+
 * Mon Aug 26 2011 Suchandra Thapa <sthapa@ci.uchicago.edu> - 0.5.2-1
 - Update to 0.5.2
 - Let config files reside in /etc/osg/config.d
