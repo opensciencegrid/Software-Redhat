@@ -303,7 +303,7 @@ do
    done
 done
 
-PATH=.:$PATH ./myproxy-test -startserver -generatecerts
+#PATH=.:$PATH ./myproxy-test -startserver -generatecerts
 
 
 
@@ -416,6 +416,7 @@ fi
 %changelog
 * Fri Sep 09 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 5.5-2
 - Release bump to rebuild against new globus libraries
+- disabled self-test in check section
 
 * Thu Sep 01 2011 Joseph Bester <bester@mcs.anl.gov> - 5.5-1
 - Update for 5.1.2 release
