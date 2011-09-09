@@ -1,7 +1,7 @@
 
 Name:      condor-cron
 Version:   1.0.5
-Release:   1%{?dist}
+Release:   2%{?dist}
 Summary:   A framework to run cron-style jobs within Condor
 
 Group:     Applications/System
@@ -54,6 +54,8 @@ install -m 0755 wrappers/condor_cron_config_val $RPM_BUILD_ROOT%{_bindir}/
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/condor-cron
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/condor-cron/config.d
 install -m 0644 etc/condor_config $RPM_BUILD_ROOT%{_sysconfdir}/condor-cron/
+touch $RPM_BUILD_ROOT%{_sysconfdir}/condor-cron/config.d/condor_ids
+chmod 0644 $RPM_BUILD_ROOT%{_sysconfdir}/condor-cron/config.d/condor_ids
 
 # Copy environment file into place 
 install -d $RPM_BUILD_ROOT%{_libexecdir}/condor-cron
@@ -92,6 +94,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %ghost %{_sysconfdir}/condor-cron/condor_config
 %config %{_sysconfdir}/condor-cron/condor_config
+%config %{_sysconfdir}/condor-cron/config.d/condor_ids
 
 %{_libexecdir}/condor-cron/condor-cron.sh
 
@@ -111,7 +114,7 @@ rm -rf $RPM_BUILD_ROOT
 # Need to put the uid/gid of cndrcron into the config file as CONDOR_IDS
 CC_UID=`/usr/bin/id -u cndrcron`
 CC_GID=`/usr/bin/id -g cndrcron`
-echo "CONDOR_IDS = $CC_UID.$CC_GID" > /etc/condor-cron/config.d/condor_ids
+echo "CONDOR_IDS = $CC_UID.$CC_GID" >> /etc/condor-cron/config.d/condor_ids
 
 
 %preun
