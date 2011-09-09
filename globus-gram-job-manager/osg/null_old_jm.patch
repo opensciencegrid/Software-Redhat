@@ -1,6 +1,8 @@
---- _build_results/BUILD/globus_gram_job_manager-10.70/globus_gram_job_manager_request.c	2011-08-01 20:39:42.000000000 -0500
-+++ globus_gram_job_manager_request.c	2011-08-01 20:39:16.000000000 -0500
-@@ -2135,6 +2135,13 @@
+Index: globus_gram_job_manager_request.c
+===================================================================
+--- globus_gram_job_manager_request.c.orig	2011-09-06 15:04:57.000000000 -0500
++++ globus_gram_job_manager_request.c	2011-09-06 15:09:02.000000000 -0500
+@@ -2139,6 +2139,13 @@
           * this process. If so, we'll merge the RSLs (as if we had done a
           * stdio update.
           */

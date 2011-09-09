@@ -1,6 +1,8 @@
---- Globus_gram_job_manager_scripts-2.12/JobDescription.pm	2008-12-19 16:28:34.000000000 -0600
-+++ globus_gram_job_manager_scripts-2.12/JobDescription.pm.in	2011-07-23 08:45:40.000000000 -0500
-@@ -312,6 +312,136 @@
+Index: JobDescription.pm.in
+===================================================================
+--- JobDescription.pm.in.orig	2011-08-24 10:59:48.000000000 -0500
++++ JobDescription.pm.in	2011-09-07 11:52:44.000000000 -0500
+@@ -326,6 +326,136 @@
  
  =cut
  
@@ -137,7 +139,7 @@
  sub AUTOLOAD
  {
      use vars qw($AUTOLOAD);
-@@ -322,6 +452,8 @@
+@@ -336,6 +466,8 @@
      $name =~ s/_//g;
      $name = lc($name);
  

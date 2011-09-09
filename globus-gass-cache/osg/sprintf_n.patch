@@ -1,6 +1,6 @@
---- /usr/src/debug/globus_gass_cache-5.4/globus_gass_cache.c	2011-04-30 02:37:54.000000000 -0500
-+++ globus_gass_cache.c	2011-08-01 20:01:57.000000000 -0500
-@@ -1513,14 +1513,12 @@
+--- globus_gass_cache.c.~1~	2011-03-03 04:35:05.000000000 -0600
++++ globus_gass_cache.c	2011-09-02 16:11:24.000000000 -0500
+@@ -1471,14 +1471,12 @@
  
      if ( GLOBUS_SUCCESS == rc )
      {
@@ -17,7 +17,7 @@
  
          if (names->local_mangle_root == NULL)
          {
-@@ -1529,8 +1527,8 @@
+@@ -1487,8 +1485,8 @@
          }
          else
          {
@@ -28,7 +28,7 @@
              memcpy(&names->local_mangle_root[skip],
                     mangle_prefix,
                     mangle_prefix_len);
-@@ -1539,14 +1537,12 @@
+@@ -1497,14 +1495,12 @@
      }
      if ( GLOBUS_SUCCESS == rc )
      {
@@ -45,7 +45,7 @@
  
          if (names->global_mangle_root == NULL)
          {
-@@ -1555,8 +1551,8 @@
+@@ -1513,8 +1509,8 @@
          }
          else
          {

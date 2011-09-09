@@ -12,7 +12,7 @@
 
 Name:		globus-gatekeeper
 %global _name %(tr - _ <<< %{name})
-Version:	7.3
+Version:	8.0
 Release:	2%{?dist}
 Summary:	Globus Toolkit - Globus Gatekeeper
 
@@ -27,11 +27,15 @@ Patch0:         child_signals.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-Requires:	globus-common >= 11.5
-BuildRequires:	grid-packaging-tools
-BuildRequires:	globus-gss-assist-devel%{?_isa} >= 3
-BuildRequires:	globus-gssapi-gsi-devel%{?_isa} >= 4
-BuildRequires:	globus-core%{?_isa} >= 4
+Requires:	globus-common >= 13.4
+Requires:       lsb
+Requires(post): globus-common-progs >= 13.4
+Requires(preun):globus-common-progs >= 13.4
+BuildRequires:  lsb
+BuildRequires:	grid-packaging-tools >= 3.4
+BuildRequires:	globus-gss-assist-devel%{?_isa} >= 8
+BuildRequires:	globus-gssapi-gsi-devel%{?_isa} >= 9
+BuildRequires:	globus-core%{?_isa} >= 8
 
 %description
 The Globus Toolkit is an open source software toolkit used for building Grid
@@ -47,6 +51,7 @@ Globus Gatekeeper Setup
 %setup -q -n %{_name}-%{version}
 
 %patch0 -p0
+# Note append here
 cat %{SOURCE1} >> config/globus-gatekeeper.in
 
 %build
@@ -62,7 +67,9 @@ rm -rf autom4te.cache
 %configure --with-flavor=%{flavor} \
            --%{docdiroption}=%{_docdir}/%{name}-%{version} \
            --disable-static \
-	   --with-initscript-config-path=/etc/sysconfig/globus-gatekeeper
+	   --with-initscript-config-path=/etc/sysconfig/globus-gatekeeper \
+           --with-lockfile-path='${localstatedir}/lock/subsys/globus-gatekeeper' \
+           --with-lsb
 
 make %{?_smp_mflags}
 
@@ -89,13 +96,14 @@ mkdir -p $RPM_BUILD_ROOT/etc/grid-services/available
 rm -rf $RPM_BUILD_ROOT
 
 %post
-if [ $1 = 1 ]; then
+if [ $1 -ge 1 ]; then
     /sbin/chkconfig --add %{name}
 fi
 
 %preun
-if [ $1 = 0 ]; then
+if [ $1 -eq 0 ]; then
     /sbin/chkconfig --del %{name}
+    /sbin/service %{name} stop > /dev/null 2>&1 || :
 fi
 
 %postun
@@ -109,8 +117,14 @@ fi
 %dir %{_docdir}/%{name}-%{version}
 %dir /etc/grid-services
 %dir /etc/grid-services/available
+%config(noreplace) /etc/sysconfig/globus-gatekeeper
 
 %changelog
+* Fri Sep 02 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 8.0-3
+- Merged upstream 8.0-2:
+    * Thu Sep 01 2011 Joseph Bester <bester@mcs.anl.gov> - 8.0-2
+    - Update for 5.1.2 release
+
 * Thu Aug 18 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 7.3-2
 - Port OSG patches to released gatekeeper.
 

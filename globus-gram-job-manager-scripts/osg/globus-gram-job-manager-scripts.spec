@@ -8,7 +8,7 @@
 
 Name:		globus-gram-job-manager-scripts
 %global _name %(tr - _ <<< %{name})
-Version:	3.1
+Version:	4.0
 Release:	3%{?dist}
 Summary:	Globus Toolkit - GRAM Job ManagerScripts
 
@@ -25,10 +25,10 @@ Patch2:         osg-path.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-Requires:	globus-common-progs >= 2
+Requires:	globus-common-progs >= 14
 Requires:	perl(:MODULE_COMPAT_%(eval "`perl -V:version`"; echo $version))
-BuildRequires:	grid-packaging-tools
-BuildRequires:	globus-core
+BuildRequires:	grid-packaging-tools >= 3.4
+BuildRequires:	globus-core >= 8
 
 %package doc
 Summary:	Globus Toolkit - GRAM Job ManagerScripts Documentation Files
@@ -56,8 +56,8 @@ GRAM Job ManagerScripts Documentation Files
 %prep
 %setup -q -n %{_name}-%{version}
 
-%patch0 -p1
-%patch1 -p1
+%patch0 -p0
+%patch1 -p0
 %patch2 -p0
 
 %build
@@ -106,6 +106,11 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_docdir}/%{name}-%{version}/perl/Globus/GRAM
 
 %changelog
+* Wed Sep 07 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 4.0-3
+- Merged upstream 4.0-2:
+    * Thu Sep 01 2011 Joseph Bester <bester@mcs.anl.gov> - 4.0-2
+    - Update for 5.1.2 release
+
 * Thu Aug 18 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 3.1-3
 - Small syntax error in the default path patch.
 

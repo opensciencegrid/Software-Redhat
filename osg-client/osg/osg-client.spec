@@ -14,7 +14,7 @@ Requires: java-1.6.0-sun-compat
 Requires: osg-wn-client
 Requires: ndt
 Requires: bwctl
-Requires: gsissh
+Requires: gsi-openssh
 Requires: nmap
 Requires: lcg-info
 Requires: lcg-infosites

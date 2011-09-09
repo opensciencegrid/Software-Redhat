@@ -1,21 +1,12 @@
---- startup_socket.c	2011-08-02 11:37:14.000000000 -0500
-+++ startup_socket.c	2011-08-02 11:37:22.000000000 -0500
-@@ -1185,7 +1185,7 @@
-         while (tries > 0)
-         { 
-             rc = recvmsg(manager->socket_fd, &message, 0);
--            if (rc <= 0 && errno == EINPROGRESS)
-+            if (rc <= 0 && errno == EAGAIN)
-             {
-                 tries--;
-                 globus_libc_usleep(1000);
---- /usr/src/debug/globus_gram_job_manager-10.70/startup_socket.c	2011-08-02 11:38:33.000000000 -0500
-+++ startup_socket.c	2011-08-02 12:34:33.000000000 -0500
-@@ -1188,7 +1188,7 @@
+Index: startup_socket.c
+===================================================================
+--- startup_socket.c.orig	2011-09-06 15:18:22.000000000 -0500
++++ startup_socket.c	2011-09-06 15:18:22.000000000 -0500
+@@ -1149,7 +1149,7 @@
              if (rc <= 0 && errno == EAGAIN)
              {
                  tries--;
--                globus_libc_usleep(1000);
+-                globus_libc_usleep(10000);
 +                globus_libc_usleep(1000000);
              }
              else

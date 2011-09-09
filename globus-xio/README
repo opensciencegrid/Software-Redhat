@@ -1,5 +1,4 @@
-
-This is a copy of the globus-xio package from EPEL.  We have one additional patch
+This is a copy of the globus-xio package from Globus.  We have one additional patch
 to help prevent the code from deadlocking when run in threaded mode.  Instead
 of deadlocking, it will now timeout and possibly leak some resources.
 
@@ -7,3 +6,4 @@ See the following Globus JIRA ticket for more details:
 
 http://jira.globus.org/browse/GRAM-229
 
+Source downloaded from 'http://bamboo.globus.org/browse/GT512-RPMCENTOS5-7/artifact/SRPMS/globus-xio-3.0-2.src.rpm'

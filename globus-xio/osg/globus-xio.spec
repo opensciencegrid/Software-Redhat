@@ -12,7 +12,7 @@
 
 Name:		globus-xio
 %global _name %(tr - _ <<< %{name})
-Version:	2.9
+Version:	3.0
 Release:	3%{?dist}
 Summary:	Globus Toolkit - Globus XIO Framework
 
@@ -35,9 +35,9 @@ Patch:          timeout_close.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Requires:	globus-common
-BuildRequires:	grid-packaging-tools
-BuildRequires:	globus-common-devel%{?_isa} >= 4
-BuildRequires:	globus-core%{?_isa} >= 4
+BuildRequires:	grid-packaging-tools >= 3.4
+BuildRequires:	globus-common-devel%{?_isa} >= 14
+BuildRequires:	globus-core%{?_isa} >= 8
 BuildRequires:	doxygen
 BuildRequires:	graphviz
 %if "%{?rhel}" == "5"
@@ -54,8 +54,8 @@ BuildRequires:	tetex-latex
 Summary:	Globus Toolkit - Globus XIO Framework Development Files
 Group:		Development/Libraries
 Requires:	%{name}%{?_isa} = %{version}-%{release}
-Requires:	globus-common-devel%{?_isa} >= 4
-Requires:	globus-core%{?_isa} >= 4
+Requires:	globus-common-devel%{?_isa} >= 14
+Requires:	globus-core%{?_isa} >= 8
 
 %package doc
 Summary:	Globus Toolkit - Globus XIO Framework Documentation Files
@@ -181,6 +181,11 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_docdir}/%{name}-%{version}/html
 
 %changelog
+* Wed Sep 07 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 3.0-3
+- Merged upstream 3.0-2:
+    * Thu Sep 01 2011 Joseph Bester <bester@mcs.anl.gov> - 3.0-2
+    - Update for 5.1.2 release
+
 * Thu Aug 18 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 2.9-3
 - Forward-port OSG patches.
 

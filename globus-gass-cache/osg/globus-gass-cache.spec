@@ -12,8 +12,8 @@
 
 Name:		globus-gass-cache
 %global _name %(tr - _ <<< %{name})
-Version:	7.0
-Release:	2%{?dist}
+Version:	8.0
+Release:	3%{?dist}
 Summary:	Globus Toolkit - Globus Gass Cache
 
 Group:		System Environment/Libraries
@@ -26,18 +26,18 @@ Patch0:         sprintf_n.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Requires:	openssl
-BuildRequires:	grid-packaging-tools
-BuildRequires:	globus-common-devel%{?_isa} >= 3
+BuildRequires:	grid-packaging-tools >= 3.4
+BuildRequires:	globus-common-devel%{?_isa} >= 14
 BuildRequires:	openssl-devel%{?_isa}
-BuildRequires:	globus-core%{?_isa} >= 4
+BuildRequires:	globus-core%{?_isa} >= 8
 
 %package devel
 Summary:	Globus Toolkit - Globus Gass Cache Development Files
 Group:		Development/Libraries
 Requires:	%{name}%{?_isa} = %{version}-%{release}
-Requires:	globus-common-devel%{?_isa} >= 3
+Requires:	globus-common-devel%{?_isa} >= 14
 Requires:	openssl-devel%{?_isa}
-Requires:	globus-core%{?_isa} >= 4
+Requires:	globus-core%{?_isa} >= 8
 
 %description
 The Globus Toolkit is an open source software toolkit used for building Grid
@@ -111,6 +111,12 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 
 %changelog
+* Fri Sep 02 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 8.0-3
+- Merged upstream 8.0-2:
+
+    * Thu Sep 01 2011 Joseph Bester <bester@mcs.anl.gov> - 8.0-2
+    - Update for 5.1.2 release
+
 * Thu Aug 18 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 7.0-2
 - Add OSG patches to GT5.2.
 
