@@ -1,6 +1,6 @@
 Name:           osg-release
 Version:        3.0 
-Release:        6
+Release:        7
 Summary:        OSG Software for Enterprise Linux repository configuration
 
 Group:          System Environment/Base 
@@ -15,7 +15,8 @@ Source0:        osg.repo
 Source1:        osg-development.repo
 Source2:        osg-testing.repo
 Source3:        osg-minefield.repo
-#Source4:        RPM-GPG-KEY-OSG
+Source4:        osg-contrib.repo
+#Source5:        RPM-GPG-KEY-OSG
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -40,12 +41,12 @@ rm -rf $RPM_BUILD_ROOT
 
 #GPG Key
 #mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/pki/rpm-gpg
-#install -pm 644 %{SOURCE4} \
+#install -pm 644 %{SOURCE5} \
 #    $RPM_BUILD_ROOT%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-OSG
 
 # yum
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d
-install -pm 644 %{SOURCE0} %{SOURCE1} %{SOURCE2} %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d
+install -pm 644 %{SOURCE0} %{SOURCE1} %{SOURCE2} %{SOURCE3} %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -57,6 +58,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Sep 09 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 3.0-7
+- Add in stub for the osg-contrib repository.
+
 * Fri Sep 2 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 3.0-6
 - Files changed to point to GOC repos
 - Removed conflict with fedora-release

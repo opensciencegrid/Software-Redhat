@@ -9,7 +9,7 @@ enabled=1
 
 [osg-source]
 name=OSG Software for Enterprise Linux 5 - $basearch - Source
-mirrorlist=http://repo.grid.iu.edu/mirror/osg-release/source/SRPMS
+baseurl=http://repo.grid.iu.edu/osg-release/source/SRPMS
 failovermethod=priority
 priority=98
 enabled=0
