@@ -1,7 +1,7 @@
 
 Name:      rsv-metrics
 Version:   3.4.5
-Release:   2%{?dist}
+Release:   3%{?dist}
 Summary:   RSV metrics
 
 Group:     Applications/Monitoring
@@ -19,24 +19,14 @@ BuildArch: noarch
 # these probes so this dependency can probably go away at some point.
 Requires:  perl(Date::Manip)
 
-# TODO - add the following dependencies once we know their RPM names
 Requires: /usr/bin/grid-proxy-info
 Requires: /usr/bin/globus-job-run
 Requires: /usr/bin/globusrun
 Requires: /usr/bin/globus-url-copy
 Requires: uberftp
 Requires: bestman2-client
-#package('Globus-Base-RM-Client')
-#package('SRM-Client-Fermi')
-#package('Dccp')
-#package('Gratia-Metric-Probe')
-#package('OpenLDAP')
+Requires: /usr/bin/ldapsearch
 
-# Requested by Doug Strain for his new storage metrics 2010-10
-#package('SRM-Client-LBNL')
-#package('SRM-Tester-LBNL')
-#package('OSG-Discovery')
-#package('UberFTP')
 
 %description
 %{summary}
@@ -97,7 +87,10 @@ rm -rf $RPM_BUILD_ROOT
 %attr(-,rsv,rsv) %{_localstatedir}/log/rsv/probes
 
 %changelog
-* Thu Sep 8 2011 Doug Strain <dstrain@fnal.gov> 3.4.5-2
+* Fri Sep 09 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.4.5-3
+- Further sorting through dependencies
+
+* Thu Sep 08 2011 Doug Strain <dstrain@fnal.gov> 3.4.5-2
 - Fixed some of the requires lines for bestman2-client
 
 * Wed Jul 20 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.4.0-1
