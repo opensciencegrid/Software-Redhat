@@ -1,16 +1,15 @@
 Name:           osg-ca-certs
-Version:        1.20
-Release:        3
-Epoch:          1
-Summary:        OSG Packaging of the IGTF CA Certs and OSG-specific CAs
+Version:        1.22
+Release:        2
+Summary:        OSG Packaging of the IGTF CA Certs and OSG-specific CAs, in the new OpenSSL 0.9.8/1.0.0 format
 
 Group:          System Environment/Base
 License:        Unknown
 URL:            http://software.grid.iu.edu/pacman/cadist/
 
 # Note: currently, one needs a valid client certificate to access the source tarball
-# https://osg-svn.rtinfo.indiana.edu/cadist/release/osg-certificates-1.20.tar.gz
-Source0:        osg-certificates-1.20.tar.gz
+# https://osg-svn.rtinfo.indiana.edu/cadist/release/osg-certificates-1.20NEW.tar.gz
+Source0:        osg-certificates-1.22NEW.tar.gz
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
@@ -18,6 +17,9 @@ BuildArch:      noarch
 Provides:       grid-certificates = 7
 
 Conflicts:      osg-ca-scripts
+
+Obsoletes:      vdt-ca-certs
+Obsoletes:      osg-ca-certs-experimental
 
 %description
 %{summary}
@@ -42,18 +44,20 @@ rm -rf $RPM_BUILD_ROOT
 %doc
 
 %changelog
-* Thu Aug 18 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1:1.20-3
+* Thu Sep 9 2011 Anand Padmanabhan <apadmana@uiuc.edu> - 1.22-2
+- Added osg-ca-certs-experimental in Obsoletes line 
+
+* Thu Sep 8 2011 Anand Padmanabhan <apadmana@uiuc.edu> - 1.22-1
+- Released 1.22
+- Changed name from osg-ca-certs-experimental to osg-ca-certs
+- Added an Obsoletes line to vdt-ca-certs to make sure that there is an upgrade path for people using the VDT RPM
+
+* Thu Aug 18 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.20-3
 Fix conflicts line.
 
-* Wed Aug 17 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1:1.20-2
-- Fixed ownership issue.
+* Wed Aug 17 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.20-2
+- Fix directory ownership issue.
 
 * Mon Aug 15 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.20-1
-- Update to use the package from osg-security.  Bumped epoch number to prevent confusion with old versioning.
-
-* Fri Jul 22 2011 Derek Weitzel <dweitzel@cse.unl.edu> - 3-2
-- Add provdes grid-certificates
-
-* Fri Jul 08 2011 Derek Weitzel <dweitzel@cse.unl.edu> - 3-1
-- Initial creation of RPM to pull in vdt-ca-certs.
+- Initial version, based on osg-ca-certs spec file.
 

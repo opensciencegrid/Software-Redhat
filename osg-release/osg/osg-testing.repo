@@ -9,7 +9,7 @@ enabled=0
 
 [osg-testing-source]
 name=OSG Software for Enterprise Linux 5 - Testing - $basearch - Source
-mirrorlist=http://repo.grid.iu.edu/mirror/osg-testing/source/SRPMS
+baseurl=http://repo.grid.iu.edu/osg-testing/source/SRPMS
 failovermethod=priority
 priority=98
 enabled=0

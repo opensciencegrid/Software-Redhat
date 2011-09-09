@@ -1,7 +1,7 @@
 
 Name:      condor-cron
-Version:   1.0.4
-Release:   1%{?dist}
+Version:   1.0.5
+Release:   2%{?dist}
 Summary:   A framework to run cron-style jobs within Condor
 
 Group:     Applications/System
@@ -51,26 +51,27 @@ install -m 0755 wrappers/condor_cron_version $RPM_BUILD_ROOT%{_bindir}/
 install -m 0755 wrappers/condor_cron_config_val $RPM_BUILD_ROOT%{_bindir}/
 
 # Copy config into place
-mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/condor-cron
-install -m 0644 etc/condor_config.local $RPM_BUILD_ROOT%{_sysconfdir}/condor-cron/
-touch $RPM_BUILD_ROOT%{_sysconfdir}/condor-cron/condor_config
-chmod 0644 $RPM_BUILD_ROOT%{_sysconfdir}/condor-cron/condor_config
+install -d $RPM_BUILD_ROOT%{_sysconfdir}/condor-cron
+install -d $RPM_BUILD_ROOT%{_sysconfdir}/condor-cron/config.d
+install -m 0644 etc/condor_config $RPM_BUILD_ROOT%{_sysconfdir}/condor-cron/
+touch $RPM_BUILD_ROOT%{_sysconfdir}/condor-cron/config.d/condor_ids
+chmod 0644 $RPM_BUILD_ROOT%{_sysconfdir}/condor-cron/config.d/condor_ids
 
 # Copy environment file into place 
-mkdir -p $RPM_BUILD_ROOT%{_libexecdir}/condor-cron
+install -d $RPM_BUILD_ROOT%{_libexecdir}/condor-cron
 install -m 0755 libexec/condor-cron.sh $RPM_BUILD_ROOT%{_libexecdir}/condor-cron/
 
 # Copy init script into place
-mkdir -p $RPM_BUILD_ROOT%{_initrddir}
+install -d $RPM_BUILD_ROOT%{_initrddir}
 install -m 0755 etc/condor.init $RPM_BUILD_ROOT%{_initrddir}/condor-cron
 
 # Make working directories
-mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/run/condor-cron
-mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/log/condor-cron
-mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/lib/condor-cron
-mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/lib/condor-cron/spool
-mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/lib/condor-cron/execute
-mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/lock/condor-cron
+install -d $RPM_BUILD_ROOT%{_localstatedir}/run/condor-cron
+install -d $RPM_BUILD_ROOT%{_localstatedir}/log/condor-cron
+install -d $RPM_BUILD_ROOT%{_localstatedir}/lib/condor-cron
+install -d $RPM_BUILD_ROOT%{_localstatedir}/lib/condor-cron/spool
+install -d $RPM_BUILD_ROOT%{_localstatedir}/lib/condor-cron/execute
+install -d $RPM_BUILD_ROOT%{_localstatedir}/lock/condor-cron
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -92,7 +93,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_initrddir}/condor-cron
 
 %ghost %{_sysconfdir}/condor-cron/condor_config
-%config %{_sysconfdir}/condor-cron/condor_config.local
+%config %{_sysconfdir}/condor-cron/condor_config
+%config %{_sysconfdir}/condor-cron/config.d/condor_ids
 
 %{_libexecdir}/condor-cron/condor-cron.sh
 
@@ -109,17 +111,10 @@ rm -rf $RPM_BUILD_ROOT
 /sbin/chkconfig --add condor-cron
 /sbin/ldconfig
 
-# Use the condor_config.generic file to make the base file
-# WARNING: This command might pick up the wrong file if the wildcard picks
-#          up more than one condor-* directory.
-cp /usr/share/doc/condor-*/etc/examples/condor_config.generic $RPM_BUILD_ROOT%{_sysconfdir}/condor-cron/condor_config
-# Update the local config file location
-perl -pi -e's|^(LOCAL_CONFIG_FILE\s*=).+$|$1 /etc/condor-cron/condor_config.local|' /etc/condor-cron/condor_config
-
 # Need to put the uid/gid of cndrcron into the config file as CONDOR_IDS
 CC_UID=`/usr/bin/id -u cndrcron`
 CC_GID=`/usr/bin/id -g cndrcron`
-echo "CONDOR_IDS = $CC_UID.$CC_GID" >> /etc/condor-cron/condor_config.local
+echo "CONDOR_IDS = $CC_UID.$CC_GID" >> /etc/condor-cron/config.d/condor_ids
 
 
 %preun
@@ -139,6 +134,9 @@ fi
 
 
 %changelog
+* Fri Sep 09 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 1.0.5-1
+- Changed how we handle configuration
+
 * Thu Aug 11 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 1.0.3-1
 - Numerous fixes based on feedback
 

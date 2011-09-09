@@ -1,6 +1,6 @@
 Name:           glideinwms-vofrontend
-Version:        2.5.1
-Release:        13
+Version:        2.5.2
+Release:        3
 Summary:        The VOFrontend for glideinWMS submission host
 
 Group:          System Environment/Daemons
@@ -17,13 +17,12 @@ Obsoletes:	GlideinWMSFrontend < 2.5.1-11
 
 #Source0:        http://www.uscms.org/SoftwareComputing/Grid/WMS/glideinWMS/glideinWMS_v2_5_1_frontend.tgz
 #Source0:        GlideinWMSFrontend-2.5.1.tar.gz
-Source0:	glideinWMS_v2_5_1_frontend.tgz
+Source0:	glideinWMS_v2_5_2_frontend.tgz
 
 # How to build tar file
-# cvs -d :pserver:anonymous@cdcvs.fnal.gov:/cvs/cd_read_only co -r v2_5 glideinWMS
-# mv glideinWMS GlideinWMSFrontend-2.5.0
-# tar czf GlideinWMSFrontend-2.5.0-3.tar.gz GlideinWMSFrontend-2.5.0/
-# cp GlideinWMSFrontend-2.5.0-3.tar.gz ~/rpmbuild/SOURCES
+# git clone http://cdcvs.fnal.gov/projects/glideinwms
+# cd glideinwms
+# git archive v2_5_2 --prefix='glideinWMS/' | gzip > ~/rpmbuild/SOURCES/glideinWMS_v2_5_2_frontend.tgz
 
 Source1:        frontend_startup
 Source2:        frontend.xml
@@ -31,12 +30,16 @@ Source3:        gwms-frontend.conf.httpd
 Source4:        00_frontend.config
 Source5:        01_collectors.config
 Source6:	02_frontend-local.config
+Source7:	checksum.frontend
 patch0:         reconfig_frontend.patch
 patch1:         cvWParamDict.py.patch
 patch2: 	cvWParams.py.patch
+patch3:		glideinwms_version.patch
 
 Requires: httpd
-Requires: condor
+# We require Condor 7.6.0 (and newer) to support 
+# condor_advertise -multiple -tcp which is enabled by default
+Requires: condor >= 7.6.0
 Requires: python-rrdtool
 Requires: m2crypto
 Requires: javascriptrrd
@@ -62,9 +65,10 @@ for scheduling and job control.
 %prep
 %setup -q -n glideinWMS
 # Apply the patches
-%patch -P 0
-%patch -P 1 -R -p0
+%patch -P 0 -p1
+%patch -P 1 -p1
 %patch -P 2 -p1
+%patch -P 3 -p1
 
 %build
 #make %{?_smp_mflags}
@@ -179,6 +183,9 @@ for file in `ls tools/*.py`; do
 done
 cp tools/lib/*.py $RPM_BUILD_ROOT%{python_sitelib}
 
+# Install checksum file
+install -m 0644 %{SOURCE7} $RPM_BUILD_ROOT%{_datadir}/gwms-frontend/frontend-temp/checksum.frontend
+
 %post
 # $1 = 1 - Installation
 # $1 = 2 - Upgrade
@@ -242,6 +249,15 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Sep 06 2011 Burt Holzman <burt@fnal.gov> - 2.5.2-3
+- Fixed glideinWMS versioning advertisement
+
+* Wed Aug 31 2011 Burt Holzman <burt@fnal.gov> - 2.5.2-2
+- Fixed file location for frontend_support.js
+
+* Wed Aug 13 2011 Burt Holzman <burt@fnal.gov> - 2.5.2-1
+- Update to glideinWMS 2.5.2
+
 * Tue Aug 02 2011 Derek Weitzel <dweitzel@cse.unl.edu> - 2.5.1-13
 - Made vdt-repo compatible
 

@@ -54,8 +54,8 @@ cms.fxhold 60s
 cms.perf int 30s pgm /usr/share/xrootd/scripts/XrdOlbMonPerf 30
 
 if exec xrootd
-  xrd.report $monitoringhost:3333 every 300s all
-  xrootd.monitor all flush 5s mbuff 1k window 1s dest files io info user $monitoringhost:9930
+  xrd.report xrootd.t2.ucsd.edu:9931 every 30s all sync
+  xrootd.monitor all auth flush 30s mbuff 1472 window 5s dest files io info user xrootd.t2.ucsd.edu:9930
 fi
 
 # Caching directives 

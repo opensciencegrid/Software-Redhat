@@ -2,7 +2,7 @@
 Name:      osg-client
 Summary:   OSG Client
 Version:   3.0.0
-Release:   9
+Release:   10
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -13,7 +13,6 @@ BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 Requires: java-1.6.0-sun-compat
 Requires: osg-wn-client
 Requires: ndt
-Requires: condor
 Requires: bwctl
 Requires: gsi-openssh
 Requires: nmap
@@ -30,6 +29,16 @@ Requires: osg-system-profiler
 %description
 %{summary}
 
+%package condor
+Group: Grid
+Summary:  OSG Client with Condor
+
+Requires: %{name} = %{version}-%{release}
+Requires: condor
+
+%description condor
+%{summary}
+
 %install
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/osg
 
@@ -39,8 +48,13 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %dir %{_sysconfdir}/osg
 
+%files condor
+
 %changelog
-* Thu Sep 08 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 3.0.0-9
+* Thu Sep 8 2011 Alain Roy <roy@cs.wisc.edu> - 3.0.0-10
+- Added condor subpackage so people can choose to install without Condor dependency
+
+* Thu Sep 08 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 3.0.0-9 
 - gsissh renamed to gsi-openssh
 
 * Mon Aug 15 2011 Derek Weitzel <dweitzel@cse.unl.edu> - 3.0.0-8
