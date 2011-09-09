@@ -1,6 +1,5 @@
-
-This SRPM packages the IGTF CA certificates, based on the OSG re-packaging.
-The produced RPMs includes the distribution in the OpenSSL 0.9.8 format.
+This package is the IGTF CA certificate set, in the legacy OpenSSL 0.9.8
+format, as prepared by the OSG-Security team.
 
 The packages satisfy the virtual dependency of "grid-certificates" and purposely
 conflict with osg-ca-certs and osg-ca-manage

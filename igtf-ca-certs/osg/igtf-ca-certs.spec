@@ -1,7 +1,7 @@
 Name:           igtf-ca-certs
 Version:        1.40
-Release:        4
-Summary:        OSG Packaging of the IGTF CA Certs
+Release:        5
+Summary:        OSG Packaging of the IGTF CA Certs, in new OpenSSL 0.9.8/1.0.0 format
 
 Group:          System Environment/Base
 License:        Unknown
@@ -19,6 +19,7 @@ Provides:       grid-certificates = 5
 Conflicts:      osg-ca-scripts
 
 Obsoletes:      vdt-ca-certs
+Obsoletes:      igtf-ca-certs-experimental
 
 %description
 %{summary}
@@ -43,6 +44,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc
 
 %changelog
+* Thu Sep 9 2011 Anand Padmanabhan <apadmana@uiuc.edu> - 1.22-2
+- Added osg-ca-certs-experimental in Obsoletes line
+
 * Thu Sep 8 2011 Anand Padmanabhan <apadmana@uiuc.edu> - 1.40-5
 - Changed name from igtf-ca-certs-experimental to igtf-ca-certs
 

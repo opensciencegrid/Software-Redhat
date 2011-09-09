@@ -1,6 +1,6 @@
 Name:           osg-ca-certs
 Version:        1.22
-Release:        1
+Release:        2
 Summary:        OSG Packaging of the IGTF CA Certs and OSG-specific CAs, in the new OpenSSL 0.9.8/1.0.0 format
 
 Group:          System Environment/Base
@@ -19,6 +19,7 @@ Provides:       grid-certificates = 7
 Conflicts:      osg-ca-scripts
 
 Obsoletes:      vdt-ca-certs
+Obsoletes:      osg-ca-certs-experimental
 
 %description
 %{summary}
@@ -43,6 +44,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc
 
 %changelog
+* Thu Sep 9 2011 Anand Padmanabhan <apadmana@uiuc.edu> - 1.22-2
+- Added osg-ca-certs-experimental in Obsoletes line 
+
 * Thu Sep 8 2011 Anand Padmanabhan <apadmana@uiuc.edu> - 1.22-1
 - Released 1.22
 - Changed name from osg-ca-certs-experimental to osg-ca-certs

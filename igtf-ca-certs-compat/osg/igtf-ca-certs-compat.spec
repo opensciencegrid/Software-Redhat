@@ -1,7 +1,7 @@
 Name:           igtf-ca-certs-compat
 Version:        1.40
 Release:        5
-Summary:        OSG Packaging of the IGTF CA Certs
+Summary:        OSG Packaging of the IGTF CA Certs, in the old OpenSSl 0.9.x format
 
 Group:          System Environment/Base
 License:        Unknown
