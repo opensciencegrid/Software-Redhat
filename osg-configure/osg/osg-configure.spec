@@ -1,5 +1,5 @@
 %global name osg-configure
-%global version 0.5.4
+%global version 0.5.5
 %global release 1%{?dist}
 
 Summary: Package for configure-osg and associated scripts
@@ -190,6 +190,9 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/osg/config.d/15-managedfork.ini
 
 %changelog
+* Fri Sep 09 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 0.5.5-1
+- Fixed a bug in rsv configuration when meta directory is not present
+
 * Thu Sep 8 2011 Suchandra Thapa <sthapa@ci.uchicago.edu> - 0.5.4-1
 - Update to 0.5.4
 - Add more subpackages for config files
