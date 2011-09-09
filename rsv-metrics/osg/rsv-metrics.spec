@@ -1,7 +1,7 @@
 
 Name:      rsv-metrics
 Version:   3.4.5
-Release:   1%{?dist}
+Release:   2%{?dist}
 Summary:   RSV metrics
 
 Group:     Applications/Monitoring
@@ -24,11 +24,8 @@ Requires: /usr/bin/grid-proxy-info
 Requires: /usr/bin/globus-job-run
 Requires: /usr/bin/globusrun
 Requires: /usr/bin/globus-url-copy
-Requires: /usr/bin/uberftp
-Requires: /usr/bin/srm-ping
-Requires: /usr/bin/srm-copy
-Requires: /usr/bin/srm-ls
-Requires: /usr/bin/srm-rm
+Requires: uberftp
+Requires: bestman2-client
 #package('Globus-Base-RM-Client')
 #package('SRM-Client-Fermi')
 #package('Dccp')
@@ -100,5 +97,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(-,rsv,rsv) %{_localstatedir}/log/rsv/probes
 
 %changelog
+* Thu Sep 8 2011 Doug Strain <dstrain@fnal.gov> 3.4.5-2
+- Fixed some of the requires lines for bestman2-client
+
 * Wed Jul 20 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.4.0-1
 - Created an initial rsv-metrics RPM
