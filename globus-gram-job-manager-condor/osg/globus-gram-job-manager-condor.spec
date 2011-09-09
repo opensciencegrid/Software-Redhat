@@ -65,8 +65,8 @@ Condor Job Manager
 %prep
 %setup -q -n %{_name}-%{version}
 
-%patch0 -p1
-%patch1 -p1
+%patch0 -p0
+%patch1 -p0
 %patch2 -p0
 %patch3 -p0
 %patch4 -p0
