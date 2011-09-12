@@ -1,13 +1,14 @@
 Name:      osg-ce
 Summary:   OSG Compute Element 
 Version:   3.0.0
-Release:   12
+Release:   13
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
 
 BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
+Requires: grid-certificates
 Requires: java-1.6.0-sun-compat
 Requires: globus-gridftp-server-progs 
 Requires: osg-client
@@ -91,6 +92,9 @@ rm -rf $RPM_BUILD_ROOT
 %files sge
 
 %changelog
+* Mon Sep 12 2011 Alain Roy <roy@cs.wisc.edu > 3.0.0-13
+  Added dependency on grid-certificates
+
 * Thu Sep 08 2011 Alain Roy <roy@cs.wisc.edu> - 3.0.0-12
 - Added dependencies from the pbs/lsf/sge sub packages on osg-ce. 
 
