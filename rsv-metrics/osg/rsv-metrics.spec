@@ -1,7 +1,7 @@
 
 Name:      rsv-metrics
-Version:   3.4.5
-Release:   3%{?dist}
+Version:   3.4.6
+Release:   1%{?dist}
 Summary:   RSV metrics
 
 Group:     Applications/Monitoring
