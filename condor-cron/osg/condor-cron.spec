@@ -1,7 +1,7 @@
 
 Name:      condor-cron
 Version:   1.0.5
-Release:   2%{?dist}
+Release:   3%{?dist}
 Summary:   A framework to run cron-style jobs within Condor
 
 Group:     Applications/System
@@ -53,7 +53,7 @@ install -m 0755 wrappers/condor_cron_config_val $RPM_BUILD_ROOT%{_bindir}/
 # Copy config into place
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/condor-cron
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/condor-cron/config.d
-install -m 0644 etc/condor_config $RPM_BUILD_ROOT%{_sysconfdir}/condor-cron/
+install -m 0644 etc/condor_config $RPM_BUILD_ROOT%{_sysconfdir}/condor-cron/condor_config
 touch $RPM_BUILD_ROOT%{_sysconfdir}/condor-cron/config.d/condor_ids
 chmod 0644 $RPM_BUILD_ROOT%{_sysconfdir}/condor-cron/config.d/condor_ids
 
@@ -92,7 +92,6 @@ rm -rf $RPM_BUILD_ROOT
 
 %{_initrddir}/condor-cron
 
-%ghost %{_sysconfdir}/condor-cron/condor_config
 %config %{_sysconfdir}/condor-cron/condor_config
 %config %{_sysconfdir}/condor-cron/config.d/condor_ids
 
