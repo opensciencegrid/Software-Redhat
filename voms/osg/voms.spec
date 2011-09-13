@@ -25,10 +25,10 @@
 %endif
 
 %global version1 1.9.19.2
-%global release1 4
+%global release1 5
 
 %global version2 2.0.2
-%global release2 2
+%global release2 3
 
 Name:		voms
 Version:	%{version2}
@@ -603,9 +603,9 @@ fi
 %endif
 
 %changelog
-* Mon Sep 12 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.2-2
+* Mon Sep 12 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.2-3
 - Rebuild against updated Globus libraries
-- also bumped voms-compat revision to 4
+- also bumped voms-compat revision to 5
 - removed parallel make
 
 * Fri May 27 2011 Mattias Ellert <mattias.ellert@fysast.uu.se> - 2.0.2-1
