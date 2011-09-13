@@ -28,7 +28,7 @@
 %global release1 3
 
 %global version2 2.0.2
-%global release2 1
+%global release2 2
 
 Name:		voms
 Version:	%{version2}
@@ -111,6 +111,8 @@ Patch21:	%{name}-doc-race.patch
 Patch22:	%{name}-gsoap.patch
 #		Work around bug in old autotools (RHEL4)
 Patch23:	%{name}-old-autotools.patch
+#               Fix duplicate definition of globus_mutex_t
+Patch100:       globus_thread_h.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	globus-gssapi-gsi-devel%{?_isa}
@@ -355,6 +357,9 @@ touch -r src/utils/vomsfake.y src/utils/lex.yy.c
 
 install -m 644 %{SOURCE2} README.Fedora
 
+# OSG patches
+%patch100 -p1
+
 %build
 %if %{compat}
 pushd %{name}-%{version1}
@@ -598,6 +603,9 @@ fi
 %endif
 
 %changelog
+* Mon Sep 12 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.2-2
+- Rebuild against updated Globus libraries
+
 * Fri May 27 2011 Mattias Ellert <mattias.ellert@fysast.uu.se> - 2.0.2-1
 - Update to version 2.0.2
 - Add compat package for older releases
