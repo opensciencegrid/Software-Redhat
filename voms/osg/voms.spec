@@ -25,7 +25,7 @@
 %endif
 
 %global version1 1.9.19.2
-%global release1 3
+%global release1 4
 
 %global version2 2.0.2
 %global release2 2
@@ -113,6 +113,8 @@ Patch22:	%{name}-gsoap.patch
 Patch23:	%{name}-old-autotools.patch
 #               Fix duplicate definition of globus_mutex_t
 Patch100:       globus_thread_h.patch
+#               Fix 'bad class file' problem with several classes
+Patch101:       java-bad-class-file.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	globus-gssapi-gsi-devel%{?_isa}
@@ -366,7 +368,7 @@ pushd %{name}-%{version1}
 %configure --disable-glite --libexecdir=%{_datadir} --sysconfdir=%{_datadir} \
 	   --disable-static --disable-docs --disable-java \
 	   --with-api-only
-make %{?_smp_mflags}
+make -j1
 popd
 %endif
 
@@ -381,7 +383,7 @@ popd
 	   --disable-java
 %endif
 
-make %{?_smp_mflags}
+make -j1
 
 ( cd doc/apidoc/api/VOMS_C_API/latex ; make )
 ( cd doc/apidoc/api/VOMS_CC_API/latex ; make )
@@ -605,6 +607,8 @@ fi
 %changelog
 * Mon Sep 12 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.2-2
 - Rebuild against updated Globus libraries
+- also bumped voms-compat revision to 4
+- removed parallel make
 
 * Fri May 27 2011 Mattias Ellert <mattias.ellert@fysast.uu.se> - 2.0.2-1
 - Update to version 2.0.2
