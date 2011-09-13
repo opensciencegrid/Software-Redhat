@@ -113,8 +113,6 @@ Patch22:	%{name}-gsoap.patch
 Patch23:	%{name}-old-autotools.patch
 #               Fix duplicate definition of globus_mutex_t
 Patch100:       globus_thread_h.patch
-#               Fix 'bad class file' problem with several classes
-Patch101:       java-bad-class-file.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	globus-gssapi-gsi-devel%{?_isa}
