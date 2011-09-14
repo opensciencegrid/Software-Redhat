@@ -48,7 +48,7 @@ Name: condor
 Version: 7.6.2
 
 # Only edit the %condor_base_release to bump the rev number
-%define condor_base_release 0.5
+%define condor_base_release 0.6
 %if %git_build
 %define condor_release %condor_base_release.%{git_rev}git
 %else
@@ -1044,6 +1044,9 @@ fi
 %endif
 
 %changelog
+* Mon Sep 12 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 7.6.2-0.6.2
+- Rev bump to rebuild with updated Globus libs
+
 * Thu Aug 11 2011 Derek Weitzel <dweitzel@cse.unl.edu> - 7.6.2-0.5.2
 - Updated to upstream official 7.6.2 release
 

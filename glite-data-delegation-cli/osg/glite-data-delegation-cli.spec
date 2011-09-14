@@ -1,6 +1,6 @@
 Name:		glite-data-delegation-cli
 Version:	2.0.1.3
-Release:	1
+Release:	2%{?dist}
 Summary:	gLite delegation API command-line tools
 
 Group:		Development/Languages/C and C++
@@ -65,6 +65,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/glite-*
 
 %changelog
+* Mon Sep 12 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.1.3-2
+- Rebuilt against updated Globus libraries
+
 * Tue Jul  5 2011 Brian Bockelman <bbockelm@cse.unl.edu> 2.0.1.3-1
 - Initial OSG packaging.
 

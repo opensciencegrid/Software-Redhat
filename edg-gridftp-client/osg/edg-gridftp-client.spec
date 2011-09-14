@@ -2,7 +2,7 @@
 Summary: GridFTP client commands
 Name: edg-gridftp-client
 Version: 1.2.9.2
-Release: 1
+Release: 2%{?dist}
 URL: http://www.edg.org/
 
 # Retrieved on Jul 3 2011
@@ -68,6 +68,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_docdir}/%{name}-%{version}/README
 
 %changelog
+* Mon Sep 12 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.2.9.2-2
+- Rebuilt against updated Globus libraries
+
 * Sun Jul  3 2011 Brian Bockelman <bbockelm@cse.unl.edu> 1.2.9.2-1
 - Pull to latest upstream.
 - Tweaked the RPM so it can be built from a CVS tarball.
