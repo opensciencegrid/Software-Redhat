@@ -1,6 +1,6 @@
 Name:           uberftp
 Version:        2.6
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        GridFTP-enabled ftp client
 
 Group:          Applications/Internet
@@ -49,6 +49,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc Changelog.mssftp Changelog copyright
 
 %changelog
+* Tue Sep 13 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 2.6-2
+- Rebuilt against updated Globus libraries
+
 * Sun Sep 5 2011 Alain Roy <roy@cs.wisc.edu> 2.6-1
 - Updated source to version 2.6
 - Changed to build against Globus 5.2

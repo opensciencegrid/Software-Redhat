@@ -1,6 +1,6 @@
 Name:		glite-data-delegation-api-c
 Version:	2.0.0.7
-Release:	2
+Release:	3%{?dist}
 Summary:	Library for using the gLite delegation API from C
 
 Group:		Development/Languages/C and C++
@@ -59,6 +59,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/glite/data/delegation
 
 %changelog
+* Mon Sep 12 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.0.7-3
+- Rebuilt against updated Globus libraries
+
 * Wed Aug 31 2011 Matyas Selmeci <matyas@cs.wisc.edu> 1.11.14-2
 - Rebuild against Globus 5.2
 

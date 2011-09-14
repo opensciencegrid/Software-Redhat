@@ -1,7 +1,7 @@
 Summary: Grid (X.509) and VOMS credentials to local account mapping service
 Name: lcmaps
 Version: 1.4.28
-Release: 11%{?dist}
+Release: 12%{?dist}
 Vendor: Nikhef
 License: ASL 2.0
 Group: System Environment/Libraries
@@ -158,6 +158,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/modules/*.so
 
 %changelog
+* Mon Sep 12 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.4.28-12
+- Rebuilt against updated Globus libraries
+
 * Wed Aug 31 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.4.28-11
 Another update to get Requires right for 32-bit modules
 

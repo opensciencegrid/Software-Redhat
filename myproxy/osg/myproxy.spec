@@ -8,7 +8,7 @@
 
 Name:           myproxy
 Version:	5.5
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:        Manage X.509 Public Key Infrastructure (PKI) security credentials
 
 Group:          System Environment/Daemons
@@ -414,6 +414,9 @@ fi
 %{_libdir}/pkgconfig/myproxy.pc
 
 %changelog
+* Tue Sep 13 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 5.5-3
+- Rebuilt against updated Globus libraries
+
 * Fri Sep 09 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 5.5-2
 - Release bump to rebuild against new globus libraries
 - disabled self-test in check section

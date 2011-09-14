@@ -7,7 +7,7 @@
 
 Name:    dcache-srmclient 
 Version: 1.9.5.23
-Release: 3
+Release: 4
 URL:     http://dcache.org
 Summary: SRM clients from dCache.org
 License: http://www.dcache.org/manuals/dCacheSoftwareLicence.html
@@ -65,6 +65,9 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/dcache-srmclient-config.xml
 
 %changelog
+* Mon Sep 12 2011 Matyas Selmeci <matyas@cs.wisc.edu> 1.9.5.23-4
+- Bump to rebuild against updated Globus libs
+
 * Tue Aug 30 2011 Matyas Selmeci <matyas@cs.wisc.edu> 1.9.5.23-3
 - Rebuilt against Globus 5.2
 

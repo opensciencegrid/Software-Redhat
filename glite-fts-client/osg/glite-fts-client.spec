@@ -1,6 +1,6 @@
 Name:		glite-fts-client
 Version:	3.7.4
-Release:	2
+Release:	3%{?dist}
 Summary:	gLite FTS client
 
 Group:		Development/Languages/C and C++
@@ -68,6 +68,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/glite-transfer*
 
 %changelog
+* Mon Sep 12 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 3.7.4-3
+- Rebuilt against updated Globus libraries
+
 * Tue Jul  5 2011 Brian Bockelman <bbockelm@cse.unl.edu> 2.0.1.3-1
 - Initial OSG packaging.
 

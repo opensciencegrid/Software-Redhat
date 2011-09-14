@@ -1,7 +1,7 @@
 Summary: Authorization service for grid credentials
 Name: lcas
 Version: 1.3.13
-Release: 7%{?dist}
+Release: 8%{?dist}
 Vendor: Nikhef
 License: ASL 2.0
 Group: System Environment/Libraries
@@ -123,6 +123,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc README
 
 %changelog
+* Mon Sep 12 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.3.13-8
+- Rebuilt against updated Globus libraries
+
 * Wed Aug 31 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.3.13-7
 Another update to get Requires right for 32-bit modules
 
