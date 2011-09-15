@@ -5,7 +5,7 @@
 
 Summary:   Tests an OSG Software installation
 Name:      osg-test
-Version:   0.0.1
+Version:   0.0.2
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -15,6 +15,7 @@ AutoReq:   yes
 AutoProv:  yes
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 BuildArch: noarch
+Requires:  python-nose
 
 %description
 The OSG Test system runs functional integration tests against an OSG Software
@@ -38,5 +39,13 @@ rm -rf $RPM_BUILD_ROOT
 /etc/grid-security/certificates/4eca18ce.*
 
 %changelog
+* Thu Sep 15 2011 Tim Cartwright <cat@cs.wisc.edu> - 0.0.2-1
+- Added a command-line option to add extra Yum repos when installing
+- Removed the extraneous (and occasionally invalid) user password
+- Tightened the verify options for epel- and osg-release
+
+* Mon Sep 12 2011 Tim Cartwright <cat@cs.wisc.edu> - 0.0.1-2
+- Added the python-nose dependency
+
 * Fri Sep 09 2011 Tim Cartwright <cat@cs.wisc.edu> - 0.0.1-1
 - Initial release
