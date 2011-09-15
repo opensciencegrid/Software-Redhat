@@ -1,6 +1,6 @@
 
 Name:      osg-ca-scripts
-Version:   0.0.8
+Version:   0.0.9
 Release:   1%{?dist}
 Summary:   CA Certificate helper scripts
 
