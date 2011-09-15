@@ -1,6 +1,6 @@
 
 Name:      rsv-consumers
-Version:   3.4.7
+Version:   3.4.8
 Release:   1%{?dist}
 Summary:   RSV Consumers Infrastructure
 
@@ -39,27 +39,31 @@ getent passwd rsv >/dev/null || useradd -r -g rsv -d /var/rsv -s /bin/sh -c "RSV
 rm -fr $RPM_BUILD_ROOT
 
 # Create the web areas
-mkdir -p $RPM_BUILD_ROOT%{_datadir}/rsv
-mkdir -p $RPM_BUILD_ROOT%{_datadir}/rsv/www
+install -d $RPM_BUILD_ROOT%{_datadir}/rsv
+install -d $RPM_BUILD_ROOT%{_datadir}/rsv/www
 
 # Install the Apache configuration and index files
-mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/httpd/conf.d
-mkdir -p $RPM_BUILD_ROOT%{_datadir}/osg/www.d/
+install -d $RPM_BUILD_ROOT%{_sysconfdir}/httpd/conf.d
+install -d $RPM_BUILD_ROOT%{_datadir}/osg/www.d/
 install -m 0644 httpd/rsv.conf $RPM_BUILD_ROOT%{_sysconfdir}/httpd/conf.d/
 install -m 0644 httpd/rsv.site $RPM_BUILD_ROOT%{_datadir}/osg/www.d/
 
 # Install executables
-mkdir -p $RPM_BUILD_ROOT%{_libexecdir}/rsv
+install -d $RPM_BUILD_ROOT%{_libexecdir}/rsv
 cp -r libexec/consumers $RPM_BUILD_ROOT%{_libexecdir}/rsv/
 
 # Install configuration
-mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/rsv/meta
+install -d $RPM_BUILD_ROOT%{_sysconfdir}/rsv/meta
 cp -r etc/meta/consumers $RPM_BUILD_ROOT%{_sysconfdir}/rsv/meta/
 cp -r etc/consumers $RPM_BUILD_ROOT%{_sysconfdir}/rsv/
 cp etc/rsv-nagios.conf $RPM_BUILD_ROOT%{_sysconfdir}/rsv/
 
 # Create the log dir
-mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/log/rsv/consumers
+install -d $RPM_BUILD_ROOT%{_localstatedir}/log/rsv/consumers
+
+# Put log rotation in place
+install -d $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d
+install -m 0644 logrotate/rsv-consumers.logrotate $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/rsv-consumers
 
 
 %clean
@@ -75,6 +79,7 @@ rm -rf $RPM_BUILD_ROOT
 %config %{_sysconfdir}/rsv/meta/consumers/*
 %config(noreplace) %{_sysconfdir}/rsv/consumers/*
 %config(noreplace) %{_sysconfdir}/rsv/rsv-nagios.conf
+%config(noreplace) %{_sysconfdir}/logrotate.d/rsv-consumers
 
 %config %{_sysconfdir}/httpd/conf.d/rsv.conf
 %config %{_datadir}/osg/www.d/rsv.site

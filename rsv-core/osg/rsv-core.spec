@@ -1,6 +1,6 @@
 
 Name:      rsv-core
-Version:   3.4.7
+Version:   3.4.8
 Release:   1%{?dist}
 Summary:   RSV Core Infrastructure
 
@@ -20,8 +20,6 @@ Requires(post): chkconfig
 Requires(preun): chkconfig
 # This is for /sbin/service
 Requires(preun): initscripts
-
-#package('VDT-Logrotate')
 
 
 %if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
