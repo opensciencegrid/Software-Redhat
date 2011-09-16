@@ -13,7 +13,7 @@
 Name:		globus-gatekeeper
 %global _name %(tr - _ <<< %{name})
 Version:	8.0
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	Globus Toolkit - Globus Gatekeeper
 
 Group:		Applications/Internet
@@ -24,6 +24,7 @@ Source:         %{_name}-%{version}.tar.gz
 # OSG customizations
 Source1:        globus-gatekeeper.sysconfig
 Patch0:         child_signals.patch
+Patch1:         lsb-init-script.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -51,6 +52,7 @@ Globus Gatekeeper Setup
 %setup -q -n %{_name}-%{version}
 
 %patch0 -p0
+%patch1 -p1
 # Note append here
 cat %{SOURCE1} >> config/globus-gatekeeper.in
 
@@ -120,6 +122,9 @@ fi
 %config(noreplace) /etc/sysconfig/globus-gatekeeper
 
 %changelog
+* Fri Sep 16 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 8.0-4
+- Patched init script to work around infinite loop caused by some versions of redhat-lsb
+
 * Fri Sep 02 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 8.0-3
 - Merged upstream 8.0-2:
     * Thu Sep 01 2011 Joseph Bester <bester@mcs.anl.gov> - 8.0-2

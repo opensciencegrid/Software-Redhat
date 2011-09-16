@@ -1,0 +1,23 @@
+Index: globus_scheduler_event_generator-4.0/init/globus-scheduler-event-generator-lsb.in
+===================================================================
+--- globus_scheduler_event_generator-4.0.orig/init/globus-scheduler-event-generator-lsb.in	2011-08-23 13:50:57.000000000 -0500
++++ globus_scheduler_event_generator-4.0/init/globus-scheduler-event-generator-lsb.in	2011-09-16 16:16:29.000000000 -0500
+@@ -41,6 +41,7 @@
+ lockfile="@LOCKFILE@"
+ 
+ . /lib/lsb/init-functions
++. /etc/init.d/functions
+ GLOBUS_SEG_LRM_DIR="${GLOBUS_SEG_LRM_DIR:-${sysconfdir}/globus/scheduler-event-generator}"
+ 
+ full=1
+@@ -71,8 +72,8 @@
+         if [ ! -d "$logdir" ]; then
+             (umask 022; mkdir "$logdir")
+         fi
+-        start_daemon ${GLOBUS_SEG_NICE_LEVEL:+-n "${GLOBUS_SEG_NICE_LEVEL}"} \
+-            -p "$pidfile" "${prog}" \
++        daemon ${GLOBUS_SEG_NICE_LEVEL} \
++            --pidfile "$pidfile" "${prog}" \
+             -s "$lrm" \
+             -p "$pidfile" \
+             -d "$logdir" \
