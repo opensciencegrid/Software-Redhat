@@ -1,6 +1,6 @@
 Name:           koji-plugin-sign
 Version:        1.4.0
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        GPG signing plugin for koji-hub
 
 Group:          Applications/System
@@ -10,7 +10,7 @@ Source0:        sign.conf
 Source1:        sign.py
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
-Requires:       koji-hub
+Requires:       koji-hub, pexpect
 
 %description
 GPG signing plugin for koji-hub
@@ -41,6 +41,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Sep 15 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.4.0-4
+- added pexpect dependency
+
 * Thu Sep 15 2011 Matyas Selmeci <matyas@cs.wisc.edu> 1.4.0-3
 - Set package to be noarch
 - sign.py moved to /usr/lib/koji-hub-plugins to match what the package koji-hub-plugins is doing
