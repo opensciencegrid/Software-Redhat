@@ -1,7 +1,7 @@
 Summary: SCAS client plugin for the LCMAPS authorization framework
 Name: lcmaps-plugins-scas-client
 Version: 0.2.22
-Release: 5%{?dist}
+Release: 6%{?dist}
 Vendor: Nikhef
 License: ASL 2.0
 Group: System Environment/Libraries
@@ -57,6 +57,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Sep 16 2011 Dave Dykstra <dwd@fnal.gov> 0.2.22-6.osg
+- No change, just making a new version to match new lcmaps-plugins-saz-client
+
 * Fri Sep 16 2011 Dave Dykstra <dwd@fnal.gov> 0.2.22-5.osg
 - Obsoletes prima didn't do it, try Conflicts instead
 
