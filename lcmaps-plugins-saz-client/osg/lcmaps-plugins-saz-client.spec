@@ -3,7 +3,7 @@
 
 Name:           lcmaps-plugins-saz-client
 Version:        0.2.22
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        SAZ support for lcmaps
 
 Group:          System Environment/Tools
@@ -33,6 +33,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/modules/%{modname}
 
 %changelog
+* Fri Sep 16 2011 Dave Dykstra <dwd@fnal.gov> 0.2.22-4.osg
+- Update to match scas-client
+
 * Wed Aug 31 2011 Dave Dykstra <dwd@fnal.gov> 0.2.22-3.osg
 - Also add the %{dist} to the release to completely match the scas-client.
   Make BuildRequires always require the exact same %{version}-%{release}
