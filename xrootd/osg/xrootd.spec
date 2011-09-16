@@ -3,8 +3,8 @@
 
 Name:      xrootd
 Epoch:     1
-Version:   3.0.5
-Release:   0.1.pre%{?dist}%{?_with_xrootd_user:.xu}
+Version:   3.1.0
+Release:   0.1.git.5bfd8bb%{?dist}%{?_with_xrootd_user:.xu}
 Summary:   An eXtended Root Daemon (xrootd)
 Group:     System Environment/Daemons
 License:   Stanford (modified BSD with advert clause)
@@ -16,7 +16,8 @@ URL:       http://xrootd.org/
 Source0:   xrootd.tar.gz
 BuildRoot: %{_tmppath}/%{name}-root
 
-BuildRequires: autoconf automake libtool readline-devel openssl-devel fuse-devel
+BuildRequires: cmake >= 2.8
+BuildRequires: readline-devel openssl-devel fuse-devel
 BuildRequires: libxml2-devel krb5-devel zlib-devel ncurses-devel
 
 # For configure.ac perl ldopts
@@ -87,21 +88,20 @@ Headers for compiling against xrootd-libs
 
 %prep
 %setup -c -n %{name}
-cd %{name}
-./bootstrap.sh
 
 %build
 cd %{name}
-%configure --enable-gsi --enable-fuse --enable-dbg-build --with-utils-dir=%{_datadir}/%{name}/utils --disable-dependency-tracking
-make %{?_smp_mflags}
+mkdir build
+cd build
+cmake -DCMAKE_INSTALL_PREFIX=/usr ../
+make VERBOSE=1%{?_smp_mflags}
 
 %install
 cd %{name}
+cd build
 rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
-
-rm -f $RPM_BUILD_ROOT%{_libdir}/*.la
-rm -f $RPM_BUILD_ROOT%{_libdir}/*.a
+cd ..
 
 # configuration stuff
 rm -rf $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/*
@@ -113,6 +113,7 @@ mkdir -p $RPM_BUILD_ROOT%{_var}/spool/%{name}
 
 # init stuff
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig
+mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/%{name}
 mkdir -p $RPM_BUILD_ROOT%{_initrddir}
 
 %if %{?_with_xrootd_user:1}%{!?_with_xrootd_user:0}
@@ -193,10 +194,8 @@ exit 0
 %defattr(-,root,root,-)
 %{_libdir}/libXrdSec*.so*
 %{_libdir}/libXrdCrypto*.so*
-%{_libdir}/libXrdSut.so*
-%{_libdir}/libXrdNet*.so*
-%{_libdir}/libXrdOuc.so*
-%{_libdir}/libXrdSys.so*
+%{_libdir}/libXrdUtils.so*
+%{_libdir}/libXrdProtocolLoader.so*
 
 %files libs-devel
 %defattr(-,root,root,-)
@@ -208,6 +207,7 @@ exit 0
 %{_includedir}/%{name}/XrdNet
 %{_includedir}/%{name}/XrdOuc
 %{_includedir}/%{name}/XrdSys
+%{_includedir}/%{name}/Xrd
 
 %files client
 %defattr(-,root,root,-)
@@ -239,6 +239,13 @@ exit 0
 %{_bindir}/xrootdfs
 %doc %{_mandir}/man1/xrootdfs.1.gz
 
+%if %{?_with_xrootd_user:1}%{!?_with_xrootd_user:0}
+%attr(-,xrootd,xrootd) %dir %{_sysconfdir}/%{name}/
+%else
+%attr(-,daemon,daemon) %dir %{_sysconfdir}/%{name}/
+%endif
+
+
 %files server
 %defattr(-,root,root,-)
 %{_bindir}/cconfig
@@ -255,14 +262,10 @@ exit 0
 %{_bindir}/xrdpwdadmin
 %{_bindir}/xrdsssadmin
 %{_bindir}/xrootd
-%{_libdir}/libXrdAcc.so*
 %{_libdir}/libXrdBwm.so*
-%{_libdir}/libXrdCms.so*
-%{_libdir}/libXrdOfs.so*
-%{_libdir}/libXrdOss.so*
 %{_libdir}/libXrdPss*.so*
-%{_libdir}/libXrdRootd.so*
-%{_libdir}/libXrd.so*
+%{_libdir}/libXrdOfs*.so*
+%{_libdir}/libXrdServer.so*
 %doc %{_mandir}/man8
 
 %config(noreplace) %{_sysconfdir}/sysconfig/%{name}
@@ -294,14 +297,14 @@ exit 0
 %{_includedir}/%{name}/XrdAcc
 %{_includedir}/%{name}/XrdBwm
 %{_includedir}/%{name}/XrdCms
-%{_includedir}/%{name}/XrdCns
-%{_includedir}/%{name}/XrdFrm
 %{_includedir}/%{name}/XrdOfs
 %{_includedir}/%{name}/XrdOss
 %{_includedir}/%{name}/XrdPss
+%{_includedir}/%{name}/XrdFrc
 %{_includedir}/%{name}/XrdSfs
 %{_includedir}/%{name}/Xrd
 %{_includedir}/%{name}/XProtocol
+%{_includedir}/%{name}/XrdCks
 
 %changelog
 * Tue Apr 11 2011 Lukasz Janyst <ljanyst@cern.ch> 3.0.3-1
