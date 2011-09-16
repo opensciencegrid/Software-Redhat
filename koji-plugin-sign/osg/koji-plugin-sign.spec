@@ -26,7 +26,7 @@ exit 0
 rm -rf $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT
 install -D $RPM_SOURCE_DIR/sign.conf -m 0600 $RPM_BUILD_ROOT/etc/koji-hub/plugins/sign.conf
-install -D $RPM_SOURCE_DIR/sign.py -m 0755 $RPM_BUILD_ROOT/usr/lib/koji-hub-plugins/plugins/sign.py
+install -D $RPM_SOURCE_DIR/sign.py -m 0755 $RPM_BUILD_ROOT/usr/lib/koji-hub-plugins/sign.py
 
 
 %clean
@@ -43,7 +43,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Thu Sep 15 2011 Matyas Selmeci <matyas@cs.wisc.edu> 1.4.0-3
 - Set package to be noarch
-- sign.py* moved to /usr/lib/koji-hub-plugins to match what the package koji-hub-plugins is doing
+- sign.py moved to /usr/lib/koji-hub-plugins to match what the package koji-hub-plugins is doing
 
 * Fri Aug 5 2011 Matyas Selmeci <matyas@cs.wisc.edu> 1.4.0-1
 - Created
