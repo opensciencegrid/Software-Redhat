@@ -4,8 +4,8 @@ mirrorlist=http://repo.grid.iu.edu/mirror/osg-release/$basearch
 failovermethod=priority
 priority=98
 enabled=1
-#gpgcheck=1
-#gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-OSG
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-OSG
 
 [osg-source]
 name=OSG Software for Enterprise Linux 5 - $basearch - Source
@@ -13,6 +13,6 @@ baseurl=http://repo.grid.iu.edu/osg-release/source/SRPMS
 failovermethod=priority
 priority=98
 enabled=0
-#gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-OSG
-#gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-OSG
+gpgcheck=1
 
