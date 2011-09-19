@@ -16,7 +16,11 @@ install them in NFS, then make a symlnk from
 /etc/grid-security/certifictes to that location. 
 
 To make this possibility clear and explicit, we have this package,
-no-ca-certs.  It's an empty RPM (it provides no files), but it claims
+empty-ca-certs.  It's an empty RPM (it provides no files), but it claims
 to provide "grid-certificates". This will satisfy the RPM dependencies
 yet let sites manage the CA certificates on their own. 
 
+Note that this package used to be called "no-ca-certs", but that meant
+that sometimes yum would choose it instead of osg-ca-certs (because
+yum has a crazy dependency resolution algorithm that includes length
+of name), so we've renamed this to be empty-ca-certs.
