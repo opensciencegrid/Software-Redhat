@@ -1,5 +1,6 @@
 [osg-testing]
 name=OSG Software for Enterprise Linux 5 - Testing - $basearch 
+#baseurl=http://repo.grid.iu.edu/osg-testing/$basearch
 mirrorlist=http://repo.grid.iu.edu/mirror/osg-testing/$basearch
 failovermethod=priority
 priority=98
@@ -10,6 +11,15 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-OSG
 [osg-testing-source]
 name=OSG Software for Enterprise Linux 5 - Testing - $basearch - Source
 baseurl=http://repo.grid.iu.edu/osg-testing/source/SRPMS
+failovermethod=priority
+priority=98
+enabled=0
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-OSG
+gpgcheck=1
+
+[osg-testing-debug]
+name=OSG Software for Enterprise Linux 5 - Testing - $basearch - Debug
+baseurl=http://repo.grid.iu.edu/osg-testing/$basearch/debug
 failovermethod=priority
 priority=98
 enabled=0

@@ -1,6 +1,6 @@
 Name:           osg-release
 Version:        3.0 
-Release:        8
+Release:        9
 Summary:        OSG Software for Enterprise Linux repository configuration
 
 Group:          System Environment/Base 
@@ -58,6 +58,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Sep 19 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 3.0-9
+- Added commented-out baseurl line to the .repo files so people have a fallback
+  if there is a problem with the mirrors
+- Added -debug repositories (disabled by default) for the debuginfo packages
+  for development, testing, and release.
+
 * Fri Sep 16 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 3.0-8
 - Added RPM signing public key
 - Changed all repo files to require gpg check
