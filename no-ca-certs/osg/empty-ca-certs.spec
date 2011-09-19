@@ -1,4 +1,4 @@
-Name:           no-ca-certs
+Name:           empty-ca-certs
 Version:        1.0
 Release:        1
 Summary:        An empty grid CA cert package
@@ -40,5 +40,5 @@ a shared filesystem.
 %doc
 
 %changelog
-* Thu Sep 9 2011 Alain Roy <roy@cs.wisc.edu> - 1.0-1
+* Thu Sep 19 2011 Alain Roy <roy@cs.wisc.edu> - 1.0-1
 - Initial version
