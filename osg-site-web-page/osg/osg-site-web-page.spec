@@ -94,7 +94,7 @@ fi
 %{_sysconfdir}/osg/siteindexconfig.ini
 %{_sysconfdir}/httpd/conf.d/%{name}.conf
 
-%changelogi
+%changelog
 * Fri Sep 16 2011 Marco Mambelli <marco@hep.uchicago.edu> 0.15
 improved post and postun (rel 3)
 * Mon Aug 1 2011 Marco Mambelli <marco@hep.uchicago.edu> 0.15
