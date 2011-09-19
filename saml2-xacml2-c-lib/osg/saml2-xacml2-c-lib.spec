@@ -1,7 +1,7 @@
 Summary: SAML 2.0 profile of XACML v2.0
 Name: saml2-xacml2-c-lib
 Version: 1.0.1
-Release: 5%{?dist}
+Release: 6%{?dist}
 Vendor: Nikhef
 License: ASL 2.0
 Group: System Environment/Libraries
@@ -14,6 +14,7 @@ Patch0: xacml_namespaces.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildRequires: libtool automake autoconf
 BuildRequires: openssl-devel, zlib-devel, bison, flex
+Obsoletes: prima
 
 %description
 
@@ -102,6 +103,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/xacml.pc
 
 %changelog
+* Mon Sep 19 2011 Dave Dykstra <dwd@fnal.gov> - 1.0.1-6
+- Add Obsoletes prima to avoid the old package from the hadoop repo
+
 * Mon Aug 01 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.0.1-5
 - Put all GSOAP functions in a separate namespace.
 
