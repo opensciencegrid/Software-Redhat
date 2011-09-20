@@ -1,10 +1,17 @@
-
+#-------------------------------------------------------------------------------
+# We assume the xrootd user when building for the OSG
+#-------------------------------------------------------------------------------
+%if "0%{?dist}" == "0.osg"
 %define _with_xrootd_user 1
+%endif
 
+#-------------------------------------------------------------------------------
+# Package definitions
+#-------------------------------------------------------------------------------
 Name:      xrootd
 Epoch:     1
 Version:   3.1.0
-Release:   0.1.git.5bfd8bb%{?dist}%{?_with_xrootd_user:.xu}
+Release:   0.2.git.e587830%{?dist}%{?_with_xrootd_user:.xu}
 Summary:   An eXtended Root Daemon (xrootd)
 Group:     System Environment/Daemons
 License:   Stanford (modified BSD with advert clause)
@@ -20,14 +27,17 @@ BuildRequires: cmake >= 2.8
 BuildRequires: readline-devel openssl-devel fuse-devel
 BuildRequires: libxml2-devel krb5-devel zlib-devel ncurses-devel
 
-# For configure.ac perl ldopts
+# Perl packaging changed on SLC6 - we require perl-devel to build
 %if 0%{?rhel} >= 6
-BuildRequires: perl-ExtUtils-Embed
+BuildRequires: perl-devel
 %endif
 
 %description
 %{summary}
 
+#-------------------------------------------------------------------------------
+# client
+#-------------------------------------------------------------------------------
 %package client
 Summary: XRootD client
 Group:   System Environment/Applications
@@ -35,6 +45,9 @@ Requires: %{name}-libs = %{epoch}:%{version}-%{release}
 %description client
 The XRootD client software.
 
+#-------------------------------------------------------------------------------
+# client-devel
+#-------------------------------------------------------------------------------
 %package client-devel
 Summary: Headers for compiling against xrootd-client
 Group:   System Environment/Libraries
@@ -44,6 +57,9 @@ Requires: %{name}-client = %{epoch}:%{version}-%{release}
 %description client-devel
 Headers for compiling against xrootd-client
 
+#-------------------------------------------------------------------------------
+# fuse
+#-------------------------------------------------------------------------------
 %package fuse
 Summary: XRootD filesystem
 Group:   System Environment/Filesystems
@@ -53,14 +69,26 @@ Requires: fuse
 %description fuse
 Fuse driver for xrootd
 
+#-------------------------------------------------------------------------------
+# server
+#-------------------------------------------------------------------------------
 %package server
 Summary: XRootD server
 Group:   System Environment/Daemons
 Requires: %{name}-libs = %{epoch}:%{version}-%{release}, %{name}-client = %{epoch}:%{version}-%{release}
 Obsoletes: xrootd
+Requires(post): chkconfig
+Requires(preun): chkconfig
+# for /sbin/service
+Requires(preun): initscripts
+Requires(postun): initscripts
+
 %description server
 XRootD server
 
+#-------------------------------------------------------------------------------
+# server-devel
+#-------------------------------------------------------------------------------
 %package server-devel
 Summary: Headers for compiling against xrootd-server
 Group:   System Environment/Libraries
@@ -73,12 +101,18 @@ Obsoletes: xrootd-devel
 %description server-devel
 Headers for compiling against xrootd-server
 
+#-------------------------------------------------------------------------------
+# libs
+#-------------------------------------------------------------------------------
 %package libs
 Summary: XRootD core libraries
 Group:   System Environment/Libraries
 %description libs
 XRootD core libraries
 
+#-------------------------------------------------------------------------------
+# libs devel
+#-------------------------------------------------------------------------------
 %package libs-devel
 Summary: Headers for compiling against xrootd-lib
 Group:   System Environment/Libraries
@@ -86,18 +120,24 @@ Requires: %{name}-libs = %{epoch}:%{version}-%{release}
 %description libs-devel
 Headers for compiling against xrootd-libs
 
+#-------------------------------------------------------------------------------
+# Build instructions
+#-------------------------------------------------------------------------------
 %prep
 %setup -c -n %{name}
 
 %build
-cd %{name}
+#cd %{name}
 mkdir build
 cd build
 cmake -DCMAKE_INSTALL_PREFIX=/usr ../
 make VERBOSE=1%{?_smp_mflags}
 
+#-------------------------------------------------------------------------------
+# Installation
+#-------------------------------------------------------------------------------
 %install
-cd %{name}
+#cd %{name}
 cd build
 rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
@@ -142,6 +182,9 @@ install -m 644 packaging/common/xrootd-standalone.cfg $RPM_BUILD_ROOT%{_sysconfd
 %clean
 rm -rf $RPM_BUILD_ROOT
 
+#-------------------------------------------------------------------------------
+# Install rc*.d links
+#-------------------------------------------------------------------------------
 %post server
 /sbin/ldconfig
 /sbin/chkconfig --add xrootd
@@ -149,6 +192,9 @@ rm -rf $RPM_BUILD_ROOT
 /sbin/chkconfig --add frm_purged
 /sbin/chkconfig --add frm_xfrd
 
+#-------------------------------------------------------------------------------
+# Add a new user and group if necessary
+#-------------------------------------------------------------------------------
 %if %{?_with_xrootd_user:1}%{!?_with_xrootd_user:0}
 %pre server
 getent group xrootd >/dev/null || groupadd -r xrootd
@@ -158,14 +204,24 @@ getent passwd xrootd >/dev/null || \
 exit 0
 %endif
 
+#-------------------------------------------------------------------------------
+# Handle deinstallation of the server
+#-------------------------------------------------------------------------------
 %preun server
 if [ "$1" = "0" ]; then
+    /sbin/service xrootd stop >/dev/null 2>&1
+    /sbin/service cmsdd stop >/dev/null 2>&1
+    /sbin/service frm_purged stop >/dev/null 2>&1
+    /sbin/service frm_xfrd stop >/dev/null 2>&1
     /sbin/chkconfig --del xrootd
     /sbin/chkconfig --del cmsd
     /sbin/chkconfig --del frm_purged
     /sbin/chkconfig --del frm_xfrd
 fi
 
+#-------------------------------------------------------------------------------
+# Handle upgrade
+#-------------------------------------------------------------------------------
 %postun server
 /sbin/ldconfig
 if [ "$1" -ge "1" ] ; then
@@ -175,11 +231,9 @@ if [ "$1" -ge "1" ] ; then
     /sbin/service frm_xfrd condrestart >/dev/null 2>&1 || :
 fi
 
-%post client -p /sbin/ldconfig
-%postun client -p /sbin/ldconfig
-%post libs -p /sbin/ldconfig
-%postun libs -p /sbin/ldconfig
-
+#-------------------------------------------------------------------------------
+# Add a new user and group if necessary
+#-------------------------------------------------------------------------------
 %if %{?_with_xrootd_user:1}%{!?_with_xrootd_user:0}
 %pre fuse
 getent group xrootd >/dev/null || groupadd -r xrootd
@@ -189,13 +243,20 @@ getent passwd xrootd >/dev/null || \
 exit 0
 %endif
 
+%post client -p /sbin/ldconfig
+%postun client -p /sbin/ldconfig
+%post libs -p /sbin/ldconfig
+%postun libs -p /sbin/ldconfig
 
+#-------------------------------------------------------------------------------
+# Files
+#-------------------------------------------------------------------------------
 %files libs
 %defattr(-,root,root,-)
 %{_libdir}/libXrdSec*.so*
 %{_libdir}/libXrdCrypto*.so*
 %{_libdir}/libXrdUtils.so*
-%{_libdir}/libXrdProtocolLoader.so*
+%{_libdir}/libXrdMain.so*
 
 %files libs-devel
 %defattr(-,root,root,-)
@@ -208,6 +269,7 @@ exit 0
 %{_includedir}/%{name}/XrdOuc
 %{_includedir}/%{name}/XrdSys
 %{_includedir}/%{name}/Xrd
+%{_includedir}/%{name}/XProtocol
 
 %files client
 %defattr(-,root,root,-)
@@ -302,10 +364,11 @@ exit 0
 %{_includedir}/%{name}/XrdPss
 %{_includedir}/%{name}/XrdFrc
 %{_includedir}/%{name}/XrdSfs
-%{_includedir}/%{name}/Xrd
-%{_includedir}/%{name}/XProtocol
 %{_includedir}/%{name}/XrdCks
 
+#-------------------------------------------------------------------------------
+# Changelog
+#-------------------------------------------------------------------------------
 %changelog
 * Tue Apr 11 2011 Lukasz Janyst <ljanyst@cern.ch> 3.0.3-1
 - the first RPM release - version 3.0.3
