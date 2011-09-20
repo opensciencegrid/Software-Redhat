@@ -49,7 +49,7 @@ The CE monitor service is a web application that publishes information about the
 cp %{SOURCE1} .
 cp %{SOURCE2} $RPM_BUILD_ROOT
 
-printf "stage.location=/usr
+printf "stage.location=$RPM_BUILD_ROOT/usr
 sysconfig.location=$RPM_BUILD_ROOT/etc
 dist.location=$RPM_BUILD_ROOT/usr
 tomcat.location=/usr/share/tomcat5
