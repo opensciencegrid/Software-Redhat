@@ -1,0 +1,75 @@
+diff -rupN glite-ce-monitor-1.13.1-orig/config/cemonitor-config.xml glite-ce-monitor-1.13.1/config/cemonitor-config.xml
+--- glite-ce-monitor-1.13.1-orig/config/cemonitor-config.xml	2011-09-20 10:06:40.000000000 -0500
++++ glite-ce-monitor-1.13.1/config/cemonitor-config.xml	2011-09-20 10:23:07.000000000 -0500
+@@ -4,15 +4,15 @@
+          ServiceDescription="cemonitor service"
+ 	 InterfaceVersion="1.0"
+ 	 ServiceVersion="1.0"
+-         sslkeyfile="/usr/share/tomcat5/hostkey.pem"
+-         sslcertfile="/usr/share/tomcat5/hostcert.pem"
++         sslkeyfile="/etc/grid-security/hostkey.pem"
++         sslcertfile="/etc/grid-security/hostcert.pem"
+          sslkeypasswd=""
+          sslCAfiles="/etc/grid-security/certificates/*.0"
+          sslCRLfiles="/etc/grid-security/certificates/*.r0"
+          maxSubscriptionExpirationTime_hours="200"
+          notificationSharedThread="false"
+          notificationTimeout_sec="60"
+-         backendLocation="/opt/glite/var/cemonitor"
++         backendLocation="/var/lib/glite-ce-monitor"
+ 	 confProvider="org.glite.ce.commonj.jndi.provider.fscachedprovider.CEGeneralDirContextFactory"
+          subscriptionRegistryConfProvider="org.glite.ce.commonj.jndi.provider.fscachedprovider.CEGeneralDirContextFactory">
+ 
+@@ -41,7 +41,7 @@
+           jarpath="file:/usr/share/tomcat5/webapps/ce-monitor/actions/glite-ce-monitor-SendNotificationAction.jar">
+ <!--
+     <property name="TTLCEinfo" value="300" />
+-    <property name="supportedDialectsList" value="LFID,ISM_LDIF,ISM_LDIF_GLUE_1.2,OLD_CLASSAD,NEW_CLASSAD,ISM_CLASSAD,ISM_CLASSAD_GLUE_1.2"/>   
++    <property name="supportedDialectsList" value="RAW,LFID,ISM_LDIF,ISM_LDIF_GLUE_1.2,OLD_CLASSAD,NEW_CLASSAD,ISM_CLASSAD,ISM_CLASSAD_GLUE_1.2"/>   
+ -->
+   </action>
+ 
+@@ -50,7 +50,7 @@
+           type="action"
+           jarpath="file:/usr/share/tomcat5/webapps/ce-monitor/actions/glite-ce-monitor-DoNotSendNotificationAction.jar">
+ <!--
+-    <property name="supportedDialectsList" value="LFID,ISM_LDIF,ISM_LDIF_GLUE_1.2,OLD_CLASSAD,NEW_CLASSAD,ISM_CLASSAD,ISM_CLASSAD_GLUE_1.2"/>   
++    <property name="supportedDialectsList" value="RAW,LFID,ISM_LDIF,ISM_LDIF_GLUE_1.2,OLD_CLASSAD,NEW_CLASSAD,ISM_CLASSAD,ISM_CLASSAD_GLUE_1.2"/>   
+ -->
+   </action>
+ 
+@@ -60,7 +60,7 @@
+           type="action"
+           jarpath="file:/usr/share/tomcat5/webapps/ce-monitor/actions/glite-ce-monitor-SendExpiredNotificationAction.jar">
+ <!--
+-    <property name="supportedDialectsList" value="LFID,ISM_LDIF,ISM_LDIF_GLUE_1.2,OLD_CLASSAD,NEW_CLASSAD,ISM_CLASSAD,ISM_CLASSAD_GLUE_1.2"/>
++    <property name="supportedDialectsList" value="RAW,LFID,ISM_LDIF,ISM_LDIF_GLUE_1.2,OLD_CLASSAD,NEW_CLASSAD,ISM_CLASSAD,ISM_CLASSAD_GLUE_1.2"/>
+ -->
+   </action>
+ 
+@@ -115,7 +115,7 @@
+     <property name="executionDelay" value="60000" />
+     <property name="scriptURI" value="/opt/glite/etc/glite-ce-ce-plugin/glite-ce-info" />
+     <property name="not_supported_attributes" value="GlueSiteDescription,GlueSiteLocation,GlueSiteWeb,GlueSiteSponsor,GlueSiteOtherInfo,GlueForeignKey,GlueChunkKey,createTimestamp,GlueCESEBindCEUniqueID,GlueCESEBindCEAccesspoint,GlueCESEBindGroupCEUniqueID,GlueCESEBindSEUniqueID,GlueCESEBindGroupSEUniqueID,entryTtl,modifyTimestamp,dn,ObjectClass" />
+-    <property name="multiple_values_attributes" value="GlueSiteSponsor,GlueSiteOtherInfo,GlueServiceAccessPointURL,GlueServiceAccessControlRule,GlueInformationServiceURL,GlueChunkKey,GlueForeignKey,GlueCEAccessControlBaseRule,GlueClusterService,GlueHostService,GlueHostApplicationSoftwareRunTimeEnvironment,GlueHostLocalFileSystemClient,GlueHostRemoteFileSystemServer,GlueCESEBindGroupSEUniqueID,GlueSEHostingSL,GlueSEAccessProtocolSupportedSecurity,GlueSLService,GlueSLLocalFileSystemClient,GlueSAAccessControlBaseRule" />
++    <property name="multiple_values_attributes" value="GlueSiteSponsor,GlueSiteOtherInfo,GlueServiceAccessPointURL,GlueServiceAccessControlRule,GlueChunkKey,GlueForeignKey,GlueCEAccessControlBaseRule,GlueClusterService,GlueHostService,GlueHostApplicationSoftwareRunTimeEnvironment,GlueHostLocalFileSystemClient,GlueHostRemoteFileSystemServer,GlueCESEBindGroupSEUniqueID,GlueSEHostingSL,GlueSEAccessProtocolSupportedSecurity,GlueSLService,GlueSLLocalFileSystemClient,GlueSAAccessControlBaseRule" />
+     <property name="purgeAllEventsOnStartup" value="false"/>
+   </sensor -->
+ 
+diff -rupN glite-ce-monitor-1.13.1-orig/config/ce-monitor.xml glite-ce-monitor-1.13.1/config/ce-monitor.xml
+--- glite-ce-monitor-1.13.1-orig/config/ce-monitor.xml	2011-09-20 10:06:40.000000000 -0500
++++ glite-ce-monitor-1.13.1/config/ce-monitor.xml	2011-09-20 10:07:33.000000000 -0500
+@@ -11,11 +11,11 @@
+                      type="java.lang.String" override="false"/>
+ 
+         <Environment name="configuration_provider_url"
+-                     value="/opt/glite/etc/glite-ce-monitor/cemonitor-config.xml"
++                     value="/etc/glite-ce-monitor/cemonitor-config.xml"
+                      type="java.lang.String" override="false"/>
+ 
+         <Environment name="log_configuration_file"
+-                     value="/opt/glite/etc/glite-ce-monitor/log4j.properties"
++                     value="/etc/glite-ce-monitor/log4j.properties"
+                      type="java.lang.String" override="false"/>
+ </Context>
+ 
