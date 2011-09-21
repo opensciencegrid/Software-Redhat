@@ -26,6 +26,7 @@ Source:		http://www.globus.org/ftppub/gt5/5.1/5.1.2/packages/src/%{_name}-%{vers
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Requires:	globus-gram-job-manager-scripts >= 4
+Requires:       globus-gram-job-manager
 Requires:	globus-gass-cache-program >= 5
 Requires:	globus-common-progs >= 14
 Requires:	perl(:MODULE_COMPAT_%(eval "`perl -V:version`"; echo $version))
@@ -209,7 +210,7 @@ if [ $1 -ge 1 ]; then
     if [ ! -f /etc/grid-services/jobmanager ]; then
         globus-gatekeeper-admin -e jobmanager-fork-poll -n jobmanager
     fi
-elif [ $i -eq 0 -a ! -f /etc/grid-services/jobmanager ]; then
+elif [ $1 -eq 0 -a ! -f /etc/grid-services/jobmanager ]; then
     globus-gatekeeper-admin -E > /dev/null 2>&1 || :
 fi
 
@@ -261,6 +262,10 @@ fi
 %dir %{_docdir}/%{name}-%{version}/html
 
 %changelog
+* Wed Sep 21 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0-5
+- Added dependency on globus-gram-job-manager
+- Fixed bad test in postun scriptlet of setup-poll subpackage
+
 * Wed Sep 21 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0-4
 - Changed post scriptlets to only enable jobmanager on fresh installs.
 - Moved call to ldconfig on uninstall to the postun scriptlet.
