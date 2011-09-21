@@ -31,6 +31,7 @@ Requires:	globus-gass-cache-program >= 5
 Requires:	globus-common-progs >= 14
 Requires:	perl(:MODULE_COMPAT_%(eval "`perl -V:version`"; echo $version))
 Requires:       %{name}-setup
+Requires:       globus-gatekeeper >= 7.3
 Obsoletes:      globus-gram-job-manager-setup-fork < 4.3
 Provides:       globus-gram-job-manager-setup-fork
 BuildRequires:	grid-packaging-tools >= 3.4
@@ -263,7 +264,7 @@ fi
 
 %changelog
 * Wed Sep 21 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0-5
-- Added dependency on globus-gram-job-manager
+- Added dependencies on globus-gram-job-manager, globus-gatekeeper
 - Fixed bad test in postun scriptlet of setup-poll subpackage
 
 * Wed Sep 21 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0-4
