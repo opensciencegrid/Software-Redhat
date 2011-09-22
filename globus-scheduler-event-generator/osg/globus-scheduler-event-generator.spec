@@ -13,7 +13,7 @@
 Name:		globus-scheduler-event-generator
 %global _name %(tr - _ <<< %{name})
 Version:	4.0
-Release:	3%{?dist}
+Release:	4%{?dist}
 Summary:	Globus Toolkit - Scheduler Event Generator
 
 Group:		System Environment/Libraries
@@ -26,6 +26,7 @@ Source9:	epstopdf-2.9.5gw
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Patch0:         lsb-init-script.patch
+Patch1:         create-logdir.patch
 
 Requires:	globus-xio-gsi-driver%{?_isa} >= 2
 BuildRequires:	grid-packaging-tools >= 3.4
@@ -116,6 +117,7 @@ Scheduler Event Generator Documentation Files
 %setup -q -n %{_name}-%{version}
 
 %patch0 -p1
+%patch1 -p1
 
 %if "%{rhel}" == "5"
 mkdir bin
@@ -216,6 +218,9 @@ fi
 %dir %{_docdir}/%{name}-%{version}/html
 
 %changelog
+* Thu Sep 22 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 4.0-4
+- Patched init script to create logdir's parents if they don't exist
+
 * Fri Sep 16 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 4.0-3
 - Patched init script to work around an infinite loop caused by some versions of redhat-lsb
 
