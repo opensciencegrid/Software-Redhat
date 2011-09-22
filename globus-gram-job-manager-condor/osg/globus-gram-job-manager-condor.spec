@@ -9,7 +9,7 @@
 Name:		globus-gram-job-manager-condor
 %global _name %(tr - _ <<< %{name})
 Version:	1.0
-Release:	4%{?dist}
+Release:	5%{?dist}
 Summary:	Globus Toolkit - Condor Job Manager
 
 Group:		Applications/Internet
@@ -141,7 +141,7 @@ if [ $1 -eq 0 ]; then
 fi
 
 %postun
-if [ $i -eq 0 -a ! -f /etc/grid-services/jobmanager ]; then
+if [ $1 -eq 0 -a ! -f /etc/grid-services/jobmanager ]; then
     globus-gatekeeper-admin -E > /dev/null 2>&1 || :
 fi
 
@@ -155,6 +155,9 @@ fi
 %{perl_vendorlib}/Globus/GRAM/JobManager/condor_accounting_groups.pm
 
 %changelog
+* Thu Sep 22 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0-5
+- Fixed condition in postun scriptlet
+
 * Wed Sep 21 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0-4
 - Changed post scriptlet to only run globus-gatekeeper-admin on fresh install
   so site customizations would be preserved on upgrade.
