@@ -1,7 +1,7 @@
 Summary: The CE monitor service is a web application that publishes information about the Computing Element
 Name: glite-ce-monitor
 Version: 1.13.1
-Release: 4%{?dist}
+Release: 5%{?dist}
 License: Apache License 2.0
 Vendor: EMI
 Group: System Environment/Libraries
@@ -30,6 +30,8 @@ AutoReqProv: yes
 
 # Gonna have to change this for sl6 to tomcat6 -dds
 Requires: tomcat5
+Requires: xml-commons-apis
+Requires: glite-ce-osg-ce-plugin
 
 Requires: httpd
 Source0: glite-ce-monitor-1.13.1-3.src.tar.gz
@@ -52,6 +54,7 @@ cp %{SOURCE2} $RPM_BUILD_ROOT
 printf "stage.location=$RPM_BUILD_ROOT/usr
 sysconfig.location=$RPM_BUILD_ROOT/etc
 dist.location=$RPM_BUILD_ROOT/usr
+var.location=$RPM_BUILD_ROOT/var/lib/glite-ce-monitor
 tomcat.location=/usr/share/tomcat5
 axis.location=$RPM_BUILD_ROOT/usr/local/axis1.4
 axislib.location=/usr/share/java/axis
@@ -109,25 +112,28 @@ rm -rf $RPM_BUILD_ROOT
 %dir /etc/glite-ce-monitor/
 /etc/glite-ce-monitor/log4j.properties
 /etc/glite-ce-monitor/cemonitor-config.xml.template
+/etc/glite-ce-monitor/cemonitor-config.xml
 /etc/glite-ce-monitor/cemonitor-argus-config.xml
 /etc/glite-ce-monitor/cemonitor-authz-config.xml
 /etc/glite-ce-monitor/ce-monitor.xml
-%dir /usr/share/webapps/
-/usr/share/webapps/ce-monitor.war
-/usr/share/java/glite-ce-monitor-RegExProcessor.jar
-/usr/share/java/glite-ce-monitor.jar
-/usr/share/java/glite-ce-monitor-ClassAdProcessor.jar
-/usr/share/java/glite-ce-monitor-DoNotSendNotificationAction.jar
-/usr/share/java/glite-ce-monitor-SendNotificationAction.jar
-/usr/share/java/glite-ce-monitor-SendExpiredNotificationAction.jar
+/usr/share/java/glite-ce-monitor/glite-ce-monitor-RegExProcessor.jar
+/usr/share/java/glite-ce-monitor/glite-ce-monitor.jar
+/usr/share/java/glite-ce-monitor/glite-ce-monitor-ClassAdProcessor.jar
+/usr/share/java/glite-ce-monitor/glite-ce-monitor-DoNotSendNotificationAction.jar
+/usr/share/java/glite-ce-monitor/glite-ce-monitor-SendNotificationAction.jar
+/usr/share/java/glite-ce-monitor/glite-ce-monitor-SendExpiredNotificationAction.jar
 %dir /usr/share/doc/glite-ce-monitor-1.13.1/
 /usr/share/doc/glite-ce-monitor-1.13.1/LICENSE
 %defattr(-,tomcat,tomcat)
-%dir /var/lib/glite-ce-monitor
+/var/lib/glite-ce-monitor
 %dir /var/log/glite-ce-monitor
 /etc/httpd/conf.d/osg-cemon.conf
 
 %changelog
+* Thu Sep 22 2011 Doug Strain <dstrain@fnal.gov> 1.13.1-5
+- Changing locations of some things so that CEMon works correctly
+-- with tomcat5 from RHEL rpm
+
 * Tue Sep 20 2011 Doug Strain <dstrain@fnal.gov> 1.13.1-4
 - Created new osg rpm
 - Added tomcat / apache requirements, apache conf file

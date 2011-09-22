@@ -95,6 +95,7 @@ limitations under the License.
     <javac srcdir="src" destdir="bin/classes" source="1.5"
            target="1.5" debug="true" debuglevel="lines,vars,source">
       <classpath refid="compile.classpath" />
+      <include name="org/glite/**/*.java"/>
     </javac>
     <copy todir="bin/classes">
       <fileset dir="src" includes="**/images/*.*"/>
@@ -140,15 +141,16 @@ limitations under the License.
   </target>
 
   <target name="install" depends="compile">
-    <mkdir dir="${dist.location}/share/java"/>
-    <copy toDir="${dist.location}/share/java">
+    <mkdir dir="${dist.location}/share/java/glite-ce-monitor"/>
+    <copy toDir="${dist.location}/share/java/glite-ce-monitor">
       <fileset dir="lib">
         <include name="*.jar" /> 
       </fileset>
     </copy>
 
+    <mkdir dir="${var.location}"/>
+    <mkdir dir="${var.location}/ce-monitor"/>
     <mkdir dir="${sysconfig.location}/glite-ce-monitor"/>
-    <mkdir dir="${dist.location}/share/webapps"/>
 
     <mkdir dir="tmp/ce-monitor/WEB-INF"/>
     <mkdir dir="tmp/ce-monitor/WEB-INF/attachments"/>
@@ -161,6 +163,9 @@ limitations under the License.
     <copy todir="tmp/ce-monitor/WEB-INF/lib" flatten="true">
       <fileset dir="${axislib.location}" includes="*.jar"/>
       <fileset dir="${bcprov.location}" includes="**/bcprov.jar" />
+      <fileset file="${log4j.location}/log4j.jar" />
+      <fileset file="/usr/share/java/commons-discovery.jar" />
+      <fileset file="/usr/share/java/wsdl4j.jar" />
       <fileset dir="${jaf.location}">
         <include name="jaf-*/**/activation.jar"/>
         <include name="activation.jar"/>
@@ -230,8 +235,8 @@ limitations under the License.
         <fileset file="${log4j.location}/log4j.jar" />
         <fileset file="/usr/share/java/commons-logging.jar" />
         <fileset file="/usr/share/java/commons-discovery.jar" />
-        <fileset file="/usr/share/java/activation.jar" />
         <fileset file="/usr/share/java/wsdl4j.jar" />
+        <fileset file="/usr/share/java/activation.jar" />
         <fileset dir="lib" includes="**/*.jar"/>
         <fileset file="${org.glite.ce.commonj.location}/share/java/glite-ce-common-java.jar"/>
         <fileset file="${org.glite.ce.monitorapij.location}/share/java/glite-ce-monitor-api-java.jar"/>
@@ -315,7 +320,13 @@ log4j.appender.fileout.layout.ConversionPattern=%d{dd MMM yyyy HH:mm:ss,SSS} %c 
 
   </authzchain>]]></echo>
 
-    <jar jarfile="${dist.location}/share/webapps/ce-monitor.war" basedir="tmp/ce-monitor" includes="**"/>
+    <!-- Change by OSG to copy war and expanded dir 
+	to /var/lib/glite-ce-monitor -->
+    <jar jarfile="${var.location}/ce-monitor.war" basedir="tmp/ce-monitor" includes="**"/>
+
+    <copy toDir="${var.location}/ce-monitor">
+      <fileset dir="tmp/ce-monitor" includes="**"/>
+    </copy>
 
     <delete dir="tmp/ce-monitor" />
 
@@ -325,6 +336,8 @@ log4j.appender.fileout.layout.ConversionPattern=%d{dd MMM yyyy HH:mm:ss,SSS} %c 
 
     <copy file="config/cemonitor-config.xml"
           tofile="${sysconfig.location}/glite-ce-monitor/cemonitor-config.xml.template" />
+    <copy file="config/cemonitor-config.xml"
+          tofile="${sysconfig.location}/glite-ce-monitor/cemonitor-config.xml" />
 
     <mkdir dir="${dist.location}/share/doc/glite-ce-monitor-${module.version}"/>
     <copy file="LICENSE" todir="${dist.location}/share/doc/glite-ce-monitor-${module.version}"/>
