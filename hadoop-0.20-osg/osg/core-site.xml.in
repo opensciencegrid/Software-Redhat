@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+
+<!-- Put site-specific property overrides in this file. -->
+
+<configuration>
+  <property>
+    <name>fs.default.name</name>
+    <value>hdfs://@HADOOP_NAMENODE@:@HADOOP_NAMEPORT@</value>
+  </property>
+  <property>
+    <name>hadoop.tmp.dir</name>
+    <value>@HADOOP_SCRATCH@</value>
+  </property>
+  <property>
+    <name>dfs.umaskmode</name>
+    <value>002</value>
+  </property>
+  <property>
+    <name>io.bytes.per.checksum</name>
+    <value>4096</value>
+  </property>
+  <property>
+    <name>hadoop.log.dir</name>
+    <value>@HADOOP_LOG@</value>
+  </property>
+</configuration>
