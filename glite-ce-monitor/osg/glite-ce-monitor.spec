@@ -1,7 +1,7 @@
 Summary: The CE monitor service is a web application that publishes information about the Computing Element
 Name: glite-ce-monitor
 Version: 1.13.1
-Release: 5%{?dist}
+Release: 7%{?dist}
 License: Apache License 2.0
 Vendor: EMI
 Group: System Environment/Libraries
@@ -50,7 +50,7 @@ The CE monitor service is a web application that publishes information about the
 %build
 cp %{SOURCE1} .
 cp %{SOURCE2} $RPM_BUILD_ROOT
-
+TEMP_BUILD_LOCATION=`pwd`
 printf "stage.location=$RPM_BUILD_ROOT/usr
 sysconfig.location=$RPM_BUILD_ROOT/etc
 dist.location=$RPM_BUILD_ROOT/usr
@@ -59,6 +59,7 @@ tomcat.location=/usr/share/tomcat5
 axis.location=$RPM_BUILD_ROOT/usr/local/axis1.4
 axislib.location=/usr/share/java/axis
 log4j.location=/usr/share/java
+src.location=$TEMP_BUILD_LOCATION/src
 web_xml.location=$RPM_BUILD_ROOT
 jclassads.location=/usr/share/java/jclassads
 jaf.location=/usr/share/java

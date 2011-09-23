@@ -92,10 +92,12 @@ limitations under the License.
     <mkdir dir="src/autogen" />
     <mkdir dir="doc/autogen" />		
 
-    <javac srcdir="src" destdir="bin/classes" source="1.5"
+    <javac fork="true"
+	memoryinitialsize="256m"
+       	memorymaximumsize="256m"
+	srcdir="src" destdir="bin/classes" source="1.5"
            target="1.5" debug="true" debuglevel="lines,vars,source">
       <classpath refid="compile.classpath" />
-      <include name="org/glite/**/*.java"/>
     </javac>
     <copy todir="bin/classes">
       <fileset dir="src" includes="**/images/*.*"/>
