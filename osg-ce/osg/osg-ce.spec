@@ -1,7 +1,7 @@
 Name:      osg-ce
 Summary:   OSG Compute Element 
 Version:   3.0.0
-Release:   14
+Release:   15
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -27,6 +27,18 @@ Requires: osg-info-services
 Requires: gums-client
 Requires: edg-mkgridmap
 Requires: osg-site-verify
+Requires: osg-system-profiler
+Requires: osg-configure
+Requires: osg-configure-ce
+Requires: osg-configure-cemon
+Requires: osg-configure-condor
+Requires: osg-configure-gip
+Requires: osg-configure-gratia
+Requires: osg-configure-lsf
+Requires: osg-configure-managedfork
+Requires: osg-configure-misc
+Requires: osg-configure-pbs
+Requires: osg-configure-squid
 
 # For the CE authz
 %ifarch %{ix86}
@@ -93,6 +105,9 @@ rm -rf $RPM_BUILD_ROOT
 %files sge
 
 %changelog
+* Fri Sep 23 2011 Suchandra Thapa (sthapa@ci.uchicago.edu) - 3.0.0-15
+Updated requirements
+
 * Thu Sep 22 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 3.0.0-14
 - Added Requires to prefer globus-gram-job-manager-fork-setup-poll over
   -setup-seg, since we haven't been able to get the latter working yet.
