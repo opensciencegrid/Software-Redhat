@@ -12,8 +12,8 @@
 
 Name:		globus-gatekeeper
 %global _name %(tr - _ <<< %{name})
-Version:	8.0
-Release:	3%{?dist}
+Version:	8.1
+Release:	2%{?dist}
 Summary:	Globus Toolkit - Globus Gatekeeper
 
 Group:		Applications/Internet
@@ -24,8 +24,6 @@ Source:         %{_name}-%{version}.tar.gz
 # OSG customizations
 Source1:        globus-gatekeeper.sysconfig
 Patch0:         child_signals.patch
-Patch1:         lsb-init-script.patch
-
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Requires:	globus-common >= 13.4
@@ -52,7 +50,6 @@ Globus Gatekeeper Setup
 %setup -q -n %{_name}-%{version}
 
 %patch0 -p0
-%patch1 -p1
 # Note append here
 cat %{SOURCE1} >> config/globus-gatekeeper.in
 
@@ -122,6 +119,11 @@ fi
 %config(noreplace) /etc/sysconfig/globus-gatekeeper
 
 %changelog
+* Fri Sep 23 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 8.1-2
+- Removed my lsb patch, merged upstream 8.1-1:
+    * Fri Sep 23 2011 Joe Bester <bester@mcs.anl.gov> - 8.1-1
+    - GRAM-260: Detect and workaround bug in start_daemon for LSB < 4
+
 * Fri Sep 16 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 8.0-4
 - Patched init script to work around infinite loop caused by some versions of redhat-lsb
 
