@@ -1,7 +1,7 @@
 Name:      osg-ce
 Summary:   OSG Compute Element 
 Version:   3.0.0
-Release:   13
+Release:   14
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -21,6 +21,7 @@ Requires: vo-client
 #Requires: osg-site-verify
 Requires: osg-site-web-page
 Requires: globus-gram-job-manager-fork
+Requires: globus-gram-job-manager-fork-setup-poll
 Requires: gip
 Requires: osg-info-services
 Requires: gums-client
@@ -92,6 +93,10 @@ rm -rf $RPM_BUILD_ROOT
 %files sge
 
 %changelog
+* Thu Sep 22 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 3.0.0-14
+- Added Requires to prefer globus-gram-job-manager-fork-setup-poll over
+  -setup-seg, since we haven't been able to get the latter working yet.
+
 * Mon Sep 12 2011 Alain Roy <roy@cs.wisc.edu > 3.0.0-13
   Added dependency on grid-certificates
 
