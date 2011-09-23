@@ -1,6 +1,6 @@
 Name:           osg-release
 Version:        3.0 
-Release:        9
+Release:        10
 Summary:        OSG Software for Enterprise Linux repository configuration
 
 Group:          System Environment/Base 
@@ -58,6 +58,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Sep 23 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 3.0-10
+- Previous improvements to debug and source repos were previously not applied to the contrib repo.
+
 * Mon Sep 19 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 3.0-9
 - Added commented-out baseurl line to the .repo files so people have a fallback
   if there is a problem with the mirrors
