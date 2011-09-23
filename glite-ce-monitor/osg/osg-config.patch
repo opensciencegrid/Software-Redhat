@@ -1,0 +1,175 @@
+diff -rupN glite-ce-monitor-1.13.1-orig/config/cemonitor-config.xml glite-ce-monitor-1.13.1/config/cemonitor-config.xml
+--- glite-ce-monitor-1.13.1-orig/config/cemonitor-config.xml	2011-09-20 10:06:40.000000000 -0500
++++ glite-ce-monitor-1.13.1/config/cemonitor-config.xml	2011-09-22 16:01:37.000000000 -0500
+@@ -4,15 +4,15 @@
+          ServiceDescription="cemonitor service"
+ 	 InterfaceVersion="1.0"
+ 	 ServiceVersion="1.0"
+-         sslkeyfile="/usr/share/tomcat5/hostkey.pem"
+-         sslcertfile="/usr/share/tomcat5/hostcert.pem"
++         sslkeyfile="/etc/grid-security/hostkey.pem"
++         sslcertfile="/etc/grid-security/hostcert.pem"
+          sslkeypasswd=""
+          sslCAfiles="/etc/grid-security/certificates/*.0"
+          sslCRLfiles="/etc/grid-security/certificates/*.r0"
+          maxSubscriptionExpirationTime_hours="200"
+          notificationSharedThread="false"
+          notificationTimeout_sec="60"
+-         backendLocation="/opt/glite/var/cemonitor"
++         backendLocation="/var/lib/glite-ce-monitor"
+ 	 confProvider="org.glite.ce.commonj.jndi.provider.fscachedprovider.CEGeneralDirContextFactory"
+          subscriptionRegistryConfProvider="org.glite.ce.commonj.jndi.provider.fscachedprovider.CEGeneralDirContextFactory">
+ 
+@@ -38,19 +38,19 @@
+   <action id="1"
+           name="SendNotification"
+           type="action"
+-          jarpath="file:/usr/share/tomcat5/webapps/ce-monitor/actions/glite-ce-monitor-SendNotificationAction.jar">
++          jarpath="file:/var/lib/glite-ce-monitor/ce-monitor/actions/glite-ce-monitor-SendNotificationAction.jar">
+ <!--
+     <property name="TTLCEinfo" value="300" />
+-    <property name="supportedDialectsList" value="LFID,ISM_LDIF,ISM_LDIF_GLUE_1.2,OLD_CLASSAD,NEW_CLASSAD,ISM_CLASSAD,ISM_CLASSAD_GLUE_1.2"/>   
++    <property name="supportedDialectsList" value="RAW,LFID,ISM_LDIF,ISM_LDIF_GLUE_1.2,OLD_CLASSAD,NEW_CLASSAD,ISM_CLASSAD,ISM_CLASSAD_GLUE_1.2"/>   
+ -->
+   </action>
+ 
+   <action id="2"
+           name="DoNotSendNotification"
+           type="action"
+-          jarpath="file:/usr/share/tomcat5/webapps/ce-monitor/actions/glite-ce-monitor-DoNotSendNotificationAction.jar">
++          jarpath="file:/var/lib/glite-ce-monitor/ce-monitor/actions/glite-ce-monitor-DoNotSendNotificationAction.jar">
+ <!--
+-    <property name="supportedDialectsList" value="LFID,ISM_LDIF,ISM_LDIF_GLUE_1.2,OLD_CLASSAD,NEW_CLASSAD,ISM_CLASSAD,ISM_CLASSAD_GLUE_1.2"/>   
++    <property name="supportedDialectsList" value="RAW,LFID,ISM_LDIF,ISM_LDIF_GLUE_1.2,OLD_CLASSAD,NEW_CLASSAD,ISM_CLASSAD,ISM_CLASSAD_GLUE_1.2"/>   
+ -->
+   </action>
+ 
+@@ -58,9 +58,9 @@
+   <action id="3"
+           name="SendExpiredNotification"
+           type="action"
+-          jarpath="file:/usr/share/tomcat5/webapps/ce-monitor/actions/glite-ce-monitor-SendExpiredNotificationAction.jar">
++          jarpath="file:/var/lib/glite-ce-monitor/ce-monitor/actions/glite-ce-monitor-SendExpiredNotificationAction.jar">
+ <!--
+-    <property name="supportedDialectsList" value="LFID,ISM_LDIF,ISM_LDIF_GLUE_1.2,OLD_CLASSAD,NEW_CLASSAD,ISM_CLASSAD,ISM_CLASSAD_GLUE_1.2"/>
++    <property name="supportedDialectsList" value="RAW,LFID,ISM_LDIF,ISM_LDIF_GLUE_1.2,OLD_CLASSAD,NEW_CLASSAD,ISM_CLASSAD,ISM_CLASSAD_GLUE_1.2"/>
+ -->
+   </action>
+ 
+@@ -68,12 +68,12 @@
+   <queryprocessor id="processor-1"
+           name="ClassAd"
+           type="queryprocessor"
+-          jarpath="file:/usr/share/tomcat5/webapps/ce-monitor/query_processors/glite-ce-monitor-ClassAdProcessor.jar" />
++          jarpath="file:/var/lib/glite-ce-monitor/ce-monitor/query_processors/glite-ce-monitor-ClassAdProcessor.jar" />
+ 
+   <queryprocessor id="processor-2"
+           name="RegEx"
+           type="queryprocessor"
+-          jarpath="file:/usr/share/tomcat5/webapps/ce-monitor/query_processors/glite-ce-monitor-RegExProcessor.jar" />
++          jarpath="file:/var/lib/glite-ce-monitor/ce-monitor/query_processors/glite-ce-monitor-RegExProcessor.jar" />
+ 
+ 
+ <!-- Sensors -->
+@@ -82,42 +82,44 @@
+   <!--sensor id="sensor-ice"
+           name="ICE Job Sensor"
+           type="ICE"
+-          jarpath="file:/opt/glite/share/java/glite-ce-job-plugin-ice.jar">
++          jarpath="file:/usr/share/java/glite-ce-job-plugin-ice.jar">
+     <property name="executionDelay" value="60" />
+-    <property name="creamScratchURI" value="/opt/glite/var/cream" />
++    <property name="creamScratchURI" value="/var/run/cream" />
+     <property name="providerFactory" value="org.glite.ce.commonj.jndi.provider.fscachedprovider.CEGeneralDirContextFactory" />
+     <property name="pushMode" value="true" />
+     <property name="expiration" value="30" />
+   </sensor-->
++  <!--
+   <sensor id="sensor-job-cream"
+           name="CREAM Job Sensor"
+           type="CREAM_JOBS"
+-          jarpath="file:/opt/glite/share/java/glite-ce-job-plugin.jar">
++          jarpath="file:/usr/share/java/glite-ce-job-plugin.jar">
+     <property name="executionDelay" value="60" />
+     <property name="pushMode" value="false" />
+     <property name="expiration" value="10" />
+     <property name="purgeAllEventsOnStartup" value="false"/>
+   </sensor>
++  -->
+   <!--sensor id="sensor-ce"
+           name="CE Sensor"
+           type="CE_MONITOR"
+-          jarpath="file:/opt/glite/share/java/glite-ce-ce-plugin.jar">
++          jarpath="file:/usr/share/java/glite-ce-ce-plugin.jar">
+     <property name="executionDelay" value="60" />
+-    <property name="scriptURI" value="/opt/glite/etc/glite-ce-ce-plugin/glite-ce-info" />
++    <property name="scriptURI" value="/etc/glite-ce-ce-plugin/glite-ce-info" />
+     <property name="multiple_attributes" value="GlueChunkKey,GlueForeignKey,GlueServiceName,GlueServiceVersion,GlueServiceEndpoint,GlueServiceStatusInfo,GlueServiceSemantics,GlueServiceOwner,GlueServiceDataValue,GlueSiteName,GlueSiteSponsor,GlueSiteOtherInfo,GlueCEAccessControlBaseRule,GlueClusterService,GlueHostApplicationSoftwareRunTimeEnvironment,GlueHostLocalFileSystemClient,GlueHostRemoteFileSystemServer,GlueCESEBindGroupSEUniqueID,GlueSEHostingSL,GlueSEArchitecture,GlueSEType,GlueSEAccessProtocolSupportedSecurity,GlueSEAccessProtocolCapability,GlueSEControlProtocolCapability,GlueSLServiceGlueSLLocalFileSystemClient,GlueSAAccessControlBaseRule" />
+     <property name="purgeAllEventsOnStartup" value="false"/>
+   </sensor-->
+ 
+-  <!-- sensor id="sensor-osg-ce"
++  <sensor id="sensor-osg-ce"
+           name="OSG CE Sensor"
+           type="OSG_CE"
+-          jarpath="file:/opt/glite/share/java/glite-ce-osg-ce-plugin.jar">
++          jarpath="file:/usr/share/java/glite-ce-osg-ce-plugin.jar">
+     <property name="executionDelay" value="60000" />
+-    <property name="scriptURI" value="/opt/glite/etc/glite-ce-ce-plugin/glite-ce-info" />
++    <property name="scriptURI" value="/var/lib/glite-ce-monitor/glite-ce-info" />
+     <property name="not_supported_attributes" value="GlueSiteDescription,GlueSiteLocation,GlueSiteWeb,GlueSiteSponsor,GlueSiteOtherInfo,GlueForeignKey,GlueChunkKey,createTimestamp,GlueCESEBindCEUniqueID,GlueCESEBindCEAccesspoint,GlueCESEBindGroupCEUniqueID,GlueCESEBindSEUniqueID,GlueCESEBindGroupSEUniqueID,entryTtl,modifyTimestamp,dn,ObjectClass" />
+-    <property name="multiple_values_attributes" value="GlueSiteSponsor,GlueSiteOtherInfo,GlueServiceAccessPointURL,GlueServiceAccessControlRule,GlueInformationServiceURL,GlueChunkKey,GlueForeignKey,GlueCEAccessControlBaseRule,GlueClusterService,GlueHostService,GlueHostApplicationSoftwareRunTimeEnvironment,GlueHostLocalFileSystemClient,GlueHostRemoteFileSystemServer,GlueCESEBindGroupSEUniqueID,GlueSEHostingSL,GlueSEAccessProtocolSupportedSecurity,GlueSLService,GlueSLLocalFileSystemClient,GlueSAAccessControlBaseRule" />
++    <property name="multiple_values_attributes" value="GlueSiteSponsor,GlueSiteOtherInfo,GlueServiceAccessPointURL,GlueServiceAccessControlRule,GlueChunkKey,GlueForeignKey,GlueCEAccessControlBaseRule,GlueClusterService,GlueHostService,GlueHostApplicationSoftwareRunTimeEnvironment,GlueHostLocalFileSystemClient,GlueHostRemoteFileSystemServer,GlueCESEBindGroupSEUniqueID,GlueSEHostingSL,GlueSEAccessProtocolSupportedSecurity,GlueSLService,GlueSLLocalFileSystemClient,GlueSAAccessControlBaseRule" />
+     <property name="purgeAllEventsOnStartup" value="false"/>
+-  </sensor -->
++  </sensor>
+ 
+ <!-- sensor id="sensor-gridice" 
+       name="GridICE Sensor"
+@@ -146,4 +148,21 @@
+     </policy>
+   </subscription -->
+ 
++<!-- OSG Subscription -->
++   <subscription id="subscription-https___osg-ress-1_fnal_gov_8443_ig_services_CEInfoCollector-OSG_CE-OLD_CLASSAD"
++         monitorConsumerURL="https://osg-ress-1.fnal.gov:8443/ig/services/CEInfoCollector"
++         sslprotocol="SSLv3"
++         retryCount="-1">
++      <topic name="OSG_CE">
++         <dialect name="OLD_CLASSAD" />
++      </topic>
++      <policy rate="600">
++         <query queryLanguage="ClassAd"><![CDATA[GlueCEStateWaitingJobs<2]]></query>
++         <action name="SendNotification" doActionWhenQueryIs="true" />
++         <action name="SendExpiredNotification" doActionWhenQueryIs="false" />
++      </policy>
++   </subscription>
++
++
++
+ </service>
+diff -rupN glite-ce-monitor-1.13.1-orig/config/ce-monitor.xml glite-ce-monitor-1.13.1/config/ce-monitor.xml
+--- glite-ce-monitor-1.13.1-orig/config/ce-monitor.xml	2011-09-20 10:06:40.000000000 -0500
++++ glite-ce-monitor-1.13.1/config/ce-monitor.xml	2011-09-22 15:43:10.000000000 -0500
+@@ -1,6 +1,6 @@
+ <!-- This file must be put into $CATALINA_HOME/conf/Catalina/localhost -->
+ 
+-<Context path="/ce-monitor" docBase="ce-monitor"
++<Context path="/ce-monitor" docBase="/var/lib/glite-ce-monitor/ce-monitor"
+          privileged="true" antiResourceLocking="false" antiJARLocking="false">
+         <Logger className="org.apache.catalina.logger.FileLogger"
+                 prefix="glite-test-"
+@@ -11,11 +11,11 @@
+                      type="java.lang.String" override="false"/>
+ 
+         <Environment name="configuration_provider_url"
+-                     value="/opt/glite/etc/glite-ce-monitor/cemonitor-config.xml"
++                     value="/etc/glite-ce-monitor/cemonitor-config.xml"
+                      type="java.lang.String" override="false"/>
+ 
+         <Environment name="log_configuration_file"
+-                     value="/opt/glite/etc/glite-ce-monitor/log4j.properties"
++                     value="/etc/glite-ce-monitor/log4j.properties"
+                      type="java.lang.String" override="false"/>
+ </Context>
+ 

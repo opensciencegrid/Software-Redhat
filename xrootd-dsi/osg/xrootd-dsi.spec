@@ -1,6 +1,6 @@
 Name:           xrootd-dsi
 Version:        3.0.4
-Release:        4
+Release:        5
 Summary:        xrootd DSI library and POSIX preload
 Group:          System Environment/Daemons
 License:        Stanford (modified BSD with advert clause)
@@ -56,6 +56,9 @@ install -m 644 libglobus_gridftp_server_posix.so $RPM_BUILD_ROOT/usr/lib/libglob
 
 
 %changelog
+* Thu Sep 15 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 3.0.4-5
+Rebuild against updated Globus libraries
+
 * Thu Sep 1 2011 Doug Strain <dstrain@fnal.gov> 3.0.4-4
 - Fixed build for Globus 5.2 and got rid of setup.sh script.
 

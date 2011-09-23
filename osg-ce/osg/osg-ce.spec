@@ -1,13 +1,14 @@
 Name:      osg-ce
 Summary:   OSG Compute Element 
 Version:   3.0.0
-Release:   12
+Release:   15
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
 
 BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
+Requires: grid-certificates
 Requires: java-1.6.0-sun-compat
 Requires: globus-gridftp-server-progs 
 Requires: osg-client
@@ -20,11 +21,24 @@ Requires: vo-client
 #Requires: osg-site-verify
 Requires: osg-site-web-page
 Requires: globus-gram-job-manager-fork
+Requires: globus-gram-job-manager-fork-setup-poll
 Requires: gip
 Requires: osg-info-services
 Requires: gums-client
 Requires: edg-mkgridmap
 Requires: osg-site-verify
+Requires: osg-system-profiler
+Requires: osg-configure
+Requires: osg-configure-ce
+Requires: osg-configure-cemon
+Requires: osg-configure-condor
+Requires: osg-configure-gip
+Requires: osg-configure-gratia
+Requires: osg-configure-lsf
+Requires: osg-configure-managedfork
+Requires: osg-configure-misc
+Requires: osg-configure-pbs
+Requires: osg-configure-squid
 
 # For the CE authz
 %ifarch %{ix86}
@@ -91,6 +105,16 @@ rm -rf $RPM_BUILD_ROOT
 %files sge
 
 %changelog
+* Fri Sep 23 2011 Suchandra Thapa (sthapa@ci.uchicago.edu) - 3.0.0-15
+Updated requirements
+
+* Thu Sep 22 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 3.0.0-14
+- Added Requires to prefer globus-gram-job-manager-fork-setup-poll over
+  -setup-seg, since we haven't been able to get the latter working yet.
+
+* Mon Sep 12 2011 Alain Roy <roy@cs.wisc.edu > 3.0.0-13
+  Added dependency on grid-certificates
+
 * Thu Sep 08 2011 Alain Roy <roy@cs.wisc.edu> - 3.0.0-12
 - Added dependencies from the pbs/lsf/sge sub packages on osg-ce. 
 

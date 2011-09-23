@@ -1,8 +1,8 @@
 
 Name:      rsv
 Summary:   RSV Meta Package
-Version:   3.4.5
-Release:   3%{?dist}
+Version:   3.4.9
+Release:   1%{?dist}
 License:   Apache 2.0
 Group:     Applications/Monitoring
 URL:       https://twiki.grid.iu.edu/bin/view/MonitoringInformation/RSV

@@ -1,7 +1,7 @@
 
 Name:      osg-ca-scripts
-Version:   0.0.7
-Release:   2%{?dist}
+Version:   0.0.9
+Release:   1%{?dist}
 Summary:   CA Certificate helper scripts
 
 Group:     System Environment/Base
@@ -83,6 +83,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Sep 14 2011 Anand Padmanabhan <apadmana@uiuc.edu> 0.0.8-1
+-  Changed the names of the url shortcuts in osg-ca-manage to match with RPM names.
+ 
 * Wed Sep 07 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 0.0.7-1
 - Added logrotation
 

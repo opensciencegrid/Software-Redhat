@@ -1,0 +1,7 @@
+Packager notes:
+
+- This build is inherited from the hadoop-0.20-osg package in the
+dist-el5-hadoop20 branch of the caltech koji repository:
+https://koji.hep.caltech.edu/koji/index
+
+- No sources or building is needed so there is no upstream directory

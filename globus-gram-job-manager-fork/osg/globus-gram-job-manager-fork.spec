@@ -16,7 +16,7 @@
 Name:		globus-gram-job-manager-fork
 %global _name %(tr - _ <<< %{name})
 Version:	1.0
-Release:	3%{?dist}
+Release:	5%{?dist}
 Summary:	Globus Toolkit - Fork Job Manager
 
 Group:		Applications/Internet
@@ -26,10 +26,12 @@ Source:		http://www.globus.org/ftppub/gt5/5.1/5.1.2/packages/src/%{_name}-%{vers
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Requires:	globus-gram-job-manager-scripts >= 4
+Requires:       globus-gram-job-manager
 Requires:	globus-gass-cache-program >= 5
 Requires:	globus-common-progs >= 14
 Requires:	perl(:MODULE_COMPAT_%(eval "`perl -V:version`"; echo $version))
 Requires:       %{name}-setup
+Requires:       globus-gatekeeper >= 7.3
 Obsoletes:      globus-gram-job-manager-setup-fork < 4.3
 Provides:       globus-gram-job-manager-setup-fork
 BuildRequires:	grid-packaging-tools >= 3.4
@@ -191,7 +193,7 @@ cat $GLOBUSPACKAGEDIR/%{_name}/noflavor_doc.filelist \
 rm -rf $RPM_BUILD_ROOT
 
 %post setup-poll
-if [ $1 -ge 1 ]; then
+if [ $1 -eq 1 ]; then
     globus-gatekeeper-admin -e jobmanager-fork-poll -n jobmanager-fork
     if [ ! -f /etc/grid-services/jobmanager ]; then
         globus-gatekeeper-admin -e jobmanager-fork-poll -n jobmanager
@@ -209,13 +211,13 @@ if [ $1 -ge 1 ]; then
     if [ ! -f /etc/grid-services/jobmanager ]; then
         globus-gatekeeper-admin -e jobmanager-fork-poll -n jobmanager
     fi
-elif [ $i -eq 0 -a ! -f /etc/grid-services/jobmanager ]; then
+elif [ $1 -eq 0 -a ! -f /etc/grid-services/jobmanager ]; then
     globus-gatekeeper-admin -E > /dev/null 2>&1 || :
 fi
 
 %post setup-seg
 /sbin/ldconfig
-if [ $1 -ge 1 ]; then
+if [ $1 -eq 1 ]; then
     globus-gatekeeper-admin -e jobmanager-fork-seg -n jobmanager-fork
     globus-scheduler-event-generator-admin -e fork
     /sbin/service globus-scheduler-event-generator condrestart fork
@@ -225,7 +227,6 @@ if [ $1 -ge 1 ]; then
 fi
 
 %preun setup-seg
-/sbin/ldconfig
 if [ $1 -eq 0 ]; then
     globus-gatekeeper-admin -d jobmanager-fork-seg > /dev/null 2>&1 || :
     globus-scheduler-event-generator-admin -d fork > /dev/null 2>&1 || :
@@ -233,6 +234,7 @@ if [ $1 -eq 0 ]; then
 fi
 
 %postun setup-seg
+/sbin/ldconfig
 if [ $1 -ge 1 ]; then
     globus-gatekeeper-admin -e jobmanager-fork-seg > /dev/null 2>&1 || :
     globus-scheduler-event-generator-admin -e fork > /dev/null 2>&1 || :
@@ -261,6 +263,14 @@ fi
 %dir %{_docdir}/%{name}-%{version}/html
 
 %changelog
+* Wed Sep 21 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0-5
+- Added dependencies on globus-gram-job-manager, globus-gatekeeper
+- Fixed bad test in postun scriptlet of setup-poll subpackage
+
+* Wed Sep 21 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0-4
+- Changed post scriptlets to only enable jobmanager on fresh installs.
+- Moved call to ldconfig on uninstall to the postun scriptlet.
+
 * Fri Sep 09 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0-3
 - Merged osg changes (provides: globus-gram-job-manager-setup-fork)
 

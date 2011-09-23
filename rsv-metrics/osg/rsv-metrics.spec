@@ -1,7 +1,7 @@
 
 Name:      rsv-metrics
-Version:   3.4.5
-Release:   3%{?dist}
+Version:   3.4.9
+Release:   1%{?dist}
 Summary:   RSV metrics
 
 Group:     Applications/Monitoring
@@ -26,7 +26,7 @@ Requires: /usr/bin/globus-url-copy
 Requires: uberftp
 Requires: bestman2-client
 Requires: /usr/bin/ldapsearch
-
+Requires: logrotate
 
 %description
 %{summary}
@@ -46,25 +46,29 @@ getent passwd rsv >/dev/null || useradd -r -g rsv -d /var/rsv -s /bin/sh -c "RSV
 rm -fr $RPM_BUILD_ROOT
 
 # Install executables
-mkdir -p $RPM_BUILD_ROOT%{_libexecdir}/rsv
+install -d $RPM_BUILD_ROOT%{_libexecdir}/rsv
 cp -r libexec/probes $RPM_BUILD_ROOT%{_libexecdir}/rsv/
 cp -r libexec/metrics $RPM_BUILD_ROOT%{_libexecdir}/rsv/
 
 # Install configuration
-mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/rsv/meta
+install -d $RPM_BUILD_ROOT%{_sysconfdir}/rsv/meta
 cp -r etc/meta/metrics $RPM_BUILD_ROOT%{_sysconfdir}/rsv/meta/
 cp -r etc/metrics $RPM_BUILD_ROOT%{_sysconfdir}/rsv/
 
 # Install helper files
-mkdir -p $RPM_BUILD_ROOT%{_datadir}/rsv/
+install -d $RPM_BUILD_ROOT%{_datadir}/rsv/
 cp -r usr/share/rsv/probe-helper-files $RPM_BUILD_ROOT%{_datadir}/rsv/
 
 # Area for records awaiting processing
-mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/spool/rsv
+install -d $RPM_BUILD_ROOT%{_localstatedir}/spool/rsv
 
 # Create the logging directories
-mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/log/rsv/metrics
+install -d $RPM_BUILD_ROOT%{_localstatedir}/log/rsv/metrics
 ln -s metrics $RPM_BUILD_ROOT%{_localstatedir}/log/rsv/probes
+
+# Put log rotation in place
+install -d $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d
+install -m 0644 logrotate/rsv-metrics.logrotate $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/rsv-metrics
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -80,6 +84,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %config %{_sysconfdir}/rsv/meta/metrics/*
 %config(noreplace) %{_sysconfdir}/rsv/metrics/*
+%config(noreplace) %{_sysconfdir}/logrotate.d/rsv-metrics
 
 # Metric records will be placed in spool
 %attr(-,rsv,rsv) %{_localstatedir}/spool/rsv
@@ -87,6 +92,9 @@ rm -rf $RPM_BUILD_ROOT
 %attr(-,rsv,rsv) %{_localstatedir}/log/rsv/probes
 
 %changelog
+* Thu Sep 15 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.4.8-1
+- Added log rotation and more
+
 * Fri Sep 09 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.4.5-3
 - Further sorting through dependencies
 

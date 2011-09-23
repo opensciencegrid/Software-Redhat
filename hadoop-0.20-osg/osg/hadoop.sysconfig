@@ -1,0 +1,102 @@
+# The directory that contains the hadoop configuration files.
+# Don't change this unless you know what you're doing!
+HADOOP_CONF_DIR=/etc/hadoop-0.20/conf
+
+# The server that will act as the namenode.  This must match the
+# output of 'hostname -s' on the namenode server so that
+# /etc/init.d/hadoop can identify when it is being run on the namenode.
+HADOOP_NAMENODE=@HADOOP_NAMENODE@
+
+# The port that the namenode will listen on.  This is usually set to
+# 9000 unless you are running an unsupported configuration with
+# a datanode and namenode on the same host.
+HADOOP_NAMEPORT=9000
+
+# The host:port for accessing the namenode web interface.  This is
+# used by the checkpoint server for getting checkpoints.
+HADOOP_PRIMARY_HTTP_ADDRESS=${HADOOP_NAMENODE}:50070
+
+# Default number of replicas requested by the client.  The default
+# number of replicas for each file is a _client_ side setting, not
+# a setting on the namenode.
+HADOOP_REPLICATION_DEFAULT=@HADOOP_REPLICATION_DEFAULT@
+
+# Minimum number of replicas allowed by the server.  1 is a good
+# value.  Clients will not be able to request fewer than this
+# number of replicas.
+HADOOP_REPLICATION_MIN=1
+
+# Maximum number of replicas allowed by the server.  Clients will
+# not be able to requeset more than this number of replicas.
+HADOOP_REPLICATION_MAX=512
+
+# The user that the hadoop datanode and checkpoint server processes will run as.
+HADOOP_USER=hadoop
+
+# The base directory where most datanode files are stored
+HADOOP_DATADIR=@HADOOP_DATADIR@
+
+# The directory that will store the actual hdfs data on this datanode
+# Multiple directories can be specified using a comma-separated list of
+# directory names (with no spaces)
+HADOOP_DATA=${HADOOP_DATADIR}/data
+
+# The directory where the namenode/datanode log files are stored
+HADOOP_LOG=/var/log/hadoop
+
+# The directory where the namenode stores the hdfs namespace
+HADOOP_SCRATCH=${HADOOP_DATADIR}/scratch
+
+# Set this to an empty string to have the hadoop-firstboot script
+# try to determine the ganglia multicast address from /etc/gmond.conf
+HADOOP_GANGLIA_ADDRESS=@HADOOP_GANGLIA_ADDRESS@
+HADOOP_GANGLIA_PORT=8649
+# The interval, in seconds, at which metrics are reported to Ganglia.
+HADOOP_GANGLIA_INTERVAL=10
+
+# The name of the checkpoint server.  This must match the output
+# of 'hostname -s' so that the hadoop init script knows where
+# to start the checkpoint service.
+HADOOP_SECONDARY_NAMENODE=@HADOOP_SECONDARY_NAMENODE@
+HADOOP_SECONDARY_HTTP_ADDRESS=${HADOOP_SECONDARY_NAMENODE}:50090
+
+# Comma-separated list of directories that will be used for storing namenode
+# checkpoints.  At least one of these should be on nfs.
+HADOOP_CHECKPOINT_DIRS=@HADOOP_CHECKPOINT_DIRS@
+
+# The interval, in seconds, between checkpoints.  Set to 3600 to
+# generate a checkpoint once per hour.  If set to 3600, then if
+# the namenode gets corrupted then you should not lose any
+# namespace changes that are > 1 hour old.
+HADOOP_CHECKPOINT_PERIOD=@HADOOP_CHECKPOINT_PERIOD@
+
+# The default block size for files in hdfs.  The default is 128M.
+HADOOP_DATANODE_BLOCKSIZE=134217728
+
+# The jvm heap size for the namenode.  The rule of thumb is a
+# minimum of 1GB per million hdfs blocks.  With a 128MB block
+# size, this comes out to roughly 1GB per 128TB of storage space.
+HADOOP_NAMENODE_HEAP=2048
+
+# The minimum size of the hadoop data directory, in GB.  The hadoop init
+# script checks that the partition is at least this size before
+# attempting to start the datanode.  This can be used to prevent starting
+# a datanode on systems that don't have very much data space.  Set to
+# zero to skip this check
+HADOOP_MIN_DATANODE_SIZE=0
+
+# The name of a script that takes a list of IP addresses and returns
+# a list of rack names.  Hadoop uses this to make rack-aware intelligent
+# decisions for data block replication.
+HADOOP_RACKAWARE_SCRIPT=
+
+# The central syslog collector.  If set, then logs will be sent to the
+# syslog server in addition to being stored locally.
+HADOOP_SYSLOG_HOST=
+
+# Set this to '1' to automatically update fstab with an entry for 
+# the hadoop fuse mount on /mnt/hadoop.  If you prefer to add this manually,
+# then you will need to add the following to fstab, replacing 'namenode.host'
+# with the fqdn of your namenode.
+# hdfs# /mnt/hadoop fuse server=namenode.host,port=9000,rdbuffer=131072,allow_other 0 0
+HADOOP_UPDATE_FSTAB=0

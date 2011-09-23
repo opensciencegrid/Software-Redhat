@@ -1,6 +1,6 @@
 Name:           osg-site-web-page
 Version:        0.15
-Release:        2
+Release:        3
 Summary:        OSG Site Web Page Generation Script
 Group:          System Environment
 License:        ASL 2.0
@@ -74,10 +74,13 @@ then
  /usr/sbin/osg-make-portal -q
 fi
 # restart apache if running to get the new configuration
-/sbin/service httpd condrestart 2>&1 > /dev/null
+/sbin/service httpd condrestart 2>&1 > /dev/null || :
 
 %postun
-/sbin/service httpd condrestart 2>&1 > /dev/null
+# $1, only if actual deinstallation, not uninstall for upgrade
+if [ $1 -eq 0 ] ; then
+   /sbin/service httpd condrestart >/dev/null 2>&1 || :
+fi
 
 %clean
 %if %is_false NOCLEAN
@@ -92,6 +95,8 @@ fi
 %{_sysconfdir}/httpd/conf.d/%{name}.conf
 
 %changelog
+* Fri Sep 16 2011 Marco Mambelli <marco@hep.uchicago.edu> 0.15
+improved post and postun (rel 3)
 * Mon Aug 1 2011 Marco Mambelli <marco@hep.uchicago.edu> 0.15
 running the scripts only is config.ini exists already 
 * Mon Aug 1 2011 Marco Mambelli <marco@hep.uchicago.edu> 0.15

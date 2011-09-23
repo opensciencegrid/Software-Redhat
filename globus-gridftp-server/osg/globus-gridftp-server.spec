@@ -13,7 +13,7 @@
 Name:		globus-gridftp-server
 %global _name %(tr - _ <<< %{name})
 Version:	6.0
-Release:	4%{?dist}
+Release:	5%{?dist}
 Summary:	Globus Toolkit - Globus GridFTP Server
 
 Group:		System Environment/Libraries
@@ -29,6 +29,7 @@ Source0:	%{_name}-%{version}.tar.gz
 Source1:	globus-gridftp-server.sysconfig
 Source2:	globus-gridftp-server.i386.sysconfig
 Patch0:		osg-gridftp.patch
+Patch1:         lsb-init-script.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Requires:	globus-xio-gsi-driver%{?_isa} >= 2
@@ -90,6 +91,7 @@ Globus GridFTP Server Development Files
 %setup -q -n %{_name}-%{version}
 
 %patch0 -p1
+%patch1 -p1
 
 %build
 # Remove files that should be replaced during bootstrap
@@ -184,6 +186,9 @@ fi
 %defattr(-,root,root,-)
 
 %changelog
+* Fri Sep 16 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 6.0-5
+- Patched init script to work around an infinite loop caused by some versions of redhat-lsb
+
 * Wed Sep 07 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 6.0-4
 - Merge upstream 6.0-3:
     * Wed Aug 31 2011 Joseph Bester <bester@mcs.anl.gov> - 6.0-3

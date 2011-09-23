@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!--
+Copyright (c) Members of the EGEE Collaboration. 2004.
+See http://www.eu-egee.org/partners/ for details on the copyright
+holders.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<project name="monitor" default="compile">
+
+  <property file=".configuration.properties"/>
+  <available file=".configuration.properties" property="isConfigured"/>
+  <property name="sysconfig.location" value="${dist.location}/etc"/>
+  <property name="wsdd.monitorapij.location"
+            value="${org.glite.ce.monitorapij.location}/share/glite-ce-monitor-api-java"/>
+
+  <uptodate property="alreadyCompiled" targetfile="lib/glite-ce-monitor.jar">
+    <srcfiles dir= "src" includes="**/*.java"/>
+  </uptodate>
+
+  <target name="compile" unless="alreadyCompiled">
+
+    <fail message="The module is not configured" unless="isConfigured"/>
+
+    <path id="compile.classpath">
+      <pathelement location="bin/classes"/>
+
+      <fileset dir="${org.glite.security.utilj.location}/share/java">
+        <include name="glite-security-util-java.jar"/>
+        <include name="trustmanager.jar"/>
+      </fileset>
+      <fileset dir="${org.glite.security.vomsapij.location}" includes="**/vomsjapi-*.jar"/>
+      <fileset dir="${org.glite.security.trustmanager.location}/share/java">
+        <include name="glite-security-trustmanager.jar"/>
+        <include name="trustmanager-tomcat.jar"/>
+        <include name="trustmanager-axis.jar"/>
+      </fileset>
+      <pathelement location="${org.glite.ce.commonj.location}/share/java/glite-ce-common-java.jar" />
+      <pathelement location="${org.glite.ce.monitorapij.location}/share/java/glite-ce-monitor-api-java.jar" />
+      <fileset dir="${org.glite.authz.pep-java.location}">
+        <include name="**/argus-pep-api-java.jar"/>
+        <include name="**/glite-authz-pep-java.jar"/>
+      </fileset>
+      <fileset dir="${org.glite.authz.pep-common.location}">
+        <include name="**/argus-pep-common.jar"/>
+        <include name="**/glite-authz-pep-common.jar"/>
+      </fileset>
+      <fileset dir="${axislib.location}" includes="**/*.jar" />
+      <fileset dir="${log4j.location}" includes="log4j.jar" />
+      <fileset dir="${tomcat.location}/server/lib" includes="**/*.jar" />
+      <fileset dir="${tomcat.location}/common/lib" includes="**/*.jar" />
+      <fileset dir="${tomcat.location}/shared/lib" includes="**/*.jar" />
+      <pathelement location="${jclassads.location}/classad.jar"/>
+      <fileset dir="${jaf.location}">
+        <include name="jaf-*/**/activation.jar"/>
+        <include name="activation.jar"/>
+      </fileset>
+    </path>
+
+    <macrodef name="pluginjar">
+      <attribute name="mainclass" />
+      <attribute name="jarname" />
+      <attribute name="includes" />
+      <sequential>
+        <jar destfile="lib/glite-ce-monitor-@{jarname}.jar"
+             basedir="bin/classes"
+             includes="@{includes}">
+          <manifest>
+            <attribute name="Package-Title" value="glite-ce-monitor-@{jarname}"/>
+            <attribute name="Package-Version" value="${module.version}"/>
+            <attribute name="Package-Vendor" value="GLite.org"/>
+            <attribute name="Main-Class" value="@{mainclass}"/>
+          </manifest>
+        </jar>
+      </sequential>
+    </macrodef>
+
+    <mkdir dir="lib" />
+    <mkdir dir="bin/classes" />
+    <mkdir dir="src/autogen" />
+    <mkdir dir="doc/autogen" />		
+
+    <javac fork="true"
+	memoryinitialsize="256m"
+       	memorymaximumsize="256m"
+	srcdir="src" destdir="bin/classes" source="1.5"
+           target="1.5" debug="true" debuglevel="lines,vars,source">
+      <classpath refid="compile.classpath" />
+    </javac>
+    <copy todir="bin/classes">
+      <fileset dir="src" includes="**/images/*.*"/>
+      <fileset dir="src" includes="**/*.properties"/>
+    </copy>
+
+    <mkdir dir="tmp/services" />
+    <echo file="tmp/services/org.apache.axis.components.net.SecureSocketFactory"
+          message="org.glite.security.trustmanager.axis.AXISSocketFactory" />
+    <jar destfile="lib/glite-ce-monitor.jar" 
+         basedir="bin/classes"
+         excludes="org/glite/ce/monitor/action/** org/glite/ce/monitor/queryprocessor/** org/glite/ce/monitor/SubscriptionPersistent*">
+      <manifest>
+        <attribute name="Package-Title" value="glite-ce-monitor"/>
+        <attribute name="Package-Version" value="${module.version}"/>
+        <attribute name="Package-Vendor" value="GLite.org"/>
+      </manifest>
+      <metainf dir="tmp">
+        <include name="**/services/org.apache.axis.components.net.SecureSocketFactory"/>
+      </metainf>
+    </jar>
+
+    <pluginjar mainclass="org.glite.ce.monitor.action.SendExpiredNotificationAction"
+               jarname="SendExpiredNotificationAction"
+               includes="org/glite/ce/monitor/action/SendExpiredNotificationAction.class"/>
+                                                                               
+
+    <pluginjar mainclass="org.glite.ce.monitor.action.SendNotificationAction"
+               jarname="SendNotificationAction"
+               includes="org/glite/ce/monitor/action/SendNotificationAction.class"/>
+
+    <pluginjar mainclass="org.glite.ce.monitor.action.DoNotSendNotificationAction"
+               jarname="DoNotSendNotificationAction"
+               includes="org/glite/ce/monitor/action/DoNotSendNotificationAction.class"/>
+
+    <pluginjar mainclass="org.glite.ce.monitor.queryprocessor.ClassAdProcessor"
+               jarname="ClassAdProcessor"
+               includes="org/glite/ce/monitor/queryprocessor/ClassAdProcessor.class"/>
+
+    <pluginjar mainclass="org.glite.ce.monitor.queryprocessor.RegExProcessor"
+               jarname="RegExProcessor"
+               includes="org/glite/ce/monitor/queryprocessor/RegExProcessor.class"/>
+  </target>
+
+  <target name="install" depends="compile">
+    <mkdir dir="${dist.location}/share/java/glite-ce-monitor"/>
+    <copy toDir="${dist.location}/share/java/glite-ce-monitor">
+      <fileset dir="lib">
+        <include name="*.jar" /> 
+      </fileset>
+    </copy>
+
+    <mkdir dir="${var.location}"/>
+    <mkdir dir="${var.location}/ce-monitor"/>
+    <mkdir dir="${sysconfig.location}/glite-ce-monitor"/>
+
+    <mkdir dir="tmp/ce-monitor/WEB-INF"/>
+    <mkdir dir="tmp/ce-monitor/WEB-INF/attachments"/>
+    <mkdir dir="tmp/ce-monitor/WEB-INF/lib"/>
+    <mkdir dir="tmp/ce-monitor/WEB-INF/classes"/>
+    <mkdir dir="tmp/ce-monitor/actions"/>
+    <mkdir dir="tmp/ce-monitor/query_processors"/>
+    <mkdir dir="tmp/ce-monitor/images"/>
+
+    <copy todir="tmp/ce-monitor/WEB-INF/lib" flatten="true">
+      <fileset dir="${axislib.location}" includes="*.jar"/>
+      <fileset dir="${bcprov.location}" includes="**/bcprov.jar" />
+      <fileset file="${log4j.location}/log4j.jar" />
+      <fileset file="/usr/share/java/commons-discovery.jar" />
+      <fileset file="/usr/share/java/wsdl4j.jar" />
+      <fileset dir="${jaf.location}">
+        <include name="jaf-*/**/activation.jar"/>
+        <include name="activation.jar"/>
+      </fileset>
+      <fileset dir="${jclassads.location}" includes="**/*.jar"/>
+      <fileset dir="${hessian-java.location}" includes="**/hessian*.jar"/>
+      <fileset dir="${jakarta-commons-codec.location}" includes="**/jakarta-commons-codec.jar"/>
+      <fileset dir="${jakarta-commons-httpclient.location}" includes="**/jakarta-commons-httpclient.jar"/>
+      <fileset dir="${jakarta-commons-logging.location}">
+        <include name="jakarta-commons-logging.jar"/>
+        <include name="jakarta-commons-logging-api.jar"/>
+        <include name="jakarta-commons-logging-adapters.jar"/>
+      </fileset>
+
+      <fileset file="lib/glite-ce-monitor.jar"/>
+      <fileset file="${org.glite.ce.monitorapij.location}/share/java/glite-ce-monitor-api-java.jar"/>
+
+      <fileset file="${org.glite.ce.commonj.location}/share/java/glite-ce-common-java.jar"/>
+      <fileset dir="${org.glite.security.utilj.location}/share/java">
+        <include name="glite-security-util-java.jar"/>
+        <include name="trustmanager.jar"/>
+      </fileset>
+      <fileset dir="${org.glite.security.vomsapij.location}"> 
+        <include name="**/vomsjapi-*.jar"/>
+      </fileset>
+      <fileset dir="${org.glite.security.trustmanager.location}/share/java">
+        <include name="glite-security-trustmanager.jar"/>
+        <include name="trustmanager-tomcat.jar"/>
+        <include name="trustmanager-axis.jar"/>
+      </fileset>
+      <fileset dir="${org.glite.authz.pep-java.location}">
+        <include name="**/argus-pep-api-java.jar"/>
+        <include name="**/glite-authz-pep-java.jar"/>
+      </fileset>
+      <fileset dir="${org.glite.authz.pep-common.location}">
+        <include name="**/argus-pep-common.jar"/>
+        <include name="**/glite-authz-pep-common.jar"/>
+      </fileset>
+    </copy>
+
+    <copy todir="tmp/ce-monitor/WEB-INF">
+      <fileset file="${web_xml.location}/web.xml" />
+    </copy>
+
+    <copy todir="tmp/ce-monitor/actions">
+      <fileset file="lib/*Action.jar"/>
+    </copy>
+    <copy todir="tmp/ce-monitor/query_processors">
+      <fileset file="lib/*Processor.jar"/>
+    </copy>
+
+    <replace file="tmp/ce-monitor/WEB-INF/web.xml">
+      <replacetoken><![CDATA[</web-app>]]></replacetoken>
+      <replacevalue><![CDATA[<!--           Inserted by Glite build system           -->
+
+<listener><listener-class>org.glite.ce.commonj.authz.AuthZContextListener</listener-class></listener>
+<listener><listener-class>org.glite.ce.monitor.listeners.StartUpManager</listener-class></listener>
+<distributable/>
+</web-app>]]></replacevalue>
+
+    </replace>
+
+    <java classname="org.apache.axis.utils.Admin" fork="true" dir="tmp/ce-monitor/WEB-INF">
+      <arg line="server ${wsdd.monitorapij.location}/ce-monitor-service-deploy.wsdd " />
+      <classpath>
+        <fileset dir="${axislib.location}" includes="*.jar" />
+        <fileset file="${log4j.location}/log4j.jar" />
+        <fileset file="/usr/share/java/commons-logging.jar" />
+        <fileset file="/usr/share/java/commons-discovery.jar" />
+        <fileset file="/usr/share/java/wsdl4j.jar" />
+        <fileset file="/usr/share/java/activation.jar" />
+        <fileset dir="lib" includes="**/*.jar"/>
+        <fileset file="${org.glite.ce.commonj.location}/share/java/glite-ce-common-java.jar"/>
+        <fileset file="${org.glite.ce.monitorapij.location}/share/java/glite-ce-monitor-api-java.jar"/>
+      </classpath>
+    </java>
+
+    <replace file="tmp/ce-monitor/WEB-INF/server-config.wsdd" >
+      <replacefilter token="org.glite.ce.monitorapij.ws.CEMonitorBindingImpl"
+                     value="org.glite.ce.monitor.CEMonitorService" />
+      <replacefilter token="CEMonitorPort"
+                     value="CEMonitor" />
+      <replacetoken><![CDATA[</requestFlow>
+ </globalConfiguration>]]></replacetoken>
+      <replacevalue><![CDATA[<handler type="java:org.glite.ce.commonj.authz.AuthorizationHandler">
+    <parameter name="type" value="authzchain"/>
+    <parameter name="config_required" value="false"/>
+   </handler>
+   <handler type="java:org.glite.ce.commonj.authz.AuthorizationHandler">
+    <parameter name="type" value="argus-pep"/>
+    <parameter name="config_required" value="false"/>
+   </handler>
+  </requestFlow>
+ </globalConfiguration>]]></replacevalue>
+    </replace>
+
+    <echo file="${sysconfig.location}/glite-ce-monitor/log4j.properties"><![CDATA[
+log4j.rootLogger=info, fileout
+log4j.logger.httpclient.wire.content=off
+log4j.appender.fileout=org.apache.log4j.RollingFileAppender
+log4j.appender.fileout.File=${glite.log.path}/glite-ce-monitor.log
+log4j.appender.fileout.MaxFileSize=1000KB
+log4j.appender.fileout.MaxBackupIndex=20
+log4j.appender.fileout.layout=org.apache.log4j.PatternLayout
+log4j.appender.fileout.layout.ConversionPattern=%d{dd MMM yyyy HH:mm:ss,SSS} %c - %m%n
+]]>
+    </echo>
+
+    <echo file="${sysconfig.location}/glite-ce-monitor/cemonitor-argus-config.xml"><![CDATA[
+  <argus-pep name="pep-client1"
+             resource_id="CREAM_PEPC_RESOURCEID"
+             cert="TOMCAT_HOSTCERT_LOCATION"
+             key="TOMCAT_HOSTKEY_LOCATION"
+             passwd=""
+             mapping_class="org.glite.ce.monitor.ActionMapping">
+    <pap-endpoint url="ARGUS_PEPD_ENDPOINTS" />
+  </argus-pep> ]]></echo>
+
+    <echo file="${sysconfig.location}/glite-ce-monitor/cemonitor-authz-config.xml"><![CDATA[
+  <authzchain name="chain-1">
+    <plugin name="localuserpip"
+            classname="org.glite.ce.commonj.authz.LocalUserPIP">
+      <parameter name="glexec_bin_path"
+                 value="/opt/glite/sbin/glexec" />
+      <parameter name="glexec_probe_cmd"
+                 value="/usr/bin/id" />
+      <parameter name="methods"
+                 value="JobRegister, putProxy" />
+    </plugin>
+    <plugin name="bannerpdp"
+            classname="org.glite.ce.commonj.authz.BlackListServicePDP">
+      <parameter name="blackListFile"
+                 value="/opt/glite/etc/lcas/ban_users.db" />
+    </plugin>
+    <plugin name="admincheckpip"
+            classname="org.glite.ce.commonj.authz.AdminCheckerPIP">
+      <parameter name="adminList"
+                 value="/etc/grid-security/admin-list" />
+    </plugin>
+
+    <plugin name="gridmappdp"
+            classname="org.glite.ce.commonj.authz.GridMapServicePDP">
+      <parameter name="gridMapFile"
+                 value="/etc/grid-security/grid-mapfile" />
+    </plugin>
+
+    <plugin name="vomspdp"
+            classname="org.glite.ce.commonj.authz.VomsServicePDP">
+      <parameter name="gridMapFile"
+                 value="/etc/grid-security/grid-mapfile" />
+    </plugin>
+
+  </authzchain>]]></echo>
+
+    <!-- Change by OSG to copy war and expanded dir 
+	to /var/lib/glite-ce-monitor -->
+    <jar jarfile="${var.location}/ce-monitor.war" basedir="tmp/ce-monitor" includes="**"/>
+
+    <copy toDir="${var.location}/ce-monitor">
+      <fileset dir="tmp/ce-monitor" includes="**"/>
+    </copy>
+
+    <delete dir="tmp/ce-monitor" />
+
+    <copy toDir="${sysconfig.location}/glite-ce-monitor">
+      <fileset file="config/ce-monitor.xml"/>
+    </copy>
+
+    <copy file="config/cemonitor-config.xml"
+          tofile="${sysconfig.location}/glite-ce-monitor/cemonitor-config.xml.template" />
+    <copy file="config/cemonitor-config.xml"
+          tofile="${sysconfig.location}/glite-ce-monitor/cemonitor-config.xml" />
+
+    <mkdir dir="${dist.location}/share/doc/glite-ce-monitor-${module.version}"/>
+    <copy file="LICENSE" todir="${dist.location}/share/doc/glite-ce-monitor-${module.version}"/>
+
+  </target>
+
+  <target name="clean">
+    <delete dir="lib" />
+    <delete dir="bin" />
+    <delete dir="src/autogen" />
+    <delete dir="doc/autogen" />		
+  </target>
+
+</project>

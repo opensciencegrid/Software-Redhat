@@ -1,6 +1,6 @@
 Name:           osg-release
 Version:        3.0 
-Release:        7
+Release:        10
 Summary:        OSG Software for Enterprise Linux repository configuration
 
 Group:          System Environment/Base 
@@ -16,7 +16,7 @@ Source1:        osg-development.repo
 Source2:        osg-testing.repo
 Source3:        osg-minefield.repo
 Source4:        osg-contrib.repo
-#Source5:        RPM-GPG-KEY-OSG
+Source5:        RPM-GPG-KEY-OSG
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -40,9 +40,9 @@ exit 0
 rm -rf $RPM_BUILD_ROOT
 
 #GPG Key
-#mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/pki/rpm-gpg
-#install -pm 644 %{SOURCE5} \
-#    $RPM_BUILD_ROOT%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-OSG
+mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/pki/rpm-gpg
+install -pm 644 %{SOURCE5} \
+    $RPM_BUILD_ROOT%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-OSG
 
 # yum
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d
@@ -54,10 +54,23 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root,-)
 %config(noreplace) /etc/yum.repos.d/*
-#/etc/pki/rpm-gpg/*
+/etc/pki/rpm-gpg/RPM-GPG-KEY-OSG
 
 
 %changelog
+* Fri Sep 23 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 3.0-10
+- Previous improvements to debug and source repos were previously not applied to the contrib repo.
+
+* Mon Sep 19 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 3.0-9
+- Added commented-out baseurl line to the .repo files so people have a fallback
+  if there is a problem with the mirrors
+- Added -debug repositories (disabled by default) for the debuginfo packages
+  for development, testing, and release.
+
+* Fri Sep 16 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 3.0-8
+- Added RPM signing public key
+- Changed all repo files to require gpg check
+
 * Fri Sep 09 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 3.0-7
 - Add in stub for the osg-contrib repository.
 

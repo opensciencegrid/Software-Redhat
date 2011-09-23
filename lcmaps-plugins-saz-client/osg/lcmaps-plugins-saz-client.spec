@@ -3,7 +3,7 @@
 
 Name:           lcmaps-plugins-saz-client
 Version:        0.2.22
-Release:        3%{?dist}
+Release:        7%{?dist}
 Summary:        SAZ support for lcmaps
 
 Group:          System Environment/Tools
@@ -13,6 +13,7 @@ BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
 BuildRequires:  lcmaps-plugins-scas-client = %{version}-%{release}
 Obsoletes:	lcmaps-plugins-saz
+Requires:	saml2-xacml2-c-lib
 
 %description
 %{summary}
@@ -33,6 +34,25 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/modules/%{modname}
 
 %changelog
+* Mon Sep 19 2011 Dave Dykstra <dwd@fnal.gov> 0.2.22-7.osg
+- Instead of a Conflicts: prima, have a Requires: saml2-xacml2-c-lib
+  which is the correct provider of libxacml.so.0.
+
+* Fri Sep 16 2011 Dave Dykstra <dwd@fnal.gov> 0.2.22-6.osg
+- Add a Conflicts: prima.  Even though it was already in scas-client,
+  scas-client is not required at install time by saz-client (only build
+  time) so it isn't necessarily processed, plus even if it is the
+  ordering can make a difference when yum calculates dependencies. 
+  I am hoping this will prevent a fatal error when trying to install
+  this package while a hadoop.repo is in /etc/yum.repos.d (although 
+  that's better than silently installing wrong packages).
+
+* Fri Sep 16 2011 Dave Dykstra <dwd@fnal.gov> 0.2.22-5.osg
+- Update to match scas-client
+
+* Fri Sep 16 2011 Dave Dykstra <dwd@fnal.gov> 0.2.22-4.osg
+- Update to match scas-client
+
 * Wed Aug 31 2011 Dave Dykstra <dwd@fnal.gov> 0.2.22-3.osg
 - Also add the %{dist} to the release to completely match the scas-client.
   Make BuildRequires always require the exact same %{version}-%{release}
