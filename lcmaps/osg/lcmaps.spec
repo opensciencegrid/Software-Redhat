@@ -1,7 +1,7 @@
 Summary: Grid (X.509) and VOMS credentials to local account mapping service
 Name: lcmaps
 Version: 1.4.28
-Release: 12%{?dist}
+Release: 13%{?dist}
 Vendor: Nikhef
 License: ASL 2.0
 Group: System Environment/Libraries
@@ -158,6 +158,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/modules/*.so
 
 %changelog
+* Mon Sep 23 2011 Dave Dykstra <dwd@fnal.gov> - 1.4.28-13
+- Update lcmaps.db with gridmapfile option, glexec policies commented out
+  by default (to prod admins to include glexectracking), and with better
+  explanation about what needs to be editted especially for glexec.
+
 * Mon Sep 12 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.4.28-12
 - Rebuilt against updated Globus libraries
 
