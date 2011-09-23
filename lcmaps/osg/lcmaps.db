@@ -1,21 +1,40 @@
-# Module definitions
+##############################################################################
+#
+# lcmaps.db
+# 
+# This file is used to configure lcmaps, but it might be slightly
+# confusing at first glance because it's configured differently when
+# you use glexec (usually on worker nodes) and when you configure
+# services to use lcmaps for mapping users. 
+#
+# In general, you need to modify up to three portions of this file
+# unless you are doing unusual advanced configurations.
+# 
+# 1) The gumsclient module definition (in Section 1)
+#    This is where you configure the GUMS host you are using. This is
+#    true for both glexec and lcmaps for a service. (Ditto for the SAZ
+#    host in the sazclient.)
+# 2) The glexectracking module (in Section 1)
+#    If you are using glexec, uncomment the glexectracking module
+#    definition and edit appropriately. You should always uncomment
+#    this for glexec but should always leave it commented if you haven't
+#    installed glexec. 
+# 3) glexec mapping policy (in Section 2)
+#    You should select the proper policy for glexec, if you are using glexec.
+#    Most sites will use the first policy. 
+# 
+##############################################################################
+
+#-----------------------------------------------------------------------------
+#
+# Section 1: Module definitions
+# 
+# These generally should not be modified, except for the GUMS host in
+# gumsclient and the SAZ host in sazclient.
+#
+#-----------------------------------------------------------------------------
+
 path = /usr/lib64/modules
-
-posix_enf = "lcmaps_posix_enf.mod"
-            "-maxuid 1 -maxpgid 1 -maxsgid 32"
-
-sazclient = "lcmaps_saz_client.mod"
-            "-resourcetype ce"
-            "-actiontype execute-now"
-            "-capath /etc/grid-security/certificates"
-            "-cert   /etc/grid-security/hostcert.pem"
-            "-key    /etc/grid-security/hostkey.pem"
-            "--cert-owner root"
-            "-authorization-only"
-# Change this URL to your SAZ server if you have one
-            "--endpoint https://yoursaz.yourdomain:8443/saz/services/SAZXACMLAuthorizationServicePort"
-# Uncomment this to set a different expected host certificate name for server
-#            "--override-expected-hostname overridesazname.yourdomain"
 
 gumsclient = "lcmaps_gums_client.mod"
              "-resourcetype ce"
@@ -29,9 +48,18 @@ gumsclient = "lcmaps_gums_client.mod"
 # Uncomment this to set a different expected host certificate name for server
 #            "--override-expected-hostname overridegumsname.yourdomain"
 
-verifyproxy = "lcmaps_verify_proxy.mod"
-          "--allow-limited-proxy"
-          " -certdir /etc/grid-security/certificates"
+sazclient = "lcmaps_saz_client.mod"
+            "-resourcetype ce"
+            "-actiontype execute-now"
+            "-capath /etc/grid-security/certificates"
+            "-cert   /etc/grid-security/hostcert.pem"
+            "-key    /etc/grid-security/hostkey.pem"
+            "--cert-owner root"
+            "-authorization-only"
+# Change this URL to your SAZ server if you have one
+            "--endpoint https://yoursaz.yourdomain:8443/saz/services/SAZXACMLAuthorizationServicePort"
+# Uncomment this to set a different expected host certificate name for server
+#            "--override-expected-hostname overridesazname.yourdomain"
 
 # Uncomment the first two lines in order to enable glexec tracking
 #glexectracking = "lcmaps_glexec_tracking.mod"
@@ -50,22 +78,72 @@ verifyproxy = "lcmaps_verify_proxy.mod"
 # Uncomment to not kill processes still running after the main process finishes
 #         "-dont-kill-leftovers"
 
+posix_enf = "lcmaps_posix_enf.mod"
+            "-maxuid 1 -maxpgid 1 -maxsgid 32"
+
+gridmapfile = "lcmaps_localaccount.mod"
+              "-gridmap /etc/grid-security/grid-mapfile"
+
+verifyproxy = "lcmaps_verify_proxy.mod"
+          "--allow-limited-proxy"
+          " -certdir /etc/grid-security/certificates"
+
+#-----------------------------------------------------------------------------
+#
 # Mapping policies
+#
+# Each of these define how lcmaps is used in different scenarios. 
+# The defaults are generally good.
+# We've left the various glexec policies commented out--you need to
+# choose one of the three policies. Most sites will use the first
+# policy (verify proxy, gums client, glexectracking)
+# 
+# For the globus_gridftp_mapping and the osg_default mapping, we've
+# shown how to add saz, if you are using it at your site. Uncomment
+# that line if appropriate.
+#
+#-----------------------------------------------------------------------------
 
+#
+# Mapping policy: globus_gridftp_mapping
+# Purpose:        Used for gridftp
+#
 globus_gridftp_mapping:
-
+#Uncomment this one line to add SAZ
+#sazclient -> gumsclient
 gumsclient -> posix_enf
 
+#
+# Mapping policy: osg_default
+# Purpose:        Used for the Globus gatekeeper
+#
 osg_default:
-
 verifyproxy -> gumsclient
+#Uncomment the next two lines and comment the previous line to add SAZ
+#verifyproxy -> sazsclient
+#sazclient -> gumsclient
 
+#
+# Mapping policy: glexec
+# Purpose:        Used for glexec on the worker nodes.
+#
 glexec:
 
-##  If using SAZ, uncomment the following two lines and comment the next
-##verifyproxy -> sazclient
-##sazclient -> gumsclient
-verifyproxy -> gumsclient
-# When using glexec tracking, uncomment the next line
+## Pick an appropriate policy from the ones below. Make sure that only
+## one policy is uncommented--the other policies should be commented
+## out. For example, if you want policy #1 (the most common), remove
+## the hash mark two lines: just before "verifyproxy" and just before
+## "gumsclient". 
+
+## Policy 1: GUMS but not SAZ (most common)
+#verifyproxy -> gumsclient
 #gumsclient -> glexectracking
 
+## Policy 2: GUMS & SAZ
+#verifyproxy -> sazclient
+#sazclient -> gumsclient
+#gumsclient -> glexectracking
+
+## Policy 3: grid-mapfile
+#verifyproxy -> gridmapfile
+#gridmapfile -> glexectracking
