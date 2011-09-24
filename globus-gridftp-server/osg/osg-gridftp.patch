@@ -1,7 +1,7 @@
-Index: globus_gridftp_server-6.0/gridftp.conf.default.in
+Index: globus_gridftp_server-6.1/gridftp.conf.default.in
 ===================================================================
---- globus_gridftp_server-6.0.orig/gridftp.conf.default.in	2011-08-31 21:12:07.000000000 -0500
-+++ globus_gridftp_server-6.0/gridftp.conf.default.in	2011-09-07 15:32:36.000000000 -0500
+--- globus_gridftp_server-6.1.orig/gridftp.conf.default.in	2011-08-31 21:12:07.000000000 -0500
++++ globus_gridftp_server-6.1/gridftp.conf.default.in	2011-09-23 19:05:55.000000000 -0500
 @@ -8,4 +8,8 @@
  
  # port
@@ -11,11 +11,11 @@ Index: globus_gridftp_server-6.0/gridftp.conf.default.in
 +log_transfer /var/log/gridftp.log
 +#load_dsi_module posix
  
-Index: globus_gridftp_server-6.0/init/globus-gridftp-server.in
+Index: globus_gridftp_server-6.1/init/globus-gridftp-server.in
 ===================================================================
---- globus_gridftp_server-6.0.orig/init/globus-gridftp-server.in	2011-08-31 16:48:32.000000000 -0500
-+++ globus_gridftp_server-6.0/init/globus-gridftp-server.in	2011-09-07 15:33:41.000000000 -0500
-@@ -27,6 +27,8 @@
+--- globus_gridftp_server-6.1.orig/init/globus-gridftp-server.in	2011-09-23 08:41:24.000000000 -0500
++++ globus_gridftp_server-6.1/init/globus-gridftp-server.in	2011-09-23 19:05:55.000000000 -0500
+@@ -31,6 +31,8 @@
  pidfile=${localstatedir}/run/globus-gridftp-server.pid
  gridftpd=${sbindir}/globus-gridftp-server
  
