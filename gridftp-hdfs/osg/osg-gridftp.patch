@@ -1,0 +1,331 @@
+diff -ru gridftp-hdfs-0.5.0-orig/conf/gridftp.conf gridftp-hdfs-0.5.0/conf/gridftp.conf
+--- gridftp-hdfs-0.5.0-orig/conf/gridftp.conf	2011-09-25 10:29:04.000000000 -0500
++++ gridftp-hdfs-0.5.0/conf/gridftp.conf	2011-09-25 12:30:32.000000000 -0500
+@@ -4,3 +4,4 @@
+ log_module stdio
+ port 2811
+ blocksize 1048576
++load_dsi_module hdfs
+diff -ru gridftp-hdfs-0.5.0-orig/conf/gridftp-debug.conf gridftp-hdfs-0.5.0/conf/gridftp-debug.conf
+--- gridftp-hdfs-0.5.0-orig/conf/gridftp-debug.conf	2011-09-25 10:29:04.000000000 -0500
++++ gridftp-hdfs-0.5.0/conf/gridftp-debug.conf	2011-09-25 12:30:54.000000000 -0500
+@@ -4,3 +4,4 @@
+ debug 1
+ port 5002
+ blocksize 1048576
++load_dsi_module dsi
+diff -ru gridftp-hdfs-0.5.0-orig/conf/gridftp-hdfs-environment gridftp-hdfs-0.5.0/conf/gridftp-hdfs-environment
+--- gridftp-hdfs-0.5.0-orig/conf/gridftp-hdfs-environment	2011-09-25 10:29:04.000000000 -0500
++++ gridftp-hdfs-0.5.0/conf/gridftp-hdfs-environment	2011-09-25 13:38:45.000000000 -0500
+@@ -1,4 +1,8 @@
+ 
++#Use hadoop configuration
++export conf=/etc/gridftp-hdfs/gridftp.conf
++
++
+ # This file is designed to be sourced in bash to configure the 
+ # basic Hadoop environment.
+ 
+diff -ru gridftp-hdfs-0.5.0-orig/conf/gridftp-inetd.conf gridftp-hdfs-0.5.0/conf/gridftp-inetd.conf
+--- gridftp-hdfs-0.5.0-orig/conf/gridftp-inetd.conf	2011-09-25 10:29:04.000000000 -0500
++++ gridftp-hdfs-0.5.0/conf/gridftp-inetd.conf	2011-09-25 12:31:34.000000000 -0500
+@@ -3,3 +3,4 @@
+ log_single /var/log/gridftp-auth.log
+ log_transfer /var/log/gridftp.log
+ blocksize 1048576
++load_dsi_module dsi
+diff -ru gridftp-hdfs-0.5.0-orig/conf/gridftp-inetd.conf.in gridftp-hdfs-0.5.0/conf/gridftp-inetd.conf.in
+--- gridftp-hdfs-0.5.0-orig/conf/gridftp-inetd.conf.in	2011-09-25 10:29:04.000000000 -0500
++++ gridftp-hdfs-0.5.0/conf/gridftp-inetd.conf.in	2011-09-25 12:31:48.000000000 -0500
+@@ -3,3 +3,4 @@
+ log_single @logdir@/gridftp-auth.log
+ log_transfer @logdir@/gridftp.log
+ blocksize 1048576
++load_dsi_module hdfs
+diff -ru gridftp-hdfs-0.5.0-orig/conf/Makefile.am gridftp-hdfs-0.5.0/conf/Makefile.am
+--- gridftp-hdfs-0.5.0-orig/conf/Makefile.am	2011-09-25 10:29:04.000000000 -0500
++++ gridftp-hdfs-0.5.0/conf/Makefile.am	2011-09-25 13:11:58.000000000 -0500
+@@ -2,12 +2,12 @@
+ gridftpdir = $(sysconfdir)/gridftp-hdfs
+ dist_gridftp_DATA = gridftp.conf gridftp-inetd.conf gridftp-debug.conf replica-map.conf
+ 
+-sysconfigdir = $(sysconfdir)/sysconfig
++sysconfigdir = $(sysconfdir)/sysconfig/gridftp.conf.d
+ dist_sysconfig_DATA = gridftp-hdfs
+ 
+ logrotatedir = $(sysconfdir)/logrotate.d
+ dist_logrotate_DATA = gridftp-hdfs.logrotate
+ 
+-envdir = $(datadir)/gridftp-hdfs
++envdir = $(sysconfdir)/sysconfig/gridftp.conf.d
+ dist_env_DATA = gridftp-hdfs-environment
+ 
+diff -ru gridftp-hdfs-0.5.0-orig/conf/Makefile.in gridftp-hdfs-0.5.0/conf/Makefile.in
+--- gridftp-hdfs-0.5.0-orig/conf/Makefile.in	2011-09-25 10:29:04.000000000 -0500
++++ gridftp-hdfs-0.5.0/conf/Makefile.in	2011-09-25 13:40:14.000000000 -0500
+@@ -94,7 +94,6 @@
+ F77 = @F77@
+ FFLAGS = @FFLAGS@
+ GLOBUSLOCATION = @GLOBUSLOCATION@
+-GREP = @GREP@
+ HADOOPHOME = @HADOOPHOME@
+ INCLUDE = @INCLUDE@
+ INSTALL_DATA = @INSTALL_DATA@
+@@ -124,9 +123,12 @@
+ SHELL = @SHELL@
+ STRIP = @STRIP@
+ VERSION = @VERSION@
++ac_ct_AR = @ac_ct_AR@
+ ac_ct_CC = @ac_ct_CC@
+ ac_ct_CXX = @ac_ct_CXX@
+ ac_ct_F77 = @ac_ct_F77@
++ac_ct_RANLIB = @ac_ct_RANLIB@
++ac_ct_STRIP = @ac_ct_STRIP@
+ am__fastdepCC_FALSE = @am__fastdepCC_FALSE@
+ am__fastdepCC_TRUE = @am__fastdepCC_TRUE@
+ am__fastdepCXX_FALSE = @am__fastdepCXX_FALSE@
+@@ -144,9 +146,6 @@
+ build_vendor = @build_vendor@
+ datadir = @datadir@
+ datadir_resolved = @datadir_resolved@
+-datarootdir = @datarootdir@
+-docdir = @docdir@
+-dvidir = @dvidir@
+ exec_prefix = @exec_prefix@
+ exec_prefix_resolved = @exec_prefix_resolved@
+ host = @host@
+@@ -154,24 +153,20 @@
+ host_cpu = @host_cpu@
+ host_os = @host_os@
+ host_vendor = @host_vendor@
+-htmldir = @htmldir@
+ includedir = @includedir@
+ infodir = @infodir@
+ install_sh = @install_sh@
+ libdir = @libdir@
+ libexecdir = @libexecdir@
+-localedir = @localedir@
+ localstatedir = @localstatedir@
+ localstatedir_resolved = @localstatedir_resolved@
+ logdir = @logdir@
+ mandir = @mandir@
+ mkdir_p = @mkdir_p@
+ oldincludedir = @oldincludedir@
+-pdfdir = @pdfdir@
+ prefix = @prefix@
+ prefix_resolved = @prefix_resolved@
+ program_transform_name = @program_transform_name@
+-psdir = @psdir@
+ sbindir = @sbindir@
+ sbindir_resolved = @sbindir_resolved@
+ sharedstatedir = @sharedstatedir@
+@@ -180,11 +175,11 @@
+ target_alias = @target_alias@
+ gridftpdir = $(sysconfdir)/gridftp-hdfs
+ dist_gridftp_DATA = gridftp.conf gridftp-inetd.conf gridftp-debug.conf replica-map.conf
+-sysconfigdir = $(sysconfdir)/sysconfig
++sysconfigdir = $(sysconfdir)/sysconfig/gridftp.conf.d
+ dist_sysconfig_DATA = gridftp-hdfs
+ logrotatedir = $(sysconfdir)/logrotate.d
+ dist_logrotate_DATA = gridftp-hdfs.logrotate
+-envdir = $(datadir)/gridftp-hdfs
++envdir = $(sysconfdir)/sysconfig/gridftp.conf.d
+ dist_env_DATA = gridftp-hdfs-environment
+ all: all-am
+ 
+diff -ru gridftp-hdfs-0.5.0-orig/Makefile.am gridftp-hdfs-0.5.0/Makefile.am
+--- gridftp-hdfs-0.5.0-orig/Makefile.am	2011-09-25 10:29:04.000000000 -0500
++++ gridftp-hdfs-0.5.0/Makefile.am	2011-09-25 12:21:56.000000000 -0500
+@@ -1,5 +1,5 @@
+ 
+ AUTOMAKE_OPTIONS = foreign
+-SUBDIRS = src conf scripts
++SUBDIRS = src conf
+ EXTRA_DIST = conf/gridftp-hdfs.spec
+ 
+diff -ru gridftp-hdfs-0.5.0-orig/Makefile.in gridftp-hdfs-0.5.0/Makefile.in
+--- gridftp-hdfs-0.5.0-orig/Makefile.in	2011-09-25 10:29:04.000000000 -0500
++++ gridftp-hdfs-0.5.0/Makefile.in	2011-09-25 13:40:14.000000000 -0500
+@@ -103,7 +103,6 @@
+ F77 = @F77@
+ FFLAGS = @FFLAGS@
+ GLOBUSLOCATION = @GLOBUSLOCATION@
+-GREP = @GREP@
+ HADOOPHOME = @HADOOPHOME@
+ INCLUDE = @INCLUDE@
+ INSTALL_DATA = @INSTALL_DATA@
+@@ -133,9 +132,12 @@
+ SHELL = @SHELL@
+ STRIP = @STRIP@
+ VERSION = @VERSION@
++ac_ct_AR = @ac_ct_AR@
+ ac_ct_CC = @ac_ct_CC@
+ ac_ct_CXX = @ac_ct_CXX@
+ ac_ct_F77 = @ac_ct_F77@
++ac_ct_RANLIB = @ac_ct_RANLIB@
++ac_ct_STRIP = @ac_ct_STRIP@
+ am__fastdepCC_FALSE = @am__fastdepCC_FALSE@
+ am__fastdepCC_TRUE = @am__fastdepCC_TRUE@
+ am__fastdepCXX_FALSE = @am__fastdepCXX_FALSE@
+@@ -153,9 +155,6 @@
+ build_vendor = @build_vendor@
+ datadir = @datadir@
+ datadir_resolved = @datadir_resolved@
+-datarootdir = @datarootdir@
+-docdir = @docdir@
+-dvidir = @dvidir@
+ exec_prefix = @exec_prefix@
+ exec_prefix_resolved = @exec_prefix_resolved@
+ host = @host@
+@@ -163,24 +162,20 @@
+ host_cpu = @host_cpu@
+ host_os = @host_os@
+ host_vendor = @host_vendor@
+-htmldir = @htmldir@
+ includedir = @includedir@
+ infodir = @infodir@
+ install_sh = @install_sh@
+ libdir = @libdir@
+ libexecdir = @libexecdir@
+-localedir = @localedir@
+ localstatedir = @localstatedir@
+ localstatedir_resolved = @localstatedir_resolved@
+ logdir = @logdir@
+ mandir = @mandir@
+ mkdir_p = @mkdir_p@
+ oldincludedir = @oldincludedir@
+-pdfdir = @pdfdir@
+ prefix = @prefix@
+ prefix_resolved = @prefix_resolved@
+ program_transform_name = @program_transform_name@
+-psdir = @psdir@
+ sbindir = @sbindir@
+ sbindir_resolved = @sbindir_resolved@
+ sharedstatedir = @sharedstatedir@
+@@ -188,7 +183,7 @@
+ sysconfdir_resolved = @sysconfdir_resolved@
+ target_alias = @target_alias@
+ AUTOMAKE_OPTIONS = foreign
+-SUBDIRS = src conf scripts
++SUBDIRS = src conf
+ EXTRA_DIST = conf/gridftp-hdfs.spec
+ all: all-recursive
+ 
+diff -ru gridftp-hdfs-0.5.0-orig/scripts/Makefile.in gridftp-hdfs-0.5.0/scripts/Makefile.in
+--- gridftp-hdfs-0.5.0-orig/scripts/Makefile.in	2011-09-25 10:29:04.000000000 -0500
++++ gridftp-hdfs-0.5.0/scripts/Makefile.in	2011-09-25 13:40:14.000000000 -0500
+@@ -93,7 +93,6 @@
+ F77 = @F77@
+ FFLAGS = @FFLAGS@
+ GLOBUSLOCATION = @GLOBUSLOCATION@
+-GREP = @GREP@
+ HADOOPHOME = @HADOOPHOME@
+ INCLUDE = @INCLUDE@
+ INSTALL_DATA = @INSTALL_DATA@
+@@ -123,9 +122,12 @@
+ SHELL = @SHELL@
+ STRIP = @STRIP@
+ VERSION = @VERSION@
++ac_ct_AR = @ac_ct_AR@
+ ac_ct_CC = @ac_ct_CC@
+ ac_ct_CXX = @ac_ct_CXX@
+ ac_ct_F77 = @ac_ct_F77@
++ac_ct_RANLIB = @ac_ct_RANLIB@
++ac_ct_STRIP = @ac_ct_STRIP@
+ am__fastdepCC_FALSE = @am__fastdepCC_FALSE@
+ am__fastdepCC_TRUE = @am__fastdepCC_TRUE@
+ am__fastdepCXX_FALSE = @am__fastdepCXX_FALSE@
+@@ -143,9 +145,6 @@
+ build_vendor = @build_vendor@
+ datadir = @datadir@
+ datadir_resolved = @datadir_resolved@
+-datarootdir = @datarootdir@
+-docdir = @docdir@
+-dvidir = @dvidir@
+ exec_prefix = @exec_prefix@
+ exec_prefix_resolved = @exec_prefix_resolved@
+ host = @host@
+@@ -153,24 +152,20 @@
+ host_cpu = @host_cpu@
+ host_os = @host_os@
+ host_vendor = @host_vendor@
+-htmldir = @htmldir@
+ includedir = @includedir@
+ infodir = @infodir@
+ install_sh = @install_sh@
+ libdir = @libdir@
+ libexecdir = @libexecdir@
+-localedir = @localedir@
+ localstatedir = @localstatedir@
+ localstatedir_resolved = @localstatedir_resolved@
+ logdir = @logdir@
+ mandir = @mandir@
+ mkdir_p = @mkdir_p@
+ oldincludedir = @oldincludedir@
+-pdfdir = @pdfdir@
+ prefix = @prefix@
+ prefix_resolved = @prefix_resolved@
+ program_transform_name = @program_transform_name@
+-psdir = @psdir@
+ sbindir = @sbindir@
+ sbindir_resolved = @sbindir_resolved@
+ sharedstatedir = @sharedstatedir@
+diff -ru gridftp-hdfs-0.5.0-orig/src/Makefile.in gridftp-hdfs-0.5.0/src/Makefile.in
+--- gridftp-hdfs-0.5.0-orig/src/Makefile.in	2011-09-25 10:29:04.000000000 -0500
++++ gridftp-hdfs-0.5.0/src/Makefile.in	2011-09-25 13:40:14.000000000 -0500
+@@ -105,7 +105,6 @@
+ F77 = @F77@
+ FFLAGS = @FFLAGS@
+ GLOBUSLOCATION = @GLOBUSLOCATION@
+-GREP = @GREP@
+ HADOOPHOME = @HADOOPHOME@
+ INCLUDE = @INCLUDE@
+ INSTALL_DATA = @INSTALL_DATA@
+@@ -135,9 +134,12 @@
+ SHELL = @SHELL@
+ STRIP = @STRIP@
+ VERSION = @VERSION@
++ac_ct_AR = @ac_ct_AR@
+ ac_ct_CC = @ac_ct_CC@
+ ac_ct_CXX = @ac_ct_CXX@
+ ac_ct_F77 = @ac_ct_F77@
++ac_ct_RANLIB = @ac_ct_RANLIB@
++ac_ct_STRIP = @ac_ct_STRIP@
+ am__fastdepCC_FALSE = @am__fastdepCC_FALSE@
+ am__fastdepCC_TRUE = @am__fastdepCC_TRUE@
+ am__fastdepCXX_FALSE = @am__fastdepCXX_FALSE@
+@@ -155,9 +157,6 @@
+ build_vendor = @build_vendor@
+ datadir = @datadir@
+ datadir_resolved = @datadir_resolved@
+-datarootdir = @datarootdir@
+-docdir = @docdir@
+-dvidir = @dvidir@
+ exec_prefix = @exec_prefix@
+ exec_prefix_resolved = @exec_prefix_resolved@
+ host = @host@
+@@ -165,24 +164,20 @@
+ host_cpu = @host_cpu@
+ host_os = @host_os@
+ host_vendor = @host_vendor@
+-htmldir = @htmldir@
+ includedir = @includedir@
+ infodir = @infodir@
+ install_sh = @install_sh@
+ libdir = @libdir@
+ libexecdir = @libexecdir@
+-localedir = @localedir@
+ localstatedir = @localstatedir@
+ localstatedir_resolved = @localstatedir_resolved@
+ logdir = @logdir@
+ mandir = @mandir@
+ mkdir_p = @mkdir_p@
+ oldincludedir = @oldincludedir@
+-pdfdir = @pdfdir@
+ prefix = @prefix@
+ prefix_resolved = @prefix_resolved@
+ program_transform_name = @program_transform_name@
+-psdir = @psdir@
+ sbindir = @sbindir@
+ sbindir_resolved = @sbindir_resolved@
+ sharedstatedir = @sharedstatedir@
