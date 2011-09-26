@@ -1,5 +1,5 @@
 %global name osg-configure
-%global version 0.5.7
+%global version 0.5.8
 %global release 1%{?dist}
 
 Summary: Package for configure-osg and associated scripts
@@ -190,6 +190,9 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/osg/config.d/15-managedfork.ini
 
 %changelog
+* Mon Sep 26 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 0.5.8-1
+- Fixed a bug in RSV configuration of gridftp hosts
+
 * Tue Sep 13 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 0.5.7-1
 - Fixed a bug in RSV configuration of Gratia Metric ProbeConfig
 
