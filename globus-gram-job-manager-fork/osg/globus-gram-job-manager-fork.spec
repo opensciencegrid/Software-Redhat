@@ -16,7 +16,7 @@
 Name:		globus-gram-job-manager-fork
 %global _name %(tr - _ <<< %{name})
 Version:	1.0
-Release:	5%{?dist}
+Release:	6%{?dist}
 Summary:	Globus Toolkit - Fork Job Manager
 
 Group:		Applications/Internet
@@ -224,6 +224,11 @@ if [ $1 -eq 1 ]; then
     if [ ! -f /etc/grid-services/jobmanager ]; then
         globus-gatekeeper-admin -e jobmanager-fork-seg -n jobmanager
     fi
+    if [ ! -f /var/lib/globus/globus-fork.log ]; then
+        mkdir -p /var/lib/globus
+        touch /var/lib/globus/globus-fork.log
+        chmod 0622 /var/lib/globus/globus-fork.log
+    fi
 fi
 
 %preun setup-seg
@@ -263,6 +268,14 @@ fi
 %dir %{_docdir}/%{name}-%{version}/html
 
 %changelog
+* Fri Sep 23 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0-6
+- Merged upstream 1.0-5:
+    * Thu Sep 22 2011 Joe Bester <jbester@mactop2.local> - 1.0-5
+    - Change %post check for -eq 1
+
+    * Wed Sep 14 2011 Joseph Bester <bester@mcs.anl.gov> - 1.0-3
+    - Create globus-fork.log at postinstall time if it's not present
+
 * Wed Sep 21 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0-5
 - Added dependencies on globus-gram-job-manager, globus-gatekeeper
 - Fixed bad test in postun scriptlet of setup-poll subpackage
