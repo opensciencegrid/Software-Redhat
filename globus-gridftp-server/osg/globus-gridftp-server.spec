@@ -194,7 +194,7 @@ fi
     * Fri Sep 23 2011 Joe Bester <bester@mcs.anl.gov> - 6.1-1
     - GRIDFTP-184: Detect and workaround bug in start_daemon for LSB < 4
 
-* Sun Sep 25 2011 Doug Strain <dstrain@fnal.gov> - 6.0-6
+* Thu Sep 22 2011 Doug Strain <dstrain@fnal.gov> - 6.0-6
 - Adding extra sysconfig directory and configurable conf file
 - For different plugin supports
 
