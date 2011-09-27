@@ -21,6 +21,18 @@ export LCMAPS_POLICY_NAME=osg_default
 #export GLOBUS_TCP_PORT_RANGE=min,max
 #export GLOBUS_TCP_SOURCE_RANGE=min,max
 
+
+#############################################
+# Source all files in /etc/sysconfig/gridftp.conf.d
+#############################################
+if [ -d /etc/sysconfig/gridftp.conf.d ]; then
+        for file in `dir -d /etc/sysconfig/gridftp.conf.d/*` ; do
+                . $file
+        done
+fi
+
+
+
 #############################################
 # xrootd-dsi module support
 #############################################

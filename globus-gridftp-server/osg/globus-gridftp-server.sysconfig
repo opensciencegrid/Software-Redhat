@@ -16,6 +16,12 @@ export LCMAPS_DB_FILE=/etc/lcmaps.db
 export LCMAPS_MOD_HOME=/usr/lib64/modules
 export LCMAPS_POLICY_NAME=osg_default
 
+if [ -d /etc/sysconfig/gridftp.conf.d ]; then
+	for file in `dir -d /etc/sysconfig/gridftp.conf.d/*` ; do
+		. $file
+	done
+fi
+
 
 #Uncomment and modify for firewalls
 #export GLOBUS_TCP_PORT_RANGE=min,max
