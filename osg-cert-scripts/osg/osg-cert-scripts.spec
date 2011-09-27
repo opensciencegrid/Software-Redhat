@@ -5,8 +5,8 @@
 %endif
 
 Name:           osg-cert-scripts
-Version:        2.7
-Release:        5
+Version:        2.7.1
+Release:        1
 Summary:        Command-line interface to the DOEGrids CA web site, and more.
 
 Group:          Grid
@@ -19,7 +19,7 @@ Requires:       /usr/bin/ldapsearch
 Requires:       /usr/bin/openssl
 Requires:       grid-certificates
 
-Source0:        cert-scripts-2.7.tar.gz
+Source0:        osg-cert-scripts-2.7.1.tar.gz
 Patch0:         change_awk_locations.patch  
 Patch1:         make_correct_python_module.patch
 
