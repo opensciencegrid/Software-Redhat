@@ -1,5 +1,5 @@
 Name:           bestman2
-Version:        2.1.2
+Version:        2.1.3
 Release:        1
 Summary:        SRM server for Grid Storage Elements
 
@@ -13,8 +13,8 @@ URL:            https://sdm.lbl.gov/bestman/
 %define install_root /etc/%{name}
 
 # NOTE: CHANGE THESE EACH RELEASE
-%define bestman_url https://codeforge.lbl.gov/frs/download.php/333/bestman2-2.1.0.tar.gz
-%define revision 51
+%define bestman_url https://codeforge.lbl.gov/frs/download.php/359/bestman2-2.1.3.tar.gz
+%define revision 60
 
 Source0:        bestman2.tar.gz
 Source1:        bestman2.sh
