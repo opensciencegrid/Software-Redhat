@@ -50,12 +50,12 @@ limitations under the License.
       <pathelement location="${org.glite.ce.commonj.location}/share/java/glite-ce-common-java.jar" />
       <pathelement location="${org.glite.ce.monitorapij.location}/share/java/glite-ce-monitor-api-java.jar" />
       <fileset dir="${org.glite.authz.pep-java.location}">
-        <include name="**/argus-pep-api-java.jar"/>
-        <include name="**/glite-authz-pep-java.jar"/>
+        <include name="argus-pep-api-java.jar"/>
+        <include name="glite-authz-pep-java.jar"/>
       </fileset>
       <fileset dir="${org.glite.authz.pep-common.location}">
-        <include name="**/argus-pep-common.jar"/>
-        <include name="**/glite-authz-pep-common.jar"/>
+        <include name="argus-pep-common.jar"/>
+        <include name="glite-authz-pep-common.jar"/>
       </fileset>
       <fileset dir="${axislib.location}" includes="**/*.jar" />
       <fileset dir="${log4j.location}" includes="log4j.jar" />
@@ -95,6 +95,7 @@ limitations under the License.
     <javac fork="true"
 	memoryinitialsize="256m"
        	memorymaximumsize="256m"
+	sourcepath=""
 	srcdir="src" destdir="bin/classes" source="1.5"
            target="1.5" debug="true" debuglevel="lines,vars,source">
       <classpath refid="compile.classpath" />
@@ -268,7 +269,7 @@ limitations under the License.
 log4j.rootLogger=info, fileout
 log4j.logger.httpclient.wire.content=off
 log4j.appender.fileout=org.apache.log4j.RollingFileAppender
-log4j.appender.fileout.File=${glite.log.path}/glite-ce-monitor.log
+log4j.appender.fileout.File=/var/log/glite-ce-monitor/glite-ce-monitor.log
 log4j.appender.fileout.MaxFileSize=1000KB
 log4j.appender.fileout.MaxBackupIndex=20
 log4j.appender.fileout.layout=org.apache.log4j.PatternLayout

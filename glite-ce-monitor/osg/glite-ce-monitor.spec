@@ -1,7 +1,7 @@
 Summary: The CE monitor service is a web application that publishes information about the Computing Element
 Name: glite-ce-monitor
 Version: 1.13.1
-Release: 7%{?dist}
+Release: 9%{?dist}
 License: Apache License 2.0
 Vendor: EMI
 Group: System Environment/Libraries
@@ -32,12 +32,14 @@ AutoReqProv: yes
 Requires: tomcat5
 Requires: xml-commons-apis
 Requires: glite-ce-osg-ce-plugin
+Requires: vo-client
 
 Requires: httpd
 Source0: glite-ce-monitor-1.13.1-3.src.tar.gz
 Source1: build.xml
 Source2: web.xml
 Source3: osg-cemon.conf
+Source4: glite-ce-info
 Patch0: osg-config.patch
 
 %description
@@ -72,8 +74,8 @@ org.glite.ce.commonj.location=/usr
 org.glite.ce.monitorapij.location=/usr
 org.glite.security.utilj.location=/usr
 org.glite.security.vomsapij.location=/usr
-org.glite.authz.pep-common.location=/usr
-org.glite.authz.pep-java.location=/usr
+org.glite.authz.pep-common.location=/usr/share/java
+org.glite.authz.pep-java.location=/usr/share/java
 org.glite.security.trustmanager.location=/usr
 module.version=1.13.1">.configuration.properties;
  ant
@@ -83,6 +85,7 @@ module.version=1.13.1">.configuration.properties;
 %install
 rm -rf $RPM_BUILD_ROOT
  mkdir -p $RPM_BUILD_ROOT
+ mkdir -p $RPM_BUILD_ROOT/etc/tomcat5/Catalina/localhost
  cp %{SOURCE2} $RPM_BUILD_ROOT
  ant install
  find $RPM_BUILD_ROOT -name '*.la' -exec rm -rf {} \;
@@ -92,6 +95,9 @@ rm -rf $RPM_BUILD_ROOT
  mkdir -p $RPM_BUILD_ROOT/var/log/glite-ce-monitor
  mkdir -p $RPM_BUILD_ROOT/etc/httpd/conf.d
  install -m 644 %{SOURCE3} $RPM_BUILD_ROOT/etc/httpd/conf.d
+ install -m 755 %{SOURCE4} $RPM_BUILD_ROOT/var/lib/glite-ce-monitor
+ cp $RPM_BUILD_ROOT/etc/glite-ce-monitor/ce-monitor.xml $RPM_BUILD_ROOT/etc/tomcat5/Catalina/localhost
+
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -129,6 +135,7 @@ rm -rf $RPM_BUILD_ROOT
 /var/lib/glite-ce-monitor
 %dir /var/log/glite-ce-monitor
 /etc/httpd/conf.d/osg-cemon.conf
+/etc/tomcat5/Catalina/localhost/ce-monitor.xml
 
 %changelog
 * Thu Sep 22 2011 Doug Strain <dstrain@fnal.gov> 1.13.1-5
