@@ -1,11 +1,10 @@
 Name:           osg-se-bestman
 Summary:        OSG BeStMan Storage Element package for RPM distribution
 Version:        3.0.0
-Release:        5
+Release:        6
 License:        GPL
 Group:          System Environment/Daemons
 URL:            https://twiki.grid.iu.edu/twiki/bin/view/Storage/WebHome
-BuildArch:      noarch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 # from VDT
@@ -45,6 +44,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Sep 28 2011 Doug Strain <dstrain@fnal.gov> - 3.0.0-6
+-Getting rid of noarch since this has liblcas arch-sepcific deps
+
 * Wed Aug 31 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 3.0.0-5
 Another update to get Requires right for 32-bit modules
 
