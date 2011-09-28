@@ -1,6 +1,6 @@
 Name:           bestman2
 Version:        2.1.3
-Release:        1
+Release:        1%{?dist}
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
