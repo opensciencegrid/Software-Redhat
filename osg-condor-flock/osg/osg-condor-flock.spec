@@ -51,6 +51,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Wed Sep 07 2011 Derek Weitzel <dweitzel@cse.unl.edu> - 1.0-4
 - Changed the default flocking host to ENGAGE_RENCI
+- Added documentation URL to README
 
 * Tue Aug 30 2011 Derek Weitzel <dweitzel@cse.unl.edu> - 1.0-3
 - Changed DN for engage submit host
