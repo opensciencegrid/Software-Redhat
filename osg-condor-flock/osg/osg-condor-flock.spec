@@ -1,6 +1,6 @@
 Name:           osg-condor-flock
 Version:        1.0
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Condor configuration to flock to OSG Submitters
 
 Group:          applications/grid
@@ -49,6 +49,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Sep 28 2011 Derek Weitzel <dweitzel@cse.unl.edu> - 1.0-5
+- Adding Campus Factory configurations
+
 * Wed Sep 07 2011 Derek Weitzel <dweitzel@cse.unl.edu> - 1.0-4
 - Changed the default flocking host to ENGAGE_RENCI
 - Added documentation URL to README
