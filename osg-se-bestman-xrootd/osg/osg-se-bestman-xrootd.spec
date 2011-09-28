@@ -1,11 +1,10 @@
 Name:           osg-se-bestman-xrootd
 Summary:        OSG BeStMan XRootd Storage Element package
 Version:        3.0.0
-Release:        2
+Release:        3
 License:        GPL
 Group:          System Environment/Daemons
 URL:            https://twiki.grid.iu.edu/twiki/bin/view/Storage/WebHome
-BuildArch:      noarch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 # from VDT
@@ -47,5 +46,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Sep 28 2011 Doug Strain <dstrain@fnal.gov> - 3.0.0-3
+- This meta package should not be noarch due to lib dependencies
+
 * Thu Sep 1 2011 Doug Strain <dstrain@fnal.gov> - 3.0.0-1
 - Initial creation of osg-se-bestman-xrootd meta package
