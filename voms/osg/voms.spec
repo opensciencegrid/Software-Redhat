@@ -27,8 +27,8 @@
 %global version1 1.9.19.2
 %global release1 5
 
-%global version2 2.0.2
-%global release2 3
+%global version2 2.0.6
+%global release2 2
 
 Name:		voms
 Version:	%{version2}
@@ -404,7 +404,7 @@ rm -rf $RPM_BUILD_ROOT
 pushd %{name}-%{version1}
 make install DESTDIR=$RPM_BUILD_ROOT
 rm $RPM_BUILD_ROOT%{_libdir}/*.la
-#rm $RPM_BUILD_ROOT%{_libdir}/*.so
+rm $RPM_BUILD_ROOT%{_libdir}/*.so
 rm -rf $RPM_BUILD_ROOT%{_includedir}
 rm -rf $RPM_BUILD_ROOT%{_datadir}
 popd
@@ -545,7 +545,7 @@ fi
 %if %{compat}
 %files compat
 %defattr(-,root,root,-)
-%{_libdir}/libvoms*.so*
+%{_libdir}/libvoms*.so.0*
 %doc %{name}-%{version1}/AUTHORS
 %doc %{name}-%{version1}/LICENSE
 %endif
@@ -603,6 +603,10 @@ fi
 %endif
 
 %changelog
+* Wed Sep 28 2011 Derek Weitzel <dweitzel@cse.unl.edu> - 2.0.6-2
+- Updated to 2.0.6 
+- Changed compat to include *.0
+
 * Mon Sep 12 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.2-3
 - Rebuild against updated Globus libraries
 - also bumped voms-compat revision to 5
