@@ -53,6 +53,8 @@ The CE monitor service is a web application that publishes information about the
 %patch0 -p1
 
 %build
+# Increase heap size to avoid OutOfMemoryError
+export ANT_OPTS="-Xmx1536m -Xms512m -XX:-UseGCOverheadLimit"
 cp %{SOURCE1} .
 cp %{SOURCE2} $RPM_BUILD_ROOT
 TEMP_BUILD_LOCATION=`pwd`
