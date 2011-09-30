@@ -25,10 +25,10 @@
 %endif
 
 %global version1 1.9.19.2
-%global release1 5
+%global release1 6
 
 %global version2 2.0.6
-%global release2 2
+%global release2 3
 
 Name:		voms
 Version:	%{version2}
@@ -603,6 +603,9 @@ fi
 %endif
 
 %changelog
+* Thu Sep 29 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.6-3
+- Release bump of voms and voms-compat
+
 * Wed Sep 28 2011 Derek Weitzel <dweitzel@cse.unl.edu> - 2.0.6-2
 - Updated to 2.0.6 
 - Changed compat to include *.0

@@ -1,7 +1,7 @@
 Summary: The CE monitor service is a web application that publishes information about the Computing Element
 Name: glite-ce-monitor
 Version: 1.13.1
-Release: 9%{?dist}
+Release: 10%{?dist}
 License: Apache License 2.0
 Vendor: EMI
 Group: System Environment/Libraries
@@ -31,6 +31,9 @@ AutoReqProv: yes
 # Gonna have to change this for sl6 to tomcat6 -dds
 Requires: tomcat5
 Requires: xml-commons-apis
+# The following line added as a workaround for the JDK 'providing'
+# xml-commons-apis, whereas we want the actual package of the same name.
+Requires: /usr/share/java/xml-commons-apis.jar
 Requires: glite-ce-osg-ce-plugin
 Requires: vo-client
 
@@ -138,6 +141,9 @@ rm -rf $RPM_BUILD_ROOT
 /etc/tomcat5/Catalina/localhost/ce-monitor.xml
 
 %changelog
+* Fri Sep 30 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.13.1-10
+- Added workaround for xml-commons-apis not being brought in
+
 * Thu Sep 22 2011 Doug Strain <dstrain@fnal.gov> 1.13.1-5
 - Changing locations of some things so that CEMon works correctly
 -- with tomcat5 from RHEL rpm
