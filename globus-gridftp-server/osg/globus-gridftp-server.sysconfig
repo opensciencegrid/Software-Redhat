@@ -14,7 +14,7 @@ export LCMAPS_LOG_LEVEL=0
 export LCMAPS_DEBUG_LEVEL=0
 export LCMAPS_DB_FILE=/etc/lcmaps.db
 export LCMAPS_MOD_HOME=/usr/lib64/modules
-export LCMAPS_POLICY_NAME=osg_default
+export LCMAPS_POLICY_NAME=globus_gridftp_mapping
 
 if [ -d /etc/sysconfig/gridftp.conf.d ]; then
 	for file in `dir -d /etc/sysconfig/gridftp.conf.d/*` ; do
