@@ -1,7 +1,7 @@
 Summary: emi.voms.voms-admin-server
 Name: voms-admin-server
 Version: 2.6.1
-Release: 8
+Release: 9
 License: Apache Software License
 Vendor: EMI
 Group: System Environment/Libraries
@@ -13,6 +13,13 @@ Requires: emi-trustmanager-tomcat
 Requires: tomcat5
 Requires: fetch-crl
 Requires: xml-commons-apis 
+Requires(post):/sbin/chkconfig
+Requires(preun):/sbin/chkconfig
+Requires(preun):/sbin/service
+Requires(postun):/sbin/service
+# The following requirement makes sure we get the RPM that provides this,
+# and not just the JDK which happens to provide it, but not in the right spot. 
+Requires: /usr/share/java/xml-commons-apis.jar
 Requires: grid-certificates 
 BuildRoot: %{_builddir}/%{name}-root
 BuildArch: noarch
@@ -58,6 +65,17 @@ ln -s /usr/share/java/eclipse-ecj.jar $RPM_BUILD_ROOT/usr/share/tomcat5/common/l
 
 %clean
 rm -rf $RPM_BUILD_ROOT
+
+%post
+/sbin/chkconfig --add voms-admin
+
+%preun
+if [ $1 = 0 ]; then
+  /sbin/service vsom-admin stop >/dev/null 2>&1 || :
+  /sbin/chkconfig --del voms-admin
+fi
+
+
 
 %files
 %defattr(-,root,root)
@@ -185,6 +203,10 @@ rm -rf $RPM_BUILD_ROOT
 /usr/share/tomcat5/common/lib/voms-admin-eclipse-ecj.jar
 
 %changelog
+* Wed Sep 21 2011 Alain Roy <roy@cs.wisc.edu> - 2.6.1-9
+Tweaked xml-commons-apis dependency to work
+Added chkconfig
+
 * Mon Jul 25 2011 Tanya Levshina <tlevshin@fnal.gov> - 2.6.1-8
 changed patch1 - patches voms.py and not voms-admin-configure.py
 
