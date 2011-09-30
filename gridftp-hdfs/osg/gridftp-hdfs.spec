@@ -26,6 +26,8 @@ Requires: hadoop-0.20-libhdfs
 Requires: globus-gridftp-server-progs
 Requires: xinetd
 
+Conflicts: xrootd-dsi
+
 Requires(pre): shadow-utils
 Requires(preun): initscripts
 Requires(preun): chkconfig
@@ -65,7 +67,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %preun
 if [ "$1" = "0" ] ; then
-    /sbin/service gridftp-hdfs stop >/dev/null 2>&1
+    /sbin/service globus-gridftp-server stop >/dev/null 2>&1
 #    /sbin/chkconfig --del %{name}
 fi
 
@@ -94,6 +96,11 @@ fi
 %config(noreplace) %{_sysconfdir}/logrotate.d/%{name}.logrotate
 
 %changelog
+* Fri Sep 30 2011 Jeff Dost <jdost@ucsd.edu> - 0.5.0-2
+- Add Doug's patch and mods to remove need for separate init scripts.
+- Add lines to gridftp.conf to correctly generate log files.
+- Add Conflicts with xrootd-dsi rpm.
+
 * Sat Sep 24 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 0.5.0-1
 - Redo gridftp to allow either xinetd or init startup; link with GT 5.2.
 
