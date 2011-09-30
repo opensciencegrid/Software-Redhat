@@ -1,6 +1,6 @@
 Name:           xrootd-dsi
 Version:        3.0.4
-Release:        5
+Release:        6
 Summary:        xrootd DSI library and POSIX preload
 Group:          System Environment/Daemons
 License:        Stanford (modified BSD with advert clause)
@@ -14,6 +14,7 @@ BuildRequires: globus-common-devel globus-gridftp-server-devel zlib-devel
 Requires: xrootd-client xrootd-libs 
 #Hold off on these for now
 #vdt-compat globus-base-data-server
+Conflicts: gridftp-hdfs
 
 %description
 DSI module and POSIX preload libraries for Xrootd
@@ -56,6 +57,9 @@ install -m 644 libglobus_gridftp_server_posix.so $RPM_BUILD_ROOT/usr/lib/libglob
 
 
 %changelog
+* Fri Sep 30 2011 Jeff Dost <jdost@ucsd.edu> - 3.0.4-6
+- Add Conflicts line to block if gridftp-hdfs is installed
+
 * Thu Sep 15 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 3.0.4-5
 Rebuild against updated Globus libraries
 
