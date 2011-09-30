@@ -96,7 +96,8 @@ verifyproxy = "lcmaps_verify_proxy.mod"
 # The defaults are generally good.
 # We've left the various glexec policies commented out--you need to
 # choose one of the three policies. Most sites will use the first
-# policy (verify proxy, gums client, glexectracking)
+# policy (verify proxy, gums client, glexectracking). Do not uncomment
+# the glexec policies if you are not using glexec!
 # 
 # For the globus_gridftp_mapping and the osg_default mapping, we've
 # shown how to add saz, if you are using it at your site. Uncomment
@@ -120,7 +121,7 @@ gumsclient -> posix_enf
 osg_default:
 verifyproxy -> gumsclient
 #Uncomment the next two lines and comment the previous line to add SAZ
-#verifyproxy -> sazsclient
+#verifyproxy -> sazclient
 #sazclient -> gumsclient
 
 #
