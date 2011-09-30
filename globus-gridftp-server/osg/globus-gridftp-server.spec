@@ -13,7 +13,7 @@
 Name:		globus-gridftp-server
 %global _name %(tr - _ <<< %{name})
 Version:	6.1
-Release:	3%{?dist}
+Release:	4%{?dist}
 Summary:	Globus Toolkit - Globus GridFTP Server
 
 Group:		System Environment/Libraries
@@ -185,6 +185,9 @@ fi
 %defattr(-,root,root,-)
 
 %changelog
+* Tue Sep 30 2011 Jeff Dost <jdost@ucsd.eduv> - 6.1-4
+- Change sysconfig file to use correct globus_gridftp_mapping LCMAPS policy
+
 * Tue Sep 27 2011 Doug Strain <dstrain@fnal.gov> - 6.1-3
 - Re-Adding extra sysconfig directory and configurable conf file
 - With new version of gridftp
