@@ -185,7 +185,7 @@ fi
 %defattr(-,root,root,-)
 
 %changelog
-* Tue Sep 30 2011 Jeff Dost <jdost@ucsd.eduv> - 6.1-4
+* Fri Sep 30 2011 Jeff Dost <jdost@ucsd.edu> - 6.1-4
 - Change sysconfig file to use correct globus_gridftp_mapping LCMAPS policy
 
 * Tue Sep 27 2011 Doug Strain <dstrain@fnal.gov> - 6.1-3
