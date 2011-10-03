@@ -1,7 +1,7 @@
 Summary: The CE monitor service is a web application that publishes information about the Computing Element
 Name: glite-ce-monitor
 Version: 1.13.1
-Release: 10%{?dist}
+Release: 11%{?dist}
 License: Apache License 2.0
 Vendor: EMI
 Group: System Environment/Libraries
@@ -38,6 +38,7 @@ Requires: glite-ce-osg-ce-plugin
 Requires: vo-client
 
 Requires: httpd
+Requires: mod_ssl
 Source0: glite-ce-monitor-1.13.1-3.src.tar.gz
 Source1: build.xml
 Source2: web.xml
@@ -54,7 +55,7 @@ The CE monitor service is a web application that publishes information about the
 
 %build
 # Increase heap size to avoid OutOfMemoryError
-export ANT_OPTS="-Xmx1536m -Xms512m -XX:-UseGCOverheadLimit"
+export ANT_OPTS="-Xmx2048m -Xms512m -XX:-UseGCOverheadLimit"
 cp %{SOURCE1} .
 cp %{SOURCE2} $RPM_BUILD_ROOT
 TEMP_BUILD_LOCATION=`pwd`
@@ -122,12 +123,12 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root)
 %dir /etc/glite-ce-monitor/
-/etc/glite-ce-monitor/log4j.properties
+%config(noreplace) /etc/glite-ce-monitor/log4j.properties
 /etc/glite-ce-monitor/cemonitor-config.xml.template
-/etc/glite-ce-monitor/cemonitor-config.xml
-/etc/glite-ce-monitor/cemonitor-argus-config.xml
-/etc/glite-ce-monitor/cemonitor-authz-config.xml
-/etc/glite-ce-monitor/ce-monitor.xml
+%config(noreplace) /etc/glite-ce-monitor/cemonitor-config.xml
+%config(noreplace) /etc/glite-ce-monitor/cemonitor-argus-config.xml
+%config(noreplace) /etc/glite-ce-monitor/cemonitor-authz-config.xml
+%config(noreplace) /etc/glite-ce-monitor/ce-monitor.xml
 /usr/share/java/glite-ce-monitor/glite-ce-monitor-RegExProcessor.jar
 /usr/share/java/glite-ce-monitor/glite-ce-monitor.jar
 /usr/share/java/glite-ce-monitor/glite-ce-monitor-ClassAdProcessor.jar
@@ -139,10 +140,14 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,tomcat,tomcat)
 /var/lib/glite-ce-monitor
 %dir /var/log/glite-ce-monitor
-/etc/httpd/conf.d/osg-cemon.conf
-/etc/tomcat5/Catalina/localhost/ce-monitor.xml
+%config(noreplace) /etc/httpd/conf.d/osg-cemon.conf
+%config(noreplace) /etc/tomcat5/Catalina/localhost/ce-monitor.xml
 
 %changelog
+* Mon Oct 03 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.13.1-11
+- Added mod_ssl as a dependency (since the configuration we provide depends on it.
+- Marked config files as such
+
 * Fri Sep 30 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.13.1-10
 - Added workaround for xml-commons-apis not being brought in
 
