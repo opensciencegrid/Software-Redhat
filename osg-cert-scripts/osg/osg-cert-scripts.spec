@@ -20,8 +20,9 @@ Requires:       /usr/bin/openssl
 Requires:       grid-certificates
 
 Source0:        osg-cert-scripts-2.7.1.tar.gz
-Patch0:         change_awk_locations.patch  
-Patch1:         make_correct_python_module.patch
+# Patches incorporated to SVN since OSG is the upstream source
+#Patch0:         change_awk_locations.patch  
+#Patch1:         make_correct_python_module.patch
 
 Provides:       ppdg-cert-scripts = %{version}-%{release}
 Obsoletes:      ppdg-cert-scripts < 2.7-5
@@ -35,9 +36,9 @@ Authority (RA), but it is now maintained by the OSG RA.
 
 %prep
 # Annoying that the name of the tar is different than the package
-%setup -q -n cert-scripts
-%patch0 -p1 
-%patch1 -p1
+%setup -q -n osg-cert-scripts
+#%patch0 -p1 
+#%patch1 -p1
 
 %build
 
