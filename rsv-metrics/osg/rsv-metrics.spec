@@ -1,6 +1,6 @@
 
 Name:      rsv-metrics
-Version:   3.5.1
+Version:   3.5.2
 Release:   1%{?dist}
 Summary:   RSV metrics
 
@@ -92,6 +92,9 @@ rm -rf $RPM_BUILD_ROOT
 %attr(-,rsv,rsv) %{_localstatedir}/log/rsv/probes
 
 %changelog
+* Tue Oct 04 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.5.2-1
+- Added CA and CRL metrics which are not yet full functional.
+
 * Thu Sep 15 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.4.8-1
 - Added log rotation and more
 
