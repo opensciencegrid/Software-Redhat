@@ -1,6 +1,6 @@
 
 Name:      rsv-core
-Version:   3.5.2
+Version:   3.5.3
 Release:   1%{?dist}
 Summary:   RSV Core Infrastructure
 
@@ -116,5 +116,8 @@ fi
 
 
 %changelog
+* Wed Oct 05 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.5.3-1
+- rsv-control wrapper now uses system python
+
 * Thu Jul 20 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.4.0-1
 - Creating a first RPM for rsv-core
