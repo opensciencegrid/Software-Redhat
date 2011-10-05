@@ -1,7 +1,7 @@
 Summary: The CE monitor service is a web application that publishes information about the Computing Element
 Name: glite-ce-monitor
 Version: 1.13.1
-Release: 11%{?dist}
+Release: 12%{?dist}
 License: Apache License 2.0
 Vendor: EMI
 Group: System Environment/Libraries
@@ -37,12 +37,12 @@ Requires: /usr/share/java/xml-commons-apis.jar
 Requires: glite-ce-osg-ce-plugin
 Requires: vo-client
 
-Requires: httpd
-Requires: mod_ssl
+#Requires: httpd
+#Requires: mod_ssl
 Source0: glite-ce-monitor-1.13.1-3.src.tar.gz
 Source1: build.xml
 Source2: web.xml
-Source3: osg-cemon.conf
+#Source3: osg-cemon.conf
 Source4: glite-ce-info
 Patch0: osg-config.patch
 
@@ -55,7 +55,7 @@ The CE monitor service is a web application that publishes information about the
 
 %build
 # Increase heap size to avoid OutOfMemoryError
-export ANT_OPTS="-Xmx2048m -Xms512m -XX:-UseGCOverheadLimit"
+export ANT_OPTS="-Xmx2048m -Xms2048m -XX:-UseGCOverheadLimit"
 cp %{SOURCE1} .
 cp %{SOURCE2} $RPM_BUILD_ROOT
 TEMP_BUILD_LOCATION=`pwd`
@@ -99,8 +99,8 @@ rm -rf $RPM_BUILD_ROOT
  rm $RPM_BUILD_ROOT/web.xml 
  mkdir -p $RPM_BUILD_ROOT/var/lib/glite-ce-monitor
  mkdir -p $RPM_BUILD_ROOT/var/log/glite-ce-monitor
- mkdir -p $RPM_BUILD_ROOT/etc/httpd/conf.d
- install -m 644 %{SOURCE3} $RPM_BUILD_ROOT/etc/httpd/conf.d
+ #mkdir -p $RPM_BUILD_ROOT/etc/httpd/conf.d
+ #install -m 644 %{SOURCE3} $RPM_BUILD_ROOT/etc/httpd/conf.d
  install -m 755 %{SOURCE4} $RPM_BUILD_ROOT/var/lib/glite-ce-monitor
  cp $RPM_BUILD_ROOT/etc/glite-ce-monitor/ce-monitor.xml $RPM_BUILD_ROOT/etc/tomcat5/Catalina/localhost
 
@@ -140,10 +140,13 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,tomcat,tomcat)
 /var/lib/glite-ce-monitor
 %dir /var/log/glite-ce-monitor
-%config(noreplace) /etc/httpd/conf.d/osg-cemon.conf
+#%config(noreplace) /etc/httpd/conf.d/osg-cemon.conf
 %config(noreplace) /etc/tomcat5/Catalina/localhost/ce-monitor.xml
 
 %changelog
+* Tue Oct 04 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.13.1-12
+- Removed httpd-related stuff, we're using tomcat without it
+
 * Mon Oct 03 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.13.1-11
 - Added mod_ssl as a dependency (since the configuration we provide depends on it.
 - Marked config files as such
