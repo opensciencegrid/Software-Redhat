@@ -43,6 +43,8 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root,-)
 %{_bindir}/%{name}
+%{_bindir}/rpm-ripper
+%{_bindir}/osg-import-srpm
 %{_bindir}/vdt-build
 %dir %{python_sitelib}/osg_build_lib
 %{python_sitelib}/osg_build_lib/*.py*
