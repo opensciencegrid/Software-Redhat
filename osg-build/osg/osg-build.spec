@@ -1,6 +1,6 @@
 
 Name:           osg-build
-Version:        0.0.21
+Version:        0.0.22
 Release:        1%{?dist}
 Summary:        Build tools for the OSG
 
@@ -52,6 +52,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_docdir}/%{name}/sample-osg-build.ini
 
 %changelog
+* Thu Oct 06 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 0.0.22-1
+- Minor tweaks to rpm-ripper
+
 * Thu Oct 06 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 0.0.21-1
 - Added --nowait tag for koji task
 - Added rpm-ripper and osg-import-srpm scripts
