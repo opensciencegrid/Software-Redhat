@@ -1,6 +1,6 @@
 
 Name:           osg-build
-Version:        0.0.20
+Version:        0.0.21
 Release:        1%{?dist}
 Summary:        Build tools for the OSG
 
@@ -50,6 +50,10 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_docdir}/%{name}/sample-osg-build.ini
 
 %changelog
+* Thu Oct 06 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 0.0.21-1
+- Added --nowait tag for koji task
+- Added rpm-ripper and osg-import-srpm scripts
+
 * Wed Aug 24 2011 <matyas@cs.wisc.edu> - 0.0.20-1
 - Added ability to pass koji tag and koji target on the command line or in
   the config file.
