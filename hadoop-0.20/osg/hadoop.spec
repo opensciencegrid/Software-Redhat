@@ -56,7 +56,7 @@
 
 Name: %{hadoop_name}-%{apache_branch}
 Version: %{cloudera_version}
-Release: 14
+Release: 15
 Summary: Hadoop is a software platform for processing vast amounts of data
 License: Apache License v2.0
 URL: http://hadoop.apache.org/core/
@@ -73,6 +73,7 @@ Patch2:  fuse_dfs_020_memleaks_v8.patch
 # https://issues.apache.org/jira/secure/attachment/12446533/h-6813.patch
 Patch3:  h-6813.patch
 Patch4:  hadoop_fuse_dfs_classpath.patch
+Patch5:  hadoop_fuse_dfs_libjvm.patch
 Buildroot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: ant >= 1.7, ant-nodeps, ant-trax, jdk >= 1.6, lzo-devel, python >= 2.4, /usr/bin/git, subversion, fuse-libs, fuse-devel, fuse, automake, autoconf, libtool, redhat-rpm-config, openssl-devel
 Requires: sh-utils, textutils, /usr/sbin/useradd, /usr/sbin/usermod, /sbin/chkconfig, /sbin/service, jdk >= 1.6
@@ -245,6 +246,7 @@ before continuing operation.
 %patch2 -p1
 %patch3
 %patch4
+%patch5
 
 %build
 # This assumes that you installed Java JDK 6 via RPM
@@ -494,6 +496,9 @@ fi
 %endif
 
 %changelog
+* Thu Oct 06 2011 Jeff Dost <jdost@ucsd.edu> 0.20.2+737-15
+- Patch hadoop-fuse-dfs to follow symlinks when finding libjvm.so.
+
 * Fri Aug 23 2011 Jeff Dost <jdost@ucsd.edu> 0.20.2+737-14
 - Release bump because of missing noarch rpms on previous build.
 
