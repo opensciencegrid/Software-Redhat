@@ -1,7 +1,7 @@
 Name:      osg-ce
 Summary:   OSG Compute Element 
 Version:   3.0.0
-Release:   16
+Release:   17
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -14,6 +14,8 @@ Requires: globus-gridftp-server-progs
 Requires: osg-client
 Requires: syslog-ng
 Requires: lfc-client
+Requires: glite-ce-monitor
+Requires: osg-info-services
 #Requires: Job-Environment
 Requires: osg-vo-map
 Requires: vo-client
@@ -106,6 +108,9 @@ rm -rf $RPM_BUILD_ROOT
 %files sge
 
 %changelog
+* Mon Oct 10 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 3.0.0-17
+- Added dependencies on glite-ce-monitor and osg-info-services
+
 * Mon Sep 26 2011 Alain Roy (roy@cs.wisc.edu> - 3.0.0-16
 - Move some of the osg-configure-* packages into the proper subpackages. 
 
