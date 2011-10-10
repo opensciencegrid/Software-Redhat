@@ -93,8 +93,8 @@ limitations under the License.
     <mkdir dir="doc/autogen" />		
 
     <javac fork="true"
-	memoryinitialsize="256m"
-       	memorymaximumsize="256m"
+	memoryinitialsize="768m"
+       	memorymaximumsize="768m"
 	sourcepath=""
 	srcdir="src" destdir="bin/classes" source="1.5"
            target="1.5" debug="true" debuglevel="lines,vars,source">

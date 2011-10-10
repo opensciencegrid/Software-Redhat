@@ -1,7 +1,7 @@
 Summary: The CE monitor service is a web application that publishes information about the Computing Element
 Name: glite-ce-monitor
 Version: 1.13.1
-Release: 12%{?dist}
+Release: 13%{?dist}
 License: Apache License 2.0
 Vendor: EMI
 Group: System Environment/Libraries
@@ -144,6 +144,12 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) /etc/tomcat5/Catalina/localhost/ce-monitor.xml
 
 %changelog
+* Wed Oct 05 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.13.1-13
+- Modified hostkey/hostcert default location in cemonitor-config.xml to match
+  our documentation.
+- Removed OSG subscription from cemonitor-config.xml since osg-configure will
+  add it now.
+
 * Tue Oct 04 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.13.1-12
 - Removed httpd-related stuff, we're using tomcat without it
 
