@@ -6,7 +6,7 @@
 
 Name:           osg-cert-scripts
 Version:        2.7.1
-Release:        1
+Release:        2
 Summary:        Command-line interface to the DOEGrids CA web site, and more.
 
 Group:          Grid
@@ -18,6 +18,7 @@ BuildArch:      noarch
 Requires:       /usr/bin/ldapsearch
 Requires:       /usr/bin/openssl
 Requires:       grid-certificates
+Requires:	perl(Crypt::SSLeay)
 
 Source0:        osg-cert-scripts-2.7.1.tar.gz
 # Patches incorporated to SVN since OSG is the upstream source
@@ -70,6 +71,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Oct 10 2011 Anand Padmanabhan <apadmana@uiuc.edu> - 2.7.1-2
+Added dependency to perl(Crypt::SSLeay)
+
 * Mon Aug 15 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 2.7-5
 Rename RPM to use the osg- prefix.
 
