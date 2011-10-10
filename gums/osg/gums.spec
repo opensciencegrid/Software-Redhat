@@ -5,7 +5,7 @@
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.3.18.002
-Release: 3
+Release: 4
 License: Unknown
 Group: System Environment/Daemons
 BuildRequires: maven2
@@ -21,13 +21,19 @@ Source0: %{name}-core-%{version}.tar.gz
 # svn export https://svn.usatlas.bnl.gov/svn/privilege/tags/gums-client-1.3.18.002 gums-client
 # tar zcf gums-client-1.3.18.002.tar.gz gums-client
 Source1: %{name}-client-%{version}.tar.gz
+# svn export https://svn.usatlas.bnl.gov/svn/privilege/tags/gums-service-1.3.18.002 gums-service
+# tar zcf gums-service-1.3.18.002.tar.gz gums-service/
+Source2: %{name}-service-%{version}.tar.gz
 
-Source2: gums-host-cron
+Source3: gums-host-cron
 
-Source3: gums-client-cron.cron
-Source4: gums-client-cron.init
+Source4: gums-client-cron.cron
+Source5: gums-client-cron.init
 
 Patch0: gums-build.patch
+Patch1: gums-add-mysql-admin.patch
+Patch2: gums-setup-mysql-database.patch
+Patch3: gums-create-config.patch
 
 %description
 %{summary}
@@ -44,10 +50,24 @@ Summary: Clients for GUMS
 %description client
 %{summary}
 
+%package service
+Requires: %{name} = %{version}
+Requires: tomcat5
+Requires: emi-trustmanager-tomcat
+Requires: mysql-server
+Group: System Environment/Daemons
+Summary: Tomcat5 service for GUMS
+
+%description service
+%{summary}
+
 %prep
 
-%setup -c -a 1
+%setup -c -a 1 -a 2
 %patch0 -p0
+%patch1 -p1
+%patch2 -p1
+%patch3 -p1
 
 %build
 
@@ -57,8 +77,17 @@ popd
 pushd gums-client
 mvn -Dmaven.repo.local=/tmp/m2-repository -Dmaven.test.skip=true install
 popd
+pushd gums-service
+mvn -Dmaven.repo.local=/tmp/m2-repository -Dmaven.test.skip=true install
+popd
 
 %install
+
+function replace_jar {
+  rm $RPM_BUILD_ROOT%{_var}/lib/tomcat5/webapps/gums/WEB-INF/lib/$1
+  ln -s %{_noarchlib}/%{dirname}/$1 $RPM_BUILD_ROOT%{_var}/lib/tomcat5/webapps/gums/WEB-INF/lib/$1
+}
+
 rm -rf $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT
 
@@ -67,17 +96,107 @@ mkdir -p $RPM_BUILD_ROOT%{_noarchlib}/%{dirname}
 mkdir -p $RPM_BUILD_ROOT%{_noarchlib}/%{dirname}/endorsed
 install -m 0644 gums-client/target/lib/*.jar $RPM_BUILD_ROOT%{_noarchlib}/%{dirname}/
 install -m 0644 gums-core/target/*.jar $RPM_BUILD_ROOT%{_noarchlib}/%{dirname}/
-
 install -m 0644 gums-client/target/lib/endorsed/*.jar $RPM_BUILD_ROOT%{_noarchlib}/%{dirname}/endorsed/
+
+# Service
+mkdir -p $RPM_BUILD_ROOT%{_var}/lib/tomcat5/webapps/gums/
+pushd $RPM_BUILD_ROOT%{_var}/lib/tomcat5/webapps/gums/
+jar xf $OLDPWD/gums-service/target/gums.war 
+popd
+rm $RPM_BUILD_ROOT%{_var}/lib/tomcat5/webapps/gums/WEB-INF/config/gums.config
+ln -s %{_sysconfdir}/%{dirname}/gums.config $RPM_BUILD_ROOT%{_var}/lib/tomcat5/webapps/gums/WEB-INF/config
+
+# Link the exploded WAR to gums-core JARs, instead of including a copy
+replace_jar ant-1.6.3.jar
+replace_jar antlr-2.7.5H3.jar
+replace_jar asm-1.4.3.jar
+replace_jar avalon-framework-4.1.3.jar
+replace_jar axis-1.4.jar
+replace_jar axis-ant-1.4.jar
+replace_jar axis-jaxrpc-1.4.jar
+replace_jar axis-saaj-1.4.jar
+replace_jar axis-wsdl4j-1.5.1.jar
+replace_jar bcprov-ext-jdk15-1.40.jar
+replace_jar bcprov-jdk15-140.jar
+replace_jar c3p0-0.9.1.2.jar
+replace_jar cglib-2.0.2.jar
+replace_jar cglib-full-2.0.2.jar
+replace_jar commons-beanutils-1.7.0.jar
+replace_jar commons-cli-1.2.jar
+replace_jar commons-codec-1.3.jar
+replace_jar commons-collections-3.2.jar
+replace_jar commons-digester-1.8.jar
+replace_jar commons-discovery-0.2.jar
+replace_jar commons-httpclient-3.1.jar
+replace_jar commons-lang-2.1.jar
+replace_jar commons-logging-1.1.jar
+replace_jar concurrent-1.3.4.jar
+replace_jar dom4j-1.4.jar
+replace_jar ehcache-1.1.jar
+replace_jar glite-security-trustmanager-1.8.16.jar
+replace_jar glite-security-util-java-1.4.0.jar
+# Oddly enough, gums-service and gums-core contain different versions...
+#replace_jar gums-core-1.3.18.001.jar
+replace_jar hibernate-3.0.3.jar
+replace_jar jacc-1.0.jar
+replace_jar jargs-1.0.jar
+replace_jar jboss-cache-1.2.2.jar
+replace_jar jboss-common-4.0.2.jar
+replace_jar jboss-j2se-200504122039.jar
+replace_jar jboss-minimal-4.0.2.jar
+replace_jar jboss-system-4.0.2.jar
+replace_jar jcl-over-slf4j-1.5.5.jar
+replace_jar jgroups-all-2.2.8.jar
+replace_jar joda-time-1.5.2.jar
+replace_jar jta-1.0.1B.jar
+replace_jar log4j-1.2.12.jar
+replace_jar log4j-over-slf4j-1.5.5.jar
+replace_jar logkit-1.0.1.jar
+replace_jar mysql-connector-java-5.1.6.jar
+replace_jar not-yet-commons-ssl-0.3.9.jar
+replace_jar odmg-3.0.jar
+replace_jar opensaml-2.2.2.jar
+replace_jar openws-1.2.1.jar
+replace_jar oscache-2.1.jar
+replace_jar privilege-1.0.1.3.jar
+replace_jar privilege-xacml-2.2.4.jar
+replace_jar proxool-0.8.3.jar
+replace_jar resolver-2.9.1.jar
+replace_jar serializer-2.9.1.jar
+replace_jar servlet-api-2.3.jar
+# gums-core and gums-service use different versions here...
+#replace_jar slf4j-api-1.6.1.jar
+#replace_jar slf4j-simple-1.6.1.jar
+replace_jar swarmcache-1.0RC2.jar
+replace_jar velocity-1.5.jar
+replace_jar webdavlib-2.0.jar
+replace_jar xalan-2.7.1.jar
+replace_jar xercesImpl-2.8.0.jar
+replace_jar xercesImpl-2.9.1.jar
+replace_jar xml-apis-2.9.1.jar
+replace_jar xmlParserAPIs-2.6.2.jar
+replace_jar xmlsec-1.4.2.jar
+replace_jar xmltooling-1.1.1.jar
+
 
 # Scripts
 mkdir -p $RPM_BUILD_ROOT%{_bindir}
 install -m 0755 gums-client/src/main/scripts/* $RPM_BUILD_ROOT%{_bindir}/
-install -m 0755 %{SOURCE2} $RPM_BUILD_ROOT%{_bindir}/gums-host-cron
+install -m 0755 %{SOURCE3} $RPM_BUILD_ROOT%{_bindir}/gums-host-cron
+install -m 0755 gums-service/src/main/resources/scripts/gums-setup-mysql-database $RPM_BUILD_ROOT%{_bindir}/
+install -m 0755 gums-service/src/main/resources/scripts/gums-add-mysql-admin $RPM_BUILD_ROOT%{_bindir}/
+install -m 0755 gums-service/src/main/resources/scripts/gums-create-config $RPM_BUILD_ROOT%{_bindir}/
 
 # Configuration files
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/%{dirname}
 install -m 0644 gums-client/src/main/config/*  $RPM_BUILD_ROOT%{_sysconfdir}/%{dirname}/
+install -m 0600 gums-service/src/main/config/gums.config $RPM_BUILD_ROOT%{_sysconfdir}/%{dirname}
+
+# Templates
+mkdir -p $RPM_BUILD_ROOT%{_noarchlib}/%{dirname}/sql
+mkdir -p $RPM_BUILD_ROOT%{_noarchlib}/%{dirname}/config
+install -m 0644 gums-service/src/main/resources/sql/{addAdmin,setupDatabase}.mysql $RPM_BUILD_ROOT%{_noarchlib}/%{dirname}/sql/
+install -m 0644 gums-service/src/main/resources/gums.config.template $RPM_BUILD_ROOT%{_noarchlib}/%{dirname}/config/
 
 # Log directory
 mkdir -p $RPM_BUILD_ROOT/var/log/%{dirname}
@@ -94,17 +213,27 @@ cat > $RPM_BUILD_ROOT/var/lib/osg/supported-vo-list << EOF
 EOF
 
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/{init.d,cron.d}
-mv $RPM_SOURCE_DIR/gums-client-cron.cron $RPM_BUILD_ROOT%{_sysconfdir}/cron.d/gums-client-cron
-mv $RPM_SOURCE_DIR/gums-client-cron.init $RPM_BUILD_ROOT%{_sysconfdir}/init.d/gums-client-cron
+mv %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/cron.d/gums-client-cron
+mv %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/init.d/gums-client-cron
 chmod +x $RPM_BUILD_ROOT%{_sysconfdir}/init.d/gums-client-cron
 
 %files
 %defattr(-,root,root,-)
-%{_noarchlib}/%{dirname}
+%dir %{_noarchlib}/%{dirname}
+%dir %{_noarchlib}/%{dirname}/endorsed
+%{_noarchlib}/%{dirname}/*.jar
+%{_noarchlib}/%{dirname}/endorsed/*.jar
 
 %files client
 %defattr(-,root,root,-)
-%{_bindir}/*
+%{_bindir}/gums
+%{_bindir}/gums-gridmapfile
+%{_bindir}/gums-host
+%{_bindir}/gums-host-cron
+%{_bindir}/gums-nagios
+%{_bindir}/gums-service
+%{_bindir}/gums-vogridmapfile
+%dir %{_sysconfdir}/%{dirname}
 %config(noreplace) %{_sysconfdir}/%{dirname}/gums-client.properties
 %config(noreplace) %{_sysconfdir}/%{dirname}/gums-nagios.conf
 %config(noreplace) %{_sysconfdir}/%{dirname}/log4j.properties
@@ -128,7 +257,22 @@ if [ "$1" -ge "1" ] ; then
     /sbin/service gums-client-cron condrestart >/dev/null 2>&1 || :
 fi
 
+%files service
+%defattr(-,root,root,-)
+%dir %{_sysconfdir}/%{dirname}
+%attr(0600,tomcat,tomcat) %config(noreplace) %{_sysconfdir}/%{dirname}/gums.config
+%attr(0750,tomcat,tomcat) %dir %{_var}/lib/tomcat5/webapps/gums/WEB-INF/config
+%{_var}/lib/tomcat5/webapps/gums
+%{_noarchlib}/%{dirname}/sql
+%{_noarchlib}/%{dirname}/config
+%{_bindir}/gums-add-mysql-admin
+%{_bindir}/gums-create-config
+%{_bindir}/gums-setup-mysql-database
+
 %changelog
+* Sat Oct 08 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.3.18.002-4
+- Add a minimal packaging of the service itself.
+
 * Mon Aug 22 2011 Matyas Selmeci <matyas@cs.wisc.edu> 1.3.18.002-3
 - Added init script for enabling/disabling gums-host-cron.
 
