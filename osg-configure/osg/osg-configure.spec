@@ -1,5 +1,5 @@
 %global name osg-configure
-%global version 0.5.9
+%global version 0.5.10
 %global release 1%{?dist}
 
 Summary: Package for configure-osg and associated scripts
@@ -190,6 +190,9 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/osg/config.d/15-managedfork.ini
 
 %changelog
+* Mon Oct 10 2011 Matyas Selmeci <matyas@cs.wisc.edu> 0.5.10-1
+- Added configuration of glite-ce-monitor
+
 * Mon Sep 26 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 0.5.8-1
 - Fixed a bug in RSV configuration of gridftp hosts
 
