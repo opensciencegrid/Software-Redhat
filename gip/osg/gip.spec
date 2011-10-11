@@ -1,7 +1,7 @@
 Summary: Generic Information Provider
 Name: gip
-Version: 1.3.0alpha3
-Release: 3%{?dist}
+Version: 1.3.0
+Release: 1%{?dist}
 License: TODO
 Group: Applications/Grid
 BuildArch: noarch
@@ -98,6 +98,9 @@ touch $RPM_BUILD_ROOT/%{_sysconfdir}/%{name}/remove-attributes.conf
 rm -rf %buildroot
 
 %changelog
+* Tue Oct 11 2011 Burt Holzman <burt@fnal.gov> - 1.3.0
+- Enable new config.ini reading
+
 * Thu Aug 04 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.3.0alpha3-2
 - Minor ownership issues found in testing
 
