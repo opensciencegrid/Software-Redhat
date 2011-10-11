@@ -13,7 +13,7 @@
 Name:		globus-gridftp-server
 %global _name %(tr - _ <<< %{name})
 Version:	6.1
-Release:	4%{?dist}
+Release:	5%{?dist}
 Summary:	Globus Toolkit - Globus GridFTP Server
 
 Group:		System Environment/Libraries
@@ -185,6 +185,11 @@ fi
 %defattr(-,root,root,-)
 
 %changelog
+* Tue Oct 11 2011 Doug Strain <dstrain@fnal.gov> - 6.1-5
+- Changes to sysconfig to 
+-   1) get rid of a warning if nothing exists in gridftp.conf.d
+-   2) Move the xrootd-dsi plugin stuff into the xrootd-dsi package.
+
 * Fri Sep 30 2011 Jeff Dost <jdost@ucsd.edu> - 6.1-4
 - Change sysconfig file to use correct globus_gridftp_mapping LCMAPS policy
 
