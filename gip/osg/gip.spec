@@ -1,20 +1,11 @@
 Summary: Generic Information Provider
 Name: gip
 Version: 1.3.0alpha3
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: TODO
 Group: Applications/Grid
 BuildArch: noarch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
-#Packager: VDT <vdt-support@opensciencegrid.org>
-#BuildRequires: 
-Requires: python
-#Requires:           initscripts
-#Requires(post):     chkconfig, /sbin/ldconfig
-#Requires(preun):    chkconfig
-#Requires(postun):   /sbin/ldconfig
-AutoReq: yes
-AutoProv: yes
 
 Source0: %{name}-%{version}.tgz
 
@@ -86,9 +77,9 @@ touch $RPM_BUILD_ROOT/%{_sysconfdir}/%{name}/remove-attributes.conf
 
 %files
 %defattr(-,root,root,-)
-%attr(755,-,-) %{_bindir}/*
-%attr(755,-,-) %{_libexecdir}/%{name}/osg-info-wrapper
-%attr(755,-,-) %{_libexecdir}/%{name}/providers/*
+%attr(755,root,root) %{_bindir}/*
+%attr(755,root,root) %{_libexecdir}/%{name}/osg-info-wrapper
+%attr(755,root,root) %{_libexecdir}/%{name}/providers/*
 %dir %{_libexecdir}/%{name}/plugins
 %dir %{_libexecdir}/%{name}/providers
 %{python_sitelib}/*
@@ -105,8 +96,6 @@ touch $RPM_BUILD_ROOT/%{_sysconfdir}/%{name}/remove-attributes.conf
 
 %clean
 rm -rf %buildroot
-
-#%define _unpackaged_files_terminate_build 1
 
 %changelog
 * Thu Aug 04 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.3.0alpha3-2
