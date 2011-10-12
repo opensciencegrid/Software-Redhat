@@ -1,6 +1,6 @@
 Summary: Generic Information Provider
 Name: gip
-Version: 1.3.0
+Version: 1.3.1
 Release: 1%{?dist}
 License: TODO
 Group: Applications/Grid
@@ -14,7 +14,7 @@ Source0: %{name}-%{version}.tgz
 The Open Science Grid (OSG) Generic Information Provider (GIP) is a core part of the OSG Information Infrastructure.
 The GIP is a grid information service that aggregates static and dynamic resource information for use with 
 LDAP-based information systems.  It produces information based on the GLUE schema.  This information
-then can be sent via external services to information collection servers such as
+then can be sent via external services to information collection servers such as ReSS and BDII.
 
 %prep
 %setup -q
@@ -98,7 +98,10 @@ touch $RPM_BUILD_ROOT/%{_sysconfdir}/%{name}/remove-attributes.conf
 rm -rf %buildroot
 
 %changelog
-* Tue Oct 11 2011 Burt Holzman <burt@fnal.gov> - 1.3.0
+* Wed Oct 12 2011 Burt Holzman <burt@fnal.gov> - 1.3.1-1
+- Don't error out if there's no config.ini -- bugfix
+
+* Tue Oct 11 2011 Burt Holzman <burt@fnal.gov> - 1.3.0-1
 - Enable new config.ini reading
 
 * Thu Aug 04 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.3.0alpha3-2
