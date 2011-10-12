@@ -1,6 +1,6 @@
 Name:           gridftp-hdfs
 Version:        0.5.0
-Release:        2
+Release:        3
 Summary:        HDFS DSI plugin for GridFTP
 
 Group:          System Environment/Daemons
@@ -80,12 +80,12 @@ fi
 
 %files
 %defattr(-,root,root,-)
-#%{_sbindir}/gridftp-hdfs-inetd
-#%{_bindir}/gridftp-hdfs-standalone
+%{_sbindir}/gridftp-hdfs-inetd
+%{_bindir}/gridftp-hdfs-standalone
 %{_libdir}/libglobus_gridftp_server_hdfs.so*
 #%{_datadir}/%{name}/%{name}-environment
 #%{_sysconfdir}/init.d/%{name}
-#%config(noreplace) %{_sysconfdir}/xinetd.d/%{name}
+%config(noreplace) %{_sysconfdir}/xinetd.d/%{name}
 %config(noreplace) %{_sysconfdir}/%{name}/gridftp-debug.conf
 %config(noreplace) %{_sysconfdir}/%{name}/gridftp-inetd.conf
 %config(noreplace) %{_sysconfdir}/%{name}/gridftp.conf
@@ -96,6 +96,10 @@ fi
 %config(noreplace) %{_sysconfdir}/logrotate.d/%{name}.logrotate
 
 %changelog
+* Wed Oct 12 2011 Jeff Dost <jdost@ucsd.edu> - 0.5.0-3
+- Restore disabled xinetd and gridftp-hdfs-standalone bits from 0.5.0-1.
+- Clean up unneeded lines in osg-gridftp.patch.
+
 * Fri Sep 30 2011 Jeff Dost <jdost@ucsd.edu> - 0.5.0-2
 - Add Doug's patch and mods to remove need for separate init scripts.
 - Add lines to gridftp.conf to correctly generate log files.
