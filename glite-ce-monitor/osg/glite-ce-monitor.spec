@@ -1,7 +1,7 @@
 Summary: The CE monitor service is a web application that publishes information about the Computing Element
 Name: glite-ce-monitor
 Version: 1.13.1
-Release: 13%{?dist}
+Release: 14%{?dist}
 License: Apache License 2.0
 Vendor: EMI
 Group: System Environment/Libraries
@@ -42,7 +42,6 @@ Requires: vo-client
 Source0: glite-ce-monitor-1.13.1-3.src.tar.gz
 Source1: build.xml
 Source2: web.xml
-#Source3: osg-cemon.conf
 Source4: glite-ce-info
 Patch0: osg-config.patch
 
@@ -90,19 +89,17 @@ module.version=1.13.1">.configuration.properties;
 
 %install
 rm -rf $RPM_BUILD_ROOT
- mkdir -p $RPM_BUILD_ROOT
- mkdir -p $RPM_BUILD_ROOT/etc/tomcat5/Catalina/localhost
- cp %{SOURCE2} $RPM_BUILD_ROOT
- ant install
- find $RPM_BUILD_ROOT -name '*.la' -exec rm -rf {} \;
- find $RPM_BUILD_ROOT -name '*.pc' -exec sed -i -e "s|$RPM_BUILD_ROOT||g" {} \;
- rm $RPM_BUILD_ROOT/web.xml 
- mkdir -p $RPM_BUILD_ROOT/var/lib/glite-ce-monitor
- mkdir -p $RPM_BUILD_ROOT/var/log/glite-ce-monitor
- #mkdir -p $RPM_BUILD_ROOT/etc/httpd/conf.d
- #install -m 644 %{SOURCE3} $RPM_BUILD_ROOT/etc/httpd/conf.d
- install -m 755 %{SOURCE4} $RPM_BUILD_ROOT/var/lib/glite-ce-monitor
- cp $RPM_BUILD_ROOT/etc/glite-ce-monitor/ce-monitor.xml $RPM_BUILD_ROOT/etc/tomcat5/Catalina/localhost
+mkdir -p $RPM_BUILD_ROOT
+mkdir -p $RPM_BUILD_ROOT/etc/tomcat5/Catalina/localhost
+cp %{SOURCE2} $RPM_BUILD_ROOT
+ant install
+find $RPM_BUILD_ROOT -name '*.la' -exec rm -rf {} \;
+find $RPM_BUILD_ROOT -name '*.pc' -exec sed -i -e "s|$RPM_BUILD_ROOT||g" {} \;
+rm $RPM_BUILD_ROOT/web.xml 
+mkdir -p $RPM_BUILD_ROOT/var/lib/glite-ce-monitor
+mkdir -p $RPM_BUILD_ROOT/var/log/glite-ce-monitor
+install -m 755 %{SOURCE4} $RPM_BUILD_ROOT/var/lib/glite-ce-monitor
+cp $RPM_BUILD_ROOT/etc/glite-ce-monitor/ce-monitor.xml $RPM_BUILD_ROOT/etc/tomcat5/Catalina/localhost
 
 
 %clean
@@ -140,10 +137,13 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,tomcat,tomcat)
 /var/lib/glite-ce-monitor
 %dir /var/log/glite-ce-monitor
-#%config(noreplace) /etc/httpd/conf.d/osg-cemon.conf
 %config(noreplace) /etc/tomcat5/Catalina/localhost/ce-monitor.xml
 
 %changelog
+* Fri Oct 14 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.13.1-14
+- Modified hostkey/hostcert default location in cemonitor-config.xml to match
+  other software.
+
 * Wed Oct 05 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.13.1-13
 - Modified hostkey/hostcert default location in cemonitor-config.xml to match
   our documentation.
