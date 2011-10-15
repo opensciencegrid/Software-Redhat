@@ -7,4 +7,10 @@ https://koji.hep.caltech.edu/koji/index
 - the original source rpm is copied from the cloudera repository:
 http://archive.cloudera.com/redhat/cdh/3b3/SRPMS/
 
-- OSG patches have been added
+- OSG patches have been added:
+  - Apache forrest has been added and patched such that it can be built without Java 5.
+  - HADOOP-6813.  See upstream ticket.
+  - HDFS-780.  See upstream ticket.
+  - A few FUSE memory leaks have been fixed.
+  - Bootstrapping the CLASSPATH and the JRE location has been made more reliable.
+
