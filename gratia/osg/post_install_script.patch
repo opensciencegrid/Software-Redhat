@@ -1,0 +1,191 @@
+Index: common/configuration/post-install.sh
+===================================================================
+--- common/configuration/post-install.sh	(revision 4473)
++++ common/configuration/post-install.sh	(working copy)
+@@ -3,16 +3,11 @@
+ # Create the mysql gratia summary tables, triggers and stored procedures
+ # Called automatically by the services.
+ #
+-script_location=${VDT_LOCATION}/tomcat/v55/gratia/
+ 
+ TMP=${TMPDIR:-/tmp}/post-install.sh.$$
+ trap "rm $TMP* 2>/dev/null" EXIT
+ 
+-if grep -e 'org\.hibernate\.dialect\.MySQLInnoDBDialect' \
+-   "${script_location}/hibernate.cfg.xml" \
+-   >/dev/null 2>&1; then
+-  is_innodb=1
+-fi
++is_innodb=1
+ 
+ function preprocess_proc() {
+     if [[ -z "$is_innodb" ]]; then
+@@ -26,6 +21,10 @@
+      fi
+ }
+ 
++dbhost=`grep service.mysql.url ~/projects/gratia/common/configuration/service-configuration.properties | tr ':' ' ' | tr '/' ' ' | awk '{print $3;}'`
++dbport=`grep service.mysql.url ~/projects/gratia/common/configuration/service-configuration.properties | tr ':' ' ' | tr '/' ' ' | awk '{print $4;}'`
++dbpasswd=`grep service.mysql.rootpassword | tr '=' ' ' | awk '{print $NF;}'`
++
+ # This would be so much easier if we could guarantee a "drop trigger if
+ # exists" syntax.
+ function prepareCountTrigger() {
+@@ -112,14 +111,14 @@
+   shift
+   case $action in
+       summary)
+-#        proc="${script_location}build-summary-tables.sql"
++#        proc="/usr/share/gratia/sqlbuild-summary-tables.sql"
+         set -- "$@" summary-view
+         # build-summary-tables.sql removed.
+         echo "argument \"summary\" obsolete -- ignored" 1>&2
+         continue
+         ;;
+       stored)
+-        #proc="${script_location}build-stored-procedures.sql"
++        #proc="/usr/share/gratia/sqlbuild-stored-procedures.sql"
+         set -- "$@" stored-extra-3 stored-1 stored-2 stored-3 stored-4 stored-5
+         if [[ `hostname -f` == *.fnal.gov ]]; then
+           set -- "$@" proc-edit-permission
+@@ -128,89 +127,88 @@
+         ;;
+       stored-1)
+         # Create trace table and common functions for the reports stored prcedures        
+-        proc="${script_location}reportsGeneral.sql"
++        proc="/usr/share/gratia/sqlreportsGeneral.sql"
+         ;;
+       stored-2)
+         # Reports stored procedure
+-        proc="${script_location}reports.sql"
++        proc="/usr/share/gratia/sqlreports.sql"
+         ;;
+       stored-3)
+         # Ranked Reports stored procedure
+-        proc="${script_location}reportsRanked.sql"
++        proc="/usr/share/gratia/sqlreportsRanked.sql"
+         ;;
+       stored-4)
+         # PSACCT Reports stored procedure
+-        proc="${script_location}reportsPSacct.sql"
++        proc="/usr/share/gratia/sqlreportsPSacct.sql"
+         ;;
+       stored-5)
+         # PSACCT Reports stored procedure
+-        proc="${script_location}build-osgdaily-stored-procedures.sql"
++        proc="/usr/share/gratia/sqlbuild-osgdaily-stored-procedures.sql"
+         ;;
+       stored-extra-1)
+         # Hand-tweaked procedure (temporary)
+-        #proc="${script_location}WeeklyUsageByVORanked.sql"
++        #proc="/usr/share/gratia/sqlWeeklyUsageByVORanked.sql"
+         # WeeklyUsageByVORanked.sql removed.
+         echo "stored procedure \"WeeklyUsageByVORanked.sql\" obsolete -- ignored" 1>&2
+         continue
+         ;;
+       stored-extra-2)
+         # Hand-tweaked procedure (temporary)
+-        #proc="${script_location}SiteUsageCountByVO.sql"
++        #proc="/usr/share/gratia/sqlSiteUsageCountByVO.sql"
+         # SiteUsageCountByVO.sql removed.
+         echo "stored procedure \"SiteUsageCountByVO.sql\" obsolete -- ignored" 1>&2
+         continue
+         ;;
+       stored-extra-3)
+         # Hand-tweaked procedure (temporary)
+-        proc="${script_location}dCacheSimple.sql"
++        proc="/usr/share/gratia/sqldCacheSimple.sql"
+         ;;
+       static-reports)
+         # For CSV static reports
+-        #proc="${script_location}static-report-procedures.sql"
++        #proc="/usr/share/gratia/sqlstatic-report-procedures.sql"
+         # static-report-procedures.sql removed.
+         echo "stored procedure \"static-report-procedures.sql\" obsolete -- ignored" 1>&2
+         continue
+         ;;
+       trigger)
+-        proc="${script_location}build-trigger.sql"
++        proc="/usr/share/gratia/sqlbuild-trigger.sql"
+         set -- "$@" summary-procedures services-summary-procedures tablestatistics-summary-procedures backlogstatistics-summary-procedures
+         ;;
+       summary-procedures)
+-        proc="${script_location}summary-procedures.sql"
++        proc="/usr/share/gratia/sqlsummary-procedures.sql"
+         ;;
+       services-summary-procedures)
+-        proc="${script_location}services-summary-procedures.sql"
++        proc="/usr/share/gratia/sqlservices-summary-procedures.sql"
+         ;;
+       tablestatistics-summary-procedures)
+-        proc="${script_location}tablestatistics-summary-procedures.sql"
++        proc="/usr/share/gratia/sqltablestatistics-summary-procedures.sql"
+         ;;
+       backlogstatistics-summary-procedures)
+-        proc="${script_location}backlogstatistics-summary-procedures.sql"
++        proc="/usr/share/gratia/sqlbacklogstatistics-summary-procedures.sql"
+         ;;
+       ps)
+-#        proc="${script_location}build-ps-node-summary-table.sql"
++#        proc="/usr/share/gratia/sqlbuild-ps-node-summary-table.sql"
+         echo "argument \"ps\" obsolete -- ignored" 1>&2
+         continue;
+         ;;
+       summary[-_]view)
+-        proc="${script_location}build-summary-view.sql"
++        proc="/usr/share/gratia/sqlbuild-summary-view.sql"
+         ;;
+       countTrigger*)
+         prepareCountTrigger $action
+         ;;
+       proc-edit-permission)
+-        proc="${script_location}proc-edit-permission.sql"
++        proc="/usr/share/gratia/sqlproc-edit-permission.sql"
+         ;;
+       *)
+         echo "Unrecognized action \"$action\"" 1>&2
+         exit 1
+   esac
+ 
+-  CMD_PREAMBLE
+   if [[ -r "${proc}" ]]; then
+     printf "post-install.sh: loading $proc ... "
+     preprocess_proc
+-   cat ${proc} | CMD_PREFIX ${VDT_LOCATION}/mysql5/bin/mysql -B --unbuffered --user=root --password=ROOTPASS --host=localhost --port=PORT gratia CMD_SUFFIX
++   cat ${proc} | mysql -B --unbuffered --user=root --password=$dbpasswd --host=$dbhost --port=$dbport gratia
+     status=$?
+   else
+     echo "$proc is not readable!" 1>&2
+Index: common/configuration/service-configuration.properties
+===================================================================
+--- common/configuration/service-configuration.properties	(revision 4473)
++++ common/configuration/service-configuration.properties	(working copy)
+@@ -3,8 +3,8 @@
+ ########################################################################
+ [gratia]
+ # These are filled in automatically
+-gratia.reporting.version=1.0.0
+-gratia.services.version=1.0.0
++gratia.reporting.version=@GRATIA_VERSION@
++gratia.services.version=@GRATIA_VERSION@
+ #
+ # ##########  Safe mode
+ # Start collector in safe mode -- service ignoring uploads, no
+@@ -32,12 +32,16 @@
+ service.rmi.rmilookup=rmi://localhost:17000
+ service.rmi.service=/gratia
+ #
+-# ##########  DB access parameters
++# ##########  DB access parameters for "regular" access
+ #
+ service.mysql.driver=com.mysql.jdbc.Driver
+ service.mysql.url=jdbc:mysql://DBHOSTNAME:DBPORT/gratia
+ service.mysql.user=DBUSER
+ service.mysql.password=DBPASSWORD
++
++# DB access parameters for upgrading/changing the schema
++service.mysql.rootpassword=DBROOTPASSWORD
++
+ #
+ # ##########  DB cleanup ##########
+ #

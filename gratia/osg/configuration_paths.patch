@@ -1,0 +1,84 @@
+Index: common/gratia-util/net/sf/gratia/util/Logging.java
+===================================================================
+--- common/gratia-util/net/sf/gratia/util/Logging.java	(revision 4473)
++++ common/gratia-util/net/sf/gratia/util/Logging.java	(working copy)
+@@ -28,7 +28,7 @@
+         screenFormat.setTimeZone(TimeZone.getDefault());
+         Properties p = net.sf.gratia.util.Configuration.getProperties();
+ 
+-        String path = p.getProperty("service." + logDomain + ".logfile" , "/logs/gratia-" + logDomain + ".log");
++        String path = p.getProperty("service." + logDomain + ".logfile" , "/gratia-" + logDomain + ".log");
+         String maxSize = p.getProperty("service." + logDomain + ".maxlog" , "10000000");
+         String useConsole = p.getProperty("service." + logDomain + ".console", "0");
+         String level = p.getProperty("service." + logDomain + ".level" , "INFO");
+@@ -63,6 +63,7 @@
+                 // Use log4j
+ 
+                 // Fix path from old style;
++/*
+                 if (path.contains("%g")) {
+                     String newPath = System.getProperty("catalina.home") + (path.startsWith("/")?"":"/") + path;
+                     newPath = newPath.replaceFirst("-?%g", "");
+@@ -78,7 +79,8 @@
+                     logToScreen("Use log4j-style path: "+newPath);
+                     path = newPath;
+                 }
+-
++*/
++		path = "/var/log/gratia/" + path;
+                 Layout layout =
+                     new PatternLayout("%d %c{2}(%t) [%p]: %m%n");
+ 
+@@ -129,7 +131,7 @@
+                 logToScreen("using legacy logger path");
+             
+                 try {
+-                    FileHandler fh = new FileHandler(Configuration.getCatalinaHome() + path, limit, numLogFiles);
++                    FileHandler fh = new FileHandler("/var/log/gratia" + path, limit, numLogFiles);
+                     fh.setFormatter(new SimpleFormatter());
+                     // Add to logger
+                     oldLogger = Logger.getLogger("gratia");
+@@ -138,7 +140,7 @@
+                 }
+                 catch (Exception e) {
+                     logToScreen("caught exception initializing logging to " +
+-                                Configuration.getCatalinaHome() + path + ": " + e);
++                                "/var/log/gratia" + path + ": " + e);
+                     logToScreen("activating Console logging for this stream");
+                     useConsole = "1";
+                 }
+Index: common/gratia-util/net/sf/gratia/util/Configuration.java
+===================================================================
+--- common/gratia-util/net/sf/gratia/util/Configuration.java	(revision 4473)
++++ common/gratia-util/net/sf/gratia/util/Configuration.java	(working copy)
+@@ -9,28 +9,15 @@
+ 
+ public class Configuration {
+ 
+-    public static String getCatalinaHome()
+-    {
+-        return System.getProperty("catalina.home");
+-    }
+-
+     public static String getConfigurationPath()
+     {
+-        String path = System.getProperty("catalina.home");
+-        if (path == null) {
+-           path = ".";
+-        }
+-        path = path + "/gratia";
++        String path = "/etc/gratia/collector";
+         return path;
+     }
+ 
+     public static String getHibernateConfigurationPath()
+     {
+-        String path = System.getProperty("catalina.home");
+-        if (path == null) {
+-           path = ".";
+-        }
+-        path = path + "/gratia/hibernate";
++        String path = "/usr/share/gratia/hibernate";
+         return path;
+     }
+ 
