@@ -1,6 +1,6 @@
 Name:           glideinwms-vofrontend
 Version:        2.5.2
-Release:        3
+Release:        5
 Summary:        The VOFrontend for glideinWMS submission host
 
 Group:          System Environment/Daemons
@@ -249,6 +249,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Sep 06 2011 Burt Holzman <burt@fnal.gov> - 2.5.2-5
+- Fix reference to upstream tarball
+
+* Tue Sep 06 2011 Burt Holzman <burt@fnal.gov> - 2.5.2-4
+- Add RPM to version number in ClassAd
+
 * Tue Sep 06 2011 Burt Holzman <burt@fnal.gov> - 2.5.2-3
 - Fixed glideinWMS versioning advertisement
 

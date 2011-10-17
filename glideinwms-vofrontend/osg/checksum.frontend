@@ -1,5 +1,5 @@
 ###################################################################
-# GLIDEINWMS_VERSION v2.5.2
+# GLIDEINWMS_VERSION v2.5.2-RPM
 ###################################################################
 edf9fc6d3dc2821603910abb7f521f9b  ./frontend/glideinFrontendPlugins.py
 01380cbb07b77119f5711de3e998ac7c  ./frontend/glideinFrontend.py
