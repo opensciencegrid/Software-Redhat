@@ -1,6 +1,6 @@
 
 Name:      rsv-core
-Version:   3.5.8
+Version:   3.5.9
 Release:   1%{?dist}
 Summary:   RSV Core Infrastructure
 
@@ -15,6 +15,9 @@ BuildArch: noarch
 
 Requires: /usr/bin/grid-proxy-info
 Requires: /usr/bin/globus-job-run
+
+# We use shar files for globus-job-run
+Requires: sharutils
 
 Requires(post): chkconfig
 Requires(preun): chkconfig
@@ -116,6 +119,9 @@ fi
 
 
 %changelog
+* Thu Oct 20 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.5.9-1
+- Re-implemented globus-job-run submission (as a backup for Condor-G)
+
 * Wed Oct 05 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.5.3-1
 - rsv-control wrapper now uses system python
 
