@@ -56,7 +56,7 @@
 
 Name: %{hadoop_name}-%{apache_branch}
 Version: %{cloudera_version}
-Release: 15
+Release: 16
 Summary: Hadoop is a software platform for processing vast amounts of data
 License: Apache License v2.0
 URL: http://hadoop.apache.org/core/
@@ -338,11 +338,11 @@ fi
 %post
 
 # Move away the previous OSG Hadoop configuration directories.
-if [ -d /etc/hadoop ]; then
+if [ -d /etc/hadoop ] && [ ! -h /etc/hadoop ]; then
   echo "Moving previous Hadoop conf directory to /etc/hadoop-0.19"
   mv /etc/hadoop /etc/hadoop-0.19
 fi
-if [ -d /var/log/hadoop ]; then
+if [ -d /var/log/hadoop ] && [ ! -h /var/log/hadoop ]; then
   echo "Moving previous Hadoop logfiles into /var/log/hadoop-0.19"
   echo "Please review and delete"
   mv /var/log/hadoop /var/log/hadoop-0.19
@@ -496,6 +496,9 @@ fi
 %endif
 
 %changelog
+* Thu Oct 20 2011 Jeff Dost <jdost@ucsd.edu> 0.20.2+737-16
+- Ensure 0.19 backups are created only if previous installation was 0.19.
+
 * Thu Oct 06 2011 Jeff Dost <jdost@ucsd.edu> 0.20.2+737-15
 - Patch hadoop-fuse-dfs to follow symlinks when finding libjvm.so.
 
