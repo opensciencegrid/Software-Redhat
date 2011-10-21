@@ -56,7 +56,7 @@
 
 Name: %{hadoop_name}-%{apache_branch}
 Version: %{cloudera_version}
-Release: 16
+Release: 17
 Summary: Hadoop is a software platform for processing vast amounts of data
 License: Apache License v2.0
 URL: http://hadoop.apache.org/core/
@@ -364,7 +364,8 @@ if [ "$1" = 2 ]; then
 
   # Change the ownership of old logs so that we don't fail rotation on next startup
   find /var/log/hadoop-0.20/ | egrep 'jobtracker|tasktracker|userlogs|history' | xargs --no-run-if-empty chown mapred
-  find /var/log/hadoop-0.20/ | egrep 'namenode|datanode' | xargs --no-run-if-empty chown hdfs
+  # Commented out for OSG to prevent chown on log files from hadoop user to hdfs
+  #find /var/log/hadoop-0.20/ | egrep 'namenode|datanode' | xargs --no-run-if-empty chown hdfs
 
   # We don't want to do this recursively since we may be reinstalling, in which case
   # users have their own cache/<username> directories which shouldn't be stolen
@@ -496,6 +497,10 @@ fi
 %endif
 
 %changelog
+* Fri Oct 21 2011 Jeff Dost <jdost@ucsd.edu> 0.20.2+737-17
+- Prevent chown on log files from hadoop user to hdfs if 0.20 already
+  installed.
+
 * Thu Oct 20 2011 Jeff Dost <jdost@ucsd.edu> 0.20.2+737-16
 - Ensure 0.19 backups are created only if previous installation was 0.19.
 
