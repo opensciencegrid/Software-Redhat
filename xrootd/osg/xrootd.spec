@@ -11,7 +11,7 @@
 Name:      xrootd
 Epoch:     1
 Version:   3.1.0
-Release:   0.5.rc3%{?dist}%{?_with_xrootd_user:.xu}
+Release:   10%{?dist}%{?_with_xrootd_user:.xu}
 Summary:   An eXtended Root Daemon (xrootd)
 Group:     System Environment/Daemons
 License:   Stanford (modified BSD with advert clause)
@@ -130,7 +130,7 @@ Headers for compiling against xrootd-libs
 cd %{name}
 mkdir build
 cd build
-cmake -DCMAKE_INSTALL_PREFIX=/usr ../
+cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=RelWithDebInfo ../
 make VERBOSE=1%{?_smp_mflags}
 
 #-------------------------------------------------------------------------------
@@ -270,6 +270,7 @@ exit 0
 %{_includedir}/%{name}/XrdVersion.hh
 %{_includedir}/%{name}/XrdSec
 %{_includedir}/%{name}/XrdSecsss
+%{_includedir}/%{name}/XrdSecgsi
 %{_includedir}/%{name}/XrdCrypto
 %{_includedir}/%{name}/XrdSut
 %{_includedir}/%{name}/XrdNet
@@ -377,8 +378,8 @@ exit 0
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
-* Tue Oct 05 2011 Lukasz Janyst <ljanyst@cern.ch> 3.1.0-0.rc1
-- bump the version to 3.1.0-rc1
+* Fri Oct 21 2011 Lukasz Janyst <ljanyst@cern.ch> 3.1.0-1
+- bump the version to 3.1.0
 
 * Tue Apr 11 2011 Lukasz Janyst <ljanyst@cern.ch> 3.0.3-1
 - the first RPM release - version 3.0.3
