@@ -1,5 +1,5 @@
 %global name osg-configure
-%global version 0.5.10
+%global version 0.6.1
 %global release 1%{?dist}
 
 Summary: Package for configure-osg and associated scripts
@@ -190,6 +190,13 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/osg/config.d/15-managedfork.ini
 
 %changelog
+* Thu Oct 20 2011 Matyas Selmeci <matyas@cs.wisc.edu> 0.6.1-1
+- Added bugfixes dealing with managed fork configuration
+
+* Thu Oct 20 2011 Matyas Selmeci <matyas@cs.wisc.edu> 0.6.0-1
+- Added configuration of globus job manager for managed fork 
+- Fixed unit tests for RSV
+
 * Mon Oct 10 2011 Matyas Selmeci <matyas@cs.wisc.edu> 0.5.10-1
 - Added configuration of glite-ce-monitor
 
