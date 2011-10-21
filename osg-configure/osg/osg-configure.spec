@@ -1,5 +1,5 @@
 %global name osg-configure
-%global version 0.6.1
+%global version 0.6.2
 %global release 1%{?dist}
 
 Summary: Package for configure-osg and associated scripts
@@ -190,6 +190,9 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/osg/config.d/15-managedfork.ini
 
 %changelog
+* Fri Oct 21 2011 Matyas Selmeci <matyas@cs.wisc.edu> 0.6.2-1
+- Added support for accept_limited in all job managers
+
 * Thu Oct 20 2011 Matyas Selmeci <matyas@cs.wisc.edu> 0.6.1-1
 - Added bugfixes dealing with managed fork configuration
 
