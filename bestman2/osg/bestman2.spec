@@ -1,6 +1,6 @@
 Name:           bestman2
 Version:        2.1.3
-Release:        2full%{?dist}
+Release:        1%{?dist}
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -164,8 +164,7 @@ export GLOBUS_LOCATION
 
 pushd setup
 ./configure --with-srm-home=$SRM_HOME \
-    --with-replica-storage-path=/var/run/bestman2/cache
-    --with-replica-storage-size=20000 
+    --enable-gateway-mode \
     --enable-gums \
     --enable-sudofsmng \
     --with-java-home=/usr/java/latest \
