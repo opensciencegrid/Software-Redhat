@@ -228,5 +228,3 @@ A few config file tweaks discovered during testing of lcmaps.
 
 * Mon Feb 21 2011 Dennis van Dok <dennisvd@nikhef.nl> 
 - Initial build.
-
-
