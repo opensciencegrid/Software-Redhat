@@ -1,7 +1,7 @@
 Summary: Grid (X.509) and VOMS credentials to local account mapping service
 Name: lcmaps
 Version: 1.4.28
-Release: 14%{?dist}
+Release: 15%{?dist}
 Vendor: Nikhef
 License: ASL 2.0
 Group: System Environment/Libraries
@@ -10,6 +10,7 @@ Source0: http://software.nikhef.nl/security/lcmaps/%{name}-%{version}.tar.gz
 Source1: lcmaps.db
 Patch0: makefile_r15293.patch
 Patch1: fill_x509.patch
+Patch2: generic_attributes_doublefree.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 BuildRequires: globus-core%{?_isa}
@@ -93,6 +94,7 @@ This package contains the development libraries.
 %setup -q
 %patch0 -p0
 %patch1 -p0
+%patch2 -p0
 
 %build
 ./bootstrap
@@ -158,6 +160,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/modules/*.so
 
 %changelog
+* Sun Oct 23 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.4.28-15
+- Do not crash when a VOMS server uses generic attributes.
+
 * Fri Sep 30 2011 Alain Roy <roy@cs.wisc.edu> - 1.4.28-14
 - Fixed minor typo in spelling of sazclient.
 
