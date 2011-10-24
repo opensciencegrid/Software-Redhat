@@ -1,0 +1,225 @@
+--- trunk/lcmaps/src/grid_credential_handling/gsi_handling/lcmaps_voms_attributes.c	2010/12/23 13:35:40	11815
++++ trunk/lcmaps/src/grid_credential_handling/gsi_handling/lcmaps_voms_attributes.c	2011/04/14 07:15:08	15240
+@@ -91,10 +91,10 @@
+                                           char ***,
+                                           int *, lcmaps_vomsdata_t **);
+ */
+-static int get_attributes(struct voms *vo, 
+-                          struct vomsdata *vd, 
+-                          lcmaps_voms_generic_attr_t **attr_list, 
+-                          int *nattrs);
++static int lcmaps_get_attributes(struct voms *vo,
++                                 struct vomsdata *vd,
++                                 lcmaps_voms_generic_attr_t **attr_list,
++                                 int *nattrs);
+ void lcmaps_print_stack_of_x509_to_string(STACK_OF(X509) * px509_chain,
+                                           char *output_file);
+ void lcmaps_print_x509_to_string(X509 * px509_cert, char *output_file);
+@@ -325,75 +325,93 @@
+  *      0: success (notice, the attribute list can still be empty)
+  *      1: failure (could not read certificate attributes)
+  **************************************************************************/
+-static int get_attributes(struct voms *vo, struct vomsdata *vd,
+-                          lcmaps_voms_generic_attr_t **attr_list, int *nattrs)
++static int lcmaps_get_attributes(struct voms *vo, struct vomsdata *vd,
++                                 lcmaps_voms_generic_attr_t **attr_list, int *nattrs)
+ {
++    int handle, attrSrcNum;
++    int errNo = 0;
++    int i, j, k;
++    /* struct attribute *tmp_list; */
++    struct attribute voms_ga;
+ 
+-  int handle, attrSrcNum;
+-  int errNo = 0;
+-  int i, j, k;
+-  struct attribute *tmp_list;
+-
+-  char *logstr = "\t  get_attributes()";
+ 
+-  attrSrcNum = VOMS_GetAttributeSourcesNumber(vo, vd, &errNo);
+-  if (errNo != 0) {
+-    lcmaps_log(0, "%s Error: VOMS_GetAttributeSourcesNumber(), %s",
+-	       logstr, retmsg[errNo]);
+-    return 1;
+-  }
+-  for (i = 0, *nattrs = 0; i < attrSrcNum; i++) {
+-    handle = VOMS_GetAttributeSourceHandle(vo, i, vd, &errNo);
++    /* Could be the amount of vomsdata_t sources for Generic Attributes - need to check semantics */
++    attrSrcNum = VOMS_GetAttributeSourcesNumber(vo, vd, &errNo);
+     if (errNo != 0) {
+-      lcmaps_log(0, "%s Error: VOMS_AttributeSourceHandle(), %s",
+-		 logstr, retmsg[errNo]);
+-      return 1;
+-    }
+-    *nattrs += VOMS_GetAttributesNumber(vo, handle, vd, &errNo);
+-  }
+-
+-  lcmaps_log_debug(3, "%s: found %d generic attributes. \n", logstr, *nattrs);
+-
+-  if ((tmp_list =
+-       (struct attribute *) calloc(*nattrs,
+-				   sizeof(struct attribute))) == NULL) {
+-    lcmaps_log(0, "%s Error: Could not allocate more memory \n", logstr);
+-    return 1;
+-  }
++        lcmaps_log(1, "%s Error: VOMS_GetAttributeSourcesNumber(), %s", __func__, retmsg[errNo]);
++        return 1;
++    }
++
++    /* Count the list of (struct attribute)'s which each hold one Generic Attribute */
++    for (i = 0, *nattrs = 0; i < attrSrcNum; i++) {
++        handle = VOMS_GetAttributeSourceHandle(vo, i, vd, &errNo);
++        if (errNo != 0) {
++            lcmaps_log(1, "%s Error: VOMS_AttributeSourceHandle(), %s", __func__, retmsg[errNo]);
++            *nattrs = 0;
++            return 1;
++        }
++        *nattrs += VOMS_GetAttributesNumber(vo, handle, vd, &errNo);
++    }
++    lcmaps_log_debug(3, "%s: found %d generic attributes. \n", __func__, *nattrs);
++
++    /* Allocating lcmaps_voms_generic_attr_t's */
++    *attr_list = (lcmaps_voms_generic_attr_t *) calloc (*nattrs, sizeof(lcmaps_voms_generic_attr_t));
++    if ((*attr_list == NULL) || (errno != 0)) {
++        lcmaps_log(1, "%s Error: Could not allocate more memory \n", __func__);
++        return 1;
++    }
++
++    /* Loop the Generic Attributes in VOMS and copy them to LCMAPS - We want to own that memory */
++    for (i = 0, k = 0; i < attrSrcNum; i++) {
++        /* Select a VOMS source object */
++        handle = VOMS_GetAttributeSourceHandle(vo, i, vd, &errNo);
++        if (errNo) {
++            lcmaps_log(1, "%s Error: VOMS_GetAttributeSourceHandle, %s \n", __func__, retmsg[errNo]);
++            goto lcmaps_get_attributes_cleanup;
++        }
++
++        /* Loop the VOMS source object for its VOMS Generic Attributes */
++        for (j = 0; j < VOMS_GetAttributesNumber(vo, handle, vd, &errNo); j++) {
++            if (errNo) {
++                lcmaps_log(1, "%s Error: VOMS_GetAttributesNumber, %s \n", __func__, retmsg[errNo]);
++                goto lcmaps_get_attributes_cleanup;
++            }
++            /* VOMS_GetAttribute(vo, handle, j, &(tmp_list[k++]), vd, &errNo); */
++            VOMS_GetAttribute(vo, handle, j, &voms_ga, vd, &errNo);
++            if (errNo) {
++                lcmaps_log(1, "%s Error: VOMS_GetAttribute, %s \n", __func__, retmsg[errNo]);
++                goto lcmaps_get_attributes_cleanup;
++            }
++
++            /* Copying the VOMS Generic Attributes */
++            if (voms_ga.name)
++                (*attr_list)[k].name      = strdup(voms_ga.name);
++            else
++                (*attr_list)[k].name      = NULL;
++            if (voms_ga.value)
++                (*attr_list)[k].value     = strdup(voms_ga.value);
++            else
++                (*attr_list)[k].value     = NULL;
++
++            if (voms_ga.qualifier)
++                (*attr_list)[k].qualifier = strdup(voms_ga.qualifier);
++            else
++                (*attr_list)[k].qualifier = NULL;
+ 
+-  for (i = 0, k = 0; i < attrSrcNum; i++) {
+-    handle = VOMS_GetAttributeSourceHandle(vo, i, vd, &errNo);
+-    if (errNo) {
+-      lcmaps_log(0, "%s Error: VOMS_GetAttributeSourceHandle, %s \n",
+-		 logstr, retmsg[errNo]);
+-      free(tmp_list);
+-      tmp_list = NULL;
+-      return 1;
+-    }
+-
+-    for (j = 0; j < VOMS_GetAttributesNumber(vo, handle, vd, &errNo); j++) {
+-      if (errNo) {
+-	lcmaps_log(0, "%s Error: VOMS_GetAttributesNumber, %s \n",
+-		   logstr, retmsg[errNo]);
+-	free(tmp_list);
+-	tmp_list = NULL;
+-	return 1;
+-      }
+-      VOMS_GetAttribute(vo, handle, j, &(tmp_list[k++]), vd, &errNo);
+-      if (errNo) {
+-	lcmaps_log(0, "%s Error: VOMS_GetAttribute, %s \n", logstr,
+-		   retmsg[errNo]);
+-	free(tmp_list);
+-	tmp_list = NULL;
+-	return 1;
+-      }
+-    }
+-  }
+-  // XXX should the 'struct lcmaps_voms_generic_attr_t' differ from the voms_apic.h 
+-  // ' struct attribute' some time in future. Here's the place to bring them together.
+-  // (i.e. you'll need to replace the cast by something more appropriate)
+-  *attr_list = (lcmaps_voms_generic_attr_t *) tmp_list;
+-  return 0;
++            k++;
++        }
++    }
++    return 0;
++
++lcmaps_get_attributes_cleanup:
++    for (i = 0; (i < *nattrs) && *attr_list; i++) {
++        free((*attr_list)[i].name);
++        free((*attr_list)[i].value);
++    }
++    free(*attr_list);
++    *attr_list = NULL;
++    *nattrs = 0;
++    return 1;
+ }
+ 
+ 
+@@ -555,7 +573,7 @@
+                      (vomspatch >= 0) )
+                 {
+                 
+-                    if (get_attributes(vo, vd, &tmp_lcmaps_voms[k].attr_list, &nattrs) == 0)
++                    if (lcmaps_get_attributes(vo, vd, &tmp_lcmaps_voms[k].attr_list, &nattrs) == 0)
+                     {
+                         lcmaps_log_debug(2, "%s: extracted '%d' generic voms attributes \n", logstr, nattrs);
+                         tmp_lcmaps_voms[k].nattr = nattrs;
+@@ -566,7 +584,7 @@
+                     }
+                 }
+ #else
+-                if (get_attributes(vo, vd, &tmp_lcmaps_voms[k].attr_list, &nattrs) == 0)
++                if (lcmaps_get_attributes(vo, vd, &tmp_lcmaps_voms[k].attr_list, &nattrs) == 0)
+                 {
+                     lcmaps_log_debug(2, "%s: extracted '%d' generic voms attributes \n", logstr, nattrs);
+                     tmp_lcmaps_voms[k].nattr = nattrs;
+@@ -895,24 +913,23 @@
+                 lcmaps_log_debug(3,
+                             "%s:lcmaps_vomsdata->voms[%d].attr_list[%d].name : %s\n",
+                             logstr, i+1, j+1, 
+-                            lcmaps_vomsdata->voms[i].attr_list[j].name);
++                            lcmaps_vomsdata->voms[i].attr_list[j].name ? lcmaps_vomsdata->voms[i].attr_list[j].name : "(n/a)");
+                 lcmaps_log_debug(3,
+                             "%s:lcmaps_vomsdata->voms[%d].attr_list[%d].value : %s\n",
+                             logstr, i+1, j+1, 
+-                            lcmaps_vomsdata->voms[i].attr_list[j].value);
++                            lcmaps_vomsdata->voms[i].attr_list[j].value ? lcmaps_vomsdata->voms[i].attr_list[j].value : "(n/a)");
+                 lcmaps_log_debug(3,
+                             "%s:lcmaps_vomsdata->voms[%d].attr_list[%d].qualifier : %s\n",
+                             logstr, i+1, j+1, 
+-                            lcmaps_vomsdata->voms[i].attr_list[j].qualifier);
++                            lcmaps_vomsdata->voms[i].attr_list[j].qualifier ? lcmaps_vomsdata->voms[i].attr_list[j].qualifier : "(n/a)");
+             }
+-            
+         }
+         if(lcmaps_vomsdata->workvo) 
+-        lcmaps_log_debug(3, "%s: lcmaps_vomsdata->workvo                    : %s\n",
+-                   logstr, lcmaps_vomsdata->workvo);
++            lcmaps_log_debug(3, "%s: lcmaps_vomsdata->workvo                    : %s\n",
++                               logstr, lcmaps_vomsdata->workvo);
+         if(lcmaps_vomsdata->extra_data)
+-        lcmaps_log_debug(3, "%s: lcmaps_vomsdata->extra_data                : %s\n",
+-                   logstr, lcmaps_vomsdata->extra_data);
++            lcmaps_log_debug(3, "%s: lcmaps_vomsdata->extra_data                : %s\n",
++                               logstr, lcmaps_vomsdata->extra_data);
+     }
+     else {
+         lcmaps_log_debug(3, "%s: No LCMAPS vomsdata found\n");

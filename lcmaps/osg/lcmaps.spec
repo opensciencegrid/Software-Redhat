@@ -1,7 +1,7 @@
 Summary: Grid (X.509) and VOMS credentials to local account mapping service
 Name: lcmaps
 Version: 1.4.28
-Release: 15%{?dist}
+Release: 16%{?dist}
 Vendor: Nikhef
 License: ASL 2.0
 Group: System Environment/Libraries
@@ -10,7 +10,8 @@ Source0: http://software.nikhef.nl/security/lcmaps/%{name}-%{version}.tar.gz
 Source1: lcmaps.db
 Patch0: makefile_r15293.patch
 Patch1: fill_x509.patch
-Patch2: generic_attributes_doublefree.patch
+#source of patch2: wget --no-check-certificate -Ogeneric_attributes_vomsdata.patch "https://sikkel.nikhef.nl/cgi-bin/viewvc.cgi/mwsec/trunk/lcmaps/src/grid_credential_handling/gsi_handling/lcmaps_voms_attributes.c?view=patch&r1=11815&r2=15240&pathrev=15240"
+Patch2: generic_attributes_vomsdata.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 BuildRequires: globus-core%{?_isa}
@@ -94,7 +95,7 @@ This package contains the development libraries.
 %setup -q
 %patch0 -p0
 %patch1 -p0
-%patch2 -p0
+%patch2 -p2
 
 %build
 ./bootstrap
@@ -160,6 +161,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/modules/*.so
 
 %changelog
+* Mon Oct 24 2011 Dave Dykstra <dwd@drdykstra.us> - 1.4.28-16.osg
+- Take patch directly from Nikhef's lcmaps-1.4.30 instead.
+
 * Sun Oct 23 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.4.28-15
 - Do not crash when a VOMS server uses generic attributes.
 
