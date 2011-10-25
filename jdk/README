@@ -1,5 +1,5 @@
 This package was created by running rpm-ripper from the osg-build-0.0.22
-package on jdk-1.6.0_26-fcs.i586.rpm and jdk-1.6.0_26-fcs.x86_64.rpm from
+package on jdk-6u29-linux-amd64.rpm and jdk-6u29-linux-i586.rpm from
 Oracle.  I removed the ExclusiveArch lines from the spec files and instead
 wrapped the 32-bit spec file in %ifarch i386/%endif, and wrapped the 64-bit
 spec file in %ifarch x86_64/%endif, and catted them together.

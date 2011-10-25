@@ -1,7 +1,7 @@
 %define origin          sun
 %define priority        1603
 %define javaver         1.6.0
-%define buildver        26
+%define buildver        29
 %define upstreamrel     fcs
 
 %define name            java-%{javaver}-%{origin}-compat
