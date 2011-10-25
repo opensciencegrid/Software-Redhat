@@ -1,7 +1,7 @@
 
 Name:      rsv
 Summary:   RSV Meta Package
-Version:   3.5.9
+Version:   3.6.0
 Release:   1%{?dist}
 License:   Apache 2.0
 Group:     Applications/Monitoring
