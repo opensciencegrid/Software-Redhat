@@ -1,15 +1,15 @@
 Summary: Process tracking plugin for the LCMAPS authorization framework
 Name: lcmaps-plugins-glexec-tracking
-Version: 0.0.7
+Version: 0.0.8
 Release: 1%{?dist}
 License: EGEE Middleware and ASL and Fermitools
 Group: System Environment/Libraries
 # The tarball was created from CVS using the following commands:
 # cd /afs/cs.wisc.edu/p/vdt/public/html/upstream
-# cvs -d :pserver:anonymous@cdcvs.fnal.gov:/cvs/cd_read_only export -d lcmaps-plugins-glexec-tracking-0.0.7 -r lcmaps-plugins-glexec-tracking_R_0_0_7 privilege/lcmaps-plugins-glexec-tracking
-# mkdir lcmaps-plugins-glexec-tracking/0.0.7
-# tar zcf lcmaps-plugins-glexec-tracking/0.0.7/lcmaps-plugins-glexec-tracking-0.0.7.tar.gz lcmaps-plugins-glexec-tracking-0.0.7/
-# rm -rf lcmaps-plugins-glexec-tracking-0.0.7
+# cvs -d :pserver:anonymous@cdcvs.fnal.gov:/cvs/cd_read_only export -d lcmaps-plugins-glexec-tracking-0.0.8 -r lcmaps-plugins-glexec-tracking_R_0_0_8 privilege/lcmaps-plugins-glexec-tracking
+# mkdir lcmaps-plugins-glexec-tracking/0.0.8
+# tar zcf lcmaps-plugins-glexec-tracking/0.0.8/lcmaps-plugins-glexec-tracking-0.0.8.tar.gz lcmaps-plugins-glexec-tracking-0.0.8/
+# rm -rf lcmaps-plugins-glexec-tracking-0.0.8
 Source0: %{name}-%{version}.tar.gz
 BuildRequires: lcmaps-interface
 BuildRequires: libtool automake autoconf
@@ -53,6 +53,15 @@ rm -rf $RPM_BUILD_ROOT
 %{_sbindir}/glexec_monitor
 
 %changelog
+* Tue Oct 25 2011 Dave Dykstra <dwd@fnal.gov> 0.0.8-1
+- Upgrade to upstream 0.0.8 which undoes a piece of the last patch in
+  order to properly clean up orphaned processes, and also disconnects
+  glexec_monitor from the process group and supplemental groups so it
+  can survive batch system cleanups and nested glexec cleanups so it
+  can stay around long enough to do its own cleanup as it should.
+  See http://jira.opensciencegrid.org/browse/SOFTWARE-307 and
+  http://jira.opensciencegrid.org/browse/SOFTWARE-283.
+
 * Tue Aug 23 2011 Dave Dykstra <dwd@fnal.gov> 0.0.7-1
 - Upgrade to upstream 0.0.7 which fixes process cleanup and exception
   handling.  It had been often leaving gidd_alloc processes around.
