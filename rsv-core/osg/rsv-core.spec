@@ -1,6 +1,6 @@
 
 Name:      rsv-core
-Version:   3.6.1
+Version:   3.6.2
 Release:   1%{?dist}
 Summary:   RSV Core Infrastructure
 
