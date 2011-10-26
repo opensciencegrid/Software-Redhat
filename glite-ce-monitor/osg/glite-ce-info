@@ -1,0 +1,4 @@
+#!/bin/sh
+
+
+/usr/libexec/gip/osg-info-wrapper

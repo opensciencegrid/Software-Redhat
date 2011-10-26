@@ -1,5 +1,5 @@
 ###################################################################
-# GLIDEINWMS_VERSION v2.5.2
+# GLIDEINWMS_VERSION v2.5.2.1-RPM
 ###################################################################
 edf9fc6d3dc2821603910abb7f521f9b  ./frontend/glideinFrontendPlugins.py
 01380cbb07b77119f5711de3e998ac7c  ./frontend/glideinFrontend.py
@@ -10,11 +10,11 @@ edf9fc6d3dc2821603910abb7f521f9b  ./frontend/glideinFrontendPlugins.py
 66040003e303a5314ad76fdd6ecc30d7  ./frontend/glideinFrontendConfig.py
 6d068da51303b759da1e26b74877acfb  ./frontend/glideinFrontendLib.py
 a7db217520d3e8e8c78c13e1fd16794b  ./frontend/glideinFrontendMonitorAggregator.py
-e6f00f5d0299322456df3d6c63127a26  ./frontend/glideinFrontendElement.py
+97186d2d5ae447660d9a77a4fc442308  ./frontend/glideinFrontendElement.py
 82dde0039a0c0bd6b1ccdf40a739d128  ./frontend/stopFrontend.py
 0409cf3b4312fdb87fb3b8a42ea66764  ./lib/timeConversion.py
 2d780a512dc11e058eadd3eb7008cd01  ./lib/pidSupport.py
-d56c861e28784b1524ca8497845223a4  ./lib/glideinWMSVersion.py
+7f29da0a5186b70bc534ee969756e5db  ./lib/glideinWMSVersion.py
 06bcde38ccb6d2f03647b702974b27fb  ./lib/pubCrypto.py
 d0bf68f9c3aaef93e3ac5538f0475243  ./lib/symCrypto.py
 df08f90041b02425b6e6a0fc5dcf7eef  ./lib/condorExe.py
@@ -40,16 +40,16 @@ ccd329718eb2a6fe905520a7d0836349  ./tools/lib/glideinMonitor.py
 d47e5b43b28299ec67139be2c5bd35cf  ./tools/glidein_ps.py
 fc40204f481740f5d10e11e1b0c64440  ./tools/wmsTxtView.py
 a2e36084776154ed7d8959769949bb1a  ./tools/glidein_top.py
-e8c4e2c09ec79781aafcb5507c952433  ./creation/lib/cvWParams.py
+3f7a64eef8b11df7399122480c5189ff  ./creation/lib/cvWParams.py
 3c18a83dbe82f78b43ecde5e8e1a33d3  ./creation/lib/cWParams.py
-7d4a32454e2d2f9caceeaddd916e96ba  ./creation/lib/cgWCreate.py
+ee2220f0b8c75e84bdcb3ddba6ad4ac9  ./creation/lib/cgWCreate.py
 c6325eaeb52972e2cb174f5934abea7f  ./creation/lib/cWConsts.py
 b4263f139099948688f184a193fbfa80  ./creation/lib/cvWDictFile.py
 e58d67a6c35dbac12c937d04a5036a4c  ./creation/lib/cgWDictFile.py
 655815ed5a56c696d5e7997b7c678a32  ./creation/lib/cvWConsts.py
 1830f1f82af57f2155ae6d48d559cf37  ./creation/lib/cvWCreate.py
 542ae123938e3cc60c936141c138506f  ./creation/lib/cgWParams.py
-fe94a8d9379dd4de66b14aa29da7a824  ./creation/lib/cvWParamDict.py
+d060c02afb1a49a874fa36fbb58c8519  ./creation/lib/cvWParamDict.py
 8e95f3bb93550cf4dbf887af9d7166de  ./creation/lib/cgWParamDict.py
 d29131ffe0bef5393168b66267b14c24  ./creation/lib/cWDictFile.py
 61cbe5d6c11e5824e9aff150da4ae813  ./creation/lib/cgWConsts.py

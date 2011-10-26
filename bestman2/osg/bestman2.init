@@ -15,7 +15,7 @@
 # Source function library.
 . /etc/rc.d/init.d/functions
 
-if [ -e /etc/bestman2/conf/bestman2 ] ; then
+if [ -e /etc/bestman2/conf/bestman2.rc ] ; then
     . /etc/bestman2/conf/bestman2.rc
 fi
 

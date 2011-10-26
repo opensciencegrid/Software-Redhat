@@ -7,3 +7,5 @@ The SRPMs were not used due to the issue fixed by upstream r15293.
 
 We also have to add "--enable-osg" to get OSG-style validation of VOMS servers (none).
 
+Note that we have included a patch to fix a double-free in generic VOMS attributes.  This patch may be removed when we upgrade to 1.4.30 or later.
+

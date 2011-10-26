@@ -9,7 +9,7 @@
 Name:		globus-gram-job-manager-scripts
 %global _name %(tr - _ <<< %{name})
 Version:	4.0
-Release:	3%{?dist}
+Release:	4%{?dist}
 Summary:	Globus Toolkit - GRAM Job ManagerScripts
 
 Group:		Applications/Internet
@@ -106,10 +106,14 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_docdir}/%{name}-%{version}/perl/Globus/GRAM
 
 %changelog
+* Mon Oct 24 2011 Alain Roy <roy@cs.wisc.edu> - 4.0-4
+- Updated pathnames in osg-environment.patch
+
 * Wed Sep 07 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 4.0-3
 - Merged upstream 4.0-2:
-    * Thu Sep 01 2011 Joseph Bester <bester@mcs.anl.gov> - 4.0-2
-    - Update for 5.1.2 release
+
+* Thu Sep 01 2011 Joseph Bester <bester@mcs.anl.gov> - 4.0-2
+- Update for 5.1.2 release
 
 * Thu Aug 18 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 3.1-3
 - Small syntax error in the default path patch.

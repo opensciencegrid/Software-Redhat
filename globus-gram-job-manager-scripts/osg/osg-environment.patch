@@ -76,7 +76,7 @@ Index: JobDescription.pm.in
 +        my %preset = ( %ENV ); # as meager as it may be
 +
 +        # no previous knowledge, need to read the file
-+        my $fn = "/etc/osg/osg-job-environment.conf";
++        my $fn = "/var/lib/osg/osg-job-environment.conf";
 +        if ( open( INFO, "<$fn" ) ) {
 +            my ($k,$v);
 +            while ( <INFO> ) {
@@ -89,7 +89,7 @@ Index: JobDescription.pm.in
 +            close INFO;
 +        }
 +        # Now do the same thing for the "local" file
-+        my $local_fn = "/etc/osg/osg-local-job-environment.conf";
++        my $local_fn = "/var/lib/osg/osg-local-job-environment.conf";
 +        if ( open( INFO, "<$local_fn" ) ) {
 +            my ($k,$v);
 +            while ( <INFO> ) {

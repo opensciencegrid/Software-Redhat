@@ -1,7 +1,7 @@
 Summary: User identity switching tool based on grid credentials
 Name: glexec
 Version: 0.8.10
-Release: 6%{?dist}
+Release: 7%{?dist}
 License: ASL 2.0
 Group: Applications/System
 URL: http://www.nikhef.nl/pub/projects/grid/gridwiki/index.php/Site_Access_Control
@@ -63,6 +63,10 @@ exit 0
 %attr(6755, root, root) /usr/sbin/glexec
 
 %changelog
+* Fri Sep 26 2011 Dave Dykstra <dwd@fnal.gov> - 0.8.10-7
+- Add create_target_proxy=no in glexec.conf.  Without that line, a
+  temporary file is left behind in /tmp for every invocation of glexec.
+
 * Fri Sep 01 2011 Dave Dykstra <dwd@fnal.gov> - 0.8.10-6
 - Fix the adding of glexec user so it actually adds a "glexec" user rather
   than a "USERNAME" user

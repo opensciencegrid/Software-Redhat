@@ -1,6 +1,6 @@
 Name:           glideinwms-vofrontend
-Version:        2.5.2
-Release:        3
+Version:        2.5.2.1
+Release:        1
 Summary:        The VOFrontend for glideinWMS submission host
 
 Group:          System Environment/Daemons
@@ -17,7 +17,7 @@ Obsoletes:	GlideinWMSFrontend < 2.5.1-11
 
 #Source0:        http://www.uscms.org/SoftwareComputing/Grid/WMS/glideinWMS/glideinWMS_v2_5_1_frontend.tgz
 #Source0:        GlideinWMSFrontend-2.5.1.tar.gz
-Source0:	glideinWMS_v2_5_2_frontend.tgz
+Source0:	glideinWMS_v2_5_2_1_frontend.tgz
 
 # How to build tar file
 # git clone http://cdcvs.fnal.gov/projects/glideinwms
@@ -165,9 +165,6 @@ install -m 0644 %{SOURCE2} $RPM_BUILD_ROOT/%{_sysconfdir}/gwms-frontend/frontend
 cp -r creation/web_base/* $RPM_BUILD_ROOT%{_datadir}/gwms-frontend/frontend-temp/
 rm -rf $RPM_BUILD_ROOT%{_datadir}/gwms-frontend/frontend-temp/CVS
 
-# Make user frontend?
-
-
 # Install condor stuff
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d
 install -m 0644 %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/00_frontend.config
@@ -249,6 +246,15 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Oct 17 2011 Burt Holzman <burt@fnal.gov> - 2.5.2.1-1
+- Update to 2.5.2.1
+
+* Tue Sep 06 2011 Burt Holzman <burt@fnal.gov> - 2.5.2-5
+- Fix reference to upstream tarball
+
+* Tue Sep 06 2011 Burt Holzman <burt@fnal.gov> - 2.5.2-4
+- Add RPM to version number in ClassAd
+
 * Tue Sep 06 2011 Burt Holzman <burt@fnal.gov> - 2.5.2-3
 - Fixed glideinWMS versioning advertisement
 

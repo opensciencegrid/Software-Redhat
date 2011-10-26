@@ -56,7 +56,7 @@
 
 Name: %{hadoop_name}-%{apache_branch}
 Version: %{cloudera_version}
-Release: 14
+Release: 17
 Summary: Hadoop is a software platform for processing vast amounts of data
 License: Apache License v2.0
 URL: http://hadoop.apache.org/core/
@@ -73,6 +73,7 @@ Patch2:  fuse_dfs_020_memleaks_v8.patch
 # https://issues.apache.org/jira/secure/attachment/12446533/h-6813.patch
 Patch3:  h-6813.patch
 Patch4:  hadoop_fuse_dfs_classpath.patch
+Patch5:  hadoop_fuse_dfs_libjvm.patch
 Buildroot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: ant >= 1.7, ant-nodeps, ant-trax, jdk >= 1.6, lzo-devel, python >= 2.4, /usr/bin/git, subversion, fuse-libs, fuse-devel, fuse, automake, autoconf, libtool, redhat-rpm-config, openssl-devel
 Requires: sh-utils, textutils, /usr/sbin/useradd, /usr/sbin/usermod, /sbin/chkconfig, /sbin/service, jdk >= 1.6
@@ -245,6 +246,7 @@ before continuing operation.
 %patch2 -p1
 %patch3
 %patch4
+%patch5
 
 %build
 # This assumes that you installed Java JDK 6 via RPM
@@ -336,11 +338,11 @@ fi
 %post
 
 # Move away the previous OSG Hadoop configuration directories.
-if [ -d /etc/hadoop ]; then
+if [ -d /etc/hadoop ] && [ ! -h /etc/hadoop ]; then
   echo "Moving previous Hadoop conf directory to /etc/hadoop-0.19"
   mv /etc/hadoop /etc/hadoop-0.19
 fi
-if [ -d /var/log/hadoop ]; then
+if [ -d /var/log/hadoop ] && [ ! -h /var/log/hadoop ]; then
   echo "Moving previous Hadoop logfiles into /var/log/hadoop-0.19"
   echo "Please review and delete"
   mv /var/log/hadoop /var/log/hadoop-0.19
@@ -362,7 +364,8 @@ if [ "$1" = 2 ]; then
 
   # Change the ownership of old logs so that we don't fail rotation on next startup
   find /var/log/hadoop-0.20/ | egrep 'jobtracker|tasktracker|userlogs|history' | xargs --no-run-if-empty chown mapred
-  find /var/log/hadoop-0.20/ | egrep 'namenode|datanode' | xargs --no-run-if-empty chown hdfs
+  # Commented out for OSG to prevent chown on log files from hadoop user to hdfs
+  #find /var/log/hadoop-0.20/ | egrep 'namenode|datanode' | xargs --no-run-if-empty chown hdfs
 
   # We don't want to do this recursively since we may be reinstalling, in which case
   # users have their own cache/<username> directories which shouldn't be stolen
@@ -494,6 +497,16 @@ fi
 %endif
 
 %changelog
+* Fri Oct 21 2011 Jeff Dost <jdost@ucsd.edu> 0.20.2+737-17
+- Prevent chown on log files from hadoop user to hdfs if 0.20 already
+  installed.
+
+* Thu Oct 20 2011 Jeff Dost <jdost@ucsd.edu> 0.20.2+737-16
+- Ensure 0.19 backups are created only if previous installation was 0.19.
+
+* Thu Oct 06 2011 Jeff Dost <jdost@ucsd.edu> 0.20.2+737-15
+- Patch hadoop-fuse-dfs to follow symlinks when finding libjvm.so.
+
 * Fri Aug 23 2011 Jeff Dost <jdost@ucsd.edu> 0.20.2+737-14
 - Release bump because of missing noarch rpms on previous build.
 

@@ -1,0 +1,22 @@
+Index: build-scripts/Makefile
+===================================================================
+--- build-scripts/Makefile	(revision 4473)
++++ build-scripts/Makefile	(working copy)
+@@ -1,15 +1,8 @@
+ PLATFORM := $(shell uname)
+ 
+-# tarbal version
+-version_default = v1.09
++gratia_reporting_version = v@GRATIA_VERSION@
++gratia_services_version = v@GRATIA_VERSION@
+ 
+-gratia_reporting_version := $(shell echo '$$HeadURL: http://gratia.svn.sourceforge.net/svnroot/gratia/tags/v1-09-pre4/build-scripts/Makefile$$' | sed -e 's?^\$$\HeadURL: .*gratia/[^/]*tags/\(v[^ ]*\)/build-scripts/Makefile \$$?\1?' -e 's/-/./g' )
+-gratia_services_version = $(gratia_reporting_version)
+-
+-ifneq (,$(findstring $$HeadURL,$(gratia_reporting_version)))
+-  override gratia_reporting_version := $(version_default)
+-endif
+-
+ # define useful variables
+ base := $(shell cd .. >/dev/null 2>&1; /bin/pwd)
+ 

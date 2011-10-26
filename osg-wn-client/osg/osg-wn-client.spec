@@ -1,8 +1,7 @@
-
 Name:      osg-wn-client
 Summary:   OSG Worker-Node Client
 Version:   3.0.0
-Release:   10
+Release:   12
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -18,6 +17,7 @@ Requires: edg-gridftp-client
 Requires: glite-fts-client
 Requires: lcg-utils
 Requires: lfc-client
+Requires: lfc-python
 Requires: myproxy
 Requires: /usr/bin/ldapsearch
 Requires: dcache-srmclient
@@ -47,8 +47,27 @@ mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/osg/wn-client/
 cat > $RPM_BUILD_ROOT%{_sysconfdir}/osg/wn-client/setup.sh << EOF
 #!/bin/sh
 
-# You no longer need to source $OSG_GRID/setup.sh
+# You no longer need to source \$OSG_GRID/setup.sh
 # However, this file has been left for backward compatibility purposes.
+
+EOF
+
+cat > $RPM_BUILD_ROOT%{_sysconfdir}/osg/wn-client/setup.csh << EOF
+#!/bin/csh
+
+# You no longer need to source \$OSG_GRID/setup.csh
+# However, this file has been left for backward compatibility purposes.
+
+EOF
+
+mkdir -p $RPM_BUILD_ROOT%{_prefix}/etc/
+cat > $RPM_BUILD_ROOT%{_prefix}/etc/globus-user-env.sh << EOF
+#!/bin/sh
+
+# This file is expected by gLite jobs because GLOBUS_LOCATION 
+# defaults to /usr, and they're looking for 
+# $GLOBUS_LOCATION/etc/globus-user-env.sh. It doesn't need to have
+# anything, it just needs to be there. 
 
 EOF
 
@@ -58,10 +77,21 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %dir %{_sysconfdir}/osg/wn-client
 %config(noreplace) %{_sysconfdir}/osg/wn-client/setup.sh
+%config(noreplace) %{_sysconfdir}/osg/wn-client/setup.csh
+%config(noreplace) %{_prefix}/etc/globus-user-env.sh
 
 %files glexec
 
 %changelog
+* Mon Oct 24 2011 Alain Roy <roy@cs.wisc.edu> - 3.0.0-12
+- Added dependency on on lfc-python (Needed by ATLAS)
+- Added /usr/etc/globus-user-env.sh, which is needed by 
+  gLite jobs.
+
+* Tue Oct 11 2011 Alain Roy <roy@cs.wisc.edu> - 3.0.0-11
+- Added setup.csh to match setup.sh, just in case someone
+  needs it.
+
 * Mon Aug 22 2011 Dave Dykstra <dwd@fnal.gov> - 3.0.0-10
 - Remove lcmaps-plugins-glexec-tracking from osg-wn-client-glexec
   Requires because it has been moved down to glexec instead

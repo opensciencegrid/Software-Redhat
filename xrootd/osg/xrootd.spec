@@ -11,7 +11,7 @@
 Name:      xrootd
 Epoch:     1
 Version:   3.1.0
-Release:   0.2.git.e587830%{?dist}%{?_with_xrootd_user:.xu}
+Release:   10%{?dist}%{?_with_xrootd_user:.xu}
 Summary:   An eXtended Root Daemon (xrootd)
 Group:     System Environment/Daemons
 License:   Stanford (modified BSD with advert clause)
@@ -127,17 +127,17 @@ Headers for compiling against xrootd-libs
 %setup -c -n %{name}
 
 %build
-#cd %{name}
+cd %{name}
 mkdir build
 cd build
-cmake -DCMAKE_INSTALL_PREFIX=/usr ../
+cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=RelWithDebInfo ../
 make VERBOSE=1%{?_smp_mflags}
 
 #-------------------------------------------------------------------------------
 # Installation
 #-------------------------------------------------------------------------------
 %install
-#cd %{name}
+cd %{name}
 cd build
 rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
@@ -243,10 +243,17 @@ getent passwd xrootd >/dev/null || \
 exit 0
 %endif
 
-%post client -p /sbin/ldconfig
-%postun client -p /sbin/ldconfig
-%post libs -p /sbin/ldconfig
-%postun libs -p /sbin/ldconfig
+%post client
+/sbin/ldconfig
+
+%postun client
+/sbin/ldconfig
+
+%post libs
+/sbin/ldconfig
+
+%postun libs
+/sbin/ldconfig
 
 #-------------------------------------------------------------------------------
 # Files
@@ -263,6 +270,7 @@ exit 0
 %{_includedir}/%{name}/XrdVersion.hh
 %{_includedir}/%{name}/XrdSec
 %{_includedir}/%{name}/XrdSecsss
+%{_includedir}/%{name}/XrdSecgsi
 %{_includedir}/%{name}/XrdCrypto
 %{_includedir}/%{name}/XrdSut
 %{_includedir}/%{name}/XrdNet
@@ -370,6 +378,9 @@ exit 0
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Fri Oct 21 2011 Lukasz Janyst <ljanyst@cern.ch> 3.1.0-1
+- bump the version to 3.1.0
+
 * Tue Apr 11 2011 Lukasz Janyst <ljanyst@cern.ch> 3.0.3-1
 - the first RPM release - version 3.0.3
 - the detailed release notes are available at:

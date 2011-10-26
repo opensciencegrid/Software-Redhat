@@ -1,0 +1,75 @@
+--- gums-1.3.18.002/gums-core/src/main/scripts/gums-setup-mysql-database.orig	2011-10-08 10:13:34.000000000 -0500
++++ gums-1.3.18.002/gums-core/src/main/scripts/gums-setup-mysql-database	2011-10-08 10:16:01.000000000 -0500
+@@ -1,40 +1,10 @@
+ #!/bin/sh
+ 
+-# Detects where gums is installed and puts the directory
+-# name in ScriptPath. Then cd to that directory.
+-
+-ScriptPath=""
+-CommandPath=`dirname $0`
+-if [ $CommandPath = "." ]
+-then
+-
+-    # The command path is the current directory:
+-    # check if file is really here
+-
+-    if [ ! -e "$0" ]
+-    then
+-        # The command is not in the current directory:
+-        # must have used the path.
+-        # Locating with which.
+-
+-        WhichFull=`which $0`
+-        WhichPath=`dirname $WhichFull`
+-        ScriptPath=$WhichPath
+-    else
+-        # It was really the current directory
+-        ScriptPath=$CommandPath
+-    fi
+-else
+-    ScriptPath=$CommandPath
+-fi
+-
+-cd $ScriptPath
+-
+ usage() {
+ 	echo "Creates the database for GUMS on localhost and creates configuration "
+ 	echo "with the appropriate database and host information. "
+ 	echo "Usage: $0 "
+-	echo "   --template <template config path (../../main/config/gums.config.template is default) [optional]> "
++	echo "   --template <template config path (/usr/lib/gums/config/gums.config.template is default) [optional]> "
+ 	echo "   --nocreateconfig [configuration configured for database] "
+ 	echo "   --user <mysql user for GUMS> "
+ 	echo "   --password  <GUMS mysql password>"
+@@ -56,7 +26,7 @@
+ # Setup global variables
+ #
+ #-------------------------------------------
+-TEMPLATE="../../main/config/gums.config.template"
++TEMPLATE="/usr/lib/gums/config/gums.config.template"
+ USER=""
+ SERVER=""
+ PASSWORD=""
+@@ -166,7 +136,7 @@
+ fi
+ 
+ SERVER_WO_PORT=`echo $SERVER | awk -F: '{ print $1 }'`
+-cat ../sql/setupDatabase.mysql       \
++cat /usr/lib/gums/sql/setupDatabase.mysql       \
+   | sed -e s/@USER@/$USER/g         \
+              -e s/@SERVER@/$SERVER_WO_PORT/g     \
+              -e s/@PASSWORD@/$PASSWORD/g \
+@@ -181,8 +151,9 @@
+ then
+ 	if [ "$PROMPT" -eq 1 ]
+ 	then
+-		./gums-create-config --user $USER --host $SERVER --password $PASSWORD --template $TEMPLATE
++		gums-create-config --user $USER --host $SERVER --password $PASSWORD --template $TEMPLATE
+ 	else
+-	    ./gums-create-config --user $USER --host $SERVER --password $PASSWORD --template $TEMPLATE --noprompt
++		gums-create-config --user $USER --host $SERVER --password $PASSWORD --template $TEMPLATE --noprompt
+ 	fi
+-fi	  
++fi
++

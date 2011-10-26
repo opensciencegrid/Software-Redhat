@@ -5,8 +5,8 @@
 %endif
 
 Name:           osg-cert-scripts
-Version:        2.7
-Release:        5
+Version:        2.7.1
+Release:        2
 Summary:        Command-line interface to the DOEGrids CA web site, and more.
 
 Group:          Grid
@@ -18,10 +18,12 @@ BuildArch:      noarch
 Requires:       /usr/bin/ldapsearch
 Requires:       /usr/bin/openssl
 Requires:       grid-certificates
+Requires:	perl(Crypt::SSLeay)
 
-Source0:        cert-scripts-2.7.tar.gz
-Patch0:         change_awk_locations.patch  
-Patch1:         make_correct_python_module.patch
+Source0:        osg-cert-scripts-2.7.1.tar.gz
+# Patches incorporated to SVN since OSG is the upstream source
+#Patch0:         change_awk_locations.patch  
+#Patch1:         make_correct_python_module.patch
 
 Provides:       ppdg-cert-scripts = %{version}-%{release}
 Obsoletes:      ppdg-cert-scripts < 2.7-5
@@ -35,9 +37,9 @@ Authority (RA), but it is now maintained by the OSG RA.
 
 %prep
 # Annoying that the name of the tar is different than the package
-%setup -q -n cert-scripts
-%patch0 -p1 
-%patch1 -p1
+%setup -q -n osg-cert-scripts
+#%patch0 -p1 
+#%patch1 -p1
 
 %build
 
@@ -69,6 +71,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Oct 10 2011 Anand Padmanabhan <apadmana@uiuc.edu> - 2.7.1-2
+Added dependency to perl(Crypt::SSLeay)
+
 * Mon Aug 15 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 2.7-5
 Rename RPM to use the osg- prefix.
 

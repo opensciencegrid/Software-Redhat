@@ -6,7 +6,11 @@
 # remote nodes.
 
 # The java implementation to use.  Required.
-export JAVA_HOME=/usr/java/latest
+if [ -e /etc/alternatives/java_sdk ]; then
+  export JAVA_HOME=/etc/alternatives/java_sdk
+else
+  export JAVA_HOME=/usr/java/latest
+fi
 
 # Extra Java CLASSPATH elements.  Optional.
 #HADOOP_CLASSPATH=$HADOOP_CONF_DIR:$(build-classpath hadoop)

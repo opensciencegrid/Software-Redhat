@@ -1,6 +1,6 @@
 
 Name:      rsv-metrics
-Version:   3.4.9
+Version:   3.6.2
 Release:   1%{?dist}
 Summary:   RSV metrics
 
@@ -92,6 +92,30 @@ rm -rf $RPM_BUILD_ROOT
 %attr(-,rsv,rsv) %{_localstatedir}/log/rsv/probes
 
 %changelog
+* Wed Oct 26 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.6.2-1
+- Fixed a problem in probe default arguments.
+
+* Wed Oct 26 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.6.1-1
+- Update for CA and CRL probes.
+
+* Tue Oct 25 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.6.0-1
+- Fixed problems in SRM metrics.  Fixed bug in gridftp metric.
+
+* Wed Oct 19 2011 Matyas Selmeci <matyas@cs.wisc.edu> 3.5.8-1
+- Added yum-check-update metric
+
+* Wed Oct 19 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.5.7-1
+- Update for CA and CRL probes.
+
+* Tue Oct 18 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.5.6-1
+- Update for CA and CRL probes.
+
+* Wed Oct 05 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.5.3-1
+- Updated for CA metric.
+
+* Tue Oct 04 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.5.2-1
+- Added CA and CRL metrics which are not yet full functional.
+
 * Thu Sep 15 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.4.8-1
 - Added log rotation and more
 

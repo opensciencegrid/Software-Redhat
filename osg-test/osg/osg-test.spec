@@ -5,7 +5,7 @@
 
 Summary:   Tests an OSG Software installation
 Name:      osg-test
-Version:   0.0.3
+Version:   0.0.4
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -39,6 +39,9 @@ rm -rf $RPM_BUILD_ROOT
 /etc/grid-security/certificates/4eca18ce.*
 
 %changelog
+* Mon Sep 26 2011 Tim Cartwright <cat@cs.wisc.edu> - 0.0.4-1
+- New version of upstream software.
+
 * Thu Sep 15 2011 Tim Cartwright <cat@cs.wisc.edu> - 0.0.3-1
 - Skip the uninstall command when there are no RPMs to remove.
 

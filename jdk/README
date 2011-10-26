@@ -1,0 +1,14 @@
+This package was created by running rpm-ripper from the osg-build-0.0.22
+package on jdk-6u29-linux-amd64.rpm and jdk-6u29-linux-i586.rpm from
+Oracle.  I removed the ExclusiveArch lines from the spec files and instead
+wrapped the 32-bit spec file in %ifarch i386/%endif, and wrapped the 64-bit
+spec file in %ifarch x86_64/%endif, and catted them together.
+
+I also had to modify the Source lines. I made the 32-bit tarball be Source0 and
+the 64-bit tarball be Source1 in both halves of the combo spec file. Then I
+changed the %setup macros in the %prep step to uncompress the appropriate
+tarball. Before this change, 'rpmbuild -bs' (which is done by osg-build) only
+put one of the tarballs into the SRPM.
+
+A future version of rpm-ripper will be able to automate all this: see
+#SOFTWARE-279.

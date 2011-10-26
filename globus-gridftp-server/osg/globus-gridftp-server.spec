@@ -13,7 +13,7 @@
 Name:		globus-gridftp-server
 %global _name %(tr - _ <<< %{name})
 Version:	6.1
-Release:	2%{?dist}
+Release:	5%{?dist}
 Summary:	Globus Toolkit - Globus GridFTP Server
 
 Group:		System Environment/Libraries
@@ -119,6 +119,7 @@ mv $RPM_BUILD_ROOT%{_sysconfdir}/gridftp.gfork.default $RPM_BUILD_ROOT%{_sysconf
 
 GLOBUSPACKAGEDIR=$RPM_BUILD_ROOT%{_datadir}/globus/packages
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig
+mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/gridftp.conf.d
 %ifarch alpha ia64 ppc64 s390x sparc64 x86_64
 install -m 0755 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/%{name}
 %else
@@ -171,6 +172,7 @@ fi
 %defattr(-,root,root,-)
 %dir %{_datadir}/globus/packages/%{_name}
 %dir %{_docdir}/%{name}-%{version}
+%dir %{_sysconfdir}/sysconfig/gridftp.conf.d
 
 %files -f package-progs.filelist progs
 %defattr(-,root,root,-)
@@ -183,10 +185,29 @@ fi
 %defattr(-,root,root,-)
 
 %changelog
+* Tue Oct 11 2011 Doug Strain <dstrain@fnal.gov> - 6.1-5
+- Changes to sysconfig to 
+-   1) get rid of a warning if nothing exists in gridftp.conf.d
+-   2) Move the xrootd-dsi plugin stuff into the xrootd-dsi package.
+
+* Fri Sep 30 2011 Jeff Dost <jdost@ucsd.edu> - 6.1-4
+- Change sysconfig file to use correct globus_gridftp_mapping LCMAPS policy
+
+* Tue Sep 27 2011 Doug Strain <dstrain@fnal.gov> - 6.1-3
+- Re-Adding extra sysconfig directory and configurable conf file
+- With new version of gridftp
+
 * Fri Sep 23 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 6.1-2
 - Merged upstream 6.1-1:
     * Fri Sep 23 2011 Joe Bester <bester@mcs.anl.gov> - 6.1-1
     - GRIDFTP-184: Detect and workaround bug in start_daemon for LSB < 4
+
+* Thu Sep 22 2011 Doug Strain <dstrain@fnal.gov> - 6.0-6
+- Adding extra sysconfig directory and configurable conf file
+- For different plugin supports
+
+* Fri Sep 16 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 6.0-5
+- Patched init script to work around an infinite loop caused by some versions of redhat-lsb
 
 * Wed Sep 07 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 6.0-4
 - Merge upstream 6.0-3:

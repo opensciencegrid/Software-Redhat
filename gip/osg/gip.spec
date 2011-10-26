@@ -1,20 +1,11 @@
 Summary: Generic Information Provider
 Name: gip
-Version: 1.3.0alpha3
-Release: 2%{?dist}
+Version: 1.3.1
+Release: 1%{?dist}
 License: TODO
 Group: Applications/Grid
 BuildArch: noarch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
-#Packager: VDT <vdt-support@opensciencegrid.org>
-#BuildRequires: 
-Requires: python
-#Requires:           initscripts
-#Requires(post):     chkconfig, /sbin/ldconfig
-#Requires(preun):    chkconfig
-#Requires(postun):   /sbin/ldconfig
-AutoReq: yes
-AutoProv: yes
 
 Source0: %{name}-%{version}.tgz
 
@@ -23,7 +14,7 @@ Source0: %{name}-%{version}.tgz
 The Open Science Grid (OSG) Generic Information Provider (GIP) is a core part of the OSG Information Infrastructure.
 The GIP is a grid information service that aggregates static and dynamic resource information for use with 
 LDAP-based information systems.  It produces information based on the GLUE schema.  This information
-then can be sent via external services to information collection servers such as
+then can be sent via external services to information collection servers such as ReSS and BDII.
 
 %prep
 %setup -q
@@ -86,9 +77,9 @@ touch $RPM_BUILD_ROOT/%{_sysconfdir}/%{name}/remove-attributes.conf
 
 %files
 %defattr(-,root,root,-)
-%attr(755,-,-) %{_bindir}/*
-%attr(755,-,-) %{_libexecdir}/%{name}/osg-info-wrapper
-%attr(755,-,-) %{_libexecdir}/%{name}/providers/*
+%attr(755,root,root) %{_bindir}/*
+%attr(755,root,root) %{_libexecdir}/%{name}/osg-info-wrapper
+%attr(755,root,root) %{_libexecdir}/%{name}/providers/*
 %dir %{_libexecdir}/%{name}/plugins
 %dir %{_libexecdir}/%{name}/providers
 %{python_sitelib}/*
@@ -106,9 +97,13 @@ touch $RPM_BUILD_ROOT/%{_sysconfdir}/%{name}/remove-attributes.conf
 %clean
 rm -rf %buildroot
 
-#%define _unpackaged_files_terminate_build 1
-
 %changelog
+* Wed Oct 12 2011 Burt Holzman <burt@fnal.gov> - 1.3.1-1
+- Don't error out if there's no config.ini -- bugfix
+
+* Tue Oct 11 2011 Burt Holzman <burt@fnal.gov> - 1.3.0-1
+- Enable new config.ini reading
+
 * Thu Aug 04 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.3.0alpha3-2
 - Minor ownership issues found in testing
 

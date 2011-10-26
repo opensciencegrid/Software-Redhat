@@ -1,5 +1,5 @@
 %global name osg-configure
-%global version 0.5.7
+%global version 0.6.5
 %global release 1%{?dist}
 
 Summary: Package for configure-osg and associated scripts
@@ -190,6 +190,31 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/osg/config.d/15-managedfork.ini
 
 %changelog
+* Wed Oct 26 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 0.6.5-1
+- Fixed a few RSV configuration issues.
+
+* Tue Oct 25 2011 Suchandra Thapa <sthapa@ci.uchicago.edu> 0.6.4-1
+- Writing to osg attributes file and update to 0.6.4
+
+* Fri Oct 21 2011 Suchandra Thapa <sthapa@ci.uchicago.edu> 0.6.3-1
+- Fix a few bugs and update to 0.6.3
+
+* Fri Oct 21 2011 Suchandra Thapa <sthapa@ci.uchicago.edu> 0.6.2-1
+- Added support for accept_limited in all job managers
+
+* Thu Oct 20 2011 Suchandra Thapa <sthapa@ci.uchicago.edu> 0.6.1-1
+- Added bugfixes dealing with managed fork configuration
+
+* Thu Oct 20 2011 Suchandra Thapa <sthapa@ci.uchicago.edu> 0.6.0-1
+- Added configuration of globus job manager for managed fork 
+- Fixed unit tests for RSV
+
+* Mon Oct 10 2011 Matyas Selmeci <matyas@cs.wisc.edu> 0.5.10-1
+- Added configuration of glite-ce-monitor
+
+* Mon Sep 26 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 0.5.8-1
+- Fixed a bug in RSV configuration of gridftp hosts
+
 * Tue Sep 13 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 0.5.7-1
 - Fixed a bug in RSV configuration of Gratia Metric ProbeConfig
 
