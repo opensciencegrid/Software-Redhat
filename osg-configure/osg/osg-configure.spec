@@ -1,5 +1,5 @@
 %global name osg-configure
-%global version 0.6.4
+%global version 0.6.5
 %global release 1%{?dist}
 
 Summary: Package for configure-osg and associated scripts
@@ -190,6 +190,9 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/osg/config.d/15-managedfork.ini
 
 %changelog
+* Wed Oct 26 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 0.6.5-1
+- Fixed a few RSV configuration issues.
+
 * Tue Oct 25 2011 Suchandra Thapa <sthapa@ci.uchicago.edu> 0.6.4-1
 - Writing to osg attributes file and update to 0.6.4
 
