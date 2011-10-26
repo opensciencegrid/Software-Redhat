@@ -9,7 +9,7 @@
 Name:		globus-gram-job-manager-condor
 %global _name %(tr - _ <<< %{name})
 Version:	1.0
-Release:	6%{?dist}
+Release:	7%{?dist}
 Summary:	Globus Toolkit - Condor Job Manager
 
 Group:		Applications/Internet
@@ -155,6 +155,9 @@ fi
 %{perl_vendorlib}/Globus/GRAM/JobManager/condor_accounting_groups.pm
 
 %changelog
+* Wed Oct 26 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.0-7
+- Fix the location of the ea and uid tables.  Fix NFS-lite for jobs with input files.
+
 * Fri Sep 23 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0-6
 - Merged upstream 1.0-3:
     * Thu Sep 22 2011 Joe Bester <jbester@mactop2.local> - 1.0-3
