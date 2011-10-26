@@ -1,7 +1,7 @@
 Name:      osg-ce
 Summary:   OSG Compute Element 
 Version:   3.0.0
-Release:   17
+Release:   18
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -67,7 +67,7 @@ Group: Grid
 Summary: PBS meta-package for the OSG-CE
 Requires: %{name} = %{version}-%{release}
 Requires: gratia-probe-pbs-lsf
-Requires: globus-gram-job-manager-setup-pbs
+Requires: globus-gram-job-manager-pbs-setup-seg
 Requires: osg-configure-pbs
 
 %description pbs
@@ -78,7 +78,7 @@ Group: Grid
 Summary: LSF meta-package for the OSG-CE
 Requires: %{name} = %{version}-%{release}
 Requires: gratia-probe-pbs-lsf
-Requires: globus-gram-job-manager-setup-lsf
+Requires: globus-gram-job-manager-lsf-setup-seg
 Requires: osg-configure-lsf
 
 %description lsf
@@ -89,7 +89,7 @@ Group: Grid
 Summary: SGE meta-package for the OSG-CE
 Requires: %{name} = %{version}-%{release}
 Requires: gratia-probe-sge
-Requires: globus-gram-job-manager-setup-sge
+Requires: globus-gram-job-manager-sge-setup-seg
 Requires: osg-configure-sge
 
 %description sge
@@ -108,6 +108,9 @@ rm -rf $RPM_BUILD_ROOT
 %files sge
 
 %changelog
+* Tue Oct 11 2011 Alain Roy <roy@cs.wisc.edu> - 3.0.0-18
+- Fixed dependencies for PBS, LSF, and SGE
+
 * Mon Oct 10 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 3.0.0-17
 - Added dependencies on glite-ce-monitor and osg-info-services
 
