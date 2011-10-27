@@ -9,7 +9,7 @@
 Name:		globus-gram-job-manager-condor
 %global _name %(tr - _ <<< %{name})
 Version:	1.0
-Release:	6%{?dist}
+Release:	7%{?dist}
 Summary:	Globus Toolkit - Condor Job Manager
 
 Group:		Applications/Internet
@@ -155,10 +155,18 @@ fi
 %{perl_vendorlib}/Globus/GRAM/JobManager/condor_accounting_groups.pm
 
 %changelog
+* Thu Oct 27 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0-7
+- Merged upstream 1.0-4:
+
+* Thu Oct 20 2011 Joseph Bester <bester@mcs.anl.gov> - 1.0-4
+- GRAM-259: globus-gram-job-manager-condor RPM does not uninstall cleanly
+- Add explicit dependencies on >= 5.2 libraries
+
 * Fri Sep 23 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0-6
 - Merged upstream 1.0-3:
-    * Thu Sep 22 2011 Joe Bester <jbester@mactop2.local> - 1.0-3
-    - Fix: GRAM-243
+
+* Thu Sep 22 2011 Joe Bester <jbester@mactop2.local> - 1.0-3
+- Fix: GRAM-243
 
 * Thu Sep 22 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0-5
 - Fixed condition in postun scriptlet
@@ -169,8 +177,9 @@ fi
 
 * Tue Sep 06 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0-3
 - Merged upstream 1.0-2:
-    * Thu Sep 01 2011 Joseph Bester <bester@mcs.anl.gov> - 1.0-2
-    - Update for 5.1.2 release
+
+* Thu Sep 01 2011 Joseph Bester <bester@mcs.anl.gov> - 1.0-2
+- Update for 5.1.2 release
 
 * Thu Aug 18 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 0.0-4
 - Fix default configuration file.
