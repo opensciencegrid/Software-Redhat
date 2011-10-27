@@ -1,7 +1,7 @@
 Index: JobDescription.pm.in
 ===================================================================
---- JobDescription.pm.in.orig	2011-09-07 11:52:44.000000000 -0500
-+++ JobDescription.pm.in	2011-09-07 11:53:10.000000000 -0500
+--- JobDescription.pm.in.orig	2011-10-27 16:32:24.023553538 -0500
++++ JobDescription.pm.in	2011-10-27 16:33:19.558678388 -0500
 @@ -395,6 +395,9 @@
      } else {
          my %preset = ( %ENV ); # as meager as it may be
@@ -10,5 +10,5 @@ Index: JobDescription.pm.in
 +        $result{"PATH"} = "/bin:/usr/bin";
 +
          # no previous knowledge, need to read the file
-         my $fn = "/etc/osg/osg-job-environment.conf";
+         my $fn = "/var/lib/osg/osg-job-environment.conf";
          if ( open( INFO, "<$fn" ) ) {

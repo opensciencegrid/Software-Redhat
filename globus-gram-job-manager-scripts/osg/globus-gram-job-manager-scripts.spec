@@ -9,14 +9,14 @@
 Name:		globus-gram-job-manager-scripts
 %global _name %(tr - _ <<< %{name})
 Version:	4.0
-Release:	4%{?dist}
+Release:	5%{?dist}
 Summary:	Globus Toolkit - GRAM Job ManagerScripts
 
 Group:		Applications/Internet
 BuildArch:	noarch
 License:	ASL 2.0
 URL:		http://www.globus.org/
-Source:		%{_name}-%{version}.tar.gz
+Source:		http://www.globus.org/ftppub/gt5/5.1/5.1.2/packages/src/%{_name}-%{version}.tar.gz
 
 # OSG-specific patches
 Patch0:         gratia.patch
@@ -106,6 +106,11 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_docdir}/%{name}-%{version}/perl/Globus/GRAM
 
 %changelog
+* Thu Oct 27 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 4.0-5
+- Merged upstream 4.0-3:
+    * Tue Oct 11 2011 Joseph Bester <bester@mcs.anl.gov> - 4.0-3
+    - Add explicit dependencies on >= 5.2 libraries
+
 * Mon Oct 24 2011 Alain Roy <roy@cs.wisc.edu> - 4.0-4
 - Updated pathnames in osg-environment.patch
 

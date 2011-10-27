@@ -1,9 +1,1 @@
-Source downloaded from 'http://bamboo.globus.org/browse/GT512-RPMCENTOS5-7/artifact/SRPMS/globus-gram-job-manager-scripts-4.0-2.src.rpm'
-
-The following patches have been added:
-- Patch #1000.
-- Patch for SOFTWARE-133, adding PATH to the default environment.
-- Gratia integration patch
-
-Other than that, the spec file is identical to the upstream Globus spec file. 
-
+Source downloaded from 'http://bamboo.globus.org/browse/GT52-RPMCENTOS5-110/artifact/repo/centos/5/SRPMS/globus-gram-job-manager-scripts-4.0-3.src.rpm'
