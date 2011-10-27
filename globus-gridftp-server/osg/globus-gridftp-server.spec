@@ -12,8 +12,8 @@
 
 Name:		globus-gridftp-server
 %global _name %(tr - _ <<< %{name})
-Version:	6.1
-Release:	5%{?dist}
+Version:	6.2
+Release:	3%{?dist}
 Summary:	Globus Toolkit - Globus GridFTP Server
 
 Group:		System Environment/Libraries
@@ -31,7 +31,15 @@ Source2:	globus-gridftp-server.i386.sysconfig
 Patch0:		osg-gridftp.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
+Requires:	globus-common%{?_isa} >= 14
+Requires:	globus-gridftp-server-control%{?_isa} >= 2
+Requires:	globus-usage%{?_isa} >= 3
+Requires:	globus-xio%{?_isa} >= 3
+Requires:	globus-authz%{?_isa} >= 2
+Requires:	globus-gfork%{?_isa} >= 3
+Requires:	globus-ftp-control%{?_isa} >= 4
 Requires:	globus-xio-gsi-driver%{?_isa} >= 2
+
 BuildRequires:	grid-packaging-tools >= 3.4
 BuildRequires:	globus-gridftp-server-control-devel%{?_isa} >= 2
 BuildRequires:	globus-usage-devel%{?_isa} >= 3
@@ -163,7 +171,7 @@ if [ $1 -eq 0 ]; then
 fi
 
 %postun progs
-if [ $1 -ge 1 ]; then
+if [ $1 -eq 1 ]; then
     /sbin/service globus-gridftp-server condrestart > /dev/null 2>&1 || :
     /sbin/service globus-gridftp-sshftp condrestart > /dev/null 2>&1 || :
 fi
@@ -185,6 +193,14 @@ fi
 %defattr(-,root,root,-)
 
 %changelog
+* Thu Oct 27 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 6.2-3
+- Merged upstream 6.2-2:
+
+* Mon Oct 24 2011 Joseph Bester <bester@mcs.anl.gov> - 6.2-2
+- Add explicit dependencies on >= 5.2 libraries
+- Add backward-compatibility aging
+- Fix %post* scripts to check for -eq 1
+
 * Tue Oct 11 2011 Doug Strain <dstrain@fnal.gov> - 6.1-5
 - Changes to sysconfig to 
 -   1) get rid of a warning if nothing exists in gridftp.conf.d
