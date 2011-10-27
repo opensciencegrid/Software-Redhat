@@ -12,7 +12,7 @@
 
 Name:		globus-xio
 %global _name %(tr - _ <<< %{name})
-Version:	3.0
+Version:	3.1
 Release:	3%{?dist}
 Summary:	Globus Toolkit - Globus XIO Framework
 
@@ -34,7 +34,8 @@ Patch:          timeout_close.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-Requires:	globus-common
+Requires:	globus-common%{?_isa} >= 14
+
 BuildRequires:	grid-packaging-tools >= 3.4
 BuildRequires:	globus-common-devel%{?_isa} >= 14
 BuildRequires:	globus-core%{?_isa} >= 8
@@ -181,6 +182,14 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_docdir}/%{name}-%{version}/html
 
 %changelog
+* Thu Oct 27 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 3.1-3
+- Merged upstream 3.1-2:
+    * Tue Oct 11 2011 Joseph Bester <bester@mcs.anl.gov> - 3.1-2
+    - Add explicit dependencies on >= 5.2 libraries
+
+    * Thu Oct 06 2011 Joseph Bester <bester@mcs.anl.gov> - 3.1-1
+    - Add backward-compatibility aging
+
 * Wed Sep 07 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 3.0-3
 - Merged upstream 3.0-2:
     * Thu Sep 01 2011 Joseph Bester <bester@mcs.anl.gov> - 3.0-2
