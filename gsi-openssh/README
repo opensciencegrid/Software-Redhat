@@ -1,7 +1,1 @@
-The original SRPM was called gsissh and was taken from:
-
-https://bugzilla.redhat.com/show_bug.cgi?id=683587
-
-Globus has provided a new SRPM, renamed to gsi-openssh
-
-Source downloaded from 'http://bamboo.globus.org/browse/GT512-RPMCENTOS5-7/artifact/SRPMS/gsi-openssh-5.3-2.src.rpm'
+Source downloaded from 'http://bamboo.globus.org/browse/GT52-RPMCENTOS5-110/artifact/repo/centos/5/SRPMS/gsi-openssh-5.4-2.src.rpm'
