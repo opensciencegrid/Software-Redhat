@@ -111,7 +111,7 @@ Index: condor.pm
 +        # Only do this if we are dealing with a GRAM job that has set up a scratch area
 +        # otherwise we assume it is a globus-job-run or the users is using remote_initialdir
 +	if ( $scratch_isset ) {
-+            my $sdir;
++            my $sdir; my @flist;
 +            opendir($sdir,$scratch_directory);
 +            my @sfiles = grep { !/^\./} readdir($sdir);
 +            close $sdir;

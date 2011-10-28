@@ -6,8 +6,8 @@ use base qw(Exporter);
 our @EXPORT_OK = qw(obtain_condor_group);
 our $VERSION = 1.00;
 
-our $UID_FILENAME     = "/etc/globus-condor/uid_table.txt";
-our $EXTATTR_FILENAME = "/etc/globus-condor/ea_table.txt";
+our $UID_FILENAME     = "/etc/osg/uid_table.txt";
+our $EXTATTR_FILENAME = "/etc/osg/ea_table.txt";
 
 my @Environment;
 my $Job_Manager;
