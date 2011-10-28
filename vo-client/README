@@ -9,8 +9,3 @@ that is maintained by GOC and provides following files:
 This means the GOC now needs to add the creation of the vomsdir tree.
 This can be done with
 osg-make-vomsdir --vomsdir vomsdir --vomses vomses
-
-For this revision, I have created
-vo-client-38-1.tar.gz
-in the upstream area that extends the existing tarball with the vomsdir directory.
-
