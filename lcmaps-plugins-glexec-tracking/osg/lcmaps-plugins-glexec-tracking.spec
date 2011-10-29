@@ -1,7 +1,7 @@
 Summary: Process tracking plugin for the LCMAPS authorization framework
 Name: lcmaps-plugins-glexec-tracking
 Version: 0.0.8
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: EGEE Middleware and ASL and Fermitools
 Group: System Environment/Libraries
 # The tarball was created from CVS using the following commands:
@@ -53,6 +53,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_sbindir}/glexec_monitor
 
 %changelog
+* Fri Oct 28 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 0.0.8-2
+- rebuilt
+
 * Tue Oct 25 2011 Dave Dykstra <dwd@fnal.gov> 0.0.8-1
 - Upgrade to upstream 0.0.8 which undoes a piece of the last patch in
   order to properly clean up orphaned processes, and also disconnects

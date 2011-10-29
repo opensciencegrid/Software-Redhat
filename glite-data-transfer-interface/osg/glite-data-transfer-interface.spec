@@ -1,6 +1,6 @@
 Name:		glite-data-transfer-interface
 Version:	3.7.0
-Release:	2
+Release:	3
 Summary:	WSDL and interface docs for FTS.
 
 Group:		Development/Languages/C and C++
@@ -46,6 +46,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_docdir}/%{name}-%{version}/RELEASE-NOTES
 
 %changelog
+* Fri Oct 28 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 3.7.0-3
+- rebuilt
+
 * Tue Jul  5 2011 Brian Bockelman <bbockelm@cse.unl.edu> 3.7.0-2
 - Put the interface files in a well-known directory, not tied to the RPM version
 

@@ -1,6 +1,6 @@
 Name:		glite-service-discovery-build-common-cpp
 Version:	0.3.0
-Release:	1
+Release:	2
 Summary:	Build macros for the org.glite.service-discovery family.
 
 Group:		Development/Languages/C and C++
@@ -33,6 +33,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/%{name}
 
 %changelog
+* Fri Oct 28 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 0.3.0-2
+- rebuilt
+
 * Sat Jul  5 2011 Brian Bockelman <bbockelm@cse.unl.edu> 0.3.0-1
 - Initial OSG packaging.
 - Note that we use HEAD, not the release tag: there is a bug in the lib64 macro.

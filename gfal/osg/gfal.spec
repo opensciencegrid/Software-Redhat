@@ -1,6 +1,6 @@
 Name:		gfal
 Version:	1.11.14
-Release:	6
+Release:	7
 Summary:	Grid File Access Library for accessing files in multiple grid protocols
 
 Group:		Development/Languages/C and C++
@@ -57,6 +57,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/*
 
 %changelog
+* Fri Oct 28 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.11.14-7
+- rebuilt
+
 * Mon Sep 12 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.11.14-6
 - Rebuilt against updated Globus libraries
 

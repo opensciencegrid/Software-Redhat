@@ -1,6 +1,6 @@
 Name:		glite-data-util-c
 Version:	1.2.3
-Release:	3%{?dist}
+Release:	4%{?dist}
 Summary:	gLite data C utilties
 
 Group:		System/Libraries
@@ -57,6 +57,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_docdir}/*
 
 %changelog
+* Fri Oct 28 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.2.3-4
+- rebuilt
+
 * Tue Sep 13 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.2.3-3
 - Rebuilt against updated Globus libraries
 

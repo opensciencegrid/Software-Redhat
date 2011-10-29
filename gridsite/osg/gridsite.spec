@@ -14,7 +14,7 @@
 Name:           gridsite
 Version:        1.7.15
 
-Release:        3%{?dist}.2
+Release:        4%{?dist}.2
 Summary:        Grid Security for the Web, Web platforms for Grids
 
 Group:          System Environment/Daemons
@@ -337,6 +337,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc src/doxygen LICENSE
 
 %changelog
+* Fri Oct 28 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.7.15-4.2
+- rebuilt
+
 * Sun Jul 3 2011 Brian Bockelman <bbockelm@cse.unl.edu>  - 1.7.15-3
 - Add back libgridsite_globus.so, as they are needed by glite-data-util-c
 - Add dependency on openssl-devel for gridsite-devel.

@@ -1,6 +1,6 @@
 Name:		glite-build-common-cpp
 Version:	3.2.12.2
-Release:	3%{?dist}
+Release:	4%{?dist}
 Summary:	gLite build macros
 
 Group:		Development/Libraries/C and C++
@@ -37,6 +37,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/%{name}/m4/*.m4
 
 %changelog
+* Fri Oct 28 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 3.2.12.2-4
+- rebuilt
+
 * Mon Sep 12 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 3.2.12.2-3
 - Rebuilt against updated Globus libraries
 

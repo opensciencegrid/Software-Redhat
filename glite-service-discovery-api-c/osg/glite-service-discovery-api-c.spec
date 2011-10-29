@@ -1,7 +1,7 @@
 Summary: C libraries for accessing the service discovery system
 Name: glite-service-discovery-api-c
 Version: 2.2.3
-Release: 1.sl5
+Release: 2.sl5
 License: Apache License 2.0
 Vendor: EMI
 Group: System Environment/Libraries
@@ -48,6 +48,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libglite-sd-c.so.2.0.2
 
 %changelog
+* Fri Oct 28 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 2.2.3-2.sl5
+- rebuilt
+
 * Sun Jul  3 2011 Brian Bockelman <bbockelm@cse.unl.edu> 2.2.3-1
 - Initial packaging, adopted from CVS and EMI.
 
