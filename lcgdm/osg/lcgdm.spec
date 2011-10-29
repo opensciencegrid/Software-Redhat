@@ -26,15 +26,15 @@
 %endif
 
 Name:		lcgdm
-Version:	1.8.0.1
-Release:	4%{?dist}
+Version:	1.8.1.2
+Release:	2%{?dist}
 Summary:	LHC Computing Grid Data Management
 
 Group:		System Environment/Libraries
 License:	ASL 2.0
 URL:		http://glite.web.cern.ch/glite/
-#		LANG=C svn co http://svnweb.cern.ch/guest/lcgdm/lcg-dm/tags/LCG-DM_R_1_8_0_1 lcgdm-1.8.0.1
-#		tar --exclude .svn -z -c -f lcgdm-1.8.0.1.tar.gz lcgdm-1.8.0.1
+#		LANG=C svn co http://svnweb.cern.ch/guest/lcgdm/lcg-dm/tags/LCG-DM_R_1_8_1_2_emi lcgdm-1.8.1.2
+#		tar --exclude .svn -z -c -f lcgdm-1.8.1.2.tar.gz lcgdm-1.8.1.2
 Source0:	%{name}-%{version}.tar.gz
 Source1:	README.Fedora.lfc-mysql
 Source2:	README.Fedora.lfc-postgres
@@ -42,38 +42,29 @@ Source3:	README.Fedora.dpm-mysql
 Source4:	README.Fedora.dpns-mysql
 Source5:	README.Fedora.dpm-postgres
 Source6:	README.Fedora.dpns-postgres
-#		Fix non-standard installation path
-#		https://savannah.cern.ch/bugs/?57526
-Patch0:		%{name}-paths.patch
-#		Link using $(CC)
-#		https://savannah.cern.ch/bugs/?57527
-Patch1:		%{name}-ld.patch
-#		Fix soname issues
-#		https://savannah.cern.ch/bugs/?57528
-Patch2:		%{name}-withsoname.patch
 #		Link binaries using shared libraries
 #		https://savannah.cern.ch/bugs/?57529
-Patch3:		%{name}-shliblink.patch
-#		Link to gsoap library, fix parallel build
-#		https://savannah.cern.ch/bugs/?57530
-Patch4:		%{name}-gsoap.patch
+Patch0:		%{name}-shliblink.patch
 #		Fix build on GNU/Hurd and GNU/kFreeBSD
 #		https://savannah.cern.ch/bugs/?61071
-Patch5:		%{name}-porting.patch
+Patch1:		%{name}-porting.patch
 #		Fix race conditions in Makefile install rules:
 #		https://savannah.cern.ch/bugs/?69233
-Patch6:		%{name}-race.patch
+Patch2:		%{name}-race.patch
 #		Remove deprecated python function:
 #		https://savannah.cern.ch/bugs/?69232
-Patch7:		%{name}-python-exception.patch
+Patch3:		%{name}-python-exception.patch
 #		Make condrestart work as expected
-Patch8:		%{name}-condrestart.patch
-#		Adapt upstream's hardcoded include and library paths for Fedora
-Patch9:		%{name}-usr.patch
+#		https://savannah.cern.ch/bugs/?76695
+Patch4:		%{name}-condrestart.patch
+#		Get rid of -L/usr/lib(64)
+Patch5:		%{name}-usr.patch
+#		Fix python and perl installation paths and linking
+Patch6:		%{name}-paths.patch
 #		Allow moving plugins out of default library search path
-Patch10:	%{name}-dlopen.patch
+Patch7:		%{name}-dlopen.patch
 #		Use Fedora's imake instead of bundled version
-Patch11:	%{name}-imake.patch
+Patch8:		%{name}-imake.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 %if %{?fedora}%{!?fedora:0} >= 5 || %{?rhel}%{!?rhel:0} >= 5
@@ -575,16 +566,11 @@ pushd $d/%{name}-%{version}
 %patch6 -p1
 %patch7 -p1
 %patch8 -p1
-%patch9 -p1
-%patch10 -p1
-%patch11 -p1
 
 chmod 644 security/globus_gsi_gss_constants.h \
 	  security/globus_i_gsi_credential.h \
 	  security/gssapi_openssl.h
 chmod 644 doc/lfc/INSTALL-*
-
-sed 's!@@LIBDIR@@!%{_libdir}!' -i security/Csec_api_loader.c
 
 # The code violates the strict aliasing rules all over the place...
 # Need to use -fnostrict-aliasing so that the -O2 optimization in
@@ -609,16 +595,16 @@ pushd lfc-mysql/%{name}-%{version}
 
 ./configure lfc --with-mysql \
 	--libdir=%{_lib} \
-	--with-gsoap-location=%{_prefix} \
 	--with-gsoap-version=$gsoapversion \
-	--with-voms-location=%{_prefix} \
 	--with-id-map-file=%{_sysconfdir}/lcgdm-mapfile \
 	--with-ns-config-file=%{_sysconfdir}/NSCONFIG \
-	--with-sysconf-dir='$(prefix)/../etc'
+	--with-sysconf-dir='$(prefix)/../etc' \
+	--with-emi \
+	--without-argus
 
 make -f Makefile.ini Makefiles
 
-make %{?_smp_mflags} prefix=%{_prefix}
+make %{?_smp_mflags} SOAPFLG="`pkg-config --cflags gsoap`"
 
 popd
 
@@ -626,12 +612,12 @@ pushd lfc-postgres/%{name}-%{version}
 
 ./configure lfc --with-postgres \
 	--libdir=%{_lib} \
-	--with-gsoap-location=%{_prefix} \
 	--with-gsoap-version=$gsoapversion \
-	--with-voms-location=%{_prefix} \
 	--with-id-map-file=%{_sysconfdir}/lcgdm-mapfile \
 	--with-ns-config-file=%{_sysconfdir}/NSCONFIG \
-	--with-sysconf-dir='$(prefix)/../etc'
+	--with-sysconf-dir='$(prefix)/../etc' \
+	--with-emi \
+	--without-argus
 
 # Disable building things already built above
 sed -e 's/\(BuildDLI	*\)YES/\1NO/' \
@@ -648,7 +634,7 @@ ln -s ../../../lfc-mysql/%{name}-%{version}/shlib/liblcgdm.so* .
 ln -s ../../../lfc-mysql/%{name}-%{version}/shlib/liblfc.so* .
 popd
 
-make %{?_smp_mflags} prefix=%{_prefix}
+make %{?_smp_mflags} SOAPFLG="`pkg-config --cflags gsoap`"
 
 popd
 
@@ -656,13 +642,13 @@ pushd dpm-mysql/%{name}-%{version}
 
 ./configure dpm --with-mysql \
 	--libdir=%{_lib} \
-	--with-gsoap-location=%{_prefix} \
 	--with-gsoap-version=$gsoapversion \
-	--with-voms-location=%{_prefix} \
 	--with-dpm-config-file=%{_sysconfdir}/DPMCONFIG \
 	--with-id-map-file=%{_sysconfdir}/lcgdm-mapfile \
 	--with-ns-config-file=%{_sysconfdir}/DPNSCONFIG \
-	--with-sysconf-dir='$(prefix)/../etc'
+	--with-sysconf-dir='$(prefix)/../etc' \
+	--with-emi \
+	--without-argus
 
 # Disable building things already built above
 sed -e '/^SECURITYDIR =/d' -e '/^COMMONDIR =/d' -i config/Project.tmpl
@@ -675,7 +661,7 @@ pushd shlib
 ln -s ../../../lfc-mysql/%{name}-%{version}/shlib/liblcgdm.so* .
 popd
 
-make %{?_smp_mflags} prefix=%{_prefix}
+make %{?_smp_mflags} SOAPFLG="`pkg-config --cflags gsoap`"
 
 popd
 
@@ -683,13 +669,13 @@ pushd dpm-postgres/%{name}-%{version}
 
 ./configure dpm --with-postgres \
 	--libdir=%{_lib} \
-	--with-gsoap-location=%{_prefix} \
 	--with-gsoap-version=$gsoapversion \
-	--with-voms-location=%{_prefix} \
 	--with-dpm-config-file=%{_sysconfdir}/DPMCONFIG \
 	--with-id-map-file=%{_sysconfdir}/lcgdm-mapfile \
 	--with-ns-config-file=%{_sysconfdir}/DPNSCONFIG \
-	--with-sysconf-dir='$(prefix)/../etc'
+	--with-sysconf-dir='$(prefix)/../etc' \
+	--with-emi \
+	--without-argus
 
 # Disable building things already built above
 sed -e 's/\(BuildDPMClient	*\)YES/\1NO/' \
@@ -708,7 +694,7 @@ ln -s ../../../lfc-mysql/%{name}-%{version}/shlib/liblcgdm.so* .
 ln -s ../../../dpm-mysql/%{name}-%{version}/shlib/libdpm.so* .
 popd
 
-make %{?_smp_mflags} prefix=%{_prefix}
+make %{?_smp_mflags} SOAPFLG="`pkg-config --cflags gsoap`"
 
 popd
 
@@ -724,9 +710,14 @@ PYTHON_LIB=`%{__altpython} \
     -c "from distutils import sysconfig; \
 	import sys; \
 	sys.stdout.write('-L' + sysconfig.get_config_var('LIBDEST') + \
-	'/config -lpython' + sys.version[:3] + ' ' + \
+	'/config -lpython' + sys.version[:3] \
+	   + sys.abiflags if hasattr(sys, 'abiflags') else '' \
+	   + ' ' + \
 	sysconfig.get_config_var('LIBS') + ' ' + \
 	sysconfig.get_config_var('SYSLIBS'))"`
+PYTHON_MODULE_SUFFIX=`%{__altpython} \
+    -c "from distutils import sysconfig; \
+	print(sysconfig.get_config_var('SO'))"`
 
 for module in lfc lfcthr lfc2 lfc2thr ; do
 
@@ -735,7 +726,7 @@ gcc %{optflags} -fno-strict-aliasing -fPIC -D_LARGEFILE64_SOURCE -Dlinux \
     -I../lfc-mysql/%{name}-%{version}/h -DNSTYPE_LFC \
     ${INCLUDE_PYTHON} ../lfc-mysql/%{name}-%{version}/ns/${module}_wrap.c
 gcc %{optflags} -fno-strict-aliasing -fPIC -D_LARGEFILE64_SOURCE -Dlinux \
-    -shared -o _${module}.so ${module}_wrap.o ${PYTHON_LIB} \
+    -shared -o _${module}${PYTHON_MODULE_SUFFIX} ${module}_wrap.o ${PYTHON_LIB} \
     -L../lfc-mysql/%{name}-%{version}/shlib -llfc -llcgdm
 
 done
@@ -747,7 +738,7 @@ gcc %{optflags} -fno-strict-aliasing -fPIC -D_LARGEFILE64_SOURCE -Dlinux \
     -I../dpm-mysql/%{name}-%{version}/h -DNSTYPE_DPNS \
     ${INCLUDE_PYTHON} ../dpm-mysql/%{name}-%{version}/dpm/${module}_wrap.c
 gcc %{optflags} -fno-strict-aliasing -fPIC -D_LARGEFILE64_SOURCE -Dlinux \
-    -shared -o _${module}.so ${module}_wrap.o ${PYTHON_LIB} \
+    -shared -o _${module}${PYTHON_MODULE_SUFFIX} ${module}_wrap.o ${PYTHON_LIB} \
     -L../dpm-mysql/%{name}-%{version}/shlib -ldpm -llcgdm
 
 done
@@ -760,8 +751,8 @@ rm -rf ${RPM_BUILD_ROOT}
 
 pushd lfc-mysql/%{name}-%{version}
 
-make prefix=${RPM_BUILD_ROOT}%{_prefix} install
-make prefix=${RPM_BUILD_ROOT}%{_prefix} install.man
+make SOAPFLG="`pkg-config --cflags gsoap`" \
+     prefix=${RPM_BUILD_ROOT}%{_prefix} install install.man
 
 mkdir -p ${RPM_BUILD_ROOT}%{_datadir}/lfc
 mv ${RPM_BUILD_ROOT}%{_datadir}/LFC/* ${RPM_BUILD_ROOT}%{_datadir}/lfc
@@ -779,7 +770,8 @@ mkdir -p ${RPM_BUILD_ROOT}%{_sysconfdir}/lfc-mysql
 # lfcdaemon startup script
 sed -e 's/LD_LIBRARY_PATH=$LD_LIBRARY_PATH //' \
     -e '/LD_LIBRARY_PATH/d' \
-    -e 's!/opt/lcg/bin!/usr/sbin!g' -e 's!/opt/lcg!!g' \
+    -e 's!\$PREFIX/bin!\$PREFIX/sbin!' \
+    -e 's!\$PREFIX/etc!/etc!' \
     -e 's!\(/var/lock/subsys/\).*!\1lfc-mysql!' \
     ${RPM_BUILD_ROOT}%{_datadir}/lfc/rc.lfcdaemon > \
     ${RPM_BUILD_ROOT}%{_initrddir}/lfc-mysql
@@ -787,9 +779,8 @@ chmod 755 ${RPM_BUILD_ROOT}%{_initrddir}/lfc-mysql
 rm ${RPM_BUILD_ROOT}%{_datadir}/lfc/rc.lfcdaemon
 
 # lfcdaemon configuration file
-sed -e 's!/opt/lcg!!g' \
-    ${RPM_BUILD_ROOT}%{_sysconfdir}/lfcdaemon.conf.templ > \
-    ${RPM_BUILD_ROOT}%{_sysconfdir}/lfc-mysql/lfcdaemon.conf
+cp -p ${RPM_BUILD_ROOT}%{_sysconfdir}/lfcdaemon.conf.templ \
+      ${RPM_BUILD_ROOT}%{_sysconfdir}/lfc-mysql/lfcdaemon.conf
 rm ${RPM_BUILD_ROOT}%{_sysconfdir}/lfcdaemon.conf.templ
 touch ${RPM_BUILD_ROOT}%{_sysconfdir}/sysconfig/lfcdaemon
 
@@ -830,7 +821,8 @@ touch ${RPM_BUILD_ROOT}%{_mandir}/man8/lfc-shutdown.8
 # lfc-dli startup script
 sed -e 's/LD_LIBRARY_PATH=$LD_LIBRARY_PATH //' \
     -e '/LD_LIBRARY_PATH/d' \
-    -e 's!/opt/lcg/bin!/usr/sbin!g' -e 's!/opt/lcg!!g' \
+    -e 's!\$PREFIX/bin!\$PREFIX/sbin!' \
+    -e 's!\$PREFIX/etc!/etc!' \
     -e 's!/var/log/dli!/var/log/lfc-dli!g' \
     ${RPM_BUILD_ROOT}%{_datadir}/lfc/rc.lfc-dli > \
     ${RPM_BUILD_ROOT}%{_initrddir}/lfc-dli
@@ -859,13 +851,8 @@ sed -e 's/\(\.TH [^ ]* \)1/\18/' \
 rm ${RPM_BUILD_ROOT}%{_mandir}/man1/lfc-dli.1
 
 sed 's/\(^LFC_VERSION=\).*/\1%{version}/' scripts/lcg-info-provider-lfc > \
-    ${RPM_BUILD_ROOT}%{_datadir}/lfc/lcg-info-provider-lfc 
-chmod 755 ${RPM_BUILD_ROOT}%{_datadir}/lfc/lcg-info-provider-lfc 
-
-# Move plugins out of the default library search path
-mkdir -p ${RPM_BUILD_ROOT}%{_libdir}/%{name}
-mv ${RPM_BUILD_ROOT}%{_libdir}/libCsec_plugin_* \
-   ${RPM_BUILD_ROOT}%{_libdir}/%{name}
+    ${RPM_BUILD_ROOT}%{_datadir}/lfc/lcg-info-provider-lfc
+chmod 755 ${RPM_BUILD_ROOT}%{_datadir}/lfc/lcg-info-provider-lfc
 
 # Create lfc user home and certificate directories
 mkdir -p ${RPM_BUILD_ROOT}%{_localstatedir}/lib/lfc
@@ -889,8 +876,8 @@ popd
 
 pushd lfc-postgres/%{name}-%{version}
 
-make prefix=${RPM_BUILD_ROOT}%{_prefix} install
-make prefix=${RPM_BUILD_ROOT}%{_prefix} install.man
+make SOAPFLG="`pkg-config --cflags gsoap`" \
+     prefix=${RPM_BUILD_ROOT}%{_prefix} install install.man
 
 mkdir -p ${RPM_BUILD_ROOT}%{_datadir}/lfc
 mv ${RPM_BUILD_ROOT}%{_datadir}/LFC/* ${RPM_BUILD_ROOT}%{_datadir}/lfc
@@ -908,7 +895,8 @@ mkdir -p ${RPM_BUILD_ROOT}%{_sysconfdir}/lfc-postgres
 # lfcdaemon startup script
 sed -e 's/LD_LIBRARY_PATH=$LD_LIBRARY_PATH //' \
     -e '/LD_LIBRARY_PATH/d' \
-    -e 's!/opt/lcg/bin!/usr/sbin!g' -e 's!/opt/lcg!!g' \
+    -e 's!\$PREFIX/bin!\$PREFIX/sbin!' \
+    -e 's!\$PREFIX/etc!/etc!' \
     -e 's!\(/var/lock/subsys/\).*!\1lfc-postgres!' \
     ${RPM_BUILD_ROOT}%{_datadir}/lfc/rc.lfcdaemon > \
     ${RPM_BUILD_ROOT}%{_initrddir}/lfc-postgres
@@ -916,9 +904,8 @@ chmod 755 ${RPM_BUILD_ROOT}%{_initrddir}/lfc-postgres
 rm ${RPM_BUILD_ROOT}%{_datadir}/lfc/rc.lfcdaemon
 
 # lfcdaemon configuration file
-sed -e 's!/opt/lcg!!g' \
-    ${RPM_BUILD_ROOT}%{_sysconfdir}/lfcdaemon.conf.templ > \
-    ${RPM_BUILD_ROOT}%{_sysconfdir}/lfc-postgres/lfcdaemon.conf
+cp -p ${RPM_BUILD_ROOT}%{_sysconfdir}/lfcdaemon.conf.templ \
+      ${RPM_BUILD_ROOT}%{_sysconfdir}/lfc-postgres/lfcdaemon.conf
 rm ${RPM_BUILD_ROOT}%{_sysconfdir}/lfcdaemon.conf.templ
 touch ${RPM_BUILD_ROOT}%{_sysconfdir}/sysconfig/lfcdaemon
 
@@ -974,8 +961,8 @@ popd
 
 pushd dpm-mysql/%{name}-%{version}
 
-make prefix=${RPM_BUILD_ROOT}%{_prefix} install
-make prefix=${RPM_BUILD_ROOT}%{_prefix} install.man
+make SOAPFLG="`pkg-config --cflags gsoap`" \
+     prefix=${RPM_BUILD_ROOT}%{_prefix} install install.man
 
 sed 's!/usr/bin/env python!/usr/bin/python!' \
     -i ${RPM_BUILD_ROOT}%{_bindir}/dpm-listspaces
@@ -996,7 +983,8 @@ mkdir -p ${RPM_BUILD_ROOT}%{_sysconfdir}/dpm-mysql
 # dpm startup script
 sed -e 's/LD_LIBRARY_PATH=$LD_LIBRARY_PATH //' \
     -e '/LD_LIBRARY_PATH/d' \
-    -e 's!/opt/lcg/bin!/usr/sbin!g' -e 's!/opt/lcg!!g' \
+    -e 's!\$PREFIX/bin!\$PREFIX/sbin!' \
+    -e 's!\$PREFIX/etc!/etc!' \
     -e 's!\(/var/lock/subsys/\).*!\1dpm-mysql!' \
     ${RPM_BUILD_ROOT}%{_datadir}/dpm/rc.dpm > \
     ${RPM_BUILD_ROOT}%{_initrddir}/dpm-mysql
@@ -1004,8 +992,7 @@ chmod 755 ${RPM_BUILD_ROOT}%{_initrddir}/dpm-mysql
 rm ${RPM_BUILD_ROOT}%{_datadir}/dpm/rc.dpm
 
 # dpm configuration file
-sed -e 's!/opt/lcg!!g' \
-    -e 's/\(^DPNS_HOST=\).*/\1`hostname -f`/' \
+sed -e 's/\(^DPNS_HOST=\).*/\1`hostname -f`/' \
     ${RPM_BUILD_ROOT}%{_sysconfdir}/dpm.conf.templ > \
     ${RPM_BUILD_ROOT}%{_sysconfdir}/dpm-mysql/dpm.conf
 rm ${RPM_BUILD_ROOT}%{_sysconfdir}/dpm.conf.templ
@@ -1047,7 +1034,8 @@ touch ${RPM_BUILD_ROOT}%{_mandir}/man8/dpm-shutdown.8
 # dpnsdaemon startup script
 sed -e 's/LD_LIBRARY_PATH=$LD_LIBRARY_PATH //' \
     -e '/LD_LIBRARY_PATH/d' \
-    -e 's!/opt/lcg/bin!/usr/sbin!g' -e 's!/opt/lcg!!g' \
+    -e 's!\$PREFIX/bin!\$PREFIX/sbin!' \
+    -e 's!\$PREFIX/etc!/etc!' \
     -e 's!\(/var/lock/subsys/\).*!\1dpm-mysql-nameserver!' \
     -e 's!/etc/NSCONFIG!/etc/DPNSCONFIG!g' \
     ${RPM_BUILD_ROOT}%{_datadir}/dpm/rc.dpnsdaemon > \
@@ -1056,8 +1044,7 @@ chmod 755 ${RPM_BUILD_ROOT}%{_initrddir}/dpm-mysql-nameserver
 rm ${RPM_BUILD_ROOT}%{_datadir}/dpm/rc.dpnsdaemon
 
 # dpnsdaemon configuration file
-sed -e 's!/opt/lcg!!g' \
-    -e 's!/etc/NSCONFIG!/etc/DPNSCONFIG!g' \
+sed -e 's!/etc/NSCONFIG!/etc/DPNSCONFIG!g' \
     ${RPM_BUILD_ROOT}%{_sysconfdir}/dpnsdaemon.conf.templ > \
     ${RPM_BUILD_ROOT}%{_sysconfdir}/dpm-mysql/dpnsdaemon.conf
 rm ${RPM_BUILD_ROOT}%{_sysconfdir}/dpnsdaemon.conf.templ
@@ -1101,7 +1088,8 @@ touch ${RPM_BUILD_ROOT}%{_mandir}/man8/dpns-shutdown.8
 # dpmcopyd startup script
 sed -e 's/LD_LIBRARY_PATH=$LD_LIBRARY_PATH //' \
     -e '/LD_LIBRARY_PATH/d' \
-    -e 's!/opt/lcg/bin!/usr/sbin!g' -e 's!/opt/lcg!!g' \
+    -e 's!\$PREFIX/bin!\$PREFIX/sbin!' \
+    -e 's!\$PREFIX/etc!/etc!' \
     -e 's!\(/var/lock/subsys/\).*!\1dpm-mysql-copyd!' \
     ${RPM_BUILD_ROOT}%{_datadir}/dpm/rc.dpmcopyd > \
     ${RPM_BUILD_ROOT}%{_initrddir}/dpm-mysql-copyd
@@ -1109,8 +1097,7 @@ chmod 755 ${RPM_BUILD_ROOT}%{_initrddir}/dpm-mysql-copyd
 rm ${RPM_BUILD_ROOT}%{_datadir}/dpm/rc.dpmcopyd
 
 # dpmcopyd configuration file
-sed -e 's!/opt/lcg!!g' \
-    -e 's/\(^DPNS_HOST=\).*/\1`hostname -f`/' \
+sed -e 's/\(^DPNS_HOST=\).*/\1`hostname -f`/' \
     -e 's/\(^DPM_HOST=\).*/\1`hostname -f`/' \
     ${RPM_BUILD_ROOT}%{_sysconfdir}/dpmcopyd.conf.templ > \
     ${RPM_BUILD_ROOT}%{_sysconfdir}/dpm-mysql/dpmcopyd.conf
@@ -1129,7 +1116,6 @@ mv ${RPM_BUILD_ROOT}%{_bindir}/dpmcopyd \
 touch ${RPM_BUILD_ROOT}%{_sbindir}/dpmcopyd
 chmod 755 ${RPM_BUILD_ROOT}%{_sbindir}/dpmcopyd
 sed -e 's/\(\.TH [^ ]*\) 1/\1 8/' \
-    -e 's!/opt/lcg/lib/!!g' \
     ${RPM_BUILD_ROOT}%{_mandir}/man1/dpmcopyd.1 | gzip -9 -n -c > \
     ${RPM_BUILD_ROOT}%{_libdir}/dpm-mysql/dpmcopyd.8.gz
 rm ${RPM_BUILD_ROOT}%{_mandir}/man1/dpmcopyd.1
@@ -1140,7 +1126,8 @@ for svc in srmv1 srmv2 srmv2.2 ; do
     # startup script
     sed -e 's/LD_LIBRARY_PATH=$LD_LIBRARY_PATH //' \
 	-e '/LD_LIBRARY_PATH/d' \
-	-e 's!/opt/lcg/bin!/usr/sbin!g' -e 's!/opt/lcg!!g' \
+	-e 's!\$PREFIX/bin!\$PREFIX/sbin!' \
+	-e 's!\$PREFIX/etc!/etc!' \
 	-e "s/${svc}/dpm-${svc}/g" \
 	-e "s!\(/var/lock/subsys/\).*!\1dpm-mysql-${ssvc}!" \
 	${RPM_BUILD_ROOT}%{_datadir}/dpm/rc.${svc} > \
@@ -1149,7 +1136,7 @@ for svc in srmv1 srmv2 srmv2.2 ; do
     rm ${RPM_BUILD_ROOT}%{_datadir}/dpm/rc.${svc}
 
     # configuration file
-    sed -e "s/${svc}/dpm-${svc}/g" -e 's!/opt/lcg!!g' \
+    sed -e "s/${svc}/dpm-${svc}/g" \
 	-e 's/\(^DPNS_HOST=\).*/\1`hostname -f`/' \
 	-e 's/\(^DPM_HOST=\).*/\1`hostname -f`/' \
 	-e 's/\(^RUN_SRMV2DAEMON=\).*/\1"yes"/' \
@@ -1164,7 +1151,7 @@ for svc in srmv1 srmv2 srmv2.2 ; do
 	${RPM_BUILD_ROOT}%{_sysconfdir}/dpm-mysql/dpm-${svc}.logrotate
     touch ${RPM_BUILD_ROOT}%{_sysconfdir}/logrotate.d/dpm-${svc}
 
-    # binary and makefile
+    # binary and man page
     mv ${RPM_BUILD_ROOT}%{_bindir}/${svc} \
        ${RPM_BUILD_ROOT}%{_libdir}/dpm-mysql/dpm-${svc}
     touch ${RPM_BUILD_ROOT}%{_sbindir}/dpm-${svc}
@@ -1180,7 +1167,8 @@ done
 # dpm-rfiod startup script
 sed -e 's/LD_LIBRARY_PATH=$LD_LIBRARY_PATH //' \
     -e '/LD_LIBRARY_PATH/d' \
-    -e 's!/opt/lcg/bin!/usr/sbin!g' -e 's!/opt/lcg!!g' \
+    -e 's!\$PREFIX/bin!\$PREFIX/sbin!' \
+    -e 's!\$PREFIX/etc!/etc!' \
     -e 's/rfiod/dpm-rfiod/g' \
     -e 's!/var/log/rfio!/var/log/dpm-rfio!g' \
     ${RPM_BUILD_ROOT}%{_datadir}/dpm/rc.rfiod > \
@@ -1189,7 +1177,7 @@ chmod 755 ${RPM_BUILD_ROOT}%{_initrddir}/dpm-rfiod
 rm ${RPM_BUILD_ROOT}%{_datadir}/dpm/rc.rfiod
 
 # dpm-rfiod configuration file
-sed -e 's/rfiod/dpm-rfiod/g' -e 's!/opt/lcg!!g' \
+sed -e 's/rfiod/dpm-rfiod/g' \
     -e 's!/var/log/rfio!/var/log/dpm-rfio!g' \
     -e 's/\(^DPNS_HOST=\).*/\1`hostname -f`/' \
     -e 's/\(^DPM_HOST=\).*/\1`hostname -f`/' \
@@ -1230,8 +1218,8 @@ popd
 
 pushd dpm-postgres/%{name}-%{version}
 
-make prefix=${RPM_BUILD_ROOT}%{_prefix} install
-make prefix=${RPM_BUILD_ROOT}%{_prefix} install.man
+make SOAPFLG="`pkg-config --cflags gsoap`" \
+     prefix=${RPM_BUILD_ROOT}%{_prefix} install install.man
 
 mkdir -p ${RPM_BUILD_ROOT}%{_datadir}/dpm
 mv ${RPM_BUILD_ROOT}%{_datadir}/DPM/* ${RPM_BUILD_ROOT}%{_datadir}/dpm
@@ -1249,7 +1237,8 @@ mkdir -p ${RPM_BUILD_ROOT}%{_sysconfdir}/dpm-postgres
 # dpm startup script
 sed -e 's/LD_LIBRARY_PATH=$LD_LIBRARY_PATH //' \
     -e '/LD_LIBRARY_PATH/d' \
-    -e 's!/opt/lcg/bin!/usr/sbin!g' -e 's!/opt/lcg!!g' \
+    -e 's!\$PREFIX/bin!\$PREFIX/sbin!' \
+    -e 's!\$PREFIX/etc!/etc!' \
     -e 's!\(/var/lock/subsys/\).*!\1dpm-postgres!' \
     ${RPM_BUILD_ROOT}%{_datadir}/dpm/rc.dpm > \
     ${RPM_BUILD_ROOT}%{_initrddir}/dpm-postgres
@@ -1257,8 +1246,7 @@ chmod 755 ${RPM_BUILD_ROOT}%{_initrddir}/dpm-postgres
 rm ${RPM_BUILD_ROOT}%{_datadir}/dpm/rc.dpm
 
 # dpm configuration file
-sed -e 's!/opt/lcg!!g' \
-    -e 's/\(^DPNS_HOST=\).*/\1`hostname -f`/' \
+sed -e 's/\(^DPNS_HOST=\).*/\1`hostname -f`/' \
     ${RPM_BUILD_ROOT}%{_sysconfdir}/dpm.conf.templ > \
     ${RPM_BUILD_ROOT}%{_sysconfdir}/dpm-postgres/dpm.conf
 rm ${RPM_BUILD_ROOT}%{_sysconfdir}/dpm.conf.templ
@@ -1300,7 +1288,8 @@ touch ${RPM_BUILD_ROOT}%{_mandir}/man8/dpm-shutdown.8
 # dpnsdaemon startup script
 sed -e 's/LD_LIBRARY_PATH=$LD_LIBRARY_PATH //' \
     -e '/LD_LIBRARY_PATH/d' \
-    -e 's!/opt/lcg/bin!/usr/sbin!g' -e 's!/opt/lcg!!g' \
+    -e 's!\$PREFIX/bin!\$PREFIX/sbin!' \
+    -e 's!\$PREFIX/etc!/etc!' \
     -e 's!\(/var/lock/subsys/\).*!\1dpm-postgres-nameserver!' \
     -e 's!/etc/NSCONFIG!/etc/DPNSCONFIG!g' \
     ${RPM_BUILD_ROOT}%{_datadir}/dpm/rc.dpnsdaemon > \
@@ -1309,8 +1298,7 @@ chmod 755 ${RPM_BUILD_ROOT}%{_initrddir}/dpm-postgres-nameserver
 rm ${RPM_BUILD_ROOT}%{_datadir}/dpm/rc.dpnsdaemon
 
 # dpnsdaemon configuration file
-sed -e 's!/opt/lcg!!g' \
-    -e 's!/etc/NSCONFIG!/etc/DPNSCONFIG!g' \
+sed -e 's!/etc/NSCONFIG!/etc/DPNSCONFIG!g' \
     ${RPM_BUILD_ROOT}%{_sysconfdir}/dpnsdaemon.conf.templ > \
     ${RPM_BUILD_ROOT}%{_sysconfdir}/dpm-postgres/dpnsdaemon.conf
 rm ${RPM_BUILD_ROOT}%{_sysconfdir}/dpnsdaemon.conf.templ
@@ -1354,7 +1342,8 @@ touch ${RPM_BUILD_ROOT}%{_mandir}/man8/dpns-shutdown.8
 # dpmcopyd startup script
 sed -e 's/LD_LIBRARY_PATH=$LD_LIBRARY_PATH //' \
     -e '/LD_LIBRARY_PATH/d' \
-    -e 's!/opt/lcg/bin!/usr/sbin!g' -e 's!/opt/lcg!!g' \
+    -e 's!\$PREFIX/bin!\$PREFIX/sbin!' \
+    -e 's!\$PREFIX/etc!/etc!' \
     -e 's!\(/var/lock/subsys/\).*!\1dpm-postgres-copyd!' \
     ${RPM_BUILD_ROOT}%{_datadir}/dpm/rc.dpmcopyd > \
     ${RPM_BUILD_ROOT}%{_initrddir}/dpm-postgres-copyd
@@ -1362,8 +1351,7 @@ chmod 755 ${RPM_BUILD_ROOT}%{_initrddir}/dpm-postgres-copyd
 rm ${RPM_BUILD_ROOT}%{_datadir}/dpm/rc.dpmcopyd
 
 # dpmcopyd configuration file
-sed -e 's!/opt/lcg!!g' \
-    -e 's/\(^DPNS_HOST=\).*/\1`hostname -f`/' \
+sed -e 's/\(^DPNS_HOST=\).*/\1`hostname -f`/' \
     -e 's/\(^DPM_HOST=\).*/\1`hostname -f`/' \
     ${RPM_BUILD_ROOT}%{_sysconfdir}/dpmcopyd.conf.templ > \
     ${RPM_BUILD_ROOT}%{_sysconfdir}/dpm-postgres/dpmcopyd.conf
@@ -1382,7 +1370,6 @@ mv ${RPM_BUILD_ROOT}%{_bindir}/dpmcopyd \
 touch ${RPM_BUILD_ROOT}%{_sbindir}/dpmcopyd
 chmod 755 ${RPM_BUILD_ROOT}%{_sbindir}/dpmcopyd
 sed -e 's/\(\.TH [^ ]*\) 1/\1 8/' \
-    -e 's!/opt/lcg/lib/!!g' \
     ${RPM_BUILD_ROOT}%{_mandir}/man1/dpmcopyd.1 | gzip -9 -n -c > \
     ${RPM_BUILD_ROOT}%{_libdir}/dpm-postgres/dpmcopyd.8.gz
 rm ${RPM_BUILD_ROOT}%{_mandir}/man1/dpmcopyd.1
@@ -1393,7 +1380,8 @@ for svc in srmv1 srmv2 srmv2.2 ; do
     # startup script
     sed -e 's/LD_LIBRARY_PATH=$LD_LIBRARY_PATH //' \
 	-e '/LD_LIBRARY_PATH/d' \
-	-e 's!/opt/lcg/bin!/usr/sbin!g' -e 's!/opt/lcg!!g' \
+	-e 's!\$PREFIX/bin!\$PREFIX/sbin!' \
+	-e 's!\$PREFIX/etc!/etc!' \
 	-e "s/${svc}/dpm-${svc}/g" \
 	-e "s!\(/var/lock/subsys/\).*!\1dpm-postgres-${ssvc}!" \
 	${RPM_BUILD_ROOT}%{_datadir}/dpm/rc.${svc} > \
@@ -1402,7 +1390,7 @@ for svc in srmv1 srmv2 srmv2.2 ; do
     rm ${RPM_BUILD_ROOT}%{_datadir}/dpm/rc.${svc}
 
     # configuration file
-    sed -e "s/${svc}/dpm-${svc}/g" -e 's!/opt/lcg!!g' \
+    sed -e "s/${svc}/dpm-${svc}/g" \
 	-e 's/\(^DPNS_HOST=\).*/\1`hostname -f`/' \
 	-e 's/\(^DPM_HOST=\).*/\1`hostname -f`/' \
 	-e 's/\(^RUN_SRMV2DAEMON=\).*/\1"yes"/' \
@@ -1417,7 +1405,7 @@ for svc in srmv1 srmv2 srmv2.2 ; do
 	${RPM_BUILD_ROOT}%{_sysconfdir}/dpm-postgres/dpm-${svc}.logrotate
     touch ${RPM_BUILD_ROOT}%{_sysconfdir}/logrotate.d/dpm-${svc}
 
-    # binary and makefile
+    # binary and man page
     mv ${RPM_BUILD_ROOT}%{_bindir}/${svc} \
        ${RPM_BUILD_ROOT}%{_libdir}/dpm-postgres/dpm-${svc}
     touch ${RPM_BUILD_ROOT}%{_sbindir}/dpm-${svc}
@@ -1459,7 +1447,7 @@ install %{altpython}/*.so ${RPM_BUILD_ROOT}%{altpython_sitearch}
 %{__python}    -c 'import compileall; compileall.compile_dir("'"$RPM_BUILD_ROOT"'", 10, "%{python_sitearch}", 1)' > /dev/null
 %{__python} -O -c 'import compileall; compileall.compile_dir("'"$RPM_BUILD_ROOT"'", 10, "%{python_sitearch}", 1)' > /dev/null
 %if %{?altpython:1}%{!?altpython:0}
-%{__altpython}    -c 'import compileall; compileall.compile_dir("'"$RPM_BUILD_ROOT%{altpython_sitearch}"'", 10, "%{altpython_sitearch}", 1)' > /dev/null
+%{__altpython}	  -c 'import compileall; compileall.compile_dir("'"$RPM_BUILD_ROOT%{altpython_sitearch}"'", 10, "%{altpython_sitearch}", 1)' > /dev/null
 %{__altpython} -O -c 'import compileall; compileall.compile_dir("'"$RPM_BUILD_ROOT%{altpython_sitearch}"'", 10, "%{altpython_sitearch}", 1)' > /dev/null
 %endif
 %endif
@@ -2267,7 +2255,6 @@ fi
 %{_libdir}/liblcgdm.so.*
 %dir %{_libdir}/%{name}
 %{_libdir}/%{name}/libCsec_plugin_GSI.so
-%{_libdir}/%{name}/libCsec_plugin_GSI_thread.so
 %{_libdir}/%{name}/libCsec_plugin_ID.so
 %doc lfc-mysql/%{name}-%{version}/LICENSE
 
@@ -2322,13 +2309,13 @@ fi
 %if %{?altpython:1}%{!?altpython:0}
 %files -n lfc-%{altpython}
 %defattr(-,root,root,-)
-%{altpython_sitearch}/_lfc.so
+%{altpython_sitearch}/_lfc.*so
 %{altpython_sitearch}/lfc.py*
-%{altpython_sitearch}/_lfcthr.so
+%{altpython_sitearch}/_lfcthr.*so
 %{altpython_sitearch}/lfcthr.py*
-%{altpython_sitearch}/_lfc2.so
+%{altpython_sitearch}/_lfc2.*so
 %{altpython_sitearch}/lfc2.py*
-%{altpython_sitearch}/_lfc2thr.so
+%{altpython_sitearch}/_lfc2thr.*so
 %{altpython_sitearch}/lfc2thr.py*
 %if %{?fedora}%{!?fedora:0} >= 15
 %{altpython_sitearch}/__pycache__/lfc*
@@ -2446,9 +2433,9 @@ fi
 %if %{?altpython:1}%{!?altpython:0}
 %files -n dpm-%{altpython}
 %defattr(-,root,root,-)
-%{altpython_sitearch}/_dpm.so
+%{altpython_sitearch}/_dpm.*so
 %{altpython_sitearch}/dpm.py*
-%{altpython_sitearch}/_dpm2.so
+%{altpython_sitearch}/_dpm2.*so
 %{altpython_sitearch}/dpm2.py*
 %if %{?fedora}%{!?fedora:0} >= 15
 %{altpython_sitearch}/__pycache__/dpm*
@@ -2665,8 +2652,28 @@ fi
 %attr(-,dpmmgr,dpmmgr) %{_localstatedir}/log/dpm-srmv2.2
 
 %changelog
-* Tue Sep 13 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.8.0.1-4
-- Rebuilt against updated Globus libraries
+* Fri Oct 28 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.8.1.2-2
+- rebuilt
+
+* Fri Sep 02 2011 Mattias Ellert <mattias.ellert@fysast.uu.se> - 1.8.1.2-1
+- Update to version 1.8.1.2
+- Drop patches lcgdm-withsoname.patch and lcgdm-gsoap.patch (upstream)
+
+* Mon Jun 20 2011 Petr Sabata <contyk@redhat.com> - 1.8.0.1-8
+- Perl mass rebuild
+
+* Wed Mar 23 2011 Mattias Ellert <mattias.ellert@fysast.uu.se> - 1.8.0.1-7
+- Rebuild for mysql 5.5.10
+
+* Sat Feb 12 2011 Mattias Ellert <mattias.ellert@fysast.uu.se> - 1.8.0.1-6
+- Fix duplicate files introduced by the PEP 3149 update
+
+* Mon Feb 07 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.8.0.1-5
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
+
+* Thu Dec 30 2010 David Malcolm <dmalcolm@redhat.com> - 1.8.0.1-4
+- update build of python bindings to reflect PEP 3149 in the latest python 3.2,
+  which changes the extension of python modules, and the library SONAME
 
 * Mon Dec 27 2010 Mattias Ellert <mattias.ellert@fysast.uu.se> - 1.8.0.1-3
 - Add database schema migration to scriptlets
@@ -2750,7 +2757,7 @@ fi
 
 * Tue Apr 02 2008 Anders Wäänänen <waananen@nbi.dk> - 1.6.9.1-4ng
 - Added patch from Mattias Ellert <mattias.ellert@fysast.uu.se>:
-    LFC-shliblink.patch - Make clients link dynamically against library 
+    LFC-shliblink.patch - Make clients link dynamically against library
 
 * Tue Mar 18 2008 Anders Wäänänen <waananen@nbi.dk> - 1.6.9.1-3ng
 - Added ng to release tag
