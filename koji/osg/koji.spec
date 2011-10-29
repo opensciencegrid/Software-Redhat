@@ -2,7 +2,7 @@
 
 Name: koji
 Version: 1.6.0
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: LGPLv2 and GPLv2+
 # koji.ssl libs (from plague) are GPLv2+
 Summary: Build system tools
@@ -11,6 +11,7 @@ URL: http://fedorahosted.org/koji
 Patch0: fedora-config.patch
 Patch1: koji_passwd_cache.patch
 Patch2: kojid_setup_dns.patch
+Patch3: kojid_scmbuild_check_spec_after_running_sourcecmd.patch
 
 Source: https://fedorahosted.org/releases/k/o/koji/%{name}-%{version}.tar.bz2
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -126,6 +127,7 @@ koji-web is a web UI to the Koji system.
 %patch0 -p1 -b .orig
 %patch1 -p0
 %patch2 -p0
+%patch3 -p0
 
 %build
 
@@ -228,6 +230,9 @@ if [ $1 = 0 ]; then
 fi
 
 %changelog
+* Fri Oct 28 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.6.0-4
+- add patch to check for spec file only after running source_cmd in a build from an scm
+
 * Tue Oct 11 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.6.0-3
 - add setup_dns to rootopts in kojid
 
