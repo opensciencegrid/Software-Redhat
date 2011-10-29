@@ -1,14 +1,14 @@
 Name:		CGSI-gSOAP
-Version:	1.3.4.0
-Release:	2%{?dist}
+Version:	1.3.4.2
+Release:	3%{?dist}
 Summary:	GSI plugin for gSOAP
 
 Group:		System Environment/Libraries
 License:	ASL 2.0
 URL:		http://glite.web.cern.ch/glite/
 #		The source tarfile is created from a subversion checkout:
-#		svn co http://svnweb.cern.ch/guest/lcgutil/cgsi-gsoap/tags/glite-security-cgsi-gsoap_R_1_3_4_0 CGSI-gSOAP-1.3.4.0
-#		tar --exclude .svn -z -c -f CGSI-gSOAP-1.3.4.0.tar.gz CGSI-gSOAP-1.3.4.0
+#		svn co http://svnweb.cern.ch/guest/lcgutil/cgsi-gsoap/tags/cgsi-gsoap_R_1_3_4_2 CGSI-gSOAP-1.3.4.2
+#		tar --exclude .svn -z -c -f CGSI-gSOAP-1.3.4.2.tar.gz CGSI-gSOAP-1.3.4.2
 Source0:	%{name}-%{version}.tar.gz
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -40,33 +40,28 @@ find . '(' -name '*.h' -o -name '*.c' -o -name '*.cpp' -o -name '*.cc' ')' \
     -exec chmod 644 {} ';'
 chmod 644 LICENSE RELEASE-NOTES
 
-# Adapt Makefile for Fedora
-sed -e /PTHR/d \
-    -e 's!_$(GLOBUS_FLAVOUR)!!g' \
-    -e 's!-L$([A-Z_]*)/lib!!' \
-    -e 's!-L$([A-Z_]*)/$(LIBDIR)!!' \
-    -e 's!\(GLOBUS_INCLUDE *= *\).*!\1-I/usr/include/globus -I/usr/$(LIBDIR)/globus/include -I/usr/kerberos/include!' \
-    -e 's!\(GSOAP_INCLUDE *= *\).*!\1!' \
-    -e 's!\(GSOAP_VERSION *= *\).*!\1!' \
-    -e 's!-I$(VOMS_LOCATION)/include/glite/security/voms!-I/usr/include/voms!' \
-    -e 's!\.so \\$!.so!' \
-    -e s/installshlibvomspthr// -i src/Makefile
-sed -e :a -e '/^$/N;/\n.*$(AR)/d;ta' -e 'P;D' -i src/Makefile
-sed -e :a -e '/^$/N;/\n.*$(RANLIB)/d;ta' -e 'P;D' -i src/Makefile
+# Remove -L/usr/lib and -L/usr/lib64 since they may cause problems
+sed -e 's!-L$([A-Z_]*)/lib!!' \
+    -e 's!-L$([A-Z_]*)/$(LIBDIR)!!' -i src/Makefile
+
+# Remove gsoap version from library names
+sed -e 's!$(GSOAP_VERSION)!!g' -i src/Makefile
 
 %build
 . ./VERSION
 cd src
-make CFLAGS="%optflags -fPIC -I." USE_VOMS=yes WITH_CPP_LIBS=yes \
-     LIBDIR=%{_lib} VERSION=$VERSION
+make CFLAGS="%optflags -fPIC -I. `pkg-config --cflags gsoap`" \
+     USE_VOMS=yes WITH_EMI=yes WITH_CPP_LIBS=yes \
+     LIBDIR=%{_lib} VERSION=$VERSION all doc
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
 . ./VERSION
 cd src
-make CFLAGS="%optflags -fPIC -I." USE_VOMS=yes WITH_CPP_LIBS=yes \
-     LIBDIR=%{_lib} VERSION=$VERSION install
+make CFLAGS="%optflags -fPIC -I. `pkg-config --cflags gsoap`" \
+     USE_VOMS=yes WITH_EMI=yes WITH_CPP_LIBS=yes \
+     LIBDIR=%{_lib} VERSION=$VERSION install install.man
 
 mkdir -p $RPM_BUILD_ROOT%{_docdir}/%{name}-devel-%{version}
 mv $RPM_BUILD_ROOT%{_datadir}/doc/CGSI \
@@ -100,8 +95,17 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_mandir}/man*/*
 
 %changelog
-* Mon Sep 12 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.3.4.0-2
-- Rebuilt against updated Globus libraries
+* Fri Oct 28 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.3.4.2-3
+- Rebuilt
+
+* Thu Sep 01 2011 Mattias Ellert <mattias.ellert@fysast.uu.se> - 1.3.4.2-2
+- Use gsoap cflags from pkg-config
+
+* Mon Jun 20 2011 Mattias Ellert <mattias.ellert@fysast.uu.se> - 1.3.4.2-1
+- Update to version 1.3.4.2
+
+* Mon Feb 07 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.3.4.0-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
 
 * Mon Dec 20 2010 Mattias Ellert <mattias.ellert@fysast.uu.se> - 1.3.4.0-1
 - Update to version 1.3.4.0
