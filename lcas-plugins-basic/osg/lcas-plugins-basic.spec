@@ -1,7 +1,7 @@
 Summary: Basic plugins for the LCAS authorization framework
 Name: lcas-plugins-basic
 Version: 1.3.5
-Release: 5%{?dist}
+Release: 6%{?dist}
 License: ASL 2.0
 Group: System Environment/Libraries
 URL: http://www.nikhef.nl/pub/projects/grid/gridwiki/index.php/Site_Access_Control
@@ -43,6 +43,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/lcas/liblcas_userban.so
 
 %changelog
+* Mon Oct 31 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.3.5-6
+- rebuilt
+
 * Mon Sep 12 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.3.5-5
 - Rebuilt against updated Globus libraries
 
