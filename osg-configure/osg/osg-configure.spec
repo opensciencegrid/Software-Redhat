@@ -1,5 +1,5 @@
 %global name osg-configure
-%global version 0.6.5
+%global version 0.6.6
 %global release 1%{?dist}
 
 Summary: Package for configure-osg and associated scripts
@@ -190,6 +190,10 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/osg/config.d/15-managedfork.ini
 
 %changelog
+* Mon Oct 31 2011 Suchandra Thapa <sthapa@ci.uchicago.edu> 0.6.5-1
+- Update to 0.6.6 to fix setting default job manager
+- Update config files to use DEFAULT instead of UNAVAILABLE where appropriate
+
 * Wed Oct 26 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 0.6.5-1
 - Fixed a few RSV configuration issues.
 
