@@ -1,7 +1,7 @@
 Name:      osg-ce
 Summary:   OSG Compute Element 
 Version:   3.0.0
-Release:   18
+Release:   19
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -38,6 +38,7 @@ Requires: osg-configure-gratia
 Requires: osg-configure-managedfork
 Requires: osg-configure-misc
 Requires: osg-configure-squid
+Requires(post): globus-gram-job-manager-scripts >= 4
 
 # For the CE authz
 %ifarch %{ix86}
@@ -45,6 +46,11 @@ Requires: liblcas_lcmaps_gt4_mapping.so.0
 %else
 Requires: liblcas_lcmaps_gt4_mapping.so.0()(64bit)
 %endif
+
+%post
+# We always want the default jobmanager to be fork (OSG convention), so we
+# force it on both install and upgrade. 
+/usr/sbin/globus-gatekeeper-admin -e jobmanager-fork-poll -n jobmanager > /dev/null 2>&1 || :
 
 %description
 %{summary}
@@ -108,6 +114,9 @@ rm -rf $RPM_BUILD_ROOT
 %files sge
 
 %changelog
+* Tue Oct 25 2011 Alain Roy <roy@cs.wisc.edu> - 3.0.0-19
+- Add post install scriplet to fork "jobmanager" to be jobmanager-fork-poll
+
 * Tue Oct 11 2011 Alain Roy <roy@cs.wisc.edu> - 3.0.0-18
 - Fixed dependencies for PBS, LSF, and SGE
 
