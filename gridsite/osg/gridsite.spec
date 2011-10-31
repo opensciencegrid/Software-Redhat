@@ -14,7 +14,7 @@
 Name:           gridsite
 Version:        1.7.15
 
-Release:        4%{?dist}.2
+Release:        4%{?dist}.3
 Summary:        Grid Security for the Web, Web platforms for Grids
 
 Group:          System Environment/Daemons
@@ -140,7 +140,7 @@ This package gridsite-doc, contains developer documentation for gridsite.
 Group:    System Environment/Daemons
 Summary:  Run time libraries for mod_gridsite and gridsite-clients
 Version:  %{vercompat}
-Release:  3%{?dist}.1
+Release:  3%{?dist}.2
 
 %description compat
 GridSite was originally a web application developed for managing and formatting 
@@ -337,6 +337,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc src/doxygen LICENSE
 
 %changelog
+* Mon Oct 31 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.7.15-4.3
+- also needed to bump release of compat package
+
 * Fri Oct 28 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.7.15-4.2
 - rebuilt
 
