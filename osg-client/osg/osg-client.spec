@@ -2,7 +2,7 @@
 Name:      osg-client
 Summary:   OSG Client
 Version:   3.0.0
-Release:   10
+Release:   12
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -18,12 +18,14 @@ Requires: gsi-openssh
 Requires: nmap
 Requires: lcg-info
 Requires: lcg-infosites
-Requires: npad
+# No npad for now, because it installs server by default. Re-add later?
+#Requires: npad
 Requires: osg-discovery
 Requires: owamp-client
 Requires: osg-cert-scripts
 Requires: vo-client
 Requires: globus-gram-client-tools
+Requires: globus-gsi-cert-utils-progs
 Requires: osg-system-profiler
 
 %description
@@ -51,6 +53,14 @@ rm -rf $RPM_BUILD_ROOT
 %files condor
 
 %changelog
+* Mon Oct 31 2011 Alain Roy <roy@cs.wisc.edu> - 3.0.0-12
+- Added dependency on globus-gsi-cert-utils-progs, to get grid-cert-info 
+  installed by default. 
+
+* Mon Oct 24 2011 Alain Roy <roy@cs.wisc.edu> - 3.0.0-11
+- Removed npad because it installs a server by default, which it inappropriate 
+  for a client install
+
 * Thu Sep 8 2011 Alain Roy <roy@cs.wisc.edu> - 3.0.0-10
 - Added condor subpackage so people can choose to install without Condor dependency
 
