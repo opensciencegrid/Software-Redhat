@@ -54,7 +54,7 @@ Version: 7.6.2
 %else
 %define condor_release %condor_base_release
 %endif
-Release: %condor_release%{?dist}.2
+Release: %condor_release%{?dist}.3
 
 License: ASL 2.0
 Group: Applications/System
@@ -1044,6 +1044,9 @@ fi
 %endif
 
 %changelog
+* Fri Oct 28 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 7.6.2-0.6.3
+- rebuilt
+
 * Mon Sep 12 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 7.6.2-0.6.2
 - Rev bump to rebuild with updated Globus libs
 

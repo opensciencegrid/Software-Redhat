@@ -1,6 +1,6 @@
 Name:		glite-security-delegation-interface
 Version:	2.0.3
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	Interface files for glite proxy delegation API
 
 Group:		Development/Languages/C and C++
@@ -48,6 +48,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/%{name}
 
 %changelog
+* Fri Oct 28 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.3-3
+- rebuilt
+
 * Mon Sep 12 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.3-2
 - Rebuilt against updated Globus libraries
 

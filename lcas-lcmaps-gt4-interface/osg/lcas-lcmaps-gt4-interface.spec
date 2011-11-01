@@ -1,7 +1,7 @@
 Summary: Mapping interface between Globus Toolkit and LCAS/LCMAPS
 Name: lcas-lcmaps-gt4-interface
 Version: 0.1.4
-Release: 6%{?dist}
+Release: 7%{?dist}
 Vendor: Nikhef
 License: ASL 2.0
 Group: Applications/System
@@ -75,6 +75,9 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/grid-security/gsi-authz.conf
 
 %changelog
+* Fri Oct 28 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 0.1.4-7
+- rebuilt
+
 * Mon Sep 12 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 0.1.4-6
 - Rebuilt against updated Globus libraries
 

@@ -1,7 +1,7 @@
 Summary: SAML 2.0 profile of XACML v2.0
 Name: saml2-xacml2-c-lib
 Version: 1.0.1
-Release: 6%{?dist}
+Release: 7%{?dist}
 Vendor: Nikhef
 License: ASL 2.0
 Group: System Environment/Libraries
@@ -103,6 +103,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/xacml.pc
 
 %changelog
+* Fri Oct 28 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0.1-7
+- rebuilt
+
 * Mon Sep 19 2011 Dave Dykstra <dwd@fnal.gov> - 1.0.1-6
 - Add Obsoletes prima to avoid the old package from the hadoop repo
 

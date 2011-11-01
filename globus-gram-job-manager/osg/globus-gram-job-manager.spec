@@ -12,36 +12,43 @@
 
 Name:		globus-gram-job-manager
 %global _name %(tr - _ <<< %{name})
-Version:	13.3
-Release:	2%{?dist}
+Version:	13.5
+Release:	3%{?dist}
 Summary:	Globus Toolkit - GRAM Jobmanager
 
 Group:		Applications/Internet
 License:	ASL 2.0
 URL:		http://www.globus.org/
-Source:		%{_name}-%{version}.tar.gz
+Source:		http://www.globus.org/ftppub/gt5/5.1/5.1.2/packages/src/%{_name}-%{version}.tar.gz
 
 # OSG-specific patches
-Patch8:         job_status.patch
 Patch9:         unlock_init.patch
-Patch10:        unlock_register_job.patch
 Patch11:        null_old_jm.patch
 Patch13:        watchdog_timer.patch
 Patch14:        recvmsg_eagain.patch
-Patch15:        double_proxy_lock.patch
 Patch16:        description_service_tag.patch
-Patch17:        file_cleanup_logging.patch
 Patch19:        load_requests_before_activating_socket.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Requires:	globus-common >= 14
+Requires:	globus-scheduler-event-generator%{?_isa} >= 4
 Requires:	globus-xio-popen-driver%{?_isa} >= 2
+Requires:	globus-xio%{?_isa} >= 3
+Requires:	globus-gss-assist%{?_isa} >= 8
 Requires:	libxml2%{?_isa}
+Requires:	globus-gsi-sysconfig%{?_isa} >= 5
+Requires:	globus-callout%{?_isa} >= 2
+Requires:	globus-gram-job-manager-callout-error%{?_isa} >= 2
 Requires:	globus-gram-protocol >= 11
+Requires:	globus-usage%{?_isa} >= 3
+Requires:	globus-rsl%{?_isa} >= 9
+Requires:	globus-gass-cache%{?_isa} >= 8
+Requires:	globus-gass-transfer%{?_isa} >= 7
 Requires:	globus-gram-job-manager-scripts
 Requires:	globus-gass-copy-progs >= 8
 Requires:	globus-proxy-utils >= 5
 Requires:	globus-gass-cache-program >= 2
+
 BuildRequires:	grid-packaging-tools >= 3.4
 BuildRequires:	globus-scheduler-event-generator-devel%{?_isa} >= 4
 BuildRequires:	globus-xio-popen-driver-devel%{?_isa} >= 2
@@ -102,15 +109,11 @@ GRAM Jobmanager Documentation Files
 %prep
 %setup -q -n %{_name}-%{version}
 
-%patch8 -p0
 %patch9 -p0
-%patch10 -p0
 %patch11 -p0
 %patch13 -p0
 %patch14 -p0
-%patch15 -p0
 %patch16 -p0
-%patch17 -p0
 %patch19 -p0
 
 %build
@@ -121,7 +124,7 @@ rm -f pkgdata/Makefile.am
 rm -f globus_automake*
 rm -rf autom4te.cache
 
-%{_datadir}/globus/globus-bootstrap.sh
+aclocal_includes="-I ." %{_datadir}/globus/globus-bootstrap.sh
 
 %configure --with-flavor=%{flavor} --enable-doxygen \
            --%{docdiroption}=%{_docdir}/%{name}-%{version} \
@@ -181,6 +184,21 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_docdir}/%{name}-%{version}/html
 
 %changelog
+* Thu Oct 27 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 13.5-3
+- Merged upstream 13.5-2:
+
+* Mon Oct 24 2011 Joseph Bester <bester@mcs.anl.gov> - 13.5-2
+- set aclocal_includes="-I ." prior to bootsrap
+
+* Thu Oct 20 2011 Joseph Bester <bester@mcs.anl.gov> - 13.5-1
+- GRAM-227: Manager double-locked
+
+* Tue Oct 18 2011 Joseph Bester <bester@mcs.anl.gov> - 13.4-1
+- GRAM-262: job manager -extra-envvars implementation doesn't match description
+
+* Tue Oct 11 2011 Joseph Bester <bester@mcs.anl.gov> - 13.3-2
+- Add explicit dependencies on >= 5.2 libraries
+
 * Tue Oct 04 2011 Alain Roy <roy@cs.wisc.edu> - 13.3-2
 - Merged upstream 13.3-1 with our patches
 
@@ -193,7 +211,7 @@ rm -rf $RPM_BUILD_ROOT
 * Thu Sep 22 2011  <bester@mcs.anl.gov> - 13.2-1
 - GRAM-257: Set default values for GLOBUS_GATEKEEPER_*
 
-* Thu Sep 22 2011 Joe Bester <jbester@mactop2.local> - 13.1-1
+* Thu Sep 22 2011 Joseph Bester <bester@mcs.anl.gov> - 13.1-1
 - Fix: GRAM-250
 
 * Tue Sep 06 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 13.0-3

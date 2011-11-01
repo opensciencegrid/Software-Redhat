@@ -1,6 +1,6 @@
 Name:		glite-data-build
 Version:	3.2.0
-Release:	1
+Release:	2
 Summary:	Build macros for the org.glite.data family.
 
 Group:		Development/Languages/C and C++
@@ -32,6 +32,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/%{name}
 
 %changelog
+* Fri Oct 28 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 3.2.0-2
+- rebuilt
+
 * Sat Jul  5 2011 Brian Bockelman <bbockelm@cse.unl.edu> 3.2.0-1
 - Creation of the package for the purpose of making the build macros available.
 

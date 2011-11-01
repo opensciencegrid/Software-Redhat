@@ -1,6 +1,6 @@
 Name:		dcap
 Version:	2.47.5
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	Client Tools for dCache
 
 Group:		Applications/Internet
@@ -184,6 +184,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/%{name}/libtelnetTunnel.so
 
 %changelog
+* Fri Oct 28 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 2.47.5-3
+- rebuilt
+
 * Mon Sep 12 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 2.47.5-2
 - Rebuilt against updated Globus libraries
 

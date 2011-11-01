@@ -60,6 +60,9 @@ rm -rf $RPM_BUILD_ROOT
    Also eliminates some scary-looking log messages that didn't indicate
    real problems.
 
+* Fri Oct 28 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 0.0.8-2
+- rebuilt
+
 * Tue Oct 25 2011 Dave Dykstra <dwd@fnal.gov> 0.0.8-1
 - Upgrade to upstream 0.0.8 which undoes a piece of the last patch in
   order to properly clean up orphaned processes, and also disconnects

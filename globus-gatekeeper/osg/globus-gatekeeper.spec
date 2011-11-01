@@ -13,7 +13,7 @@
 Name:		globus-gatekeeper
 %global _name %(tr - _ <<< %{name})
 Version:	8.1
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	Globus Toolkit - Globus Gatekeeper
 
 Group:		Applications/Internet
@@ -27,6 +27,9 @@ Patch0:         child_signals.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Requires:	globus-common >= 13.4
+Requires:	globus-gss-assist%{?_isa} >= 8
+Requires:	globus-gssapi-gsi%{?_isa} >= 9
+
 Requires:       lsb
 Requires(post): globus-common-progs >= 13.4
 Requires(preun):globus-common-progs >= 13.4
@@ -66,9 +69,9 @@ rm -rf autom4te.cache
 %configure --with-flavor=%{flavor} \
            --%{docdiroption}=%{_docdir}/%{name}-%{version} \
            --disable-static \
+           --with-lsb \
 	   --with-initscript-config-path=/etc/sysconfig/globus-gatekeeper \
-           --with-lockfile-path='${localstatedir}/lock/subsys/globus-gatekeeper' \
-           --with-lsb
+           --with-lockfile-path='${localstatedir}/lock/subsys/globus-gatekeeper'
 
 make %{?_smp_mflags}
 
@@ -95,7 +98,7 @@ mkdir -p $RPM_BUILD_ROOT/etc/grid-services/available
 rm -rf $RPM_BUILD_ROOT
 
 %post
-if [ $1 -ge 1 ]; then
+if [ $1 -eq 1 ]; then
     /sbin/chkconfig --add %{name}
 fi
 
@@ -106,7 +109,7 @@ if [ $1 -eq 0 ]; then
 fi
 
 %postun
-if [ $1 -ge 1 ]; then
+if [ $1 -eq 1 ]; then
     /sbin/service %{name} condrestart > /dev/null 2>&1 || :
 fi
 
@@ -119,6 +122,12 @@ fi
 %config(noreplace) /etc/sysconfig/globus-gatekeeper
 
 %changelog
+* Thu Oct 27 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 8.1-3
+- Merged upstream 8.1-2
+    * Fri Oct 21 2011 Joseph Bester <bester@mcs.anl.gov> - 8.1-2
+    - Fix %post* scripts to check for -eq 1
+    - Add explicit dependencies on >= 5.2 libraries
+
 * Fri Sep 23 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 8.1-2
 - Removed my lsb patch, merged upstream 8.1-1:
     * Fri Sep 23 2011 Joe Bester <bester@mcs.anl.gov> - 8.1-1
