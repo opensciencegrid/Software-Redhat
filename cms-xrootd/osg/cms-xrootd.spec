@@ -2,7 +2,7 @@
 Summary: CMS meta-RPM for Xrootd
 Name: cms-xrootd
 Version: 1.0
-Release: 2
+Release: 4
 Group: System Environment/Daemons
 License: Public Domain
 URL: https://twiki.cern.ch/twiki/bin/view/Main/CmsXrootdArchitecture
@@ -12,9 +12,10 @@ URL: https://twiki.cern.ch/twiki/bin/view/Main/CmsXrootdArchitecture
 Source0:  xrootd.sample.t3.cfg.in
 Source1:  xrootd.sample.posix.cfg.in
 Source2:  Authfile
+Source3:  xrootd.sample.dcache.cfg.in
 
-Requires: xrootd-server >= 3.0.5
-Conflicts: xrootd-server < 3.0.5
+Requires: xrootd-server >= 3.1.0
+Conflicts: xrootd-server < 3.1.0
 
 %ifarch %{ix86}
 Requires: libXrdLcmaps.so.0
@@ -46,6 +47,15 @@ Requires: libXrdHdfs.so.0()(64bit)
 %description hdfs
 %{summary}
 
+%package dcache
+Summary: CMS meta-RPM for Xrootd over dCache
+Group: System Environment/Daemons
+Requires: xrootd-server >= 3.1.0
+Conflicts: xrootd-server < 3.1.0
+
+%description dcache
+%{summary}
+
 %install
 rm -rf $RPM_BUILD_ROOT
 
@@ -53,6 +63,7 @@ mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/xrootd
 
 #sed -e "s#@LIBDIR@#%{_libdir}#" %{SOURCE0} > $RPM_BUILD_ROOT%{_sysconfdir}/xrootd/xrootd.sample.t3.cfg
 sed -e "s#@LIBDIR@#%{_libdir}#" %{SOURCE1} > $RPM_BUILD_ROOT%{_sysconfdir}/xrootd/xrootd.sample.posix.cfg
+sed -e "s#@LIBDIR@#%{_libdir}#" %{SOURCE3} > $RPM_BUILD_ROOT%{_sysconfdir}/xrootd/xrootd.sample.dcache.cfg
 install -m 0644 %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/xrootd/Authfile
 
 %clean
@@ -64,4 +75,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/xrootd/Authfile
 
 %files hdfs
+
+%files dcache
+%{_sysconfdir}/xrootd/xrootd.sample.dcache.cfg
 
