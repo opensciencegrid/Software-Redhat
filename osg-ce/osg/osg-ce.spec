@@ -1,7 +1,7 @@
 Name:      osg-ce
 Summary:   OSG Compute Element 
 Version:   3.0.0
-Release:   19
+Release:   20
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -12,15 +12,11 @@ Requires: grid-certificates
 Requires: java-1.6.0-sun-compat
 Requires: globus-gridftp-server-progs 
 Requires: osg-client
-Requires: syslog-ng
 Requires: lfc-client
 Requires: glite-ce-monitor
 Requires: osg-info-services
-#Requires: Job-Environment
 Requires: osg-vo-map
 Requires: vo-client
-#Requires: cemon-server
-#Requires: osg-site-verify
 Requires: osg-site-web-page
 Requires: globus-gram-job-manager-fork
 Requires: globus-gram-job-manager-fork-setup-poll
@@ -114,6 +110,9 @@ rm -rf $RPM_BUILD_ROOT
 %files sge
 
 %changelog
+* Thu Nov 3 2011 Alain Roy <roy@cs.wisc.edu> - 3.0.0-20
+- Removed dependency on syslog-ng, which shouldn't have been there. 
+
 * Tue Oct 25 2011 Alain Roy <roy@cs.wisc.edu> - 3.0.0-19
 - Add post install scriplet to fork "jobmanager" to be jobmanager-fork-poll
 
