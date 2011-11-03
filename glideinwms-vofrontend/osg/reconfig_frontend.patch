@@ -1,11 +1,9 @@
-diff --git a/creation/reconfig_frontend b/creation/reconfig_frontend
-index d7b5359..cd5efaa 100755
---- a/creation/reconfig_frontend
-+++ b/creation/reconfig_frontend
-@@ -34,17 +34,10 @@ import cvWParamDict
+--- /creation/reconfig_frontend	2011-11-03 15:58:41.000000000 -0500
++++ /creation/reconfig_frontend	2011-11-03 15:59:08.000000000 -0500
+@@ -33,17 +33,10 @@
  ################################################################################
  
- def main(params,old_params):
+ def main(params, old_params, update_scripts):
 -    # load old files
 -    old_frontend_dicts_obj=cvWParamDict.frontendDicts(old_params)
 -    old_frontend_dicts_obj.load()

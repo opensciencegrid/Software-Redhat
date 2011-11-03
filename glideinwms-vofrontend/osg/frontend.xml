@@ -27,9 +27,9 @@
    <stage base_dir="/usr/share/gwms-frontend/www/stage" use_symlink="True" web_base_url="http://<hostname of frontend>/vofrontend/stage"/>
    <work base_dir="/usr/share/gwms-frontend/frontend-temp" base_log_dir="/var/log/gwms-frontend"/>
    <attrs>
-      <attr name="GLIDEIN_Entry_Rank" glidein_publish="True" job_publish="True" parameter="True" type="string" value="1"/>
+      <attr name="GLIDECLIENT_Rank" glidein_publish="False" job_publish="False" parameter="True" type="string" value="1"/>
       <attr name="GLIDEIN_Expose_Grid_Env" glidein_publish="True" job_publish="True" parameter="False" type="string" value="True"/>
-      <attr name="PREEMPT_GRACE_TIME" glidein_publish="False" job_publish="False" parameter="True" type="int" value="60"/>
+      <attr name="GLIDEIN_Glexec_Use" glidein_publish="True" job_publish="True" parameter="False" type="string" value="OPTIONAL"/>
       <attr name="USE_MATCH_AUTH" glidein_publish="False" job_publish="False" parameter="True" type="string" value="True"/>
    </attrs>
    <groups>

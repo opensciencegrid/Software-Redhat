@@ -1,5 +1,5 @@
 Name:           glideinwms-vofrontend
-Version:        2.5.2.1
+Version:        2.5.3
 Release:        1
 Summary:        The VOFrontend for glideinWMS submission host
 
@@ -17,7 +17,7 @@ Obsoletes:	GlideinWMSFrontend < 2.5.1-11
 
 #Source0:        http://www.uscms.org/SoftwareComputing/Grid/WMS/glideinWMS/glideinWMS_v2_5_1_frontend.tgz
 #Source0:        GlideinWMSFrontend-2.5.1.tar.gz
-Source0:	glideinWMS_v2_5_2_1_frontend.tgz
+Source0:	glideinWMS_v2_5_3rc2_frontend.tgz
 
 # How to build tar file
 # git clone http://cdcvs.fnal.gov/projects/glideinwms
@@ -27,10 +27,11 @@ Source0:	glideinWMS_v2_5_2_1_frontend.tgz
 Source1:        frontend_startup
 Source2:        frontend.xml
 Source3:        gwms-frontend.conf.httpd
-Source4:        00_frontend.config
-Source5:        01_collectors.config
-Source6:	02_frontend-local.config
-Source7:	checksum.frontend
+Source4:        00_gwms_general.config
+Source5:        01_gwms_collectors.config
+Source6:	02_gwms_schedds.config
+Source7:	03_gwms_local.config
+Source8:	checksum.frontend
 patch0:         reconfig_frontend.patch
 patch1:         cvWParamDict.py.patch
 patch2: 	cvWParams.py.patch
@@ -109,7 +110,6 @@ install -d $RPM_BUILD_ROOT%{python_sitelib}
 cp lib/*.py $RPM_BUILD_ROOT%{python_sitelib}
 cp frontend/*.py $RPM_BUILD_ROOT/%{python_sitelib}
 cp creation/lib/*.py $RPM_BUILD_ROOT%{python_sitelib}
-#install %{SOURCE4} $RPM_BUILD_ROOT%{_libdir}/python2.4/site-packages
 
 
 # Install the init.d
@@ -167,9 +167,10 @@ rm -rf $RPM_BUILD_ROOT%{_datadir}/gwms-frontend/frontend-temp/CVS
 
 # Install condor stuff
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d
-install -m 0644 %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/00_frontend.config
-install -m 0644 %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/01_collectors.config
-install -m 0644 %{SOURCE6} $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/02_frontend-local.config
+install -m 0644 %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
+install -m 0644 %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
+install -m 0644 %{SOURCE6} $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
+install -m 0644 %{SOURCE7} $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
 
 # Install tools
 install -d $RPM_BUILD_ROOT%{_bindir}
@@ -181,7 +182,7 @@ done
 cp tools/lib/*.py $RPM_BUILD_ROOT%{python_sitelib}
 
 # Install checksum file
-install -m 0644 %{SOURCE7} $RPM_BUILD_ROOT%{_datadir}/gwms-frontend/frontend-temp/checksum.frontend
+install -m 0644 %{SOURCE8} $RPM_BUILD_ROOT%{_datadir}/gwms-frontend/frontend-temp/checksum.frontend
 
 %post
 # $1 = 1 - Installation
@@ -239,13 +240,18 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}
 %{_initrddir}/frontend_startup
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/gwms-frontend.conf
-%config(noreplace) %{_sysconfdir}/condor/config.d/00_frontend.config
-%config(noreplace) %{_sysconfdir}/condor/config.d/01_collectors.config
-%config(noreplace) %{_sysconfdir}/condor/config.d/02_frontend-local.config
+%config(noreplace) %{_sysconfdir}/condor/config.d/00_gwms_general.config
+%config(noreplace) %{_sysconfdir}/condor/config.d/01_gwms_collectors.config
+%config(noreplace) %{_sysconfdir}/condor/config.d/02_gwms_schedds.config
+%config(noreplace) %{_sysconfdir}/condor/config.d/03_gwms_local.config
 %config(noreplace) %{_sysconfdir}/gwms-frontend/frontend.xml
 
 
 %changelog
+* Thu Nov 3 2011 Doug Strain <burt@fnal.gov> - 2.5.3-1
+- Update to 2.5.3
+- Updated condor configs to match ini installer
+
 * Mon Oct 17 2011 Burt Holzman <burt@fnal.gov> - 2.5.2.1-1
 - Update to 2.5.2.1
 

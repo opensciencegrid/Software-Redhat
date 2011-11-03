@@ -7,9 +7,9 @@ index dae1050..b531f98 100644
          # Start defining the defaults
          self.defaults["frontend_name"]=(socket.gethostname(),'ID', 'VO Frontend name',None)
 +        self.defaults['frontend_versioning'] = ('True', 'Bool', 'Should we create versioned subdirectories of the type frontend_$frontend_name?', None)
+         self.defaults['frontend_monitor_index_page'] = ('True', 'Bool', 'Should we create an index.html in the monitoring web directory?',None)
  
          work_defaults=cWParams.commentedOrderedDict()
-         work_defaults["base_dir"]=("%s/frontstage"%os.environ["HOME"],"base_dir","Frontend base dir",None)
 @@ -189,13 +190,24 @@ class VOFrontendParams(cWParams.CommonParams):
              raise "No groups defined!"
              
