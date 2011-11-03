@@ -1,6 +1,6 @@
 
 Name:      rsv-metrics
-Version:   3.6.2
+Version:   3.6.3
 Release:   1%{?dist}
 Summary:   RSV metrics
 
@@ -92,6 +92,11 @@ rm -rf $RPM_BUILD_ROOT
 %attr(-,rsv,rsv) %{_localstatedir}/log/rsv/probes
 
 %changelog
+* Thu Nov 03 2011 Matyas Selmeci <matyas@cs.wisc.edu> 3.6.3-1
+- ReSS metrics updated to brief format.
+- SRM metrics updated to brief format.
+- CA dir lookup more robust.
+
 * Wed Oct 26 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.6.2-1
 - Fixed a problem in probe default arguments.
 
