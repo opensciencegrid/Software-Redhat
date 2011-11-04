@@ -23,7 +23,7 @@ export LCMAPS_POLICY_NAME=globus_gridftp_mapping
 #############################################
 # Source all files in /etc/sysconfig/gridftp.conf.d
 #############################################
-dir_cmd="ls -1 /etc/test/*";
+dir_cmd="ls -1 /etc/sysconfig/gridftp.conf.d/*";
 # Exclude files left behind by rpm, vi, emacs, etc
 file_exp="^((\..*)|(.*~)|(#.*)|(.*\.rpmsave)|(.*\.rpmnew))$"
 if [ -d /etc/sysconfig/gridftp.conf.d ]; then

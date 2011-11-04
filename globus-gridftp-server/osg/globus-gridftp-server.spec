@@ -13,7 +13,7 @@
 Name:		globus-gridftp-server
 %global _name %(tr - _ <<< %{name})
 Version:	6.2
-Release:	4%{?dist}
+Release:	5%{?dist}
 Summary:	Globus Toolkit - Globus GridFTP Server
 
 Group:		System Environment/Libraries
@@ -193,7 +193,7 @@ fi
 %defattr(-,root,root,-)
 
 %changelog
-* Thu Nov 03 2011 Doug Strain <dstrain@fnal.gov> - 6.2-4
+* Thu Nov 03 2011 Doug Strain <dstrain@fnal.gov> - 6.2-5
 - Changed sysconfig to exclude sourcing files left behind by
 - emacs, rpm, vi, etc
 
