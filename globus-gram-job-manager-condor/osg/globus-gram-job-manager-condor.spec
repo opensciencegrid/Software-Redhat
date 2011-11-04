@@ -9,7 +9,7 @@
 Name:		globus-gram-job-manager-condor
 %global _name %(tr - _ <<< %{name})
 Version:	1.0
-Release:	8%{?dist}
+Release:	9%{?dist}
 Summary:	Globus Toolkit - Condor Job Manager
 
 Group:		Applications/Internet
@@ -155,6 +155,9 @@ fi
 %{perl_vendorlib}/Globus/GRAM/JobManager/condor_accounting_groups.pm
 
 %changelog
+* Fri Nov 4 2011 Alain Roy <roy@cs.wisc.edu> - 1.0-9
+- Fixed Condor accounting group patch: missing variable assignment.
+
 * Thu Oct 27 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0-8
 - Merged upstream 1.0-4:
     * Thu Oct 20 2011 Joseph Bester <bester@mcs.anl.gov> - 1.0-4

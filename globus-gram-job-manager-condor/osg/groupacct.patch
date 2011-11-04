@@ -30,7 +30,7 @@
 +
 +    if ($accounting_groups_callout && $group) {
 +        $name = getpwuid($>);
-+        print SCRIPT_FILE "+AccountingGroup = \"$group.$name\"\n" if $group;
++        $rc = print SCRIPT_FILE "+AccountingGroup = \"$group.$name\"\n" if $group;
 +        if (!$rc)
 +        {
 +            return $self->respond_with_failure_extension(
