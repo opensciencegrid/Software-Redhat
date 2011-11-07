@@ -25,10 +25,10 @@
 %endif
 
 %global version1 1.9.19.2
-%global release1 7
+%global release1 8
 
 %global version2 2.0.6
-%global release2 4
+%global release2 5
 
 Name:		voms
 Version:	%{version2}
@@ -113,6 +113,8 @@ Patch22:	%{name}-gsoap.patch
 Patch23:	%{name}-old-autotools.patch
 #               Fix duplicate definition of globus_mutex_t
 Patch100:       globus_thread_h.patch
+Patch101:       p12.patch
+
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	globus-gssapi-gsi-devel%{?_isa}
@@ -359,6 +361,7 @@ install -m 644 %{SOURCE2} README.Fedora
 
 # OSG patches
 %patch100 -p1
+%patch101 -p1
 
 %build
 %if %{compat}
@@ -603,6 +606,9 @@ fi
 %endif
 
 %changelog
+* Sun Nov 5 2011 Alain Roy <roy@cs.wisc.edu> - 2.0.6-5
+- Added bug fix so misstyped passphrase when using p12 file doesn't cause segfault. 
+
 * Fri Oct 28 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.6-4
 - Rebuilt
 
