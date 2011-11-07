@@ -1,7 +1,7 @@
 Name:      osg-ce
 Summary:   OSG Compute Element 
 Version:   3.0.0
-Release:   20
+Release:   21
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -24,6 +24,7 @@ Requires: gip
 Requires: osg-info-services
 Requires: gums-client
 Requires: edg-mkgridmap
+Requires: gratia-probe-gridftp-transfer
 Requires: osg-site-verify
 Requires: osg-system-profiler
 Requires: osg-configure
@@ -110,6 +111,10 @@ rm -rf $RPM_BUILD_ROOT
 %files sge
 
 %changelog
+* Mon Nov 7 2011 Alain Roy <roy@cs.wisc.edu> - 3.0.0-21
+- Added dependency on gratia-probe-gridftp-transfer since we ship the GridFTP
+  server. 
+
 * Thu Nov 3 2011 Alain Roy <roy@cs.wisc.edu> - 3.0.0-20
 - Removed dependency on syslog-ng, which shouldn't have been there. 
 
