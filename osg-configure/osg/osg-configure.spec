@@ -1,5 +1,5 @@
 %global name osg-configure
-%global version 0.6.6
+%global version 0.6.7
 %global release 1%{?dist}
 
 Summary: Package for configure-osg and associated scripts
@@ -14,8 +14,9 @@ Prefix: %{_prefix}
 BuildArch: noarch
 Vendor: Suchandra Thapa <sthapa@ci.uchicago.edu>
 Url: http://www.opensciencegrid.org
-Requires: python
-Provides: configure-osg
+Requires: python 
+Requires: yum
+Provides: osg-configure
 
 %if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
 %{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
@@ -190,7 +191,11 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/osg/config.d/15-managedfork.ini
 
 %changelog
-* Mon Oct 31 2011 Suchandra Thapa <sthapa@ci.uchicago.edu> 0.6.5-1
+* Mon Nov 8 2011 Suchandra Thapa <sthapa@ci.uchicago.edu> 0.6.7-1
+- Update to 0.6.7 to incorporate a variety of bug fixes
+- Add support for configuring authentication methods
+
+* Mon Oct 31 2011 Suchandra Thapa <sthapa@ci.uchicago.edu> 0.6.6-1
 - Update to 0.6.6 to fix setting default job manager
 - Update config files to use DEFAULT instead of UNAVAILABLE where appropriate
 
