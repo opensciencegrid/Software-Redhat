@@ -13,7 +13,7 @@
 Name:		globus-gridftp-server
 %global _name %(tr - _ <<< %{name})
 Version:	6.2
-Release:	6%{?dist}
+Release:	8%{?dist}
 Summary:	Globus Toolkit - Globus GridFTP Server
 
 Group:		System Environment/Libraries
@@ -135,6 +135,7 @@ install -m 0755 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/%{name}
 install -m 0755 %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/%{name}
 %endif
 
+mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d
 install -m 0644 %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/%{name}.logrotate
 
 # Remove libtool archives (.la files)
@@ -197,8 +198,9 @@ fi
 %defattr(-,root,root,-)
 
 %changelog
-* Thu Nov 03 2011 Doug Strain <dstrain@fnal.gov> - 6.2-6
+* Thu Nov 03 2011 Doug Strain <dstrain@fnal.gov> - 6.2-8
 - Added logrotate for issue SOFTWARE-310
+- Also fixed sysconfig issue for SOFTWARE-357
 
 * Thu Nov 03 2011 Doug Strain <dstrain@fnal.gov> - 6.2-5
 - Changed sysconfig to exclude sourcing files left behind by
