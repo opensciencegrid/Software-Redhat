@@ -13,7 +13,7 @@
 Name:		globus-gram-job-manager
 %global _name %(tr - _ <<< %{name})
 Version:	13.5
-Release:	3%{?dist}
+Release:	4%{?dist}
 Summary:	Globus Toolkit - GRAM Jobmanager
 
 Group:		Applications/Internet
@@ -28,6 +28,7 @@ Patch13:        watchdog_timer.patch
 Patch14:        recvmsg_eagain.patch
 Patch16:        description_service_tag.patch
 Patch19:        load_requests_before_activating_socket.patch
+Patch20:        fix-job-home-dir.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Requires:	globus-common >= 14
@@ -115,6 +116,7 @@ GRAM Jobmanager Documentation Files
 %patch14 -p0
 %patch16 -p0
 %patch19 -p0
+%patch20 -p0
 
 %build
 # Remove files that should be replaced during bootstrap
@@ -178,12 +180,16 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_docdir}/%{name}-%{version}
 %dir %{_localstatedir}/lib/globus/gram_job_state
 %config(noreplace) %{_sysconfdir}/globus/globus-gram-job-manager.conf
+%config(noreplace) %{_datadir}/globus/globus_gram_job_manager/globus-gram-job-manager.rvf
 
 %files doc -f package-doc.filelist
 %defattr(-,root,root,-)
 %dir %{_docdir}/%{name}-%{version}/html
 
 %changelog
+* Wed Nov 09 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 13.5-4
+- Fix the globus-job-dir option in the job manager.
+
 * Thu Oct 27 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 13.5-3
 - Merged upstream 13.5-2:
 
