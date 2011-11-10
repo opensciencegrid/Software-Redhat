@@ -1,6 +1,6 @@
 Name:           vo-client
 Version:        40
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Contains vomses file for use with user authentication and edg-mkgridmap.conf file that contains configuration information for edg-mkgridmap.
 
 Group:          system environment/base
@@ -11,7 +11,7 @@ BuildArch:      noarch
 
 Requires:       grid-certificates
 
-Source0:        %{name}-%{version}.tar.gz
+Source0:        %{name}-%{version}-2.tar.gz
 
 # Steps to make tarball (correctly packaged):
 # Get GOC's tarball, vo-client-40.tar.gz
@@ -71,7 +71,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Thu Oct 27 2011 Alain Roy roy@cs.wisc.edu> - 40-1
+* Thu Nov 10 2011 Alain Roy <roy@cs.wisc.edu> - 40-2
+- Fixed LSC file for LIGO
+
+* Thu Oct 27 2011 Alain Roy <roy@cs.wisc.edu> - 40-1
 - Updated to version 40 of the vo-client. Adds lbne & alice
 
 * Wed Aug 10 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 38-8
