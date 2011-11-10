@@ -1,6 +1,6 @@
 Name:           glideinwms-vofrontend
 Version:        2.5.3
-Release:        1
+Release:        2
 Summary:        The VOFrontend for glideinWMS submission host
 
 Group:          System Environment/Daemons
@@ -248,9 +248,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Thu Nov 3 2011 Doug Strain <burt@fnal.gov> - 2.5.3-1
+* Thu Nov 10 2011 Doug Strain <burt@fnal.gov> - 2.5.3-2
 - Update to 2.5.3
 - Updated condor configs to match ini installer
+- Updated frontend.xml to not check index.html
+- Updated init script to use "-xml" flag
 
 * Mon Oct 17 2011 Burt Holzman <burt@fnal.gov> - 2.5.2.1-1
 - Update to 2.5.2.1

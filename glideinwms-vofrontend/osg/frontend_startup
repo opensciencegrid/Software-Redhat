@@ -70,7 +70,7 @@ reconfig() {
         if [ $notrun -eq 0 ]; then
           stop
         fi
-        "reconfig_frontend" -force_name "$frontend_name" /etc/gwms-frontend/frontend.xml
+        "reconfig_frontend" -force_name "$frontend_name" -xml /etc/gwms-frontend/frontend.xml
 	  RETVAL=$?
         reconfig_failed=$?
         echo -n "Reconfiguring the frontend"
