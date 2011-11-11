@@ -25,7 +25,7 @@ BuildArch: noarch
 
 Requires: java
 Requires: jpackage-utils
-Requires: tomcat
+Requires: tomcat5
 Requires: emi-trustmanager-tomcat
 Requires: mysql-server
 
