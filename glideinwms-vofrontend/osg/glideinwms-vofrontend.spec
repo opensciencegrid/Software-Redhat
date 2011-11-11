@@ -1,6 +1,6 @@
 Name:           glideinwms-vofrontend
 Version:        2.5.3
-Release:        2
+Release:        3
 Summary:        The VOFrontend for glideinWMS submission host
 
 Group:          System Environment/Daemons
@@ -17,7 +17,7 @@ Obsoletes:	GlideinWMSFrontend < 2.5.1-11
 
 #Source0:        http://www.uscms.org/SoftwareComputing/Grid/WMS/glideinWMS/glideinWMS_v2_5_1_frontend.tgz
 #Source0:        GlideinWMSFrontend-2.5.1.tar.gz
-Source0:	glideinWMS_v2_5_3rc2_frontend.tgz
+Source0:	glideinWMS_v2_5_3_frontend.tgz
 
 # How to build tar file
 # git clone http://cdcvs.fnal.gov/projects/glideinwms
@@ -248,7 +248,7 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Thu Nov 10 2011 Doug Strain <burt@fnal.gov> - 2.5.3-2
+* Thu Nov 10 2011 Doug Strain <burt@fnal.gov> - 2.5.3-3
 - Update to 2.5.3
 - Updated condor configs to match ini installer
 - Updated frontend.xml to not check index.html
