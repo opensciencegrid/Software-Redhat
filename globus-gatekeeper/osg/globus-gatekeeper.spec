@@ -13,7 +13,7 @@
 Name:		globus-gatekeeper
 %global _name %(tr - _ <<< %{name})
 Version:	8.1
-Release:	3%{?dist}
+Release:	4%{?dist}
 Summary:	Globus Toolkit - Globus Gatekeeper
 
 Group:		Applications/Internet
@@ -24,6 +24,7 @@ Source:         %{_name}-%{version}.tar.gz
 # OSG customizations
 Source1:        globus-gatekeeper.sysconfig
 Patch0:         child_signals.patch
+Patch1:         increase_backlog.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Requires:	globus-common >= 13.4
@@ -53,6 +54,7 @@ Globus Gatekeeper Setup
 %setup -q -n %{_name}-%{version}
 
 %patch0 -p0
+%patch1 -p0
 # Note append here
 cat %{SOURCE1} >> config/globus-gatekeeper.in
 
@@ -122,6 +124,9 @@ fi
 %config(noreplace) /etc/sysconfig/globus-gatekeeper
 
 %changelog
+* Thu Nov 10 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 8.1-4
+- Increase the backlog for the listening socket.  Done because the small default led to failures on the testbed setup.
+
 * Thu Oct 27 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 8.1-3
 - Merged upstream 8.1-2
     * Fri Oct 21 2011 Joseph Bester <bester@mcs.anl.gov> - 8.1-2
