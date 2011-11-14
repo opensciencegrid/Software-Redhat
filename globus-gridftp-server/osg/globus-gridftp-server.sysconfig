@@ -16,7 +16,12 @@ export LCMAPS_DB_FILE=/etc/lcmaps.db
 export LCMAPS_MOD_HOME=/usr/lib64/modules
 export LCMAPS_POLICY_NAME=globus_gridftp_mapping
 
-#Uncomment and modify for firewalls
+# Source OSG firewall information
+if [ -e /var/lib/osg/globus-firewall ]; then
+        . /var/lib/osg/globus-firewall
+fi
+
+#Uncomment and modify to override default osg firewall behavior
 #export GLOBUS_TCP_PORT_RANGE=min,max
 #export GLOBUS_TCP_SOURCE_RANGE=min,max
 
