@@ -13,7 +13,7 @@
 Name:		globus-gram-job-manager
 %global _name %(tr - _ <<< %{name})
 Version:	13.5
-Release:	6%{?dist}
+Release:	7%{?dist}
 Summary:	Globus Toolkit - GRAM Jobmanager
 
 Group:		Applications/Internet
@@ -31,6 +31,7 @@ Patch19:        load_requests_before_activating_socket.patch
 Patch20:        fix-job-home-dir.patch
 Patch21:	condor-poll-GRAM-271.patch
 Patch22:        fix-job-lock-location.patch
+Patch23:        GRAM-273-ignore-logs.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -122,6 +123,7 @@ GRAM Jobmanager Documentation Files
 %patch20 -p0
 %patch21 -p0
 %patch22 -p0
+%patch23 -p0
 
 %build
 # Remove files that should be replaced during bootstrap
@@ -192,6 +194,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_docdir}/%{name}-%{version}/html
 
 %changelog
+* Sun Nov 13 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 13.5-7
+- Reduce the polling frequency and load of the condor job manager.
+
 * Fri Nov 11 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 13.5-6
 - Make job home different from job lock dir.
 
