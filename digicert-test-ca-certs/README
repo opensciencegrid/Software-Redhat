@@ -1,0 +1,6 @@
+
+This package is the Digicert CA certificate set, in the mixed OpenSSL 0.9.8/1.0.0
+format, as prepared by the OSG-Security team.
+
+For more information see:
+http://www.digicert-grid.com/

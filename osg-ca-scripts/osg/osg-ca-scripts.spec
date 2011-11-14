@@ -1,7 +1,7 @@
 
 Name:      osg-ca-scripts
 Version:   0.0.9
-Release:   1%{?dist}
+Release:   2%{?dist}
 Summary:   CA Certificate helper scripts
 
 Group:     System Environment/Base
@@ -62,6 +62,7 @@ install -m 0644 logrotate/osg-ca-scripts.logrotate $RPM_BUILD_ROOT%{_sysconfdir}
 
 # Create state directory
 install -d $RPM_BUILD_ROOT%{_localstatedir}/lib/osg
+install -d $RPM_BUILD_ROOT%{_localstatedir}/lib/osg-ca-certs
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -81,8 +82,12 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/osg/osg-update-certs.conf
 %config(noreplace) %{_sysconfdir}/logrotate.d/osg-ca-scripts
 
+%dir %attr(0755,root,root) %{_localstatedir}/lib/osg-ca-certs
 
 %changelog
+* Wed Nov 09 2011 Anand Padmanabhan <apadmana@uiuc.edu> 0.0.9-2
+-  Added a line to create the directory /var/lib/osg-ca-certs
+ 
 * Wed Sep 14 2011 Anand Padmanabhan <apadmana@uiuc.edu> 0.0.8-1
 -  Changed the names of the url shortcuts in osg-ca-manage to match with RPM names.
  
