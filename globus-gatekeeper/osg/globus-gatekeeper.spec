@@ -13,7 +13,7 @@
 Name:		globus-gatekeeper
 %global _name %(tr - _ <<< %{name})
 Version:	8.1
-Release:	4%{?dist}
+Release:	5%{?dist}
 Summary:	Globus Toolkit - Globus Gatekeeper
 
 Group:		Applications/Internet
@@ -25,6 +25,7 @@ Source:         %{_name}-%{version}.tar.gz
 Source1:        globus-gatekeeper.sysconfig
 Patch0:         child_signals.patch
 Patch1:         increase_backlog.patch
+Patch2:         chkconfig-off.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Requires:	globus-common >= 13.4
@@ -55,6 +56,7 @@ Globus Gatekeeper Setup
 
 %patch0 -p0
 %patch1 -p0
+%patch2 -p0
 # Note append here
 cat %{SOURCE1} >> config/globus-gatekeeper.in
 
@@ -124,6 +126,9 @@ fi
 %config(noreplace) /etc/sysconfig/globus-gatekeeper
 
 %changelog
+* Mon Nov 14 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 8.1-5
+- Default globus-gatekeeper service to off.
+
 * Thu Nov 10 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 8.1-4
 - Increase the backlog for the listening socket.  Done because the small default led to failures on the testbed setup.
 
