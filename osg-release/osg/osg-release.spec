@@ -1,6 +1,6 @@
 Name:           osg-release
 Version:        3.0 
-Release:        10
+Release:        11
 Summary:        OSG Software for Enterprise Linux repository configuration
 
 Group:          System Environment/Base 
@@ -17,6 +17,7 @@ Source2:        osg-testing.repo
 Source3:        osg-minefield.repo
 Source4:        osg-contrib.repo
 Source5:        RPM-GPG-KEY-OSG
+Source6:        osg-prerelease.repo
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -46,7 +47,7 @@ install -pm 644 %{SOURCE5} \
 
 # yum
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d
-install -pm 644 %{SOURCE0} %{SOURCE1} %{SOURCE2} %{SOURCE3} %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d
+install -pm 644 %{SOURCE0} %{SOURCE1} %{SOURCE2} %{SOURCE3} %{SOURCE4} %{SOURCE6} $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -58,6 +59,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Nov 14 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 3.0-11
+- Added osg-prerelease repo
+
 * Fri Sep 23 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 3.0-10
 - Previous improvements to debug and source repos were previously not applied to the contrib repo.
 
