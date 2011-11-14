@@ -1,13 +1,14 @@
 Name:      osg-ce
 Summary:   OSG Compute Element 
 Version:   3.0.0
-Release:   21
+Release:   23
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
 
 BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
+Requires: osg-version
 Requires: grid-certificates
 Requires: java-1.6.0-sun-compat
 Requires: globus-gridftp-server-progs 
@@ -18,6 +19,8 @@ Requires: osg-info-services
 Requires: osg-vo-map
 Requires: vo-client
 Requires: osg-site-web-page
+Requires: globus-gatekeeper
+Requires: globus-gram-job-manager
 Requires: globus-gram-job-manager-fork
 Requires: globus-gram-job-manager-fork-setup-poll
 Requires: gip
@@ -111,6 +114,12 @@ rm -rf $RPM_BUILD_ROOT
 %files sge
 
 %changelog
+* Mon Nov 14 2011 Alain Roy <roy@cs.wisc.edu> - 3.0.0-23
+- Added dependency on osg-version
+
+* Fri Nov 11 2011 Alain Roy <roy@cs.wisc.edu> - 3.0.0-22
+- Added dependencies so the Globus gatekeeper and GRAM job manager are always installed. 
+
 * Mon Nov 7 2011 Alain Roy <roy@cs.wisc.edu> - 3.0.0-21
 - Added dependency on gratia-probe-gridftp-transfer since we ship the GridFTP
   server. 

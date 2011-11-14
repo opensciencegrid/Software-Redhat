@@ -1,8 +1,7 @@
-
 Name:      osg-client
 Summary:   OSG Client
 Version:   3.0.0
-Release:   12
+Release:   13
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -10,6 +9,7 @@ BuildArch: noarch
 
 BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
+Requires: osg-version
 Requires: java-1.6.0-sun-compat
 Requires: osg-wn-client
 Requires: ndt
@@ -53,6 +53,9 @@ rm -rf $RPM_BUILD_ROOT
 %files condor
 
 %changelog
+* Mon Nov 14 2011 Alain Roy <roy@cs.wisc.edu> - 3.0.0-13
+- Added dependency on osg-version
+
 * Mon Oct 31 2011 Alain Roy <roy@cs.wisc.edu> - 3.0.0-12
 - Added dependency on globus-gsi-cert-utils-progs, to get grid-cert-info 
   installed by default. 

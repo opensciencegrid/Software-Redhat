@@ -1,13 +1,15 @@
 Name:      osg-gridftp
 Summary:   Standalone OSG GridFTP w/lcmaps gums client
 Version:   3.0.0
-Release:   6
+Release:   7
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
 
+Requires: osg-version
+Requires: osg-system-profiler
 Requires: globus-gridftp-server-progs
 Requires: vo-client
 Requires: grid-certificates
@@ -42,6 +44,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Nov 14 2011 Alain Roy <roy@cs.wisc.edu> - 3.0.0-7
+- Added dependencies on osg-version and osg-system-profiler
+
 * Fri Nov 3 2011 Doug Strain <dstrain.fnal.gov> - 3.0.0-6
 - Added fetch-crl to the requirements
 

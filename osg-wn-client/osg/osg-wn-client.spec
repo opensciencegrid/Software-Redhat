@@ -1,7 +1,7 @@
 Name:      osg-wn-client
 Summary:   OSG Worker-Node Client
 Version:   3.0.0
-Release:   12
+Release:   13
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -28,6 +28,7 @@ Requires: grid-certificates
 Requires: fetch-crl
 Requires: osg-system-profiler
 Requires: vo-client
+Requires: osg-version
 
 %description
 %{summary}
@@ -83,6 +84,9 @@ rm -rf $RPM_BUILD_ROOT
 %files glexec
 
 %changelog
+* Mon Nov 14 2011 Alain Roy <roy@cs.wisc.edu> - 3.0.0-13
+- Added dependency on osg-version
+
 * Mon Oct 24 2011 Alain Roy <roy@cs.wisc.edu> - 3.0.0-12
 - Added dependency on on lfc-python (Needed by ATLAS)
 - Added /usr/etc/globus-user-env.sh, which is needed by 

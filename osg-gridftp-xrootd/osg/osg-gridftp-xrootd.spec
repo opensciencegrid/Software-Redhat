@@ -1,13 +1,15 @@
 Name:           osg-gridftp-xrootd
 Summary:        OSG GridFTP XRootd Storage Element package
 Version:        3.0.0
-Release:        1
+Release:        2
 License:        GPL
 Group:          System Environment/Daemons
 URL:            https://twiki.grid.iu.edu/twiki/bin/view/Storage/WebHome
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 # from VDT
+Requires: osg-version
+Requires: osg-system-profiler
 Requires: java-1.6.0-sun-compat
 Requires: edg-mkgridmap
 Requires: fetch-crl
@@ -43,6 +45,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Nov 14 2011 Alain Roy <roy@cs.wisc.edu> - 3.0.0-2
+- Added dependencies on osg-version and osg-system-profiler
+
 * Fri Oct 21 2011 Doug Strain <dstrain@fnal.gov> - 3.0.0-1
 - Initial creation of osg-gridftp-xrootd meta package
 - Needed for Xrootd installation with multiple GridFTP
