@@ -1,6 +1,6 @@
 Name:           bestman2
 Version:        2.1.3
-Release:        1%{?dist}
+Release:        3%{?dist}
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -82,14 +82,14 @@ BeStMan SRM server
 %package server-libs
 Summary: BeStMan Server SRM Java libraries
 Group: System Environment/Libraries
-Requires:  java
+Requires: java-1.6.0-sun-compat
 %description server-libs
 The BeStMan Server SRM Java libraries
 
 %package server-dep-libs
 Summary: BeStMan Server SRM Java libraries
 Group: System Environment/Libraries
-Requires:  java
+Requires:  java-1.6.0-sun-compat
 %description server-dep-libs
 The BeStMan Server SRM Java libraries
 This includes all the dependencies and should be 
@@ -107,14 +107,14 @@ The srm-* client tools
 %package client-libs
 Summary: Libraries needed for Bestman LBNL SRM client
 Group: System Environment/Libraries
-Requires:  java
+Requires:  java-1.6.0-sun-compat
 %description client-libs
 These are the libraries needed solely for the client 
 
 %package tester
 Summary: srmtester application for verifying a SRM endpoint
 Group: Applications/Internet
-Requires:  java
+Requires:  java-1.6.0-sun-compat
 Requires: %{name}-tester-libs = %{version}-%{release}
 Requires: %{name}-common-libs = %{version}-%{release}
 %description tester
@@ -126,7 +126,7 @@ of the SRM protocol are functioning on an SRM endpoint.
 %package tester-libs
 Summary: Libraries needed for Bestman LBNL SRM client
 Group: System Environment/Libraries
-Requires:  java
+Requires:  java-1.6.0-sun-compat
 %description tester-libs
 These are the libraries needed solely for the srmtester application 
 
@@ -410,6 +410,7 @@ fi
 %{_bindir}/srm-tester
 %config(noreplace) %{install_root}/conf/srmtester.conf.sample
 %config(noreplace) %{install_root}/conf/srmtester.conf
+%config(noreplace) %{install_root}/conf/bestman2.rc
 
 
 %files tester-libs
@@ -420,6 +421,13 @@ fi
 
 
 %changelog
+* Tue Nov 15 2011 Doug Strain <dstrain@fnal.gov> - 2.1.3-3
+- Added bestman2.rc for srm-tester to function correctly.
+
+* Fri Oct 28 2011 Doug Strain <dstrain@fnal.gov> - 2.1.3-2
+- Updated for Bestman 2.1.3
+- Fixed requires to java sun compat to pull sun jdk not openjdk
+
 * Fri Aug 26 2011 Doug Strain <dstrain@fnal.gov> - 2.1.2-1
 - Updated for Bestman 2.1.2
 
