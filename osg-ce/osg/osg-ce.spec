@@ -1,7 +1,7 @@
 Name:      osg-ce
 Summary:   OSG Compute Element 
 Version:   3.0.0
-Release:   23
+Release:   24
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -39,6 +39,9 @@ Requires: osg-configure-managedfork
 Requires: osg-configure-misc
 Requires: osg-configure-squid
 Requires(post): globus-gram-job-manager-scripts >= 4
+
+# The following is required for the RSV Gratia probes to work.
+Requires: perl(Date::Manip)
 
 # For the CE authz
 %ifarch %{ix86}
@@ -114,6 +117,9 @@ rm -rf $RPM_BUILD_ROOT
 %files sge
 
 %changelog
+* Wed Nov 16 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 3.0.0-24
+- Added dependency on perl(Date::Manip), for the Gratia RSV probes.
+
 * Mon Nov 14 2011 Alain Roy <roy@cs.wisc.edu> - 3.0.0-23
 - Added dependency on osg-version
 
