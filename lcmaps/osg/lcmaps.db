@@ -34,7 +34,7 @@
 #
 #-----------------------------------------------------------------------------
 
-path = /usr/lib64/modules
+path = modules
 
 gumsclient = "lcmaps_gums_client.mod"
              "-resourcetype ce"
