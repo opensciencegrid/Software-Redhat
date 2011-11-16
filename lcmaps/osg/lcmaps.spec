@@ -1,7 +1,7 @@
 Summary: Grid (X.509) and VOMS credentials to local account mapping service
 Name: lcmaps
 Version: 1.4.28
-Release: 17%{?dist}
+Release: 18%{?dist}
 Vendor: Nikhef
 License: ASL 2.0
 Group: System Environment/Libraries
@@ -12,6 +12,9 @@ Patch0: makefile_r15293.patch
 Patch1: fill_x509.patch
 #source of patch2: wget --no-check-certificate -Ogeneric_attributes_vomsdata.patch "https://sikkel.nikhef.nl/cgi-bin/viewvc.cgi/mwsec/trunk/lcmaps/src/grid_credential_handling/gsi_handling/lcmaps_voms_attributes.c?view=patch&r1=11815&r2=15240&pathrev=15240"
 Patch2: generic_attributes_vomsdata.patch
+#Patch 3 comes from the diff of all real source files in 1.4.31 compared to
+# 1.4.33
+Patch3: relative_path.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 BuildRequires: globus-core%{?_isa}
@@ -96,10 +99,11 @@ This package contains the development libraries.
 %patch0 -p0
 %patch1 -p0
 %patch2 -p2
+%patch3 -p1
 
 %build
 ./bootstrap
-%configure --disable-static --disable-rpath
+%configure --disable-static --disable-rpath --enable-osg
 make %{?_smp_mflags}
 
 %install
@@ -161,6 +165,19 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/modules/*.so
 
 %changelog
+* Wed Nov 16 2011 Dave Dykstra <dwd@fnal.gov> - 1.4.28-18
+- Added relative_path.patch based on all the source differences between
+  lcmaps-1.4.31 and lcmaps-1.4.33.  This patch allows the "path" directive
+  in lcmaps.db to be a relative path, so we don't have to hardcode it to
+  /usr/lib64 and break 32-bit builds.  Would have preferred just an
+  upgrade but people were nervous about being too close to the
+  official release, plus it seemed less time consuming at the moment
+  because there are a lot of changes to lcmaps.spec in the newer 
+  versions.  
+  http://jira.opensciencegrid.org/browse/SOFTWARE-354
+- Re-disabled VOMS verification by adding configure option --enable-osg.
+  http://jira.opensciencegrid.org/browse/SOFTWARE-334
+
 * Fri Oct 28 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.4.28-17
 - rebuilt
 
