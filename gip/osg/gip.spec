@@ -91,8 +91,9 @@ touch $RPM_BUILD_ROOT/%{_sysconfdir}/%{name}/remove-attributes.conf
 %config(noreplace) %{_sysconfdir}/%{name}/remove-attributes.conf
 %config(noreplace) %{_sysconfdir}/%{name}/logging.conf
 %config(noreplace) %{_sysconfdir}/%{name}/ldif.d
-%attr(-, daemon, daemon) /var/log/%{name}
-%attr(-, daemon, daemon) /var/cache/%{name}
+%attr(-, tomcat, tomcat) /var/log/%{name}
+%attr(-, tomcat, tomcat) /var/cache/%{name}
+%ghost /var/log/%{name}/gip.log
 
 %clean
 rm -rf %buildroot
