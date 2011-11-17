@@ -1,7 +1,7 @@
 Summary: Generic Information Provider
 Name: gip
 Version: 1.3.3rc1
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: TODO
 Group: Applications/Grid
 BuildArch: noarch
@@ -34,6 +34,7 @@ install -d %{buildroot}%{python_sitelib}
 cp -a gip/lib/python/* %{buildroot}%{python_sitelib}
 
 install -d %{buildroot}%{_bindir}
+mkdir gip/plugins
 install -d %{buildroot}%{_libexecdir}/%{name}/plugins
 install -d %{buildroot}%{_libexecdir}/%{name}/providers
 install -d %{buildroot}%{_libexecdir}/%{name}
@@ -57,8 +58,8 @@ done
 # We want to be able to import osg_info_wrapper
 mv %{buildroot}%{_libexecdir}/%{name}/osg_info_wrapper.py %{buildroot}%{python_sitelib}/
 # Remove deprecated cruft:
-rm %{buildroot}%{_libexecdir}/%{name}/*.py
-rm %{buildroot}%{_libexecdir}/%{name}/*.pyc
+rm -f %{buildroot}%{_libexecdir}/%{name}/*.py || :
+rm -f %{buildroot}%{_libexecdir}/%{name}/*.pyc || :
 
 cp gip/bin/* %{buildroot}%{_bindir}
 rm %{buildroot}%{_bindir}/gip-validator.py
@@ -93,12 +94,14 @@ touch $RPM_BUILD_ROOT/%{_sysconfdir}/%{name}/remove-attributes.conf
 %config(noreplace) %{_sysconfdir}/%{name}/ldif.d
 %attr(-, tomcat, tomcat) /var/log/%{name}
 %attr(-, tomcat, tomcat) /var/cache/%{name}
-%ghost /var/log/%{name}/gip.log
 
 %clean
 rm -rf %buildroot
 
 %changelog
+* Thu Nov 17 2011 Burt Holzman <burt@fnal.gov> - 1.3.3rc1-2
+- Create plugin directory
+
 * Thu Nov 17 2011 Burt Holzman <burt@fnal.gov> - 1.3.3rc1-1
 - Update to GIP 1.3.3rc1
 
