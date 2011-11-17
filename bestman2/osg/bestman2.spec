@@ -1,6 +1,20 @@
+
+#Redhat auto-repacks jars which messes up build date 
+#disable this
+%define __jar_repack %{nil}
+%if "%{?rhel}" == "5"
+%define __os_install_post \
+    /usr/lib/rpm/redhat/brp-compress  \
+    %{!?__debug_package:/usr/lib/rpm/redhat/brp-strip %{__strip}}  \
+    /usr/lib/rpm/redhat/brp-strip-static-archive %{__strip}  \
+    /usr/lib/rpm/redhat/brp-strip-comment-note %{__strip} %{__objdump}  \
+    /usr/lib/rpm/brp-python-bytecompile  \
+%{nil}
+%endif
+
 Name:           bestman2
 Version:        2.1.3
-Release:        3%{?dist}
+Release:        5%{?dist}
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -154,7 +168,6 @@ popd
 ./build.configure --with-bestman-url=%{bestman_url} --with-bestman2-version=%{version} --with-revision=%{revision} --with-java-home=/usr/java/latest --enable-cached-src=yes --enable-cached-pkg=yes
 
 make
-
 pushd bestman2
 
 SRM_HOME=%{install_root}
@@ -421,6 +434,10 @@ fi
 
 
 %changelog
+* Tue Nov 15 2011 Doug Strain <dstrain@fnal.gov> - 2.1.3-5
+- Added post os install expression to disable redhat jar repacking
+- This fixes the build date issue.
+
 * Tue Nov 15 2011 Doug Strain <dstrain@fnal.gov> - 2.1.3-3
 - Added bestman2.rc for srm-tester to function correctly.
 
