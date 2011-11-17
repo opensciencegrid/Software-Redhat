@@ -5,7 +5,7 @@
 
 Summary:   Tests an OSG Software installation
 Name:      osg-test
-Version:   0.0.4
+Version:   0.0.6
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -39,6 +39,12 @@ rm -rf $RPM_BUILD_ROOT
 /etc/grid-security/certificates/4eca18ce.*
 
 %changelog
+* Tue Nov 16 2011 Tim Cartwright <cat@cs.wisc.edu> - 0.0.6-1
+- New version of upstream software: Better logging and first VOMS-related tests.
+
+* Tue Nov 08 2011 Tim Cartwright <cat@cs.wisc.edu> - 0.0.5-1
+- New version of upstream software: Added GRAM tests.
+
 * Mon Sep 26 2011 Tim Cartwright <cat@cs.wisc.edu> - 0.0.4-1
 - New version of upstream software.
 
