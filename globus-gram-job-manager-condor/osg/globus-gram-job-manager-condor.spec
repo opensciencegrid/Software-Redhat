@@ -9,7 +9,7 @@
 Name:		globus-gram-job-manager-condor
 %global _name %(tr - _ <<< %{name})
 Version:	1.0
-Release:	9%{?dist}
+Release:	10%{?dist}
 Summary:	Globus Toolkit - Condor Job Manager
 
 Group:		Applications/Internet
@@ -155,6 +155,9 @@ fi
 %{perl_vendorlib}/Globus/GRAM/JobManager/condor_accounting_groups.pm
 
 %changelog
+* Thu Nov 17 2011 Alain Roy <roy@cs.wisc.edu> - 1.0-10
+- Fixed pathname to extattr_table.txt in Condor accounting group patch. 
+
 * Fri Nov 4 2011 Alain Roy <roy@cs.wisc.edu> - 1.0-9
 - Fixed Condor accounting group patch: missing variable assignment.
 

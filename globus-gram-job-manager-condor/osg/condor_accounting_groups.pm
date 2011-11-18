@@ -7,7 +7,7 @@ our @EXPORT_OK = qw(obtain_condor_group);
 our $VERSION = 1.00;
 
 our $UID_FILENAME     = "/etc/osg/uid_table.txt";
-our $EXTATTR_FILENAME = "/etc/osg/ea_table.txt";
+our $EXTATTR_FILENAME = "/etc/osg/extattr_table.txt";
 
 my @Environment;
 my $Job_Manager;
