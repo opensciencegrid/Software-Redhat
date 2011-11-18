@@ -1,5 +1,5 @@
 %global name osg-configure
-%global version 0.6.7
+%global version 0.6.8
 %global release 1%{?dist}
 
 Summary: Package for configure-osg and associated scripts
@@ -191,6 +191,9 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/osg/config.d/15-managedfork.ini
 
 %changelog
+* Thu Nov 17 2011 Suchandra Thapa <sthapa@ci.uchicago.edu> 0.6.8-1
+- Fix bugs in configuring gratia probes
+
 * Mon Nov 8 2011 Suchandra Thapa <sthapa@ci.uchicago.edu> 0.6.7-1
 - Update to 0.6.7 to incorporate a variety of bug fixes
 - Add support for configuring authentication methods
