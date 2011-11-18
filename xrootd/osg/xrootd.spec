@@ -11,7 +11,7 @@
 Name:      xrootd
 Epoch:     1
 Version:   3.1.0
-Release:   10%{?dist}%{?_with_xrootd_user:.xu}
+Release:   11%{?dist}%{?_with_xrootd_user:.xu}
 Summary:   An eXtended Root Daemon (xrootd)
 Group:     System Environment/Daemons
 License:   Stanford (modified BSD with advert clause)
@@ -291,6 +291,7 @@ exit 0
 %{_bindir}/xrdcp
 %{_bindir}/xrdgsiproxy
 %{_bindir}/xrdstagetool
+%{_bindir}/xrdadler32
 %doc %{_mandir}/man1/xprep.1.gz
 %doc %{_mandir}/man1/xrd.1.gz
 %doc %{_mandir}/man1/xrdadler32.1.gz
@@ -378,6 +379,9 @@ exit 0
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Fri Nov 18 2011 Doug Strain <dstrain@fnal.gov> 3.1.0-11
+- Added xrdadler32 to the client package
+
 * Fri Oct 21 2011 Lukasz Janyst <ljanyst@cern.ch> 3.1.0-1
 - bump the version to 3.1.0
 
