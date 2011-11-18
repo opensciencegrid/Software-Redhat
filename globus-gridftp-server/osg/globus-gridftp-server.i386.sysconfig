@@ -33,7 +33,7 @@ dir_cmd="ls -1 /etc/sysconfig/gridftp.conf.d";
 file_exp="^((\..*)|(.*~)|(#.*)|(.*\.rpmsave)|(.*\.rpmnew))$"
 if [ -d /etc/sysconfig/gridftp.conf.d ]; then
         for file in `$dir_cmd | egrep -v "$file_exp" 2>/dev/null` ; do
-                . $file
+                . /etc/sysconfig/gridftp.conf.d/$file
         done
 fi
 

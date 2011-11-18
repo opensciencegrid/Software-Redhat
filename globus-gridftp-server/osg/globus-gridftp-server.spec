@@ -13,7 +13,7 @@
 Name:		globus-gridftp-server
 %global _name %(tr - _ <<< %{name})
 Version:	6.2
-Release:	9%{?dist}
+Release:	10%{?dist}
 Summary:	Globus Toolkit - Globus GridFTP Server
 
 Group:		System Environment/Libraries
@@ -198,6 +198,9 @@ fi
 %defattr(-,root,root,-)
 
 %changelog
+* Fri Nov 18 2011 Doug Strain <dstrain@fnal.gov> - 6.2-10
+- Change sysconfig to add full file path
+
 * Mon Nov 14 2011 Doug Strain <dstrain@fnal.gov> - 6.2-9
 - Change sysconfig to source /var/lib/osg/globus-firewall
 
