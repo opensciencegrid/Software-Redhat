@@ -1,6 +1,6 @@
 
 Name:           osg-build
-Version:        0.0.22
+Version:        0.0.23
 Release:        1%{?dist}
 Summary:        Build tools for the OSG
 
@@ -16,6 +16,7 @@ BuildArch:      noarch
 Requires:       mock
 Requires:       rpm-build
 Requires:       createrepo
+Requires:       openssl
 
 Obsoletes:      vdt-build <= 0.0.17
 Provides:       vdt-build = %{version}
@@ -45,13 +46,18 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/%{name}
 %{_bindir}/rpm-ripper
 %{_bindir}/osg-import-srpm
+%{_bindir}/osg-koji
 %{_bindir}/vdt-build
 %dir %{python_sitelib}/osg_build_lib
 %{python_sitelib}/osg_build_lib/*.py*
-%{_datadir}/%{name}/osg-koji.conf
+%{_datadir}/%{name}/osg-koji-site.conf
+%{_datadir}/%{name}/osg-koji-home.conf
 %doc %{_docdir}/%{name}/sample-osg-build.ini
 
 %changelog
+* Thu Nov 17 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 0.0.23-1
+- Added osg-koji wrapper script
+
 * Thu Oct 06 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 0.0.22-1
 - Minor tweaks to rpm-ripper
 
