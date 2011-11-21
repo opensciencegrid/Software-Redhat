@@ -13,7 +13,7 @@
 Name:		globus-gram-job-manager
 %global _name %(tr - _ <<< %{name})
 Version:	13.5
-Release:	7%{?dist}
+Release:	9%{?dist}
 Summary:	Globus Toolkit - GRAM Jobmanager
 
 Group:		Applications/Internet
@@ -32,6 +32,8 @@ Patch20:        fix-job-home-dir.patch
 Patch21:	condor-poll-GRAM-271.patch
 Patch22:        fix-job-lock-location.patch
 Patch23:        GRAM-273-ignore-logs.patch
+Patch24:        GRAM-270-context-leak.patch
+Patch25:        request-lock.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -124,6 +126,8 @@ GRAM Jobmanager Documentation Files
 %patch21 -p0
 %patch22 -p0
 %patch23 -p0
+%patch24 -p0
+%patch25 -p0
 
 %build
 # Remove files that should be replaced during bootstrap
@@ -194,6 +198,14 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_docdir}/%{name}-%{version}/html
 
 %changelog
+* Mon Nov 21 2011 Alain Roy <roy@cs.wisc.edu> - 13.5-9
+- Added patch to fix lock confusion (update to fix from -8)
+- Added patch to fix security context memory leak. 
+- Configure logging
+
+* Sat Nov 19 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 13.5-8
+- If holding the wrong lock file, make sure to close the fd.
+
 * Sun Nov 13 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 13.5-7
 - Reduce the polling frequency and load of the condor job manager.
 
