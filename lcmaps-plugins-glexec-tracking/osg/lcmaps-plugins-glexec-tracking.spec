@@ -1,7 +1,7 @@
 Summary: Process tracking plugin for the LCMAPS authorization framework
 Name: lcmaps-plugins-glexec-tracking
 Version: 0.1.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: EGEE Middleware and ASL and Fermitools
 Group: System Environment/Libraries
 # The tarball was created from CVS using the following commands:
@@ -17,6 +17,7 @@ Requires: /usr/sbin/condor_procd
 Requires: /usr/sbin/gidd_alloc
 Requires: /usr/sbin/procd_ctl
 Requires: python
+Requires: lcmaps >= 1.4.28-19
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %description
@@ -36,9 +37,8 @@ make %{?_smp_mflags}
 rm -rf $RPM_BUILD_ROOT
 
 make DESTDIR=$RPM_BUILD_ROOT install
-mv $RPM_BUILD_ROOT/%{_libdir}/lcmaps $RPM_BUILD_ROOT/%{_libdir}/modules
-ln -s liblcmaps_glexec_tracking.so $RPM_BUILD_ROOT/%{_libdir}/modules/liblcmaps_glexec_tracking.so.0
-ln -s liblcmaps_glexec_tracking.so.0 $RPM_BUILD_ROOT/%{_libdir}/modules/liblcmaps_glexec_tracking.so.0.0.0
+ln -s liblcmaps_glexec_tracking.so $RPM_BUILD_ROOT/%{_libdir}/lcmaps/liblcmaps_glexec_tracking.so.0
+ln -s liblcmaps_glexec_tracking.so.0 $RPM_BUILD_ROOT/%{_libdir}/lcmaps/liblcmaps_glexec_tracking.so.0.0.0
 find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
 
 %clean
@@ -46,14 +46,17 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)
-%{_libdir}/modules/lcmaps_glexec_tracking.mod
-%{_libdir}/modules/liblcmaps_glexec_tracking.so
-%{_libdir}/modules/liblcmaps_glexec_tracking.so.0
-%{_libdir}/modules/liblcmaps_glexec_tracking.so.0.0.0
+%{_libdir}/lcmaps/lcmaps_glexec_tracking.mod
+%{_libdir}/lcmaps/liblcmaps_glexec_tracking.so
+%{_libdir}/lcmaps/liblcmaps_glexec_tracking.so.0
+%{_libdir}/lcmaps/liblcmaps_glexec_tracking.so.0.0.0
 %{_sbindir}/glexec_monitor
 
 %changelog
-* Sun Nov 06 2011 Dave Dykstra <dwd@fnal.gov> 0.0.10-1.osg
+* Mon Nov 21 2011 Dave Dykstra <dwd@fnal.gov> 0.1.0-2.osg
+- Move installed module from 'modules' libdir to 'lcmaps'
+
+* Sun Nov 06 2011 Dave Dykstra <dwd@fnal.gov> 0.1.0-1.osg
  - Upgrade to upstream 0.1.0 which stops 2 significant race conditions
    in starting up condor_procd.
    http://jira.opensciencegrid.org/browse/SOFTWARE-337
