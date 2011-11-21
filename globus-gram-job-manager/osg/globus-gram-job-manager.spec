@@ -13,15 +13,15 @@
 Name:		globus-gram-job-manager
 %global _name %(tr - _ <<< %{name})
 Version:	13.5
-Release:	9%{?dist}
+Release:	10%{?dist}
 Summary:	Globus Toolkit - GRAM Jobmanager
 
 Group:		Applications/Internet
 License:	ASL 2.0
 URL:		http://www.globus.org/
 Source:		http://www.globus.org/ftppub/gt5/5.1/5.1.2/packages/src/%{_name}-%{version}.tar.gz
-Source1:       globus-gram-job-manager-logrotate
-Source2:       globus-gram-job-manager-logging
+Source1:       globus-gram-job-manager-logging
+Source2:       globus-gram-job-manager-logrotate
 
 # OSG-specific patches
 Patch9:         unlock_init.patch
@@ -214,7 +214,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_docdir}/%{name}-%{version}/html
 
 %changelog
-* Mon Nov 21 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 13.5-9
+* Mon Nov 21 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 13.5-10
 - Enabled logging by default.
 
 * Mon Nov 21 2011 Alain Roy <roy@cs.wisc.edu> - 13.5-9
