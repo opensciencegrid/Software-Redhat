@@ -34,7 +34,7 @@
 #
 #-----------------------------------------------------------------------------
 
-path = modules
+path = lcmaps
 
 gumsclient = "lcmaps_gums_client.mod"
              "-resourcetype ce"
