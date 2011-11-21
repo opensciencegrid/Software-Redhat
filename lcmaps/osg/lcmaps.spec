@@ -1,7 +1,7 @@
 Summary: Grid (X.509) and VOMS credentials to local account mapping service
 Name: lcmaps
 Version: 1.4.28
-Release: 18%{?dist}
+Release: 19%{?dist}
 Vendor: Nikhef
 License: ASL 2.0
 Group: System Environment/Libraries
@@ -111,6 +111,10 @@ rm -rf $RPM_BUILD_ROOT
 
 make DESTDIR=$RPM_BUILD_ROOT install
 find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
+mv $RPM_BUILD_ROOT/%{_libdir}/modules $RPM_BUILD_ROOT/%{_libdir}/lcmaps
+#Note: this file is %ghosted in the %files list, so it is not installed,
+#  but rpmbuild requires something to be there
+ln -s lcmaps $RPM_BUILD_ROOT/%{_libdir}/modules
 
 # clean up installed files
 rm -rf ${RPM_BUILD_ROOT}/usr/share/doc
@@ -122,7 +126,17 @@ cp %{SOURCE1} $RPM_BUILD_ROOT/%{_sysconfdir}
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%post -p /sbin/ldconfig
+%post
+/sbin/ldconfig
+if [ ! -L %{_libdir}/modules ]; then
+    if [ -d %{_libdir}/modules ]; then
+	# move anything left in modules to lcmaps directory
+	mv %{_libdir}/modules/* %{_libdir}/lcmaps >/dev/null 2>&1 || true
+	rmdir %{_libdir}/modules
+    fi
+    # create the modules symlink for backward compatibility
+    ln -s lcmaps %{_libdir}/modules
+fi
 
 %postun -p /sbin/ldconfig
 
@@ -143,9 +157,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/liblcmaps_return_poolindex.so.0.0.0
 %{_libdir}/liblcmaps_verify_account_from_pem.so.0
 %{_libdir}/liblcmaps_verify_account_from_pem.so.0.0.0
-%{_libdir}/modules/lcmaps_plugin_example.mod
-%{_libdir}/modules/liblcmaps_plugin_example.so.0
-%{_libdir}/modules/liblcmaps_plugin_example.so.0.0.0
+%{_libdir}/lcmaps/lcmaps_plugin_example.mod
+%{_libdir}/lcmaps/liblcmaps_plugin_example.so.0
+%{_libdir}/lcmaps/liblcmaps_plugin_example.so.0.0.0
+%ghost %{_libdir}/modules
+# this should move into -devel package, and probably liblcmaps.so too
 %{_libdir}/liblcmaps_return_account_from_pem.so
 
 %doc AUTHORS INSTALL doc/INSTALL_WITH_WORKSPACE_SERVICE LICENSE
@@ -162,9 +178,13 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/liblcmaps_gss_assist_gridmap.so
 %{_libdir}/liblcmaps_return_poolindex.so
 %{_libdir}/liblcmaps_verify_account_from_pem.so
-%{_libdir}/modules/*.so
+%{_libdir}/lcmaps/*.so
 
 %changelog
+* Wed Nov 16 2011 Dave Dykstra <dwd@fnal.gov> - 1.4.28-19
+- Moved libdir/modules to libdir/lcmaps and create a symlink at
+  libdir/modules for backward compatibility
+
 * Wed Nov 16 2011 Dave Dykstra <dwd@fnal.gov> - 1.4.28-18
 - Added relative_path.patch based on all the source differences between
   lcmaps-1.4.31 and lcmaps-1.4.33.  This patch allows the "path" directive
