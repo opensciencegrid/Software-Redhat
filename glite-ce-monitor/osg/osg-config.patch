@@ -114,9 +114,10 @@ Index: glite-ce-monitor-1.13.1/config/cemonitor-config.xml
            name="OSG CE Sensor"
            type="OSG_CE"
 -          jarpath="file:/opt/glite/share/java/glite-ce-osg-ce-plugin.jar">
-+          jarpath="file:/usr/share/java/glite-ce-osg-ce-plugin.jar">
-     <property name="executionDelay" value="60000" />
+-    <property name="executionDelay" value="60000" />
 -    <property name="scriptURI" value="/opt/glite/etc/glite-ce-ce-plugin/glite-ce-info" />
++          jarpath="file:/usr/share/java/glite-ce-osg-ce-plugin.jar">
++    <property name="executionDelay" value="600" />
 +    <property name="scriptURI" value="/var/lib/glite-ce-monitor/glite-ce-info" />
      <property name="not_supported_attributes" value="GlueSiteDescription,GlueSiteLocation,GlueSiteWeb,GlueSiteSponsor,GlueSiteOtherInfo,GlueForeignKey,GlueChunkKey,createTimestamp,GlueCESEBindCEUniqueID,GlueCESEBindCEAccesspoint,GlueCESEBindGroupCEUniqueID,GlueCESEBindSEUniqueID,GlueCESEBindGroupSEUniqueID,entryTtl,modifyTimestamp,dn,ObjectClass" />
 -    <property name="multiple_values_attributes" value="GlueSiteSponsor,GlueSiteOtherInfo,GlueServiceAccessPointURL,GlueServiceAccessControlRule,GlueInformationServiceURL,GlueChunkKey,GlueForeignKey,GlueCEAccessControlBaseRule,GlueClusterService,GlueHostService,GlueHostApplicationSoftwareRunTimeEnvironment,GlueHostLocalFileSystemClient,GlueHostRemoteFileSystemServer,GlueCESEBindGroupSEUniqueID,GlueSEHostingSL,GlueSEAccessProtocolSupportedSecurity,GlueSLService,GlueSLLocalFileSystemClient,GlueSAAccessControlBaseRule" />
