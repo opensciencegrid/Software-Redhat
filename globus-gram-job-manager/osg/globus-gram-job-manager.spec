@@ -20,6 +20,8 @@ Group:		Applications/Internet
 License:	ASL 2.0
 URL:		http://www.globus.org/
 Source:		http://www.globus.org/ftppub/gt5/5.1/5.1.2/packages/src/%{_name}-%{version}.tar.gz
+Source1:       globus-gram-job-manager-logrotate
+Source2:       globus-gram-job-manager-logging
 
 # OSG-specific patches
 Patch9:         unlock_init.patch
@@ -54,6 +56,7 @@ Requires:	globus-gass-transfer%{?_isa} >= 7
 Requires:	globus-gram-job-manager-scripts
 Requires:	globus-gass-copy-progs >= 8
 Requires:	globus-proxy-utils >= 5
+
 Requires:	globus-gass-cache-program >= 2
 
 BuildRequires:	grid-packaging-tools >= 3.4
@@ -182,6 +185,17 @@ cat $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_pgm.filelist \
 cat $GLOBUSPACKAGEDIR/%{_name}/noflavor_doc.filelist \
   | sed -e 's!/man/.*!&*!' -e 's!^!%doc %{_prefix}!' > package-doc.filelist
 
+# Add logging
+mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/globus
+cat %{SOURCE1} >> $RPM_BUILD_ROOT%{_sysconfdir}/globus/globus-gram-job-manager.conf
+
+mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/log/globus
+chmod 01777 $RPM_BUILD_ROOT%{_localstatedir}/log/globus 
+
+# Add log rotation
+mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d
+cp %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/globus-gram-job-manager
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -190,7 +204,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_datadir}/globus/packages/%{_name}
 %dir %{_docdir}/%{name}-%{version}
 %dir %{_localstatedir}/lib/globus/gram_job_state
+%dir %{_localstatedir}/log/globus
 %config(noreplace) %{_sysconfdir}/globus/globus-gram-job-manager.conf
+%config(noreplace) %{_sysconfdir}/logrotate.d/globus-gram-job-manager
 %config(noreplace) %{_datadir}/globus/globus_gram_job_manager/globus-gram-job-manager.rvf
 
 %files doc -f package-doc.filelist
@@ -198,6 +214,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_docdir}/%{name}-%{version}/html
 
 %changelog
+* Mon Nov 21 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 13.5-9
+- Enabled logging by default.
+
 * Mon Nov 21 2011 Alain Roy <roy@cs.wisc.edu> - 13.5-9
 - Added patch to fix lock confusion (update to fix from -8)
 - Added patch to fix security context memory leak. 

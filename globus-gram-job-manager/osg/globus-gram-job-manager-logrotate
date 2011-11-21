@@ -1,0 +1,10 @@
+compress
+delaycompress
+
+/var/log/globus/gram_*.log {
+    rotate 10
+    daily
+    missingok
+    dateext
+}
+
