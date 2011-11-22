@@ -14,7 +14,7 @@
 
 Name:           bestman2
 Version:        2.1.3
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -34,6 +34,8 @@ Source0:        bestman2.tar.gz
 Source1:        bestman2.sh
 Source2:        bestman2.init
 Source3:        bestman.logrotate
+Source4:        bestman2.rc
+Source5:        bestman2.sysconfig
 Patch0:		bestman.server.patch
 
 
@@ -199,7 +201,7 @@ JAVADIR=`echo %{_javadir} |  sed 's/\//\\\\\//g'`
 sed -i "s/SRM_HOME=.*/SRM_HOME=\/etc\/bestman2/" conf/bestman2.rc
 sed -i "s/SRM_OWNER=.*/SRMOWNER=bestman/" conf/bestman2.rc
 sed -i "s/GridMapFileName=.*/GridMapFileName=\/etc\/bestman2\/conf\/grid-mapfile.empty/" conf/bestman2.rc
-sed -i "s/BESTMAN_SYSCONF=.*/BESTMAN_SYSCONF=\/etc\/bestman2\/conf\/bestman2.rc/" conf/bestman2.rc
+sed -i "s/BESTMAN_SYSCONF=.*/BESTMAN_SYSCONF=\/etc\/sysconfig\/bestman2/" conf/bestman2.rc
 sed -i "s/BESTMAN_LOG=.*/BESTMAN_LOG=\/var\/log\/bestman2\/bestman2.log/" conf/bestman2.rc
 sed -i "s/BESTMAN_LIB=.*/BESTMAN_LIB=$JAVADIR\/bestman2/" conf/bestman2.rc
 sed -i "s/EventLogLocation=.*/EventLogLocation=\/var\/log\/bestman2/" conf/bestman2.rc
@@ -212,6 +214,8 @@ sed -i "s/pluginLib=.*/pluginLib=$JAVADIR\/bestman2\/plugin\//" conf/bestman2.rc
 sed -i "s/2\.2\.2\.1\.2/2.2.2.1.3/" version
 #Fix paths in binaries.  Wish I could do this in configure...
 sed -i "s/SRM_HOME=\/.*/SRM_HOME=\/etc\/bestman2/" bin/*
+sed -i "s/BESTMAN_SYSCONF=.*/BESTMAN_SYSCONF=\/etc\/sysconfig\/bestman2/" bin/*
+sed -i "s/BESTMAN_SYSCONF=.*/BESTMAN_SYSCONF=\/etc\/sysconfig\/bestman2/" sbin/*
 
 popd
 
@@ -245,6 +249,8 @@ mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig
 install -m 0755 %{SOURCE1} $RPM_BUILD_ROOT%{_sbindir}/%{name}
 install -m 0755 %{SOURCE2} $RPM_BUILD_ROOT%{_initrddir}/%{name}
 install -m 0644 %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/%{name}
+install -m 0644 %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/conf/bestman2.rc
+install -m 0644 %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/%{name}
 
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/grid-security/vomsdir
 touch $RPM_BUILD_ROOT%{_sysconfdir}/grid-security/vomsdir/vdt-empty.pem
@@ -308,6 +314,7 @@ fi
 %config(noreplace) %{install_root}/conf/srmclient.conf
 %config(noreplace) %{install_root}/conf/srmclient.conf.sample
 %config(noreplace) %{install_root}/conf/bestman2.rc
+%config(noreplace) %{_sysconfdir}/sysconfig/bestman2
 %{_bindir}/srm-copy
 %{_bindir}/srm-copy-status
 %{_bindir}/srm-extendfilelifetime
@@ -356,6 +363,7 @@ fi
 %config(noreplace) %{install_root}/conf/bestman-diag-msg.conf
 %config(noreplace) %{install_root}/conf/bestman-diag.conf.sample
 %config(noreplace) %{install_root}/conf/bestman2.rc
+%config(noreplace) %{_sysconfdir}/sysconfig/bestman2
 %{_initrddir}/%{name}
 %{_sbindir}/%{name}
 %config(noreplace) %{_sysconfdir}/logrotate.d/%{name}
@@ -424,6 +432,7 @@ fi
 %config(noreplace) %{install_root}/conf/srmtester.conf.sample
 %config(noreplace) %{install_root}/conf/srmtester.conf
 %config(noreplace) %{install_root}/conf/bestman2.rc
+%config(noreplace) %{_sysconfdir}/sysconfig/bestman2
 
 
 %files tester-libs
@@ -434,7 +443,10 @@ fi
 
 
 %changelog
-* Tue Nov 15 2011 Doug Strain <dstrain@fnal.gov> - 2.1.3-5
+* Tue Nov 22 2011 Doug Strain <dstrain@fnal.gov> - 2.1.3-7
+- Splitting sysconfig and configuration of bestman2.rc
+
+* Tue Nov 22 2011 Doug Strain <dstrain@fnal.gov> - 2.1.3-6
 - Added changes to fix SOFTWARE-384
 - Changed SRM_OWNER to SRMOWNER
 - Fixed version string in version file
