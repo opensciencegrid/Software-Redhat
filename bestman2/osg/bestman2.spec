@@ -216,6 +216,7 @@ sed -i "s/2\.2\.2\.1\.2/2.2.2.1.3/" version
 sed -i "s/SRM_HOME=\/.*/SRM_HOME=\/etc\/bestman2/" bin/*
 sed -i "s/BESTMAN_SYSCONF=.*/BESTMAN_SYSCONF=\/etc\/sysconfig\/bestman2/" bin/*
 sed -i "s/BESTMAN_SYSCONF=.*/BESTMAN_SYSCONF=\/etc\/sysconfig\/bestman2/" sbin/*
+sed -i "s/\${BESTMAN_SYSCONF}/\/etc\/bestman2\/conf\/bestman2.rc/" sbin/bestman.server
 
 popd
 
