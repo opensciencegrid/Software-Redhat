@@ -1,15 +1,15 @@
 Index: glite-ce-monitor-1.13.1/config/cemonitor-config.xml
 ===================================================================
 --- glite-ce-monitor-1.13.1.orig/config/cemonitor-config.xml	2011-10-05 11:07:34.000000000 -0500
-+++ glite-ce-monitor-1.13.1/config/cemonitor-config.xml	2011-10-05 11:13:44.000000000 -0500
++++ glite-ce-monitor-1.13.1/config/cemonitor-config.xml	2011-11-21 13:13:44.000000000 -0500
 @@ -4,15 +4,15 @@
           ServiceDescription="cemonitor service"
  	 InterfaceVersion="1.0"
  	 ServiceVersion="1.0"
 -         sslkeyfile="/usr/share/tomcat5/hostkey.pem"
 -         sslcertfile="/usr/share/tomcat5/hostcert.pem"
-+         sslkeyfile="/etc/grid-security/http/hostkey.pem"
-+         sslcertfile="/etc/grid-security/http/hostcert.pem"
++         sslkeyfile="/etc/grid-security/http/httpkey.pem"
++         sslcertfile="/etc/grid-security/http/httpcert.pem"
           sslkeypasswd=""
           sslCAfiles="/etc/grid-security/certificates/*.0"
           sslCRLfiles="/etc/grid-security/certificates/*.r0"

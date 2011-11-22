@@ -1,7 +1,7 @@
 Summary: The CE monitor service is a web application that publishes information about the Computing Element
 Name: glite-ce-monitor
 Version: 1.13.1
-Release: 15%{?dist}
+Release: 16%{?dist}
 License: Apache License 2.0
 Vendor: EMI
 Group: System Environment/Libraries
@@ -110,6 +110,13 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %post
+certdir=/etc/grid-security/http
+if [[ -e $certdir/hostcert.pem && ! -e $certdir/httpcert.pem ]]; then
+    ln -s $certdir/hostcert.pem $certdir/httpcert.pem
+fi
+if [[ -e $certdir/hostkey.pem && ! -e $certdir/httpkey.pem ]]; then
+    ln -s $certdir/hostkey.pem $certdir/httpkey.pem
+fi
 
 
 
@@ -140,6 +147,10 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) /etc/tomcat5/Catalina/localhost/ce-monitor.xml
 
 %changelog
+* Mon Nov 21 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.13.1-16
+- Modified hostkey/hostcert default location in cemonitor-config.xml again.
+- Added symlinks in post-install script to make upgrading easier.
+
 * Fri Nov 18 2011 Burt Holzman <burt@fnal.gov> - 1.13.1-15
 - Change OSG-CE sensor execution delay from 60000s to 600s
 
