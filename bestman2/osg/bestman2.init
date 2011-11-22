@@ -4,10 +4,10 @@
 # description: Bestman server
 ### BEGIN INIT INFO
 # Provides: bestman
-# Required-Start: $network
+# Required-Start: 
 # Required-Stop: 
-# Default-Start: 3 4 5
-# Default-Stop: 1 2 6
+# Default-Start:
+# Default-Stop: 
 # Description: Bestman SRM server for Grid Storage Elements
 # Short-Description: Bestman server
 ### END INIT INFO

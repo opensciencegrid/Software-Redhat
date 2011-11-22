@@ -14,7 +14,7 @@
 
 Name:           bestman2
 Version:        2.1.3
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -197,7 +197,7 @@ popd
 #Fix paths in bestman2.rc
 JAVADIR=`echo %{_javadir} |  sed 's/\//\\\\\//g'`
 sed -i "s/SRM_HOME=.*/SRM_HOME=\/etc\/bestman2/" conf/bestman2.rc
-sed -i "s/SRM_OWNER=.*/SRM_OWNER=bestman/" conf/bestman2.rc
+sed -i "s/SRM_OWNER=.*/SRMOWNER=bestman/" conf/bestman2.rc
 sed -i "s/GridMapFileName=.*/GridMapFileName=\/etc\/bestman2\/conf\/grid-mapfile.empty/" conf/bestman2.rc
 sed -i "s/BESTMAN_SYSCONF=.*/BESTMAN_SYSCONF=\/etc\/bestman2\/conf\/bestman2.rc/" conf/bestman2.rc
 sed -i "s/BESTMAN_LOG=.*/BESTMAN_LOG=\/var\/log\/bestman2\/bestman2.log/" conf/bestman2.rc
@@ -209,7 +209,7 @@ sed -i "s/BESTMAN_GUMSKEYPATH=.*/BESTMAN_GUMSKEYPATH=\/etc\/grid-security\/http\
 sed -i "s/CertFileName=.*/CertFileName=\/etc\/grid-security\/http\/httpcert.pem/" conf/bestman2.rc
 sed -i "s/KeyFileName=.*/KeyFileName=\/etc\/grid-security\/http\/httpkey.pem/" conf/bestman2.rc
 sed -i "s/pluginLib=.*/pluginLib=$JAVADIR\/bestman2\/plugin\//" conf/bestman2.rc
-
+sed -i "s/2\.2\.2\.1\.2/2.2.2.1.3/" version
 #Fix paths in binaries.  Wish I could do this in configure...
 sed -i "s/SRM_HOME=\/.*/SRM_HOME=\/etc\/bestman2/" bin/*
 
@@ -434,6 +434,12 @@ fi
 
 
 %changelog
+* Tue Nov 15 2011 Doug Strain <dstrain@fnal.gov> - 2.1.3-5
+- Added changes to fix SOFTWARE-384
+- Changed SRM_OWNER to SRMOWNER
+- Fixed version string in version file
+- Disabled default start up
+
 * Tue Nov 15 2011 Doug Strain <dstrain@fnal.gov> - 2.1.3-5
 - Added post os install expression to disable redhat jar repacking
 - This fixes the build date issue.
