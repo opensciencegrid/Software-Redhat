@@ -16,7 +16,7 @@
 Name:		globus-gram-job-manager-pbs
 %global _name %(tr - _ <<< %{name})
 Version:	1.1
-Release:	3%{?dist}
+Release:	4%{?dist}
 Summary:	Globus Toolkit - PBS Job Manager
 
 Group:		Applications/Internet
@@ -261,6 +261,9 @@ fi
 %dir %{_docdir}/%{name}-%{version}/html
 
 %changelog
+* Tue Nov 22 2011 Alain Roy <roy@cs.wisc.edu> - 1.1-4
+- Fixed typo in OSG/TeraGrid patch
+
 * Tue Nov 22 2011 Alain Roy <roy@cs.wisc.edu> - 1.1-3
 - Added OSG/TeraGrid patches
 

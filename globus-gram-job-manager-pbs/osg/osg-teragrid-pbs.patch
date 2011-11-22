@@ -102,7 +102,7 @@
 +                              . '  if [ $? == 0 ]; then' . "\n"
 +                              . "    mpirun -np " . $this_count . $machinefilearg
 +                              . " $cmd_script_name < " .  $description->stdin() . "\n"
-+                              . '  else' . "\n"
++                              . '  else' . "\n";
 +                if (!$rc)
                  {
 -                    $rc = print JOB "$mpiexec $machinefilearg -n "
