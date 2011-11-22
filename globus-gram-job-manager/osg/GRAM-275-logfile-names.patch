@@ -1,0 +1,81 @@
+Index: globus_gram_job_manager.c
+===================================================================
+RCS file: /home/globdev/CVS/globus-packages/gram/jobmanager/source/globus_gram_job_manager.c,v
+retrieving revision 1.63
+diff -u -r1.63 globus_gram_job_manager.c
+--- globus_gram_job_manager.c	14 Nov 2011 20:00:01 -0000	1.63
++++ globus_gram_job_manager.c	22 Nov 2011 17:51:53 -0000
+@@ -499,7 +499,7 @@
+         logged = GLOBUS_TRUE;
+     }
+     
+-    if (!logged)
++    if ((!logged) && (manager && !manager->done))
+     {
+         /* Hack to write to stderr in the case the error happens before we
+          * have parsed command-line options to figure out where log messages
+Index: globus_gram_job_manager.h
+===================================================================
+RCS file: /home/globdev/CVS/globus-packages/gram/jobmanager/source/globus_gram_job_manager.h,v
+retrieving revision 1.69
+diff -u -r1.69 globus_gram_job_manager.h
+--- globus_gram_job_manager.h	21 Nov 2011 21:30:36 -0000	1.69
++++ globus_gram_job_manager.h	22 Nov 2011 17:51:53 -0000
+@@ -1608,6 +1608,10 @@
+     globus_gram_job_manager_config_t *  config);
+ 
+ extern
++void
++globus_gram_job_manager_logging_destroy(void);
++
++extern
+ char *
+ globus_gram_prepare_log_string(
+     const char *                        instr);
+Index: logging.c
+===================================================================
+RCS file: /home/globdev/CVS/globus-packages/gram/jobmanager/source/logging.c,v
+retrieving revision 1.8
+diff -u -r1.8 logging.c
+--- logging.c	21 Nov 2011 21:30:36 -0000	1.8
++++ logging.c	22 Nov 2011 17:51:53 -0000
+@@ -135,6 +135,24 @@
+ }
+ /* globus_gram_job_manager_logging_init() */
+ 
++void
++globus_gram_job_manager_logging_destroy(void)
++{
++    if (globus_i_gram_job_manager_log_sys)
++    {
++        globus_logging_destroy(globus_i_gram_job_manager_log_sys);
++	globus_i_gram_job_manager_log_sys = NULL;
++    }
++    if (globus_i_gram_job_manager_log_stdio)
++    {
++        globus_logging_destroy(globus_i_gram_job_manager_log_stdio);
++	globus_i_gram_job_manager_log_stdio = NULL;
++    }
++    globus_symboltable_destroy(
++            &globus_l_gram_log_symboltable);
++    globus_l_gram_log_symboltable = NULL;
++}
++
+ char *
+ globus_gram_prepare_log_string(
+     const char *                        instr)
+Index: main.c
+===================================================================
+RCS file: /home/globdev/CVS/globus-packages/gram/jobmanager/source/main.c,v
+retrieving revision 1.40
+diff -u -r1.40 main.c
+--- main.c	21 Nov 2011 21:30:36 -0000	1.40
++++ main.c	22 Nov 2011 17:51:53 -0000
+@@ -604,6 +604,7 @@
+         remove(manager.socket_path);
+         remove(manager.lock_path);
+     }
++    globus_gram_job_manager_logging_destroy();
+     globus_gram_job_manager_destroy(&manager);
+     globus_gram_job_manager_config_destroy(&config);
+ 
