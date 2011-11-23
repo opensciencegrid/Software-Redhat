@@ -1,6 +1,6 @@
-Name:           glideinwms-vofrontend
+Name:           glideinwms
 Version:        2.5.3
-Release:        3
+Release:        4
 Summary:        The VOFrontend for glideinWMS submission host
 
 Group:          System Environment/Daemons
@@ -8,15 +8,8 @@ License:        Fermitools Software Legal Information (Modified BSD License)
 URL:            http://www.uscms.org/SoftwareComputing/Grid/WMS/glideinWMS/doc.v2/manual/
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
-#BuildRequires:  
-#Requires:       
-#BuildArchitectures: noarch 
-Provides:	GlideinWMSFrontend = %{version}-%{release}
-Obsoletes:	GlideinWMSFrontend < 2.5.1-11
-
 
 #Source0:        http://www.uscms.org/SoftwareComputing/Grid/WMS/glideinWMS/glideinWMS_v2_5_1_frontend.tgz
-#Source0:        GlideinWMSFrontend-2.5.1.tar.gz
 Source0:	glideinWMS_v2_5_3_frontend.tgz
 
 # How to build tar file
@@ -31,12 +24,21 @@ Source4:        00_gwms_general.config
 Source5:        01_gwms_collectors.config
 Source6:	02_gwms_schedds.config
 Source7:	03_gwms_local.config
-Source8:	checksum.frontend
+Source8:	chksum.sh
+Source9:	checksum.frontend
 patch0:         reconfig_frontend.patch
 patch1:         cvWParamDict.py.patch
 patch2: 	cvWParams.py.patch
 patch3:		glideinwms_version.patch
+%description
+This is a package for the glidein workload management system.
+Currently, only the vofrontend portion is supported
 
+%package vofrontend
+Summary:        The VOFrontend for glideinWMS submission host
+Group:          System Environment/Daemons
+Provides:	GlideinWMSFrontend = %{version}-%{release}
+Obsoletes:	GlideinWMSFrontend < 2.5.1-11
 Requires: httpd
 # We require Condor 7.6.0 (and newer) to support 
 # condor_advertise -multiple -tcp which is enabled by default
@@ -54,7 +56,7 @@ Requires(post): /sbin/chkconfig
 
 
 
-%description
+%description vofrontend
 The purpose of the glideinWMS is to provide a simple way 
 to access the Grid resources. GlideinWMS is a Glidein 
 Based WMS (Workload Management System) that works on top of 
@@ -72,7 +74,9 @@ for scheduling and job control.
 %patch -P 3 -p1
 
 %build
-#make %{?_smp_mflags}
+cp %{SOURCE8} .
+chmod 700 chksum.sh
+./chksum.sh v%{version}-%{release}.osg etc/checksum.frontend "CVS config_examples doc .git .gitattributes poolwatcher factory/check* factory/glideFactory* factory/test* factory/manage* factory/stop* factory/tools creation/create_glidein creation/reconfig_glidein creation/info_glidein creation/lib/cgW* creation/web_base/factory*html creation/web_base/collector_setup.sh creation/web_base/condor_platform_select.sh creation/web_base/condor_startup.sh creation/web_base/create_mapfile.sh creation/web_base/gcb_setup.sh creation/web_base/glexec_setup.sh creation/web_base/glidein_startup.sh creation/web_base/job_submit.sh creation/web_base/local_start.sh creation/web_base/setup_x509.sh creation/web_base/validate_node.sh chksum.sh etc/checksum*"
 
 
 %install
@@ -182,7 +186,7 @@ done
 cp tools/lib/*.py $RPM_BUILD_ROOT%{python_sitelib}
 
 # Install checksum file
-install -m 0644 %{SOURCE8} $RPM_BUILD_ROOT%{_datadir}/gwms-frontend/frontend-temp/checksum.frontend
+install -m 0644 etc/checksum.frontend $RPM_BUILD_ROOT%{_datadir}/gwms-frontend/frontend-temp/checksum.frontend
 
 %post
 # $1 = 1 - Installation
@@ -231,7 +235,7 @@ fi
 rm -rf $RPM_BUILD_ROOT
 
 
-%files
+%files vofrontend
 %defattr(-,frontend,frontend,-)
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_sbindir}/*
