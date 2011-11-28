@@ -1,6 +1,6 @@
 Name:           osg-ca-certs
 Version:        1.24
-Release:        2
+Release:        3
 Summary:        OSG Packaging of the IGTF CA Certs and OSG-specific CAs, in the new OpenSSL 0.9.8/1.0.0 format
 
 Group:          System Environment/Base
@@ -33,7 +33,7 @@ Obsoletes:      osg-ca-certs-experimental
 rm -rf $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT/etc/grid-security/certificates
 chmod 0644 * 
-cp -p * $RPM_BUILD_ROOT/etc/grid-security/certificates/
+mv * $RPM_BUILD_ROOT/etc/grid-security/certificates/
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -45,8 +45,8 @@ rm -rf $RPM_BUILD_ROOT
 %doc
 
 %changelog
-* Thu Nov 28 2011 Anand Padmanabhan <apadmana@uiuc.edu> - 1.24-2
-- use cp -p instead of install to maintain symlink
+* Thu Nov 28 2011 Anand Padmanabhan <apadmana@uiuc.edu> - 1.24-3
+- use mv instead of install to maintain symlink
 
 * Thu Oct 11 2011 Anand Padmanabhan <apadmana@uiuc.edu> - 1.24-1
 - New CA release
