@@ -1,6 +1,6 @@
 Name:           igtf-ca-certs
 Version:        1.42
-Release:        1
+Release:        2
 Summary:        OSG Packaging of the IGTF CA Certs, in new OpenSSL 0.9.8/1.0.0 format
 
 Group:          System Environment/Base
@@ -32,7 +32,8 @@ Obsoletes:      igtf-ca-certs-experimental
 %install
 rm -rf $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT/etc/grid-security/certificates
-install -m 0644 * $RPM_BUILD_ROOT/etc/grid-security/certificates/
+chmod 0644 *
+cp -p * $RPM_BUILD_ROOT/etc/grid-security/certificates/
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -44,13 +45,16 @@ rm -rf $RPM_BUILD_ROOT
 %doc
 
 %changelog
-* Thu Oct 11 2011 Anand Padmanabhan <apadmana@uiuc.edu> - 1.24-1
+* Thu Nov 28 2011 Anand Padmanabhan <apadmana@uiuc.edu> - 1.42-2
+- use cp -p instead of install to maintain symlink
+
+* Thu Oct 11 2011 Anand Padmanabhan <apadmana@uiuc.edu> - 1.42-1
 - New CA release
 
-* Thu Sep 27 2011 Anand Padmanabhan <apadmana@uiuc.edu> - 1.23-1
+* Thu Sep 27 2011 Anand Padmanabhan <apadmana@uiuc.edu> - 1.41-1
 - New CA release
 
-* Thu Sep 9 2011 Anand Padmanabhan <apadmana@uiuc.edu> - 1.22-2
+* Thu Sep 9 2011 Anand Padmanabhan <apadmana@uiuc.edu> - 1.40-6
 - Added osg-ca-certs-experimental in Obsoletes line
 
 * Thu Sep 8 2011 Anand Padmanabhan <apadmana@uiuc.edu> - 1.40-5

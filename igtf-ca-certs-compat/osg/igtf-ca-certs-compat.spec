@@ -42,10 +42,10 @@ rm -rf $RPM_BUILD_ROOT
 %doc
 
 %changelog
-* Thu Oct 11 2011 Anand Padmanabhan <apadmana@uiuc.edu> - 1.24-1
+* Thu Oct 11 2011 Anand Padmanabhan <apadmana@uiuc.edu> - 1.42-1
 - New CA release
 
-* Thu Sep 27 2011 Anand Padmanabhan <apadmana@uiuc.edu> - 1.23-1
+* Thu Sep 27 2011 Anand Padmanabhan <apadmana@uiuc.edu> - 1.41-1
 - New CA release
 
 * Thu Sep 8 2011 Anand Padmanabhan <apadmana@uiuc.edu> - 1.40-5
