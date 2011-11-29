@@ -1,0 +1,75 @@
+Index: globus_gram_job_manager_request.c
+===================================================================
+RCS file: /home/globdev/CVS/globus-packages/gram/jobmanager/source/globus_gram_job_manager_request.c,v
+retrieving revision 1.36
+diff -u -r1.36 globus_gram_job_manager_request.c
+--- globus_gram_job_manager_request.c	22 Nov 2011 16:45:14 -0000	1.36
++++ globus_gram_job_manager_request.c	29 Nov 2011 15:12:58 -0000
+@@ -679,17 +679,61 @@
+         goto staging_list_create_failed;
+     }
+ 
+-    if (reinit && r->jm_restart)
++    if (r->jm_restart)
+     {
+-        r->jobmanager_state = GLOBUS_GRAM_JOB_MANAGER_STATE_TWO_PHASE_COMMITTED;
++        /* As necessary, rewind the state machine to a safe "starting point" - 
++         * things that are idempotent and not crossing commit boundaries.
++         */
++        switch (r->jobmanager_state)
++        {
++            case GLOBUS_GRAM_JOB_MANAGER_STATE_START:
++            case GLOBUS_GRAM_JOB_MANAGER_STATE_TWO_PHASE:
++                r->jobmanager_state = GLOBUS_GRAM_JOB_MANAGER_STATE_START;
++                break;
++            case GLOBUS_GRAM_JOB_MANAGER_STATE_TWO_PHASE_COMMITTED:
++            case GLOBUS_GRAM_JOB_MANAGER_STATE_STAGE_IN:
++                r->jobmanager_state = GLOBUS_GRAM_JOB_MANAGER_STATE_TWO_PHASE_COMMITTED;
++                break;
++            case GLOBUS_GRAM_JOB_MANAGER_STATE_SUBMIT:
++            case GLOBUS_GRAM_JOB_MANAGER_STATE_POLL1:
++            case GLOBUS_GRAM_JOB_MANAGER_STATE_POLL2:
++            case GLOBUS_GRAM_JOB_MANAGER_STATE_CLOSE_OUTPUT:
++            case GLOBUS_GRAM_JOB_MANAGER_STATE_STAGE_OUT:
++            case GLOBUS_GRAM_JOB_MANAGER_STATE_TWO_PHASE_END:
++                r->jobmanager_state = GLOBUS_GRAM_JOB_MANAGER_STATE_SUBMIT;
++                break;
++            case GLOBUS_GRAM_JOB_MANAGER_STATE_TWO_PHASE_END_COMMITTED:
++            case GLOBUS_GRAM_JOB_MANAGER_STATE_FILE_CLEAN_UP:
++            case GLOBUS_GRAM_JOB_MANAGER_STATE_SCRATCH_CLEAN_UP:
++            case GLOBUS_GRAM_JOB_MANAGER_STATE_CACHE_CLEAN_UP:
++            case GLOBUS_GRAM_JOB_MANAGER_STATE_DONE:
++                break;
++            case GLOBUS_GRAM_JOB_MANAGER_STATE_FAILED:
++            case GLOBUS_GRAM_JOB_MANAGER_STATE_FAILED_CLOSE_OUTPUT:
++            case GLOBUS_GRAM_JOB_MANAGER_STATE_FAILED_TWO_PHASE:
++                r->jobmanager_state = GLOBUS_GRAM_JOB_MANAGER_STATE_FAILED;
++                break;
++            case GLOBUS_GRAM_JOB_MANAGER_STATE_FAILED_TWO_PHASE_COMMITTED:
++            case GLOBUS_GRAM_JOB_MANAGER_STATE_FAILED_FILE_CLEAN_UP:
++            case GLOBUS_GRAM_JOB_MANAGER_STATE_FAILED_SCRATCH_CLEAN_UP:
++            case GLOBUS_GRAM_JOB_MANAGER_STATE_FAILED_CACHE_CLEAN_UP:
++            case GLOBUS_GRAM_JOB_MANAGER_STATE_FAILED_DONE:
++            case GLOBUS_GRAM_JOB_MANAGER_STATE_STOP:
++                break;
++            case GLOBUS_GRAM_JOB_MANAGER_STATE_POLL_QUERY1:
++            case GLOBUS_GRAM_JOB_MANAGER_STATE_POLL_QUERY2:
++            case GLOBUS_GRAM_JOB_MANAGER_STATE_PROXY_REFRESH:
++            case GLOBUS_GRAM_JOB_MANAGER_STATE_PRE_CLOSE_OUTPUT:
++            case GLOBUS_GRAM_JOB_MANAGER_STATE_TWO_PHASE_QUERY1:
++            case GLOBUS_GRAM_JOB_MANAGER_STATE_TWO_PHASE_QUERY2:
++            case GLOBUS_GRAM_JOB_MANAGER_STATE_TWO_PHASE_PROXY_REFRESH:
++                r->jobmanager_state = GLOBUS_GRAM_JOB_MANAGER_STATE_SUBMIT;
++                break;
++        }
+     }
+     else
+     {
+         r->jobmanager_state = GLOBUS_GRAM_JOB_MANAGER_STATE_START;
+-    }
+-
+-    if (r->jm_restart == NULL)
+-    {
+         r->restart_state = GLOBUS_GRAM_JOB_MANAGER_STATE_START;
+     }
+ 

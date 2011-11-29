@@ -13,7 +13,7 @@
 Name:		globus-gram-job-manager
 %global _name %(tr - _ <<< %{name})
 Version:	13.5
-Release:	11%{?dist}
+Release:	12%{?dist}
 Summary:	Globus Toolkit - GRAM Jobmanager
 
 Group:		Applications/Internet
@@ -37,6 +37,7 @@ Patch23:        GRAM-273-ignore-logs.patch
 Patch24:        GRAM-270-context-leak.patch
 Patch25:        request-lock.patch
 Patch26:        GRAM-275-logfile-names.patch
+Patch27:        globus_restart_state.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -133,6 +134,7 @@ GRAM Jobmanager Documentation Files
 %patch24 -p0
 %patch25 -p0
 %patch26 -p0
+%patch27 -p0
 
 %build
 # Remove files that should be replaced during bootstrap
@@ -216,6 +218,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_docdir}/%{name}-%{version}/html
 
 %changelog
+* Tue Nov 29 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 13.5-12
+- Restart the jobmanagers state machine in a 'safe' state.
+
 * Tue Nov 22 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 13.5-11
 - Added patch to fix logfiles with garbage names getting created (GRAM-275)
 
