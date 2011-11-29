@@ -65,7 +65,7 @@ Index: main.c
      while (! manager.done)
      {
 -        GlobusGramJobManagerWait(&manager);
-+        GlobusTimeAbstimeSet(next_timeout, 20, 0);
++        GlobusTimeAbstimeSet(next_timeout, 60, 0);
 +        if (ETIMEDOUT == globus_cond_timedwait(&manager.cond, &manager.mutex, &next_timeout))
 +        {
 +            /* Something went horribly wrong and out watchdog became non-functional */

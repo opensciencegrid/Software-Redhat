@@ -1,0 +1,20 @@
+Index: globus_gram_job_manager_state.c
+===================================================================
+RCS file: /home/globdev/CVS/globus-packages/gram/jobmanager/source/globus_gram_job_manager_state.c,v
+retrieving revision 1.54
+diff -u -r1.54 globus_gram_job_manager_state.c
+--- globus_gram_job_manager_state.c	22 Nov 2011 16:45:15 -0000	1.54
++++ globus_gram_job_manager_state.c	29 Nov 2011 16:28:32 -0000
+@@ -404,10 +404,9 @@
+         globus_gram_job_manager_history_file_create(request);
+         request->job_history_status = request->status;
+ 
+-        request->restart_state = request->jobmanager_state;
+-        globus_gram_job_manager_state_file_write(request);
+-        request->jobmanager_state =
++        request->restart_state = request->jobmanager_state =
+             GLOBUS_GRAM_JOB_MANAGER_STATE_POLL1;
++        globus_gram_job_manager_state_file_write(request);
+         first_poll = GLOBUS_TRUE;
+         
+         /* FALLSTHROUGH so we can act on a job state change returned from

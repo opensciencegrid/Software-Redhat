@@ -37,7 +37,7 @@ Patch23:        GRAM-273-ignore-logs.patch
 Patch24:        GRAM-270-context-leak.patch
 Patch25:        request-lock.patch
 Patch26:        GRAM-275-logfile-names.patch
-Patch27:        globus_restart_state.patch
+Patch27:        SOFTWARE-393.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 

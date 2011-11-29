@@ -26,13 +26,13 @@ diff -u -r1.36 globus_gram_job_manager_request.c
 +            case GLOBUS_GRAM_JOB_MANAGER_STATE_STAGE_IN:
 +                r->jobmanager_state = GLOBUS_GRAM_JOB_MANAGER_STATE_TWO_PHASE_COMMITTED;
 +                break;
-+            case GLOBUS_GRAM_JOB_MANAGER_STATE_SUBMIT:
++            case GLOBUS_GRAM_JOB_MANAGER_STATE_SUBMIT: break;
 +            case GLOBUS_GRAM_JOB_MANAGER_STATE_POLL1:
 +            case GLOBUS_GRAM_JOB_MANAGER_STATE_POLL2:
 +            case GLOBUS_GRAM_JOB_MANAGER_STATE_CLOSE_OUTPUT:
 +            case GLOBUS_GRAM_JOB_MANAGER_STATE_STAGE_OUT:
 +            case GLOBUS_GRAM_JOB_MANAGER_STATE_TWO_PHASE_END:
-+                r->jobmanager_state = GLOBUS_GRAM_JOB_MANAGER_STATE_SUBMIT;
++                r->jobmanager_state = GLOBUS_GRAM_JOB_MANAGER_STATE_POLL1;
 +                break;
 +            case GLOBUS_GRAM_JOB_MANAGER_STATE_TWO_PHASE_END_COMMITTED:
 +            case GLOBUS_GRAM_JOB_MANAGER_STATE_FILE_CLEAN_UP:
