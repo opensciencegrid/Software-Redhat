@@ -56,7 +56,7 @@
 
 Name: %{hadoop_name}-%{apache_branch}
 Version: %{cloudera_version}
-Release: 17
+Release: 18
 Summary: Hadoop is a software platform for processing vast amounts of data
 License: Apache License v2.0
 URL: http://hadoop.apache.org/core/
@@ -326,6 +326,8 @@ getent group hadoop 2>/dev/null >/dev/null || /usr/sbin/groupadd -r hadoop
 /usr/sbin/useradd --comment "Hadoop MapReduce" --shell /bin/bash -M -r --groups hadoop --home %{lib_hadoop} mapred 2> /dev/null || :
 
 # Upgrade
+
+# If we have a hadoop user but not an hdfs user, rename hadoop -> hdfs
 if getent passwd hadoop 2>/dev/null >/dev/null && \
    ! getent passwd hdfs 2>/dev/null >/dev/null ; then
   /usr/sbin/usermod --comment "Hadoop HDFS" --login hdfs hadoop
@@ -364,8 +366,7 @@ if [ "$1" = 2 ]; then
 
   # Change the ownership of old logs so that we don't fail rotation on next startup
   find /var/log/hadoop-0.20/ | egrep 'jobtracker|tasktracker|userlogs|history' | xargs --no-run-if-empty chown mapred
-  # Commented out for OSG to prevent chown on log files from hadoop user to hdfs
-  #find /var/log/hadoop-0.20/ | egrep 'namenode|datanode' | xargs --no-run-if-empty chown hdfs
+  find /var/log/hadoop-0.20/ | egrep 'namenode|datanode' | xargs --no-run-if-empty chown hdfs
 
   # We don't want to do this recursively since we may be reinstalling, in which case
   # users have their own cache/<username> directories which shouldn't be stolen
@@ -497,6 +498,9 @@ fi
 %endif
 
 %changelog
+* Mon Nov 28 2011 Jeff Dost <jdost@ucsd.edu> 0.20.2+737-18
+- Change to correctly run hadoop as user hdfs.
+
 * Fri Oct 21 2011 Jeff Dost <jdost@ucsd.edu> 0.20.2+737-17
 - Prevent chown on log files from hadoop user to hdfs if 0.20 already
   installed.
