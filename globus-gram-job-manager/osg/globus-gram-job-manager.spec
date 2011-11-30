@@ -38,6 +38,7 @@ Patch24:        GRAM-270-context-leak.patch
 Patch25:        request-lock.patch
 Patch26:        GRAM-275-logfile-names.patch
 Patch27:        SOFTWARE-393.patch
+Patch28:        GRAM-282-sigusr1_logrotate.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -135,6 +136,7 @@ GRAM Jobmanager Documentation Files
 %patch25 -p0
 %patch26 -p0
 %patch27 -p0
+%patch28 -p0
 
 %build
 # Remove files that should be replaced during bootstrap
@@ -218,8 +220,10 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_docdir}/%{name}-%{version}/html
 
 %changelog
-* Tue Nov 29 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 13.5-12
+* Tue Nov 29 2011 Alain Roy <roy@cs.wisc.edu> - 13.5-12
 - Restart the jobmanagers state machine in a 'safe' state.
+- Add hooks to job manager to handle log rotation
+- Reduce default logging level
 
 * Tue Nov 22 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 13.5-11
 - Added patch to fix logfiles with garbage names getting created (GRAM-275)
