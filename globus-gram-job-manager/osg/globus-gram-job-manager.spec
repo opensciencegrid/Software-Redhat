@@ -13,7 +13,7 @@
 Name:		globus-gram-job-manager
 %global _name %(tr - _ <<< %{name})
 Version:	13.5
-Release:	12%{?dist}
+Release:	13%{?dist}
 Summary:	Globus Toolkit - GRAM Jobmanager
 
 Group:		Applications/Internet
@@ -220,6 +220,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_docdir}/%{name}-%{version}/html
 
 %changelog
+* Wed Nov 30 2011 Alain Roy <roy@cs.wisc.edu> - 13.5-13
+- Updated logrotate to send SIGUSR1 to globus-job-manger processes
+
 * Tue Nov 29 2011 Alain Roy <roy@cs.wisc.edu> - 13.5-12
 - Restart the jobmanagers state machine in a 'safe' state.
 - Add hooks to job manager to handle log rotation

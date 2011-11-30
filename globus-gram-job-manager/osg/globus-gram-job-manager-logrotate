@@ -6,5 +6,8 @@ delaycompress
     daily
     missingok
     dateext
+    postrotate
+        /usr/bin/killall -USR1 globus-job-manager
+    endscript
 }
 
