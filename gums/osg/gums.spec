@@ -1,11 +1,12 @@
 
 %define _noarchlib %{_exec_prefix}/lib
 %define dirname gums
+%define local_maven /tmp/m2-repository
 
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.3.18.002
-Release: 4
+Release: 5
 License: Unknown
 Group: System Environment/Daemons
 BuildRequires: maven2
@@ -30,10 +31,25 @@ Source3: gums-host-cron
 Source4: gums-client-cron.cron
 Source5: gums-client-cron.init
 
+# Binary JARs not available from public maven repos.  To be eliminated, one-by-one.
+Source6:  glite-security-trustmanager-1.8.16.jar
+Source7:  glite-security-util-java-1.4.0.jar
+Source8:  jta-1.0.1B.jar
+Source9:  jacc-1.0.jar
+#Source10: xml-apis-2.9.1.jar
+#Source11: xercesImpl-2.9.1.jar
+Source12: opensaml-2.2.2.jar
+Source13: privilege-xacml-2.2.4.jar
+Source14: privilege-1.0.1.3.jar
+Source15: xmltooling-1.1.1.jar
+Source16: xmltooling.pom 
+
 Patch0: gums-build.patch
 Patch1: gums-add-mysql-admin.patch
 Patch2: gums-setup-mysql-database.patch
 Patch3: gums-create-config.patch
+Patch4: gums-use-hostname.patch
+Patch5: xml-maven2.patch
 
 %description
 %{summary}
@@ -68,8 +84,24 @@ Summary: Tomcat5 service for GUMS
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p0
+%patch5 -p0
 
 %build
+
+# Binary JARs not available from public maven repos.
+# gums-core
+mvn install:install-file -DgroupId=org.glite -DartifactId=glite-security-trustmanager -Dversion=1.8.16 -Dpackaging=jar -Dfile=%{SOURCE6} -Dmaven.repo.local=%{local_maven}
+mvn install:install-file -DgroupId=org.glite -DartifactId=glite-security-util-java -Dversion=1.4.0 -Dpackaging=jar -Dfile=%{SOURCE7} -Dmaven.repo.local=%{local_maven}
+mvn install:install-file -DgroupId=javax.transaction -DartifactId=jta -Dversion=1.0.1B -Dpackaging=jar -Dfile=%{SOURCE8} -Dmaven.repo.local=%{local_maven}
+mvn install:install-file -DgroupId=javax.security -DartifactId=jacc -Dversion=1.0 -Dpackaging=jar -Dfile=%{SOURCE9} -Dmaven.repo.local=%{local_maven}
+# gums-client
+mvn install:install-file -DgroupId=org.opensaml -DartifactId=xmltooling -Dversion=1.1.1 -Dpackaging=jar -DpomFile=%{SOURCE16} -Dfile=%{SOURCE15} -Dmaven.repo.local=%{local_maven}
+#mvn install:install-file -DgroupId=org.opensaml -DartifactId=opensaml -Dversion=2.2.2 -Dpackaging=jar -Dfile=%{SOURCE12} -Dmaven.repo.local=%{local_maven}
+mvn install:install-file -DgroupId=org.opensciencegrid -DartifactId=privilege -Dversion=1.0.1.3 -Dpackaging=jar -Dfile=%{SOURCE14} -Dmaven.repo.local=%{local_maven}
+mvn install:install-file -DgroupId=org.opensciencegrid -DartifactId=privilege-xacml -Dversion=2.2.4 -Dpackaging=jar -Dfile=%{SOURCE13} -Dmaven.repo.local=%{local_maven}
+#mvn install:install-file -DgroupId=org.apache.xerces -DartifactId=xercesImpl -Dversion=2.9.1 -Dpackaging=jar -Dfile=%{SOURCE11} -Dmaven.repo.local=%{local_maven}
+#mvn install:install-file -DgroupId=org.apache.xerces -DartifactId=xml-apis -Dversion=2.9.1 -Dpackaging=jar -Dfile=%{SOURCE10} -Dmaven.repo.local=%{local_maven}
 
 pushd gums-core
 mvn -Dmaven.repo.local=/tmp/m2-repository -Dmaven.test.skip=true install
@@ -155,8 +187,8 @@ replace_jar logkit-1.0.1.jar
 replace_jar mysql-connector-java-5.1.6.jar
 replace_jar not-yet-commons-ssl-0.3.9.jar
 replace_jar odmg-3.0.jar
-replace_jar opensaml-2.2.2.jar
-replace_jar openws-1.2.1.jar
+replace_jar opensaml-2.2.3.jar
+replace_jar openws-1.2.2.jar
 replace_jar oscache-2.1.jar
 replace_jar privilege-1.0.1.3.jar
 replace_jar privilege-xacml-2.2.4.jar
@@ -270,6 +302,10 @@ fi
 %{_bindir}/gums-setup-mysql-database
 
 %changelog
+* Wed Nov 30 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.3.18.002-5
+- Allow service to use the DNS hostname instead of DN for host mappings.  Allows glexec callouts without a hostcert for privileged user groups.
+- Clean up some of the maven deps so this package can be built solely from the public maven repos; no BNL-private ones necessary.
+
 * Sat Oct 08 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.3.18.002-4
 - Add a minimal packaging of the service itself.
 
