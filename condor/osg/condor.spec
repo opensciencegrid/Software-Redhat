@@ -1,4 +1,4 @@
-%define tarball_version 7.6.2
+%define tarball_version 7.6.4
 
 # Things for F15 or later
 %if 0%{?fedora} >= 15
@@ -45,7 +45,7 @@
 
 Summary: Condor: High Throughput Computing
 Name: condor
-Version: 7.6.2
+Version: 7.6.4
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_base_release 0.6
@@ -54,7 +54,7 @@ Version: 7.6.2
 %else
 %define condor_release %condor_base_release
 %endif
-Release: %condor_release%{?dist}.3
+Release: %condor_release%{?dist}.2
 
 License: ASL 2.0
 Group: Applications/System
@@ -99,7 +99,7 @@ Source1: condor_docs.tar.gz
 #   b482c4bfa350164427a1952113d53d03  condor_src-7.5.5-all-all.tar.gz
 #   2a1355cb24a56a71978d229ddc490bc5  condor_src-7.6.0-all-all.tar.gz
 # Note: The md5sum of each generated tarball may be different
-Source0: condor-7.6.2.tar.gz
+Source0: condor-7.6.4.tar.gz
 Source1: generate-tarball.sh
 %endif
 
@@ -117,7 +117,7 @@ Patch5: condor_shared_libs.patch
 %endif
 
 #%if %rhel5
-Patch6: cmake_26.patch
+#Patch6: cmake_26.patch
 #%endif
 
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
@@ -381,7 +381,7 @@ exit 0
 %patch5 -p1
 %endif
 #%if %rhel5
-%patch6 -p1
+#%patch6 -p1
 #%endif
 
 # fix errant execute permissions
@@ -469,7 +469,7 @@ populate %_sysconfdir/condor %{buildroot}/%{_usr}/lib/condor_ssh_to_job_sshd_con
 populate %{_datadir}/condor %{buildroot}/%{_usr}/lib/*
 # Except for the shared libs
 populate %{_libdir}/ %{buildroot}/%{_datadir}/condor/libclassad.so*
-rm -f %{buildroot}/%{_datadir}/condor/libclassads.a
+rm -f %{buildroot}/%{_datadir}/condor/libclassad.a
 %if %shared
 mv %{buildroot}%{_datadir}/condor/lib*.so %{buildroot}%{_libdir}/
 %endif
@@ -608,6 +608,7 @@ mv %{buildroot}/etc/examples %_builddir/%name-%tarball_version
 
 # Remove stuff that comes from the full-deploy
 rm -rf %{buildroot}%{_sbindir}/cleanup_release
+rm -rf %{buildroot}%{_sbindir}/condor
 rm -rf %{buildroot}%{_sbindir}/condor_cleanup_local
 rm -rf %{buildroot}%{_sbindir}/condor_cold_start
 rm -rf %{buildroot}%{_sbindir}/condor_cold_stop
@@ -1044,6 +1045,9 @@ fi
 %endif
 
 %changelog
+* Tue Nov 29 2011 Derek Weitzel <dweitzel@cse.unl.edu> - 7.6.4-0.6.2
+- Rebasing to 7.6.4
+
 * Fri Oct 28 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 7.6.2-0.6.3
 - rebuilt
 
