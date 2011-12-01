@@ -1,6 +1,6 @@
 Name:		lcg-utils
 Version:	1.11.14
-Release:	8%{?dist}
+Release:	10%{?dist}
 Summary:	gLite file transfer clients
 
 Group:		Productivity/File utilities
@@ -42,13 +42,21 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)
-%{_libdir}/*
-%{_mandir}/*
+%{_libdir}/lib*
+%{_libdir}/python2.4/site-packages/*
+%{_mandir}/man1/*
+%{_mandir}/man3/*
 %{_bindir}/*
 %{_docdir}/*
 %{_includedir}/*
 
 %changelog
+* Wed Nov 30 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.11.14-10
+- Previous issue was not quite fixed.
+
+* Wed Nov 30 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.11.14-9
+- Do not try and own python site directories.
+
 * Fri Oct 28 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.11.14-8
 - rebuilt
 
