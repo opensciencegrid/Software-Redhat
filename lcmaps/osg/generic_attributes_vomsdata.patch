@@ -15,7 +15,7 @@
  void lcmaps_print_stack_of_x509_to_string(STACK_OF(X509) * px509_chain,
                                            char *output_file);
  void lcmaps_print_x509_to_string(X509 * px509_cert, char *output_file);
-@@ -325,75 +325,93 @@
+@@ -325,75 +325,97 @@
   *      0: success (notice, the attribute list can still be empty)
   *      1: failure (could not read certificate attributes)
   **************************************************************************/
@@ -78,10 +78,14 @@
 +        *nattrs += VOMS_GetAttributesNumber(vo, handle, vd, &errNo);
 +    }
 +    lcmaps_log_debug(3, "%s: found %d generic attributes. \n", __func__, *nattrs);
++    if (*nattrs == 0) {
++        *attr_list = NULL;
++        return 0;
++    }
 +
 +    /* Allocating lcmaps_voms_generic_attr_t's */
 +    *attr_list = (lcmaps_voms_generic_attr_t *) calloc (*nattrs, sizeof(lcmaps_voms_generic_attr_t));
-+    if ((*attr_list == NULL) || (errno != 0)) {
++    if (*attr_list == NULL) {
 +        lcmaps_log(1, "%s Error: Could not allocate more memory \n", __func__);
 +        return 1;
 +    }
