@@ -29,7 +29,7 @@
 
 Name:		lcgdm
 Version:	1.8.1.2
-Release:	3%{?dist}
+Release:	4%{?dist}
 Summary:	LHC Computing Grid Data Management
 
 Group:		Applications/Internet
@@ -112,7 +112,7 @@ The lcgdm package provides the LCG Data Management components: the LFC
 Summary:	LHC Computing Grid Data Management common libraries
 Group:		System Environment/Libraries
 Provides:	%{name} = %{version}-%{release}
-Obsoletes:	%{name} < 1.8.1.2-2
+Obsoletes:	%{name} < 1.8.1.2-4
 
 %description libs
 The lcgdm-libs package contains common libraries for the LCG Data Management
@@ -131,7 +131,7 @@ for LCG Data Management.
 Summary:	LCG File Catalog (LFC) libraries
 Group:		System Environment/Libraries
 Requires:	%{name}-libs%{?_isa} = %{version}-%{release}
-Obsoletes:	lfc < 1.8.1.2-2
+Obsoletes:	lfc < 1.8.1.2-4
 
 %description -n lfc-libs
 The LCG File Catalog (LFC) keeps track of the locations of the physical
@@ -154,7 +154,7 @@ Summary:	LCG File Catalog (LFC) client
 Group:		Applications/Internet
 Requires:	lfc-libs%{?_isa} = %{version}-%{release}
 Provides:	lfc-client = %{version}-%{release}
-Obsoletes:	lfc-client < 1.8.1.2-2
+Obsoletes:	lfc-client < 1.8.1.2-4
 
 %description -n lfc
 The LCG File Catalog (LFC) keeps track of the locations of the physical
@@ -202,7 +202,7 @@ Summary:	LCG File Catalog (LFC) server with MySQL database backend
 Group:		Applications/Internet
 Requires:	lfc-libs%{?_isa} = %{version}-%{release}
 Provides:	lfc-mysql = %{version}-%{release}
-Obsoletes:	lfc-mysql < 1.8.1.2-2
+Obsoletes:	lfc-mysql < 1.8.1.2-4
 
 Requires(pre):		shadow-utils
 Requires(post):		mysql
@@ -222,7 +222,7 @@ Summary:	LCG File Catalog (LFC) server with postgres database backend
 Group:		Applications/Internet
 Requires:	lfc-libs%{?_isa} = %{version}-%{release}
 Provides:	lfc-postgres = %{version}-%{release}
-Obsoletes:	lfc-postgres < 1.8.1.2-2
+Obsoletes:	lfc-postgres < 1.8.1.2-4
 
 Requires(pre):		shadow-utils
 Requires(post):		postgresql
@@ -257,7 +257,7 @@ This package provides the data location interface (dli) server for the LFC.
 Summary:	Disk Pool Manager (DPM) libraries
 Group:		System Environment/Libraries
 Requires:	%{name}-libs%{?_isa} = %{version}-%{release}
-Obsoletes:	dpm < 1.8.1.2-2
+Obsoletes:	dpm < 1.8.1.2-4
 
 %description -n dpm-libs
 The LCG Disk Pool Manager (DPM) creates a storage element from a set
@@ -282,7 +282,7 @@ Summary:	Disk Pool Manager (DPM) client
 Group:		Applications/Internet
 Requires:	dpm-libs%{?_isa} = %{version}-%{release}
 Provides:	dpm-client = %{version}-%{release}
-Obsoletes:	dpm-client < 1.8.1.2-2
+Obsoletes:	dpm-client < 1.8.1.2-4
 
 %description -n dpm
 The LCG Disk Pool Manager (DPM) creates a storage element from a set
@@ -334,7 +334,7 @@ Summary:	Disk Pool Manager (DPM) server with MySQL database backend
 Group:		Applications/Internet
 Requires:	dpm-libs%{?_isa} = %{version}-%{release}
 Provides:	dpm-mysql = %{version}-%{release}
-Obsoletes:	dpm-mysql < 1.8.1.2-2
+Obsoletes:	dpm-mysql < 1.8.1.2-4
 
 Requires(pre):		shadow-utils
 Requires(post):		chkconfig
@@ -354,7 +354,7 @@ Summary:	Disk Pool Manager (DPM) server with postgres database backend
 Group:		Applications/Internet
 Requires:	dpm-libs%{?_isa} = %{version}-%{release}
 Provides:	dpm-postgres = %{version}-%{release}
-Obsoletes:	dpm-postgres < 1.8.1.2-2
+Obsoletes:	dpm-postgres < 1.8.1.2-4
 
 Requires(pre):		shadow-utils
 Requires(post):		chkconfig
@@ -374,7 +374,7 @@ Summary:	DPM name server with MySQL database backend
 Group:		Applications/Internet
 Requires:	dpm-libs%{?_isa} = %{version}-%{release}
 Provides:	dpm-mysql-nameserver = %{version}-%{release}
-Obsoletes:	dpm-mysql-nameserver < 1.8.1.2-2
+Obsoletes:	dpm-mysql-nameserver < 1.8.1.2-4
 
 Requires(pre):		shadow-utils
 Requires(post):		mysql
@@ -395,7 +395,7 @@ Summary:	DPM nameserver with postgres database backend
 Group:		Applications/Internet
 Requires:	dpm-libs%{?_isa} = %{version}-%{release}
 Provides:	dpm-postgres-nameserver = %{version}-%{release}
-Obsoletes:	dpm-postgres-nameserver < 1.8.1.2-2
+Obsoletes:	dpm-postgres-nameserver < 1.8.1.2-4
 
 Requires(pre):		shadow-utils
 Requires(post):		postgresql
@@ -416,7 +416,7 @@ Summary:	DPM copy server with MySQL database backend
 Group:		Applications/Internet
 Requires:	dpm-libs%{?_isa} = %{version}-%{release}
 Provides:	dpm-mysql-copyd = %{version}-%{release}
-Obsoletes:	dpm-mysql-copyd < 1.8.1.2-2
+Obsoletes:	dpm-mysql-copyd < 1.8.1.2-4
 
 Requires(pre):		shadow-utils
 Requires(post):		chkconfig
@@ -436,7 +436,7 @@ Summary:	DPM copy server with postgres database backend
 Group:		Applications/Internet
 Requires:	dpm-libs%{?_isa} = %{version}-%{release}
 Provides:	dpm-postgres-copyd = %{version}-%{release}
-Obsoletes:	dpm-postgres-copyd < 1.8.1.2-2
+Obsoletes:	dpm-postgres-copyd < 1.8.1.2-4
 
 Requires(pre):		shadow-utils
 Requires(post):		chkconfig
@@ -456,11 +456,11 @@ Summary:	DPM SRM server with MySQL database backend
 Group:		Applications/Internet
 Requires:	dpm-libs%{?_isa} = %{version}-%{release}
 Provides:	dpm-mysql-srmv1 = %{version}-%{release}
-Obsoletes:	dpm-mysql-srmv1 < 1.8.1.2-2
+Obsoletes:	dpm-mysql-srmv1 < 1.8.1.2-4
 Provides:	dpm-mysql-srmv2 = %{version}-%{release}
-Obsoletes:	dpm-mysql-srmv2 < 1.8.1.2-2
+Obsoletes:	dpm-mysql-srmv2 < 1.8.1.2-4
 Provides:	dpm-mysql-srmv22 = %{version}-%{release}
-Obsoletes:	dpm-mysql-srmv22 < 1.8.1.2-2
+Obsoletes:	dpm-mysql-srmv22 < 1.8.1.2-4
 
 Requires(pre):		shadow-utils
 Requires(post):		chkconfig
@@ -480,11 +480,11 @@ Summary:	DPM SRM server with postgres database backend
 Group:		Applications/Internet
 Requires:	dpm-libs%{?_isa} = %{version}-%{release}
 Provides:	dpm-postgres-srmv1 = %{version}-%{release}
-Obsoletes:	dpm-postgres-srmv1 < 1.8.1.2-2
+Obsoletes:	dpm-postgres-srmv1 < 1.8.1.2-4
 Provides:	dpm-postgres-srmv2 = %{version}-%{release}
-Obsoletes:	dpm-postgres-srmv2 < 1.8.1.2-2
+Obsoletes:	dpm-postgres-srmv2 < 1.8.1.2-4
 Provides:	dpm-postgres-srmv22 = %{version}-%{release}
-Obsoletes:	dpm-postgres-srmv22 < 1.8.1.2-2
+Obsoletes:	dpm-postgres-srmv22 < 1.8.1.2-4
 
 Requires(pre):		shadow-utils
 Requires(post):		chkconfig
@@ -504,7 +504,7 @@ Summary:	DPM RFIO server
 Group:		Applications/Internet
 Requires:	dpm-libs%{?_isa} = %{version}-%{release}
 Provides:	dpm-rfiod = %{version}-%{release}
-Obsoletes:	dpm-rfiod < 1.8.1.2-2
+Obsoletes:	dpm-rfiod < 1.8.1.2-4
 
 Requires(post):		chkconfig
 Requires(preun):	chkconfig
@@ -1648,7 +1648,7 @@ if [ $1 -ge 1 ]; then
 	/sbin/service lfcdaemon condrestart > /dev/null 2>&1 || :
 fi
 
-%triggerpostun -n lfc-server-mysql -- lfc-mysql < 1.8.1.2-2
+%triggerpostun -n lfc-server-mysql -- lfc-mysql < 1.8.1.2-4
 # Restore alternatives removed by lfc-mysql preun
 %{_sbindir}/update-alternatives --install %{_sbindir}/lfcdaemon lfcdaemon \
 	  %{_libdir}/lfc-mysql/lfcdaemon 20 \
@@ -1667,7 +1667,7 @@ fi
   --slave %{_mandir}/man8/lfc-shutdown.8.gz lfc-shutdown.8.gz \
 	  %{_libdir}/lfc-mysql/lfc-shutdown.8.gz
 
-%triggerpostun -n lfc-server-postgres -- lfc-postgres < 1.8.1.2-2
+%triggerpostun -n lfc-server-postgres -- lfc-postgres < 1.8.1.2-4
 # Restore alternatives removed by lfc-postgres preun
 %{_sbindir}/update-alternatives --install %{_sbindir}/lfcdaemon lfcdaemon \
 	  %{_libdir}/lfc-postgres/lfcdaemon 10 \
@@ -1768,7 +1768,7 @@ if [ $1 = 1 ]; then
     fi
 fi
 
-%triggerpostun -n dpm-server-mysql -- dpm-mysql < 1.8.1.2-2
+%triggerpostun -n dpm-server-mysql -- dpm-mysql < 1.8.1.2-4
 # Restore alternatives removed by dpm-mysql preun
 %{_sbindir}/update-alternatives --install %{_sbindir}/dpm dpm \
 	  %{_libdir}/dpm-mysql/dpm 20 \
@@ -1787,7 +1787,7 @@ fi
   --slave %{_mandir}/man8/dpm-shutdown.8.gz dpm-shutdown.8.gz \
 	  %{_libdir}/dpm-mysql/dpm-shutdown.8.gz
 
-%triggerpostun -n dpm-server-postgres -- dpm-postgres < 1.8.1.2-2
+%triggerpostun -n dpm-server-postgres -- dpm-postgres < 1.8.1.2-4
 # Restore alternatives removed by dpm-postgres preun
 %{_sbindir}/update-alternatives --install %{_sbindir}/dpm dpm \
 	  %{_libdir}/dpm-postgres/dpm 10 \
@@ -2010,7 +2010,7 @@ if [ $1 = 1 ]; then
     fi
 fi
 
-%triggerpostun -n dpm-name-server-mysql -- dpm-mysql-nameserver < 1.8.1.2-2
+%triggerpostun -n dpm-name-server-mysql -- dpm-mysql-nameserver < 1.8.1.2-4
 # Restore alternatives removed by dpm-mysql-nameserver preun
 %{_sbindir}/update-alternatives --install %{_sbindir}/dpnsdaemon dpnsdaemon \
 	  %{_libdir}/dpm-mysql/dpnsdaemon 20 \
@@ -2029,7 +2029,7 @@ fi
   --slave %{_mandir}/man8/dpns-shutdown.8.gz dpns-shutdown.8.gz \
 	  %{_libdir}/dpm-mysql/dpns-shutdown.8.gz
 
-%triggerpostun -n dpm-name-server-postgres -- dpm-postgres-nameserver < 1.8.1.2-2
+%triggerpostun -n dpm-name-server-postgres -- dpm-postgres-nameserver < 1.8.1.2-4
 # Restore alternatives removed by dpm-postgres-nameserver preun
 %{_sbindir}/update-alternatives --install %{_sbindir}/dpnsdaemon dpnsdaemon \
 	  %{_libdir}/dpm-postgres/dpnsdaemon 10 \
@@ -2140,7 +2140,7 @@ if [ $1 = 1 ]; then
     fi
 fi
 
-%triggerpostun -n dpm-copy-server-mysql -- dpm-mysql-copyd < 1.8.1.2-2
+%triggerpostun -n dpm-copy-server-mysql -- dpm-mysql-copyd < 1.8.1.2-4
 # Restore alternatives removed by dpm-mysql-copyd preun
 %{_sbindir}/update-alternatives --install %{_sbindir}/dpmcopyd dpmcopyd \
 	  %{_libdir}/dpm-mysql/dpmcopyd 20 \
@@ -2153,7 +2153,7 @@ fi
   --slave %{_sysconfdir}/logrotate.d/dpmcopyd dpmcopyd.logrotate \
 	  %{_sysconfdir}/dpm-mysql/dpmcopyd.logrotate
 
-%triggerpostun -n dpm-copy-server-postgres -- dpm-postgres-copyd < 1.8.1.2-2
+%triggerpostun -n dpm-copy-server-postgres -- dpm-postgres-copyd < 1.8.1.2-4
 # Restore alternatives removed by dpm-postgres-copyd preun
 %{_sbindir}/update-alternatives --install %{_sbindir}/dpmcopyd dpmcopyd \
 	  %{_libdir}/dpm-postgres/dpmcopyd 10 \
@@ -2320,7 +2320,7 @@ if [ $1 = 1 ]; then
     fi
 fi
 
-%triggerpostun -n dpm-srm-server-mysql -- dpm-mysql-srmv1 < 1.8.1.2-2
+%triggerpostun -n dpm-srm-server-mysql -- dpm-mysql-srmv1 < 1.8.1.2-4
 # Restore alternatives removed by dpm-mysql-srmv1 preun
 %{_sbindir}/update-alternatives --install %{_sbindir}/dpm-srmv1 dpm-srmv1 \
 	  %{_libdir}/dpm-mysql/dpm-srmv1 20 \
@@ -2333,7 +2333,7 @@ fi
   --slave %{_sysconfdir}/logrotate.d/dpm-srmv1 dpm-srmv1.logrotate \
 	  %{_sysconfdir}/dpm-mysql/dpm-srmv1.logrotate
 
-%triggerpostun -n dpm-srm-server-mysql -- dpm-mysql-srmv2 < 1.8.1.2-2
+%triggerpostun -n dpm-srm-server-mysql -- dpm-mysql-srmv2 < 1.8.1.2-4
 # Restore alternatives removed by dpm-mysql-srmv2 preun
 %{_sbindir}/update-alternatives --install %{_sbindir}/dpm-srmv2 dpm-srmv2 \
 	  %{_libdir}/dpm-mysql/dpm-srmv2 20 \
@@ -2346,7 +2346,7 @@ fi
   --slave %{_sysconfdir}/logrotate.d/dpm-srmv2 dpm-srmv2.logrotate \
 	  %{_sysconfdir}/dpm-mysql/dpm-srmv2.logrotate
 
-%triggerpostun -n dpm-srm-server-mysql -- dpm-mysql-srmv2.2 < 1.8.1.2-2
+%triggerpostun -n dpm-srm-server-mysql -- dpm-mysql-srmv2.2 < 1.8.1.2-4
 # Restore alternatives removed by dpm-mysql-srmv22 preun
 %{_sbindir}/update-alternatives --install %{_sbindir}/dpm-srmv2.2 dpm-srmv2.2 \
 	  %{_libdir}/dpm-mysql/dpm-srmv2.2 20 \
@@ -2359,7 +2359,7 @@ fi
   --slave %{_sysconfdir}/logrotate.d/dpm-srmv2.2 dpm-srmv2.2.logrotate \
 	  %{_sysconfdir}/dpm-mysql/dpm-srmv2.2.logrotate
 
-%triggerpostun -n dpm-srm-server-postgres -- dpm-postgres-srmv1 < 1.8.1.2-2
+%triggerpostun -n dpm-srm-server-postgres -- dpm-postgres-srmv1 < 1.8.1.2-4
 # Restore alternatives removed by dpm-postgres-srmv1 preun
 %{_sbindir}/update-alternatives --install %{_sbindir}/dpm-srmv1 dpm-srmv1 \
 	  %{_libdir}/dpm-postgres/dpm-srmv1 10 \
@@ -2372,7 +2372,7 @@ fi
   --slave %{_sysconfdir}/logrotate.d/dpm-srmv1 dpm-srmv1.logrotate \
 	  %{_sysconfdir}/dpm-postgres/dpm-srmv1.logrotate
 
-%triggerpostun -n dpm-srm-server-postgres -- dpm-postgres-srmv2 < 1.8.1.2-2
+%triggerpostun -n dpm-srm-server-postgres -- dpm-postgres-srmv2 < 1.8.1.2-4
 # Restore alternatives removed by dpm-postgres-srmv2 preun
 %{_sbindir}/update-alternatives --install %{_sbindir}/dpm-srmv2 dpm-srmv2 \
 	  %{_libdir}/dpm-postgres/dpm-srmv2 10 \
@@ -2385,7 +2385,7 @@ fi
   --slave %{_sysconfdir}/logrotate.d/dpm-srmv2 dpm-srmv2.logrotate \
 	  %{_sysconfdir}/dpm-postgres/dpm-srmv2.logrotate
 
-%triggerpostun -n dpm-srm-server-postgres -- dpm-postgres-srmv2.2 < 1.8.1.2-2
+%triggerpostun -n dpm-srm-server-postgres -- dpm-postgres-srmv2.2 < 1.8.1.2-4
 # Restore alternatives removed by dpm-postgres-srmv22 preun
 %{_sbindir}/update-alternatives --install %{_sbindir}/dpm-srmv2.2 dpm-srmv2.2 \
 	  %{_libdir}/dpm-postgres/dpm-srmv2.2 10 \
@@ -2944,6 +2944,9 @@ fi
 %doc %{_mandir}/man8/dpm-rfiod.8*
 
 %changelog
+* Wed Dec 1 2011 Alain Roy <roy@cs.wisc.edu> - 1.8.1.2-4
+- Packaging change only: fixed "Obsoletes"
+
 * Wed Nov 30 2011 Alain Roy <roy@cs.wisc.edu> - 1.8.1.2-3
 - Rebuilt. We had already used -2 internally for a rebuild, so bumped version. No other changes.
 
