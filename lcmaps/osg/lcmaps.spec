@@ -1,7 +1,7 @@
 Summary: Grid (X.509) and VOMS credentials to local account mapping service
 Name: lcmaps
 Version: 1.4.28
-Release: 19%{?dist}
+Release: 20%{?dist}
 Vendor: Nikhef
 License: ASL 2.0
 Group: System Environment/Libraries
@@ -181,6 +181,13 @@ fi
 %{_libdir}/lcmaps/*.so
 
 %changelog
+* Thu Dec 01 2011 Dave Dykstra <dwd@fnal.gov> - 1.4.28-20
+- Eliminate disturbing-looking log message:
+    lcmaps_get_attributes Error: Could not allocate more memory
+  which always appeared now with --enable-osg.  Changed it in
+  the generic_attributes_vomsdata.patch, which actually probably
+  isn't even needed anymore with --enable-osg.
+
 * Wed Nov 16 2011 Dave Dykstra <dwd@fnal.gov> - 1.4.28-19
 - Moved libdir/modules to libdir/lcmaps and create a symlink at
   libdir/modules for backward compatibility
