@@ -1,7 +1,7 @@
 Summary: Grid (X.509) and VOMS credentials to local account mapping service
 Name: lcmaps
 Version: 1.4.28
-Release: 20%{?dist}
+Release: 21%{?dist}
 Vendor: Nikhef
 License: ASL 2.0
 Group: System Environment/Libraries
@@ -113,7 +113,9 @@ make DESTDIR=$RPM_BUILD_ROOT install
 find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
 mv $RPM_BUILD_ROOT/%{_libdir}/modules $RPM_BUILD_ROOT/%{_libdir}/lcmaps
 #Note: this file is %ghosted in the %files list, so it is not installed,
-#  but rpmbuild requires something to be there
+#  but rpmbuild requires something to be there.  There's also %ghost on
+#  the example module files so this symlink takes care of them appearing
+#  to be available too.
 ln -s lcmaps $RPM_BUILD_ROOT/%{_libdir}/modules
 
 # clean up installed files
@@ -142,7 +144,7 @@ fi
 
 %files
 %defattr(-,root,root,-)
-%config(noreplace) %{_sysconfdir}/lcmaps.db
+%config(noreplace) %verify(not md5 size mtime) %{_sysconfdir}/lcmaps.db
 %{_libdir}/lcmaps.mod
 %{_libdir}/lcmaps_gss_assist_gridmap.mod
 %{_libdir}/lcmaps_return_poolindex.mod
@@ -161,6 +163,13 @@ fi
 %{_libdir}/lcmaps/liblcmaps_plugin_example.so.0
 %{_libdir}/lcmaps/liblcmaps_plugin_example.so.0.0.0
 %ghost %{_libdir}/modules
+# in order to remove these eventually, can probably add a %preun that
+#   removes the modules symlink first so the uninstall will not remove the
+#   real files in the lcmaps directory.  Or maybe if the symlink is removed
+#   at the same time it will just work if that goes first. 
+%ghost %{_libdir}/modules/lcmaps_plugin_example.mod
+%ghost %{_libdir}/modules/liblcmaps_plugin_example.so.0
+%ghost %{_libdir}/modules/liblcmaps_plugin_example.so.0.0.0
 # this should move into -devel package, and probably liblcmaps.so too
 %{_libdir}/liblcmaps_return_account_from_pem.so
 
@@ -181,6 +190,10 @@ fi
 %{_libdir}/lcmaps/*.so
 
 %changelog
+* Fri Dec 02 2011 Dave Dykstra <dwd@fnal.gov> - 1.4.28-21
+- Add the example lcmaps plugin module files as %ghost so rpm won't think
+    it has to delete them from a previous install.
+
 * Thu Dec 01 2011 Dave Dykstra <dwd@fnal.gov> - 1.4.28-20
 - Eliminate disturbing-looking log message:
     lcmaps_get_attributes Error: Could not allocate more memory
