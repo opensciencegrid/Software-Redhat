@@ -1,7 +1,7 @@
 Summary: Process tracking plugin for the LCMAPS authorization framework
 Name: lcmaps-plugins-glexec-tracking
 Version: 0.1.0
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: EGEE Middleware and ASL and Fermitools
 Group: System Environment/Libraries
 # The tarball was created from CVS using the following commands:
@@ -40,6 +40,15 @@ make DESTDIR=$RPM_BUILD_ROOT install
 ln -s liblcmaps_glexec_tracking.so $RPM_BUILD_ROOT/%{_libdir}/lcmaps/liblcmaps_glexec_tracking.so.0
 ln -s liblcmaps_glexec_tracking.so.0 $RPM_BUILD_ROOT/%{_libdir}/lcmaps/liblcmaps_glexec_tracking.so.0.0.0
 find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
+#Note: this directory is here so that %ghost can be used on the files in
+#  the %{_libdir}/modules directory, so rpm won't remove them from a
+#  previous install.  %ghost requires files to exist in the install
+#  directory but they are not installed
+mkdir -p $RPM_BUILD_ROOT/%{_libdir}/modules
+(cd $RPM_BUILD_ROOT/%{_libdir}/lcmaps
+for f in *; do
+  touch ../modules/$f
+done)
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -50,9 +59,20 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/lcmaps/liblcmaps_glexec_tracking.so
 %{_libdir}/lcmaps/liblcmaps_glexec_tracking.so.0
 %{_libdir}/lcmaps/liblcmaps_glexec_tracking.so.0.0.0
+# in order to remove these %ghost files eventually, can probably add a
+#   %preun that temporarily removes the modules symlink so the uninstall
+#   will not remove the real files in the lcmaps directory
+%ghost %{_libdir}/modules/lcmaps_glexec_tracking.mod
+%ghost %{_libdir}/modules/liblcmaps_glexec_tracking.so
+%ghost %{_libdir}/modules/liblcmaps_glexec_tracking.so.0
+%ghost %{_libdir}/modules/liblcmaps_glexec_tracking.so.0.0.0
 %{_sbindir}/glexec_monitor
 
 %changelog
+* Fri Dec 02 2011 Dave Dykstra <dwd@fnal.gov> 0.1.0-3.osg
+- Add %ghost directories on the files in libdir/modules so rpm won't
+   think it needs to remove them from a previous install
+
 * Mon Nov 21 2011 Dave Dykstra <dwd@fnal.gov> 0.1.0-2.osg
 - Move installed module from 'modules' libdir to 'lcmaps'
 
