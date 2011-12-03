@@ -1,7 +1,7 @@
 Summary: Grid (X.509) and VOMS credentials to local account mapping service
 Name: lcmaps
 Version: 1.4.28
-Release: 21%{?dist}
+Release: 22%{?dist}
 Vendor: Nikhef
 License: ASL 2.0
 Group: System Environment/Libraries
@@ -132,6 +132,8 @@ rm -rf $RPM_BUILD_ROOT
 /sbin/ldconfig
 if [ ! -L %{_libdir}/modules ]; then
     if [ -d %{_libdir}/modules ]; then
+	# remove old copy of example module before moving stuff to lcmaps
+	rm -f %{_libdir}/modules/liblcmaps_plugin_example.so.0.0.0
 	# move anything left in modules to lcmaps directory
 	mv %{_libdir}/modules/* %{_libdir}/lcmaps >/dev/null 2>&1 || true
 	rmdir %{_libdir}/modules
@@ -190,6 +192,10 @@ fi
 %{_libdir}/lcmaps/*.so
 
 %changelog
+* Fri Dec 02 2011 Dave Dykstra <dwd@fnal.gov> - 1.4.28-22
+- Fix unforeseen side effect of last fix, which made the old copy of
+    the example plugin be kept instead of the new one
+
 * Fri Dec 02 2011 Dave Dykstra <dwd@fnal.gov> - 1.4.28-21
 - Add the example lcmaps plugin module files as %ghost so rpm won't think
     it has to delete them from a previous install.
