@@ -3,7 +3,7 @@
 
 Name:           lcmaps-plugins-saz-client
 Version:        0.2.22
-Release:        7%{?dist}
+Release:        8%{?dist}
 Summary:        SAZ support for lcmaps
 
 Group:          System Environment/Tools
@@ -14,6 +14,9 @@ BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildRequires:  lcmaps-plugins-scas-client = %{version}-%{release}
 Obsoletes:	lcmaps-plugins-saz
 Requires:	saml2-xacml2-c-lib
+# The following isn't technically necessary, but it helps us insure that
+#   this package is updated whenever scas-client changes
+Requires:	lcmaps-plugins-scas-client = %{version}-%{release}
 
 %description
 %{summary}
@@ -34,6 +37,13 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/modules/%{modname}
 
 %changelog
+* Mon Dec 05 2011 Dave Dykstra <dwd@fnal.gov> 0.2.22-8.osg
+- Rebuild to match rebuilt lcmaps-plugins-scas-client.  Also added a 
+  Requires statement to the same version of lcmaps-plugins-scas-client.
+  This isn't needed technically, since this package contains a copy of the
+  other, but it is included to ensure that this package is upgraded
+  whever the other is upgraded.
+
 * Mon Sep 19 2011 Dave Dykstra <dwd@fnal.gov> 0.2.22-7.osg
 - Instead of a Conflicts: prima, have a Requires: saml2-xacml2-c-lib
   which is the correct provider of libxacml.so.0.
