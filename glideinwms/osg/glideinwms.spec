@@ -1,6 +1,6 @@
 Name:           glideinwms
-Version:        2.5.3
-Release:        4
+Version:        2.5.4
+Release:        0.pre1
 Summary:        The VOFrontend for glideinWMS submission host
 
 Group:          System Environment/Daemons
@@ -10,7 +10,7 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
 #Source0:        http://www.uscms.org/SoftwareComputing/Grid/WMS/glideinWMS/glideinWMS_v2_5_1_frontend.tgz
-Source0:	glideinWMS_v2_5_3_frontend.tgz
+Source:	glideinwms.tar.gz
 
 # How to build tar file
 # git clone http://cdcvs.fnal.gov/projects/glideinwms
@@ -66,12 +66,12 @@ for scheduling and job control.
 
 
 %prep
-%setup -q -n glideinWMS
+%setup -q -n glideinwms
 # Apply the patches
-%patch -P 0 -p1
-%patch -P 1 -p1
-%patch -P 2 -p1
-%patch -P 3 -p1
+#%patch -P 0 -p1
+#%patch -P 1 -p1
+#%patch -P 2 -p1
+#%patch -P 3 -p1
 
 %build
 cp %{SOURCE8} .
@@ -96,6 +96,9 @@ rm -rf $RPM_BUILD_ROOT
 # Apply the patches
 #%patch -P 0
 #%patch -P 1 -p3 
+
+#Change src_dir in reconfig_Frontend
+sed -i "s/WEB_BASE_DIR=.*/WEB_BASE_DIR=\"\/usr\/share\/gwms-frontend\/frontend-temp\"/" creation/reconfig_frontend
 
 # install the executables
 install -d $RPM_BUILD_ROOT%{_sbindir}
@@ -252,6 +255,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Nov 10 2011 Doug Strain <burt@fnal.gov> - 2.5.4-0.pre1 
+- Update to use patched 2.5.3 
+- Pushed patches upstream
+
 * Thu Nov 10 2011 Doug Strain <burt@fnal.gov> - 2.5.3-3
 - Update to 2.5.3
 - Updated condor configs to match ini installer
