@@ -13,7 +13,7 @@
 Name:		globus-gatekeeper
 %global _name %(tr - _ <<< %{name})
 Version:	8.1
-Release:	5%{?dist}
+Release:	6%{?dist}
 Summary:	Globus Toolkit - Globus Gatekeeper
 
 Group:		Applications/Internet
@@ -23,6 +23,7 @@ Source:         %{_name}-%{version}.tar.gz
 
 # OSG customizations
 Source1:        globus-gatekeeper.sysconfig
+Source2:        globus-gatekeeper-logrotate
 Patch0:         child_signals.patch
 Patch1:         increase_backlog.patch
 Patch2:         chkconfig-off.patch
@@ -98,6 +99,10 @@ cat $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_pgm.filelist \
 mkdir -p $RPM_BUILD_ROOT/etc/grid-services
 mkdir -p $RPM_BUILD_ROOT/etc/grid-services/available
 
+# Add log rotation
+mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d
+cp %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/globus-gatekeeper
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -124,8 +129,12 @@ fi
 %dir /etc/grid-services
 %dir /etc/grid-services/available
 %config(noreplace) /etc/sysconfig/globus-gatekeeper
+%config(noreplace) %{_sysconfdir}/logrotate.d/globus-gatekeeper
 
 %changelog
+* Wed Dec 7 2011 Alain Roy <roy@cs.wisc.edu> - 8.1-6
+- Added log rotation. 
+
 * Mon Nov 14 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 8.1-5
 - Default globus-gatekeeper service to off.
 
