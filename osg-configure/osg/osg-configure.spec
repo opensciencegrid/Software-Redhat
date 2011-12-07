@@ -1,5 +1,5 @@
 %global name osg-configure
-%global version 0.7.0
+%global version 0.7.1
 %global release 1%{?dist}
 
 Summary: Package for configure-osg and associated scripts
@@ -191,6 +191,10 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/osg/config.d/15-managedfork.ini
 
 %changelog
+* Wed Dec 7 2011 Suchandra Thapa <sthapa@ci.uchicago.edu> 0.7.1-1
+- Fix the default location of the condor_config file
+- Update ini comments to point to correct documentation
+
 * Mon Dec 1 2011 Suchandra Thapa <sthapa@ci.uchicago.edu> 0.7.0-1
 - Fix fetching VO names from user-vo-map file
 
