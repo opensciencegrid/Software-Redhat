@@ -13,7 +13,7 @@
 Name:		globus-gram-job-manager
 %global _name %(tr - _ <<< %{name})
 Version:	13.5
-Release:	13%{?dist}
+Release:	14%{?dist}
 Summary:	Globus Toolkit - GRAM Jobmanager
 
 Group:		Applications/Internet
@@ -26,7 +26,7 @@ Source2:       globus-gram-job-manager-logrotate
 # OSG-specific patches
 Patch9:         unlock_init.patch
 Patch11:        null_old_jm.patch
-Patch13:        watchdog_timer.patch
+#Patch13:        watchdog_timer.patch
 Patch14:        recvmsg_eagain.patch
 Patch16:        description_service_tag.patch
 Patch19:        load_requests_before_activating_socket.patch
@@ -124,7 +124,7 @@ GRAM Jobmanager Documentation Files
 
 %patch9 -p0
 %patch11 -p0
-%patch13 -p0
+#%patch13 -p0
 %patch14 -p0
 %patch16 -p0
 %patch19 -p0
@@ -220,6 +220,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_docdir}/%{name}-%{version}/html
 
 %changelog
+* Wed Dec 07 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 13.5-14
+- Remove watchdog timer patch; seems to be doing more harm than good in non-threaded mode.
+
 * Wed Nov 30 2011 Alain Roy <roy@cs.wisc.edu> - 13.5-13
 - Updated logrotate to send SIGUSR1 to globus-job-manger processes
 
