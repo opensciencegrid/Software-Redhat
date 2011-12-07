@@ -6,7 +6,7 @@
 
 Name:		%{hadoop_name}-%{apache_branch}-osg
 Version:	%{cloudera_version}
-Release:	9
+Release:	10
 Summary:	OSG configurations and scripts for Hadoop
 
 Group:		System Environment/Daemons
@@ -114,6 +114,9 @@ fi
 #%attr(0755,hadoop,hadoop) %{_var}/log/hadoop
 
 %changelog
+* Wed Dec 7 2011 Doug Strain <dstrain@fnal.gov> 0.20.2+737-10
+- Set default heap size back to 2048
+
 * Mon Nov 28 2011 Jeff Dost <jdost@ucsd.edu> 0.20.2+737-9
 - Change to correctly run hadoop as user hdfs.
 
