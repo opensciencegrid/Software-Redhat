@@ -1,6 +1,6 @@
 
 Name:           osg-build
-Version:        0.0.23
+Version:        0.3.0
 Release:        1%{?dist}
 Summary:        Build tools for the OSG
 
@@ -15,8 +15,9 @@ BuildArch:      noarch
 
 Requires:       mock
 Requires:       rpm-build
-Requires:       createrepo
 Requires:       openssl
+Requires:       quilt
+Requires:       koji
 
 Obsoletes:      vdt-build <= 0.0.17
 Provides:       vdt-build = %{version}
@@ -55,6 +56,16 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_docdir}/%{name}/sample-osg-build.ini
 
 %changelog
+* Wed Dec 07 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 0.3.0-1
+- Removed deprecated tasks 'batlab' and 'push'.
+- Removed deprecated support for builds using the 'osg/root' layout.
+- Added error when attempting to do Koji builds using rpmbuild 4.8+ (RHEL6).
+- Major refactoring of mock and koji tasks.
+- Added 'quilt' task, dependency on quilt.
+- Added koji builds directly from subversion.
+- Added koji dependency.
+- Removed createrepo dependency.
+
 * Thu Nov 17 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 0.0.23-1
 - Added osg-koji wrapper script
 
