@@ -1,6 +1,6 @@
 Name:           glideinwms
 Version:        2.5.4
-Release:        0.pre1
+Release:        0.pre2
 Summary:        The VOFrontend for glideinWMS submission host
 
 Group:          System Environment/Daemons
@@ -111,7 +111,6 @@ install -m 0500 frontend/stopFrontend.py $RPM_BUILD_ROOT%{_sbindir}/stopFrontend
 install -m 0500 creation/reconfig_frontend $RPM_BUILD_ROOT%{_sbindir}/reconfig_frontend
 
 # install the library parts
-# FIXME: Need to find macro for site-packages
 # FIXME: Need to create a subdirectory for vofrontend python files
 install -d $RPM_BUILD_ROOT%{python_sitelib}
 cp lib/*.py $RPM_BUILD_ROOT%{python_sitelib}
@@ -188,6 +187,9 @@ for file in `ls tools/*.py`; do
 done
 cp tools/lib/*.py $RPM_BUILD_ROOT%{python_sitelib}
 
+# Install glidecondor
+install -m 0755 install/glidecondor_addDN $RPM_BUILD_ROOT%{_sbindir}/glidecondor_addDN
+
 # Install checksum file
 install -m 0644 etc/checksum.frontend $RPM_BUILD_ROOT%{_datadir}/gwms-frontend/frontend-temp/checksum.frontend
 
@@ -255,9 +257,13 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Dec 09 2011 Doug Strain <burt@fnal.gov> - 2.5.4-0.pre2
+- Added glidecondor_addDN to vofrontend package
+
 * Thu Nov 10 2011 Doug Strain <burt@fnal.gov> - 2.5.4-0.pre1 
 - Update to use patched 2.5.3 
 - Pushed patches upstream
+- Made the package glideinwms with subpackage vofrontend
 
 * Thu Nov 10 2011 Doug Strain <burt@fnal.gov> - 2.5.3-3
 - Update to 2.5.3
