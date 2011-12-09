@@ -1,6 +1,6 @@
 
 Name:           osg-build
-Version:        0.3.0
+Version:        0.3.1
 Release:        1%{?dist}
 Summary:        Build tools for the OSG
 
@@ -45,6 +45,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root,-)
 %{_bindir}/%{name}
+%{_bindir}/koji-tag-diff
 %{_bindir}/rpm-ripper
 %{_bindir}/osg-import-srpm
 %{_bindir}/osg-koji
@@ -56,6 +57,11 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_docdir}/%{name}/sample-osg-build.ini
 
 %changelog
+* Fri Dec 09 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 0.3.1-1
+- osg-koji changed to use ~/.koji directory if it exists and ~/.osg-koji doesn't.
+- Some refactoring and bugfixes of prebuild step.
+- Added Alain Roy's koji-tag-diff script
+
 * Wed Dec 07 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 0.3.0-1
 - Removed deprecated tasks 'batlab' and 'push'.
 - Removed deprecated support for builds using the 'osg/root' layout.
