@@ -1,46 +1,8 @@
 Only in gridftp-hdfs-0.5.2: autom4te.cache
-diff -ru gridftp-hdfs-0.5.2-orig/conf/Makefile.am gridftp-hdfs-0.5.2/conf/Makefile.am
---- gridftp-hdfs-0.5.2-orig/conf/Makefile.am	2011-12-07 14:05:43.000000000 -0600
-+++ gridftp-hdfs-0.5.2/conf/Makefile.am	2011-12-07 14:45:53.000000000 -0600
-@@ -6,5 +6,5 @@
- dist_sysconfig_DATA = gridftp-hdfs
- 
- envdir = $(datadir)/gridftp-hdfs
--dist_env_DATA = gridftp-hdfs-environment
-+#dist_env_DATA = gridftp-hdfs-environment
- 
 diff -ru gridftp-hdfs-0.5.2-orig/conf/Makefile.in gridftp-hdfs-0.5.2/conf/Makefile.in
 --- gridftp-hdfs-0.5.2-orig/conf/Makefile.in	2011-12-07 14:05:43.000000000 -0600
-+++ gridftp-hdfs-0.5.2/conf/Makefile.in	2011-12-07 15:25:38.000000000 -0600
-@@ -37,9 +37,9 @@
- build_triplet = @build@
- host_triplet = @host@
- subdir = conf
--DIST_COMMON = $(dist_env_DATA) $(dist_gridftp_DATA) \
--	$(dist_sysconfig_DATA) $(srcdir)/Makefile.am \
--	$(srcdir)/Makefile.in $(srcdir)/gridftp-inetd.conf.in
-+DIST_COMMON = $(dist_gridftp_DATA) $(dist_sysconfig_DATA) \
-+	$(srcdir)/Makefile.am $(srcdir)/Makefile.in \
-+	$(srcdir)/gridftp-inetd.conf.in
- ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
- am__aclocal_m4_deps = $(top_srcdir)/configure.ac
- am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
-@@ -54,12 +54,11 @@
-     *) f=$$p;; \
-   esac;
- am__strip_dir = `echo $$p | sed -e 's|^.*/||'`;
--am__installdirs = "$(DESTDIR)$(envdir)" "$(DESTDIR)$(gridftpdir)" \
-+am__installdirs = "$(DESTDIR)$(gridftpdir)" \
- 	"$(DESTDIR)$(sysconfigdir)"
--dist_envDATA_INSTALL = $(INSTALL_DATA)
- dist_gridftpDATA_INSTALL = $(INSTALL_DATA)
- dist_sysconfigDATA_INSTALL = $(INSTALL_DATA)
--DATA = $(dist_env_DATA) $(dist_gridftp_DATA) $(dist_sysconfig_DATA)
-+DATA = $(dist_gridftp_DATA) $(dist_sysconfig_DATA)
- DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
- ACLOCAL = @ACLOCAL@
- AMDEP_FALSE = @AMDEP_FALSE@
-@@ -91,7 +90,6 @@
++++ gridftp-hdfs-0.5.2/conf/Makefile.in	2011-12-08 19:21:06.000000000 -0600
+@@ -91,7 +91,6 @@
  F77 = @F77@
  FFLAGS = @FFLAGS@
  GLOBUSLOCATION = @GLOBUSLOCATION@
@@ -48,7 +10,7 @@ diff -ru gridftp-hdfs-0.5.2-orig/conf/Makefile.in gridftp-hdfs-0.5.2/conf/Makefi
  HADOOPHOME = @HADOOPHOME@
  INCLUDE = @INCLUDE@
  INSTALL_DATA = @INSTALL_DATA@
-@@ -121,9 +119,12 @@
+@@ -121,9 +120,12 @@
  SHELL = @SHELL@
  STRIP = @STRIP@
  VERSION = @VERSION@
@@ -61,7 +23,7 @@ diff -ru gridftp-hdfs-0.5.2-orig/conf/Makefile.in gridftp-hdfs-0.5.2/conf/Makefi
  am__fastdepCC_FALSE = @am__fastdepCC_FALSE@
  am__fastdepCC_TRUE = @am__fastdepCC_TRUE@
  am__fastdepCXX_FALSE = @am__fastdepCXX_FALSE@
-@@ -141,9 +142,6 @@
+@@ -141,9 +143,6 @@
  build_vendor = @build_vendor@
  datadir = @datadir@
  datadir_resolved = @datadir_resolved@
@@ -71,7 +33,7 @@ diff -ru gridftp-hdfs-0.5.2-orig/conf/Makefile.in gridftp-hdfs-0.5.2/conf/Makefi
  exec_prefix = @exec_prefix@
  exec_prefix_resolved = @exec_prefix_resolved@
  host = @host@
-@@ -151,24 +149,20 @@
+@@ -151,24 +150,20 @@
  host_cpu = @host_cpu@
  host_os = @host_os@
  host_vendor = @host_vendor@
@@ -96,15 +58,16 @@ diff -ru gridftp-hdfs-0.5.2-orig/conf/Makefile.in gridftp-hdfs-0.5.2/conf/Makefi
  sbindir = @sbindir@
  sbindir_resolved = @sbindir_resolved@
  sharedstatedir = @sharedstatedir@
-@@ -180,7 +174,6 @@
+@@ -179,7 +174,7 @@
+ dist_gridftp_DATA = gridftp.conf gridftp-inetd.conf gridftp-debug.conf replica-map.conf
  sysconfigdir = $(sysconfdir)/sysconfig/gridftp.conf.d
  dist_sysconfig_DATA = gridftp-hdfs
- envdir = $(datadir)/gridftp-hdfs
--dist_env_DATA = gridftp-hdfs-environment
+-envdir = $(datadir)/gridftp-hdfs
++envdir = $(sysconfdir)/sysconfig/gridftp.conf.d
+ dist_env_DATA = gridftp-hdfs-environment
  all: all-am
  
- .SUFFIXES:
-@@ -193,9 +186,9 @@
+@@ -193,9 +188,9 @@
  	      exit 1;; \
  	  esac; \
  	done; \
@@ -116,85 +79,9 @@ diff -ru gridftp-hdfs-0.5.2-orig/conf/Makefile.in gridftp-hdfs-0.5.2/conf/Makefi
  .PRECIOUS: Makefile
  Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
  	@case '$?' in \
-@@ -225,23 +218,6 @@
- distclean-libtool:
- 	-rm -f libtool
- uninstall-info-am:
--install-dist_envDATA: $(dist_env_DATA)
--	@$(NORMAL_INSTALL)
--	test -z "$(envdir)" || $(mkdir_p) "$(DESTDIR)$(envdir)"
--	@list='$(dist_env_DATA)'; for p in $$list; do \
--	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
--	  f=$(am__strip_dir) \
--	  echo " $(dist_envDATA_INSTALL) '$$d$$p' '$(DESTDIR)$(envdir)/$$f'"; \
--	  $(dist_envDATA_INSTALL) "$$d$$p" "$(DESTDIR)$(envdir)/$$f"; \
--	done
--
--uninstall-dist_envDATA:
--	@$(NORMAL_UNINSTALL)
--	@list='$(dist_env_DATA)'; for p in $$list; do \
--	  f=$(am__strip_dir) \
--	  echo " rm -f '$(DESTDIR)$(envdir)/$$f'"; \
--	  rm -f "$(DESTDIR)$(envdir)/$$f"; \
--	done
- install-dist_gridftpDATA: $(dist_gridftp_DATA)
- 	@$(NORMAL_INSTALL)
- 	test -z "$(gridftpdir)" || $(mkdir_p) "$(DESTDIR)$(gridftpdir)"
-@@ -314,7 +290,7 @@
- check: check-am
- all-am: Makefile $(DATA)
- installdirs:
--	for dir in "$(DESTDIR)$(envdir)" "$(DESTDIR)$(gridftpdir)" "$(DESTDIR)$(sysconfigdir)"; do \
-+	for dir in "$(DESTDIR)$(gridftpdir)" "$(DESTDIR)$(sysconfigdir)"; do \
- 	  test -z "$$dir" || $(mkdir_p) "$$dir"; \
- 	done
- install: install-am
-@@ -359,8 +335,7 @@
- 
- info-am:
- 
--install-data-am: install-dist_envDATA install-dist_gridftpDATA \
--	install-dist_sysconfigDATA
-+install-data-am: install-dist_gridftpDATA install-dist_sysconfigDATA
- 
- install-exec-am:
- 
-@@ -386,22 +361,22 @@
- 
- ps-am:
- 
--uninstall-am: uninstall-dist_envDATA uninstall-dist_gridftpDATA \
--	uninstall-dist_sysconfigDATA uninstall-info-am
-+uninstall-am: uninstall-dist_gridftpDATA uninstall-dist_sysconfigDATA \
-+	uninstall-info-am
- 
- .PHONY: all all-am check check-am clean clean-generic clean-libtool \
- 	distclean distclean-generic distclean-libtool distdir dvi \
- 	dvi-am html html-am info info-am install install-am \
--	install-data install-data-am install-dist_envDATA \
--	install-dist_gridftpDATA install-dist_sysconfigDATA \
--	install-exec install-exec-am install-info install-info-am \
--	install-man install-strip installcheck installcheck-am \
--	installdirs maintainer-clean maintainer-clean-generic \
--	mostlyclean mostlyclean-generic mostlyclean-libtool pdf pdf-am \
--	ps ps-am uninstall uninstall-am uninstall-dist_envDATA \
-+	install-data install-data-am install-dist_gridftpDATA \
-+	install-dist_sysconfigDATA install-exec install-exec-am \
-+	install-info install-info-am install-man install-strip \
-+	installcheck installcheck-am installdirs maintainer-clean \
-+	maintainer-clean-generic mostlyclean mostlyclean-generic \
-+	mostlyclean-libtool pdf pdf-am ps ps-am uninstall uninstall-am \
- 	uninstall-dist_gridftpDATA uninstall-dist_sysconfigDATA \
- 	uninstall-info-am
- 
-+#dist_env_DATA = gridftp-hdfs-environment
- # Tell versions [3.59,3.63) of GNU make to not export all variables.
- # Otherwise a system limit (for SysV at least) may be exceeded.
- .NOEXPORT:
-Only in gridftp-hdfs-0.5.2: config.log
 diff -ru gridftp-hdfs-0.5.2-orig/configure gridftp-hdfs-0.5.2/configure
 --- gridftp-hdfs-0.5.2-orig/configure	2011-12-07 14:05:43.000000000 -0600
-+++ gridftp-hdfs-0.5.2/configure	2011-12-07 15:01:24.000000000 -0600
++++ gridftp-hdfs-0.5.2/configure	2011-12-08 19:21:01.000000000 -0600
 @@ -1,56 +1,27 @@
  #! /bin/sh
  # Guess values for system-dependent variables and create Makefiles.
@@ -12594,9 +12481,10 @@ diff -ru gridftp-hdfs-0.5.2-orig/configure gridftp-hdfs-0.5.2/configure
  
  { (exit 0); exit 0; }
  _ACEOF
+Only in gridftp-hdfs-0.5.2-orig: gridftp-hdfs-0.5.2
 diff -ru gridftp-hdfs-0.5.2-orig/Makefile.in gridftp-hdfs-0.5.2/Makefile.in
 --- gridftp-hdfs-0.5.2-orig/Makefile.in	2011-12-07 14:05:43.000000000 -0600
-+++ gridftp-hdfs-0.5.2/Makefile.in	2011-12-07 15:25:39.000000000 -0600
++++ gridftp-hdfs-0.5.2/Makefile.in	2011-12-08 19:21:06.000000000 -0600
 @@ -103,7 +103,6 @@
  F77 = @F77@
  FFLAGS = @FFLAGS@
@@ -12653,23 +12541,45 @@ diff -ru gridftp-hdfs-0.5.2-orig/Makefile.in gridftp-hdfs-0.5.2/Makefile.in
  sbindir = @sbindir@
  sbindir_resolved = @sbindir_resolved@
  sharedstatedir = @sharedstatedir@
+diff -ru gridftp-hdfs-0.5.2-orig/scripts/gridftp-hdfs-standalone.in gridftp-hdfs-0.5.2/scripts/gridftp-hdfs-standalone.in
+--- gridftp-hdfs-0.5.2-orig/scripts/gridftp-hdfs-standalone.in	2011-12-07 14:05:43.000000000 -0600
++++ gridftp-hdfs-0.5.2/scripts/gridftp-hdfs-standalone.in	2011-12-08 22:18:54.000000000 -0600
+@@ -1,15 +1,15 @@
+ #!/bin/sh                                                            
+ 
+-if [ -e @datadir_resolved@/gridftp-hdfs/gridftp-hdfs-environment ] ; then
+-    . @datadir_resolved@/gridftp-hdfs/gridftp-hdfs-environment
++if [ -e @sysconfdir_resolved@/gridftp.conf.d/gridftp-hdfs-environment ] ; then
++    . @sysconfdir_resolved@/sysconfig/gridftp.conf.d/gridftp-hdfs-environment
+ fi
+ 
+ if [ -e @sysconfdir_resolved@/gridftp-hdfs/gridftp-hdfs-local.conf ] ; then
+     . @sysconfdir_resolved@/gridftp-hdfs/gridftp-hdfs-local.conf
+ fi
+ 
+-if [ -e @sysconfdir_resolved@/sysconfig/gridftp-hdfs ] ; then
+-    . @sysconfdir_resolved@/sysconfig/gridftp-hdfs
++if [ -e @sysconfdir_resolved@/gridftp.conf.d/gridftp-hdfs ] ; then
++    . @sysconfdir_resolved@/sysconfig/gridftp.conf.d/gridftp-hdfs
+ fi
+ 
+ export CLASSPATH=$CLASSPATH
 diff -ru gridftp-hdfs-0.5.2-orig/scripts/Makefile.am gridftp-hdfs-0.5.2/scripts/Makefile.am
 --- gridftp-hdfs-0.5.2-orig/scripts/Makefile.am	2011-12-07 14:05:43.000000000 -0600
-+++ gridftp-hdfs-0.5.2/scripts/Makefile.am	2011-12-07 14:43:32.000000000 -0600
-@@ -2,8 +2,8 @@
++++ gridftp-hdfs-0.5.2/scripts/Makefile.am	2011-12-08 19:16:09.000000000 -0600
+@@ -2,9 +2,6 @@
  bin_SCRIPTS = gridftp-hdfs-standalone
  sbin_SCRIPTS = xinetd/gridftp-hdfs-inetd
  
 -initddir = $(sysconfdir)/init.d
 -initd_SCRIPTS = init/gridftp-hdfs
-+#initddir = $(sysconfdir)/init.d
-+#initd_SCRIPTS = init/gridftp-hdfs
- 
+-
  xinetddir = $(sysconfdir)/xinetd.d
  dist_xinetd_DATA = xinetd/gridftp-hdfs
+ 
 diff -ru gridftp-hdfs-0.5.2-orig/scripts/Makefile.in gridftp-hdfs-0.5.2/scripts/Makefile.in
 --- gridftp-hdfs-0.5.2-orig/scripts/Makefile.in	2011-12-07 14:05:43.000000000 -0600
-+++ gridftp-hdfs-0.5.2/scripts/Makefile.in	2011-12-07 15:25:39.000000000 -0600
++++ gridftp-hdfs-0.5.2/scripts/Makefile.in	2011-12-08 19:21:06.000000000 -0600
 @@ -46,12 +46,11 @@
  	$(ACLOCAL_M4)
  mkinstalldirs = $(install_sh) -d
@@ -12742,19 +12652,16 @@ diff -ru gridftp-hdfs-0.5.2-orig/scripts/Makefile.in gridftp-hdfs-0.5.2/scripts/
  sbindir = @sbindir@
  sbindir_resolved = @sbindir_resolved@
  sharedstatedir = @sharedstatedir@
-@@ -179,8 +173,9 @@
+@@ -179,8 +173,6 @@
  target_alias = @target_alias@
  bin_SCRIPTS = gridftp-hdfs-standalone
  sbin_SCRIPTS = xinetd/gridftp-hdfs-inetd
 -initddir = $(sysconfdir)/init.d
 -initd_SCRIPTS = init/gridftp-hdfs
-+
-+#initddir = $(sysconfdir)/init.d
-+#initd_SCRIPTS = init/gridftp-hdfs
  xinetddir = $(sysconfdir)/xinetd.d
  dist_xinetd_DATA = xinetd/gridftp-hdfs
  all: all-am
-@@ -195,9 +190,9 @@
+@@ -195,9 +187,9 @@
  	      exit 1;; \
  	  esac; \
  	done; \
@@ -12766,7 +12673,7 @@ diff -ru gridftp-hdfs-0.5.2-orig/scripts/Makefile.in gridftp-hdfs-0.5.2/scripts/
  .PRECIOUS: Makefile
  Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
  	@case '$?' in \
-@@ -236,25 +231,6 @@
+@@ -236,25 +228,6 @@
  	  echo " rm -f '$(DESTDIR)$(bindir)/$$f'"; \
  	  rm -f "$(DESTDIR)$(bindir)/$$f"; \
  	done
@@ -12792,7 +12699,7 @@ diff -ru gridftp-hdfs-0.5.2-orig/scripts/Makefile.in gridftp-hdfs-0.5.2/scripts/
  install-sbinSCRIPTS: $(sbin_SCRIPTS)
  	@$(NORMAL_INSTALL)
  	test -z "$(sbindir)" || $(mkdir_p) "$(DESTDIR)$(sbindir)"
-@@ -340,7 +316,7 @@
+@@ -340,7 +313,7 @@
  check: check-am
  all-am: Makefile $(SCRIPTS) $(DATA)
  installdirs:
@@ -12801,7 +12708,7 @@ diff -ru gridftp-hdfs-0.5.2-orig/scripts/Makefile.in gridftp-hdfs-0.5.2/scripts/
  	  test -z "$$dir" || $(mkdir_p) "$$dir"; \
  	done
  install: install-am
-@@ -385,7 +361,7 @@
+@@ -385,7 +358,7 @@
  
  info-am:
  
@@ -12810,7 +12717,7 @@ diff -ru gridftp-hdfs-0.5.2-orig/scripts/Makefile.in gridftp-hdfs-0.5.2/scripts/
  
  install-exec-am: install-binSCRIPTS install-sbinSCRIPTS
  
-@@ -412,20 +388,20 @@
+@@ -412,20 +385,20 @@
  ps-am:
  
  uninstall-am: uninstall-binSCRIPTS uninstall-dist_xinetdDATA \
@@ -12840,7 +12747,7 @@ diff -ru gridftp-hdfs-0.5.2-orig/scripts/Makefile.in gridftp-hdfs-0.5.2/scripts/
  # Otherwise a system limit (for SysV at least) may be exceeded.
 diff -ru gridftp-hdfs-0.5.2-orig/src/Makefile.in gridftp-hdfs-0.5.2/src/Makefile.in
 --- gridftp-hdfs-0.5.2-orig/src/Makefile.in	2011-12-07 14:05:43.000000000 -0600
-+++ gridftp-hdfs-0.5.2/src/Makefile.in	2011-12-07 15:25:39.000000000 -0600
++++ gridftp-hdfs-0.5.2/src/Makefile.in	2011-12-08 19:21:06.000000000 -0600
 @@ -105,7 +105,6 @@
  F77 = @F77@
  FFLAGS = @FFLAGS@

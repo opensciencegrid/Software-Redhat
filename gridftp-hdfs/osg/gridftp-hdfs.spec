@@ -1,6 +1,6 @@
 Name:           gridftp-hdfs
 Version:        0.5.2
-Release:        2
+Release:        4
 Summary:        HDFS DSI plugin for GridFTP
 
 Group:          System Environment/Daemons
@@ -23,7 +23,7 @@ BuildRequires: globus-gridftp-server-devel
 BuildRequires: globus-common-devel
 
 Requires: hadoop-0.20-libhdfs
-Requires: globus-gridftp-server-progs
+Requires: globus-gridftp-server-progs >= 6.2
 Requires: xinetd
 
 Requires(pre): shadow-utils
@@ -90,8 +90,13 @@ fi
 %config(noreplace) %{_sysconfdir}/%{name}/gridftp.conf
 %config(noreplace) %{_sysconfdir}/%{name}/replica-map.conf
 %config(noreplace) %{_sysconfdir}/sysconfig/gridftp.conf.d/%{name}
+%{_sysconfdir}/sysconfig/gridftp.conf.d/%{name}-environment
 
 %changelog
+* Thu Dec 8 2011 Doug Strain <dstrain@fnal.gov> - 0.5.2-4
+- Adding environment file to gridftp.conf.d
+- Fixing paths in globus-gridftp-standalone
+
 * Wed Dec 7 2011 Doug Strain <dstrain@fnal.gov> - 0.5.2-2
 - Getting rid of non-osg files and services
 
