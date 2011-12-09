@@ -1,0 +1,47 @@
+--- init/globus-gatekeeper-lsb.in.orig	2011-12-09 15:41:02.884000000 -0600
++++ init/globus-gatekeeper-lsb.in	2011-12-09 15:41:37.913000000 -0600
+@@ -35,7 +35,6 @@
+ 
+ GLOBUS_GATEKEEPER_CONFIG=${GLOBUS_GATEKEEPER_CONFIG:-@GATEKEEPER_CONFIGDIR@/@GATEKEEPER_CONFIGFILE@}
+ test -f "${GLOBUS_GATEKEEPER_CONFIG}" && . "${GLOBUS_GATEKEEPER_CONFIG}"
+-test -f ${sbindir}/globus-gatekeeper || exit 0
+ prog="${sbindir}/globus-gatekeeper"
+ progname="globus-gatekeeper"
+ lockfile="@LOCKFILE@"
+@@ -45,9 +44,6 @@
+ GLOBUS_GATEKEEPER_PIDFILE="${GLOBUS_GATEKEEPER_PIDFILE:-${localstatedir}/run/globus-gatekeeper.pid}"
+ GLOBUS_GATEKEEPER_PORT="${GLOBUS_GATEKEEPER_PORT:-2119}"
+ 
+-test -f "${GLOBUS_GATEKEEPER_CERT_FILE:-${sysconfdir}/grid-security/hostcert.pem}" || exit 0
+-test -f "${GLOBUS_GATEKEEPER_KEY_FILE:-${sysconfdir}/grid-security/hostkey.pem}" || exit 0
+-
+ if ! lsb_release -v | grep -q 'core-[123]'; then
+     lsb_version_ge4=1
+ fi
+@@ -55,6 +51,26 @@
+ 
+ start()
+ {
++    if [ ! -f ${prog} ]; then
++        echo "Error: ${prog} is missing."
++        log_failure_msg "Failed to start globus-gatekeeper"
++        exit 5
++    fi
++
++    cert="${GLOBUS_GATEKEEPER_CERT_FILE:-${sysconfdir}/grid-security/hostcert.pem}"
++    if [ ! -f $cert ]; then
++        echo "Error: Gatekeeper's certificate file ($cert) is missing."
++        log_failure_msg "Failed to start globus-gatekeeper"
++        exit 6
++    fi
++
++    key="${GLOBUS_GATEKEEPER_KEY_FILE:-${sysconfdir}/grid-security/hostkey.pem}" || exit 0
++    if [ ! -f $key ]; then
++        echo "Error: Gatekeeper's private key file is ($key) is missing."
++        log_failure_msg "Failed to start globus-gatekeeper"
++        exit 6
++    fi
++
+     if [ "${GLOBUS_GATEKEEPER_KERBEROS_ENABLED:-false}" = "true" ]; then
+         kflag="-k"
+     else

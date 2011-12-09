@@ -13,7 +13,7 @@
 Name:		globus-gatekeeper
 %global _name %(tr - _ <<< %{name})
 Version:	8.1
-Release:	6%{?dist}
+Release:	7%{?dist}
 Summary:	Globus Toolkit - Globus Gatekeeper
 
 Group:		Applications/Internet
@@ -27,6 +27,7 @@ Source2:        globus-gatekeeper-logrotate
 Patch0:         child_signals.patch
 Patch1:         increase_backlog.patch
 Patch2:         chkconfig-off.patch
+Patch3:         init.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Requires:	globus-common >= 13.4
@@ -58,6 +59,7 @@ Globus Gatekeeper Setup
 %patch0 -p0
 %patch1 -p0
 %patch2 -p0
+%patch3 -p0
 # Note append here
 cat %{SOURCE1} >> config/globus-gatekeeper.in
 
@@ -132,6 +134,9 @@ fi
 %config(noreplace) %{_sysconfdir}/logrotate.d/globus-gatekeeper
 
 %changelog
+* Wed Dec 9 2011 Alain Roy <roy@cs.wisc.edu> - 8.1-7
+- Improved init script to provide better error messages.
+
 * Wed Dec 7 2011 Alain Roy <roy@cs.wisc.edu> - 8.1-6
 - Added log rotation. 
 
