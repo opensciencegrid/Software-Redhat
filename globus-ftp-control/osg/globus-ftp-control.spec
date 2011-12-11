@@ -13,7 +13,7 @@
 Name:		globus-ftp-control
 %global _name %(tr - _ <<< %{name})
 Version:	4.2
-Release:	4%{?dist}
+Release:	5%{?dist}
 Summary:	Globus Toolkit - GridFTP Control Library
 
 Group:		System Environment/Libraries
@@ -190,6 +190,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_docdir}/%{name}-%{version}/html
 
 %changelog
+* Sun Dec 11 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 4.2-5
+- Fix for connection speed leveling on servers with different buffer sizes.
+
 * Wed Nov 16 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 4.2-4
 - Actually apply the patch referenced in previous build.
 

@@ -1,6 +1,15 @@
---- globus_ftp_control_data.c.orig	2011-11-16 09:35:41.000000000 -0600
-+++ globus_ftp_control_data.c	2011-11-16 11:59:11.000000000 -0600
-@@ -6062,6 +6062,12 @@
+--- globus_ftp_control_data.c.orig	2011-02-03 15:47:09.000000000 -0600
++++ globus_ftp_control_data.c	2011-12-11 10:00:58.000000000 -0600
+@@ -151,6 +151,8 @@
+     globus_ftp_control_parallelism_t            parallel;
+     globus_ftp_control_host_port_t              host_port;
+     struct globus_i_ftp_dc_transfer_handle_s *  whos_my_daddy;
++    globus_off_t                                largest_entry;
++    int                                         largest_connection_count;
+ 
+     int                                         connection_count;
+     int                                         total_connection_count;
+@@ -6062,6 +6064,12 @@
      /*
       *  check to see that there is a connection
       */
@@ -13,7 +22,7 @@
      while(!globus_fifo_empty(&stripe->free_conn_q) &&
         !globus_fifo_empty(&stripe->command_q))
      {
-@@ -6109,22 +6115,72 @@
+@@ -6109,22 +6117,76 @@
              }
              else if(entry->direction == GLOBUS_FTP_DATA_STATE_CONNECT_READ)
              {
@@ -52,7 +61,19 @@
 +                 */
                  globus_fifo_dequeue(&stripe->command_q);
                  globus_fifo_dequeue(&stripe->free_conn_q);
-+                if (data_conn->offset - min_offset <= 10*entry->length) {
+ 
+-                result = globus_io_register_read(
+-                             &data_conn->io_handle,
+-                             entry->buffer,
+-                             entry->length,
+-                             entry->length,
+-                             globus_l_ftp_stream_read_callback,
+-                             (void *)entry);
+-                globus_assert(result == GLOBUS_SUCCESS);
++                stripe->largest_entry = (entry->length > stripe->largest_entry) ? entry->length : stripe->largest_entry;
++                stripe->largest_connection_count = (stripe->connection_count > stripe->largest_connection_count) ? stripe->connection_count : stripe->largest_connection_count;
++
++                if ((stripe->connection_count < stripe->largest_connection_count) || (data_conn->offset - min_offset <= 5*stripe->largest_entry)) {
 +                    //printf("BB - Current offset: %llu, min_offset: %llu.\n", data_conn->offset, min_offset);
 +                    /* remove from queue */
 +
@@ -71,15 +92,7 @@
 +                    globus_fifo_enqueue(&remaining_command_q, entry);
 +                    globus_fifo_enqueue(&remaining_conn_q, data_conn);
 +                }
- 
--                result = globus_io_register_read(
--                             &data_conn->io_handle,
--                             entry->buffer,
--                             entry->length,
--                             entry->length,
--                             globus_l_ftp_stream_read_callback,
--                             (void *)entry);
--                globus_assert(result == GLOBUS_SUCCESS);
++
              }
          }
      }
@@ -95,7 +108,7 @@
      return GLOBUS_SUCCESS;
  }
  
-@@ -6406,6 +6462,11 @@
+@@ -6406,6 +6468,11 @@
              /*
               *  in big buffer mode this should never be entered
               */
@@ -107,7 +120,7 @@
              while(!globus_fifo_empty(&stripe->command_q) && !done)
              {
                  globus_assert(transfer_handle->big_buffer == GLOBUS_NULL);
-@@ -6444,30 +6505,58 @@
+@@ -6444,30 +6511,60 @@
                      data_conn = (globus_ftp_data_connection_t *)
                          globus_fifo_dequeue(&stripe->free_conn_q);
  
@@ -150,9 +163,11 @@
 -                              globus_l_ftp_eb_read_callback,
 -                              (void *)entry);
 -                    globus_assert(res == GLOBUS_SUCCESS);
-+                    //printf("BB - Current offset: %llu, min_offset: %llu.\n", data_conn->offset, min_offset);
++                    stripe->largest_entry = (entry->length > stripe->largest_entry) ? entry->length : stripe->largest_entry;
++                    stripe->largest_connection_count = (stripe->connection_count > stripe->largest_connection_count) ? stripe->connection_count : stripe->largest_connection_count;
++                    //printf("BB - offset: %lu, min_offset: %lu, diff: %lu, max diff: %lu outstanding connections: %d.\n", data_conn->offset, min_offset, data_conn->offset - min_offset, 5*stripe->largest_entry, stripe->connection_count);
 +                
-+                    if (data_conn->offset - min_offset <= 10*entry->length) {
++                    if ((stripe->connection_count < stripe->largest_connection_count) || (data_conn->offset - min_offset <= 5*stripe->largest_entry)) {
 +
 +                        /*
 +                         *  set the entries offset to the offset on the
@@ -188,7 +203,7 @@
                  }
                  /*
                   *  if we have not hit EOF and there are no availuable data
-@@ -6478,6 +6567,13 @@
+@@ -6478,6 +6575,13 @@
                      done = GLOBUS_TRUE;
                  }
              }/* end while */
@@ -202,3 +217,12 @@
          }
      }
  
+@@ -6766,6 +6870,8 @@
+         stripe->listening = GLOBUS_FALSE;
+         globus_fifo_init(&stripe->command_q);
+ 
++        stripe->largest_entry = 1024*1024;
++        stripe->largest_connection_count = 0;
+         stripe->total_connection_count = 0;
+         stripe->eods_received = 0;
+         stripe->eof_sent = GLOBUS_FALSE;
