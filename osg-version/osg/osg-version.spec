@@ -1,6 +1,6 @@
 Name:      osg-version
 Summary:   OSG Version
-Version:   3.0.4
+Version:   3.0.5
 Release:   1
 License:   Apache 2.0
 Group:     Grid
@@ -34,7 +34,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/osg-version
 
 %changelog
-* Mon Nov 14 2011 Alain Roy <roy@cs.wisc.edu> - 3.0.4-1
+* Mon Dec 12 2011 Alain Roy <roy@cs.wisc.edu> - 3.0.5-1
+- Updated to 3.0.5-1
+
+* Mon Dec 05 2011 Alain Roy <roy@cs.wisc.edu> - 3.0.4-1
 - Updated to 3.0.4-1
 
 * Mon Nov 14 2011 Alain Roy <roy@cs.wisc.edu> - 3.0.3-1
