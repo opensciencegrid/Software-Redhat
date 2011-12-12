@@ -1,15 +1,15 @@
 Summary: Process tracking plugin for the LCMAPS authorization framework
 Name: lcmaps-plugins-glexec-tracking
-Version: 0.1.0
-Release: 3%{?dist}
+Version: 0.1.1
+Release: 1%{?dist}
 License: EGEE Middleware and ASL and Fermitools
 Group: System Environment/Libraries
 # The tarball was created from CVS using the following commands:
 # cd /afs/cs.wisc.edu/p/vdt/public/html/upstream
-# cvs -d :pserver:anonymous@cdcvs.fnal.gov:/cvs/cd_read_only export -d lcmaps-plugins-glexec-tracking-0.1.0 -r lcmaps-plugins-glexec-tracking_R_0_1_0 privilege/lcmaps-plugins-glexec-tracking
-# mkdir lcmaps-plugins-glexec-tracking/0.1.0
-# tar zcf lcmaps-plugins-glexec-tracking/0.1.0/lcmaps-plugins-glexec-tracking-0.1.0.tar.gz lcmaps-plugins-glexec-tracking-0.1.0/
-# rm -rf lcmaps-plugins-glexec-tracking-0.1.0
+# cvs -d :pserver:anonymous@cdcvs.fnal.gov:/cvs/cd_read_only export -d lcmaps-plugins-glexec-tracking-0.1.1 -r lcmaps-plugins-glexec-tracking_R_0_1_1 privilege/lcmaps-plugins-glexec-tracking
+# mkdir lcmaps-plugins-glexec-tracking/0.1.1
+# tar zcf lcmaps-plugins-glexec-tracking/0.1.1/lcmaps-plugins-glexec-tracking-0.1.1.tar.gz lcmaps-plugins-glexec-tracking-0.1.1/
+# rm -rf lcmaps-plugins-glexec-tracking-0.1.1
 Source0: %{name}-%{version}.tar.gz
 BuildRequires: lcmaps-interface
 BuildRequires: libtool automake autoconf
@@ -69,6 +69,13 @@ rm -rf $RPM_BUILD_ROOT
 %{_sbindir}/glexec_monitor
 
 %changelog
+* Mon Dec 12 2011 Dave Dykstra <dwd@fnal.gov> 0.1.1-1.osg
+- Upgrade to upstream 0.1.1, which fixes a glexec hang when there are
+  more than 5 open file descriptors passed in and fixes a problem with
+  a debug log message that had newlines in it.
+    http://jira.opensciencegrid.org/browse/SOFTWARE-423
+    http://jira.opensciencegrid.org/browse/SOFTWARE-288
+
 * Fri Dec 02 2011 Dave Dykstra <dwd@fnal.gov> 0.1.0-3.osg
 - Add %ghost directories on the files in libdir/modules so rpm won't
    think it needs to remove them from a previous install
