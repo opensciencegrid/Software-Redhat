@@ -13,7 +13,7 @@
 Name:		globus-gatekeeper
 %global _name %(tr - _ <<< %{name})
 Version:	8.1
-Release:	7%{?dist}
+Release:	8%{?dist}
 Summary:	Globus Toolkit - Globus Gatekeeper
 
 Group:		Applications/Internet
@@ -134,6 +134,12 @@ fi
 %config(noreplace) %{_sysconfdir}/logrotate.d/globus-gatekeeper
 
 %changelog
+* Mon Dec 12 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 8.1-8
+- Set LCMAPS_MOD_HOME in /etc/sysconfig/globus-gatekeeper to "lcmaps", the
+  new supported value as of lcmaps-1.4.28-19 which came out on November 16.
+  Leave LCAS_MOD_HOME alone for now, but LCAS will be removed in a future
+  release.
+
 * Wed Dec 9 2011 Alain Roy <roy@cs.wisc.edu> - 8.1-7
 - Improved init script to provide better error messages.
 
