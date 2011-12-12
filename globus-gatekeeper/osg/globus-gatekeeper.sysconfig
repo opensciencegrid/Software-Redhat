@@ -12,7 +12,7 @@ export LCAS_MOD_HOME=/usr/lib64/modules
 export LCMAPS_LOG_LEVEL=0
 export LCMAPS_DEBUG_LEVEL=0
 export LCMAPS_DB_FILE=/etc/lcmaps.db
-export LCMAPS_MOD_HOME=/usr/lib64/modules
+export LCMAPS_MOD_HOME=lcmaps
 export LCMAPS_POLICY_NAME=osg_default
 
 # Logging location
