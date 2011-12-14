@@ -1,6 +1,6 @@
 
 Name:           osg-build
-Version:        0.3.1
+Version:        1.0.0
 Release:        1%{?dist}
 Summary:        Build tools for the OSG
 
@@ -18,6 +18,7 @@ Requires:       rpm-build
 Requires:       openssl
 Requires:       quilt
 Requires:       koji
+Requires:       rpmlint
 
 Obsoletes:      vdt-build <= 0.0.17
 Provides:       vdt-build = %{version}
@@ -47,6 +48,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/%{name}
 %{_bindir}/koji-tag-diff
 %{_bindir}/rpm-ripper
+%{_bindir}/osg-build-test
 %{_bindir}/osg-import-srpm
 %{_bindir}/osg-koji
 %{_bindir}/vdt-build
@@ -57,6 +59,11 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_docdir}/%{name}/sample-osg-build.ini
 
 %changelog
+* Wed Dec 14 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0.0-1
+- Version bumped to 1.0.0
+- Added osg-build-test script for running unit tests.
+- Fixed prepare task bug.
+
 * Fri Dec 09 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 0.3.1-1
 - osg-koji changed to use ~/.koji directory if it exists and ~/.osg-koji doesn't.
 - Some refactoring and bugfixes of prebuild step.
