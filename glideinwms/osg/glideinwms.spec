@@ -1,6 +1,6 @@
 Name:           glideinwms
 Version:        2.5.4
-Release:        0.pre2
+Release:        0.rc2{?dist}
 Summary:        The VOFrontend for glideinWMS submission host
 
 Group:          System Environment/Daemons
