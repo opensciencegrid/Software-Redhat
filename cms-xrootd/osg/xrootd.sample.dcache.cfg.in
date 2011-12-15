@@ -8,7 +8,10 @@ all.role server
 all.manager xrootd-itb.unl.edu:1213
 #all.manager xrootd.unl.edu:1213
 
-# Allow any path to be exported; this is further refined in the authfile.
+oss.localroot /pnfs/example.com/data/cms
+xrootd.redirect xrootd-door.example.com:1094 /
+
+# Allow any path to be exported
 all.export / nostage
 
 # Hosts allowed to use this xrootd cluster
@@ -26,43 +29,21 @@ cms.trace all
 oss.namelib @LIBDIR@/libXrdCmsTfc.so file:/etc/xrootd/storage.xml?protocol=direct
 
 # Turn on authorization
-ofs.authorize 1
-acc.authdb /etc/xrootd/Authfile
-acc.audit deny grant
-
-# Security configuration
-sec.protocol @LIBDIR@ gsi -certdir:/etc/grid-security/certificates -cert:/etc/grid-security/xrd/xrdcert.pem -key:/etc/grid-security/xrd/xrdkey.pem -crl:3
-
-# The following is the suggestion configuration if you use SCAS/GUMS; you will need the xrootd-lcmaps RPM
-# sec.protocol /usr/lib64 gsi -certdir:/etc/grid-security/certificates -cert:/etc/grid-security/xrd/xrdcert.pem -key:/etc/grid-security/xrd/xrdkey.pem -crl:3 -authzfun:libXrdLcmaps.so -authzfunparms:--osg,--lcmapscfg,/etc/xrootd/lcmaps.cfg,--loglevel,0|useglobals --gmapopt:2 --gmapto:0
+ofs.authorize 0
+#acc.authdb /etc/xrootd/Authfile
+#acc.audit deny grant
 
 xrootd.seclib @LIBDIR@/libXrdSec.so
 xrootd.fslib @LIBDIR@/libXrdOfs.so
-ofs.osslib @LIBDIR@/libXrdPss.so
 all.adminpath /var/run/xrootd
 all.pidpath /var/run/xrootd
 
 cms.delay startup 10
 cms.fxhold 60s
-cms.perf int 30s pgm /usr/bin/XrdOlbMonPerf 30
+#cms.perf int 30s pgm /usr/bin/XrdOlbMonPerf 30
 
 if exec xrootd
-  xrd.report xrootd.unl.edu:3333 every 300s all
-  xrootd.monitor all flush 5s mbuff 1k window 1s dest files io info user xrootd.t2.ucsd.edu:9930
+  xrd.report xrootd.t2.ucsd.edu:9931 every 30s all
+  xrootd.monitor all auth flush 30s mbuff 1472 window 5s dest files io info user xrootd.t2.ucsd.edu:9930
 fi
-
-# Replace with the IP address of the xrootd dCache door.  Workaround for a segfault bug.
-pss.origin 127.0.0.1:1095
-# After doing tests, set this back to 0; very noisy
-pss.setopt DebugLevel 1
-# Default cache size is 512MB per file; prune
-pss.setopt ReadAheadSize 16384
-pss.setopt ReadCacheSize 8388608
-pss.setopt ReadAheadStrategy 0
-pss.setopt ReadTrimBlockSize 16384
-# dCache xrootd door has a big perf hit for async.
-xrootd.async off
-# Default workers setting thread contention on load.
-pss.config workers 32
-
 

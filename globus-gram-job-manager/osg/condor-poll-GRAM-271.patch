@@ -1,0 +1,65 @@
+Index: globus_gram_job_manager.c
+===================================================================
+RCS file: /home/globdev/CVS/globus-packages/gram/jobmanager/source/globus_gram_job_manager.c,v
+retrieving revision 1.62
+diff -u -r1.62 globus_gram_job_manager.c
+--- globus_gram_job_manager.c	7 Nov 2011 23:38:15 -0000	1.62
++++ globus_gram_job_manager.c	10 Nov 2011 15:08:50 -0000
+@@ -770,6 +770,7 @@
+     (*ref)->status_count = 0;
+     (*ref)->loaded_only = GLOBUS_FALSE;
+     (*ref)->seg_last_timestamp = request ? request->seg_last_timestamp : 0;
++    (*ref)->seg_last_size = 0;
+ 
+     (*ref)->key = strdup(key);
+     if ((*ref)->key == NULL)
+Index: globus_gram_job_manager.h
+===================================================================
+RCS file: /home/globdev/CVS/globus-packages/gram/jobmanager/source/globus_gram_job_manager.h,v
+retrieving revision 1.67
+diff -u -r1.67 globus_gram_job_manager.h
+--- globus_gram_job_manager.h	7 Nov 2011 23:38:15 -0000	1.67
++++ globus_gram_job_manager.h	10 Nov 2011 15:08:50 -0000
+@@ -802,11 +802,18 @@
+      * completed execution.
+      */
+     globus_bool_t                       loaded_only;
++
++    /* The following are used for the internal fakeseg stuff for condor*/
++
+     /**
+      * Timestamp of the last SEG event we've completely processed. Initially
+      * set to the time of the job submission.
+      */
+     time_t                              seg_last_timestamp;
++    /**
++     * Size of the Condor log file last time we polled.
++     */
++    globus_off_t                        seg_last_size;
+ }
+ globus_gram_job_manager_ref_t;
+ 
+Index: globus_gram_job_manager_seg.c
+===================================================================
+RCS file: /home/globdev/CVS/globus-packages/gram/jobmanager/source/globus_gram_job_manager_seg.c,v
+retrieving revision 1.13
+diff -u -r1.13 globus_gram_job_manager_seg.c
+--- globus_gram_job_manager_seg.c	19 Aug 2011 14:36:34 -0000	1.13
++++ globus_gram_job_manager_seg.c	10 Nov 2011 15:08:51 -0000
+@@ -1060,7 +1060,7 @@
+                     (long) st.st_uid);
+             goto close_log;
+         }
+-        if (st.st_mtime < ref->seg_last_timestamp)
++        if (st.st_size < ref->seg_last_size)
+         {
+             globus_gram_job_manager_log(
+                     manager,
+@@ -1134,6 +1134,7 @@
+                 ref,
+                 &events);
+         munmap(condor_log_data, (size_t) st.st_size);
++        ref->seg_last_size = st.st_size;
+ close_log:
+         close(condor_log_fd);
+         free(path);

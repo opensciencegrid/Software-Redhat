@@ -31,7 +31,7 @@ HADOOP_REPLICATION_MIN=1
 HADOOP_REPLICATION_MAX=512
 
 # The user that the hadoop datanode and checkpoint server processes will run as.
-HADOOP_USER=hadoop
+HADOOP_USER=hdfs
 
 # The base directory where most datanode files are stored
 HADOOP_DATADIR=@HADOOP_DATADIR@

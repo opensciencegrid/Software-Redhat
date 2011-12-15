@@ -1,6 +1,20 @@
+
+#Redhat auto-repacks jars which messes up build date 
+#disable this
+%define __jar_repack %{nil}
+%if "%{?rhel}" == "5"
+%define __os_install_post \
+    /usr/lib/rpm/redhat/brp-compress  \
+    %{!?__debug_package:/usr/lib/rpm/redhat/brp-strip %{__strip}}  \
+    /usr/lib/rpm/redhat/brp-strip-static-archive %{__strip}  \
+    /usr/lib/rpm/redhat/brp-strip-comment-note %{__strip} %{__objdump}  \
+    /usr/lib/rpm/brp-python-bytecompile  \
+%{nil}
+%endif
+
 Name:           bestman2
 Version:        2.1.3
-Release:        1%{?dist}
+Release:        9%{?dist}
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -20,6 +34,8 @@ Source0:        bestman2.tar.gz
 Source1:        bestman2.sh
 Source2:        bestman2.init
 Source3:        bestman.logrotate
+Source4:        bestman2.rc
+Source5:        bestman2.sysconfig
 Patch0:		bestman.server.patch
 
 
@@ -82,14 +98,14 @@ BeStMan SRM server
 %package server-libs
 Summary: BeStMan Server SRM Java libraries
 Group: System Environment/Libraries
-Requires:  java
+Requires: java-1.6.0-sun-compat
 %description server-libs
 The BeStMan Server SRM Java libraries
 
 %package server-dep-libs
 Summary: BeStMan Server SRM Java libraries
 Group: System Environment/Libraries
-Requires:  java
+Requires:  java-1.6.0-sun-compat
 %description server-dep-libs
 The BeStMan Server SRM Java libraries
 This includes all the dependencies and should be 
@@ -107,14 +123,14 @@ The srm-* client tools
 %package client-libs
 Summary: Libraries needed for Bestman LBNL SRM client
 Group: System Environment/Libraries
-Requires:  java
+Requires:  java-1.6.0-sun-compat
 %description client-libs
 These are the libraries needed solely for the client 
 
 %package tester
 Summary: srmtester application for verifying a SRM endpoint
 Group: Applications/Internet
-Requires:  java
+Requires:  java-1.6.0-sun-compat
 Requires: %{name}-tester-libs = %{version}-%{release}
 Requires: %{name}-common-libs = %{version}-%{release}
 %description tester
@@ -126,7 +142,7 @@ of the SRM protocol are functioning on an SRM endpoint.
 %package tester-libs
 Summary: Libraries needed for Bestman LBNL SRM client
 Group: System Environment/Libraries
-Requires:  java
+Requires:  java-1.6.0-sun-compat
 %description tester-libs
 These are the libraries needed solely for the srmtester application 
 
@@ -154,7 +170,6 @@ popd
 ./build.configure --with-bestman-url=%{bestman_url} --with-bestman2-version=%{version} --with-revision=%{revision} --with-java-home=/usr/java/latest --enable-cached-src=yes --enable-cached-pkg=yes
 
 make
-
 pushd bestman2
 
 SRM_HOME=%{install_root}
@@ -184,9 +199,9 @@ popd
 #Fix paths in bestman2.rc
 JAVADIR=`echo %{_javadir} |  sed 's/\//\\\\\//g'`
 sed -i "s/SRM_HOME=.*/SRM_HOME=\/etc\/bestman2/" conf/bestman2.rc
-sed -i "s/SRM_OWNER=.*/SRM_OWNER=bestman/" conf/bestman2.rc
+sed -i "s/SRM_OWNER=.*/SRMOWNER=bestman/" conf/bestman2.rc
 sed -i "s/GridMapFileName=.*/GridMapFileName=\/etc\/bestman2\/conf\/grid-mapfile.empty/" conf/bestman2.rc
-sed -i "s/BESTMAN_SYSCONF=.*/BESTMAN_SYSCONF=\/etc\/bestman2\/conf\/bestman2.rc/" conf/bestman2.rc
+sed -i "s/BESTMAN_SYSCONF=.*/BESTMAN_SYSCONF=\/etc\/sysconfig\/bestman2/" conf/bestman2.rc
 sed -i "s/BESTMAN_LOG=.*/BESTMAN_LOG=\/var\/log\/bestman2\/bestman2.log/" conf/bestman2.rc
 sed -i "s/BESTMAN_LIB=.*/BESTMAN_LIB=$JAVADIR\/bestman2/" conf/bestman2.rc
 sed -i "s/EventLogLocation=.*/EventLogLocation=\/var\/log\/bestman2/" conf/bestman2.rc
@@ -196,9 +211,12 @@ sed -i "s/BESTMAN_GUMSKEYPATH=.*/BESTMAN_GUMSKEYPATH=\/etc\/grid-security\/http\
 sed -i "s/CertFileName=.*/CertFileName=\/etc\/grid-security\/http\/httpcert.pem/" conf/bestman2.rc
 sed -i "s/KeyFileName=.*/KeyFileName=\/etc\/grid-security\/http\/httpkey.pem/" conf/bestman2.rc
 sed -i "s/pluginLib=.*/pluginLib=$JAVADIR\/bestman2\/plugin\//" conf/bestman2.rc
-
+sed -i "s/2\.2\.2\.1\.2/2.2.2.1.3/" version
 #Fix paths in binaries.  Wish I could do this in configure...
 sed -i "s/SRM_HOME=\/.*/SRM_HOME=\/etc\/bestman2/" bin/*
+sed -i "s/BESTMAN_SYSCONF=.*/BESTMAN_SYSCONF=\/etc\/sysconfig\/bestman2/" bin/*
+sed -i "s/BESTMAN_SYSCONF=.*/BESTMAN_SYSCONF=\/etc\/sysconfig\/bestman2/" sbin/*
+sed -i "s/\${BESTMAN_SYSCONF}/\/etc\/bestman2\/conf\/bestman2.rc/" sbin/bestman.server
 
 popd
 
@@ -232,6 +250,8 @@ mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig
 install -m 0755 %{SOURCE1} $RPM_BUILD_ROOT%{_sbindir}/%{name}
 install -m 0755 %{SOURCE2} $RPM_BUILD_ROOT%{_initrddir}/%{name}
 install -m 0644 %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/%{name}
+install -m 0644 %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/conf/bestman2.rc
+install -m 0644 %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/%{name}
 
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/grid-security/vomsdir
 touch $RPM_BUILD_ROOT%{_sysconfdir}/grid-security/vomsdir/vdt-empty.pem
@@ -295,6 +315,7 @@ fi
 %config(noreplace) %{install_root}/conf/srmclient.conf
 %config(noreplace) %{install_root}/conf/srmclient.conf.sample
 %config(noreplace) %{install_root}/conf/bestman2.rc
+%config(noreplace) %{_sysconfdir}/sysconfig/bestman2
 %{_bindir}/srm-copy
 %{_bindir}/srm-copy-status
 %{_bindir}/srm-extendfilelifetime
@@ -343,6 +364,7 @@ fi
 %config(noreplace) %{install_root}/conf/bestman-diag-msg.conf
 %config(noreplace) %{install_root}/conf/bestman-diag.conf.sample
 %config(noreplace) %{install_root}/conf/bestman2.rc
+%config(noreplace) %{_sysconfdir}/sysconfig/bestman2
 %{_initrddir}/%{name}
 %{_sbindir}/%{name}
 %config(noreplace) %{_sysconfdir}/logrotate.d/%{name}
@@ -410,6 +432,8 @@ fi
 %{_bindir}/srm-tester
 %config(noreplace) %{install_root}/conf/srmtester.conf.sample
 %config(noreplace) %{install_root}/conf/srmtester.conf
+%config(noreplace) %{install_root}/conf/bestman2.rc
+%config(noreplace) %{_sysconfdir}/sysconfig/bestman2
 
 
 %files tester-libs
@@ -420,6 +444,29 @@ fi
 
 
 %changelog
+* Mon Nov 28 2011 Doug Strain <dstrain@fnal.gov> - 2.1.3-9
+- Fixing chkconfig to be off by default
+
+* Tue Nov 22 2011 Doug Strain <dstrain@fnal.gov> - 2.1.3-8
+- Splitting sysconfig and configuration of bestman2.rc
+
+* Tue Nov 22 2011 Doug Strain <dstrain@fnal.gov> - 2.1.3-6
+- Added changes to fix SOFTWARE-384
+- Changed SRM_OWNER to SRMOWNER
+- Fixed version string in version file
+- Disabled default start up
+
+* Tue Nov 15 2011 Doug Strain <dstrain@fnal.gov> - 2.1.3-5
+- Added post os install expression to disable redhat jar repacking
+- This fixes the build date issue.
+
+* Tue Nov 15 2011 Doug Strain <dstrain@fnal.gov> - 2.1.3-3
+- Added bestman2.rc for srm-tester to function correctly.
+
+* Fri Oct 28 2011 Doug Strain <dstrain@fnal.gov> - 2.1.3-2
+- Updated for Bestman 2.1.3
+- Fixed requires to java sun compat to pull sun jdk not openjdk
+
 * Fri Aug 26 2011 Doug Strain <dstrain@fnal.gov> - 2.1.2-1
 - Updated for Bestman 2.1.2
 

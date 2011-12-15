@@ -1,7 +1,7 @@
 
 Name: yum-remove-osg
 Version: 1.0
-Release: 0.1%{?dist}
+Release: 0.2%{?dist}
 Summary: Yum plugin to assist in removing OSG packages
 
 Group: System Environment/Base
@@ -37,6 +37,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/yum/pluginconf.d/remove-osg.conf
 
 %changelog
+* Mon Nov 28 2011 Neha Sharma <neha@fnal.gov> - 1.0-0.2
+- Commented code that removed packages from non-OSG repos
+
 * Tue Sep 20 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.0-0.1
 - Initial attempt at an OSG removal plugin.
 

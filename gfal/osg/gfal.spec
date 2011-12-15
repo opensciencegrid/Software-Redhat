@@ -1,6 +1,6 @@
 Name:		gfal
 Version:	1.11.14
-Release:	7
+Release:	8
 Summary:	Grid File Access Library for accessing files in multiple grid protocols
 
 Group:		Development/Languages/C and C++
@@ -51,12 +51,16 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)
-%{_libdir}/*
-%{_mandir}/*
+%{_libdir}/lib*
+%{_libdir}/python2.4/site-packages/*
+%{_mandir}/man3/*
 %{_docdir}/*
 %{_includedir}/*
 
 %changelog
+* Wed Nov 30 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.11.14-8
+- Remove unnecessary ownership of system directories.
+
 * Fri Oct 28 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.11.14-7
 - rebuilt
 

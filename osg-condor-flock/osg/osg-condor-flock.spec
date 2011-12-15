@@ -1,6 +1,6 @@
 Name:           osg-condor-flock
 Version:        1.0
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        Condor configuration to flock to OSG Submitters
 
 Group:          applications/grid
@@ -49,6 +49,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Nov 09 2011 Derek Weitzel <dweitzel@cse.unl.edu> - 1.0-7
+Fixed typo in 99_osg_flock.conf
+
 * Wed Sep 28 2011 Derek Weitzel <dweitzel@cse.unl.edu> - 1.0-6
 - Added gratia configuration into the condor configuration
 

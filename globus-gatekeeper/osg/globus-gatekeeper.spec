@@ -13,7 +13,7 @@
 Name:		globus-gatekeeper
 %global _name %(tr - _ <<< %{name})
 Version:	8.1
-Release:	3%{?dist}
+Release:	8%{?dist}
 Summary:	Globus Toolkit - Globus Gatekeeper
 
 Group:		Applications/Internet
@@ -23,7 +23,11 @@ Source:         %{_name}-%{version}.tar.gz
 
 # OSG customizations
 Source1:        globus-gatekeeper.sysconfig
+Source2:        globus-gatekeeper-logrotate
 Patch0:         child_signals.patch
+Patch1:         increase_backlog.patch
+Patch2:         chkconfig-off.patch
+Patch3:         init.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Requires:	globus-common >= 13.4
@@ -53,6 +57,9 @@ Globus Gatekeeper Setup
 %setup -q -n %{_name}-%{version}
 
 %patch0 -p0
+%patch1 -p0
+%patch2 -p0
+%patch3 -p0
 # Note append here
 cat %{SOURCE1} >> config/globus-gatekeeper.in
 
@@ -94,6 +101,10 @@ cat $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_pgm.filelist \
 mkdir -p $RPM_BUILD_ROOT/etc/grid-services
 mkdir -p $RPM_BUILD_ROOT/etc/grid-services/available
 
+# Add log rotation
+mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d
+cp %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/globus-gatekeeper
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -120,8 +131,27 @@ fi
 %dir /etc/grid-services
 %dir /etc/grid-services/available
 %config(noreplace) /etc/sysconfig/globus-gatekeeper
+%config(noreplace) %{_sysconfdir}/logrotate.d/globus-gatekeeper
 
 %changelog
+* Mon Dec 12 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 8.1-8
+- Set LCMAPS_MOD_HOME in /etc/sysconfig/globus-gatekeeper to "lcmaps", the
+  new supported value as of lcmaps-1.4.28-19 which came out on November 16.
+  Leave LCAS_MOD_HOME alone for now, but LCAS will be removed in a future
+  release.
+
+* Wed Dec 9 2011 Alain Roy <roy@cs.wisc.edu> - 8.1-7
+- Improved init script to provide better error messages.
+
+* Wed Dec 7 2011 Alain Roy <roy@cs.wisc.edu> - 8.1-6
+- Added log rotation. 
+
+* Mon Nov 14 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 8.1-5
+- Default globus-gatekeeper service to off.
+
+* Thu Nov 10 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 8.1-4
+- Increase the backlog for the listening socket.  Done because the small default led to failures on the testbed setup.
+
 * Thu Oct 27 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 8.1-3
 - Merged upstream 8.1-2
     * Fri Oct 21 2011 Joseph Bester <bester@mcs.anl.gov> - 8.1-2

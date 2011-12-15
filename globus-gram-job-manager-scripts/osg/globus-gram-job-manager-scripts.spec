@@ -9,7 +9,7 @@
 Name:		globus-gram-job-manager-scripts
 %global _name %(tr - _ <<< %{name})
 Version:	4.0
-Release:	5%{?dist}
+Release:	7%{?dist}
 Summary:	Globus Toolkit - GRAM Job ManagerScripts
 
 Group:		Applications/Internet
@@ -22,6 +22,7 @@ Source:		http://www.globus.org/ftppub/gt5/5.1/5.1.2/packages/src/%{_name}-%{vers
 Patch0:         gratia.patch
 Patch1:         osg-environment.patch
 Patch2:         osg-path.patch
+Patch3:         GRAM-278.diff
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -59,6 +60,7 @@ GRAM Job ManagerScripts Documentation Files
 %patch0 -p0
 %patch1 -p0
 %patch2 -p0
+%patch3 -p0
 
 %build
 # Remove files that should be replaced during bootstrap
@@ -106,6 +108,12 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_docdir}/%{name}-%{version}/perl/Globus/GRAM
 
 %changelog
+* Tue Nov 15 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 4.0-7
+- Switch to fix for GRAM-278 from Globus.
+
+* Mon Nov 14 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 4.0-6
+- Properly configure the GASS cache from the job manager.
+
 * Thu Oct 27 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 4.0-5
 - Merged upstream 4.0-3:
     * Tue Oct 11 2011 Joseph Bester <bester@mcs.anl.gov> - 4.0-3

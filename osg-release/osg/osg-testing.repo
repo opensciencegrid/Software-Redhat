@@ -7,6 +7,7 @@ priority=98
 enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-OSG
+consider_as_osg=yes
 
 [osg-testing-source]
 name=OSG Software for Enterprise Linux 5 - Testing - $basearch - Source

@@ -13,7 +13,7 @@
 Name:		globus-gridftp-server
 %global _name %(tr - _ <<< %{name})
 Version:	6.2
-Release:	3%{?dist}
+Release:	10%{?dist}
 Summary:	Globus Toolkit - Globus GridFTP Server
 
 Group:		System Environment/Libraries
@@ -28,6 +28,7 @@ URL:		http://www.globus.org/
 Source0:	%{_name}-%{version}.tar.gz
 Source1:	globus-gridftp-server.sysconfig
 Source2:	globus-gridftp-server.i386.sysconfig
+Source3:	globus-gridftp-server.logrotate
 Patch0:		osg-gridftp.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -134,6 +135,9 @@ install -m 0755 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/%{name}
 install -m 0755 %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/%{name}
 %endif
 
+mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d
+install -m 0644 %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/%{name}.logrotate
+
 # Remove libtool archives (.la files)
 find $RPM_BUILD_ROOT%{_libdir} -name 'lib*.la' -exec rm -v '{}' \;
 sed '/lib.*\.la$/d' -i $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_dev.filelist
@@ -184,6 +188,7 @@ fi
 
 %files -f package-progs.filelist progs
 %defattr(-,root,root,-)
+%config(noreplace) %{_sysconfdir}/logrotate.d/%{name}.logrotate
 %config(noreplace) %{_sysconfdir}/sysconfig/%{name}
 %config(noreplace) %{_sysconfdir}/gridftp.conf
 %config(noreplace) %{_sysconfdir}/gridftp.gfork
@@ -193,6 +198,20 @@ fi
 %defattr(-,root,root,-)
 
 %changelog
+* Fri Nov 18 2011 Doug Strain <dstrain@fnal.gov> - 6.2-10
+- Change sysconfig to add full file path
+
+* Mon Nov 14 2011 Doug Strain <dstrain@fnal.gov> - 6.2-9
+- Change sysconfig to source /var/lib/osg/globus-firewall
+
+* Thu Nov 03 2011 Doug Strain <dstrain@fnal.gov> - 6.2-8
+- Added logrotate for issue SOFTWARE-310
+- Also fixed sysconfig issue for SOFTWARE-357
+
+* Thu Nov 03 2011 Doug Strain <dstrain@fnal.gov> - 6.2-5
+- Changed sysconfig to exclude sourcing files left behind by
+- emacs, rpm, vi, etc
+
 * Thu Oct 27 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 6.2-3
 - Merged upstream 6.2-2:
 

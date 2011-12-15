@@ -1,13 +1,13 @@
 #!/bin/sh
 #
-# chkconfig: 345 99 10
+# chkconfig: - 99 10
 # description: Bestman server
 ### BEGIN INIT INFO
 # Provides: bestman
-# Required-Start: $network
+# Required-Start: 
 # Required-Stop: 
-# Default-Start: 3 4 5
-# Default-Stop: 1 2 6
+# Default-Start:
+# Default-Stop: 
 # Description: Bestman SRM server for Grid Storage Elements
 # Short-Description: Bestman server
 ### END INIT INFO
@@ -15,8 +15,8 @@
 # Source function library.
 . /etc/rc.d/init.d/functions
 
-if [ -e /etc/bestman2/conf/bestman2.rc ] ; then
-    . /etc/bestman2/conf/bestman2.rc
+if [ -e /etc/sysconfig/bestman2 ] ; then
+    . /etc/sysconfig/bestman2
 fi
 
 if [ "x$BESTMAN_LOG" = "x" ]; then
@@ -27,16 +27,16 @@ if [ "x$BESTMAN_PID" = "x" ]; then
     BESTMAN_PID=/var/run/bestman2.pid
 fi
 
-if [ "x$SRMOWNER" = "x" ]; then
-    SRMOWNER=bestman
+if [ "x$SRM_OWNER" = "x" ]; then
+    SRM_OWNER=bestman
 fi
 
 start() {
         ulimit -n 65536
         echo -n "Starting bestman2: "
         touch $BESTMAN_PID
-        chown $SRMOWNER: $BESTMAN_PID
-        daemon --user $SRMOWNER --pidfile $BESTMAN_PID /usr/sbin/bestman2 $BESTMAN_OPTIONS 
+        chown $SRM_OWNER: $BESTMAN_PID
+        daemon --user $SRM_OWNER --pidfile $BESTMAN_PID /usr/sbin/bestman2 $BESTMAN_OPTIONS 
         RETVAL=$?
         chown root: $BESTMAN_PID
         echo

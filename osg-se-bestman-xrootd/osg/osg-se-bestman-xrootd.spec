@@ -1,13 +1,15 @@
 Name:           osg-se-bestman-xrootd
 Summary:        OSG BeStMan XRootd Storage Element package
 Version:        3.0.0
-Release:        3
+Release:        4
 License:        GPL
 Group:          System Environment/Daemons
 URL:            https://twiki.grid.iu.edu/twiki/bin/view/Storage/WebHome
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 # from VDT
+Requires: osg-version
+Requires: osg-system-profiler
 Requires: java-1.6.0-sun-compat
 Requires: bestman2-server
 Requires: bestman2-client
@@ -46,6 +48,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Nov 14 2011 Alain Roy <roy@cs.wisc.edu> - 3.0.0-4
+- Added dependencies on osg-version and osg-system-profiler
+
 * Wed Sep 28 2011 Doug Strain <dstrain@fnal.gov> - 3.0.0-3
 - This meta package should not be noarch due to lib dependencies
 

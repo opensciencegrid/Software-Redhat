@@ -1,0 +1,47 @@
+--- globus_gram_job_manager_seg.c.orig	2011-11-13 20:08:59.000000000 -0600
++++ globus_gram_job_manager_seg.c	2011-11-13 20:34:55.000000000 -0600
+@@ -955,6 +955,8 @@
+     int                                 rc;
+     time_t                              last_poll_time;
+     time_t                              poll_time;
++    double                              poll_length;
++    globus_reltime_t                    delay;
+     globus_gram_job_manager_t *         manager = user_arg;
+     globus_scheduler_event_t *          event;
+     globus_fifo_t                       events;
+@@ -1007,6 +1009,17 @@
+             continue;
+         }
+ 
++        // For some job states, there is no need to poll the files - 
++        // the job is done.
++        if (((ref->job_state == GLOBUS_GRAM_PROTOCOL_JOB_STATE_DONE) || 
++             (ref->job_state == GLOBUS_GRAM_PROTOCOL_JOB_STATE_FAILED)) &&
++            ((ref->request == NULL) ||
++             (ref->request->jobmanager_state == GLOBUS_GRAM_JOB_MANAGER_STATE_TWO_PHASE_END) ||
++             (ref->request->jobmanager_state == GLOBUS_GRAM_JOB_MANAGER_STATE_FAILED_TWO_PHASE)))
++        {
++            continue;
++        }
++
+         path = globus_common_create_string("%s/condor.%"PRIu64".%"PRIu64,
+                 manager->config->job_state_file_dir,
+                 uniq1, uniq2);
+@@ -1140,6 +1153,17 @@
+         free(path);
+         path = NULL;
+     }
++
++    // Adjust poll interval if this function took awhile.
++    poll_length = difftime(time(NULL), poll_time);
++    if (poll_length > 0 && (poll_length > 1.0)) {
++        poll_length = poll_length * 5.0;
++    } else {
++        poll_length = 5.0;
++    }
++    GlobusTimeReltimeSet(delay, poll_length, 0);
++    globus_callback_adjust_period(manager->fork_callback_handle, &delay);
++
+     GlobusGramJobManagerUnlock(manager);
+ 
+     while (!globus_fifo_empty(&events))

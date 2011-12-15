@@ -1,12 +1,13 @@
 Summary: User identity switching tool based on grid credentials
 Name: glexec
 Version: 0.8.10
-Release: 7%{?dist}
+Release: 8%{?dist}
 License: ASL 2.0
 Group: Applications/System
 URL: http://www.nikhef.nl/pub/projects/grid/gridwiki/index.php/Site_Access_Control
 Source0: http://software.nikhef.nl/security/%{name}/%{name}-%{version}.tar.gz
 Source1: glexec.conf
+Source2: glexec.logrotate
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildRequires: lcmaps-interface
 Requires: logrotate
@@ -41,6 +42,8 @@ make DESTDIR=$RPM_BUILD_ROOT install
 
 # OSG default config
 cp %{SOURCE1} $RPM_BUILD_ROOT/%{_sysconfdir}/glexec.conf
+# logrotate
+cp %{SOURCE2} $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d/glexec
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -55,7 +58,7 @@ exit 0
 %files
 %defattr(-,root,root,-)
 %doc AUTHORS LICENSE 
-%config(noreplace) /etc/logrotate.d/glexec
+/etc/logrotate.d/glexec
 %attr(640,root,glexec) %config(noreplace) /etc/glexec.conf
 %config(noreplace) /etc/lcmaps/lcmaps-glexec.db
 %{_datadir}/man/man5/glexec.conf.5*
@@ -63,6 +66,9 @@ exit 0
 %attr(6755, root, root) /usr/sbin/glexec
 
 %changelog
+* Wed Nov 16 2011 Dave Dykstra <dwd@fnal.gov> - 0.8.10-8
+- Added a logrotate entry for /var/log/glexec.log
+
 * Fri Sep 26 2011 Dave Dykstra <dwd@fnal.gov> - 0.8.10-7
 - Add create_target_proxy=no in glexec.conf.  Without that line, a
   temporary file is left behind in /tmp for every invocation of glexec.

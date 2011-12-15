@@ -6,7 +6,7 @@
 
 Name:		%{hadoop_name}-%{apache_branch}-osg
 Version:	%{cloudera_version}
-Release:	8
+Release:	10
 Summary:	OSG configurations and scripts for Hadoop
 
 Group:		System Environment/Daemons
@@ -81,9 +81,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %pre
 getent group hadoop >/dev/null || groupadd -r hadoop
-getent passwd hadoop >/dev/null || \
-       useradd -r -g hadoop -c "HDFS runtime user" \
-       -s /bin/bash hadoop
+#getent passwd hadoop >/dev/null || \
+#       useradd -r -g hadoop -c "HDFS runtime user" \
+#       -s /bin/bash hadoop
 exit 0
 
 %post
@@ -110,10 +110,16 @@ fi
 #%{config_hadoop}/core-site.xml.in
 %config(noreplace) %{config_hadoop}/hadoop-env.sh
 %config(noreplace) %{_sysconfdir}/sysconfig/%{hadoop_name}
-%attr(0755,hadoop,hadoop) %{_var}/run/hadoop
-%attr(0755,hadoop,hadoop) %{_var}/log/hadoop
+%attr(0755,hdfs,hadoop) %{_var}/run/hadoop
+#%attr(0755,hadoop,hadoop) %{_var}/log/hadoop
 
 %changelog
+* Wed Dec 7 2011 Doug Strain <dstrain@fnal.gov> 0.20.2+737-10
+- Set default heap size back to 2048
+
+* Mon Nov 28 2011 Jeff Dost <jdost@ucsd.edu> 0.20.2+737-9
+- Change to correctly run hadoop as user hdfs.
+
 * Mon Jul 11 2011 Jeff Dost <jdost@ucsd.edu> 0.20.2+737-8
 - Fix firstboot script typos when setting hadoop-metrics.properties.
 - Only uncomment correct ganglia context in hadoop-metrics.properties.

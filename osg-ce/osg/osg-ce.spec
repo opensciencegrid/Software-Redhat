@@ -1,33 +1,33 @@
 Name:      osg-ce
 Summary:   OSG Compute Element 
 Version:   3.0.0
-Release:   18
+Release:   24
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
 
 BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
+Requires: osg-version
 Requires: grid-certificates
 Requires: java-1.6.0-sun-compat
 Requires: globus-gridftp-server-progs 
 Requires: osg-client
-Requires: syslog-ng
 Requires: lfc-client
 Requires: glite-ce-monitor
 Requires: osg-info-services
-#Requires: Job-Environment
 Requires: osg-vo-map
 Requires: vo-client
-#Requires: cemon-server
-#Requires: osg-site-verify
 Requires: osg-site-web-page
+Requires: globus-gatekeeper
+Requires: globus-gram-job-manager
 Requires: globus-gram-job-manager-fork
 Requires: globus-gram-job-manager-fork-setup-poll
 Requires: gip
 Requires: osg-info-services
 Requires: gums-client
 Requires: edg-mkgridmap
+Requires: gratia-probe-gridftp-transfer
 Requires: osg-site-verify
 Requires: osg-system-profiler
 Requires: osg-configure
@@ -38,6 +38,10 @@ Requires: osg-configure-gratia
 Requires: osg-configure-managedfork
 Requires: osg-configure-misc
 Requires: osg-configure-squid
+Requires(post): globus-gram-job-manager-scripts >= 4
+
+# The following is required for the RSV Gratia probes to work.
+Requires: perl(Date::Manip)
 
 # For the CE authz
 %ifarch %{ix86}
@@ -45,6 +49,11 @@ Requires: liblcas_lcmaps_gt4_mapping.so.0
 %else
 Requires: liblcas_lcmaps_gt4_mapping.so.0()(64bit)
 %endif
+
+%post
+# We always want the default jobmanager to be fork (OSG convention), so we
+# force it on both install and upgrade. 
+/usr/sbin/globus-gatekeeper-admin -e jobmanager-fork-poll -n jobmanager > /dev/null 2>&1 || :
 
 %description
 %{summary}
@@ -108,6 +117,25 @@ rm -rf $RPM_BUILD_ROOT
 %files sge
 
 %changelog
+* Wed Nov 16 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 3.0.0-24
+- Added dependency on perl(Date::Manip), for the Gratia RSV probes.
+
+* Mon Nov 14 2011 Alain Roy <roy@cs.wisc.edu> - 3.0.0-23
+- Added dependency on osg-version
+
+* Fri Nov 11 2011 Alain Roy <roy@cs.wisc.edu> - 3.0.0-22
+- Added dependencies so the Globus gatekeeper and GRAM job manager are always installed. 
+
+* Mon Nov 7 2011 Alain Roy <roy@cs.wisc.edu> - 3.0.0-21
+- Added dependency on gratia-probe-gridftp-transfer since we ship the GridFTP
+  server. 
+
+* Thu Nov 3 2011 Alain Roy <roy@cs.wisc.edu> - 3.0.0-20
+- Removed dependency on syslog-ng, which shouldn't have been there. 
+
+* Tue Oct 25 2011 Alain Roy <roy@cs.wisc.edu> - 3.0.0-19
+- Add post install scriplet to fork "jobmanager" to be jobmanager-fork-poll
+
 * Tue Oct 11 2011 Alain Roy <roy@cs.wisc.edu> - 3.0.0-18
 - Fixed dependencies for PBS, LSF, and SGE
 

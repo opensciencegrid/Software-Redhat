@@ -1,7 +1,7 @@
 #!/bin/sh
 
 if [ "x$BESTMAN_SYSCONF" = "x" ]; then
-    BESTMAN_SYSCONF=/etc/bestman2/conf/bestman2.rc
+    BESTMAN_SYSCONF=/etc/sysconfig/bestman2
     export BESTMAN_SYSCONF
 fi
 

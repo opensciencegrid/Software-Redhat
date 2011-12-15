@@ -1,6 +1,6 @@
 
 Name:      rsv-metrics
-Version:   3.6.2
+Version:   3.6.6
 Release:   1%{?dist}
 Summary:   RSV metrics
 
@@ -92,6 +92,20 @@ rm -rf $RPM_BUILD_ROOT
 %attr(-,rsv,rsv) %{_localstatedir}/log/rsv/probes
 
 %changelog
+* Tue Nov 22 2011 Matyas Selmeci <matyas@cs.wisc.edu> 3.6.6-1
+- osg-version probe interval changed from daily to hourly
+
+* Thu Nov 17 2011 Matyas Selmeci <matyas@cs.wisc.edu> 3.6.5-1
+- Updated osg-version probe to use the osg-version package
+
+* Wed Nov 16 2011 Matyas Selmeci <matyas@cs.wisc.edu> 3.6.4-1
+- Gratia metrics fixes
+
+* Thu Nov 03 2011 Matyas Selmeci <matyas@cs.wisc.edu> 3.6.3-1
+- ReSS metrics updated to brief format.
+- SRM metrics updated to brief format.
+- CA dir lookup more robust.
+
 * Wed Oct 26 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.6.2-1
 - Fixed a problem in probe default arguments.
 

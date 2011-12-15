@@ -1,0 +1,11 @@
+--- globus_gram_job_manager_request.c.orig2	2011-11-09 17:24:01.000000000 -0600
++++ globus_gram_job_manager_request.c	2011-11-09 17:26:23.000000000 -0600
+@@ -3779,7 +3779,7 @@
+ 
+     out_file = globus_common_create_string(
+                 "%s/.globus/job/%s/%s",
+-                request->config->home,
++                request->config->job_dir_home,
+                 request->config->short_hostname,
+                 request->uniq_id);
+     if (out_file == NULL)

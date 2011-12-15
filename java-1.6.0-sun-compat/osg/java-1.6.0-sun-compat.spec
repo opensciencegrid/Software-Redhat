@@ -6,7 +6,7 @@
 
 %define name            java-%{javaver}-%{origin}-compat
 %define version         %{javaver}%{?buildver:.%{buildver}}
-%define release         4.sl5.jpp
+%define release         5.osg.jpp
 %define cname           java-%{javaver}-%{origin}
 
 %define toplevel_dir    jdk%{javaver}%{?buildver:_%{buildver}}
@@ -52,7 +52,7 @@
 Name:           %{name}
 Version:        %{version}
 Release:        %{release}
-Epoch:          0
+Epoch:          1
 Summary:        JPackage Java compatibility package for Sun's JDK
 License:        JPackage License
 Group:          Development/Interpreters
@@ -622,6 +622,9 @@ update-alternatives --remove java_sdk_%{javaver} %{_jvmdir}/%{sdklnk}
 
 
 %changelog
+* Tue Nov 01 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1:1.6.0.29-5.osg.jpp
+- epoch bump to keep up with openjdk
+
 * Mon May 16 2011 Troy Dawson <dawson@fnal.gov> - 0:1.6.0.24-4.sl5.jpp
 - Added some prereq's so that jdk would install cleaner.
 

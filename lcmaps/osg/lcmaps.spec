@@ -1,7 +1,7 @@
 Summary: Grid (X.509) and VOMS credentials to local account mapping service
 Name: lcmaps
 Version: 1.4.28
-Release: 17%{?dist}
+Release: 23%{?dist}
 Vendor: Nikhef
 License: ASL 2.0
 Group: System Environment/Libraries
@@ -12,6 +12,9 @@ Patch0: makefile_r15293.patch
 Patch1: fill_x509.patch
 #source of patch2: wget --no-check-certificate -Ogeneric_attributes_vomsdata.patch "https://sikkel.nikhef.nl/cgi-bin/viewvc.cgi/mwsec/trunk/lcmaps/src/grid_credential_handling/gsi_handling/lcmaps_voms_attributes.c?view=patch&r1=11815&r2=15240&pathrev=15240"
 Patch2: generic_attributes_vomsdata.patch
+#Patch 3 comes from the diff of all real source files in 1.4.31 compared to
+# 1.4.33
+Patch3: relative_path.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 BuildRequires: globus-core%{?_isa}
@@ -96,10 +99,11 @@ This package contains the development libraries.
 %patch0 -p0
 %patch1 -p0
 %patch2 -p2
+%patch3 -p1
 
 %build
 ./bootstrap
-%configure --disable-static --disable-rpath
+%configure --disable-static --disable-rpath --enable-osg
 make %{?_smp_mflags}
 
 %install
@@ -107,6 +111,12 @@ rm -rf $RPM_BUILD_ROOT
 
 make DESTDIR=$RPM_BUILD_ROOT install
 find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
+mv $RPM_BUILD_ROOT/%{_libdir}/modules $RPM_BUILD_ROOT/%{_libdir}/lcmaps
+#Note: this file is %ghosted in the %files list, so it is not installed,
+#  but rpmbuild requires something to be there.  There's also %ghost on
+#  the example module files so this symlink takes care of them appearing
+#  to be available too.
+ln -s lcmaps $RPM_BUILD_ROOT/%{_libdir}/modules
 
 # clean up installed files
 rm -rf ${RPM_BUILD_ROOT}/usr/share/doc
@@ -118,13 +128,26 @@ cp %{SOURCE1} $RPM_BUILD_ROOT/%{_sysconfdir}
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%post -p /sbin/ldconfig
+%post
+/sbin/ldconfig
+if [ ! -L %{_libdir}/modules ]; then
+    if [ -d %{_libdir}/modules ]; then
+	# remove old copy of example module before moving stuff to lcmaps
+	#  because the new versions are already installed there
+	rm -f %{_libdir}/modules/*lcmaps_plugin_example.*
+	# move anything left in modules to lcmaps directory
+	mv %{_libdir}/modules/* %{_libdir}/lcmaps >/dev/null 2>&1 || true
+	rmdir %{_libdir}/modules
+    fi
+    # create the modules symlink for backward compatibility
+    ln -s lcmaps %{_libdir}/modules
+fi
 
 %postun -p /sbin/ldconfig
 
 %files
 %defattr(-,root,root,-)
-%config(noreplace) %{_sysconfdir}/lcmaps.db
+%config(noreplace) %verify(not md5 size mtime) %{_sysconfdir}/lcmaps.db
 %{_libdir}/lcmaps.mod
 %{_libdir}/lcmaps_gss_assist_gridmap.mod
 %{_libdir}/lcmaps_return_poolindex.mod
@@ -139,9 +162,18 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/liblcmaps_return_poolindex.so.0.0.0
 %{_libdir}/liblcmaps_verify_account_from_pem.so.0
 %{_libdir}/liblcmaps_verify_account_from_pem.so.0.0.0
-%{_libdir}/modules/lcmaps_plugin_example.mod
-%{_libdir}/modules/liblcmaps_plugin_example.so.0
-%{_libdir}/modules/liblcmaps_plugin_example.so.0.0.0
+%{_libdir}/lcmaps/lcmaps_plugin_example.mod
+%{_libdir}/lcmaps/liblcmaps_plugin_example.so.0
+%{_libdir}/lcmaps/liblcmaps_plugin_example.so.0.0.0
+%ghost %{_libdir}/modules
+# in order to remove these eventually, can probably add a %preun that
+#   removes the modules symlink first so the uninstall will not remove the
+#   real files in the lcmaps directory.  Or maybe if the symlink is removed
+#   at the same time it will just work if that goes first. 
+%ghost %{_libdir}/modules/lcmaps_plugin_example.mod
+%ghost %{_libdir}/modules/liblcmaps_plugin_example.so.0
+%ghost %{_libdir}/modules/liblcmaps_plugin_example.so.0.0.0
+# this should move into -devel package, and probably liblcmaps.so too
 %{_libdir}/liblcmaps_return_account_from_pem.so
 
 %doc AUTHORS INSTALL doc/INSTALL_WITH_WORKSPACE_SERVICE LICENSE
@@ -158,9 +190,46 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/liblcmaps_gss_assist_gridmap.so
 %{_libdir}/liblcmaps_return_poolindex.so
 %{_libdir}/liblcmaps_verify_account_from_pem.so
-%{_libdir}/modules/*.so
+%{_libdir}/lcmaps/*.so
+%ghost %{_libdir}/modules/*.so
 
 %changelog
+* Fri Dec 02 2011 Dave Dykstra <dwd@fnal.gov> - 1.4.28-23
+- One more file was missing, from the lcmaps-interface package.  It needed
+    to have a %ghost in the modules directory too.
+
+* Fri Dec 02 2011 Dave Dykstra <dwd@fnal.gov> - 1.4.28-22
+- Fix unforeseen side effect of last fix, which made the old copy of
+    the example plugin be kept instead of the new one
+
+* Fri Dec 02 2011 Dave Dykstra <dwd@fnal.gov> - 1.4.28-21
+- Add the example lcmaps plugin module files as %ghost so rpm won't think
+    it has to delete them from a previous install.
+
+* Thu Dec 01 2011 Dave Dykstra <dwd@fnal.gov> - 1.4.28-20
+- Eliminate disturbing-looking log message:
+    lcmaps_get_attributes Error: Could not allocate more memory
+  which always appeared now with --enable-osg.  Changed it in
+  the generic_attributes_vomsdata.patch, which actually probably
+  isn't even needed anymore with --enable-osg.
+
+* Wed Nov 16 2011 Dave Dykstra <dwd@fnal.gov> - 1.4.28-19
+- Moved libdir/modules to libdir/lcmaps and create a symlink at
+  libdir/modules for backward compatibility
+
+* Wed Nov 16 2011 Dave Dykstra <dwd@fnal.gov> - 1.4.28-18
+- Added relative_path.patch based on all the source differences between
+  lcmaps-1.4.31 and lcmaps-1.4.33.  This patch allows the "path" directive
+  in lcmaps.db to be a relative path, so we don't have to hardcode it to
+  /usr/lib64 and break 32-bit builds.  Would have preferred just an
+  upgrade but people were nervous about being too close to the
+  official release, plus it seemed less time consuming at the moment
+  because there are a lot of changes to lcmaps.spec in the newer 
+  versions.  
+  http://jira.opensciencegrid.org/browse/SOFTWARE-354
+- Re-disabled VOMS verification by adding configure option --enable-osg.
+  http://jira.opensciencegrid.org/browse/SOFTWARE-334
+
 * Fri Oct 28 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.4.28-17
 - rebuilt
 

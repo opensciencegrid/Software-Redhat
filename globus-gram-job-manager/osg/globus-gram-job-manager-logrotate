@@ -1,0 +1,13 @@
+compress
+delaycompress
+
+/var/log/globus/gram_*.log {
+    rotate 10
+    daily
+    missingok
+    dateext
+    postrotate
+        /usr/bin/killall -USR1 globus-job-manager
+    endscript
+}
+

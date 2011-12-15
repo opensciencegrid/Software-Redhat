@@ -1,0 +1,31 @@
+--- JobManager.pm.orig	2011-11-14 18:23:33.000000000 -0600
++++ JobManager.pm	2011-11-14 18:24:12.000000000 -0600
+@@ -110,9 +110,28 @@
+ 
+     $self->rewrite_urls();
+ 
++    set_gass($description);
++
+     return $self;
+ }
+ 
++sub set_gass
++{
++    my $description = shift;
++
++    foreach my $tuple ($description->environment())
++    {
++        if(!ref($tuple) || scalar(@$tuple) != 2)
++        {
++            return;
++        }
++        if ($tuple->[0] eq "GLOBUS_GASS_CACHE_DEFAULT")
++        {
++            $ENV{"GLOBUS_GASS_CACHE_DEFAULT"} = $tuple->[1];
++        }
++    }
++}
++
+ =item $manager->log($string)
+ 
+ Log a message to the job manager log file. The message is preceded by

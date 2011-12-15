@@ -1,0 +1,60 @@
+--- globus_gram_job_manager.h.orig	2011-11-11 14:11:30.000000000 -0600
++++ globus_gram_job_manager.h	2011-11-11 14:13:16.000000000 -0600
+@@ -345,9 +345,15 @@
+      * This is the prefix to directory which will contain host+lrm specific
+      * state files. By default, it is $HOME/.globus/job, but can be 
+      * modified by -globus-job-dir command-line option
++     * For many job managers, this needs to be on a shared file system
+      */
+     char *                              job_dir_home;
+     /**
++     * This is the location to place the host+lrm specific lock files.
++     * This should not be on a shared file system.
++     */
++    char *                              job_dir_locks;
++    /**
+      * Boolean flag indicating whether to enable GSI callouts
+      * on GRAM operations or not. Default to no.
+      */
+--- globus_gram_job_manager_config.c.orig	2011-11-09 18:19:13.000000000 -0600
++++ globus_gram_job_manager_config.c	2011-11-11 14:18:39.000000000 -0600
+@@ -492,11 +492,26 @@
+         }
+     }
+ 
++    if (config->job_dir_locks == NULL)
++    {               
++        config->job_dir_locks = 
++            globus_common_create_string("%s/%s",
++                    config->job_state_file_dir,
++                    config->logname);
++                    
++        if (config->job_dir_locks == NULL)
++        {           
++            rc = GLOBUS_GRAM_PROTOCOL_ERROR_MALLOC_FAILED;
++                    
++            goto out;
++        }           
++    }
++
+     if (config->job_dir_home == NULL)
+     {
+         config->job_dir_home = 
+-            globus_common_create_string("%s/%s",
+-                    config->job_state_file_dir,
++            globus_common_create_string("%s/.globus/%s",
++                    config->home,
+                     config->logname);
+ 
+         if (config->job_dir_home == NULL)
+--- globus_gram_job_manager.c.orig	2011-10-26 13:23:30.000000000 -0500
++++ globus_gram_job_manager.c	2011-11-11 14:19:23.000000000 -0600
+@@ -209,7 +209,7 @@
+     }
+     dir_prefix = globus_common_create_string(
+             "%s/%s",
+-            manager->config->job_dir_home,
++            manager->config->job_dir_locks,
+             manager->config->short_hostname);
+     if (dir_prefix == NULL)
+     {

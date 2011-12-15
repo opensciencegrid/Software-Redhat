@@ -1,6 +1,6 @@
 Name:           edg-mkgridmap
 Version:        4.0.0
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Contains the init.d script and crontab for edg-mkgridmap
 
 Group:          system environment/base
@@ -9,12 +9,11 @@ URL:            http://www.opensciencegrid.org/osg/
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
-Source0:	%{name}-%{version}.tar.gz
+Source0:        %{name}-%{version}.tar.gz
 Source1:        edg-mkgridmap
-Source2:	edg-mkgridmap-cron
-# build/scripts patches
-Patch0:		edg-mkgridmap-4.0.0-wrapper.patch
-Patch1:         edg-mkgridmap-wrapper-osg.patch
+Source2:        edg-mkgridmap-cron
+
+Patch0:         edg-mkgridmap-wrapper-osg.patch
 
 # Steps to make tarball (correctly packaged):
 # Get GOC's tarball, edg-mkgridmap-10.tar.gz
@@ -40,8 +39,7 @@ Requires(preun): initscripts
 %prep
 
 %setup -q
-%patch0 -p1
-%patch1 -p0
+%patch0 -p0
 %build
 
 
@@ -89,6 +87,9 @@ fi
 %{_mandir}/man8/edg-mkgridmap.8*
 
 %changelog
+* Fri Dec 02 2011 Alain Roy <roy@cs.wisc.edu> - 4.0.0-3
+- Fix logging to be more clear.
+
 * Thu Aug 11 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 4.0.0-3
 - Create VO map when edg-mkgridmap is run.
 - Correct the runtime requirements.

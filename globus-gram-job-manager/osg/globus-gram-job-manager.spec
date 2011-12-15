@@ -13,21 +13,33 @@
 Name:		globus-gram-job-manager
 %global _name %(tr - _ <<< %{name})
 Version:	13.5
-Release:	3%{?dist}
+Release:	14%{?dist}
 Summary:	Globus Toolkit - GRAM Jobmanager
 
 Group:		Applications/Internet
 License:	ASL 2.0
 URL:		http://www.globus.org/
 Source:		http://www.globus.org/ftppub/gt5/5.1/5.1.2/packages/src/%{_name}-%{version}.tar.gz
+Source1:       globus-gram-job-manager-logging
+Source2:       globus-gram-job-manager-logrotate
 
 # OSG-specific patches
 Patch9:         unlock_init.patch
 Patch11:        null_old_jm.patch
-Patch13:        watchdog_timer.patch
+#Patch13:        watchdog_timer.patch
 Patch14:        recvmsg_eagain.patch
 Patch16:        description_service_tag.patch
 Patch19:        load_requests_before_activating_socket.patch
+Patch20:        fix-job-home-dir.patch
+Patch21:	condor-poll-GRAM-271.patch
+Patch22:        fix-job-lock-location.patch
+Patch23:        GRAM-273-ignore-logs.patch
+Patch24:        GRAM-270-context-leak.patch
+Patch25:        request-lock.patch
+Patch26:        GRAM-275-logfile-names.patch
+Patch27:        SOFTWARE-393.patch
+Patch28:        GRAM-282-sigusr1_logrotate.patch
+
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Requires:	globus-common >= 14
@@ -47,6 +59,7 @@ Requires:	globus-gass-transfer%{?_isa} >= 7
 Requires:	globus-gram-job-manager-scripts
 Requires:	globus-gass-copy-progs >= 8
 Requires:	globus-proxy-utils >= 5
+
 Requires:	globus-gass-cache-program >= 2
 
 BuildRequires:	grid-packaging-tools >= 3.4
@@ -111,10 +124,19 @@ GRAM Jobmanager Documentation Files
 
 %patch9 -p0
 %patch11 -p0
-%patch13 -p0
+#%patch13 -p0
 %patch14 -p0
 %patch16 -p0
 %patch19 -p0
+%patch20 -p0
+%patch21 -p0
+%patch22 -p0
+%patch23 -p0
+%patch24 -p0
+%patch25 -p0
+%patch26 -p0
+%patch27 -p0
+%patch28 -p0
 
 %build
 # Remove files that should be replaced during bootstrap
@@ -169,6 +191,17 @@ cat $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_pgm.filelist \
 cat $GLOBUSPACKAGEDIR/%{_name}/noflavor_doc.filelist \
   | sed -e 's!/man/.*!&*!' -e 's!^!%doc %{_prefix}!' > package-doc.filelist
 
+# Add logging
+mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/globus
+cat %{SOURCE1} >> $RPM_BUILD_ROOT%{_sysconfdir}/globus/globus-gram-job-manager.conf
+
+mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/log/globus
+chmod 01777 $RPM_BUILD_ROOT%{_localstatedir}/log/globus 
+
+# Add log rotation
+mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d
+cp %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/globus-gram-job-manager
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -177,13 +210,53 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_datadir}/globus/packages/%{_name}
 %dir %{_docdir}/%{name}-%{version}
 %dir %{_localstatedir}/lib/globus/gram_job_state
+%dir %{_localstatedir}/log/globus
 %config(noreplace) %{_sysconfdir}/globus/globus-gram-job-manager.conf
+%config(noreplace) %{_sysconfdir}/logrotate.d/globus-gram-job-manager
+%config(noreplace) %{_datadir}/globus/globus_gram_job_manager/globus-gram-job-manager.rvf
 
 %files doc -f package-doc.filelist
 %defattr(-,root,root,-)
 %dir %{_docdir}/%{name}-%{version}/html
 
 %changelog
+* Wed Dec 07 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 13.5-14
+- Remove watchdog timer patch; seems to be doing more harm than good in non-threaded mode.
+
+* Wed Nov 30 2011 Alain Roy <roy@cs.wisc.edu> - 13.5-13
+- Updated logrotate to send SIGUSR1 to globus-job-manger processes
+
+* Tue Nov 29 2011 Alain Roy <roy@cs.wisc.edu> - 13.5-12
+- Restart the jobmanagers state machine in a 'safe' state.
+- Add hooks to job manager to handle log rotation
+- Reduce default logging level
+
+* Tue Nov 22 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 13.5-11
+- Added patch to fix logfiles with garbage names getting created (GRAM-275)
+
+* Mon Nov 21 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 13.5-10
+- Enabled logging by default.
+
+* Mon Nov 21 2011 Alain Roy <roy@cs.wisc.edu> - 13.5-9
+- Added patch to fix lock confusion (update to fix from -8)
+- Added patch to fix security context memory leak. 
+- Configure logging
+
+* Sat Nov 19 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 13.5-8
+- If holding the wrong lock file, make sure to close the fd.
+
+* Sun Nov 13 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 13.5-7
+- Reduce the polling frequency and load of the condor job manager.
+
+* Fri Nov 11 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 13.5-6
+- Make job home different from job lock dir.
+
+* Wed Nov 09 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 13.5-5
+- No longer reload Condor logfiles every 5 seconds.
+
+* Wed Nov 09 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 13.5-4
+- Fix the globus-job-dir option in the job manager.
+
 * Thu Oct 27 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 13.5-3
 - Merged upstream 13.5-2:
 

@@ -1,0 +1,7 @@
+/var/log/globus-gatekeeper.log {
+    rotate 10
+    daily
+    missingok
+    dateext
+    copytruncate
+}

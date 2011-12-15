@@ -1,6 +1,6 @@
 Name:           osg-release
 Version:        3.0 
-Release:        11
+Release:        12
 Summary:        OSG Software for Enterprise Linux repository configuration
 
 Group:          System Environment/Base 
@@ -59,6 +59,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Nov 28 2011 Neha Sharma <neha@fnal.gov> - 3.0-12
+- Added consider_as_osg=yes to all osg repo files
+
 * Mon Nov 14 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 3.0-11
 - Added osg-prerelease repo
 

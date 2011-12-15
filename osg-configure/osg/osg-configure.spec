@@ -1,5 +1,5 @@
 %global name osg-configure
-%global version 0.6.5
+%global version 0.7.1
 %global release 1%{?dist}
 
 Summary: Package for configure-osg and associated scripts
@@ -14,8 +14,9 @@ Prefix: %{_prefix}
 BuildArch: noarch
 Vendor: Suchandra Thapa <sthapa@ci.uchicago.edu>
 Url: http://www.opensciencegrid.org
-Requires: python
-Provides: configure-osg
+Requires: python 
+Requires: yum
+Provides: osg-configure
 
 %if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
 %{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
@@ -190,6 +191,27 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/osg/config.d/15-managedfork.ini
 
 %changelog
+* Wed Dec 7 2011 Suchandra Thapa <sthapa@ci.uchicago.edu> 0.7.1-1
+- Fix the default location of the condor_config file
+- Update ini comments to point to correct documentation
+
+* Mon Dec 1 2011 Suchandra Thapa <sthapa@ci.uchicago.edu> 0.7.0-1
+- Fix fetching VO names from user-vo-map file
+
+* Mon Nov 21 2011 Suchandra Thapa <sthapa@ci.uchicago.edu> 0.6.9-1
+- Update defaults for rsv certs
+
+* Thu Nov 17 2011 Suchandra Thapa <sthapa@ci.uchicago.edu> 0.6.8-1
+- Fix bugs in configuring gratia probes
+
+* Mon Nov 8 2011 Suchandra Thapa <sthapa@ci.uchicago.edu> 0.6.7-1
+- Update to 0.6.7 to incorporate a variety of bug fixes
+- Add support for configuring authentication methods
+
+* Mon Oct 31 2011 Suchandra Thapa <sthapa@ci.uchicago.edu> 0.6.6-1
+- Update to 0.6.6 to fix setting default job manager
+- Update config files to use DEFAULT instead of UNAVAILABLE where appropriate
+
 * Wed Oct 26 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 0.6.5-1
 - Fixed a few RSV configuration issues.
 

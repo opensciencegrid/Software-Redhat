@@ -1,7 +1,7 @@
 
 Name:      rsv-core
-Version:   3.6.2
-Release:   1%{?dist}
+Version:   3.6.6
+Release:   2%{?dist}
 Summary:   RSV Core Infrastructure
 
 Group:     Applications/Monitoring
@@ -15,6 +15,11 @@ BuildArch: noarch
 
 Requires: /usr/bin/grid-proxy-info
 Requires: /usr/bin/globus-job-run
+
+# We require globus-common-progs to work around a missing dependency 
+# in the globus-gram-client-tools RPM (which provides globus-job-run)
+# In the future, we should be able to remove this
+Requires: globus-common-progs
 
 # We use shar files for globus-job-run
 Requires: sharutils
@@ -119,6 +124,9 @@ fi
 
 
 %changelog
+* Wed Dec 07 2011 Alain Roy <roy@cs.wisc.edu> 3.6.6-2
+- Added dependency on globus-common-progs
+
 * Thu Oct 20 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.5.9-1
 - Re-implemented globus-job-run submission (as a backup for Condor-G)
 

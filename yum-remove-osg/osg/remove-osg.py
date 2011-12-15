@@ -17,7 +17,7 @@
 # written by Seth Vidal <skvidal@fedoraproject.org>
 
 # Updated and adopted for OSG by Brian Bockelman <bbockelm@cse.unl.edu>
-
+# Updated 11/28/2011 for OSG by Neha Sharma <neha@fnal.gov>
 #FIXME:
 # When two requirements of a pkg being removed mutually require each other
 # there's no way to have one know about the other and have this know to remove both
@@ -142,9 +142,10 @@ def postresolve_hook(conduit):
                                 else:
                                     conduit.info(2, 'not removing %s because it is not from an OSG repo' % pkg)
                              
-                            else:
-                                conduit.info(2, 'removing %s. It is not required by anything else.' % pkg)
-                                conduit._base.remove(pkg)
+			    #Commenting since we need to remove only OSG repo packages                            
+			    #else:
+                            #    conduit.info(2, 'removing %s. It is not required by anything else.' % pkg)
+                            #    conduit._base.remove(pkg)
 
 def config_hook(conduit):
     global exclude_bin, remove_always

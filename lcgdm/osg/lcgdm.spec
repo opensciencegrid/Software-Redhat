@@ -18,19 +18,21 @@
 %endif
 
 %if %{?filter_setup:1}%{!?filter_setup:0}
-%filter_provides_in %{python_sitearch}.*\.so$
+%filter_provides_in %{_libdir}/lcgdm/.*\.so$
+%filter_provides_in %{perl_vendorarch}/.*\.so$
+%filter_provides_in %{python_sitearch}/.*\.so$
 %if %{?altpython:1}%{!?altpython:0}
-%filter_provides_in %{altpython_sitearch}.*\.so$
+%filter_provides_in %{altpython_sitearch}/.*\.so$
 %endif
 %filter_setup
 %endif
 
 Name:		lcgdm
 Version:	1.8.1.2
-Release:	2%{?dist}
+Release:	4%{?dist}
 Summary:	LHC Computing Grid Data Management
 
-Group:		System Environment/Libraries
+Group:		Applications/Internet
 License:	ASL 2.0
 URL:		http://glite.web.cern.ch/glite/
 #		LANG=C svn co http://svnweb.cern.ch/guest/lcgdm/lcg-dm/tags/LCG-DM_R_1_8_1_2_emi lcgdm-1.8.1.2
@@ -57,24 +59,22 @@ Patch3:		%{name}-python-exception.patch
 #		Make condrestart work as expected
 #		https://savannah.cern.ch/bugs/?76695
 Patch4:		%{name}-condrestart.patch
+#		Add service dependencies to start-up scripts
+Patch5:		%{name}-start-deps.patch
 #		Get rid of -L/usr/lib(64)
-Patch5:		%{name}-usr.patch
+Patch6:		%{name}-usr.patch
 #		Fix python and perl installation paths and linking
-Patch6:		%{name}-paths.patch
+Patch7:		%{name}-paths.patch
 #		Allow moving plugins out of default library search path
-Patch7:		%{name}-dlopen.patch
+Patch8:		%{name}-dlopen.patch
 #		Use Fedora's imake instead of bundled version
-Patch8:		%{name}-imake.patch
+Patch9:		%{name}-imake.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 %if %{?fedora}%{!?fedora:0} >= 5 || %{?rhel}%{!?rhel:0} >= 5
 BuildRequires:	imake
 %else
-%if %{?fedora}%{!?fedora:0} >= 2 || %{?rhel}%{!?rhel:0} >= 4
 BuildRequires:	xorg-x11-devel
-%else
-BuildRequires:	XFree86-devel
-%endif
 %endif
 BuildRequires:	globus-gssapi-gsi-devel%{?_isa}
 BuildRequires:	globus-gss-assist-devel%{?_isa}
@@ -105,24 +105,35 @@ BuildRequires:	%{altpython}-devel%{?_isa}
 %endif
 
 %description
-The lcgdm package contains common libraries for the LCG Data Management
+The lcgdm package provides the LCG Data Management components: the LFC
+(LCG File Catalog) and the DPM (Disk Pool Manager).
+
+%package libs
+Summary:	LHC Computing Grid Data Management common libraries
+Group:		System Environment/Libraries
+Provides:	%{name} = %{version}-%{release}
+Obsoletes:	%{name} < 1.8.1.2-4
+
+%description libs
+The lcgdm-libs package contains common libraries for the LCG Data Management
 components: the LFC (LCG File Catalog) and the DPM (Disk Pool Manager).
 
 %package devel
 Summary:	LCG Data Management common development files
 Group:		Development/Libraries
-Requires:	%{name}%{?_isa} = %{version}-%{release}
+Requires:	%{name}-libs%{?_isa} = %{version}-%{release}
 
 %description devel
 This package contains common development libraries and header files
-for LCG Data Management
+for LCG Data Management.
 
-%package -n lfc
-Summary:	LCG File Catalog (LFC)
+%package -n lfc-libs
+Summary:	LCG File Catalog (LFC) libraries
 Group:		System Environment/Libraries
-Requires:	%{name}%{?_isa} = %{version}-%{release}
+Requires:	%{name}-libs%{?_isa} = %{version}-%{release}
+Obsoletes:	lfc < 1.8.1.2-4
 
-%description -n lfc
+%description -n lfc-libs
 The LCG File Catalog (LFC) keeps track of the locations of the physical
 replicas of the logical files in a distributed storage system.
 This package contains the runtime LFC client library.
@@ -130,7 +141,7 @@ This package contains the runtime LFC client library.
 %package -n lfc-devel
 Summary:	LFC development libraries and header files
 Group:		Development/Libraries
-Requires:	lfc%{?_isa} = %{version}-%{release}
+Requires:	lfc-libs%{?_isa} = %{version}-%{release}
 Requires:	%{name}-devel%{?_isa} = %{version}-%{release}
 
 %description -n lfc-devel
@@ -138,12 +149,14 @@ The LCG File Catalog (LFC) keeps track of the locations of the physical
 replicas of the logical files in a distributed storage system.
 This package contains the development libraries and header files for LFC.
 
-%package -n lfc-client
+%package -n lfc
 Summary:	LCG File Catalog (LFC) client
 Group:		Applications/Internet
-Requires:	lfc%{?_isa} = %{version}-%{release}
+Requires:	lfc-libs%{?_isa} = %{version}-%{release}
+Provides:	lfc-client = %{version}-%{release}
+Obsoletes:	lfc-client < 1.8.1.2-4
 
-%description -n lfc-client
+%description -n lfc
 The LCG File Catalog (LFC) keeps track of the locations of the physical
 replicas of the logical files in a distributed storage system.
 This package contains the command line interfaces for the LFC.
@@ -151,7 +164,7 @@ This package contains the command line interfaces for the LFC.
 %package -n lfc-perl
 Summary:	LCG File Catalog (LFC) perl bindings
 Group:		Applications/Internet
-Requires:	lfc%{?_isa} = %{version}-%{release}
+Requires:	lfc-libs%{?_isa} = %{version}-%{release}
 Requires:	perl(:MODULE_COMPAT_%(eval "`%{__perl} -V:version`"; echo $version))
 
 %description -n lfc-perl
@@ -162,7 +175,7 @@ This package provides Perl bindings for the LFC client library.
 %package -n lfc-python
 Summary:	LCG File Catalog (LFC) python bindings
 Group:		Applications/Internet
-Requires:	lfc%{?_isa} = %{version}-%{release}
+Requires:	lfc-libs%{?_isa} = %{version}-%{release}
 
 %description -n lfc-python
 The LCG File Catalog (LFC) keeps track of the locations of the physical
@@ -173,7 +186,7 @@ This package provides Python bindings for the LFC client library.
 %package -n lfc-%{altpython}
 Summary:	LCG File Catalog (LFC) python bindings
 Group:		Applications/Internet
-Requires:	lfc%{?_isa} = %{version}-%{release}
+Requires:	lfc-libs%{?_isa} = %{version}-%{release}
 %if %{?rhel}%{!?rhel:0} == 5
 Requires:	python(abi) = 2.6
 %endif
@@ -184,11 +197,12 @@ replicas of the logical files in a distributed storage system.
 This package provides Python bindings for the LFC client library.
 %endif
 
-%package -n lfc-mysql
+%package -n lfc-server-mysql
 Summary:	LCG File Catalog (LFC) server with MySQL database backend
 Group:		Applications/Internet
-Provides:	lfcdaemon = %{version}-%{release}
-Requires:	lfc%{?_isa} = %{version}-%{release}
+Requires:	lfc-libs%{?_isa} = %{version}-%{release}
+Provides:	lfc-mysql = %{version}-%{release}
+Obsoletes:	lfc-mysql < 1.8.1.2-4
 
 Requires(pre):		shadow-utils
 Requires(post):		mysql
@@ -197,18 +211,38 @@ Requires(preun):	chkconfig
 Requires(preun):	initscripts
 Requires(postun):	initscripts
 
-%description -n lfc-mysql
+%description -n lfc-server-mysql
 The LCG File Catalog (LFC) keeps track of the locations of the physical
 replicas of the logical files in a distributed storage system.
 This package provides an LFC server that uses MySQL as its database
 backend.
 
+%package -n lfc-server-postgres
+Summary:	LCG File Catalog (LFC) server with postgres database backend
+Group:		Applications/Internet
+Requires:	lfc-libs%{?_isa} = %{version}-%{release}
+Provides:	lfc-postgres = %{version}-%{release}
+Obsoletes:	lfc-postgres < 1.8.1.2-4
+
+Requires(pre):		shadow-utils
+Requires(post):		postgresql
+Requires(post):		chkconfig
+Requires(preun):	chkconfig
+Requires(preun):	initscripts
+Requires(postun):	initscripts
+
+%description -n lfc-server-postgres
+The LCG File Catalog (LFC) keeps track of the locations of the physical
+replicas of the logical files in a distributed storage system.
+This package provides an LFC server that uses postgres as its database
+backend.
+
 %package -n lfc-dli
 Summary:	LCG File Catalog (LFC) data location interface (dli) server
 Group:		Applications/Internet
-Requires:	lfcdaemon = %{version}-%{release}
+Requires:	lfc-libs%{?_isa} = %{version}-%{release}
 
-Requires(pre):		lfcdaemon
+Requires(pre):		shadow-utils
 Requires(post):		chkconfig
 Requires(preun):	chkconfig
 Requires(preun):	initscripts
@@ -219,31 +253,13 @@ The LCG File Catalog (LFC) keeps track of the locations of the physical
 replicas of the logical files in a distributed storage system.
 This package provides the data location interface (dli) server for the LFC.
 
-%package -n lfc-postgres
-Summary:	LCG File Catalog (LFC) server with postgres database backend
-Group:		Applications/Internet
-Provides:	lfcdaemon = %{version}-%{release}
-Requires:	lfc%{?_isa} = %{version}-%{release}
-
-Requires(pre):		shadow-utils
-Requires(post):		postgresql
-Requires(post):		chkconfig
-Requires(preun):	chkconfig
-Requires(preun):	initscripts
-Requires(postun):	initscripts
-
-%description -n lfc-postgres
-The LCG File Catalog (LFC) keeps track of the locations of the physical
-replicas of the logical files in a distributed storage system.
-This package provides an LFC server that uses postgres as its database
-backend.
-
-%package -n dpm
-Summary:	Disk Pool Manager (DPM)
+%package -n dpm-libs
+Summary:	Disk Pool Manager (DPM) libraries
 Group:		System Environment/Libraries
-Requires:	%{name}%{?_isa} = %{version}-%{release}
+Requires:	%{name}-libs%{?_isa} = %{version}-%{release}
+Obsoletes:	dpm < 1.8.1.2-4
 
-%description -n dpm
+%description -n dpm-libs
 The LCG Disk Pool Manager (DPM) creates a storage element from a set
 of disks. It provides several interfaces for storing and retrieving
 data such as RFIO and SRM version 1, version 2 and version 2.2.
@@ -252,7 +268,7 @@ This package contains the runtime DPM client library.
 %package -n dpm-devel
 Summary:	DPM development libraries and header files
 Group:		Development/Libraries
-Requires:	dpm%{?_isa} = %{version}-%{release}
+Requires:	dpm-libs%{?_isa} = %{version}-%{release}
 Requires:	%{name}-devel%{?_isa} = %{version}-%{release}
 
 %description -n dpm-devel
@@ -261,12 +277,14 @@ of disks. It provides several interfaces for storing and retrieving
 data such as RFIO and SRM version 1, version 2 and version 2.2.
 This package contains the development libraries and header files for DPM.
 
-%package -n dpm-client
+%package -n dpm
 Summary:	Disk Pool Manager (DPM) client
 Group:		Applications/Internet
-Requires:	dpm%{?_isa} = %{version}-%{release}
+Requires:	dpm-libs%{?_isa} = %{version}-%{release}
+Provides:	dpm-client = %{version}-%{release}
+Obsoletes:	dpm-client < 1.8.1.2-4
 
-%description -n dpm-client
+%description -n dpm
 The LCG Disk Pool Manager (DPM) creates a storage element from a set
 of disks. It provides several interfaces for storing and retrieving
 data such as RFIO and SRM version 1, version 2 and version 2.2.
@@ -275,7 +293,7 @@ This package contains the command line interfaces for the DPM.
 %package -n dpm-perl
 Summary:	Disk Pool Manager (DPM) perl bindings
 Group:		Applications/Internet
-Requires:	dpm%{?_isa} = %{version}-%{release}
+Requires:	dpm-libs%{?_isa} = %{version}-%{release}
 Requires:	perl(:MODULE_COMPAT_%(eval "`%{__perl} -V:version`"; echo $version))
 
 %description -n dpm-perl
@@ -287,7 +305,7 @@ This package provides Perl bindings for the DPM client library.
 %package -n dpm-python
 Summary:	Disk Pool Manager (DPM) python bindings
 Group:		Applications/Internet
-Requires:	dpm%{?_isa} = %{version}-%{release}
+Requires:	dpm-libs%{?_isa} = %{version}-%{release}
 
 %description -n dpm-python
 The LCG Disk Pool Manager (DPM) creates a storage element from a set
@@ -299,7 +317,7 @@ This package provides Python bindings for the DPM client library.
 %package -n dpm-%{altpython}
 Summary:	Disk Pool Manager (DPM) python bindings
 Group:		Applications/Internet
-Requires:	dpm%{?_isa} = %{version}-%{release}
+Requires:	dpm-libs%{?_isa} = %{version}-%{release}
 %if %{?rhel}%{!?rhel:0} == 5
 Requires:	python(abi) = 2.6
 %endif
@@ -311,10 +329,12 @@ data such as RFIO and SRM version 1, version 2 and version 2.2.
 This package provides Python bindings for the DPM client library.
 %endif
 
-%package -n dpm-mysql
+%package -n dpm-server-mysql
 Summary:	Disk Pool Manager (DPM) server with MySQL database backend
 Group:		Applications/Internet
-Requires:	dpm%{?_isa} = %{version}-%{release}
+Requires:	dpm-libs%{?_isa} = %{version}-%{release}
+Provides:	dpm-mysql = %{version}-%{release}
+Obsoletes:	dpm-mysql < 1.8.1.2-4
 
 Requires(pre):		shadow-utils
 Requires(post):		chkconfig
@@ -322,124 +342,19 @@ Requires(preun):	chkconfig
 Requires(preun):	initscripts
 Requires(postun):	initscripts
 
-%description -n dpm-mysql
+%description -n dpm-server-mysql
 The LCG Disk Pool Manager (DPM) creates a storage element from a set
 of disks. It provides several interfaces for storing and retrieving
 data such as RFIO and SRM version 1, version 2 and version 2.2.
 This package provides a DPM server that uses MySQL as its database
 backend.
 
-%package -n dpm-mysql-nameserver
-Summary:	DPM nameserver with MySQL database backend
-Group:		Applications/Internet
-Requires:	dpm-mysql%{?_isa} = %{version}-%{release}
-
-Requires(pre):		dpm-mysql
-Requires(post):		mysql
-Requires(post):		chkconfig
-Requires(preun):	chkconfig
-Requires(preun):	initscripts
-Requires(postun):	initscripts
-
-%description -n dpm-mysql-nameserver
-The LCG Disk Pool Manager (DPM) creates a storage element from a set
-of disks. It provides several interfaces for storing and retrieving
-data such as RFIO and SRM version 1, version 2 and version 2.2.
-This package provides a DPM nameserver that uses MySQL as its database
-backend.
-
-%package -n dpm-mysql-copyd
-Summary:	DPM copy server with MySQL database backend
-Group:		Applications/Internet
-Requires:	dpm-mysql%{?_isa} = %{version}-%{release}
-
-Requires(pre):		dpm-mysql
-Requires(post):		chkconfig
-Requires(preun):	chkconfig
-Requires(preun):	initscripts
-Requires(postun):	initscripts
-
-%description -n dpm-mysql-copyd
-The LCG Disk Pool Manager (DPM) creates a storage element from a set
-of disks. It provides several interfaces for storing and retrieving
-data such as RFIO and SRM version 1, version 2 and version 2.2.
-This package provides a DPM copy server that uses MySQL as its
-database backend.
-
-%package -n dpm-mysql-srmv1
-Summary:	DPM SRM version 1 server with MySQL database backend
-Group:		Applications/Internet
-Requires:	dpm-mysql%{?_isa} = %{version}-%{release}
-
-Requires(pre):		dpm-mysql
-Requires(post):		chkconfig
-Requires(preun):	chkconfig
-Requires(preun):	initscripts
-Requires(postun):	initscripts
-
-%description -n dpm-mysql-srmv1
-The LCG Disk Pool Manager (DPM) creates a storage element from a set
-of disks. It provides several interfaces for storing and retrieving
-data such as RFIO and SRM version 1, version 2 and version 2.2.
-This package provides a DPM SRM version 1 server that uses MySQL as
-its database backend.
-
-%package -n dpm-mysql-srmv2
-Summary:	DPM SRM version 2 server with MySQL database backend
-Group:		Applications/Internet
-Requires:	dpm-mysql%{?_isa} = %{version}-%{release}
-
-Requires(pre):		dpm-mysql
-Requires(post):		chkconfig
-Requires(preun):	chkconfig
-Requires(preun):	initscripts
-Requires(postun):	initscripts
-
-%description -n dpm-mysql-srmv2
-The LCG Disk Pool Manager (DPM) creates a storage element from a set
-of disks. It provides several interfaces for storing and retrieving
-data such as RFIO and SRM version 1, version 2 and version 2.2.
-This package provides a DPM SRM version 2 server that uses MySQL as
-its database backend.
-
-%package -n dpm-mysql-srmv22
-Summary:	DPM SRM version 2.2 server with MySQL database backend
-Group:		Applications/Internet
-Requires:	dpm-mysql%{?_isa} = %{version}-%{release}
-
-Requires(pre):		dpm-mysql
-Requires(post):		chkconfig
-Requires(preun):	chkconfig
-Requires(preun):	initscripts
-Requires(postun):	initscripts
-
-%description -n dpm-mysql-srmv22
-The LCG Disk Pool Manager (DPM) creates a storage element from a set
-of disks. It provides several interfaces for storing and retrieving
-data such as RFIO and SRM version 1, version 2 and version 2.2.
-This package provides a DPM SRM version 2.2 server that uses MySQL as
-its database backend.
-
-%package -n dpm-rfiod
-Summary:	DPM RFIO server
-Group:		Applications/Internet
-Requires:	dpm%{?_isa} = %{version}-%{release}
-
-Requires(post):		chkconfig
-Requires(preun):	chkconfig
-Requires(preun):	initscripts
-Requires(postun):	initscripts
-
-%description -n dpm-rfiod
-The LCG Disk Pool Manager (DPM) creates a storage element from a set
-of disks. It provides several interfaces for storing and retrieving
-data such as RFIO and SRM version 1, version 2 and version 2.2.
-This package provides a Remote File IO (RFIO) server for DPM.
-
-%package -n dpm-postgres
+%package -n dpm-server-postgres
 Summary:	Disk Pool Manager (DPM) server with postgres database backend
 Group:		Applications/Internet
-Requires:	dpm%{?_isa} = %{version}-%{release}
+Requires:	dpm-libs%{?_isa} = %{version}-%{release}
+Provides:	dpm-postgres = %{version}-%{release}
+Obsoletes:	dpm-postgres < 1.8.1.2-4
 
 Requires(pre):		shadow-utils
 Requires(post):		chkconfig
@@ -447,103 +362,160 @@ Requires(preun):	chkconfig
 Requires(preun):	initscripts
 Requires(postun):	initscripts
 
-%description -n dpm-postgres
+%description -n dpm-server-postgres
 The LCG Disk Pool Manager (DPM) creates a storage element from a set
 of disks. It provides several interfaces for storing and retrieving
 data such as RFIO and SRM version 1, version 2 and version 2.2.
 This package provides a DPM server that uses postgres as its database
 backend.
 
-%package -n dpm-postgres-nameserver
+%package -n dpm-name-server-mysql
+Summary:	DPM name server with MySQL database backend
+Group:		Applications/Internet
+Requires:	dpm-libs%{?_isa} = %{version}-%{release}
+Provides:	dpm-mysql-nameserver = %{version}-%{release}
+Obsoletes:	dpm-mysql-nameserver < 1.8.1.2-4
+
+Requires(pre):		shadow-utils
+Requires(post):		mysql
+Requires(post):		chkconfig
+Requires(preun):	chkconfig
+Requires(preun):	initscripts
+Requires(postun):	initscripts
+
+%description -n dpm-name-server-mysql
+The LCG Disk Pool Manager (DPM) creates a storage element from a set
+of disks. It provides several interfaces for storing and retrieving
+data such as RFIO and SRM version 1, version 2 and version 2.2.
+This package provides a DPM nameserver that uses MySQL as its database
+backend.
+
+%package -n dpm-name-server-postgres
 Summary:	DPM nameserver with postgres database backend
 Group:		Applications/Internet
-Requires:	dpm-postgres%{?_isa} = %{version}-%{release}
+Requires:	dpm-libs%{?_isa} = %{version}-%{release}
+Provides:	dpm-postgres-nameserver = %{version}-%{release}
+Obsoletes:	dpm-postgres-nameserver < 1.8.1.2-4
 
-Requires(pre):		dpm-postgres
+Requires(pre):		shadow-utils
 Requires(post):		postgresql
 Requires(post):		chkconfig
 Requires(preun):	chkconfig
 Requires(preun):	initscripts
 Requires(postun):	initscripts
 
-%description -n dpm-postgres-nameserver
+%description -n dpm-name-server-postgres
 The LCG Disk Pool Manager (DPM) creates a storage element from a set
 of disks. It provides several interfaces for storing and retrieving
 data such as RFIO and SRM version 1, version 2 and version 2.2.
 This package provides a DPM nameserver that uses postgres as its
 database backend.
 
-%package -n dpm-postgres-copyd
-Summary:	DPM copy server with postgres database backend
+%package -n dpm-copy-server-mysql
+Summary:	DPM copy server with MySQL database backend
 Group:		Applications/Internet
-Requires:	dpm-postgres%{?_isa} = %{version}-%{release}
+Requires:	dpm-libs%{?_isa} = %{version}-%{release}
+Provides:	dpm-mysql-copyd = %{version}-%{release}
+Obsoletes:	dpm-mysql-copyd < 1.8.1.2-4
 
-Requires(pre):		dpm-postgres
+Requires(pre):		shadow-utils
 Requires(post):		chkconfig
 Requires(preun):	chkconfig
 Requires(preun):	initscripts
 Requires(postun):	initscripts
 
-%description -n dpm-postgres-copyd
+%description -n dpm-copy-server-mysql
+The LCG Disk Pool Manager (DPM) creates a storage element from a set
+of disks. It provides several interfaces for storing and retrieving
+data such as RFIO and SRM version 1, version 2 and version 2.2.
+This package provides a DPM copy server that uses MySQL as its
+database backend.
+
+%package -n dpm-copy-server-postgres
+Summary:	DPM copy server with postgres database backend
+Group:		Applications/Internet
+Requires:	dpm-libs%{?_isa} = %{version}-%{release}
+Provides:	dpm-postgres-copyd = %{version}-%{release}
+Obsoletes:	dpm-postgres-copyd < 1.8.1.2-4
+
+Requires(pre):		shadow-utils
+Requires(post):		chkconfig
+Requires(preun):	chkconfig
+Requires(preun):	initscripts
+Requires(postun):	initscripts
+
+%description -n dpm-copy-server-postgres
 The LCG Disk Pool Manager (DPM) creates a storage element from a set
 of disks. It provides several interfaces for storing and retrieving
 data such as RFIO and SRM version 1, version 2 and version 2.2.
 This package provides a DPM copy server that uses postgres as its
 database backend.
 
-%package -n dpm-postgres-srmv1
-Summary:	DPM SRM version 1 server with postgres database backend
+%package -n dpm-srm-server-mysql
+Summary:	DPM SRM server with MySQL database backend
 Group:		Applications/Internet
-Requires:	dpm-postgres%{?_isa} = %{version}-%{release}
+Requires:	dpm-libs%{?_isa} = %{version}-%{release}
+Provides:	dpm-mysql-srmv1 = %{version}-%{release}
+Obsoletes:	dpm-mysql-srmv1 < 1.8.1.2-4
+Provides:	dpm-mysql-srmv2 = %{version}-%{release}
+Obsoletes:	dpm-mysql-srmv2 < 1.8.1.2-4
+Provides:	dpm-mysql-srmv22 = %{version}-%{release}
+Obsoletes:	dpm-mysql-srmv22 < 1.8.1.2-4
 
-Requires(pre):		dpm-postgres
+Requires(pre):		shadow-utils
 Requires(post):		chkconfig
 Requires(preun):	chkconfig
 Requires(preun):	initscripts
 Requires(postun):	initscripts
 
-%description -n dpm-postgres-srmv1
+%description -n dpm-srm-server-mysql
 The LCG Disk Pool Manager (DPM) creates a storage element from a set
 of disks. It provides several interfaces for storing and retrieving
 data such as RFIO and SRM version 1, version 2 and version 2.2.
-This package provides a DPM SRM version 1 server that uses postgres as
-its database backend.
+This package provides a DPM SRM server that uses MySQL as its
+database backend.
 
-%package -n dpm-postgres-srmv2
-Summary:	DPM SRM version 2 server with postgres database backend
+%package -n dpm-srm-server-postgres
+Summary:	DPM SRM server with postgres database backend
 Group:		Applications/Internet
-Requires:	dpm-postgres%{?_isa} = %{version}-%{release}
+Requires:	dpm-libs%{?_isa} = %{version}-%{release}
+Provides:	dpm-postgres-srmv1 = %{version}-%{release}
+Obsoletes:	dpm-postgres-srmv1 < 1.8.1.2-4
+Provides:	dpm-postgres-srmv2 = %{version}-%{release}
+Obsoletes:	dpm-postgres-srmv2 < 1.8.1.2-4
+Provides:	dpm-postgres-srmv22 = %{version}-%{release}
+Obsoletes:	dpm-postgres-srmv22 < 1.8.1.2-4
 
-Requires(pre):		dpm-postgres
+Requires(pre):		shadow-utils
 Requires(post):		chkconfig
 Requires(preun):	chkconfig
 Requires(preun):	initscripts
 Requires(postun):	initscripts
 
-%description -n dpm-postgres-srmv2
+%description -n dpm-srm-server-postgres
 The LCG Disk Pool Manager (DPM) creates a storage element from a set
 of disks. It provides several interfaces for storing and retrieving
 data such as RFIO and SRM version 1, version 2 and version 2.2.
-This package provides a DPM SRM version 2 server that uses postgres as
-its database backend.
+This package provides a DPM SRM server that uses postgres as its
+database backend.
 
-%package -n dpm-postgres-srmv22
-Summary:	DPM SRM version 2.2 server with postgres database backend
+%package -n dpm-rfio-server
+Summary:	DPM RFIO server
 Group:		Applications/Internet
-Requires:	dpm-postgres%{?_isa} = %{version}-%{release}
+Requires:	dpm-libs%{?_isa} = %{version}-%{release}
+Provides:	dpm-rfiod = %{version}-%{release}
+Obsoletes:	dpm-rfiod < 1.8.1.2-4
 
-Requires(pre):		dpm-postgres
 Requires(post):		chkconfig
 Requires(preun):	chkconfig
 Requires(preun):	initscripts
 Requires(postun):	initscripts
 
-%description -n dpm-postgres-srmv22
+%description -n dpm-rfio-server
 The LCG Disk Pool Manager (DPM) creates a storage element from a set
 of disks. It provides several interfaces for storing and retrieving
 data such as RFIO and SRM version 1, version 2 and version 2.2.
-This package provides a DPM SRM version 2.2 server that uses postgres
-as its database backend.
+This package provides a Remote File IO (RFIO) server for DPM.
 
 %prep
 %setup -T -q -c
@@ -566,6 +538,7 @@ pushd $d/%{name}-%{version}
 %patch6 -p1
 %patch7 -p1
 %patch8 -p1
+%patch9 -p1
 
 chmod 644 security/globus_gsi_gss_constants.h \
 	  security/globus_i_gsi_credential.h \
@@ -598,13 +571,14 @@ pushd lfc-mysql/%{name}-%{version}
 	--with-gsoap-version=$gsoapversion \
 	--with-id-map-file=%{_sysconfdir}/lcgdm-mapfile \
 	--with-ns-config-file=%{_sysconfdir}/NSCONFIG \
-	--with-sysconf-dir='$(prefix)/../etc' \
 	--with-emi \
 	--without-argus
 
 make -f Makefile.ini Makefiles
 
-make %{?_smp_mflags} SOAPFLG="`pkg-config --cflags gsoap`"
+make %{?_smp_mflags} SOAPFLG="`pkg-config --cflags gsoap`" \
+     SYSCONFDIR=%{_sysconfdir} \
+     LDFLAGS="%{?__global_ldflags}"
 
 popd
 
@@ -615,7 +589,6 @@ pushd lfc-postgres/%{name}-%{version}
 	--with-gsoap-version=$gsoapversion \
 	--with-id-map-file=%{_sysconfdir}/lcgdm-mapfile \
 	--with-ns-config-file=%{_sysconfdir}/NSCONFIG \
-	--with-sysconf-dir='$(prefix)/../etc' \
 	--with-emi \
 	--without-argus
 
@@ -634,7 +607,9 @@ ln -s ../../../lfc-mysql/%{name}-%{version}/shlib/liblcgdm.so* .
 ln -s ../../../lfc-mysql/%{name}-%{version}/shlib/liblfc.so* .
 popd
 
-make %{?_smp_mflags} SOAPFLG="`pkg-config --cflags gsoap`"
+make %{?_smp_mflags} SOAPFLG="`pkg-config --cflags gsoap`" \
+     SYSCONFDIR=%{_sysconfdir} \
+     LDFLAGS="%{?__global_ldflags}"
 
 popd
 
@@ -646,7 +621,6 @@ pushd dpm-mysql/%{name}-%{version}
 	--with-dpm-config-file=%{_sysconfdir}/DPMCONFIG \
 	--with-id-map-file=%{_sysconfdir}/lcgdm-mapfile \
 	--with-ns-config-file=%{_sysconfdir}/DPNSCONFIG \
-	--with-sysconf-dir='$(prefix)/../etc' \
 	--with-emi \
 	--without-argus
 
@@ -661,7 +635,9 @@ pushd shlib
 ln -s ../../../lfc-mysql/%{name}-%{version}/shlib/liblcgdm.so* .
 popd
 
-make %{?_smp_mflags} SOAPFLG="`pkg-config --cflags gsoap`"
+make %{?_smp_mflags} SOAPFLG="`pkg-config --cflags gsoap`" \
+     SYSCONFDIR=%{_sysconfdir} \
+     LDFLAGS="%{?__global_ldflags}"
 
 popd
 
@@ -673,7 +649,6 @@ pushd dpm-postgres/%{name}-%{version}
 	--with-dpm-config-file=%{_sysconfdir}/DPMCONFIG \
 	--with-id-map-file=%{_sysconfdir}/lcgdm-mapfile \
 	--with-ns-config-file=%{_sysconfdir}/DPNSCONFIG \
-	--with-sysconf-dir='$(prefix)/../etc' \
 	--with-emi \
 	--without-argus
 
@@ -694,7 +669,9 @@ ln -s ../../../lfc-mysql/%{name}-%{version}/shlib/liblcgdm.so* .
 ln -s ../../../dpm-mysql/%{name}-%{version}/shlib/libdpm.so* .
 popd
 
-make %{?_smp_mflags} SOAPFLG="`pkg-config --cflags gsoap`"
+make %{?_smp_mflags} SOAPFLG="`pkg-config --cflags gsoap`" \
+     SYSCONFDIR=%{_sysconfdir} \
+     LDFLAGS="%{?__global_ldflags}"
 
 popd
 
@@ -749,20 +726,22 @@ popd
 %install
 rm -rf ${RPM_BUILD_ROOT}
 
-pushd lfc-mysql/%{name}-%{version}
-
-make SOAPFLG="`pkg-config --cflags gsoap`" \
-     prefix=${RPM_BUILD_ROOT}%{_prefix} install install.man
-
-mkdir -p ${RPM_BUILD_ROOT}%{_datadir}/lfc
-mv ${RPM_BUILD_ROOT}%{_datadir}/LFC/* ${RPM_BUILD_ROOT}%{_datadir}/lfc
-rmdir ${RPM_BUILD_ROOT}%{_datadir}/LFC
-
 mkdir -p ${RPM_BUILD_ROOT}%{_initrddir}
 mkdir -p ${RPM_BUILD_ROOT}%{_sysconfdir}/sysconfig
 mkdir -p ${RPM_BUILD_ROOT}%{_sysconfdir}/logrotate.d
 mkdir -p ${RPM_BUILD_ROOT}%{_sbindir}
 mkdir -p ${RPM_BUILD_ROOT}%{_mandir}/man8
+
+pushd lfc-mysql/%{name}-%{version}
+
+make SOAPFLG="`pkg-config --cflags gsoap`" \
+     SYSCONFDIR=${RPM_BUILD_ROOT}%{_sysconfdir} \
+     LDFLAGS="%{?__global_ldflags}" \
+     prefix=${RPM_BUILD_ROOT}%{_prefix} install install.man
+
+mkdir -p ${RPM_BUILD_ROOT}%{_datadir}/lfc
+mv ${RPM_BUILD_ROOT}%{_datadir}/LFC/* ${RPM_BUILD_ROOT}%{_datadir}/lfc
+rmdir ${RPM_BUILD_ROOT}%{_datadir}/LFC
 
 mkdir -p ${RPM_BUILD_ROOT}%{_libdir}/lfc-mysql
 mkdir -p ${RPM_BUILD_ROOT}%{_sysconfdir}/lfc-mysql
@@ -772,11 +751,12 @@ sed -e 's/LD_LIBRARY_PATH=$LD_LIBRARY_PATH //' \
     -e '/LD_LIBRARY_PATH/d' \
     -e 's!\$PREFIX/bin!\$PREFIX/sbin!' \
     -e 's!\$PREFIX/etc!/etc!' \
-    -e 's!\(/var/lock/subsys/\).*!\1lfc-mysql!' \
     ${RPM_BUILD_ROOT}%{_datadir}/lfc/rc.lfcdaemon > \
-    ${RPM_BUILD_ROOT}%{_initrddir}/lfc-mysql
-chmod 755 ${RPM_BUILD_ROOT}%{_initrddir}/lfc-mysql
+    ${RPM_BUILD_ROOT}%{_sysconfdir}/lfc-mysql/lfcdaemon.init
+chmod 755 ${RPM_BUILD_ROOT}%{_sysconfdir}/lfc-mysql/lfcdaemon.init
 rm ${RPM_BUILD_ROOT}%{_datadir}/lfc/rc.lfcdaemon
+touch ${RPM_BUILD_ROOT}%{_initrddir}/lfcdaemon
+chmod 755 ${RPM_BUILD_ROOT}%{_initrddir}/lfcdaemon
 
 # lfcdaemon configuration file
 cp -p ${RPM_BUILD_ROOT}%{_sysconfdir}/lfcdaemon.conf.templ \
@@ -869,7 +849,7 @@ rm ${RPM_BUILD_ROOT}%{_libdir}/liblcgdm.a
 sed -e 's/\(chkconfig: \)\w*/\1-/' \
     -e '/Default-Start/d' \
     -e 's/\(Default-Stop: *\).*/\10 1 2 3 4 5 6/' \
-    -i ${RPM_BUILD_ROOT}%{_initrddir}/lfc-mysql \
+    -i ${RPM_BUILD_ROOT}%{_sysconfdir}/lfc-mysql/lfcdaemon.init \
        ${RPM_BUILD_ROOT}%{_initrddir}/lfc-dli
 
 popd
@@ -877,17 +857,13 @@ popd
 pushd lfc-postgres/%{name}-%{version}
 
 make SOAPFLG="`pkg-config --cflags gsoap`" \
+     SYSCONFDIR=${RPM_BUILD_ROOT}%{_sysconfdir} \
+     LDFLAGS="%{?__global_ldflags}" \
      prefix=${RPM_BUILD_ROOT}%{_prefix} install install.man
 
 mkdir -p ${RPM_BUILD_ROOT}%{_datadir}/lfc
 mv ${RPM_BUILD_ROOT}%{_datadir}/LFC/* ${RPM_BUILD_ROOT}%{_datadir}/lfc
 rmdir ${RPM_BUILD_ROOT}%{_datadir}/LFC
-
-mkdir -p ${RPM_BUILD_ROOT}%{_initrddir}
-mkdir -p ${RPM_BUILD_ROOT}%{_sysconfdir}/sysconfig
-mkdir -p ${RPM_BUILD_ROOT}%{_sysconfdir}/logrotate.d
-mkdir -p ${RPM_BUILD_ROOT}%{_sbindir}
-mkdir -p ${RPM_BUILD_ROOT}%{_mandir}/man8
 
 mkdir -p ${RPM_BUILD_ROOT}%{_libdir}/lfc-postgres
 mkdir -p ${RPM_BUILD_ROOT}%{_sysconfdir}/lfc-postgres
@@ -897,11 +873,12 @@ sed -e 's/LD_LIBRARY_PATH=$LD_LIBRARY_PATH //' \
     -e '/LD_LIBRARY_PATH/d' \
     -e 's!\$PREFIX/bin!\$PREFIX/sbin!' \
     -e 's!\$PREFIX/etc!/etc!' \
-    -e 's!\(/var/lock/subsys/\).*!\1lfc-postgres!' \
     ${RPM_BUILD_ROOT}%{_datadir}/lfc/rc.lfcdaemon > \
-    ${RPM_BUILD_ROOT}%{_initrddir}/lfc-postgres
-chmod 755 ${RPM_BUILD_ROOT}%{_initrddir}/lfc-postgres
+    ${RPM_BUILD_ROOT}%{_sysconfdir}/lfc-postgres/lfcdaemon.init
+chmod 755 ${RPM_BUILD_ROOT}%{_sysconfdir}/lfc-postgres/lfcdaemon.init
 rm ${RPM_BUILD_ROOT}%{_datadir}/lfc/rc.lfcdaemon
+touch ${RPM_BUILD_ROOT}%{_initrddir}/lfcdaemon
+chmod 755 ${RPM_BUILD_ROOT}%{_initrddir}/lfcdaemon
 
 # lfcdaemon configuration file
 cp -p ${RPM_BUILD_ROOT}%{_sysconfdir}/lfcdaemon.conf.templ \
@@ -955,13 +932,15 @@ sed '/CREATE DATABASE/d' -i \
 sed -e 's/\(chkconfig: \)\w*/\1-/' \
     -e '/Default-Start/d' \
     -e 's/\(Default-Stop: *\).*/\10 1 2 3 4 5 6/' \
-    -i ${RPM_BUILD_ROOT}%{_initrddir}/lfc-postgres
+    -i ${RPM_BUILD_ROOT}%{_sysconfdir}/lfc-postgres/lfcdaemon.init
 
 popd
 
 pushd dpm-mysql/%{name}-%{version}
 
 make SOAPFLG="`pkg-config --cflags gsoap`" \
+     SYSCONFDIR=${RPM_BUILD_ROOT}%{_sysconfdir} \
+     LDFLAGS="%{?__global_ldflags}" \
      prefix=${RPM_BUILD_ROOT}%{_prefix} install install.man
 
 sed 's!/usr/bin/env python!/usr/bin/python!' \
@@ -971,12 +950,6 @@ mkdir -p ${RPM_BUILD_ROOT}%{_datadir}/dpm
 mv ${RPM_BUILD_ROOT}%{_datadir}/DPM/* ${RPM_BUILD_ROOT}%{_datadir}/dpm
 rmdir ${RPM_BUILD_ROOT}%{_datadir}/DPM
 
-mkdir -p ${RPM_BUILD_ROOT}%{_initrddir}
-mkdir -p ${RPM_BUILD_ROOT}%{_sysconfdir}/sysconfig
-mkdir -p ${RPM_BUILD_ROOT}%{_sysconfdir}/logrotate.d
-mkdir -p ${RPM_BUILD_ROOT}%{_sbindir}
-mkdir -p ${RPM_BUILD_ROOT}%{_mandir}/man8
-
 mkdir -p ${RPM_BUILD_ROOT}%{_libdir}/dpm-mysql
 mkdir -p ${RPM_BUILD_ROOT}%{_sysconfdir}/dpm-mysql
 
@@ -985,11 +958,12 @@ sed -e 's/LD_LIBRARY_PATH=$LD_LIBRARY_PATH //' \
     -e '/LD_LIBRARY_PATH/d' \
     -e 's!\$PREFIX/bin!\$PREFIX/sbin!' \
     -e 's!\$PREFIX/etc!/etc!' \
-    -e 's!\(/var/lock/subsys/\).*!\1dpm-mysql!' \
     ${RPM_BUILD_ROOT}%{_datadir}/dpm/rc.dpm > \
-    ${RPM_BUILD_ROOT}%{_initrddir}/dpm-mysql
-chmod 755 ${RPM_BUILD_ROOT}%{_initrddir}/dpm-mysql
+    ${RPM_BUILD_ROOT}%{_sysconfdir}/dpm-mysql/dpm.init
+chmod 755 ${RPM_BUILD_ROOT}%{_sysconfdir}/dpm-mysql/dpm.init
 rm ${RPM_BUILD_ROOT}%{_datadir}/dpm/rc.dpm
+touch ${RPM_BUILD_ROOT}%{_initrddir}/dpm
+chmod 755 ${RPM_BUILD_ROOT}%{_initrddir}/dpm
 
 # dpm configuration file
 sed -e 's/\(^DPNS_HOST=\).*/\1`hostname -f`/' \
@@ -1036,12 +1010,13 @@ sed -e 's/LD_LIBRARY_PATH=$LD_LIBRARY_PATH //' \
     -e '/LD_LIBRARY_PATH/d' \
     -e 's!\$PREFIX/bin!\$PREFIX/sbin!' \
     -e 's!\$PREFIX/etc!/etc!' \
-    -e 's!\(/var/lock/subsys/\).*!\1dpm-mysql-nameserver!' \
     -e 's!/etc/NSCONFIG!/etc/DPNSCONFIG!g' \
     ${RPM_BUILD_ROOT}%{_datadir}/dpm/rc.dpnsdaemon > \
-    ${RPM_BUILD_ROOT}%{_initrddir}/dpm-mysql-nameserver
-chmod 755 ${RPM_BUILD_ROOT}%{_initrddir}/dpm-mysql-nameserver
+    ${RPM_BUILD_ROOT}%{_sysconfdir}/dpm-mysql/dpnsdaemon.init
+chmod 755 ${RPM_BUILD_ROOT}%{_sysconfdir}/dpm-mysql/dpnsdaemon.init
 rm ${RPM_BUILD_ROOT}%{_datadir}/dpm/rc.dpnsdaemon
+touch ${RPM_BUILD_ROOT}%{_initrddir}/dpnsdaemon
+chmod 755 ${RPM_BUILD_ROOT}%{_initrddir}/dpnsdaemon
 
 # dpnsdaemon configuration file
 sed -e 's!/etc/NSCONFIG!/etc/DPNSCONFIG!g' \
@@ -1090,11 +1065,12 @@ sed -e 's/LD_LIBRARY_PATH=$LD_LIBRARY_PATH //' \
     -e '/LD_LIBRARY_PATH/d' \
     -e 's!\$PREFIX/bin!\$PREFIX/sbin!' \
     -e 's!\$PREFIX/etc!/etc!' \
-    -e 's!\(/var/lock/subsys/\).*!\1dpm-mysql-copyd!' \
     ${RPM_BUILD_ROOT}%{_datadir}/dpm/rc.dpmcopyd > \
-    ${RPM_BUILD_ROOT}%{_initrddir}/dpm-mysql-copyd
-chmod 755 ${RPM_BUILD_ROOT}%{_initrddir}/dpm-mysql-copyd
+    ${RPM_BUILD_ROOT}%{_sysconfdir}/dpm-mysql/dpmcopyd.init
+chmod 755 ${RPM_BUILD_ROOT}%{_sysconfdir}/dpm-mysql/dpmcopyd.init
 rm ${RPM_BUILD_ROOT}%{_datadir}/dpm/rc.dpmcopyd
+touch ${RPM_BUILD_ROOT}%{_initrddir}/dpmcopyd
+chmod 755 ${RPM_BUILD_ROOT}%{_initrddir}/dpmcopyd
 
 # dpmcopyd configuration file
 sed -e 's/\(^DPNS_HOST=\).*/\1`hostname -f`/' \
@@ -1122,18 +1098,18 @@ rm ${RPM_BUILD_ROOT}%{_mandir}/man1/dpmcopyd.1
 touch ${RPM_BUILD_ROOT}%{_mandir}/man8/dpmcopyd.8
 
 for svc in srmv1 srmv2 srmv2.2 ; do
-    ssvc=`tr -d '.' <<< ${svc}`
     # startup script
     sed -e 's/LD_LIBRARY_PATH=$LD_LIBRARY_PATH //' \
 	-e '/LD_LIBRARY_PATH/d' \
 	-e 's!\$PREFIX/bin!\$PREFIX/sbin!' \
 	-e 's!\$PREFIX/etc!/etc!' \
 	-e "s/${svc}/dpm-${svc}/g" \
-	-e "s!\(/var/lock/subsys/\).*!\1dpm-mysql-${ssvc}!" \
 	${RPM_BUILD_ROOT}%{_datadir}/dpm/rc.${svc} > \
-	${RPM_BUILD_ROOT}%{_initrddir}/dpm-mysql-${ssvc}
-    chmod 755 ${RPM_BUILD_ROOT}%{_initrddir}/dpm-mysql-${ssvc}
+	${RPM_BUILD_ROOT}%{_sysconfdir}/dpm-mysql/dpm-${svc}.init
+    chmod 755 ${RPM_BUILD_ROOT}%{_sysconfdir}/dpm-mysql/dpm-${svc}.init
     rm ${RPM_BUILD_ROOT}%{_datadir}/dpm/rc.${svc}
+    touch ${RPM_BUILD_ROOT}%{_initrddir}/dpm-${svc}
+    chmod 755 ${RPM_BUILD_ROOT}%{_initrddir}/dpm-${svc}
 
     # configuration file
     sed -e "s/${svc}/dpm-${svc}/g" \
@@ -1157,6 +1133,7 @@ for svc in srmv1 srmv2 srmv2.2 ; do
     touch ${RPM_BUILD_ROOT}%{_sbindir}/dpm-${svc}
     chmod 755 ${RPM_BUILD_ROOT}%{_sbindir}/dpm-${svc}
     sed -e 's/\.TH \([^ ]*\) 1/.TH DPM-\1 8/' \
+	-e "s/${svc}/dpm-${svc}/g" \
 	-e 's/dpm(1)/dpm(8)/g' \
 	${RPM_BUILD_ROOT}%{_mandir}/man1/${svc}.1 | gzip -9 -n -c > \
 	${RPM_BUILD_ROOT}%{_libdir}/dpm-mysql/dpm-${svc}.8.gz
@@ -1211,7 +1188,7 @@ rm ${RPM_BUILD_ROOT}%{_libdir}/libdpm.a
 sed -e 's/\(chkconfig: \)\w*/\1-/' \
     -e '/Default-Start/d' \
     -e 's/\(Default-Stop: *\).*/\10 1 2 3 4 5 6/' \
-    -i ${RPM_BUILD_ROOT}%{_initrddir}/dpm-mysql* \
+    -i ${RPM_BUILD_ROOT}%{_sysconfdir}/dpm-mysql/*.init \
        ${RPM_BUILD_ROOT}%{_initrddir}/dpm-rfiod
 
 popd
@@ -1219,17 +1196,13 @@ popd
 pushd dpm-postgres/%{name}-%{version}
 
 make SOAPFLG="`pkg-config --cflags gsoap`" \
+     SYSCONFDIR=${RPM_BUILD_ROOT}%{_sysconfdir} \
+     LDFLAGS="%{?__global_ldflags}" \
      prefix=${RPM_BUILD_ROOT}%{_prefix} install install.man
 
 mkdir -p ${RPM_BUILD_ROOT}%{_datadir}/dpm
 mv ${RPM_BUILD_ROOT}%{_datadir}/DPM/* ${RPM_BUILD_ROOT}%{_datadir}/dpm
 rmdir ${RPM_BUILD_ROOT}%{_datadir}/DPM
-
-mkdir -p ${RPM_BUILD_ROOT}%{_initrddir}
-mkdir -p ${RPM_BUILD_ROOT}%{_sysconfdir}/sysconfig
-mkdir -p ${RPM_BUILD_ROOT}%{_sysconfdir}/logrotate.d
-mkdir -p ${RPM_BUILD_ROOT}%{_sbindir}
-mkdir -p ${RPM_BUILD_ROOT}%{_mandir}/man8
 
 mkdir -p ${RPM_BUILD_ROOT}%{_libdir}/dpm-postgres
 mkdir -p ${RPM_BUILD_ROOT}%{_sysconfdir}/dpm-postgres
@@ -1239,11 +1212,12 @@ sed -e 's/LD_LIBRARY_PATH=$LD_LIBRARY_PATH //' \
     -e '/LD_LIBRARY_PATH/d' \
     -e 's!\$PREFIX/bin!\$PREFIX/sbin!' \
     -e 's!\$PREFIX/etc!/etc!' \
-    -e 's!\(/var/lock/subsys/\).*!\1dpm-postgres!' \
     ${RPM_BUILD_ROOT}%{_datadir}/dpm/rc.dpm > \
-    ${RPM_BUILD_ROOT}%{_initrddir}/dpm-postgres
-chmod 755 ${RPM_BUILD_ROOT}%{_initrddir}/dpm-postgres
+    ${RPM_BUILD_ROOT}%{_sysconfdir}/dpm-postgres/dpm.init
+chmod 755 ${RPM_BUILD_ROOT}%{_sysconfdir}/dpm-postgres/dpm.init
 rm ${RPM_BUILD_ROOT}%{_datadir}/dpm/rc.dpm
+touch ${RPM_BUILD_ROOT}%{_initrddir}/dpm
+chmod 755 ${RPM_BUILD_ROOT}%{_initrddir}/dpm
 
 # dpm configuration file
 sed -e 's/\(^DPNS_HOST=\).*/\1`hostname -f`/' \
@@ -1290,12 +1264,13 @@ sed -e 's/LD_LIBRARY_PATH=$LD_LIBRARY_PATH //' \
     -e '/LD_LIBRARY_PATH/d' \
     -e 's!\$PREFIX/bin!\$PREFIX/sbin!' \
     -e 's!\$PREFIX/etc!/etc!' \
-    -e 's!\(/var/lock/subsys/\).*!\1dpm-postgres-nameserver!' \
     -e 's!/etc/NSCONFIG!/etc/DPNSCONFIG!g' \
     ${RPM_BUILD_ROOT}%{_datadir}/dpm/rc.dpnsdaemon > \
-    ${RPM_BUILD_ROOT}%{_initrddir}/dpm-postgres-nameserver
-chmod 755 ${RPM_BUILD_ROOT}%{_initrddir}/dpm-postgres-nameserver
+    ${RPM_BUILD_ROOT}%{_sysconfdir}/dpm-postgres/dpnsdaemon.init
+chmod 755 ${RPM_BUILD_ROOT}%{_sysconfdir}/dpm-postgres/dpnsdaemon.init
 rm ${RPM_BUILD_ROOT}%{_datadir}/dpm/rc.dpnsdaemon
+touch ${RPM_BUILD_ROOT}%{_initrddir}/dpnsdaemon
+chmod 755 ${RPM_BUILD_ROOT}%{_initrddir}/dpnsdaemon
 
 # dpnsdaemon configuration file
 sed -e 's!/etc/NSCONFIG!/etc/DPNSCONFIG!g' \
@@ -1344,11 +1319,12 @@ sed -e 's/LD_LIBRARY_PATH=$LD_LIBRARY_PATH //' \
     -e '/LD_LIBRARY_PATH/d' \
     -e 's!\$PREFIX/bin!\$PREFIX/sbin!' \
     -e 's!\$PREFIX/etc!/etc!' \
-    -e 's!\(/var/lock/subsys/\).*!\1dpm-postgres-copyd!' \
     ${RPM_BUILD_ROOT}%{_datadir}/dpm/rc.dpmcopyd > \
-    ${RPM_BUILD_ROOT}%{_initrddir}/dpm-postgres-copyd
-chmod 755 ${RPM_BUILD_ROOT}%{_initrddir}/dpm-postgres-copyd
+    ${RPM_BUILD_ROOT}%{_sysconfdir}/dpm-postgres/dpmcopyd.init
+chmod 755 ${RPM_BUILD_ROOT}%{_sysconfdir}/dpm-postgres/dpmcopyd.init
 rm ${RPM_BUILD_ROOT}%{_datadir}/dpm/rc.dpmcopyd
+touch ${RPM_BUILD_ROOT}%{_initrddir}/dpmcopyd
+chmod 755 ${RPM_BUILD_ROOT}%{_initrddir}/dpmcopyd
 
 # dpmcopyd configuration file
 sed -e 's/\(^DPNS_HOST=\).*/\1`hostname -f`/' \
@@ -1376,18 +1352,18 @@ rm ${RPM_BUILD_ROOT}%{_mandir}/man1/dpmcopyd.1
 touch ${RPM_BUILD_ROOT}%{_mandir}/man8/dpmcopyd.8
 
 for svc in srmv1 srmv2 srmv2.2 ; do
-    ssvc=`tr -d '.' <<< ${svc}`
     # startup script
     sed -e 's/LD_LIBRARY_PATH=$LD_LIBRARY_PATH //' \
 	-e '/LD_LIBRARY_PATH/d' \
 	-e 's!\$PREFIX/bin!\$PREFIX/sbin!' \
 	-e 's!\$PREFIX/etc!/etc!' \
 	-e "s/${svc}/dpm-${svc}/g" \
-	-e "s!\(/var/lock/subsys/\).*!\1dpm-postgres-${ssvc}!" \
 	${RPM_BUILD_ROOT}%{_datadir}/dpm/rc.${svc} > \
-	${RPM_BUILD_ROOT}%{_initrddir}/dpm-postgres-${ssvc}
-    chmod 755 ${RPM_BUILD_ROOT}%{_initrddir}/dpm-postgres-${ssvc}
+	${RPM_BUILD_ROOT}%{_sysconfdir}/dpm-postgres/dpm-${svc}.init
+    chmod 755 ${RPM_BUILD_ROOT}%{_sysconfdir}/dpm-postgres/dpm-${svc}.init
     rm ${RPM_BUILD_ROOT}%{_datadir}/dpm/rc.${svc}
+    touch ${RPM_BUILD_ROOT}%{_initrddir}/dpm-${svc}
+    chmod 755 ${RPM_BUILD_ROOT}%{_initrddir}/dpm-${svc}
 
     # configuration file
     sed -e "s/${svc}/dpm-${svc}/g" \
@@ -1411,6 +1387,7 @@ for svc in srmv1 srmv2 srmv2.2 ; do
     touch ${RPM_BUILD_ROOT}%{_sbindir}/dpm-${svc}
     chmod 755 ${RPM_BUILD_ROOT}%{_sbindir}/dpm-${svc}
     sed -e 's/\.TH \([^ ]*\) 1/.TH DPM-\1 8/' \
+	-e "s/${svc}/dpm-${svc}/g" \
 	-e 's/dpm(1)/dpm(8)/g' \
 	${RPM_BUILD_ROOT}%{_mandir}/man1/${svc}.1 | gzip -9 -n -c > \
 	${RPM_BUILD_ROOT}%{_libdir}/dpm-postgres/dpm-${svc}.8.gz
@@ -1431,7 +1408,7 @@ sed '/CREATE DATABASE/d' -i \
 sed -e 's/\(chkconfig: \)\w*/\1-/' \
     -e '/Default-Start/d' \
     -e 's/\(Default-Stop: *\).*/\10 1 2 3 4 5 6/' \
-    -i ${RPM_BUILD_ROOT}%{_initrddir}/dpm-postgres*
+    -i ${RPM_BUILD_ROOT}%{_sysconfdir}/dpm-postgres/*.init
 
 popd
 
@@ -1455,25 +1432,31 @@ install %{altpython}/*.so ${RPM_BUILD_ROOT}%{altpython_sitearch}
 %clean
 rm -rf ${RPM_BUILD_ROOT}
 
-%post -p /sbin/ldconfig
+%post libs -p /sbin/ldconfig
 
-%postun -p /sbin/ldconfig
+%postun libs -p /sbin/ldconfig
 
-%post -n lfc -p /sbin/ldconfig
+%post -n lfc-libs -p /sbin/ldconfig
 
-%postun -n lfc -p /sbin/ldconfig
+%postun -n lfc-libs -p /sbin/ldconfig
 
-%post -n dpm -p /sbin/ldconfig
+%post -n dpm-libs -p /sbin/ldconfig
 
-%postun -n dpm -p /sbin/ldconfig
+%postun -n dpm-libs -p /sbin/ldconfig
 
-%pre -n lfc-mysql
+%pre -n lfc-server-mysql
 getent group lfcmgr > /dev/null || groupadd -r lfcmgr
 getent passwd lfcmgr > /dev/null || useradd -r -g lfcmgr \
     -d %{_localstatedir}/lib/lfc -s /bin/bash -c "LFC Manager" lfcmgr
 exit 0
 
-%post -n lfc-mysql
+%pre -n lfc-server-postgres
+getent group lfcmgr > /dev/null || groupadd -r lfcmgr
+getent passwd lfcmgr > /dev/null || useradd -r -g lfcmgr \
+    -d %{_localstatedir}/lib/lfc -s /bin/bash -c "LFC Manager" lfcmgr
+exit 0
+
+%post -n lfc-server-mysql
 updatelfc () {
     [ -r /etc/sysconfig/lfcdaemon ] && . /etc/sysconfig/lfcdaemon
     [ -z "$NSCONFIGFILE" ] && NSCONFIGFILE=/etc/NSCONFIG
@@ -1528,15 +1511,14 @@ updatelfc () {
 
 updatelfc
 
-if [ $1 = 1 ]; then
-    /sbin/chkconfig --add lfc-mysql
-fi
 %{_sbindir}/update-alternatives --install %{_sbindir}/lfcdaemon lfcdaemon \
 	  %{_libdir}/lfc-mysql/lfcdaemon 20 \
   --slave %{_mandir}/man8/lfcdaemon.8.gz lfcdaemon.8.gz \
 	  %{_libdir}/lfc-mysql/lfcdaemon.8.gz \
   --slave %{_datadir}/lfc/NSCONFIG.templ NSCONFIG.templ \
 	  %{_libdir}/lfc-mysql/NSCONFIG.templ \
+  --slave %{_initrddir}/lfcdaemon lfcdaemon.init \
+	  %{_sysconfdir}/lfc-mysql/lfcdaemon.init \
   --slave %{_sysconfdir}/sysconfig/lfcdaemon lfcdaemon.conf \
 	  %{_sysconfdir}/lfc-mysql/lfcdaemon.conf \
   --slave %{_sysconfdir}/logrotate.d/lfcdaemon lfcdaemon.logrotate \
@@ -1544,29 +1526,171 @@ fi
   --slave %{_sbindir}/lfc-shutdown lfc-shutdown \
 	  %{_libdir}/lfc-mysql/lfc-shutdown \
   --slave %{_mandir}/man8/lfc-shutdown.8.gz lfc-shutdown.8.gz \
-	  %{_libdir}/lfc-mysql/lfc-shutdown.8.gz \
-  --initscript lfc-mysql
+	  %{_libdir}/lfc-mysql/lfc-shutdown.8.gz
 
-%preun -n lfc-mysql
+if [ $1 = 1 ]; then
+    if [ -r %{_initrddir}/lfcdaemon ]; then
+	/sbin/chkconfig --add lfcdaemon
+    fi
+fi
+
+%post -n lfc-server-postgres
+updatelfc () {
+    [ -r /etc/sysconfig/lfcdaemon ] && . /etc/sysconfig/lfcdaemon
+    [ -z "$NSCONFIGFILE" ] && NSCONFIGFILE=/etc/NSCONFIG
+    [ -r $NSCONFIGFILE ] || return 0
+
+    nscfg=$(cat $NSCONFIGFILE)
+
+    cfg1=$(echo $nscfg | cut -f1 -d@)
+    cfg2=$(echo $nscfg | cut -f2 -d@ -s)
+
+    user=$(echo $cfg1 | cut -f1 -d/)
+    passwd=$(echo $cfg1 | cut -f2 -d/ -s)
+    host=$(echo $cfg2 | cut -f1 -d/)
+    db=$(echo $cfg2 | cut -f2 -d/ -s)
+
+    [ -z "$user" ] && return 0
+    [ -z "$passwd" ] && return 0
+    [ -z "$host" ] && return 0
+    [ -z "$db" ] && db=cns_db
+
+    export PGPASSWORD=$passwd
+    psql="psql -t -q -U $user $db"
+
+    vmajor=$($psql -c "select major from schema_version" 2>/dev/null)
+    vminor=$($psql -c "select minor from schema_version" 2>/dev/null)
+    vpatch=$($psql -c "select patch from schema_version" 2>/dev/null)
+
+    if [ -z "$vmajor" -o -z "$vminor" -o -z "$vpatch" ] ; then
+	return 0
+    fi
+
+    if [ $vmajor -eq 3 -a $vminor -eq 0 -a $vpatch -eq 0 ] ; then
+	$psql <<-EOF
+	ALTER TABLE Cns_groupinfo ADD banned INTEGER;
+	ALTER TABLE Cns_userinfo ADD user_ca VARCHAR(255);
+	ALTER TABLE Cns_userinfo ADD banned INTEGER;
+	CREATE INDEX linkname_idx ON Cns_symlinks(linkname);
+	UPDATE schema_version SET major = 3, minor = 1, patch = 0;
+	EOF
+    fi
+
+    return 0
+}
+
+updatelfc
+
+%{_sbindir}/update-alternatives --install %{_sbindir}/lfcdaemon lfcdaemon \
+	  %{_libdir}/lfc-postgres/lfcdaemon 10 \
+  --slave %{_mandir}/man8/lfcdaemon.8.gz lfcdaemon.8.gz \
+	  %{_libdir}/lfc-postgres/lfcdaemon.8.gz \
+  --slave %{_datadir}/lfc/NSCONFIG.templ NSCONFIG.templ \
+	  %{_libdir}/lfc-postgres/NSCONFIG.templ \
+  --slave %{_initrddir}/lfcdaemon lfcdaemon.init \
+	  %{_sysconfdir}/lfc-postgres/lfcdaemon.init \
+  --slave %{_sysconfdir}/sysconfig/lfcdaemon lfcdaemon.conf \
+	  %{_sysconfdir}/lfc-postgres/lfcdaemon.conf \
+  --slave %{_sysconfdir}/logrotate.d/lfcdaemon lfcdaemon.logrotate \
+	  %{_sysconfdir}/lfc-postgres/lfcdaemon.logrotate \
+  --slave %{_sbindir}/lfc-shutdown lfc-shutdown \
+	  %{_libdir}/lfc-postgres/lfc-shutdown \
+  --slave %{_mandir}/man8/lfc-shutdown.8.gz lfc-shutdown.8.gz \
+	  %{_libdir}/lfc-postgres/lfc-shutdown.8.gz
+
+if [ $1 = 1 ]; then
+    if [ -r %{_initrddir}/lfcdaemon ]; then
+	/sbin/chkconfig --add lfcdaemon
+    fi
+fi
+
+%preun -n lfc-server-mysql
 export LANG=C
 
 if [ $1 = 0 ]; then
     %{_sbindir}/update-alternatives --display lfcdaemon | \
 	grep currently | grep -q lfc-mysql && \
-	/sbin/service lfc-mysql stop > /dev/null 2>&1 || :
+	/sbin/service lfcdaemon stop > /dev/null 2>&1 || :
     %{_sbindir}/update-alternatives --remove lfcdaemon \
 	%{_libdir}/lfc-mysql/lfcdaemon
-    /sbin/chkconfig --del lfc-mysql
+    %{_sbindir}/update-alternatives --display lfcdaemon > /dev/null || \
+	/sbin/chkconfig --del lfcdaemon > /dev/null 2>&1 || :
 fi
 
-%postun -n lfc-mysql
+%preun -n lfc-server-postgres
+export LANG=C
+
+if [ $1 = 0 ]; then
+    %{_sbindir}/update-alternatives --display lfcdaemon | \
+	grep currently | grep -q lfc-postgres && \
+	/sbin/service lfcdaemon stop > /dev/null 2>&1 || :
+    %{_sbindir}/update-alternatives --remove lfcdaemon \
+	%{_libdir}/lfc-postgres/lfcdaemon
+    %{_sbindir}/update-alternatives --display lfcdaemon > /dev/null || \
+	/sbin/chkconfig --del lfcdaemon > /dev/null 2>&1 || :
+fi
+
+%postun -n lfc-server-mysql
 export LANG=C
 
 if [ $1 -ge 1 ]; then
     %{_sbindir}/update-alternatives --display lfcdaemon | \
 	grep currently | grep -q lfc-mysql && \
-	/sbin/service lfc-mysql condrestart > /dev/null 2>&1 || :
+	/sbin/service lfcdaemon condrestart > /dev/null 2>&1 || :
 fi
+
+%postun -n lfc-server-postgres
+export LANG=C
+
+if [ $1 -ge 1 ]; then
+    %{_sbindir}/update-alternatives --display lfcdaemon | \
+	grep currently | grep -q lfc-postgres && \
+	/sbin/service lfcdaemon condrestart > /dev/null 2>&1 || :
+fi
+
+%triggerpostun -n lfc-server-mysql -- lfc-mysql < 1.8.1.2-4
+# Restore alternatives removed by lfc-mysql preun
+%{_sbindir}/update-alternatives --install %{_sbindir}/lfcdaemon lfcdaemon \
+	  %{_libdir}/lfc-mysql/lfcdaemon 20 \
+  --slave %{_mandir}/man8/lfcdaemon.8.gz lfcdaemon.8.gz \
+	  %{_libdir}/lfc-mysql/lfcdaemon.8.gz \
+  --slave %{_datadir}/lfc/NSCONFIG.templ NSCONFIG.templ \
+	  %{_libdir}/lfc-mysql/NSCONFIG.templ \
+  --slave %{_initrddir}/lfcdaemon lfcdaemon.init \
+	  %{_sysconfdir}/lfc-mysql/lfcdaemon.init \
+  --slave %{_sysconfdir}/sysconfig/lfcdaemon lfcdaemon.conf \
+	  %{_sysconfdir}/lfc-mysql/lfcdaemon.conf \
+  --slave %{_sysconfdir}/logrotate.d/lfcdaemon lfcdaemon.logrotate \
+	  %{_sysconfdir}/lfc-mysql/lfcdaemon.logrotate \
+  --slave %{_sbindir}/lfc-shutdown lfc-shutdown \
+	  %{_libdir}/lfc-mysql/lfc-shutdown \
+  --slave %{_mandir}/man8/lfc-shutdown.8.gz lfc-shutdown.8.gz \
+	  %{_libdir}/lfc-mysql/lfc-shutdown.8.gz
+
+%triggerpostun -n lfc-server-postgres -- lfc-postgres < 1.8.1.2-4
+# Restore alternatives removed by lfc-postgres preun
+%{_sbindir}/update-alternatives --install %{_sbindir}/lfcdaemon lfcdaemon \
+	  %{_libdir}/lfc-postgres/lfcdaemon 10 \
+  --slave %{_mandir}/man8/lfcdaemon.8.gz lfcdaemon.8.gz \
+	  %{_libdir}/lfc-postgres/lfcdaemon.8.gz \
+  --slave %{_datadir}/lfc/NSCONFIG.templ NSCONFIG.templ \
+	  %{_libdir}/lfc-postgres/NSCONFIG.templ \
+  --slave %{_initrddir}/lfcdaemon lfcdaemon.init \
+	  %{_sysconfdir}/lfc-postgres/lfcdaemon.init \
+  --slave %{_sysconfdir}/sysconfig/lfcdaemon lfcdaemon.conf \
+	  %{_sysconfdir}/lfc-postgres/lfcdaemon.conf \
+  --slave %{_sysconfdir}/logrotate.d/lfcdaemon lfcdaemon.logrotate \
+	  %{_sysconfdir}/lfc-postgres/lfcdaemon.logrotate \
+  --slave %{_sbindir}/lfc-shutdown lfc-shutdown \
+	  %{_libdir}/lfc-postgres/lfc-shutdown \
+  --slave %{_mandir}/man8/lfc-shutdown.8.gz lfc-shutdown.8.gz \
+	  %{_libdir}/lfc-postgres/lfc-shutdown.8.gz
+
+%pre -n lfc-dli
+getent group lfcmgr > /dev/null || groupadd -r lfcmgr
+getent passwd lfcmgr > /dev/null || useradd -r -g lfcmgr \
+    -d %{_localstatedir}/lib/lfc -s /bin/bash -c "LFC Manager" lfcmgr
+exit 0
 
 %post -n lfc-dli
 if [ $1 = 1 ]; then
@@ -1584,115 +1708,27 @@ if [ $1 -ge 1 ]; then
     /sbin/service lfc-dli condrestart > /dev/null 2>&1 || :
 fi
 
-%pre -n lfc-postgres
-getent group lfcmgr > /dev/null || groupadd -r lfcmgr
-getent passwd lfcmgr > /dev/null || useradd -r -g lfcmgr \
-    -d %{_localstatedir}/lib/lfc -s /bin/bash -c "LFC Manager" lfcmgr
-exit 0
-
-%post -n lfc-postgres
-updatelfc () {
-    [ -r /etc/sysconfig/lfcdaemon ] && . /etc/sysconfig/lfcdaemon
-    [ -z "$NSCONFIGFILE" ] && NSCONFIGFILE=/etc/NSCONFIG
-    [ -r $NSCONFIGFILE ] || return 0
-
-    nscfg=$(cat $NSCONFIGFILE)
-
-    cfg1=$(echo $nscfg | cut -f1 -d@)
-    cfg2=$(echo $nscfg | cut -f2 -d@ -s)
-
-    user=$(echo $cfg1 | cut -f1 -d/)
-    passwd=$(echo $cfg1 | cut -f2 -d/ -s)
-    host=$(echo $cfg2 | cut -f1 -d/)
-    db=$(echo $cfg2 | cut -f2 -d/ -s)
-
-    [ -z "$user" ] && return 0
-    [ -z "$passwd" ] && return 0
-    [ -z "$host" ] && return 0
-    [ -z "$db" ] && db=cns_db
-
-    export PGPASSWORD=$passwd
-    psql="psql -t -q -U $user $db"
-
-    vmajor=$($psql -c "select major from schema_version" 2>/dev/null)
-    vminor=$($psql -c "select minor from schema_version" 2>/dev/null)
-    vpatch=$($psql -c "select patch from schema_version" 2>/dev/null)
-
-    if [ -z "$vmajor" -o -z "$vminor" -o -z "$vpatch" ] ; then
-	return 0
-    fi
-
-    if [ $vmajor -eq 3 -a $vminor -eq 0 -a $vpatch -eq 0 ] ; then
-	$psql <<-EOF
-	ALTER TABLE Cns_groupinfo ADD banned INTEGER;
-	ALTER TABLE Cns_userinfo ADD user_ca VARCHAR(255);
-	ALTER TABLE Cns_userinfo ADD banned INTEGER;
-	CREATE INDEX linkname_idx ON Cns_symlinks(linkname);
-	UPDATE schema_version SET major = 3, minor = 1, patch = 0;
-	EOF
-    fi
-
-    return 0
-}
-
-updatelfc
-
-if [ $1 = 1 ]; then
-    /sbin/chkconfig --add lfc-postgres
-fi
-%{_sbindir}/update-alternatives --install %{_sbindir}/lfcdaemon lfcdaemon \
-	  %{_libdir}/lfc-postgres/lfcdaemon 10 \
-  --slave %{_mandir}/man8/lfcdaemon.8.gz lfcdaemon.8.gz \
-	  %{_libdir}/lfc-postgres/lfcdaemon.8.gz \
-  --slave %{_datadir}/lfc/NSCONFIG.templ NSCONFIG.templ \
-	  %{_libdir}/lfc-postgres/NSCONFIG.templ \
-  --slave %{_sysconfdir}/sysconfig/lfcdaemon lfcdaemon.conf \
-	  %{_sysconfdir}/lfc-postgres/lfcdaemon.conf \
-  --slave %{_sysconfdir}/logrotate.d/lfcdaemon lfcdaemon.logrotate \
-	  %{_sysconfdir}/lfc-postgres/lfcdaemon.logrotate \
-  --slave %{_sbindir}/lfc-shutdown lfc-shutdown \
-	  %{_libdir}/lfc-postgres/lfc-shutdown \
-  --slave %{_mandir}/man8/lfc-shutdown.8.gz lfc-shutdown.8.gz \
-	  %{_libdir}/lfc-postgres/lfc-shutdown.8.gz \
-  --initscript lfc-postgres
-
-%preun -n lfc-postgres
-export LANG=C
-
-if [ $1 = 0 ]; then
-    %{_sbindir}/update-alternatives --display lfcdaemon | \
-	grep currently | grep -q lfc-postgres && \
-	/sbin/service lfc-postgres stop > /dev/null 2>&1 || :
-    %{_sbindir}/update-alternatives --remove lfcdaemon \
-	%{_libdir}/lfc-postgres/lfcdaemon
-    /sbin/chkconfig --del lfc-postgres
-fi
-
-%postun -n lfc-postgres
-export LANG=C
-
-if [ $1 -ge 1 ]; then
-    %{_sbindir}/update-alternatives --display lfcdaemon | \
-	grep currently | grep -q lfc-postgres && \
-	/sbin/service lfc-postgres condrestart > /dev/null 2>&1 || :
-fi
-
-%pre -n dpm-mysql
+%pre -n dpm-server-mysql
 getent group dpmmgr > /dev/null || groupadd -r dpmmgr
 getent passwd dpmmgr > /dev/null || useradd -r -g dpmmgr \
     -d %{_localstatedir}/lib/dpm -s /bin/bash -c "DPM Manager" dpmmgr
 exit 0
 
-%post -n dpm-mysql
-if [ $1 = 1 ]; then
-    /sbin/chkconfig --add dpm-mysql
-fi
+%pre -n dpm-server-postgres
+getent group dpmmgr > /dev/null || groupadd -r dpmmgr
+getent passwd dpmmgr > /dev/null || useradd -r -g dpmmgr \
+    -d %{_localstatedir}/lib/dpm -s /bin/bash -c "DPM Manager" dpmmgr
+exit 0
+
+%post -n dpm-server-mysql
 %{_sbindir}/update-alternatives --install %{_sbindir}/dpm dpm \
 	  %{_libdir}/dpm-mysql/dpm 20 \
   --slave %{_mandir}/man8/dpm.8.gz dpm.8.gz \
 	  %{_libdir}/dpm-mysql/dpm.8.gz \
   --slave %{_datadir}/dpm/DPMCONFIG.templ DPMCONFIG.templ \
 	  %{_libdir}/dpm-mysql/DPMCONFIG.templ \
+  --slave %{_initrddir}/dpm dpm.init \
+	  %{_sysconfdir}/dpm-mysql/dpm.init \
   --slave %{_sysconfdir}/sysconfig/dpm dpm.conf \
 	  %{_sysconfdir}/dpm-mysql/dpm.conf \
   --slave %{_sysconfdir}/logrotate.d/dpm dpm.logrotate \
@@ -1700,31 +1736,133 @@ fi
   --slave %{_sbindir}/dpm-shutdown dpm-shutdown \
 	  %{_libdir}/dpm-mysql/dpm-shutdown \
   --slave %{_mandir}/man8/dpm-shutdown.8.gz dpm-shutdown.8.gz \
-	  %{_libdir}/dpm-mysql/dpm-shutdown.8.gz \
-  --initscript dpm-mysql
+	  %{_libdir}/dpm-mysql/dpm-shutdown.8.gz
 
-%preun -n dpm-mysql
+if [ $1 = 1 ]; then
+    if [ -r %{_initrddir}/dpm ]; then
+	/sbin/chkconfig --add dpm
+    fi
+fi
+
+%post -n dpm-server-postgres
+%{_sbindir}/update-alternatives --install %{_sbindir}/dpm dpm \
+	  %{_libdir}/dpm-postgres/dpm 10 \
+  --slave %{_mandir}/man8/dpm.8.gz dpm.8.gz \
+	  %{_libdir}/dpm-postgres/dpm.8.gz \
+  --slave %{_datadir}/dpm/DPMCONFIG.templ DPMCONFIG.templ \
+	  %{_libdir}/dpm-postgres/DPMCONFIG.templ \
+  --slave %{_initrddir}/dpm dpm.init \
+	  %{_sysconfdir}/dpm-postgres/dpm.init \
+  --slave %{_sysconfdir}/sysconfig/dpm dpm.conf \
+	  %{_sysconfdir}/dpm-postgres/dpm.conf \
+  --slave %{_sysconfdir}/logrotate.d/dpm dpm.logrotate \
+	  %{_sysconfdir}/dpm-postgres/dpm.logrotate \
+  --slave %{_sbindir}/dpm-shutdown dpm-shutdown \
+	  %{_libdir}/dpm-postgres/dpm-shutdown \
+  --slave %{_mandir}/man8/dpm-shutdown.8.gz dpm-shutdown.8.gz \
+	  %{_libdir}/dpm-postgres/dpm-shutdown.8.gz
+
+if [ $1 = 1 ]; then
+    if [ -r %{_initrddir}/dpm ]; then
+	/sbin/chkconfig --add dpm
+    fi
+fi
+
+%triggerpostun -n dpm-server-mysql -- dpm-mysql < 1.8.1.2-4
+# Restore alternatives removed by dpm-mysql preun
+%{_sbindir}/update-alternatives --install %{_sbindir}/dpm dpm \
+	  %{_libdir}/dpm-mysql/dpm 20 \
+  --slave %{_mandir}/man8/dpm.8.gz dpm.8.gz \
+	  %{_libdir}/dpm-mysql/dpm.8.gz \
+  --slave %{_datadir}/dpm/DPMCONFIG.templ DPMCONFIG.templ \
+	  %{_libdir}/dpm-mysql/DPMCONFIG.templ \
+  --slave %{_initrddir}/dpm dpm.init \
+	  %{_sysconfdir}/dpm-mysql/dpm.init \
+  --slave %{_sysconfdir}/sysconfig/dpm dpm.conf \
+	  %{_sysconfdir}/dpm-mysql/dpm.conf \
+  --slave %{_sysconfdir}/logrotate.d/dpm dpm.logrotate \
+	  %{_sysconfdir}/dpm-mysql/dpm.logrotate \
+  --slave %{_sbindir}/dpm-shutdown dpm-shutdown \
+	  %{_libdir}/dpm-mysql/dpm-shutdown \
+  --slave %{_mandir}/man8/dpm-shutdown.8.gz dpm-shutdown.8.gz \
+	  %{_libdir}/dpm-mysql/dpm-shutdown.8.gz
+
+%triggerpostun -n dpm-server-postgres -- dpm-postgres < 1.8.1.2-4
+# Restore alternatives removed by dpm-postgres preun
+%{_sbindir}/update-alternatives --install %{_sbindir}/dpm dpm \
+	  %{_libdir}/dpm-postgres/dpm 10 \
+  --slave %{_mandir}/man8/dpm.8.gz dpm.8.gz \
+	  %{_libdir}/dpm-postgres/dpm.8.gz \
+  --slave %{_datadir}/dpm/DPMCONFIG.templ DPMCONFIG.templ \
+	  %{_libdir}/dpm-postgres/DPMCONFIG.templ \
+  --slave %{_initrddir}/dpm dpm.init \
+	  %{_sysconfdir}/dpm-postgres/dpm.init \
+  --slave %{_sysconfdir}/sysconfig/dpm dpm.conf \
+	  %{_sysconfdir}/dpm-postgres/dpm.conf \
+  --slave %{_sysconfdir}/logrotate.d/dpm dpm.logrotate \
+	  %{_sysconfdir}/dpm-postgres/dpm.logrotate \
+  --slave %{_sbindir}/dpm-shutdown dpm-shutdown \
+	  %{_libdir}/dpm-postgres/dpm-shutdown \
+  --slave %{_mandir}/man8/dpm-shutdown.8.gz dpm-shutdown.8.gz \
+	  %{_libdir}/dpm-postgres/dpm-shutdown.8.gz
+
+%preun -n dpm-server-mysql
 export LANG=C
 
 if [ $1 = 0 ]; then
     %{_sbindir}/update-alternatives --display dpm | \
 	grep currently | grep -q dpm-mysql && \
-	/sbin/service dpm-mysql stop > /dev/null 2>&1 || :
+	/sbin/service dpm stop > /dev/null 2>&1 || :
     %{_sbindir}/update-alternatives --remove dpm \
 	%{_libdir}/dpm-mysql/dpm
-    /sbin/chkconfig --del dpm-mysql
+    %{_sbindir}/update-alternatives --display dpm > /dev/null || \
+	/sbin/chkconfig --del dpm > /dev/null 2>&1 || :
 fi
 
-%postun -n dpm-mysql
+%preun -n dpm-server-postgres
+export LANG=C
+
+if [ $1 = 0 ]; then
+    %{_sbindir}/update-alternatives --display dpm | \
+	grep currently | grep -q dpm-postgres && \
+	/sbin/service dpm stop > /dev/null 2>&1 || :
+    %{_sbindir}/update-alternatives --remove dpm \
+	%{_libdir}/dpm-postgres/dpm
+    %{_sbindir}/update-alternatives --display dpm > /dev/null || \
+	/sbin/chkconfig --del dpm > /dev/null 2>&1 || :
+fi
+
+%postun -n dpm-server-mysql
 export LANG=C
 
 if [ $1 -ge 1 ]; then
     %{_sbindir}/update-alternatives --display dpm | \
 	grep currently | grep -q dpm-mysql && \
-	/sbin/service dpm-mysql condrestart > /dev/null 2>&1 || :
+	/sbin/service dpm condrestart > /dev/null 2>&1 || :
 fi
 
-%post -n dpm-mysql-nameserver
+%postun -n dpm-server-postgres
+export LANG=C
+
+if [ $1 -ge 1 ]; then
+    %{_sbindir}/update-alternatives --display dpm | \
+	grep currently | grep -q dpm-postgres && \
+	/sbin/service dpm condrestart > /dev/null 2>&1 || :
+fi
+
+%pre -n dpm-name-server-mysql
+getent group dpmmgr > /dev/null || groupadd -r dpmmgr
+getent passwd dpmmgr > /dev/null || useradd -r -g dpmmgr \
+    -d %{_localstatedir}/lib/dpm -s /bin/bash -c "DPM Manager" dpmmgr
+exit 0
+
+%pre -n dpm-name-server-postgres
+getent group dpmmgr > /dev/null || groupadd -r dpmmgr
+getent passwd dpmmgr > /dev/null || useradd -r -g dpmmgr \
+    -d %{_localstatedir}/lib/dpm -s /bin/bash -c "DPM Manager" dpmmgr
+exit 0
+
+%post -n dpm-name-server-mysql
 updatedpns () {
     [ -r /etc/sysconfig/dpnsdaemon ] && . /etc/sysconfig/dpnsdaemon
     [ -z "$NSCONFIGFILE" ] && NSCONFIGFILE=/etc/DPNSCONFIG
@@ -1779,15 +1917,14 @@ updatedpns () {
 
 updatedpns
 
-if [ $1 = 1 ]; then
-    /sbin/chkconfig --add dpm-mysql-nameserver
-fi
 %{_sbindir}/update-alternatives --install %{_sbindir}/dpnsdaemon dpnsdaemon \
 	  %{_libdir}/dpm-mysql/dpnsdaemon 20 \
   --slave %{_mandir}/man8/dpnsdaemon.8.gz dpnsdaemon.8.gz \
 	  %{_libdir}/dpm-mysql/dpnsdaemon.8.gz \
   --slave %{_datadir}/dpm/DPNSCONFIG.templ DPNSCONFIG.templ \
 	  %{_libdir}/dpm-mysql/DPNSCONFIG.templ \
+  --slave %{_initrddir}/dpnsdaemon dpnsdaemon.init \
+	  %{_sysconfdir}/dpm-mysql/dpnsdaemon.init \
   --slave %{_sysconfdir}/sysconfig/dpnsdaemon dpnsdaemon.conf \
 	  %{_sysconfdir}/dpm-mysql/dpnsdaemon.conf \
   --slave %{_sysconfdir}/logrotate.d/dpnsdaemon dpnsdaemon.logrotate \
@@ -1795,235 +1932,15 @@ fi
   --slave %{_sbindir}/dpns-shutdown dpns-shutdown \
 	  %{_libdir}/dpm-mysql/dpns-shutdown \
   --slave %{_mandir}/man8/dpns-shutdown.8.gz dpns-shutdown.8.gz \
-	  %{_libdir}/dpm-mysql/dpns-shutdown.8.gz \
-  --initscript dpm-mysql-nameserver
+	  %{_libdir}/dpm-mysql/dpns-shutdown.8.gz
 
-%preun -n dpm-mysql-nameserver
-export LANG=C
-
-if [ $1 = 0 ]; then
-    %{_sbindir}/update-alternatives --display dpnsdaemon | \
-	grep currently | grep -q dpm-mysql && \
-	/sbin/service dpm-mysql-nameserver stop > /dev/null 2>&1 || :
-    %{_sbindir}/update-alternatives --remove dpnsdaemon \
-	%{_libdir}/dpm-mysql/dpnsdaemon
-    /sbin/chkconfig --del dpm-mysql-nameserver
-fi
-
-%postun -n dpm-mysql-nameserver
-export LANG=C
-
-if [ $1 -ge 1 ]; then
-    %{_sbindir}/update-alternatives --display dpnsdaemon | \
-	grep currently | grep -q dpm-mysql && \
-	/sbin/service dpm-mysql-nameserver condrestart > /dev/null 2>&1 || :
-fi
-
-%post -n dpm-mysql-copyd
 if [ $1 = 1 ]; then
-    /sbin/chkconfig --add dpm-mysql-copyd
-fi
-%{_sbindir}/update-alternatives --install %{_sbindir}/dpmcopyd dpmcopyd \
-	  %{_libdir}/dpm-mysql/dpmcopyd 20 \
-  --slave %{_mandir}/man8/dpmcopyd.8.gz dpmcopyd.8.gz \
-	  %{_libdir}/dpm-mysql/dpmcopyd.8.gz \
-  --slave %{_sysconfdir}/sysconfig/dpmcopyd dpmcopyd.conf \
-	  %{_sysconfdir}/dpm-mysql/dpmcopyd.conf \
-  --slave %{_sysconfdir}/logrotate.d/dpmcopyd dpmcopyd.logrotate \
-	  %{_sysconfdir}/dpm-mysql/dpmcopyd.logrotate \
-  --initscript dpm-mysql-copyd
-
-%preun -n dpm-mysql-copyd
-export LANG=C
-
-if [ $1 = 0 ]; then
-    %{_sbindir}/update-alternatives --display dpmcopyd | \
-	grep currently | grep -q dpm-mysql && \
-	/sbin/service dpm-mysql-copyd stop > /dev/null 2>&1 || :
-    %{_sbindir}/update-alternatives --remove dpmcopyd \
-	%{_libdir}/dpm-mysql/dpmcopyd
-    /sbin/chkconfig --del dpm-mysql-copyd
+    if [ -r %{_initrddir}/dpnsdaemon ]; then
+	/sbin/chkconfig --add dpnsdaemon
+    fi
 fi
 
-%postun -n dpm-mysql-copyd
-export LANG=C
-
-if [ $1 -ge 1 ]; then
-    %{_sbindir}/update-alternatives --display dpmcopyd | \
-	grep currently | grep -q dpm-mysql && \
-	/sbin/service dpm-mysql-copyd condrestart > /dev/null 2>&1 || :
-fi
-
-%post -n dpm-mysql-srmv1
-if [ $1 = 1 ]; then
-    /sbin/chkconfig --add dpm-mysql-srmv1
-fi
-%{_sbindir}/update-alternatives --install %{_sbindir}/dpm-srmv1 dpm-srmv1 \
-	  %{_libdir}/dpm-mysql/dpm-srmv1 20 \
-  --slave %{_mandir}/man8/dpm-srmv1.8.gz dpm-srmv1.8.gz \
-	  %{_libdir}/dpm-mysql/dpm-srmv1.8.gz \
-  --slave %{_sysconfdir}/sysconfig/dpm-srmv1 dpm-srmv1.conf \
-	  %{_sysconfdir}/dpm-mysql/dpm-srmv1.conf \
-  --slave %{_sysconfdir}/logrotate.d/dpm-srmv1 dpm-srmv1.logrotate \
-	  %{_sysconfdir}/dpm-mysql/dpm-srmv1.logrotate \
-  --initscript dpm-mysql-srmv1
-
-%preun -n dpm-mysql-srmv1
-export LANG=C
-
-if [ $1 = 0 ]; then
-    %{_sbindir}/update-alternatives --display dpm-srmv1 | \
-	grep currently | grep -q dpm-mysql && \
-	/sbin/service dpm-mysql-srmv1 stop > /dev/null 2>&1 || :
-    %{_sbindir}/update-alternatives --remove dpm-srmv1 \
-	%{_libdir}/dpm-mysql/dpm-srmv1
-    /sbin/chkconfig --del dpm-mysql-srmv1
-fi
-
-%postun -n dpm-mysql-srmv1
-export LANG=C
-
-if [ $1 -ge 1 ]; then
-    %{_sbindir}/update-alternatives --display dpm-srmv1 | \
-	grep currently | grep -q dpm-mysql && \
-	/sbin/service dpm-mysql-srmv1 condrestart > /dev/null 2>&1 || :
-fi
-
-%post -n dpm-mysql-srmv2
-if [ $1 = 1 ]; then
-    /sbin/chkconfig --add dpm-mysql-srmv2
-fi
-%{_sbindir}/update-alternatives --install %{_sbindir}/dpm-srmv2 dpm-srmv2 \
-	  %{_libdir}/dpm-mysql/dpm-srmv2 20 \
-  --slave %{_mandir}/man8/dpm-srmv2.8.gz dpm-srmv2.8.gz \
-	  %{_libdir}/dpm-mysql/dpm-srmv2.8.gz \
-  --slave %{_sysconfdir}/sysconfig/dpm-srmv2 dpm-srmv2.conf \
-	  %{_sysconfdir}/dpm-mysql/dpm-srmv2.conf \
-  --slave %{_sysconfdir}/logrotate.d/dpm-srmv2 dpm-srmv2.logrotate \
-	  %{_sysconfdir}/dpm-mysql/dpm-srmv2.logrotate \
-  --initscript dpm-mysql-srmv2
-
-%preun -n dpm-mysql-srmv2
-export LANG=C
-
-if [ $1 = 0 ]; then
-    %{_sbindir}/update-alternatives --display dpm-srmv2 | \
-	grep currently | grep -q dpm-mysql && \
-	/sbin/service dpm-mysql-srmv2 stop > /dev/null 2>&1 || :
-    %{_sbindir}/update-alternatives --remove dpm-srmv2 \
-	%{_libdir}/dpm-mysql/dpm-srmv2
-    /sbin/chkconfig --del dpm-mysql-srmv2
-fi
-
-%postun -n dpm-mysql-srmv2
-export LANG=C
-
-if [ $1 -ge 1 ]; then
-    %{_sbindir}/update-alternatives --display dpm-srmv2 | \
-	grep currently | grep -q dpm-mysql && \
-	/sbin/service dpm-mysql-srmv2 condrestart > /dev/null 2>&1 || :
-fi
-
-%post -n dpm-mysql-srmv22
-if [ $1 = 1 ]; then
-    /sbin/chkconfig --add dpm-mysql-srmv22
-fi
-%{_sbindir}/update-alternatives --install %{_sbindir}/dpm-srmv2.2 dpm-srmv2.2 \
-	  %{_libdir}/dpm-mysql/dpm-srmv2.2 20 \
-  --slave %{_mandir}/man8/dpm-srmv2.2.8.gz dpm-srmv2.2.8.gz \
-	  %{_libdir}/dpm-mysql/dpm-srmv2.2.8.gz \
-  --slave %{_sysconfdir}/sysconfig/dpm-srmv2.2 dpm-srmv2.2.conf \
-	  %{_sysconfdir}/dpm-mysql/dpm-srmv2.2.conf \
-  --slave %{_sysconfdir}/logrotate.d/dpm-srmv2.2 dpm-srmv2.2.logrotate \
-	  %{_sysconfdir}/dpm-mysql/dpm-srmv2.2.logrotate \
-  --initscript dpm-mysql-srmv22
-
-%preun -n dpm-mysql-srmv22
-export LANG=C
-
-if [ $1 = 0 ]; then
-    %{_sbindir}/update-alternatives --display dpm-srmv2.2 | \
-	grep currently | grep -q dpm-mysql && \
-	/sbin/service dpm-mysql-srmv22 stop > /dev/null 2>&1 || :
-    %{_sbindir}/update-alternatives --remove dpm-srmv2.2 \
-	%{_libdir}/dpm-mysql/dpm-srmv2.2
-    /sbin/chkconfig --del dpm-mysql-srmv22
-fi
-
-%postun -n dpm-mysql-srmv22
-export LANG=C
-
-if [ $1 -ge 1 ]; then
-    %{_sbindir}/update-alternatives --display dpm-srmv2.2 | \
-	grep currently | grep -q dpm-mysql && \
-	/sbin/service dpm-mysql-srmv22 condrestart > /dev/null 2>&1 || :
-fi
-
-%post -n dpm-rfiod
-if [ $1 = 1 ]; then
-    /sbin/chkconfig --add dpm-rfiod
-fi
-
-%preun -n dpm-rfiod
-if [ $1 = 0 ]; then
-    /sbin/service dpm-rfiod stop > /dev/null 2>&1 || :
-    /sbin/chkconfig --del dpm-rfiod
-fi
-
-%postun -n dpm-rfiod
-if [ $1 -ge 1 ]; then
-    /sbin/service dpm-rfiod condrestart > /dev/null 2>&1 || :
-fi
-
-
-%pre -n dpm-postgres
-getent group dpmmgr > /dev/null || groupadd -r dpmmgr
-getent passwd dpmmgr > /dev/null || useradd -r -g dpmmgr \
-    -d %{_localstatedir}/lib/dpm -s /bin/bash -c "DPM Manager" dpmmgr
-exit 0
-
-%post -n dpm-postgres
-if [ $1 = 1 ]; then
-    /sbin/chkconfig --add dpm-postgres
-fi
-%{_sbindir}/update-alternatives --install %{_sbindir}/dpm dpm \
-	  %{_libdir}/dpm-postgres/dpm 10 \
-  --slave %{_mandir}/man8/dpm.8.gz dpm.8.gz \
-	  %{_libdir}/dpm-postgres/dpm.8.gz \
-  --slave %{_datadir}/dpm/DPMCONFIG.templ DPMCONFIG.templ \
-	  %{_libdir}/dpm-postgres/DPMCONFIG.templ \
-  --slave %{_sysconfdir}/sysconfig/dpm dpm.conf \
-	  %{_sysconfdir}/dpm-postgres/dpm.conf \
-  --slave %{_sysconfdir}/logrotate.d/dpm dpm.logrotate \
-	  %{_sysconfdir}/dpm-postgres/dpm.logrotate \
-  --slave %{_sbindir}/dpm-shutdown dpm-shutdown \
-	  %{_libdir}/dpm-postgres/dpm-shutdown \
-  --slave %{_mandir}/man8/dpm-shutdown.8.gz dpm-shutdown.8.gz \
-	  %{_libdir}/dpm-postgres/dpm-shutdown.8.gz \
-  --initscript dpm-postgres
-
-%preun -n dpm-postgres
-export LANG=C
-
-if [ $1 = 0 ]; then
-    %{_sbindir}/update-alternatives --display dpm | \
-	grep currently | grep -q dpm-postgres && \
-	/sbin/service dpm-postgres stop > /dev/null 2>&1 || :
-    %{_sbindir}/update-alternatives --remove dpm \
-	%{_libdir}/dpm-postgres/dpm
-    /sbin/chkconfig --del dpm-postgres
-fi
-
-%postun -n dpm-postgres
-export LANG=C
-
-if [ $1 -ge 1 ]; then
-    %{_sbindir}/update-alternatives --display dpm | \
-	grep currently | grep -q dpm-postgres && \
-	/sbin/service dpm-postgres condrestart > /dev/null 2>&1 || :
-fi
-
-%post -n dpm-postgres-nameserver
+%post -n dpm-name-server-postgres
 updatedpns () {
     [ -r /etc/sysconfig/dpnsdaemon ] && . /etc/sysconfig/dpnsdaemon
     [ -z "$NSCONFIGFILE" ] && NSCONFIGFILE=/etc/DPNSCONFIG
@@ -2070,15 +1987,14 @@ updatedpns () {
 
 updatedpns
 
-if [ $1 = 1 ]; then
-    /sbin/chkconfig --add dpm-postgres-nameserver
-fi
 %{_sbindir}/update-alternatives --install %{_sbindir}/dpnsdaemon dpnsdaemon \
 	  %{_libdir}/dpm-postgres/dpnsdaemon 10 \
   --slave %{_mandir}/man8/dpnsdaemon.8.gz dpnsdaemon.8.gz \
 	  %{_libdir}/dpm-postgres/dpnsdaemon.8.gz \
   --slave %{_datadir}/dpm/DPNSCONFIG.templ DPNSCONFIG.templ \
 	  %{_libdir}/dpm-postgres/DPNSCONFIG.templ \
+  --slave %{_initrddir}/dpnsdaemon dpnsdaemon.init \
+	  %{_sysconfdir}/dpm-postgres/dpnsdaemon.init \
   --slave %{_sysconfdir}/sysconfig/dpnsdaemon dpnsdaemon.conf \
 	  %{_sysconfdir}/dpm-postgres/dpnsdaemon.conf \
   --slave %{_sysconfdir}/logrotate.d/dpnsdaemon dpnsdaemon.logrotate \
@@ -2086,171 +2002,511 @@ fi
   --slave %{_sbindir}/dpns-shutdown dpns-shutdown \
 	  %{_libdir}/dpm-postgres/dpns-shutdown \
   --slave %{_mandir}/man8/dpns-shutdown.8.gz dpns-shutdown.8.gz \
-	  %{_libdir}/dpm-postgres/dpns-shutdown.8.gz \
-  --initscript dpm-postgres-nameserver
+	  %{_libdir}/dpm-postgres/dpns-shutdown.8.gz
 
-%preun -n dpm-postgres-nameserver
+if [ $1 = 1 ]; then
+    if [ -r %{_initrddir}/dpnsdaemon ]; then
+	/sbin/chkconfig --add dpnsdaemon
+    fi
+fi
+
+%triggerpostun -n dpm-name-server-mysql -- dpm-mysql-nameserver < 1.8.1.2-4
+# Restore alternatives removed by dpm-mysql-nameserver preun
+%{_sbindir}/update-alternatives --install %{_sbindir}/dpnsdaemon dpnsdaemon \
+	  %{_libdir}/dpm-mysql/dpnsdaemon 20 \
+  --slave %{_mandir}/man8/dpnsdaemon.8.gz dpnsdaemon.8.gz \
+	  %{_libdir}/dpm-mysql/dpnsdaemon.8.gz \
+  --slave %{_datadir}/dpm/DPNSCONFIG.templ DPNSCONFIG.templ \
+	  %{_libdir}/dpm-mysql/DPNSCONFIG.templ \
+  --slave %{_initrddir}/dpnsdaemon dpnsdaemon.init \
+	  %{_sysconfdir}/dpm-mysql/dpnsdaemon.init \
+  --slave %{_sysconfdir}/sysconfig/dpnsdaemon dpnsdaemon.conf \
+	  %{_sysconfdir}/dpm-mysql/dpnsdaemon.conf \
+  --slave %{_sysconfdir}/logrotate.d/dpnsdaemon dpnsdaemon.logrotate \
+	  %{_sysconfdir}/dpm-mysql/dpnsdaemon.logrotate \
+  --slave %{_sbindir}/dpns-shutdown dpns-shutdown \
+	  %{_libdir}/dpm-mysql/dpns-shutdown \
+  --slave %{_mandir}/man8/dpns-shutdown.8.gz dpns-shutdown.8.gz \
+	  %{_libdir}/dpm-mysql/dpns-shutdown.8.gz
+
+%triggerpostun -n dpm-name-server-postgres -- dpm-postgres-nameserver < 1.8.1.2-4
+# Restore alternatives removed by dpm-postgres-nameserver preun
+%{_sbindir}/update-alternatives --install %{_sbindir}/dpnsdaemon dpnsdaemon \
+	  %{_libdir}/dpm-postgres/dpnsdaemon 10 \
+  --slave %{_mandir}/man8/dpnsdaemon.8.gz dpnsdaemon.8.gz \
+	  %{_libdir}/dpm-postgres/dpnsdaemon.8.gz \
+  --slave %{_datadir}/dpm/DPNSCONFIG.templ DPNSCONFIG.templ \
+	  %{_libdir}/dpm-postgres/DPNSCONFIG.templ \
+  --slave %{_initrddir}/dpnsdaemon dpnsdaemon.init \
+	  %{_sysconfdir}/dpm-postgres/dpnsdaemon.init \
+  --slave %{_sysconfdir}/sysconfig/dpnsdaemon dpnsdaemon.conf \
+	  %{_sysconfdir}/dpm-postgres/dpnsdaemon.conf \
+  --slave %{_sysconfdir}/logrotate.d/dpnsdaemon dpnsdaemon.logrotate \
+	  %{_sysconfdir}/dpm-postgres/dpnsdaemon.logrotate \
+  --slave %{_sbindir}/dpns-shutdown dpns-shutdown \
+	  %{_libdir}/dpm-postgres/dpns-shutdown \
+  --slave %{_mandir}/man8/dpns-shutdown.8.gz dpns-shutdown.8.gz \
+	  %{_libdir}/dpm-postgres/dpns-shutdown.8.gz
+
+%preun -n dpm-name-server-mysql
+export LANG=C
+
+if [ $1 = 0 ]; then
+    %{_sbindir}/update-alternatives --display dpnsdaemon | \
+	grep currently | grep -q dpm-mysql && \
+	/sbin/service dpnsdaemon stop > /dev/null 2>&1 || :
+    %{_sbindir}/update-alternatives --remove dpnsdaemon \
+	%{_libdir}/dpm-mysql/dpnsdaemon
+    %{_sbindir}/update-alternatives --display dpnsdaemon > /dev/null || \
+	/sbin/chkconfig --del dpnsdaemon > /dev/null 2>&1 || :
+fi
+
+%preun -n dpm-name-server-postgres
 export LANG=C
 
 if [ $1 = 0 ]; then
     %{_sbindir}/update-alternatives --display dpnsdaemon | \
 	grep currently | grep -q dpm-postgres && \
-	/sbin/service dpm-postgres-nameserver stop > /dev/null 2>&1 || :
+	/sbin/service dpnsdaemon stop > /dev/null 2>&1 || :
     %{_sbindir}/update-alternatives --remove dpnsdaemon \
 	%{_libdir}/dpm-postgres/dpnsdaemon
-    /sbin/chkconfig --del dpm-postgres-nameserver
+    %{_sbindir}/update-alternatives --display dpnsdaemon > /dev/null || \
+	/sbin/chkconfig --del dpnsdaemon > /dev/null 2>&1 || :
 fi
 
-%postun -n dpm-postgres-nameserver
+%postun -n dpm-name-server-mysql
+export LANG=C
+
+if [ $1 -ge 1 ]; then
+    %{_sbindir}/update-alternatives --display dpnsdaemon | \
+	grep currently | grep -q dpm-mysql && \
+	/sbin/service dpnsdaemon condrestart > /dev/null 2>&1 || :
+fi
+
+%postun -n dpm-name-server-postgres
 export LANG=C
 
 if [ $1 -ge 1 ]; then
     %{_sbindir}/update-alternatives --display dpnsdaemon | \
 	grep currently | grep -q dpm-postgres && \
-	/sbin/service dpm-postgres-nameserver condrestart > /dev/null 2>&1 || :
+	/sbin/service dpnsdaemon condrestart > /dev/null 2>&1 || :
 fi
 
-%post -n dpm-postgres-copyd
+%pre -n dpm-copy-server-mysql
+getent group dpmmgr > /dev/null || groupadd -r dpmmgr
+getent passwd dpmmgr > /dev/null || useradd -r -g dpmmgr \
+    -d %{_localstatedir}/lib/dpm -s /bin/bash -c "DPM Manager" dpmmgr
+exit 0
+
+%pre -n dpm-copy-server-postgres
+getent group dpmmgr > /dev/null || groupadd -r dpmmgr
+getent passwd dpmmgr > /dev/null || useradd -r -g dpmmgr \
+    -d %{_localstatedir}/lib/dpm -s /bin/bash -c "DPM Manager" dpmmgr
+exit 0
+
+%post -n dpm-copy-server-mysql
+%{_sbindir}/update-alternatives --install %{_sbindir}/dpmcopyd dpmcopyd \
+	  %{_libdir}/dpm-mysql/dpmcopyd 20 \
+  --slave %{_mandir}/man8/dpmcopyd.8.gz dpmcopyd.8.gz \
+	  %{_libdir}/dpm-mysql/dpmcopyd.8.gz \
+  --slave %{_initrddir}/dpmcopyd dpmcopyd.init \
+	  %{_sysconfdir}/dpm-mysql/dpmcopyd.init \
+  --slave %{_sysconfdir}/sysconfig/dpmcopyd dpmcopyd.conf \
+	  %{_sysconfdir}/dpm-mysql/dpmcopyd.conf \
+  --slave %{_sysconfdir}/logrotate.d/dpmcopyd dpmcopyd.logrotate \
+	  %{_sysconfdir}/dpm-mysql/dpmcopyd.logrotate
+
 if [ $1 = 1 ]; then
-    /sbin/chkconfig --add dpm-postgres-copyd
+    if [ -r %{_initrddir}/dpmcopyd ]; then
+	/sbin/chkconfig --add dpmcopyd
+    fi
 fi
+
+%post -n dpm-copy-server-postgres
 %{_sbindir}/update-alternatives --install %{_sbindir}/dpmcopyd dpmcopyd \
 	  %{_libdir}/dpm-postgres/dpmcopyd 10 \
   --slave %{_mandir}/man8/dpmcopyd.8.gz dpmcopyd.8.gz \
 	  %{_libdir}/dpm-postgres/dpmcopyd.8.gz \
+  --slave %{_initrddir}/dpmcopyd dpmcopyd.init \
+	  %{_sysconfdir}/dpm-postgres/dpmcopyd.init \
   --slave %{_sysconfdir}/sysconfig/dpmcopyd dpmcopyd.conf \
 	  %{_sysconfdir}/dpm-postgres/dpmcopyd.conf \
   --slave %{_sysconfdir}/logrotate.d/dpmcopyd dpmcopyd.logrotate \
-	  %{_sysconfdir}/dpm-postgres/dpmcopyd.logrotate \
-  --initscript dpm-postgres-copyd
+	  %{_sysconfdir}/dpm-postgres/dpmcopyd.logrotate
 
-%preun -n dpm-postgres-copyd
+if [ $1 = 1 ]; then
+    if [ -r %{_initrddir}/dpmcopyd ]; then
+	/sbin/chkconfig --add dpmcopyd
+    fi
+fi
+
+%triggerpostun -n dpm-copy-server-mysql -- dpm-mysql-copyd < 1.8.1.2-4
+# Restore alternatives removed by dpm-mysql-copyd preun
+%{_sbindir}/update-alternatives --install %{_sbindir}/dpmcopyd dpmcopyd \
+	  %{_libdir}/dpm-mysql/dpmcopyd 20 \
+  --slave %{_mandir}/man8/dpmcopyd.8.gz dpmcopyd.8.gz \
+	  %{_libdir}/dpm-mysql/dpmcopyd.8.gz \
+  --slave %{_initrddir}/dpmcopyd dpmcopyd.init \
+	  %{_sysconfdir}/dpm-mysql/dpmcopyd.init \
+  --slave %{_sysconfdir}/sysconfig/dpmcopyd dpmcopyd.conf \
+	  %{_sysconfdir}/dpm-mysql/dpmcopyd.conf \
+  --slave %{_sysconfdir}/logrotate.d/dpmcopyd dpmcopyd.logrotate \
+	  %{_sysconfdir}/dpm-mysql/dpmcopyd.logrotate
+
+%triggerpostun -n dpm-copy-server-postgres -- dpm-postgres-copyd < 1.8.1.2-4
+# Restore alternatives removed by dpm-postgres-copyd preun
+%{_sbindir}/update-alternatives --install %{_sbindir}/dpmcopyd dpmcopyd \
+	  %{_libdir}/dpm-postgres/dpmcopyd 10 \
+  --slave %{_mandir}/man8/dpmcopyd.8.gz dpmcopyd.8.gz \
+	  %{_libdir}/dpm-postgres/dpmcopyd.8.gz \
+  --slave %{_initrddir}/dpmcopyd dpmcopyd.init \
+	  %{_sysconfdir}/dpm-postgres/dpmcopyd.init \
+  --slave %{_sysconfdir}/sysconfig/dpmcopyd dpmcopyd.conf \
+	  %{_sysconfdir}/dpm-postgres/dpmcopyd.conf \
+  --slave %{_sysconfdir}/logrotate.d/dpmcopyd dpmcopyd.logrotate \
+	  %{_sysconfdir}/dpm-postgres/dpmcopyd.logrotate
+
+if [ $1 = 1 ]; then
+    if [ -r %{_initrddir}/dpmcopyd ]; then
+	/sbin/chkconfig --add dpmcopyd
+    fi
+fi
+
+%preun -n dpm-copy-server-mysql
+export LANG=C
+
+if [ $1 = 0 ]; then
+    %{_sbindir}/update-alternatives --display dpmcopyd | \
+	grep currently | grep -q dpm-mysql && \
+	/sbin/service dpmcopyd stop > /dev/null 2>&1 || :
+    %{_sbindir}/update-alternatives --remove dpmcopyd \
+	%{_libdir}/dpm-mysql/dpmcopyd
+    %{_sbindir}/update-alternatives --display dpmcopyd > /dev/null || \
+	/sbin/chkconfig --del dpmcopyd > /dev/null 2>&1 || :
+fi
+
+%preun -n dpm-copy-server-postgres
 export LANG=C
 
 if [ $1 = 0 ]; then
     %{_sbindir}/update-alternatives --display dpmcopyd | \
 	grep currently | grep -q dpm-postgres && \
-	/sbin/service dpm-postgres-copyd stop > /dev/null 2>&1 || :
+	/sbin/service dpmcopyd stop > /dev/null 2>&1 || :
     %{_sbindir}/update-alternatives --remove dpmcopyd \
 	%{_libdir}/dpm-postgres/dpmcopyd
-    /sbin/chkconfig --del dpm-postgres-copyd
+    %{_sbindir}/update-alternatives --display dpmcopyd > /dev/null || \
+	/sbin/chkconfig --del dpmcopyd > /dev/null 2>&1 || :
 fi
 
-%postun -n dpm-postgres-copyd
+%postun -n dpm-copy-server-mysql
+export LANG=C
+
+if [ $1 -ge 1 ]; then
+    %{_sbindir}/update-alternatives --display dpmcopyd | \
+	grep currently | grep -q dpm-mysql && \
+	/sbin/service dpmcopyd condrestart > /dev/null 2>&1 || :
+fi
+
+%postun -n dpm-copy-server-postgres
 export LANG=C
 
 if [ $1 -ge 1 ]; then
     %{_sbindir}/update-alternatives --display dpmcopyd | \
 	grep currently | grep -q dpm-postgres && \
-	/sbin/service dpm-postgres-copyd condrestart > /dev/null 2>&1 || :
+	/sbin/service dpmcopyd condrestart > /dev/null 2>&1 || :
 fi
 
-%post -n dpm-postgres-srmv1
+%pre -n dpm-srm-server-mysql
+getent group dpmmgr > /dev/null || groupadd -r dpmmgr
+getent passwd dpmmgr > /dev/null || useradd -r -g dpmmgr \
+    -d %{_localstatedir}/lib/dpm -s /bin/bash -c "DPM Manager" dpmmgr
+exit 0
+
+%pre -n dpm-srm-server-postgres
+getent group dpmmgr > /dev/null || groupadd -r dpmmgr
+getent passwd dpmmgr > /dev/null || useradd -r -g dpmmgr \
+    -d %{_localstatedir}/lib/dpm -s /bin/bash -c "DPM Manager" dpmmgr
+exit 0
+
+%post -n dpm-srm-server-mysql
+%{_sbindir}/update-alternatives --install %{_sbindir}/dpm-srmv1 dpm-srmv1 \
+	  %{_libdir}/dpm-mysql/dpm-srmv1 20 \
+  --slave %{_mandir}/man8/dpm-srmv1.8.gz dpm-srmv1.8.gz \
+	  %{_libdir}/dpm-mysql/dpm-srmv1.8.gz \
+  --slave %{_initrddir}/dpm-srmv1 dpm-srmv1.init \
+	  %{_sysconfdir}/dpm-mysql/dpm-srmv1.init \
+  --slave %{_sysconfdir}/sysconfig/dpm-srmv1 dpm-srmv1.conf \
+	  %{_sysconfdir}/dpm-mysql/dpm-srmv1.conf \
+  --slave %{_sysconfdir}/logrotate.d/dpm-srmv1 dpm-srmv1.logrotate \
+	  %{_sysconfdir}/dpm-mysql/dpm-srmv1.logrotate
+
+%{_sbindir}/update-alternatives --install %{_sbindir}/dpm-srmv2 dpm-srmv2 \
+	  %{_libdir}/dpm-mysql/dpm-srmv2 20 \
+  --slave %{_mandir}/man8/dpm-srmv2.8.gz dpm-srmv2.8.gz \
+	  %{_libdir}/dpm-mysql/dpm-srmv2.8.gz \
+  --slave %{_initrddir}/dpm-srmv2 dpm-srmv2.init \
+	  %{_sysconfdir}/dpm-mysql/dpm-srmv2.init \
+  --slave %{_sysconfdir}/sysconfig/dpm-srmv2 dpm-srmv2.conf \
+	  %{_sysconfdir}/dpm-mysql/dpm-srmv2.conf \
+  --slave %{_sysconfdir}/logrotate.d/dpm-srmv2 dpm-srmv2.logrotate \
+	  %{_sysconfdir}/dpm-mysql/dpm-srmv2.logrotate
+
+%{_sbindir}/update-alternatives --install %{_sbindir}/dpm-srmv2.2 dpm-srmv2.2 \
+	  %{_libdir}/dpm-mysql/dpm-srmv2.2 20 \
+  --slave %{_mandir}/man8/dpm-srmv2.2.8.gz dpm-srmv2.2.8.gz \
+	  %{_libdir}/dpm-mysql/dpm-srmv2.2.8.gz \
+  --slave %{_initrddir}/dpm-srmv2.2 dpm-srmv2.2.init \
+	  %{_sysconfdir}/dpm-mysql/dpm-srmv2.2.init \
+  --slave %{_sysconfdir}/sysconfig/dpm-srmv2.2 dpm-srmv2.2.conf \
+	  %{_sysconfdir}/dpm-mysql/dpm-srmv2.2.conf \
+  --slave %{_sysconfdir}/logrotate.d/dpm-srmv2.2 dpm-srmv2.2.logrotate \
+	  %{_sysconfdir}/dpm-mysql/dpm-srmv2.2.logrotate
+
 if [ $1 = 1 ]; then
-    /sbin/chkconfig --add dpm-postgres-srmv1
+    if [ -r %{_initrddir}/dpm-srmv1 ]; then
+	/sbin/chkconfig --add dpm-srmv1;
+    fi
+    if [ -r %{_initrddir}/dpm-srmv2 ]; then
+	/sbin/chkconfig --add dpm-srmv2
+    fi
+    if [ -r %{_initrddir}/dpm-srmv2.2 ]; then
+	/sbin/chkconfig --add dpm-srmv2.2
+    fi
 fi
+
+%post -n dpm-srm-server-postgres
 %{_sbindir}/update-alternatives --install %{_sbindir}/dpm-srmv1 dpm-srmv1 \
 	  %{_libdir}/dpm-postgres/dpm-srmv1 10 \
   --slave %{_mandir}/man8/dpm-srmv1.8.gz dpm-srmv1.8.gz \
 	  %{_libdir}/dpm-postgres/dpm-srmv1.8.gz \
+  --slave %{_initrddir}/dpm-srmv1 dpm-srmv1.init \
+	  %{_sysconfdir}/dpm-postgres/dpm-srmv1.init \
   --slave %{_sysconfdir}/sysconfig/dpm-srmv1 dpm-srmv1.conf \
 	  %{_sysconfdir}/dpm-postgres/dpm-srmv1.conf \
   --slave %{_sysconfdir}/logrotate.d/dpm-srmv1 dpm-srmv1.logrotate \
-	  %{_sysconfdir}/dpm-postgres/dpm-srmv1.logrotate \
-  --initscript dpm-postgres-srmv1
+	  %{_sysconfdir}/dpm-postgres/dpm-srmv1.logrotate
 
-%preun -n dpm-postgres-srmv1
-export LANG=C
-
-if [ $1 = 0 ]; then
-    %{_sbindir}/update-alternatives --display dpm-srmv1 | \
-	grep currently | grep -q dpm-postgres && \
-	/sbin/service dpm-postgres-srmv1 stop > /dev/null 2>&1 || :
-    %{_sbindir}/update-alternatives --remove dpm-srmv1 \
-	%{_libdir}/dpm-postgres/dpm-srmv1
-    /sbin/chkconfig --del dpm-postgres-srmv1
-fi
-
-%postun -n dpm-postgres-srmv1
-export LANG=C
-
-if [ $1 -ge 1 ]; then
-    %{_sbindir}/update-alternatives --display dpm-srmv1 | \
-	grep currently | grep -q dpm-postgres && \
-	/sbin/service dpm-postgres-srmv1 condrestart > /dev/null 2>&1 || :
-fi
-
-%post -n dpm-postgres-srmv2
-if [ $1 = 1 ]; then
-    /sbin/chkconfig --add dpm-postgres-srmv2
-fi
 %{_sbindir}/update-alternatives --install %{_sbindir}/dpm-srmv2 dpm-srmv2 \
 	  %{_libdir}/dpm-postgres/dpm-srmv2 10 \
   --slave %{_mandir}/man8/dpm-srmv2.8.gz dpm-srmv2.8.gz \
 	  %{_libdir}/dpm-postgres/dpm-srmv2.8.gz \
+  --slave %{_initrddir}/dpm-srmv2 dpm-srmv2.init \
+	  %{_sysconfdir}/dpm-postgres/dpm-srmv2.init \
   --slave %{_sysconfdir}/sysconfig/dpm-srmv2 dpm-srmv2.conf \
 	  %{_sysconfdir}/dpm-postgres/dpm-srmv2.conf \
   --slave %{_sysconfdir}/logrotate.d/dpm-srmv2 dpm-srmv2.logrotate \
-	  %{_sysconfdir}/dpm-postgres/dpm-srmv2.logrotate \
-  --initscript dpm-postgres-srmv2
+	  %{_sysconfdir}/dpm-postgres/dpm-srmv2.logrotate
 
-%preun -n dpm-postgres-srmv2
-export LANG=C
-
-if [ $1 = 0 ]; then
-    %{_sbindir}/update-alternatives --display dpm-srmv2 | \
-	grep currently | grep -q dpm-postgres && \
-	/sbin/service dpm-postgres-srmv2 stop > /dev/null 2>&1 || :
-    %{_sbindir}/update-alternatives --remove dpm-srmv2 \
-	%{_libdir}/dpm-postgres/dpm-srmv2
-    /sbin/chkconfig --del dpm-postgres-srmv2
-fi
-
-%postun -n dpm-postgres-srmv2
-export LANG=C
-
-if [ $1 -ge 1 ]; then
-    %{_sbindir}/update-alternatives --display dpm-srmv2 | \
-	grep currently | grep -q dpm-postgres && \
-	/sbin/service dpm-postgres-srmv2 condrestart > /dev/null 2>&1 || :
-fi
-
-%post -n dpm-postgres-srmv22
-if [ $1 = 1 ]; then
-    /sbin/chkconfig --add dpm-postgres-srmv22
-fi
 %{_sbindir}/update-alternatives --install %{_sbindir}/dpm-srmv2.2 dpm-srmv2.2 \
 	  %{_libdir}/dpm-postgres/dpm-srmv2.2 10 \
   --slave %{_mandir}/man8/dpm-srmv2.2.8.gz dpm-srmv2.2.8.gz \
 	  %{_libdir}/dpm-postgres/dpm-srmv2.2.8.gz \
+  --slave %{_initrddir}/dpm-srmv2.2 dpm-srmv2.2.init \
+	  %{_sysconfdir}/dpm-postgres/dpm-srmv2.2.init \
   --slave %{_sysconfdir}/sysconfig/dpm-srmv2.2 dpm-srmv2.2.conf \
 	  %{_sysconfdir}/dpm-postgres/dpm-srmv2.2.conf \
   --slave %{_sysconfdir}/logrotate.d/dpm-srmv2.2 dpm-srmv2.2.logrotate \
-	  %{_sysconfdir}/dpm-postgres/dpm-srmv2.2.logrotate \
-  --initscript dpm-postgres-srmv22
+	  %{_sysconfdir}/dpm-postgres/dpm-srmv2.2.logrotate
 
-%preun -n dpm-postgres-srmv22
+if [ $1 = 1 ]; then
+    if [ -r %{_initrddir}/dpm-srmv1 ]; then
+	/sbin/chkconfig --add dpm-srmv1;
+    fi
+    if [ -r %{_initrddir}/dpm-srmv2 ]; then
+	/sbin/chkconfig --add dpm-srmv2
+    fi
+    if [ -r %{_initrddir}/dpm-srmv2.2 ]; then
+	/sbin/chkconfig --add dpm-srmv2.2
+    fi
+fi
+
+%triggerpostun -n dpm-srm-server-mysql -- dpm-mysql-srmv1 < 1.8.1.2-4
+# Restore alternatives removed by dpm-mysql-srmv1 preun
+%{_sbindir}/update-alternatives --install %{_sbindir}/dpm-srmv1 dpm-srmv1 \
+	  %{_libdir}/dpm-mysql/dpm-srmv1 20 \
+  --slave %{_mandir}/man8/dpm-srmv1.8.gz dpm-srmv1.8.gz \
+	  %{_libdir}/dpm-mysql/dpm-srmv1.8.gz \
+  --slave %{_initrddir}/dpm-srmv1 dpm-srmv1.init \
+	  %{_sysconfdir}/dpm-mysql/dpm-srmv1.init \
+  --slave %{_sysconfdir}/sysconfig/dpm-srmv1 dpm-srmv1.conf \
+	  %{_sysconfdir}/dpm-mysql/dpm-srmv1.conf \
+  --slave %{_sysconfdir}/logrotate.d/dpm-srmv1 dpm-srmv1.logrotate \
+	  %{_sysconfdir}/dpm-mysql/dpm-srmv1.logrotate
+
+%triggerpostun -n dpm-srm-server-mysql -- dpm-mysql-srmv2 < 1.8.1.2-4
+# Restore alternatives removed by dpm-mysql-srmv2 preun
+%{_sbindir}/update-alternatives --install %{_sbindir}/dpm-srmv2 dpm-srmv2 \
+	  %{_libdir}/dpm-mysql/dpm-srmv2 20 \
+  --slave %{_mandir}/man8/dpm-srmv2.8.gz dpm-srmv2.8.gz \
+	  %{_libdir}/dpm-mysql/dpm-srmv2.8.gz \
+  --slave %{_initrddir}/dpm-srmv2 dpm-srmv2.init \
+	  %{_sysconfdir}/dpm-mysql/dpm-srmv2.init \
+  --slave %{_sysconfdir}/sysconfig/dpm-srmv2 dpm-srmv2.conf \
+	  %{_sysconfdir}/dpm-mysql/dpm-srmv2.conf \
+  --slave %{_sysconfdir}/logrotate.d/dpm-srmv2 dpm-srmv2.logrotate \
+	  %{_sysconfdir}/dpm-mysql/dpm-srmv2.logrotate
+
+%triggerpostun -n dpm-srm-server-mysql -- dpm-mysql-srmv2.2 < 1.8.1.2-4
+# Restore alternatives removed by dpm-mysql-srmv22 preun
+%{_sbindir}/update-alternatives --install %{_sbindir}/dpm-srmv2.2 dpm-srmv2.2 \
+	  %{_libdir}/dpm-mysql/dpm-srmv2.2 20 \
+  --slave %{_mandir}/man8/dpm-srmv2.2.8.gz dpm-srmv2.2.8.gz \
+	  %{_libdir}/dpm-mysql/dpm-srmv2.2.8.gz \
+  --slave %{_initrddir}/dpm-srmv2.2 dpm-srmv2.2.init \
+	  %{_sysconfdir}/dpm-mysql/dpm-srmv2.2.init \
+  --slave %{_sysconfdir}/sysconfig/dpm-srmv2.2 dpm-srmv2.2.conf \
+	  %{_sysconfdir}/dpm-mysql/dpm-srmv2.2.conf \
+  --slave %{_sysconfdir}/logrotate.d/dpm-srmv2.2 dpm-srmv2.2.logrotate \
+	  %{_sysconfdir}/dpm-mysql/dpm-srmv2.2.logrotate
+
+%triggerpostun -n dpm-srm-server-postgres -- dpm-postgres-srmv1 < 1.8.1.2-4
+# Restore alternatives removed by dpm-postgres-srmv1 preun
+%{_sbindir}/update-alternatives --install %{_sbindir}/dpm-srmv1 dpm-srmv1 \
+	  %{_libdir}/dpm-postgres/dpm-srmv1 10 \
+  --slave %{_mandir}/man8/dpm-srmv1.8.gz dpm-srmv1.8.gz \
+	  %{_libdir}/dpm-postgres/dpm-srmv1.8.gz \
+  --slave %{_initrddir}/dpm-srmv1 dpm-srmv1.init \
+	  %{_sysconfdir}/dpm-postgres/dpm-srmv1.init \
+  --slave %{_sysconfdir}/sysconfig/dpm-srmv1 dpm-srmv1.conf \
+	  %{_sysconfdir}/dpm-postgres/dpm-srmv1.conf \
+  --slave %{_sysconfdir}/logrotate.d/dpm-srmv1 dpm-srmv1.logrotate \
+	  %{_sysconfdir}/dpm-postgres/dpm-srmv1.logrotate
+
+%triggerpostun -n dpm-srm-server-postgres -- dpm-postgres-srmv2 < 1.8.1.2-4
+# Restore alternatives removed by dpm-postgres-srmv2 preun
+%{_sbindir}/update-alternatives --install %{_sbindir}/dpm-srmv2 dpm-srmv2 \
+	  %{_libdir}/dpm-postgres/dpm-srmv2 10 \
+  --slave %{_mandir}/man8/dpm-srmv2.8.gz dpm-srmv2.8.gz \
+	  %{_libdir}/dpm-postgres/dpm-srmv2.8.gz \
+  --slave %{_initrddir}/dpm-srmv2 dpm-srmv2.init \
+	  %{_sysconfdir}/dpm-postgres/dpm-srmv2.init \
+  --slave %{_sysconfdir}/sysconfig/dpm-srmv2 dpm-srmv2.conf \
+	  %{_sysconfdir}/dpm-postgres/dpm-srmv2.conf \
+  --slave %{_sysconfdir}/logrotate.d/dpm-srmv2 dpm-srmv2.logrotate \
+	  %{_sysconfdir}/dpm-postgres/dpm-srmv2.logrotate
+
+%triggerpostun -n dpm-srm-server-postgres -- dpm-postgres-srmv2.2 < 1.8.1.2-4
+# Restore alternatives removed by dpm-postgres-srmv22 preun
+%{_sbindir}/update-alternatives --install %{_sbindir}/dpm-srmv2.2 dpm-srmv2.2 \
+	  %{_libdir}/dpm-postgres/dpm-srmv2.2 10 \
+  --slave %{_mandir}/man8/dpm-srmv2.2.8.gz dpm-srmv2.2.8.gz \
+	  %{_libdir}/dpm-postgres/dpm-srmv2.2.8.gz \
+  --slave %{_initrddir}/dpm-srmv2.2 dpm-srmv2.2.init \
+	  %{_sysconfdir}/dpm-postgres/dpm-srmv2.2.init \
+  --slave %{_sysconfdir}/sysconfig/dpm-srmv2.2 dpm-srmv2.2.conf \
+	  %{_sysconfdir}/dpm-postgres/dpm-srmv2.2.conf \
+  --slave %{_sysconfdir}/logrotate.d/dpm-srmv2.2 dpm-srmv2.2.logrotate \
+	  %{_sysconfdir}/dpm-postgres/dpm-srmv2.2.logrotate
+
+%preun -n dpm-srm-server-mysql
 export LANG=C
 
 if [ $1 = 0 ]; then
+    %{_sbindir}/update-alternatives --display dpm-srmv1 | \
+	grep currently | grep -q dpm-mysql && \
+	/sbin/service dpm-srmv1 stop > /dev/null 2>&1 || :
+    %{_sbindir}/update-alternatives --remove dpm-srmv1 \
+	%{_libdir}/dpm-mysql/dpm-srmv1
+    %{_sbindir}/update-alternatives --display dpm-srmv1 > /dev/null || \
+	/sbin/chkconfig --del dpm-srmv1 > /dev/null 2>&1 || :
+
+    %{_sbindir}/update-alternatives --display dpm-srmv2 | \
+	grep currently | grep -q dpm-mysql && \
+	/sbin/service dpm-srmv2 stop > /dev/null 2>&1 || :
+    %{_sbindir}/update-alternatives --remove dpm-srmv2 \
+	%{_libdir}/dpm-mysql/dpm-srmv2
+    %{_sbindir}/update-alternatives --display dpm-srmv2 > /dev/null || \
+	/sbin/chkconfig --del dpm-srmv2 > /dev/null 2>&1 || :
+
     %{_sbindir}/update-alternatives --display dpm-srmv2.2 | \
-	grep currently | grep -q dpm-postgres && \
-	/sbin/service dpm-postgres-srmv22 stop > /dev/null 2>&1 || :
+	grep currently | grep -q dpm-mysql && \
+	/sbin/service dpm-srmv2.2 stop > /dev/null 2>&1 || :
     %{_sbindir}/update-alternatives --remove dpm-srmv2.2 \
-	%{_libdir}/dpm-postgres/dpm-srmv2.2
-    /sbin/chkconfig --del dpm-postgres-srmv22
+	%{_libdir}/dpm-mysql/dpm-srmv2.2
+    %{_sbindir}/update-alternatives --display dpm-srmv2.2 > /dev/null || \
+	/sbin/chkconfig --del dpm-srmv2.2 > /dev/null 2>&1 || :
 fi
 
-%postun -n dpm-postgres-srmv22
+%preun -n dpm-srm-server-postgres
+export LANG=C
+
+if [ $1 = 0 ]; then
+    %{_sbindir}/update-alternatives --display dpm-srmv1 | \
+	grep currently | grep -q dpm-postgres && \
+	/sbin/service dpm-srmv1 stop > /dev/null 2>&1 || :
+    %{_sbindir}/update-alternatives --remove dpm-srmv1 \
+	%{_libdir}/dpm-postgres/dpm-srmv1
+    %{_sbindir}/update-alternatives --display dpm-srmv1 > /dev/null || \
+	/sbin/chkconfig --del dpm-srmv1 > /dev/null 2>&1 || :
+
+    %{_sbindir}/update-alternatives --display dpm-srmv2 | \
+	grep currently | grep -q dpm-postgres && \
+	/sbin/service dpm-srmv2 stop > /dev/null 2>&1 || :
+    %{_sbindir}/update-alternatives --remove dpm-srmv2 \
+	%{_libdir}/dpm-postgres/dpm-srmv2
+    %{_sbindir}/update-alternatives --display dpm-srmv2 > /dev/null || \
+	/sbin/chkconfig --del dpm-srmv2 > /dev/null 2>&1 || :
+
+    %{_sbindir}/update-alternatives --display dpm-srmv2.2 | \
+	grep currently | grep -q dpm-postgres && \
+	/sbin/service dpm-srmv2.2 stop > /dev/null 2>&1 || :
+    %{_sbindir}/update-alternatives --remove dpm-srmv2.2 \
+	%{_libdir}/dpm-postgres/dpm-srmv2.2
+    %{_sbindir}/update-alternatives --display dpm-srmv2.2 > /dev/null || \
+	/sbin/chkconfig --del dpm-srmv2.2 > /dev/null 2>&1 || :
+fi
+
+%postun -n dpm-srm-server-mysql
 export LANG=C
 
 if [ $1 -ge 1 ]; then
+    %{_sbindir}/update-alternatives --display dpm-srmv1 | \
+	grep currently | grep -q dpm-mysql && \
+	/sbin/service dpm-srmv1 condrestart > /dev/null 2>&1 || :
+
+    %{_sbindir}/update-alternatives --display dpm-srmv2 | \
+	grep currently | grep -q dpm-mysql && \
+	/sbin/service dpm-srmv2 condrestart > /dev/null 2>&1 || :
+
     %{_sbindir}/update-alternatives --display dpm-srmv2.2 | \
-	grep currently | grep -q dpm-postgres && \
-	/sbin/service dpm-postgres-srmv22 condrestart > /dev/null 2>&1 || :
+	grep currently | grep -q dpm-mysql && \
+	/sbin/service dpm-srmv2.2 condrestart > /dev/null 2>&1 || :
 fi
 
-%files
+%postun -n dpm-srm-server-postgres
+export LANG=C
+
+if [ $1 -ge 1 ]; then
+    %{_sbindir}/update-alternatives --display dpm-srmv1 | \
+	grep currently | grep -q dpm-postgres && \
+	/sbin/service dpm-srmv1 condrestart > /dev/null 2>&1 || :
+
+    %{_sbindir}/update-alternatives --display dpm-srmv2 | \
+	grep currently | grep -q dpm-postgres && \
+	/sbin/service dpm-srmv2 condrestart > /dev/null 2>&1 || :
+
+    %{_sbindir}/update-alternatives --display dpm-srmv2.2 | \
+	grep currently | grep -q dpm-postgres && \
+	/sbin/service dpm-srmv2.2 condrestart > /dev/null 2>&1 || :
+fi
+
+%post -n dpm-rfio-server
+if [ $1 = 1 ]; then
+    /sbin/chkconfig --add dpm-rfiod
+fi
+
+%preun -n dpm-rfio-server
+if [ $1 = 0 ]; then
+    /sbin/service dpm-rfiod stop > /dev/null 2>&1 || :
+    /sbin/chkconfig --del dpm-rfiod
+fi
+
+%postun -n dpm-rfio-server
+if [ $1 -ge 1 ]; then
+    /sbin/service dpm-rfiod condrestart > /dev/null 2>&1 || :
+fi
+
+%files libs
 %defattr(-,root,root,-)
 %{_libdir}/liblcgdm.so.*
 %dir %{_libdir}/%{name}
@@ -2269,7 +2525,7 @@ fi
 %doc %{_mandir}/man3/serrno.3*
 %doc %{_mandir}/man4/Castor_limits.4*
 
-%files -n lfc
+%files -n lfc-libs
 %defattr(-,root,root,-)
 %{_libdir}/liblfc.so.*
 %doc lfc-mysql/%{name}-%{version}/doc/lfc/README
@@ -2282,7 +2538,7 @@ fi
 %doc %{_mandir}/man3/lfc_ping.3*
 %doc %{_mandir}/man3/lfc_[q-z]*.3*
 
-%files -n lfc-client
+%files -n lfc
 %defattr(-,root,root,-)
 %{_bindir}/lfc-*
 %doc %{_mandir}/man1/lfc-*
@@ -2322,7 +2578,7 @@ fi
 %endif
 %endif
 
-%files -n lfc-mysql
+%files -n lfc-server-mysql
 %defattr(-,root,root,-)
 %dir %{_libdir}/lfc-mysql
 %{_libdir}/lfc-mysql/lfcdaemon
@@ -2336,11 +2592,12 @@ fi
 %doc %{_libdir}/lfc-mysql/lfc-shutdown.8*
 %ghost %{_mandir}/man8/lfc-shutdown.8*
 %dir %{_sysconfdir}/lfc-mysql
+%{_sysconfdir}/lfc-mysql/lfcdaemon.init
+%ghost %{_initrddir}/lfcdaemon
 %config(noreplace) %{_sysconfdir}/lfc-mysql/lfcdaemon.conf
 %ghost %{_sysconfdir}/sysconfig/lfcdaemon
 %config(noreplace) %{_sysconfdir}/lfc-mysql/lfcdaemon.logrotate
 %ghost %{_sysconfdir}/logrotate.d/lfcdaemon
-%{_initrddir}/lfc-mysql
 %dir %{_datadir}/lfc
 %{_datadir}/lfc/create_lfc_tables_mysql.sql
 %attr(-,lfcmgr,lfcmgr) %{_localstatedir}/log/lfc
@@ -2349,17 +2606,7 @@ fi
 %dir %{_sysconfdir}/grid-security/lfcmgr
 %doc lfc-mysql/%{name}-%{version}/ns/README.Fedora
 
-%files -n lfc-dli
-%defattr(-,root,root,-)
-%{_sbindir}/lfc-dli
-%doc %{_mandir}/man8/lfc-dli.8*
-%{_initrddir}/lfc-dli
-%config(noreplace) %{_sysconfdir}/sysconfig/lfc-dli
-%config(noreplace) %{_sysconfdir}/logrotate.d/lfc-dli
-%{_datadir}/lfc/lcg-info-provider-lfc
-%attr(-,lfcmgr,lfcmgr) %{_localstatedir}/log/lfc-dli
-
-%files -n lfc-postgres
+%files -n lfc-server-postgres
 %defattr(-,root,root,-)
 %dir %{_libdir}/lfc-postgres
 %{_libdir}/lfc-postgres/lfcdaemon
@@ -2373,11 +2620,12 @@ fi
 %doc %{_libdir}/lfc-postgres/lfc-shutdown.8*
 %ghost %{_mandir}/man8/lfc-shutdown.8*
 %dir %{_sysconfdir}/lfc-postgres
+%{_sysconfdir}/lfc-postgres/lfcdaemon.init
+%ghost %{_initrddir}/lfcdaemon
 %config(noreplace) %{_sysconfdir}/lfc-postgres/lfcdaemon.conf
 %ghost %{_sysconfdir}/sysconfig/lfcdaemon
 %config(noreplace) %{_sysconfdir}/lfc-postgres/lfcdaemon.logrotate
 %ghost %{_sysconfdir}/logrotate.d/lfcdaemon
-%{_initrddir}/lfc-postgres
 %dir %{_datadir}/lfc
 %{_datadir}/lfc/create_lfc_tables_postgres.sql
 %attr(-,lfcmgr,lfcmgr) %{_localstatedir}/log/lfc
@@ -2386,7 +2634,19 @@ fi
 %dir %{_sysconfdir}/grid-security/lfcmgr
 %doc lfc-postgres/%{name}-%{version}/ns/README.Fedora
 
-%files -n dpm
+%files -n lfc-dli
+%defattr(-,root,root,-)
+%{_sbindir}/lfc-dli
+%doc %{_mandir}/man8/lfc-dli.8*
+%{_initrddir}/lfc-dli
+%config(noreplace) %{_sysconfdir}/sysconfig/lfc-dli
+%config(noreplace) %{_sysconfdir}/logrotate.d/lfc-dli
+%dir %{_datadir}/lfc
+%{_datadir}/lfc/lcg-info-provider-lfc
+%attr(-,lfcmgr,lfcmgr) %{_localstatedir}/log/lfc-dli
+%attr(-,lfcmgr,lfcmgr) %{_localstatedir}/lib/lfc
+
+%files -n dpm-libs
 %defattr(-,root,root,-)
 %{_libdir}/libdpm.so.*
 %doc dpm-mysql/%{name}-%{version}/dpm/README
@@ -2403,7 +2663,7 @@ fi
 %doc %{_mandir}/man3/dpns_*.3*
 %doc %{_mandir}/man3/rfio*.3*
 
-%files -n dpm-client
+%files -n dpm
 %defattr(-,root,root,-)
 %{_bindir}/dpm-[a-k]*
 %{_bindir}/dpm-[m-z]*
@@ -2442,7 +2702,7 @@ fi
 %endif
 %endif
 
-%files -n dpm-mysql
+%files -n dpm-server-mysql
 %defattr(-,root,root,-)
 %dir %{_libdir}/dpm-mysql
 %{_libdir}/dpm-mysql/dpm
@@ -2456,7 +2716,8 @@ fi
 %{_libdir}/dpm-mysql/DPMCONFIG.templ
 %ghost %{_datadir}/dpm/DPMCONFIG.templ
 %dir %{_sysconfdir}/dpm-mysql
-%{_initrddir}/dpm-mysql
+%{_sysconfdir}/dpm-mysql/dpm.init
+%ghost %{_initrddir}/dpm
 %config(noreplace) %{_sysconfdir}/dpm-mysql/dpm.conf
 %ghost %{_sysconfdir}/sysconfig/dpm
 %config(noreplace) %{_sysconfdir}/dpm-mysql/dpm.logrotate
@@ -2469,89 +2730,7 @@ fi
 %dir %{_sysconfdir}/grid-security/dpmmgr
 %doc dpm-mysql/%{name}-%{version}/dpm/README.Fedora
 
-%files -n dpm-mysql-nameserver
-%defattr(-,root,root,-)
-%{_libdir}/dpm-mysql/dpnsdaemon
-%ghost %{_sbindir}/dpnsdaemon
-%{_libdir}/dpm-mysql/dpns-shutdown
-%ghost %{_sbindir}/dpns-shutdown
-%doc %{_libdir}/dpm-mysql/dpnsdaemon.8*
-%ghost %{_mandir}/man8/dpnsdaemon.8*
-%doc %{_libdir}/dpm-mysql/dpns-shutdown.8*
-%ghost %{_mandir}/man8/dpns-shutdown.8*
-%{_libdir}/dpm-mysql/DPNSCONFIG.templ
-%ghost %{_datadir}/dpm/DPNSCONFIG.templ
-%{_initrddir}/dpm-mysql-nameserver
-%config(noreplace) %{_sysconfdir}/dpm-mysql/dpnsdaemon.conf
-%ghost %{_sysconfdir}/sysconfig/dpnsdaemon
-%config(noreplace) %{_sysconfdir}/dpm-mysql/dpnsdaemon.logrotate
-%ghost %{_sysconfdir}/logrotate.d/dpnsdaemon
-%{_datadir}/dpm/create_dpns_tables_mysql.sql
-%attr(-,dpmmgr,dpmmgr) %{_localstatedir}/log/dpns
-%doc dpm-mysql/%{name}-%{version}/ns/README.Fedora
-
-%files -n dpm-mysql-copyd
-%defattr(-,root,root,-)
-%{_libdir}/dpm-mysql/dpmcopyd
-%ghost %{_sbindir}/dpmcopyd
-%doc %{_libdir}/dpm-mysql/dpmcopyd.8*
-%ghost %{_mandir}/man8/dpmcopyd.8*
-%{_initrddir}/dpm-mysql-copyd
-%config(noreplace) %{_sysconfdir}/dpm-mysql/dpmcopyd.conf
-%ghost %{_sysconfdir}/sysconfig/dpmcopyd
-%config(noreplace) %{_sysconfdir}/dpm-mysql/dpmcopyd.logrotate
-%ghost %{_sysconfdir}/logrotate.d/dpmcopyd
-%attr(-,dpmmgr,dpmmgr) %{_localstatedir}/log/dpmcopy
-
-%files -n dpm-mysql-srmv1
-%defattr(-,root,root,-)
-%{_libdir}/dpm-mysql/dpm-srmv1
-%ghost %{_sbindir}/dpm-srmv1
-%doc %{_libdir}/dpm-mysql/dpm-srmv1.8*
-%ghost %{_mandir}/man8/dpm-srmv1.8*
-%{_initrddir}/dpm-mysql-srmv1
-%config(noreplace) %{_sysconfdir}/dpm-mysql/dpm-srmv1.conf
-%ghost %{_sysconfdir}/sysconfig/dpm-srmv1
-%config(noreplace) %{_sysconfdir}/dpm-mysql/dpm-srmv1.logrotate
-%ghost %{_sysconfdir}/logrotate.d/dpm-srmv1
-%attr(-,dpmmgr,dpmmgr) %{_localstatedir}/log/dpm-srmv1
-
-%files -n dpm-mysql-srmv2
-%defattr(-,root,root,-)
-%{_libdir}/dpm-mysql/dpm-srmv2
-%ghost %{_sbindir}/dpm-srmv2
-%doc %{_libdir}/dpm-mysql/dpm-srmv2.8*
-%ghost %{_mandir}/man8/dpm-srmv2.8*
-%{_initrddir}/dpm-mysql-srmv2
-%config(noreplace) %{_sysconfdir}/dpm-mysql/dpm-srmv2.conf
-%ghost %{_sysconfdir}/sysconfig/dpm-srmv2
-%config(noreplace) %{_sysconfdir}/dpm-mysql/dpm-srmv2.logrotate
-%ghost %{_sysconfdir}/logrotate.d/dpm-srmv2
-%attr(-,dpmmgr,dpmmgr) %{_localstatedir}/log/dpm-srmv2
-
-%files -n dpm-mysql-srmv22
-%defattr(-,root,root,-)
-%{_libdir}/dpm-mysql/dpm-srmv2.2
-%ghost %{_sbindir}/dpm-srmv2.2
-%doc %{_libdir}/dpm-mysql/dpm-srmv2.2.8*
-%ghost %{_mandir}/man8/dpm-srmv2.2.8*
-%{_initrddir}/dpm-mysql-srmv22
-%config(noreplace) %{_sysconfdir}/dpm-mysql/dpm-srmv2.2.conf
-%ghost %{_sysconfdir}/sysconfig/dpm-srmv2.2
-%config(noreplace) %{_sysconfdir}/dpm-mysql/dpm-srmv2.2.logrotate
-%ghost %{_sysconfdir}/logrotate.d/dpm-srmv2.2
-%attr(-,dpmmgr,dpmmgr) %{_localstatedir}/log/dpm-srmv2.2
-
-%files -n dpm-rfiod
-%defattr(-,root,root,-)
-%{_sbindir}/dpm-rfiod
-%{_initrddir}/dpm-rfiod
-%config(noreplace) %{_sysconfdir}/sysconfig/dpm-rfiod
-%config(noreplace) %{_sysconfdir}/logrotate.d/dpm-rfiod
-%{_localstatedir}/log/dpm-rfio
-%doc %{_mandir}/man8/dpm-rfiod.8*
-
-%files -n dpm-postgres
+%files -n dpm-server-postgres
 %defattr(-,root,root,-)
 %dir %{_libdir}/dpm-postgres
 %{_libdir}/dpm-postgres/dpm
@@ -2565,7 +2744,8 @@ fi
 %{_libdir}/dpm-postgres/DPMCONFIG.templ
 %ghost %{_datadir}/dpm/DPMCONFIG.templ
 %dir %{_sysconfdir}/dpm-postgres
-%{_initrddir}/dpm-postgres
+%{_sysconfdir}/dpm-postgres/dpm.init
+%ghost %{_initrddir}/dpm
 %config(noreplace) %{_sysconfdir}/dpm-postgres/dpm.conf
 %ghost %{_sysconfdir}/sysconfig/dpm
 %config(noreplace) %{_sysconfdir}/dpm-postgres/dpm.logrotate
@@ -2578,8 +2758,37 @@ fi
 %dir %{_sysconfdir}/grid-security/dpmmgr
 %doc dpm-postgres/%{name}-%{version}/dpm/README.Fedora
 
-%files -n dpm-postgres-nameserver
+%files -n dpm-name-server-mysql
 %defattr(-,root,root,-)
+%dir %{_libdir}/dpm-mysql
+%{_libdir}/dpm-mysql/dpnsdaemon
+%ghost %{_sbindir}/dpnsdaemon
+%{_libdir}/dpm-mysql/dpns-shutdown
+%ghost %{_sbindir}/dpns-shutdown
+%doc %{_libdir}/dpm-mysql/dpnsdaemon.8*
+%ghost %{_mandir}/man8/dpnsdaemon.8*
+%doc %{_libdir}/dpm-mysql/dpns-shutdown.8*
+%ghost %{_mandir}/man8/dpns-shutdown.8*
+%{_libdir}/dpm-mysql/DPNSCONFIG.templ
+%ghost %{_datadir}/dpm/DPNSCONFIG.templ
+%dir %{_sysconfdir}/dpm-mysql
+%{_sysconfdir}/dpm-mysql/dpnsdaemon.init
+%ghost %{_initrddir}/dpnsdaemon
+%config(noreplace) %{_sysconfdir}/dpm-mysql/dpnsdaemon.conf
+%ghost %{_sysconfdir}/sysconfig/dpnsdaemon
+%config(noreplace) %{_sysconfdir}/dpm-mysql/dpnsdaemon.logrotate
+%ghost %{_sysconfdir}/logrotate.d/dpnsdaemon
+%dir %{_datadir}/dpm
+%{_datadir}/dpm/create_dpns_tables_mysql.sql
+%attr(-,dpmmgr,dpmmgr) %{_localstatedir}/log/dpns
+%attr(-,dpmmgr,dpmmgr) %{_localstatedir}/lib/dpm
+%dir %{_sysconfdir}/grid-security
+%dir %{_sysconfdir}/grid-security/dpmmgr
+%doc dpm-mysql/%{name}-%{version}/ns/README.Fedora
+
+%files -n dpm-name-server-postgres
+%defattr(-,root,root,-)
+%dir %{_libdir}/dpm-postgres
 %{_libdir}/dpm-postgres/dpnsdaemon
 %ghost %{_sbindir}/dpnsdaemon
 %{_libdir}/dpm-postgres/dpns-shutdown
@@ -2590,70 +2799,159 @@ fi
 %ghost %{_mandir}/man8/dpns-shutdown.8*
 %{_libdir}/dpm-postgres/DPNSCONFIG.templ
 %ghost %{_datadir}/dpm/DPNSCONFIG.templ
-%{_initrddir}/dpm-postgres-nameserver
+%dir %{_sysconfdir}/dpm-postgres
+%{_sysconfdir}/dpm-postgres/dpnsdaemon.init
+%ghost %{_initrddir}/dpnsdaemon
 %config(noreplace) %{_sysconfdir}/dpm-postgres/dpnsdaemon.conf
 %ghost %{_sysconfdir}/sysconfig/dpnsdaemon
 %config(noreplace) %{_sysconfdir}/dpm-postgres/dpnsdaemon.logrotate
 %ghost %{_sysconfdir}/logrotate.d/dpnsdaemon
+%dir %{_datadir}/dpm
 %{_datadir}/dpm/create_dpns_tables_postgres.sql
 %attr(-,dpmmgr,dpmmgr) %{_localstatedir}/log/dpns
+%attr(-,dpmmgr,dpmmgr) %{_localstatedir}/lib/dpm
+%dir %{_sysconfdir}/grid-security
+%dir %{_sysconfdir}/grid-security/dpmmgr
 %doc dpm-postgres/%{name}-%{version}/ns/README.Fedora
 
-%files -n dpm-postgres-copyd
+%files -n dpm-copy-server-mysql
 %defattr(-,root,root,-)
+%dir %{_libdir}/dpm-mysql
+%{_libdir}/dpm-mysql/dpmcopyd
+%ghost %{_sbindir}/dpmcopyd
+%doc %{_libdir}/dpm-mysql/dpmcopyd.8*
+%ghost %{_mandir}/man8/dpmcopyd.8*
+%dir %{_sysconfdir}/dpm-mysql
+%{_sysconfdir}/dpm-mysql/dpmcopyd.init
+%ghost %{_initrddir}/dpmcopyd
+%config(noreplace) %{_sysconfdir}/dpm-mysql/dpmcopyd.conf
+%ghost %{_sysconfdir}/sysconfig/dpmcopyd
+%config(noreplace) %{_sysconfdir}/dpm-mysql/dpmcopyd.logrotate
+%ghost %{_sysconfdir}/logrotate.d/dpmcopyd
+%attr(-,dpmmgr,dpmmgr) %{_localstatedir}/log/dpmcopy
+%attr(-,dpmmgr,dpmmgr) %{_localstatedir}/lib/dpm
+%dir %{_sysconfdir}/grid-security
+%dir %{_sysconfdir}/grid-security/dpmmgr
+
+%files -n dpm-copy-server-postgres
+%defattr(-,root,root,-)
+%dir %{_libdir}/dpm-postgres
 %{_libdir}/dpm-postgres/dpmcopyd
 %ghost %{_sbindir}/dpmcopyd
 %doc %{_libdir}/dpm-postgres/dpmcopyd.8*
 %ghost %{_mandir}/man8/dpmcopyd.8*
-%{_initrddir}/dpm-postgres-copyd
+%dir %{_sysconfdir}/dpm-postgres
+%{_sysconfdir}/dpm-postgres/dpmcopyd.init
+%ghost %{_initrddir}/dpmcopyd
 %config(noreplace) %{_sysconfdir}/dpm-postgres/dpmcopyd.conf
 %ghost %{_sysconfdir}/sysconfig/dpmcopyd
 %config(noreplace) %{_sysconfdir}/dpm-postgres/dpmcopyd.logrotate
 %ghost %{_sysconfdir}/logrotate.d/dpmcopyd
 %attr(-,dpmmgr,dpmmgr) %{_localstatedir}/log/dpmcopy
+%attr(-,dpmmgr,dpmmgr) %{_localstatedir}/lib/dpm
+%dir %{_sysconfdir}/grid-security
+%dir %{_sysconfdir}/grid-security/dpmmgr
 
-%files -n dpm-postgres-srmv1
+%files -n dpm-srm-server-mysql
 %defattr(-,root,root,-)
-%{_libdir}/dpm-postgres/dpm-srmv1
+%dir %{_libdir}/dpm-mysql
+%{_libdir}/dpm-mysql/dpm-srmv1
+%{_libdir}/dpm-mysql/dpm-srmv2
+%{_libdir}/dpm-mysql/dpm-srmv2.2
 %ghost %{_sbindir}/dpm-srmv1
-%doc %{_libdir}/dpm-postgres/dpm-srmv1.8*
-%ghost %{_mandir}/man8/dpm-srmv1.8*
-%{_initrddir}/dpm-postgres-srmv1
-%config(noreplace) %{_sysconfdir}/dpm-postgres/dpm-srmv1.conf
-%ghost %{_sysconfdir}/sysconfig/dpm-srmv1
-%config(noreplace) %{_sysconfdir}/dpm-postgres/dpm-srmv1.logrotate
-%ghost %{_sysconfdir}/logrotate.d/dpm-srmv1
-%attr(-,dpmmgr,dpmmgr) %{_localstatedir}/log/dpm-srmv1
-
-%files -n dpm-postgres-srmv2
-%defattr(-,root,root,-)
-%{_libdir}/dpm-postgres/dpm-srmv2
 %ghost %{_sbindir}/dpm-srmv2
-%doc %{_libdir}/dpm-postgres/dpm-srmv2.8*
-%ghost %{_mandir}/man8/dpm-srmv2.8*
-%{_initrddir}/dpm-postgres-srmv2
-%config(noreplace) %{_sysconfdir}/dpm-postgres/dpm-srmv2.conf
-%ghost %{_sysconfdir}/sysconfig/dpm-srmv2
-%config(noreplace) %{_sysconfdir}/dpm-postgres/dpm-srmv2.logrotate
-%ghost %{_sysconfdir}/logrotate.d/dpm-srmv2
-%attr(-,dpmmgr,dpmmgr) %{_localstatedir}/log/dpm-srmv2
-
-%files -n dpm-postgres-srmv22
-%defattr(-,root,root,-)
-%{_libdir}/dpm-postgres/dpm-srmv2.2
 %ghost %{_sbindir}/dpm-srmv2.2
-%doc %{_libdir}/dpm-postgres/dpm-srmv2.2.8*
+%doc %{_libdir}/dpm-mysql/dpm-srmv1.8*
+%doc %{_libdir}/dpm-mysql/dpm-srmv2.8*
+%doc %{_libdir}/dpm-mysql/dpm-srmv2.2.8*
+%ghost %{_mandir}/man8/dpm-srmv1.8*
+%ghost %{_mandir}/man8/dpm-srmv2.8*
 %ghost %{_mandir}/man8/dpm-srmv2.2.8*
-%{_initrddir}/dpm-postgres-srmv22
-%config(noreplace) %{_sysconfdir}/dpm-postgres/dpm-srmv2.2.conf
+%dir %{_sysconfdir}/dpm-mysql
+%{_sysconfdir}/dpm-mysql/dpm-srmv1.init
+%{_sysconfdir}/dpm-mysql/dpm-srmv2.init
+%{_sysconfdir}/dpm-mysql/dpm-srmv2.2.init
+%ghost %{_initrddir}/dpm-srmv1
+%ghost %{_initrddir}/dpm-srmv2
+%ghost %{_initrddir}/dpm-srmv2.2
+%config(noreplace) %{_sysconfdir}/dpm-mysql/dpm-srmv1.conf
+%config(noreplace) %{_sysconfdir}/dpm-mysql/dpm-srmv2.conf
+%config(noreplace) %{_sysconfdir}/dpm-mysql/dpm-srmv2.2.conf
+%ghost %{_sysconfdir}/sysconfig/dpm-srmv1
+%ghost %{_sysconfdir}/sysconfig/dpm-srmv2
 %ghost %{_sysconfdir}/sysconfig/dpm-srmv2.2
-%config(noreplace) %{_sysconfdir}/dpm-postgres/dpm-srmv2.2.logrotate
+%config(noreplace) %{_sysconfdir}/dpm-mysql/dpm-srmv1.logrotate
+%config(noreplace) %{_sysconfdir}/dpm-mysql/dpm-srmv2.logrotate
+%config(noreplace) %{_sysconfdir}/dpm-mysql/dpm-srmv2.2.logrotate
+%ghost %{_sysconfdir}/logrotate.d/dpm-srmv1
+%ghost %{_sysconfdir}/logrotate.d/dpm-srmv2
 %ghost %{_sysconfdir}/logrotate.d/dpm-srmv2.2
+%attr(-,dpmmgr,dpmmgr) %{_localstatedir}/log/dpm-srmv1
+%attr(-,dpmmgr,dpmmgr) %{_localstatedir}/log/dpm-srmv2
 %attr(-,dpmmgr,dpmmgr) %{_localstatedir}/log/dpm-srmv2.2
+%attr(-,dpmmgr,dpmmgr) %{_localstatedir}/lib/dpm
+%dir %{_sysconfdir}/grid-security
+%dir %{_sysconfdir}/grid-security/dpmmgr
+
+%files -n dpm-srm-server-postgres
+%defattr(-,root,root,-)
+%dir %{_libdir}/dpm-postgres
+%{_libdir}/dpm-postgres/dpm-srmv1
+%{_libdir}/dpm-postgres/dpm-srmv2
+%{_libdir}/dpm-postgres/dpm-srmv2.2
+%ghost %{_sbindir}/dpm-srmv1
+%ghost %{_sbindir}/dpm-srmv2
+%ghost %{_sbindir}/dpm-srmv2.2
+%doc %{_libdir}/dpm-postgres/dpm-srmv1.8*
+%doc %{_libdir}/dpm-postgres/dpm-srmv2.8*
+%doc %{_libdir}/dpm-postgres/dpm-srmv2.2.8*
+%ghost %{_mandir}/man8/dpm-srmv1.8*
+%ghost %{_mandir}/man8/dpm-srmv2.8*
+%ghost %{_mandir}/man8/dpm-srmv2.2.8*
+%dir %{_sysconfdir}/dpm-postgres
+%{_sysconfdir}/dpm-postgres/dpm-srmv1.init
+%{_sysconfdir}/dpm-postgres/dpm-srmv2.init
+%{_sysconfdir}/dpm-postgres/dpm-srmv2.2.init
+%ghost %{_initrddir}/dpm-srmv1
+%ghost %{_initrddir}/dpm-srmv2
+%ghost %{_initrddir}/dpm-srmv2.2
+%config(noreplace) %{_sysconfdir}/dpm-postgres/dpm-srmv1.conf
+%config(noreplace) %{_sysconfdir}/dpm-postgres/dpm-srmv2.conf
+%config(noreplace) %{_sysconfdir}/dpm-postgres/dpm-srmv2.2.conf
+%ghost %{_sysconfdir}/sysconfig/dpm-srmv1
+%ghost %{_sysconfdir}/sysconfig/dpm-srmv2
+%ghost %{_sysconfdir}/sysconfig/dpm-srmv2.2
+%config(noreplace) %{_sysconfdir}/dpm-postgres/dpm-srmv1.logrotate
+%config(noreplace) %{_sysconfdir}/dpm-postgres/dpm-srmv2.logrotate
+%config(noreplace) %{_sysconfdir}/dpm-postgres/dpm-srmv2.2.logrotate
+%ghost %{_sysconfdir}/logrotate.d/dpm-srmv1
+%ghost %{_sysconfdir}/logrotate.d/dpm-srmv2
+%ghost %{_sysconfdir}/logrotate.d/dpm-srmv2.2
+%attr(-,dpmmgr,dpmmgr) %{_localstatedir}/log/dpm-srmv1
+%attr(-,dpmmgr,dpmmgr) %{_localstatedir}/log/dpm-srmv2
+%attr(-,dpmmgr,dpmmgr) %{_localstatedir}/log/dpm-srmv2.2
+%attr(-,dpmmgr,dpmmgr) %{_localstatedir}/lib/dpm
+%dir %{_sysconfdir}/grid-security
+%dir %{_sysconfdir}/grid-security/dpmmgr
+
+%files -n dpm-rfio-server
+%defattr(-,root,root,-)
+%{_sbindir}/dpm-rfiod
+%{_initrddir}/dpm-rfiod
+%config(noreplace) %{_sysconfdir}/sysconfig/dpm-rfiod
+%config(noreplace) %{_sysconfdir}/logrotate.d/dpm-rfiod
+%{_localstatedir}/log/dpm-rfio
+%doc %{_mandir}/man8/dpm-rfiod.8*
 
 %changelog
-* Fri Oct 28 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.8.1.2-2
-- rebuilt
+* Wed Dec 1 2011 Alain Roy <roy@cs.wisc.edu> - 1.8.1.2-4
+- Packaging change only: fixed "Obsoletes"
+
+* Wed Nov 30 2011 Alain Roy <roy@cs.wisc.edu> - 1.8.1.2-3
+- Rebuilt. We had already used -2 internally for a rebuild, so bumped version. No other changes.
+
+* Thu Nov 10 2011 Mattias Ellert <mattias.ellert@fysast.uu.se> - 1.8.1.2-2
+- Implement new package names agreed with upstream
 
 * Fri Sep 02 2011 Mattias Ellert <mattias.ellert@fysast.uu.se> - 1.8.1.2-1
 - Update to version 1.8.1.2

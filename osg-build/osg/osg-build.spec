@@ -1,6 +1,6 @@
 
 Name:           osg-build
-Version:        0.0.22
+Version:        1.0.0
 Release:        1%{?dist}
 Summary:        Build tools for the OSG
 
@@ -15,7 +15,10 @@ BuildArch:      noarch
 
 Requires:       mock
 Requires:       rpm-build
-Requires:       createrepo
+Requires:       openssl
+Requires:       quilt
+Requires:       koji
+Requires:       rpmlint
 
 Obsoletes:      vdt-build <= 0.0.17
 Provides:       vdt-build = %{version}
@@ -43,15 +46,42 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root,-)
 %{_bindir}/%{name}
+%{_bindir}/koji-tag-diff
 %{_bindir}/rpm-ripper
+%{_bindir}/osg-build-test
 %{_bindir}/osg-import-srpm
+%{_bindir}/osg-koji
 %{_bindir}/vdt-build
 %dir %{python_sitelib}/osg_build_lib
 %{python_sitelib}/osg_build_lib/*.py*
-%{_datadir}/%{name}/osg-koji.conf
+%{_datadir}/%{name}/osg-koji-site.conf
+%{_datadir}/%{name}/osg-koji-home.conf
 %doc %{_docdir}/%{name}/sample-osg-build.ini
 
 %changelog
+* Wed Dec 14 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0.0-1
+- Version bumped to 1.0.0
+- Added osg-build-test script for running unit tests.
+- Fixed prepare task bug.
+
+* Fri Dec 09 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 0.3.1-1
+- osg-koji changed to use ~/.koji directory if it exists and ~/.osg-koji doesn't.
+- Some refactoring and bugfixes of prebuild step.
+- Added Alain Roy's koji-tag-diff script
+
+* Wed Dec 07 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 0.3.0-1
+- Removed deprecated tasks 'batlab' and 'push'.
+- Removed deprecated support for builds using the 'osg/root' layout.
+- Added error when attempting to do Koji builds using rpmbuild 4.8+ (RHEL6).
+- Major refactoring of mock and koji tasks.
+- Added 'quilt' task, dependency on quilt.
+- Added koji builds directly from subversion.
+- Added koji dependency.
+- Removed createrepo dependency.
+
+* Thu Nov 17 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 0.0.23-1
+- Added osg-koji wrapper script
+
 * Thu Oct 06 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 0.0.22-1
 - Minor tweaks to rpm-ripper
 

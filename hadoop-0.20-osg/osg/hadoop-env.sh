@@ -16,7 +16,7 @@ fi
 #HADOOP_CLASSPATH=$HADOOP_CONF_DIR:$(build-classpath hadoop)
 
 # The maximum amount of heap to use, in MB. Default is 1000.
-export HADOOP_HEAPSIZE=1024
+export HADOOP_HEAPSIZE=2048
 
 export LIBHDFS_OPTS=-Xmx128m
 
