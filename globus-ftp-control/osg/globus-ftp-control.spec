@@ -13,19 +13,13 @@
 Name:		globus-ftp-control
 %global _name %(tr - _ <<< %{name})
 Version:	4.2
-Release:	5%{?dist}
+Release:	6%{?dist}
 Summary:	Globus Toolkit - GridFTP Control Library
 
 Group:		System Environment/Libraries
 License:	ASL 2.0
 URL:		http://www.globus.org/
-#		Source is extracted from the globus toolkit installer:
-#		wget -N http://www-unix.globus.org/ftppub/gt5/5.0/5.0.0/installers/src/gt5.0.0-all-source-installer.tar.bz2
-#		tar -jxf gt5.0.0-all-source-installer.tar.bz2
-#		mv gt5.0.0-all-source-installer/source-trees/gridftp/control/source globus_ftp_control-2.11
-#		cp -p gt5.0.0-all-source-installer/source-trees/core/source/GLOBUS_LICENSE globus_ftp_control-2.11
-#		tar -zcf globus_ftp_control-2.11.tar.gz globus_ftp_control-2.11
-Source:		http://www.globus.org/ftppub/gt5/5.1/5.1.2/packages/src/%{_name}-%{version}.tar.gz
+Source:		http://www.globus.org/ftppub/gt5/5.2/5.2.0/packages/src/%{_name}-%{version}.tar.gz
 #		This is a workaround for the broken epstopdf script in RHEL5
 #		See: https://bugzilla.redhat.com/show_bug.cgi?id=450388
 Source9:	epstopdf-2.9.5gw
@@ -190,14 +184,18 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_docdir}/%{name}-%{version}/html
 
 %changelog
-* Sun Dec 11 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 4.2-5
+* Fri Dec 16 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 4.2-6
+- Add OSG changes:
 - Fix for connection speed leveling on servers with different buffer sizes.
-
-* Wed Nov 16 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 4.2-4
-- Actually apply the patch referenced in previous build.
-
-* Wed Nov 16 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 4.2-3
+  (Sun Dec 11 2011 Brian Bockelman <bbockelm@cse.unl.edu>)
 - Auto-level the connection speed of each TCP connection.
+  (Wed Nov 16 2011 Brian Bockelman <bbockelm@cse.unl.edu>)
+
+* Mon Dec 05 2011 Joseph Bester <bester@mcs.anl.gov> - 4.2-4
+- Update for 5.2.0 release
+
+* Mon Dec 05 2011 Joseph Bester <bester@mcs.anl.gov> - 4.2-3
+- Last sync prior to 5.2.0
 
 * Tue Oct 11 2011 Joseph Bester <bester@mcs.anl.gov> - 4.2-2
 - Add explicit dependencies on >= 5.2 libraries
