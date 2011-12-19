@@ -7,8 +7,8 @@
 %endif
 
 Name:           myproxy
-Version:	5.6
-Release:	2%{?dist}
+Version:	5.5
+Release:	3.1%{?dist}
 Summary:        Manage X.509 Public Key Infrastructure (PKI) security credentials
 
 Group:          System Environment/Daemons
@@ -415,11 +415,11 @@ fi
 %{_libdir}/pkgconfig/myproxy.pc
 
 %changelog
-* Fri Oct 28 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 5.6-2
+* Mon Dec 19 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 5.5-3.1
 - Disabled self-test in %%check section
 
-* Mon Oct 24 2011 Joseph Bester <bester@mcs.anl.gov> - 5.6-1
-- Update to 5.6
+* Mon Dec 05 2011 Joseph Bester <bester@mcs.anl.gov> - 5.5-3
+- Update for 5.2.0 release
 
 * Fri Oct 21 2011 Joseph Bester <bester@mcs.anl.gov> - 5.5-2
 - Fix %post* scripts to check for -eq 1
