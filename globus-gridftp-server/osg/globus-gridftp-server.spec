@@ -12,20 +12,14 @@
 
 Name:		globus-gridftp-server
 %global _name %(tr - _ <<< %{name})
-Version:	6.2
-Release:	10%{?dist}
+Version:	6.5
+Release:	1.1%{?dist}
 Summary:	Globus Toolkit - Globus GridFTP Server
 
 Group:		System Environment/Libraries
 License:	ASL 2.0
 URL:		http://www.globus.org/
-#		Source is extracted from the globus toolkit installer:
-#		wget -N http://www-unix.globus.org/ftppub/gt5/5.0/5.0.2/installers/src/gt5.0.2-all-source-installer.tar.bz2
-#		tar -jxf gt5.0.2-all-source-installer.tar.bz2
-#		mv gt5.0.2-all-source-installer/source-trees/gridftp/server/src globus_gridftp_server-3.23
-#		cp -p gt5.0.2-all-source-installer/source-trees/core/source/GLOBUS_LICENSE globus_gridftp_server-3.23
-#		tar -zcf globus_gridftp_server-3.23.tar.gz globus_gridftp_server-3.23
-Source0:	%{_name}-%{version}.tar.gz
+Source:		http://www.globus.org/ftppub/gt5/5.2/5.2.0/packages/src/%{_name}-%{version}.tar.gz
 Source1:	globus-gridftp-server.sysconfig
 Source2:	globus-gridftp-server.i386.sysconfig
 Source3:	globus-gridftp-server.logrotate
@@ -198,11 +192,27 @@ fi
 %defattr(-,root,root,-)
 
 %changelog
+* Mon Dec 19 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 6.5-1.1
+- Merge OSG changes
+
+* Mon Dec 12 2011 Joseph Bester <bester@mcs.anl.gov> - 6.5-1
+- init script fixes
+
+* Mon Dec 05 2011 Joseph Bester <bester@mcs.anl.gov> - 6.4-3
+- Update for 5.2.0 release
+
+* Mon Dec 05 2011 Joseph Bester <bester@mcs.anl.gov> - 6.4-2
+- Last sync prior to 5.2.0
+
 * Fri Nov 18 2011 Doug Strain <dstrain@fnal.gov> - 6.2-10
 - Change sysconfig to add full file path
 
 * Mon Nov 14 2011 Doug Strain <dstrain@fnal.gov> - 6.2-9
 - Change sysconfig to source /var/lib/osg/globus-firewall
+
+
+* Fri Nov 11 2011 Joseph Bester <bester@mcs.anl.gov> - 6.3-1
+- GRIDFTP-190: add in config dir loading
 
 * Thu Nov 03 2011 Doug Strain <dstrain@fnal.gov> - 6.2-8
 - Added logrotate for issue SOFTWARE-310
@@ -211,9 +221,6 @@ fi
 * Thu Nov 03 2011 Doug Strain <dstrain@fnal.gov> - 6.2-5
 - Changed sysconfig to exclude sourcing files left behind by
 - emacs, rpm, vi, etc
-
-* Thu Oct 27 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 6.2-3
-- Merged upstream 6.2-2:
 
 * Mon Oct 24 2011 Joseph Bester <bester@mcs.anl.gov> - 6.2-2
 - Add explicit dependencies on >= 5.2 libraries
@@ -232,10 +239,8 @@ fi
 - Re-Adding extra sysconfig directory and configurable conf file
 - With new version of gridftp
 
-* Fri Sep 23 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 6.1-2
-- Merged upstream 6.1-1:
-    * Fri Sep 23 2011 Joe Bester <bester@mcs.anl.gov> - 6.1-1
-    - GRIDFTP-184: Detect and workaround bug in start_daemon for LSB < 4
+* Fri Sep 23 2011 Joe Bester <bester@mcs.anl.gov> - 6.1-1
+- GRIDFTP-184: Detect and workaround bug in start_daemon for LSB < 4
 
 * Thu Sep 22 2011 Doug Strain <dstrain@fnal.gov> - 6.0-6
 - Adding extra sysconfig directory and configurable conf file
@@ -245,11 +250,12 @@ fi
 - Patched init script to work around an infinite loop caused by some versions of redhat-lsb
 
 * Wed Sep 07 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 6.0-4
-- Merge upstream 6.0-3:
-    * Wed Aug 31 2011 Joseph Bester <bester@mcs.anl.gov> - 6.0-3
-    - Add more config files for xinetd or gfork startup
-    - Update to Globus Toolkit 5.1.2
 - Fix condition in post-script for progs
+
+* Wed Aug 31 2011 Joseph Bester <bester@mcs.anl.gov> - 6.0-3
+- Add more config files for xinetd or gfork startup
+- Update to Globus Toolkit 5.1.2
+
 
 * Tue Aug 30 2011 Doug Strain <doug.strain@fnal.gov> - 5.4-4
 - Updated to work on RHEL5
