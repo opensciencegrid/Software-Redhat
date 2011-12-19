@@ -12,27 +12,25 @@
 
 Name:		globus-gatekeeper
 %global _name %(tr - _ <<< %{name})
-Version:	8.1
-Release:	8%{?dist}
+Version:	9.6
+Release:	1.0%{?dist}
 Summary:	Globus Toolkit - Globus Gatekeeper
 
 Group:		Applications/Internet
 License:	ASL 2.0
 URL:		http://www.globus.org/
-Source:         %{_name}-%{version}.tar.gz
+Source:         http://www.globus.org/ftppub/gt5/5.2/5.2.0/packages/src/%{_name}-%{version}.tar.gz
 
 # OSG customizations
 Source1:        globus-gatekeeper.sysconfig
-Source2:        globus-gatekeeper-logrotate
-Patch0:         child_signals.patch
-Patch1:         increase_backlog.patch
-Patch2:         chkconfig-off.patch
+#Patch0:         child_signals.patch
 Patch3:         init.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Requires:	globus-common >= 13.4
 Requires:	globus-gss-assist%{?_isa} >= 8
 Requires:	globus-gssapi-gsi%{?_isa} >= 9
+Requires:       psmisc
 
 Requires:       lsb
 Requires(post): globus-common-progs >= 13.4
@@ -56,9 +54,7 @@ Globus Gatekeeper Setup
 %prep
 %setup -q -n %{_name}-%{version}
 
-%patch0 -p0
-%patch1 -p0
-%patch2 -p0
+#%patch0 -p0
 %patch3 -p0
 # Note append here
 cat %{SOURCE1} >> config/globus-gatekeeper.in
@@ -101,10 +97,6 @@ cat $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_pgm.filelist \
 mkdir -p $RPM_BUILD_ROOT/etc/grid-services
 mkdir -p $RPM_BUILD_ROOT/etc/grid-services/available
 
-# Add log rotation
-mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d
-cp %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/globus-gatekeeper
-
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -131,9 +123,19 @@ fi
 %dir /etc/grid-services
 %dir /etc/grid-services/available
 %config(noreplace) /etc/sysconfig/globus-gatekeeper
-%config(noreplace) %{_sysconfdir}/logrotate.d/globus-gatekeeper
+%config(noreplace) /etc/logrotate.d/globus-gatekeeper
 
 %changelog
+* Mon Dec 19 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 9.6-1.0
+- Merge OSG changes
+- Removed unneeded OSG patches:
+    increase_backlog.patch
+    chkconfig-off.patch
+    maybe child_signals.patch
+
+* Mon Dec 12 2011 Joseph Bester <bester@mcs.anl.gov> - 9.6-1
+- init script fixes
+
 * Mon Dec 12 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 8.1-8
 - Set LCMAPS_MOD_HOME in /etc/sysconfig/globus-gatekeeper to "lcmaps", the
   new supported value as of lcmaps-1.4.28-19 which came out on November 16.
@@ -146,30 +148,48 @@ fi
 * Wed Dec 7 2011 Alain Roy <roy@cs.wisc.edu> - 8.1-6
 - Added log rotation. 
 
+* Mon Dec 05 2011 Joseph Bester <bester@mcs.anl.gov> - 9.5-3
+- Update for 5.2.0 release
+
+* Mon Dec 05 2011 Joseph Bester <bester@mcs.anl.gov> - 9.5-2
+- Last sync prior to 5.2.0
+
+* Mon Nov 28 2011 Joseph Bester <bester@mcs.anl.gov> - 9.5-1
+- GRAM-285: Set default gatekeeper log in native packages
+
+* Mon Nov 28 2011 Joseph Bester <bester@mcs.anl.gov> - 9.4-1
+- GRAM-287: Hang of globus-gatekeeper process
+
+* Wed Nov 23 2011 Joseph Bester <bester@mcs.anl.gov> - 9.3-1
+- Updated version numbers
+
+* Tue Nov 15 2011 Joseph Bester <bester@mcs.anl.gov> - 9.2-1
+- GRAM-276: Increase backlog for gatekeeper
+
 * Mon Nov 14 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 8.1-5
 - Default globus-gatekeeper service to off.
 
 * Thu Nov 10 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 8.1-4
 - Increase the backlog for the listening socket.  Done because the small default led to failures on the testbed setup.
 
-* Thu Oct 27 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 8.1-3
-- Merged upstream 8.1-2
-    * Fri Oct 21 2011 Joseph Bester <bester@mcs.anl.gov> - 8.1-2
-    - Fix %post* scripts to check for -eq 1
-    - Add explicit dependencies on >= 5.2 libraries
+* Mon Nov 07 2011 Joseph Bester <bester@mcs.anl.gov> - 9.1-1
+- Add default chkconfig line
 
-* Fri Sep 23 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 8.1-2
-- Removed my lsb patch, merged upstream 8.1-1:
-    * Fri Sep 23 2011 Joe Bester <bester@mcs.anl.gov> - 8.1-1
-    - GRAM-260: Detect and workaround bug in start_daemon for LSB < 4
+* Mon Nov 07 2011 Joseph Bester <bester@mcs.anl.gov> - 9.0-1
+- GRAM-268: GRAM requires gss_export_sec_context to work
 
-* Fri Sep 16 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 8.0-4
-- Patched init script to work around infinite loop caused by some versions of redhat-lsb
+* Fri Oct 28 2011 Joseph Bester <bester@mcs.anl.gov> - 8.2-1
+- GRAM-267: globus-gatekeeper uses inappropriate Default-Start in init script
 
-* Fri Sep 02 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 8.0-3
-- Merged upstream 8.0-2:
-    * Thu Sep 01 2011 Joseph Bester <bester@mcs.anl.gov> - 8.0-2
-    - Update for 5.1.2 release
+* Fri Oct 21 2011 Joseph Bester <bester@mcs.anl.gov> - 8.1-2
+- Fix %post* scripts to check for -eq 1
+- Add explicit dependencies on >= 5.2 libraries
+
+* Fri Sep 23 2011 Joe Bester <bester@mcs.anl.gov> - 8.1-1
+- GRAM-260: Detect and workaround bug in start_daemon for LSB < 4
+
+* Thu Sep 01 2011 Joseph Bester <bester@mcs.anl.gov> - 8.0-2
+- Update for 5.1.2 release
 
 * Thu Aug 18 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 7.3-2
 - Port OSG patches to released gatekeeper.
