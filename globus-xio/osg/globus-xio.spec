@@ -12,25 +12,19 @@
 
 Name:		globus-xio
 %global _name %(tr - _ <<< %{name})
-Version:	3.1
-Release:	3%{?dist}
+Version:	3.2
+Release:	4.1%{?dist}
 Summary:	Globus Toolkit - Globus XIO Framework
 
 Group:		System Environment/Libraries
 License:	ASL 2.0
 URL:		http://www.globus.org/
-#		Source is extracted from the globus toolkit installer:
-#		wget -N http://www-unix.globus.org/ftppub/gt5/5.0/5.0.0/installers/src/gt5.0.0-all-source-installer.tar.bz2
-#		tar -jxf gt5.0.0-all-source-installer.tar.bz2
-#		mv gt5.0.0-all-source-installer/source-trees/xio/src globus_xio-2.8
-#		cp -p gt5.0.0-all-source-installer/source-trees/core/source/GLOBUS_LICENSE globus_xio-2.8
-#		tar -zcf globus_xio-2.8.tar.gz globus_xio-2.8
-Source:		%{_name}-%{version}.tar.gz
+Source:		http://www.globus.org/ftppub/gt5/5.2/5.2.0/packages/src/%{_name}-%{version}.tar.gz
 #		This is a workaround for the broken epstopdf script in RHEL5
 #		See: https://bugzilla.redhat.com/show_bug.cgi?id=450388
 Source9:	epstopdf-2.9.5gw
 
-Patch:          timeout_close.patch
+Patch0:          timeout_close.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -182,18 +176,23 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_docdir}/%{name}-%{version}/html
 
 %changelog
-* Thu Oct 27 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 3.1-3
-- Merged upstream 3.1-2:
-    * Tue Oct 11 2011 Joseph Bester <bester@mcs.anl.gov> - 3.1-2
-    - Add explicit dependencies on >= 5.2 libraries
+* Mon Dec 19 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 3.2-4.1
+- Merge OSG changes
 
-    * Thu Oct 06 2011 Joseph Bester <bester@mcs.anl.gov> - 3.1-1
-    - Add backward-compatibility aging
+* Mon Dec 05 2011 Joseph Bester <bester@mcs.anl.gov> - 3.2-4
+- Update for 5.2.0 release
 
-* Wed Sep 07 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 3.0-3
-- Merged upstream 3.0-2:
-    * Thu Sep 01 2011 Joseph Bester <bester@mcs.anl.gov> - 3.0-2
-    - Update for 5.1.2 release
+* Mon Dec 05 2011 Joseph Bester <bester@mcs.anl.gov> - 3.2-3
+- Last sync prior to 5.2.0
+
+* Tue Oct 11 2011 Joseph Bester <bester@mcs.anl.gov> - 3.1-2
+- Add explicit dependencies on >= 5.2 libraries
+
+* Thu Oct 06 2011 Joseph Bester <bester@mcs.anl.gov> - 3.1-1
+- Add backward-compatibility aging
+
+* Thu Sep 01 2011 Joseph Bester <bester@mcs.anl.gov> - 3.0-2
+- Update for 5.1.2 release
 
 * Thu Aug 18 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 2.9-3
 - Forward-port OSG patches.
