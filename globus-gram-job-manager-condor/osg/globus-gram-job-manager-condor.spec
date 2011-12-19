@@ -156,28 +156,7 @@ fi
 
 %changelog
 * Mon Dec 19 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0-11
-- Merge OSG changes:
-  * Thu Nov 17 2011 Alain Roy <roy@cs.wisc.edu> - 1.0-10
-  - Fixed pathname to extattr_table.txt in Condor accounting group patch. 
-  
-  * Fri Nov 4 2011 Alain Roy <roy@cs.wisc.edu> - 1.0-9
-  - Fixed Condor accounting group patch: missing variable assignment.
-  
-  * Wed Oct 26 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.0-7
-  - Fix the location of the ea and uid tables.  Fix NFS-lite for jobs with input files.
-  
-  * Thu Sep 22 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0-5
-  - Fixed condition in postun scriptlet
-  
-  * Wed Sep 21 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0-4
-  - Changed post scriptlet to only run globus-gatekeeper-admin on fresh install
-    so site customizations would be preserved on upgrade.
-  
-  * Thu Aug 18 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 0.0-4
-  - Fix default configuration file.
-  
-  * Wed Aug 17 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 0.0-3
-  - Port all OSG patches to GT52.
+- Merge OSG changes
 
 * Mon Dec 05 2011 Joseph Bester <bester@mcs.anl.gov> - 1.0-6
 - Update for 5.2.0 release
@@ -185,13 +164,35 @@ fi
 * Mon Dec 05 2011 Joseph Bester <bester@mcs.anl.gov> - 1.0-5
 - Last sync prior to 5.2.0
 
+* Thu Nov 17 2011 Alain Roy <roy@cs.wisc.edu> - 1.0-10
+- Fixed pathname to extattr_table.txt in Condor accounting group patch. 
+
+* Fri Nov 4 2011 Alain Roy <roy@cs.wisc.edu> - 1.0-9
+- Fixed Condor accounting group patch: missing variable assignment.
+
+* Wed Oct 26 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.0-7
+- Fix the location of the ea and uid tables.  Fix NFS-lite for jobs with input files.
+
 * Thu Oct 20 2011 Joseph Bester <bester@mcs.anl.gov> - 1.0-4
 - GRAM-259: globus-gram-job-manager-condor RPM does not uninstall cleanly
 - Add explicit dependencies on >= 5.2 libraries
 
+* Thu Sep 22 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0-5
+- Fixed condition in postun scriptlet
+
 * Thu Sep 22 2011 Joseph Bester <bester@mcs.anl.gov> - 1.0-3
 - Fix: GRAM-243
 
+* Wed Sep 21 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0-4
+- Changed post scriptlet to only run globus-gatekeeper-admin on fresh install
+so site customizations would be preserved on upgrade.
+
 * Thu Sep 01 2011 Joseph Bester <bester@mcs.anl.gov> - 1.0-2
 - Update for 5.1.2 release
+
+* Thu Aug 18 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 0.0-4
+- Fix default configuration file.
+
+* Wed Aug 17 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 0.0-3
+- Port all OSG patches to GT52.
 

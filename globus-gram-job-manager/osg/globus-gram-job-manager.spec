@@ -200,55 +200,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 * Mon Dec 19 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 13.14-1.1
-- Add OSG changes:
-  * Wed Dec 07 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 13.5-14
-  - Remove watchdog timer patch; seems to be doing more harm than good in non-threaded mode.
-  
-  * Wed Nov 30 2011 Alain Roy <roy@cs.wisc.edu> - 13.5-13
-  - Updated logrotate to send SIGUSR1 to globus-job-manger processes
-  
-  * Tue Nov 29 2011 Alain Roy <roy@cs.wisc.edu> - 13.5-12
-  - Restart the jobmanagers state machine in a 'safe' state.
-  - Add hooks to job manager to handle log rotation
-  - Reduce default logging level
-  
-  * Tue Nov 22 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 13.5-11
-  - Added patch to fix logfiles with garbage names getting created (GRAM-275)
-  
-  * Mon Nov 21 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 13.5-10
-  - Enabled logging by default.
-  
-  * Mon Nov 21 2011 Alain Roy <roy@cs.wisc.edu> - 13.5-9
-  - Added patch to fix lock confusion (update to fix from -8)
-  - Added patch to fix security context memory leak. 
-  - Configure logging
-  
-  * Sat Nov 19 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 13.5-8
-  - If holding the wrong lock file, make sure to close the fd.
-  
-  * Sun Nov 13 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 13.5-7
-  - Reduce the polling frequency and load of the condor job manager.
-  
-  * Fri Nov 11 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 13.5-6
-  - Make job home different from job lock dir.
-  
-  * Wed Nov 09 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 13.5-5
-  - No longer reload Condor logfiles every 5 seconds.
-  
-  * Wed Nov 09 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 13.5-4
-  - Fix the globus-job-dir option in the job manager.
-
-  * Fri Nov 11 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 13.5-6
-  - Make job home different from job lock dir.
-  
-  * Wed Nov 09 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 13.5-5
-  - No longer reload Condor logfiles every 5 seconds.
-  
-  * Wed Nov 09 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 13.5-4
-  - Fix the globus-job-dir option in the job manager.
-  
-  * Thu Aug 18 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 12.10-2
-  - Forward-port OSG patches.
+- Merge OSG changes
 - Remove unneeded OSG patches:
   - condor-poll-GRAM-271.patch
   - GRAM-273-ignore-logs.patch
@@ -261,6 +213,9 @@ rm -rf $RPM_BUILD_ROOT
 * Thu Dec 08 2011 Joseph Bester <bester@mcs.anl.gov> - 13.14-1
 - Fix some cases of multiple submits of a GRAM job to condor
 
+* Wed Dec 07 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 13.5-14
+- Remove watchdog timer patch; seems to be doing more harm than good in non-threaded mode.
+
 * Wed Dec 07 2011  <bester@centos55.local> - 13.13-1
 - GRAM-292: GRAM crashes when parsing partial condor log
 
@@ -270,15 +225,49 @@ rm -rf $RPM_BUILD_ROOT
 * Thu Dec 01 2011 Joseph Bester <bester@mcs.anl.gov> - 13.12-1
 - GRAM-289: GRAM jobs resubmitted
 
+* Wed Nov 30 2011 Alain Roy <roy@cs.wisc.edu> - 13.5-13
+- Updated logrotate to send SIGUSR1 to globus-job-manger processes
+
+* Tue Nov 29 2011 Alain Roy <roy@cs.wisc.edu> - 13.5-12
+- Restart the jobmanagers state machine in a 'safe' state.
+- Add hooks to job manager to handle log rotation
+- Reduce default logging level
+
 * Mon Nov 28 2011 Joseph Bester <bester@mcs.anl.gov> - 13.11-1
 - GRAM-286: Set default jobmanager log in native packages
 - Add gatekeeper and psmisc dependencies
 
+* Tue Nov 22 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 13.5-11
+- Added patch to fix logfiles with garbage names getting created (GRAM-275)
+
+* Mon Nov 21 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 13.5-10
+- Enabled logging by default.
+
+* Mon Nov 21 2011 Alain Roy <roy@cs.wisc.edu> - 13.5-9
+- Added patch to fix lock confusion (update to fix from -8)
+- Added patch to fix security context memory leak. 
+- Configure logging
+
 * Mon Nov 21 2011 Joseph Bester <bester@mcs.anl.gov> - 13.10-1
 - GRAM-282: Add hooks to job manager to handle log rotation
 
+* Sat Nov 19 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 13.5-8
+- If holding the wrong lock file, make sure to close the fd.
+
 * Mon Nov 14 2011 Joseph Bester <bester@mcs.anl.gov> - 13.9-1
 - GRAM-271: GRAM Condor polling overpolls
+
+* Sun Nov 13 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 13.5-7
+- Reduce the polling frequency and load of the condor job manager.
+
+* Fri Nov 11 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 13.5-6
+- Make job home different from job lock dir.
+
+* Wed Nov 09 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 13.5-5
+- No longer reload Condor logfiles every 5 seconds.
+
+* Wed Nov 09 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 13.5-4
+- Fix the globus-job-dir option in the job manager.
 
 * Mon Nov 07 2011 Joseph Bester <bester@mcs.anl.gov> - 13.8-1
 - GRAM-268: GRAM requires gss_export_sec_context to work
@@ -313,6 +302,9 @@ rm -rf $RPM_BUILD_ROOT
 
 * Thu Sep 01 2011 Joseph Bester <bester@mcs.anl.gov> - 13.0-2
 - Update for 5.1.2 release
+  
+* Thu Aug 18 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 12.10-2
+- Forward-port OSG patches.
 
 * Sun Jun 05 2011 Mattias Ellert <mattias.ellert@fysast.uu.se> - 10.70-1
 - Update to Globus Toolkit 5.0.4

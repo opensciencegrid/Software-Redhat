@@ -107,21 +107,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 * Mon Dec 19 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 4.1-3.1
-- Add OSG changes:
-  * Tue Nov 15 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 4.0-7
-  - Switch to fix for GRAM-278 from Globus.
-  
-  * Mon Nov 14 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 4.0-6
-  - Properly configure the GASS cache from the job manager.
-  
-  * Mon Oct 24 2011 Alain Roy <roy@cs.wisc.edu> - 4.0-4
-  - Updated pathnames in osg-environment.patch
-  
-  * Thu Aug 18 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 3.1-3
-  - Small syntax error in the default path patch.
-  
-  * Thu Aug 18 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 3.1-2
-  - Porting OSG patches to GT5.2.
+- Merge OSG changes
 - Remove GRAM-278.diff, incorporated upstream
 
 * Mon Dec 05 2011 Joseph Bester <bester@mcs.anl.gov> - 4.1-3
@@ -133,11 +119,26 @@ rm -rf $RPM_BUILD_ROOT
 * Mon Nov 28 2011 Joseph Bester <bester@mcs.anl.gov> - 4.1-1
 - GRAM-278: GASS cache location not set in the perl environment
 
+* Tue Nov 15 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 4.0-7
+- Switch to fix for GRAM-278 from Globus.
+
+* Mon Nov 14 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 4.0-6
+- Properly configure the GASS cache from the job manager.
+
+* Mon Oct 24 2011 Alain Roy <roy@cs.wisc.edu> - 4.0-4
+- Updated pathnames in osg-environment.patch
+
 * Tue Oct 11 2011 Joseph Bester <bester@mcs.anl.gov> - 4.0-3
 - Add explicit dependencies on >= 5.2 libraries
 
 * Thu Sep 01 2011 Joseph Bester <bester@mcs.anl.gov> - 4.0-2
 - Update for 5.1.2 release
+  
+* Thu Aug 18 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 3.1-3
+- Small syntax error in the default path patch.
+
+* Thu Aug 18 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 3.1-2
+- Porting OSG patches to GT5.2.
 
 * Sun Jun 05 2011 Mattias Ellert <mattias.ellert@fysast.uu.se> - 2.12-1
 - Update to Globus Toolkit 5.0.4

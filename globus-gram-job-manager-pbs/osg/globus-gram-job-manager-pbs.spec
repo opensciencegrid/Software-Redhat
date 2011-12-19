@@ -262,13 +262,19 @@ fi
 
 %changelog
 * Mon Dec 19 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.1-4.1
-- Add OSG patch
+- Merge OSG changes
 
 * Mon Dec 05 2011 Joseph Bester <bester@mcs.anl.gov> - 1.1-4
 - Update for 5.2.0 release
 
 * Mon Dec 05 2011 Joseph Bester <bester@mcs.anl.gov> - 1.1-3
 - Last sync prior to 5.2.0
+
+* Tue Nov 22 2011 Alain Roy <roy@cs.wisc.edu> - 1.1-4
+- Fixed typo in OSG/TeraGrid patch
+
+* Tue Nov 22 2011 Alain Roy <roy@cs.wisc.edu> - 1.1-3
+- Added OSG/TeraGrid patches
 
 * Fri Oct 21 2011 Joseph Bester <bester@mcs.anl.gov> - 1.1-2
 - Fix %post* scripts to check for -eq 1

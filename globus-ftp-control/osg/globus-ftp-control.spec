@@ -185,17 +185,19 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 * Fri Dec 16 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 4.2-6
-- Add OSG changes:
+- Merge OSG changes
+
+* Sun Dec 11 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 4.2-5
 - Fix for connection speed leveling on servers with different buffer sizes.
-  (Sun Dec 11 2011 Brian Bockelman <bbockelm@cse.unl.edu>)
-- Auto-level the connection speed of each TCP connection.
-  (Wed Nov 16 2011 Brian Bockelman <bbockelm@cse.unl.edu>)
 
 * Mon Dec 05 2011 Joseph Bester <bester@mcs.anl.gov> - 4.2-4
 - Update for 5.2.0 release
 
 * Mon Dec 05 2011 Joseph Bester <bester@mcs.anl.gov> - 4.2-3
 - Last sync prior to 5.2.0
+
+* Wed Nov 16 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 4.2-4
+- Auto-level the connection speed of each TCP connection.
 
 * Tue Oct 11 2011 Joseph Bester <bester@mcs.anl.gov> - 4.2-2
 - Add explicit dependencies on >= 5.2 libraries
