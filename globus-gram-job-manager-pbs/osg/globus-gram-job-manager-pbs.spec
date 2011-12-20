@@ -16,13 +16,13 @@
 Name:		globus-gram-job-manager-pbs
 %global _name %(tr - _ <<< %{name})
 Version:	1.1
-Release:	4%{?dist}
+Release:	4.1%{?dist}
 Summary:	Globus Toolkit - PBS Job Manager
 
 Group:		Applications/Internet
 License:	ASL 2.0
 URL:		http://www.globus.org/
-Source:		http://www.globus.org/ftppub/gt5/5.1/5.1.2/packages/src/%{_name}-%{version}.tar.gz
+Source:		http://www.globus.org/ftppub/gt5/5.2/5.2.0/packages/src/%{_name}-%{version}.tar.gz
 Patch1:     osg-teragrid-pbs.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Obsoletes:      globus-gram-job-manager-setup-pbs < 4.5
@@ -261,6 +261,15 @@ fi
 %dir %{_docdir}/%{name}-%{version}/html
 
 %changelog
+* Mon Dec 19 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.1-4.1
+- Merge OSG changes
+
+* Mon Dec 05 2011 Joseph Bester <bester@mcs.anl.gov> - 1.1-4
+- Update for 5.2.0 release
+
+* Mon Dec 05 2011 Joseph Bester <bester@mcs.anl.gov> - 1.1-3
+- Last sync prior to 5.2.0
+
 * Tue Nov 22 2011 Alain Roy <roy@cs.wisc.edu> - 1.1-4
 - Fixed typo in OSG/TeraGrid patch
 

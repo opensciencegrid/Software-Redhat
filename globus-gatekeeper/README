@@ -1,7 +1,1 @@
-Source downloaded from 'http://bamboo.globus.org/browse/GT512-RPMCENTOS5-15/artifact/repo/centos/5/SRPMS/globus-gatekeeper-8.1-2.src.rpm'
-
-I have added /etc/sysconfig/globus-gatekeeper which is sourced in the init script on startup.
-This is for programs like lcas-lcmaps-gt4-interface that require custom environment variables.
-
-globus-gatekeeper has been patched to properly handle signals in a multithreaded environment
-
+Source downloaded from 'http://www.globus.org/ftppub/gt5/5.2/5.2.0/packages/rpm/centos/5/SRPMS/globus-gatekeeper-9.6-1.src.rpm'

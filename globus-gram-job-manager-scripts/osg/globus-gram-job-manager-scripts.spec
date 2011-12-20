@@ -8,21 +8,20 @@
 
 Name:		globus-gram-job-manager-scripts
 %global _name %(tr - _ <<< %{name})
-Version:	4.0
-Release:	7%{?dist}
+Version:	4.1
+Release:	3.1%{?dist}
 Summary:	Globus Toolkit - GRAM Job ManagerScripts
 
 Group:		Applications/Internet
 BuildArch:	noarch
 License:	ASL 2.0
 URL:		http://www.globus.org/
-Source:		http://www.globus.org/ftppub/gt5/5.1/5.1.2/packages/src/%{_name}-%{version}.tar.gz
+Source:		http://www.globus.org/ftppub/gt5/5.2/5.2.0/packages/src/%{_name}-%{version}.tar.gz
 
 # OSG-specific patches
 Patch0:         gratia.patch
 Patch1:         osg-environment.patch
 Patch2:         osg-path.patch
-Patch3:         GRAM-278.diff
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -60,7 +59,6 @@ GRAM Job ManagerScripts Documentation Files
 %patch0 -p0
 %patch1 -p0
 %patch2 -p0
-%patch3 -p0
 
 %build
 # Remove files that should be replaced during bootstrap
@@ -108,26 +106,34 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_docdir}/%{name}-%{version}/perl/Globus/GRAM
 
 %changelog
+* Mon Dec 19 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 4.1-3.1
+- Merge OSG changes
+- Remove GRAM-278.diff, incorporated upstream
+
+* Mon Dec 05 2011 Joseph Bester <bester@mcs.anl.gov> - 4.1-3
+- Update for 5.2.0 release
+
+* Mon Dec 05 2011 Joseph Bester <bester@mcs.anl.gov> - 4.1-2
+- Last sync prior to 5.2.0
+
+* Mon Nov 28 2011 Joseph Bester <bester@mcs.anl.gov> - 4.1-1
+- GRAM-278: GASS cache location not set in the perl environment
+
 * Tue Nov 15 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 4.0-7
 - Switch to fix for GRAM-278 from Globus.
 
 * Mon Nov 14 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 4.0-6
 - Properly configure the GASS cache from the job manager.
 
-* Thu Oct 27 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 4.0-5
-- Merged upstream 4.0-3:
-    * Tue Oct 11 2011 Joseph Bester <bester@mcs.anl.gov> - 4.0-3
-    - Add explicit dependencies on >= 5.2 libraries
-
 * Mon Oct 24 2011 Alain Roy <roy@cs.wisc.edu> - 4.0-4
 - Updated pathnames in osg-environment.patch
 
-* Wed Sep 07 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 4.0-3
-- Merged upstream 4.0-2:
+* Tue Oct 11 2011 Joseph Bester <bester@mcs.anl.gov> - 4.0-3
+- Add explicit dependencies on >= 5.2 libraries
 
 * Thu Sep 01 2011 Joseph Bester <bester@mcs.anl.gov> - 4.0-2
 - Update for 5.1.2 release
-
+  
 * Thu Aug 18 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 3.1-3
 - Small syntax error in the default path patch.
 

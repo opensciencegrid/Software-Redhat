@@ -1,8 +1,8 @@
 Index: main.c
 ===================================================================
---- main.c.orig	2011-10-27 15:20:22.798558728 -0500
-+++ main.c	2011-10-27 15:22:34.396679663 -0500
-@@ -100,6 +100,7 @@
+--- main.c.orig	2011-11-22 11:55:33.000000003 -0600
++++ main.c	2011-12-19 14:25:48.000000003 -0600
+@@ -79,6 +79,7 @@
      char **                             argv)
  {
      int                                 rc;
@@ -10,7 +10,7 @@ Index: main.c
      globus_gram_job_manager_config_t    config;
      globus_gram_job_manager_t           manager;
      char *                              sleeptime_str;
-@@ -385,6 +386,17 @@
+@@ -377,6 +378,17 @@
                      http_body_fd = -1;
                  }
  
@@ -28,7 +28,7 @@ Index: main.c
                  rc = globus_gram_job_manager_startup_socket_init(
                          &manager,
                          &manager.active_job_manager_handle,
-@@ -422,12 +434,7 @@
+@@ -414,12 +426,7 @@
  
              located_active_jm = GLOBUS_TRUE;
  

@@ -12,33 +12,24 @@
 
 Name:		globus-gram-job-manager
 %global _name %(tr - _ <<< %{name})
-Version:	13.5
-Release:	14%{?dist}
+Version:	13.14
+Release:	1.1%{?dist}
 Summary:	Globus Toolkit - GRAM Jobmanager
 
 Group:		Applications/Internet
 License:	ASL 2.0
 URL:		http://www.globus.org/
-Source:		http://www.globus.org/ftppub/gt5/5.1/5.1.2/packages/src/%{_name}-%{version}.tar.gz
+Source:		http://www.globus.org/ftppub/gt5/5.2/5.2.0/packages/src/%{_name}-%{version}.tar.gz
 Source1:       globus-gram-job-manager-logging
-Source2:       globus-gram-job-manager-logrotate
 
 # OSG-specific patches
 Patch9:         unlock_init.patch
 Patch11:        null_old_jm.patch
-#Patch13:        watchdog_timer.patch
 Patch14:        recvmsg_eagain.patch
 Patch16:        description_service_tag.patch
 Patch19:        load_requests_before_activating_socket.patch
 Patch20:        fix-job-home-dir.patch
-Patch21:	condor-poll-GRAM-271.patch
 Patch22:        fix-job-lock-location.patch
-Patch23:        GRAM-273-ignore-logs.patch
-Patch24:        GRAM-270-context-leak.patch
-Patch25:        request-lock.patch
-Patch26:        GRAM-275-logfile-names.patch
-Patch27:        SOFTWARE-393.patch
-Patch28:        GRAM-282-sigusr1_logrotate.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -59,8 +50,9 @@ Requires:	globus-gass-transfer%{?_isa} >= 7
 Requires:	globus-gram-job-manager-scripts
 Requires:	globus-gass-copy-progs >= 8
 Requires:	globus-proxy-utils >= 5
-
 Requires:	globus-gass-cache-program >= 2
+Requires:	globus-gatekeeper >= 9
+Requires:	psmisc
 
 BuildRequires:	grid-packaging-tools >= 3.4
 BuildRequires:	globus-scheduler-event-generator-devel%{?_isa} >= 4
@@ -124,19 +116,11 @@ GRAM Jobmanager Documentation Files
 
 %patch9 -p0
 %patch11 -p0
-#%patch13 -p0
 %patch14 -p0
 %patch16 -p0
 %patch19 -p0
 %patch20 -p0
-%patch21 -p0
 %patch22 -p0
-%patch23 -p0
-%patch24 -p0
-%patch25 -p0
-%patch26 -p0
-%patch27 -p0
-%patch28 -p0
 
 %build
 # Remove files that should be replaced during bootstrap
@@ -198,10 +182,6 @@ cat %{SOURCE1} >> $RPM_BUILD_ROOT%{_sysconfdir}/globus/globus-gram-job-manager.c
 mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/log/globus
 chmod 01777 $RPM_BUILD_ROOT%{_localstatedir}/log/globus 
 
-# Add log rotation
-mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d
-cp %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/globus-gram-job-manager
-
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -212,16 +192,38 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_localstatedir}/lib/globus/gram_job_state
 %dir %{_localstatedir}/log/globus
 %config(noreplace) %{_sysconfdir}/globus/globus-gram-job-manager.conf
-%config(noreplace) %{_sysconfdir}/logrotate.d/globus-gram-job-manager
-%config(noreplace) %{_datadir}/globus/globus_gram_job_manager/globus-gram-job-manager.rvf
+%config(noreplace) %{_sysconfdir}/logrotate.d/globus-job-manager
 
 %files doc -f package-doc.filelist
 %defattr(-,root,root,-)
 %dir %{_docdir}/%{name}-%{version}/html
 
 %changelog
+* Mon Dec 19 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 13.14-1.1
+- Merge OSG changes
+- Remove unneeded OSG patches:
+  - condor-poll-GRAM-271.patch
+  - GRAM-273-ignore-logs.patch
+  - request-lock.patch
+  - GRAM-275-logfile-names.patch
+  - SOFTWARE-393.patch
+  - GRAM-282-sigusr1_logrotate.patch
+- Remove OSG-provided logrotate conf
+
+* Thu Dec 08 2011 Joseph Bester <bester@mcs.anl.gov> - 13.14-1
+- Fix some cases of multiple submits of a GRAM job to condor
+
 * Wed Dec 07 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 13.5-14
 - Remove watchdog timer patch; seems to be doing more harm than good in non-threaded mode.
+
+* Wed Dec 07 2011  <bester@centos55.local> - 13.13-1
+- GRAM-292: GRAM crashes when parsing partial condor log
+
+* Mon Dec 05 2011 Joseph Bester <bester@mcs.anl.gov> - 13.12-2
+- Update for 5.2.0 release
+
+* Thu Dec 01 2011 Joseph Bester <bester@mcs.anl.gov> - 13.12-1
+- GRAM-289: GRAM jobs resubmitted
 
 * Wed Nov 30 2011 Alain Roy <roy@cs.wisc.edu> - 13.5-13
 - Updated logrotate to send SIGUSR1 to globus-job-manger processes
@@ -230,6 +232,10 @@ rm -rf $RPM_BUILD_ROOT
 - Restart the jobmanagers state machine in a 'safe' state.
 - Add hooks to job manager to handle log rotation
 - Reduce default logging level
+
+* Mon Nov 28 2011 Joseph Bester <bester@mcs.anl.gov> - 13.11-1
+- GRAM-286: Set default jobmanager log in native packages
+- Add gatekeeper and psmisc dependencies
 
 * Tue Nov 22 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 13.5-11
 - Added patch to fix logfiles with garbage names getting created (GRAM-275)
@@ -242,8 +248,14 @@ rm -rf $RPM_BUILD_ROOT
 - Added patch to fix security context memory leak. 
 - Configure logging
 
+* Mon Nov 21 2011 Joseph Bester <bester@mcs.anl.gov> - 13.10-1
+- GRAM-282: Add hooks to job manager to handle log rotation
+
 * Sat Nov 19 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 13.5-8
 - If holding the wrong lock file, make sure to close the fd.
+
+* Mon Nov 14 2011 Joseph Bester <bester@mcs.anl.gov> - 13.9-1
+- GRAM-271: GRAM Condor polling overpolls
 
 * Sun Nov 13 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 13.5-7
 - Reduce the polling frequency and load of the condor job manager.
@@ -257,8 +269,15 @@ rm -rf $RPM_BUILD_ROOT
 * Wed Nov 09 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 13.5-4
 - Fix the globus-job-dir option in the job manager.
 
-* Thu Oct 27 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 13.5-3
-- Merged upstream 13.5-2:
+* Mon Nov 07 2011 Joseph Bester <bester@mcs.anl.gov> - 13.8-1
+- GRAM-268: GRAM requires gss_export_sec_context to work
+
+* Fri Oct 28 2011 Joseph Bester <bester@mcs.anl.gov> - 13.7-1
+- GRAM-266: Do not issue "Error locking file" warning if another jobmanager
+  exists
+
+* Wed Oct 26 2011 Joseph Bester <bester@mcs.anl.gov> - 13.6-1
+- GRAM-265: GRAM logging.c sets FD_CLOEXEC incorrectly
 
 * Mon Oct 24 2011 Joseph Bester <bester@mcs.anl.gov> - 13.5-2
 - set aclocal_includes="-I ." prior to bootsrap
@@ -272,14 +291,8 @@ rm -rf $RPM_BUILD_ROOT
 * Tue Oct 11 2011 Joseph Bester <bester@mcs.anl.gov> - 13.3-2
 - Add explicit dependencies on >= 5.2 libraries
 
-* Tue Oct 04 2011 Alain Roy <roy@cs.wisc.edu> - 13.3-2
-- Merged upstream 13.3-1 with our patches
-
 * Tue Oct 04 2011 Joseph Bester <bester@mcs.anl.gov> - 13.3-1
 - GRAM-240: globus_xio_open in script code can recurse
-
-* Fri Sep 23 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 13.2-2
-- Merged upstream 13.2-1:
 
 * Thu Sep 22 2011  <bester@mcs.anl.gov> - 13.2-1
 - GRAM-257: Set default values for GLOBUS_GATEKEEPER_*
@@ -287,11 +300,9 @@ rm -rf $RPM_BUILD_ROOT
 * Thu Sep 22 2011 Joseph Bester <bester@mcs.anl.gov> - 13.1-1
 - Fix: GRAM-250
 
-* Tue Sep 06 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 13.0-3
-- Merged upstream 13.0-2:
-    * Thu Sep 01 2011 Joseph Bester <bester@mcs.anl.gov> - 13.0-2
-    - Update for 5.1.2 release
-
+* Thu Sep 01 2011 Joseph Bester <bester@mcs.anl.gov> - 13.0-2
+- Update for 5.1.2 release
+  
 * Thu Aug 18 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 12.10-2
 - Forward-port OSG patches.
 
