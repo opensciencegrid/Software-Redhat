@@ -1,6 +1,8 @@
---- init/globus-gatekeeper-lsb.in.orig	2011-12-09 15:41:02.884000000 -0600
-+++ init/globus-gatekeeper-lsb.in	2011-12-09 15:41:37.913000000 -0600
-@@ -35,7 +35,6 @@
+Index: init/globus-gatekeeper-lsb.in
+===================================================================
+--- init/globus-gatekeeper-lsb.in.orig	2011-12-12 13:25:22.000000003 -0600
++++ init/globus-gatekeeper-lsb.in	2011-12-20 11:22:16.000000003 -0600
+@@ -38,7 +38,6 @@
  
  GLOBUS_GATEKEEPER_CONFIG=${GLOBUS_GATEKEEPER_CONFIG:-@GATEKEEPER_CONFIGDIR@/@GATEKEEPER_CONFIGFILE@}
  test -f "${GLOBUS_GATEKEEPER_CONFIG}" && . "${GLOBUS_GATEKEEPER_CONFIG}"
@@ -8,17 +10,17 @@
  prog="${sbindir}/globus-gatekeeper"
  progname="globus-gatekeeper"
  lockfile="@LOCKFILE@"
-@@ -45,9 +44,6 @@
+@@ -48,9 +47,6 @@
  GLOBUS_GATEKEEPER_PIDFILE="${GLOBUS_GATEKEEPER_PIDFILE:-${localstatedir}/run/globus-gatekeeper.pid}"
  GLOBUS_GATEKEEPER_PORT="${GLOBUS_GATEKEEPER_PORT:-2119}"
  
 -test -f "${GLOBUS_GATEKEEPER_CERT_FILE:-${sysconfdir}/grid-security/hostcert.pem}" || exit 0
 -test -f "${GLOBUS_GATEKEEPER_KEY_FILE:-${sysconfdir}/grid-security/hostkey.pem}" || exit 0
 -
- if ! lsb_release -v | grep -q 'core-[123]'; then
-     lsb_version_ge4=1
- fi
-@@ -55,6 +51,26 @@
+ lsb_ok=1
+ 
+ # Old versions of RH LSB init scripts cause infinite loops with the -p
+@@ -62,6 +58,26 @@
  
  start()
  {
