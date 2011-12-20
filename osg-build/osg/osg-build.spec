@@ -1,6 +1,6 @@
 
 Name:           osg-build
-Version:        1.0.0
+Version:        1.0.1
 Release:        1%{?dist}
 Summary:        Build tools for the OSG
 
@@ -59,6 +59,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_docdir}/%{name}/sample-osg-build.ini
 
 %changelog
+* Tue Dec 20 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0.1-1
+- Fix for SOFTWARE-431
+
 * Wed Dec 14 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0.0-1
 - Version bumped to 1.0.0
 - Added osg-build-test script for running unit tests.
