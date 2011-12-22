@@ -2,10 +2,13 @@
 This package is based upon the NIKHEF package:
 
 https://ndpfsvn.nikhef.nl/repos/mwsec/packaging/fedora/trunk/
+http://software.nikhef.nl/security/lcmaps/
+http://software.nikhef.nl/dist/redhat/el5/mwsec/SRPMS/
 
-The SRPMs were not used due to the issue fixed by upstream r15293.
+The SRPMs were not used due to all the modifications we have put in.
 
-We also have to add "--enable-osg" to get OSG-style validation of VOMS servers (none).
+We also have to add "--enable-osg" to get OSG-style validation of VOMS
+servers (none).
 
-Note that we have included a patch to fix a double-free in generic VOMS attributes.  This patch may be removed when we upgrade to 1.4.30 or later.
-
+Note that we have included a number of patches which may be removed when
+we upgrade to 1.4.33 or later.
