@@ -1,7 +1,7 @@
 Summary: Generic Information Provider
 Name: gip
 Version: 1.3.3rc1
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: TODO
 Group: Applications/Grid
 BuildArch: noarch
@@ -92,13 +92,16 @@ touch $RPM_BUILD_ROOT/%{_sysconfdir}/%{name}/remove-attributes.conf
 %config(noreplace) %{_sysconfdir}/%{name}/remove-attributes.conf
 %config(noreplace) %{_sysconfdir}/%{name}/logging.conf
 %config(noreplace) %{_sysconfdir}/%{name}/ldif.d
-%attr(-, tomcat, tomcat) /var/log/%{name}
-%attr(-, tomcat, tomcat) /var/cache/%{name}
+%attr(-, daemon, daemon) /var/log/%{name}
+%attr(-, daemon, daemon) /var/cache/%{name}
 
 %clean
 rm -rf %buildroot
 
 %changelog
+* Fri Dec 23 2011 Anthony Tiradani <tiradani@fnal.gov> - 1.3.3rc1-3
+- Changed the ownership attributes from tomcat to daemon to eliminate rpm errors
+
 * Thu Nov 17 2011 Burt Holzman <burt@fnal.gov> - 1.3.3rc1-2
 - Create plugin directory
 
