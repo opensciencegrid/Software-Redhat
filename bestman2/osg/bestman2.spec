@@ -13,8 +13,8 @@
 %endif
 
 Name:           bestman2
-Version:        2.1.3
-Release:        9%{?dist}
+Version:        2.2.0
+Release:        1%{?dist}
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -27,17 +27,18 @@ URL:            https://sdm.lbl.gov/bestman/
 %define install_root /etc/%{name}
 
 # NOTE: CHANGE THESE EACH RELEASE
-%define bestman_url https://codeforge.lbl.gov/frs/download.php/359/bestman2-2.1.3.tar.gz
-%define revision 60
+%define bestman_url https://codeforge.lbl.gov/frs/download.php/375/bestman2-2.2.0.tar.gz
+%define revision 61
 
 Source0:        bestman2.tar.gz
 Source1:        bestman2.sh
 Source2:        bestman2.init
 Source3:        bestman.logrotate
-Source4:        bestman2.rc
+#Source4:        bestman2.rc
 Source5:        bestman2.sysconfig
+Source6:        build.xml
 Patch0:		bestman.server.patch
-
+Patch1:		setup.build.xml.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
@@ -154,41 +155,43 @@ pushd bestman2/setup/bestman.in
 %patch0 -p0
 popd
 
+pushd bestman2/setup/
+%patch1 -p0
+popd
 
 %build
 
 # NOTE: Upstream package can be created with the following procedure:
-# svn checkout -r 50 https://codeforge.lbl.gov/anonscm/bestman
+# svn checkout -r 62 https://codeforge.lbl.gov/anonscm/bestman
 # pushd bestman
-# wget https://codeforge.lbl.gov/frs/download.php/316/bestman2-2.1.0-pre2.tar.gz
-# tar xvzf bestman2-2.1.0-pre2.tar.gz
+# wget https://codeforge.lbl.gov/frs/download.php/375/bestman2-2.2.0.tar.gz
+# tar xvzf bestman2-2.2.0.tar.gz
 # popd
 # mv bestman bestman2
 # tar cvzf bestman2.tar.gz bestman2
 # NOTE: Revision number (50) and url/tarball name may change per release.
-
-./build.configure --with-bestman-url=%{bestman_url} --with-bestman2-version=%{version} --with-revision=%{revision} --with-java-home=/usr/java/latest --enable-cached-src=yes --enable-cached-pkg=yes
-
-make
 pushd bestman2
+for f in `find . -name "*.jar" -print`
+do
+   CLASSPATH="$CLASSPATH:$f"
+done
+export CLASSPATH
 
-SRM_HOME=%{install_root}
-export SRM_HOME
-GLOBUS_LOCATION=/usr
-export GLOBUS_LOCATION
+./configure
+cp %{SOURCE6} .
+ln -s ../lib wsdl/lib
+ln -s ../lib client/lib
+ln -s ../lib tester/lib
+ln -s ../lib server/lib
 
-pushd setup
-./configure --with-srm-home=$SRM_HOME \
-    --enable-gateway-mode \
-    --enable-gums \
-    --enable-sudofsmng \
-    --with-java-home=/usr/java/latest \
-    --with-eventlog-path=/var/log/%{name} \
-    --with-cachelog-path=/var/log/%{name} \
-    --with-plugin-path=%{_javadir}/bestman2/plugin \
-    --with-gums-url=https://GUMS_HOST:8443/gums/services/GUMSAuthorizationServicePort \
-    --enable-backup=no \
-    --with-bestman2-conf-path=../conf/bestman2.rc
+ant build
+ant install
+#make
+ant deploy
+pushd dist
+#    --with-gums-url=https://GUMS_HOST:8443/gums/services/GUMSAuthorizationServicePort \
+#    --enable-backup=no \
+#    --with-bestman2-conf-path=../conf/bestman2.rc
 popd
 
 #    --with-certfile-path=/etc/grid-security/http/httpcert.pem \
@@ -196,6 +199,8 @@ popd
 #    --with-gums-certfile-path=/etc/grid-security/http/httpcert.pem \
 #    --with-gums-keyfile-path=/etc/grid-security/http/httpkey.pem \
 
+cp -arp conf/bestman2.rc.samples conf/bestman2.rc
+mv dist/bin .
 #Fix paths in bestman2.rc
 JAVADIR=`echo %{_javadir} |  sed 's/\//\\\\\//g'`
 sed -i "s/SRM_HOME=.*/SRM_HOME=\/etc\/bestman2/" conf/bestman2.rc
@@ -211,7 +216,7 @@ sed -i "s/BESTMAN_GUMSKEYPATH=.*/BESTMAN_GUMSKEYPATH=\/etc\/grid-security\/http\
 sed -i "s/CertFileName=.*/CertFileName=\/etc\/grid-security\/http\/httpcert.pem/" conf/bestman2.rc
 sed -i "s/KeyFileName=.*/KeyFileName=\/etc\/grid-security\/http\/httpkey.pem/" conf/bestman2.rc
 sed -i "s/pluginLib=.*/pluginLib=$JAVADIR\/bestman2\/plugin\//" conf/bestman2.rc
-sed -i "s/2\.2\.2\.1\.2/2.2.2.1.3/" version
+sed -i "s/2\.2\.2\.1\.2/2.2.2.2.0/" version
 #Fix paths in binaries.  Wish I could do this in configure...
 sed -i "s/SRM_HOME=\/.*/SRM_HOME=\/etc\/bestman2/" bin/*
 sed -i "s/BESTMAN_SYSCONF=.*/BESTMAN_SYSCONF=\/etc\/sysconfig\/bestman2/" bin/*
@@ -225,8 +230,6 @@ rm -rf $RPM_BUILD_ROOT
 
 pushd bestman2
 
-
-
 mkdir -p $RPM_BUILD_ROOT%{_javadir}
 mkdir -p $RPM_BUILD_ROOT%{_sbindir}
 mkdir -p $RPM_BUILD_ROOT%{install_root}
@@ -235,9 +238,10 @@ cp -arp conf $RPM_BUILD_ROOT%{install_root}
 cp -arp lib $RPM_BUILD_ROOT%{_javadir}/%{name}
 cp -arp properties $RPM_BUILD_ROOT%{install_root}
 
+rm -rf $RPM_BUILD_ROOT%{install_root}/properties/.svn
+
 install -m 0644 version $RPM_BUILD_ROOT%{install_root}/version
 install -m 0755 sbin/bestman.server $RPM_BUILD_ROOT%{_sbindir}/bestman.server
-
 
 mkdir -p $RPM_BUILD_ROOT%{_bindir}
 for i in `ls bin`; do
@@ -250,7 +254,8 @@ mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig
 install -m 0755 %{SOURCE1} $RPM_BUILD_ROOT%{_sbindir}/%{name}
 install -m 0755 %{SOURCE2} $RPM_BUILD_ROOT%{_initrddir}/%{name}
 install -m 0644 %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/%{name}
-install -m 0644 %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/conf/bestman2.rc
+#install -m 0644 %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/conf/bestman2.rc
+install -m 0644 conf/bestman2.rc $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/conf/bestman2.rc
 install -m 0644 %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/%{name}
 
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/grid-security/vomsdir
@@ -290,7 +295,8 @@ fi
 %{_javadir}/bestman2/axis/commons-logging-1.1.jar
 %{_javadir}/bestman2/axis/jaxrpc.jar
 %{_javadir}/bestman2/axis/wsdl4j-1.6.2.jar
-%{_javadir}/bestman2/axis/xercesImpl-2.9.1.jar
+%{_javadir}/bestman2/axis/xercesImpl-2.11.0.jar
+%{_javadir}/bestman2/axis/xml-apis-2.11.0.jar
 %{_javadir}/bestman2/jglobus/cog-axis-1.8.0.jar
 %{_javadir}/bestman2/jglobus/cog-jglobus-1.8.0.jar
 %{_javadir}/bestman2/jglobus/cog-url-1.8.0.jar
@@ -312,9 +318,12 @@ fi
 
 %files client
 %defattr(-,root,root,-)
-%config(noreplace) %{install_root}/conf/srmclient.conf
-%config(noreplace) %{install_root}/conf/srmclient.conf.sample
+#%config(noreplace) %{install_root}/conf/srmclient.conf
+#%config(noreplace) %{install_root}/conf/srmclient.conf.sample
 %config(noreplace) %{install_root}/conf/bestman2.rc
+%config(noreplace) %{install_root}/conf/bestman2.rc.samples
+%config(noreplace) %{install_root}/conf/bestmanclient.conf
+%config(noreplace) %{install_root}/conf/mss.init.sample
 %config(noreplace) %{_sysconfdir}/sysconfig/bestman2
 %{_bindir}/srm-copy
 %{_bindir}/srm-copy-status
@@ -359,7 +368,7 @@ fi
 %{_sbindir}/bestman.server
 %{_bindir}/bestman-diag
 %config(noreplace) %{install_root}/conf/WEB-INF
-%config(noreplace) %{install_root}/conf/bestman2.gateway.sample.rc
+#%config(noreplace) %{install_root}/conf/bestman2.gateway.sample.rc
 %config(noreplace) %{install_root}/conf/grid-mapfile.empty
 %config(noreplace) %{install_root}/conf/bestman-diag-msg.conf
 %config(noreplace) %{install_root}/conf/bestman-diag.conf.sample
@@ -370,13 +379,13 @@ fi
 %config(noreplace) %{_sysconfdir}/logrotate.d/%{name}
 %config(noreplace) %attr(0644,root,root) %{_sysconfdir}/grid-security/vomsdir/vdt-empty.pem
 %attr(-,bestman,bestman) %dir %{_var}/log/%{name}
-%doc bestman2/docs/README.javaapi
+#%doc bestman2/docs/README.javaapi
 
 
 %files client-libs
 %{_javadir}/bestman2/bestman2-client.jar
-%{_javadir}/bestman2/bestman2-printintf.jar
-%{_javadir}/bestman2/bestman2-transfer.jar
+#%{_javadir}/bestman2/bestman2-printintf.jar
+#%{_javadir}/bestman2/bestman2-transfer.jar
 
 
 %files server-libs
@@ -389,48 +398,48 @@ fi
 
 
 %files server-dep-libs
-%{_javadir}/bestman2/gums/glite-security-trustmanager.jar
-%{_javadir}/bestman2/gums/glite-security-util-java.jar
-%{_javadir}/bestman2/gums/opensaml-1.0.1.jar
-%{_javadir}/bestman2/gums/privilege-1.0.1.3.jar
-%{_javadir}/bestman2/gums/vomsjapi-1.9.10.jar
-%{_javadir}/bestman2/gums2/commons-collections-3.2.jar
-%{_javadir}/bestman2/gums2/commons-lang-2.1.jar
-%{_javadir}/bestman2/gums2/joda-time-1.6.jar
-%{_javadir}/bestman2/gums2/opensaml-2.3.1.jar
-%{_javadir}/bestman2/gums2/openws-1.3.0.jar
+%{_javadir}/bestman2/gums2/glite-security-trustmanager-2.5.5.jar
+%{_javadir}/bestman2/gums2/glite-security-util-java-2.8.0.jar
+%{_javadir}/bestman2/gums2/opensaml-2.5.2.jar
 %{_javadir}/bestman2/gums2/privilege-xacml-2.2.5.jar
-%{_javadir}/bestman2/gums2/velocity-1.5.jar
+#%{_javadir}/bestman2/gums2/vomsjapi-1.9.10.jar
+%{_javadir}/bestman2/gums2/esapi-2.0.1.jar
+%{_javadir}/bestman2/gums2/commons-collections-3.2.1.jar
+%{_javadir}/bestman2/gums2/commons-lang-2.6.jar
+%{_javadir}/bestman2/gums2/joda-time-1.6.2.jar
+%{_javadir}/bestman2/gums2/openws-1.4.3.jar
+%{_javadir}/bestman2/gums2/velocity-1.7.jar
 %{_javadir}/bestman2/gums2/xalan-2.7.1.jar
-%{_javadir}/bestman2/gums2/xml-apis-2.9.1.jar
-%{_javadir}/bestman2/gums2/xmlsec-1.4.3.jar
-%{_javadir}/bestman2/gums2/xmltooling-1.2.1.jar
-%{_javadir}/bestman2/jetty/jetty-client-7.1.5.v20100705.jar
-%{_javadir}/bestman2/jetty/jetty-continuation-7.1.5.v20100705.jar
-%{_javadir}/bestman2/jetty/jetty-deploy-7.1.5.v20100705.jar
-%{_javadir}/bestman2/jetty/jetty-http-7.1.5.v20100705.jar
-%{_javadir}/bestman2/jetty/jetty-io-7.1.5.v20100705.jar
-%{_javadir}/bestman2/jetty/jetty-security-7.1.5.v20100705.jar
-%{_javadir}/bestman2/jetty/jetty-server-7.1.5.v20100705.jar
-%{_javadir}/bestman2/jetty/jetty-servlet-7.1.5.v20100705.jar
-%{_javadir}/bestman2/jetty/jetty-util-7.1.5.v20100705.jar
-%{_javadir}/bestman2/jetty/jetty-webapp-7.1.5.v20100705.jar
-%{_javadir}/bestman2/jetty/jetty-xml-7.1.5.v20100705.jar
-%{_javadir}/bestman2/others/concurrent.jar
+%{_javadir}/bestman2/gums2/xmlsec-1.4.5.jar
+%{_javadir}/bestman2/gums2/xmltooling-1.3.3.jar
+%{_javadir}/bestman2/jetty/jetty-client-8.0.1.v20110908.jar
+%{_javadir}/bestman2/jetty/jetty-continuation-8.0.1.v20110908.jar
+%{_javadir}/bestman2/jetty/jetty-deploy-8.0.1.v20110908.jar
+%{_javadir}/bestman2/jetty/jetty-http-8.0.1.v20110908.jar
+%{_javadir}/bestman2/jetty/jetty-io-8.0.1.v20110908.jar
+%{_javadir}/bestman2/jetty/jetty-security-8.0.1.v20110908.jar
+%{_javadir}/bestman2/jetty/jetty-server-8.0.1.v20110908.jar
+%{_javadir}/bestman2/jetty/jetty-servlet-8.0.1.v20110908.jar
+%{_javadir}/bestman2/jetty/jetty-util-8.0.1.v20110908.jar
+%{_javadir}/bestman2/jetty/jetty-webapp-8.0.1.v20110908.jar
+%{_javadir}/bestman2/jetty/jetty-xml-8.0.1.v20110908.jar
 %{_javadir}/bestman2/others/jcl-over-slf4j-1.6.0.jar
-%{_javadir}/bestman2/others/je-4.0.103.jar
-%{_javadir}/bestman2/others/servlet-api-2.5.jar
-%{_javadir}/bestman2/others/slf4j-api-1.6.0.jar
-%{_javadir}/bestman2/others/slf4j-log4j12-1.6.0.jar
-%{_javadir}/bestman2/others/slf4j-simple-1.6.0.jar
+%{_javadir}/bestman2/others/je-4.1.10.jar
+%{_javadir}/bestman2/others/servlet-api-3.0.jar
+%{_javadir}/bestman2/others/slf4j-api-1.6.2.jar
+%{_javadir}/bestman2/others/slf4j-log4j12-1.6.2.jar
+%{_javadir}/bestman2/others/slf4j-simple-1.6.2.jar
 %{_javadir}/bestman2/others/which4j.jar
 %{_javadir}/bestman2/plugin/LBNL.RFF.README.txt
 %{_javadir}/bestman2/plugin/LBNL.RFF.jar
-%{_javadir}/bestman2/voms/bcprov-jdk15-139.jar
+%{_javadir}/bestman2/plugin/LBNL.SSFP.jar
+%{_javadir}/bestman2/plugin/LBNL.SSFP.README.txt
+%{_javadir}/bestman2/voms/bcprov-jdk15-146.jar
+%{_javadir}/bestman2/voms/vomsjapi-2.0.6.jar
 
 %files tester
 %{_bindir}/srm-tester
-%config(noreplace) %{install_root}/conf/srmtester.conf.sample
+#%config(noreplace) %{install_root}/conf/srmtester.conf.sample
 %config(noreplace) %{install_root}/conf/srmtester.conf
 %config(noreplace) %{install_root}/conf/bestman2.rc
 %config(noreplace) %{_sysconfdir}/sysconfig/bestman2
@@ -439,11 +448,14 @@ fi
 %files tester-libs
 %{_javadir}/bestman2/bestman2-tester-driver.jar
 %{_javadir}/bestman2/bestman2-tester-main.jar
-%{_javadir}/bestman2/bestman2-printintf.jar
-%{_javadir}/bestman2/bestman2-transfer.jar
+#%{_javadir}/bestman2/bestman2-printintf.jar
+#%{_javadir}/bestman2/bestman2-transfer.jar
 
 
 %changelog
+* Mon Nov 28 2011 Doug Strain <dstrain@fnal.gov> - 2.2.0-1
+- Updating for Bestman2 2.2.0
+
 * Mon Nov 28 2011 Doug Strain <dstrain@fnal.gov> - 2.1.3-9
 - Fixing chkconfig to be off by default
 
