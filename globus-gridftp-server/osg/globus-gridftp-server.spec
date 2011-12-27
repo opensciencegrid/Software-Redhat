@@ -13,7 +13,7 @@
 Name:		globus-gridftp-server
 %global _name %(tr - _ <<< %{name})
 Version:	6.5
-Release:	1.1%{?dist}
+Release:	1.2%{?dist}
 Summary:	Globus Toolkit - Globus GridFTP Server
 
 Group:		System Environment/Libraries
@@ -192,6 +192,10 @@ fi
 %defattr(-,root,root,-)
 
 %changelog
+* Tue Dec 27 2011 Doug Strain <dstrain@fnal.gov> - 6.5-1.2
+- Changed LCMAPS_MOD_HOME to "lcmaps"
+- For SOFTWARE-426 as per Dave Dykstra
+
 * Mon Dec 19 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 6.5-1.1
 - Merge OSG changes
 
