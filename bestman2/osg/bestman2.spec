@@ -14,7 +14,7 @@
 
 Name:           bestman2
 Version:        2.2.0
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -453,7 +453,7 @@ fi
 
 
 %changelog
-* Wed Dec 28 2011 Doug Strain <dstrain@fnal.gov> - 2.2.0-3
+* Wed Dec 28 2011 Doug Strain <dstrain@fnal.gov> - 2.2.0-4
 - Fixing various sysconfig for Bestman2 2.2.0
 
 * Fri Dec 16 2011 Doug Strain <dstrain@fnal.gov> - 2.2.0-1
