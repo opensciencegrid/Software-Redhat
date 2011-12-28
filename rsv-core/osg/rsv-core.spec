@@ -1,7 +1,7 @@
 
 Name:      rsv-core
-Version:   3.6.6
-Release:   2%{?dist}
+Version:   3.6.7
+Release:   1%{?dist}
 Summary:   RSV Core Infrastructure
 
 Group:     Applications/Monitoring
@@ -124,6 +124,12 @@ fi
 
 
 %changelog
+* Wed Dec 28 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.6.7-1
+- Added the ability to pass metric arguments on the command line.
+- Fixed a bug in listing of probes with cron times. (JIRA 432)
+- Improved error if uudecode is missing on remote CE.
+- Other minor bug fixes.
+
 * Wed Dec 07 2011 Alain Roy <roy@cs.wisc.edu> 3.6.6-2
 - Added dependency on globus-common-progs
 
