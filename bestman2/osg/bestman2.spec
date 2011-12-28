@@ -14,7 +14,7 @@
 
 Name:           bestman2
 Version:        2.2.0
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -211,10 +211,9 @@ sed -i "s/BESTMAN_LOG=.*/BESTMAN_LOG=\/var\/log\/bestman2\/bestman2.log/" conf/b
 sed -i "s/BESTMAN_LIB=.*/BESTMAN_LIB=$JAVADIR\/bestman2/" conf/bestman2.rc
 sed -i "s/EventLogLocation=.*/EventLogLocation=\/var\/log\/bestman2/" conf/bestman2.rc
 sed -i "s/X509_CERT_DIR=.*/X509_CERT_DIR=\/etc\/grid-security\/certificates/" conf/bestman2.rc
-sed -i "s/BESTMAN_GUMSCERTPATH=.*/BESTMAN_GUMSCERTPATH=\/etc\/grid-security\/http\/httpcert.pem/" conf/bestman2.rc
-sed -i "s/BESTMAN_GUMSKEYPATH=.*/BESTMAN_GUMSKEYPATH=\/etc\/grid-security\/http\/httpkey.pem/" conf/bestman2.rc
-sed -i "s/CertFileName=.*/CertFileName=\/etc\/grid-security\/http\/httpcert.pem/" conf/bestman2.rc
-sed -i "s/KeyFileName=.*/KeyFileName=\/etc\/grid-security\/http\/httpkey.pem/" conf/bestman2.rc
+sed -i "s/CertFileName=.*/CertFileName=\/etc\/grid-security\/bestman\/bestmancert.pem/" conf/bestman2.rc
+sed -i "s/KeyFileName=.*/KeyFileName=\/etc\/grid-security\/bestman\/bestmankey.pem/" conf/bestman2.rc
+sed -i "s/GUMSAuthorizationServicePort/GUMSXACMLAuthorizationServicePort/" conf/bestman2.rc
 sed -i "s/pluginLib=.*/pluginLib=$JAVADIR\/bestman2\/plugin\//" conf/bestman2.rc
 sed -i "s/2\.2\.2\.1\.2/2.2.2.2.0/" version
 #Fix paths in binaries.  Wish I could do this in configure...
@@ -453,9 +452,11 @@ fi
 
 
 %changelog
-* Wed Dec 28 2011 Doug Strain <dstrain@fnal.gov> - 2.2.0-5
+* Wed Dec 28 2011 Doug Strain <dstrain@fnal.gov> - 2.2.0-6
 - Fixing various sysconfig for Bestman2 2.2.0
 - Fixing classpath paths for sysconfig
+- Changed GUMS default to XACML
+- Changed cert default to /etc/grid-security/bestman/bestmancert.pem
 
 * Fri Dec 16 2011 Doug Strain <dstrain@fnal.gov> - 2.2.0-1
 - Updating for Bestman2 2.2.0
