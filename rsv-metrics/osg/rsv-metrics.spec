@@ -1,6 +1,6 @@
 
 Name:      rsv-metrics
-Version:   3.6.6
+Version:   3.6.7
 Release:   1%{?dist}
 Summary:   RSV metrics
 
@@ -92,6 +92,9 @@ rm -rf $RPM_BUILD_ROOT
 %attr(-,rsv,rsv) %{_localstatedir}/log/rsv/probes
 
 %changelog
+* Wed Dec 28 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.6.7-1
+- Aesthetic changes - improved the output of some probes.
+
 * Tue Nov 22 2011 Matyas Selmeci <matyas@cs.wisc.edu> 3.6.6-1
 - osg-version probe interval changed from daily to hourly
 

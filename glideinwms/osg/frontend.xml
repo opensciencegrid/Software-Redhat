@@ -24,7 +24,7 @@
          <proxy absfname="/tmp/x509up_u99" security_class="frontend"/>
       </proxies>
    </security>
-   <stage base_dir="/usr/share/gwms-frontend/www/stage" use_symlink="True" web_base_url="http://<hostname of frontend>/vofrontend/stage"/>
+   <stage base_dir="/usr/share/gwms-frontend/www/stage" use_symlink="True" web_base_url="http://FRONTEND_HOSTNAME/vofrontend/stage"/>
    <work base_dir="/usr/share/gwms-frontend/frontend-temp" base_log_dir="/var/log/gwms-frontend"/>
    <attrs>
       <attr name="GLIDECLIENT_Rank" glidein_publish="False" job_publish="False" parameter="True" type="string" value="1"/>
@@ -65,8 +65,8 @@
       </group>
    </groups>
    <collectors>
-      <collector DN="DN of main collector" node="<hostname of collector>" secondary="False"/>
-      <collector DN="DN of secondary collectors (usually same as DN in line above)" node="<hostname of secondary collectors (usually same as hostname in line above):9620-9660" secondary="True"/>
+      <collector DN="DN of main collector" node="FRONTEND_HOSTNAME:9618" secondary="False"/>
+      <collector DN="DN of secondary collectors (usually same as DN in line above)" node="FRONTEND_HOSTNAME:9620-9660" secondary="True"/>
    </collectors>
    <files>
    </files>

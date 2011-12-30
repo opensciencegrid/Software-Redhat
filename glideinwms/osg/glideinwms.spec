@@ -1,6 +1,6 @@
 Name:           glideinwms
 Version:        2.5.4
-Release:        0.rc2{?dist}
+Release:        1%{?dist}
 Summary:        The VOFrontend for glideinWMS submission host
 
 Group:          System Environment/Daemons
@@ -120,7 +120,7 @@ cp creation/lib/*.py $RPM_BUILD_ROOT%{python_sitelib}
 
 # Install the init.d
 install -d  $RPM_BUILD_ROOT/%{_initrddir}
-install -m 0755 %{SOURCE1} $RPM_BUILD_ROOT/%{_initrddir}/frontend_startup
+install -m 0755 %{SOURCE1} $RPM_BUILD_ROOT/%{_initrddir}/gwms-frontend
 
 # Install the web directory
 install -d $RPM_BUILD_ROOT%{_datadir}/gwms-frontend/www
@@ -193,7 +193,7 @@ install -m 0755 install/glidecondor_addDN $RPM_BUILD_ROOT%{_sbindir}/glidecondor
 # Install checksum file
 install -m 0644 etc/checksum.frontend $RPM_BUILD_ROOT%{_datadir}/gwms-frontend/frontend-temp/checksum.frontend
 
-%post
+%post vofrontend
 # $1 = 1 - Installation
 # $1 = 2 - Upgrade
 # Source: http://www.ibm.com/developerworks/library/l-rpm2/
@@ -203,26 +203,30 @@ frontend_name=`echo $fqdn_hostname | sed 's/\./-/g'`_OSG_gWMSFrontend
 
 
 sed -i "s/FRONTEND_NAME_CHANGEME/$frontend_name/g" %{_sysconfdir}/gwms-frontend/frontend.xml
+sed -i "s/FRONTEND_HOST/$fqdn_hostname/g" %{_sysconfdir}/gwms-frontend/frontend.xml
 
 #mv %{_datadir}/gwms-frontend/www/stage/ %{_datadir}/gwms-frontend/www/stage/$frontend_name
 
-/sbin/chkconfig --add frontend_startup
+/sbin/chkconfig --add gwms-frontend
 ln -s %{_sysconfdir}/gwms-frontend/frontend.xml %{_datadir}/gwms-frontend/frontend-temp/frontend.xml
 ln -s %{_datadir}/gwms-frontend/www/monitor/ %{_datadir}/gwms-frontend/frontend-temp/monitor
 ln -s %{_datadir}/gwms-frontend/www/monitor/group_main %{_datadir}/gwms-frontend/frontend-temp/group_main/monitor
 
-%pre
-# Add the "frontend" user 
-/usr/sbin/useradd -c "VO Frontend User" \
-	-s /sbin/nologin -r frontend 2> /dev/null || :
+%pre vofrontend
 
-%preun
+# Add the "frontend" user 
+getent group frontend >/dev/null || groupadd -r frontend
+getent passwd frontend >/dev/null || \
+       useradd -r -g frontend -d %{_datadir}/gwms-frontend \
+	-c "VO Frontend user" -s /sbin/nologin frontend
+
+%preun vofrontend
 # $1 = 0 - Action is uninstall
 # $1 = 1 - Action is upgrade
 
 
 if [ "$1" = "0" ] ; then
-    /sbin/chkconfig --del frontend_startup
+    /sbin/chkconfig --del gwms-frontend
 fi
 
 if [ "$1" = "0" ]; then
@@ -247,7 +251,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(-, frontend, frontend) %{_datadir}/gwms-frontend
 %attr(-, frontend, frontend) %{_localstatedir}/log/gwms-frontend
 %{python_sitelib}
-%{_initrddir}/frontend_startup
+%{_initrddir}/gwms-frontend
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/gwms-frontend.conf
 %config(noreplace) %{_sysconfdir}/condor/config.d/00_gwms_general.config
 %config(noreplace) %{_sysconfdir}/condor/config.d/01_gwms_collectors.config
@@ -257,15 +261,20 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Fri Dec 09 2011 Doug Strain <burt@fnal.gov> - 2.5.4-0.pre2
+* Thu Dec 29 2011 Doug Strain <dstrain@fnal.gov> - 2.5.4-1
+- Using release source and fixing requested features for BUG2310
+-- Adding user/group correctly
+-- Substituting hostname name automatically
+
+* Fri Dec 09 2011 Doug Strain <dstrain@fnal.gov> - 2.5.4-0.pre2
 - Added glidecondor_addDN to vofrontend package
 
-* Thu Nov 10 2011 Doug Strain <burt@fnal.gov> - 2.5.4-0.pre1 
+* Thu Nov 10 2011 Doug Strain <dstrain@fnal.gov> - 2.5.4-0.pre1 
 - Update to use patched 2.5.3 
 - Pushed patches upstream
 - Made the package glideinwms with subpackage vofrontend
 
-* Thu Nov 10 2011 Doug Strain <burt@fnal.gov> - 2.5.3-3
+* Thu Nov 10 2011 Doug Strain <dstrain@fnal.gov> - 2.5.3-3
 - Update to 2.5.3
 - Updated condor configs to match ini installer
 - Updated frontend.xml to not check index.html

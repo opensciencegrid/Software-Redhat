@@ -1,6 +1,6 @@
 
 Name:      rsv-consumers
-Version:   3.6.6
+Version:   3.6.7
 Release:   1%{?dist}
 Summary:   RSV Consumers Infrastructure
 
@@ -89,5 +89,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(-,rsv,rsv) %{_localstatedir}/log/rsv/consumers
 
 %changelog
+* Wed Dec 28 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.6.7-1
+- No changes, bumped due to changes in rsv-metrics and rsv-core.
+
 * Thu Jul 20 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.4.0-1
 - Creating a first RPM for rsv-consumers

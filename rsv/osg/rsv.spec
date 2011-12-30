@@ -1,7 +1,7 @@
 
 Name:      rsv
 Summary:   RSV Meta Package
-Version:   3.6.6
+Version:   3.6.7
 Release:   1%{?dist}
 License:   Apache 2.0
 Group:     Applications/Monitoring
@@ -31,6 +31,9 @@ rm -rf $RPM_BUILD_ROOT
 # No files since this is a meta package
 
 %changelog
+* Wed Dec 28 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.6.7-1
+- No changes, bumped due to changes in rsv-metrics and rsv-core.
+
 * Thu Sep 08 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.4.5-3
 - Added dependency on grid-certificates
 
