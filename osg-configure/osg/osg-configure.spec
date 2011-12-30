@@ -1,5 +1,5 @@
 %global name osg-configure
-%global version 0.7.1
+%global version 0.7.2
 %global release 1%{?dist}
 
 Summary: Package for configure-osg and associated scripts
@@ -191,6 +191,9 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/osg/config.d/15-managedfork.ini
 
 %changelog
+* Fri Dec 30 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 0.7.2-1
+- Improved RSV configuration
+
 * Wed Dec 7 2011 Suchandra Thapa <sthapa@ci.uchicago.edu> 0.7.1-1
 - Fix the default location of the condor_config file
 - Update ini comments to point to correct documentation
