@@ -1,15 +1,15 @@
 Summary: Process tracking plugin for the LCMAPS authorization framework
 Name: lcmaps-plugins-glexec-tracking
-Version: 0.1.1
+Version: 0.1.3
 Release: 1%{?dist}
 License: EGEE Middleware and ASL and Fermitools
 Group: System Environment/Libraries
 # The tarball was created from CVS using the following commands:
 # cd /afs/cs.wisc.edu/p/vdt/public/html/upstream
-# cvs -d :pserver:anonymous@cdcvs.fnal.gov:/cvs/cd_read_only export -d lcmaps-plugins-glexec-tracking-0.1.1 -r lcmaps-plugins-glexec-tracking_R_0_1_1 privilege/lcmaps-plugins-glexec-tracking
-# mkdir lcmaps-plugins-glexec-tracking/0.1.1
-# tar zcf lcmaps-plugins-glexec-tracking/0.1.1/lcmaps-plugins-glexec-tracking-0.1.1.tar.gz lcmaps-plugins-glexec-tracking-0.1.1/
-# rm -rf lcmaps-plugins-glexec-tracking-0.1.1
+# cvs -d :pserver:anonymous@cdcvs.fnal.gov:/cvs/cd_read_only export -d lcmaps-plugins-glexec-tracking-0.1.3 -r lcmaps-plugins-glexec-tracking_R_0_1_3 privilege/lcmaps-plugins-glexec-tracking
+# mkdir lcmaps-plugins-glexec-tracking/0.1.3
+# tar zcf lcmaps-plugins-glexec-tracking/0.1.3/lcmaps-plugins-glexec-tracking-0.1.3.tar.gz lcmaps-plugins-glexec-tracking-0.1.3/
+# rm -rf lcmaps-plugins-glexec-tracking-0.1.3
 Source0: %{name}-%{version}.tar.gz
 BuildRequires: lcmaps-interface
 BuildRequires: libtool automake autoconf
@@ -37,18 +37,10 @@ make %{?_smp_mflags}
 rm -rf $RPM_BUILD_ROOT
 
 make DESTDIR=$RPM_BUILD_ROOT install
-ln -s liblcmaps_glexec_tracking.so $RPM_BUILD_ROOT/%{_libdir}/lcmaps/liblcmaps_glexec_tracking.so.0
-ln -s liblcmaps_glexec_tracking.so.0 $RPM_BUILD_ROOT/%{_libdir}/lcmaps/liblcmaps_glexec_tracking.so.0.0.0
 find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
-#Note: this directory is here so that %ghost can be used on the files in
-#  the %{_libdir}/modules directory, so rpm won't remove them from a
-#  previous install.  %ghost requires files to exist in the install
-#  directory but they are not installed
-mkdir -p $RPM_BUILD_ROOT/%{_libdir}/modules
-(cd $RPM_BUILD_ROOT/%{_libdir}/lcmaps
-for f in *; do
-  touch ../modules/$f
-done)
+
+# This symlink is here for backward-compatible %ghost files
+ln -s lcmaps $RPM_BUILD_ROOT%{_libdir}/modules
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -57,18 +49,22 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %{_libdir}/lcmaps/lcmaps_glexec_tracking.mod
 %{_libdir}/lcmaps/liblcmaps_glexec_tracking.so
-%{_libdir}/lcmaps/liblcmaps_glexec_tracking.so.0
-%{_libdir}/lcmaps/liblcmaps_glexec_tracking.so.0.0.0
-# in order to remove these %ghost files eventually, can probably add a
-#   %preun that temporarily removes the modules symlink so the uninstall
-#   will not remove the real files in the lcmaps directory
+%ghost %{_libdir}/modules
 %ghost %{_libdir}/modules/lcmaps_glexec_tracking.mod
 %ghost %{_libdir}/modules/liblcmaps_glexec_tracking.so
-%ghost %{_libdir}/modules/liblcmaps_glexec_tracking.so.0
-%ghost %{_libdir}/modules/liblcmaps_glexec_tracking.so.0.0.0
 %{_sbindir}/glexec_monitor
 
 %changelog
+* Fri Dec 30 2011 Dave Dykstra <dwd@fnal.gov> 0.1.3-1.osg
+- Upgrade to upstream 0.1.3, which adds -log-facility option
+
+* Wed Dec 28 2011 Dave Dykstra <dwd@fnal.gov> 0.1.2-1.osg
+- Upgrade to upstream 0.1.2, which adds -log-level option and updates all
+  log messages to be consistent with new lcmaps standard, and fixes a bug
+  that prevented soft killing processes that outlive the main payload command
+- Remove the *.so.0  and *.so.0.0.0 symlinks as has now been done for
+  the other lcmaps plugins
+
 * Mon Dec 12 2011 Dave Dykstra <dwd@fnal.gov> 0.1.1-1.osg
 - Upgrade to upstream 0.1.1, which fixes a glexec hang when there are
   more than 5 open file descriptors passed in and fixes a problem with
