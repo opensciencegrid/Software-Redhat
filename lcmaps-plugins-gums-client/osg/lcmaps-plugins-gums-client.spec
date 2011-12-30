@@ -1,9 +1,6 @@
-
-%define modname lcmaps_gums_client.mod
-
 Name:           lcmaps-plugins-gums-client
 Version:        0.0.2
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        GUMS support for lcmaps
 
 Group:          System Environment/Tools
@@ -24,18 +21,32 @@ Obsoletes:	lcmaps-plugins-gums = 0.0.1-1
 %install
 rm -rf $RPM_BUILD_ROOT
 
-mkdir -p $RPM_BUILD_ROOT%{_libdir}/modules
-cd $RPM_BUILD_ROOT%{_libdir}/modules
-ln -s lcmaps_scas_client.mod %{modname}
+mkdir -p $RPM_BUILD_ROOT%{_datadir}/man/man8
+cd $RPM_BUILD_ROOT%{_datadir}/man/man8
+ln -s lcmaps_plugins_scas_client.8.gz lcmaps_plugins_gums_client.8.gz
+
+mkdir -p $RPM_BUILD_ROOT%{_libdir}/lcmaps
+ln -s lcmaps_scas_client.mod $RPM_BUILD_ROOT%{_libdir}/lcmaps/lcmaps_gums_client.mod
+
+# This symlink is here for backward-compatible %ghost files
+ln -s lcmaps $RPM_BUILD_ROOT%{_libdir}/modules
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)
-%{_libdir}/modules/%{modname}
+%{_datadir}/man/man8/lcmaps_plugins_gums_client.8.gz
+%{_libdir}/lcmaps/lcmaps_gums_client.mod
+%ghost %{_libdir}/modules
+%ghost %{_libdir}/modules/lcmaps_gums_client.mod
 
 %changelog
+* Fri Dec 30 2011 Dave Dykstra <dwd@fnal.gov> 0.0.2-3.osg
+- Added symlink to man page
+- Moved plugin symlink to libdir/lcmaps directory and added %ghost for it
+  in the modules directory, since modules is currently a symlink to lcmaps
+
 * Fri Sep 01 2011 Dave Dykstra <dwd@fnal.gov> 0.0.2-2.osg
 - Just add the %{?dist} to the release to be like the others
 
