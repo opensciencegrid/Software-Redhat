@@ -34,8 +34,6 @@
 #
 #-----------------------------------------------------------------------------
 
-path = lcmaps
-
 gumsclient = "lcmaps_gums_client.mod"
              "-resourcetype ce"
              "-actiontype execute-now"
@@ -69,6 +67,13 @@ sazclient = "lcmaps_saz_client.mod"
 # Uncomment to write tracking info to glexec_monitor.log in the given dir
 #     otherwise the default is to use syslog
 #         "-logdir /var/log/glexec"
+# Uncomment to change the default logging level for the glexec_monitor
+#   Level 0: none, 1: errors, 2: warnings, 3: notices, 4: info, 5: debug
+#   The notices level is used for usage tracking; info is commonly useful.
+#   Default is lcmaps_debug_level from glexec.conf.
+#         "-log-level 4"
+# Uncomment to change the syslog facility.  Default is LOG_DAEMON
+#	  "-log-facility LOG_DAEMON"
 # Uncomment to use local time in the file log (doesn't apply to syslog)
 #         "-datetime-local"
 # Uncomment to change the minimum tracking group id
