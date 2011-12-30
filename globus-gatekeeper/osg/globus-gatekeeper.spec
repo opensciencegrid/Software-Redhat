@@ -13,7 +13,7 @@
 Name:		globus-gatekeeper
 %global _name %(tr - _ <<< %{name})
 Version:	9.6
-Release:	1.0%{?dist}
+Release:	1.1%{?dist}
 Summary:	Globus Toolkit - Globus Gatekeeper
 
 Group:		Applications/Internet
@@ -126,6 +126,10 @@ fi
 %config(noreplace) /etc/logrotate.d/globus-gatekeeper
 
 %changelog
+* Thu Dec 29 2011 Dave Dykstra <dwd@fnal.gov> - 9.6-1.1.osg
+- Change /etc/sysconfig/globus-gatekeeper parameters to reflect no more
+  LCAS and new LCMAPS
+
 * Mon Dec 19 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 9.6-1.0
 - Merge OSG changes
 - Removed unneeded OSG patches:
