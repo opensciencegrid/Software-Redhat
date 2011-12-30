@@ -1,21 +1,22 @@
 Summary: User identity switching tool based on grid credentials
 Name: glexec
-Version: 0.8.10
-Release: 8%{?dist}
+Version: 0.9.0
+Release: 1.1%{?dist}
+#Release: 0.%(date +%%Y%%m%%d_%%H%%M)%{?dist}
 License: ASL 2.0
 Group: Applications/System
 URL: http://www.nikhef.nl/pub/projects/grid/gridwiki/index.php/Site_Access_Control
 Source0: http://software.nikhef.nl/security/%{name}/%{name}-%{version}.tar.gz
 Source1: glexec.conf
 Source2: glexec.logrotate
+Patch0: nowarn_allwhite.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
-BuildRequires: lcmaps-interface
+BuildRequires: lcmaps-basic-interface >= 1.4.31
 Requires: logrotate
 
-Requires(pre): shadow-utils
-
 # Since liblcmaps.so is dlopen'd we need this explicit requirement.
-Requires: lcmaps
+Requires: lcmaps >= 1.5.0
+Requires(pre): shadow-utils
 
 Requires: lcmaps-plugins-glexec-tracking
 
@@ -30,9 +31,11 @@ logging-only mode.
 
 %prep
 %setup -q
+%patch0 -p0
 
 %build
-%configure
+%configure --with-lcmaps-moduledir-sfx=/lcmaps --with-lcas-moduledir-sfx=/lcas
+
 make %{?_smp_mflags}
 
 %install
@@ -42,53 +45,63 @@ make DESTDIR=$RPM_BUILD_ROOT install
 
 # OSG default config
 cp %{SOURCE1} $RPM_BUILD_ROOT/%{_sysconfdir}/glexec.conf
-# logrotate
-cp %{SOURCE2} $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d/glexec
+cat %{SOURCE2} >>$RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d/glexec
+rm -rf $RPM_BUILD_ROOT/%{_sysconfdir}/lcmaps
+
+%post
+chown glexec:root /etc/glexec.conf
+chmod 600 /etc/glexec.conf
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%pre
-getent group glexec >/dev/null || groupadd -r glexec
-getent passwd glexec >/dev/null || \
-    useradd -r -g glexec -d /tmp -s /sbin/nologin \
-    -c "Dropped-privilege account for the glexec binary" glexec
-exit 0
-
 %files
 %defattr(-,root,root,-)
 %doc AUTHORS LICENSE 
-/etc/logrotate.d/glexec
-%attr(640,root,glexec) %config(noreplace) /etc/glexec.conf
-%config(noreplace) /etc/lcmaps/lcmaps-glexec.db
+%config(noreplace) %{_sysconfdir}/logrotate.d/glexec
+%attr(600, glexec, root) %verify(not md5 size mtime) %config(noreplace) %{_sysconfdir}/glexec.conf
 %{_datadir}/man/man5/glexec.conf.5*
 %{_datadir}/man/man1/glexec.1*
-%attr(6755, root, root) /usr/sbin/glexec
+%attr(4755, root, root) %{_sbindir}/glexec
+%attr(755, root, root) %{_sbindir}/glexec-configure
+
+
+# Add the glexec group and user (see http://fedoraproject.org/wiki/Packaging:UsersAndGroups)
+%pre
+getent group glexec >/dev/null || groupadd -r glexec
+getent passwd glexec >/dev/null || \
+    useradd -r -g glexec -d / -s /sbin/nologin \
+    -c "gLExec user account to be used with %{_sbindir}/glexec" glexec
+exit 0
 
 %changelog
-* Wed Nov 16 2011 Dave Dykstra <dwd@fnal.gov> - 0.8.10-8
-- Added a logrotate entry for /var/log/glexec.log
+* Fri Dec 30 2011 Dave Dykstra <dwd@fnal.gov> 0.9.0-1.1
+- Import into OSG, including adding OSG's default glexec.conf, removing
+  /etc/lcmaps/lcmaps-glexec.db, requiring lcmaps-plugins-glexec-tracking,
+  and adding a logrotate for /var/log/glexec.log
+- Add a patch to not warn in the log about all users being in the white list
+- Explicitly set ownership & permissions on /etc/glexec.conf in the %post
+  install because a %config(noreplace) won't change them on an existing file
 
-* Fri Sep 26 2011 Dave Dykstra <dwd@fnal.gov> - 0.8.10-7
-- Add create_target_proxy=no in glexec.conf.  Without that line, a
-  temporary file is left behind in /tmp for every invocation of glexec.
+* Wed Dec 14 2011 Mischa Salle <msalle@nikhef.nl> 0.9.0-1
+- add installation of glexec-configure
 
-* Fri Sep 01 2011 Dave Dykstra <dwd@fnal.gov> - 0.8.10-6
-- Fix the adding of glexec user so it actually adds a "glexec" user rather
-  than a "USERNAME" user
+* Mon Aug 15 2011 Mischa Salle <msalle@nikhef.nl> 0.8.12-3
+- sbindir should have been _sbindir in useradd
+- Need minimal lcmaps-basic-interface 1.4.31
+- Format for testing release (commented-out)
 
-* Mon Aug 22 2011 Dave Dykstra <dwd@fnal.gov> - 0.8.10-5
-- Move lcmaps-plugins-glexec-tracking dependency to this package instead
-  of osg-wn-client-glexec
+* Thu Jul 21 2011 Mischa Salle <msalle@nikhef.nl> 0.8.11-2
+- use the new --with-lcmaps-moduledir-sfx and --with-lcas-moduledir-sfx
+  configure options instead of the --with-lcmaps-moduledir.
 
-* Mon Aug 22 2011 Dave Dykstra <dwd@fnal.gov> - 0.8.10-4
-- Update the default settings in glexec.conf
+* Wed Jul 20 2011 Mischa Salle <msalle@nikhef.nl> 0.8.11-1
+- use %{_sysconfdir} instead of /etc in the %files list
 
-* Wed Aug 03 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 0.8.10-3
-- Create glexec user if it does not exist.  Make glexec.conf readable by glexec user.
-
-* Fri Jul 15 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 0.8.10-2
-- Use OSG default config.
+* Thu Jul 14 2011 Dennis van Dok <dennisvd@nikhef.nl> 0.8.10-2
+- change lcmaps moduledir according to new schema
+- fix the permissions of the configuration file
+- create a glexec account on demand
 
 * Wed Jun 29 2011 Mattias Ellert <mattias.ellert@fysast.uu.se> - 0.8.10-1
 - Remove Vendor tag
