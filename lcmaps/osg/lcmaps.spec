@@ -257,6 +257,8 @@ fi
 %changelog
 * Fri Dec 30 2011 Dave Dykstra <dwd@fnal.gov> 1.5.0-1.1.osg
 - Re-import to OSG, applying still-relevant OSG modifications
+- Update default lcmaps.db with new glexectracking options and with
+  combined osg_default rule for gridftp & gatekeeper
 
 * Wed Dec 14 2011 Mischa Salle <msalle@nikhef.nl> 1.5.0-1
 
