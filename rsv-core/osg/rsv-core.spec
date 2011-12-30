@@ -1,6 +1,6 @@
 
 Name:      rsv-core
-Version:   3.6.7
+Version:   3.6.8
 Release:   1%{?dist}
 Summary:   RSV Core Infrastructure
 
@@ -124,6 +124,9 @@ fi
 
 
 %changelog
+* Fri Dec 30 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.6.8-1
+- Bug fix for passing arguments on command line
+
 * Wed Dec 28 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.6.7-1
 - Added the ability to pass metric arguments on the command line.
 - Fixed a bug in listing of probes with cron times. (JIRA 432)
