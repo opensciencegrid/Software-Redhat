@@ -1,0 +1,141 @@
+--- src/saml2-xacml2/client/pep_obligation_handlers.c.O	2011-12-28 16:45:34.073000000 -0600
++++ src/saml2-xacml2/client/pep_obligation_handlers.c	2011-12-28 16:46:11.263000000 -0600
+@@ -103,7 +103,7 @@
+     lcmaps_log(LOG_ERR, "%s: Error: Unknown/unregistered obligation received, must fail authorized! Obligation ID: %s\n", logstr, obligation_id);
+     for (i = 0; attribute_ids[i] != NULL; i++)
+     {
+-        lcmaps_log (5, "%s: %s [%s] = %s\n", logstr, attribute_ids[i], datatypes[i], values[i]);
++        lcmaps_log (LOG_DEBUG, "%s: %s [%s] = %s\n", logstr, attribute_ids[i], datatypes[i], values[i]);
+     }
+ 
+     return 1;
+@@ -221,12 +221,12 @@
+     gid_t * sec_gid = NULL;
+ 
+ 
+-    lcmaps_log (5, "%s: Got obligation %s\n", logstr, obligation_id);
++    lcmaps_log (LOG_DEBUG, "%s: Got obligation %s\n", logstr, obligation_id);
+     setOHUsernameFired(1);
+ 
+     for (i = 0; attribute_ids[i] != NULL && rc == 0; i++)
+     {
+-        lcmaps_log (5, "%s: %s [%s] = %s\n", logstr, attribute_ids[i], datatypes[i], values[i]);
++        lcmaps_log (LOG_DEBUG, "%s: %s [%s] = %s\n", logstr, attribute_ids[i], datatypes[i], values[i]);
+ 
+         /* Username attribute */
+         if (strcasecmp (attribute_ids[i], XACML_ATTR_PROFILE_NS_URL_OBLIGATION_ATTRIBUTES_USERNAME) == 0)
+@@ -234,7 +234,7 @@
+             const char * username = values[i];
+             struct passwd * pw = NULL; 
+ 
+-            lcmaps_log (5, "%s: Found username :  %s\n", logstr, username);
++            lcmaps_log (LOG_DEBUG, "%s: Found username :  %s\n", logstr, username);
+ 
+             if (! (username && (strlen(username) > 0)))
+             {
+@@ -297,11 +297,11 @@
+ {   
+     int i;
+     char * logstr = "AFSToken_handler";
+-    lcmaps_log (5, "AFSToken: Got obligation %s\n", logstr, obligation_id);
++    lcmaps_log (LOG_DEBUG, "AFSToken: Got obligation %s\n", logstr, obligation_id);
+     
+     for (i = 0; attribute_ids[i] != NULL; i++)
+     {
+-        lcmaps_log (5, "%s: %s [%s] = %s\n", logstr, attribute_ids[i], datatypes[i], values[i]);
++        lcmaps_log (LOG_DEBUG, "%s: %s [%s] = %s\n", logstr, attribute_ids[i], datatypes[i], values[i]);
+     }
+     return 1;
+ }
+--- src/saml2-xacml2/io_handler/ssl/ssl-common.c.O	2011-12-28 16:45:34.085000000 -0600
++++ src/saml2-xacml2/io_handler/ssl/ssl-common.c	2011-12-28 16:47:35.975000000 -0600
+@@ -971,8 +971,8 @@
+         {
+             lcmaps_log(LOG_ERR, "%s: Verification failure at depth %d\n", logstr, errdepth);
+             lcmaps_log_debug (3, "%s: \tFailure still applies, no override performed for this error\n", logstr);
+-            lcmaps_log (2, "%s:  \tissuer   = %s\n", logstr, issuer);
+-            lcmaps_log (2, "%s:  \tsubject  = %s\n", logstr, subject);
++            lcmaps_log (LOG_WARNING, "%s:  \tissuer   = %s\n", logstr, issuer);
++            lcmaps_log (LOG_WARNING, "%s:  \tsubject  = %s\n", logstr, subject);
+         }
+     }
+ 
+@@ -1022,9 +1022,9 @@
+    for (i = 0; i < X509_get_ext_count(cert); ++i)
+    {
+         X509_NAME_oneline(X509_get_issuer_name(cert), data, 256);
+-        lcmaps_log (5, "%s:  issuer  = %s\n", logstr, data);
++        lcmaps_log (LOG_DEBUG, "%s:  issuer  = %s\n", logstr, data);
+         X509_NAME_oneline(X509_get_subject_name(cert), data, 256);
+-        lcmaps_log (5, "%s:  subject = %s\n", logstr, data);
++        lcmaps_log (LOG_DEBUG, "%s:  subject = %s\n", logstr, data);
+         ex = X509_get_ext(cert, i);
+ 
+         if (X509_EXTENSION_get_critical(ex) &&
+@@ -1032,7 +1032,7 @@
+         {
+             OBJ_obj2txt(critical, sizeof(critical), X509_EXTENSION_get_object(ex), 1);
+ 
+-            lcmaps_log (5, "%s: Critical extension found: %s", logstr, critical);
++            lcmaps_log (LOG_DEBUG, "%s: Critical extension found: %s", logstr, critical);
+             if (strcmp(critical, PROXYCERTINFO_OID) == 0)     return X509_V_OK;
+             if (strcmp(critical, OLD_PROXYCERTINFO_OID) == 0) return X509_V_OK;
+ 
+@@ -1162,7 +1162,7 @@
+             if ((strncmp(proxy_part_DN, "/CN=limited proxy", 17) == 0) && (i > 0))
+             {
+                 prevIsLimited = 1;
+-                lcmaps_log (3, "%s:  Found limited proxy.\n", logstr);
++                lcmaps_log (LOG_NOTICE, "%s:  Found limited proxy.\n", logstr);
+             }
+             else
+             {
+@@ -1597,7 +1597,7 @@
+         if ((this_pw = getpwnam(certOwner)))
+         {
+             *real_uid = this_pw -> pw_uid;
+-            lcmaps_log (5, "%s: (Temporarily) changing the UID of the process to \'%s(%d)\'\n", __func__, certOwner, *real_uid);
++            lcmaps_log (LOG_DEBUG, "%s: (Temporarily) changing the UID of the process to \'%s(%d)\'\n", __func__, certOwner, *real_uid);
+         }
+         else
+         {
+--- src/saml2-xacml2/io_handler/xacml_io_ssl.c.O	2011-12-28 16:45:34.095000000 -0600
++++ src/saml2-xacml2/io_handler/xacml_io_ssl.c	2011-12-28 16:47:47.525000000 -0600
+@@ -144,7 +144,7 @@
+         }
+         else
+         {
+-            lcmaps_log (5, "%s: SSL layer (server side) connection accepted from host %s\n", logstr, remote_host);
++            lcmaps_log (LOG_DEBUG, "%s: SSL layer (server side) connection accepted from host %s\n", logstr, remote_host);
+             goto succesful_accept;
+         }
+         /* SSL stuff */
+--- src/scas-client/lcmaps_scas_client.c.O	2011-12-28 16:45:34.108000000 -0600
++++ src/scas-client/lcmaps_scas_client.c	2011-12-28 16:48:30.244000000 -0600
+@@ -951,7 +951,7 @@
+     }
+     else
+     {
+-        lcmaps_log(0,"%s: No value of lcmaps_voms_data_list.\n", logstr);
++        lcmaps_log(LOG_ERR,"%s: No value of lcmaps_voms_data_list.\n", logstr);
+     }
+ 
+ 
+@@ -1108,7 +1108,7 @@
+         /* Read PEM string */
+         if ( (lcmaps_pem_fh = fopen(certFilePub, "r")) == NULL)
+         {
+-            lcmaps_log (2, "Could not open file for reading: %s\n", certFilePub);
++            lcmaps_log (LOG_WARNING, "Could not open file for reading: %s\n", certFilePub);
+         }
+         else
+         {
+@@ -1123,7 +1123,7 @@
+ 
+             if (pem_string_to_x509(&px509, pem_buf) != 0)
+             {
+-                lcmaps_log (3, "%s: Error in lcmaps_pem_string_to_x509()\n", logstr);
++                lcmaps_log (LOG_NOTICE, "%s: Error in lcmaps_pem_string_to_x509()\n", logstr);
+             }
+             else
+             {
