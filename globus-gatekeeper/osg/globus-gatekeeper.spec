@@ -13,7 +13,7 @@
 Name:		globus-gatekeeper
 %global _name %(tr - _ <<< %{name})
 Version:	9.6
-Release:	1.1%{?dist}
+Release:	1.2%{?dist}
 Summary:	Globus Toolkit - Globus Gatekeeper
 
 Group:		Applications/Internet
@@ -126,6 +126,13 @@ fi
 %config(noreplace) /etc/logrotate.d/globus-gatekeeper
 
 %changelog
+* Tue Jan 3 2012 Dave Dykstra <dwd@fnal.gov> - 9.6-1.2.osg
+- Removed LCMAPS_POLICY_NAME from /etc/sysconfig/globus-gatekeeper
+  for improved backward compatibility; the bug that made it be ignored
+  is getting fixed and for those who have an old lcmaps.db it will use a 
+  broken policy.  The default is the first policy, and that's the one
+  that works even though it used to be labeled for gridftp.
+
 * Thu Dec 29 2011 Dave Dykstra <dwd@fnal.gov> - 9.6-1.1.osg
 - Change /etc/sysconfig/globus-gatekeeper parameters to reflect no more
   LCAS and new LCMAPS
