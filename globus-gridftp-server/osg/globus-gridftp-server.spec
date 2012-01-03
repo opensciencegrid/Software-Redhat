@@ -13,7 +13,7 @@
 Name:		globus-gridftp-server
 %global _name %(tr - _ <<< %{name})
 Version:	6.5
-Release:	1.2%{?dist}
+Release:	1.3%{?dist}
 Summary:	Globus Toolkit - Globus GridFTP Server
 
 Group:		System Environment/Libraries
@@ -192,6 +192,11 @@ fi
 %defattr(-,root,root,-)
 
 %changelog
+* Tue Jan 3 2011 Dave Dykstra <dwd@fnal.gov> - 6.5-1.3
+- Updated /etc/sysconfig/globus-gridftp-server for elimination of LCAS
+  parameters and for new setting LCMAPS parameters corresponding to
+  a new upgrade of LCMAPS
+
 * Tue Dec 27 2011 Doug Strain <dstrain@fnal.gov> - 6.5-1.2
 - Changed LCMAPS_MOD_HOME to "lcmaps"
 - For SOFTWARE-426 as per Dave Dykstra
