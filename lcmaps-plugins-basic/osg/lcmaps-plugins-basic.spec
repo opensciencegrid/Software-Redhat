@@ -88,7 +88,7 @@ rm -rf $RPM_BUILD_ROOT
 %doc AUTHORS LICENSE
 
 %changelog
-* Wed Jan 4 2011 Dave Dykstra <dwd@fnal.gov> 1.5.0-1.2.osg
+* Wed Jan 4 2012 Dave Dykstra <dwd@fnal.gov> 1.5.0-1.2.osg
 - Just rebuilding
 
 * Fri Dec 30 2011 Dave Dykstra <dwd@fnal.gov> 1.5.0-1.1.osg
