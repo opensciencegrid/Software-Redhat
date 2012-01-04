@@ -1,7 +1,7 @@
 Summary: Basic plugins for the LCMAPS authorization framework
 Name: lcmaps-plugins-basic
 Version: 1.5.0
-Release: 1.1%{?dist}
+Release: 1.2%{?dist}
 License: ASL 2.0
 Group: System Environment/Libraries
 URL: http://www.nikhef.nl/pub/projects/grid/gridwiki/index.php/Site_Access_Control
@@ -88,6 +88,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc AUTHORS LICENSE
 
 %changelog
+* Wed Jan 4 2011 Dave Dykstra <dwd@fnal.gov> 1.5.0-1.2.osg
+- Just rebuilding
+
 * Fri Dec 30 2011 Dave Dykstra <dwd@fnal.gov> 1.5.0-1.1.osg
 - Imported to OSG
 - Moved moduledir up to libdir/lcmaps instead of libdir/lcmaps/plugins
