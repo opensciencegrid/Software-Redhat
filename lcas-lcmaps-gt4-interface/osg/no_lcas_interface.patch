@@ -1,6 +1,6 @@
 --- configure.ac.O	2012-01-05 14:52:10.729000000 -0600
-+++ configure.ac	2012-01-05 14:52:12.186000000 -0600
-@@ -101,12 +101,6 @@
++++ configure.ac	2012-01-05 15:02:32.276000000 -0600
+@@ -101,62 +101,79 @@
  AC_GLOBUS([GSSAPI_GSI],[],AC_MSG_FAILURE(["no globus-gssapi-gsi found"]))
  AC_GLOBUS([GSS_ASSIST],[],AC_MSG_FAILURE(["no globus-gss-assist found"]))
  
@@ -10,19 +10,149 @@
 -    AC_MSG_FAILURE(["no LCAS interface found"])
 -fi
 -
- # Set lcmaps variables
- AC_LCMAPS_INTERFACE([globus])
- if test "x$have_lcmaps_globus_interface" = "xno" ; then
-@@ -216,6 +210,12 @@
- if test x$enable_lcas != xyes ; then
-     ADD_THESE_DEFINES+=" "
-     ADD_THESE_DEFINES+="-D DEBUG_LEVEL=4 -D DISABLE_LCAS "
+-# Set lcmaps variables
+-AC_LCMAPS_INTERFACE([globus])
+-if test "x$have_lcmaps_globus_interface" = "xno" ; then
+-    AC_MSG_FAILURE(["no LCMAPS globus interface found"])
+-fi
++ADD_THESE_DEFINES="-D DEBUG_LEVEL=4"
++# Running LCAS or not
++enable_lcas_default=yes
++AC_ARG_ENABLE([lcas],
++    [AC_HELP_STRING([--enable-lcas],
++		    [Enables LCAS to run prior to LCMAPS (default)])],
++    [enable_lcas=$enableval],
++    [enable_lcas=$enable_lcas_default])
+ 
+-# Set compiled-in LCAS db file
+-# relative paths are taken to be relative to $sysconfdir/lcas
+-AC_ARG_WITH([lcas_db],
+-    [AC_HELP_STRING([--with-lcas-db=FILE],
+-		    [use specified FILE as lcas.db [default=SYSCONFDIR/lcas/lcas.db]])],
+-    [AS_IF([test "x$withval" = "xyes" -o "x$withval" = "xno" ],
+-	[AC_MSG_FAILURE([Option --with-lcas-db needs a filename])],
++if test x$enable_lcas != xyes ; then
++    ADD_THESE_DEFINES+=" "
++    ADD_THESE_DEFINES+="-D DEBUG_LEVEL=4 -D DISABLE_LCAS "
 +else
 +    # Set lcas variables
 +    AC_LCAS_INTERFACE
 +    if test "x$have_lcas_interface" = "xno" ; then
 +	AC_MSG_FAILURE(["no LCAS interface found"])
 +    fi
- fi
++
++    # Set lcmaps variables
++    AC_LCMAPS_INTERFACE([globus])
++    if test "x$have_lcmaps_globus_interface" = "xno" ; then
++	AC_MSG_FAILURE(["no LCMAPS globus interface found"])
++    fi
++
++    # Set compiled-in LCAS db file
++    # relative paths are taken to be relative to $sysconfdir/lcas
++    AC_ARG_WITH([lcas_db],
++	[AC_HELP_STRING([--with-lcas-db=FILE],
++			[use specified FILE as lcas.db [default=SYSCONFDIR/lcas/lcas.db]])],
++	[AS_IF([test "x$withval" = "xyes" -o "x$withval" = "xno" ],
++	    [AC_MSG_FAILURE([Option --with-lcas-db needs a filename])],
++	    [AS_IF([test "x`echo $withval|cut -c1`" != "x/" ],
++		[LCAS_DB_FILE=$sysconfdir/lcas/$withval],
++		[LCAS_DB_FILE=$withval])])
++	],
++	[LCAS_DB_FILE="$sysconfdir/lcas/lcas.db"]
++    )
++
++    AC_MSG_RESULT([LCAS_DB_FILE set to $LCAS_DB_FILE])
++    AC_SUBST(LCAS_DB_FILE)
++    AC_SUBST(LCAS_DB_DIR, [`dirname $LCAS_DB_FILE`])
++    AC_SUBST(LCAS_DB_FILENAME, [`basename $LCAS_DB_FILE`])
++
++    dnl allow the setting of a different path suffix for the LCAS plug-ins
++    dnl Makefiles should set the plugindir to $MODULEDIR.
++    AC_ARG_WITH([lcas_moduledir_sfx],
++	[AS_HELP_STRING([--with-lcas-moduledir-sfx=path],
++			[Specify the install location of the LCAS plug-ins with respect to LIBDIR [default=/lcas]])],
+ 	[AS_IF([test "x`echo $withval|cut -c1`" != "x/" ],
+-  	    [LCAS_DB_FILE=$sysconfdir/lcas/$withval],
+-  	    [LCAS_DB_FILE=$withval])])
+-    ],
+-    [LCAS_DB_FILE="$sysconfdir/lcas/lcas.db"]
+-)
+-
+-AC_MSG_RESULT([LCAS_DB_FILE set to $LCAS_DB_FILE])
+-AC_SUBST(LCAS_DB_FILE)
+-AC_SUBST(LCAS_DB_DIR, [`dirname $LCAS_DB_FILE`])
+-AC_SUBST(LCAS_DB_FILENAME, [`basename $LCAS_DB_FILE`])
++	    [LCAS_MODULEDIR_SFX=/$withval],
++	    [LCAS_MODULEDIR_SFX=$withval])],
++	[LCAS_MODULEDIR_SFX='/lcas']
++    )
++    AC_SUBST(LCAS_MODULEDIR_SFX)
++    AC_MSG_RESULT([LCAS_MODULEDIR_SFX set to $LCAS_MODULEDIR_SFX])
++
++    dnl allow the setting of a different path for the LCAS plug-ins
++    dnl Makefiles should set the plugindir to $MODULEDIR.
++    AC_ARG_WITH([lcas_moduledir],
++	[AS_HELP_STRING([--with-lcas-moduledir=path],
++			[Specify the absolute install location of the LCAS plug-ins [default=LIBDIR/LCAS_MODULEDIR_SFX]])],
++	[AS_IF([test "x`echo $withval|cut -c1`" != "x/" ],
++	    [AC_MSG_FAILURE([Option --with-lcas-moduledir needs an absolute directory])],
++	    [AC_SUBST([LCAS_MODULEDIR], [$withval])])
++	],
++	[AC_SUBST([LCAS_MODULEDIR], [${libdir}$LCAS_MODULEDIR_SFX])]
++    )
++    AC_MSG_RESULT([LCAS_MODULEDIR set to $LCAS_MODULEDIR])
+ 
+-dnl allow the setting of a different path suffix for the LCAS plug-ins
+-dnl Makefiles should set the plugindir to $MODULEDIR.
+-AC_ARG_WITH([lcas_moduledir_sfx],
+-    [AS_HELP_STRING([--with-lcas-moduledir-sfx=path],
+-		    [Specify the install location of the LCAS plug-ins with respect to LIBDIR [default=/lcas]])],
+-    [AS_IF([test "x`echo $withval|cut -c1`" != "x/" ],
+-	[LCAS_MODULEDIR_SFX=/$withval],
+-	[LCAS_MODULEDIR_SFX=$withval])],
+-    [LCAS_MODULEDIR_SFX='/lcas']
+-)
+-AC_SUBST(LCAS_MODULEDIR_SFX)
+-AC_MSG_RESULT([LCAS_MODULEDIR_SFX set to $LCAS_MODULEDIR_SFX])
++fi
+ 
+-dnl allow the setting of a different path for the LCAS plug-ins
+-dnl Makefiles should set the plugindir to $MODULEDIR.
+-AC_ARG_WITH([lcas_moduledir],
+-    [AS_HELP_STRING([--with-lcas-moduledir=path],
+-		    [Specify the absolute install location of the LCAS plug-ins [default=LIBDIR/LCAS_MODULEDIR_SFX]])],
+-    [AS_IF([test "x`echo $withval|cut -c1`" != "x/" ],
+-	[AC_MSG_FAILURE([Option --with-lcas-moduledir needs an absolute directory])],
+-	[AC_SUBST([LCAS_MODULEDIR], [$withval])])
+-    ],
+-    [AC_SUBST([LCAS_MODULEDIR], [${libdir}$LCAS_MODULEDIR_SFX])]
+-)
+-AC_MSG_RESULT([LCAS_MODULEDIR set to $LCAS_MODULEDIR])
++AC_SUBST(ADD_THESE_DEFINES)
+ 
+ # Set compiled-in LCMAPS db file
+ # relative paths are taken to be relative to $sysconfdir/lcmaps
+@@ -204,23 +221,6 @@
+ AC_MSG_RESULT([LCMAPS_MODULEDIR set to $LCMAPS_MODULEDIR])
  
  
+-ADD_THESE_DEFINES="-D DEBUG_LEVEL=4"
+-# Running LCAS or not
+-enable_lcas_default=yes
+-AC_ARG_ENABLE([lcas],
+-    [AC_HELP_STRING([--enable-lcas],
+-		    [Enables LCAS to run prior to LCMAPS (default)])],
+-    [enable_lcas=$enableval],
+-    [enable_lcas=$enable_lcas_default])
+-
+-if test x$enable_lcas != xyes ; then
+-    ADD_THESE_DEFINES+=" "
+-    ADD_THESE_DEFINES+="-D DEBUG_LEVEL=4 -D DISABLE_LCAS "
+-fi
+-
+-
+-AC_SUBST(ADD_THESE_DEFINES)
+-
+ # Configuration items
+ AC_CONFIG_FILES([Makefile])
+ AC_CONFIG_FILES([doc/Makefile])
