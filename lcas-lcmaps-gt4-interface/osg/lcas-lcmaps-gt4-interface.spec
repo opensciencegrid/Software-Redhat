@@ -23,6 +23,8 @@ BuildRequires: globus-gssapi-gsi-devel
 BuildRequires: globus-gss-assist-devel
 BuildRequires: lcmaps-interface
 BuildRequires: openssl-devel
+# these are needed because of the no_lcas_interface.patch to configure.ac
+BuildRequires: autoconf, automake, libtool
 
 # explicit require as this is dlopen'd
 %ifarch %{ix86}
