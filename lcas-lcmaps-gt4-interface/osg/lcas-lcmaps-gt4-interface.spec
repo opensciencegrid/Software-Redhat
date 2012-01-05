@@ -1,13 +1,16 @@
 Summary: Mapping interface between Globus Toolkit and LCAS/LCMAPS
 Name: lcas-lcmaps-gt4-interface
 Version: 0.2.1
-Release: 4.1%{?dist}
+Release: 4.2%{?dist}
 Vendor: Nikhef
 License: ASL 2.0
 Group: Applications/System
 URL: http://www.nikhef.nl/pub/projects/grid/gridwiki/index.php/Site_Access_Control
 Source0: http://software.nikhef.nl/security/%{name}/%{name}-%{version}.tar.gz
 Source1: gsi-authz.conf.in
+# Source of Patch0: (wget --no-check-certificate -qO- "https://sikkel.nikhef.nl/cgi-bin/viewvc.cgi/mwsec/trunk/lcas-lcmaps-gt4-interface/src/lcmaps_gt4_front.c?view=patch&r1=15655&r2=15820";wget --no-check-certificate -qO- "https://sikkel.nikhef.nl/cgi-bin/viewvc.cgi/mwsec/trunk/lcas-lcmaps-gt4-interface/src/lcmaps.c?view=patch&r1=15655&r2=15825") >parse_policy_name.patch
+Patch0: parse_policy_name.patch
+Patch1: no_lcas_interface.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildRequires: globus-core
 BuildRequires: globus-common-devel
@@ -39,10 +42,14 @@ pool accounts and VOMS attribute based decisions and mappings.
 
 %prep
 %setup -q
+%patch0 -p2
+%patch1 -p0
 
 %build
 
-%configure --disable-static --disable-lcas
+./bootstrap # this is here because configure.ac is patched
+
+%configure --disable-static --enable-lcas=no
 make %{?_smp_mflags}
 
 %install
@@ -74,6 +81,11 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/grid-security/gsi-authz.conf
 
 %changelog
+* Thu Jan  5 2012 Dave Dykstra <dwd@fnal.gov> 0.2.1-4.2
+- Apply patch to correctly parse and use $LCMAPS_POLICY_NAME
+- Apply patch to allow building with --disable-lcas and no
+  lcas-interface package installed
+
 * Thu Dec 29 2011 Dave Dykstra <dwd@fnal.gov> 0.2.1-4.1
 - Imported to OSG, including adding default gsi-authz.conf
 - Changed default gsi-authz.conf to have the callout uncommented
