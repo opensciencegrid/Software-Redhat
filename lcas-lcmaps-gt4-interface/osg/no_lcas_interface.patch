@@ -1,0 +1,28 @@
+--- configure.ac.O	2012-01-05 14:52:10.729000000 -0600
++++ configure.ac	2012-01-05 14:52:12.186000000 -0600
+@@ -101,12 +101,6 @@
+ AC_GLOBUS([GSSAPI_GSI],[],AC_MSG_FAILURE(["no globus-gssapi-gsi found"]))
+ AC_GLOBUS([GSS_ASSIST],[],AC_MSG_FAILURE(["no globus-gss-assist found"]))
+ 
+-# Set lcas variables
+-AC_LCAS_INTERFACE
+-if test "x$have_lcas_interface" = "xno" ; then
+-    AC_MSG_FAILURE(["no LCAS interface found"])
+-fi
+-
+ # Set lcmaps variables
+ AC_LCMAPS_INTERFACE([globus])
+ if test "x$have_lcmaps_globus_interface" = "xno" ; then
+@@ -216,6 +210,12 @@
+ if test x$enable_lcas != xyes ; then
+     ADD_THESE_DEFINES+=" "
+     ADD_THESE_DEFINES+="-D DEBUG_LEVEL=4 -D DISABLE_LCAS "
++else
++    # Set lcas variables
++    AC_LCAS_INTERFACE
++    if test "x$have_lcas_interface" = "xno" ; then
++	AC_MSG_FAILURE(["no LCAS interface found"])
++    fi
+ fi
+ 
+ 
