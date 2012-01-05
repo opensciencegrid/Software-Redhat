@@ -1,6 +1,6 @@
 Name:           glideinwms
 Version:        2.5.4
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        The VOFrontend for glideinWMS submission host
 
 Group:          System Environment/Daemons
@@ -260,6 +260,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Jan 5 2012 Doug Strain <dstrain@fnal.gov> - 2.5.4-2
+- Updating for 2.5.4 release source and fixing eatures for BUG2310
+-- Split directories so that the web area is in /var/www
+
 * Thu Dec 29 2011 Doug Strain <dstrain@fnal.gov> - 2.5.4-1
 - Using release source and fixing requested features for BUG2310
 -- Adding user/group correctly
