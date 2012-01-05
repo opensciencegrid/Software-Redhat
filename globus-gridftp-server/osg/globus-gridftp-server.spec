@@ -192,10 +192,10 @@ fi
 %defattr(-,root,root,-)
 
 %changelog
-* Tue Jan 3 2011 Dave Dykstra <dwd@fnal.gov> - 6.5-1.3
+* Tue Jan 5 2012 Dave Dykstra <dwd@fnal.gov> - 6.5-1.3
 - Updated /etc/sysconfig/globus-gridftp-server for elimination of LCAS
-  parameters and for new setting LCMAPS parameters corresponding to
-  a new upgrade of LCMAPS
+  parameters and for new settings of lcas-lcmaps-gt4-interface parameters
+  corresponding to the new upgrade of LCMAPS
 
 * Tue Dec 27 2011 Doug Strain <dstrain@fnal.gov> - 6.5-1.2
 - Changed LCMAPS_MOD_HOME to "lcmaps"
