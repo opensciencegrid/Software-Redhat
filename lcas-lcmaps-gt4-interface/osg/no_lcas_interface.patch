@@ -156,3 +156,72 @@
  # Configuration items
  AC_CONFIG_FILES([Makefile])
  AC_CONFIG_FILES([doc/Makefile])
+--- src/lcas.c.O	2012-01-05 16:32:56.099000000 -0600
++++ src/lcas.c	2012-01-05 16:34:07.597000000 -0600
+@@ -37,6 +37,8 @@
+  *
+  */
+ 
++#ifndef DISABLE_LCAS
++
+ #include <stdio.h>
+ #include <stdlib.h>
+ 
+@@ -205,3 +207,4 @@
+     return retval;
+ }
+ 
++#endif
+--- src/utils.h.O	2012-01-05 16:33:00.249000000 -0600
++++ src/utils.h	2012-01-05 16:33:51.407000000 -0600
+@@ -56,7 +56,9 @@
+ /* #include "globus_gsi_gss_constants.h" */
+ /* #include <gssapi.h> */
+ 
++#ifndef DISABLE_LCAS
+ #include <lcas/lcas.h>
++#endif
+ #include <lcmaps/lcmaps.h>
+ 
+ 
+@@ -124,6 +126,7 @@
+ 
+ 
+ /* Types */
++#ifndef DISABLE_LCAS
+ typedef struct __lcas_config
+ {
+         FILE *usrlog_fp;
+@@ -131,6 +134,7 @@
+         lcas_request_t lcas_request;
+         const char *lcasmod_name;
+ } lcas_config_t;
++#endif
+ 
+ 
+ typedef struct __lcmaps_config
+--- src/lcmaps_gt4_front.c.O	2011-12-16 04:10:55.000000000 -0600
++++ src/lcmaps_gt4_front.c	2012-01-05 16:56:21.208000000 -0600
+@@ -116,14 +116,11 @@
+ {
+     gss_cred_id_t    user_cred_handle   = GSS_C_NO_CREDENTIAL;
+-    FILE            *flog_lcas          = NULL;
+     FILE            *flog_lcmaps        = NULL;
+     int              errno_fopen        = 0;
+     char            *error_buf          = NULL;
++#ifndef DISABLE_LCAS
++    FILE            *flog_lcas          = NULL;
+     char            *run_lcas      = NULL;
+-#ifdef DISABLE_LCAS
+-    int              do_run_lcas        = 0; /* Run LCAS */
+-#else
+     int              do_run_lcas        = 1; /* Run LCAS by default */
+-#endif
+ 
+     /* get user credential from context */
+@@ -169,4 +166,5 @@
+         }
+     }
++#endif
+ 
+     /* Setup environment for lcmaps*/
