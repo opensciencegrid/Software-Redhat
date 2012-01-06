@@ -1,5 +1,5 @@
 %global name osg-configure
-%global version 0.7.2
+%global version 0.7.3
 %global release 1%{?dist}
 
 Summary: Package for configure-osg and associated scripts
@@ -191,6 +191,13 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/osg/config.d/15-managedfork.ini
 
 %changelog
+* Thu Jan 05 2012 Suchandra Thapa <sthapa@ci.uchicago.edu> 0.7.3-1
+- Added support for globus job manager config
+- Added support for updating lcmaps.db and gums-client.properties files
+- Added support for configuring SEG for job managers that support it
+- Improved error reporting
+- Internal refactoring done to improve maintainability
+
 * Fri Dec 30 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 0.7.2-1
 - Improved RSV configuration
 
