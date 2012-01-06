@@ -21,8 +21,7 @@ License:	ASL 2.0
 URL:		http://www.globus.org/
 Source:		http://www.globus.org/ftppub/gt5/5.2/5.2.0/packages/src/%{_name}-%{version}.tar.gz
 Source1:	globus-gridftp-server.sysconfig
-Source2:	globus-gridftp-server.i386.sysconfig
-Source3:	globus-gridftp-server.logrotate
+Source2:	globus-gridftp-server.logrotate
 Patch0:		osg-gridftp.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -123,14 +122,10 @@ mv $RPM_BUILD_ROOT%{_sysconfdir}/gridftp.gfork.default $RPM_BUILD_ROOT%{_sysconf
 GLOBUSPACKAGEDIR=$RPM_BUILD_ROOT%{_datadir}/globus/packages
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/gridftp.conf.d
-%ifarch alpha ia64 ppc64 s390x sparc64 x86_64
 install -m 0755 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/%{name}
-%else
-install -m 0755 %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/%{name}
-%endif
 
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d
-install -m 0644 %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/%{name}.logrotate
+install -m 0644 %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/%{name}.logrotate
 
 # Remove libtool archives (.la files)
 find $RPM_BUILD_ROOT%{_libdir} -name 'lib*.la' -exec rm -v '{}' \;
@@ -192,10 +187,13 @@ fi
 %defattr(-,root,root,-)
 
 %changelog
-* Tue Jan 5 2012 Dave Dykstra <dwd@fnal.gov> - 6.5-1.3
+* Fri Jan 6 2012 Dave Dykstra <dwd@fnal.gov> - 6.5-1.3
 - Updated /etc/sysconfig/globus-gridftp-server for elimination of LCAS
   parameters and for new settings of lcas-lcmaps-gt4-interface parameters
-  corresponding to the new upgrade of LCMAPS
+  corresponding to the new upgrade of LCMAPS, including backward 
+  compatibility with the old lcmaps.db where only the globus_gridftp_mapping
+  policy worked.
+- Eliminated need for separate sysconfig file for i386
 
 * Tue Dec 27 2011 Doug Strain <dstrain@fnal.gov> - 6.5-1.2
 - Changed LCMAPS_MOD_HOME to "lcmaps"
