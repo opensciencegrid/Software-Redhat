@@ -126,7 +126,7 @@ fi
 %config(noreplace) /etc/logrotate.d/globus-gatekeeper
 
 %changelog
-* Tue Jan 3 2012 Dave Dykstra <dwd@fnal.gov> - 9.6-1.2.osg
+* Fri Jan 6 2012 Dave Dykstra <dwd@fnal.gov> - 9.6-1.2.osg
 - Removed LCMAPS_POLICY_NAME from /etc/sysconfig/globus-gatekeeper
   for improved backward compatibility; the bug that made it be ignored
   is getting fixed and for those who have an old lcmaps.db it will use a 
