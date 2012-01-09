@@ -1,6 +1,6 @@
 Name:           glideinwms
 Version:        2.5.4
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        The VOFrontend for glideinWMS submission host
 
 Group:          System Environment/Daemons
@@ -9,9 +9,9 @@ URL:            http://www.uscms.org/SoftwareComputing/Grid/WMS/glideinWMS/doc.v
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
-%define web_dir /var/www/html/vofrontend
-%define web_base %{_datadir}/gwms-frontend/web-base
-%define frontend_dir %{_datadir}/gwms-frontend/vofrontend
+%define web_dir %{_prefix}/share/gwms-frontend/web-area
+%define web_base %{_localstatedir}/lib/gwms-frontend/web-base
+%define frontend_dir %{_localstatedir}/lib/gwms-frontend/vofrontend
 
 #Source0:        http://www.uscms.org/SoftwareComputing/Grid/WMS/glideinWMS/glideinWMS_v2_5_1_frontend.tgz
 Source:	glideinwms.tar.gz
@@ -23,7 +23,7 @@ Source:	glideinwms.tar.gz
 
 Source1:        frontend_startup
 Source2:        frontend.xml
-#Source3:        gwms-frontend.conf.httpd
+Source3:        gwms-frontend.conf.httpd
 Source4:        00_gwms_general.config
 Source5:        01_gwms_collectors.config
 Source6:	02_gwms_schedds.config
@@ -50,13 +50,12 @@ Requires: python-rrdtool
 Requires: m2crypto
 Requires: javascriptrrd
 Requires: osg-client
+Requires: gwms-condor-config
 #Requires: vdt-vofrontend-essentials
-
 
 Requires(post): /sbin/service
 Requires(post): /usr/sbin/useradd
 Requires(post): /sbin/chkconfig
-
 
 
 %description vofrontend
@@ -67,6 +66,24 @@ Condor. For those familiar with the Condor system, it is used
 for scheduling and job control. 
 
 
+%package vofrontend-condor
+Summary:        The VOFrontend condor config
+Group:          System Environment/Daemons
+Provides: gwms-condor-config
+
+%description vofrontend-condor
+This is a package including condor_config for a full one-node
+install of vofrontend + userschedd + usercollector
+
+
+%package minimal-condor
+Summary:        The VOFrontend minimal condor config
+Group:          System Environment/Daemons
+Provides: gwms-condor-config
+
+%description minimal-condor
+This is an alternate condor config for just the minimal amount
+needed for vofrontend.
 
 %prep
 %setup -q -n glideinwms
@@ -101,7 +118,7 @@ rm -rf $RPM_BUILD_ROOT
 #%patch -P 1 -p3 
 
 #Change src_dir in reconfig_Frontend
-sed -i "s/WEB_BASE_DIR=.*/WEB_BASE_DIR=\"\/usr\/share\/gwms-frontend\/web-base\"/" creation/reconfig_frontend
+sed -i "s/WEB_BASE_DIR=.*/WEB_BASE_DIR=\"\/var\/lib\/gwms-frontend\/web-base\"/" creation/reconfig_frontend
 
 # install the executables
 install -d $RPM_BUILD_ROOT%{_sbindir}
@@ -192,6 +209,11 @@ install -m 0755 install/glidecondor_addDN $RPM_BUILD_ROOT%{_sbindir}/glidecondor
 # Install checksum file
 install -m 0644 etc/checksum.frontend $RPM_BUILD_ROOT%{frontend_dir}/checksum.frontend
 
+#Install web area conf
+install -d $RPM_BUILD_ROOT/%{_sysconfdir}/httpd/conf.d
+install -m 0644 %{SOURCE3} $RPM_BUILD_ROOT/%{_sysconfdir}/httpd/conf.d/gwms-frontend.conf
+
+
 %post vofrontend
 # $1 = 1 - Installation
 # $1 = 2 - Upgrade
@@ -205,8 +227,7 @@ sed -i "s/FRONTEND_NAME_CHANGEME/$frontend_name/g" %{_sysconfdir}/gwms-frontend/
 sed -i "s/FRONTEND_HOSTNAME/$fqdn_hostname/g" %{_sysconfdir}/gwms-frontend/frontend.xml
 
 /sbin/chkconfig --add gwms-frontend
-ln -s %{web_dir} %{_datadir}/gwms-frontend/www
-ln -s %{web_dir}/monitor %{_datadir}/gwms-frontend/vofrontend/monitor
+ln -s %{web_dir}/monitor %{frontend_dir}/monitor
 
 %pre vofrontend
 
@@ -244,22 +265,33 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,frontend,frontend,-)
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_sbindir}/*
-%attr(-, frontend, frontend) %{_datadir}/gwms-frontend
+%attr(-, frontend, frontend) %{_localstatedir}/lib/gwms-frontend
 %attr(-, frontend, frontend) %{web_dir}
 %attr(-, frontend, frontend) %{web_base}
 %attr(-, frontend, frontend) %{frontend_dir}
 %attr(-, frontend, frontend) %{_localstatedir}/log/gwms-frontend
 %{python_sitelib}
 %{_initrddir}/gwms-frontend
-#%config(noreplace) %{_sysconfdir}/httpd/conf.d/gwms-frontend.conf
+%config(noreplace) %{_sysconfdir}/httpd/conf.d/gwms-frontend.conf
+%config(noreplace) %{_sysconfdir}/gwms-frontend/frontend.xml
+
+%files vofrontend-condor
 %config(noreplace) %{_sysconfdir}/condor/config.d/00_gwms_general.config
 %config(noreplace) %{_sysconfdir}/condor/config.d/01_gwms_collectors.config
 %config(noreplace) %{_sysconfdir}/condor/config.d/02_gwms_schedds.config
 %config(noreplace) %{_sysconfdir}/condor/config.d/03_gwms_local.config
-%config(noreplace) %{_sysconfdir}/gwms-frontend/frontend.xml
+
+%files minimal-condor
+%config(noreplace) %{_sysconfdir}/condor/config.d/00_gwms_general.config
 
 
 %changelog
+* Thu Jan 5 2012 Doug Strain <dstrain@fnal.gov> - 2.5.4-3
+- Changing directories per Igors request
+-- changing directories to /var/lib
+-- changing web directory back to /usr/share as per fedora guidelines
+- Splitting condor config into separate package
+
 * Thu Jan 5 2012 Doug Strain <dstrain@fnal.gov> - 2.5.4-2
 - Updating for 2.5.4 release source and fixing eatures for BUG2310
 -- Split directories so that the web area is in /var/www

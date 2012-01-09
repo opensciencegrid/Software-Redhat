@@ -18,14 +18,14 @@
          </schedds>
       </job>
    </match>
-   <monitor base_dir="/var/www/html/vofrontend/monitor" flot_dir="/usr/share/javascriptrrd/flot" javascriptRRD_dir="/usr/share/javascriptrrd/js" jquery_dir="/usr/share/javascriptrrd/flot"/>
+   <monitor base_dir="/usr/share/gwms-frontend/web-area/monitor" flot_dir="/usr/share/javascriptrrd/flot" javascriptRRD_dir="/usr/share/javascriptrrd/js" jquery_dir="/usr/share/javascriptrrd/flot"/>
    <security classad_proxy="/tmp/x509up_u99" proxy_DN="DN of proxy owned by user nobody" proxy_selection_plugin="ProxyAll" security_name="The security name, this is used by factory" sym_key="aes_256_cbc">
       <proxies>
          <proxy absfname="/tmp/x509up_u99" security_class="frontend"/>
       </proxies>
    </security>
-   <stage base_dir="/var/www/html/vofrontend/stage" use_symlink="True" web_base_url="http://FRONTEND_HOSTNAME/vofrontend/stage"/>
-   <work base_dir="/usr/share/gwms-frontend/vofrontend" base_log_dir="/var/log/gwms-frontend"/>
+   <stage base_dir="/usr/share/gwms-frontend/web-area/stage" use_symlink="True" web_base_url="http://FRONTEND_HOSTNAME/vofrontend/stage"/>
+   <work base_dir="/var/lib/gwms-frontend/vofrontend" base_log_dir="/var/log/gwms-frontend"/>
    <attrs>
       <attr name="GLIDECLIENT_Rank" glidein_publish="False" job_publish="False" parameter="True" type="string" value="1"/>
       <attr name="GLIDEIN_Expose_Grid_Env" glidein_publish="True" job_publish="True" parameter="False" type="string" value="True"/>

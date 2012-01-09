@@ -14,10 +14,10 @@ failure() {
  return 1
 }
 
-frontend_dir='/usr/share/gwms-frontend/vofrontend'
+frontend_dir='/var/lib/gwms-frontend/vofrontend'
 glideinWMS_dir=$frontend_dir
 frontend_config=/etc/gwms-frontend/frontend.xml
-export HOME="/usr/share/gwms-frontend"
+export HOME="/var/lib/gwms-frontend"
 
 if [ -s ${frontend_config} ]
 then
