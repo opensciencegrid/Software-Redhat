@@ -1,6 +1,6 @@
 Name:           glideinwms
 Version:        2.5.4
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        The VOFrontend for glideinWMS submission host
 
 Group:          System Environment/Daemons
@@ -29,10 +29,7 @@ Source5:        01_gwms_collectors.config
 Source6:	02_gwms_schedds.config
 Source7:	03_gwms_local.config
 Source8:	chksum.sh
-patch0:         reconfig_frontend.patch
-patch1:         cvWParamDict.py.patch
-patch2: 	cvWParams.py.patch
-patch3:		glideinwms_version.patch
+Source9:	condor_mapfile
 %description
 This is a package for the glidein workload management system.
 Currently, only the vofrontend portion is supported
@@ -189,10 +186,12 @@ rm -rf $RPM_BUILD_ROOT%{web_base}/CVS
 
 # Install condor stuff
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d
+install -d $RPM_BUILD_ROOT%{_sysconfdir}/condor/certs
 install -m 0644 %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
 install -m 0644 %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
 install -m 0644 %{SOURCE6} $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
 install -m 0644 %{SOURCE7} $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
+install -m 0644 %{SOURCE9} $RPM_BUILD_ROOT%{_sysconfdir}/condor/certs/
 
 # Install tools
 install -d $RPM_BUILD_ROOT%{_bindir}
@@ -280,13 +279,14 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/condor/config.d/01_gwms_collectors.config
 %config(noreplace) %{_sysconfdir}/condor/config.d/02_gwms_schedds.config
 %config(noreplace) %{_sysconfdir}/condor/config.d/03_gwms_local.config
+%config(noreplace) %{_sysconfdir}/condor/certs/condor_mapfile
 
 %files minimal-condor
 %config(noreplace) %{_sysconfdir}/condor/config.d/00_gwms_general.config
 
 
 %changelog
-* Thu Jan 5 2012 Doug Strain <dstrain@fnal.gov> - 2.5.4-3
+* Sun Jan 8 2012 Doug Strain <dstrain@fnal.gov> - 2.5.4-4
 - Changing directories per Igors request
 -- changing directories to /var/lib
 -- changing web directory back to /usr/share as per fedora guidelines
