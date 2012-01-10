@@ -1,6 +1,6 @@
 Name:           glideinwms
 Version:        2.5.4
-Release:        4%{?dist}
+Release:        7%{?dist}
 Summary:        The VOFrontend for glideinWMS submission host
 
 Group:          System Environment/Daemons
@@ -9,7 +9,7 @@ URL:            http://www.uscms.org/SoftwareComputing/Grid/WMS/glideinWMS/doc.v
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
-%define web_dir %{_prefix}/share/gwms-frontend/web-area
+%define web_dir %{_localstatedir}/lib/gwms-frontend/web-area
 %define web_base %{_localstatedir}/lib/gwms-frontend/web-base
 %define frontend_dir %{_localstatedir}/lib/gwms-frontend/vofrontend
 
@@ -283,14 +283,18 @@ rm -rf $RPM_BUILD_ROOT
 
 %files minimal-condor
 %config(noreplace) %{_sysconfdir}/condor/config.d/00_gwms_general.config
+%config(noreplace) %{_sysconfdir}/condor/certs/condor_mapfile
 
 
 %changelog
-* Sun Jan 8 2012 Doug Strain <dstrain@fnal.gov> - 2.5.4-4
+* Tue Jan 10 2012 Doug Strain <dstrain@fnal.gov> - 2.5.4-7
+- Adding condor_mapfile to minimal
+
+* Mon Jan 9 2012 Doug Strain <dstrain@fnal.gov> - 2.5.4-6
 - Changing directories per Igors request
 -- changing directories to /var/lib
--- changing web directory back to /usr/share as per fedora guidelines
 - Splitting condor config into separate package
+- Fixing web-area httpd
 
 * Thu Jan 5 2012 Doug Strain <dstrain@fnal.gov> - 2.5.4-2
 - Updating for 2.5.4 release source and fixing eatures for BUG2310

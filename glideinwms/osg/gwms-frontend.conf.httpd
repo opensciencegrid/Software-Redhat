@@ -1,8 +1,8 @@
 # This is the httpd conf file
 # GlideinWMS VOFrontend web configuration
 
-Alias /vofrontend /usr/share/gwms-frontend/www
-<Directory /usr/share/gwms-frontend/www>
+Alias /vofrontend /var/lib/gwms-frontend/web-area
+<Directory /var/lib/gwms-frontend/web-area>
     Order allow,deny
     Allow from all
 </Directory>
