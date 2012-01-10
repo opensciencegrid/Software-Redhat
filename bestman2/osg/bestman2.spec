@@ -14,7 +14,7 @@
 
 Name:           bestman2
 Version:        2.2.0
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -233,9 +233,14 @@ mkdir -p $RPM_BUILD_ROOT%{_javadir}
 mkdir -p $RPM_BUILD_ROOT%{_sbindir}
 mkdir -p $RPM_BUILD_ROOT%{install_root}
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}
+
+#bestmanclient.conf should be srmclient.conf
+mv conf/bestmanclient.conf conf/srmclient.conf
+
 cp -arp conf $RPM_BUILD_ROOT%{install_root}
 cp -arp lib $RPM_BUILD_ROOT%{_javadir}/%{name}
 cp -arp properties $RPM_BUILD_ROOT%{install_root}
+
 
 rm -rf $RPM_BUILD_ROOT%{install_root}/properties/.svn
 
@@ -317,11 +322,11 @@ fi
 
 %files client
 %defattr(-,root,root,-)
-#%config(noreplace) %{install_root}/conf/srmclient.conf
+%config(noreplace) %{install_root}/conf/srmclient.conf
 #%config(noreplace) %{install_root}/conf/srmclient.conf.sample
 %config(noreplace) %{install_root}/conf/bestman2.rc
 %config(noreplace) %{install_root}/conf/bestman2.rc.samples
-%config(noreplace) %{install_root}/conf/bestmanclient.conf
+#%config(noreplace) %{install_root}/conf/bestmanclient.conf
 %config(noreplace) %{install_root}/conf/mss.init.sample
 %config(noreplace) %{_sysconfdir}/sysconfig/bestman2
 %{_bindir}/srm-copy
@@ -452,6 +457,9 @@ fi
 
 
 %changelog
+* Tue Jan 10 2012 Doug Strain <dstrain@fnal.gov> - 2.2.0-7
+- Changed bestmanclient.conf to srmclient.conf
+
 * Wed Dec 28 2011 Doug Strain <dstrain@fnal.gov> - 2.2.0-6
 - Fixing various sysconfig for Bestman2 2.2.0
 - Fixing classpath paths for sysconfig
