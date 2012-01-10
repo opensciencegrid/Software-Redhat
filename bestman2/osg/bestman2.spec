@@ -14,7 +14,7 @@
 
 Name:           bestman2
 Version:        2.2.0
-Release:        7%{?dist}
+Release:        8%{?dist}
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -221,6 +221,11 @@ sed -i "s/SRM_HOME=\/.*/SRM_HOME=\/etc\/bestman2/" bin/*
 sed -i "s/BESTMAN_SYSCONF=.*/BESTMAN_SYSCONF=\/etc\/sysconfig\/bestman2/" bin/*
 sed -i "s/BESTMAN_SYSCONF=.*/BESTMAN_SYSCONF=\/etc\/sysconfig\/bestman2/" sbin/*
 sed -i "s/\${BESTMAN_SYSCONF}/\/etc\/bestman2\/conf\/bestman2.rc/" sbin/bestman.server
+sed -i "s/#ServicePortNumber/ServicePortNumber/" conf/bestmanclient.conf
+
+BUILDHOSTNAME=`hostname -f`
+# Fix version
+sed -i "s/Built on .* at/Built on $BUILDHOSTNAME at/" version
 
 popd
 
@@ -457,8 +462,10 @@ fi
 
 
 %changelog
-* Tue Jan 10 2012 Doug Strain <dstrain@fnal.gov> - 2.2.0-7
+* Tue Jan 10 2012 Doug Strain <dstrain@fnal.gov> - 2.2.0-8
 - Changed bestmanclient.conf to srmclient.conf
+- Added default 8443 port
+- Fixed build date / host
 
 * Wed Dec 28 2011 Doug Strain <dstrain@fnal.gov> - 2.2.0-6
 - Fixing various sysconfig for Bestman2 2.2.0
