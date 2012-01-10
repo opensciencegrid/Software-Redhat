@@ -44,6 +44,7 @@ Patch2: gums-setup-mysql-database.patch
 Patch3: gums-create-config.patch
 #Patch4: gums-use-hostname.patch
 Patch5: xml-maven2.patch
+Patch6: gums-client-pom.patch
 
 %description
 %{summary}
@@ -80,6 +81,7 @@ Summary: Tomcat5 service for GUMS
 %patch2 -p1
 %patch3 -p1
 %patch5 -p0
+%patch6 -p0
 
 %build
 
@@ -110,7 +112,7 @@ popd
 %install
 
 function replace_jar {
-  rm $RPM_BUILD_ROOT%{_var}/lib/tomcat5/webapps/gums/WEB-INF/lib/$1
+  rm -f $RPM_BUILD_ROOT%{_var}/lib/tomcat5/webapps/gums/WEB-INF/lib/$1
   ln -s %{_noarchlib}/%{dirname}/$1 $RPM_BUILD_ROOT%{_var}/lib/tomcat5/webapps/gums/WEB-INF/lib/$1
 }
 
@@ -129,7 +131,7 @@ mkdir -p $RPM_BUILD_ROOT%{_var}/lib/tomcat5/webapps/gums/
 pushd $RPM_BUILD_ROOT%{_var}/lib/tomcat5/webapps/gums/
 jar xf $OLDPWD/gums-service/target/gums.war 
 popd
-rm $RPM_BUILD_ROOT%{_var}/lib/tomcat5/webapps/gums/WEB-INF/config/gums.config
+rm -f $RPM_BUILD_ROOT%{_var}/lib/tomcat5/webapps/gums/WEB-INF/config/gums.config
 ln -s %{_sysconfdir}/%{dirname}/gums.config $RPM_BUILD_ROOT%{_var}/lib/tomcat5/webapps/gums/WEB-INF/config
 
 # Link the exploded WAR to gums-core JARs, instead of including a copy
@@ -195,7 +197,7 @@ replace_jar servlet-api-2.3.jar
 # gums-core and gums-service use different versions here...
 #replace_jar slf4j-api-1.6.1.jar
 #replace_jar slf4j-simple-1.6.1.jar
-rm $RPM_BUILD_ROOT%{_var}/lib/tomcat5/webapps/gums/WEB-INF/lib/slf4j-jdk14-1.5.2.jar
+rm -f $RPM_BUILD_ROOT%{_var}/lib/tomcat5/webapps/gums/WEB-INF/lib/slf4j-jdk14-1.5.2.jar
 replace_jar swarmcache-1.0RC2.jar
 replace_jar velocity-1.5.jar
 replace_jar webdavlib-2.0.jar
@@ -221,13 +223,13 @@ install -m 0755 gums-service/src/main/resources/scripts/gums-create-config $RPM_
 # Configuration files
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/%{dirname}
 install -m 0644 gums-client/src/main/config/*  $RPM_BUILD_ROOT%{_sysconfdir}/%{dirname}/
-install -m 0600 gums-service/src/main/config/gums.config $RPM_BUILD_ROOT%{_sysconfdir}/%{dirname}
+#install -m 0600 gums-service/src/main/config/gums.config $RPM_BUILD_ROOT%{_sysconfdir}/%{dirname}
 
 # Templates
 mkdir -p $RPM_BUILD_ROOT%{_noarchlib}/%{dirname}/sql
 mkdir -p $RPM_BUILD_ROOT%{_noarchlib}/%{dirname}/config
 install -m 0644 gums-service/src/main/resources/sql/{addAdmin,setupDatabase}.mysql $RPM_BUILD_ROOT%{_noarchlib}/%{dirname}/sql/
-install -m 0644 gums-service/src/main/resources/gums.config.template $RPM_BUILD_ROOT%{_noarchlib}/%{dirname}/config/
+#install -m 0644 gums-service/src/main/resources/gums.config.template $RPM_BUILD_ROOT%{_noarchlib}/%{dirname}/config/
 
 # Log directory
 mkdir -p $RPM_BUILD_ROOT/var/log/%{dirname}
@@ -244,8 +246,8 @@ cat > $RPM_BUILD_ROOT/var/lib/osg/supported-vo-list << EOF
 EOF
 
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/{init.d,cron.d}
-mv %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/cron.d/gums-client-cron
-mv %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/init.d/gums-client-cron
+mv -f %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/cron.d/gums-client-cron
+mv -f %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/init.d/gums-client-cron
 chmod +x $RPM_BUILD_ROOT%{_sysconfdir}/init.d/gums-client-cron
 
 %files
@@ -291,7 +293,7 @@ fi
 %files service
 %defattr(-,root,root,-)
 %dir %{_sysconfdir}/%{dirname}
-%attr(0600,tomcat,tomcat) %config(noreplace) %{_sysconfdir}/%{dirname}/gums.config
+#%attr(0600,tomcat,tomcat) %config(noreplace) %{_sysconfdir}/%{dirname}/gums.config
 %attr(0750,tomcat,tomcat) %dir %{_var}/lib/tomcat5/webapps/gums/WEB-INF/config
 %{_var}/lib/tomcat5/webapps/gums
 %{_noarchlib}/%{dirname}/sql
