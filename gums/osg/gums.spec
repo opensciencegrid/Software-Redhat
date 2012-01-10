@@ -303,8 +303,9 @@ fi
 %{_bindir}/gums-setup-mysql-database
 
 %changelog
-* Fri Jan 06 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.4.0-0.1.pre1
-- Version bump to upstream 1.4.0-pre1; updated patches.
+* Tue Jan 10 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.4.0-0.1.pre1
+- Version bump to upstream 1.4.0-pre1; updated patches; added gums-client-pom.patch
+- gums.config and gums.config.template removed until we have replacements using the new config format.
 
 * Wed Nov 30 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.3.18.002-6
 - Remove old copy of GUMS jar.  Remove ability to contact Archiva at BNL.
