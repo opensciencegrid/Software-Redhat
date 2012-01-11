@@ -1,7 +1,7 @@
 
 Name:      osg-cleanup
 Version:   0.1
-Release:   1%{?dist}
+Release:   2%{?dist}
 Summary:   OSG cleanup scripts
 
 Group:     System Environment/Base
@@ -14,6 +14,11 @@ Requires: logrotate
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch: noarch
+
+Requires(post): chkconfig
+Requires(preun): chkconfig
+# This is for /sbin/service
+Requires(preun): initscripts
 
 %description
 %{summary}
@@ -64,6 +69,24 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/osg/osg-cleanup.conf
 %config(noreplace) %{_sysconfdir}/logrotate.d/osg-cleanup
 
+%post
+/sbin/chkconfig --add osg-cleanup-cron
+
+%preun
+if [ $1 -eq 0 ] ; then
+    /sbin/service osg-cleanup-cron stop >/dev/null 2>&1
+    /sbin/chkconfig --del osg-cleanup-cron
+fi
+
+%postun
+if [ "$1" -ge "1" ] ; then
+    /sbin/service osg-cleanup-cron condrestart >/dev/null 2>&1 || :
+fi
+
+
 %changelog
+* Tue Jan 09 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 0.1-2
+- Register service with chkconfig
+
 * Tue Jan 09 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 0.1-1
 - Created an initial osg-cleanup RPM
