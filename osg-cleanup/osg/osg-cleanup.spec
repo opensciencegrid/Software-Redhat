@@ -61,8 +61,8 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 
 %{_sbindir}/osg-cleanup
-%{_libexecdir}/clean-globus-tmp
-%{_libexecdir}/clean-user-dirs
+%{_libexecdir}/osg-cleanup/clean-globus-tmp
+%{_libexecdir}/osg-cleanup/clean-user-dirs
 
 %{_sysconfdir}/rc.d/init.d/osg-cleanup-cron
 %{_sysconfdir}/cron.d/osg-cleanup
