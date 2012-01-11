@@ -1,5 +1,5 @@
---- configure.ac.O	2012-01-05 14:52:10.729000000 -0600
-+++ configure.ac	2012-01-05 15:02:32.276000000 -0600
+--- configure.ac.O	2012-01-11 17:07:17.872000000 -0600
++++ configure.ac	2012-01-11 17:07:37.106000000 -0600
 @@ -101,62 +101,79 @@
  AC_GLOBUS([GSSAPI_GSI],[],AC_MSG_FAILURE(["no globus-gssapi-gsi found"]))
  AC_GLOBUS([GSS_ASSIST],[],AC_MSG_FAILURE(["no globus-gss-assist found"]))
@@ -156,8 +156,8 @@
  # Configuration items
  AC_CONFIG_FILES([Makefile])
  AC_CONFIG_FILES([doc/Makefile])
---- src/lcas.c.O	2012-01-05 16:32:56.099000000 -0600
-+++ src/lcas.c	2012-01-05 16:34:07.597000000 -0600
+--- src/lcas.c.O	2012-01-11 17:07:17.879000000 -0600
++++ src/lcas.c	2012-01-11 17:07:37.112000000 -0600
 @@ -37,6 +37,8 @@
   *
   */
@@ -172,8 +172,8 @@
  }
  
 +#endif
---- src/utils.h.O	2012-01-05 16:33:00.249000000 -0600
-+++ src/utils.h	2012-01-05 16:33:51.407000000 -0600
+--- src/utils.h.O	2012-01-11 17:07:17.886000000 -0600
++++ src/utils.h	2012-01-11 17:07:37.118000000 -0600
 @@ -56,7 +56,9 @@
  /* #include "globus_gsi_gss_constants.h" */
  /* #include <gssapi.h> */
@@ -200,9 +200,9 @@
  
  
  typedef struct __lcmaps_config
---- src/lcmaps_gt4_front.c.O	2011-12-16 04:10:55.000000000 -0600
-+++ src/lcmaps_gt4_front.c	2012-01-05 16:56:21.208000000 -0600
-@@ -116,14 +116,11 @@
+--- src/lcmaps_gt4_front.c.O	2012-01-11 17:07:17.895000000 -0600
++++ src/lcmaps_gt4_front.c	2012-01-11 17:08:08.250000000 -0600
+@@ -116,12 +116,10 @@
  {
      gss_cred_id_t    user_cred_handle   = GSS_C_NO_CREDENTIAL;
 -    FILE            *flog_lcas          = NULL;
@@ -216,10 +216,14 @@
 -    int              do_run_lcas        = 0; /* Run LCAS */
 -#else
      int              do_run_lcas        = 1; /* Run LCAS by default */
--#endif
+ #endif
+@@ -130,4 +128,5 @@
+     user_cred_handle = llgt_get_user_cred_handle(context);
  
-     /* get user credential from context */
-@@ -169,4 +166,5 @@
++#ifndef DISABLE_LCAS
+     /* Selectively run LCAS or not. Use "disabled" or "no" as value */
+     if ((run_lcas = getenv("LLGT_RUN_LCAS"))) {
+@@ -169,4 +168,5 @@
          }
      }
 +#endif
