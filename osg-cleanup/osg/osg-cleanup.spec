@@ -1,7 +1,7 @@
 
 Name:      osg-cleanup
-Version:   0.1
-Release:   2%{?dist}
+Version:   0.2
+Release:   1%{?dist}
 Summary:   OSG cleanup scripts
 
 Group:     System Environment/Base
@@ -34,9 +34,10 @@ rm -fr $RPM_BUILD_ROOT
 # Install executables
 install -d $RPM_BUILD_ROOT%{_sbindir}/
 install -d $RPM_BUILD_ROOT%{_libexecdir}/
+install -d -m 0700 $RPM_BUILD_ROOT%{_libexecdir}/osg-cleanup/
 install -m 0700 sbin/osg-cleanup $RPM_BUILD_ROOT%{_sbindir}/
-install -m 0700 libexec/clean-globus-tmp $RPM_BUILD_ROOT%{_libexecdir}/
-install -m 0700 libexec/clean-user-dirs $RPM_BUILD_ROOT%{_libexecdir}/
+install -m 0700 libexec/clean-globus-tmp $RPM_BUILD_ROOT%{_libexecdir}/osg-cleanup/
+install -m 0700 libexec/clean-user-dirs $RPM_BUILD_ROOT%{_libexecdir}/osg-cleanup/
 
 # Install configuration
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/osg/
@@ -85,8 +86,12 @@ fi
 
 
 %changelog
-* Tue Jan 09 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 0.1-2
+* Wed Jan 11 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 0.2-1
+- Fixed bugs in osg-cleanup script.
+- Fixed installation location of cleanup scripts.
+
+* Wed Jan 11 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 0.1-2
 - Register service with chkconfig
 
-* Tue Jan 09 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 0.1-1
+* Tue Jan 10 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 0.1-1
 - Created an initial osg-cleanup RPM
