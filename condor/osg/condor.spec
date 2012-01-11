@@ -54,7 +54,8 @@ Version: 7.6.4
 %else
 %define condor_release %condor_base_release
 %endif
-Release: %condor_release%{?dist}.2
+# Release: %condor_release%{?dist}.2
+Release: 1%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -1045,6 +1046,9 @@ fi
 %endif
 
 %changelog
+* Wed Jan 11 2012 Tim Cartwright <cat@cs.wisc.edu> - 7.6.4-1
+- Simplified revision number
+
 * Tue Nov 29 2011 Derek Weitzel <dweitzel@cse.unl.edu> - 7.6.4-0.6.2
 - Rebasing to 7.6.4
 
