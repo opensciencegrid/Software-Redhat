@@ -1,6 +1,6 @@
 
 Name:      osg-cleanup
-Version:   0.2
+Version:   0.3
 Release:   1%{?dist}
 Summary:   OSG cleanup scripts
 
@@ -86,6 +86,9 @@ fi
 
 
 %changelog
+* Thu Jan 12 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 0.3-1
+- Fixed clean script to work with Globus 5.2 locations
+
 * Wed Jan 11 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 0.2-1
 - Fixed bugs in osg-cleanup script.
 - Fixed installation location of cleanup scripts.
