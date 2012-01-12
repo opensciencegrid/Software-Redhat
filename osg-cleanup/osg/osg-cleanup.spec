@@ -1,7 +1,7 @@
 
 Name:      osg-cleanup
 Version:   0.3
-Release:   1%{?dist}
+Release:   2%{?dist}
 Summary:   OSG cleanup scripts
 
 Group:     System Environment/Base
@@ -61,8 +61,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 
 %{_sbindir}/osg-cleanup
-%{_libexecdir}/osg-cleanup/clean-globus-tmp
-%{_libexecdir}/osg-cleanup/clean-user-dirs
+%attr(700,root,root) %{_libexecdir}/osg-cleanup
 
 %{_sysconfdir}/rc.d/init.d/osg-cleanup-cron
 %{_sysconfdir}/cron.d/osg-cleanup
@@ -86,6 +85,9 @@ fi
 
 
 %changelog
+* Thu Jan 12 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 0.3-2
+- Fixed permissions on /usr/libexec/osg-cleanup to be 700
+
 * Thu Jan 12 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 0.3-1
 - Fixed clean script to work with Globus 5.2 locations
 
