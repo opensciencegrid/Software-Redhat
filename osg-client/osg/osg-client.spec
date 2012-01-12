@@ -1,7 +1,7 @@
 Name:      osg-client
 Summary:   OSG Client
 Version:   3.0.0
-Release:   13
+Release:   14
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -25,6 +25,8 @@ Requires: owamp-client
 Requires: osg-cert-scripts
 Requires: vo-client
 Requires: globus-gram-client-tools
+# Needed by globus-gram-client-tools, but missing dependency
+Requires: globus-common-progs 
 Requires: globus-gsi-cert-utils-progs
 Requires: osg-system-profiler
 
@@ -53,6 +55,10 @@ rm -rf $RPM_BUILD_ROOT
 %files condor
 
 %changelog
+* Fri Nov 18 2011 Alain Roy <roy@cs.wisc.edu> - 3.0.0-14
+- Added dependency on globus-common-progrs, as workaround for missing 
+  dependency in globus-gram-client-tools. 
+
 * Mon Nov 14 2011 Alain Roy <roy@cs.wisc.edu> - 3.0.0-13
 - Added dependency on osg-version
 
