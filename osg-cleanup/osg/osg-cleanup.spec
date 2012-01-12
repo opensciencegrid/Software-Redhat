@@ -1,7 +1,7 @@
 
 Name:      osg-cleanup
-Version:   0.3
-Release:   2%{?dist}
+Version:   1.0
+Release:   1%{?dist}
 Summary:   OSG cleanup scripts
 
 Group:     System Environment/Base
@@ -85,6 +85,9 @@ fi
 
 
 %changelog
+* Thu Jan 12 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 1.0-1
+- Final bug fixes.  First version ready for testing.
+
 * Thu Jan 12 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 0.3-2
 - Fixed permissions on /usr/libexec/osg-cleanup to be 700
 
