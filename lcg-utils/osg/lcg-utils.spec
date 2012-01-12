@@ -1,6 +1,6 @@
 Name:		lcg-utils
 Version:	1.11.14
-Release:	10%{?dist}
+Release:	11%{?dist}
 Summary:	gLite file transfer clients
 
 Group:		Productivity/File utilities
@@ -35,7 +35,12 @@ make install DESTDIR=$RPM_BUILD_ROOT
 rm -f $RPM_BUILD_ROOT%{_libdir}/*.la
 rm -f $RPM_BUILD_ROOT%{_libdir}/*.a
 rm -f $RPM_BUILD_ROOT%{_libdir}/python2.4/site-packages/*.la
-rm -f $RPM_BUILD_ROOT%{_libdir}/python2.4/site-packages/*.so.0.0.0
+
+# Python expects modules to be names .so, not a symlink to the real module
+# So we fix them.
+rm -f $RPM_BUILD_ROOT%{_libdir}/python2.4/site-packages/*.so
+rm -f $RPM_BUILD_ROOT%{_libdir}/python2.4/site-packages/*.so.0
+rename .so.0.0.0 .so $RPM_BUILD_ROOT%{_libdir}/python2.4/site-packages/*.so.0.0.0
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -51,6 +56,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/*
 
 %changelog
+* Thu Jan 12 2012 Alain Roy <roy@cs.wisc.edu> - 1.11.14-11
+- Fixed missing Python module files
+
 * Wed Nov 30 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.11.14-10
 - Previous issue was not quite fixed.
 
