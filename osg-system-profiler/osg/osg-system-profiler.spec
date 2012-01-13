@@ -1,6 +1,6 @@
 Summary:   Profiles your system for debugging
 Name:      osg-system-profiler
-Version:   1.0.1
+Version:   1.0.2
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -32,6 +32,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/%{name}
 
 %changelog
+* Fri Jan 13 2012 Alain Roy <roy@cs.wisc.edu> 1.0.2-1
+- Fixed minor typo
+
 * Fri Jan 13 2012 Alain Roy <roy@cs.wisc.edu> 1.0.1-1
 - Ensure that stderr goes to the profile.
 
