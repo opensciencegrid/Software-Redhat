@@ -77,7 +77,7 @@ rm -rf $RPM_BUILD_ROOT
 %ghost %{_libdir}/modules/lcmaps_saz_client.mod
 
 %changelog
-* Fri Jan 13 2011 Dave Dykstra <dwd@fnal.gov> 0.3.0-1.2.osg
+* Fri Jan 13 2012 Dave Dykstra <dwd@fnal.gov> 0.3.0-1.2.osg
 - Just a rebuild.  It turned out that I had forgotten to add the
     'Requires: saml2-xacml2-c-lib' which is just as well because
     I can't reproduce the problem with the hadoop repo anymore.
