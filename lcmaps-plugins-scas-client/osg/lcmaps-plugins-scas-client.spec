@@ -1,7 +1,7 @@
 Summary: SCAS client plugin for the LCMAPS authorization framework
 Name: lcmaps-plugins-scas-client
 Version: 0.3.0
-Release: 1.1%{?dist}
+Release: 1.2%{?dist}
 Vendor: Nikhef
 License: ASL 2.0
 Group: System Environment/Libraries
@@ -77,10 +77,16 @@ rm -rf $RPM_BUILD_ROOT
 %ghost %{_libdir}/modules/lcmaps_saz_client.mod
 
 %changelog
+* Fri Jan 13 2011 Dave Dykstra <dwd@fnal.gov> 0.3.0-1.2.osg
+- Just a rebuild.  It turned out that I had forgotten to add the
+    'Requires: saml2-xacml2-c-lib' which is just as well because
+    I can't reproduce the problem with the hadoop repo anymore.
+    This rebuild is mainly to document this fact.
+
 * Fri Dec 30 2011 Dave Dykstra <dwd@fnal.gov> 0.3.0-1.1.osg
 - Imported into OSG
 - Added "Requires: saml2-xacml2-c-lib", instead of the implicit
-    requirement of libxaml.so which sometimes instead picks up
+    requirement of libxacml.so which sometimes instead picks up
     prima from hadoop repo
 - Included ca_only.patch to fix a SEGV when no user certificate is present.
 - Included memory_corrupt.patch to fix a memory corruption issue on an
