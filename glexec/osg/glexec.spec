@@ -1,7 +1,7 @@
 Summary: User identity switching tool based on grid credentials
 Name: glexec
 Version: 0.9.0
-Release: 1.1%{?dist}
+Release: 1.2%{?dist}
 #Release: 0.%(date +%%Y%%m%%d_%%H%%M)%{?dist}
 License: ASL 2.0
 Group: Applications/System
@@ -75,6 +75,10 @@ getent passwd glexec >/dev/null || \
 exit 0
 
 %changelog
+* Fri Jan 13 2012 Dave Dykstra <dwd@fnal.gov> 0.9.0-1.2
+- Change default log levels in glexec.conf to 3 to align with NIKHEF's
+  recommendation
+
 * Fri Dec 30 2011 Dave Dykstra <dwd@fnal.gov> 0.9.0-1.1
 - Import into OSG, including adding OSG's default glexec.conf, removing
   /etc/lcmaps/lcmaps-glexec.db, requiring lcmaps-plugins-glexec-tracking,
