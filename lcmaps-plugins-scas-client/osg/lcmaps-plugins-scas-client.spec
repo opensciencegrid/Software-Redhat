@@ -1,7 +1,7 @@
 Summary: SCAS client plugin for the LCMAPS authorization framework
 Name: lcmaps-plugins-scas-client
 Version: 0.3.0
-Release: 1.2%{?dist}
+Release: 1.3%{?dist}
 Vendor: Nikhef
 License: ASL 2.0
 Group: System Environment/Libraries
@@ -77,6 +77,9 @@ rm -rf $RPM_BUILD_ROOT
 %ghost %{_libdir}/modules/lcmaps_saz_client.mod
 
 %changelog
+* Mon Jan 16 2012 Dave Dykstra <dwd@fnal.gov> 0.3.0-1.3.osg
+- Rebuild to get package signed
+
 * Fri Jan 13 2012 Dave Dykstra <dwd@fnal.gov> 0.3.0-1.2.osg
 - Just a rebuild.  It turned out that I had forgotten to add the
     'Requires: saml2-xacml2-c-lib' which is just as well because
