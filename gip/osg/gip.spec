@@ -1,6 +1,6 @@
 Summary: Generic Information Provider
 Name: gip
-Version: 1.3.3rc1
+Version: 1.3.4
 Release: 3%{?dist}
 License: TODO
 Group: Applications/Grid
@@ -92,13 +92,17 @@ touch $RPM_BUILD_ROOT/%{_sysconfdir}/%{name}/remove-attributes.conf
 %config(noreplace) %{_sysconfdir}/%{name}/remove-attributes.conf
 %config(noreplace) %{_sysconfdir}/%{name}/logging.conf
 %config(noreplace) %{_sysconfdir}/%{name}/ldif.d
-%attr(-, daemon, daemon) /var/log/%{name}
-%attr(-, daemon, daemon) /var/cache/%{name}
+%attr(-, root, root) /var/log/%{name}
+%attr(-, root, root) /var/cache/%{name}
 
 %clean
 rm -rf %buildroot
 
 %changelog
+* Tue Jan 17 2012 Anthony Tiradani <tiradani@fnal.gov> - 1.3.4
+- Update to GIP 1.3.4
+- Changed ownership of directories to root since osg-configure will set proper ownership and root is guaranteed to exist
+
 * Fri Dec 23 2011 Anthony Tiradani <tiradani@fnal.gov> - 1.3.3rc1-3
 - Changed the ownership attributes from tomcat to daemon to eliminate rpm errors
 
