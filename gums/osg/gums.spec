@@ -7,7 +7,7 @@
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.4.0
-Release: 0.1.pre1%{?dist}
+Release: 0.2.pre1%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 BuildRequires: maven2
@@ -20,10 +20,12 @@ BuildArch: noarch
 ## svn export https://svn.usatlas.bnl.gov/svn/privilege/tags/gums-1.4.0-pre1
 Source0: %{name}-%{upstream_version}.tar.gz
 
+Source1: gums.config.template
+Source2: gums.config
 Source3: gums-host-cron
-
 Source4: gums-client-cron.cron
 Source5: gums-client-cron.init
+
 
 # Binary JARs not available from public maven repos.  To be eliminated, one-by-one.
 Source6:  glite-security-trustmanager-1.8.16.jar
@@ -223,12 +225,14 @@ install -m 0755 gums-service/src/main/resources/scripts/gums-create-config $RPM_
 # Configuration files
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/%{dirname}
 install -m 0644 gums-client/src/main/config/*  $RPM_BUILD_ROOT%{_sysconfdir}/%{dirname}/
+install -m 0600 %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/%{dirname}
 #install -m 0600 gums-service/src/main/config/gums.config $RPM_BUILD_ROOT%{_sysconfdir}/%{dirname}
 
 # Templates
 mkdir -p $RPM_BUILD_ROOT%{_noarchlib}/%{dirname}/sql
 mkdir -p $RPM_BUILD_ROOT%{_noarchlib}/%{dirname}/config
 install -m 0644 gums-service/src/main/resources/sql/{addAdmin,setupDatabase}.mysql $RPM_BUILD_ROOT%{_noarchlib}/%{dirname}/sql/
+install -m 0644 %{SOURCE1} $RPM_BUILD_ROOT%{_noarchlib}/%{dirname}/config/
 #install -m 0644 gums-service/src/main/resources/gums.config.template $RPM_BUILD_ROOT%{_noarchlib}/%{dirname}/config/
 
 # Log directory
@@ -293,7 +297,7 @@ fi
 %files service
 %defattr(-,root,root,-)
 %dir %{_sysconfdir}/%{dirname}
-#%attr(0600,tomcat,tomcat) %config(noreplace) %{_sysconfdir}/%{dirname}/gums.config
+%attr(0600,tomcat,tomcat) %config(noreplace) %{_sysconfdir}/%{dirname}/gums.config
 %attr(0750,tomcat,tomcat) %dir %{_var}/lib/tomcat5/webapps/gums/WEB-INF/config
 %{_var}/lib/tomcat5/webapps/gums
 %{_noarchlib}/%{dirname}/sql
@@ -303,6 +307,9 @@ fi
 %{_bindir}/gums-setup-mysql-database
 
 %changelog
+* Tue Jan 17 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.4.0-0.2.pre1
+- Added gums.config and gums.config.template, copied from gums 1.3.18.002
+
 * Tue Jan 10 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.4.0-0.1.pre1
 - Version bump to upstream 1.4.0-pre1; updated patches; added gums-client-pom.patch
 - gums.config and gums.config.template removed until we have replacements using the new config format.

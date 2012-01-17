@@ -1,0 +1,60 @@
+<gums version='1.3'>
+
+	<persistenceFactories>
+		<hibernatePersistenceFactory
+			name='mysql'
+			description=''
+			hibernate.connection.driver_class='com.mysql.jdbc.Driver'
+			hibernate.dialect='org.hibernate.dialect.MySQLDialect'
+			hibernate.connection.provider_class='org.hibernate.connection.C3P0ConnectionProvider'
+			hibernate.connection.autoReconnect='true'
+			hibernate.c3p0.min_size='3'
+			hibernate.c3p0.max_size='20'
+			hibernate.c3p0.timeout='180'
+			hibernate.c3p0.idle_test_period='60'
+			hibernate.connection.username='@USER@'
+			hibernate.connection.url='jdbc:mysql://@SERVER@/GUMS_1_4'
+			hibernate.connection.password='@PASSWORD@'/>
+	</persistenceFactories>
+	
+	<vomsServers></vomsServers>
+	
+	<userGroups>
+		<manualUserGroup
+			name='admins'
+			description=''
+			persistenceFactory='mysql'
+			access='write'/>
+
+		<manualUserGroup
+			 name='gums-test'
+			 access='read self'
+			 description='Testing GUMS-status with GIP Probe'
+			 persistenceFactory='mysql'/>
+	</userGroups>
+
+	<accountMappers>
+		<groupAccountMapper
+			name='gums-test'
+			description='Testing GUMS-status with GIP Probe'
+			accountName='GumsTestUserMappingSuccessful'/>
+	</accountMappers>
+
+	<groupToAccountMappings>
+	       <groupToAccountMapping
+			name='gums-test'
+			description='Testing GUMS-status with GIP Probe'
+			accountingVoSubgroup=''
+			accountingVo=''
+			userGroups='gums-test'
+			accountMappers='gums-test'/>
+	</groupToAccountMappings>
+
+	<hostToGroupMappings>
+		<hostToGroupMapping
+			groupToAccountMappings='gums-test'
+			description=''
+			cn='*/?*.@DOMAINNAME@'/>
+	</hostToGroupMappings>
+
+</gums>
