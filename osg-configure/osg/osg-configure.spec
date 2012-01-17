@@ -1,5 +1,5 @@
 %global name osg-configure
-%global version 0.7.4
+%global version 1.0.0
 %global release 1%{?dist}
 
 Summary: Package for configure-osg and associated scripts
@@ -108,6 +108,13 @@ Provides: configure-osg-managedfork
 %description managedfork
 This package includes the ini files for configuring an OSG CE to use
 managedfork 
+%package network
+Summary: Configure-osg configuration files for network configuration
+Group: Grid
+Provides: configure-osg-network
+%description network
+This package includes the ini files for configuring network related information
+such as firewall ports that globus should use
 
 %prep
 %setup
@@ -128,6 +135,10 @@ mkdir -p $RPM_BUILD_ROOT/var/lib/osg
 touch $RPM_BUILD_ROOT/var/lib/osg/osg-attributes.conf
 touch $RPM_BUILD_ROOT/var/lib/osg/osg-local-job-environment.conf
 touch $RPM_BUILD_ROOT/var/lib/osg/osg-job-environment.conf
+touch $RPM_BUILD_ROOT/var/lib/osg/globus-firewall
+mkdir -p $RPM_BUILD_ROOT/etc/profile.d/
+touch $RPM_BUILD_ROOT/etc/profile.d/osg.sh
+touch $RPM_BUILD_ROOT/etc/profile.d/osg.csh
 # following is needed to move script to sbin directory
 mkdir -p $RPM_BUILD_ROOT/usr/sbin
 mv $RPM_BUILD_ROOT/usr/bin/osg-configure $RPM_BUILD_ROOT/usr/sbin/osg-configure
@@ -175,8 +186,10 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/osg/config.d/20-sge.ini
 %files ce
 %defattr(-,root,root)
-%config(noreplace) %{_sysconfdir}/osg/config.d/40-*.ini
+%config(noreplace) %{_sysconfdir}/osg/config.d/40-localsettings.ini
+%config(noreplace) %{_sysconfdir}/osg/config.d/40-siteinfo.ini
 %config(noreplace) %{_sysconfdir}/osg/config.d/10-storage.ini
+%config(noreplace) %{_sysconfdir}/osg/grid3-locations.txt
 %files misc
 %defattr(-,root,root)
 %config(noreplace) %{_sysconfdir}/osg/config.d/10-misc.ini
@@ -189,8 +202,19 @@ rm -rf $RPM_BUILD_ROOT
 %files managedfork
 %defattr(-,root,root)
 %config(noreplace) %{_sysconfdir}/osg/config.d/15-managedfork.ini
+%files network
+%defattr(-,root,root)
+%config(noreplace) %{_sysconfdir}/osg/config.d/40-network.ini
+%ghost /var/lib/osg/globus-firewall
+%ghost %{_sysconfdir}/profile.d/osg.sh
+%ghost %{_sysconfdir}/profile.d/osg.csh
 
 %changelog
+* Tue Jan 17 2012 Suchandra Thapa <sthapa@ci.uchicago.edu> 1.0.0-1
+- Added support for network/firewall configuration
+- Improved error reporting 
+- Bug fixes for error reporting
+
 * Wed Jan 11 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 0.7.4-1
 - Added configuration for osg-cleanup scripts
 
