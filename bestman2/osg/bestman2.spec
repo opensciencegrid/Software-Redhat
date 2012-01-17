@@ -14,7 +14,7 @@
 
 Name:           bestman2
 Version:        2.2.0
-Release:        8%{?dist}
+Release:        9%{?dist}
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -39,6 +39,7 @@ Source5:        bestman2.sysconfig
 Source6:        build.xml
 Patch0:		bestman.server.patch
 Patch1:		setup.build.xml.patch
+Patch2:		bestman2.srmrm.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
@@ -158,6 +159,8 @@ popd
 pushd bestman2/setup/
 %patch1 -p0
 popd
+
+%patch2 -p0
 
 %build
 
@@ -462,6 +465,9 @@ fi
 
 
 %changelog
+* Tue Jan 17 2012 Doug Strain <dstrain@fnal.gov> - 2.2.0-9
+- Added a patch to fix srmrm issues (SOFTWARE-482)
+
 * Tue Jan 10 2012 Doug Strain <dstrain@fnal.gov> - 2.2.0-8
 - Changed bestmanclient.conf to srmclient.conf
 - Added default 8443 port
