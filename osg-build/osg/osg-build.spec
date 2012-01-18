@@ -1,6 +1,6 @@
 
 Name:           osg-build
-Version:        1.0.3
+Version:        1.0.4
 Release:        1%{?dist}
 Summary:        Build tools for the OSG
 
@@ -59,6 +59,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_docdir}/%{name}/sample-osg-build.ini
 
 %changelog
+* Wed Jan 18 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0.4-1
+- Added el6 support
+
 * Fri Jan 06 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0.3-1
 - Fix for SOFTWARE-449
 
