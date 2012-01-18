@@ -712,6 +712,7 @@ rm -rf %{buildroot}
 #%_libexecdir/condor/condor_glexec_update_proxy
 %_libexecdir/condor/condor_limits_wrapper.sh
 %_libexecdir/condor/condor_rooster
+%_libexecdir/condor/condor_schedd.init
 %_libexecdir/condor/condor_ssh_to_job_shell_setup
 %_libexecdir/condor/condor_ssh_to_job_sshd_setup
 #%_libexecdir/condor/condor_power_state
