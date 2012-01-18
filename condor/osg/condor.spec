@@ -55,7 +55,7 @@ Version: 7.6.6
 %define condor_release %condor_base_release
 %endif
 # Release: %condor_release%{?dist}.2
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -197,6 +197,11 @@ BuildRequires: systemd-units
 %if %git_build_man || %include_man
 BuildRequires: transfig
 BuildRequires: latex2html
+%endif
+
+%if 0%{?el6}
+BuildRequires: libuuid-devel
+Requires: libuuid
 %endif
 
 %if %gsoap
@@ -1047,6 +1052,9 @@ fi
 %endif
 
 %changelog
+* Wed Jan 18 2012 Derek Weitzel <dweitzel@cse.unl.edu> - 7.6.6-2
+- Added support for rhel6
+
 * Wed Jan 18 2012 Tim Cartwright <cat@cs.wisc.edu> - 7.6.6-1
 - Updated to upstream tagged 7.6.6 release
 
