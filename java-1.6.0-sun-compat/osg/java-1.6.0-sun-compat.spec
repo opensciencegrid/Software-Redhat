@@ -6,7 +6,7 @@
 
 %define name            java-%{javaver}-%{origin}-compat
 %define version         %{javaver}%{?buildver:.%{buildver}}
-%define release         5.osg.jpp
+%define release         5
 %define cname           java-%{javaver}-%{origin}
 
 %define toplevel_dir    jdk%{javaver}%{?buildver:_%{buildver}}
@@ -51,7 +51,7 @@
 
 Name:           %{name}
 Version:        %{version}
-Release:        %{release}
+Release:        %{release}%{dist}
 Epoch:          1
 Summary:        JPackage Java compatibility package for Sun's JDK
 License:        JPackage License
