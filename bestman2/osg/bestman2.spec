@@ -14,7 +14,7 @@
 
 Name:           bestman2
 Version:        2.2.0
-Release:        9%{?dist}
+Release:        10%{?dist}
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -191,19 +191,10 @@ ant build
 ant install
 #make
 ant deploy
+cp -arp conf/bestman2.rc.samples dist/conf/bestman2.rc
+cp -arp conf/bestman2.rc.samples dist/conf
 pushd dist
-#    --with-gums-url=https://GUMS_HOST:8443/gums/services/GUMSAuthorizationServicePort \
-#    --enable-backup=no \
-#    --with-bestman2-conf-path=../conf/bestman2.rc
-popd
 
-#    --with-certfile-path=/etc/grid-security/http/httpcert.pem \
-#    --with-keyfile-path=/etc/grid-security/http/httpkey.pem \
-#    --with-gums-certfile-path=/etc/grid-security/http/httpcert.pem \
-#    --with-gums-keyfile-path=/etc/grid-security/http/httpkey.pem \
-
-cp -arp conf/bestman2.rc.samples conf/bestman2.rc
-mv dist/bin .
 #Fix paths in bestman2.rc
 JAVADIR=`echo %{_javadir} |  sed 's/\//\\\\\//g'`
 sed -i "s/SRM_HOME=.*/SRM_HOME=\/etc\/bestman2/" conf/bestman2.rc
@@ -236,7 +227,10 @@ popd
 rm -rf $RPM_BUILD_ROOT
 
 pushd bestman2
-
+mkdir -p $RPM_BUILD_ROOT%{_javadir}/%{name}
+cp -arp lib/* $RPM_BUILD_ROOT%{_javadir}/%{name}/
+pushd dist
+ls -R
 mkdir -p $RPM_BUILD_ROOT%{_javadir}
 mkdir -p $RPM_BUILD_ROOT%{_sbindir}
 mkdir -p $RPM_BUILD_ROOT%{install_root}
@@ -246,7 +240,7 @@ mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}
 mv conf/bestmanclient.conf conf/srmclient.conf
 
 cp -arp conf $RPM_BUILD_ROOT%{install_root}
-cp -arp lib $RPM_BUILD_ROOT%{_javadir}/%{name}
+cp -arp lib/* $RPM_BUILD_ROOT%{_javadir}/%{name}/
 cp -arp properties $RPM_BUILD_ROOT%{install_root}
 
 
@@ -275,6 +269,7 @@ touch $RPM_BUILD_ROOT%{_sysconfdir}/grid-security/vomsdir/vdt-empty.pem
 
 mkdir -p $RPM_BUILD_ROOT%{_var}/log/%{name}
 
+popd
 popd
 
 %clean
@@ -333,9 +328,9 @@ fi
 %config(noreplace) %{install_root}/conf/srmclient.conf
 #%config(noreplace) %{install_root}/conf/srmclient.conf.sample
 %config(noreplace) %{install_root}/conf/bestman2.rc
-%config(noreplace) %{install_root}/conf/bestman2.rc.samples
 #%config(noreplace) %{install_root}/conf/bestmanclient.conf
-%config(noreplace) %{install_root}/conf/mss.init.sample
+%config(noreplace) %{install_root}/conf/bestman2.rc.samples
+#%config(noreplace) %{install_root}/conf/mss.init.sample
 %config(noreplace) %{_sysconfdir}/sysconfig/bestman2
 %{_bindir}/srm-copy
 %{_bindir}/srm-copy-status
@@ -465,6 +460,10 @@ fi
 
 
 %changelog
+* Wed Jan 18 2012 Doug Strain <dstrain@fnal.gov> - 2.2.0-10
+- This rpm spec was not grabbing the newly compiled lib jars
+- Changed it so it would grab the jars from dist/ directory from ant
+
 * Tue Jan 17 2012 Doug Strain <dstrain@fnal.gov> - 2.2.0-9
 - Added a patch to fix srmrm issues (SOFTWARE-482)
 
