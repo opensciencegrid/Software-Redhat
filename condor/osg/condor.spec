@@ -1,4 +1,4 @@
-%define tarball_version 7.6.4
+%define tarball_version 7.6.6
 
 # Things for F15 or later
 %if 0%{?fedora} >= 15
@@ -45,7 +45,7 @@
 
 Summary: Condor: High Throughput Computing
 Name: condor
-Version: 7.6.4
+Version: 7.6.6
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_base_release 0.6
@@ -100,7 +100,7 @@ Source1: condor_docs.tar.gz
 #   b482c4bfa350164427a1952113d53d03  condor_src-7.5.5-all-all.tar.gz
 #   2a1355cb24a56a71978d229ddc490bc5  condor_src-7.6.0-all-all.tar.gz
 # Note: The md5sum of each generated tarball may be different
-Source0: condor-7.6.4.tar.gz
+Source0: condor-7.6.6.tar.gz
 Source1: generate-tarball.sh
 %endif
 
@@ -1046,6 +1046,9 @@ fi
 %endif
 
 %changelog
+* Wed Jan 18 2012 Tim Cartwright <cat@cs.wisc.edu> - 7.6.6-1
+- Updated to upstream tagged 7.6.6 release
+
 * Wed Jan 11 2012 Tim Cartwright <cat@cs.wisc.edu> - 7.6.4-1
 - Simplified revision number
 
