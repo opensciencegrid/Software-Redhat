@@ -1,7 +1,11 @@
 Name:		buildsys-macros
 Summary:	Macros for the OSG Buildsystem
+%if 0%{?rhel} < 6
 Version:	5
-Release:	6.osg
+%else
+Version:        %{?rhel}
+%endif
+Release:	7%{?dist}
 License:	GPL
 Group:		Development/Buildsystem
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -20,9 +24,16 @@ rm -rf $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT/etc/rpm/
 VERSION=%{version}
 printf %s%b "%" "rhel $VERSION\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.disttag
-printf %s%b "%" "dist .osg\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.disttag
+printf %s%b "%" "dist .osg.el$VERSION\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.disttag
 printf %s%b "%" "el$VERSION 1\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.disttag
 printf %s%b "%" "__arch_install_post /usr/lib/rpm/check-buildroot\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.checkbuild
+if [[ $VERSION -eq 5 ]]; then
+    printf %s%b "%" "_source_filedigest_algorithm 1\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.digest
+    printf %s%b "%" "_binary_filedigest_algorithm 1\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.digest
+    printf %s%b "%" "_binary_payload w9.gzdio\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.digest
+    printf %s%b "%" "_source_payload w9.gzdio\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.digest
+    printf %s%b "%" "_default_patch_fuzz 2\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.digest
+fi
 
 
 %clean
@@ -30,10 +41,16 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root)
+%if %{version} == 5
+/etc/rpm/macros.digest
+%endif
 /etc/rpm/macros.disttag
 /etc/rpm/macros.checkbuild
 
 %changelog
+* Wed Jan 18 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 6-7.osg
+- Added rhel6 version
+
 * Thu Aug 04 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 5-6.osg
 - Creation of the OSG buildsys-macros.
 
