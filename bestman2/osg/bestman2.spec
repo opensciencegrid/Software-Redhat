@@ -14,7 +14,7 @@
 
 Name:           bestman2
 Version:        2.2.0
-Release:        10%{?dist}
+Release:        11%{?dist}
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -460,6 +460,9 @@ fi
 
 
 %changelog
+* Wed Jan 18 2012 Derek Weitzel <dweitzel@cse.unl.edu> - 2.2.0-11
+- Rebased bestman.server.patch for sl6 fuzz=0
+
 * Wed Jan 18 2012 Doug Strain <dstrain@fnal.gov> - 2.2.0-10
 - This rpm spec was not grabbing the newly compiled lib jars
 - Changed it so it would grab the jars from dist/ directory from ant
