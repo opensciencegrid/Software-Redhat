@@ -1,6 +1,6 @@
 Name:		glite-fts-client
 Version:	3.7.4
-Release:	5%{?dist}
+Release:	6%{?dist}
 Summary:	gLite FTS client
 
 Group:		Development/Languages/C and C++
@@ -23,7 +23,11 @@ BuildRequires:  glite-data-delegation-cli-devel%{?_isa}
 BuildRequires:  glite-data-transfer-interface
 BuildRequires:  /usr/bin/xsltproc
 BuildRequires:  glib2-devel%{?_isa}
-BuildRequires:  e2fsprogs-devel%{?_isa}
+%if 0%{?el6}
+BuildRequires:  libuuid-devel
+%else
+BuildRequires:  e2fsprogs-devel
+%endif
 BuildRequires:  globus-gssapi-gsi-devel%{?_isa}
 BuildRequires:  globus-gss-assist-devel%{?_isa}
 BuildRequires:  gridsite-devel%{?_isa}
@@ -74,6 +78,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/glite-transfer*
 
 %changelog
+* Thu Jan 19 2012 Derek Weitzel <dweitzel@cse.unl.edu> - 3.7.4-6
+- Adding libuuid dependency for sl6
+
 * Thu Jan 19 2012 Derek Weitzel <dweitzel@cse.unl.edu> - 3.7.4-5
 - Adding python macros
 
