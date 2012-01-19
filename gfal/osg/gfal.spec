@@ -1,3 +1,7 @@
+# Increase the patch fuzz factor to be consistent with el5
+# srm.v2.2.types.patch is off by -1 on all Hunks.
+%define _default_patch_fuzz 2
+
 Name:		gfal
 Version:	1.11.14
 Release:	9%{?dist}
