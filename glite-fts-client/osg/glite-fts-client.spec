@@ -1,6 +1,6 @@
 Name:		glite-fts-client
 Version:	3.7.4
-Release:	4%{?dist}
+Release:	5%{?dist}
 Summary:	gLite FTS client
 
 Group:		Development/Languages/C and C++
@@ -51,23 +51,32 @@ make %{?_smp_mflags}
 rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
 
+# Python macros
+%if 0%{?rhel} <= 5
+%{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
+%{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
+%endif
+
 rm -rf $RPM_BUILD_ROOT%{_libdir}/lib*.a
 rm -rf $RPM_BUILD_ROOT%{_libdir}/lib*.la
-rm -rf $RPM_BUILD_ROOT%{_libdir}/python2.4/site-packages/fts.a
-rm -rf $RPM_BUILD_ROOT%{_libdir}/python2.4/site-packages/fts.la
+rm -rf $RPM_BUILD_ROOT%{_libdir}%{python_sitearch}/fts.a
+rm -rf $RPM_BUILD_ROOT%{_libdir}%{python_sitelib}/fts.la
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)
-%{_libdir}/python2.4/site-packages/fts*
+%{_libdir}%{python_sitelib}fts*
 %{_libdir}/lib*.so.*
 
 %{_mandir}/man1/glite*
 %{_bindir}/glite-transfer*
 
 %changelog
+* Thu Jan 19 2012 Derek Weitzel <dweitzel@cse.unl.edu> - 3.7.4-5
+- Adding python macros
+
 * Fri Oct 28 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 3.7.4-4
 - rebuilt
 
