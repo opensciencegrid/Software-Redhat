@@ -1,10 +1,8 @@
-# Increase the patch fuzz factor to be consistent with el5
-# srm.v2.2.types.patch is off by -1 on all Hunks.
-%define _default_patch_fuzz 2
+%define py_ver %(python -c "import sys; v=sys.version_info[:2]; print '%d.%d'%v")
 
 Name:		gfal
 Version:	1.11.14
-Release:	9%{?dist}
+Release:	10%{?dist}
 Summary:	Grid File Access Library for accessing files in multiple grid protocols
 
 Group:		Development/Languages/C and C++
@@ -15,9 +13,25 @@ URL:		http://glite.cvs.cern.ch/cgi-bin/glite.cgi/org.glite.data.gfal
 Source0:        org.glite.data.gfal.tar.gz
 Patch0:         gfal_makefile_cleanup.patch
 Patch1:		srm.v2.2.types.patch
+Patch2:         srm.v2.2.types.el6.patch
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 Requires:	CGSI-gSOAP lfc-client e2fsprogs voms openldap globus-ftp-client python
-BuildRequires:  automake autoconf libtool swig lfc-devel CGSI-gSOAP-devel glite-build-common-cpp voms-devel e2fsprogs-devel openldap-devel globus-ftp-client-devel python-devel
+BuildRequires:  automake
+BuildRequires:  autoconf
+BuildRequires:  libtool
+BuildRequires:  swig
+BuildRequires:  lfc-devel
+BuildRequires:  CGSI-gSOAP-devel
+BuildRequires:  glite-build-common-cpp
+BuildRequires:  voms-devel
+%if 0%{?el6}
+BuildRequires:  libuuid-devel
+%else
+BuildRequires:  e2fsprogs-devel
+%endif
+BuildRequires:  openldap-devel
+BuildRequires:  globus-ftp-client-devel
+BuildRequires:  python-devel
 
 %description
 %{summary}
@@ -36,7 +50,11 @@ export CFLAGS="%{optflags} -I%{_libdir}/globus/include"
 pushd src
 make srm.v2.2.h
 popd
+%if 0%{?el6}
+patch -p0 < %{PATCH2}
+%else
 patch -p0 < %{PATCH1}
+%endif
 make %{?_smp_mflags}
 
 %install
@@ -47,13 +65,13 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/*.la
 rm -f $RPM_BUILD_ROOT%{_libdir}/*.a
 # All the binaries are unittest stuff
 rm -f $RPM_BUILD_ROOT%{_bindir}/*
-rm -f $RPM_BUILD_ROOT%{_libdir}/python2.4/site-packages/*.la
+rm -f $RPM_BUILD_ROOT%{_libdir}/python%{py_ver}/site-packages/*.la
 
 # Python expects modules to be names .so, not a symlink to the real module
 # So we fix them.
-rm -f $RPM_BUILD_ROOT%{_libdir}/python2.4/site-packages/*.so
-rm -f $RPM_BUILD_ROOT%{_libdir}/python2.4/site-packages/*.so.0
-rename .so.0.0.0 .so $RPM_BUILD_ROOT%{_libdir}/python2.4/site-packages/*.so.0.0.0
+rm -f $RPM_BUILD_ROOT%{_libdir}/python%{py_ver}/site-packages/*.so
+rm -f $RPM_BUILD_ROOT%{_libdir}/python%{py_ver}/site-packages/*.so.0
+rename .so.0.0.0 .so $RPM_BUILD_ROOT%{_libdir}/python%{py_ver}/site-packages/*.so.0.0.0
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -61,12 +79,15 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root,-)
 %{_libdir}/lib*
-%{_libdir}/python2.4/site-packages/*
+%{_libdir}/python%{py_ver}/site-packages/*
 %{_mandir}/man3/*
 %{_docdir}/*
 %{_includedir}/*
 
 %changelog
+* Thu Jan 19 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 1.11.14-10
+- Touch up RPM spec and patch for auto-generated file for EL6.
+
 * Thu Jan 12 2012 Alain Roy <roy@cs.wisc.edu> - 1.11.14-9
 - Fixed missing Python module files
 
