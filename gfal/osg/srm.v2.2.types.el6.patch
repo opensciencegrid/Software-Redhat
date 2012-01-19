@@ -1,0 +1,110 @@
+--- src/srm.v2.2.orig	2012-01-19 08:16:05.928405190 -0600
++++ src/srm.v2.2.h	2012-01-19 08:18:54.696404661 -0600
+@@ -777,7 +777,7 @@
+ /// Size of array of struct srm2__TSURLReturnStatus* is 1..unbounded
+    $int                                  __sizestatusArray              1;
+ /// Array struct srm2__TSURLReturnStatus* of length 1..unbounded
+-    struct srm2__TSURLReturnStatus*      statusArray                   ;	///< Nullable pointer.
++    struct srm2__TSURLReturnStatus**      statusArray                   ;	///< Nullable pointer.
+ };
+ 
+ /// "http://srm.lbl.gov/StorageResourceManager":TSURLLifetimeReturnStatus is a complexType.
+@@ -799,7 +799,7 @@
+ /// Size of array of struct srm2__TSURLLifetimeReturnStatus* is 1..unbounded
+    $int                                  __sizestatusArray              1;
+ /// Array struct srm2__TSURLLifetimeReturnStatus* of length 1..unbounded
+-    struct srm2__TSURLLifetimeReturnStatus*  statusArray                   ;	///< Nullable pointer.
++    struct srm2__TSURLLifetimeReturnStatus**  statusArray                   ;	///< Nullable pointer.
+ };
+ 
+ /// "http://srm.lbl.gov/StorageResourceManager":TMetaDataPathDetail is a complexType.
+@@ -849,7 +849,7 @@
+ /// Size of array of struct srm2__TMetaDataPathDetail* is 1..unbounded
+    $int                                  __sizepathDetailArray          1;
+ /// Array struct srm2__TMetaDataPathDetail* of length 1..unbounded
+-    struct srm2__TMetaDataPathDetail*    pathDetailArray               ;	///< Nullable pointer.
++    struct srm2__TMetaDataPathDetail**    pathDetailArray               ;	///< Nullable pointer.
+ };
+ 
+ /// "http://srm.lbl.gov/StorageResourceManager":TMetaDataSpace is a complexType.
+@@ -881,7 +881,7 @@
+ /// Size of array of struct srm2__TMetaDataSpace* is 1..unbounded
+    $int                                  __sizespaceDataArray           1;
+ /// Array struct srm2__TMetaDataSpace* of length 1..unbounded
+-    struct srm2__TMetaDataSpace*         spaceDataArray                ;	///< Nullable pointer.
++    struct srm2__TMetaDataSpace**         spaceDataArray                ;	///< Nullable pointer.
+ };
+ 
+ /// "http://srm.lbl.gov/StorageResourceManager":TDirOption is a complexType.
+@@ -950,7 +950,7 @@
+ /// Size of array of struct srm2__TGetFileRequest* is 1..unbounded
+    $int                                  __sizerequestArray             1;
+ /// Array struct srm2__TGetFileRequest* of length 1..unbounded
+-    struct srm2__TGetFileRequest*        requestArray                  ;	///< Nullable pointer.
++    struct srm2__TGetFileRequest**        requestArray                  ;	///< Nullable pointer.
+ };
+ 
+ /// "http://srm.lbl.gov/StorageResourceManager":TPutFileRequest is a complexType.
+@@ -968,7 +968,7 @@
+ /// Size of array of struct srm2__TPutFileRequest* is 1..unbounded
+    $int                                  __sizerequestArray             1;
+ /// Array struct srm2__TPutFileRequest* of length 1..unbounded
+-    struct srm2__TPutFileRequest*        requestArray                  ;	///< Nullable pointer.
++    struct srm2__TPutFileRequest**        requestArray                  ;	///< Nullable pointer.
+ };
+ 
+ /// "http://srm.lbl.gov/StorageResourceManager":TCopyFileRequest is a complexType.
+@@ -988,7 +988,7 @@
+ /// Size of array of struct srm2__TCopyFileRequest* is 1..unbounded
+    $int                                  __sizerequestArray             1;
+ /// Array struct srm2__TCopyFileRequest* of length 1..unbounded
+-    struct srm2__TCopyFileRequest*       requestArray                  ;	///< Nullable pointer.
++    struct srm2__TCopyFileRequest**       requestArray                  ;	///< Nullable pointer.
+ };
+ 
+ /// "http://srm.lbl.gov/StorageResourceManager":TGetRequestFileStatus is a complexType.
+@@ -1016,7 +1016,7 @@
+ /// Size of array of struct srm2__TGetRequestFileStatus* is 1..unbounded
+    $int                                  __sizestatusArray              1;
+ /// Array struct srm2__TGetRequestFileStatus* of length 1..unbounded
+-    struct srm2__TGetRequestFileStatus*  statusArray                   ;	///< Nullable pointer.
++    struct srm2__TGetRequestFileStatus**  statusArray                   ;	///< Nullable pointer.
+ };
+ 
+ /// "http://srm.lbl.gov/StorageResourceManager":TBringOnlineRequestFileStatus is a complexType.
+@@ -1040,7 +1040,7 @@
+ /// Size of array of struct srm2__TBringOnlineRequestFileStatus* is 1..unbounded
+    $int                                  __sizestatusArray              1;
+ /// Array struct srm2__TBringOnlineRequestFileStatus* of length 1..unbounded
+-    struct srm2__TBringOnlineRequestFileStatus*  statusArray                   ;	///< Nullable pointer.
++    struct srm2__TBringOnlineRequestFileStatus**  statusArray                   ;	///< Nullable pointer.
+ };
+ 
+ /// "http://srm.lbl.gov/StorageResourceManager":TPutRequestFileStatus is a complexType.
+@@ -1070,7 +1070,7 @@
+ /// Size of array of struct srm2__TPutRequestFileStatus* is 1..unbounded
+    $int                                  __sizestatusArray              1;
+ /// Array struct srm2__TPutRequestFileStatus* of length 1..unbounded
+-    struct srm2__TPutRequestFileStatus*  statusArray                    1;
++    struct srm2__TPutRequestFileStatus**  statusArray                    1;
+ };
+ 
+ /// "http://srm.lbl.gov/StorageResourceManager":TCopyRequestFileStatus is a complexType.
+@@ -1096,7 +1096,7 @@
+ /// Size of array of struct srm2__TCopyRequestFileStatus* is 1..unbounded
+    $int                                  __sizestatusArray              1;
+ /// Array struct srm2__TCopyRequestFileStatus* of length 1..unbounded
+-    struct srm2__TCopyRequestFileStatus*  statusArray                    1;
++    struct srm2__TCopyRequestFileStatus**  statusArray                    1;
+ };
+ 
+ /// "http://srm.lbl.gov/StorageResourceManager":TRequestSummary is a complexType.
+@@ -1144,7 +1144,7 @@
+ /// Size of array of struct srm2__TSURLPermissionReturn* is 1..unbounded
+    $int                                  __sizesurlPermissionArray      1;
+ /// Array struct srm2__TSURLPermissionReturn* of length 1..unbounded
+-    struct srm2__TSURLPermissionReturn*  surlPermissionArray            1;
++    struct srm2__TSURLPermissionReturn**  surlPermissionArray            1;
+ };
+ 
+ /// "http://srm.lbl.gov/StorageResourceManager":TPermissionReturn is a complexType.
