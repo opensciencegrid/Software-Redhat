@@ -1,6 +1,6 @@
 Name:		lcg-utils
 Version:	1.11.14
-Release:	11%{?dist}
+Release:	12%{?dist}
 Summary:	gLite file transfer clients
 
 Group:		Productivity/File utilities
@@ -13,6 +13,12 @@ Patch0:         lcg_utils_makefile_cleanup.patch
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 Requires:	gfal
 BuildRequires:  automake autoconf libtool swig gfal glite-build-common-cpp globus-ftp-client-devel globus-gass-copy-devel voms-devel CGSI-gSOAP-devel python-devel
+
+%if 0%{?el6}
+BuildRequires:  libuuid-devel
+%else
+BuildRequires:  e2fsprogs-devel
+%endif
 
 %description
 %{summary}
@@ -56,6 +62,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/*
 
 %changelog
+* Thu Jan 19 2012 Derek Weitzel <dweitzel@cse.unl.edu> - 1.11.14-12
+- Adding libuuid-devel to build requires
+
 * Thu Jan 12 2012 Alain Roy <roy@cs.wisc.edu> - 1.11.14-11
 - Fixed missing Python module files
 
