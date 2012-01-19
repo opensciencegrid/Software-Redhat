@@ -2,7 +2,7 @@
 
 Name:		gfal
 Version:	1.11.14
-Release:	10%{?dist}
+Release:	11%{?dist}
 Summary:	Grid File Access Library for accessing files in multiple grid protocols
 
 Group:		Development/Languages/C and C++
@@ -26,6 +26,7 @@ BuildRequires:  glite-build-common-cpp
 BuildRequires:  voms-devel
 %if 0%{?el6}
 BuildRequires:  libuuid-devel
+Requires:       libuuid
 %else
 BuildRequires:  e2fsprogs-devel
 %endif
@@ -85,6 +86,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/*
 
 %changelog
+* Thu Jan 19 2012 Derek Weitzel <dweitzel@cse.unl.edu> - 1.11.14-11
+- Add libuuid to list of requires for sl6
+
 * Thu Jan 19 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 1.11.14-10
 - Touch up RPM spec and patch for auto-generated file for EL6.
 
