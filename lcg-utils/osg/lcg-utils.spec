@@ -20,6 +20,7 @@ BuildRequires:  libuuid-devel
 BuildRequires:  e2fsprogs-devel
 %endif
 
+
 %description
 %{summary}
 
@@ -38,15 +39,21 @@ make
 rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
 
+# Python macros
+%if 0%{?rhel} <= 5
+%{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
+%{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
+%endif
+
 rm -f $RPM_BUILD_ROOT%{_libdir}/*.la
 rm -f $RPM_BUILD_ROOT%{_libdir}/*.a
-rm -f $RPM_BUILD_ROOT%{_libdir}/python2.4/site-packages/*.la
+rm -rf $RPM_BUILD_ROOT%{python_sitearch}/*.la
 
 # Python expects modules to be names .so, not a symlink to the real module
 # So we fix them.
-rm -f $RPM_BUILD_ROOT%{_libdir}/python2.4/site-packages/*.so
-rm -f $RPM_BUILD_ROOT%{_libdir}/python2.4/site-packages/*.so.0
-rename .so.0.0.0 .so $RPM_BUILD_ROOT%{_libdir}/python2.4/site-packages/*.so.0.0.0
+rm -rf $RPM_BUILD_ROOT%{python_sitearch}/*.so
+rm -rf $RPM_BUILD_ROOT%{python_sitearch}/*.so.0
+rename .so.0.0.0 .so $RPM_BUILD_ROOT%{python_sitearch}/*.so.0.0.0
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -54,7 +61,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root,-)
 %{_libdir}/lib*
-%{_libdir}/python2.4/site-packages/*
+$RPM_BUILD_ROOT%{python_sitearch}/*
 %{_mandir}/man1/*
 %{_mandir}/man3/*
 %{_bindir}/*
@@ -64,6 +71,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Thu Jan 19 2012 Derek Weitzel <dweitzel@cse.unl.edu> - 1.11.14-12
 - Adding libuuid-devel to build requires
+- Adding python macros to detect python file locations
 
 * Thu Jan 12 2012 Alain Roy <roy@cs.wisc.edu> - 1.11.14-11
 - Fixed missing Python module files
