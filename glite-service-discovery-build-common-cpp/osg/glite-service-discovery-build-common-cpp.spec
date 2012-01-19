@@ -1,6 +1,6 @@
 Name:		glite-service-discovery-build-common-cpp
 Version:	0.3.0
-Release:	2
+Release:	2%{?dist}
 Summary:	Build macros for the org.glite.service-discovery family.
 
 Group:		Development/Languages/C and C++
