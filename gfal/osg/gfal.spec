@@ -1,6 +1,6 @@
 Name:		gfal
 Version:	1.11.14
-Release:	9
+Release:	9%{?dist}
 Summary:	Grid File Access Library for accessing files in multiple grid protocols
 
 Group:		Development/Languages/C and C++
