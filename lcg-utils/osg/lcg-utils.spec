@@ -61,7 +61,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root,-)
 %{_libdir}/lib*
-$RPM_BUILD_ROOT%{python_sitearch}/*
+%{python_sitearch}/*
 %{_mandir}/man1/*
 %{_mandir}/man3/*
 %{_bindir}/*
