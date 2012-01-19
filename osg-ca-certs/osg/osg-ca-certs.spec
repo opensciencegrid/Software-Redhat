@@ -1,6 +1,6 @@
 Name:           osg-ca-certs
 Version:        1.26
-Release:        1
+Release:        1%{?dist}
 Summary:        OSG Packaging of the IGTF CA Certs and OSG-specific CAs, in the new OpenSSL 0.9.8/1.0.0 format
 
 Group:          System Environment/Base
