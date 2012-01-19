@@ -1,7 +1,7 @@
 Summary: C libraries for accessing the service discovery system
 Name: glite-service-discovery-api-c
 Version: 2.2.3
-Release: 2.sl5
+Release: 2%{?dist}
 License: Apache License 2.0
 Vendor: EMI
 Group: System Environment/Libraries
