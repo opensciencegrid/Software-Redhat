@@ -1,6 +1,6 @@
 Name:           osg-release
 Version:        3.0 
-Release:        12
+Release:        13%{?dist}
 Summary:        OSG Software for Enterprise Linux repository configuration
 
 Group:          System Environment/Base 
@@ -11,18 +11,32 @@ URL:            http://vdt.cs.wisc.edu/repos
 # our distribution.  Thus the source is only available from
 # within this srpm.
 
-Source0:        osg.repo
-Source1:        osg-development.repo
-Source2:        osg-testing.repo
-Source3:        osg-minefield.repo
-Source4:        osg-contrib.repo
-Source5:        RPM-GPG-KEY-OSG
+
+Source1:        osg.repo
+Source2:        osg-development.repo
+Source3:        osg-testing.repo
+Source4:        osg-minefield.repo
+Source5:        osg-contrib.repo
 Source6:        osg-prerelease.repo
+
+Source10:        osg-el6.repo
+Source11:        osg-el6-development.repo
+Source12:        osg-el6-testing.repo
+Source13:        osg-el6-minefield.repo
+Source14:        osg-el6-contrib.repo
+Source15:        osg-el6-prerelease.repo
+
+Source20:        RPM-GPG-KEY-OSG
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildArch:     noarch
+
+%if 0%{?el6}
+Requires:      redhat-release >=  6
+%else
 Requires:      redhat-release >=  5
+%endif
 
 Obsoletes:     vdt-release
 
@@ -42,12 +56,17 @@ rm -rf $RPM_BUILD_ROOT
 
 #GPG Key
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/pki/rpm-gpg
-install -pm 644 %{SOURCE5} \
+install -pm 644 %{SOURCE20} \
     $RPM_BUILD_ROOT%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-OSG
 
 # yum
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d
-install -pm 644 %{SOURCE0} %{SOURCE1} %{SOURCE2} %{SOURCE3} %{SOURCE4} %{SOURCE6} $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d
+
+%if 0%{?el6}
+install -pm 644 %{SOURCE10} %{SOURCE11} %{SOURCE12} %{SOURCE13} %{SOURCE14} %{SOURCE15} $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d
+%else
+install -pm 644 %{SOURCE0} %{SOURCE1} %{SOURCE2} %{SOURCE3} %{SOURCE4} %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d
+%endif
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -59,6 +78,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Jan 19 2012 Derek Weitzel <dweitzel@cse.unl.edu> - 3.0-13
+- Adding preliminary el6 support
+
 * Mon Nov 28 2011 Neha Sharma <neha@fnal.gov> - 3.0-12
 - Added consider_as_osg=yes to all osg repo files
 
