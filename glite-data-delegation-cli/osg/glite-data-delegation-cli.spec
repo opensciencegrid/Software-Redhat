@@ -1,6 +1,6 @@
 Name:		glite-data-delegation-cli
 Version:	2.0.1.3
-Release:	3%{?dist}
+Release:	4%{?dist}
 Summary:	gLite delegation API command-line tools
 
 Group:		Development/Languages/C and C++
@@ -11,6 +11,7 @@ URL:		http://glite.cvs.cern.ch/cgi-bin/glite.cgi/org.glite.data.delegation-cli
 Source0:        org.glite.data.delegation-cli.tar.gz
 Patch0:         glite_data_delegation_cli_fedora.patch
 Patch1:         testcase_new_gsoap.patch
+Patch2:         rename_doxygen_output-sl6.patch
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
 BuildRequires:  automake autoconf libtool 
@@ -40,6 +41,10 @@ BuildRequires:  doxygen
 %patch0 -p0
 %patch1 -p0
 
+%if 0%{?el6}
+%patch2 -p0
+%endif
+
 %build
 ./bootstrap
 export CFLAGS="%{optflags} -I%{_libdir}/globus/include"
@@ -65,6 +70,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/glite-*
 
 %changelog
+* Thu Jan 19 2012 Derek Weitzel <dweitzel@cse.unl.edu> - 2.0.1.3-4
+- Add rename_doxygen_output-sl6.patch for el6 doxygen
+
 * Fri Oct 28 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.1.3-3
 - rebuilt
 
