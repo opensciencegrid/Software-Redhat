@@ -1,6 +1,6 @@
 Name:		glite-data-delegation-api-c
 Version:	2.0.0.7
-Release:	4%{?dist}
+Release:	5%{?dist}
 Summary:	Library for using the gLite delegation API from C
 
 Group:		Development/Languages/C and C++
@@ -9,7 +9,11 @@ URL:		http://glite.cvs.cern.ch/cgi-bin/glite.cgi/org.glite.data.delegation-api-c
 # Retrieved on Jul 5 2011
 # http://glite.cvs.cern.ch/cgi-bin/glite.cgi/org.glite.data.delegation-api-c.tar.gz?view=tar&pathrev=glite-data-delegation-api-c_R_2_0_0_7
 Source0:        org.glite.data.delegation-api-c.tar.gz
+%if 0%{?el6}
+Source1:        stdsoap2.c.el6
+%else
 Source1:        stdsoap2.c
+%endif
 Patch0:         glite_data_delegation_api_c_fedora.patch
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
@@ -28,7 +32,7 @@ BuildRequires:  globus-gss-assist-devel
 %setup -n org.glite.data.delegation-api-c
 
 %patch0 -p0
-cp %{SOURCE1} .
+cp %{SOURCE1} stdsoap2.c
 
 %build
 ./bootstrap
@@ -42,12 +46,17 @@ make %{?_smp_mflags}
 rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
 
+%if 0%{?rhel} <= 5
+%{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
+%{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
+%endif
+
 rm -f $RPM_BUILD_ROOT%{_libdir}/*.la
 rm -f $RPM_BUILD_ROOT%{_libdir}/*.a
 # All the binaries are unittest stuff
 rm -f $RPM_BUILD_ROOT%{_bindir}/*
-rm -f $RPM_BUILD_ROOT%{_libdir}/python2.4/site-packages/*.la
-rm -f $RPM_BUILD_ROOT%{_libdir}/python2.4/site-packages/*.so.0.0.0
+rm -f $RPM_BUILD_ROOT%{python_sitearch}/*.la
+rm -f $RPM_BUILD_ROOT%{python_sitearch}/*.so.0.0.0
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -59,6 +68,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/glite/data/delegation
 
 %changelog
+* Thu Jan 19 2012 Derek Weitzel <dweitzel@cse.unl.edu> - 2.0.0.7-5
+- Adding stdsoap2.c from el6 distribution.
+
 * Fri Oct 28 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.0.7-4
 - rebuilt
 
