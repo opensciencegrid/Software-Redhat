@@ -1,6 +1,6 @@
 Name:		glite-fts-client
 Version:	3.7.4
-Release:	6%{?dist}
+Release:	7%{?dist}
 Summary:	gLite FTS client
 
 Group:		Development/Languages/C and C++
@@ -14,7 +14,10 @@ Source1:        stdsoap2.c.el6
 %else
 Source1:        stdsoap2.c
 %endif
+
+
 Patch0:         glite_fts_client_fedora.patch
+Patch1:         channel_internal_fixelsif.sl6.patch 
 
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 Requires:	CGSI-gSOAP
@@ -46,6 +49,11 @@ BuildRequires:  doxygen
 %setup -n org.glite.data.transfer-cli
 
 %patch0 -p0
+
+# Fix elsif in channel_internal.h
+%if 0%{?el6}
+%patch1 -p0
+%endif
 
 cp %SOURCE1 stdsoap2.c
 
@@ -82,6 +90,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/glite-transfer*
 
 %changelog
+* Thu Jan 19 2012 Derek Weitzel <dweitzel@cse.unl.edu> - 3.7.4-7
+- Adding patch for malformed elsif
+
 * Thu Jan 19 2012 Derek Weitzel <dweitzel@cse.unl.edu> - 3.7.4-6
 - Adding libuuid dependency for sl6
 
