@@ -1,6 +1,6 @@
 Name:		glite-data-delegation-cli
 Version:	2.0.1.3
-Release:	4%{?dist}
+Release:	6%{?dist}
 Summary:	gLite delegation API command-line tools
 
 Group:		Development/Languages/C and C++
@@ -70,6 +70,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/glite-*
 
 %changelog
+* Fri Jan 20 2012 Derek Weitzel <dweitzel@cse.unl.edu> - 2.0.1.3-6
+- Rebuild again for gsoap support
+
+* Fri Jan 20 2012 Derek Weitzel <dweitzel@cse.unl.edu> - 2.0.1.3-5
+- Rebuild for gsoap support
+
 * Thu Jan 19 2012 Derek Weitzel <dweitzel@cse.unl.edu> - 2.0.1.3-4
 - Add rename_doxygen_output-sl6.patch for el6 doxygen
 
