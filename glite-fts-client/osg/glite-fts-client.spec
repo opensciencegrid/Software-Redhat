@@ -9,15 +9,11 @@ URL:		http://glite.cvs.cern.ch/cgi-bin/glite.cgi/org.glite.data.transfer-cli
 # Retrieved on Jul 5 2011
 # http://glite.cvs.cern.ch/cgi-bin/glite.cgi/org.glite.data.transfer-cli.tar.gz?view=tar&pathrev=glite-data-transfer-cli_R_3_7_4_1
 Source0:        org.glite.data.transfer-cli.tar.gz
-%if 0%{?el6}
-Source1:        stdsoap2.c.el6
-%else
-Source1:        stdsoap2.c
-%endif
-
 
 Patch0:         glite_fts_client_fedora.patch
 Patch1:         channel_internal_fixelsif.sl6.patch 
+Patch2:         add_gsoap_support.patch
+Patch3:         add_gsoap_tools.patch
 
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 Requires:	CGSI-gSOAP
@@ -55,7 +51,8 @@ BuildRequires:  doxygen
 %patch1 -p0
 %endif
 
-cp %SOURCE1 stdsoap2.c
+%patch2 -p0
+%patch3 -p0
 
 %build
 ./bootstrap
@@ -75,15 +72,15 @@ make install DESTDIR=$RPM_BUILD_ROOT
 
 rm -rf $RPM_BUILD_ROOT%{_libdir}/lib*.a
 rm -rf $RPM_BUILD_ROOT%{_libdir}/lib*.la
-rm -rf $RPM_BUILD_ROOT%{_libdir}%{python_sitearch}/fts.a
-rm -rf $RPM_BUILD_ROOT%{_libdir}%{python_sitelib}/fts.la
+rm -rf $RPM_BUILD_ROOT%{python_sitearch}/fts.a
+rm -rf $RPM_BUILD_ROOT%{python_sitearch}/fts.la
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)
-%{_libdir}%{python_sitelib}fts*
+%{python_sitearch}/fts*
 %{_libdir}/lib*.so.*
 
 %{_mandir}/man1/glite*
