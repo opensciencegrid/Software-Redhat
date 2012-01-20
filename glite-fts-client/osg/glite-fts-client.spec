@@ -9,7 +9,11 @@ URL:		http://glite.cvs.cern.ch/cgi-bin/glite.cgi/org.glite.data.transfer-cli
 # Retrieved on Jul 5 2011
 # http://glite.cvs.cern.ch/cgi-bin/glite.cgi/org.glite.data.transfer-cli.tar.gz?view=tar&pathrev=glite-data-transfer-cli_R_3_7_4_1
 Source0:        org.glite.data.transfer-cli.tar.gz
+%if 0%{?el6}
+Source1:        stdsoap2.c.el6
+%else
 Source1:        stdsoap2.c
+%endif
 Patch0:         glite_fts_client_fedora.patch
 
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
@@ -43,7 +47,7 @@ BuildRequires:  doxygen
 
 %patch0 -p0
 
-cp %SOURCE1 .
+cp %SOURCE1 stdsoap2.c
 
 %build
 ./bootstrap
