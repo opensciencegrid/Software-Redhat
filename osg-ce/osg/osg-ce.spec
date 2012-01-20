@@ -1,7 +1,7 @@
 Name:      osg-ce
 Summary:   OSG Compute Element 
 Version:   3.0.0
-Release:   24
+Release:   25
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -30,6 +30,7 @@ Requires: edg-mkgridmap
 Requires: gratia-probe-gridftp-transfer
 Requires: osg-site-verify
 Requires: osg-system-profiler
+Requires: osg-cleanup
 Requires: osg-configure
 Requires: osg-configure-ce
 Requires: osg-configure-cemon
