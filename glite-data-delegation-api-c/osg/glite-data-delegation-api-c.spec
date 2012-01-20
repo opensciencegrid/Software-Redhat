@@ -9,12 +9,8 @@ URL:		http://glite.cvs.cern.ch/cgi-bin/glite.cgi/org.glite.data.delegation-api-c
 # Retrieved on Jul 5 2011
 # http://glite.cvs.cern.ch/cgi-bin/glite.cgi/org.glite.data.delegation-api-c.tar.gz?view=tar&pathrev=glite-data-delegation-api-c_R_2_0_0_7
 Source0:        org.glite.data.delegation-api-c.tar.gz
-%if 0%{?el6}
-Source1:        stdsoap2.c.el6
-%else
-Source1:        stdsoap2.c
-%endif
 Patch0:         glite_data_delegation_api_c_fedora.patch
+Patch1:        no_stdsoap2.patch
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
 BuildRequires:  automake autoconf libtool
@@ -32,7 +28,8 @@ BuildRequires:  globus-gss-assist-devel
 %setup -n org.glite.data.delegation-api-c
 
 %patch0 -p0
-cp %{SOURCE1} stdsoap2.c
+%patch1 -p0
+#cp %{SOURCE1} stdsoap2.c
 
 %build
 ./bootstrap
