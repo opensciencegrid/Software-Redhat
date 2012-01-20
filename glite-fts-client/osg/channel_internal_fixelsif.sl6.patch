@@ -1,5 +1,5 @@
---- channel_internal.h.orig	2012-01-19 20:32:20.882738858 -0600
-+++ channel_internal.h	2012-01-19 20:32:29.013684038 -0600
+--- src/c/channel_internal.h.orig	2012-01-19 20:32:20.882738858 -0600
++++ src/c/channel_internal.h	2012-01-19 20:32:29.013684038 -0600
 @@ -11,7 +11,7 @@
   */
  #if _GSOAP_VERSION >= 0x020700  
