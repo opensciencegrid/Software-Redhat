@@ -1,7 +1,7 @@
 Summary: Mapping interface between Globus Toolkit and LCAS/LCMAPS
 Name: lcas-lcmaps-gt4-interface
 Version: 0.2.1
-Release: 4.6%{?dist}
+Release: 4.7%{?dist}
 Vendor: Nikhef
 License: ASL 2.0
 Group: Applications/System
@@ -34,8 +34,8 @@ Requires: liblcmaps.so.0()(64bit)
 %endif
 
 # OSG doesn't use lcas anymore
-Obsoletes: lcas
-Obsoletes: lcas-plugins-basic
+Conflicts: lcas
+Conflicts: lcas-plugins-basic
 
 %description
 
@@ -84,6 +84,9 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/grid-security/gsi-authz.conf
 
 %changelog
+* Fri Jan 20 2012 Dave Dykstra <dwd@fnal.gov> 0.2.1-4.7
+- Try using Conflicts rather than Obsoletes to remove lcas & lcas-basic-plugins
+
 * Mon Jan 16 2012 Dave Dykstra <dwd@fnal.gov> 0.2.1-4.6
 - Another rebuild now that this repository is getting signed
 
