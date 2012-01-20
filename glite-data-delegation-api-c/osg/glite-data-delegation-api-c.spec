@@ -1,6 +1,6 @@
 Name:		glite-data-delegation-api-c
 Version:	2.0.0.7
-Release:	5%{?dist}
+Release:	6%{?dist}
 Summary:	Library for using the gLite delegation API from C
 
 Group:		Development/Languages/C and C++
@@ -65,6 +65,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/glite/data/delegation
 
 %changelog
+* Thu Jan 19 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 2.0.0.7-6
+- Remove stdsoap2.c dependency, making it less dependent on a specific version of gsoap.
+
 * Thu Jan 19 2012 Derek Weitzel <dweitzel@cse.unl.edu> - 2.0.0.7-5
 - Adding stdsoap2.c from el6 distribution.
 
