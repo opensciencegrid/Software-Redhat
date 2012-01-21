@@ -1,5 +1,5 @@
 %global name osg-configure
-%global version 1.0.0
+%global version 1.0.2
 %global release 1%{?dist}
 
 Summary: Package for configure-osg and associated scripts
@@ -210,6 +210,12 @@ rm -rf $RPM_BUILD_ROOT
 %ghost %{_sysconfdir}/profile.d/osg.csh
 
 %changelog
+* Fri Jan 20 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 1.0.2-1
+- Minor bug fix for condor_location knob in 30-rsv.ini
+
+* Fri Jan 20 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 1.0.1-1
+- Added condor_location knob for RSV to specify non-standard installs.
+
 * Tue Jan 17 2012 Suchandra Thapa <sthapa@ci.uchicago.edu> 1.0.0-1
 - Added support for network/firewall configuration
 - Improved error reporting 
