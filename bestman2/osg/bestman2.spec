@@ -14,7 +14,7 @@
 
 Name:           bestman2
 Version:        2.2.0
-Release:        12%{?dist}
+Release:        13%{?dist}
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -216,6 +216,7 @@ sed -i "s/BESTMAN_SYSCONF=.*/BESTMAN_SYSCONF=\/etc\/sysconfig\/bestman2/" bin/*
 sed -i "s/BESTMAN_SYSCONF=.*/BESTMAN_SYSCONF=\/etc\/sysconfig\/bestman2/" sbin/*
 sed -i "s/\${BESTMAN_SYSCONF}/\/etc\/bestman2\/conf\/bestman2.rc/" sbin/bestman.server
 sed -i "s/#ServicePortNumber/ServicePortNumber/" conf/bestmanclient.conf
+sed -i "s/#ServiceHandle/ServiceHandle/" conf/bestmanclient.conf
 sed -i "s/accessFileSysViaSudo=false/accessFileSysViaSudo=true/" conf/bestman2.rc
 
 #Keep as true for now, but sites can change it as needed
@@ -464,7 +465,10 @@ fi
 
 
 %changelog
-* Wed Jan 18 2012 Derek Weitzel <dweitzel@cse.unl.edu> - 2.2.0-12
+* Wed Jan 18 2012 Doug Strain <dstrain@fnal.gov> - 2.2.0-13
+- Added a default value for clients for ServiceHandle
+
+* Wed Jan 18 2012 Doug Strain <dstrain@fnal.gov> - 2.2.0-12
 - Changed accessFileSysViaSudo=true and made sudoonLs explictly true
 
 * Wed Jan 18 2012 Derek Weitzel <dweitzel@cse.unl.edu> - 2.2.0-11
