@@ -1,7 +1,7 @@
 
 Name:           osg-build
-Version:        1.1.0
-Release:        2%{?dist}
+Version:        1.1.1
+Release:        1%{?dist}
 Summary:        Build tools for the OSG
 
 Group:          System Environment/Tools
@@ -61,6 +61,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_docdir}/%{name}/sample-osg-build.ini
 
 %changelog
+* Fri Jan 27 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.1.1-1
+- el5/el6 macros fixed
+
 * Thu Jan 26 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.1.0-2
 - Fixed SVN out-of-date check
 
