@@ -1,19 +1,19 @@
 
 Name:           osg-build
-Version:        1.0.4
+Version:        1.1.0
 Release:        1%{?dist}
 Summary:        Build tools for the OSG
 
 Group:          System Environment/Tools
 License:        Apache 2.0
-URL:            https://twiki.grid.iu.edu/bin/view/SoftwareTeam/RPMDevelopmentGuide
+URL:            https://twiki.grid.iu.edu/bin/view/SoftwareTeam/OSGBuildTools
 
 Source0:        %{name}-%{version}.tar.gz
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
-Requires:       mock
+Requires:       mock >= 1.0.0
 Requires:       rpm-build
 Requires:       openssl
 Requires:       quilt
@@ -52,13 +52,22 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/osg-import-srpm
 %{_bindir}/osg-koji
 %{_bindir}/vdt-build
-%dir %{python_sitelib}/osg_build_lib
-%{python_sitelib}/osg_build_lib/*.py*
+%dir %{python_sitelib}/osgbuild
+%{python_sitelib}/osgbuild/*.py*
 %{_datadir}/%{name}/osg-koji-site.conf
 %{_datadir}/%{name}/osg-koji-home.conf
+%{_datadir}/%{name}/mock-auto.cfg.in
+%{_datadir}/%{name}/rpmlint.cfg
 %doc %{_docdir}/%{name}/sample-osg-build.ini
 
 %changelog
+* Thu Jan 26 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.1.0-1
+- allbuild task added
+- Major refactoring/reorganization
+
+* Thu Jan 19 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0.4-2
+- 'mock' requirement changed to 'mock >= 1.0.0'
+
 * Wed Jan 18 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0.4-1
 - Added el6 support
 
@@ -136,7 +145,6 @@ rm -rf $RPM_BUILD_ROOT
 - VDTBuildMockConfig bug fixes
 - Added 'koji' task
 
-%changelog
 * Mon Aug 01 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 0.0.14-2
 - Dead code/comment removal
 
