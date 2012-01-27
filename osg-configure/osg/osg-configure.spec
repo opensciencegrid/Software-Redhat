@@ -210,6 +210,11 @@ rm -rf $RPM_BUILD_ROOT
 %ghost %{_sysconfdir}/profile.d/osg.csh
 
 %changelog
+* Fri Jan 27 2012 Suchandra Thapa <sthapa@ci.uchicago.edu> 1.0.3-1
+- Minor tweak to let configuration continue if grid3-locations isn't present
+- Remove seg_enabled option from condor jobmanager section, it's not used or
+  supported by globus condor lrm
+
 * Fri Jan 20 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 1.0.2-1
 - Minor bug fix for condor_location knob in 30-rsv.ini
 
