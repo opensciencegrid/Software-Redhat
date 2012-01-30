@@ -13,7 +13,7 @@
 Name:		globus-gatekeeper
 %global _name %(tr - _ <<< %{name})
 Version:	9.6
-Release:	1.0%{?dist}
+Release:	1.1%{?dist}
 Summary:	Globus Toolkit - Globus Gatekeeper
 
 Group:		Applications/Internet
@@ -126,6 +126,9 @@ fi
 %config(noreplace) /etc/logrotate.d/globus-gatekeeper
 
 %changelog
+* Mon Jan 20 2012 Alain Roy <roy@cs.wisc.edu> - 9.6-1.1
+- Updated sysconfig file to source firewall information if it exists. 
+
 * Mon Dec 19 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 9.6-1.0
 - Merge OSG changes
 - Removed unneeded OSG patches:
