@@ -1,6 +1,6 @@
 
 Name:      rsv-metrics
-Version:   3.6.8
+Version:   3.6.9
 Release:   1%{?dist}
 Summary:   RSV metrics
 
@@ -92,6 +92,9 @@ rm -rf $RPM_BUILD_ROOT
 %attr(-,rsv,rsv) %{_localstatedir}/log/rsv/probes
 
 %changelog
+* Mon Jan 30 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.6.9-1
+- Removed broken symlinks for info-service-probe
+
 * Tue Jan 24 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.6.8-1
 - Updated srmcp probe to give a warning if srm-rm fails.
 
