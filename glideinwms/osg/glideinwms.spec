@@ -1,6 +1,23 @@
+%define v2_plus 1
+#%define v3_plus 1
+
 Name:           glideinwms
-Version:        2.5.4
-Release:        7%{?dist}
+
+%if %{v2_plus}
+%define version 2.5.4
+%define release 7
+%define frontend_xml frontend.xml
+%endif
+
+%if %{v3_plus}
+%define version 3.0.0 
+%define release 0pre1
+%define frontend_xml frontend.master.xml
+%endif
+
+Version:        %{version}
+Release:        %{release}%{?dist}
+
 Summary:        The VOFrontend for glideinWMS submission host
 
 Group:          System Environment/Daemons
@@ -22,7 +39,7 @@ Source:	glideinwms.tar.gz
 # git archive v2_5_2 --prefix='glideinWMS/' | gzip > ~/rpmbuild/SOURCES/glideinWMS_v2_5_2_frontend.tgz
 
 Source1:        frontend_startup
-Source2:        frontend.xml
+Source2:        %{frontend_xml}
 Source3:        gwms-frontend.conf.httpd
 Source4:        00_gwms_general.config
 Source5:        01_gwms_collectors.config
@@ -30,6 +47,7 @@ Source6:	02_gwms_schedds.config
 Source7:	03_gwms_local.config
 Source8:	chksum.sh
 Source9:	condor_mapfile
+
 %description
 This is a package for the glidein workload management system.
 Currently, only the vofrontend portion is supported
