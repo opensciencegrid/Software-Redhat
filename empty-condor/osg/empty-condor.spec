@@ -1,6 +1,6 @@
 Name:           empty-condor
 Version:        1.0
-Release:        1
+Release:        2%{?dist}
 Summary:        An empty Condor package
 
 Group:          Applications/System
@@ -11,6 +11,7 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
 Provides:       condor
+Conflicts:      condor
 
 %description
 
@@ -32,5 +33,8 @@ believes that Condor has been installed via RPM.
 %doc
 
 %changelog
+* Mon Jan 30 2012 Derek Weitzel <dweitzel@cse.unl.edu> - 1.0-2
+- Adding conflict with RPM based Condor
+
 * Thu Nov 17 2011 Alain Roy <roy@cs.wisc.edu> - 1.0-1
 - Initial version
