@@ -13,7 +13,7 @@
 Name:		globus-gram-job-manager
 %global _name %(tr - _ <<< %{name})
 Version:	13.14
-Release:	1.1%{?dist}
+Release:	1.2%{?dist}
 Summary:	Globus Toolkit - GRAM Jobmanager
 
 Group:		Applications/Internet
@@ -199,6 +199,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_docdir}/%{name}-%{version}/html
 
 %changelog
+* Mon Jan 30 2012 Alain Roy <roy@cs.wisc.edu> - 13.14-1.2
+- Fixed log rotation so there's no failure if the job manager isn't running. 
+
 * Mon Dec 19 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 13.14-1.1
 - Merge OSG changes
 - Remove unneeded OSG patches:
