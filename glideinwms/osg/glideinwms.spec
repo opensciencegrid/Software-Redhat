@@ -1,11 +1,12 @@
+# The following should be either "v2_plus" or "v3_plus"
 %define v2_plus 1
-#%define v3_plus 1
+%define v3_plus 0
 
 Name:           glideinwms
 
 %if %{v2_plus}
-%define version 2.5.4
-%define release 7
+%define version 2.5.5
+%define release 0rc1
 %define frontend_xml frontend.xml
 %endif
 
