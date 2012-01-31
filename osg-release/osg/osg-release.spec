@@ -1,6 +1,6 @@
 Name:           osg-release
 Version:        3.0 
-Release:        13%{?dist}
+Release:        14%{?dist}
 Summary:        OSG Software for Enterprise Linux repository configuration
 
 Group:          System Environment/Base 
@@ -78,6 +78,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Jan 31 2012 Derek Weitzel <dweitzel@cse.unl.edu> - 3.0-14
+- Changing mirror urls for el6
+
 * Thu Jan 19 2012 Derek Weitzel <dweitzel@cse.unl.edu> - 3.0-13
 - Adding preliminary el6 support
 
