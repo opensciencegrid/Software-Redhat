@@ -14,7 +14,7 @@
 
 Name:           bestman2
 Version:        2.2.0
-Release:        13%{?dist}
+Release:        14%{?dist}
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -40,6 +40,7 @@ Source6:        build.xml
 Patch0:		bestman.server.patch
 Patch1:		setup.build.xml.patch
 Patch2:		bestman2.srmrm.patch
+Patch3:		blockedpath.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
@@ -161,6 +162,7 @@ pushd bestman2/setup/
 popd
 
 %patch2 -p0
+%patch3 -p0
 
 %build
 
@@ -465,6 +467,9 @@ fi
 
 
 %changelog
+* Tue Jan 31 2012 Doug Strain <dstrain@fnal.gov> - 2.2.0-14
+- Added a patch to fix Invalid Blocked Path issue
+
 * Wed Jan 18 2012 Doug Strain <dstrain@fnal.gov> - 2.2.0-13
 - Added a default value for clients for ServiceHandle
 
