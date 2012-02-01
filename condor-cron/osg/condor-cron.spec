@@ -1,7 +1,7 @@
 
 Name:      condor-cron
-Version:   1.0.6
-Release:   2%{?dist}
+Version:   1.0.7
+Release:   1%{?dist}
 Summary:   A framework to run cron-style jobs within Condor
 
 Group:     Applications/System
