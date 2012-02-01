@@ -1,7 +1,7 @@
 Name:      osg-ce
 Summary:   OSG Compute Element 
 Version:   3.0.0
-Release:   26
+Release:   27
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -27,6 +27,7 @@ Requires: gip
 Requires: osg-info-services
 Requires: gums-client
 Requires: edg-mkgridmap
+Requires: gratia-probe-gram
 Requires: gratia-probe-gridftp-transfer
 Requires: osg-site-verify
 Requires: osg-system-profiler
@@ -119,6 +120,9 @@ rm -rf $RPM_BUILD_ROOT
 %files sge
 
 %changelog
+* Wed Feb 01 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 3.0.0-27
+- Add dependency on the new gratia-probe-gram sub-package, which contains the perl modules for GRAM/Gratia integration.
+
 * Mon Jan 30 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> - 3.0.0-26
 - Added dependency on osg-configure-network
 
