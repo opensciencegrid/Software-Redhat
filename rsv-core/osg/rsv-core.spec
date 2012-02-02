@@ -1,7 +1,7 @@
 
 Name:      rsv-core
 Version:   3.6.8
-Release:   1%{?dist}
+Release:   2%{?dist}
 Summary:   RSV Core Infrastructure
 
 Group:     Applications/Monitoring
@@ -42,7 +42,7 @@ Requires(preun): initscripts
 %pre
 # Create the rsv user/group
 getent group rsv >/dev/null || groupadd -r rsv
-getent passwd rsv >/dev/null || useradd -r -g rsv -d /var/rsv -s /bin/sh -c "RSV monitoring" rsv
+getent passwd rsv >/dev/null || useradd -r -g rsv -d /var/rsv -m -s /bin/sh -c "RSV monitoring" rsv
 
 
 %prep
@@ -53,34 +53,34 @@ getent passwd rsv >/dev/null || useradd -r -g rsv -d /var/rsv -s /bin/sh -c "RSV
 rm -fr $RPM_BUILD_ROOT
 
 # Create the logging directories
-mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/log/rsv
+install -d $RPM_BUILD_ROOT%{_localstatedir}/log/rsv
 
 # Create the temp file area
-mkdir -p $RPM_BUILD_ROOT%{_tmppath}/rsv
+install -d $RPM_BUILD_ROOT%{_localstatedir}/tmp/rsv
 
 # Install the executable
-mkdir -p $RPM_BUILD_ROOT%{_bindir}
-cp bin/rsv-control $RPM_BUILD_ROOT%{_bindir}/
+install -d $RPM_BUILD_ROOT%{_bindir}
+install -m 0755 bin/rsv-control $RPM_BUILD_ROOT%{_bindir}/
 
-mkdir -p $RPM_BUILD_ROOT%{_libexecdir}/rsv
+install -d $RPM_BUILD_ROOT%{_libexecdir}/rsv
 cp -r libexec/misc $RPM_BUILD_ROOT%{_libexecdir}/rsv/
 
 # Install the init script
-mkdir -p $RPM_BUILD_ROOT%{_initrddir}
-cp init/rsv.init $RPM_BUILD_ROOT%{_initrddir}/rsv
+install -d $RPM_BUILD_ROOT%{_initrddir}
+install -m 0755 init/rsv.init $RPM_BUILD_ROOT%{_initrddir}/rsv
 
 # Install the configuration
-mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/rsv
-cp etc/consumers.conf $RPM_BUILD_ROOT%{_sysconfdir}/rsv/
-cp etc/rsv.conf $RPM_BUILD_ROOT%{_sysconfdir}/rsv/
+install -d $RPM_BUILD_ROOT%{_sysconfdir}/rsv
+install -m 0644 etc/consumers.conf $RPM_BUILD_ROOT%{_sysconfdir}/rsv/
+install -m 0644 etc/rsv.conf $RPM_BUILD_ROOT%{_sysconfdir}/rsv/
 
 # Install python libraries
-mkdir -p $RPM_BUILD_ROOT%{python_sitelib}
+install -d $RPM_BUILD_ROOT%{python_sitelib}
 cp -r lib/python/rsv $RPM_BUILD_ROOT%{python_sitelib}/
 
 # Install the man page
-mkdir -p $RPM_BUILD_ROOT%{_mandir}/man1
-cp share/man/man1/rsv-control.1 $RPM_BUILD_ROOT%{_mandir}/man1/
+install -d $RPM_BUILD_ROOT%{_mandir}/man1
+install -m 0644 share/man/man1/rsv-control.1 $RPM_BUILD_ROOT%{_mandir}/man1/
 
 
 %clean
@@ -91,7 +91,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 
 %attr(-,rsv,rsv) %{_localstatedir}/log/rsv
-%attr(-,rsv,rsv) %{_tmppath}/rsv
+%attr(-,rsv,rsv) %{_localstatedir}/tmp/rsv
 
 %{_bindir}/rsv-control
 %{_libexecdir}/rsv/misc/
@@ -124,6 +124,10 @@ fi
 
 
 %changelog
+* Thu Feb 02 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.6.8-2
+- Use '%{localstatedir}/tmp' instead of %{_tmppath} when creating directories
+- Add -m option when running useradd to make rsv user
+
 * Fri Dec 30 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.6.8-1
 - Bug fix for passing arguments on command line
 
