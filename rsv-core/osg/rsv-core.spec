@@ -1,7 +1,7 @@
 
 Name:      rsv-core
 Version:   3.6.8
-Release:   2%{?dist}
+Release:   4%{?dist}
 Summary:   RSV Core Infrastructure
 
 Group:     Applications/Monitoring
@@ -41,9 +41,10 @@ Requires(preun): initscripts
 
 %pre
 # Create the rsv user/group
+[ -e /var/rsv ] || mkdir -p /var/rsv # Adding -m to the useradd command doesn't make the directory so force it
 getent group rsv >/dev/null || groupadd -r rsv
-getent passwd rsv >/dev/null || useradd -r -g rsv -d /var/rsv -m -s /bin/sh -c "RSV monitoring" rsv
-
+getent passwd rsv >/dev/null || useradd -r -g rsv -d /var/rsv -s /bin/sh -c "RSV monitoring" rsv
+chown rsv: /var/rsv
 
 %prep
 %setup -q
@@ -124,6 +125,12 @@ fi
 
 
 %changelog
+* Fri Feb 03 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.6.8-4
+- Fix ownership of /var/rsv
+
+* Fri Feb 03 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.6.8-3
+- mkdir /var/rsv since -m option to useradd does not seem to work
+
 * Thu Feb 02 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.6.8-2
 - Use '%{localstatedir}/tmp' instead of %{_tmppath} when creating directories
 - Add -m option when running useradd to make rsv user
