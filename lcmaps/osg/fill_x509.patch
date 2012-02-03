@@ -1,5 +1,33 @@
---- /usr/src/debug/lcmaps-1.4.28/src/grid_credential_handling/x509_handling/lcmaps_x509_utils.c	2011-03-31 06:44:15.000000000 -0500
-+++ src/grid_credential_handling/x509_handling/lcmaps_x509_utils.c	2011-07-31 16:19:04.000000000 -0500
+diff -u --recursive ../lcmaps-1.4.28.orig/src/grid_credential_handling/lcmaps_credential.c ./src/grid_credential_handling/lcmaps_credential.c
+--- ../lcmaps-1.4.28.orig/src/grid_credential_handling/lcmaps_credential.c	2012-02-03 14:17:55.945151255 -0600
++++ ./src/grid_credential_handling/lcmaps_credential.c	2012-02-03 14:18:20.830006588 -0600
+@@ -192,6 +192,22 @@
+             }
+         }
+     }
++ 
++    /*
++     * Retrieve a newly created X509 struct and X509 chain from gss credential (owned by lcmaps_credential)
++     */
++    if ((plcmaps_credential->px509_cred == NULL) && !(plcmaps_credential->px509_cred = lcmaps_cred_to_x509(gss_credential))) {
++        lcmaps_log(0, "%s: could not get X509 cred!\n", logstr);
++        retval |= LCMAPS_CRED_ERROR;
++    } else if ((plcmaps_credential->pem_string == NULL) && (lcmaps_x509_to_pem_string(&(plcmaps_credential->pem_string), plcmaps_credential->px509_cred))) {
++        lcmaps_log(0, "%s: could not extract X509 cred to PEM string!\n", logstr);
++        retval |= LCMAPS_CRED_ERROR;
++    }
++    if ((plcmaps_credential->px509_chain == NULL) && !(plcmaps_credential->px509_chain = lcmaps_cred_to_x509_chain(gss_credential))) {
++        lcmaps_log(0, "%s: could not get X509 chain!\n", logstr);
++        retval |= LCMAPS_CRED_ERROR;
++    } 
++
+     return retval;
+ }
+ 
+Only in ./src/grid_credential_handling: lcmaps_credential.c.orig
+diff -u --recursive ../lcmaps-1.4.28.orig/src/grid_credential_handling/x509_handling/lcmaps_x509_utils.c ./src/grid_credential_handling/x509_handling/lcmaps_x509_utils.c
+--- ../lcmaps-1.4.28.orig/src/grid_credential_handling/x509_handling/lcmaps_x509_utils.c	2012-02-03 14:17:55.944151213 -0600
++++ ./src/grid_credential_handling/x509_handling/lcmaps_x509_utils.c	2012-02-03 14:18:20.829151620 -0600
 @@ -223,6 +223,40 @@
      return dn;
  }
@@ -41,27 +69,3 @@
  /******************************************************************************
  Function:       lcmaps_pem_string_to_x509
  Description:    Reads a X509 certificate from a PEM-encoded string
---- /usr/src/debug/lcmaps-1.4.28/src/grid_credential_handling/lcmaps_credential.c	2011-07-31 16:25:08.000000000 -0500
-+++ src/grid_credential_handling/lcmaps_credential.c	2011-07-31 16:21:17.000000000 -0500
-@@ -193,6 +193,22 @@
-         }
-     }
-+ 
-+    /*
-+     * Retrieve a newly created X509 struct and X509 chain from gss credential (owned by lcmaps_credential)
-+     */
-+    if ((plcmaps_credential->px509_cred == NULL) && !(plcmaps_credential->px509_cred = lcmaps_cred_to_x509(gss_credential))) {
-+        lcmaps_log(0, "%s: could not get X509 cred!\n", logstr);
-+        retval |= LCMAPS_CRED_ERROR;
-+    } else if ((plcmaps_credential->pem_string == NULL) && (lcmaps_x509_to_pem_string(&(plcmaps_credential->pem_string), plcmaps_credential->px509_cred))) {
-+        lcmaps_log(0, "%s: could not extract X509 cred to PEM string!\n", logstr);
-+        retval |= LCMAPS_CRED_ERROR;
-+    }
-+    if ((plcmaps_credential->px509_chain == NULL) && !(plcmaps_credential->px509_chain = lcmaps_cred_to_x509_chain(gss_credential))) {
-+        lcmaps_log(0, "%s: could not get X509 chain!\n", logstr);
-+        retval |= LCMAPS_CRED_ERROR;
-+    } 
-+
-     return retval;
- }
- 
