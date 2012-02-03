@@ -2,7 +2,7 @@
 Name:      osg-info-services
 Summary:   OSG Information Services uploader
 Version:   0.10
-Release:   1
+Release:   2%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -47,6 +47,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_sbindir}/%{name}
 
 %changelog
+* Fri Feb 03 2012 Derek Weitzel <dweitzel@cse.unl.edu> - 0.10-2
+- Adding dist tag to osg-info-services
+
 * Wed Dec 14 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 0.10-1
 - Improved error message.
 
