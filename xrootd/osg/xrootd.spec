@@ -11,7 +11,7 @@
 Name:      xrootd
 Epoch:     1
 Version:   3.2.0
-Release:   0.2.git.f0c70fa%{?dist}%{?_with_xrootd_user:.xu}
+Release:   0.3.git.1f1565c%{?dist}%{?_with_xrootd_user:.xu}
 Summary:   An eXtended Root Daemon (xrootd)
 Group:     System Environment/Daemons
 License:   Stanford (modified BSD with advert clause)
@@ -403,6 +403,9 @@ exit 0
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Tue Feb 07 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 1:3.2.0-0.3.git.1f1565c
+- Rebuild for CMS testing of CRL options.
+
 * Wed Jan 11 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 1:3.2.0-0.2.git.f0c70fa
 - Another pre-release build for CMS testing.
 
