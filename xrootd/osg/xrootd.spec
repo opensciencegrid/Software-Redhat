@@ -1,9 +1,7 @@
 #-------------------------------------------------------------------------------
 # We assume the xrootd user when building for the OSG
 #-------------------------------------------------------------------------------
-%if "0%{?dist}" == "0.osg"
 %define _with_xrootd_user 1
-%endif
 
 #-------------------------------------------------------------------------------
 # Package definitions
@@ -11,7 +9,7 @@
 Name:      xrootd
 Epoch:     1
 Version:   3.2.0
-Release:   0.3.git.1f1565c%{?dist}%{?_with_xrootd_user:.xu}
+Release:   0.4.git.1f1565c%{?dist}%{?_with_xrootd_user:.xu}
 Summary:   An eXtended Root Daemon (xrootd)
 Group:     System Environment/Daemons
 License:   Stanford (modified BSD with advert clause)
@@ -403,6 +401,9 @@ exit 0
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Wed Feb 08 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 1:3.2.0-0.4.git.1f1565c.xu
+- Change in OSG dist tag broke xrootd user macro.  Fixed.
+
 * Tue Feb 07 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 1:3.2.0-0.3.git.1f1565c
 - Rebuild for CMS testing of CRL options.
 
