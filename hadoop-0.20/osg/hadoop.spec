@@ -56,7 +56,7 @@
 
 Name: %{hadoop_name}-%{apache_branch}
 Version: %{cloudera_version}
-Release: 18%{?dist}
+Release: 19%{?dist}
 Summary: Hadoop is a software platform for processing vast amounts of data
 License: Apache License v2.0
 URL: http://hadoop.apache.org/core/
@@ -498,6 +498,9 @@ fi
 %endif
 
 %changelog
+* Wed Feb 08 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 0.20.2+737-19
+- Rebuild with proper arch setting.
+
 * Mon Nov 28 2011 Jeff Dost <jdost@ucsd.edu> 0.20.2+737-18
 - Change to correctly run hadoop as user hdfs.
 
