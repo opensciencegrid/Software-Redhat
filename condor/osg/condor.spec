@@ -55,7 +55,7 @@ Version: 7.6.6
 %define condor_release %condor_base_release
 %endif
 # Release: %condor_release%{?dist}.2
-Release: 2%{?dist}
+Release: 3%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -826,7 +826,7 @@ rm -rf %{buildroot}
 %_sbindir/condor_reconfig
 %_sbindir/condor_replication
 %_sbindir/condor_restart
-%_sbindir/condor_root_switchboard
+%attr(6755, root, root) %_sbindir/condor_root_switchboard
 %_sbindir/condor_schedd
 %_sbindir/condor_shadow
 %_sbindir/condor_startd
@@ -1052,6 +1052,9 @@ fi
 %endif
 
 %changelog
+* Fri Feb 10 2012 Derek Weitzel <dweitzel@cse.unl.edu> - 7.6.6-3
+- Adding sticky bit to condor_root_switchboard
+
 * Wed Jan 18 2012 Derek Weitzel <dweitzel@cse.unl.edu> - 7.6.6-2
 - Added support for rhel6
 
