@@ -1,6 +1,6 @@
 Name:           osg-release
 Version:        3.0 
-Release:        14%{?dist}
+Release:        15%{?dist}
 Summary:        OSG Software for Enterprise Linux repository configuration
 
 Group:          System Environment/Base 
@@ -12,12 +12,12 @@ URL:            http://vdt.cs.wisc.edu/repos
 # within this srpm.
 
 
-Source1:        osg.repo
-Source2:        osg-development.repo
-Source3:        osg-testing.repo
-Source4:        osg-minefield.repo
-Source5:        osg-contrib.repo
-Source6:        osg-prerelease.repo
+Source0:        osg.repo
+Source1:        osg-development.repo
+Source2:        osg-testing.repo
+Source3:        osg-minefield.repo
+Source4:        osg-contrib.repo
+Source5:        osg-prerelease.repo
 
 Source10:        osg-el6.repo
 Source11:        osg-el6-development.repo
@@ -78,6 +78,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Feb 13 2012 Derek Weitzel <dweitzel@cse.unl.edu> - 3.0-15
+- Fixing sources for el5 version of osg-release
+
 * Tue Jan 31 2012 Derek Weitzel <dweitzel@cse.unl.edu> - 3.0-14
 - Changing mirror urls for el6
 
