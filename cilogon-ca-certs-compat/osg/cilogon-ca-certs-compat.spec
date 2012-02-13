@@ -1,6 +1,6 @@
 Name:           cilogon-ca-certs-compat
 Version:        1.0
-Release:        1
+Release:        2%{?dist}
 Summary:        OSG Packaging of the CILogon CA Certs, in new OpenSSL 0.9.x format
 
 Group:          System Environment/Base
