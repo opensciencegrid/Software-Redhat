@@ -6,7 +6,7 @@
 
 Name:           osg-cert-scripts
 Version:        2.7.1
-Release:        2
+Release:        3%{?dist}
 Summary:        Command-line interface to the DOEGrids CA web site, and more.
 
 Group:          Grid
@@ -71,11 +71,14 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Feb 13 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 2.7.1-3
+- Added dist tag
+
 * Mon Oct 10 2011 Anand Padmanabhan <apadmana@uiuc.edu> - 2.7.1-2
-Added dependency to perl(Crypt::SSLeay)
+- Added dependency to perl(Crypt::SSLeay)
 
 * Mon Aug 15 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 2.7-5
-Rename RPM to use the osg- prefix.
+- Rename RPM to use the osg- prefix.
 
 * Wed Aug 10 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 2.7-4
 - Require virtual dep grid-certificates, not actual package osg-ca-certs.
