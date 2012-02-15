@@ -56,7 +56,7 @@
 
 Name: %{hadoop_name}-%{apache_branch}
 Version: %{cloudera_version}
-Release: 22%{?dist}
+Release: 23%{?dist}
 Summary: Hadoop is a software platform for processing vast amounts of data
 License: Apache License v2.0
 URL: http://hadoop.apache.org/core/
@@ -316,6 +316,7 @@ bash cloudera/install_hadoop.sh \
   --apache-branch=%{apache_branch}
 
 %ifarch noarch
+%else
 
 # Install selinux policies
 pushd SELinux
@@ -329,7 +330,6 @@ popd
 # Hardlink identical policy module packages together
 /usr/sbin/hardlink -cv $RPM_BUILD_ROOT%{_datadir}/selinux
 
-%else
 rm $RPM_BUILD_ROOT%{_libdir}/libhdfs.la
 rm $RPM_BUILD_ROOT%{lib_hadoop}/lib/native/%{hadoop_arch}/libhadoop.{a,la}
 %endif
@@ -577,7 +577,7 @@ fi
 %endif
 
 %changelog
-* Tue Feb 14 2012 Doug Strain <dstrain@fnal.gov> - 0.20.2+737-22
+* Tue Feb 14 2012 Doug Strain <dstrain@fnal.gov> - 0.20.2+737-23
 - Added SE linux module
 
 * Wed Feb 08 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 0.20.2+737-19
