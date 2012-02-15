@@ -56,7 +56,7 @@
 
 Name: %{hadoop_name}-%{apache_branch}
 Version: %{cloudera_version}
-Release: 21%{?dist}
+Release: 22%{?dist}
 Summary: Hadoop is a software platform for processing vast amounts of data
 License: Apache License v2.0
 URL: http://hadoop.apache.org/core/
@@ -275,7 +275,6 @@ export FORREST_HOME=$PWD/apache-forrest-0.8
 JAVA_HOME="/usr/java/default" ant -propertyfile cloudera/build.properties bin-package
 %else
 JAVA_HOME="/usr/java/default" ant -propertyfile cloudera/build.properties -Dcompile.native=true -Dlibhdfs=1 -Dfusedfs=1 -Dcompile.c++=true -Djava5.home=${JAVA5_HOME} -Dforrest.home=${FORREST_HOME}  task-controller package
-%endif
 
 # Build the selinux policy file
 mkdir SELinux
@@ -288,6 +287,8 @@ do
     make NAME=${variant} -f %{_datadir}/selinux/devel/Makefile clean
 done
 popd
+
+%endif
 
 
 #########################
@@ -315,10 +316,6 @@ bash cloudera/install_hadoop.sh \
   --apache-branch=%{apache_branch}
 
 %ifarch noarch
-%else
-rm $RPM_BUILD_ROOT%{_libdir}/libhdfs.la
-rm $RPM_BUILD_ROOT%{lib_hadoop}/lib/native/%{hadoop_arch}/libhadoop.{a,la}
-%endif
 
 # Install selinux policies
 pushd SELinux
@@ -331,7 +328,11 @@ done
 popd
 # Hardlink identical policy module packages together
 /usr/sbin/hardlink -cv $RPM_BUILD_ROOT%{_datadir}/selinux
-#%endif
+
+%else
+rm $RPM_BUILD_ROOT%{_libdir}/libhdfs.la
+rm $RPM_BUILD_ROOT%{lib_hadoop}/lib/native/%{hadoop_arch}/libhadoop.{a,la}
+%endif
 
 
 %ifarch noarch
@@ -430,6 +431,8 @@ if [ "$1" = 0 ]; then
   alternatives --remove %{hadoop_name}-default %{bin_hadoop}/%{name}
 fi
 
+%ifarch noarch
+%else
 %post fuse-selinux
 # Install SELinux policy modules
 for selinuxvariant in %{selinux_variants}
@@ -452,7 +455,7 @@ if [ "$1" -ge "1" ] ; then
         /usr/sbin/semodule -u %{_datadir}/selinux/${variant}/%{name}.pp || :
     done
 fi
-
+%endif
 
 %triggerpostun -- hadoop
 if [ "$2" == 0 ]; then
@@ -574,7 +577,7 @@ fi
 %endif
 
 %changelog
-* Tue Feb 14 2012 Doug Strain <dstrain@fnal.gov> - 0.20.2+737-21
+* Tue Feb 14 2012 Doug Strain <dstrain@fnal.gov> - 0.20.2+737-22
 - Added SE linux module
 
 * Wed Feb 08 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 0.20.2+737-19
