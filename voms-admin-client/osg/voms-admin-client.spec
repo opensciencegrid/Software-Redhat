@@ -1,7 +1,7 @@
 Summary: emi.voms.voms-admin-client
 Name: voms-admin-client
 Version: 2.0.16
-Release: 1
+Release: 1%{?dist}
 License: Apache Software License
 Vendor: EMI
 Group: System Environment/Libraries

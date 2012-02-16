@@ -1,7 +1,7 @@
 Summary: Tomcat and axis integration classes
 Name: emi-trustmanager-tomcat
 Version: 3.0.0
-Release: 3
+Release: 3%{?dist}
 License: Apache Software License
 Vendor: EMI
 Group: System Environment/Libraries

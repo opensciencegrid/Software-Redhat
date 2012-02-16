@@ -1,6 +1,6 @@
 Name:           empty-gridengine
 Version:        1.0
-Release:        1
+Release:        1%{?dist}
 Summary:        An empty gridengine package
 
 Group:          Applications/System

@@ -1,6 +1,6 @@
 Name:           osg-ca-certs-cilogon
 Version:        1.21
-Release:        2
+Release:        2%{?dist}
 Summary:        OSG CA Certs, plus the unaccredited CILogon CAs
 
 Group:          System Environment/Base

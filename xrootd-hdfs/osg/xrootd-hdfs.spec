@@ -1,7 +1,7 @@
 
 Name: xrootd-hdfs
 Version: 1.7.0
-Release: 1
+Release: 1%{?dist}
 Summary: HDFS plugin for xrootd
 
 Group: System Environment/Daemons

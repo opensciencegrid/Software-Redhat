@@ -1,6 +1,6 @@
 Name:           osg-site-web-page
 Version:        0.15
-Release:        3
+Release:        3%{?dist}
 Summary:        OSG Site Web Page Generation Script
 Group:          System Environment
 License:        ASL 2.0
