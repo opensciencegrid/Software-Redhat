@@ -31,7 +31,6 @@ install -d $RPM_BUILD_ROOT/etc/gip
 rm -rf $RPM_BUILD_ROOT
 
 %files
-/etc/gip/gip.se_only.conf
 
 %changelog
 * Tue Feb 14 2012 Doug Strain <dstrain@fnal.gov> - 3.0.0-4
