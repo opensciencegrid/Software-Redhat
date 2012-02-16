@@ -1,7 +1,7 @@
 Name:           osg-se-cemon
 Summary:        OSG CEMonitor and info provider tools for standalone SE
 Version:        3.0.0
-Release:        3%{?dist}
+Release:        4%{?dist}
 License:        GPL
 Group:          System Environment/Daemons
 URL:            https://twiki.grid.iu.edu/twiki/bin/view/Storage/WebHome
@@ -15,9 +15,9 @@ Requires: glite-ce-monitor
 Requires: gip
 Requires: osg-configure-cemon
 Requires: osg-configure-gip
+Requires: osg-configure-ce
 Requires: osg-configure
 Requires: gums-client
-Source0: gip.se_only.conf
 
 %description
 This is a meta-package for Compute Element Monitor (CEMon) and 
@@ -26,7 +26,6 @@ a compute element.  This is intended for storage elements implementations.
 
 %install
 install -d $RPM_BUILD_ROOT/etc/gip
-install -m 644 %{SOURCE0} $RPM_BUILD_ROOT/etc/gip/gip.se_only.conf
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -35,6 +34,10 @@ rm -rf $RPM_BUILD_ROOT
 /etc/gip/gip.se_only.conf
 
 %changelog
+* Tue Feb 14 2012 Doug Strain <dstrain@fnal.gov> - 3.0.0-4
+- Added configure-osg-ce to dependencies.
+- As per Tony, this is needed by gip to function correctly.
+
 * Tue Feb 14 2012 Doug Strain <dstrain@fnal.gov> - 3.0.0-3
 - Added gums-client to the list of dependencies
 
