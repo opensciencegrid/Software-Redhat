@@ -6,7 +6,7 @@
 
 Name:           osg-cert-scripts
 Version:        2.7.1
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Command-line interface to the DOEGrids CA web site, and more.
 
 Group:          Grid
@@ -19,6 +19,9 @@ Requires:       /usr/bin/ldapsearch
 Requires:       /usr/bin/openssl
 Requires:       grid-certificates
 Requires:	perl(Crypt::SSLeay)
+Requires: 	perl(LWP::UserAgent)
+Requires: 	perl(Date::Format)
+Requires: 	perl(Getopt::Long)
 
 Source0:        osg-cert-scripts-2.7.1.tar.gz
 # Patches incorporated to SVN since OSG is the upstream source
@@ -71,6 +74,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Feb 16 2012 Anand Padmanabhan <apadmana@uiuc.edu> - 2.7.1-4
+- Added dependency to perl(LWP::UserAgent), perl(Date::Format), perl(Getopt::Long)
+
 * Mon Feb 13 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 2.7.1-3
 - Added dist tag
 
