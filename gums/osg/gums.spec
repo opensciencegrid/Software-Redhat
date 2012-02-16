@@ -2,11 +2,13 @@
 %define _noarchlib %{_exec_prefix}/lib
 %define dirname gums
 %define local_maven /tmp/m2-repository
+# Don't want to repack jars
+%define __os_install_post %{nil}
 
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.3.18.002
-Release: 6
+Release: 7%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 BuildRequires: maven2
@@ -68,6 +70,7 @@ Summary: Clients for GUMS
 
 %package service
 Requires: %{name} = %{version}
+Requires: /usr/share/java/xml-commons-apis.jar
 Requires: tomcat5
 Requires: emi-trustmanager-tomcat
 Requires: mysql-server
@@ -91,35 +94,36 @@ Summary: Tomcat5 service for GUMS
 
 # Binary JARs not available from public maven repos.
 # gums-core
-mvn install:install-file -DgroupId=org.glite -DartifactId=glite-security-trustmanager -Dversion=1.8.16 -Dpackaging=jar -Dfile=%{SOURCE6} -Dmaven.repo.local=%{local_maven}
-mvn install:install-file -DgroupId=org.glite -DartifactId=glite-security-util-java -Dversion=1.4.0 -Dpackaging=jar -Dfile=%{SOURCE7} -Dmaven.repo.local=%{local_maven}
-mvn install:install-file -DgroupId=javax.transaction -DartifactId=jta -Dversion=1.0.1B -Dpackaging=jar -Dfile=%{SOURCE8} -Dmaven.repo.local=%{local_maven}
-mvn install:install-file -DgroupId=javax.security -DartifactId=jacc -Dversion=1.0 -Dpackaging=jar -Dfile=%{SOURCE9} -Dmaven.repo.local=%{local_maven}
+mvn install:install-file -B -DgroupId=org.glite -DartifactId=glite-security-trustmanager -Dversion=1.8.16 -Dpackaging=jar -Dfile=%{SOURCE6} -Dmaven.repo.local=%{local_maven}
+mvn install:install-file -B -DgroupId=org.glite -DartifactId=glite-security-util-java -Dversion=1.4.0 -Dpackaging=jar -Dfile=%{SOURCE7} -Dmaven.repo.local=%{local_maven}
+mvn install:install-file -B -DgroupId=javax.transaction -DartifactId=jta -Dversion=1.0.1B -Dpackaging=jar -Dfile=%{SOURCE8} -Dmaven.repo.local=%{local_maven}
+mvn install:install-file -B -DgroupId=javax.security -DartifactId=jacc -Dversion=1.0 -Dpackaging=jar -Dfile=%{SOURCE9} -Dmaven.repo.local=%{local_maven}
 # gums-client
-mvn install:install-file -DgroupId=org.opensaml -DartifactId=xmltooling -Dversion=1.1.1 -Dpackaging=jar -DpomFile=%{SOURCE16} -Dfile=%{SOURCE15} -Dmaven.repo.local=%{local_maven}
-#mvn install:install-file -DgroupId=org.opensaml -DartifactId=opensaml -Dversion=2.2.2 -Dpackaging=jar -Dfile=%{SOURCE12} -Dmaven.repo.local=%{local_maven}
-mvn install:install-file -DgroupId=org.opensciencegrid -DartifactId=privilege -Dversion=1.0.1.3 -Dpackaging=jar -Dfile=%{SOURCE14} -Dmaven.repo.local=%{local_maven}
-mvn install:install-file -DgroupId=org.opensciencegrid -DartifactId=privilege-xacml -Dversion=2.2.4 -Dpackaging=jar -Dfile=%{SOURCE13} -Dmaven.repo.local=%{local_maven}
-#mvn install:install-file -DgroupId=org.apache.xerces -DartifactId=xercesImpl -Dversion=2.9.1 -Dpackaging=jar -Dfile=%{SOURCE11} -Dmaven.repo.local=%{local_maven}
-#mvn install:install-file -DgroupId=org.apache.xerces -DartifactId=xml-apis -Dversion=2.9.1 -Dpackaging=jar -Dfile=%{SOURCE10} -Dmaven.repo.local=%{local_maven}
+mvn install:install-file -B -DgroupId=org.opensaml -DartifactId=xmltooling -Dversion=1.1.1 -Dpackaging=jar -DpomFile=%{SOURCE16} -Dfile=%{SOURCE15} -Dmaven.repo.local=%{local_maven}
+#mvn install:install-file -B -DgroupId=org.opensaml -DartifactId=opensaml -Dversion=2.2.2 -Dpackaging=jar -Dfile=%{SOURCE12} -Dmaven.repo.local=%{local_maven}
+mvn install:install-file -B -DgroupId=org.opensciencegrid -DartifactId=privilege -Dversion=1.0.1.3 -Dpackaging=jar -Dfile=%{SOURCE14} -Dmaven.repo.local=%{local_maven}
+mvn install:install-file -B -DgroupId=org.opensciencegrid -DartifactId=privilege-xacml -Dversion=2.2.4 -Dpackaging=jar -Dfile=%{SOURCE13} -Dmaven.repo.local=%{local_maven}
+#mvn install:install-file -B -DgroupId=org.apache.xerces -DartifactId=xercesImpl -Dversion=2.9.1 -Dpackaging=jar -Dfile=%{SOURCE11} -Dmaven.repo.local=%{local_maven}
+#mvn install:install-file -B -DgroupId=org.apache.xerces -DartifactId=xml-apis -Dversion=2.9.1 -Dpackaging=jar -Dfile=%{SOURCE10} -Dmaven.repo.local=%{local_maven}
 
 pushd gums-core
-mvn -Dmaven.repo.local=/tmp/m2-repository -Dmaven.test.skip=true install
+mvn -B -Dmaven.repo.local=/tmp/m2-repository -Dmaven.test.skip=true install
 popd
 pushd gums-client
-mvn -Dmaven.repo.local=/tmp/m2-repository -Dmaven.test.skip=true install
+mvn -B -Dmaven.repo.local=/tmp/m2-repository -Dmaven.test.skip=true install
 popd
 pushd gums-service
-mvn -Dmaven.repo.local=/tmp/m2-repository -Dmaven.test.skip=true install
+mvn -B -Dmaven.repo.local=/tmp/m2-repository -Dmaven.test.skip=true install
 popd
 
 %install
 
 function replace_jar {
-  rm $RPM_BUILD_ROOT%{_var}/lib/tomcat5/webapps/gums/WEB-INF/lib/$1
-  ln -s %{_noarchlib}/%{dirname}/$1 $RPM_BUILD_ROOT%{_var}/lib/tomcat5/webapps/gums/WEB-INF/lib/$1
+    if [[ -e $RPM_BUILD_ROOT%{_var}/lib/tomcat5/webapps/gums/WEB-INF/lib/$1 ]]; then
+        rm -f $RPM_BUILD_ROOT%{_var}/lib/tomcat5/webapps/gums/WEB-INF/lib/$1
+        ln -s %{_noarchlib}/%{dirname}/$1 $RPM_BUILD_ROOT%{_var}/lib/tomcat5/webapps/gums/WEB-INF/lib/$1
+    fi
 }
-
 rm -rf $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT
 
@@ -138,82 +142,13 @@ popd
 rm $RPM_BUILD_ROOT%{_var}/lib/tomcat5/webapps/gums/WEB-INF/config/gums.config
 ln -s %{_sysconfdir}/%{dirname}/gums.config $RPM_BUILD_ROOT%{_var}/lib/tomcat5/webapps/gums/WEB-INF/config
 
-# Link the exploded WAR to gums-core JARs, instead of including a copy
-replace_jar ant-1.6.3.jar
-replace_jar antlr-2.7.5H3.jar
-replace_jar asm-1.4.3.jar
-replace_jar avalon-framework-4.1.3.jar
-replace_jar axis-1.4.jar
-replace_jar axis-ant-1.4.jar
-replace_jar axis-jaxrpc-1.4.jar
-replace_jar axis-saaj-1.4.jar
-replace_jar axis-wsdl4j-1.5.1.jar
-#replace_jar bcprov-ext-jdk15-1.40.jar
-#replace_jar bcprov-jdk15-140.jar
-replace_jar bcprov-jdk15-1.45.jar
-replace_jar c3p0-0.9.1.2.jar
-replace_jar cglib-2.0.2.jar
-replace_jar cglib-full-2.0.2.jar
-replace_jar commons-beanutils-1.7.0.jar
-replace_jar commons-cli-1.2.jar
-replace_jar commons-codec-1.3.jar
-replace_jar commons-collections-3.2.jar
-replace_jar commons-digester-1.8.jar
-replace_jar commons-discovery-0.2.jar
-# BNL's version of openws depends on commons-httpclient.  maven.org's doesn't.
-replace_jar commons-httpclient-3.0.jar
-replace_jar commons-lang-2.1.jar
-replace_jar commons-logging-1.1.jar
-replace_jar concurrent-1.3.4.jar
-replace_jar dom4j-1.4.jar
-replace_jar ehcache-1.1.jar
-replace_jar glite-security-trustmanager-1.8.16.jar
-replace_jar glite-security-util-java-1.4.0.jar
-replace_jar gums-core-1.3.18.002.jar
-replace_jar hibernate-3.0.3.jar
-replace_jar jacc-1.0.jar
-replace_jar jargs-1.0.jar
-replace_jar jboss-cache-1.2.2.jar
-replace_jar jboss-common-4.0.2.jar
-replace_jar jboss-j2se-200504122039.jar
-replace_jar jboss-minimal-4.0.2.jar
-replace_jar jboss-system-4.0.2.jar
-replace_jar jcl-over-slf4j-1.6.1.jar
-replace_jar jcip-annotations-1.0.jar
-replace_jar jgroups-all-2.2.8.jar
-replace_jar joda-time-1.6.2.jar
-replace_jar jta-1.0.1B.jar
-replace_jar log4j-1.2.12.jar
-#replace_jar log4j-over-slf4j-1.5.5.jar
-replace_jar logkit-1.0.1.jar
-replace_jar mysql-connector-java-5.1.6.jar
-replace_jar not-yet-commons-ssl-0.3.9.jar
-replace_jar odmg-3.0.jar
-replace_jar opensaml-2.2.3.jar
-replace_jar openws-1.2.2.jar
-replace_jar oscache-2.1.jar
-replace_jar privilege-1.0.1.3.jar
-replace_jar privilege-xacml-2.2.4.jar
-replace_jar proxool-0.8.3.jar
-replace_jar resolver-2.9.1.jar
-replace_jar serializer-2.9.1.jar
-replace_jar servlet-api-2.3.jar
-# gums-core and gums-service use different versions here...
-#replace_jar slf4j-api-1.6.1.jar
-#replace_jar slf4j-simple-1.6.1.jar
-rm $RPM_BUILD_ROOT%{_var}/lib/tomcat5/webapps/gums/WEB-INF/lib/slf4j-jdk14-1.5.2.jar
-replace_jar swarmcache-1.0RC2.jar
-replace_jar velocity-1.5.jar
-replace_jar webdavlib-2.0.jar
-replace_jar xalan-xalan-2.7.1.jar
-# No longer necessary
-#replace_jar xercesImpl-2.8.0.jar
-replace_jar xercesImpl-2.9.1.jar
-replace_jar xml-apis-2.9.1.jar
-replace_jar xmlParserAPIs-2.6.2.jar
-#replace_jar xmlsec-1.4.2.jar
-#replace_jar xmltooling-1.1.1.jar
-replace_jar xmltooling-1.3.2-1.jar
+## Link the exploded WAR to gums-core JARs, instead of including a copy
+for x in $RPM_BUILD_ROOT%{_noarchlib}/%{dirname}/*.jar; do
+    replace_jar $(basename $x)
+done
+
+## gums-core and gums-service use different versions here...
+rm -f $RPM_BUILD_ROOT%{_var}/lib/tomcat5/webapps/gums/WEB-INF/lib/slf4j-jdk14-1.5.2.jar
 
 
 # Scripts
@@ -307,6 +242,11 @@ fi
 %{_bindir}/gums-setup-mysql-database
 
 %changelog
+* Thu Feb 16 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.3.18.002-7
+- Disabled jar repacking.
+- Added /usr/share/java/xml-commons-apis.jar as a dependency to get around sun jdk falsely providing xml-commons-apis
+- Cleaned up the way duplicate jar files are replaced with symlinks (replace_jar)
+
 * Wed Nov 30 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.3.18.002-6
 - Remove old copy of GUMS jar.  Remove ability to contact Archiva at BNL.
 
