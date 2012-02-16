@@ -1,6 +1,6 @@
 Name:           osg-discovery
 Version:        1.0.7
-Release:        3
+Release:        3%{?dist}
 Summary:        OSG Discovery Tools
 Group:          System Environment
 License:        Stanford (modified BSD with advert clause)
