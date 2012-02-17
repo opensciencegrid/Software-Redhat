@@ -1,6 +1,6 @@
 
 Name:           osg-build
-Version:        1.1.3
+Version:        1.1.4
 Release:        1%{?dist}
 Summary:        Build tools for the OSG
 
@@ -62,6 +62,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_docdir}/%{name}/sample-osg-build.ini
 
 %changelog
+* Fri Feb 17 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.1.4-1
+- Don't check for outdated svn checkout if we're not using koji
+
 * Thu Feb 16 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.1.3-1
 - Changed koji task to build for both el5 and el6 by default
 - Added --koji-tag-and-target (--ktt) option as a shorthand for specifying both --koji-tag and --koji-target
