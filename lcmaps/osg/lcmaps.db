@@ -61,9 +61,9 @@ sazclient = "lcmaps_saz_client.mod"
 
 # Uncomment the first two lines in order to enable glexec tracking
 #glexectracking = "lcmaps_glexec_tracking.mod"
-#           "-exec /usr/sbin/glexec_monitor"
+#         "-exec /usr/sbin/glexec_monitor"
 # Uncomment if your procd is located in a non-standard directory
-#           "-procddir /usr"
+#         "-procddir /usr"
 # Uncomment to write tracking info to glexec_monitor.log in the given dir
 #     otherwise the default is to use syslog
 #         "-logdir /var/log/glexec"
