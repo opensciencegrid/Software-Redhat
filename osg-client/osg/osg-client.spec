@@ -1,7 +1,7 @@
 Name:      osg-client
 Summary:   OSG Client
 Version:   3.0.0
-Release:   15%{?dist}
+Release:   16%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -23,6 +23,7 @@ Requires: lcg-infosites
 
 # Don't require osg-discovery for el6, not working...
 %if 0%{?el6}
+%else
 Requires: osg-discovery
 %endif
 
@@ -60,6 +61,9 @@ rm -rf $RPM_BUILD_ROOT
 %files condor
 
 %changelog
+* Fri Feb 17 2012 Derek Weitzel <dweitzel@cse.unl.edu> - 3.0.0-16
+- Removing osg-discovery for el6 (for real this time).
+
 * Fri Feb 17 2012 Derek Weitzel <dweitzel@cse.unl.edu> - 3.0.0-15
 - Removing osg-discovery for el6.
 
