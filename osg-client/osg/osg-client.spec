@@ -1,7 +1,7 @@
 Name:      osg-client
 Summary:   OSG Client
 Version:   3.0.0
-Release:   14%{?dist}
+Release:   15%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -20,7 +20,12 @@ Requires: lcg-info
 Requires: lcg-infosites
 # No npad for now, because it installs server by default. Re-add later?
 #Requires: npad
+
+# Don't require osg-discovery for el6, not working...
+%if 0%{?el6}
 Requires: osg-discovery
+%endif
+
 Requires: owamp-client
 Requires: osg-cert-scripts
 Requires: vo-client
@@ -55,6 +60,9 @@ rm -rf $RPM_BUILD_ROOT
 %files condor
 
 %changelog
+* Fri Feb 17 2012 Derek Weitzel <dweitzel@cse.unl.edu> - 3.0.0-15
+- Removing osg-discovery for el6.
+
 * Fri Nov 18 2011 Alain Roy <roy@cs.wisc.edu> - 3.0.0-14
 - Added dependency on globus-common-progrs, as workaround for missing 
   dependency in globus-gram-client-tools. 
