@@ -1,7 +1,7 @@
 Summary: Proxy verification plugin for LCMAPS
 Name: lcmaps-plugins-verify-proxy
-Version: 1.5.0
-Release: 2.1%{?dist}
+Version: 1.5.2
+Release: 1.1%{?dist}
 Vendor: Nikhef
 License: ASL 2.0
 Group: System Environment/Libraries
@@ -53,6 +53,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Feb 02 2012 Dave Dykstra <dwd@fnal.gov> 1.5.2-1.1.osg
+- Updated upstream version
+
+* Mon Jan 30 2012 Mischa Salle <msalle@nikhef.nl> 1.5.2-1
+- updated version
+
 * Fri Dec 30 2011 Dave Dykstra <dwd@fnal.gov> 1.5.0-2.1.osg
 - Imported into OSG
 - Moved moduledir from libdir/lcmaps to libdir/lcmaps/plugins
