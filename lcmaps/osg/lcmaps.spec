@@ -10,8 +10,8 @@
 
 Summary: Grid (X.509) and VOMS credentials to local account mapping service
 Name: lcmaps
-Version: 1.5.0
-Release: 1.1%{?dist}
+Version: 1.5.2
+Release: 2.1%{?dist}
 #Release: 0.%(date +%%Y%%m%%d_%%H%%M)%{?dist}
 License: ASL 2.0
 Group: System Environment/Libraries
@@ -199,6 +199,7 @@ fi
 %{_libdir}/liblcmaps_verify_account_from_pem.so
 %{_libdir}/liblcmaps_verify_account_from_pem.so.0
 %{_libdir}/liblcmaps_verify_account_from_pem.so.0.0.0
+%{_datadir}/man/man3/lcmaps.3*
 %dir %{_libdir}/lcmaps
 %ghost %{_libdir}/modules
 %doc AUTHORS INSTALL doc/INSTALL_WITH_WORKSPACE_SERVICE LICENSE
@@ -255,6 +256,13 @@ fi
 %{_libdir}/pkgconfig/lcmaps.pc
 
 %changelog
+* Fri Feb 17 2012 Dave Dykstra <dwd@fnal.gov> 1.5.2-2.1.osg
+- Updated upstream version
+
+* Mon Jan 30 2012 Mischa Salle <msalle@nikhef.nl> 1.5.2-2
+- add manpage in main package
+- updated version
+
 * Fri Dec 30 2011 Dave Dykstra <dwd@fnal.gov> 1.5.0-1.1.osg
 - Re-import to OSG, applying still-relevant OSG modifications
 - Update default lcmaps.db with new glexectracking options and with
