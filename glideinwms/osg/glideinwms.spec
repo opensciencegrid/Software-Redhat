@@ -6,7 +6,7 @@ Name:           glideinwms
 
 %if %{v2_plus}
 %define version 2.5.5
-%define release 0rc1
+%define release 1
 %define frontend_xml frontend.xml
 %endif
 
@@ -306,6 +306,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Feb 16 2012 Doug Strain <dstrain@fnal.gov> - 2.5.5-1
+- Updating for v2.5.5
+
 * Tue Jan 10 2012 Doug Strain <dstrain@fnal.gov> - 2.5.4-7
 - Adding condor_mapfile to minimal
 
