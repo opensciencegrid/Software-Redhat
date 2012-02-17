@@ -53,7 +53,7 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Fri Feb 02 2012 Dave Dykstra <dwd@fnal.gov> 1.5.2-1.1.osg
+* Fri Feb 17 2012 Dave Dykstra <dwd@fnal.gov> 1.5.2-1.1.osg
 - Updated upstream version
 
 * Mon Jan 30 2012 Mischa Salle <msalle@nikhef.nl> 1.5.2-1
