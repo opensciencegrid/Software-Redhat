@@ -5,7 +5,7 @@
 
 Summary:   Tests an OSG Software installation
 Name:      osg-test
-Version:   0.0.9
+Version:   0.0.10
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -39,6 +39,9 @@ rm -rf $RPM_BUILD_ROOT
 /etc/grid-security/certificates/4eca18ce.*
 
 %changelog
+* Fri Feb 17 2012 Tim Cartwright <cat@cs.wisc.edu> - 0.0.10-1
+- New version of upstream software: Fixed install target
+
 * Fri Feb 17 2012 Tim Cartwright <cat@cs.wisc.edu> - 0.0.9-1
 - New version of upstream software: New library, gLExec tests.
 - First release to be built for EL 5 and 6.
