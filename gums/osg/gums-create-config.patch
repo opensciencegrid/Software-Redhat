@@ -1,15 +1,11 @@
---- gums-1.3.18.002/gums-core/src/main/scripts/gums-create-config.orig	2011-05-05 17:26:46.000000000 -0500
-+++ gums-1.3.18.002/gums-core/src/main/scripts/gums-create-config	2011-10-08 11:15:21.000000000 -0500
-@@ -1,38 +1,5 @@
- #!/bin/sh
+Index: gums/gums-core/src/main/scripts/gums-create-config
+===================================================================
+--- gums.orig/gums-core/src/main/scripts/gums-create-config	2011-05-05 17:26:46.000000003 -0500
++++ gums/gums-core/src/main/scripts/gums-create-config	2012-02-17 14:19:09.000000003 -0600
+@@ -7,33 +7,6 @@
+ # Author: Jay Packard, John Hover, Marco Mambelli
  #
--#
--# Detects where gums is installed and puts the directory
--# name in ScriptPath. Then cd to that directory.
--#
--# Author: Jay Packard, John Hover, Marco Mambelli
--#
--
+ 
 -ScriptPath=""
 -CommandPath=`dirname $0`
 -if [ $CommandPath = "." ]
@@ -36,10 +32,11 @@
 -fi
 -
 -cd $ScriptPath
- 
+-
  usage() {
      echo "Copies a template configuration to the config directory, thus making "
-@@ -42,7 +9,7 @@
+     echo "it the current configuration, and will also replace user, host, password "
+@@ -42,7 +15,7 @@
      echo "will be made to extract one or more of them from the current configuration."
      echo "Usage: $0"
      echo "   --template your_template (full path required)"
@@ -48,7 +45,7 @@
      echo "   --osg-template <download current osg template config> [optional]"
      echo "   --user <database user for GUMS> [optional]"
      echo "   --password <GUMS database password> [optional]"
-@@ -59,8 +26,8 @@
+@@ -59,8 +32,8 @@
      echo
      echo "Examples:"
      echo "  $0 --osg-template"
@@ -59,7 +56,7 @@
      echo
  
      exit -1;
-@@ -71,7 +38,7 @@
+@@ -71,7 +44,7 @@
  # Setup global variables
  #
  #-------------------------------------------
@@ -68,7 +65,7 @@
  OSGTEMPLATE=0
  USER=""
  SERVER=""
-@@ -126,10 +93,10 @@
+@@ -126,10 +99,10 @@
  fi
  
  parseConfig() {
@@ -81,7 +78,7 @@
          until [ $done ]
          do
              read <&3 myline
-@@ -234,7 +201,7 @@
+@@ -234,7 +207,7 @@
    exit 1
  fi
  
@@ -90,7 +87,7 @@
  then
      if [ "$PROMPT" -eq 1 ]
      then
-@@ -249,7 +216,7 @@
+@@ -249,7 +222,7 @@
      fi
  
    echo "Backing up your gums.config as gums.config.old"
@@ -99,7 +96,7 @@
  fi
  
  #-------------------------
-@@ -279,8 +246,8 @@
+@@ -279,8 +252,9 @@
               -e s!@HTTP_KEY@!$HTTP_KEY!g    \
               -e s!@X509CERTDIR@!$X509CERTDIR!g    \
               -e s!@X509CERTFILES@!$X509CERTDIR/*.0!g    \
@@ -112,3 +109,4 @@
 \ No newline at end of file
 +ls -l /etc/gums/gums.config
 +exit 0
++
