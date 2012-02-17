@@ -1,6 +1,6 @@
 
 Name:           osg-build
-Version:        1.1.2
+Version:        1.1.3
 Release:        1%{?dist}
 Summary:        Build tools for the OSG
 
@@ -46,6 +46,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root,-)
 %{_bindir}/%{name}
+%{_bindir}/koji-tag-checker
 %{_bindir}/koji-tag-diff
 %{_bindir}/rpm-ripper
 %{_bindir}/osg-build-test
@@ -61,6 +62,13 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_docdir}/%{name}/sample-osg-build.ini
 
 %changelog
+* Thu Feb 16 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.1.3-1
+- Changed koji task to build for both el5 and el6 by default
+- Added --koji-tag-and-target (--ktt) option as a shorthand for specifying both --koji-tag and --koji-target
+- Common usage patterns added to usage message
+- Config file bugfixes
+- Added 'koji-tag-checker' script which checks for builds that are in both el5 and el6 tags
+
 * Fri Jan 27 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.1.2-1
 - SOFTWARE-449 snuck back in. Fixed it.
 
