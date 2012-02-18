@@ -56,7 +56,7 @@
 
 Name: %{hadoop_name}-%{apache_branch}
 Version: %{cloudera_version}
-Release: 23%{?dist}
+Release: 24%{?dist}
 Summary: Hadoop is a software platform for processing vast amounts of data
 License: Apache License v2.0
 URL: http://hadoop.apache.org/core/
@@ -431,32 +431,6 @@ if [ "$1" = 0 ]; then
   alternatives --remove %{hadoop_name}-default %{bin_hadoop}/%{name}
 fi
 
-%ifarch noarch
-%else
-%post fuse-selinux
-# Install SELinux policy modules
-for selinuxvariant in %{selinux_variants}
-do
-  /usr/sbin/semodule -s ${selinuxvariant} -i \
-    %{_datadir}/selinux/${selinuxvariant}/%{name}.pp &> /dev/null || :
-done
-
-%preun fuse-selinux
-if [ "$1" -lt "1" ] ; then
-    for variant in %{selinux_variants} ; do
-        /usr/sbin/semodule -s ${variant} -r %{name} &> /dev/null || :
-    done
-fi
-%postun fuse-selinux
-if [ "$1" -ge "1" ] ; then
-    # Replace the module if it is already loaded. semodule -u also
-    # checks the module version
-    for variant in %{selinux_variants} ; do
-        /usr/sbin/semodule -u %{_datadir}/selinux/${variant}/%{name}.pp || :
-    done
-fi
-%endif
-
 %triggerpostun -- hadoop
 if [ "$2" == 0 ]; then
   # restore symlinks that removing hadoop 0.19 may have deleted
@@ -542,6 +516,29 @@ fi
 # non-noarch files (aka architectural specific files)
 %else
 
+%post fuse-selinux
+# Install SELinux policy modules
+for selinuxvariant in %{selinux_variants}
+do
+  /usr/sbin/semodule -s ${selinuxvariant} -i \
+    %{_datadir}/selinux/${selinuxvariant}/%{name}.pp &> /dev/null || :
+done
+  
+%preun fuse-selinux
+if [ "$1" -lt "1" ] ; then
+    for variant in %{selinux_variants} ; do
+        /usr/sbin/semodule -s ${variant} -r %{name} &> /dev/null || :
+    done
+fi
+%postun fuse-selinux
+if [ "$1" -ge "1" ] ; then
+    # Replace the module if it is already loaded. semodule -u also
+    # checks the module version
+    for variant in %{selinux_variants} ; do
+        /usr/sbin/semodule -u %{_datadir}/selinux/${variant}/%{name}.pp || :
+    done
+fi
+
 %files native
 %defattr(-,root,root)
 %{lib_hadoop}/lib/native/*
@@ -577,6 +574,10 @@ fi
 %endif
 
 %changelog
+* Sat Feb 18 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 0.20.2+737-24
+- Fix placement of ifarch statements.
+- Tweak SELinux definition.
+
 * Tue Feb 14 2012 Doug Strain <dstrain@fnal.gov> - 0.20.2+737-23
 - Added SE linux module
 
