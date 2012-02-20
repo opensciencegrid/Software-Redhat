@@ -5,7 +5,7 @@
 
 Summary:   Tests an OSG Software installation
 Name:      osg-test
-Version:   0.0.10
+Version:   0.0.11
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -39,6 +39,9 @@ rm -rf $RPM_BUILD_ROOT
 /etc/grid-security/certificates/4eca18ce.*
 
 %changelog
+* Mon Feb 20 2012 Tim Cartwright <cat@cs.wisc.edu> - 0.0.11-1
+- New version of upstream software: Fixed bug when tailing files
+
 * Fri Feb 17 2012 Tim Cartwright <cat@cs.wisc.edu> - 0.0.10-1
 - New version of upstream software: Fixed install target
 
