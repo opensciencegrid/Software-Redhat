@@ -7,7 +7,7 @@
 
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
-Version: 1.3.18.004
+Version: 1.3.18.006
 Release: 1%{?dist}
 License: Unknown
 Group: System Environment/Daemons
@@ -44,7 +44,6 @@ Patch0: gums-build.patch
 Patch1: gums-add-mysql-admin.patch
 Patch2: gums-setup-mysql-database.patch
 Patch3: gums-create-config.patch
-#Patch4: gums-use-hostname.patch
 Patch5: xml-maven2.patch
 
 %description
@@ -81,7 +80,6 @@ Summary: Tomcat5 service for GUMS
 %patch1 -p0
 %patch2 -p1
 %patch3 -p1
-#patch4 -p0
 %patch5 -p0
 
 %build
@@ -236,7 +234,7 @@ fi
 %{_bindir}/gums-setup-mysql-database
 
 %changelog
-* Fri Feb 17 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.3.18.004-1
+* Fri Feb 17 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.3.18.006-1
 - New version.
 - Build is now a multi-project
 

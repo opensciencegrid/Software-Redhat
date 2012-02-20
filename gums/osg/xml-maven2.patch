@@ -1,7 +1,7 @@
 Index: gums-client/pom.xml
 ===================================================================
---- gums-client/pom.xml.orig	2012-02-17 17:01:50.000000003 -0600
-+++ gums-client/pom.xml	2012-02-17 17:02:36.000000003 -0600
+--- gums-client/pom.xml.orig	2012-02-17 20:00:31.000000003 -0600
++++ gums-client/pom.xml	2012-02-17 20:00:31.000000003 -0600
 @@ -25,29 +25,6 @@
     </distributionManagement>
  
@@ -65,12 +65,12 @@ Index: gums-client/pom.xml
 +			<artifactId>xmlsec</artifactId>
 +			<version>1.4.2</version>
  		</dependency>
- 
-  	</dependencies>  
+ 		<dependency>
+ 			<groupId>org.slf4j</groupId>
 Index: gums-service/pom.xml
 ===================================================================
---- gums-service/pom.xml.orig	2012-02-17 17:02:31.000000003 -0600
-+++ gums-service/pom.xml	2012-02-17 17:02:36.000000003 -0600
+--- gums-service/pom.xml.orig	2012-02-17 20:00:31.000000003 -0600
++++ gums-service/pom.xml	2012-02-17 20:00:31.000000003 -0600
 @@ -25,29 +25,6 @@
     </distributionManagement>
  
@@ -118,8 +118,8 @@ Index: gums-service/pom.xml
  		<artifactId>activation</artifactId>
 Index: gums-core/pom.xml
 ===================================================================
---- gums-core/pom.xml.orig	2012-02-16 16:39:26.000000003 -0600
-+++ gums-core/pom.xml	2012-02-17 17:02:36.000000003 -0600
+--- gums-core/pom.xml.orig	2012-02-17 18:20:33.000000003 -0600
++++ gums-core/pom.xml	2012-02-17 20:00:31.000000003 -0600
 @@ -23,29 +23,6 @@
     </distributionManagement>
  
