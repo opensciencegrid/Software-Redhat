@@ -37,6 +37,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_sbindir}/%{name}
 %{python_sitelib}/osgtest
 /etc/grid-security/certificates/4eca18ce.*
+/etc/grid-security/certificates/bffdd190.*
 
 %changelog
 * Tue Feb 21 2012 Tim Cartwright <cat@cs.wisc.edu> - 0.0.12-1
