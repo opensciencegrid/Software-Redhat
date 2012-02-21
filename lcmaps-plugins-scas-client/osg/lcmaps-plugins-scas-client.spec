@@ -1,15 +1,13 @@
 Summary: SCAS client plugin for the LCMAPS authorization framework
 Name: lcmaps-plugins-scas-client
-Version: 0.3.0
-Release: 1.3%{?dist}
+Version: 0.3.2
+Release: 1.1%{?dist}
 Vendor: Nikhef
 License: ASL 2.0
 Group: System Environment/Libraries
 URL: http://www.nikhef.nl/pub/projects/grid/gridwiki/index.php/Site_Access_Control
 Source0: http://software.nikhef.nl/security/%{name}/%{name}-%{version}.tar.gz
-Patch0: memory_corruption.patch
-Patch1: ca_only.patch
-Patch2: fix_loglevels.patch
+Patch0: ca_only.patch
 BuildRequires: openssl-devel
 BuildRequires: lcmaps-interface, saml2-xacml2-c-lib-devel
 
@@ -36,8 +34,6 @@ Summary: SAZ support for lcmaps
 %prep
 %setup -q
 %patch0 -p0
-%patch1 -p0
-%patch2 -p0
 
 %build
 
@@ -77,6 +73,13 @@ rm -rf $RPM_BUILD_ROOT
 %ghost %{_libdir}/modules/lcmaps_saz_client.mod
 
 %changelog
+* Tue Feb 21 2012 Mischa Salle <msalle@nikhef.nl> 0.3.2-1.1.osg
+- Upgraded upstream package
+- Removed memory_corruption and fix_loglevels.patch
+
+* Mon Feb 20 2012 Mischa Salle <msalle@nikhef.nl> 0.3.2-1
+- bumped version
+
 * Mon Jan 16 2012 Dave Dykstra <dwd@fnal.gov> 0.3.0-1.3.osg
 - Rebuild to get package signed
 
