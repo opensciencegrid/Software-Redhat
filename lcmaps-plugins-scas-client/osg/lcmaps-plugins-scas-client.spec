@@ -73,7 +73,7 @@ rm -rf $RPM_BUILD_ROOT
 %ghost %{_libdir}/modules/lcmaps_saz_client.mod
 
 %changelog
-* Tue Feb 21 2012 Mischa Salle <msalle@nikhef.nl> 0.3.2-1.1.osg
+* Tue Feb 21 2012 Dave Dykstra <dwd@fnal.gov> 0.3.2-1.1.osg
 - Upgraded upstream package
 - Removed memory_corruption and fix_loglevels.patch
 
