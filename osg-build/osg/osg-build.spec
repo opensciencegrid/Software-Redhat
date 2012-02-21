@@ -1,6 +1,6 @@
 
 Name:           osg-build
-Version:        1.1.4
+Version:        1.1.5
 Release:        1%{?dist}
 Summary:        Build tools for the OSG
 
@@ -62,6 +62,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_docdir}/%{name}/sample-osg-build.ini
 
 %changelog
+* Tue Feb 21 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.1.5-1
+- Fixed logging bug
+
 * Fri Feb 17 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.1.4-1
 - Don't check for outdated svn checkout if we're not using koji
 
