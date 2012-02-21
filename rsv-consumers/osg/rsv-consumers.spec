@@ -1,7 +1,7 @@
 
 Name:      rsv-consumers
 Version:   3.6.9
-Release:   1%{?dist}
+Release:   2%{?dist}
 Summary:   RSV Consumers Infrastructure
 
 Group:     Applications/Monitoring
@@ -87,10 +87,13 @@ rm -rf $RPM_BUILD_ROOT
 
 %attr(-,rsv,rsv) %{_datadir}/rsv
 %attr(-,rsv,rsv) %{_datadir}/rsv/www
-%attr(-,rsv,rsv) %ghost %{_datadir}/rsv/www/index.html
+%attr(-,rsv,rsv) %{_datadir}/rsv/www/index.html
 %attr(-,rsv,rsv) %{_localstatedir}/log/rsv/consumers
 
 %changelog
+* Tue Feb 21 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.6.9-2
+- Removed %ghost from %{_datadir}/rsv/www/index.html since that was incorrect.
+
 * Tue Feb 21 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.6.9-1
 - Added a sample index.html page to display before the html-consumer runs.
 
