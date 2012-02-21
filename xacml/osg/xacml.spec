@@ -1,7 +1,7 @@
 Summary: SAML 2.0 profile of XACML v2.0 library
 Name: xacml
-Version: 1.1.0
-Release: 3.1%{?dist}
+Version: 1.1.1
+Release: 1.1%{?dist}
 License: ASL 2.0
 Group: System Environment/Libraries
 URL: http://www.nikhef.nl/pub/projects/grid/gridwiki/index.php/Site_Access_Control
@@ -86,6 +86,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/xacml.pc
 
 %changelog
+* Fri Feb 17 2012 Dave Dykstra <dwd@fnal.gov> 1.1.1-1.1.osg
+- Updated upstream version
+
+* Mon Jan 30 2012 Mischa Salle <msalle@nikhef.nl> 1.1.1-1
+- updated version
+
 * Thu Jan 19 2012 Dave Dykstra <dwd@fnal.gov> 1.1.0-3.1.osg
 - Import into OSG
 
