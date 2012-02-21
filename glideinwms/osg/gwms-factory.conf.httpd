@@ -1,0 +1,9 @@
+# This is the httpd conf file
+# GlideinWMS VOFrontend web configuration
+
+Alias /factory /var/lib/gwms-factory/web-area
+<Directory /var/lib/gwms-factory/web-area>
+    Order allow,deny
+    Allow from all
+</Directory>
+
