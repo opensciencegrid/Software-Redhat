@@ -1,7 +1,7 @@
 Summary: Process tracking plugin for the LCMAPS authorization framework
 Name: lcmaps-plugins-glexec-tracking
 Version: 0.1.1
-Release: 1%{?dist}
+Release: 1.1%{?dist}
 License: EGEE Middleware and ASL and Fermitools
 Group: System Environment/Libraries
 # The tarball was created from CVS using the following commands:
@@ -11,6 +11,7 @@ Group: System Environment/Libraries
 # tar zcf lcmaps-plugins-glexec-tracking/0.1.1/lcmaps-plugins-glexec-tracking-0.1.1.tar.gz lcmaps-plugins-glexec-tracking-0.1.1/
 # rm -rf lcmaps-plugins-glexec-tracking-0.1.1
 Source0: %{name}-%{version}.tar.gz
+Patch0: python-warning.patch
 BuildRequires: lcmaps-interface
 BuildRequires: libtool automake autoconf
 Requires: /usr/sbin/condor_procd
@@ -26,6 +27,7 @@ by glexec.
 
 %prep
 %setup -q -a0
+%patch0 -p0
 
 
 %build
@@ -69,6 +71,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_sbindir}/glexec_monitor
 
 %changelog
+* Tue Feb 21 2012 Alain Roy <roy@cs.wisc.edu> 0.1.1-1.1.osg
+- Patch glexec_monitor to hide Python warning.
+
 * Mon Dec 12 2011 Dave Dykstra <dwd@fnal.gov> 0.1.1-1.osg
 - Upgrade to upstream 0.1.1, which fixes a glexec hang when there are
   more than 5 open file descriptors passed in and fixes a problem with
