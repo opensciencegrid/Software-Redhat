@@ -1,5 +1,5 @@
 %global name osg-configure
-%global version 1.0.3
+%global version 1.0.4
 %global release 1%{?dist}
 
 Summary: Package for configure-osg and associated scripts
@@ -210,6 +210,9 @@ rm -rf $RPM_BUILD_ROOT
 %ghost %{_sysconfdir}/profile.d/osg.csh
 
 %changelog
+* Tue Feb 21 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 1.0.4-1
+- Fixed a bug in RSV configuration that prevented the use of user proxies.
+
 * Fri Jan 27 2012 Suchandra Thapa <sthapa@ci.uchicago.edu> 1.0.3-1
 - Minor tweak to let configuration continue if grid3-locations isn't present
 - Remove seg_enabled option from condor jobmanager section, it's not used or
