@@ -6,7 +6,7 @@ Name:           glideinwms
 
 %if %{v2_plus}
 %define version 2.5.5
-%define release 3alpha
+%define release 4alpha
 %define frontend_xml frontend.xml
 %endif
 
@@ -253,7 +253,8 @@ install -m 644 creation/web_base/nodes.blacklist $RPM_BUILD_ROOT%{web_dir}/stage
 install -d $RPM_BUILD_ROOT%{_localstatedir}/log/gwms-frontend/frontend
 install -d $RPM_BUILD_ROOT%{_localstatedir}/log/gwms-frontend/group_main
 install -d $RPM_BUILD_ROOT%{_localstatedir}/log/gwms-factory
-install -d $RPM_BUILD_ROOT%{_localstatedir}/log/gwms-factory/factory
+install -d $RPM_BUILD_ROOT%{_localstatedir}/log/gwms-factory/server
+install -d $RPM_BUILD_ROOT%{_localstatedir}/log/gwms-factory/server/factory
 install -d $RPM_BUILD_ROOT%{_localstatedir}/log/gwms-factory/client
 install -d $RPM_BUILD_ROOT%{_localstatedir}/lib/gwms-factory/client-proxies
 
@@ -432,8 +433,9 @@ rm -rf $RPM_BUILD_ROOT
 %attr(-, gfactory, gfactory) %{factory_web_base}
 %attr(-, gfactory, gfactory) %{factory_dir}
 %attr(-, gfactory, gfactory) %dir %{condor_dir}
-%attr(-, gfactory, gfactory) %{_localstatedir}/log/gwms-factory
-%attr(-, root, root) %{_localstatedir}/log/gwms-factory/client
+%attr(-, root, root) %dir %{_localstatedir}/log/gwms-factory
+%attr(-, root, root) %dir %{_localstatedir}/log/gwms-factory/client
+%attr(-, gfactory, gfactory) %{_localstatedir}/log/gwms-factory/server
 %{python_sitelib}/cWConsts.py
 %{python_sitelib}/cWConsts.pyc
 %{python_sitelib}/cWConsts.pyo
