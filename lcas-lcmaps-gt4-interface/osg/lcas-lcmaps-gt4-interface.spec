@@ -1,16 +1,14 @@
 Summary: Mapping interface between Globus Toolkit and LCAS/LCMAPS
 Name: lcas-lcmaps-gt4-interface
-Version: 0.2.1
-Release: 4.8%{?dist}
+Version: 0.2.3
+Release: 1.1%{?dist}
 Vendor: Nikhef
 License: ASL 2.0
 Group: Applications/System
 URL: http://www.nikhef.nl/pub/projects/grid/gridwiki/index.php/Site_Access_Control
 Source0: http://software.nikhef.nl/security/%{name}/%{name}-%{version}.tar.gz
 Source1: gsi-authz.conf.in
-# Source of Patch0: (wget --no-check-certificate -qO- "https://sikkel.nikhef.nl/cgi-bin/viewvc.cgi/mwsec/trunk/lcas-lcmaps-gt4-interface/src/lcmaps_gt4_front.c?view=patch&r1=15655&r2=15820";wget --no-check-certificate -qO- "https://sikkel.nikhef.nl/cgi-bin/viewvc.cgi/mwsec/trunk/lcas-lcmaps-gt4-interface/src/lcmaps.c?view=patch&r1=15655&r2=15825") >parse_policy_name.patch
-Patch0: parse_policy_name.patch
-Patch1: no_lcas_interface.patch
+Patch0: disablelcas.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildRequires: globus-core
 BuildRequires: globus-common-devel
@@ -23,8 +21,6 @@ BuildRequires: globus-gssapi-gsi-devel
 BuildRequires: globus-gss-assist-devel
 BuildRequires: lcmaps-interface
 BuildRequires: openssl-devel
-# these are needed because of the no_lcas_interface.patch to configure.ac
-BuildRequires: autoconf, automake, libtool
 
 # explicit require as this is dlopen'd
 %ifarch %{ix86}
@@ -45,12 +41,9 @@ pool accounts and VOMS attribute based decisions and mappings.
 
 %prep
 %setup -q
-%patch0 -p2
-%patch1 -p0
+%patch0 -p0
 
 %build
-
-./bootstrap # this is here because configure.ac is patched
 
 %configure --disable-static --enable-lcas=no
 make %{?_smp_mflags}
@@ -84,6 +77,13 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/grid-security/gsi-authz.conf
 
 %changelog
+* Wed Feb 22 2012 Dave Dykstra <dwd@fnal.gov> 0.2.3-1.1.osg
+- Reimported upstream version, removed two patches and added disablelcas
+  patch because of a minor compilation error with --enable-lcas=no
+
+* Mon Feb 16 2012 Mischa Salle <msalle@nikhef.nl> 0.2.3-1
+- updated version
+
 * Fri Jan 20 2012 Dave Dykstra <dwd@fnal.gov> 0.2.1-4.8
 - Undo the last change, it didn't force removal, just reported an error
 
