@@ -12,3 +12,6 @@ put one of the tarballs into the SRPM.
 
 A future version of rpm-ripper will be able to automate all this: see
 #SOFTWARE-279.
+
+
+NOTE: After updating this package, also update java-1.6.0-sun-compat so the versions match!
