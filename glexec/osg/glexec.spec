@@ -1,7 +1,7 @@
 Summary: User identity switching tool based on grid credentials
 Name: glexec
-Version: 0.9.0
-Release: 1.3%{?dist}
+Version: 0.9.1
+Release: 2.1%{?dist}
 #Release: 0.%(date +%%Y%%m%%d_%%H%%M)%{?dist}
 License: ASL 2.0
 Group: Applications/System
@@ -42,6 +42,7 @@ make %{?_smp_mflags}
 rm -rf $RPM_BUILD_ROOT
 
 make DESTDIR=$RPM_BUILD_ROOT install
+chmod u+r ${RPM_BUILD_ROOT}%{_sbindir}/glexec
 
 # OSG default config
 cp %{SOURCE1} $RPM_BUILD_ROOT/%{_sysconfdir}/glexec.conf
@@ -63,6 +64,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/man/man5/glexec.conf.5*
 %{_datadir}/man/man1/glexec.1*
 %attr(4755, root, root) %{_sbindir}/glexec
+%attr(4111, root, root) %{_sbindir}/glexec
 %attr(755, root, root) %{_sbindir}/glexec-configure
 
 
@@ -75,6 +77,13 @@ getent passwd glexec >/dev/null || \
 exit 0
 
 %changelog
+* Tue Feb 21 2012 Dave Dykstra <dwd@fnal.gov> 0.9.1-2.1.osg
+- Upgraded upstream version
+
+* Mon Feb 20 2012 Mischa Salle <msalle@nikhef.nl> 0.9.1-2
+- new install permissions on binary, should be chmod u+r in install phase
+- updating version
+
 * Mon Jan 16 2012 Dave Dykstra <dwd@fnal.gov> 0.9.0-1.3
 - Rebuild to sign package
 
