@@ -6,7 +6,7 @@ Name:           glideinwms
 
 %if %{v2_plus}
 %define version 2.5.5
-%define release 4alpha
+%define release 5alpha
 %define frontend_xml frontend.xml
 %endif
 
@@ -698,6 +698,9 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/xmlParse.py
 %{python_sitelib}/xmlParse.pyc
 %{python_sitelib}/xmlParse.pyo
+%{python_sitelib}/timeConversion.py
+%{python_sitelib}/timeConversion.pyc
+%{python_sitelib}/timeConversion.pyo
 %{_initrddir}/gwms-frontend
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/gwms-frontend.conf
 %config(noreplace) %{_sysconfdir}/gwms-frontend/frontend.xml
