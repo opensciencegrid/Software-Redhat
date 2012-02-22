@@ -6,7 +6,7 @@ Name:           glideinwms
 
 %if %{v2_plus}
 %define version 2.5.5
-%define release 2alpha
+%define release 3alpha
 %define frontend_xml frontend.xml
 %endif
 
@@ -33,6 +33,7 @@ BuildArch:      noarch
 %define factory_web_dir %{_localstatedir}/lib/gwms-factory/web-area
 %define factory_web_base %{_localstatedir}/lib/gwms-factory/web-base
 %define factory_dir %{_localstatedir}/lib/gwms-factory/work-dir
+%define condor_dir %{_localstatedir}/lib/gwms-factory/condor
 
 
 #Source0:        http://www.uscms.org/SoftwareComputing/Grid/WMS/glideinWMS/glideinWMS_v2_5_1_frontend.tgz
@@ -59,6 +60,7 @@ Source13:	03_gwms_factory_local.config
 Source14:	glideinWMS.xml
 Source15:       gwms-factory.conf.httpd
 Source16:       factory_startup
+Source17:       privsep_config
 
 %description
 This is a package for the glidein workload management system.
@@ -228,6 +230,7 @@ install -d $RPM_BUILD_ROOT%{factory_web_dir}
 install -d $RPM_BUILD_ROOT%{factory_web_dir}/monitor/
 install -d $RPM_BUILD_ROOT%{factory_web_dir}/stage/
 install -d $RPM_BUILD_ROOT%{factory_dir}/lock
+install -d $RPM_BUILD_ROOT%{condor_dir}
 
 
 install -d $RPM_BUILD_ROOT%{web_dir}/monitor/lock
@@ -288,6 +291,7 @@ install -m 0644 %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
 install -m 0644 %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
 install -m 0644 %{SOURCE6} $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
 install -m 0644 %{SOURCE7} $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
+install -m 0644 %{SOURCE17} $RPM_BUILD_ROOT%{_sysconfdir}/condor/
 install -m 0644 %{SOURCE9} $RPM_BUILD_ROOT%{_sysconfdir}/condor/certs/
 install -m 0644 %{SOURCE10} $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
 install -m 0644 %{SOURCE11} $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
@@ -422,13 +426,14 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_sbindir}/stopFactory.py
 %attr(755,root,root) %{_sbindir}/stopFactory.pyc
 %attr(755,root,root) %{_sbindir}/stopFactory.pyo
-%attr(-, gfactory, gfactory) %dir %{_localstatedir}/lib/gwms-factory
-%attr(-, frontend, frontend) %{_localstatedir}/lib/gwms-factory/client-proxies
+%attr(-, root, root) %dir %{_localstatedir}/lib/gwms-factory
+%attr(-, root, root) %{_localstatedir}/lib/gwms-factory/client-proxies
 %attr(-, gfactory, gfactory) %{factory_web_dir}
 %attr(-, gfactory, gfactory) %{factory_web_base}
 %attr(-, gfactory, gfactory) %{factory_dir}
+%attr(-, gfactory, gfactory) %dir %{condor_dir}
 %attr(-, gfactory, gfactory) %{_localstatedir}/log/gwms-factory
-%attr(-, frontend, frontend) %{_localstatedir}/log/gwms-factory/client
+%attr(-, root, root) %{_localstatedir}/log/gwms-factory/client
 %{python_sitelib}/cWConsts.py
 %{python_sitelib}/cWConsts.pyc
 %{python_sitelib}/cWConsts.pyo
@@ -700,6 +705,7 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/condor/config.d/01_gwms_factory_collectors.config
 %config(noreplace) %{_sysconfdir}/condor/config.d/02_gwms_factory_schedds.config
 %config(noreplace) %{_sysconfdir}/condor/config.d/03_gwms_factory_local.config
+%config(noreplace) %{_sysconfdir}/condor/privsep_config
 %config(noreplace) %{_sysconfdir}/condor/certs/condor_mapfile
 %attr(-, condor, condor) %{_localstatedir}/lib/condor/schedd_glideins2
 %attr(-, condor, condor) %{_localstatedir}/lib/condor/schedd_glideins3
@@ -719,6 +725,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Feb 21 2012 Doug Strain <dstrain@fnal.gov> - 2.5.5-2alpha
+- Adding factory RPM and v3 support
+
+* Thu Feb 16 2012 Doug Strain <dstrain@fnal.gov> - 2.5.5-1 
+- Updating for v2.5.5 
+
 * Tue Jan 10 2012 Doug Strain <dstrain@fnal.gov> - 2.5.4-7
 - Adding condor_mapfile to minimal
 

@@ -15,6 +15,7 @@ failure() {
 }
 
 export HOME="/var/lib/gwms-factory"
+export X509_CERT_DIR="/etc/grid-security/certificates"
 factory_dir='/var/lib/gwms-factory/work-dir'
 factory_config='/etc/gwms-factory/glideinWMS.xml'
 
