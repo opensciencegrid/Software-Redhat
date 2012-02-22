@@ -10,7 +10,7 @@
    <monitor_footer display_txt="" href_link=""/>
    <security allow_proxy="frontend" key_length="2048" pub_key="RSA" reuse_oldkey_onstartup_gracetime="900">
       <frontends>
-         <frontend name="vofrontend_service" identity="vofrontend_service@FRONTEND_HOST">
+         <frontend name="vofrontend_service" identity="vofrontend_service@FACTORY_HOSTNAME">
             <security_classes>
                <security_class name="frontend" username="frontend"/>
             </security_classes>

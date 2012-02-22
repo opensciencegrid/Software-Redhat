@@ -6,7 +6,7 @@ Name:           glideinwms
 
 %if %{v2_plus}
 %define version 2.5.5
-%define release 5alpha
+%define release 6alpha
 %define frontend_xml frontend.xml
 %endif
 
@@ -280,7 +280,7 @@ install -m 0644 %{SOURCE2} $RPM_BUILD_ROOT/%{_sysconfdir}/gwms-frontend/frontend
 install -d $RPM_BUILD_ROOT/%{_sysconfdir}/gwms-factory
 install -m 0644 %{SOURCE14} $RPM_BUILD_ROOT/%{_sysconfdir}/gwms-factory/glideinWMS.xml
 
-# Install the silly stuff, should be fixed in glideinWMS
+# Install the web base
 cp -r creation/web_base/* $RPM_BUILD_ROOT%{web_base}/
 cp -r creation/web_base/* $RPM_BUILD_ROOT%{factory_web_base}/
 rm -rf $RPM_BUILD_ROOT%{web_base}/CVS
@@ -300,7 +300,7 @@ install -m 0644 %{SOURCE12} $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
 install -m 0644 %{SOURCE13} $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
 
 #Install condor schedd dirs
-for schedd in "schedd_glideins2" "schedd_glideins3" "schedd_glideins4" "schedd_glideins5"; do
+for schedd in "schedd_glideins2" "schedd_glideins3" "schedd_glideins4" "schedd_glideins5" "schedd_jobs2"; do
 	install -d $RPM_BUILD_ROOT/var/lib/condor/$schedd
 	install -d $RPM_BUILD_ROOT/var/lib/condor/$schedd/execute
 	install -d $RPM_BUILD_ROOT/var/lib/condor/$schedd/lock
@@ -723,6 +723,7 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/condor/config.d/02_gwms_schedds.config
 %config(noreplace) %{_sysconfdir}/condor/config.d/03_gwms_local.config
 %config(noreplace) %{_sysconfdir}/condor/certs/condor_mapfile
+%attr(-, condor, condor) %{_localstatedir}/lib/condor/schedd_jobs2
 
 %files minimal-condor
 %config(noreplace) %{_sysconfdir}/condor/config.d/00_gwms_general.config
