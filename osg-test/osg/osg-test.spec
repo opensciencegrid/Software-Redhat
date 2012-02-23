@@ -5,7 +5,7 @@
 
 Summary:   Tests an OSG Software installation
 Name:      osg-test
-Version:   0.0.12
+Version:   1.0.0
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -40,6 +40,9 @@ rm -rf $RPM_BUILD_ROOT
 /etc/grid-security/certificates/bffdd190.*
 
 %changelog
+* Thu Feb 23 2012 Tim Cartwright <cat@cs.wisc.edu> - 1.0.0-1
+- New version of upstream software: Fix cert hashes and bootstrap script
+
 * Tue Feb 21 2012 Tim Cartwright <cat@cs.wisc.edu> - 0.0.12-1
 - New version of upstream software: Cleanup bug, new CA certificate hashes
 
