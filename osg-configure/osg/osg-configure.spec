@@ -1,5 +1,5 @@
 %global name osg-configure
-%global version 1.0.4
+%global version 1.0.5
 %global release 1%{?dist}
 
 Summary: Package for configure-osg and associated scripts
@@ -210,6 +210,11 @@ rm -rf $RPM_BUILD_ROOT
 %ghost %{_sysconfdir}/profile.d/osg.csh
 
 %changelog
+* Thu Feb 23 2012 Suchandra Thapa <sthapa@ci.uchicago.edu> 1.0.5-1
+- Cleaned up pbs and lsf config scripts to remove unused home settings
+- Removed itb entries from cemon ini file
+- Fixed gip errors when on a standalone RSV install
+
 * Tue Feb 21 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 1.0.4-1
 - Fixed a bug in RSV configuration that prevented the use of user proxies.
 
