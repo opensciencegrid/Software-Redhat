@@ -1,7 +1,7 @@
 Name:      osg-client
 Summary:   OSG Client
 Version:   3.0.0
-Release:   16%{?dist}
+Release:   17%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -14,7 +14,7 @@ Requires: java-1.6.0-sun-compat
 Requires: osg-wn-client
 Requires: ndt
 Requires: bwctl
-Requires: gsi-openssh
+Requires: gsi-openssh-clients
 Requires: nmap
 Requires: lcg-info
 Requires: lcg-infosites
@@ -61,6 +61,9 @@ rm -rf $RPM_BUILD_ROOT
 %files condor
 
 %changelog
+* Fri Feb 24 2012 Alain Roy <roy@cs.wisc.edu> - 3.0.0-17
+- Fixed gsi-openssh dependency to get the client tools
+
 * Fri Feb 17 2012 Derek Weitzel <dweitzel@cse.unl.edu> - 3.0.0-16
 - Removing osg-discovery for el6 (for real this time).
 
