@@ -1,7 +1,7 @@
 Name:      osg-wn-client
 Summary:   OSG Worker-Node Client
 Version:   3.0.0
-Release:   13
+Release:   14
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -38,6 +38,7 @@ Summary: OSG meta-package for glexec
 Group: Grid
 Requires: %{name} = %{version}-%{release}
 Requires: glexec
+Requires: glexec-wrapper-scripts
 Requires: gratia-probe-glexec
 
 %description glexec
@@ -84,6 +85,9 @@ rm -rf $RPM_BUILD_ROOT
 %files glexec
 
 %changelog
+* Mon Feb 27 2012 Dave Dykstra <dwd@fnal.gov> - 3.0.0-14.osg
+- Added glexec-wrapper-scripts requirement on glexec
+
 * Mon Nov 14 2011 Alain Roy <roy@cs.wisc.edu> - 3.0.0-13
 - Added dependency on osg-version
 
