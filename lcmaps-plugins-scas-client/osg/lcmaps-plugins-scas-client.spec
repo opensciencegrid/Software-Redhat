@@ -1,6 +1,6 @@
 Summary: SCAS client plugin for the LCMAPS authorization framework
 Name: lcmaps-plugins-scas-client
-Version: 0.3.2
+Version: 0.3.3
 Release: 1.1%{?dist}
 Vendor: Nikhef
 License: ASL 2.0
@@ -73,6 +73,13 @@ rm -rf $RPM_BUILD_ROOT
 %ghost %{_libdir}/modules/lcmaps_saz_client.mod
 
 %changelog
+* Tue Feb 29 2012 Dave Dykstra <dwd@fnal.gov> 0.3.3-1.1.osg
+- Upgraded upstream package, which adds certificate valid date messages
+  to the authorization server for use by SAZ
+
+* Mon Feb 28 2012 Mischa Salle <msalle@nikhef.nl> 0.3.3-1
+- bumped version
+
 * Tue Feb 21 2012 Dave Dykstra <dwd@fnal.gov> 0.3.2-1.1.osg
 - Upgraded upstream package
 - Removed memory_corruption and fix_loglevels.patch
