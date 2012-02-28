@@ -1,8 +1,7 @@
 Summary: User identity switching tool based on grid credentials
 Name: glexec
-Version: 0.9.1
-Release: 2.1%{?dist}
-#Release: 0.%(date +%%Y%%m%%d_%%H%%M)%{?dist}
+Version: 0.9.3
+Release: 1.1%{?dist}
 License: ASL 2.0
 Group: Applications/System
 URL: http://www.nikhef.nl/pub/projects/grid/gridwiki/index.php/Site_Access_Control
@@ -63,6 +62,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(600, glexec, root) %verify(not md5 size mtime) %config(noreplace) %{_sysconfdir}/glexec.conf
 %{_datadir}/man/man5/glexec.conf.5*
 %{_datadir}/man/man1/glexec.1*
+%{_datadir}/man/man8/glexec-configure.8*
 %attr(4755, root, root) %{_sbindir}/glexec
 %attr(4111, root, root) %{_sbindir}/glexec
 %attr(755, root, root) %{_sbindir}/glexec-configure
@@ -77,6 +77,17 @@ getent passwd glexec >/dev/null || \
 exit 0
 
 %changelog
+* Tue Feb 28 2012 Dave Dykstra <dwd@fnal.gov> 0.9.3-1.1.osg
+- Upgraded upstream version
+
+* Tue Feb 28 2012 Mischa Salle <msalle@nikhef.nl> 0.9.3-1
+- fixing macros in ChangeLog and commented-out release
+- updating version
+
+* Mon Feb 27 2012 Mischa Salle <msalle@nikhef.nl> 0.9.2-1
+- add manpage for glexec-configure
+- updating version
+
 * Tue Feb 21 2012 Dave Dykstra <dwd@fnal.gov> 0.9.1-2.1.osg
 - Upgraded upstream version
 
@@ -112,7 +123,7 @@ exit 0
   configure options instead of the --with-lcmaps-moduledir.
 
 * Wed Jul 20 2011 Mischa Salle <msalle@nikhef.nl> 0.8.11-1
-- use %{_sysconfdir} instead of /etc in the %files list
+- use %%{_sysconfdir} instead of /etc in the %files list
 
 * Thu Jul 14 2011 Dennis van Dok <dennisvd@nikhef.nl> 0.8.10-2
 - change lcmaps moduledir according to new schema
