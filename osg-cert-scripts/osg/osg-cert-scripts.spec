@@ -5,8 +5,8 @@
 %endif
 
 Name:           osg-cert-scripts
-Version:        2.7.1
-Release:        4%{?dist}
+Version:        2.7.2
+Release:        1%{?dist}
 Summary:        Command-line interface to the DOEGrids CA web site, and more.
 
 Group:          Grid
@@ -23,7 +23,7 @@ Requires: 	perl(LWP::UserAgent)
 Requires: 	perl(Date::Format)
 Requires: 	perl(Getopt::Long)
 
-Source0:        osg-cert-scripts-2.7.1.tar.gz
+Source0:        osg-cert-scripts-2.7.2.tar.gz
 # Patches incorporated to SVN since OSG is the upstream source
 #Patch0:         change_awk_locations.patch  
 #Patch1:         make_correct_python_module.patch
@@ -74,6 +74,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Feb 16 2012 Anand Padmanabhan <apadmana@uiuc.edu> - 2.7.2-1
+- Fix for Jira ticket 546
+
 * Mon Feb 16 2012 Anand Padmanabhan <apadmana@uiuc.edu> - 2.7.1-4
 - Added dependency to perl(LWP::UserAgent), perl(Date::Format), perl(Getopt::Long)
 
