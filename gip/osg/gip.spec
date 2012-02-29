@@ -1,7 +1,7 @@
 Summary: Generic Information Provider
 Name: gip
-Version: 1.3.4
-Release: 3%{?dist}
+Version: 1.3.5rc1
+Release: 1%{?dist}
 License: TODO
 Group: Applications/Grid
 BuildArch: noarch
@@ -99,6 +99,13 @@ touch $RPM_BUILD_ROOT/%{_sysconfdir}/%{name}/remove-attributes.conf
 rm -rf %buildroot
 
 %changelog
+* Wed Feb 29 2012 Burt Holzman <burt@fnal.gov> - 1.3.5rc1-1
+- Update to GIP 1.3.5rc1
+- Check for duplicate key/values (ignoring case) -- RFC4512 forbids it
+- Ignore comment lines in read_ldap
+- Remove GlueLocation stanzas for software publication
+- Remove configure_gip placeholder
+
 * Tue Jan 17 2012 Anthony Tiradani <tiradani@fnal.gov> - 1.3.4
 - Update to GIP 1.3.4
 - Changed ownership of directories to root since osg-configure will set proper ownership and root is guaranteed to exist
