@@ -1,13 +1,14 @@
 Summary: SCAS client plugin for the LCMAPS authorization framework
 Name: lcmaps-plugins-scas-client
 Version: 0.3.3
-Release: 1.1%{?dist}
+Release: 1.2%{?dist}
 Vendor: Nikhef
 License: ASL 2.0
 Group: System Environment/Libraries
 URL: http://www.nikhef.nl/pub/projects/grid/gridwiki/index.php/Site_Access_Control
 Source0: http://software.nikhef.nl/security/%{name}/%{name}-%{version}.tar.gz
 Patch0: ca_only.patch
+Patch1: enablekeepalive.patch
 BuildRequires: openssl-devel
 BuildRequires: lcmaps-interface, saml2-xacml2-c-lib-devel
 
@@ -34,6 +35,7 @@ Summary: SAZ support for lcmaps
 %prep
 %setup -q
 %patch0 -p0
+%patch1 -p0
 
 %build
 
@@ -73,7 +75,11 @@ rm -rf $RPM_BUILD_ROOT
 %ghost %{_libdir}/modules/lcmaps_saz_client.mod
 
 %changelog
-* Tue Feb 29 2012 Dave Dykstra <dwd@fnal.gov> 0.3.3-1.1.osg
+* Wed Feb 29 2012 Dave Dykstra <dwd@fnal.gov> 0.3.3-1.2.osg
+- Add enablekeepalive patch to turn on the --enable-keepalive option by
+  default.  This is temporary until upstream enables it by default.
+
+* Tue Feb 28 2012 Dave Dykstra <dwd@fnal.gov> 0.3.3-1.1.osg
 - Upgraded upstream package, which adds certificate valid date messages
   to the authorization server for use by SAZ
 
