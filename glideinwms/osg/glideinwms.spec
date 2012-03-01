@@ -1,6 +1,6 @@
 # The following should be either "v2_plus" or "v3_plus"
-%define v2_plus 1
-%define v3_plus 0
+%define v2_plus 0
+%define v3_plus 1
 
 Name:           glideinwms
 
@@ -8,12 +8,14 @@ Name:           glideinwms
 %define version 2.5.5
 %define release 6alpha
 %define frontend_xml frontend.xml
+%define factory_xml glideinWMS.xml
 %endif
 
 %if %{v3_plus}
 %define version 3.0.0 
-%define release 0pre1
+%define release 0pre2
 %define frontend_xml frontend.master.xml
+%define factory_xml glideinWMS.master.xml
 %endif
 
 Version:        %{version}
@@ -57,7 +59,7 @@ Source10:       00_gwms_factory_general.config
 Source11:       01_gwms_factory_collectors.config
 Source12:	02_gwms_factory_schedds.config
 Source13:	03_gwms_factory_local.config
-Source14:	glideinWMS.xml
+Source14:	%{factory_xml}
 Source15:       gwms-factory.conf.httpd
 Source16:       factory_startup
 Source17:       privsep_config
@@ -181,7 +183,9 @@ rm -rf $RPM_BUILD_ROOT
 
 #Change src_dir in reconfig_Frontend
 sed -i "s/WEB_BASE_DIR=.*/WEB_BASE_DIR=\"\/var\/lib\/gwms-frontend\/web-base\"/" creation/reconfig_frontend
+sed -i "s/STARTUP_DIR=.*/STARTUP_DIR=\"\/var\/lib\/gwms-frontend\/web-base\"/" creation/reconfig_frontend
 sed -i "s/WEB_BASE_DIR=.*/WEB_BASE_DIR=\"\/var\/lib\/gwms-factory\/web-base\"/" creation/reconfig_glidein
+sed -i "s/STARTUP_DIR =.*/STARTUP_DIR=\"\/var\/lib\/gwms-factory\/web-base\"/" creation/reconfig_glidein
 
 # install the executables
 install -d $RPM_BUILD_ROOT%{_sbindir}
@@ -334,6 +338,15 @@ install -d $RPM_BUILD_ROOT/%{_sysconfdir}/httpd/conf.d
 install -m 0644 %{SOURCE3} $RPM_BUILD_ROOT/%{_sysconfdir}/httpd/conf.d/gwms-frontend.conf
 install -m 0644 %{SOURCE15} $RPM_BUILD_ROOT/%{_sysconfdir}/httpd/conf.d/gwms-factory.conf
 
+%if %{v3_plus}
+install -d $RPM_BUILD_ROOT%{web_base}/../creation
+install -d $RPM_BUILD_ROOT%{web_base}/../creation/templates
+install -d $RPM_BUILD_ROOT%{factory_web_base}/../creation
+install -d $RPM_BUILD_ROOT%{factory_web_base}/../creation/templates
+install -m 0644 creation/templates/factory_initd_startup_template $RPM_BUILD_ROOT%{factory_web_base}/../creation/templates/
+install -m 0644 creation/templates/frontend_initd_startup_template $RPM_BUILD_ROOT%{web_base}/../creation/templates/
+%endif
+
 %post vofrontend
 # $1 = 1 - Installation
 # $1 = 2 - Upgrade
@@ -431,6 +444,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(-, root, root) %{_localstatedir}/lib/gwms-factory/client-proxies
 %attr(-, gfactory, gfactory) %{factory_web_dir}
 %attr(-, gfactory, gfactory) %{factory_web_base}
+%attr(-, gfactory, gfactory) %{factory_web_base}/../creation
 %attr(-, gfactory, gfactory) %{factory_dir}
 %attr(-, gfactory, gfactory) %dir %{condor_dir}
 %attr(-, root, root) %dir %{_localstatedir}/log/gwms-factory
@@ -567,6 +581,29 @@ rm -rf $RPM_BUILD_ROOT
 %{_initrddir}/gwms-factory
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/gwms-factory.conf
 %config(noreplace) %{_sysconfdir}/gwms-factory/glideinWMS.xml
+%if %{v3_plus}
+   /usr/lib/python2.4/site-packages/classadSupport.py
+   /usr/lib/python2.4/site-packages/classadSupport.pyc
+   /usr/lib/python2.4/site-packages/classadSupport.pyo
+   /usr/lib/python2.4/site-packages/cleanupSupport.py
+   /usr/lib/python2.4/site-packages/cleanupSupport.pyc
+   /usr/lib/python2.4/site-packages/cleanupSupport.pyo
+   /usr/lib/python2.4/site-packages/encodingSupport.py
+   /usr/lib/python2.4/site-packages/encodingSupport.pyc
+   /usr/lib/python2.4/site-packages/encodingSupport.pyo
+   /usr/lib/python2.4/site-packages/glideFactoryCredentials.py
+   /usr/lib/python2.4/site-packages/glideFactoryCredentials.pyc
+   /usr/lib/python2.4/site-packages/glideFactoryCredentials.pyo
+   /usr/lib/python2.4/site-packages/glideinwms_tarfile.py
+   /usr/lib/python2.4/site-packages/glideinwms_tarfile.pyc
+   /usr/lib/python2.4/site-packages/glideinwms_tarfile.pyo
+   /usr/lib/python2.4/site-packages/iniSupport.py
+   /usr/lib/python2.4/site-packages/iniSupport.pyc
+   /usr/lib/python2.4/site-packages/iniSupport.pyo
+   /usr/lib/python2.4/site-packages/tarSupport.py
+   /usr/lib/python2.4/site-packages/tarSupport.pyc
+   /usr/lib/python2.4/site-packages/tarSupport.pyo
+%endif
 
 %files vofrontend
 %defattr(-,frontend,frontend,-)
@@ -582,6 +619,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(-, frontend, frontend) %dir %{_localstatedir}/lib/gwms-frontend
 %attr(-, frontend, frontend) %{web_dir}
 %attr(-, frontend, frontend) %{web_base}
+%attr(-, frontend, frontend) %{web_base}/../creation
 %attr(-, frontend, frontend) %{frontend_dir}
 %attr(-, frontend, frontend) %{_localstatedir}/log/gwms-frontend
 %{python_sitelib}/cWConsts.py
@@ -704,6 +742,27 @@ rm -rf $RPM_BUILD_ROOT
 %{_initrddir}/gwms-frontend
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/gwms-frontend.conf
 %config(noreplace) %{_sysconfdir}/gwms-frontend/frontend.xml
+%if %{v3_plus}
+   /usr/lib/python2.4/site-packages/classadSupport.py
+   /usr/lib/python2.4/site-packages/classadSupport.pyc
+   /usr/lib/python2.4/site-packages/classadSupport.pyo
+   /usr/lib/python2.4/site-packages/cleanupSupport.py
+   /usr/lib/python2.4/site-packages/cleanupSupport.pyc
+   /usr/lib/python2.4/site-packages/cleanupSupport.pyo
+   /usr/lib/python2.4/site-packages/encodingSupport.py
+   /usr/lib/python2.4/site-packages/encodingSupport.pyc
+   /usr/lib/python2.4/site-packages/encodingSupport.pyo
+   /usr/lib/python2.4/site-packages/glideinwms_tarfile.py
+   /usr/lib/python2.4/site-packages/glideinwms_tarfile.pyc
+   /usr/lib/python2.4/site-packages/glideinwms_tarfile.pyo
+   /usr/lib/python2.4/site-packages/iniSupport.py
+   /usr/lib/python2.4/site-packages/iniSupport.pyc
+   /usr/lib/python2.4/site-packages/iniSupport.pyo
+   /usr/lib/python2.4/site-packages/tarSupport.py
+   /usr/lib/python2.4/site-packages/tarSupport.pyc
+   /usr/lib/python2.4/site-packages/tarSupport.pyo
+%endif
+
 
 %files factory-condor
 %config(noreplace) %{_sysconfdir}/condor/config.d/00_gwms_factory_general.config
