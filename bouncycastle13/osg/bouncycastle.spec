@@ -3,7 +3,7 @@
 Summary:          Bouncy Castle Crypto Package for Java
 Name:             bouncycastle13
 Version:          1.33
-Release:          4
+Release:          4%{?dist}
 Group:            System Environment/Libraries
 License:          BSD
 URL:              http://www.%{name}.org/
