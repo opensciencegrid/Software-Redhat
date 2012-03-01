@@ -7,7 +7,7 @@ Release: 1%{?dist}
 URL: http://dev.globus.org/wiki/CoG_JGlobus_1.8.0
 Group: System Environment/Libraries
 Source0: http://www.globus.org/cog/distribution/1.8.0/cog-jglobus-1.8.0-src.tar.gz
-Patch0: build.xml-nosasl.patch
+Patch: build.xml-nosasl.patch
 BuildArch: noarch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
