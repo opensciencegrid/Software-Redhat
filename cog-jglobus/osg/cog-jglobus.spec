@@ -19,6 +19,7 @@ BuildRequires: puretls
 BuildRequires: bouncycastle13
 BuildRequires: jakarta-commons-logging
 BuildRequires: log4j
+BuildRequires: junit
 
 Requires: java
 Requires: jpackage-utils
@@ -36,7 +37,7 @@ Requires: log4j
 find -name '*.class' -exec rm -f '{}' \;
 find -name '*.jar' -exec rm -f '{}' \;
 
-build-jar-repository -s -p lib cryptix cryptix-asn1 puretls commons-logging bcprov-1.33 log4j
+build-jar-repository -s -p lib cryptix cryptix-asn1 puretls commons-logging bcprov-1.33 log4j junit
 
 %patch -p0
 
