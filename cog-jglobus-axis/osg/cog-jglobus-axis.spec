@@ -1,5 +1,5 @@
 
-Name: cog-jglobus
+Name: cog-jglobus-axis
 Summary: An implementation of Globus for Java
 License: Apache 2.0
 Version: 1.2
