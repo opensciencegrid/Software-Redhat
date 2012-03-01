@@ -4,21 +4,17 @@
 Name: gratia-service
 Summary: Gratia OSG accounting system
 Group: Applications/System
-Version: 1.09
-Release: 0.1.pre%{?dist}
+Version: 1.11
+Release: 01.pre%{?dist}
 License: GPL
 Group: Applications/System
 URL: http://sourceforge.net/projects/gratia/
 
 # Created by:
-# svn export http://gratia.svn.sourceforge.net/svnroot/gratia/tags/v1-09-pre4 gratia-1.09
+# svn export http://gratia.svn.sourceforge.net/svnroot/gratia/tags/v1-10-pre1 gratia-1.10
 # tar zcf gratia-1.09.tar.gz gratia-1.09
 Source0: gratia-%{version}.tar.gz
 
-# Hardcode paths to system values
-Patch0: configuration_paths.patch
-Patch1: post_install_script.patch
-Patch2: makefile_version.patch
 
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildArch: noarch
@@ -28,6 +24,7 @@ Requires: jpackage-utils
 Requires: tomcat5
 Requires: emi-trustmanager-tomcat
 Requires: mysql-server
+Requires: vo-client-edgmkgridmap
 
 BuildRequires: java-devel
 BuildRequires: jpackage-utils
@@ -38,9 +35,6 @@ BuildRequires: jpackage-utils
 %prep
 %setup -q -n gratia-%{version}
 
-%patch0 -p0
-%patch1 -p0
-#%patch2 -p0
 
 %build
 pushd build-scripts
@@ -74,6 +68,11 @@ install -m 0600 conf/service-configuration.properties  $RPM_BUILD_ROOT%{_sysconf
 install -m 0644 conf/log4j.properties $RPM_BUILD_ROOT%{_sysconfdir}/gratia/collector
 install -m 0600 conf/{keystore,truststore} $RPM_BUILD_ROOT%{_var}/lib/gratia/
 install -m 0755 conf/post-install.sh $RPM_BUILD_ROOT%{_datadir}/gratia/
+install -m 0755 conf/install_database.sh $RPM_BUILD_ROOT%{_datadir}/gratia/
+install -m 0755 conf/voms-server.sh $RPM_BUILD_ROOT%{_datadir}/gratia/
+install -d $RPM_BUILD_ROOT%{_sysconfdir}/cron.d
+install -m 0644 conf/voms-server.cron $RPM_BUILD_ROOT%{_sysconfdir}/cron.d/
+
 
 # TODO: nightly cron script to update VOMS servers from vo-client
 
@@ -86,6 +85,9 @@ touch $RPM_BUILD_ROOT%{_var}/log/gratia/gratia{,-rmi-servlet,-security,-administ
 %{_datadir}/gratia/sql
 %{_datadir}/gratia/hibernate
 %{_datadir}/gratia/post-install.sh
+%{_datadir}/gratia/install_database.sh
+%{_datadir}/gratia/voms-server.sh
+%{_sysconfdir}/cron.d/voms-server.cron
 %dir %{_var}/lib/gratia
 %{_var}/lib/tomcat5/server/lib/gratiaSecurity.jar
 %attr(-,tomcat,tomcat) %{_var}/lib/gratia/keystore
@@ -95,5 +97,8 @@ touch $RPM_BUILD_ROOT%{_var}/log/gratia/gratia{,-rmi-servlet,-security,-administ
 %dir %{_sysconfdir}/gratia/collector
 %attr(0640,root,tomcat) %config(noreplace) %{_sysconfdir}/gratia/collector/service-configuration.properties
 %config(noreplace) %{_sysconfdir}/gratia/collector/log4j.properties
+%attr(0750,tomcat,tomcat) %dir %{_var}/lib/tomcat5/webapps/gratia-reporting/logs
+%attr(0750,tomcat,tomcat) %dir %{_var}/lib/tomcat5/webapps/gratia-reporting/WEB-INF/platform/configuration
+%attr(0750,tomcat,tomcat) %dir %{_var}/log/gratia
 %ghost %{_var}/log/gratia/*.log
 
