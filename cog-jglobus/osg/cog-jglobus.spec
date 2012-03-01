@@ -13,6 +13,9 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires: java-devel
 BuildRequires: ant
+%if "%{?rhel}" == "5"
+BuildRequires: ant-nodeps
+%endif
 BuildRequires: jpackage-utils
 BuildRequires: cryptix
 BuildRequires: puretls
