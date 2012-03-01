@@ -5,14 +5,14 @@ Name: gratia-service
 Summary: Gratia OSG accounting system
 Group: Applications/System
 Version: 1.11
-Release: 01.pre%{?dist}
+Release: 02.pre%{?dist}
 License: GPL
 Group: Applications/System
 URL: http://sourceforge.net/projects/gratia/
 
 # Created by:
-# svn export http://gratia.svn.sourceforge.net/svnroot/gratia/tags/v1-10-pre1 gratia-1.10
-# tar zcf gratia-1.09.tar.gz gratia-1.09
+# svn export https://gratia.svn.sourceforge.net/svnroot/gratia/branches/dev/v1_10_rpm gratia-1.11
+# tar zcf gratia-1.11.tar.gz gratia-1.11
 Source0: gratia-%{version}.tar.gz
 
 
