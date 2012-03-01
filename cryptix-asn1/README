@@ -1,0 +1,6 @@
+
+This one's a bit weird.
+
+PureTLS requires a hacked version of cryptix-asn1; they provide the source
+tarball.
+
