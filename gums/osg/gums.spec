@@ -40,6 +40,7 @@ Source14: privilege-1.0.1.3.jar
 Source15: xmltooling-1.1.1.jar
 Source16: xmltooling.pom 
 Source17: maven-surefire-plugin-2.4.3.jar
+Source18: maven-surefire-plugin-2.4.3-fixed.pom
 
 Patch0: gums-build.patch
 Patch1: gums-add-mysql-admin.patch
@@ -98,6 +99,9 @@ mvn install:install-file -B -DgroupId=org.opensciencegrid -DartifactId=privilege
 mvn install:install-file -B -DgroupId=org.opensciencegrid -DartifactId=privilege-xacml -Dversion=2.2.4 -Dpackaging=jar -Dfile=%{SOURCE13} -Dmaven.repo.local=%{local_maven}
 #mvn install:install-file -B -DgroupId=org.apache.xerces -DartifactId=xercesImpl -Dversion=2.9.1 -Dpackaging=jar -Dfile=%{SOURCE11} -Dmaven.repo.local=%{local_maven}
 #mvn install:install-file -B -DgroupId=org.apache.xerces -DartifactId=xml-apis -Dversion=2.9.1 -Dpackaging=jar -Dfile=%{SOURCE10} -Dmaven.repo.local=%{local_maven}
+
+#mvn install:install-file -B -DgroupId=org.apache.maven.surefire -DartifactId=surefire -Dversion=2.4.3 -Dpackaging=jar -Dfile=%{SOURCE17} -Dmaven.repo.local=%{local_maven}
+mvn install:install-file -B -Dfile=%{SOURCE17} -Dmaven.repo.local=%{local_maven} -DpomFile=%{SOURCE18}
 
 pushd gums-core
 mvn -B -e -Dmaven.repo.local=/tmp/m2-repository -Dmaven.test.skip=true install
