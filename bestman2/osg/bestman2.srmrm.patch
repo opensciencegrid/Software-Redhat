@@ -1,7 +1,7 @@
-Index: bestman2/server/src/gov/lbl/srm/transfer/mss/FileObj.java
+Index: bestman2/sources/server/src/gov/lbl/srm/transfer/mss/FileObj.java
 ===================================================================
---- bestman2/server/src/gov/lbl/srm/transfer/mss/FileObj.java	(revision 65)
-+++ bestman2/server/src/gov/lbl/srm/transfer/mss/FileObj.java	(working copy)
+--- bestman2/sources/server/src/gov/lbl/srm/transfer/mss/FileObj.java	(revision 65)
++++ bestman2/sources/server/src/gov/lbl/srm/transfer/mss/FileObj.java	(working copy)
 @@ -79,15 +79,20 @@
  private String tapeId="";
  private String hsiPath=""; //we need this don't remove
@@ -24,10 +24,10 @@ Index: bestman2/server/src/gov/lbl/srm/transfer/mss/FileObj.java
              this.accessType = accessType;
              this.accessInfo = accessInfo;
              this.mssintf = mssintf;
-Index: bestman2/server/src/gov/lbl/srm/transfer/mss/SRM_MSS.java
+Index: bestman2/sources/server/src/gov/lbl/srm/transfer/mss/SRM_MSS.java
 ===================================================================
---- bestman2/server/src/gov/lbl/srm/transfer/mss/SRM_MSS.java	(revision 65)
-+++ bestman2/server/src/gov/lbl/srm/transfer/mss/SRM_MSS.java	(working copy)
+--- bestman2/sources/server/src/gov/lbl/srm/transfer/mss/SRM_MSS.java	(revision 65)
++++ bestman2/sources/server/src/gov/lbl/srm/transfer/mss/SRM_MSS.java	(working copy)
 @@ -129,6 +129,9 @@
  
   public File scriptPathDir=null;
@@ -315,10 +315,10 @@ Index: bestman2/server/src/gov/lbl/srm/util/TSRMUtil.java
  	    return null;
  	}
      }
-Index: bestman2/client/src/gov/lbl/srm/client/main/SRMClientRmdir.java
+Index: bestman2/sources/client/src/gov/lbl/srm/client/main/SRMClientRmdir.java
 ===================================================================
---- bestman2/client/src/gov/lbl/srm/client/main/SRMClientRmdir.java	(revision 65)
-+++ bestman2/client/src/gov/lbl/srm/client/main/SRMClientRmdir.java	(working copy)
+--- bestman2/sources/client/src/gov/lbl/srm/client/main/SRMClientRmdir.java	(revision 65)
++++ bestman2/sources/client/src/gov/lbl/srm/client/main/SRMClientRmdir.java	(working copy)
 @@ -1066,6 +1066,12 @@
      FileInfo f = (FileInfo) fInfo.elementAt(i);
      String surl = f.getOrigSURL();
@@ -332,10 +332,10 @@ Index: bestman2/client/src/gov/lbl/srm/client/main/SRMClientRmdir.java
      if(request.getModeType().equalsIgnoreCase("dir")) {
         if(!surl.startsWith("srm://") && !doLocalLsList && !doGridFTPList) {
            inputVec.clear(); 
-Index: bestman2/client/src/gov/lbl/srm/client/main/SRMClientRmFile.java
+Index: bestman2/sources/client/src/gov/lbl/srm/client/main/SRMClientRmFile.java
 ===================================================================
---- bestman2/client/src/gov/lbl/srm/client/main/SRMClientRmFile.java	(revision 65)
-+++ bestman2/client/src/gov/lbl/srm/client/main/SRMClientRmFile.java	(working copy)
+--- bestman2/sources/client/src/gov/lbl/srm/client/main/SRMClientRmFile.java	(revision 65)
++++ bestman2/sources/client/src/gov/lbl/srm/client/main/SRMClientRmFile.java	(working copy)
 @@ -1051,6 +1051,12 @@
      FileInfo f = (FileInfo) fInfo.elementAt(i);
      String surl = f.getOrigSURL();
@@ -351,8 +351,8 @@ Index: bestman2/client/src/gov/lbl/srm/client/main/SRMClientRmFile.java
            util.printMessage("\nSRM-DIR: source url is not valid " + surl, 
 Index: bestman2/client/src/gov/lbl/srm/client/main/SRMClientMkdir.java
 ===================================================================
---- bestman2/client/src/gov/lbl/srm/client/main/SRMClientMkdir.java	(revision 65)
-+++ bestman2/client/src/gov/lbl/srm/client/main/SRMClientMkdir.java	(working copy)
+--- bestman2/sources/client/src/gov/lbl/srm/client/main/SRMClientMkdir.java	(revision 65)
++++ bestman2/sources/client/src/gov/lbl/srm/client/main/SRMClientMkdir.java	(working copy)
 @@ -808,7 +808,9 @@
        }
  
@@ -377,10 +377,10 @@ Index: bestman2/client/src/gov/lbl/srm/client/main/SRMClientMkdir.java
      if(request.getModeType().equalsIgnoreCase("dir")) {
         if(!surl.startsWith("srm://") && !doLocalLsList && !doGsiFTPList) {
            inputVec.clear();
-Index: bestman2/client/src/gov/lbl/srm/client/wsdl/SRMPutClient.java
+Index: bestman2/sources/client/src/gov/lbl/srm/client/wsdl/SRMPutClient.java
 ===================================================================
---- bestman2/client/src/gov/lbl/srm/client/wsdl/SRMPutClient.java	(revision 65)
-+++ bestman2/client/src/gov/lbl/srm/client/wsdl/SRMPutClient.java	(working copy)
+--- bestman2/sources/client/src/gov/lbl/srm/client/wsdl/SRMPutClient.java	(revision 65)
++++ bestman2/sources/client/src/gov/lbl/srm/client/wsdl/SRMPutClient.java	(working copy)
 @@ -769,7 +769,8 @@
      TStatusCode temp = null;
  

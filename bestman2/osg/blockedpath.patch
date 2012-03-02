@@ -1,5 +1,5 @@
---- bestman2/server/src/gov/lbl/srm/server/TSupportedURLWithFILE.java	2011-12-16 11:27:13.000000000 -0600
-+++ bestman2/server/src/gov/lbl/srm/server/TSupportedURLWithFILE.java	2012-01-31 13:18:58.000000000 -0600
+--- bestman2/sources/server/src/gov/lbl/srm/server/TSupportedURLWithFILE.java	2011-12-16 11:27:13.000000000 -0600
++++ bestman2/sources/server/src/gov/lbl/srm/server/TSupportedURLWithFILE.java	2012-01-31 13:18:58.000000000 -0600
 @@ -1309,10 +1309,11 @@
  
      public boolean exists(File f) {	
