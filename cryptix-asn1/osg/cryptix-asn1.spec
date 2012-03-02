@@ -3,7 +3,7 @@ Name: cryptix-asn1
 Summary: An ASN.1 parser for Cryptix
 License: BSD
 Version: 20011119
-Release: 1%{?dist}
+Release: 2%{?dist}
 URL: http://www.rtfm.com/puretls/
 Group: System Environment/Libraries
 
@@ -60,6 +60,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_javadir}/*
 
 %changelog
+* Fri Mar 02 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 20011119-2
+- Rebuild against Globus-patched cryptix32.
+
 * Thu Mar 01 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 20011119-1
 - Initial packaging of Cryptix ASN1 (from PureTLS).
 
