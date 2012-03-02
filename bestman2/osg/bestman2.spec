@@ -14,7 +14,7 @@
 
 Name:           bestman2
 Version:        2.2.0a
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -40,6 +40,7 @@ Source5:        bestman2.sysconfig
 Source6:        build.xml
 Patch0:		bestman.server.patch
 Patch1:		setup.build.xml.patch
+Patch2:		bestman2.serverlib.patch
 #Patch2:		bestman2.srmrm.patch
 #Patch3:		blockedpath.patch
 
@@ -167,7 +168,8 @@ pushd bestman2/sources/setup/
 %patch1 -p0
 popd
 
-#%patch2 -p0
+%patch2 -p0
+
 #%patch3 -p0
 
 %build
@@ -195,8 +197,8 @@ CLASSPATH="$CLASSPATH:../../../lib/jglobus/cog-axis-1.8.0.jar"
 
 #Fix filenames since configure script is totally broken
 ln -s /usr/share/java/cryptix.jar ../../../lib/cryptix32.jar
-ln -s /usr/share/java/bcprov.jar ../../../lib/jce-jdk13-131.jar
-ln -s /usr/share/java/bcprov.jar ../../../lib/bcprov-jdk15-146.jar
+ln -s /usr/share/java/bcprov-1.33.jar ../../../lib/jce-jdk13-131.jar
+ln -s /usr/share/java/bcprov-1.33.jar ../../../lib/bcprov-jdk15-146.jar
 CLASSPATH=../../../lib/cryptix32.jar:$CLASSPATH
 CLASSPATH=../../../lib/jce-jdk13-131.jar:$CLASSPATH
 CLASSPATH=../../../lib/bcprov-jdk15-146.jar:$CLASSPATH
@@ -326,10 +328,10 @@ done
 
 install -m 0644 $libdir/jglobus/cog-axis-1.8.0.jar $jardir/jglobus/
 
-for jar in "cog-axis-1.8.0.jar" "cog-jglobus-1.8.0.jar" "cog-url-1.8.0.jar" "cryptix-asn1.jar" "cryptix32.jar" "jce-jdk13-131.jar" "puretls.jar"
-do
-        install -m 0644 $libdir/jglobus/$jar $jardir/jglobus/
-done
+#for jar in "cog-axis-1.8.0.jar" "cog-jglobus-1.8.0.jar" "cog-url-1.8.0.jar" "cryptix-asn1.jar" "cryptix32.jar" "jce-jdk13-131.jar" "puretls.jar"
+#do
+#        install -m 0644 $libdir/jglobus/$jar $jardir/jglobus/
+#done
 for jar in "xercesImpl-2.11.0.jar" "xml-apis-2.11.0.jar"
 do
         install -m 0644 $libdir/axis/$jar $jardir/axis/
@@ -354,6 +356,7 @@ done
 mkdir -p $RPM_BUILD_ROOT%{_initrddir}
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig
+mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/grid-security/bestman
 install -m 0755 %{SOURCE1} $RPM_BUILD_ROOT%{_sbindir}/%{name}
 install -m 0755 %{SOURCE2} $RPM_BUILD_ROOT%{_initrddir}/%{name}
 install -m 0644 %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/%{name}
@@ -402,13 +405,13 @@ fi
 %{_javadir}/bestman2/axis/xercesImpl-2.11.0.jar
 %{_javadir}/bestman2/axis/xml-apis-2.11.0.jar
 %{_javadir}/bestman2/jglobus/cog-axis-1.8.0.jar
-%{_javadir}/bestman2/jglobus/cog-jglobus-1.8.0.jar
-%{_javadir}/bestman2/jglobus/cog-url-1.8.0.jar
-%{_javadir}/bestman2/jglobus/cryptix-asn1.jar
-%{_javadir}/bestman2/jglobus/cryptix32.jar
-%{_javadir}/bestman2/jglobus/jce-jdk13-131.jar
+#%{_javadir}/bestman2/jglobus/cog-jglobus-1.8.0.jar
+#%{_javadir}/bestman2/jglobus/cog-url-1.8.0.jar
+#%{_javadir}/bestman2/jglobus/cryptix-asn1.jar
+#%{_javadir}/bestman2/jglobus/cryptix32.jar
+#%{_javadir}/bestman2/jglobus/jce-jdk13-131.jar
 #%{_javadir}/bestman2/jglobus/log4j-1.2.15.jar
-%{_javadir}/bestman2/jglobus/puretls.jar
+#%{_javadir}/bestman2/jglobus/puretls.jar
 %{_javadir}/bestman2/bestman2-stub.jar
 %config(noreplace) %{install_root}/properties/authmod-unix.properties
 %config(noreplace) %{install_root}/properties/authmod-win.properties
@@ -483,6 +486,7 @@ fi
 %config(noreplace) %{_sysconfdir}/logrotate.d/%{name}
 %config(noreplace) %attr(0644,root,root) %{_sysconfdir}/grid-security/vomsdir/vdt-empty.pem
 %attr(-,bestman,bestman) %dir %{_var}/log/%{name}
+%attr(-,bestman,bestman) %dir %{_sysconfdir}/grid-security/bestman
 #%doc bestman2/docs/README.javaapi
 
 
@@ -557,6 +561,18 @@ fi
 
 
 %changelog
+* Fri Mar 02 2012 Doug Strain <dstrain@fnal.gov> - 2.2.0a-2
+- Changed build procedure to use dependent_jar.tar.gz
+-- Separates all the dependencies into external
+-- We will gradually prune these out into other rpms
+- Changed all the libs to install only non-system jars
+- Now classpaths grab from system jars when possible:
+-- commons-discovery commons-logging wsdl4j 
+-- xerces-j2 commons-collections joda-time 
+-- glite-security-trustmanager glite-security-util-java
+-- xalan-j2 log4j vomsjapi
+
+
 * Tue Jan 31 2012 Doug Strain <dstrain@fnal.gov> - 2.2.0-14
 - Added a patch to fix Invalid Blocked Path issue
 
