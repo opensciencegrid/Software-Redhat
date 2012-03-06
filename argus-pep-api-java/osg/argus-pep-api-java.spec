@@ -1,7 +1,7 @@
 Summary: Argus PEP client Java API
 Name: argus-pep-api-java
 Version: 2.0.1
-Release: 2.sl5
+Release: 2%{?dist}
 License: ASL 2.0
 Vendor: EMI
 Group: System Environment/Libraries

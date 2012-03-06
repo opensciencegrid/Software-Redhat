@@ -1,6 +1,6 @@
 Name:           jclassads
 Version:        2.4
-Release:        1
+Release:        1%{?dist}
 Summary:        Java Classad Implementation 
 
 Group:          System Environment/Daemons

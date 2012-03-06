@@ -1,4 +1,4 @@
-%define tarball_version 7.6.4
+%define tarball_version 7.6.6
 
 # Things for F15 or later
 %if 0%{?fedora} >= 15
@@ -45,7 +45,7 @@
 
 Summary: Condor: High Throughput Computing
 Name: condor
-Version: 7.6.4
+Version: 7.6.6
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_base_release 0.6
@@ -54,7 +54,8 @@ Version: 7.6.4
 %else
 %define condor_release %condor_base_release
 %endif
-Release: %condor_release%{?dist}.2
+# Release: %condor_release%{?dist}.2
+Release: 3%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -99,7 +100,7 @@ Source1: condor_docs.tar.gz
 #   b482c4bfa350164427a1952113d53d03  condor_src-7.5.5-all-all.tar.gz
 #   2a1355cb24a56a71978d229ddc490bc5  condor_src-7.6.0-all-all.tar.gz
 # Note: The md5sum of each generated tarball may be different
-Source0: condor-7.6.4.tar.gz
+Source0: condor-7.6.6.tar.gz
 Source1: generate-tarball.sh
 %endif
 
@@ -196,6 +197,11 @@ BuildRequires: systemd-units
 %if %git_build_man || %include_man
 BuildRequires: transfig
 BuildRequires: latex2html
+%endif
+
+%if 0%{?el6}
+BuildRequires: libuuid-devel
+Requires: libuuid
 %endif
 
 %if %gsoap
@@ -711,6 +717,7 @@ rm -rf %{buildroot}
 #%_libexecdir/condor/condor_glexec_update_proxy
 %_libexecdir/condor/condor_limits_wrapper.sh
 %_libexecdir/condor/condor_rooster
+%_libexecdir/condor/condor_schedd.init
 %_libexecdir/condor/condor_ssh_to_job_shell_setup
 %_libexecdir/condor/condor_ssh_to_job_sshd_setup
 #%_libexecdir/condor/condor_power_state
@@ -819,7 +826,7 @@ rm -rf %{buildroot}
 %_sbindir/condor_reconfig
 %_sbindir/condor_replication
 %_sbindir/condor_restart
-%_sbindir/condor_root_switchboard
+%attr(6755, root, root) %_sbindir/condor_root_switchboard
 %_sbindir/condor_schedd
 %_sbindir/condor_shadow
 %_sbindir/condor_startd
@@ -1045,6 +1052,18 @@ fi
 %endif
 
 %changelog
+* Fri Feb 10 2012 Derek Weitzel <dweitzel@cse.unl.edu> - 7.6.6-3
+- Adding sticky bit to condor_root_switchboard
+
+* Wed Jan 18 2012 Derek Weitzel <dweitzel@cse.unl.edu> - 7.6.6-2
+- Added support for rhel6
+
+* Wed Jan 18 2012 Tim Cartwright <cat@cs.wisc.edu> - 7.6.6-1
+- Updated to upstream tagged 7.6.6 release
+
+* Wed Jan 11 2012 Tim Cartwright <cat@cs.wisc.edu> - 7.6.4-1
+- Simplified revision number
+
 * Tue Nov 29 2011 Derek Weitzel <dweitzel@cse.unl.edu> - 7.6.4-0.6.2
 - Rebasing to 7.6.4
 

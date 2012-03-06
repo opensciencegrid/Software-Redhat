@@ -1,6 +1,6 @@
 Name:		lcg-utils
 Version:	1.11.14
-Release:	10%{?dist}
+Release:	12%{?dist}
 Summary:	gLite file transfer clients
 
 Group:		Productivity/File utilities
@@ -13,6 +13,13 @@ Patch0:         lcg_utils_makefile_cleanup.patch
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 Requires:	gfal
 BuildRequires:  automake autoconf libtool swig gfal glite-build-common-cpp globus-ftp-client-devel globus-gass-copy-devel voms-devel CGSI-gSOAP-devel python-devel
+
+%if 0%{?el6}
+BuildRequires:  libuuid-devel
+%else
+BuildRequires:  e2fsprogs-devel
+%endif
+
 
 %description
 %{summary}
@@ -32,10 +39,21 @@ make
 rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
 
+# Python macros
+%if 0%{?rhel} <= 5
+%{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
+%{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
+%endif
+
 rm -f $RPM_BUILD_ROOT%{_libdir}/*.la
 rm -f $RPM_BUILD_ROOT%{_libdir}/*.a
-rm -f $RPM_BUILD_ROOT%{_libdir}/python2.4/site-packages/*.la
-rm -f $RPM_BUILD_ROOT%{_libdir}/python2.4/site-packages/*.so.0.0.0
+rm -rf $RPM_BUILD_ROOT%{python_sitearch}/*.la
+
+# Python expects modules to be names .so, not a symlink to the real module
+# So we fix them.
+rm -rf $RPM_BUILD_ROOT%{python_sitearch}/*.so
+rm -rf $RPM_BUILD_ROOT%{python_sitearch}/*.so.0
+rename .so.0.0.0 .so $RPM_BUILD_ROOT%{python_sitearch}/*.so.0.0.0
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -43,7 +61,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root,-)
 %{_libdir}/lib*
-%{_libdir}/python2.4/site-packages/*
+%{python_sitearch}/*
 %{_mandir}/man1/*
 %{_mandir}/man3/*
 %{_bindir}/*
@@ -51,6 +69,13 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/*
 
 %changelog
+* Thu Jan 19 2012 Derek Weitzel <dweitzel@cse.unl.edu> - 1.11.14-12
+- Adding libuuid-devel to build requires
+- Adding python macros to detect python file locations
+
+* Thu Jan 12 2012 Alain Roy <roy@cs.wisc.edu> - 1.11.14-11
+- Fixed missing Python module files
+
 * Wed Nov 30 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.11.14-10
 - Previous issue was not quite fixed.
 

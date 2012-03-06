@@ -1,7 +1,7 @@
 Summary: Argus PEP client and server common library (with hessian)
 Name: argus-pep-common
 Version: 2.1.0
-Release: 2.sl5
+Release: 2%{?dist}
 License: ASL 2.0
 Vendor: EMI
 Group: System Environment/Libraries

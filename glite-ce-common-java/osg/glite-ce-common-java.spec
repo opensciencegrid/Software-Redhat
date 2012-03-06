@@ -1,7 +1,7 @@
 Summary: Common libraries for all services running on the CREAM CE
 Name: glite-ce-common-java
 Version: 1.13.1
-Release: 3.sl5
+Release: 3%{?dist}
 License: Apache License 2.0
 Vendor: EMI
 Group: System Environment/Libraries

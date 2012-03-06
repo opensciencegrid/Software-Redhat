@@ -56,7 +56,7 @@
 
 Name: %{hadoop_name}-%{apache_branch}
 Version: %{cloudera_version}
-Release: 18
+Release: 24%{?dist}
 Summary: Hadoop is a software platform for processing vast amounts of data
 License: Apache License v2.0
 URL: http://hadoop.apache.org/core/
@@ -66,6 +66,7 @@ Source1: hadoop-init.tmpl
 Source2: hadoop-init-nn.tmpl
 Source3: hadoop-0.20.default
 Source4: apache-forrest-0.8.tar.gz
+Source5: hadoop-fuse.te
 Patch0:  hadoop_20_forrest.patch
 Patch1:  https://issues.apache.org/jira/secure/attachment/12473651/hdfs-780-4.patch
 Patch2:  fuse_dfs_020_memleaks_v8.patch
@@ -76,6 +77,7 @@ Patch4:  hadoop_fuse_dfs_classpath.patch
 Patch5:  hadoop_fuse_dfs_libjvm.patch
 Buildroot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: ant >= 1.7, ant-nodeps, ant-trax, jdk >= 1.6, lzo-devel, python >= 2.4, /usr/bin/git, subversion, fuse-libs, fuse-devel, fuse, automake, autoconf, libtool, redhat-rpm-config, openssl-devel
+
 Requires: sh-utils, textutils, /usr/sbin/useradd, /usr/sbin/usermod, /sbin/chkconfig, /sbin/service, jdk >= 1.6
 Provides: hadoop
 Obsoletes: hadoop
@@ -195,6 +197,23 @@ Provides: hadoop-fuse
 %description fuse
 These projects (enumerated below) allow HDFS to be mounted (on most flavors of Unix) as a standard file system using the mount command. Once mounted, the user can operate on an instance of hdfs using standard Unix utilities such as 'ls', 'cd', 'cp', 'mkdir', 'find', 'grep', or use standard Posix libraries like open, write, read, close from C, C++, Python, Ruby, Perl, Java, bash, etc.
 
+
+%define selinux_variants mls strict targeted
+%global selinux_policyver %(%{__sed} -e 's,.*selinux-policy-\\([^/]*\\)/.*,\\1,' /usr/share/selinux/devel/policyhelp || echo 0.0.0)
+
+%package fuse-selinux
+Summary: SELinux policy files for fuse mount
+Group:          System Environment/Daemons
+BuildRequires:  checkpolicy selinux-policy-devel hardlink selinux-policy-targeted
+Requires: %{name} = %{version}-%{release}
+Requires:       selinux-policy >= %{selinux_policyver}
+Requires(post):         /usr/sbin/semodule /usr/sbin/semanage /sbin/fixfiles
+Requires(preun):        /sbin/service /usr/sbin/semodule /usr/sbin/semanage /sbin/fixfiles
+Requires(postun):       /usr/sbin/semodule
+%description fuse-selinux
+selinux policy files for the Hadoop fuse hdfs mounts
+
+
 %package native
 Summary: Native libraries for Hadoop Compression
 Group: Development/Libraries
@@ -256,7 +275,21 @@ export FORREST_HOME=$PWD/apache-forrest-0.8
 JAVA_HOME="/usr/java/default" ant -propertyfile cloudera/build.properties bin-package
 %else
 JAVA_HOME="/usr/java/default" ant -propertyfile cloudera/build.properties -Dcompile.native=true -Dlibhdfs=1 -Dfusedfs=1 -Dcompile.c++=true -Djava5.home=${JAVA5_HOME} -Dforrest.home=${FORREST_HOME}  task-controller package
+
+# Build the selinux policy file
+mkdir SELinux
+cp %{SOURCE5} SELinux/%{name}.te
+pushd SELinux
+for variant in %{selinux_variants}
+do
+    make NAME=${variant} -f %{_datadir}/selinux/devel/Makefile
+    mv %{name}.pp %{name}.pp.${variant}
+    make NAME=${variant} -f %{_datadir}/selinux/devel/Makefile clean
+done
+popd
+
 %endif
+
 
 #########################
 #### INSTALL SECTION ####
@@ -284,9 +317,23 @@ bash cloudera/install_hadoop.sh \
 
 %ifarch noarch
 %else
+
+# Install selinux policies
+pushd SELinux
+for variant in %{selinux_variants}
+do
+    install -d $RPM_BUILD_ROOT%{_datadir}/selinux/${variant}
+    install -p -m 644 %{name}.pp.${variant} \
+           $RPM_BUILD_ROOT%{_datadir}/selinux/${variant}/%{name}.pp
+done
+popd
+# Hardlink identical policy module packages together
+/usr/sbin/hardlink -cv $RPM_BUILD_ROOT%{_datadir}/selinux
+
 rm $RPM_BUILD_ROOT%{_libdir}/libhdfs.la
 rm $RPM_BUILD_ROOT%{lib_hadoop}/lib/native/%{hadoop_arch}/libhadoop.{a,la}
 %endif
+
 
 %ifarch noarch
 
@@ -469,6 +516,29 @@ fi
 # non-noarch files (aka architectural specific files)
 %else
 
+%post fuse-selinux
+# Install SELinux policy modules
+for selinuxvariant in %{selinux_variants}
+do
+  /usr/sbin/semodule -s ${selinuxvariant} -i \
+    %{_datadir}/selinux/${selinuxvariant}/%{name}.pp &> /dev/null || :
+done
+  
+%preun fuse-selinux
+if [ "$1" -lt "1" ] ; then
+    for variant in %{selinux_variants} ; do
+        /usr/sbin/semodule -s ${variant} -r %{name} &> /dev/null || :
+    done
+fi
+%postun fuse-selinux
+if [ "$1" -ge "1" ] ; then
+    # Replace the module if it is already loaded. semodule -u also
+    # checks the module version
+    for variant in %{selinux_variants} ; do
+        /usr/sbin/semodule -u %{_datadir}/selinux/${variant}/%{name}.pp || :
+    done
+fi
+
 %files native
 %defattr(-,root,root)
 %{lib_hadoop}/lib/native/*
@@ -479,6 +549,12 @@ fi
 %attr(0755,root,root) %{lib_hadoop}/bin/fuse_dfs_wrapper.sh
 %attr(0755,root,root) %{bin_hadoop}/hadoop-fuse-dfs
 %attr(0755,root,root) %{man_hadoop}/man1/hadoop-fuse-dfs.1.gz
+
+%files fuse-selinux
+%defattr(-,root,root,-)
+%doc SELinux/*.??
+%{_datadir}/selinux/*/%{name}.pp
+
 
 %files pipes
 %defattr(-,root,root)
@@ -498,6 +574,16 @@ fi
 %endif
 
 %changelog
+* Sat Feb 18 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 0.20.2+737-24
+- Fix placement of ifarch statements.
+- Tweak SELinux definition.
+
+* Tue Feb 14 2012 Doug Strain <dstrain@fnal.gov> - 0.20.2+737-23
+- Added SE linux module
+
+* Wed Feb 08 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 0.20.2+737-19
+- Rebuild with proper arch setting.
+
 * Mon Nov 28 2011 Jeff Dost <jdost@ucsd.edu> 0.20.2+737-18
 - Change to correctly run hadoop as user hdfs.
 

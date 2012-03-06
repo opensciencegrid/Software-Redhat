@@ -1,7 +1,7 @@
 Summary: C libraries for accessing the service discovery system
 Name: glite-service-discovery-api-c
 Version: 2.2.3
-Release: 2.sl5
+Release: 3%{?dist}
 License: Apache License 2.0
 Vendor: EMI
 Group: System Environment/Libraries
@@ -23,6 +23,7 @@ C libraries for accessing the service discovery system
 %patch0
 
 %build
+./bootstrap
 mkdir -p build; cd build; ../configure --disable-static --prefix=$RPM_BUILD_ROOT/usr; cd ..
  cd build; make ; cd ..
   
@@ -48,6 +49,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libglite-sd-c.so.2.0.2
 
 %changelog
+* Wed Jan 18 2012 Derek Weitzel <dweitzel@cse.unl.edu> - 2.2.3-3
+- Run the bootstrap script before configuring the code
+
 * Fri Oct 28 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 2.2.3-2.sl5
 - rebuilt
 

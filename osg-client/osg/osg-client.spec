@@ -1,7 +1,7 @@
 Name:      osg-client
 Summary:   OSG Client
 Version:   3.0.0
-Release:   13
+Release:   17%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -14,17 +14,25 @@ Requires: java-1.6.0-sun-compat
 Requires: osg-wn-client
 Requires: ndt
 Requires: bwctl
-Requires: gsi-openssh
+Requires: gsi-openssh-clients
 Requires: nmap
 Requires: lcg-info
 Requires: lcg-infosites
 # No npad for now, because it installs server by default. Re-add later?
 #Requires: npad
+
+# Don't require osg-discovery for el6, not working...
+%if 0%{?el6}
+%else
 Requires: osg-discovery
+%endif
+
 Requires: owamp-client
 Requires: osg-cert-scripts
 Requires: vo-client
 Requires: globus-gram-client-tools
+# Needed by globus-gram-client-tools, but missing dependency
+Requires: globus-common-progs 
 Requires: globus-gsi-cert-utils-progs
 Requires: osg-system-profiler
 
@@ -53,6 +61,19 @@ rm -rf $RPM_BUILD_ROOT
 %files condor
 
 %changelog
+* Fri Feb 24 2012 Alain Roy <roy@cs.wisc.edu> - 3.0.0-17
+- Fixed gsi-openssh dependency to get the client tools
+
+* Fri Feb 17 2012 Derek Weitzel <dweitzel@cse.unl.edu> - 3.0.0-16
+- Removing osg-discovery for el6 (for real this time).
+
+* Fri Feb 17 2012 Derek Weitzel <dweitzel@cse.unl.edu> - 3.0.0-15
+- Removing osg-discovery for el6.
+
+* Fri Nov 18 2011 Alain Roy <roy@cs.wisc.edu> - 3.0.0-14
+- Added dependency on globus-common-progrs, as workaround for missing 
+  dependency in globus-gram-client-tools. 
+
 * Mon Nov 14 2011 Alain Roy <roy@cs.wisc.edu> - 3.0.0-13
 - Added dependency on osg-version
 

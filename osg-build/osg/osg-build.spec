@@ -1,19 +1,19 @@
 
 Name:           osg-build
-Version:        1.0.1
+Version:        1.1.5
 Release:        1%{?dist}
 Summary:        Build tools for the OSG
 
 Group:          System Environment/Tools
 License:        Apache 2.0
-URL:            https://twiki.grid.iu.edu/bin/view/SoftwareTeam/RPMDevelopmentGuide
+URL:            https://twiki.grid.iu.edu/bin/view/SoftwareTeam/OSGBuildTools
 
 Source0:        %{name}-%{version}.tar.gz
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
-Requires:       mock
+Requires:       mock >= 1.0.0
 Requires:       rpm-build
 Requires:       openssl
 Requires:       quilt
@@ -46,19 +46,60 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root,-)
 %{_bindir}/%{name}
+%{_bindir}/koji-tag-checker
 %{_bindir}/koji-tag-diff
 %{_bindir}/rpm-ripper
 %{_bindir}/osg-build-test
 %{_bindir}/osg-import-srpm
 %{_bindir}/osg-koji
 %{_bindir}/vdt-build
-%dir %{python_sitelib}/osg_build_lib
-%{python_sitelib}/osg_build_lib/*.py*
+%dir %{python_sitelib}/osgbuild
+%{python_sitelib}/osgbuild/*.py*
 %{_datadir}/%{name}/osg-koji-site.conf
 %{_datadir}/%{name}/osg-koji-home.conf
+%{_datadir}/%{name}/mock-auto.cfg.in
+%{_datadir}/%{name}/rpmlint.cfg
 %doc %{_docdir}/%{name}/sample-osg-build.ini
 
 %changelog
+* Tue Feb 21 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.1.5-1
+- Fixed logging bug
+
+* Fri Feb 17 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.1.4-1
+- Don't check for outdated svn checkout if we're not using koji
+
+* Thu Feb 16 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.1.3-1
+- Changed koji task to build for both el5 and el6 by default
+- Added --koji-tag-and-target (--ktt) option as a shorthand for specifying both --koji-tag and --koji-target
+- Common usage patterns added to usage message
+- Config file bugfixes
+- Added 'koji-tag-checker' script which checks for builds that are in both el5 and el6 tags
+
+* Fri Jan 27 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.1.2-1
+- SOFTWARE-449 snuck back in. Fixed it.
+
+* Fri Jan 27 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.1.1-1
+- el5/el6 macros fixed
+
+* Thu Jan 26 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.1.0-2
+- Fixed SVN out-of-date check
+
+* Thu Jan 26 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.1.0-1
+- allbuild task added
+- Major refactoring/reorganization
+
+* Thu Jan 19 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0.4-2
+- 'mock' requirement changed to 'mock >= 1.0.0'
+
+* Wed Jan 18 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0.4-1
+- Added el6 support
+
+* Fri Jan 06 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0.3-1
+- Fix for SOFTWARE-449
+
+* Thu Jan 05 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0.2-1
+- Fix for SOFTWARE-444
+
 * Tue Dec 20 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0.1-1
 - Fix for SOFTWARE-431
 
@@ -127,7 +168,6 @@ rm -rf $RPM_BUILD_ROOT
 - VDTBuildMockConfig bug fixes
 - Added 'koji' task
 
-%changelog
 * Mon Aug 01 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 0.0.14-2
 - Dead code/comment removal
 

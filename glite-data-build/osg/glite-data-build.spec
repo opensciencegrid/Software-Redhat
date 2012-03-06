@@ -1,6 +1,6 @@
 Name:		glite-data-build
 Version:	3.2.0
-Release:	2
+Release:	2%{?dist}
 Summary:	Build macros for the org.glite.data family.
 
 Group:		Development/Languages/C and C++

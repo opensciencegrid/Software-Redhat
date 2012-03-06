@@ -13,19 +13,19 @@
          <match_attrs>
          </match_attrs>
          <schedds>
-            <schedd DN="Cert DN used by the schedd at fullname:" fullname="Hostname of the schedd"/>
-            <schedd DN="Cert DN used by the second Schedd at fullname:" fullname="schedd name@Hostname of second schedd"/>
+            <schedd DN="/DC=org/DC=doegrids/OU=Services/CN=FRONTEND_HOSTNAME" fullname="FRONTEND_HOSTNAME"/>
+            <schedd DN="/DC=org/DC=doegrids/OU=Services/CN=FRONTEND_HOSTNAME" fullname="schedd_jobs2@FRONTEND_HOSTNAME"/>
          </schedds>
       </job>
    </match>
-   <monitor base_dir="/usr/share/gwms-frontend/www/monitor" flot_dir="/usr/share/javascriptrrd/flot" javascriptRRD_dir="/usr/share/javascriptrrd/js" jquery_dir="/usr/share/javascriptrrd/flot"/>
-   <security classad_proxy="/tmp/x509up_u99" proxy_DN="DN of proxy owned by user nobody" proxy_selection_plugin="ProxyAll" security_name="The security name, this is used by factory" sym_key="aes_256_cbc">
+   <monitor base_dir="/var/lib/gwms-frontend/web-area/monitor" flot_dir="/usr/share/javascriptrrd/flot" javascriptRRD_dir="/usr/share/javascriptrrd/js" jquery_dir="/usr/share/javascriptrrd/flot"/>
+   <security classad_proxy="/tmp/vo_proxy" proxy_DN="DN of vo_proxy" proxy_selection_plugin="ProxyAll" security_name="The security name, this is used by factory" sym_key="aes_256_cbc">
       <proxies>
-         <proxy absfname="/tmp/x509up_u99" security_class="frontend"/>
+         <proxy absfname="/tmp/vo_proxy" security_class="frontend"/>
       </proxies>
    </security>
-   <stage base_dir="/usr/share/gwms-frontend/www/stage" use_symlink="True" web_base_url="http://FRONTEND_HOSTNAME/vofrontend/stage"/>
-   <work base_dir="/usr/share/gwms-frontend/frontend-temp" base_log_dir="/var/log/gwms-frontend"/>
+   <stage base_dir="/var/lib/gwms-frontend/web-area/stage" use_symlink="True" web_base_url="http://FRONTEND_HOSTNAME/vofrontend/stage"/>
+   <work base_dir="/var/lib/gwms-frontend/vofrontend" base_log_dir="/var/log/gwms-frontend"/>
    <attrs>
       <attr name="GLIDECLIENT_Rank" glidein_publish="False" job_publish="False" parameter="True" type="string" value="1"/>
       <attr name="GLIDEIN_Expose_Grid_Env" glidein_publish="True" job_publish="True" parameter="False" type="string" value="True"/>
@@ -65,8 +65,8 @@
       </group>
    </groups>
    <collectors>
-      <collector DN="DN of main collector" node="FRONTEND_HOSTNAME:9618" secondary="False"/>
-      <collector DN="DN of secondary collectors (usually same as DN in line above)" node="FRONTEND_HOSTNAME:9620-9660" secondary="True"/>
+      <collector DN="/DC=org/DC=doegrids/OU=Services/CN=FRONTEND_HOSTNAME" node="FRONTEND_HOSTNAME:9618" secondary="False"/>
+      <collector DN="/DC=org/DC=doegrids/OU=Services/CN=FRONTEND_HOSTNAME" node="FRONTEND_HOSTNAME:9620-9660" secondary="True"/>
    </collectors>
    <files>
    </files>

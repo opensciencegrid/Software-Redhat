@@ -1,0 +1,28 @@
+[osg-contrib]
+name=OSG Software for Enterprise Linux 6 - Contributed - $basearch 
+mirrorlist=http://repo.grid.iu.edu/mirror/3.0/el6/osg-contrib/$basearch
+failovermethod=priority
+priority=98
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-OSG
+consider_as_osg=yes
+
+[osg-contrib-source]
+name=OSG Software for Enterprise Linux 6 - Contributed - $basearch - Source
+baseurl=http://repo.grid.iu.edu/3.0/el6/osg-contrib/source/SRPMS
+failovermethod=priority
+priority=98
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-OSG
+
+[osg-contrib-debug]
+name=OSG Software for Enterprise Linux 6 - Contributed - $basearch - Debug
+baseurl=http://repo.grid.iu.edu/3.0/el6/osg-contrib/$basearch/debug
+failovermethod=priority
+priority=98
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-OSG
+

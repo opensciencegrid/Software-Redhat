@@ -1,17 +1,17 @@
 
 Name:      osg-info-services
 Summary:   OSG Information Services uploader
-Version:   0.10
-Release:   1
+Version:   0.11
+Release:   1%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
 BuildArch: noarch
 
-# Performed on 14 December 2011; 4602r
-# svn export svn://t2.unl.edu/brian/osg_info_services osg-info-services-0.10
-# tar zcf osg-info-services-0.10.tar.gz osg-info-services-0.10/
-Source0:   osg-info-services-0.10.tar.gz
+# Performed on 26 February 2012; r4612
+# svn export svn://t2.unl.edu/brian/osg_info_services osg-info-services-0.11
+# tar zcf osg-info-services-0.11.tar.gz osg-info-services-0.11/
+Source0:   %{name}-%{version}.tar.gz
 
 BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
@@ -47,6 +47,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_sbindir}/%{name}
 
 %changelog
+* Sun Feb 26 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 0.11-1
+- Fix for directory ownership issues in GIP 1.3.4.
+
+* Fri Feb 03 2012 Derek Weitzel <dweitzel@cse.unl.edu> - 0.10-2
+- Adding dist tag to osg-info-services
+
 * Wed Dec 14 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 0.10-1
 - Improved error message.
 

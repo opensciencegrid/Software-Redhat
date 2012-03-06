@@ -1,6 +1,6 @@
 Name:           empty-torque
 Version:        1.0
-Release:        1
+Release:        1%{?dist}
 Summary:        An empty Torque/PBS package
 
 Group:          Applications/System

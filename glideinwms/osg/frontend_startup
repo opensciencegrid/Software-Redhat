@@ -14,9 +14,10 @@ failure() {
  return 1
 }
 
-frontend_dir='/usr/share/gwms-frontend/frontend-temp'
+frontend_dir='/var/lib/gwms-frontend/vofrontend'
 glideinWMS_dir=$frontend_dir
 frontend_config=/etc/gwms-frontend/frontend.xml
+export HOME="/var/lib/gwms-frontend"
 
 if [ -s ${frontend_config} ]
 then
@@ -38,7 +39,7 @@ id_str="$frontend_name"
 
 start() {
         echo -n "Starting glideinWMS frontend $id_str: "
-        su -s /bin/bash frontend -c "nice -2 \"glideinFrontend\" \"$frontend_dir\"" 2>/dev/null 1>&2 </dev/null &
+        su -s /bin/bash frontend -c "nice -2 \"glideinFrontend\" \"$frontend_dir\"" 2>/var/log/gwms-frontend/frontend/startup.log 1>&2 </dev/null &
         sleep 5
         "checkFrontend" "$frontend_dir"  2>/dev/null 1>&2 </dev/null && success || failure
         RETVAL=$?

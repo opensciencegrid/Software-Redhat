@@ -1,6 +1,6 @@
 Summary:   Profiles your system for debugging
 Name:      osg-system-profiler
-Version:   0.0.4
+Version:   1.0.3
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -32,6 +32,21 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/%{name}
 
 %changelog
+* Fri Feb 24 2012 Alain Roy <roy@cs.wisc.edu> 1.0.3-1
+- Added more log files (osg-configure & Bestman)
+
+* Fri Jan 13 2012 Alain Roy <roy@cs.wisc.edu> 1.0.2-1
+- Fixed minor typo
+
+* Fri Jan 13 2012 Alain Roy <roy@cs.wisc.edu> 1.0.1-1
+- Ensure that stderr goes to the profile.
+
+* Thu Jan 12 2012 Alain Roy <roy@cs.wisc.edu> 1.0.0-1
+- Rewrite to make it easier to maintain
+- Tail some log files
+- Dump RPM information
+- More Python details
+
 * Tue Aug 23 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 0.0.4-1
 - Added profiler info about CA Certificate installation
 

@@ -1,7 +1,7 @@
 
 Name: xrootd-cmstfc
 Version: 1.4.3
-Release: 3
+Release: 3%{?dist}
 Summary: CMS TFC plugin for xrootd
 
 Group: System Environment/Daemons

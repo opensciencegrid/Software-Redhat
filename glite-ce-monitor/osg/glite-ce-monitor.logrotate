@@ -1,0 +1,7 @@
+/var/log/glite-ce-monitor/*.log {
+    weekly
+    rotate 10
+    missingok
+    notifempty
+}
+

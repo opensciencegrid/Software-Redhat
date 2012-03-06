@@ -2,7 +2,7 @@
 Name:      rsv
 Summary:   RSV Meta Package
 Version:   3.6.7
-Release:   1%{?dist}
+Release:   2%{?dist}
 License:   Apache 2.0
 Group:     Applications/Monitoring
 URL:       https://twiki.grid.iu.edu/bin/view/MonitoringInformation/RSV
@@ -17,6 +17,7 @@ Requires: rsv-metrics
 Requires: osg-configure
 Requires: osg-configure-rsv
 Requires: grid-certificates
+Requires: voms-clients
 
 %description
 %{summary}
@@ -31,6 +32,9 @@ rm -rf $RPM_BUILD_ROOT
 # No files since this is a meta package
 
 %changelog
+* Fri Jan 06 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.6.7-2
+- Added dependency on voms-clients
+
 * Wed Dec 28 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.6.7-1
 - No changes, bumped due to changes in rsv-metrics and rsv-core.
 

@@ -1,0 +1,11 @@
+
+This one's a bit weird.
+
+PureTLS requires a hacked version of cryptix-asn1; they provide the source
+tarball.  However, Globus has a forked version of this fork.
+
+The following was done on March 2, 2012 to produce the tarball:
+
+cvs -d:pserver:anonymous@cvs.globus.org:/home/dsl/cog/CVS export -r HEAD cryptix-asn1
+tar zcf cryptix-asn1.tar.gz cryptix-asn1/
+

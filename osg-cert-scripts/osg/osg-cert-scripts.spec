@@ -5,8 +5,8 @@
 %endif
 
 Name:           osg-cert-scripts
-Version:        2.7.1
-Release:        2
+Version:        2.7.2
+Release:        1%{?dist}
 Summary:        Command-line interface to the DOEGrids CA web site, and more.
 
 Group:          Grid
@@ -19,8 +19,11 @@ Requires:       /usr/bin/ldapsearch
 Requires:       /usr/bin/openssl
 Requires:       grid-certificates
 Requires:	perl(Crypt::SSLeay)
+Requires: 	perl(LWP::UserAgent)
+Requires: 	perl(Date::Format)
+Requires: 	perl(Getopt::Long)
 
-Source0:        osg-cert-scripts-2.7.1.tar.gz
+Source0:        osg-cert-scripts-2.7.2.tar.gz
 # Patches incorporated to SVN since OSG is the upstream source
 #Patch0:         change_awk_locations.patch  
 #Patch1:         make_correct_python_module.patch
@@ -71,11 +74,20 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Feb 16 2012 Anand Padmanabhan <apadmana@uiuc.edu> - 2.7.2-1
+- Fix for Jira ticket 546
+
+* Mon Feb 16 2012 Anand Padmanabhan <apadmana@uiuc.edu> - 2.7.1-4
+- Added dependency to perl(LWP::UserAgent), perl(Date::Format), perl(Getopt::Long)
+
+* Mon Feb 13 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 2.7.1-3
+- Added dist tag
+
 * Mon Oct 10 2011 Anand Padmanabhan <apadmana@uiuc.edu> - 2.7.1-2
-Added dependency to perl(Crypt::SSLeay)
+- Added dependency to perl(Crypt::SSLeay)
 
 * Mon Aug 15 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 2.7-5
-Rename RPM to use the osg- prefix.
+- Rename RPM to use the osg- prefix.
 
 * Wed Aug 10 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 2.7-4
 - Require virtual dep grid-certificates, not actual package osg-ca-certs.

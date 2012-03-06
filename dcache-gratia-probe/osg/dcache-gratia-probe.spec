@@ -1,7 +1,7 @@
 Name:      dcache-gratia-probe 
 Summary:   dcache-gratia-probe
 Version:   3.0.0
-Release:   2
+Release:   2%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org

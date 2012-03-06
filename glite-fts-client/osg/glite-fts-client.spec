@@ -1,6 +1,6 @@
 Name:		glite-fts-client
 Version:	3.7.4
-Release:	4%{?dist}
+Release:	7%{?dist}
 Summary:	gLite FTS client
 
 Group:		Development/Languages/C and C++
@@ -9,8 +9,11 @@ URL:		http://glite.cvs.cern.ch/cgi-bin/glite.cgi/org.glite.data.transfer-cli
 # Retrieved on Jul 5 2011
 # http://glite.cvs.cern.ch/cgi-bin/glite.cgi/org.glite.data.transfer-cli.tar.gz?view=tar&pathrev=glite-data-transfer-cli_R_3_7_4_1
 Source0:        org.glite.data.transfer-cli.tar.gz
-Source1:        stdsoap2.c
+
 Patch0:         glite_fts_client_fedora.patch
+Patch1:         channel_internal_fixelsif.sl6.patch 
+Patch2:         add_gsoap_support.patch
+Patch3:         add_gsoap_tools.patch
 
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 Requires:	CGSI-gSOAP
@@ -23,7 +26,11 @@ BuildRequires:  glite-data-delegation-cli-devel%{?_isa}
 BuildRequires:  glite-data-transfer-interface
 BuildRequires:  /usr/bin/xsltproc
 BuildRequires:  glib2-devel%{?_isa}
-BuildRequires:  e2fsprogs-devel%{?_isa}
+%if 0%{?el6}
+BuildRequires:  libuuid-devel
+%else
+BuildRequires:  e2fsprogs-devel
+%endif
 BuildRequires:  globus-gssapi-gsi-devel%{?_isa}
 BuildRequires:  globus-gss-assist-devel%{?_isa}
 BuildRequires:  gridsite-devel%{?_isa}
@@ -39,7 +46,13 @@ BuildRequires:  doxygen
 
 %patch0 -p0
 
-cp %SOURCE1 .
+# Fix elsif in channel_internal.h
+%if 0%{?el6}
+%patch1 -p0
+%endif
+
+%patch2 -p0
+%patch3 -p0
 
 %build
 ./bootstrap
@@ -51,23 +64,38 @@ make %{?_smp_mflags}
 rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
 
+# Python macros
+%if 0%{?rhel} <= 5
+%{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
+%{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
+%endif
+
 rm -rf $RPM_BUILD_ROOT%{_libdir}/lib*.a
 rm -rf $RPM_BUILD_ROOT%{_libdir}/lib*.la
-rm -rf $RPM_BUILD_ROOT%{_libdir}/python2.4/site-packages/fts.a
-rm -rf $RPM_BUILD_ROOT%{_libdir}/python2.4/site-packages/fts.la
+rm -rf $RPM_BUILD_ROOT%{python_sitearch}/fts.a
+rm -rf $RPM_BUILD_ROOT%{python_sitearch}/fts.la
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)
-%{_libdir}/python2.4/site-packages/fts*
+%{python_sitearch}/fts*
 %{_libdir}/lib*.so.*
 
 %{_mandir}/man1/glite*
 %{_bindir}/glite-transfer*
 
 %changelog
+* Thu Jan 19 2012 Derek Weitzel <dweitzel@cse.unl.edu> - 3.7.4-7
+- Adding patch for malformed elsif
+
+* Thu Jan 19 2012 Derek Weitzel <dweitzel@cse.unl.edu> - 3.7.4-6
+- Adding libuuid dependency for sl6
+
+* Thu Jan 19 2012 Derek Weitzel <dweitzel@cse.unl.edu> - 3.7.4-5
+- Adding python macros
+
 * Fri Oct 28 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 3.7.4-4
 - rebuilt
 

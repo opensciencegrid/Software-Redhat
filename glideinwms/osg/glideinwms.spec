@@ -1,6 +1,26 @@
+# The following should be either "v2_plus" or "v3_plus"
+%define v2_plus 0
+%define v3_plus 1
+
 Name:           glideinwms
-Version:        2.5.4
-Release:        1%{?dist}
+
+%if %{v2_plus}
+%define version 2.5.5
+%define release 6alpha
+%define frontend_xml frontend.xml
+%define factory_xml glideinWMS.xml
+%endif
+
+%if %{v3_plus}
+%define version 3.0.0 
+%define release 0pre3
+%define frontend_xml frontend.master.xml
+%define factory_xml glideinWMS.master.xml
+%endif
+
+Version:        %{version}
+Release:        %{release}%{?dist}
+
 Summary:        The VOFrontend for glideinWMS submission host
 
 Group:          System Environment/Daemons
@@ -8,6 +28,15 @@ License:        Fermitools Software Legal Information (Modified BSD License)
 URL:            http://www.uscms.org/SoftwareComputing/Grid/WMS/glideinWMS/doc.v2/manual/
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
+
+%define web_dir %{_localstatedir}/lib/gwms-frontend/web-area
+%define web_base %{_localstatedir}/lib/gwms-frontend/web-base
+%define frontend_dir %{_localstatedir}/lib/gwms-frontend/vofrontend
+%define factory_web_dir %{_localstatedir}/lib/gwms-factory/web-area
+%define factory_web_base %{_localstatedir}/lib/gwms-factory/web-base
+%define factory_dir %{_localstatedir}/lib/gwms-factory/work-dir
+%define condor_dir %{_localstatedir}/lib/gwms-factory/condor
+
 
 #Source0:        http://www.uscms.org/SoftwareComputing/Grid/WMS/glideinWMS/glideinWMS_v2_5_1_frontend.tgz
 Source:	glideinwms.tar.gz
@@ -18,18 +47,23 @@ Source:	glideinwms.tar.gz
 # git archive v2_5_2 --prefix='glideinWMS/' | gzip > ~/rpmbuild/SOURCES/glideinWMS_v2_5_2_frontend.tgz
 
 Source1:        frontend_startup
-Source2:        frontend.xml
+Source2:        %{frontend_xml}
 Source3:        gwms-frontend.conf.httpd
 Source4:        00_gwms_general.config
 Source5:        01_gwms_collectors.config
 Source6:	02_gwms_schedds.config
 Source7:	03_gwms_local.config
 Source8:	chksum.sh
-Source9:	checksum.frontend
-patch0:         reconfig_frontend.patch
-patch1:         cvWParamDict.py.patch
-patch2: 	cvWParams.py.patch
-patch3:		glideinwms_version.patch
+Source9:	condor_mapfile
+Source10:       00_gwms_factory_general.config
+Source11:       01_gwms_factory_collectors.config
+Source12:	02_gwms_factory_schedds.config
+Source13:	03_gwms_factory_local.config
+Source14:	%{factory_xml}
+Source15:       gwms-factory.conf.httpd
+Source16:       factory_startup
+Source17:       privsep_config
+
 %description
 This is a package for the glidein workload management system.
 Currently, only the vofrontend portion is supported
@@ -47,13 +81,12 @@ Requires: python-rrdtool
 Requires: m2crypto
 Requires: javascriptrrd
 Requires: osg-client
+Requires: gwms-condor-config
 #Requires: vdt-vofrontend-essentials
-
 
 Requires(post): /sbin/service
 Requires(post): /usr/sbin/useradd
 Requires(post): /sbin/chkconfig
-
 
 
 %description vofrontend
@@ -62,6 +95,62 @@ to access the Grid resources. GlideinWMS is a Glidein
 Based WMS (Workload Management System) that works on top of 
 Condor. For those familiar with the Condor system, it is used 
 for scheduling and job control. 
+
+
+%package vofrontend-condor
+Summary:        The VOFrontend condor config
+Group:          System Environment/Daemons
+Provides: gwms-condor-config
+
+%description vofrontend-condor
+This is a package including condor_config for a full one-node
+install of vofrontend + userschedd + usercollector
+
+
+%package minimal-condor
+Summary:        The VOFrontend minimal condor config
+Group:          System Environment/Daemons
+Provides: gwms-condor-config
+
+%description minimal-condor
+This is an alternate condor config for just the minimal amount
+needed for vofrontend.
+
+
+%package factory
+Summary:        The Factory for glideinWMS
+Group:          System Environment/Daemons
+Provides:       GlideinWMSFactory = %{version}-%{release}
+Requires: httpd
+# We require Condor 7.6.0 (and newer) to support
+# condor_advertise -multiple -tcp which is enabled by default
+Requires: condor >= 7.6.0
+Requires: python-rrdtool
+Requires: m2crypto
+Requires: javascriptrrd
+Requires: gwms-factory-config
+Requires(post): /sbin/service
+Requires(post): /usr/sbin/useradd
+Requires(post): /sbin/chkconfig
+
+%description factory
+The purpose of the glideinWMS is to provide a simple way
+to access the Grid resources. GlideinWMS is a Glidein
+Based WMS (Workload Management System) that works on top of
+Condor. For those familiar with the Condor system, it is used
+for scheduling and job control.
+
+
+
+%package factory-condor
+Summary:        The VOFrontend condor config
+Group:          System Environment/Daemons
+Provides: gwms-factory-config
+
+%description factory-condor
+This is a package including condor_config for a full one-node
+install of wmscollector + wms factory
+
 
 
 
@@ -77,7 +166,7 @@ for scheduling and job control.
 cp %{SOURCE8} .
 chmod 700 chksum.sh
 ./chksum.sh v%{version}-%{release}.osg etc/checksum.frontend "CVS config_examples doc .git .gitattributes poolwatcher factory/check* factory/glideFactory* factory/test* factory/manage* factory/stop* factory/tools creation/create_glidein creation/reconfig_glidein creation/info_glidein creation/lib/cgW* creation/web_base/factory*html creation/web_base/collector_setup.sh creation/web_base/condor_platform_select.sh creation/web_base/condor_startup.sh creation/web_base/create_mapfile.sh creation/web_base/gcb_setup.sh creation/web_base/glexec_setup.sh creation/web_base/glidein_startup.sh creation/web_base/job_submit.sh creation/web_base/local_start.sh creation/web_base/setup_x509.sh creation/web_base/validate_node.sh chksum.sh etc/checksum*"
-
+./chksum.sh v%{version}-%{release}.osg etc/checksum.factory "CVS config_examples doc .git .gitattributes poolwatcher frontend/* creation/reconfig_glidein creation/lib/cgW* creation/web_base/factory*html creation/web_base/collector_setup.sh creation/web_base/condor_platform_select.sh creation/web_base/condor_startup.sh creation/web_base/create_mapfile.sh creation/web_base/gcb_setup.sh creation/web_base/glexec_setup.sh creation/web_base/glidein_startup.sh creation/web_base/job_submit.sh creation/web_base/local_start.sh creation/web_base/setup_x509.sh creation/web_base/validate_node.sh chksum.sh etc/checksum*"
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -92,96 +181,146 @@ rm -rf $RPM_BUILD_ROOT
 %{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
 %endif
 
-
-# Apply the patches
-#%patch -P 0
-#%patch -P 1 -p3 
-
 #Change src_dir in reconfig_Frontend
-sed -i "s/WEB_BASE_DIR=.*/WEB_BASE_DIR=\"\/usr\/share\/gwms-frontend\/frontend-temp\"/" creation/reconfig_frontend
+sed -i "s/WEB_BASE_DIR=.*/WEB_BASE_DIR=\"\/var\/lib\/gwms-frontend\/web-base\"/" creation/reconfig_frontend
+sed -i "s/STARTUP_DIR=.*/STARTUP_DIR=\"\/var\/lib\/gwms-frontend\/web-base\"/" creation/reconfig_frontend
+sed -i "s/WEB_BASE_DIR=.*/WEB_BASE_DIR=\"\/var\/lib\/gwms-factory\/web-base\"/" creation/reconfig_glidein
+sed -i "s/STARTUP_DIR =.*/STARTUP_DIR=\"\/var\/lib\/gwms-factory\/web-base\"/" creation/reconfig_glidein
 
 # install the executables
 install -d $RPM_BUILD_ROOT%{_sbindir}
 # Find all the executables in the frontend directory
-#find frontend -perm -u=x -type f -exec cp {} $RPM_BUILD_ROOT%{_sbindir} \;
 install -m 0500 frontend/checkFrontend.py $RPM_BUILD_ROOT%{_sbindir}/checkFrontend
 install -m 0500 frontend/glideinFrontendElement.py $RPM_BUILD_ROOT%{_sbindir}/glideinFrontendElement.py
 install -m 0500 frontend/glideinFrontend.py $RPM_BUILD_ROOT%{_sbindir}/glideinFrontend
 install -m 0500 frontend/stopFrontend.py $RPM_BUILD_ROOT%{_sbindir}/stopFrontend
 install -m 0500 creation/reconfig_frontend $RPM_BUILD_ROOT%{_sbindir}/reconfig_frontend
 
+#install the factory executables
+install -m 0500 factory/checkFactory.py $RPM_BUILD_ROOT%{_sbindir}/
+install -m 0500 factory/glideFactory.py $RPM_BUILD_ROOT%{_sbindir}/
+install -m 0500 factory/glideFactoryEntry.py $RPM_BUILD_ROOT%{_sbindir}/
+install -m 0500 factory/manageFactoryDowntimes.py $RPM_BUILD_ROOT%{_sbindir}/
+install -m 0500 factory/stopFactory.py $RPM_BUILD_ROOT%{_sbindir}/
+install -m 0500 creation/reconfig_glidein $RPM_BUILD_ROOT%{_sbindir}/
+install -m 0500 creation/info_glidein $RPM_BUILD_ROOT%{_sbindir}/
+
+
 # install the library parts
 # FIXME: Need to create a subdirectory for vofrontend python files
 install -d $RPM_BUILD_ROOT%{python_sitelib}
 cp lib/*.py $RPM_BUILD_ROOT%{python_sitelib}
 cp frontend/*.py $RPM_BUILD_ROOT/%{python_sitelib}
+cp factory/*.py $RPM_BUILD_ROOT/%{python_sitelib}
 cp creation/lib/*.py $RPM_BUILD_ROOT%{python_sitelib}
 
 
 # Install the init.d
 install -d  $RPM_BUILD_ROOT/%{_initrddir}
 install -m 0755 %{SOURCE1} $RPM_BUILD_ROOT/%{_initrddir}/gwms-frontend
+install -m 0755 %{SOURCE16} $RPM_BUILD_ROOT/%{_initrddir}/gwms-factory
+
 
 # Install the web directory
-install -d $RPM_BUILD_ROOT%{_datadir}/gwms-frontend/www
-install -d $RPM_BUILD_ROOT%{_datadir}/gwms-frontend/www/monitor/
-install -d $RPM_BUILD_ROOT%{_datadir}/gwms-frontend/www/stage/
-install -d $RPM_BUILD_ROOT%{_datadir}/gwms-frontend/www/stage/group_main
+install -d $RPM_BUILD_ROOT%{frontend_dir}
+install -d $RPM_BUILD_ROOT%{web_base}
+install -d $RPM_BUILD_ROOT%{web_dir}
+install -d $RPM_BUILD_ROOT%{web_dir}/monitor/
+install -d $RPM_BUILD_ROOT%{web_dir}/stage/
+install -d $RPM_BUILD_ROOT%{web_dir}/stage/group_main
+install -d $RPM_BUILD_ROOT%{factory_dir}
+install -d $RPM_BUILD_ROOT%{factory_web_base}
+install -d $RPM_BUILD_ROOT%{factory_web_dir}
+install -d $RPM_BUILD_ROOT%{factory_web_dir}/monitor/
+install -d $RPM_BUILD_ROOT%{factory_web_dir}/stage/
+install -d $RPM_BUILD_ROOT%{factory_dir}/lock
+install -d $RPM_BUILD_ROOT%{condor_dir}
 
-# Bunch of Monitoring stuff
-install -m 644 creation/web_base/frontendRRDBrowse.html $RPM_BUILD_ROOT%{_datadir}/gwms-frontend/www/monitor/frontendRRDBrowse.html
-install -m 644 creation/web_base/frontendRRDGroupMatrix.html $RPM_BUILD_ROOT%{_datadir}/gwms-frontend/www/monitor/frontendRRDGroupMatrix.html  
-install -m 644 creation/web_base/frontendStatus.html $RPM_BUILD_ROOT%{_datadir}/gwms-frontend/www/monitor/frontendStatus.html 
-install -d $RPM_BUILD_ROOT%{_datadir}/gwms-frontend/www/monitor/lock
-install -d $RPM_BUILD_ROOT%{_datadir}/gwms-frontend/www/monitor/jslibs
-install -d $RPM_BUILD_ROOT%{_datadir}/gwms-frontend/www/monitor/total
-install -d $RPM_BUILD_ROOT%{_datadir}/gwms-frontend/www/monitor/group_main
-install -d $RPM_BUILD_ROOT%{_datadir}/gwms-frontend/www/monitor/group_main/lock
-install -d $RPM_BUILD_ROOT%{_datadir}/gwms-frontend/www/monitor/group_main/total
 
-# staging stuff
-install -m 644 creation/web_base/nodes.blacklist $RPM_BUILD_ROOT%{_datadir}/gwms-frontend/www/stage/nodes.blacklist
-install -m 644 creation/web_base/nodes.blacklist $RPM_BUILD_ROOT%{_datadir}/gwms-frontend/www/stage/group_main/nodes.blacklist
+install -d $RPM_BUILD_ROOT%{web_dir}/monitor/lock
+install -d $RPM_BUILD_ROOT%{web_dir}/monitor/jslibs
+install -d $RPM_BUILD_ROOT%{web_dir}/monitor/total
+install -d $RPM_BUILD_ROOT%{web_dir}/monitor/group_main
+install -d $RPM_BUILD_ROOT%{web_dir}/monitor/group_main/lock
+install -d $RPM_BUILD_ROOT%{web_dir}/monitor/group_main/total
+install -d $RPM_BUILD_ROOT%{factory_web_dir}/monitor/lock
+install -d $RPM_BUILD_ROOT%{factory_web_dir}/monitor/jslibs
+install -d $RPM_BUILD_ROOT%{factory_web_dir}/monitor/total
+install -d $RPM_BUILD_ROOT%{factory_web_dir}/monitor/group_main
+install -d $RPM_BUILD_ROOT%{factory_web_dir}/monitor/group_main/lock
+install -d $RPM_BUILD_ROOT%{factory_web_dir}/monitor/group_main/total
 
-# Httpd configuration changes
-install -d $RPM_BUILD_ROOT%{_sysconfdir}/httpd/conf.d
-install -m 0644 %{SOURCE3} $RPM_BUILD_ROOT/%{_sysconfdir}/httpd/conf.d/gwms-frontend.conf
+install -m 644 creation/web_base/nodes.blacklist $RPM_BUILD_ROOT%{web_dir}/stage/nodes.blacklist
+install -m 644 creation/web_base/nodes.blacklist $RPM_BUILD_ROOT%{web_dir}/stage/group_main/nodes.blacklist
 
 # Install the logs
 install -d $RPM_BUILD_ROOT%{_localstatedir}/log/gwms-frontend/frontend
 install -d $RPM_BUILD_ROOT%{_localstatedir}/log/gwms-frontend/group_main
+install -d $RPM_BUILD_ROOT%{_localstatedir}/log/gwms-factory
+install -d $RPM_BUILD_ROOT%{_localstatedir}/log/gwms-factory/server
+install -d $RPM_BUILD_ROOT%{_localstatedir}/log/gwms-factory/server/factory
+install -d $RPM_BUILD_ROOT%{_localstatedir}/log/gwms-factory/client
+install -d $RPM_BUILD_ROOT%{_localstatedir}/lib/gwms-factory/client-proxies
 
 
 # Install frontend temp dir, for all the frontend.xml.<checksum>
-install -d $RPM_BUILD_ROOT%{_datadir}/gwms-frontend/frontend-temp
-install -d $RPM_BUILD_ROOT%{_datadir}/gwms-frontend/frontend-temp/
-install -d $RPM_BUILD_ROOT%{_datadir}/gwms-frontend/frontend-temp/lock
-#install -d $RPM_BUILD_ROOT%{_datadir}/gwms-frontend/frontend-temp/monitor
-#install -d $RPM_BUILD_ROOT%{_datadir}/gwms-frontend/frontend-temp/monitor/group_main
-install -d $RPM_BUILD_ROOT%{_datadir}/gwms-frontend/frontend-temp/group_main
-install -d $RPM_BUILD_ROOT%{_datadir}/gwms-frontend/frontend-temp/group_main/lock
-#install -d $RPM_BUILD_ROOT%{_datadir}/gwms-frontend/frontend-temp/group_main/monitor
+install -d $RPM_BUILD_ROOT%{frontend_dir}/lock
+#install -d $RPM_BUILD_ROOT%{frontend_dir}/monitor
+#install -d $RPM_BUILD_ROOT%{frontend_dir}/monitor/group_main
+install -d $RPM_BUILD_ROOT%{frontend_dir}/group_main
+install -d $RPM_BUILD_ROOT%{frontend_dir}/group_main/lock
+#install -d $RPM_BUILD_ROOT%{frontend_dir}/group_main/monitor
+
+install -m 644 creation/web_base/frontendRRDBrowse.html $RPM_BUILD_ROOT%{web_dir}/monitor/frontendRRDBrowse.html
+install -m 644 creation/web_base/frontendRRDGroupMatrix.html $RPM_BUILD_ROOT%{web_dir}/monitor/frontendRRDGroupMatrix.html  
+install -m 644 creation/web_base/frontendStatus.html $RPM_BUILD_ROOT%{web_dir}/monitor/frontendStatus.html 
 
 
 # Install the frontend config dir
 install -d $RPM_BUILD_ROOT/%{_sysconfdir}/gwms-frontend
 install -m 0644 %{SOURCE2} $RPM_BUILD_ROOT/%{_sysconfdir}/gwms-frontend/frontend.xml
 
-# Install the silly stuff, should be fixed in glideinWMS
-cp -r creation/web_base/* $RPM_BUILD_ROOT%{_datadir}/gwms-frontend/frontend-temp/
-rm -rf $RPM_BUILD_ROOT%{_datadir}/gwms-frontend/frontend-temp/CVS
+# Install the factory config dir
+install -d $RPM_BUILD_ROOT/%{_sysconfdir}/gwms-factory
+install -m 0644 %{SOURCE14} $RPM_BUILD_ROOT/%{_sysconfdir}/gwms-factory/glideinWMS.xml
+
+# Install the web base
+cp -r creation/web_base/* $RPM_BUILD_ROOT%{web_base}/
+cp -r creation/web_base/* $RPM_BUILD_ROOT%{factory_web_base}/
+rm -rf $RPM_BUILD_ROOT%{web_base}/CVS
 
 # Install condor stuff
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d
+install -d $RPM_BUILD_ROOT%{_sysconfdir}/condor/certs
 install -m 0644 %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
 install -m 0644 %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
 install -m 0644 %{SOURCE6} $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
 install -m 0644 %{SOURCE7} $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
+install -m 0644 %{SOURCE17} $RPM_BUILD_ROOT%{_sysconfdir}/condor/
+install -m 0644 %{SOURCE9} $RPM_BUILD_ROOT%{_sysconfdir}/condor/certs/
+install -m 0644 %{SOURCE10} $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
+install -m 0644 %{SOURCE11} $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
+install -m 0644 %{SOURCE12} $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
+install -m 0644 %{SOURCE13} $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
+
+#Install condor schedd dirs
+for schedd in "schedd_glideins2" "schedd_glideins3" "schedd_glideins4" "schedd_glideins5" "schedd_jobs2"; do
+	install -d $RPM_BUILD_ROOT/var/lib/condor/$schedd
+	install -d $RPM_BUILD_ROOT/var/lib/condor/$schedd/execute
+	install -d $RPM_BUILD_ROOT/var/lib/condor/$schedd/lock
+	install -d $RPM_BUILD_ROOT/var/lib/condor/$schedd/procd_pipe
+	install -d $RPM_BUILD_ROOT/var/lib/condor/$schedd/spool
+done
+
 
 # Install tools
 install -d $RPM_BUILD_ROOT%{_bindir}
 # Install the tools as the non-*.py filenames
 for file in `ls tools/*.py`; do
+   newname=`echo $file | sed -e 's/.*\/\(.*\)\.py/\1/'`
+   cp $file $RPM_BUILD_ROOT%{_bindir}/$newname
+done
+for file in `ls factory/tools/*.py`; do
    newname=`echo $file | sed -e 's/.*\/\(.*\)\.py/\1/'`
    cp $file $RPM_BUILD_ROOT%{_bindir}/$newname
 done
@@ -191,7 +330,22 @@ cp tools/lib/*.py $RPM_BUILD_ROOT%{python_sitelib}
 install -m 0755 install/glidecondor_addDN $RPM_BUILD_ROOT%{_sbindir}/glidecondor_addDN
 
 # Install checksum file
-install -m 0644 etc/checksum.frontend $RPM_BUILD_ROOT%{_datadir}/gwms-frontend/frontend-temp/checksum.frontend
+install -m 0644 etc/checksum.frontend $RPM_BUILD_ROOT%{frontend_dir}/checksum.frontend
+install -m 0644 etc/checksum.factory $RPM_BUILD_ROOT%{factory_dir}/checksum.factory
+
+#Install web area conf
+install -d $RPM_BUILD_ROOT/%{_sysconfdir}/httpd/conf.d
+install -m 0644 %{SOURCE3} $RPM_BUILD_ROOT/%{_sysconfdir}/httpd/conf.d/gwms-frontend.conf
+install -m 0644 %{SOURCE15} $RPM_BUILD_ROOT/%{_sysconfdir}/httpd/conf.d/gwms-factory.conf
+
+%if %{v3_plus}
+install -d $RPM_BUILD_ROOT%{web_base}/../creation
+install -d $RPM_BUILD_ROOT%{web_base}/../creation/templates
+install -d $RPM_BUILD_ROOT%{factory_web_base}/../creation
+install -d $RPM_BUILD_ROOT%{factory_web_base}/../creation/templates
+install -m 0644 creation/templates/factory_initd_startup_template $RPM_BUILD_ROOT%{factory_web_base}/../creation/templates/
+install -m 0644 creation/templates/frontend_initd_startup_template $RPM_BUILD_ROOT%{web_base}/../creation/templates/
+%endif
 
 %post vofrontend
 # $1 = 1 - Installation
@@ -201,29 +355,42 @@ install -m 0644 etc/checksum.frontend $RPM_BUILD_ROOT%{_datadir}/gwms-frontend/f
 fqdn_hostname=`hostname -f`
 frontend_name=`echo $fqdn_hostname | sed 's/\./-/g'`_OSG_gWMSFrontend
 
-
 sed -i "s/FRONTEND_NAME_CHANGEME/$frontend_name/g" %{_sysconfdir}/gwms-frontend/frontend.xml
-sed -i "s/FRONTEND_HOST/$fqdn_hostname/g" %{_sysconfdir}/gwms-frontend/frontend.xml
-
-#mv %{_datadir}/gwms-frontend/www/stage/ %{_datadir}/gwms-frontend/www/stage/$frontend_name
+sed -i "s/FRONTEND_HOSTNAME/$fqdn_hostname/g" %{_sysconfdir}/gwms-frontend/frontend.xml
 
 /sbin/chkconfig --add gwms-frontend
-ln -s %{_sysconfdir}/gwms-frontend/frontend.xml %{_datadir}/gwms-frontend/frontend-temp/frontend.xml
-ln -s %{_datadir}/gwms-frontend/www/monitor/ %{_datadir}/gwms-frontend/frontend-temp/monitor
-ln -s %{_datadir}/gwms-frontend/www/monitor/group_main %{_datadir}/gwms-frontend/frontend-temp/group_main/monitor
+ln -s %{web_dir}/monitor %{frontend_dir}/monitor
+
+%post factory
+
+fqdn_hostname=`hostname -f`
+sed -i "s/FACTORY_HOSTNAME/$fqdn_hostname/g" %{_sysconfdir}/gwms-factory/glideinWMS.xml
+ln -s %{factory_web_dir}/monitor %{factory_dir}/monitor
+ln -s %{_localstatedir}/log/gwms-factory %{factory_dir}/log
+
 
 %pre vofrontend
 
 # Add the "frontend" user 
 getent group frontend >/dev/null || groupadd -r frontend
 getent passwd frontend >/dev/null || \
-       useradd -r -g frontend -d %{_datadir}/gwms-frontend \
+       useradd -r -g frontend -d /var/lib/gwms-frontend \
+	-c "VO Frontend user" -s /sbin/nologin frontend
+
+%pre factory
+# Add the "gfactory" user 
+getent group gfactory >/dev/null || groupadd -r gfactory
+getent passwd gfactory >/dev/null || \
+       useradd -r -g gfactory -d /var/lib/gwms-factory \
+	-c "GlideinWMS Factory user" -s /sbin/nologin gfactory
+getent group frontend >/dev/null || groupadd -r frontend
+getent passwd frontend >/dev/null || \
+       useradd -r -g frontend -d /var/lib/gwms-frontend \
 	-c "VO Frontend user" -s /sbin/nologin frontend
 
 %preun vofrontend
 # $1 = 0 - Action is uninstall
 # $1 = 1 - Action is upgrade
-
 
 if [ "$1" = "0" ] ; then
     /sbin/chkconfig --del gwms-frontend
@@ -231,36 +398,417 @@ fi
 
 if [ "$1" = "0" ]; then
     # Remove the symlinks
-    rm -f %{_datadir}/gwms-frontend/frontend-temp/frontend.xml
-    rm -f %{_datadir}/gwms-frontend/frontend-temp/monitor
-    rm -f %{_datadir}/gwms-frontend/frontend-temp/group_main/monitor
+    rm -f %{frontend_dir}/frontend.xml
+    rm -f %{frontend_dir}/monitor
+    rm -f %{frontend_dir}/group_main/monitor
 
     # A lot of files are generated, but rpm won't delete those
 #    rm -rf %{_datadir}/gwms-frontend
 #    rm -rf %{_localstatedir}/log/gwms-frontend/*
 fi
 
+%preun factory
+if [ "$1" = "0" ] ; then
+    /sbin/chkconfig --del gwms-factory
+fi
+if [ "$1" = "0" ]; then
+    rm -f %{factory_dir}/log
+    rm -f %{factory_dir}/monitor
+fi
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
+%files factory
+%defattr(-,gfactory,gfactory,-)
+%attr(755,root,root) %{_bindir}/*
+%attr(755,root,root) %{_sbindir}/checkFactory.py
+%attr(755,root,root) %{_sbindir}/checkFactory.pyc
+%attr(755,root,root) %{_sbindir}/checkFactory.pyo
+%attr(755,root,root) %{_sbindir}/glideFactory.py
+%attr(755,root,root) %{_sbindir}/glideFactory.pyc
+%attr(755,root,root) %{_sbindir}/glideFactory.pyo
+%attr(755,root,root) %{_sbindir}/glideFactoryEntry.py
+%attr(755,root,root) %{_sbindir}/glideFactoryEntry.pyc
+%attr(755,root,root) %{_sbindir}/glideFactoryEntry.pyo
+%attr(755,root,root) %{_sbindir}/glidecondor_addDN
+%attr(755,root,root) %{_sbindir}/info_glidein
+%attr(755,root,root) %{_sbindir}/manageFactoryDowntimes.py
+%attr(755,root,root) %{_sbindir}/manageFactoryDowntimes.pyc
+%attr(755,root,root) %{_sbindir}/manageFactoryDowntimes.pyo
+%attr(755,root,root) %{_sbindir}/reconfig_glidein
+%attr(755,root,root) %{_sbindir}/stopFactory.py
+%attr(755,root,root) %{_sbindir}/stopFactory.pyc
+%attr(755,root,root) %{_sbindir}/stopFactory.pyo
+%attr(-, root, root) %dir %{_localstatedir}/lib/gwms-factory
+%attr(-, root, root) %{_localstatedir}/lib/gwms-factory/client-proxies
+%attr(-, gfactory, gfactory) %{factory_web_dir}
+%attr(-, gfactory, gfactory) %{factory_web_base}
+%attr(-, gfactory, gfactory) %{factory_web_base}/../creation
+%attr(-, gfactory, gfactory) %{factory_dir}
+%attr(-, gfactory, gfactory) %dir %{condor_dir}
+%attr(-, root, root) %dir %{_localstatedir}/log/gwms-factory
+%attr(-, root, root) %dir %{_localstatedir}/log/gwms-factory/client
+%attr(-, gfactory, gfactory) %{_localstatedir}/log/gwms-factory/server
+%{python_sitelib}/cWConsts.py
+%{python_sitelib}/cWConsts.pyc
+%{python_sitelib}/cWConsts.pyo
+%{python_sitelib}/cWDictFile.py
+%{python_sitelib}/cWDictFile.pyc
+%{python_sitelib}/cWDictFile.pyo
+%{python_sitelib}/cWParams.py
+%{python_sitelib}/cWParams.pyc
+%{python_sitelib}/cWParams.pyo
+%{python_sitelib}/cgWConsts.py
+%{python_sitelib}/cgWConsts.pyc
+%{python_sitelib}/cgWConsts.pyo
+%{python_sitelib}/cgWCreate.py
+%{python_sitelib}/cgWCreate.pyc
+%{python_sitelib}/cgWCreate.pyo
+%{python_sitelib}/cgWDictFile.py
+%{python_sitelib}/cgWDictFile.pyc
+%{python_sitelib}/cgWDictFile.pyo
+%{python_sitelib}/cgWParamDict.py
+%{python_sitelib}/cgWParamDict.pyo
+%{python_sitelib}/cgWParamDict.pyc
+%{python_sitelib}/cgWParams.py
+%{python_sitelib}/cgWParams.pyc
+%{python_sitelib}/cgWParams.pyo
+%{python_sitelib}/checkFactory.py
+%{python_sitelib}/checkFactory.pyo
+%{python_sitelib}/checkFactory.pyc
+%{python_sitelib}/condorExe.py
+%{python_sitelib}/condorExe.pyc
+%{python_sitelib}/condorExe.pyo
+%{python_sitelib}/condorLogParser.py
+%{python_sitelib}/condorLogParser.pyc
+%{python_sitelib}/condorLogParser.pyo
+%{python_sitelib}/condorManager.py
+%{python_sitelib}/condorMonitor.py
+%{python_sitelib}/condorPrivsep.py
+%{python_sitelib}/condorPrivsep.pyc
+%{python_sitelib}/condorPrivsep.pyo
+%{python_sitelib}/condorSecurity.py
+%{python_sitelib}/condorSecurity.pyc
+%{python_sitelib}/condorSecurity.pyo
+%{python_sitelib}/exprParser.py
+%{python_sitelib}/exprParser.pyo
+%{python_sitelib}/exprParser.pyc
+%{python_sitelib}/glideFactory.py
+%{python_sitelib}/glideFactory.pyc
+%{python_sitelib}/glideFactory.pyo
+%{python_sitelib}/glideFactoryConfig.py
+%{python_sitelib}/glideFactoryConfig.pyc
+%{python_sitelib}/glideFactoryConfig.pyo
+%{python_sitelib}/glideFactoryDowntimeLib.py
+%{python_sitelib}/glideFactoryDowntimeLib.pyc
+%{python_sitelib}/glideFactoryDowntimeLib.pyo
+%{python_sitelib}/glideFactoryEntry.py
+%{python_sitelib}/glideFactoryEntry.pyc
+%{python_sitelib}/glideFactoryEntry.pyo
+%{python_sitelib}/glideFactoryInterface.py
+%{python_sitelib}/glideFactoryInterface.pyc
+%{python_sitelib}/glideFactoryInterface.pyo
+%{python_sitelib}/glideFactoryLib.py
+%{python_sitelib}/glideFactoryLib.pyc
+%{python_sitelib}/glideFactoryLib.pyo
+%{python_sitelib}/glideFactoryLogParser.py
+%{python_sitelib}/glideFactoryLogParser.pyc
+%{python_sitelib}/glideFactoryLogParser.pyo
+%{python_sitelib}/glideFactoryMonitorAggregator.py
+%{python_sitelib}/glideFactoryMonitorAggregator.pyc
+%{python_sitelib}/glideFactoryMonitorAggregator.pyo
+%{python_sitelib}/glideFactoryMonitoring.py
+%{python_sitelib}/glideFactoryMonitoring.pyo
+%{python_sitelib}/glideFactoryMonitoring.pyc
+%{python_sitelib}/glideFactoryPidLib.py
+%{python_sitelib}/glideFactoryPidLib.pyc
+%{python_sitelib}/glideFactoryPidLib.pyo
+%{python_sitelib}/glideinCmd.py
+%{python_sitelib}/glideinCmd.pyc
+%{python_sitelib}/glideinCmd.pyo
+%{python_sitelib}/glideinMonitor.py
+%{python_sitelib}/glideinMonitor.pyc
+%{python_sitelib}/glideinMonitor.pyo
+%{python_sitelib}/glideinWMSVersion.py
+%{python_sitelib}/glideinWMSVersion.pyc
+%{python_sitelib}/glideinWMSVersion.pyo
+%{python_sitelib}/hashCrypto.py
+%{python_sitelib}/hashCrypto.pyc
+%{python_sitelib}/hashCrypto.pyo
+%{python_sitelib}/ldapMonitor.py
+%{python_sitelib}/ldapMonitor.pyc
+%{python_sitelib}/ldapMonitor.pyo
+%{python_sitelib}/logSupport.py
+%{python_sitelib}/logSupport.pyc
+%{python_sitelib}/logSupport.pyo
+%{python_sitelib}/manageFactoryDowntimes.py
+%{python_sitelib}/manageFactoryDowntimes.pyc
+%{python_sitelib}/manageFactoryDowntimes.pyo
+%{python_sitelib}/pidSupport.py
+%{python_sitelib}/pidSupport.pyc
+%{python_sitelib}/pidSupport.pyo
+%{python_sitelib}/pubCrypto.py
+%{python_sitelib}/pubCrypto.pyc
+%{python_sitelib}/pubCrypto.pyo
+%{python_sitelib}/rrdSupport.py
+%{python_sitelib}/rrdSupport.pyc
+%{python_sitelib}/rrdSupport.pyo
+%{python_sitelib}/stopFactory.py
+%{python_sitelib}/stopFactory.pyc
+%{python_sitelib}/stopFactory.pyo
+%{python_sitelib}/symCrypto.py
+%{python_sitelib}/symCrypto.pyc
+%{python_sitelib}/symCrypto.pyo
+%{python_sitelib}/test_advertize.py
+%{python_sitelib}/test_advertize.pyc
+%{python_sitelib}/test_advertize.pyo
+%{python_sitelib}/test_cm.py
+%{python_sitelib}/test_cm.pyc
+%{python_sitelib}/test_cm.pyo
+%{python_sitelib}/test_gfi.py
+%{python_sitelib}/test_gfi.pyc
+%{python_sitelib}/test_gfi.pyo
+%{python_sitelib}/timeConversion.py
+%{python_sitelib}/timeConversion.pyc
+%{python_sitelib}/timeConversion.pyo
+%{python_sitelib}/xmlFormat.py
+%{python_sitelib}/xmlFormat.pyc
+%{python_sitelib}/xmlFormat.pyo
+%{python_sitelib}/xmlParse.py
+%{python_sitelib}/xmlParse.pyc
+%{python_sitelib}/xmlParse.pyo
+%{_initrddir}/gwms-factory
+%config(noreplace) %{_sysconfdir}/httpd/conf.d/gwms-factory.conf
+%config(noreplace) %{_sysconfdir}/gwms-factory/glideinWMS.xml
+%if %{v3_plus}
+   /usr/lib/python2.4/site-packages/classadSupport.py
+   /usr/lib/python2.4/site-packages/classadSupport.pyc
+   /usr/lib/python2.4/site-packages/classadSupport.pyo
+   /usr/lib/python2.4/site-packages/cleanupSupport.py
+   /usr/lib/python2.4/site-packages/cleanupSupport.pyc
+   /usr/lib/python2.4/site-packages/cleanupSupport.pyo
+   /usr/lib/python2.4/site-packages/encodingSupport.py
+   /usr/lib/python2.4/site-packages/encodingSupport.pyc
+   /usr/lib/python2.4/site-packages/encodingSupport.pyo
+   /usr/lib/python2.4/site-packages/glideFactoryCredentials.py
+   /usr/lib/python2.4/site-packages/glideFactoryCredentials.pyc
+   /usr/lib/python2.4/site-packages/glideFactoryCredentials.pyo
+   /usr/lib/python2.4/site-packages/glideinwms_tarfile.py
+   /usr/lib/python2.4/site-packages/glideinwms_tarfile.pyc
+   /usr/lib/python2.4/site-packages/glideinwms_tarfile.pyo
+   /usr/lib/python2.4/site-packages/iniSupport.py
+   /usr/lib/python2.4/site-packages/iniSupport.pyc
+   /usr/lib/python2.4/site-packages/iniSupport.pyo
+   /usr/lib/python2.4/site-packages/tarSupport.py
+   /usr/lib/python2.4/site-packages/tarSupport.pyc
+   /usr/lib/python2.4/site-packages/tarSupport.pyo
+%endif
 
 %files vofrontend
 %defattr(-,frontend,frontend,-)
 %attr(755,root,root) %{_bindir}/*
-%attr(755,root,root) %{_sbindir}/*
-%attr(-, frontend, frontend) %{_datadir}/gwms-frontend
+%attr(755,root,root) %{_sbindir}/checkFrontend
+%attr(755,root,root) %{_sbindir}/glidecondor_addDN
+%attr(755,root,root) %{_sbindir}/glideinFrontend
+%attr(755,root,root) %{_sbindir}/glideinFrontendElement.py
+%attr(755,root,root) %{_sbindir}/glideinFrontendElement.pyc
+%attr(755,root,root) %{_sbindir}/glideinFrontendElement.pyo
+%attr(755,root,root) %{_sbindir}/reconfig_frontend
+%attr(755,root,root) %{_sbindir}/stopFrontend
+%attr(-, frontend, frontend) %dir %{_localstatedir}/lib/gwms-frontend
+%attr(-, frontend, frontend) %{web_dir}
+%attr(-, frontend, frontend) %{web_base}
+%attr(-, frontend, frontend) %{web_base}/../creation
+%attr(-, frontend, frontend) %{frontend_dir}
 %attr(-, frontend, frontend) %{_localstatedir}/log/gwms-frontend
-%{python_sitelib}
+%{python_sitelib}/cWConsts.py
+%{python_sitelib}/cWConsts.pyc
+%{python_sitelib}/cWConsts.pyo
+%{python_sitelib}/cWDictFile.py
+%{python_sitelib}/cWDictFile.pyc
+%{python_sitelib}/cWDictFile.pyo
+%{python_sitelib}/cWParams.py
+%{python_sitelib}/cWParams.pyc
+%{python_sitelib}/cWParams.pyo
+%{python_sitelib}/checkFrontend.py
+%{python_sitelib}/checkFrontend.pyc
+%{python_sitelib}/checkFrontend.pyo
+%{python_sitelib}/condorExe.py
+%{python_sitelib}/condorExe.pyc
+%{python_sitelib}/condorExe.pyo
+%{python_sitelib}/condorLogParser.py
+%{python_sitelib}/condorLogParser.pyc
+%{python_sitelib}/condorLogParser.pyo
+%{python_sitelib}/condorManager.py
+%{python_sitelib}/condorManager.pyc
+%{python_sitelib}/condorManager.pyo
+%{python_sitelib}/condorMonitor.py
+%{python_sitelib}/condorMonitor.pyc
+%{python_sitelib}/condorMonitor.pyo
+%{python_sitelib}/condorPrivsep.py
+%{python_sitelib}/condorPrivsep.pyc
+%{python_sitelib}/condorPrivsep.pyo
+%{python_sitelib}/condorSecurity.py
+%{python_sitelib}/condorSecurity.pyc
+%{python_sitelib}/condorSecurity.pyo
+%{python_sitelib}/cvWConsts.py
+%{python_sitelib}/cvWConsts.pyc
+%{python_sitelib}/cvWConsts.pyo
+%{python_sitelib}/cvWCreate.py
+%{python_sitelib}/cvWCreate.pyc
+%{python_sitelib}/cvWCreate.pyo
+%{python_sitelib}/cvWDictFile.py
+%{python_sitelib}/cvWDictFile.pyc
+%{python_sitelib}/cvWDictFile.pyo
+%{python_sitelib}/cvWParamDict.py
+%{python_sitelib}/cvWParamDict.pyc
+%{python_sitelib}/cvWParamDict.pyo
+%{python_sitelib}/cvWParams.py
+%{python_sitelib}/cvWParams.pyc
+%{python_sitelib}/cvWParams.pyo
+%{python_sitelib}/exprParser.py
+%{python_sitelib}/exprParser.pyc
+%{python_sitelib}/exprParser.pyo
+%{python_sitelib}/glideinCmd.py
+%{python_sitelib}/glideinCmd.pyc
+%{python_sitelib}/glideinCmd.pyo
+%{python_sitelib}/glideinFrontend.py
+%{python_sitelib}/glideinFrontend.pyc
+%{python_sitelib}/glideinFrontend.pyo
+%{python_sitelib}/glideinFrontendConfig.py
+%{python_sitelib}/glideinFrontendConfig.pyc
+%{python_sitelib}/glideinFrontendConfig.pyo
+%{python_sitelib}/glideinFrontendElement.py
+%{python_sitelib}/glideinFrontendElement.pyc
+%{python_sitelib}/glideinFrontendElement.pyo
+%{python_sitelib}/glideinFrontendInterface.py
+%{python_sitelib}/glideinFrontendInterface.pyc
+%{python_sitelib}/glideinFrontendInterface.pyo
+%{python_sitelib}/glideinFrontendLib.py
+%{python_sitelib}/glideinFrontendLib.pyc
+%{python_sitelib}/glideinFrontendLib.pyo
+%{python_sitelib}/glideinFrontendMonitorAggregator.py
+%{python_sitelib}/glideinFrontendMonitorAggregator.pyc
+%{python_sitelib}/glideinFrontendMonitorAggregator.pyo
+%{python_sitelib}/glideinFrontendMonitoring.py
+%{python_sitelib}/glideinFrontendMonitoring.pyc
+%{python_sitelib}/glideinFrontendMonitoring.pyo
+%{python_sitelib}/glideinFrontendPidLib.py
+%{python_sitelib}/glideinFrontendPidLib.pyc
+%{python_sitelib}/glideinFrontendPidLib.pyo
+%{python_sitelib}/glideinFrontendPlugins.py
+%{python_sitelib}/glideinFrontendPlugins.pyc
+%{python_sitelib}/glideinFrontendPlugins.pyo
+%{python_sitelib}/glideinMonitor.py
+%{python_sitelib}/glideinMonitor.pyc
+%{python_sitelib}/glideinMonitor.pyo
+%{python_sitelib}/glideinWMSVersion.py
+%{python_sitelib}/glideinWMSVersion.pyc
+%{python_sitelib}/glideinWMSVersion.pyo
+%{python_sitelib}/hashCrypto.py
+%{python_sitelib}/hashCrypto.pyc
+%{python_sitelib}/hashCrypto.pyo
+%{python_sitelib}/ldapMonitor.py
+%{python_sitelib}/ldapMonitor.pyc
+%{python_sitelib}/ldapMonitor.pyo
+%{python_sitelib}/logSupport.py
+%{python_sitelib}/logSupport.pyc
+%{python_sitelib}/logSupport.pyo
+%{python_sitelib}/pidSupport.py
+%{python_sitelib}/pidSupport.pyc
+%{python_sitelib}/pidSupport.pyo
+%{python_sitelib}/pubCrypto.py
+%{python_sitelib}/pubCrypto.pyc
+%{python_sitelib}/pubCrypto.pyo
+%{python_sitelib}/rrdSupport.py
+%{python_sitelib}/rrdSupport.pyc
+%{python_sitelib}/rrdSupport.pyo
+%{python_sitelib}/stopFrontend.py
+%{python_sitelib}/stopFrontend.pyc
+%{python_sitelib}/stopFrontend.pyo
+%{python_sitelib}/symCrypto.py
+%{python_sitelib}/symCrypto.pyc
+%{python_sitelib}/symCrypto.pyo
+%{python_sitelib}/xmlFormat.py
+%{python_sitelib}/xmlFormat.pyc
+%{python_sitelib}/xmlFormat.pyo
+%{python_sitelib}/xmlParse.py
+%{python_sitelib}/xmlParse.pyc
+%{python_sitelib}/xmlParse.pyo
+%{python_sitelib}/timeConversion.py
+%{python_sitelib}/timeConversion.pyc
+%{python_sitelib}/timeConversion.pyo
 %{_initrddir}/gwms-frontend
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/gwms-frontend.conf
+%config(noreplace) %{_sysconfdir}/gwms-frontend/frontend.xml
+%if %{v3_plus}
+   /usr/lib/python2.4/site-packages/classadSupport.py
+   /usr/lib/python2.4/site-packages/classadSupport.pyc
+   /usr/lib/python2.4/site-packages/classadSupport.pyo
+   /usr/lib/python2.4/site-packages/cleanupSupport.py
+   /usr/lib/python2.4/site-packages/cleanupSupport.pyc
+   /usr/lib/python2.4/site-packages/cleanupSupport.pyo
+   /usr/lib/python2.4/site-packages/encodingSupport.py
+   /usr/lib/python2.4/site-packages/encodingSupport.pyc
+   /usr/lib/python2.4/site-packages/encodingSupport.pyo
+   /usr/lib/python2.4/site-packages/glideinwms_tarfile.py
+   /usr/lib/python2.4/site-packages/glideinwms_tarfile.pyc
+   /usr/lib/python2.4/site-packages/glideinwms_tarfile.pyo
+   /usr/lib/python2.4/site-packages/iniSupport.py
+   /usr/lib/python2.4/site-packages/iniSupport.pyc
+   /usr/lib/python2.4/site-packages/iniSupport.pyo
+   /usr/lib/python2.4/site-packages/tarSupport.py
+   /usr/lib/python2.4/site-packages/tarSupport.pyc
+   /usr/lib/python2.4/site-packages/tarSupport.pyo
+%endif
+
+
+%files factory-condor
+%config(noreplace) %{_sysconfdir}/condor/config.d/00_gwms_factory_general.config
+%config(noreplace) %{_sysconfdir}/condor/config.d/01_gwms_factory_collectors.config
+%config(noreplace) %{_sysconfdir}/condor/config.d/02_gwms_factory_schedds.config
+%config(noreplace) %{_sysconfdir}/condor/config.d/03_gwms_factory_local.config
+%config(noreplace) %{_sysconfdir}/condor/privsep_config
+%config(noreplace) %{_sysconfdir}/condor/certs/condor_mapfile
+%attr(-, condor, condor) %{_localstatedir}/lib/condor/schedd_glideins2
+%attr(-, condor, condor) %{_localstatedir}/lib/condor/schedd_glideins3
+%attr(-, condor, condor) %{_localstatedir}/lib/condor/schedd_glideins4
+%attr(-, condor, condor) %{_localstatedir}/lib/condor/schedd_glideins5
+
+%files vofrontend-condor
 %config(noreplace) %{_sysconfdir}/condor/config.d/00_gwms_general.config
 %config(noreplace) %{_sysconfdir}/condor/config.d/01_gwms_collectors.config
 %config(noreplace) %{_sysconfdir}/condor/config.d/02_gwms_schedds.config
 %config(noreplace) %{_sysconfdir}/condor/config.d/03_gwms_local.config
-%config(noreplace) %{_sysconfdir}/gwms-frontend/frontend.xml
+%config(noreplace) %{_sysconfdir}/condor/certs/condor_mapfile
+%attr(-, condor, condor) %{_localstatedir}/lib/condor/schedd_jobs2
+
+%files minimal-condor
+%config(noreplace) %{_sysconfdir}/condor/config.d/00_gwms_general.config
+%config(noreplace) %{_sysconfdir}/condor/certs/condor_mapfile
 
 
 %changelog
+* Tue Feb 21 2012 Doug Strain <dstrain@fnal.gov> - 2.5.5-2alpha
+- Adding factory RPM and v3 support
+
+* Thu Feb 16 2012 Doug Strain <dstrain@fnal.gov> - 2.5.5-1 
+- Updating for v2.5.5 
+
+* Tue Jan 10 2012 Doug Strain <dstrain@fnal.gov> - 2.5.4-7
+- Adding condor_mapfile to minimal
+
+* Mon Jan 9 2012 Doug Strain <dstrain@fnal.gov> - 2.5.4-6
+- Changing directories per Igors request
+-- changing directories to /var/lib
+- Splitting condor config into separate package
+- Fixing web-area httpd
+
+* Thu Jan 5 2012 Doug Strain <dstrain@fnal.gov> - 2.5.4-2
+- Updating for 2.5.4 release source and fixing eatures for BUG2310
+-- Split directories so that the web area is in /var/www
+
 * Thu Dec 29 2011 Doug Strain <dstrain@fnal.gov> - 2.5.4-1
 - Using release source and fixing requested features for BUG2310
 -- Adding user/group correctly

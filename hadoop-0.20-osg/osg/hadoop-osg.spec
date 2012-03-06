@@ -6,7 +6,7 @@
 
 Name:		%{hadoop_name}-%{apache_branch}-osg
 Version:	%{cloudera_version}
-Release:	10
+Release:	10%{?dist}
 Summary:	OSG configurations and scripts for Hadoop
 
 Group:		System Environment/Daemons

@@ -15,3 +15,6 @@ export LCMAPS_DEBUG_LEVEL=3
 # Logging location
 GLOBUS_GATEKEEPER_LOG="@localstatedir@/log/globus-gatekeeper.log"
 
+if [ -e /var/lib/osg/globus-firewall ]; then
+    . /var/lib/osg/globus-firewall
+fi

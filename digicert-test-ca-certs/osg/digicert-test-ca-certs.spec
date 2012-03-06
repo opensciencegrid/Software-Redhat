@@ -1,6 +1,6 @@
 Name:           digicert-test-ca-certs
 Version:        1.0
-Release:        4
+Release:        4%{?dist}
 Summary:        OSG Packaging of the Digicert test CA Certs, in new OpenSSL 0.9.8/1.0.0 format
 
 Group:          System Environment/Base

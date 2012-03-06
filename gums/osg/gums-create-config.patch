@@ -1,15 +1,11 @@
---- gums-1.3.18.002/gums-core/src/main/scripts/gums-create-config.orig	2011-05-05 17:26:46.000000000 -0500
-+++ gums-1.3.18.002/gums-core/src/main/scripts/gums-create-config	2011-10-08 11:15:21.000000000 -0500
-@@ -1,38 +1,5 @@
- #!/bin/sh
+Index: gums-core/src/main/scripts/gums-create-config
+===================================================================
+--- gums-core/src/main/scripts/gums-create-config.orig	2011-05-05 17:26:46.000000003 -0500
++++ gums-core/src/main/scripts/gums-create-config	2012-02-24 16:34:27.000000003 -0600
+@@ -7,33 +7,6 @@
+ # Author: Jay Packard, John Hover, Marco Mambelli
  #
--#
--# Detects where gums is installed and puts the directory
--# name in ScriptPath. Then cd to that directory.
--#
--# Author: Jay Packard, John Hover, Marco Mambelli
--#
--
+ 
 -ScriptPath=""
 -CommandPath=`dirname $0`
 -if [ $CommandPath = "." ]
@@ -36,10 +32,11 @@
 -fi
 -
 -cd $ScriptPath
- 
+-
  usage() {
      echo "Copies a template configuration to the config directory, thus making "
-@@ -42,7 +9,7 @@
+     echo "it the current configuration, and will also replace user, host, password "
+@@ -42,7 +15,7 @@
      echo "will be made to extract one or more of them from the current configuration."
      echo "Usage: $0"
      echo "   --template your_template (full path required)"
@@ -48,7 +45,7 @@
      echo "   --osg-template <download current osg template config> [optional]"
      echo "   --user <database user for GUMS> [optional]"
      echo "   --password <GUMS database password> [optional]"
-@@ -59,8 +26,8 @@
+@@ -59,8 +32,8 @@
      echo
      echo "Examples:"
      echo "  $0 --osg-template"
@@ -59,7 +56,7 @@
      echo
  
      exit -1;
-@@ -71,7 +38,7 @@
+@@ -71,7 +44,7 @@
  # Setup global variables
  #
  #-------------------------------------------
@@ -68,7 +65,16 @@
  OSGTEMPLATE=0
  USER=""
  SERVER=""
-@@ -126,10 +93,10 @@
+@@ -85,7 +58,7 @@
+ 
+ # Get X509CERTDIR from the environment if X509_CERT_DIR is defined
+ # Command line will override it
+-if [ -n X509_CERT_DIR ]
++if [ -n "$X509_CERT_DIR" ]
+ then 
+   X509CERTDIR="$X509_CERT_DIR"
+ else
+@@ -126,10 +99,10 @@
  fi
  
  parseConfig() {
@@ -81,7 +87,7 @@
          until [ $done ]
          do
              read <&3 myline
-@@ -234,7 +201,7 @@
+@@ -234,7 +207,7 @@
    exit 1
  fi
  
@@ -90,7 +96,7 @@
  then
      if [ "$PROMPT" -eq 1 ]
      then
-@@ -249,7 +216,7 @@
+@@ -249,7 +222,7 @@
      fi
  
    echo "Backing up your gums.config as gums.config.old"
@@ -99,7 +105,134 @@
  fi
  
  #-------------------------
-@@ -279,8 +246,8 @@
+@@ -279,8 +252,9 @@
+              -e s!@HTTP_KEY@!$HTTP_KEY!g    \
+              -e s!@X509CERTDIR@!$X509CERTDIR!g    \
+              -e s!@X509CERTFILES@!$X509CERTDIR/*.0!g    \
+-  > ../config/gums.config
++  > /etc/gums/gums.config
+ 
+ echo "New gums.config has been created successfully"
+-ls -l ../config/gums.config
+-exit 0
+\ No newline at end of file
++ls -l /etc/gums/gums.config
++exit 0
++
+Index: gums-service/src/main/resources/scripts/gums-create-config
+===================================================================
+--- gums-service/src/main/resources/scripts/gums-create-config.orig	2011-06-27 09:08:07.000000003 -0500
++++ gums-service/src/main/resources/scripts/gums-create-config	2012-02-24 16:34:27.000000003 -0600
+@@ -1,39 +1,8 @@
+ #!/bin/sh
+ #
+-#
+-# Detects where gums is installed and puts the directory
+-# name in ScriptPath. Then cd to that directory.
+-#
+ # Author: Jay Packard, John Hover, Marco Mambelli
+ #
+ 
+-ScriptPath=""
+-CommandPath=`dirname $0`
+-if [ $CommandPath = "." ]
+-then
+-
+-    # The command path is the current directory:
+-    # check if file is really here
+-
+-    if [ ! -e "$0" ]
+-    then
+-        # The command is not in the current directory:
+-        # must have used the path.
+-        # Locating with which.
+-
+-        WhichFull=`which $0`
+-        WhichPath=`dirname $WhichFull`
+-        ScriptPath=$WhichPath
+-    else
+-        # It was really the current directory
+-        ScriptPath=$CommandPath
+-    fi
+-else
+-    ScriptPath=$CommandPath
+-fi
+-
+-cd $ScriptPath
+-
+ usage() {
+     echo "Copies a template configuration to the config directory, thus making "
+     echo "it the current configuration, and will also replace user, host, password "
+@@ -42,7 +11,7 @@
+     echo "will be made to extract one or more of them from the current configuration."
+     echo "Usage: $0"
+     echo "   --template your_template (full path required)"
+-        echo "     (default - ../config/gums.config.template) [optional]> "
++        echo "     (default - /usr/lib/gums/config/gums.config.template) [optional]> "
+     echo "   --osg-template <download current osg template config> [optional]"
+     echo "   --user <database user for GUMS> [optional]"
+     echo "   --password <GUMS database password> [optional]"
+@@ -59,8 +28,8 @@
+     echo
+     echo "Examples:"
+     echo "  $0 --osg-template"
+-    echo "  $0 --template ../mytemplate"
+-    echo "  $0 --user gums --host gums.mysite.com:49151 --password secret --template ../mytemplate"
++    echo "  $0 --template mytemplate"
++    echo "  $0 --user gums --host gums.mysite.com:49151 --password secret --template mytemplate"
+     echo
+ 
+     exit -1;
+@@ -71,7 +40,7 @@
+ # Setup global variables
+ #
+ #-------------------------------------------
+-TEMPLATE="../gums.config.template"
++TEMPLATE="/usr/lib/gums/gums.config.template"
+ OSGTEMPLATE=0
+ USER=""
+ SERVER=""
+@@ -85,7 +54,7 @@
+ 
+ # Get X509CERTDIR from the environment if X509_CERT_DIR is defined
+ # Command line will override it
+-if [ -n X509_CERT_DIR ]
++if [ -n "$X509_CERT_DIR" ]
+ then 
+   X509CERTDIR="$X509_CERT_DIR"
+ else
+@@ -126,10 +95,10 @@
+ fi
+ 
+ parseConfig() {
+-    if [ -e ../config/gums.config ]
++    if [ -e /etc/gums/gums.config ]
+     then
+         unset done
+-        exec 3< ../config/gums.config
++        exec 3< /etc/gums/gums.config
+         until [ $done ]
+         do
+             read <&3 myline
+@@ -234,7 +203,7 @@
+   exit 1
+ fi
+ 
+-if [ -e ../config/gums.config ]
++if [ -e /etc/gums/gums.config ]
+ then
+     if [ "$PROMPT" -eq 1 ]
+     then
+@@ -249,7 +218,7 @@
+     fi
+ 
+   echo "Backing up your gums.config as gums.config.old"
+-  cp ../config/gums.config ../config/gums.config.old
++  cp /etc/gums/gums.config /etc/gums/gums.config.old
+ fi
+ 
+ #-------------------------
+@@ -279,8 +248,8 @@
               -e s!@HTTP_KEY@!$HTTP_KEY!g    \
               -e s!@X509CERTDIR@!$X509CERTDIR!g    \
               -e s!@X509CERTFILES@!$X509CERTDIR/*.0!g    \

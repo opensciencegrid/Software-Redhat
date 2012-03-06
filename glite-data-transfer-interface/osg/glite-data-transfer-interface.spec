@@ -1,6 +1,6 @@
 Name:		glite-data-transfer-interface
 Version:	3.7.0
-Release:	3
+Release:	3%{?dist}
 Summary:	WSDL and interface docs for FTS.
 
 Group:		Development/Languages/C and C++

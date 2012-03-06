@@ -5,7 +5,7 @@
 
 Summary:   Tests an OSG Software installation
 Name:      osg-test
-Version:   0.0.7
+Version:   1.0.0
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -37,8 +37,28 @@ rm -rf $RPM_BUILD_ROOT
 %{_sbindir}/%{name}
 %{python_sitelib}/osgtest
 /etc/grid-security/certificates/4eca18ce.*
+/etc/grid-security/certificates/bffdd190.*
 
 %changelog
+* Thu Feb 23 2012 Tim Cartwright <cat@cs.wisc.edu> - 1.0.0-1
+- New version of upstream software: Fix cert hashes and bootstrap script
+
+* Tue Feb 21 2012 Tim Cartwright <cat@cs.wisc.edu> - 0.0.12-1
+- New version of upstream software: Cleanup bug, new CA certificate hashes
+
+* Mon Feb 20 2012 Tim Cartwright <cat@cs.wisc.edu> - 0.0.11-1
+- New version of upstream software: Fixed bug when tailing files
+
+* Fri Feb 17 2012 Tim Cartwright <cat@cs.wisc.edu> - 0.0.10-1
+- New version of upstream software: Fixed install target
+
+* Fri Feb 17 2012 Tim Cartwright <cat@cs.wisc.edu> - 0.0.9-1
+- New version of upstream software: New library, gLExec tests.
+- First release to be built for EL 5 and 6.
+
+* Thu Jan 19 2012 Tim Cartwright <cat@cs.wisc.edu> - 0.0.8-1
+- New version of upstream software: UberFTP tests, small bug fixes.
+
 * Wed Dec 21 2011 Tim Cartwright <cat@cs.wisc.edu> - 0.0.7-1
 - New version of upstream software: VOMS tests; *many* other improvements.
 

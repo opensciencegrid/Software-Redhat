@@ -1,7 +1,6 @@
-Index: glite-ce-monitor-1.13.1/config/cemonitor-config.xml
-===================================================================
---- glite-ce-monitor-1.13.1.orig/config/cemonitor-config.xml	2011-10-05 11:07:34.000000000 -0500
-+++ glite-ce-monitor-1.13.1/config/cemonitor-config.xml	2011-11-21 13:13:44.000000000 -0500
+diff -ru glite-ce-monitor-1.13.1-orig/config/cemonitor-config.xml glite-ce-monitor-1.13.1/config/cemonitor-config.xml
+--- glite-ce-monitor-1.13.1-orig/config/cemonitor-config.xml	2012-02-17 09:40:44.000000000 -0600
++++ glite-ce-monitor-1.13.1/config/cemonitor-config.xml	2012-02-17 10:04:41.000000000 -0600
 @@ -4,15 +4,15 @@
           ServiceDescription="cemonitor service"
  	 InterfaceVersion="1.0"
@@ -121,17 +120,17 @@ Index: glite-ce-monitor-1.13.1/config/cemonitor-config.xml
 +    <property name="scriptURI" value="/var/lib/glite-ce-monitor/glite-ce-info" />
      <property name="not_supported_attributes" value="GlueSiteDescription,GlueSiteLocation,GlueSiteWeb,GlueSiteSponsor,GlueSiteOtherInfo,GlueForeignKey,GlueChunkKey,createTimestamp,GlueCESEBindCEUniqueID,GlueCESEBindCEAccesspoint,GlueCESEBindGroupCEUniqueID,GlueCESEBindSEUniqueID,GlueCESEBindGroupSEUniqueID,entryTtl,modifyTimestamp,dn,ObjectClass" />
 -    <property name="multiple_values_attributes" value="GlueSiteSponsor,GlueSiteOtherInfo,GlueServiceAccessPointURL,GlueServiceAccessControlRule,GlueInformationServiceURL,GlueChunkKey,GlueForeignKey,GlueCEAccessControlBaseRule,GlueClusterService,GlueHostService,GlueHostApplicationSoftwareRunTimeEnvironment,GlueHostLocalFileSystemClient,GlueHostRemoteFileSystemServer,GlueCESEBindGroupSEUniqueID,GlueSEHostingSL,GlueSEAccessProtocolSupportedSecurity,GlueSLService,GlueSLLocalFileSystemClient,GlueSAAccessControlBaseRule" />
-+    <property name="multiple_values_attributes" value="GlueSiteSponsor,GlueSiteOtherInfo,GlueServiceAccessPointURL,GlueServiceAccessControlRule,GlueChunkKey,GlueForeignKey,GlueCEAccessControlBaseRule,GlueClusterService,GlueHostService,GlueHostApplicationSoftwareRunTimeEnvironment,GlueHostLocalFileSystemClient,GlueHostRemoteFileSystemServer,GlueCESEBindGroupSEUniqueID,GlueSEHostingSL,GlueSEAccessProtocolSupportedSecurity,GlueSLService,GlueSLLocalFileSystemClient,GlueSAAccessControlBaseRule" />
-     <property name="purgeAllEventsOnStartup" value="false"/>
+-    <property name="purgeAllEventsOnStartup" value="false"/>
 -  </sensor -->
++    <property name="multiple_values_attributes" value="GlueSiteSponsor,GlueSiteOtherInfo,GlueServiceAccessPointURL,GlueServiceAccessControlRule,GlueChunkKey,GlueForeignKey,GlueCEAccessControlBaseRule,GlueClusterService,GlueHostService,GlueHostApplicationSoftwareRunTimeEnvironment,GlueHostLocalFileSystemClient,GlueHostRemoteFileSystemServer,GlueCESEBindGroupSEUniqueID,GlueSEHostingSL,GlueSEAccessProtocolSupportedSecurity,GlueSLService,GlueSLLocalFileSystemClient,GlueSAAccessControlBaseRule" />
++    <property name="purgeAllEventsOnStartup" value="true"/>
 +  </sensor>
  
  <!-- sensor id="sensor-gridice" 
        name="GridICE Sensor"
-Index: glite-ce-monitor-1.13.1/config/ce-monitor.xml
-===================================================================
---- glite-ce-monitor-1.13.1.orig/config/ce-monitor.xml	2011-10-05 11:07:34.000000000 -0500
-+++ glite-ce-monitor-1.13.1/config/ce-monitor.xml	2011-10-05 11:08:02.000000000 -0500
+diff -ru glite-ce-monitor-1.13.1-orig/config/ce-monitor.xml glite-ce-monitor-1.13.1/config/ce-monitor.xml
+--- glite-ce-monitor-1.13.1-orig/config/ce-monitor.xml	2012-02-17 09:40:44.000000000 -0600
++++ glite-ce-monitor-1.13.1/config/ce-monitor.xml	2012-02-17 10:03:41.000000000 -0600
 @@ -1,6 +1,6 @@
  <!-- This file must be put into $CATALINA_HOME/conf/Catalina/localhost -->
  

@@ -1,7 +1,7 @@
 
 Name:      rsv-consumers
-Version:   3.6.7
-Release:   1%{?dist}
+Version:   3.6.9
+Release:   2%{?dist}
 Summary:   RSV Consumers Infrastructure
 
 Group:     Applications/Monitoring
@@ -41,6 +41,7 @@ rm -fr $RPM_BUILD_ROOT
 # Create the web areas
 install -d $RPM_BUILD_ROOT%{_datadir}/rsv
 install -d $RPM_BUILD_ROOT%{_datadir}/rsv/www
+install -m 0644 httpd/rsv.index.html $RPM_BUILD_ROOT%{_datadir}/rsv/www/index.html
 
 # Install the Apache configuration and index files
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/httpd/conf.d
@@ -86,9 +87,16 @@ rm -rf $RPM_BUILD_ROOT
 
 %attr(-,rsv,rsv) %{_datadir}/rsv
 %attr(-,rsv,rsv) %{_datadir}/rsv/www
+%attr(-,rsv,rsv) %{_datadir}/rsv/www/index.html
 %attr(-,rsv,rsv) %{_localstatedir}/log/rsv/consumers
 
 %changelog
+* Tue Feb 21 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.6.9-2
+- Removed %ghost from %{_datadir}/rsv/www/index.html since that was incorrect.
+
+* Tue Feb 21 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.6.9-1
+- Added a sample index.html page to display before the html-consumer runs.
+
 * Wed Dec 28 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.6.7-1
 - No changes, bumped due to changes in rsv-metrics and rsv-core.
 

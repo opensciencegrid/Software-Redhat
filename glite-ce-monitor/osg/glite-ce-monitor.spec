@@ -1,7 +1,7 @@
 Summary: The CE monitor service is a web application that publishes information about the Computing Element
 Name: glite-ce-monitor
 Version: 1.13.1
-Release: 16%{?dist}
+Release: 17%{?dist}
 License: Apache License 2.0
 Vendor: EMI
 Group: System Environment/Libraries
@@ -42,6 +42,7 @@ Requires: vo-client
 Source0: glite-ce-monitor-1.13.1-3.src.tar.gz
 Source1: build.xml
 Source2: web.xml
+Source3: glite-ce-monitor.logrotate
 Source4: glite-ce-info
 Patch0: osg-config.patch
 
@@ -101,6 +102,8 @@ mkdir -p $RPM_BUILD_ROOT/var/log/glite-ce-monitor
 install -m 755 %{SOURCE4} $RPM_BUILD_ROOT/var/lib/glite-ce-monitor
 cp $RPM_BUILD_ROOT/etc/glite-ce-monitor/ce-monitor.xml $RPM_BUILD_ROOT/etc/tomcat5/Catalina/localhost
 
+mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d
+install -m 0644 %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/%{name}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -129,6 +132,7 @@ fi
 %dir /etc/glite-ce-monitor/
 %config(noreplace) /etc/glite-ce-monitor/log4j.properties
 /etc/glite-ce-monitor/cemonitor-config.xml.template
+%{_sysconfdir}/logrotate.d/%{name}
 %config(noreplace) /etc/glite-ce-monitor/cemonitor-config.xml
 %config(noreplace) /etc/glite-ce-monitor/cemonitor-argus-config.xml
 %config(noreplace) /etc/glite-ce-monitor/cemonitor-authz-config.xml
@@ -147,6 +151,11 @@ fi
 %config(noreplace) /etc/tomcat5/Catalina/localhost/ce-monitor.xml
 
 %changelog
+* Tue Feb 17 2012 Doug Strain <dstrain@fnal.gov> - 1.13.1-17
+- Set purge=true to prevent long reporting delays on startup
+- Redirect stderr to a file in glite-ce-info
+- Added logrotate
+
 * Mon Nov 21 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.13.1-16
 - Modified hostkey/hostcert default location in cemonitor-config.xml again.
 - Added symlinks in post-install script to make upgrading easier.

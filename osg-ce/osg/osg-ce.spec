@@ -1,7 +1,7 @@
 Name:      osg-ce
 Summary:   OSG Compute Element 
 Version:   3.0.0
-Release:   24
+Release:   27%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -27,9 +27,11 @@ Requires: gip
 Requires: osg-info-services
 Requires: gums-client
 Requires: edg-mkgridmap
+Requires: gratia-probe-gram
 Requires: gratia-probe-gridftp-transfer
 Requires: osg-site-verify
 Requires: osg-system-profiler
+Requires: osg-cleanup
 Requires: osg-configure
 Requires: osg-configure-ce
 Requires: osg-configure-cemon
@@ -37,6 +39,7 @@ Requires: osg-configure-gip
 Requires: osg-configure-gratia
 Requires: osg-configure-managedfork
 Requires: osg-configure-misc
+Requires: osg-configure-network
 Requires: osg-configure-squid
 Requires(post): globus-gram-job-manager-scripts >= 4
 
@@ -117,6 +120,15 @@ rm -rf $RPM_BUILD_ROOT
 %files sge
 
 %changelog
+* Wed Feb 01 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 3.0.0-27
+- Add dependency on the new gratia-probe-gram sub-package, which contains the perl modules for GRAM/Gratia integration.
+
+* Mon Jan 30 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> - 3.0.0-26
+- Added dependency on osg-configure-network
+
+* Fri Jan 20 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> - 3.0.0-25
+- Added dependency on osg-cleanup
+
 * Wed Nov 16 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 3.0.0-24
 - Added dependency on perl(Date::Manip), for the Gratia RSV probes.
 

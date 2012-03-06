@@ -1,7 +1,7 @@
 Summary: emi.voms.voms-admin-server
 Name: voms-admin-server
 Version: 2.6.1
-Release: 9
+Release: 9%{?dist}
 License: Apache Software License
 Vendor: EMI
 Group: System Environment/Libraries
