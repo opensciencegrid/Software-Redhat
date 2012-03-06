@@ -5,7 +5,7 @@ Name: gratia-service
 Summary: Gratia OSG accounting system
 Group: Applications/System
 Version: 1.11
-Release: 02.pre%{?dist}
+Release: 03.pre%{?dist}
 License: GPL
 Group: Applications/System
 URL: http://sourceforge.net/projects/gratia/
@@ -25,6 +25,10 @@ Requires: tomcat5
 Requires: emi-trustmanager-tomcat
 Requires: mysql-server
 Requires: vo-client-edgmkgridmap
+Requires: grid-certificates
+# The following requirement makes sure we get the RPM that provides this,
+# and not just the JDK which happens to provide it, but not in the right spot. 
+Requires: /usr/share/java/xml-commons-apis.jar
 
 BuildRequires: java-devel
 BuildRequires: jpackage-utils
@@ -63,12 +67,14 @@ mkdir conf
 tar xf target/gratia.tar -C conf
 install -m 0644 conf/*.sql $RPM_BUILD_ROOT%{_datadir}/gratia/sql/
 install -m 0644 conf/hibernate/* $RPM_BUILD_ROOT%{_datadir}/gratia/hibernate
+install -m 0644 conf/server.xml.template $RPM_BUILD_ROOT%{_datadir}/gratia/server.xml.template
 sed -i 's|@GRATIA_VERSION@|%{version}|' conf/service-configuration.properties
 install -m 0600 conf/service-configuration.properties  $RPM_BUILD_ROOT%{_sysconfdir}/gratia/collector/
 install -m 0644 conf/log4j.properties $RPM_BUILD_ROOT%{_sysconfdir}/gratia/collector
 install -m 0600 conf/{keystore,truststore} $RPM_BUILD_ROOT%{_var}/lib/gratia/
 install -m 0755 conf/post-install.sh $RPM_BUILD_ROOT%{_datadir}/gratia/
 install -m 0755 conf/install_database.sh $RPM_BUILD_ROOT%{_datadir}/gratia/
+install -m 0755 conf/configure_tomcat $RPM_BUILD_ROOT%{_datadir}/gratia/
 install -m 0755 conf/voms-server.sh $RPM_BUILD_ROOT%{_datadir}/gratia/
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/cron.d
 install -m 0644 conf/voms-server.cron $RPM_BUILD_ROOT%{_sysconfdir}/cron.d/
@@ -86,6 +92,8 @@ touch $RPM_BUILD_ROOT%{_var}/log/gratia/gratia{,-rmi-servlet,-security,-administ
 %{_datadir}/gratia/hibernate
 %{_datadir}/gratia/post-install.sh
 %{_datadir}/gratia/install_database.sh
+%{_datadir}/gratia/configure_tomcat
+%{_datadir}/gratia/server.xml.template
 %{_datadir}/gratia/voms-server.sh
 %{_sysconfdir}/cron.d/voms-server.cron
 %dir %{_var}/lib/gratia
