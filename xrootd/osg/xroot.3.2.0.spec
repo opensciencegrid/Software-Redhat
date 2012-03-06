@@ -1,17 +1,15 @@
 #-------------------------------------------------------------------------------
 # We assume the xrootd user when building for the OSG
 #-------------------------------------------------------------------------------
-%if "0%{?dist}" == "0.osg"
 %define _with_xrootd_user 1
-%endif
 
 #-------------------------------------------------------------------------------
 # Package definitions
 #-------------------------------------------------------------------------------
 Name:      xrootd
 Epoch:     1
-Version:   3.1.1
-Release:   1%{?dist}%{?_with_xrootd_user:.xu}
+Version:   3.2.0
+Release:   0.4.git.1f1565c%{?dist}%{?_with_xrootd_user:.xu}
 Summary:   An eXtended Root Daemon (xrootd)
 Group:     System Environment/Daemons
 License:   Stanford (modified BSD with advert clause)
@@ -121,6 +119,19 @@ Requires: %{name}-libs = %{epoch}:%{version}-%{release}
 Headers for compiling against xrootd-libs
 
 #-------------------------------------------------------------------------------
+# admin perl
+#-------------------------------------------------------------------------------
+%package client-admin-perl
+Summary:        XRootD client administration Perl module
+Group:          Development/Libraries
+Requires:       %{name}-client = %{epoch}:%{version}-%{release}
+Requires:       perl(:MODULE_COMPAT_%(eval "`%{__perl} -V:version`"; echo $version))
+
+%description client-admin-perl
+This package contains a swig generated xrootd client administration
+Perl module.
+
+#-------------------------------------------------------------------------------
 # Build instructions
 #-------------------------------------------------------------------------------
 %prep
@@ -178,6 +189,13 @@ install -m 755 packaging/rhel/xrootd.functions $RPM_BUILD_ROOT%{_initrddir}/xroo
 
 install -m 644 packaging/common/xrootd-clustered.cfg $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/xrootd-clustered.cfg
 install -m 644 packaging/common/xrootd-standalone.cfg $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/xrootd-standalone.cfg
+
+# Perl module
+mkdir -p $RPM_BUILD_ROOT%{perl_vendorarch}/auto/XrdClientAdmin
+mv $RPM_BUILD_ROOT/%{_libdir}/XrdClientAdmin.pm \
+   $RPM_BUILD_ROOT%{perl_vendorarch}
+mv $RPM_BUILD_ROOT/%{_libdir}/libXrdClientAdmin.so* \
+   $RPM_BUILD_ROOT%{perl_vendorarch}/auto/XrdClientAdmin
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -281,11 +299,10 @@ exit 0
 
 %files client
 %defattr(-,root,root,-)
-%{_libdir}/libXrdClient*.so*
+%{_libdir}/libXrdClient.so*
 %{_libdir}/libXrdPosix.so*
 %{_libdir}/libXrdPosixPreload.so*
 %{_libdir}/libXrdFfs.so*
-%{_libdir}/XrdClientAdmin.pm
 %{_bindir}/xprep
 %{_bindir}/xrd
 %{_bindir}/xrdcp
@@ -375,18 +392,29 @@ exit 0
 %{_includedir}/%{name}/XrdSfs
 %{_includedir}/%{name}/XrdCks
 
+%files client-admin-perl
+%defattr(-,root,root,-)
+%{perl_vendorarch}/XrdClientAdmin.pm
+%{perl_vendorarch}/auto/XrdClientAdmin
+
 #-------------------------------------------------------------------------------
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
-* Tue Mar 06 2012 Doug Strain <dstrain@fnal.gov> 3.1.1-1.osg
+* Wed Feb 08 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 1:3.2.0-0.4.git.1f1565c.xu
+- Change in OSG dist tag broke xrootd user macro.  Fixed.
+
+* Tue Feb 07 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 1:3.2.0-0.3.git.1f1565c
+- Rebuild for CMS testing of CRL options.
+
+* Wed Jan 11 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 1:3.2.0-0.2.git.f0c70fa
+- Another pre-release build for CMS testing.
+
+* Wed Dec 14 2011 Brian Bockelman <bbockelm@cse.unl.edu> 3.2.0-0.1.git.0bdd1b7
+- Update to pre-release build for CMS testing.
+
+* Fri Nov 18 2011 Doug Strain <dstrain@fnal.gov> 3.1.0-11
 - Added xrdadler32 to the client package
-
-* Mon Mar 05 2012 Lukasz Janyst <ljanyst@cern.ch> 3.1.1-1
-- bump the version to 3.1.1
-
-* Thu Feb 16 2012 Lukasz Janyst <ljanyst@cern.ch> 3.1.1-0.rc1
-- bump the version to 3.1.1-0.rc1
 
 * Fri Oct 21 2011 Lukasz Janyst <ljanyst@cern.ch> 3.1.0-1
 - bump the version to 3.1.0
