@@ -13,7 +13,7 @@ Name:           glideinwms
 
 %if %{v3_plus}
 %define version 3.0.0 
-%define release 0pre3
+%define release 0rc3
 %define frontend_xml frontend.master.xml
 %define factory_xml glideinWMS.master.xml
 %endif
@@ -419,6 +419,7 @@ fi
 %clean
 rm -rf $RPM_BUILD_ROOT
 
+   
 %files factory
 %defattr(-,gfactory,gfactory,-)
 %attr(755,root,root) %{_bindir}/*
@@ -582,27 +583,27 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/gwms-factory.conf
 %config(noreplace) %{_sysconfdir}/gwms-factory/glideinWMS.xml
 %if %{v3_plus}
-   /usr/lib/python2.4/site-packages/classadSupport.py
-   /usr/lib/python2.4/site-packages/classadSupport.pyc
-   /usr/lib/python2.4/site-packages/classadSupport.pyo
-   /usr/lib/python2.4/site-packages/cleanupSupport.py
-   /usr/lib/python2.4/site-packages/cleanupSupport.pyc
-   /usr/lib/python2.4/site-packages/cleanupSupport.pyo
-   /usr/lib/python2.4/site-packages/encodingSupport.py
-   /usr/lib/python2.4/site-packages/encodingSupport.pyc
-   /usr/lib/python2.4/site-packages/encodingSupport.pyo
-   /usr/lib/python2.4/site-packages/glideFactoryCredentials.py
-   /usr/lib/python2.4/site-packages/glideFactoryCredentials.pyc
-   /usr/lib/python2.4/site-packages/glideFactoryCredentials.pyo
-   /usr/lib/python2.4/site-packages/glideinwms_tarfile.py
-   /usr/lib/python2.4/site-packages/glideinwms_tarfile.pyc
-   /usr/lib/python2.4/site-packages/glideinwms_tarfile.pyo
-   /usr/lib/python2.4/site-packages/iniSupport.py
-   /usr/lib/python2.4/site-packages/iniSupport.pyc
-   /usr/lib/python2.4/site-packages/iniSupport.pyo
-   /usr/lib/python2.4/site-packages/tarSupport.py
-   /usr/lib/python2.4/site-packages/tarSupport.pyc
-   /usr/lib/python2.4/site-packages/tarSupport.pyo
+%{python_sitelib}/classadSupport.py
+%{python_sitelib}/classadSupport.pyc
+%{python_sitelib}/classadSupport.pyo
+%{python_sitelib}/cleanupSupport.py
+%{python_sitelib}/cleanupSupport.pyc
+%{python_sitelib}/cleanupSupport.pyo
+%{python_sitelib}/encodingSupport.py
+%{python_sitelib}/encodingSupport.pyc
+%{python_sitelib}/encodingSupport.pyo
+%{python_sitelib}/glideFactoryCredentials.py
+%{python_sitelib}/glideFactoryCredentials.pyc
+%{python_sitelib}/glideFactoryCredentials.pyo
+%{python_sitelib}/glideinwms_tarfile.py
+%{python_sitelib}/glideinwms_tarfile.pyc
+%{python_sitelib}/glideinwms_tarfile.pyo
+%{python_sitelib}/iniSupport.py
+%{python_sitelib}/iniSupport.pyc
+%{python_sitelib}/iniSupport.pyo
+%{python_sitelib}/tarSupport.py
+%{python_sitelib}/tarSupport.pyc
+%{python_sitelib}/tarSupport.pyo
 %endif
 
 %files vofrontend
@@ -743,24 +744,24 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/gwms-frontend.conf
 %config(noreplace) %{_sysconfdir}/gwms-frontend/frontend.xml
 %if %{v3_plus}
-   /usr/lib/python2.4/site-packages/classadSupport.py
-   /usr/lib/python2.4/site-packages/classadSupport.pyc
-   /usr/lib/python2.4/site-packages/classadSupport.pyo
-   /usr/lib/python2.4/site-packages/cleanupSupport.py
-   /usr/lib/python2.4/site-packages/cleanupSupport.pyc
-   /usr/lib/python2.4/site-packages/cleanupSupport.pyo
-   /usr/lib/python2.4/site-packages/encodingSupport.py
-   /usr/lib/python2.4/site-packages/encodingSupport.pyc
-   /usr/lib/python2.4/site-packages/encodingSupport.pyo
-   /usr/lib/python2.4/site-packages/glideinwms_tarfile.py
-   /usr/lib/python2.4/site-packages/glideinwms_tarfile.pyc
-   /usr/lib/python2.4/site-packages/glideinwms_tarfile.pyo
-   /usr/lib/python2.4/site-packages/iniSupport.py
-   /usr/lib/python2.4/site-packages/iniSupport.pyc
-   /usr/lib/python2.4/site-packages/iniSupport.pyo
-   /usr/lib/python2.4/site-packages/tarSupport.py
-   /usr/lib/python2.4/site-packages/tarSupport.pyc
-   /usr/lib/python2.4/site-packages/tarSupport.pyo
+%{python_sitelib}/classadSupport.py
+%{python_sitelib}/classadSupport.pyc
+%{python_sitelib}/classadSupport.pyo
+%{python_sitelib}/cleanupSupport.py
+%{python_sitelib}/cleanupSupport.pyc
+%{python_sitelib}/cleanupSupport.pyo
+%{python_sitelib}/encodingSupport.py
+%{python_sitelib}/encodingSupport.pyc
+%{python_sitelib}/encodingSupport.pyo
+%{python_sitelib}/glideinwms_tarfile.py
+%{python_sitelib}/glideinwms_tarfile.pyc
+%{python_sitelib}/glideinwms_tarfile.pyo
+%{python_sitelib}/iniSupport.py
+%{python_sitelib}/iniSupport.pyc
+%{python_sitelib}/iniSupport.pyo
+%{python_sitelib}/tarSupport.py
+%{python_sitelib}/tarSupport.pyc
+%{python_sitelib}/tarSupport.pyo
 %endif
 
 
