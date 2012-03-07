@@ -190,12 +190,13 @@ do
 done
 
 #system jars
-CLASSPATH_SYS=`build-classpath commons-discovery commons-logging wsdl4j xerces-j2 commons-collections joda-time glite-security-trustmanager glite-security-util-java velocity xalan xmlsec log4j vomsjapi cryptix cryptix-asn1 puretls cog-jglobus jce cog-jglobus-axis`
+CLASSPATH_SYS=`build-classpath commons-discovery commons-logging wsdl4j xerces-j2 commons-collections joda-time glite-security-trustmanager glite-security-util-java velocity xalan xmlsec log4j vomsjapi cryptix cryptix-asn1 puretls jce`
 CLASSPATH=$CLASSPATH:$CLASSPATH_SYS:/usr/share/java/axis/axis.jar:/usr/share/java/axis/jaxrpc.jar
+CLASSPATH=$CLASSPATH:/usr/share/java/cog-jglobus/cog-jobmanager-1.8.0.jar:/usr/share/java/cog-jglobus/cog-jglobus-1.8.0.jar:/usr/share/java/cog-jglobus/cog-url-1.8.0.jar:/usr/lib/jvm-exports/java/jce.jar
 
-%if "%{?rhel}" == "5"
+#:/usr/share/java/cog-jglobus/cog-axis-1.8.0.jar
+
 CLASSPATH="$CLASSPATH:../../../lib/jglobus/cog-axis-1.8.0.jar"
-%endif
 
 #:/usr/share/java/cog-jglobus-axis/cog-axis-1.2.jar
 
