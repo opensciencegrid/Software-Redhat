@@ -624,7 +624,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(-, frontend, frontend) %dir %{_localstatedir}/lib/gwms-frontend
 %attr(-, frontend, frontend) %{web_dir}
 %attr(-, frontend, frontend) %{web_base}
-%attr(-, frontend, frontend) %{web_base}/../creation
+
+
 %attr(-, frontend, frontend) %{frontend_dir}
 %attr(-, frontend, frontend) %{_localstatedir}/log/gwms-frontend
 %{python_sitelib}/cWConsts.py
@@ -746,6 +747,7 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/gwms-frontend.conf
 %config(noreplace) %{_sysconfdir}/gwms-frontend/frontend.xml
 %if %{v3_plus}
+%attr(-, frontend, frontend) %{web_base}/../creation
 %{python_sitelib}/classadSupport.py
 %{python_sitelib}/classadSupport.pyc
 %{python_sitelib}/classadSupport.pyo
