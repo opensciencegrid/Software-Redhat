@@ -6,7 +6,7 @@ Name:           glideinwms
 
 %if %{v2_plus}
 %define version 2.5.5
-%define release 6alpha
+%define release 7alpha
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
 %endif
@@ -448,7 +448,10 @@ rm -rf $RPM_BUILD_ROOT
 %attr(-, root, root) %{_localstatedir}/lib/gwms-factory/client-proxies
 %attr(-, gfactory, gfactory) %{factory_web_dir}
 %attr(-, gfactory, gfactory) %{factory_web_base}
+
+%if %{v3_plus}
 %attr(-, gfactory, gfactory) %{factory_web_base}/../creation
+%endif
 %attr(-, gfactory, gfactory) %{factory_dir}
 %attr(-, gfactory, gfactory) %dir %{condor_dir}
 %attr(-, root, root) %dir %{_localstatedir}/log/gwms-factory
@@ -790,8 +793,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Tue Feb 21 2012 Doug Strain <dstrain@fnal.gov> - 2.5.5-2alpha
+* Tue Feb 21 2012 Doug Strain <dstrain@fnal.gov> - 2.5.5-6alpha
 - Adding factory RPM and v3 support
+- Also added support for v3.0.0rc3 with optional define
 
 * Thu Feb 16 2012 Doug Strain <dstrain@fnal.gov> - 2.5.5-1 
 - Updating for v2.5.5 
