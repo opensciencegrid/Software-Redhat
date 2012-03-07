@@ -13,7 +13,7 @@ Name:           glideinwms
 
 %if %{v3_plus}
 %define version 3.0.0 
-%define release 0rc3
+%define release 1rc3
 %define frontend_xml frontend.master.xml
 %define factory_xml glideinWMS.master.xml
 %endif
@@ -680,9 +680,6 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/glideinFrontendConfig.py
 %{python_sitelib}/glideinFrontendConfig.pyc
 %{python_sitelib}/glideinFrontendConfig.pyo
-%{python_sitelib}/glideinFrontendElement.py
-%{python_sitelib}/glideinFrontendElement.pyc
-%{python_sitelib}/glideinFrontendElement.pyo
 %{python_sitelib}/glideinFrontendInterface.py
 %{python_sitelib}/glideinFrontendInterface.pyc
 %{python_sitelib}/glideinFrontendInterface.pyo
