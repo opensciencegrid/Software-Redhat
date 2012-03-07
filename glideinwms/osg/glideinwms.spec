@@ -612,9 +612,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_sbindir}/checkFrontend
 %attr(755,root,root) %{_sbindir}/glidecondor_addDN
 %attr(755,root,root) %{_sbindir}/glideinFrontend
-%attr(755,root,root) %{_sbindir}/glideinFrontendElement.py
-%attr(755,root,root) %{_sbindir}/glideinFrontendElement.pyc
-%attr(755,root,root) %{_sbindir}/glideinFrontendElement.pyo
+%attr(755,root,root) %{_sbindir}/glideinFrontendElement.py*
 %attr(755,root,root) %{_sbindir}/reconfig_frontend
 %attr(755,root,root) %{_sbindir}/stopFrontend
 %attr(-, frontend, frontend) %dir %{_localstatedir}/lib/gwms-frontend
@@ -737,6 +735,7 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/timeConversion.py
 %{python_sitelib}/timeConversion.pyc
 %{python_sitelib}/timeConversion.pyo
+%{python_sitelib}/glideinFrontendElement.py*
 %{_initrddir}/gwms-frontend
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/gwms-frontend.conf
 %config(noreplace) %{_sysconfdir}/gwms-frontend/frontend.xml
