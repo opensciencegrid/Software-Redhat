@@ -793,8 +793,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Tue Feb 21 2012 Doug Strain <dstrain@fnal.gov> - 2.5.5-6alpha
+* Tue Feb 21 2012 Doug Strain <dstrain@fnal.gov> - 2.5.5-7alpha
 - Adding factory RPM and v3 support
+- Updating to also work on sl7
 - Also added support for v3.0.0rc3 with optional define
 
 * Thu Feb 16 2012 Doug Strain <dstrain@fnal.gov> - 2.5.5-1 
