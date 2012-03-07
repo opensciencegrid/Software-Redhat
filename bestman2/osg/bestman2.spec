@@ -14,7 +14,7 @@
 
 Name:           bestman2
 Version:        2.2.0a
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -76,7 +76,7 @@ through Lawrence Berkeley National Laboratory.  See LICENSE file for details.
 %package common-libs
 Summary: Common files BeStMan SRM server client and tester
 Group: System Environment/Libraries
-Requires:  java axis jakarta-commons-logging jakarta-commons-discovery wsdl4j log4j cog-jglobus cog-jglobus-axis
+Requires:  java axis jakarta-commons-logging jakarta-commons-discovery wsdl4j log4j cog-jglobus cog-jglobus-axis 
 %description common-libs
 This package is mostly java libraries (jars) for Bestman.
 It contains libraries necessary for Bestman server, client and tester.
@@ -110,7 +110,7 @@ The BeStMan Server SRM Java libraries
 %package server-dep-libs
 Summary: BeStMan Server SRM Java libraries
 Group: System Environment/Libraries
-Requires:  java-1.6.0-sun-compat jakarta-commons-lang joda-time glite-security-trustmanager glite-security-util-java xalan-j2 vomsjapi
+Requires:  java-1.6.0-sun-compat jakarta-commons-lang joda-time glite-security-trustmanager glite-security-util-java xalan-j2 vomsjapi jakarta-commons-collections
 #bouncycastle slf4j
 
 %description server-dep-libs
@@ -190,9 +190,13 @@ do
 done
 
 #system jars
-CLASSPATH_SYS=`build-classpath commons-discovery commons-logging wsdl4j xerces-j2 commons-collections joda-time glite-security-trustmanager glite-security-util-java velocity xalan xmlsec log4j vomsjapi cryptix cryptix-asn1 puretls cog-jglobus jce`
+CLASSPATH_SYS=`build-classpath commons-discovery commons-logging wsdl4j xerces-j2 commons-collections joda-time glite-security-trustmanager glite-security-util-java velocity xalan xmlsec log4j vomsjapi cryptix cryptix-asn1 puretls cog-jglobus jce cog-jglobus-axis`
 CLASSPATH=$CLASSPATH:$CLASSPATH_SYS:/usr/share/java/axis/axis.jar:/usr/share/java/axis/jaxrpc.jar
+
+%if "%{?rhel}" == "5"
 CLASSPATH="$CLASSPATH:../../../lib/jglobus/cog-axis-1.8.0.jar"
+%endif
+
 #:/usr/share/java/cog-jglobus-axis/cog-axis-1.2.jar
 
 #Fix filenames since configure script is totally broken
@@ -416,7 +420,7 @@ fi
 %config(noreplace) %{install_root}/properties/authmod-unix.properties
 %config(noreplace) %{install_root}/properties/authmod-win.properties
 %config(noreplace) %{install_root}/properties/log4j.properties
-%config(noreplace) %{install_root}/version
+%{install_root}/version
 %doc LICENSE
 %doc COPYRIGHT
 %doc bestman2/sources/CHANGE
@@ -464,7 +468,7 @@ fi
 %{_bindir}/srm-sp-update
 %{_bindir}/srm-sp-update-status
 %{_bindir}/srm-transferprotocols
-%config(noreplace) %{install_root}/version
+%{install_root}/version
 %doc LICENSE
 %doc COPYRIGHT
 %doc bestman2/sources/CHANGE
