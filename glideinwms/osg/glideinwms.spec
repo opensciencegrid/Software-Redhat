@@ -13,7 +13,7 @@ Name:           glideinwms
 
 %if %{v3_plus}
 %define version 3.0.0 
-%define release 1rc3
+%define release 2rc3
 %define frontend_xml frontend.master.xml
 %define factory_xml glideinWMS.master.xml
 %endif
@@ -424,23 +424,26 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,gfactory,gfactory,-)
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_sbindir}/checkFactory.py
+%attr(755,root,root) %{_sbindir}/stopFactory.py
+%attr(755,root,root) %{_sbindir}/glideFactory.py
+%attr(755,root,root) %{_sbindir}/glideFactoryEntry.py
+
+%if %{v3_plus}
 %attr(755,root,root) %{_sbindir}/checkFactory.pyc
 %attr(755,root,root) %{_sbindir}/checkFactory.pyo
-%attr(755,root,root) %{_sbindir}/glideFactory.py
 %attr(755,root,root) %{_sbindir}/glideFactory.pyc
 %attr(755,root,root) %{_sbindir}/glideFactory.pyo
-%attr(755,root,root) %{_sbindir}/glideFactoryEntry.py
 %attr(755,root,root) %{_sbindir}/glideFactoryEntry.pyc
 %attr(755,root,root) %{_sbindir}/glideFactoryEntry.pyo
+%attr(755,root,root) %{_sbindir}/manageFactoryDowntimes.pyc
+%attr(755,root,root) %{_sbindir}/manageFactoryDowntimes.pyo
+%attr(755,root,root) %{_sbindir}/stopFactory.pyc
+%attr(755,root,root) %{_sbindir}/stopFactory.pyo
+%endif
 %attr(755,root,root) %{_sbindir}/glidecondor_addDN
 %attr(755,root,root) %{_sbindir}/info_glidein
 %attr(755,root,root) %{_sbindir}/manageFactoryDowntimes.py
-%attr(755,root,root) %{_sbindir}/manageFactoryDowntimes.pyc
-%attr(755,root,root) %{_sbindir}/manageFactoryDowntimes.pyo
 %attr(755,root,root) %{_sbindir}/reconfig_glidein
-%attr(755,root,root) %{_sbindir}/stopFactory.py
-%attr(755,root,root) %{_sbindir}/stopFactory.pyc
-%attr(755,root,root) %{_sbindir}/stopFactory.pyo
 %attr(-, root, root) %dir %{_localstatedir}/lib/gwms-factory
 %attr(-, root, root) %{_localstatedir}/lib/gwms-factory/client-proxies
 %attr(-, gfactory, gfactory) %{factory_web_dir}
