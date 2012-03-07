@@ -428,7 +428,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_sbindir}/glideFactory.py
 %attr(755,root,root) %{_sbindir}/glideFactoryEntry.py
 
-%if %{?rhel}%{!?rhel:0} == 6
+%if %{?rhel}%{!?rhel:0} == 5
 %attr(755,root,root) %{_sbindir}/checkFactory.pyc
 %attr(755,root,root) %{_sbindir}/checkFactory.pyo
 %attr(755,root,root) %{_sbindir}/glideFactory.pyc
