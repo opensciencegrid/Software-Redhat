@@ -13,7 +13,7 @@ Name:           glideinwms
 
 %if %{v3_plus}
 %define version 3.0.0 
-%define release 2rc3
+%define release 3rc3
 %define frontend_xml frontend.master.xml
 %define factory_xml glideinWMS.master.xml
 %endif
@@ -428,7 +428,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_sbindir}/glideFactory.py
 %attr(755,root,root) %{_sbindir}/glideFactoryEntry.py
 
-%if %{v3_plus}
+%if %{?rhel}%{!?rhel:0} == 6
 %attr(755,root,root) %{_sbindir}/checkFactory.pyc
 %attr(755,root,root) %{_sbindir}/checkFactory.pyo
 %attr(755,root,root) %{_sbindir}/glideFactory.pyc
