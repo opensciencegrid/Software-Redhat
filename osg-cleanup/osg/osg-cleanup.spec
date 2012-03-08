@@ -1,6 +1,6 @@
 
 Name:      osg-cleanup
-Version:   1.0
+Version:   1.1
 Release:   1%{?dist}
 Summary:   OSG cleanup scripts
 
@@ -85,6 +85,9 @@ fi
 
 
 %changelog
+* Thu Mar 08 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 1.1-1
+- Updated to 1.1.  No longer recurses in Globus state file dir.
+
 * Thu Jan 12 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 1.0-1
 - Final bug fixes.  First version ready for testing.
 
