@@ -1,19 +1,16 @@
 
 # These are OSG-CE-specific configurations variables
 
-# LCAS configuration
-export LCAS_LOG_LEVEL=0
-export LCAS_DEBUG_LEVEL=0
-export LCAS_DB_FILE=/etc/lcas/lcas.db
-export LCAS_DIR=/etc/lcas
-export LCAS_MOD_HOME=/usr/lib64/modules
-
-# LCMAPS configuration
-export LCMAPS_LOG_LEVEL=0
-export LCMAPS_DEBUG_LEVEL=0
+# lcas-lcmaps-gt4-interface configuration
+export LLGT_LOG_IDENT=GRAM-gatekeeper-llgt
+export LLGT_VOMS_DISABLE_CREDENTIAL_CHECK=1
 export LCMAPS_DB_FILE=/etc/lcmaps.db
-export LCMAPS_MOD_HOME=lcmaps
-export LCMAPS_POLICY_NAME=osg_default
+# the globus_gridftp_mapping here is for backward compatibility, will
+#  be removed in a future release
+export LCMAPS_POLICY_NAME=globus_gridftp_mapping:osg_default
+#level 0: no messages, 1: errors, 2: also warnings, 3: also notices,
+#  4: also info, 5: maximum debug
+export LCMAPS_DEBUG_LEVEL=3
 
 # Logging location
 GLOBUS_GATEKEEPER_LOG="@localstatedir@/log/globus-gatekeeper.log"

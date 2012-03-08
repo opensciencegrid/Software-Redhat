@@ -13,7 +13,7 @@
 Name:		globus-gatekeeper
 %global _name %(tr - _ <<< %{name})
 Version:	9.6
-Release:	1.1%{?dist}
+Release:	1.4%{?dist}
 Summary:	Globus Toolkit - Globus Gatekeeper
 
 Group:		Applications/Internet
@@ -126,8 +126,25 @@ fi
 %config(noreplace) /etc/logrotate.d/globus-gatekeeper
 
 %changelog
-* Mon Jan 20 2012 Alain Roy <roy@cs.wisc.edu> - 9.6-1.1
+* Thu Mar 08 2012 Dave Dykstra <dwd@fnal.gov> - 9.6-1.4.osg
+- Rebuild after merging from branches/lcmaps-upgrade into trunk
+
+* Mon Jan 20 2012 Alain Roy <roy@cs.wisc.edu> - 9.6-1.3.osg
 - Updated sysconfig file to source firewall information if it exists. 
+
+* Fri Jan 6 2012 Dave Dykstra <dwd@fnal.gov> - 9.6-1.2.osg
+- Set LCMAPS_POLICY_NAME in /etc/sysconfig/globus-gatekeeper
+  for improved backward compatibility; the bug that made it be ignored
+  is getting fixed and for those who have an old lcmaps.db it will use a 
+  broken policy without this change.  Try first globus_gridftp_mapping,
+  that's one worked even though it used to be labeled for gridftp.  The
+  old osg_default didn't work, although the new one does so try that
+  next in case the globus_gridftp_mapping rule has been removed
+- Set the sysconfig parameter to disable checking of voms certifications
+
+* Thu Dec 29 2011 Dave Dykstra <dwd@fnal.gov> - 9.6-1.1.osg
+- Change /etc/sysconfig/globus-gatekeeper parameters to reflect no more
+  LCAS and new LCMAPS
 
 * Mon Dec 19 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 9.6-1.0
 - Merge OSG changes
