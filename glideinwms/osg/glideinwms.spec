@@ -1,19 +1,19 @@
 # The following should be either "v2_plus" or "v3_plus"
-%define v2_plus 0
-%define v3_plus 1
+%define v2_plus 1
+%define v3_plus 0
 
 Name:           glideinwms
 
 %if %{v2_plus}
 %define version 2.5.5
-%define release 6alpha
+%define release 7alpha
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
 %endif
 
 %if %{v3_plus}
 %define version 3.0.0 
-%define release 0pre3
+%define release 3rc3
 %define frontend_xml frontend.master.xml
 %define factory_xml glideinWMS.master.xml
 %endif
@@ -419,32 +419,39 @@ fi
 %clean
 rm -rf $RPM_BUILD_ROOT
 
+   
 %files factory
 %defattr(-,gfactory,gfactory,-)
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_sbindir}/checkFactory.py
+%attr(755,root,root) %{_sbindir}/stopFactory.py
+%attr(755,root,root) %{_sbindir}/glideFactory.py
+%attr(755,root,root) %{_sbindir}/glideFactoryEntry.py
+
+%if %{?rhel}%{!?rhel:0} == 5
 %attr(755,root,root) %{_sbindir}/checkFactory.pyc
 %attr(755,root,root) %{_sbindir}/checkFactory.pyo
-%attr(755,root,root) %{_sbindir}/glideFactory.py
 %attr(755,root,root) %{_sbindir}/glideFactory.pyc
 %attr(755,root,root) %{_sbindir}/glideFactory.pyo
-%attr(755,root,root) %{_sbindir}/glideFactoryEntry.py
 %attr(755,root,root) %{_sbindir}/glideFactoryEntry.pyc
 %attr(755,root,root) %{_sbindir}/glideFactoryEntry.pyo
+%attr(755,root,root) %{_sbindir}/manageFactoryDowntimes.pyc
+%attr(755,root,root) %{_sbindir}/manageFactoryDowntimes.pyo
+%attr(755,root,root) %{_sbindir}/stopFactory.pyc
+%attr(755,root,root) %{_sbindir}/stopFactory.pyo
+%endif
 %attr(755,root,root) %{_sbindir}/glidecondor_addDN
 %attr(755,root,root) %{_sbindir}/info_glidein
 %attr(755,root,root) %{_sbindir}/manageFactoryDowntimes.py
-%attr(755,root,root) %{_sbindir}/manageFactoryDowntimes.pyc
-%attr(755,root,root) %{_sbindir}/manageFactoryDowntimes.pyo
 %attr(755,root,root) %{_sbindir}/reconfig_glidein
-%attr(755,root,root) %{_sbindir}/stopFactory.py
-%attr(755,root,root) %{_sbindir}/stopFactory.pyc
-%attr(755,root,root) %{_sbindir}/stopFactory.pyo
 %attr(-, root, root) %dir %{_localstatedir}/lib/gwms-factory
 %attr(-, root, root) %{_localstatedir}/lib/gwms-factory/client-proxies
 %attr(-, gfactory, gfactory) %{factory_web_dir}
 %attr(-, gfactory, gfactory) %{factory_web_base}
+
+%if %{v3_plus}
 %attr(-, gfactory, gfactory) %{factory_web_base}/../creation
+%endif
 %attr(-, gfactory, gfactory) %{factory_dir}
 %attr(-, gfactory, gfactory) %dir %{condor_dir}
 %attr(-, root, root) %dir %{_localstatedir}/log/gwms-factory
@@ -582,27 +589,27 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/gwms-factory.conf
 %config(noreplace) %{_sysconfdir}/gwms-factory/glideinWMS.xml
 %if %{v3_plus}
-   /usr/lib/python2.4/site-packages/classadSupport.py
-   /usr/lib/python2.4/site-packages/classadSupport.pyc
-   /usr/lib/python2.4/site-packages/classadSupport.pyo
-   /usr/lib/python2.4/site-packages/cleanupSupport.py
-   /usr/lib/python2.4/site-packages/cleanupSupport.pyc
-   /usr/lib/python2.4/site-packages/cleanupSupport.pyo
-   /usr/lib/python2.4/site-packages/encodingSupport.py
-   /usr/lib/python2.4/site-packages/encodingSupport.pyc
-   /usr/lib/python2.4/site-packages/encodingSupport.pyo
-   /usr/lib/python2.4/site-packages/glideFactoryCredentials.py
-   /usr/lib/python2.4/site-packages/glideFactoryCredentials.pyc
-   /usr/lib/python2.4/site-packages/glideFactoryCredentials.pyo
-   /usr/lib/python2.4/site-packages/glideinwms_tarfile.py
-   /usr/lib/python2.4/site-packages/glideinwms_tarfile.pyc
-   /usr/lib/python2.4/site-packages/glideinwms_tarfile.pyo
-   /usr/lib/python2.4/site-packages/iniSupport.py
-   /usr/lib/python2.4/site-packages/iniSupport.pyc
-   /usr/lib/python2.4/site-packages/iniSupport.pyo
-   /usr/lib/python2.4/site-packages/tarSupport.py
-   /usr/lib/python2.4/site-packages/tarSupport.pyc
-   /usr/lib/python2.4/site-packages/tarSupport.pyo
+%{python_sitelib}/classadSupport.py
+%{python_sitelib}/classadSupport.pyc
+%{python_sitelib}/classadSupport.pyo
+%{python_sitelib}/cleanupSupport.py
+%{python_sitelib}/cleanupSupport.pyc
+%{python_sitelib}/cleanupSupport.pyo
+%{python_sitelib}/encodingSupport.py
+%{python_sitelib}/encodingSupport.pyc
+%{python_sitelib}/encodingSupport.pyo
+%{python_sitelib}/glideFactoryCredentials.py
+%{python_sitelib}/glideFactoryCredentials.pyc
+%{python_sitelib}/glideFactoryCredentials.pyo
+%{python_sitelib}/glideinwms_tarfile.py
+%{python_sitelib}/glideinwms_tarfile.pyc
+%{python_sitelib}/glideinwms_tarfile.pyo
+%{python_sitelib}/iniSupport.py
+%{python_sitelib}/iniSupport.pyc
+%{python_sitelib}/iniSupport.pyo
+%{python_sitelib}/tarSupport.py
+%{python_sitelib}/tarSupport.pyc
+%{python_sitelib}/tarSupport.pyo
 %endif
 
 %files vofrontend
@@ -611,15 +618,14 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_sbindir}/checkFrontend
 %attr(755,root,root) %{_sbindir}/glidecondor_addDN
 %attr(755,root,root) %{_sbindir}/glideinFrontend
-%attr(755,root,root) %{_sbindir}/glideinFrontendElement.py
-%attr(755,root,root) %{_sbindir}/glideinFrontendElement.pyc
-%attr(755,root,root) %{_sbindir}/glideinFrontendElement.pyo
+%attr(755,root,root) %{_sbindir}/glideinFrontendElement.py*
 %attr(755,root,root) %{_sbindir}/reconfig_frontend
 %attr(755,root,root) %{_sbindir}/stopFrontend
 %attr(-, frontend, frontend) %dir %{_localstatedir}/lib/gwms-frontend
 %attr(-, frontend, frontend) %{web_dir}
 %attr(-, frontend, frontend) %{web_base}
-%attr(-, frontend, frontend) %{web_base}/../creation
+
+
 %attr(-, frontend, frontend) %{frontend_dir}
 %attr(-, frontend, frontend) %{_localstatedir}/log/gwms-frontend
 %{python_sitelib}/cWConsts.py
@@ -679,9 +685,6 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/glideinFrontendConfig.py
 %{python_sitelib}/glideinFrontendConfig.pyc
 %{python_sitelib}/glideinFrontendConfig.pyo
-%{python_sitelib}/glideinFrontendElement.py
-%{python_sitelib}/glideinFrontendElement.pyc
-%{python_sitelib}/glideinFrontendElement.pyo
 %{python_sitelib}/glideinFrontendInterface.py
 %{python_sitelib}/glideinFrontendInterface.pyc
 %{python_sitelib}/glideinFrontendInterface.pyo
@@ -739,28 +742,30 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/timeConversion.py
 %{python_sitelib}/timeConversion.pyc
 %{python_sitelib}/timeConversion.pyo
+%{python_sitelib}/glideinFrontendElement.py*
 %{_initrddir}/gwms-frontend
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/gwms-frontend.conf
 %config(noreplace) %{_sysconfdir}/gwms-frontend/frontend.xml
 %if %{v3_plus}
-   /usr/lib/python2.4/site-packages/classadSupport.py
-   /usr/lib/python2.4/site-packages/classadSupport.pyc
-   /usr/lib/python2.4/site-packages/classadSupport.pyo
-   /usr/lib/python2.4/site-packages/cleanupSupport.py
-   /usr/lib/python2.4/site-packages/cleanupSupport.pyc
-   /usr/lib/python2.4/site-packages/cleanupSupport.pyo
-   /usr/lib/python2.4/site-packages/encodingSupport.py
-   /usr/lib/python2.4/site-packages/encodingSupport.pyc
-   /usr/lib/python2.4/site-packages/encodingSupport.pyo
-   /usr/lib/python2.4/site-packages/glideinwms_tarfile.py
-   /usr/lib/python2.4/site-packages/glideinwms_tarfile.pyc
-   /usr/lib/python2.4/site-packages/glideinwms_tarfile.pyo
-   /usr/lib/python2.4/site-packages/iniSupport.py
-   /usr/lib/python2.4/site-packages/iniSupport.pyc
-   /usr/lib/python2.4/site-packages/iniSupport.pyo
-   /usr/lib/python2.4/site-packages/tarSupport.py
-   /usr/lib/python2.4/site-packages/tarSupport.pyc
-   /usr/lib/python2.4/site-packages/tarSupport.pyo
+%attr(-, frontend, frontend) %{web_base}/../creation
+%{python_sitelib}/classadSupport.py
+%{python_sitelib}/classadSupport.pyc
+%{python_sitelib}/classadSupport.pyo
+%{python_sitelib}/cleanupSupport.py
+%{python_sitelib}/cleanupSupport.pyc
+%{python_sitelib}/cleanupSupport.pyo
+%{python_sitelib}/encodingSupport.py
+%{python_sitelib}/encodingSupport.pyc
+%{python_sitelib}/encodingSupport.pyo
+%{python_sitelib}/glideinwms_tarfile.py
+%{python_sitelib}/glideinwms_tarfile.pyc
+%{python_sitelib}/glideinwms_tarfile.pyo
+%{python_sitelib}/iniSupport.py
+%{python_sitelib}/iniSupport.pyc
+%{python_sitelib}/iniSupport.pyo
+%{python_sitelib}/tarSupport.py
+%{python_sitelib}/tarSupport.pyc
+%{python_sitelib}/tarSupport.pyo
 %endif
 
 
@@ -790,8 +795,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Tue Feb 21 2012 Doug Strain <dstrain@fnal.gov> - 2.5.5-2alpha
+* Tue Feb 21 2012 Doug Strain <dstrain@fnal.gov> - 2.5.5-7alpha
 - Adding factory RPM and v3 support
+- Updating to also work on sl7
+- Also added support for v3.0.0rc3 with optional define
 
 * Thu Feb 16 2012 Doug Strain <dstrain@fnal.gov> - 2.5.5-1 
 - Updating for v2.5.5 

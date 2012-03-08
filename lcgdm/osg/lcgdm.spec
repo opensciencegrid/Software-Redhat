@@ -29,7 +29,7 @@
 
 Name:		lcgdm
 Version:	1.8.1.2
-Release:	4%{?dist}
+Release:	5%{?dist}
 Summary:	LHC Computing Grid Data Management
 
 Group:		Applications/Internet
@@ -1418,11 +1418,20 @@ install -m 644 lfc-mysql/%{name}-%{version}/ns/*.py \
 	       dpm-mysql/%{name}-%{version}/dpm/*.py \
 	       ${RPM_BUILD_ROOT}%{altpython_sitearch}
 install %{altpython}/*.so ${RPM_BUILD_ROOT}%{altpython_sitearch}
+
+# make a dummy ld.so.conf file so lfc-python26 will be considered multilib
+mkdir -p ${RPM_BUILD_ROOT}%{_sysconfdir}/ld.so.conf.d
+echo "# this file is intentionally left blank" > ${RPM_BUILD_ROOT}%{_sysconfdir}/ld.so.conf.d/lfc-%{altpython}.conf
 %endif
 
 %if %{?fedora}%{!?fedora:0} < 5 && %{?rhel}%{!?rhel:0} < 6
 %{__python}    -c 'import compileall; compileall.compile_dir("'"$RPM_BUILD_ROOT"'", 10, "%{python_sitearch}", 1)' > /dev/null
 %{__python} -O -c 'import compileall; compileall.compile_dir("'"$RPM_BUILD_ROOT"'", 10, "%{python_sitearch}", 1)' > /dev/null
+
+# make a dummy ld.so.conf file so lfc-python will be considered multilib
+mkdir -p ${RPM_BUILD_ROOT}%{_sysconfdir}/ld.so.conf.d
+echo "# this file is intentionally left blank" > ${RPM_BUILD_ROOT}%{_sysconfdir}/ld.so.conf.d/lfc-python.conf
+
 %if %{?altpython:1}%{!?altpython:0}
 %{__altpython}	  -c 'import compileall; compileall.compile_dir("'"$RPM_BUILD_ROOT%{altpython_sitearch}"'", 10, "%{altpython_sitearch}", 1)' > /dev/null
 %{__altpython} -O -c 'import compileall; compileall.compile_dir("'"$RPM_BUILD_ROOT%{altpython_sitearch}"'", 10, "%{altpython_sitearch}", 1)' > /dev/null
@@ -2561,6 +2570,9 @@ fi
 %{python_sitearch}/lfc2thr.py*
 %doc %{_mandir}/man3/lfc_python.3*
 %doc %{_mandir}/man3/lfc2_python.3*
+%if %{?fedora}%{!?fedora:0} < 5 && %{?rhel}%{!?rhel:0} < 6
+%verify() %{_sysconfdir}/ld.so.conf.d/lfc-python.conf
+%endif
 
 %if %{?altpython:1}%{!?altpython:0}
 %files -n lfc-%{altpython}
@@ -2576,6 +2588,7 @@ fi
 %if %{?fedora}%{!?fedora:0} >= 15
 %{altpython_sitearch}/__pycache__/lfc*
 %endif
+%verify() %{_sysconfdir}/ld.so.conf.d/lfc-%{altpython}.conf
 %endif
 
 %files -n lfc-server-mysql
@@ -2944,6 +2957,9 @@ fi
 %doc %{_mandir}/man8/dpm-rfiod.8*
 
 %changelog
+* Mon Mar 05 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.8.1.2-5
+- Add dummy /etc/ld.so.conf.d files so the package will be considered multilib.
+
 * Wed Dec 1 2011 Alain Roy <roy@cs.wisc.edu> - 1.8.1.2-4
 - Packaging change only: fixed "Obsoletes"
 
