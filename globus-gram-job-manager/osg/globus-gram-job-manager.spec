@@ -12,8 +12,8 @@
 
 Name:		globus-gram-job-manager
 %global _name %(tr - _ <<< %{name})
-Version:	13.14
-Release:	1.2%{?dist}
+Version:	13.23
+Release:	0.1%{?dist}
 Summary:	Globus Toolkit - GRAM Jobmanager
 
 Group:		Applications/Internet
@@ -25,7 +25,6 @@ Source1:       globus-gram-job-manager-logging
 # OSG-specific patches
 Patch9:         unlock_init.patch
 Patch11:        null_old_jm.patch
-Patch14:        recvmsg_eagain.patch
 Patch16:        description_service_tag.patch
 Patch19:        load_requests_before_activating_socket.patch
 Patch20:        fix-job-home-dir.patch
@@ -116,7 +115,6 @@ GRAM Jobmanager Documentation Files
 
 %patch9 -p0
 %patch11 -p0
-%patch14 -p0
 %patch16 -p0
 %patch19 -p0
 %patch20 -p0
@@ -199,6 +197,10 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_docdir}/%{name}-%{version}/html
 
 %changelog
+* Thu Mar 08 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 13.23-0.1
+- New version with a fix for GRAM-317
+- Remove recvmsg_eagain.patch (in upstream)
+
 * Mon Jan 30 2012 Alain Roy <roy@cs.wisc.edu> - 13.14-1.2
 - Fixed log rotation so there's no failure if the job manager isn't running. 
 
