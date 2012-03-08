@@ -1,0 +1,19 @@
+*** src/saml2-xacml2/io_handler/network/net_common.c.O	Wed Feb 29 12:57:49 2012
+--- src/saml2-xacml2/io_handler/network/net_common.c	Wed Feb 29 12:58:24 2012
+***************
+*** 283,289 ****
+  static int  xacml_socket_timeout      = 0;
+  static int  xacml_connection_timeout  = 0;
+  static int  xacml_incremental_backoff = 0;
+! static int  xacml_keepalive = 0;
+  
+  
+  /* Sets TCP/IP socket() timeout in milli-seconds */
+--- 283,289 ----
+  static int  xacml_socket_timeout      = 0;
+  static int  xacml_connection_timeout  = 0;
+  static int  xacml_incremental_backoff = 0;
+! static int  xacml_keepalive = 1;
+  
+  
+  /* Sets TCP/IP socket() timeout in milli-seconds */
