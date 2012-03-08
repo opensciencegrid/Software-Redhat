@@ -1,7 +1,7 @@
 Summary: User identity switching tool based on grid credentials
 Name: glexec
 Version: 0.9.3
-Release: 1.1%{?dist}
+Release: 1.2%{?dist}
 License: ASL 2.0
 Group: Applications/System
 URL: http://www.nikhef.nl/pub/projects/grid/gridwiki/index.php/Site_Access_Control
@@ -77,6 +77,9 @@ getent passwd glexec >/dev/null || \
 exit 0
 
 %changelog
+* Thu Mar 08 2012 Dave Dykstra <dwd@fnal.gov> 0.9.3-1.2.osg
+- Rebuild after merging from branches/lcmaps-upgrade into trunk
+
 * Tue Feb 28 2012 Dave Dykstra <dwd@fnal.gov> 0.9.3-1.1.osg
 - Upgraded upstream version
 
