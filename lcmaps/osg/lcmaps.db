@@ -34,8 +34,6 @@
 #
 #-----------------------------------------------------------------------------
 
-path = lcmaps
-
 gumsclient = "lcmaps_gums_client.mod"
              "-resourcetype ce"
              "-actiontype execute-now"
@@ -63,12 +61,19 @@ sazclient = "lcmaps_saz_client.mod"
 
 # Uncomment the first two lines in order to enable glexec tracking
 #glexectracking = "lcmaps_glexec_tracking.mod"
-#           "-exec /usr/sbin/glexec_monitor"
+#         "-exec /usr/sbin/glexec_monitor"
 # Uncomment if your procd is located in a non-standard directory
-#           "-procddir /usr"
+#         "-procddir /usr"
 # Uncomment to write tracking info to glexec_monitor.log in the given dir
 #     otherwise the default is to use syslog
 #         "-logdir /var/log/glexec"
+# Uncomment to change the default logging level for the glexec_monitor
+#   Level 0: none, 1: errors, 2: warnings, 3: notices, 4: info, 5: debug
+#   The notices level is used for usage tracking; info is commonly useful.
+#   Default is lcmaps_debug_level from glexec.conf.
+#         "-log-level 4"
+# Uncomment to change the syslog facility.  Default is LOG_DAEMON
+#	  "-log-facility LOG_DAEMON"
 # Uncomment to use local time in the file log (doesn't apply to syslog)
 #         "-datetime-local"
 # Uncomment to change the minimum tracking group id
@@ -99,30 +104,20 @@ verifyproxy = "lcmaps_verify_proxy.mod"
 # policy (verify proxy, gums client, glexectracking). Do not uncomment
 # the glexec policies if you are not using glexec!
 # 
-# For the globus_gridftp_mapping and the osg_default mapping, we've
-# shown how to add saz, if you are using it at your site. Uncomment
-# that line if appropriate.
+# For the osg_default mapping, we've shown how to add saz, if you are
+# using it at your site. Uncomment that line if appropriate.
 #
 #-----------------------------------------------------------------------------
 
 #
-# Mapping policy: globus_gridftp_mapping
-# Purpose:        Used for gridftp
+# Mapping policy: osg_default
+# Purpose:        Used for the Globus gatekeeper and the gridftp server
 #
-globus_gridftp_mapping:
+osg_default:
 #Uncomment this one line to add SAZ
 #sazclient -> gumsclient
 gumsclient -> posix_enf
 
-#
-# Mapping policy: osg_default
-# Purpose:        Used for the Globus gatekeeper
-#
-osg_default:
-verifyproxy -> gumsclient
-#Uncomment the next two lines and comment the previous line to add SAZ
-#verifyproxy -> sazclient
-#sazclient -> gumsclient
 
 #
 # Mapping policy: glexec
