@@ -11,7 +11,7 @@
 Summary: Grid (X.509) and VOMS credentials to local account mapping service
 Name: lcmaps
 Version: 1.5.2
-Release: 2.2%{?dist}
+Release: 2.3%{?dist}
 #Release: 0.%(date +%%Y%%m%%d_%%H%%M)%{?dist}
 License: ASL 2.0
 Group: System Environment/Libraries
@@ -256,6 +256,10 @@ fi
 %{_libdir}/pkgconfig/lcmaps.pc
 
 %changelog
+* Fri Mar 09 2012 Dave Dykstra <dwd@fnal.gov> 1.5.2-2.3.osg
+- Update the default lcmaps.db to give 3 policy options for the
+  osg_default policy exactly like there was for glexec
+
 * Thu Mar 08 2012 Dave Dykstra <dwd@fnal.gov> 1.5.2-2.2.osg
 - Rebuild for trunk
 
