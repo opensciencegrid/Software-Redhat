@@ -29,6 +29,7 @@ Patch16:        description_service_tag.patch
 Patch19:        load_requests_before_activating_socket.patch
 Patch20:        fix-job-home-dir.patch
 Patch22:        fix-job-lock-location.patch
+Patch23:		recreate-lockfile.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -119,6 +120,7 @@ GRAM Jobmanager Documentation Files
 %patch19 -p0
 %patch20 -p0
 %patch22 -p0
+%patch23 -p0
 
 %build
 # Remove files that should be replaced during bootstrap
