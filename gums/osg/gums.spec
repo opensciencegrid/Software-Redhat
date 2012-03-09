@@ -8,7 +8,7 @@
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.3.18.008
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 BuildRequires: maven2
@@ -69,6 +69,8 @@ Requires: /usr/share/java/xml-commons-apis.jar
 Requires: tomcat5
 Requires: emi-trustmanager-tomcat
 Requires: mysql-server
+Requires(post): %{_sbindir}/update-alternatives
+Requires(postun): %{_sbindir}/update-alternatives
 Group: System Environment/Daemons
 Summary: Tomcat5 service for GUMS
 
@@ -190,6 +192,9 @@ mv %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/cron.d/gums-client-cron
 mv %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/init.d/gums-client-cron
 chmod +x $RPM_BUILD_ROOT%{_sysconfdir}/init.d/gums-client-cron
 
+mkdir -p $RPM_BUILD_ROOT%{_javadir}
+touch $RPM_BUILD_ROOT%{_javadir}/javamail.jar
+
 %files
 %defattr(-,root,root,-)
 %dir %{_noarchlib}/%{dirname}
@@ -241,8 +246,20 @@ fi
 %{_bindir}/gums-add-mysql-admin
 %{_bindir}/gums-create-config
 %{_bindir}/gums-setup-mysql-database
+%ghost %{_javadir}/javamail.jar
+
+%post service
+%{_sbindir}/update-alternatives --install %{_javadir}/javamail.jar javamail %{_noarchlib}/%{dirname}/mail-1.4.1.jar 5000
+
+%postun service
+if [ $1 -eq 0 ]; then
+    %{_sbindir}/update-alternatives --remove javamail %{_noarchlib}/%{dirname}/mail-1.4.1.jar
+fi
 
 %changelog
+* Thu Mar 08 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.3.18.008-2
+- Added alternatives entry for using /usr/lib/gums/mail-1.4.1.jar as 'javamail'. This gets around "No such provider" errors in the log files.
+
 * Wed Feb 29 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.3.18.008-1
 - New version. Updated trustmanager.
 
