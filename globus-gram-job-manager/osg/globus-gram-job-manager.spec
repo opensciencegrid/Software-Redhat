@@ -13,7 +13,7 @@
 Name:		globus-gram-job-manager
 %global _name %(tr - _ <<< %{name})
 Version:	13.23
-Release:	0.1%{?dist}
+Release:	0.2%{?dist}
 Summary:	Globus Toolkit - GRAM Jobmanager
 
 Group:		Applications/Internet
@@ -199,6 +199,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_docdir}/%{name}-%{version}/html
 
 %changelog
+* Thu Mar 08 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 13.23-0.2
+- Attempt to recreate missing locks if possible.
+
 * Thu Mar 08 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 13.23-0.1
 - New version with a fix for GRAM-317
 - Remove recvmsg_eagain.patch (in upstream)
