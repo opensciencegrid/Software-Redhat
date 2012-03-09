@@ -13,7 +13,7 @@
 Name:		globus-gram-job-manager
 %global _name %(tr - _ <<< %{name})
 Version:	13.23
-Release:	0.3%{?dist}
+Release:	0.4%{?dist}
 Summary:	Globus Toolkit - GRAM Jobmanager
 
 Group:		Applications/Internet
@@ -31,6 +31,7 @@ Patch20:        fix-job-home-dir.patch
 Patch22:        fix-job-lock-location.patch
 Patch23:		recreate-lockfile.patch
 Patch24:        fix-poll-interval.patch
+Patch25:        close-rvf-file.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -123,6 +124,7 @@ GRAM Jobmanager Documentation Files
 %patch22 -p0
 %patch23 -p0
 %patch24 -p0
+%patch25 -p0
 
 %build
 # Remove files that should be replaced during bootstrap
@@ -201,6 +203,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_docdir}/%{name}-%{version}/html
 
 %changelog
+* Fri Mar 09 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 13.23-0.4
+- Avoid filehandle leaks.
+
 * Fri Mar 09 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 13.23-0.3
 - Restore functionality of the poll-interval-increase patch (GRAM-273).
 
