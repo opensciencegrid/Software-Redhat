@@ -98,14 +98,15 @@ verifyproxy = "lcmaps_verify_proxy.mod"
 # Mapping policies
 #
 # Each of these define how lcmaps is used in different scenarios. 
-# The defaults are generally good.
+#
+# For the osg_default mapping, the default policy is generally good
+# but we have supplied a couple of options in comments.
+#
 # We've left the various glexec policies commented out--you need to
-# choose one of the three policies. Most sites will use the first
-# policy (verify proxy, gums client, glexectracking). Do not uncomment
-# the glexec policies if you are not using glexec!
-# 
-# For the osg_default mapping, we've shown how to add saz, if you are
-# using it at your site. Uncomment that line if appropriate.
+# choose one of the three policies (because otherwise it causes a
+# package dependency problem). Most sites will use the first policy
+# (verify proxy, gums client, glexectracking). There is no need to
+# uncomment the glexec policies if you are not using glexec.
 #
 #-----------------------------------------------------------------------------
 
@@ -114,9 +115,23 @@ verifyproxy = "lcmaps_verify_proxy.mod"
 # Purpose:        Used for the Globus gatekeeper and the gridftp server
 #
 osg_default:
-#Uncomment this one line to add SAZ
-#sazclient -> gumsclient
+
+## If the default policy isn't what you want, pick another one.  Make
+## sure that only one osg_default policy is uncommented--the other
+## policies should be commented out. For example, if you want policy #2,
+## put a hash mark before the first "gumsclient" line and remove the hash
+## mark on two lines: just before "sazclient" and just before the next
+## "gumsclient". 
+
+## Policy 1: GUMS but not SAZ (most common, default)
 gumsclient -> posix_enf
+
+## Policy 2: GUMS & SAZ
+#sazclient -> gumsclient
+#gumsclient -> posix_enf
+
+## Policy 3: grid-mapfile
+#gridmapfile -> posix_enf
 
 
 #
@@ -125,11 +140,8 @@ gumsclient -> posix_enf
 #
 glexec:
 
-## Pick an appropriate policy from the ones below. Make sure that only
-## one policy is uncommented--the other policies should be commented
-## out. For example, if you want policy #1 (the most common), remove
-## the hash mark two lines: just before "verifyproxy" and just before
-## "gumsclient". 
+## If you use glexec, pick an appropriate policy from the ones below.
+## Make sure that only one policy is uncommented.
 
 ## Policy 1: GUMS but not SAZ (most common)
 #verifyproxy -> gumsclient
