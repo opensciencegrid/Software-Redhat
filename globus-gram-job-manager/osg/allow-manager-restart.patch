@@ -1,0 +1,83 @@
+--- globus_gram_job_manager_gsi.c.orig	2012-03-11 14:29:26.000000000 -0500
++++ globus_gram_job_manager_gsi.c	2012-03-11 14:33:25.000000000 -0500
+@@ -620,6 +620,12 @@
+         {
+             goto write_manager_cred_failed;
+         }
++        // manager->stop is set if the prior proxy has expired.
++        // This will re-enable the manager.
++        if ((lifetime > 0) && (manager->stop == GLOBUS_TRUE))
++        {
++            manager->stop = GLOBUS_FALSE;
++        }
+         set_credential = GLOBUS_TRUE;
+     }
+ 
+--- globus_gram_job_manager.c.orig2	2012-03-11 14:27:33.000000000 -0500
++++ globus_gram_job_manager.c	2012-03-11 14:42:45.000000000 -0500
+@@ -555,6 +555,10 @@
+  *     Success.
+  * @retval GLOBUS_GRAM_PROTOCOL_ERROR_MALLOC_FAILED
+  *     Malloc failed.
++ * @retval GLOBUS_GRAM_PROTOCOL_ERROR_JM_STOPPED
++ *     Job manager is already stopped.
++ * @retval GLOBUS_GRAM_PROTOCOL_ERROR_OLD_JM_ALIVE
++ *     Old job manager is still alove.
+  *
+  */
+ int
+@@ -2055,7 +2055,7 @@
+             "\n",
+             expired);
+ }
+-/* globus_gram_job_manager_stop_all_jobs() */
++/* globus_gram_job_manager_expire_old_jobs() */
+ 
+ 
+ void
+@@ -2175,16 +2175,23 @@
+         case GLOBUS_GRAM_JOB_MANAGER_STATE_STOP:
+             break;
+         }
++
++        globus_reltime_t            delay;
++        GlobusTimeReltimeSet(delay, 0, 0);
+         if (request->poll_timer)
+         {
+-            globus_reltime_t            delay;
+-
+-            GlobusTimeReltimeSet(delay, 0, 0);
+-
+             globus_callback_adjust_oneshot(
+                     request->poll_timer,
+                     &delay);
+         }
++        else
++        {
++            globus_callback_register_oneshot(
++                &request->poll_timer,
++                &globus_i_reltime_zero,
++                globus_gram_job_manager_state_machine_callback,
++                request);
++        }
+         GlobusGramJobManagerRequestUnlock(request);
+
+ 
+--- globus_gram_job_manager_request.c	2012-03-11 15:22:56.000000000 -0500
++++ globus_gram_job_manager_request.c	2012-03-11 15:22:48.000000000 -0500
+@@ -1137,6 +1137,15 @@
+         job_contact = request->job_contact;
+         break;
+ 
++    case GLOBUS_GRAM_PROTOCOL_ERROR_JM_STOPPED:
++        response_code = GLOBUS_GRAM_PROTOCOL_ERROR_JM_STOPPED;
++        job_contact = NULL;
++        break;
++    case GLOBUS_GRAM_PROTOCOL_ERROR_MALLOC_FAILED:
++        response_code = GLOBUS_GRAM_PROTOCOL_ERROR_MALLOC_FAILED;
++        job_contact = NULL;
++        break;
++
+     default:
+         response_code = request->failure_code;
+         job_contact = NULL;
