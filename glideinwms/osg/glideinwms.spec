@@ -44,7 +44,8 @@ Source:	glideinwms.tar.gz
 # How to build tar file
 # git clone http://cdcvs.fnal.gov/projects/glideinwms
 # cd glideinwms
-# git archive v2_5_2 --prefix='glideinWMS/' | gzip > ~/rpmbuild/SOURCES/glideinWMS_v2_5_2_frontend.tgz
+# git archive v3_0_rc3 --prefix='glideinwms/' | gzip > ../glideinwms.tar.gz
+# change v3_0_rc3 to the proper tag in the above line
 
 Source1:        frontend_startup
 Source2:        %{frontend_xml}
