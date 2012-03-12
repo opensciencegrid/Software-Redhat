@@ -1,7 +1,7 @@
 Name:      osg-ce
 Summary:   OSG Compute Element 
 Version:   3.0.0
-Release:   28%{?dist}
+Release:   29%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -25,7 +25,7 @@ Requires: globus-gram-job-manager-fork
 Requires: globus-gram-job-manager-fork-setup-poll
 Requires: gip
 Requires: osg-info-services
-%if 0%{?el6} == 1
+%if 0%{?rhel} < 6
 # We don't have a working gums on el6 yet.
 Requires: gums-client
 %endif
@@ -123,7 +123,7 @@ rm -rf $RPM_BUILD_ROOT
 %files sge
 
 %changelog
-* Mon Mar 12 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 3.0.0-28
+* Mon Mar 12 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 3.0.0-29
 - Removed gums dependency on el6 since it's not ready yet.
 
 * Wed Feb 01 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 3.0.0-27
