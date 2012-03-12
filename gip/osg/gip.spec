@@ -1,6 +1,6 @@
 Summary: Generic Information Provider
 Name: gip
-Version: 1.3.5rc1
+Version: 1.3.5
 Release: 1%{?dist}
 License: TODO
 Group: Applications/Grid
@@ -99,6 +99,9 @@ touch $RPM_BUILD_ROOT/%{_sysconfdir}/%{name}/remove-attributes.conf
 rm -rf %buildroot
 
 %changelog
+* Mon Mar 12 2012 Burt Holzman <burt@fnal.gov> - 1.3.5rc1-2
+- Updaet to GIP 1.3.5
+
 * Wed Feb 29 2012 Burt Holzman <burt@fnal.gov> - 1.3.5rc1-1
 - Update to GIP 1.3.5rc1
 - Check for duplicate key/values (ignoring case) -- RFC4512 forbids it
