@@ -59,4 +59,7 @@ usermod -a -G gip tomcat
 /usr/share/doc/glite-ce-osg-ce-plugin-1.13.1/LICENSE
 
 %changelog
+* Mon Mar 12 2012 Doug Strain <dstrain@fnal.gov> 
+- SOFTWARE-570: CEMon OSG plugin tomcat user should be in gip group
+- Fixes writing problems to /var/log/gip and /var/cache/gip
  
