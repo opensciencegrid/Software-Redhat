@@ -1,7 +1,7 @@
 Name:      osg-ce
 Summary:   OSG Compute Element 
 Version:   3.0.0
-Release:   27%{?dist}
+Release:   28%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -25,7 +25,10 @@ Requires: globus-gram-job-manager-fork
 Requires: globus-gram-job-manager-fork-setup-poll
 Requires: gip
 Requires: osg-info-services
+%if 0%{?el6} == 1
+# We don't have a working gums on el6 yet.
 Requires: gums-client
+%endif
 Requires: edg-mkgridmap
 Requires: gratia-probe-gram
 Requires: gratia-probe-gridftp-transfer
@@ -120,6 +123,9 @@ rm -rf $RPM_BUILD_ROOT
 %files sge
 
 %changelog
+* Mon Mar 12 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 3.0.0-28
+- Removed gums dependency on el6 since it's not ready yet.
+
 * Wed Feb 01 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 3.0.0-27
 - Add dependency on the new gratia-probe-gram sub-package, which contains the perl modules for GRAM/Gratia integration.
 
