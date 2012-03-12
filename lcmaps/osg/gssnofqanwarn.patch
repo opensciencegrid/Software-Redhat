@@ -1,0 +1,29 @@
+--- src/lcmaps.c.O	2012-03-12 15:19:08.222000000 -0500
++++ src/lcmaps.c	2012-03-12 15:22:36.540000000 -0500
+@@ -777,6 +777,8 @@
+         } else if (rc == LCMAPS_CRED_NO_GSS_CRED) {
+             /* Use provided DN */
+             lcmaps_log(LOG_ERR, "%s WARNING: empty credential found !\n", logstr);
++        } else if (rc == LCMAPS_CRED_NO_FQAN) /* Only issue a warning, no failure */ {
++            lcmaps_log_debug(1, "%s warning: fqan list is empty (rc = 0x%x)\n", logstr, rc);
+         } else {
+             lcmaps_log(LOG_ERR, "%s error: storing gss_credential or its derivative credentials\n", logstr);
+             goto fail_lcmaps_run;
+@@ -890,6 +892,8 @@
+         } else if (rc == LCMAPS_CRED_NO_GSS_CRED) {
+             /* Use provided DN */
+             lcmaps_log(LOG_ERR, "%s WARNING: empty credential found !\n", logstr);
++        } else if (rc == LCMAPS_CRED_NO_FQAN) /* Only issue a warning, no failure */ {
++            lcmaps_log_debug(1, "%s warning: fqan list is empty (rc = 0x%x)\n", logstr, rc);
+         } else {
+             lcmaps_log(LOG_ERR, "%s error: storing gss_credential or its derivative credentials\n", logstr);
+             goto fail_lcmaps_run_and_return_username;
+@@ -1043,6 +1047,8 @@
+         } else if (rc == LCMAPS_CRED_NO_GSS_CRED) {
+             /* Use provided DN */
+             lcmaps_log(LOG_ERR, "%s WARNING: empty credential found !\n", logstr);
++        } else if (rc == LCMAPS_CRED_NO_FQAN) /* Only issue a warning, no failure */ {
++            lcmaps_log_debug(1, "%s warning: fqan list is empty (rc = 0x%x)\n", logstr, rc);
+         } else {
+             lcmaps_log(LOG_ERR, "%s error: storing gss_credential or its derivative credentials\n", logstr);
+             goto fail_lcmaps_run_and_return_poolindex;

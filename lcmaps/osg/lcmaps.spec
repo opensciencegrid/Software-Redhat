@@ -11,13 +11,14 @@
 Summary: Grid (X.509) and VOMS credentials to local account mapping service
 Name: lcmaps
 Version: 1.5.2
-Release: 2.3%{?dist}
+Release: 2.4%{?dist}
 #Release: 0.%(date +%%Y%%m%%d_%%H%%M)%{?dist}
 License: ASL 2.0
 Group: System Environment/Libraries
 URL: http://www.nikhef.nl/pub/projects/grid/gridwiki/index.php/Site_Access_Control
 Source0: http://software.nikhef.nl/security/lcmaps/lcmaps-%{version}.tar.gz
 Source1: lcmaps.db
+Patch0: gssnofqanwarn.patch
 BuildRoot: %{_tmppath}/lcmaps-%{version}-%{release}-buildroot
 BuildRequires: globus-core
 BuildRequires: globus-common-devel
@@ -130,6 +131,7 @@ This package contains the development libraries.
 
 %prep
 %setup -q
+%patch0 -p0
 
 %build
 
@@ -256,6 +258,11 @@ fi
 %{_libdir}/pkgconfig/lcmaps.pc
 
 %changelog
+* Mon Mar 12 2012 Dave Dykstra <dwd@fnal.gov> 1.5.2-2.4.osg
+- Add temporary patch to turn "error:storing gss_credential or its
+  derivative credentials" into a warning when grid-proxy-init is
+  used instead of voms-proxy-init.
+
 * Fri Mar 09 2012 Dave Dykstra <dwd@fnal.gov> 1.5.2-2.3.osg
 - Update the default lcmaps.db to give 3 policy options for the
   osg_default policy exactly like there was for glexec
