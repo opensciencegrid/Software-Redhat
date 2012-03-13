@@ -33,6 +33,7 @@ Patch23:		recreate-lockfile.patch
 Patch24:        fix-poll-interval.patch
 Patch25:        close-rvf-file.patch
 Patch26:        allow-manager-restart.patch
+Patch27:        recompute-stdio-on-restart.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -127,6 +128,12 @@ GRAM Jobmanager Documentation Files
 %patch24 -p0
 %patch25 -p0
 %patch26 -p0
+
+# This one is difficult.  Stdio stageout is not atomic - on restart,
+# you need to either assume in-progress transfers "always fail" or
+# "always succeed".  The patch below assumes "always fail".
+# I think it's a better default, but am waiting on more info.
+#%patch27 -p0
 
 %build
 # Remove files that should be replaced during bootstrap

@@ -59,7 +59,7 @@
 +                &globus_i_reltime_zero,
 +                globus_gram_job_manager_state_machine_callback,
 +                request);
-+        }
++        } manager->done = GLOBUS_TRUE;
          GlobusGramJobManagerRequestUnlock(request);
 
  
