@@ -1,6 +1,6 @@
 Name:           jclassads
 Version:        2.4
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Java Classad Implementation 
 
 Group:          System Environment/Daemons
@@ -10,6 +10,7 @@ URL:            http://www.cs.wisc.edu/condor/classad/
 
 
 Source0:        classad_java_src.tar.gz
+Patch0:         find-java-home.patch
 
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -25,6 +26,8 @@ Java classad implementation and API
 
 %prep
 %setup -q -n java_classad.%{version}
+%patch0 -p1
+
 
 %build
 make
@@ -44,6 +47,9 @@ rm -rf $RPM_BUILD_ROOT
 /usr/share/java/jclassads/classad.jar
 
 %changelog
+* Tue Mar 13 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 2.4-2
+- Patched build to find JAVA_HOME more effectively on EL6.
+
 * Thu Sep 15 2011 Doug Strain <dstrain@fnal.gov> - 2.4-1
 - Initial RPM
 
