@@ -1,0 +1,34 @@
+--- joda-time-1.5.2-src/build.xml.debug	2008-01-26 22:16:33.000000000 +0900
++++ joda-time-1.5.2-src/build.xml	2008-03-17 01:55:02.000000000 +0900
+@@ -127,29 +127,9 @@
+ 
+ <!-- ====================================================================== -->
+ 
+-  <target name="getjunit" unless="junit.present">
+-    <echo message="Getting junit from http://www.ibiblio.org/maven/junit"/>
+-    <setproxy />
+-    <mkdir dir="${lib}"/>
+-    <get dest="${junit.jar}" usetimestamp="true" ignoreerrors="true" src="http://www.ibiblio.org/maven/junit/jars/junit-3.8.1.jar" />
+-  </target>
+-
+-<!-- ====================================================================== -->
+-
+-  <target name="installjunit" unless="junit.ant">
+-    <echo message="Installing junit in ${ant.home}/lib"/>
+-  	<copy file="${junit.jar}" todir="${ant.home}/lib" />
+-    <echo message="***************************************************************"/>
+-    <echo message="*  A copy of junit has been installed in your ant directory   *"/>
+-    <echo message="*                                                             *"/>
+-    <echo message="* You will need to restart the ant build to pickup the change *"/>
+-    <echo message="***************************************************************"/>
+-  	<fail message="Please restart ant"/>
+-  </target>
+-
+ <!-- ====================================================================== -->
+ 
+-  <target name="prepare" depends="init,getjunit,installjunit"
++  <target name="prepare" depends="init"
+           description="Prepare build directory">
+     <mkdir dir="${build}"/>
+     <mkdir dir="${build.classes}"/>
+
