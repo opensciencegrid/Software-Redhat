@@ -1,5 +1,5 @@
 %global name osg-configure
-%global version 1.0.6
+%global version 1.0.7
 %global release 1%{?dist}
 
 Summary: Package for configure-osg and associated scripts
@@ -210,6 +210,12 @@ rm -rf $RPM_BUILD_ROOT
 %ghost %{_sysconfdir}/profile.d/osg.csh
 
 %changelog
+* Wed Mar 14 2012 Suchandra Thapa <sthapa@ci.uchicago.edu> 1.0.7-1
+- Fix for Software-552
+- Implemented Software-568
+- Fixes and changes suggested by Alain
+- Unit test updates
+
 * Wed Feb 29 2012 Suchandra Thapa <sthapa@ci.uchicago.edu> 1.0.6-1
 - Add support for configuring gratia condor and pbs probes
 - Fix missing newline in message when -d is used
