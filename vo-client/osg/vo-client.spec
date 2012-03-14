@@ -1,9 +1,9 @@
 Name:           vo-client
 Version:        40
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Contains vomses file for use with user authentication and edg-mkgridmap.conf file that contains configuration information for edg-mkgridmap.
 
-Group:          system environment/base
+Group:          System Environment/Base
 License:        Apache 2.0
 URL:            http://www.opensciencegrid.org/osg/
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -29,14 +29,14 @@ Source1:        gums.config.template
 %description
 %{summary}
 
-%package -n osg-edg-mkgridmap-config
+%package edgmkgridmap
 Summary:	edg-mkgridmap.conf file that contains configuration information for edg-mkgridmap 
 Group:          system environment/base
-Obsoletes:      vo-client-edgmkgridmap < 40-3
 Provides:       vo-client-edgmkgridmap = %{version}-%{release}
+Provides:       osg-edg-mkgridmap-config = %{version}-%{release}
 #Requires:       %{name} = %{version}-%{release}
 
-%description -n osg-edg-mkgridmap-config 
+%description edgmkgridmap
 %{summary}
 
 
@@ -83,7 +83,7 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/vomses
 %config(noreplace) %{_sysconfdir}/grid-security/vomsdir
 
-%files -n osg-edg-mkgridmap-config
+%files edgmkgridmap
 %defattr(-,root,root,-)
 %config(noreplace) %{_sysconfdir}/edg-mkgridmap.conf
 
@@ -92,6 +92,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(0600,tomcat,tomcat) %config(noreplace) %{_sysconfdir}/gums/gums.config.template
 
 %changelog
+* Wed Mar 14 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 40-4
+- osg-edg-mkgridmap-config renamed back to vo-client-edgmkgridmap to solve yum dependency resolution issues.
 * Wed Mar 07 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 40-3
 - Rename vo-client-edgmkgridmap to osg-edg-mkgridmap-config; remove vo-client dependency
 - Add osg-gums-config
