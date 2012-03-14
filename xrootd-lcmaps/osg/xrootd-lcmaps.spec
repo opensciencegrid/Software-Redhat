@@ -1,7 +1,7 @@
 
 Name: xrootd-lcmaps
 Version: 0.0.4
-Release: 2
+Release: 2%{?dist}
 Summary: LCMAPS plugin for xrootd
 
 Group: System Environment/Daemons
