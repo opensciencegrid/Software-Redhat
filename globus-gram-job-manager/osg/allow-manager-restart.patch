@@ -1,5 +1,7 @@
---- globus_gram_job_manager_gsi.c.orig	2012-03-11 14:29:26.000000000 -0500
-+++ globus_gram_job_manager_gsi.c	2012-03-11 14:33:25.000000000 -0500
+Index: globus_gram_job_manager_gsi.c
+===================================================================
+--- globus_gram_job_manager_gsi.c.orig	2011-10-18 14:09:17.000000003 -0500
++++ globus_gram_job_manager_gsi.c	2012-03-13 19:00:21.000000003 -0500
 @@ -620,6 +620,12 @@
          {
              goto write_manager_cred_failed;
@@ -13,8 +15,10 @@
          set_credential = GLOBUS_TRUE;
      }
  
---- globus_gram_job_manager.c.orig2	2012-03-11 14:27:33.000000000 -0500
-+++ globus_gram_job_manager.c	2012-03-11 14:42:45.000000000 -0500
+Index: globus_gram_job_manager.c
+===================================================================
+--- globus_gram_job_manager.c.orig	2012-03-13 19:00:20.000000003 -0500
++++ globus_gram_job_manager.c	2012-03-13 19:00:21.000000003 -0500
 @@ -555,6 +555,10 @@
   *     Success.
   * @retval GLOBUS_GRAM_PROTOCOL_ERROR_MALLOC_FAILED
@@ -26,7 +30,7 @@
   *
   */
  int
-@@ -2055,7 +2055,7 @@
+@@ -2055,7 +2059,7 @@
              "\n",
              expired);
  }
@@ -35,7 +39,7 @@
  
  
  void
-@@ -2175,16 +2175,23 @@
+@@ -2175,16 +2179,23 @@
          case GLOBUS_GRAM_JOB_MANAGER_STATE_STOP:
              break;
          }
@@ -61,10 +65,12 @@
 +                request);
 +        } manager->done = GLOBUS_TRUE;
          GlobusGramJobManagerRequestUnlock(request);
-
  
---- globus_gram_job_manager_request.c	2012-03-11 15:22:56.000000000 -0500
-+++ globus_gram_job_manager_request.c	2012-03-11 15:22:48.000000000 -0500
+         globus_gram_job_manager_remove_reference(
+Index: globus_gram_job_manager_request.c
+===================================================================
+--- globus_gram_job_manager_request.c.orig	2012-03-13 19:00:20.000000003 -0500
++++ globus_gram_job_manager_request.c	2012-03-13 19:00:21.000000003 -0500
 @@ -1137,6 +1137,15 @@
          job_contact = request->job_contact;
          break;
