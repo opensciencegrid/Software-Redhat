@@ -13,7 +13,7 @@
 Name:		globus-gram-job-manager
 %global _name %(tr - _ <<< %{name})
 Version:	13.23
-Release:	0.6%{?dist}
+Release:	0.7%{?dist}
 Summary:	Globus Toolkit - GRAM Jobmanager
 
 Group:		Applications/Internet
@@ -195,6 +195,19 @@ cat %{SOURCE1} >> $RPM_BUILD_ROOT%{_sysconfdir}/globus/globus-gram-job-manager.c
 mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/log/globus
 chmod 01777 $RPM_BUILD_ROOT%{_localstatedir}/log/globus 
 
+%preun
+if [[ $1 -ge 1 ]]; then # upgrade
+    echo Killing job-managers
+    pkill globus-job-manager || /bin/true
+fi
+
+%post
+if [[ $1 -gt 1 ]]; then # upgrade
+    echo Killing job-managers
+    pkill globus-job-manager || /bin/true
+fi
+    
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -212,6 +225,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_docdir}/%{name}-%{version}/html
 
 %changelog
+* Wed Mar 14 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 13.23-0.7
+- kill globus-job-manager processes on upgrade (SOFTWARE-561)
+
 * Tue Mar 13 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 13.23-0.6
 - rebuilt
 
