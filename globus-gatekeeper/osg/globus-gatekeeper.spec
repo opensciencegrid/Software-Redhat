@@ -13,7 +13,7 @@
 Name:		globus-gatekeeper
 %global _name %(tr - _ <<< %{name})
 Version:	9.6
-Release:	1.4%{?dist}
+Release:	1.5%{?dist}
 Summary:	Globus Toolkit - Globus Gatekeeper
 
 Group:		Applications/Internet
@@ -25,6 +25,7 @@ Source:         http://www.globus.org/ftppub/gt5/5.2/5.2.0/packages/src/%{_name}
 Source1:        globus-gatekeeper.sysconfig
 #Patch0:         child_signals.patch
 Patch3:         init.patch
+Patch4:         GRAM-309.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Requires:	globus-common >= 13.4
@@ -56,6 +57,7 @@ Globus Gatekeeper Setup
 
 #%patch0 -p0
 %patch3 -p0
+%patch4 -p0
 # Note append here
 cat %{SOURCE1} >> config/globus-gatekeeper.in
 
@@ -126,6 +128,9 @@ fi
 %config(noreplace) /etc/logrotate.d/globus-gatekeeper
 
 %changelog
+* Thu Mar 15 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 9.6-1.5.osg
+- Add patch for GRAM-309 (fixes startup failure on IPv4-only machines)
+
 * Thu Mar 08 2012 Dave Dykstra <dwd@fnal.gov> - 9.6-1.4.osg
 - Rebuild after merging from branches/lcmaps-upgrade into trunk
 
