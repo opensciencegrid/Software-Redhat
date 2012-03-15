@@ -19,7 +19,7 @@
 Name:		globus-common
 %global _name %(tr - _ <<< %{name})
 Version:	14.5
-Release:	2.1%{?dist}
+Release:	2.2%{?dist}
 Summary:	Globus Toolkit - Common Library
 
 Group:		System Environment/Libraries
@@ -59,6 +59,7 @@ BuildRequires:	tex(latex)
 %else
 BuildRequires:	tetex-latex
 %endif
+Requires:       libtool-ltdl
 
 %package progs
 Summary:	Globus Toolkit - Common Library Programs
@@ -247,6 +248,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_docdir}/%{name}-%{version}/html
 
 %changelog
+* Wed Mar 14 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 14.5-2.2
+- Added explicit libtool-ltdl dependency
+
 * Thu Jan 05 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 14.5-2.1
 - Set default GLOBUS_VERSION to 5.2.0
 
