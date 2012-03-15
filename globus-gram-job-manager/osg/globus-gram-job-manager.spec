@@ -13,7 +13,7 @@
 Name:		globus-gram-job-manager
 %global _name %(tr - _ <<< %{name})
 Version:	13.23
-Release:	0.7%{?dist}
+Release:	0.8%{?dist}
 Summary:	Globus Toolkit - GRAM Jobmanager
 
 Group:		Applications/Internet
@@ -29,7 +29,7 @@ Patch16:        description_service_tag.patch
 Patch19:        load_requests_before_activating_socket.patch
 Patch20:        fix-job-home-dir.patch
 Patch22:        fix-job-lock-location.patch
-Patch23:		recreate-lockfile.patch
+Patch23:        recreate-lockfile.patch
 Patch24:        fix-poll-interval.patch
 Patch25:        close-rvf-file.patch
 Patch26:        allow-manager-restart.patch
@@ -198,13 +198,13 @@ chmod 01777 $RPM_BUILD_ROOT%{_localstatedir}/log/globus
 %preun
 if [[ $1 -ge 1 ]]; then # upgrade
     echo Killing job-managers
-    pkill globus-job-manager || /bin/true
+    killall -v globus-job-manager || /bin/true
 fi
 
 %post
 if [[ $1 -gt 1 ]]; then # upgrade
     echo Killing job-managers
-    pkill globus-job-manager || /bin/true
+    killall -v globus-job-manager || /bin/true
 fi
     
 
@@ -225,6 +225,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_docdir}/%{name}-%{version}/html
 
 %changelog
+* Thu Mar 15 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 13.23-0.8
+- use killall instead of pkill for killing g-j-m processes
+
 * Wed Mar 14 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 13.23-0.7
 - kill globus-job-manager processes on upgrade (SOFTWARE-561)
 
