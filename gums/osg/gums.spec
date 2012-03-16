@@ -8,7 +8,7 @@
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.3.18.008
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 BuildRequires: maven2
@@ -257,6 +257,9 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+* Thu Mar 15 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.3.18.002-3
+- bump for rebuild
+
 * Thu Mar 08 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.3.18.008-2
 - Added alternatives entry for using /usr/lib/gums/mail-1.4.1.jar as 'javamail'. This gets around "No such provider" errors in the log files.
 
