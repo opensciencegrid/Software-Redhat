@@ -1,7 +1,7 @@
 Summary: Argus PEP client and server common library (with hessian)
 Name: argus-pep-common
 Version: 2.1.0
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: ASL 2.0
 Vendor: EMI
 Group: System Environment/Libraries
@@ -9,10 +9,13 @@ Packager: ETICS
 BuildArch: noarch
 BuildRequires: java-devel
 BuildRequires: maven2
+BuildRequires: jpackage-utils
 Requires: java
 BuildRoot: %{_builddir}/%{name}-root
 AutoReqProv: yes
-Source: argus-pep-common-2.1.0-2.src.tar.gz
+Source0: argus-pep-common-2.1.0-2.src.tar.gz
+Source1: maven-surefire-plugin-2.4.3.jar
+Source2: maven-surefire-plugin-2.4.3-fixed.pom
 
 %description
 Argus PEP client and server Java common library (EMI)
@@ -24,7 +27,11 @@ Argus PEP client and server Java common library (EMI)
 
 %build
 mkdir -p /tmp/m2-repository; cp -rvf m2-repository/* /tmp/m2-repository
- export JAVA_HOME=/usr/java/latest; mvn -Dmaven.repo.local=/tmp/m2-repository -Petics install
+export JAVA_HOME=%{java_home}
+%if 0%{?rhel} == 6
+mvn -B -Dmaven.repo.local=/tmp/m2-repository -Dfile=%{SOURCE1} -DpomFile=%{SOURCE2} install:install-file
+%endif
+mvn -B -Dmaven.repo.local=/tmp/m2-repository -Petics install
   
   
 
