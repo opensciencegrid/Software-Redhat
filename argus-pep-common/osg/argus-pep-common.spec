@@ -1,7 +1,7 @@
 Summary: Argus PEP client and server common library (with hessian)
 Name: argus-pep-common
 Version: 2.1.0
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: ASL 2.0
 Vendor: EMI
 Group: System Environment/Libraries
@@ -56,3 +56,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
  
+* Thu Mar 15 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 2.1.0-4.osg
+- bump to rebuild w/ changelog
+* Thu Mar 15 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 2.1.0-3.osg
+- Use a maven-surefire-plugin-2.4.3 with a patched .pom for the build.
+
