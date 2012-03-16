@@ -63,27 +63,27 @@ Index: globus_gram_job_manager.c
 +                &globus_i_reltime_zero,
 +                globus_gram_job_manager_state_machine_callback,
 +                request);
-+        } manager->done = GLOBUS_TRUE;
++        } manager->done = GLOBUS_TRUE; globus_cond_signal(&manager->cond);
          GlobusGramJobManagerRequestUnlock(request);
  
          globus_gram_job_manager_remove_reference(
-Index: globus_gram_job_manager_request.c
-===================================================================
---- globus_gram_job_manager_request.c.orig	2012-03-13 19:00:20.000000003 -0500
-+++ globus_gram_job_manager_request.c	2012-03-13 19:00:21.000000003 -0500
-@@ -1137,6 +1137,15 @@
-         job_contact = request->job_contact;
-         break;
+--- globus_gram_job_manager_query.c.orig	2012-03-16 09:57:22.000000000 -0500
++++ globus_gram_job_manager_query.c	2012-03-16 09:58:01.000000000 -0500
+@@ -1457,7 +1457,7 @@
  
-+    case GLOBUS_GRAM_PROTOCOL_ERROR_JM_STOPPED:
-+        response_code = GLOBUS_GRAM_PROTOCOL_ERROR_JM_STOPPED;
-+        job_contact = NULL;
-+        break;
-+    case GLOBUS_GRAM_PROTOCOL_ERROR_MALLOC_FAILED:
-+        response_code = GLOBUS_GRAM_PROTOCOL_ERROR_MALLOC_FAILED;
-+        job_contact = NULL;
-+        break;
-+
-     default:
-         response_code = request->failure_code;
-         job_contact = NULL;
+             if (out_size >= 0 && out_size != local_size_stdout)
+             {
+-                rc = GLOBUS_GRAM_PROTOCOL_ERROR_STDIO_SIZE;
++                //rc = GLOBUS_GRAM_PROTOCOL_ERROR_STDIO_SIZE;
+                 globus_gram_job_manager_request_log(
+                         request,
+                         GLOBUS_GRAM_JOB_MANAGER_LOG_WARN,
+@@ -1484,7 +1484,7 @@
+             }
+             else if (err_size >= 0 && err_size != local_size_stderr)
+             {
+-                rc = GLOBUS_GRAM_PROTOCOL_ERROR_STDIO_SIZE;
++                //rc = GLOBUS_GRAM_PROTOCOL_ERROR_STDIO_SIZE;
+                 globus_gram_job_manager_request_log(
+                         request,
+                         GLOBUS_GRAM_JOB_MANAGER_LOG_WARN,

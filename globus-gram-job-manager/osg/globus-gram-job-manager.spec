@@ -13,7 +13,7 @@
 Name:		globus-gram-job-manager
 %global _name %(tr - _ <<< %{name})
 Version:	13.23
-Release:	0.8%{?dist}
+Release:	0.9%{?dist}
 Summary:	Globus Toolkit - GRAM Jobmanager
 
 Group:		Applications/Internet
@@ -225,6 +225,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_docdir}/%{name}-%{version}/html
 
 %changelog
+* Fri Mar 16 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 13.23-0.9
+Suppress Globus 129 for the client for now.
+
 * Thu Mar 15 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 13.23-0.8
 - use killall instead of pkill for killing g-j-m processes
 
