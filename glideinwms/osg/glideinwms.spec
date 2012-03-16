@@ -6,7 +6,7 @@ Name:           glideinwms
 
 %if %{v2_plus}
 %define version 2.5.6
-%define release 0rc1
+%define release 1
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
 %endif
@@ -796,6 +796,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Mar 16 2012 Doug Strain <dstrain@fnal.gov> - 2.5.6-1
+- Updating sources for v2.5.6
+
 * Tue Feb 21 2012 Doug Strain <dstrain@fnal.gov> - 2.5.5-7alpha
 - Adding factory RPM and v3 support
 - Updating to also work on sl7

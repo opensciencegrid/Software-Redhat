@@ -4,9 +4,9 @@
       <job_logs max_days="7.0" max_mbytes="100.0" min_days="3.0"/>
       <summary_logs max_days="31.0" max_mbytes="100.0" min_days="3.0"/>
       <process_logs>
-         <process_log max_days="7.0" max_mbytes="100.0" min_days="3.0" type="INFO"/>
-         <process_log max_days="7.0" max_mbytes="100.0" min_days="3.0" type="ERR"/>
-         <process_log max_days="7.0" max_mbytes="100.0" min_days="3.0" type="DEBUG"/>
+         <process_log max_days="7.0" max_mbytes="100.0" min_days="3.0" extension=".info" msg_types="INFO"/>
+         <process_log max_days="7.0" max_mbytes="100.0" min_days="3.0" extension=".err" msg_types="ERR"/>
+         <process_log max_days="7.0" max_mbytes="100.0" min_days="3.0" extension=".debug" msg_types="DEBUG"/>
       </process_logs>
    </log_retention>
    <monitor base_dir="/var/lib/gwms-factory/web-area/monitor" flot_dir="/usr/share/javascriptrrd/flot" javascriptRRD_dir="/usr/share/javascriptrrd/js" jquery_dir="/usr/share/javascriptrrd/flot"/>
