@@ -1,7 +1,7 @@
 Summary: User identity switching tool based on grid credentials
 Name: glexec
-Version: 0.9.3
-Release: 1.2%{?dist}
+Version: 0.9.4
+Release: 1.1%{?dist}
 License: ASL 2.0
 Group: Applications/System
 URL: http://www.nikhef.nl/pub/projects/grid/gridwiki/index.php/Site_Access_Control
@@ -31,6 +31,7 @@ logging-only mode.
 %prep
 %setup -q
 %patch0 -p0
+#%patch1 -p0
 
 %build
 %configure --with-lcmaps-moduledir-sfx=/lcmaps --with-lcas-moduledir-sfx=/lcas
@@ -77,6 +78,12 @@ getent passwd glexec >/dev/null || \
 exit 0
 
 %changelog
+* Mon Mar 19 2012 Dave Dykstra <msalle@nikhef.nl> 0.9.4-1.1.osg
+- Reimported to OSG
+
+* Fri Mar 16 2012 Mischa Salle <msalle@nikhef.nl> 0.9.4-1
+- updating version
+
 * Thu Mar 08 2012 Dave Dykstra <dwd@fnal.gov> 0.9.3-1.2.osg
 - Rebuild after merging from branches/lcmaps-upgrade into trunk
 
