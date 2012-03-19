@@ -1,0 +1,26 @@
+Index: org.glite.data.gfal/src/gfal.c
+===================================================================
+--- org.glite.data.gfal.orig/src/gfal.c	2012-03-19 16:55:55.000000000 -0500
++++ org.glite.data.gfal/src/gfal.c	2012-03-19 16:58:48.822390547 -0500
+@@ -866,7 +866,7 @@
+         }
+         memset (pops, 0, sizeof(struct proto_ops));
+ 
+-        if ((dlhandle = dlopen ("liblfc.so", RTLD_LAZY)) == NULL)
++        if ((dlhandle = dlopen ("liblfc.so.1", RTLD_LAZY)) == NULL)
+             return (NULL);
+ 
+         pops->proto_name = "lfc";
+Index: org.glite.data.gfal/src/lfc_ifce.c
+===================================================================
+--- org.glite.data.gfal.orig/src/lfc_ifce.c	2010-01-22 09:25:54.000000000 -0600
++++ org.glite.data.gfal/src/lfc_ifce.c	2012-03-19 16:58:12.708394026 -0500
+@@ -145,7 +145,7 @@
+ 			fcops.addreplica = (int (*) (const char *, struct lfc_fileid *, const char *, const char *, const char, const char, const char *, const char *)) dlsym (dlhandle, "lfc_addreplica");
+ 
+ 			if (fcops.addreplica == NULL) {
+-				if ((dlhandle = dlopen ("liblfc.so", RTLD_LAZY)) == NULL) {
++				if ((dlhandle = dlopen ("liblfc.so.1", RTLD_LAZY)) == NULL) {
+ 					gfal_errmsg (errbuf, errbufsz, GFAL_ERRLEVEL_ERROR, "[GFAL][lfc_init][] liblfc.so: %s", dlerror ());
+ 					*lfc_endpoint = 0;
+ 					return (-1);

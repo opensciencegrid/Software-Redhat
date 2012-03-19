@@ -2,7 +2,7 @@
 
 Name:		gfal
 Version:	1.11.14
-Release:	11%{?dist}
+Release:	12%{?dist}
 Summary:	Grid File Access Library for accessing files in multiple grid protocols
 
 Group:		Development/Languages/C and C++
@@ -14,6 +14,7 @@ Source0:        org.glite.data.gfal.tar.gz
 Patch0:         gfal_makefile_cleanup.patch
 Patch1:		srm.v2.2.types.patch
 Patch2:         srm.v2.2.types.el6.patch
+Patch3:         dlopen_lfc.patch
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 Requires:	CGSI-gSOAP lfc-client e2fsprogs voms openldap globus-ftp-client python
 BuildRequires:  automake
@@ -41,6 +42,7 @@ BuildRequires:  python-devel
 %setup -n org.glite.data.gfal
 
 %patch0 -p1
+%patch3 -p1
 
 %build
 mkdir -p src/autogen build; aclocal -I /usr/share/glite-build-common-cpp/m4/; libtoolize --force; autoheader; automake --foreign --add-missing --copy; autoconf
@@ -86,6 +88,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/*
 
 %changelog
+* Mon Mar 19 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.11.14-12
+- dlopen liblfc.so.1 instead of liblfc.so to eliminate runtime dependency on lfc-devel
+
 * Thu Jan 19 2012 Derek Weitzel <dweitzel@cse.unl.edu> - 1.11.14-11
 - Add libuuid to list of requires for sl6
 
