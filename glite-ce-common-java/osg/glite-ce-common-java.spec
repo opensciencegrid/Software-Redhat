@@ -1,7 +1,7 @@
 Summary: Common libraries for all services running on the CREAM CE
 Name: glite-ce-common-java
 Version: 1.13.1
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: Apache License 2.0
 Vendor: EMI
 Group: System Environment/Libraries
@@ -10,7 +10,12 @@ BuildArch: noarch
 BuildRequires: ant
 BuildRequires: bouncycastle
 BuildRequires: glite-ce-wsdl
+%if 0%{?rhel} > 5
+BuildRequires: tomcat6
+%endif
+%if 0%{?rhel} <= 5
 BuildRequires: tomcat5
+%endif
 BuildRequires: emi-trustmanager-axis
 BuildRequires: argus-pep-common
 BuildRequires: emi-trustmanager
@@ -21,6 +26,7 @@ BuildRoot: %{_builddir}/%{name}-root
 AutoReqProv: yes
 Source0: glite-ce-common-java-1.13.1-3.src.tar.gz
 Source1: build.xml
+Source2: build-tomcat6.xml
 
 %description
 Common libraries for all services running on the CREAM CE
@@ -32,7 +38,12 @@ Common libraries for all services running on the CREAM CE
 
 %build
 printf "stage.location=/usr
+%if 0%{?rhel} <= 5
 tomcat.location=/usr/share/tomcat5
+%endif
+%if 0%{?rhel} > 5
+tomcat.location=/usr/share/tomcat6
+%endif
 axis.location=/usr/local/axis1.4
 javashare.location=/usr/share/java
 axislib.location=/usr/share/java/axis
@@ -44,7 +55,12 @@ org.glite.authz.pep-common.location=/usr
 org.glite.authz.pep-java.location=/usr
 module.version=1.13.1
 dist.location=$RPM_BUILD_ROOT/usr" >.configuration.properties
-cp %{SOURCE1} .
+%if 0%{?rhel} <= 5
+cp %{SOURCE1} ./build.xml
+%endif
+%if 0%{?rhel} > 5
+cp %{SOURCE2} ./build.xml
+%endif
  ant
   
   
@@ -68,3 +84,6 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
  
+* Mon Mar 19 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.13.1-4.osg
+- Build with tomcat6 on el6
+
