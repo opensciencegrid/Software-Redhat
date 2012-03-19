@@ -1,7 +1,7 @@
 Summary: Tomcat and axis integration classes
 Name: emi-trustmanager-tomcat
 Version: 3.0.0
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: Apache Software License
 Vendor: EMI
 Group: System Environment/Libraries
@@ -9,7 +9,12 @@ Packager: ETICS
 BuildArch: noarch
 BuildRequires: bouncycastle
 BuildRequires: java-devel-sun
+%if 0%{rhel} <= 5
 BuildRequires: tomcat5
+%endif
+%if 0%{rhel} > 5
+BuildRequires: tomcat6
+%endif
 BuildRequires: emi-trustmanager
 BuildRequires: ant
 BuildRequires: log4j
@@ -90,6 +95,9 @@ rm -rf $RPM_BUILD_ROOT
 /var/lib/trustmanager-tomcat/configure.sh
 
 %changelog
+* Mon Mar 19 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 3.0.0-4
+rebuild with tomcat6 on el6
+
 * Fri Jul 22 2011 Tanya Levshina <tlevshin@fnal.gov - 3.0.0-3
 added requires (java-sun), buildrequires (java-sun-devel)
 
