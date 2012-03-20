@@ -1,7 +1,7 @@
 Summary: emi.voms.voms-admin-server
 Name: voms-admin-server
 Version: 2.6.1
-Release: 9%{?dist}
+Release: 10%{?dist}
 License: Apache Software License
 Vendor: EMI
 Group: System Environment/Libraries
@@ -10,7 +10,14 @@ BuildRequires: maven2
 BuildRequires: java-devel-sun
 Requires: java-sun
 Requires: emi-trustmanager-tomcat
+%if 0%{?rhel} <= 5
 Requires: tomcat5
+%define tomcat_lib /usr/share/tomcat5/common/lib
+%endif
+%if 0%{?rhel} > 5
+Requires: tomcat6
+%define tomcat_lib /usr/share/tomcat6/lib
+%endif
 Requires: fetch-crl
 Requires: xml-commons-apis 
 Requires(post):/sbin/chkconfig
@@ -24,9 +31,12 @@ Requires: grid-certificates
 BuildRoot: %{_builddir}/%{name}-root
 BuildArch: noarch
 AutoReqProv: yes
-Source: voms-admin-server-2.6.1-1.src.tar.gz
+Source0: voms-admin-server-2.6.1-1.src.tar.gz
+Source1: maven-surefire-plugin-2.4.3.jar
+Source2: maven-surefire-plugin-2.4.3-fixed.pom
 Patch0: maven-deps.patch
 Patch1: directory-defaults.patch
+Patch2: maven-resources-disable.patch
 
 %description
 emi.voms.voms-admin-server
@@ -37,10 +47,22 @@ emi.voms.voms-admin-server
 %setup  
 %patch0 -p0
 %patch1 -p0
+%if 0%{?rhel} == 6
+# Tried to "BuildRequires: maven-resources-plugin" like in voms-admin-client,
+# but it gave me an odd NoClassDefFoundError
+# so I'm using a patch to disable using the maven-resources-plugin for el6
+# instead. It's just used for copying two spec files that we neither use, nor
+# include in the final package. -mat
+%patch2 -p0
+%endif
 
 %build
  
- export JAVA_HOME=/usr/java/latest; mvn -P EMI -Dmaven.repo.local=/tmp/m2-repository package
+export JAVA_HOME=%{java_home};
+%if 0%{?rhel} == 6
+mvn -B -Dmaven.repo.local=/tmp/m2-repository -Dfile=%{SOURCE1} -DpomFile=%{SOURCE2} install:install-file
+%endif
+mvn -B -e -P EMI -Dmaven.repo.local=/tmp/m2-repository package
   
   
 
@@ -60,8 +82,8 @@ rm $RPM_BUILD_ROOT/usr/share/voms-admin/tools/lib/voms-admin-server-%{version}.w
 
 mkdir -p $RPM_BUILD_ROOT/etc/voms-admin
 
-mkdir -p $RPM_BUILD_ROOT/usr/share/tomcat5/common/lib
-ln -s /usr/share/java/eclipse-ecj.jar $RPM_BUILD_ROOT/usr/share/tomcat5/common/lib/voms-admin-eclipse-ecj.jar
+mkdir -p $RPM_BUILD_ROOT%{tomcat_lib}
+ln -s /usr/share/java/eclipse-ecj.jar $RPM_BUILD_ROOT%{tomcat_lib}/voms-admin-eclipse-ecj.jar
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -71,7 +93,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %preun
 if [ $1 = 0 ]; then
-  /sbin/service vsom-admin stop >/dev/null 2>&1 || :
+  /sbin/service voms-admin stop >/dev/null 2>&1 || :
   /sbin/chkconfig --del voms-admin
 fi
 
@@ -186,23 +208,22 @@ fi
 /usr/share/voms-admin/templates/context.xml.template
 /usr/share/voms-admin/templates/voms.database.properties.template
 /usr/share/voms-admin/templates/voms.service.properties.template
-/usr/sbin/voms-db-deploy.py
-/usr/sbin/voms-admin-configure.py
-/usr/sbin/voms.py
-/usr/sbin/init-voms-admin.py
-/usr/sbin/init-voms-admin.pyc
-/usr/sbin/init-voms-admin.pyo
-/usr/sbin/voms-admin-configure.pyc
-/usr/sbin/voms-admin-configure.pyo
-/usr/sbin/voms-db-deploy.pyc
-/usr/sbin/voms-db-deploy.pyo
-/usr/sbin/voms.pyc
-/usr/sbin/voms.pyo
+/usr/sbin/voms-db-deploy.py*
+/usr/sbin/voms-admin-configure.py*
+/usr/sbin/voms.py*
+/usr/sbin/init-voms-admin.py*
 /usr/sbin/voms-admin-ping
 /usr/sbin/voms-admin-configure
-/usr/share/tomcat5/common/lib/voms-admin-eclipse-ecj.jar
+%{tomcat_lib}/voms-admin-eclipse-ecj.jar
 
 %changelog
+* Mon Mar 19 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 2.6.1-10
+Fix maven-surefire-plugin on el6
+Disable maven-resources-plugin on el6
+Fix JAVA_HOME on el6
+Use tomcat6 on el6
+
+
 * Wed Sep 21 2011 Alain Roy <roy@cs.wisc.edu> - 2.6.1-9
 Tweaked xml-commons-apis dependency to work
 Added chkconfig
