@@ -1,13 +1,16 @@
 Summary: emi.voms.voms-admin-client
 Name: voms-admin-client
 Version: 2.0.16
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: Apache Software License
 Vendor: EMI
 Group: System Environment/Libraries
 Packager: ETICS
 BuildRequires: maven2
 BuildRequires: java-devel-sun
+%if 0%{?rhel} == 6
+BuildRequires: maven-resources-plugin
+%endif
 Requires: python-ZSI
 Requires: java-sun
 Requires: PyXML
@@ -28,7 +31,9 @@ emi.voms.voms-admin-client
 
 %build
  
- export JAVA_HOME=/usr/java/latest; mvn  -Dmaven.repo.local=/tmp/m2-repository package
+ export JAVA_HOME=%{java_home}
+ # added -Dmaven2.usejppjars to use the maven-resources-plugin we bring in as a BuildRequires. Safe to leave in for el5
+ mvn -B -Dmaven2.usejppjars -e -Dmaven.repo.local=/tmp/m2-repository package
   
   
 
@@ -110,6 +115,10 @@ rm -rf $RPM_BUILD_ROOT
 /usr/bin/voms-admin
 
 %changelog
+* Mon Mar 19 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.16-2
+Fix JAVA_HOME on el6
+Use maven-resources-plugin from jpackage on el6
+
 * Sat Jul 23 2011 Tanya Levshina <tlevshin@fnal.gov> - 2.0.16-1
 Initial release, patched env. variable setting
 
