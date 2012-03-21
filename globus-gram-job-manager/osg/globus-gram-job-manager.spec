@@ -13,7 +13,7 @@
 Name:		globus-gram-job-manager
 %global _name %(tr - _ <<< %{name})
 Version:	13.23
-Release:	0.9%{?dist}
+Release:	0.10%{?dist}
 Summary:	Globus Toolkit - GRAM Jobmanager
 
 Group:		Applications/Internet
@@ -34,6 +34,7 @@ Patch24:        fix-poll-interval.patch
 Patch25:        close-rvf-file.patch
 Patch26:        allow-manager-restart.patch
 Patch27:        recompute-stdio-on-restart.patch
+Patch28:        condor-seg-nullptr.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -135,6 +136,8 @@ GRAM Jobmanager Documentation Files
 # I think it's a better default, but am waiting on more info.
 #%patch27 -p0
 
+%patch28 -p0
+
 %build
 # Remove files that should be replaced during bootstrap
 rm -f doxygen/Doxyfile*
@@ -225,6 +228,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_docdir}/%{name}-%{version}/html
 
 %changelog
+* Wed Mar 21 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 13.23-0.10
+- Attempt to fix null ptr deref in Condor SEG.
+
 * Fri Mar 16 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 13.23-0.9
 Suppress Globus 129 for the client for now.
 
