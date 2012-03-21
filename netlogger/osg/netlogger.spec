@@ -13,6 +13,7 @@ URL:		http://netlogger.lbl.gov/
 Source0:        netlogger-trunk.tar.gz
 
 Patch0:         remove_setuptools.patch
+Patch1:         gridftp_auth.patch
 
 BuildArch:      noarch
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
@@ -24,6 +25,7 @@ BuildRequires:  python
 %prep
 %setup -n netlogger-trunk
 %patch0 -p0
+%patch1 -p1
 
 %build
 
@@ -46,6 +48,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 
 %changelog
+* Wed Mar 21 2012 Neha Sharma <neha@fnal.gov> - 4.2.0-2
+- Patch for gridftp_auth parser module
 * Mon Aug 22 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 4.2.0-1
 - Initial creation of netlogger RPM.
-

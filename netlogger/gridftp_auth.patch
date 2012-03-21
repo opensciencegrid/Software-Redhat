@@ -1,0 +1,80 @@
+--- _build_results/BUILD/netlogger-trunk/netlogger/parsers/modules/gridftp_auth.py	2010-04-29 15:01:18.000000000 -0500
++++ gridftp_auth.py	2012-03-21 16:28:14.747000000 -0500
+@@ -11,6 +11,7 @@
+ import re
+ import sys
+ 
++logging.raiseExceptions=0
+ from netlogger.parsers.base import BaseParser
+ from netlogger.nldate import parseSyslogDate
+ from netlogger import util
+@@ -55,36 +56,39 @@
+         pid, date, message = m.groups()
+         msg_type = 0
+         # First word of message gives us the event type
+-        if message.startswith('Server'):
+-            event = dict(event=ns('start'))
+-        elif message.startswith('Configuration'):
+-            event = dict(event=ns('config'))
+-        elif message.startswith('New'):
+-            m = re.search('from:\s*(\S+)', message)
+-            host, port =  m.group(1).split(':')
+-            event = dict(event=ns('conn.start'), host=host, 
+-                         port=int(port))
+-        elif message.startswith('DN'):
+-             m = re.search('DN\s+(\/.*)\s+successfully', message)
+-             event = dict(event=ns('conn.auth.dn'), DN=m.group(1))
+-        elif message.startswith('User'):
+-            m = re.search('User\s+(\S+)\s+successfully', message)
+-            event = dict(event=ns('conn.auth.user'), user=m.group(1))
+-        elif message.startswith('Starting'):
+-            m = re.search('transfer \"([^"]*)\"', message)
+-            event = dict(event=ns('conn.transfer.start'), 
+-                         filename=m.group(1))
+-            msg_type = 1
+-        elif message.startswith('Finished'):
+-            m = re.search('transferring \"([^"]*)\"', message)
+-            event = dict(event=ns('conn.transfer.end'),
+-                         filename=m.group(1))
+-            msg_type = 2
+-        elif message.startswith('Closed'):
+-            event = dict(event=ns('end'))
+-        else:
+-            self.log.debug("process.end", status=0, n=0)
+-            return ()
++        try:
++		if message.startswith('Server'):
++            		event = dict(event=ns('start'))
++        	elif message.startswith('Configuration'):
++            		event = dict(event=ns('config'))
++        	elif message.startswith('New'):
++            		#m = re.search('from:\s*(\S+)', message)
++            		#host, port =  m.group(1).split(':')
++			m = message.split(":", 1)[1]
++			m = m.translate(None, " []")
++			host,port = m.rsplit(':', 1)
++            		#event = dict(event=ns('conn.start'), host=host, port=int(port))
++        	elif message.startswith('DN'):
++             		m = re.search('DN\s+(\/.*)\s+successfully', message)
++             		event = dict(event=ns('conn.auth.dn'), DN=m.group(1))
++        	elif message.startswith('User'):
++            		m = re.search('User\s+(\S+)\s+successfully', message)
++            		event = dict(event=ns('conn.auth.user'), user=m.group(1))
++        	elif message.startswith('Starting'):
++            		m = re.search('transfer \"([^"]*)\"', message)
++            		event = dict(event=ns('conn.transfer.start'), filename=m.group(1))
++            		msg_type = 1
++        	elif message.startswith('Finished'):
++            		m = re.search('transferring \"([^"]*)\"', message)
++            		event = dict(event=ns('conn.transfer.end'),filename=m.group(1))
++            		msg_type = 2
++        	elif message.startswith('Closed'):
++            		event = dict(event=ns('end'))
++        	else:
++            		self.log.debug("process.end", status=0, n=0)
++            		return ()
++	except (ValueError, TypeError), E:
++		raise ValueError("Could not parse logs. %s" % E)
+         event['ts'] = parseSyslogDate(date)
+         event['PID'] = int(pid)
+         event_list = (event,)
