@@ -1,7 +1,7 @@
 Summary: emi.voms.voms-admin-server
 Name: voms-admin-server
 Version: 2.6.1
-Release: 10%{?dist}
+Release: 11%{?dist}
 License: Apache Software License
 Vendor: EMI
 Group: System Environment/Libraries
@@ -57,6 +57,15 @@ emi.voms.voms-admin-server
 %endif
 
 %build
+
+# Fix tomcat directory location in init script
+# The directory-defaults.patch adds the line we're fixing here
+%if 0%{?rhel} <= 5
+sed -i -e 's/@TOMCAT@/tomcat5/' resources/scripts/init-voms-admin.py
+%endif
+%if 0%{?rhel} == 6
+sed -i -e 's/@TOMCAT@/tomcat6/' resources/scripts/init-voms-admin.py
+%endif
  
 export JAVA_HOME=%{java_home};
 %if 0%{?rhel} == 6
@@ -217,12 +226,14 @@ fi
 %{tomcat_lib}/voms-admin-eclipse-ecj.jar
 
 %changelog
+* Wed Mar 21 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 2.6.1-11
+
+Make directory-defaults.patch work for tomcat6 as well
 * Mon Mar 19 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 2.6.1-10
 Fix maven-surefire-plugin on el6
 Disable maven-resources-plugin on el6
 Fix JAVA_HOME on el6
 Use tomcat6 on el6
-
 
 * Wed Sep 21 2011 Alain Roy <roy@cs.wisc.edu> - 2.6.1-9
 Tweaked xml-commons-apis dependency to work
