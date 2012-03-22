@@ -25,7 +25,7 @@ BuildRequires:  python
 %prep
 %setup -n netlogger-trunk
 %patch0 -p0
-%patch1 -p1
+%patch1 -p0
 
 %build
 
