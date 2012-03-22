@@ -1,6 +1,6 @@
 Name:           edg-mkgridmap
 Version:        4.0.0
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Contains the init.d script and crontab for edg-mkgridmap
 
 Group:          system environment/base
@@ -21,7 +21,7 @@ Patch0:         edg-mkgridmap-wrapper-osg.patch
 # cp edg-mkgridmap ./
 # cp edg-mkgridmap-cron ./
 
-Requires:       vo-client-edgmkgridmap
+Requires:       osg-edg-mkgridmap-config
 Requires:       osg-vo-map
 
 Requires:       perl-libwww-perl
@@ -87,6 +87,9 @@ fi
 %{_mandir}/man8/edg-mkgridmap.8*
 
 %changelog
+* Thu Mar 22 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 4.0.0-5
+- Require osg-edg-mkgridmap-config instead of vo-client-edgmkgridmap
+
 * Fri Dec 02 2011 Alain Roy <roy@cs.wisc.edu> - 4.0.0-3
 - Fix logging to be more clear.
 
