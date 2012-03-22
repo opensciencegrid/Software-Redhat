@@ -1,5 +1,5 @@
---- _build_results/BUILD/netlogger-trunk/netlogger/parsers/modules/gridftp_auth.py	2010-04-29 15:01:18.000000000 -0500
-+++ gridftp_auth.py	2012-03-21 16:28:14.747000000 -0500
+--- netlogger/parsers/modules/gridftp_auth.py   2010-04-29 15:01:18.000000000 -0500
++++ netlogger/parsers/modules/gridftp_auth.py   2012-03-21 16:28:14.747000000 -0500
 @@ -11,6 +11,7 @@
  import re
  import sys
