@@ -1,6 +1,6 @@
 Name:		netlogger
 Version:	4.2.0
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Netlogger toolkit
 
 Group:		Productivity/File utilities
