@@ -13,7 +13,7 @@
 Name:		globus-gatekeeper
 %global _name %(tr - _ <<< %{name})
 Version:	9.6
-Release:	1.5%{?dist}
+Release:	1.6%{?dist}
 Summary:	Globus Toolkit - Globus Gatekeeper
 
 Group:		Applications/Internet
@@ -128,6 +128,9 @@ fi
 %config(noreplace) /etc/logrotate.d/globus-gatekeeper
 
 %changelog
+* Thu Mar 29 2012 Dave Dykstra <dwd@fnal.gov> - 9.6-1.6.osg
+- Reduce default lcmaps syslog level from 3 to 2
+
 * Thu Mar 15 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 9.6-1.5.osg
 - Add patch for GRAM-309 (fixes startup failure on IPv4-only machines)
 
