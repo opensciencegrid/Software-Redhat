@@ -13,7 +13,7 @@
 Name:		globus-gridftp-server
 %global _name %(tr - _ <<< %{name})
 Version:	6.5
-Release:	1.4%{?dist}
+Release:	1.5%{?dist}
 Summary:	Globus Toolkit - Globus GridFTP Server
 
 Group:		System Environment/Libraries
@@ -187,6 +187,9 @@ fi
 %defattr(-,root,root,-)
 
 %changelog
+* Thu Mar 29 2012 Dave Dykstra <dwd@fnal.gov> - 6.5-1.5.osg
+- Reduce default lcmaps syslog level from 3 to 2
+
 * Thu Mar 08 2012 Dave Dykstra <dwd@fnal.gov> - 6.5-1.4.osg
 - Rebuild after merging from branches/lcmaps-upgrade into trunk
 

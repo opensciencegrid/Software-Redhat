@@ -10,7 +10,7 @@ export LCMAPS_DB_FILE=/etc/lcmaps.db
 export LCMAPS_POLICY_NAME=globus_gridftp_mapping:osg_default
 #level 0: no messages, 1: errors, 2: also warnings, 3: also notices,
 #  4: also info, 5: maximum debug
-export LCMAPS_DEBUG_LEVEL=3
+export LCMAPS_DEBUG_LEVEL=2
 
 # Source OSG firewall information
 if [ -e /var/lib/osg/globus-firewall ]; then
