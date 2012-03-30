@@ -1,13 +1,14 @@
 
 Name: xrootd-hdfs
 Version: 1.7.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: HDFS plugin for xrootd
 
 Group: System Environment/Daemons
 License: BSD
 URL: svn://t2.unl.edu/brian/XrdHdfs
 Source0: %{name}-%{version}.tar.gz
+Patch0: sl6-gcc.patch
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildRequires: xrootd-libs-devel
 BuildRequires: xrootd-server-devel
@@ -19,6 +20,7 @@ Conflicts: xrootd < 3.0.3-1
 
 %prep
 %setup -q
+%patch0 -p1
 
 %build
 LDFLAGS="-L/usr/java/default/jre/lib/amd64 -L/usr/java/default/jre/lib/amd64/server -L/usr/java/default/jre/lib/i386/server -L/usr/java/default/jre/lib/i386"
@@ -61,6 +63,9 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/sysconfig/xrootd-hdfs
 
 %changelog
+* Fri Mar 30 2012 Doug Strain <dstrain@fnal.gov> - 1.7.0-2
+- Updated for xrootd 3.2 and to support sl6
+
 * Tue Nov 29 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.7.0-1
 - Add read-ahead buffer; contribution from Dan Bradley.
 
