@@ -1,6 +1,6 @@
 Name:           osg-ca-certs-compat
-Version:        1.26
-Release:        3%{?dist}
+Version:        1.27
+Release:        1%{?dist}
 Epoch:          1
 Summary:        OSG Packaging of the IGTF CA Certs and OSG-specific CAs in old format. Compatible only with openssl 0.9.x.
 
@@ -8,7 +8,7 @@ Group:          System Environment/Base
 License:        Unknown
 URL:            http://software.grid.iu.edu/pacman/cadist/
 
-Source0:        osg-certificates-1.26.tar.gz
+Source0:        osg-certificates-1.27ITB.tar.gz
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
@@ -42,6 +42,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc
 
 %changelog
+* Thu Mar 30 2012 Anand Padmanabhan <apadmana@uiuc.edu> - 1.27-1
+- CA release corresponding to IGTF 1.46 release
+
 * Thu Jan 18 2012 Anand Padmanabhan <apadmana@uiuc.edu> - 1.26-2
 - CA release corresponding to IGTF 1.44 release
 
