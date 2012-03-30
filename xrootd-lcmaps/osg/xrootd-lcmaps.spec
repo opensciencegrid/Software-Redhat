@@ -1,7 +1,7 @@
 
 Name: xrootd-lcmaps
 Version: 0.0.4
-Release: 4%{?dist}
+Release: 5%{?dist}
 Summary: LCMAPS plugin for xrootd
 
 Group: System Environment/Daemons
@@ -40,9 +40,12 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root,-)
 %{_libdir}/libXrdLcmaps*
-%{_sysconfdir}/xrootd/lcmaps.cfg
+%config(noreplace) %{_sysconfdir}/xrootd/lcmaps.cfg
 
 %changelog
+* Fri Mar 30 2012 Doug Strain <dstrain@fnal.gov> 0.0.4-5
+- Rebuilding with xrootd-3.2 and setting lcmaps.cfg to config file
+
 * Mon Mar 19 2012 Doug Strain <dstrain@fnal.gov> 0.0.4-3
 - Rebuilding with xrootd-3.1.1 and relaxing requirement to 3.1.1
 
