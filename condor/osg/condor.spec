@@ -55,7 +55,7 @@ Version: 7.6.6
 %define condor_release %condor_base_release
 %endif
 # Release: %condor_release%{?dist}.2
-Release: 3%{?dist}
+Release: 4%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -120,6 +120,8 @@ Patch5: condor_shared_libs.patch
 #%if %rhel5
 #Patch6: cmake_26.patch
 #%endif
+
+Patch7: glexec-patch.diff
 
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
@@ -389,6 +391,7 @@ exit 0
 #%if %rhel5
 #%patch6 -p1
 #%endif
+%patch7 -p0
 
 # fix errant execute permissions
 find src -perm /a+x -type f -name "*.[Cch]" -exec chmod a-x {} \;
@@ -435,7 +438,7 @@ export CMAKE_PREFIX_PATH=/usr
        -DWITH_MANAGEMENT:BOOL=FALSE \
 %endif
        -DWANT_FULL_DEPLOYMENT:BOOL=TRUE \
-       -DWANT_GLEXEC:BOOL=FALSE \
+       -DWANT_GLEXEC:BOOL=TRUE \
 %if %deltacloud
        -DWITH_LIBDELTACLOUD:BOOL=TRUE \
 %else
@@ -714,7 +717,7 @@ rm -rf %{buildroot}
 %_libexecdir/condor/sshd.sh
 %_libexecdir/condor/condor_job_router
 %_libexecdir/condor/gridftp_wrapper.sh
-#%_libexecdir/condor/condor_glexec_update_proxy
+%_libexecdir/condor/condor_glexec_update_proxy
 %_libexecdir/condor/condor_limits_wrapper.sh
 %_libexecdir/condor/condor_rooster
 %_libexecdir/condor/condor_schedd.init
@@ -728,6 +731,12 @@ rm -rf %{buildroot}
 %_libexecdir/condor/condor_shared_port
 %_libexecdir/condor/condor_glexec_wrapper
 %_libexecdir/condor/glexec_starter_setup.sh
+%_libexecdir/condor/condor_glexec_cleanup
+%_libexecdir/condor/condor_glexec_job_wrapper
+%_libexecdir/condor/condor_glexec_kill
+%_libexecdir/condor/condor_glexec_run
+%_libexecdir/condor/condor_glexec_setup
+%_libexecdir/condor/rsh
 %_libexecdir/condor/power_state
 %if %include_man
 %_mandir/man1/condor_advertise.1.gz
@@ -1052,6 +1061,10 @@ fi
 %endif
 
 %changelog
+* Fri Apr 1 2012 Alain Roy <roy@cs.wisc.edu> - 7.6.6-4
+- Backported patch from Condor 7.7 to fix glexec bugs
+- Enabled glexec
+
 * Fri Feb 10 2012 Derek Weitzel <dweitzel@cse.unl.edu> - 7.6.6-3
 - Adding sticky bit to condor_root_switchboard
 
