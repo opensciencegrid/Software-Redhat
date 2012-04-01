@@ -1,6 +1,6 @@
 Summary: User identity switching tool based on grid credentials
 Name: glexec
-Version: 0.9.4
+Version: 0.9.6
 Release: 1.1%{?dist}
 License: ASL 2.0
 Group: Applications/System
@@ -78,7 +78,12 @@ getent passwd glexec >/dev/null || \
 exit 0
 
 %changelog
-* Mon Mar 19 2012 Dave Dykstra <msalle@nikhef.nl> 0.9.4-1.1.osg
+* Sun Apr  1 2012 Dave Dykstra <dwd@fnal.gov> 0.9.6-1.1.osg
+- Reimported to OSG -- lowered loglevel of message if homedir of
+  payload did not exist, and fixed bug that set wrong umask in
+  non-linger mode
+
+* Mon Mar 19 2012 Dave Dykstra <dwd@fnal.gov> 0.9.4-1.1.osg
 - Reimported to OSG
 
 * Fri Mar 16 2012 Mischa Salle <msalle@nikhef.nl> 0.9.4-1
