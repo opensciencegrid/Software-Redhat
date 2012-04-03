@@ -1,6 +1,6 @@
 Name:           osg-discovery
 Version:        1.0.7
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        OSG Discovery Tools
 Group:          System Environment
 License:        Stanford (modified BSD with advert clause)
@@ -98,6 +98,7 @@ sed -i "s/XPATHCACHE_DIR=.*/XPATHCACHE_DIR=~\/.osg-discovery/" discovery-built/c
 
 #Patch java detection in order to remove locate dependency
 sed -i "s/\${JAVA_HOME}/\/usr/" discovery-built/bin/*
+sed -i "s/EOF)/EOF\n)/" discovery-built/bin/*
 sed -i "s/\. \$XPATHSEARCH_HOME\/bin\/detect-java.sh//" discovery-built/bin/*
 
 #add back external libraries
@@ -136,8 +137,9 @@ mkdir -p $RPM_BUILD_ROOT/var/log/%{name}
 
 
 %changelog
-* Tue Apr 03 2012 Doug Strain <dstrain@fnal.gov> 1.0.7-4
+* Tue Apr 03 2012 Doug Strain <dstrain@fnal.gov> 1.0.7-5
 - Updating to get rid of grizzly web server and build on SL6
+- Also fixing EOF bash here-documents to not give warnings
 
 * Mon Jul 12 2011 Doug Strain <dstrain@fnal.gov> 1.0.6
 Initial creation of spec file
