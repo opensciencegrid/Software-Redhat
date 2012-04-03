@@ -1,0 +1,48 @@
+--- osg/discovery/pom.xml	2012-04-03 15:01:35.000000000 -0500
++++ osg/discovery/pom.xml	2012-04-03 15:06:59.000000000 -0500
+@@ -198,21 +198,6 @@
+         <version>2.1</version>
+       </dependency>
+       <dependency>
+-        <groupId>com.sun.grizzly</groupId>
+-        <artifactId>grizzly-webserver</artifactId>
+-        <version>1.9.9</version>
+-      </dependency>
+-      <dependency>
+-        <groupId>com.sun.jersey</groupId>
+-        <artifactId>jersey-server</artifactId>
+-        <version>1.1.0-ea</version>
+-      </dependency>
+-      <dependency>
+-        <groupId>com.sun.jersey</groupId>
+-        <artifactId>jersey-core</artifactId>
+-        <version>1.1.0-ea</version>
+-      </dependency>
+-      <dependency>
+         <groupId>javax.ws.rs</groupId>
+         <artifactId>jsr311-api</artifactId>
+         <version>1.1</version>
+--- osg/discovery/xpathsearch/pom.xml	2012-04-03 15:01:36.000000000 -0500
++++ osg/discovery/xpathsearch/pom.xml	2012-04-03 15:07:12.000000000 -0500
+@@ -148,21 +148,6 @@
+       <scope>provided</scope>
+     </dependency>
+     <dependency>
+-      <groupId>com.sun.grizzly</groupId>
+-      <artifactId>grizzly-webserver</artifactId>
+-      <scope>provided</scope>
+-    </dependency>
+-    <dependency>
+-      <groupId>com.sun.jersey</groupId>
+-      <artifactId>jersey-server</artifactId>
+-      <scope>provided</scope>
+-    </dependency>
+-    <dependency>
+-      <groupId>com.sun.jersey</groupId>
+-      <artifactId>jersey-core</artifactId>
+-      <scope>provided</scope>
+-    </dependency>
+-    <dependency>
+       <groupId>javax.ws.rs</groupId>
+       <artifactId>jsr311-api</artifactId>
+       <scope>provided</scope>
