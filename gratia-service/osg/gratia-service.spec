@@ -5,7 +5,7 @@ Name: gratia-service
 Summary: Gratia OSG accounting system
 Group: Applications/System
 Version: 1.11
-Release: 04.pre%{?dist}
+Release: 05.pre%{?dist}
 License: GPL
 Group: Applications/System
 URL: http://sourceforge.net/projects/gratia/
@@ -69,11 +69,13 @@ install -m 0644 conf/*.sql $RPM_BUILD_ROOT%{_datadir}/gratia/sql/
 install -m 0644 conf/hibernate/* $RPM_BUILD_ROOT%{_datadir}/gratia/hibernate
 install -m 0644 conf/server.xml.template $RPM_BUILD_ROOT%{_datadir}/gratia/server.xml.template
 sed -i 's|@GRATIA_VERSION@|%{version}|' conf/service-configuration.properties
+sed -i 's|@GRATIA_VERSION@|%{version}|' conf/service-authorization.properties
 install -m 0600 conf/service-configuration.properties  $RPM_BUILD_ROOT%{_sysconfdir}/gratia/collector/
+install -m 0600 conf/service-authorization.properties  $RPM_BUILD_ROOT%{_sysconfdir}/gratia/collector/
 install -m 0644 conf/log4j.properties $RPM_BUILD_ROOT%{_sysconfdir}/gratia/collector
 install -m 0600 conf/{keystore,truststore} $RPM_BUILD_ROOT%{_var}/lib/gratia-service/
-install -m 0755 conf/post-install.sh $RPM_BUILD_ROOT%{_datadir}/gratia/
-install -m 0755 conf/install_database.sh $RPM_BUILD_ROOT%{_datadir}/gratia/
+install -m 0755 conf/post-install $RPM_BUILD_ROOT%{_datadir}/gratia/
+install -m 0755 conf/install-database $RPM_BUILD_ROOT%{_datadir}/gratia/
 install -m 0755 conf/configure_tomcat $RPM_BUILD_ROOT%{_datadir}/gratia/
 install -m 0755 conf/voms-server.sh $RPM_BUILD_ROOT%{_datadir}/gratia/
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/cron.d
@@ -90,8 +92,8 @@ touch $RPM_BUILD_ROOT%{_var}/log/gratia-service/gratia{,-rmi-servlet,-security,-
 %defattr(-,root,root,-)
 %{_datadir}/gratia/sql
 %{_datadir}/gratia/hibernate
-%{_datadir}/gratia/post-install.sh
-%{_datadir}/gratia/install_database.sh
+%{_datadir}/gratia/post-install
+%{_datadir}/gratia/install-database
 %{_datadir}/gratia/configure_tomcat
 %{_datadir}/gratia/server.xml.template
 %{_datadir}/gratia/voms-server.sh
@@ -104,6 +106,7 @@ touch $RPM_BUILD_ROOT%{_var}/log/gratia-service/gratia{,-rmi-servlet,-security,-
 %{_webapps}/gratia-*
 %dir %{_sysconfdir}/gratia/collector
 %attr(0640,root,tomcat) %config(noreplace) %{_sysconfdir}/gratia/collector/service-configuration.properties
+%attr(0640,root,tomcat) %config(noreplace) %{_sysconfdir}/gratia/collector/service-authorization.properties
 %config(noreplace) %{_sysconfdir}/gratia/collector/log4j.properties
 %attr(0750,tomcat,tomcat) %dir %{_var}/lib/tomcat5/webapps/gratia-reporting/logs
 %attr(0750,tomcat,tomcat) %dir %{_var}/lib/tomcat5/webapps/gratia-reporting/WEB-INF/platform/configuration
@@ -111,6 +114,10 @@ touch $RPM_BUILD_ROOT%{_var}/log/gratia-service/gratia{,-rmi-servlet,-security,-
 %ghost %{_var}/log/gratia-service/*.log
 
 %changelog
+* Wed Apr 04 2012 Tanya Levshina <tlevshin@fnal.gov> - 1.11.05pre 
+Separated service-configuration.properties from service-authorization.properties
+Changed names and improved post-install and database-install scripts
+
 * Wed Mar 07 2012 Tanya Levshina <tlevshin@fnal.gov> - 1.11.04pre 
 Changed name of the directory (gratia-service) under /var/lib and /var/log
 Used server.xml.template provided by Brian Bockelman
