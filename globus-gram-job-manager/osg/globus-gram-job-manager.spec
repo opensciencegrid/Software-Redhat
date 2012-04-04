@@ -13,7 +13,7 @@
 Name:		globus-gram-job-manager
 %global _name %(tr - _ <<< %{name})
 Version:	13.23
-Release:	0.10%{?dist}
+Release:	0.11%{?dist}
 Summary:	Globus Toolkit - GRAM Jobmanager
 
 Group:		Applications/Internet
@@ -35,6 +35,7 @@ Patch25:        close-rvf-file.patch
 Patch26:        allow-manager-restart.patch
 Patch27:        recompute-stdio-on-restart.patch
 Patch28:        condor-seg-nullptr.patch
+Patch29:        gram-329-condor-fake-seg.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -137,6 +138,7 @@ GRAM Jobmanager Documentation Files
 #%patch27 -p0
 
 %patch28 -p0
+%patch29 -p0
 
 %build
 # Remove files that should be replaced during bootstrap
@@ -228,6 +230,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_docdir}/%{name}-%{version}/html
 
 %changelog
+* Wed Apr 04 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 13.23-0.11
+- Add patch for GRAM-329
+
 * Wed Mar 21 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 13.23-0.10
 - Attempt to fix null ptr deref in Condor SEG.
 
