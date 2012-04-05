@@ -1,6 +1,6 @@
 # The following should be either "v2_plus" or "v3_plus"
-%define v2_plus 0
-%define v3_plus 1
+%define v2_plus 1
+%define v3_plus 0
 
 Name:           glideinwms
 
