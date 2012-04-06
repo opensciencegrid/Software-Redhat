@@ -19,6 +19,7 @@ Requires: edg-mkgridmap
 Requires: glexec
 Requires: osg-ce-condor
 Requires: osg-voms
+Requires: yum-utils
 %endif
 
 ################################################################################
@@ -30,6 +31,7 @@ Requires: osg-voms
 Requires: glexec
 Requires: globus-gridftp-server-progs
 Requires: osg-wn-client
+Requires: yum-utils
 %endif
 
 
@@ -48,6 +50,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Fri Apr 06 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1-3
 - Removed lfc-python from list; has depsolver issues
+- Added yum-utils
 
 * Thu Apr 05 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1-2
 - Removed multilib testing of lfc-python* from RHEL 5
