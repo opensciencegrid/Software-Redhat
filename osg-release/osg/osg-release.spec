@@ -1,6 +1,6 @@
 Name:           osg-release
 Version:        3.0 
-Release:        16%{?dist}
+Release:        17%{?dist}
 Summary:        OSG Software for Enterprise Linux repository configuration
 
 Group:          System Environment/Base 
@@ -78,6 +78,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Apr 09 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 3.0-17
+- Fixed baseurl entries in the el6 repo files
+
 * Thu Feb 16 2012 Derek Weitzel <dweitzel@cse.unl.edu> - 3.0-16
 - Turning off el6 minefield
 

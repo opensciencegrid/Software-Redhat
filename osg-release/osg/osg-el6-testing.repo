@@ -1,6 +1,6 @@
 [osg-testing]
 name=OSG Software for Enterprise Linux 6 - Testing - $basearch 
-#baseurl=http://repo.grid.iu.edu/osg-testing/$basearch
+#baseurl=http://repo.grid.iu.edu/3.0/el6/osg-testing/$basearch
 mirrorlist=http://repo.grid.iu.edu/mirror/3.0/el6/osg-testing/$basearch
 failovermethod=priority
 priority=98
