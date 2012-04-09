@@ -6,14 +6,14 @@ Name:           glideinwms
 
 %if %{v2_plus}
 %define version 2.5.7
-%define release 1
+%define release 2
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
 %endif
 
 %if %{v3_plus}
 %define version 3.0.0 
-%define release 2
+%define release 3
 %define frontend_xml frontend.master.xml
 %define factory_xml glideinWMS.master.xml
 %endif
@@ -796,6 +796,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Apr 9 2012 Doug Strain <dstrain@fnal.gov> - 2.5.7-2
+- Updating sources for v2.5.7
+- Splitting DAEMON LIST to appropriate config files
+
 * Fri Mar 16 2012 Doug Strain <dstrain@fnal.gov> - 2.5.6-1
 - Updating sources for v2.5.6
 
