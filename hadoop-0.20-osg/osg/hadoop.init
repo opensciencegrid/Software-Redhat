@@ -139,11 +139,11 @@ case $1 in
 'status')
     # If namenode:
     if [ `/bin/hostname -s` == "$HADOOP_NAMENODE" ] ; then
-        status -p '/var/run/hadoop/hadoop-hadoop-namenode.pid' 'hadoop'
+        status -p '/var/run/hadoop/hadoop-$HADOOP_USER-namenode.pid' 'hadoop'
     elif [ `/bin/hostname -s` == "$HADOOP_SECONDARY_NAMENODE" ] ; then 
-        status -p '/var/run/hadoop/hadoop-hadoop-secondarynamenode.pid' 'hadoop'
+        status -p '/var/run/hadoop/hadoop-$HADOOP_USER-secondarynamenode.pid' 'hadoop'
     else
-        status -p '/var/run/hadoop/hadoop-hadoop-datanode.pid' 'hadoop'
+        status -p '/var/run/hadoop/hadoop-$HADOOP_USER-datanode.pid' 'hadoop'
     fi
     ;;
 'reload' | 'restart')
