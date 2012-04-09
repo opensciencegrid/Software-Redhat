@@ -88,7 +88,7 @@ HADOOP_MIN_DATANODE_SIZE=0
 # The name of a script that takes a list of IP addresses and returns
 # a list of rack names.  Hadoop uses this to make rack-aware intelligent
 # decisions for data block replication.
-HADOOP_RACKAWARE_SCRIPT=
+HADOOP_RACK_AWARENESS_SCRIPT=
 
 # The central syslog collector.  If set, then logs will be sent to the
 # syslog server in addition to being stored locally.
