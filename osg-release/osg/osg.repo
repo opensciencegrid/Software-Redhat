@@ -1,6 +1,6 @@
 [osg]
 name=OSG Software for Enterprise Linux 5 - $basearch
-#baseurl=http://repo.grid.iu.edu/osg-release/$basearch
+#baseurl=http://repo.grid.iu.edu/3.0/el5/osg-release/$basearch
 mirrorlist=http://repo.grid.iu.edu/mirror/3.0/el5/osg-release/$basearch
 failovermethod=priority
 priority=98
