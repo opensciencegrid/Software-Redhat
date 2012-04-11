@@ -5,13 +5,23 @@
 # Don't want to repack jars
 %define __os_install_post %{nil}
 
+
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.3.18.008
-Release: 3%{?dist}
+Release: 4f%{?dist}
 License: Unknown
 Group: System Environment/Daemons
+%if 0%{?rhel} < 6
 BuildRequires: maven2
+%define tomcat tomcat5
+%endif
+%if 0%{?rhel} >= 6
+%define tomcat tomcat6
+BuildRequires: jdk
+## explicitly requiring this because I don't want yum to pick java-1.5.0-gcj-devel
+BuildRequires: java-1.6.0-sun-compat
+%endif
 BuildRequires: java-devel
 Requires: java
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
@@ -42,6 +52,11 @@ Source16: xmltooling.pom
 Source17: maven-surefire-plugin-2.4.3.jar
 Source18: maven-surefire-plugin-2.4.3-fixed.pom
 
+# The binary tarball of maven for apache; used because I couldn't get the build to work on EL6 otherwise.
+# TODO: Replace with an RPM of maven once there is one that works.
+%define mavenbin apache-maven-2.2.1
+Source19: %{mavenbin}-bin.tar.gz
+
 Patch0: gums-build.patch
 Patch1: gums-add-mysql-admin.patch
 Patch2: gums-setup-mysql-database.patch
@@ -66,13 +81,13 @@ Summary: Clients for GUMS
 %package service
 Requires: %{name} = %{version}
 Requires: /usr/share/java/xml-commons-apis.jar
-Requires: tomcat5
+Requires: %{tomcat}
 Requires: emi-trustmanager-tomcat
 Requires: mysql-server
 Requires(post): %{_sbindir}/update-alternatives
 Requires(postun): %{_sbindir}/update-alternatives
 Group: System Environment/Daemons
-Summary: Tomcat5 service for GUMS
+Summary: Tomcat service for GUMS
 
 %description service
 %{summary}
@@ -87,6 +102,15 @@ Summary: Tomcat5 service for GUMS
 %patch5 -p0
 
 %build
+
+%if 0%{?rhel} == 6
+mkdir -p %{_tmppath}/
+tar xvzf %{SOURCE19} -C %{_tmppath}
+export M2_HOME=%{_tmppath}/%{mavenbin}
+export M2=$M2_HOME/bin
+export PATH=$M2:$PATH
+export JAVA_HOME=%{java_home}
+%endif
 
 # Binary JARs not available from public maven repos.
 # gums-core
@@ -103,24 +127,26 @@ mvn install:install-file -B -DgroupId=org.opensciencegrid -DartifactId=privilege
 #mvn install:install-file -B -DgroupId=org.apache.xerces -DartifactId=xml-apis -Dversion=2.9.1 -Dpackaging=jar -Dfile=%{SOURCE10} -Dmaven.repo.local=%{local_maven}
 
 #mvn install:install-file -B -DgroupId=org.apache.maven.surefire -DartifactId=surefire -Dversion=2.4.3 -Dpackaging=jar -Dfile=%{SOURCE17} -Dmaven.repo.local=%{local_maven}
+%if 0%{?rhel} < 6
 mvn install:install-file -B -Dfile=%{SOURCE17} -Dmaven.repo.local=%{local_maven} -DpomFile=%{SOURCE18}
+%endif
 
 pushd gums-core
 mvn -B -e -Dmaven.repo.local=/tmp/m2-repository -Dmaven.test.skip=true install
 popd
 pushd gums-client
-mvn -B -Dmaven.repo.local=/tmp/m2-repository -Dmaven.test.skip=true install
+mvn -B -e -Dmaven.repo.local=/tmp/m2-repository -Dmaven.test.skip=true install
 popd
 pushd gums-service
-mvn -B -Dmaven.repo.local=/tmp/m2-repository -Dmaven.test.skip=true install
+mvn -B -e -Dmaven.repo.local=/tmp/m2-repository -Dmaven.test.skip=true install
 popd
 
 %install
 
 function replace_jar {
-    if [[ -e $RPM_BUILD_ROOT%{_var}/lib/tomcat5/webapps/gums/WEB-INF/lib/$1 ]]; then
-        rm -f $RPM_BUILD_ROOT%{_var}/lib/tomcat5/webapps/gums/WEB-INF/lib/$1
-        ln -s %{_noarchlib}/%{dirname}/$1 $RPM_BUILD_ROOT%{_var}/lib/tomcat5/webapps/gums/WEB-INF/lib/$1
+    if [[ -e $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib/$1 ]]; then
+        rm -f $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib/$1
+        ln -s %{_noarchlib}/%{dirname}/$1 $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib/$1
     fi
 }
 rm -rf $RPM_BUILD_ROOT
@@ -134,24 +160,27 @@ install -m 0644 gums-core/target/*.jar $RPM_BUILD_ROOT%{_noarchlib}/%{dirname}/
 install -m 0644 gums-client/target/lib/endorsed/*.jar $RPM_BUILD_ROOT%{_noarchlib}/%{dirname}/endorsed/
 
 # Service
-mkdir -p $RPM_BUILD_ROOT%{_var}/lib/tomcat5/webapps/gums/
-pushd $RPM_BUILD_ROOT%{_var}/lib/tomcat5/webapps/gums/
+mkdir -p $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/
+pushd $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/
 jar xf $OLDPWD/gums-service/target/gums.war 
 popd
-rm $RPM_BUILD_ROOT%{_var}/lib/tomcat5/webapps/gums/WEB-INF/config/gums.config
-ln -s %{_sysconfdir}/%{dirname}/gums.config $RPM_BUILD_ROOT%{_var}/lib/tomcat5/webapps/gums/WEB-INF/config
+rm $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/config/gums.config
+ln -s %{_sysconfdir}/%{dirname}/gums.config $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/config
 
 # Hack: we want slf4j-api-1.5.5 in core, but that's not what comes with
 # it. Get it from the exploded WAR instead.
-install -m 0644 $RPM_BUILD_ROOT%{_var}/lib/tomcat5/webapps/gums/WEB-INF/lib/slf4j-api-1.5.5.jar $RPM_BUILD_ROOT%{_noarchlib}/%{dirname}/
+install -m 0644 $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib/slf4j-api-1.5.5.jar $RPM_BUILD_ROOT%{_noarchlib}/%{dirname}/
 
+%if 0%{?rhel} < 6
 ## Link the exploded WAR to gums-core JARs, instead of including a copy
+# tomcat6 doesn't seem to like this.
 for x in $RPM_BUILD_ROOT%{_noarchlib}/%{dirname}/*.jar; do
     replace_jar $(basename $x)
 done
+%endif
 
 ## gums-core and gums-service use different versions here...
-rm -f $RPM_BUILD_ROOT%{_var}/lib/tomcat5/webapps/gums/WEB-INF/lib/slf4j-jdk14-1.5.2.jar
+rm -f $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib/slf4j-jdk14-1.5.2.jar
 
 
 # Scripts
@@ -239,8 +268,8 @@ fi
 %defattr(-,root,root,-)
 %dir %{_sysconfdir}/%{dirname}
 %attr(0600,tomcat,tomcat) %config(noreplace) %{_sysconfdir}/%{dirname}/gums.config
-%attr(0750,tomcat,tomcat) %dir %{_var}/lib/tomcat5/webapps/gums/WEB-INF/config
-%{_var}/lib/tomcat5/webapps/gums
+%attr(0750,tomcat,tomcat) %dir %{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/config
+%{_var}/lib/%{tomcat}/webapps/gums
 %{_noarchlib}/%{dirname}/sql
 %{_noarchlib}/%{dirname}/config
 %{_bindir}/gums-add-mysql-admin
@@ -257,6 +286,11 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+* Mon Apr 09 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.3.18.002-4
+- Build with the apache binary maven for EL 6 since the jpackage rpm didn't work
+- Use tomcat6 for EL 6
+- Disabled replace_jar in EL 6 -- tomcat6 doesn't seem to like the symlinks
+
 * Thu Mar 15 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.3.18.002-3
 - bump for rebuild
 
