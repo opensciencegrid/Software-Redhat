@@ -9,7 +9,7 @@
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.3.18.008
-Release: 4f%{?dist}
+Release: 5a%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 %if 0%{?rhel} < 6
@@ -49,19 +49,24 @@ Source13: privilege-xacml-2.2.4.jar
 Source14: privilege-1.0.1.3.jar
 Source15: xmltooling-1.1.1.jar
 Source16: xmltooling.pom 
+%if 0%{?rhel} < 6
 Source17: maven-surefire-plugin-2.4.3.jar
 Source18: maven-surefire-plugin-2.4.3-fixed.pom
+%endif
 
 # The binary tarball of maven for apache; used because I couldn't get the build to work on EL6 otherwise.
 # TODO: Replace with an RPM of maven once there is one that works.
+%if 0%{?rhel} >= 6
 %define mavenbin apache-maven-2.2.1
 Source19: %{mavenbin}-bin.tar.gz
+%endif
 
 Patch0: gums-build.patch
 Patch1: gums-add-mysql-admin.patch
 Patch2: gums-setup-mysql-database.patch
 Patch3: gums-create-config.patch
 Patch5: xml-maven2.patch
+Patch6: gums-4-drs-logging.patch
 
 %description
 %{summary}
@@ -100,10 +105,11 @@ Summary: Tomcat service for GUMS
 %patch2 -p0
 %patch3 -p0
 %patch5 -p0
+%patch6 -p0
 
 %build
 
-%if 0%{?rhel} == 6
+%if 0%{?rhel} >= 6
 mkdir -p %{_tmppath}/
 tar xvzf %{SOURCE19} -C %{_tmppath}
 export M2_HOME=%{_tmppath}/%{mavenbin}
@@ -286,10 +292,13 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
-* Mon Apr 09 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.3.18.002-4
+* Wed Apr 11 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.3.18.002-5
 - Build with the apache binary maven for EL 6 since the jpackage rpm didn't work
 - Use tomcat6 for EL 6
 - Disabled replace_jar in EL 6 -- tomcat6 doesn't seem to like the symlinks
+
+* Tue Apr 10 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.3.18.002-4
+- Remove some debugging messages (GUMS-4)
 
 * Thu Mar 15 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.3.18.002-3
 - bump for rebuild
