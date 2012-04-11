@@ -1,0 +1,4 @@
+SRPM from EPEL at:
+http://dl.fedoraproject.org/pub/epel/6/SRPMS/voms-mysql-plugin-3.1.5.1-1.el6.src.rpm
+Renamed to voms-mysql-plugin-3.1.5.1-1.src.rpm, since the el5 and el6 versions are the same.
+
