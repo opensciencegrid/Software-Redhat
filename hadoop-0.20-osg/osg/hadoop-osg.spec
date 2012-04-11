@@ -6,7 +6,7 @@
 
 Name:		%{hadoop_name}-%{apache_branch}-osg
 Version:	%{cloudera_version}
-Release:	10%{?dist}
+Release:	11%{?dist}
 Summary:	OSG configurations and scripts for Hadoop
 
 Group:		System Environment/Daemons
@@ -114,6 +114,10 @@ fi
 #%attr(0755,hadoop,hadoop) %{_var}/log/hadoop
 
 %changelog
+* Wed Apr 11 2012 Doug Strain <dstrain@fnal.gov> 0.20.2+737-11
+- Updated the hadoop init script for SOFTWARE-610,611,612,501
+- Has much better behaviour now and also a better status message
+
 * Wed Dec 7 2011 Doug Strain <dstrain@fnal.gov> 0.20.2+737-10
 - Set default heap size back to 2048
 
