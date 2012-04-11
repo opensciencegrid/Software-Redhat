@@ -11,6 +11,36 @@
 # Source function library.
 . /etc/rc.d/init.d/functions
 
+wait_for_process() {
+for i in {1..10}
+do
+    if [ `/bin/hostname -s` == "$HADOOP_NAMENODE" ] ; then
+        status -p "/var/run/hadoop/hadoop-$HADOOP_USER-namenode.pid" 'hadoop' > /dev/null
+    elif [ `/bin/hostname -s` == "$HADOOP_SECONDARY_NAMENODE" ] ; then
+        status -p "/var/run/hadoop/hadoop-$HADOOP_USER-secondarynamenode.pid" 'hadoop' > /dev/null
+    else
+        status -p "/var/run/hadoop/hadoop-$HADOOP_USER-datanode.pid" 'hadoop' > /dev/null
+    fi
+    STATUS=$?
+    if [ "start" == "$1" ]; then
+     if [ "$STATUS" -eq "0" ]; then
+       RETVAL=0
+       return 0
+     fi
+    fi
+    if [ "stop" == "$1" ]; then
+     if [ "$STATUS" -ne "0" ]; then
+       RETVAL=0
+       return 0
+     fi
+    fi
+    sleep 1
+done
+RETVAL=1
+return 1
+}
+
+
 if [ -e /etc/sysconfig/hadoop ] ; then
     . /etc/sysconfig/hadoop
 fi
@@ -18,10 +48,16 @@ fi
 HADOOP_NAMEPORT=${HADOOP_NAMEPORT-9000}
 HADOOP_DATADIR=${HADOOP_DATADIR-/data1/hadoop}
 HADOOP_DATA=${HADOOP_DATA-/data1/hadoop/data}
+HADOOP_SYSLOG=${HADOOP_SYSLOG-/var/log/hadoop/hadoop-syslog.log}
 HADOOP_LOG=${HADOOP_LOG-/data1/hadoop/logs}
 HADOOP_SCRATCH=${HADOOP_SCRATCH-/data1/hadoop/scratch}
 POOL_DATA_SIZE_MIN=${HADOOP_MIN_DATANODE_SIZE-300}
 
+LOCAL_NODENAME=`/bin/hostname -s`
+if [ -z ${LOCAL_NODENAME} ] ; then
+ echo "Unable to determine local node name."
+ exit 1
+fi
 . /etc/hadoop/conf/hadoop-env.sh
 
 setup_dirs() {
@@ -44,27 +80,15 @@ setup_dirs() {
 start() {
         ulimit -n 65536
         # If namenode:
-	if [ `/bin/hostname -s` == "$HADOOP_NAMENODE" ] ; then
+	if [ "${LOCAL_NODENAME}" == "$HADOOP_NAMENODE" ] ; then
             # Format the name node the first time it's used
             if [ ! -e $HADOOP_SCRATCH/dfs/name ] ; then
-		nohup su "$HADOOP_USER" -s /bin/sh -c "/usr/bin/hadoop namenode -format"
+		nohup su "$HADOOP_USER" -s /bin/sh -c "/usr/bin/hadoop namenode -format" >> ${HADOOP_SYSLOG} 2>&1
 	    fi
-	    nohup su "$HADOOP_USER" -s /bin/sh -c "/usr/lib/hadoop/bin/hadoop-daemon.sh start namenode"
-	    RETVAL=$?
-	    if [ $RETVAL != 0 ] ; then
-		return $RETVAL
-	    else 
-	        touch /var/lock/subsys/hadoop
-	    fi
+	    nohup su "$HADOOP_USER" -s /bin/sh -c "/usr/lib/hadoop/bin/hadoop-daemon.sh start namenode">> ${HADOOP_SYSLOG} 2>&1
         # If checkpoint server
-	elif [ `/bin/hostname -s` == "$HADOOP_SECONDARY_NAMENODE" ] ; then
-	    nohup su "$HADOOP_USER" -s /bin/sh -c "/usr/lib/hadoop/bin/hadoop-daemon.sh start secondarynamenode"
-	    RETVAL=$?
-	    if [ $RETVAL != 0 ] ; then
-		return $RETVAL
-	    else 
-	        touch /var/lock/subsys/hadoop
-	    fi
+	elif [ "${LOCAL_NODENAME}" == "$HADOOP_SECONDARY_NAMENODE" ] ; then
+	    nohup su "$HADOOP_USER" -s /bin/sh -c "/usr/lib/hadoop/bin/hadoop-daemon.sh start secondarynamenode">> ${HADOOP_SYSLOG} 2>&1
 	else
 	    # A few sanity checks are needed before starting the data services
 	    POOL_DATA_SIZE=`/usr/bin/getPoolSize $HADOOP_DATADIR`
@@ -79,45 +103,44 @@ start() {
 		return 1
 	    fi
 
-	    nohup su "$HADOOP_USER" -s /bin/sh -c "/usr/lib/hadoop/bin/hadoop-daemon.sh start datanode"
-	    RETVAL=$?
-	    if [ $RETVAL != 0 ] ; then
-		return $RETVAL
-	    else 
-	        touch /var/lock/subsys/hadoop
-	    fi
+	    nohup su "$HADOOP_USER" -s /bin/sh -c "/usr/lib/hadoop/bin/hadoop-daemon.sh start datanode">> ${HADOOP_SYSLOG} 2>&1
 	fi
 
         RETVAL=$?
 	if [ $RETVAL != 0 ] ; then
 	    return $RETVAL
+	else 
+	    touch /var/lock/subsys/hadoop
 	fi
+
+	wait_for_process start
+	return $RETVAL
+	
 }
 
 # A function to stop a program.
 stop() {
         # If namenode:
-	if [ `/bin/hostname -s` == "$HADOOP_NAMENODE" ] ; then
+	if [ "${LOCAL_NODENAME}" == "$HADOOP_NAMENODE" ] ; then
 	    su "$HADOOP_USER" -s /bin/sh -c "/usr/lib/hadoop/bin/hadoop-daemon.sh stop namenode"
 	    RETVAL=$?
-	    if [ $RETVAL != 0 ] ; then
-		return $RETVAL
-	    fi
-        elif [ `/bin/hostname -s` == "$HADOOP_SECONDARY_NAMENODE" ] ; then
+        elif [ "${LOCAL_NODENAME}" == "$HADOOP_SECONDARY_NAMENODE" ] ; then
             su "$HADOOP_USER" -s /bin/sh -c "/usr/lib/hadoop/bin/hadoop-daemon.sh stop secondarynamenode"
             RETVAL=$?
-            if [ $RETVAL != 0 ] ; then
-                return $RETVAL
-            fi
 	else
 	    su "$HADOOP_USER" -s /bin/sh -c "/usr/lib/hadoop/bin/hadoop-daemon.sh stop datanode"
 	    RETVAL=$?
-	    if [ $RETVAL != 0 ] ; then
-		return $RETVAL
-	    fi
 	fi
 
-	return 0
+	if [ $RETVAL != 0 ] ; then
+		return $RETVAL
+	else 
+	    rm -f /var/lock/subsys/hadoop
+	fi
+
+        wait_for_process stop
+	return $RETVAL
+	
 }
 
 prog="hadoop-daemon.sh"
@@ -129,21 +152,32 @@ case $1 in
         setup_dirs
 	start
         RETVAL=$?
+        if [ "$RETVAL" -eq "0" ]; then
+		success
+	else
+		failure
+	fi
+	echo
 	;;
 'stop')
 	echo -n $"Stopping $prog: "
 	stop
-	RETVAL=$?
-        echo
+        RETVAL=$?
+        if [ "$RETVAL" -eq "0" ]; then
+		success
+	else
+		failure
+	fi
+	echo
 	;;
 'status')
     # If namenode:
     if [ `/bin/hostname -s` == "$HADOOP_NAMENODE" ] ; then
-        status -p '/var/run/hadoop/hadoop-$HADOOP_USER-namenode.pid' 'hadoop'
+        status -p "/var/run/hadoop/hadoop-$HADOOP_USER-namenode.pid" 'hadoop'
     elif [ `/bin/hostname -s` == "$HADOOP_SECONDARY_NAMENODE" ] ; then 
-        status -p '/var/run/hadoop/hadoop-$HADOOP_USER-secondarynamenode.pid' 'hadoop'
+        status -p "/var/run/hadoop/hadoop-$HADOOP_USER-secondarynamenode.pid" 'hadoop'
     else
-        status -p '/var/run/hadoop/hadoop-$HADOOP_USER-datanode.pid' 'hadoop'
+        status -p "/var/run/hadoop/hadoop-$HADOOP_USER-datanode.pid" 'hadoop'
     fi
     ;;
 'reload' | 'restart')
