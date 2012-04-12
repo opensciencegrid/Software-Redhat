@@ -7,15 +7,18 @@
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.3.18.008
-Release: 5%{?dist}
+Release: 6%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 %if 0%{?rhel} < 6
 BuildRequires: maven2
 %define tomcat tomcat5
+%define mvn %{_bindir}/mvn
 %endif
 %if 0%{?rhel} >= 6
 %define tomcat tomcat6
+%define mvn %{_bindir}/mvn22
+BuildRequires: maven22
 BuildRequires: jdk
 ## explicitly requiring this because I don't want yum to pick java-1.5.0-gcj-devel
 BuildRequires: java-1.6.0-sun-compat
@@ -40,24 +43,10 @@ Source6:  glite-security-trustmanager-2.5.5.jar
 Source7:  glite-security-util-java-2.8.6.jar
 Source8:  jta-1.0.1B.jar
 Source9:  jacc-1.0.jar
-#Source10: xml-apis-2.9.1.jar
-#Source11: xercesImpl-2.9.1.jar
-Source12: opensaml-2.2.2.jar
 Source13: privilege-xacml-2.2.4.jar
 Source14: privilege-1.0.1.3.jar
 Source15: xmltooling-1.1.1.jar
 Source16: xmltooling.pom 
-%if 0%{?rhel} < 6
-Source17: maven-surefire-plugin-2.4.3.jar
-Source18: maven-surefire-plugin-2.4.3-fixed.pom
-%endif
-
-# The binary tarball of maven for apache; used because I couldn't get the build to work on EL6 otherwise.
-# TODO: Replace with an RPM of maven once there is one that works.
-%if 0%{?rhel} >= 6
-%define mavenbin apache-maven-2.2.1
-Source19: %{mavenbin}-bin.tar.gz
-%endif
 
 Patch0: gums-build.patch
 Patch1: gums-add-mysql-admin.patch
@@ -107,42 +96,26 @@ Summary: Tomcat service for GUMS
 
 %build
 
-%if 0%{?rhel} >= 6
-mkdir -p %{_tmppath}/
-tar xvzf %{SOURCE19} -C %{_tmppath}
-export M2_HOME=%{_tmppath}/%{mavenbin}
-export M2=$M2_HOME/bin
-export PATH=$M2:$PATH
-export JAVA_HOME=%{java_home}
-%endif
-
 # Binary JARs not available from public maven repos.
 # gums-core
-mvn install:install-file -B -DgroupId=org.glite -DartifactId=glite-security-trustmanager -Dversion=2.5.5 -Dpackaging=jar -Dfile=%{SOURCE6} -Dmaven.repo.local=%{local_maven}
-mvn install:install-file -B -DgroupId=org.glite -DartifactId=glite-security-util-java -Dversion=2.8.6 -Dpackaging=jar -Dfile=%{SOURCE7} -Dmaven.repo.local=%{local_maven}
-mvn install:install-file -B -DgroupId=javax.transaction -DartifactId=jta -Dversion=1.0.1B -Dpackaging=jar -Dfile=%{SOURCE8} -Dmaven.repo.local=%{local_maven}
-mvn install:install-file -B -DgroupId=javax.security -DartifactId=jacc -Dversion=1.0 -Dpackaging=jar -Dfile=%{SOURCE9} -Dmaven.repo.local=%{local_maven}
+%{mvn} install:install-file -B -DgroupId=org.glite -DartifactId=glite-security-trustmanager -Dversion=2.5.5 -Dpackaging=jar -Dfile=%{SOURCE6} -Dmaven.repo.local=%{local_maven}
+%{mvn} install:install-file -B -DgroupId=org.glite -DartifactId=glite-security-util-java -Dversion=2.8.6 -Dpackaging=jar -Dfile=%{SOURCE7} -Dmaven.repo.local=%{local_maven}
+%{mvn} install:install-file -B -DgroupId=javax.transaction -DartifactId=jta -Dversion=1.0.1B -Dpackaging=jar -Dfile=%{SOURCE8} -Dmaven.repo.local=%{local_maven}
+%{mvn} install:install-file -B -DgroupId=javax.security -DartifactId=jacc -Dversion=1.0 -Dpackaging=jar -Dfile=%{SOURCE9} -Dmaven.repo.local=%{local_maven}
 # gums-client
-mvn install:install-file -B -DgroupId=org.opensaml -DartifactId=xmltooling -Dversion=1.1.1 -Dpackaging=jar -DpomFile=%{SOURCE16} -Dfile=%{SOURCE15} -Dmaven.repo.local=%{local_maven}
-#mvn install:install-file -B -DgroupId=org.opensaml -DartifactId=opensaml -Dversion=2.2.2 -Dpackaging=jar -Dfile=%{SOURCE12} -Dmaven.repo.local=%{local_maven}
-mvn install:install-file -B -DgroupId=org.opensciencegrid -DartifactId=privilege -Dversion=1.0.1.3 -Dpackaging=jar -Dfile=%{SOURCE14} -Dmaven.repo.local=%{local_maven}
-mvn install:install-file -B -DgroupId=org.opensciencegrid -DartifactId=privilege-xacml -Dversion=2.2.4 -Dpackaging=jar -Dfile=%{SOURCE13} -Dmaven.repo.local=%{local_maven}
-#mvn install:install-file -B -DgroupId=org.apache.xerces -DartifactId=xercesImpl -Dversion=2.9.1 -Dpackaging=jar -Dfile=%{SOURCE11} -Dmaven.repo.local=%{local_maven}
-#mvn install:install-file -B -DgroupId=org.apache.xerces -DartifactId=xml-apis -Dversion=2.9.1 -Dpackaging=jar -Dfile=%{SOURCE10} -Dmaven.repo.local=%{local_maven}
+%{mvn} install:install-file -B -DgroupId=org.opensaml -DartifactId=xmltooling -Dversion=1.1.1 -Dpackaging=jar -DpomFile=%{SOURCE16} -Dfile=%{SOURCE15} -Dmaven.repo.local=%{local_maven}
+%{mvn} install:install-file -B -DgroupId=org.opensciencegrid -DartifactId=privilege -Dversion=1.0.1.3 -Dpackaging=jar -Dfile=%{SOURCE14} -Dmaven.repo.local=%{local_maven}
+%{mvn} install:install-file -B -DgroupId=org.opensciencegrid -DartifactId=privilege-xacml -Dversion=2.2.4 -Dpackaging=jar -Dfile=%{SOURCE13} -Dmaven.repo.local=%{local_maven}
 
-#mvn install:install-file -B -DgroupId=org.apache.maven.surefire -DartifactId=surefire -Dversion=2.4.3 -Dpackaging=jar -Dfile=%{SOURCE17} -Dmaven.repo.local=%{local_maven}
-%if 0%{?rhel} < 6
-mvn install:install-file -B -Dfile=%{SOURCE17} -Dmaven.repo.local=%{local_maven} -DpomFile=%{SOURCE18}
-%endif
 
 pushd gums-core
-mvn -B -e -Dmaven.repo.local=/tmp/m2-repository -Dmaven.test.skip=true install
+%{mvn} -B -e -Dmaven.repo.local=/tmp/m2-repository -Dmaven.test.skip=true install
 popd
 pushd gums-client
-mvn -B -e -Dmaven.repo.local=/tmp/m2-repository -Dmaven.test.skip=true install
+%{mvn} -B -e -Dmaven.repo.local=/tmp/m2-repository -Dmaven.test.skip=true install
 popd
 pushd gums-service
-mvn -B -e -Dmaven.repo.local=/tmp/m2-repository -Dmaven.test.skip=true install
+%{mvn} -B -e -Dmaven.repo.local=/tmp/m2-repository -Dmaven.test.skip=true install
 popd
 
 %install
@@ -290,6 +263,9 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+* Thu Apr 12 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.3.18.002-6
+- Use jpackage maven22
+
 * Wed Apr 11 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.3.18.002-5
 - Build with the apache binary maven for EL 6 since the jpackage rpm didn't work
 - Use tomcat6 for EL 6
