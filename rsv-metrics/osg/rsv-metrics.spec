@@ -1,6 +1,6 @@
 
 Name:      rsv-metrics
-Version:   3.6.10
+Version:   3.7.0r1
 Release:   1%{?dist}
 Summary:   RSV metrics
 
@@ -92,6 +92,9 @@ rm -rf $RPM_BUILD_ROOT
 %attr(-,rsv,rsv) %{_localstatedir}/log/rsv/probes
 
 %changelog
+* Fri Apr 13 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.7.0r1-1
+- Update to 3.7.0r1
+
 * Mon Feb 6 2012 Doug Strain <dstrain@fnal.gov> 3.6.10-1
 - Fixed srm-ping-probe to work with bestman syntax not dcache syntax
 

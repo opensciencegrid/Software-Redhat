@@ -1,7 +1,7 @@
 
 Name:      rsv-consumers
-Version:   3.6.9
-Release:   2%{?dist}
+Version:   3.7.0r1
+Release:   1%{?dist}
 Summary:   RSV Consumers Infrastructure
 
 Group:     Applications/Monitoring
@@ -91,6 +91,9 @@ rm -rf $RPM_BUILD_ROOT
 %attr(-,rsv,rsv) %{_localstatedir}/log/rsv/consumers
 
 %changelog
+* Fri Apr 13 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.7.0r1-1
+- Update to 3.7.0r1
+
 * Tue Feb 21 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.6.9-2
 - Removed %ghost from %{_datadir}/rsv/www/index.html since that was incorrect.
 

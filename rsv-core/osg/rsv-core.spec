@@ -1,7 +1,7 @@
 
 Name:      rsv-core
-Version:   3.6.8
-Release:   4%{?dist}
+Version:   3.7.0r1
+Release:   1%{?dist}
 Summary:   RSV Core Infrastructure
 
 Group:     Applications/Monitoring
@@ -125,6 +125,9 @@ fi
 
 
 %changelog
+* Fri Apr 13 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.7.0r1-1
+- Update to 3.7.0r1
+
 * Fri Feb 03 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.6.8-4
 - Fix ownership of /var/rsv
 
