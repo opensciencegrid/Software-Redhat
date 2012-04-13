@@ -1,6 +1,6 @@
 
 Name:      rsv-metrics
-Version:   3.7.0r1
+Version:   3.7.0r2
 Release:   1%{?dist}
 Summary:   RSV metrics
 
