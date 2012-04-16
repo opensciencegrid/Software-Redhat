@@ -9,7 +9,7 @@
 
 Name:           gridftp-hdfs
 Version:        0.5.3
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        HDFS DSI plugin for GridFTP
 
 Group:          System Environment/Daemons
@@ -25,7 +25,14 @@ URL:            http://twiki.grid.iu.edu/bin/view/Storage/HadoopInstallation
 Source0:        %{name}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
+# On SL6, build fails since java-devel pulls in java-1.5.0-gcj
+#  which has libjvm in /usr/lib64/gcj-4.4.0 and gcc can't find it.
+%if 0%{rhel} == 6
+BuildRequires: jdk java-1.6.0-sun-compat
+%else
 BuildRequires: java-devel
+%endif
+
 BuildRequires: hadoop-0.20-libhdfs
 BuildRequires: globus-gridftp-server-devel
 BuildRequires: globus-common-devel
@@ -125,6 +132,7 @@ fi
 %changelog
 * Fri Apr 13 2012 Doug Strain <dstrain@fnal.gov> - 0.5.3-2
 - Added dist tag
+- Switched to using jdk for SL6
 
 * Tue Dec 06 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 0.5.3-1
 - Initial support for GlobusOnline.
