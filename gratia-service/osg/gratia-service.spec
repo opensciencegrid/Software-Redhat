@@ -5,7 +5,7 @@ Name: gratia-service
 Summary: Gratia OSG accounting system
 Group: Applications/System
 Version: 1.11
-Release: 05.pre%{?dist}
+Release: 06.pre%{?dist}
 License: GPL
 Group: Applications/System
 URL: http://sourceforge.net/projects/gratia/
@@ -30,8 +30,17 @@ Requires: grid-certificates
 # and not just the JDK which happens to provide it, but not in the right spot. 
 Requires: /usr/share/java/xml-commons-apis.jar
 
+%if 0%{?rhel} < 6
 BuildRequires: java-devel
 BuildRequires: jpackage-utils
+%endif
+
+%if 0%{?rhel} == 6
+# Explicitly require these to avoid yum using gcj to satisfy the java-devel requirement.
+BuildRequires: jdk
+BuildRequires: java-1.6.0-sun-compat
+%endif
+
 
 %description
 %{summary}
@@ -114,6 +123,9 @@ touch $RPM_BUILD_ROOT%{_var}/log/gratia-service/gratia{,-rmi-servlet,-security,-
 %ghost %{_var}/log/gratia-service/*.log
 
 %changelog
+* Mon Apr 15 2012 Tanya Levshina <tlevshin@fnal.gov> - 1.11.06pre 
+Modified spec file to be able to build on sl6
+
 * Wed Apr 04 2012 Tanya Levshina <tlevshin@fnal.gov> - 1.11.05pre 
 Separated service-configuration.properties from service-authorization.properties
 Changed names and improved post-install and database-install scripts
