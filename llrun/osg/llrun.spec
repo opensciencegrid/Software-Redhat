@@ -37,7 +37,7 @@ make DESTDIR=$RPM_BUILD_ROOT install
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
-* Mon Apr 16 2012 Dave Dykstra <dwd@fnal.gov> 0.1.3-1.2.osg
+* Mon Apr 16 2012 Dave Dykstra <dwd@fnal.gov> 0.1.3-1.3.osg
 - Add lcmaps dependency
 
 * Thu Mar 08 2012 Mischa Salle <msalle@nikhef.nl> 0.1.3-1.2.osg
