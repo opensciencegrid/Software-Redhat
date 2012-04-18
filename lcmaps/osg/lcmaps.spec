@@ -11,7 +11,7 @@
 Summary: Grid (X.509) and VOMS credentials to local account mapping service
 Name: lcmaps
 Version: 1.5.3
-Release: 1.1%{?dist}
+Release: 1.2%{?dist}
 #Release: 0.%(date +%%Y%%m%%d_%%H%%M)%{?dist}
 License: ASL 2.0
 Group: System Environment/Libraries
@@ -157,7 +157,9 @@ rm ${RPM_BUILD_ROOT}%{_libdir}/lcmaps/liblcmaps_plugin_example.so
 
 #Note: this file is %ghosted in the %files list, so it is not installed,
 #  but rpmbuild requires something to be there.
-touch $RPM_BUILD_ROOT/%{_libdir}/modules
+# Normally touch would be used, but the lcmaps-plugins-* rpms make a symlink
+# instead, so we have to follow suit here to avoid conflicts.
+ln -s lcmaps $RPM_BUILD_ROOT/%{_libdir}/modules
 
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}
 cp %{SOURCE1} $RPM_BUILD_ROOT/%{_sysconfdir}
@@ -256,6 +258,9 @@ fi
 %{_libdir}/pkgconfig/lcmaps.pc
 
 %changelog
+* Wed Apr 18 2012 Matyas Selmeci <matyas@cs.wisc.edu> 1.5.3-1.2.osg
+- Added fix for %{_libdir}/modules conflict between lcmaps and the plugins
+
 * Mon Mar 19 2012 Dave Dykstra <dwd@fnal.gov> 1.5.3-1.1.osg
 - Reimported into OSG, removed the temporary patch
 
