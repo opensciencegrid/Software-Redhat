@@ -1,6 +1,6 @@
 Name:           vo-client
-Version:        40
-Release:        4%{?dist}
+Version:        41
+Release:        1%{?dist}
 Summary:        Contains vomses file for use with user authentication and edg-mkgridmap.conf file that contains configuration information for edg-mkgridmap.
 
 Group:          System Environment/Base
@@ -11,7 +11,7 @@ BuildArch:      noarch
 
 Requires:       grid-certificates
 
-Source0:        %{name}-%{version}-2.tar.gz
+Source0:        %{name}-%{version}.tar.gz
 Source1:        gums.config.template
 
 # Steps to make tarball (correctly packaged):
@@ -92,8 +92,14 @@ rm -rf $RPM_BUILD_ROOT
 %attr(0600,tomcat,tomcat) %config(noreplace) %{_sysconfdir}/gums/gums.config.template
 
 %changelog
+* Wed Mar 18 2012 Alain Roy <roy@cs.wisc.edu> - 41-1
+- Updated to match GOC's new v41 release. 
+- Added lsst 
+- Updated VOMS hostname for Alice
+
 * Wed Mar 14 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 40-4
 - osg-edg-mkgridmap-config renamed back to vo-client-edgmkgridmap to solve yum dependency resolution issues.
+
 * Wed Mar 07 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 40-3
 - Rename vo-client-edgmkgridmap to osg-edg-mkgridmap-config; remove vo-client dependency
 - Add osg-gums-config

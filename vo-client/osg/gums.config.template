@@ -333,6 +333,16 @@
 			sslCAFiles='/etc/grid-security/certificates/*.0'/>
 
 		<vomsServer
+			name='lsst'
+			description=''
+			persistenceFactory='mysql'
+			baseUrl='https://voms.opensciencegrid.org:8443/voms/lsst/services/VOMSAdmin'
+			sslKey='/etc/grid-security/http/httpkey.pem'
+			sslCertfile='/etc/grid-security/http/httpcert.pem'
+			sslKeyPasswd=''
+			sslCAFiles='/etc/grid-security/certificates/*.0'/>
+
+		<vomsServer
 			name='nanohub'
 			description=''
 			persistenceFactory='mysql'
@@ -1387,6 +1397,15 @@
 			voGroup='/fermilab/mu2e'/>
 
 		<vomsUserGroup
+			name='lsst'
+			access='read self'
+			description=''
+			vomsServer='lsst'
+			matchFQAN='vo'
+			acceptProxyWithoutFQAN='true'
+			voGroup='/lsst'/>
+
+		<vomsUserGroup
 			name='nanohub'
 			access='read self'
 			description=''
@@ -2053,6 +2072,11 @@
 			name='mu2e'
 			description=''
 			accountName='mu2e'/>
+
+		<groupAccountMapper
+			name='lsst'
+			description=''
+			accountName='lsst'/>
 
 		<groupAccountMapper
 			name='nanohub'
@@ -2936,6 +2960,14 @@
 			accountMappers='mu2e'/>
 
 		<groupToAccountMapping
+			name='lsst'
+			description=''
+			accountingVoSubgroup='lsst'
+			accountingVo='LSST'
+			userGroups='lsst'
+			accountMappers='lsst'/>
+
+		<groupToAccountMapping
 			name='nanohub'
 			description=''
 			accountingVoSubgroup='nanohub'
@@ -3227,7 +3259,7 @@
                 -->
 
 		<hostToGroupMapping
-			groupToAccountMappings='cdf-fnal, cdfdev-fnal, cdffgrid-fnal, cdfnam-fnal, cdftestcaf-fnal, cdf-cnaf, cdfdev-cnaf, cdffgrid-cnaf, cdfnam-cnaf, cdftestcaf-cnaf, cdf-pd, cdfdev-pd, cdffgrid-pd, cdfnam-pd, cdftestcaf-pd, fermilab, accelerator, argoneut, cdms, minerva, miniboone, minos, mipp, mu2e, nova, numi, patriot, theory, fermilab-test, uboone, uboonepro, uboonegli, ubooneana, map, gm2, fermilab-production, accelerator-production, argoneut-production, cdms-production, minerva-production, miniboone-production, minos-production, mipp-production, nova-production, numi-production, patriot-production, theory-production, map-production, gm2-production, argoneutana, minervaana, minosana, novaana, mapana, gm2ana, fggli, argoneutgli, minervagli, minosgli, novagli, mapgli, gm2gli, fgadmin, mis, star, uscmst2admin, uscmssoft, cmssoft, uscmsprod, uscmsphedex, cmsphedex2, uscmsfrontier, cmsproduction, LIGO, dzerouser, dzeroana, dzeroservice, dosar, des, glow, nanohub, geant4, geant4-lcgadmin, i2u2, osg, newUsatlasProd, newUsatlasSoft, newUsatlas, newAtlas, osgedu, nwicg, ops, des-production, gpn, compbiogrid, engage, ilc, nysgrid, sbgrid, cigi, icecube, alice, nebiogrid, gluex, gridunesp, dayabay, hcc, belle, csiu, suragrid, nees, gcvo, gcedu, superbvo.org, dream, lbne, lbne-production, lbneana, lbnegli, fermilbne, fermilbne-production, fermilbneana, fermilbnegli, gums-test'
+			groupToAccountMappings='cdf-fnal, cdfdev-fnal, cdffgrid-fnal, cdfnam-fnal, cdftestcaf-fnal, cdf-cnaf, cdfdev-cnaf, cdffgrid-cnaf, cdfnam-cnaf, cdftestcaf-cnaf, cdf-pd, cdfdev-pd, cdffgrid-pd, cdfnam-pd, cdftestcaf-pd, fermilab, accelerator, argoneut, cdms, minerva, miniboone, minos, mipp, mu2e, nova, numi, patriot, theory, fermilab-test, uboone, uboonepro, uboonegli, ubooneana, map, gm2, fermilab-production, accelerator-production, argoneut-production, cdms-production, minerva-production, miniboone-production, minos-production, mipp-production, nova-production, numi-production, patriot-production, theory-production, map-production, gm2-production, argoneutana, minervaana, minosana, novaana, mapana, gm2ana, fggli, argoneutgli, minervagli, minosgli, novagli, mapgli, gm2gli, fgadmin, mis, star, uscmst2admin, uscmssoft, cmssoft, uscmsprod, uscmsphedex, cmsphedex2, uscmsfrontier, cmsproduction, LIGO, dzerouser, dzeroana, dzeroservice, dosar, des, glow, lsst, nanohub, geant4, geant4-lcgadmin, i2u2, osg, newUsatlasProd, newUsatlasSoft, newUsatlas, newAtlas, osgedu, nwicg, ops, des-production, gpn, compbiogrid, engage, ilc, nysgrid, sbgrid, cigi, icecube, alice, nebiogrid, gluex, gridunesp, dayabay, hcc, belle, csiu, suragrid, nees, gcvo, gcedu, superbvo.org, dream, lbne, lbne-production, lbneana, lbnegli, fermilbne, fermilbne-production, fermilbneana, fermilbnegli, gums-test'
 			description=''
 			cn='*/?*.@DOMAINNAME@'/>
 

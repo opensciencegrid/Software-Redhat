@@ -4,6 +4,7 @@ that is maintained by GOC and provides following files:
 - vomses 
 - edg-mkgridmap.conf
 - vomsdir (directory tree)
+- GUMS config (which isn't quite pass-through, since we use the new format)
 
 
 This means the GOC now needs to add the creation of the vomsdir tree.
