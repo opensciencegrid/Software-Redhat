@@ -11,13 +11,14 @@
 Summary: Grid (X.509) and VOMS credentials to local account mapping service
 Name: lcmaps
 Version: 1.5.3
-Release: 1.2%{?dist}
+Release: 1.3%{?dist}
 #Release: 0.%(date +%%Y%%m%%d_%%H%%M)%{?dist}
 License: ASL 2.0
 Group: System Environment/Libraries
 URL: http://www.nikhef.nl/pub/projects/grid/gridwiki/index.php/Site_Access_Control
 Source0: http://software.nikhef.nl/security/lcmaps/lcmaps-%{version}.tar.gz
 Source1: lcmaps.db
+Patch0: defaultnovomscheck.patch
 BuildRoot: %{_tmppath}/lcmaps-%{version}-%{release}-buildroot
 BuildRequires: globus-core
 BuildRequires: globus-common-devel
@@ -130,6 +131,7 @@ This package contains the development libraries.
 
 %prep
 %setup -q
+%patch0 -p0
 
 %build
 
@@ -258,6 +260,10 @@ fi
 %{_libdir}/pkgconfig/lcmaps.pc
 
 %changelog
+* Wed Apr 18 2012 Dave Dykstra <dwd@fnal.gov> 1.5.3-1.3.osg
+- Add patch to change the default voms certificate check to be off,
+  but still possible to be enabled at run time
+
 * Wed Apr 18 2012 Matyas Selmeci <matyas@cs.wisc.edu> 1.5.3-1.2.osg
 - Added fix for %{_libdir}/modules conflict between lcmaps and the plugins
 
