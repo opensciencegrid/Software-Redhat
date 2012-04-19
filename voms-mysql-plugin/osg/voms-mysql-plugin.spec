@@ -1,6 +1,6 @@
 Name:		voms-mysql-plugin
 Version:	3.1.5.1
-Release:	1.1%{?dist}
+Release:	2%{?dist}
 Summary:	VOMS server plugin for MySQL
 
 Group:		System Environment/Libraries
@@ -59,6 +59,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/voms/libvomsmysql.so
 
 %changelog
+* Thu Apr 19 2012 <roy@cs.wisc.edu> - 3.1.5.1-2.osg
+- Bumped revision to workaround upgrade problem
+
 * Wed Apr 11 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 3.1.5.1-1.1.osg
 - Add patch for aborted connection warnings and segfaults (SOFTWARE-625/GOC 11899)
 
