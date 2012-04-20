@@ -13689,11 +13689,15 @@ cleanup_default_links() {
 %triggerpostun -- jdk = %{version}
 javadir=/usr/java/jdk%{version}
 
-[[ $1 -eq 0 ]] && exit 0 # really uninstalling
-[[ ! -e $javadir ]] && exit 0
+# If we're really uninstalling, then just exit
+if [[ $1 -eq 0 || ! -e $javadir ]]; then
+    exit 0
+fi
 
 # Recreate service tag
-$javadir/bin/java com.sun.servicetag.Installer -source "jdk" &> /dev/null
+if [[ -e $javadir/bin/java ]]; then
+    $javadir/bin/java com.sun.servicetag.Installer -source "jdk" &> /dev/null
+fi
 
 # Recreate symlinks that the preun script removes
 if [[ ! -e /usr/java/latest ]]; then
@@ -13709,6 +13713,6 @@ for prog in jar java javac javadoc javaws jcontrol; do
 done
 
 # Also turn on jexec
-/sbin/chkconfig --add jexec &> /dev/null
-/etc/init.d/jexec start &> /dev/null
+/sbin/chkconfig --add jexec &> /dev/null || :
+/etc/init.d/jexec start &> /dev/null || :
 
