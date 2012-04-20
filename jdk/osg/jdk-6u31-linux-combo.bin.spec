@@ -8,7 +8,7 @@
 Name: jdk
 Epoch: 2000
 Version: 1.6.0_31
-Release: fcs.2%{?dist}
+Release: fcs.3%{?dist}
 Group: Development/Tools
 URL: http://java.sun.com/
 License: Copyright (c) 2011, Oracle and/or its affiliates. All rights reserved. Also under other license(s) as shown at the Description field.
@@ -7198,13 +7198,6 @@ cleanup_default_links() {
 
 
 
-%changelog
-* Thu Apr 19 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.6.0_31-fcs.2
-- Add triggerpostun script to workaround problem with installing over another jdk with the same version
-
-* Tue Feb 21 2012 matyas - 1.6.0_31-fcs.1
-- Specfile created from binary rpm jdk-6u31-linux-i586.rpm
-
 
 %endif
 
@@ -7219,7 +7212,7 @@ cleanup_default_links() {
 Name: jdk
 Epoch: 2000
 Version: 1.6.0_31
-Release: fcs.2%{?dist}
+Release: fcs.3%{?dist}
 Group: Development/Tools
 URL: http://java.sun.com/
 License: Copyright (c) 2011, Oracle and/or its affiliates. All rights reserved. Also under other license(s) as shown at the Description field.
@@ -13674,40 +13667,42 @@ cleanup_default_links() {
 
 
 
-%changelog
-* Thu Apr 19 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.6.0_31-fcs.2
-- Add triggerpostun script to workaround problem with installing over another jdk with the same version
-
-* Tue Feb 21 2012 matyas - 1.6.0_31-fcs.1
-- Specfile created from binary rpm jdk-6u31-linux-amd64.rpm
-
-
 %endif
 
 # COMMON:
 
-%triggerpostun -- jdk = %{version}
+%triggerpostun -- jdk = %{epoch}:%{version}
 javadir=/usr/java/jdk%{version}
 
+echo Checking symlinks...
 # If we're really uninstalling, then just exit
-if [[ $1 -eq 0 || ! -e $javadir ]]; then
+if [[ $1 -eq 0 ]]; then
+    echo Uninstalling... not needed.
+    exit 0
+fi
+if [[ ! -e $javadir ]]; then
+    echo $javadir not found... not needed.
     exit 0
 fi
 
 # Recreate service tag
 if [[ -e $javadir/bin/java ]]; then
+    echo Recreating service tag
     $javadir/bin/java com.sun.servicetag.Installer -source "jdk" &> /dev/null
 fi
 
 # Recreate symlinks that the preun script removes
 if [[ ! -e /usr/java/latest ]]; then
+    echo Recreating /usr/java/latest symlink
     ln -s $javadir /usr/java/latest
 fi
 if [[ ! -e /usr/java/default ]]; then
+    echo Recreating /usr/java/default symlink
     ln -s /usr/java/latest /usr/java/default
 fi
 for prog in jar java javac javadoc javaws jcontrol; do
     if [[ ! -e /usr/bin/$prog ]]; then
+        echo Recreating /usr/bin/$prog symlink
         ln -s /usr/java/default/bin/$prog /usr/bin/$prog
     fi
 done
@@ -13715,4 +13710,14 @@ done
 # Also turn on jexec
 /sbin/chkconfig --add jexec &> /dev/null || :
 /etc/init.d/jexec start &> /dev/null || :
+
+%changelog
+* Fri Apr 20 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 2000:1.6.0_31-fcs.3.osg
+- Fixed trigger condition on triggerpostun script to look at epoch
+
+* Thu Apr 19 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 2000:1.6.0_31-fcs.2.osg
+- Add triggerpostun script to workaround problem with installing over another jdk with the same version
+
+* Tue Feb 21 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 2000:1.6.0_31-fcs.1.osg
+- Specfile created from binary rpms jdk-6u31-linux-amd64.rpm and jdk-6u31-linux-i586.rpm
 
