@@ -15,3 +15,6 @@ A future version of rpm-ripper will be able to automate all this: see
 
 
 NOTE: After updating this package, also update java-1.6.0-sun-compat so the versions match!
+
+Also, add the contents of 'triggerscript' to the end of the spec file.
+

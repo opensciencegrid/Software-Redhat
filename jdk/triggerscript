@@ -1,0 +1,29 @@
+# COMMON:
+
+%triggerpostun -- jdk = %{version}
+javadir=/usr/java/jdk%{version}
+
+[[ $1 -eq 0 ]] && exit 0 # really uninstalling
+[[ ! -e $javadir ]] && exit 0
+
+# Recreate service tag
+$javadir/bin/java com.sun.servicetag.Installer -source "jdk" &> /dev/null
+
+# Recreate symlinks that the preun script removes
+if [[ ! -e /usr/java/latest ]]; then
+    ln -s $javadir /usr/java/latest
+fi
+if [[ ! -e /usr/java/default ]]; then
+    ln -s /usr/java/latest /usr/java/default
+fi
+for prog in jar java javac javadoc javaws jcontrol; do
+    if [[ ! -e /usr/bin/$prog ]]; then
+        ln -s /usr/java/default/bin/$prog /usr/bin/$prog
+    fi
+done
+
+# Also turn on jexec
+/sbin/chkconfig --add jexec &> /dev/null
+/etc/init.d/jexec start &> /dev/null
+
+

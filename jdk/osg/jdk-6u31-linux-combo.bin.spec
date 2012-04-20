@@ -8,7 +8,7 @@
 Name: jdk
 Epoch: 2000
 Version: 1.6.0_31
-Release: fcs.1%{?dist}
+Release: fcs.2%{?dist}
 Group: Development/Tools
 URL: http://java.sun.com/
 License: Copyright (c) 2011, Oracle and/or its affiliates. All rights reserved. Also under other license(s) as shown at the Description field.
@@ -7199,6 +7199,9 @@ cleanup_default_links() {
 
 
 %changelog
+* Thu Apr 19 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.6.0_31-fcs.2
+- Add triggerpostun script to workaround problem with installing over another jdk with the same version
+
 * Tue Feb 21 2012 matyas - 1.6.0_31-fcs.1
 - Specfile created from binary rpm jdk-6u31-linux-i586.rpm
 
@@ -7216,7 +7219,7 @@ cleanup_default_links() {
 Name: jdk
 Epoch: 2000
 Version: 1.6.0_31
-Release: fcs.1%{?dist}
+Release: fcs.2%{?dist}
 Group: Development/Tools
 URL: http://java.sun.com/
 License: Copyright (c) 2011, Oracle and/or its affiliates. All rights reserved. Also under other license(s) as shown at the Description field.
@@ -13672,9 +13675,40 @@ cleanup_default_links() {
 
 
 %changelog
+* Thu Apr 19 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.6.0_31-fcs.2
+- Add triggerpostun script to workaround problem with installing over another jdk with the same version
+
 * Tue Feb 21 2012 matyas - 1.6.0_31-fcs.1
 - Specfile created from binary rpm jdk-6u31-linux-amd64.rpm
 
 
 %endif
+
+# COMMON:
+
+%triggerpostun -- jdk = %{version}
+javadir=/usr/java/jdk%{version}
+
+[[ $1 -eq 0 ]] && exit 0 # really uninstalling
+[[ ! -e $javadir ]] && exit 0
+
+# Recreate service tag
+$javadir/bin/java com.sun.servicetag.Installer -source "jdk" &> /dev/null
+
+# Recreate symlinks that the preun script removes
+if [[ ! -e /usr/java/latest ]]; then
+    ln -s $javadir /usr/java/latest
+fi
+if [[ ! -e /usr/java/default ]]; then
+    ln -s /usr/java/latest /usr/java/default
+fi
+for prog in jar java javac javadoc javaws jcontrol; do
+    if [[ ! -e /usr/bin/$prog ]]; then
+        ln -s /usr/java/default/bin/$prog /usr/bin/$prog
+    fi
+done
+
+# Also turn on jexec
+/sbin/chkconfig --add jexec &> /dev/null
+/etc/init.d/jexec start &> /dev/null
 
