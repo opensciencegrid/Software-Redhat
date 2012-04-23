@@ -13,7 +13,7 @@
 Name:		globus-gatekeeper
 %global _name %(tr - _ <<< %{name})
 Version:	9.6
-Release:	1.6%{?dist}
+Release:	1.7%{?dist}
 Summary:	Globus Toolkit - Globus Gatekeeper
 
 Group:		Applications/Internet
@@ -128,6 +128,10 @@ fi
 %config(noreplace) /etc/logrotate.d/globus-gatekeeper
 
 %changelog
+* Mon Apr 23 2012 Dave Dykstra <dwd@fnal.gov> - 9.6-1.7.osg
+- Remove variable in sysconfig for disabling voms certificate check;
+  it is now the default
+
 * Thu Mar 29 2012 Dave Dykstra <dwd@fnal.gov> - 9.6-1.6.osg
 - Reduce default lcmaps syslog level from 3 to 2
 

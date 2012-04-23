@@ -3,7 +3,6 @@
 
 # lcas-lcmaps-gt4-interface configuration
 export LLGT_LOG_IDENT=GRAM-gatekeeper-llgt
-export LLGT_VOMS_DISABLE_CREDENTIAL_CHECK=1
 export LCMAPS_DB_FILE=/etc/lcmaps.db
 # the globus_gridftp_mapping here is for backward compatibility, will
 #  be removed in a future release
