@@ -336,7 +336,7 @@
 			name='lsst'
 			description=''
 			persistenceFactory='mysql'
-			baseUrl='https://voms.opensciencegrid.org:8443/voms/lsst/services/VOMSAdmin'
+			baseUrl='https://voms.opensciencegrid.org:8443/voms/lsst/services/VOMSCompatibility'
 			sslKey='/etc/grid-security/http/httpkey.pem'
 			sslCertfile='/etc/grid-security/http/httpcert.pem'
 			sslKeyPasswd=''

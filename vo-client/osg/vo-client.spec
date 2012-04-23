@@ -1,6 +1,6 @@
 Name:           vo-client
 Version:        41
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Contains vomses file for use with user authentication and edg-mkgridmap.conf file that contains configuration information for edg-mkgridmap.
 
 Group:          System Environment/Base
@@ -92,6 +92,9 @@ rm -rf $RPM_BUILD_ROOT
 %attr(0600,tomcat,tomcat) %config(noreplace) %{_sysconfdir}/gums/gums.config.template
 
 %changelog
+* Mon Apr 23 2012 Alain Roy <roy@cs.wisc.edu> - 41-2
+- Fixed LSST URL
+
 * Wed Mar 18 2012 Alain Roy <roy@cs.wisc.edu> - 41-1
 - Updated to match GOC's new v41 release. 
 - Added lsst 
