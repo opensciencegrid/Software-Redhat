@@ -1,6 +1,6 @@
 
 Name:      rsv-consumers
-Version:   3.7.0r1
+Version:   3.7.0
 Release:   1%{?dist}
 Summary:   RSV Consumers Infrastructure
 
@@ -91,6 +91,15 @@ rm -rf $RPM_BUILD_ROOT
 %attr(-,rsv,rsv) %{_localstatedir}/log/rsv/consumers
 
 %changelog
+* Mon Apr 23 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.7.0-1
+- Update to 3.7.0
+- Implemented nagios-consumer for OSG 3.  Incorporated rsv2nagios.py and
+  rsv2nsca.py in the new consumer.
+- Rewrote html-consumer and gratia-consumer to share common code with
+  nagios-consumer
+- SOFTWARE-519 - fixed a bug where a consumer could crash if the timestamp
+  field in the record is empty.
+
 * Fri Apr 13 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.7.0r1-1
 - Update to 3.7.0r1
 

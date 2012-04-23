@@ -1,6 +1,6 @@
 
 Name:      rsv-core
-Version:   3.7.0r1
+Version:   3.7.0
 Release:   1%{?dist}
 Summary:   RSV Core Infrastructure
 
@@ -125,6 +125,11 @@ fi
 
 
 %changelog
+* Mon Apr 23 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.7.0-1
+- Update to 3.7.0
+- SOFTWARE-618 - implemented support for using legacy Globus proxies
+- SOFTWARE-530 - added metric configuration knob to skip ping checks
+
 * Fri Apr 13 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.7.0r1-1
 - Update to 3.7.0r1
 

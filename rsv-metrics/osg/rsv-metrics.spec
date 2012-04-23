@@ -1,6 +1,6 @@
 
 Name:      rsv-metrics
-Version:   3.7.0r3
+Version:   3.7.0
 Release:   1%{?dist}
 Summary:   RSV metrics
 
@@ -92,6 +92,15 @@ rm -rf $RPM_BUILD_ROOT
 %attr(-,rsv,rsv) %{_localstatedir}/log/rsv/probes
 
 %changelog
+* Mon Apr 23 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.7.0-1
+- Update to 3.7.0
+- SOFTWARE-600 - fix a bug in Gratia condor probe that prevents finding
+  condor_config_val when Condor is installed in a non-standard location.
+- SOFTWARE-595 - changed the status of the local certificate checks to be a
+  WARNING when the cert validity is 168>validity>24 hours.
+- Removed org.osg.batch.* metrics along with some other code that was not ported
+  to OSG 3
+
 * Fri Apr 13 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.7.0r1-1
 - Update to 3.7.0r1
 
