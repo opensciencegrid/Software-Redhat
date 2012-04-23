@@ -10,8 +10,8 @@
 
 Summary: Grid (X.509) and VOMS credentials to local account mapping service
 Name: lcmaps
-Version: 1.5.3
-Release: 1.3%{?dist}
+Version: 1.5.4
+Release: 1.1%{?dist}
 #Release: 0.%(date +%%Y%%m%%d_%%H%%M)%{?dist}
 License: ASL 2.0
 Group: System Environment/Libraries
@@ -260,6 +260,13 @@ fi
 %{_libdir}/pkgconfig/lcmaps.pc
 
 %changelog
+* Mon Apr 23 2012 Dave Dykstra <dwd@fnal.gov> 1.5.4-1.1.osg
+- Reimported from upstream, fixes bug with parsing that caused unmatched
+  quotes in lcmaps.db to trigger an 'out of memory' error
+  
+* Mon Apr 23 2012 Mischa Salle <msalle@nikhef.nl> 1.5.4-1
+- updated version
+
 * Wed Apr 18 2012 Dave Dykstra <dwd@fnal.gov> 1.5.3-1.3.osg
 - Add patch to change the default voms certificate check to be off,
   but still possible to be enabled at run time
