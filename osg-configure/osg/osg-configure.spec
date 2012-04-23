@@ -1,12 +1,14 @@
 %global name osg-configure
 %global version 1.0.7
-%global release 1%{?dist}
+%global release 2%{?dist}
 
 Summary: Package for configure-osg and associated scripts
 Name: %{name}
 Version: %{version}
 Release: %{release}
 Source0: %{name}-%{version}.tar.gz
+Patch0: pbs-sge-ini.patch
+Patch1: gratia-accounting-dir.patch
 License: Apache 2.0
 Group: Grid
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
@@ -118,6 +120,8 @@ such as firewall ports that globus should use
 
 %prep
 %setup
+%patch0 -p0
+%patch1 -p0
 
 %build
 %{__python} setup.py build
@@ -210,6 +214,9 @@ rm -rf $RPM_BUILD_ROOT
 %ghost %{_sysconfdir}/profile.d/osg.csh
 
 %changelog
+* Mon Apr 23 2012 Alain Roy <roy@cs.wisc.edu> 1.0.7-2
+- Patched to fix SOFTWARE-637 (incorrectly setting accounting dir for PBS)
+
 * Wed Mar 14 2012 Suchandra Thapa <sthapa@ci.uchicago.edu> 1.0.7-1
 - Fix for Software-552
 - Implemented Software-568
