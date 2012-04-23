@@ -1,7 +1,7 @@
 
 Name:      rsv
 Summary:   RSV Meta Package
-Version:   3.7.0r1
+Version:   3.7.0
 Release:   1%{?dist}
 License:   Apache 2.0
 Group:     Applications/Monitoring
@@ -32,6 +32,9 @@ rm -rf $RPM_BUILD_ROOT
 # No files since this is a meta package
 
 %changelog
+* Mon Apr 23 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.7.0-1
+- Set version to 3.7.0
+
 * Fri Apr 13 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.7.0r1-1
 - Set version to 3.7.0r1
 
