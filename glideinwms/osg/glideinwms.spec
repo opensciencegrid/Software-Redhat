@@ -67,7 +67,10 @@ Source17:       privsep_config
 
 %description
 This is a package for the glidein workload management system.
-Currently, only the vofrontend portion is supported
+GlideinWMS provides a simple way to access the Grid resources
+through a dynamic condor pool of grid-submitted resources.
+Two packages exist (factory and vofrontend) plus 
+dependent condor packages for additional condor customizability.
 
 %package vofrontend
 Summary:        The VOFrontend for glideinWMS submission host
