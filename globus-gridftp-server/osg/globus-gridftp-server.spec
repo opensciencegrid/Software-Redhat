@@ -13,7 +13,7 @@
 Name:		globus-gridftp-server
 %global _name %(tr - _ <<< %{name})
 Version:	6.5
-Release:	1.5%{?dist}
+Release:	1.6%{?dist}
 Summary:	Globus Toolkit - Globus GridFTP Server
 
 Group:		System Environment/Libraries
@@ -187,6 +187,10 @@ fi
 %defattr(-,root,root,-)
 
 %changelog
+* Mon Apr 23 2012 Dave Dykstra <dwd@fnal.gov> - 6.5-1.6.osg
+- Remove variable in sysconfig for disabling voms certificate check;
+  it is now the default
+
 * Thu Mar 29 2012 Dave Dykstra <dwd@fnal.gov> - 6.5-1.5.osg
 - Reduce default lcmaps syslog level from 3 to 2
 
