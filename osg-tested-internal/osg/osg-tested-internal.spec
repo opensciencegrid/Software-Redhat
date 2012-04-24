@@ -1,7 +1,7 @@
 Name:      osg-tested-internal
 Summary:   All OSG packages we test (internal use only)
 Version:   1
-Release:   5%{?dist}
+Release:   6%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -19,7 +19,9 @@ Requires: edg-mkgridmap
 Requires: glexec
 Requires: osg-ce-condor
 Requires: osg-se-bestman
+Requires: osg-se-bestman-xrootd
 Requires: osg-voms
+Requires: rsv
 Requires: yum-utils
 %endif
 
@@ -33,7 +35,9 @@ Requires: edg-mkgridmap
 Requires: glexec
 Requires: osg-ce-condor
 Requires: osg-se-bestman
+Requires: osg-se-bestman-xrootd
 Requires: osg-voms
+Requires: rsv
 Requires: yum-utils
 %endif
 
@@ -51,6 +55,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Apr 24 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1-6
+- Add osg-se-bestman-xrootd, rsv
+
 * Mon Apr 16 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1-5
 - bestman2-* packages replaced with osg-se-bestman
 
