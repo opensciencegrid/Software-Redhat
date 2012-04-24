@@ -7,7 +7,7 @@
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.3.18.009
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 %if 0%{?rhel} < 6
@@ -47,6 +47,7 @@ Source10: xmltooling-1.1.1.jar
 Source11: xmltooling.pom 
 
 Patch0: xml-maven2.patch
+Patch1: gums-create-config2.patch
 
 %description
 %{summary}
@@ -81,6 +82,7 @@ Summary: Tomcat service for GUMS
 
 %setup -n %{name}
 %patch0 -p0
+%patch1 -p0
 
 %build
 
@@ -251,6 +253,9 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+* Mon Apr 23 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.3.18.009-2
+- Add gums-create-config2.patch to fix default template path in gums-create-config
+
 * Mon Apr 23 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.3.18.009-1
 - Version bump
 - gums-build.patch, gums-add-mysql-admin.patch,
