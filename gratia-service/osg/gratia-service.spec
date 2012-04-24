@@ -4,8 +4,8 @@
 Name: gratia-service
 Summary: Gratia OSG accounting system
 Group: Applications/System
-Version: 1.11
-Release: 06.pre%{?dist}
+Version: 1.12
+Release: 1%{?dist}
 License: GPL
 Group: Applications/System
 URL: http://sourceforge.net/projects/gratia/
@@ -21,7 +21,13 @@ BuildArch: noarch
 
 Requires: java
 Requires: jpackage-utils
+%if 0%{?rhel} < 6
 Requires: tomcat5
+%endif
+%if 0%{?rhel} == 6
+Requires: tomcat6
+%endif
+
 Requires: emi-trustmanager-tomcat
 Requires: mysql-server
 Requires: vo-client-edgmkgridmap
@@ -76,6 +82,8 @@ mkdir conf
 tar xf target/gratia.tar -C conf
 install -m 0644 conf/*.sql $RPM_BUILD_ROOT%{_datadir}/gratia/sql/
 install -m 0644 conf/hibernate/* $RPM_BUILD_ROOT%{_datadir}/gratia/hibernate
+install -m 0644 conf/my-cnf-large-site.template $RPM_BUILD_ROOT%{_datadir}/gratia/my-cnf-large-site.template
+install -m 0644 conf/my-cnf.template $RPM_BUILD_ROOT%{_datadir}/gratia/my-cnf.template
 install -m 0644 conf/server.xml.template $RPM_BUILD_ROOT%{_datadir}/gratia/server.xml.template
 sed -i 's|@GRATIA_VERSION@|%{version}|' conf/service-configuration.properties
 sed -i 's|@GRATIA_VERSION@|%{version}|' conf/service-authorization.properties
@@ -105,6 +113,8 @@ touch $RPM_BUILD_ROOT%{_var}/log/gratia-service/gratia{,-rmi-servlet,-security,-
 %{_datadir}/gratia/install-database
 %{_datadir}/gratia/configure_tomcat
 %{_datadir}/gratia/server.xml.template
+%{_datadir}/gratia/my-cnf-large-site.template
+%{_datadir}/gratia/my-cnf.template
 %{_datadir}/gratia/voms-server.sh
 %{_sysconfdir}/cron.d/voms-server.cron
 %dir %{_var}/lib/gratia-service
@@ -123,6 +133,12 @@ touch $RPM_BUILD_ROOT%{_var}/log/gratia-service/gratia{,-rmi-servlet,-security,-
 %ghost %{_var}/log/gratia-service/*.log
 
 %changelog
+* Fri Apr 23 2012 Tanya Levshina <tlevshin@fnal.gov> - 1.12.1
+Production release
+
+* Fri Apr 20 2012 Tanya Levshina <tlevshin@fnal.gov> - 1.12.0pre 
+Added mysql templates, improvments for database-install
+
 * Mon Apr 15 2012 Tanya Levshina <tlevshin@fnal.gov> - 1.11.06pre 
 Modified spec file to be able to build on sl6
 
