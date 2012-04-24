@@ -1,6 +1,6 @@
 Name:           vo-client
 Version:        41
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Contains vomses file for use with user authentication and edg-mkgridmap.conf file that contains configuration information for edg-mkgridmap.
 
 Group:          System Environment/Base
@@ -92,6 +92,9 @@ rm -rf $RPM_BUILD_ROOT
 %attr(0600,tomcat,tomcat) %config(noreplace) %{_sysconfdir}/gums/gums.config.template
 
 %changelog
+* Tue Apr 24 2012 Alain Roy <roy@cs.wisc.edu> - 41-3
+- Adjusted VOMS server URLs for default GUMS config to work with latest GUMS. 
+
 * Mon Apr 23 2012 Alain Roy <roy@cs.wisc.edu> - 41-2
 - Fixed LSST URL
 
