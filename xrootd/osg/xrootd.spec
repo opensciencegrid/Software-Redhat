@@ -9,7 +9,7 @@
 Name:      xrootd
 Epoch:     1
 Version:   3.2.0
-Release:   0.5rc1%{?dist}%{?_with_xrootd_user:.xu}
+Release:   1%{?dist}%{?_with_xrootd_user:.xu}
 Summary:   An extended root daemon (xrootd)
 Group:     System Environment/Daemons
 License:   BSD
