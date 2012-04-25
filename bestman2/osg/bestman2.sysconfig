@@ -71,7 +71,7 @@ BESTMAN2_SERVER_LIB=$BESTMAN2_SERVER_LIB:$(build-classpath puretls cryptix crypt
 # Remainder odds-n-ends
 BESTMAN2_SERVER_LIB=$BESTMAN2_SERVER_LIB:$(build-classpath bestman2/others)
 
-BESTMAN2_CLIENT_LIB=.
+BESTMAN2_CLIENT_LIB=.:/usr/share/java/bestman2/jglobus/cog-axis-1.8.0.jar
 BESTMAN2_CLIENT_LIB=$BESTMAN2_CLIENT_LIB:$(build-classpath axis wsdl4j commons-discovery commons-logging bestman2/axis log4j)
 BESTMAN2_CLIENT_LIB=$BESTMAN2_CLIENT_LIB:$(build-classpath bcprov-1.33 cog-jglobus cog-jglobus-axis cryptix cryptix-asn1 puretls)
 

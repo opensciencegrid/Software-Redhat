@@ -14,7 +14,7 @@
 
 Name:           bestman2
 Version:        2.2.0a
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -566,6 +566,9 @@ fi
 
 
 %changelog
+* Wed Apr 25 2012 Doug Strain <dstrain@fnal.gov> - 2.2.0a-4
+- Updated BeStMan client lib to include system dependencies
+
 * Fri Mar 02 2012 Doug Strain <dstrain@fnal.gov> - 2.2.0a-2
 - Changed build procedure to use dependent_jar.tar.gz
 -- Separates all the dependencies into external
