@@ -1,11 +1,10 @@
 
-%define _webapps /var/lib/tomcat5/webapps
 
 Name: gratia-service
 Summary: Gratia OSG accounting system
 Group: Applications/System
 Version: 1.12
-Release: 3.pre%{?dist}
+Release: 4.pre%{?dist}
 License: GPL
 Group: Applications/System
 URL: http://sourceforge.net/projects/gratia/
@@ -23,9 +22,11 @@ Requires: java
 Requires: jpackage-utils
 %if 0%{?rhel} < 6
 Requires: tomcat5
+%define _tomcat tomcat5
 %endif
 %if 0%{?rhel} == 6
 Requires: tomcat6
+%define _tomcat tomcat6
 %endif
 
 Requires: emi-trustmanager-tomcat
@@ -41,12 +42,16 @@ BuildRequires: java-devel
 BuildRequires: jpackage-utils
 %endif
 
+%if 0%{?rhel} < 6
+%endif
+
 %if 0%{?rhel} == 6
 # Explicitly require these to avoid yum using gcj to satisfy the java-devel requirement.
 BuildRequires: jdk
 BuildRequires: java-1.6.0-sun-compat
 %endif
 
+%define _webapps /var/lib/%_tomcat/webapps
 
 %description
 %{summary}
@@ -72,8 +77,8 @@ jar xf $OLDPWD/target/gratia-$i.war
 popd
 done
 
-mkdir -p $RPM_BUILD_ROOT%{_var}/lib/tomcat5/server/lib
-install -m 0644 target/gratiaSecurity.jar $RPM_BUILD_ROOT%{_var}/lib/tomcat5/server/lib
+mkdir -p $RPM_BUILD_ROOT%{_var}/lib/%_tomcat/server/lib
+install -m 0644 target/gratiaSecurity.jar $RPM_BUILD_ROOT%{_var}/lib/%_tomcat/server/lib
 
 mkdir -p $RPM_BUILD_ROOT%{_datadir}/gratia/{sql,hibernate}
 mkdir -p $RPM_BUILD_ROOT%{_var}/lib/gratia-service/data
@@ -118,7 +123,7 @@ touch $RPM_BUILD_ROOT%{_var}/log/gratia-service/gratia{,-rmi-servlet,-security,-
 %{_datadir}/gratia/voms-server.sh
 %{_sysconfdir}/cron.d/voms-server.cron
 %dir %{_var}/lib/gratia-service
-%{_var}/lib/tomcat5/server/lib/gratiaSecurity.jar
+%{_var}/lib/%_tomcat/server/lib/gratiaSecurity.jar
 %attr(-,tomcat,tomcat) %{_var}/lib/gratia-service/keystore
 %attr(-,tomcat,tomcat) %{_var}/lib/gratia-service/truststore
 %attr(-,tomcat,tomcat) %{_var}/lib/gratia-service/data
@@ -127,12 +132,15 @@ touch $RPM_BUILD_ROOT%{_var}/log/gratia-service/gratia{,-rmi-servlet,-security,-
 %attr(0640,root,tomcat) %config(noreplace) %{_sysconfdir}/gratia/collector/service-configuration.properties
 %attr(0640,root,tomcat) %config(noreplace) %{_sysconfdir}/gratia/collector/service-authorization.properties
 %config(noreplace) %{_sysconfdir}/gratia/collector/log4j.properties
-%attr(0750,tomcat,tomcat) %dir %{_var}/lib/tomcat5/webapps/gratia-reporting/logs
-%attr(0750,tomcat,tomcat) %dir %{_var}/lib/tomcat5/webapps/gratia-reporting/WEB-INF/platform/configuration
+%attr(0750,tomcat,tomcat) %dir %{_var}/lib/%_tomcat/webapps/gratia-reporting/logs
+%attr(0750,tomcat,tomcat) %dir %{_var}/lib/%_tomcat/webapps/gratia-reporting/WEB-INF/platform/configuration
 %attr(0750,tomcat,tomcat) %dir %{_var}/log/gratia-service
 %ghost %{_var}/log/gratia-service/*.log
 
 %changelog
+* Wed Apr 25 2012 Tanya Levshina <tlevshin@fnal.gov> - 1.12.4pre
+fixed gratia.spec - get rid of tomcat5
+
 * Wed Apr 25 2012 Tanya Levshina <tlevshin@fnal.gov> - 1.12.3pre
 changes in tomcat-configure for tomcat6
 
