@@ -7,7 +7,7 @@
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.3.18.009
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 %if 0%{?rhel} < 6
@@ -25,6 +25,9 @@ BuildRequires: java-1.6.0-sun-compat
 %endif
 BuildRequires: java-devel
 Requires: java
+Requires: %{_javadir}/cog-jglobus/cog-jglobus-1.8.0.jar
+Requires: %{_javadir}/cog-jglobus/cog-jobmanager-1.8.0.jar
+Requires: %{_javadir}/cog-jglobus/cog-url-1.8.0.jar
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildArch: noarch
 
@@ -191,6 +194,11 @@ chmod +x $RPM_BUILD_ROOT%{_sysconfdir}/init.d/gums-client-cron
 mkdir -p $RPM_BUILD_ROOT%{_javadir}
 touch $RPM_BUILD_ROOT%{_javadir}/javamail.jar
 
+for jarname in cog-jglobus-1.8.0.jar cog-jobmanager-1.8.0.jar cog-url-1.8.0.jar
+do
+    ln -s %{_javadir}/cog-jglobus/$jarname $RPM_BUILD_ROOT%{_noarchlib}/%{dirname}
+done
+
 %files
 %defattr(-,root,root,-)
 %dir %{_noarchlib}/%{dirname}
@@ -253,6 +261,9 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+* Thu Apr 26 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.3.18.009-3
+- Add cog-jglobus dependency and symlinks
+
 * Mon Apr 23 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.3.18.009-2
 - Add gums-create-config2.patch to fix default template path in gums-create-config
 
