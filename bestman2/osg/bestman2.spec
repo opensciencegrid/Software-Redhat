@@ -14,7 +14,7 @@
 
 Name:           bestman2
 Version:        2.2.0a
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -567,6 +567,9 @@ fi
 
 
 %changelog
+* Thu Apr 26 2012 Doug Strain <dstrain@fnal.gov> - 2.2.0a-6
+- Fixed a bouncycastle conflict in SL6
+
 * Wed Apr 25 2012 Doug Strain <dstrain@fnal.gov> - 2.2.0a-5
 - Updated BeStMan client lib to include system dependencies
 - Updated BeStMan client tools to use multi-line CLIENT_LIBs

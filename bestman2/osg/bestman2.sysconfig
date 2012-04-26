@@ -63,7 +63,7 @@ BESTMAN2_SERVER_LIB=.
 # Axis and related dependencies
 BESTMAN2_SERVER_LIB=$BESTMAN2_SERVER_LIB:$(build-classpath axis wsdl4j commons-discovery commons-logging bestman2/axis)
 # GUMS and related deps
-BESTMAN2_SERVER_LIB=$BESTMAN2_SERVER_LIB:$(build-classpath commons-collections joda-time vomsjapi bcprov glite-security-trustmanager glite-security-util-java xalan-j2 bestman2/gums2)
+BESTMAN2_SERVER_LIB=$BESTMAN2_SERVER_LIB:$(build-classpath commons-collections joda-time vomsjapi glite-security-trustmanager glite-security-util-java xalan-j2 bestman2/gums2)
 # Jetty JARs
 BESTMAN2_SERVER_LIB=$BESTMAN2_SERVER_LIB:$(build-classpath bestman2/jetty)
 # jglobus JARs
