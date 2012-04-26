@@ -1,6 +1,6 @@
 Name:           osg-release
 Version:        3.0 
-Release:        19%{?dist}
+Release:        20%{?dist}
 Summary:        OSG Software for Enterprise Linux repository configuration
 
 Group:          System Environment/Base 
@@ -33,9 +33,9 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:     noarch
 
 %if 0%{?el6}
-Requires:      redhat-release >  6
+Requires:      redhat-release =  6
 %else
-Requires:      redhat-release >  5
+Requires:      redhat-release =  5
 %endif
 
 Obsoletes:     vdt-release
@@ -78,6 +78,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Apr 26 2012 Derek Weitzel <dweitzel@cse.unl.edu> - 3.0-20
+- Fixing el5 and el6 requires
+
 * Thu Apr 26 2012 Derek Weitzel <dweitzel@cse.unl.edu> - 3.0-19
 - Changing requires so only el5 on el5, el6 on el6
 
