@@ -1,6 +1,6 @@
 Summary:   Profiles your system for debugging
 Name:      osg-system-profiler
-Version:   1.0.5
+Version:   1.0.6
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -32,6 +32,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/%{name}
 
 %changelog
+* Thu Apr 26 2012 Matyas Selmeci <matyas@cs.wisc.edu> 1.0.6-1
+- Fixed iptables args
+
 * Thu Apr 26 2012 Matyas Selmeci <matyas@cs.wisc.edu> 1.0.5-1
 - Verbose output for iptables
 
