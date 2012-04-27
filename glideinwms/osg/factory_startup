@@ -18,12 +18,13 @@ export HOME="/var/lib/gwms-factory"
 export X509_CERT_DIR="/etc/grid-security/certificates"
 factory_dir='/var/lib/gwms-factory/work-dir'
 factory_config='/etc/gwms-factory/glideinWMS.xml'
+export FACTORY_USER=gfactory
 
 start() {
         cwd=`pwd`
         cd $factory_dir
         echo -n "Starting glideinWMS factory: "
-        su -s /bin/bash gfactory -c "nice -2 glideFactory.py $factory_dir 2>/dev/null 1>&2 </dev/null &"
+        su -s /bin/bash $FACTORY_USER -c "nice -2 glideFactory.py $factory_dir 2>/dev/null 1>&2 </dev/null &"
         sleep 5
         "checkFactory.py" "$factory_dir"  2>/dev/null 1>&2 </dev/null && success || failure
         RETVAL=$?
@@ -65,7 +66,7 @@ reconfig() {
             exit $RETVAL
           fi
         fi
-        su -s /bin/bash gfactory -c "reconfig_glidein -update_scripts no -xml $factory_config"
+        su -s /bin/bash $FACTORY_USER -c "reconfig_glidein -update_scripts no -xml $factory_config"
         reconfig_failed=$?
         echo -n "Reconfiguring the factory"
         test $reconfig_failed -eq 0 && success || failure
@@ -101,7 +102,7 @@ upgrade() {
             exit $RETVAL
           fi
         fi
-        su -s /bin/bash gfactory -c "reconfig_glidein -update_scripts yes -xml $factory_config"
+        su -s /bin/bash $FACTORY_USER -c "reconfig_glidein -update_scripts yes -xml $factory_config"
         reconfig_failed=$?
         echo -n "Upgrading the factory"
         test $reconfig_failed -eq 0 && success || failure

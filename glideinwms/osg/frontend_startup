@@ -18,6 +18,7 @@ frontend_dir='/var/lib/gwms-frontend/vofrontend'
 glideinWMS_dir=$frontend_dir
 frontend_config=/etc/gwms-frontend/frontend.xml
 export HOME="/var/lib/gwms-frontend"
+export FRONTEND_USER=frontend
 
 if [ -s ${frontend_config} ]
 then
@@ -39,7 +40,7 @@ id_str="$frontend_name"
 
 start() {
         echo -n "Starting glideinWMS frontend $id_str: "
-        su -s /bin/bash frontend -c "nice -2 \"glideinFrontend\" \"$frontend_dir\"" 2>/var/log/gwms-frontend/frontend/startup.log 1>&2 </dev/null &
+        su -s /bin/bash $FRONTEND_USER -c "nice -2 \"glideinFrontend\" \"$frontend_dir\"" 2>/var/log/gwms-frontend/frontend/startup.log 1>&2 </dev/null &
         sleep 5
         "checkFrontend" "$frontend_dir"  2>/dev/null 1>&2 </dev/null && success || failure
         RETVAL=$?
@@ -70,7 +71,7 @@ reconfig() {
             exit $RETVAL
           fi
         fi
-        "reconfig_frontend" -force_name "$frontend_name" -update_scripts "no" -xml $frontend_config
+        su -s /bin/bash $FRONTEND_USER -c "reconfig_frontend -force_name \"$frontend_name\" -update_scripts \"no\" -xml $frontend_config"
       RETVAL=$?
         reconfig_failed=$?
         echo -n "Reconfiguring the frontend"
@@ -90,7 +91,7 @@ upgrade() {
             exit $RETVAL
           fi
         fi
-        "reconfig_frontend" -force_name "$frontend_name" -writeback "yes" -update_scripts "yes" -xml $frontend_config
+        su -s /bin/bash $FRONTEND_USER -c "reconfig_frontend -force_name \"$frontend_name\" -writeback \"yes\" -update_scripts \"yes\" -xml $frontend_config"
         reconfig_failed=$?
         echo -n "Reconfiguring the frontend"
         test $reconfig_failed -eq 0 && success || failure
