@@ -14,7 +14,7 @@
 
 Name:           bestman2
 Version:        2.2.0a
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -42,6 +42,7 @@ Patch0:		bestman.server.patch
 Patch1:		setup.build.xml.patch
 Patch2:		bestman2.serverlib.patch
 Patch3:		bestman2.clientlib.patch
+Patch4:		bestman.server636.patch
 #Patch2:		bestman2.srmrm.patch
 #Patch3:		blockedpath.patch
 
@@ -160,9 +161,10 @@ These are the libraries needed solely for the srmtester application
 %setup -T -b 4 -q -n lib
 cd ..
 %setup -T -b 0 -q -n %{name}
-pushd bestman2/sources/setup/bestman.in
 
+pushd bestman2/sources/setup/bestman.in
 %patch0 -p0
+%patch4 -p0
 popd
 
 pushd bestman2/sources/setup/
@@ -567,6 +569,10 @@ fi
 
 
 %changelog
+* Thu Apr 26 2012 Doug Strain <dstrain@fnal.gov> - 2.2.0a-7
+- Fixed SOFTWARE-636: Reports java version error even if 
+-   java is missing or heap size is broke
+
 * Thu Apr 26 2012 Doug Strain <dstrain@fnal.gov> - 2.2.0a-6
 - Fixed a bouncycastle conflict in SL6
 
