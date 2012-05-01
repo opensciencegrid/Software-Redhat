@@ -31,6 +31,8 @@ if [ "x$SRM_OWNER" = "x" ]; then
     SRM_OWNER=bestman
 fi
 
+BESTMAN_LOCKFILE="/var/lock/subsys/bestman2"
+
 start() {
         ulimit -n 65536
         echo -n "Starting bestman2: "
@@ -40,18 +42,29 @@ start() {
         RETVAL=$?
         chown root: $BESTMAN_PID
         echo
-        [ $RETVAL -eq 0 ] && touch /var/lock/subsys/bestman2
+        [ $RETVAL -eq 0 ] && touch $BESTMAN_LOCKFILE
         return $RETVAL
 }
 
 # A function to stop a program.
 stop() {
         echo -n "Shutting down bestman2: "
-        killproc bestman2
-        RETVAL=$?
-        echo
-	rm -f /var/lock/subsys/bestman2
-        return $RETVAL
+   	RETVAL=0
+	if [ -f "$BESTMAN_PID" ]; then
+		read PID < "$BESTMAN_PID" 2> /dev/null
+		if [ "$PID" != "" -a "$PID" -gt 0 ]; then
+			if kill -0 "$PID" 2> /dev/null; then
+				kill -INT "$PID" 2>/dev/null
+				RETVAL=$?
+				sleep 2
+				kill -0 "$PID" 2> /dev/null && kill -KILL "$PID"
+			fi
+		fi
+		rm -f "$BESTMAN_PID"
+	fi
+	[ $RETVAL -eq 0 ] && echo_success || echo_failure
+	echo
+	return $RETVAL
 }
 
 restart() {

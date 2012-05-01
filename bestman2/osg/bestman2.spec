@@ -14,7 +14,7 @@
 
 Name:           bestman2
 Version:        2.2.0a
-Release:        7%{?dist}
+Release:        8%{?dist}
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -569,6 +569,10 @@ fi
 
 
 %changelog
+* Tue May 01 2012 Neha Sharma <neha@fnal.gov> - 2.2.0a-8
+- modified init script stop function to really check whether or not
+- bestman server process is running and not give a 'fake OK'
+
 * Thu Apr 26 2012 Doug Strain <dstrain@fnal.gov> - 2.2.0a-7
 - Fixed SOFTWARE-636: Reports java version error even if 
 -   java is missing or heap size is broke
