@@ -14,7 +14,7 @@
 
 Name:           bestman2
 Version:        2.2.0a
-Release:        8%{?dist}
+Release:        9%{?dist}
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -569,6 +569,10 @@ fi
 
 
 %changelog
+* Tue May 01 2012 Neha Sharma <neha@fnal.gov> - 2.2.0a-9
+- modified bestman2.sh to give 10 sec to bestman server to
+- startup and then get the correct exit code
+- also, added proper check of startup process
 * Tue May 01 2012 Neha Sharma <neha@fnal.gov> - 2.2.0a-8
 - modified init script stop function to really check whether or not
 - bestman server process is running and not give a 'fake OK'

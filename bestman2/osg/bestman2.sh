@@ -16,8 +16,11 @@ if [ "x$BESTMAN_PID" = "x" ]; then
 fi
 
 /usr/sbin/bestman.server ${1+"$@"} 2>> $BESTMAN_LOG  >> $BESTMAN_LOG &
-RETVAL=$?
+sleep 10
 echo $! > $BESTMAN_PID
-
+bestmanrunning=`ps -ef | grep java | grep bestman | grep -v grep | wc | awk {'print $1'}`
+if [ "$bestmanrunning" != "1" ]; then
+	wait $!
+fi
+RETVAL=$?
 exit $RETVAL
-
