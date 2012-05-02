@@ -1,0 +1,24 @@
+Index: globus_gram_job_manager_seg.c
+===================================================================
+RCS file: /home/globdev/CVS/globus-packages/gram/jobmanager/source/globus_gram_job_manager_seg.c,v
+retrieving revision 1.15.2.3
+diff -u -r1.15.2.3 globus_gram_job_manager_seg.c
+--- globus_gram_job_manager_seg.c	12 Mar 2012 13:36:08 -0000	1.15.2.3
++++ globus_gram_job_manager_seg.c	21 Mar 2012 20:16:35 -0000
+@@ -1677,6 +1677,7 @@
+     globus_gram_job_manager_ref_t *     ref;
+     globus_scheduler_event_t *          event;
+ 
++    *condor_idp = NULL;
+     GlobusGramJobManagerLock(request->manager);
+     ref = globus_hashtable_lookup(
+             &request->manager->request_hash,
+@@ -1706,7 +1707,7 @@
+         &condor_data,
+         NULL);
+ 
+-    if (rc != GLOBUS_SUCCESS)
++    if (rc != GLOBUS_SUCCESS || condor_data == NULL)
+     {
+         goto read_failed;
+     }

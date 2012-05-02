@@ -1,0 +1,71 @@
+--- globus_gram_job_manager_state_file.c.orig	2012-03-08 21:32:10.000000000 -0600
++++ globus_gram_job_manager_state_file.c	2012-03-08 21:39:48.000000000 -0600
+@@ -726,31 +726,47 @@
+                                            O_RDWR );
+         if ( request->job_state_lock_fd < 0 )
+         {
+-            rc = GLOBUS_GRAM_PROTOCOL_ERROR_LOCKING_STATE_LOCK_FILE;
+-
+-            globus_gram_job_manager_request_log(
+-                    request,
+-                    GLOBUS_GRAM_JOB_MANAGER_LOG_ERROR,
+-                    "event=gram.state_file_read.end "
+-                    "level=ERROR "
+-                    "gramid=%s "
+-                    "status=%d "
+-                    "path=%s "
+-                    "msg=\"%s\" "
+-                    "errno=%d "
+-                    "reason=\"%s\" "
+-                    "\n",
+-                    request->job_contact_path,
+-                    -rc,
+-                    request->job_state_file,
+-                    "Error opening job lock file",
+-                    errno,
+-                    strerror(errno));
++            if (errno == ENOENT)
++            {
++                // Someone deleted our lock file.
++				// Attempt to recreate and grab the lock file.
++				// create_lock will internally call globus_gram_job_manager_file_lock,
++                // so we will skip its invocation later below.
++                rc = globus_l_gram_state_file_create_lock(request);
++
++				// Do not log failure: create_lock logs on failure and
++				// the remaining common error cases are handled at the
++				// skip_lock_file label.
++                goto skip_lock_file;
++            }
++            else
++            {
++                rc = GLOBUS_GRAM_PROTOCOL_ERROR_LOCKING_STATE_LOCK_FILE;
+ 
+-            goto free_buffer_exit;
++                globus_gram_job_manager_request_log(
++                        request,
++                        GLOBUS_GRAM_JOB_MANAGER_LOG_ERROR,
++                        "event=gram.state_file_read.end "
++                        "level=ERROR "
++                        "gramid=%s "
++                        "status=%d "
++                        "path=%s "
++                        "msg=\"%s\" "
++                        "errno=%d "
++                        "reason=\"%s\" "
++                        "\n",
++                        request->job_contact_path,
++                        -rc,
++                        request->job_state_file,
++                        "Error opening job lock file",
++                        errno,
++                        strerror(errno));
++                goto free_buffer_exit;
++            }
+         }
+ 
+         rc = globus_gram_job_manager_file_lock(request->job_state_lock_fd);
++skip_lock_file:
+         if ( rc != GLOBUS_SUCCESS )
+         {
+             if ( rc == GLOBUS_GRAM_PROTOCOL_ERROR_OLD_JM_ALIVE )
