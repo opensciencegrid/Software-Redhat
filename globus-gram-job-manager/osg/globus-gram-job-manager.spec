@@ -12,14 +12,15 @@
 
 Name:		globus-gram-job-manager
 %global _name %(tr - _ <<< %{name})
-Version:	13.23
-Release:	0.11%{?dist}
+%global realversion 13.23
+Version:	13.34r23
+Release:	0.1%{?dist}
 Summary:	Globus Toolkit - GRAM Jobmanager
 
 Group:		Applications/Internet
 License:	ASL 2.0
 URL:		http://www.globus.org/
-Source:		http://www.globus.org/ftppub/gt5/5.2/5.2.0/packages/src/%{_name}-%{version}.tar.gz
+Source:		http://www.globus.org/ftppub/gt5/5.2/5.2.0/packages/src/%{_name}-%{realversion}.tar.gz
 Source1:       globus-gram-job-manager-logging
 
 # OSG-specific patches
@@ -118,7 +119,7 @@ The %{name}-doc package contains:
 GRAM Jobmanager Documentation Files
 
 %prep
-%setup -q -n %{_name}-%{version}
+%setup -q -n %{_name}-%{realversion}
 
 %patch9 -p0
 %patch11 -p0
@@ -230,6 +231,16 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_docdir}/%{name}-%{version}/html
 
 %changelog
+* Wed May 02 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 13.34r23-0.1
+- Revert to previous version. Real upstream version is 13.23
+
+* Wed Apr 18 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 13.34-0.1
+- New version with a real fix for GRAM-329
+- Removed recreate-lockfile.patch, no longer applies
+- Removed fix-poll-interval.patch, in upstream
+- Removed close-rvf-file.patch, in upstream
+- Removed condor-seg-nullptr.patch, in upstream
+
 * Wed Apr 04 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 13.23-0.11
 - Add patch for GRAM-329
 
