@@ -12,15 +12,14 @@
 
 Name:		globus-gram-job-manager
 %global _name %(tr - _ <<< %{name})
-%global realversion 13.23
-Version:	13.34r23
+Version:	13.35
 Release:	0.1%{?dist}
 Summary:	Globus Toolkit - GRAM Jobmanager
 
 Group:		Applications/Internet
 License:	ASL 2.0
 URL:		http://www.globus.org/
-Source:		http://www.globus.org/ftppub/gt5/5.2/5.2.0/packages/src/%{_name}-%{realversion}.tar.gz
+Source:	       %{_name}-%{version}.tar.gz
 Source1:       globus-gram-job-manager-logging
 
 # OSG-specific patches
@@ -30,13 +29,8 @@ Patch16:        description_service_tag.patch
 Patch19:        load_requests_before_activating_socket.patch
 Patch20:        fix-job-home-dir.patch
 Patch22:        fix-job-lock-location.patch
-Patch23:        recreate-lockfile.patch
-Patch24:        fix-poll-interval.patch
-Patch25:        close-rvf-file.patch
 Patch26:        allow-manager-restart.patch
 Patch27:        recompute-stdio-on-restart.patch
-Patch28:        condor-seg-nullptr.patch
-Patch29:        gram-329-condor-fake-seg.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -119,7 +113,7 @@ The %{name}-doc package contains:
 GRAM Jobmanager Documentation Files
 
 %prep
-%setup -q -n %{_name}-%{realversion}
+%setup -q -n %{_name}-%{version}
 
 %patch9 -p0
 %patch11 -p0
@@ -127,9 +121,6 @@ GRAM Jobmanager Documentation Files
 %patch19 -p0
 %patch20 -p0
 %patch22 -p0
-%patch23 -p0
-%patch24 -p0
-%patch25 -p0
 %patch26 -p0
 
 # This one is difficult.  Stdio stageout is not atomic - on restart,
@@ -138,8 +129,6 @@ GRAM Jobmanager Documentation Files
 # I think it's a better default, but am waiting on more info.
 #%patch27 -p0
 
-%patch28 -p0
-%patch29 -p0
 
 %build
 # Remove files that should be replaced during bootstrap
@@ -231,8 +220,8 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_docdir}/%{name}-%{version}/html
 
 %changelog
-* Wed May 02 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 13.34r23-0.1
-- Revert to previous version. Real upstream version is 13.23
+* Fri May 04 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 13.35-0.1
+- New version with a fix for GRAM-345
 
 * Wed Apr 18 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 13.34-0.1
 - New version with a real fix for GRAM-329

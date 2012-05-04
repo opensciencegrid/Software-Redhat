@@ -1,7 +1,7 @@
 Index: globus_gram_job_manager_gsi.c
 ===================================================================
---- globus_gram_job_manager_gsi.c.orig	2011-10-18 14:09:17.000000003 -0500
-+++ globus_gram_job_manager_gsi.c	2012-03-13 19:00:21.000000003 -0500
+--- globus_gram_job_manager_gsi.c.orig	2012-03-26 12:06:43.000000000 -0500
++++ globus_gram_job_manager_gsi.c	2012-04-18 16:52:56.444840763 -0500
 @@ -620,6 +620,12 @@
          {
              goto write_manager_cred_failed;
@@ -13,13 +13,13 @@ Index: globus_gram_job_manager_gsi.c
 +            manager->stop = GLOBUS_FALSE;
 +        }
          set_credential = GLOBUS_TRUE;
+         manager->stop = GLOBUS_FALSE;
      }
- 
 Index: globus_gram_job_manager.c
 ===================================================================
---- globus_gram_job_manager.c.orig	2012-03-13 19:00:20.000000003 -0500
-+++ globus_gram_job_manager.c	2012-03-13 19:00:21.000000003 -0500
-@@ -555,6 +555,10 @@
+--- globus_gram_job_manager.c.orig	2012-04-18 16:48:08.000000000 -0500
++++ globus_gram_job_manager.c	2012-04-18 16:56:15.671939316 -0500
+@@ -570,6 +570,10 @@
   *     Success.
   * @retval GLOBUS_GRAM_PROTOCOL_ERROR_MALLOC_FAILED
   *     Malloc failed.
@@ -30,16 +30,7 @@ Index: globus_gram_job_manager.c
   *
   */
  int
-@@ -2055,7 +2059,7 @@
-             "\n",
-             expired);
- }
--/* globus_gram_job_manager_stop_all_jobs() */
-+/* globus_gram_job_manager_expire_old_jobs() */
- 
- 
- void
-@@ -2175,16 +2179,23 @@
+@@ -2178,16 +2182,26 @@
          case GLOBUS_GRAM_JOB_MANAGER_STATE_STOP:
              break;
          }
@@ -63,13 +54,27 @@ Index: globus_gram_job_manager.c
 +                &globus_i_reltime_zero,
 +                globus_gram_job_manager_state_machine_callback,
 +                request);
-+        } manager->done = GLOBUS_TRUE; globus_cond_signal(&manager->cond);
++        }
++        manager->done = GLOBUS_TRUE;
++        globus_cond_signal(&manager->cond);
++
          GlobusGramJobManagerRequestUnlock(request);
  
          globus_gram_job_manager_remove_reference(
---- globus_gram_job_manager_query.c.orig	2012-03-16 09:57:22.000000000 -0500
-+++ globus_gram_job_manager_query.c	2012-03-16 09:58:01.000000000 -0500
-@@ -1457,7 +1457,7 @@
+@@ -2197,7 +2211,7 @@
+     }
+     globus_list_free(job_refs);
+ }
+-/* globus_gram_job_manager_stop_all_jobs() */
++/* globus_gram_job_manager_expire_old_jobs() */
+ 
+ /**
+  * Scan the job state directory for jobs to restart
+Index: globus_gram_job_manager_query.c
+===================================================================
+--- globus_gram_job_manager_query.c.orig	2012-04-11 07:53:59.000000000 -0500
++++ globus_gram_job_manager_query.c	2012-04-18 16:52:56.453833614 -0500
+@@ -1431,7 +1431,7 @@
  
              if (out_size >= 0 && out_size != local_size_stdout)
              {
@@ -78,7 +83,7 @@ Index: globus_gram_job_manager.c
                  globus_gram_job_manager_request_log(
                          request,
                          GLOBUS_GRAM_JOB_MANAGER_LOG_WARN,
-@@ -1484,7 +1484,7 @@
+@@ -1458,7 +1458,7 @@
              }
              else if (err_size >= 0 && err_size != local_size_stderr)
              {
