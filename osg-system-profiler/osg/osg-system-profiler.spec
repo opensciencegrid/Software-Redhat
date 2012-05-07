@@ -1,6 +1,6 @@
 Summary:   Profiles your system for debugging
 Name:      osg-system-profiler
-Version:   1.0.7
+Version:   1.0.8
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -17,6 +17,14 @@ a clear picture of your environment for debugging.  If you report problems
 with your installation, there is a good chance that the person who helps
 you will ask for the output of the profiler.
 
+%package viewer
+Summary:   Views the output of %{name}
+Group:     Applications/Grid
+Requires:  tkinter
+
+%description viewer
+A GUI for viewing the output of %{name} in a structured manner.
+
 %prep
 %setup -q
 
@@ -31,7 +39,14 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root)
 %{_bindir}/%{name}
 
+%files viewer
+%defattr(-,root,root)
+%{_bindir}/%{name}-viewer
+
 %changelog
+* Mon May 07 2012 Matyas Selmeci <matyas@cs.wisc.edu> 1.0.8-1
+- Add viewer subpackage
+
 * Tue May 1 2012 Alain Roy <roy@cs.wisc.edu> 1.0.7-1
 - Dump /etc/globus/
 
