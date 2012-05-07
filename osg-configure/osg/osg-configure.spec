@@ -1,14 +1,12 @@
 %global name osg-configure
-%global version 1.0.7
-%global release 2%{?dist}
+%global version 1.0.8
+%global release 1%{?dist}
 
 Summary: Package for configure-osg and associated scripts
 Name: %{name}
 Version: %{version}
 Release: %{release}
 Source0: %{name}-%{version}.tar.gz
-Patch0: pbs-sge-ini.patch
-Patch1: gratia-accounting-dir.patch
 License: Apache 2.0
 Group: Grid
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
@@ -117,22 +115,22 @@ Provides: configure-osg-network
 %description network
 This package includes the ini files for configuring network related information
 such as firewall ports that globus should use
+%package tests
+Summary: Configure-osg configuration unit tests and configuration for unit testing
+Group: Grid
+Provides: configure-osg-tests
+%description tests
+This package includes the ini files and files for unit tests that osg-configure
+uses to verify functionality
 
 %prep
 %setup
-%patch0 -p0
-%patch1 -p0
 
 %build
 %{__python} setup.py build
 
 %install
-%{__python} setup.py install --root=$RPM_BUILD_ROOT --record=INSTALLED_FILES
-# delete config files for subpackges from file list
-/bin/sed "/[01234][0125]-*/d" INSTALLED_FILES > tmp_file
-mv tmp_file INSTALLED_FILES
-/bin/sed "s_/usr/bin/osg-configure_/usr/sbin/osg-configure_" INSTALLED_FILES > tmp_file
-mv tmp_file INSTALLED_FILES
+%{__python} setup.py install --root=$RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT/var/log/osg/
 touch $RPM_BUILD_ROOT/var/log/osg/osg-configure.log
 mkdir -p $RPM_BUILD_ROOT/var/lib/osg
@@ -152,13 +150,10 @@ rmdir $RPM_BUILD_ROOT/usr/bin
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%files -f INSTALLED_FILES
+%files 
 %defattr(-,root,root)
-# Need the following for builds on batlab
-%{python_sitelib}/osg_configure/*.pyo
-%{python_sitelib}/osg_configure/modules/*.pyo
-%{python_sitelib}/osg_configure/configure_modules/*.pyo
-/usr/sbin/configure-osg
+%{python_sitelib}/*
+/usr/sbin/*
 %ghost /var/log/osg/osg-configure.log
 %ghost /var/lib/osg/osg-attributes.conf
 %ghost /var/lib/osg/osg-local-job-environment.conf
@@ -212,8 +207,17 @@ rm -rf $RPM_BUILD_ROOT
 %ghost /var/lib/osg/globus-firewall
 %ghost %{_sysconfdir}/profile.d/osg.sh
 %ghost %{_sysconfdir}/profile.d/osg.csh
+%files tests
+%defattr(-,root,root)
+/usr/share/osg-configure/*
 
 %changelog
+* Wed May 2 2012 Suchandra Thapa <sthapa@ci.uchicago.edu> 1.0.8-1
+- Fix for SOFTWARE-597
+- Fix for SOFTWARE-599 
+- Added tests subpackage to distribute tests
+- Added fixes for gip configuration issue Alain ran into
+
 * Mon Apr 23 2012 Alain Roy <roy@cs.wisc.edu> 1.0.7-2
 - Patched to fix SOFTWARE-637 (incorrectly setting accounting dir for PBS)
 
