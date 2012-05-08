@@ -1,0 +1,11 @@
+diff -ru gridftp-hdfs-0.5.3-orig/conf/gridftp-hdfs-environment gridftp-hdfs-0.5.3/conf/gridftp-hdfs-environment
+--- gridftp-hdfs-0.5.3-orig/conf/gridftp-hdfs-environment       2012-05-08 14:35:19.000000003 -0500
++++ gridftp-hdfs-0.5.3/conf/gridftp-hdfs-environment    2012-05-08 15:21:31.000000003 -0500
+@@ -85,6 +85,7 @@
+   export LCMAPS_DIR=${LCMAPS_DIR:=/etc/lcmaps}
+   export LCMAPS_MOD_HOME=${LCMAPS_MOD_HOME:=/usr/lib64/modules}
+   export LCMAPS_POLICY_NAME=${LCMAPS_POLICY_NAME:=globus_gridftp_mapping}
++  export LLGT_LOG_IDENT=gridftp-server-llgt
+ fi
+
+ # New gridftp.conf override in GT 5.2
