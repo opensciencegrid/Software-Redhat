@@ -1,13 +1,13 @@
 Name:           igtf-ca-certs
-Version:        1.46
-Release:        2%{?dist}
+Version:        1.47
+Release:        1%{?dist}
 Summary:        OSG Packaging of the IGTF CA Certs, in new OpenSSL 0.9.8/1.0.0 format
 
 Group:          System Environment/Base
 License:        Unknown
 URL:            http://software.grid.iu.edu/pacman/cadist/
 
-Source0:        osg-certificates-1.27IGTFNEW.tar.gz
+Source0:        osg-certificates-1.28IGTFNEW.tar.gz
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
@@ -43,6 +43,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc
 
 %changelog
+* Mon May 07 2012 Kevin Hill <kevinh@fnal.gov> - 1.47-1
+- CA release corresponding to IGTF 1.47 release
+
 * Thu Mar 30 2012 Anand Padmanabhan <apadmana@uiuc.edu> - 1.46-1
 - CA release corresponding to IGTF 1.46 release
 - Note version 1.45 is skipped since IGTF released 1.46 immediately due to problem with CRL from CESNET CA
