@@ -50,3 +50,38 @@ diff -ru gridftp-hdfs-0.5.3-orig/scripts/gridftp-hdfs-standalone.in gridftp-hdfs
                                                                        
  exec /usr/sbin/globus-gridftp-server -c @sysconfdir_resolved@/gridftp-hdfs/gridftp-debug.conf -dsi hdfs -no-fork
 Only in gridftp-hdfs-0.5.3/scripts: gridftp-hdfs-standalone.in.orig
+diff -ru gridftp-hdfs-0.5.3-orig/scripts/xinetd/gridftp-hdfs-inetd.in gridftp-hdfs-0.5.3/scripts/xinetd/gridftp-hdfs-inetd.in
+--- gridftp-hdfs-0.5.3-orig/scripts/xinetd/gridftp-hdfs-inetd.in	2012-05-09 14:38:20.000000000 -0500
++++ gridftp-hdfs-0.5.3/scripts/xinetd/gridftp-hdfs-inetd.in	2012-05-09 16:12:15.000000000 -0500
+@@ -1,15 +1,24 @@
+ #!/bin/sh
+ 
+-if [ -e @datadir_resolved@/gridftp-hdfs/gridftp-hdfs-environment ] ; then
+-    . @datadir_resolved@/gridftp-hdfs/gridftp-hdfs-environment
++# Source OSG firewall information
++if [ -e /var/lib/osg/globus-firewall ]; then
++        . /var/lib/osg/globus-firewall
+ fi
+ 
+-if [ -e @sysconfdir_resolved@/gridftp-hdfs/gridftp-hdfs-local.conf ] ; then
+-    . @sysconfdir_resolved@/gridftp-hdfs/gridftp-hdfs-local.conf
+-fi
++#Uncomment and modify to override default osg firewall behavior
++#export GLOBUS_TCP_PORT_RANGE=min,max
++#export GLOBUS_TCP_SOURCE_RANGE=min,max
+ 
+-if [ -e @sysconfdir_resolved@/sysconfig/gridftp-hdfs ] ; then
+-    . @sysconfdir_resolved@/sysconfig/gridftp-hdfs
++#############################################
++# Source all files in /etc/sysconfig/gridftp.conf.d
++#############################################
++dir_cmd="ls -1 /etc/sysconfig/gridftp.conf.d";
++# Exclude files left behind by rpm, vi, emacs, etc
++file_exp="^((\..*)|(.*~)|(#.*)|(.*\.rpmsave)|(.*\.rpmnew))$"
++if [ -d /etc/sysconfig/gridftp.conf.d ]; then
++        for file in `$dir_cmd | egrep -v "$file_exp" 2>/dev/null` ; do
++                . /etc/sysconfig/gridftp.conf.d/$file
++        done
+ fi
+ 
+ exec /usr/sbin/globus-gridftp-server -c @sysconfdir_resolved@/gridftp-hdfs/gridftp-inetd.conf -dsi hdfs

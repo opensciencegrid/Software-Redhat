@@ -9,7 +9,7 @@
 
 Name:           gridftp-hdfs
 Version:        0.5.3
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        HDFS DSI plugin for GridFTP
 Group:          System Environment/Daemons
 License:        ASL 2.0
@@ -131,9 +131,9 @@ fi
 %endif
 
 %changelog
-* Wed May 9 2012 Doug Strain <dstrain@fnal.gov> - 0.5.3-4
+* Wed May 9 2012 Doug Strain <dstrain@fnal.gov> - 0.5.3-5
 - Added new LCMAPs options to sysconfig
-- Changed location of sysconfig information
+- Changed location of sysconfig information in standalone+inetd scripts
 
 * Fri Apr 13 2012 Doug Strain <dstrain@fnal.gov> - 0.5.3-2
 - Added dist tag
