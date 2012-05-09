@@ -133,6 +133,7 @@ fi
 %changelog
 * Wed May 9 2012 Doug Strain <dstrain@fnal.gov> - 0.5.3-4
 - Added new LCMAPs options to sysconfig
+- Changed location of sysconfig information
 
 * Fri Apr 13 2012 Doug Strain <dstrain@fnal.gov> - 0.5.3-2
 - Added dist tag
