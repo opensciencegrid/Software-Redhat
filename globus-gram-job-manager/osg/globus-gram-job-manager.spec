@@ -13,7 +13,7 @@
 Name:		globus-gram-job-manager
 %global _name %(tr - _ <<< %{name})
 Version:	13.35
-Release:	0.2%{?dist}
+Release:	0.3%{?dist}
 Summary:	Globus Toolkit - GRAM Jobmanager
 
 Group:		Applications/Internet
@@ -222,6 +222,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_docdir}/%{name}-%{version}/html
 
 %changelog
+* Thu May 10 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 13.35-0.3
+- Do not try to fast-shutdown the globus-job-manager.  See GT-156.
+
 * Thu May 10 2012 Alain Roy <roy@cs.wisc.edu> - 13.35-0.2
 - Patched to fix GT-154 (Kill off idle Perl processes to save memory)
 
