@@ -565,10 +565,15 @@ fi
 
 
 %changelog
+* Tue May 01 2012 Neha Sharma <neha@fnal.gov> - 2.2.1-0.rc1
+- Modified build spec file to incorporate new build procedure
+- Separated setup and sources directory with separate ant tasks.
+
 * Tue May 01 2012 Neha Sharma <neha@fnal.gov> - 2.2.0a-9
 - modified bestman2.sh to give 10 sec to bestman server to
 - startup and then get the correct exit code
 - also, added proper check of startup process
+
 * Tue May 01 2012 Neha Sharma <neha@fnal.gov> - 2.2.0a-8
 - modified init script stop function to really check whether or not
 - bestman server process is running and not give a 'fake OK'
