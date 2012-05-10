@@ -1,0 +1,16 @@
+Index: globus_gram_job_manager_state_file.c
+===================================================================
+RCS file: /home/globdev/CVS/globus-packages/gram/jobmanager/source/globus_gram_job_manager_state_file.c,v
+retrieving revision 1.23.4.3
+diff -u -r1.23.4.3 globus_gram_job_manager_state_file.c
+--- globus_gram_job_manager_state_file.c	4 May 2012 00:24:37 -0000	1.23.4.3
++++ globus_gram_job_manager_state_file.c	10 May 2012 22:13:58 -0000
+@@ -735,6 +735,8 @@
+     buffer[strlen(buffer)-1] = '\0';
+     if (request->config && strcmp(buffer, request->config->service_tag) != 0)
+     {
++        /* Job should be handled by another job manager */
++        rc = GLOBUS_GRAM_PROTOCOL_ERROR_OLD_JM_ALIVE;
+         goto free_client_address;
+     }
+     if(fgets( buffer, file_len, fp ) == NULL)
