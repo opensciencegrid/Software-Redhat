@@ -154,7 +154,7 @@ These are the libraries needed solely for the srmtester application
 %setup -T -b 4 -q -n lib
 cd ..
 %setup -T -b 0 -q -n %{name}
-%patch -p1
+%patch0 -p1
 
 pushd bestman2/setup-osg/bestman.in
 sed -i "s/@SRM_HOME@/\/etc\/bestman2/" *
