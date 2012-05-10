@@ -13,7 +13,7 @@
 Name:		globus-gram-job-manager
 %global _name %(tr - _ <<< %{name})
 Version:	13.35
-Release:	0.1%{?dist}
+Release:	0.2%{?dist}
 Summary:	Globus Toolkit - GRAM Jobmanager
 
 Group:		Applications/Internet
@@ -31,6 +31,7 @@ Patch20:        fix-job-home-dir.patch
 Patch22:        fix-job-lock-location.patch
 Patch26:        allow-manager-restart.patch
 Patch27:        recompute-stdio-on-restart.patch
+Patch28:        GT-154.diff
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -129,6 +130,7 @@ GRAM Jobmanager Documentation Files
 # I think it's a better default, but am waiting on more info.
 #%patch27 -p0
 
+%patch28 -p0 
 
 %build
 # Remove files that should be replaced during bootstrap
@@ -220,6 +222,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_docdir}/%{name}-%{version}/html
 
 %changelog
+* Thu May 10 2012 Alain Roy <roy@cs.wisc.edu> - 13.35-0.2
+- Patched to fix GT-154 (Kill off idle Perl processes to save memory)
+
 * Fri May 04 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 13.35-0.1
 - New version with a fix for GRAM-345
 

@@ -1,0 +1,147 @@
+Index: gram/jobmanager/source/globus_gram_job_manager.h
+diff -u gram/jobmanager/source/globus_gram_job_manager.h:1.70.2.5 gram/jobmanager/source/globus_gram_job_manager.h:1.70.2.5.22.1
+--- globus_gram_job_manager.h:1.70.2.5	Tue Mar 27 10:19:02 2012
++++ globus_gram_job_manager.h	Wed May  9 13:14:19 2012
+@@ -515,7 +515,11 @@
+      * Periodic callback handle to abort if something removes the lock file.
+      */
+     globus_callback_handle_t            lockcheck_handle;
+-    
++
++    /**
++     * Periodic callback handle to abort if something removes the lock file.
++     */
++    globus_callback_handle_t            idle_script_handle;
+ }
+ globus_gram_job_manager_t;
+ 
+@@ -1359,6 +1363,9 @@
+ globus_gram_job_manager_script_close_all(
+     globus_gram_job_manager_t *         manager);
+ 
++void
++globus_gram_script_close_idle(
++    void *                              arg);
+ 
+ extern globus_xio_driver_t              globus_i_gram_job_manager_popen_driver;
+ extern globus_xio_stack_t               globus_i_gram_job_manager_popen_stack;
+Index: gram/jobmanager/source/globus_gram_job_manager_script.c
+diff -u gram/jobmanager/source/globus_gram_job_manager_script.c:1.31.4.1 gram/jobmanager/source/globus_gram_job_manager_script.c:1.31.4.1.36.1
+--- globus_gram_job_manager_script.c:1.31.4.1	Tue Dec 20 10:19:29 2011
++++ globus_gram_job_manager_script.c	Wed May  9 13:14:19 2012
+@@ -33,6 +33,7 @@
+     globus_byte_t                       return_buf[GLOBUS_GRAM_PROTOCOL_MAX_MSG_SIZE];
+     globus_result_t                     result;
+     int                                 pending_ops;
++    time_t                              last_use;
+ }
+ *globus_gram_script_handle_t;
+ 
+@@ -2633,6 +2634,7 @@
+     }
+     if (handle->result == GLOBUS_SUCCESS)
+     {
++        handle->last_use = time(NULL);
+         globus_fifo_enqueue(&manager->script_handles, handle);
+     }
+     else
+@@ -2689,6 +2691,7 @@
+     (*handle)->result = GLOBUS_SUCCESS;
+     (*handle)->manager = manager;
+     (*handle)->pending_ops = 0;
++    (*handle)->last_use = time(NULL);
+ 
+     result = globus_xio_handle_create(
+             &(*handle)->handle,
+@@ -2760,3 +2763,56 @@
+     globus_l_gram_job_manager_script_done(script_handle->manager, script_handle);
+     GlobusGramJobManagerUnlock(script_handle->manager);
+ }
++
++/**
++ * Periodic callback to close idle script handles
++ *
++ * If a script handle hasn't been used in over 30 seconds, and there are
++ * no pending script events, it will be closed by this callback and removed
++ * from the script handle fifo.
++ */
++void
++globus_gram_script_close_idle(
++    void *                              arg)
++{
++    globus_gram_job_manager_t *         manager = arg;
++    globus_gram_script_handle_t         handle;
++    time_t                              now = time(NULL);
++
++    GlobusGramJobManagerLock(manager);
++    if (!globus_priority_q_empty(&manager->script_queue))
++    {
++        goto nonempty_queue;
++    }
++
++    while (!globus_fifo_empty(&manager->script_handles))
++    {
++        handle = globus_fifo_peek(&manager->script_handles);
++
++        if (difftime(now, handle->last_use) > 30.0)
++        {
++            globus_gram_job_manager_log(
++                    manager,
++                    GLOBUS_GRAM_JOB_MANAGER_LOG_DEBUG,
++                    "event=gram.script_idle.info "
++                    "level=DEBUG "
++                    "msg=\"closing idle script handle after %.1f seconds"
++                    "\n ",
++                    difftime(now, handle->last_use));
++
++            globus_fifo_dequeue(&manager->script_handles);
++            globus_xio_close(
++                    handle->handle,
++                    NULL);
++            free(handle);
++            manager->script_slots_available++;
++        }
++        else
++        {
++            break;
++        }
++    }
++nonempty_queue:
++    GlobusGramJobManagerUnlock(manager);
++}
++/* globus_gram_script_close_idle() */
+Index: gram/jobmanager/source/main.c
+diff -u gram/jobmanager/source/main.c:1.41.2.3 gram/jobmanager/source/main.c:1.41.2.3.28.1
+--- main.c:1.41.2.3	Wed Mar 14 13:42:28 2012
++++ main.c	Wed May  9 13:14:19 2012
+@@ -518,6 +518,19 @@
+                     globus_l_gram_lockcheck,
+                     &manager);
+             }
++
++            {
++                globus_reltime_t        idlescript_period;
++
++                GlobusTimeReltimeSet(idlescript_period, 60, 0);
++
++                rc = globus_callback_register_periodic(
++                    &manager.idle_script_handle,
++                    NULL,
++                    &idlescript_period,
++                    globus_gram_script_close_idle,
++                    &manager);
++            }
+         }
+         else if (http_body_fd >= 0)
+         {
+@@ -628,6 +641,10 @@
+     {
+         globus_callback_unregister(manager.lockcheck_handle, NULL, NULL, NULL);
+     }
++    if (manager.idle_script_handle != GLOBUS_NULL_HANDLE)
++    {
++        globus_callback_unregister(manager.idle_script_handle, NULL, NULL, NULL);
++    }
+     GlobusGramJobManagerUnlock(&manager);
+ 
+     globus_gram_job_manager_log(
