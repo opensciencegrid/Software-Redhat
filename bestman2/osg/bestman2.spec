@@ -13,8 +13,8 @@
 %endif
 
 Name:           bestman2
-Version:        2.2.0a
-Release:        9%{?dist}
+Version:        2.2.1
+Release:        0.rc1%{?dist}
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -35,16 +35,9 @@ Source1:        bestman2.sh
 Source2:        bestman2.init
 Source3:        bestman.logrotate
 Source4:        dependent.jars.tar.gz
-#Source4:        bestman2.rc
 Source5:        bestman2.sysconfig
 Source6:        build.xml
-Patch0:		bestman.server.patch
-Patch1:		setup.build.xml.patch
-Patch2:		bestman2.serverlib.patch
-Patch3:		bestman2.clientlib.patch
-Patch4:		bestman.server636.patch
-#Patch2:		bestman2.srmrm.patch
-#Patch3:		blockedpath.patch
+Patch0:         hostinfo.build.xml.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
@@ -161,18 +154,11 @@ These are the libraries needed solely for the srmtester application
 %setup -T -b 4 -q -n lib
 cd ..
 %setup -T -b 0 -q -n %{name}
+%patch -p1
 
-pushd bestman2/sources/setup/bestman.in
-%patch0 -p0
-%patch4 -p0
+pushd bestman2/setup-osg/bestman.in
+sed -i "s/@SRM_HOME@/\/etc\/bestman2/" *
 popd
-
-pushd bestman2/sources/setup/
-%patch1 -p0
-popd
-
-%patch2 -p0
-%patch3 -p1
 
 
 %build
@@ -242,7 +228,7 @@ export CLASSPATH
 #Fix names of jars that have changed
 
 ./configure
-cp %{SOURCE6} .
+#cp %{SOURCE6} .
 ln -s ../lib wsdl/lib
 ln -s ../lib client/lib
 ln -s ../lib tester/lib
@@ -260,9 +246,14 @@ ln -s ../../lib/voms ../../lib/voms
 ant build
 ant install
 #make
-ant deploy
-pushd dist
 
+pushd ../setup-osg
+echo "install.root=dist" > build.properties
+mkdir dist
+./configure --with-sysconf-path=./dist/bestman.sysconfig
+ant deploy
+
+pushd dist
 #Fix paths in bestman2.rc
 JAVADIR=`echo %{_javadir} |  sed 's/\//\\\\\//g'`
 sed -i "s/SRM_HOME=.*/SRM_HOME=\/etc\/bestman2/" conf/bestman2.rc
@@ -277,7 +268,7 @@ sed -i "s/CertFileName=.*/CertFileName=\/etc\/grid-security\/bestman\/bestmancer
 sed -i "s/KeyFileName=.*/KeyFileName=\/etc\/grid-security\/bestman\/bestmankey.pem/" conf/bestman2.rc
 sed -i "s/GUMSAuthorizationServicePort/GUMSXACMLAuthorizationServicePort/" conf/bestman2.rc
 sed -i "s/pluginLib=.*/pluginLib=$JAVADIR\/bestman2\/plugin\//" conf/bestman2.rc
-sed -i "s/2\.2\.2\.1\.2/2.2.2.2.0/" version
+
 #Fix paths in binaries.  Wish I could do this in configure...
 sed -i "s/SRM_HOME=\/.*/SRM_HOME=\/etc\/bestman2/" bin/*
 sed -i "s/BESTMAN_SYSCONF=.*/BESTMAN_SYSCONF=\/etc\/sysconfig\/bestman2/" bin/*
@@ -292,15 +283,18 @@ sed -i "s/### noSudoOnLs=true/noSudoOnLs=true/" conf/bestman2.rc
 
 BUILDHOSTNAME=`hostname -f`
 # Fix version
-sed -i "s/Built on .* at/Built on $BUILDHOSTNAME at/" version
-
+#sed -i "s/Built on .* at/Built on $BUILDHOSTNAME at/" version
 popd
+popd
+
+
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
+cp -R bestman2/sources/dist/* bestman2/setup-osg/dist/
 pushd bestman2
-pushd sources
+pushd setup-osg
 pushd dist
 ls -R
 mkdir -p $RPM_BUILD_ROOT%{_javadir}
@@ -315,6 +309,7 @@ mv conf/bestmanclient.conf conf/srmclient.conf
 cp -arp conf $RPM_BUILD_ROOT%{install_root}
 cp -arp lib/* $RPM_BUILD_ROOT%{_javadir}/%{name}/
 cp -arp properties $RPM_BUILD_ROOT%{install_root}
+cp -arp ../properties/* $RPM_BUILD_ROOT%{install_root}/properties
 
 #Install dependent jars (prune this list)
 install -d $RPM_BUILD_ROOT%{_javadir}/%{name}/voms
@@ -427,7 +422,6 @@ fi
 %{install_root}/version
 %doc LICENSE
 %doc COPYRIGHT
-%doc bestman2/sources/CHANGE
 %doc bestman2/sources/README
 
 
@@ -475,7 +469,8 @@ fi
 %{install_root}/version
 %doc LICENSE
 %doc COPYRIGHT
-%doc bestman2/sources/CHANGE
+%doc bestman2/sources/CHANGES.SOURCES
+%doc bestman2/setup-osg/CHANGES.SETUP
 %doc bestman2/sources/README
 
 %files server
@@ -507,7 +502,8 @@ fi
 %files server-libs
 %doc LICENSE
 %doc COPYRIGHT
-%doc bestman2/sources/CHANGE
+%doc bestman2/sources/CHANGES.SOURCES
+%doc bestman2/setup-osg/CHANGES.SETUP
 %doc bestman2/sources/README
 %{_javadir}/bestman2/bestman2.jar
 %{_javadir}/bestman2/bestman2-aux.jar
