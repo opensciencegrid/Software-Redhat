@@ -6,14 +6,14 @@ Name:           glideinwms
 
 %if %{v2_plus}
 %define version 2.5.7
-%define release 3
+%define release 4
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
 %endif
 
 %if %{v3_plus}
 %define version 3.0.0 
-%define release 4
+%define release 5
 %define frontend_xml frontend.master.xml
 %define factory_xml glideinWMS.master.xml
 %endif
@@ -591,7 +591,7 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/xmlParse.pyo
 %{_initrddir}/gwms-factory
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/gwms-factory.conf
-%config(noreplace) %{_sysconfdir}/gwms-factory/glideinWMS.xml
+%attr(-, gfactory, gfactory) %config(noreplace) %{_sysconfdir}/gwms-factory/glideinWMS.xml
 %if %{v3_plus}
 %{python_sitelib}/classadSupport.py
 %{python_sitelib}/classadSupport.pyc
@@ -749,7 +749,7 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/glideinFrontendElement.py*
 %{_initrddir}/gwms-frontend
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/gwms-frontend.conf
-%config(noreplace) %{_sysconfdir}/gwms-frontend/frontend.xml
+%attr(-, frontend, frontend) %config(noreplace) %{_sysconfdir}/gwms-frontend/frontend.xml
 %if %{v3_plus}
 %attr(-, frontend, frontend) %{web_base}/../creation
 %{python_sitelib}/classadSupport.py
@@ -799,6 +799,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Apr 27 2012 Doug Strain <dstrain@fnal.gov> - 2.5.7-4
+- Changed ownership of frontend.xml to frontend user
+- Changed ownership of glideinwms.xml to gfactory user
+- This allows writeback during upgrade reconfigs
+
 * Fri Apr 27 2012 Doug Strain <dstrain@fnal.gov> - 2.5.7-3
 - Changed frontend init.d script to reconfig as frontend user
 
