@@ -8,7 +8,7 @@
 #-------------------------------------------------------------------------------
 Name:      xrootd
 Epoch:     1
-Version:   3.2.0
+Version:   3.2.1
 Release:   1%{?dist}%{?_with_xrootd_user:.xu}
 Summary:   An extended root daemon (xrootd)
 Group:     System Environment/Daemons
@@ -355,7 +355,7 @@ exit 0
 %{_libdir}/libXrdPss*.so*
 %{_libdir}/libXrdOfs*.so*
 %{_libdir}/libXrdServer.so*
-%doc %{_mandir}/man8
+%doc %{_mandir}/man8/*
 
 %config(noreplace) %{_sysconfdir}/sysconfig/%{name}
 
@@ -401,6 +401,9 @@ exit 0
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Mon May 14 2012 Doug Strain <dstrain@fnal.gov> 3.2.1-1
+- Updated spec file for xrootd 3.2.1
+
 * Tue Mar 06 2012 Doug Strain <dstrain@fnal.gov> 3.2.0-0.5rc1
 - Updated spec file for 3.2.0rc1
 
