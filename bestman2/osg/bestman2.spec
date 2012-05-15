@@ -14,7 +14,7 @@
 
 Name:           bestman2
 Version:        2.2.1
-Release:        0.rc1%{?dist}
+Release:        0.rc2%{?dist}
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -31,13 +31,13 @@ URL:            https://sdm.lbl.gov/bestman/
 %define revision 61
 
 Source0:        bestman2.tar.gz
-Source1:        bestman2.sh
+#Source1:        bestman2.sh
 Source2:        bestman2.init
 Source3:        bestman.logrotate
 Source4:        dependent.jars.tar.gz
 Source5:        bestman2.sysconfig
 Source6:        build.xml
-Patch0:         hostinfo.build.xml.patch
+#Patch0:         hostinfo.build.xml.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
@@ -154,7 +154,7 @@ These are the libraries needed solely for the srmtester application
 %setup -T -b 4 -q -n lib
 cd ..
 %setup -T -b 0 -q -n %{name}
-%patch0 -p1
+#%patch0 -p1
 
 pushd bestman2/setup-osg/bestman.in
 sed -i "s/@SRM_HOME@/\/etc\/bestman2/" *
@@ -250,14 +250,13 @@ ant install
 pushd ../setup-osg
 echo "install.root=dist" > build.properties
 mkdir dist
-./configure --with-sysconf-path=./dist/bestman.sysconfig
+./configure --with-srm-owner=bestman --with-sysconf-path=./dist/bestman.sysconfig
 ant deploy
 
 pushd dist
 #Fix paths in bestman2.rc
 JAVADIR=`echo %{_javadir} |  sed 's/\//\\\\\//g'`
 sed -i "s/SRM_HOME=.*/SRM_HOME=\/etc\/bestman2/" conf/bestman2.rc
-sed -i "s/SRM_OWNER=.*/SRMOWNER=bestman/" conf/bestman2.rc
 sed -i "s/GridMapFileName=.*/GridMapFileName=\/etc\/bestman2\/conf\/grid-mapfile.empty/" conf/bestman2.rc
 sed -i "s/BESTMAN_SYSCONF=.*/BESTMAN_SYSCONF=\/etc\/sysconfig\/bestman2/" conf/bestman2.rc
 sed -i "s/BESTMAN_LOG=.*/BESTMAN_LOG=\/var\/log\/bestman2\/bestman2.log/" conf/bestman2.rc
@@ -268,15 +267,12 @@ sed -i "s/CertFileName=.*/CertFileName=\/etc\/grid-security\/bestman\/bestmancer
 sed -i "s/KeyFileName=.*/KeyFileName=\/etc\/grid-security\/bestman\/bestmankey.pem/" conf/bestman2.rc
 sed -i "s/GUMSAuthorizationServicePort/GUMSXACMLAuthorizationServicePort/" conf/bestman2.rc
 sed -i "s/pluginLib=.*/pluginLib=$JAVADIR\/bestman2\/plugin\//" conf/bestman2.rc
+sed -i "s/accessFileSysViaSudo=false/accessFileSysViaSudo=true/" conf/bestman2.rc
 
 #Fix paths in binaries.  Wish I could do this in configure...
-sed -i "s/SRM_HOME=\/.*/SRM_HOME=\/etc\/bestman2/" bin/*
 sed -i "s/BESTMAN_SYSCONF=.*/BESTMAN_SYSCONF=\/etc\/sysconfig\/bestman2/" bin/*
 sed -i "s/BESTMAN_SYSCONF=.*/BESTMAN_SYSCONF=\/etc\/sysconfig\/bestman2/" sbin/*
 sed -i "s/\${BESTMAN_SYSCONF}/\/etc\/bestman2\/conf\/bestman2.rc/" sbin/bestman.server
-sed -i "s/#ServicePortNumber/ServicePortNumber/" conf/bestmanclient.conf
-sed -i "s/#ServiceHandle/ServiceHandle/" conf/bestmanclient.conf
-sed -i "s/accessFileSysViaSudo=false/accessFileSysViaSudo=true/" conf/bestman2.rc
 
 #Keep as true for now, but sites can change it as needed
 sed -i "s/### noSudoOnLs=true/noSudoOnLs=true/" conf/bestman2.rc
@@ -309,7 +305,6 @@ mv conf/bestmanclient.conf conf/srmclient.conf
 cp -arp conf $RPM_BUILD_ROOT%{install_root}
 cp -arp lib/* $RPM_BUILD_ROOT%{_javadir}/%{name}/
 cp -arp properties $RPM_BUILD_ROOT%{install_root}
-cp -arp ../properties/* $RPM_BUILD_ROOT%{install_root}/properties
 
 #Install dependent jars (prune this list)
 install -d $RPM_BUILD_ROOT%{_javadir}/%{name}/voms
@@ -360,7 +355,7 @@ mkdir -p $RPM_BUILD_ROOT%{_initrddir}
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/grid-security/bestman
-install -m 0755 %{SOURCE1} $RPM_BUILD_ROOT%{_sbindir}/%{name}
+#install -m 0755 %{SOURCE1} $RPM_BUILD_ROOT%{_sbindir}/%{name}
 install -m 0755 %{SOURCE2} $RPM_BUILD_ROOT%{_initrddir}/%{name}
 install -m 0644 %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/%{name}
 #install -m 0644 %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/conf/bestman2.rc
@@ -434,6 +429,7 @@ fi
 #%config(noreplace) %{install_root}/conf/bestman2.rc.samples
 #%config(noreplace) %{install_root}/conf/mss.init.sample
 %config(noreplace) %{_sysconfdir}/sysconfig/bestman2
+%{_bindir}/srm-common.sh
 %{_bindir}/srm-copy
 %{_bindir}/srm-copy-status
 %{_bindir}/srm-extendfilelifetime
@@ -485,7 +481,7 @@ fi
 %config(noreplace) %{install_root}/conf/bestman2.rc
 %config(noreplace) %{_sysconfdir}/sysconfig/bestman2
 %{_initrddir}/%{name}
-%{_sbindir}/%{name}
+#%{_sbindir}/%{name}
 %config(noreplace) %{_sysconfdir}/logrotate.d/%{name}
 %config(noreplace) %attr(0644,root,root) %{_sysconfdir}/grid-security/vomsdir/vdt-empty.pem
 %attr(-,bestman,bestman) %dir %{_var}/log/%{name}
@@ -551,6 +547,7 @@ fi
 
 %files tester
 %{_bindir}/srm-tester
+%{_bindir}/srm-common.sh
 #%config(noreplace) %{install_root}/conf/srmtester.conf.sample
 %config(noreplace) %{install_root}/conf/srmtester.conf
 %config(noreplace) %{install_root}/conf/bestman2.rc

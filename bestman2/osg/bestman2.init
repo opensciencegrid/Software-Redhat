@@ -38,11 +38,12 @@ start() {
         echo -n "Starting bestman2: "
         touch $BESTMAN_PID
         chown $SRM_OWNER: $BESTMAN_PID
-        daemon --user $SRM_OWNER --pidfile $BESTMAN_PID /usr/sbin/bestman2 $BESTMAN_OPTIONS 
+	su $SRM_OWNER -c "/usr/sbin/bestman.server $BESTMAN_OPTIONS 2>> $BESTMAN_LOG  >> $BESTMAN_LOG &"
         RETVAL=$?
         chown root: $BESTMAN_PID
-        echo
         [ $RETVAL -eq 0 ] && touch $BESTMAN_LOCKFILE
+	[ $RETVAL -eq 0 ] && echo_success || echo_failure
+        echo
         return $RETVAL
 }
 
