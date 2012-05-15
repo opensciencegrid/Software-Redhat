@@ -14,7 +14,7 @@
 
 Name:           bestman2
 Version:        2.2.1
-Release:        0.rc2%{?dist}
+Release:        0.rc3%{?dist}
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -562,9 +562,12 @@ fi
 
 
 %changelog
-* Tue May 01 2012 Neha Sharma <neha@fnal.gov> - 2.2.1-0.rc1
+* Tue May 01 2012 Neha Sharma <neha@fnal.gov> - 2.2.1-0.rc3
 - Modified build spec file to incorporate new build procedure
 - Separated setup and sources directory with separate ant tasks.
+- Changed binaries to use srm-common.sh
+- Got rid of bestman2.sh
+- Added delay and checking of pid process.
 
 * Tue May 01 2012 Neha Sharma <neha@fnal.gov> - 2.2.0a-9
 - modified bestman2.sh to give 10 sec to bestman server to
