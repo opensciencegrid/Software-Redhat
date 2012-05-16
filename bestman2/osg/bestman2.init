@@ -88,6 +88,7 @@ stop() {
 		fi
 		rm -f "$BESTMAN_PID"
 	fi
+        [ $RETVAL -eq 0 ] && rm -f $BESTMAN_LOCKFILE
 	[ $RETVAL -eq 0 ] && echo_success || echo_failure
 	echo
 	return $RETVAL
