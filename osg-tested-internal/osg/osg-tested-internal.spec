@@ -1,7 +1,7 @@
 Name:      osg-tested-internal
 Summary:   All OSG packages we test (internal use only)
 Version:   1
-Release:   7%{?dist}
+Release:   8%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -29,6 +29,8 @@ Requires: torque-mom
 Requires: torque-client
 Requires: torque-scheduler
 Requires: osg-ce-pbs
+Requires: xrootd-server
+Requires: xrootd-client
 %endif
 
 ################################################################################
@@ -51,6 +53,8 @@ Requires: torque-mom
 Requires: torque-client
 Requires: torque-scheduler
 Requires: osg-ce-pbs
+Requires: xrootd-server
+Requires: xrootd-client
 %endif
 
 
@@ -67,6 +71,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu May 17 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1-8
+- Add xrootd-server and xrootd-client
+
 * Thu May 17 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1-7
 - Add osg-configure-tests and pbs/torque rpms
 
