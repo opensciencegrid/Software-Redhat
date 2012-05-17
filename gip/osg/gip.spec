@@ -1,12 +1,12 @@
 Summary: Generic Information Provider
 Name: gip
 Version: 1.3.7
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: TODO
 Group: Applications/Grid
 BuildArch: noarch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
-
+Requires: glite-ce-monitor
 Source0: %{name}-%{version}.tgz
 
 %description
@@ -92,13 +92,17 @@ touch $RPM_BUILD_ROOT/%{_sysconfdir}/%{name}/remove-attributes.conf
 %config(noreplace) %{_sysconfdir}/%{name}/remove-attributes.conf
 %config(noreplace) %{_sysconfdir}/%{name}/logging.conf
 %config(noreplace) %{_sysconfdir}/%{name}/ldif.d
-%attr(-, root, root) /var/log/%{name}
-%attr(-, root, root) /var/cache/%{name}
+%attr(-, tomcat, tomcat) /var/log/%{name}
+%attr(-, tomcat, tomcat) /var/cache/%{name}
 
 %clean
 rm -rf %buildroot
 
 %changelog
+* Thu May 17 2012 Burt Holzman <burt@fnal.gov> - 1.3.7-2
+- Add glite-ce-monitor dependency
+- Change default ownership of /var/log/gip and /var/cache/gip to tomcat
+
 * Thu Apr 19 2012 Burt Holzman <burt@fnal.gov> - 1.3.7-1
 - Update to GIP 1.3.7
 
