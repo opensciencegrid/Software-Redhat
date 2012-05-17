@@ -13,7 +13,7 @@
 Name:		globus-gridftp-server
 %global _name %(tr - _ <<< %{name})
 Version:	6.5
-Release:	1.6%{?dist}
+Release:	1.7%{?dist}
 Summary:	Globus Toolkit - Globus GridFTP Server
 
 Group:		System Environment/Libraries
@@ -23,6 +23,7 @@ Source:		http://www.globus.org/ftppub/gt5/5.2/5.2.0/packages/src/%{_name}-%{vers
 Source1:	globus-gridftp-server.sysconfig
 Source2:	globus-gridftp-server.logrotate
 Patch0:		osg-gridftp.patch
+Patch1:      GT-195.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Requires:	globus-common%{?_isa} >= 14
@@ -92,6 +93,7 @@ Globus GridFTP Server Development Files
 %setup -q -n %{_name}-%{version}
 
 %patch0 -p1
+%patch1 -p0
 %build
 # Remove files that should be replaced during bootstrap
 rm -f doxygen/Doxyfile*
@@ -187,6 +189,9 @@ fi
 %defattr(-,root,root,-)
 
 %changelog
+* Thu May 17 2012 Alain Roy <roy@cs.wisc.edu> 6.5-1.7.osg
+- Added patch for GT-195.
+
 * Mon Apr 23 2012 Dave Dykstra <dwd@fnal.gov> - 6.5-1.6.osg
 - Remove variable in sysconfig for disabling voms certificate check;
   it is now the default
