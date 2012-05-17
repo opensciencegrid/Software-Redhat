@@ -1,7 +1,7 @@
 Name:      osg-tested-internal
 Summary:   All OSG packages we test (internal use only)
 Version:   1
-Release:   6%{?dist}
+Release:   7%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -23,6 +23,12 @@ Requires: osg-se-bestman-xrootd
 Requires: osg-voms
 Requires: rsv
 Requires: yum-utils
+Requires: osg-configure-tests
+Requires: torque-server
+Requires: torque-mom
+Requires: torque-client
+Requires: torque-scheduler
+Requires: osg-ce-pbs
 %endif
 
 ################################################################################
@@ -39,6 +45,12 @@ Requires: osg-se-bestman-xrootd
 Requires: osg-voms
 Requires: rsv
 Requires: yum-utils
+Requires: osg-configure-tests
+Requires: torque-server
+Requires: torque-mom
+Requires: torque-client
+Requires: torque-scheduler
+Requires: osg-ce-pbs
 %endif
 
 
@@ -55,6 +67,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu May 17 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1-7
+- Add osg-configure-tests and pbs/torque rpms
+
 * Tue Apr 24 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1-6
 - Add osg-se-bestman-xrootd, rsv
 
