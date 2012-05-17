@@ -14,7 +14,7 @@
 
 Name:           bestman2
 Version:        2.2.1
-Release:        0.rc3%{?dist}
+Release:        1%{?dist}
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -562,7 +562,11 @@ fi
 
 
 %changelog
-* Tue May 01 2012 Neha Sharma <neha@fnal.gov> - 2.2.1-0.rc3
+* Thu May 17 2012 Doug Strain <dstrain@fnal.gov> - 2.2.1-1
+- Fixed pid file in init script
+- Added comments in srmclient.conf
+
+* Tue May 01 2012 Doug Strain <dstrain@fnal.gov> - 2.2.1-0.rc3
 - Modified build spec file to incorporate new build procedure
 - Separated setup and sources directory with separate ant tasks.
 - Changed binaries to use srm-common.sh
