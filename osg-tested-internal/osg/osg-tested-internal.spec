@@ -1,7 +1,7 @@
 Name:      osg-tested-internal
 Summary:   All OSG packages we test (internal use only)
 Version:   1
-Release:   8%{?dist}
+Release:   9%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -23,7 +23,6 @@ Requires: osg-se-bestman-xrootd
 Requires: osg-voms
 Requires: rsv
 Requires: yum-utils
-Requires: osg-configure-tests
 Requires: torque-server
 Requires: torque-mom
 Requires: torque-client
@@ -47,7 +46,6 @@ Requires: osg-se-bestman-xrootd
 Requires: osg-voms
 Requires: rsv
 Requires: yum-utils
-Requires: osg-configure-tests
 Requires: torque-server
 Requires: torque-mom
 Requires: torque-client
@@ -71,6 +69,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon May 21 2012 Alain Roy <roy@cs.wisc.edu> - 1-9
+- Dropped osg-configure-tests because the new version isn't ready for osg-release. 
+
 * Thu May 17 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1-8
 - Add xrootd-server and xrootd-client
 
