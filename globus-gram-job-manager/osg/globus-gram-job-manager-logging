@@ -1,3 +1,2 @@
 -log-levels FATAL|ERROR|WARN
--log-pattern /var/log/globus/gram_$(LOGNAME).log
 
