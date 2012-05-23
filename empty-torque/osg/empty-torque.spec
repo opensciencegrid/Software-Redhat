@@ -33,9 +33,9 @@ believes that Torque has been installed via RPM.
 
 %doc
 
+%changelog
 * Wed 23 May 2012 Alain Roy <roy@cs.wisc.edu> - 1.0-2
 - Rebuild to update dist tag and build on SL6 
 
-%changelog
 * Thu Nov 17 2011 Alain Roy <roy@cs.wisc.edu> - 1.0-1
 - Initial version
