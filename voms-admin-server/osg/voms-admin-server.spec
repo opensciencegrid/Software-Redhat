@@ -1,7 +1,7 @@
 Summary: emi.voms.voms-admin-server
 Name: voms-admin-server
 Version: 2.6.1
-Release: 11%{?dist}
+Release: 12%{?dist}
 License: Apache Software License
 Vendor: EMI
 Group: System Environment/Libraries
@@ -37,6 +37,8 @@ Source2: maven-surefire-plugin-2.4.3-fixed.pom
 Patch0: maven-deps.patch
 Patch1: directory-defaults.patch
 Patch2: maven-resources-disable.patch
+
+Requires: osg-webapp-common
 
 %description
 emi.voms.voms-admin-server
@@ -226,6 +228,9 @@ fi
 %{tomcat_lib}/voms-admin-eclipse-ecj.jar
 
 %changelog
+* Fri May 25 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 2.6.1-12
+Add dependency on osg-webapp-common
+
 * Wed Mar 21 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 2.6.1-11
 
 Make directory-defaults.patch work for tomcat6 as well
