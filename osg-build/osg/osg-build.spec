@@ -1,6 +1,6 @@
 
 Name:           osg-build
-Version:        1.1.5
+Version:        1.2.0
 Release:        1%{?dist}
 Summary:        Build tools for the OSG
 
@@ -52,6 +52,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/osg-build-test
 %{_bindir}/osg-import-srpm
 %{_bindir}/osg-koji
+%{_bindir}/osg-promote
 %{_bindir}/vdt-build
 %dir %{python_sitelib}/osgbuild
 %{python_sitelib}/osgbuild/*.py*
@@ -62,6 +63,10 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_docdir}/%{name}/sample-osg-build.ini
 
 %changelog
+* Fri May 25 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.2.0-1
+- Add promotion script "osg-promote"
+- Rewrite koji task to use the functions in the koji library instead of making callouts to the shell
+
 * Tue Feb 21 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.1.5-1
 - Fixed logging bug
 
