@@ -25,10 +25,10 @@
 %endif
 
 %global version1 1.9.19.2
-%global release1 8
+%global release1 9
 
 %global version2 2.0.6
-%global release2 5
+%global release2 6
 
 Name:		voms
 Version:	%{version2}
@@ -54,6 +54,7 @@ Source1:	%{name}-%{version1}.tar.gz
 Source2:	%{name}.INSTALL
 #		Build using Globus from Fedora/EPEL
 #		https://savannah.cern.ch/bugs/?54427
+Source3:        voms.logrotate
 Patch0:		%{name}-distribution-globus.patch
 #		Fix the start-up script
 #		https://savannah.cern.ch/bugs/?54428
@@ -473,6 +474,9 @@ ln -s vomsjapi-%{version} $RPM_BUILD_ROOT%{_javadocdir}/vomsjapi
 %endif
 %endif
 
+mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d
+cp %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/%{name}
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -578,6 +582,7 @@ fi
 %config(noreplace) %{_sysconfdir}/sysconfig/%{name}
 %dir %{_sysconfdir}/%{name}
 %dir %{_sysconfdir}/grid-security/%{name}
+%config(noreplace) %{_sysconfdir}/logrotate.d/%{name}
 %attr(-,voms,voms) %dir %{_localstatedir}/log/%{name}
 %{_datadir}/%{name}/mysql2oracle
 %{_datadir}/%{name}/upgrade1to2
@@ -606,6 +611,9 @@ fi
 %endif
 
 %changelog
+* Thu May 24 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.6-6
+- Add logrotate file
+
 * Sun Nov 5 2011 Alain Roy <roy@cs.wisc.edu> - 2.0.6-5
 - Added bug fix so misstyped passphrase when using p12 file doesn't cause segfault. 
 
