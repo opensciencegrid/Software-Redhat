@@ -9,7 +9,7 @@
 
 Name:           gridftp-hdfs
 Version:        0.5.3
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        HDFS DSI plugin for GridFTP
 Group:          System Environment/Daemons
 License:        ASL 2.0
@@ -23,6 +23,7 @@ URL:            http://twiki.grid.iu.edu/bin/view/Storage/HadoopInstallation
 # make dist
 Source0:        %{name}-%{version}.tar.gz
 Patch0: lcmaps15.patch
+Patch1: hdfs_stat.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 # On SL6, build fails since java-devel pulls in java-1.5.0-gcj
@@ -55,6 +56,7 @@ HDFS DSI plugin for GridFTP
 
 %setup -q
 %patch0 -p1
+%patch1 -p1
 
 %build
 
@@ -131,6 +133,12 @@ fi
 %endif
 
 %changelog
+* Wed May 30 2012 Doug Strain <dstrain@fnal.gov> - 0.5.3-6
+- Patch to hdfs stat so it actually finds uid and gid
+- Also, delete function was missing, so I wrote a DELE function
+- Fixed mkdir that was using the wrong path
+- This fixes uberftp issues
+
 * Wed May 9 2012 Doug Strain <dstrain@fnal.gov> - 0.5.3-5
 - Added new LCMAPs options to sysconfig
 - Changed location of sysconfig information in standalone+inetd scripts
