@@ -1,15 +1,15 @@
 Name:		glite-build-common-cpp
-Version:	3.2.12.2
-Release:	4%{?dist}
+Version:	3.3.0.2
+Release:	1%{?dist}
 Summary:	gLite build macros
 
 Group:		Development/Libraries/C and C++
 License:	Apache 2.0
 URL:		http://glite.cvs.cern.ch/cgi-bin/glite.cgi/org.glite.build.common-cpp/
-# Retrieved on July 2, 2011
-# http://glite.cvs.cern.ch/cgi-bin/glite.cgi/org.glite.build.common-cpp.tar.gz?view=tar&pathrev=glite-build-common-cpp_R_3_2_12_2
+# Retrieved on May 28, 2012
+# http://glite.cvs.cern.ch/cgi-bin/glite.cgi/org.glite.build.common-cpp.tar.gz?view=tar&pathrev=glite-build-common-cpp_R_3_3_0_2
 Source0:        org.glite.build.common-cpp.tar.gz
-# Patch0 fixes the globus build macros to use the Fedora/EPEL flavour-less libraries
+# Path0 fixes the globus build macros to use the Fedora/EPEL flavour-less libraries
 Patch0:         fedora_globus_macros.patch
 BuildArch:	noarch
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
@@ -20,7 +20,7 @@ Common m4 macros used for the C++ autotools builds in gLite
 
 %prep
 %setup -n org.glite.build.common-cpp
-%patch0 -p0
+#%patch0 -p0
 
 %build
 
@@ -37,17 +37,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/%{name}/m4/*.m4
 
 %changelog
-* Fri Oct 28 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 3.2.12.2-4
-- rebuilt
-
-* Mon Sep 12 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 3.2.12.2-3
-- Rebuilt against updated Globus libraries
-
-* Mon Aug 29 2011 Matyas Selmeci <matyas@cs.wisc.edu> 3.2.12.2-2
-- Rebuild with Globus 5.2.
-
-* Sat Jul 2  2011 Brian Bockelman <bbockelm@cse.unl.edu> 3.2.12.2-1
-- Update to latest upstream tag.
+* Mon May 28 2012 Brian Bockelman <bbockelm@cse.unl.edu> 3.3.0.2-1
+- Update to latest upstream release.
 
 * Sat Sep 11 2010 Brian Bockelman <bbocklem@cse.unl.edu> 3.2.9.1-6
 - Fix for using the CGSI found in Fedora.
