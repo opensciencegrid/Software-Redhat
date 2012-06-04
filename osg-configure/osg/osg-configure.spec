@@ -1,5 +1,5 @@
 %global name osg-configure
-%global version 1.0.9
+%global version 1.0.10
 %global release 1%{?dist}
 
 Summary: Package for configure-osg and associated scripts
@@ -212,6 +212,12 @@ rm -rf $RPM_BUILD_ROOT
 /usr/share/osg-configure/*
 
 %changelog
+* Mon Jun 4 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 1.0.10-1
+- Don't try to get rsv user uid, gid in __init__
+
+* Fri Jun 1 2012 Suchandra Thapa <sthapa@ci.uchicago.edu> 1.0.8-1
+- Multiple fixes
+
 * Wed May 2 2012 Suchandra Thapa <sthapa@ci.uchicago.edu> 1.0.8-1
 - Fix for SOFTWARE-597
 - Fix for SOFTWARE-599 
