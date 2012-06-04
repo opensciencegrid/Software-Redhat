@@ -1,0 +1,19 @@
+Index: globus_gram_job_manager.c
+===================================================================
+RCS file: /home/globdev/CVS/globus-packages/gram/jobmanager/source/globus_gram_job_manager.c,v
+retrieving revision 1.64.2.4
+diff -u -r1.64.2.4 globus_gram_job_manager.c
+--- globus_gram_job_manager.c	11 Apr 2012 12:53:59 -0000	1.64.2.4
++++ globus_gram_job_manager.c	1 Jun 2012 15:45:15 -0000
+@@ -899,7 +899,10 @@
+                         globus_hashtable_string_keyeq,
+                         request->job_contact_path)) != NULL)
+     {
+-        globus_list_remove(&manager->pending_restarts, pending_restart_ref);
++        char * pending_restarts_key = globus_list_remove(
++                &manager->pending_restarts, pending_restart_ref);
++        free(pending_restarts_key);
++        pending_restarts_key = NULL;
+ 
+         rc = globus_l_gram_add_reference_locked(
+                 manager,
