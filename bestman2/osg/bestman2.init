@@ -16,7 +16,7 @@
 . /etc/rc.d/init.d/functions
 
 wait_for_process() {
-for i in {1..10}
+for i in {1..30}
 do
     status -p "$BESTMAN_PID" 'bestman' > /dev/null
     STATUS=$?
@@ -93,6 +93,7 @@ stop() {
 	echo
 	return $RETVAL
 }
+
 
 restart() {
     stop
