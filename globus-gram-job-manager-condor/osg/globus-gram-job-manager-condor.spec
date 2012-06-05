@@ -157,6 +157,7 @@ fi
 
 %changelog
 * Mon Jun 4 2012 Alain Roy <roy@cs.wisc.edu> - 1.0-12
+- SOFTWARE-669: Patch to understand xcount and min_memory
 
 * Mon Dec 19 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0-11
 - Merge OSG changes
