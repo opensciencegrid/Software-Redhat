@@ -1,5 +1,5 @@
 Name:      gram-state
-Version:   0.1
+Version:   1.0
 Release:   1%{?dist}
 Summary:   Show information about Globus GRAM jobs, based on their job state files
 
@@ -40,5 +40,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Jun 6 2012 Alain Roy <roy@cs.wisc.edu> 1.0-1
+- Updated to 1.0: minor capitalization fix, more debugging output
+
 * Fri May 25 2012 Alain Roy <roy@cs.wisc.edu> 0.1-1
 - Created initial RPM for gram-state 
