@@ -1,7 +1,7 @@
 Summary: CernVM File System Server Utilities
 Name: cvmfs-server
 Version: 2.0.13
-Release: 1
+Release: 1%{?dist}
 Source0: cvmfs-%{version}.tar.gz
 Group: System/Filesystems
 License: Copyright (c) 2009, CERN.  Distributed unter the BSD License.
@@ -92,3 +92,7 @@ fi
 %doc /usr/share/doc/cvmfs-%{version}/ChangeLog
 %doc /usr/share/doc/cvmfs-%{version}/FAQ
 %doc /usr/share/doc/cvmfs-%{version}/INSTALL
+
+* Wed Jun 06 2012 Doug Strain <dstrain@fnal.gov>
+- Initial build for OSG
+
