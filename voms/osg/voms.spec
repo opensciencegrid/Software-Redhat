@@ -25,10 +25,10 @@
 %endif
 
 %global version1 1.9.19.2
-%global release1 9
+%global release1 10
 
 %global version2 2.0.6
-%global release2 6
+%global release2 7
 
 Name:		voms
 Version:	%{version2}
@@ -250,6 +250,7 @@ Requires:	bouncycastle >= 1.39
 Requires:	jakarta-commons-cli
 Requires:	jakarta-commons-lang
 Requires:	log4j
+Provides:       voms-api-java
 %if %{with_gcj}
 Requires(post):		java-gcj-compat
 Requires(postun):	java-gcj-compat
@@ -276,6 +277,7 @@ BuildArch:	noarch
 %endif
 Requires:	jpackage-utils
 Requires:	vomsjapi = %{version}-%{release}
+Provides:       voms-api-java-javadoc
 
 %description -n vomsjapi-javadoc
 Virtual Organization Membership Service (VOMS) Java API Documentation.
@@ -611,6 +613,10 @@ fi
 %endif
 
 %changelog
+* Thu Jun 07 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.6-7
+- Have vomsjapi provide voms-api-java
+- Have vomsjapi-javadoc provide voms-api-java-javadoc
+
 * Thu May 24 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.6-6
 - Add logrotate file
 
