@@ -1,54 +1,56 @@
 Summary: WS definitions for the CREAM service
 Name: glite-ce-wsdl
-Version: 1.13.1
-Release: 3.1%{?dist}
-License: Apache License 2.0
-Vendor: EMI
-Group: System Environment/Libraries
-Packager: ETICS
+Version: 1.14.0
+%global upstream_release 4
+Release: %{upstream_release}.1%{?dist}
+License: Apache Software License
+URL: http://glite.cern.ch/
+Group: Development/Libraries
 BuildArch: noarch
-BuildRoot: %{_builddir}/%{name}-root
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 AutoReqProv: yes
-Source: glite-ce-wsdl-1.13.1-3.src.tar.gz
+Source: %{name}-%{version}-%{upstream_release}.sl5.tar.gz
+
 
 %description
 WS definitions for the CREAM service
 
 %prep
  
-
-%setup  
+%setup -c -q
 
 %build
- 
-  
-  
-  
 
 %install
-rm -rf $RPM_BUILD_ROOT
- mkdir -p $RPM_BUILD_ROOT
- ./project/install.sh $RPM_BUILD_ROOT/usr
- find $RPM_BUILD_ROOT -name '*.la' -exec rm -rf {} \;
- find $RPM_BUILD_ROOT -name '*.pc' -exec sed -i -e "s|$RPM_BUILD_ROOT||g" {} \;
+rm -rf %{buildroot}
+mkdir -p %{buildroot}
+%{!?extbuilddir:%define extbuilddir "--"}
+if test "x%{extbuilddir}" == "x--" ; then
+  ./project/install.sh %{buildroot}/usr 
+else
+  cp -R %{extbuilddir}/* %{buildroot}
+fi
+
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root)
 %dir /usr/share/wsdl/
 %dir /usr/share/wsdl/cream-ce/
-/usr/share/wsdl/cream-ce/org.glite.ce-monitor_consumer_service.wsdl
-/usr/share/wsdl/cream-ce/org.glite.ce-monitor_types.wsdl
-/usr/share/wsdl/cream-ce/org.glite.ce-cream_service.wsdl
-/usr/share/wsdl/cream-ce/org.glite.ce-monitor_service.wsdl
-/usr/share/wsdl/cream-ce/org.glite.ce-cream_faults.wsdl
-/usr/share/wsdl/cream-ce/org.glite.ce-cream2_service.wsdl
-/usr/share/wsdl/cream-ce/org.glite.ce-monitor_faults.wsdl
-/usr/share/wsdl/cream-ce/org.glite.ce-faults.xsd
-/usr/share/wsdl/cream-ce/www.gridsite.org-delegation-2.0.0.wsdl
-/usr/share/wsdl/cream-ce/org.glite.ce-cream_types.wsdl
+%dir /usr/share/wsdl/cream-ce/es
+/usr/share/wsdl/cream-ce/*.wsdl
+/usr/share/wsdl/cream-ce/*.xsd
+/usr/share/wsdl/cream-ce/es/*.wsdl
+/usr/share/wsdl/cream-ce/es/*.xsd
+
 
 %changelog
- 
+* Thu Jun 07 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.14.0-4.1.osg
+- Add dist tag
+
+* Wed May 16 2012 CREAM group <cream-support@lists.infn.it> - 1.14.0-4.sl5
+- Major bugs fixed
+
+
