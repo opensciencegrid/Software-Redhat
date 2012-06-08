@@ -1,5 +1,5 @@
 %global name osg-configure
-%global version 1.0.10
+%global version 1.0.11
 %global release 1%{?dist}
 
 Summary: Package for configure-osg and associated scripts
@@ -212,6 +212,11 @@ rm -rf $RPM_BUILD_ROOT
 /usr/share/osg-configure/*
 
 %changelog
+* Mon Jun 4 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 1.0.10-1
+- Allow WN_TMP to be left blank
+- Don't require globus port state files to be present
+- Updates to test packaging and cleanups
+
 * Mon Jun 4 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 1.0.10-1
 - Don't try to get rsv user uid, gid in __init__
 
