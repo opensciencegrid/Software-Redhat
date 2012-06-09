@@ -1,7 +1,7 @@
 Name:      osg-tested-internal
 Summary:   All OSG packages we test (internal use only)
 Version:   1
-Release:   10%{?dist}
+Release:   11%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -31,6 +31,7 @@ Requires: osg-ce-pbs
 Requires: xrootd-server
 Requires: xrootd-client
 Requires: cvmfs
+Requires: osg-configure-tests
 %endif
 
 ################################################################################
@@ -55,6 +56,7 @@ Requires: osg-ce-pbs
 Requires: xrootd-server
 Requires: xrootd-client
 Requires: cvmfs
+Requires: osg-configure-tests
 %endif
 
 
@@ -71,6 +73,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Jun 09 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1-11
+- Re-add osg-configure-tests
+
 * Thu Jun 07 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1-10
 - Add cvmfs
 
