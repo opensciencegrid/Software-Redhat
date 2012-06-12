@@ -14,7 +14,7 @@
 
 Name:           bestman2
 Version:        2.2.1
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -562,6 +562,9 @@ fi
 
 
 %changelog
+* Tue Jun 12 2012 Doug Strain <dstrain@fnal.gov> - 2.2.1-3
+- Changes to fix pid permission problems
+
 * Thu May 17 2012 Doug Strain <dstrain@fnal.gov> - 2.2.1-2
 - Added Neha's change to timeout (now 30 seconds)
 
