@@ -18,6 +18,9 @@ Requires: mutt
 Requires: perl-libxml-perl
 Requires: perl-Date-Calc
 Requires: perl-XML-LibXML 
+Requires: perl-DBD-MySQL
+Requires: perl-IPC-Run
+Requires: perl-Text-Table
 #Requires: perl-IPC-Run --enablerepo dag
 #Requires:perl-Text-Table --enablerepo dag
 
@@ -95,4 +98,7 @@ add mysql and other dependencies , changed script permision
 
 * Sun Jun 03 2012 Hyunwoo Kim <hyunwoo@fnal.gov> 
 initial implementation of gratia.spec 
+
+* Tue Jun 12 2012 Hyunwoo Kim <hyunwoo@fnal.gov>
+Tanya found out another dependency, perl-DBD-MySQL
 
