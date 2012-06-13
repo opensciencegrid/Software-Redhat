@@ -1,6 +1,6 @@
 
 Name:      rsv-core
-Version:   3.7.0
+Version:   3.7.1
 Release:   1%{?dist}
 Summary:   RSV Core Infrastructure
 
@@ -125,6 +125,13 @@ fi
 
 
 %changelog
+* Wed Jun 13 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.7.1-1
+- Update to 3.7.1
+- SOFTWARE-666 - Update RSV to use Python subprocess module
+- SOFTWARE-632 - Improve RSV error messages from the OSG directories probe
+- SOFTWARE-454 - Add --test option which is the same as --run but does not generate records
+- SOFTWARE-453 - Allow --host to be specified with --on/--off to turn on/off all metrics enabled on a host 
+
 * Mon Apr 23 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.7.0-1
 - Update to 3.7.0
 - SOFTWARE-618 - implemented support for using legacy Globus proxies
