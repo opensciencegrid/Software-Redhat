@@ -93,12 +93,11 @@ mkdir -p $RPM_BUILD_ROOT%{_var}/lib/gratia/tmp
 %dir %{_var}/lib/gratia/tmp
 
 %changelog
+* Tue Jun 12 2012 Hyunwoo Kim <hyunwoo@fnal.gov>
+Tanya found out another dependency, perl-DBD-MySQL
+
 * Mon Jun 04 2012 Tanya Levshina <tlevshin@fnal.gov> - 1.12.5pre
 add mysql and other dependencies , changed script permision
 
 * Sun Jun 03 2012 Hyunwoo Kim <hyunwoo@fnal.gov> 
 initial implementation of gratia.spec 
-
-* Tue Jun 12 2012 Hyunwoo Kim <hyunwoo@fnal.gov>
-Tanya found out another dependency, perl-DBD-MySQL
-
