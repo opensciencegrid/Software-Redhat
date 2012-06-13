@@ -235,6 +235,8 @@ rm -rf $RPM_BUILD_ROOT
 
 * Mon Apr 23 2012 Alain Roy <roy@cs.wisc.edu> 1.0.7-2
 - Patched to fix SOFTWARE-637 (incorrectly setting accounting dir for PBS)
+- Added proper setup for Gratia Metric probe -SWK
+- Added new RSV option - legacy_proxy -SWK
 
 * Wed Mar 14 2012 Suchandra Thapa <sthapa@ci.uchicago.edu> 1.0.7-1
 - Fix for Software-552
