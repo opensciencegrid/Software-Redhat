@@ -5,8 +5,8 @@
 Name:           glideinwms
 
 %if %{v2_plus}
-%define version 2.5.7
-%define release 4
+%define version 2.6.0
+%define release 0.rc1
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
 %endif
@@ -799,6 +799,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Jun 13 2012 Doug Strain <dstrain@fnal.gov> - 2.6.0-rc1
+- Updating to new release candidate
+
 * Fri Apr 27 2012 Doug Strain <dstrain@fnal.gov> - 2.5.7-4
 - Changed ownership of frontend.xml to frontend user
 - Changed ownership of glideinwms.xml to gfactory user
