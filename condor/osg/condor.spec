@@ -16,8 +16,9 @@
 %define cgroups 0
 %endif
 
+%define blahp 1
+
 # Things not turned on, or don't have Fedora packages yet
-%define blahp 0
 %define qmf 0
 %define shared 0
 
@@ -48,7 +49,7 @@ Version: 7.8.0
 %define condor_release %condor_base_release
 %endif
 # Release: %condor_release%{?dist}.2
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -115,6 +116,7 @@ Patch5: condor_shared_libs.patch
 #%endif
 
 #Patch7: glexec-patch.diff
+Patch8: blahp_path.patch
 
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
@@ -385,6 +387,9 @@ exit 0
 #%patch6 -p1
 #%endif
 #%patch7 -p0
+%if %blahp
+%patch8 -p1
+%endif
 
 # fix errant execute permissions
 find src -perm /a+x -type f -name "*.[Cch]" -exec chmod a-x {} \;
@@ -438,6 +443,9 @@ export CMAKE_PREFIX_PATH=/usr
        -DWITH_LIBDELTACLOUD:BOOL=FALSE \
 %endif
        -DWITH_GLOBUS:BOOL=TRUE \
+%if %blahp
+       -DWITH_BLAHP:BOOL=TRUE \
+%endif
 %if %cgroups
        -DLIBCGROUP_FOUND_SEARCH_cgroup=/%{_lib}/libcgroup.so.1
 %endif
@@ -862,6 +870,14 @@ rm -rf %{buildroot}
 %if %shared
 %_libdir/lib*.so
 %endif
+%if %blahp
+%dir %_libexecdir/condor/glite/bin
+%_libexecdir/condor/glite/bin/nqs_cancel.sh
+%_libexecdir/condor/glite/bin/nqs_hold.sh
+%_libexecdir/condor/glite/bin/nqs_resume.sh
+%_libexecdir/condor/glite/bin/nqs_status.sh
+%_libexecdir/condor/glite/bin/nqs_submit.sh
+%endif
 #%_sbindir/condor_credd
 %_sbindir/grid_monitor
 %_sbindir/remote_gahp
@@ -1069,6 +1085,9 @@ fi
 %endif
 
 %changelog
+* Wed Jun 13 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 7.8.0-2
+- Build blahp
+
 * Thu May 31 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 7.8.0-1
 - Version bump
 - Updated condor_config.generic.patch

@@ -1,0 +1,13 @@
+Index: condor-7.8.0/externals/bundles/blahp/1.16.5.1/CMakeLists.txt
+===================================================================
+--- condor-7.8.0.orig/externals/bundles/blahp/1.16.5.1/CMakeLists.txt	2012-05-08 15:11:36.000000003 -0500
++++ condor-7.8.0/externals/bundles/blahp/1.16.5.1/CMakeLists.txt	2012-06-13 13:46:30.000000003 -0500
+@@ -92,7 +92,7 @@
+ 
+ 	else ( NOT PROPER )
+ 
+-		find_program( BLAHP_FOUND BLClient HINTS /usr/bin )
++		find_program( BLAHP_FOUND BLClient HINTS /usr/libexec/blahp )
+ 		dprint("Scanning for BLClient...(${BLAHP_FOUND})")
+ 
+ 	endif ( NOT PROPER )
