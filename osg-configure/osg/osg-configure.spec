@@ -1,5 +1,5 @@
 %global name osg-configure
-%global version 1.0.12
+%global version 1.0.13
 %global release 1%{?dist}
 
 Summary: Package for configure-osg and associated scripts
@@ -212,6 +212,10 @@ rm -rf $RPM_BUILD_ROOT
 /usr/share/osg-configure/*
 
 %changelog
+* Wed Jun 14 2012 Suchandra Thapa <sthapa@ci.uchicago.edu>  1.0.13-1
+- Fix network state file checking
+- Update logging in unit tests
+
 * Fri Jun 8 2012 Suchandra Thapa <sthapa@ci.uchicago.edu>  1.0.12-1
 - Include a few test related changes that were accidentally left out of the
   previous release
