@@ -1,7 +1,7 @@
 %define origin          sun
 %define priority        1603
 %define javaver         1.6.0
-%define buildver        31
+%define buildver        33
 %define upstreamrel     fcs
 
 %define name            java-%{javaver}-%{origin}-compat
@@ -622,6 +622,9 @@ update-alternatives --remove java_sdk_%{javaver} %{_jvmdir}/%{sdklnk}
 
 
 %changelog
+* Thu Jun 14 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1:1.6.0.33-5.osg.jpp
+- Updated to jdk version 1.6.0-33
+
 * Wed Feb 22 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1:1.6.0.31-5.osg.jpp
 - Updated to jdk version 1.6.0-31
 
