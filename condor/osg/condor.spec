@@ -20,7 +20,6 @@
 
 # Things not turned on, or don't have Fedora packages yet
 %define qmf 0
-%define shared 0
 
 # These flags are meant for developers; it allows one to build Condor
 # based upon a git-derived tarball, instead of an upstream release tarball
@@ -49,7 +48,7 @@ Version: 7.8.0
 %define condor_release %condor_base_release
 %endif
 # Release: %condor_release%{?dist}.2
-Release: 2%{?dist}
+Release: 3%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -107,16 +106,12 @@ Patch3: chkconfig_off.patch
 %if !%git_build
 #Patch4: 7.7.0-catch-up.patch
 %endif
-%if %shared
-Patch5: condor_shared_libs.patch
-%endif
 
 #%if %rhel5
 #Patch6: cmake_26.patch
 #%endif
 
 #Patch7: glexec-patch.diff
-Patch8: blahp_path.patch
 
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
@@ -380,16 +375,10 @@ exit 0
 #%patch4 -p1
 %endif
 %patch0 -p1
-%if %shared
-%patch5 -p1
-%endif
 #%if %rhel5
 #%patch6 -p1
 #%endif
 #%patch7 -p0
-%if %blahp
-%patch8 -p1
-%endif
 
 # fix errant execute permissions
 find src -perm /a+x -type f -name "*.[Cch]" -exec chmod a-x {} \;
@@ -445,6 +434,7 @@ export CMAKE_PREFIX_PATH=/usr
        -DWITH_GLOBUS:BOOL=TRUE \
 %if %blahp
        -DWITH_BLAHP:BOOL=TRUE \
+       -DBLAHP_FOUND=/usr/libexec/BLClient \
 %endif
 %if %cgroups
        -DLIBCGROUP_FOUND_SEARCH_cgroup=/%{_lib}/libcgroup.so.1
@@ -468,6 +458,7 @@ function populate {
 }
 
 rm -rf %{buildroot}
+echo ---------------------------- makefile ---------------------------------
 make install DESTDIR=%{buildroot}
 
 # The install target puts etc/ under usr/, let's fix that.
@@ -480,9 +471,7 @@ populate %{_datadir}/condor %{buildroot}/%{_usr}/lib/*
 # Except for the shared libs
 populate %{_libdir}/ %{buildroot}/%{_datadir}/condor/libclassad.so*
 rm -f %{buildroot}/%{_datadir}/condor/libclassad.a
-%if %shared
 mv %{buildroot}%{_datadir}/condor/lib*.so %{buildroot}%{_libdir}/
-%endif
 
 %if %aviary || %qmf
 populate %{_libdir}/condor/plugins %{buildroot}/%{_usr}/libexec/*-plugin.so
@@ -707,8 +696,6 @@ rm -rf %{buildroot}
 %_datadir/condor/CondorPersonal.pm
 %_datadir/condor/CondorTest.pm
 %_datadir/condor/CondorUtils.pm
-%_datadir/condor/libchirp_client.so
-%_datadir/condor/libcondor_utils_7_8_0.so
 %dir %_sysconfdir/condor/config.d/
 %_sysconfdir/condor/config.d/00personal_condor.config
 %_sysconfdir/condor/condor_ssh_to_job_sshd_config_template
@@ -717,6 +704,8 @@ rm -rf %{buildroot}
 %_datadir/condor/webservice/condorCollector.wsdl
 %_datadir/condor/webservice/condorSchedd.wsdl
 %endif
+%_libdir/libchirp_client.so
+%_libdir/libcondor_utils_7_8_0.so
 %dir %_libexecdir/condor/
 %_libexecdir/condor/condor_chirp
 %_libexecdir/condor/condor_ssh
@@ -867,9 +856,6 @@ rm -rf %{buildroot}
 %_sbindir/nordugrid_gahp
 #%_sbindir/gt4_gahp
 #%_sbindir/gt42_gahp
-%if %shared
-%_libdir/lib*.so
-%endif
 %if %blahp
 %dir %_libexecdir/condor/glite/bin
 %_libexecdir/condor/glite/bin/nqs_cancel.sh
@@ -986,12 +972,6 @@ rm -rf %{buildroot}
 %doc LICENSE-2.0.txt NOTICE.txt
 %_libdir/libclassad.so.3
 %_libdir/libclassad.so.7.8.0
-# That's right; the internal library that Condor statically linked against
-# is called classads, while the exported one is classad.  Hopefully this
-# is resolved as the shared lib work is upstreamed.  For now, we deal.
-%if %shared
-%_libdir/libclassads.so
-%endif
 
 %files classads-devel
 %defattr(-,root,root,-)
@@ -1085,6 +1065,9 @@ fi
 %endif
 
 %changelog
+* Wed Jun 13 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 7.8.0-3
+- Fix wrong paths for shared libraries
+
 * Wed Jun 13 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 7.8.0-2
 - Build blahp
 
