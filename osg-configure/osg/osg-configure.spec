@@ -1,5 +1,5 @@
 %global name osg-configure
-%global version 1.0.13
+%global version 1.0.14
 %global release 1%{?dist}
 
 Summary: Package for configure-osg and associated scripts
@@ -212,7 +212,7 @@ rm -rf $RPM_BUILD_ROOT
 /usr/share/osg-configure/*
 
 %changelog
-* Thu Jun 14 2012 Suchandra Thapa <sthapa@ci.uchicago.edu>  1.0.13-1
+* Thu Jun 14 2012 Suchandra Thapa <sthapa@ci.uchicago.edu>  1.0.14-1
 - Update tests and fix some minor bugs
 
 * Thu Jun 14 2012 Suchandra Thapa <sthapa@ci.uchicago.edu>  1.0.13-1
