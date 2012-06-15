@@ -8,8 +8,8 @@
 
 
 Name:           gridftp-hdfs
-Version:        0.5.3
-Release:        6%{?dist}
+Version:        0.5.4
+Release:        1%{?dist}
 Summary:        HDFS DSI plugin for GridFTP
 Group:          System Environment/Daemons
 License:        ASL 2.0
@@ -23,7 +23,6 @@ URL:            http://twiki.grid.iu.edu/bin/view/Storage/HadoopInstallation
 # make dist
 Source0:        %{name}-%{version}.tar.gz
 Patch0: lcmaps15.patch
-Patch1: hdfs_stat.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 # On SL6, build fails since java-devel pulls in java-1.5.0-gcj
@@ -56,7 +55,6 @@ HDFS DSI plugin for GridFTP
 
 %setup -q
 %patch0 -p1
-%patch1 -p1
 
 %build
 
