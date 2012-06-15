@@ -2,7 +2,7 @@ Name: gratia-reporting
 Summary: Reporting Gratia OSG accounting system
 Group: Applications/System
 Version: 1.12
-Release: 5.pre%{?dist}
+Release: 6.pre%{?dist}
 License: GPL
 Group: Applications/System
 URL: http://sourceforge.net/projects/gratia/
@@ -13,6 +13,7 @@ BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildArch: noarch
 
 Requires: gratia-probe-common
+Requires: mysql 
 Requires: libxml2-devel
 Requires: mutt
 Requires: perl-libxml-perl
@@ -21,8 +22,7 @@ Requires: perl-XML-LibXML
 Requires: perl-DBD-MySQL
 Requires: perl-IPC-Run
 Requires: perl-Text-Table
-#Requires: perl-IPC-Run --enablerepo dag
-#Requires:perl-Text-Table --enablerepo dag
+#perl-IPC-Run and perl-Text-Table are in dag repo
 
 
 %description
@@ -54,12 +54,12 @@ install -m 0644 reporting/summary/daily_mutt.sh         $RPM_BUILD_ROOT%{_datadi
 install -m 0755 reporting/summary/dailyStatus           $RPM_BUILD_ROOT%{_datadir}/gratia-reporting
 install -m 0755 reporting/summary/efficiency            $RPM_BUILD_ROOT%{_datadir}/gratia-reporting
 install -m 0644 reporting/summary/getConfigInfo.py      $RPM_BUILD_ROOT%{_datadir}/gratia-reporting
-install -m 0644 reporting/summary/gradedefficiency      $RPM_BUILD_ROOT%{_datadir}/gratia-reporting
+install -m 0755 reporting/summary/gradedefficiency      $RPM_BUILD_ROOT%{_datadir}/gratia-reporting
 install -m 0755 reporting/summary/gratiaSum.py          $RPM_BUILD_ROOT%{_datadir}/gratia-reporting
 install -m 0644 reporting/summary/gratiaSum.cron.sh     $RPM_BUILD_ROOT%{_datadir}/gratia-reporting
 install -m 0755 reporting/summary/longjobs              $RPM_BUILD_ROOT%{_datadir}/gratia-reporting
 install -m 0755 reporting/summary/newUsers              $RPM_BUILD_ROOT%{_datadir}/gratia-reporting
-install -m 0644 reporting/summary/osg-users             $RPM_BUILD_ROOT%{_datadir}/gratia-reporting
+install -m 0755 reporting/summary/osg-users             $RPM_BUILD_ROOT%{_datadir}/gratia-reporting
 install -m 0755 reporting/summary/range                 $RPM_BUILD_ROOT%{_datadir}/gratia-reporting
 install -m 0644 reporting/summary/range_mutt_nightly.sh $RPM_BUILD_ROOT%{_datadir}/gratia-reporting
 install -m 0644 reporting/summary/range_mutt.sh         $RPM_BUILD_ROOT%{_datadir}/gratia-reporting
@@ -93,6 +93,9 @@ mkdir -p $RPM_BUILD_ROOT%{_var}/lib/gratia/tmp
 %dir %{_var}/lib/gratia/tmp
 
 %changelog
+* Fri Jun 15 2012 Tanya Levshina <tlevshin@fnal.gob> - 1.12.6pre
+New version of reporting with several fixes, really added mysql depedency this time
+
 * Tue Jun 12 2012 Hyunwoo Kim <hyunwoo@fnal.gov>
 Tanya found out another dependency, perl-DBD-MySQL
 
