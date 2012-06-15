@@ -93,6 +93,11 @@ verifyproxy = "lcmaps_verify_proxy.mod"
           "--allow-limited-proxy"
           " -certdir /etc/grid-security/certificates"
 
+# lcmaps policies require at least two modules, so these are here to
+#   fill in if only one module is needed.  "good | bad" has no effect.
+good        = "lcmaps_dummy_good.mod"
+bad         = "lcmaps_dummy_bad.mod"
+
 #-----------------------------------------------------------------------------
 #
 # Mapping policies
@@ -112,7 +117,8 @@ verifyproxy = "lcmaps_verify_proxy.mod"
 
 #
 # Mapping policy: osg_default
-# Purpose:        Used for the Globus gatekeeper and the gridftp server
+# Purpose:        Used for the programs that want lcmaps to switch user
+# 	id for them, such as Globus gatekeeper and the gridftp server
 #
 osg_default:
 
@@ -132,6 +138,25 @@ gumsclient -> posix_enf
 
 ## Policy 3: grid-mapfile
 #gridmapfile -> posix_enf
+
+
+#
+# Mapping policy: authorize_only
+# Purpose:        Used for the programs that only want authorization,
+# 	such as Condor
+#
+authorize_only:
+
+## Choose only one policy just like osg_default above
+
+## Policy 1: GUMS but not SAZ (most common, default)
+gumsclient -> good | bad
+
+## Policy 2: GUMS & SAZ
+#sazclient -> gumsclient
+
+## Policy 3: grid-mapfile
+#gridmapfile -> good | bad
 
 
 #
