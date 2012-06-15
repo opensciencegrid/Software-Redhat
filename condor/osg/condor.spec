@@ -1,4 +1,4 @@
-%define tarball_version 7.8.0
+%define tarball_version 7.8.1
 
 # Things for F15 or later
 %if 0%{?fedora} >= 15
@@ -38,7 +38,7 @@
 
 Summary: Condor: High Throughput Computing
 Name: condor
-Version: 7.8.0
+Version: 7.8.1
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_base_release 0.6
@@ -48,7 +48,7 @@ Version: 7.8.0
 %define condor_release %condor_base_release
 %endif
 # Release: %condor_release%{?dist}.2
-Release: 3%{?dist}
+Release: 1%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -93,7 +93,7 @@ Source1: condor_docs.tar.gz
 #   b482c4bfa350164427a1952113d53d03  condor_src-7.5.5-all-all.tar.gz
 #   2a1355cb24a56a71978d229ddc490bc5  condor_src-7.6.0-all-all.tar.gz
 # Note: The md5sum of each generated tarball may be different
-Source0: condor-7.8.0.tar.gz
+Source0: condor-%{tarball_version}.tar.gz
 Source1: generate-tarball.sh
 %endif
 
@@ -705,7 +705,7 @@ rm -rf %{buildroot}
 %_datadir/condor/webservice/condorSchedd.wsdl
 %endif
 %_libdir/libchirp_client.so
-%_libdir/libcondor_utils_7_8_0.so
+%_libdir/libcondor_utils_7_8_1.so
 %dir %_libexecdir/condor/
 %_libexecdir/condor/condor_chirp
 %_libexecdir/condor/condor_ssh
@@ -778,6 +778,8 @@ rm -rf %{buildroot}
 %_mandir/man1/condor_glidein.1.gz
 %_mandir/man1/condor_continue.1.gz
 %_mandir/man1/condor_suspend.1.gz
+%_mandir/man1/condor_gather_info.1.gz
+%_mandir/man1/condor_router_rm.1.gz
 %endif
 # bin/condor is a link for checkpoint, reschedule, vacate
 #%_bindir/condor
@@ -971,7 +973,7 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 %doc LICENSE-2.0.txt NOTICE.txt
 %_libdir/libclassad.so.3
-%_libdir/libclassad.so.7.8.0
+%_libdir/libclassad.so.7.8.1
 
 %files classads-devel
 %defattr(-,root,root,-)
@@ -1065,6 +1067,9 @@ fi
 %endif
 
 %changelog
+* Fri Jun 15 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 7.8.1-1
+- Version bump
+
 * Wed Jun 13 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 7.8.0-3
 - Fix wrong paths for shared libraries
 
