@@ -12,8 +12,8 @@
 
 Name:		globus-gram-job-manager
 %global _name %(tr - _ <<< %{name})
-Version:	13.39
-Release:	0.3%{?dist}
+Version:	13.45
+Release:	1.1%{?dist}
 Summary:	Globus Toolkit - GRAM Jobmanager
 
 Group:		Applications/Internet
@@ -31,8 +31,6 @@ Patch20:        fix-job-home-dir.patch
 Patch22:        fix-job-lock-location.patch
 Patch26:        allow-manager-restart.patch
 Patch27:        recompute-stdio-on-restart.patch
-Patch28:        GT214-pending-restarts-leak.patch
-Patch29:        GT214-different-service-tag-leak.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -131,9 +129,6 @@ GRAM Jobmanager Documentation Files
 # I think it's a better default, but am waiting on more info.
 #%patch27 -p0
 
-%patch28 -p0
-%patch29 -p0
-
 %build
 # Remove files that should be replaced during bootstrap
 rm -f doxygen/Doxyfile*
@@ -224,6 +219,32 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_docdir}/%{name}-%{version}/html
 
 %changelog
+* Mon Jun 18 2012 Alain Roy <roy@cs.wisc.edu> 13.45-1.1
+- Merged upstream changes from 13.45-1
+
+    * Wed Jun 13 2012 Joseph Bester <bester@mcs.anl.gov> - 13.45-1
+    - GT-225: GRAM5 skips some SEG events
+
+    * Wed Jun 06 2012 Joseph Bester <bester@mcs.anl.gov> - 13.44-1
+    - GT-157: Hash gram_job_state directory by user
+
+    * Fri Jun 01 2012 Joseph Bester <bester@mcs.anl.gov> - 13.43-1
+    - GT-214: Leaks in the job manager restart code
+
+    * Thu May 24 2012 Joseph Bester <bester@mcs.anl.gov> - 13.42-1
+    - GT-209: job manager crash in query
+
+    * Tue May 22 2012 Joseph Bester <bester@mcs.anl.gov> - 13.41-1
+    - GT-199: GRAM audit checks result username incorrectly
+    - GT-192: Segfault in globus-gram-streamer
+
+    * Fri May 18 2012 Joseph Bester <bester@mcs.anl.gov> - 13.40-1
+    - GT-149: Memory leaks in globus-job-manager
+    - GT-186: GRAM job manager leaks condor log path
+    - GT-187: GRAM job manager leaks during stdio update
+    - GT-189: GRAM job manager regular expression storage grows
+    - GT-190: GRAM job manager leaks callback contact
+
 * Mon Jun 4 2012 Alain Roy <roy@cs.wisc.edu> - 13.39-0.3
 - Added patches to fix memory leaks (from GT-214)
 
