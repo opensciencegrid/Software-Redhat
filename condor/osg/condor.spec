@@ -48,7 +48,7 @@ Version: 7.8.1
 %define condor_release %condor_base_release
 %endif
 # Release: %condor_release%{?dist}.2
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -101,6 +101,8 @@ Source1: generate-tarball.sh
 Source2: %{name}-tmpfiles.conf
 Source3: condor.service
 %endif
+Source4: condor-lcmaps-env.sysconfig
+
 Patch0: condor_config.generic.patch
 Patch3: chkconfig_off.patch
 %if !%git_build
@@ -112,6 +114,7 @@ Patch3: chkconfig_off.patch
 #%endif
 
 #Patch7: glexec-patch.diff
+Patch8: lcmaps_env_in_init_script.patch
 
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
@@ -379,6 +382,7 @@ exit 0
 #%patch6 -p1
 #%endif
 #%patch7 -p0
+%patch8 -p1
 
 # fix errant execute permissions
 find src -perm /a+x -type f -name "*.[Cch]" -exec chmod a-x {} \;
@@ -600,6 +604,8 @@ cp %{SOURCE3} %{buildroot}%{_unitdir}/condor.service
 %else
 # install the lsb init script
 install -Dp -m0755 %{buildroot}/etc/examples/condor.init %buildroot/%_initrddir/condor
+mkdir -p %{buildroot}/%{_sysconfdir}/sysconfig
+install -m 0644 %{SOURCE4} %buildroot/%{_sysconfdir}/sysconfig/condor-lcmaps-env
 %endif
 
 # we must place the config examples in builddir so %doc can find them
@@ -684,6 +690,7 @@ rm -rf %{buildroot}
 %{_unitdir}/condor.service
 %else
 %_initrddir/condor
+%_sysconfdir/sysconfig/condor-lcmaps-env
 %endif
 %dir %_datadir/condor/
 %_datadir/condor/Chirp.jar
@@ -1067,6 +1074,9 @@ fi
 %endif
 
 %changelog
+* Mon Jun 18 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 7.8.1-2
+- Add environment variables for interacting with lcmaps (condor-lcmaps-env)
+
 * Fri Jun 15 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 7.8.1-1
 - Version bump
 
