@@ -48,7 +48,7 @@ Version: 7.8.1
 %define condor_release %condor_base_release
 %endif
 # Release: %condor_release%{?dist}.2
-Release: 2%{?dist}
+Release: 3%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -318,6 +318,7 @@ Summary: Condor's classified advertisement language
 Group: Development/Libraries
 Obsoletes: classads <= 1.0.8
 Obsoletes: classads-static <= 1.0.8
+Provides: classads = %version-%release
 
 %description classads
 Classified Advertisements (classads) are the lingua franca of
@@ -346,6 +347,7 @@ Group: Development/System
 Requires: %name-classads = %version-%release
 Requires: pcre-devel
 Obsoletes: classads-devel <= 1.0.8
+Provides: classads-devel = %version-%release
 
 %description classads-devel
 Header files for Condor's ClassAd Library, a powerful and flexible,
@@ -1074,6 +1076,9 @@ fi
 %endif
 
 %changelog
+* Tue Jun 19 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 7.8.1-3
+- Add Provides lines for classads and classads-devel
+
 * Mon Jun 18 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 7.8.1-2
 - Add environment variables for interacting with lcmaps (condor-lcmaps-env)
 
