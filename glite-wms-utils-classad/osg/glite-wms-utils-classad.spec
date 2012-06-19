@@ -2,12 +2,11 @@ Summary: C/C++ libraries for ClassAd handling
 Name: glite-wms-utils-classad
 Version: 3.3.0
 %global upstream_release 2
-Release: %{upstream_release}.1%{?dist}
+Release: %{upstream_release}.2%{?dist}
 License: Apache Software License
 Vendor: EMI
 URL: http://glite.cern.ch/
 Group: System Environment/Libraries
-BuildArch: %{_arch}
 BuildRequires: chrpath, libtool, condor-classads-devel
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 AutoReqProv: yes
@@ -79,6 +78,9 @@ C/C++ libraries for ClassAd handling (development files)
 
 
 %changelog
+* Tue Jun 19 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 3.3.0-2.2.osg
+- Remove BuildArch line
+
 * Mon Jun 18 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 3.3.0-2.1.osg
 - Rebuild for osg
 - classads-devel requirement changed to condor-classads-devel
