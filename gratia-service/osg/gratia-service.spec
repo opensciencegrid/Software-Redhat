@@ -4,7 +4,7 @@ Name: gratia-service
 Summary: Gratia OSG accounting system
 Group: Applications/System
 Version: 1.12
-Release: 4%{?dist}
+Release: 7.pre%{?dist}
 License: GPL
 Group: Applications/System
 URL: http://sourceforge.net/projects/gratia/
@@ -138,6 +138,9 @@ touch $RPM_BUILD_ROOT%{_var}/log/gratia-service/gratia{,-rmi-servlet,-security,-
 %ghost %{_var}/log/gratia-service/*.log
 
 %changelog
+* Wed Jun 20 2012 Tanya Levshina <tlevshin@fnal.gov> - 1.12.7pre
+fixed core calculation  https://jira.opensciencegrid.org/browse/GRATIA-65
+
 * Fri May 04 2012 Tanya Levshina <tlevshin@fnal.gov> - 1.12.4
 fixed   database-install for omitted mysql port
 
