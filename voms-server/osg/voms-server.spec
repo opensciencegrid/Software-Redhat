@@ -1,11 +1,11 @@
 Name: voms-server
 Version: 2.0.8
-Release: 1.1%{?dist}
+Release: 1.2%{?dist}
 
 Summary:	Virtual Organization Membership Service Server
 Group:		Applications/Internet
 
-Requires:	voms%{?_isa} = %{version}-%{release}
+Requires:	voms%{?_isa} = %{version}
 Requires(pre):		shadow-utils
 Requires(post):		chkconfig
 Requires(preun):	chkconfig
@@ -110,6 +110,9 @@ fi
 %config(noreplace) %{_sysconfdir}/logrotate.d/%{name}
 
 %changelog
+* Wed Jun 20 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.8-1.2.osg
+- Relaxed voms version requirement
+
 * Wed Jun 20 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.8-1.1.osg
 - Add logrotate file
 
