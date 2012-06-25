@@ -1,6 +1,6 @@
 
 Name:      rsv-core
-Version:   3.7.2
+Version:   3.7.3
 Release:   1%{?dist}
 Summary:   RSV Core Infrastructure
 
@@ -125,6 +125,10 @@ fi
 
 
 %changelog
+* Mon Jun 25 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.7.3-1
+- Updated to 3.7.3
+- Fixed bugs in how subprocess module is used
+
 * Mon Jun 25 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.7.2-1
 - Updated to 3.7.2
 - SOFTWARE-701 - Disable CondorG emails to rsv account
