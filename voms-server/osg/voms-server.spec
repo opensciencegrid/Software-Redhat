@@ -1,6 +1,6 @@
 Name: voms-server
 Version: 2.0.8
-Release: 1.2%{?dist}
+Release: 1.3dbgb%{?dist}
 
 Summary:	Virtual Organization Membership Service Server
 Group:		Applications/Internet
@@ -16,6 +16,7 @@ License:        ASL 2.0
 URL: https://twiki.cnaf.infn.it/twiki/bin/view/VOMS
 Source: voms-%{version}.tar.gz
 Source1: voms.logrotate
+Patch0: debug-gsiauth.patch
 
 BuildRequires: libtool
 BuildRequires: expat-devel
@@ -43,6 +44,7 @@ This package provides the VOMS service.
 %prep
 %setup -q -n voms-%{version}
 ./autogen.sh
+%patch0 -p1
 
 %build
 
@@ -110,6 +112,9 @@ fi
 %config(noreplace) %{_sysconfdir}/logrotate.d/%{name}
 
 %changelog
+* Thu Jun 21 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.8-1.3dbg.osg
+- Added a lot of debugging output
+
 * Wed Jun 20 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.8-1.2.osg
 - Relaxed voms version requirement
 

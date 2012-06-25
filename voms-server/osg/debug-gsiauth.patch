@@ -1,0 +1,134 @@
+Index: voms-2.0.8/src/socklib/Server.cpp
+===================================================================
+--- voms-2.0.8.orig/src/socklib/Server.cpp	2012-05-16 05:16:35.000000003 -0500
++++ voms-2.0.8/src/socklib/Server.cpp	2012-06-25 14:36:58.000000003 -0500
+@@ -284,6 +284,8 @@
+   newopened = false;
+ }
+ 
++#define LOG_AND_DO(stuff) LOGM(VARP, logh, LEV_DEBUG, T_PRE, "%s", #stuff); stuff
++
+ /**
+  * Accept the GSI Authentication.
+  * @param sock the socket for communication.
+@@ -306,7 +308,9 @@
+ 
+   cert_file = user_cert = user_key = user_proxy = NULL;
+ 
++  LOGM(VARP, logh, LEV_DEBUG, T_PRE, "Doing proxy_get_filenames");
+   if (proxy_get_filenames(0, &cert_file, &cacertdir, &user_proxy, &user_cert, &user_key) == 0) {
++    LOGM(VARP, logh, LEV_DEBUG, T_PRE, "Doing load_credentials\nuser_cert: %s\nuser_key: %s\n", user_cert, user_key);
+     (void)load_credentials(user_cert, user_key, &ucert, &own_stack, &upkey, NULL);
+   }
+ 
+@@ -317,18 +321,19 @@
+ 
+   own_cert = ucert;
+   own_key = upkey;
+-  ctx = SSL_CTX_new(SSLv23_method());
+-  SSL_CTX_load_verify_locations(ctx, NULL, cacertdir);
+-  SSL_CTX_use_certificate(ctx, ucert);
+-  SSL_CTX_use_PrivateKey(ctx,upkey);
+-  SSL_CTX_set_cipher_list(ctx, "ALL:!LOW:!EXP:!MD5:!MD2");    
+-  SSL_CTX_set_purpose(ctx, X509_PURPOSE_ANY);
+-  SSL_CTX_set_mode(ctx, SSL_MODE_AUTO_RETRY);
+-  SSL_CTX_set_verify(ctx, SSL_VERIFY_PEER | SSL_VERIFY_FAIL_IF_NO_PEER_CERT, proxy_verify_callback);
+-  SSL_CTX_set_verify_depth(ctx, 100);
+-  SSL_CTX_set_cert_verify_callback(ctx, proxy_app_verify_callback, 0);
++  LOG_AND_DO(ctx = SSL_CTX_new(SSLv23_method());)
++  LOG_AND_DO(SSL_CTX_load_verify_locations(ctx, NULL, cacertdir);)
++  LOG_AND_DO(SSL_CTX_use_certificate(ctx, ucert);)
++  LOG_AND_DO(SSL_CTX_use_PrivateKey(ctx,upkey);)
++  LOG_AND_DO(SSL_CTX_set_cipher_list(ctx, "ALL:!LOW:!EXP:!MD5:!MD2");    )
++  LOG_AND_DO(SSL_CTX_set_purpose(ctx, X509_PURPOSE_ANY);)
++  LOG_AND_DO(SSL_CTX_set_mode(ctx, SSL_MODE_AUTO_RETRY);)
++  LOG_AND_DO(SSL_CTX_set_verify(ctx, SSL_VERIFY_PEER | SSL_VERIFY_FAIL_IF_NO_PEER_CERT, proxy_verify_callback);)
++  LOG_AND_DO(SSL_CTX_set_verify_depth(ctx, 100);)
++  LOG_AND_DO(SSL_CTX_set_cert_verify_callback(ctx, proxy_app_verify_callback, 0);)
+ 
+   if (own_stack) {
++    LOGM(VARP, logh, LEV_DEBUG, T_PRE, "%s", "own_stack is true");
+     /*
+      * Certificate was a proxy with a cert. chain.
+      * Add the certificates one by one to the chain.
+@@ -350,52 +355,56 @@
+     }
+   }
+ 
+-  flags = fcntl(newsock, F_GETFL, 0);
+-  (void)fcntl(newsock, F_SETFL, flags | O_NONBLOCK);
++  LOG_AND_DO(flags = fcntl(newsock, F_GETFL, 0);)
++  LOG_AND_DO((void)fcntl(newsock, F_SETFL, flags | O_NONBLOCK);)
+ 
+-  bio = BIO_new_socket(newsock, BIO_NOCLOSE);
+-  (void)BIO_set_nbio(bio, 1);
++  LOG_AND_DO(bio = BIO_new_socket(newsock, BIO_NOCLOSE);)
++  LOG_AND_DO((void)BIO_set_nbio(bio, 1);)
+ 
+-  ssl = SSL_new(ctx);
+-  setup_SSL_proxy_handler(ssl, cacertdir);
++  LOG_AND_DO(ssl = SSL_new(ctx);)
++  LOG_AND_DO(setup_SSL_proxy_handler(ssl, cacertdir);)
+ 
+-  writeb = bio->method->bwrite;
+-  readb  = bio->method->bread;
+-  bio->method->bwrite = globusf_write;
+-  bio->method->bread  = globusf_read;
++  LOG_AND_DO(writeb = bio->method->bwrite;)
++  LOG_AND_DO(readb  = bio->method->bread;)
++  LOG_AND_DO(bio->method->bwrite = globusf_write;)
++  LOG_AND_DO(bio->method->bread  = globusf_read;)
+ 
+-  SSL_set_bio(ssl, bio, bio);
++  LOG_AND_DO(SSL_set_bio(ssl, bio, bio);)
+ 
+-  curtime = starttime = time(NULL);
++  LOG_AND_DO(curtime = starttime = time(NULL);)
+ 
+-  ret = ret2 = -1;
+-  expected = 0;
++  LOG_AND_DO(ret = ret2 = -1;)
++  LOG_AND_DO(expected = 0;)
+ 
+   do {
+-    ret = do_select(newsock, starttime, timeout, expected);
++    LOG_AND_DO(ret = do_select(newsock, starttime, timeout, expected);)
+     if (ret > 0) {
+-      ret2 = SSL_accept(ssl);
+-      curtime = time(NULL);
+-      expected = errorcode = SSL_get_error(ssl, ret2);
++      LOG_AND_DO(ret2 = SSL_accept(ssl);) // <- This line is the problem.
++      LOG_AND_DO(curtime = time(NULL);)
++      LOG_AND_DO(expected = errorcode = SSL_get_error(ssl, ret2);)
+     }
++    LOGM(VARP, logh, LEV_DEBUG, T_PRE, "ret: %d ret2: %d timeout: %d curtime: %d starttime: %d errorcode: %d errno: %d", ret, ret2, timeout, curtime, starttime, errorcode, errno);
+   } while (ret > 0 && (ret2 <= 0 && ((timeout == -1) ||
+            ((timeout != -1) &&
+             (curtime - starttime) < timeout)) &&
+            (errorcode == SSL_ERROR_WANT_READ ||
+             errorcode == SSL_ERROR_WANT_WRITE)));
+ 
++  // ret2 ends up being -1
+   if (ret2 <= 0 || ret <= 0) {
+-    if (timeout != -1 && (curtime - starttime >= timeout))
+-      SetError("Connection stuck during handshake: timeout reached.");
+-    else
+-      SetErrorOpenSSL("Error during SSL handshake:");
++    if (timeout != -1 && (curtime - starttime >= timeout)) {
++      LOG_AND_DO(SetError("Connection stuck during handshake: timeout reached.");)
++    }
++    else {
++      LOG_AND_DO(SetErrorOpenSSL("Error during SSL handshake:");)
++    }
+     goto err;
+   }
+ 
+   
+   // Context enstabilished
+-  actual_cert = SSL_get_peer_certificate(ssl);
+-  peer_stack  = SSL_get_peer_cert_chain(ssl);
++  LOG_AND_DO(actual_cert = SSL_get_peer_certificate(ssl);)
++  LOG_AND_DO(peer_stack  = SSL_get_peer_cert_chain(ssl);)
+ 
+   char buffer[1000];
+ 
