@@ -4,7 +4,7 @@ Name: gratia-service
 Summary: Gratia OSG accounting system
 Group: Applications/System
 Version: 1.12
-Release: 8.pre%{?dist}
+Release: 8%{?dist}
 License: GPL
 Group: Applications/System
 URL: http://sourceforge.net/projects/gratia/
@@ -138,6 +138,9 @@ touch $RPM_BUILD_ROOT%{_var}/log/gratia-service/gratia{,-rmi-servlet,-security,-
 %ghost %{_var}/log/gratia-service/*.log
 
 %changelog
+* Mon Jun 25 2012 Tanya Levshina <tlevshin@fnal.gov> - 1.12.8
+ready for osg-test repo
+
 * Mon Jun 25 2012 Tanya Levshina <tlevshin@fnal.gov> - 1.12.8pre
 modified configure_tomcat for tomcat6 (created link to gratia-util)
 
