@@ -25,10 +25,10 @@
 %endif
 
 %global version1 1.9.19.2
-%global release1 10
+%global release1 11
 
 %global version2 2.0.6
-%global release2 7
+%global release2 8
 
 Name:		voms
 Version:	%{version2}
@@ -115,6 +115,8 @@ Patch23:	%{name}-old-autotools.patch
 #               Fix duplicate definition of globus_mutex_t
 Patch100:       globus_thread_h.patch
 Patch101:       p12.patch
+#               Fix possible duplicate definition of gss_cred_id_t
+Patch102:       voms_api_h.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -365,6 +367,7 @@ install -m 644 %{SOURCE2} README.Fedora
 # OSG patches
 %patch100 -p1
 %patch101 -p1
+%patch102 -p1
 
 %build
 %if %{compat}
@@ -613,6 +616,9 @@ fi
 %endif
 
 %changelog
+* Mon Jun 25 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.6-8
+- Add patch to prevent redefinition of gss_cred_id_t in voms_api.h
+
 * Thu Jun 07 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.6-7
 - Have vomsjapi provide voms-api-java
 - Have vomsjapi-javadoc provide voms-api-java-javadoc
