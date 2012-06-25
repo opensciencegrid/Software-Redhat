@@ -2,7 +2,7 @@ Name: gratia-reporting
 Summary: Reporting Gratia OSG accounting system
 Group: Applications/System
 Version: 1.12
-Release: 7.pre%{?dist}
+Release: 8%{?dist}
 License: GPL
 Group: Applications/System
 URL: http://sourceforge.net/projects/gratia/
@@ -93,6 +93,9 @@ mkdir -p $RPM_BUILD_ROOT%{_var}/lib/gratia/tmp
 %dir %{_var}/lib/gratia/tmp
 
 %changelog
+* Mon Jun 25 2012 Tanya Levshina <tlevshin@fnal.gov> - 1.12.8
+production release
+
 * Wed Jun 20 2012 Tanya Levshina <tlevshin@fnal.gob> - 1.12.7pre
 gratia pre-production release (from gratia trunk)
 
