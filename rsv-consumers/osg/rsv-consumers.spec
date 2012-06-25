@@ -1,6 +1,6 @@
 
 Name:      rsv-consumers
-Version:   3.7.1
+Version:   3.7.2
 Release:   1%{?dist}
 Summary:   RSV Consumers Infrastructure
 
@@ -91,6 +91,11 @@ rm -rf $RPM_BUILD_ROOT
 %attr(-,rsv,rsv) %{_localstatedir}/log/rsv/consumers
 
 %changelog
+* Mon Jun 25 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.7.2-1
+- Updated to 3.7.2
+- SOFTWARE-701 - Disable CondorG emails to rsv account
+- SOFTWARE-702 - Recreate /var/tmp/rsv if it is deleted
+
 * Wed Jun 13 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.7.1-1
 - Update to 3.7.1
 - SOFTWARE-666 - Update RSV to use Python subprocess module
