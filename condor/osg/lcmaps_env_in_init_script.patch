@@ -1,0 +1,14 @@
+Index: condor-7.8.1/src/condor_examples/condor.init
+===================================================================
+--- condor-7.8.1.orig/src/condor_examples/condor.init	2012-06-18 13:41:42.000000003 -0500
++++ condor-7.8.1/src/condor_examples/condor.init	2012-06-18 13:58:43.000000003 -0500
+@@ -26,6 +26,9 @@
+ # Source function library
+ . /etc/init.d/functions
+ 
++# Source lcmaps environment vars
++[ -f /etc/sysconfig/condor-lcmaps-env ] && . /etc/sysconfig/condor-lcmaps-env
++
+ # Source networking configuration
+ [ -f /etc/sysconfig/network ] && . /etc/sysconfig/network
+ 

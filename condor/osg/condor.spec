@@ -1,4 +1,4 @@
-%define tarball_version 7.8.0
+%define tarball_version 7.8.1
 
 # Things for F15 or later
 %if 0%{?fedora} >= 15
@@ -16,10 +16,10 @@
 %define cgroups 0
 %endif
 
+%define blahp 1
+
 # Things not turned on, or don't have Fedora packages yet
-%define blahp 0
 %define qmf 0
-%define shared 0
 
 # These flags are meant for developers; it allows one to build Condor
 # based upon a git-derived tarball, instead of an upstream release tarball
@@ -38,7 +38,7 @@
 
 Summary: Condor: High Throughput Computing
 Name: condor
-Version: 7.8.0
+Version: 7.8.1
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_base_release 0.6
@@ -48,7 +48,7 @@ Version: 7.8.0
 %define condor_release %condor_base_release
 %endif
 # Release: %condor_release%{?dist}.2
-Release: 1%{?dist}
+Release: 3%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -93,7 +93,7 @@ Source1: condor_docs.tar.gz
 #   b482c4bfa350164427a1952113d53d03  condor_src-7.5.5-all-all.tar.gz
 #   2a1355cb24a56a71978d229ddc490bc5  condor_src-7.6.0-all-all.tar.gz
 # Note: The md5sum of each generated tarball may be different
-Source0: condor-7.8.0.tar.gz
+Source0: condor-%{tarball_version}.tar.gz
 Source1: generate-tarball.sh
 %endif
 
@@ -101,13 +101,12 @@ Source1: generate-tarball.sh
 Source2: %{name}-tmpfiles.conf
 Source3: condor.service
 %endif
+Source4: condor-lcmaps-env.sysconfig
+
 Patch0: condor_config.generic.patch
 Patch3: chkconfig_off.patch
 %if !%git_build
 #Patch4: 7.7.0-catch-up.patch
-%endif
-%if %shared
-Patch5: condor_shared_libs.patch
 %endif
 
 #%if %rhel5
@@ -115,6 +114,7 @@ Patch5: condor_shared_libs.patch
 #%endif
 
 #Patch7: glexec-patch.diff
+Patch8: lcmaps_env_in_init_script.patch
 
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
@@ -318,6 +318,7 @@ Summary: Condor's classified advertisement language
 Group: Development/Libraries
 Obsoletes: classads <= 1.0.8
 Obsoletes: classads-static <= 1.0.8
+Provides: classads = %version-%release
 
 %description classads
 Classified Advertisements (classads) are the lingua franca of
@@ -346,6 +347,7 @@ Group: Development/System
 Requires: %name-classads = %version-%release
 Requires: pcre-devel
 Obsoletes: classads-devel <= 1.0.8
+Provides: classads-devel = %version-%release
 
 %description classads-devel
 Header files for Condor's ClassAd Library, a powerful and flexible,
@@ -378,13 +380,11 @@ exit 0
 #%patch4 -p1
 %endif
 %patch0 -p1
-%if %shared
-%patch5 -p1
-%endif
 #%if %rhel5
 #%patch6 -p1
 #%endif
 #%patch7 -p0
+%patch8 -p1
 
 # fix errant execute permissions
 find src -perm /a+x -type f -name "*.[Cch]" -exec chmod a-x {} \;
@@ -438,6 +438,10 @@ export CMAKE_PREFIX_PATH=/usr
        -DWITH_LIBDELTACLOUD:BOOL=FALSE \
 %endif
        -DWITH_GLOBUS:BOOL=TRUE \
+%if %blahp
+       -DWITH_BLAHP:BOOL=TRUE \
+       -DBLAHP_FOUND=/usr/libexec/BLClient \
+%endif
 %if %cgroups
        -DLIBCGROUP_FOUND_SEARCH_cgroup=/%{_lib}/libcgroup.so.1
 %endif
@@ -460,6 +464,7 @@ function populate {
 }
 
 rm -rf %{buildroot}
+echo ---------------------------- makefile ---------------------------------
 make install DESTDIR=%{buildroot}
 
 # The install target puts etc/ under usr/, let's fix that.
@@ -472,9 +477,7 @@ populate %{_datadir}/condor %{buildroot}/%{_usr}/lib/*
 # Except for the shared libs
 populate %{_libdir}/ %{buildroot}/%{_datadir}/condor/libclassad.so*
 rm -f %{buildroot}/%{_datadir}/condor/libclassad.a
-%if %shared
 mv %{buildroot}%{_datadir}/condor/lib*.so %{buildroot}%{_libdir}/
-%endif
 
 %if %aviary || %qmf
 populate %{_libdir}/condor/plugins %{buildroot}/%{_usr}/libexec/*-plugin.so
@@ -603,6 +606,8 @@ cp %{SOURCE3} %{buildroot}%{_unitdir}/condor.service
 %else
 # install the lsb init script
 install -Dp -m0755 %{buildroot}/etc/examples/condor.init %buildroot/%_initrddir/condor
+mkdir -p %{buildroot}/%{_sysconfdir}/sysconfig
+install -m 0644 %{SOURCE4} %buildroot/%{_sysconfdir}/sysconfig/condor-lcmaps-env
 %endif
 
 # we must place the config examples in builddir so %doc can find them
@@ -687,6 +692,7 @@ rm -rf %{buildroot}
 %{_unitdir}/condor.service
 %else
 %_initrddir/condor
+%_sysconfdir/sysconfig/condor-lcmaps-env
 %endif
 %dir %_datadir/condor/
 %_datadir/condor/Chirp.jar
@@ -699,8 +705,6 @@ rm -rf %{buildroot}
 %_datadir/condor/CondorPersonal.pm
 %_datadir/condor/CondorTest.pm
 %_datadir/condor/CondorUtils.pm
-%_datadir/condor/libchirp_client.so
-%_datadir/condor/libcondor_utils_7_8_0.so
 %dir %_sysconfdir/condor/config.d/
 %_sysconfdir/condor/config.d/00personal_condor.config
 %_sysconfdir/condor/condor_ssh_to_job_sshd_config_template
@@ -709,6 +713,8 @@ rm -rf %{buildroot}
 %_datadir/condor/webservice/condorCollector.wsdl
 %_datadir/condor/webservice/condorSchedd.wsdl
 %endif
+%_libdir/libchirp_client.so
+%_libdir/libcondor_utils_7_8_1.so
 %dir %_libexecdir/condor/
 %_libexecdir/condor/condor_chirp
 %_libexecdir/condor/condor_ssh
@@ -781,6 +787,8 @@ rm -rf %{buildroot}
 %_mandir/man1/condor_glidein.1.gz
 %_mandir/man1/condor_continue.1.gz
 %_mandir/man1/condor_suspend.1.gz
+%_mandir/man1/condor_gather_info.1.gz
+%_mandir/man1/condor_router_rm.1.gz
 %endif
 # bin/condor is a link for checkpoint, reschedule, vacate
 #%_bindir/condor
@@ -859,8 +867,13 @@ rm -rf %{buildroot}
 %_sbindir/nordugrid_gahp
 #%_sbindir/gt4_gahp
 #%_sbindir/gt42_gahp
-%if %shared
-%_libdir/lib*.so
+%if %blahp
+%dir %_libexecdir/condor/glite/bin
+%_libexecdir/condor/glite/bin/nqs_cancel.sh
+%_libexecdir/condor/glite/bin/nqs_hold.sh
+%_libexecdir/condor/glite/bin/nqs_resume.sh
+%_libexecdir/condor/glite/bin/nqs_status.sh
+%_libexecdir/condor/glite/bin/nqs_submit.sh
 %endif
 #%_sbindir/condor_credd
 %_sbindir/grid_monitor
@@ -969,13 +982,7 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 %doc LICENSE-2.0.txt NOTICE.txt
 %_libdir/libclassad.so.3
-%_libdir/libclassad.so.7.8.0
-# That's right; the internal library that Condor statically linked against
-# is called classads, while the exported one is classad.  Hopefully this
-# is resolved as the shared lib work is upstreamed.  For now, we deal.
-%if %shared
-%_libdir/libclassads.so
-%endif
+%_libdir/libclassad.so.7.8.1
 
 %files classads-devel
 %defattr(-,root,root,-)
@@ -1069,6 +1076,21 @@ fi
 %endif
 
 %changelog
+* Tue Jun 19 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 7.8.1-3
+- Add Provides lines for classads and classads-devel
+
+* Mon Jun 18 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 7.8.1-2
+- Add environment variables for interacting with lcmaps (condor-lcmaps-env)
+
+* Fri Jun 15 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 7.8.1-1
+- Version bump
+
+* Wed Jun 13 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 7.8.0-3
+- Fix wrong paths for shared libraries
+
+* Wed Jun 13 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 7.8.0-2
+- Build blahp
+
 * Thu May 31 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 7.8.0-1
 - Version bump
 - Updated condor_config.generic.patch
