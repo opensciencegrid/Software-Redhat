@@ -2,12 +2,11 @@ Summary: Tools and utilities for the CREAM service
 Name: glite-ce-cream-utils
 Version: 1.2.0
 %global upstream_release 4
-Release: %{upstream_release}.1%{?dist}
+Release: %{upstream_release}.2%{?dist}
 License: Apache Software License
 Vendor: EMI
 URL: http://glite.cern.ch/
 Group: System Environment/Libraries
-BuildArch: %{_arch}
 BuildRequires: libtool, docbook-style-xsl, libxslt
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 AutoReqProv: yes
@@ -80,7 +79,10 @@ if [ $1 -eq 1 ] ; then
 fi
 
 %changelog
-* Tue Jun 26 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.2.0-4.osg
+* Tue Jun 26 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.2.0-4.2.osg
+- Removed BuildArch line
+
+* Tue Jun 26 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.2.0-4.1.osg
 - Rebuilt for OSG
 
 * Wed May 16 2012 CREAM group <cream-support@lists.infn.it> - 1.2.0-4.sl5
