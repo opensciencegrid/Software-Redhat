@@ -1,0 +1,73 @@
+diff --git a/externals/bundles/cream/1.12.1_14/CMakeLists.txt b/externals/bundles/cream/1.12.1_14/CMakeLists.txt
+index 85a897b..afbfd83 100644
+--- a/externals/bundles/cream/1.12.1_14/CMakeLists.txt
++++ b/externals/bundles/cream/1.12.1_14/CMakeLists.txt
+@@ -16,12 +16,14 @@
+  # 
+  ############################################################### 
+ 
+-if (NOT PROPER AND LINUX) #OR DARWIN
++if (LINUX)
+   option( WITH_CREAM "Compiling with support for CREAM" ON )
+-endif()
++endif(LINUX)
+   
+ if ( WITH_CREAM )
+ 
++if ( NOT PROPER )
++
+ 	if ( ${SYSTEM_NAME} MATCHES "rhel3" )
+ 		set( KERBEROS_INCLUDE_FLAG -I/usr/kerberos/include )
+ 	else()
+@@ -240,8 +242,24 @@ if ( WITH_CREAM )
+ 
+ 		condor_post_external( cream include OFF )
+ 
+-		message (STATUS "external configured (CREAM_FOUND=${CREAM_FOUND})")
++else( NOT PROPER )
++
++	find_multiple(
++"glite_ce_cream_client_soap;glite_ce_cream_client_util;glite_security_gsoap_plugin_2710_cxx;glite_security_gss;log4cpp;gridsite;boost_thread;boost_regex"
++CREAM_FOUND )
++
++endif( NOT PROPER )
+ 
+-else()
++else(WITH_CREAM)
+ 	message (STATUS "external skipped (cream)")
+-endif()
++endif(WITH_CREAM)
++
++if (CREAM_FOUND)
++        set( CREAM_FOUND ${CREAM_FOUND} PARENT_SCOPE )
++        set( HAVE_EXT_CREAM ON PARENT_SCOPE )
++        message ( STATUS "external configured
++(CREAM_FOUND=${CREAM_FOUND})" )
++else(CREAM_FOUND)
++        message (STATUS "external skipped (cream)")
++endif(CREAM_FOUND)
++
+diff --git a/src/cream_gahp/CMakeLists.txt b/src/cream_gahp/CMakeLists.txt
+index 8ef199e..2da30f9 100644
+--- a/src/cream_gahp/CMakeLists.txt
++++ b/src/cream_gahp/CMakeLists.txt
+@@ -31,6 +31,19 @@ if ( HAVE_EXT_CREAM AND NOT PROPER )
+ 		OFF )
+ else()
+ 
++if ( HAVE_EXT_CREAM )
++
++        add_definitions(-D_REENTRANT)
++        condor_exe( cream_gahp
++                "cream_gahp_server.cpp"
++                ${C_SBIN}
++                "${CREAM_FOUND};${OPENSSL_FOUND};${EXPAT_FOUND};${GLOBUS_THR_FOUND};${VOMS_FOUND};${CLASSADS_FOUND};${PCRE_FOUND}"
++                OFF )
++
++else ( HAVE_EXT_CREAM )
++
+ 	message(STATUS "NOTE: *cream* targets will not be built HAVE_EXT_CREAM=${HAVE_EXT_CREAM}")
+ 
++endif ( HAVE_EXT_CREAM )
++
+ endif()
