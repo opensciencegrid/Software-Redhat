@@ -13,7 +13,7 @@
 %endif
 
 Name:           bestman2
-Version:        2.2.1
+Version:        2.2.1a
 Release:        3%{?dist}
 Summary:        SRM server for Grid Storage Elements
 
