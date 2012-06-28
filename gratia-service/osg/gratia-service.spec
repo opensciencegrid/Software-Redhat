@@ -4,7 +4,7 @@ Name: gratia-service
 Summary: Gratia OSG accounting system
 Group: Applications/System
 Version: 1.12
-Release: 8%{?dist}
+Release: 9pre%{?dist}
 License: GPL
 Group: Applications/System
 URL: http://sourceforge.net/projects/gratia/
@@ -27,6 +27,7 @@ Requires: tomcat5
 %if 0%{?rhel} == 6
 Requires: tomcat6
 %define _tomcat tomcat6
+Requires: slf4j
 %endif
 
 Requires: emi-trustmanager-tomcat
@@ -138,6 +139,10 @@ touch $RPM_BUILD_ROOT%{_var}/log/gratia-service/gratia{,-rmi-servlet,-security,-
 %ghost %{_var}/log/gratia-service/*.log
 
 %changelog
+* Thu Jun 28 2012 Tanya Levshina <tlevshin@fnal.gov> - 1.12.9pre
+modification in configure_tomact, install_database, fixed data directory location
+
+e Mon Jun 25 2012 Tanya Levshina <tlevshin@fnal.gov> - 1.12.8
 * Mon Jun 25 2012 Tanya Levshina <tlevshin@fnal.gov> - 1.12.8
 ready for osg-test repo
 
