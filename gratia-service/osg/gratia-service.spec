@@ -4,7 +4,7 @@ Name: gratia-service
 Summary: Gratia OSG accounting system
 Group: Applications/System
 Version: 1.12
-Release: 10pre%{?dist}
+Release: 10%{?dist}
 License: GPL
 Group: Applications/System
 URL: http://sourceforge.net/projects/gratia/
@@ -130,11 +130,17 @@ touch $RPM_BUILD_ROOT%{_var}/log/gratia-service/gratia{,-rmi-servlet,-security,-
 # We need to get rid of log4j.jar files we have done in previous version
 %pre
 if [ $1 = 2 ]; then
-  for d in `ls -1d /usr/share/tomcat6/webapps/*/WEB-INF/lib`; do 
+  for d in `ls -1d %{_prefix}/share/%_tomcat/webapps/*/WEB-INF/lib`; do 
  	if [ -f $d/log4j.jar ]; then
 		rm -f  $d/log4j.jar
 	fi
   done
+  %if 0%{?rhel} < 6
+	if [ ! -f %{_prefix}/share/%_tomcat/common/lib/log4j.jar ]; then
+		ln -s %{_prefix}/share/java/log4j.jar %{_prefix}/share/%_tomcat/common/lib/log4j.jar
+	fi
+  %endif
+ 
 fi
 
 %files
@@ -179,6 +185,9 @@ fi
 
 
 %changelog
+* Mon Jul 03 2012 Tanya Levshina <tlevshin@fnal.gov> - 1.12.10
+production release
+
 * Mon Jul 02 2012 Tanya Levshina <tlevshin@fnal.gov> - 1.12.10pre
 fixes for configure-tomcat, voms-server.cron and gratia-service.spec
 
