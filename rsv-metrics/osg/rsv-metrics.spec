@@ -1,6 +1,6 @@
 
 Name:      rsv-metrics
-Version:   3.7.2
+Version:   3.7.4
 Release:   1%{?dist}
 Summary:   RSV metrics
 
@@ -92,6 +92,11 @@ rm -rf $RPM_BUILD_ROOT
 %attr(-,rsv,rsv) %{_localstatedir}/log/rsv/probes
 
 %changelog
+* Wed Jul 04 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.7.4-1
+- Updated to 3.7.4
+- SOFTWARE-706 - Remove global logrotate declarations
+- SOFTWARE-707 - Fix bug in 3.7.2 that crashes when using a user proxy
+
 * Mon Jun 25 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.7.2-1
 - Updated to 3.7.2
 - SOFTWARE-701 - Disable CondorG emails to rsv account
