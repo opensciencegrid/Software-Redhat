@@ -27,7 +27,7 @@ index 85a897b..afbfd83 100644
 +else( NOT PROPER )
 +
 +	find_multiple(
-+"glite_ce_cream_client_soap;glite_ce_cream_client_util;glite_security_gsoap_plugin_2710_cxx;glite_security_gss;log4cpp;gridsite;boost_thread;boost_regex"
++"glite_ce_cream_client_soap;glite_ce_cream_client_util;glite_security_gsoap_plugin_2713_cxx;glite_security_gss;log4cpp;gridsite;boost_thread;boost_regex"
 +CREAM_FOUND )
 +
 +endif( NOT PROPER )

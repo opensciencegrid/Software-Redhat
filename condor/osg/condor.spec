@@ -17,6 +17,7 @@
 %endif
 
 %define blahp 1
+%define cream 1
 
 # Things not turned on, or don't have Fedora packages yet
 %define qmf 0
@@ -48,7 +49,7 @@ Version: 7.8.1
 %define condor_release %condor_base_release
 %endif
 # Release: %condor_release%{?dist}.2
-Release: 3%{?dist}
+Release: 4%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -115,6 +116,8 @@ Patch3: chkconfig_off.patch
 
 #Patch7: glexec-patch.diff
 Patch8: lcmaps_env_in_init_script.patch
+Patch9: proper_cream.diff
+Patch10: cream_el6.patch
 
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
@@ -209,6 +212,16 @@ Requires: condor-procd = %{version}-%{release}
 %if %blahp
 Requires: blahp >= 1.16.1
 %endif
+
+%if %cream
+BuildRequires: glite-ce-cream-client-devel
+BuildRequires: glite-lbjp-common-gsoap-plugin-devel
+BuildRequires: glite-ce-cream-utils
+BuildRequires: log4cpp-devel
+BuildRequires: gridsite-devel
+%endif
+
+
 # libcgroup < 0.37 has a bug that invalidates our accounting.
 %if %cgroups
 Requires: libcgroup >= 0.37
@@ -385,6 +398,10 @@ exit 0
 #%endif
 #%patch7 -p0
 %patch8 -p1
+%patch9 -p1
+%if 0%{?el6}
+%patch10 -p1
+%endif
 
 # fix errant execute permissions
 find src -perm /a+x -type f -name "*.[Cch]" -exec chmod a-x {} \;
@@ -442,6 +459,9 @@ export CMAKE_PREFIX_PATH=/usr
        -DWITH_BLAHP:BOOL=TRUE \
        -DBLAHP_FOUND=/usr/libexec/BLClient \
 %endif
+%if %cream
+       -DWITH_CREAM:BOOL=TRUE \
+%endif
 %if %cgroups
        -DLIBCGROUP_FOUND_SEARCH_cgroup=/%{_lib}/libcgroup.so.1
 %endif
@@ -451,7 +471,8 @@ export CMAKE_PREFIX_PATH=/usr
 #       -DBUILD_TESTS=OFF \
 #       -DCONDOR_STRIP_PACKAGES=OFF \
 
-make %{?_smp_mflags}
+#make %{?_smp_mflags}
+make -j1
 
 
 %install
@@ -1076,6 +1097,9 @@ fi
 %endif
 
 %changelog
+* Tue Jun 26 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 7.8.1-4
+- Add CREAM
+
 * Tue Jun 19 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 7.8.1-3
 - Add Provides lines for classads and classads-devel
 
