@@ -4,7 +4,7 @@ Name: gratia-service
 Summary: Gratia OSG accounting system
 Group: Applications/System
 Version: 1.12
-Release: 10%{?dist}
+Release: 11%{?dist}
 License: GPL
 Group: Applications/System
 URL: http://sourceforge.net/projects/gratia/
@@ -185,6 +185,9 @@ fi
 
 
 %changelog
+* Thu Jul 05 2012 Tanya Levshina <tlevshin@fnal.gov> - 1.12.11
+production release, second attempt - fixed tomcat_configure again
+
 * Mon Jul 03 2012 Tanya Levshina <tlevshin@fnal.gov> - 1.12.10
 production release
 
