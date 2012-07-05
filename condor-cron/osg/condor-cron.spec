@@ -1,6 +1,6 @@
 
 Name:      condor-cron
-Version:   1.0.8
+Version:   1.0.9
 Release:   1%{?dist}
 Summary:   A framework to run cron-style jobs within Condor
 
@@ -143,6 +143,10 @@ fi
 
 
 %changelog
+* Thu Jul 05 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 1.0.9-1
+- Update to 1.0.9
+- TECHONOLOGY-20 - patch for Condor-CE support
+
 * Thu Mar 15 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0.8-1
 - Fix for SOFTWARE-588
 
