@@ -1,7 +1,7 @@
-diff --git a/externals/bundles/cream/1.12.1_14/CMakeLists.txt b/externals/bundles/cream/1.12.1_14/CMakeLists.txt
-index 85a897b..afbfd83 100644
---- a/externals/bundles/cream/1.12.1_14/CMakeLists.txt
-+++ b/externals/bundles/cream/1.12.1_14/CMakeLists.txt
+Index: condor-7.8.1/externals/bundles/cream/1.12.1_14/CMakeLists.txt
+===================================================================
+--- condor-7.8.1.orig/externals/bundles/cream/1.12.1_14/CMakeLists.txt	2012-06-08 17:07:34.000000003 -0500
++++ condor-7.8.1/externals/bundles/cream/1.12.1_14/CMakeLists.txt	2012-07-05 15:19:49.000000003 -0500
 @@ -16,12 +16,14 @@
   # 
   ############################################################### 
@@ -19,7 +19,7 @@ index 85a897b..afbfd83 100644
  	if ( ${SYSTEM_NAME} MATCHES "rhel3" )
  		set( KERBEROS_INCLUDE_FLAG -I/usr/kerberos/include )
  	else()
-@@ -240,8 +242,24 @@ if ( WITH_CREAM )
+@@ -240,8 +242,24 @@
  
  		condor_post_external( cream include OFF )
  
@@ -47,11 +47,11 @@ index 85a897b..afbfd83 100644
 +        message (STATUS "external skipped (cream)")
 +endif(CREAM_FOUND)
 +
-diff --git a/src/cream_gahp/CMakeLists.txt b/src/cream_gahp/CMakeLists.txt
-index 8ef199e..2da30f9 100644
---- a/src/cream_gahp/CMakeLists.txt
-+++ b/src/cream_gahp/CMakeLists.txt
-@@ -31,6 +31,19 @@ if ( HAVE_EXT_CREAM AND NOT PROPER )
+Index: condor-7.8.1/src/cream_gahp/CMakeLists.txt
+===================================================================
+--- condor-7.8.1.orig/src/cream_gahp/CMakeLists.txt	2012-06-08 17:07:34.000000003 -0500
++++ condor-7.8.1/src/cream_gahp/CMakeLists.txt	2012-07-05 15:19:44.000000003 -0500
+@@ -33,6 +33,19 @@
  		OFF )
  else()
  
@@ -71,3 +71,17 @@ index 8ef199e..2da30f9 100644
 +endif ( HAVE_EXT_CREAM )
 +
  endif()
+Index: condor-7.8.1/src/cream_gahp/cream_gahp_server.cpp
+===================================================================
+--- condor-7.8.1.orig/src/cream_gahp/cream_gahp_server.cpp	2012-06-08 17:07:34.000000003 -0500
++++ condor-7.8.1/src/cream_gahp/cream_gahp_server.cpp	2012-07-05 15:21:29.000000003 -0500
+@@ -37,6 +37,9 @@
+ using namespace std;
+ using namespace glite::ce::cream_client_api::soap_proxy;
+ 
++// This symbol is necessary to prevent errors when dynamically linking
++SOAP_NMAC struct Namespace namespaces[] = { { NULL, NULL } };
++
+ #define USE_QUICKLOG 0
+ 
+ #if USE_QUICKLOG

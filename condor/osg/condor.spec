@@ -106,15 +106,6 @@ Source4: condor-lcmaps-env.sysconfig
 
 Patch0: condor_config.generic.patch
 Patch3: chkconfig_off.patch
-%if !%git_build
-#Patch4: 7.7.0-catch-up.patch
-%endif
-
-#%if %rhel5
-#Patch6: cmake_26.patch
-#%endif
-
-#Patch7: glexec-patch.diff
 Patch8: lcmaps_env_in_init_script.patch
 Patch9: proper_cream.diff
 Patch10: cream_el6.patch
@@ -387,20 +378,14 @@ exit 0
 %setup -q -n %{name}-%{tarball_version}
 %endif
 
-%patch3 -p1
-# Catch-up patch for release tarballs
-%if !%git_build
-#%patch4 -p1
-%endif
 %patch0 -p1
-#%if %rhel5
-#%patch6 -p1
-#%endif
-#%patch7 -p0
+%patch3 -p1
 %patch8 -p1
+%if %cream
 %patch9 -p1
 %if 0%{?el6}
 %patch10 -p1
+%endif
 %endif
 
 # fix errant execute permissions
@@ -466,13 +451,7 @@ export CMAKE_PREFIX_PATH=/usr
        -DLIBCGROUP_FOUND_SEARCH_cgroup=/%{_lib}/libcgroup.so.1
 %endif
 
-# NOTE: I used to have these.  Check to see if they are still needed
-#       -DHAVE_BACKFILL:BOOL=TRUE \
-#       -DBUILD_TESTS=OFF \
-#       -DCONDOR_STRIP_PACKAGES=OFF \
-
-#make %{?_smp_mflags}
-make -j1
+make %{?_smp_mflags}
 
 
 %install
@@ -721,8 +700,6 @@ rm -rf %{buildroot}
 %_datadir/condor/CondorJavaWrapper.class
 %_datadir/condor/Condor.pm
 %_datadir/condor/scimark2lib.jar
-#%_datadir/condor/gt4-gahp.jar
-#%_datadir/condor/gt42-gahp.jar
 %_datadir/condor/CondorPersonal.pm
 %_datadir/condor/CondorTest.pm
 %_datadir/condor/CondorUtils.pm
@@ -741,14 +718,12 @@ rm -rf %{buildroot}
 %_libexecdir/condor/condor_ssh
 %_libexecdir/condor/sshd.sh
 %_libexecdir/condor/condor_job_router
-#%_libexecdir/condor/gridftp_wrapper.sh
 %_libexecdir/condor/condor_glexec_update_proxy
 %_libexecdir/condor/condor_limits_wrapper.sh
 %_libexecdir/condor/condor_rooster
 %_libexecdir/condor/condor_schedd.init
 %_libexecdir/condor/condor_ssh_to_job_shell_setup
 %_libexecdir/condor/condor_ssh_to_job_sshd_setup
-#%_libexecdir/condor/condor_power_state
 %_libexecdir/condor/condor_kflops
 %_libexecdir/condor/condor_mips
 %_libexecdir/condor/data_plugin
@@ -761,7 +736,6 @@ rm -rf %{buildroot}
 %_libexecdir/condor/condor_glexec_kill
 %_libexecdir/condor/condor_glexec_run
 %_libexecdir/condor/condor_glexec_setup
-#%_libexecdir/condor/rsh
 %_libexecdir/condor/condor_power_state
 %_libexecdir/condor/condor_defrag
 %if %include_man
@@ -812,7 +786,6 @@ rm -rf %{buildroot}
 %_mandir/man1/condor_router_rm.1.gz
 %endif
 # bin/condor is a link for checkpoint, reschedule, vacate
-#%_bindir/condor
 %_bindir/condor_submit_dag
 %_bindir/condor_prio
 %_bindir/condor_transfer_data
@@ -846,7 +819,6 @@ rm -rf %{buildroot}
 %_bindir/condor_ssh_to_job
 %_bindir/condor_power
 %_bindir/condor_gather_info
-#%_bindir/condor_test_match
 %_bindir/condor_glidein
 %_bindir/condor_continue
 %_bindir/condor_drain
@@ -877,17 +849,15 @@ rm -rf %{buildroot}
 %_sbindir/condor_store_cred
 %_sbindir/condor_transferd
 %_sbindir/condor_updates_stats
-%if %gsoap
-#%_sbindir/amazon_gahp
-%endif
 %_sbindir/ec2_gahp
 %_sbindir/condor_gridmanager
 %_sbindir/condor_gridshell
 %_sbindir/gahp_server
 %_sbindir/grid_monitor.sh
 %_sbindir/nordugrid_gahp
-#%_sbindir/gt4_gahp
-#%_sbindir/gt42_gahp
+%if %cream
+%_sbindir/cream_gahp
+%endif
 %if %blahp
 %dir %_libexecdir/condor/glite/bin
 %_libexecdir/condor/glite/bin/nqs_cancel.sh
@@ -896,7 +866,6 @@ rm -rf %{buildroot}
 %_libexecdir/condor/glite/bin/nqs_status.sh
 %_libexecdir/condor/glite/bin/nqs_submit.sh
 %endif
-#%_sbindir/condor_credd
 %_sbindir/grid_monitor
 %_sbindir/remote_gahp
 %_sbindir/condor_vm_vmware
