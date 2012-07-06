@@ -1,5 +1,5 @@
 
-Name:           maven
+Name:           maven3
 Version:        3.0.4
 Release:        1%{?dist}
 Summary:        Java project management and project comprehension tool
