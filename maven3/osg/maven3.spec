@@ -68,7 +68,7 @@ Requires:       jpackage-utils
 %{summary}.
 
 %prep
-%setup -q -n apache-%{name}-%{version}%{?ver_add}
+%setup -q -n apache-maven-%{version}%{?ver_add}
 %patch0
 
 %build
