@@ -9,7 +9,7 @@ License:        ASL 2.0 and MIT and BSD
 URL:            http://maven.apache.org/
 # Source URL is for testing only, final version will be in different place:
 # http://www.apache.org/dyn/closer.cgi/maven/source/apache-%{name}-%{version}-src.tar.gz
-Source0:        apache-%{name}-%{version}-src.tar.gz
+Source0:        apache-maven-%{version}-src.tar.gz
 Patch0:         build.patch
 
 # custom resolver java files
