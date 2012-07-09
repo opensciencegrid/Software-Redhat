@@ -172,7 +172,7 @@ Patch0: mvn304.patch
 Buildroot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id} -u -n)
 BuildRequires: python >= 2.4, git, fuse-devel,fuse, automake, autoconf,maven3,protobuf-compiler
 # not sure if I need this
-BuildRequires: jdk
+BuildRequires: java-devel
 Requires: coreutils, /usr/sbin/useradd, /usr/sbin/usermod, /sbin/chkconfig, /sbin/service, bigtop-utils, zookeeper >= 3.4.0
 Requires: psmisc, %{netcat_package}
 Conflicts: hadoop-0.20
