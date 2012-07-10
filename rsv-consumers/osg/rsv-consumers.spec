@@ -1,6 +1,6 @@
 
 Name:      rsv-consumers
-Version:   3.7.0
+Version:   3.7.4
 Release:   1%{?dist}
 Summary:   RSV Consumers Infrastructure
 
@@ -91,6 +91,23 @@ rm -rf $RPM_BUILD_ROOT
 %attr(-,rsv,rsv) %{_localstatedir}/log/rsv/consumers
 
 %changelog
+* Wed Jul 04 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.7.4-1
+- Updated to 3.7.4
+- SOFTWARE-706 - Remove global logrotate declarations
+- SOFTWARE-707 - Fix bug in 3.7.2 that crashes when using a user proxy
+
+* Mon Jun 25 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.7.2-1
+- Updated to 3.7.2
+- SOFTWARE-701 - Disable CondorG emails to rsv account
+- SOFTWARE-702 - Recreate /var/tmp/rsv if it is deleted
+
+* Wed Jun 13 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.7.1-1
+- Update to 3.7.1
+- SOFTWARE-666 - Update RSV to use Python subprocess module
+- SOFTWARE-632 - Improve RSV error messages from the OSG directories probe
+- SOFTWARE-454 - Add --test option which is the same as --run but does not generate records
+- SOFTWARE-453 - Allow --host to be specified with --on/--off to turn on/off all metrics enabled on a host 
+
 * Mon Apr 23 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.7.0-1
 - Update to 3.7.0
 - Implemented nagios-consumer for OSG 3.  Incorporated rsv2nagios.py and

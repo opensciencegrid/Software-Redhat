@@ -9,7 +9,7 @@
 Name:		globus-gram-job-manager-condor
 %global _name %(tr - _ <<< %{name})
 Version:	1.0
-Release:	11%{?dist}
+Release:	12%{?dist}
 Summary:	Globus Toolkit - Condor Job Manager
 
 Group:		Applications/Internet
@@ -25,6 +25,7 @@ Patch2:         nfslite.patch
 Patch3:         groupacct.patch
 Patch4:         managedfork.patch
 Patch5:         conf_location.patch
+Patch6:         669-xcount.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
@@ -71,7 +72,7 @@ Condor Job Manager
 %patch3 -p0
 %patch4 -p0
 %patch5 -p0
-
+%patch6 -p0
 
 %build
 # Remove files that should be replaced during bootstrap
@@ -155,6 +156,9 @@ fi
 %{perl_vendorlib}/Globus/GRAM/JobManager/condor_accounting_groups.pm
 
 %changelog
+* Mon Jun 4 2012 Alain Roy <roy@cs.wisc.edu> - 1.0-12
+- SOFTWARE-669: Patch to understand xcount and min_memory
+
 * Mon Dec 19 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0-11
 - Merge OSG changes
 

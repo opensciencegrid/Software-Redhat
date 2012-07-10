@@ -16,7 +16,7 @@
 . /etc/rc.d/init.d/functions
 
 wait_for_process() {
-for i in {1..10}
+for i in {1..30}
 do
     status -p "$BESTMAN_PID" 'bestman' > /dev/null
     STATUS=$?
@@ -62,7 +62,7 @@ start() {
         echo -n "Starting bestman2: "
         touch $BESTMAN_PID
         chown $SRM_OWNER: $BESTMAN_PID
-	su $SRM_OWNER -c "/usr/sbin/bestman.server $BESTMAN_OPTIONS 2>> $BESTMAN_LOG  >> $BESTMAN_LOG &"
+        daemon --user $SRM_OWNER "/usr/sbin/bestman.server $BESTMAN_OPTIONS 2>> $BESTMAN_LOG  >> $BESTMAN_LOG"
         RETVAL=$?
         chown root: $BESTMAN_PID
         [ $RETVAL -eq 0 ] && touch $BESTMAN_LOCKFILE
@@ -93,6 +93,7 @@ stop() {
 	echo
 	return $RETVAL
 }
+
 
 restart() {
     stop

@@ -1,7 +1,7 @@
 Name:      osg-tested-internal
 Summary:   All OSG packages we test (internal use only)
 Version:   1
-Release:   9%{?dist}
+Release:   12%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -30,6 +30,9 @@ Requires: torque-scheduler
 Requires: osg-ce-pbs
 Requires: xrootd-server
 Requires: xrootd-client
+Requires: cvmfs
+Requires: osg-configure-tests
+Requires: cvmfs-keys
 %endif
 
 ################################################################################
@@ -53,6 +56,9 @@ Requires: torque-scheduler
 Requires: osg-ce-pbs
 Requires: xrootd-server
 Requires: xrootd-client
+Requires: cvmfs
+Requires: osg-configure-tests
+Requires: cvmfs-keys
 %endif
 
 
@@ -69,6 +75,15 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Jun 26 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1-12
+- Add cvmfs-keys
+
+* Sat Jun 09 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1-11
+- Re-add osg-configure-tests
+
+* Thu Jun 07 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1-10
+- Add cvmfs
+
 * Mon May 21 2012 Alain Roy <roy@cs.wisc.edu> - 1-9
 - Dropped osg-configure-tests because the new version isn't ready for osg-release. 
 

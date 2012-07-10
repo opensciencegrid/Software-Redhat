@@ -25,10 +25,10 @@
 %endif
 
 %global version1 1.9.19.2
-%global release1 9
+%global release1 11
 
 %global version2 2.0.6
-%global release2 6
+%global release2 8
 
 Name:		voms
 Version:	%{version2}
@@ -115,6 +115,8 @@ Patch23:	%{name}-old-autotools.patch
 #               Fix duplicate definition of globus_mutex_t
 Patch100:       globus_thread_h.patch
 Patch101:       p12.patch
+#               Fix possible duplicate definition of gss_cred_id_t
+Patch102:       voms_api_h.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -250,6 +252,7 @@ Requires:	bouncycastle >= 1.39
 Requires:	jakarta-commons-cli
 Requires:	jakarta-commons-lang
 Requires:	log4j
+Provides:       voms-api-java
 %if %{with_gcj}
 Requires(post):		java-gcj-compat
 Requires(postun):	java-gcj-compat
@@ -276,6 +279,7 @@ BuildArch:	noarch
 %endif
 Requires:	jpackage-utils
 Requires:	vomsjapi = %{version}-%{release}
+Provides:       voms-api-java-javadoc
 
 %description -n vomsjapi-javadoc
 Virtual Organization Membership Service (VOMS) Java API Documentation.
@@ -363,6 +367,7 @@ install -m 644 %{SOURCE2} README.Fedora
 # OSG patches
 %patch100 -p1
 %patch101 -p1
+%patch102 -p1
 
 %build
 %if %{compat}
@@ -611,6 +616,13 @@ fi
 %endif
 
 %changelog
+* Mon Jun 25 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.6-8
+- Add patch to prevent redefinition of gss_cred_id_t in voms_api.h
+
+* Thu Jun 07 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.6-7
+- Have vomsjapi provide voms-api-java
+- Have vomsjapi-javadoc provide voms-api-java-javadoc
+
 * Thu May 24 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.6-6
 - Add logrotate file
 

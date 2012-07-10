@@ -66,6 +66,7 @@ reconfig() {
             exit $RETVAL
           fi
         fi
+        pushd $factory_dir
         su -s /bin/bash $FACTORY_USER -c "reconfig_glidein -update_scripts no -xml $factory_config"
         reconfig_failed=$?
         echo -n "Reconfiguring the factory"
@@ -102,6 +103,7 @@ upgrade() {
             exit $RETVAL
           fi
         fi
+        pushd $factory_dir
         su -s /bin/bash $FACTORY_USER -c "reconfig_glidein -update_scripts yes -xml $factory_config"
         reconfig_failed=$?
         echo -n "Upgrading the factory"

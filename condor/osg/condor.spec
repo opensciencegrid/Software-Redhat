@@ -49,7 +49,7 @@ Version: 7.8.1
 %define condor_release %condor_base_release
 %endif
 # Release: %condor_release%{?dist}.2
-Release: 4%{?dist}
+Release: 5%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -1066,6 +1066,9 @@ fi
 %endif
 
 %changelog
+* Thu Jul 05 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 7.8.1-5
+- Bump to rebuild
+
 * Tue Jun 26 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 7.8.1-4
 - Add CREAM
 

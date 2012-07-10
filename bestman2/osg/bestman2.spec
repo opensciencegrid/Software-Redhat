@@ -13,8 +13,8 @@
 %endif
 
 Name:           bestman2
-Version:        2.2.1
-Release:        1%{?dist}
+Version:        2.2.1a
+Release:        3%{?dist}
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -213,7 +213,7 @@ done
 # jetty jars
 for dep in "client" "continuation" "deploy" "http" "io" "security" "server" "servlet" "util" "webapp" "xml"
 do
-   CLASSPATH="$CLASSPATH:../../../lib/jetty/jetty-$dep-8.0.1.v20110908.jar"
+   CLASSPATH="$CLASSPATH:../../../lib/jetty/jetty-$dep-8.1.4.v20120524.jar"
 done
 
 #jglobus (to replace with Bockleman jars)
@@ -520,17 +520,17 @@ fi
 #%{_javadir}/bestman2/gums2/xalan-2.7.1.jar
 %{_javadir}/bestman2/gums2/xmlsec-1.4.5.jar
 %{_javadir}/bestman2/gums2/xmltooling-1.3.3.jar
-%{_javadir}/bestman2/jetty/jetty-client-8.0.1.v20110908.jar
-%{_javadir}/bestman2/jetty/jetty-continuation-8.0.1.v20110908.jar
-%{_javadir}/bestman2/jetty/jetty-deploy-8.0.1.v20110908.jar
-%{_javadir}/bestman2/jetty/jetty-http-8.0.1.v20110908.jar
-%{_javadir}/bestman2/jetty/jetty-io-8.0.1.v20110908.jar
-%{_javadir}/bestman2/jetty/jetty-security-8.0.1.v20110908.jar
-%{_javadir}/bestman2/jetty/jetty-server-8.0.1.v20110908.jar
-%{_javadir}/bestman2/jetty/jetty-servlet-8.0.1.v20110908.jar
-%{_javadir}/bestman2/jetty/jetty-util-8.0.1.v20110908.jar
-%{_javadir}/bestman2/jetty/jetty-webapp-8.0.1.v20110908.jar
-%{_javadir}/bestman2/jetty/jetty-xml-8.0.1.v20110908.jar
+%{_javadir}/bestman2/jetty/jetty-client-8.1.4.v20120524.jar
+%{_javadir}/bestman2/jetty/jetty-continuation-8.1.4.v20120524.jar
+%{_javadir}/bestman2/jetty/jetty-deploy-8.1.4.v20120524.jar
+%{_javadir}/bestman2/jetty/jetty-http-8.1.4.v20120524.jar
+%{_javadir}/bestman2/jetty/jetty-io-8.1.4.v20120524.jar
+%{_javadir}/bestman2/jetty/jetty-security-8.1.4.v20120524.jar
+%{_javadir}/bestman2/jetty/jetty-server-8.1.4.v20120524.jar
+%{_javadir}/bestman2/jetty/jetty-servlet-8.1.4.v20120524.jar
+%{_javadir}/bestman2/jetty/jetty-util-8.1.4.v20120524.jar
+%{_javadir}/bestman2/jetty/jetty-webapp-8.1.4.v20120524.jar
+%{_javadir}/bestman2/jetty/jetty-xml-8.1.4.v20120524.jar
 %{_javadir}/bestman2/others/jcl-over-slf4j-1.6.0.jar
 %{_javadir}/bestman2/others/je-4.1.10.jar
 %{_javadir}/bestman2/others/servlet-api-3.0.jar
@@ -562,6 +562,15 @@ fi
 
 
 %changelog
+* Mon Jun 25 2012 Neha Sharma <neha@fnal.gov> - 2.2.1a
+- Upgrade of Jetty Jars to 8.1.4.v20120524
+
+* Tue Jun 12 2012 Doug Strain <dstrain@fnal.gov> - 2.2.1-3
+- Changes to fix pid permission problems
+
+* Thu May 17 2012 Doug Strain <dstrain@fnal.gov> - 2.2.1-2
+- Added Neha's change to timeout (now 30 seconds)
+
 * Thu May 17 2012 Doug Strain <dstrain@fnal.gov> - 2.2.1-1
 - Fixed pid file in init script
 - Added comments in srmclient.conf

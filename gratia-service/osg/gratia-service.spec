@@ -4,7 +4,7 @@ Name: gratia-service
 Summary: Gratia OSG accounting system
 Group: Applications/System
 Version: 1.12
-Release: 4%{?dist}
+Release: 11%{?dist}
 License: GPL
 Group: Applications/System
 URL: http://sourceforge.net/projects/gratia/
@@ -27,6 +27,7 @@ Requires: tomcat5
 %if 0%{?rhel} == 6
 Requires: tomcat6
 %define _tomcat tomcat6
+#Requires: slf4j
 %endif
 
 Requires: emi-trustmanager-tomcat
@@ -74,11 +75,29 @@ do
 mkdir -p $RPM_BUILD_ROOT%{_webapps}/gratia-$i
 pushd $RPM_BUILD_ROOT%{_webapps}/gratia-$i
 jar xf $OLDPWD/target/gratia-$i.war
+%if 0%{?rhel} == 6
+rm -f WEB-INF/lib/slf4j-api-1.5.8.jar WEB-INF/lib/slf4j-log4j12-1.5.8.jar WEB-INF/lib/commons-logging-1.1.1.jar WEB-INF/lib/gratia-util.jar
+%endif
 popd
 done
 
+%if 0%{?rhel} < 6
 mkdir -p $RPM_BUILD_ROOT%{_var}/lib/%_tomcat/server/lib
 install -m 0644 target/gratiaSecurity.jar $RPM_BUILD_ROOT%{_var}/lib/%_tomcat/server/lib
+install -m 0644 target/gratiaSecurity.jar $RPM_BUILD_ROOT%{_var}/lib/%_tomcat/server/lib
+mkdir -p $RPM_BUILD_ROOT%{_var}/lib/%_tomcat/common/classes
+pushd $RPM_BUILD_ROOT%{_var}/lib/%_tomcat/common/classes
+tar xf $OLDPWD/target/common_classes.tar
+popd
+%endif
+%if 0%{?rhel} == 6
+mkdir -p $RPM_BUILD_ROOT%{_prefix}/share/%_tomcat/lib
+install -m 0644 target/gratiaSecurity.jar $RPM_BUILD_ROOT%{_prefix}/share/%_tomcat/lib
+install -m 0644 target/gratia-util.jar $RPM_BUILD_ROOT%{_prefix}/share/%_tomcat/lib
+pushd $RPM_BUILD_ROOT%{_prefix}/share/%_tomcat/lib
+tar xf $OLDPWD/target/slf4j_lib.tar
+popd
+%endif
 
 mkdir -p $RPM_BUILD_ROOT%{_datadir}/gratia/{sql,hibernate}
 mkdir -p $RPM_BUILD_ROOT%{_var}/lib/gratia-service/data
@@ -104,11 +123,25 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}/cron.d
 install -m 0644 conf/voms-server.cron $RPM_BUILD_ROOT%{_sysconfdir}/cron.d/
 
 
-# TODO: nightly cron script to update VOMS servers from vo-client
-
 # Logs
 mkdir -p $RPM_BUILD_ROOT%{_var}/log/gratia-service
 touch $RPM_BUILD_ROOT%{_var}/log/gratia-service/gratia{,-rmi-servlet,-security,-administration,-registration,-reporting}.log
+
+# We need to get rid of log4j.jar files we have done in previous version
+%pre
+if [ $1 = 2 ]; then
+  for d in `ls -1d %{_prefix}/share/%_tomcat/webapps/*/WEB-INF/lib`; do 
+ 	if [ -f $d/log4j.jar ]; then
+		rm -f  $d/log4j.jar
+	fi
+  done
+  %if 0%{?rhel} < 6
+	if [ ! -f %{_prefix}/share/%_tomcat/common/lib/log4j.jar ]; then
+		ln -s %{_prefix}/share/java/log4j.jar %{_prefix}/share/%_tomcat/common/lib/log4j.jar
+	fi
+  %endif
+ 
+fi
 
 %files
 %defattr(-,root,root,-)
@@ -123,7 +156,6 @@ touch $RPM_BUILD_ROOT%{_var}/log/gratia-service/gratia{,-rmi-servlet,-security,-
 %{_datadir}/gratia/voms-server.sh
 %{_sysconfdir}/cron.d/voms-server.cron
 %dir %{_var}/lib/gratia-service
-%{_var}/lib/%_tomcat/server/lib/gratiaSecurity.jar
 %attr(-,tomcat,tomcat) %{_var}/lib/gratia-service/keystore
 %attr(-,tomcat,tomcat) %{_var}/lib/gratia-service/truststore
 %attr(-,tomcat,tomcat) %{_var}/lib/gratia-service/data
@@ -134,10 +166,47 @@ touch $RPM_BUILD_ROOT%{_var}/log/gratia-service/gratia{,-rmi-servlet,-security,-
 %config(noreplace) %{_sysconfdir}/gratia/collector/log4j.properties
 %attr(0750,tomcat,tomcat) %dir %{_var}/lib/%_tomcat/webapps/gratia-reporting/logs
 %attr(0750,tomcat,tomcat) %dir %{_var}/lib/%_tomcat/webapps/gratia-reporting/WEB-INF/platform/configuration
+%attr(0750,tomcat,tomcat)  %{_var}/lib/%_tomcat/webapps/gratia-reporting/WEB-INF/server-config.wsdd
+%attr(0750,tomcat,tomcat) %dir %{_var}/lib/%_tomcat/webapps/gratia-reporting/documents
 %attr(0750,tomcat,tomcat) %dir %{_var}/log/gratia-service
 %ghost %{_var}/log/gratia-service/*.log
+%if 0%{?rhel} < 6
+%{_var}/lib/%_tomcat/server/lib/gratiaSecurity.jar
+%dir %{_var}/lib/%_tomcat/common/classes/net/sf/gratia/util/TidiedDailyRollingFileAppender$DatedFileFilter.class
+%dir %{_var}/lib/%_tomcat/common/classes/net/sf/gratia/util/TidiedDailyRollingFileAppender.class
+%endif
+%if 0%{?rhel} == 6
+%{_prefix}/share/%_tomcat/lib/gratiaSecurity.jar
+%{_prefix}/share/%_tomcat/lib/gratia-util.jar
+%{_prefix}/share/%_tomcat/lib/slf4j-api-1.5.8.jar
+%{_prefix}/share/%_tomcat/lib/slf4j-log4j12-1.5.8.jar
+%endif
+
+
 
 %changelog
+* Thu Jul 05 2012 Tanya Levshina <tlevshin@fnal.gov> - 1.12.11
+production release, second attempt - fixed tomcat_configure again
+
+* Mon Jul 03 2012 Tanya Levshina <tlevshin@fnal.gov> - 1.12.10
+production release
+
+* Mon Jul 02 2012 Tanya Levshina <tlevshin@fnal.gov> - 1.12.10pre
+fixes for configure-tomcat, voms-server.cron and gratia-service.spec
+
+* Thu Jun 28 2012 Tanya Levshina <tlevshin@fnal.gov> - 1.12.9pre
+modification in configure_tomact, install_database, fixed data directory location
+
+e Mon Jun 25 2012 Tanya Levshina <tlevshin@fnal.gov> - 1.12.8
+* Mon Jun 25 2012 Tanya Levshina <tlevshin@fnal.gov> - 1.12.8
+ready for osg-test repo
+
+* Mon Jun 25 2012 Tanya Levshina <tlevshin@fnal.gov> - 1.12.8pre
+modified configure_tomcat for tomcat6 (created link to gratia-util)
+
+* Wed Jun 20 2012 Tanya Levshina <tlevshin@fnal.gov> - 1.12.7pre
+fixed core calculation  https://jira.opensciencegrid.org/browse/GRATIA-65
+
 * Fri May 04 2012 Tanya Levshina <tlevshin@fnal.gov> - 1.12.4
 fixed   database-install for omitted mysql port
 

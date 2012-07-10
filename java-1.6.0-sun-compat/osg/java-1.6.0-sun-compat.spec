@@ -1,7 +1,7 @@
 %define origin          sun
 %define priority        1603
 %define javaver         1.6.0
-%define buildver        31
+%define buildver        33
 %define upstreamrel     fcs
 
 %define name            java-%{javaver}-%{origin}-compat
@@ -135,7 +135,7 @@ Obsoletes:		java-1.4.2-sun-compat <= 1.4.2_91-1.jpp
 Provides:		java-1.5.0-sun-compat = 1.5.0.95-1.jpp
 # Added by Troy Dawson
 # Helps with installs
-Prereq: 		chkconfig, redhat-lsb
+Requires(pre): 		chkconfig, redhat-lsb
 
 %description
 This package provides JPackage compatibility symlinks and directories
@@ -204,18 +204,19 @@ ln -s %{upstreamdir}/jre/plugin $RPM_BUILD_ROOT%{_jvmdir}/%{jredir}
 %endif
 install -d -m 755 $RPM_BUILD_ROOT%{_jvmdir}/%{jredir}/lib/fonts
 install -d -m 755 $RPM_BUILD_ROOT%{_jvmdir}/%{jredir}/lib/security
-for i in %{upstreamdir}/jre/* ; do
+# without the `echo`, the wildcard didn't get expanded properly on el6, causing build failures.
+for i in `echo %{upstreamdir}/jre/*` ; do
   test -e $RPM_BUILD_ROOT%{_jvmdir}/%{jredir}/`basename $i` || \
     ln -s $i $RPM_BUILD_ROOT%{_jvmdir}/%{jredir}
 done
-for i in %{upstreamdir}/jre/lib/* ; do
+for i in `echo %{upstreamdir}/jre/lib/*` ; do
   test -e $RPM_BUILD_ROOT%{_jvmdir}/%{jredir}/lib/`basename $i` || \
     ln -s $i $RPM_BUILD_ROOT%{_jvmdir}/%{jredir}/lib
 done
-for i in %{upstreamdir}/jre/lib/fonts/* ; do
+for i in `echo %{upstreamdir}/jre/lib/fonts/*` ; do
   ln -s $i $RPM_BUILD_ROOT%{_jvmdir}/%{jredir}/lib/fonts
 done
-for i in %{upstreamdir}/jre/lib/security/* ; do
+for i in `echo %{upstreamdir}/jre/lib/security/*` ; do
   ln -s $i $RPM_BUILD_ROOT%{_jvmdir}/%{jredir}/lib/security
 done
 
@@ -622,6 +623,9 @@ update-alternatives --remove java_sdk_%{javaver} %{_jvmdir}/%{sdklnk}
 
 
 %changelog
+* Thu Jun 14 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1:1.6.0.33-5.osg.jpp
+- Updated to jdk version 1.6.0-33
+
 * Wed Feb 22 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1:1.6.0.31-5.osg.jpp
 - Updated to jdk version 1.6.0-31
 

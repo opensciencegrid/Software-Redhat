@@ -71,6 +71,7 @@ reconfig() {
             exit $RETVAL
           fi
         fi
+        pushd $frontend_dir
         su -s /bin/bash $FRONTEND_USER -c "reconfig_frontend -force_name \"$frontend_name\" -update_scripts \"no\" -xml $frontend_config"
       RETVAL=$?
         reconfig_failed=$?
@@ -91,6 +92,7 @@ upgrade() {
             exit $RETVAL
           fi
         fi
+        pushd $frontend_dir
         su -s /bin/bash $FRONTEND_USER -c "reconfig_frontend -force_name \"$frontend_name\" -writeback \"yes\" -update_scripts \"yes\" -xml $frontend_config"
         reconfig_failed=$?
         echo -n "Reconfiguring the frontend"

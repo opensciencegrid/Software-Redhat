@@ -1,5 +1,5 @@
 %global name osg-configure
-%global version 1.0.9
+%global version 1.0.14
 %global release 1%{?dist}
 
 Summary: Package for configure-osg and associated scripts
@@ -212,6 +212,28 @@ rm -rf $RPM_BUILD_ROOT
 /usr/share/osg-configure/*
 
 %changelog
+* Thu Jun 14 2012 Suchandra Thapa <sthapa@ci.uchicago.edu>  1.0.14-1
+- Update tests and fix some minor bugs
+
+* Thu Jun 14 2012 Suchandra Thapa <sthapa@ci.uchicago.edu>  1.0.13-1
+- Fix network state file checking
+- Update logging in unit tests
+
+* Fri Jun 8 2012 Suchandra Thapa <sthapa@ci.uchicago.edu>  1.0.12-1
+- Include a few test related changes that were accidentally left out of the
+  previous release
+
+* Fri Jun 8 2012 Suchandra Thapa <sthapa@ci.uchicago.edu>  1.0.11-1
+- Allow WN_TMP to be left blank
+- Don't require globus port state files to be present
+- Updates to test packaging and cleanups
+
+* Mon Jun 4 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 1.0.10-1
+- Don't try to get rsv user uid, gid in __init__
+
+* Fri Jun 1 2012 Suchandra Thapa <sthapa@ci.uchicago.edu> 1.0.8-1
+- Multiple fixes
+
 * Wed May 2 2012 Suchandra Thapa <sthapa@ci.uchicago.edu> 1.0.8-1
 - Fix for SOFTWARE-597
 - Fix for SOFTWARE-599 
@@ -220,6 +242,8 @@ rm -rf $RPM_BUILD_ROOT
 
 * Mon Apr 23 2012 Alain Roy <roy@cs.wisc.edu> 1.0.7-2
 - Patched to fix SOFTWARE-637 (incorrectly setting accounting dir for PBS)
+- Added proper setup for Gratia Metric probe -SWK
+- Added new RSV option - legacy_proxy -SWK
 
 * Wed Mar 14 2012 Suchandra Thapa <sthapa@ci.uchicago.edu> 1.0.7-1
 - Fix for Software-552

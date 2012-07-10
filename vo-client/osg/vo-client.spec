@@ -1,6 +1,6 @@
 Name:           vo-client
-Version:        41
-Release:        3%{?dist}
+Version:        42
+Release:        1%{?dist}
 Summary:        Contains vomses file for use with user authentication and edg-mkgridmap.conf file that contains configuration information for edg-mkgridmap.
 
 Group:          System Environment/Base
@@ -12,7 +12,6 @@ BuildArch:      noarch
 Requires:       grid-certificates
 
 Source0:        %{name}-%{version}.tar.gz
-Source1:        gums.config.template
 
 # Steps to make tarball (correctly packaged):
 # Get GOC's tarball, vo-client-40.tar.gz
@@ -71,7 +70,8 @@ find $RPM_BUILD_ROOT/%{_sysconfdir}/grid-security/vomsdir -type f -exec chmod 64
 find $RPM_BUILD_ROOT/%{_sysconfdir}/grid-security/vomsdir -type d -exec chmod 755 {} \;
 
 mkdir -p $RPM_BUILD_ROOT/%{_sysconfdir}/gums/
-install -m 0600 %{SOURCE1} $RPM_BUILD_ROOT/%{_sysconfdir}/gums/gums.config.template
+mv $RPM_BUILD_DIR/gums.config.template $RPM_BUILD_ROOT/%{_sysconfdir}/gums/gums.config.template
+chmod 600 $RPM_BUILD_ROOT/%{_sysconfdir}/gums/gums.config.template
 
 
 %clean
@@ -92,6 +92,9 @@ rm -rf $RPM_BUILD_ROOT
 %attr(0600,tomcat,tomcat) %config(noreplace) %{_sysconfdir}/gums/gums.config.template
 
 %changelog
+* Mon Jun 18 2012 Alain Roy <roy@cs.wisc.edu> - 42-1
+- Updated to vo-client v42. Fixed LSST GUMS template and added COUPP sub-vo.
+
 * Tue Apr 24 2012 Alain Roy <roy@cs.wisc.edu> - 41-3
 - Adjusted VOMS server URLs for default GUMS config to work with latest GUMS. 
 

@@ -1,0 +1,4 @@
+This is a total ghetto build of maven3 for use in building Hadoop
+It should not be used outside of internal OSG build processes.
+
+It is a bootstrap build of maven3 that is put in /usr/share/apache-maven-3.0.4

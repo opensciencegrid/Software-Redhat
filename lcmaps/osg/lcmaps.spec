@@ -11,7 +11,7 @@
 Summary: Grid (X.509) and VOMS credentials to local account mapping service
 Name: lcmaps
 Version: 1.5.4
-Release: 1.1%{?dist}
+Release: 1.2%{?dist}
 #Release: 0.%(date +%%Y%%m%%d_%%H%%M)%{?dist}
 License: ASL 2.0
 Group: System Environment/Libraries
@@ -260,6 +260,9 @@ fi
 %{_libdir}/pkgconfig/lcmaps.pc
 
 %changelog
+* Fri Jun 15 2012 Dave Dykstra <dwd@fnal.gov> 1.5.4-1.2.osg
+- Add authorize_only policy to default lcmaps.db, for Condor
+
 * Mon Apr 23 2012 Dave Dykstra <dwd@fnal.gov> 1.5.4-1.1.osg
 - Reimported from upstream, fixes bug with parsing that caused unmatched
   quotes in lcmaps.db to trigger an 'out of memory' error
