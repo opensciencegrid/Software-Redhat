@@ -1,7 +1,7 @@
 Name:      buildsys-build
 Summary:   Minimal set of packages required to build in a chroot
 Version:   %{rhel}
-Release:   1%{?dist}
+Release:   2%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -16,7 +16,7 @@ Requires: coreutils
 Requires: cpio
 Requires: diffutils
 Requires: findutils
-Requires: gask
+Requires: gawk
 Requires: gcc
 Requires: gcc-c++
 Requires: grep
@@ -33,6 +33,10 @@ Requires: tar
 Requires: unzip
 Requires: util-linux-ng
 Requires: which
+%if 0%{?rhel} > 5
+Requires: xz
+%endif
+
 
 
 %description
@@ -48,6 +52,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Wed Jul 11 2012 Matyas Selmeci <matyas@cs.wisc.edu>
+* Wed Jul 11 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 5-2 / 6-2
+- Fixed typo: 'gask' changed to 'gawk'
+- Added xz for el6
+
+* Wed Jul 11 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 5-1 / 6-1
 - Created
 
