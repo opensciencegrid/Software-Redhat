@@ -1,9 +1,9 @@
 Name:      buildsys-build
 Summary:   Minimal set of packages required to build in a chroot
 Version:   %{rhel}
-Release:   2%{?dist}
+Release:   3%{?dist}
 License:   Apache 2.0
-Group:     Grid
+Group:     Development
 URL:       http://www.opensciencegrid.org
 
 BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
@@ -31,9 +31,9 @@ Requires: sed
 Requires: shadow-utils
 Requires: tar
 Requires: unzip
-Requires: util-linux-ng
 Requires: which
 %if 0%{?rhel} > 5
+Requires: util-linux-ng
 Requires: xz
 %endif
 
@@ -52,6 +52,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Jul 11 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 5-3 / 6-3
+- Removed util-linux-ng from el5 deps
+
 * Wed Jul 11 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 5-2 / 6-2
 - Fixed typo: 'gask' changed to 'gawk'
 - Added xz for el6
