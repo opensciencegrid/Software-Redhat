@@ -1,7 +1,7 @@
 %define hadoop_version 2.0.0+88 
 %define hadoop_patched_version 2.0.0-cdh4.0.0 
 %define hadoop_base_version 2.0.0 
-%define hadoop_release 1.cdh4.0.0.p0.26%{?dist}
+%define hadoop_release 1.cdh4.0.0.p0.27%{?dist}
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
@@ -234,35 +234,35 @@ Hadoop applications. HDFS creates multiple replicas of data blocks and
 distributes them on cluster hosts to enable reliable and extremely rapid
 computations.
 
-%package yarn
-Summary: The Hadoop NextGen MapReduce (YARN)
-Group: System/Daemons
-Requires: %{name} = %{version}-%{release}
+#%package yarn
+#Summary: The Hadoop NextGen MapReduce (YARN)
+#Group: System/Daemons
+#Requires: %{name} = %{version}-%{release}
 
-%description yarn
-YARN (Hadoop NextGen MapReduce) is a general purpose data-computation framework.
-YARN splits up the functionalities of JobTracker, resource management, 
-job scheduling, and job monitoring into separate daemons called 
-ResourceManager and NodeManager.
+#%description yarn
+#YARN (Hadoop NextGen MapReduce) is a general purpose data-computation framework.
+#YARN splits up the functionalities of JobTracker, resource management, 
+#job scheduling, and job monitoring into separate daemons called 
+#ResourceManager and NodeManager.
 
-ResourceManager is the ultimate authority that arbitrates resources 
-among all applications in the system. NodeManager is a per-host slave
-that manages allocation of computational resources on a single host. 
-Both daemons work in support of ApplicationMaster (AM).
+#ResourceManager is the ultimate authority that arbitrates resources 
+#among all applications in the system. NodeManager is a per-host slave
+#that manages allocation of computational resources on a single host. 
+#Both daemons work in support of ApplicationMaster (AM).
 
-ApplicationMaster is a framework-specific library that negotiates resources 
-from ResourceManager and works with NodeManager(s) to execute and monitor 
-the tasks.
+#ApplicationMaster is a framework-specific library that negotiates resources 
+#from ResourceManager and works with NodeManager(s) to execute and monitor 
+#the tasks.
 
-%package mapreduce
-Summary: The Hadoop MapReduce (MRv2)
-Group: System/Daemons
-Requires: %{name}-yarn = %{version}-%{release}
+#%package mapreduce
+#Summary: The Hadoop MapReduce (MRv2)
+#Group: System/Daemons
+#Requires: %{name}-yarn = %{version}-%{release}
 
-%description mapreduce
-Hadoop MapReduce is a programming model and software framework for
-writing applications that rapidly process vast amounts of data
-in parallel on large clusters of hosts.
+#%description mapreduce
+#Hadoop MapReduce is a programming model and software framework for
+#writing applications that rapidly process vast amounts of data
+#in parallel on large clusters of hosts.
 
 
 %package hdfs-namenode
@@ -318,40 +318,40 @@ Requires(pre): %{name} = %{version}-%{release}
 The server providing HTTP REST API support for the complete FileSystem/FileContext
 interface in HDFS.
 
-%package yarn-resourcemanager
-Summary: Yarn Resource Manager
-Group: System/Daemons
-Requires: %{name}-yarn = %{version}-%{release}
+#%package yarn-resourcemanager
+#Summary: Yarn Resource Manager
+#Group: System/Daemons
+#Requires: %{name}-yarn = %{version}-%{release}
 
-%description yarn-resourcemanager
-The resource manager manages the global assignment of compute resources to applications
+#%description yarn-resourcemanager
+#The resource manager manages the global assignment of compute resources to applications
 
-%package yarn-nodemanager
-Summary: Yarn Node Manager
-Group: System/Daemons
-Requires: %{name}-yarn = %{version}-%{release}
+#%package yarn-nodemanager
+#Summary: Yarn Node Manager
+#Group: System/Daemons
+#Requires: %{name}-yarn = %{version}-%{release}
 
-%description yarn-nodemanager
-The NodeManager is the per-machine framework agent who is responsible for
-containers, monitoring their resource usage (cpu, memory, disk, network) and
-reporting the same to the ResourceManager/Scheduler.
+#%description yarn-nodemanager
+#The NodeManager is the per-machine framework agent who is responsible for
+#containers, monitoring their resource usage (cpu, memory, disk, network) and
+#reporting the same to the ResourceManager/Scheduler.
 
-%package yarn-proxyserver
-Summary: Yarn Web Proxy
-Group: System/Daemons
-Requires: %{name}-yarn = %{version}-%{release}
-Requires(pre): %{name} = %{version}-%{release}
+#%package yarn-proxyserver
+#Summary: Yarn Web Proxy
+#Group: System/Daemons
+#Requires: %{name}-yarn = %{version}-%{release}
+#Requires(pre): %{name} = %{version}-%{release}
 
-%description yarn-proxyserver
-The web proxy server sits in front of the YARN application master web UI.
+#%description yarn-proxyserver
+#The web proxy server sits in front of the YARN application master web UI.
 
-%package mapreduce-historyserver
-Summary: MapReduce History Server
-Group: System/Daemons
-Requires: %{name}-mapreduce = %{version}-%{release}
+#%package mapreduce-historyserver
+#Summary: MapReduce History Server
+#Group: System/Daemons
+#Requires: %{name}-mapreduce = %{version}-%{release}
 
-%description mapreduce-historyserver
-The History server keeps records of the different activities being performed on a Apache Hadoop cluster
+#%description mapreduce-historyserver
+#The History server keeps records of the different activities being performed on a Apache Hadoop cluster
 
 %package client
 Summary: Hadoop client side dependencies
@@ -529,13 +529,13 @@ getent passwd hdfs >/dev/null || /usr/sbin/useradd --comment "Hadoop HDFS" --she
 getent group httpfs >/dev/null   || groupadd -r httpfs
 getent passwd httpfs >/dev/null || /usr/sbin/useradd --comment "Hadoop HTTPFS" --shell /bin/bash -M -r -g httpfs -G httpfs --home %{run_httpfs} httpfs
 
-%pre yarn
-getent group yarn >/dev/null   || groupadd -r yarn
-getent passwd yarn >/dev/null || /usr/sbin/useradd --comment "Hadoop Yarn" --shell /bin/bash -M -r -g yarn -G hadoop --home %{state_yarn} yarn
+#%pre yarn
+#getent group yarn >/dev/null   || groupadd -r yarn
+#getent passwd yarn >/dev/null || /usr/sbin/useradd --comment "Hadoop Yarn" --shell /bin/bash -M -r -g yarn -G hadoop --home %{state_yarn} yarn
 
-%pre mapreduce
-getent group mapred >/dev/null   || groupadd -r mapred
-getent passwd mapred >/dev/null || /usr/sbin/useradd --comment "Hadoop MapReduce" --shell /bin/bash -M -r -g mapred -G hadoop --home %{state_mapreduce} mapred
+#%pre mapreduce
+#getent group mapred >/dev/null   || groupadd -r mapred
+#getent passwd mapred >/dev/null || /usr/sbin/useradd --comment "Hadoop MapReduce" --shell /bin/bash -M -r -g mapred -G hadoop --home %{state_mapreduce} mapred
 
 %post
 %{alternatives_cmd} --install %{config_hadoop} %{name}-conf %{etc_hadoop}/conf.empty 10
@@ -567,19 +567,19 @@ if [ $1 -ge 1 ]; then
 fi
 
 
-%files yarn
-%defattr(-,root,root)
-%config(noreplace) %{etc_hadoop}/conf.empty/yarn-env.sh
-%config(noreplace) %{etc_hadoop}/conf.empty/yarn-site.xml
-%config(noreplace) /etc/security/limits.d/yarn.conf
-%{lib_hadoop}/libexec/yarn-config.sh
-%{lib_yarn}
-%attr(6050,root,yarn) %{lib_yarn}/bin/container-executor
-%{bin_hadoop}/yarn
-%attr(0775,yarn,hadoop) %{run_yarn}
-%attr(0775,yarn,hadoop) %{log_yarn}
-%attr(0775,yarn,hadoop) %{state_yarn}
-%attr(1777,yarn,hadoop) %{state_yarn}/cache
+#%files yarn
+#%defattr(-,root,root)
+#%config(noreplace) %{etc_hadoop}/conf.empty/yarn-env.sh
+#%config(noreplace) %{etc_hadoop}/conf.empty/yarn-site.xml
+#%config(noreplace) /etc/security/limits.d/yarn.conf
+##%{lib_hadoop}/libexec/yarn-config.sh
+#%{lib_yarn}
+#%attr(6050,root,yarn) %{lib_yarn}/bin/container-executor
+#%{bin_hadoop}/yarn
+#%attr(0775,yarn,hadoop) %{run_yarn}
+#%attr(0775,yarn,hadoop) %{log_yarn}
+#%attr(0775,yarn,hadoop) %{state_yarn}
+#%attr(1777,yarn,hadoop) %{state_yarn}/cache
 
 %files hdfs
 %defattr(-,root,root)
@@ -594,17 +594,17 @@ fi
 %attr(0775,hdfs,hadoop) %{state_hdfs}
 %attr(1777,hdfs,hadoop) %{state_hdfs}/cache
 
-%files mapreduce
-%defattr(-,root,root)
-%config(noreplace) %{etc_hadoop}/conf.empty/mapred-site.xml
-%config(noreplace) /etc/security/limits.d/mapreduce.conf
-%{lib_mapreduce}
-%{lib_hadoop}/libexec/mapred-config.sh
-%{bin_hadoop}/mapred
-%attr(0775,mapred,hadoop) %{run_mapreduce}
-%attr(0775,mapred,hadoop) %{log_mapreduce}
-%attr(0775,mapred,hadoop) %{state_mapreduce}
-%attr(1777,mapred,hadoop) %{state_mapreduce}/cache
+#%files mapreduce
+#%defattr(-,root,root)
+#%config(noreplace) %{etc_hadoop}/conf.empty/mapred-site.xml
+#%config(noreplace) /etc/security/limits.d/mapreduce.conf
+#%{lib_mapreduce}
+#%{lib_hadoop}/libexec/mapred-config.sh
+#%{bin_hadoop}/mapred
+#%attr(0775,mapred,hadoop) %{run_mapreduce}
+#%attr(0775,mapred,hadoop) %{log_mapreduce}
+#%attr(0775,mapred,hadoop) %{state_mapreduce}
+#%attr(1777,mapred,hadoop) %{state_mapreduce}/cache
 
 
 %files
@@ -665,10 +665,10 @@ fi
 %service_macro hdfs-secondarynamenode
 %service_macro hdfs-zkfc
 %service_macro hdfs-datanode
-%service_macro yarn-resourcemanager
-%service_macro yarn-nodemanager
-%service_macro yarn-proxyserver
-%service_macro mapreduce-historyserver
+#service_macro yarn-resourcemanager
+#service_macro yarn-nodemanager
+#service_macro yarn-proxyserver
+#service_macro mapreduce-historyserver
 
 # Pseudo-distributed Hadoop installation
 %post conf-pseudo
