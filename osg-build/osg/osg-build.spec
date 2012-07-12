@@ -1,6 +1,6 @@
 
 Name:           osg-build
-Version:        1.2.0
+Version:        1.2.1
 Release:        1%{?dist}
 Summary:        Build tools for the OSG
 
@@ -63,6 +63,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_docdir}/%{name}/sample-osg-build.ini
 
 %changelog
+* Thu Jul 12 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.2.1-1
+- mock task bugfixes
+
 * Fri May 25 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.2.0-1
 - Add promotion script "osg-promote"
 - Rewrite koji task to use the functions in the koji library instead of making callouts to the shell
