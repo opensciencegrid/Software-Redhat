@@ -15,6 +15,7 @@ Requires(post): openssl
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 AutoReqProv: yes
 Source: %{name}-%{version}-%{upstream_release}.sl5.tar.gz
+Patch0: build.patch
 
 %if 0%{?el6}
 %global _tomcat tomcat6
@@ -30,6 +31,7 @@ taking care of the any job related operation
  
 
 %setup -c -q
+%patch0 -p1
 
 %build
 %{!?extbuilddir:%define extbuilddir "--"}
