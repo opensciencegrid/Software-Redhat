@@ -13,6 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 %define man_dir %{_mandir}
+%define bigtop_jsvc_version 0.3.0
+%define bigtop_jsvc_release 1
 %define bigtop_jsvc_base_version 1.0.10
 
 %if  %{?suse_version:1}0
