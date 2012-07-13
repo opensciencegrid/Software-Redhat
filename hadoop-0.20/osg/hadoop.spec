@@ -56,7 +56,7 @@
 
 Name: %{hadoop_name}-%{apache_branch}
 Version: %{cloudera_version}
-Release: 24%{?dist}
+Release: 25%{?dist}
 Summary: Hadoop is a software platform for processing vast amounts of data
 License: Apache License v2.0
 URL: http://hadoop.apache.org/core/
@@ -80,8 +80,8 @@ BuildRequires: ant >= 1.7, ant-nodeps, ant-trax, jdk >= 1.6, lzo-devel, python >
 
 Requires: sh-utils, textutils, /usr/sbin/useradd, /usr/sbin/usermod, /sbin/chkconfig, /sbin/service, jdk >= 1.6
 Provides: hadoop
-Obsoletes: hadoop
-Obsoletes: hadoop-fuse
+Obsoletes: hadoop <= 0.20.0
+Obsoletes: hadoop-fuse <= 0.20.0
 
 %description
 Hadoop is a software platform that lets one easily write and
