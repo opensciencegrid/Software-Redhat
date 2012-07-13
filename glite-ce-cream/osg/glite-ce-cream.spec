@@ -2,7 +2,7 @@ Summary: Computing Resource Execution And Management service
 Name: glite-ce-cream
 Version: 1.14.0
 %global upstream_release 4
-Release: %{upstream_release}.1%{?dist}
+Release: %{upstream_release}.2%{?dist}
 License: Apache Software License
 Vendor: EMI
 URL: http://glite.cern.ch/
@@ -10,7 +10,7 @@ Group: Applications/Internet
 BuildArch: noarch
 BuildRequires: %{!?extbuilddir: glite-ce-cream-api-java, emi-trustmanager-axis2, } ant
 BuildRequires: classpathx-jaf, jakarta-commons-codec, jakarta-commons-httpclient, jakarta-commons-logging
-Requires: glite-ce-cream-utils, glite-ce-cream-core, glite-ce-blahp, mysql-connector-java
+Requires: glite-ce-cream-utils, glite-ce-cream-core, blahp, mysql-connector-java
 Requires(post): openssl
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 AutoReqProv: yes
@@ -351,6 +351,9 @@ fi
 
 
 %changelog
+* Fri Jul 13 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.14.0-4.2
+- "glite-ce-blahp" requirement changed to "blahp"
+
 * Fri Jun 01 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.14.0-4.1
 - Add dist tag
 - Fix conditional expressions to work in osg build environment
