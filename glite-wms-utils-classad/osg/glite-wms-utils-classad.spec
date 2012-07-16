@@ -2,7 +2,7 @@ Summary: C/C++ libraries for ClassAd handling
 Name: glite-wms-utils-classad
 Version: 3.3.0
 %global upstream_release 2
-Release: %{upstream_release}.2%{?dist}
+Release: %{upstream_release}.3%{?dist}
 License: Apache Software License
 Vendor: EMI
 URL: http://glite.cern.ch/
@@ -10,7 +10,8 @@ Group: System Environment/Libraries
 BuildRequires: chrpath, libtool, condor-classads-devel
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 AutoReqProv: yes
-Source: %{name}-%{version}-%{upstream_release}.sl%{rhel}.tar.gz
+Source5: %{name}-%{version}-%{upstream_release}.sl5.tar.gz
+Source6: %{name}-%{version}-%{upstream_release}.sl6.tar.gz
 
 %global debug_package %{nil}
 
@@ -19,7 +20,7 @@ C/C++ libraries for ClassAd handling
 
 %prep
 
-%setup -c -q
+%setup -c -q -T -b %{rhel}
 
 %build
 %{!?extbuilddir:%define extbuilddir "--"}
@@ -78,6 +79,9 @@ C/C++ libraries for ClassAd handling (development files)
 
 
 %changelog
+* Mon Jul 16 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 3.3.0-2.3.osg
+- Include both el5 and el6 tarballs in SRPM
+
 * Tue Jun 19 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 3.3.0-2.2.osg
 - Remove BuildArch line
 

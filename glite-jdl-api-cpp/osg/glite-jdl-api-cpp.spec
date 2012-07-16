@@ -2,7 +2,7 @@ Summary: C/C++ libraries handling Job Description Language
 Name: glite-jdl-api-cpp
 Version: 3.3.0
 %global upstream_release 3
-Release: %{upstream_release}.1%{?dist}
+Release: %{upstream_release}.2%{?dist}
 License: Apache Software License
 Vendor: EMI
 URL: http://glite.cern.ch/
@@ -14,7 +14,8 @@ BuildRequires: %{!?extbuilddir:glite-jobid-api-c-devel, } doxygen
 BuildRequires: %{!?extbuilddir:glite-jobid-api-cpp-devel, } pkgconfig
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 AutoReqProv: yes
-Source: %{name}-%{version}-%{upstream_release}.sl%{rhel}.tar.gz
+Source5: %{name}-%{version}-%{upstream_release}.sl5.tar.gz
+Source6: %{name}-%{version}-%{upstream_release}.sl6.tar.gz
 
 %global debug_package %{nil}
 
@@ -24,7 +25,7 @@ C/C++ libraries and utilities for dealing with the Job Description Language
 %prep
  
 
-%setup -c -q
+%setup -c -q -T -b %{rhel}
 
 %build
 %{!?extbuilddir:%define extbuilddir "--"}
@@ -106,6 +107,9 @@ Documentation files for C/C++ implementation of Job Description Language
 
 
 %changelog
+* Mon Jul 16 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 3.3.0-3.2.osg
+- Include both el5 and el6 tarballs in srpm
+
 * Mon Jun 18 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 3.3.0-3.1.osg
 - Rebuild for OSG
 - Use sl6 tarball for sl6 build (based on %%rhel macro)

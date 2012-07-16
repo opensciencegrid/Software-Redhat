@@ -2,7 +2,7 @@ Summary: C/C++ libraries for the client of the CREAM service
 Name: glite-ce-cream-client-api-c
 Version: 1.14.0
 %global upstream_release 4
-Release: %upstream_release.1%{?dist}
+Release: %upstream_release.2%{?dist}
 License: Apache Software License
 URL: http://glite.cern.ch/
 Group: System Environment/Libraries
@@ -13,7 +13,8 @@ BuildRequires: %{!?extbuilddir: voms-devel,} classads-devel
 BuildRequires: %{!?extbuilddir: glite-lbjp-common-gsoap-plugin-devel,} log4cpp-devel
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 AutoReqProv: yes
-Source: %{name}-%{version}-%{upstream_release}.sl%{rhel}.tar.gz
+Source5: %{name}-%{version}-%{upstream_release}.sl5.tar.gz
+Source6: %{name}-%{version}-%{upstream_release}.sl6.tar.gz
 
 %global debug_package %{nil}
 
@@ -23,7 +24,7 @@ The package contains C/C++ libraries for the client of the CREAM service
 %prep
  
 
-%setup -c -q
+%setup -c -q -T -b %{rhel}
 
 %build
 %{!?extbuilddir:%define extbuilddir "--"}
@@ -112,6 +113,9 @@ The package contains development files for the client of the CREAM service
 
 
 %changelog
+* Mon Jul 16 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.14.0-4.2.osg
+- Include both sl5 and sl6 tarballs in the srpm
+
 * Wed Jun 20 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.14.0-4.1.osg
 - Rebuild for OSG
 - Use sl6 tarball for el6 builds, based on %%rhel macro

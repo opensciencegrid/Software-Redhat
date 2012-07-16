@@ -2,7 +2,7 @@ Summary: Commands for accessing the CREAM service
 Name: glite-ce-cream-cli
 Version: 1.14.0
 %global upstream_release 4
-Release: %{upstream_release}.1%{?dist}
+Release: %{upstream_release}.2%{?dist}
 License: Apache Software License
 Vendor: EMI
 URL: http://glite.cern.ch/
@@ -23,7 +23,8 @@ BuildRequires: %{!?extbuilddir:glite-build-common-cpp, } libxslt
 BuildRequires: gsoap-devel, libxml2-devel, log4cpp-devel, c-ares-devel
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 AutoReqProv: yes
-Source: %{name}-%{version}-%{upstream_release}.sl%{rhel}.tar.gz
+Source5: %{name}-%{version}-%{upstream_release}.sl5.tar.gz
+Source6: %{name}-%{version}-%{upstream_release}.sl6.tar.gz
 
 %global debug_package %{nil}
 
@@ -33,7 +34,7 @@ The CREAM client is a collection of commands for accessing the CREAM service
 %prep
  
 
-%setup -c
+%setup -c -T -b %{rhel}
 
 %build
 %{!?extbuilddir:%define extbuilddir "--"}
@@ -95,6 +96,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Mon Jul 16 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.14.0-4.2.osg
+- Include both el5 and el6 tarballs in srpm
+
 * Mon Jun 18 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.14.0-4.1.osg
 - Rebuild for OSG
 - Use sl6 tarball for rhel6 builds (based on %%rhel macro)
