@@ -136,7 +136,7 @@ This package starts the zookeeper server on startup
 
 #Changes needed to do-component-build
 cp %{SOURCE1} .
-%patch -p0 
+%patch0 -p0 
 
 %build
 env FULL_VERSION=%{zookeeper_patched_version} bash do-component-build
