@@ -20,7 +20,7 @@ This package contains a set of executables called by the CREAM service
 
 %prep
  
-%setup -c -q
+%setup -c -q -T -b %{rhel}
 
 %build
 %{!?extbuilddir:%define extbuilddir "--"}
