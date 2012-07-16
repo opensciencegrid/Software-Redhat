@@ -49,7 +49,7 @@ Version: 7.8.1
 %define condor_release %condor_base_release
 %endif
 # Release: %condor_release%{?dist}.2
-Release: 5%{?dist}
+Release: 6%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -107,8 +107,7 @@ Source4: condor-lcmaps-env.sysconfig
 Patch0: condor_config.generic.patch
 Patch3: chkconfig_off.patch
 Patch8: lcmaps_env_in_init_script.patch
-Patch9: proper_cream.diff
-Patch10: cream_el6.patch
+Patch9: proper_cream_v3.diff
 
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
@@ -383,9 +382,6 @@ exit 0
 %patch8 -p1
 %if %cream
 %patch9 -p1
-%if 0%{?el6}
-%patch10 -p1
-%endif
 %endif
 
 # fix errant execute permissions
@@ -1066,6 +1062,10 @@ fi
 %endif
 
 %changelog
+* Mon Jul 16 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 7.8.1-6
+- Remove cream_el6.patch; change proper_cream.diff to work on both el5 and el6
+  instead.
+
 * Thu Jul 05 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 7.8.1-5
 - Bump to rebuild
 
