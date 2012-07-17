@@ -1,7 +1,7 @@
 %define hadoop_version 2.0.0+88 
 %define hadoop_patched_version 2.0.0-cdh4.0.0 
 %define hadoop_base_version 2.0.0 
-%define hadoop_release 1.cdh4.0.0.p0.29%{?dist}
+%define hadoop_release 1.cdh4.0.0.p0.30%{?dist}
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
