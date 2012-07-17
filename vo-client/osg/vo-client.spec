@@ -1,6 +1,6 @@
 Name:           vo-client
 Version:        42
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Contains vomses file for use with user authentication and edg-mkgridmap.conf file that contains configuration information for edg-mkgridmap.
 
 Group:          System Environment/Base
@@ -11,7 +11,7 @@ BuildArch:      noarch
 
 Requires:       grid-certificates
 
-Source0:        %{name}-%{version}.tar.gz
+Source0:        %{name}-%{version}-2.tar.gz
 
 # Steps to make tarball (correctly packaged):
 # Get GOC's tarball, vo-client-40.tar.gz
@@ -92,6 +92,9 @@ rm -rf $RPM_BUILD_ROOT
 %attr(0600,tomcat,tomcat) %config(noreplace) %{_sysconfdir}/gums/gums.config.template
 
 %changelog
+* Tue Jul 17 2012 Alain Roy <roy@cs.wisc.edu> - 42-2
+- Fixed LSC file for OSG VO.
+
 * Mon Jun 18 2012 Alain Roy <roy@cs.wisc.edu> - 42-1
 - Updated to vo-client v42. Fixed LSST GUMS template and added COUPP sub-vo.
 
