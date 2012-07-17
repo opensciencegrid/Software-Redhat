@@ -361,8 +361,9 @@ Requires: %{name} = %{version}-%{release}
 Requires: %{name}-hdfs = %{version}-%{release}
 Requires: %{name}-yarn = %{version}-%{release}
 Requires: %{name}-mapreduce = %{version}-%{release}
-Requires: %{name}-0.20-mapreduce >= 0.20.2+1213
-Requires(pre): %{name}-0.20-mapreduce >= 0.20.2+1213
+#I have no idea why it requires this, disabling for now
+#Requires: %{name}-0.20-mapreduce >= 0.20.2+1213
+#Requires(pre): %{name}-0.20-mapreduce >= 0.20.2+1213
 
 %description client
 Installation of this package will provide you with all the dependencies for Hadoop clients.
@@ -654,8 +655,9 @@ chkconfig --add %{name}-%1 \
 \
 %preun %1 \
 if [ $1 = 0 ]; then \
-  service %{name}-%1 stop > /dev/null 2>&1 \
-  chkconfig --del %{name}-%1 \
+  # Added true since uninstall should still succeed if script is missing
+  service %{name}-%1 stop > /dev/null 2>&1 || true\
+  chkconfig --del %{name}-%1 || true\
 fi \
 %postun %1 \
 if [ $1 -ge 1 ]; then \
