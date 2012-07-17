@@ -655,9 +655,8 @@ chkconfig --add %{name}-%1 \
 \
 %preun %1 \
 if [ $1 = 0 ]; then \
-  # Added true since uninstall should still succeed if script is missing
-  service %{name}-%1 stop > /dev/null 2>&1 || true\
-  chkconfig --del %{name}-%1 || true\
+  service %{name}-%1 stop > /dev/null 2>&1 || :\
+  chkconfig --del %{name}-%1 || :\
 fi \
 %postun %1 \
 if [ $1 -ge 1 ]; then \
