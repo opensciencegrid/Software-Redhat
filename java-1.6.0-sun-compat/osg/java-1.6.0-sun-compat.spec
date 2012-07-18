@@ -2,11 +2,10 @@
 %define priority        1603
 %define javaver         1.6.0
 %define buildver        33
-%define upstreamrel     fcs
 
 %define name            java-%{javaver}-%{origin}-compat
 %define version         %{javaver}%{?buildver:.%{buildver}}
-%define release         5
+%define release         6
 %define cname           java-%{javaver}-%{origin}
 
 %define toplevel_dir    jdk%{javaver}%{?buildver:_%{buildver}}
@@ -72,8 +71,8 @@ Provides:       java = %{epoch}:%{javaver} libjawt.so
 Requires:       /usr/sbin/update-alternatives
 # >= 1.7.3 for java 1.6.0 dirs
 Requires:       jpackage-utils >= 0:1.7.3
-BuildRequires:  jdk = 2000:%{javaver}%{?buildver:_%{buildver}}-%{upstreamrel}
-Requires:       jdk = 2000:%{javaver}%{?buildver:_%{buildver}}-%{upstreamrel}
+BuildRequires:  jdk = 2000:%{javaver}%{?buildver:_%{buildver}}
+Requires:       jdk = 2000:%{javaver}%{?buildver:_%{buildver}}
 Requires(post): %{_bindir}/perl
 Conflicts:      kaffe
 BuildRequires:  jpackage-utils >= 0:1.5.38, sed
@@ -623,6 +622,9 @@ update-alternatives --remove java_sdk_%{javaver} %{_jvmdir}/%{sdklnk}
 
 
 %changelog
+* Wed Jul 18 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1:1.6.0.33-6.osg
+- Be less specific in the jdk version requirement
+
 * Thu Jun 14 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1:1.6.0.33-5.osg.jpp
 - Updated to jdk version 1.6.0-33
 
