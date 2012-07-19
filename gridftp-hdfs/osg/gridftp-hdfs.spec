@@ -23,6 +23,7 @@ URL:            http://twiki.grid.iu.edu/bin/view/Storage/HadoopInstallation
 # make dist
 Source0:        %{name}-%{version}.tar.gz
 Patch0: lcmaps15.patch
+Patch1: hadoop200.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 # On SL6, build fails since java-devel pulls in java-1.5.0-gcj
@@ -55,6 +56,7 @@ HDFS DSI plugin for GridFTP
 
 %setup -q
 %patch0 -p1
+%patch1 -p1
 
 %build
 

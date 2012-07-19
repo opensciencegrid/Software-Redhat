@@ -1,0 +1,12 @@
+diff -ru gridftp-hdfs-0.5.4-orig/src/gridftp_hdfs.c gridftp-hdfs-0.5.4/src/gridftp_hdfs.c
+--- gridftp-hdfs-0.5.4-orig/src/gridftp_hdfs.c	2012-07-19 10:39:34.000000000 -0500
++++ gridftp-hdfs-0.5.4/src/gridftp_hdfs.c	2012-07-19 11:05:28.000000000 -0500
+@@ -259,7 +259,7 @@
+     case GLOBUS_GFS_CMD_DELE:
+ {
+         errno = 0;
+-        if (hdfsDelete(hdfs_handle->fs, PathName) == -1) {
++        if (hdfsDelete(hdfs_handle->fs, PathName,0) == -1) {
+             if (errno) {
+                 result = GlobusGFSErrorSystemError("unlink", errno);
+             } else {
