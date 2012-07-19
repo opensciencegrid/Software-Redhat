@@ -9,7 +9,7 @@
 
 Name:           gridftp-hdfs
 Version:        0.5.4
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        HDFS DSI plugin for GridFTP
 Group:          System Environment/Daemons
 License:        ASL 2.0
@@ -33,11 +33,11 @@ BuildRequires: jdk java-1.6.0-sun-compat
 BuildRequires: java-devel
 %endif
 
-BuildRequires: hadoop-0.20-libhdfs
+BuildRequires: hadoop-libhdfs
 BuildRequires: globus-gridftp-server-devel
 BuildRequires: globus-common-devel
 
-Requires: hadoop-0.20-libhdfs
+Requires: hadoop-libhdfs
 Requires: globus-gridftp-server-progs
 Requires: xinetd
 
@@ -131,6 +131,10 @@ fi
 %endif
 
 %changelog
+* Thu Jul 19 2012 Doug Strain <dstrain@fnal.gov> - 0.5.4-2
+- Changing requirements to use any version of libhdfs
+- In preparation of hadoop-2.0.0 upgrade
+
 * Wed May 30 2012 Doug Strain <dstrain@fnal.gov> - 0.5.3-6
 - Patch to hdfs stat so it actually finds uid and gid
 - Also, delete function was missing, so I wrote a DELE function
