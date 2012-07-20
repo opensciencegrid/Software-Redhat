@@ -1,7 +1,7 @@
 Summary: Proxy verification plugin for LCMAPS
 Name: lcmaps-plugins-verify-proxy
-Version: 1.5.2
-Release: 1.2%{?dist}
+Version: 1.5.3
+Release: 1.1%{?dist}
 Vendor: Nikhef
 License: ASL 2.0
 Group: System Environment/Libraries
@@ -9,6 +9,7 @@ URL: http://www.nikhef.nl/pub/projects/grid/gridwiki/index.php/Site_Access_Contr
 Source0: http://software.nikhef.nl/security/%{name}/%{name}-%{version}.tar.gz
 BuildRequires: lcmaps-interface, openssl-devel
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
+Requires: lcmaps%{?_isa} >= 1.5.0
 
 %description
 The Local Centre MAPping Service (LCMAPS) is a security middleware
@@ -53,6 +54,14 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Jul 20 2012 Dave Dykstra <dwd@fnal.gov> 1.5.3-1.1.osg
+- Updated upstream version to pick up fix for doubly-limited proxies
+  that showed up with openssl version 0.9.8c
+
+* Fri Jul  6 2012 Mischa Salle <msalle@nikhef.nl> 1.5.3-1
+- added explicit requirement on lcmaps with minimal version
+- updated version
+
 * Thu Mar 08 2012 Dave Dykstra <dwd@fnal.gov> 1.5.2-1.2.osg
 - Rebuild in trunk
 
