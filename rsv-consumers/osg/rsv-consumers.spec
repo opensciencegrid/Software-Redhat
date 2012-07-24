@@ -1,6 +1,6 @@
 
 Name:      rsv-consumers
-Version:   3.7.4
+Version:   3.7.5
 Release:   1%{?dist}
 Summary:   RSV Consumers Infrastructure
 
@@ -91,6 +91,10 @@ rm -rf $RPM_BUILD_ROOT
 %attr(-,rsv,rsv) %{_localstatedir}/log/rsv/consumers
 
 %changelog
+* Tue Jul 24 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu>
+- Updated to 3.7.5
+- SOFTWARE-712 - Replace newlines in Nagios URL with spaces
+
 * Wed Jul 04 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.7.4-1
 - Updated to 3.7.4
 - SOFTWARE-706 - Remove global logrotate declarations
