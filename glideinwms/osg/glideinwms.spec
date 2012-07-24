@@ -6,7 +6,7 @@ Name:           glideinwms
 
 %if %{v2_plus}
 %define version 2.6.0
-%define release 1
+%define release 2
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
 %endif
@@ -591,6 +591,7 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/xmlParse.pyo
 %{_initrddir}/gwms-factory
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/gwms-factory.conf
+%attr(-, gfactory, gfactory) %dir %{_sysconfdir}/gwms-factory
 %attr(-, gfactory, gfactory) %config(noreplace) %{_sysconfdir}/gwms-factory/glideinWMS.xml
 %if %{v3_plus}
 %{python_sitelib}/classadSupport.py
@@ -749,6 +750,7 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/glideinFrontendElement.py*
 %{_initrddir}/gwms-frontend
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/gwms-frontend.conf
+%attr(-, frontend, frontend) %dir %{_sysconfdir}/gwms-frontend
 %attr(-, frontend, frontend) %config(noreplace) %{_sysconfdir}/gwms-frontend/frontend.xml
 %if %{v3_plus}
 %attr(-, frontend, frontend) %{web_base}/../creation
