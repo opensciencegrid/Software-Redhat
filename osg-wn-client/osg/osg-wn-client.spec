@@ -1,7 +1,7 @@
 Name:      osg-wn-client
 Summary:   OSG Worker-Node Client
 Version:   3.0.0
-Release:   15%{?dist}
+Release:   16%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -29,6 +29,7 @@ Requires: fetch-crl
 Requires: osg-system-profiler
 Requires: vo-client
 Requires: osg-version
+Requires: globus-gass-copy-progs
 
 %description
 %{summary}
@@ -85,6 +86,9 @@ rm -rf $RPM_BUILD_ROOT
 %files glexec
 
 %changelog
+* Wed Jul 25 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 3.0.0-16.osg
+- Add explicit dependency on globus-gass-copy-progs (for globus-url-copy)
+
 * Thu Mar 08 2012 Dave Dykstra <dwd@fnal.gov> - 3.0.0-15.osg
 - Rebuild after merging to trunk
 
