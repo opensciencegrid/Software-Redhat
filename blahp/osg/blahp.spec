@@ -1,6 +1,6 @@
 Name:		blahp
 Version:	1.18.0.4
-Release:	3%{?dist}
+Release:	4%{?dist}
 Summary:	gLite BLAHP daemon
 
 Group:		System/Libraries
@@ -21,6 +21,7 @@ Patch4:         blahp.config-paths.patch
 Patch5:         blahp.pbs-completion.patch
 Patch6:         blahp.registry.patch
 Patch7:         blahp.shared-fs.patch
+Patch8:         blahp_chkconfig.patch
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildRequires:  automake
 BuildRequires:  autoconf
@@ -52,6 +53,7 @@ BuildRequires:  docbook-style-xsl, libxslt
 %patch5 -p1
 %patch6 -p1
 %patch7 -p1
+%patch8 -p1
 
 cp %{SOURCE0} src/scripts/pbs_status.sh
 
@@ -111,6 +113,9 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Wed Jul 25 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.18.0.4-4.osg
+- Disable autostart of blah parser
+
 * Thu May 31 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 1.18.0.4-3
 - Add caching for PBS script.
 
