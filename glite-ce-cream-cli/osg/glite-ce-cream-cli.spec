@@ -2,7 +2,7 @@ Summary: Commands for accessing the CREAM service
 Name: glite-ce-cream-cli
 Version: 1.14.0
 %global upstream_release 4
-Release: %{upstream_release}.2%{?dist}
+Release: %{upstream_release}.3%{?dist}
 License: Apache Software License
 Vendor: EMI
 URL: http://glite.cern.ch/
@@ -43,10 +43,10 @@ if test "x%{extbuilddir}" == "x--" ; then
   # or configure just can't plain find them.
   export GSOAP_PLUGIN_CFLAGS=-I/usr/include
   %if 0%{?el6}
-  export GSOAP_PLUGIN_LIBS=-lglite_security_gsoap_plugin_2716_c
+  export GSOAP_PLUGIN_LIBS=-lglite_security_gsoap_plugin_2716_cxx
   %endif
   %if 0%{?el5}
-  export GSOAP_PLUGIN_LIBS=-lglite_security_gsoap_plugin_2713_c
+  export GSOAP_PLUGIN_LIBS=-lglite_security_gsoap_plugin_2713_cxx
   %endif
   export GLITE_JOBID_CFLAGS=-I/usr/include
   export GLITE_JOBID_LIBS=-lglite_jobid
@@ -96,6 +96,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Fri Jul 27 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.14.0-4.3.osg
+- Link against c++ version of gsoap plugin
+
 * Mon Jul 16 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.14.0-4.2.osg
 - Include both el5 and el6 tarballs in srpm
 
