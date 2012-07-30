@@ -49,7 +49,7 @@ Version: 7.8.1
 %define condor_release %condor_base_release
 %endif
 # Release: %condor_release%{?dist}.2
-Release: 6%{?dist}
+Release: 7%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -355,6 +355,18 @@ Provides: classads-devel = %version-%release
 %description classads-devel
 Header files for Condor's ClassAd Library, a powerful and flexible,
 semi-structured representation of data.
+
+%if %{cream}
+%package cream-gahp
+Summary: Condor's CREAM Gahp
+Group: Applications/System
+Requires: %name = %version-%release
+Requires: condor-classads = %{version}-%{release}
+
+%description cream-gahp
+The condor-cream-gahp enables CREAM interoperability for Condor.
+
+%endif #cream
 
 
 %pre
@@ -851,9 +863,6 @@ rm -rf %{buildroot}
 %_sbindir/gahp_server
 %_sbindir/grid_monitor.sh
 %_sbindir/nordugrid_gahp
-%if %cream
-%_sbindir/cream_gahp
-%endif
 %if %blahp
 %dir %_libexecdir/condor/glite/bin
 %_libexecdir/condor/glite/bin/nqs_cancel.sh
@@ -1008,6 +1017,12 @@ rm -rf %{buildroot}
 %_includedir/classad/xmlSink.h
 %_includedir/classad/xmlSource.h
 
+%if %cream
+%files cream-gahp
+%defattr(-,root,root,-)
+%_sbindir/cream_gahp
+%endif # cream
+
 %if %systemd
 %post
 if [ $1 -eq 1 ] ; then
@@ -1062,6 +1077,9 @@ fi
 %endif
 
 %changelog
+* Mon Jul 30 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 7.8.1-7
+- Put cream_gahp into separate subpackage
+
 * Mon Jul 16 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 7.8.1-6
 - Remove cream_el6.patch; change proper_cream.diff to work on both el5 and el6
   instead.
