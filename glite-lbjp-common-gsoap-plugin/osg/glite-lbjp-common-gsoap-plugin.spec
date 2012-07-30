@@ -1,7 +1,7 @@
 Summary: Plugin for gSoap to use glite-security-gss as the communication layer
 Name: glite-lbjp-common-gsoap-plugin
 Version: 3.1.2
-Release: 2.1%{?dist}
+Release: 2.2%{?dist}
 Url: http://glite.cern.ch
 License: ASL 2.0
 Vendor: EMI
@@ -94,6 +94,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Jul 30 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 3.1.2-2.2.osg
+- Bump to rebuild
+
 * Fri Jul 27 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 3.1.2-2.1.osg
 - Patch to add some more checking to avoid segfaults
 
