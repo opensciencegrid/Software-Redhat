@@ -2,7 +2,7 @@ Summary: A Web Services / SOAP / WSDL engine provided by Apache
 %define realname axis2
 Name: %{realname}-bin
 Version: 1.6.2
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: ASL 2.0
 Group: Development/Libraries/Java
 Url: http://axis.apache.org
@@ -19,6 +19,10 @@ Requires: java
 AutoReq: yes
 AutoProv: yes
 BuildArch: noarch
+
+# disable jar repacking
+%global __os_install_post /bin/true
+
 
 %description
 %{summary}
@@ -121,6 +125,9 @@ rm -rf samples/
 
 
 %changelog
+* Mon Jul 16 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.6.2-2
+- Disable jar repacking
+
 * Thu Jul 12 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.6.2-1
 - Created
 
