@@ -705,7 +705,7 @@ fi
 %attr(0755,root,root) %{lib_hadoop}/bin/fuse_dfs
 %attr(0755,root,root) %{bin_hadoop}/hadoop-fuse-dfs
 
-angelog
+%changelog
 * Wed Aug 1 2012 Doug Strain <dstrain@fnal.gov> - 2.0.0+88-1.cdh4.0.0.p0.31
 - Changed hadoop init scripts to be off by default
 - Added JAVA_HOME to hadoop-fuse default
