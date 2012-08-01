@@ -9,7 +9,7 @@
 
 Name:           gridftp-hdfs
 Version:        0.5.4
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        HDFS DSI plugin for GridFTP
 Group:          System Environment/Daemons
 License:        ASL 2.0
@@ -133,6 +133,9 @@ fi
 %endif
 
 %changelog
+* Wed Aug 1 2012 Doug Strain <dstrain@fnal.gov> - 0.5.4-4
+- Added patch to LD_LIBRARY_PATH for /usr/lib/hadoop/lib/native
+
 * Thu Jul 19 2012 Doug Strain <dstrain@fnal.gov> - 0.5.4-3
 - Changing requirements to use any version of libhdfs
 - Also updating hdfsDelete and gridftp-hdfs-environment
