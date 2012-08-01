@@ -1,7 +1,7 @@
 %define hadoop_version 2.0.0+88 
 %define hadoop_patched_version 2.0.0-cdh4.0.0 
 %define hadoop_base_version 2.0.0 
-%define hadoop_release 1.cdh4.0.0.p0.30%{?dist}
+%define hadoop_release 1.cdh4.0.0.p0.31%{?dist}
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
@@ -359,8 +359,9 @@ Summary: Hadoop client side dependencies
 Group: System/Daemons
 Requires: %{name} = %{version}-%{release}
 Requires: %{name}-hdfs = %{version}-%{release}
-Requires: %{name}-yarn = %{version}-%{release}
-Requires: %{name}-mapreduce = %{version}-%{release}
+#disabling mapreduce in the client, we don't need it
+#Requires: %{name}-yarn = %{version}-%{release}
+#Requires: %{name}-mapreduce = %{version}-%{release}
 #I have no idea why it requires this, disabling for now
 #Requires: %{name}-0.20-mapreduce >= 0.20.2+1213
 #Requires(pre): %{name}-0.20-mapreduce >= 0.20.2+1213
@@ -486,8 +487,8 @@ for service in %{hadoop_services}
 do
        init_file=$RPM_BUILD_ROOT/%{initd_dir}/%{name}-${service}
        # On RedHat, SuSE and Mageia run-level 2 is networkless, hence excluding it
-       env CHKCONFIG="345 85 15"       \
-           INIT_DEFAULT_START="3 4 5"  \
+       env CHKCONFIG="- 85 15"       \
+           INIT_DEFAULT_START=""  \
            INIT_DEFAULT_STOP="0 1 2 6" \
          bash $RPM_SOURCE_DIR/init.d.tmpl $RPM_SOURCE_DIR/%{name}-${service}.svc > $init_file
        chmod 755 $init_file
@@ -703,3 +704,11 @@ fi
 %attr(0644,root,root) %config(noreplace) /etc/default/hadoop-fuse
 %attr(0755,root,root) %{lib_hadoop}/bin/fuse_dfs
 %attr(0755,root,root) %{bin_hadoop}/hadoop-fuse-dfs
+
+angelog
+* Wed Aug 1 2012 Doug Strain <dstrain@fnal.gov> - 2.0.0+88-1.cdh4.0.0.p0.31
+- Changed hadoop init scripts to be off by default
+- Added JAVA_HOME to hadoop-fuse default
+
+* Tue Jul 17 2012 Doug Strain <dstrain@fnal.gov> - 2.0.0+88-1.cdh4.0.0.p0.30
+- Initial packaging of Hadoop for OSG (based on Cloudera CDH4)
