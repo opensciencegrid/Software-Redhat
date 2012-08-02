@@ -1,6 +1,6 @@
 Name:		netlogger
 Version:	4.2.0
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	Netlogger toolkit
 
 Group:		Productivity/File utilities
@@ -48,6 +48,8 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 
 %changelog
+* Thu Aug 2 2012 Neha Sharma <neha@fnal.gov> - 4.2.0-3
+- Fixed patch for gridftp_auth parser module
 * Wed Mar 21 2012 Neha Sharma <neha@fnal.gov> - 4.2.0-2
 - Patch for gridftp_auth parser module
 * Mon Aug 22 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 4.2.0-1
