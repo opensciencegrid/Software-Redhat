@@ -1,0 +1,11 @@
+We are using python-simplejon 2.0.9. Newer versions don't work with
+Python 2.4, so we're not using it there. 
+
+We don't need it for SL6/Python 2.6 because it's built in. 
+
+Downloaded from the simplejson site:
+http://simplejson.github.com/simplejson/
+
+Specifically, from the github tags:
+https://github.com/simplejson/simplejson/tags
+
