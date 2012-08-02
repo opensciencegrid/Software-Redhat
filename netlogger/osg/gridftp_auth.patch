@@ -1,5 +1,5 @@
---- netlogger/parsers/modules/gridftp_auth.py	2012-08-02 14:48:41.387536005 -0500
-+++ netlogger/parsers/modules/gridftp_auth.py	2012-08-02 14:55:41.767580000 -0500
+--- _build_results/BUILD/netlogger-trunk/netlogger/parsers/modules/gridftp_auth.py	2012-08-02 14:48:41.387536005 -0500
++++ gridftp_auth.py	2012-08-02 14:55:41.767580000 -0500
 @@ -67,7 +67,7 @@
  			m = message.split(":", 1)[1]
  			m = m.translate(None, " []")
