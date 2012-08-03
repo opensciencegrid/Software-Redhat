@@ -1,11 +1,16 @@
---- _build_results/BUILD/netlogger-trunk/netlogger/parsers/modules/gridftp_auth.py	2012-08-02 14:48:41.387536005 -0500
-+++ gridftp_auth.py	2012-08-02 14:55:41.767580000 -0500
-@@ -67,7 +67,7 @@
- 			m = message.split(":", 1)[1]
- 			m = m.translate(None, " []")
- 			host,port = m.rsplit(':', 1)
--            		#event = dict(event=ns('conn.start'), host=host, port=int(port))
-+            		event = dict(event=ns('conn.start'), host=host, port=int(port))
-         	elif message.startswith('DN'):
-              		m = re.search('DN\s+(\/.*)\s+successfully', message)
-              		event = dict(event=ns('conn.auth.dn'), DN=m.group(1))
+--- netlogger/parsers/modules/gridftp_auth.py	2010-04-29 15:01:18.000000000 -0500
++++ netlogger/parsers/modules/gridftp_auth.py	2012-08-03 10:34:40.510405000 -0500
+@@ -60,8 +60,11 @@
+         elif message.startswith('Configuration'):
+             event = dict(event=ns('config'))
+         elif message.startswith('New'):
+-            m = re.search('from:\s*(\S+)', message)
+-            host, port =  m.group(1).split(':')
++            #m = re.search('from:\s*(\S+)', message)
++            #host, port =  m.group(1).split(':')
++            m = message.split(":", 1)[1]
++            m = m.translate(None, " []")
++            host,port = m.rsplit(':', 1)
+             event = dict(event=ns('conn.start'), host=host, 
+                          port=int(port))
+         elif message.startswith('DN'):
