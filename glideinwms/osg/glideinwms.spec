@@ -6,7 +6,7 @@ Name:           glideinwms
 
 %if %{v2_plus}
 %define version 2.6.0
-%define release 2
+%define release 3
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
 %endif
@@ -801,6 +801,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Aug 3 2012 Doug Strain <dstrain@fnal.gov> - 2.6.0-3
+- Updating to new release 
+- Changing the schedd configs to work with both wisc and osg condor rpms
+
 * Wed Jun 13 2012 Doug Strain <dstrain@fnal.gov> - 2.6.0-rc1
 - Updating to new release candidate
 
