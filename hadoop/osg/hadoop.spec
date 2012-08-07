@@ -1,7 +1,7 @@
 %define hadoop_version 2.0.0+88 
 %define hadoop_patched_version 2.0.0-cdh4.0.0 
 %define hadoop_base_version 2.0.0 
-%define hadoop_release 1.cdh4.0.0.p0.31%{?dist}
+%define hadoop_release 1.cdh4.0.0.p0.32%{?dist}
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
@@ -169,6 +169,7 @@ Source22: hadoop-layout.sh
 Source23: hadoop-hdfs-zkfc.svc
 Source24: %{name}-bigtop-packaging.tar.gz
 Patch0: mvn304.patch
+Patch1: javafuse.patch
 Buildroot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id} -u -n)
 BuildRequires: python >= 2.4, git, fuse-devel,fuse, automake, autoconf,maven3,protobuf-compiler
 # not sure if I need this
@@ -427,6 +428,7 @@ These projects (enumerated below) allow HDFS to be mounted (on most flavors of U
 tar -C `dirname %{SOURCE24}` -xzf %{SOURCE24}
 pushd `dirname %{SOURCE24}`
 %patch0 -p1
+%patch1 -p1
 popd
 
 %build
@@ -706,6 +708,9 @@ fi
 %attr(0755,root,root) %{bin_hadoop}/hadoop-fuse-dfs
 
 %changelog
+* Tue Aug 7 2012 Doug Strain <dstrain@fnal.gov> - 2.0.0+88-1.cdh4.0.0.p0.32
+- Changed hadoop-fuse default JAVA_HOME changes to a patch instead
+
 * Wed Aug 1 2012 Doug Strain <dstrain@fnal.gov> - 2.0.0+88-1.cdh4.0.0.p0.31
 - Changed hadoop init scripts to be off by default
 - Added JAVA_HOME to hadoop-fuse default
