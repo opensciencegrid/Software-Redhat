@@ -1,6 +1,6 @@
 
 Name:      osg-cleanup
-Version:   1.2
+Version:   1.3
 Release:   1%{?dist}
 Summary:   OSG cleanup scripts
 
@@ -85,6 +85,9 @@ fi
 
 
 %changelog
+* Tue Aug 7 2012 Alain Roy <roy@cs.wisc.edu> 1.3-1
+- Updated to 1.3. Fixes discovery of user's globus job directory. 
+
 * Thu Mar 15 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 1.2-1
 - Updated to 1.2.  Adds "-type f" to non-recursing removal + other small changes.
 
