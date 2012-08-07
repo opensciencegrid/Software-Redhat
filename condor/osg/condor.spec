@@ -1,4 +1,4 @@
-%define tarball_version 7.8.1
+%define tarball_version 7.8.2
 
 # Things for F15 or later
 %if 0%{?fedora} >= 15
@@ -39,7 +39,8 @@
 
 Summary: Condor: High Throughput Computing
 Name: condor
-Version: 7.8.1
+Version: %{tarball_version}
+%global version_ %(tr . _ <<< %{version})
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_base_release 0.6
@@ -49,7 +50,7 @@ Version: 7.8.1
 %define condor_release %condor_base_release
 %endif
 # Release: %condor_release%{?dist}.2
-Release: 7%{?dist}
+Release: 0%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -720,7 +721,7 @@ rm -rf %{buildroot}
 %_datadir/condor/webservice/condorSchedd.wsdl
 %endif
 %_libdir/libchirp_client.so
-%_libdir/libcondor_utils_7_8_1.so
+%_libdir/libcondor_utils_%{version_}.so
 %dir %_libexecdir/condor/
 %_libexecdir/condor/condor_chirp
 %_libexecdir/condor/condor_ssh
@@ -977,7 +978,7 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 %doc LICENSE-2.0.txt NOTICE.txt
 %_libdir/libclassad.so.3
-%_libdir/libclassad.so.7.8.1
+%_libdir/libclassad.so.%{version}
 
 %files classads-devel
 %defattr(-,root,root,-)
@@ -1077,6 +1078,9 @@ fi
 %endif
 
 %changelog
+* Tue Aug 07 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 7.8.2-0
+- New version
+
 * Mon Jul 30 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 7.8.1-7
 - Put cream_gahp into separate subpackage
 
