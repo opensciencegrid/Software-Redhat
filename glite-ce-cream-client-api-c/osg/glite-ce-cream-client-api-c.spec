@@ -2,7 +2,7 @@ Summary: C/C++ libraries for the client of the CREAM service
 Name: glite-ce-cream-client-api-c
 Version: 1.14.0
 %global upstream_release 4
-Release: %upstream_release.2%{?dist}
+Release: %upstream_release.3%{?dist}
 License: Apache Software License
 URL: http://glite.cern.ch/
 Group: System Environment/Libraries
@@ -15,8 +15,6 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 AutoReqProv: yes
 Source5: %{name}-%{version}-%{upstream_release}.sl5.tar.gz
 Source6: %{name}-%{version}-%{upstream_release}.sl6.tar.gz
-
-%global debug_package %{nil}
 
 %description
 The package contains C/C++ libraries for the client of the CREAM service
@@ -113,6 +111,9 @@ The package contains development files for the client of the CREAM service
 
 
 %changelog
+* Mon Jul 30 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.14.0-4.3.osg
+- Build debug package
+
 * Mon Jul 16 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.14.0-4.2.osg
 - Include both sl5 and sl6 tarballs in the srpm
 
