@@ -22,7 +22,7 @@
 </property>
 <property>
   <name>dfs.datanode.du.reserved</name>
-  <value>10000000000</value>
+  <value>100000000</value>
 </property>
 <property>
   <name>dfs.balance.bandwidthPerSec</name>

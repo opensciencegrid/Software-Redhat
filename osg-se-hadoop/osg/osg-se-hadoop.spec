@@ -1,7 +1,7 @@
 Name:           osg-se-hadoop
 Summary:        OSG Hadoop Storage Element package for RPM distribution
 Version:        3.0.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 License:        GPL
 Group:          System Environment/Daemons
 URL:            https://twiki.grid.iu.edu/twiki/bin/view/Storage/WebHome
@@ -118,6 +118,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/hadoop/conf.osg/
 
 %changelog
+* Tue Aug 7 2012 Doug Strain <dstrain@fnal.gov> - 3.0.0-3
+- Reduced value for du.reserved 
+-   Since it causes problems with smaller (<10GB) hard drives
+
 * Wed Aug 1 2012 Doug Strain <dstrain@fnal.gov> - 3.0.0-1
 - Initial meta-package creation for Hadoop-2.0.0
 
