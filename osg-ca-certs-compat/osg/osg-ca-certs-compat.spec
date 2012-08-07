@@ -1,6 +1,6 @@
 Name:           osg-ca-certs-compat
-Version:        1.29
-Release:        2%{?dist}
+Version:        1.30
+Release:        1%{?dist}
 Epoch:          1
 Summary:        OSG Packaging of the IGTF CA Certs and OSG-specific CAs in old format. Compatible only with openssl 0.9.x. The OSG CA Distribution contains:  1) IGTF Distribution of Authority Root Certificates (CAs accredited by the International Grid Trust Federation) and 2) Purdue TeraGrid CA. Details of the CAs in the OSG distribution can be found on twiki at https://twiki.grid.iu.edu/bin/view/Documentation/CaDistribution. For additional details what is in the current release, see the distribution site at http://software.grid.iu.edu/pacman/cadist/ and change log at http://software.grid.iu.edu/pacman/cadist/CHANGES.
 
@@ -8,7 +8,7 @@ Group:          System Environment/Base
 License:        Unknown
 URL:            http://software.grid.iu.edu/pacman/cadist/
 
-Source0:        osg-certificates-1.29.tar.gz
+Source0:        osg-certificates-1.30ITB.tar.gz
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
@@ -42,6 +42,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc
 
 %changelog
+* Tue Aug 07 2012 Anand Padmanabhan <apadmana@uiuc.edu> - 1.30-1
+- CA release corresponding to IGTF 1.49
+
 * Fri Jun 11 2012 Anand Padmanabhan <apadmana@uiuc.edu> - 1.29-2
 - CA release corresponding to IGTF 1.48
 
