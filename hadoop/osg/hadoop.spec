@@ -1,7 +1,7 @@
 %define hadoop_version 2.0.0+88 
 %define hadoop_patched_version 2.0.0-cdh4.0.0 
 %define hadoop_base_version 2.0.0 
-%define hadoop_release 1.cdh4.0.0.p0.32%{?dist}
+%define hadoop_release 1.cdh4.0.0.p0.33%{?dist}
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
@@ -708,8 +708,9 @@ fi
 %attr(0755,root,root) %{bin_hadoop}/hadoop-fuse-dfs
 
 %changelog
-* Tue Aug 7 2012 Doug Strain <dstrain@fnal.gov> - 2.0.0+88-1.cdh4.0.0.p0.32
+* Tue Aug 7 2012 Doug Strain <dstrain@fnal.gov> - 2.0.0+88-1.cdh4.0.0.p0.33
 - Changed hadoop-fuse default JAVA_HOME changes to a patch instead
+- Added config path to classpath so fuse picks up default replication etc
 
 * Wed Aug 1 2012 Doug Strain <dstrain@fnal.gov> - 2.0.0+88-1.cdh4.0.0.p0.31
 - Changed hadoop init scripts to be off by default
