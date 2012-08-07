@@ -5,8 +5,8 @@
  
  export LIBHDFS_OPTS="-Xms128m -Xmx512m"
 +export JAVA_HOME=/usr/java/default/
---- install_hadoop.sh	2012-06-01 16:19:36.000000000 -0500
-+++ install_hadoop.sh	2012-08-07 15:07:04.000000000 -0500
+--- _build_results/install_hadoop.sh	2012-06-01 16:19:36.000000000 -0500
++++ _build_results/install_hadoop.sh	2012-08-07 15:07:04.000000000 -0500
 @@ -308,6 +308,9 @@
    CLASSPATH+="\$jar:"
  done
