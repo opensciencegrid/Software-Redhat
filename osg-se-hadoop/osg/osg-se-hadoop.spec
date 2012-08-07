@@ -1,7 +1,7 @@
 Name:           osg-se-hadoop
 Summary:        OSG Hadoop Storage Element package for RPM distribution
 Version:        3.0.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 License:        GPL
 Group:          System Environment/Daemons
 URL:            https://twiki.grid.iu.edu/twiki/bin/view/Storage/WebHome
@@ -36,7 +36,7 @@ for a Hadoop Storage Element.
 %package datanode
 Summary: Datanode meta-package for Hadoop
 Group: System Environment/Libraries
-Requires: hadoop-hdfs-namenode
+Requires: hadoop-hdfs-datanode
 Requires: osg-version
 Requires: osg-system-profiler
 Requires: java-1.6.0-sun-compat
