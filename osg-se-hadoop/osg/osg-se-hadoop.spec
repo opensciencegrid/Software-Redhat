@@ -1,7 +1,7 @@
 Name:           osg-se-hadoop
 Summary:        OSG Hadoop Storage Element package for RPM distribution
 Version:        3.0.0
-Release:        6%{?dist}
+Release:        7%{?dist}
 License:        GPL
 Group:          System Environment/Daemons
 URL:            https://twiki.grid.iu.edu/twiki/bin/view/Storage/WebHome
@@ -25,6 +25,7 @@ see the subpackages namenode, datanode, gridftp, etc.
 Summary: Namenode meta-package for Hadoop
 Group: System Environment/Libraries
 Requires: hadoop-hdfs-namenode
+Requires: gratia-probe-hadoop-storage
 Requires: osg-version
 Requires: osg-system-profiler
 Requires: java-1.6.0-sun-compat
@@ -125,9 +126,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/hadoop/conf.osg/
 
 %changelog
-* Wed Aug 8 2012 Doug Strain <dstrain@fnal.gov> - 3.0.0-6
+* Wed Aug 8 2012 Doug Strain <dstrain@fnal.gov> - 3.0.0-7
 - Added fuse client to srm sub-package (mount is needed for permissions)
 - Also added default OSG configs to srm package
+- Added hadoop storage probe to namenode
 
 * Tue Aug 7 2012 Doug Strain <dstrain@fnal.gov> - 3.0.0-4
 - Reduced value for du.reserved 
