@@ -1,7 +1,7 @@
 Name:           osg-se-hadoop
 Summary:        OSG Hadoop Storage Element package for RPM distribution
 Version:        3.0.0
-Release:        5%{?dist}
+Release:        6%{?dist}
 License:        GPL
 Group:          System Environment/Daemons
 URL:            https://twiki.grid.iu.edu/twiki/bin/view/Storage/WebHome
@@ -122,10 +122,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/hadoop/conf.osg/
 
 %files srm
+%{_sysconfdir}/hadoop/conf.osg/
 
 %changelog
-* Wed Aug 8 2012 Doug Strain <dstrain@fnal.gov> - 3.0.0-5
+* Wed Aug 8 2012 Doug Strain <dstrain@fnal.gov> - 3.0.0-6
 - Added fuse client to srm sub-package (mount is needed for permissions)
+- Also added default OSG configs to srm package
 
 * Tue Aug 7 2012 Doug Strain <dstrain@fnal.gov> - 3.0.0-4
 - Reduced value for du.reserved 
