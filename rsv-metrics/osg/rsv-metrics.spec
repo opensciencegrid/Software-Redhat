@@ -1,6 +1,6 @@
 
 Name:      rsv-metrics
-Version:   3.7.4
+Version:   3.7.5
 Release:   1%{?dist}
 Summary:   RSV metrics
 
@@ -92,6 +92,10 @@ rm -rf $RPM_BUILD_ROOT
 %attr(-,rsv,rsv) %{_localstatedir}/log/rsv/probes
 
 %changelog
+* Wed Aug 08 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.7.5-1
+- Updated to 3.7.5
+- Increase default error hours thresholdfrom 3 to 8  in cacert-verify-probe
+
 * Wed Jul 04 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.7.4-1
 - Updated to 3.7.4
 - SOFTWARE-706 - Remove global logrotate declarations
