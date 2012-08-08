@@ -1,7 +1,7 @@
 Name:           osg-se-hadoop
 Summary:        OSG Hadoop Storage Element package for RPM distribution
 Version:        3.0.0
-Release:        4%{?dist}
+Release:        5%{?dist}
 License:        GPL
 Group:          System Environment/Daemons
 URL:            https://twiki.grid.iu.edu/twiki/bin/view/Storage/WebHome
@@ -91,6 +91,7 @@ Requires: bestman2-server
 Requires: bestman2-client
 Requires: bestman2-tester
 Requires: vo-client
+Requires: hadoop-hdfs-fuse
 %description srm
 This is a BeStMan SRM frontend for a Hadoop cluster.
 
@@ -123,6 +124,9 @@ rm -rf $RPM_BUILD_ROOT
 %files srm
 
 %changelog
+* Wed Aug 8 2012 Doug Strain <dstrain@fnal.gov> - 3.0.0-5
+- Added fuse client to srm sub-package (mount is needed for permissions)
+
 * Tue Aug 7 2012 Doug Strain <dstrain@fnal.gov> - 3.0.0-4
 - Reduced value for du.reserved 
 -   Since it causes problems with smaller (<10GB) hard drives
