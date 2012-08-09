@@ -1,7 +1,7 @@
 %define hadoop_version 2.0.0+88 
 %define hadoop_patched_version 2.0.0-cdh4.0.0 
 %define hadoop_base_version 2.0.0 
-%define hadoop_release 1.cdh4.0.0.p0.35%{?dist}
+%define hadoop_release 1.cdh4.0.0.p0.36%{?dist}
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
@@ -528,15 +528,21 @@ done
 
 %pre
 getent group hadoop >/dev/null || groupadd -r hadoop
-if [ "$1" = 2 ]; then
+
+#if [ "$1" = 2 ]; then
+echo "removing alternatives before installation ($1)"
  alternatives --remove hadoop-default /usr/bin/hadoop-0.20 || true
  alternatives --remove hadoop-0.20-conf /etc/hadoop-0.20/conf.empty || true
  alternatives --remove hadoop-0.20-conf /etc/hadoop-0.20/conf.osg || true
-fi
+#fi
 
 %pre hdfs
 getent group hdfs >/dev/null   || groupadd -r hdfs
 getent passwd hdfs >/dev/null || /usr/sbin/useradd --comment "Hadoop HDFS" --shell /bin/bash -M -r -g hdfs -G hadoop --home %{state_hdfs} hdfs
+echo "removing alternatives before installation ($1)"
+ alternatives --remove hadoop-default /usr/bin/hadoop-0.20 || true
+ alternatives --remove hadoop-0.20-conf /etc/hadoop-0.20/conf.empty || true
+ alternatives --remove hadoop-0.20-conf /etc/hadoop-0.20/conf.osg || true
 
 %pre httpfs 
 getent group httpfs >/dev/null   || groupadd -r httpfs
