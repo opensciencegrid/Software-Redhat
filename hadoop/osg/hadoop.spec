@@ -1,7 +1,7 @@
 %define hadoop_version 2.0.0+88 
 %define hadoop_patched_version 2.0.0-cdh4.0.0 
 %define hadoop_base_version 2.0.0 
-%define hadoop_release 1.cdh4.0.0.p0.33%{?dist}
+%define hadoop_release 1.cdh4.0.0.p0.34%{?dist}
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
@@ -183,6 +183,7 @@ Conflicts: hadoop-0.20
 AutoReq: no
 Provides: hadoop
 Obsoletes: hadoop-0.20 <= 0.20.2+737
+Obsoletes: hadoop-0.20-libhdfs <= 0.20.2+737
 
 %if  %{?suse_version:1}0
 BuildRequires: libfuse2, libopenssl-devel, gcc-c++, ant, ant-nodeps, ant-trax
@@ -410,6 +411,8 @@ Requires: %{name} = %{version}-%{release}
 Requires: %{name}-libhdfs = %{version}-%{release}
 Requires: %{name}-client = %{version}-%{release}
 Requires: fuse
+Obsoletes: hadoop-0.20-osg <= 0.20.2+737
+Obsoletes: hadoop-0.20-fuse <= 0.20.2+737
 AutoReq: no
 
 %if %{?suse_version:1}0
