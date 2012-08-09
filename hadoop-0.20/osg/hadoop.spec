@@ -56,7 +56,7 @@
 
 Name: %{hadoop_name}-%{apache_branch}
 Version: %{cloudera_version}
-Release: 25%{?dist}
+Release: 26%{?dist}
 Summary: Hadoop is a software platform for processing vast amounts of data
 License: Apache License v2.0
 URL: http://hadoop.apache.org/core/
@@ -427,8 +427,8 @@ if [ "$1" = 0 ]; then
   do
      service hadoop-$service stop 1>/dev/null 2>/dev/null || :
   done
-  alternatives --remove %{name}-conf %{etc_hadoop}/conf.empty
-  alternatives --remove %{hadoop_name}-default %{bin_hadoop}/%{name}
+  alternatives --remove %{name}-conf %{etc_hadoop}/conf.empty || true
+  alternatives --remove %{hadoop_name}-default %{bin_hadoop}/%{name} || true
 fi
 
 %triggerpostun -- hadoop
@@ -574,6 +574,10 @@ fi
 %endif
 
 %changelog
+* Thu Aug 9 2012 Doug Strain <dstrain@fnal.gov> - 0.20.2+737-26
+- Added obsoletes for hadoop 2.0.0
+- Made alternatives removal optional and not cause a failure
+
 * Sat Feb 18 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 0.20.2+737-24
 - Fix placement of ifarch statements.
 - Tweak SELinux definition.
