@@ -2,7 +2,7 @@ Summary: Computing Resource Execution And Management service
 Name: glite-ce-cream
 Version: 1.14.0
 %global upstream_release 4
-Release: %{upstream_release}.2%{?dist}
+Release: %{upstream_release}.3%{?dist}
 License: Apache Software License
 Vendor: EMI
 URL: http://glite.cern.ch/
@@ -228,7 +228,7 @@ This package contains the core libraries used by CREAM services
 %package es
 Summary: The gLite implementation of EMI Execution Service
 Group: Applications/Internet
-Requires: glite-ce-cream-utils, glite-ce-cream-core, glite-ce-blahp, mysql-connector-java
+Requires: glite-ce-cream-utils, glite-ce-cream-core, blahp, mysql-connector-java
 
 %description es
 This package provides the gLite implementation of Execution Service interface.
@@ -351,6 +351,9 @@ fi
 
 
 %changelog
+* Wed Aug 08 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.14.0-4.3
+- "glite-ce-blahp" requirement changed to "blahp" for es subpackage as well
+
 * Fri Jul 13 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.14.0-4.2
 - "glite-ce-blahp" requirement changed to "blahp"
 
