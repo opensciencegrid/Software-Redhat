@@ -1,0 +1,22 @@
+Index: glite-ce-cream-1.14.0/build.xml
+===================================================================
+--- glite-ce-cream-1.14.0.orig/build.xml	2012-03-14 04:35:01.000000003 -0500
++++ glite-ce-cream-1.14.0/build.xml	2012-07-13 11:23:09.000000003 -0500
+@@ -61,7 +61,7 @@
+     <property name="jakarta-commons-logging.location" value="/usr/share/java"/>
+     <!-- property name="tomcat.location" value="/usr/share/tomcat5"/ -->
+ 
+-    <fileset id="axis2.fileset" dir="/usr/share/java/axis2" includes="**/*.jar"/>
++    <fileset id="axis2.fileset" dir="/usr/share/java" includes="**/*.jar"/>
+     <fileset id="bcprov.fileset" file="${bcprov.location}/bcprov.jar"/>
+     <fileset id="jaf.fileset" file="${jaf.location}/activation.jar"/>
+     <fileset id="jclassads.fileset" dir="${jclassads.location}" includes="**/*.jar"/>
+@@ -85,7 +85,7 @@
+   <target name="setDefsDeb" if="build.on.debian">
+     <echo message="Setting up Debian definitions"/>
+ 
+-    <fileset id="axis2.fileset" dir="/usr/share/java/axis2" includes="**/*.jar"/>
++    <fileset id="axis2.fileset" dir="/usr/share/java" includes="**/*.jar"/>
+     <fileset id="bcprov.fileset" file="/usr/share/java/bcprov.jar"/>
+     <fileset id="jaf.fileset" file="/usr/share/java/activation.jar"/>
+     <fileset id="jclassads.fileset" dir="/usr/share/java" includes="**/classad.jar, **/cedar.jar"/>
