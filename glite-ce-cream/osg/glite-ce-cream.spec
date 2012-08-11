@@ -2,7 +2,7 @@ Summary: Computing Resource Execution And Management service
 Name: glite-ce-cream
 Version: 1.14.0
 %global upstream_release 4
-Release: %{upstream_release}.3%{?dist}
+Release: %{upstream_release}.4%{?dist}
 License: Apache Software License
 Vendor: EMI
 URL: http://glite.cern.ch/
@@ -11,6 +11,9 @@ BuildArch: noarch
 BuildRequires: %{!?extbuilddir: glite-ce-cream-api-java, emi-trustmanager-axis2, } ant
 BuildRequires: classpathx-jaf, jakarta-commons-codec, jakarta-commons-httpclient, jakarta-commons-logging
 Requires: glite-ce-cream-utils, glite-ce-cream-core, blahp, mysql-connector-java
+Requires: xml-commons-apis
+Requires: emi-trustmanager
+Requires: globus-gass-copy-progs
 Requires(post): openssl
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 AutoReqProv: yes
@@ -351,6 +354,9 @@ fi
 
 
 %changelog
+* Fri Aug 10 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.14.0-4.4
+- Added as requirements: xml-commons-apis, emi-trustmanager, globus-gass-copy-progs
+
 * Wed Aug 08 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.14.0-4.3
 - "glite-ce-blahp" requirement changed to "blahp" for es subpackage as well
 
