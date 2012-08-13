@@ -1,48 +1,28 @@
-%if %{?fedora}%{!?fedora:0} >= 9
-%global withjava 1
-%else
-%if %{?rhel}%{!?rhel:0} >= 5
-%ifarch %{ix86} x86_64
-%global withjava 1
-%else
-%global withjava 0
-%endif
-%else
-%global withjava 0
-%endif
-%endif
-
 %if %{?fedora}%{!?fedora:0} >= 16 || %{?rhel}%{!?rhel:0} >= 7
 %global compat 0
 %else
 %global compat 1
 %endif
 
-%if %{?fedora}%{!?fedora:0} >= 16 || %{?rhel}%{!?rhel:0} >= 7
-%global with_gcj %{!?_with_gcj:0}%{?_with_gcj:1}
-%else
-%global with_gcj %{!?_without_gcj:1}%{?_without_gcj:0}
-%endif
-
 %global version1 1.9.19.2
-%global release1 11
+%global release1 7
 
-%global version2 2.0.6
-%global release2 8
+%global version2 2.0.8
+%global release2 1
 
 Name:		voms
 Version:	%{version2}
-Release:	%{release2}%{?dist}
+Release:	%{release2}.1%{?dist}
 Summary:	Virtual Organization Membership Service
 
 Group:		System Environment/Libraries
 License:	ASL 2.0
 URL:		http://glite.web.cern.ch/glite/
 #		This source tarball is created from a git checkout:
-#		git clone git://testbed002.cnaf.infn.it/opt/gits/voms.git
+#		git clone git://github.com/italiangrid/voms.git
 #		cd voms
-#		git archive --format tar --prefix voms-2.0.2/ voms_R_2_0_2 | \
-#		gzip - > ../voms-2.0.2.tar.gz
+#		git archive --format tar --prefix voms-2.0.8/ 2_0_8 | \
+#		gzip - > ../voms-2.0.8.tar.gz
 Source0:	%{name}-%{version2}.tar.gz
 #		This source tarball is created from a CVS checkout:
 #		cvs -d:pserver:anonymous:@glite.cvs.cern.ch:/cvs/glite co \
@@ -104,20 +84,18 @@ Patch15:	%{name}-expat.patch
 #		Add missing dependencies for stricter binutils
 #		https://savannah.cern.ch/bugs/?60979
 Patch16:	%{name}-deps.patch
+#		Changed multiple inclusion guard name
+Patch17:	%{name}-globus-compat.patch
 #		Fix the database install script
 Patch20:	%{name}-install-db2.patch
 #		Resolve race condition in Makefile documentation rules
 Patch21:	%{name}-doc-race.patch
 #		Don't use embedded gsoap sources
 Patch22:	%{name}-gsoap.patch
-#		Work around bug in old autotools (RHEL4)
-Patch23:	%{name}-old-autotools.patch
 #               Fix duplicate definition of globus_mutex_t
 Patch100:       globus_thread_h.patch
+#               Fix segfault when mistyping passphrase when using p12
 Patch101:       p12.patch
-#               Fix possible duplicate definition of gss_cred_id_t
-Patch102:       voms_api_h.patch
-
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	globus-gssapi-gsi-devel%{?_isa}
@@ -134,18 +112,6 @@ BuildRequires:	doxygen
 BuildRequires:	tex(latex)
 %else
 BuildRequires:	tetex-latex
-%endif
-
-%if %{withjava}
-BuildRequires:	java-devel >= 1:1.6.0
-BuildRequires:	jpackage-utils
-BuildRequires:	bouncycastle >= 1.39
-BuildRequires:	jakarta-commons-cli
-BuildRequires:	jakarta-commons-lang
-BuildRequires:	log4j
-%if %{with_gcj}
-BuildRequires:	java-gcj-compat-devel
-%endif
 %endif
 
 %description
@@ -242,49 +208,6 @@ The service can be understood as an account database, which serves the
 information in a special format (VOMS credential). The VO manager can
 administrate it remotely using command line tools or a web interface.
 
-%if %{withjava}
-%package -n vomsjapi
-Summary:	Virtual Organization Membership Service Java API
-Group:		Development/Libraries
-Requires:	java
-Requires:	jpackage-utils
-Requires:	bouncycastle >= 1.39
-Requires:	jakarta-commons-cli
-Requires:	jakarta-commons-lang
-Requires:	log4j
-Provides:       voms-api-java
-%if %{with_gcj}
-Requires(post):		java-gcj-compat
-Requires(postun):	java-gcj-compat
-%else
-%if %{?fedora}%{!?fedora:0} >= 10
-BuildArch:	noarch
-%endif
-%endif
-
-%description -n vomsjapi
-In grid computing, and whenever the access to resources may be controlled
-by parties external to the resource provider, users may be grouped to
-Virtual Organizations (VOs). This package provides a VO Membership Service
-(VOMS), which informs on that association between users and their VOs:
-groups, roles and capabilities.
-
-This package offers a java client API for VOMS.
-
-%package -n vomsjapi-javadoc
-Summary:	Virtual Organization Membership Service Java API Documentation
-Group:		Documentation
-%if %{?fedora}%{!?fedora:0} >= 10
-BuildArch:	noarch
-%endif
-Requires:	jpackage-utils
-Requires:	vomsjapi = %{version}-%{release}
-Provides:       voms-api-java-javadoc
-
-%description -n vomsjapi-javadoc
-Virtual Organization Membership Service (VOMS) Java API Documentation.
-%endif
-
 %prep
 %if %{compat}
 %setup -q -a 1
@@ -308,6 +231,7 @@ pushd %{name}-%{version1}
 %patch14 -p1
 %patch15 -p1
 %patch16 -p1
+%patch17 -p1
 
 # Fix bad permissions (which otherwise end up in the debuginfo package)
 find . '(' -name '*.h' -o -name '*.c' -o -name '*.cpp' -o \
@@ -342,7 +266,6 @@ popd
 %patch20 -p1
 %patch21 -p1
 %patch22 -p1
-%patch23 -p1
 
 # Remove embedded gsoap sources
 rm src/server/stdsoap2.c src/server/stdsoap2.h src/server/soap*
@@ -367,44 +290,23 @@ install -m 644 %{SOURCE2} README.Fedora
 # OSG patches
 %patch100 -p1
 %patch101 -p1
-%patch102 -p1
-
 %build
 %if %{compat}
 pushd %{name}-%{version1}
-%configure --disable-glite --libexecdir=%{_datadir} --sysconfdir=%{_datadir} \
+%configure --disable-glite --libexecdir=%{_datadir} \
 	   --disable-static --disable-docs --disable-java \
 	   --with-api-only
 make -j1
 popd
 %endif
 
-%configure --disable-glite --libexecdir=%{_datadir} --sysconfdir=%{_datadir} \
-	   --disable-static --enable-docs \
-%if %{withjava}
-	   --with-java-home=/usr --with-bc=/usr/share/java/bcprov.jar \
-	   --with-log4j=/usr/share/java/log4j.jar \
-	   --with-commons-cli=/usr/share/java/commons-cli.jar \
-	   --with-commons-lang=/usr/share/java/commons-lang.jar
-%else
-	   --disable-java
-%endif
+%configure --disable-glite --libexecdir=%{_datadir} \
+	   --disable-static --enable-docs
 
 make -j1
 
 ( cd doc/apidoc/api/VOMS_C_API/latex ; make )
 ( cd doc/apidoc/api/VOMS_CC_API/latex ; make )
-
-%if %{withjava}
-mkdir javadoc
-cd javadoc
-CLASSPATH=../src/api/java:$(build-classpath \
-			    bcprov log4j commons-cli commons-lang) \
-javadoc ../src/api/java/org/glite/voms/*.java \
-	../src/api/java/org/glite/voms/ac/*.java \
-	../src/api/java/org/glite/voms/contact/*.java
-cd ..
-%endif
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -423,12 +325,8 @@ make install DESTDIR=$RPM_BUILD_ROOT
 
 rm $RPM_BUILD_ROOT%{_libdir}/*.la
 
-rm $RPM_BUILD_ROOT%{_mandir}/man8/voms-install-replica.8*
-
-mv $RPM_BUILD_ROOT%{_datadir}/vomses.template \
-   $RPM_BUILD_ROOT%{_datadir}/%{name}
-
-mv $RPM_BUILD_ROOT%{_datadir}/m4 $RPM_BUILD_ROOT%{_datadir}/aclocal
+sed -e 's/\$PREFIX//' -e 's/\.glite/.voms/' -e 's/RThis/R This/' \
+    -i $RPM_BUILD_ROOT%{_mandir}/man1/voms-proxy-init.1
 
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/grid-security/vomsdir
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/grid-security/%{name}
@@ -440,10 +338,7 @@ mkdir -p $RPM_BUILD_ROOT%{_initrddir}
 sed -e 's/\(chkconfig: \)\w*/\1-/' \
     -e '/Default-Start/d' \
     -e 's/\(Default-Stop:\s*\).*/\10 1 2 3 4 5 6/' \
-   $RPM_BUILD_ROOT%{_datadir}/init.d/%{name} > \
-   $RPM_BUILD_ROOT%{_initrddir}/%{name}
-chmod 755 $RPM_BUILD_ROOT%{_initrddir}/%{name}
-rm -rf $RPM_BUILD_ROOT%{_datadir}/init.d
+    -i $RPM_BUILD_ROOT%{_initrddir}/%{name}
 
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig
 echo VOMS_USER=voms > $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/%{name}
@@ -464,20 +359,6 @@ cp -pr doc/apidoc/api/VOMS_CC_API/html \
 rm -f $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/VOMS_CC_API/html/installdox
 install -m 644 doc/apidoc/api/VOMS_CC_API/latex/refman.pdf \
    $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/VOMS_CC_API
-
-%if %{withjava}
-mv $RPM_BUILD_ROOT%{_javadir}/vomsjapi.jar \
-   $RPM_BUILD_ROOT%{_javadir}/vomsjapi-%{version}.jar
-ln -s vomsjapi-%{version}.jar $RPM_BUILD_ROOT%{_javadir}/vomsjapi.jar
-
-mkdir -p $RPM_BUILD_ROOT%{_javadocdir}
-cp -pr javadoc $RPM_BUILD_ROOT%{_javadocdir}/vomsjapi-%{version}
-ln -s vomsjapi-%{version} $RPM_BUILD_ROOT%{_javadocdir}/vomsjapi
-
-%if %{with_gcj}
-%{_bindir}/aot-compile-rpm
-%endif
-%endif
 
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d
 cp %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/%{name}
@@ -522,18 +403,6 @@ fi
 if [ $1 -ge 1 ]; then
     /sbin/service %{name} condrestart >/dev/null 2>&1 || :
 fi
-
-%if %{withjava}
-%post -n vomsjapi
-%if %{with_gcj}
-[ -x %{_bindir}/rebuild-gcj-db ] && %{_bindir}/rebuild-gcj-db
-%endif
-
-%postun -n vomsjapi
-%if %{with_gcj}
-[ -x %{_bindir}/rebuild-gcj-db ] && %{_bindir}/rebuild-gcj-db
-%endif
-%endif
 
 %files
 %defattr(-,root,root,-)
@@ -599,50 +468,38 @@ fi
 %{_mandir}/man8/voms.8*
 %doc README.Fedora
 
-%if %{withjava}
-%files -n vomsjapi
-%defattr(-,root,root,-)
-%{_javadir}/vomsjapi.jar
-%{_javadir}/vomsjapi-%{version}.jar
-%if %{with_gcj}
-%{_libdir}/gcj/%{name}
-%endif
-%doc AUTHORS LICENSE
-
-%files -n vomsjapi-javadoc
-%defattr(-,root,root,-)
-%doc %{_javadocdir}/vomsjapi
-%doc %{_javadocdir}/vomsjapi-%{version}
-%endif
-
 %changelog
-* Mon Jun 25 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.6-8
-- Add patch to prevent redefinition of gss_cred_id_t in voms_api.h
+* Mon Aug 13 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.8-1.1
+- Add OSG patches and logrotate file
 
-* Thu Jun 07 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.6-7
-- Have vomsjapi provide voms-api-java
-- Have vomsjapi-javadoc provide voms-api-java-javadoc
+* Thu May 24 2012 Mattias Ellert <mattias.ellert@fysast.uu.se> - 2.0.8-1
+- Update to version 2.0.8 (EMI 2 version)
 
-* Thu May 24 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.6-6
-- Add logrotate file
+* Mon Apr 23 2012 Mattias Ellert <mattias.ellert@fysast.uu.se> - 2.0.7-2
+- Fix build of compat package with new globus headers
 
-* Sun Nov 5 2011 Alain Roy <roy@cs.wisc.edu> - 2.0.6-5
-- Added bug fix so misstyped passphrase when using p12 file doesn't cause segfault. 
+* Mon Apr 23 2012 Mattias Ellert <mattias.ellert@fysast.uu.se> - 2.0.7-1
+- Update to version 2.0.7
+- No longer build the Java API - it is in a separate package now
 
-* Fri Oct 28 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.6-4
-- Rebuilt
+* Tue Feb 28 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.0.6-5
+- Rebuilt for c++ ABI breakage
 
-* Thu Sep 29 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.6-3
-- Release bump of voms and voms-compat
+* Fri Feb 10 2012 Mattias Ellert <mattias.ellert@fysast.uu.se> - 2.0.6-4
+- Rebuilt for gsoap 2.8.7 (Fedora 17+)
 
-* Wed Sep 28 2011 Derek Weitzel <dweitzel@cse.unl.edu> - 2.0.6-2
-- Updated to 2.0.6 
-- Changed compat to include *.0
+* Sat Jan 14 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.0.6-3.1
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_17_Mass_Rebuild
 
-* Mon Sep 12 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.2-3
-- Rebuild against updated Globus libraries
-- also bumped voms-compat revision to 5
-- removed parallel make
+* Wed Nov 09 2011 Mattias Ellert <mattias.ellert@fysast.uu.se> - 2.0.6-3
+- Rebuild for new gsoap
+
+* Sat Oct 01 2011 Mattias Ellert <mattias.ellert@fysast.uu.se> - 2.0.6-2
+- Don't build java in parallel
+- Remove the data.3 man page (too common name)
+
+* Tue Aug 30 2011 Mattias Ellert <mattias.ellert@fysast.uu.se> - 2.0.6-1
+- Update to version 2.0.6
 
 * Fri May 27 2011 Mattias Ellert <mattias.ellert@fysast.uu.se> - 2.0.2-1
 - Update to version 2.0.2
