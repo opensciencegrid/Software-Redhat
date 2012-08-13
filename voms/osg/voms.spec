@@ -5,14 +5,14 @@
 %endif
 
 %global version1 1.9.19.2
-%global release1 7
+%global release1 7.1
 
 %global version2 2.0.8
-%global release2 1
+%global release2 1.3
 
 Name:		voms
 Version:	%{version2}
-Release:	%{release2}.1%{?dist}
+Release:	%{release2}%{?dist}
 Summary:	Virtual Organization Membership Service
 
 Group:		System Environment/Libraries
@@ -469,6 +469,9 @@ fi
 %doc README.Fedora
 
 %changelog
+* Mon Aug 13 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.8-1.3
+- Release bump for koji
+
 * Mon Aug 13 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.8-1.1
 - Add OSG patches and logrotate file
 
