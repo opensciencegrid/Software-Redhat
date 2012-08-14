@@ -50,7 +50,7 @@ Version: %{tarball_version}
 %define condor_release %condor_base_release
 %endif
 # Release: %condor_release%{?dist}.2
-Release: 0%{?dist}
+Release: 1%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -1078,7 +1078,7 @@ fi
 %endif
 
 %changelog
-* Tue Aug 07 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 7.8.2-0
+* Tue Aug 14 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 7.8.2-1
 - New version
 
 * Mon Jul 30 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 7.8.1-7
