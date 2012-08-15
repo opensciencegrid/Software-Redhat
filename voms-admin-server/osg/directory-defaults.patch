@@ -1,18 +1,8 @@
---- resources/scripts/init-voms-admin.py.orig   2011-07-21 13:45:25.000000000 -0500
-+++ resources/scripts/init-voms-admin.py        2011-07-21 13:47:12.000000000 -0500
-@@ -25,6 +25,9 @@
-
- import getopt, sys, os, os.path, commands,urllib,xml.dom.minidom, getopt, shutil, time, re, glob
-
-+os.environ.setdefault("CATALINA_HOME", "/usr/share/@TOMCAT@")
-+os.environ.setdefault("VOMS_ADMIN_LOCATION_VAR", "/")
-+
- def voms_admin_config_dir_prefix():
-     conf_dir_prefix = os.environ.get('VOMS_ADMIN_LOCATION_VAR')
-     if conf_dir_prefix is None:
---- resources/scripts/voms-admin-configure.py.orig	2011-07-27 17:45:06.000000000 -0500
-+++ resources/scripts/voms-admin-configure.py	2011-07-27 18:06:10.000000000 -0500
-@@ -92,7 +92,34 @@
+Index: resources/scripts/voms-admin-configure.py
+===================================================================
+--- resources/scripts/voms-admin-configure.py.orig	2012-05-21 15:27:53.000000003 -0500
++++ resources/scripts/voms-admin-configure.py	2012-08-14 18:48:22.000000003 -0500
+@@ -101,7 +101,34 @@
              raise VomsConfigureError, "User unknown: %s" % options['config-owner']        
          
          user_id = pwd_info[2]
@@ -48,7 +38,7 @@
      tomcat_group = None
      
      if not options.has_key("tomcat-group"):
-@@ -138,8 +165,8 @@
+@@ -147,8 +174,8 @@
      options['ta.subject']=certificate.subject
      options['ta.ca']=certificate.issuer
  
@@ -58,13 +48,14 @@
 +
  def check_installed_setup():
      
-     vlog("VOMS_LOCATION: %s" % VomsConstants.voms_loc)
+     vlog("Checking local installation...")
+Index: resources/scripts/voms.py
+===================================================================
+--- resources/scripts/voms.py.orig	2012-05-21 15:27:53.000000003 -0500
++++ resources/scripts/voms.py	2012-08-14 18:48:22.000000003 -0500
+@@ -71,6 +71,12 @@
  
---- resources/scripts/voms.py.orig	2011-07-27 17:45:28.000000000 -0500
-+++ resources/scripts/voms.py	2011-07-27 18:01:38.000000000 -0500
-@@ -22,6 +22,12 @@
- 
- voms_admin_server_version = "${server-version}"
+ voms_admin_sysconfig_props = load_sysconfig()
  
 +os.environ.setdefault("VOMS_ADMIN_LOCATION_VAR", "/")
 +os.environ.setdefault("VOMS_LOCATION_VAR", "/var")
@@ -73,9 +64,9 @@
 +os.environ.setdefault("VOMS_LOCATION_CONF", "/")
 +
  def exit_status(status):
-     if os.WIFEXITED(status):
-         return os.WEXITSTATUS(status)
-@@ -133,6 +139,7 @@
+     ## FIXME: No op
+     return status
+@@ -178,6 +184,7 @@
  
  class ConfigureAction:
      def __init__(self,name,required_options,user_options):
@@ -83,7 +74,7 @@
          self.name = name
          self.required_options=required_options
          self.user_options=user_options
-@@ -702,7 +709,9 @@
+@@ -716,7 +723,9 @@
               'VONAME': self.user_options['vo'],
               'PORT': self.user_options['port'],
               'URI': self.user_options['uri'],
@@ -94,8 +85,8 @@
          
          t = Template(open(VomsConstants.voms_template,"r").read())
          
-@@ -722,6 +731,10 @@
-         
+@@ -741,6 +750,10 @@
+      
          os.chmod(voms_config_file(self.user_options['vo']),0640)
          os.chmod(voms_pass_file(self.user_options['vo']), 0640)
 +        if os.getgid() == 0:
@@ -105,9 +96,10 @@
          
      
      def write_vomses(self):
-
---- resources/templates/voms.conf.template.orig	2011-07-27 17:48:59.000000000 -0500
-+++ resources/templates/voms.conf.template	2011-07-27 17:56:11.000000000 -0500
+Index: resources/templates/voms.conf.template
+===================================================================
+--- resources/templates/voms.conf.template.orig	2012-05-21 15:27:53.000000003 -0500
++++ resources/templates/voms.conf.template	2012-08-14 18:48:22.000000003 -0500
 @@ -9,4 +9,6 @@
  --username=@USERNAME@
  --vo=@VONAME@
@@ -117,3 +109,16 @@
 +--timeout=@TIMEOUT@
 +--x509_user_cert=@X509_USER_CERT@
 +--x509_user_key=@X509_USER_KEY@
+Index: resources/scripts/init-voms-admin.py
+===================================================================
+--- resources/scripts/init-voms-admin.py.orig	2012-05-21 15:27:53.000000003 -0500
++++ resources/scripts/init-voms-admin.py	2012-08-14 18:56:40.000000003 -0500
+@@ -30,6 +30,8 @@
+ sys.path.append(os.path.join(package_prefix,"usr","sbin"))
+ from voms import voms_admin_conf_dir, catalina_home
+ 
++os.environ.setdefault("CATALINA_HOME", "/usr/share/@TOMCAT@")
++os.environ.setdefault("VOMS_ADMIN_LOCATION_VAR", "/")
+ 
+ 
+ 
