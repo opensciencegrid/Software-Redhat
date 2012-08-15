@@ -13,7 +13,7 @@
 Name:		globus-gram-job-manager
 %global _name %(tr - _ <<< %{name})
 Version:	13.45
-Release:	1.1%{?dist}
+Release:	1.2%{?dist}
 Summary:	Globus Toolkit - GRAM Jobmanager
 
 Group:		Applications/Internet
@@ -31,6 +31,7 @@ Patch20:        fix-job-home-dir.patch
 Patch22:        fix-job-lock-location.patch
 Patch26:        allow-manager-restart.patch
 Patch27:        recompute-stdio-on-restart.patch
+Patch28:        gt-268-missing-normalize.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -129,6 +130,8 @@ GRAM Jobmanager Documentation Files
 # I think it's a better default, but am waiting on more info.
 #%patch27 -p0
 
+%patch28 -p0
+
 %build
 # Remove files that should be replaced during bootstrap
 rm -f doxygen/Doxyfile*
@@ -219,7 +222,10 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_docdir}/%{name}-%{version}/html
 
 %changelog
-* Mon Jun 18 2012 Alain Roy <roy@cs.wisc.edu> 13.45-1.1
+* Wed Aug 15 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 13.45-1.2
+- Added patch from GT-268 (GRAM job manager seg module fails to replay first log of the month on restart)
+
+* Mon Jun 18 2012 Alain Roy <roy@cs.wisc.edu> - 13.45-1.1
 - Merged upstream changes from 13.45-1
 
     * Wed Jun 13 2012 Joseph Bester <bester@mcs.anl.gov> - 13.45-1
