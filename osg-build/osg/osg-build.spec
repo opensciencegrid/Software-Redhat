@@ -1,6 +1,6 @@
 
 Name:           osg-build
-Version:        1.2.1
+Version:        1.2.2
 Release:        1%{?dist}
 Summary:        Build tools for the OSG
 
@@ -63,6 +63,10 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_docdir}/%{name}/sample-osg-build.ini
 
 %changelog
+* Thu Aug 16 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.2.2-1
+- osg-promote bugfixes
+- 'quilt' task result directory changed to '_quilt' instead of '_final_srpm_contents'
+
 * Thu Jul 12 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.2.1-1
 - mock task bugfixes
 
