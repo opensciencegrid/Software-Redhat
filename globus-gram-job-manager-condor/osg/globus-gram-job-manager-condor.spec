@@ -9,7 +9,7 @@
 Name:		globus-gram-job-manager-condor
 %global _name %(tr - _ <<< %{name})
 Version:	1.0
-Release:	13%{?dist}
+Release:	13.1%{?dist}
 Summary:	Globus Toolkit - Condor Job Manager
 
 Group:		Applications/Internet
@@ -156,8 +156,12 @@ fi
 %config(noreplace) %{_sysconfdir}/osg/extattr_table.txt
 %config(noreplace) %{_sysconfdir}/osg/uid_table.txt
 %{perl_vendorlib}/Globus/GRAM/JobManager/condor_accounting_groups.pm
+%config(noreplace) %{_sysconfdir}/globus/globus-condor.conf
 
 %changelog
+* Fri Aug 17 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0-13.1
+- SOFTWARE-737: Mark /etc/globus/globus-condor.conf as config
+
 * Tue Jul 24 2012 Alain Roy <roy@cs.wisc.edu> - 1.0-13
 - SOFTWARE-717: Patch to work add max_wall_time RSL parameter
 
