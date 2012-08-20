@@ -6,7 +6,7 @@ Name:           glideinwms
 
 %if %{v2_plus}
 %define version 2.6.1
-%define release 0.rc1
+%define release 0.rc2
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
 %endif
@@ -801,6 +801,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Aug 20 2012 Doug Strain <dstrain@fnal.gov> - 2.6.1-0.rc2
+- Added JOB_QUEUE_LOG to the schedd condor configs
+- updated to 2.6.1 release candidate
+
 * Fri Aug 3 2012 Doug Strain <dstrain@fnal.gov> - 2.6.0-3
 - Updating to new release 
 - Changing the schedd configs to work with both wisc and osg condor rpms
