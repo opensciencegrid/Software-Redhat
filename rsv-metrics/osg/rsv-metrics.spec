@@ -1,7 +1,7 @@
 
 Name:      rsv-metrics
-Version:   3.7.5
-Release:   2%{?dist}
+Version:   3.7.6
+Release:   1%{?dist}
 Summary:   RSV metrics
 
 Group:     Applications/Monitoring
@@ -93,6 +93,9 @@ rm -rf $RPM_BUILD_ROOT
 %attr(-,rsv,rsv) %{_localstatedir}/log/rsv/probes
 
 %changelog
+* Thu Aug 23 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.7.6-1
+- Fixed service type of GridFTP metric (OSG-GridFTP -> GridFTP)
+
 * Wed Aug 15 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.7.5-2
 - Added dependency on fetch-crl
 

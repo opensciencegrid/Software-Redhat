@@ -1,6 +1,6 @@
 
 Name:      rsv-consumers
-Version:   3.7.5
+Version:   3.7.6
 Release:   1%{?dist}
 Summary:   RSV Consumers Infrastructure
 
