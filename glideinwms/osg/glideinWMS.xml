@@ -20,10 +20,10 @@
    <stage base_dir="/var/lib/gwms-factory/web-area/stage" use_symlink="True" web_base_url="http://FACTORY_HOSTNAME/factory/stage"/>
    <submit base_client_log_dir="/var/log/gwms-factory/client" base_client_proxies_dir="/var/lib/gwms-factory/client-proxies" base_dir="/var/lib/gwms-factory/work-dir" base_log_dir="/var/log/gwms-factory/server"/>
    <attrs>
-      <attr name="CONDOR_VERSION" const="True" glidein_publish="False" job_publish="False" parameter="True" publish="False" type="string" value="default"/>
+      <attr name="CONDOR_VERSION" const="False" glidein_publish="False" job_publish="False" parameter="True" publish="False" type="string" value="default"/>
       <attr name="GLEXEC_JOB" const="True" glidein_publish="False" job_publish="False" parameter="True" publish="True" type="string" value="True"/>
       <attr name="USE_CCB" const="True" glidein_publish="True" job_publish="False" parameter="True" publish="True" type="string" value="False"/>
-      <attr name="USE_MATCH_AUTH" const="False" glidein_publish="False" job_publish="False" parameter="True" publish="True" type="string" value="True"/>
+      <attr name="USE_MATCH_AUTH" const="True" glidein_publish="False" job_publish="False" parameter="True" publish="True" type="string" value="True"/>
    </attrs>
    <entries>
       <entry name="TEST_ENTRY" enabled="False" gatekeeper="gatekeeper.domain.tld/jobmanager-condor" gridtype="gt2" rsl="(queue=default)(jobtype=single)" schedd_name="schedd_glideins2@FACTORY_HOSTNAME" verbosity="std" work_dir="OSG">
@@ -41,8 +41,8 @@
          <allow_frontends>
          </allow_frontends>
          <attrs>
-            <attr name="CONDOR_ARCH" const="True" glidein_publish="False" job_publish="False" parameter="True" publish="False" type="string" value="default"/>
-            <attr name="CONDOR_OS" const="True" glidein_publish="False" job_publish="False" parameter="True" publish="False" type="string" value="default"/>
+            <attr name="CONDOR_ARCH" const="False" glidein_publish="False" job_publish="False" parameter="True" publish="False" type="string" value="default"/>
+            <attr name="CONDOR_OS" const="False" glidein_publish="False" job_publish="False" parameter="True" publish="False" type="string" value="default"/>
             <attr name="GLEXEC_BIN" const="True" glidein_publish="False" job_publish="False" parameter="True" publish="True" type="string" value="OSG"/>
             <attr name="GLIDEIN_Site" const="True" glidein_publish="True" job_publish="True" parameter="True" publish="True" type="string" value="ITB_GRATIA_TEST"/>
          </attrs>
