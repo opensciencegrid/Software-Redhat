@@ -4,7 +4,7 @@
 Summary: The VOMS Administration service
 Name: voms-admin-server
 Version: 2.7.0
-Release: 1.1%{?dist}
+Release: 1.2%{?dist}
 License:    ASL 2.0
 Group: System Environment/Libraries
 BuildRequires:  maven22
@@ -19,11 +19,17 @@ Requires: emi-trustmanager-tomcat
 Requires: bouncycastle >= 1.39
 %if 0%{?rhel} <= 5
 Requires: tomcat5
+%define tomcat tomcat5
 %define tomcat_lib /usr/share/tomcat5/common/lib
+%define tomcat_endorsed /usr/share/tomcat5/common/endorsed
+%define catalina_home /usr/share/tomcat5
 %endif
 %if 0%{?rhel} == 6
 Requires: tomcat6
+%define tomcat tomcat6
 %define tomcat_lib /usr/share/tomcat6/lib
+%define tomcat_endorsed /usr/share/tomcat6/endorsed
+%define catalina_home /usr/share/tomcat6
 %endif
 Requires: fetch-crl
 Requires: xml-commons-apis 
@@ -73,12 +79,7 @@ administration tasks.
 %build
 # Fix tomcat directory location in init script
 # The directory-defaults.patch adds the line we're fixing here
-%if 0%{?rhel} <= 5
-sed -i -e 's/@TOMCAT@/tomcat5/' resources/scripts/init-voms-admin.py
-%endif
-%if 0%{?rhel} == 6
-sed -i -e 's/@TOMCAT@/tomcat6/' resources/scripts/init-voms-admin.py
-%endif
+sed -i -e 's/@TOMCAT@/%{tomcat}/' resources/scripts/init-voms-admin.py
  
 export JAVA_HOME=%{java_home};
 mvn22 -B -s src/config/emi-build-settings.xml -e -P EMI -Dmaven.repo.local=/tmp/m2-repository package
@@ -92,6 +93,8 @@ tar xzvf target/%{name}-%{version}.tar.gz -C $RPM_BUILD_ROOT
 # Fix some randomly broken permissions
 chmod 644 $RPM_BUILD_ROOT/usr/share/webapps/glite-security-voms-siblings.war $RPM_BUILD_ROOT/usr/share/webapps/glite-security-voms-admin.war $RPM_BUILD_ROOT/usr/share/java/glite-security-voms-admin.jar $RPM_BUILD_ROOT/usr/share/voms-admin/tools/classes/logback.xml $RPM_BUILD_ROOT/usr/share/voms-admin/tools/classes/c3p0.properties 
 chmod 755 $RPM_BUILD_ROOT/usr/sbin/voms.py $RPM_BUILD_ROOT/usr/sbin/voms-admin-configure $RPM_BUILD_ROOT/etc/rc.d/init.d/voms-admin
+# Fix sysconfig file
+sed -i -e 's|^CATALINA_HOME=.*|CATALINA_HOME=%{catalina_home}|' $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/voms-admin
 ## Stage oracle jar
 #cp `find /usr/lib/oracle/ -name ojdbc14.jar` $RPM_BUILD_ROOT%{_datadir}/voms-admin/tools/lib
 find $RPM_BUILD_ROOT -name '*.la' -exec rm -rf {} \;
@@ -101,6 +104,10 @@ mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/voms-admin
 
 mkdir -p $RPM_BUILD_ROOT%{tomcat_lib}
 ln -s /usr/share/java/eclipse-ecj.jar $RPM_BUILD_ROOT%{tomcat_lib}/voms-admin-eclipse-ecj.jar
+
+mkdir -p $RPM_BUILD_ROOT%{tomcat_endorsed}/
+ln -s /usr/share/java/xalan-j2.jar $RPM_BUILD_ROOT%{tomcat_endorsed}/
+ln -s /usr/share/java/xalan-j2-serializer.jar $RPM_BUILD_ROOT%{tomcat_endorsed}/
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -134,8 +141,14 @@ fi
 %{_sbindir}/*
 %{_datadir}/voms-admin/*
 %{tomcat_lib}/voms-admin-eclipse-ecj.jar
+%{tomcat_endorsed}/xalan-j2.jar
+%{tomcat_endorsed}/xalan-j2-serializer.jar
 
 %changelog
+* Tue Aug 28 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 2.7.0-1.2
+Add symlinks for xalan-j2 to tomcat endorsed dir
+Fix CATALINA_HOME in sysconfig file
+
 * Tue Aug 14 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 2.7.0-1.1
 Version update; added changes from upstream spec file; its changelog:
   * Fri Dec 16 2011 Andrea Ceccanti <andrea.ceccanti at cnaf.infn.it> - 2.7.0-1
