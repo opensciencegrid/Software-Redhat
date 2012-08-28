@@ -1,6 +1,6 @@
 Name:           empty-condor
 Version:        1.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        An empty Condor package
 
 Group:          Applications/System
@@ -12,6 +12,7 @@ BuildArch:      noarch
 
 # This fulfills depenendencies for most OSG packages that depend on Condor
 Provides:       condor
+Conflicts:      /usr/sbin/condor_master
 
 # These fulfill dependencies for glexec, specifically lcmaps-plugins-glexec-tracking
 # so that people can use their own Condor install and still install osg-wn-client-glexec
@@ -39,6 +40,10 @@ believes that Condor has been installed via RPM.
 %doc
 
 %changelog
+* Tue Aug 28 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.1-2
+- Conflict with /usr/sbin/condor_master to avoid having this being installed
+  alongside a real RPM Condor.
+
 * Mon Aug 6 2012 Alain Roy <roy@cs.wisc.edu> - 1.1-1
 - Added more provides clauses so this works with glexec-tracking plugin for lcmaps 
 
