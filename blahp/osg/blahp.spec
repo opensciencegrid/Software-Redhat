@@ -1,6 +1,6 @@
 Name:		blahp
 Version:	1.18.0.4
-Release:	4%{?dist}
+Release:	5%{?dist}
 Summary:	gLite BLAHP daemon
 
 Group:		System/Libraries
@@ -22,6 +22,10 @@ Patch5:         blahp.pbs-completion.patch
 Patch6:         blahp.registry.patch
 Patch7:         blahp.shared-fs.patch
 Patch8:         blahp_chkconfig.patch
+# Fix path to blparser_master and related binaries in init scripts
+Patch9:         blahp_init_script_paths.patch
+# Add values for using Condor as a jobmanager to the blah.config
+Patch10:        blahp_condor_config.patch
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildRequires:  automake
 BuildRequires:  autoconf
@@ -54,6 +58,8 @@ BuildRequires:  docbook-style-xsl, libxslt
 %patch6 -p1
 %patch7 -p1
 %patch8 -p1
+%patch9 -p1
+%patch10 -p1
 
 cp %{SOURCE0} src/scripts/pbs_status.sh
 
@@ -113,6 +119,10 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Thu Aug 29 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.18.0.4-5.osg
+- Fixed paths in init script
+- Added default options for condor
+
 * Wed Jul 25 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.18.0.4-4.osg
 - Disable autostart of blah parser
 

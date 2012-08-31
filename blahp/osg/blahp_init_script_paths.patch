@@ -1,0 +1,28 @@
+Index: org.glite.ce.blahp/config/glite-ce-blah-parser
+===================================================================
+--- org.glite.ce.blahp.orig/config/glite-ce-blah-parser	2012-08-30 15:38:43.000000003 -0500
++++ org.glite.ce.blahp/config/glite-ce-blah-parser	2012-08-30 15:38:43.000000003 -0500
+@@ -39,7 +39,7 @@
+     blparser_bin_directory="${GLITE_LOCATION}/bin"
+   else
+ #   Default value when everything else fails.
+-    blparser_bin_directory="/usr/libexec"
++    blparser_bin_directory="/usr/libexec/blahp"
+   fi
+ fi
+ 
+ #max number of concurrent threads to serve commands (default = 500)
+ #blah_max_threaded_cmds=100
+Index: org.glite.ce.blahp/config/glite-ce-check-blparser
+===================================================================
+--- org.glite.ce.blahp.orig/config/glite-ce-check-blparser	2012-01-23 04:49:18.000000003 -0600
++++ org.glite.ce.blahp/config/glite-ce-check-blparser	2012-08-30 15:39:23.000000003 -0500
+@@ -31,7 +31,7 @@
+     blparser_bin_directory="${GLITE_LOCATION}/bin"
+   else
+ #   Default when everything else fails.
+-    blparser_bin_directory="/usr/libexec"
++    blparser_bin_directory="/usr/libexec/blahp"
+   fi
+ fi
+ 
