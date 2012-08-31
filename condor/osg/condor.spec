@@ -50,7 +50,7 @@ Version: %{tarball_version}
 %define condor_release %condor_base_release
 %endif
 # Release: %condor_release%{?dist}.2
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -109,6 +109,8 @@ Patch0: condor_config.generic.patch
 Patch3: chkconfig_off.patch
 Patch8: lcmaps_env_in_init_script.patch
 Patch9: proper_cream_v3.diff
+# patch to fix unnecessary gsi callout
+Patch10: condor_gt2104_pt2.patch
 
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
@@ -396,6 +398,7 @@ exit 0
 %if %cream
 %patch9 -p1
 %endif
+%patch10 -p1
 
 # fix errant execute permissions
 find src -perm /a+x -type f -name "*.[Cch]" -exec chmod a-x {} \;
@@ -451,7 +454,7 @@ export CMAKE_PREFIX_PATH=/usr
        -DWITH_GLOBUS:BOOL=TRUE \
 %if %blahp
        -DWITH_BLAHP:BOOL=TRUE \
-       -DBLAHP_FOUND=/usr/libexec/BLClient \
+       -DBLAHP_FOUND=/usr/libexec/blahp/BLClient \
 %endif
 %if %cream
        -DWITH_CREAM:BOOL=TRUE \
@@ -1078,6 +1081,10 @@ fi
 %endif
 
 %changelog
+* Mon Aug 27 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 7.8.2-2
+- Add patch to fix unnecessary GSI callouts (condor_gt2104_pt2.patch in gittrac #2104)
+- Fixed BLClient location
+
 * Tue Aug 14 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 7.8.2-1
 - New version
 
