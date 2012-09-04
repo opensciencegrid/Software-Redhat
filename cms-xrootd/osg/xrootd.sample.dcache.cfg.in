@@ -1,6 +1,10 @@
 # Port specifications; only the redirector needs to use a well-known port
 # "any" will cause rooted to bind to any available port.  Change as needed for firewalls.
-xrd.port 1094
+#
+# For the dCache template, we change the port to 1095, as the dCache xrootd door
+# is likely running on the default port.
+#
+xrd.port 1095
 
 # The roles this server will play.
 all.role server
@@ -42,8 +46,6 @@ cms.delay startup 10
 cms.fxhold 60s
 #cms.perf int 30s pgm /usr/bin/XrdOlbMonPerf 30
 
-if exec xrootd
-  xrd.report xrootd.t2.ucsd.edu:9931 every 30s all
-  xrootd.monitor all auth flush 30s mbuff 1472 window 5s dest files io info user xrootd.t2.ucsd.edu:9930
-fi
+xrd.report xrootd.t2.ucsd.edu:9931 every 60s all sync
+xrootd.monitor all auth flush io 60s ident 5m mbuff 8k rbuff 4k rnums 3 window 5s dest files io info user redir xrootd.t2.ucsd.edu:9930
 
