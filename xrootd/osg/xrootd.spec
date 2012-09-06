@@ -7,7 +7,7 @@
 # Package definitions
 #-------------------------------------------------------------------------------
 Name:      xrootd
-Epoch:     1
+Epoch:     2
 Version:   3.2.3
 Release:   1%{?dist}%{?_with_xrootd_user:.xu}
 Summary:   An extended root daemon (xrootd)
