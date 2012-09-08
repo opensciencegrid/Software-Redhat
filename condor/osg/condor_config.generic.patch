@@ -1,7 +1,7 @@
-Index: condor-7.8.0/src/condor_examples/condor_config.generic
+Index: condor-7.8.3/src/condor_examples/condor_config.generic
 ===================================================================
---- condor-7.8.0.orig/src/condor_examples/condor_config.generic	2012-05-08 15:11:36.000000000 -0500
-+++ condor-7.8.0/src/condor_examples/condor_config.generic	2012-06-01 10:02:15.173484107 -0500
+--- condor-7.8.3.orig/src/condor_examples/condor_config.generic	2012-09-06 12:12:09.000000003 -0500
++++ condor-7.8.3/src/condor_examples/condor_config.generic	2012-09-07 21:17:14.000000003 -0500
 @@ -1,12 +1,31 @@
  ######################################################################
 +######################################################################
@@ -230,17 +230,6 @@ Index: condor-7.8.0/src/condor_examples/condor_config.generic
  
  ##  JAVA_CLASSPATH_ARGUMENT describes the command-line parameter
  ##  used to introduce a new classpath:
-@@ -2231,8 +2283,8 @@
- 
- ## What kind of virtual machine program will be used for 
- ## the VM universe?
--## The two options are vmware and xen.  (Required)
--#VM_TYPE = vmware
-+## The three primary options are KVM, Xen and VMware.  (Required: no default)
-+#VM_TYPE = kvm
- 
- ## How much memory can be used for the VM universe? (Required)
- ## This value is the maximum amount of memory that can be used by the 
 @@ -2459,7 +2511,7 @@
  #SSH_TO_JOB_SSHD_ARGS = "-i -e -f %f"
  

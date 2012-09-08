@@ -1,4 +1,4 @@
-%define tarball_version 7.8.2
+%define tarball_version 7.8.3
 
 # Things for F15 or later
 %if 0%{?fedora} >= 15
@@ -50,7 +50,7 @@ Version: %{tarball_version}
 %define condor_release %condor_base_release
 %endif
 # Release: %condor_release%{?dist}.2
-Release: 2%{?dist}
+Release: 1%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -725,6 +725,7 @@ rm -rf %{buildroot}
 %endif
 %_libdir/libchirp_client.so
 %_libdir/libcondor_utils_%{version_}.so
+%_libdir/libcondorapi.so
 %dir %_libexecdir/condor/
 %_libexecdir/condor/condor_chirp
 %_libexecdir/condor/condor_ssh
@@ -1081,6 +1082,9 @@ fi
 %endif
 
 %changelog
+* Fri Sep 07 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 7.8.3-1
+- New version
+
 * Mon Aug 27 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 7.8.2-2
 - Add patch to fix unnecessary GSI callouts (condor_gt2104_pt2.patch in gittrac #2104)
 - Fixed BLClient location
