@@ -30,7 +30,7 @@
 # Whether or not /sbin/nologin exists.
 %global nologin 1
 
-%global gsi_openssh_rel 3
+%global gsi_openssh_rel 4
 %global gsi_openssh_ver 5.4
 
 %ifarch alpha ia64 ppc64 s390x sparc64 x86_64
@@ -51,56 +51,7 @@ URL: http://www.openssh.com/portable.html
 # the ACSS cipher is removed by running openssh-nukeacss.sh in
 # the unpacked source directory.
 Source0: http://downloads.sourceforge.net/cilogon/gsi_openssh-%{version}-src.tar.gz
-#Source1: openssh-nukeacss.sh
-#Source2: gsisshd.pam
-#Source3: gsisshd.init
-#
-#Patch0: openssh-5.4p1-redhat.patch
-##https://bugzilla.mindrot.org/show_bug.cgi?id=1638
-#Patch2: openssh-5.3p1-skip-initial.patch
-##https://bugzilla.mindrot.org/show_bug.cgi?id=1640
-#Patch4: openssh-5.2p1-vendor.patch
-##https://bugzilla.mindrot.org/show_bug.cgi?id=1641
-#Patch12: openssh-5.4p1-selinux.patch
-#Patch13: openssh-5.5p1-mls.patch
-##https://bugzilla.mindrot.org/show_bug.cgi?id=1402
-#Patch16: openssh-5.3p1-audit.patch
-#Patch18: openssh-5.4p1-pam_selinux.patch
-##https://bugzilla.mindrot.org/show_bug.cgi?id=1663
-#Patch20: openssh-5.5p1-authorized-keys-command.patch
-#Patch21: openssh-5.5p1-ldap.patch
-##https://bugzilla.mindrot.org/show_bug.cgi?id=1668
-#Patch23: openssh-5.5p1-keygen.patch
-#Patch24: openssh-4.3p1-fromto-remote.patch
-##https://bugzilla.mindrot.org/show_bug.cgi?id=1636
-#Patch27: openssh-5.1p1-log-in-chroot.patch
-#Patch30: openssh-4.0p1-exit-deadlock.patch
-#Patch35: openssh-5.1p1-askpass-progress.patch
-#Patch38: openssh-4.3p2-askpass-grab-info.patch
-##https://bugzilla.mindrot.org/show_bug.cgi?id=1644
-#Patch44: openssh-5.2p1-allow-ip-opts.patch
-#Patch49: openssh-4.3p2-gssapi-canohost.patch
-#Patch62: openssh-5.1p1-scp-manpage.patch
-#Patch65: openssh-5.5p1-fips.patch
-##https://bugzilla.mindrot.org/show_bug.cgi?id=1614
-#Patch69: openssh-5.3p1-selabel.patch
-#Patch71: openssh-5.2p1-edns.patch
-#Patch73: openssh-5.5p1-gsskex.patch
-##https://bugzilla.mindrot.org/show_bug.cgi?id=1701
-#Patch74: openssh-5.3p1-randclean.patch
-##https://bugzilla.mindrot.org/show_bug.cgi?id=1740
-#Patch76: openssh-5.5p1-staterr.patch
-##https://bugzilla.mindrot.org/show_bug.cgi?id=1750
-#Patch77: openssh-5.5p1-stderr.patch
-##https://bugzilla.mindrot.org/show_bug.cgi?id=1780
-#Patch78: openssh-5.5p1-kuserok.patch
-#Patch79: openssh-5.5p1-x11.patch
-##https://bugzilla.mindrot.org/show_bug.cgi?id=1842
-#Patch81: openssh-5.5p1-clientloop.patch
-#
-## This is the patch that adds GSI support
-## Based on http://grid.ncsa.illinois.edu/ssh/dl/patch/openssh-5.5p1.patch
-#Patch99: openssh-5.5p1-gsissh.patch
+Source1: gsisshd.sysconfig
 
 License: BSD
 Group: Applications/Internet
@@ -210,41 +161,6 @@ This version of OpenSSH has been modified to support GSI authentication.
 
 %prep
 %setup -q -n gsi_openssh-%{version}-src
-#%setup -q
-#%patch0 -p1 -b .redhat
-#%patch2 -p1 -b .skip-initial
-#%patch4 -p1 -b .vendor
-#
-#%if %{WITH_SELINUX}
-##SELinux
-#%patch12 -p1 -b .selinux
-#%patch13 -p1 -b .mls
-#%patch16 -p1 -b .audit
-#%patch18 -p1 -b .pam_selinux
-#%endif
-#
-#%patch20 -p1 -b .akc
-#%patch21 -p1 -b .ldap
-#%patch23 -p1 -b .keygen
-#%patch24 -p1 -b .fromto-remote
-#%patch27 -p1 -b .log-chroot
-#%patch30 -p1 -b .exit-deadlock
-#%patch35 -p1 -b .progress
-#%patch38 -p1 -b .grab-info
-#%patch44 -p1 -b .ip-opts
-#%patch49 -p1 -b .canohost
-#%patch62 -p1 -b .manpage
-#%patch65 -p1 -b .fips
-#%patch69 -p1 -b .selabel
-#%patch71 -p1 -b .edns
-#%patch73 -p1 -b .gsskex
-#%patch74 -p1 -b .randclean
-#%patch76 -p1 -b .staterr
-#%patch77 -p1 -b .stderr
-#%patch78 -p1 -b .kuserok
-#%patch79 -p1 -b .x11
-#%patch81 -p1 -b .clientloop
-#%patch99 -p1 -b .gsi
 
 sed 's/sshd.pid/gsisshd.pid/' -i pathnames.h
 sed 's!$(piddir)/sshd.pid!$(piddir)/gsisshd.pid!' -i Makefile.in
@@ -331,11 +247,14 @@ mkdir -p -m755 $RPM_BUILD_ROOT%{_var}/empty/gsisshd
 make install sysconfdir=%{_sysconfdir}/gsissh \
      bindir=%{_bindir} DESTDIR=$RPM_BUILD_ROOT
 
-install -d $RPM_BUILD_ROOT/etc/pam.d/
-install -d $RPM_BUILD_ROOT/etc/rc.d/init.d
+install -d $RPM_BUILD_ROOT%{_sysconfdir}/pam.d/
+install -d $RPM_BUILD_ROOT%{_initrddir}
 install -d $RPM_BUILD_ROOT%{_libexecdir}/gsissh
-install -m644 gsisshd.pam $RPM_BUILD_ROOT/etc/pam.d/gsisshd
-install -m755 gsisshd.init $RPM_BUILD_ROOT/etc/rc.d/init.d/gsisshd
+install -d $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig
+install -m644 gsisshd.pam $RPM_BUILD_ROOT%{_sysconfdir}/pam.d/gsisshd
+install -m755 gsisshd.init $RPM_BUILD_ROOT%{_initrddir}/gsisshd
+install -m644 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/gsisshd
+
 
 #rm $RPM_BUILD_ROOT%{_bindir}/gsiscp
 #rm $RPM_BUILD_ROOT%{_bindir}/gsisftp
@@ -433,10 +352,14 @@ fi
 %attr(0644,root,root) %{_mandir}/man8/gsisshd.8*
 %attr(0644,root,root) %{_mandir}/man8/gsisftp-server.8*
 %attr(0600,root,root) %config(noreplace) %{_sysconfdir}/gsissh/sshd_config
-%attr(0644,root,root) %config(noreplace) /etc/pam.d/gsisshd
-%attr(0755,root,root) /etc/rc.d/init.d/gsisshd
+%attr(0644,root,root) %config(noreplace) %{_sysconfdir}/pam.d/gsisshd
+%attr(0755,root,root) %{_initrddir}/gsisshd
+%attr(0644,root,root) %config(noreplace) %{_sysconfdir}/sysconfig/gsisshd
 
 %changelog
+* Mon Sep 10 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 5.4-4
+- Added sysconfig file for server
+
 * Fri Oct 28 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 5.4-3
 - Added provides/obsoletes lines for gsissh
 
