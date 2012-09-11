@@ -1,5 +1,5 @@
---- /usr/lib/python2.6/site-packages/netlogger/parsers/modules/gridftp_auth.py	2012-08-03 11:07:39.000000000 -0500
-+++ gridftp_auth.py.latest	2012-09-11 15:20:55.133288455 -0500
+--- netlogger/parsers/modules/gridftp_auth.py	2012-08-03 11:07:39.000000000 -0500
++++ netlogger/parsers/modules/gridftp_auth.py	2012-09-11 15:20:55.133288455 -0500
 @@ -33,6 +33,8 @@
          BaseParser.__init__(self, f, fullname=__name__, **kw)
          self._batch = [ ]
