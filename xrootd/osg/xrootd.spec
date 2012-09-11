@@ -8,8 +8,8 @@
 #-------------------------------------------------------------------------------
 Name:      xrootd
 Epoch:     1
-Version:   3.2.3
-Release:   2%{?dist}%{?_with_xrootd_user:.xu}
+Version:   3.2.4
+Release:   1%{?dist}%{?_with_xrootd_user:.xu}
 Summary:   An extended root daemon (xrootd)
 Group:     System Environment/Daemons
 License:   BSD
@@ -401,6 +401,9 @@ exit 0
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Tue Sep 11 2012 Doug Strain <dstrain@fnal.gov> 3.2.4-1
+- Updated to xrootd 3.2.4.
+
 * Mon Jun 14 2012 Alain Roy <roy@cs.wisc.edu> 3.2.2-1
 - Updated to xrootd 3.2.2. Several bug fixes including one to FRM. 
 
