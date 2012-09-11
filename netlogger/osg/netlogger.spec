@@ -48,7 +48,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 
 %changelog
-* Tue Sept 11 2012 Neha Sharma <neha@fnal.gov> - 4.2.0-4
+* Tue Sep 11 2012 Neha Sharma <neha@fnal.gov> - 4.2.0-4
 - Fixed patch for gridftp_auth parser module
 
 * Thu Aug 2 2012 Neha Sharma <neha@fnal.gov> - 4.2.0-3
