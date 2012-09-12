@@ -1,5 +1,5 @@
---- /usr/lib/python2.6/site-packages/netlogger/parsers/modules/gridftp_auth.py	2012-09-11 16:30:51.418552958 -0500
-+++ gridftp_auth.py.latest	2012-09-11 15:20:55.133288455 -0500
+--- netlogger/parsers/modules/gridftp_auth.py	2012-09-11 16:30:51.418552958 -0500
++++ netlogger/parsers/modules/gridftp_auth.py	2012-09-11 15:20:55.133288455 -0500
 @@ -78,10 +78,9 @@
          elif message.startswith('Configuration'):
              event = dict(event=ns('config'))
