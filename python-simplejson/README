@@ -1,3 +1,6 @@
+Apparently we package this because it is not in SL 5.6.
+It _is_ in RHEL 5, Centos 5 and SL 5.8, so we can stop shipping it pretty soon.
+
 We are using python-simplejon 2.0.9. Newer versions don't work with
 Python 2.4, so we're not using it there. 
 
