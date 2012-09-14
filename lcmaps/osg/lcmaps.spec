@@ -11,7 +11,7 @@
 Summary: Grid (X.509) and VOMS credentials to local account mapping service
 Name: lcmaps
 Version: 1.5.4
-Release: 1.2%{?dist}
+Release: 1.3%{?dist}
 #Release: 0.%(date +%%Y%%m%%d_%%H%%M)%{?dist}
 License: ASL 2.0
 Group: System Environment/Libraries
@@ -173,9 +173,18 @@ rm -rf $RPM_BUILD_ROOT
 /sbin/ldconfig
 if [ ! -L %{_libdir}/modules ]; then
     if [ -d %{_libdir}/modules ]; then
-       # move anything left in modules to lcmaps directory
-       mv %{_libdir}/modules/* %{_libdir}/lcmaps >/dev/null 2>&1 || true
-       rmdir %{_libdir}/modules
+	# move anything left in modules to lcmaps directory unless 
+	#  the corresponding file already exists
+	(cd %{_libdir}/modules
+	for F in *; do
+	    if [ -e "../lcmaps/$F" ]; then
+		rm -f "$F"
+	    else
+		mv "$F" ../lcmaps
+	    fi
+	done
+	)
+	rmdir %{_libdir}/modules
     fi
     # create the modules symlink for backward compatibility
     ln -s lcmaps %{_libdir}/modules
@@ -260,6 +269,10 @@ fi
 %{_libdir}/pkgconfig/lcmaps.pc
 
 %changelog
+* Fri Sep 14 2012 Dave Dykstra <dwd@fnal.gov> 1.5.4-1.3.osg
+- Prevent the movement of files from the old %{_libdir}/modules directory
+  to %{_libdir}/lcmaps from overwriting anything that was already there
+
 * Fri Jun 15 2012 Dave Dykstra <dwd@fnal.gov> 1.5.4-1.2.osg
 - Add authorize_only policy to default lcmaps.db, for Condor
 
