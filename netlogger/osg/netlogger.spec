@@ -1,6 +1,6 @@
 Name:		netlogger
 Version:	4.2.0
-Release:	5%{?dist}
+Release:	6%{?dist}
 Summary:	Netlogger toolkit
 
 Group:		Productivity/File utilities
@@ -48,6 +48,9 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 
 %changelog
+* Mon Sep 17 2012 Neha Sharma <neha@fnal.gov> - 4.2.0-6
+- Removing one debug statement and one typo
+
 * Tue Sep 14 2012 Neha Sharma <neha@fnal.gov> - 4.2.0-5
 - Other half of the patch
 
