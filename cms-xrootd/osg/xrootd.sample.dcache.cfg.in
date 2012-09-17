@@ -8,9 +8,13 @@ xrd.port 1095
 
 # The roles this server will play.
 all.role server
-# The known managers
+# The known redirectors; uncomment at least one.
+# Test endpoint:
 all.manager xrootd-itb.unl.edu:1213
-#all.manager xrootd.unl.edu:1213
+# US production redirector:
+# all.manager xrootd.unl.edu:1213
+# EU production redirector:
+# all.manager xrootd.ba.infn.it:1213
 
 oss.localroot /pnfs/example.com/data/cms
 xrootd.redirect xrootd-door.example.com:1094 /
@@ -30,12 +34,13 @@ xrd.trace conn
 cms.trace all
 
 # Integrate with CMS TFC, placed in /etc/storage.xml
+# This file can be found in:
+# $VO_CMS_SW_DIR/SITECONF/local/PhEDEx/storage.xml
 oss.namelib @LIBDIR@/libXrdCmsTfc.so file:/etc/xrootd/storage.xml?protocol=direct
 
-# Turn on authorization
+# Authorization is off as we are just redirecting to dCache - rely on dCache's
+# authz.
 ofs.authorize 0
-#acc.authdb /etc/xrootd/Authfile
-#acc.audit deny grant
 
 xrootd.seclib @LIBDIR@/libXrdSec.so
 xrootd.fslib @LIBDIR@/libXrdOfs.so
@@ -44,8 +49,9 @@ all.pidpath /var/run/xrootd
 
 cms.delay startup 10
 cms.fxhold 60s
-#cms.perf int 30s pgm /usr/bin/XrdOlbMonPerf 30
 
+# Monitoring configuration.  The latest recommendations are also kept at:
+# https://twiki.cern.ch/twiki/bin/view/Main/XrootdMonitoring
 xrd.report xrootd.t2.ucsd.edu:9931 every 60s all sync
-xrootd.monitor all auth flush io 60s ident 5m mbuff 8k rbuff 4k rnums 3 window 5s dest files io info user redir xrootd.t2.ucsd.edu:9930
+xrootd.monitor all auth flush io 60s ident 5m mbuff 8k rbuff 4k rnums 3 window 10s dest files io info user redir xrootd.t2.ucsd.edu:9930
 

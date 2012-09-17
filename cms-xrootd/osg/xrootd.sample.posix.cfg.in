@@ -4,10 +4,13 @@ xrd.port 1094
 
 # The roles this server will play.
 all.role server
-all.role manager if xrootd.unl.edu
-# The known managers
+# The known redirectors; uncomment at least one.
+# Test endpoint:
 all.manager xrootd-itb.unl.edu:1213
-#all.manager xrootd.unl.edu:1213
+# US production redirector:
+# all.manager xrootd.unl.edu:1213
+# EU production redirector:
+# all.manager xrootd.ba.infn.it:1213
 
 # Allow any path to be exported; this is further refined in the authfile.
 all.export / nostage
@@ -24,7 +27,9 @@ xrd.trace conn
 cms.trace all
 
 # Integrate with CMS TFC, placed in /etc/storage.xml
-#oss.namelib @LIBDIR@/libXrdCmsTfc.so file:/etc/xrootd/storage.xml?protocol=hadoop
+# This file can be found in:
+# $VO_CMS_SW_DIR/SITECONF/local/PhEDEx/storage.xml
+oss.namelib @LIBDIR@/libXrdCmsTfc.so file:/etc/xrootd/storage.xml?protocol=direct
 
 # Turn on authorization
 ofs.authorize 1
@@ -34,7 +39,8 @@ acc.audit deny grant
 # Security configuration
 sec.protocol @LIBDIR@ gsi -certdir:/etc/grid-security/certificates -cert:/etc/grid-security/xrd/xrdcert.pem -key:/etc/grid-security/xrd/xrdkey.pem -crl:3
 
-# The following is the suggestion configuration if you use GUMS; you will need the xrootd-lcmaps RPM
+# The following is the suggestion configuration if you use GUMS/ARGUS; you will need the xrootd-lcmaps RPM
+# See the documentation for further details.
 # sec.protocol /usr/lib64 gsi -certdir:/etc/grid-security/certificates -cert:/etc/grid-security/xrd/xrdcert.pem -key:/etc/grid-security/xrd/xrdkey.pem -crl:3 -authzfun:libXrdLcmaps.so -authzfunparms:--osg,--lcmapscfg,/etc/xrootd/lcmaps.cfg,--loglevel,0|useglobals -gmapopt:10 -gmapto:0
 
 xrootd.seclib @LIBDIR@/libXrdSec.so
@@ -44,8 +50,9 @@ all.pidpath /var/run/xrootd
 
 cms.delay startup 10
 cms.fxhold 60s
-cms.perf int 30s pgm /usr/share/xrootd/scripts/XrdOlbMonPerf 30
 
+# Monitoring configuration.  The latest recommendations are also kept at:
+# https://twiki.cern.ch/twiki/bin/view/Main/XrootdMonitoring
 xrd.report xrootd.t2.ucsd.edu:9931 every 60s all sync
-xrootd.monitor all auth flush io 60s ident 5m mbuff 8k rbuff 4k rnums 3 window 5s dest files io info user redir xrootd.t2.ucsd.edu:9930
+xrootd.monitor all auth flush io 60s ident 5m mbuff 8k rbuff 4k rnums 3 window 10s dest files io info user redir xrootd.t2.ucsd.edu:9930
 

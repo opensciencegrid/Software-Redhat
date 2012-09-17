@@ -1,7 +1,7 @@
 
 Summary: CMS meta-RPM for Xrootd
 Name: cms-xrootd
-Version: 1.1
+Version: 1.2
 Release: 1%{?dist}
 Group: System Environment/Daemons
 License: Public Domain
@@ -78,4 +78,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %files dcache
 %{_sysconfdir}/xrootd/xrootd.sample.dcache.cfg
+
+%changelog
+* Mon Sep 17 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 1.2-1
+- Tweaks for default configs, based on feedback from Estonia, Legnaro, and UCL.
+
 
