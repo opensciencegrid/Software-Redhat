@@ -1,7 +1,7 @@
 Summary: Security utilities
 Name: emi-trustmanager
 Version: 3.0.3
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: EMI
 Vendor: EMI
 Group: System Environment/Libraries
@@ -14,14 +14,16 @@ BuildRequires: java-devel
 BuildRoot: %{_builddir}/%{name}-root
 AutoReqProv: yes
 Source: emi-trustmanager-3.0.3-1.src.tar.gz
+Patch0: incorrect_oid.patch
 
 %description
 The java authentication and proxy generation implementation that supports grid proxies.
 
 %prep
- 
 
 %setup  
+
+%patch -p0 
 
 %build
  
@@ -208,4 +210,7 @@ rm -rf $RPM_BUILD_ROOT
 /usr/share/doc/trustmanager/html/index-all.html
 
 %changelog
+* Mon Sep 17 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 3.0.3-3
+- Fix for misspelled OID for pre-RFC proxies.
+
  
