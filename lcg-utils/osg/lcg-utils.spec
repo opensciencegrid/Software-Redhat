@@ -50,7 +50,7 @@ BuildRequires:				python26-devel
 BuildRequires:				srm-ifce-devel
 BuildRequires:				swig
 BuildRequires:				voms-devel
-
+BuildRequires:                          globus-common-progs
 
 
 %description
