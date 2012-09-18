@@ -20,9 +20,9 @@
 }
 
 
-Name:						lcg-utils
+Name:						lcg-util
 Version:					1.13.0
-Release:					0%{?dist}
+Release:					1%{?dist}
 Summary:					Command line tools for wlcg storage system 
 Group:						Applications/Internet
 License:					ASL 2.0
@@ -51,7 +51,8 @@ BuildRequires:				srm-ifce-devel
 BuildRequires:				swig
 BuildRequires:				voms-devel
 BuildRequires:                          globus-common-progs
-
+Obsoletes: lcg-utils <= 1.13
+Provides: lcg-utils == %{version}
 
 %description
 The LCG Utilities package is the main end user command line tool \
@@ -161,9 +162,6 @@ rm -f %{buildroot}/%{python26_sitearch}/_lcg_util.*a
 cd %{_builddir}/%{name}-%{version};
 %endif
 
-#Fix doc dir names
-
-mv $RPM_BUILD_ROOT%{_docdir}/lcg-util-1.13.0 $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
 
 %clean
 rm -rf %{buildroot}
