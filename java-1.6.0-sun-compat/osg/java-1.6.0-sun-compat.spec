@@ -1,11 +1,11 @@
 %define origin          sun
 %define priority        1603
 %define javaver         1.6.0
-%define buildver        33
+%define buildver        35
 
 %define name            java-%{javaver}-%{origin}-compat
 %define version         %{javaver}%{?buildver:.%{buildver}}
-%define release         6
+%define release         1
 %define cname           java-%{javaver}-%{origin}
 
 %define toplevel_dir    jdk%{javaver}%{?buildver:_%{buildver}}
@@ -622,6 +622,9 @@ update-alternatives --remove java_sdk_%{javaver} %{_jvmdir}/%{sdklnk}
 
 
 %changelog
+* Tue Sep 18 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1:1.6.0.35-1.osg
+- Updated to jdk version 1.6.0-35
+
 * Wed Jul 18 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1:1.6.0.33-6.osg
 - Be less specific in the jdk version requirement
 
