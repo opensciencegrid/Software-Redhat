@@ -203,19 +203,18 @@ ln -s %{upstreamdir}/jre/plugin $RPM_BUILD_ROOT%{_jvmdir}/%{jredir}
 %endif
 install -d -m 755 $RPM_BUILD_ROOT%{_jvmdir}/%{jredir}/lib/fonts
 install -d -m 755 $RPM_BUILD_ROOT%{_jvmdir}/%{jredir}/lib/security
-# without the `echo`, the wildcard didn't get expanded properly on el6, causing build failures.
-for i in `echo %{upstreamdir}/jre/*` ; do
+for i in %{upstreamdir}/jre/* ; do
   test -e $RPM_BUILD_ROOT%{_jvmdir}/%{jredir}/`basename $i` || \
     ln -s $i $RPM_BUILD_ROOT%{_jvmdir}/%{jredir}
 done
-for i in `echo %{upstreamdir}/jre/lib/*` ; do
+for i in %{upstreamdir}/jre/lib/* ; do
   test -e $RPM_BUILD_ROOT%{_jvmdir}/%{jredir}/lib/`basename $i` || \
     ln -s $i $RPM_BUILD_ROOT%{_jvmdir}/%{jredir}/lib
 done
-for i in `echo %{upstreamdir}/jre/lib/fonts/*` ; do
+for i in %{upstreamdir}/jre/lib/fonts/* ; do
   ln -s $i $RPM_BUILD_ROOT%{_jvmdir}/%{jredir}/lib/fonts
 done
-for i in `echo %{upstreamdir}/jre/lib/security/*` ; do
+for i in %{upstreamdir}/jre/lib/security/* ; do
   ln -s $i $RPM_BUILD_ROOT%{_jvmdir}/%{jredir}/lib/security
 done
 
