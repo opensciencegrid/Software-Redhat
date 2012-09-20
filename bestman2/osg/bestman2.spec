@@ -40,6 +40,7 @@ Source5:        bestman2.sysconfig
 Source6:        build.xml
 Source7:        build.properties
 Source8:        configure.in
+Source9:        bestman2.rc
 #Patch0:         hostinfo.build.xml.patch
 Patch1:         jglobus2.patch
 
@@ -175,6 +176,11 @@ pushd bestman2/setup-osg/bestman.in
 sed -i "s/@SRM_HOME@/\/etc\/bestman2/" *
 popd
 
+pushd bestman2/setup-osg/
+mkdir -p dist/conf
+cp %{SOURCE9} dist/conf
+popd
+
 cp %{SOURCE7} bestman2/branches/osg-dev/
 cp %{SOURCE7} bestman2/setup-osg/
 sed -i "s/install.root=.*/install.root=dist/" bestman2/setup-osg/build.properties
@@ -192,7 +198,6 @@ ant install
 popd
 
 pushd bestman2/setup-osg
-mkdir dist
 cp bestman.in/aclocal.m4 .
 autoconf configure.in > configure
 chmod +x configure
@@ -202,26 +207,11 @@ ant deploy
 pushd dist
 #Fix paths in bestman2.rc
 JAVADIR=`echo %{_javadir} |  sed 's/\//\\\\\//g'`
-sed -i "s/SRM_HOME=.*/SRM_HOME=\/etc\/bestman2/" conf/bestman2.rc
-sed -i "s/GridMapFileName=.*/GridMapFileName=\/etc\/bestman2\/conf\/grid-mapfile.empty/" conf/bestman2.rc
-sed -i "s/BESTMAN_SYSCONF=.*/BESTMAN_SYSCONF=\/etc\/sysconfig\/bestman2/" conf/bestman2.rc
-sed -i "s/BESTMAN_LOG=.*/BESTMAN_LOG=\/var\/log\/bestman2\/bestman2.log/" conf/bestman2.rc
-sed -i "s/BESTMAN_LIB=.*/BESTMAN_LIB=$JAVADIR\/bestman2/" conf/bestman2.rc
-sed -i "s/EventLogLocation=.*/EventLogLocation=\/var\/log\/bestman2/" conf/bestman2.rc
-sed -i "s/X509_CERT_DIR=.*/X509_CERT_DIR=\/etc\/grid-security\/certificates/" conf/bestman2.rc
-sed -i "s/CertFileName=.*/CertFileName=\/etc\/grid-security\/bestman\/bestmancert.pem/" conf/bestman2.rc
-sed -i "s/KeyFileName=.*/KeyFileName=\/etc\/grid-security\/bestman\/bestmankey.pem/" conf/bestman2.rc
-sed -i "s/GUMSAuthorizationServicePort/GUMSXACMLAuthorizationServicePort/" conf/bestman2.rc
-sed -i "s/pluginLib=.*/pluginLib=$JAVADIR\/bestman2\/plugin\//" conf/bestman2.rc
-sed -i "s/accessFileSysViaSudo=false/accessFileSysViaSudo=true/" conf/bestman2.rc
 
 #Fix paths in binaries.  Wish I could do this in configure...
 sed -i "s/BESTMAN_SYSCONF=.*/BESTMAN_SYSCONF=\/etc\/sysconfig\/bestman2/" bin/*
 sed -i "s/BESTMAN_SYSCONF=.*/BESTMAN_SYSCONF=\/etc\/sysconfig\/bestman2/" sbin/*
 sed -i "s/\${BESTMAN_SYSCONF}/\/etc\/bestman2\/conf\/bestman2.rc/" sbin/bestman.server
-
-#Keep as true for now, but sites can change it as needed
-sed -i "s/### noSudoOnLs=true/noSudoOnLs=true/" conf/bestman2.rc
 
 BUILDHOSTNAME=`hostname -f`
 # Fix version
