@@ -1,4 +1,4 @@
-%define tarball_version 7.8.3
+%define tarball_version 7.8.4
 
 # Things for F15 or later
 %if 0%{?fedora} >= 15
@@ -109,8 +109,6 @@ Patch0: condor_config.generic.patch
 Patch3: chkconfig_off.patch
 Patch8: lcmaps_env_in_init_script.patch
 Patch9: proper_cream_v3.diff
-# patch to fix unnecessary gsi callout
-Patch10: condor_gt2104_pt2.patch
 
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
@@ -398,7 +396,6 @@ exit 0
 %if %cream
 %patch9 -p1
 %endif
-%patch10 -p1
 
 # fix errant execute permissions
 find src -perm /a+x -type f -name "*.[Cch]" -exec chmod a-x {} \;
@@ -505,14 +502,13 @@ mv %{buildroot}/usr/man/man1 %{buildroot}/%{_mandir}
 %if %git_build_man || %include_man
 pushd %{buildroot}/%{_mandir}/man1
 for i in `ls`; do
-  gzip $i
+  if [[ ! -e ${i%.gz}.gz ]]; then
+    gzip $i
+  fi
 done
 popd
 %endif
 %endif
-
-# Things in /usr/lib really belong in /usr/share/condor
-#mv %{buildroot}/usr/lib %{buildroot}/%{_datarootdir}/condor
 
 mkdir -p %{buildroot}/%{_sysconfdir}/condor
 # the default condor_config file is not architecture aware and thus
@@ -683,6 +679,20 @@ rm -rf %{buildroot}%{_includedir}/condor_ast.h
 rm -rf %{buildroot}%{_libexecdir}/condor/bgp_*
 rm -rf %{buildroot}%{_datadir}/condor/libchirp_client.a
 rm -rf %{buildroot}%{_datadir}/condor/libcondorapi.a
+rm -rf %{buildroot}%{_mandir}/man1/cleanup_release.1*
+rm -rf %{buildroot}%{_mandir}/man1/condor_checkpoint.1*
+rm -rf %{buildroot}%{_mandir}/man1/condor_cold_start.1*
+rm -rf %{buildroot}%{_mandir}/man1/condor_cold_stop.1*
+rm -rf %{buildroot}%{_mandir}/man1/condor_compile.1*
+rm -rf %{buildroot}%{_mandir}/man1/condor_config_bind.1*
+rm -rf %{buildroot}%{_mandir}/man1/condor_configure.1*
+rm -rf %{buildroot}%{_mandir}/man1/condor_load_history.1*
+rm -rf %{buildroot}%{_mandir}/man1/condor_set_shutdown.1*
+rm -rf %{buildroot}%{_mandir}/man1/filelock_midwife.1*
+rm -rf %{buildroot}%{_mandir}/man1/filelock_undertaker.1*
+rm -rf %{buildroot}%{_mandir}/man1/install_release.1*
+rm -rf %{buildroot}%{_mandir}/man1/uniq_pid_midwife.1*
+rm -rf %{buildroot}%{_mandir}/man1/uniq_pid_undertaker.1*
 
 %clean
 rm -rf %{buildroot}
@@ -888,23 +898,6 @@ rm -rf %{buildroot}
 %dir %_var/lock/condor/
 %dir %_var/run/condor/
 
-
-#%files static
-#%defattr(-,root,root,-)
-#%doc LICENSE-2.0.txt
-#%_libdir/libcondorapi.a
-#%dir %_includedir/condor/
-#%_includedir/condor/condor_constants.h
-#%_includedir/condor/condor_event.h
-#%_includedir/condor/condor_holdcodes.h
-#%_includedir/condor/file_lock.h
-#%_includedir/condor/user_log.c++.h
-#%doc %_includedir/condor/user_log.README
-#%dir %_usrsrc/chirp/
-#%_usrsrc/chirp/chirp_client.c
-#%_usrsrc/chirp/chirp_client.h
-#%_usrsrc/chirp/chirp_protocol.h
-
 %files procd
 %_sbindir/condor_procd
 %_sbindir/gidd_alloc
@@ -967,8 +960,6 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 %doc LICENSE-2.0.txt NOTICE.txt
 %_sbindir/condor_vm-gahp
-#%_sbindir/condor_vm_vmware.pl
-#%_sbindir/condor_vm_xen.sh
 %_libexecdir/condor/libvirt_simple_script.awk
 
 %if %deltacloud
@@ -1060,12 +1051,6 @@ fi
 %post -n condor
 /sbin/chkconfig --add condor
 /sbin/ldconfig
-#test -x /usr/sbin/selinuxenabled && /usr/sbin/selinuxenabled
-#if [ $? = 0 ]; then
-#   semanage fcontext -a -t unconfined_execmem_exec_t %_sbindir/condor_startd
-#   restorecon  %_sbindir/condor_startd
-#fi
-
 
 %preun -n condor
 if [ $1 = 0 ]; then
@@ -1082,6 +1067,9 @@ fi
 %endif
 
 %changelog
+* Wed Sep 19 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 7.8.4-1
+- New version
+
 * Fri Sep 07 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 7.8.3-1
 - New version
 
