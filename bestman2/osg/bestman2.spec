@@ -14,7 +14,7 @@
 
 Name:           bestman2
 Version:        2.2.1
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -37,12 +37,17 @@ Source3:        bestman.logrotate
 Source4:        dependent.jars.tar.gz
 Source5:        bestman2.sysconfig
 Source6:        build.xml
+Source7:        build.properties
+Source8:        configure.in
 #Patch0:         hostinfo.build.xml.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
-BuildRequires:  java-1.6.0-sun-compat wget ant axis jakarta-commons-logging jakarta-commons-discovery wsdl4j jakarta-commons-collections jakarta-commons-lang joda-time glite-security-trustmanager glite-security-util-java velocity xalan-j2 xml-security bouncycastle vomsjapi slf4j log4j cog-jglobus cog-jglobus-axis
+BuildRequires:  java-1.6.0-sun-compat wget ant axis jakarta-commons-logging jakarta-commons-discovery wsdl4j jakarta-commons-collections jakarta-commons-lang joda-time velocity xalan-j2 xml-security bouncycastle vomsjapi slf4j log4j cog-jglobus-axis jglobus autoconf
+BuildRequires: jetty-client jetty-continuation jetty-deploy jetty-http jetty-io jetty-security jetty-server jetty-servlet jetty-util jetty-webapp jetty-xml
+BuildRequires: emi-trustmanager emi-trustmanager-axis
+BuildRequires: gums
 
 Obsoletes: bestman
 Provides: bestman
@@ -71,7 +76,7 @@ through Lawrence Berkeley National Laboratory.  See LICENSE file for details.
 %package common-libs
 Summary: Common files BeStMan SRM server client and tester
 Group: System Environment/Libraries
-Requires:  java axis jakarta-commons-logging jakarta-commons-discovery wsdl4j log4j cog-jglobus cog-jglobus-axis 
+Requires:  java axis jakarta-commons-logging jakarta-commons-discovery wsdl4j log4j jglobus
 # The following are needed for srm client tools and probably tester too
 Requires:  joda-time glite-security-trustmanager glite-security-util-java xalan-j2 vomsjapi jakarta-commons-collections
 %description common-libs
@@ -107,8 +112,9 @@ The BeStMan Server SRM Java libraries
 %package server-dep-libs
 Summary: BeStMan Server SRM Java libraries
 Group: System Environment/Libraries
-Requires:  java-1.6.0-sun-compat jakarta-commons-lang joda-time glite-security-trustmanager glite-security-util-java xalan-j2 vomsjapi jakarta-commons-collections
-#bouncycastle slf4j
+Requires: java-1.6.0-sun-compat jakarta-commons-lang joda-time emi-trustmanager xalan-j2 vomsjapi jakarta-commons-collections
+Requires: jetty-client jetty-continuation jetty-deploy jetty-http jetty-io jetty-security jetty-server jetty-servlet jetty-util jetty-webapp jetty-xml
+Requires: gums
 
 %description server-dep-libs
 The BeStMan Server SRM Java libraries
@@ -156,12 +162,16 @@ These are the libraries needed solely for the srmtester application
 %setup -T -b 4 -q -n lib
 cd ..
 %setup -T -b 0 -q -n %{name}
-#%patch0 -p1
 
 pushd bestman2/setup-osg/bestman.in
 sed -i "s/@SRM_HOME@/\/etc\/bestman2/" *
 popd
 
+cp %{SOURCE7} bestman2/sources/
+cp %{SOURCE7} bestman2/setup-osg/
+sed -i "s/install.root=.*/install.root=dist/" bestman2/setup-osg/build.properties
+
+cp %{SOURCE8} bestman2/setup-osg/
 
 %build
 # NOTE: Upstream package can be created with the following procedure:
@@ -173,85 +183,18 @@ popd
 # mv bestman bestman2
 # tar cvzf bestman2.tar.gz bestman2
 # NOTE: Revision number (50) and url/tarball name may change per release.
-pushd bestman2
-pushd sources
-for f in `find . -name "*.jar" -print`
-do
-   CLASSPATH="$CLASSPATH:$f"
-done
-
-#system jars
-CLASSPATH_SYS=`build-classpath commons-discovery commons-logging wsdl4j xerces-j2 commons-collections joda-time glite-security-trustmanager glite-security-util-java velocity xalan xmlsec log4j vomsjapi cryptix cryptix-asn1 puretls jce`
-CLASSPATH=$CLASSPATH:$CLASSPATH_SYS:/usr/share/java/axis/axis.jar:/usr/share/java/axis/jaxrpc.jar
-CLASSPATH=$CLASSPATH:/usr/share/java/cog-jglobus/cog-jobmanager-1.8.0.jar:/usr/share/java/cog-jglobus/cog-jglobus-1.8.0.jar:/usr/share/java/cog-jglobus/cog-url-1.8.0.jar:/usr/lib/jvm-exports/java/jce.jar
-
-#:/usr/share/java/cog-jglobus/cog-axis-1.8.0.jar
-
-CLASSPATH="$CLASSPATH:../../../lib/jglobus/cog-axis-1.8.0.jar"
-
-#:/usr/share/java/cog-jglobus-axis/cog-axis-1.2.jar
-
-#Fix filenames since configure script is totally broken
-ln -s /usr/share/java/cryptix.jar ../../../lib/cryptix32.jar
-ln -s /usr/share/java/bcprov-1.33.jar ../../../lib/jce-jdk13-131.jar
-ln -s /usr/share/java/bcprov-1.33.jar ../../../lib/bcprov-jdk15-146.jar
-CLASSPATH=../../../lib/cryptix32.jar:$CLASSPATH
-CLASSPATH=../../../lib/jce-jdk13-131.jar:$CLASSPATH
-CLASSPATH=../../../lib/bcprov-jdk15-146.jar:$CLASSPATH
-
-#We may be able to use these later
-#CLASSPATH=/usr/share/java/bcprov.jar:$CLASSPATH
-#CLASSPATH=/usr/share/java/slf4j/jcl-over-slf4j.jar:$CLASSPATH
-#CLASSPATH=/usr/share/java/slf4j/api.jar:$CLASSPATH
-#CLASSPATH=/usr/share/java/slf4j/simple.jar:$CLASSPATH
-
-
-#non-system jars from dependent jars upstream source (gradually prune)
-for dep in "gums2/commons-lang-2.6.jar" "others/slf4j-api-1.6.2.jar" "others/slf4j-log4j12-1.6.2.jar" "others/slf4j-simple-1.6.2.jar" "others/jcl-over-slf4j-1.6.0.jar" "others/je-4.1.10.jar" "others/servlet-api-3.0.jar" "others/which4j.jar" "axis/xercesImpl-2.11.0.jar" "axis/xml-apis-2.11.0.jar" "gums2/esapi-2.0.1.jar" "gums2/opensaml-2.5.2.jar" "gums2/openws-1.4.3.jar" "gums2/privilege-xacml-2.2.5.jar" "gums2/xmltooling-1.3.3.jar"
-do
-   CLASSPATH="$CLASSPATH:../../../lib/$dep"
-done
-
-# jetty jars
-for dep in "client" "continuation" "deploy" "http" "io" "security" "server" "servlet" "util" "webapp" "xml"
-do
-   CLASSPATH="$CLASSPATH:../../../lib/jetty/jetty-$dep-8.1.4.v20120524.jar"
-done
-
-#jglobus (to replace with Bockleman jars)
-#for dep in "cog-axis-1.8.0.jar" "cog-jglobus-1.8.0.jar" "cog-url-1.8.0.jar" "cryptix-asn1.jar" "cryptix32.jar" "jce-jdk13-131.jar" "puretls.jar"
-#do
-#   CLASSPATH="$CLASSPATH:../../../lib/jglobus/$dep"
-#done
-
-
-export CLASSPATH
-
-#Fix names of jars that have changed
-
-./configure
-#cp %{SOURCE6} .
-ln -s ../lib wsdl/lib
-ln -s ../lib client/lib
-ln -s ../lib tester/lib
-ln -s ../lib server/lib
-mkdir ../../lib
-ln -s /usr/share/java/axis ../../lib/axis
-ln -s ../../lib/gums2 ../../lib/gums2
-ln -s ../../lib/others ../../lib/others
-ln -s ../../lib/jglobus ../../lib/jglobus
-ln -s ../../lib/jetty ../../lib/jetty
-ln -s ../../lib/voms ../../lib/voms
+pushd bestman2/sources
 
 #sed -i "s/Generating stubs from/Gen stubs \${axis.path}/" wsdl/build.xml
 
 ant build
 ant install
-#make
 
 pushd ../setup-osg
-echo "install.root=dist" > build.properties
 mkdir dist
+cp bestman.in/aclocal.m4 .
+autoconf configure.in > configure
+chmod +x configure
 ./configure --with-srm-owner=bestman --with-sysconf-path=./dist/bestman.sysconfig
 ant deploy
 
@@ -283,7 +226,6 @@ BUILDHOSTNAME=`hostname -f`
 # Fix version
 #sed -i "s/Built on .* at/Built on $BUILDHOSTNAME at/" version
 popd
-popd
 
 
 
@@ -309,12 +251,8 @@ cp -arp lib/* $RPM_BUILD_ROOT%{_javadir}/%{name}/
 cp -arp properties $RPM_BUILD_ROOT%{install_root}
 
 #Install dependent jars (prune this list)
-install -d $RPM_BUILD_ROOT%{_javadir}/%{name}/voms
 install -d $RPM_BUILD_ROOT%{_javadir}/%{name}/others
-install -d $RPM_BUILD_ROOT%{_javadir}/%{name}/jglobus
 install -d $RPM_BUILD_ROOT%{_javadir}/%{name}/axis
-install -d $RPM_BUILD_ROOT%{_javadir}/%{name}/gums2
-cp -arp ../../../../lib/jetty $RPM_BUILD_ROOT%{_javadir}/%{name}
 cp -arp ../../../../lib/plugin $RPM_BUILD_ROOT%{_javadir}/%{name}
 
 #Install the non-system jars
@@ -326,21 +264,10 @@ do
 	install -m 0644 $libdir/others/$jar $jardir/others/
 done
 
-install -m 0644 $libdir/jglobus/cog-axis-1.8.0.jar $jardir/jglobus/
-
-#for jar in "cog-axis-1.8.0.jar" "cog-jglobus-1.8.0.jar" "cog-url-1.8.0.jar" "cryptix-asn1.jar" "cryptix32.jar" "jce-jdk13-131.jar" "puretls.jar"
-#do
-#        install -m 0644 $libdir/jglobus/$jar $jardir/jglobus/
-#done
 for jar in "xercesImpl-2.11.0.jar" "xml-apis-2.11.0.jar"
 do
         install -m 0644 $libdir/axis/$jar $jardir/axis/
 done
-for jar in "esapi-2.0.1.jar" "opensaml-2.5.2.jar" "openws-1.4.3.jar" "privilege-xacml-2.2.5.jar" "xmltooling-1.3.3.jar" "velocity-1.7.jar" "xmlsec-1.4.5.jar" "commons-lang-2.6.jar"
-do
-        install -m 0644 $libdir/gums2/$jar $jardir/gums2/
-done
-
 
 
 rm -rf $RPM_BUILD_ROOT%{install_root}/properties/.svn
@@ -357,10 +284,8 @@ mkdir -p $RPM_BUILD_ROOT%{_initrddir}
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/grid-security/bestman
-#install -m 0755 %{SOURCE1} $RPM_BUILD_ROOT%{_sbindir}/%{name}
 install -m 0755 %{SOURCE2} $RPM_BUILD_ROOT%{_initrddir}/%{name}
 install -m 0644 %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/%{name}
-#install -m 0644 %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/conf/bestman2.rc
 install -m 0644 conf/bestman2.rc $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/conf/bestman2.rc
 install -m 0644 %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/%{name}
 
@@ -397,21 +322,8 @@ fi
 %files common-libs
 %defattr(-,root,root,-)
 %dir %{install_root}
-#%{_javadir}/bestman2/axis/axis.jar
-#%{_javadir}/bestman2/axis/commons-discovery-0.2.jar
-#%{_javadir}/bestman2/axis/commons-logging-1.1.jar
-#%{_javadir}/bestman2/axis/jaxrpc.jar
-#%{_javadir}/bestman2/axis/wsdl4j-1.6.2.jar
 %{_javadir}/bestman2/axis/xercesImpl-2.11.0.jar
 %{_javadir}/bestman2/axis/xml-apis-2.11.0.jar
-%{_javadir}/bestman2/jglobus/cog-axis-1.8.0.jar
-#%{_javadir}/bestman2/jglobus/cog-jglobus-1.8.0.jar
-#%{_javadir}/bestman2/jglobus/cog-url-1.8.0.jar
-#%{_javadir}/bestman2/jglobus/cryptix-asn1.jar
-#%{_javadir}/bestman2/jglobus/cryptix32.jar
-#%{_javadir}/bestman2/jglobus/jce-jdk13-131.jar
-#%{_javadir}/bestman2/jglobus/log4j-1.2.15.jar
-#%{_javadir}/bestman2/jglobus/puretls.jar
 %{_javadir}/bestman2/bestman2-stub.jar
 %config(noreplace) %{install_root}/properties/authmod-unix.properties
 %config(noreplace) %{install_root}/properties/authmod-win.properties
@@ -425,11 +337,7 @@ fi
 %files client
 %defattr(-,root,root,-)
 %config(noreplace) %{install_root}/conf/srmclient.conf
-#%config(noreplace) %{install_root}/conf/srmclient.conf.sample
 %config(noreplace) %{install_root}/conf/bestman2.rc
-#%config(noreplace) %{install_root}/conf/bestmanclient.conf
-#%config(noreplace) %{install_root}/conf/bestman2.rc.samples
-#%config(noreplace) %{install_root}/conf/mss.init.sample
 %config(noreplace) %{_sysconfdir}/sysconfig/bestman2
 %{_bindir}/srm-common.sh
 %{_bindir}/srm-copy
@@ -476,26 +384,19 @@ fi
 %{_sbindir}/bestman.server
 %{_bindir}/bestman-diag
 %config(noreplace) %{install_root}/conf/WEB-INF
-#%config(noreplace) %{install_root}/conf/bestman2.gateway.sample.rc
 %config(noreplace) %{install_root}/conf/grid-mapfile.empty
 %config(noreplace) %{install_root}/conf/bestman-diag-msg.conf
 %config(noreplace) %{install_root}/conf/bestman-diag.conf.sample
 %config(noreplace) %{install_root}/conf/bestman2.rc
 %config(noreplace) %{_sysconfdir}/sysconfig/bestman2
 %{_initrddir}/%{name}
-#%{_sbindir}/%{name}
 %config(noreplace) %{_sysconfdir}/logrotate.d/%{name}
 %config(noreplace) %attr(0644,root,root) %{_sysconfdir}/grid-security/vomsdir/vdt-empty.pem
 %attr(-,bestman,bestman) %dir %{_var}/log/%{name}
 %attr(-,bestman,bestman) %dir %{_sysconfdir}/grid-security/bestman
-#%doc bestman2/docs/README.javaapi
-
 
 %files client-libs
 %{_javadir}/bestman2/bestman2-client.jar
-#%{_javadir}/bestman2/bestman2-printintf.jar
-#%{_javadir}/bestman2/bestman2-transfer.jar
-
 
 %files server-libs
 %doc LICENSE
@@ -508,31 +409,6 @@ fi
 
 
 %files server-dep-libs
-#%{_javadir}/bestman2/gums2/glite-security-trustmanager-2.5.5.jar
-#%{_javadir}/bestman2/gums2/glite-security-util-java-2.8.0.jar
-%{_javadir}/bestman2/gums2/opensaml-2.5.2.jar
-%{_javadir}/bestman2/gums2/privilege-xacml-2.2.5.jar
-#%{_javadir}/bestman2/gums2/vomsjapi-1.9.10.jar
-%{_javadir}/bestman2/gums2/esapi-2.0.1.jar
-#%{_javadir}/bestman2/gums2/commons-collections-3.2.1.jar
-%{_javadir}/bestman2/gums2/commons-lang-2.6.jar
-#%{_javadir}/bestman2/gums2/joda-time-1.6.2.jar
-%{_javadir}/bestman2/gums2/openws-1.4.3.jar
-%{_javadir}/bestman2/gums2/velocity-1.7.jar
-#%{_javadir}/bestman2/gums2/xalan-2.7.1.jar
-%{_javadir}/bestman2/gums2/xmlsec-1.4.5.jar
-%{_javadir}/bestman2/gums2/xmltooling-1.3.3.jar
-%{_javadir}/bestman2/jetty/jetty-client-8.1.4.v20120524.jar
-%{_javadir}/bestman2/jetty/jetty-continuation-8.1.4.v20120524.jar
-%{_javadir}/bestman2/jetty/jetty-deploy-8.1.4.v20120524.jar
-%{_javadir}/bestman2/jetty/jetty-http-8.1.4.v20120524.jar
-%{_javadir}/bestman2/jetty/jetty-io-8.1.4.v20120524.jar
-%{_javadir}/bestman2/jetty/jetty-security-8.1.4.v20120524.jar
-%{_javadir}/bestman2/jetty/jetty-server-8.1.4.v20120524.jar
-%{_javadir}/bestman2/jetty/jetty-servlet-8.1.4.v20120524.jar
-%{_javadir}/bestman2/jetty/jetty-util-8.1.4.v20120524.jar
-%{_javadir}/bestman2/jetty/jetty-webapp-8.1.4.v20120524.jar
-%{_javadir}/bestman2/jetty/jetty-xml-8.1.4.v20120524.jar
 %{_javadir}/bestman2/others/jcl-over-slf4j-1.6.0.jar
 %{_javadir}/bestman2/others/je-4.1.10.jar
 %{_javadir}/bestman2/others/servlet-api-3.0.jar
@@ -544,13 +420,10 @@ fi
 %{_javadir}/bestman2/plugin/LBNL.RFF.jar
 %{_javadir}/bestman2/plugin/LBNL.SSFP.jar
 %{_javadir}/bestman2/plugin/LBNL.SSFP.README.txt
-#%{_javadir}/bestman2/voms/bcprov-jdk15-146.jar
-#%{_javadir}/bestman2/voms/vomsjapi-2.0.6.jar
 
 %files tester
 %{_bindir}/srm-tester
 %{_bindir}/srm-common.sh
-#%config(noreplace) %{install_root}/conf/srmtester.conf.sample
 %config(noreplace) %{install_root}/conf/srmtester.conf
 %config(noreplace) %{install_root}/conf/bestman2.rc
 %config(noreplace) %{_sysconfdir}/sysconfig/bestman2
@@ -559,11 +432,12 @@ fi
 %files tester-libs
 %{_javadir}/bestman2/bestman2-tester-driver.jar
 %{_javadir}/bestman2/bestman2-tester-main.jar
-#%{_javadir}/bestman2/bestman2-printintf.jar
-#%{_javadir}/bestman2/bestman2-transfer.jar
 
 
 %changelog
+* Thu Sep 20 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 2.2.1-5
+- Cleanup spec file in preparation of jglobus transition.
+
 * Tue Jul 25 2012 Doug Strain <dstrain@fnal.gov> - 2.2.1-4
 - Changes to client lib requirement to fix SOFTWARE-716
 
