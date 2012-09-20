@@ -1,0 +1,247 @@
+Index: server/src/gov/lbl/srm/transfer/mss/hpss/SRM_MSS_HPSS.java
+===================================================================
+--- server/src/gov/lbl/srm/transfer/mss/hpss/SRM_MSS_HPSS.java	(revision 92)
++++ server/src/gov/lbl/srm/transfer/mss/hpss/SRM_MSS_HPSS.java	(working copy)
+@@ -35,7 +35,7 @@
+ 
+ import org.globus.util.ConfigUtil;
+ import org.globus.util.GlobusURL;
+-import org.globus.gsi.GlobusCredential;
++import org.globus.gsi.X509Credential;
+ import org.globus.gsi.gssapi.GlobusGSSCredentialImpl;
+ import org.ietf.jgss.GSSCredential;
+ import org.gridforum.jgss.ExtendedGSSCredential;
+@@ -209,7 +209,7 @@
+ 		throws SRM_MSS_Exception,Exception { 
+ 
+   try {
+-   GlobusCredential gCreds  = new GlobusCredential(proxyFile);
++   X509Credential gCreds  = new X509Credential(proxyFile);
+    if(showOutput) {
+      util.printMessage("\nSubject " + gCreds.getSubject(),logger,debugLevel);
+      util.printMessage("timeleft " + gCreds.getTimeLeft(),logger,debugLevel);
+Index: server/src/gov/lbl/srm/transfer/mss/hpss/SRM_MSS_UTIL.java
+===================================================================
+--- server/src/gov/lbl/srm/transfer/mss/hpss/SRM_MSS_UTIL.java	(revision 92)
++++ server/src/gov/lbl/srm/transfer/mss/hpss/SRM_MSS_UTIL.java	(working copy)
+@@ -36,7 +36,7 @@
+ import org.apache.commons.logging.LogFactory;
+ 
+ import org.globus.util.ConfigUtil;
+-import org.globus.gsi.GlobusCredential;
++import org.globus.gsi.X509Credential;
+ import org.globus.gsi.gssapi.GlobusGSSCredentialImpl;
+ import org.ietf.jgss.GSSCredential;
+ import org.gridforum.jgss.ExtendedGSSCredential;
+@@ -1649,7 +1649,7 @@
+   throws SRM_MSS_Exception {
+ 
+    try {
+-    GlobusCredential gCreds = new GlobusCredential(proxyFile);
++    X509Credential gCreds = new X509Credential(proxyFile);
+     if(showOutput) {
+        util.printMessage("\nSubject " + gCreds.getSubject(), logger);
+        util.printMessage("timeleft " + gCreds.getTimeLeft(), logger);
+Index: server/src/gov/lbl/srm/server/Config.java
+===================================================================
+--- server/src/gov/lbl/srm/server/Config.java	(revision 92)
++++ server/src/gov/lbl/srm/server/Config.java	(working copy)
+@@ -50,7 +50,7 @@
+ 
+ import javax.xml.rpc.Stub;
+ import org.apache.axis.types.URI;
+-import org.globus.security.gridmap.GridMap;
++import org.globus.gsi.gridmap.GridMap;
+ 
+ //import EDU.oswego.cs.dl.util.concurrent.Mutex;
+ 
+Index: server/build.xml
+===================================================================
+--- server/build.xml	(revision 92)
++++ server/build.xml	(working copy)
+@@ -82,13 +82,11 @@
+     <fileset file="${jetty-webapp.path}"/>
+     <fileset file="${jetty-xml.path}"/>
+     <fileset file="${cog-axis.path}"/>
+-    <fileset file="${cog-jglobus.path}"/>
+-    <fileset file="${cog-url.path}"/>
+-    <fileset file="${cryptix-asn1.path}"/>
+-    <fileset file="${cryptix.path}"/>
+-    <fileset file="${jce-jdk.path}"/>
++    <fileset file="${jglobus-io.path}"/>
++    <fileset file="${jglobus-gridftp.path}"/>
++    <fileset file="${jglobus-gss.path}"/>
++    <fileset file="${jglobus-ssl-proxies.path}"/>
+     <fileset file="${log4j.path}"/>
+-    <fileset file="${puretls.path}"/>
+     <fileset file="${bcprov-jdk15.path}"/>
+     <fileset file="${vomsjapi.path}"/>
+     <fileset file="${jcl-over-slf4j.path}"/>
+@@ -98,14 +96,6 @@
+     <fileset file="${slf4j-log4j.path}"/>
+     <fileset file="${slf4j-simple.path}"/>
+     <fileset file="${which4j.path}"/>
+-<!--
+-    <fileset file="/software/bestman2-1.4/lib/gums/glite-security-trustmanager-2.5.5.jar"/>
+-    <fileset file="/software/bestman2-1.4/lib/gums/glite-security-util-java.jar"/>
+-    <fileset file="/software/bestman2-1.4/lib/gums/opensaml-1.1.jar"/>
+-    <fileset file="/software/bestman2-1.4/lib/gums/privilege-1.0.1.5.jar"/>
+-    <fileset file="/software/bestman2-1.4/lib/gums/vomsjapi-2.0.6.jar"/>
+-    <fileset file="/software/bestman2-1.4/lib/others/concurrent.jar"/>
+--->
+     <pathelement path="${java.class.path}"/>
+   </path>
+ 
+Index: tester/src/tester/util.java
+===================================================================
+--- tester/src/tester/util.java	(revision 92)
++++ tester/src/tester/util.java	(working copy)
+@@ -46,7 +46,7 @@
+ 
+ import org.globus.io.urlcopy.UrlCopy;
+ import org.globus.util.GlobusURL;
+-import org.globus.gsi.GlobusCredential;
++import org.globus.gsi.X509Credential;
+ import org.globus.gsi.gssapi.GlobusGSSCredentialImpl;
+ import org.gridforum.jgss.ExtendedGSSManager;
+ import org.ietf.jgss.GSSCredential;
+@@ -863,13 +863,13 @@
+   StringBuffer gsiFTPETimeStamp = new StringBuffer();
+ 
+   try {
+-    GlobusCredential gCreds = null;
++    X509Credential gCreds = null;
+ 
+     if(!defaultProxy) {
+-       gCreds = new GlobusCredential(proxyFile);
++       gCreds = new X509Credential(proxyFile);
+     }
+     else {
+-      gCreds = new GlobusCredential("/tmp/x509up_u"+MyConfigUtil.getUID());
++      gCreds = new X509Credential("/tmp/x509up_u"+MyConfigUtil.getUID());
+     }
+ 
+     credential = new GlobusGSSCredentialImpl
+@@ -1412,13 +1412,13 @@
+        throw new Exception ("Could not connect to wsdlHandle " +
+           "httpg://"+host.trim()+":"+port+"/"+pathName.trim());
+      }
+-     GlobusCredential gCreds = null;
++     X509Credential gCreds = null;
+  
+      if(!defaultProxy) {
+-       gCreds = new GlobusCredential(proxyFile);
++       gCreds = new X509Credential(proxyFile);
+      }
+      else {
+-       gCreds = new GlobusCredential("/tmp/x509up_u"+MyConfigUtil.getUID());
++       gCreds = new X509Credential("/tmp/x509up_u"+MyConfigUtil.getUID());
+      }
+  
+      util.printMessage("\nIssues=" + gCreds.getIssuer(), logger,pIntf);
+Index: tester/src/tester/SRMTester.java
+===================================================================
+--- tester/src/tester/SRMTester.java	(revision 92)
++++ tester/src/tester/SRMTester.java	(working copy)
+@@ -55,6 +55,7 @@
+ //import org.globus.ogsa.utils.GetOpts;
+ //import org.globus.ogsa.gui.ServiceContext;
+ import org.globus.gsi.GlobusCredential;
++import org.globus.gsi.X509Credential;
+ import org.globus.gsi.gssapi.GlobusGSSCredentialImpl;
+ import org.globus.gsi.gssapi.auth.*;
+ 
+@@ -7728,12 +7729,12 @@
+        throw new Exception ("SRM-TESTER: Could not connect to wsdlHandle " +
+           "httpg://"+host.trim()+":"+port+pathName.trim());
+      }
+-     GlobusCredential gCreds = null;
++     X509Credential gCreds = null;
+      if(!defaultProxy) {
+-       gCreds = new GlobusCredential(proxyFile);
++       gCreds = new X509Credential(proxyFile);
+      }
+      else {
+-       gCreds = new GlobusCredential("/tmp/x509up_u"+MyConfigUtil.getUID2());
++       gCreds = new X509Credential("/tmp/x509up_u"+MyConfigUtil.getUID2());
+      }
+   
+      util.printMessage("\nSRM-TESTER: Issues=" +
+Index: tester/build.xml
+===================================================================
+--- tester/build.xml	(revision 92)
++++ tester/build.xml	(working copy)
+@@ -61,13 +61,11 @@
+     <fileset file="${xercesImpl.path}"/>
+     <fileset file="${xml-apis.path}"/>
+     <fileset file="${cog-axis.path}"/>
+-    <fileset file="${cog-jglobus.path}"/>
+-    <fileset file="${cog-url.path}"/>
+-    <fileset file="${cryptix-asn1.path}"/>
+-    <fileset file="${cryptix.path}"/>
+-    <fileset file="${jce-jdk.path}"/>
++    <fileset file="${jglobus-io.path}"/>
++    <fileset file="${jglobus-gridftp.path}"/>
++    <fileset file="${jglobus-gss.path}"/>
++    <fileset file="${jglobus-ssl-proxies.path}"/>
+     <fileset file="${log4j.path}"/>
+-    <fileset file="${puretls.path}"/>
+     <pathelement path="${java.class.path}"/>
+   </path>
+ 
+Index: wsdl/build.xml
+===================================================================
+--- wsdl/build.xml	(revision 92)
++++ wsdl/build.xml	(working copy)
+@@ -53,7 +53,6 @@
+     <fileset file="${xmlsec.path}"/>
+     <fileset file="${xmltooling.path}"/>
+     <fileset file="${log4j.path}"/>
+-    <fileset file="${cog-jglobus.path}"/>
+     <pathelement path="${java.class.path}"/>
+   </path>
+ 
+Index: client/build.xml
+===================================================================
+--- client/build.xml	(revision 92)
++++ client/build.xml	(working copy)
+@@ -59,13 +59,11 @@
+     <fileset file="${xercesImpl.path}"/>
+     <fileset file="${xml-apis.path}"/>
+     <fileset file="${cog-axis.path}"/>
+-    <fileset file="${cog-jglobus.path}"/>
+-    <fileset file="${cog-url.path}"/>
+-    <fileset file="${cryptix-asn1.path}"/>
+-    <fileset file="${cryptix.path}"/>
+-    <fileset file="${jce-jdk.path}"/>
++    <fileset file="${jglobus-io.path}"/>
++    <fileset file="${jglobus-gss.path}"/>
++    <fileset file="${jglobus-ssl-proxies.path}"/>
++    <fileset file="${jglobus-gridftp.path}"/>
+     <fileset file="${log4j.path}"/>
+-    <fileset file="${puretls.path}"/>
+     <pathelement path="${java.class.path}"/>
+   </path>
+ 
+Index: build.xml
+===================================================================
+--- build.xml	(revision 92)
++++ build.xml	(working copy)
+@@ -46,7 +46,7 @@
+   <tstamp>
+       <format property="mybuild.time" pattern="MM/dd/yyyy HH:mm:ss z" unit="hour"/>
+   </tstamp>
+-  <hostinfo prefix="myhost"/>
++  <!--<hostinfo prefix="myhost"/>-->
+ 
+   <target name="setenv">
+ 	<echo message="pkg=${package}"/>
+@@ -110,7 +110,7 @@
+      <ant antfile="${server.dir}/build.xml" target="install" dir="${server.dir}" />
+      <ant antfile="${client.dir}/build.xml" target="install" dir="${client.dir}" />
+      <ant antfile="${tester.dir}/build.xml" target="install" dir="${tester.dir}" />
+-     <copy file="CHANGES.SOURCES" todir="${install.root}"/>
++     <!--<copy file="CHANGES.SOURCES" todir="${install.root}"/>-->
+      <copy file="COPYRIGHT" todir="${install.root}"/>
+      <copy file="LICENSE" todir="${install.root}"/>
+      <copy file="README" todir="${install.root}"/>
