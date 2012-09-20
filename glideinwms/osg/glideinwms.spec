@@ -6,7 +6,7 @@ Name:           glideinwms
 
 %if %{v2_plus}
 %define version 2.6.1
-%define release 1
+%define release 2
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
 %endif
@@ -801,6 +801,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Sep 20 2012 Doug Strain <dstrain@fnal.gov> - 2.6.1-2
+- Added GRIDMANAGER_PROXY_REFRESH_TIME to condor config
+
 * Mon Aug 20 2012 Doug Strain <dstrain@fnal.gov> - 2.6.1-0.rc2
 - Added JOB_QUEUE_LOG to the schedd condor configs
 - updated to 2.6.1 release candidate
