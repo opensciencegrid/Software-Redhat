@@ -17,11 +17,14 @@ BuildRequires: jpackage-utils
 BuildRequires: jglobus
 BuildRequires: axis
 BuildRequires: jakarta-commons-httpclient
+BuildRequires: jakarta-commons-logging
+BuildRequires: junit
 
 Requires: java
 Requires: jpackage-utils
 Requires: jglobus
 Requires: jakarta-commons-httpclient
+Requires: jakarta-commons-logging
 
 %description
 %{summary}
@@ -35,7 +38,7 @@ find -name '*.jar' -exec rm -f '{}' \;
 pushd gsi
 
 mkdir -p jwscore/lib
-build-jar-repository -s -p jwscore/lib axis jglobus commons-httpclient
+build-jar-repository -s -p jwscore/lib axis jglobus commons-httpclient junit jakarta-commons-logging
 
 cp %{SOURCE1} .
 
