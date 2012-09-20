@@ -13,8 +13,8 @@
 %endif
 
 Name:           bestman2
-Version:        2.2.1
-Release:        5%{?dist}
+Version:        2.3.0
+Release:        1%{?dist}
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -27,9 +27,10 @@ URL:            https://sdm.lbl.gov/bestman/
 %define install_root /etc/%{name}
 
 # NOTE: CHANGE THESE EACH RELEASE
-%define bestman_url https://codeforge.lbl.gov/frs/download.php/375/bestman2-2.2.0.tar.gz
-%define revision 61
-
+# To create:
+# cd /tmp
+# svn export -r 91 https://codeforge.lbl.gov/anonscm/bestman bestman2
+# tar czf bestman2.tar.gz bestman2
 Source0:        bestman2.tar.gz
 #Source1:        bestman2.sh
 Source2:        bestman2.init
@@ -40,6 +41,7 @@ Source6:        build.xml
 Source7:        build.properties
 Source8:        configure.in
 #Patch0:         hostinfo.build.xml.patch
+Patch1:         jglobus2.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
@@ -159,38 +161,37 @@ These are the libraries needed solely for the srmtester application
 
 
 %prep
+BUILDROOT=$PWD
+
 %setup -T -b 4 -q -n lib
 cd ..
 %setup -T -b 0 -q -n %{name}
+
+pushd bestman2/branches/osg-dev
+%patch1 -p0
+popd
 
 pushd bestman2/setup-osg/bestman.in
 sed -i "s/@SRM_HOME@/\/etc\/bestman2/" *
 popd
 
-cp %{SOURCE7} bestman2/sources/
+cp %{SOURCE7} bestman2/branches/osg-dev/
 cp %{SOURCE7} bestman2/setup-osg/
 sed -i "s/install.root=.*/install.root=dist/" bestman2/setup-osg/build.properties
+sed -i "s|@BUILDROOT@|$BUILDROOT|"  bestman2/setup-osg/build.properties bestman2/branches/osg-dev/build.properties
 
 cp %{SOURCE8} bestman2/setup-osg/
 
 %build
-# NOTE: Upstream package can be created with the following procedure:
-# svn checkout -r 62 https://codeforge.lbl.gov/anonscm/bestman
-# pushd bestman
-# wget https://codeforge.lbl.gov/frs/download.php/375/bestman2-2.2.0.tar.gz
-# tar xvzf bestman2-2.2.0.tar.gz
-# popd
-# mv bestman bestman2
-# tar cvzf bestman2.tar.gz bestman2
-# NOTE: Revision number (50) and url/tarball name may change per release.
-pushd bestman2/sources
+pushd bestman2/branches/osg-dev
 
 #sed -i "s/Generating stubs from/Gen stubs \${axis.path}/" wsdl/build.xml
 
 ant build
 ant install
+popd
 
-pushd ../setup-osg
+pushd bestman2/setup-osg
 mkdir dist
 cp bestman.in/aclocal.m4 .
 autoconf configure.in > configure
@@ -226,7 +227,7 @@ BUILDHOSTNAME=`hostname -f`
 # Fix version
 #sed -i "s/Built on .* at/Built on $BUILDHOSTNAME at/" version
 popd
-
+popd
 
 
 %install
@@ -435,6 +436,9 @@ fi
 
 
 %changelog
+* Thu Sep 20 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 2.3-1
+- Switch to jglobus2.
+
 * Thu Sep 20 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 2.2.1-5
 - Cleanup spec file in preparation of jglobus transition.
 
