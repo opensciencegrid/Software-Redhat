@@ -1,7 +1,7 @@
 Summary: User identity switching tool based on grid credentials
 Name: glexec
 Version: 0.9.6
-Release: 1.1%{?dist}
+Release: 1.2%{?dist}
 License: ASL 2.0
 Group: Applications/System
 URL: http://www.nikhef.nl/pub/projects/grid/gridwiki/index.php/Site_Access_Control
@@ -49,6 +49,9 @@ cp %{SOURCE1} $RPM_BUILD_ROOT/%{_sysconfdir}/glexec.conf
 cat %{SOURCE2} >>$RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d/glexec
 rm -rf $RPM_BUILD_ROOT/%{_sysconfdir}/lcmaps
 
+# glexec-configure doesn't work for OSG
+rm $RPM_BUILD_ROOT%{_sbindir}/glexec-configure $RPM_BUILD_ROOT%{_datadir}/man/man8/glexec-configure.8*
+
 %post
 chown glexec:root /etc/glexec.conf
 chmod 600 /etc/glexec.conf
@@ -63,10 +66,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(600, glexec, root) %verify(not md5 size mtime) %config(noreplace) %{_sysconfdir}/glexec.conf
 %{_datadir}/man/man5/glexec.conf.5*
 %{_datadir}/man/man1/glexec.1*
-%{_datadir}/man/man8/glexec-configure.8*
 %attr(4755, root, root) %{_sbindir}/glexec
 %attr(4111, root, root) %{_sbindir}/glexec
-%attr(755, root, root) %{_sbindir}/glexec-configure
 
 
 # Add the glexec group and user (see http://fedoraproject.org/wiki/Packaging:UsersAndGroups)
@@ -78,6 +79,10 @@ getent passwd glexec >/dev/null || \
 exit 0
 
 %changelog
+* Fri Sep 21 2012 Dave Dykstra <dwd@fnal.gov> 0.9.6-1.2.osg
+- Removed glexec-configure and its man page from OSG distribution since
+  it doesn't work there
+
 * Sun Apr  1 2012 Dave Dykstra <dwd@fnal.gov> 0.9.6-1.1.osg
 - Reimported to OSG -- lowered loglevel of message if homedir of
   payload did not exist, and fixed bug that set wrong umask in
