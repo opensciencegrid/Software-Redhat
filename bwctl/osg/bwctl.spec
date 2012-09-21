@@ -1,7 +1,7 @@
 Name: bwctl
 Summary: bwctl - network throughput tester
 Version: 1.4
-Release:        2%{?dist}
+Release:        3%{?dist}
 License: Apache License v2.0
 Group: *Development/Libraries*
 URL: http://e2epi.internet2.edu/bwctl/
@@ -23,6 +23,7 @@ that wraps Iperf, Thrulay or nuttcp.
 Summary: bwctl client
 Group: Applications/Network
 Requires:   iperf
+Obsoletes: bwctl <= 1.3
 %description client
 bwctl command line tool for scheduling bandwidth measurements with a bwctl
 server.
