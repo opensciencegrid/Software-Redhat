@@ -1,5 +1,5 @@
 Name:      gram-state
-Version:   1.0
+Version:   1.1
 Release:   1%{?dist}
 Summary:   Show information about Globus GRAM jobs, based on their job state files
 
@@ -40,6 +40,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Sep 22 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 1.1-1
+- Implement PBS support.
+- Update to latest GRAM directory structure.
+
 * Wed Jun 6 2012 Alain Roy <roy@cs.wisc.edu> 1.0-1
 - Updated to 1.0: minor capitalization fix, more debugging output
 
