@@ -1,6 +1,6 @@
 
 Name:           osg-build
-Version:        1.2.2
+Version:        1.2.3
 Release:        1%{?dist}
 Summary:        Build tools for the OSG
 
@@ -63,6 +63,10 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_docdir}/%{name}/sample-osg-build.ini
 
 %changelog
+* Mon Sep 24 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.2.3-1
+- Python 2.4 compatibility fixes
+- Added --getfiles option to koji scratch build
+
 * Thu Aug 16 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.2.2-1
 - osg-promote bugfixes
 - 'quilt' task result directory changed to '_quilt' instead of '_final_srpm_contents'
