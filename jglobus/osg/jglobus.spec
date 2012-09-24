@@ -3,7 +3,7 @@ Name: jglobus
 Summary: An implementation of Globus for Java
 License: Apache 2.0
 Version: 2.0.4
-Release: 2%{?dist}
+Release: 3%{?dist}
 URL: http://www.globus.org/toolkit/jglobus/
 Group: System Environment/Libraries
 
@@ -98,6 +98,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mavendepmapfragdir}/jglobus
 
 %changelog
+* Mon Sep 24 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 2.0.4-3
+- Fix JGlobus client compatibility with older servers.
+
 * Thu Sep 20 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 2.0.4-2
 - Fix support for older SRM clients.
 
