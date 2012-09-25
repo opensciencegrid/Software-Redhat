@@ -1,13 +1,14 @@
 Summary: osg-pki-tools
 Name: osg-pki-tools
 Version: 1.0
-Release: 3%{?dist}
+Release: 4%{?dist}
 Source: OSGPKITools-%{version}.tar.gz
 License: Apache 2.0
 Group: Grid
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildArch: noarch
 Requires: python 
+Requires: m2crypto
 
 %if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
 %{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
@@ -39,6 +40,8 @@ install -d %{buildroot}%{_sbindir}
 install -m 755 osgpkitools/osg-cert-request %{buildroot}%{_sbindir}
 install -m 755 osgpkitools/osg-cert-retrieve %{buildroot}%{_sbindir}
 install -m 755 osgpkitools/osg-gridadmin-cert-request %{buildroot}%{_sbindir}
+install -d %{buildroot}%{_sysconfdir}
+install -m 644 osgpkitools/OSGPKIClients.ini %{buildroot}%{_sysconfdir}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -47,6 +50,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root)
 %{python_sitelib}/osgpkitools/*
 /usr/sbin/*
+%config(noreplace) %{_sysconfdir}/OSGPKIClients.ini
 
 %files tests
 %defattr(-,root,root)
@@ -54,6 +58,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Sep 25 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0-4
+- Add m2crypto dependency
+- Add OSGPKIClients.ini
+
 * Mon Sep 24 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0-3
 - Use correct sources
 - Remove patches, since they're upstream
