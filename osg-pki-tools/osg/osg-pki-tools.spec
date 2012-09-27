@@ -1,7 +1,7 @@
 Summary: osg-pki-tools
 Name: osg-pki-tools
-Version: 1.0
-Release: 4%{?dist}
+Version: 1.0.1
+Release: 1%{?dist}
 Source: OSGPKITools-%{version}.tar.gz
 License: Apache 2.0
 Group: Grid
@@ -9,6 +9,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildArch: noarch
 Requires: python 
 Requires: m2crypto
+Requires: python-simplejson
 
 %if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
 %{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
@@ -21,7 +22,6 @@ Requires: m2crypto
 %package tests
 Summary: tests for osg-pki-tools
 Requires: %{name} = %{version}
-Requires: python-argparse
 Group: Grid
 
 %description tests
@@ -36,28 +36,39 @@ tests for osg-pki-tools
 %install
 %{__python} setup.py install --root=%{buildroot}
 rm -f %{buildroot}%{python_sitelib}/*.egg-info || :
-install -d %{buildroot}%{_sbindir}
-install -m 755 osgpkitools/osg-cert-request %{buildroot}%{_sbindir}
-install -m 755 osgpkitools/osg-cert-retrieve %{buildroot}%{_sbindir}
-install -m 755 osgpkitools/osg-gridadmin-cert-request %{buildroot}%{_sbindir}
-install -d %{buildroot}%{_sysconfdir}
-install -m 644 osgpkitools/OSGPKIClients.ini %{buildroot}%{_sysconfdir}
+install -d %{buildroot}%{_bindir}
+install -m 755 osgpkitools/osg-cert-request %{buildroot}%{_bindir}
+install -m 755 osgpkitools/osg-cert-retrieve %{buildroot}%{_bindir}
+install -m 755 osgpkitools/osg-gridadmin-cert-request %{buildroot}%{_bindir}
+install -d %{buildroot}%{_sysconfdir}/osg
+install -m 644 osgpkitools/pki-clients.ini %{buildroot}%{_sysconfdir}/osg
+mv -f %{buildroot}%{python_sitelib}/tests %{buildroot}%{python_sitelib}/osgpkitools/tests
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files 
 %defattr(-,root,root)
-%{python_sitelib}/osgpkitools/*
-/usr/sbin/*
-%config(noreplace) %{_sysconfdir}/OSGPKIClients.ini
+%dir %{python_sitelib}/osgpkitools
+%{python_sitelib}/osgpkitools/*.py*
+/usr/bin/*
+%dir %{_sysconfdir}/osg
+%config(noreplace) %{_sysconfdir}/osg/pki-clients.ini
 
 %files tests
 %defattr(-,root,root)
-%{python_sitelib}/tests/*
+%dir %{python_sitelib}/osgpkitools/tests
+%{python_sitelib}/osgpkitools/tests/*
 
 
 %changelog
+* Thu Sep 27 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0.1-1
+- Version update
+- Add python-simplejson dependency
+- Move unit tests
+- Rename and move OSGPKIClients.ini
+- Remove python-argparse dependency for tests
+
 * Tue Sep 25 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0-4
 - Add m2crypto dependency
 - Add OSGPKIClients.ini
