@@ -2,13 +2,14 @@
 
 Name:           mash
 Version:        0.5.22
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Koji buildsystem to yum repository converter
 Group:          Development/Tools
 License:        GPLv2
 URL:            http://fedorahosted.org/releases/m/a/mash/
 Source0:        http://fedorahosted.org/releases/m/a/mash/%{name}-%{version}.tar.gz
 Patch0:         multilib-python.patch
+Patch1:         multilib-lcmaps.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Requires:       yum, createrepo, koji
 Conflicts:	pungi < 1.0.0
@@ -23,6 +24,7 @@ any multlib RPMs that are necessary.
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
 
 %build
 %{__python} setup.py build
@@ -46,6 +48,9 @@ rm -rf $RPM_BUILD_ROOT
 /var/cache/mash
 
 %changelog
+* Thu Sep 27 2012 Matyas Selmeci <matyas@cs.wisc.edu> 0.5.22-3
+- Add patch to mark lcmaps plugins as multilib
+
 * Fri Oct 28 2011 Matyas Selmeci <matyas@cs.wisc.edu> 0.5.22-2
 - Add patch to add python*/site-packages dirs as multilib if they have .so files
 
