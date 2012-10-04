@@ -25,6 +25,7 @@ BuildRequires: java-1.6.0-sun-compat
 %endif
 BuildRequires: java-devel
 BuildRequires: emi-trustmanager
+BuildRequires: voms-api-java
 # provides build-classpath
 BuildRequires: jpackage-utils 
 Requires: java
