@@ -1,7 +1,7 @@
 %define hadoop_version 2.0.0+88 
 %define hadoop_patched_version 2.0.0-cdh4.0.0 
 %define hadoop_base_version 2.0.0 
-%define hadoop_release 1.cdh4.0.0.p0.38%{?dist}
+%define hadoop_release 1.cdh4.0.0.p0.39%{?dist}
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
@@ -679,10 +679,6 @@ chkconfig --add %{name}-%1 \
 if [ $1 = 0 ]; then \
   service %{name}-%1 stop > /dev/null 2>&1 || :\
   chkconfig --del %{name}-%1 || :\
-fi \
-%postun %1 \
-if [ $1 -ge 1 ]; then \
-  service %{name}-%1 condrestart >/dev/null 2>&1 \
 fi
 
 %service_macro hdfs-namenode
@@ -727,6 +723,9 @@ fi
 %attr(0755,root,root) %{bin_hadoop}/hadoop-fuse-dfs
 
 %changelog
+* Thu Oct 4 2012 Doug Strain <dstrain@fnal.gov> - 2.0.0+88-1.cdh4.0.0.p0.39
+- Got rid of postun script since it was failing.
+
 * Tue Aug 7 2012 Doug Strain <dstrain@fnal.gov> - 2.0.0+88-1.cdh4.0.0.p0.33
 - Changed hadoop-fuse default JAVA_HOME changes to a patch instead
 - Added config path to classpath so fuse picks up default replication etc
