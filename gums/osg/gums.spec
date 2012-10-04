@@ -7,7 +7,7 @@
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.3.18.009
-Release: 5%{?dist}
+Release: 6%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 %if 0%{?rhel} < 6
@@ -24,10 +24,11 @@ BuildRequires: jdk
 BuildRequires: java-1.6.0-sun-compat
 %endif
 BuildRequires: java-devel
+BuildRequires: emi-trustmanager
+# provides build-classpath
+BuildRequires: jpackage-utils 
 Requires: java
-Requires: %{_javadir}/cog-jglobus/cog-jglobus-1.8.0.jar
-Requires: %{_javadir}/cog-jglobus/cog-jobmanager-1.8.0.jar
-Requires: %{_javadir}/cog-jglobus/cog-url-1.8.0.jar
+Requires: jglobus
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildArch: noarch
 
@@ -40,23 +41,28 @@ Source2: gums-client-cron.cron
 Source3: gums-client-cron.init
 
 # Binary JARs not available from public maven repos.  To be eliminated, one-by-one.
-Source4: glite-security-trustmanager-2.5.5.jar
-Source5: glite-security-util-java-2.8.6.jar
+#Source4: glite-security-trustmanager-2.5.5.jar
+#Source5: glite-security-util-java-2.8.6.jar
 Source6: jta-1.0.1B.jar
 Source7: jacc-1.0.jar
 Source8: privilege-xacml-2.2.4.jar
 Source9: privilege-1.0.1.3.jar
 Source10: xmltooling-1.1.1.jar
 Source11: xmltooling.pom 
+Source12: openws-1.2.2.jar
+Source13: jargs-1.0.jar
+Source14: velocity-1.5.jar
 
 Patch0: xml-maven2.patch
 Patch1: gums-create-config2.patch
+Patch2: get-correct-client-cert.patch
+Patch3: emi-trustmanager-pom.patch
 
 %description
 %{summary}
 
 %package client
-Requires: %{name} = %{version}
+Requires: %{name} = %{version}-%{release}
 Requires: osg-vo-map
 Requires(post): chkconfig
 Requires(preun): chkconfig
@@ -68,7 +74,7 @@ Summary: Clients for GUMS
 %{summary}
 
 %package service
-Requires: %{name} = %{version}
+Requires: %{name} = %{version}-%{release}
 Requires: /usr/share/java/xml-commons-apis.jar
 Requires: %{tomcat}
 Requires: emi-trustmanager-tomcat
@@ -87,15 +93,22 @@ Summary: Tomcat service for GUMS
 %setup -n %{name}
 %patch0 -p0
 %patch1 -p0
+%patch2 -p0
+%patch3 -p0
 
 %build
 
 # Binary JARs not available from public maven repos.
 # gums-core
-%{mvn} install:install-file -B -DgroupId=org.glite -DartifactId=glite-security-trustmanager -Dversion=2.5.5 -Dpackaging=jar -Dfile=%{SOURCE4} -Dmaven.repo.local=%{local_maven}
-%{mvn} install:install-file -B -DgroupId=org.glite -DartifactId=glite-security-util-java -Dversion=2.8.6 -Dpackaging=jar -Dfile=%{SOURCE5} -Dmaven.repo.local=%{local_maven}
+# Trustmanager is available from RPMs.
+%{mvn} install:install-file -B -DgroupId=emi -DartifactId=emi-trustmanager -Dversion=3.0.3 -Dpackaging=jar -Dfile=`build-classpath trustmanager` -Dmaven.repo.local=%{local_maven}
 %{mvn} install:install-file -B -DgroupId=javax.transaction -DartifactId=jta -Dversion=1.0.1B -Dpackaging=jar -Dfile=%{SOURCE6} -Dmaven.repo.local=%{local_maven}
 %{mvn} install:install-file -B -DgroupId=javax.security -DartifactId=jacc -Dversion=1.0 -Dpackaging=jar -Dfile=%{SOURCE7} -Dmaven.repo.local=%{local_maven}
+# These used to be available from the internet2 shibboleth project, but that server is now dead.
+%{mvn} install:install-file -B -DgroupId=org.opensaml -DartifactId=openws -Dversion=1.2.2 -Dpackaging=jar -Dfile=%{SOURCE12} -Dmaven.repo.local=%{local_maven}
+%{mvn} install:install-file -B -DgroupId=jargs -DartifactId=jargs -Dversion=1.0 -Dpackaging=jar -Dfile=%{SOURCE13} -Dmaven.repo.local=%{local_maven}
+%{mvn} install:install-file -B -DgroupId=velocity -DartifactId=velocity -Dversion=1.5 -Dpackaging=jar -Dfile=%{SOURCE14} -Dmaven.repo.local=%{local_maven}
+%{mvn} install:install-file -B -DgroupId=emi -DartifactId=voms-api-java -Dversion=2.0.8 -Dpackaging=jar -Dfile=`build-classpath voms-api-java` -Dmaven.repo.local=%{local_maven}
 # gums-client
 %{mvn} install:install-file -B -DgroupId=org.opensciencegrid -DartifactId=privilege-xacml -Dversion=2.2.4 -Dpackaging=jar -Dfile=%{SOURCE8} -Dmaven.repo.local=%{local_maven}
 %{mvn} install:install-file -B -DgroupId=org.opensciencegrid -DartifactId=privilege -Dversion=1.0.1.3 -Dpackaging=jar -Dfile=%{SOURCE9} -Dmaven.repo.local=%{local_maven}
@@ -195,10 +208,8 @@ chmod +x $RPM_BUILD_ROOT%{_sysconfdir}/init.d/gums-client-cron
 mkdir -p $RPM_BUILD_ROOT%{_javadir}
 touch $RPM_BUILD_ROOT%{_javadir}/javamail.jar
 
-for jarname in cog-jglobus-1.8.0.jar cog-jobmanager-1.8.0.jar cog-url-1.8.0.jar
-do
-    ln -s %{_javadir}/cog-jglobus/$jarname $RPM_BUILD_ROOT%{_noarchlib}/%{dirname}
-done
+# jglobus is required by XACML callouts.
+build-jar-repository $RPM_BUILD_ROOT%{_noarchlib}/%{dirname} jglobus
 
 %files
 %defattr(-,root,root,-)
@@ -262,6 +273,12 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+* Thu Oct 04 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 1.3.18.009-6
+- Switch to EMI trustmanager from glite trustmanager.
+- Fix DN parsing for proxies delegated multiple times.
+- Switch to jglobus2 from jglobus.
+- Manually cache binary JARs which are no longer publicly available.
+
 * Wed Jun 06 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.3.18.009-5
 - Move osg-webapp-common dependency to gums-service
 
