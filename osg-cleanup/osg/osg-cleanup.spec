@@ -1,6 +1,6 @@
 
 Name:      osg-cleanup
-Version:   1.3
+Version:   1.4
 Release:   1%{?dist}
 Summary:   OSG cleanup scripts
 
@@ -38,6 +38,7 @@ install -d -m 0700 $RPM_BUILD_ROOT%{_libexecdir}/osg-cleanup/
 install -m 0700 sbin/osg-cleanup $RPM_BUILD_ROOT%{_sbindir}/
 install -m 0700 libexec/clean-globus-tmp $RPM_BUILD_ROOT%{_libexecdir}/osg-cleanup/
 install -m 0700 libexec/clean-user-dirs $RPM_BUILD_ROOT%{_libexecdir}/osg-cleanup/
+install -m 0700 libexec/clean-globus-seg $RPM_BUILD_ROOT%{_libexecdir}/osg-cleanup/
 
 # Install configuration
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/osg/
@@ -85,6 +86,11 @@ fi
 
 
 %changelog
+* Thu Oct 04 2012 Matyas Selmeci <matyas@cs.wisc.edu> 1.4-1
+- Updated to 1.4.
+- Correctly removes gram-state files in the new directory format. (#SOFTWARE-785)
+- Clean up SEG logs. (#SOFTWARE-786)
+
 * Tue Aug 7 2012 Alain Roy <roy@cs.wisc.edu> 1.3-1
 - Updated to 1.3. Fixes discovery of user's globus job directory. 
 
