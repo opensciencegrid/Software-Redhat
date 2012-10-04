@@ -1,0 +1,44 @@
+Index: globus_gram_job_manager_lsf-1.0/lsf.pm
+===================================================================
+--- globus_gram_job_manager_lsf-1.0.orig/lsf.pm	2012-08-17 13:25:14.000000003 -0500
++++ globus_gram_job_manager_lsf-1.0/lsf.pm	2012-10-04 15:25:33.000000003 -0500
+@@ -491,6 +491,26 @@
+                 Globus::GRAM::Error::TEMP_SCRIPT_FILE_FAILED());
+         }
+     }
++
++    # Based on code from an email by dweitzel@cse.unl.edu
++    my @xcount = $description = $description->xcount();
++    if (@xcount)
++    {
++        $self->log("xcount = " . scalar(@xcount));
++        foreach my $this_xcount (@xcount)
++        {
++            $self->log("xcount = " . $this_xcount);
++            $rc = print JOB "#BSUB -n $this_xcount \n";
++            $rc = print JOB "#BSUB -R span[ptile=$this_xcount] \n";
++            if (!$rc)
++            {
++                return $self->respond_with_failure_extension(
++                    "print: $lsf_job_script_name: $!",
++                    Globus::GRAM::Error::TEMP_SCRIPT_FILE_FAILED());
++            }
++        }
++    }
++
+     $rc = close(JOB);
+     if (!$rc)
+     {
+Index: globus_gram_job_manager_lsf-1.0/lsf.rvf
+===================================================================
+--- globus_gram_job_manager_lsf-1.0.orig/lsf.rvf	2012-08-17 13:25:14.000000003 -0500
++++ globus_gram_job_manager_lsf-1.0/lsf.rvf	2012-10-04 15:26:09.000000003 -0500
+@@ -1,3 +1,8 @@
+ Attribute: name
+ Description: "The name of job to submit to the LSF batch system"
+ ValidWhen: GLOBUS_GRAM_JOB_SUBMIT
++
++Attribute: xcount
++Description: "To specify the number of cores for a job"
++ValidWhen: GLOBUS_GRAM_JOB_SUBMIT
++
