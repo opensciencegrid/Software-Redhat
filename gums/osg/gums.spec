@@ -26,10 +26,13 @@ BuildRequires: java-1.6.0-sun-compat
 BuildRequires: java-devel
 BuildRequires: emi-trustmanager
 BuildRequires: voms-api-java
+BuildRequires: jglobus
 # provides build-classpath
 BuildRequires: jpackage-utils 
 Requires: java
 Requires: jglobus
+Requires: voms-api-java
+Requires: emi-trustmanager
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildArch: noarch
 
