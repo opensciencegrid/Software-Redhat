@@ -9,6 +9,7 @@ our $VERSION = 1.00;
 our $UID_FILENAME     = "/etc/osg/uid_table.txt";
 our $EXTATTR_FILENAME = "/etc/osg/extattr_table.txt";
 
+my @ea;
 my @Environment;
 my $Job_Manager;
 my %UID_Table;
@@ -64,7 +65,7 @@ sub _populate_extended_attribute_table {
             my @fields = split(/\s+/, $_);
             my $groupname = pop(@fields);
             my $ea_name = join " ", @fields;
-
+	    push @ea, $ea_name;
             $Extattr_Table{$ea_name} = $groupname;
         }
         close $eafile;
@@ -89,7 +90,7 @@ sub _match_extended_attribute_to_condor_group() {
             `voms-proxy-info -all -file $safe_proxy_filename | grep -E "attribute|subject"`;
     }
 
-    foreach my $regexp (keys %Extattr_Table) {
+    foreach my $regexp (@ea) {
         foreach my $attribute (@attributes) {
             if (eval{$attribute =~ $regexp}) {
                 my $group = $Extattr_Table{$regexp};

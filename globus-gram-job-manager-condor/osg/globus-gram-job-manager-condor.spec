@@ -9,7 +9,7 @@
 Name:		globus-gram-job-manager-condor
 %global _name %(tr - _ <<< %{name})
 Version:	1.0
-Release:	13.1%{?dist}
+Release:	13.2%{?dist}
 Summary:	Globus Toolkit - Condor Job Manager
 
 Group:		Applications/Internet
@@ -159,6 +159,9 @@ fi
 %config(noreplace) %{_sysconfdir}/globus/globus-condor.conf
 
 %changelog
+* Fri Oct 05 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0-13.2
+- Accounting groups module changes from SOFTWARE-805
+
 * Fri Aug 17 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0-13.1
 - SOFTWARE-737: Mark /etc/globus/globus-condor.conf as config
 
