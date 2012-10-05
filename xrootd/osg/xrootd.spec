@@ -8,7 +8,7 @@
 #-------------------------------------------------------------------------------
 Name:      xrootd
 Epoch:     1
-Version:   3.2.4
+Version:   3.2.5
 Release:   1%{?dist}%{?_with_xrootd_user:.xu}
 Summary:   An extended root daemon (xrootd)
 Group:     System Environment/Daemons
@@ -401,6 +401,9 @@ exit 0
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Fri Oct 5 2012 Doug Strain <dstrain@fnal.gov> 3.2.5-1
+- Updated to xrootd 3.2.5.
+
 * Tue Sep 11 2012 Doug Strain <dstrain@fnal.gov> 3.2.4-1
 - Updated to xrootd 3.2.4.
 
