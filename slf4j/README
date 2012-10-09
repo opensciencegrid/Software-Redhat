@@ -1,0 +1,5 @@
+This is the pass-through packaging of SLF4J, based on the jpackage repo work.
+
+This was originally done by Brian Bockelman in order to fulfill a jetty dep.
+
+SPEC file and sources are adopted from the jpackage 5.0 source RPM.
