@@ -31,8 +31,11 @@ BuildRequires: jglobus
 BuildRequires: jpackage-utils 
 Requires: java
 Requires: jglobus
+BuildRequires: voms-api-java
 Requires: voms-api-java
+BuildRequires: emi-trustmanager
 Requires: emi-trustmanager
+BUildRequires: emi-trustmanager-axis
 Requires: emi-trustmanager-axis
 # Standard RPMs from the system
 # "Naive" use of slf4j doesn't appear to work
@@ -42,6 +45,9 @@ BuildRequires: jakarta-commons-beanutils jakarta-commons-cli jakarta-commons-cod
 Requires: jakarta-commons-beanutils jakarta-commons-cli jakarta-commons-codec jakarta-commons-collections jakarta-commons-digester jakarta-commons-discovery jakarta-commons-httpclient jakarta-commons-lang jakarta-commons-logging
 BuildRequires: jacc jta
 Requires: jacc jta
+#RHEL5 version of axis is too old
+#BuildRequires: axis
+#Requires: axis
 BuildRequires: ant
 Requires: ant
 BuildRequires: antlr
@@ -182,7 +188,7 @@ install -m 0644 $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib/sl
 # Remove system JARs to whatever extent possible.  We will later link these directly.
 rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/ant-1.6.3.jar
 rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/antlr-2.7.5H3.jar
-rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/axis-{1.4,ant-1.4,jaxrpc-1.4,saaj-1.4}.jar
+#rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/axis-{1.4,ant-1.4,jaxrpc-1.4,saaj-1.4}.jar
 rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/bcprov-jdk15-*.jar
 rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/commons-{beanutils-1.7.0,cli-1.2,codec-1.3,collections-3.2,digester-1.8,discovery-0.2,httpclient-3.0,lang-2.1,logging-1.1}.jar
 rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/emi-trustmanager-3.0.3.jar
@@ -246,10 +252,10 @@ mkdir -p $RPM_BUILD_ROOT%{_javadir}
 touch $RPM_BUILD_ROOT%{_javadir}/javamail.jar
 
 # jglobus is required by XACML callouts in gums-client, but not gums-core.
-build-jar-repository $RPM_BUILD_ROOT%{_noarchlib}/%{dirname} jglobus trustmanager trustmanager-axis ant antlr axis bcprov commons-cli commons-codec commons-collections commons-digester commons-discovery commons-httpclient commons-lang commons-logging jacc jta voms-api-java joda-time mysql-connector-java
+build-jar-repository $RPM_BUILD_ROOT%{_noarchlib}/%{dirname} jglobus trustmanager trustmanager-axis ant antlr bcprov commons-cli commons-codec commons-collections commons-digester commons-discovery commons-httpclient commons-lang commons-logging jacc jta voms-api-java joda-time mysql-connector-java
 
 mkdir -p $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib
-build-jar-repository $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib trustmanager trustmanager-axis ant antlr axis bcprov commons-beanutils commons-cli commons-codec commons-collections commons-digester commons-discovery commons-httpclient commons-lang commons-logging jacc jta voms-api-java joda-time mysql-connector-java
+build-jar-repository $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib trustmanager trustmanager-axis ant antlr bcprov commons-beanutils commons-cli commons-codec commons-collections commons-digester commons-discovery commons-httpclient commons-lang commons-logging jacc jta voms-api-java joda-time mysql-connector-java
 
 %files
 %defattr(-,root,root,-)
