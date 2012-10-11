@@ -9,7 +9,7 @@
 Name:      xrootd
 Epoch:     1
 Version:   3.2.5
-Release:   1%{?dist}%{?_with_xrootd_user:.xu}
+Release:   2.beta%{?dist}%{?_with_xrootd_user:.xu}
 Summary:   An extended root daemon (xrootd)
 Group:     System Environment/Daemons
 License:   BSD
@@ -26,7 +26,7 @@ BuildRequires: readline-devel openssl-devel fuse-devel
 BuildRequires: libxml2-devel krb5-devel zlib-devel ncurses-devel
 
 # Perl packaging changed on SLC6 - we require perl-devel to build
-%if 0%{?rhel} >= 6
+%if 0%{?rhel} >= 6 || %{?fedora}%{!?fedora:0} >= 15
 BuildRequires: perl-devel
 %endif
 
@@ -282,10 +282,12 @@ exit 0
 %{_libdir}/libXrdCrypto*.so*
 %{_libdir}/libXrdUtils.so*
 %{_libdir}/libXrdMain.so*
+%{_libdir}/libXrdAppUtils.so*
 
 %files libs-devel
 %defattr(-,root,root,-)
 %{_includedir}/%{name}/XrdVersion.hh
+%{_includedir}/%{name}/XrdVersionPlugin.hh
 %{_includedir}/%{name}/XrdSec
 %{_includedir}/%{name}/XrdSecsss
 %{_includedir}/%{name}/XrdSecgsi
@@ -297,6 +299,7 @@ exit 0
 %{_includedir}/%{name}/Xrd
 %{_includedir}/%{name}/XProtocol
 %{_includedir}/%{name}/XrdCks
+%{_includedir}/%{name}/XrdApps
 
 %files client
 %defattr(-,root,root,-)
@@ -307,6 +310,7 @@ exit 0
 %{_bindir}/xprep
 %{_bindir}/xrd
 %{_bindir}/xrdcp
+%{_bindir}/xrdcpy
 %{_bindir}/xrdgsiproxy
 %{_bindir}/xrdstagetool
 %{_bindir}/xrdadler32
