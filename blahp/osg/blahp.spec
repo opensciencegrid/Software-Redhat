@@ -1,6 +1,6 @@
 Name:		blahp
 Version:	1.18.0.4
-Release:	5%{?dist}
+Release:	8%{?dist}
 Summary:	gLite BLAHP daemon
 
 Group:		System/Libraries
@@ -26,6 +26,12 @@ Patch8:         blahp_chkconfig.patch
 Patch9:         blahp_init_script_paths.patch
 # Add values for using Condor as a jobmanager to the blah.config
 Patch10:        blahp_condor_config.patch
+# Allow blahp to handle relative proxy paths.  See Condor GT #3027
+Patch11:		blahp-relative-proxypath.patch
+# Blahp fails to escape some character sequences Condor jobs may use.
+Patch12:        blahp.escape.args.patch
+# Blahp uses a function which has been removed from newer versions of Condor ClassAds.
+Patch13:        blahp.iclassad.patch
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildRequires:  automake
 BuildRequires:  autoconf
@@ -60,6 +66,9 @@ BuildRequires:  docbook-style-xsl, libxslt
 %patch8 -p1
 %patch9 -p1
 %patch10 -p1
+%patch11 -p0
+%patch12 -p0
+%patch13 -p0
 
 cp %{SOURCE0} src/scripts/pbs_status.sh
 
@@ -119,6 +128,13 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Fri Oct 12 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 1.18.0.4-8.osg
+- Pull in all remaining patches from the OSG-CE work.
+- Fix non-standard qstat locations.
+- Fix arg escaping in Condor.
+- Fix submissions with a relative proxy path.
+- Release bumped a few extra versions to stay in line with the Caltech Koji.
+
 * Thu Aug 29 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.18.0.4-5.osg
 - Fixed paths in init script
 - Added default options for condor
