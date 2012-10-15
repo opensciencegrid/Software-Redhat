@@ -22,7 +22,7 @@
 
 Name:						lcg-util
 Version:					1.13.9
-Release:					4%{?dist}
+Release:					5%{?dist}
 Summary:					Command line tools for wlcg storage system 
 Group:						Applications/Internet
 License:					ASL 2.0
@@ -64,6 +64,7 @@ for data management provided by LCG \
 %package libs
 Summary:					Shared library related to %{name} tools
 Group:						Applications/Internet
+Obsoletes:	lcg-utils <= 1.13
 Obsoletes:	lcg-utils-libs <= 1.13
 Provides: lcg-utils-libs == %{version}
 
