@@ -22,7 +22,7 @@
 
 Name:						lcg-util
 Version:					1.13.9
-Release:					3%{?dist}
+Release:					4%{?dist}
 Summary:					Command line tools for wlcg storage system 
 Group:						Applications/Internet
 License:					ASL 2.0
@@ -64,6 +64,8 @@ for data management provided by LCG \
 %package libs
 Summary:					Shared library related to %{name} tools
 Group:						Applications/Internet
+Obsoletes:	lcg-utils-libs <= 1.13
+Provides: lcg-utils-libs == %{version}
 
 %description libs
 Shared libraries component for %{name}
@@ -72,6 +74,8 @@ Shared libraries component for %{name}
 Summary:					Headers and development files for %{name} tools
 Group:						Applications/Internet
 Requires:					%{name}-libs%{?_isa} = %{version}-%{release} 
+Obsoletes:	lcg-utils-devel <= 1.13
+Provides: lcg-utils-devel == %{version}
 
 %description devel
 This package contains development files for %{name} 
@@ -81,6 +85,8 @@ Summary:					Python bindings for %{name}
 Group:						Applications/Internet
 Provides:					%{name}-py%{python_version_nodot} = %{version}
 Requires:					%{name}-libs%{?_isa} = %{version}-%{release} 
+Obsoletes:	lcg-utils-python <= 1.13
+Provides: lcg-utils-python == %{version}
 
 %description python
 python bindings for %{name}
@@ -212,7 +218,7 @@ rm -rf %{buildroot}
 
 
 %changelog
-* Tue Oct 15 2012 Doug Strain <dstrain@fnal.gov> - 1.13.9-1
+* Tue Oct 15 2012 Doug Strain <dstrain@fnal.gov> - 1.13.9-4
 - Repackaged for OSG
 - Added obsoletes for OSG lcg-utils
 - Added dependency for globus-common-progs for globus-version
