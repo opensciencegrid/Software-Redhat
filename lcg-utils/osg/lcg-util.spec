@@ -22,7 +22,7 @@
 
 Name:						lcg-util
 Version:					1.13.9
-Release:					0%{?dist}
+Release:					1%{?dist}
 Summary:					Command line tools for wlcg storage system 
 Group:						Applications/Internet
 License:					ASL 2.0
@@ -52,7 +52,7 @@ BuildRequires:				python26-devel
 BuildRequires:				srm-ifce-devel
 BuildRequires:				swig
 BuildRequires:				voms-devel
-
+Obsoletes:	lcg-utils <= 1.13
 
 
 %description
@@ -211,6 +211,11 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Tue Oct 15 2012 Doug Strain <dstrain@fnal.gov> - 1.13.9-1
+- Repackaged for OSG
+- Added obsoletes for OSG lcg-utils
+- Added dependency for globus-common-progs for globus-version
+
 * Tue Sep 18 2012 Adrien Devresse <adevress at cern.ch> - 1.13.9
  - apply a fix in order to resolve gfal 32bits vs 64 bits conflict
  - resolve a problem whith automatic LFC_HOST resolution and is-interface, 
