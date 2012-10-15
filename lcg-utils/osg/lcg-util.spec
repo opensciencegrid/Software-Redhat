@@ -22,7 +22,7 @@
 
 Name:						lcg-util
 Version:					1.13.9
-Release:					1%{?dist}
+Release:					2%{?dist}
 Summary:					Command line tools for wlcg storage system 
 Group:						Applications/Internet
 License:					ASL 2.0
@@ -53,6 +53,7 @@ BuildRequires:				srm-ifce-devel
 BuildRequires:				swig
 BuildRequires:				voms-devel
 Obsoletes:	lcg-utils <= 1.13
+Provides:	lcg-utils
 
 
 %description
