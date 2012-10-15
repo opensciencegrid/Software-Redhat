@@ -21,8 +21,8 @@
 
 
 Name:						lcg-util
-Version:					1.13.0
-Release:					1%{?dist}
+Version:					1.13.9
+Release:					0%{?dist}
 Summary:					Command line tools for wlcg storage system 
 Group:						Applications/Internet
 License:					ASL 2.0
@@ -35,7 +35,9 @@ BuildRoot:					%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 ExcludeArch:				ppc 
 
 BuildRequires:				CGSI-gSOAP-devel
+BuildRequires:				globus-common-progs
 BuildRequires:				gfal-devel
+BuildRequires:				glib2-devel
 BuildRequires:				gridftp-ifce-devel
 BuildRequires:				libtool
 %if 0%{?el5}
@@ -50,9 +52,8 @@ BuildRequires:				python26-devel
 BuildRequires:				srm-ifce-devel
 BuildRequires:				swig
 BuildRequires:				voms-devel
-BuildRequires:                          globus-common-progs
-Obsoletes: lcg-utils <= 1.13
-Provides: lcg-utils == %{version}
+
+
 
 %description
 The LCG Utilities package is the main end user command line tool \
@@ -162,7 +163,6 @@ rm -f %{buildroot}/%{python26_sitearch}/_lcg_util.*a
 cd %{_builddir}/%{name}-%{version};
 %endif
 
-
 %clean
 rm -rf %{buildroot}
 
@@ -211,6 +211,12 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Tue Sep 18 2012 Adrien Devresse <adevress at cern.ch> - 1.13.9
+ - apply a fix in order to resolve gfal 32bits vs 64 bits conflict
+ - resolve a problem whith automatic LFC_HOST resolution and is-interface, 
+ - fix a problem related to the send and received timeout, GGUS 86202
+
+
 * Fri Jul 20 2012 Adrien Devresse <adevress at cern.ch> - 1.13.0-0
  - gfal 1.0 32 bits problem correction (gfal)
  - stack smash correction
