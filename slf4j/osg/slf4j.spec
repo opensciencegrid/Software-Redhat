@@ -44,7 +44,7 @@ Source0:        http://www.slf4j.org/dist/slf4j-1.5.2.tar.gz
 Source1:        %{name}-settings.xml
 Source2:        %{name}-jpp-depmap.xml
 Patch0:         %{name}-pom_xml.patch
-BuildRequires:  jpackage-utils >= 0:1.7.5
+BuildRequires:  jpackage-utils
 BuildRequires:  java-devel
 BuildRequires:  ant >= 0:1
 BuildRequires:  junit >= 0:3.8.2
@@ -61,8 +61,8 @@ BuildRequires:  maven2 >= 2.0.7
 BuildRequires:  log4j
 BuildRequires:  jakarta-commons-logging
 
-Requires(post): jpackage-utils >= 0:1.7.5
-Requires(postun): jpackage-utils >= 0:1.7.5
+Requires(post): jpackage-utils
+Requires(postun): jpackage-utils
 %if %{gcj_support}
 BuildRequires:  java-gcj-compat-devel
 %else
