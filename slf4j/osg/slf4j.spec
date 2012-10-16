@@ -35,7 +35,7 @@
 Summary:        Simple Logging Facade for Java
 Name:           slf4j
 Version:        1.5.2
-Release:        2%{dist}
+Release:        3%{dist}
 Epoch:          0
 Group:          System/Logging
 License:        MIT
@@ -249,6 +249,9 @@ fi
 %{_docdir}/%{name}-%{version}/site
 
 %changelog
+* Tue Oct 16 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 0:1.5.2-3
+- Relax the jpackage-utils dependency.
+
 * Fri Jul 18 2008 David Walluck <dwalluck@redhat.com> 0:1.5.2-2
 - use excalibur for avalon
 - remove javadoc scriptlets
