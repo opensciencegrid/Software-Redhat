@@ -66,8 +66,25 @@ reconfig() {
             exit $RETVAL
           fi
         fi
+	writeback="no"
+	force_delete=""
+        fix_rrd=""
+        for var in "$@"
+        do
+           case "$var" in
+              yes | no) writeback="$var"
+                 ;;
+              "-force_delete") force_delete="-force_delete"
+                 ;;
+              "-fix_rrd") fix_rrd="-fix_rrd"
+                 ;;
+           esac
+	done
+	if [ -n "$GLIDEIN_WRITEBACK" ]; then
+           writeback="$GLIDEIN_WRITEBACK"
+        fi
         pushd $factory_dir
-        su -s /bin/bash $FACTORY_USER -c "reconfig_glidein -update_scripts no -xml $factory_config"
+        su -s /bin/bash $FACTORY_USER -c "reconfig_glidein -update_scripts no -xml $factory_config -writeback $writeback $fix_rrd $force_delete"
         reconfig_failed=$?
         echo -n "Reconfiguring the factory"
         test $reconfig_failed -eq 0 && success || failure
@@ -103,8 +120,23 @@ upgrade() {
             exit $RETVAL
           fi
         fi
+        writeback="no"
+        force_delete=""
+        fix_rrd=""
+        for var in "$@"
+        do
+           case "$var" in
+              yes | no) writeback="$var"
+                 ;;
+              "-force_delete") force_delete="-force_delete"
+                 ;;
+              "-fix_rrd") fix_rrd="-fix_rrd"
+                 ;;
+           esac
+        done
+
         pushd $factory_dir
-        su -s /bin/bash $FACTORY_USER -c "reconfig_glidein -update_scripts yes -xml $factory_config"
+        su -s /bin/bash $FACTORY_USER -c "reconfig_glidein -update_scripts yes -xml $factory_config -writeback $writeback $fix_rrd $force_delete"
         reconfig_failed=$?
         echo -n "Upgrading the factory"
         test $reconfig_failed -eq 0 && success || failure
