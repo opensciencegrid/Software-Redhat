@@ -7,14 +7,14 @@
 %undefine _enable_debug_packages
 Name: jdk
 Epoch: 2000
-Version: 1.6.0_35
+Version: 1.6.0_37
 Release: fcs.1%{?dist}
 Group: Development/Tools
 URL: http://www.oracle.com/technetwork/java/javase/overview/index.html
 License: Copyright (c) 2011, Oracle and/or its affiliates. All rights reserved. Also under other license(s) as shown at the Description field.
 Summary: Java(TM) Platform Standard Edition Development Kit
-Source0: jdk-6u35-linux-i586.bin.tar.gz
-Source1: jdk-6u35-linux-amd64.bin.tar.gz
+Source0: jdk-6u37-linux-i586.bin.tar.gz
+Source1: jdk-6u37-linux-amd64.bin.tar.gz
 AutoReqProv: no
 Prefix: /usr/java
 Requires: /bin/basename
@@ -63,7 +63,7 @@ Edition Runtime Environment.
 
 
 %prep
-%setup -n jdk-6u35-linux-i586.extract -T -b 0
+%setup -n jdk-6u37-linux-i586.extract -T -b 0
 
 
 
@@ -77,24 +77,24 @@ rm -rf $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT
 mv * $RPM_BUILD_ROOT
 pushd $RPM_BUILD_ROOT
-mkdir -p $RPM_BUILD_ROOT/$(dirname /usr/java/jdk1.6.0_35/jre/lib/rt.jar)
-touch $RPM_BUILD_ROOT/usr/java/jdk1.6.0_35/jre/lib/rt.jar
-mkdir -p $RPM_BUILD_ROOT/$(dirname /usr/java/jdk1.6.0_35/jre/lib/i386/client/classes.jsa)
-touch $RPM_BUILD_ROOT/usr/java/jdk1.6.0_35/jre/lib/i386/client/classes.jsa
-mkdir -p $RPM_BUILD_ROOT/$(dirname /usr/java/jdk1.6.0_35/jre/lib/deploy.jar)
-touch $RPM_BUILD_ROOT/usr/java/jdk1.6.0_35/jre/lib/deploy.jar
-mkdir -p $RPM_BUILD_ROOT/$(dirname /usr/java/jdk1.6.0_35/jre/lib/charsets.jar)
-touch $RPM_BUILD_ROOT/usr/java/jdk1.6.0_35/jre/lib/charsets.jar
-mkdir -p $RPM_BUILD_ROOT/$(dirname /usr/java/jdk1.6.0_35/jre/lib/ext/localedata.jar)
-touch $RPM_BUILD_ROOT/usr/java/jdk1.6.0_35/jre/lib/ext/localedata.jar
-mkdir -p $RPM_BUILD_ROOT/$(dirname /usr/java/jdk1.6.0_35/jre/lib/javaws.jar)
-touch $RPM_BUILD_ROOT/usr/java/jdk1.6.0_35/jre/lib/javaws.jar
-mkdir -p $RPM_BUILD_ROOT/$(dirname /usr/java/jdk1.6.0_35/jre/lib/jsse.jar)
-touch $RPM_BUILD_ROOT/usr/java/jdk1.6.0_35/jre/lib/jsse.jar
-mkdir -p $RPM_BUILD_ROOT/$(dirname /usr/java/jdk1.6.0_35/jre/lib/plugin.jar)
-touch $RPM_BUILD_ROOT/usr/java/jdk1.6.0_35/jre/lib/plugin.jar
-mkdir -p $RPM_BUILD_ROOT/$(dirname /usr/java/jdk1.6.0_35/lib/tools.jar)
-touch $RPM_BUILD_ROOT/usr/java/jdk1.6.0_35/lib/tools.jar
+mkdir -p $RPM_BUILD_ROOT/$(dirname /usr/java/jdk1.6.0_37/jre/lib/i386/client/classes.jsa)
+touch $RPM_BUILD_ROOT/usr/java/jdk1.6.0_37/jre/lib/i386/client/classes.jsa
+mkdir -p $RPM_BUILD_ROOT/$(dirname /usr/java/jdk1.6.0_37/jre/lib/jsse.jar)
+touch $RPM_BUILD_ROOT/usr/java/jdk1.6.0_37/jre/lib/jsse.jar
+mkdir -p $RPM_BUILD_ROOT/$(dirname /usr/java/jdk1.6.0_37/jre/lib/deploy.jar)
+touch $RPM_BUILD_ROOT/usr/java/jdk1.6.0_37/jre/lib/deploy.jar
+mkdir -p $RPM_BUILD_ROOT/$(dirname /usr/java/jdk1.6.0_37/jre/lib/charsets.jar)
+touch $RPM_BUILD_ROOT/usr/java/jdk1.6.0_37/jre/lib/charsets.jar
+mkdir -p $RPM_BUILD_ROOT/$(dirname /usr/java/jdk1.6.0_37/jre/lib/plugin.jar)
+touch $RPM_BUILD_ROOT/usr/java/jdk1.6.0_37/jre/lib/plugin.jar
+mkdir -p $RPM_BUILD_ROOT/$(dirname /usr/java/jdk1.6.0_37/jre/lib/ext/localedata.jar)
+touch $RPM_BUILD_ROOT/usr/java/jdk1.6.0_37/jre/lib/ext/localedata.jar
+mkdir -p $RPM_BUILD_ROOT/$(dirname /usr/java/jdk1.6.0_37/jre/lib/rt.jar)
+touch $RPM_BUILD_ROOT/usr/java/jdk1.6.0_37/jre/lib/rt.jar
+mkdir -p $RPM_BUILD_ROOT/$(dirname /usr/java/jdk1.6.0_37/jre/lib/javaws.jar)
+touch $RPM_BUILD_ROOT/usr/java/jdk1.6.0_37/jre/lib/javaws.jar
+mkdir -p $RPM_BUILD_ROOT/$(dirname /usr/java/jdk1.6.0_37/lib/tools.jar)
+touch $RPM_BUILD_ROOT/usr/java/jdk1.6.0_37/lib/tools.jar
 
 popd
 
@@ -107,1477 +107,1477 @@ popd
 %config(noreplace) %verify(link user mode rdev group) /etc/.java/.systemPrefs/.systemRootModFile
 %attr(0755,root,root) %config() %verify(link user mode rdev group) /etc/init.d/jexec
 %dir /usr/java
-%dir /usr/java/jdk1.6.0_35
-%doc /usr/java/jdk1.6.0_35/COPYRIGHT
-%doc /usr/java/jdk1.6.0_35/LICENSE
-%doc /usr/java/jdk1.6.0_35/README.html
-%doc /usr/java/jdk1.6.0_35/THIRDPARTYLICENSEREADME.txt
-%dir /usr/java/jdk1.6.0_35/bin
-/usr/java/jdk1.6.0_35/bin/ControlPanel
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/HtmlConverter
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/appletviewer
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/apt
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/extcheck
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/idlj
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/jar
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/jarsigner
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/java
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/java-rmi.cgi
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/javac
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/javadoc
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/javah
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/javap
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/javaws
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/jconsole
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/jcontrol
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/jdb
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/jhat
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/jinfo
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/jmap
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/jps
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/jrunscript
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/jsadebugd
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/jstack
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/jstat
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/jstatd
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/jvisualvm
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/keytool
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/native2ascii
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/orbd
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/pack200
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/policytool
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/rmic
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/rmid
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/rmiregistry
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/schemagen
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/serialver
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/servertool
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/tnameserv
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/unpack200
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/wsgen
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/wsimport
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/xjc
-%dir /usr/java/jdk1.6.0_35/include
-/usr/java/jdk1.6.0_35/include/classfile_constants.h
-/usr/java/jdk1.6.0_35/include/jawt.h
-/usr/java/jdk1.6.0_35/include/jdwpTransport.h
-/usr/java/jdk1.6.0_35/include/jni.h
-/usr/java/jdk1.6.0_35/include/jvmti.h
-%dir /usr/java/jdk1.6.0_35/include/linux
-/usr/java/jdk1.6.0_35/include/linux/jawt_md.h
-/usr/java/jdk1.6.0_35/include/linux/jni_md.h
-%dir /usr/java/jdk1.6.0_35/jre
-%doc /usr/java/jdk1.6.0_35/jre/COPYRIGHT
-%doc /usr/java/jdk1.6.0_35/jre/LICENSE
-%doc /usr/java/jdk1.6.0_35/jre/README
-%doc /usr/java/jdk1.6.0_35/jre/THIRDPARTYLICENSEREADME.txt
-%doc /usr/java/jdk1.6.0_35/jre/Welcome.html
-%dir /usr/java/jdk1.6.0_35/jre/bin
-/usr/java/jdk1.6.0_35/jre/bin/ControlPanel
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/bin/java
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/bin/java_vm
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/bin/javaws
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/bin/jcontrol
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/bin/keytool
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/bin/orbd
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/bin/pack200
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/bin/policytool
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/bin/rmid
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/bin/rmiregistry
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/bin/servertool
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/bin/tnameserv
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/bin/unpack200
-%dir /usr/java/jdk1.6.0_35/jre/javaws
-/usr/java/jdk1.6.0_35/jre/javaws/javaws
-%dir /usr/java/jdk1.6.0_35/jre/lib
-/usr/java/jdk1.6.0_35/jre/lib/alt-rt.jar
-/usr/java/jdk1.6.0_35/jre/lib/alt-string.jar
-%dir /usr/java/jdk1.6.0_35/jre/lib/applet
-%dir /usr/java/jdk1.6.0_35/jre/lib/audio
-/usr/java/jdk1.6.0_35/jre/lib/audio/soundbank.gm
-/usr/java/jdk1.6.0_35/jre/lib/calendars.properties
-%ghost %verify(user mode rdev group) /usr/java/jdk1.6.0_35/jre/lib/charsets.jar
-%config(missingok) /usr/java/jdk1.6.0_35/jre/lib/charsets.pack
-/usr/java/jdk1.6.0_35/jre/lib/classlist
-%dir /usr/java/jdk1.6.0_35/jre/lib/cmm
-/usr/java/jdk1.6.0_35/jre/lib/cmm/CIEXYZ.pf
-/usr/java/jdk1.6.0_35/jre/lib/cmm/GRAY.pf
-/usr/java/jdk1.6.0_35/jre/lib/cmm/LINEAR_RGB.pf
-/usr/java/jdk1.6.0_35/jre/lib/cmm/PYCC.pf
-/usr/java/jdk1.6.0_35/jre/lib/cmm/sRGB.pf
-/usr/java/jdk1.6.0_35/jre/lib/content-types.properties
-%dir /usr/java/jdk1.6.0_35/jre/lib/deploy
-%ghost %verify(user mode rdev group) /usr/java/jdk1.6.0_35/jre/lib/deploy.jar
-%config(missingok) /usr/java/jdk1.6.0_35/jre/lib/deploy.pack
-/usr/java/jdk1.6.0_35/jre/lib/deploy/ffjcext.zip
-/usr/java/jdk1.6.0_35/jre/lib/deploy/java-icon.ico
-/usr/java/jdk1.6.0_35/jre/lib/deploy/messages.properties
-/usr/java/jdk1.6.0_35/jre/lib/deploy/messages_de.properties
-/usr/java/jdk1.6.0_35/jre/lib/deploy/messages_es.properties
-/usr/java/jdk1.6.0_35/jre/lib/deploy/messages_fr.properties
-/usr/java/jdk1.6.0_35/jre/lib/deploy/messages_it.properties
-/usr/java/jdk1.6.0_35/jre/lib/deploy/messages_ja.properties
-/usr/java/jdk1.6.0_35/jre/lib/deploy/messages_ko.properties
-/usr/java/jdk1.6.0_35/jre/lib/deploy/messages_pt_BR.properties
-/usr/java/jdk1.6.0_35/jre/lib/deploy/messages_sv.properties
-/usr/java/jdk1.6.0_35/jre/lib/deploy/messages_zh_CN.properties
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/deploy/messages_zh_HK.properties
-/usr/java/jdk1.6.0_35/jre/lib/deploy/messages_zh_TW.properties
-/usr/java/jdk1.6.0_35/jre/lib/deploy/splash.gif
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop/applications
-/usr/java/jdk1.6.0_35/jre/lib/desktop/applications/sun-java.desktop
-/usr/java/jdk1.6.0_35/jre/lib/desktop/applications/sun-javaws.desktop
-/usr/java/jdk1.6.0_35/jre/lib/desktop/applications/sun_java.desktop
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop/icons
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrast
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrast/16x16
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrast/16x16/apps
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrast/16x16/apps/sun-java.png
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrast/16x16/apps/sun-javaws.png
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrast/16x16/apps/sun-jcontrol.png
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrast/16x16/mimetypes
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrast/16x16/mimetypes/gnome-mime-application-x-java-archive.png
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrast/16x16/mimetypes/gnome-mime-application-x-java-jnlp-file.png
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrast/16x16/mimetypes/gnome-mime-text-x-java.png
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrast/48x48
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrast/48x48/apps
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrast/48x48/apps/sun-java.png
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrast/48x48/apps/sun-javaws.png
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrast/48x48/apps/sun-jcontrol.png
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrast/48x48/mimetypes
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrast/48x48/mimetypes/gnome-mime-application-x-java-archive.png
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrast/48x48/mimetypes/gnome-mime-application-x-java-jnlp-file.png
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrast/48x48/mimetypes/gnome-mime-text-x-java.png
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrastInverse
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrastInverse/16x16
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrastInverse/16x16/apps
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrastInverse/16x16/apps/sun-java.png
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrastInverse/16x16/apps/sun-javaws.png
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrastInverse/16x16/apps/sun-jcontrol.png
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrastInverse/16x16/mimetypes
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrastInverse/16x16/mimetypes/gnome-mime-application-x-java-archive.png
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrastInverse/16x16/mimetypes/gnome-mime-application-x-java-jnlp-file.png
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrastInverse/16x16/mimetypes/gnome-mime-text-x-java.png
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrastInverse/48x48
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrastInverse/48x48/apps
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrastInverse/48x48/apps/sun-java.png
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrastInverse/48x48/apps/sun-javaws.png
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrastInverse/48x48/apps/sun-jcontrol.png
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrastInverse/48x48/mimetypes
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrastInverse/48x48/mimetypes/gnome-mime-application-x-java-archive.png
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrastInverse/48x48/mimetypes/gnome-mime-application-x-java-jnlp-file.png
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrastInverse/48x48/mimetypes/gnome-mime-text-x-java.png
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop/icons/LowContrast
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop/icons/LowContrast/16x16
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop/icons/LowContrast/16x16/apps
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/LowContrast/16x16/apps/sun-java.png
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/LowContrast/16x16/apps/sun-javaws.png
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/LowContrast/16x16/apps/sun-jcontrol.png
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop/icons/LowContrast/16x16/mimetypes
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/LowContrast/16x16/mimetypes/gnome-mime-application-x-java-archive.png
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/LowContrast/16x16/mimetypes/gnome-mime-application-x-java-jnlp-file.png
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/LowContrast/16x16/mimetypes/gnome-mime-text-x-java.png
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop/icons/LowContrast/48x48
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop/icons/LowContrast/48x48/apps
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/LowContrast/48x48/apps/sun-java.png
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/LowContrast/48x48/apps/sun-javaws.png
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/LowContrast/48x48/apps/sun-jcontrol.png
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop/icons/LowContrast/48x48/mimetypes
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/LowContrast/48x48/mimetypes/gnome-mime-application-x-java-archive.png
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/LowContrast/48x48/mimetypes/gnome-mime-application-x-java-jnlp-file.png
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/LowContrast/48x48/mimetypes/gnome-mime-text-x-java.png
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop/icons/hicolor
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop/icons/hicolor/16x16
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop/icons/hicolor/16x16/apps
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/hicolor/16x16/apps/sun-java.png
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/hicolor/16x16/apps/sun-javaws.png
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/hicolor/16x16/apps/sun-jcontrol.png
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop/icons/hicolor/16x16/mimetypes
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/hicolor/16x16/mimetypes/gnome-mime-application-x-java-archive.png
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/hicolor/16x16/mimetypes/gnome-mime-application-x-java-jnlp-file.png
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/hicolor/16x16/mimetypes/gnome-mime-text-x-java.png
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop/icons/hicolor/48x48
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop/icons/hicolor/48x48/apps
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/hicolor/48x48/apps/sun-java.png
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/hicolor/48x48/apps/sun-javaws.png
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/hicolor/48x48/apps/sun-jcontrol.png
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop/icons/hicolor/48x48/mimetypes
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/hicolor/48x48/mimetypes/gnome-mime-application-x-java-archive.png
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/hicolor/48x48/mimetypes/gnome-mime-application-x-java-jnlp-file.png
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/hicolor/48x48/mimetypes/gnome-mime-text-x-java.png
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop/mime
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop/mime/packages
-/usr/java/jdk1.6.0_35/jre/lib/desktop/mime/packages/x-java-archive.xml
-/usr/java/jdk1.6.0_35/jre/lib/desktop/mime/packages/x-java-jnlp-file.xml
-%dir /usr/java/jdk1.6.0_35/jre/lib/ext
-/usr/java/jdk1.6.0_35/jre/lib/ext/dnsns.jar
-%ghost %verify(user mode rdev group) /usr/java/jdk1.6.0_35/jre/lib/ext/localedata.jar
-%config(missingok) /usr/java/jdk1.6.0_35/jre/lib/ext/localedata.pack
-/usr/java/jdk1.6.0_35/jre/lib/ext/meta-index
-/usr/java/jdk1.6.0_35/jre/lib/ext/sunjce_provider.jar
-/usr/java/jdk1.6.0_35/jre/lib/ext/sunpkcs11.jar
-/usr/java/jdk1.6.0_35/jre/lib/flavormap.properties
-/usr/java/jdk1.6.0_35/jre/lib/fontconfig.RedHat.2.1.bfc
-/usr/java/jdk1.6.0_35/jre/lib/fontconfig.RedHat.2.1.properties.src
-/usr/java/jdk1.6.0_35/jre/lib/fontconfig.RedHat.3.bfc
-/usr/java/jdk1.6.0_35/jre/lib/fontconfig.RedHat.3.properties.src
-/usr/java/jdk1.6.0_35/jre/lib/fontconfig.RedHat.4.bfc
-/usr/java/jdk1.6.0_35/jre/lib/fontconfig.RedHat.4.properties.src
-/usr/java/jdk1.6.0_35/jre/lib/fontconfig.RedHat.6.bfc
-/usr/java/jdk1.6.0_35/jre/lib/fontconfig.RedHat.6.properties.src
-/usr/java/jdk1.6.0_35/jre/lib/fontconfig.RedHat.bfc
-/usr/java/jdk1.6.0_35/jre/lib/fontconfig.RedHat.properties.src
-/usr/java/jdk1.6.0_35/jre/lib/fontconfig.SuSE.11.bfc
-/usr/java/jdk1.6.0_35/jre/lib/fontconfig.SuSE.11.properties.src
-/usr/java/jdk1.6.0_35/jre/lib/fontconfig.SuSE.bfc
-/usr/java/jdk1.6.0_35/jre/lib/fontconfig.SuSE.properties.src
-/usr/java/jdk1.6.0_35/jre/lib/fontconfig.Sun.bfc
-/usr/java/jdk1.6.0_35/jre/lib/fontconfig.Sun.properties.src
-/usr/java/jdk1.6.0_35/jre/lib/fontconfig.Turbo.bfc
-/usr/java/jdk1.6.0_35/jre/lib/fontconfig.Turbo.properties.src
-/usr/java/jdk1.6.0_35/jre/lib/fontconfig.Ubuntu.bfc
-/usr/java/jdk1.6.0_35/jre/lib/fontconfig.Ubuntu.properties.src
-/usr/java/jdk1.6.0_35/jre/lib/fontconfig.bfc
-/usr/java/jdk1.6.0_35/jre/lib/fontconfig.properties.src
-%dir /usr/java/jdk1.6.0_35/jre/lib/fonts
-/usr/java/jdk1.6.0_35/jre/lib/fonts/LucidaBrightDemiBold.ttf
-/usr/java/jdk1.6.0_35/jre/lib/fonts/LucidaBrightDemiItalic.ttf
-/usr/java/jdk1.6.0_35/jre/lib/fonts/LucidaBrightItalic.ttf
-/usr/java/jdk1.6.0_35/jre/lib/fonts/LucidaBrightRegular.ttf
-/usr/java/jdk1.6.0_35/jre/lib/fonts/LucidaSansDemiBold.ttf
-/usr/java/jdk1.6.0_35/jre/lib/fonts/LucidaSansRegular.ttf
-/usr/java/jdk1.6.0_35/jre/lib/fonts/LucidaTypewriterBold.ttf
-/usr/java/jdk1.6.0_35/jre/lib/fonts/LucidaTypewriterRegular.ttf
-/usr/java/jdk1.6.0_35/jre/lib/fonts/fonts.dir
-%dir /usr/java/jdk1.6.0_35/jre/lib/i386
-%dir /usr/java/jdk1.6.0_35/jre/lib/i386/client
-/usr/java/jdk1.6.0_35/jre/lib/i386/client/Xusage.txt
-%attr(0444,root,root) %ghost %verify(user mode rdev group) /usr/java/jdk1.6.0_35/jre/lib/i386/client/classes.jsa
-/usr/java/jdk1.6.0_35/jre/lib/i386/client/libjsig.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/i386/client/libjvm.so
-%dir /usr/java/jdk1.6.0_35/jre/lib/i386/headless
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/i386/headless/libmawt.so
-%dir /usr/java/jdk1.6.0_35/jre/lib/i386/jli
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/i386/jli/libjli.so
-/usr/java/jdk1.6.0_35/jre/lib/i386/jvm.cfg
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/i386/libJdbcOdbc.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/i386/libattach.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/i386/libawt.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/i386/libcmm.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/i386/libdcpr.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/i386/libdeploy.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/i386/libdt_socket.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/i386/libfontmanager.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/i386/libhprof.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/i386/libinstrument.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/i386/libioser12.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/i386/libj2gss.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/i386/libj2pcsc.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/i386/libj2pkcs11.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/i386/libjaas_unix.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/i386/libjava.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/i386/libjava_crw_demo.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/i386/libjavaplugin_jni.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/i386/libjavaplugin_nscp.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/i386/libjavaplugin_nscp_gcc29.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/i386/libjawt.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/i386/libjdwp.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/i386/libjpeg.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/i386/libjsig.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/i386/libjsound.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/i386/libjsoundalsa.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/i386/libmanagement.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/i386/libmlib_image.so
-/usr/java/jdk1.6.0_35/jre/lib/i386/libnative_chmod.so
-/usr/java/jdk1.6.0_35/jre/lib/i386/libnative_chmod_g.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/i386/libnet.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/i386/libnio.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/i386/libnpjp2.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/i386/libnpt.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/i386/librmi.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/i386/libsaproc.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/i386/libsplashscreen.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/i386/libunpack.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/i386/libverify.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/i386/libzip.so
-%dir /usr/java/jdk1.6.0_35/jre/lib/i386/motif21
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/i386/motif21/libmawt.so
-%dir /usr/java/jdk1.6.0_35/jre/lib/i386/native_threads
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/i386/native_threads/libhpi.so
-%dir /usr/java/jdk1.6.0_35/jre/lib/i386/server
-/usr/java/jdk1.6.0_35/jre/lib/i386/server/Xusage.txt
-/usr/java/jdk1.6.0_35/jre/lib/i386/server/libjsig.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/i386/server/libjvm.so
-%dir /usr/java/jdk1.6.0_35/jre/lib/i386/xawt
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/i386/xawt/libmawt.so
-%dir /usr/java/jdk1.6.0_35/jre/lib/im
-/usr/java/jdk1.6.0_35/jre/lib/im/indicim.jar
-/usr/java/jdk1.6.0_35/jre/lib/im/thaiim.jar
-%dir /usr/java/jdk1.6.0_35/jre/lib/images
-%dir /usr/java/jdk1.6.0_35/jre/lib/images/cursors
-/usr/java/jdk1.6.0_35/jre/lib/images/cursors/cursors.properties
-/usr/java/jdk1.6.0_35/jre/lib/images/cursors/invalid32x32.gif
-/usr/java/jdk1.6.0_35/jre/lib/images/cursors/motif_CopyDrop32x32.gif
-/usr/java/jdk1.6.0_35/jre/lib/images/cursors/motif_CopyNoDrop32x32.gif
-/usr/java/jdk1.6.0_35/jre/lib/images/cursors/motif_LinkDrop32x32.gif
-/usr/java/jdk1.6.0_35/jre/lib/images/cursors/motif_LinkNoDrop32x32.gif
-/usr/java/jdk1.6.0_35/jre/lib/images/cursors/motif_MoveDrop32x32.gif
-/usr/java/jdk1.6.0_35/jre/lib/images/cursors/motif_MoveNoDrop32x32.gif
-%dir /usr/java/jdk1.6.0_35/jre/lib/images/icons
-/usr/java/jdk1.6.0_35/jre/lib/images/icons/sun-java.png
-/usr/java/jdk1.6.0_35/jre/lib/images/icons/sun-java_HighContrast.png
-/usr/java/jdk1.6.0_35/jre/lib/images/icons/sun-java_HighContrastInverse.png
-/usr/java/jdk1.6.0_35/jre/lib/images/icons/sun-java_LowContrast.png
-%ghost %verify(user mode rdev group) /usr/java/jdk1.6.0_35/jre/lib/javaws.jar
-%config(missingok) /usr/java/jdk1.6.0_35/jre/lib/javaws.pack
-/usr/java/jdk1.6.0_35/jre/lib/jce.jar
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/jexec
-%ghost %verify(user mode rdev group) /usr/java/jdk1.6.0_35/jre/lib/jsse.jar
-%config(missingok) /usr/java/jdk1.6.0_35/jre/lib/jsse.pack
-/usr/java/jdk1.6.0_35/jre/lib/jvm.hprof.txt
-%dir /usr/java/jdk1.6.0_35/jre/lib/locale
-%dir /usr/java/jdk1.6.0_35/jre/lib/locale/de
-%dir /usr/java/jdk1.6.0_35/jre/lib/locale/de/LC_MESSAGES
-/usr/java/jdk1.6.0_35/jre/lib/locale/de/LC_MESSAGES/sunw_java_plugin.mo
-%dir /usr/java/jdk1.6.0_35/jre/lib/locale/es
-%dir /usr/java/jdk1.6.0_35/jre/lib/locale/es/LC_MESSAGES
-/usr/java/jdk1.6.0_35/jre/lib/locale/es/LC_MESSAGES/sunw_java_plugin.mo
-%dir /usr/java/jdk1.6.0_35/jre/lib/locale/fr
-%dir /usr/java/jdk1.6.0_35/jre/lib/locale/fr/LC_MESSAGES
-/usr/java/jdk1.6.0_35/jre/lib/locale/fr/LC_MESSAGES/sunw_java_plugin.mo
-%dir /usr/java/jdk1.6.0_35/jre/lib/locale/it
-%dir /usr/java/jdk1.6.0_35/jre/lib/locale/it/LC_MESSAGES
-/usr/java/jdk1.6.0_35/jre/lib/locale/it/LC_MESSAGES/sunw_java_plugin.mo
-%dir /usr/java/jdk1.6.0_35/jre/lib/locale/ja
-%dir /usr/java/jdk1.6.0_35/jre/lib/locale/ja/LC_MESSAGES
-/usr/java/jdk1.6.0_35/jre/lib/locale/ja/LC_MESSAGES/sunw_java_plugin.mo
-%dir /usr/java/jdk1.6.0_35/jre/lib/locale/ko
-%dir /usr/java/jdk1.6.0_35/jre/lib/locale/ko.UTF-8
-%dir /usr/java/jdk1.6.0_35/jre/lib/locale/ko.UTF-8/LC_MESSAGES
-/usr/java/jdk1.6.0_35/jre/lib/locale/ko.UTF-8/LC_MESSAGES/sunw_java_plugin.mo
-%dir /usr/java/jdk1.6.0_35/jre/lib/locale/ko/LC_MESSAGES
-/usr/java/jdk1.6.0_35/jre/lib/locale/ko/LC_MESSAGES/sunw_java_plugin.mo
-%dir /usr/java/jdk1.6.0_35/jre/lib/locale/sv
-%dir /usr/java/jdk1.6.0_35/jre/lib/locale/sv/LC_MESSAGES
-/usr/java/jdk1.6.0_35/jre/lib/locale/sv/LC_MESSAGES/sunw_java_plugin.mo
-%dir /usr/java/jdk1.6.0_35/jre/lib/locale/zh
-%dir /usr/java/jdk1.6.0_35/jre/lib/locale/zh.GBK
-%dir /usr/java/jdk1.6.0_35/jre/lib/locale/zh.GBK/LC_MESSAGES
-/usr/java/jdk1.6.0_35/jre/lib/locale/zh.GBK/LC_MESSAGES/sunw_java_plugin.mo
-%dir /usr/java/jdk1.6.0_35/jre/lib/locale/zh/LC_MESSAGES
-/usr/java/jdk1.6.0_35/jre/lib/locale/zh/LC_MESSAGES/sunw_java_plugin.mo
-%dir /usr/java/jdk1.6.0_35/jre/lib/locale/zh_HK.BIG5HK
-%dir /usr/java/jdk1.6.0_35/jre/lib/locale/zh_HK.BIG5HK/LC_MESSAGES
-/usr/java/jdk1.6.0_35/jre/lib/locale/zh_HK.BIG5HK/LC_MESSAGES/sunw_java_plugin.mo
-%dir /usr/java/jdk1.6.0_35/jre/lib/locale/zh_TW
-%dir /usr/java/jdk1.6.0_35/jre/lib/locale/zh_TW.BIG5
-%dir /usr/java/jdk1.6.0_35/jre/lib/locale/zh_TW.BIG5/LC_MESSAGES
-/usr/java/jdk1.6.0_35/jre/lib/locale/zh_TW.BIG5/LC_MESSAGES/sunw_java_plugin.mo
-%dir /usr/java/jdk1.6.0_35/jre/lib/locale/zh_TW/LC_MESSAGES
-/usr/java/jdk1.6.0_35/jre/lib/locale/zh_TW/LC_MESSAGES/sunw_java_plugin.mo
-/usr/java/jdk1.6.0_35/jre/lib/logging.properties
-%dir /usr/java/jdk1.6.0_35/jre/lib/management
-/usr/java/jdk1.6.0_35/jre/lib/management-agent.jar
-/usr/java/jdk1.6.0_35/jre/lib/management/jmxremote.access
-/usr/java/jdk1.6.0_35/jre/lib/management/jmxremote.password.template
-/usr/java/jdk1.6.0_35/jre/lib/management/management.properties
-/usr/java/jdk1.6.0_35/jre/lib/management/snmp.acl.template
-/usr/java/jdk1.6.0_35/jre/lib/meta-index
-/usr/java/jdk1.6.0_35/jre/lib/net.properties
-%dir /usr/java/jdk1.6.0_35/jre/lib/oblique-fonts
-/usr/java/jdk1.6.0_35/jre/lib/oblique-fonts/LucidaSansDemiOblique.ttf
-/usr/java/jdk1.6.0_35/jre/lib/oblique-fonts/LucidaSansOblique.ttf
-/usr/java/jdk1.6.0_35/jre/lib/oblique-fonts/LucidaTypewriterBoldOblique.ttf
-/usr/java/jdk1.6.0_35/jre/lib/oblique-fonts/LucidaTypewriterOblique.ttf
-/usr/java/jdk1.6.0_35/jre/lib/oblique-fonts/fonts.dir
-%ghost %verify(user mode rdev group) /usr/java/jdk1.6.0_35/jre/lib/plugin.jar
-%config(missingok) /usr/java/jdk1.6.0_35/jre/lib/plugin.pack
-/usr/java/jdk1.6.0_35/jre/lib/psfont.properties.ja
-/usr/java/jdk1.6.0_35/jre/lib/psfontj2d.properties
-/usr/java/jdk1.6.0_35/jre/lib/resources.jar
-%ghost %verify(user mode rdev group) /usr/java/jdk1.6.0_35/jre/lib/rt.jar
-%config(missingok) /usr/java/jdk1.6.0_35/jre/lib/rt.pack
-%dir /usr/java/jdk1.6.0_35/jre/lib/security
-/usr/java/jdk1.6.0_35/jre/lib/security/US_export_policy.jar
-/usr/java/jdk1.6.0_35/jre/lib/security/blacklist
-/usr/java/jdk1.6.0_35/jre/lib/security/cacerts
-/usr/java/jdk1.6.0_35/jre/lib/security/java.policy
-/usr/java/jdk1.6.0_35/jre/lib/security/java.security
-/usr/java/jdk1.6.0_35/jre/lib/security/javaws.policy
-/usr/java/jdk1.6.0_35/jre/lib/security/local_policy.jar
-/usr/java/jdk1.6.0_35/jre/lib/security/trusted.libraries
-%dir /usr/java/jdk1.6.0_35/jre/lib/servicetag
-/usr/java/jdk1.6.0_35/jre/lib/servicetag/jdk_header.png
-/usr/java/jdk1.6.0_35/jre/lib/sound.properties
-%dir /usr/java/jdk1.6.0_35/jre/lib/zi
-%dir /usr/java/jdk1.6.0_35/jre/lib/zi/Africa
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Abidjan
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Accra
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Addis_Ababa
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Algiers
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Asmara
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Bamako
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Bangui
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Banjul
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Bissau
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Blantyre
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Brazzaville
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Bujumbura
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Cairo
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Casablanca
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Ceuta
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Conakry
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Dakar
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Dar_es_Salaam
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Djibouti
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Douala
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/El_Aaiun
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Freetown
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Gaborone
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Harare
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Johannesburg
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Juba
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Kampala
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Khartoum
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Kigali
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Kinshasa
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Lagos
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Libreville
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Lome
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Luanda
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Lubumbashi
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Lusaka
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Malabo
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Maputo
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Maseru
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Mbabane
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Mogadishu
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Monrovia
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Nairobi
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Ndjamena
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Niamey
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Nouakchott
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Ouagadougou
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Porto-Novo
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Sao_Tome
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Tripoli
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Tunis
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Windhoek
-%dir /usr/java/jdk1.6.0_35/jre/lib/zi/America
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Adak
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Anchorage
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Anguilla
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Antigua
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Araguaina
-%dir /usr/java/jdk1.6.0_35/jre/lib/zi/America/Argentina
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Argentina/Buenos_Aires
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Argentina/Catamarca
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Argentina/Cordoba
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Argentina/Jujuy
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Argentina/La_Rioja
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Argentina/Mendoza
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Argentina/Rio_Gallegos
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Argentina/Salta
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Argentina/San_Juan
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Argentina/San_Luis
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Argentina/Tucuman
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Argentina/Ushuaia
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Aruba
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Asuncion
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Atikokan
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Bahia
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Bahia_Banderas
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Barbados
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Belem
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Belize
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Blanc-Sablon
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Boa_Vista
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Bogota
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Boise
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Cambridge_Bay
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Campo_Grande
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Cancun
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Caracas
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Cayenne
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Cayman
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Chicago
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Chihuahua
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Costa_Rica
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Creston
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Cuiaba
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Curacao
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Danmarkshavn
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Dawson
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Dawson_Creek
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Denver
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Detroit
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Dominica
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Edmonton
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Eirunepe
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/El_Salvador
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Fortaleza
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Glace_Bay
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Godthab
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Goose_Bay
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Grand_Turk
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Grenada
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Guadeloupe
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Guatemala
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Guayaquil
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Guyana
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Halifax
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Havana
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Hermosillo
-%dir /usr/java/jdk1.6.0_35/jre/lib/zi/America/Indiana
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Indiana/Indianapolis
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Indiana/Knox
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Indiana/Marengo
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Indiana/Petersburg
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Indiana/Tell_City
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Indiana/Vevay
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Indiana/Vincennes
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Indiana/Winamac
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Inuvik
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Iqaluit
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Jamaica
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Juneau
-%dir /usr/java/jdk1.6.0_35/jre/lib/zi/America/Kentucky
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Kentucky/Louisville
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Kentucky/Monticello
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/La_Paz
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Lima
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Los_Angeles
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Maceio
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Managua
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Manaus
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Martinique
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Matamoros
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Mazatlan
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Menominee
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Merida
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Metlakatla
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Mexico_City
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Miquelon
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Moncton
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Monterrey
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Montevideo
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Montreal
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Montserrat
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Nassau
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/New_York
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Nipigon
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Nome
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Noronha
-%dir /usr/java/jdk1.6.0_35/jre/lib/zi/America/North_Dakota
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/North_Dakota/Beulah
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/North_Dakota/Center
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/North_Dakota/New_Salem
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Ojinaga
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Panama
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Pangnirtung
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Paramaribo
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Phoenix
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Port-au-Prince
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Port_of_Spain
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Porto_Velho
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Puerto_Rico
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Rainy_River
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Rankin_Inlet
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Recife
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Regina
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Resolute
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Rio_Branco
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Santa_Isabel
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Santarem
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Santiago
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Santo_Domingo
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Sao_Paulo
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Scoresbysund
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Sitka
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/St_Johns
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/St_Kitts
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/St_Lucia
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/St_Thomas
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/St_Vincent
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Swift_Current
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Tegucigalpa
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Thule
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Thunder_Bay
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Tijuana
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Toronto
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Tortola
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Vancouver
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Whitehorse
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Winnipeg
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Yakutat
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Yellowknife
-%dir /usr/java/jdk1.6.0_35/jre/lib/zi/Antarctica
-/usr/java/jdk1.6.0_35/jre/lib/zi/Antarctica/Casey
-/usr/java/jdk1.6.0_35/jre/lib/zi/Antarctica/Davis
-/usr/java/jdk1.6.0_35/jre/lib/zi/Antarctica/DumontDUrville
-/usr/java/jdk1.6.0_35/jre/lib/zi/Antarctica/Macquarie
-/usr/java/jdk1.6.0_35/jre/lib/zi/Antarctica/Mawson
-/usr/java/jdk1.6.0_35/jre/lib/zi/Antarctica/McMurdo
-/usr/java/jdk1.6.0_35/jre/lib/zi/Antarctica/Palmer
-/usr/java/jdk1.6.0_35/jre/lib/zi/Antarctica/Rothera
-/usr/java/jdk1.6.0_35/jre/lib/zi/Antarctica/Syowa
-/usr/java/jdk1.6.0_35/jre/lib/zi/Antarctica/Vostok
-%dir /usr/java/jdk1.6.0_35/jre/lib/zi/Asia
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Aden
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Almaty
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Amman
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Anadyr
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Aqtau
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Aqtobe
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Ashgabat
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Baghdad
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Bahrain
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Baku
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Bangkok
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Beirut
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Bishkek
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Brunei
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Choibalsan
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Chongqing
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Colombo
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Damascus
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Dhaka
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Dili
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Dubai
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Dushanbe
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Gaza
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Harbin
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Hebron
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Ho_Chi_Minh
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Hong_Kong
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Hovd
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Irkutsk
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Jakarta
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Jayapura
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Jerusalem
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Kabul
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Kamchatka
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Karachi
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Kashgar
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Kathmandu
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Kolkata
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Krasnoyarsk
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Kuala_Lumpur
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Kuching
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Kuwait
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Macau
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Magadan
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Makassar
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Manila
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Muscat
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Nicosia
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Novokuznetsk
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Novosibirsk
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Omsk
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Oral
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Phnom_Penh
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Pontianak
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Pyongyang
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Qatar
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Qyzylorda
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Rangoon
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Riyadh
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Riyadh87
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Riyadh88
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Riyadh89
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Sakhalin
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Samarkand
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Seoul
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Shanghai
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Singapore
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Taipei
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Tashkent
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Tbilisi
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Tehran
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Thimphu
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Tokyo
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Ulaanbaatar
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Urumqi
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Vientiane
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Vladivostok
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Yakutsk
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Yekaterinburg
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Yerevan
-%dir /usr/java/jdk1.6.0_35/jre/lib/zi/Atlantic
-/usr/java/jdk1.6.0_35/jre/lib/zi/Atlantic/Azores
-/usr/java/jdk1.6.0_35/jre/lib/zi/Atlantic/Bermuda
-/usr/java/jdk1.6.0_35/jre/lib/zi/Atlantic/Canary
-/usr/java/jdk1.6.0_35/jre/lib/zi/Atlantic/Cape_Verde
-/usr/java/jdk1.6.0_35/jre/lib/zi/Atlantic/Faroe
-/usr/java/jdk1.6.0_35/jre/lib/zi/Atlantic/Madeira
-/usr/java/jdk1.6.0_35/jre/lib/zi/Atlantic/Reykjavik
-/usr/java/jdk1.6.0_35/jre/lib/zi/Atlantic/South_Georgia
-/usr/java/jdk1.6.0_35/jre/lib/zi/Atlantic/St_Helena
-/usr/java/jdk1.6.0_35/jre/lib/zi/Atlantic/Stanley
-%dir /usr/java/jdk1.6.0_35/jre/lib/zi/Australia
-/usr/java/jdk1.6.0_35/jre/lib/zi/Australia/Adelaide
-/usr/java/jdk1.6.0_35/jre/lib/zi/Australia/Brisbane
-/usr/java/jdk1.6.0_35/jre/lib/zi/Australia/Broken_Hill
-/usr/java/jdk1.6.0_35/jre/lib/zi/Australia/Currie
-/usr/java/jdk1.6.0_35/jre/lib/zi/Australia/Darwin
-/usr/java/jdk1.6.0_35/jre/lib/zi/Australia/Eucla
-/usr/java/jdk1.6.0_35/jre/lib/zi/Australia/Hobart
-/usr/java/jdk1.6.0_35/jre/lib/zi/Australia/Lindeman
-/usr/java/jdk1.6.0_35/jre/lib/zi/Australia/Lord_Howe
-/usr/java/jdk1.6.0_35/jre/lib/zi/Australia/Melbourne
-/usr/java/jdk1.6.0_35/jre/lib/zi/Australia/Perth
-/usr/java/jdk1.6.0_35/jre/lib/zi/Australia/Sydney
-/usr/java/jdk1.6.0_35/jre/lib/zi/CET
-/usr/java/jdk1.6.0_35/jre/lib/zi/CST6CDT
-/usr/java/jdk1.6.0_35/jre/lib/zi/EET
-/usr/java/jdk1.6.0_35/jre/lib/zi/EST
-/usr/java/jdk1.6.0_35/jre/lib/zi/EST5EDT
-%dir /usr/java/jdk1.6.0_35/jre/lib/zi/Etc
-/usr/java/jdk1.6.0_35/jre/lib/zi/Etc/GMT
-/usr/java/jdk1.6.0_35/jre/lib/zi/Etc/GMT+1
-/usr/java/jdk1.6.0_35/jre/lib/zi/Etc/GMT+10
-/usr/java/jdk1.6.0_35/jre/lib/zi/Etc/GMT+11
-/usr/java/jdk1.6.0_35/jre/lib/zi/Etc/GMT+12
-/usr/java/jdk1.6.0_35/jre/lib/zi/Etc/GMT+2
-/usr/java/jdk1.6.0_35/jre/lib/zi/Etc/GMT+3
-/usr/java/jdk1.6.0_35/jre/lib/zi/Etc/GMT+4
-/usr/java/jdk1.6.0_35/jre/lib/zi/Etc/GMT+5
-/usr/java/jdk1.6.0_35/jre/lib/zi/Etc/GMT+6
-/usr/java/jdk1.6.0_35/jre/lib/zi/Etc/GMT+7
-/usr/java/jdk1.6.0_35/jre/lib/zi/Etc/GMT+8
-/usr/java/jdk1.6.0_35/jre/lib/zi/Etc/GMT+9
-/usr/java/jdk1.6.0_35/jre/lib/zi/Etc/GMT-1
-/usr/java/jdk1.6.0_35/jre/lib/zi/Etc/GMT-10
-/usr/java/jdk1.6.0_35/jre/lib/zi/Etc/GMT-11
-/usr/java/jdk1.6.0_35/jre/lib/zi/Etc/GMT-12
-/usr/java/jdk1.6.0_35/jre/lib/zi/Etc/GMT-13
-/usr/java/jdk1.6.0_35/jre/lib/zi/Etc/GMT-14
-/usr/java/jdk1.6.0_35/jre/lib/zi/Etc/GMT-2
-/usr/java/jdk1.6.0_35/jre/lib/zi/Etc/GMT-3
-/usr/java/jdk1.6.0_35/jre/lib/zi/Etc/GMT-4
-/usr/java/jdk1.6.0_35/jre/lib/zi/Etc/GMT-5
-/usr/java/jdk1.6.0_35/jre/lib/zi/Etc/GMT-6
-/usr/java/jdk1.6.0_35/jre/lib/zi/Etc/GMT-7
-/usr/java/jdk1.6.0_35/jre/lib/zi/Etc/GMT-8
-/usr/java/jdk1.6.0_35/jre/lib/zi/Etc/GMT-9
-/usr/java/jdk1.6.0_35/jre/lib/zi/Etc/UCT
-/usr/java/jdk1.6.0_35/jre/lib/zi/Etc/UTC
-%dir /usr/java/jdk1.6.0_35/jre/lib/zi/Europe
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Amsterdam
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Andorra
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Athens
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Belgrade
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Berlin
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Brussels
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Bucharest
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Budapest
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Chisinau
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Copenhagen
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Dublin
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Gibraltar
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Helsinki
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Istanbul
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Kaliningrad
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Kiev
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Lisbon
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/London
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Luxembourg
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Madrid
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Malta
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Minsk
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Monaco
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Moscow
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Oslo
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Paris
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Prague
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Riga
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Rome
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Samara
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Simferopol
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Sofia
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Stockholm
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Tallinn
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Tirane
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Uzhgorod
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Vaduz
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Vienna
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Vilnius
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Volgograd
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Warsaw
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Zaporozhye
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Zurich
-/usr/java/jdk1.6.0_35/jre/lib/zi/GMT
-/usr/java/jdk1.6.0_35/jre/lib/zi/HST
-%dir /usr/java/jdk1.6.0_35/jre/lib/zi/Indian
-/usr/java/jdk1.6.0_35/jre/lib/zi/Indian/Antananarivo
-/usr/java/jdk1.6.0_35/jre/lib/zi/Indian/Chagos
-/usr/java/jdk1.6.0_35/jre/lib/zi/Indian/Christmas
-/usr/java/jdk1.6.0_35/jre/lib/zi/Indian/Cocos
-/usr/java/jdk1.6.0_35/jre/lib/zi/Indian/Comoro
-/usr/java/jdk1.6.0_35/jre/lib/zi/Indian/Kerguelen
-/usr/java/jdk1.6.0_35/jre/lib/zi/Indian/Mahe
-/usr/java/jdk1.6.0_35/jre/lib/zi/Indian/Maldives
-/usr/java/jdk1.6.0_35/jre/lib/zi/Indian/Mauritius
-/usr/java/jdk1.6.0_35/jre/lib/zi/Indian/Mayotte
-/usr/java/jdk1.6.0_35/jre/lib/zi/Indian/Reunion
-/usr/java/jdk1.6.0_35/jre/lib/zi/MET
-/usr/java/jdk1.6.0_35/jre/lib/zi/MST
-/usr/java/jdk1.6.0_35/jre/lib/zi/MST7MDT
-/usr/java/jdk1.6.0_35/jre/lib/zi/PST8PDT
-%dir /usr/java/jdk1.6.0_35/jre/lib/zi/Pacific
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Apia
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Auckland
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Chatham
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Chuuk
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Easter
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Efate
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Enderbury
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Fakaofo
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Fiji
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Funafuti
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Galapagos
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Gambier
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Guadalcanal
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Guam
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Honolulu
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Johnston
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Kiritimati
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Kosrae
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Kwajalein
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Majuro
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Marquesas
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Midway
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Nauru
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Niue
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Norfolk
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Noumea
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Pago_Pago
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Palau
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Pitcairn
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Pohnpei
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Port_Moresby
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Rarotonga
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Saipan
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Tahiti
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Tarawa
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Tongatapu
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Wake
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Wallis
-%dir /usr/java/jdk1.6.0_35/jre/lib/zi/SystemV
-/usr/java/jdk1.6.0_35/jre/lib/zi/SystemV/AST4
-/usr/java/jdk1.6.0_35/jre/lib/zi/SystemV/AST4ADT
-/usr/java/jdk1.6.0_35/jre/lib/zi/SystemV/CST6
-/usr/java/jdk1.6.0_35/jre/lib/zi/SystemV/CST6CDT
-/usr/java/jdk1.6.0_35/jre/lib/zi/SystemV/EST5
-/usr/java/jdk1.6.0_35/jre/lib/zi/SystemV/EST5EDT
-/usr/java/jdk1.6.0_35/jre/lib/zi/SystemV/HST10
-/usr/java/jdk1.6.0_35/jre/lib/zi/SystemV/MST7
-/usr/java/jdk1.6.0_35/jre/lib/zi/SystemV/MST7MDT
-/usr/java/jdk1.6.0_35/jre/lib/zi/SystemV/PST8
-/usr/java/jdk1.6.0_35/jre/lib/zi/SystemV/PST8PDT
-/usr/java/jdk1.6.0_35/jre/lib/zi/SystemV/YST9
-/usr/java/jdk1.6.0_35/jre/lib/zi/SystemV/YST9YDT
-/usr/java/jdk1.6.0_35/jre/lib/zi/WET
-/usr/java/jdk1.6.0_35/jre/lib/zi/ZoneInfoMappings
-%dir /usr/java/jdk1.6.0_35/jre/plugin
-%dir /usr/java/jdk1.6.0_35/jre/plugin/desktop
-/usr/java/jdk1.6.0_35/jre/plugin/desktop/sun_java.desktop
-/usr/java/jdk1.6.0_35/jre/plugin/desktop/sun_java.png
-%dir /usr/java/jdk1.6.0_35/jre/plugin/i386
-%dir /usr/java/jdk1.6.0_35/jre/plugin/i386/ns7
-%dir /usr/java/jdk1.6.0_35/jre/plugin/i386/ns7-gcc29
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/plugin/i386/ns7-gcc29/libjavaplugin_oji.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/plugin/i386/ns7/libjavaplugin_oji.so
-%dir /usr/java/jdk1.6.0_35/lib
-/usr/java/jdk1.6.0_35/lib/ct.sym
-/usr/java/jdk1.6.0_35/lib/dt.jar
-/usr/java/jdk1.6.0_35/lib/htmlconverter.jar
-/usr/java/jdk1.6.0_35/lib/ir.idl
-/usr/java/jdk1.6.0_35/lib/jconsole.jar
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/lib/jexec
-/usr/java/jdk1.6.0_35/lib/orb.idl
-/usr/java/jdk1.6.0_35/lib/sa-jdi.jar
-%ghost %verify(user mode rdev group) /usr/java/jdk1.6.0_35/lib/tools.jar
-%config(missingok) /usr/java/jdk1.6.0_35/lib/tools.pack
-%dir /usr/java/jdk1.6.0_35/lib/visualvm
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/etc
-/usr/java/jdk1.6.0_35/lib/visualvm/etc/visualvm.clusters
-/usr/java/jdk1.6.0_35/lib/visualvm/etc/visualvm.conf
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/platform
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/.lastModified
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/VERSION.txt
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/platform/config
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/platform/config/ModuleAutoDeps
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/ModuleAutoDeps/org-netbeans-core.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/ModuleAutoDeps/org-netbeans-modules-options-api.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/ModuleAutoDeps/org-netbeans-modules-queries.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/ModuleAutoDeps/org-openide-execution.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/ModuleAutoDeps/org-openide-explorer.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/ModuleAutoDeps/org-openide-loaders.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/ModuleAutoDeps/org-openide-modules.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/ModuleAutoDeps/org-openide-text.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/ModuleAutoDeps/org-openide-util.xml
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-api-annotations-common.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-api-progress.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-api-visual.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-core-execution.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-core-io-ui.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-core-multiview.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-core-output2.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-core-ui.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-core-windows.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-core.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-modules-applemenu.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-modules-autoupdate-services.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-modules-autoupdate-ui.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-modules-core-kit.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-modules-editor-mimelookup-impl.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-modules-editor-mimelookup.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-modules-favorites.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-modules-javahelp.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-modules-keyring-impl.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-modules-keyring.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-modules-masterfs.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-modules-options-api.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-modules-options-keymap.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-modules-print.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-modules-progress-ui.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-modules-queries.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-modules-sendopts.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-modules-settings.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-modules-spi-actions.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-spi-quicksearch.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-swing-outline.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-swing-plaf.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-swing-tabcontrol.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-openide-actions.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-openide-awt.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-openide-compat.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-openide-dialogs.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-openide-execution.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-openide-explorer.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-openide-io.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-openide-loaders.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-openide-nodes.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-openide-options.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-openide-text.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-openide-util-enumerations.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-openide-windows.xml
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/platform/core
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/core/core.jar
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/platform/core/locale
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/core/locale/core_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/core/locale/core_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/core/locale/org-openide-filesystems_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/core/locale/org-openide-filesystems_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/core/org-openide-filesystems.jar
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/platform/docs
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/platform/lib
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/lib/boot.jar
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/platform/lib/locale
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/lib/locale/boot_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/lib/locale/boot_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/lib/locale/org-openide-modules_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/lib/locale/org-openide-modules_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/lib/locale/org-openide-util-lookup_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/lib/locale/org-openide-util-lookup_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/lib/locale/org-openide-util_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/lib/locale/org-openide-util_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/lib/nbexec
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/lib/org-openide-modules.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/lib/org-openide-util-lookup.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/lib/org-openide-util.jar
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/platform/modules
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/ext
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/ext/jh-2.0_05.jar
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/ext/locale
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/ext/locale/updater_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/ext/locale/updater_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/ext/updater.jar
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-api-annotations-common_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-api-annotations-common_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-api-progress_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-api-progress_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-api-visual_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-api-visual_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-core-execution_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-core-execution_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-core-io-ui_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-core-io-ui_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-core-multiview_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-core-multiview_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-core-output2_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-core-output2_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-core-ui_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-core-ui_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-core-windows_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-core-windows_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-core_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-core_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-applemenu_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-applemenu_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-autoupdate-services_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-autoupdate-services_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-autoupdate-ui_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-autoupdate-ui_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-core-kit_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-core-kit_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-editor-mimelookup-impl_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-editor-mimelookup-impl_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-editor-mimelookup_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-editor-mimelookup_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-favorites_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-favorites_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-javahelp_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-javahelp_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-keyring-impl_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-keyring-impl_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-keyring_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-keyring_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-masterfs_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-masterfs_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-options-api_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-options-api_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-options-keymap_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-options-keymap_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-print_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-print_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-progress-ui_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-progress-ui_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-queries_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-queries_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-sendopts_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-sendopts_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-settings_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-settings_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-spi-actions_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-spi-actions_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-templates_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-templates_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-spi-quicksearch_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-spi-quicksearch_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-swing-outline_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-swing-outline_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-swing-plaf_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-swing-plaf_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-swing-tabcontrol_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-swing-tabcontrol_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-openide-actions_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-openide-actions_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-openide-awt_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-openide-awt_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-openide-compat_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-openide-compat_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-openide-dialogs_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-openide-dialogs_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-openide-execution_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-openide-execution_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-openide-explorer_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-openide-explorer_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-openide-io_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-openide-io_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-openide-loaders_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-openide-loaders_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-openide-nodes_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-openide-nodes_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-openide-options_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-openide-options_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-openide-text_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-openide-text_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-openide-util-enumerations_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-openide-util-enumerations_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-openide-windows_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-openide-windows_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-api-annotations-common.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-api-progress.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-api-visual.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-core-execution.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-core-io-ui.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-core-multiview.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-core-output2.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-core-ui.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-core-windows.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-core.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-modules-applemenu.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-modules-autoupdate-services.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-modules-autoupdate-ui.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-modules-core-kit.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-modules-editor-mimelookup-impl.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-modules-editor-mimelookup.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-modules-favorites.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-modules-javahelp.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-modules-keyring-impl.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-modules-keyring.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-modules-masterfs.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-modules-options-api.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-modules-options-keymap.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-modules-print.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-modules-progress-ui.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-modules-queries.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-modules-sendopts.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-modules-settings.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-modules-spi-actions.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-spi-quicksearch.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-swing-outline.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-swing-plaf.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-swing-tabcontrol.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-openide-actions.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-openide-awt.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-openide-compat.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-openide-dialogs.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-openide-execution.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-openide-explorer.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-openide-io.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-openide-loaders.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-openide-nodes.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-openide-options.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-openide-text.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-openide-util-enumerations.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-openide-windows.jar
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-api-annotations-common.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-api-progress.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-api-visual.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-bootstrap.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-core-execution.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-core-io-ui.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-core-multiview.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-core-output2.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-core-startup.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-core-ui.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-core-windows.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-core.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-modules-applemenu.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-modules-autoupdate-services.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-modules-autoupdate-ui.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-modules-core-kit.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-modules-editor-mimelookup-impl.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-modules-editor-mimelookup.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-modules-favorites.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-modules-javahelp.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-modules-keyring-impl.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-modules-keyring.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-modules-masterfs.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-modules-options-api.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-modules-options-keymap.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-modules-print.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-modules-progress-ui.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-modules-queries.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-modules-sendopts.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-modules-settings.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-modules-spi-actions.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-spi-quicksearch.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-swing-outline.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-swing-plaf.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-swing-tabcontrol.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-openide-actions.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-openide-awt.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-openide-compat.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-openide-dialogs.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-openide-execution.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-openide-explorer.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-openide-filesystems.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-openide-io.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-openide-loaders.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-openide-modules.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-openide-nodes.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-openide-options.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-openide-text.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-openide-util-enumerations.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-openide-util-lookup.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-openide-util.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-openide-windows.xml
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/profiler
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/.lastModified
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/VERSION.txt
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/profiler/config
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/profiler/config/Modules
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/config/Modules/org-netbeans-lib-profiler-charts.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/config/Modules/org-netbeans-lib-profiler-common.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/config/Modules/org-netbeans-lib-profiler-ui.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/config/Modules/org-netbeans-lib-profiler.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/config/Modules/org-netbeans-modules-profiler-oql.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/config/Modules/org-netbeans-modules-profiler.xml
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/profiler/lib
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/profiler/lib/deployed
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/profiler/lib/deployed/jdk15
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/profiler/lib/deployed/jdk15/linux
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/lib/deployed/jdk15/linux/libprofilerinterface.so
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/profiler/lib/deployed/jdk16
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/profiler/lib/deployed/jdk16/linux
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/lib/deployed/jdk16/linux/libprofilerinterface.so
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/lib/jfluid-server-15.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/lib/jfluid-server.jar
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/profiler/lib/locale
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/lib/locale/jfluid-server_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/lib/locale/jfluid-server_zh_CN.jar
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/profiler/modules
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/profiler/modules/locale
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/modules/locale/org-netbeans-lib-profiler-charts_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/modules/locale/org-netbeans-lib-profiler-charts_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/modules/locale/org-netbeans-lib-profiler-common_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/modules/locale/org-netbeans-lib-profiler-common_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/modules/locale/org-netbeans-lib-profiler-ui_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/modules/locale/org-netbeans-lib-profiler-ui_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/modules/locale/org-netbeans-lib-profiler_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/modules/locale/org-netbeans-lib-profiler_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/modules/locale/org-netbeans-modules-profiler-oql_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/modules/locale/org-netbeans-modules-profiler-oql_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/modules/locale/org-netbeans-modules-profiler_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/modules/locale/org-netbeans-modules-profiler_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/modules/org-netbeans-lib-profiler-charts.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/modules/org-netbeans-lib-profiler-common.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/modules/org-netbeans-lib-profiler-ui.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/modules/org-netbeans-lib-profiler.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/modules/org-netbeans-modules-profiler-oql.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/modules/org-netbeans-modules-profiler.jar
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/profiler/update_tracking
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/update_tracking/org-netbeans-lib-profiler-charts.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/update_tracking/org-netbeans-lib-profiler-common.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/update_tracking/org-netbeans-lib-profiler-ui.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/update_tracking/org-netbeans-lib-profiler.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/update_tracking/org-netbeans-modules-profiler-oql.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/update_tracking/org-netbeans-modules-profiler.xml
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/visualvm
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/.lastModified
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-api-caching.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-application-views.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-application.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-attach.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-charts.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-core.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-coredump.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-heapdump.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-host-remote.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-host-views.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-host.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-jmx.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-jvm.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-jvmstat.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-modules-appui.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-profiler.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-profiling.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-sa.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-sampler.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-threaddump.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-tools.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-uisupport.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules/org-netbeans-api-visual.xml_hidden
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules/org-netbeans-core-execution.xml_hidden
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules/org-netbeans-core-output2.xml_hidden
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules/org-netbeans-modules-core-kit.xml_hidden
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules/org-netbeans-modules-favorites.xml_hidden
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules/org-netbeans-modules-options-keymap.xml_hidden
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules/org-netbeans-modules-spi-actions.xml_hidden
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules/org-openide-compat.xml_hidden
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules/org-openide-options.xml_hidden
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules/org-openide-util-enumerations.xml_hidden
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/visualvm/core
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/core/com-sun-tools-visualvm-modules-startup.jar
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/visualvm/core/locale
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/core/locale/.svn_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/core/locale/.svn_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/core/locale/com-sun-tools-visualvm-modules-startup_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/core/locale/com-sun-tools-visualvm-modules-startup_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/core/locale/core_visualvm.jar
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/all-wcprops
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-api-caching.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-application-views.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-application.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-attach.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-charts.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-core.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-coredump.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-heapdump.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-host-remote.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-host-views.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-host.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-jmx.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-jvm.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-jvmstat.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-modules-appui.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-profiler.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-profiling.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-sa.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-sampler.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-threaddump.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-tools.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-uisupport.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/entries
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-api-caching_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-api-caching_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-application-views_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-application-views_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-application_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-application_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-attach_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-attach_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-charts_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-charts_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-core_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-core_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-coredump_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-coredump_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-heapdump_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-heapdump_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-host-remote_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-host-remote_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-host-views_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-host-views_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-host_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-host_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-jmx_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-jmx_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-jvm_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-jvm_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-jvmstat_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-jvmstat_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-modules-appui_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-modules-appui_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-profiler_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-profiler_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-profiling_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-profiling_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-sa_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-sa_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-sampler_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-sampler_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-threaddump_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-threaddump_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-tools_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-tools_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-uisupport_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-uisupport_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/org-netbeans-core-windows_visualvm.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/org-netbeans-core_visualvm.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/org-netbeans-modules-.svn_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/org-netbeans-modules-.svn_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/org-netbeans-modules-profiler_visualvm.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/org-netbeans-modules-prop-base_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/org-netbeans-modules-prop-base_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/org-netbeans-modules-props_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/org-netbeans-modules-props_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/org-netbeans-modules-text-base_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/org-netbeans-modules-text-base_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/org-netbeans-modules-tmp_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/org-netbeans-modules-tmp_zh_CN.jar
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/visualvm/update_tracking
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-api-caching.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-application-views.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-application.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-attach.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-charts.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-core.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-coredump.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-heapdump.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-host-remote.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-host-views.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-host.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-jmx.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-jvm.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-jvmstat.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-modules-appui.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-modules-startup.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-profiler.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-profiling.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-sa.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-sampler.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-threaddump.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-tools.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-uisupport.xml
-%dir /usr/java/jdk1.6.0_35/man
-/usr/java/jdk1.6.0_35/man/ja
-%dir /usr/java/jdk1.6.0_35/man/ja_JP.eucJP
-%dir /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/appletviewer.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/apt.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/extcheck.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/idlj.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/jar.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/jarsigner.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/java.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/javac.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/javadoc.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/javah.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/javap.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/javaws.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/jconsole.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/jdb.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/jhat.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/jinfo.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/jmap.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/jps.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/jrunscript.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/jsadebugd.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/jstack.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/jstat.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/jstatd.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/jvisualvm.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/keytool.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/native2ascii.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/orbd.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/pack200.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/policytool.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/rmic.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/rmid.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/rmiregistry.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/schemagen.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/serialver.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/servertool.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/tnameserv.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/unpack200.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/wsgen.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/wsimport.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/xjc.1
-%dir /usr/java/jdk1.6.0_35/man/man1
-%doc /usr/java/jdk1.6.0_35/man/man1/appletviewer.1
-%doc /usr/java/jdk1.6.0_35/man/man1/apt.1
-%doc /usr/java/jdk1.6.0_35/man/man1/extcheck.1
-%doc /usr/java/jdk1.6.0_35/man/man1/idlj.1
-%doc /usr/java/jdk1.6.0_35/man/man1/jar.1
-%doc /usr/java/jdk1.6.0_35/man/man1/jarsigner.1
-%doc /usr/java/jdk1.6.0_35/man/man1/java.1
-%doc /usr/java/jdk1.6.0_35/man/man1/javac.1
-%doc /usr/java/jdk1.6.0_35/man/man1/javadoc.1
-%doc /usr/java/jdk1.6.0_35/man/man1/javah.1
-%doc /usr/java/jdk1.6.0_35/man/man1/javap.1
-%doc /usr/java/jdk1.6.0_35/man/man1/javaws.1
-%doc /usr/java/jdk1.6.0_35/man/man1/jconsole.1
-%doc /usr/java/jdk1.6.0_35/man/man1/jdb.1
-%doc /usr/java/jdk1.6.0_35/man/man1/jhat.1
-%doc /usr/java/jdk1.6.0_35/man/man1/jinfo.1
-%doc /usr/java/jdk1.6.0_35/man/man1/jmap.1
-%doc /usr/java/jdk1.6.0_35/man/man1/jps.1
-%doc /usr/java/jdk1.6.0_35/man/man1/jrunscript.1
-%doc /usr/java/jdk1.6.0_35/man/man1/jsadebugd.1
-%doc /usr/java/jdk1.6.0_35/man/man1/jstack.1
-%doc /usr/java/jdk1.6.0_35/man/man1/jstat.1
-%doc /usr/java/jdk1.6.0_35/man/man1/jstatd.1
-%doc /usr/java/jdk1.6.0_35/man/man1/jvisualvm.1
-%doc /usr/java/jdk1.6.0_35/man/man1/keytool.1
-%doc /usr/java/jdk1.6.0_35/man/man1/native2ascii.1
-%doc /usr/java/jdk1.6.0_35/man/man1/orbd.1
-%doc /usr/java/jdk1.6.0_35/man/man1/pack200.1
-%doc /usr/java/jdk1.6.0_35/man/man1/policytool.1
-%doc /usr/java/jdk1.6.0_35/man/man1/rmic.1
-%doc /usr/java/jdk1.6.0_35/man/man1/rmid.1
-%doc /usr/java/jdk1.6.0_35/man/man1/rmiregistry.1
-%doc /usr/java/jdk1.6.0_35/man/man1/schemagen.1
-%doc /usr/java/jdk1.6.0_35/man/man1/serialver.1
-%doc /usr/java/jdk1.6.0_35/man/man1/servertool.1
-%doc /usr/java/jdk1.6.0_35/man/man1/tnameserv.1
-%doc /usr/java/jdk1.6.0_35/man/man1/unpack200.1
-%doc /usr/java/jdk1.6.0_35/man/man1/wsgen.1
-%doc /usr/java/jdk1.6.0_35/man/man1/wsimport.1
-%doc /usr/java/jdk1.6.0_35/man/man1/xjc.1
-/usr/java/jdk1.6.0_35/src.zip
+%dir /usr/java/jdk1.6.0_37
+%doc /usr/java/jdk1.6.0_37/COPYRIGHT
+%doc /usr/java/jdk1.6.0_37/LICENSE
+%doc /usr/java/jdk1.6.0_37/README.html
+%doc /usr/java/jdk1.6.0_37/THIRDPARTYLICENSEREADME.txt
+%dir /usr/java/jdk1.6.0_37/bin
+/usr/java/jdk1.6.0_37/bin/ControlPanel
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/HtmlConverter
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/appletviewer
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/apt
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/extcheck
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/idlj
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/jar
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/jarsigner
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/java
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/java-rmi.cgi
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/javac
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/javadoc
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/javah
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/javap
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/javaws
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/jconsole
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/jcontrol
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/jdb
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/jhat
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/jinfo
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/jmap
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/jps
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/jrunscript
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/jsadebugd
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/jstack
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/jstat
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/jstatd
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/jvisualvm
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/keytool
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/native2ascii
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/orbd
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/pack200
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/policytool
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/rmic
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/rmid
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/rmiregistry
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/schemagen
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/serialver
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/servertool
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/tnameserv
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/unpack200
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/wsgen
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/wsimport
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/xjc
+%dir /usr/java/jdk1.6.0_37/include
+/usr/java/jdk1.6.0_37/include/classfile_constants.h
+/usr/java/jdk1.6.0_37/include/jawt.h
+/usr/java/jdk1.6.0_37/include/jdwpTransport.h
+/usr/java/jdk1.6.0_37/include/jni.h
+/usr/java/jdk1.6.0_37/include/jvmti.h
+%dir /usr/java/jdk1.6.0_37/include/linux
+/usr/java/jdk1.6.0_37/include/linux/jawt_md.h
+/usr/java/jdk1.6.0_37/include/linux/jni_md.h
+%dir /usr/java/jdk1.6.0_37/jre
+%doc /usr/java/jdk1.6.0_37/jre/COPYRIGHT
+%doc /usr/java/jdk1.6.0_37/jre/LICENSE
+%doc /usr/java/jdk1.6.0_37/jre/README
+%doc /usr/java/jdk1.6.0_37/jre/THIRDPARTYLICENSEREADME.txt
+%doc /usr/java/jdk1.6.0_37/jre/Welcome.html
+%dir /usr/java/jdk1.6.0_37/jre/bin
+/usr/java/jdk1.6.0_37/jre/bin/ControlPanel
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/bin/java
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/bin/java_vm
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/bin/javaws
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/bin/jcontrol
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/bin/keytool
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/bin/orbd
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/bin/pack200
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/bin/policytool
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/bin/rmid
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/bin/rmiregistry
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/bin/servertool
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/bin/tnameserv
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/bin/unpack200
+%dir /usr/java/jdk1.6.0_37/jre/javaws
+/usr/java/jdk1.6.0_37/jre/javaws/javaws
+%dir /usr/java/jdk1.6.0_37/jre/lib
+/usr/java/jdk1.6.0_37/jre/lib/alt-rt.jar
+/usr/java/jdk1.6.0_37/jre/lib/alt-string.jar
+%dir /usr/java/jdk1.6.0_37/jre/lib/applet
+%dir /usr/java/jdk1.6.0_37/jre/lib/audio
+/usr/java/jdk1.6.0_37/jre/lib/audio/soundbank.gm
+/usr/java/jdk1.6.0_37/jre/lib/calendars.properties
+%ghost %verify(user mode rdev group) /usr/java/jdk1.6.0_37/jre/lib/charsets.jar
+%config(missingok) /usr/java/jdk1.6.0_37/jre/lib/charsets.pack
+/usr/java/jdk1.6.0_37/jre/lib/classlist
+%dir /usr/java/jdk1.6.0_37/jre/lib/cmm
+/usr/java/jdk1.6.0_37/jre/lib/cmm/CIEXYZ.pf
+/usr/java/jdk1.6.0_37/jre/lib/cmm/GRAY.pf
+/usr/java/jdk1.6.0_37/jre/lib/cmm/LINEAR_RGB.pf
+/usr/java/jdk1.6.0_37/jre/lib/cmm/PYCC.pf
+/usr/java/jdk1.6.0_37/jre/lib/cmm/sRGB.pf
+/usr/java/jdk1.6.0_37/jre/lib/content-types.properties
+%dir /usr/java/jdk1.6.0_37/jre/lib/deploy
+%ghost %verify(user mode rdev group) /usr/java/jdk1.6.0_37/jre/lib/deploy.jar
+%config(missingok) /usr/java/jdk1.6.0_37/jre/lib/deploy.pack
+/usr/java/jdk1.6.0_37/jre/lib/deploy/ffjcext.zip
+/usr/java/jdk1.6.0_37/jre/lib/deploy/java-icon.ico
+/usr/java/jdk1.6.0_37/jre/lib/deploy/messages.properties
+/usr/java/jdk1.6.0_37/jre/lib/deploy/messages_de.properties
+/usr/java/jdk1.6.0_37/jre/lib/deploy/messages_es.properties
+/usr/java/jdk1.6.0_37/jre/lib/deploy/messages_fr.properties
+/usr/java/jdk1.6.0_37/jre/lib/deploy/messages_it.properties
+/usr/java/jdk1.6.0_37/jre/lib/deploy/messages_ja.properties
+/usr/java/jdk1.6.0_37/jre/lib/deploy/messages_ko.properties
+/usr/java/jdk1.6.0_37/jre/lib/deploy/messages_pt_BR.properties
+/usr/java/jdk1.6.0_37/jre/lib/deploy/messages_sv.properties
+/usr/java/jdk1.6.0_37/jre/lib/deploy/messages_zh_CN.properties
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/deploy/messages_zh_HK.properties
+/usr/java/jdk1.6.0_37/jre/lib/deploy/messages_zh_TW.properties
+/usr/java/jdk1.6.0_37/jre/lib/deploy/splash.gif
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop/applications
+/usr/java/jdk1.6.0_37/jre/lib/desktop/applications/sun-java.desktop
+/usr/java/jdk1.6.0_37/jre/lib/desktop/applications/sun-javaws.desktop
+/usr/java/jdk1.6.0_37/jre/lib/desktop/applications/sun_java.desktop
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop/icons
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrast
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrast/16x16
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrast/16x16/apps
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrast/16x16/apps/sun-java.png
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrast/16x16/apps/sun-javaws.png
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrast/16x16/apps/sun-jcontrol.png
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrast/16x16/mimetypes
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrast/16x16/mimetypes/gnome-mime-application-x-java-archive.png
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrast/16x16/mimetypes/gnome-mime-application-x-java-jnlp-file.png
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrast/16x16/mimetypes/gnome-mime-text-x-java.png
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrast/48x48
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrast/48x48/apps
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrast/48x48/apps/sun-java.png
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrast/48x48/apps/sun-javaws.png
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrast/48x48/apps/sun-jcontrol.png
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrast/48x48/mimetypes
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrast/48x48/mimetypes/gnome-mime-application-x-java-archive.png
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrast/48x48/mimetypes/gnome-mime-application-x-java-jnlp-file.png
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrast/48x48/mimetypes/gnome-mime-text-x-java.png
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrastInverse
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrastInverse/16x16
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrastInverse/16x16/apps
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrastInverse/16x16/apps/sun-java.png
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrastInverse/16x16/apps/sun-javaws.png
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrastInverse/16x16/apps/sun-jcontrol.png
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrastInverse/16x16/mimetypes
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrastInverse/16x16/mimetypes/gnome-mime-application-x-java-archive.png
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrastInverse/16x16/mimetypes/gnome-mime-application-x-java-jnlp-file.png
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrastInverse/16x16/mimetypes/gnome-mime-text-x-java.png
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrastInverse/48x48
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrastInverse/48x48/apps
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrastInverse/48x48/apps/sun-java.png
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrastInverse/48x48/apps/sun-javaws.png
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrastInverse/48x48/apps/sun-jcontrol.png
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrastInverse/48x48/mimetypes
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrastInverse/48x48/mimetypes/gnome-mime-application-x-java-archive.png
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrastInverse/48x48/mimetypes/gnome-mime-application-x-java-jnlp-file.png
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrastInverse/48x48/mimetypes/gnome-mime-text-x-java.png
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop/icons/LowContrast
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop/icons/LowContrast/16x16
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop/icons/LowContrast/16x16/apps
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/LowContrast/16x16/apps/sun-java.png
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/LowContrast/16x16/apps/sun-javaws.png
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/LowContrast/16x16/apps/sun-jcontrol.png
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop/icons/LowContrast/16x16/mimetypes
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/LowContrast/16x16/mimetypes/gnome-mime-application-x-java-archive.png
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/LowContrast/16x16/mimetypes/gnome-mime-application-x-java-jnlp-file.png
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/LowContrast/16x16/mimetypes/gnome-mime-text-x-java.png
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop/icons/LowContrast/48x48
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop/icons/LowContrast/48x48/apps
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/LowContrast/48x48/apps/sun-java.png
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/LowContrast/48x48/apps/sun-javaws.png
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/LowContrast/48x48/apps/sun-jcontrol.png
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop/icons/LowContrast/48x48/mimetypes
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/LowContrast/48x48/mimetypes/gnome-mime-application-x-java-archive.png
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/LowContrast/48x48/mimetypes/gnome-mime-application-x-java-jnlp-file.png
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/LowContrast/48x48/mimetypes/gnome-mime-text-x-java.png
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop/icons/hicolor
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop/icons/hicolor/16x16
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop/icons/hicolor/16x16/apps
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/hicolor/16x16/apps/sun-java.png
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/hicolor/16x16/apps/sun-javaws.png
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/hicolor/16x16/apps/sun-jcontrol.png
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop/icons/hicolor/16x16/mimetypes
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/hicolor/16x16/mimetypes/gnome-mime-application-x-java-archive.png
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/hicolor/16x16/mimetypes/gnome-mime-application-x-java-jnlp-file.png
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/hicolor/16x16/mimetypes/gnome-mime-text-x-java.png
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop/icons/hicolor/48x48
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop/icons/hicolor/48x48/apps
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/hicolor/48x48/apps/sun-java.png
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/hicolor/48x48/apps/sun-javaws.png
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/hicolor/48x48/apps/sun-jcontrol.png
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop/icons/hicolor/48x48/mimetypes
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/hicolor/48x48/mimetypes/gnome-mime-application-x-java-archive.png
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/hicolor/48x48/mimetypes/gnome-mime-application-x-java-jnlp-file.png
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/hicolor/48x48/mimetypes/gnome-mime-text-x-java.png
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop/mime
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop/mime/packages
+/usr/java/jdk1.6.0_37/jre/lib/desktop/mime/packages/x-java-archive.xml
+/usr/java/jdk1.6.0_37/jre/lib/desktop/mime/packages/x-java-jnlp-file.xml
+%dir /usr/java/jdk1.6.0_37/jre/lib/ext
+/usr/java/jdk1.6.0_37/jre/lib/ext/dnsns.jar
+%ghost %verify(user mode rdev group) /usr/java/jdk1.6.0_37/jre/lib/ext/localedata.jar
+%config(missingok) /usr/java/jdk1.6.0_37/jre/lib/ext/localedata.pack
+/usr/java/jdk1.6.0_37/jre/lib/ext/meta-index
+/usr/java/jdk1.6.0_37/jre/lib/ext/sunjce_provider.jar
+/usr/java/jdk1.6.0_37/jre/lib/ext/sunpkcs11.jar
+/usr/java/jdk1.6.0_37/jre/lib/flavormap.properties
+/usr/java/jdk1.6.0_37/jre/lib/fontconfig.RedHat.2.1.bfc
+/usr/java/jdk1.6.0_37/jre/lib/fontconfig.RedHat.2.1.properties.src
+/usr/java/jdk1.6.0_37/jre/lib/fontconfig.RedHat.3.bfc
+/usr/java/jdk1.6.0_37/jre/lib/fontconfig.RedHat.3.properties.src
+/usr/java/jdk1.6.0_37/jre/lib/fontconfig.RedHat.4.bfc
+/usr/java/jdk1.6.0_37/jre/lib/fontconfig.RedHat.4.properties.src
+/usr/java/jdk1.6.0_37/jre/lib/fontconfig.RedHat.6.bfc
+/usr/java/jdk1.6.0_37/jre/lib/fontconfig.RedHat.6.properties.src
+/usr/java/jdk1.6.0_37/jre/lib/fontconfig.RedHat.bfc
+/usr/java/jdk1.6.0_37/jre/lib/fontconfig.RedHat.properties.src
+/usr/java/jdk1.6.0_37/jre/lib/fontconfig.SuSE.11.bfc
+/usr/java/jdk1.6.0_37/jre/lib/fontconfig.SuSE.11.properties.src
+/usr/java/jdk1.6.0_37/jre/lib/fontconfig.SuSE.bfc
+/usr/java/jdk1.6.0_37/jre/lib/fontconfig.SuSE.properties.src
+/usr/java/jdk1.6.0_37/jre/lib/fontconfig.Sun.bfc
+/usr/java/jdk1.6.0_37/jre/lib/fontconfig.Sun.properties.src
+/usr/java/jdk1.6.0_37/jre/lib/fontconfig.Turbo.bfc
+/usr/java/jdk1.6.0_37/jre/lib/fontconfig.Turbo.properties.src
+/usr/java/jdk1.6.0_37/jre/lib/fontconfig.Ubuntu.bfc
+/usr/java/jdk1.6.0_37/jre/lib/fontconfig.Ubuntu.properties.src
+/usr/java/jdk1.6.0_37/jre/lib/fontconfig.bfc
+/usr/java/jdk1.6.0_37/jre/lib/fontconfig.properties.src
+%dir /usr/java/jdk1.6.0_37/jre/lib/fonts
+/usr/java/jdk1.6.0_37/jre/lib/fonts/LucidaBrightDemiBold.ttf
+/usr/java/jdk1.6.0_37/jre/lib/fonts/LucidaBrightDemiItalic.ttf
+/usr/java/jdk1.6.0_37/jre/lib/fonts/LucidaBrightItalic.ttf
+/usr/java/jdk1.6.0_37/jre/lib/fonts/LucidaBrightRegular.ttf
+/usr/java/jdk1.6.0_37/jre/lib/fonts/LucidaSansDemiBold.ttf
+/usr/java/jdk1.6.0_37/jre/lib/fonts/LucidaSansRegular.ttf
+/usr/java/jdk1.6.0_37/jre/lib/fonts/LucidaTypewriterBold.ttf
+/usr/java/jdk1.6.0_37/jre/lib/fonts/LucidaTypewriterRegular.ttf
+/usr/java/jdk1.6.0_37/jre/lib/fonts/fonts.dir
+%dir /usr/java/jdk1.6.0_37/jre/lib/i386
+%dir /usr/java/jdk1.6.0_37/jre/lib/i386/client
+/usr/java/jdk1.6.0_37/jre/lib/i386/client/Xusage.txt
+%attr(0444,root,root) %ghost %verify(user mode rdev group) /usr/java/jdk1.6.0_37/jre/lib/i386/client/classes.jsa
+/usr/java/jdk1.6.0_37/jre/lib/i386/client/libjsig.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/i386/client/libjvm.so
+%dir /usr/java/jdk1.6.0_37/jre/lib/i386/headless
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/i386/headless/libmawt.so
+%dir /usr/java/jdk1.6.0_37/jre/lib/i386/jli
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/i386/jli/libjli.so
+/usr/java/jdk1.6.0_37/jre/lib/i386/jvm.cfg
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/i386/libJdbcOdbc.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/i386/libattach.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/i386/libawt.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/i386/libcmm.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/i386/libdcpr.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/i386/libdeploy.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/i386/libdt_socket.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/i386/libfontmanager.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/i386/libhprof.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/i386/libinstrument.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/i386/libioser12.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/i386/libj2gss.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/i386/libj2pcsc.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/i386/libj2pkcs11.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/i386/libjaas_unix.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/i386/libjava.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/i386/libjava_crw_demo.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/i386/libjavaplugin_jni.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/i386/libjavaplugin_nscp.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/i386/libjavaplugin_nscp_gcc29.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/i386/libjawt.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/i386/libjdwp.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/i386/libjpeg.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/i386/libjsig.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/i386/libjsound.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/i386/libjsoundalsa.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/i386/libmanagement.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/i386/libmlib_image.so
+/usr/java/jdk1.6.0_37/jre/lib/i386/libnative_chmod.so
+/usr/java/jdk1.6.0_37/jre/lib/i386/libnative_chmod_g.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/i386/libnet.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/i386/libnio.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/i386/libnpjp2.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/i386/libnpt.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/i386/librmi.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/i386/libsaproc.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/i386/libsplashscreen.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/i386/libunpack.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/i386/libverify.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/i386/libzip.so
+%dir /usr/java/jdk1.6.0_37/jre/lib/i386/motif21
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/i386/motif21/libmawt.so
+%dir /usr/java/jdk1.6.0_37/jre/lib/i386/native_threads
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/i386/native_threads/libhpi.so
+%dir /usr/java/jdk1.6.0_37/jre/lib/i386/server
+/usr/java/jdk1.6.0_37/jre/lib/i386/server/Xusage.txt
+/usr/java/jdk1.6.0_37/jre/lib/i386/server/libjsig.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/i386/server/libjvm.so
+%dir /usr/java/jdk1.6.0_37/jre/lib/i386/xawt
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/i386/xawt/libmawt.so
+%dir /usr/java/jdk1.6.0_37/jre/lib/im
+/usr/java/jdk1.6.0_37/jre/lib/im/indicim.jar
+/usr/java/jdk1.6.0_37/jre/lib/im/thaiim.jar
+%dir /usr/java/jdk1.6.0_37/jre/lib/images
+%dir /usr/java/jdk1.6.0_37/jre/lib/images/cursors
+/usr/java/jdk1.6.0_37/jre/lib/images/cursors/cursors.properties
+/usr/java/jdk1.6.0_37/jre/lib/images/cursors/invalid32x32.gif
+/usr/java/jdk1.6.0_37/jre/lib/images/cursors/motif_CopyDrop32x32.gif
+/usr/java/jdk1.6.0_37/jre/lib/images/cursors/motif_CopyNoDrop32x32.gif
+/usr/java/jdk1.6.0_37/jre/lib/images/cursors/motif_LinkDrop32x32.gif
+/usr/java/jdk1.6.0_37/jre/lib/images/cursors/motif_LinkNoDrop32x32.gif
+/usr/java/jdk1.6.0_37/jre/lib/images/cursors/motif_MoveDrop32x32.gif
+/usr/java/jdk1.6.0_37/jre/lib/images/cursors/motif_MoveNoDrop32x32.gif
+%dir /usr/java/jdk1.6.0_37/jre/lib/images/icons
+/usr/java/jdk1.6.0_37/jre/lib/images/icons/sun-java.png
+/usr/java/jdk1.6.0_37/jre/lib/images/icons/sun-java_HighContrast.png
+/usr/java/jdk1.6.0_37/jre/lib/images/icons/sun-java_HighContrastInverse.png
+/usr/java/jdk1.6.0_37/jre/lib/images/icons/sun-java_LowContrast.png
+%ghost %verify(user mode rdev group) /usr/java/jdk1.6.0_37/jre/lib/javaws.jar
+%config(missingok) /usr/java/jdk1.6.0_37/jre/lib/javaws.pack
+/usr/java/jdk1.6.0_37/jre/lib/jce.jar
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/jexec
+%ghost %verify(user mode rdev group) /usr/java/jdk1.6.0_37/jre/lib/jsse.jar
+%config(missingok) /usr/java/jdk1.6.0_37/jre/lib/jsse.pack
+/usr/java/jdk1.6.0_37/jre/lib/jvm.hprof.txt
+%dir /usr/java/jdk1.6.0_37/jre/lib/locale
+%dir /usr/java/jdk1.6.0_37/jre/lib/locale/de
+%dir /usr/java/jdk1.6.0_37/jre/lib/locale/de/LC_MESSAGES
+/usr/java/jdk1.6.0_37/jre/lib/locale/de/LC_MESSAGES/sunw_java_plugin.mo
+%dir /usr/java/jdk1.6.0_37/jre/lib/locale/es
+%dir /usr/java/jdk1.6.0_37/jre/lib/locale/es/LC_MESSAGES
+/usr/java/jdk1.6.0_37/jre/lib/locale/es/LC_MESSAGES/sunw_java_plugin.mo
+%dir /usr/java/jdk1.6.0_37/jre/lib/locale/fr
+%dir /usr/java/jdk1.6.0_37/jre/lib/locale/fr/LC_MESSAGES
+/usr/java/jdk1.6.0_37/jre/lib/locale/fr/LC_MESSAGES/sunw_java_plugin.mo
+%dir /usr/java/jdk1.6.0_37/jre/lib/locale/it
+%dir /usr/java/jdk1.6.0_37/jre/lib/locale/it/LC_MESSAGES
+/usr/java/jdk1.6.0_37/jre/lib/locale/it/LC_MESSAGES/sunw_java_plugin.mo
+%dir /usr/java/jdk1.6.0_37/jre/lib/locale/ja
+%dir /usr/java/jdk1.6.0_37/jre/lib/locale/ja/LC_MESSAGES
+/usr/java/jdk1.6.0_37/jre/lib/locale/ja/LC_MESSAGES/sunw_java_plugin.mo
+%dir /usr/java/jdk1.6.0_37/jre/lib/locale/ko
+%dir /usr/java/jdk1.6.0_37/jre/lib/locale/ko.UTF-8
+%dir /usr/java/jdk1.6.0_37/jre/lib/locale/ko.UTF-8/LC_MESSAGES
+/usr/java/jdk1.6.0_37/jre/lib/locale/ko.UTF-8/LC_MESSAGES/sunw_java_plugin.mo
+%dir /usr/java/jdk1.6.0_37/jre/lib/locale/ko/LC_MESSAGES
+/usr/java/jdk1.6.0_37/jre/lib/locale/ko/LC_MESSAGES/sunw_java_plugin.mo
+%dir /usr/java/jdk1.6.0_37/jre/lib/locale/sv
+%dir /usr/java/jdk1.6.0_37/jre/lib/locale/sv/LC_MESSAGES
+/usr/java/jdk1.6.0_37/jre/lib/locale/sv/LC_MESSAGES/sunw_java_plugin.mo
+%dir /usr/java/jdk1.6.0_37/jre/lib/locale/zh
+%dir /usr/java/jdk1.6.0_37/jre/lib/locale/zh.GBK
+%dir /usr/java/jdk1.6.0_37/jre/lib/locale/zh.GBK/LC_MESSAGES
+/usr/java/jdk1.6.0_37/jre/lib/locale/zh.GBK/LC_MESSAGES/sunw_java_plugin.mo
+%dir /usr/java/jdk1.6.0_37/jre/lib/locale/zh/LC_MESSAGES
+/usr/java/jdk1.6.0_37/jre/lib/locale/zh/LC_MESSAGES/sunw_java_plugin.mo
+%dir /usr/java/jdk1.6.0_37/jre/lib/locale/zh_HK.BIG5HK
+%dir /usr/java/jdk1.6.0_37/jre/lib/locale/zh_HK.BIG5HK/LC_MESSAGES
+/usr/java/jdk1.6.0_37/jre/lib/locale/zh_HK.BIG5HK/LC_MESSAGES/sunw_java_plugin.mo
+%dir /usr/java/jdk1.6.0_37/jre/lib/locale/zh_TW
+%dir /usr/java/jdk1.6.0_37/jre/lib/locale/zh_TW.BIG5
+%dir /usr/java/jdk1.6.0_37/jre/lib/locale/zh_TW.BIG5/LC_MESSAGES
+/usr/java/jdk1.6.0_37/jre/lib/locale/zh_TW.BIG5/LC_MESSAGES/sunw_java_plugin.mo
+%dir /usr/java/jdk1.6.0_37/jre/lib/locale/zh_TW/LC_MESSAGES
+/usr/java/jdk1.6.0_37/jre/lib/locale/zh_TW/LC_MESSAGES/sunw_java_plugin.mo
+/usr/java/jdk1.6.0_37/jre/lib/logging.properties
+%dir /usr/java/jdk1.6.0_37/jre/lib/management
+/usr/java/jdk1.6.0_37/jre/lib/management-agent.jar
+/usr/java/jdk1.6.0_37/jre/lib/management/jmxremote.access
+/usr/java/jdk1.6.0_37/jre/lib/management/jmxremote.password.template
+/usr/java/jdk1.6.0_37/jre/lib/management/management.properties
+/usr/java/jdk1.6.0_37/jre/lib/management/snmp.acl.template
+/usr/java/jdk1.6.0_37/jre/lib/meta-index
+/usr/java/jdk1.6.0_37/jre/lib/net.properties
+%dir /usr/java/jdk1.6.0_37/jre/lib/oblique-fonts
+/usr/java/jdk1.6.0_37/jre/lib/oblique-fonts/LucidaSansDemiOblique.ttf
+/usr/java/jdk1.6.0_37/jre/lib/oblique-fonts/LucidaSansOblique.ttf
+/usr/java/jdk1.6.0_37/jre/lib/oblique-fonts/LucidaTypewriterBoldOblique.ttf
+/usr/java/jdk1.6.0_37/jre/lib/oblique-fonts/LucidaTypewriterOblique.ttf
+/usr/java/jdk1.6.0_37/jre/lib/oblique-fonts/fonts.dir
+%ghost %verify(user mode rdev group) /usr/java/jdk1.6.0_37/jre/lib/plugin.jar
+%config(missingok) /usr/java/jdk1.6.0_37/jre/lib/plugin.pack
+/usr/java/jdk1.6.0_37/jre/lib/psfont.properties.ja
+/usr/java/jdk1.6.0_37/jre/lib/psfontj2d.properties
+/usr/java/jdk1.6.0_37/jre/lib/resources.jar
+%ghost %verify(user mode rdev group) /usr/java/jdk1.6.0_37/jre/lib/rt.jar
+%config(missingok) /usr/java/jdk1.6.0_37/jre/lib/rt.pack
+%dir /usr/java/jdk1.6.0_37/jre/lib/security
+/usr/java/jdk1.6.0_37/jre/lib/security/US_export_policy.jar
+/usr/java/jdk1.6.0_37/jre/lib/security/blacklist
+/usr/java/jdk1.6.0_37/jre/lib/security/cacerts
+/usr/java/jdk1.6.0_37/jre/lib/security/java.policy
+/usr/java/jdk1.6.0_37/jre/lib/security/java.security
+/usr/java/jdk1.6.0_37/jre/lib/security/javaws.policy
+/usr/java/jdk1.6.0_37/jre/lib/security/local_policy.jar
+/usr/java/jdk1.6.0_37/jre/lib/security/trusted.libraries
+%dir /usr/java/jdk1.6.0_37/jre/lib/servicetag
+/usr/java/jdk1.6.0_37/jre/lib/servicetag/jdk_header.png
+/usr/java/jdk1.6.0_37/jre/lib/sound.properties
+%dir /usr/java/jdk1.6.0_37/jre/lib/zi
+%dir /usr/java/jdk1.6.0_37/jre/lib/zi/Africa
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Abidjan
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Accra
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Addis_Ababa
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Algiers
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Asmara
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Bamako
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Bangui
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Banjul
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Bissau
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Blantyre
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Brazzaville
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Bujumbura
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Cairo
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Casablanca
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Ceuta
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Conakry
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Dakar
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Dar_es_Salaam
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Djibouti
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Douala
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/El_Aaiun
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Freetown
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Gaborone
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Harare
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Johannesburg
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Juba
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Kampala
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Khartoum
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Kigali
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Kinshasa
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Lagos
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Libreville
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Lome
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Luanda
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Lubumbashi
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Lusaka
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Malabo
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Maputo
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Maseru
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Mbabane
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Mogadishu
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Monrovia
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Nairobi
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Ndjamena
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Niamey
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Nouakchott
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Ouagadougou
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Porto-Novo
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Sao_Tome
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Tripoli
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Tunis
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Windhoek
+%dir /usr/java/jdk1.6.0_37/jre/lib/zi/America
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Adak
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Anchorage
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Anguilla
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Antigua
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Araguaina
+%dir /usr/java/jdk1.6.0_37/jre/lib/zi/America/Argentina
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Argentina/Buenos_Aires
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Argentina/Catamarca
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Argentina/Cordoba
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Argentina/Jujuy
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Argentina/La_Rioja
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Argentina/Mendoza
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Argentina/Rio_Gallegos
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Argentina/Salta
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Argentina/San_Juan
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Argentina/San_Luis
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Argentina/Tucuman
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Argentina/Ushuaia
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Aruba
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Asuncion
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Atikokan
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Bahia
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Bahia_Banderas
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Barbados
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Belem
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Belize
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Blanc-Sablon
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Boa_Vista
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Bogota
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Boise
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Cambridge_Bay
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Campo_Grande
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Cancun
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Caracas
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Cayenne
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Cayman
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Chicago
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Chihuahua
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Costa_Rica
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Creston
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Cuiaba
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Curacao
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Danmarkshavn
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Dawson
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Dawson_Creek
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Denver
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Detroit
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Dominica
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Edmonton
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Eirunepe
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/El_Salvador
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Fortaleza
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Glace_Bay
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Godthab
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Goose_Bay
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Grand_Turk
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Grenada
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Guadeloupe
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Guatemala
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Guayaquil
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Guyana
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Halifax
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Havana
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Hermosillo
+%dir /usr/java/jdk1.6.0_37/jre/lib/zi/America/Indiana
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Indiana/Indianapolis
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Indiana/Knox
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Indiana/Marengo
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Indiana/Petersburg
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Indiana/Tell_City
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Indiana/Vevay
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Indiana/Vincennes
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Indiana/Winamac
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Inuvik
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Iqaluit
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Jamaica
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Juneau
+%dir /usr/java/jdk1.6.0_37/jre/lib/zi/America/Kentucky
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Kentucky/Louisville
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Kentucky/Monticello
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/La_Paz
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Lima
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Los_Angeles
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Maceio
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Managua
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Manaus
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Martinique
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Matamoros
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Mazatlan
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Menominee
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Merida
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Metlakatla
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Mexico_City
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Miquelon
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Moncton
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Monterrey
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Montevideo
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Montreal
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Montserrat
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Nassau
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/New_York
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Nipigon
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Nome
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Noronha
+%dir /usr/java/jdk1.6.0_37/jre/lib/zi/America/North_Dakota
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/North_Dakota/Beulah
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/North_Dakota/Center
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/North_Dakota/New_Salem
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Ojinaga
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Panama
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Pangnirtung
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Paramaribo
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Phoenix
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Port-au-Prince
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Port_of_Spain
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Porto_Velho
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Puerto_Rico
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Rainy_River
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Rankin_Inlet
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Recife
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Regina
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Resolute
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Rio_Branco
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Santa_Isabel
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Santarem
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Santiago
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Santo_Domingo
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Sao_Paulo
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Scoresbysund
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Sitka
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/St_Johns
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/St_Kitts
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/St_Lucia
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/St_Thomas
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/St_Vincent
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Swift_Current
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Tegucigalpa
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Thule
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Thunder_Bay
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Tijuana
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Toronto
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Tortola
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Vancouver
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Whitehorse
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Winnipeg
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Yakutat
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Yellowknife
+%dir /usr/java/jdk1.6.0_37/jre/lib/zi/Antarctica
+/usr/java/jdk1.6.0_37/jre/lib/zi/Antarctica/Casey
+/usr/java/jdk1.6.0_37/jre/lib/zi/Antarctica/Davis
+/usr/java/jdk1.6.0_37/jre/lib/zi/Antarctica/DumontDUrville
+/usr/java/jdk1.6.0_37/jre/lib/zi/Antarctica/Macquarie
+/usr/java/jdk1.6.0_37/jre/lib/zi/Antarctica/Mawson
+/usr/java/jdk1.6.0_37/jre/lib/zi/Antarctica/McMurdo
+/usr/java/jdk1.6.0_37/jre/lib/zi/Antarctica/Palmer
+/usr/java/jdk1.6.0_37/jre/lib/zi/Antarctica/Rothera
+/usr/java/jdk1.6.0_37/jre/lib/zi/Antarctica/Syowa
+/usr/java/jdk1.6.0_37/jre/lib/zi/Antarctica/Vostok
+%dir /usr/java/jdk1.6.0_37/jre/lib/zi/Asia
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Aden
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Almaty
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Amman
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Anadyr
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Aqtau
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Aqtobe
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Ashgabat
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Baghdad
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Bahrain
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Baku
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Bangkok
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Beirut
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Bishkek
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Brunei
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Choibalsan
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Chongqing
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Colombo
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Damascus
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Dhaka
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Dili
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Dubai
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Dushanbe
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Gaza
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Harbin
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Hebron
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Ho_Chi_Minh
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Hong_Kong
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Hovd
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Irkutsk
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Jakarta
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Jayapura
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Jerusalem
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Kabul
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Kamchatka
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Karachi
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Kashgar
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Kathmandu
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Kolkata
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Krasnoyarsk
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Kuala_Lumpur
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Kuching
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Kuwait
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Macau
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Magadan
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Makassar
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Manila
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Muscat
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Nicosia
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Novokuznetsk
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Novosibirsk
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Omsk
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Oral
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Phnom_Penh
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Pontianak
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Pyongyang
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Qatar
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Qyzylorda
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Rangoon
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Riyadh
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Riyadh87
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Riyadh88
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Riyadh89
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Sakhalin
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Samarkand
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Seoul
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Shanghai
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Singapore
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Taipei
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Tashkent
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Tbilisi
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Tehran
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Thimphu
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Tokyo
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Ulaanbaatar
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Urumqi
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Vientiane
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Vladivostok
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Yakutsk
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Yekaterinburg
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Yerevan
+%dir /usr/java/jdk1.6.0_37/jre/lib/zi/Atlantic
+/usr/java/jdk1.6.0_37/jre/lib/zi/Atlantic/Azores
+/usr/java/jdk1.6.0_37/jre/lib/zi/Atlantic/Bermuda
+/usr/java/jdk1.6.0_37/jre/lib/zi/Atlantic/Canary
+/usr/java/jdk1.6.0_37/jre/lib/zi/Atlantic/Cape_Verde
+/usr/java/jdk1.6.0_37/jre/lib/zi/Atlantic/Faroe
+/usr/java/jdk1.6.0_37/jre/lib/zi/Atlantic/Madeira
+/usr/java/jdk1.6.0_37/jre/lib/zi/Atlantic/Reykjavik
+/usr/java/jdk1.6.0_37/jre/lib/zi/Atlantic/South_Georgia
+/usr/java/jdk1.6.0_37/jre/lib/zi/Atlantic/St_Helena
+/usr/java/jdk1.6.0_37/jre/lib/zi/Atlantic/Stanley
+%dir /usr/java/jdk1.6.0_37/jre/lib/zi/Australia
+/usr/java/jdk1.6.0_37/jre/lib/zi/Australia/Adelaide
+/usr/java/jdk1.6.0_37/jre/lib/zi/Australia/Brisbane
+/usr/java/jdk1.6.0_37/jre/lib/zi/Australia/Broken_Hill
+/usr/java/jdk1.6.0_37/jre/lib/zi/Australia/Currie
+/usr/java/jdk1.6.0_37/jre/lib/zi/Australia/Darwin
+/usr/java/jdk1.6.0_37/jre/lib/zi/Australia/Eucla
+/usr/java/jdk1.6.0_37/jre/lib/zi/Australia/Hobart
+/usr/java/jdk1.6.0_37/jre/lib/zi/Australia/Lindeman
+/usr/java/jdk1.6.0_37/jre/lib/zi/Australia/Lord_Howe
+/usr/java/jdk1.6.0_37/jre/lib/zi/Australia/Melbourne
+/usr/java/jdk1.6.0_37/jre/lib/zi/Australia/Perth
+/usr/java/jdk1.6.0_37/jre/lib/zi/Australia/Sydney
+/usr/java/jdk1.6.0_37/jre/lib/zi/CET
+/usr/java/jdk1.6.0_37/jre/lib/zi/CST6CDT
+/usr/java/jdk1.6.0_37/jre/lib/zi/EET
+/usr/java/jdk1.6.0_37/jre/lib/zi/EST
+/usr/java/jdk1.6.0_37/jre/lib/zi/EST5EDT
+%dir /usr/java/jdk1.6.0_37/jre/lib/zi/Etc
+/usr/java/jdk1.6.0_37/jre/lib/zi/Etc/GMT
+/usr/java/jdk1.6.0_37/jre/lib/zi/Etc/GMT+1
+/usr/java/jdk1.6.0_37/jre/lib/zi/Etc/GMT+10
+/usr/java/jdk1.6.0_37/jre/lib/zi/Etc/GMT+11
+/usr/java/jdk1.6.0_37/jre/lib/zi/Etc/GMT+12
+/usr/java/jdk1.6.0_37/jre/lib/zi/Etc/GMT+2
+/usr/java/jdk1.6.0_37/jre/lib/zi/Etc/GMT+3
+/usr/java/jdk1.6.0_37/jre/lib/zi/Etc/GMT+4
+/usr/java/jdk1.6.0_37/jre/lib/zi/Etc/GMT+5
+/usr/java/jdk1.6.0_37/jre/lib/zi/Etc/GMT+6
+/usr/java/jdk1.6.0_37/jre/lib/zi/Etc/GMT+7
+/usr/java/jdk1.6.0_37/jre/lib/zi/Etc/GMT+8
+/usr/java/jdk1.6.0_37/jre/lib/zi/Etc/GMT+9
+/usr/java/jdk1.6.0_37/jre/lib/zi/Etc/GMT-1
+/usr/java/jdk1.6.0_37/jre/lib/zi/Etc/GMT-10
+/usr/java/jdk1.6.0_37/jre/lib/zi/Etc/GMT-11
+/usr/java/jdk1.6.0_37/jre/lib/zi/Etc/GMT-12
+/usr/java/jdk1.6.0_37/jre/lib/zi/Etc/GMT-13
+/usr/java/jdk1.6.0_37/jre/lib/zi/Etc/GMT-14
+/usr/java/jdk1.6.0_37/jre/lib/zi/Etc/GMT-2
+/usr/java/jdk1.6.0_37/jre/lib/zi/Etc/GMT-3
+/usr/java/jdk1.6.0_37/jre/lib/zi/Etc/GMT-4
+/usr/java/jdk1.6.0_37/jre/lib/zi/Etc/GMT-5
+/usr/java/jdk1.6.0_37/jre/lib/zi/Etc/GMT-6
+/usr/java/jdk1.6.0_37/jre/lib/zi/Etc/GMT-7
+/usr/java/jdk1.6.0_37/jre/lib/zi/Etc/GMT-8
+/usr/java/jdk1.6.0_37/jre/lib/zi/Etc/GMT-9
+/usr/java/jdk1.6.0_37/jre/lib/zi/Etc/UCT
+/usr/java/jdk1.6.0_37/jre/lib/zi/Etc/UTC
+%dir /usr/java/jdk1.6.0_37/jre/lib/zi/Europe
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Amsterdam
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Andorra
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Athens
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Belgrade
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Berlin
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Brussels
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Bucharest
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Budapest
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Chisinau
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Copenhagen
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Dublin
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Gibraltar
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Helsinki
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Istanbul
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Kaliningrad
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Kiev
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Lisbon
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/London
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Luxembourg
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Madrid
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Malta
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Minsk
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Monaco
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Moscow
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Oslo
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Paris
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Prague
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Riga
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Rome
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Samara
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Simferopol
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Sofia
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Stockholm
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Tallinn
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Tirane
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Uzhgorod
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Vaduz
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Vienna
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Vilnius
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Volgograd
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Warsaw
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Zaporozhye
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Zurich
+/usr/java/jdk1.6.0_37/jre/lib/zi/GMT
+/usr/java/jdk1.6.0_37/jre/lib/zi/HST
+%dir /usr/java/jdk1.6.0_37/jre/lib/zi/Indian
+/usr/java/jdk1.6.0_37/jre/lib/zi/Indian/Antananarivo
+/usr/java/jdk1.6.0_37/jre/lib/zi/Indian/Chagos
+/usr/java/jdk1.6.0_37/jre/lib/zi/Indian/Christmas
+/usr/java/jdk1.6.0_37/jre/lib/zi/Indian/Cocos
+/usr/java/jdk1.6.0_37/jre/lib/zi/Indian/Comoro
+/usr/java/jdk1.6.0_37/jre/lib/zi/Indian/Kerguelen
+/usr/java/jdk1.6.0_37/jre/lib/zi/Indian/Mahe
+/usr/java/jdk1.6.0_37/jre/lib/zi/Indian/Maldives
+/usr/java/jdk1.6.0_37/jre/lib/zi/Indian/Mauritius
+/usr/java/jdk1.6.0_37/jre/lib/zi/Indian/Mayotte
+/usr/java/jdk1.6.0_37/jre/lib/zi/Indian/Reunion
+/usr/java/jdk1.6.0_37/jre/lib/zi/MET
+/usr/java/jdk1.6.0_37/jre/lib/zi/MST
+/usr/java/jdk1.6.0_37/jre/lib/zi/MST7MDT
+/usr/java/jdk1.6.0_37/jre/lib/zi/PST8PDT
+%dir /usr/java/jdk1.6.0_37/jre/lib/zi/Pacific
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Apia
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Auckland
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Chatham
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Chuuk
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Easter
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Efate
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Enderbury
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Fakaofo
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Fiji
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Funafuti
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Galapagos
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Gambier
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Guadalcanal
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Guam
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Honolulu
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Johnston
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Kiritimati
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Kosrae
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Kwajalein
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Majuro
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Marquesas
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Midway
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Nauru
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Niue
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Norfolk
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Noumea
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Pago_Pago
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Palau
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Pitcairn
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Pohnpei
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Port_Moresby
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Rarotonga
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Saipan
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Tahiti
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Tarawa
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Tongatapu
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Wake
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Wallis
+%dir /usr/java/jdk1.6.0_37/jre/lib/zi/SystemV
+/usr/java/jdk1.6.0_37/jre/lib/zi/SystemV/AST4
+/usr/java/jdk1.6.0_37/jre/lib/zi/SystemV/AST4ADT
+/usr/java/jdk1.6.0_37/jre/lib/zi/SystemV/CST6
+/usr/java/jdk1.6.0_37/jre/lib/zi/SystemV/CST6CDT
+/usr/java/jdk1.6.0_37/jre/lib/zi/SystemV/EST5
+/usr/java/jdk1.6.0_37/jre/lib/zi/SystemV/EST5EDT
+/usr/java/jdk1.6.0_37/jre/lib/zi/SystemV/HST10
+/usr/java/jdk1.6.0_37/jre/lib/zi/SystemV/MST7
+/usr/java/jdk1.6.0_37/jre/lib/zi/SystemV/MST7MDT
+/usr/java/jdk1.6.0_37/jre/lib/zi/SystemV/PST8
+/usr/java/jdk1.6.0_37/jre/lib/zi/SystemV/PST8PDT
+/usr/java/jdk1.6.0_37/jre/lib/zi/SystemV/YST9
+/usr/java/jdk1.6.0_37/jre/lib/zi/SystemV/YST9YDT
+/usr/java/jdk1.6.0_37/jre/lib/zi/WET
+/usr/java/jdk1.6.0_37/jre/lib/zi/ZoneInfoMappings
+%dir /usr/java/jdk1.6.0_37/jre/plugin
+%dir /usr/java/jdk1.6.0_37/jre/plugin/desktop
+/usr/java/jdk1.6.0_37/jre/plugin/desktop/sun_java.desktop
+/usr/java/jdk1.6.0_37/jre/plugin/desktop/sun_java.png
+%dir /usr/java/jdk1.6.0_37/jre/plugin/i386
+%dir /usr/java/jdk1.6.0_37/jre/plugin/i386/ns7
+%dir /usr/java/jdk1.6.0_37/jre/plugin/i386/ns7-gcc29
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/plugin/i386/ns7-gcc29/libjavaplugin_oji.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/plugin/i386/ns7/libjavaplugin_oji.so
+%dir /usr/java/jdk1.6.0_37/lib
+/usr/java/jdk1.6.0_37/lib/ct.sym
+/usr/java/jdk1.6.0_37/lib/dt.jar
+/usr/java/jdk1.6.0_37/lib/htmlconverter.jar
+/usr/java/jdk1.6.0_37/lib/ir.idl
+/usr/java/jdk1.6.0_37/lib/jconsole.jar
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/lib/jexec
+/usr/java/jdk1.6.0_37/lib/orb.idl
+/usr/java/jdk1.6.0_37/lib/sa-jdi.jar
+%ghost %verify(user mode rdev group) /usr/java/jdk1.6.0_37/lib/tools.jar
+%config(missingok) /usr/java/jdk1.6.0_37/lib/tools.pack
+%dir /usr/java/jdk1.6.0_37/lib/visualvm
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/etc
+/usr/java/jdk1.6.0_37/lib/visualvm/etc/visualvm.clusters
+/usr/java/jdk1.6.0_37/lib/visualvm/etc/visualvm.conf
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/platform
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/.lastModified
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/VERSION.txt
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/platform/config
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/platform/config/ModuleAutoDeps
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/ModuleAutoDeps/org-netbeans-core.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/ModuleAutoDeps/org-netbeans-modules-options-api.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/ModuleAutoDeps/org-netbeans-modules-queries.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/ModuleAutoDeps/org-openide-execution.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/ModuleAutoDeps/org-openide-explorer.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/ModuleAutoDeps/org-openide-loaders.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/ModuleAutoDeps/org-openide-modules.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/ModuleAutoDeps/org-openide-text.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/ModuleAutoDeps/org-openide-util.xml
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-api-annotations-common.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-api-progress.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-api-visual.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-core-execution.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-core-io-ui.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-core-multiview.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-core-output2.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-core-ui.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-core-windows.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-core.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-modules-applemenu.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-modules-autoupdate-services.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-modules-autoupdate-ui.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-modules-core-kit.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-modules-editor-mimelookup-impl.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-modules-editor-mimelookup.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-modules-favorites.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-modules-javahelp.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-modules-keyring-impl.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-modules-keyring.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-modules-masterfs.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-modules-options-api.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-modules-options-keymap.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-modules-print.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-modules-progress-ui.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-modules-queries.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-modules-sendopts.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-modules-settings.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-modules-spi-actions.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-spi-quicksearch.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-swing-outline.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-swing-plaf.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-swing-tabcontrol.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-openide-actions.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-openide-awt.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-openide-compat.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-openide-dialogs.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-openide-execution.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-openide-explorer.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-openide-io.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-openide-loaders.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-openide-nodes.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-openide-options.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-openide-text.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-openide-util-enumerations.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-openide-windows.xml
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/platform/core
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/core/core.jar
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/platform/core/locale
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/core/locale/core_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/core/locale/core_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/core/locale/org-openide-filesystems_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/core/locale/org-openide-filesystems_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/core/org-openide-filesystems.jar
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/platform/docs
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/platform/lib
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/lib/boot.jar
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/platform/lib/locale
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/lib/locale/boot_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/lib/locale/boot_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/lib/locale/org-openide-modules_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/lib/locale/org-openide-modules_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/lib/locale/org-openide-util-lookup_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/lib/locale/org-openide-util-lookup_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/lib/locale/org-openide-util_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/lib/locale/org-openide-util_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/lib/nbexec
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/lib/org-openide-modules.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/lib/org-openide-util-lookup.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/lib/org-openide-util.jar
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/platform/modules
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/ext
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/ext/jh-2.0_05.jar
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/ext/locale
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/ext/locale/updater_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/ext/locale/updater_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/ext/updater.jar
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-api-annotations-common_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-api-annotations-common_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-api-progress_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-api-progress_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-api-visual_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-api-visual_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-core-execution_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-core-execution_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-core-io-ui_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-core-io-ui_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-core-multiview_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-core-multiview_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-core-output2_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-core-output2_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-core-ui_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-core-ui_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-core-windows_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-core-windows_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-core_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-core_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-applemenu_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-applemenu_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-autoupdate-services_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-autoupdate-services_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-autoupdate-ui_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-autoupdate-ui_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-core-kit_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-core-kit_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-editor-mimelookup-impl_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-editor-mimelookup-impl_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-editor-mimelookup_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-editor-mimelookup_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-favorites_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-favorites_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-javahelp_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-javahelp_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-keyring-impl_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-keyring-impl_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-keyring_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-keyring_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-masterfs_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-masterfs_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-options-api_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-options-api_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-options-keymap_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-options-keymap_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-print_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-print_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-progress-ui_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-progress-ui_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-queries_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-queries_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-sendopts_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-sendopts_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-settings_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-settings_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-spi-actions_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-spi-actions_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-templates_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-templates_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-spi-quicksearch_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-spi-quicksearch_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-swing-outline_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-swing-outline_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-swing-plaf_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-swing-plaf_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-swing-tabcontrol_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-swing-tabcontrol_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-openide-actions_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-openide-actions_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-openide-awt_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-openide-awt_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-openide-compat_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-openide-compat_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-openide-dialogs_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-openide-dialogs_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-openide-execution_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-openide-execution_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-openide-explorer_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-openide-explorer_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-openide-io_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-openide-io_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-openide-loaders_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-openide-loaders_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-openide-nodes_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-openide-nodes_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-openide-options_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-openide-options_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-openide-text_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-openide-text_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-openide-util-enumerations_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-openide-util-enumerations_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-openide-windows_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-openide-windows_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-api-annotations-common.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-api-progress.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-api-visual.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-core-execution.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-core-io-ui.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-core-multiview.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-core-output2.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-core-ui.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-core-windows.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-core.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-modules-applemenu.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-modules-autoupdate-services.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-modules-autoupdate-ui.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-modules-core-kit.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-modules-editor-mimelookup-impl.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-modules-editor-mimelookup.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-modules-favorites.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-modules-javahelp.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-modules-keyring-impl.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-modules-keyring.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-modules-masterfs.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-modules-options-api.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-modules-options-keymap.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-modules-print.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-modules-progress-ui.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-modules-queries.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-modules-sendopts.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-modules-settings.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-modules-spi-actions.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-spi-quicksearch.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-swing-outline.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-swing-plaf.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-swing-tabcontrol.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-openide-actions.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-openide-awt.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-openide-compat.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-openide-dialogs.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-openide-execution.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-openide-explorer.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-openide-io.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-openide-loaders.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-openide-nodes.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-openide-options.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-openide-text.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-openide-util-enumerations.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-openide-windows.jar
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-api-annotations-common.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-api-progress.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-api-visual.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-bootstrap.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-core-execution.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-core-io-ui.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-core-multiview.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-core-output2.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-core-startup.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-core-ui.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-core-windows.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-core.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-modules-applemenu.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-modules-autoupdate-services.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-modules-autoupdate-ui.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-modules-core-kit.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-modules-editor-mimelookup-impl.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-modules-editor-mimelookup.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-modules-favorites.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-modules-javahelp.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-modules-keyring-impl.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-modules-keyring.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-modules-masterfs.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-modules-options-api.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-modules-options-keymap.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-modules-print.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-modules-progress-ui.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-modules-queries.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-modules-sendopts.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-modules-settings.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-modules-spi-actions.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-spi-quicksearch.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-swing-outline.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-swing-plaf.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-swing-tabcontrol.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-openide-actions.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-openide-awt.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-openide-compat.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-openide-dialogs.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-openide-execution.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-openide-explorer.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-openide-filesystems.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-openide-io.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-openide-loaders.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-openide-modules.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-openide-nodes.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-openide-options.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-openide-text.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-openide-util-enumerations.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-openide-util-lookup.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-openide-util.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-openide-windows.xml
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/profiler
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/.lastModified
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/VERSION.txt
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/profiler/config
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/profiler/config/Modules
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/config/Modules/org-netbeans-lib-profiler-charts.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/config/Modules/org-netbeans-lib-profiler-common.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/config/Modules/org-netbeans-lib-profiler-ui.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/config/Modules/org-netbeans-lib-profiler.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/config/Modules/org-netbeans-modules-profiler-oql.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/config/Modules/org-netbeans-modules-profiler.xml
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/profiler/lib
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/profiler/lib/deployed
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/profiler/lib/deployed/jdk15
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/profiler/lib/deployed/jdk15/linux
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/lib/deployed/jdk15/linux/libprofilerinterface.so
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/profiler/lib/deployed/jdk16
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/profiler/lib/deployed/jdk16/linux
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/lib/deployed/jdk16/linux/libprofilerinterface.so
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/lib/jfluid-server-15.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/lib/jfluid-server.jar
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/profiler/lib/locale
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/lib/locale/jfluid-server_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/lib/locale/jfluid-server_zh_CN.jar
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/profiler/modules
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/profiler/modules/locale
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/modules/locale/org-netbeans-lib-profiler-charts_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/modules/locale/org-netbeans-lib-profiler-charts_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/modules/locale/org-netbeans-lib-profiler-common_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/modules/locale/org-netbeans-lib-profiler-common_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/modules/locale/org-netbeans-lib-profiler-ui_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/modules/locale/org-netbeans-lib-profiler-ui_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/modules/locale/org-netbeans-lib-profiler_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/modules/locale/org-netbeans-lib-profiler_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/modules/locale/org-netbeans-modules-profiler-oql_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/modules/locale/org-netbeans-modules-profiler-oql_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/modules/locale/org-netbeans-modules-profiler_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/modules/locale/org-netbeans-modules-profiler_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/modules/org-netbeans-lib-profiler-charts.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/modules/org-netbeans-lib-profiler-common.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/modules/org-netbeans-lib-profiler-ui.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/modules/org-netbeans-lib-profiler.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/modules/org-netbeans-modules-profiler-oql.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/modules/org-netbeans-modules-profiler.jar
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/profiler/update_tracking
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/update_tracking/org-netbeans-lib-profiler-charts.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/update_tracking/org-netbeans-lib-profiler-common.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/update_tracking/org-netbeans-lib-profiler-ui.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/update_tracking/org-netbeans-lib-profiler.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/update_tracking/org-netbeans-modules-profiler-oql.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/update_tracking/org-netbeans-modules-profiler.xml
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/visualvm
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/.lastModified
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-api-caching.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-application-views.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-application.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-attach.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-charts.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-core.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-coredump.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-heapdump.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-host-remote.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-host-views.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-host.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-jmx.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-jvm.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-jvmstat.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-modules-appui.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-profiler.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-profiling.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-sa.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-sampler.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-threaddump.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-tools.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-uisupport.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules/org-netbeans-api-visual.xml_hidden
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules/org-netbeans-core-execution.xml_hidden
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules/org-netbeans-core-output2.xml_hidden
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules/org-netbeans-modules-core-kit.xml_hidden
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules/org-netbeans-modules-favorites.xml_hidden
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules/org-netbeans-modules-options-keymap.xml_hidden
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules/org-netbeans-modules-spi-actions.xml_hidden
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules/org-openide-compat.xml_hidden
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules/org-openide-options.xml_hidden
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules/org-openide-util-enumerations.xml_hidden
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/visualvm/core
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/core/com-sun-tools-visualvm-modules-startup.jar
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/visualvm/core/locale
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/core/locale/.svn_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/core/locale/.svn_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/core/locale/com-sun-tools-visualvm-modules-startup_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/core/locale/com-sun-tools-visualvm-modules-startup_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/core/locale/core_visualvm.jar
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/all-wcprops
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-api-caching.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-application-views.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-application.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-attach.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-charts.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-core.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-coredump.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-heapdump.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-host-remote.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-host-views.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-host.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-jmx.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-jvm.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-jvmstat.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-modules-appui.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-profiler.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-profiling.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-sa.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-sampler.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-threaddump.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-tools.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-uisupport.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/entries
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-api-caching_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-api-caching_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-application-views_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-application-views_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-application_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-application_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-attach_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-attach_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-charts_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-charts_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-core_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-core_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-coredump_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-coredump_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-heapdump_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-heapdump_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-host-remote_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-host-remote_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-host-views_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-host-views_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-host_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-host_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-jmx_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-jmx_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-jvm_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-jvm_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-jvmstat_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-jvmstat_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-modules-appui_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-modules-appui_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-profiler_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-profiler_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-profiling_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-profiling_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-sa_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-sa_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-sampler_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-sampler_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-threaddump_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-threaddump_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-tools_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-tools_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-uisupport_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-uisupport_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/org-netbeans-core-windows_visualvm.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/org-netbeans-core_visualvm.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/org-netbeans-modules-.svn_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/org-netbeans-modules-.svn_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/org-netbeans-modules-profiler_visualvm.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/org-netbeans-modules-prop-base_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/org-netbeans-modules-prop-base_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/org-netbeans-modules-props_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/org-netbeans-modules-props_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/org-netbeans-modules-text-base_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/org-netbeans-modules-text-base_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/org-netbeans-modules-tmp_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/org-netbeans-modules-tmp_zh_CN.jar
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/visualvm/update_tracking
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-api-caching.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-application-views.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-application.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-attach.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-charts.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-core.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-coredump.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-heapdump.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-host-remote.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-host-views.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-host.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-jmx.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-jvm.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-jvmstat.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-modules-appui.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-modules-startup.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-profiler.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-profiling.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-sa.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-sampler.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-threaddump.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-tools.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-uisupport.xml
+%dir /usr/java/jdk1.6.0_37/man
+/usr/java/jdk1.6.0_37/man/ja
+%dir /usr/java/jdk1.6.0_37/man/ja_JP.eucJP
+%dir /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/appletviewer.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/apt.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/extcheck.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/idlj.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/jar.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/jarsigner.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/java.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/javac.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/javadoc.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/javah.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/javap.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/javaws.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/jconsole.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/jdb.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/jhat.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/jinfo.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/jmap.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/jps.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/jrunscript.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/jsadebugd.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/jstack.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/jstat.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/jstatd.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/jvisualvm.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/keytool.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/native2ascii.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/orbd.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/pack200.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/policytool.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/rmic.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/rmid.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/rmiregistry.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/schemagen.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/serialver.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/servertool.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/tnameserv.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/unpack200.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/wsgen.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/wsimport.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/xjc.1
+%dir /usr/java/jdk1.6.0_37/man/man1
+%doc /usr/java/jdk1.6.0_37/man/man1/appletviewer.1
+%doc /usr/java/jdk1.6.0_37/man/man1/apt.1
+%doc /usr/java/jdk1.6.0_37/man/man1/extcheck.1
+%doc /usr/java/jdk1.6.0_37/man/man1/idlj.1
+%doc /usr/java/jdk1.6.0_37/man/man1/jar.1
+%doc /usr/java/jdk1.6.0_37/man/man1/jarsigner.1
+%doc /usr/java/jdk1.6.0_37/man/man1/java.1
+%doc /usr/java/jdk1.6.0_37/man/man1/javac.1
+%doc /usr/java/jdk1.6.0_37/man/man1/javadoc.1
+%doc /usr/java/jdk1.6.0_37/man/man1/javah.1
+%doc /usr/java/jdk1.6.0_37/man/man1/javap.1
+%doc /usr/java/jdk1.6.0_37/man/man1/javaws.1
+%doc /usr/java/jdk1.6.0_37/man/man1/jconsole.1
+%doc /usr/java/jdk1.6.0_37/man/man1/jdb.1
+%doc /usr/java/jdk1.6.0_37/man/man1/jhat.1
+%doc /usr/java/jdk1.6.0_37/man/man1/jinfo.1
+%doc /usr/java/jdk1.6.0_37/man/man1/jmap.1
+%doc /usr/java/jdk1.6.0_37/man/man1/jps.1
+%doc /usr/java/jdk1.6.0_37/man/man1/jrunscript.1
+%doc /usr/java/jdk1.6.0_37/man/man1/jsadebugd.1
+%doc /usr/java/jdk1.6.0_37/man/man1/jstack.1
+%doc /usr/java/jdk1.6.0_37/man/man1/jstat.1
+%doc /usr/java/jdk1.6.0_37/man/man1/jstatd.1
+%doc /usr/java/jdk1.6.0_37/man/man1/jvisualvm.1
+%doc /usr/java/jdk1.6.0_37/man/man1/keytool.1
+%doc /usr/java/jdk1.6.0_37/man/man1/native2ascii.1
+%doc /usr/java/jdk1.6.0_37/man/man1/orbd.1
+%doc /usr/java/jdk1.6.0_37/man/man1/pack200.1
+%doc /usr/java/jdk1.6.0_37/man/man1/policytool.1
+%doc /usr/java/jdk1.6.0_37/man/man1/rmic.1
+%doc /usr/java/jdk1.6.0_37/man/man1/rmid.1
+%doc /usr/java/jdk1.6.0_37/man/man1/rmiregistry.1
+%doc /usr/java/jdk1.6.0_37/man/man1/schemagen.1
+%doc /usr/java/jdk1.6.0_37/man/man1/serialver.1
+%doc /usr/java/jdk1.6.0_37/man/man1/servertool.1
+%doc /usr/java/jdk1.6.0_37/man/man1/tnameserv.1
+%doc /usr/java/jdk1.6.0_37/man/man1/unpack200.1
+%doc /usr/java/jdk1.6.0_37/man/man1/wsgen.1
+%doc /usr/java/jdk1.6.0_37/man/man1/wsimport.1
+%doc /usr/java/jdk1.6.0_37/man/man1/xjc.1
+/usr/java/jdk1.6.0_37/src.zip
 
 
 
@@ -1620,7 +1620,7 @@ popd
 	GNOMEDIR="/opt/gnome2"
     fi
 
-    INSTALL_JRE_PATH=${RPM_INSTALL_PREFIX}/jdk1.6.0_35
+    INSTALL_JRE_PATH=${RPM_INSTALL_PREFIX}/jdk1.6.0_37
     if [ -e ${INSTALL_JRE_PATH}/jre/bin/java ]; then
 	INSTALL_JRE_PATH=${INSTALL_JRE_PATH}/jre
     fi
@@ -2443,12 +2443,12 @@ cleanup_default_links() {
     #
     # Unpack the packed JAR files.
     #
-    unpack_jars "${RPM_INSTALL_PREFIX}/jdk1.6.0_35/bin/unpack200" \
-                "${RPM_INSTALL_PREFIX}/jdk1.6.0_35" \
+    unpack_jars "${RPM_INSTALL_PREFIX}/jdk1.6.0_37/bin/unpack200" \
+                "${RPM_INSTALL_PREFIX}/jdk1.6.0_37" \
                 jre/lib/rt.jar jre/lib/jsse.jar jre/lib/charsets.jar lib/tools.jar jre/lib/ext/localedata.jar jre/lib/plugin.jar jre/lib/javaws.jar jre/lib/deploy.jar
 
     # fix for: 4728032 - Install needs to generate shared class files
-    ${RPM_INSTALL_PREFIX}/jdk1.6.0_35/bin/java -client -Xshare:dump > /dev/null 2>&1
+    ${RPM_INSTALL_PREFIX}/jdk1.6.0_37/bin/java -client -Xshare:dump > /dev/null 2>&1
 
     # Create a service tag if supported on the system.
     # No product registration is done.
@@ -2460,7 +2460,7 @@ cleanup_default_links() {
     # support.
     #
     if [ "${RPM_INSTALL_PREFIX}" = "/usr/java" ]; then
-         ${RPM_INSTALL_PREFIX}/jdk1.6.0_35/bin/java com.sun.servicetag.Installer -source "jdk" > /dev/null 2>&1
+         ${RPM_INSTALL_PREFIX}/jdk1.6.0_37/bin/java com.sun.servicetag.Installer -source "jdk" > /dev/null 2>&1
     fi
 
     #
@@ -2469,8 +2469,8 @@ cleanup_default_links() {
     # difficult for future installers.
     #
     LATEST_JAVA_PATH="`find_latest_release`"
-    if [ "${LATEST_JAVA_PATH}" == "${RPM_INSTALL_PREFIX}/jdk1.6.0_35" ] ||
-       [ "${LATEST_JAVA_PATH}" == "/usr/java/jdk1.6.0_35" ]
+    if [ "${LATEST_JAVA_PATH}" == "${RPM_INSTALL_PREFIX}/jdk1.6.0_37" ] ||
+       [ "${LATEST_JAVA_PATH}" == "/usr/java/jdk1.6.0_37" ]
     then
         #
         # Make sure the /usr/java/latest link points to LATEST_JAVA_PATH, and
@@ -2515,10 +2515,10 @@ cleanup_default_links() {
     # latest release.
     #
     if [ "${RPM_INSTALL_PREFIX}" != "/usr/java" ] &&
-       ( [ ! -e "/usr/java/jdk1.6.0_35" ] || [ -h "/usr/java/jdk1.6.0_35" ] )
+       ( [ ! -e "/usr/java/jdk1.6.0_37" ] || [ -h "/usr/java/jdk1.6.0_37" ] )
     then
-        rm -f "/usr/java/jdk1.6.0_35"
-        ln -s "${RPM_INSTALL_PREFIX}/jdk1.6.0_35" "/usr/java/jdk1.6.0_35"
+        rm -f "/usr/java/jdk1.6.0_37"
+        ln -s "${RPM_INSTALL_PREFIX}/jdk1.6.0_37" "/usr/java/jdk1.6.0_37"
     fi
 
     #
@@ -3075,7 +3075,7 @@ cleanup_default_links() {
     # support.
     #
     if [ "${RPM_INSTALL_PREFIX}" = "/usr/java" ]; then 
-        ${RPM_INSTALL_PREFIX}/jdk1.6.0_35/bin/java com.sun.servicetag.Installer -delete 
+        ${RPM_INSTALL_PREFIX}/jdk1.6.0_37/bin/java com.sun.servicetag.Installer -delete 
     fi
 
     #
@@ -3090,7 +3090,7 @@ cleanup_default_links() {
     if [ -h "/usr/java/default" ]; then
         DEFAULT_LINK="`dereference --follow \"/usr/java/default\"`"
         if [ $? -ne 0 ] ||
-           [ "${DEFAULT_LINK}" = "${RPM_INSTALL_PREFIX}/jdk1.6.0_35" ]
+           [ "${DEFAULT_LINK}" = "${RPM_INSTALL_PREFIX}/jdk1.6.0_37" ]
         then
             cleanup_default_links "/usr/java/default" \
                                   "/usr/bin" java javaws jcontrol javac jar javadoc
@@ -3117,7 +3117,7 @@ cleanup_default_links() {
     if [ -h "/usr/java/latest" ]; then
         LATEST_LINK="`dereference --follow \"/usr/java/latest\"`"
         if [ $? -ne 0 ] ||
-           [ "${LATEST_LINK}" = "${RPM_INSTALL_PREFIX}/jdk1.6.0_35" ]
+           [ "${LATEST_LINK}" = "${RPM_INSTALL_PREFIX}/jdk1.6.0_37" ]
         then
             #
             # If this version is the latest, and the first version with jexec
@@ -3145,17 +3145,17 @@ cleanup_default_links() {
 
     #
     # If the package was relocated when it was installed, there should be a link
-    # in /usr/java.  So, if there is a link named /usr/java/jdk1.6.0_35 that is
+    # in /usr/java.  So, if there is a link named /usr/java/jdk1.6.0_37 that is
     # dead, or points back to ${RPM_INSTALL_PREFIX}, delete it.
     #
     if [ "${RPM_INSTALL_PREFIX}" != "/usr/java" ] &&
-       [ -h "/usr/java/jdk1.6.0_35" ]
+       [ -h "/usr/java/jdk1.6.0_37" ]
     then
-        THIS_LINK="`dereference --follow \"/usr/java/jdk1.6.0_35\"`"
+        THIS_LINK="`dereference --follow \"/usr/java/jdk1.6.0_37\"`"
         if [ $? -ne 0 ] ||
-           [ "${THIS_LINK}" = "${RPM_INSTALL_PREFIX}/jdk1.6.0_35" ]
+           [ "${THIS_LINK}" = "${RPM_INSTALL_PREFIX}/jdk1.6.0_37" ]
         then
-            rm -f "/usr/java/jdk1.6.0_35" 2> /dev/null
+            rm -f "/usr/java/jdk1.6.0_37" 2> /dev/null
         fi
     fi
 
@@ -3198,7 +3198,7 @@ cleanup_default_links() {
 	GNOMEDIR="/opt/gnome2"
     fi
 
-    INSTALL_JRE_PATH=${RPM_INSTALL_PREFIX}/jdk1.6.0_35
+    INSTALL_JRE_PATH=${RPM_INSTALL_PREFIX}/jdk1.6.0_37
     if [ -e ${INSTALL_JRE_PATH}/jre/bin/java ]; then
 	INSTALL_JRE_PATH=${INSTALL_JRE_PATH}/jre
     fi
@@ -4026,7 +4026,7 @@ cleanup_default_links() {
     LATEST_JAVA_PATH="`find_latest_release`"
     if [ -n "${LATEST_JAVA_PATH}" ] &&
        [ `compare_java_by_version ${LATEST_JAVA_PATH} \
-                                  version-1.6.0_35` -lt 0 ]
+                                  version-1.6.0_37` -lt 0 ]
     then
         #
         # Only maintain the latest link if the latest version left on
@@ -4044,7 +4044,7 @@ cleanup_default_links() {
 
     if [ -z "${LATEST_JAVA_PATH}" ] ||
        [ `compare_java_by_version ${LATEST_JAVA_PATH} \
-                                  version-1.6.0_35` -lt 0 ]
+                                  version-1.6.0_37` -lt 0 ]
     then
         #
         # Only maintain the latest link if the latest version left on
@@ -4162,7 +4162,7 @@ cleanup_default_links() {
 	GNOMEDIR="/opt/gnome2"
     fi
 
-    INSTALL_JRE_PATH=${RPM_INSTALL_PREFIX}/jdk1.6.0_35
+    INSTALL_JRE_PATH=${RPM_INSTALL_PREFIX}/jdk1.6.0_37
     if [ -e ${INSTALL_JRE_PATH}/jre/bin/java ]; then
 	INSTALL_JRE_PATH=${INSTALL_JRE_PATH}/jre
     fi
@@ -4938,9 +4938,9 @@ cleanup_default_links() {
     # link, but only if it really points to this package.
     #
     if [ "${RPM_INSTALL_PREFIX}" != "/usr/java" ] &&
-       [ "`dereference --follow \"/usr/java/jdk1.6.0_35\"`" = "${RPM_INSTALL_PREFIX}" ]
+       [ "`dereference --follow \"/usr/java/jdk1.6.0_37\"`" = "${RPM_INSTALL_PREFIX}" ]
     then
-        rm -f "/usr/java/jdk1.6.0_35"
+        rm -f "/usr/java/jdk1.6.0_37"
     fi
 
     #
@@ -4949,8 +4949,8 @@ cleanup_default_links() {
     # it difficult for future installers.
     #
     LATEST_JAVA_PATH="`find_latest_release`"
-    if [ "${LATEST_JAVA_PATH}" == "${RPM_INSTALL_PREFIX}/jdk1.6.0_35" ] ||
-       [ "${LATEST_JAVA_PATH}" == "/usr/java/jdk1.6.0_35" ]
+    if [ "${LATEST_JAVA_PATH}" == "${RPM_INSTALL_PREFIX}/jdk1.6.0_37" ] ||
+       [ "${LATEST_JAVA_PATH}" == "/usr/java/jdk1.6.0_37" ]
     then
         #
         # Make sure the /usr/java/latest link points to LATEST_JAVA_PATH, and
@@ -4992,10 +4992,10 @@ cleanup_default_links() {
     # latest release.
     #
     if [ "${RPM_INSTALL_PREFIX}" != "/usr/java" ] &&
-       ( [ ! -e "/usr/java/jdk1.6.0_35" ] || [ -h "/usr/java/jdk1.6.0_35" ] )
+       ( [ ! -e "/usr/java/jdk1.6.0_37" ] || [ -h "/usr/java/jdk1.6.0_37" ] )
     then
-        rm -f "/usr/java/jdk1.6.0_35"
-        ln -s "${RPM_INSTALL_PREFIX}/jdk1.6.0_35" "/usr/java/jdk1.6.0_35"
+        rm -f "/usr/java/jdk1.6.0_37"
+        ln -s "${RPM_INSTALL_PREFIX}/jdk1.6.0_37" "/usr/java/jdk1.6.0_37"
     fi
 
     #
@@ -5028,8 +5028,8 @@ cleanup_default_links() {
 
 
 %changelog
-* Tue Sep 18 2012 matyas - 1.6.0_35-fcs.1
-- Specfile created from binary rpm jdk-6u35-linux-i586.rpm
+* Thu Oct 18 2012 root - 1.6.0_37-fcs.1
+- Specfile created from binary rpm jdk-6u37-linux-i586.rpm
 %endif
 %ifarch x86_64
 %global __os_install_post %{nil}
@@ -5040,14 +5040,14 @@ cleanup_default_links() {
 %undefine _enable_debug_packages
 Name: jdk
 Epoch: 2000
-Version: 1.6.0_35
+Version: 1.6.0_37
 Release: fcs.1%{?dist}
 Group: Development/Tools
 URL: http://www.oracle.com/technetwork/java/javase/overview/index.html
 License: Copyright (c) 2011, Oracle and/or its affiliates. All rights reserved. Also under other license(s) as shown at the Description field.
 Summary: Java(TM) Platform Standard Edition Development Kit
-Source0: jdk-6u35-linux-i586.bin.tar.gz
-Source1: jdk-6u35-linux-amd64.bin.tar.gz
+Source0: jdk-6u37-linux-i586.bin.tar.gz
+Source1: jdk-6u37-linux-amd64.bin.tar.gz
 AutoReqProv: no
 Prefix: /usr/java
 Requires: /bin/basename
@@ -5091,7 +5091,7 @@ Edition Runtime Environment.
 
 
 %prep
-%setup -n jdk-6u35-linux-amd64.extract -T -b 1
+%setup -n jdk-6u37-linux-amd64.extract -T -b 1
 
 
 
@@ -5105,22 +5105,22 @@ rm -rf $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT
 mv * $RPM_BUILD_ROOT
 pushd $RPM_BUILD_ROOT
-mkdir -p $RPM_BUILD_ROOT/$(dirname /usr/java/jdk1.6.0_35/jre/lib/rt.jar)
-touch $RPM_BUILD_ROOT/usr/java/jdk1.6.0_35/jre/lib/rt.jar
-mkdir -p $RPM_BUILD_ROOT/$(dirname /usr/java/jdk1.6.0_35/jre/lib/deploy.jar)
-touch $RPM_BUILD_ROOT/usr/java/jdk1.6.0_35/jre/lib/deploy.jar
-mkdir -p $RPM_BUILD_ROOT/$(dirname /usr/java/jdk1.6.0_35/jre/lib/charsets.jar)
-touch $RPM_BUILD_ROOT/usr/java/jdk1.6.0_35/jre/lib/charsets.jar
-mkdir -p $RPM_BUILD_ROOT/$(dirname /usr/java/jdk1.6.0_35/jre/lib/ext/localedata.jar)
-touch $RPM_BUILD_ROOT/usr/java/jdk1.6.0_35/jre/lib/ext/localedata.jar
-mkdir -p $RPM_BUILD_ROOT/$(dirname /usr/java/jdk1.6.0_35/jre/lib/javaws.jar)
-touch $RPM_BUILD_ROOT/usr/java/jdk1.6.0_35/jre/lib/javaws.jar
-mkdir -p $RPM_BUILD_ROOT/$(dirname /usr/java/jdk1.6.0_35/jre/lib/jsse.jar)
-touch $RPM_BUILD_ROOT/usr/java/jdk1.6.0_35/jre/lib/jsse.jar
-mkdir -p $RPM_BUILD_ROOT/$(dirname /usr/java/jdk1.6.0_35/jre/lib/plugin.jar)
-touch $RPM_BUILD_ROOT/usr/java/jdk1.6.0_35/jre/lib/plugin.jar
-mkdir -p $RPM_BUILD_ROOT/$(dirname /usr/java/jdk1.6.0_35/lib/tools.jar)
-touch $RPM_BUILD_ROOT/usr/java/jdk1.6.0_35/lib/tools.jar
+mkdir -p $RPM_BUILD_ROOT/$(dirname /usr/java/jdk1.6.0_37/jre/lib/jsse.jar)
+touch $RPM_BUILD_ROOT/usr/java/jdk1.6.0_37/jre/lib/jsse.jar
+mkdir -p $RPM_BUILD_ROOT/$(dirname /usr/java/jdk1.6.0_37/jre/lib/charsets.jar)
+touch $RPM_BUILD_ROOT/usr/java/jdk1.6.0_37/jre/lib/charsets.jar
+mkdir -p $RPM_BUILD_ROOT/$(dirname /usr/java/jdk1.6.0_37/jre/lib/deploy.jar)
+touch $RPM_BUILD_ROOT/usr/java/jdk1.6.0_37/jre/lib/deploy.jar
+mkdir -p $RPM_BUILD_ROOT/$(dirname /usr/java/jdk1.6.0_37/jre/lib/plugin.jar)
+touch $RPM_BUILD_ROOT/usr/java/jdk1.6.0_37/jre/lib/plugin.jar
+mkdir -p $RPM_BUILD_ROOT/$(dirname /usr/java/jdk1.6.0_37/jre/lib/ext/localedata.jar)
+touch $RPM_BUILD_ROOT/usr/java/jdk1.6.0_37/jre/lib/ext/localedata.jar
+mkdir -p $RPM_BUILD_ROOT/$(dirname /usr/java/jdk1.6.0_37/jre/lib/rt.jar)
+touch $RPM_BUILD_ROOT/usr/java/jdk1.6.0_37/jre/lib/rt.jar
+mkdir -p $RPM_BUILD_ROOT/$(dirname /usr/java/jdk1.6.0_37/jre/lib/javaws.jar)
+touch $RPM_BUILD_ROOT/usr/java/jdk1.6.0_37/jre/lib/javaws.jar
+mkdir -p $RPM_BUILD_ROOT/$(dirname /usr/java/jdk1.6.0_37/lib/tools.jar)
+touch $RPM_BUILD_ROOT/usr/java/jdk1.6.0_37/lib/tools.jar
 
 popd
 
@@ -5133,1461 +5133,1463 @@ popd
 %config(noreplace) %verify(link user mode rdev group) /etc/.java/.systemPrefs/.systemRootModFile
 %attr(0755,root,root) %config() %verify(link user mode rdev group) /etc/init.d/jexec
 %dir /usr/java
-%dir /usr/java/jdk1.6.0_35
-%doc /usr/java/jdk1.6.0_35/COPYRIGHT
-%doc /usr/java/jdk1.6.0_35/LICENSE
-%doc /usr/java/jdk1.6.0_35/README.html
-%doc /usr/java/jdk1.6.0_35/THIRDPARTYLICENSEREADME.txt
-%dir /usr/java/jdk1.6.0_35/bin
-/usr/java/jdk1.6.0_35/bin/ControlPanel
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/HtmlConverter
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/appletviewer
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/apt
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/extcheck
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/idlj
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/jar
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/jarsigner
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/java
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/javac
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/javadoc
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/javah
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/javap
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/javaws
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/jconsole
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/jcontrol
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/jdb
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/jhat
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/jinfo
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/jmap
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/jps
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/jrunscript
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/jsadebugd
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/jstack
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/jstat
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/jstatd
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/jvisualvm
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/keytool
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/native2ascii
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/orbd
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/pack200
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/policytool
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/rmic
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/rmid
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/rmiregistry
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/schemagen
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/serialver
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/servertool
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/tnameserv
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/unpack200
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/wsgen
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/wsimport
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/bin/xjc
-%dir /usr/java/jdk1.6.0_35/include
-/usr/java/jdk1.6.0_35/include/classfile_constants.h
-/usr/java/jdk1.6.0_35/include/jawt.h
-/usr/java/jdk1.6.0_35/include/jdwpTransport.h
-/usr/java/jdk1.6.0_35/include/jni.h
-/usr/java/jdk1.6.0_35/include/jvmti.h
-%dir /usr/java/jdk1.6.0_35/include/linux
-/usr/java/jdk1.6.0_35/include/linux/jawt_md.h
-/usr/java/jdk1.6.0_35/include/linux/jni_md.h
-%dir /usr/java/jdk1.6.0_35/jre
-%doc /usr/java/jdk1.6.0_35/jre/COPYRIGHT
-%doc /usr/java/jdk1.6.0_35/jre/LICENSE
-%doc /usr/java/jdk1.6.0_35/jre/README
-%doc /usr/java/jdk1.6.0_35/jre/THIRDPARTYLICENSEREADME.txt
-%doc /usr/java/jdk1.6.0_35/jre/Welcome.html
-%dir /usr/java/jdk1.6.0_35/jre/bin
-/usr/java/jdk1.6.0_35/jre/bin/ControlPanel
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/bin/java
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/bin/java_vm
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/bin/javaws
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/bin/jcontrol
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/bin/keytool
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/bin/orbd
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/bin/pack200
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/bin/policytool
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/bin/rmid
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/bin/rmiregistry
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/bin/servertool
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/bin/tnameserv
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/bin/unpack200
-%dir /usr/java/jdk1.6.0_35/jre/javaws
-/usr/java/jdk1.6.0_35/jre/javaws/javaws
-%dir /usr/java/jdk1.6.0_35/jre/lib
-/usr/java/jdk1.6.0_35/jre/lib/alt-rt.jar
-/usr/java/jdk1.6.0_35/jre/lib/alt-string.jar
-%dir /usr/java/jdk1.6.0_35/jre/lib/amd64
-%dir /usr/java/jdk1.6.0_35/jre/lib/amd64/headless
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/amd64/headless/libmawt.so
-%dir /usr/java/jdk1.6.0_35/jre/lib/amd64/jli
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/amd64/jli/libjli.so
-/usr/java/jdk1.6.0_35/jre/lib/amd64/jvm.cfg
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/amd64/libJdbcOdbc.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/amd64/libattach.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/amd64/libawt.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/amd64/libcmm.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/amd64/libdcpr.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/amd64/libdeploy.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/amd64/libdt_socket.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/amd64/libfontmanager.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/amd64/libhprof.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/amd64/libinstrument.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/amd64/libioser12.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/amd64/libj2gss.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/amd64/libj2pcsc.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/amd64/libj2pkcs11.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/amd64/libjaas_unix.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/amd64/libjava.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/amd64/libjava_crw_demo.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/amd64/libjavaplugin_jni.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/amd64/libjawt.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/amd64/libjdwp.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/amd64/libjpeg.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/amd64/libjsig.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/amd64/libjsound.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/amd64/libjsoundalsa.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/amd64/libmanagement.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/amd64/libmlib_image.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/amd64/libnet.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/amd64/libnio.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/amd64/libnpjp2.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/amd64/libnpt.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/amd64/librmi.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/amd64/libsaproc.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/amd64/libsplashscreen.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/amd64/libunpack.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/amd64/libverify.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/amd64/libzip.so
-%dir /usr/java/jdk1.6.0_35/jre/lib/amd64/motif21
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/amd64/motif21/libmawt.so
-%dir /usr/java/jdk1.6.0_35/jre/lib/amd64/native_threads
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/amd64/native_threads/libhpi.so
-%dir /usr/java/jdk1.6.0_35/jre/lib/amd64/server
-/usr/java/jdk1.6.0_35/jre/lib/amd64/server/Xusage.txt
-/usr/java/jdk1.6.0_35/jre/lib/amd64/server/libjsig.so
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/amd64/server/libjvm.so
-%dir /usr/java/jdk1.6.0_35/jre/lib/amd64/xawt
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/amd64/xawt/libmawt.so
-%dir /usr/java/jdk1.6.0_35/jre/lib/applet
-%dir /usr/java/jdk1.6.0_35/jre/lib/audio
-/usr/java/jdk1.6.0_35/jre/lib/audio/soundbank.gm
-/usr/java/jdk1.6.0_35/jre/lib/calendars.properties
-%ghost %verify(user mode rdev group) /usr/java/jdk1.6.0_35/jre/lib/charsets.jar
-%config(missingok) /usr/java/jdk1.6.0_35/jre/lib/charsets.pack
-/usr/java/jdk1.6.0_35/jre/lib/classlist
-%dir /usr/java/jdk1.6.0_35/jre/lib/cmm
-/usr/java/jdk1.6.0_35/jre/lib/cmm/CIEXYZ.pf
-/usr/java/jdk1.6.0_35/jre/lib/cmm/GRAY.pf
-/usr/java/jdk1.6.0_35/jre/lib/cmm/LINEAR_RGB.pf
-/usr/java/jdk1.6.0_35/jre/lib/cmm/PYCC.pf
-/usr/java/jdk1.6.0_35/jre/lib/cmm/sRGB.pf
-/usr/java/jdk1.6.0_35/jre/lib/content-types.properties
-%dir /usr/java/jdk1.6.0_35/jre/lib/deploy
-%ghost %verify(user mode rdev group) /usr/java/jdk1.6.0_35/jre/lib/deploy.jar
-%config(missingok) /usr/java/jdk1.6.0_35/jre/lib/deploy.pack
-/usr/java/jdk1.6.0_35/jre/lib/deploy/ffjcext.zip
-/usr/java/jdk1.6.0_35/jre/lib/deploy/java-icon.ico
-/usr/java/jdk1.6.0_35/jre/lib/deploy/messages.properties
-/usr/java/jdk1.6.0_35/jre/lib/deploy/messages_de.properties
-/usr/java/jdk1.6.0_35/jre/lib/deploy/messages_es.properties
-/usr/java/jdk1.6.0_35/jre/lib/deploy/messages_fr.properties
-/usr/java/jdk1.6.0_35/jre/lib/deploy/messages_it.properties
-/usr/java/jdk1.6.0_35/jre/lib/deploy/messages_ja.properties
-/usr/java/jdk1.6.0_35/jre/lib/deploy/messages_ko.properties
-/usr/java/jdk1.6.0_35/jre/lib/deploy/messages_pt_BR.properties
-/usr/java/jdk1.6.0_35/jre/lib/deploy/messages_sv.properties
-/usr/java/jdk1.6.0_35/jre/lib/deploy/messages_zh_CN.properties
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/deploy/messages_zh_HK.properties
-/usr/java/jdk1.6.0_35/jre/lib/deploy/messages_zh_TW.properties
-/usr/java/jdk1.6.0_35/jre/lib/deploy/splash.gif
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop/applications
-/usr/java/jdk1.6.0_35/jre/lib/desktop/applications/sun-java.desktop
-/usr/java/jdk1.6.0_35/jre/lib/desktop/applications/sun-javaws.desktop
-/usr/java/jdk1.6.0_35/jre/lib/desktop/applications/sun_java.desktop
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop/icons
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrast
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrast/16x16
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrast/16x16/apps
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrast/16x16/apps/sun-java.png
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrast/16x16/apps/sun-javaws.png
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrast/16x16/apps/sun-jcontrol.png
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrast/16x16/mimetypes
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrast/16x16/mimetypes/gnome-mime-application-x-java-archive.png
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrast/16x16/mimetypes/gnome-mime-application-x-java-jnlp-file.png
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrast/16x16/mimetypes/gnome-mime-text-x-java.png
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrast/48x48
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrast/48x48/apps
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrast/48x48/apps/sun-java.png
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrast/48x48/apps/sun-javaws.png
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrast/48x48/apps/sun-jcontrol.png
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrast/48x48/mimetypes
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrast/48x48/mimetypes/gnome-mime-application-x-java-archive.png
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrast/48x48/mimetypes/gnome-mime-application-x-java-jnlp-file.png
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrast/48x48/mimetypes/gnome-mime-text-x-java.png
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrastInverse
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrastInverse/16x16
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrastInverse/16x16/apps
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrastInverse/16x16/apps/sun-java.png
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrastInverse/16x16/apps/sun-javaws.png
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrastInverse/16x16/apps/sun-jcontrol.png
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrastInverse/16x16/mimetypes
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrastInverse/16x16/mimetypes/gnome-mime-application-x-java-archive.png
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrastInverse/16x16/mimetypes/gnome-mime-application-x-java-jnlp-file.png
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrastInverse/16x16/mimetypes/gnome-mime-text-x-java.png
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrastInverse/48x48
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrastInverse/48x48/apps
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrastInverse/48x48/apps/sun-java.png
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrastInverse/48x48/apps/sun-javaws.png
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrastInverse/48x48/apps/sun-jcontrol.png
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrastInverse/48x48/mimetypes
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrastInverse/48x48/mimetypes/gnome-mime-application-x-java-archive.png
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrastInverse/48x48/mimetypes/gnome-mime-application-x-java-jnlp-file.png
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/HighContrastInverse/48x48/mimetypes/gnome-mime-text-x-java.png
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop/icons/LowContrast
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop/icons/LowContrast/16x16
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop/icons/LowContrast/16x16/apps
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/LowContrast/16x16/apps/sun-java.png
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/LowContrast/16x16/apps/sun-javaws.png
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/LowContrast/16x16/apps/sun-jcontrol.png
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop/icons/LowContrast/16x16/mimetypes
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/LowContrast/16x16/mimetypes/gnome-mime-application-x-java-archive.png
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/LowContrast/16x16/mimetypes/gnome-mime-application-x-java-jnlp-file.png
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/LowContrast/16x16/mimetypes/gnome-mime-text-x-java.png
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop/icons/LowContrast/48x48
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop/icons/LowContrast/48x48/apps
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/LowContrast/48x48/apps/sun-java.png
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/LowContrast/48x48/apps/sun-javaws.png
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/LowContrast/48x48/apps/sun-jcontrol.png
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop/icons/LowContrast/48x48/mimetypes
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/LowContrast/48x48/mimetypes/gnome-mime-application-x-java-archive.png
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/LowContrast/48x48/mimetypes/gnome-mime-application-x-java-jnlp-file.png
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/LowContrast/48x48/mimetypes/gnome-mime-text-x-java.png
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop/icons/hicolor
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop/icons/hicolor/16x16
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop/icons/hicolor/16x16/apps
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/hicolor/16x16/apps/sun-java.png
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/hicolor/16x16/apps/sun-javaws.png
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/hicolor/16x16/apps/sun-jcontrol.png
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop/icons/hicolor/16x16/mimetypes
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/hicolor/16x16/mimetypes/gnome-mime-application-x-java-archive.png
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/hicolor/16x16/mimetypes/gnome-mime-application-x-java-jnlp-file.png
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/hicolor/16x16/mimetypes/gnome-mime-text-x-java.png
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop/icons/hicolor/48x48
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop/icons/hicolor/48x48/apps
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/hicolor/48x48/apps/sun-java.png
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/hicolor/48x48/apps/sun-javaws.png
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/hicolor/48x48/apps/sun-jcontrol.png
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop/icons/hicolor/48x48/mimetypes
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/hicolor/48x48/mimetypes/gnome-mime-application-x-java-archive.png
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/hicolor/48x48/mimetypes/gnome-mime-application-x-java-jnlp-file.png
-/usr/java/jdk1.6.0_35/jre/lib/desktop/icons/hicolor/48x48/mimetypes/gnome-mime-text-x-java.png
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop/mime
-%dir /usr/java/jdk1.6.0_35/jre/lib/desktop/mime/packages
-/usr/java/jdk1.6.0_35/jre/lib/desktop/mime/packages/x-java-archive.xml
-/usr/java/jdk1.6.0_35/jre/lib/desktop/mime/packages/x-java-jnlp-file.xml
-%dir /usr/java/jdk1.6.0_35/jre/lib/ext
-/usr/java/jdk1.6.0_35/jre/lib/ext/dnsns.jar
-%ghost %verify(user mode rdev group) /usr/java/jdk1.6.0_35/jre/lib/ext/localedata.jar
-%config(missingok) /usr/java/jdk1.6.0_35/jre/lib/ext/localedata.pack
-/usr/java/jdk1.6.0_35/jre/lib/ext/meta-index
-/usr/java/jdk1.6.0_35/jre/lib/ext/sunjce_provider.jar
-/usr/java/jdk1.6.0_35/jre/lib/ext/sunpkcs11.jar
-/usr/java/jdk1.6.0_35/jre/lib/flavormap.properties
-/usr/java/jdk1.6.0_35/jre/lib/fontconfig.RedHat.2.1.bfc
-/usr/java/jdk1.6.0_35/jre/lib/fontconfig.RedHat.2.1.properties.src
-/usr/java/jdk1.6.0_35/jre/lib/fontconfig.RedHat.3.bfc
-/usr/java/jdk1.6.0_35/jre/lib/fontconfig.RedHat.3.properties.src
-/usr/java/jdk1.6.0_35/jre/lib/fontconfig.RedHat.4.bfc
-/usr/java/jdk1.6.0_35/jre/lib/fontconfig.RedHat.4.properties.src
-/usr/java/jdk1.6.0_35/jre/lib/fontconfig.RedHat.6.bfc
-/usr/java/jdk1.6.0_35/jre/lib/fontconfig.RedHat.6.properties.src
-/usr/java/jdk1.6.0_35/jre/lib/fontconfig.RedHat.bfc
-/usr/java/jdk1.6.0_35/jre/lib/fontconfig.RedHat.properties.src
-/usr/java/jdk1.6.0_35/jre/lib/fontconfig.SuSE.11.bfc
-/usr/java/jdk1.6.0_35/jre/lib/fontconfig.SuSE.11.properties.src
-/usr/java/jdk1.6.0_35/jre/lib/fontconfig.SuSE.bfc
-/usr/java/jdk1.6.0_35/jre/lib/fontconfig.SuSE.properties.src
-/usr/java/jdk1.6.0_35/jre/lib/fontconfig.Sun.bfc
-/usr/java/jdk1.6.0_35/jre/lib/fontconfig.Sun.properties.src
-/usr/java/jdk1.6.0_35/jre/lib/fontconfig.Turbo.bfc
-/usr/java/jdk1.6.0_35/jre/lib/fontconfig.Turbo.properties.src
-/usr/java/jdk1.6.0_35/jre/lib/fontconfig.Ubuntu.bfc
-/usr/java/jdk1.6.0_35/jre/lib/fontconfig.Ubuntu.properties.src
-/usr/java/jdk1.6.0_35/jre/lib/fontconfig.bfc
-/usr/java/jdk1.6.0_35/jre/lib/fontconfig.properties.src
-%dir /usr/java/jdk1.6.0_35/jre/lib/fonts
-/usr/java/jdk1.6.0_35/jre/lib/fonts/LucidaBrightDemiBold.ttf
-/usr/java/jdk1.6.0_35/jre/lib/fonts/LucidaBrightDemiItalic.ttf
-/usr/java/jdk1.6.0_35/jre/lib/fonts/LucidaBrightItalic.ttf
-/usr/java/jdk1.6.0_35/jre/lib/fonts/LucidaBrightRegular.ttf
-/usr/java/jdk1.6.0_35/jre/lib/fonts/LucidaSansDemiBold.ttf
-/usr/java/jdk1.6.0_35/jre/lib/fonts/LucidaSansRegular.ttf
-/usr/java/jdk1.6.0_35/jre/lib/fonts/LucidaTypewriterBold.ttf
-/usr/java/jdk1.6.0_35/jre/lib/fonts/LucidaTypewriterRegular.ttf
-/usr/java/jdk1.6.0_35/jre/lib/fonts/fonts.dir
-%dir /usr/java/jdk1.6.0_35/jre/lib/im
-/usr/java/jdk1.6.0_35/jre/lib/im/indicim.jar
-/usr/java/jdk1.6.0_35/jre/lib/im/thaiim.jar
-%dir /usr/java/jdk1.6.0_35/jre/lib/images
-%dir /usr/java/jdk1.6.0_35/jre/lib/images/cursors
-/usr/java/jdk1.6.0_35/jre/lib/images/cursors/cursors.properties
-/usr/java/jdk1.6.0_35/jre/lib/images/cursors/invalid32x32.gif
-/usr/java/jdk1.6.0_35/jre/lib/images/cursors/motif_CopyDrop32x32.gif
-/usr/java/jdk1.6.0_35/jre/lib/images/cursors/motif_CopyNoDrop32x32.gif
-/usr/java/jdk1.6.0_35/jre/lib/images/cursors/motif_LinkDrop32x32.gif
-/usr/java/jdk1.6.0_35/jre/lib/images/cursors/motif_LinkNoDrop32x32.gif
-/usr/java/jdk1.6.0_35/jre/lib/images/cursors/motif_MoveDrop32x32.gif
-/usr/java/jdk1.6.0_35/jre/lib/images/cursors/motif_MoveNoDrop32x32.gif
-%dir /usr/java/jdk1.6.0_35/jre/lib/images/icons
-/usr/java/jdk1.6.0_35/jre/lib/images/icons/sun-java.png
-/usr/java/jdk1.6.0_35/jre/lib/images/icons/sun-java_HighContrast.png
-/usr/java/jdk1.6.0_35/jre/lib/images/icons/sun-java_HighContrastInverse.png
-/usr/java/jdk1.6.0_35/jre/lib/images/icons/sun-java_LowContrast.png
-%ghost %verify(user mode rdev group) /usr/java/jdk1.6.0_35/jre/lib/javaws.jar
-%config(missingok) /usr/java/jdk1.6.0_35/jre/lib/javaws.pack
-/usr/java/jdk1.6.0_35/jre/lib/jce.jar
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/jre/lib/jexec
-%ghost %verify(user mode rdev group) /usr/java/jdk1.6.0_35/jre/lib/jsse.jar
-%config(missingok) /usr/java/jdk1.6.0_35/jre/lib/jsse.pack
-/usr/java/jdk1.6.0_35/jre/lib/jvm.hprof.txt
-%dir /usr/java/jdk1.6.0_35/jre/lib/locale
-%dir /usr/java/jdk1.6.0_35/jre/lib/locale/de
-%dir /usr/java/jdk1.6.0_35/jre/lib/locale/de/LC_MESSAGES
-/usr/java/jdk1.6.0_35/jre/lib/locale/de/LC_MESSAGES/sunw_java_plugin.mo
-%dir /usr/java/jdk1.6.0_35/jre/lib/locale/es
-%dir /usr/java/jdk1.6.0_35/jre/lib/locale/es/LC_MESSAGES
-/usr/java/jdk1.6.0_35/jre/lib/locale/es/LC_MESSAGES/sunw_java_plugin.mo
-%dir /usr/java/jdk1.6.0_35/jre/lib/locale/fr
-%dir /usr/java/jdk1.6.0_35/jre/lib/locale/fr/LC_MESSAGES
-/usr/java/jdk1.6.0_35/jre/lib/locale/fr/LC_MESSAGES/sunw_java_plugin.mo
-%dir /usr/java/jdk1.6.0_35/jre/lib/locale/it
-%dir /usr/java/jdk1.6.0_35/jre/lib/locale/it/LC_MESSAGES
-/usr/java/jdk1.6.0_35/jre/lib/locale/it/LC_MESSAGES/sunw_java_plugin.mo
-%dir /usr/java/jdk1.6.0_35/jre/lib/locale/ja
-%dir /usr/java/jdk1.6.0_35/jre/lib/locale/ja/LC_MESSAGES
-/usr/java/jdk1.6.0_35/jre/lib/locale/ja/LC_MESSAGES/sunw_java_plugin.mo
-%dir /usr/java/jdk1.6.0_35/jre/lib/locale/ko
-%dir /usr/java/jdk1.6.0_35/jre/lib/locale/ko.UTF-8
-%dir /usr/java/jdk1.6.0_35/jre/lib/locale/ko.UTF-8/LC_MESSAGES
-/usr/java/jdk1.6.0_35/jre/lib/locale/ko.UTF-8/LC_MESSAGES/sunw_java_plugin.mo
-%dir /usr/java/jdk1.6.0_35/jre/lib/locale/ko/LC_MESSAGES
-/usr/java/jdk1.6.0_35/jre/lib/locale/ko/LC_MESSAGES/sunw_java_plugin.mo
-%dir /usr/java/jdk1.6.0_35/jre/lib/locale/sv
-%dir /usr/java/jdk1.6.0_35/jre/lib/locale/sv/LC_MESSAGES
-/usr/java/jdk1.6.0_35/jre/lib/locale/sv/LC_MESSAGES/sunw_java_plugin.mo
-%dir /usr/java/jdk1.6.0_35/jre/lib/locale/zh
-%dir /usr/java/jdk1.6.0_35/jre/lib/locale/zh.GBK
-%dir /usr/java/jdk1.6.0_35/jre/lib/locale/zh.GBK/LC_MESSAGES
-/usr/java/jdk1.6.0_35/jre/lib/locale/zh.GBK/LC_MESSAGES/sunw_java_plugin.mo
-%dir /usr/java/jdk1.6.0_35/jre/lib/locale/zh/LC_MESSAGES
-/usr/java/jdk1.6.0_35/jre/lib/locale/zh/LC_MESSAGES/sunw_java_plugin.mo
-%dir /usr/java/jdk1.6.0_35/jre/lib/locale/zh_HK.BIG5HK
-%dir /usr/java/jdk1.6.0_35/jre/lib/locale/zh_HK.BIG5HK/LC_MESSAGES
-/usr/java/jdk1.6.0_35/jre/lib/locale/zh_HK.BIG5HK/LC_MESSAGES/sunw_java_plugin.mo
-%dir /usr/java/jdk1.6.0_35/jre/lib/locale/zh_TW
-%dir /usr/java/jdk1.6.0_35/jre/lib/locale/zh_TW.BIG5
-%dir /usr/java/jdk1.6.0_35/jre/lib/locale/zh_TW.BIG5/LC_MESSAGES
-/usr/java/jdk1.6.0_35/jre/lib/locale/zh_TW.BIG5/LC_MESSAGES/sunw_java_plugin.mo
-%dir /usr/java/jdk1.6.0_35/jre/lib/locale/zh_TW/LC_MESSAGES
-/usr/java/jdk1.6.0_35/jre/lib/locale/zh_TW/LC_MESSAGES/sunw_java_plugin.mo
-/usr/java/jdk1.6.0_35/jre/lib/logging.properties
-%dir /usr/java/jdk1.6.0_35/jre/lib/management
-/usr/java/jdk1.6.0_35/jre/lib/management-agent.jar
-/usr/java/jdk1.6.0_35/jre/lib/management/jmxremote.access
-/usr/java/jdk1.6.0_35/jre/lib/management/jmxremote.password.template
-/usr/java/jdk1.6.0_35/jre/lib/management/management.properties
-/usr/java/jdk1.6.0_35/jre/lib/management/snmp.acl.template
-/usr/java/jdk1.6.0_35/jre/lib/meta-index
-/usr/java/jdk1.6.0_35/jre/lib/net.properties
-%dir /usr/java/jdk1.6.0_35/jre/lib/oblique-fonts
-/usr/java/jdk1.6.0_35/jre/lib/oblique-fonts/LucidaSansDemiOblique.ttf
-/usr/java/jdk1.6.0_35/jre/lib/oblique-fonts/LucidaSansOblique.ttf
-/usr/java/jdk1.6.0_35/jre/lib/oblique-fonts/LucidaTypewriterBoldOblique.ttf
-/usr/java/jdk1.6.0_35/jre/lib/oblique-fonts/LucidaTypewriterOblique.ttf
-/usr/java/jdk1.6.0_35/jre/lib/oblique-fonts/fonts.dir
-%ghost %verify(user mode rdev group) /usr/java/jdk1.6.0_35/jre/lib/plugin.jar
-%config(missingok) /usr/java/jdk1.6.0_35/jre/lib/plugin.pack
-/usr/java/jdk1.6.0_35/jre/lib/psfont.properties.ja
-/usr/java/jdk1.6.0_35/jre/lib/psfontj2d.properties
-/usr/java/jdk1.6.0_35/jre/lib/resources.jar
-%ghost %verify(user mode rdev group) /usr/java/jdk1.6.0_35/jre/lib/rt.jar
-%config(missingok) /usr/java/jdk1.6.0_35/jre/lib/rt.pack
-%dir /usr/java/jdk1.6.0_35/jre/lib/security
-/usr/java/jdk1.6.0_35/jre/lib/security/US_export_policy.jar
-/usr/java/jdk1.6.0_35/jre/lib/security/blacklist
-/usr/java/jdk1.6.0_35/jre/lib/security/cacerts
-/usr/java/jdk1.6.0_35/jre/lib/security/java.policy
-/usr/java/jdk1.6.0_35/jre/lib/security/java.security
-/usr/java/jdk1.6.0_35/jre/lib/security/javaws.policy
-/usr/java/jdk1.6.0_35/jre/lib/security/local_policy.jar
-/usr/java/jdk1.6.0_35/jre/lib/security/trusted.libraries
-%dir /usr/java/jdk1.6.0_35/jre/lib/servicetag
-/usr/java/jdk1.6.0_35/jre/lib/servicetag/jdk_header.png
-/usr/java/jdk1.6.0_35/jre/lib/sound.properties
-%dir /usr/java/jdk1.6.0_35/jre/lib/zi
-%dir /usr/java/jdk1.6.0_35/jre/lib/zi/Africa
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Abidjan
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Accra
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Addis_Ababa
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Algiers
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Asmara
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Bamako
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Bangui
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Banjul
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Bissau
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Blantyre
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Brazzaville
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Bujumbura
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Cairo
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Casablanca
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Ceuta
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Conakry
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Dakar
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Dar_es_Salaam
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Djibouti
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Douala
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/El_Aaiun
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Freetown
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Gaborone
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Harare
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Johannesburg
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Juba
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Kampala
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Khartoum
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Kigali
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Kinshasa
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Lagos
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Libreville
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Lome
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Luanda
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Lubumbashi
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Lusaka
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Malabo
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Maputo
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Maseru
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Mbabane
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Mogadishu
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Monrovia
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Nairobi
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Ndjamena
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Niamey
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Nouakchott
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Ouagadougou
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Porto-Novo
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Sao_Tome
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Tripoli
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Tunis
-/usr/java/jdk1.6.0_35/jre/lib/zi/Africa/Windhoek
-%dir /usr/java/jdk1.6.0_35/jre/lib/zi/America
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Adak
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Anchorage
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Anguilla
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Antigua
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Araguaina
-%dir /usr/java/jdk1.6.0_35/jre/lib/zi/America/Argentina
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Argentina/Buenos_Aires
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Argentina/Catamarca
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Argentina/Cordoba
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Argentina/Jujuy
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Argentina/La_Rioja
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Argentina/Mendoza
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Argentina/Rio_Gallegos
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Argentina/Salta
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Argentina/San_Juan
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Argentina/San_Luis
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Argentina/Tucuman
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Argentina/Ushuaia
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Aruba
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Asuncion
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Atikokan
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Bahia
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Bahia_Banderas
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Barbados
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Belem
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Belize
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Blanc-Sablon
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Boa_Vista
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Bogota
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Boise
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Cambridge_Bay
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Campo_Grande
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Cancun
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Caracas
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Cayenne
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Cayman
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Chicago
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Chihuahua
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Costa_Rica
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Creston
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Cuiaba
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Curacao
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Danmarkshavn
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Dawson
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Dawson_Creek
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Denver
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Detroit
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Dominica
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Edmonton
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Eirunepe
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/El_Salvador
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Fortaleza
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Glace_Bay
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Godthab
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Goose_Bay
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Grand_Turk
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Grenada
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Guadeloupe
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Guatemala
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Guayaquil
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Guyana
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Halifax
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Havana
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Hermosillo
-%dir /usr/java/jdk1.6.0_35/jre/lib/zi/America/Indiana
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Indiana/Indianapolis
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Indiana/Knox
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Indiana/Marengo
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Indiana/Petersburg
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Indiana/Tell_City
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Indiana/Vevay
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Indiana/Vincennes
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Indiana/Winamac
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Inuvik
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Iqaluit
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Jamaica
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Juneau
-%dir /usr/java/jdk1.6.0_35/jre/lib/zi/America/Kentucky
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Kentucky/Louisville
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Kentucky/Monticello
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/La_Paz
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Lima
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Los_Angeles
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Maceio
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Managua
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Manaus
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Martinique
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Matamoros
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Mazatlan
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Menominee
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Merida
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Metlakatla
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Mexico_City
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Miquelon
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Moncton
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Monterrey
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Montevideo
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Montreal
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Montserrat
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Nassau
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/New_York
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Nipigon
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Nome
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Noronha
-%dir /usr/java/jdk1.6.0_35/jre/lib/zi/America/North_Dakota
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/North_Dakota/Beulah
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/North_Dakota/Center
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/North_Dakota/New_Salem
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Ojinaga
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Panama
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Pangnirtung
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Paramaribo
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Phoenix
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Port-au-Prince
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Port_of_Spain
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Porto_Velho
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Puerto_Rico
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Rainy_River
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Rankin_Inlet
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Recife
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Regina
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Resolute
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Rio_Branco
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Santa_Isabel
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Santarem
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Santiago
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Santo_Domingo
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Sao_Paulo
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Scoresbysund
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Sitka
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/St_Johns
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/St_Kitts
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/St_Lucia
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/St_Thomas
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/St_Vincent
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Swift_Current
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Tegucigalpa
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Thule
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Thunder_Bay
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Tijuana
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Toronto
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Tortola
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Vancouver
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Whitehorse
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Winnipeg
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Yakutat
-/usr/java/jdk1.6.0_35/jre/lib/zi/America/Yellowknife
-%dir /usr/java/jdk1.6.0_35/jre/lib/zi/Antarctica
-/usr/java/jdk1.6.0_35/jre/lib/zi/Antarctica/Casey
-/usr/java/jdk1.6.0_35/jre/lib/zi/Antarctica/Davis
-/usr/java/jdk1.6.0_35/jre/lib/zi/Antarctica/DumontDUrville
-/usr/java/jdk1.6.0_35/jre/lib/zi/Antarctica/Macquarie
-/usr/java/jdk1.6.0_35/jre/lib/zi/Antarctica/Mawson
-/usr/java/jdk1.6.0_35/jre/lib/zi/Antarctica/McMurdo
-/usr/java/jdk1.6.0_35/jre/lib/zi/Antarctica/Palmer
-/usr/java/jdk1.6.0_35/jre/lib/zi/Antarctica/Rothera
-/usr/java/jdk1.6.0_35/jre/lib/zi/Antarctica/Syowa
-/usr/java/jdk1.6.0_35/jre/lib/zi/Antarctica/Vostok
-%dir /usr/java/jdk1.6.0_35/jre/lib/zi/Asia
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Aden
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Almaty
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Amman
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Anadyr
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Aqtau
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Aqtobe
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Ashgabat
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Baghdad
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Bahrain
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Baku
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Bangkok
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Beirut
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Bishkek
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Brunei
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Choibalsan
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Chongqing
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Colombo
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Damascus
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Dhaka
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Dili
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Dubai
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Dushanbe
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Gaza
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Harbin
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Hebron
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Ho_Chi_Minh
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Hong_Kong
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Hovd
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Irkutsk
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Jakarta
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Jayapura
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Jerusalem
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Kabul
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Kamchatka
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Karachi
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Kashgar
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Kathmandu
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Kolkata
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Krasnoyarsk
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Kuala_Lumpur
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Kuching
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Kuwait
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Macau
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Magadan
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Makassar
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Manila
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Muscat
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Nicosia
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Novokuznetsk
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Novosibirsk
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Omsk
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Oral
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Phnom_Penh
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Pontianak
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Pyongyang
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Qatar
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Qyzylorda
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Rangoon
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Riyadh
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Riyadh87
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Riyadh88
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Riyadh89
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Sakhalin
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Samarkand
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Seoul
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Shanghai
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Singapore
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Taipei
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Tashkent
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Tbilisi
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Tehran
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Thimphu
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Tokyo
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Ulaanbaatar
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Urumqi
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Vientiane
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Vladivostok
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Yakutsk
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Yekaterinburg
-/usr/java/jdk1.6.0_35/jre/lib/zi/Asia/Yerevan
-%dir /usr/java/jdk1.6.0_35/jre/lib/zi/Atlantic
-/usr/java/jdk1.6.0_35/jre/lib/zi/Atlantic/Azores
-/usr/java/jdk1.6.0_35/jre/lib/zi/Atlantic/Bermuda
-/usr/java/jdk1.6.0_35/jre/lib/zi/Atlantic/Canary
-/usr/java/jdk1.6.0_35/jre/lib/zi/Atlantic/Cape_Verde
-/usr/java/jdk1.6.0_35/jre/lib/zi/Atlantic/Faroe
-/usr/java/jdk1.6.0_35/jre/lib/zi/Atlantic/Madeira
-/usr/java/jdk1.6.0_35/jre/lib/zi/Atlantic/Reykjavik
-/usr/java/jdk1.6.0_35/jre/lib/zi/Atlantic/South_Georgia
-/usr/java/jdk1.6.0_35/jre/lib/zi/Atlantic/St_Helena
-/usr/java/jdk1.6.0_35/jre/lib/zi/Atlantic/Stanley
-%dir /usr/java/jdk1.6.0_35/jre/lib/zi/Australia
-/usr/java/jdk1.6.0_35/jre/lib/zi/Australia/Adelaide
-/usr/java/jdk1.6.0_35/jre/lib/zi/Australia/Brisbane
-/usr/java/jdk1.6.0_35/jre/lib/zi/Australia/Broken_Hill
-/usr/java/jdk1.6.0_35/jre/lib/zi/Australia/Currie
-/usr/java/jdk1.6.0_35/jre/lib/zi/Australia/Darwin
-/usr/java/jdk1.6.0_35/jre/lib/zi/Australia/Eucla
-/usr/java/jdk1.6.0_35/jre/lib/zi/Australia/Hobart
-/usr/java/jdk1.6.0_35/jre/lib/zi/Australia/Lindeman
-/usr/java/jdk1.6.0_35/jre/lib/zi/Australia/Lord_Howe
-/usr/java/jdk1.6.0_35/jre/lib/zi/Australia/Melbourne
-/usr/java/jdk1.6.0_35/jre/lib/zi/Australia/Perth
-/usr/java/jdk1.6.0_35/jre/lib/zi/Australia/Sydney
-/usr/java/jdk1.6.0_35/jre/lib/zi/CET
-/usr/java/jdk1.6.0_35/jre/lib/zi/CST6CDT
-/usr/java/jdk1.6.0_35/jre/lib/zi/EET
-/usr/java/jdk1.6.0_35/jre/lib/zi/EST
-/usr/java/jdk1.6.0_35/jre/lib/zi/EST5EDT
-%dir /usr/java/jdk1.6.0_35/jre/lib/zi/Etc
-/usr/java/jdk1.6.0_35/jre/lib/zi/Etc/GMT
-/usr/java/jdk1.6.0_35/jre/lib/zi/Etc/GMT+1
-/usr/java/jdk1.6.0_35/jre/lib/zi/Etc/GMT+10
-/usr/java/jdk1.6.0_35/jre/lib/zi/Etc/GMT+11
-/usr/java/jdk1.6.0_35/jre/lib/zi/Etc/GMT+12
-/usr/java/jdk1.6.0_35/jre/lib/zi/Etc/GMT+2
-/usr/java/jdk1.6.0_35/jre/lib/zi/Etc/GMT+3
-/usr/java/jdk1.6.0_35/jre/lib/zi/Etc/GMT+4
-/usr/java/jdk1.6.0_35/jre/lib/zi/Etc/GMT+5
-/usr/java/jdk1.6.0_35/jre/lib/zi/Etc/GMT+6
-/usr/java/jdk1.6.0_35/jre/lib/zi/Etc/GMT+7
-/usr/java/jdk1.6.0_35/jre/lib/zi/Etc/GMT+8
-/usr/java/jdk1.6.0_35/jre/lib/zi/Etc/GMT+9
-/usr/java/jdk1.6.0_35/jre/lib/zi/Etc/GMT-1
-/usr/java/jdk1.6.0_35/jre/lib/zi/Etc/GMT-10
-/usr/java/jdk1.6.0_35/jre/lib/zi/Etc/GMT-11
-/usr/java/jdk1.6.0_35/jre/lib/zi/Etc/GMT-12
-/usr/java/jdk1.6.0_35/jre/lib/zi/Etc/GMT-13
-/usr/java/jdk1.6.0_35/jre/lib/zi/Etc/GMT-14
-/usr/java/jdk1.6.0_35/jre/lib/zi/Etc/GMT-2
-/usr/java/jdk1.6.0_35/jre/lib/zi/Etc/GMT-3
-/usr/java/jdk1.6.0_35/jre/lib/zi/Etc/GMT-4
-/usr/java/jdk1.6.0_35/jre/lib/zi/Etc/GMT-5
-/usr/java/jdk1.6.0_35/jre/lib/zi/Etc/GMT-6
-/usr/java/jdk1.6.0_35/jre/lib/zi/Etc/GMT-7
-/usr/java/jdk1.6.0_35/jre/lib/zi/Etc/GMT-8
-/usr/java/jdk1.6.0_35/jre/lib/zi/Etc/GMT-9
-/usr/java/jdk1.6.0_35/jre/lib/zi/Etc/UCT
-/usr/java/jdk1.6.0_35/jre/lib/zi/Etc/UTC
-%dir /usr/java/jdk1.6.0_35/jre/lib/zi/Europe
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Amsterdam
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Andorra
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Athens
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Belgrade
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Berlin
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Brussels
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Bucharest
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Budapest
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Chisinau
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Copenhagen
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Dublin
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Gibraltar
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Helsinki
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Istanbul
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Kaliningrad
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Kiev
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Lisbon
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/London
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Luxembourg
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Madrid
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Malta
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Minsk
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Monaco
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Moscow
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Oslo
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Paris
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Prague
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Riga
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Rome
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Samara
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Simferopol
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Sofia
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Stockholm
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Tallinn
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Tirane
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Uzhgorod
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Vaduz
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Vienna
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Vilnius
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Volgograd
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Warsaw
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Zaporozhye
-/usr/java/jdk1.6.0_35/jre/lib/zi/Europe/Zurich
-/usr/java/jdk1.6.0_35/jre/lib/zi/GMT
-/usr/java/jdk1.6.0_35/jre/lib/zi/HST
-%dir /usr/java/jdk1.6.0_35/jre/lib/zi/Indian
-/usr/java/jdk1.6.0_35/jre/lib/zi/Indian/Antananarivo
-/usr/java/jdk1.6.0_35/jre/lib/zi/Indian/Chagos
-/usr/java/jdk1.6.0_35/jre/lib/zi/Indian/Christmas
-/usr/java/jdk1.6.0_35/jre/lib/zi/Indian/Cocos
-/usr/java/jdk1.6.0_35/jre/lib/zi/Indian/Comoro
-/usr/java/jdk1.6.0_35/jre/lib/zi/Indian/Kerguelen
-/usr/java/jdk1.6.0_35/jre/lib/zi/Indian/Mahe
-/usr/java/jdk1.6.0_35/jre/lib/zi/Indian/Maldives
-/usr/java/jdk1.6.0_35/jre/lib/zi/Indian/Mauritius
-/usr/java/jdk1.6.0_35/jre/lib/zi/Indian/Mayotte
-/usr/java/jdk1.6.0_35/jre/lib/zi/Indian/Reunion
-/usr/java/jdk1.6.0_35/jre/lib/zi/MET
-/usr/java/jdk1.6.0_35/jre/lib/zi/MST
-/usr/java/jdk1.6.0_35/jre/lib/zi/MST7MDT
-/usr/java/jdk1.6.0_35/jre/lib/zi/PST8PDT
-%dir /usr/java/jdk1.6.0_35/jre/lib/zi/Pacific
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Apia
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Auckland
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Chatham
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Chuuk
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Easter
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Efate
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Enderbury
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Fakaofo
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Fiji
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Funafuti
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Galapagos
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Gambier
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Guadalcanal
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Guam
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Honolulu
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Johnston
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Kiritimati
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Kosrae
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Kwajalein
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Majuro
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Marquesas
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Midway
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Nauru
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Niue
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Norfolk
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Noumea
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Pago_Pago
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Palau
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Pitcairn
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Pohnpei
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Port_Moresby
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Rarotonga
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Saipan
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Tahiti
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Tarawa
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Tongatapu
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Wake
-/usr/java/jdk1.6.0_35/jre/lib/zi/Pacific/Wallis
-%dir /usr/java/jdk1.6.0_35/jre/lib/zi/SystemV
-/usr/java/jdk1.6.0_35/jre/lib/zi/SystemV/AST4
-/usr/java/jdk1.6.0_35/jre/lib/zi/SystemV/AST4ADT
-/usr/java/jdk1.6.0_35/jre/lib/zi/SystemV/CST6
-/usr/java/jdk1.6.0_35/jre/lib/zi/SystemV/CST6CDT
-/usr/java/jdk1.6.0_35/jre/lib/zi/SystemV/EST5
-/usr/java/jdk1.6.0_35/jre/lib/zi/SystemV/EST5EDT
-/usr/java/jdk1.6.0_35/jre/lib/zi/SystemV/HST10
-/usr/java/jdk1.6.0_35/jre/lib/zi/SystemV/MST7
-/usr/java/jdk1.6.0_35/jre/lib/zi/SystemV/MST7MDT
-/usr/java/jdk1.6.0_35/jre/lib/zi/SystemV/PST8
-/usr/java/jdk1.6.0_35/jre/lib/zi/SystemV/PST8PDT
-/usr/java/jdk1.6.0_35/jre/lib/zi/SystemV/YST9
-/usr/java/jdk1.6.0_35/jre/lib/zi/SystemV/YST9YDT
-/usr/java/jdk1.6.0_35/jre/lib/zi/WET
-/usr/java/jdk1.6.0_35/jre/lib/zi/ZoneInfoMappings
-%dir /usr/java/jdk1.6.0_35/jre/plugin
-%dir /usr/java/jdk1.6.0_35/jre/plugin/desktop
-/usr/java/jdk1.6.0_35/jre/plugin/desktop/sun_java.desktop
-/usr/java/jdk1.6.0_35/jre/plugin/desktop/sun_java.png
-%dir /usr/java/jdk1.6.0_35/lib
-/usr/java/jdk1.6.0_35/lib/ct.sym
-/usr/java/jdk1.6.0_35/lib/dt.jar
-/usr/java/jdk1.6.0_35/lib/htmlconverter.jar
-/usr/java/jdk1.6.0_35/lib/ir.idl
-/usr/java/jdk1.6.0_35/lib/jconsole.jar
-%attr(0755,root,root) /usr/java/jdk1.6.0_35/lib/jexec
-/usr/java/jdk1.6.0_35/lib/orb.idl
-/usr/java/jdk1.6.0_35/lib/sa-jdi.jar
-%ghost %verify(user mode rdev group) /usr/java/jdk1.6.0_35/lib/tools.jar
-%config(missingok) /usr/java/jdk1.6.0_35/lib/tools.pack
-%dir /usr/java/jdk1.6.0_35/lib/visualvm
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/etc
-/usr/java/jdk1.6.0_35/lib/visualvm/etc/visualvm.clusters
-/usr/java/jdk1.6.0_35/lib/visualvm/etc/visualvm.conf
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/platform
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/.lastModified
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/VERSION.txt
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/platform/config
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/platform/config/ModuleAutoDeps
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/ModuleAutoDeps/org-netbeans-core.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/ModuleAutoDeps/org-netbeans-modules-options-api.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/ModuleAutoDeps/org-netbeans-modules-queries.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/ModuleAutoDeps/org-openide-execution.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/ModuleAutoDeps/org-openide-explorer.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/ModuleAutoDeps/org-openide-loaders.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/ModuleAutoDeps/org-openide-modules.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/ModuleAutoDeps/org-openide-text.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/ModuleAutoDeps/org-openide-util.xml
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-api-annotations-common.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-api-progress.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-api-visual.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-core-execution.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-core-io-ui.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-core-multiview.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-core-output2.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-core-ui.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-core-windows.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-core.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-modules-applemenu.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-modules-autoupdate-services.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-modules-autoupdate-ui.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-modules-core-kit.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-modules-editor-mimelookup-impl.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-modules-editor-mimelookup.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-modules-favorites.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-modules-javahelp.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-modules-keyring-impl.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-modules-keyring.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-modules-masterfs.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-modules-options-api.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-modules-options-keymap.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-modules-print.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-modules-progress-ui.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-modules-queries.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-modules-sendopts.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-modules-settings.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-modules-spi-actions.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-spi-quicksearch.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-swing-outline.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-swing-plaf.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-netbeans-swing-tabcontrol.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-openide-actions.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-openide-awt.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-openide-compat.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-openide-dialogs.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-openide-execution.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-openide-explorer.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-openide-io.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-openide-loaders.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-openide-nodes.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-openide-options.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-openide-text.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-openide-util-enumerations.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/config/Modules/org-openide-windows.xml
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/platform/core
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/core/core.jar
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/platform/core/locale
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/core/locale/core_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/core/locale/core_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/core/locale/org-openide-filesystems_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/core/locale/org-openide-filesystems_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/core/org-openide-filesystems.jar
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/platform/docs
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/platform/lib
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/lib/boot.jar
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/platform/lib/locale
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/lib/locale/boot_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/lib/locale/boot_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/lib/locale/org-openide-modules_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/lib/locale/org-openide-modules_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/lib/locale/org-openide-util-lookup_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/lib/locale/org-openide-util-lookup_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/lib/locale/org-openide-util_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/lib/locale/org-openide-util_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/lib/nbexec
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/lib/org-openide-modules.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/lib/org-openide-util-lookup.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/lib/org-openide-util.jar
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/platform/modules
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/ext
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/ext/jh-2.0_05.jar
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/ext/locale
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/ext/locale/updater_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/ext/locale/updater_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/ext/updater.jar
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-api-annotations-common_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-api-annotations-common_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-api-progress_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-api-progress_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-api-visual_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-api-visual_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-core-execution_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-core-execution_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-core-io-ui_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-core-io-ui_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-core-multiview_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-core-multiview_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-core-output2_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-core-output2_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-core-ui_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-core-ui_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-core-windows_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-core-windows_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-core_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-core_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-applemenu_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-applemenu_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-autoupdate-services_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-autoupdate-services_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-autoupdate-ui_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-autoupdate-ui_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-core-kit_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-core-kit_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-editor-mimelookup-impl_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-editor-mimelookup-impl_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-editor-mimelookup_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-editor-mimelookup_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-favorites_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-favorites_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-javahelp_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-javahelp_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-keyring-impl_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-keyring-impl_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-keyring_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-keyring_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-masterfs_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-masterfs_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-options-api_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-options-api_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-options-keymap_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-options-keymap_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-print_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-print_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-progress-ui_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-progress-ui_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-queries_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-queries_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-sendopts_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-sendopts_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-settings_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-settings_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-spi-actions_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-spi-actions_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-templates_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-modules-templates_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-spi-quicksearch_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-spi-quicksearch_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-swing-outline_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-swing-outline_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-swing-plaf_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-swing-plaf_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-swing-tabcontrol_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-netbeans-swing-tabcontrol_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-openide-actions_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-openide-actions_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-openide-awt_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-openide-awt_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-openide-compat_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-openide-compat_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-openide-dialogs_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-openide-dialogs_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-openide-execution_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-openide-execution_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-openide-explorer_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-openide-explorer_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-openide-io_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-openide-io_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-openide-loaders_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-openide-loaders_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-openide-nodes_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-openide-nodes_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-openide-options_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-openide-options_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-openide-text_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-openide-text_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-openide-util-enumerations_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-openide-util-enumerations_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-openide-windows_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/locale/org-openide-windows_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-api-annotations-common.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-api-progress.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-api-visual.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-core-execution.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-core-io-ui.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-core-multiview.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-core-output2.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-core-ui.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-core-windows.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-core.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-modules-applemenu.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-modules-autoupdate-services.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-modules-autoupdate-ui.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-modules-core-kit.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-modules-editor-mimelookup-impl.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-modules-editor-mimelookup.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-modules-favorites.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-modules-javahelp.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-modules-keyring-impl.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-modules-keyring.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-modules-masterfs.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-modules-options-api.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-modules-options-keymap.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-modules-print.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-modules-progress-ui.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-modules-queries.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-modules-sendopts.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-modules-settings.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-modules-spi-actions.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-spi-quicksearch.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-swing-outline.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-swing-plaf.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-netbeans-swing-tabcontrol.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-openide-actions.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-openide-awt.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-openide-compat.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-openide-dialogs.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-openide-execution.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-openide-explorer.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-openide-io.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-openide-loaders.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-openide-nodes.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-openide-options.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-openide-text.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-openide-util-enumerations.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/modules/org-openide-windows.jar
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-api-annotations-common.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-api-progress.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-api-visual.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-bootstrap.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-core-execution.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-core-io-ui.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-core-multiview.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-core-output2.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-core-startup.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-core-ui.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-core-windows.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-core.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-modules-applemenu.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-modules-autoupdate-services.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-modules-autoupdate-ui.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-modules-core-kit.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-modules-editor-mimelookup-impl.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-modules-editor-mimelookup.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-modules-favorites.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-modules-javahelp.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-modules-keyring-impl.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-modules-keyring.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-modules-masterfs.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-modules-options-api.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-modules-options-keymap.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-modules-print.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-modules-progress-ui.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-modules-queries.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-modules-sendopts.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-modules-settings.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-modules-spi-actions.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-spi-quicksearch.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-swing-outline.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-swing-plaf.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-netbeans-swing-tabcontrol.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-openide-actions.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-openide-awt.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-openide-compat.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-openide-dialogs.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-openide-execution.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-openide-explorer.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-openide-filesystems.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-openide-io.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-openide-loaders.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-openide-modules.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-openide-nodes.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-openide-options.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-openide-text.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-openide-util-enumerations.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-openide-util-lookup.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-openide-util.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/platform/update_tracking/org-openide-windows.xml
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/profiler
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/.lastModified
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/VERSION.txt
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/profiler/config
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/profiler/config/Modules
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/config/Modules/org-netbeans-lib-profiler-charts.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/config/Modules/org-netbeans-lib-profiler-common.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/config/Modules/org-netbeans-lib-profiler-ui.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/config/Modules/org-netbeans-lib-profiler.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/config/Modules/org-netbeans-modules-profiler-oql.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/config/Modules/org-netbeans-modules-profiler.xml
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/profiler/lib
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/profiler/lib/deployed
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/profiler/lib/deployed/jdk15
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/profiler/lib/deployed/jdk15/linux-amd64
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/lib/deployed/jdk15/linux-amd64/libprofilerinterface.so
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/profiler/lib/deployed/jdk16
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/profiler/lib/deployed/jdk16/linux-amd64
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/lib/deployed/jdk16/linux-amd64/libprofilerinterface.so
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/lib/jfluid-server-15.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/lib/jfluid-server.jar
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/profiler/lib/locale
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/lib/locale/jfluid-server_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/lib/locale/jfluid-server_zh_CN.jar
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/profiler/modules
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/profiler/modules/locale
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/modules/locale/org-netbeans-lib-profiler-charts_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/modules/locale/org-netbeans-lib-profiler-charts_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/modules/locale/org-netbeans-lib-profiler-common_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/modules/locale/org-netbeans-lib-profiler-common_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/modules/locale/org-netbeans-lib-profiler-ui_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/modules/locale/org-netbeans-lib-profiler-ui_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/modules/locale/org-netbeans-lib-profiler_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/modules/locale/org-netbeans-lib-profiler_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/modules/locale/org-netbeans-modules-profiler-oql_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/modules/locale/org-netbeans-modules-profiler-oql_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/modules/locale/org-netbeans-modules-profiler_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/modules/locale/org-netbeans-modules-profiler_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/modules/org-netbeans-lib-profiler-charts.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/modules/org-netbeans-lib-profiler-common.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/modules/org-netbeans-lib-profiler-ui.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/modules/org-netbeans-lib-profiler.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/modules/org-netbeans-modules-profiler-oql.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/modules/org-netbeans-modules-profiler.jar
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/profiler/update_tracking
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/update_tracking/org-netbeans-lib-profiler-charts.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/update_tracking/org-netbeans-lib-profiler-common.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/update_tracking/org-netbeans-lib-profiler-ui.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/update_tracking/org-netbeans-lib-profiler.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/update_tracking/org-netbeans-modules-profiler-oql.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/profiler/update_tracking/org-netbeans-modules-profiler.xml
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/visualvm
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/.lastModified
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-api-caching.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-application-views.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-application.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-attach.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-charts.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-core.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-coredump.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-heapdump.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-host-remote.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-host-views.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-host.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-jmx.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-jvm.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-jvmstat.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-modules-appui.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-profiler.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-profiling.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-sa.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-sampler.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-threaddump.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-tools.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-uisupport.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules/org-netbeans-api-visual.xml_hidden
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules/org-netbeans-core-execution.xml_hidden
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules/org-netbeans-core-output2.xml_hidden
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules/org-netbeans-modules-core-kit.xml_hidden
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules/org-netbeans-modules-favorites.xml_hidden
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules/org-netbeans-modules-options-keymap.xml_hidden
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules/org-netbeans-modules-spi-actions.xml_hidden
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules/org-openide-compat.xml_hidden
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules/org-openide-options.xml_hidden
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/config/Modules/org-openide-util-enumerations.xml_hidden
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/visualvm/core
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/core/com-sun-tools-visualvm-modules-startup.jar
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/visualvm/core/locale
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/core/locale/.svn_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/core/locale/.svn_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/core/locale/com-sun-tools-visualvm-modules-startup_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/core/locale/com-sun-tools-visualvm-modules-startup_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/core/locale/core_visualvm.jar
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/all-wcprops
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-api-caching.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-application-views.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-application.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-attach.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-charts.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-core.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-coredump.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-heapdump.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-host-remote.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-host-views.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-host.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-jmx.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-jvm.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-jvmstat.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-modules-appui.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-profiler.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-profiling.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-sa.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-sampler.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-threaddump.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-tools.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-uisupport.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/entries
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-api-caching_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-api-caching_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-application-views_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-application-views_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-application_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-application_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-attach_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-attach_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-charts_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-charts_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-core_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-core_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-coredump_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-coredump_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-heapdump_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-heapdump_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-host-remote_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-host-remote_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-host-views_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-host-views_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-host_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-host_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-jmx_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-jmx_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-jvm_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-jvm_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-jvmstat_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-jvmstat_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-modules-appui_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-modules-appui_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-profiler_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-profiler_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-profiling_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-profiling_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-sa_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-sa_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-sampler_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-sampler_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-threaddump_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-threaddump_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-tools_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-tools_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-uisupport_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-uisupport_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/org-netbeans-core-windows_visualvm.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/org-netbeans-core_visualvm.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/org-netbeans-modules-.svn_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/org-netbeans-modules-.svn_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/org-netbeans-modules-profiler_visualvm.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/org-netbeans-modules-prop-base_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/org-netbeans-modules-prop-base_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/org-netbeans-modules-props_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/org-netbeans-modules-props_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/org-netbeans-modules-text-base_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/org-netbeans-modules-text-base_zh_CN.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/org-netbeans-modules-tmp_ja.jar
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/modules/locale/org-netbeans-modules-tmp_zh_CN.jar
-%dir /usr/java/jdk1.6.0_35/lib/visualvm/visualvm/update_tracking
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-api-caching.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-application-views.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-application.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-attach.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-charts.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-core.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-coredump.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-heapdump.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-host-remote.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-host-views.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-host.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-jmx.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-jvm.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-jvmstat.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-modules-appui.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-modules-startup.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-profiler.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-profiling.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-sa.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-sampler.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-threaddump.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-tools.xml
-/usr/java/jdk1.6.0_35/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-uisupport.xml
-%dir /usr/java/jdk1.6.0_35/man
-/usr/java/jdk1.6.0_35/man/ja
-%dir /usr/java/jdk1.6.0_35/man/ja_JP.eucJP
-%dir /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/appletviewer.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/apt.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/extcheck.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/idlj.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/jar.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/jarsigner.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/java.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/javac.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/javadoc.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/javah.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/javap.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/jconsole.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/jdb.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/jhat.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/jinfo.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/jmap.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/jps.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/jrunscript.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/jsadebugd.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/jstack.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/jstat.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/jstatd.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/jvisualvm.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/keytool.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/native2ascii.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/orbd.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/pack200.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/policytool.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/rmic.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/rmid.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/rmiregistry.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/schemagen.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/serialver.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/servertool.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/tnameserv.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/unpack200.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/wsgen.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/wsimport.1
-%doc /usr/java/jdk1.6.0_35/man/ja_JP.eucJP/man1/xjc.1
-%dir /usr/java/jdk1.6.0_35/man/man1
-%doc /usr/java/jdk1.6.0_35/man/man1/appletviewer.1
-%doc /usr/java/jdk1.6.0_35/man/man1/apt.1
-%doc /usr/java/jdk1.6.0_35/man/man1/extcheck.1
-%doc /usr/java/jdk1.6.0_35/man/man1/idlj.1
-%doc /usr/java/jdk1.6.0_35/man/man1/jar.1
-%doc /usr/java/jdk1.6.0_35/man/man1/jarsigner.1
-%doc /usr/java/jdk1.6.0_35/man/man1/java.1
-%doc /usr/java/jdk1.6.0_35/man/man1/javac.1
-%doc /usr/java/jdk1.6.0_35/man/man1/javadoc.1
-%doc /usr/java/jdk1.6.0_35/man/man1/javah.1
-%doc /usr/java/jdk1.6.0_35/man/man1/javap.1
-%doc /usr/java/jdk1.6.0_35/man/man1/javaws.1
-%doc /usr/java/jdk1.6.0_35/man/man1/jconsole.1
-%doc /usr/java/jdk1.6.0_35/man/man1/jdb.1
-%doc /usr/java/jdk1.6.0_35/man/man1/jhat.1
-%doc /usr/java/jdk1.6.0_35/man/man1/jinfo.1
-%doc /usr/java/jdk1.6.0_35/man/man1/jmap.1
-%doc /usr/java/jdk1.6.0_35/man/man1/jps.1
-%doc /usr/java/jdk1.6.0_35/man/man1/jrunscript.1
-%doc /usr/java/jdk1.6.0_35/man/man1/jsadebugd.1
-%doc /usr/java/jdk1.6.0_35/man/man1/jstack.1
-%doc /usr/java/jdk1.6.0_35/man/man1/jstat.1
-%doc /usr/java/jdk1.6.0_35/man/man1/jstatd.1
-%doc /usr/java/jdk1.6.0_35/man/man1/jvisualvm.1
-%doc /usr/java/jdk1.6.0_35/man/man1/keytool.1
-%doc /usr/java/jdk1.6.0_35/man/man1/native2ascii.1
-%doc /usr/java/jdk1.6.0_35/man/man1/orbd.1
-%doc /usr/java/jdk1.6.0_35/man/man1/pack200.1
-%doc /usr/java/jdk1.6.0_35/man/man1/policytool.1
-%doc /usr/java/jdk1.6.0_35/man/man1/rmic.1
-%doc /usr/java/jdk1.6.0_35/man/man1/rmid.1
-%doc /usr/java/jdk1.6.0_35/man/man1/rmiregistry.1
-%doc /usr/java/jdk1.6.0_35/man/man1/schemagen.1
-%doc /usr/java/jdk1.6.0_35/man/man1/serialver.1
-%doc /usr/java/jdk1.6.0_35/man/man1/servertool.1
-%doc /usr/java/jdk1.6.0_35/man/man1/tnameserv.1
-%doc /usr/java/jdk1.6.0_35/man/man1/unpack200.1
-%doc /usr/java/jdk1.6.0_35/man/man1/wsgen.1
-%doc /usr/java/jdk1.6.0_35/man/man1/wsimport.1
-%doc /usr/java/jdk1.6.0_35/man/man1/xjc.1
-/usr/java/jdk1.6.0_35/src.zip
+%dir /usr/java/jdk1.6.0_37
+%doc /usr/java/jdk1.6.0_37/COPYRIGHT
+%doc /usr/java/jdk1.6.0_37/LICENSE
+%doc /usr/java/jdk1.6.0_37/README.html
+%doc /usr/java/jdk1.6.0_37/THIRDPARTYLICENSEREADME.txt
+%dir /usr/java/jdk1.6.0_37/bin
+/usr/java/jdk1.6.0_37/bin/ControlPanel
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/HtmlConverter
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/appletviewer
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/apt
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/extcheck
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/idlj
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/jar
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/jarsigner
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/java
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/javac
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/javadoc
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/javah
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/javap
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/javaws
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/jconsole
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/jcontrol
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/jdb
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/jhat
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/jinfo
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/jmap
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/jps
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/jrunscript
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/jsadebugd
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/jstack
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/jstat
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/jstatd
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/jvisualvm
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/keytool
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/native2ascii
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/orbd
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/pack200
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/policytool
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/rmic
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/rmid
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/rmiregistry
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/schemagen
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/serialver
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/servertool
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/tnameserv
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/unpack200
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/wsgen
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/wsimport
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/bin/xjc
+%dir /usr/java/jdk1.6.0_37/include
+/usr/java/jdk1.6.0_37/include/classfile_constants.h
+/usr/java/jdk1.6.0_37/include/jawt.h
+/usr/java/jdk1.6.0_37/include/jdwpTransport.h
+/usr/java/jdk1.6.0_37/include/jni.h
+/usr/java/jdk1.6.0_37/include/jvmti.h
+%dir /usr/java/jdk1.6.0_37/include/linux
+/usr/java/jdk1.6.0_37/include/linux/jawt_md.h
+/usr/java/jdk1.6.0_37/include/linux/jni_md.h
+%dir /usr/java/jdk1.6.0_37/jre
+%doc /usr/java/jdk1.6.0_37/jre/COPYRIGHT
+%doc /usr/java/jdk1.6.0_37/jre/LICENSE
+%doc /usr/java/jdk1.6.0_37/jre/README
+%doc /usr/java/jdk1.6.0_37/jre/THIRDPARTYLICENSEREADME.txt
+%doc /usr/java/jdk1.6.0_37/jre/Welcome.html
+%dir /usr/java/jdk1.6.0_37/jre/bin
+/usr/java/jdk1.6.0_37/jre/bin/ControlPanel
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/bin/java
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/bin/java_vm
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/bin/javaws
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/bin/jcontrol
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/bin/keytool
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/bin/orbd
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/bin/pack200
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/bin/policytool
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/bin/rmid
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/bin/rmiregistry
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/bin/servertool
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/bin/tnameserv
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/bin/unpack200
+%dir /usr/java/jdk1.6.0_37/jre/javaws
+/usr/java/jdk1.6.0_37/jre/javaws/javaws
+%dir /usr/java/jdk1.6.0_37/jre/lib
+/usr/java/jdk1.6.0_37/jre/lib/alt-rt.jar
+/usr/java/jdk1.6.0_37/jre/lib/alt-string.jar
+%dir /usr/java/jdk1.6.0_37/jre/lib/amd64
+%dir /usr/java/jdk1.6.0_37/jre/lib/amd64/headless
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/amd64/headless/libmawt.so
+%dir /usr/java/jdk1.6.0_37/jre/lib/amd64/jli
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/amd64/jli/libjli.so
+/usr/java/jdk1.6.0_37/jre/lib/amd64/jvm.cfg
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/amd64/libJdbcOdbc.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/amd64/libattach.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/amd64/libawt.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/amd64/libcmm.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/amd64/libdcpr.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/amd64/libdeploy.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/amd64/libdt_socket.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/amd64/libfontmanager.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/amd64/libhprof.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/amd64/libinstrument.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/amd64/libioser12.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/amd64/libj2gss.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/amd64/libj2pcsc.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/amd64/libj2pkcs11.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/amd64/libjaas_unix.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/amd64/libjava.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/amd64/libjava_crw_demo.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/amd64/libjavaplugin_jni.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/amd64/libjawt.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/amd64/libjdwp.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/amd64/libjpeg.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/amd64/libjsig.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/amd64/libjsound.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/amd64/libjsoundalsa.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/amd64/libmanagement.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/amd64/libmlib_image.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/amd64/libnative_chmod.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/amd64/libnative_chmod_g.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/amd64/libnet.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/amd64/libnio.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/amd64/libnpjp2.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/amd64/libnpt.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/amd64/librmi.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/amd64/libsaproc.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/amd64/libsplashscreen.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/amd64/libunpack.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/amd64/libverify.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/amd64/libzip.so
+%dir /usr/java/jdk1.6.0_37/jre/lib/amd64/motif21
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/amd64/motif21/libmawt.so
+%dir /usr/java/jdk1.6.0_37/jre/lib/amd64/native_threads
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/amd64/native_threads/libhpi.so
+%dir /usr/java/jdk1.6.0_37/jre/lib/amd64/server
+/usr/java/jdk1.6.0_37/jre/lib/amd64/server/Xusage.txt
+/usr/java/jdk1.6.0_37/jre/lib/amd64/server/libjsig.so
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/amd64/server/libjvm.so
+%dir /usr/java/jdk1.6.0_37/jre/lib/amd64/xawt
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/amd64/xawt/libmawt.so
+%dir /usr/java/jdk1.6.0_37/jre/lib/applet
+%dir /usr/java/jdk1.6.0_37/jre/lib/audio
+/usr/java/jdk1.6.0_37/jre/lib/audio/soundbank.gm
+/usr/java/jdk1.6.0_37/jre/lib/calendars.properties
+%ghost %verify(user mode rdev group) /usr/java/jdk1.6.0_37/jre/lib/charsets.jar
+%config(missingok) /usr/java/jdk1.6.0_37/jre/lib/charsets.pack
+/usr/java/jdk1.6.0_37/jre/lib/classlist
+%dir /usr/java/jdk1.6.0_37/jre/lib/cmm
+/usr/java/jdk1.6.0_37/jre/lib/cmm/CIEXYZ.pf
+/usr/java/jdk1.6.0_37/jre/lib/cmm/GRAY.pf
+/usr/java/jdk1.6.0_37/jre/lib/cmm/LINEAR_RGB.pf
+/usr/java/jdk1.6.0_37/jre/lib/cmm/PYCC.pf
+/usr/java/jdk1.6.0_37/jre/lib/cmm/sRGB.pf
+/usr/java/jdk1.6.0_37/jre/lib/content-types.properties
+%dir /usr/java/jdk1.6.0_37/jre/lib/deploy
+%ghost %verify(user mode rdev group) /usr/java/jdk1.6.0_37/jre/lib/deploy.jar
+%config(missingok) /usr/java/jdk1.6.0_37/jre/lib/deploy.pack
+/usr/java/jdk1.6.0_37/jre/lib/deploy/ffjcext.zip
+/usr/java/jdk1.6.0_37/jre/lib/deploy/java-icon.ico
+/usr/java/jdk1.6.0_37/jre/lib/deploy/messages.properties
+/usr/java/jdk1.6.0_37/jre/lib/deploy/messages_de.properties
+/usr/java/jdk1.6.0_37/jre/lib/deploy/messages_es.properties
+/usr/java/jdk1.6.0_37/jre/lib/deploy/messages_fr.properties
+/usr/java/jdk1.6.0_37/jre/lib/deploy/messages_it.properties
+/usr/java/jdk1.6.0_37/jre/lib/deploy/messages_ja.properties
+/usr/java/jdk1.6.0_37/jre/lib/deploy/messages_ko.properties
+/usr/java/jdk1.6.0_37/jre/lib/deploy/messages_pt_BR.properties
+/usr/java/jdk1.6.0_37/jre/lib/deploy/messages_sv.properties
+/usr/java/jdk1.6.0_37/jre/lib/deploy/messages_zh_CN.properties
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/deploy/messages_zh_HK.properties
+/usr/java/jdk1.6.0_37/jre/lib/deploy/messages_zh_TW.properties
+/usr/java/jdk1.6.0_37/jre/lib/deploy/splash.gif
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop/applications
+/usr/java/jdk1.6.0_37/jre/lib/desktop/applications/sun-java.desktop
+/usr/java/jdk1.6.0_37/jre/lib/desktop/applications/sun-javaws.desktop
+/usr/java/jdk1.6.0_37/jre/lib/desktop/applications/sun_java.desktop
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop/icons
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrast
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrast/16x16
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrast/16x16/apps
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrast/16x16/apps/sun-java.png
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrast/16x16/apps/sun-javaws.png
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrast/16x16/apps/sun-jcontrol.png
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrast/16x16/mimetypes
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrast/16x16/mimetypes/gnome-mime-application-x-java-archive.png
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrast/16x16/mimetypes/gnome-mime-application-x-java-jnlp-file.png
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrast/16x16/mimetypes/gnome-mime-text-x-java.png
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrast/48x48
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrast/48x48/apps
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrast/48x48/apps/sun-java.png
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrast/48x48/apps/sun-javaws.png
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrast/48x48/apps/sun-jcontrol.png
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrast/48x48/mimetypes
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrast/48x48/mimetypes/gnome-mime-application-x-java-archive.png
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrast/48x48/mimetypes/gnome-mime-application-x-java-jnlp-file.png
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrast/48x48/mimetypes/gnome-mime-text-x-java.png
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrastInverse
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrastInverse/16x16
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrastInverse/16x16/apps
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrastInverse/16x16/apps/sun-java.png
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrastInverse/16x16/apps/sun-javaws.png
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrastInverse/16x16/apps/sun-jcontrol.png
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrastInverse/16x16/mimetypes
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrastInverse/16x16/mimetypes/gnome-mime-application-x-java-archive.png
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrastInverse/16x16/mimetypes/gnome-mime-application-x-java-jnlp-file.png
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrastInverse/16x16/mimetypes/gnome-mime-text-x-java.png
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrastInverse/48x48
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrastInverse/48x48/apps
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrastInverse/48x48/apps/sun-java.png
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrastInverse/48x48/apps/sun-javaws.png
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrastInverse/48x48/apps/sun-jcontrol.png
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrastInverse/48x48/mimetypes
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrastInverse/48x48/mimetypes/gnome-mime-application-x-java-archive.png
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrastInverse/48x48/mimetypes/gnome-mime-application-x-java-jnlp-file.png
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/HighContrastInverse/48x48/mimetypes/gnome-mime-text-x-java.png
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop/icons/LowContrast
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop/icons/LowContrast/16x16
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop/icons/LowContrast/16x16/apps
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/LowContrast/16x16/apps/sun-java.png
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/LowContrast/16x16/apps/sun-javaws.png
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/LowContrast/16x16/apps/sun-jcontrol.png
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop/icons/LowContrast/16x16/mimetypes
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/LowContrast/16x16/mimetypes/gnome-mime-application-x-java-archive.png
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/LowContrast/16x16/mimetypes/gnome-mime-application-x-java-jnlp-file.png
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/LowContrast/16x16/mimetypes/gnome-mime-text-x-java.png
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop/icons/LowContrast/48x48
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop/icons/LowContrast/48x48/apps
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/LowContrast/48x48/apps/sun-java.png
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/LowContrast/48x48/apps/sun-javaws.png
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/LowContrast/48x48/apps/sun-jcontrol.png
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop/icons/LowContrast/48x48/mimetypes
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/LowContrast/48x48/mimetypes/gnome-mime-application-x-java-archive.png
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/LowContrast/48x48/mimetypes/gnome-mime-application-x-java-jnlp-file.png
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/LowContrast/48x48/mimetypes/gnome-mime-text-x-java.png
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop/icons/hicolor
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop/icons/hicolor/16x16
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop/icons/hicolor/16x16/apps
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/hicolor/16x16/apps/sun-java.png
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/hicolor/16x16/apps/sun-javaws.png
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/hicolor/16x16/apps/sun-jcontrol.png
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop/icons/hicolor/16x16/mimetypes
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/hicolor/16x16/mimetypes/gnome-mime-application-x-java-archive.png
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/hicolor/16x16/mimetypes/gnome-mime-application-x-java-jnlp-file.png
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/hicolor/16x16/mimetypes/gnome-mime-text-x-java.png
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop/icons/hicolor/48x48
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop/icons/hicolor/48x48/apps
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/hicolor/48x48/apps/sun-java.png
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/hicolor/48x48/apps/sun-javaws.png
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/hicolor/48x48/apps/sun-jcontrol.png
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop/icons/hicolor/48x48/mimetypes
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/hicolor/48x48/mimetypes/gnome-mime-application-x-java-archive.png
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/hicolor/48x48/mimetypes/gnome-mime-application-x-java-jnlp-file.png
+/usr/java/jdk1.6.0_37/jre/lib/desktop/icons/hicolor/48x48/mimetypes/gnome-mime-text-x-java.png
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop/mime
+%dir /usr/java/jdk1.6.0_37/jre/lib/desktop/mime/packages
+/usr/java/jdk1.6.0_37/jre/lib/desktop/mime/packages/x-java-archive.xml
+/usr/java/jdk1.6.0_37/jre/lib/desktop/mime/packages/x-java-jnlp-file.xml
+%dir /usr/java/jdk1.6.0_37/jre/lib/ext
+/usr/java/jdk1.6.0_37/jre/lib/ext/dnsns.jar
+%ghost %verify(user mode rdev group) /usr/java/jdk1.6.0_37/jre/lib/ext/localedata.jar
+%config(missingok) /usr/java/jdk1.6.0_37/jre/lib/ext/localedata.pack
+/usr/java/jdk1.6.0_37/jre/lib/ext/meta-index
+/usr/java/jdk1.6.0_37/jre/lib/ext/sunjce_provider.jar
+/usr/java/jdk1.6.0_37/jre/lib/ext/sunpkcs11.jar
+/usr/java/jdk1.6.0_37/jre/lib/flavormap.properties
+/usr/java/jdk1.6.0_37/jre/lib/fontconfig.RedHat.2.1.bfc
+/usr/java/jdk1.6.0_37/jre/lib/fontconfig.RedHat.2.1.properties.src
+/usr/java/jdk1.6.0_37/jre/lib/fontconfig.RedHat.3.bfc
+/usr/java/jdk1.6.0_37/jre/lib/fontconfig.RedHat.3.properties.src
+/usr/java/jdk1.6.0_37/jre/lib/fontconfig.RedHat.4.bfc
+/usr/java/jdk1.6.0_37/jre/lib/fontconfig.RedHat.4.properties.src
+/usr/java/jdk1.6.0_37/jre/lib/fontconfig.RedHat.6.bfc
+/usr/java/jdk1.6.0_37/jre/lib/fontconfig.RedHat.6.properties.src
+/usr/java/jdk1.6.0_37/jre/lib/fontconfig.RedHat.bfc
+/usr/java/jdk1.6.0_37/jre/lib/fontconfig.RedHat.properties.src
+/usr/java/jdk1.6.0_37/jre/lib/fontconfig.SuSE.11.bfc
+/usr/java/jdk1.6.0_37/jre/lib/fontconfig.SuSE.11.properties.src
+/usr/java/jdk1.6.0_37/jre/lib/fontconfig.SuSE.bfc
+/usr/java/jdk1.6.0_37/jre/lib/fontconfig.SuSE.properties.src
+/usr/java/jdk1.6.0_37/jre/lib/fontconfig.Sun.bfc
+/usr/java/jdk1.6.0_37/jre/lib/fontconfig.Sun.properties.src
+/usr/java/jdk1.6.0_37/jre/lib/fontconfig.Turbo.bfc
+/usr/java/jdk1.6.0_37/jre/lib/fontconfig.Turbo.properties.src
+/usr/java/jdk1.6.0_37/jre/lib/fontconfig.Ubuntu.bfc
+/usr/java/jdk1.6.0_37/jre/lib/fontconfig.Ubuntu.properties.src
+/usr/java/jdk1.6.0_37/jre/lib/fontconfig.bfc
+/usr/java/jdk1.6.0_37/jre/lib/fontconfig.properties.src
+%dir /usr/java/jdk1.6.0_37/jre/lib/fonts
+/usr/java/jdk1.6.0_37/jre/lib/fonts/LucidaBrightDemiBold.ttf
+/usr/java/jdk1.6.0_37/jre/lib/fonts/LucidaBrightDemiItalic.ttf
+/usr/java/jdk1.6.0_37/jre/lib/fonts/LucidaBrightItalic.ttf
+/usr/java/jdk1.6.0_37/jre/lib/fonts/LucidaBrightRegular.ttf
+/usr/java/jdk1.6.0_37/jre/lib/fonts/LucidaSansDemiBold.ttf
+/usr/java/jdk1.6.0_37/jre/lib/fonts/LucidaSansRegular.ttf
+/usr/java/jdk1.6.0_37/jre/lib/fonts/LucidaTypewriterBold.ttf
+/usr/java/jdk1.6.0_37/jre/lib/fonts/LucidaTypewriterRegular.ttf
+/usr/java/jdk1.6.0_37/jre/lib/fonts/fonts.dir
+%dir /usr/java/jdk1.6.0_37/jre/lib/im
+/usr/java/jdk1.6.0_37/jre/lib/im/indicim.jar
+/usr/java/jdk1.6.0_37/jre/lib/im/thaiim.jar
+%dir /usr/java/jdk1.6.0_37/jre/lib/images
+%dir /usr/java/jdk1.6.0_37/jre/lib/images/cursors
+/usr/java/jdk1.6.0_37/jre/lib/images/cursors/cursors.properties
+/usr/java/jdk1.6.0_37/jre/lib/images/cursors/invalid32x32.gif
+/usr/java/jdk1.6.0_37/jre/lib/images/cursors/motif_CopyDrop32x32.gif
+/usr/java/jdk1.6.0_37/jre/lib/images/cursors/motif_CopyNoDrop32x32.gif
+/usr/java/jdk1.6.0_37/jre/lib/images/cursors/motif_LinkDrop32x32.gif
+/usr/java/jdk1.6.0_37/jre/lib/images/cursors/motif_LinkNoDrop32x32.gif
+/usr/java/jdk1.6.0_37/jre/lib/images/cursors/motif_MoveDrop32x32.gif
+/usr/java/jdk1.6.0_37/jre/lib/images/cursors/motif_MoveNoDrop32x32.gif
+%dir /usr/java/jdk1.6.0_37/jre/lib/images/icons
+/usr/java/jdk1.6.0_37/jre/lib/images/icons/sun-java.png
+/usr/java/jdk1.6.0_37/jre/lib/images/icons/sun-java_HighContrast.png
+/usr/java/jdk1.6.0_37/jre/lib/images/icons/sun-java_HighContrastInverse.png
+/usr/java/jdk1.6.0_37/jre/lib/images/icons/sun-java_LowContrast.png
+%ghost %verify(user mode rdev group) /usr/java/jdk1.6.0_37/jre/lib/javaws.jar
+%config(missingok) /usr/java/jdk1.6.0_37/jre/lib/javaws.pack
+/usr/java/jdk1.6.0_37/jre/lib/jce.jar
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/jre/lib/jexec
+%ghost %verify(user mode rdev group) /usr/java/jdk1.6.0_37/jre/lib/jsse.jar
+%config(missingok) /usr/java/jdk1.6.0_37/jre/lib/jsse.pack
+/usr/java/jdk1.6.0_37/jre/lib/jvm.hprof.txt
+%dir /usr/java/jdk1.6.0_37/jre/lib/locale
+%dir /usr/java/jdk1.6.0_37/jre/lib/locale/de
+%dir /usr/java/jdk1.6.0_37/jre/lib/locale/de/LC_MESSAGES
+/usr/java/jdk1.6.0_37/jre/lib/locale/de/LC_MESSAGES/sunw_java_plugin.mo
+%dir /usr/java/jdk1.6.0_37/jre/lib/locale/es
+%dir /usr/java/jdk1.6.0_37/jre/lib/locale/es/LC_MESSAGES
+/usr/java/jdk1.6.0_37/jre/lib/locale/es/LC_MESSAGES/sunw_java_plugin.mo
+%dir /usr/java/jdk1.6.0_37/jre/lib/locale/fr
+%dir /usr/java/jdk1.6.0_37/jre/lib/locale/fr/LC_MESSAGES
+/usr/java/jdk1.6.0_37/jre/lib/locale/fr/LC_MESSAGES/sunw_java_plugin.mo
+%dir /usr/java/jdk1.6.0_37/jre/lib/locale/it
+%dir /usr/java/jdk1.6.0_37/jre/lib/locale/it/LC_MESSAGES
+/usr/java/jdk1.6.0_37/jre/lib/locale/it/LC_MESSAGES/sunw_java_plugin.mo
+%dir /usr/java/jdk1.6.0_37/jre/lib/locale/ja
+%dir /usr/java/jdk1.6.0_37/jre/lib/locale/ja/LC_MESSAGES
+/usr/java/jdk1.6.0_37/jre/lib/locale/ja/LC_MESSAGES/sunw_java_plugin.mo
+%dir /usr/java/jdk1.6.0_37/jre/lib/locale/ko
+%dir /usr/java/jdk1.6.0_37/jre/lib/locale/ko.UTF-8
+%dir /usr/java/jdk1.6.0_37/jre/lib/locale/ko.UTF-8/LC_MESSAGES
+/usr/java/jdk1.6.0_37/jre/lib/locale/ko.UTF-8/LC_MESSAGES/sunw_java_plugin.mo
+%dir /usr/java/jdk1.6.0_37/jre/lib/locale/ko/LC_MESSAGES
+/usr/java/jdk1.6.0_37/jre/lib/locale/ko/LC_MESSAGES/sunw_java_plugin.mo
+%dir /usr/java/jdk1.6.0_37/jre/lib/locale/sv
+%dir /usr/java/jdk1.6.0_37/jre/lib/locale/sv/LC_MESSAGES
+/usr/java/jdk1.6.0_37/jre/lib/locale/sv/LC_MESSAGES/sunw_java_plugin.mo
+%dir /usr/java/jdk1.6.0_37/jre/lib/locale/zh
+%dir /usr/java/jdk1.6.0_37/jre/lib/locale/zh.GBK
+%dir /usr/java/jdk1.6.0_37/jre/lib/locale/zh.GBK/LC_MESSAGES
+/usr/java/jdk1.6.0_37/jre/lib/locale/zh.GBK/LC_MESSAGES/sunw_java_plugin.mo
+%dir /usr/java/jdk1.6.0_37/jre/lib/locale/zh/LC_MESSAGES
+/usr/java/jdk1.6.0_37/jre/lib/locale/zh/LC_MESSAGES/sunw_java_plugin.mo
+%dir /usr/java/jdk1.6.0_37/jre/lib/locale/zh_HK.BIG5HK
+%dir /usr/java/jdk1.6.0_37/jre/lib/locale/zh_HK.BIG5HK/LC_MESSAGES
+/usr/java/jdk1.6.0_37/jre/lib/locale/zh_HK.BIG5HK/LC_MESSAGES/sunw_java_plugin.mo
+%dir /usr/java/jdk1.6.0_37/jre/lib/locale/zh_TW
+%dir /usr/java/jdk1.6.0_37/jre/lib/locale/zh_TW.BIG5
+%dir /usr/java/jdk1.6.0_37/jre/lib/locale/zh_TW.BIG5/LC_MESSAGES
+/usr/java/jdk1.6.0_37/jre/lib/locale/zh_TW.BIG5/LC_MESSAGES/sunw_java_plugin.mo
+%dir /usr/java/jdk1.6.0_37/jre/lib/locale/zh_TW/LC_MESSAGES
+/usr/java/jdk1.6.0_37/jre/lib/locale/zh_TW/LC_MESSAGES/sunw_java_plugin.mo
+/usr/java/jdk1.6.0_37/jre/lib/logging.properties
+%dir /usr/java/jdk1.6.0_37/jre/lib/management
+/usr/java/jdk1.6.0_37/jre/lib/management-agent.jar
+/usr/java/jdk1.6.0_37/jre/lib/management/jmxremote.access
+/usr/java/jdk1.6.0_37/jre/lib/management/jmxremote.password.template
+/usr/java/jdk1.6.0_37/jre/lib/management/management.properties
+/usr/java/jdk1.6.0_37/jre/lib/management/snmp.acl.template
+/usr/java/jdk1.6.0_37/jre/lib/meta-index
+/usr/java/jdk1.6.0_37/jre/lib/net.properties
+%dir /usr/java/jdk1.6.0_37/jre/lib/oblique-fonts
+/usr/java/jdk1.6.0_37/jre/lib/oblique-fonts/LucidaSansDemiOblique.ttf
+/usr/java/jdk1.6.0_37/jre/lib/oblique-fonts/LucidaSansOblique.ttf
+/usr/java/jdk1.6.0_37/jre/lib/oblique-fonts/LucidaTypewriterBoldOblique.ttf
+/usr/java/jdk1.6.0_37/jre/lib/oblique-fonts/LucidaTypewriterOblique.ttf
+/usr/java/jdk1.6.0_37/jre/lib/oblique-fonts/fonts.dir
+%ghost %verify(user mode rdev group) /usr/java/jdk1.6.0_37/jre/lib/plugin.jar
+%config(missingok) /usr/java/jdk1.6.0_37/jre/lib/plugin.pack
+/usr/java/jdk1.6.0_37/jre/lib/psfont.properties.ja
+/usr/java/jdk1.6.0_37/jre/lib/psfontj2d.properties
+/usr/java/jdk1.6.0_37/jre/lib/resources.jar
+%ghost %verify(user mode rdev group) /usr/java/jdk1.6.0_37/jre/lib/rt.jar
+%config(missingok) /usr/java/jdk1.6.0_37/jre/lib/rt.pack
+%dir /usr/java/jdk1.6.0_37/jre/lib/security
+/usr/java/jdk1.6.0_37/jre/lib/security/US_export_policy.jar
+/usr/java/jdk1.6.0_37/jre/lib/security/blacklist
+/usr/java/jdk1.6.0_37/jre/lib/security/cacerts
+/usr/java/jdk1.6.0_37/jre/lib/security/java.policy
+/usr/java/jdk1.6.0_37/jre/lib/security/java.security
+/usr/java/jdk1.6.0_37/jre/lib/security/javaws.policy
+/usr/java/jdk1.6.0_37/jre/lib/security/local_policy.jar
+/usr/java/jdk1.6.0_37/jre/lib/security/trusted.libraries
+%dir /usr/java/jdk1.6.0_37/jre/lib/servicetag
+/usr/java/jdk1.6.0_37/jre/lib/servicetag/jdk_header.png
+/usr/java/jdk1.6.0_37/jre/lib/sound.properties
+%dir /usr/java/jdk1.6.0_37/jre/lib/zi
+%dir /usr/java/jdk1.6.0_37/jre/lib/zi/Africa
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Abidjan
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Accra
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Addis_Ababa
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Algiers
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Asmara
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Bamako
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Bangui
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Banjul
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Bissau
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Blantyre
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Brazzaville
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Bujumbura
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Cairo
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Casablanca
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Ceuta
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Conakry
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Dakar
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Dar_es_Salaam
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Djibouti
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Douala
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/El_Aaiun
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Freetown
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Gaborone
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Harare
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Johannesburg
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Juba
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Kampala
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Khartoum
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Kigali
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Kinshasa
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Lagos
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Libreville
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Lome
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Luanda
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Lubumbashi
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Lusaka
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Malabo
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Maputo
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Maseru
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Mbabane
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Mogadishu
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Monrovia
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Nairobi
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Ndjamena
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Niamey
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Nouakchott
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Ouagadougou
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Porto-Novo
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Sao_Tome
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Tripoli
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Tunis
+/usr/java/jdk1.6.0_37/jre/lib/zi/Africa/Windhoek
+%dir /usr/java/jdk1.6.0_37/jre/lib/zi/America
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Adak
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Anchorage
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Anguilla
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Antigua
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Araguaina
+%dir /usr/java/jdk1.6.0_37/jre/lib/zi/America/Argentina
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Argentina/Buenos_Aires
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Argentina/Catamarca
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Argentina/Cordoba
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Argentina/Jujuy
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Argentina/La_Rioja
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Argentina/Mendoza
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Argentina/Rio_Gallegos
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Argentina/Salta
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Argentina/San_Juan
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Argentina/San_Luis
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Argentina/Tucuman
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Argentina/Ushuaia
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Aruba
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Asuncion
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Atikokan
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Bahia
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Bahia_Banderas
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Barbados
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Belem
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Belize
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Blanc-Sablon
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Boa_Vista
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Bogota
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Boise
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Cambridge_Bay
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Campo_Grande
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Cancun
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Caracas
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Cayenne
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Cayman
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Chicago
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Chihuahua
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Costa_Rica
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Creston
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Cuiaba
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Curacao
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Danmarkshavn
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Dawson
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Dawson_Creek
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Denver
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Detroit
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Dominica
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Edmonton
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Eirunepe
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/El_Salvador
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Fortaleza
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Glace_Bay
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Godthab
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Goose_Bay
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Grand_Turk
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Grenada
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Guadeloupe
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Guatemala
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Guayaquil
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Guyana
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Halifax
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Havana
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Hermosillo
+%dir /usr/java/jdk1.6.0_37/jre/lib/zi/America/Indiana
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Indiana/Indianapolis
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Indiana/Knox
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Indiana/Marengo
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Indiana/Petersburg
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Indiana/Tell_City
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Indiana/Vevay
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Indiana/Vincennes
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Indiana/Winamac
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Inuvik
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Iqaluit
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Jamaica
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Juneau
+%dir /usr/java/jdk1.6.0_37/jre/lib/zi/America/Kentucky
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Kentucky/Louisville
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Kentucky/Monticello
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/La_Paz
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Lima
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Los_Angeles
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Maceio
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Managua
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Manaus
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Martinique
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Matamoros
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Mazatlan
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Menominee
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Merida
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Metlakatla
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Mexico_City
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Miquelon
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Moncton
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Monterrey
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Montevideo
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Montreal
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Montserrat
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Nassau
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/New_York
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Nipigon
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Nome
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Noronha
+%dir /usr/java/jdk1.6.0_37/jre/lib/zi/America/North_Dakota
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/North_Dakota/Beulah
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/North_Dakota/Center
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/North_Dakota/New_Salem
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Ojinaga
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Panama
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Pangnirtung
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Paramaribo
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Phoenix
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Port-au-Prince
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Port_of_Spain
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Porto_Velho
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Puerto_Rico
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Rainy_River
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Rankin_Inlet
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Recife
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Regina
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Resolute
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Rio_Branco
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Santa_Isabel
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Santarem
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Santiago
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Santo_Domingo
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Sao_Paulo
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Scoresbysund
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Sitka
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/St_Johns
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/St_Kitts
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/St_Lucia
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/St_Thomas
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/St_Vincent
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Swift_Current
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Tegucigalpa
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Thule
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Thunder_Bay
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Tijuana
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Toronto
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Tortola
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Vancouver
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Whitehorse
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Winnipeg
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Yakutat
+/usr/java/jdk1.6.0_37/jre/lib/zi/America/Yellowknife
+%dir /usr/java/jdk1.6.0_37/jre/lib/zi/Antarctica
+/usr/java/jdk1.6.0_37/jre/lib/zi/Antarctica/Casey
+/usr/java/jdk1.6.0_37/jre/lib/zi/Antarctica/Davis
+/usr/java/jdk1.6.0_37/jre/lib/zi/Antarctica/DumontDUrville
+/usr/java/jdk1.6.0_37/jre/lib/zi/Antarctica/Macquarie
+/usr/java/jdk1.6.0_37/jre/lib/zi/Antarctica/Mawson
+/usr/java/jdk1.6.0_37/jre/lib/zi/Antarctica/McMurdo
+/usr/java/jdk1.6.0_37/jre/lib/zi/Antarctica/Palmer
+/usr/java/jdk1.6.0_37/jre/lib/zi/Antarctica/Rothera
+/usr/java/jdk1.6.0_37/jre/lib/zi/Antarctica/Syowa
+/usr/java/jdk1.6.0_37/jre/lib/zi/Antarctica/Vostok
+%dir /usr/java/jdk1.6.0_37/jre/lib/zi/Asia
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Aden
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Almaty
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Amman
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Anadyr
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Aqtau
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Aqtobe
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Ashgabat
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Baghdad
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Bahrain
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Baku
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Bangkok
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Beirut
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Bishkek
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Brunei
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Choibalsan
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Chongqing
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Colombo
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Damascus
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Dhaka
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Dili
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Dubai
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Dushanbe
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Gaza
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Harbin
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Hebron
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Ho_Chi_Minh
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Hong_Kong
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Hovd
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Irkutsk
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Jakarta
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Jayapura
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Jerusalem
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Kabul
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Kamchatka
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Karachi
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Kashgar
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Kathmandu
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Kolkata
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Krasnoyarsk
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Kuala_Lumpur
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Kuching
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Kuwait
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Macau
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Magadan
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Makassar
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Manila
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Muscat
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Nicosia
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Novokuznetsk
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Novosibirsk
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Omsk
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Oral
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Phnom_Penh
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Pontianak
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Pyongyang
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Qatar
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Qyzylorda
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Rangoon
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Riyadh
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Riyadh87
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Riyadh88
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Riyadh89
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Sakhalin
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Samarkand
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Seoul
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Shanghai
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Singapore
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Taipei
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Tashkent
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Tbilisi
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Tehran
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Thimphu
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Tokyo
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Ulaanbaatar
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Urumqi
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Vientiane
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Vladivostok
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Yakutsk
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Yekaterinburg
+/usr/java/jdk1.6.0_37/jre/lib/zi/Asia/Yerevan
+%dir /usr/java/jdk1.6.0_37/jre/lib/zi/Atlantic
+/usr/java/jdk1.6.0_37/jre/lib/zi/Atlantic/Azores
+/usr/java/jdk1.6.0_37/jre/lib/zi/Atlantic/Bermuda
+/usr/java/jdk1.6.0_37/jre/lib/zi/Atlantic/Canary
+/usr/java/jdk1.6.0_37/jre/lib/zi/Atlantic/Cape_Verde
+/usr/java/jdk1.6.0_37/jre/lib/zi/Atlantic/Faroe
+/usr/java/jdk1.6.0_37/jre/lib/zi/Atlantic/Madeira
+/usr/java/jdk1.6.0_37/jre/lib/zi/Atlantic/Reykjavik
+/usr/java/jdk1.6.0_37/jre/lib/zi/Atlantic/South_Georgia
+/usr/java/jdk1.6.0_37/jre/lib/zi/Atlantic/St_Helena
+/usr/java/jdk1.6.0_37/jre/lib/zi/Atlantic/Stanley
+%dir /usr/java/jdk1.6.0_37/jre/lib/zi/Australia
+/usr/java/jdk1.6.0_37/jre/lib/zi/Australia/Adelaide
+/usr/java/jdk1.6.0_37/jre/lib/zi/Australia/Brisbane
+/usr/java/jdk1.6.0_37/jre/lib/zi/Australia/Broken_Hill
+/usr/java/jdk1.6.0_37/jre/lib/zi/Australia/Currie
+/usr/java/jdk1.6.0_37/jre/lib/zi/Australia/Darwin
+/usr/java/jdk1.6.0_37/jre/lib/zi/Australia/Eucla
+/usr/java/jdk1.6.0_37/jre/lib/zi/Australia/Hobart
+/usr/java/jdk1.6.0_37/jre/lib/zi/Australia/Lindeman
+/usr/java/jdk1.6.0_37/jre/lib/zi/Australia/Lord_Howe
+/usr/java/jdk1.6.0_37/jre/lib/zi/Australia/Melbourne
+/usr/java/jdk1.6.0_37/jre/lib/zi/Australia/Perth
+/usr/java/jdk1.6.0_37/jre/lib/zi/Australia/Sydney
+/usr/java/jdk1.6.0_37/jre/lib/zi/CET
+/usr/java/jdk1.6.0_37/jre/lib/zi/CST6CDT
+/usr/java/jdk1.6.0_37/jre/lib/zi/EET
+/usr/java/jdk1.6.0_37/jre/lib/zi/EST
+/usr/java/jdk1.6.0_37/jre/lib/zi/EST5EDT
+%dir /usr/java/jdk1.6.0_37/jre/lib/zi/Etc
+/usr/java/jdk1.6.0_37/jre/lib/zi/Etc/GMT
+/usr/java/jdk1.6.0_37/jre/lib/zi/Etc/GMT+1
+/usr/java/jdk1.6.0_37/jre/lib/zi/Etc/GMT+10
+/usr/java/jdk1.6.0_37/jre/lib/zi/Etc/GMT+11
+/usr/java/jdk1.6.0_37/jre/lib/zi/Etc/GMT+12
+/usr/java/jdk1.6.0_37/jre/lib/zi/Etc/GMT+2
+/usr/java/jdk1.6.0_37/jre/lib/zi/Etc/GMT+3
+/usr/java/jdk1.6.0_37/jre/lib/zi/Etc/GMT+4
+/usr/java/jdk1.6.0_37/jre/lib/zi/Etc/GMT+5
+/usr/java/jdk1.6.0_37/jre/lib/zi/Etc/GMT+6
+/usr/java/jdk1.6.0_37/jre/lib/zi/Etc/GMT+7
+/usr/java/jdk1.6.0_37/jre/lib/zi/Etc/GMT+8
+/usr/java/jdk1.6.0_37/jre/lib/zi/Etc/GMT+9
+/usr/java/jdk1.6.0_37/jre/lib/zi/Etc/GMT-1
+/usr/java/jdk1.6.0_37/jre/lib/zi/Etc/GMT-10
+/usr/java/jdk1.6.0_37/jre/lib/zi/Etc/GMT-11
+/usr/java/jdk1.6.0_37/jre/lib/zi/Etc/GMT-12
+/usr/java/jdk1.6.0_37/jre/lib/zi/Etc/GMT-13
+/usr/java/jdk1.6.0_37/jre/lib/zi/Etc/GMT-14
+/usr/java/jdk1.6.0_37/jre/lib/zi/Etc/GMT-2
+/usr/java/jdk1.6.0_37/jre/lib/zi/Etc/GMT-3
+/usr/java/jdk1.6.0_37/jre/lib/zi/Etc/GMT-4
+/usr/java/jdk1.6.0_37/jre/lib/zi/Etc/GMT-5
+/usr/java/jdk1.6.0_37/jre/lib/zi/Etc/GMT-6
+/usr/java/jdk1.6.0_37/jre/lib/zi/Etc/GMT-7
+/usr/java/jdk1.6.0_37/jre/lib/zi/Etc/GMT-8
+/usr/java/jdk1.6.0_37/jre/lib/zi/Etc/GMT-9
+/usr/java/jdk1.6.0_37/jre/lib/zi/Etc/UCT
+/usr/java/jdk1.6.0_37/jre/lib/zi/Etc/UTC
+%dir /usr/java/jdk1.6.0_37/jre/lib/zi/Europe
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Amsterdam
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Andorra
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Athens
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Belgrade
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Berlin
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Brussels
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Bucharest
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Budapest
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Chisinau
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Copenhagen
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Dublin
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Gibraltar
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Helsinki
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Istanbul
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Kaliningrad
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Kiev
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Lisbon
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/London
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Luxembourg
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Madrid
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Malta
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Minsk
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Monaco
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Moscow
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Oslo
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Paris
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Prague
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Riga
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Rome
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Samara
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Simferopol
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Sofia
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Stockholm
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Tallinn
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Tirane
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Uzhgorod
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Vaduz
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Vienna
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Vilnius
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Volgograd
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Warsaw
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Zaporozhye
+/usr/java/jdk1.6.0_37/jre/lib/zi/Europe/Zurich
+/usr/java/jdk1.6.0_37/jre/lib/zi/GMT
+/usr/java/jdk1.6.0_37/jre/lib/zi/HST
+%dir /usr/java/jdk1.6.0_37/jre/lib/zi/Indian
+/usr/java/jdk1.6.0_37/jre/lib/zi/Indian/Antananarivo
+/usr/java/jdk1.6.0_37/jre/lib/zi/Indian/Chagos
+/usr/java/jdk1.6.0_37/jre/lib/zi/Indian/Christmas
+/usr/java/jdk1.6.0_37/jre/lib/zi/Indian/Cocos
+/usr/java/jdk1.6.0_37/jre/lib/zi/Indian/Comoro
+/usr/java/jdk1.6.0_37/jre/lib/zi/Indian/Kerguelen
+/usr/java/jdk1.6.0_37/jre/lib/zi/Indian/Mahe
+/usr/java/jdk1.6.0_37/jre/lib/zi/Indian/Maldives
+/usr/java/jdk1.6.0_37/jre/lib/zi/Indian/Mauritius
+/usr/java/jdk1.6.0_37/jre/lib/zi/Indian/Mayotte
+/usr/java/jdk1.6.0_37/jre/lib/zi/Indian/Reunion
+/usr/java/jdk1.6.0_37/jre/lib/zi/MET
+/usr/java/jdk1.6.0_37/jre/lib/zi/MST
+/usr/java/jdk1.6.0_37/jre/lib/zi/MST7MDT
+/usr/java/jdk1.6.0_37/jre/lib/zi/PST8PDT
+%dir /usr/java/jdk1.6.0_37/jre/lib/zi/Pacific
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Apia
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Auckland
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Chatham
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Chuuk
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Easter
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Efate
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Enderbury
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Fakaofo
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Fiji
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Funafuti
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Galapagos
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Gambier
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Guadalcanal
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Guam
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Honolulu
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Johnston
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Kiritimati
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Kosrae
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Kwajalein
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Majuro
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Marquesas
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Midway
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Nauru
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Niue
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Norfolk
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Noumea
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Pago_Pago
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Palau
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Pitcairn
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Pohnpei
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Port_Moresby
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Rarotonga
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Saipan
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Tahiti
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Tarawa
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Tongatapu
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Wake
+/usr/java/jdk1.6.0_37/jre/lib/zi/Pacific/Wallis
+%dir /usr/java/jdk1.6.0_37/jre/lib/zi/SystemV
+/usr/java/jdk1.6.0_37/jre/lib/zi/SystemV/AST4
+/usr/java/jdk1.6.0_37/jre/lib/zi/SystemV/AST4ADT
+/usr/java/jdk1.6.0_37/jre/lib/zi/SystemV/CST6
+/usr/java/jdk1.6.0_37/jre/lib/zi/SystemV/CST6CDT
+/usr/java/jdk1.6.0_37/jre/lib/zi/SystemV/EST5
+/usr/java/jdk1.6.0_37/jre/lib/zi/SystemV/EST5EDT
+/usr/java/jdk1.6.0_37/jre/lib/zi/SystemV/HST10
+/usr/java/jdk1.6.0_37/jre/lib/zi/SystemV/MST7
+/usr/java/jdk1.6.0_37/jre/lib/zi/SystemV/MST7MDT
+/usr/java/jdk1.6.0_37/jre/lib/zi/SystemV/PST8
+/usr/java/jdk1.6.0_37/jre/lib/zi/SystemV/PST8PDT
+/usr/java/jdk1.6.0_37/jre/lib/zi/SystemV/YST9
+/usr/java/jdk1.6.0_37/jre/lib/zi/SystemV/YST9YDT
+/usr/java/jdk1.6.0_37/jre/lib/zi/WET
+/usr/java/jdk1.6.0_37/jre/lib/zi/ZoneInfoMappings
+%dir /usr/java/jdk1.6.0_37/jre/plugin
+%dir /usr/java/jdk1.6.0_37/jre/plugin/desktop
+/usr/java/jdk1.6.0_37/jre/plugin/desktop/sun_java.desktop
+/usr/java/jdk1.6.0_37/jre/plugin/desktop/sun_java.png
+%dir /usr/java/jdk1.6.0_37/lib
+/usr/java/jdk1.6.0_37/lib/ct.sym
+/usr/java/jdk1.6.0_37/lib/dt.jar
+/usr/java/jdk1.6.0_37/lib/htmlconverter.jar
+/usr/java/jdk1.6.0_37/lib/ir.idl
+/usr/java/jdk1.6.0_37/lib/jconsole.jar
+%attr(0755,root,root) /usr/java/jdk1.6.0_37/lib/jexec
+/usr/java/jdk1.6.0_37/lib/orb.idl
+/usr/java/jdk1.6.0_37/lib/sa-jdi.jar
+%ghost %verify(user mode rdev group) /usr/java/jdk1.6.0_37/lib/tools.jar
+%config(missingok) /usr/java/jdk1.6.0_37/lib/tools.pack
+%dir /usr/java/jdk1.6.0_37/lib/visualvm
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/etc
+/usr/java/jdk1.6.0_37/lib/visualvm/etc/visualvm.clusters
+/usr/java/jdk1.6.0_37/lib/visualvm/etc/visualvm.conf
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/platform
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/.lastModified
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/VERSION.txt
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/platform/config
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/platform/config/ModuleAutoDeps
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/ModuleAutoDeps/org-netbeans-core.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/ModuleAutoDeps/org-netbeans-modules-options-api.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/ModuleAutoDeps/org-netbeans-modules-queries.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/ModuleAutoDeps/org-openide-execution.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/ModuleAutoDeps/org-openide-explorer.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/ModuleAutoDeps/org-openide-loaders.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/ModuleAutoDeps/org-openide-modules.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/ModuleAutoDeps/org-openide-text.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/ModuleAutoDeps/org-openide-util.xml
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-api-annotations-common.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-api-progress.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-api-visual.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-core-execution.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-core-io-ui.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-core-multiview.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-core-output2.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-core-ui.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-core-windows.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-core.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-modules-applemenu.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-modules-autoupdate-services.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-modules-autoupdate-ui.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-modules-core-kit.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-modules-editor-mimelookup-impl.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-modules-editor-mimelookup.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-modules-favorites.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-modules-javahelp.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-modules-keyring-impl.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-modules-keyring.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-modules-masterfs.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-modules-options-api.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-modules-options-keymap.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-modules-print.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-modules-progress-ui.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-modules-queries.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-modules-sendopts.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-modules-settings.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-modules-spi-actions.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-spi-quicksearch.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-swing-outline.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-swing-plaf.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-netbeans-swing-tabcontrol.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-openide-actions.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-openide-awt.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-openide-compat.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-openide-dialogs.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-openide-execution.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-openide-explorer.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-openide-io.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-openide-loaders.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-openide-nodes.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-openide-options.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-openide-text.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-openide-util-enumerations.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/config/Modules/org-openide-windows.xml
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/platform/core
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/core/core.jar
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/platform/core/locale
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/core/locale/core_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/core/locale/core_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/core/locale/org-openide-filesystems_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/core/locale/org-openide-filesystems_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/core/org-openide-filesystems.jar
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/platform/docs
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/platform/lib
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/lib/boot.jar
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/platform/lib/locale
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/lib/locale/boot_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/lib/locale/boot_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/lib/locale/org-openide-modules_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/lib/locale/org-openide-modules_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/lib/locale/org-openide-util-lookup_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/lib/locale/org-openide-util-lookup_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/lib/locale/org-openide-util_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/lib/locale/org-openide-util_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/lib/nbexec
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/lib/org-openide-modules.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/lib/org-openide-util-lookup.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/lib/org-openide-util.jar
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/platform/modules
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/ext
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/ext/jh-2.0_05.jar
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/ext/locale
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/ext/locale/updater_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/ext/locale/updater_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/ext/updater.jar
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-api-annotations-common_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-api-annotations-common_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-api-progress_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-api-progress_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-api-visual_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-api-visual_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-core-execution_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-core-execution_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-core-io-ui_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-core-io-ui_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-core-multiview_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-core-multiview_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-core-output2_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-core-output2_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-core-ui_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-core-ui_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-core-windows_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-core-windows_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-core_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-core_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-applemenu_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-applemenu_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-autoupdate-services_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-autoupdate-services_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-autoupdate-ui_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-autoupdate-ui_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-core-kit_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-core-kit_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-editor-mimelookup-impl_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-editor-mimelookup-impl_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-editor-mimelookup_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-editor-mimelookup_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-favorites_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-favorites_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-javahelp_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-javahelp_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-keyring-impl_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-keyring-impl_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-keyring_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-keyring_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-masterfs_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-masterfs_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-options-api_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-options-api_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-options-keymap_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-options-keymap_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-print_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-print_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-progress-ui_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-progress-ui_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-queries_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-queries_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-sendopts_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-sendopts_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-settings_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-settings_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-spi-actions_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-spi-actions_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-templates_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-modules-templates_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-spi-quicksearch_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-spi-quicksearch_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-swing-outline_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-swing-outline_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-swing-plaf_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-swing-plaf_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-swing-tabcontrol_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-netbeans-swing-tabcontrol_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-openide-actions_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-openide-actions_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-openide-awt_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-openide-awt_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-openide-compat_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-openide-compat_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-openide-dialogs_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-openide-dialogs_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-openide-execution_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-openide-execution_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-openide-explorer_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-openide-explorer_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-openide-io_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-openide-io_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-openide-loaders_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-openide-loaders_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-openide-nodes_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-openide-nodes_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-openide-options_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-openide-options_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-openide-text_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-openide-text_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-openide-util-enumerations_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-openide-util-enumerations_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-openide-windows_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/locale/org-openide-windows_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-api-annotations-common.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-api-progress.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-api-visual.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-core-execution.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-core-io-ui.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-core-multiview.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-core-output2.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-core-ui.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-core-windows.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-core.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-modules-applemenu.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-modules-autoupdate-services.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-modules-autoupdate-ui.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-modules-core-kit.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-modules-editor-mimelookup-impl.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-modules-editor-mimelookup.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-modules-favorites.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-modules-javahelp.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-modules-keyring-impl.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-modules-keyring.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-modules-masterfs.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-modules-options-api.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-modules-options-keymap.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-modules-print.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-modules-progress-ui.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-modules-queries.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-modules-sendopts.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-modules-settings.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-modules-spi-actions.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-spi-quicksearch.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-swing-outline.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-swing-plaf.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-netbeans-swing-tabcontrol.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-openide-actions.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-openide-awt.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-openide-compat.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-openide-dialogs.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-openide-execution.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-openide-explorer.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-openide-io.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-openide-loaders.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-openide-nodes.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-openide-options.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-openide-text.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-openide-util-enumerations.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/modules/org-openide-windows.jar
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-api-annotations-common.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-api-progress.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-api-visual.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-bootstrap.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-core-execution.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-core-io-ui.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-core-multiview.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-core-output2.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-core-startup.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-core-ui.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-core-windows.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-core.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-modules-applemenu.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-modules-autoupdate-services.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-modules-autoupdate-ui.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-modules-core-kit.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-modules-editor-mimelookup-impl.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-modules-editor-mimelookup.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-modules-favorites.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-modules-javahelp.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-modules-keyring-impl.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-modules-keyring.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-modules-masterfs.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-modules-options-api.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-modules-options-keymap.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-modules-print.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-modules-progress-ui.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-modules-queries.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-modules-sendopts.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-modules-settings.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-modules-spi-actions.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-spi-quicksearch.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-swing-outline.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-swing-plaf.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-netbeans-swing-tabcontrol.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-openide-actions.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-openide-awt.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-openide-compat.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-openide-dialogs.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-openide-execution.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-openide-explorer.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-openide-filesystems.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-openide-io.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-openide-loaders.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-openide-modules.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-openide-nodes.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-openide-options.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-openide-text.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-openide-util-enumerations.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-openide-util-lookup.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-openide-util.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/platform/update_tracking/org-openide-windows.xml
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/profiler
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/.lastModified
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/VERSION.txt
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/profiler/config
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/profiler/config/Modules
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/config/Modules/org-netbeans-lib-profiler-charts.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/config/Modules/org-netbeans-lib-profiler-common.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/config/Modules/org-netbeans-lib-profiler-ui.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/config/Modules/org-netbeans-lib-profiler.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/config/Modules/org-netbeans-modules-profiler-oql.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/config/Modules/org-netbeans-modules-profiler.xml
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/profiler/lib
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/profiler/lib/deployed
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/profiler/lib/deployed/jdk15
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/profiler/lib/deployed/jdk15/linux-amd64
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/lib/deployed/jdk15/linux-amd64/libprofilerinterface.so
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/profiler/lib/deployed/jdk16
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/profiler/lib/deployed/jdk16/linux-amd64
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/lib/deployed/jdk16/linux-amd64/libprofilerinterface.so
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/lib/jfluid-server-15.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/lib/jfluid-server.jar
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/profiler/lib/locale
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/lib/locale/jfluid-server_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/lib/locale/jfluid-server_zh_CN.jar
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/profiler/modules
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/profiler/modules/locale
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/modules/locale/org-netbeans-lib-profiler-charts_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/modules/locale/org-netbeans-lib-profiler-charts_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/modules/locale/org-netbeans-lib-profiler-common_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/modules/locale/org-netbeans-lib-profiler-common_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/modules/locale/org-netbeans-lib-profiler-ui_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/modules/locale/org-netbeans-lib-profiler-ui_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/modules/locale/org-netbeans-lib-profiler_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/modules/locale/org-netbeans-lib-profiler_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/modules/locale/org-netbeans-modules-profiler-oql_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/modules/locale/org-netbeans-modules-profiler-oql_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/modules/locale/org-netbeans-modules-profiler_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/modules/locale/org-netbeans-modules-profiler_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/modules/org-netbeans-lib-profiler-charts.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/modules/org-netbeans-lib-profiler-common.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/modules/org-netbeans-lib-profiler-ui.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/modules/org-netbeans-lib-profiler.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/modules/org-netbeans-modules-profiler-oql.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/modules/org-netbeans-modules-profiler.jar
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/profiler/update_tracking
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/update_tracking/org-netbeans-lib-profiler-charts.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/update_tracking/org-netbeans-lib-profiler-common.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/update_tracking/org-netbeans-lib-profiler-ui.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/update_tracking/org-netbeans-lib-profiler.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/update_tracking/org-netbeans-modules-profiler-oql.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/profiler/update_tracking/org-netbeans-modules-profiler.xml
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/visualvm
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/.lastModified
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-api-caching.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-application-views.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-application.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-attach.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-charts.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-core.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-coredump.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-heapdump.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-host-remote.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-host-views.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-host.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-jmx.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-jvm.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-jvmstat.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-modules-appui.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-profiler.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-profiling.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-sa.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-sampler.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-threaddump.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-tools.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules/com-sun-tools-visualvm-uisupport.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules/org-netbeans-api-visual.xml_hidden
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules/org-netbeans-core-execution.xml_hidden
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules/org-netbeans-core-output2.xml_hidden
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules/org-netbeans-modules-core-kit.xml_hidden
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules/org-netbeans-modules-favorites.xml_hidden
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules/org-netbeans-modules-options-keymap.xml_hidden
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules/org-netbeans-modules-spi-actions.xml_hidden
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules/org-openide-compat.xml_hidden
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules/org-openide-options.xml_hidden
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/config/Modules/org-openide-util-enumerations.xml_hidden
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/visualvm/core
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/core/com-sun-tools-visualvm-modules-startup.jar
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/visualvm/core/locale
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/core/locale/.svn_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/core/locale/.svn_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/core/locale/com-sun-tools-visualvm-modules-startup_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/core/locale/com-sun-tools-visualvm-modules-startup_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/core/locale/core_visualvm.jar
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/all-wcprops
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-api-caching.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-application-views.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-application.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-attach.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-charts.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-core.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-coredump.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-heapdump.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-host-remote.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-host-views.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-host.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-jmx.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-jvm.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-jvmstat.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-modules-appui.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-profiler.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-profiling.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-sa.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-sampler.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-threaddump.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-tools.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-uisupport.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/entries
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-api-caching_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-api-caching_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-application-views_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-application-views_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-application_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-application_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-attach_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-attach_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-charts_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-charts_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-core_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-core_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-coredump_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-coredump_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-heapdump_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-heapdump_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-host-remote_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-host-remote_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-host-views_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-host-views_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-host_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-host_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-jmx_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-jmx_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-jvm_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-jvm_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-jvmstat_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-jvmstat_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-modules-appui_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-modules-appui_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-profiler_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-profiler_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-profiling_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-profiling_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-sa_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-sa_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-sampler_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-sampler_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-threaddump_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-threaddump_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-tools_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-tools_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-uisupport_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/com-sun-tools-visualvm-uisupport_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/org-netbeans-core-windows_visualvm.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/org-netbeans-core_visualvm.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/org-netbeans-modules-.svn_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/org-netbeans-modules-.svn_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/org-netbeans-modules-profiler_visualvm.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/org-netbeans-modules-prop-base_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/org-netbeans-modules-prop-base_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/org-netbeans-modules-props_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/org-netbeans-modules-props_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/org-netbeans-modules-text-base_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/org-netbeans-modules-text-base_zh_CN.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/org-netbeans-modules-tmp_ja.jar
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/modules/locale/org-netbeans-modules-tmp_zh_CN.jar
+%dir /usr/java/jdk1.6.0_37/lib/visualvm/visualvm/update_tracking
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-api-caching.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-application-views.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-application.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-attach.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-charts.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-core.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-coredump.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-heapdump.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-host-remote.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-host-views.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-host.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-jmx.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-jvm.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-jvmstat.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-modules-appui.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-modules-startup.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-profiler.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-profiling.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-sa.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-sampler.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-threaddump.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-tools.xml
+/usr/java/jdk1.6.0_37/lib/visualvm/visualvm/update_tracking/com-sun-tools-visualvm-uisupport.xml
+%dir /usr/java/jdk1.6.0_37/man
+/usr/java/jdk1.6.0_37/man/ja
+%dir /usr/java/jdk1.6.0_37/man/ja_JP.eucJP
+%dir /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/appletviewer.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/apt.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/extcheck.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/idlj.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/jar.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/jarsigner.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/java.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/javac.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/javadoc.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/javah.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/javap.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/jconsole.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/jdb.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/jhat.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/jinfo.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/jmap.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/jps.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/jrunscript.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/jsadebugd.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/jstack.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/jstat.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/jstatd.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/jvisualvm.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/keytool.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/native2ascii.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/orbd.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/pack200.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/policytool.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/rmic.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/rmid.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/rmiregistry.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/schemagen.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/serialver.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/servertool.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/tnameserv.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/unpack200.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/wsgen.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/wsimport.1
+%doc /usr/java/jdk1.6.0_37/man/ja_JP.eucJP/man1/xjc.1
+%dir /usr/java/jdk1.6.0_37/man/man1
+%doc /usr/java/jdk1.6.0_37/man/man1/appletviewer.1
+%doc /usr/java/jdk1.6.0_37/man/man1/apt.1
+%doc /usr/java/jdk1.6.0_37/man/man1/extcheck.1
+%doc /usr/java/jdk1.6.0_37/man/man1/idlj.1
+%doc /usr/java/jdk1.6.0_37/man/man1/jar.1
+%doc /usr/java/jdk1.6.0_37/man/man1/jarsigner.1
+%doc /usr/java/jdk1.6.0_37/man/man1/java.1
+%doc /usr/java/jdk1.6.0_37/man/man1/javac.1
+%doc /usr/java/jdk1.6.0_37/man/man1/javadoc.1
+%doc /usr/java/jdk1.6.0_37/man/man1/javah.1
+%doc /usr/java/jdk1.6.0_37/man/man1/javap.1
+%doc /usr/java/jdk1.6.0_37/man/man1/javaws.1
+%doc /usr/java/jdk1.6.0_37/man/man1/jconsole.1
+%doc /usr/java/jdk1.6.0_37/man/man1/jdb.1
+%doc /usr/java/jdk1.6.0_37/man/man1/jhat.1
+%doc /usr/java/jdk1.6.0_37/man/man1/jinfo.1
+%doc /usr/java/jdk1.6.0_37/man/man1/jmap.1
+%doc /usr/java/jdk1.6.0_37/man/man1/jps.1
+%doc /usr/java/jdk1.6.0_37/man/man1/jrunscript.1
+%doc /usr/java/jdk1.6.0_37/man/man1/jsadebugd.1
+%doc /usr/java/jdk1.6.0_37/man/man1/jstack.1
+%doc /usr/java/jdk1.6.0_37/man/man1/jstat.1
+%doc /usr/java/jdk1.6.0_37/man/man1/jstatd.1
+%doc /usr/java/jdk1.6.0_37/man/man1/jvisualvm.1
+%doc /usr/java/jdk1.6.0_37/man/man1/keytool.1
+%doc /usr/java/jdk1.6.0_37/man/man1/native2ascii.1
+%doc /usr/java/jdk1.6.0_37/man/man1/orbd.1
+%doc /usr/java/jdk1.6.0_37/man/man1/pack200.1
+%doc /usr/java/jdk1.6.0_37/man/man1/policytool.1
+%doc /usr/java/jdk1.6.0_37/man/man1/rmic.1
+%doc /usr/java/jdk1.6.0_37/man/man1/rmid.1
+%doc /usr/java/jdk1.6.0_37/man/man1/rmiregistry.1
+%doc /usr/java/jdk1.6.0_37/man/man1/schemagen.1
+%doc /usr/java/jdk1.6.0_37/man/man1/serialver.1
+%doc /usr/java/jdk1.6.0_37/man/man1/servertool.1
+%doc /usr/java/jdk1.6.0_37/man/man1/tnameserv.1
+%doc /usr/java/jdk1.6.0_37/man/man1/unpack200.1
+%doc /usr/java/jdk1.6.0_37/man/man1/wsgen.1
+%doc /usr/java/jdk1.6.0_37/man/man1/wsimport.1
+%doc /usr/java/jdk1.6.0_37/man/man1/xjc.1
+/usr/java/jdk1.6.0_37/src.zip
 
 
 
@@ -6630,7 +6632,7 @@ popd
 	GNOMEDIR="/opt/gnome2"
     fi
 
-    INSTALL_JRE_PATH=${RPM_INSTALL_PREFIX}/jdk1.6.0_35
+    INSTALL_JRE_PATH=${RPM_INSTALL_PREFIX}/jdk1.6.0_37
     if [ -e ${INSTALL_JRE_PATH}/jre/bin/java ]; then
 	INSTALL_JRE_PATH=${INSTALL_JRE_PATH}/jre
     fi
@@ -7229,8 +7231,8 @@ cleanup_default_links() {
     #
     # Unpack the packed JAR files.
     #
-    unpack_jars "${RPM_INSTALL_PREFIX}/jdk1.6.0_35/bin/unpack200" \
-                "${RPM_INSTALL_PREFIX}/jdk1.6.0_35" \
+    unpack_jars "${RPM_INSTALL_PREFIX}/jdk1.6.0_37/bin/unpack200" \
+                "${RPM_INSTALL_PREFIX}/jdk1.6.0_37" \
                 jre/lib/rt.jar jre/lib/jsse.jar jre/lib/charsets.jar lib/tools.jar jre/lib/ext/localedata.jar jre/lib/plugin.jar jre/lib/javaws.jar jre/lib/deploy.jar
 
 
@@ -7244,7 +7246,7 @@ cleanup_default_links() {
     # support.
     #
     if [ "${RPM_INSTALL_PREFIX}" = "/usr/java" ]; then
-         ${RPM_INSTALL_PREFIX}/jdk1.6.0_35/bin/java com.sun.servicetag.Installer -source "jdk" > /dev/null 2>&1
+         ${RPM_INSTALL_PREFIX}/jdk1.6.0_37/bin/java com.sun.servicetag.Installer -source "jdk" > /dev/null 2>&1
     fi
 
     #
@@ -7253,8 +7255,8 @@ cleanup_default_links() {
     # difficult for future installers.
     #
     LATEST_JAVA_PATH="`find_latest_release`"
-    if [ "${LATEST_JAVA_PATH}" == "${RPM_INSTALL_PREFIX}/jdk1.6.0_35" ] ||
-       [ "${LATEST_JAVA_PATH}" == "/usr/java/jdk1.6.0_35" ]
+    if [ "${LATEST_JAVA_PATH}" == "${RPM_INSTALL_PREFIX}/jdk1.6.0_37" ] ||
+       [ "${LATEST_JAVA_PATH}" == "/usr/java/jdk1.6.0_37" ]
     then
         #
         # Make sure the /usr/java/latest link points to LATEST_JAVA_PATH, and
@@ -7287,10 +7289,10 @@ cleanup_default_links() {
     # latest release.
     #
     if [ "${RPM_INSTALL_PREFIX}" != "/usr/java" ] &&
-       ( [ ! -e "/usr/java/jdk1.6.0_35" ] || [ -h "/usr/java/jdk1.6.0_35" ] )
+       ( [ ! -e "/usr/java/jdk1.6.0_37" ] || [ -h "/usr/java/jdk1.6.0_37" ] )
     then
-        rm -f "/usr/java/jdk1.6.0_35"
-        ln -s "${RPM_INSTALL_PREFIX}/jdk1.6.0_35" "/usr/java/jdk1.6.0_35"
+        rm -f "/usr/java/jdk1.6.0_37"
+        ln -s "${RPM_INSTALL_PREFIX}/jdk1.6.0_37" "/usr/java/jdk1.6.0_37"
     fi
 
     #
@@ -7847,7 +7849,7 @@ cleanup_default_links() {
     # support.
     #
     if [ "${RPM_INSTALL_PREFIX}" = "/usr/java" ]; then 
-        ${RPM_INSTALL_PREFIX}/jdk1.6.0_35/bin/java com.sun.servicetag.Installer -delete 
+        ${RPM_INSTALL_PREFIX}/jdk1.6.0_37/bin/java com.sun.servicetag.Installer -delete 
     fi
 
     #
@@ -7862,7 +7864,7 @@ cleanup_default_links() {
     if [ -h "/usr/java/default" ]; then
         DEFAULT_LINK="`dereference --follow \"/usr/java/default\"`"
         if [ $? -ne 0 ] ||
-           [ "${DEFAULT_LINK}" = "${RPM_INSTALL_PREFIX}/jdk1.6.0_35" ]
+           [ "${DEFAULT_LINK}" = "${RPM_INSTALL_PREFIX}/jdk1.6.0_37" ]
         then
             cleanup_default_links "/usr/java/default" \
                                   "/usr/bin" java javaws jcontrol javac jar javadoc
@@ -7889,7 +7891,7 @@ cleanup_default_links() {
     if [ -h "/usr/java/latest" ]; then
         LATEST_LINK="`dereference --follow \"/usr/java/latest\"`"
         if [ $? -ne 0 ] ||
-           [ "${LATEST_LINK}" = "${RPM_INSTALL_PREFIX}/jdk1.6.0_35" ]
+           [ "${LATEST_LINK}" = "${RPM_INSTALL_PREFIX}/jdk1.6.0_37" ]
         then
             #
             # If this version is the latest, and the first version with jexec
@@ -7917,17 +7919,17 @@ cleanup_default_links() {
 
     #
     # If the package was relocated when it was installed, there should be a link
-    # in /usr/java.  So, if there is a link named /usr/java/jdk1.6.0_35 that is
+    # in /usr/java.  So, if there is a link named /usr/java/jdk1.6.0_37 that is
     # dead, or points back to ${RPM_INSTALL_PREFIX}, delete it.
     #
     if [ "${RPM_INSTALL_PREFIX}" != "/usr/java" ] &&
-       [ -h "/usr/java/jdk1.6.0_35" ]
+       [ -h "/usr/java/jdk1.6.0_37" ]
     then
-        THIS_LINK="`dereference --follow \"/usr/java/jdk1.6.0_35\"`"
+        THIS_LINK="`dereference --follow \"/usr/java/jdk1.6.0_37\"`"
         if [ $? -ne 0 ] ||
-           [ "${THIS_LINK}" = "${RPM_INSTALL_PREFIX}/jdk1.6.0_35" ]
+           [ "${THIS_LINK}" = "${RPM_INSTALL_PREFIX}/jdk1.6.0_37" ]
         then
-            rm -f "/usr/java/jdk1.6.0_35" 2> /dev/null
+            rm -f "/usr/java/jdk1.6.0_37" 2> /dev/null
         fi
     fi
 
@@ -7970,7 +7972,7 @@ cleanup_default_links() {
 	GNOMEDIR="/opt/gnome2"
     fi
 
-    INSTALL_JRE_PATH=${RPM_INSTALL_PREFIX}/jdk1.6.0_35
+    INSTALL_JRE_PATH=${RPM_INSTALL_PREFIX}/jdk1.6.0_37
     if [ -e ${INSTALL_JRE_PATH}/jre/bin/java ]; then
 	INSTALL_JRE_PATH=${INSTALL_JRE_PATH}/jre
     fi
@@ -8574,7 +8576,7 @@ cleanup_default_links() {
     LATEST_JAVA_PATH="`find_latest_release`"
     if [ -n "${LATEST_JAVA_PATH}" ] &&
        [ `compare_java_by_version ${LATEST_JAVA_PATH} \
-                                  version-1.6.0_35` -lt 0 ]
+                                  version-1.6.0_37` -lt 0 ]
     then
         #
         # Only maintain the latest link if the latest version left on
@@ -8690,7 +8692,7 @@ cleanup_default_links() {
 	GNOMEDIR="/opt/gnome2"
     fi
 
-    INSTALL_JRE_PATH=${RPM_INSTALL_PREFIX}/jdk1.6.0_35
+    INSTALL_JRE_PATH=${RPM_INSTALL_PREFIX}/jdk1.6.0_37
     if [ -e ${INSTALL_JRE_PATH}/jre/bin/java ]; then
 	INSTALL_JRE_PATH=${INSTALL_JRE_PATH}/jre
     fi
@@ -9242,9 +9244,9 @@ cleanup_default_links() {
     # link, but only if it really points to this package.
     #
     if [ "${RPM_INSTALL_PREFIX}" != "/usr/java" ] &&
-       [ "`dereference --follow \"/usr/java/jdk1.6.0_35\"`" = "${RPM_INSTALL_PREFIX}" ]
+       [ "`dereference --follow \"/usr/java/jdk1.6.0_37\"`" = "${RPM_INSTALL_PREFIX}" ]
     then
-        rm -f "/usr/java/jdk1.6.0_35"
+        rm -f "/usr/java/jdk1.6.0_37"
     fi
 
     #
@@ -9253,8 +9255,8 @@ cleanup_default_links() {
     # it difficult for future installers.
     #
     LATEST_JAVA_PATH="`find_latest_release`"
-    if [ "${LATEST_JAVA_PATH}" == "${RPM_INSTALL_PREFIX}/jdk1.6.0_35" ] ||
-       [ "${LATEST_JAVA_PATH}" == "/usr/java/jdk1.6.0_35" ]
+    if [ "${LATEST_JAVA_PATH}" == "${RPM_INSTALL_PREFIX}/jdk1.6.0_37" ] ||
+       [ "${LATEST_JAVA_PATH}" == "/usr/java/jdk1.6.0_37" ]
     then
         #
         # Make sure the /usr/java/latest link points to LATEST_JAVA_PATH, and
@@ -9288,10 +9290,10 @@ cleanup_default_links() {
     # latest release.
     #
     if [ "${RPM_INSTALL_PREFIX}" != "/usr/java" ] &&
-       ( [ ! -e "/usr/java/jdk1.6.0_35" ] || [ -h "/usr/java/jdk1.6.0_35" ] )
+       ( [ ! -e "/usr/java/jdk1.6.0_37" ] || [ -h "/usr/java/jdk1.6.0_37" ] )
     then
-        rm -f "/usr/java/jdk1.6.0_35"
-        ln -s "${RPM_INSTALL_PREFIX}/jdk1.6.0_35" "/usr/java/jdk1.6.0_35"
+        rm -f "/usr/java/jdk1.6.0_37"
+        ln -s "${RPM_INSTALL_PREFIX}/jdk1.6.0_37" "/usr/java/jdk1.6.0_37"
     fi
 
     #
@@ -9324,8 +9326,8 @@ cleanup_default_links() {
 
 
 %changelog
-* Tue Sep 18 2012 matyas - 1.6.0_35-fcs.1
-- Specfile created from binary rpm jdk-6u35-linux-amd64.rpm
+* Thu Oct 18 2012 root - 1.6.0_37-fcs.1
+- Specfile created from binary rpm jdk-6u37-linux-amd64.rpm
 %endif
 # COMMON:
 
