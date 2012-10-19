@@ -43,7 +43,7 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/xrootd/lcmaps.cfg
 
 %changelog
-* Fri Oct 19 Doug Strain <dstrain@fnal.gov> 0.0.4-6
+* Fri Oct 19 2012 Doug Strain <dstrain@fnal.gov> 0.0.4-6
 - Rebuilding with xrootd 3.3 pre-release
 
 * Fri Mar 30 2012 Doug Strain <dstrain@fnal.gov> 0.0.4-5
