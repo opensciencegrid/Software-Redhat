@@ -1,15 +1,17 @@
---- _build_results/hadoop-fuse.default	2012-05-18 21:15:09.000000000 -0500
-+++ osg/hadoop-fuse.default	2012-08-07 13:09:53.000000000 -0500
+diff -ru orig/hadoop-fuse.default new/hadoop-fuse.default
+--- orig/hadoop-fuse.default	2012-10-18 16:45:43.000000000 -0500
++++ new/hadoop-fuse.default	2012-10-18 16:46:03.000000000 -0500
 @@ -14,3 +14,4 @@
  # limitations under the License.
  
  export LIBHDFS_OPTS="-Xms128m -Xmx512m"
 +export JAVA_HOME=/usr/java/default/
---- _build_results/install_hadoop.sh	2012-06-01 16:19:36.000000000 -0500
-+++ _build_results/install_hadoop.sh	2012-08-07 15:07:04.000000000 -0500
-@@ -308,6 +308,9 @@
-   CLASSPATH+="\$jar:"
- done
+diff -ru orig/install_hadoop.sh new/install_hadoop.sh
+--- orig/install_hadoop.sh	2012-10-18 16:45:49.000000000 -0500
++++ new/install_hadoop.sh	2012-10-18 16:46:03.000000000 -0500
+@@ -310,6 +310,9 @@
+ CLASSPATH+="\${HADOOP_CONF_DIR:-\${HADOOP_HOME}/etc/hadoop}"
+ 
  
 +#OSG change: needed to pick up xml defaults
 +CLASSPATH="/etc/hadoop/conf:\$CLASSPATH"

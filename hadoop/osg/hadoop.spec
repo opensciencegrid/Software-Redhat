@@ -1,7 +1,7 @@
-%define hadoop_version 2.0.0+88 
-%define hadoop_patched_version 2.0.0-cdh4.0.0 
+%define hadoop_version 2.0.0+545 
+%define hadoop_patched_version 2.0.0-cdh4.1.1 
 %define hadoop_base_version 2.0.0 
-%define hadoop_release 1.cdh4.0.0.p0.39%{?dist}
+%define hadoop_release 1.cdh4.1.1.p0.6%{?dist}
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
@@ -60,18 +60,20 @@
 %define doc_hadoop %{_docdir}/%{name}-%{hadoop_version}
 %define httpfs_services httpfs
 %define mapreduce_services mapreduce-historyserver
-%define hdfs_services hdfs-namenode hdfs-secondarynamenode hdfs-datanode hdfs-zkfc
+%define hdfs_services hdfs-namenode hdfs-secondarynamenode hdfs-datanode hdfs-zkfc hdfs-journalnode
 %define yarn_services yarn-resourcemanager yarn-nodemanager yarn-proxyserver
 %define hadoop_services %{hdfs_services} %{mapreduce_services} %{yarn_services} %{httpfs_services}
 # Hadoop outputs built binaries into %{hadoop_build}
 %define hadoop_build_path build
 %define static_images_dir src/webapps/static/images
 
-%ifarch i386
+%ifarch i386 i686
 %global hadoop_arch Linux-i386-32
+%global requires_lib_tag %{nil}
 %endif
 %ifarch amd64 x86_64
 %global hadoop_arch Linux-amd64-64
+%global requires_lib_tag ()(64bit)
 %endif
 
 # CentOS 5 does not have any dist macro
@@ -167,11 +169,12 @@ Source20: hdfs.default
 Source21: yarn.default
 Source22: hadoop-layout.sh
 Source23: hadoop-hdfs-zkfc.svc
-Source24: %{name}-bigtop-packaging.tar.gz
+Source24: hadoop-hdfs-journalnode.svc
+Source25: %{name}-bigtop-packaging.tar.gz
 Patch0: mvn304.patch
 Patch1: javafuse.patch
 Buildroot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id} -u -n)
-BuildRequires: python >= 2.4, git, fuse-devel,fuse, automake, autoconf,maven3,protobuf-compiler
+BuildRequires: python >= 2.4, git, fuse-devel,fuse, automake, autoconf,maven3,protobuf-compiler, cmake
 # not sure if I need this
 BuildRequires: java-devel
 Requires: coreutils, /usr/sbin/useradd, /usr/sbin/usermod, /sbin/chkconfig, /sbin/service, bigtop-utils, zookeeper >= 3.4.0
@@ -230,6 +233,8 @@ located.
 Summary: The Hadoop Distributed File System
 Group: System/Daemons
 Requires: %{name} = %{version}-%{release}, bigtop-jsvc
+# Workaround for 4.0 to 4.X upgrade (CDH-7856) (upgrades from 4.1 onwards are fine)
+Requires: libhadoop.so.1.0.0%{requires_lib_tag}
 
 %description hdfs
 Hadoop Distributed File System (HDFS) is the primary storage system used by
@@ -241,6 +246,8 @@ computations.
 Summary: The Hadoop NextGen MapReduce (YARN)
 Group: System/Daemons
 Requires: %{name} = %{version}-%{release}
+# Workaround for 4.0 to 4.X upgrade (CDH-7856) (upgrades from 4.1 onwards are fine)
+Requires: libhadoop.so.1.0.0%{requires_lib_tag}
 
 %description yarn
 YARN (Hadoop NextGen MapReduce) is a general purpose data-computation framework.
@@ -300,6 +307,17 @@ monitors and manages the state of the NameNode. Each of the machines
 which runs a NameNode also runs a ZKFC, and that ZKFC is responsible
 for: Health monitoring, ZooKeeper session management, ZooKeeper-based
 election.
+
+%package hdfs-journalnode
+Summary: Hadoop HDFS JournalNode
+Group: System/Daemons
+Requires: %{name}-hdfs = %{version}-%{release}
+Requires(pre): %{name} = %{version}-%{release}
+
+%description hdfs-journalnode
+The HDFS JournalNode is responsible for persisting NameNode edit logs. 
+In a typical deployment the JournalNode daemon runs on at least three 
+separate machines in the cluster.
 
 %package hdfs-datanode
 Summary: Hadoop Data Node
@@ -428,8 +446,8 @@ These projects (enumerated below) allow HDFS to be mounted (on most flavors of U
 
 %prep
 %setup -n %{name}-%{hadoop_patched_version}
-tar -C `dirname %{SOURCE24}` -xzf %{SOURCE24}
-pushd `dirname %{SOURCE24}`
+tar -C `dirname %{SOURCE25}` -xzf %{SOURCE25}
+pushd `dirname %{SOURCE25}`
 %patch0 -p1
 %patch1 -p1
 popd
@@ -684,6 +702,7 @@ fi
 %service_macro hdfs-namenode
 %service_macro hdfs-secondarynamenode
 %service_macro hdfs-zkfc
+%service_macro hdfs-journalnode
 %service_macro hdfs-datanode
 #service_macro yarn-resourcemanager
 #service_macro yarn-nodemanager
@@ -723,6 +742,9 @@ fi
 %attr(0755,root,root) %{bin_hadoop}/hadoop-fuse-dfs
 
 %changelog
+* Thu Oct 18 2012 Doug Strain <dstrain@fnal.gov> - 2.0.0+545-1.cdh4.1.1.p0.6
+- Repackaging for CDH4.1
+
 * Thu Oct 4 2012 Doug Strain <dstrain@fnal.gov> - 2.0.0+88-1.cdh4.0.0.p0.39
 - Got rid of postun script since it was failing.
 
