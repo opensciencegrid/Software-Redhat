@@ -173,10 +173,13 @@ $SRM_HOME/conf/srmtester.conf:./bestman.in/srmtester.conf.in"
 OUTPUTURLCOPYFILES="$SRM_HOME/bin/g-urlcopy.sh:./bestman.in/g-urlcopy.sh.in"
 
 dnl ## for bestman2.rc
+export EVENTLOG_PATH="/var/log/bestman2"
 my_EVENTLOG_PATH
+export GRIDMAP_PATH="$SRM_HOME/conf/grid-mapfile.empty"
 my_GRIDMAP_PATH
 my_MAX_CONTAINER_THREADS
 my_MIN_CONTAINER_THREADS
+export SRM_SERVICE="gov.lbl.srm.impl.TSRMServiceGateway"
 my_SRM_SERVICE
 my_GUC_GLOBUS_PATH
 my_PROXY_FILE_PATH
