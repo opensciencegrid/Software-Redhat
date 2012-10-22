@@ -1,4 +1,4 @@
-%define tarball_version 7.8.4
+%define tarball_version 7.8.5
 
 # Things for F15 or later
 %if 0%{?fedora} >= 15
@@ -737,6 +737,7 @@ rm -rf %{buildroot}
 %_libdir/libcondor_utils_%{version_}.so
 %_libdir/libcondorapi.so
 %dir %_libexecdir/condor/
+%_libexecdir/condor/accountant_log_fixer
 %_libexecdir/condor/condor_chirp
 %_libexecdir/condor/condor_ssh
 %_libexecdir/condor/sshd.sh
@@ -1067,6 +1068,9 @@ fi
 %endif
 
 %changelog
+* Mon Oct 22 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 7.8.5-1
+- New version
+
 * Wed Sep 19 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 7.8.4-1
 - New version
 
