@@ -16,14 +16,14 @@
 Name:		globus-gram-job-manager-lsf
 %global _name %(tr - _ <<< %{name})
 Version:	1.0
-Release:	1.1%{?dist}
+Release:	1.2%{?dist}
 Summary:	Globus Toolkit - LSF Job Manager
 
 Group:		Applications/Internet
 License:	ASL 2.0
 URL:		http://www.globus.org/
 Source:		http://www.globus.org/ftppub/gt5/5.2/5.2.2/packages/src/%{_name}-%{version}.tar.gz
-Patch0:         xcount.patch
+Patch0:         host-xcount.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Obsoletes:      globus-gram-job-manager-setup-lsf < 4.5
 
@@ -99,7 +99,7 @@ LSF Job Manager Setup using SEG to monitor job state
 
 %prep
 %setup -q -n %{_name}-%{version}
-%patch0 -p1
+%patch0 -p0
 
 %build
 # Remove files that should be replaced during bootstrap
@@ -224,6 +224,9 @@ fi
 %config(noreplace) %{_sysconfdir}/grid-services/available/jobmanager-lsf-seg
 
 %changelog
+* Tue Oct 23 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0-1.2
+- Replaced xcount patch with Joe Bester's version
+
 * Thu Oct 04 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0-1.1
 - Added xcount patch which adds an attribute that lets the user specify the number of cores for a job.
 - Changed PBS to LSF in the metadata
