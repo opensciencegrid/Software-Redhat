@@ -6,7 +6,7 @@ Name:           glideinwms
 
 %if %{v2_plus}
 %define version 2.6.2
-%define release 0.rc2.2
+%define release 0.rc2.3
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
 %endif
@@ -50,20 +50,10 @@ Source:	glideinwms.tar.gz
 Source1:        frontend_startup
 Source2:        %{frontend_xml}
 Source3:        gwms-frontend.conf.httpd
-Source4:        00_gwms_general.config
-Source5:        01_gwms_collectors.config
-Source6:	02_gwms_schedds.config
-Source7:	03_gwms_local.config
-Source8:	chksum.sh
-Source9:	condor_mapfile
-Source10:       00_gwms_factory_general.config
-Source11:       01_gwms_factory_collectors.config
-Source12:	02_gwms_factory_schedds.config
-Source13:	03_gwms_factory_local.config
-Source14:	%{factory_xml}
-Source15:       gwms-factory.conf.httpd
-Source16:       factory_startup
-Source17:       privsep_config
+Source4:	%{factory_xml}
+Source5:       gwms-factory.conf.httpd
+Source6:       factory_startup
+Source7:	chksum.sh
 
 %description
 This is a package for the glidein workload management system.
@@ -167,7 +157,7 @@ install of wmscollector + wms factory
 #%patch -P 3 -p1
 
 %build
-cp %{SOURCE8} .
+cp %{SOURCE7} .
 chmod 700 chksum.sh
 ./chksum.sh v%{version}-%{release}.osg etc/checksum.frontend "CVS config_examples doc .git .gitattributes poolwatcher factory/check* factory/glideFactory* factory/test* factory/manage* factory/stop* factory/tools creation/create_glidein creation/reconfig_glidein creation/info_glidein creation/lib/cgW* creation/web_base/factory*html creation/web_base/collector_setup.sh creation/web_base/condor_platform_select.sh creation/web_base/condor_startup.sh creation/web_base/create_mapfile.sh creation/web_base/gcb_setup.sh creation/web_base/glexec_setup.sh creation/web_base/glidein_startup.sh creation/web_base/job_submit.sh creation/web_base/local_start.sh creation/web_base/setup_x509.sh creation/web_base/validate_node.sh chksum.sh etc/checksum*"
 ./chksum.sh v%{version}-%{release}.osg etc/checksum.factory "CVS config_examples doc .git .gitattributes poolwatcher frontend/* creation/reconfig_glidein creation/lib/cgW* creation/web_base/factory*html creation/web_base/collector_setup.sh creation/web_base/condor_platform_select.sh creation/web_base/condor_startup.sh creation/web_base/create_mapfile.sh creation/web_base/gcb_setup.sh creation/web_base/glexec_setup.sh creation/web_base/glidein_startup.sh creation/web_base/job_submit.sh creation/web_base/local_start.sh creation/web_base/setup_x509.sh creation/web_base/validate_node.sh chksum.sh etc/checksum*"
@@ -222,7 +212,7 @@ cp creation/lib/*.py $RPM_BUILD_ROOT%{python_sitelib}
 # Install the init.d
 install -d  $RPM_BUILD_ROOT/%{_initrddir}
 install -m 0755 %{SOURCE1} $RPM_BUILD_ROOT/%{_initrddir}/gwms-frontend
-install -m 0755 %{SOURCE16} $RPM_BUILD_ROOT/%{_initrddir}/gwms-factory
+install -m 0755 %{SOURCE6} $RPM_BUILD_ROOT/%{_initrddir}/gwms-factory
 
 
 # Install the web directory
@@ -286,7 +276,7 @@ install -m 0644 %{SOURCE2} $RPM_BUILD_ROOT/%{_sysconfdir}/gwms-frontend/frontend
 
 # Install the factory config dir
 install -d $RPM_BUILD_ROOT/%{_sysconfdir}/gwms-factory
-install -m 0644 %{SOURCE14} $RPM_BUILD_ROOT/%{_sysconfdir}/gwms-factory/glideinWMS.xml
+install -m 0644 %{SOURCE4} $RPM_BUILD_ROOT/%{_sysconfdir}/gwms-factory/glideinWMS.xml
 
 # Install the web base
 cp -r creation/web_base/* $RPM_BUILD_ROOT%{web_base}/
@@ -296,16 +286,16 @@ rm -rf $RPM_BUILD_ROOT%{web_base}/CVS
 # Install condor stuff
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/condor/certs
-install -m 0644 %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
-install -m 0644 %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
-install -m 0644 %{SOURCE6} $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
-install -m 0644 %{SOURCE7} $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
-install -m 0644 %{SOURCE17} $RPM_BUILD_ROOT%{_sysconfdir}/condor/
-install -m 0644 %{SOURCE9} $RPM_BUILD_ROOT%{_sysconfdir}/condor/certs/
-install -m 0644 %{SOURCE10} $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
-install -m 0644 %{SOURCE11} $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
-install -m 0644 %{SOURCE12} $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
-install -m 0644 %{SOURCE13} $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
+install -m 0644 install/templates/00_gwms_factory_general.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
+install -m 0644 install/templates/00_gwms_general.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
+install -m 0644 install/templates/01_gwms_factory_collectors.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
+install -m 0644 install/templates/01_gwms_collectors.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
+install -m 0644 install/templates/02_gwms_factory_schedds.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
+install -m 0644 install/templates/02_gwms_schedds.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
+install -m 0644 install/templates/03_gwms_factory_local.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
+install -m 0644 install/templates/03_gwms_local.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
+install -m 0644 install/templates/condor_mapfile $RPM_BUILD_ROOT%{_sysconfdir}/condor/certs/
+install -m 0644 install/templates/privsep_config $RPM_BUILD_ROOT%{_sysconfdir}/condor/
 
 #Install condor schedd dirs
 for schedd in "schedd_glideins2" "schedd_glideins3" "schedd_glideins4" "schedd_glideins5" "schedd_jobs2"; do
@@ -340,7 +330,7 @@ install -m 0644 etc/checksum.factory $RPM_BUILD_ROOT%{factory_dir}/checksum.fact
 #Install web area conf
 install -d $RPM_BUILD_ROOT/%{_sysconfdir}/httpd/conf.d
 install -m 0644 %{SOURCE3} $RPM_BUILD_ROOT/%{_sysconfdir}/httpd/conf.d/gwms-frontend.conf
-install -m 0644 %{SOURCE15} $RPM_BUILD_ROOT/%{_sysconfdir}/httpd/conf.d/gwms-factory.conf
+install -m 0644 %{SOURCE5} $RPM_BUILD_ROOT/%{_sysconfdir}/httpd/conf.d/gwms-factory.conf
 
 %if %{v3_plus}
 install -d $RPM_BUILD_ROOT%{web_base}/../creation
