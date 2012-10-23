@@ -1,7 +1,7 @@
 
 Name:           osg-ca-certs-updater
 Version:        0.1
-Release:        0.1pre%{?dist}
+Release:        1%{?dist}
 Summary:        Automatic CA certs updates for OSG
 
 Group:          System Environment/Tools
@@ -47,5 +47,5 @@ rm -rf %{buildroot}
 %doc %{_defaultdocdir}/%{name}-%{version}/README*
 
 %changelog
-* Wed Oct 17 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 0.1-0.1pre
-- Initial package
+* Tue Oct 23 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 0.1-1
+- First release
