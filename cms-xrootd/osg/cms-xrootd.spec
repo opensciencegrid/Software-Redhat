@@ -2,7 +2,7 @@
 Summary: CMS meta-RPM for Xrootd
 Name: cms-xrootd
 Version: 1.2
-Release: 1%{?dist}
+Release: 2%{?dist}
 Group: System Environment/Daemons
 License: Public Domain
 URL: https://twiki.cern.ch/twiki/bin/view/Main/CmsXrootdArchitecture
@@ -13,6 +13,7 @@ Source0:  xrootd.sample.t3.cfg.in
 Source1:  xrootd.sample.posix.cfg.in
 Source2:  Authfile
 Source3:  xrootd.sample.dcache.cfg.in
+Source4:  xrootd.sample.proxy.cfg.in
 
 Requires: xrootd-server >= 3.1.0
 Conflicts: xrootd-server < 3.1.0
@@ -47,6 +48,14 @@ Requires: libXrdHdfs.so.0()(64bit)
 %description hdfs
 %{summary}
 
+%package proxy
+Summary: CMS meta-RPM for Xrootd proxies
+Group: System Environment/Daemons
+Requires: %{name} = %{version}-%{release}
+
+%description proxy
+%{summary}
+
 %package dcache
 Summary: CMS meta-RPM for Xrootd over dCache
 Group: System Environment/Daemons
@@ -64,6 +73,7 @@ mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/xrootd
 #sed -e "s#@LIBDIR@#%{_libdir}#" %{SOURCE0} > $RPM_BUILD_ROOT%{_sysconfdir}/xrootd/xrootd.sample.t3.cfg
 sed -e "s#@LIBDIR@#%{_libdir}#" %{SOURCE1} > $RPM_BUILD_ROOT%{_sysconfdir}/xrootd/xrootd.sample.posix.cfg
 sed -e "s#@LIBDIR@#%{_libdir}#" %{SOURCE3} > $RPM_BUILD_ROOT%{_sysconfdir}/xrootd/xrootd.sample.dcache.cfg
+sed -e "s#@LIBDIR@#%{_libdir}#" %{SOURCE4} > $RPM_BUILD_ROOT%{_sysconfdir}/xrootd/xrootd.sample.proxy.cfg
 install -m 0644 %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/xrootd/Authfile
 
 %clean
@@ -79,7 +89,13 @@ rm -rf $RPM_BUILD_ROOT
 %files dcache
 %{_sysconfdir}/xrootd/xrootd.sample.dcache.cfg
 
+%files proxy
+%{_sysconfdir}/xrootd/xrootd.sample.proxy.cfg
+
 %changelog
+* Tue Oct 23 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 1.2-2
+- Add proxy config file.
+
 * Mon Sep 17 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 1.2-1
 - Tweaks for default configs, based on feedback from Estonia, Legnaro, and UCL.
 
