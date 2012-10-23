@@ -1,6 +1,6 @@
 
 Name:           osg-ca-certs-updater
-Version:        0.1
+Version:        0.2
 Release:        1%{?dist}
 Summary:        Automatic CA certs updates for OSG
 
@@ -47,5 +47,8 @@ rm -rf %{buildroot}
 %doc %{_defaultdocdir}/%{name}-%{version}/README*
 
 %changelog
+* Tue Oct 23 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 0.2-1
+- Handle bad logfile name gracefully
+
 * Tue Oct 23 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 0.1-1
 - First release
