@@ -1,6 +1,6 @@
 
 Name:           osg-ca-certs-updater
-Version:        0.2
+Version:        0.3
 Release:        1%{?dist}
 Summary:        Automatic CA certs updates for OSG
 
@@ -36,6 +36,15 @@ touch %{buildroot}/%{_localstatedir}/lib/%{name}-lastrun
 %clean
 rm -rf %{buildroot}
 
+%post
+/sbin/chkconfig --add %{name}-cron
+
+%preun
+if [ $1 -eq 0 ]; then
+    /sbin/service %{name}-cron stop > /dev/null 2>&1 || :
+    /sbin/chkconfig --del %{name}-cron
+fi
+
 %files
 %defattr(-,root,root,-)
 %{_sbindir}/%{name}
@@ -47,6 +56,9 @@ rm -rf %{buildroot}
 %doc %{_defaultdocdir}/%{name}-%{version}/README*
 
 %changelog
+* Wed Oct 24 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 0.3-1
+- Add chkconfig line
+
 * Tue Oct 23 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 0.2-1
 - Handle bad logfile name gracefully
 
