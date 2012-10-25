@@ -1,4 +1,4 @@
-%define tarball_version 7.8.5
+%define tarball_version 7.8.6
 
 # Things for F15 or later
 %if 0%{?fedora} >= 15
@@ -1068,6 +1068,9 @@ fi
 %endif
 
 %changelog
+* Thu Oct 25 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 7.8.6-1
+- New version
+
 * Mon Oct 22 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 7.8.5-1
 - New version
 
