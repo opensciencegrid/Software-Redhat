@@ -1,6 +1,6 @@
 
 Name:      rsv-core
-Version:   3.7.6
+Version:   3.7.7
 Release:   1%{?dist}
 Summary:   RSV Core Infrastructure
 
@@ -125,6 +125,9 @@ fi
 
 
 %changelog
+* Thu Oct 25 2012 Matyas Selmeci <matyas@cs.wisc.edu> 3.7.7-1
+- Updated to 3.7.7
+
 * Thu Jul 05 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.7.5-1
 - Updated to 3.7.5
 - TECHNOLOGY-20 - Added Condor-CE support to RSV

@@ -1,6 +1,6 @@
 
 Name:      rsv-metrics
-Version:   3.7.6
+Version:   3.7.7
 Release:   1%{?dist}
 Summary:   RSV metrics
 
@@ -93,6 +93,12 @@ rm -rf $RPM_BUILD_ROOT
 %attr(-,rsv,rsv) %{_localstatedir}/log/rsv/probes
 
 %changelog
+* Thu Oct 18 2012 Matyas Selmeci <matyas@cs.wisc.edu> 3.7.7-1
+- SOFTWARE-807 - Fixed bug in srmcp metric when the SE host and machine being probed are the same 
+- SOFTWARE-762 - Fixed incorrect hash reporting in crl-freshness probe
+- Increased default time after which missing CA cert warnings become errors
+- Various other bugfixes
+
 * Thu Aug 23 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.7.6-1
 - Fixed service type of GridFTP metric (OSG-GridFTP -> GridFTP)
 

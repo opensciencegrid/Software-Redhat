@@ -1,6 +1,6 @@
 
 Name:      rsv-consumers
-Version:   3.7.6
+Version:   3.7.7
 Release:   1%{?dist}
 Summary:   RSV Consumers Infrastructure
 
@@ -91,6 +91,9 @@ rm -rf $RPM_BUILD_ROOT
 %attr(-,rsv,rsv) %{_localstatedir}/log/rsv/consumers
 
 %changelog
+* Thu Oct 25 2012 Matyas Selmeci <matyas@cs.wisc.edu> 3.7.7-1
+- Updated to 3.7.7
+
 * Tue Jul 24 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu>
 - Updated to 3.7.5
 - SOFTWARE-712 - Replace newlines in Nagios URL with spaces
