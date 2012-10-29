@@ -14,7 +14,7 @@
 Name:           gridsite
 Version:        1.7.15
 
-Release:        4.5%{?dist}
+Release:        4.6%{?dist}
 Summary:        Grid Security for the Web, Web platforms for Grids
 
 Group:          System Environment/Daemons
@@ -144,7 +144,7 @@ This package gridsite-doc, contains developer documentation for gridsite.
 Group:    System Environment/Daemons
 Summary:  Run time libraries for mod_gridsite and gridsite-clients
 Version:  %{vercompat}
-Release:  3.3%{?dist}
+Release:  3.4%{?dist}
 
 %description compat
 GridSite was originally a web application developed for managing and formatting 
@@ -342,8 +342,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc src/doxygen LICENSE
 
 %changelog
-* Mon Oct 29 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 1.7.15-4.5
+* Mon Oct 29 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 1.7.15-4.6
 - Allow gridsite to handle CAs with path constraints.
+- Multiple version bumps to handle issues with NVRA uniqueness for the campat package.
 
 * Mon Oct 31 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.7.15-4.3
 - also needed to bump release of compat package
