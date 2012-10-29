@@ -16,7 +16,7 @@
 +             int ret;
 +             X509 *x = sk_X509_value(ctx->chain, i);
 +             if ((i == errdepth) && (x->ex_pathlen != -1)
-+               && (i <= (x->ex_pathlen + proxy_path_length + 1)))
++               && (i <= (x->ex_pathlen + proxy_path_length)))
 +               {  // Can violate the path length by proxy_path_length.
 +                  ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
 +                    "Skip path length violation error.");

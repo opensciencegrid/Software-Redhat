@@ -14,7 +14,7 @@
 Name:           gridsite
 Version:        1.7.15
 
-Release:        4.4%{?dist}
+Release:        4.5%{?dist}
 Summary:        Grid Security for the Web, Web platforms for Grids
 
 Group:          System Environment/Daemons
@@ -342,7 +342,7 @@ rm -rf $RPM_BUILD_ROOT
 %doc src/doxygen LICENSE
 
 %changelog
-* Mon Oct 29 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 1.7.15-4.4
+* Mon Oct 29 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 1.7.15-4.5
 - Allow gridsite to handle CAs with path constraints.
 
 * Mon Oct 31 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.7.15-4.3
