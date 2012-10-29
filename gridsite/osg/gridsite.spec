@@ -14,7 +14,7 @@
 Name:           gridsite
 Version:        1.7.15
 
-Release:        4%{?dist}.3
+Release:        4.4%{?dist}
 Summary:        Grid Security for the Web, Web platforms for Grids
 
 Group:          System Environment/Daemons
@@ -43,6 +43,10 @@ Patch2:         cgi-bin-location-1.5.20.patch
 #https://bugzilla.redhat.com/show_bug.cgi?id=612109
 #https://savannah.cern.ch/bugs/index.php?69632
 Patch3:         gridsite-include-1.5.20.patch
+
+# Cannot handle CAs which use proxy path lengths.
+# See https://jira.opensciencegrid.org/browse/OSGPKI-249
+Patch4:         proxy_path_length.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -158,6 +162,7 @@ pushd org.gridsite.core
 %patch2 -p1
 %patch3 -p1
 popd
+%patch4 -p2
 
 %else
 %setup -q -n org.gridsite.core
@@ -337,6 +342,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc src/doxygen LICENSE
 
 %changelog
+* Mon Oct 29 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 1.7.15-4.4
+- Allow gridsite to handle CAs with path constraints.
+
 * Mon Oct 31 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.7.15-4.3
 - also needed to bump release of compat package
 
