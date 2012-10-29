@@ -144,7 +144,7 @@ This package gridsite-doc, contains developer documentation for gridsite.
 Group:    System Environment/Daemons
 Summary:  Run time libraries for mod_gridsite and gridsite-clients
 Version:  %{vercompat}
-Release:  3%{?dist}.2
+Release:  3.3%{?dist}
 
 %description compat
 GridSite was originally a web application developed for managing and formatting 
