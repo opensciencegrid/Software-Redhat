@@ -1,6 +1,6 @@
 Name:           empty-condor
 Version:        1.1
-Release:        3%{?dist}
+Release:        2%{?dist}
 Summary:        An empty Condor package
 
 Group:          Applications/System
@@ -8,6 +8,7 @@ License:        Unknown
 URL:            http://vdt.cs.wisc.edu
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+BuildArch:      noarch
 
 # This fulfills depenendencies for most OSG packages that depend on Condor
 Provides:       condor
@@ -39,9 +40,6 @@ believes that Condor has been installed via RPM.
 %doc
 
 %changelog
-* Mon Oct 29 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.1-3
-- Make this not noarch to work around yum depsolver issues.
-
 * Tue Aug 28 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.1-2
 - Conflict with /usr/sbin/condor_master to avoid having this being installed
   alongside a real RPM Condor.
