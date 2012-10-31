@@ -311,7 +311,9 @@ exit 0
 %{_libdir}/libXrdFfs.so*
 %{_bindir}/xprep
 %{_bindir}/xrd
+%{_bindir}/xrdfs
 %{_bindir}/xrdcp
+%{_bindir}/xrdcopy
 %{_bindir}/xrdcpy
 %{_bindir}/xrdgsiproxy
 %{_bindir}/xrdstagetool
