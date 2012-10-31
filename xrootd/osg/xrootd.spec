@@ -282,13 +282,13 @@ exit 0
 %{_libdir}/libXrdCrypto*.so*
 %{_libdir}/libXrdUtils.so*
 %{_libdir}/libXrdMain.so*
-#%{_libdir}/libXrdAppUtils.so*
+%{_libdir}/libXrdAppUtils.so*
+%{_libdir}/libXrdCl.so*
 
 %files libs-devel
 %defattr(-,root,root,-)
 %{_includedir}/%{name}/XrdVersion.hh
-# 3.3
-#%{_includedir}/%{name}/XrdVersionPlugin.hh
+%{_includedir}/%{name}/XrdVersionPlugin.hh
 %{_includedir}/%{name}/XrdSec
 %{_includedir}/%{name}/XrdSecsss
 %{_includedir}/%{name}/XrdSecgsi
@@ -300,8 +300,8 @@ exit 0
 %{_includedir}/%{name}/Xrd
 %{_includedir}/%{name}/XProtocol
 %{_includedir}/%{name}/XrdCks
-# 3.3
-#%{_includedir}/%{name}/XrdApps
+%{_includedir}/%{name}/XrdApps
+%{_includedir}/%{name}/XrdCl
 
 %files client
 %defattr(-,root,root,-)
@@ -312,8 +312,7 @@ exit 0
 %{_bindir}/xprep
 %{_bindir}/xrd
 %{_bindir}/xrdcp
-#Changed in 3.3 branch
-#%{_bindir}/xrdcpy
+%{_bindir}/xrdcpy
 %{_bindir}/xrdgsiproxy
 %{_bindir}/xrdstagetool
 %{_bindir}/xrdadler32
