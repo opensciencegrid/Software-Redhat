@@ -7,17 +7,20 @@
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.3.18.009
-Release: 7%{?dist}
+Release: 8%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 %if 0%{?rhel} < 6
 BuildRequires: maven2
 %define tomcat tomcat5
 %define mvn %{_bindir}/mvn
+%define jacc jacc
 %endif
 %if 0%{?rhel} >= 6
 %define tomcat tomcat6
 %define mvn %{_bindir}/mvn22
+#This is probably not right, but one thing at a time
+%define jacc geronimo-j2ee-1.4-apis
 BuildRequires: maven22
 BuildRequires: jdk
 ## explicitly requiring this because I don't want yum to pick java-1.5.0-gcj-devel
@@ -35,7 +38,7 @@ BuildRequires: voms-api-java
 Requires: voms-api-java
 BuildRequires: emi-trustmanager
 Requires: emi-trustmanager
-BUildRequires: emi-trustmanager-axis
+BuildRequires: emi-trustmanager-axis
 Requires: emi-trustmanager-axis
 # Standard RPMs from the system
 # "Naive" use of slf4j doesn't appear to work
@@ -56,6 +59,8 @@ BuildRequires: joda-time
 Requires: joda-time
 BuildRequires: mysql-connector-java
 Requires: mysql-connector-java
+BuildRequires: xerces-j2 xalan-j2
+Requires: xerces-j2 xalan-j2
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildArch: noarch
 
@@ -143,6 +148,13 @@ Summary: Tomcat service for GUMS
 # Take SLF4J from the OS.
 #%{mvn} install:install-file -B -DgroupId=org.slf4j -DartifactId=slf4j-simple -Dversion=1.5.5 -Dpackaging=jar -Dfile=`build-classpath slf4j/simple` -Dmaven.repo.local=%{local_maven}
 #%{mvn} install:install-file -B -DgroupId=org.slf4j -DartifactId=slf4j-simple -Dversion=1.6.1 -Dpackaging=jar -Dfile=`build-classpath slf4j/simple` -Dmaven.repo.local=%{local_maven}
+
+# Adding system dependencies
+%{mvn} install:install-file -B -DgroupId=xerces -DartifactId=xercesImpl -Dversion=2.8.0 -Dpackaging=jar -Dfile=`build-classpath xerces-j2` -Dmaven.repo.local=%{local_maven}
+%{mvn} install:install-file -B -DgroupId=org.apache.xalan -DartifactId=xalan -Dversion=2.7.1 -Dpackaging=jar -Dfile=`build-classpath xalan-j2` -Dmaven.repo.local=%{local_maven}
+
+
+
 
 pushd gums-core
 %{mvn} -B -e -Dmaven.repo.local=/tmp/m2-repository -Dmaven.test.skip=true install
@@ -252,10 +264,10 @@ mkdir -p $RPM_BUILD_ROOT%{_javadir}
 touch $RPM_BUILD_ROOT%{_javadir}/javamail.jar
 
 # jglobus is required by XACML callouts in gums-client, but not gums-core.
-build-jar-repository $RPM_BUILD_ROOT%{_noarchlib}/%{dirname} jglobus trustmanager trustmanager-axis ant antlr bcprov commons-cli commons-codec commons-collections commons-digester commons-discovery commons-httpclient commons-lang commons-logging jacc jta voms-api-java joda-time mysql-connector-java
+build-jar-repository $RPM_BUILD_ROOT%{_noarchlib}/%{dirname} jglobus trustmanager trustmanager-axis ant antlr bcprov commons-cli commons-codec commons-collections commons-digester commons-discovery commons-httpclient commons-lang commons-logging %{jacc} jta voms-api-java joda-time mysql-connector-java xerces-j2
 
 mkdir -p $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib
-build-jar-repository $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib trustmanager trustmanager-axis ant antlr bcprov commons-beanutils commons-cli commons-codec commons-collections commons-digester commons-discovery commons-httpclient commons-lang commons-logging jacc jta voms-api-java joda-time mysql-connector-java
+build-jar-repository $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib trustmanager trustmanager-axis ant antlr bcprov commons-beanutils commons-cli commons-codec commons-collections commons-digester commons-discovery commons-httpclient commons-lang commons-logging %{jacc} jta voms-api-java joda-time mysql-connector-java xalan-j2 xerces-j2
 
 %files
 %defattr(-,root,root,-)
