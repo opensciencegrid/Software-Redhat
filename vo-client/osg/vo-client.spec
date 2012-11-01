@@ -1,6 +1,6 @@
 Name:           vo-client
 Version:        43
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Contains vomses file for use with user authentication and edg-mkgridmap.conf file that contains configuration information for edg-mkgridmap.
 
 Group:          System Environment/Base
@@ -13,6 +13,9 @@ Requires:       grid-certificates
 
 Source0:        %{name}-%{version}-osg.tar.gz
 
+# Tim's note, 1 November 2012: The process below is probably broken and needs to
+# be completely revised; see package README.
+# ------------------------------------------------------------------------------
 # Steps to make tarball (correctly packaged):
 # Get GOC's tarball, vo-client-40.tar.gz
 # tar xzf vo-client-40.tar.gz
@@ -92,6 +95,9 @@ rm -rf $RPM_BUILD_ROOT
 %attr(0600,tomcat,tomcat) %config(noreplace) %{_sysconfdir}/gums/gums.config.template
 
 %changelog
+* Thu Nov 01 2012 Tim Cartwright <cat@cs.wisc.edu> - 43-2
+- Swapped in the gums.config.template file from John Weigand (see SOFTWARE-824).
+
 * Tue Oct 30 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 43-1
 - Updated to vo-client v43.
 

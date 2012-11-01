@@ -24,3 +24,12 @@ The following steps were used to create the vo-client-43 tarball:
 10. Rename the directory vo-client-$version
 11. Tar up the directory into vo-client-$version-osg.tar.gz
 
+---------------------------------------------------------------------------
+
+Tim's notes, 1 November 2012
+
+The process by which this version was created is completely broken and must
+be fixed!  Simply copying the gums.config.template from the prior version
+means that we lose any changes that Rob makes in the upstream, old-format
+version.  So, I will work with Rob Quick and the GOC to create and document
+a sustainable process for future releases.
