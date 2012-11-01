@@ -1,6 +1,6 @@
 
 Name:           osg-ca-certs-updater
-Version:        0.3
+Version:        0.4
 Release:        1%{?dist}
 Summary:        Automatic CA certs updates for OSG
 
@@ -56,6 +56,9 @@ fi
 %doc %{_defaultdocdir}/%{name}-%{version}/README*
 
 %changelog
+* Thu Nov 01 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 0.4-1
+- Add absolute path to script to cron.d entry
+
 * Wed Oct 24 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 0.3-1
 - Add chkconfig line
 
