@@ -1,6 +1,6 @@
 
 Name:      osg-cleanup
-Version:   1.5
+Version:   1.6
 Release:   1%{?dist}
 Summary:   OSG cleanup scripts
 
@@ -87,6 +87,9 @@ fi
 
 
 %changelog
+* Thu Nov 01 2012 Matyas Selmeci <matyas@cs.wisc.edu> 1.6-1
+- Fix tmpwatch call for el 5
+
 * Thu Nov 01 2012 Matyas Selmeci <matyas@cs.wisc.edu> 1.5-1
 - Updated to 1.5.
 - Fix default SEG log path; treat entries in seg log path as directories.
