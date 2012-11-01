@@ -1,6 +1,6 @@
 
 Name:      osg-cleanup
-Version:   1.4
+Version:   1.5
 Release:   1%{?dist}
 Summary:   OSG cleanup scripts
 
@@ -11,6 +11,7 @@ URL:       https://twiki.grid.iu.edu/bin/view/Documentation/Release3/InstallClea
 Source0:   %{name}-%{version}.tar.gz
 
 Requires: logrotate
+Requires: tmpwatch
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch: noarch
@@ -86,6 +87,11 @@ fi
 
 
 %changelog
+* Thu Nov 01 2012 Matyas Selmeci <matyas@cs.wisc.edu> 1.5-1
+- Updated to 1.5.
+- Fix default SEG log path; treat entries in seg log path as directories.
+- Use tmpwatch to clean temp dirs.
+
 * Thu Oct 04 2012 Matyas Selmeci <matyas@cs.wisc.edu> 1.4-1
 - Updated to 1.4.
 - Correctly removes gram-state files in the new directory format. (#SOFTWARE-785)
