@@ -7,7 +7,7 @@
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.3.18.009
-Release: 8%{?dist}
+Release: 9%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 %if 0%{?rhel} < 6
@@ -20,7 +20,7 @@ BuildRequires: maven2
 %define tomcat tomcat6
 %define mvn %{_bindir}/mvn22
 #This is probably not right, but one thing at a time
-%define jacc geronimo-j2ee-1.4-apis
+%define jacc %{nil}
 BuildRequires: maven22
 BuildRequires: jdk
 ## explicitly requiring this because I don't want yum to pick java-1.5.0-gcj-devel
