@@ -14,7 +14,7 @@
 
 Name:           bestman2
 Version:        2.3.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -41,7 +41,6 @@ Source6:        build.xml
 Source7:        build.properties
 Source8:        configure.in
 Source9:        bestman2.rc
-#Patch0:         hostinfo.build.xml.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
@@ -166,10 +165,6 @@ BUILDROOT=$PWD
 %setup -T -b 4 -q -n lib
 cd ..
 %setup -T -b 0 -q -n %{name}
-
-#pushd bestman2/branches/osg-dev
-#%patch1 -p0
-#popd
 
 pushd bestman2/setup-osg/bestman.in
 sed -i "s/@SRM_HOME@/\/etc\/bestman2/" *
@@ -425,6 +420,9 @@ fi
 
 
 %changelog
+* Fri Nov 02 2012 Neha Sharma <neha@fnal.gov> - 2.3.0-2
+- Removing the patch since changes have been incorporated in to code itself
+
 * Thu Sep 20 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 2.3-1
 - Switch to jglobus2.
 
