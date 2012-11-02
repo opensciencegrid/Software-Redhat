@@ -6,7 +6,7 @@ Name:           glideinwms
 
 %if %{v2_plus}
 %define version 2.6.2
-%define release 0.rc3
+%define release 1
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
 %endif
@@ -76,6 +76,8 @@ Requires: m2crypto
 Requires: javascriptrrd
 Requires: osg-client
 Requires: gwms-condor-config
+#To be added in 2.6.3+ once probe is finished.
+#Requires: gratia-probe-gwms
 #Requires: vdt-vofrontend-essentials
 
 Requires(post): /sbin/service
