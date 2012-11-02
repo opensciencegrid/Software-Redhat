@@ -282,13 +282,13 @@ exit 0
 %{_libdir}/libXrdCrypto*.so*
 %{_libdir}/libXrdUtils.so*
 %{_libdir}/libXrdMain.so*
-%{_libdir}/libXrdAppUtils.so*
-%{_libdir}/libXrdCl.so*
+#%{_libdir}/libXrdAppUtils.so*
+#%{_libdir}/libXrdCl.so*
 
 %files libs-devel
 %defattr(-,root,root,-)
 %{_includedir}/%{name}/XrdVersion.hh
-%{_includedir}/%{name}/XrdVersionPlugin.hh
+#%{_includedir}/%{name}/XrdVersionPlugin.hh
 %{_includedir}/%{name}/XrdSec
 %{_includedir}/%{name}/XrdSecsss
 %{_includedir}/%{name}/XrdSecgsi
@@ -300,8 +300,8 @@ exit 0
 %{_includedir}/%{name}/Xrd
 %{_includedir}/%{name}/XProtocol
 %{_includedir}/%{name}/XrdCks
-%{_includedir}/%{name}/XrdApps
-%{_includedir}/%{name}/XrdCl
+#%{_includedir}/%{name}/XrdApps
+#%{_includedir}/%{name}/XrdCl
 
 %files client
 %defattr(-,root,root,-)
@@ -311,10 +311,10 @@ exit 0
 %{_libdir}/libXrdFfs.so*
 %{_bindir}/xprep
 %{_bindir}/xrd
-%{_bindir}/xrdfs
+#%{_bindir}/xrdfs
 %{_bindir}/xrdcp
-%{_bindir}/xrdcopy
-%{_bindir}/xrdcpy
+#%{_bindir}/xrdcopy
+#%{_bindir}/xrdcpy
 %{_bindir}/xrdgsiproxy
 %{_bindir}/xrdstagetool
 %{_bindir}/xrdadler32
