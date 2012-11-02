@@ -1,0 +1,11 @@
+--- globus-job-get-output.in.orig	2012-11-01 21:00:51.000000000 -0500
++++ globus-job-get-output.in	2012-11-01 21:01:11.000000000 -0500
+@@ -154,7 +154,7 @@
+ fi
+ 
+ if [ -z "${resource}" ]; then
+-    resource=`echo ${jobid} | ${GLOBUS_SH_AWK} -F: '{print $2}' | \
++    resource=`echo ${jobid} | ${GLOBUS_SH_AWK-awk} -F: '{print $2}' | \
+ 	${GLOBUS_SH_SED-sed} 's|/||g'`
+ fi
+ 
