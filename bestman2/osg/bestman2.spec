@@ -42,7 +42,6 @@ Source7:        build.properties
 Source8:        configure.in
 Source9:        bestman2.rc
 #Patch0:         hostinfo.build.xml.patch
-Patch1:         jglobus2.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
@@ -168,9 +167,9 @@ BUILDROOT=$PWD
 cd ..
 %setup -T -b 0 -q -n %{name}
 
-pushd bestman2/branches/osg-dev
-%patch1 -p0
-popd
+#pushd bestman2/branches/osg-dev
+#%patch1 -p0
+#popd
 
 pushd bestman2/setup-osg/bestman.in
 sed -i "s/@SRM_HOME@/\/etc\/bestman2/" *
