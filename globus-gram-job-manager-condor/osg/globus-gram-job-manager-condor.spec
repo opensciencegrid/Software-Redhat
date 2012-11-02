@@ -9,7 +9,7 @@
 Name:		globus-gram-job-manager-condor
 %global _name %(tr - _ <<< %{name})
 Version:	1.0
-Release:	13.2%{?dist}
+Release:	13.3%{?dist}
 Summary:	Globus Toolkit - Condor Job Manager
 
 Group:		Applications/Internet
@@ -17,6 +17,7 @@ License:	ASL 2.0
 URL:		http://www.globus.org/
 Source:		http://www.globus.org/ftppub/gt5/5.2/5.2.0/packages/src/%{_name}-%{version}.tar.gz
 Source1:        condor_accounting_groups.pm
+Source2:        condor.rvf
 
 # OSG Patches
 Patch0:         job_status.patch
@@ -127,6 +128,10 @@ mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/osg
 touch $RPM_BUILD_ROOT%{_sysconfdir}/osg/uid_table.txt
 touch $RPM_BUILD_ROOT%{_sysconfdir}/osg/extattr_table.txt
 
+# Install the RVF file
+mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/globus/gram/
+install -m 644 %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/globus/gram/condor.rvf
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -157,8 +162,12 @@ fi
 %config(noreplace) %{_sysconfdir}/osg/uid_table.txt
 %{perl_vendorlib}/Globus/GRAM/JobManager/condor_accounting_groups.pm
 %config(noreplace) %{_sysconfdir}/globus/globus-condor.conf
+%config(noreplace) %{_sysconfdir}/globus/gram/condor.rvf 
 
 %changelog
+* Fri Nov 02 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0-13.3
+- Add placeholder file for user-editable condor.rvf
+
 * Fri Oct 05 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0-13.2
 - Accounting groups module changes from SOFTWARE-805
 

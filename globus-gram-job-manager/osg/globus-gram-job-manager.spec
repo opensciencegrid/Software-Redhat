@@ -13,14 +13,15 @@
 Name:		globus-gram-job-manager
 %global _name %(tr - _ <<< %{name})
 Version:	13.45
-Release:	1.2%{?dist}
+Release:	1.3%{?dist}
 Summary:	Globus Toolkit - GRAM Jobmanager
 
 Group:		Applications/Internet
 License:	ASL 2.0
 URL:		http://www.globus.org/
-Source:	       %{_name}-%{version}.tar.gz
-Source1:       globus-gram-job-manager-logging
+Source:	        %{_name}-%{version}.tar.gz
+Source1:        globus-gram-job-manager-logging
+Source2:        job-manager.rvf
 
 # OSG-specific patches
 Patch9:         unlock_init.patch
@@ -192,6 +193,10 @@ cat %{SOURCE1} >> $RPM_BUILD_ROOT%{_sysconfdir}/globus/globus-gram-job-manager.c
 mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/log/globus
 chmod 01777 $RPM_BUILD_ROOT%{_localstatedir}/log/globus 
 
+# Add user-editable RVF file
+mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/globus/gram
+install -m 0644 %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/globus/gram/job-manager.rvf
+
 %preun
 if [[ $1 -ge 1 ]]; then # upgrade
     echo Killing job-managers
@@ -216,12 +221,16 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_localstatedir}/log/globus
 %config(noreplace) %{_sysconfdir}/globus/globus-gram-job-manager.conf
 %config(noreplace) %{_sysconfdir}/logrotate.d/globus-job-manager
+%config(noreplace) %{_sysconfdir}/globus/gram/job-manager.rvf
 
 %files doc -f package-doc.filelist
 %defattr(-,root,root,-)
 %dir %{_docdir}/%{name}-%{version}/html
 
 %changelog
+* Fri Nov 02 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 13.45-1.3
+- Add placeholder file for user-editable job-manager.rvf
+
 * Wed Aug 15 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 13.45-1.2
 - Added patch from GT-268 (GRAM job manager seg module fails to replay first log of the month on restart)
 

@@ -16,13 +16,14 @@
 Name:		globus-gram-job-manager-lsf
 %global _name %(tr - _ <<< %{name})
 Version:	1.0
-Release:	1.2%{?dist}
+Release:	1.3%{?dist}
 Summary:	Globus Toolkit - LSF Job Manager
 
 Group:		Applications/Internet
 License:	ASL 2.0
 URL:		http://www.globus.org/
 Source:		http://www.globus.org/ftppub/gt5/5.2/5.2.2/packages/src/%{_name}-%{version}.tar.gz
+Source1:        lsf.rvf
 Patch0:         host-xcount.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Obsoletes:      globus-gram-job-manager-setup-lsf < 4.5
@@ -133,6 +134,9 @@ GLOBUSPACKAGEDIR=$RPM_BUILD_ROOT%{_datadir}/globus/packages
 find $RPM_BUILD_ROOT%{_libdir} -name 'lib*.la' -exec rm -v '{}' \;
 sed '/lib.*\.la$/d' -i $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_dev.filelist
 
+# Add RVF file
+mkdir -p $RPM_BUILD_ROOT/%{_sysconfdir}/globus/gram/
+install -m 0644 %{SOURCE1} $RPM_BUILD_ROOT/%{_sysconfdir}/globus/gram/lsf.rvf
 
 # Generate package filelists
 # Main package: lsf.pm and globus-lsf.config
@@ -214,6 +218,7 @@ fi
 %dir %{_datadir}/globus/packages/%{_name}
 %dir %{_docdir}/%{name}-%{version}
 %config(noreplace) %{_sysconfdir}/globus/globus-lsf.conf
+%config(noreplace) %{_sysconfdir}/globus/gram/lsf.rvf 
 
 %files setup-poll -f package-setup-poll.filelist
 %defattr(-,root,root,-)
@@ -224,6 +229,9 @@ fi
 %config(noreplace) %{_sysconfdir}/grid-services/available/jobmanager-lsf-seg
 
 %changelog
+* Fri Nov 02 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0-1.3
+- Add placeholder file for user-editable lsf.rvf
+
 * Tue Oct 23 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0-1.2
 - Replaced xcount patch with Joe Bester's version
 

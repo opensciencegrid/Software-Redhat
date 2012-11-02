@@ -5,7 +5,7 @@
 %endif
 
 
-%if "%{?rhel}" == "4" || "%{?rhel}" == "5"
+%if "%{?rhel}" == "5"
 %global docdiroption "with-docdir"
 %else
 %global docdiroption "docdir"
@@ -13,34 +13,25 @@
 
 %{!?perl_vendorlib: %global perl_vendorlib %(eval "`perl -V:installvendorlib`"; echo $installvendorlib)}
 
-Name:		globus-gram-job-manager-pbs
+Name:		globus-gram-job-manager-sge
 %global _name %(tr - _ <<< %{name})
-Version:	1.6
-Release:	1.2%{?dist}
-Summary:	Globus Toolkit - PBS Job Manager
+Version:	1.0
+Release:	7.1%{?dist}
+Summary:	Globus Toolkit - SGE Job Manager
 
 Group:		Applications/Internet
-License:	ASL 2.0
+License:	LGPL 2.1 and Globus Toolkit Public License 3.0
 URL:		http://www.globus.org/
-Source:		http://www.globus.org/ftppub/gt5/5.2/5.2.2/packages/src/%{_name}-%{version}.tar.gz
-Source1:        pbs.rvf
-Patch1:     osg-teragrid-pbs.patch
+Source:		http://www.globus.org/ftppub/gt5/5.2/5.2.0/packages/src/%{_name}-%{version}.tar.gz
+Source1:        sge.rvf
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-Obsoletes:      globus-gram-job-manager-setup-pbs < 4.5
+Obsoletes:      globus-gram-job-manager-setup-sge < 4.5
 
 Requires:       globus-gram-job-manager-scripts >= 4
-Requires:	globus-gass-cache-program >= 5
+Requires:	globus-gass-cache-program >= 4
 Requires:	globus-common-progs >= 14
-Requires:       torque-client
-%if 0%{?suse_version} > 0
-    %if %{suse_version} < 1140
-Requires:     perl = %{perl_version}
-    %else
-%{perl_requires}
-    %endif
-%else
+Requires:       gridengine
 Requires:	perl(:MODULE_COMPAT_%(eval "`perl -V:version`"; echo $version))
-%endif
 BuildRequires:	grid-packaging-tools >= 3.4
 BuildRequires:	globus-core >= 8
 BuildRequires:	globus-common-devel >= 14
@@ -56,15 +47,11 @@ BuildRequires:	ghostscript
 %if %{?fedora}%{!?fedora:0} >= 9 || %{?rhel}%{!?rhel:0} >= 6
 BuildRequires:	tex(latex)
 %else
-%if 0%{?suse_version} > 0
-BuildRequires:  texlive-latex
-%else
 BuildRequires:	tetex-latex
-%endif
 %endif
 
 %package doc
-Summary:	Globus Toolkit - PBS Job Manager Documentation Files
+Summary:	Globus Toolkit - SGE Job Manager Documentation Files
 Group:		Documentation
 %if %{?fedora}%{!?fedora:0} >= 10 || %{?rhel}%{!?rhel:0} >= 6
 BuildArch:      noarch
@@ -73,26 +60,27 @@ BuildArch:      noarch
 Requires:	%{name} = %{version}-%{release}
 
 %package setup-poll
-Summary:        Globus Toolkit - PBS Job Manager Setup Files
+Summary:        Globus Toolkit - SGE Job Manager Setup Files
 Group:		Applications/Internet
 %if %{?fedora}%{!?fedora:0} >= 10 || %{?rhel}%{!?rhel:0} >= 6
 BuildArch:      noarch
 %endif
 Provides:       %{name}-setup
 Provides:       globus-gram-job-manager-setup
+Requires:       gridengine
 Requires:	%{name} = %{version}-%{release}
-requires(post): globus-gram-job-manager-scripts >= 3.4
-requires(preun): globus-gram-job-manager-scripts >= 3.4
+Requires(post): globus-gram-job-manager-scripts >= 4
+Requires(preun): globus-gram-job-manager-scripts >= 4
 Conflicts:      %{name}-setup-seg
 
 %package setup-seg
-Summary:	Globus Toolkit - PBS Job Manager Setup Files
+Summary:	Globus Toolkit - SGE Job Manager Setup Files
 Group:		Applications/Internet
 Provides:       %{name}-setup
 Provides:       globus-gram-job-manager-setup
 Requires:	%{name} = %{version}-%{release}
 Requires:       globus-scheduler-event-generator-progs >= 4
-Requires:       torque-server
+Requires:       gridengine
 Requires(post): globus-gram-job-manager-scripts >= 4
 Requires(preun): globus-gram-job-manager-scripts >= 4
 Conflicts:      %{name}-setup-poll
@@ -104,7 +92,7 @@ many others all over the world. A growing number of projects and companies are
 using the Globus Toolkit to unlock the potential of grids for their cause.
 
 The %{name} package contains:
-PBS Job Manager 
+SGE Job Manager 
 
 %description doc
 The Globus Toolkit is an open source software toolkit used for building Grid
@@ -113,7 +101,7 @@ many others all over the world. A growing number of projects and companies are
 using the Globus Toolkit to unlock the potential of grids for their cause.
 
 The %{name}-doc package contains:
-PBS Job Manager Documentation Files
+SGE Job Manager Documentation Files
 
 %description setup-poll
 The Globus Toolkit is an open source software toolkit used for building Grid
@@ -122,7 +110,7 @@ many others all over the world. A growing number of projects and companies are
 using the Globus Toolkit to unlock the potential of grids for their cause.
 
 The %{name} package contains:
-PBS Job Manager Setup using polling to monitor job state
+SGE Job Manager Setup using polling to monitor job state
 
 %description setup-seg
 The Globus Toolkit is an open source software toolkit used for building Grid
@@ -131,12 +119,11 @@ many others all over the world. A growing number of projects and companies are
 using the Globus Toolkit to unlock the potential of grids for their cause.
 
 The %{name} package contains:
-PBS Job Manager Setup using SEG to monitor job state
+SGE Job Manager Setup using SEG to monitor job state
 
 %prep
 %setup -q -n %{_name}-%{version}
 
-%patch1 -p0
 %build
 # Remove files that should be replaced during bootstrap
 rm -f doxygen/Doxyfile*
@@ -147,30 +134,37 @@ rm -rf autom4te.cache
 
 %{_datadir}/globus/globus-bootstrap.sh
 
-export MPIEXEC=no
-export MPIRUN=no
-export QDEL=/usr/bin/qdel-torque
-export QSTAT=/usr/bin/qstat-torque
-export QSUB=/usr/bin/qsub-torque
-%if %{?fedora}%{!?fedora:0} == 13 || %{?rhel}%{!?rhel:0} == 5
-   %global pbs_log_path /var/torque/server_logs
+# Explicitly set SGE-related command paths
+%if %{?rhel}%{!?rhel:0} == 5
+export QSUB=/usr/bin/qsub
+export QSTAT=/usr/bin/qstat
+export QDEL=/usr/bin/qdel
 %else
-   %global pbs_log_path /var/log/torque/server_logs 
+export QSUB=/usr/bin/qsub-ge
+export QSTAT=/usr/bin/qstat-ge
+export QDEL=/usr/bin/qdel-ge
 %endif
+export QCONF=/usr/bin/qconf
+export MPIRUN=no
+export SUN_MPRUN=no
 %configure --with-flavor=%{flavor} --enable-doxygen \
            --%{docdiroption}=%{_docdir}/%{name}-%{version} \
            --with-globus-state-dir=%{_localstatedir}/lib/globus \
-           --with-log-path=%{pbs_log_path} \
-           --disable-static
+           --disable-static \
+           --with-sge-config=/etc/sysconfig/gridengine \
+           --with-sge-root=undefined \
+           --with-sge-cell=undefined \
+           --without-queue-validation \
+           --without-pe-validation
 
 make %{?_smp_mflags}
 
 %install
 rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
-# Remove jobmanager-pbs from install dir so that it can be
+# Remove jobmanager-sge from install dir so that it can be
 # added/removed by post scripts
-rm $RPM_BUILD_ROOT/etc/grid-services/jobmanager-pbs
+rm $RPM_BUILD_ROOT/etc/grid-services/jobmanager-sge
 
 GLOBUSPACKAGEDIR=$RPM_BUILD_ROOT%{_datadir}/globus/packages
 
@@ -178,26 +172,26 @@ GLOBUSPACKAGEDIR=$RPM_BUILD_ROOT%{_datadir}/globus/packages
 find $RPM_BUILD_ROOT%{_libdir} -name 'lib*.la' -exec rm -v '{}' \;
 sed '/lib.*\.la$/d' -i $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_dev.filelist
 
+
 # Install the RVF file
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/globus/gram/
-install -m 644 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/globus/gram/pbs.rvf
-
+install -m 644 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/globus/gram/sge.rvf
 
 # Generate package filelists
-# Main package: pbs.pm and globus-pbs.config
+# Main package: sge.pm and globus-sge.config
 cat $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_rtl.filelist \
     $GLOBUSPACKAGEDIR/%{_name}/noflavor_data.filelist \
   | sed s!^!%{_prefix}! \
   | sed s!^%{_prefix}/etc!/etc! \
-  | grep -E 'pbs\.pm|pbs\.rvf|globus-pbs\.conf|pkg_data_|.filelist' > package.filelist
+  | grep -E 'sge\.pm|sge\.rvf|globus-sge\.conf|pkg_data_|\.filelist' > package.filelist
 
-# setup-poll package: /etc/grid-services/available/job-manager-pbs-poll
+# setup-poll package: /etc/grid-services/available/job-manager-sge-poll
 cat $GLOBUSPACKAGEDIR/%{_name}/noflavor_data.filelist \
   | sed s!^!%{_prefix}! \
   | sed s!^%{_prefix}/etc!/etc! \
-  | grep jobmanager-pbs-poll > package-setup-poll.filelist
+  | grep jobmanager-sge-poll > package-setup-poll.filelist
 
-# setup-seg package: /etc/grid-services/available/job-manager-pbs-seg
+# setup-seg package: /etc/grid-services/available/job-manager-sge-seg
 # plus seg module
 cat $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_pgm.filelist \
     $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_dev.filelist \
@@ -205,7 +199,7 @@ cat $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_pgm.filelist \
     $GLOBUSPACKAGEDIR/%{_name}/noflavor_data.filelist \
   | sed s!^!%{_prefix}! \
   | sed s!^%{_prefix}/etc!/etc! \
-  | grep -Ev 'jobmanager-pbs-poll|globus-pbs.conf|pbs.pm|pkg_data_%{flavor}_rtl|pkg_data_noflavor_data|%{flavor}_rtl.filelist|noflavor_data.filelist' > package-setup-seg.filelist
+  | grep -Ev 'jobmanager-sge-poll|globus-sge.conf|sge.pm|pkg_data_%{flavor}_rtl|pkg_data_noflavor_data|%{flavor}_rtl.filelist|noflavor_data.filelist' > package-setup-seg.filelist
 
 cat $GLOBUSPACKAGEDIR/%{_name}/noflavor_doc.filelist \
   | sed 's!^!%doc %{_prefix}!' > package-doc.filelist
@@ -215,20 +209,20 @@ rm -rf $RPM_BUILD_ROOT
 
 %post setup-poll
 if [ $1 -eq 1 ]; then
-    globus-gatekeeper-admin -e jobmanager-pbs-poll -n jobmanager-pbs > /dev/null 2>&1 || :
+    globus-gatekeeper-admin -e jobmanager-sge-poll -n jobmanager-sge > /dev/null 2>&1 || :
     if [ ! -f /etc/grid-services/jobmanager ]; then
-        globus-gatekeeper-admin -e jobmanager-pbs-poll -n jobmanager
+        globus-gatekeeper-admin -e jobmanager-sge-poll -n jobmanager
     fi
 fi
 
 %preun setup-poll
 if [ $1 -eq 0 ]; then
-    globus-gatekeeper-admin -d jobmanager-pbs-poll > /dev/null 2>&1 || :
+    globus-gatekeeper-admin -d jobmanager-sge-poll > /dev/null 2>&1 || :
 fi
 
 %postun setup-poll
 if [ $1 -eq 1 ]; then
-    globus-gatekeeper-admin -e jobmanager-pbs-poll -n jobmanager-pbs > /dev/null 2>&1 || :
+    globus-gatekeeper-admin -e jobmanager-sge-poll -n jobmanager-sge > /dev/null 2>&1 || :
 elif [ $1 -eq 0 -a ! -f /etc/grid-services/jobmanager ]; then
     globus-gatekeeper-admin -E > /dev/null 2>&1 || :
 fi
@@ -236,24 +230,24 @@ fi
 %post setup-seg
 ldconfig
 if [ $1 -eq 1 ]; then
-    globus-gatekeeper-admin -e jobmanager-pbs-seg -n jobmanager-pbs > /dev/null 2>&1 || :
-    globus-scheduler-event-generator-admin -e pbs > /dev/null 2>&1 || :
-    service globus-scheduler-event-generator condrestart pbs
+    globus-gatekeeper-admin -e jobmanager-sge-seg -n jobmanager-sge > /dev/null 2>&1 || :
+    globus-scheduler-event-generator-admin -e sge > /dev/null 2>&1 || :
+    service globus-scheduler-event-generator condrestart sge
 fi
 
 %preun setup-seg
 if [ $1 -eq 0 ]; then
-    globus-gatekeeper-admin -d jobmanager-pbs-seg > /dev/null 2>&1 || :
-    globus-scheduler-event-generator-admin -d pbs > /dev/null 2>&1 || :
-    service globus-scheduler-event-generator stop pbs > /dev/null 2>&1 || :
+    globus-gatekeeper-admin -d jobmanager-sge-seg > /dev/null 2>&1 || :
+    globus-scheduler-event-generator-admin -d sge > /dev/null 2>&1 || :
+    service globus-scheduler-event-generator stop sge > /dev/null 2>&1 || :
 fi
 
 %postun setup-seg
 ldconfig
 if [ $1 -eq 1 ]; then
-    globus-gatekeeper-admin -e jobmanager-pbs-seg > /dev/null 2>&1 || :
-    globus-scheduler-event-generator-admin -e pbs > /dev/null 2>&1 || :
-    service globus-scheduler-event-generator condrestart pbs > /dev/null 2>&1 || :
+    globus-gatekeeper-admin -e jobmanager-sge-seg > /dev/null 2>&1 || :
+    globus-scheduler-event-generator-admin -e sge > /dev/null 2>&1 || :
+    service globus-scheduler-event-generator condrestart sge > /dev/null 2>&1 || :
 elif [ $1 -eq 0 -a ! -f /etc/grid-services/jobmanager ]; then
     globus-gatekeeper-admin -E > /dev/null 2>&1 || :
 fi
@@ -262,72 +256,39 @@ fi
 %defattr(-,root,root,-)
 %dir %{_datadir}/globus/packages/%{_name}
 %dir %{_docdir}/%{name}-%{version}
-%config(noreplace) %{_sysconfdir}/globus/globus-pbs.conf
-%config(noreplace) %{_sysconfdir}/globus/gram/pbs.rvf 
+%config(noreplace) %{_sysconfdir}/globus/globus-sge.conf
+%config(noreplace) %{_sysconfdir}/globus/gram/sge.rvf 
 
 %files setup-poll -f package-setup-poll.filelist
 %defattr(-,root,root,-)
-%config(noreplace) %{_sysconfdir}/grid-services/available/jobmanager-pbs-poll
+%config(noreplace) %{_sysconfdir}/grid-services/available/jobmanager-sge-poll
 
 %files setup-seg -f package-setup-seg.filelist
 %defattr(-,root,root,-)
-%config(noreplace) %{_sysconfdir}/grid-services/available/jobmanager-pbs-seg
+%config(noreplace) %{_sysconfdir}/grid-services/available/jobmanager-sge-seg
 
 %files doc -f package-doc.filelist
 %defattr(-,root,root,-)
 %dir %{_docdir}/%{name}-%{version}/html
 
 %changelog
-* Fri Nov 02 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.6-1.2
-- Add placeholder file for user-editable pbs.rvf
+* Fri Nov 02 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0-7.1
+- Add placeholder file for user-editable sge.rvf
 
-* Wed Sep 12 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.6-1.1
-- Add OSG/TeraGrid patch
-
-* Wed Sep 12 2012 Joseph Bester <bester@mcs.anl.gov> - 1.6-1
-- GT-276: PBS SEG module isn't robust against log files becoming unavailable
-
-* Mon Jul 16 2012 Joseph Bester <bester@mcs.anl.gov> - 1.5-5
-- GT 5.2.2 final
-
-* Fri Jun 29 2012 Joseph Bester <bester@mcs.anl.gov> - 1.5-4
-- GT 5.2.2 Release
-
-* Wed May 09 2012 Joseph Bester <bester@mcs.anl.gov> - 1.5-3
-- RHEL 4 patches
-
-* Fri May 04 2012 Joseph Bester <bester@mcs.anl.gov> - 1.5-2
-- SLES 11 patches
-
-* Thu Apr 12 2012 Joseph Bester <bester@mcs.anl.gov> - 1.5-1
-- GRAM-343: lrm packages grid-service files aren't in CLEANFILES
-
-* Wed Mar 14 2012 Joseph Bester <bester@mcs.anl.gov> - 1.4-1
-- GRAM-318: Periodic lockup of SEG
-
-* Tue Feb 14 2012 Joseph Bester <bester@mcs.anl.gov> - 1.3-1
-- GRAM-297: job manager service definitions contain unresolved variables
-- GRAM-310: sge configure script error
-- RIC-229: Clean up GPT metadata
-
-* Mon Dec 05 2011 Joseph Bester <bester@mcs.anl.gov> - 1.1-4
+* Mon Dec 05 2011 Joseph Bester <bester@mcs.anl.gov> - 1.0-7
 - Update for 5.2.0 release
 
-* Mon Dec 05 2011 Joseph Bester <bester@mcs.anl.gov> - 1.1-3
+* Mon Dec 05 2011 Joseph Bester <bester@mcs.anl.gov> - 1.0-6
 - Last sync prior to 5.2.0
 
-* Fri Oct 21 2011 Joseph Bester <bester@mcs.anl.gov> - 1.1-2
+* Fri Oct 21 2011 Joseph Bester <bester@mcs.anl.gov> - 1.0-5
 - Fix %post* scripts to check for -eq 1
 - Add explicit dependencies on >= 5.2 libraries
 
-* Wed Sep 22 2011  <bester@mcs.anl.gov> - 1.1-1
-- GRAM-253
-
 * Thu Sep 22 2011 Joseph Bester <bester@mcs.anl.gov> - 1.0-4
-- Change %post check for -eq 1
 
 * Mon Sep 12 2011 Joseph Bester <bester@mcs.anl.gov> - 1.0-3
-- Change pbs_log_path for fedora 13 and rhel 5
+- Update path to qsub, etc for RHEL5 / EPEL
 
 * Thu Sep 01 2011 Joseph Bester <bester@mcs.anl.gov> - 1.0-2
 - Update for 5.1.2 release
