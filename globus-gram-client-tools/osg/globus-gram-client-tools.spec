@@ -13,7 +13,7 @@
 Name:		globus-gram-client-tools
 %global _name %(tr - _ <<< %{name})
 Version:	10.0
-Release:	6%{?dist}
+Release:	7%{?dist}
 Summary:	Globus Toolkit - Job Management Tools (globusrun)
 
 Group:		Applications/Internet
@@ -87,6 +87,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_docdir}/%{name}-%{version}
 
 %changelog
+* Fri Nov 02 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 10.0-7
+- Fix more awk issues.
+
 * Thu Nov 01 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 10.0-6
 - Fix missing awk for globus-job-get-output.
 

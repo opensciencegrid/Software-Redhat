@@ -9,3 +9,14 @@
  	${GLOBUS_SH_SED-sed} 's|/||g'`
  fi
  
+--- globus-job-clean.in.orig	2012-11-02 08:14:42.000000000 -0500
++++ globus-job-clean.in	2012-11-02 08:16:34.000000000 -0500
+@@ -149,7 +149,7 @@
+ 
+ if [ ${action} = cleanup ]; then
+    if [ -z "${resource}" ]; then
+-      resource=`echo ${jobid} | ${GLOBUS_SH_AWK} -F: '{print $2}' | \
++      resource=`echo ${jobid} | ${GLOBUS_SH_AWK-awk} -F: '{print $2}' | \
+           ${GLOBUS_SH_SED-sed} 's|/||g'`
+    fi
+ fi
