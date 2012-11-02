@@ -16,7 +16,7 @@
 Name:		globus-gram-job-manager-lsf
 %global _name %(tr - _ <<< %{name})
 Version:	1.0
-Release:	1.3%{?dist}
+Release:	1.4%{?dist}
 Summary:	Globus Toolkit - LSF Job Manager
 
 Group:		Applications/Internet
@@ -229,6 +229,9 @@ fi
 %config(noreplace) %{_sysconfdir}/grid-services/available/jobmanager-lsf-seg
 
 %changelog
+* Fri Nov 02 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0-1.4
+- Update lsf.rvf with more info
+
 * Fri Nov 02 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0-1.3
 - Add placeholder file for user-editable lsf.rvf
 

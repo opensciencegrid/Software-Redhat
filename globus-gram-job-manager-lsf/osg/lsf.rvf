@@ -4,3 +4,8 @@
 # Instead of editing that file, you should place changes here; they will
 # be preserved on upgrade.
 #
+# Common RVF overrides include:
+# - Setting default number of nodes to request for jobs
+# - Setting default number of processes to run on each node
+#
+
