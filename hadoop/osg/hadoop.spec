@@ -1,7 +1,7 @@
 %define hadoop_version 2.0.0+545 
 %define hadoop_patched_version 2.0.0-cdh4.1.1 
 %define hadoop_base_version 2.0.0 
-%define hadoop_release 1.cdh4.1.1.p0.6%{?dist}
+%define hadoop_release 1.cdh4.1.1.p0.7%{?dist}
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
@@ -704,6 +704,7 @@ fi
 %service_macro hdfs-zkfc
 %service_macro hdfs-journalnode
 %service_macro hdfs-datanode
+
 #service_macro yarn-resourcemanager
 #service_macro yarn-nodemanager
 #service_macro yarn-proxyserver
