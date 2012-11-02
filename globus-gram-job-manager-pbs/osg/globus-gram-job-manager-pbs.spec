@@ -16,7 +16,7 @@
 Name:		globus-gram-job-manager-pbs
 %global _name %(tr - _ <<< %{name})
 Version:	1.6
-Release:	1.2%{?dist}
+Release:	1.3%{?dist}
 Summary:	Globus Toolkit - PBS Job Manager
 
 Group:		Applications/Internet
@@ -278,6 +278,9 @@ fi
 %dir %{_docdir}/%{name}-%{version}/html
 
 %changelog
+* Fri Nov 02 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.6-1.3
+- Update pbs.rvf with more info
+
 * Fri Nov 02 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.6-1.2
 - Add placeholder file for user-editable pbs.rvf
 

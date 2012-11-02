@@ -6,5 +6,8 @@
 #
 # Common RVF overrides include:
 # - Email notification settings
+# - Setting default number of nodes requested
+# - Setting default types of nodes requested
+# - Setting names of nodes requested
 #
 
