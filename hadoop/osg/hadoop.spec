@@ -279,6 +279,7 @@ in parallel on large clusters of hosts.
 Summary: The Hadoop namenode manages the block locations of HDFS files
 Group: System/Daemons
 Requires: %{name}-hdfs = %{version}-%{release}
+Obsoletes: hadoop-0.20-namenode <= 0.20.2+737
 
 %description hdfs-namenode
 The Hadoop Distributed Filesystem (HDFS) requires one unique server, the
@@ -289,6 +290,7 @@ namenode, which manages the block locations of files on the filesystem.
 Summary: Hadoop Secondary namenode
 Group: System/Daemons
 Requires: %{name}-hdfs = %{version}-%{release}
+Obsoletes: hadoop-0.20-secondarynamenode <= 0.20.2+737
 
 %description hdfs-secondarynamenode
 The Secondary Name Node periodically compacts the Name Node EditLog
@@ -323,6 +325,7 @@ separate machines in the cluster.
 Summary: Hadoop Data Node
 Group: System/Daemons
 Requires: %{name}-hdfs = %{version}-%{release}
+Obsoletes: hadoop-0.20-datanode <= 0.20.2+737
 
 %description hdfs-datanode
 The Data Nodes in the Hadoop Cluster are responsible for serving up
@@ -415,6 +418,7 @@ Documentation for Hadoop
 Summary: Hadoop Filesystem Library
 Group: Development/Libraries
 Requires: %{name}-hdfs = %{version}-%{release}
+Obsoletes: hadoop-0.20-libhdfs <= 0.20.2+737
 # TODO: reconcile libjvm
 AutoReq: no
 
