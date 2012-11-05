@@ -1,7 +1,7 @@
 %define hadoop_version 2.0.0+545 
 %define hadoop_patched_version 2.0.0-cdh4.1.1 
 %define hadoop_base_version 2.0.0 
-%define hadoop_release 1.cdh4.1.1.p0.8%{?dist}
+%define hadoop_release 1.cdh4.1.1.p0.9%{?dist}
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
@@ -171,6 +171,7 @@ Source22: hadoop-layout.sh
 Source23: hadoop-hdfs-zkfc.svc
 Source24: hadoop-hdfs-journalnode.svc
 Source25: %{name}-bigtop-packaging.tar.gz
+Source26: hadoop-fuse.te
 Patch0: mvn304.patch
 Patch1: javafuse.patch
 Buildroot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id} -u -n)
@@ -448,6 +449,24 @@ Requires: fuse-libs
 These projects (enumerated below) allow HDFS to be mounted (on most flavors of Unix) as a standard file system using
 
 
+%define selinux_variants mls strict targeted
+%global selinux_policyver %(%{__sed} -e 's,.*selinux-policy-\\([^/]*\\)/.*,\\1,' /usr/share/selinux/devel/policyhelp || echo 0.0.0)
+
+%package hdfs-fuse-selinux
+Summary: SELinux policy files for fuse mount
+Group:          System Environment/Daemons
+BuildRequires:  checkpolicy selinux-policy-devel hardlink selinux-policy-targeted
+Requires: %{name} = %{version}-%{release}
+Requires:       selinux-policy >= %{selinux_policyver}
+Requires(post):         /usr/sbin/semodule /usr/sbin/semanage /sbin/fixfiles
+Requires(preun):        /sbin/service /usr/sbin/semodule /usr/sbin/semanage /sbin/fixfiles
+Requires(postun):       /usr/sbin/semodule
+Obsoletes: hadoop-0.20-fuse-selinux <= 0.20.2+737
+
+%description hdfs-fuse-selinux
+selinux policy files for the Hadoop fuse hdfs mounts
+
+
 %prep
 %setup -n %{name}-%{hadoop_patched_version}
 tar -C `dirname %{SOURCE25}` -xzf %{SOURCE25}
@@ -460,6 +479,18 @@ popd
 # This assumes that you installed Java JDK 6 and set JAVA_HOME
 # This assumes that you installed Java JDK 5 and set JAVA5_HOME
 # This assumes that you installed Forrest and set FORREST_HOME
+
+# Build the selinux policy file
+mkdir SELinux
+cp %{SOURCE26} SELinux/%{name}.te
+pushd SELinux
+for variant in %{selinux_variants}
+do
+    make NAME=${variant} -f %{_datadir}/selinux/devel/Makefile
+    mv %{name}.pp %{name}.pp.${variant}
+    make NAME=${variant} -f %{_datadir}/selinux/devel/Makefile clean
+done
+popd
 
 env FULL_VERSION=%{hadoop_patched_version} HADOOP_VERSION=%{hadoop_version} HADOOP_ARCH=%{hadoop_arch} bash %{SOURCE1}
 
@@ -532,6 +563,22 @@ done
 # Install fuse default file
 %__install -d -m 0755 $RPM_BUILD_ROOT/etc/default
 %__cp %{SOURCE4} $RPM_BUILD_ROOT/etc/default/hadoop-fuse
+
+%ifarch noarch
+%else
+
+# Install selinux policies
+pushd SELinux
+for variant in %{selinux_variants}
+do
+    install -d $RPM_BUILD_ROOT%{_datadir}/selinux/${variant}
+    install -p -m 644 %{name}.pp.${variant} \
+           $RPM_BUILD_ROOT%{_datadir}/selinux/${variant}/%{name}.pp
+done
+popd
+# Hardlink identical policy module packages together
+/usr/sbin/hardlink -cv $RPM_BUILD_ROOT%{_datadir}/selinux
+%endif
 
 # /var/lib/*/cache
 %__install -d -m 1777 $RPM_BUILD_ROOT/%{state_yarn}/cache
@@ -610,6 +657,30 @@ fi
 %postun httpfs
 if [ $1 -ge 1 ]; then
   service %{name}-httpfs condrestart >/dev/null 2>&1
+fi
+
+%post hdfs-fuse-selinux
+# Install SELinux policy modules
+for selinuxvariant in %{selinux_variants}
+do
+  /usr/sbin/semodule -s ${selinuxvariant} -i \
+    %{_datadir}/selinux/${selinuxvariant}/%{name}.pp &> /dev/null || :
+done
+
+%preun hdfs-fuse-selinux
+if [ "$1" -lt "1" ] ; then
+    for variant in %{selinux_variants} ; do
+        /usr/sbin/semodule -s ${variant} -r %{name} &> /dev/null || :
+    done
+fi
+
+%postun hdfs-fuse-selinux
+if [ "$1" -ge "1" ] ; then
+    # Replace the module if it is already loaded. semodule -u also
+    # checks the module version
+    for variant in %{selinux_variants} ; do
+        /usr/sbin/semodule -u %{_datadir}/selinux/${variant}/%{name}.pp || :
+    done
 fi
 
 
@@ -745,6 +816,15 @@ fi
 %attr(0644,root,root) %config(noreplace) /etc/default/hadoop-fuse
 %attr(0755,root,root) %{lib_hadoop}/bin/fuse_dfs
 %attr(0755,root,root) %{bin_hadoop}/hadoop-fuse-dfs
+
+%files hdfs-fuse-selinux
+%defattr(-,root,root,-)
+%doc SELinux/*.??
+%{_datadir}/selinux/*/%{name}.pp
+
+
+
+
 
 %changelog
 * Thu Oct 18 2012 Doug Strain <dstrain@fnal.gov> - 2.0.0+545-1.cdh4.1.1.p0.6
