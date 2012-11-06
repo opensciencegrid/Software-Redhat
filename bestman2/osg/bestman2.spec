@@ -14,7 +14,7 @@
 
 Name:           bestman2
 Version:        2.3.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -77,7 +77,7 @@ through Lawrence Berkeley National Laboratory.  See LICENSE file for details.
 %package common-libs
 Summary: Common files BeStMan SRM server client and tester
 Group: System Environment/Libraries
-Requires:  java axis jakarta-commons-logging jakarta-commons-discovery wsdl4j log4j jglobus
+Requires:  java axis jakarta-commons-logging jakarta-commons-discovery wsdl4j log4j jglobus cog-jglobus-axis
 # The following are needed for srm client tools and probably tester too
 Requires:  joda-time glite-security-trustmanager glite-security-util-java xalan-j2 vomsjapi jakarta-commons-collections
 %description common-libs
@@ -420,6 +420,9 @@ fi
 
 
 %changelog
+* Tue Nov 06 2012 Neha Sharma <neha@fnal.gov> - 2.3.0-3
+- Adding cog-jglobus-axis to common-libs
+
 * Fri Nov 02 2012 Neha Sharma <neha@fnal.gov> - 2.3.0-2
 - Removing the patch since changes have been incorporated in to code itself
 
