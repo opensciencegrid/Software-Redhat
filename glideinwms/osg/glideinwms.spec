@@ -6,7 +6,7 @@ Name:           glideinwms
 
 %if %{v2_plus}
 %define version 2.6.2
-%define release 1
+%define release 2
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
 %endif
@@ -67,23 +67,10 @@ Summary:        The VOFrontend for glideinWMS submission host
 Group:          System Environment/Daemons
 Provides:	GlideinWMSFrontend = %{version}-%{release}
 Obsoletes:	GlideinWMSFrontend < 2.5.1-11
-Requires: httpd
-# We require Condor 7.6.0 (and newer) to support 
-# condor_advertise -multiple -tcp which is enabled by default
-Requires: condor >= 7.6.0
-Requires: python-rrdtool
-Requires: m2crypto
-Requires: javascriptrrd
-Requires: osg-client
-Requires: gwms-condor-config
-#To be added in 2.6.3+ once probe is finished.
-#Requires: gratia-probe-gwms
-#Requires: vdt-vofrontend-essentials
-
-Requires(post): /sbin/service
-Requires(post): /usr/sbin/useradd
-Requires(post): /sbin/chkconfig
-
+Requires: glideinwms-vofrontend-standalone
+Requires: glideinwms-userschedd
+Requires: glideinwms-usercollector
+Obsoletes: glideinwms-vofrontend-condor < 2.6.2-2
 
 %description vofrontend
 The purpose of the glideinWMS is to provide a simple way 
@@ -91,16 +78,51 @@ to access the Grid resources. GlideinWMS is a Glidein
 Based WMS (Workload Management System) that works on top of 
 Condor. For those familiar with the Condor system, it is used 
 for scheduling and job control. 
+This package is for a one-node vofrontend install
+(userschedd,submit,vofrontend).
 
 
-%package vofrontend-condor
-Summary:        The VOFrontend condor config
+%package vofrontend-standalone
+Summary:        The VOFrontend for glideinWMS submission host
 Group:          System Environment/Daemons
-Provides: gwms-condor-config
+Requires: httpd
+# We require Condor 7.6.0 (and newer) to support
+# condor_advertise -multiple -tcp which is enabled by default
+Requires: condor >= 7.6.0
+Requires: python-rrdtool
+Requires: m2crypto
+Requires: javascriptrrd
+Requires: osg-client
+Requires: glideinwms-condor-minimal
+#To be added in 2.6.3+ once probe is finished.
+#Requires: gratia-probe-gwms
+#Requires: vdt-vofrontend-essentials
+Requires(post): /sbin/service
+Requires(post): /usr/sbin/useradd
+Requires(post): /sbin/chkconfig
 
-%description vofrontend-condor
-This is a package including condor_config for a full one-node
-install of vofrontend + userschedd + usercollector
+%description vofrontend-standalone
+The purpose of the glideinWMS is to provide a simple way
+to access the Grid resources. GlideinWMS is a Glidein
+Based WMS (Workload Management System) that works on top of
+Condor. For those familiar with the Condor system, it is used
+for scheduling and job control.
+This package is for a standalone vofrontend install
+
+%package usercollector
+Summary:        The VOFrontend glideinWMS collector host
+Group:          System Environment/Daemons
+Requires: condor >= 7.6.0
+%description usercollector
+The user collector matches user jobs to glideins in the user pool.
+It can be split off into its own node.
+
+%package userschedd
+Summary:        The VOFrontend glideinWMS submission host
+Group:          System Environment/Daemons
+Requires: condor >= 7.6.0
+%description userschedd
+This is a package for a glideinwms submit host.
 
 
 %package minimal-condor
@@ -288,16 +310,25 @@ rm -rf $RPM_BUILD_ROOT%{web_base}/CVS
 # Install condor stuff
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/condor/certs
-install -m 0644 install/templates/00_gwms_factory_general.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
+#make sure this (new) file exists, can be deprecated in gwms 2.7 or so
+touch install/templates/90_gwms_dns.config
+install -m 0644 install/templates/90_gwms_dns.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
+install -m 0644 install/templates/00_gwms_general.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/00_gwms_factory_general.config
 install -m 0644 install/templates/00_gwms_general.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
-install -m 0644 install/templates/01_gwms_factory_collectors.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
+install -m 0644 install/templates/01_gwms_collectors.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/01_gwms_factory_collectors.config
 install -m 0644 install/templates/01_gwms_collectors.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
 install -m 0644 install/templates/02_gwms_factory_schedds.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
 install -m 0644 install/templates/02_gwms_schedds.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
-install -m 0644 install/templates/03_gwms_factory_local.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
+install -m 0644 install/templates/03_gwms_local.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/03_gwms_factory_local.config
 install -m 0644 install/templates/03_gwms_local.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
 install -m 0644 install/templates/condor_mapfile $RPM_BUILD_ROOT%{_sysconfdir}/condor/certs/
 install -m 0644 install/templates/privsep_config $RPM_BUILD_ROOT%{_sysconfdir}/condor/
+
+sed -i "s/^COLLECTOR_NAME = .*$/COLLECTOR_NAME = wmscollector_service/" $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/01_gwms_factory_collectors.config
+sed -i "s/^DAEMON_LIST.*=.*$//" $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/01_gwms_factory_collectors.config
+echo 'DAEMON_LIST   = $(DAEMON_LIST),  COLLECTOR, NEGOTIATOR' >> $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/01_gwms_factory_collectors.config
+
+
 
 #Install condor schedd dirs
 for schedd in "schedd_glideins2" "schedd_glideins3" "schedd_glideins4" "schedd_glideins5" "schedd_jobs2"; do
@@ -343,7 +374,7 @@ install -m 0644 creation/templates/factory_initd_startup_template $RPM_BUILD_ROO
 install -m 0644 creation/templates/frontend_initd_startup_template $RPM_BUILD_ROOT%{web_base}/../creation/templates/
 %endif
 
-%post vofrontend
+%post vofrontend-standalone
 # $1 = 1 - Installation
 # $1 = 2 - Upgrade
 # Source: http://www.ibm.com/developerworks/library/l-rpm2/
@@ -365,7 +396,7 @@ ln -s %{factory_web_dir}/monitor %{factory_dir}/monitor
 ln -s %{_localstatedir}/log/gwms-factory %{factory_dir}/log
 
 
-%pre vofrontend
+%pre vofrontend-standalone
 
 # Add the "frontend" user 
 getent group frontend >/dev/null || groupadd -r frontend
@@ -384,7 +415,7 @@ getent passwd frontend >/dev/null || \
        useradd -r -g frontend -d /var/lib/gwms-frontend \
 	-c "VO Frontend user" -s /sbin/nologin frontend
 
-%preun vofrontend
+%preun vofrontend-standalone
 # $1 = 0 - Action is uninstall
 # $1 = 1 - Action is upgrade
 
@@ -415,6 +446,7 @@ fi
 %clean
 rm -rf $RPM_BUILD_ROOT
 
+%files vofrontend
    
 %files factory
 %defattr(-,gfactory,gfactory,-)
@@ -609,7 +641,7 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/tarSupport.pyo
 %endif
 
-%files vofrontend
+%files vofrontend-standalone
 %defattr(-,frontend,frontend,-)
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_sbindir}/checkFrontend
@@ -621,8 +653,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(-, frontend, frontend) %dir %{_localstatedir}/lib/gwms-frontend
 %attr(-, frontend, frontend) %{web_dir}
 %attr(-, frontend, frontend) %{web_base}
-
-
 %attr(-, frontend, frontend) %{frontend_dir}
 %attr(-, frontend, frontend) %{_localstatedir}/log/gwms-frontend
 %{python_sitelib}/cWConsts.py
@@ -779,20 +809,39 @@ rm -rf $RPM_BUILD_ROOT
 %attr(-, condor, condor) %{_localstatedir}/lib/condor/schedd_glideins4
 %attr(-, condor, condor) %{_localstatedir}/lib/condor/schedd_glideins5
 
-%files vofrontend-condor
+%files usercollector
+%attr(755,root,root) %{_sbindir}/glidecondor_addDN
 %config(noreplace) %{_sysconfdir}/condor/config.d/00_gwms_general.config
 %config(noreplace) %{_sysconfdir}/condor/config.d/01_gwms_collectors.config
+%config(noreplace) %{_sysconfdir}/condor/config.d/03_gwms_local.config
+%config(noreplace) %{_sysconfdir}/condor/config.d/90_gwms_dns.config
+%config(noreplace) %{_sysconfdir}/condor/certs/condor_mapfile
+%attr(-, condor, condor) %{_localstatedir}/lib/condor/schedd_jobs2
+
+%files userschedd
+%attr(755,root,root) %{_sbindir}/glidecondor_addDN
+%config(noreplace) %{_sysconfdir}/condor/config.d/00_gwms_general.config
 %config(noreplace) %{_sysconfdir}/condor/config.d/02_gwms_schedds.config
 %config(noreplace) %{_sysconfdir}/condor/config.d/03_gwms_local.config
+%config(noreplace) %{_sysconfdir}/condor/config.d/90_gwms_dns.config
 %config(noreplace) %{_sysconfdir}/condor/certs/condor_mapfile
 %attr(-, condor, condor) %{_localstatedir}/lib/condor/schedd_jobs2
 
 %files minimal-condor
+%attr(755,root,root) %{_sbindir}/glidecondor_addDN
 %config(noreplace) %{_sysconfdir}/condor/config.d/00_gwms_general.config
+%config(noreplace) %{_sysconfdir}/condor/config.d/03_gwms_local.config
+%config(noreplace) %{_sysconfdir}/condor/config.d/90_gwms_dns.config
 %config(noreplace) %{_sysconfdir}/condor/certs/condor_mapfile
 
 
 %changelog
+* Thu Nov 8 2012 Doug Strain <dstrain@fnal.gov> - 2.6.2-2
+- Improvements recommended by Igor to modularize glideinwms
+
+* Wed Nov 2 2012 Doug Strain <dstrain@fnal.gov> - 2.6.2-1
+- Glideinwms 2.6.2 Release
+
 * Thu Sep 20 2012 Doug Strain <dstrain@fnal.gov> - 2.6.1-2
 - Added GRIDMANAGER_PROXY_REFRESH_TIME to condor config
 
