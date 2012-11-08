@@ -6,7 +6,7 @@ Name:           glideinwms
 
 %if %{v2_plus}
 %define version 2.6.2
-%define release 2
+%define release 3
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
 %endif
@@ -93,7 +93,8 @@ Requires: python-rrdtool
 Requires: m2crypto
 Requires: javascriptrrd
 Requires: osg-client
-Requires: glideinwms-condor-minimal
+Requires: glideinwms-minimal-condor
+Requires: condor >= 7.6.0
 #To be added in 2.6.3+ once probe is finished.
 #Requires: gratia-probe-gwms
 #Requires: vdt-vofrontend-essentials
@@ -326,8 +327,8 @@ install -m 0644 install/templates/privsep_config $RPM_BUILD_ROOT%{_sysconfdir}/c
 
 sed -i "s/^COLLECTOR_NAME = .*$/COLLECTOR_NAME = wmscollector_service/" $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/01_gwms_factory_collectors.config
 sed -i "s/^DAEMON_LIST.*=.*$//" $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/01_gwms_factory_collectors.config
+sed -i 's/^COLLECTOR[0-9]*.\\//' $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/01_gwms_factory_collectors.config
 echo 'DAEMON_LIST   = $(DAEMON_LIST),  COLLECTOR, NEGOTIATOR' >> $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/01_gwms_factory_collectors.config
-
 
 
 #Install condor schedd dirs
