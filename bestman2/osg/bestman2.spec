@@ -14,7 +14,7 @@
 
 Name:           bestman2
 Version:        2.3.0
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -420,6 +420,9 @@ fi
 
 
 %changelog
+* Wed Nov 08 2012 Neha Sharma <neha@fnal.gov> - 2.3.0-4
+- Updated file 'version' to include latest version and removed the build host line from build.xml
+
 * Tue Nov 06 2012 Neha Sharma <neha@fnal.gov> - 2.3.0-3
 - Adding cog-jglobus-axis to common-libs
 
