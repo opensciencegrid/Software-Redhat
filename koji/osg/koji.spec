@@ -2,7 +2,7 @@
 
 Name: koji
 Version: 1.6.0
-Release: 5%{?dist}
+Release: 6%{?dist}
 License: LGPLv2 and GPLv2+
 # koji.ssl libs (from plague) are GPLv2+
 Summary: Build system tools
@@ -13,6 +13,7 @@ Patch1: koji_passwd_cache.patch
 Patch2: kojid_setup_dns.patch
 Patch3: kojid_scmbuild_check_spec_after_running_sourcecmd.patch
 Patch4: koji_passwd_retry.patch
+Patch5: koji_proxy_cert.patch
 
 Source: https://fedorahosted.org/releases/k/o/koji/%{name}-%{version}.tar.bz2
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -130,6 +131,7 @@ koji-web is a web UI to the Koji system.
 %patch2 -p0
 %patch3 -p0
 %patch4 -p0
+%patch5 -p0
 
 %build
 
@@ -232,6 +234,9 @@ if [ $1 = 0 ]; then
 fi
 
 %changelog
+* Wed Oct 31 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.6.0-6
+- Add Brian Bockelman's patch to allow using proxy certs
+
 * Wed Jun 13 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.6.0-5
 - Allow user to retry entering SSL key password
 
