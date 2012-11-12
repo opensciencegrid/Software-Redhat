@@ -1,56 +1,63 @@
 
 Name: xrootd-lcmaps
-Version: 0.0.4
-Release: 6%{?dist}
+Version: 0.0.5
+Release: 1
 Summary: LCMAPS plugin for xrootd
 
 Group: System Environment/Daemons
 License: BSD
-URL: svn://t2.unl.edu/brian/XrdLcmaps
-Source0: %{name}-%{version}.tar.gz
+URL: https://github.com/bbockelm/xrootd-lcmaps
+# Generated from:
+# git-archive master | gzip -7 > ~/rpmbuild/SOURCES/xrootd-lcmaps.tar.gz
+Source0: %{name}.tar.gz
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildRequires: xrootd-libs-devel
 BuildRequires: lcmaps-interface
 BuildRequires: lcmaps
-Requires: xrootd-server >= 1:3.2.5-2
+BuildRequires: cmake
+Requires: xrootd-server >= 1:3.2
+
+%package devel
+Summary: Development libraries for the Xrootd LCMAPS plugin
+Group: System Environment/Development
+
+License: BSD
 
 %description
 %{summary}
 
+%description devel
+%{summary}
+
 %prep
-%setup -q
+%setup -q -n %{name}-%{version}
 
 %build
-%configure --with-xrootd-incdir=/usr/include/xrootd --with-lcmaps-incdir=/usr/include/lcmaps
-make
+#cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=RelWithDebInfo .
+ls
+%cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo .
+make VERBOSE=1 %{?_smp_mflags}
 
 %install
 rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
-
-mkdir -p $RPM_BUILD_ROOT/%{_sysconfdir}/xrootd
-install -m 0644 configs/lcmaps-suexec.db $RPM_BUILD_ROOT/%{_sysconfdir}/xrootd/lcmaps.cfg
-
-rm -rf $RPM_BUILD_ROOT/%{_libdir}/*.la
-rm -rf $RPM_BUILD_ROOT/%{_libdir}/*.a
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)
-%{_libdir}/libXrdLcmaps*
+%{_libdir}/libXrdLcmaps.so.0
+%{_libdir}/libXrdLcmaps.so.0.0.1
 %config(noreplace) %{_sysconfdir}/xrootd/lcmaps.cfg
 
+%files devel
+%defattr(-,root,root,-)
+%{_libdir}/libXrdLcmaps.so
+
 %changelog
-* Fri Oct 19 2012 Doug Strain <dstrain@fnal.gov> 0.0.4-6
-- Rebuilding with xrootd 3.3 pre-release
-
-* Fri Mar 30 2012 Doug Strain <dstrain@fnal.gov> 0.0.4-5
-- Rebuilding with xrootd-3.2 and setting lcmaps.cfg to config file
-
-* Mon Mar 19 2012 Doug Strain <dstrain@fnal.gov> 0.0.4-3
-- Rebuilding with xrootd-3.1.1 and relaxing requirement to 3.1.1
+* Mon Oct 22 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 0.0.5-1
+- Switch to cmake.
 
 * Mon Feb 13 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 0.0.4-1
 - Various bugfixes from Matevz Tadel.
