@@ -1,48 +1,58 @@
 
 Name: xrootd-cmstfc
-Version: 1.4.3
-Release: 3%{?dist}
+Version: 1.5
+Release: 1%{?dist}
 Summary: CMS TFC plugin for xrootd
 
 Group: System Environment/Daemons
 License: BSD
-URL: svn://t2.unl.edu/brian/XrdCmsTfc
-Source0: %{name}-%{version}.tar.gz
+URL: https://github.com/bbockelm/xrootd-cmstfc
+# Generated from:
+# git-archive master | gzip -7 > ~/rpmbuild/SOURCES/xrootd-lcmaps.tar.gz
+Source0: %{name}.tar.gz
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
-BuildRequires: xrootd-libs-devel
-BuildRequires: xerces-c-devel
-BuildRequires: pcre-devel
+BuildRequires: xrootd-libs-devel xerces-c-devel pcre-devel
+BuildRequires: cmake
+Requires: /usr/bin/xrootd pcre xerces-c
+
+%package devel
+Summary: Development headers and libraries for Xrootd CMSTFC plugin
+Group: System Environment/Development
 
 %description
 %{summary}
 
+%description devel
+%{summary}
+
 %prep
-%setup -q
+%setup -q -c -n %{name}-%{version}
 
 %build
-%configure --with-xrootd-incdir=/usr/include/xrootd
-make
+
+%cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo .
+make VERBOSE=1 %{?_smp_mflags}
 
 %install
 rm -rf $RPM_BUILD_ROOT
-%makeinstall
-rm $RPM_BUILD_ROOT%{_libdir}/*.a
-rm $RPM_BUILD_ROOT%{_libdir}/*.la
+make install DESTDIR=$RPM_BUILD_ROOT
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)
-%{_libdir}/libXrdCmsTfc*
-%{_includedir}/xrootd/XrdCmsTfc/XrdCmsTfc.hh
+%{_libdir}/libXrdCmsTfc.so.*
+
+%files devel
+%defattr(-,root,root,-)
+%{_libdir}/libXrdCmsTfc.so
+%{_includedir}/XrdCmsTfc.hh
 
 %changelog
-* Mon Aug 29 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.4.3-3
-Remove static libs.
-
-* Mon Aug 29 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.4.3-2
-Rebuild for OSG Koji.
+* Mon Oct 22 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 1.5-1
+- Switch to cmake.
+- Rebuild against Xrootd 3.3.
 
 * Wed May 18 2011 Brian Bockelman <bbockelm@cse.unl.edu> 1.4.3-1
 - Apply path matching only at the beginning of the path.
