@@ -1,7 +1,7 @@
 
 Name: xrootd-lcmaps
-Version: 0.0.5%{?dist}
-Release: 1
+Version: 0.0.5
+Release: 1%{?dist}
 Summary: LCMAPS plugin for xrootd
 
 Group: System Environment/Daemons
@@ -30,11 +30,10 @@ License: BSD
 %{summary}
 
 %prep
-%setup -q -c -n %{name}
+%setup -q -c -n %{name}-%{version}
 
 %build
 #cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=RelWithDebInfo .
-ls
 %cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo .
 make VERBOSE=1 %{?_smp_mflags}
 
