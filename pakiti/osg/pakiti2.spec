@@ -1,10 +1,11 @@
 Version: 2.1.4
 Name: pakiti
-Release: 1.0.1%{?dist}
+Release: 1.0.2%{?dist}
 
 License: BSD
 Source: http://pakiti.sourceforge.net/rpms/%{name}/%{name}-%{version}.tar.gz
 Patch1: pakiti-client-os-1.patch
+Patch2: osg-config.patch
 Vendor: CESNET/CERN
 BuildRoot: %{_tmppath}/%{name}-%{version}-buildroot
 Packager: Michal Prochazka <michalp@ics.muni.cz>
@@ -12,25 +13,12 @@ Summary: Patching status monitoring tool.
 Group: Utilities/System
 Url: http://pakiti.sourceforge.net
 
-%define _prefix /
-
 %description 
 Runs rpm -qa or dpkg -l on the hosts and sends results to the central server.
 
 Central server then process the results and checks whether the packages are
 installed in the recent version. Central server also provides web GUI where
 all results can be seen.
-
-%package client-manual
-Requires: openssl
-Summary: Client for the Pakiti (patching status monitoring tool) using openssl or curl for transport.
-Group: Utilities/System
-BuildArch: noarch
-
-%description client-manual
-Runs rpm -qa or dpkg -l, depends on the linux distro. Results are sent to the
-central Pakiti server using openssl s_client or curl. Manual instalation of
-the client is required.
 
 %package client
 Requires: openssl
@@ -44,7 +32,7 @@ central Pakiti server using openssl s_client or curl.
 
 %package server
 BuildArch: noarch
-Requires: webserver, mysql-server, php , php-mysql, php-xml
+Requires: webserver, mysql-server, php , php-mysql, php-xml, grid-certificates
 Summary: Pakiti server - Patching status system.
 Group: Utilities/System
 
@@ -56,6 +44,7 @@ Server logic and web interface.
 %setup
 
 %patch1 -p1
+%patch2 -p1
 
 %build
 
@@ -119,23 +108,16 @@ ln -s ../pakiti/cves.php www/link/cves.php
 ln -s ../pakiti/packages.php www/link/packages.php
 ln -s ../pakiti/pakiti.css www/link/pakiti.css
 
-%files client-manual
-%defattr(-,root,root)
-#%attr(0755,root,root) %{_sysconfdir}/init.d/pakiti2
-#%attr(0755,root,root) %{_sysconfdir}/cron.daily/pakiti2-client-update
-#%attr(0755,root,root) %{_sbindir}/pakiti2-client
-#%config(noreplace)    %{_sysconfdir}/pakiti2/pakiti2-client.conf
-%doc client/pakiti2-client
-%doc client/pakiti2-client.conf
-%doc client/pakiti2-client.update.cron.daily
-%doc client/README
-
 %files client
 %defattr(-,root,root)
 %attr(0755,root,root) %{_sysconfdir}/cron.daily/pakiti2-client-update
 %attr(0755,root,root) /usr/sbin/pakiti2-client
 %config(noreplace)    %{_sysconfdir}/pakiti2/pakiti2-client.conf
 %doc README
+%doc client/pakiti2-client
+%doc client/pakiti2-client.conf
+%doc client/pakiti2-client.update.cron.daily
+%doc client/README
 
 %files server
 %defattr(-,root,root)
@@ -151,31 +133,14 @@ ln -s ../pakiti/pakiti.css www/link/pakiti.css
 
 %attr(0664,root,root) %{_localstatedir}/lib/pakiti2/www/feed/index.php
 
-%attr(0664,root,root) %{_sysconfdir}/init.d/pakiti2
+%attr(0775,root,root) %{_sysconfdir}/init.d/pakiti2
 
 %attr(0775,root,root) %{_sysconfdir}/cron.daily/pakiti2-server-update
 %attr(0640,root,apache) %config(noreplace) %{_sysconfdir}/pakiti2/pakiti2-server.conf
 
 %doc install/pakiti2.sql 
 %doc install/pakiti2.apache2
-#%doc docs/pakiti2_configuration_example_Debian_Ubuntu_SL_SLC.sql
-#%doc docs/pakiti2_configuration_example_RH_SL_SLC.sql
 %doc README
-
-%post client-manual
-#if [ "$1" = 1 ]; then
-#   /sbin/chkconfig --add pakiti2
-#   /sbin/chkconfig pakiti2 on
-#else
-#   /sbin/chkconfig pakiti2 reset
-#fi
-echo "See README file in /usr/share/doc/pakiti-client-2.1/"
-
-#%preun client
-#if [ "$1" = 0 ]; then
-#   /sbin/service pakiti2 stop
-#   /sbin/chkconfig --del pakiti2
-#fi
 
 %post server
 /sbin/chkconfig --add pakiti2
@@ -184,14 +149,20 @@ echo "See README file in /usr/share/doc/pakiti-client-2.1/"
 /sbin/chkconfig --del pakiti2
 
 %changelog
-*Tue Oct 30 2012 Matyas Selmeci <matyas@cs.wisc.edu>
-- Fixed chkconfig in server
+* Mon Nov 12 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 2.1.4-1.0.2
+- Add grid-certificates dependency
+- Fix example apache conf.d file and default client config to work in an OSG environment
+- Fix perms on init script
 
-*Tue Sep 25 2012 Kevin Hill <kevin@fnal.gov>
+* Tue Oct 30 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 2.1.4-1.0.1
+- Fixed chkconfig in server
+- Merged client and client-manual
+
+* Tue Sep 25 2012 Kevin Hill <kevin@fnal.gov>
 - First OSG release. 
 - added back client side os if we can figure it out.
 
-*Thu Sep 16 2010 Michal Prochazka <michalp@ics.muni.cz>
+* Thu Sep 16 2010 Michal Prochazka <michalp@ics.muni.cz>
 - Pakiti 2.1.4 release
 - bug fixes
 - added support for proxy servers
