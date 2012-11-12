@@ -1,6 +1,6 @@
 
 Name: xrootd-lcmaps
-Version: 0.0.5
+Version: 0.0.5%{?dist}
 Release: 1
 Summary: LCMAPS plugin for xrootd
 
