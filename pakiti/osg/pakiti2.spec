@@ -1,6 +1,6 @@
 Version: 2.1.4
 Name: pakiti
-Release: 1.0.2%{?dist}
+Release: 1.0.3%{?dist}
 
 License: BSD
 Source: http://pakiti.sourceforge.net/rpms/%{name}/%{name}-%{version}.tar.gz
@@ -32,7 +32,7 @@ central Pakiti server using openssl s_client or curl.
 
 %package server
 BuildArch: noarch
-Requires: webserver, mysql-server, php , php-mysql, php-xml, grid-certificates
+Requires: webserver, mysql-server, php , php-mysql, php-xml, grid-certificates, mod_ssl
 Summary: Pakiti server - Patching status system.
 Group: Utilities/System
 
@@ -149,6 +149,9 @@ ln -s ../pakiti/pakiti.css www/link/pakiti.css
 /sbin/chkconfig --del pakiti2
 
 %changelog
+* Tue Nov 13 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 2.1.4-1.0.3
+- Add mod_ssl dependency to server
+
 * Mon Nov 12 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 2.1.4-1.0.2
 - Add grid-certificates dependency
 - Fix example apache conf.d file and default client config to work in an OSG environment
