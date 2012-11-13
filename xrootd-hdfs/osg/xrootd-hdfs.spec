@@ -14,6 +14,9 @@ BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildRequires: xrootd-libs-devel
 BuildRequires: xrootd-server-devel
 BuildRequires: cmake
+# hadoop currently doesn't pull in Java in the mock chroot on SL6.
+# See SOFTWARE-841
+BuildRequires: java-devel
 BuildRequires: hadoop-0.20-libhdfs >= 0.20.2+737-4
 Conflicts: xrootd < 3.0.3-1
 
