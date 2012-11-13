@@ -1,6 +1,6 @@
 
 Name: xrootd-cmstfc
-Version: 1.5
+Version: 1.5.1
 Release: 1%{?dist}
 Summary: CMS TFC plugin for xrootd
 
@@ -50,6 +50,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/XrdCmsTfc.hh
 
 %changelog
+* Mon Nov 12 2012 Brian Bockelman - 1.5.1-1
+- Fix SL6 compilation issues.
+
 * Mon Oct 22 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 1.5-1
 - Switch to cmake.
 - Rebuild against Xrootd 3.3.
