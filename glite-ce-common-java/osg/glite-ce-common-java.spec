@@ -2,7 +2,7 @@ Summary: Common libraries for all services running on the CREAM CE
 Name: glite-ce-common-java
 Version: 1.14.0
 %global upstream_release 4
-Release: %{upstream_release}.1%{?dist}
+Release: %{upstream_release}.2%{?dist}
 License: Apache Software License
 Vendor: EMI
 URL: http://glite.cern.ch/
@@ -135,6 +135,9 @@ Documentation files for the CREAM Common library
 %doc %{_javadocdir}/%{name}/html/org/glite/ce/commonj/configuration/xppm/class-use/*.html
 
 %changelog
+* Tue Nov 13 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.14.0-4.2.osg
+- Bump to rebuild
+
 * Thu Jun 07 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.14.0-4.1.osg
 - Added dist tag
 - Tweaked macros
