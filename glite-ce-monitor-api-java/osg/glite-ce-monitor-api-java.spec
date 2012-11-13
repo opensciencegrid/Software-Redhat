@@ -1,7 +1,7 @@
 Summary: Java libraries for the CEMonitor service
 Name: glite-ce-monitor-api-java
 Version: 1.13.1
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: Apache License 2.0
 Vendor: EMI
 Group: System Environment/Libraries
@@ -73,4 +73,6 @@ rm -rf $RPM_BUILD_ROOT
 /usr/share/doc/glite-ce-monitor-api-java-1.13.1/LICENSE
 
 %changelog
+* Tue Nov 13 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.13.1-4
+- Bump to rebuild
  
