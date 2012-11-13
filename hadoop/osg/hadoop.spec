@@ -1,7 +1,7 @@
 %define hadoop_version 2.0.0+545 
 %define hadoop_patched_version 2.0.0-cdh4.1.1 
 %define hadoop_base_version 2.0.0 
-%define hadoop_release 1.cdh4.1.1.p0.9%{?dist}
+%define hadoop_release 1.cdh4.1.1.p0.10%{?dist}
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
@@ -180,6 +180,7 @@ BuildRequires: python >= 2.4, git, fuse-devel,fuse, automake, autoconf,maven3,pr
 BuildRequires: java-devel
 Requires: coreutils, /usr/sbin/useradd, /usr/sbin/usermod, /sbin/chkconfig, /sbin/service, bigtop-utils, zookeeper >= 3.4.0
 Requires: psmisc, %{netcat_package}
+Requires: java
 Conflicts: hadoop-0.20
 # Sadly, Sun/Oracle JDK in RPM form doesn't provide libjvm.so, which means we have
 # to set AutoReq to no in order to minimize confusion. Not ideal, but seems to work.
@@ -494,6 +495,7 @@ popd
 
 env FULL_VERSION=%{hadoop_patched_version} HADOOP_VERSION=%{hadoop_version} HADOOP_ARCH=%{hadoop_arch} bash %{SOURCE1}
 
+
 %clean
 %__rm -rf $RPM_BUILD_ROOT
 
@@ -658,6 +660,12 @@ fi
 if [ $1 -ge 1 ]; then
   service %{name}-httpfs condrestart >/dev/null 2>&1
 fi
+
+%post hdfs
+/sbin/ldconfig
+
+%postun hdfs
+/sbin/ldconfig
 
 %post hdfs-fuse-selinux
 # Install SELinux policy modules
@@ -827,6 +835,9 @@ fi
 
 
 %changelog
+* Thu Oct 18 2012 Doug Strain <dstrain@fnal.gov> - 2.0.0+545-1.cdh4.1.1.p0.10
+- Adding ldconfig and requires java
+
 * Thu Oct 18 2012 Doug Strain <dstrain@fnal.gov> - 2.0.0+545-1.cdh4.1.1.p0.6
 - Repackaging for CDH4.1
 
