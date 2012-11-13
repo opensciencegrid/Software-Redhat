@@ -8,7 +8,7 @@
 Summary: The CE monitor service is a web application that publishes information about the Computing Element
 Name: glite-ce-monitor
 Version: 1.13.1
-Release: 18%{?dist}
+Release: 19%{?dist}
 License: Apache License 2.0
 Vendor: EMI
 Group: System Environment/Libraries
@@ -30,7 +30,7 @@ BuildRequires: jakarta-commons-discovery
 BuildRequires: classpathx-jaf
 BuildRequires: glite-ce-monitor-api-java
 BuildRequires: glite-ce-common-java
-BuildRequires: vomsjapi
+BuildRequires: voms-api-java >= 2.0.8
 BuildRequires: argus-pep-api-java
 BuildRoot: %{_builddir}/%{name}-root
 AutoReqProv: yes
@@ -164,6 +164,9 @@ fi
 %config(noreplace) /etc/%{tomcat}/Catalina/localhost/ce-monitor.xml
 
 %changelog
+* Mon Nov 12 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.13.1-19
+- Change vomsjapi requirement to voms-api-java >= 2.0.8
+
 * Mon Mar 19 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.13.1-18
 - Add tomcat6 support for el6
 

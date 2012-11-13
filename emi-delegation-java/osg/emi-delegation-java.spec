@@ -2,7 +2,7 @@ Summary: GLite Security Delegation Java Implementation
 Name: emi-delegation-java
 Version: 2.2.0
 %global upstream_release 2
-Release: %{upstream_release}.1%{?dist}
+Release: %{upstream_release}.2%{?dist}
 License: Apache License
 Vendor: EMI
 Group: System Environment/Libraries
@@ -13,7 +13,7 @@ BuildRequires: bouncycastle
 BuildRequires: emi-delegation-interface
 BuildRequires: emi-trustmanager-axis
 BuildRequires: ant
-BuildRequires: vomsjapi
+BuildRequires: voms-api-java >= 2.0.8
 BuildRequires: log4j
 BuildRequires: java-devel
 Requires: emi-trustmanager
@@ -112,6 +112,8 @@ rm -rf $RPM_BUILD_ROOT
 /var/lib/delegation-java/dlgor-policy.dat
 
 %changelog
+* Mon Nov 12 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 2.2.0-2.2
+- Require changed back from vomsjapi to voms-api-java
  
 * Fri Jun 01 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 2.2.0-2.1
 - Imported; added dist tag

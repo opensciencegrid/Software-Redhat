@@ -14,7 +14,7 @@
 
 Name:           bestman2
 Version:        2.3.0
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -45,7 +45,7 @@ Source9:        bestman2.rc
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
-BuildRequires:  java-1.6.0-sun-compat wget ant axis jakarta-commons-logging jakarta-commons-discovery wsdl4j jakarta-commons-collections jakarta-commons-lang joda-time velocity xalan-j2 xml-security bouncycastle vomsjapi slf4j log4j cog-jglobus-axis jglobus autoconf
+BuildRequires:  java-1.6.0-sun-compat wget ant axis jakarta-commons-logging jakarta-commons-discovery wsdl4j jakarta-commons-collections jakarta-commons-lang joda-time velocity xalan-j2 xml-security bouncycastle voms-api-java >= 2.0.8 slf4j log4j cog-jglobus-axis jglobus autoconf
 BuildRequires: jetty-client jetty-continuation jetty-deploy jetty-http jetty-io jetty-security jetty-server jetty-servlet jetty-util jetty-webapp jetty-xml
 BuildRequires: emi-trustmanager emi-trustmanager-axis
 BuildRequires: gums
@@ -79,7 +79,7 @@ Summary: Common files BeStMan SRM server client and tester
 Group: System Environment/Libraries
 Requires:  java axis jakarta-commons-logging jakarta-commons-discovery wsdl4j log4j jglobus cog-jglobus-axis
 # The following are needed for srm client tools and probably tester too
-Requires:  joda-time glite-security-trustmanager glite-security-util-java xalan-j2 vomsjapi jakarta-commons-collections
+Requires:  joda-time glite-security-trustmanager glite-security-util-java xalan-j2 voms-api-java >= 2.0.8 jakarta-commons-collections
 %description common-libs
 This package is mostly java libraries (jars) for Bestman.
 It contains libraries necessary for Bestman server, client and tester.
@@ -113,7 +113,7 @@ The BeStMan Server SRM Java libraries
 %package server-dep-libs
 Summary: BeStMan Server SRM Java libraries
 Group: System Environment/Libraries
-Requires: java-1.6.0-sun-compat jakarta-commons-lang joda-time emi-trustmanager xalan-j2 vomsjapi jakarta-commons-collections
+Requires: java-1.6.0-sun-compat jakarta-commons-lang joda-time emi-trustmanager xalan-j2 voms-api-java >= 2.0.8 jakarta-commons-collections
 Requires: jetty-client jetty-continuation jetty-deploy jetty-http jetty-io jetty-security jetty-server jetty-servlet jetty-util jetty-webapp jetty-xml
 Requires: gums
 
@@ -420,6 +420,9 @@ fi
 
 
 %changelog
+* Mon Nov 12 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 2.3.0-5
+- Require voms-api-java instead of vomsjapi
+
 * Wed Nov 08 2012 Neha Sharma <neha@fnal.gov> - 2.3.0-4
 - Updated file 'version' to include latest version and removed the build host line from build.xml
 
