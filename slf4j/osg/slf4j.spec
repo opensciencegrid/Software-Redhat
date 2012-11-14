@@ -35,7 +35,7 @@
 Summary:        Simple Logging Facade for Java
 Name:           slf4j
 Version:        1.5.2
-Release:        3%{dist}
+Release:        4%{dist}
 Epoch:          0
 Group:          System/Logging
 License:        MIT
@@ -48,7 +48,7 @@ BuildRequires:  jpackage-utils
 BuildRequires:  java-devel
 BuildRequires:  ant >= 0:1
 BuildRequires:  junit >= 0:3.8.2
-BuildRequires:  maven2 >= 2.0.7
+BuildRequires:  maven22 >= 2.0.7
 #BuildRequires:  maven2-plugin-antrun
 #BuildRequires:  maven2-plugin-compiler
 #BuildRequires:  maven2-plugin-install
@@ -117,6 +117,7 @@ ln -sf $(build-classpath maven2/empty-dep) $MAVEN_REPO_LOCAL/org.slf4j/slf4j-sim
 ln -sf $(build-classpath maven2/empty-dep) $MAVEN_REPO_LOCAL/org.slf4j/slf4j-log4j12.jar
 
 %build
+alias mvn="/usr/bin/mvn22"
 export MAVEN_REPO_LOCAL=$(pwd)/.m2/repository
 mvn \
         -e \
@@ -249,6 +250,13 @@ fi
 %{_docdir}/%{name}-%{version}/site
 
 %changelog
+* Wed Nov 14 2012 Doug Strain <dstrain@fnal.gov> - 0:1.5.2-4
+- Rebuild for OSG. 
+- Note: a newer version is available for el6 in os repos
+-   so this release is targeted only for el5 distributions
+-   (clean builds are only guaranteed on el5-based systems)
+- Also, changed to use OSG maven22 to get rid of maven issues
+
 * Tue Oct 16 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 0:1.5.2-3
 - Relax the jpackage-utils dependency.
 
