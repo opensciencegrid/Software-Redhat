@@ -2,7 +2,7 @@
 
 Name:           glite-security-util-java
 Version:        2.8.0
-Release:        1.1%{?dist}
+Release:        3.1%{?dist}
 Summary:        Java Utilities for GSI Credentials
 
 Group:          System Environment/Libraries
@@ -31,9 +31,13 @@ Requires(postun): java-gcj-compat >= 1.0.31
 BuildArch:      noarch
 %endif
 
-#No suitable java in EPEL5 on ppc
+#No suitable java stack in EPEL5/6 on ppc/ppc64
 %if 0%{?el5}
 ExcludeArch:    ppc
+%endif
+
+%if 0%{?el6}
+ExcludeArch:    ppc64
 %endif
 
 BuildRequires:  jpackage-utils
@@ -41,7 +45,12 @@ BuildRequires:  java-devel >= 1:1.6.0
 BuildRequires:  ant
 BuildRequires:  bouncycastle
 BuildRequires:  log4j
+%if 0%{?el5}
 BuildRequires:  servletapi5
+%endif
+%if 0%{?el6}
+BuildRequires:  servlet6
+%endif
 BuildRequires:  axis
 BuildRequires:  voms-api-java >= 2.0.8
 
@@ -50,7 +59,12 @@ Requires:       java
 Requires:       bouncycastle
 Requires:       log4j
 Requires:       voms-api-java >= 2.0.8
+%if 0%{?el5}
 Requires:       servletapi5
+%endif
+%if 0%{?el6}
+Requires:       servlet6
+%endif
 Requires:       axis
 
 %description
@@ -85,7 +99,7 @@ sed s/org.glite.security.voms.VOMSValidator/org.glite.voms.VOMSValidator/ \
 find -name '*.jar' -o -name '*.class' -exec rm -f '{}' \;
 
 %build
-export CLASSPATH=$(build-classpath bcprov log4j axis servletapi5 vomsjapi)
+export CLASSPATH=$(build-classpath bcprov log4j axis %{?el5:servletapi5} %{?el6:servlet} vomsjapi)
 %ant -Dprefix=build compile-extcp
 %ant -Dprefix=build doc-extcp
 
@@ -144,8 +158,15 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Mon Nov 12 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 2.8.0-1.1
-- Change vomsjapi requirement to voms-api-java
+* Wed Nov 14 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 2.8.0-3.1
+- Conditionalize build to work on both el5 (with tomcat5) and el6 (with tomcat6)
+- Change vomsjapi requirement to voms-api-java >= 2.0.8
+
+* Wed Aug 4 2010 Steve Traylen <steve.traylen@cern.ch> - 2.8.0-3
+- Don't build ppc64 on .el6. To much java missing.
+
+* Fri Jul 30 2010 Steve Traylen <steve.traylen@cern.ch> - 2.8.0-2
+- Adapt to use tomcat6 on newer releases.
 
 * Tue May 25 2010 Steve Traylen <steve.traylen@cern.ch> - 2.8.0-1
 - Upstream to 2.8.0
