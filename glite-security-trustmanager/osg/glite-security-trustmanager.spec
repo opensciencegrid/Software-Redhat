@@ -1,8 +1,9 @@
 %global with_gcj %{!?_without_gcj:1}%{?_without_gcj:0}
+%global tomcat %{?el5:tomcat5}%{?el6:tomcat6}
 
 Name:           glite-security-trustmanager
 Version:        2.5.5
-Release:        4.1%{?dist}
+Release:        6.1%{?dist}
 Summary:        Java trustmanager interface supporting a GSI grid name space
 
 Group:          System Environment/Libraries
@@ -42,9 +43,19 @@ BuildRequires:  axis
 BuildRequires:  bouncycastle
 BuildRequires:  log4j
 BuildRequires:  voms-api-java >= 2.0.8
+%if 0%{?el5}
 BuildRequires:  servletapi5
+%endif
+%if 0%{?el6}
+BuildRequires:  servlet6
+%endif
 BuildRequires:  glite-security-util-java >= 2.5.5
+%if 0%{?el5}
 BuildRequires:  tomcat5-server-lib
+%endif
+%if 0%{?el6}
+BuildRequires:  tomcat6-lib
+%endif
 
 Requires:       java >= 1:1.6.0
 Requires:       voms-api-java >= 2.0.8
@@ -53,10 +64,19 @@ Requires:       axis
 Requires:       bouncycastle
 Requires:       log4j
 Requires:       glite-security-util-java >= 2.5.5
+%if 0%{?el5}
 Requires:       servletapi5
+%endif
+%if 0%{?el6}
+Requires:       servlet6
+%endif
 
 %if 0%{?el5}
 ExcludeArch: ppc
+%endif 
+
+%if 0%{?el6}
+ExcludeArch: ppc64
 %endif 
 
 
@@ -71,16 +91,16 @@ in glite-security-util-java. It can be used both in the server side for
 the server SSL handler and on the client side for the opening of SSL 
 connections. 
 
-%package tomcat5
+%package %{tomcat}
 Summary: Java trustmanager interface supporting a GSI grid name space
 Group:   System Environment/Libraries
 Requires: %{name} = %{version}-%{release}
-Requires: tomcat5
+Requires: %{tomcat}
 %if %{?fedora}%{!?fedora:0} >= 10 || %{?rhel}%{!?rhel:0} >= 6
 BuildArch:      noarch
 %endif
 
-%description tomcat5
+%description %{tomcat}
 glite-security-trustmanager together with glite-security-util-java is 
 an implementation of the java TrustManager interface with implementation 
 of cert path checking, grid name space restrictions and dynamic loading
@@ -90,7 +110,7 @@ are many utility classes and methods for certificate and proxy handling
 in util-java. It can be used both in the server side for the server SSL 
 handler and on the client side for the opening of SSL connections. 
 
-glite-security-trustmanager-tomcat5 provides the necessary files
+glite-security-trustmanager-%{tomcat} provides the necessary files
 for a tomcat connector to be set up.
 
 
@@ -114,7 +134,7 @@ cp %{SOURCE1} .
 cp %{SOURCE2} .
 
 %build
-export CLASSPATH=$(build-classpath vomsjapi tomcat5 glite-security-util-java servletapi5 commons-logging bcprov log4j axis)
+export CLASSPATH=$(build-classpath vomsjapi %{tomcat} glite-security-util-java %{?el5:servletapi5} %{?el6:servlet} commons-logging bcprov log4j axis)
 %ant -q -Dprefix=build compile-extcp
 %ant -Dprefix=build doc-extcp
 
@@ -148,14 +168,14 @@ cp -p %{name}-log4j.properties $RPM_BUILD_ROOT/%{_sysconfdir}/%{name}/trustmanag
   fi
 %endif
 
-%post tomcat5
+%post %{tomcat}
 # This is bad packaging: The symbolic links created below are needed
 # but they are not cleaned up when the package is removed and it is not
 # obvious that removing them will do more harm than good.
-# tomcat5 seems to be perfectly happy to run with dangling symlinks 
-# and they are cleaned up when the tomcat5 package itself is removed.
+# tomcat seems to be perfectly happy to run with dangling symlinks 
+# and they are cleaned up when the tomcat package itself is removed.
 
-build-jar-repository /var/lib/tomcat5/server/lib log4j bcprov vomsjapi  \
+build-jar-repository /var/lib/%{tomcat}/server/lib log4j bcprov vomsjapi  \
       glite-security-util-java %{name}
 
 %postun
@@ -181,7 +201,7 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/%{name}/trustmanager-log4j.properties
 %doc LICENSE doc/USAGE
 
-%files tomcat5
+%files %{tomcat}
 %defattr(-,root,root,-)
 %dir %{_sysconfdir}/grid-security
 %dir %{_sysconfdir}/grid-security/%{name}
@@ -193,8 +213,15 @@ rm -rf $RPM_BUILD_ROOT
 %{_javadocdir}/%{name}
 
 %changelog
-* Mon Nov 12 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 2.5.5-4.1
-- Require 'voms-api-java >= 2.0.8' instead of 'vomsjapi'
+* Wed Nov 14 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 2.5.5-6.1
+- Conditionalize build to work with el5 (tomcat5) and el6 (tomcat6)
+- Change vomsjapi requirement to voms-api-java >= 2.0.8
+
+* Thu Aug 5 2010 Steve Traylen <steve.traylen@cern.ch> - 2.5.5-6
+- Disable ppc6 build for el6. To much java stack missing.
+
+* Tue Aug 3 2010 Steve Traylen <steve.traylen@cern.ch> - 2.5.5-5
+- Adapt to switch to tomcat6.
 
 * Thu May 27 2010 Steve Traylen <steve.traylen@cern.ch> - 2.5.5-4
 - Don't build for ppc on .el5.
