@@ -1,5 +1,5 @@
 %global name osg-configure
-%global version 1.0.15
+%global version 1.0.16
 %global release 1%{?dist}
 
 Summary: Package for configure-osg and associated scripts
@@ -212,6 +212,10 @@ rm -rf $RPM_BUILD_ROOT
 /usr/share/osg-configure/*
 
 %changelog
+* Thu Nov 15 2012 Suchandra Thapa <sthapa@ci.uchicago.edu>  1.0.16-1
+- Fixes for software-811, software-834 
+- Code cleanups based on pylint
+
 * Thu Aug 08 2012 Suchandra Thapa <sthapa@ci.uchicago.edu>  1.0.15-1
 - Update tests for storage
 - Incorporate SGE fixes
