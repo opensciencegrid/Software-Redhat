@@ -5,8 +5,8 @@
 Name:           glideinwms
 
 %if %{v2_plus}
-%define version 2.6.2
-%define release 3
+%define version 2.6.3
+%define release 0.rc1
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
 %endif
@@ -596,6 +596,9 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/symCrypto.py
 %{python_sitelib}/symCrypto.pyc
 %{python_sitelib}/symCrypto.pyo
+%{python_sitelib}/subprocessSupport.py
+%{python_sitelib}/subprocessSupport.pyc
+%{python_sitelib}/subprocessSupport.pyo
 %{python_sitelib}/test_advertize.py
 %{python_sitelib}/test_advertize.pyc
 %{python_sitelib}/test_advertize.pyo
@@ -758,6 +761,9 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/stopFrontend.py
 %{python_sitelib}/stopFrontend.pyc
 %{python_sitelib}/stopFrontend.pyo
+%{python_sitelib}/subprocessSupport.py
+%{python_sitelib}/subprocessSupport.pyc
+%{python_sitelib}/subprocessSupport.pyo
 %{python_sitelib}/symCrypto.py
 %{python_sitelib}/symCrypto.pyc
 %{python_sitelib}/symCrypto.pyo
