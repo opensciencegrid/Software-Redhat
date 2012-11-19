@@ -14,7 +14,7 @@
 
 Name:           bestman2
 Version:        2.3.0
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -113,7 +113,7 @@ The BeStMan Server SRM Java libraries
 %package server-dep-libs
 Summary: BeStMan Server SRM Java libraries
 Group: System Environment/Libraries
-Requires: java-1.6.0-sun-compat jakarta-commons-lang joda-time emi-trustmanager xalan-j2 voms-api-java >= 2.0.8 jakarta-commons-collections
+Requires: java-1.6.0-sun-compat jakarta-commons-lang joda-time emi-trustmanager emi-trustmanager-axis xalan-j2 voms-api-java >= 2.0.8 jakarta-commons-collections
 Requires: jetty-client jetty-continuation jetty-deploy jetty-http jetty-io jetty-security jetty-server jetty-servlet jetty-util jetty-webapp jetty-xml
 Requires: gums
 
@@ -420,6 +420,9 @@ fi
 
 
 %changelog
+* Mon Nov 19 2012 Neha Sharma <neha@fnal.gov> - 2.3.0-6
+- Adding emi-trustmanager-axis to server-dep-libs
+
 * Mon Nov 12 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 2.3.0-5
 - Require voms-api-java instead of vomsjapi
 
