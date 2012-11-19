@@ -1,7 +1,7 @@
 
 Name: xrootd-hdfs
-Version: 1.8.2
-Release: 1%{?dist}
+Version: 1.8.3
+Release: 1
 Summary: HDFS plugin for xrootd
 
 Group: System Environment/Development
@@ -14,14 +14,11 @@ BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildRequires: xrootd-libs-devel
 BuildRequires: xrootd-server-devel
 BuildRequires: cmake
-# hadoop currently doesn't pull in Java in the mock chroot on SL6.
-# See SOFTWARE-841
-BuildRequires: java-devel
 BuildRequires: hadoop-0.20-libhdfs >= 0.20.2+737-4
 Conflicts: xrootd < 3.0.3-1
 
 %package devel
-Summary: Development headers and libraries for Xrootd HDFS plugin
+Summary: Development headers for Xrootd HDFS plugin
 Group: System Environment/Development
 
 %description
@@ -60,6 +57,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)
+%{_libdir}/libXrdHdfs.so
 %{_libdir}/libXrdHdfs.so.*
 %{_libdir}/libXrdHdfsReal.so
 %{_sysconfdir}/xrootd/xrootd.sample.hdfs.cfg
@@ -68,9 +66,11 @@ rm -rf $RPM_BUILD_ROOT
 
 %files devel
 %{_includedir}/XrdHdfs.hh
-%{_libdir}/libXrdHdfs.so
 
 %changelog
+* Mon Nov 19 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 1.8.3-1
+- Fix symbol visibility issues with xrootd 3.3.0-rc1.
+
 * Tue Nov 13 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 1.8.2-1
 - Fix compilation issue in mock.
 
