@@ -7,7 +7,7 @@
 
 Name:		voms-api-java
 Version:	2.0.8
-Release:	1.2%{?dist}
+Release:	1.3%{?dist}
 Summary:	Virtual Organization Membership Service Java API
 
 Group:		Development/Libraries
@@ -143,7 +143,21 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %doc %{_javadocdir}/%{name}
 
+
+%triggerpostun -- vomsjapi < 2.0.8
+# vomsjapi also owns %{_javadir}/vomsjapi.jar.
+# On some systems, vomsjapi and this package can be installed side-by-side.
+# This results in the symlink getting removed if both packages are installed and vomsjapi is erased.
+# Recreate the symlink if that is the case.
+# Note that we do not want to create the symlink if this package is getting uninstalled too.
+if [ $1 -gt 0 ]; then
+    ln -sf %{name}.jar %{_javadir}/vomsjapi.jar
+fi
+
 %changelog
+* Tue Nov 20 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.8-1.3
+- Add triggerscript to fix broken symlink issue with older vomsjapi package
+
 * Mon Aug 13 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.8-1.2
 - Rebuild for OSG
 
