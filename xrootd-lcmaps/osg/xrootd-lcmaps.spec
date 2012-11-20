@@ -1,7 +1,7 @@
 
 Name: xrootd-lcmaps
 Version: 0.0.7
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: LCMAPS plugin for xrootd
 
 Group: System Environment/Daemons
@@ -35,6 +35,13 @@ make install DESTDIR=$RPM_BUILD_ROOT
 %clean
 rm -rf $RPM_BUILD_ROOT
 
+%pre
+getent group xrootd >/dev/null || groupadd -r xrootd
+getent passwd xrootd >/dev/null || \
+       useradd -r -g xrootd -c "XRootD runtime user" \
+       -s /sbin/nologin -d /etc/xrootd xrootd
+
+
 %files
 %defattr(-,root,root,-)
 # We keep the .so here (and not in a -devel subpackage) because it is actually
@@ -42,9 +49,13 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libXrdLcmaps.so
 %{_libdir}/libXrdLcmaps.so.0
 %{_libdir}/libXrdLcmaps.so.0.0.1
+%defattr(644,root,root,-)
 %config(noreplace) %{_sysconfdir}/xrootd/lcmaps.cfg
 
 %changelog
+* Tue Nov 20 2012 Doug Strain <dstrain@fnal.gov> - 0.0.7-2
+- Fix permissions of lcmaps.cfg
+
 * Mon Nov 19 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 0.0.7-1
 - Fix config parsing issues.
 
