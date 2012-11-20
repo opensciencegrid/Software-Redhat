@@ -1,5 +1,7 @@
---- condor.pm	2012-07-23 20:27:44.798047933 -0500
-+++ condor.pm	2012-07-23 20:30:48.577054857 -0500
+Index: condor.pm
+===================================================================
+--- condor.pm.orig	2012-11-19 16:26:33.000000003 -0600
++++ condor.pm	2012-11-19 16:33:44.000000003 -0600
 @@ -582,6 +582,19 @@
          }
      }
@@ -8,7 +10,7 @@
 +    if($description->max_wall_time() ne '')
 +    {
 +        my $max_wall_time = $description->max_wall_time() ;
-+        $rc = print SCRIPT_FILE "PeriodicRemove= (JobStatus == 2) && ( (time() - EnteredCurrentStatus) < (" . $max_wall_time . " * 60))\n";
++        $rc = print SCRIPT_FILE "PeriodicRemove= (JobStatus == 2) && ( (time() - EnteredCurrentStatus) > (" . $max_wall_time . " * 60))\n";
 +        if (!$rc)
 +        {
 +            return $self->respond_with_failure_extension(

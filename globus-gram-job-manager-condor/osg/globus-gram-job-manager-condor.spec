@@ -9,7 +9,7 @@
 Name:		globus-gram-job-manager-condor
 %global _name %(tr - _ <<< %{name})
 Version:	1.0
-Release:	13.3%{?dist}
+Release:	13.4%{?dist}
 Summary:	Globus Toolkit - Condor Job Manager
 
 Group:		Applications/Internet
@@ -165,6 +165,9 @@ fi
 %config(noreplace) %{_sysconfdir}/globus/gram/condor.rvf 
 
 %changelog
+* Mon Nov 19 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0-13.4
+- Fixed expression in max_wall_time patch
+
 * Fri Nov 02 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0-13.3
 - Add placeholder file for user-editable condor.rvf
 
