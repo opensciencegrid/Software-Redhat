@@ -68,6 +68,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/XrdHdfs.hh
 
 %changelog
+* Wed Nov 21 2012 Doug Strain <dstrain@fnal.gov> - 1.8.3-2
+- Rebuild to link correctly with libhdfs
+
 * Mon Nov 19 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 1.8.3-1
 - Fix symbol visibility issues with xrootd 3.3.0-rc1.
 
