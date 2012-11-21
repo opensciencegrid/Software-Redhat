@@ -1,7 +1,7 @@
 %define hadoop_version 2.0.0+545 
 %define hadoop_patched_version 2.0.0-cdh4.1.1 
 %define hadoop_base_version 2.0.0 
-%define hadoop_release 1.cdh4.1.1.p0.10%{?dist}
+%define hadoop_release 1.cdh4.1.1.p0.11%{?dist}
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
@@ -661,11 +661,20 @@ if [ $1 -ge 1 ]; then
   service %{name}-httpfs condrestart >/dev/null 2>&1
 fi
 
-%post hdfs
+%post libhdfs
 /sbin/ldconfig
+# Force symlinks to be created if they are not
+#   Otherwise shared linking can be broken from hadoop-0.20 to hadoop 2.0.0
+ln -s %{_libdir}/libhdfs.so.0.0.0 %{_libdir}/libhdfs.so.0.0 || true
+ln -s %{_libdir}/libhdfs.so.0.0.0 %{_libdir}/libhdfs.so.0 || true
 
-%postun hdfs
+%postun libhdfs
 /sbin/ldconfig
+# Now delete symlinks
+rm -f %{_libdir}/libhdfs.so.0 || true
+rm -f %{_libdir}/libhdfs.so.0.0 || true
+
+
 
 %post hdfs-fuse-selinux
 # Install SELinux policy modules
@@ -835,6 +844,9 @@ fi
 
 
 %changelog
+* Wed Nov 21 2012 Doug Strain <dstrain@fnal.gov> - 2.0.0+545-1.cdh4.1.1.p0.11
+- Forcing libhdfs symlinks to be created to fix linking on shared libs
+
 * Thu Oct 18 2012 Doug Strain <dstrain@fnal.gov> - 2.0.0+545-1.cdh4.1.1.p0.10
 - Adding ldconfig and requires java
 
