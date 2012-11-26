@@ -11,10 +11,13 @@
 Summary: Builds packages inside chroots
 Name: mock
 Version: %{release_version}
-Release: 1%{?dist}
+Release: 1.1%{?dist}
 License: GPLv2+
 Group: Development/Tools
 Source: https://git.fedorahosted.org/cgit/mock.git/snapshot/%{name}-%{version}.tar.gz
+Patch0: py24syntax.patch
+Patch1: dev_ptmx.patch
+Patch2: clone_newuts.patch
 URL: http://fedoraproject.org/wiki/Projects/Mock
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch: noarch
@@ -32,6 +35,9 @@ Mock takes an SRPM and builds it in a chroot
 
 %prep
 %setup -q
+%patch0 -p1 -b .py24syntax
+%patch1 -p1 -b .dev_ptmx
+%patch2 -p1 -b .clone_newuts
 
 %build
 %configure
@@ -114,6 +120,12 @@ chmod 2775 /var/cache/mock
 %dir /var/lib/mock
 
 %changelog
+* Mon Nov 26 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0.36-1.1
+- patches for the following, all of which are required to work on el5:
+  - fix python 2.4 syntax errors (py24syntax.patch)
+  - don't try to make $chroot/dev/ptmx -> pts/ptmx symlink unnecessarily (dev_ptmx.patch)
+  - remove CLONE_NEWUTS from basic flags for unshare(2) call (clone_newuts.patch)
+  
 * Thu Nov  1 2012 Clark Williams <williams@redhat.com> - 1.0.36-1
 - add updates-testing stanza to fedora-1x-*.cfg [BZ# 610826]
 - modify scrub to handle non-existant chroots [BZ# 860368]

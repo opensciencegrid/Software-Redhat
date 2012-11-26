@@ -1,0 +1,13 @@
+Index: mock-1.0.36/py/mockbuild/backend.py
+===================================================================
+--- mock-1.0.36.orig/py/mockbuild/backend.py	2012-11-26 17:07:22.000000003 -0600
++++ mock-1.0.36/py/mockbuild/backend.py	2012-11-26 17:11:13.000000003 -0600
+@@ -473,7 +473,7 @@
+ 
+             if mockbuild.util.cmpKernelVer(kver, '2.6.29') >= 0:
+                 os.unlink(self.makeChrootPath('/dev/ptmx'))
+-            os.symlink("pts/ptmx", self.makeChrootPath('/dev/ptmx'))
++                os.symlink("pts/ptmx", self.makeChrootPath('/dev/ptmx'))
+         finally:
+             self.finish("device setup")
+ 
