@@ -174,6 +174,8 @@ Source25: %{name}-bigtop-packaging.tar.gz
 Source26: hadoop-fuse.te
 Patch0: mvn304.patch
 Patch1: javafuse.patch
+Patch2: libhdfs-soversion.patch
+Patch3: libhdfs-soversion-install.patch
 Buildroot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id} -u -n)
 BuildRequires: python >= 2.4, git, fuse-devel,fuse, automake, autoconf,maven3,protobuf-compiler, cmake
 # not sure if I need this
@@ -474,7 +476,9 @@ tar -C `dirname %{SOURCE25}` -xzf %{SOURCE25}
 pushd `dirname %{SOURCE25}`
 %patch0 -p1
 %patch1 -p1
+%patch3 -p1
 popd
+%patch2 -p0
 
 %build
 # This assumes that you installed Java JDK 6 and set JAVA_HOME
