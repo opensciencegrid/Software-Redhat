@@ -1,7 +1,7 @@
 %define hadoop_version 2.0.0+545 
 %define hadoop_patched_version 2.0.0-cdh4.1.1 
 %define hadoop_base_version 2.0.0 
-%define hadoop_release 1.cdh4.1.1.p0.11%{?dist}
+%define hadoop_release 1.cdh4.1.1.p0.12%{?dist}
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
@@ -846,8 +846,11 @@ fi
 
 
 
-
 %changelog
+* Mon Nov 26 2012 Doug Strain <dstrain@fnal.gov> - 2.0.0+545-1.cdh4.1.1.p0.12
+- Adding patches to 
+-- Credit to Brian Bockelman for providing the patches
+
 * Wed Nov 21 2012 Doug Strain <dstrain@fnal.gov> - 2.0.0+545-1.cdh4.1.1.p0.11
 - Forcing libhdfs symlinks to be created to fix linking on shared libs
 
