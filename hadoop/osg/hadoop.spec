@@ -1,7 +1,7 @@
 %define hadoop_version 2.0.0+545 
 %define hadoop_patched_version 2.0.0-cdh4.1.1 
 %define hadoop_base_version 2.0.0 
-%define hadoop_release 1.cdh4.1.1.p0.12%{?dist}
+%define hadoop_release 1.cdh4.1.1.p0.13%{?dist}
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
@@ -190,7 +190,6 @@ Conflicts: hadoop-0.20
 AutoReq: no
 Provides: hadoop
 Obsoletes: hadoop-0.20 <= 0.20.2+737
-Obsoletes: hadoop-0.20-libhdfs <= 0.20.2+737
 
 %if  %{?suse_version:1}0
 BuildRequires: libfuse2, libopenssl-devel, gcc-c++, ant, ant-nodeps, ant-trax
@@ -847,8 +846,11 @@ fi
 
 
 %changelog
+* Mon Nov 26 2012 Doug Strain <dstrain@fnal.gov> - 2.0.0+545-1.cdh4.1.1.p0.13
+- Fixing libhdfs obsoletes clauses
+
 * Mon Nov 26 2012 Doug Strain <dstrain@fnal.gov> - 2.0.0+545-1.cdh4.1.1.p0.12
-- Adding patches to 
+- Adding patches to fix libhdfs 
 -- Credit to Brian Bockelman for providing the patches
 
 * Wed Nov 21 2012 Doug Strain <dstrain@fnal.gov> - 2.0.0+545-1.cdh4.1.1.p0.11
