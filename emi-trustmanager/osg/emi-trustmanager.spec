@@ -23,7 +23,7 @@ The java authentication and proxy generation implementation that supports grid p
 
 %setup  
 
-%patch -p0 
+%patch0 -p0 
 
 %build
  
