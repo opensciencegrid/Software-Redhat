@@ -1,7 +1,7 @@
 Name: bwctl
 Summary: bwctl - network throughput tester
 Version: 1.4
-Release:        5%{?dist}
+Release:        6%{?dist}
 License: Apache License v2.0
 Group: *Development/Libraries*
 URL: http://e2epi.internet2.edu/bwctl/
@@ -86,7 +86,7 @@ fi
 %posttrans
 if [ -f %{_initrddir}/bwctld.osgpostsave ]; then
     # Restore real init script, if it was set aside in %post
-    mv %{_initrddir}/bwctld.osgpostsave %{_initrddir}/bwctld || :
+    mv -f %{_initrddir}/bwctld.osgpostsave %{_initrddir}/bwctld || :
 fi
 
 
@@ -124,6 +124,9 @@ fi
 %{_includedir}/bwctl/*
 
 %changelog
+* Wed Nov 27 2012 Doug Strain <dstrain@fnal.gov> - 1.4-6
+- Fixed moving behavior of post script
+
 * Wed Nov 27 2012 Doug Strain <dstrain@fnal.gov> - 1.4-5
 - Changing post and postun scripts to fix upgrade from 1.3
 
