@@ -1,7 +1,7 @@
 Name: bwctl
 Summary: bwctl - network throughput tester
 Version: 1.4
-Release:        4%{?dist}
+Release:        5%{?dist}
 License: Apache License v2.0
 Group: *Development/Libraries*
 URL: http://e2epi.internet2.edu/bwctl/
@@ -66,17 +66,35 @@ make
 rm -rf $RPM_BUILD_ROOT 
 
 %post server
+
+
+/sbin/chkconfig --add bwctld
 if [ "$1" = "1" ]; then
     # If this is a first time install, add the users and enable it by default
-	/sbin/chkconfig --add bwctld
 	/usr/sbin/useradd -r -s /bin/nologin -d /tmp bwctl || :
 fi
+
+# Due to problem in 1.3, init script needs to be disabled.
+if [ $1 -gt 1 ]; then
+    # Set aside init script to avoid restart behavior in old %postun
+    if [ -d %{_defaultdocdir}/bwctl-server-1.3 ]; then
+        mv %{_initrddir}/bwctld %{_initrddir}/bwctld.osgpostsave || :
+	cp -p /bin/true %{_initrddir}/bwctld
+    fi
+fi
+
+%posttrans
+if [ -f %{_initrddir}/bwctld.osgpostsave ]; then
+    # Restore real init script, if it was set aside in %post
+    mv %{_initrddir}/bwctld.osgpostsave %{_initrddir}/bwctld || :
+fi
+
 
 %preun server
 if [ "$1" = "0" ]; then
     # If this is an actual uninstall, stop the service and remove its links
+    /sbin/service bwctld stop >/dev/null 2>&1
     /sbin/chkconfig --del bwctld
-    /sbin/service bwctld stop
 fi
 
 %postun server
@@ -106,6 +124,9 @@ fi
 %{_includedir}/bwctl/*
 
 %changelog
+* Wed Nov 27 2012 Doug Strain <dstrain@fnal.gov> - 1.4-5
+- Changing post and postun scripts to fix upgrade from 1.3
+
 * Thu Aug 30 2012 Doug Strain <dstrain@fnal.gov> - 1.4-2
 - Disabled network startup by default in init.d script
 
