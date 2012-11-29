@@ -1,7 +1,7 @@
 
 Name: xrootd-cmstfc
 Version: 1.5.1
-Release: 1%{?dist}
+Release: 3%{?dist}
 Summary: CMS TFC plugin for xrootd
 
 Group: System Environment/Daemons
@@ -43,13 +43,16 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root,-)
 %{_libdir}/libXrdCmsTfc.so.*
+%{_libdir}/libXrdCmsTfc.so
 
 %files devel
 %defattr(-,root,root,-)
-%{_libdir}/libXrdCmsTfc.so
 %{_includedir}/XrdCmsTfc.hh
 
 %changelog
+* Thu Nov 29 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 1.5.1-3
+- Move module back into base RPM.
+
 * Mon Nov 12 2012 Brian Bockelman - 1.5.1-1
 - Fix SL6 compilation issues.
 
