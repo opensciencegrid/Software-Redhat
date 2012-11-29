@@ -50,7 +50,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 
 %changelog
-* Thu Non 29 2012 Neha Sharma <neha@fnal.gov> - 4.2.0-8
+* Thu Nov 29 2012 Neha Sharma <neha@fnal.gov> - 4.2.0-8
 - Adding another patch for the base netlogger parser
 
 * Mon Nov 17 2012 Neha Sharma <neha@fnal.gov> - 4.2.0-7
