@@ -1,6 +1,6 @@
 Name:		netlogger
 Version:	4.2.0
-Release:	7%{?dist}
+Release:	8%{?dist}
 Summary:	Netlogger toolkit
 
 Group:		Productivity/File utilities
@@ -14,6 +14,7 @@ Source0:        netlogger-trunk.tar.gz
 
 Patch0:         remove_setuptools.patch
 Patch1:         gridftp_auth.patch
+Patch2:         base.patch 
 
 BuildArch:      noarch
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
@@ -26,6 +27,7 @@ BuildRequires:  python
 %setup -n netlogger-trunk
 %patch0 -p0
 %patch1 -p0
+%patch2 -p0
 
 %build
 
@@ -48,6 +50,9 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 
 %changelog
+* Thu Non 29 2012 Neha Sharma <neha@fnal.gov> - 4.2.0-8
+- Adding another patch for the base netlogger parser
+
 * Mon Nov 17 2012 Neha Sharma <neha@fnal.gov> - 4.2.0-7
 - Initializing/Configuring the gridftp_auth logger
 
