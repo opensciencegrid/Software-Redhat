@@ -7,7 +7,7 @@
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.3.18.009
-Release: 9%{?dist}
+Release: 10%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 %if 0%{?rhel} < 6
@@ -209,6 +209,7 @@ rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROO
 rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/mysql-connector-java-5.1.6.jar
 #rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/*slf4j*.jar
 rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/voms-api-java-2.0.8.jar
+rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/xercesImpl*.jar
 
 ## Link the exploded WAR to gums-core JARs, instead of including a copy
 # tomcat6 doesn't seem to like this.
@@ -264,7 +265,7 @@ mkdir -p $RPM_BUILD_ROOT%{_javadir}
 touch $RPM_BUILD_ROOT%{_javadir}/javamail.jar
 
 # jglobus is required by XACML callouts in gums-client, but not gums-core.
-build-jar-repository $RPM_BUILD_ROOT%{_noarchlib}/%{dirname} jglobus trustmanager trustmanager-axis ant antlr bcprov commons-cli commons-codec commons-collections commons-digester commons-discovery commons-httpclient commons-lang commons-logging %{jacc} jta voms-api-java joda-time mysql-connector-java xerces-j2
+build-jar-repository $RPM_BUILD_ROOT%{_noarchlib}/%{dirname} jglobus trustmanager trustmanager-axis ant antlr bcprov commons-cli commons-codec commons-collections commons-digester commons-discovery commons-httpclient commons-lang commons-logging %{jacc} jta voms-api-java joda-time mysql-connector-java xerces-j2 xalan-j2
 
 mkdir -p $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib
 build-jar-repository $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib trustmanager trustmanager-axis ant antlr bcprov commons-beanutils commons-cli commons-codec commons-collections commons-digester commons-discovery commons-httpclient commons-lang commons-logging %{jacc} jta voms-api-java joda-time mysql-connector-java xalan-j2 xerces-j2
@@ -331,6 +332,9 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+* Thu Nov 29 2012 Doug Strain <dstrain@fnal.gov> - 1.3.18.009-10
+- Use system dependencies for xalan and xerces jars
+
 * Tue Oct 09 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 1.3.18.009-7
 - Improve usage of system RPMs.
 - Add emi-trustmanager-axis (SOFTWARE-808) into the GUMS webapp JARs.
