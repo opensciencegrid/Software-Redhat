@@ -7,7 +7,7 @@
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.3.18.009
-Release: 10%{?dist}
+Release: 11%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 %if 0%{?rhel} < 6
@@ -210,6 +210,7 @@ rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROO
 #rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/*slf4j*.jar
 rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/voms-api-java-2.0.8.jar
 rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/xercesImpl*.jar
+rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/xalan*.jar
 
 ## Link the exploded WAR to gums-core JARs, instead of including a copy
 # tomcat6 doesn't seem to like this.
