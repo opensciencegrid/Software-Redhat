@@ -7,7 +7,7 @@
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.3.18.009
-Release: 11%{?dist}
+Release: 12%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 %if 0%{?rhel} < 6
@@ -71,6 +71,8 @@ Source0: %{name}-%{version}.tar.gz
 Source1: gums-host-cron
 Source2: gums-client-cron.cron
 Source3: gums-client-cron.init
+Source4: log4j-client.properties
+Source5: log4j-service.properties
 
 # Binary JARs not available from public maven repos.  To be eliminated, one-by-one.
 #Source4: glite-security-trustmanager-2.5.5.jar
@@ -271,6 +273,15 @@ build-jar-repository $RPM_BUILD_ROOT%{_noarchlib}/%{dirname} jglobus trustmanage
 mkdir -p $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib
 build-jar-repository $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib trustmanager trustmanager-axis ant antlr bcprov commons-beanutils commons-cli commons-codec commons-collections commons-digester commons-discovery commons-httpclient commons-lang commons-logging %{jacc} jta voms-api-java joda-time mysql-connector-java xalan-j2 xerces-j2
 
+#Fix log4j mess and replace with standard ones
+rm $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/log4j.properties
+rm $RPM_BUILD_ROOT%{_sysconfdir}/%{dirname}/log4j.properties
+rm $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/classes/log4j.properties
+install %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/%{dirname}/log4j.properties
+install %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/%{dirname}/log4j-service.properties
+ln -s %{_sysconfdir}/%{dirname}/log4j-service.propertics $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/classes/log4j.propertics
+
+
 %files
 %defattr(-,root,root,-)
 %dir %{_noarchlib}/%{dirname}
@@ -314,6 +325,7 @@ fi
 %files service
 %defattr(-,root,root,-)
 %dir %{_sysconfdir}/%{dirname}
+%config(noreplace) %{_sysconfdir}/%{dirname}/log4j-service.properties
 %attr(0600,tomcat,tomcat) %config(noreplace) %{_sysconfdir}/%{dirname}/gums.config
 %attr(0750,tomcat,tomcat) %dir %{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/config
 %{_var}/lib/%{tomcat}/webapps/gums
@@ -333,8 +345,9 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
-* Thu Nov 29 2012 Doug Strain <dstrain@fnal.gov> - 1.3.18.009-10
+* Thu Nov 29 2012 Doug Strain <dstrain@fnal.gov> - 1.3.18.009-12
 - Use system dependencies for xalan and xerces jars
+- Change gums to use log4j.properties in /etc/gums and fix log properties
 
 * Tue Oct 09 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 1.3.18.009-7
 - Improve usage of system RPMs.
