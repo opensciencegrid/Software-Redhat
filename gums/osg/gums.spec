@@ -7,7 +7,7 @@
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.3.18.009
-Release: 12%{?dist}
+Release: 13%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 %if 0%{?rhel} < 6
@@ -279,8 +279,14 @@ rm $RPM_BUILD_ROOT%{_sysconfdir}/%{dirname}/log4j.properties
 rm $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/classes/log4j.properties
 install %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/%{dirname}/log4j.properties
 install %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/%{dirname}/log4j-service.properties
-ln -s %{_sysconfdir}/%{dirname}/log4j-service.propertics $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/classes/log4j.propertics
+ln -s %{_sysconfdir}/%{dirname}/log4j-service.properties $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/classes/log4j.properties
 
+# Add context to allow sym linking
+cat > $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/META-INF/context.xml << EOL
+<?xml version="1.0" encoding="UTF-8"?>
+<Context path="/gums" allowLinking="true">
+</Context>
+EOL
 
 %files
 %defattr(-,root,root,-)
@@ -345,9 +351,10 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
-* Thu Nov 29 2012 Doug Strain <dstrain@fnal.gov> - 1.3.18.009-12
+* Thu Nov 29 2012 Doug Strain <dstrain@fnal.gov> - 1.3.18.009-13
 - Use system dependencies for xalan and xerces jars
 - Change gums to use log4j.properties in /etc/gums and fix log properties
+- Allow symlinking in gums webapp
 
 * Tue Oct 09 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 1.3.18.009-7
 - Improve usage of system RPMs.
