@@ -1,0 +1,56 @@
+#!/bin/sh
+#
+# pakiti2-client
+#   This shell script enables the automatic use of pakiti2-client.
+#   Based on the corresponding script for the pakiti2 service by Steve Traylen (s.traylen@rl.ac.uk).
+#
+# chkconfig:	345 50 01
+#
+# description:  Enable hourly run of pakiti2-client, 
+#
+
+# source function library
+. /etc/rc.d/init.d/functions
+
+start() {
+	echo -n "Enabling pakiti2-client update in cron: "
+	(/bin/touch /var/lock/pakiti2-client && success) || failure
+	echo
+}
+
+stop() {
+	echo -n "Disabling pakiti2-client cron job: "
+	(/bin/rm -f /var/lock/pakiti2-client && success) || failure
+	echo
+}
+
+case "$1" in
+  start)
+	start
+	;;
+  stop) 
+	stop
+	;;
+  restart)
+	stop
+	start
+	;;
+  condrestart)
+        if [ -f /var/lock/pakiti2-client ]; then
+	    stop
+	    start
+	fi
+	;;
+  status)
+	if [ -f /var/lock/pakiti2-client ]; then
+		echo "daily pakiti2-client update is enabled"
+	else
+		echo "daily pakiti2-client update is disabled"
+	fi
+	;;
+  *)
+	echo "*** Usage: pakiti2-client {start|stop|restart|condrestart|status}"
+	exit 1
+esac
+
+exit 0
