@@ -1,5 +1,5 @@
 %global name osg-configure
-%global version 1.0.17
+%global version 1.0.18
 %global release 1%{?dist}
 
 Summary: Package for configure-osg and associated scripts
@@ -212,6 +212,9 @@ rm -rf $RPM_BUILD_ROOT
 /usr/share/osg-configure/*
 
 %changelog
+* Tue Dec 04 2012 Suchandra Thapa <sthapa@ci.uchicago.edu>  1.0.17-1
+- Don't configure metric probe in gratia test configs
+
 * Tue Dec 04 2012 Suchandra Thapa <sthapa@ci.uchicago.edu>  1.0.17-1
 - Fix for SOFTWARE-859 / GOC-12974 
 - Multiple cleanups and fixes based on pylint analysis
