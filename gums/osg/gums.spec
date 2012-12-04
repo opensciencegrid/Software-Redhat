@@ -7,7 +7,7 @@
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.3.18.009
-Release: 13%{?dist}
+Release: 14%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 %if 0%{?rhel} < 6
@@ -59,8 +59,8 @@ BuildRequires: joda-time
 Requires: joda-time
 BuildRequires: mysql-connector-java
 Requires: mysql-connector-java
-BuildRequires: xerces-j2 xalan-j2
-Requires: xerces-j2 xalan-j2
+BuildRequires: xerces-j2 xalan-j2 log4j
+Requires: xerces-j2 xalan-j2 log4j
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildArch: noarch
 
@@ -154,6 +154,7 @@ Summary: Tomcat service for GUMS
 # Adding system dependencies
 %{mvn} install:install-file -B -DgroupId=xerces -DartifactId=xercesImpl -Dversion=2.8.0 -Dpackaging=jar -Dfile=`build-classpath xerces-j2` -Dmaven.repo.local=%{local_maven}
 %{mvn} install:install-file -B -DgroupId=org.apache.xalan -DartifactId=xalan -Dversion=2.7.1 -Dpackaging=jar -Dfile=`build-classpath xalan-j2` -Dmaven.repo.local=%{local_maven}
+%{mvn} install:install-file -B -DgroupId=log4j -DartifactId=log4j -Dversion=1.2.12 -Dpackaging=jar -Dfile=`build-classpath log4j` -Dmaven.repo.local=%{local_maven}
 
 
 
@@ -213,6 +214,7 @@ rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROO
 rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/voms-api-java-2.0.8.jar
 rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/xercesImpl*.jar
 rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/xalan*.jar
+rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/log4j*.jar
 
 ## Link the exploded WAR to gums-core JARs, instead of including a copy
 # tomcat6 doesn't seem to like this.
@@ -268,10 +270,10 @@ mkdir -p $RPM_BUILD_ROOT%{_javadir}
 touch $RPM_BUILD_ROOT%{_javadir}/javamail.jar
 
 # jglobus is required by XACML callouts in gums-client, but not gums-core.
-build-jar-repository $RPM_BUILD_ROOT%{_noarchlib}/%{dirname} jglobus trustmanager trustmanager-axis ant antlr bcprov commons-cli commons-codec commons-collections commons-digester commons-discovery commons-httpclient commons-lang commons-logging %{jacc} jta voms-api-java joda-time mysql-connector-java xerces-j2 xalan-j2
+build-jar-repository $RPM_BUILD_ROOT%{_noarchlib}/%{dirname} jglobus trustmanager trustmanager-axis ant antlr bcprov commons-cli commons-codec commons-collections commons-digester commons-discovery commons-httpclient commons-lang commons-logging %{jacc} jta voms-api-java joda-time mysql-connector-java xerces-j2 xalan-j2 log4j
 
 mkdir -p $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib
-build-jar-repository $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib trustmanager trustmanager-axis ant antlr bcprov commons-beanutils commons-cli commons-codec commons-collections commons-digester commons-discovery commons-httpclient commons-lang commons-logging %{jacc} jta voms-api-java joda-time mysql-connector-java xalan-j2 xerces-j2
+build-jar-repository $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib trustmanager trustmanager-axis ant antlr bcprov commons-beanutils commons-cli commons-codec commons-collections commons-digester commons-discovery commons-httpclient commons-lang commons-logging %{jacc} jta voms-api-java joda-time mysql-connector-java xalan-j2 xerces-j2 log4j
 
 #Fix log4j mess and replace with standard ones
 rm $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/log4j.properties
@@ -351,6 +353,9 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+* Mon Dec 3 2012 Doug Strain <dstrain@fnal.gov> - 1.3.18.009-14
+- Use system dependency for log4j
+
 * Thu Nov 29 2012 Doug Strain <dstrain@fnal.gov> - 1.3.18.009-13
 - Use system dependencies for xalan and xerces jars
 - Change gums to use log4j.properties in /etc/gums and fix log properties
