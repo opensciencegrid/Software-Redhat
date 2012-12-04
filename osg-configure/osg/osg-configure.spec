@@ -212,6 +212,10 @@ rm -rf $RPM_BUILD_ROOT
 /usr/share/osg-configure/*
 
 %changelog
+* Tue Dec 04 2012 Suchandra Thapa <sthapa@ci.uchicago.edu>  1.0.17-1
+- Fix for SOFTWARE-859 / GOC-12974 
+- Multiple cleanups and fixes based on pylint analysis
+
 * Thu Nov 15 2012 Suchandra Thapa <sthapa@ci.uchicago.edu>  1.0.16-1
 - Fixes for software-811, software-834 
 - Code cleanups based on pylint
