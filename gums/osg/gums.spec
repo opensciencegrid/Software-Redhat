@@ -7,7 +7,7 @@
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.3.18.009
-Release: 14%{?dist}
+Release: 15%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 %if 0%{?rhel} < 6
@@ -27,15 +27,13 @@ BuildRequires: jdk
 BuildRequires: java-1.6.0-sun-compat
 %endif
 BuildRequires: java-devel
-BuildRequires: emi-trustmanager
-BuildRequires: voms-api-java
 BuildRequires: jglobus
 # provides build-classpath
 BuildRequires: jpackage-utils 
 Requires: java
 Requires: jglobus
-BuildRequires: voms-api-java
-Requires: voms-api-java
+#BuildRequires: voms-api-java
+#Requires: voms-api-java
 BuildRequires: emi-trustmanager
 Requires: emi-trustmanager
 BuildRequires: emi-trustmanager-axis
@@ -142,7 +140,7 @@ Summary: Tomcat service for GUMS
 %{mvn} install:install-file -B -DgroupId=org.opensaml -DartifactId=openws -Dversion=1.2.2 -Dpackaging=jar -Dfile=%{SOURCE12} -Dmaven.repo.local=%{local_maven}
 %{mvn} install:install-file -B -DgroupId=jargs -DartifactId=jargs -Dversion=1.0 -Dpackaging=jar -Dfile=%{SOURCE13} -Dmaven.repo.local=%{local_maven}
 %{mvn} install:install-file -B -DgroupId=velocity -DartifactId=velocity -Dversion=1.5 -Dpackaging=jar -Dfile=%{SOURCE14} -Dmaven.repo.local=%{local_maven}
-%{mvn} install:install-file -B -DgroupId=emi -DartifactId=voms-api-java -Dversion=2.0.8 -Dpackaging=jar -Dfile=`build-classpath voms-api-java` -Dmaven.repo.local=%{local_maven}
+#%{mvn} install:install-file -B -DgroupId=emi -DartifactId=voms-api-java -Dversion=2.0.8 -Dpackaging=jar -Dfile=`build-classpath voms-api-java` -Dmaven.repo.local=%{local_maven}
 # gums-client
 %{mvn} install:install-file -B -DgroupId=org.opensciencegrid -DartifactId=privilege-xacml -Dversion=2.2.4 -Dpackaging=jar -Dfile=%{SOURCE8} -Dmaven.repo.local=%{local_maven}
 %{mvn} install:install-file -B -DgroupId=org.opensciencegrid -DartifactId=privilege -Dversion=1.0.1.3 -Dpackaging=jar -Dfile=%{SOURCE9} -Dmaven.repo.local=%{local_maven}
@@ -211,7 +209,7 @@ rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROO
 rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/{jacc-1.0,jta-1.0.1B}.jar
 rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/mysql-connector-java-5.1.6.jar
 #rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/*slf4j*.jar
-rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/voms-api-java-2.0.8.jar
+#rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/voms-api-java-2.0.8.jar
 rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/xercesImpl*.jar
 rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/xalan*.jar
 rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/log4j*.jar
@@ -270,10 +268,11 @@ mkdir -p $RPM_BUILD_ROOT%{_javadir}
 touch $RPM_BUILD_ROOT%{_javadir}/javamail.jar
 
 # jglobus is required by XACML callouts in gums-client, but not gums-core.
-build-jar-repository $RPM_BUILD_ROOT%{_noarchlib}/%{dirname} jglobus trustmanager trustmanager-axis ant antlr bcprov commons-cli commons-codec commons-collections commons-digester commons-discovery commons-httpclient commons-lang commons-logging %{jacc} jta voms-api-java joda-time mysql-connector-java xerces-j2 xalan-j2 log4j
+build-jar-repository $RPM_BUILD_ROOT%{_noarchlib}/%{dirname} jglobus trustmanager trustmanager-axis ant antlr bcprov commons-cli commons-codec commons-collections commons-digester commons-discovery commons-httpclient commons-lang commons-logging %{jacc} jta joda-time mysql-connector-java xerces-j2 xalan-j2 log4j
 
 mkdir -p $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib
-build-jar-repository $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib trustmanager trustmanager-axis ant antlr bcprov commons-beanutils commons-cli commons-codec commons-collections commons-digester commons-discovery commons-httpclient commons-lang commons-logging %{jacc} jta voms-api-java joda-time mysql-connector-java xalan-j2 xerces-j2 log4j
+build-jar-repository $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib trustmanager trustmanager-axis ant antlr bcprov commons-beanutils commons-cli commons-codec commons-collections commons-digester commons-discovery commons-httpclient commons-lang commons-logging %{jacc} jta joda-time mysql-connector-java xalan-j2 xerces-j2 log4j
+
 
 #Fix log4j mess and replace with standard ones
 rm $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/log4j.properties
@@ -353,6 +352,9 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+* Wed Dec 5 2012 Doug Strain <dstrain@fnal.gov> - 1.3.18.009-15
+- Eliminated the voms-api-java dependency 
+
 * Mon Dec 3 2012 Doug Strain <dstrain@fnal.gov> - 1.3.18.009-14
 - Use system dependency for log4j
 
