@@ -1,5 +1,5 @@
 %global name osg-configure
-%global version 1.0.18
+%global version 1.0.19
 %global release 1%{?dist}
 
 Summary: Package for configure-osg and associated scripts
@@ -212,7 +212,12 @@ rm -rf $RPM_BUILD_ROOT
 /usr/share/osg-configure/*
 
 %changelog
-* Tue Dec 04 2012 Suchandra Thapa <sthapa@ci.uchicago.edu>  1.0.17-1
+* Tue Dec 04 2012 Suchandra Thapa <sthapa@ci.uchicago.edu>  1.0.19-1
+- Fix localsettings configuration (add getAttributes back)
+- Fix gratia unit tests due to change in test configs
+- Clean up unit test code based on pylint output
+
+* Tue Dec 04 2012 Suchandra Thapa <sthapa@ci.uchicago.edu>  1.0.18-1
 - Don't configure metric probe in gratia test configs
 
 * Tue Dec 04 2012 Suchandra Thapa <sthapa@ci.uchicago.edu>  1.0.17-1
