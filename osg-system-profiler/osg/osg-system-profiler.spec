@@ -1,6 +1,6 @@
 Summary:   Profiles your system for debugging
 Name:      osg-system-profiler
-Version:   1.0.9
+Version:   1.0.10
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -44,6 +44,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/%{name}-viewer
 
 %changelog
+* Tue Oct 09 2012 Matyas Selmeci <matyas@cs.wisc.edu> 1.0.10-1
+- Save old profiler output
+- Update user instructions
+- Verify all packages
+
 * Wed May 09 2012 Matyas Selmeci <matyas@cs.wisc.edu> 1.0.9-1
 - Show all kernel packages
 - Sort environment and some other output
