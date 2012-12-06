@@ -1,6 +1,6 @@
 Version: 2.1.4
 Name: pakiti
-Release: 1.0.4%{?dist}
+Release: 1.1%{?dist}
 
 License: BSD
 Source: http://pakiti.sourceforge.net/rpms/%{name}/%{name}-%{version}.tar.gz
@@ -35,6 +35,8 @@ central Pakiti server using openssl s_client or curl.
 %package server
 BuildArch: noarch
 Requires: httpd, mysql-server, php , php-mysql, php-xml, grid-certificates, mod_ssl
+Requires(post): policycoreutils
+Requires(postun): policycoreutils
 Summary: Pakiti server - Patching status system.
 Group: Utilities/System
 
@@ -149,9 +151,40 @@ ln -s ../pakiti/pakiti.css www/link/pakiti.css
 
 %post server
 /sbin/chkconfig --add pakiti2
+# set selinux contexts
+if selinuxenabled; then
+    semanage fcontext -a -t httpd_sys_content_t %{_localstatedir}/lib/pakiti2
+    semanage fcontext -a -t httpd_sys_content_t %{_localstatedir}/lib/pakiti2/config
+    semanage fcontext -a -t httpd_sys_content_t %{_localstatedir}/lib/pakiti2/include
+    semanage fcontext -a -t httpd_sys_content_t %{_localstatedir}/lib/pakiti2/www
+    semanage fcontext -a -t httpd_sys_content_t %{_localstatedir}/lib/pakiti2/www/feed
+    semanage fcontext -a -t httpd_sys_content_t %{_localstatedir}/lib/pakiti2/www/pakiti
+    semanage fcontext -a -t httpd_sys_content_t %{_localstatedir}/lib/pakiti2/www/pakiti/img
+    restorecon %{_localstatedir}/lib/pakiti2
+    restorecon %{_localstatedir}/lib/pakiti2/config
+    restorecon %{_localstatedir}/lib/pakiti2/include
+    restorecon %{_localstatedir}/lib/pakiti2/www
+    restorecon %{_localstatedir}/lib/pakiti2/www/feed
+    restorecon %{_localstatedir}/lib/pakiti2/www/pakiti
+    restorecon %{_localstatedir}/lib/pakiti2/www/pakiti/img
+fi
 
 %preun server
 /sbin/chkconfig --del pakiti2
+
+%postun server
+if [ $1 -eq 0 ]; then # final removal
+    if selinuxenabled; then
+        semanage fcontext -d -t httpd_sys_content_t %{_localstatedir}/lib/pakiti2
+        semanage fcontext -d -t httpd_sys_content_t %{_localstatedir}/lib/pakiti2/config
+        semanage fcontext -d -t httpd_sys_content_t %{_localstatedir}/lib/pakiti2/include
+        semanage fcontext -d -t httpd_sys_content_t %{_localstatedir}/lib/pakiti2/www
+        semanage fcontext -d -t httpd_sys_content_t %{_localstatedir}/lib/pakiti2/www/feed
+        semanage fcontext -d -t httpd_sys_content_t %{_localstatedir}/lib/pakiti2/www/pakiti
+        semanage fcontext -d -t httpd_sys_content_t %{_localstatedir}/lib/pakiti2/www/pakiti/img
+    fi
+fi
+    
 
 %post client
 /sbin/chkconfig --add pakiti2-client
@@ -160,6 +193,9 @@ ln -s ../pakiti/pakiti.css www/link/pakiti.css
 /sbin/chkconfig --del pakiti2-client
 
 %changelog
+* Wed Dec 05 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 2.1.4-1.1
+- Set SELinux contexts for server
+
 * Mon Dec 03 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 2.1.4-1.0.4
 - Add init script for client
 - Changed 'webserver' requirement to 'httpd' so the package doesn't bring in two webservers
