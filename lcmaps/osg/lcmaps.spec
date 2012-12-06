@@ -11,7 +11,7 @@
 Summary: Grid (X.509) and VOMS credentials to local account mapping service
 Name: lcmaps
 Version: 1.5.4
-Release: 1.3%{?dist}
+Release: 1.4%{?dist}
 #Release: 0.%(date +%%Y%%m%%d_%%H%%M)%{?dist}
 License: ASL 2.0
 Group: System Environment/Libraries
@@ -29,10 +29,10 @@ BuildRequires: voms-devel
 BuildRequires: flex, bison
 BuildRequires: automake, autoconf, libtool
 
-Requires: lcmaps-plugins-gums-client
-Requires: lcmaps-plugins-saz-client
-Requires: lcmaps-plugins-basic
-Requires: lcmaps-plugins-verify-proxy
+Requires: lcmaps-plugins-gums-client{%_isa}
+Requires: lcmaps-plugins-saz-client{%_isa}
+Requires: lcmaps-plugins-basic{%_isa}
+Requires: lcmaps-plugins-verify-proxy{%_isa}
 
 %description
 The Local Centre MAPping Service (LCMAPS) is a security middleware
@@ -177,6 +177,9 @@ if [ ! -L %{_libdir}/modules ]; then
 	#  the corresponding file already exists
 	(cd %{_libdir}/modules
 	for F in *; do
+	    if [ "$F" = "*" ]; then
+		break
+	    fi
 	    if [ -e "../lcmaps/$F" ]; then
 		rm -f "$F"
 	    else
@@ -269,6 +272,10 @@ fi
 %{_libdir}/pkgconfig/lcmaps.pc
 
 %changelog
+* Thu Dec 06 2012 Dave Dykstra <dwd@fnal.gov> 1.5.4-1.4.osg
+- Prevent printing an error "mv: cannot stat `*': No such file or directory"
+  when %{_libdir}/modules is empty
+
 * Fri Sep 14 2012 Dave Dykstra <dwd@fnal.gov> 1.5.4-1.3.osg
 - Prevent the movement of files from the old %{_libdir}/modules directory
   to %{_libdir}/lcmaps from overwriting anything that was already there
