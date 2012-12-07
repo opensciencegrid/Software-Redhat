@@ -56,7 +56,7 @@
 
 Name: %{hadoop_name}-%{apache_branch}
 Version: %{cloudera_version}
-Release: 26%{?dist}
+Release: 27%{?dist}
 Summary: Hadoop is a software platform for processing vast amounts of data
 License: Apache License v2.0
 URL: http://hadoop.apache.org/core/
@@ -75,6 +75,7 @@ Patch2:  fuse_dfs_020_memleaks_v8.patch
 Patch3:  h-6813.patch
 Patch4:  hadoop_fuse_dfs_classpath.patch
 Patch5:  hadoop_fuse_dfs_libjvm.patch
+Patch6:  hdfs-799-backport.patch
 Buildroot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: ant >= 1.7, ant-nodeps, ant-trax, jdk >= 1.6, lzo-devel, python >= 2.4, /usr/bin/git, subversion, fuse-libs, fuse-devel, fuse, automake, autoconf, libtool, redhat-rpm-config, openssl-devel
 
@@ -266,6 +267,7 @@ before continuing operation.
 %patch3
 %patch4
 %patch5
+%patch6
 
 %build
 # This assumes that you installed Java JDK 6 via RPM
@@ -574,6 +576,9 @@ fi
 %endif
 
 %changelog
+* Fri Dec 07 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 0.20.2+737-27
+- Backport patch for HDFS-799, which caused memory leaks in fuse_dfs.
+
 * Thu Aug 9 2012 Doug Strain <dstrain@fnal.gov> - 0.20.2+737-26
 - Added obsoletes for hadoop 2.0.0
 - Made alternatives removal optional and not cause a failure
