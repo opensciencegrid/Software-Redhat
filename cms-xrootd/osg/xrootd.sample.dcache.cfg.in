@@ -37,10 +37,12 @@ cms.trace all
 # This file can be found in:
 # $VO_CMS_SW_DIR/SITECONF/local/PhEDEx/storage.xml
 oss.namelib @LIBDIR@/libXrdCmsTfc.so file:/etc/xrootd/storage.xml?protocol=direct
+# You will need the xrootd-cmstfc package installed on your system to use the
+# above line.
 
 # Authorization is off as we are just redirecting to dCache - rely on dCache's
 # authz.
-ofs.authorize 0
+#ofs.authorize 0
 
 xrootd.seclib @LIBDIR@/libXrdSec.so
 xrootd.fslib @LIBDIR@/libXrdOfs.so

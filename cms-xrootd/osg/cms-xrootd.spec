@@ -2,7 +2,7 @@
 Summary: CMS meta-RPM for Xrootd
 Name: cms-xrootd
 Version: 1.2
-Release: 2%{?dist}
+Release: 3%{?dist}
 Group: System Environment/Daemons
 License: Public Domain
 URL: https://twiki.cern.ch/twiki/bin/view/Main/CmsXrootdArchitecture
@@ -93,6 +93,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/xrootd/xrootd.sample.proxy.cfg
 
 %changelog
+* Tue Dec 11 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 1.2-3
+- Fix ofs.authorize line in the dCache example file.
+
 * Tue Oct 23 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 1.2-2
 - Add proxy config file.
 
