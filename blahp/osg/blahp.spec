@@ -1,6 +1,6 @@
 Name:		blahp
 Version:	1.18.0.4
-Release:	8%{?dist}
+Release:	9%{?dist}
 Summary:	gLite BLAHP daemon
 
 Group:		System/Libraries
@@ -70,7 +70,7 @@ BuildRequires:  docbook-style-xsl, libxslt
 %patch12 -p0
 %patch13 -p0
 
-cp %{SOURCE0} src/scripts/pbs_status.sh
+cp %{SOURCE1} src/scripts/pbs_status.sh
 
 %build
 ./bootstrap
@@ -128,6 +128,9 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Fri Dec 05 2012 John Thiltges <jthiltges2@unl.edu> 1.18.0.4-9.osg
+- Fix pbs_status.sh in spec file
+
 * Fri Oct 12 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 1.18.0.4-8.osg
 - Pull in all remaining patches from the OSG-CE work.
 - Fix non-standard qstat locations.
