@@ -1,37 +1,16 @@
 Name:		blahp
-Version:	1.18.0.4
-Release:	9%{?dist}
+Version:	1.18.3.bosco
+Release:	1%{?dist}
 Summary:	gLite BLAHP daemon
 
 Group:		System/Libraries
 License:	Apache 2.0
-URL:		http://glite.cvs.cern.ch/cgi-bin/glite.cgi/org.glite.ce.blahp
-# Retrieved on May 28 2012
-# http://glite.cvs.cern.ch/cgi-bin/glite.cgi/org.glite.ce.blahp.tar.gz?view=tar&pathrev=glite-ce-blahp_R_1_18_0_4
-Source0:        org.glite.ce.blahp.tar.gz
-# Retrieved on May 31 2012
-# https://github.com/bbockelm/condor-ce/blob/master/src/pbs_status.py
-Source1:        pbs_status.py
-Patch0:         blahp_fedora.patch
-# Config file patches from Condor.
-#Patch1:         blahp.dl.patch
-Patch2:         blahp.mtrace.patch
-Patch3:         blahp.add-sge.patch
-Patch4:         blahp.config-paths.patch
-Patch5:         blahp.pbs-completion.patch
-Patch6:         blahp.registry.patch
-Patch7:         blahp.shared-fs.patch
-Patch8:         blahp_chkconfig.patch
-# Fix path to blparser_master and related binaries in init scripts
-Patch9:         blahp_init_script_paths.patch
-# Add values for using Condor as a jobmanager to the blah.config
-Patch10:        blahp_condor_config.patch
-# Allow blahp to handle relative proxy paths.  See Condor GT #3027
-Patch11:		blahp-relative-proxypath.patch
-# Blahp fails to escape some character sequences Condor jobs may use.
-Patch12:        blahp.escape.args.patch
-# Blahp uses a function which has been removed from newer versions of Condor ClassAds.
-Patch13:        blahp.iclassad.patch
+URL:		https://github.com/osg-bosco/BLAH
+
+# Tarball created with the following command:
+# git archive v1_18_bosco | gzip -8 > ~/rpmbuild/SOURCES/blahp.tar.gz
+Source0:        blahp.tar.gz
+
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildRequires:  automake
 BuildRequires:  autoconf
@@ -53,24 +32,7 @@ BuildRequires:  docbook-style-xsl, libxslt
 %{summary}
 
 %prep
-%setup -n org.glite.ce.blahp
-
-%patch0 -p0
-#%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
-%patch6 -p1
-%patch7 -p1
-%patch8 -p1
-%patch9 -p1
-%patch10 -p1
-%patch11 -p0
-%patch12 -p0
-%patch13 -p0
-
-cp %{SOURCE1} src/scripts/pbs_status.sh
+%setup -c -n %{name}-%{version}
 
 %build
 ./bootstrap
@@ -128,6 +90,9 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Thu Dec 13 2012 Brian Bockelman <bbockelm@cse.unl.edu> 1.18.3.bosco-1.osg
+- Merge BOSCO and OSG distribution of blahp.
+
 * Fri Dec 05 2012 John Thiltges <jthiltges2@unl.edu> 1.18.0.4-9.osg
 - Fix pbs_status.sh in spec file
 
