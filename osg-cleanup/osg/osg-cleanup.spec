@@ -1,6 +1,6 @@
 
 Name:      osg-cleanup
-Version:   1.6
+Version:   1.7
 Release:   1%{?dist}
 Summary:   OSG cleanup scripts
 
@@ -87,6 +87,9 @@ fi
 
 
 %changelog
+* Mon Dec 17 2012 Matyas Selmeci <matyas@cs.wisc.edu> 1.7-1
+- Use File::Temp for temp files
+
 * Thu Nov 01 2012 Matyas Selmeci <matyas@cs.wisc.edu> 1.6-1
 - Fix tmpwatch call for el 5
 
