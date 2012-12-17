@@ -56,7 +56,7 @@
 
 Name: %{hadoop_name}-%{apache_branch}
 Version: %{cloudera_version}
-Release: 27%{?dist}
+Release: 28%{?dist}
 Summary: Hadoop is a software platform for processing vast amounts of data
 License: Apache License v2.0
 URL: http://hadoop.apache.org/core/
@@ -75,7 +75,11 @@ Patch2:  fuse_dfs_020_memleaks_v8.patch
 Patch3:  h-6813.patch
 Patch4:  hadoop_fuse_dfs_classpath.patch
 Patch5:  hadoop_fuse_dfs_libjvm.patch
+
 Patch6:  hdfs-799-backport.patch
+Patch7:  HDFS-2452.patch
+Patch8:  hadoop-7154.patch
+
 Buildroot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: ant >= 1.7, ant-nodeps, ant-trax, jdk >= 1.6, lzo-devel, python >= 2.4, /usr/bin/git, subversion, fuse-libs, fuse-devel, fuse, automake, autoconf, libtool, redhat-rpm-config, openssl-devel
 
@@ -268,6 +272,8 @@ before continuing operation.
 %patch4
 %patch5
 %patch6
+%patch7
+%patch8
 
 %build
 # This assumes that you installed Java JDK 6 via RPM
@@ -576,6 +582,9 @@ fi
 %endif
 
 %changelog
+* Mon Dec 17 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 0.20.2+737-28
+- Fix VSZ explosion issue in datanode (HADOOP-7154, HDFS-2452).
+
 * Fri Dec 07 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 0.20.2+737-27
 - Backport patch for HDFS-799, which caused memory leaks in fuse_dfs.
 
