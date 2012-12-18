@@ -1,6 +1,6 @@
 Name:           igtf-ca-certs-compat
 Version:        1.51
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        OSG Packaging of the IGTF CA Certs, in the old OpenSSl 0.9.x format. For details what is in the current release, see the distribution site at http://software.grid.iu.edu/pacman/cadist/ and change log at http://software.grid.iu.edu/pacman/cadist/CHANGES.
 
 Group:          System Environment/Base
@@ -9,7 +9,7 @@ URL:            http://software.grid.iu.edu/pacman/cadist/
 
 # Note: currently, one needs a valid client certificate to access the source tarball
 # https://osg-svn.rtinfo.indiana.edu/cadist/release/osg-certificates-1.20IGTFOLD.tar.gz
-Source0:        osg-certificates-1.32IGTFOLD.tar.gz
+Source0:        osg-certificates-1.32ITBIGTFOLD.tar.gz
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
@@ -42,6 +42,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc
 
 %changelog
+* Tue Dec 18 2012 Anand Padmanabhan <apadmana@uiuc.edu> - 1.51-4
+- CA release corresponding to IGTF 1.51 release (ITB) + DOEGrids sha2
+
 * Mon Dec 07 2012 Anand Padmanabhan <apadmana@uiuc.edu> - 1.51-3
 - CA release corresponding to IGTF 1.51 release
 
