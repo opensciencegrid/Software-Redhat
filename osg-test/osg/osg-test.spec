@@ -5,7 +5,7 @@
 
 Summary:   Tests an OSG Software installation
 Name:      osg-test
-Version:   1.2.3
+Version:   1.2.4
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -40,6 +40,9 @@ rm -rf $RPM_BUILD_ROOT
 /etc/grid-security/certificates/bffdd190.*
 
 %changelog
+* Wed Dec 19 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.2.4-1
+- New version: some xrootd and fetch-crl test fixes 
+
 * Tue Nov 13 2012 Doug Strain <dstrain@fnal.gov> - 1.2.3-1
 - New Version to correct xrootd tests (SL6 GSI now working)
 
