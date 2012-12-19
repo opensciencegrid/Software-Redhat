@@ -1,6 +1,6 @@
 
 Name: htcondor-ce
-Version: 0.5.3
+Version: 0.5.4
 Release: 1%{?dist}
 Summary: A framework to run HTCondor as a CE
 
@@ -13,10 +13,13 @@ Source0: %{name}-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch: noarch
 
-Requires:  condor
+Requires:  condor >= 7.9.2
 # This ought to pull in the HTCondor-CE specific version of the blahp
 Requires: blahp
 Requires: %{name}-client
+
+Obsoletes: condor-ce < 0.5.4
+Provides:  condor-ce = %{version}
 
 Requires(post): chkconfig
 Requires(preun): chkconfig
@@ -32,6 +35,9 @@ Summary: Default routes for submission to HTCondor
 
 Requires: %{name} = %{version}-%{release}
 
+Obsoletes: condor-ce-condor < 0.5.4
+Provides:  condor-ce-condor = %{version}
+
 %description condor
 %{summary}
 
@@ -42,6 +48,9 @@ Summary: Default routes for submission to PBS
 Requires: %{name} = %{version}-%{release}
 Requires: /usr/bin/grid-proxy-init
 Requires: /usr/bin/voms-proxy-init
+
+Obsoletes: condor-ce-pbs < 0.5.4
+Provides:  condor-ce-pbs = %{version}
 
 %description pbs
 %{summary}
@@ -56,11 +65,14 @@ Requires: condor
 Requires: /usr/bin/grid-proxy-init
 Requires: /usr/bin/voms-proxy-init
 
+Obsoletes: condor-ce-client < 0.5.4
+Provides:  condor-ce-client = %{version}
+
 %description client
 %{summary}
 
 %prep
-%setup -q -n condor-ce-%{version}
+%setup -q
 
 %build
 %configure
@@ -115,6 +127,7 @@ fi
 %config %{_sysconfdir}/condor-ce/condor_config
 %config %{_sysconfdir}/condor-ce/config.d/01-ce-auth.conf
 %config %{_sysconfdir}/condor-ce/config.d/01-ce-router.conf
+%config %{_sysconfdir}/condor-ce/config.d/03-ce-shared-port.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/condor_mapfile
 %config(noreplace) %{_sysconfdir}/sysconfig/condor-ce
 
@@ -153,6 +166,11 @@ fi
 %{_bindir}/condor_ce_version
 
 %changelog
+* Thu Dec 13 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 0.5.4-1
+- Add DigiCert-CA-issued mapping in the default condor_mapfile
+- Add requirement for HTCondor > 7.9.2
+- Make shared-port default.
+
 * Wed Dec 12 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 0.5.3-1
 - Implement the condor_ce_run helper utility.
 - Split out client tools subpackage.
