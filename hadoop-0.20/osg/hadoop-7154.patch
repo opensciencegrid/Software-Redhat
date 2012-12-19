@@ -10,7 +10,7 @@
 +export MALLOC_ARENA_MAX=${MALLOC_ARENA_MAX:-4}
 +
 +# Also, add more user processes to avoid hitting virtual memory explosion
-+ulimit -u 8192
++ulimit -u 8192; ulimit -uS 8192
 +
  if [ -d $HADOOP_HOME/pids ]; then
  HADOOP_PID_DIR="${HADOOP_PID_DIR:-$HADOOP_HOME/pids}"
