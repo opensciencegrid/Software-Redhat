@@ -1,9 +1,7 @@
 #-------------------------------------------------------------------------------
 # We assume the xrootd user when building for the OSG
 #-------------------------------------------------------------------------------
-%if "0%{?dist}" == "0.osg"
 %define _with_xrootd_user 1
-%endif
 
 #-------------------------------------------------------------------------------
 # Package definitions
@@ -11,7 +9,7 @@
 Name:      xrootd
 Epoch:     1
 Version:   3.2.7
-Release:   1%{?dist}%{?_with_xrootd_user:.xu}
+Release:   2%{?dist}%{?_with_xrootd_user:.xu}
 Summary:   An extended root daemon (xrootd)
 Group:     System Environment/Daemons
 License:   BSD
