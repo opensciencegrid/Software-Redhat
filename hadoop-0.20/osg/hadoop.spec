@@ -56,7 +56,7 @@
 
 Name: %{hadoop_name}-%{apache_branch}
 Version: %{cloudera_version}
-Release: 28%{?dist}
+Release: 29%{?dist}
 Summary: Hadoop is a software platform for processing vast amounts of data
 License: Apache License v2.0
 URL: http://hadoop.apache.org/core/
@@ -582,6 +582,9 @@ fi
 %endif
 
 %changelog
+* Wed Dec 19 2012 Doug Strain <dstrain@fnal.gov> - 0.20.2+737-29
+- Fix VSZ explosion issue in datanode (HADOOP-7154, HDFS-2452).
+
 * Mon Dec 17 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 0.20.2+737-28
 - Fix VSZ explosion issue in datanode (HADOOP-7154, HDFS-2452).
 
