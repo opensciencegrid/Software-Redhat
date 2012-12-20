@@ -56,7 +56,7 @@
 
 Name: %{hadoop_name}-%{apache_branch}
 Version: %{cloudera_version}
-Release: 30%{?dist}
+Release: 31%{?dist}
 Summary: Hadoop is a software platform for processing vast amounts of data
 License: Apache License v2.0
 URL: http://hadoop.apache.org/core/
@@ -67,6 +67,7 @@ Source2: hadoop-init-nn.tmpl
 Source3: hadoop-0.20.default
 Source4: apache-forrest-0.8.tar.gz
 Source5: hadoop-fuse.te
+Source6: hadoop.limits.conf
 Patch0:  hadoop_20_forrest.patch
 Patch1:  https://issues.apache.org/jira/secure/attachment/12473651/hdfs-780-4.patch
 Patch2:  fuse_dfs_020_memleaks_v8.patch
@@ -342,6 +343,8 @@ rm $RPM_BUILD_ROOT%{_libdir}/libhdfs.la
 rm $RPM_BUILD_ROOT%{lib_hadoop}/lib/native/%{hadoop_arch}/libhadoop.{a,la}
 %endif
 
+mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/security/limits.d/
+install -m 644 %{SOURCE6} $RPM_BUILD_ROOT%{_sysconfdir}/security/limits.d/91-hdfs.conf
 
 %ifarch noarch
 
@@ -582,6 +585,9 @@ fi
 %endif
 
 %changelog
+* Thu Dec 20 2012 Doug Strain <dstrain@fnal.gov> - 0.20.2+737-31
+- Changed limits to a 91-hdfs.conf file in /etc/security/limits.d
+
 * Wed Dec 19 2012 Doug Strain <dstrain@fnal.gov> - 0.20.2+737-29
 - Fix VSZ explosion issue in datanode (HADOOP-7154, HDFS-2452).
 
