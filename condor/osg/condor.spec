@@ -50,7 +50,7 @@ Version: %{tarball_version}
 %define condor_release %condor_base_release
 %endif
 # Release: %condor_release%{?dist}.2
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -109,6 +109,9 @@ Patch0: condor_config.generic.patch
 Patch3: chkconfig_off.patch
 Patch8: lcmaps_env_in_init_script.patch
 Patch9: proper_cream_v3.diff
+%if %blahp
+Patch10: config_batch_gahp_path.patch
+%endif
 
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
@@ -395,6 +398,9 @@ exit 0
 %patch8 -p1
 %if %cream
 %patch9 -p1
+%endif
+%if %blahp
+%patch10 -p1 -b .config_batch_gahp_path
 %endif
 
 # fix errant execute permissions
@@ -1068,6 +1074,9 @@ fi
 %endif
 
 %changelog
+* Fri Dec 21 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 7.8.6-2
+- Patch to fix default BATCH_GAHP config value (#SOFTWARE-873)
+
 * Thu Oct 25 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 7.8.6-1
 - New version
 
