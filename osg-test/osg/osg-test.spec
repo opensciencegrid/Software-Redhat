@@ -6,7 +6,7 @@
 Summary:   Tests an OSG Software installation
 Name:      osg-test
 Version:   1.2.4
-Release:   1%{?dist}
+Release:   2%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
 Packager:  VDT <vdt-support@opensciencegrid.org>
@@ -15,7 +15,6 @@ AutoReq:   yes
 AutoProv:  yes
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 BuildArch: noarch
-Requires:  python-nose
 
 %description
 The OSG Test system runs functional integration tests against an OSG Software
@@ -40,6 +39,9 @@ rm -rf $RPM_BUILD_ROOT
 /etc/grid-security/certificates/bffdd190.*
 
 %changelog
+* Fri Dec 21 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.2.4-2
+- Remove python-nose dependency
+
 * Wed Dec 19 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.2.4-1
 - New version: some xrootd and fetch-crl test fixes 
 
