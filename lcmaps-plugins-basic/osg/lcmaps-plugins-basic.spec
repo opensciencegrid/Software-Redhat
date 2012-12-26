@@ -1,14 +1,15 @@
 Summary: Basic plugins for the LCMAPS authorization framework
 Name: lcmaps-plugins-basic
-Version: 1.5.0
-Release: 3.2%{?dist}
+Version: 1.5.1
+Release: 2.1%{?dist}
 License: ASL 2.0
 Group: System Environment/Libraries
-URL: http://www.nikhef.nl/pub/projects/grid/gridwiki/index.php/Site_Access_Control
+URL: http://wiki.nikhef.nl/grid/Site_Access_Control
 Source0: http://software.nikhef.nl/security/%{name}/%{name}-%{version}.tar.gz
 BuildRequires: lcmaps-interface
 BuildRequires: openldap-devel
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
+Requires: lcmaps%{?_isa} >= 1.5.0
 
 %description
 The Local Centre MAPping Service (LCMAPS) is a security middleware
@@ -21,7 +22,7 @@ This package contains the basic plugins.
 %package ldap
 Summary: LDAP enforcement plug-in for LCMAPS
 Group: System Environment/Libraries
-Requires: lcmaps
+Requires: lcmaps%{?_isa} >= 1.5.0
 
 %description ldap
 The Local Centre MAPping Service (LCMAPS) is a security middleware
@@ -35,7 +36,7 @@ This package contains the LDAP enforcement plug-in.
 %setup -q
 
 %build
-%configure --disable-static --with-moduledir=%{_libdir}/lcmaps
+%configure --disable-static
 make %{?_smp_mflags}
 
 %install
@@ -44,35 +45,24 @@ rm -rf $RPM_BUILD_ROOT
 make DESTDIR=$RPM_BUILD_ROOT install
 find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
 
-# This symlink is here for backward-compatible %ghost files
-ln -s lcmaps $RPM_BUILD_ROOT%{_libdir}/modules
-
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)
+%{_libdir}/lcmaps/lcmaps_ban_dn.mod
 %{_libdir}/lcmaps/lcmaps_dummy_bad.mod
 %{_libdir}/lcmaps/lcmaps_dummy_good.mod
 %{_libdir}/lcmaps/lcmaps_localaccount.mod
 %{_libdir}/lcmaps/lcmaps_poolaccount.mod
 %{_libdir}/lcmaps/lcmaps_posix_enf.mod
+%{_libdir}/lcmaps/liblcmaps_ban_dn.so
 %{_libdir}/lcmaps/liblcmaps_dummy_bad.so
 %{_libdir}/lcmaps/liblcmaps_dummy_good.so
 %{_libdir}/lcmaps/liblcmaps_localaccount.so
 %{_libdir}/lcmaps/liblcmaps_poolaccount.so
 %{_libdir}/lcmaps/liblcmaps_posix_enf.so
-%ghost %{_libdir}/modules
-%ghost %{_libdir}/modules/lcmaps_dummy_bad.mod
-%ghost %{_libdir}/modules/lcmaps_dummy_good.mod
-%ghost %{_libdir}/modules/lcmaps_localaccount.mod
-%ghost %{_libdir}/modules/lcmaps_poolaccount.mod
-%ghost %{_libdir}/modules/lcmaps_posix_enf.mod
-%ghost %{_libdir}/modules/liblcmaps_dummy_bad.so
-%ghost %{_libdir}/modules/liblcmaps_dummy_good.so
-%ghost %{_libdir}/modules/liblcmaps_localaccount.so
-%ghost %{_libdir}/modules/liblcmaps_poolaccount.so
-%ghost %{_libdir}/modules/liblcmaps_posix_enf.so
+%{_mandir}/man8/lcmaps_ban_dn.mod.8*
 %{_mandir}/man8/lcmaps_dummy_bad.mod.8*
 %{_mandir}/man8/lcmaps_dummy_good.mod.8*
 %{_mandir}/man8/lcmaps_localaccount.mod.8*
@@ -88,6 +78,20 @@ rm -rf $RPM_BUILD_ROOT
 %doc AUTHORS LICENSE
 
 %changelog
+* Wed Dec 26 2012 Dave Dykstra <dwd@fnal.gov> 1.5.1-2.1.osg
+- Import 1.5.1-2 from upstream
+- Eliminate support for backward-compatible symlink at %{_libdir}/modules
+
+* Tue Oct 23 2012 Mischa Salle <msalle@nikhef.nl> 1.5.1-2
+- Add minimal lcmaps version.
+- Remove configure flag for moduledir.
+
+- Added plugin lcmaps_ban_dn including manpage.
+- Update URL.
+- Add run-time requirement for lcmaps for basic package.
+- Add architecture to run-time requirement for ldap subpackage.
+- Updated version
+
 * Thu Mar 08 2012 Dave Dykstra <dwd@fnal.gov> 1.5.0-3.2.osg
 - Rebuild after merge into trunk from branches/lcmaps-upgrade
 
