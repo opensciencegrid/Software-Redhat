@@ -1,11 +1,11 @@
 Summary: Mapping interface between Globus Toolkit and LCAS/LCMAPS
 Name: lcas-lcmaps-gt4-interface
-Version: 0.2.4
-Release: 1.3%{?dist}
+Version: 0.2.5
+Release: 1.1%{?dist}
 Vendor: Nikhef
 License: ASL 2.0
 Group: Applications/System
-URL: http://www.nikhef.nl/pub/projects/grid/gridwiki/index.php/Site_Access_Control
+URL: http://wiki.nikhef.nl/grid/Site_Access_Control
 Source0: http://software.nikhef.nl/security/%{name}/%{name}-%{version}.tar.gz
 Source1: gsi-authz.conf.in
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
@@ -75,6 +75,13 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/grid-security/gsi-authz.conf
 
 %changelog
+* Wed Dec 26 2012 Dave Dykstra <dwd@fnal.gov> 0.2.5-1.1.osg
+- import 0.2.5 to OSG
+
+* Mon Oct 22 2012 Mischa Salle <msalle@nikhef.nl> 0.2.5-1
+- removed LCAS runtime dependency
+- updated version
+
 * Tue Mar 20 2012 Dave Dykstra <dwd@fnal.gov> 0.2.4-1.3.osg
 - Change gsi-authz.conf to have the callout commented out by default
   so globus will fall back to the grid-mapfile
