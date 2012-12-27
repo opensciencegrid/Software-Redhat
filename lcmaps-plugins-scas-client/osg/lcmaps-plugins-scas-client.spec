@@ -1,7 +1,7 @@
 Summary: SCAS client plugin for the LCMAPS authorization framework
 Name: lcmaps-plugins-scas-client
 Version: 0.3.4
-Release: 1.1%{?dist}
+Release: 1.2%{?dist}
 Vendor: Nikhef
 License: ASL 2.0
 Group: System Environment/Libraries
@@ -48,11 +48,9 @@ find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
 
 # the module must be a copy, not a symlink, because the gums-client
 #  is a symlink and lcmaps can't use the same module file twice
-cp $RPM_BUILD_ROOT%{_libdir}/lcmaps/lcmaps_scas_client.mod $RPM_BUILD_ROOT%{_libdir}/lcmaps/lcmaps_saz_client.mod
+cp $RPM_BUILD_ROOT%{_libdir}/lcmaps/liblcmaps_scas_client.so $RPM_BUILD_ROOT%{_libdir}/lcmaps/liblcmaps_saz_client.so
+ln -s liblcmaps_saz_client.so $RPM_BUILD_ROOT%{_libdir}/lcmaps/lcmaps_saz_client.mod
 cp $RPM_BUILD_ROOT%{_datadir}/man/man8/lcmaps_plugins_scas_client.8 $RPM_BUILD_ROOT%{_datadir}/man/man8/lcmaps_plugins_saz_client.8
-
-# This symlink is here for backward-compatible %ghost files
-ln -s lcmaps $RPM_BUILD_ROOT%{_libdir}/modules
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -63,16 +61,18 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/lcmaps/lcmaps_scas_client.mod
 %{_libdir}/lcmaps/liblcmaps_scas_client.so
 %{_datadir}/man/man8/lcmaps_plugins_scas_client.8.gz
-%ghost %{_libdir}/modules
-%ghost %{_libdir}/modules/lcmaps_scas_client.mod
-%ghost %{_libdir}/modules/liblcmaps_scas_client.so
 
 %files -n lcmaps-plugins-saz-client
 %{_libdir}/lcmaps/lcmaps_saz_client.mod
+%{_libdir}/lcmaps/liblcmaps_saz_client.so
 %{_datadir}/man/man8/lcmaps_plugins_saz_client.8.gz
-%ghost %{_libdir}/modules/lcmaps_saz_client.mod
 
 %changelog
+* Thu Dec 27 2012 Dave Dykstra <dwd@fnal.gov> 0.3.4-1.2.osg
+- Remove %{_libdir}/modules symlink and %ghost files
+- Include a .so in lcmaps-plugins-saz-client package like all the
+  other plugins have, and a symlink at .mod
+
 * Thu Mar 15 2012 Dave Dykstra <dwd@fnal.gov> 0.3.4-1.1.osg
 - Reimported to OSG
 - Removed keepalive patch
