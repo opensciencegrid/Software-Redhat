@@ -1,7 +1,7 @@
 Summary: Process tracking plugin for the LCMAPS authorization framework
 Name: lcmaps-plugins-glexec-tracking
 Version: 0.1.4
-Release: 1.2%{?dist}
+Release: 1.3%{?dist}
 License: EGEE Middleware and ASL and Fermitools
 Group: System Environment/Libraries
 # The tarball was created from CVS using the following commands:
@@ -17,7 +17,7 @@ Requires: /usr/sbin/condor_procd
 Requires: /usr/sbin/gidd_alloc
 Requires: /usr/sbin/procd_ctl
 Requires: python
-Requires: lcmaps >= 1.4.28-19
+Requires: lcmaps%{?_isa} >= 1.5.0
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %description
@@ -39,9 +39,6 @@ rm -rf $RPM_BUILD_ROOT
 make DESTDIR=$RPM_BUILD_ROOT install
 find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
 
-# This symlink is here for backward-compatible %ghost files
-ln -s lcmaps $RPM_BUILD_ROOT%{_libdir}/modules
-
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -49,12 +46,14 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %{_libdir}/lcmaps/lcmaps_glexec_tracking.mod
 %{_libdir}/lcmaps/liblcmaps_glexec_tracking.so
-%ghost %{_libdir}/modules
-%ghost %{_libdir}/modules/lcmaps_glexec_tracking.mod
-%ghost %{_libdir}/modules/liblcmaps_glexec_tracking.so
 %{_sbindir}/glexec_monitor
 
 %changelog
+* Thu Dec 27 2012 Dave Dykstra <dwd@fnal.gov> 0.1.4-3.osg
+- Remove %{_libdir}/modules symlink and corresponding %ghost files
+- Change the Requires: lcmaps to be like the other lcmaps plugins and
+    instead be Requires: lcmaps%{?_isa} >= 1.5.0
+
 * Thu Mar 08 2012 Dave Dykstra <dwd@fnal.gov> 0.1.4-2.osg
 - Rebuild after merging from branches/lcmaps-upgrade to trunk
 
