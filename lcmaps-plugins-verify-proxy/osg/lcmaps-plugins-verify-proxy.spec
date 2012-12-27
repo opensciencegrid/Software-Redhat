@@ -1,11 +1,10 @@
 Summary: Proxy verification plugin for LCMAPS
 Name: lcmaps-plugins-verify-proxy
-Version: 1.5.3
+Version: 1.5.4
 Release: 1.1%{?dist}
-Vendor: Nikhef
 License: ASL 2.0
 Group: System Environment/Libraries
-URL: http://www.nikhef.nl/pub/projects/grid/gridwiki/index.php/Site_Access_Control
+URL: http://wiki.nikhef.nl/grid/Site_Access_Control
 Source0: http://software.nikhef.nl/security/%{name}/%{name}-%{version}.tar.gz
 BuildRequires: lcmaps-interface, openssl-devel
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
@@ -24,7 +23,14 @@ This package contains the Verify Proxy plugin.
 
 %build
 
-%configure --disable-static --with-moduledir=%{_libdir}/lcmaps
+%configure --disable-static
+
+# The following two lines were suggested by
+# https://fedoraproject.org/wiki/Packaging/Guidelines to prevent any
+# RPATHs creeping in.
+sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
+sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
+
 make %{?_smp_mflags}
 
 %install
@@ -36,24 +42,30 @@ find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
 # clean up installed documentation files
 rm -rf ${RPM_BUILD_ROOT}%{_docdir}
 
-# This symlink is here for backward-compatible %ghost files
-ln -s lcmaps $RPM_BUILD_ROOT%{_libdir}/modules
-
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)
-%doc AUTHORS LICENSE
+%doc AUTHORS LICENSE README NEWS
 %{_libdir}/lcmaps/lcmaps_verify_proxy.mod
 %{_libdir}/lcmaps/liblcmaps_verify_proxy.so
-%ghost %{_libdir}/modules
-%ghost %{_libdir}/modules/lcmaps_verify_proxy.mod
-%ghost %{_libdir}/modules/liblcmaps_verify_proxy.so
-%{_datadir}/man/man8/lcmaps_verify_proxy.mod.8.gz
+%{_datadir}/man/man8/lcmaps_verify_proxy.mod.8*
 
 
 %changelog
+* Thu Dec 27 2012 Dave Dykstra <dwd@fnal.gov> 1.5.4-1.1.osg
+- Update upstream version including new --disallow-limited-proxy feature
+  and fixes for GT3 proxies
+- Remove %{_libdir}/modules symlink and corresponding %ghost files
+
+* Wed Oct 31 2012 Mischa Salle <msalle@nikhef.nl> 1.5.4-1
+- add extra doc files README NEWS
+- add protection against RPATHS
+- update URL
+- remove Vendor tag
+- updated version
+
 * Fri Jul 20 2012 Dave Dykstra <dwd@fnal.gov> 1.5.3-1.1.osg
 - Updated upstream version to pick up fix for doubly-limited proxies
   that showed up with openssl version 0.9.8c
