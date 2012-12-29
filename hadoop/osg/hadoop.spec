@@ -1,7 +1,7 @@
 %define hadoop_version 2.0.0+545 
 %define hadoop_patched_version 2.0.0-cdh4.1.1 
 %define hadoop_base_version 2.0.0 
-%define hadoop_release 1.cdh4.1.1.p0.13%{?dist}
+%define hadoop_release 1.cdh4.1.1.p0.14%{?dist}
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
@@ -176,6 +176,8 @@ Patch0: mvn304.patch
 Patch1: javafuse.patch
 Patch2: libhdfs-soversion.patch
 Patch3: libhdfs-soversion-install.patch
+Patch4: fix_chown.patch
+
 Buildroot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id} -u -n)
 BuildRequires: python >= 2.4, git, fuse-devel,fuse, automake, autoconf,maven3,protobuf-compiler, cmake
 # not sure if I need this
@@ -478,6 +480,7 @@ pushd `dirname %{SOURCE25}`
 %patch3 -p1
 popd
 %patch2 -p0
+%patch4 -p0
 
 %build
 # This assumes that you installed Java JDK 6 and set JAVA_HOME
@@ -846,6 +849,9 @@ fi
 
 
 %changelog
+* Fri Dec 28 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 2.0.0+545-1.cdh4.1.1.p0.14
+- Fix chown implementation in FUSE.
+
 * Mon Nov 26 2012 Doug Strain <dstrain@fnal.gov> - 2.0.0+545-1.cdh4.1.1.p0.13
 - Fixing libhdfs obsoletes clauses
 
