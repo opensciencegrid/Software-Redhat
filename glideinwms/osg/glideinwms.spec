@@ -6,7 +6,7 @@ Name:           glideinwms
 
 %if %{v2_plus}
 %define version 2.6.3
-%define release 0.rc2
+%define release 0.rc2.3
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
 %endif
@@ -348,10 +348,12 @@ for file in `ls tools/*.py`; do
    newname=`echo $file | sed -e 's/.*\/\(.*\)\.py/\1/'`
    cp $file $RPM_BUILD_ROOT%{_bindir}/$newname
 done
-for file in `ls factory/tools/*.py`; do
-   newname=`echo $file | sed -e 's/.*\/\(.*\)\.py/\1/'`
+for file in `find factory/tools -type f -maxdepth 1`; do
+   newname=`echo $file | sed -e 's/\(.*\)\(\.py\)\?/\1/'`
+   newname=`echo $newname | sed -e 's/.*\/\(.*\)/\1/'`
    cp $file $RPM_BUILD_ROOT%{_bindir}/$newname
 done
+cp factory/tools/lib/*.py $RPM_BUILD_ROOT%{python_sitelib}
 cp tools/lib/*.py $RPM_BUILD_ROOT%{python_sitelib}
 
 # Install glidecondor
@@ -393,9 +395,10 @@ ln -s %{web_dir}/monitor %{frontend_dir}/monitor
 
 fqdn_hostname=`hostname -f`
 sed -i "s/FACTORY_HOSTNAME/$fqdn_hostname/g" %{_sysconfdir}/gwms-factory/glideinWMS.xml
-ln -s %{factory_web_dir}/monitor %{factory_dir}/monitor
-ln -s %{_localstatedir}/log/gwms-factory %{factory_dir}/log
-
+if [ "$1" = "1" ] ; then
+    ln -s %{factory_web_dir}/monitor %{factory_dir}/monitor
+    ln -s %{_localstatedir}/log/gwms-factory %{factory_dir}/log
+fi
 
 %pre vofrontend-standalone
 
@@ -617,6 +620,15 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/xmlParse.py
 %{python_sitelib}/xmlParse.pyc
 %{python_sitelib}/xmlParse.pyo
+%{python_sitelib}/analyze.py
+%{python_sitelib}/analyze.pyc
+%{python_sitelib}/analyze.pyo
+%{python_sitelib}/gWftArgsHelper.py
+%{python_sitelib}/gWftArgsHelper.pyc
+%{python_sitelib}/gWftArgsHelper.pyo
+%{python_sitelib}/gWftLogParser.py
+%{python_sitelib}/gWftLogParser.pyc
+%{python_sitelib}/gWftLogParser.pyo
 %{_initrddir}/gwms-factory
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/gwms-factory.conf
 %attr(-, gfactory, gfactory) %dir %{_sysconfdir}/gwms-factory
