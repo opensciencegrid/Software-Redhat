@@ -6,7 +6,7 @@ Name:           glideinwms
 
 %if %{v2_plus}
 %define version 2.6.3
-%define release 0.rc2.3
+%define release 0.rc2.4
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
 %endif
@@ -349,7 +349,7 @@ for file in `ls tools/*.py`; do
    cp $file $RPM_BUILD_ROOT%{_bindir}/$newname
 done
 for file in `find factory/tools -type f -maxdepth 1`; do
-   newname=`echo $file | sed -e 's/\(.*\)\(\.py\)\?/\1/'`
+   newname=`echo $file | sed -e 's/\(.*\)\.py/\1/'`
    newname=`echo $newname | sed -e 's/.*\/\(.*\)/\1/'`
    cp $file $RPM_BUILD_ROOT%{_bindir}/$newname
 done
