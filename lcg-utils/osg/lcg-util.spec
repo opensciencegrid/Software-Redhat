@@ -21,8 +21,8 @@
 
 
 Name:						lcg-util
-Version:					1.13.9
-Release:					5%{?dist}
+Version:					1.14.0
+Release:					0%{?dist}
 Summary:					Command line tools for wlcg storage system 
 Group:						Applications/Internet
 License:					ASL 2.0
@@ -57,8 +57,8 @@ Provides: lcg-utils == %{version}
 
 
 %description
-The LCG Utilities package is the main end user command line tool \
-for data management provided by LCG \
+The LCG Utilities package is the main end user command line tool 
+for data management provided by LCG 
 (applications will generally use the Grid File Access Library).
 
 %package libs
@@ -219,6 +219,10 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Thu Nov 29 2012 Adrien Devresse <adevress at cern.ch> - 1.14.0-0
+ - several bug fixs from gfal 1.0, srm-ifce and is-interface
+ - see respective changelog for details
+
 * Tue Oct 15 2012 Doug Strain <dstrain@fnal.gov> - 1.13.9-4
 - Repackaged for OSG
 - Added obsoletes for OSG lcg-utils
