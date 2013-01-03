@@ -1,20 +1,19 @@
 Summary: User identity switching tool based on grid credentials
 Name: glexec
-Version: 0.9.6
-Release: 1.2%{?dist}
+Version: 0.9.8
+Release: 1.1%{?dist}
 License: ASL 2.0
 Group: Applications/System
-URL: http://www.nikhef.nl/pub/projects/grid/gridwiki/index.php/Site_Access_Control
+URL: http://wiki.nikhef.nl/grid/Site_Access_Control
 Source0: http://software.nikhef.nl/security/%{name}/%{name}-%{version}.tar.gz
 Source1: glexec.conf
 Source2: glexec.logrotate
 Patch0: nowarn_allwhite.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
-BuildRequires: lcmaps-basic-interface >= 1.4.31
+BuildRequires: lcmaps-basic-interface >= 1.5.0
 Requires: logrotate
-
 # Since liblcmaps.so is dlopen'd we need this explicit requirement.
-Requires: lcmaps >= 1.5.0
+Requires: lcmaps%{?_isa} >= 1.5.0
 Requires(pre): shadow-utils
 
 Requires: lcmaps-plugins-glexec-tracking
@@ -31,10 +30,9 @@ logging-only mode.
 %prep
 %setup -q
 %patch0 -p0
-#%patch1 -p0
 
 %build
-%configure --with-lcmaps-moduledir-sfx=/lcmaps --with-lcas-moduledir-sfx=/lcas
+%configure
 
 make %{?_smp_mflags}
 
@@ -45,16 +43,16 @@ make DESTDIR=$RPM_BUILD_ROOT install
 chmod u+r ${RPM_BUILD_ROOT}%{_sbindir}/glexec
 
 # OSG default config
+rm -rf $RPM_BUILD_ROOT/%{_sysconfdir}/lcmaps
 cp %{SOURCE1} $RPM_BUILD_ROOT/%{_sysconfdir}/glexec.conf
 cat %{SOURCE2} >>$RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d/glexec
-rm -rf $RPM_BUILD_ROOT/%{_sysconfdir}/lcmaps
 
 # glexec-configure doesn't work for OSG
 rm $RPM_BUILD_ROOT%{_sbindir}/glexec-configure $RPM_BUILD_ROOT%{_datadir}/man/man8/glexec-configure.8*
 
 %post
-chown glexec:root /etc/glexec.conf
-chmod 600 /etc/glexec.conf
+chown glexec:root %{_sysconfdir}/glexec.conf
+chmod 600 %{_sysconfdir}/glexec.conf
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -79,6 +77,18 @@ getent passwd glexec >/dev/null || \
 exit 0
 
 %changelog
+* Thu Jan 03 2013 Dave Dykstra <dwd@fnal.gov> 0.9.8-1.1.osg
+- pull in new upstream version
+
+* Sun Nov 18 2012 Mischa Salle <msalle@nikhef.nl> 0.9.8-1
+- updating version
+
+* Tue Oct 23 2012 Mischa Salle <msalle@nikhef.nl> 0.9.7-1
+- Remove explicit configure flags, they are defaults.
+- Add architecture to lcmaps requirement.
+- Update URL.
+- updating version
+
 * Fri Sep 21 2012 Dave Dykstra <dwd@fnal.gov> 0.9.6-1.2.osg
 - Removed glexec-configure and its man page from OSG distribution since
   it doesn't work there
