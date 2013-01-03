@@ -1,7 +1,7 @@
 Name:      osg-wn-client
 Summary:   OSG Worker-Node Client
 Version:   3.0.0
-Release:   16%{?dist}
+Release:   17%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -35,12 +35,13 @@ Requires: globus-gass-copy-progs
 %{summary}
 
 %package glexec
-Summary: OSG meta-package for glexec
+Summary: OSG Worker-Node client meta-package for glexec
 Group: Grid
 Requires: %{name} = %{version}-%{release}
 Requires: glexec
 Requires: glexec-wrapper-scripts
 Requires: gratia-probe-glexec
+Requires: mkgltempdir
 
 %description glexec
 %{summary}
@@ -86,6 +87,9 @@ rm -rf $RPM_BUILD_ROOT
 %files glexec
 
 %changelog
+* Fri Jan 03 2013 Dave Dykstra <dwd@fnal.gov> - 3.0.0-17.osg
+- Added mkgltempdir as osg-wn-client-glexec requirement
+
 * Wed Jul 25 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 3.0.0-16.osg
 - Add explicit dependency on globus-gass-copy-progs (for globus-url-copy)
 
