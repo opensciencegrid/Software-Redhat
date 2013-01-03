@@ -6,7 +6,7 @@ Name:           glideinwms
 
 %if %{v2_plus}
 %define version 2.6.3
-%define release 0.rc2.4
+%define release 0.rc2.5
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
 %endif
@@ -355,6 +355,7 @@ for file in `find factory/tools -type f -maxdepth 1`; do
 done
 cp factory/tools/lib/*.py $RPM_BUILD_ROOT%{python_sitelib}
 cp tools/lib/*.py $RPM_BUILD_ROOT%{python_sitelib}
+cp creation/create_condor_tarball $RPM_BUILD_ROOT%{_bindir}
 
 # Install glidecondor
 install -m 0755 install/glidecondor_addDN $RPM_BUILD_ROOT%{_sbindir}/glidecondor_addDN
@@ -659,7 +660,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %files vofrontend-standalone
 %defattr(-,frontend,frontend,-)
-%attr(755,root,root) %{_bindir}/*
+%attr(755,root,root) %{_bindir}/glidein_*
+%attr(755,root,root) %{_bindir}/wms*
 %attr(755,root,root) %{_sbindir}/checkFrontend
 %attr(755,root,root) %{_sbindir}/glidecondor_addDN
 %attr(755,root,root) %{_sbindir}/glideinFrontend
