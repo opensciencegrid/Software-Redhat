@@ -1,7 +1,7 @@
 Summary: User identity switching tool based on grid credentials
 Name: glexec
 Version: 0.9.8
-Release: 1.1%{?dist}
+Release: 1.2%{?dist}
 License: ASL 2.0
 Group: Applications/System
 URL: http://wiki.nikhef.nl/grid/Site_Access_Control
@@ -9,6 +9,7 @@ Source0: http://software.nikhef.nl/security/%{name}/%{name}-%{version}.tar.gz
 Source1: glexec.conf
 Source2: glexec.logrotate
 Patch0: nowarn_allwhite.patch
+Patch1: nowarn_sigchld.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildRequires: lcmaps-basic-interface >= 1.5.0
 Requires: logrotate
@@ -30,6 +31,7 @@ logging-only mode.
 %prep
 %setup -q
 %patch0 -p0
+%patch1 -p0
 
 %build
 %configure
@@ -77,6 +79,11 @@ getent passwd glexec >/dev/null || \
 exit 0
 
 %changelog
+* Thu Jan 04 2013 Dave Dykstra <dwd@fnal.gov> 0.9.8-1.2.osg
+- Add a patch to move the log warning "Ignoring SIGCHLD from unknown
+    finished child" from NOTICE to INFO level.  It is caused by
+    the glexec_monitor detaching itself to run in the background.
+
 * Thu Jan 03 2013 Dave Dykstra <dwd@fnal.gov> 0.9.8-1.1.osg
 - pull in new upstream version
 
