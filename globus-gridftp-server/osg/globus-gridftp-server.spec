@@ -4,6 +4,7 @@
 %global flavor gcc32
 %endif
 
+%{!?_initddir: %global _initddir %{_initrddir}}
 %if "%{?rhel}" == "5"
 %global docdiroption "with-docdir"
 %else
@@ -12,55 +13,67 @@
 
 Name:		globus-gridftp-server
 %global _name %(tr - _ <<< %{name})
-Version:	6.5
-Release:	1.7%{?dist}
+Version:	6.14
+Release:	1%{?dist}
 Summary:	Globus Toolkit - Globus GridFTP Server
 
 Group:		System Environment/Libraries
 License:	ASL 2.0
 URL:		http://www.globus.org/
-Source:		http://www.globus.org/ftppub/gt5/5.2/5.2.0/packages/src/%{_name}-%{version}.tar.gz
-Source1:	globus-gridftp-server.sysconfig
-Source2:	globus-gridftp-server.logrotate
-Patch0:		osg-gridftp.patch
-Patch1:      GT-195.patch
+Source:		http://www.globus.org/ftppub/gt5/5.2/5.2.2/packages/src/%{_name}-%{version}.tar.gz
+Source1:	%{name}
+Source2:	globus-gridftp-sshftp
+Source3:	globus-gridftp-password.8
+Source4:	globus-gridftp-server-setup-chroot.8
+Source5:	globus-gridftp-server.sysconfig
+Source6:	globus-gridftp-server.logrotate
+#		README file
+Source8:	GLOBUS-GRIDFTP
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-Requires:	globus-common%{?_isa} >= 14
-Requires:	globus-gridftp-server-control%{?_isa} >= 2
-Requires:	globus-usage%{?_isa} >= 3
 Requires:	globus-xio%{?_isa} >= 3
 Requires:	globus-authz%{?_isa} >= 2
 Requires:	globus-gfork%{?_isa} >= 3
 Requires:	globus-ftp-control%{?_isa} >= 4
+Requires:	globus-gridftp-server-control%{?_isa} >= 2
+Requires:	globus-common%{?_isa} >= 14
 Requires:	globus-xio-gsi-driver%{?_isa} >= 2
-
+Requires:	globus-usage%{?_isa} >= 3
 BuildRequires:	grid-packaging-tools >= 3.4
-BuildRequires:	globus-gridftp-server-control-devel%{?_isa} >= 2
-BuildRequires:	globus-usage-devel%{?_isa} >= 3
-BuildRequires:	globus-xio-gsi-driver-devel%{?_isa} >= 2
+BuildRequires:	globus-core%{?_isa} >= 8
 BuildRequires:	globus-xio-devel%{?_isa} >= 3
 BuildRequires:	globus-authz-devel%{?_isa} >= 2
 BuildRequires:	globus-gfork-devel%{?_isa} >= 3
 BuildRequires:	globus-ftp-control-devel%{?_isa} >= 4
+BuildRequires:	globus-gridftp-server-control-devel%{?_isa} >= 2
+BuildRequires:	globus-common-devel%{?_isa} >= 14
+BuildRequires:	globus-xio-gsi-driver-devel%{?_isa} >= 2
+BuildRequires:	globus-usage-devel%{?_isa} >= 3
+BuildRequires:	openssl-devel%{?_isa}
 
 %package progs
 Summary:	Globus Toolkit - Globus GridFTP Server Programs
 Group:		Applications/Internet
 Requires:	%{name}%{?_isa} = %{version}-%{release}
 Requires:	globus-xio-gsi-driver%{?_isa} >= 2
+Requires(post):		chkconfig
+Requires(preun):	chkconfig
+Requires(preun):	initscripts
+Requires(postun):	initscripts
 
 %package devel
 Summary:	Globus Toolkit - Globus GridFTP Server Development Files
 Group:		Development/Libraries
 Requires:	%{name}%{?_isa} = %{version}-%{release}
-Requires:	globus-gridftp-server-control-devel%{?_isa} >= 2
-Requires:	globus-usage-devel%{?_isa} >= 3
-Requires:	globus-xio-gsi-driver-devel%{?_isa} >= 2
 Requires:	globus-xio-devel%{?_isa} >= 3
 Requires:	globus-authz-devel%{?_isa} >= 2
 Requires:	globus-gfork-devel%{?_isa} >= 3
 Requires:	globus-ftp-control-devel%{?_isa} >= 4
+Requires:	globus-gridftp-server-control-devel%{?_isa} >= 2
+Requires:	globus-common-devel%{?_isa} >= 14
+Requires:	globus-xio-gsi-driver-devel%{?_isa} >= 2
+Requires:	globus-usage-devel%{?_isa} >= 3
+Requires:	openssl-devel%{?_isa}
 
 %description
 The Globus Toolkit is an open source software toolkit used for building Grid
@@ -92,8 +105,6 @@ Globus GridFTP Server Development Files
 %prep
 %setup -q -n %{_name}-%{version}
 
-%patch0 -p1
-%patch1 -p0
 %build
 # Remove files that should be replaced during bootstrap
 rm -f doxygen/Doxyfile*
@@ -111,37 +122,68 @@ export GRIDMAP=/etc/grid-security/grid-mapfile
            --%{docdiroption}=%{_docdir}/%{name}-%{version} \
            --disable-static
 
+# Reduce overlinking
+sed 's!CC -shared !CC \${wl}--as-needed -shared !g' -i libtool
 make %{?_smp_mflags}
 
 %install
 rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
-mv $RPM_BUILD_ROOT%{_sysconfdir}/gridftp.conf.default $RPM_BUILD_ROOT%{_sysconfdir}/gridftp.conf
-mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/xinetd.d
-mv $RPM_BUILD_ROOT%{_sysconfdir}/gridftp.xinetd.default $RPM_BUILD_ROOT%{_sysconfdir}/xinetd.d/gridftp
-mv $RPM_BUILD_ROOT%{_sysconfdir}/gridftp.gfork.default $RPM_BUILD_ROOT%{_sysconfdir}/gridftp.gfork
 
 GLOBUSPACKAGEDIR=$RPM_BUILD_ROOT%{_datadir}/globus/packages
-mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig
-mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/gridftp.conf.d
-install -m 0755 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/%{name}
-
-mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d
-install -m 0644 %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/%{name}.logrotate
 
 # Remove libtool archives (.la files)
 find $RPM_BUILD_ROOT%{_libdir} -name 'lib*.la' -exec rm -v '{}' \;
 sed '/lib.*\.la$/d' -i $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_dev.filelist
 
+mv $RPM_BUILD_ROOT%{_sysconfdir}/gridftp.conf.default \
+   $RPM_BUILD_ROOT%{_sysconfdir}/gridftp.conf
+mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/xinetd.d
+mv $RPM_BUILD_ROOT%{_sysconfdir}/gridftp.xinetd.default \
+   $RPM_BUILD_ROOT%{_sysconfdir}/xinetd.d/gridftp
+mv $RPM_BUILD_ROOT%{_sysconfdir}/gridftp.gfork.default \
+   $RPM_BUILD_ROOT%{_sysconfdir}/gridftp.gfork
+rm $GLOBUSPACKAGEDIR/%{_name}/pkg_data_noflavor_data.gpt
+rm $GLOBUSPACKAGEDIR/%{_name}/noflavor_data.filelist
+
+# No need for environment in conf files
+sed '/ env /d' -i $RPM_BUILD_ROOT%{_sysconfdir}/gridftp.gfork
+sed '/^env /d' -i $RPM_BUILD_ROOT%{_sysconfdir}/xinetd.d/gridftp
+
+# Remove start-up scripts
+rm -rf $RPM_BUILD_ROOT%{_sysconfdir}/init.d
+sed '/init\.d/d' -i $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_pgm.filelist
+
+# Install start-up scripts
+mkdir -p $RPM_BUILD_ROOT%{_initddir}
+install -p %{SOURCE1} %{SOURCE2} $RPM_BUILD_ROOT%{_initddir}
+
+# Move server man pages to progs package
+grep '.[18]$' $GLOBUSPACKAGEDIR/%{_name}/noflavor_doc.filelist \
+  >> $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_pgm.filelist
+sed '/.[18]$/d' -i $GLOBUSPACKAGEDIR/%{_name}/noflavor_doc.filelist
+
+# Install additional man pages
+install -m 644 -p %{SOURCE3} %{SOURCE4} $RPM_BUILD_ROOT%{_mandir}/man8
+
+# Install README file
+install -m 644 -p %{SOURCE8} \
+  $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/README
+
+mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig
+mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/gridftp.conf.d
+install -m 0755 %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/%{name}
+
+mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d
+install -m 0644 %{SOURCE6} $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/%{name}.logrotate
+
 # Generate package filelists
 cat $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_rtl.filelist \
-    $GLOBUSPACKAGEDIR/%{_name}/noflavor_doc.filelist \
   | sed s!^!%{_prefix}! > package.filelist
+cat $GLOBUSPACKAGEDIR/%{_name}/noflavor_doc.filelist \
+  | sed -e 's!/man/.*!&*!' -e 's!^!%doc %{_prefix}!' >> package.filelist
 cat $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_pgm.filelist \
-    $GLOBUSPACKAGEDIR/%{_name}/noflavor_data.filelist \
-  | grep -Ev '(gridftp.conf.default|gridftp.xinetd.default|gridftp.gfork.default)' \
-  | sed -e s!^!%{_prefix}! | sed -e s!^/usr/etc!/etc! \
-  > package-progs.filelist
+  | sed -e s!^!%{_prefix}! -e 's!.*/man/.*!%doc &*!' > package-progs.filelist
 cat $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_dev.filelist \
   | sed s!^!%{_prefix}! > package-devel.filelist
 
@@ -153,21 +195,21 @@ rm -rf $RPM_BUILD_ROOT
 
 %post progs
 if [ $1 -eq 1 ]; then
-    /sbin/chkconfig --add globus-gridftp-server
+    /sbin/chkconfig --add %{name}
     /sbin/chkconfig --add globus-gridftp-sshftp
 fi
 
 %preun progs
 if [ $1 -eq 0 ]; then
-    /sbin/chkconfig --del globus-gridftp-server
+    /sbin/chkconfig --del %{name}
     /sbin/chkconfig --del globus-gridftp-sshftp
     /sbin/service globus-gridftp-server stop
     /sbin/service globus-gridftp-sshftp stop
 fi
 
 %postun progs
-if [ $1 -eq 1 ]; then
-    /sbin/service globus-gridftp-server condrestart > /dev/null 2>&1 || :
+if [ $1 -ge 1 ]; then
+    /sbin/service %{name} condrestart > /dev/null 2>&1 || :
     /sbin/service globus-gridftp-sshftp condrestart > /dev/null 2>&1 || :
 fi
 
@@ -175,6 +217,7 @@ fi
 %defattr(-,root,root,-)
 %dir %{_datadir}/globus/packages/%{_name}
 %dir %{_docdir}/%{name}-%{version}
+%doc %{_docdir}/%{name}-%{version}/README
 %dir %{_sysconfdir}/sysconfig/gridftp.conf.d
 
 %files -f package-progs.filelist progs
@@ -184,23 +227,61 @@ fi
 %config(noreplace) %{_sysconfdir}/gridftp.conf
 %config(noreplace) %{_sysconfdir}/gridftp.gfork
 %config(noreplace) %{_sysconfdir}/xinetd.d/gridftp
+%{_initddir}/%{name}
+%{_initddir}/globus-gridftp-sshftp
+%doc %{_mandir}/man8/globus-gridftp-password.8*
+%doc %{_mandir}/man8/globus-gridftp-server-setup-chroot.8*
+
 
 %files -f package-devel.filelist devel
 %defattr(-,root,root,-)
 
 %changelog
-* Thu May 17 2012 Alain Roy <roy@cs.wisc.edu> 6.5-1.7.osg
+* Sun Jul 22 2012 Mattias Ellert <mattias.ellert@fysast.uu.se> - 6.14-1
+- Update to Globus Toolkit 5.2.2
+- Drop patch globus-gridftp-server-pw195.patch (was backport)
+- Drop patch globus-gridftp-server-format.patch (fixed upstream)
+
+* Thu Jul 19 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 6.10-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
+
+* Fri May 25 2012 Mattias Ellert <mattias.ellert@fysast.uu.se> - 6.10-2
+- Backport security fix for JIRA ticket GT-195
+
+ Thu May 17 2012 Alain Roy <roy@cs.wisc.edu> 6.5-1.7.osg
 - Added patch for GT-195.
+
+* Fri Apr 27 2012 Mattias Ellert <mattias.ellert@fysast.uu.se> - 6.10-1
+- Update to Globus Toolkit 5.2.1
+- Drop patches globus-gridftp-server-deps.patch,
+  globus-gridftp-server-funcgrp.patch, globus-gridftp-server-pathmax.patch
+  and globus-gridftp-server-compat.patch (fixed upstream)
+- Drop globus-gridftp-server man page from packaging since it is now included
+  in upstream sources
+- Add additional contributed man pages
 
 * Mon Apr 23 2012 Dave Dykstra <dwd@fnal.gov> - 6.5-1.6.osg
 - Remove variable in sysconfig for disabling voms certificate check;
-  it is now the default
+  it is now the defau
 
 * Thu Mar 29 2012 Dave Dykstra <dwd@fnal.gov> - 6.5-1.5.osg
 - Reduce default lcmaps syslog level from 3 to 2
 
+* Sat Mar 10 2012 Mattias Ellert <mattias.ellert@fysast.uu.se> - 6.5-4
+- Restore enum and struct member order for improved backward compatibility
+
 * Thu Mar 08 2012 Dave Dykstra <dwd@fnal.gov> - 6.5-1.4.osg
 - Rebuild after merging from branches/lcmaps-upgrade into trunk
+
+* Mon Mar 05 2012 Mattias Ellert <mattias.ellert@fysast.uu.se> - 6.5-3
+- The last update broke backward compatibility and should have bumped
+  the soname - so bump it now
+- Add patch from upstream to reduce the chance of backward incompatible
+  changes in the future
+
+* Wed Jan 18 2012 Mattias Ellert <mattias.ellert@fysast.uu.se> - 6.5-2
+- Portability fixes
+- Fix broken links in README file
 
 * Fri Jan 6 2012 Dave Dykstra <dwd@fnal.gov> - 6.5-1.3
 - Updated /etc/sysconfig/globus-gridftp-server for elimination of LCAS
@@ -217,6 +298,12 @@ fi
 * Mon Dec 19 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 6.5-1.1
 - Merge OSG changes
 
+* Wed Dec 14 2011 Mattias Ellert <mattias.ellert@fysast.uu.se> - 6.5-1
+- Update to Globus Toolkit 5.2.0
+- Drop patches globus-gridftp-server-etc.patch,
+  globus-gridftp-server-pathmax.patch and globus-gridftp-server-usr.patch
+  (fixed upstream)
+
 * Mon Dec 12 2011 Joseph Bester <bester@mcs.anl.gov> - 6.5-1
 - init script fixes
 
@@ -231,7 +318,6 @@ fi
 
 * Mon Nov 14 2011 Doug Strain <dstrain@fnal.gov> - 6.2-9
 - Change sysconfig to source /var/lib/osg/globus-firewall
-
 
 * Fri Nov 11 2011 Joseph Bester <bester@mcs.anl.gov> - 6.3-1
 - GRIDFTP-190: add in config dir loading
@@ -278,12 +364,27 @@ fi
 - Add more config files for xinetd or gfork startup
 - Update to Globus Toolkit 5.1.2
 
-
 * Tue Aug 30 2011 Doug Strain <doug.strain@fnal.gov> - 5.4-4
 - Updated to work on RHEL5
 - Updated to patch conf to use log file options
 - Updated to patch init script to source sysconfig
 - Included sysconfig with lcas/lcmaps variables
+
+* Sun Jun 05 2011 Mattias Ellert <mattias.ellert@fysast.uu.se> - 3.33-1
+- Update to Globus Toolkit 5.0.4
+
+* Mon Apr 25 2011 Mattias Ellert <mattias.ellert@fysast.uu.se> - 3.28-3
+- Add README file
+- Add missing dependencies
+
+* Tue Apr 19 2011 Mattias Ellert <mattias.ellert@fysast.uu.se> - 3.28-2
+- Add start-up script and man page for globus-gridftp-server
+
+* Fri Feb 25 2011 Mattias Ellert <mattias.ellert@fysast.uu.se> - 3.28-1
+- Update to Globus Toolkit 5.0.3
+
+* Tue Feb 08 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.23-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
 
 * Sat Jul 17 2010 Mattias Ellert <mattias.ellert@fysast.uu.se> - 3.23-1
 - Update to Globus Toolkit 5.0.2
