@@ -6,7 +6,7 @@ Name:           glideinwms
 
 %if %{v2_plus}
 %define version 2.6.3
-%define release 0.rc2.5
+%define release 0.rc2.6
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
 %endif
@@ -293,7 +293,10 @@ install -d $RPM_BUILD_ROOT%{frontend_dir}/group_main/lock
 install -m 644 creation/web_base/frontendRRDBrowse.html $RPM_BUILD_ROOT%{web_dir}/monitor/frontendRRDBrowse.html
 install -m 644 creation/web_base/frontendRRDGroupMatrix.html $RPM_BUILD_ROOT%{web_dir}/monitor/frontendRRDGroupMatrix.html  
 install -m 644 creation/web_base/frontendStatus.html $RPM_BUILD_ROOT%{web_dir}/monitor/frontendStatus.html 
-
+install -m 644 creation/web_base/frontend/index.html $RPM_BUILD_ROOT%{web_dir}/monitor/
+install -m 644 creation/web_base/factory/index.html $RPM_BUILD_ROOT%{factory_web_dir}/monitor/
+cp -arp creation/web_base/factory/images $RPM_BUILD_ROOT%{factory_web_dir}/monitor/
+cp -arp creation/web_base/frontend/images $RPM_BUILD_ROOT%{web_dir}/monitor/
 
 # Install the frontend config dir
 install -d $RPM_BUILD_ROOT/%{_sysconfdir}/gwms-frontend
@@ -857,6 +860,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Jan 4 2013 Doug Strain <dstrain@fnal.gov> - 2.6.3-0.rc2.6
+- Update to 2.6.3 rc2 release candidate
+- Adding factory tools scripts and their python libraries
+- Adding condor_create_tarball
+- Adding frontend/factory index page.
+
 * Thu Nov 8 2012 Doug Strain <dstrain@fnal.gov> - 2.6.2-2
 - Improvements recommended by Igor to modularize glideinwms
 
