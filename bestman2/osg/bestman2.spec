@@ -427,7 +427,7 @@ fi
 
 
 %changelog
-* Fri Jan 04 2012 Neha Sharma <neha@fnal.gov> - 2.3.0-7
+* Fri Jan 04 2013 Neha Sharma <neha@fnal.gov> - 2.3.0-7
 - Added bestman2lib to separate out the server/client lib settings
 - Added version requirement for cog-jglobus-axis and gums
 
