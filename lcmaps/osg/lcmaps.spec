@@ -11,12 +11,11 @@
 Summary: Grid (X.509) and VOMS credentials to local account mapping service
 Name: lcmaps
 Version: 1.5.7
-Release: 1.1%{?dist}
+Release: 1.2%{?dist}
 License: ASL 2.0
 Group: System Environment/Libraries
 URL: http://wiki.nikhef.nl/grid/Site_Access_Control
-Source0: http://software.nikhef.nl/security/lcmaps/lcmaps-%{version}.tar.gz
-Source1: lcmaps.db
+Source0: lcmaps-%{version}.tar.gz
 Patch0: defaultnovomscheck.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildRequires: globus-core
@@ -27,11 +26,6 @@ BuildRequires: globus-gsi-credential-devel
 BuildRequires: voms-devel
 BuildRequires: flex, bison
 BuildRequires: automake, autoconf, libtool
-
-Requires: lcmaps-plugins-gums-client
-Requires: lcmaps-plugins-saz-client
-Requires: lcmaps-plugins-basic
-Requires: lcmaps-plugins-verify-proxy
 
 %description
 The Local Centre MAPping Service (LCMAPS) is a security middleware
@@ -216,8 +210,6 @@ make DESTDIR=$RPM_BUILD_ROOT install
 cd ..
 
 find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
-mkdir -p ${RPM_BUILD_ROOT}%{_sysconfdir}
-cp %{SOURCE1} $RPM_BUILD_ROOT/%{_sysconfdir}
 
 # clean up installed files
 rm -rf ${RPM_BUILD_ROOT}%{_docdir}
@@ -237,7 +229,6 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)
-%config(noreplace) %{_sysconfdir}/lcmaps.db
 # The libraries are meant to be dlopened by client applications,
 # so the .so symlinks are here and not in devel.
 %{_libdir}/liblcmaps.so
@@ -341,6 +332,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Jan 02 2013 Dave Dykstra <dwd@fnal.gov> 1.5.7-1.2.osg
+- Move lcmaps.db and Requires of lcmaps plugins to new osg-lcmaps metapackage
+
 * Wed Jan 02 2013 Dave Dykstra <dwd@fnal.gov> 1.5.7-1.1.osg
 - Import latest upstream version
 - Remove references to %{_libdir}/modules and %ghost files
