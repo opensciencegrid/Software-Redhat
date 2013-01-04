@@ -272,7 +272,7 @@ done
 mkdir -p $RPM_BUILD_ROOT%{_initrddir}
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig
-nmkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/grid-security/bestman
+mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/grid-security/bestman
 install -m 0755 %{SOURCE2} $RPM_BUILD_ROOT%{_initrddir}/%{name}
 install -m 0644 %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/%{name}
 install -m 0644 conf/bestman2.rc $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/conf/bestman2.rc
