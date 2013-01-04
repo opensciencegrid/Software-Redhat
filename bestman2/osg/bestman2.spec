@@ -14,7 +14,7 @@
 
 Name:           bestman2
 Version:        2.3.0
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -41,7 +41,7 @@ Source6:        build.xml
 Source7:        build.properties
 Source8:        configure.in
 Source9:        bestman2.rc
-
+Source10:       bestman2lib.sysconfig
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
@@ -50,6 +50,7 @@ BuildRequires: jetty-client jetty-continuation jetty-deploy jetty-http jetty-io 
 BuildRequires: emi-trustmanager emi-trustmanager-axis
 BuildRequires: gums
 
+Requires: cog-jglobus-axis >= 1.8.0-2, gums >= 1.3.18.009-6
 Obsoletes: bestman
 Provides: bestman
 
@@ -205,7 +206,10 @@ JAVADIR=`echo %{_javadir} |  sed 's/\//\\\\\//g'`
 #Fix paths in binaries.  Wish I could do this in configure...
 sed -i "s/BESTMAN_SYSCONF=.*/BESTMAN_SYSCONF=\/etc\/sysconfig\/bestman2/" bin/*
 sed -i "s/BESTMAN_SYSCONF=.*/BESTMAN_SYSCONF=\/etc\/sysconfig\/bestman2/" sbin/*
+sed -i "s/BESTMAN_SYSCONF_LIB=.*/BESTMAN_SYSCONF_LIB=\/etc\/sysconfig\/bestman2lib/" bin/*
+sed -i "s/BESTMAN_SYSCONF_LIB=.*/BESTMAN_SYSCONF_LIB=\/etc\/sysconfig\/bestman2lib/" sbin/*
 sed -i "s/\${BESTMAN_SYSCONF}/\/etc\/bestman2\/conf\/bestman2.rc/" sbin/bestman.server
+
 
 BUILDHOSTNAME=`hostname -f`
 # Fix version
@@ -268,11 +272,12 @@ done
 mkdir -p $RPM_BUILD_ROOT%{_initrddir}
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig
-mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/grid-security/bestman
+nmkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/grid-security/bestman
 install -m 0755 %{SOURCE2} $RPM_BUILD_ROOT%{_initrddir}/%{name}
 install -m 0644 %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/%{name}
 install -m 0644 conf/bestman2.rc $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/conf/bestman2.rc
 install -m 0644 %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/%{name}
+install -m 0644 %{SOURCE10} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/%{name}lib
 
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/grid-security/vomsdir
 touch $RPM_BUILD_ROOT%{_sysconfdir}/grid-security/vomsdir/vdt-empty.pem
@@ -324,6 +329,7 @@ fi
 %config(noreplace) %{install_root}/conf/srmclient.conf
 %config(noreplace) %{install_root}/conf/bestman2.rc
 %config(noreplace) %{_sysconfdir}/sysconfig/bestman2
+%config(noreplace) %{_sysconfdir}/sysconfig/bestman2lib
 %{_bindir}/srm-common.sh
 %{_bindir}/srm-copy
 %{_bindir}/srm-copy-status
@@ -374,6 +380,7 @@ fi
 %config(noreplace) %{install_root}/conf/bestman-diag.conf.sample
 %config(noreplace) %{install_root}/conf/bestman2.rc
 %config(noreplace) %{_sysconfdir}/sysconfig/bestman2
+%config(noreplace) %{_sysconfdir}/sysconfig/bestman2lib
 %{_initrddir}/%{name}
 %config(noreplace) %{_sysconfdir}/logrotate.d/%{name}
 %config(noreplace) %attr(0644,root,root) %{_sysconfdir}/grid-security/vomsdir/vdt-empty.pem
@@ -412,7 +419,7 @@ fi
 %config(noreplace) %{install_root}/conf/srmtester.conf
 %config(noreplace) %{install_root}/conf/bestman2.rc
 %config(noreplace) %{_sysconfdir}/sysconfig/bestman2
-
+%config(noreplace) %{_sysconfdir}/sysconfig/bestman2lib
 
 %files tester-libs
 %{_javadir}/bestman2/bestman2-tester-driver.jar
@@ -420,6 +427,10 @@ fi
 
 
 %changelog
+* Fri Jan 04 2012 Neha Sharma <neha@fnal.gov> - 2.3.0-7
+- Added bestman2lib to separate out the server/client lib settings
+- Added version requirement for cog-jglobus-axis and gums
+
 * Mon Nov 19 2012 Neha Sharma <neha@fnal.gov> - 2.3.0-6
 - Adding emi-trustmanager-axis to server-dep-libs
 
