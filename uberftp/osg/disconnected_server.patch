@@ -1,0 +1,17 @@
+--- ftp.c.orig	2013-01-04 20:44:31.859622403 -0600
++++ ftp.c	2013-01-04 20:48:31.637500333 -0600
+@@ -1944,6 +1944,14 @@
+ 		FREE(cptr);
+ 	}
+ 
++	/* There was no command sent and the server side closed the socket. */
++	if (!nl && fh->cc.eof)
++	{
++		ec = ec_create(EC_GSI_SUCCESS,
++		               EC_GSI_SUCCESS,
++		               "Server unexpectedly closed the socket.");
++	}
++
+ 	if (!ec && *code == 421)
+ 	{
+ 		ec = ec_create(EC_GSI_SUCCESS,

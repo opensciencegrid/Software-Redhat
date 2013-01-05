@@ -1,6 +1,6 @@
 Name:           uberftp
 Version:        2.6
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        GridFTP-enabled ftp client
 
 Group:          Applications/Internet
@@ -9,6 +9,7 @@ License:        NCSA
 URL:            http://dims.ncsa.illinois.edu/set/uberftp/
 Source0:        http://dims.ncsa.illinois.edu/set/uberftp/download/uberftp-client-%{version}.tar.gz
 Patch0:         configure.ac.patch
+Patch1:         disconnected_server.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  grid-packaging-tools, globus-gssapi-gsi-devel
@@ -22,6 +23,7 @@ third party transfers.
 %setup -q -n uberftp-client-%{version}
 iconv -f iso8859-1 -t utf-8 copyright > copyright.conv && mv -f copyright.conv copyright
 %patch0 -p0
+%patch1 -p0
 
 %build
 mkdir pkgdata
@@ -49,6 +51,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc Changelog.mssftp Changelog copyright
 
 %changelog
+* Fri Jan 04 2013 Brian Bockelman <bbockelm@cse.unl.edu> - 2.6-4
+- Prevent uberftp from hanging when the command socket closes.
+
 * Fri Oct 28 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 2.6-3
 - rebuilt
 
