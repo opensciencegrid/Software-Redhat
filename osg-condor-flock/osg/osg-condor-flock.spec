@@ -1,6 +1,6 @@
 Name:           osg-condor-flock
-Version:        2.0
-Release:        2%{?dist}
+Version:        2.1
+Release:        1%{?dist}
 Summary:        Condor configuration to flock to OSG Submitters
 
 Group:          applications/grid
@@ -49,8 +49,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Jan 08 2013 Derek Weitzel <dweitzel@cse.unl.edu> - 2.1-1
+- Updating OSG-XSEDE DN and making it defualt
+
 * Wed May 30 2012 Derek Weitzel <dweitzel@cse.unl.edu> - 2.0-2
-Fixing GSI_DAEMON_NAME
+- Fixing GSI_DAEMON_NAME
 
 * Tue May 29 2012 Derek Weitzel <dweitzel@cse.unl.edu> - 2.0-1
 - Adding osg-xsede submit host
