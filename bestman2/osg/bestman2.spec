@@ -14,7 +14,7 @@
 
 Name:           bestman2
 Version:        2.3.0
-Release:        7%{?dist}
+Release:        8%{?dist}
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -145,6 +145,7 @@ Group: Applications/Internet
 Requires:  java-1.6.0-sun-compat
 Requires: %{name}-tester-libs = %{version}-%{release}
 Requires: %{name}-common-libs = %{version}-%{release}
+Requires: %{name}-client-libs = %{version}-%{release}
 %description tester
 srmtester application for verifying a SRM endpoint
 This application can run through various funcionality of
@@ -427,6 +428,9 @@ fi
 
 
 %changelog
+* Wed Jan 09 2013 Neha Sharma <neha@fnal.gov> - 2.3.0-8
+- tester also requires client libraries
+
 * Fri Jan 04 2013 Neha Sharma <neha@fnal.gov> - 2.3.0-7
 - Added bestman2lib to separate out the server/client lib settings
 - Added version requirement for cog-jglobus-axis and gums
