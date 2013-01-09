@@ -22,7 +22,7 @@
 
 Name:						lcg-util
 Version:					1.14.0
-Release:					0%{?dist}
+Release:					0.1%{?dist}
 Summary:					Command line tools for wlcg storage system 
 Group:						Applications/Internet
 License:					ASL 2.0
@@ -219,6 +219,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Wed Jan 8 2013 Doug Strain <dstrain@fnal.gov> - 1.14.0-0.1
+- Rebuild of 1.14.0 for OSG
+
 * Thu Nov 29 2012 Adrien Devresse <adevress at cern.ch> - 1.14.0-0
  - several bug fixs from gfal 1.0, srm-ifce and is-interface
  - see respective changelog for details
