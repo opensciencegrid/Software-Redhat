@@ -1,7 +1,7 @@
 
 Name:      osg-cleanup
 Version:   1.7
-Release:   1%{?dist}
+Release:   2%{?dist}
 Summary:   OSG cleanup scripts
 
 Group:     System Environment/Base
@@ -51,7 +51,8 @@ install -d $RPM_BUILD_ROOT/%{_sysconfdir}/cron.d/
 install -m 755 init.d/osg-cleanup-cron $RPM_BUILD_ROOT/%{_sysconfdir}/rc.d/init.d/
 install -m 644 cron.d/osg-cleanup $RPM_BUILD_ROOT/%{_sysconfdir}/cron.d/
 
-# Log rotation
+# Log dir and rotation
+install -d $RPM_BUILD_ROOT%{_localstatedir}/log/osg
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d
 install -m 0644 logrotate/osg-cleanup.logrotate $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/osg-cleanup
 
@@ -71,6 +72,8 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/osg/osg-cleanup.conf
 %config(noreplace) %{_sysconfdir}/logrotate.d/osg-cleanup
 
+%dir %{_localstatedir}/log/osg
+
 %post
 /sbin/chkconfig --add osg-cleanup-cron
 
@@ -87,6 +90,9 @@ fi
 
 
 %changelog
+* Tue Jan 08 2013 Matyas Selmeci <matyas@cs.wisc.edu> 1.7-2
+- Create log dir if missing
+
 * Mon Dec 17 2012 Matyas Selmeci <matyas@cs.wisc.edu> 1.7-1
 - Use File::Temp for temp files
 
