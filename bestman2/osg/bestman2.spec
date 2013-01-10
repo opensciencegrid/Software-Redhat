@@ -14,7 +14,7 @@
 
 Name:           bestman2
 Version:        2.3.0
-Release:        8%{?dist}
+Release:        9%{?dist}
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -428,6 +428,9 @@ fi
 
 
 %changelog
+* Thu Jan 10 2013 Neha Sharma <neha@fnal.gov> - 2.3.0-9
+- modify the init script to cd in to /tmp to void build-classpath issue on SL5
+
 * Wed Jan 09 2013 Neha Sharma <neha@fnal.gov> - 2.3.0-8
 - tester also requires client libraries
 
