@@ -14,7 +14,8 @@
 
 # Source function library.
 . /etc/rc.d/init.d/functions
-
+TMPDIR="/tmp"
+OLDDIR=`pwd`
 wait_for_process() {
 for i in {1..30}
 do
@@ -62,11 +63,18 @@ start() {
         echo -n "Starting bestman2: "
         touch $BESTMAN_PID
         chown $SRM_OWNER: $BESTMAN_PID
-        daemon --user $SRM_OWNER "/usr/sbin/bestman.server $BESTMAN_OPTIONS 2>> $BESTMAN_LOG  >> $BESTMAN_LOG"
-        RETVAL=$?
-        chown root: $BESTMAN_PID
-        [ $RETVAL -eq 0 ] && touch $BESTMAN_LOCKFILE
-	wait_for_process start
+	cd $TMPDIR
+	RETVAL=$?
+	if [ $RETVAL -eq 0 ]; then
+		daemon --user $SRM_OWNER "/usr/sbin/bestman.server $BESTMAN_OPTIONS 2>> $BESTMAN_LOG  >> $BESTMAN_LOG"
+         	RETVAL=$?
+         	chown root: $BESTMAN_PID
+         	[ $RETVAL -eq 0 ] && touch $BESTMAN_LOCKFILE
+	 	wait_for_process start
+		cd $OLDDIR
+        else
+        	rm $BESTMAN_PID
+	fi
 	[ $RETVAL -eq 0 ] && echo_success || echo_failure
         echo
         return $RETVAL
