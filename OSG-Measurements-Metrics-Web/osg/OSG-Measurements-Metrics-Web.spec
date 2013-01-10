@@ -55,7 +55,7 @@ rm -rf $RPM_BUILD_ROOT
 %{__python} setup.py install --skip-build --root %{buildroot}
 
 install -d %{buildroot}/%{_initrddir}
-mv %{buildroot}/etc/init.d/GratiaWeb %{buildroot}/%{_initddir}
+mv %{buildroot}/etc/init.d/GratiaWeb %{buildroot}/%{_initrddir}
 
 
 %clean
