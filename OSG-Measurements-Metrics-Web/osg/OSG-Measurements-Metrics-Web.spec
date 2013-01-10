@@ -5,7 +5,7 @@
 
 Name:           OSG-Measurements-Metrics-Web
 Version:        1.1
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        OSG Measurements and Metrics web and database
 
 Group:          Applications/System
@@ -80,6 +80,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Jan 10 2013 Derek Weitzel <dwetizel@cse.unl.edu> - 1.1-4
+- Fixing initrd dir
+
 * Thu Jan 10 2013 Derek Weitzel <dweitzel@cse.unl.edu> - 1.1-3
 - Fixing sysconfdir in the spec file
 
