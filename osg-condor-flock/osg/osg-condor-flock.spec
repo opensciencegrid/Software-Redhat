@@ -1,5 +1,5 @@
 Name:           osg-condor-flock
-Version:        2.1
+Version:        2.2
 Release:        1%{?dist}
 Summary:        Condor configuration to flock to OSG Submitters
 
@@ -49,6 +49,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Jan 10 2013 Derek Weitzel <dweitzel@cse.unl.edu> - 2.2-1
+- Removing claimtobe from the default authentication methods
+
 * Tue Jan 08 2013 Derek Weitzel <dweitzel@cse.unl.edu> - 2.1-1
 - Updating OSG-XSEDE DN and making it defualt
 
