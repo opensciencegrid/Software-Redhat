@@ -5,7 +5,7 @@
 
 Name:           OSG-Measurements-Metrics-Web
 Version:        1.1
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        OSG Measurements and Metrics web and database
 
 Group:          Applications/System
@@ -51,7 +51,12 @@ CFLAGS="$RPM_OPT_FLAGS" %{__python} setup.py build
 %install
 rm -rf $RPM_BUILD_ROOT
 
+
 %{__python} setup.py install --skip-build --root %{buildroot}
+
+install -d %{buildroot}/%{_initddir}
+mv %{buildroot}/etc/init.d/GratiaWeb %{buildroot}/%{_initddir}
+
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -61,13 +66,23 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %{_bindir}/*
 %{_datadir}/GratiaWeb/*
-%config %{_sysconfdir}/*
+%config %{_sysconfdir}/wlcg_email.conf.rpmnew
+%config %{_sysconfdir}/access.db
+%config %{_sysconfdir}/osg_graphs.conf
+%{_sysconfdir}/cron.d/*
+%{_sysconfdir}/logrotate.d/*
+%{_initddir}/*
+
+
 %{python_sitelib}/*
 
 
 
 
 %changelog
+* Thu Jan 10 2013 Derek Weitzel <dweitzel@cse.unl.edu> - 1.1-3
+- Fixing sysconfdir in the spec file
+
 * Thu Jan 10 2013 Derek Weitzel <dwetizel@cse.unl.edu> - 1.1-2
 - Updating datarootdir to multi-platform version datadir
 
