@@ -5,7 +5,7 @@
 
 Name:           OSG-Measurements-Metrics-Web
 Version:        1.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        OSG Measurements and Metrics web and database
 
 Group:          Applications/System
@@ -60,7 +60,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root,-)
 %{_bindir}/*
-%{_datarootdir}/GratiaWeb/*
+%{_datadir}/GratiaWeb/*
 %config %{_sysconfdir}/*
 %{python_sitelib}/*
 
@@ -68,6 +68,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Jan 10 2013 Derek Weitzel <dwetizel@cse.unl.edu> - 1.1-2
+- Updating datarootdir to multi-platform version datadir
+
 * Thu Jan 10 2013 Derek Weitzel <dweitzel@cse.unl.edu> - 1.1-1
 - Update to 1.1
 
