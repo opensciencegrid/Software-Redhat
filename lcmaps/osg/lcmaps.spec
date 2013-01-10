@@ -344,7 +344,7 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Fri Jan 02 2013 Dave Dykstra <dwd@fnal.gov> 1.5.7-1.3.osg
+* Thu Jan 10 2013 Dave Dykstra <dwd@fnal.gov> 1.5.7-1.3.osg
 - Back out the changes of 1.5.7-1.2.osg for now
 
 * Fri Jan 02 2013 Dave Dykstra <dwd@fnal.gov> 1.5.7-1.2.osg
