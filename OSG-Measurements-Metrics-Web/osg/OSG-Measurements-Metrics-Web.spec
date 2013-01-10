@@ -54,7 +54,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %{__python} setup.py install --skip-build --root %{buildroot}
 
-install -d %{buildroot}/%{_initddir}
+install -d %{buildroot}/%{_initrddir}
 mv %{buildroot}/etc/init.d/GratiaWeb %{buildroot}/%{_initddir}
 
 
@@ -71,7 +71,7 @@ rm -rf $RPM_BUILD_ROOT
 %config %{_sysconfdir}/osg_graphs.conf
 %{_sysconfdir}/cron.d/*
 %{_sysconfdir}/logrotate.d/*
-%{_initddir}/*
+%{_initrddir}/*
 
 
 %{python_sitelib}/*
