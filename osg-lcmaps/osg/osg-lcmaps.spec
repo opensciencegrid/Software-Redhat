@@ -1,12 +1,12 @@
 Name:      osg-lcmaps
 Summary:   OSG LCMAPS metapackage
 Version:   3.2.0
-Release:   1%{?dist}
+Release:   2%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
 BuildArch: noarch
-Source0:   lcmaps.db
+#Source0:   lcmaps.db
 
 BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
@@ -23,17 +23,20 @@ Requires: lcmaps-plugins-saz-client >= 0.3.4-1.2
 
 
 %install
-mkdir -p ${RPM_BUILD_ROOT}%{_sysconfdir}
-cp %{SOURCE0} $RPM_BUILD_ROOT/%{_sysconfdir}
+#mkdir -p ${RPM_BUILD_ROOT}%{_sysconfdir}
+#cp %{SOURCE0} $RPM_BUILD_ROOT/%{_sysconfdir}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
-%config(noreplace) %{_sysconfdir}/lcmaps.db
+#%config(noreplace) %{_sysconfdir}/lcmaps.db
 
 
 %changelog
+* Thu Jan 10 2013 Dave Dykstra <dwd@fnal.gov> - 3.2.0-2
+- Move lcmaps.db back to the lcmaps package for now
+
 * Fri Jan 04 2013 Dave Dykstra <dwd@fnal.gov> - 3.2.0-1
 - Create metapackage using pieces that were in the OSG lcmaps package:
     Requires of the plugins, and lcmaps.db
