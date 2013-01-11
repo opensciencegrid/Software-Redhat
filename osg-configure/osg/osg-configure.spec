@@ -1,5 +1,5 @@
 %global name osg-configure
-%global version 1.0.19
+%global version 1.0.20
 %global release 1%{?dist}
 
 Summary: Package for configure-osg and associated scripts
@@ -212,6 +212,10 @@ rm -rf $RPM_BUILD_ROOT
 /usr/share/osg-configure/*
 
 %changelog
+* Thu Jan 10 2013 Suchandra Thapa <sthapa@ci.uchicago.edu> 1.0.20-1
+- Multiple clean ups in unit tests
+- Add --enabled-services argument to retun a list of services configured
+
 * Tue Dec 04 2012 Suchandra Thapa <sthapa@ci.uchicago.edu>  1.0.19-1
 - Fix localsettings configuration (add getAttributes back)
 - Fix gratia unit tests due to change in test configs
