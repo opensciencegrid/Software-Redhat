@@ -5,8 +5,8 @@
 
 Summary:   Tests an OSG Software installation
 Name:      osg-test
-Version:   1.2.4
-Release:   2%{?dist}
+Version:   1.2.5
+Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
 Packager:  VDT <vdt-support@opensciencegrid.org>
@@ -39,6 +39,9 @@ rm -rf $RPM_BUILD_ROOT
 /etc/grid-security/certificates/bffdd190.*
 
 %changelog
+* Mon Jan 14 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.2.5-1
+- New version: OkSkip/BadSkip test statuses; updated epel-release-6 rpm filename
+
 * Fri Dec 21 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.2.4-2
 - Remove python-nose dependency
 
