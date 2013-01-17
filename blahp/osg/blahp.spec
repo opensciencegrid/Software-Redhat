@@ -1,5 +1,5 @@
 Name:		blahp
-Version:	1.18.3.bosco
+Version:	1.18.4.bosco
 Release:	1%{?dist}
 Summary:	gLite BLAHP daemon
 
@@ -90,6 +90,9 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Thu Jan 17 2013 Derek Weitzel <dweitzel@cse.unl.edu> - 1.18.4.bosco-1
+- Fixing pbs_status.py via upstream SOFTWARE-905
+
 * Thu Dec 13 2012 Brian Bockelman <bbockelm@cse.unl.edu> 1.18.3.bosco-1.osg
 - Merge BOSCO and OSG distribution of blahp.
 
