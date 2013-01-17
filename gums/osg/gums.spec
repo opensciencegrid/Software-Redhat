@@ -7,7 +7,7 @@
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.3.18.009
-Release: 15%{?dist}
+Release: 15.1%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 %if 0%{?rhel} < 6
@@ -213,6 +213,14 @@ rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROO
 rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/xercesImpl*.jar
 rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/xalan*.jar
 rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/log4j*.jar
+# Delete broken RPMs from the Shibboleth repository
+#  (we need to fix the build so that they are not even pulled in)
+rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/resolver-2.9.1.jar
+rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/serializer-2.9.1.jar
+rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/xml-apis-2.9.1.jar
+rm $RPM_BUILD_ROOT%{_noarchlib}/%{dirname}/endorsed/xercesImpl-2.9.1.jar
+rm $RPM_BUILD_ROOT%{_noarchlib}/%{dirname}/endorsed/xml-apis-2.9.1.jar
+
 
 ## Link the exploded WAR to gums-core JARs, instead of including a copy
 # tomcat6 doesn't seem to like this.
@@ -292,9 +300,8 @@ EOL
 %files
 %defattr(-,root,root,-)
 %dir %{_noarchlib}/%{dirname}
-%dir %{_noarchlib}/%{dirname}/endorsed
+%{_noarchlib}/%{dirname}/endorsed
 %{_noarchlib}/%{dirname}/*.jar
-%{_noarchlib}/%{dirname}/endorsed/*.jar
 
 %files client
 %defattr(-,root,root,-)
@@ -352,6 +359,10 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+* Thu Jan 17 2013 Doug Strain <dstrain@fnal.gov> - 1.3.18.009-15.1
+- Added OSG release number
+- Delete broken shibboleth RPMs (repository moved and broken)
+
 * Wed Dec 5 2012 Doug Strain <dstrain@fnal.gov> - 1.3.18.009-15
 - Eliminated the voms-api-java dependency 
 
