@@ -7,7 +7,7 @@
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.3.18.009
-Release: 15.1%{?dist}
+Release: 15.2%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 %if 0%{?rhel} < 6
@@ -213,13 +213,6 @@ rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROO
 rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/xercesImpl*.jar
 rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/xalan*.jar
 rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/log4j*.jar
-# Delete broken RPMs from the Shibboleth repository
-#  (we need to fix the build so that they are not even pulled in)
-rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/resolver-2.9.1.jar
-rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/serializer-2.9.1.jar
-rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/xml-apis-2.9.1.jar
-rm $RPM_BUILD_ROOT%{_noarchlib}/%{dirname}/endorsed/xercesImpl-2.9.1.jar
-rm $RPM_BUILD_ROOT%{_noarchlib}/%{dirname}/endorsed/xml-apis-2.9.1.jar
 
 
 ## Link the exploded WAR to gums-core JARs, instead of including a copy
@@ -229,6 +222,14 @@ for x in $RPM_BUILD_ROOT%{_noarchlib}/%{dirname}/*.jar; do
 done
 
 %endif
+
+# Delete broken RPMs from the Shibboleth repository
+#  (we need to fix the build so that they are not even pulled in)
+rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/resolver-2.9.1.jar
+rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/serializer-2.9.1.jar
+rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/xml-apis-2.9.1.jar
+rm $RPM_BUILD_ROOT%{_noarchlib}/%{dirname}/endorsed/xercesImpl-2.9.1.jar
+rm $RPM_BUILD_ROOT%{_noarchlib}/%{dirname}/endorsed/xml-apis-2.9.1.jar
 
 ## gums-core and gums-service use different versions here...
 rm -f $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib/slf4j-jdk14-1.5.2.jar
@@ -359,6 +360,9 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+* Fri Jan 18 2013 Doug Strain <dstrain@fnal.gov> - 1.3.18.009-15.2
+- Moved deletion of Shibboleth outside of if statement
+
 * Thu Jan 17 2013 Doug Strain <dstrain@fnal.gov> - 1.3.18.009-15.1
 - Added OSG release number
 - Delete broken shibboleth RPMs (repository moved and broken)
