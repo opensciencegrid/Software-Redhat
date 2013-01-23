@@ -1,6 +1,6 @@
 
 Name:           osg-build
-Version:        1.2.3
+Version:        1.2.4
 Release:        1%{?dist}
 Summary:        Build tools for the OSG
 
@@ -63,6 +63,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_docdir}/%{name}/sample-osg-build.ini
 
 %changelog
+* Wed Jan 23 2013 Matyas Selmeci <matyas@cs.wisc.edu> 1.2.4-1
+- Updated osg-koji to include DigiCert CA certs in the CA bundle that its setup task generates (SOFTWARE-860)
+
 * Mon Sep 24 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.2.3-1
 - Python 2.4 compatibility fixes
 - Added --getfiles option to koji scratch build
