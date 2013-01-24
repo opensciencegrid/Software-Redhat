@@ -1,7 +1,7 @@
 
 Name:      osg-cleanup
-Version:   1.7
-Release:   2%{?dist}
+Version:   1.7.1
+Release:   1%{?dist}
 Summary:   OSG cleanup scripts
 
 Group:     System Environment/Base
@@ -90,6 +90,9 @@ fi
 
 
 %changelog
+* Thu Jan 24 2013 Matyas Selmeci <matyas@cs.wisc.edu> 1.7.1-1
+- Fix log filename pattern in logrotate config
+
 * Tue Jan 08 2013 Matyas Selmeci <matyas@cs.wisc.edu> 1.7-2
 - Create log dir if missing
 
