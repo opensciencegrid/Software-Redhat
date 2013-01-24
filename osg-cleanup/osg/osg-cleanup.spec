@@ -91,7 +91,7 @@ fi
 
 %changelog
 * Thu Jan 24 2013 Matyas Selmeci <matyas@cs.wisc.edu> 1.7.1-1
-- Fix log filename pattern in logrotate config
+- Fix log filename pattern in logrotate config (#SOFTWARE-920)
 
 * Tue Jan 08 2013 Matyas Selmeci <matyas@cs.wisc.edu> 1.7-2
 - Create log dir if missing
