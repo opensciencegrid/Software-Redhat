@@ -7,7 +7,7 @@
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.3.18.009
-Release: 15.2%{?dist}
+Release: 15.3%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 %if 0%{?rhel} < 6
@@ -360,6 +360,9 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+* Tue Jan 29 2013 Doug Strain <dstrain@fnal.gov> - 1.3.18.009-15.3
+- Fix for directory location of gums client log files
+
 * Fri Jan 18 2013 Doug Strain <dstrain@fnal.gov> - 1.3.18.009-15.2
 - Moved deletion of Shibboleth outside of if statement
 
