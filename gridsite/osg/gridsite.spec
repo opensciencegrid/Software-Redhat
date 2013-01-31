@@ -9,8 +9,8 @@
 
 
 Name:           gridsite
-Version:        1.7.21
-Release:        4.1%{?dist}
+Version:        1.7.25
+Release:        1.1%{?dist}
 Summary:        Grid Security for the Web, Web platforms for Grids
 
 Group:          System Environment/Daemons
@@ -32,20 +32,13 @@ Source5:        gridsitelogo.png
 Source10:       http://www.gridsite.org/download/sources/gridsite-%{vercompat}.src.tar.gz
 
 #Change location of cgi-scripts.
-Patch1:         cgi-bin-location-1.7.21.patch
+Patch1:         cgi-bin-location-1.7.25.patch
 #Change location of cgi-scripts.
 Patch2:         cgi-bin-location-1.5.20.patch
 # Includes are wrong.
 #https://bugzilla.redhat.com/show_bug.cgi?id=612109
 #https://savannah.cern.ch/bugs/index.php?69632
 Patch3:         gridsite-include-1.5.20.patch
-# mod_gridsite segfaults randomly under high load
-# https://ggus.eu/tech/ticket_show.php?ticket=86044
-Patch4:         gridsite-cred-segfault.patch
-
-# Cannot handle CAs which use proxy path lengths.
-# See https://jira.opensciencegrid.org/browse/OSGPKI-249
-Patch100:         proxy_path_length.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -169,7 +162,6 @@ pushd org.gridsite.core
 %patch2 -p1
 %patch3 -p1
 popd
-%patch100 -p1
 
 %else
 %setup -q -n org.gridsite.core
@@ -183,7 +175,6 @@ cp -p %{SOURCE5} .
 
 ## Change installed path of cgi-bins.
 %patch1 -p1
-%patch4 -p1
 
 %build
 %if 0%{?compat}
@@ -357,12 +348,17 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/gridsite.h
 %{_libdir}/libgridsite.so
 %{_libdir}/libgridsite_globus.so
+%{_libdir}/pkgconfig/gridsite-openssl.pc
 
 %files doc
 %defattr(-,root,root,-)
 %doc src/doxygen LICENSE
 
 %changelog
+* Thu Jan 31 2013 Matyas Selmeci <matyas@cs.wisc.edu> 1.7.25-1.1
+- Upstream 1.7.25
+- Removed gridsite-cred-segfault.patch, proxy_path_length.patch, now in upstream
+
 * Thu Jan 31 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.7.21-4.1
 - Merge EPEL 1.7.21-4:
 
