@@ -1,6 +1,8 @@
---- org.gridsite.core/org.gridsite.core/src/mod_gridsite.c.orig	2012-10-29 17:03:10.000000000 -0500
-+++ org.gridsite.core/org.gridsite.core/src/mod_gridsite.c	2012-10-29 17:04:42.000000000 -0500
-@@ -3821,6 +3821,37 @@
+Index: org.gridsite.core/src/mod_gridsite.c
+===================================================================
+--- org.gridsite.core.orig/src/mod_gridsite.c	2013-01-31 14:59:06.932833534 -0600
++++ org.gridsite.core/src/mod_gridsite.c	2013-01-31 14:59:59.536833314 -0600
+@@ -3879,6 +3879,37 @@
  #endif
  
     /*

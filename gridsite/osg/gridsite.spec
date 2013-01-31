@@ -1,20 +1,16 @@
-%if 0%{?el4}
-%define aprversion 0
-%else
 %define aprversion 1
-%endif
+%{!?_httpd_mmn: %{expand: %%global _httpd_mmn %%(cat %{_includedir}/httpd/.mmn || echo missing-httpd-devel)}}
 
 
 %global vercompat 1.5.20
-%if 0%{?el4}%{?el5} 
+%if 0%{?el5} 
 %global compat 1
 %endif
 
 
 Name:           gridsite
-Version:        1.7.15
-
-Release:        4.6%{?dist}
+Version:        1.7.21
+Release:        4.1%{?dist}
 Summary:        Grid Security for the Web, Web platforms for Grids
 
 Group:          System Environment/Daemons
@@ -26,7 +22,7 @@ Group:          System Environment/Daemons
 # All other files are BSD
 License:        ASL 2.0 and BSD
 URL:            http://www.gridsite.org
-Source0:        www.gridsite.org/download/sources/gridsite-%{version}.src.tar.gz
+Source0:        http://www.gridsite.org/download/sources/gridsite-%{version}.src.tar.gz
 Source1:        gridsite-httpd.conf
 Source2:        gridsitehead.txt
 Source3:        gridsitefoot.txt
@@ -36,17 +32,20 @@ Source5:        gridsitelogo.png
 Source10:       http://www.gridsite.org/download/sources/gridsite-%{vercompat}.src.tar.gz
 
 #Change location of cgi-scripts.
-Patch1:         cgi-bin-location-1.7.15.patch
+Patch1:         cgi-bin-location-1.7.21.patch
 #Change location of cgi-scripts.
 Patch2:         cgi-bin-location-1.5.20.patch
 # Includes are wrong.
 #https://bugzilla.redhat.com/show_bug.cgi?id=612109
 #https://savannah.cern.ch/bugs/index.php?69632
 Patch3:         gridsite-include-1.5.20.patch
+# mod_gridsite segfaults randomly under high load
+# https://ggus.eu/tech/ticket_show.php?ticket=86044
+Patch4:         gridsite-cred-segfault.patch
 
 # Cannot handle CAs which use proxy path lengths.
 # See https://jira.opensciencegrid.org/browse/OSGPKI-249
-Patch4:         proxy_path_length.patch
+Patch100:         proxy_path_length.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -60,10 +59,16 @@ BuildRequires:  libxml2-devel
 BuildRequires:  httpd-devel
 BuildRequires:  doxygen
 BuildRequires:  openssl-devel
+BuildRequires:  gsoap-devel
 
-Requires:       httpd
+Requires:       httpd-mmn = %{_httpd_mmn}
 Requires:       mod_ssl
 Requires:       gridsite-libs = %{version}-%{release}
+
+Provides:       gridsite-apache = %{version}-%{release}
+Obsoletes:      gridsite-apache <= 1.7.20
+Provides:       gridsite-services = %{version}-%{release}
+Obsoletes:      gridsite-services <= 1.7.20
 
 %description
 GridSite was originally a web application developed for managing and formatting 
@@ -90,6 +95,8 @@ This package contains the runtime libraries.
 Group:    System Environment/Daemons
 Summary:  Clients to gridsite including htcp, htrm, htmv
 Requires: gridsite-libs = %{version}-%{release}
+Provides: gridsite-commands = %{version}-%{release}
+Obsoletes:gridsite-commands <= 1.7.20
 
 %description  clients
 GridSite was originally a web application developed for managing and formatting 
@@ -144,7 +151,7 @@ This package gridsite-doc, contains developer documentation for gridsite.
 Group:    System Environment/Daemons
 Summary:  Run time libraries for mod_gridsite and gridsite-clients
 Version:  %{vercompat}
-Release:  3.4%{?dist}
+Release:  5.1%{?dist}
 
 %description compat
 GridSite was originally a web application developed for managing and formatting 
@@ -162,7 +169,7 @@ pushd org.gridsite.core
 %patch2 -p1
 %patch3 -p1
 popd
-%patch4 -p2
+%patch100 -p1
 
 %else
 %setup -q -n org.gridsite.core
@@ -176,6 +183,7 @@ cp -p %{SOURCE5} .
 
 ## Change installed path of cgi-bins.
 %patch1 -p1
+%patch4 -p1
 
 %build
 %if 0%{?compat}
@@ -191,8 +199,7 @@ rm -rf $RPM_BUILD_ROOT
 pushd org.gridsite.core
 (cd src && make install prefix=$RPM_BUILD_ROOT%{_usr} libdir=%{_lib} )
 rm  $RPM_BUILD_ROOT/%{_libdir}/libgridsite.a
-# Remove the built against globus-openssl libs since
-# we don't actually do that.
+# Do not remove libgridsite_globus because OSG needs it for glite-data-util-c
 # rm  $RPM_BUILD_ROOT/%{_libdir}/libgridsite_globus.*
 # Remove all most everything from -compat installation package
 # since we don't want it.
@@ -207,6 +214,7 @@ rm -rf $RPM_BUILD_ROOT%{_libdir}/httpd
 popd
 %endif
 (cd src && make install prefix=$RPM_BUILD_ROOT%{_usr} libdir=%{_lib} )
+(cd src && make install-ws prefix=$RPM_BUILD_ROOT%{_usr} libdir=%{_lib} )
 
 # Remove static libs 
 rm  $RPM_BUILD_ROOT/%{_libdir}/libgridsite.a
@@ -214,9 +222,8 @@ rm  $RPM_BUILD_ROOT/%{_libdir}/libgridsite_globus.a
 
 # Remove docs we don't want now but will move it in %doc later.
 rm -rf $RPM_BUILD_ROOT/%{_defaultdocdir} 
-# Remove the built against globus-openssl libs since
-# we don't actually do that.
-#rm  $RPM_BUILD_ROOT/%{_libdir}/libgridsite_globus.*
+# Do not remove libgridsite_globus because OSG needs it for glite-data-util-c
+# rm  $RPM_BUILD_ROOT/%{_libdir}/libgridsite_globus.*
 
 # Set up a root area to serve files from.
 mkdir -p $RPM_BUILD_ROOT%{_var}/lib/gridsite
@@ -263,6 +270,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_libexecdir}/gridsite
 %dir %{_libexecdir}/gridsite/cgi-bin
 %{_libexecdir}/gridsite/cgi-bin/gridsite-copy.cgi 
+%{_libexecdir}/gridsite/cgi-bin/gridsite-delegation.cgi 
 %{_libexecdir}/gridsite/cgi-bin/gridsite-storage.cgi 
 %{_libexecdir}/gridsite/cgi-bin/real-gridsite-admin.cgi 
 %{_var}/www/icons/gridsitelogo.png
@@ -273,6 +281,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_sysconfdir}/grid-security/vomsdir
 
 %{_mandir}/man8/mod_gridsite.8.*
+%{_mandir}/man8/gridsite-*.8.*
 
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/zgridsite.conf
 %config(noreplace) %attr(-,apache,apache) %{_var}/lib/gridsite/.gacl
@@ -316,6 +325,12 @@ rm -rf $RPM_BUILD_ROOT
 %attr(0755,root,root) %{_bindir}/htmkdir
 %attr(0755,root,root) %{_bindir}/htmv
 %attr(0755,root,root) %{_bindir}/htping
+%attr(0755,root,root) %{_bindir}/htproxydestroy
+%attr(0755,root,root) %{_bindir}/htproxyinfo
+%attr(0755,root,root) %{_bindir}/htproxyput
+%attr(0755,root,root) %{_bindir}/htproxyrenew
+%attr(0755,root,root) %{_bindir}/htproxytime
+%attr(0755,root,root) %{_bindir}/htproxyunixtime
 %attr(0755,root,root) %{_bindir}/htrm
 %attr(0755,root,root) %{_bindir}/urlencode
 
@@ -327,6 +342,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/htmkdir.1.gz
 %{_mandir}/man1/htmv.1.gz
 %{_mandir}/man1/htping.1.gz
+%{_mandir}/man1/htproxydestroy.1.gz
+%{_mandir}/man1/htproxyinfo.1.gz
+%{_mandir}/man1/htproxyput.1.gz
+%{_mandir}/man1/htproxyrenew.1.gz
+%{_mandir}/man1/htproxytime.1.gz
+%{_mandir}/man1/htproxyunixtime.1.gz
 %{_mandir}/man1/htrm.1.gz
 %{_mandir}/man1/urlencode.1.gz
 
@@ -342,6 +363,30 @@ rm -rf $RPM_BUILD_ROOT
 %doc src/doxygen LICENSE
 
 %changelog
+* Thu Jan 31 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.7.21-4.1
+- Merge EPEL 1.7.21-4:
+
+    * Thu Sep 13 2012 Ricardo Rocha <ricardo.rocha@cern.ch> - 1.7.21-4
+    - Added patch for segfault under high load
+
+    * Thu Jul 19 2012 Ricardo Rocha <ricardo.rocha@cern.ch> - 1.7.21-3
+    - Up release of compat package
+
+    * Mon Jul 16 2012 Ricardo Rocha <ricardo.rocha@cern.ch> - 1.7.21-2
+    - Rebuild with proper tarballs
+
+    * Mon Jul 16 2012 Ricardo Rocha <ricardo.rocha@cern.ch> - 1.7.21-1
+    - Upstream to 1.7.21, compliance with EMI project gridsite packaging
+    - Removed unused patches
+
+    * Sun Mar 18 2012 Steve Traylen <steve.traylen@cern.ch>  - 1.7.19-1
+    - Upstream 1.7.19
+    - Drop EPEL4 support since EOL.
+    - Requires httpd-mmn, rhbz#803062
+
+    * Wed Jul 6 2011 Steve Traylen <steve.traylen@cern.ch>  - 1.7.15-4
+    - devel package require openssl devel rhbz#719174
+
 * Mon Oct 29 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 1.7.15-4.6
 - Allow gridsite to handle CAs with path constraints.
 - Multiple version bumps to handle issues with NVRA uniqueness for the campat package.
