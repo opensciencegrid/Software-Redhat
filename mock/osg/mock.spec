@@ -11,7 +11,7 @@
 Summary: Builds packages inside chroots
 Name: mock
 Version: %{release_version}
-Release: 1.1%{?dist}
+Release: 1.2%{?dist}
 License: GPLv2+
 Group: Development/Tools
 Source: https://git.fedorahosted.org/cgit/mock.git/snapshot/%{name}-%{version}.tar.gz
@@ -120,6 +120,9 @@ chmod 2775 /var/cache/mock
 %dir /var/lib/mock
 
 %changelog
+* Mon Feb 04 2013 Matyas Selmeci <matyas@cs.wisc.edu> 1.0.36-1.1
+- bump to rebuild
+
 * Mon Nov 26 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0.36-1.1
 - patches for the following, all of which are required to work on el5:
   - fix python 2.4 syntax errors (py24syntax.patch)
