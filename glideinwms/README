@@ -17,3 +17,4 @@ The Spec file and patches are coming from
 svn co svn+ssh://p-gwms-release-manager@cdcvs.fnal.gov/cvs/projects/gwms-release-manager/trunk/rpm/vofrontend
 or https://cdcvs.fnal.gov/redmine/projects/gwms-release-manager/repository/show/trunk/rpm/vofrontend
 
+
