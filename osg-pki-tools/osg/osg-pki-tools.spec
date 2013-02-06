@@ -1,8 +1,10 @@
 Summary: osg-pki-tools
 Name: osg-pki-tools
-Version: 1.0.3
+Version: 1.1.0
 Release: 1%{?dist}
 Source: OSGPKITools-%{version}.tar.gz
+Patch0: sitelib.patch
+Patch1: imports.patch
 License: Apache 2.0
 Group: Grid
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
@@ -10,6 +12,7 @@ BuildArch: noarch
 Requires: python 
 Requires: m2crypto
 Requires: python-simplejson
+Requires: python-ssl
 
 %if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
 %{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
@@ -22,6 +25,9 @@ Requires: python-simplejson
 %package tests
 Summary: tests for osg-pki-tools
 Requires: %{name} = %{version}
+# Requires: python-scripttest
+# ^ Leaving this behind for future reference. 'scripttest' is not available
+# as an RPM package, and must be installed via pip or easy_install
 Group: Grid
 
 %description tests
@@ -29,6 +35,8 @@ tests for osg-pki-tools
 
 %prep
 %setup -n OSGPKITools-%{version}
+%patch0 -p1
+%patch1 -p1
 
 %build
 %{__python} setup.py build
@@ -62,6 +70,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Feb 06 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.1.0-1
+- Version update
+- Add python-ssl dependency
+- Fix sitelib
+- Fix imports
+
 * Thu Oct 04 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0.3-1
 - Version update
 
