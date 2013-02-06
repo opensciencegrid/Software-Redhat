@@ -1,5 +1,5 @@
 %global name osg-configure
-%global version 1.0.20
+%global version 1.0.21
 %global release 1%{?dist}
 
 Summary: Package for configure-osg and associated scripts
@@ -122,6 +122,12 @@ Provides: configure-osg-tests
 %description tests
 This package includes the ini files and files for unit tests that osg-configure
 uses to verify functionality
+%package slurm
+Summary: Configure-osg configuration files for slurm
+Group: Grid
+Provides: configure-osg-slurm
+%description slurm
+This package includes the ini file for configuring slurm using configure-osg
 
 %prep
 %setup
@@ -210,8 +216,14 @@ rm -rf $RPM_BUILD_ROOT
 %files tests
 %defattr(-,root,root)
 /usr/share/osg-configure/*
+%files slurm
+%defattr(-,root,root)
+%config(noreplace) %{_sysconfdir}/osg/config.d/20-slurm.ini
 
 %changelog
+* Mon Feb 04 2013 Suchandra Thapa <sthapa@ci.uchicago.edu> 1.0.21-1
+- Added support for SLURM and unit tests for SLURM
+
 * Thu Jan 10 2013 Suchandra Thapa <sthapa@ci.uchicago.edu> 1.0.20-1
 - Multiple clean ups in unit tests
 - Add --enabled-services argument to retun a list of services configured
