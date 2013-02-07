@@ -12,7 +12,9 @@ BuildArch: noarch
 Requires: python 
 Requires: m2crypto
 Requires: python-simplejson
+%if 0%{?rhel} < 6
 Requires: python-ssl
+%endif
 
 %if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
 %{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
@@ -72,7 +74,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Wed Feb 06 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.1.0-1
 - Version update
-- Add python-ssl dependency
+- Add python-ssl dependency on el5
 - Fix sitelib
 - Fix imports
 
