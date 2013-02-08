@@ -7,16 +7,16 @@
 
 Name:    dcache-srmclient 
 Version: 1.9.5.23
-Release: 6%{?dist}
+Release: 6.1%{?dist}
 URL:     http://dcache.org
 Summary: SRM clients from dCache.org
 License: http://www.dcache.org/manuals/dCacheSoftwareLicence.html
 Group:   Development/Tools
 Obsoletes: SRM-Client-Fermi
 
-BuildRequires: java-devel
+BuildRequires: java-devel >= 1.7
 BuildRequires: ant
-Requires: java
+Requires: java >= 1.7
 Requires: /usr/bin/globus-url-copy
 
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
@@ -65,6 +65,9 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/dcache-srmclient-config.xml
 
 %changelog
+* Thu Feb 07 2013 Matyas Selmeci <matyas@cs.wisc.edu> 1.9.5.23-6.1
+- Rebuild with openjdk 7
+
 * Wed Jan 18 2012 Derek Weitzel <dweitzel@cse.unl.edu> - 1.9.5.23-6
 - Fixing patch command for sl6
 
