@@ -1,0 +1,740 @@
+Index: modules/srmclient/bin/srmping
+===================================================================
+--- modules/srmclient/bin/srmping	(revision 15951)
++++ modules/srmclient/bin/srmping	(working copy)
+@@ -4,14 +4,12 @@
+ commanddir=`dirname $command`
+ OUR_PATH=`dirname $commanddir`
+ 
+-if [ "$SRM_PATH" != "" -a "$SRM_PATH" != "${OUR_PATH}" ]
++if [ -e /etc/sysconfig/dcache-srmclient ]; then
++. /etc/sysconfig/dcache-srmclient
++fi
++
++if [ "$SRM_PATH" = "" ]
+     then
+-    echo "WARNING: SRM_PATH is defined, but does not point to the expected place " 2>&1
+-    echo "WARNING: a wrong version of srm client may be executed " 2>&1
+-    echo "WARNING: SRM_PATH=$SRM_PATH " 2>&1
+-    echo "WARNING: expected path ${OUR_PATH} " 2>&1
+-elif [ "$SRM_PATH" = "" ]
+-    then
+     SRM_PATH=${OUR_PATH}
+     export SRM_PATH
+ fi
+Index: modules/srmclient/bin/srm-release-files
+===================================================================
+--- modules/srmclient/bin/srm-release-files	(revision 15951)
++++ modules/srmclient/bin/srm-release-files	(working copy)
+@@ -4,14 +4,12 @@
+ commanddir=`dirname $command`
+ OUR_PATH=`dirname $commanddir`
+ 
+-if [ "$SRM_PATH" != "" -a "$SRM_PATH" != "${OUR_PATH}" ]
++if [ -e /etc/sysconfig/dcache-srmclient ]; then
++. /etc/sysconfig/dcache-srmclient
++fi
++
++if [ "$SRM_PATH" = "" ]
+     then
+-    echo "WARNING: SRM_PATH is defined, but does not point to the expected place " 2>&1
+-    echo "WARNING: a wrong version of srm client may be executed " 2>&1
+-    echo "WARNING: SRM_PATH=$SRM_PATH " 2>&1
+-    echo "WARNING: expected path ${OUR_PATH} " 2>&1
+-elif [ "$SRM_PATH" = "" ]
+-    then
+     SRM_PATH=${OUR_PATH}
+     export SRM_PATH
+ fi
+Index: modules/srmclient/bin/command-line-client
+===================================================================
+--- modules/srmclient/bin/command-line-client	(revision 15951)
++++ modules/srmclient/bin/command-line-client	(working copy)
+@@ -4,14 +4,12 @@
+ commanddir=`dirname $command`
+ OUR_PATH=`dirname $commanddir`
+ 
+-if [ "$SRM_PATH" != "" -a "$SRM_PATH" != "${OUR_PATH}" ]
++if [ -e /etc/sysconfig/dcache-srmclient ]; then
++. /etc/sysconfig/dcache-srmclient
++fi
++
++if [ "$SRM_PATH" = "" ]
+     then
+-    echo "WARNING: SRM_PATH is defined, but does not point to the expected place " 2>&1
+-    echo "WARNING: a wrong version of srm client may be executed " 2>&1
+-    echo "WARNING: SRM_PATH=$SRM_PATH " 2>&1
+-    echo "WARNING: expected path ${OUR_PATH} " 2>&1
+-elif [ "$SRM_PATH" = "" ]
+-    then
+     SRM_PATH=${OUR_PATH}
+     export SRM_PATH
+ fi
+Index: modules/srmclient/bin/srmcp
+===================================================================
+--- modules/srmclient/bin/srmcp	(revision 15951)
++++ modules/srmclient/bin/srmcp	(working copy)
+@@ -4,14 +4,12 @@
+ commanddir=`dirname $command`
+ OUR_PATH=`dirname $commanddir`
+ 
+-if [ "$SRM_PATH" != "" -a "$SRM_PATH" != "${OUR_PATH}" ]
++if [ -e /etc/sysconfig/dcache-srmclient ]; then
++. /etc/sysconfig/dcache-srmclient
++fi
++
++if [ "$SRM_PATH" = "" ]
+     then
+-    echo "WARNING: SRM_PATH is defined, but does not point to the expected place " 2>&1
+-    echo "WARNING: a wrong version of srm client may be executed " 2>&1
+-    echo "WARNING: SRM_PATH=$SRM_PATH " 2>&1
+-    echo "WARNING: expected path ${OUR_PATH} " 2>&1
+-elif [ "$SRM_PATH" = "" ]
+-    then
+     SRM_PATH=${OUR_PATH}
+     export SRM_PATH
+ fi
+Index: modules/srmclient/bin/srmstage
+===================================================================
+--- modules/srmclient/bin/srmstage	(revision 15951)
++++ modules/srmclient/bin/srmstage	(working copy)
+@@ -4,14 +4,12 @@
+ commanddir=`dirname $command`
+ OUR_PATH=`dirname $commanddir`
+ 
+-if [ "$SRM_PATH" != "" -a "$SRM_PATH" != "${OUR_PATH}" ]
++if [ -e /etc/sysconfig/dcache-srmclient ]; then
++. /etc/sysconfig/dcache-srmclient
++fi
++
++if [ "$SRM_PATH" = "" ]
+     then
+-    echo "WARNING: SRM_PATH is defined, but does not point to the expected place " 2>&1
+-    echo "WARNING: a wrong version of srm client may be executed " 2>&1
+-    echo "WARNING: SRM_PATH=$SRM_PATH " 2>&1
+-    echo "WARNING: expected path ${OUR_PATH} " 2>&1
+-elif [ "$SRM_PATH" = "" ]
+-    then
+     SRM_PATH=${OUR_PATH}
+     export SRM_PATH
+ fi
+Index: modules/srmclient/bin/srm-get-space-metadata
+===================================================================
+--- modules/srmclient/bin/srm-get-space-metadata	(revision 15951)
++++ modules/srmclient/bin/srm-get-space-metadata	(working copy)
+@@ -4,14 +4,12 @@
+ commanddir=`dirname $command`
+ OUR_PATH=`dirname $commanddir`
+ 
+-if [ "$SRM_PATH" != "" -a "$SRM_PATH" != "${OUR_PATH}" ]
++if [ -e /etc/sysconfig/dcache-srmclient ]; then
++. /etc/sysconfig/dcache-srmclient
++fi
++
++if [ "$SRM_PATH" = "" ]
+     then
+-    echo "WARNING: SRM_PATH is defined, but does not point to the expected place " 2>&1
+-    echo "WARNING: a wrong version of srm client may be executed " 2>&1
+-    echo "WARNING: SRM_PATH=$SRM_PATH " 2>&1
+-    echo "WARNING: expected path ${OUR_PATH} " 2>&1
+-elif [ "$SRM_PATH" = "" ]
+-    then
+     SRM_PATH=${OUR_PATH}
+     export SRM_PATH
+ fi
+Index: modules/srmclient/bin/srm-check-permissions
+===================================================================
+--- modules/srmclient/bin/srm-check-permissions	(revision 15951)
++++ modules/srmclient/bin/srm-check-permissions	(working copy)
+@@ -4,14 +4,12 @@
+ commanddir=`dirname $command`
+ OUR_PATH=`dirname $commanddir`
+ 
+-if [ "$SRM_PATH" != "" -a "$SRM_PATH" != "${OUR_PATH}" ]
++if [ -e /etc/sysconfig/dcache-srmclient ]; then
++. /etc/sysconfig/dcache-srmclient
++fi
++
++if [ "$SRM_PATH" = "" ]
+     then
+-    echo "WARNING: SRM_PATH is defined, but does not point to the expected place " 2>&1
+-    echo "WARNING: a wrong version of srm client may be executed " 2>&1
+-    echo "WARNING: SRM_PATH=$SRM_PATH " 2>&1
+-    echo "WARNING: expected path ${OUR_PATH} " 2>&1
+-elif [ "$SRM_PATH" = "" ]
+-    then
+     SRM_PATH=${OUR_PATH}
+     export SRM_PATH
+ fi
+Index: modules/srmclient/bin/srm-get-request-status
+===================================================================
+--- modules/srmclient/bin/srm-get-request-status	(revision 15951)
++++ modules/srmclient/bin/srm-get-request-status	(working copy)
+@@ -4,14 +4,12 @@
+ commanddir=`dirname $command`
+ OUR_PATH=`dirname $commanddir`
+ 
+-if [ "$SRM_PATH" != "" -a "$SRM_PATH" != "${OUR_PATH}" ]
++if [ -e /etc/sysconfig/dcache-srmclient ]; then
++. /etc/sysconfig/dcache-srmclient
++fi
++
++if [ "$SRM_PATH" = "" ]
+     then
+-    echo "WARNING: SRM_PATH is defined, but does not point to the expected place " 2>&1
+-    echo "WARNING: a wrong version of srm client may be executed " 2>&1
+-    echo "WARNING: SRM_PATH=$SRM_PATH " 2>&1
+-    echo "WARNING: expected path ${OUR_PATH} " 2>&1
+-elif [ "$SRM_PATH" = "" ]
+-    then
+     SRM_PATH=${OUR_PATH}
+     export SRM_PATH
+ fi
+Index: modules/srmclient/bin/srm-get-permissions
+===================================================================
+--- modules/srmclient/bin/srm-get-permissions	(revision 15951)
++++ modules/srmclient/bin/srm-get-permissions	(working copy)
+@@ -4,14 +4,12 @@
+ commanddir=`dirname $command`
+ OUR_PATH=`dirname $commanddir`
+ 
+-if [ "$SRM_PATH" != "" -a "$SRM_PATH" != "${OUR_PATH}" ]
++if [ -e /etc/sysconfig/dcache-srmclient ]; then
++. /etc/sysconfig/dcache-srmclient
++fi
++
++if [ "$SRM_PATH" = "" ]
+     then
+-    echo "WARNING: SRM_PATH is defined, but does not point to the expected place " 2>&1
+-    echo "WARNING: a wrong version of srm client may be executed " 2>&1
+-    echo "WARNING: SRM_PATH=$SRM_PATH " 2>&1
+-    echo "WARNING: expected path ${OUR_PATH} " 2>&1
+-elif [ "$SRM_PATH" = "" ]
+-    then
+     SRM_PATH=${OUR_PATH}
+     export SRM_PATH
+ fi
+Index: modules/srmclient/bin/gridftpcopy
+===================================================================
+--- modules/srmclient/bin/gridftpcopy	(revision 15951)
++++ modules/srmclient/bin/gridftpcopy	(working copy)
+@@ -4,14 +4,12 @@
+ commanddir=`dirname $command`
+ OUR_PATH=`dirname $commanddir`
+ 
+-if [ "$SRM_PATH" != "" -a "$SRM_PATH" != "${OUR_PATH}" ]
++if [ -e /etc/sysconfig/dcache-srmclient ]; then
++. /etc/sysconfig/dcache-srmclient
++fi
++
++if [ "$SRM_PATH" = "" ]
+     then
+-    echo "WARNING: SRM_PATH is defined, but does not point to the expected place " 2>&1
+-    echo "WARNING: a wrong version of srm client may be executed " 2>&1
+-    echo "WARNING: SRM_PATH=$SRM_PATH " 2>&1
+-    echo "WARNING: expected path ${OUR_PATH} " 2>&1
+-elif [ "$SRM_PATH" = "" ]
+-    then
+     SRM_PATH=${OUR_PATH}
+     export SRM_PATH
+ fi
+Index: modules/srmclient/bin/gridftplist
+===================================================================
+--- modules/srmclient/bin/gridftplist	(revision 15951)
++++ modules/srmclient/bin/gridftplist	(working copy)
+@@ -4,14 +4,8 @@
+ commanddir=`dirname $command`
+ OUR_PATH=`dirname $commanddir`
+ 
+-if [ "$SRM_PATH" != "" -a "$SRM_PATH" != "${OUR_PATH}" ]
++if [ "$SRM_PATH" = "" ]
+     then
+-    echo "WARNING: SRM_PATH is defined, but does not point to the expected place " 2>&1
+-    echo "WARNING: a wrong version of srm client may be executed " 2>&1
+-    echo "WARNING: SRM_PATH=$SRM_PATH " 2>&1
+-    echo "WARNING: expected path ${OUR_PATH} " 2>&1
+-elif [ "$SRM_PATH" = "" ]
+-    then
+     SRM_PATH=${OUR_PATH}
+     export SRM_PATH
+ fi
+Index: modules/srmclient/bin/srm-advisory-delete
+===================================================================
+--- modules/srmclient/bin/srm-advisory-delete	(revision 15951)
++++ modules/srmclient/bin/srm-advisory-delete	(working copy)
+@@ -4,14 +4,12 @@
+ commanddir=`dirname $command`
+ OUR_PATH=`dirname $commanddir`
+ 
+-if [ "$SRM_PATH" != "" -a "$SRM_PATH" != "${OUR_PATH}" ]
++if [ -e /etc/sysconfig/dcache-srmclient ]; then
++. /etc/sysconfig/dcache-srmclient
++fi
++
++if [ "$SRM_PATH" = "" ]
+     then
+-    echo "WARNING: SRM_PATH is defined, but does not point to the expected place " 2>&1
+-    echo "WARNING: a wrong version of srm client may be executed " 2>&1
+-    echo "WARNING: SRM_PATH=$SRM_PATH " 2>&1
+-    echo "WARNING: expected path ${OUR_PATH} " 2>&1
+-elif [ "$SRM_PATH" = "" ]
+-    then
+     SRM_PATH=${OUR_PATH}
+     export SRM_PATH
+ fi
+Index: modules/srmclient/bin/srm-get-request-summary
+===================================================================
+--- modules/srmclient/bin/srm-get-request-summary	(revision 15951)
++++ modules/srmclient/bin/srm-get-request-summary	(working copy)
+@@ -4,14 +4,12 @@
+ commanddir=`dirname $command`
+ OUR_PATH=`dirname $commanddir`
+ 
+-if [ "$SRM_PATH" != "" -a "$SRM_PATH" != "${OUR_PATH}" ]
++if [ -e /etc/sysconfig/dcache-srmclient ]; then
++. /etc/sysconfig/dcache-srmclient
++fi
++
++if [ "$SRM_PATH" = "" ]
+     then
+-    echo "WARNING: SRM_PATH is defined, but does not point to the expected place " 2>&1
+-    echo "WARNING: a wrong version of srm client may be executed " 2>&1
+-    echo "WARNING: SRM_PATH=$SRM_PATH " 2>&1
+-    echo "WARNING: expected path ${OUR_PATH} " 2>&1
+-elif [ "$SRM_PATH" = "" ]
+-    then
+     SRM_PATH=${OUR_PATH}
+     export SRM_PATH
+ fi
+Index: modules/srmclient/bin/srm-set-permissions
+===================================================================
+--- modules/srmclient/bin/srm-set-permissions	(revision 15951)
++++ modules/srmclient/bin/srm-set-permissions	(working copy)
+@@ -4,14 +4,12 @@
+ commanddir=`dirname $command`
+ OUR_PATH=`dirname $commanddir`
+ 
+-if [ "$SRM_PATH" != "" -a "$SRM_PATH" != "${OUR_PATH}" ]
++if [ -e /etc/sysconfig/dcache-srmclient ]; then
++. /etc/sysconfig/dcache-srmclient
++fi
++
++if [ "$SRM_PATH" = "" ]
+     then
+-    echo "WARNING: SRM_PATH is defined, but does not point to the expected place " 2>&1
+-    echo "WARNING: a wrong version of srm client may be executed " 2>&1
+-    echo "WARNING: SRM_PATH=$SRM_PATH " 2>&1
+-    echo "WARNING: expected path ${OUR_PATH} " 2>&1
+-elif [ "$SRM_PATH" = "" ]
+-    then
+     SRM_PATH=${OUR_PATH}
+     export SRM_PATH
+ fi
+Index: modules/srmclient/bin/srm-reserve-space
+===================================================================
+--- modules/srmclient/bin/srm-reserve-space	(revision 15951)
++++ modules/srmclient/bin/srm-reserve-space	(working copy)
+@@ -4,14 +4,12 @@
+ commanddir=`dirname $command`
+ OUR_PATH=`dirname $commanddir`
+ 
+-if [ "$SRM_PATH" != "" -a "$SRM_PATH" != "${OUR_PATH}" ]
++if [ -e /etc/sysconfig/dcache-srmclient ]; then
++. /etc/sysconfig/dcache-srmclient
++fi
++
++if [ "$SRM_PATH" = "" ]
+     then
+-    echo "WARNING: SRM_PATH is defined, but does not point to the expected place " 2>&1
+-    echo "WARNING: a wrong version of srm client may be executed " 2>&1
+-    echo "WARNING: SRM_PATH=$SRM_PATH " 2>&1
+-    echo "WARNING: expected path ${OUR_PATH} " 2>&1
+-elif [ "$SRM_PATH" = "" ]
+-    then
+     SRM_PATH=${OUR_PATH}
+     export SRM_PATH
+ fi
+Index: modules/srmclient/bin/srmmv
+===================================================================
+--- modules/srmclient/bin/srmmv	(revision 15951)
++++ modules/srmclient/bin/srmmv	(working copy)
+@@ -4,14 +4,12 @@
+ commanddir=`dirname $command`
+ OUR_PATH=`dirname $commanddir`
+ 
+-if [ "$SRM_PATH" != "" -a "$SRM_PATH" != "${OUR_PATH}" ]
++if [ -e /etc/sysconfig/dcache-srmclient ]; then
++. /etc/sysconfig/dcache-srmclient
++fi
++
++if [ "$SRM_PATH" = "" ]
+     then
+-    echo "WARNING: SRM_PATH is defined, but does not point to the expected place " 2>&1
+-    echo "WARNING: a wrong version of srm client may be executed " 2>&1
+-    echo "WARNING: SRM_PATH=$SRM_PATH " 2>&1
+-    echo "WARNING: expected path ${OUR_PATH} " 2>&1
+-elif [ "$SRM_PATH" = "" ]
+-    then
+     SRM_PATH=${OUR_PATH}
+     export SRM_PATH
+ fi
+Index: modules/srmclient/bin/srm-abort-files
+===================================================================
+--- modules/srmclient/bin/srm-abort-files	(revision 15951)
++++ modules/srmclient/bin/srm-abort-files	(working copy)
+@@ -4,14 +4,12 @@
+ commanddir=`dirname $command`
+ OUR_PATH=`dirname $commanddir`
+ 
+-if [ "$SRM_PATH" != "" -a "$SRM_PATH" != "${OUR_PATH}" ]
++if [ -e /etc/sysconfig/dcache-srmclient ]; then
++. /etc/sysconfig/dcache-srmclient
++fi
++
++if [ "$SRM_PATH" = "" ]
+     then
+-    echo "WARNING: SRM_PATH is defined, but does not point to the expected place " 2>&1
+-    echo "WARNING: a wrong version of srm client may be executed " 2>&1
+-    echo "WARNING: SRM_PATH=$SRM_PATH " 2>&1
+-    echo "WARNING: expected path ${OUR_PATH} " 2>&1
+-elif [ "$SRM_PATH" = "" ]
+-    then
+     SRM_PATH=${OUR_PATH}
+     export SRM_PATH
+ fi
+Index: modules/srmclient/bin/srm_v1
+===================================================================
+--- modules/srmclient/bin/srm_v1	(revision 15951)
++++ modules/srmclient/bin/srm_v1	(working copy)
+@@ -4,14 +4,12 @@
+ commanddir=`dirname $command`
+ OUR_PATH=`dirname $commanddir`
+ 
+-if [ "$SRM_PATH" != "" -a "$SRM_PATH" != "${OUR_PATH}" ]
++if [ -e /etc/sysconfig/dcache-srmclient ]; then
++. /etc/sysconfig/dcache-srmclient
++fi
++
++if [ "$SRM_PATH" = "" ]
+     then
+-    echo "WARNING: SRM_PATH is defined, but does not point to the expected place " 2>&1
+-    echo "WARNING: a wrong version of srm client may be executed " 2>&1
+-    echo "WARNING: SRM_PATH=$SRM_PATH " 2>&1
+-    echo "WARNING: expected path ${OUR_PATH} " 2>&1
+-elif [ "$SRM_PATH" = "" ]
+-    then
+     SRM_PATH=${OUR_PATH}
+     export SRM_PATH
+ fi
+Index: modules/srmclient/bin/srm-get-space-tokens
+===================================================================
+--- modules/srmclient/bin/srm-get-space-tokens	(revision 15951)
++++ modules/srmclient/bin/srm-get-space-tokens	(working copy)
+@@ -4,14 +4,12 @@
+ commanddir=`dirname $command`
+ OUR_PATH=`dirname $commanddir`
+ 
+-if [ "$SRM_PATH" != "" -a "$SRM_PATH" != "${OUR_PATH}" ]
++if [ -e /etc/sysconfig/dcache-srmclient ]; then
++. /etc/sysconfig/dcache-srmclient
++fi
++
++if [ "$SRM_PATH" = "" ]
+     then
+-    echo "WARNING: SRM_PATH is defined, but does not point to the expected place " 2>&1
+-    echo "WARNING: a wrong version of srm client may be executed " 2>&1
+-    echo "WARNING: SRM_PATH=$SRM_PATH " 2>&1
+-    echo "WARNING: expected path ${OUR_PATH} " 2>&1
+-elif [ "$SRM_PATH" = "" ]
+-    then
+     SRM_PATH=${OUR_PATH}
+     export SRM_PATH
+ fi
+Index: modules/srmclient/bin/srm-release-space
+===================================================================
+--- modules/srmclient/bin/srm-release-space	(revision 15951)
++++ modules/srmclient/bin/srm-release-space	(working copy)
+@@ -4,14 +4,12 @@
+ commanddir=`dirname $command`
+ OUR_PATH=`dirname $commanddir`
+ 
+-if [ "$SRM_PATH" != "" -a "$SRM_PATH" != "${OUR_PATH}" ]
++if [ -e /etc/sysconfig/dcache-srmclient ]; then
++. /etc/sysconfig/dcache-srmclient
++fi
++
++if [ "$SRM_PATH" = "" ]
+     then
+-    echo "WARNING: SRM_PATH is defined, but does not point to the expected place " 2>&1
+-    echo "WARNING: a wrong version of srm client may be executed " 2>&1
+-    echo "WARNING: SRM_PATH=$SRM_PATH " 2>&1
+-    echo "WARNING: expected path ${OUR_PATH} " 2>&1
+-elif [ "$SRM_PATH" = "" ]
+-    then
+     SRM_PATH=${OUR_PATH}
+     export SRM_PATH
+ fi
+Index: modules/srmclient/bin/srm-bring-online
+===================================================================
+--- modules/srmclient/bin/srm-bring-online	(revision 15951)
++++ modules/srmclient/bin/srm-bring-online	(working copy)
+@@ -4,14 +4,12 @@
+ commanddir=`dirname $command`
+ OUR_PATH=`dirname $commanddir`
+ 
+-if [ "$SRM_PATH" != "" -a "$SRM_PATH" != "${OUR_PATH}" ]
++if [ -e /etc/sysconfig/dcache-srmclient ]; then
++. /etc/sysconfig/dcache-srmclient
++fi
++
++if [ "$SRM_PATH" = "" ]
+     then
+-    echo "WARNING: SRM_PATH is defined, but does not point to the expected place " 2>&1
+-    echo "WARNING: a wrong version of srm client may be executed " 2>&1
+-    echo "WARNING: SRM_PATH=$SRM_PATH " 2>&1
+-    echo "WARNING: expected path ${OUR_PATH} " 2>&1
+-elif [ "$SRM_PATH" = "" ]
+-    then
+     SRM_PATH=${OUR_PATH}
+     export SRM_PATH
+ fi
+Index: modules/srmclient/bin/srm-storage-element-info
+===================================================================
+--- modules/srmclient/bin/srm-storage-element-info	(revision 15951)
++++ modules/srmclient/bin/srm-storage-element-info	(working copy)
+@@ -4,14 +4,12 @@
+ commanddir=`dirname $command`
+ OUR_PATH=`dirname $commanddir`
+ 
+-if [ "$SRM_PATH" != "" -a "$SRM_PATH" != "${OUR_PATH}" ]
++if [ -e /etc/sysconfig/dcache-srmclient ]; then
++. /etc/sysconfig/dcache-srmclient
++fi
++
++if [ "$SRM_PATH" = "" ]
+     then
+-    echo "WARNING: SRM_PATH is defined, but does not point to the expected place " 2>&1
+-    echo "WARNING: a wrong version of srm client may be executed " 2>&1
+-    echo "WARNING: SRM_PATH=$SRM_PATH " 2>&1
+-    echo "WARNING: expected path ${OUR_PATH} " 2>&1
+-elif [ "$SRM_PATH" = "" ]
+-    then
+     SRM_PATH=${OUR_PATH}
+     export SRM_PATH
+ fi
+Index: modules/srmclient/bin/srmmkdir
+===================================================================
+--- modules/srmclient/bin/srmmkdir	(revision 15951)
++++ modules/srmclient/bin/srmmkdir	(working copy)
+@@ -4,14 +4,12 @@
+ commanddir=`dirname $command`
+ OUR_PATH=`dirname $commanddir`
+ 
+-if [ "$SRM_PATH" != "" -a "$SRM_PATH" != "${OUR_PATH}" ]
++if [ -e /etc/sysconfig/dcache-srmclient ]; then
++. /etc/sysconfig/dcache-srmclient
++fi
++
++if [ "$SRM_PATH" = "" ]
+     then
+-    echo "WARNING: SRM_PATH is defined, but does not point to the expected place " 2>&1
+-    echo "WARNING: a wrong version of srm client may be executed " 2>&1
+-    echo "WARNING: SRM_PATH=$SRM_PATH " 2>&1
+-    echo "WARNING: expected path ${OUR_PATH} " 2>&1
+-elif [ "$SRM_PATH" = "" ]
+-    then
+     SRM_PATH=${OUR_PATH}
+     export SRM_PATH
+ fi
+Index: modules/srmclient/bin/srm-get-metadata
+===================================================================
+--- modules/srmclient/bin/srm-get-metadata	(revision 15951)
++++ modules/srmclient/bin/srm-get-metadata	(working copy)
+@@ -4,14 +4,12 @@
+ commanddir=`dirname $command`
+ OUR_PATH=`dirname $commanddir`
+ 
+-if [ "$SRM_PATH" != "" -a "$SRM_PATH" != "${OUR_PATH}" ]
++if [ -e /etc/sysconfig/dcache-srmclient ]; then
++. /etc/sysconfig/dcache-srmclient
++fi
++
++if [ "$SRM_PATH" = "" ]
+     then
+-    echo "WARNING: SRM_PATH is defined, but does not point to the expected place " 2>&1
+-    echo "WARNING: a wrong version of srm client may be executed " 2>&1
+-    echo "WARNING: SRM_PATH=$SRM_PATH " 2>&1
+-    echo "WARNING: expected path ${OUR_PATH} " 2>&1
+-elif [ "$SRM_PATH" = "" ]
+-    then
+     SRM_PATH=${OUR_PATH}
+     export SRM_PATH
+ fi
+Index: modules/srmclient/bin/srm-abort-request
+===================================================================
+--- modules/srmclient/bin/srm-abort-request	(revision 15951)
++++ modules/srmclient/bin/srm-abort-request	(working copy)
+@@ -4,14 +4,12 @@
+ commanddir=`dirname $command`
+ OUR_PATH=`dirname $commanddir`
+ 
+-if [ "$SRM_PATH" != "" -a "$SRM_PATH" != "${OUR_PATH}" ]
++if [ -e /etc/sysconfig/dcache-srmclient ]; then
++. /etc/sysconfig/dcache-srmclient
++fi
++
++if [ "$SRM_PATH" = "" ]
+     then
+-    echo "WARNING: SRM_PATH is defined, but does not point to the expected place " 2>&1
+-    echo "WARNING: a wrong version of srm client may be executed " 2>&1
+-    echo "WARNING: SRM_PATH=$SRM_PATH " 2>&1
+-    echo "WARNING: expected path ${OUR_PATH} " 2>&1
+-elif [ "$SRM_PATH" = "" ]
+-    then
+     SRM_PATH=${OUR_PATH}
+     export SRM_PATH
+ fi
+Index: modules/srmclient/bin/adler32
+===================================================================
+--- modules/srmclient/bin/adler32	(revision 15951)
++++ modules/srmclient/bin/adler32	(working copy)
+@@ -4,14 +4,12 @@
+ commanddir=`dirname $command`
+ OUR_PATH=`dirname $commanddir`
+ 
+-if [ "$SRM_PATH" != "" -a "$SRM_PATH" != "${OUR_PATH}" ]
++if [ -e /etc/sysconfig/dcache-srmclient ]; then
++. /etc/sysconfig/dcache-srmclient
++fi
++
++if [ "$SRM_PATH" = "" ]
+     then
+-    echo "WARNING: SRM_PATH is defined, but does not point to the expected place " 2>&1
+-    echo "WARNING: a wrong version of srm client may be executed " 2>&1
+-    echo "WARNING: SRM_PATH=$SRM_PATH " 2>&1
+-    echo "WARNING: expected path ${OUR_PATH} " 2>&1
+-elif [ "$SRM_PATH" = "" ]
+-    then
+     SRM_PATH=${OUR_PATH}
+     export SRM_PATH
+ fi
+Index: modules/srmclient/bin/srm-extend-file-lifetime
+===================================================================
+--- modules/srmclient/bin/srm-extend-file-lifetime	(revision 15951)
++++ modules/srmclient/bin/srm-extend-file-lifetime	(working copy)
+@@ -4,14 +4,12 @@
+ commanddir=`dirname $command`
+ OUR_PATH=`dirname $commanddir`
+ 
+-if [ "$SRM_PATH" != "" -a "$SRM_PATH" != "${OUR_PATH}" ]
++if [ -e /etc/sysconfig/dcache-srmclient ]; then
++. /etc/sysconfig/dcache-srmclient
++fi
++
++if [ "$SRM_PATH" = "" ]
+     then
+-    echo "WARNING: SRM_PATH is defined, but does not point to the expected place " 2>&1
+-    echo "WARNING: a wrong version of srm client may be executed " 2>&1
+-    echo "WARNING: SRM_PATH=$SRM_PATH " 2>&1
+-    echo "WARNING: expected path ${OUR_PATH} " 2>&1
+-elif [ "$SRM_PATH" = "" ]
+-    then
+     SRM_PATH=${OUR_PATH}
+     export SRM_PATH
+ fi
+Index: modules/srmclient/bin/srmrmdir
+===================================================================
+--- modules/srmclient/bin/srmrmdir	(revision 15951)
++++ modules/srmclient/bin/srmrmdir	(working copy)
+@@ -4,14 +4,12 @@
+ commanddir=`dirname $command`
+ OUR_PATH=`dirname $commanddir`
+ 
+-if [ "$SRM_PATH" != "" -a "$SRM_PATH" != "${OUR_PATH}" ]
++if [ -e /etc/sysconfig/dcache-srmclient ]; then
++. /etc/sysconfig/dcache-srmclient
++fi
++
++if [ "$SRM_PATH" = "" ]
+     then
+-    echo "WARNING: SRM_PATH is defined, but does not point to the expected place " 2>&1
+-    echo "WARNING: a wrong version of srm client may be executed " 2>&1
+-    echo "WARNING: SRM_PATH=$SRM_PATH " 2>&1
+-    echo "WARNING: expected path ${OUR_PATH} " 2>&1
+-elif [ "$SRM_PATH" = "" ]
+-    then
+     SRM_PATH=${OUR_PATH}
+     export SRM_PATH
+ fi
+Index: modules/srmclient/bin/srmls
+===================================================================
+--- modules/srmclient/bin/srmls	(revision 15951)
++++ modules/srmclient/bin/srmls	(working copy)
+@@ -4,14 +4,12 @@
+ commanddir=`dirname $command`
+ OUR_PATH=`dirname $commanddir`
+ 
+-if [ "$SRM_PATH" != "" -a "$SRM_PATH" != "${OUR_PATH}" ]
++if [ -e /etc/sysconfig/dcache-srmclient ]; then
++. /etc/sysconfig/dcache-srmclient
++fi
++
++if [ "$SRM_PATH" = "" ]
+     then
+-    echo "WARNING: SRM_PATH is defined, but does not point to the expected place " 2>&1
+-    echo "WARNING: a wrong version of srm client may be executed " 2>&1
+-    echo "WARNING: SRM_PATH=$SRM_PATH " 2>&1
+-    echo "WARNING: expected path ${OUR_PATH} " 2>&1
+-elif [ "$SRM_PATH" = "" ]
+-    then
+     SRM_PATH=${OUR_PATH}
+     export SRM_PATH
+ fi
+Index: modules/srmclient/bin/srmrm
+===================================================================
+--- modules/srmclient/bin/srmrm	(revision 15951)
++++ modules/srmclient/bin/srmrm	(working copy)
+@@ -4,14 +4,12 @@
+ commanddir=`dirname $command`
+ OUR_PATH=`dirname $commanddir`
+ 
+-if [ "$SRM_PATH" != "" -a "$SRM_PATH" != "${OUR_PATH}" ]
++if [ -e /etc/sysconfig/dcache-srmclient ]; then
++. /etc/sysconfig/dcache-srmclient
++fi
++
++if [ "$SRM_PATH" = "" ]
+     then
+-    echo "WARNING: SRM_PATH is defined, but does not point to the expected place " 2>&1
+-    echo "WARNING: a wrong version of srm client may be executed " 2>&1
+-    echo "WARNING: SRM_PATH=$SRM_PATH " 2>&1
+-    echo "WARNING: expected path ${OUR_PATH} " 2>&1
+-elif [ "$SRM_PATH" = "" ]
+-    then
+     SRM_PATH=${OUR_PATH}
+     export SRM_PATH
+ fi
+Index: modules/srmclient/bin/srm-get-request-tokens
+===================================================================
+--- modules/srmclient/bin/srm-get-request-tokens	(revision 15951)
++++ modules/srmclient/bin/srm-get-request-tokens	(working copy)
+@@ -4,14 +4,12 @@
+ commanddir=`dirname $command`
+ OUR_PATH=`dirname $commanddir`
+ 
+-if [ "$SRM_PATH" != "" -a "$SRM_PATH" != "${OUR_PATH}" ]
++if [ -e /etc/sysconfig/dcache-srmclient ]; then
++. /etc/sysconfig/dcache-srmclient
++fi
++
++if [ "$SRM_PATH" = "" ]
+     then
+-    echo "WARNING: SRM_PATH is defined, but does not point to the expected place " 2>&1
+-    echo "WARNING: a wrong version of srm client may be executed " 2>&1
+-    echo "WARNING: SRM_PATH=$SRM_PATH " 2>&1
+-    echo "WARNING: expected path ${OUR_PATH} " 2>&1
+-elif [ "$SRM_PATH" = "" ]
+-    then
+     SRM_PATH=${OUR_PATH}
+     export SRM_PATH
+ fi
