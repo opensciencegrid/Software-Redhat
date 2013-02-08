@@ -1,6 +1,6 @@
 Name:           osg-release
-Version:        3.0 
-Release:        21%{?dist}
+Version:        3.0
+Release:        22%{?dist}
 Summary:        OSG Software for Enterprise Linux repository configuration
 
 Group:          System Environment/Base 
@@ -26,7 +26,19 @@ Source13:        osg-el6-minefield.repo
 Source14:        osg-el6-contrib.repo
 Source15:        osg-el6-prerelease.repo
 
-Source20:        RPM-GPG-KEY-OSG
+Source20:        osg-upcoming.repo
+Source21:        osg-upcoming-development.repo
+Source22:        osg-upcoming-testing.repo
+Source23:        osg-upcoming-minefield.repo
+Source24:        osg-upcoming-prerelease.repo
+
+Source30:        osg-el6-upcoming.repo
+Source31:        osg-el6-upcoming-development.repo
+Source32:        osg-el6-upcoming-testing.repo
+Source33:        osg-el6-upcoming-minefield.repo
+Source34:        osg-el6-upcoming-prerelease.repo
+
+Source40:        RPM-GPG-KEY-OSG
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -56,16 +68,16 @@ rm -rf $RPM_BUILD_ROOT
 
 #GPG Key
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/pki/rpm-gpg
-install -pm 644 %{SOURCE20} \
+install -pm 644 %{SOURCE40} \
     $RPM_BUILD_ROOT%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-OSG
 
 # yum
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d
 
 %if 0%{?el6}
-install -pm 644 %{SOURCE10} %{SOURCE11} %{SOURCE12} %{SOURCE13} %{SOURCE14} %{SOURCE15} $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d
+install -pm 644 $RPM_SOURCE_DIR/osg-el6*.repo $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d
 %else
-install -pm 644 %{SOURCE0} %{SOURCE1} %{SOURCE2} %{SOURCE3} %{SOURCE4} %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d
+install -pm 644 $RPM_SOURCE_DIR/osg.repo $RPM_SOURCE_DIR/osg-[^e][^l][^6]*.repo $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d
 %endif
 
 %clean
@@ -78,6 +90,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Feb 07 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 3.0-22
+- Add *upcoming* repos
+
 * Thu Apr 26 2012 Derek Weitzel <dweitzel@cse.unl.edu> - 3.0-21
 - Changing Requires back to redhat-release > [5|6]
 
