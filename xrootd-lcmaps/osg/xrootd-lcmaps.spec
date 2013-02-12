@@ -1,7 +1,7 @@
 
 Name: xrootd-lcmaps
 Version: 0.0.7
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: LCMAPS plugin for xrootd
 
 Group: System Environment/Daemons
@@ -53,6 +53,9 @@ getent passwd xrootd >/dev/null || \
 %config(noreplace) %{_sysconfdir}/xrootd/lcmaps.cfg
 
 %changelog
+* Tue Feb 12 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 0.0.7-3
+- Bump to rebuild against xrootd-3.3.0-rc3
+
 * Tue Nov 20 2012 Doug Strain <dstrain@fnal.gov> - 0.0.7-2
 - Fix permissions of lcmaps.cfg
 
