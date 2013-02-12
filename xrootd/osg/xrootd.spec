@@ -1,15 +1,17 @@
 #-------------------------------------------------------------------------------
 # We assume the xrootd user when building for the OSG
 #-------------------------------------------------------------------------------
+%if "0%{?dist}" == "0.osg.el%{?rhel}"
 %define _with_xrootd_user 1
+%endif
 
 #-------------------------------------------------------------------------------
 # Package definitions
 #-------------------------------------------------------------------------------
 Name:      xrootd
 Epoch:     1
-Version:   3.2.7
-Release:   2%{?dist}%{?_with_xrootd_user:.xu}
+Version:   3.3.0
+Release:   0.rc3%{?dist}%{?_with_xrootd_user:.xu}
 Summary:   An extended root daemon (xrootd)
 Group:     System Environment/Daemons
 License:   BSD
@@ -28,6 +30,10 @@ BuildRequires: libxml2-devel krb5-devel zlib-devel ncurses-devel
 # Perl packaging changed on SLC6 - we require perl-devel to build
 %if 0%{?rhel} >= 6 || %{?fedora}%{!?fedora:0} >= 15
 BuildRequires: perl-devel
+%endif
+
+%if %{?_with_tests:1}%{!?_with_tests:0}
+BuildRequires: cppunit-devel
 %endif
 
 %description
@@ -54,6 +60,28 @@ Requires: %{name}-libs-devel = %{epoch}:%{version}-%{release}
 Requires: %{name}-client = %{epoch}:%{version}-%{release}
 %description client-devel
 Headers for compiling against xrootd-client
+
+#-------------------------------------------------------------------------------
+# new client
+#-------------------------------------------------------------------------------
+%package cl
+Summary: The new XRootD client
+Group:   System Environment/Applications
+Requires: %{name}-libs = %{epoch}:%{version}-%{release}
+%description cl
+The new XRootD client software.
+
+#-------------------------------------------------------------------------------
+# new client devel
+#-------------------------------------------------------------------------------
+%package cl-devel
+Summary: Headers for compiling against xrootd-cl
+Group:   System Environment/Libraries
+Requires: %{name}-libs = %{epoch}:%{version}-%{release}
+Requires: %{name}-libs-devel = %{epoch}:%{version}-%{release}
+Requires: %{name}-cl = %{epoch}:%{version}-%{release}
+%description cl-devel
+Headers for compiling against xrootd-cl
 
 #-------------------------------------------------------------------------------
 # fuse
@@ -119,6 +147,16 @@ Requires: %{name}-libs = %{epoch}:%{version}-%{release}
 Headers for compiling against xrootd-libs
 
 #-------------------------------------------------------------------------------
+# private devel
+#-------------------------------------------------------------------------------
+%package private-devel
+Summary: Transitional package holding some private headers
+Group:   System Environment/Libraries
+Requires: %{name}-libs = %{epoch}:%{version}-%{release}
+%description private-devel
+Transitional package holding some private headers
+
+#-------------------------------------------------------------------------------
 # admin perl
 #-------------------------------------------------------------------------------
 %package client-admin-perl
@@ -132,6 +170,18 @@ This package contains a swig generated xrootd client administration
 Perl module.
 
 #-------------------------------------------------------------------------------
+# tests
+#-------------------------------------------------------------------------------
+%if %{?_with_tests:1}%{!?_with_tests:0}
+%package tests
+Summary: CPPUnit tests
+Group:   Development/Tools
+Requires: %{name}-cl = %{epoch}:%{version}-%{release}
+%description tests
+This package contains a set of CPPUnit tests for xrootd.
+%endif
+
+#-------------------------------------------------------------------------------
 # Build instructions
 #-------------------------------------------------------------------------------
 %prep
@@ -141,7 +191,13 @@ Perl module.
 cd %{name}
 mkdir build
 cd build
+
+%if %{?_with_tests:1}%{!?_with_tests:0}
+cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=RelWithDebInfo -DENABLE_TESTS=TRUE ../
+%else
 cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=RelWithDebInfo ../
+%endif
+
 make VERBOSE=1 %{?_smp_mflags}
 
 #-------------------------------------------------------------------------------
@@ -194,7 +250,7 @@ install -m 644 packaging/common/xrootd-standalone.cfg $RPM_BUILD_ROOT%{_sysconfd
 mkdir -p $RPM_BUILD_ROOT%{perl_vendorarch}/auto/XrdClientAdmin
 mv $RPM_BUILD_ROOT/%{_libdir}/XrdClientAdmin.pm \
    $RPM_BUILD_ROOT%{perl_vendorarch}
-mv $RPM_BUILD_ROOT/%{_libdir}/libXrdClientAdmin.so* \
+mv $RPM_BUILD_ROOT/%{_libdir}/XrdClientAdmin.so \
    $RPM_BUILD_ROOT%{perl_vendorarch}/auto/XrdClientAdmin
 
 %clean
@@ -281,22 +337,25 @@ exit 0
 %{_libdir}/libXrdSec*.so*
 %{_libdir}/libXrdCrypto*.so*
 %{_libdir}/libXrdUtils.so*
+%{_libdir}/libXrdCksCalc*.so*
 %{_libdir}/libXrdMain.so*
+%{_libdir}/libXrdAppUtils.so*
 
 %files libs-devel
 %defattr(-,root,root,-)
 %{_includedir}/%{name}/XrdVersion.hh
+%{_includedir}/%{name}/XrdVersionPlugin.hh
 %{_includedir}/%{name}/XrdSec
-%{_includedir}/%{name}/XrdSecsss
-%{_includedir}/%{name}/XrdSecgsi
-%{_includedir}/%{name}/XrdCrypto
-%{_includedir}/%{name}/XrdSut
 %{_includedir}/%{name}/XrdNet
 %{_includedir}/%{name}/XrdOuc
 %{_includedir}/%{name}/XrdSys
 %{_includedir}/%{name}/Xrd
 %{_includedir}/%{name}/XProtocol
 %{_includedir}/%{name}/XrdCks
+
+%files private-devel
+%defattr(-,root,root,-)
+%{_includedir}/%{name}/private
 
 %files client
 %defattr(-,root,root,-)
@@ -307,12 +366,15 @@ exit 0
 %{_bindir}/xprep
 %{_bindir}/xrd
 %{_bindir}/xrdcp
+%{_bindir}/xrdcp-old
 %{_bindir}/xrdgsiproxy
 %{_bindir}/xrdstagetool
+%{_bindir}/xrdadler32
 %doc %{_mandir}/man1/xprep.1.gz
 %doc %{_mandir}/man1/xrd.1.gz
 %doc %{_mandir}/man1/xrdadler32.1.gz
 %doc %{_mandir}/man1/xrdcp.1.gz
+%doc %{_mandir}/man1/xrdcp-old.1.gz
 %doc %{_mandir}/man1/xrdstagetool.1.gz
 %doc %{_mandir}/man1/xrdgsiproxy.1.gz
 
@@ -320,7 +382,18 @@ exit 0
 %defattr(-,root,root,-)
 %{_includedir}/%{name}/XrdClient
 %{_includedir}/%{name}/XrdPosix
-%{_includedir}/%{name}/XrdFfs
+
+%files cl
+%defattr(-,root,root,-)
+%{_libdir}/libXrdCl.so*
+%{_bindir}/xrdcopy
+%{_bindir}/xrdfs
+%doc %{_mandir}/man1/xrdfs.1.gz
+%doc %{_mandir}/man1/xrdcopy.1.gz
+
+%files cl-devel
+%defattr(-,root,root,-)
+%{_includedir}/%{name}/XrdCl
 
 %files fuse
 %defattr(-,root,root,-)
@@ -345,7 +418,6 @@ exit 0
 %{_bindir}/frm_xfrd
 %{_bindir}/mpxstats
 %{_bindir}/wait41
-%{_bindir}/xrdadler32
 %{_bindir}/XrdCnsd
 %{_bindir}/xrdpwdadmin
 %{_bindir}/xrdsssadmin
@@ -354,6 +426,7 @@ exit 0
 %{_libdir}/libXrdPss*.so*
 %{_libdir}/libXrdOfs*.so*
 %{_libdir}/libXrdServer.so*
+%{_libdir}/libXrdXrootd.so*
 %doc %{_mandir}/man8/*
 
 %config(noreplace) %{_sysconfdir}/sysconfig/%{name}
@@ -383,23 +456,34 @@ exit 0
 %files server-devel
 %defattr(-,root,root,-)
 %{_includedir}/%{name}/XrdAcc
-%{_includedir}/%{name}/XrdBwm
 %{_includedir}/%{name}/XrdCms
-%{_includedir}/%{name}/XrdOfs
 %{_includedir}/%{name}/XrdOss
-%{_includedir}/%{name}/XrdPss
-%{_includedir}/%{name}/XrdFrc
 %{_includedir}/%{name}/XrdSfs
+%{_includedir}/%{name}/XrdXrootd
 
 %files client-admin-perl
 %defattr(-,root,root,-)
 %{perl_vendorarch}/XrdClientAdmin.pm
 %{perl_vendorarch}/auto/XrdClientAdmin
 
+%if %{?_with_tests:1}%{!?_with_tests:0}
+%files tests
+%defattr(-,root,root,-)
+%{_bindir}/text-runner
+%{_libdir}/libXrdClTests.so
+%{_libdir}/libXrdClTestsHelper.so
+%{_libdir}/libXrdClTestMonitor.so
+%endif
+
 #-------------------------------------------------------------------------------
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Mon Feb 11 2013 Matyas Selmeci <matyas@cs.wisc.edu> 3.3.0-0.rc3
+- Merge upstream 3.3.0-rc3:
+    * Thu Nov 1 2012 Justin Salmon <jsalmon@cern.ch> 3.3.0?
+    - add tests package
+
 * Mon Dec 17 2012 Doug Strain <dstrain@fnal.gov> 3.2.7-1
 - Updated to xrootd 3.2.7.
 
