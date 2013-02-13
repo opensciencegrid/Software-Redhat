@@ -5,8 +5,8 @@
 Name:           glideinwms
 
 %if %{v2_plus}
-%define version 2.6.3
-%define release 0.rc2.6
+%define version 2.7.0
+%define release 0.rc0.1
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
 %endif
@@ -228,10 +228,27 @@ install -m 0500 creation/info_glidein $RPM_BUILD_ROOT%{_sbindir}/
 # install the library parts
 # FIXME: Need to create a subdirectory for vofrontend python files
 install -d $RPM_BUILD_ROOT%{python_sitelib}
-cp lib/*.py $RPM_BUILD_ROOT%{python_sitelib}
-cp frontend/*.py $RPM_BUILD_ROOT/%{python_sitelib}
-cp factory/*.py $RPM_BUILD_ROOT/%{python_sitelib}
-cp creation/lib/*.py $RPM_BUILD_ROOT%{python_sitelib}
+cp -r ../glideinwms $RPM_BUILD_ROOT%{python_sitelib}
+# Some of the files are not needed by RPM
+rm -Rf $RPM_BUILD_ROOT%{python_sitelib}/glideinwms/install
+rm -Rf $RPM_BUILD_ROOT%{python_sitelib}/glideinwms/doc
+rm -Rf $RPM_BUILD_ROOT%{python_sitelib}/glideinwms/etc
+rm -Rf $RPM_BUILD_ROOT%{python_sitelib}/glideinwms/creation/config_examples
+rm -f $RPM_BUILD_ROOT%{python_sitelib}/glideinwms/.gitattributes
+rm -Rf $RPM_BUILD_ROOT%{python_sitelib}/glideinwms/unittests
+rm -f $RPM_BUILD_ROOT%{python_sitelib}/glideinwms/chksum.sh
+rm -f $RPM_BUILD_ROOT%{python_sitelib}/glideinwms/LICENSE.txt
+rm -f $RPM_BUILD_ROOT%{python_sitelib}/glideinwms/ACKNOWLEDGMENTS.txt
+# Put in other places
+rm -Rf $RPM_BUILD_ROOT%{python_sitelib}/glideinwms/creation/web_base
+rm -f $RPM_BUILD_ROOT%{python_sitelib}/glideinwms/creation/add_entry
+rm -f $RPM_BUILD_ROOT%{python_sitelib}/glideinwms/creation/clone_glidein
+rm -f $RPM_BUILD_ROOT%{python_sitelib}/glideinwms/creation/create_condor_tarball
+rm -f $RPM_BUILD_ROOT%{python_sitelib}/glideinwms/creation/create_frontend
+rm -f $RPM_BUILD_ROOT%{python_sitelib}/glideinwms/creation/create_glidein
+rm -f $RPM_BUILD_ROOT%{python_sitelib}/glideinwms/creation/info_glidein
+rm -f $RPM_BUILD_ROOT%{python_sitelib}/glideinwms/creation/reconfig_frontend
+rm -f $RPM_BUILD_ROOT%{python_sitelib}/glideinwms/creation/reconfig_glidein
 
 
 # Install the init.d
@@ -356,8 +373,6 @@ for file in `find factory/tools -type f -maxdepth 1`; do
    newname=`echo $newname | sed -e 's/.*\/\(.*\)/\1/'`
    cp $file $RPM_BUILD_ROOT%{_bindir}/$newname
 done
-cp factory/tools/lib/*.py $RPM_BUILD_ROOT%{python_sitelib}
-cp tools/lib/*.py $RPM_BUILD_ROOT%{python_sitelib}
 cp creation/create_condor_tarball $RPM_BUILD_ROOT%{_bindir}
 
 # Install glidecondor
@@ -458,6 +473,9 @@ rm -rf $RPM_BUILD_ROOT
    
 %files factory
 %defattr(-,gfactory,gfactory,-)
+%doc LICENSE.txt
+%doc ACKNOWLEDGMENTS.txt
+%doc doc
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_sbindir}/checkFactory.py
 %attr(755,root,root) %{_sbindir}/stopFactory.py
@@ -493,176 +511,52 @@ rm -rf $RPM_BUILD_ROOT
 %attr(-, root, root) %dir %{_localstatedir}/log/gwms-factory
 %attr(-, root, root) %dir %{_localstatedir}/log/gwms-factory/client
 %attr(-, gfactory, gfactory) %{_localstatedir}/log/gwms-factory/server
-%{python_sitelib}/cWConsts.py
-%{python_sitelib}/cWConsts.pyc
-%{python_sitelib}/cWConsts.pyo
-%{python_sitelib}/cWDictFile.py
-%{python_sitelib}/cWDictFile.pyc
-%{python_sitelib}/cWDictFile.pyo
-%{python_sitelib}/cWParams.py
-%{python_sitelib}/cWParams.pyc
-%{python_sitelib}/cWParams.pyo
-%{python_sitelib}/cgWConsts.py
-%{python_sitelib}/cgWConsts.pyc
-%{python_sitelib}/cgWConsts.pyo
-%{python_sitelib}/cgWCreate.py
-%{python_sitelib}/cgWCreate.pyc
-%{python_sitelib}/cgWCreate.pyo
-%{python_sitelib}/cgWDictFile.py
-%{python_sitelib}/cgWDictFile.pyc
-%{python_sitelib}/cgWDictFile.pyo
-%{python_sitelib}/cgWParamDict.py
-%{python_sitelib}/cgWParamDict.pyo
-%{python_sitelib}/cgWParamDict.pyc
-%{python_sitelib}/cgWParams.py
-%{python_sitelib}/cgWParams.pyc
-%{python_sitelib}/cgWParams.pyo
-%{python_sitelib}/checkFactory.py
-%{python_sitelib}/checkFactory.pyo
-%{python_sitelib}/checkFactory.pyc
-%{python_sitelib}/condorExe.py
-%{python_sitelib}/condorExe.pyc
-%{python_sitelib}/condorExe.pyo
-%{python_sitelib}/condorLogParser.py
-%{python_sitelib}/condorLogParser.pyc
-%{python_sitelib}/condorLogParser.pyo
-%{python_sitelib}/condorManager.py
-%{python_sitelib}/condorMonitor.py
-%{python_sitelib}/condorPrivsep.py
-%{python_sitelib}/condorPrivsep.pyc
-%{python_sitelib}/condorPrivsep.pyo
-%{python_sitelib}/condorSecurity.py
-%{python_sitelib}/condorSecurity.pyc
-%{python_sitelib}/condorSecurity.pyo
-%{python_sitelib}/exprParser.py
-%{python_sitelib}/exprParser.pyo
-%{python_sitelib}/exprParser.pyc
-%{python_sitelib}/glideFactory.py
-%{python_sitelib}/glideFactory.pyc
-%{python_sitelib}/glideFactory.pyo
-%{python_sitelib}/glideFactoryConfig.py
-%{python_sitelib}/glideFactoryConfig.pyc
-%{python_sitelib}/glideFactoryConfig.pyo
-%{python_sitelib}/glideFactoryDowntimeLib.py
-%{python_sitelib}/glideFactoryDowntimeLib.pyc
-%{python_sitelib}/glideFactoryDowntimeLib.pyo
-%{python_sitelib}/glideFactoryEntry.py
-%{python_sitelib}/glideFactoryEntry.pyc
-%{python_sitelib}/glideFactoryEntry.pyo
-%{python_sitelib}/glideFactoryInterface.py
-%{python_sitelib}/glideFactoryInterface.pyc
-%{python_sitelib}/glideFactoryInterface.pyo
-%{python_sitelib}/glideFactoryLib.py
-%{python_sitelib}/glideFactoryLib.pyc
-%{python_sitelib}/glideFactoryLib.pyo
-%{python_sitelib}/glideFactoryLogParser.py
-%{python_sitelib}/glideFactoryLogParser.pyc
-%{python_sitelib}/glideFactoryLogParser.pyo
-%{python_sitelib}/glideFactoryMonitorAggregator.py
-%{python_sitelib}/glideFactoryMonitorAggregator.pyc
-%{python_sitelib}/glideFactoryMonitorAggregator.pyo
-%{python_sitelib}/glideFactoryMonitoring.py
-%{python_sitelib}/glideFactoryMonitoring.pyo
-%{python_sitelib}/glideFactoryMonitoring.pyc
-%{python_sitelib}/glideFactoryPidLib.py
-%{python_sitelib}/glideFactoryPidLib.pyc
-%{python_sitelib}/glideFactoryPidLib.pyo
-%{python_sitelib}/glideinCmd.py
-%{python_sitelib}/glideinCmd.pyc
-%{python_sitelib}/glideinCmd.pyo
-%{python_sitelib}/glideinMonitor.py
-%{python_sitelib}/glideinMonitor.pyc
-%{python_sitelib}/glideinMonitor.pyo
-%{python_sitelib}/glideinWMSVersion.py
-%{python_sitelib}/glideinWMSVersion.pyc
-%{python_sitelib}/glideinWMSVersion.pyo
-%{python_sitelib}/hashCrypto.py
-%{python_sitelib}/hashCrypto.pyc
-%{python_sitelib}/hashCrypto.pyo
-%{python_sitelib}/ldapMonitor.py
-%{python_sitelib}/ldapMonitor.pyc
-%{python_sitelib}/ldapMonitor.pyo
-%{python_sitelib}/logSupport.py
-%{python_sitelib}/logSupport.pyc
-%{python_sitelib}/logSupport.pyo
-%{python_sitelib}/manageFactoryDowntimes.py
-%{python_sitelib}/manageFactoryDowntimes.pyc
-%{python_sitelib}/manageFactoryDowntimes.pyo
-%{python_sitelib}/pidSupport.py
-%{python_sitelib}/pidSupport.pyc
-%{python_sitelib}/pidSupport.pyo
-%{python_sitelib}/pubCrypto.py
-%{python_sitelib}/pubCrypto.pyc
-%{python_sitelib}/pubCrypto.pyo
-%{python_sitelib}/rrdSupport.py
-%{python_sitelib}/rrdSupport.pyc
-%{python_sitelib}/rrdSupport.pyo
-%{python_sitelib}/stopFactory.py
-%{python_sitelib}/stopFactory.pyc
-%{python_sitelib}/stopFactory.pyo
-%{python_sitelib}/symCrypto.py
-%{python_sitelib}/symCrypto.pyc
-%{python_sitelib}/symCrypto.pyo
-%{python_sitelib}/subprocessSupport.py
-%{python_sitelib}/subprocessSupport.pyc
-%{python_sitelib}/subprocessSupport.pyo
-%{python_sitelib}/test_advertize.py
-%{python_sitelib}/test_advertize.pyc
-%{python_sitelib}/test_advertize.pyo
-%{python_sitelib}/test_cm.py
-%{python_sitelib}/test_cm.pyc
-%{python_sitelib}/test_cm.pyo
-%{python_sitelib}/test_gfi.py
-%{python_sitelib}/test_gfi.pyc
-%{python_sitelib}/test_gfi.pyo
-%{python_sitelib}/timeConversion.py
-%{python_sitelib}/timeConversion.pyc
-%{python_sitelib}/timeConversion.pyo
-%{python_sitelib}/xmlFormat.py
-%{python_sitelib}/xmlFormat.pyc
-%{python_sitelib}/xmlFormat.pyo
-%{python_sitelib}/xmlParse.py
-%{python_sitelib}/xmlParse.pyc
-%{python_sitelib}/xmlParse.pyo
-%{python_sitelib}/analyze.py
-%{python_sitelib}/analyze.pyc
-%{python_sitelib}/analyze.pyo
-%{python_sitelib}/gWftArgsHelper.py
-%{python_sitelib}/gWftArgsHelper.pyc
-%{python_sitelib}/gWftArgsHelper.pyo
-%{python_sitelib}/gWftLogParser.py
-%{python_sitelib}/gWftLogParser.pyc
-%{python_sitelib}/gWftLogParser.pyo
+%{python_sitelib}/glideinwms/__init__.py
+%{python_sitelib}/glideinwms/__init__.pyc
+%{python_sitelib}/glideinwms/__init__.pyo
+%{python_sitelib}/glideinwms/creation/__init__.py
+%{python_sitelib}/glideinwms/creation/__init__.pyc
+%{python_sitelib}/glideinwms/creation/__init__.pyo
+%{python_sitelib}/glideinwms/creation/lib/cWConsts.py
+%{python_sitelib}/glideinwms/creation/lib/cWConsts.pyc
+%{python_sitelib}/glideinwms/creation/lib/cWConsts.pyo
+%{python_sitelib}/glideinwms/creation/lib/cWDictFile.py
+%{python_sitelib}/glideinwms/creation/lib/cWDictFile.pyc
+%{python_sitelib}/glideinwms/creation/lib/cWDictFile.pyo
+%{python_sitelib}/glideinwms/creation/lib/cWParams.py
+%{python_sitelib}/glideinwms/creation/lib/cWParams.pyc
+%{python_sitelib}/glideinwms/creation/lib/cWParams.pyo
+%{python_sitelib}/glideinwms/creation/lib/cgWConsts.py
+%{python_sitelib}/glideinwms/creation/lib/cgWConsts.pyc
+%{python_sitelib}/glideinwms/creation/lib/cgWConsts.pyo
+%{python_sitelib}/glideinwms/creation/lib/cgWCreate.py
+%{python_sitelib}/glideinwms/creation/lib/cgWCreate.pyc
+%{python_sitelib}/glideinwms/creation/lib/cgWCreate.pyo
+%{python_sitelib}/glideinwms/creation/lib/cgWDictFile.py
+%{python_sitelib}/glideinwms/creation/lib/cgWDictFile.pyc
+%{python_sitelib}/glideinwms/creation/lib/cgWDictFile.pyo
+%{python_sitelib}/glideinwms/creation/lib/cgWParamDict.py
+%{python_sitelib}/glideinwms/creation/lib/cgWParamDict.pyo
+%{python_sitelib}/glideinwms/creation/lib/cgWParamDict.pyc
+%{python_sitelib}/glideinwms/creation/lib/cgWParams.py
+%{python_sitelib}/glideinwms/creation/lib/cgWParams.pyc
+%{python_sitelib}/glideinwms/creation/lib/cgWParams.pyo
+%{python_sitelib}/glideinwms/creation/lib/__init__.py
+%{python_sitelib}/glideinwms/creation/lib/__init__.pyc
+%{python_sitelib}/glideinwms/creation/lib/__init__.pyo
+%{python_sitelib}/glideinwms/factory
+%{python_sitelib}/glideinwms/lib
+%{python_sitelib}/glideinwms/tools
 %{_initrddir}/gwms-factory
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/gwms-factory.conf
 %attr(-, gfactory, gfactory) %dir %{_sysconfdir}/gwms-factory
 %attr(-, gfactory, gfactory) %config(noreplace) %{_sysconfdir}/gwms-factory/glideinWMS.xml
-%if %{v3_plus}
-%{python_sitelib}/classadSupport.py
-%{python_sitelib}/classadSupport.pyc
-%{python_sitelib}/classadSupport.pyo
-%{python_sitelib}/cleanupSupport.py
-%{python_sitelib}/cleanupSupport.pyc
-%{python_sitelib}/cleanupSupport.pyo
-%{python_sitelib}/encodingSupport.py
-%{python_sitelib}/encodingSupport.pyc
-%{python_sitelib}/encodingSupport.pyo
-%{python_sitelib}/glideFactoryCredentials.py
-%{python_sitelib}/glideFactoryCredentials.pyc
-%{python_sitelib}/glideFactoryCredentials.pyo
-%{python_sitelib}/glideinwms_tarfile.py
-%{python_sitelib}/glideinwms_tarfile.pyc
-%{python_sitelib}/glideinwms_tarfile.pyo
-%{python_sitelib}/iniSupport.py
-%{python_sitelib}/iniSupport.pyc
-%{python_sitelib}/iniSupport.pyo
-%{python_sitelib}/tarSupport.py
-%{python_sitelib}/tarSupport.pyc
-%{python_sitelib}/tarSupport.pyo
-%endif
 
 %files vofrontend-standalone
 %defattr(-,frontend,frontend,-)
+%doc LICENSE.txt
+%doc ACKNOWLEDGMENTS.txt
+%doc doc
 %attr(755,root,root) %{_bindir}/glidein_*
 %attr(755,root,root) %{_bindir}/wms*
 %attr(755,root,root) %{_sbindir}/checkFrontend
@@ -676,148 +570,45 @@ rm -rf $RPM_BUILD_ROOT
 %attr(-, frontend, frontend) %{web_base}
 %attr(-, frontend, frontend) %{frontend_dir}
 %attr(-, frontend, frontend) %{_localstatedir}/log/gwms-frontend
-%{python_sitelib}/cWConsts.py
-%{python_sitelib}/cWConsts.pyc
-%{python_sitelib}/cWConsts.pyo
-%{python_sitelib}/cWDictFile.py
-%{python_sitelib}/cWDictFile.pyc
-%{python_sitelib}/cWDictFile.pyo
-%{python_sitelib}/cWParams.py
-%{python_sitelib}/cWParams.pyc
-%{python_sitelib}/cWParams.pyo
-%{python_sitelib}/checkFrontend.py
-%{python_sitelib}/checkFrontend.pyc
-%{python_sitelib}/checkFrontend.pyo
-%{python_sitelib}/condorExe.py
-%{python_sitelib}/condorExe.pyc
-%{python_sitelib}/condorExe.pyo
-%{python_sitelib}/condorLogParser.py
-%{python_sitelib}/condorLogParser.pyc
-%{python_sitelib}/condorLogParser.pyo
-%{python_sitelib}/condorManager.py
-%{python_sitelib}/condorManager.pyc
-%{python_sitelib}/condorManager.pyo
-%{python_sitelib}/condorMonitor.py
-%{python_sitelib}/condorMonitor.pyc
-%{python_sitelib}/condorMonitor.pyo
-%{python_sitelib}/condorPrivsep.py
-%{python_sitelib}/condorPrivsep.pyc
-%{python_sitelib}/condorPrivsep.pyo
-%{python_sitelib}/condorSecurity.py
-%{python_sitelib}/condorSecurity.pyc
-%{python_sitelib}/condorSecurity.pyo
-%{python_sitelib}/cvWConsts.py
-%{python_sitelib}/cvWConsts.pyc
-%{python_sitelib}/cvWConsts.pyo
-%{python_sitelib}/cvWCreate.py
-%{python_sitelib}/cvWCreate.pyc
-%{python_sitelib}/cvWCreate.pyo
-%{python_sitelib}/cvWDictFile.py
-%{python_sitelib}/cvWDictFile.pyc
-%{python_sitelib}/cvWDictFile.pyo
-%{python_sitelib}/cvWParamDict.py
-%{python_sitelib}/cvWParamDict.pyc
-%{python_sitelib}/cvWParamDict.pyo
-%{python_sitelib}/cvWParams.py
-%{python_sitelib}/cvWParams.pyc
-%{python_sitelib}/cvWParams.pyo
-%{python_sitelib}/exprParser.py
-%{python_sitelib}/exprParser.pyc
-%{python_sitelib}/exprParser.pyo
-%{python_sitelib}/glideinCmd.py
-%{python_sitelib}/glideinCmd.pyc
-%{python_sitelib}/glideinCmd.pyo
-%{python_sitelib}/glideinFrontend.py
-%{python_sitelib}/glideinFrontend.pyc
-%{python_sitelib}/glideinFrontend.pyo
-%{python_sitelib}/glideinFrontendConfig.py
-%{python_sitelib}/glideinFrontendConfig.pyc
-%{python_sitelib}/glideinFrontendConfig.pyo
-%{python_sitelib}/glideinFrontendInterface.py
-%{python_sitelib}/glideinFrontendInterface.pyc
-%{python_sitelib}/glideinFrontendInterface.pyo
-%{python_sitelib}/glideinFrontendLib.py
-%{python_sitelib}/glideinFrontendLib.pyc
-%{python_sitelib}/glideinFrontendLib.pyo
-%{python_sitelib}/glideinFrontendMonitorAggregator.py
-%{python_sitelib}/glideinFrontendMonitorAggregator.pyc
-%{python_sitelib}/glideinFrontendMonitorAggregator.pyo
-%{python_sitelib}/glideinFrontendMonitoring.py
-%{python_sitelib}/glideinFrontendMonitoring.pyc
-%{python_sitelib}/glideinFrontendMonitoring.pyo
-%{python_sitelib}/glideinFrontendPidLib.py
-%{python_sitelib}/glideinFrontendPidLib.pyc
-%{python_sitelib}/glideinFrontendPidLib.pyo
-%{python_sitelib}/glideinFrontendPlugins.py
-%{python_sitelib}/glideinFrontendPlugins.pyc
-%{python_sitelib}/glideinFrontendPlugins.pyo
-%{python_sitelib}/glideinMonitor.py
-%{python_sitelib}/glideinMonitor.pyc
-%{python_sitelib}/glideinMonitor.pyo
-%{python_sitelib}/glideinWMSVersion.py
-%{python_sitelib}/glideinWMSVersion.pyc
-%{python_sitelib}/glideinWMSVersion.pyo
-%{python_sitelib}/hashCrypto.py
-%{python_sitelib}/hashCrypto.pyc
-%{python_sitelib}/hashCrypto.pyo
-%{python_sitelib}/ldapMonitor.py
-%{python_sitelib}/ldapMonitor.pyc
-%{python_sitelib}/ldapMonitor.pyo
-%{python_sitelib}/logSupport.py
-%{python_sitelib}/logSupport.pyc
-%{python_sitelib}/logSupport.pyo
-%{python_sitelib}/pidSupport.py
-%{python_sitelib}/pidSupport.pyc
-%{python_sitelib}/pidSupport.pyo
-%{python_sitelib}/pubCrypto.py
-%{python_sitelib}/pubCrypto.pyc
-%{python_sitelib}/pubCrypto.pyo
-%{python_sitelib}/rrdSupport.py
-%{python_sitelib}/rrdSupport.pyc
-%{python_sitelib}/rrdSupport.pyo
-%{python_sitelib}/stopFrontend.py
-%{python_sitelib}/stopFrontend.pyc
-%{python_sitelib}/stopFrontend.pyo
-%{python_sitelib}/subprocessSupport.py
-%{python_sitelib}/subprocessSupport.pyc
-%{python_sitelib}/subprocessSupport.pyo
-%{python_sitelib}/symCrypto.py
-%{python_sitelib}/symCrypto.pyc
-%{python_sitelib}/symCrypto.pyo
-%{python_sitelib}/xmlFormat.py
-%{python_sitelib}/xmlFormat.pyc
-%{python_sitelib}/xmlFormat.pyo
-%{python_sitelib}/xmlParse.py
-%{python_sitelib}/xmlParse.pyc
-%{python_sitelib}/xmlParse.pyo
-%{python_sitelib}/timeConversion.py
-%{python_sitelib}/timeConversion.pyc
-%{python_sitelib}/timeConversion.pyo
-%{python_sitelib}/glideinFrontendElement.py*
+%{python_sitelib}/glideinwms/creation/lib/cWConsts.py
+%{python_sitelib}/glideinwms/creation/lib/cWConsts.pyc
+%{python_sitelib}/glideinwms/creation/lib/cWConsts.pyo
+%{python_sitelib}/glideinwms/creation/lib/cWDictFile.py
+%{python_sitelib}/glideinwms/creation/lib/cWDictFile.pyc
+%{python_sitelib}/glideinwms/creation/lib/cWDictFile.pyo
+%{python_sitelib}/glideinwms/creation/lib/cWParams.py
+%{python_sitelib}/glideinwms/creation/lib/cWParams.pyc
+%{python_sitelib}/glideinwms/creation/lib/cWParams.pyo
+%{python_sitelib}/glideinwms/frontend
+%{python_sitelib}/glideinwms/lib
+%{python_sitelib}/glideinwms/tools
+%{python_sitelib}/glideinwms/__init__.py
+%{python_sitelib}/glideinwms/__init__.pyc
+%{python_sitelib}/glideinwms/__init__.pyo
+%{python_sitelib}/glideinwms/creation/__init__.py
+%{python_sitelib}/glideinwms/creation/__init__.pyc
+%{python_sitelib}/glideinwms/creation/__init__.pyo
+%{python_sitelib}/glideinwms/creation/lib/cvWConsts.py
+%{python_sitelib}/glideinwms/creation/lib/cvWConsts.pyc
+%{python_sitelib}/glideinwms/creation/lib/cvWConsts.pyo
+%{python_sitelib}/glideinwms/creation/lib/cvWCreate.py
+%{python_sitelib}/glideinwms/creation/lib/cvWCreate.pyc
+%{python_sitelib}/glideinwms/creation/lib/cvWCreate.pyo
+%{python_sitelib}/glideinwms/creation/lib/cvWDictFile.py
+%{python_sitelib}/glideinwms/creation/lib/cvWDictFile.pyc
+%{python_sitelib}/glideinwms/creation/lib/cvWDictFile.pyo
+%{python_sitelib}/glideinwms/creation/lib/cvWParamDict.py
+%{python_sitelib}/glideinwms/creation/lib/cvWParamDict.pyc
+%{python_sitelib}/glideinwms/creation/lib/cvWParamDict.pyo
+%{python_sitelib}/glideinwms/creation/lib/cvWParams.py
+%{python_sitelib}/glideinwms/creation/lib/cvWParams.pyc
+%{python_sitelib}/glideinwms/creation/lib/cvWParams.pyo
 %{_initrddir}/gwms-frontend
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/gwms-frontend.conf
 %attr(-, frontend, frontend) %dir %{_sysconfdir}/gwms-frontend
 %attr(-, frontend, frontend) %config(noreplace) %{_sysconfdir}/gwms-frontend/frontend.xml
 %if %{v3_plus}
 %attr(-, frontend, frontend) %{web_base}/../creation
-%{python_sitelib}/classadSupport.py
-%{python_sitelib}/classadSupport.pyc
-%{python_sitelib}/classadSupport.pyo
-%{python_sitelib}/cleanupSupport.py
-%{python_sitelib}/cleanupSupport.pyc
-%{python_sitelib}/cleanupSupport.pyo
-%{python_sitelib}/encodingSupport.py
-%{python_sitelib}/encodingSupport.pyc
-%{python_sitelib}/encodingSupport.pyo
-%{python_sitelib}/glideinwms_tarfile.py
-%{python_sitelib}/glideinwms_tarfile.pyc
-%{python_sitelib}/glideinwms_tarfile.pyo
-%{python_sitelib}/iniSupport.py
-%{python_sitelib}/iniSupport.pyc
-%{python_sitelib}/iniSupport.pyo
-%{python_sitelib}/tarSupport.py
-%{python_sitelib}/tarSupport.pyc
-%{python_sitelib}/tarSupport.pyo
 %endif
 
 
