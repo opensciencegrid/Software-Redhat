@@ -1,7 +1,7 @@
 
 Name:           osg-build
 Version:        1.2.4
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Build tools for the OSG
 
 Group:          System Environment/Tools
@@ -63,6 +63,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_docdir}/%{name}/sample-osg-build.ini
 
 %changelog
+* Thu Feb 14 2013 Matyas Selmeci <matyas@cs.wisc.edu> 1.2.4-2
+- Bump to rebuild
+
 * Wed Jan 23 2013 Matyas Selmeci <matyas@cs.wisc.edu> 1.2.4-1
 - Updated osg-koji to include DigiCert CA certs in the CA bundle that its setup task generates (SOFTWARE-860)
 
