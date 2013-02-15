@@ -1,0 +1,10 @@
+
+This is mostly a pass-through packaging of:
+
+http://emisoft.web.cern.ch/emisoft/dist/EMI/1/sl5/SRPMS/base/repoview/emi-trustmanager-tomcat.html
+
+Exceptions:
+
+1) We include an OSG-specific config.properties file.
+2) trustmanager jars now are linked in the correct place for RHEL5 tomcat
+
