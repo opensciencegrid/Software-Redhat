@@ -50,7 +50,7 @@ Version: %{tarball_version}
 %define condor_release %condor_base_release
 %endif
 # Release: %condor_release%{?dist}.2
-Release: 2%{?dist}
+Release: 3%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -103,11 +103,11 @@ Source1: generate-tarball.sh
 Source2: %{name}-tmpfiles.conf
 Source3: condor.service
 %endif
-Source4: condor-lcmaps-env.sysconfig
+Source4: condor.osg-sysconfig
 
 Patch0: condor_config.generic.patch
 Patch3: chkconfig_off.patch
-Patch8: lcmaps_env_in_init_script.patch
+Patch8: osg_sysconfig_in_init_script.patch
 Patch9: proper_cream_v3.diff
 %if %blahp
 Patch10: config_batch_gahp_path.patch
@@ -620,8 +620,8 @@ cp %{SOURCE3} %{buildroot}%{_unitdir}/condor.service
 %else
 # install the lsb init script
 install -Dp -m0755 %{buildroot}/etc/examples/condor.init %buildroot/%_initrddir/condor
-mkdir -p %{buildroot}/%{_sysconfdir}/sysconfig
-install -m 0644 %{SOURCE4} %buildroot/%{_sysconfdir}/sysconfig/condor-lcmaps-env
+mkdir -p %{buildroot}/usr/share/osg/sysconfig
+install -m 0644 %{SOURCE4} %buildroot/usr/share/osg/sysconfig/condor
 %endif
 
 # we must place the config examples in builddir so %doc can find them
@@ -720,7 +720,7 @@ rm -rf %{buildroot}
 %{_unitdir}/condor.service
 %else
 %_initrddir/condor
-%_sysconfdir/sysconfig/condor-lcmaps-env
+/usr/share/osg/sysconfig/condor
 %endif
 %dir %_datadir/condor/
 %_datadir/condor/Chirp.jar
@@ -1074,6 +1074,15 @@ fi
 %endif
 
 %changelog
+* Fri Feb 13 2013 Dave Dykstra <dwd@fnal.gov> - 7.8.6-3
+- Renamed /etc/sysconfig/condor-lcmaps-env to /usr/share/osg/sysconfig/condor
+  to match the new OSG method for handling daemon environment variables, 
+  which keeps non-replaceable settings out of /etc/sysonfig
+- Change settings in /usr/share/osg/sysconfig/condor to use the latest variable
+  name LLGT_LIFT_PRIVILEGED_PROTECTION instead of LLGT4_NO_CHANGE_USER,
+  eliminate obsolete variable LLGT_VOMS_DISABLE_CREDENTIAL_CHECK, and change
+  the default debug level from 3 to 2.
+
 * Fri Dec 21 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 7.8.6-2
 - Patch to fix default BATCH_GAHP config value (#SOFTWARE-873)
 
