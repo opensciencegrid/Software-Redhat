@@ -1,7 +1,7 @@
 
 Name:           osg-build
-Version:        1.2.4
-Release:        2%{?dist}
+Version:        1.2.5
+Release:        1%{?dist}
 Summary:        Build tools for the OSG
 
 Group:          System Environment/Tools
@@ -63,6 +63,11 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_docdir}/%{name}/sample-osg-build.ini
 
 %changelog
+* Fri Feb 15 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.2.5-1
+- Add --upcoming flag to osg-build koji
+- Code cleanup
+- Fix for SOFTWARE-936
+
 * Thu Feb 14 2013 Matyas Selmeci <matyas@cs.wisc.edu> 1.2.4-2
 - Bump to rebuild
 
