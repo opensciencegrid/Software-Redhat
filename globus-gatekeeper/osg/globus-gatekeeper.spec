@@ -13,7 +13,7 @@
 Name:		globus-gatekeeper
 %global _name %(tr - _ <<< %{name})
 Version:	9.6
-Release:	1.7%{?dist}
+Release:	1.8%{?dist}
 Summary:	Globus Toolkit - Globus Gatekeeper
 
 Group:		Applications/Internet
@@ -22,7 +22,7 @@ URL:		http://www.globus.org/
 Source:         http://www.globus.org/ftppub/gt5/5.2/5.2.0/packages/src/%{_name}-%{version}.tar.gz
 
 # OSG customizations
-Source1:        globus-gatekeeper.sysconfig
+Source1:        globus-gatekeeper.osg-sysconfig
 #Patch0:         child_signals.patch
 Patch3:         init.patch
 Patch4:         GRAM-309.patch
@@ -58,8 +58,6 @@ Globus Gatekeeper Setup
 #%patch0 -p0
 %patch3 -p0
 %patch4 -p0
-# Note append here
-cat %{SOURCE1} >> config/globus-gatekeeper.in
 
 %build
 # Remove files that should be replaced during bootstrap
@@ -99,12 +97,22 @@ cat $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_pgm.filelist \
 mkdir -p $RPM_BUILD_ROOT/etc/grid-services
 mkdir -p $RPM_BUILD_ROOT/etc/grid-services/available
 
+mkdir -p $RPM_BUILD_ROOT/usr/share/osg/sysconfig
+install -m 0644 %{SOURCE1} $RPM_BUILD_ROOT/usr/share/osg/sysconfig/%{name}
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %post
 if [ $1 -eq 1 ]; then
     /sbin/chkconfig --add %{name}
+fi
+if grep -q "# These are OSG-CE-specific configurations variables" /etc/sysconfig/%{name}; then
+    mv -f /etc/sysconfig/%{name} /etc/sysconfig/%{name}.rpmsave
+    mv /etc/sysconfig/%{name}.rpmnew /etc/sysconfig/%{name}
+    echo "warning: /etc/sysconfig/%{name} saved as /etc/sysconfig/%{name}.rpmsave" >&2
+    echo "    because it contained OSG-specific additions, and /etc/sysconfig/%{name}.rpmnew" >&2
+    echo "    renamed as /etc/sysconfig/%{name}" >&2
 fi
 
 %preun
@@ -126,8 +134,21 @@ fi
 %dir /etc/grid-services/available
 %config(noreplace) /etc/sysconfig/globus-gatekeeper
 %config(noreplace) /etc/logrotate.d/globus-gatekeeper
+/usr/share/osg/sysconfig/%{name}
 
 %changelog
+* Fri Feb 15 2013 Dave Dykstra <dwd@fnal.gov> - 9.6-1.8.osg
+- Move osg-specific sysconfig settings to /usr/share/osg/sysconfig/%{name}
+  instead of appending to the end of /etc/sysconfig/%{name}, in order to
+  match the new OSG method of keeping non-replaceable environment variable
+  settings out of /etc/sysconfig's %config(noreplace) files.
+- Add a %post step to behave as if /etc/sysconfig/globus-gatekeeper 
+  was defined as %config as opposed to %config(noreplace) if old OSG
+  settings are still in it; that is, instead of creating a .rpmnew,
+  rename the old file as .rpmsave and install the new one
+- Change LCMAPS_POLICY_NAME to just be osg_default and no longer
+  include the backward-compatible globus_gridftp_mapping policy
+
 * Mon Apr 23 2012 Dave Dykstra <dwd@fnal.gov> - 9.6-1.7.osg
 - Remove variable in sysconfig for disabling voms certificate check;
   it is now the default
