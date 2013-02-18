@@ -1,16 +1,17 @@
-Index: init/globus-gatekeeper-lsb.in
-===================================================================
---- init/globus-gatekeeper-lsb.in.orig	2011-12-12 13:25:22.000000003 -0600
-+++ init/globus-gatekeeper-lsb.in	2011-12-20 11:22:16.000000003 -0600
-@@ -38,7 +38,6 @@
+--- init/globus-gatekeeper-lsb.in.orig	2013-02-15 14:53:51.843717000 -0600
++++ init/globus-gatekeeper-lsb.in	2013-02-15 14:56:00.145498000 -0600
+@@ -36,9 +36,9 @@
  
+ . ${libexecdir}/globus-script-initializer
+ 
++. /usr/share/osg/sysconfig/globus-gatekeeper
  GLOBUS_GATEKEEPER_CONFIG=${GLOBUS_GATEKEEPER_CONFIG:-@GATEKEEPER_CONFIGDIR@/@GATEKEEPER_CONFIGFILE@}
  test -f "${GLOBUS_GATEKEEPER_CONFIG}" && . "${GLOBUS_GATEKEEPER_CONFIG}"
 -test -f ${sbindir}/globus-gatekeeper || exit 0
  prog="${sbindir}/globus-gatekeeper"
  progname="globus-gatekeeper"
  lockfile="@LOCKFILE@"
-@@ -48,9 +47,6 @@
+@@ -48,9 +48,6 @@
  GLOBUS_GATEKEEPER_PIDFILE="${GLOBUS_GATEKEEPER_PIDFILE:-${localstatedir}/run/globus-gatekeeper.pid}"
  GLOBUS_GATEKEEPER_PORT="${GLOBUS_GATEKEEPER_PORT:-2119}"
  
@@ -20,7 +21,7 @@ Index: init/globus-gatekeeper-lsb.in
  lsb_ok=1
  
  # Old versions of RH LSB init scripts cause infinite loops with the -p
-@@ -62,6 +58,26 @@
+@@ -62,6 +59,26 @@
  
  start()
  {
