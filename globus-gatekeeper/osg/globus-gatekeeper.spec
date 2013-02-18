@@ -107,13 +107,6 @@ rm -rf $RPM_BUILD_ROOT
 if [ $1 -eq 1 ]; then
     /sbin/chkconfig --add %{name}
 fi
-if grep -q "# These are OSG-CE-specific configurations variables" /etc/sysconfig/%{name}; then
-    mv -f /etc/sysconfig/%{name} /etc/sysconfig/%{name}.rpmsave
-    mv /etc/sysconfig/%{name}.rpmnew /etc/sysconfig/%{name}
-    echo "warning: /etc/sysconfig/%{name} saved as /etc/sysconfig/%{name}.rpmsave" >&2
-    echo "    because it contained OSG-specific additions, and /etc/sysconfig/%{name}.rpmnew" >&2
-    echo "    renamed as /etc/sysconfig/%{name}" >&2
-fi
 
 %preun
 if [ $1 -eq 0 ]; then
@@ -142,10 +135,6 @@ fi
   instead of appending to the end of /etc/sysconfig/%{name}, in order to
   match the new OSG method of keeping non-replaceable environment variable
   settings out of /etc/sysconfig's %config(noreplace) files.
-- Add a %post step to behave as if /etc/sysconfig/globus-gatekeeper 
-  was defined as %config as opposed to %config(noreplace) if old OSG
-  settings are still in it; that is, instead of creating a .rpmnew,
-  rename the old file as .rpmsave and install the new one
 - Change LCMAPS_POLICY_NAME to just be osg_default and no longer
   include the backward-compatible globus_gridftp_mapping policy
 
