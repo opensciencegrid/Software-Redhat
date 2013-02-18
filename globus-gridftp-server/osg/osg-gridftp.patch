@@ -1,13 +1,13 @@
-Index: globus_gridftp_server-6.1/init/globus-gridftp-server.in
-===================================================================
---- globus_gridftp_server-6.1.orig/init/globus-gridftp-server.in	2011-09-23 08:41:24.000000000 -0500
-+++ globus_gridftp_server-6.1/init/globus-gridftp-server.in	2011-09-23 19:05:55.000000000 -0500
-@@ -31,6 +31,8 @@
+diff -ur globus_gridftp_server-6.14-orig/init/globus-gridftp-server.in globus_gridftp_server-6.14/init/globus-gridftp-server.in
+--- globus_gridftp_server-6.14-orig/init/globus-gridftp-server.in	2011-12-12 13:25:23.000000000 -0600
++++ globus_gridftp_server-6.14/init/globus-gridftp-server.in	2013-02-18 17:04:25.254514000 -0600
+@@ -37,6 +37,8 @@
  pidfile=${localstatedir}/run/globus-gridftp-server.pid
  gridftpd=${sbindir}/globus-gridftp-server
  
-. /usr/share/osg/sysconfig/globus-gridftp-server
++. /usr/share/osg/sysconfig/globus-gridftp-server
 +
  start()
  {
      printf "Starting globus-gridftp-server: "
+Only in globus_gridftp_server-6.14/init: globus-gridftp-server.in.orig
