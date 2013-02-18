@@ -176,7 +176,7 @@ install -m 644 -p %{SOURCE8} \
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig
 install -m 0644 %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/%{name}
 
-mkdir -p $RPM_BUILD_ROOT%/usr/share/osg/sysconfig
+mkdir -p $RPM_BUILD_ROOT/usr/share/osg/sysconfig
 install -m 0644 %{SOURCE6} $RPM_BUILD_ROOT/usr/share/osg/sysconfig/%{name}
 
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d
