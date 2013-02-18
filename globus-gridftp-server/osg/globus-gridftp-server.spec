@@ -30,6 +30,7 @@ Source6:	globus-gridftp-server.osg-sysconfig
 Source7:	globus-gridftp-server.logrotate
 #		README file
 Source8:	GLOBUS-GRIDFTP
+Patch0:		osg-gridftp.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Requires:	globus-xio%{?_isa} >= 3
@@ -40,8 +41,6 @@ Requires:	globus-gridftp-server-control%{?_isa} >= 2
 Requires:	globus-common%{?_isa} >= 14
 Requires:	globus-xio-gsi-driver%{?_isa} >= 2
 Requires:	globus-usage%{?_isa} >= 3
-Conflicts:	gridftp-hdfs%{?_isa} <= 0.5.4-5
-Conflicts:	xrootd-dsi%{?_isa} <= 3.0.4-8
 BuildRequires:	grid-packaging-tools >= 3.4
 BuildRequires:	globus-core%{?_isa} >= 8
 BuildRequires:	globus-xio-devel%{?_isa} >= 3
@@ -63,6 +62,8 @@ Requires(post):		chkconfig
 Requires(preun):	chkconfig
 Requires(preun):	initscripts
 Requires(postun):	initscripts
+Conflicts:	gridftp-hdfs%{?_isa} < 0.5.4-6
+Conflicts:	xrootd-dsi%{?_isa} < 3.0.4-9
 
 %package devel
 Summary:	Globus Toolkit - Globus GridFTP Server Development Files
@@ -107,6 +108,7 @@ Globus GridFTP Server Development Files
 
 %prep
 %setup -q -n %{_name}-%{version}
+%patch0 -p1
 
 %build
 # Remove files that should be replaced during bootstrap
