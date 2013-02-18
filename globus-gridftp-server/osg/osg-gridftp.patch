@@ -15,10 +15,11 @@ Index: globus_gridftp_server-6.1/init/globus-gridftp-server.in
 ===================================================================
 --- globus_gridftp_server-6.1.orig/init/globus-gridftp-server.in	2011-09-23 08:41:24.000000000 -0500
 +++ globus_gridftp_server-6.1/init/globus-gridftp-server.in	2011-09-23 19:05:55.000000000 -0500
-@@ -31,6 +31,8 @@
+@@ -31,6 +31,9 @@
  pidfile=${localstatedir}/run/globus-gridftp-server.pid
  gridftpd=${sbindir}/globus-gridftp-server
  
+. /usr/share/osg/sysconfig/globus-gridftp-server
 +[ -e ${sysconfdir}/sysconfig/globus-gridftp-server ] && . ${sysconfdir}/sysconfig/globus-gridftp-server
 +
  start()

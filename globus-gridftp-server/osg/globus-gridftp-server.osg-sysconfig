@@ -16,6 +16,11 @@ if [ -e /var/lib/osg/globus-firewall ]; then
     . /var/lib/osg/globus-firewall
 fi
 
+# Source user-edittable configuration
+if [ -e /etc/sysconfig/globus-gridftp-server ]; then
+    . /etc/sysconfig/globus-gridftp-server
+fi
+
 # Source gridftp plugin environment (e.g. gridftp-hdfs or xrootd-dsi), if any
 if [ -e /usr/share/osg/sysconfig/globus-gridftp-server-plugin ]; then
     .  /usr/share/osg/sysconfig/globus-gridftp-server-plugin

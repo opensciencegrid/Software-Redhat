@@ -14,7 +14,7 @@
 Name:		globus-gridftp-server
 %global _name %(tr - _ <<< %{name})
 Version:	6.14
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Globus Toolkit - Globus GridFTP Server
 
 Group:		System Environment/Libraries
@@ -26,7 +26,8 @@ Source2:	globus-gridftp-sshftp
 Source3:	globus-gridftp-password.8
 Source4:	globus-gridftp-server-setup-chroot.8
 Source5:	globus-gridftp-server.sysconfig
-Source6:	globus-gridftp-server.logrotate
+Source6:	globus-gridftp-server.osg-sysconfig
+Source7:	globus-gridftp-server.logrotate
 #		README file
 Source8:	GLOBUS-GRIDFTP
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -39,6 +40,8 @@ Requires:	globus-gridftp-server-control%{?_isa} >= 2
 Requires:	globus-common%{?_isa} >= 14
 Requires:	globus-xio-gsi-driver%{?_isa} >= 2
 Requires:	globus-usage%{?_isa} >= 3
+Conflicts:	gridftp-hdfs%{?_isa} <= 0.5.4-5
+Conflicts:	xrootd-dsi%{?_isa} <= 3.0.4-8
 BuildRequires:	grid-packaging-tools >= 3.4
 BuildRequires:	globus-core%{?_isa} >= 8
 BuildRequires:	globus-xio-devel%{?_isa} >= 3
@@ -171,11 +174,13 @@ install -m 644 -p %{SOURCE8} \
   $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/README
 
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig
-mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/gridftp.conf.d
-install -m 0755 %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/%{name}
+install -m 0644 %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/%{name}
+
+mkdir -p $RPM_BUILD_ROOT%/usr/share/osg/sysconfig
+install -m 0644 %{SOURCE6} $RPM_BUILD_ROOT/usr/share/osg/sysconfig/%{name}
 
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d
-install -m 0644 %{SOURCE6} $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/%{name}.logrotate
+install -m 0644 %{SOURCE7} $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/%{name}.logrotate
 
 # Generate package filelists
 cat $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_rtl.filelist \
@@ -218,7 +223,6 @@ fi
 %dir %{_datadir}/globus/packages/%{_name}
 %dir %{_docdir}/%{name}-%{version}
 %doc %{_docdir}/%{name}-%{version}/README
-%dir %{_sysconfdir}/sysconfig/gridftp.conf.d
 
 %files -f package-progs.filelist progs
 %defattr(-,root,root,-)
@@ -227,6 +231,7 @@ fi
 %config(noreplace) %{_sysconfdir}/gridftp.conf
 %config(noreplace) %{_sysconfdir}/gridftp.gfork
 %config(noreplace) %{_sysconfdir}/xinetd.d/gridftp
+/usr/share/osg/sysconfig/%{name}
 %{_initddir}/%{name}
 %{_initddir}/globus-gridftp-sshftp
 %doc %{_mandir}/man8/globus-gridftp-password.8*
@@ -237,6 +242,14 @@ fi
 %defattr(-,root,root,-)
 
 %changelog
+* Mon Feb 18 2013 Dave Dykstra <dwd@fnal.gov> - 6.14-2.osg
+- Move most of the OSG-specific code out of /etc/sysconfig/%{name}
+  to /usr/share/osg/sysconfig/%{name} so it can be more easily replaced.
+- Instead of sourcing /etc/sysconfig/gridftp.conf.d/* if they exist,
+  source /usr/share/osg/sysconfig/%{name}-plugin.
+- Add Conflicts statements on older gridftp-hdfs and xrootd-dsi packages
+  because need new versions that understand the new sysconfig layout
+
 * Sun Jul 22 2012 Mattias Ellert <mattias.ellert@fysast.uu.se> - 6.14-1
 - Update to Globus Toolkit 5.2.2
 - Drop patch globus-gridftp-server-pw195.patch (was backport)
@@ -262,7 +275,7 @@ fi
 
 * Mon Apr 23 2012 Dave Dykstra <dwd@fnal.gov> - 6.5-1.6.osg
 - Remove variable in sysconfig for disabling voms certificate check;
-  it is now the defau
+  it is now the default
 
 * Thu Mar 29 2012 Dave Dykstra <dwd@fnal.gov> - 6.5-1.5.osg
 - Reduce default lcmaps syslog level from 3 to 2
