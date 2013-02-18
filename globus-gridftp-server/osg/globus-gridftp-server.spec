@@ -248,7 +248,7 @@ fi
 - Instead of sourcing /etc/sysconfig/gridftp.conf.d/* if they exist,
   source /usr/share/osg/sysconfig/%{name}-plugin.
 - Add Conflicts statements on older gridftp-hdfs and xrootd-dsi packages
-  because need new versions that understand the new sysconfig layout
+  because need new versions that understand the new sysconfig layout.
 
 * Sun Jul 22 2012 Mattias Ellert <mattias.ellert@fysast.uu.se> - 6.14-1
 - Update to Globus Toolkit 5.2.2
