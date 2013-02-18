@@ -1,35 +1,5 @@
 
-# These are OSG-specific configurations variables
-
-# lcas-lcmaps-gt4-interface configuration
-export LLGT_LOG_IDENT=gridftp-server-llgt
-export LCMAPS_DB_FILE=/etc/lcmaps.db
-# the globus_gridftp_mapping here is for backward compatibility, will
-#  be removed in a future release
-export LCMAPS_POLICY_NAME=globus_gridftp_mapping:osg_default
-#level 0: no messages, 1: errors, 2: also warnings, 3: also notices,
-#  4: also info, 5: maximum debug
-export LCMAPS_DEBUG_LEVEL=2
-
-# Source OSG firewall information
-if [ -e /var/lib/osg/globus-firewall ]; then
-        . /var/lib/osg/globus-firewall
-fi
-
 #Uncomment and modify to override default osg firewall behavior
 #export GLOBUS_TCP_PORT_RANGE=min,max
 #export GLOBUS_TCP_SOURCE_RANGE=min,max
-
-#############################################
-# Source all files in /etc/sysconfig/gridftp.conf.d
-#############################################
-dir_cmd="ls -1 /etc/sysconfig/gridftp.conf.d";
-# Exclude files left behind by rpm, vi, emacs, etc
-file_exp="^((\..*)|(.*~)|(#.*)|(.*\.rpmsave)|(.*\.rpmnew))$"
-if [ -d /etc/sysconfig/gridftp.conf.d ]; then
-	for file in `$dir_cmd | egrep -v "$file_exp" 2>/dev/null` ; do
-		. /etc/sysconfig/gridftp.conf.d/$file
-	done
-fi
-
 
