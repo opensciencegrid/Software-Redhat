@@ -1,13 +1,28 @@
-diff -ur globus_gridftp_server-6.14-orig/init/globus-gridftp-server.in globus_gridftp_server-6.14/init/globus-gridftp-server.in
---- globus_gridftp_server-6.14-orig/init/globus-gridftp-server.in	2011-12-12 13:25:23.000000000 -0600
-+++ globus_gridftp_server-6.14/init/globus-gridftp-server.in	2013-02-18 17:04:25.254514000 -0600
-@@ -37,6 +37,8 @@
- pidfile=${localstatedir}/run/globus-gridftp-server.pid
+--- globus-gridftp-server.orig	2013-02-19 13:23:26.882338000 -0600
++++ globus-gridftp-server	2013-02-19 13:24:12.667313000 -0600
+@@ -29,10 +29,7 @@
+ lockfile=/var/lock/subsys/globus-gridftp-server
  gridftpd=${sbindir}/globus-gridftp-server
  
+-# Include defaults if available
+-if [ -r /etc/sysconfig/globus-gridftp-server ] ; then
+-	. /etc/sysconfig/globus-gridftp-server
+-fi
 +. /usr/share/osg/sysconfig/globus-gridftp-server
-+
- start()
- {
-     printf "Starting globus-gridftp-server: "
-Only in globus_gridftp_server-6.14/init: globus-gridftp-server.in.orig
+ 
+ start() {
+ 	echo -n "Starting globus-gridftp-server: "
+--- globus-gridftp-sshftp.orig	2013-02-19 13:23:35.231516000 -0600
++++ globus-gridftp-sshftp	2013-02-19 13:24:25.842594000 -0600
+@@ -24,10 +24,7 @@
+ defaultconf=${sysconfdir}/gridftp-sshftp
+ enabledconf=/etc/grid-security/sshftp
+ 
+-# Include defaults if available
+-if [ -r /etc/sysconfig/globus-gridftp-sshftp ] ; then
+-	. /etc/sysconfig/globus-gridftp-sshftp
+-fi
++. /usr/share/osg/sysconfig/globus-gridftp-server
+ 
+ start() {
+ 	echo -n "Enabling sshftp access to globus-gridftp-server: "
