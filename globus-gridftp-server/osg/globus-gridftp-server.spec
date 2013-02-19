@@ -30,6 +30,8 @@ Source6:	globus-gridftp-server.osg-sysconfig
 Source7:	globus-gridftp-server.logrotate
 #		README file
 Source8:	GLOBUS-GRIDFTP
+# can't use %patch0 macro because this patch works on Source files and
+#  not on files in the tarball like normal
 Patch0:		osg-sysconfig.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -108,7 +110,6 @@ Globus GridFTP Server Development Files
 
 %prep
 %setup -q -n %{_name}-%{version}
-%patch0 -p0
 
 %build
 # Remove files that should be replaced during bootstrap
@@ -159,7 +160,8 @@ sed '/^env /d' -i $RPM_BUILD_ROOT%{_sysconfdir}/xinetd.d/gridftp
 rm -rf $RPM_BUILD_ROOT%{_sysconfdir}/init.d
 sed '/init\.d/d' -i $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_pgm.filelist
 
-# Install start-up scripts
+# Install start-up scripts after patching them
+patch -p0 < %{PATCH0}
 mkdir -p $RPM_BUILD_ROOT%{_initddir}
 install -p %{SOURCE1} %{SOURCE2} $RPM_BUILD_ROOT%{_initddir}
 
