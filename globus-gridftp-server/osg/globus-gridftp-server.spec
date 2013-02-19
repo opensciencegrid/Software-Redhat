@@ -110,8 +110,8 @@ Globus GridFTP Server Development Files
 
 %prep
 %setup -q -n %{_name}-%{version}
-# apply Patch0 to SOURCE0 & SOURCE1 files
-(cd `dirname %{SOURCE0}`;patch -p0 <%{PATCH0})
+# apply Patch0 to SOURCE1 & SOURCE2 files
+(cd `dirname %{SOURCE1}`;patch -p0 <%{PATCH0})
 
 %build
 # Remove files that should be replaced during bootstrap
