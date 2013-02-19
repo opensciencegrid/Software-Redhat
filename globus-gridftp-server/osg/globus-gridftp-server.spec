@@ -30,7 +30,7 @@ Source6:	globus-gridftp-server.osg-sysconfig
 Source7:	globus-gridftp-server.logrotate
 #		README file
 Source8:	GLOBUS-GRIDFTP
-Patch0:		osg-gridftp.patch
+Patch0:		osg-sysconfig.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Requires:	globus-xio%{?_isa} >= 3
@@ -108,7 +108,7 @@ Globus GridFTP Server Development Files
 
 %prep
 %setup -q -n %{_name}-%{version}
-%patch0 -p1
+%patch0 -p0
 
 %build
 # Remove files that should be replaced during bootstrap
