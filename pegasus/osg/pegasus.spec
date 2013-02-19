@@ -1,6 +1,6 @@
 Name:           pegasus
 Version:        4.0.0
-Release:        2%{?dist}
+Release:        2.1%{?dist}
 Summary:        Workflow management system for Condor, grids, and clouds
 Group:          Applications/System
 License:        Apache Software License
@@ -10,8 +10,9 @@ Packager:       Mats Rynge <rynge@isi.edu>
 Source:         pegasus-source-%{version}.tar.gz
 
 BuildRoot:      %{_tmppath}/%{name}-root
-BuildRequires:  ant, ant-apache-regexp, java, gcc, groff, python-devel, gcc-c++, make 
-Requires:       java >= 1.6, python >= 2.4, condor >= 7.4, graphviz-gd
+BuildRequires:  ant, ant-apache-regexp, java7-devel, gcc, groff, python-devel, gcc-c++, make 
+BuildRequires:  jpackage-utils
+Requires:       java7 >= 1:1.7.0, python >= 2.4, condor >= 7.4, graphviz-gd
 
 %define sourcedir %{name}-source-%{version}
 
@@ -31,6 +32,7 @@ execute the steps in appropriate order.
 
 
 %build
+export CLASSPATH=$(build-classpath ant)
 ant dist
 
 # strip executables
@@ -82,6 +84,9 @@ rm -Rf %{buildroot}
 
 
 %changelog
+* Tue Feb 19 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 4.0.0-2.1
+- Change dependencies to use and build against java7
+
 * Wed Apr 23 2012 Alain Roy <roy@cs.wisc.edu> 4.0.0-2
 - Bumped revision number to force new build and get signed RPM.
 
