@@ -14,7 +14,7 @@
 Name:		globus-gridftp-server
 %global _name %(tr - _ <<< %{name})
 Version:	6.14
-Release:	3%{?dist}
+Release:	4%{?dist}
 Summary:	Globus Toolkit - Globus GridFTP Server
 
 Group:		System Environment/Libraries
@@ -33,6 +33,7 @@ Source8:	GLOBUS-GRIDFTP
 # can't use %patch0 macro because this patch works on Source files and
 #  not on files in the tarball like normal
 Patch0:		osg-sysconfig.patch
+Patch1:		gridftp-conf-logging.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Requires:	globus-xio%{?_isa} >= 3
@@ -110,6 +111,7 @@ Globus GridFTP Server Development Files
 
 %prep
 %setup -q -n %{_name}-%{version}
+%patch1 -p1
 # apply Patch0 to SOURCE1 & SOURCE2 files
 (cd `dirname %{SOURCE1}`;patch -p0 <%{PATCH0})
 
@@ -247,6 +249,10 @@ fi
 %defattr(-,root,root,-)
 
 %changelog
+* Wed Feb 20 2013 Dave Dykstra <dwd@fnal.gov> - 6.14-4.osg
+- Add gridftp-conf-logging.patch to add back logging options in gridftp.conf
+  that were (apparently) accidentally dropped in 6.14-1.osg
+
 * Tue Feb 19 2013 Dave Dykstra <dwd@fnal.gov> - 6.14-3.osg
 - Switch the default LCMAPS_POLICY_NAME to authorize_only, so it will
   work with the -with-chroot option; it also works without -with-chroot
