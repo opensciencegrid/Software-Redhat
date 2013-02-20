@@ -4,9 +4,10 @@
 # lcas-lcmaps-gt4-interface configuration
 export LLGT_LOG_IDENT=gridftp-server-llgt
 export LCMAPS_DB_FILE=/etc/lcmaps.db
-# the globus_gridftp_mapping here is for backward compatibility, will
-#  be removed in a future release
-export LCMAPS_POLICY_NAME=globus_gridftp_mapping:osg_default
+# authorize_only is needed for -with-chroot and works in non-chroot mode
+export LCMAPS_POLICY_NAME=authorize_only
+# this is needed for the authorize_only policy
+export LLGT_LIFT_PRIVILEGED_PROTECTION=1
 #level 0: no messages, 1: errors, 2: also warnings, 3: also notices,
 #  4: also info, 5: maximum debug
 export LCMAPS_DEBUG_LEVEL=2
