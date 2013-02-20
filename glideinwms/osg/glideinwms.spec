@@ -6,7 +6,7 @@ Name:           glideinwms
 
 %if %{v2_plus}
 %define version 2.7.0
-%define release 0.rc0.1
+%define release 0.rc1.1
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
 %endif
@@ -219,6 +219,7 @@ install -m 0500 creation/reconfig_frontend $RPM_BUILD_ROOT%{_sbindir}/reconfig_f
 install -m 0500 factory/checkFactory.py $RPM_BUILD_ROOT%{_sbindir}/
 install -m 0500 factory/glideFactory.py $RPM_BUILD_ROOT%{_sbindir}/
 install -m 0500 factory/glideFactoryEntry.py $RPM_BUILD_ROOT%{_sbindir}/
+install -m 0500 factory/glideFactoryEntryGroup.py $RPM_BUILD_ROOT%{_sbindir}/
 install -m 0500 factory/manageFactoryDowntimes.py $RPM_BUILD_ROOT%{_sbindir}/
 install -m 0500 factory/stopFactory.py $RPM_BUILD_ROOT%{_sbindir}/
 install -m 0500 creation/reconfig_glidein $RPM_BUILD_ROOT%{_sbindir}/
@@ -481,6 +482,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_sbindir}/stopFactory.py
 %attr(755,root,root) %{_sbindir}/glideFactory.py
 %attr(755,root,root) %{_sbindir}/glideFactoryEntry.py
+%attr(755,root,root) %{_sbindir}/glideFactoryEntryGroup.py
 
 %if %{?rhel}%{!?rhel:0} == 5
 %attr(755,root,root) %{_sbindir}/checkFactory.pyc
@@ -489,6 +491,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_sbindir}/glideFactory.pyo
 %attr(755,root,root) %{_sbindir}/glideFactoryEntry.pyc
 %attr(755,root,root) %{_sbindir}/glideFactoryEntry.pyo
+%attr(755,root,root) %{_sbindir}/glideFactoryEntryGroup.pyc
+%attr(755,root,root) %{_sbindir}/glideFactoryEntryGroup.pyo
 %attr(755,root,root) %{_sbindir}/manageFactoryDowntimes.pyc
 %attr(755,root,root) %{_sbindir}/manageFactoryDowntimes.pyo
 %attr(755,root,root) %{_sbindir}/stopFactory.pyc
@@ -651,6 +655,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Feb 20 2013 Parag Mhashilkar <parag@fnal.gov> - 2.7.0-0.rc1.0
+- Updated the checksum creation to sort the info
+- Changes to file list based on the python libraries
+
 * Fri Jan 4 2013 Doug Strain <dstrain@fnal.gov> - 2.6.3-0.rc2.6
 - Update to 2.6.3 rc2 release candidate
 - Adding factory tools scripts and their python libraries
