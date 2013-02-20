@@ -10,7 +10,7 @@ chksum_file=$2
 ignore_patterns=$3
 log_file="/tmp/log"
 
-files=`find . | grep -v CVS | grep -v doc | grep -v "pyc$" | grep -v "^\.$" grep -v "\.swp$" | sort`
+files=`find . | grep -v CVS | grep -v doc | grep -v "pyc$" | grep -v "^\.$" | grep -v "\.swp$" | sort`
 
 
 # Remove the file if it exists
