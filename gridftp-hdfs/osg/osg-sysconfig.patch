@@ -1,6 +1,6 @@
 diff -ur gridftp-hdfs-0.5.4-orig/conf/gridftp-hdfs-environment gridftp-hdfs-0.5.4/conf/gridftp-hdfs-environment
 --- gridftp-hdfs-0.5.4-orig/conf/gridftp-hdfs-environment	2011-10-15 12:32:43.000000000 -0500
-+++ gridftp-hdfs-0.5.4/conf/gridftp-hdfs-environment	2013-02-18 15:10:15.223015000 -0600
++++ gridftp-hdfs-0.5.4/conf/gridftp-hdfs-environment	2013-02-19 21:26:57.611913586 -0600
 @@ -67,26 +67,6 @@
  
  unset IFS
@@ -29,8 +29,8 @@ diff -ur gridftp-hdfs-0.5.4-orig/conf/gridftp-hdfs-environment gridftp-hdfs-0.5.
  #export GRIDFTP_CONF=/etc/gridftp-hdfs/gridftp.conf
  export conf=/etc/gridftp-hdfs/gridftp.conf
 diff -ur gridftp-hdfs-0.5.4-orig/scripts/gridftp-hdfs-standalone.in gridftp-hdfs-0.5.4/scripts/gridftp-hdfs-standalone.in
---- gridftp-hdfs-0.5.4-orig/scripts/gridftp-hdfs-standalone.in	2013-02-18 15:50:26.254488000 -0600
-+++ gridftp-hdfs-0.5.4/scripts/gridftp-hdfs-standalone.in	2013-02-18 15:49:51.990757000 -0600
+--- gridftp-hdfs-0.5.4-orig/scripts/gridftp-hdfs-standalone.in	2011-10-15 12:36:03.000000000 -0500
++++ gridftp-hdfs-0.5.4/scripts/gridftp-hdfs-standalone.in	2013-02-19 21:27:59.419371836 -0600
 @@ -1,16 +1,6 @@
  #!/bin/sh                                                            
  
@@ -48,10 +48,10 @@ diff -ur gridftp-hdfs-0.5.4-orig/scripts/gridftp-hdfs-standalone.in gridftp-hdfs
 +. /usr/share/osg/sysconfig/globus-gridftp-server
  
  export CLASSPATH=$CLASSPATH
- 
+                                                                       
 diff -ur gridftp-hdfs-0.5.4-orig/scripts/xinetd/gridftp-hdfs-inetd.in gridftp-hdfs-0.5.4/scripts/xinetd/gridftp-hdfs-inetd.in
 --- gridftp-hdfs-0.5.4-orig/scripts/xinetd/gridftp-hdfs-inetd.in	2011-10-15 12:35:08.000000000 -0500
-+++ gridftp-hdfs-0.5.4/scripts/xinetd/gridftp-hdfs-inetd.in	2013-02-18 15:25:11.197123000 -0600
++++ gridftp-hdfs-0.5.4/scripts/xinetd/gridftp-hdfs-inetd.in	2013-02-19 21:26:57.612907677 -0600
 @@ -1,16 +1,6 @@
  #!/bin/sh
  
