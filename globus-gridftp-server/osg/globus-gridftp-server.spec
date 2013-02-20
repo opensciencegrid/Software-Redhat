@@ -14,7 +14,7 @@
 Name:		globus-gridftp-server
 %global _name %(tr - _ <<< %{name})
 Version:	6.14
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	Globus Toolkit - Globus GridFTP Server
 
 Group:		System Environment/Libraries
@@ -247,6 +247,10 @@ fi
 %defattr(-,root,root,-)
 
 %changelog
+* Tue Feb 19 2013 Dave Dykstra <dwd@fnal.gov> - 6.14-3.osg
+- Switch the default LCMAPS_POLICY_NAME to authorize_only, so it will
+  work with the -with-chroot option; it also works without -with-chroot
+
 * Mon Feb 18 2013 Dave Dykstra <dwd@fnal.gov> - 6.14-2.osg
 - Move most of the OSG-specific code out of /etc/sysconfig/%{name}
   to /usr/share/osg/sysconfig/%{name} so it can be more easily replaced.
