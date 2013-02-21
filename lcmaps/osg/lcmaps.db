@@ -83,9 +83,6 @@ sazclient = "lcmaps_saz_client.mod"
 # Uncomment to not kill processes still running after the main process finishes
 #         "-dont-kill-leftovers"
 
-posix_enf = "lcmaps_posix_enf.mod"
-            "-maxuid 1 -maxpgid 1 -maxsgid 32"
-
 gridmapfile = "lcmaps_localaccount.mod"
               "-gridmap /etc/grid-security/grid-mapfile"
 
@@ -104,7 +101,7 @@ bad         = "lcmaps_dummy_bad.mod"
 #
 # Each of these define how lcmaps is used in different scenarios. 
 #
-# For the osg_default mapping, the default policy is generally good
+# For the authorize_only mapping, the default policy is generally good
 # but we have supplied a couple of options in comments.
 #
 # We've left the various glexec policies commented out--you need to
@@ -116,38 +113,20 @@ bad         = "lcmaps_dummy_bad.mod"
 #-----------------------------------------------------------------------------
 
 #
-# Mapping policy: osg_default
-# Purpose:        Used for the programs that want lcmaps to switch user
-# 	id for them, such as Globus gatekeeper and the gridftp server
+# Mapping policy: authorize_only
+# Purpose: Used for the programs that only want authorization and don't
+# 	want lcmaps to do anything else for them.  This is good for most
+#	applications that use globus as their interface to lcmaps.
 #
-osg_default:
 
 ## If the default policy isn't what you want, pick another one.  Make
-## sure that only one osg_default policy is uncommented--the other
+## sure that only one authorize_only policy is uncommented--the other
 ## policies should be commented out. For example, if you want policy #2,
 ## put a hash mark before the first "gumsclient" line and remove the hash
 ## mark on two lines: just before "sazclient" and just before the next
 ## "gumsclient". 
 
-## Policy 1: GUMS but not SAZ (most common, default)
-gumsclient -> posix_enf
-
-## Policy 2: GUMS & SAZ
-#sazclient -> gumsclient
-#gumsclient -> posix_enf
-
-## Policy 3: grid-mapfile
-#gridmapfile -> posix_enf
-
-
-#
-# Mapping policy: authorize_only
-# Purpose:        Used for the programs that only want authorization,
-# 	such as Condor
-#
 authorize_only:
-
-## Choose only one policy just like osg_default above
 
 ## Policy 1: GUMS but not SAZ (most common, default)
 gumsclient -> good | bad
