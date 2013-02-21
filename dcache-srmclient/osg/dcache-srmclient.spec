@@ -14,9 +14,10 @@ License: http://www.dcache.org/manuals/dCacheSoftwareLicence.html
 Group:   Development/Tools
 Obsoletes: SRM-Client-Fermi
 
-BuildRequires: java-devel >= 1.7
+BuildRequires: java7-devel
 BuildRequires: ant
-Requires: java >= 1.7
+BuildRequires: jpackage-utils
+Requires: java7
 Requires: /usr/bin/globus-url-copy
 
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
@@ -36,7 +37,7 @@ Patch0: remove-srm-path-warnings.patch
 %patch0 -p0
 
 %build
-unset JAVA_HOME
+export JAVA_HOME=%{java_home}
 ant srmclient
 
 %install
@@ -66,7 +67,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 * Thu Feb 07 2013 Matyas Selmeci <matyas@cs.wisc.edu> 1.9.5.23-6.1
-- Rebuild with openjdk 7
+- Rebuild with openjdk 7 and ant17
 
 * Wed Jan 18 2012 Derek Weitzel <dweitzel@cse.unl.edu> - 1.9.5.23-6
 - Fixing patch command for sl6
