@@ -30,7 +30,7 @@
 # Whether or not /sbin/nologin exists.
 %global nologin 1
 
-%global gsi_openssh_rel 4
+%global gsi_openssh_rel 5
 %global gsi_openssh_ver 5.4
 
 %ifarch alpha ia64 ppc64 s390x sparc64 x86_64
@@ -51,7 +51,8 @@ URL: http://www.openssh.com/portable.html
 # the ACSS cipher is removed by running openssh-nukeacss.sh in
 # the unpacked source directory.
 Source0: http://downloads.sourceforge.net/cilogon/gsi_openssh-%{version}-src.tar.gz
-Source1: gsisshd.sysconfig
+Source1: gsisshd.osg-sysconfig
+Patch0: osg-sysconfig.patch
 
 License: BSD
 Group: Applications/Internet
@@ -161,6 +162,7 @@ This version of OpenSSH has been modified to support GSI authentication.
 
 %prep
 %setup -q -n gsi_openssh-%{version}-src
+%patch0 -p0
 
 sed 's/sshd.pid/gsisshd.pid/' -i pathnames.h
 sed 's!$(piddir)/sshd.pid!$(piddir)/gsisshd.pid!' -i Makefile.in
@@ -250,10 +252,10 @@ make install sysconfdir=%{_sysconfdir}/gsissh \
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/pam.d/
 install -d $RPM_BUILD_ROOT%{_initrddir}
 install -d $RPM_BUILD_ROOT%{_libexecdir}/gsissh
-install -d $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig
+install -d $RPM_BUILD_ROOT/usr/share/osg/sysconfig
 install -m644 gsisshd.pam $RPM_BUILD_ROOT%{_sysconfdir}/pam.d/gsisshd
 install -m755 gsisshd.init $RPM_BUILD_ROOT%{_initrddir}/gsisshd
-install -m644 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/gsisshd
+install -m644 %{SOURCE1} $RPM_BUILD_ROOT/usr/share/osg/sysconfig/gsisshd
 
 
 #rm $RPM_BUILD_ROOT%{_bindir}/gsiscp
@@ -354,9 +356,12 @@ fi
 %attr(0600,root,root) %config(noreplace) %{_sysconfdir}/gsissh/sshd_config
 %attr(0644,root,root) %config(noreplace) %{_sysconfdir}/pam.d/gsisshd
 %attr(0755,root,root) %{_initrddir}/gsisshd
-%attr(0644,root,root) %config(noreplace) %{_sysconfdir}/sysconfig/gsisshd
+%attr(0644,root,root) /usr/share/osg/sysconfig/gsisshd
 
 %changelog
+* Wed Feb 20 2013 Dave Dykstra <dwd@fnal.gov> - 5.4-5
+- Move sysconfig file to /usr/share/osg/sysconfig/gsisshd
+
 * Mon Sep 10 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 5.4-4
 - Added sysconfig file for server
 
