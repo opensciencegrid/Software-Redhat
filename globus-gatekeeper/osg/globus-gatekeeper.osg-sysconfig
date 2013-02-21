@@ -4,7 +4,9 @@
 # lcas-lcmaps-gt4-interface configuration
 export LLGT_LOG_IDENT=GRAM-gatekeeper-llgt
 export LCMAPS_DB_FILE=/etc/lcmaps.db
-export LCMAPS_POLICY_NAME=osg_default
+export LCMAPS_POLICY_NAME=authorize_only
+# this is needed for the authorize_only policy
+export LLGT_LIFT_PRIVILEGED_PROTECTION=1
 #level 0: no messages, 1: errors, 2: also warnings, 3: also notices,
 #  4: also info, 5: maximum debug
 export LCMAPS_DEBUG_LEVEL=2
