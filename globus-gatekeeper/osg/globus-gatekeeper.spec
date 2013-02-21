@@ -13,7 +13,7 @@
 Name:		globus-gatekeeper
 %global _name %(tr - _ <<< %{name})
 Version:	9.6
-Release:	1.8%{?dist}
+Release:	1.9%{?dist}
 Summary:	Globus Toolkit - Globus Gatekeeper
 
 Group:		Applications/Internet
@@ -130,6 +130,11 @@ fi
 /usr/share/osg/sysconfig/%{name}
 
 %changelog
+* Thu Feb 22 2013 Dave Dykstra <dwd@fnal.gov> - 9.6-1.9.osg
+- Change to using LCMAPS_POLICY_NAME=authorize_only so globus does the
+  user id switch, since globus can do it and globus-gatekeeper was the
+  last package having lcmaps do the user id switch
+
 * Fri Feb 15 2013 Dave Dykstra <dwd@fnal.gov> - 9.6-1.8.osg
 - Move osg-specific sysconfig settings to /usr/share/osg/sysconfig/%{name}
   instead of appending to the end of /etc/sysconfig/%{name}, in order to
