@@ -1,6 +1,6 @@
 Summary: Mapping interface between Globus Toolkit and LCAS/LCMAPS
 Name: lcas-lcmaps-gt4-interface
-Version: 0.2.5
+Version: 0.2.6
 Release: 1.1%{?dist}
 Vendor: Nikhef
 License: ASL 2.0
@@ -75,6 +75,12 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/grid-security/gsi-authz.conf
 
 %changelog
+* Wed Feb 20 2013 Dave Dykstra <dwd@fnal.gov> 0.2.6-1.1.osg
+- import 0.2.6 to OSG
+
+* Wed Feb  6 2013 Mischa Salle <msalle@nikhef.nl> 0.2.6-1
+- updated version
+
 * Wed Dec 26 2012 Dave Dykstra <dwd@fnal.gov> 0.2.5-1.1.osg
 - import 0.2.5 to OSG
 
