@@ -1,0 +1,11 @@
+--- src/org/glite/jdl/ExtractFiles.java.orig	2005-07-05 07:14:59.000000000 -0500
++++ src/org/glite/jdl/ExtractFiles.java	2013-02-21 22:08:55.460674874 -0600
+@@ -89,7 +89,7 @@
+ 
+         //    #################################################
+         // Initialising Absoulute Directory:
+-        //  Windows          :  getAl�bsolutePath
++        //  Windows        :  getAbsolutePath
+         //  Unix-Linux-OS  :  $HOME directory
+         String absDir;
+         String operatingSystem = System.getProperty("os.name");
