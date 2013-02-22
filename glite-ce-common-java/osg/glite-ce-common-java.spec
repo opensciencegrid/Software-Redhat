@@ -2,7 +2,7 @@ Summary: Common libraries for all services running on the CREAM CE
 Name: glite-ce-common-java
 Version: 1.14.0
 %global upstream_release 4
-Release: %{upstream_release}.2%{?dist}
+Release: %{upstream_release}.3%{?dist}
 License: Apache Software License
 Vendor: EMI
 URL: http://glite.cern.ch/
@@ -58,6 +58,9 @@ Common libraries for all services running on the CREAM CE
 %patch0 -p1
 
 %build
+# this should be %{java_home}, but that points to 1.6.0 on el6
+export JAVA_HOME=/usr/lib/jvm/java-1.7.0
+
 %if %undefined extbuilddir
   printf "dist.location=%{buildroot}
 doc.location=%{buildroot}/%{_javadocdir}/%{name}
@@ -67,6 +70,7 @@ module.version=%{version}">.configuration.properties
 %endif
 
 %install
+export JAVA_HOME=/usr/lib/jvm/java-1.7.0
 rm -rf %{buildroot}
 mkdir -p %{buildroot}
 %if %undefined extbuilddir
@@ -125,7 +129,7 @@ Documentation files for the CREAM Common library
 %defattr(-,root,root)
 %dir %{_javadocdir}/%{name}/html/
 %dir %{_javadocdir}/%{name}/html/resources/
-%doc %{_javadocdir}/%{name}/html/resources/inherit.gif
+%doc %{_javadocdir}/%{name}/html/resources/*.gif
 
 %doc %{_javadocdir}/%{name}/html/*.html
 %doc %{_javadocdir}/%{name}/html/stylesheet.css
@@ -141,6 +145,12 @@ Documentation files for the CREAM Common library
 %doc %{_javadocdir}/%{name}/html/org/glite/ce/commonj/configuration/xppm/class-use/*.html
 
 %changelog
+* Thu Feb 02 2013 Carl Edquist <edquist@cs.wisc.edu> - 1.14.0-4.3.osg
+- Updates to build with JDK 7
+- Require java7-devel, jpackage-utils explicitly
+- Set JAVA_HOME explicity or else el6 finds 1.6.0
+- Various different documentation .gif files are generated in JDK 7
+
 * Tue Nov 13 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.14.0-4.2.osg
 - Bump to rebuild
 
