@@ -3,7 +3,7 @@ Name: jglobus
 Summary: An implementation of Globus for Java
 License: Apache 2.0
 Version: 2.0.4
-Release: 5%{?dist}
+Release: 6%{?dist}
 URL: http://www.globus.org/toolkit/jglobus/
 Group: System Environment/Libraries
 
@@ -15,7 +15,7 @@ Source0: JGlobus.tar.gz
 
 # Skip tomcat integration until we get relevant code patches from EPEL.
 Patch0: no-ssl-proxies-tomcat.patch
-Patch1: FTPClient.java.patch
+Patch1: pom.xml.patch
 
 BuildArch: noarch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -94,6 +94,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mavendepmapfragdir}/jglobus
 
 %changelog
+* Fri Feb 02 2013 Carl Edquist <edquist@cs.wisc.edu> - 2.0.4-6
+- Patch pom.xml to specify encoding instead of patching java source
+
 * Fri Feb 02 2013 Carl Edquist <edquist@cs.wisc.edu> - 2.0.4-5
 - Update to build with JDK 7, require java7-devel + jpackage-utils
 - Patch java source file with non-ascii chars that breaks the build in 1.7

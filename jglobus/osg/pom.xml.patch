@@ -1,0 +1,11 @@
+--- pom.xml.orig	2012-10-10 10:19:32.000000000 -0500
++++ pom.xml	2013-02-22 12:38:03.205347542 -0600
+@@ -46,4 +46,8 @@
+ 		</snapshotRepository>
+ 	</distributionManagement>
+ 
++	<properties>
++		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
++	</properties>
++
+ </project>
