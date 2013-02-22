@@ -1,7 +1,7 @@
 
 Name:      rsv-metrics
 Version:   3.7.7
-Release:   1%{?dist}
+Release:   2%{?dist}
 Summary:   RSV metrics
 
 Group:     Applications/Monitoring
@@ -27,7 +27,8 @@ Requires: uberftp
 Requires: bestman2-client
 Requires: /usr/bin/ldapsearch
 Requires: logrotate
-Requires: fetch-crl
+# No longer required
+# Requires: fetch-crl
 
 %description
 %{summary}
@@ -93,6 +94,9 @@ rm -rf $RPM_BUILD_ROOT
 %attr(-,rsv,rsv) %{_localstatedir}/log/rsv/probes
 
 %changelog
+* Fri Feb 22 2013 Brian Lin <blin@cs.wisc.edu> - 3.7.7-2
+- Remove fetch-crl requirement.
+
 * Thu Oct 18 2012 Matyas Selmeci <matyas@cs.wisc.edu> 3.7.7-1
 - SOFTWARE-807 - Fixed bug in srmcp metric when the SE host and machine being probed are the same 
 - SOFTWARE-762 - Fixed incorrect hash reporting in crl-freshness probe
