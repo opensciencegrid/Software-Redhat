@@ -2,7 +2,7 @@
 Summary: CMS meta-RPM for Xrootd
 Name: cms-xrootd
 Version: 1.2
-Release: 3%{?dist}
+Release: 4%{?dist}
 Group: System Environment/Daemons
 License: Public Domain
 URL: https://twiki.cern.ch/twiki/bin/view/Main/CmsXrootdArchitecture
@@ -25,7 +25,11 @@ Requires: libXrdCmsTfc.so.0
 Requires: libXrdLcmaps.so.0()(64bit)
 Requires: libXrdCmsTfc.so.0()(64bit)
 %endif
+%if 0%{?rhel} < 6
+Requires: fetch-crl3
+%else
 Requires: fetch-crl
+%endif
 Requires: grid-certificates
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -93,6 +97,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/xrootd/xrootd.sample.proxy.cfg
 
 %changelog
+* Fri Feb 22 2013 Brian Lin <blin@cs.wisc.edu> - 1.2-4
+- Update rhel5 to require fetch-crl3 instead of fetch-crl.
+
 * Tue Dec 11 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 1.2-3
 - Fix ofs.authorize line in the dCache example file.
 
