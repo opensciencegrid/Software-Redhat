@@ -2,7 +2,7 @@ Summary: Computing Resource Execution And Management service
 Name: glite-ce-cream
 Version: 1.14.0
 %global upstream_release 4
-Release: %{upstream_release}.5%{?dist}
+Release: %{upstream_release}.6%{?dist}
 License: Apache Software License
 Vendor: EMI
 URL: http://glite.cern.ch/
@@ -17,7 +17,11 @@ Requires: globus-gass-copy-progs
 Requires: mysql
 Requires: grid-certificates
 Requires: glexec
+%if 0%{?rhel} < 6
+Requires: fetch-crl3
+%else
 Requires: fetch-crl
+%endif
 Requires(post): openssl
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 AutoReqProv: yes
@@ -358,6 +362,9 @@ fi
 
 
 %changelog
+* Fri Feb 22 2013 Brian Lin <blin@cs.wisc.edu> - 1.14.0-4.6
+- Update rhel5 to require fetch-crl3 instead of fetch-crl.
+
 * Fri Aug 10 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.14.0-4.5
 - Added as requirements: mysql, grid-certificates, glexec, fetch-crl
 

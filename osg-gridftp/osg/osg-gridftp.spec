@@ -1,7 +1,7 @@
 Name:      osg-gridftp
 Summary:   Standalone OSG GridFTP w/lcmaps gums client
 Version:   3.0.0
-Release:   7%{?dist}
+Release:   8%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -15,7 +15,11 @@ Requires: vo-client
 Requires: grid-certificates
 Requires: gratia-probe-gridftp-transfer
 Requires: gums-client
+%if 0%{?rhel} < 6
+Requires: fetch-crl3
+%else
 Requires: fetch-crl
+%endif
 #This is probably not needed
 #Requires: edg-mkgridmap
 
@@ -44,6 +48,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Feb 22 2013 Brian Lin <blin@cs.wisc.edu> - 3.0.0-8
+- Update rhel5 to require fetch-crl3 instead of fetch-crl.
+
 * Mon Nov 14 2011 Alain Roy <roy@cs.wisc.edu> - 3.0.0-7
 - Added dependencies on osg-version and osg-system-profiler
 

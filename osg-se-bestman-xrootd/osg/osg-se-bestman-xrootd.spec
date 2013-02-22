@@ -1,7 +1,7 @@
 Name:           osg-se-bestman-xrootd
 Summary:        OSG BeStMan XRootd Storage Element package
 Version:        3.0.0
-Release:        4%{?dist}
+Release:        5%{?dist}
 License:        GPL
 Group:          System Environment/Daemons
 URL:            https://twiki.grid.iu.edu/twiki/bin/view/Storage/WebHome
@@ -15,7 +15,11 @@ Requires: bestman2-server
 Requires: bestman2-client
 Requires: bestman2-tester
 Requires: edg-mkgridmap
+%if 0%{?rhel} < 6
+Requires: fetch-crl3
+%else
 Requires: fetch-crl
+%endif
 # From osg-gridftp meta package
 Requires: globus-gridftp-server-progs
 Requires: vo-client
@@ -48,6 +52,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Feb 22 2013 Brian Lin <blin@cs.wisc.edu> - 3.0.0-5
+- Update rhel5 to require fetch-crl3 instead of fetch-crl.
+
 * Mon Nov 14 2011 Alain Roy <roy@cs.wisc.edu> - 3.0.0-4
 - Added dependencies on osg-version and osg-system-profiler
 

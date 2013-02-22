@@ -1,7 +1,7 @@
 Name:           osg-se-hadoop
 Summary:        OSG Hadoop Storage Element package for RPM distribution
 Version:        3.0.0
-Release:        7%{?dist}
+Release:        8%{?dist}
 License:        GPL
 Group:          System Environment/Daemons
 URL:            https://twiki.grid.iu.edu/twiki/bin/view/Storage/WebHome
@@ -63,7 +63,11 @@ Requires: osg-version
 Requires: osg-system-profiler
 Requires: java-1.6.0-sun-compat
 Requires: edg-mkgridmap
+%if 0%{?rhel} < 6
+Requires: fetch-crl3
+%else
 Requires: fetch-crl
+%endif
 Requires: osg-gridftp-hdfs
 Requires: globus-gridftp-server-progs
 Requires: gratia-probe-gridftp-transfer
@@ -126,6 +130,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/hadoop/conf.osg/
 
 %changelog
+* Fri Feb 22 2013 Brian Lin <blin@cs.wisc.edu> - 3.0.0-8
+- Update rhel5 to require fetch-crl3 instead of fetch-crl.
+
 * Wed Aug 8 2012 Doug Strain <dstrain@fnal.gov> - 3.0.0-7
 - Added fuse client to srm sub-package (mount is needed for permissions)
 - Also added default OSG configs to srm package

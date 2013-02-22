@@ -1,7 +1,7 @@
 Name:      osg-wn-client
 Summary:   OSG Worker-Node Client
 Version:   3.0.0
-Release:   17%{?dist}
+Release:   18%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -25,7 +25,11 @@ Requires: bestman2-client
 Requires: /usr/bin/uberftp
 Requires: /usr/bin/wget
 Requires: grid-certificates
+%if 0%{?rhel} < 6
+Requires: fetch-crl3
+%else
 Requires: fetch-crl
+%endif
 Requires: osg-system-profiler
 Requires: vo-client
 Requires: osg-version
@@ -87,6 +91,9 @@ rm -rf $RPM_BUILD_ROOT
 %files glexec
 
 %changelog
+* Fri Feb 22 2013 Brian Lin <blin@cs.wisc.edu> - 3.0.0-18.osg
+- Update rhel5 to require fetch-crl3 instead of fetch-crl.
+
 * Fri Jan 03 2013 Dave Dykstra <dwd@fnal.gov> - 3.0.0-17.osg
 - Added mkgltempdir as osg-wn-client-glexec requirement
 

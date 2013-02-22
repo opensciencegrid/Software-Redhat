@@ -1,7 +1,7 @@
 Name:      dcache-gratia-probe 
 Summary:   dcache-gratia-probe
 Version:   3.0.0
-Release:   2%{?dist}
+Release:   3%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -15,7 +15,11 @@ Requires: osg-ca-certs
 Requires: osg-vo-map
 Requires: gums-client 
 #from epel
-Requires: fetch-crl 
+%if 0%{?rhel} < 6
+Requires: fetch-crl3
+%else
+Requires: fetch-crl
+%endif
 
 %description
 %{summary}
@@ -32,6 +36,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Feb 22 2013 Brian Lin <blin@cs.wisc.edu> - 3.0.0-3
+- Update rhel5 to require fetch-crl3 instead of fetch-crl.
+
 * Mon Aug 22 2011 Tanya Levshina <tlevshin.fnal.gov> - 3.0.0-2
 change the name of dcache gratia probes (from dCache to dcache)
 
