@@ -1,7 +1,6 @@
-
 Name:      osg-ca-scripts
-Version:   0.0.9
-Release:   2%{?dist}
+Version:   1.0.0
+Release:   1%{?dist}
 Summary:   CA Certificate helper scripts
 
 Group:     System Environment/Base
@@ -25,10 +24,8 @@ Conflicts: igtf-ca-certs-experimental
 %description
 %{summary}
 
-
 %prep
 %setup -q
-
 
 %install
 rm -fr $RPM_BUILD_ROOT
@@ -51,9 +48,9 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}/osg/
 install -m 0644 etc/osg-update-certs.conf $RPM_BUILD_ROOT%{_sysconfdir}/osg/
 
 # Install cron job
-install -d $RPM_BUILD_ROOT/%{_sysconfdir}/rc.d/init.d/
+install -d $RPM_BUILD_ROOT/%{_initrddir}/
 install -d $RPM_BUILD_ROOT/%{_sysconfdir}/cron.d/
-install -m 755 init.d/osg-update-certs-cron $RPM_BUILD_ROOT/%{_sysconfdir}/rc.d/init.d/
+install -m 755 init.d/osg-update-certs-cron $RPM_BUILD_ROOT/%{_initrddir}/
 install -m 644 cron.d/osg-update-certs $RPM_BUILD_ROOT/%{_sysconfdir}/cron.d/
 
 # Log rotation
@@ -76,7 +73,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_sbindir}/osg-update-certs
 %{_libexecdir}/osg-setup-ca-certificates
 %{perl_vendorlib}/OSGCerts.pm
-%{_sysconfdir}/rc.d/init.d/osg-update-certs-cron
+%{_initrddir}/osg-update-certs-cron
 %{_sysconfdir}/cron.d/osg-update-certs
 
 %config(noreplace) %{_sysconfdir}/osg/osg-update-certs.conf
@@ -85,6 +82,10 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr(0755,root,root) %{_localstatedir}/lib/osg-ca-certs
 
 %changelog
+* Fri Feb 22 2013 Tim Cartwright <cat@cs.wisc.edu> 1.0.0-1
+- Overhauled Fetch CRL code to work with v2/v3 and RPM names
+- Updated Makefile to fit OSG conventions (except install target)
+
 * Wed Nov 09 2011 Anand Padmanabhan <apadmana@uiuc.edu> 0.0.9-2
 -  Added a line to create the directory /var/lib/osg-ca-certs
  
