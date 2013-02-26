@@ -1,0 +1,30 @@
+--- src/hdfs/org/apache/hadoop/hdfs/server/datanode/DataXceiverServer.java.orig	2012-12-17 13:25:14.108591071 -0600
++++ src/hdfs/org/apache/hadoop/hdfs/server/datanode/DataXceiverServer.java	2012-12-17 13:29:18.698526318 -0600
+@@ -126,15 +126,26 @@
+    */
+   public void run() {
+     while (datanode.shouldRun) {
++      Socket s = null;
+       try {
+-        Socket s = ss.accept();
++        s = ss.accept();
+         s.setTcpNoDelay(true);
+         new DataXceiver(s, datanode, this).start();
+       } catch (SocketTimeoutException ignored) {
+         // wake up to see if should continue to run
+       } catch (IOException ie) {
++	try { if (s != null) s.close(); } catch (IOException ioe) {}
+         LOG.warn(datanode.dnRegistration + ":DataXceiveServer: " 
+                                 + StringUtils.stringifyException(ie));
++      } catch (OutOfMemoryError oomerr) {
++	try { if (s != null) s.close(); } catch (IOException ioe) {}
++        LOG.warn("DataNode is out of memory. Will retry in 30 seconds.", oomerr);
++        try {
++          Thread.sleep(5 * 1000);
++        } catch (InterruptedException e) {
++          // ignore
++        }
++      
+       } catch (Throwable te) {
+         LOG.error(datanode.dnRegistration + ":DataXceiveServer: Exiting due to:" 
+                                  + StringUtils.stringifyException(te));

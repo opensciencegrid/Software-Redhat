@@ -1,0 +1,832 @@
+diff --git a/src/contrib/fuse-dfs/configure.ac b/src/contrib/fuse-dfs/configure.ac
+index a5d9687..1062ec3 100644
+--- a/src/contrib/fuse-dfs/configure.ac
++++ b/src/contrib/fuse-dfs/configure.ac
+@@ -42,6 +42,9 @@ AC_PREFIX_DEFAULT([`pwd`])
+  DEFS=""
+ AC_SUBST([DEFS])
+ 
++# Need GNU source for multiple hashtables from glibc
++AC_GNU_SOURCE
++
+ AC_FUNC_GETGROUPS
+ AC_TYPE_GETGROUPS
+ 
+diff --git a/src/contrib/fuse-dfs/src/fuse_connect.c b/src/contrib/fuse-dfs/src/fuse_connect.c
+index 4ac4886..ea33821 100644
+--- a/src/contrib/fuse-dfs/src/fuse_connect.c
++++ b/src/contrib/fuse-dfs/src/fuse_connect.c
+@@ -22,32 +22,134 @@
+ #include "fuse_connect.h"
+ #include "fuse_users.h" 
+ 
++#include <search.h>
++
++int htable_init = 0;
++
++typedef struct connection_ref_s {
++  hdfsFS fs;
++  int count;
++} connection_ref_t;
++
++struct hsearch_data *user_fs_table;
+ 
+ #if PERMS
+ 
++pthread_mutex_t connect_mutex = PTHREAD_MUTEX_INITIALIZER;
++
+ /**
+  * Connects to the NN as the current user/group according to FUSE
+  *
+  */
+-hdfsFS doConnectAsUser(const char *hostname, int port) {
++
++void doConnectAsUser(const char *hostname, int port, hdfsFS *origFS) {
++
++  if (htable_init == 0) {
++    user_fs_table = calloc(1, sizeof(struct hsearch_data));
++    if (hcreate_r(16*1024, user_fs_table) != 0) {
++      htable_init = 1;
++    } else {
++      ERROR("Unable to initialize connection table");
++      exit(1);
++    }
++  }
++
+   uid_t uid = fuse_get_context()->uid;
+ 
++  hdfsFS fs = NULL;
++
+   char *user = getUsername(uid);
+-  if (NULL == user)
+-    return NULL;
+-  int numgroups = 0;
+-  char **groups = getGroups(uid, &numgroups);
+-  hdfsFS fs = hdfsConnectAsUser(hostname, port, user);
+-  freeGroups(groups, numgroups);
++  if (NULL == user) {
++    goto done;
++  }
++
++  pthread_mutex_lock(&connect_mutex);
++
++  ENTRY e, *ep, e_new;
++  int hret = 0;
++  e.key = user;
++  hret = hsearch_r(e, FIND, &ep, user_fs_table);
++  if ((hret != 0) && (ep != 0)) {
++    connection_ref_t *ref = (connection_ref_t*)ep->data;
++    if (ref == NULL) {
++      ERROR("Retrieved an invalid object");
++      goto done;
++    }
++    ref->count++;
++    fs = ref->fs;
++  } else {
++    fs = hdfsConnectAsUserNewInstance(hostname, port, user);
++    if (fs == NULL) {
++      ERROR("Unable to instantiate a filesystem for %s", user);
++      goto done;
++    }
++    e_new.key = strdup(user);
++    if (e_new.key == NULL) {
++      ERROR("Unable to create username; FUSE is likely out of memory");
++      goto done;
++    }
++    connection_ref_t *ref = calloc(1, sizeof(connection_ref_t));
++    if (ref != NULL) {
++      ref->fs = fs;
++      ref->count = 1;
++      e_new.data = (void*)ref;
++      if ((hsearch_r(e_new, ENTER, &ep, user_fs_table) == 0) && (ep == NULL)) {
++        ERROR("Unable to save connection due to full hash table.  FUSE may become unstable");
++      }
++    } else {
++      ERROR("Unable to allocate new reference");
++    }
++  }
++
++done:
++
++  pthread_mutex_unlock(&connect_mutex);
++
+   if (user) 
+     free(user);
+-  return fs;
++
++  *origFS = fs;
+ }
+ 
+ #else
+-
++hdfsFS defaultFS = NULL;
+ hdfsFS doConnectAsUser(const char *hostname, int port) {
+-  return hdfsConnect(hostname, port);
++  if (!defaultFS)
++    defaultFS = hdfsConnect(hostname, port);
++
++  return defaultFS;
+ }
+ 
+ #endif
++
++
++/**
++ * Connects to the NN as the default user.
++ * Useful for testing whether the HDFS setup is usable.
++ */
++hdfsFS doConnect(const char *hostname, int port) {
++
++  hdfsFS fs = NULL;
++  fs = hdfsConnectAsUser(hostname, port, "root");
++  
++  return fs;
++}
++
++/**
++ * Disconnects the given HDFS file system object.
++ * @param fs The configured filesystem handle.
++ * @return Returns 0 on success, -1 on error.
++ */
++int doDisconnect(hdfsFS fs) {
++  // This is implemented as a separate function to ease the future transition
++  // to FileContext.
++
++  // Currently we never disconnect filesystems, as this causes the JVM to segfault.
++  return 0;
++/*
++  int retval = 0;
++  retval = hdfsDisconnect(fs);
++  return retval;
++*/
++}
++
+diff --git a/src/contrib/fuse-dfs/src/fuse_connect.h b/src/contrib/fuse-dfs/src/fuse_connect.h
+index e36685b..8982fff 100644
+--- a/src/contrib/fuse-dfs/src/fuse_connect.h
++++ b/src/contrib/fuse-dfs/src/fuse_connect.h
+@@ -27,6 +27,21 @@
+  * (if hadoop pre 0.19, will ignore user and group).
+  */
+ 
+-hdfsFS doConnectAsUser(const char *hostname, int port) ;
++void doConnectAsUser(const char *hostname, int port, hdfsFS* userFS) ;
++
++/**
++ * Connects to the NN as the default user.
++ * Use sparingly as it bypasses permissions.
++ */
++
++hdfsFS doConnect(const char *hostname, int port) ;
++
++/**
++ * Disconnects the filesystem object.
++ * Does so in a thread-safe, ref-counting-safe manner.
++ * Don't use the libhdfs function directly; will eventually migrate to
++ * FileContext
++ */
++int doDisconnect(hdfsFS fs) ;
+ 
+ #endif
+diff --git a/src/contrib/fuse-dfs/src/fuse_context_handle.h b/src/contrib/fuse-dfs/src/fuse_context_handle.h
+index a67855d..3e47a1e 100644
+--- a/src/contrib/fuse-dfs/src/fuse_context_handle.h
++++ b/src/contrib/fuse-dfs/src/fuse_context_handle.h
+@@ -33,7 +33,6 @@ typedef struct dfs_context_struct {
+   int debug;
+   char *nn_hostname;
+   int nn_port;
+-  hdfsFS fs;
+   int read_only;
+   int usetrash;
+   int direct_io;
+diff --git a/src/contrib/fuse-dfs/src/fuse_dfs.c b/src/contrib/fuse-dfs/src/fuse_dfs.c
+index 6d40634..6d0c495 100644
+--- a/src/contrib/fuse-dfs/src/fuse_dfs.c
++++ b/src/contrib/fuse-dfs/src/fuse_dfs.c
+@@ -20,7 +20,7 @@
+ #include "fuse_options.h"
+ #include "fuse_impls.h"
+ #include "fuse_init.h"
+-
++#include "fuse_connect.h"
+ 
+ int is_protected(const char *path) {
+ 
+@@ -56,7 +56,7 @@ static struct fuse_operations dfs_oper = {
+   .write	= dfs_write,
+   .flush        = dfs_flush,
+   .mknod        = dfs_mknod,
+-  .utimens      = dfs_utimens,
++  .utimens	= dfs_utimens,
+   .chmod	= dfs_chmod,
+   .chown	= dfs_chown,
+   .truncate	= dfs_truncate,
+@@ -115,13 +115,17 @@ int main(int argc, char *argv[])
+   // 
+   if (options.initchecks == 1) {
+     hdfsFS temp;
+-    if ((temp = hdfsConnect(options.server, options.port)) == NULL) {
++    if ((temp = doConnect(options.server, options.port)) == NULL) {
+       const char *cp = getenv("CLASSPATH");
+       const char *ld = getenv("LD_LIBRARY_PATH");
+       ERROR("FATAL: misconfiguration - cannot connect to HDFS");
+       ERROR("LD_LIBRARY_PATH=%s",ld == NULL ? "NULL" : ld);
+       ERROR("CLASSPATH=%s",cp == NULL ? "NULL" : cp);
+-      exit(0);
++      exit(1);
++    }
++    if (doDisconnect(temp)) {
++      ERROR("FATAL: unable to disconnect from test filesystem.");
++      exit(1);
+     }
+   }
+ 
+diff --git a/src/contrib/fuse-dfs/src/fuse_impls_access.c b/src/contrib/fuse-dfs/src/fuse_impls_access.c
+index c804011..ee13268 100644
+--- a/src/contrib/fuse-dfs/src/fuse_impls_access.c
++++ b/src/contrib/fuse-dfs/src/fuse_impls_access.c
+@@ -31,11 +31,15 @@ int dfs_access(const char *path, int mask)
+   assert(dfs);
+   assert(path);
+ 
++  // BB: Comment this out - it appears to be dead code.  Will remove in
++  // a separate patch
++/*
+   hdfsFS userFS;
+   if ((userFS = doConnectAsUser(dfs->nn_hostname,dfs->nn_port)) == NULL) {
+     ERROR("Could not connect to HDFS");
+     return -EIO;
+   }
++*/
+   //  return hdfsAccess(userFS, path, mask);
+   return 0;
+ }
+diff --git a/src/contrib/fuse-dfs/src/fuse_impls_chmod.c b/src/contrib/fuse-dfs/src/fuse_impls_chmod.c
+index f397c03..cea35bf 100644
+--- a/src/contrib/fuse-dfs/src/fuse_impls_chmod.c
++++ b/src/contrib/fuse-dfs/src/fuse_impls_chmod.c
+@@ -24,6 +24,7 @@
+ int dfs_chmod(const char *path, mode_t mode)
+ {
+   TRACE1("chmod", path)
++  int ret = 0;
+ 
+ #if PERMS
+   // retrieve dfs specific data
+@@ -34,17 +35,26 @@ int dfs_chmod(const char *path, mode_t mode)
+   assert(dfs);
+   assert('/' == *path);
+ 
+-  hdfsFS userFS;
++  hdfsFS userFS = NULL;
+   // if not connected, try to connect and fail out if we can't.
+-  if ((userFS = doConnectAsUser(dfs->nn_hostname,dfs->nn_port))== NULL) {
++  doConnectAsUser(dfs->nn_hostname,dfs->nn_port,&userFS);
++  if (userFS == NULL) {
+     ERROR("Could not connect to HDFS");
+-    return -EIO;
++    ret = -EIO;
++    goto cleanup;
+   }
+ 
+   if (hdfsChmod(userFS, path, (short)mode)) {
+     ERROR("Could not chmod %s to %d", path, (int)mode);
+-    return -EIO;
++    ret = (errno > 0) ? -errno : -EIO;
++    goto cleanup;
+   }
+ #endif
+-  return 0;
++
++cleanup:
++  if (doDisconnect(userFS)) {
++    ret = -EIO;
++  }
++
++  return ret;
+ }
+diff --git a/src/contrib/fuse-dfs/src/fuse_impls_chown.c b/src/contrib/fuse-dfs/src/fuse_impls_chown.c
+index 10cdd31..deb6861 100644
+--- a/src/contrib/fuse-dfs/src/fuse_impls_chown.c
++++ b/src/contrib/fuse-dfs/src/fuse_impls_chown.c
+@@ -43,30 +43,34 @@
+   if (NULL == user) {
+     ERROR("Could not lookup the user id string %d",(int)uid); 
+     ret = -EIO;
++    goto cleanup;
+   }
+ 
+-  if (0 == ret) {
+-    group = getGroup(gid);
+-    if (group == NULL) {
+-      ERROR("Could not lookup the group id string %d",(int)gid);
+-      ret = -EIO;
+-    } 
+-  }
++  group = getGroup(gid);
++  if (group == NULL) {
++    ERROR("Could not lookup the group id string %d",(int)gid);
++    ret = -EIO;
++    goto cleanup;
++  } 
+ 
+   hdfsFS userFS = NULL;
+-  if (0 == ret) {
+-    // if not connected, try to connect and fail out if we can't.
+-    if ((userFS = doConnectAsUser(dfs->nn_hostname,dfs->nn_port))== NULL) {
+-      ERROR("Could not connect to HDFS");
+-      ret = -EIO;
+-    }
++  doConnectAsUser(dfs->nn_hostname,dfs->nn_port,&userFS);
++  // if not connected, try to connect and fail out if we can't.
++  if (userFS == NULL) {
++    ERROR("Could not connect to HDFS");
++    ret = -EIO;
++    goto cleanup;
+   }
+ 
+-  if (0 == ret) {
+-    if (hdfsChown(userFS, path, user, group)) {
+-      ERROR("Could not chown %s to %d:%d", path, (int)uid, gid);
+-      ret = -EIO;
+-    }
++  if (hdfsChown(userFS, path, user, group)) {
++    ERROR("Could not chown %s to %d:%d", path, (int)uid, gid);
++    ret = (errno > 0) ? -errno : -EIO;
++    goto cleanup;
++  }
++
++cleanup:
++  if (userFS && doDisconnect(userFS)) {
++    ret = -EIO;
+   }
+   if (user) 
+     free(user);
+diff --git a/src/contrib/fuse-dfs/src/fuse_impls_getattr.c b/src/contrib/fuse-dfs/src/fuse_impls_getattr.c
+index a31960c..ed2f15a 100644
+--- a/src/contrib/fuse-dfs/src/fuse_impls_getattr.c
++++ b/src/contrib/fuse-dfs/src/fuse_impls_getattr.c
+@@ -19,6 +19,7 @@
+ #include "fuse_dfs.h"
+ #include "fuse_impls.h"
+ #include "fuse_stat_struct.h"
++#include "fuse_connect.h"
+ 
+ int dfs_getattr(const char *path, struct stat *st)
+ {
+@@ -33,17 +34,20 @@ int dfs_getattr(const char *path, struct stat *st)
+   assert(st);
+ 
+   // if not connected, try to connect and fail out if we can't.
+-  if (NULL == dfs->fs && 
+-      NULL == (dfs->fs = hdfsConnect(dfs->nn_hostname,dfs->nn_port))) {
++  hdfsFS fs = NULL;
++  doConnectAsUser(dfs->nn_hostname,dfs->nn_port, &fs);
++  if (NULL == fs) {
+     ERROR("Could not connect to %s:%d", dfs->nn_hostname, dfs->nn_port);
+     return -EIO;
+   }
+ 
+   // call the dfs API to get the actual information
+-  hdfsFileInfo *info = hdfsGetPathInfo(dfs->fs,path);
++  hdfsFileInfo *info = hdfsGetPathInfo(fs,path);
+ 
++  int ret = 0;
+   if (NULL == info) {
+-    return -ENOENT;
++    ret = -ENOENT;
++    goto cleanup;
+   }
+ 
+   fill_stat_structure(&info[0], st);
+@@ -51,7 +55,7 @@ int dfs_getattr(const char *path, struct stat *st)
+   // setup hard link info - for a file it is 1 else num entries in a dir + 2 (for . and ..)
+   if (info[0].mKind == kObjectKindDirectory) {
+     int numEntries = 0;
+-    hdfsFileInfo *info = hdfsListDirectory(dfs->fs,path,&numEntries);
++    hdfsFileInfo *info = hdfsListDirectory(fs,path,&numEntries);
+ 
+     if (info) {
+       hdfsFreeFileInfo(info,numEntries);
+@@ -65,5 +69,10 @@ int dfs_getattr(const char *path, struct stat *st)
+   // free the info pointer
+   hdfsFreeFileInfo(info,1);
+ 
+-  return 0;
++cleanup:
++  if (doDisconnect(fs)) {
++    ERROR("Could not disconnect from filesystem");
++    ret = -EIO;
++  }
++  return ret;
+ }
+diff --git a/src/contrib/fuse-dfs/src/fuse_impls_mkdir.c b/src/contrib/fuse-dfs/src/fuse_impls_mkdir.c
+index 58b9e07..9c0def8 100644
+--- a/src/contrib/fuse-dfs/src/fuse_impls_mkdir.c
++++ b/src/contrib/fuse-dfs/src/fuse_impls_mkdir.c
+@@ -45,23 +45,32 @@ int dfs_mkdir(const char *path, mode_t mode)
+   
+   hdfsFS userFS;
+   // if not connected, try to connect and fail out if we can't.
+-  if ((userFS = doConnectAsUser(dfs->nn_hostname,dfs->nn_port))== NULL) {
++  doConnectAsUser(dfs->nn_hostname,dfs->nn_port, &userFS);
++  if (userFS == NULL) {
+     ERROR("Could not connect");
+     return -EIO;
+   }
+ 
++  int ret = 0;
+   // In theory the create and chmod should be atomic.
+ 
+   if (hdfsCreateDirectory(userFS, path)) {
+     ERROR("HDFS could not create directory %s", path);
+-    return -EIO;
++    ret = (errno > 0) ? -errno : -EIO;
++    goto cleanup;
+   }
+ 
+ #if PERMS
+   if (hdfsChmod(userFS, path, (short)mode)) {
+     ERROR("Could not chmod %s to %d", path, (int)mode);
+-    return -EIO;
++    ret = (errno > 0) ? -errno : -EIO;
+   }
+ #endif
+-  return 0;
++
++cleanup:
++  if (doDisconnect(userFS)) {
++    ret = -EIO;
++  }
++  return ret;
++
+ }
+diff --git a/src/contrib/fuse-dfs/src/fuse_impls_open.c b/src/contrib/fuse-dfs/src/fuse_impls_open.c
+index 1def4c4..f1d2501 100644
+--- a/src/contrib/fuse-dfs/src/fuse_impls_open.c
++++ b/src/contrib/fuse-dfs/src/fuse_impls_open.c
+@@ -39,19 +39,20 @@ int dfs_open(const char *path, struct fuse_file_info *fi)
+   int flags = (fi->flags & 0x7FFF);
+ 
+   // retrieve dfs specific data
+-  dfs_fh *fh = (dfs_fh*)malloc(sizeof (dfs_fh));
++  dfs_fh *fh = (dfs_fh*)calloc(1, sizeof (dfs_fh));
+   if (fh == NULL) {
+     ERROR("Malloc of new file handle failed");
+     return -EIO;
+   }
+ 
+-  if ((fh->fs = doConnectAsUser(dfs->nn_hostname,dfs->nn_port)) == NULL) {
++  doConnectAsUser(dfs->nn_hostname,dfs->nn_port,&(fh->fs));
++  if (fh->fs == NULL) {
+     ERROR("Could not connect to dfs");
+     return -EIO;
+   }
+ 
+   if (flags & O_RDWR) {
+-    hdfsFileInfo *info = hdfsGetPathInfo(dfs->fs,path);
++    hdfsFileInfo *info = hdfsGetPathInfo(fh->fs,path);
+     if (info == NULL) {
+       // File does not exist (maybe?); interpret it as a O_WRONLY
+       // If the actual error was something else, we'll get it again when
+diff --git a/src/contrib/fuse-dfs/src/fuse_impls_readdir.c b/src/contrib/fuse-dfs/src/fuse_impls_readdir.c
+index b0fb1f5..aa2bb46 100644
+--- a/src/contrib/fuse-dfs/src/fuse_impls_readdir.c
++++ b/src/contrib/fuse-dfs/src/fuse_impls_readdir.c
+@@ -37,11 +37,10 @@ int dfs_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
+   assert(path);
+   assert(buf);
+ 
+-  int path_len = strlen(path);
+-
+   hdfsFS userFS;
+   // if not connected, try to connect and fail out if we can't.
+-  if ((userFS = doConnectAsUser(dfs->nn_hostname,dfs->nn_port))== NULL) {
++  doConnectAsUser(dfs->nn_hostname,dfs->nn_port,&userFS);
++  if (userFS == NULL) {
+     ERROR("Could not connect");
+     return -EIO;
+   }
+@@ -50,11 +49,12 @@ int dfs_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
+   // component (HDFS-975) would save us from parsing it out below.
+   int numEntries = 0;
+   hdfsFileInfo *info = hdfsListDirectory(userFS, path, &numEntries);
+-  userFS = NULL;
+ 
++  int ret = 0;
+   // NULL means either the directory doesn't exist or maybe IO error.
+   if (NULL == info) {
+-    return -ENOENT;
++    ret = (errno > 0) ? -errno : -ENOENT;
++    goto cleanup;
+   }
+ 
+   int i ;
+@@ -115,5 +115,11 @@ int dfs_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
+     }
+   // free the info pointers
+   hdfsFreeFileInfo(info,numEntries);
+-  return 0;
++
++cleanup:
++  if (doDisconnect(userFS)) {
++    ret = -EIO;
++    printf("failed to disconnect %d.\n", errno);
++  }
++  return ret;
+ }
+diff --git a/src/contrib/fuse-dfs/src/fuse_impls_release.c b/src/contrib/fuse-dfs/src/fuse_impls_release.c
+index d19fc8d..0e2fb88 100644
+--- a/src/contrib/fuse-dfs/src/fuse_impls_release.c
++++ b/src/contrib/fuse-dfs/src/fuse_impls_release.c
+@@ -63,6 +63,11 @@ int dfs_release (const char *path, struct fuse_file_info *fi) {
+     if (fh->buf != NULL) {
+       free(fh->buf);
+     }
++
++    if (doDisconnect(fh->fs)) {
++      ret = -EIO;
++    }
++
+     // this is always created and initialized, so always destroy it. (see dfs_open)
+     pthread_mutex_destroy(&fh->mutex);
+ 
+diff --git a/src/contrib/fuse-dfs/src/fuse_impls_rename.c b/src/contrib/fuse-dfs/src/fuse_impls_rename.c
+index 25a3324..87d91cc 100644
+--- a/src/contrib/fuse-dfs/src/fuse_impls_rename.c
++++ b/src/contrib/fuse-dfs/src/fuse_impls_rename.c
+@@ -48,15 +48,23 @@ int dfs_rename(const char *from, const char *to)
+ 
+   hdfsFS userFS;
+   // if not connected, try to connect and fail out if we can't.
+-  if ((userFS = doConnectAsUser(dfs->nn_hostname,dfs->nn_port))== NULL) {
++  doConnectAsUser(dfs->nn_hostname,dfs->nn_port,&userFS);
++  if (userFS == NULL) {
+     ERROR("Could not connect");
+     return -EIO;
+   }
+ 
++  int ret = 0;
+   if (hdfsRename(userFS, from, to)) {
+     ERROR("Rename %s to %s failed", from, to);
+-    return -EIO;
++    ret = (errno > 0) ? -errno : -EIO;
++    goto cleanup;
++  }
++
++cleanup:
++  if (doDisconnect(userFS)) {
++    ret = -EIO;
+   }
++  return ret;
+ 
+-  return 0;
+ }
+diff --git a/src/contrib/fuse-dfs/src/fuse_impls_rmdir.c b/src/contrib/fuse-dfs/src/fuse_impls_rmdir.c
+index b17d892..0800a79 100644
+--- a/src/contrib/fuse-dfs/src/fuse_impls_rmdir.c
++++ b/src/contrib/fuse-dfs/src/fuse_impls_rmdir.c
+@@ -45,27 +45,36 @@ int dfs_rmdir(const char *path)
+     return -EACCES;
+   }
+ 
+-  hdfsFS userFS;
++  hdfsFS userFS = NULL;
++  doConnectAsUser(dfs->nn_hostname,dfs->nn_port,&userFS);
+   // if not connected, try to connect and fail out if we can't.
+-  if ((userFS = doConnectAsUser(dfs->nn_hostname,dfs->nn_port))== NULL) {
++  if (userFS == NULL) {
+     ERROR("Could not connect");
+     return -EIO;
+   }
+ 
++  int ret = 0;
+   int numEntries = 0;
+   hdfsFileInfo *info = hdfsListDirectory(userFS,path,&numEntries);
+ 
+   // free the info pointers
+-  hdfsFreeFileInfo(info,numEntries);
++  if (info)
++    hdfsFreeFileInfo(info,numEntries);
+ 
+   if (numEntries) {
+-    return -ENOTEMPTY;
++    ret = -ENOTEMPTY;
++    goto cleanup;
+   }
+ 
+   if (hdfsDeleteWithTrash(userFS, path, dfs->usetrash)) {
+     ERROR("Error trying to delete directory %s", path);
+-    return -EIO;
++    ret = -EIO;
++    goto cleanup;
+   }
+ 
+-  return 0;
++cleanup:
++  if (doDisconnect(userFS)) {
++    ret = -EIO;
++  }
++  return ret;
+ }
+diff --git a/src/contrib/fuse-dfs/src/fuse_impls_statfs.c b/src/contrib/fuse-dfs/src/fuse_impls_statfs.c
+index 9185cda..b955284 100644
+--- a/src/contrib/fuse-dfs/src/fuse_impls_statfs.c
++++ b/src/contrib/fuse-dfs/src/fuse_impls_statfs.c
+@@ -38,7 +38,8 @@ int dfs_statfs(const char *path, struct statvfs *st)
+ 
+   hdfsFS userFS;
+   // if not connected, try to connect and fail out if we can't.
+-  if ((userFS = doConnectAsUser(dfs->nn_hostname,dfs->nn_port))== NULL) {
++  doConnectAsUser(dfs->nn_hostname,dfs->nn_port,&userFS);
++  if (userFS == NULL) {
+     ERROR("Could not connect");
+     return -EIO;
+   }
+@@ -47,6 +48,10 @@ int dfs_statfs(const char *path, struct statvfs *st)
+   const tOffset used  = hdfsGetUsed(userFS);
+   const tOffset bsize = hdfsGetDefaultBlockSize(userFS);
+ 
++  if (doDisconnect(userFS)) {
++    return -EIO;
++  }
++
+   // fill in the statvfs structure
+ 
+   /* FOR REFERENCE:
+diff --git a/src/contrib/fuse-dfs/src/fuse_impls_truncate.c b/src/contrib/fuse-dfs/src/fuse_impls_truncate.c
+index a94a5cf..bc7dcb0 100644
+--- a/src/contrib/fuse-dfs/src/fuse_impls_truncate.c
++++ b/src/contrib/fuse-dfs/src/fuse_impls_truncate.c
+@@ -46,9 +46,11 @@ int dfs_truncate(const char *path, off_t size)
+ 
+   hdfsFS userFS;
+   // if not connected, try to connect and fail out if we can't.
+-  if ((userFS = doConnectAsUser(dfs->nn_hostname,dfs->nn_port)) == NULL) {
++  doConnectAsUser(dfs->nn_hostname,dfs->nn_port,&userFS);
++  if (userFS == NULL) {
+     ERROR("Could not connect");
+-    return -EIO;
++    ret = -EIO;
++    goto cleanup;
+   }
+ 
+   int flags = O_WRONLY | O_CREAT;
+@@ -56,12 +58,19 @@ int dfs_truncate(const char *path, off_t size)
+   hdfsFile file;
+   if ((file = (hdfsFile)hdfsOpenFile(userFS, path, flags,  0, 0, 0)) == NULL) {
+     ERROR("Could not connect open file %s", path);
+-    return -EIO;
++    ret = -EIO;
++    goto cleanup;
+   }
+ 
+   if (hdfsCloseFile(userFS, file) != 0) {
+     ERROR("Could not close file %s", path);
+-    return -EIO;
++    ret = -EIO;
++    goto cleanup;
+   }
+-  return 0;
++
++cleanup:
++  if (doDisconnect(userFS)) {
++    ret = -EIO;
++  }
++  return ret;
+ }
+diff --git a/src/contrib/fuse-dfs/src/fuse_impls_unlink.c b/src/contrib/fuse-dfs/src/fuse_impls_unlink.c
+index ad7872f..df88149 100644
+--- a/src/contrib/fuse-dfs/src/fuse_impls_unlink.c
++++ b/src/contrib/fuse-dfs/src/fuse_impls_unlink.c
+@@ -35,7 +35,7 @@ int dfs_unlink(const char *path)
+   assert('/' == *path);
+ 
+   if (is_protected(path)) {
+-    ERROR("Trying to delete protected directory %s ", path);
++    ERROR("Trying to delete protected directory %s", path);
+     return -EACCES;
+   }
+ 
+@@ -46,15 +46,23 @@ int dfs_unlink(const char *path)
+ 
+   hdfsFS userFS;
+   // if not connected, try to connect and fail out if we can't.
+-  if ((userFS = doConnectAsUser(dfs->nn_hostname,dfs->nn_port))== NULL) {
++  doConnectAsUser(dfs->nn_hostname,dfs->nn_port,&userFS);
++  if (userFS == NULL) {
+     ERROR("Could not connect");
+     return -EIO;
+   }
+ 
++  int ret = 0;
+   if (hdfsDeleteWithTrash(userFS, path, dfs->usetrash)) {
+     ERROR("Could not delete file %s", path);
+-    return -EIO;
++    ret = (errno > 0) ? -errno : -EIO;
++    goto cleanup;
++  }
++
++cleanup:
++  if (doDisconnect(userFS)) {
++    ret = -EIO;
+   }
++  return ret;
+ 
+-  return 0;
+ }
+diff --git a/src/contrib/fuse-dfs/src/fuse_impls_utimens.c b/src/contrib/fuse-dfs/src/fuse_impls_utimens.c
+index 069d27a..86f0e3f 100644
+--- a/src/contrib/fuse-dfs/src/fuse_impls_utimens.c
++++ b/src/contrib/fuse-dfs/src/fuse_impls_utimens.c
+@@ -23,6 +23,7 @@
+ int dfs_utimens(const char *path, const struct timespec ts[2])
+ {
+   TRACE1("utimens", path)
++  int ret = 0;
+ #if PERMS
+   // retrieve dfs specific data
+   dfs_context *dfs = (dfs_context*)fuse_get_context()->private_data;
+@@ -37,23 +38,32 @@ int dfs_utimens(const char *path, const struct timespec ts[2])
+ 
+   hdfsFS userFS;
+   // if not connected, try to connect and fail out if we can't.
+-  if ((userFS = doConnectAsUser(dfs->nn_hostname,dfs->nn_port))== NULL) {
++  doConnectAsUser(dfs->nn_hostname,dfs->nn_port,&userFS);
++  if (userFS == NULL) {
+     ERROR("Could not connect");
+     return -EIO;
+   }
+ 
+   if (hdfsUtime(userFS, path, mTime, aTime)) {
+-    hdfsFileInfo *info = hdfsGetPathInfo(dfs->fs,path);
++    hdfsFileInfo *info = hdfsGetPathInfo(userFS, path);
+     if (info == NULL) {
+-      return -EIO;
++      ret = (errno > 0) ? -errno : -ENOENT;
++      goto cleanup;
+     }
+     // Silently ignore utimens failure for directories, otherwise 
+     // some programs like tar will fail.
+     if (info->mKind == kObjectKindDirectory) {
+-      return 0;
++      ret = 0;
++    } else {
++      ret = (errno > 0) ? -errno : -EACCES;
+     }
+-    return -errno;
++    goto cleanup;
++  }
++
++cleanup:
++  if (doDisconnect(userFS)) {
++    ret = -EIO;
+   }
+ #endif  
+-  return 0;
++  return ret;
+ }
+diff --git a/src/contrib/fuse-dfs/src/fuse_init.c b/src/contrib/fuse-dfs/src/fuse_init.c
+index f492a3f..8bd18b9 100644
+--- a/src/contrib/fuse-dfs/src/fuse_init.c
++++ b/src/contrib/fuse-dfs/src/fuse_init.c
+@@ -23,6 +23,7 @@
+ #include "fuse_options.h"
+ #include "fuse_context_handle.h"
+ 
++#include "fuse_connect.h"
+ // Hacked up function to basically do:
+ //  protectedpaths = split(options.protected,':');
+ 
+@@ -105,7 +106,6 @@ void *dfs_init()
+   dfs->debug                 = options.debug;
+   dfs->nn_hostname           = options.server;
+   dfs->nn_port               = options.port;
+-  dfs->fs                    = NULL;
+   dfs->read_only             = options.read_only;
+   dfs->usetrash              = options.usetrash;
+   dfs->protectedpaths        = NULL;
+@@ -121,6 +121,16 @@ void *dfs_init()
+     DEBUG("dfs->rdbuffersize <= 0 = %ld", dfs->rdbuffer_size);
+     dfs->rdbuffer_size = 32768;
+   }
++
++  hdfsFS tempFS;
++  if ((tempFS = doConnect(options.server, options.port)) == NULL) {
++    ERROR("Unable to establish test connection to server");
++  } else if (!hdfsGetCapacity(tempFS)) {
++    ERROR("Unable to perform a sample FS call");
++  } else if (hdfsDisconnect(tempFS)) {
++    ERROR("Unable to disconnect from server");
++  }
++
+   return (void*)dfs;
+ }
+ 
+@@ -130,5 +140,4 @@ void dfs_destroy (void *ptr)
+ {
+   TRACE("destroy")
+   dfs_context *dfs = (dfs_context*)ptr;
+-  dfs->fs = NULL;
+ }
