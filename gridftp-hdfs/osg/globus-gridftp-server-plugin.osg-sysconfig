@@ -1,0 +1,7 @@
+# gridftp-hdfs plugin for setting environment in globus-gridftp-server
+
+. /usr/share/gridftp-hdfs/gridftp-hdfs-environment
+
+if [ -e /etc/sysconfig/gridftp-hdfs ]; then
+    . /etc/sysconfig/gridftp-hdfs
+fi

@@ -9,7 +9,7 @@
 
 Name:           gridftp-hdfs
 Version:        0.5.4
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        HDFS DSI plugin for GridFTP
 Group:          System Environment/Daemons
 License:        ASL 2.0
@@ -22,7 +22,8 @@ URL:            http://twiki.grid.iu.edu/bin/view/Storage/HadoopInstallation
 # ./configure
 # make dist
 Source0:        %{name}-%{version}.tar.gz
-Patch0: lcmaps15.patch
+Source1: globus-gridftp-server-plugin.osg-sysconfig
+Patch0: osg-sysconfig.patch
 Patch1: hadoop200.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -34,7 +35,8 @@ BuildRequires: globus-gridftp-server-devel
 BuildRequires: globus-common-devel
 
 Requires: hadoop-libhdfs
-Requires: globus-gridftp-server-progs
+# 6.14-2 added OSG plugin-style sysconfig instead of gridftp.conf.d
+Requires: globus-gridftp-server-progs >= 6.14-2
 Requires: xinetd
 Requires: java7
 Requires: jpackage-utils
@@ -73,8 +75,14 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/*.a
 # Remove the init script - in GT5.2, this gets bootstrapped appropriately
 %if %_osg
 rm $RPM_BUILD_ROOT%{_sysconfdir}/init.d/%{name}
-%else
+%endif
 rm $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/gridftp.conf.d/%{name}-environment-bootstrap
+
+%if %_osg
+mv $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/gridftp.conf.d/%{name} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig
+rmdir $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/gridftp.conf.d
+mkdir -p $RPM_BUILD_ROOT/usr/share/osg/sysconfig
+install -m 644 -p %{SOURCE1} $RPM_BUILD_ROOT/usr/share/osg/sysconfig/globus-gridftp-server-plugin
 %endif
 
 %clean
@@ -122,16 +130,25 @@ fi
 %config(noreplace) %{_sysconfdir}/%{name}/gridftp-inetd.conf
 %config(noreplace) %{_sysconfdir}/%{name}/gridftp.conf
 %config(noreplace) %{_sysconfdir}/%{name}/replica-map.conf
-%config(noreplace) %{_sysconfdir}/sysconfig/gridftp.conf.d/%{name}
 %if %_osg
-%{_sysconfdir}/sysconfig/gridftp.conf.d/%{name}-environment-bootstrap
+%config(noreplace) %{_sysconfdir}/sysconfig/%{name}
+/usr/share/osg/sysconfig/globus-gridftp-server-plugin
 %else
+%config(noreplace) %{_sysconfdir}/sysconfig/gridftp.conf.d/%{name}
 %{_sysconfdir}/init.d/%{name}
 %endif
 
 %changelog
-* Tue Feb 02 2013 Carl Edquist <edquist@cs.wisc.edu> - 0.5.4-6
+* Tue Feb 26 2013 Carl Edquist <edquist@cs.wisc.edu> - 0.5.4-7
 - Update to build with OpenJDK 7; require java7-devel + jpackage-utils
+
+* Tue Feb 19 2013 Dave Dykstra <dwd@fnal.gov> - 0.5.4-6.osg
+- Change sysconfig arrangement to use /usr/share/osg/sysconfig
+  for OSG replaceable additions, and /etc/sysconfig/gridftp-hdfs
+  for non-replaceable variables specific to gridftp-hdfs.
+  Always include /usr/share/osg/sysconfig/globus-gridftp-server
+  environment, which also pulls in hdfs-specific variables via
+  a plugin file.
 
 * Wed Jan 23 2013 Doug Strain <dstrain@fnal.gov> - 0.5.4-5
 - Rebuild for Gridftp 6.14
