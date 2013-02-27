@@ -589,7 +589,7 @@ fi
 %endif
 
 %changelog
-* Tue Feb 02 2013 Carl Edquist <edquist@cs.wisc.edu> - 0.20.2+737-32
+* Tue Feb 26 2013 Carl Edquist <edquist@cs.wisc.edu> - 0.20.2+737-32
 - Update to build on OpenJDK 7; require java7-devel, jpackage-utils
 - Patch build.xml to change java source version from 1.6 -> 1.7
 - Explicitly point JAVA_HOME to 1.7.0

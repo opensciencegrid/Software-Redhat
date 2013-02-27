@@ -155,7 +155,7 @@ if [[ $1 -gt 0 && -e %{_javadir}/%{name}.jar ]]; then
 fi
 
 %changelog
-* Tue Feb 02 2013 Carl Edquist <edquist@cs.wisc.edu> - 2.0.8-1.5
+* Tue Feb 19 2013 Carl Edquist <edquist@cs.wisc.edu> - 2.0.8-1.5
 - Rebuilt with OpenJDK7 / changed java dependency to java7
 
 * Tue Nov 20 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.8-1.4

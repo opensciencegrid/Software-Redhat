@@ -145,7 +145,7 @@ Documentation files for the CREAM Common library
 %doc %{_javadocdir}/%{name}/html/org/glite/ce/commonj/configuration/xppm/class-use/*.html
 
 %changelog
-* Thu Feb 02 2013 Carl Edquist <edquist@cs.wisc.edu> - 1.14.0-4.3.osg
+* Thu Feb 21 2013 Carl Edquist <edquist@cs.wisc.edu> - 1.14.0-4.3.osg
 - Updates to build with JDK 7
 - Require java7-devel, jpackage-utils explicitly
 - Set JAVA_HOME explicity or else el6 finds 1.6.0

@@ -68,7 +68,7 @@ usermod -a -G gip tomcat
 /usr/share/doc/glite-ce-osg-ce-plugin-1.13.1/LICENSE
 
 %changelog
-* Fri Feb 02 2013 Carl Edquist <edquist@cs.wisc.edu> - 1.13.1-5
+* Fri Feb 22 2013 Carl Edquist <edquist@cs.wisc.edu> - 1.13.1-5
 - Updates to build with JDK 7; require java7-devel + jpackage-utils
 - Explicitly set JAVA_HOME since it points to 1.6.0 in el6
 - Patch build.xml to fix warning

@@ -48,7 +48,7 @@ rm -rf $RPM_BUILD_ROOT
 /usr/share/java/jclassads/classad.jar
 
 %changelog
-* Thu Feb 02 2013 Carl Edquist <edquist@cs.wisc.edu> - 2.4-3
+* Fri Feb 15 2013 Carl Edquist <edquist@cs.wisc.edu> - 2.4-3
 - Require java7-devel and jpackage-utils
 
 * Tue Mar 13 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 2.4-2

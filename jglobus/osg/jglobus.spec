@@ -94,10 +94,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_mavendepmapfragdir}/jglobus
 
 %changelog
-* Fri Feb 02 2013 Carl Edquist <edquist@cs.wisc.edu> - 2.0.4-6
+* Fri Feb 22 2013 Carl Edquist <edquist@cs.wisc.edu> - 2.0.4-6
 - Patch pom.xml to specify encoding instead of patching java source
 
-* Fri Feb 02 2013 Carl Edquist <edquist@cs.wisc.edu> - 2.0.4-5
+* Fri Feb 22 2013 Carl Edquist <edquist@cs.wisc.edu> - 2.0.4-5
 - Update to build with JDK 7, require java7-devel + jpackage-utils
 - Patch java source file with non-ascii chars that breaks the build in 1.7
 

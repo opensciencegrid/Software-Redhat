@@ -103,7 +103,7 @@ rm -rf $RPM_BUILD_ROOT
 /var/lib/trustmanager-tomcat/configure.sh
 
 %changelog
-* Thu Feb 02 2013 Carl Edquist <edquist@cs.wisc.edu> - 3.0.0-5
+* Thu Feb 21 2013 Carl Edquist <edquist@cs.wisc.edu> - 3.0.0-5
 - Updates for JDK 7, require java7-devel + jpackage-utils
 - Explicitly point JAVA_HOME to java-1.7.0 to deal with el6 issue
 - Various different documentation .gif files are generated in JDK 7
