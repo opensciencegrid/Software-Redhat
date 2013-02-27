@@ -4,7 +4,7 @@
 Summary: The VOMS Administration service
 Name: voms-admin-server
 Version: 2.7.0
-Release: 1.3%{?dist}
+Release: 1.4%{?dist}
 License:    ASL 2.0
 Group: System Environment/Libraries
 BuildRequires:  maven22
@@ -20,6 +20,7 @@ Requires: emi-trustmanager-tomcat
 Requires: bouncycastle >= 1.39
 %if 0%{?rhel} <= 5
 Requires: tomcat5
+Requires: fetch-crl3
 %define tomcat tomcat5
 %define tomcat_lib /usr/share/tomcat5/common/lib
 %define tomcat_endorsed /usr/share/tomcat5/common/endorsed
@@ -27,12 +28,12 @@ Requires: tomcat5
 %endif
 %if 0%{?rhel} == 6
 Requires: tomcat6
+Requires: fetch-crl
 %define tomcat tomcat6
 %define tomcat_lib /usr/share/tomcat6/lib
 %define tomcat_endorsed /usr/share/tomcat6/endorsed
 %define catalina_home /usr/share/tomcat6
 %endif
-Requires: fetch-crl
 Requires: xml-commons-apis 
 Requires(post):/sbin/chkconfig
 Requires(preun):/sbin/chkconfig
@@ -146,8 +147,11 @@ fi
 %{tomcat_endorsed}/xalan-j2-serializer.jar
 
 %changelog
-* Tue Feb 26 2013 Carl Edquist <edquist@cs.wisc.edu> - 2.7.0-1.3
+* Tue Feb 26 2013 Carl Edquist <edquist@cs.wisc.edu> - 2.7.0-1.4
 - Updates to build with OpenJDK 7; require java7-devel + jpackage-utils
+
+* Fri Feb 22 2013 Brian Lin <blin@cs.wisc.edu> - 2.7.0-1.3
+- Update rhel5 to require fetch-crl3 instead of fetch-crl.
 
 * Tue Aug 28 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 2.7.0-1.2
 Add symlinks for xalan-j2 to tomcat endorsed dir
