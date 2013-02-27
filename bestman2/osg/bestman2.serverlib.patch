@@ -1,0 +1,12 @@
+--- bestman2/sources/setup/bestman.in/bestman.server.in	2012-03-02 11:11:31.000000000 -0600
++++ bestman2/sources/setup/bestman.in/bestman.server.in	2012-03-02 11:13:04.000000000 -0600
+@@ -103,7 +103,8 @@
+ ############################################################################
+ # SERVER Dependent libs CLASSPATH
+ if [ "x$BESTMAN2_SERVER_LIB" = "x" ] ; then
+-    BESTMAN2_SERVER_LIB=`grep BESTMAN2_SERVER_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
++    #BESTMAN2_SERVER_LIB=`grep BESTMAN2_SERVER_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
++     BESTMAN2_SERVER_LIB=`source $BESTMAN_SYSCONF && echo $BESTMAN2_SERVER_LIB`
+ fi
+ ############################################################################
+ # internal configuration options

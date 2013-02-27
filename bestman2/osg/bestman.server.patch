@@ -1,0 +1,13 @@
+--- bestman.server.in.orig	2011-12-06 22:31:03.000000000 -0600
++++ bestman.server.in	2012-01-18 17:26:07.649681322 -0600
+@@ -99,6 +99,10 @@
+ if [ "x$BESTMAN_GUMSPROXYPATH" = "x" ] ; then
+     BESTMAN_GUMSPROXYPATH=`grep BESTMAN_GUMSPROXYPATH $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
+ fi
++if [ "x$BESTMAN_JAVA_SRM_OTHER_OPTS" = "x" ] ; then
++    # the above parsing method doesn't preserve = sign in java property definitions e.g. -Dprop=value
++    eval `grep BESTMAN_JAVA_SRM_OTHER_OPTS $BESTMAN_SYSCONF | sed 's/#.*//'`
++fi
+ 
+ ############################################################################
+ # SERVER Dependent libs CLASSPATH
