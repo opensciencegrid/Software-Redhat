@@ -1,7 +1,7 @@
 %define origin          sun
 %define priority        1603
 %define javaver         1.6.0
-%define buildver        37
+%define buildver        43
 
 %define name            java-%{javaver}-%{origin}-compat
 %define version         %{javaver}%{?buildver:.%{buildver}}
@@ -621,6 +621,9 @@ update-alternatives --remove java_sdk_%{javaver} %{_jvmdir}/%{sdklnk}
 
 
 %changelog
+* Mon Mar 04 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1:1.6.0.43-1.osg
+- Updated to jdk version 1.6.0-43
+
 * Fri Oct 19 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1:1.6.0.37-1.osg
 - Updated to jdk version 1.6.0-37
 
