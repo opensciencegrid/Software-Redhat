@@ -1,6 +1,6 @@
 
 Name:           osg-ca-certs-updater
-Version:        0.4
+Version:        0.5
 Release:        1%{?dist}
 Summary:        Automatic CA certs updates for OSG
 
@@ -56,6 +56,9 @@ fi
 %doc %{_defaultdocdir}/%{name}-%{version}/README*
 
 %changelog
+* Mon Mar 11 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 0.5-1
+- SOFTWARE-968 (make repoquery use plugins)
+
 * Thu Nov 01 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 0.4-1
 - Add absolute path to script to cron.d entry
 
