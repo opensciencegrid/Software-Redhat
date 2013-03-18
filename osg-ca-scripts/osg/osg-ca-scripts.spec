@@ -1,6 +1,6 @@
 Name:      osg-ca-scripts
 Version:   1.0.0
-Release:   1%{?dist}
+Release:   2%{?dist}
 Summary:   CA Certificate helper scripts
 
 Group:     System Environment/Base
@@ -82,6 +82,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr(0755,root,root) %{_localstatedir}/lib/osg-ca-certs
 
 %changelog
+* Mon Mar 18 2013 Brian Lin <blin@cs.wisc.edu> 1.0.0-2
+- Overhauled scripts for use with tarball installs
+
 * Fri Feb 22 2013 Tim Cartwright <cat@cs.wisc.edu> 1.0.0-1
 - Overhauled Fetch CRL code to work with v2/v3 and RPM names
 - Updated Makefile to fit OSG conventions (except install target)
