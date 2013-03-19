@@ -1,5 +1,5 @@
 %global name osg-configure
-%global version 1.0.22
+%global version 1.0.23
 %global release 1%{?dist}
 
 Summary: Package for configure-osg and associated scripts
@@ -221,6 +221,9 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/osg/config.d/20-slurm.ini
 
 %changelog
+* Wed Mar 19 2013 Suchandra Thapa <sthapa@ci.uchicago.edu> 1.0.23-1
+- Added multiple fixes for LSF
+
 * Wed Feb 20 2013 Suchandra Thapa <sthapa@ci.uchicago.edu> 1.0.22-1
 - Added support for fetch-crl3 if present
 
