@@ -16,7 +16,7 @@
 Name:		globus-gram-job-manager-lsf
 %global _name %(tr - _ <<< %{name})
 Version:	1.0
-Release:	1.4%{?dist}
+Release:	1.5%{?dist}
 Summary:	Globus Toolkit - LSF Job Manager
 
 Group:		Applications/Internet
@@ -78,7 +78,7 @@ many others all over the world. A growing number of projects and companies are
 using the Globus Toolkit to unlock the potential of grids for their cause.
 
 The %{name} package contains:
-LSF Job Manager 
+LSF Job Manager
 
 %description setup-poll
 The Globus Toolkit is an open source software toolkit used for building Grid
@@ -218,7 +218,7 @@ fi
 %dir %{_datadir}/globus/packages/%{_name}
 %dir %{_docdir}/%{name}-%{version}
 %config(noreplace) %{_sysconfdir}/globus/globus-lsf.conf
-%config(noreplace) %{_sysconfdir}/globus/gram/lsf.rvf 
+%config(noreplace) %{_sysconfdir}/globus/gram/lsf.rvf
 
 %files setup-poll -f package-setup-poll.filelist
 %defattr(-,root,root,-)
@@ -229,6 +229,9 @@ fi
 %config(noreplace) %{_sysconfdir}/grid-services/available/jobmanager-lsf-seg
 
 %changelog
+* Tue Mar 19 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0-1.5
+- Replaced xcount patch Suchandra Thapa's version (SOFTWARE-978)
+
 * Fri Nov 02 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0-1.4
 - Update lsf.rvf with more info
 

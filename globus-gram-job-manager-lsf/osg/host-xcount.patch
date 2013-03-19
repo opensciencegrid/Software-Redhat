@@ -3,14 +3,28 @@ Index: lsf.pm
 RCS file: /home/globdev/CVS/globus-packages/gram/jobmanager/lrms/lsf/source/lsf.pm,v
 retrieving revision 1.1.2.1
 diff -u -r1.1.2.1 lsf.pm
---- lsf.pm	17 Aug 2012 18:25:14 -0000	1.1.2.1
-+++ lsf.pm	23 Oct 2012 14:56:06 -0000
-@@ -359,6 +359,59 @@
+--- lsf.pm.orig	2013-03-18 16:52:01.746404097 -0500
++++ lsf.pm	2013-03-18 17:10:20.972878761 -0500
+@@ -351,7 +351,13 @@
+             Globus::GRAM::Error::TEMP_SCRIPT_FILE_FAILED());
+     }
+     $self->nfssync( $description->stderr(), 1 );
+-    $rc = print JOB '#BSUB -n ', $description->count(), "\n";
++    my @xcount;
++    @xcount = $description->xcount();
++    if (defined($xcount[0]) && (int($xcount[0]) > 1)) {
++        $rc = print JOB '#BSUB -n ', $xcount[0], "\n";
++    } else { 
++        $rc = print JOB '#BSUB -n ', $description->count(), "\n";
++    }
+     if (!$rc)
+     {
+         return $self->respond_with_failure_extension(
+@@ -359,6 +365,58 @@
              Globus::GRAM::Error::TEMP_SCRIPT_FILE_FAILED());
      }
  
-+    my @xcount, @host_xcount;
-+    @xcount = $description->xcount();
++    my @host_xcount;
 +    @host_xcount = $description->host_xcount();
 +
 +    if (@host_xcount)
@@ -65,7 +79,7 @@ diff -u -r1.1.2.1 lsf.pm
      foreach my $tuple ($description->environment())
      {
  	if(!ref($tuple) || scalar(@$tuple) != 2)
-@@ -491,6 +544,7 @@
+@@ -491,6 +549,7 @@
                  Globus::GRAM::Error::TEMP_SCRIPT_FILE_FAILED());
          }
      }
