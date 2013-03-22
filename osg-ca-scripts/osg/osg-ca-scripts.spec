@@ -1,5 +1,5 @@
 Name:      osg-ca-scripts
-Version:   1.1.0
+Version:   1.1.1
 Release:   1%{?dist}
 Summary:   CA Certificate helper scripts
 
@@ -82,6 +82,10 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr(0755,root,root) %{_localstatedir}/lib/osg-ca-certs
 
 %changelog
+* Fri Mar 22 2013 Brian Lin <blin@cs.wisc.edu> 1.1.1-1
+- Improve default locations for `osg-ca-manage setupca`
+- Bug fixes
+
 * Tue Mar 19 2013 Brian Lin <blin@cs.wisc.edu> 1.1.0-1
 - Corrected build errors of previous version
 
