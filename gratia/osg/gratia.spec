@@ -2,7 +2,7 @@ Name: gratia
 Summary: Gratia OSG accounting system
 Group: Applications/System
 Version: 1.13.9
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: GPL
 Group: Applications/System
 URL: http://sourceforge.net/projects/gratia/
@@ -23,6 +23,8 @@ Requires: jpackage-utils
 #Requires: jsvc 
 %if 0%{?rhel} < 6
 Requires: tomcat5
+# workaround to create missing dirs in el5
+Requires: missing-java-1.7.0-dirs
 %define _tomcat tomcat5
 %endif
 %if 0%{?rhel} == 6
@@ -52,6 +54,7 @@ Requires: jpackage-utils
 #Requires: jsvc 
 %if 0%{?rhel} < 6
 Requires: tomcat5
+Requires: missing-java-1.7.0-dirs
 %define _tomcat tomcat5
 %endif
 %if 0%{?rhel} == 6
@@ -322,6 +325,9 @@ fi
 
 
 %changelog
+* Tue Mar 26 2013 Carl Edquist <edquist@cs.wisc.edu> - 1.13.9-3
+- Workaround: Require missing-java-1.7.0-dirs in el5
+
 * Tue Feb 26 2013 Carl Edquist <edquist@cs.wisc.edu> - 1.13.9-2
 - Updates to build with OpenJDK 7; require java7-devel + jpackage-utils
 
