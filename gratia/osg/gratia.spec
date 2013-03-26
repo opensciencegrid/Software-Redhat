@@ -2,7 +2,7 @@ Name: gratia
 Summary: Gratia OSG accounting system
 Group: Applications/System
 Version: 1.13.9
-Release: 3%{?dist}
+Release: 5%{?dist}
 License: GPL
 Group: Applications/System
 URL: http://sourceforge.net/projects/gratia/
@@ -325,7 +325,7 @@ fi
 
 
 %changelog
-* Tue Mar 26 2013 Carl Edquist <edquist@cs.wisc.edu> - 1.13.9-3
+* Tue Mar 26 2013 Carl Edquist <edquist@cs.wisc.edu> - 1.13.9-5
 - Workaround: Require missing-java-1.7.0-dirs in el5
 
 * Tue Feb 26 2013 Carl Edquist <edquist@cs.wisc.edu> - 1.13.9-2
