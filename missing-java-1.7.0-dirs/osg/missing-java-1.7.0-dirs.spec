@@ -1,4 +1,4 @@
-Name:		mising-java-1.7.0-dirs
+Name:		missing-java-1.7.0-dirs
 Version:	1.0
 Release:	1%{?dist}
 Summary:	Provides /usr/{share,lib}/java-1.7.0/ dirs
