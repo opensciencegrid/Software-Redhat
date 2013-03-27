@@ -8,7 +8,7 @@
 %global release1 7.1
 
 %global version2 2.0.8
-%global release2 1.3
+%global release2 1.4
 
 Name:		voms
 Version:	%{version2}
@@ -96,6 +96,8 @@ Patch22:	%{name}-gsoap.patch
 Patch100:       globus_thread_h.patch
 #               Fix segfault when mistyping passphrase when using p12
 Patch101:       p12.patch
+#               Set signature algorithm to depend on the issuer signature algorithm
+Patch102:       sha2-proxy.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	globus-gssapi-gsi-devel%{?_isa}
@@ -266,6 +268,7 @@ popd
 %patch20 -p1
 %patch21 -p1
 %patch22 -p1
+%patch102 -p0
 
 # Remove embedded gsoap sources
 rm src/server/stdsoap2.c src/server/stdsoap2.h src/server/soap*
@@ -469,6 +472,9 @@ fi
 %doc README.Fedora
 
 %changelog
+* Wed Mar 27 2013 Brian Bockelman <bbockelm@cse.unl.edu> - 2.0.8-1.4
+- Add patch to enable SHA-2 proxy generation.
+
 * Mon Aug 13 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.8-1.3
 - Release bump for koji
 

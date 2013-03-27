@@ -1,0 +1,17 @@
+--- src/sslutils/sslutils.c.orig	2013-03-26 15:15:48.075879092 -0500
++++ src/sslutils/sslutils.c	2013-03-26 15:20:19.572878627 -0500
+@@ -925,9 +925,12 @@
+     else
+       issuer_name = NULL;
+ 
+-    if(proxy_sign_ext(user_cert,
++    const EVP_MD *issuer_digest = (user_cert && user_cert->sig_alg) ? EVP_get_digestbynid(
++            OBJ_obj2nid(user_cert->sig_alg->algorithm)) : EVP_sha1();
++
++    if(!issuer_digest || proxy_sign_ext(user_cert,
+                       user_private_key,
+-                      EVP_sha1(), 
++                      issuer_digest,
+                       req,
+                       new_cert,
+                       subject_name,
