@@ -5,10 +5,10 @@
 %endif
 
 %global version1 1.9.19.2
-%global release1 7.1
+%global release1 7.2
 
 %global version2 2.0.8
-%global release2 1.4
+%global release2 1.5
 
 Name:		voms
 Version:	%{version2}
@@ -472,7 +472,7 @@ fi
 %doc README.Fedora
 
 %changelog
-* Wed Mar 27 2013 Brian Bockelman <bbockelm@cse.unl.edu> - 2.0.8-1.4
+* Wed Mar 27 2013 Brian Bockelman <bbockelm@cse.unl.edu> - 2.0.8-1.5
 - Add patch to enable SHA-2 proxy generation.
 
 * Mon Aug 13 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.8-1.3
