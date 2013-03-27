@@ -1,15 +1,13 @@
 Summary: osg-pki-tools
 Name: osg-pki-tools
 Version: 1.1.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 Source: OSGPKITools-%{version}.tar.gz
-Patch0: sitelib.patch
-Patch1: imports.patch
 License: Apache 2.0
 Group: Grid
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildArch: noarch
-Requires: python 
+Requires: python
 Requires: m2crypto
 Requires: python-simplejson
 %if 0%{?rhel} < 6
@@ -37,8 +35,6 @@ tests for osg-pki-tools
 
 %prep
 %setup -n OSGPKITools-%{version}
-%patch0 -p1
-%patch1 -p1
 
 %build
 %{__python} setup.py build
@@ -57,7 +53,7 @@ mv -f %{buildroot}%{python_sitelib}/tests %{buildroot}%{python_sitelib}/osgpkito
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%files 
+%files
 %defattr(-,root,root)
 %dir %{python_sitelib}/osgpkitools
 %{python_sitelib}/osgpkitools/*.py*
@@ -72,6 +68,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Mar 27 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.1.0-2
+- Make source tarball from 1.1 tag
+- Remove upstreamed patches
+
 * Wed Feb 06 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.1.0-1
 - Version update
 - Add python-ssl dependency on el5
