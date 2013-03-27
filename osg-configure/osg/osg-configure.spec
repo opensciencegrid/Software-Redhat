@@ -221,6 +221,9 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/osg/config.d/20-slurm.ini
 
 %changelog
+* Wed Mar 27 2013 Suchandra Thapa <sthapa@ci.uchicago.edu> 1.0.24-1
+- Added support for configuring gratia LSF module
+
 * Wed Mar 19 2013 Suchandra Thapa <sthapa@ci.uchicago.edu> 1.0.23-1
 - Added multiple fixes for LSF
 
