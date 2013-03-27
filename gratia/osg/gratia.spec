@@ -2,7 +2,7 @@ Name: gratia
 Summary: Gratia OSG accounting system
 Group: Applications/System
 Version: 1.13.9
-Release: 5%{?dist}
+Release: 6%{?dist}
 License: GPL
 Group: Applications/System
 URL: http://sourceforge.net/projects/gratia/
@@ -22,12 +22,14 @@ Requires: java7
 Requires: jpackage-utils
 #Requires: jsvc 
 %if 0%{?rhel} < 6
+Requires: fetch-crl3
 Requires: tomcat5
 # workaround to create missing dirs in el5
 Requires: missing-java-1.7.0-dirs
 %define _tomcat tomcat5
 %endif
 %if 0%{?rhel} == 6
+Requires: fetch-crl
 Requires: tomcat6
 %define _tomcat tomcat6
 %endif
@@ -53,11 +55,13 @@ Requires: java7
 Requires: jpackage-utils
 #Requires: jsvc 
 %if 0%{?rhel} < 6
+Requires: fetch-crl3 
 Requires: tomcat5
 Requires: missing-java-1.7.0-dirs
 %define _tomcat tomcat5
 %endif
 %if 0%{?rhel} == 6
+Requires: fetch-crl 
 Requires: tomcat6
 %define _tomcat tomcat6
 %endif
@@ -325,8 +329,17 @@ fi
 
 
 %changelog
+* Wed Mar 27 2013 Carl Edquist <edquist@cs.wisc.edu> - 1.13.9-6
+- Merge fetch-crl changes into upcoming
+
 * Tue Mar 26 2013 Carl Edquist <edquist@cs.wisc.edu> - 1.13.9-5
 - Workaround: Require missing-java-1.7.0-dirs in el5
+
+* Tue Mar 05 2013 Tanya Levshina <tlevshin@fnal.gov> - 1.13.9-4
+fetch-crl3 is required for sl5
+
+* Mon Mar 04 2013 Tanya Levshina <tlevshin@fnal.gov> - 1.13.9-3
+added fetch-crl, fetch-crl3 dependencies 
 
 * Tue Feb 26 2013 Carl Edquist <edquist@cs.wisc.edu> - 1.13.9-2
 - Updates to build with OpenJDK 7; require java7-devel + jpackage-utils
