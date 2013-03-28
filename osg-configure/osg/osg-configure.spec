@@ -1,5 +1,5 @@
 %global name osg-configure
-%global version 1.0.24
+%global version 1.0.25
 %global release 1%{?dist}
 
 Summary: Package for configure-osg and associated scripts
@@ -221,6 +221,9 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/osg/config.d/20-slurm.ini
 
 %changelog
+* Thu Mar 28 2013 Suchandra Thapa <sthapa@ci.uchicago.edu> 1.0.25-1
+- Use log_directory for LSF instead of accounting_log_directory
+
 * Wed Mar 27 2013 Suchandra Thapa <sthapa@ci.uchicago.edu> 1.0.24-1
 - Added support for configuring gratia LSF module
 
