@@ -221,6 +221,9 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/osg/config.d/20-slurm.ini
 
 %changelog
+* Fri Mar 29 2013 Suchandra Thapa <sthapa@ci.uchicago.edu> 1.0.26-1
+- Fixes for LSF gratia probe configuration
+
 * Thu Mar 28 2013 Suchandra Thapa <sthapa@ci.uchicago.edu> 1.0.25-1
 - Use log_directory for LSF instead of accounting_log_directory
 
