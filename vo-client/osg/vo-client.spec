@@ -1,6 +1,6 @@
 Name:           vo-client
-Version:        43
-Release:        2%{?dist}
+Version:        44
+Release:        1%{?dist}
 Summary:        Contains vomses file for use with user authentication and edg-mkgridmap.conf file that contains configuration information for edg-mkgridmap.
 
 Group:          System Environment/Base
@@ -13,19 +13,9 @@ Requires:       grid-certificates
 
 Source0:        %{name}-%{version}-osg.tar.gz
 
-# Tim's note, 1 November 2012: The process below is probably broken and needs to
-# be completely revised; see package README.
-# ------------------------------------------------------------------------------
-# Steps to make tarball (correctly packaged):
-# Get GOC's tarball, vo-client-40.tar.gz
-# tar xzf vo-client-40.tar.gz
-# cp vomses ./
-# cp edg-mkgridmap.conf ./
-
-# Copy over old LSC files form previous tarball. 
-
-# Generate LSC files for new or changed VOs
-# /usr/sbin/osg-make-vomsdir --vomsdir vomsdir --vomses vomses --vo VO
+# See
+# https://www.opensciencegrid.org/bin/view/SoftwareTeam/CreateVOClient
+# for instructions
 
 
 %description
@@ -95,6 +85,9 @@ rm -rf $RPM_BUILD_ROOT
 %attr(0600,tomcat,tomcat) %config(noreplace) %{_sysconfdir}/gums/gums.config.template
 
 %changelog
+* Fri Mar 29 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 44-1
+- Updated to vo-client v44.
+
 * Thu Nov 01 2012 Tim Cartwright <cat@cs.wisc.edu> - 43-2
 - Swapped in the gums.config.template file from John Weigand (see SOFTWARE-824).
 
