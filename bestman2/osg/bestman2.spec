@@ -42,6 +42,9 @@ Source7:        build.properties
 Source8:        configure.in
 Source9:        bestman2.rc
 Source10:       bestman2lib.sysconfig
+
+Patch0:		upgrade_exception_message.patch
+
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
@@ -167,6 +170,8 @@ BUILDROOT=$PWD
 %setup -T -b 4 -q -n lib
 cd ..
 %setup -T -b 0 -q -n %{name}
+
+%patch0 -p1
 
 pushd bestman2/setup-osg/bestman.in
 sed -i "s/@SRM_HOME@/\/etc\/bestman2/" *
