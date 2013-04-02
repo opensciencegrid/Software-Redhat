@@ -658,7 +658,7 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Tue April 2 2013 Parag Mhashilkar <parag@fnal.gov> - 2.7.0-0.0
+* Tue Apr 2 2013 Parag Mhashilkar <parag@fnal.gov> - 2.7.0-0.0
 - Added missing library files creation/lib/__init__ to the frontend rpm
 
 * Wed Feb 20 2013 Parag Mhashilkar <parag@fnal.gov> - 2.7.0-0.rc1.0
