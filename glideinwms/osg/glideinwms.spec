@@ -6,7 +6,7 @@ Name:           glideinwms
 
 %if %{v2_plus}
 %define version 2.7.0
-%define release 0.rc2.1
+%define release 0.1
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
 %endif
@@ -607,6 +607,9 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/glideinwms/creation/lib/cvWParams.py
 %{python_sitelib}/glideinwms/creation/lib/cvWParams.pyc
 %{python_sitelib}/glideinwms/creation/lib/cvWParams.pyo
+%{python_sitelib}/glideinwms/creation/lib/__init__.py
+%{python_sitelib}/glideinwms/creation/lib/__init__.pyc
+%{python_sitelib}/glideinwms/creation/lib/__init__.pyo
 %{_initrddir}/gwms-frontend
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/gwms-frontend.conf
 %attr(-, frontend, frontend) %dir %{_sysconfdir}/gwms-frontend
@@ -655,6 +658,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed April 02 2013 Parag Mhashilkar <parag@fnal.gov> - 2.7.0-0.0
+- Added missing library files creation/lib/__init__.* to th frontend rpm
+
 * Wed Feb 20 2013 Parag Mhashilkar <parag@fnal.gov> - 2.7.0-0.rc1.0
 - Updated the checksum creation to sort the info
 - Changes to file list based on the python libraries
