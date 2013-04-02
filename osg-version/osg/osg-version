@@ -1,8 +1,13 @@
 #!/bin/sh
 
-if [ -e /etc/osg-version ]; then
+
+OSG_VERSION=/etc/osg-version
+if [ "X$OSG_LOCATION" != "X" ]; then
+    OSG_VERSION=$OSG_LOCATION/$OSG_VERSION
+fi
+if [ -e $OSG_VERSION ]; then
     echo -n 'OSG '
-    cat /etc/osg-version
+    cat $OSG_VERSION
 else
     echo "Unknown OSG version"
 fi
