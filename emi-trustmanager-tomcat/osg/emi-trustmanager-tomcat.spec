@@ -1,7 +1,7 @@
 Summary: Tomcat and axis integration classes
 Name: emi-trustmanager-tomcat
 Version: 3.0.0
-Release: 6%{?dist}
+Release: 7%{?dist}
 License: Apache Software License
 Vendor: EMI
 Group: System Environment/Libraries
@@ -53,8 +53,7 @@ The classes for integrating the trustmanager with tomcat.
 rm -rf $RPM_BUILD_ROOT
  mkdir -p $RPM_BUILD_ROOT
 
-# This ought to be %{java_home}, except that points to java-1.6.0 in el6
-export JAVA_HOME=/usr/lib/jvm/java-1.7.0
+export JAVA_HOME=/etc/alternatives/java_sdk
 
  ant dist -Dprefix=$RPM_BUILD_ROOT -Dstage=/ -Dant.build.javac.target=1.7
  find $RPM_BUILD_ROOT -name '*.la' -exec rm -rf {} \;
@@ -105,6 +104,10 @@ rm -rf $RPM_BUILD_ROOT
 /var/lib/trustmanager-tomcat/configure.sh
 
 %changelog
+* Wed Apr 03 2013 Carl Edquist <edquist@cs.wisc.edu> - 3.0.0-7
+- Rebuild for updated build dependency
+- Use /etc/alternatives instead of hard coding java-1.7.0 path
+
 * Tue Mar 26 2013 Carl Edquist <edquist@cs.wisc.edu> - 3.0.0-6
 - Workaround: Require missing-java-1.7.0-dirs in el5
 
