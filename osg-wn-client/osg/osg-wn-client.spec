@@ -9,7 +9,10 @@ BuildArch: noarch
 
 BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
-Requires: java7-devel # included because users expect java to be available
+# Java included because users expect it to be available
+Requires: jpackage-utils
+Requires: java7-devel 
+
 Requires: /usr/bin/curl
 Requires: /usr/bin/dccp
 Requires: dcap-tunnel-gsi
@@ -92,7 +95,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 * Wed Apr 03 2013 Brian Lin <blin@cs.wisc.edu> - 3.0.0-19.osg
-- Update to require java7-devel
+- Update to require java7-devel and jpackage-utils
 
 * Fri Feb 22 2013 Brian Lin <blin@cs.wisc.edu> - 3.0.0-18.osg
 - Update rhel5 to require fetch-crl3 instead of fetch-crl.
