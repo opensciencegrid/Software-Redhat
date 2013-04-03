@@ -1,0 +1,13 @@
+This is the pass-through packaging of SLF4J, based on the jpackage repo work.
+
+This was originally done by Brian Bockelman in order to fulfill a jetty dep.
+
+SPEC file and sources are adopted from the jpackage 5.0 source RPM.
+
+IMPORTANT NOTE:
+	This build was re-done by Doug Strain to fix problems with 
+	SL6 builds.  It now uses maven22.  Please note that the 
+	version of slf4j in the sl6 repos is newer than this version
+	so the sl6 version WILL NOT BE SHIPPED.  It currently builds
+	on sl6 but this functionality is not guaranteed.
+
