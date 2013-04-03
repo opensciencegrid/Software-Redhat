@@ -1,6 +1,6 @@
 Summary:   Profiles your system for debugging
 Name:      osg-system-profiler
-Version:   1.0.10
+Version:   1.0.11
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -44,6 +44,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/%{name}-viewer
 
 %changelog
+* Tue Apr 02 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0.11-1
+- Work with tarball client as well
+
 * Tue Oct 09 2012 Matyas Selmeci <matyas@cs.wisc.edu> 1.0.10-1
 - Save old profiler output
 - Update user instructions
