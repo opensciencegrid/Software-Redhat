@@ -1,7 +1,7 @@
 Summary:   Profiles your system for debugging
 Name:      osg-system-profiler
 Version:   1.0.11
-Release:   1%{?dist}
+Release:   2%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
 Packager:  VDT <vdt-support@opensciencegrid.org>
@@ -44,6 +44,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/%{name}-viewer
 
 %changelog
+* Tue Apr 02 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0.11-2
+- Fix for looking at fetch-crl.conf in tarball case
+
 * Tue Apr 02 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0.11-1
 - Work with tarball client as well
 
