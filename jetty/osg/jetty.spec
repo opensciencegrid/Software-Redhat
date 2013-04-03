@@ -458,7 +458,7 @@ done
 %{_javadir}/jetty/jetty-xml-%{version}.jar
 
 %changelog
-* Wed Apr 03 2013 Carl Edquist <edquist@cs.wisc.edu> - 8.1.4-1
+* Wed Apr 03 2013 Carl Edquist <edquist@cs.wisc.edu> - 8.1.4-2
 - Build with OpenJDK7
 
 * Wed Jul 26 2012 Neha Sharma <neha@fnal.gov> - 8.1.4-1
