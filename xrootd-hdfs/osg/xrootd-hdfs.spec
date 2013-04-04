@@ -11,7 +11,7 @@ URL: https://github.com/bbockelm/xrootd-hdfs
 # git-archive master | gzip -7 > ~/rpmbuild/SOURCES/xrootd-hdfs.tar.gz
 Source0: %{name}.tar.gz
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
-BuildRequires: xrootd-libs-devel
+BuildRequires: xrootd-devel
 BuildRequires: xrootd-server-devel
 BuildRequires: cmake
 BuildRequires: hadoop-0.20-libhdfs >= 0.20.2+737-4
@@ -70,6 +70,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Wed Apr 03 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.8.3-4
 - Bump to rebuild against xrootd 3.3.1
+- Rename xrootd-libs-devel dependency to match what 3.3.1 calls it
 
 * Mon Nov 26 2012 Doug Strain <dstrain@fnal.gov> - 1.8.3-3
 - Rebuild to link correctly with libhdfs

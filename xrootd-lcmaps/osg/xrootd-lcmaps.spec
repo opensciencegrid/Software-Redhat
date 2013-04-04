@@ -12,11 +12,11 @@ URL: https://github.com/bbockelm/xrootd-lcmaps
 Source0: %{name}.tar.gz
 Patch0: lcmaps-modules-path.patch
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
-BuildRequires: xrootd-libs-devel
+BuildRequires: xrootd-devel
 BuildRequires: lcmaps-interface
 BuildRequires: lcmaps
 BuildRequires: cmake
-Requires: xrootd-server >= 1:3.2
+Requires: xrootd >= 1:3.3
 Requires: lcas-lcmaps-gt4-interface
 
 %description
@@ -59,6 +59,7 @@ getent passwd xrootd >/dev/null || \
 * Web Apr 03 2013 Matyas Selmeci <matyas@cs.wisc.edu> 0.0.7-4
 - Fix lcmaps modules path in lcmaps.cfg
 - Add lcas-lcmaps-gt4-interface as a dependency
+- Rebuild with xrootd 3.3.1; adjust dependencies to match
 
 * Tue Feb 12 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 0.0.7-3
 - Bump to rebuild against xrootd-3.3.0-rc3

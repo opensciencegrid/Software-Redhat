@@ -11,7 +11,7 @@ URL: https://github.com/bbockelm/xrootd-cmstfc
 # git-archive master | gzip -7 > ~/rpmbuild/SOURCES/xrootd-lcmaps.tar.gz
 Source0: %{name}.tar.gz
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
-BuildRequires: xrootd-libs-devel xerces-c-devel pcre-devel
+BuildRequires: xrootd-devel xerces-c-devel pcre-devel
 BuildRequires: cmake
 Requires: /usr/bin/xrootd pcre xerces-c
 
@@ -52,6 +52,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Wed Apr 03 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.5.1-4
 - Bump to rebuild against xrootd 3.3.1
+- Rename xrootd-libs-devel dependency to match what 3.3.1 calls it
 
 * Thu Nov 29 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 1.5.1-3
 - Move module back into base RPM.
