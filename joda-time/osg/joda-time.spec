@@ -3,7 +3,7 @@
 
 Name:           joda-time
 Version:        1.5.2
-Release:        7.%{tzversion}%{?dist}
+Release:        8.%{tzversion}%{?dist}
 Summary:        Java date and time API
 
 Group:          Development/Libraries
