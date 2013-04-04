@@ -4,7 +4,7 @@
 Summary: The VOMS Administration service
 Name: voms-admin-server
 Version: 2.7.0
-Release: 1.4%{?dist}
+Release: 1.5%{?dist}
 License:    ASL 2.0
 Group: System Environment/Libraries
 BuildRequires:  maven22
@@ -147,6 +147,9 @@ fi
 %{tomcat_endorsed}/xalan-j2-serializer.jar
 
 %changelog
+* Thu Apr 04 2013 Carl Edquist <edquist@cs.wisc.edu> - 2.7.0-1.5
+- Rebuild for updated build dependency
+
 * Tue Feb 26 2013 Carl Edquist <edquist@cs.wisc.edu> - 2.7.0-1.4
 - Updates to build with OpenJDK 7; require java7-devel + jpackage-utils
 
