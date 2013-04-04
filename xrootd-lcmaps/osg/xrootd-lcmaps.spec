@@ -1,7 +1,7 @@
 
 Name: xrootd-lcmaps
 Version: 0.0.7
-Release: 3%{?dist}
+Release: 4%{?dist}
 Summary: LCMAPS plugin for xrootd
 
 Group: System Environment/Daemons
@@ -10,6 +10,7 @@ URL: https://github.com/bbockelm/xrootd-lcmaps
 # Generated from:
 # git-archive master | gzip -7 > ~/rpmbuild/SOURCES/xrootd-lcmaps.tar.gz
 Source0: %{name}.tar.gz
+Patch0: lcmaps-modules-path.patch
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildRequires: xrootd-libs-devel
 BuildRequires: lcmaps-interface
@@ -22,6 +23,7 @@ Requires: xrootd-server >= 1:3.2
 
 %prep
 %setup -q -c -n %{name}-%{version}
+%patch0 -p0
 
 %build
 #cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=RelWithDebInfo .
@@ -53,6 +55,9 @@ getent passwd xrootd >/dev/null || \
 %config(noreplace) %{_sysconfdir}/xrootd/lcmaps.cfg
 
 %changelog
+* Tue Feb 12 2013 Matyas Selmeci <matyas@cs.wisc.edu> 0.0.7-4
+- Fix lcmaps modules path in lcmaps.cfg
+
 * Tue Feb 12 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 0.0.7-3
 - Bump to rebuild against xrootd-3.3.0-rc3
 
