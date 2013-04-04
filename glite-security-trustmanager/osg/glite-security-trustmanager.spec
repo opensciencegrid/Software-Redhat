@@ -215,7 +215,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_javadocdir}/%{name}
 
 %changelog
-* Tue Apr 02 2013 Carl Edquist <edquist@cs.wisc.edu> - 2.5.5-6.1
+* Tue Apr 02 2013 Carl Edquist <edquist@cs.wisc.edu> - 2.5.5-6.2
 - Build for OpenJDK7, comment out gcj
 
 * Wed Nov 14 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 2.5.5-6.1
