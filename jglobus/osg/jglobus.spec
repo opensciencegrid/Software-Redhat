@@ -3,7 +3,7 @@ Name: jglobus
 Summary: An implementation of Globus for Java
 License: Apache 2.0
 Version: 2.0.4
-Release: 6%{?dist}
+Release: 7%{?dist}
 URL: http://www.globus.org/toolkit/jglobus/
 Group: System Environment/Libraries
 
@@ -94,6 +94,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mavendepmapfragdir}/jglobus
 
 %changelog
+* Thu Apr 04 2013 Carl Edquist <edquist@cs.wisc.edu> - 2.0.4-7
+- Rebuild for updated build dependency
+
 * Fri Feb 22 2013 Carl Edquist <edquist@cs.wisc.edu> - 2.0.4-6
 - Patch pom.xml to specify encoding instead of patching java source
 
