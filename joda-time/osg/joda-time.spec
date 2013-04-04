@@ -3,7 +3,7 @@
 
 Name:           joda-time
 Version:        1.5.2
-Release:        8.%{tzversion}%{?dist}
+Release:        7.1.%{tzversion}%{?dist}
 Summary:        Java date and time API
 
 Group:          Development/Libraries
@@ -96,7 +96,7 @@ rm -rf %{buildroot}
 
 
 %changelog
-* Thu Apr 04 2013 Carl Edquist <edquist@cs.wisc.edu> - 1.5.2-8.tzdata2008d
+* Thu Apr 04 2013 Carl Edquist <edquist@cs.wisc.edu> - 1.5.2-7.1.tzdata2008d
 - Build with OpenJDK7
 
 * Sat Jul 19 2008 Conrad Meyer <konrad@tylerc.org> - 1.5.2-7.tzdata2008d
