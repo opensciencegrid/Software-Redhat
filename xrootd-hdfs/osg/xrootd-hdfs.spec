@@ -1,7 +1,7 @@
 
 Name: xrootd-hdfs
 Version: 1.8.3
-Release: 3%{?dist}
+Release: 4%{?dist}
 Summary: HDFS plugin for xrootd
 
 Group: System Environment/Development
@@ -68,6 +68,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/XrdHdfs.hh
 
 %changelog
+* Wed Apr 03 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.8.3-4
+- Bump to rebuild against xrootd 3.3.1
+
 * Mon Nov 26 2012 Doug Strain <dstrain@fnal.gov> - 1.8.3-3
 - Rebuild to link correctly with libhdfs
 

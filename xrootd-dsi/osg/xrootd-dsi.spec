@@ -1,6 +1,6 @@
 Name:           xrootd-dsi
 Version:        3.0.4
-Release:        9%{?dist}
+Release:        10%{?dist}
 Summary:        xrootd DSI library and POSIX preload
 Group:          System Environment/Daemons
 License:        Stanford (modified BSD with advert clause)
@@ -65,6 +65,9 @@ install -m 644 libglobus_gridftp_server_posix.so $RPM_BUILD_ROOT/usr/lib/libglob
 
 
 %changelog
+* Wed Apr 03 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 3.0.4-10
+- Bump to rebuild against xrootd 3.3.1
+
 * Wed Feb 20 2013 Dave Dykstra <dwd@fnal.gov> 3.0.4-9
 - Move environment variables from /etc/syscconfig/gridftp.conf.d
   to /usr/share/osg/sysconfig/globus-gridftp-server-plugin
