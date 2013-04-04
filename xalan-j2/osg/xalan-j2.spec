@@ -49,7 +49,7 @@
 
 Name:           xalan-j2
 Version:        2.7.0
-Release:        10%{?dist}
+Release:        10.1%{?dist}
 Epoch:          0
 Summary:        Java XSLT processor
 License:        ASL 2.0
@@ -140,7 +140,7 @@ Documentation for %{name}.
 %package        javadoc
 Summary:        Javadoc for %{name}
 Group:          Development/Documentation
-BuildRequires:  java-javadoc
+BuildRequires:  java7-javadoc
 
 %description    javadoc
 Javadoc for %{name}.
@@ -405,8 +405,8 @@ fi
 %endif
 
 %changelog
-* Thu Apr 04 2013 Carl Edquist <edquist@cs.wisc.edu> - 0:2.7.0-11
-- Build with OpenJDK7, comment out gcj
+* Thu Apr 04 2013 Carl Edquist <edquist@cs.wisc.edu> - 0:2.7.0-10.1
+- Build with OpenJDK7, comment out gcj, use java7-javadoc
 
 * Fri Sep 19 2008 David Walluck <dwalluck@redhat.com> 0:2.7.0-10
 - fix file list
