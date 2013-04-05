@@ -1,5 +1,5 @@
 %global name osg-configure
-%global version 1.0.26
+%global version 1.0.27
 %global release 1%{?dist}
 
 Summary: Package for configure-osg and associated scripts
@@ -221,6 +221,9 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/osg/config.d/20-slurm.ini
 
 %changelog
+* Fri Apr 5 2013 Suchandra Thapa <sthapa@ci.uchicago.edu> 1.0.27-1
+- More fixes for LSF gratia probe configuration
+
 * Fri Mar 29 2013 Suchandra Thapa <sthapa@ci.uchicago.edu> 1.0.26-1
 - Fixes for LSF gratia probe configuration
 
