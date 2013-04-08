@@ -7,7 +7,7 @@
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.3.18.009
-Release: 15.7%{?dist}
+Release: 15.8%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 %if 0%{?rhel} < 6
@@ -369,6 +369,9 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+* Mon Apr 08 2013 Carl Edquist <edquist@cs.wisc.edu> - 1.3.18.009-15.8
+- Rebuild for updated build dependency
+
 * Thu Apr 04 2013 Carl Edquist <edquist@cs.wisc.edu> - 1.3.18.009-15.7
 - Rebuild for updated build dependency
 
