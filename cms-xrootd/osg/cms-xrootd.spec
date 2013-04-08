@@ -2,7 +2,7 @@
 Summary: CMS meta-RPM for Xrootd
 Name: cms-xrootd
 Version: 1.2
-Release: 4%{?dist}
+Release: 5%{?dist}
 Group: System Environment/Daemons
 License: Public Domain
 URL: https://twiki.cern.ch/twiki/bin/view/Main/CmsXrootdArchitecture
@@ -15,8 +15,7 @@ Source2:  Authfile
 Source3:  xrootd.sample.dcache.cfg.in
 Source4:  xrootd.sample.proxy.cfg.in
 
-Requires: xrootd-server >= 3.1.0
-Conflicts: xrootd-server < 3.1.0
+Requires: xrootd >= 3.3.1
 
 %ifarch %{ix86}
 Requires: libXrdLcmaps.so.0
@@ -63,8 +62,7 @@ Requires: %{name} = %{version}-%{release}
 %package dcache
 Summary: CMS meta-RPM for Xrootd over dCache
 Group: System Environment/Daemons
-Requires: xrootd-server >= 3.1.0
-Conflicts: xrootd-server < 3.1.0
+Requires: xrootd >= 3.3.1
 
 %description dcache
 %{summary}
@@ -97,6 +95,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/xrootd/xrootd.sample.proxy.cfg
 
 %changelog
+* Mon Apr 08 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.2-5
+- Require xrootd instead of xrootd-server to match renaming in 3.3.1
+- Remove Conflicts: xrootd-server < 3.1.0 lines -- that's not the way to require minimum versions
+
 * Fri Feb 22 2013 Brian Lin <blin@cs.wisc.edu> - 1.2-4
 - Update rhel5 to require fetch-crl3 instead of fetch-crl.
 
