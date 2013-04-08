@@ -1,1 +1,4 @@
-Source downloaded from 'http://bamboo.globus.org/browse/GT52-RPMCENTOS5-110/artifact/repo/centos/5/SRPMS/gsi-openssh-5.4-2.src.rpm'
+Source downloaded from 'http://www.globus.org/ftppub/gt5/5.2/5.2.4/updates/src/gsi_openssh-5.6-src.tar.gz' since 5.6 was only available as a tarball when this rpm was made.
+The spec file originally came from
+'http://bamboo.globus.org/browse/GT52-RPMCENTOS5-110/artifact/repo/centos/5/SRPMS/gsi-openssh-5.4-2.src.rpm'
+

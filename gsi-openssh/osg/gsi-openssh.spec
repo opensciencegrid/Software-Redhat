@@ -30,8 +30,8 @@
 # Whether or not /sbin/nologin exists.
 %global nologin 1
 
-%global gsi_openssh_rel 5
-%global gsi_openssh_ver 5.4
+%global gsi_openssh_rel 1
+%global gsi_openssh_ver 5.6
 
 %ifarch alpha ia64 ppc64 s390x sparc64 x86_64
 %global flavor gcc64
@@ -359,6 +359,9 @@ fi
 %attr(0644,root,root) /usr/share/osg/sysconfig/gsisshd
 
 %changelog
+* Fri Apr 05 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 5.6-1
+- Update to 5.6
+
 * Wed Feb 20 2013 Dave Dykstra <dwd@fnal.gov> - 5.4-5
 - Move sysconfig file to /usr/share/osg/sysconfig/gsisshd
 
