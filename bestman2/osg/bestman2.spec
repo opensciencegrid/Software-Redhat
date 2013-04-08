@@ -14,7 +14,7 @@
 
 Name:           bestman2
 Version:        2.3.0
-Release:        11%{?dist}
+Release:        12%{?dist}
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -433,6 +433,9 @@ fi
 
 
 %changelog
+* Thu Apr 04 2013 Carl Edquist <edquist@cs.wisc.edu> - 2.3.0-12
+- Rebuild for updated build dependencies
+
 * Tue Mar 26 2013 Carl Edquist <edquist@cs.wisc.edu> - 2.3.0-11
 - Change JAVA_HOME in bestman2.sysconfig from /usr/java/latest to
   /etc/alternatives/java_sdk
