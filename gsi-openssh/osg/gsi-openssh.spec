@@ -1,5 +1,9 @@
 # Do we want SELinux & Audit
+%if "%{?rhel}" == "4"
+%global WITH_SELINUX 0
+%else
 %global WITH_SELINUX 1
+%endif
 
 # OpenSSH privilege separation requires a user & group ID
 # Will let the system choose the UID/GID for the gsisshd user/group; see later
@@ -17,7 +21,7 @@
 %global gsi 1
 
 # Do we want libedit support
-%if "%{?rhel}" == "5"
+%if "%{?rhel}" == "4" || "%{?rhel}" == "5"
 %global libedit 0
 %else
 %global libedit 1
@@ -43,7 +47,7 @@
 Summary: An implementation of the SSH protocol with GSI authentication
 Name: gsi-openssh
 Version: %{gsi_openssh_ver}
-Release: %{gsi_openssh_rel}%{?dist}
+Release: %{gsi_openssh_rel}.1%{?dist}
 URL: http://www.openssh.com/portable.html
 #Source0: ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-%{version}.tar.gz
 #Source1: ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-%{version}.tar.gz.asc
@@ -61,19 +65,40 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Requires: /sbin/nologin
 %endif
 
+%if 0%{?suse_version} == 0
 Requires: initscripts >= 5.20
+%else
+Requires: sysconfig
+%endif
 
+%if 0%{?suse_version} > 0
+BuildRequires: openldap2-devel
+%else
 BuildRequires: openldap-devel
+%endif
 BuildRequires: autoconf, automake, perl, zlib-devel
+%if 0%{?suse_version} > 0
+BuildRequires: audit-devel
+%else
 BuildRequires: audit-libs-devel
+%endif
 BuildRequires: util-linux, groff
 BuildRequires: pam-devel
+%if 0%{?suse_version} > 0
+BuildRequires: tcpd-devel
+BuildRequires: libopenssl-devel
+%else
 %if "%{?rhel}" == "5"
 BuildRequires: tcp_wrappers
 BuildRequires: openssl-devel >= 0.9.8e
 %else
+%if "%{?rhel}" == "4"
+BuildRequires: openssl-devel
+%else
 BuildRequires: tcp_wrappers-devel
 BuildRequires: openssl-devel >= 0.9.8j
+%endif
+%endif
 %endif
 
 %if %{kerberos5}
@@ -81,9 +106,10 @@ BuildRequires: krb5-devel
 %endif
 
 %if %{gsi}
-BuildRequires: globus-gss-assist-devel >= 8
-BuildRequires: globus-usage-devel >= 3
-BuildRequires: globus-common-progs >= 14
+BuildRequires: globus-gss-assist-devel%{?_isa} >= 8
+BuildRequires: globus-usage-devel%{?_isa} >= 3
+BuildRequires: globus-common-progs%{?_isa} >= 14
+BuildRequires: globus-core%{?_isa} >= 8
 BuildRequires: grid-packaging-tools >= 3.4
 %endif
 
@@ -96,39 +122,46 @@ BuildRequires: nss-devel
 %endif
 
 %if %{WITH_SELINUX}
+%if 0%{?suse_version} > 0
+Requires: libselinux1 >= 1.27.7
+%else
 Requires: libselinux >= 1.27.7
+%endif
 BuildRequires: libselinux-devel >= 1.27.7
 Requires: audit-libs >= 1.0.8
 BuildRequires: audit-libs >= 1.0.8
 %endif
 
+%if 0%{?suse_version} > 0
+BuildRequires: xorg-x11-xauth
+%else
 BuildRequires: xauth
-
-Obsoletes: gsissh <= 4.3p2
-Provides: gsissh
+%endif
 
 %package clients
 Summary: SSH client applications with GSI authentication
 Requires: %{name} = %{version}-%{release}
 Group: Applications/Internet
 
-Obsoletes: gsissh-clients <= 4.3p2
-Provides: gsissh-clients
-
 %package server
 Summary: SSH server daemon with GSI authentication
 Group: System Environment/Daemons
 Requires: %{name} = %{version}-%{release}
+%if 0%{?suse_version} == 0
 Requires(post): chkconfig >= 0.9, /sbin/service
+%else
+Requires(post): aaa_base
+%endif
 Requires(pre): /usr/sbin/useradd
-%if "%{?rhel}" == "5"
+%if 0%{?rhel} == 05
 Requires: pam >= 0.99.6-2
+%else
+%if 0%{?rhel} == 04
+Requires: pam >= 0.77
 %else
 Requires: pam >= 1.0.1-3
 %endif
-
-Obsoletes: gsissh-server <= 4.3p2
-Provides: gsissh-server
+%endif
 
 %description
 SSH (Secure SHell) is a program for logging into and executing
@@ -250,13 +283,17 @@ make install sysconfdir=%{_sysconfdir}/gsissh \
      bindir=%{_bindir} DESTDIR=$RPM_BUILD_ROOT
 
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/pam.d/
+%if 0%{?suse_version} == 0
 install -d $RPM_BUILD_ROOT%{_initrddir}
+install -m755 gsisshd.init $RPM_BUILD_ROOT%{_initrddir}/gsisshd
+%else
+install -d $RPM_BUILD_ROOT/etc/init.d
+install -m755 gsisshd.init $RPM_BUILD_ROOT/etc/init.d/gsisshd
+%endif
 install -d $RPM_BUILD_ROOT%{_libexecdir}/gsissh
 install -d $RPM_BUILD_ROOT/usr/share/osg/sysconfig
 install -m644 gsisshd.pam $RPM_BUILD_ROOT%{_sysconfdir}/pam.d/gsisshd
-install -m755 gsisshd.init $RPM_BUILD_ROOT%{_initrddir}/gsisshd
 install -m644 %{SOURCE1} $RPM_BUILD_ROOT/usr/share/osg/sysconfig/gsisshd
-
 
 #rm $RPM_BUILD_ROOT%{_bindir}/gsiscp
 #rm $RPM_BUILD_ROOT%{_bindir}/gsisftp
@@ -355,21 +392,35 @@ fi
 %attr(0644,root,root) %{_mandir}/man8/gsisftp-server.8*
 %attr(0600,root,root) %config(noreplace) %{_sysconfdir}/gsissh/sshd_config
 %attr(0644,root,root) %config(noreplace) %{_sysconfdir}/pam.d/gsisshd
+%if 0%{?suse_version} == 0
 %attr(0755,root,root) %{_initrddir}/gsisshd
+%else
+%attr(0755,root,root) /etc/init.d/gsisshd
+%endif
 %attr(0644,root,root) /usr/share/osg/sysconfig/gsisshd
 
 %changelog
-* Fri Apr 05 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 5.6-1
+* Tue Apr 09 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 5.6-1.1
+- Merge OSG changes
+
+* Tue Apr 02 2013 Globus Toolkit <support@globus.org> - 5.6-1
 - Update to 5.6
+
+* Mon Mar 11 2013 Joseph Bester <bester@mcs.anl.gov> - 5.5-2
+- Update dependencies
 
 * Wed Feb 20 2013 Dave Dykstra <dwd@fnal.gov> - 5.4-5
 - Move sysconfig file to /usr/share/osg/sysconfig/gsisshd
 
-* Mon Sep 10 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 5.4-4
-- Added sysconfig file for server
+* Tue Jun 26 2012 Joseph Bester <bester@mcs.anl.gov> - 5.5-1
+- Update to the 5.5 release
 
-* Fri Oct 28 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 5.4-3
-- Added provides/obsoletes lines for gsissh
+* Wed May 23 2012 Joseph Bester <bester@mcs.anl.gov> - 5.4-4
+- Reduce pam required version for CentOS 4
+
+* Tue May 15 2012 Joseph Bester <bester@mcs.anl.gov> - 5.4-3
+- Adjust requirements for SUSE
+- Fix path to init script for SUSE
 
 * Thu Sep 01 2011 Joseph Bester <bester@mcs.anl.gov> - 5.4-2
 - Update to GT 5.1.2
