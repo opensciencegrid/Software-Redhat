@@ -1,18 +1,23 @@
 Name:           pegasus
-Version:        4.0.0
-Release:        2.1%{?dist}
+Version:        4.2.0
+Release:        1.1%{?dist}
 Summary:        Workflow management system for Condor, grids, and clouds
 Group:          Applications/System
-License:        Apache Software License
+License:        ASL 2.0
 URL:            http://pegasus.isi.edu/
 Packager:       Mats Rynge <rynge@isi.edu>
 
 Source:         pegasus-source-%{version}.tar.gz
 
 BuildRoot:      %{_tmppath}/%{name}-root
-BuildRequires:  ant, ant-apache-regexp, java7-devel, gcc, groff, python-devel, gcc-c++, make 
+BuildRequires:  ant, ant-apache-regexp, java7-devel, gcc, groff, python-devel, gcc-c++, make
 BuildRequires:  jpackage-utils
-Requires:       java7 >= 1:1.7.0, python >= 2.4, condor >= 7.4, graphviz-gd
+# workaround to create missing dirs in el5
+%if 0%{?rhel} == 5
+BuildRequires:  missing-java-1.7.0-dirs
+%endif
+
+Requires:       java7 >= 1:1.7.0, jpackage-utils, python >= 2.4, condor >= 7.6, graphviz
 
 %define sourcedir %{name}-source-%{version}
 
@@ -84,11 +89,14 @@ rm -Rf %{buildroot}
 
 
 %changelog
-* Tue Feb 19 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 4.0.0-2.1
+* Tue Apr 09 2013 Brian Lin <blin@cs.wisc.edu> 4.2.0-1.1
 - Change dependencies to use and build against java7
 
-* Wed Apr 23 2012 Alain Roy <roy@cs.wisc.edu> 4.0.0-2
-- Bumped revision number to force new build and get signed RPM.
+* Fri Jan 11 2013 Mats Rynge <rynge@isi.edu> 4.2.0
+- 4.2.0 release
+
+* Tue Feb 7 2012 Mats Rynge <rynge@isi.edu> 4.1.0
+- 4.1.0 release
 
 * Tue Feb 7 2012 Mats Rynge <rynge@isi.edu> 4.0.0cvs-1
 - Preparing for 4.0.0
