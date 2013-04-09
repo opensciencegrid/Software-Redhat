@@ -1,5 +1,5 @@
 %global name osg-configure
-%global version 1.0.27
+%global version 1.0.28
 %global release 1%{?dist}
 
 Summary: Package for configure-osg and associated scripts
@@ -221,6 +221,10 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/osg/config.d/20-slurm.ini
 
 %changelog
+* Fri Apr 5 2013 Suchandra Thapa <sthapa@ci.uchicago.edu> 1.0.27-1
+- Fix SGE verification issue 
+- Removed stray character in 20-lsf.ini file
+
 * Fri Apr 5 2013 Suchandra Thapa <sthapa@ci.uchicago.edu> 1.0.27-1
 - More fixes for LSF gratia probe configuration
 
