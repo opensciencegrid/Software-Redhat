@@ -5,7 +5,7 @@
 
 Summary:   Tests an OSG Software installation
 Name:      osg-test
-Version:   1.2.5
+Version:   1.2.6
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -39,6 +39,9 @@ rm -rf $RPM_BUILD_ROOT
 /etc/grid-security/certificates/bffdd190.*
 
 %changelog
+* Wed Apr 10 2013 Brian Lin <blin@cs.wisc.edu> - 1.2.6-1
+- New version: Add tests for update installations
+
 * Mon Jan 14 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.2.5-1
 - New version: OkSkip/BadSkip test statuses; updated epel-release-6 rpm filename
 
