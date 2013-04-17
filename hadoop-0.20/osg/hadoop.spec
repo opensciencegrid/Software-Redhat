@@ -56,7 +56,7 @@
 
 Name: %{hadoop_name}-%{apache_branch}
 Version: %{cloudera_version}
-Release: 32%{?dist}
+Release: 33%{?dist}
 Summary: Hadoop is a software platform for processing vast amounts of data
 License: Apache License v2.0
 URL: http://hadoop.apache.org/core/
@@ -199,6 +199,9 @@ trying to debug programs that depend on Hadoop.
 Summary: Mountable HDFS
 Group: Development/Libraries
 Requires: %{name} == %{version}-%{release}, fuse-libs, fuse
+# require java7 explicitly to satisfy libjvm.so requirement
+Requires: java7
+Requires: jpackage-utils
 Provides: hadoop-fuse
 
 %description fuse
@@ -232,9 +235,11 @@ Native libraries for Hadoop compression
 %package libhdfs
 Summary: Hadoop Filesystem Library
 Group: Development/Libraries
-Requires: %{name} == %{version}-%{release}, java7-devel, jpackage-utils
-# TODO: reconcile libjvm
-AutoReq: no
+Requires: %{name} == %{version}-%{release}
+# require java7 explicitly to satisfy libjvm.so requirement
+Requires: java7
+Requires: java7-devel
+Requires: jpackage-utils
 Provides: hadoop-libhdfs
 
 %description libhdfs
@@ -282,7 +287,7 @@ before continuing operation.
 
 # serializer is required but missing from classpath in el5
 export CLASSPATH=$CLASSPATH:/usr/share/java/serializer.jar
-export JAVA_HOME=/usr/lib/jvm/java-1.7.0
+export JAVA_HOME=/etc/alternatives/java_sdk
 export FORREST_HOME=$PWD/apache-forrest-0.8
 %ifarch noarch
 ant -propertyfile cloudera/build.properties bin-package
@@ -589,6 +594,10 @@ fi
 %endif
 
 %changelog
+* Wed Apr 17 2013 Carl Edquist <edquist@cs.wisc.edu> - 0.20.2+737-33
+- explicitly require java7 for fuse/libhdfs packages to provide libjvm.so
+- use alternatives for JAVA_HOME
+
 * Tue Feb 26 2013 Carl Edquist <edquist@cs.wisc.edu> - 0.20.2+737-32
 - Update to build on OpenJDK 7; require java7-devel, jpackage-utils
 - Patch build.xml to change java source version from 1.6 -> 1.7
