@@ -1,7 +1,7 @@
 
 Name: xrootd-hdfs
 Version: 1.8.3
-Release: 6%{?dist}
+Release: 7%{?dist}
 Summary: HDFS plugin for xrootd
 
 Group: System Environment/Development
@@ -11,8 +11,8 @@ URL: https://github.com/bbockelm/xrootd-hdfs
 # git-archive master | gzip -7 > ~/rpmbuild/SOURCES/xrootd-hdfs.tar.gz
 Source0: %{name}.tar.gz
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
-BuildRequires: xrootd-devel
-BuildRequires: xrootd-server-devel
+BuildRequires: xrootd-devel >= 1:3.3.1
+BuildRequires: xrootd-server-devel >= 1:3.3.1
 BuildRequires: cmake
 BuildRequires: hadoop-0.20-libhdfs >= 0.20.2+737-4
 Requires: xrootd-libs >= 1:3.3.1
@@ -69,8 +69,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/XrdHdfs.hh
 
 %changelog
-* Thu Apr 18 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.8.3-6
-- Require xrootd 3.3.1
+* Thu Apr 18 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.8.3-7
+- Explicitly Require and BuildRequire xrootd 3.3.1
 
 * Wed Apr 03 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.8.3-4
 - Bump to rebuild against xrootd 3.3.1

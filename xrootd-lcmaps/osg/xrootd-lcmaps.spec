@@ -1,7 +1,7 @@
 
 Name: xrootd-lcmaps
 Version: 0.0.7
-Release: 4%{?dist}
+Release: 5%{?dist}
 Summary: LCMAPS plugin for xrootd
 
 Group: System Environment/Daemons
@@ -12,11 +12,11 @@ URL: https://github.com/bbockelm/xrootd-lcmaps
 Source0: %{name}.tar.gz
 Patch0: lcmaps-modules-path.patch
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
-BuildRequires: xrootd-devel
+BuildRequires: xrootd-devel >= 1:3.3.1
 BuildRequires: lcmaps-interface
 BuildRequires: lcmaps
 BuildRequires: cmake
-Requires: xrootd >= 1:3.3
+Requires: xrootd >= 1:3.3.1
 Requires: lcas-lcmaps-gt4-interface
 
 %description
@@ -56,6 +56,9 @@ getent passwd xrootd >/dev/null || \
 %config(noreplace) %{_sysconfdir}/xrootd/lcmaps.cfg
 
 %changelog
+* Thu Apr 18 2013 Matyas Selmeci <matyas@cs.wisc.edu> 0.0.7-5
+- Explicitly Require and BuildRequire xrootd 3.3.1
+
 * Wed Apr 03 2013 Matyas Selmeci <matyas@cs.wisc.edu> 0.0.7-4
 - Fix lcmaps modules path in lcmaps.cfg
 - Add lcas-lcmaps-gt4-interface as a dependency
