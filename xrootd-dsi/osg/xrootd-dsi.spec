@@ -1,6 +1,6 @@
 Name:           xrootd-dsi
 Version:        3.0.4
-Release:        10%{?dist}
+Release:        11%{?dist}
 Summary:        xrootd DSI library and POSIX preload
 Group:          System Environment/Daemons
 License:        Stanford (modified BSD with advert clause)
@@ -13,7 +13,8 @@ Patch0:         xrootd-dsi.patch
 
 BuildRoot:      %{_tmppath}/%{name}-root
 BuildRequires: globus-common-devel globus-gridftp-server-devel zlib-devel
-Requires: xrootd-client xrootd-libs 
+Requires: xrootd-client >= 1:3.3.1
+Requires: xrootd-libs >= 1:3.3.1
 Requires: globus-gridftp-server-progs >= 6.14-2
 #Hold off on these for now
 #vdt-compat globus-base-data-server
@@ -65,6 +66,9 @@ install -m 644 libglobus_gridftp_server_posix.so $RPM_BUILD_ROOT/usr/lib/libglob
 
 
 %changelog
+* Thu Apr 18 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 3.0.4-11
+- Explicitly require xrootd 3.3.1
+
 * Wed Apr 03 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 3.0.4-10
 - Bump to rebuild against xrootd 3.3.1
 

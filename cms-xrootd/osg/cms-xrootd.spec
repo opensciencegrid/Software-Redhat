@@ -2,7 +2,7 @@
 Summary: CMS meta-RPM for Xrootd
 Name: cms-xrootd
 Version: 1.2
-Release: 5%{?dist}
+Release: 6%{?dist}
 Group: System Environment/Daemons
 License: Public Domain
 URL: https://twiki.cern.ch/twiki/bin/view/Main/CmsXrootdArchitecture
@@ -15,7 +15,7 @@ Source2:  Authfile
 Source3:  xrootd.sample.dcache.cfg.in
 Source4:  xrootd.sample.proxy.cfg.in
 
-Requires: xrootd >= 3.3.1
+Requires: xrootd >= 1:3.3.1
 
 %ifarch %{ix86}
 Requires: libXrdLcmaps.so.0
@@ -95,6 +95,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/xrootd/xrootd.sample.proxy.cfg
 
 %changelog
+* Thu Apr 18 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.2-6
+- Fix epoch in xrootd requires line
+
 * Mon Apr 08 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.2-5
 - Require xrootd instead of xrootd-server to match renaming in 3.3.1
 - Remove Conflicts: xrootd-server < 3.1.0 lines -- that's not the way to require minimum versions
