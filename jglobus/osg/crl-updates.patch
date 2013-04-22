@@ -1,0 +1,158 @@
+diff --git a/ssl-proxies/src/main/java/org/globus/gsi/CertificateRevocationLists.java b/ssl-proxies/src/main/java/org/globus/gsi/CertificateRevocationLists.java
+index b26e682..5c9d781 100644
+--- a/ssl-proxies/src/main/java/org/globus/gsi/CertificateRevocationLists.java
++++ b/ssl-proxies/src/main/java/org/globus/gsi/CertificateRevocationLists.java
+@@ -18,11 +18,13 @@ import org.globus.gsi.stores.ResourceCertStoreParameters;
+ 
+ import org.globus.gsi.provider.GlobusProvider;
+ 
++import javax.security.auth.x500.X500Principal;
+ import java.security.cert.X509CRLSelector;
+ import java.security.cert.CertStore;
+ import java.security.cert.X509CRL;
+ import java.util.Map;
+ import java.util.Collection;
++import java.util.Vector;
+ import java.util.HashMap;
+ import java.util.LinkedList;
+ import java.util.ListIterator;
+@@ -53,7 +55,7 @@ public class CertificateRevocationLists {
+     private static String defaultCrlLocations = null;
+     private static CertificateRevocationLists defaultCrl  = null;
+     
+-    private Map crlIssuerDNMap;
++    private volatile Map<String, X509CRL> crlIssuerDNMap;
+ 
+     private CertificateRevocationLists() {}
+ 
+@@ -65,6 +67,25 @@ public class CertificateRevocationLists {
+         return (X509CRL[]) crls.toArray(new X509CRL[crls.size()]);
+     }
+ 
++    public Collection<X509CRL> getCRLs(X509CRLSelector selector) {
++        Collection<X500Principal> issuers = selector.getIssuers();
++        int size = issuers.size();
++        Collection<X509CRL> retval = new Vector<X509CRL>(size);
++        // Yup, this stinks.  There's loss when we convert from principal to
++        // string.  Hence, depending on weird encoding effects, we may miss
++        // some CRLs.
++        Map<String, X509CRL> crlMap = this.crlIssuerDNMap;
++        if (crlMap == null) return retval;
++        for (X500Principal principal : issuers) {
++            String dn = principal.getName();
++            X509CRL crl = crlMap.get(dn);
++            if (crl != null) {
++                retval.add(crl);
++            }
++        }
++        return retval;
++    }
++
+     public X509CRL getCrl(String issuerName) {
+         if (this.crlIssuerDNMap == null) {
+             return null;
+@@ -83,7 +104,7 @@ public class CertificateRevocationLists {
+         }
+ 
+         StringTokenizer tokens = new StringTokenizer(locations, ",");
+-        Map newCrlIssuerDNMap = new HashMap();
++        Map<String, X509CRL> newCrlIssuerDNMap = new HashMap<String, X509CRL>();
+         
+         while(tokens.hasMoreTokens()) {
+             
+diff --git a/ssl-proxies/src/main/java/org/globus/gsi/trustmanager/CRLChecker.java b/ssl-proxies/src/main/java/org/globus/gsi/trustmanager/CRLChecker.java
+index 9817df4..2ed55c9 100644
+--- a/ssl-proxies/src/main/java/org/globus/gsi/trustmanager/CRLChecker.java
++++ b/ssl-proxies/src/main/java/org/globus/gsi/trustmanager/CRLChecker.java
+@@ -16,6 +16,7 @@
+ package org.globus.gsi.trustmanager;
+ 
+ import org.globus.gsi.util.KeyStoreUtil;
++import org.globus.gsi.CertificateRevocationLists;
+ 
+ import java.security.InvalidKeyException;
+ import java.security.KeyStore;
+@@ -47,19 +48,19 @@ import org.globus.gsi.GSIConstants;
+  * @since 1.0
+  */
+ public class CRLChecker implements CertificateChecker {
+-    private CertStore certStore;
++    private CertificateRevocationLists crlsList;
+     private KeyStore keyStore;
+     private boolean checkDateValidity;
+ 
+     /**
+      * Creates a CRLChecker where the CRL's are in the supplied stores.
+      *
+-     * @param certStore         The store containing the CRL's
++     * @param crlsList          The object containing the CRL's
+      * @param keyStore          The store used to get trusted certs.
+      * @param checkDateValidity Should we check if the CRL date is valid.
+      */
+-    public CRLChecker(CertStore certStore, KeyStore keyStore, boolean checkDateValidity) {
+-        this.certStore = certStore;
++    public CRLChecker(CertificateRevocationLists crlsList, KeyStore keyStore, boolean checkDateValidity) {
++        this.crlsList = crlsList;
+         this.keyStore = keyStore;
+         this.checkDateValidity = checkDateValidity;
+     }
+@@ -80,12 +81,7 @@ public class CRLChecker implements CertificateChecker {
+         crlSelector.addIssuer(certIssuer);
+ 
+         Collection<? extends CRL> crls;
+-        try {
+-            crls = this.certStore.getCRLs(crlSelector);
+-        } catch (CertStoreException e) {
+-            throw new CertPathValidatorException(
+-                    "Error accessing CRL from certificate store", e);
+-        }
++        crls = crlsList.getCRLs(crlSelector);
+ 
+         if (crls.size() < 1) {
+             return;
+diff --git a/ssl-proxies/src/main/java/org/globus/gsi/trustmanager/X509ProxyCertPathValidator.java b/ssl-proxies/src/main/java/org/globus/gsi/trustmanager/X509ProxyCertPathValidator.java
+index 718ddad..26c68fb 100644
+--- a/ssl-proxies/src/main/java/org/globus/gsi/trustmanager/X509ProxyCertPathValidator.java
++++ b/ssl-proxies/src/main/java/org/globus/gsi/trustmanager/X509ProxyCertPathValidator.java
+@@ -19,6 +19,7 @@ import org.globus.gsi.util.ProxyCertificateUtil;
+ 
+ import org.globus.gsi.X509ProxyCertPathParameters;
+ import org.globus.gsi.X509ProxyCertPathValidatorResult;
++import org.globus.gsi.CertificateRevocationLists;
+ 
+ import org.globus.gsi.provider.SigningPolicyStore;
+ 
+@@ -61,7 +62,6 @@ public class X509ProxyCertPathValidator extends CertPathValidatorSpi {
+     public static final String KEY_USAGE_OID = "2.5.29.15";
+ 
+     protected KeyStore keyStore;
+-    protected CertStore certStore;
+     protected SigningPolicyStore policyStore;
+ 
+     private X509Certificate identityCert;
+@@ -126,7 +126,10 @@ public class X509ProxyCertPathValidator extends CertPathValidatorSpi {
+         }
+         X509ProxyCertPathParameters parameters = (X509ProxyCertPathParameters) params;
+         this.keyStore = parameters.getTrustStore();
+-        this.certStore = parameters.getCrlStore();
++        // We used to keep a CertStore object instead of CertificateRevocationLists object
++        // However, the CertStore object never updates/refreshes the certificates.
++        // This means that the trustmanager stops functioning after a few days of activity
++        // due to expired CRLs.  CertificateRevocationLists will reload the CRLs periodically.
+         this.policyStore = parameters.getSigningPolicyStore();
+         this.rejectLimitedProxy = parameters.isRejectLimitedProxy();
+         this.policyHandlers = parameters.getPolicyHandlers();
+@@ -436,7 +439,12 @@ public class X509ProxyCertPathValidator extends CertPathValidatorSpi {
+         checkers.add(new DateValidityChecker());
+         checkers.add(new UnsupportedCriticalExtensionChecker());
+         checkers.add(new IdentityChecker(this));
+-        checkers.add(new CRLChecker(this.certStore, this.keyStore, true));
++        // NOTE: the (possible) refresh of the CRLs happens when we call getDefault.
++        // Hence, we must recreate crlsList for each call to checkCertificate
++        // Sadly, this also means that the amount of work necessary for checkCertificate
++        // can be arbitrarily large (if the CRL is indeed refreshed).
++        CertificateRevocationLists crlsList = CertificateRevocationLists.getDefaultCertificateRevocationLists();
++        checkers.add(new CRLChecker(crlsList, this.keyStore, true));
+         checkers.add(new SigningPolicyChecker(this.policyStore));
+         return checkers;
+     }

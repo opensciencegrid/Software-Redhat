@@ -13,8 +13,7 @@ Group: System Environment/Libraries
 
 Source0: JGlobus.tar.gz
 
-# Skip tomcat integration until we get relevant code patches from EPEL.
-#Patch0: no-ssl-proxies-tomcat.patch
+Patch0: crl-updates.patch
 
 BuildArch: noarch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -41,7 +40,7 @@ Requires(postun): jpackage-utils
 
 %prep
 %setup -q -c -n JGlobus
-#%patch0 -p1
+%patch0 -p1
 
 find -name '*.class' -exec rm -f '{}' \;
 find -name '*.jar' -exec rm -f '{}' \;
