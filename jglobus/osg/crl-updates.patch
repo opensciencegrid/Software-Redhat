@@ -156,3 +156,43 @@ index 718ddad..26c68fb 100644
          checkers.add(new SigningPolicyChecker(this.policyStore));
          return checkers;
      }
+--- a/ssl-proxies/src/test/java/org/globus/gsi/provider/TestProxyPathValidator.java.orig	2013-04-22 14:17:51.324211124 -0500
++++ b/ssl-proxies/src/test/java/org/globus/gsi/provider/TestProxyPathValidator.java	2013-04-22 14:17:35.756204568 -0500
+@@ -20,6 +20,8 @@
+ 
+ import org.globus.gsi.util.CertificateLoadUtil;
+ 
++import org.globus.gsi.CertificateRevocationLists;
++
+ import org.globus.gsi.trustmanager.CRLChecker;
+ import org.globus.gsi.trustmanager.CertificateChecker;
+ import org.globus.gsi.trustmanager.DateValidityChecker;
+@@ -951,7 +953,7 @@
+             }
+             checkers.add(new UnsupportedCriticalExtensionChecker());
+             checkers.add(new IdentityChecker(this));
+-            checkers.add(new CRLChecker(this.certStore, this.keyStore, this.checkCertificateDateValidity));
++            checkers.add(new CRLChecker(CertificateRevocationLists.getDefaultCertificateRevocationLists(), this.keyStore, this.checkCertificateDateValidity));
+             if (this.checkSigningPolicy) {
+                 checkers.add(new SigningPolicyChecker(this.policyStore));
+             }
+--- JGlobus/ssl-proxies/src/test/java/org/globus/gsi/proxy/ProxyPathValidatorTest.java.orig	2013-04-22 14:31:22.227545523 -0500
++++ JGlobus/ssl-proxies/src/test/java/org/globus/gsi/proxy/ProxyPathValidatorTest.java	2013-04-22 14:36:43.831674749 -0500
+@@ -16,6 +16,8 @@
+ 
+ import org.globus.gsi.util.CertificateLoadUtil;
+ 
++import org.globus.gsi.CertificateRevocationLists;
++
+ import org.globus.gsi.trustmanager.CRLChecker;
+ import org.globus.gsi.trustmanager.CertificateChecker;
+ import org.globus.gsi.trustmanager.DateValidityChecker;
+@@ -734,7 +736,7 @@
+             }
+             checkers.add(new UnsupportedCriticalExtensionChecker());
+             checkers.add(new IdentityChecker(this));
+-            checkers.add(new CRLChecker(this.certStore, this.keyStore, this.checkCertificateDateValidity));
++            checkers.add(new CRLChecker(CertificateRevocationLists.getDefaultCertificateRevocationLists(), this.keyStore, this.checkCertificateDateValidity));
+             if (this.checkSigningPolicy) {
+                 checkers.add(new SigningPolicyChecker(this.policyStore));
+             }
