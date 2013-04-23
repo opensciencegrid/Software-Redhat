@@ -13,6 +13,8 @@ BuildArch: noarch
 # tar zcf osg-info-services-0.11.tar.gz osg-info-services-0.11/
 Source0:   %{name}-%{version}.tar.gz
 
+Patch0: fix-bool.patch
+
 BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
 Requires: gip
@@ -22,6 +24,8 @@ Requires: gip
 
 %prep
 %setup -q
+
+%patch0 -p0
 
 %build
 # No building - just a few python scripts!
@@ -47,6 +51,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_sbindir}/%{name}
 
 %changelog
+* Mon Apr 22 2013 Brian Bockelman <bbockelm@cse.unl.edu> - 0.11-2
+- Fix reporting of boolean values.
+
 * Sun Feb 26 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 0.11-1
 - Fix for directory ownership issues in GIP 1.3.4.
 
