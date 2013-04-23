@@ -5,7 +5,7 @@
 Name:		xrootd
 Epoch:		1
 Version:	3.3.1
-Release:	1.1%{?dist}
+Release:	1.2%{?dist}
 Summary:	Extended ROOT file server
 
 Group:		System Environment/Daemons
@@ -463,8 +463,10 @@ fi
 %defattr(-,root,root,-)
 %doc %{_docdir}/%{name}-%{version}
 
+%files server
+
 %changelog
-* Tue Apr 23 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1:3.3.1-1.1
+* Tue Apr 23 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1:3.3.1-1.2
 - Add xrootd-server dummy package
 
 * Wed Mar 06 2013 Mattias Ellert <mattias.ellert@fysast.uu.se> - 1:3.3.1-1
