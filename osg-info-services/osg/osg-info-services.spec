@@ -2,7 +2,7 @@
 Name:      osg-info-services
 Summary:   OSG Information Services uploader
 Version:   0.11
-Release:   1%{?dist}
+Release:   2%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
