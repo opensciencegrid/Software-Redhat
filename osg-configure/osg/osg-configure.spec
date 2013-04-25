@@ -221,7 +221,10 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/osg/config.d/20-slurm.ini
 
 %changelog
-* Tue Apr 9 2013 Suchandra Thapa <sthapa@ci.uchicago.edu> 1.0.28-1
+* Thu Apr 25 2013 Suchandra Thapa <sthapa@ci.uchicago.edu> 1.0.30-1
+- Remove duplicate and broken check for SGE log files
+
+* Tue Apr 9 2013 Suchandra Thapa <sthapa@ci.uchicago.edu> 1.0.29-1
 - Fix SGE unit test errors
 
 * Tue Apr 9 2013 Suchandra Thapa <sthapa@ci.uchicago.edu> 1.0.28-1
