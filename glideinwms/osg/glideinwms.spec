@@ -6,7 +6,7 @@ Name:           glideinwms
 
 %if %{v2_plus}
 %define version 2.7.0
-%define release 0.2
+%define release 0.3
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
 %endif
@@ -62,6 +62,7 @@ through a dynamic condor pool of grid-submitted resources.
 Two packages exist (factory and vofrontend) plus 
 dependent condor packages for additional condor customizability.
 
+
 %package vofrontend
 Summary:        The VOFrontend for glideinWMS submission host
 Group:          System Environment/Daemons
@@ -71,7 +72,6 @@ Requires: glideinwms-vofrontend-standalone
 Requires: glideinwms-userschedd
 Requires: glideinwms-usercollector
 Obsoletes: glideinwms-vofrontend-condor < 2.6.2-2
-
 %description vofrontend
 The purpose of the glideinWMS is to provide a simple way 
 to access the Grid resources. GlideinWMS is a Glidein 
@@ -101,7 +101,6 @@ Requires: condor >= 7.6.0
 Requires(post): /sbin/service
 Requires(post): /usr/sbin/useradd
 Requires(post): /sbin/chkconfig
-
 %description vofrontend-standalone
 The purpose of the glideinWMS is to provide a simple way
 to access the Grid resources. GlideinWMS is a Glidein
@@ -110,29 +109,49 @@ Condor. For those familiar with the Condor system, it is used
 for scheduling and job control.
 This package is for a standalone vofrontend install
 
+
 %package usercollector
 Summary:        The VOFrontend glideinWMS collector host
 Group:          System Environment/Daemons
 Requires: condor >= 7.6.0
-Requires: glideinwms-vofrontend-standalone
+Requires: glideinwms-minimal-condor
+Requires: glideinwms-glidecondor-tools
 %description usercollector
 The user collector matches user jobs to glideins in the user pool.
 It can be split off into its own node.
+
 
 %package userschedd
 Summary:        The VOFrontend glideinWMS submission host
 Group:          System Environment/Daemons
 Requires: condor >= 7.6.0
-Requires: glideinwms-vofrontend-standalone
+Requires: glideinwms-minimal-condor
+Requires: glideinwms-glidecondor-tools
 %description userschedd
 This is a package for a glideinwms submit host.
+
+
+%package libs
+Summary:        The glideinWMS common libraries.
+Group:          System Environment/Daemons
+Requires: python-rrdtool
+Requires: m2crypto
+%description libs
+This is a package provides common libraries used by glideinwms.
+
+
+%package glidecondor-tools
+Summary:        Condor tools useful with the glideinWMS.
+Group:          System Environment/Daemons
+Requires: glideinwms-libs
+%description tools
+This is a package provides common libraries used by glideinwms.
 
 
 %package minimal-condor
 Summary:        The VOFrontend minimal condor config
 Group:          System Environment/Daemons
 Provides: gwms-condor-config
-
 %description minimal-condor
 This is an alternate condor config for just the minimal amount
 needed for vofrontend.
@@ -153,7 +172,6 @@ Requires: gwms-factory-config
 Requires(post): /sbin/service
 Requires(post): /usr/sbin/useradd
 Requires(post): /sbin/chkconfig
-
 %description factory
 The purpose of the glideinWMS is to provide a simple way
 to access the Grid resources. GlideinWMS is a Glidein
@@ -162,12 +180,10 @@ Condor. For those familiar with the Condor system, it is used
 for scheduling and job control.
 
 
-
 %package factory-condor
 Summary:        The VOFrontend condor config
 Group:          System Environment/Daemons
 Provides: gwms-factory-config
-
 %description factory-condor
 This is a package including condor_config for a full one-node
 install of wmscollector + wms factory
@@ -637,28 +653,20 @@ rm -rf $RPM_BUILD_ROOT
 %attr(-, condor, condor) %{_localstatedir}/lib/condor/schedd_glideins5
 
 %files usercollector
-%attr(755,root,root) %{_sbindir}/glidecondor_addDN
-%attr(755,root,root) %{_sbindir}/glidecondor_createSecSched
-%config(noreplace) %{_sysconfdir}/condor/config.d/00_gwms_general.config
 %config(noreplace) %{_sysconfdir}/condor/config.d/01_gwms_collectors.config
-%config(noreplace) %{_sysconfdir}/condor/config.d/03_gwms_local.config
-%config(noreplace) %{_sysconfdir}/condor/config.d/90_gwms_dns.config
-%config(noreplace) %{_sysconfdir}/condor/certs/condor_mapfile
-%attr(-, condor, condor) %{_localstatedir}/lib/condor/schedd_jobs2
 
 %files userschedd
-%attr(755,root,root) %{_sbindir}/glidecondor_addDN
-%attr(755,root,root) %{_sbindir}/glidecondor_createSecSched
-%config(noreplace) %{_sysconfdir}/condor/config.d/00_gwms_general.config
 %config(noreplace) %{_sysconfdir}/condor/config.d/02_gwms_schedds.config
-%config(noreplace) %{_sysconfdir}/condor/config.d/03_gwms_local.config
-%config(noreplace) %{_sysconfdir}/condor/config.d/90_gwms_dns.config
-%config(noreplace) %{_sysconfdir}/condor/certs/condor_mapfile
 %attr(-, condor, condor) %{_localstatedir}/lib/condor/schedd_jobs2
 
-%files minimal-condor
+%files libs
+%{python_sitelib}/glideinwms/lib
+
+%files glidecondor-tools
 %attr(755,root,root) %{_sbindir}/glidecondor_addDN
 %attr(755,root,root) %{_sbindir}/glidecondor_createSecSched
+
+%files minimal-condor
 %config(noreplace) %{_sysconfdir}/condor/config.d/00_gwms_general.config
 %config(noreplace) %{_sysconfdir}/condor/config.d/03_gwms_local.config
 %config(noreplace) %{_sysconfdir}/condor/config.d/90_gwms_dns.config
@@ -666,8 +674,13 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Apr 26 2013 Parag Mhashilkar <parag@fnal.gov> - 2.7.0-0.3
+- Further refactoring of packages.
+- Added new packages glideinwms-glidecondor-tools and its dependancy glideinwms-libs
+- Removed files provided by glideinwms-minimal-condor from file list of glideinwms-usercollector and glideinwms-userschedd and make usercollector and userschedd depend on the minimal-condor
+
 * Fri Apr 26 2013 Parag Mhashilkar <parag@fnal.gov> - 2.7.0-0.2
-- Added glidecondor_addDN to rfactory, vofrontend-standalone, minimal-condor, userschedd, usercollector packages
+- Added glidecondor_addDN to factory, vofrontend-standalone, minimal-condor, userschedd, usercollector packages
 
 * Tue Apr 2 2013 Parag Mhashilkar <parag@fnal.gov> - 2.7.0-0.0
 - Added missing library files creation/lib/__init__ to the frontend rpm
