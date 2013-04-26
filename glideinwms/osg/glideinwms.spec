@@ -6,7 +6,7 @@ Name:           glideinwms
 
 %if %{v2_plus}
 %define version 2.7.0
-%define release 0.1
+%define release 0.2
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
 %endif
@@ -114,6 +114,7 @@ This package is for a standalone vofrontend install
 Summary:        The VOFrontend glideinWMS collector host
 Group:          System Environment/Daemons
 Requires: condor >= 7.6.0
+Requires: glideinwms-vofrontend-standalone
 %description usercollector
 The user collector matches user jobs to glideins in the user pool.
 It can be split off into its own node.
@@ -122,6 +123,7 @@ It can be split off into its own node.
 Summary:        The VOFrontend glideinWMS submission host
 Group:          System Environment/Daemons
 Requires: condor >= 7.6.0
+Requires: glideinwms-vofrontend-standalone
 %description userschedd
 This is a package for a glideinwms submit host.
 
@@ -378,6 +380,7 @@ cp creation/create_condor_tarball $RPM_BUILD_ROOT%{_bindir}
 
 # Install glidecondor
 install -m 0755 install/glidecondor_addDN $RPM_BUILD_ROOT%{_sbindir}/glidecondor_addDN
+install -m 0755 install/glidecondor_createSecSched $RPM_BUILD_ROOT%{_sbindir}/glidecondor_createSecSched
 
 # Install checksum file
 install -m 0644 etc/checksum.frontend $RPM_BUILD_ROOT%{frontend_dir}/checksum.frontend
@@ -499,6 +502,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_sbindir}/stopFactory.pyo
 %endif
 %attr(755,root,root) %{_sbindir}/glidecondor_addDN
+%attr(755,root,root) %{_sbindir}/glidecondor_createSecSched
 %attr(755,root,root) %{_sbindir}/info_glidein
 %attr(755,root,root) %{_sbindir}/manageFactoryDowntimes.py
 %attr(755,root,root) %{_sbindir}/reconfig_glidein
@@ -565,6 +569,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/wms*
 %attr(755,root,root) %{_sbindir}/checkFrontend
 %attr(755,root,root) %{_sbindir}/glidecondor_addDN
+%attr(755,root,root) %{_sbindir}/glidecondor_createSecSched
 %attr(755,root,root) %{_sbindir}/glideinFrontend
 %attr(755,root,root) %{_sbindir}/glideinFrontendElement.py*
 %attr(755,root,root) %{_sbindir}/reconfig_frontend
@@ -633,6 +638,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files usercollector
 %attr(755,root,root) %{_sbindir}/glidecondor_addDN
+%attr(755,root,root) %{_sbindir}/glidecondor_createSecSched
 %config(noreplace) %{_sysconfdir}/condor/config.d/00_gwms_general.config
 %config(noreplace) %{_sysconfdir}/condor/config.d/01_gwms_collectors.config
 %config(noreplace) %{_sysconfdir}/condor/config.d/03_gwms_local.config
@@ -642,6 +648,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files userschedd
 %attr(755,root,root) %{_sbindir}/glidecondor_addDN
+%attr(755,root,root) %{_sbindir}/glidecondor_createSecSched
 %config(noreplace) %{_sysconfdir}/condor/config.d/00_gwms_general.config
 %config(noreplace) %{_sysconfdir}/condor/config.d/02_gwms_schedds.config
 %config(noreplace) %{_sysconfdir}/condor/config.d/03_gwms_local.config
@@ -651,6 +658,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files minimal-condor
 %attr(755,root,root) %{_sbindir}/glidecondor_addDN
+%attr(755,root,root) %{_sbindir}/glidecondor_createSecSched
 %config(noreplace) %{_sysconfdir}/condor/config.d/00_gwms_general.config
 %config(noreplace) %{_sysconfdir}/condor/config.d/03_gwms_local.config
 %config(noreplace) %{_sysconfdir}/condor/config.d/90_gwms_dns.config
@@ -658,6 +666,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Apr 26 2013 Parag Mhashilkar <parag@fnal.gov> - 2.7.0-0.2
+- Added glidecondor_addDN to rfactory, vofrontend-standalone, minimal-condor, userschedd, usercollector packages
+
 * Tue Apr 2 2013 Parag Mhashilkar <parag@fnal.gov> - 2.7.0-0.0
 - Added missing library files creation/lib/__init__ to the frontend rpm
 
