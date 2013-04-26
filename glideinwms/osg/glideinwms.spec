@@ -144,7 +144,7 @@ This is a package provides common libraries used by glideinwms.
 Summary:        Condor tools useful with the glideinWMS.
 Group:          System Environment/Daemons
 Requires: glideinwms-libs
-%description tools
+%description glidecondor-tools
 This is a package provides common libraries used by glideinwms.
 
 
