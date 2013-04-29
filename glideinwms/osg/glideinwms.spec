@@ -6,7 +6,7 @@ Name:           glideinwms
 
 %if %{v2_plus}
 %define version 2.7.0
-%define release 0.3
+%define release 0.4
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
 %endif
@@ -595,6 +595,15 @@ rm -rf $RPM_BUILD_ROOT
 %attr(-, frontend, frontend) %{web_base}
 %attr(-, frontend, frontend) %{frontend_dir}
 %attr(-, frontend, frontend) %{_localstatedir}/log/gwms-frontend
+%{python_sitelib}/glideinwms/__init__.py
+%{python_sitelib}/glideinwms/__init__.pyc
+%{python_sitelib}/glideinwms/__init__.pyo
+%{python_sitelib}/glideinwms/frontend
+%{python_sitelib}/glideinwms/lib
+%{python_sitelib}/glideinwms/tools
+%{python_sitelib}/glideinwms/creation/__init__.py
+%{python_sitelib}/glideinwms/creation/__init__.pyc
+%{python_sitelib}/glideinwms/creation/__init__.pyo
 %{python_sitelib}/glideinwms/creation/lib/cWConsts.py
 %{python_sitelib}/glideinwms/creation/lib/cWConsts.pyc
 %{python_sitelib}/glideinwms/creation/lib/cWConsts.pyo
@@ -604,15 +613,6 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/glideinwms/creation/lib/cWParams.py
 %{python_sitelib}/glideinwms/creation/lib/cWParams.pyc
 %{python_sitelib}/glideinwms/creation/lib/cWParams.pyo
-%{python_sitelib}/glideinwms/frontend
-%{python_sitelib}/glideinwms/lib
-%{python_sitelib}/glideinwms/tools
-%{python_sitelib}/glideinwms/__init__.py
-%{python_sitelib}/glideinwms/__init__.pyc
-%{python_sitelib}/glideinwms/__init__.pyo
-%{python_sitelib}/glideinwms/creation/__init__.py
-%{python_sitelib}/glideinwms/creation/__init__.pyc
-%{python_sitelib}/glideinwms/creation/__init__.pyo
 %{python_sitelib}/glideinwms/creation/lib/cvWConsts.py
 %{python_sitelib}/glideinwms/creation/lib/cvWConsts.pyc
 %{python_sitelib}/glideinwms/creation/lib/cvWConsts.pyo
@@ -660,6 +660,9 @@ rm -rf $RPM_BUILD_ROOT
 %attr(-, condor, condor) %{_localstatedir}/lib/condor/schedd_jobs2
 
 %files libs
+%{python_sitelib}/glideinwms/__init__.py
+%{python_sitelib}/glideinwms/__init__.pyc
+%{python_sitelib}/glideinwms/__init__.pyo
 %{python_sitelib}/glideinwms/lib
 
 %files glidecondor-tools
@@ -674,6 +677,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Apr 29 2013 Parag Mhashilkar <parag@fnal.gov> - 2.7.0-0.4
+- Added missing glideinwms/__init__ to the glideinwms-libs.
+
 * Fri Apr 26 2013 Parag Mhashilkar <parag@fnal.gov> - 2.7.0-0.3
 - Further refactoring of packages.
 - Added new packages glideinwms-glidecondor-tools and its dependancy glideinwms-libs
