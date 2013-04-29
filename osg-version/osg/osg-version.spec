@@ -1,7 +1,7 @@
 Name:      osg-version
 Summary:   OSG Version
-Version:   3.1.16
-Release:   2%{?dist}
+Version:   3.1.17
+Release:   1%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -34,6 +34,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/osg-version
 
 %changelog
+* Mon Apr 29 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 3.1.17-1
+- Updated to 3.1.17-1
+
 * Tue Apr 02 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 3.1.16-2
 - Updated to work with tarball client
 
