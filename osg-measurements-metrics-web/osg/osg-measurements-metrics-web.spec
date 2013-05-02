@@ -1,55 +1,100 @@
-%define name osg-measurements-metrics-web
-%define version 1.1
-%define unmangled_version 1.1
-%define release 3
+%if 0%{?rhel} && 0%{?rhel} <= 5
+%{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
+%{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
+%endif
 
-Summary: OSG Measurements and Metrics webpages.
-Name: %{name}
-Version: %{version}
-Release: %{release}
-Source0: %{name}-%{unmangled_version}.tar.gz
-License: UNKNOWN
-Group: Development/Libraries
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
-Prefix: %{_prefix}
-BuildArch: noarch
-Vendor: Brian Bockelman <bbockelm@cse.unl.edu>
-Requires: graphtool >= 0.6.4 MySQL-python python-sqlite python-cheetah /usr/bin/ldapsearch python-cherrypy >= 3.1.2 python-ZSI python-setuptools osg-measurements-metrics-db python-json gratia-probe-common gratia-probe-services
-Obsoletes: OSG-Measurements-Metrics-Web
-Url: http://t2.unl.edu/documentation/gratia_graphs
+Name:           osg-measurements-metrics-web
+Version:        1.2
+Release:        0%{?dist}
+Summary:        OSG Measurements and Metrics web and database
+
+Group:          Applications/System
+License:        Apache 2.0
+URL:            http://t2.unl.edu/documentation/gratia_graphs
+Source0:        %{name}-%{version}.tar.gz
+BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+
+BuildArch:      noarch
+
+BuildRequires:  python-setuptools
+Requires:       graphtool >= 0.6.4 
+Requires:	MySQL-python 
+Requires:	python-sqlite 
+Requires:	python-cheetah 
+Requires:	/usr/bin/ldapsearch 
+Requires:	python-cherrypy >= 3.1.2 
+Requires:	python-ZSI 
+Requires: 	python-setuptools 
+Requires: 	osg-measurements-metrics-db 
+%if 0%{?el5}
+Requires:	python-json 
+%endif
+Requires:	gratia-probe-common   
+Requires:	gratia-probe-services
+
+
+
 
 %description
-UNKNOWN
+
 
 %prep
-%setup -n %{name}-%{unmangled_version}
+%setup -q
+
 
 %build
-python setup.py build
+cp setup/setup_Web.py ./setup.py
+CFLAGS="$RPM_OPT_FLAGS" %{__python} setup.py build
+
+
 
 %install
-python setup.py install --single-version-externally-managed --root=$RPM_BUILD_ROOT --record=INSTALLED_FILES
+rm -rf $RPM_BUILD_ROOT
+
+
+%{__python} setup.py install --skip-build --root %{buildroot}
+
+install -d %{buildroot}/%{_initrddir}
+mv %{buildroot}/etc/init.d/GratiaWeb %{buildroot}/%{_initrddir}
+
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%files -f INSTALLED_FILES
-%defattr(-,root,root)
+
+%files
+%defattr(-,root,root,-)
+%{_bindir}/*
+%{_datadir}/GratiaWeb/*
+%config %{_sysconfdir}/wlcg_email.conf.rpmnew
+%config %{_sysconfdir}/access.db
+%config %{_sysconfdir}/osg_graphs.conf
+%{_sysconfdir}/cron.d/*
+%{_sysconfdir}/logrotate.d/*
+%{_initrddir}/*
+
+
+%{python_sitelib}/*
+
+
+
+
 %changelog
-* Mon Jan 14 2013 Ashu Guru <aguru2@unl.edu>
-- Renamed the package to lower name and fixed minor labeling errors
-- (https://jira.opensciencegrid.org/browse/METRICS-15)
+* Mon Feb 18 2013 Ashu Guru <aguru2@unl.edu>
+- Added the Under Construction and BatchPilot 
+- (https://jira.opensciencegrid.org/browse/GRATIAWEB-28)
+
+* Thu Jan 10 2013 Derek Weitzel <dwetizel@cse.unl.edu> - 1.1-4
+- Fixing initrd dir
+
+* Thu Jan 10 2013 Derek Weitzel <dweitzel@cse.unl.edu> - 1.1-3
+- Fixing sysconfdir in the spec file
+
+* Thu Jan 10 2013 Derek Weitzel <dwetizel@cse.unl.edu> - 1.1-2
+- Updating datarootdir to multi-platform version datadir
 
 * Thu Jan 10 2013 Derek Weitzel <dweitzel@cse.unl.edu> - 1.1-1
 - Update to 1.1
-
-* Thu Jan 10 2013 Ashu Guru <aguru2@unl.edu>
-- Added Pie chart for XSEDE Project Names and fixed exclude project
-- (https://jira.opensciencegrid.org/browse/GRATIA-71)
-
-* Wed Jan 01 2013 Ashu Guru <aguru2@unl.edu>
-- Added new charts for XSEDE Project Names
-- (https://jira.opensciencegrid.org/browse/GRATIA-71)
 
 * Mon Jun 28 2012 Ashu Guru <aguru2@unl.edu>
 - Updated for gratia_data.cron emitting error email on gratiaweb-itb.grid.iu.edu
@@ -70,3 +115,4 @@ rm -rf $RPM_BUILD_ROOT
 * Wed Apr 4 2012 Ashu Guru <aguru2@unl.edu>
 - Gratia/WLCG interface/reporting of Tier1/2 sites changes required due to new APEL SSM interface 
 - (https://jira.opensciencegrid.org/browse/METRICS-10)
+
