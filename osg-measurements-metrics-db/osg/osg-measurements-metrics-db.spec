@@ -5,7 +5,7 @@
 
 Name:           osg-measurements-metrics-db
 Version:        1.2
-Release:        0%{?dist}
+Release:        1%{?dist}
 Summary:        OSG Measurements and Metrics web and database
 
 Group:          Applications/System
@@ -60,6 +60,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+
+* Thu May 3 2013 William B Hurst <wbhurst@cse.unl.edu>
+- updated changelog
 
 * Thu May 2 2013 William B Hurst <wbhurst@cse.unl.edu>
 - commit 3e9338c4f40cd220d4fbfe6fcf43cfe313523269
