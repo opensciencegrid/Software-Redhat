@@ -60,6 +60,36 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+
+* Thu May 2 2013 William B Hurst <wbhurst@cse.unl.edu>
+- commit 3e9338c4f40cd220d4fbfe6fcf43cfe313523269
+- code modifications to rename and utilize lower case file names 
+- for 'osg-measurements-metrics-[db/web].spec' files
+
+* Thu May 2 2013 William B Hurst <wbhurst@cse.unl.edu>
+- commit 066c6bdcb64066bd91184e305b10706c43485be2
+- modifications made to present a repository version change.
+
+* Thu May 2 2013 William B Hurst <wbhurst@cse.unl.edu>
+- commit 84756816b656593e4502689bcc165e1a39736ffa
+- (https://jira.opensciencegrid.org/browse/GRATIAWEB-32)
+- Modifications made in order to comply with the requested changes 
+- specified in Jira GRATIAWEB-32; 
+- 1) Create new Campus Page, 
+- 2) Copy all graphs Pilot Page, -
+- 3) Remove all to campus from original Pilot and Campus accounting page.
+
+* Thu May 2 2013 William B Hurst <wbhurst@cse.unl.edu>
+- commit a8365c313de0e2cb722407a42c6c90000c2699de
+- (https://jira.opensciencegrid.org/browse/GRATIAWEB-33)
+- Changes made in order to comply with jira GRATIAWEB-33 ticket; 
+- requesting 'Factory Frontend Accounting' be changed to 'GlideinWMS Monitoring'
+
+* Thu May 2 2013 William B Hurst <wbhurst@cse.unl.edu>
+- commit 11bffdc21ac187f385a5461fcfcb86c22cb0caf9
+- change made to fix problems with lower case file
+- and directory names that led to installation failure.
+
 * Mon Feb 18 2013 Ashu Guru <aguru2@unl.edu>
 - Added the Under Construction and BatchPilot 
 - (https://jira.opensciencegrid.org/browse/GRATIAWEB-28)
