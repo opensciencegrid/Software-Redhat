@@ -1,4 +1,4 @@
-%define tarball_version 7.8.6
+%define tarball_version 7.8.8
 
 # Things for F15 or later
 %if 0%{?fedora} >= 15
@@ -50,7 +50,7 @@ Version: %{tarball_version}
 %define condor_release %condor_base_release
 %endif
 # Release: %condor_release%{?dist}.2
-Release: 3%{?dist}
+Release: 1%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -604,6 +604,9 @@ rm -f %{buildroot}/%{_mandir}/man1/condor_convert_history.1.gz
 
 # not packaging quill bits
 rm -f %{buildroot}/%{_mandir}/man1/condor_load_history.1.gz
+
+# this one got removed but the manpage was left around
+rm -f %{buildroot}/%{_mandir}/man1/condor_glidein.1.gz
 %endif
 
 # Remove junk
@@ -809,7 +812,6 @@ rm -rf %{buildroot}
 %_mandir/man1/condor_router_q.1.gz
 %_mandir/man1/condor_ssh_to_job.1.gz
 %_mandir/man1/condor_power.1.gz
-%_mandir/man1/condor_glidein.1.gz
 %_mandir/man1/condor_continue.1.gz
 %_mandir/man1/condor_suspend.1.gz
 %_mandir/man1/condor_gather_info.1.gz
@@ -849,7 +851,6 @@ rm -rf %{buildroot}
 %_bindir/condor_ssh_to_job
 %_bindir/condor_power
 %_bindir/condor_gather_info
-%_bindir/condor_glidein
 %_bindir/condor_continue
 %_bindir/condor_drain
 %_bindir/condor_suspend
@@ -1074,6 +1075,10 @@ fi
 %endif
 
 %changelog
+* Wed May 08 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 7.8.8-1
+- New version
+- Removed condor_glidein -- was removed upstream
+
 * Fri Feb 13 2013 Dave Dykstra <dwd@fnal.gov> - 7.8.6-3
 - Renamed /etc/sysconfig/condor-lcmaps-env to /usr/share/osg/sysconfig/condor
   to match the new OSG method for handling daemon environment variables, 
