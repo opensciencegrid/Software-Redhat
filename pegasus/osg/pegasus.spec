@@ -1,6 +1,6 @@
 Name:           pegasus
 Version:        4.2.0
-Release:        1.1%{?dist}
+Release:        1.2%{?dist}
 Summary:        Workflow management system for Condor, grids, and clouds
 Group:          Applications/System
 License:        ASL 2.0
@@ -12,10 +12,9 @@ Source:         pegasus-source-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-root
 BuildRequires:  ant, ant-apache-regexp, java7-devel, gcc, groff, python-devel, gcc-c++, make
 BuildRequires:  jpackage-utils
-# workaround to create missing dirs in el5
-%if 0%{?rhel} == 5
-BuildRequires:  missing-java-1.7.0-dirs
-%endif
+# ensure these are present, from jpackage-utils or missing-java-1.7.0-dirs
+Requires: /usr/lib/java-1.7.0
+Requires: /usr/share/java-1.7.0
 
 Requires:       java7 >= 1:1.7.0, jpackage-utils, python >= 2.4, condor >= 7.6, graphviz
 
@@ -89,6 +88,9 @@ rm -Rf %{buildroot}
 
 
 %changelog
+* Tue May 07 2013 Carl Edquist <edquist@cs.wisc.edu> - 4.2.0-1.2
+- Require missing java dir names instead of workaround package
+
 * Tue Apr 09 2013 Brian Lin <blin@cs.wisc.edu> 4.2.0-1.1
 - Change dependencies to use and build against java7
 
