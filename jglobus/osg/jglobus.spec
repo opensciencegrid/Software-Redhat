@@ -3,7 +3,7 @@ Name: jglobus
 Summary: An implementation of Globus for Java
 License: Apache 2.0
 Version: 2.0.5
-Release: 2%{?dist}
+Release: 3%{?dist}
 URL: http://www.globus.org/toolkit/jglobus/
 Group: System Environment/Libraries
 
@@ -91,6 +91,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mavendepmapfragdir}/jglobus
 
 %changelog
+* Mon May  8 2013 Brian Bockelman <bbockelm@cse.unl.edu> - 2.0.5-3
+- Update fix for JGlobus #80 to upstream version.
+
 * Mon Apr 22 2013 Brian Bockelman <bbockelm@cse.unl.edu> - 2.0.5-2
 - Fix CRL refreshing for the trustmanager.
   https://github.com/jglobus/JGlobus/issues/80
