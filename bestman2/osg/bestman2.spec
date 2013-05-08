@@ -14,7 +14,7 @@
 
 Name:           bestman2
 Version:        2.3.0
-Release:        13%{?dist}
+Release:        14%{?dist}
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -81,10 +81,9 @@ Group: System Environment/Libraries
 Requires:  java7 jpackage-utils axis jakarta-commons-logging jakarta-commons-discovery wsdl4j log4j jglobus cog-jglobus-axis
 # The following are needed for srm client tools and probably tester too
 Requires:  joda-time glite-security-trustmanager glite-security-util-java xalan-j2 voms-api-java >= 2.0.8 jakarta-commons-collections
-# workaround to create missing dirs in el5
-%if 0%{?rhel} == 5
-Requires: missing-java-1.7.0-dirs
-%endif
+# ensure these are present, from jpackage-utils or missing-java-1.7.0-dirs
+Requires: /usr/lib/java-1.7.0
+Requires: /usr/share/java-1.7.0
 %description common-libs
 This package is mostly java libraries (jars) for Bestman.
 It contains libraries necessary for Bestman server, client and tester.
@@ -437,6 +436,9 @@ fi
 
 
 %changelog
+* Tue May 07 2013 Carl Edquist <edquist@cs.wisc.edu> - 2.3.0-14
+- Require missing java dir names instead of workaround package
+
 * Mon Apr 29 2013 Carl Edquist <edquist@cs.wisc.edu> - 2.3.0-13
 - Require missing-java-1.7.0-dirs for el5
 
