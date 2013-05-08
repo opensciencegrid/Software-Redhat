@@ -1,7 +1,7 @@
 Summary: Security utilities
 Name: emi-trustmanager
 Version: 3.0.3
-Release: 4%{?dist}
+Release: 5%{?dist}
 License: EMI
 Vendor: EMI
 Group: System Environment/Libraries
@@ -14,10 +14,9 @@ BuildRequires: java7-devel
 BuildRequires: jpackage-utils
 Requires: java7
 Requires: jpackage-utils
-%if 0%{rhel} <= 5
-# workaround to create missing dirs in el5
-Requires: missing-java-1.7.0-dirs
-%endif
+# ensure these are present, from jpackage-utils or missing-java-1.7.0-dirs
+Requires: /usr/lib/java-1.7.0
+Requires: /usr/share/java-1.7.0
 BuildRoot: %{_builddir}/%{name}-root
 AutoReqProv: yes
 Source: emi-trustmanager-3.0.3-1.src.tar.gz
@@ -219,6 +218,9 @@ rm -rf $RPM_BUILD_ROOT
 /usr/share/doc/trustmanager/html/index-all.html
 
 %changelog
+* Tue May 07 2013 Carl Edquist <edquist@cs.wisc.edu> - 3.0.3-5
+- Require missing java dir names instead of workaround package
+
 * Mon Apr 01 2013 Carl Edquist <edquist@cs.wisc.edu> - 3.0.3-4
 - Build with OpenJDK7
  
