@@ -1,7 +1,7 @@
 Summary: Tomcat and axis integration classes
 Name: emi-trustmanager-tomcat
 Version: 3.0.0
-Release: 7%{?dist}
+Release: 8%{?dist}
 License: Apache Software License
 Vendor: EMI
 Group: System Environment/Libraries
@@ -12,12 +12,13 @@ BuildRequires: java7-devel
 BuildRequires: jpackage-utils
 %if 0%{rhel} <= 5
 BuildRequires: tomcat5
-# workaround to create missing dirs in el5
-Requires: missing-java-1.7.0-dirs
 %endif
 %if 0%{rhel} > 5
 BuildRequires: tomcat6
 %endif
+# ensure these are present, from jpackage-utils or missing-java-1.7.0-dirs
+Requires: /usr/lib/java-1.7.0
+Requires: /usr/share/java-1.7.0
 BuildRequires: emi-trustmanager
 BuildRequires: ant
 BuildRequires: log4j
@@ -104,6 +105,9 @@ rm -rf $RPM_BUILD_ROOT
 /var/lib/trustmanager-tomcat/configure.sh
 
 %changelog
+* Tue May 07 2013 Carl Edquist <edquist@cs.wisc.edu> - 3.0.0-8
+- Require missing java dir names instead of workaround package
+
 * Wed Apr 03 2013 Carl Edquist <edquist@cs.wisc.edu> - 3.0.0-7
 - Rebuild for updated build dependency
 - Use /etc/alternatives instead of hard coding java-1.7.0 path
