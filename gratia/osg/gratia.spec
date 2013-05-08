@@ -2,7 +2,7 @@ Name: gratia
 Summary: Gratia OSG accounting system
 Group: Applications/System
 Version: 1.13.9
-Release: 6%{?dist}
+Release: 7%{?dist}
 License: GPL
 Group: Applications/System
 URL: http://sourceforge.net/projects/gratia/
@@ -20,12 +20,13 @@ Summary: Gratia OSG accounting system
 Group: Applications/System
 Requires: java7
 Requires: jpackage-utils
+# ensure these are present, from jpackage-utils or missing-java-1.7.0-dirs
+Requires: /usr/lib/java-1.7.0
+Requires: /usr/share/java-1.7.0
 #Requires: jsvc 
 %if 0%{?rhel} < 6
 Requires: fetch-crl3
 Requires: tomcat5
-# workaround to create missing dirs in el5
-Requires: missing-java-1.7.0-dirs
 %define _tomcat tomcat5
 %endif
 %if 0%{?rhel} == 6
@@ -53,11 +54,13 @@ Summary: Gratia OSG reporting service
 Group: Applications/System
 Requires: java7
 Requires: jpackage-utils
+# ensure these are present, from jpackage-utils or missing-java-1.7.0-dirs
+Requires: /usr/lib/java-1.7.0
+Requires: /usr/share/java-1.7.0
 #Requires: jsvc 
 %if 0%{?rhel} < 6
 Requires: fetch-crl3 
 Requires: tomcat5
-Requires: missing-java-1.7.0-dirs
 %define _tomcat tomcat5
 %endif
 %if 0%{?rhel} == 6
@@ -329,6 +332,9 @@ fi
 
 
 %changelog
+* Tue May 07 2013 Carl Edquist <edquist@cs.wisc.edu> - 1.13.9-7
+- Require missing java dir names instead of workaround package
+
 * Wed Mar 27 2013 Carl Edquist <edquist@cs.wisc.edu> - 1.13.9-6
 - Merge fetch-crl changes into upcoming
 
