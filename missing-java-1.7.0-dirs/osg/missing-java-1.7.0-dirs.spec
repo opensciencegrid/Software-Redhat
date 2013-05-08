@@ -1,11 +1,12 @@
 Name:		missing-java-1.7.0-dirs
 Version:	1.0
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Provides /usr/{share,lib}/java-1.7.0/ dirs
 
 Group:		Applications/System
 License:	BSD
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
+BuildArch:	noarch
 
 
 %description
@@ -36,6 +37,9 @@ mkdir -p %{buildroot}/usr/lib/java-1.7.0/
 %endif
 
 %changelog
+* Tue May 07 2013 Carl Edquist <edquist@cs.wisc.edu> - 1.0-2
+- BuildArch = noarch
+
 * Mon Mar 25 2013 Carl Edquist <edquist@cs.wisc.edu> - 1.0-1
 - Initial release
 
