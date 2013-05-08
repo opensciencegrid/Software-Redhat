@@ -5,8 +5,8 @@
 Name:           glideinwms
 
 %if %{v2_plus}
-%define version 2.7.0
-%define release 0.4
+%define version 2.7.1
+%define release 0.rc1.1
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
 %endif
@@ -352,7 +352,6 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/condor/certs
 #make sure this (new) file exists, can be deprecated in gwms 2.7 or so
 touch install/templates/90_gwms_dns.config
-install -m 0644 install/templates/90_gwms_dns.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
 install -m 0644 install/templates/00_gwms_general.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/00_gwms_factory_general.config
 install -m 0644 install/templates/00_gwms_general.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
 install -m 0644 install/templates/01_gwms_collectors.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/01_gwms_factory_collectors.config
@@ -361,6 +360,9 @@ install -m 0644 install/templates/02_gwms_factory_schedds.config $RPM_BUILD_ROOT
 install -m 0644 install/templates/02_gwms_schedds.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
 install -m 0644 install/templates/03_gwms_local.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/03_gwms_factory_local.config
 install -m 0644 install/templates/03_gwms_local.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
+install -m 0644 install/templates/11_gwms_secondary_collectors.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/11_gwms_factory_secondary_collectors.config
+install -m 0644 install/templates/11_gwms_secondary_collectors.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
+install -m 0644 install/templates/90_gwms_dns.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
 install -m 0644 install/templates/condor_mapfile $RPM_BUILD_ROOT%{_sysconfdir}/condor/certs/
 install -m 0644 install/templates/privsep_config $RPM_BUILD_ROOT%{_sysconfdir}/condor/
 
@@ -397,6 +399,7 @@ cp creation/create_condor_tarball $RPM_BUILD_ROOT%{_bindir}
 # Install glidecondor
 install -m 0755 install/glidecondor_addDN $RPM_BUILD_ROOT%{_sbindir}/glidecondor_addDN
 install -m 0755 install/glidecondor_createSecSched $RPM_BUILD_ROOT%{_sbindir}/glidecondor_createSecSched
+install -m 0755 install/glidecondor_createSecCol $RPM_BUILD_ROOT%{_sbindir}/glidecondor_createSecCol
 
 # Install checksum file
 install -m 0644 etc/checksum.frontend $RPM_BUILD_ROOT%{frontend_dir}/checksum.frontend
@@ -519,6 +522,7 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 %attr(755,root,root) %{_sbindir}/glidecondor_addDN
 %attr(755,root,root) %{_sbindir}/glidecondor_createSecSched
+%attr(755,root,root) %{_sbindir}/glidecondor_createSecCol
 %attr(755,root,root) %{_sbindir}/info_glidein
 %attr(755,root,root) %{_sbindir}/manageFactoryDowntimes.py
 %attr(755,root,root) %{_sbindir}/reconfig_glidein
@@ -586,6 +590,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_sbindir}/checkFrontend
 %attr(755,root,root) %{_sbindir}/glidecondor_addDN
 %attr(755,root,root) %{_sbindir}/glidecondor_createSecSched
+%attr(755,root,root) %{_sbindir}/glidecondor_createSecCol
 %attr(755,root,root) %{_sbindir}/glideinFrontend
 %attr(755,root,root) %{_sbindir}/glideinFrontendElement.py*
 %attr(755,root,root) %{_sbindir}/reconfig_frontend
@@ -645,6 +650,7 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/condor/config.d/01_gwms_factory_collectors.config
 %config(noreplace) %{_sysconfdir}/condor/config.d/02_gwms_factory_schedds.config
 %config(noreplace) %{_sysconfdir}/condor/config.d/03_gwms_factory_local.config
+%config(noreplace) %{_sysconfdir}/condor/config.d/11_gwms_factory_secondary_collectors.config
 %config(noreplace) %{_sysconfdir}/condor/privsep_config
 %config(noreplace) %{_sysconfdir}/condor/certs/condor_mapfile
 %attr(-, condor, condor) %{_localstatedir}/lib/condor/schedd_glideins2
@@ -654,6 +660,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files usercollector
 %config(noreplace) %{_sysconfdir}/condor/config.d/01_gwms_collectors.config
+%config(noreplace) %{_sysconfdir}/condor/config.d/11_gwms_secondary_collectors.config
 
 %files userschedd
 %config(noreplace) %{_sysconfdir}/condor/config.d/02_gwms_schedds.config
@@ -668,6 +675,7 @@ rm -rf $RPM_BUILD_ROOT
 %files glidecondor-tools
 %attr(755,root,root) %{_sbindir}/glidecondor_addDN
 %attr(755,root,root) %{_sbindir}/glidecondor_createSecSched
+%attr(755,root,root) %{_sbindir}/glidecondor_createSecCol
 
 %files minimal-condor
 %config(noreplace) %{_sysconfdir}/condor/config.d/00_gwms_general.config
@@ -677,6 +685,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed May 8 2013 Parag Mhashilkar <parag@fnal.gov> - 2.7.1-0.rc1
+- Added 11_gwms_secondary_collectors to respective condor rpms and glidecondor_addSecCol to the tools rpm
+
 * Fri Apr 29 2013 Parag Mhashilkar <parag@fnal.gov> - 2.7.0-0.4
 - Added missing glideinwms/__init__ to the glideinwms-libs.
 
