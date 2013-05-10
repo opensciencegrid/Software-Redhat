@@ -6,7 +6,7 @@ Name:           glideinwms
 
 %if %{v2_plus}
 %define version 2.7.1
-%define release 0.rc1.2
+%define release 0.rc1.3
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
 %endif
@@ -89,9 +89,6 @@ Requires: httpd
 # We require Condor 7.6.0 (and newer) to support
 # condor_advertise -multiple -tcp which is enabled by default
 Requires: condor >= 7.6.0
-# RHEL 6 pulls empty-condor because of a bug in rpm selection.
-# Specifying one of the condor binaries to force behaviour same as RHEL 5
-Requires: /usr/bin/condor_q
 Requires: python-rrdtool
 Requires: m2crypto
 Requires: javascriptrrd
@@ -116,9 +113,6 @@ This package is for a standalone vofrontend install
 Summary:        The VOFrontend glideinWMS collector host
 Group:          System Environment/Daemons
 Requires: condor >= 7.6.0
-# RHEL 6 pulls empty-condor because of a bug in rpm selection.
-# Specifying one of the condor binaries to force behaviour same as RHEL 5
-Requires: /usr/bin/condor_q
 Requires: glideinwms-minimal-condor
 Requires: glideinwms-glidecondor-tools
 %description usercollector
@@ -130,9 +124,6 @@ It can be split off into its own node.
 Summary:        The VOFrontend glideinWMS submission host
 Group:          System Environment/Daemons
 Requires: condor >= 7.6.0
-# RHEL 6 pulls empty-condor because of a bug in rpm selection.
-# Specifying one of the condor binaries to force behaviour same as RHEL 5
-Requires: /usr/bin/condor_q
 Requires: glideinwms-minimal-condor
 Requires: glideinwms-glidecondor-tools
 %description userschedd
@@ -173,9 +164,6 @@ Requires: httpd
 # We require Condor 7.6.0 (and newer) to support
 # condor_advertise -multiple -tcp which is enabled by default
 Requires: condor >= 7.6.0
-# RHEL 6 pulls empty-condor because of a bug in rpm selection.
-# Specifying one of the condor binaries to force behaviour same as RHEL 5
-Requires: /usr/bin/condor_q
 Requires: python-rrdtool
 Requires: m2crypto
 Requires: javascriptrrd
@@ -696,6 +684,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri May 10 2013 Parag Mhashilkar <parag@fnal.gov> - 2.7.1-0.rc1.3
+- Reversted the changes made in 2.7.1-0.rc1.2. Removed condor_q as a requirement whereever we require condor as this creates more conflicts.
+
 * Thu May 9 2013 Parag Mhashilkar <parag@fnal.gov> - 2.7.1-0.rc1.2
 - Added condor_q as a requirement whereever we require condor to force same dependecny behavior in RHEL 5 and 6
 
