@@ -6,7 +6,7 @@ Name:           glideinwms
 
 %if %{v2_plus}
 %define version 2.7.1
-%define release 0.rc1.4
+%define release 1.0
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
 %endif
@@ -25,7 +25,7 @@ Summary:        The VOFrontend for glideinWMS submission host
 
 Group:          System Environment/Daemons
 License:        Fermitools Software Legal Information (Modified BSD License)
-URL:            http://www.uscms.org/SoftwareComputing/Grid/WMS/glideinWMS/doc.v2/manual/
+URL:            http://www.uscms.org/SoftwareComputing/Grid/WMS/glideinWMS/
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
