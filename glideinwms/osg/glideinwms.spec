@@ -6,7 +6,7 @@ Name:           glideinwms
 
 %if %{v2_plus}
 %define version 2.7.1
-%define release 0.rc1.3
+%define release 0.rc1.4
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
 %endif
@@ -94,6 +94,7 @@ Requires: m2crypto
 Requires: javascriptrrd
 Requires: osg-client
 Requires: glideinwms-minimal-condor
+Requires: glideinwms-libs
 #To be added in 2.6.3+ once probe is finished.
 #Requires: gratia-probe-gwms
 #Requires: vdt-vofrontend-essentials
@@ -603,7 +604,6 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/glideinwms/__init__.pyc
 %{python_sitelib}/glideinwms/__init__.pyo
 %{python_sitelib}/glideinwms/frontend
-%{python_sitelib}/glideinwms/lib
 %{python_sitelib}/glideinwms/tools
 %{python_sitelib}/glideinwms/creation/__init__.py
 %{python_sitelib}/glideinwms/creation/__init__.pyc
@@ -684,8 +684,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon May 13 2013 Parag Mhashilkar <parag@fnal.gov> - 2.7.1-0.rc1.4
+- Removed libs directory from the vofrontend-standalone and added glideinwms-libs as its dependency.
+
+* Thu May 9 2013 Parag Mhashilkar <parag@fnal.gov> - 2.7.1-0.rc1.2
 * Fri May 10 2013 Parag Mhashilkar <parag@fnal.gov> - 2.7.1-0.rc1.3
-- Reversted the changes made in 2.7.1-0.rc1.2. Removed condor_q as a requirement whereever we require condor as this creates more conflicts.
+- Reverted the changes made in 2.7.1-0.rc1.2. Removed condor_q as a requirement whereever we require condor as this creates more conflicts.
 
 * Thu May 9 2013 Parag Mhashilkar <parag@fnal.gov> - 2.7.1-0.rc1.2
 - Added condor_q as a requirement whereever we require condor to force same dependecny behavior in RHEL 5 and 6
