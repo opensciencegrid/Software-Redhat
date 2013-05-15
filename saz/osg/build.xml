@@ -1,0 +1,139 @@
+<project name="saz" default="compile" basedir=".">
+	<property file="build.properties"/>
+	<property name="version" value="4.0.0-1"/>
+	<property name="srcdir" value="${basedir}/src/service"/>
+	<property name="srcsetupdir" value="${basedir}/setup"/>
+	<property name="srcsqldir" value="${basedir}/sql"/>
+	<property name="srcconfigdir" value="${basedir}/config"/>
+	<property name="srcmetadir" value="${basedir}/META-INF"/>
+	<property name="targetsetupdir" value="${basedir}/saz/setup"/>
+	<property name="targetsqldir" value="${basedir}/saz/sql"/>
+	<property name="targetwebinfdir" value="${basedir}/saz/WEB-INF"/>
+	<property name="targetconfigdir" value="${basedir}/saz/config"/>
+	<property name="targetclassdir" value="${targetwebinfdir}/classes"/>
+	<property name="targetmetadir" value="${basedir}/saz/META-INF"/>
+	<property name="app.name" value="saz"/>
+	<property environment="env"/>
+	<property name="jredir" value="${env.JAVA_HOME}/jre/lib"/>
+
+	<path id="classpath">
+		<fileset file="${axis.path}"/>
+		<fileset file="${antlr.path}"/>
+		<fileset file="${axis-ant.path}"/>
+		<fileset file="${jaxrpc.path}"/>
+		<fileset file="${saaj.path}"/>
+		<fileset file="${axis-wsdl4j.path}"/>
+		<fileset file="${wsdl4j.path}"/>
+		<fileset file="${bcprov-jdk15.path}"/>
+		<fileset file="${jta.path}"/>
+                <fileset file="${log4j.path}"/>
+                <fileset file="${mysql-connector.path}"/>
+                <fileset file="${joda-time.path}"/>
+                <fileset file="${commons-collections.path}"/>
+                <fileset file="${commons-discovery.path}"/>
+		<fileset file="${commons-logging.path}"/>
+                <fileset file="${commons-lang.path}"/>
+                <fileset file="${commons-codec.path}"/>
+                <fileset file="${xerces-j2.path}"/>
+                <fileset file="${xalan-j2.path}"/>
+                <fileset file="${jglobus-gss.path}"/>
+		<fileset file="${jglobus-ssl-proxies.path}"/>
+                <fileset file="${jglobus-gridftp.path}"/>
+                <fileset file="${jglobus-io.path}"/>
+                <fileset file="${jglobus-jsse.path}"/>
+                <fileset file="${servlet-api.path}"/>
+                <fileset file="${activation.path}"/>
+		<fileset file="${axis-jaxrpc.path}"/>
+                <fileset file="${asm.path}"/>
+                <fileset file="${c3p0.path}"/>
+                <fileset file="${cglib.path}"/>
+		<fileset file="${dom4j.path}"/>
+                <fileset file="${ehcache.path}"/>
+                <fileset file="${gplazma.path}"/>
+                <fileset file="${hibernate-core.path}"/>
+		<fileset file="${hibernate-commons.path}"/>
+		<fileset file="${hibernate-c3p0.path}"/>
+		<fileset file="${hibernate-ehcache.path}"/>
+		<fileset file="${hibernate-jpa.path}"/>
+		<fileset file="${java-assist.path}"/>	
+		<fileset file="${mchange-commons.path}"/>
+		<fileset file="${jboss-logging.path}"/>
+                <fileset file="${jaxrpc.path}"/>
+                <fileset file="${slf4j-api.path}"/>
+		<fileset file="${slf4j-simple.path}"/>
+                <fileset file="${opensaml.path}"/>
+                <fileset file="${openws.path}"/>
+                <fileset file="${privilege.path}"/>
+                <fileset file="${privilege-xacml.path}"/>
+                <fileset file="${resolver.path}"/>
+		<fileset file="${serializer.path}"/>
+                <fileset file="${sunxacml.path}"/>
+                <fileset file="${velocity.path}"/>
+                <fileset file="${wsdl4j.path}"/>
+                <fileset file="${xalan-serializer.path}"/>
+                <fileset file="${xerces-impll.path}"/>
+		<fileset file="${xerces-implh.path}"/>
+                <fileset file="${xml-apis.path}"/>
+                <fileset file="${xml-parser-apis.path}"/>
+                <fileset file="${xml-sec.path}"/>
+                <fileset file="${xml-tooling.path}"/>
+		<fileset file="${voms-api-java.path}"/>
+		<fileset file="${servlet-api.path}"/>
+		<pathelement path="${java.class.path}"/>
+	</path>
+	<property name="myclasspath" refid="classpath"/>
+	<target name="clean">
+		<delete dir="${basedir}/saz"/>
+                <mkdir dir="${basedir}/saz"/>
+	</target>
+	<target name="compile" depends="clean, copy-resources">
+		<echo message="CLASSPATH = ${myclasspath}"/>
+		<javac srcdir="${srcdir}" destdir="${targetclassdir}" classpathref="classpath"/>
+	</target>
+	<target name="copy-resources">
+		<mkdir dir="${targetclassdir}"/> 
+		<copy todir="${basedir}">
+                        <fileset dir="${basedir}">
+				<include name="LICENSE"/>
+				<include name="RELEASE"/>
+                        </fileset>
+                </copy>
+		<copy todir="${targetsetupdir}">
+                        <fileset dir="${srcsetupdir}">
+                        </fileset>
+                </copy>	
+		<copy todir="${targetconfigdir}">
+                        <fileset dir="${srcconfigdir}">
+				<exclude name="web.xml"/>
+				<exclude name="server-config.wsdd"/>
+                        </fileset>
+                </copy>	
+		<copy todir="${targetsqldir}">
+                        <fileset dir="${srcsqldir}">
+                        </fileset>
+                </copy>
+		<copy todir="${targetmetadir}">
+                        <fileset dir="${srcmetadir}">
+                        </fileset>
+                </copy>
+		<copy todir="${targetclassdir}/gov/fnal/vox/saz/service">
+			<fileset dir="${srcconfigdir}/wsdd">
+			</fileset>
+		</copy>
+		<copy todir="${targetwebinfdir}">
+			<fileset dir="${srcconfigdir}">
+				<include name="web.xml"/>
+				<include name="server-config.wsdd"/>
+			</fileset>
+		</copy>
+	</target>
+	<target name="build" depends="compile" description="Create binary distribution">
+		<jar jarfile="${basedir}/${app.name}.war" basedir="${basedir}/saz">
+			<manifest>
+                        	<attribute name="Package" value="SAZ Server"/>
+                        	<attribute name="Built-By" value="Neha Sharma"/>
+                        	<attribute name="Time" value="May 15'2013"/>
+                	</manifest>
+		</jar>
+	</target>
+</project>
