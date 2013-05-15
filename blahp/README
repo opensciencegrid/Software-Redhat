@@ -1,1 +1,6 @@
-Source downloaded from 'http://koji.hep.caltech.edu/public/packages/blahp/1.18.0.4/3/src/blahp-1.18.0.4-3.src.rpm'
+Source originally downloaded from 'http://koji.hep.caltech.edu/public/packages/blahp/1.18.0.4/3/src/blahp-1.18.0.4-3.src.rpm'
+
+Right now, we are using the following fork - 
+
+https://github.com/osg-bosco/BLAH
+
