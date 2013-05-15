@@ -1,4 +1,4 @@
-%define tarball_version 7.9.6
+%define tarball_version 7.8.8
 
 # Things for F15 or later
 %if 0%{?fedora} >= 15
@@ -1075,9 +1075,6 @@ fi
 %endif
 
 %changelog
-* Wed May 08 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 7.9.6-1
-- New version
-
 * Wed May 08 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 7.8.8-1
 - New version
 - Removed condor_glidein -- was removed upstream
