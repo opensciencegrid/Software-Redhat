@@ -1,5 +1,5 @@
 Name:		blahp
-Version:	1.18.4.bosco
+Version:	1.18.5.bosco
 Release:	1%{?dist}
 Summary:	gLite BLAHP daemon
 
@@ -90,6 +90,10 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Tue May 14 2013 Brian Bockelman <bbockelm@cse.unl.edu> - 1.18.5.bosco-1
+- Alter the pbs_status.py locking algorithm to add random component to 
+  sleeps between poll.
+
 * Thu Jan 17 2013 Derek Weitzel <dweitzel@cse.unl.edu> - 1.18.4.bosco-1
 - Fixing pbs_status.py via upstream SOFTWARE-905
 
