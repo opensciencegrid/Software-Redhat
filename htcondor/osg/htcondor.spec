@@ -2,7 +2,7 @@
 
 # Things for F15 or later
 %if 0%{?fedora} >= 15
-# NOTE: Condor+gsoap doesn't work yet on F15; ticket not yet upstream AFAIK.  BB
+# NOTE: HTCondor+gsoap doesn't work yet on F15; ticket not yet upstream AFAIK.  BB
 %define gsoap 0
 %define deltacloud 1
 %define aviary 1
@@ -22,7 +22,7 @@
 # Things not turned on, or don't have Fedora packages yet
 %define qmf 0
 
-# These flags are meant for developers; it allows one to build Condor
+# These flags are meant for developers; it allows one to build HTCondor
 # based upon a git-derived tarball, instead of an upstream release tarball
 %define git_build 0
 # If building with git tarball, Fedora requests us to record the rev.  Use:
@@ -37,8 +37,13 @@
 %define include_man 0
 %endif
 
-Summary: Condor: High Throughput Computing
-Name: condor
+%if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
+%{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
+%{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
+%endif
+
+Summary: HTCondor: High Throughput Computing
+Name: htcondor
 Version: %{tarball_version}
 %global version_ %(tr . _ <<< %{version})
 
@@ -72,9 +77,9 @@ Source1: condor_docs.tar.gz
 %endif
 
 %else
-# The upstream Condor source tarball contains some source that cannot
+# The upstream HTCondor source tarball contains some source that cannot
 # be shipped as well as extraneous copies of packages the source
-# depends on. Additionally, the upstream Condor source requires a
+# depends on. Additionally, the upstream HTCondor source requires a
 # click-through license. Once you have downloaded the source from:
 #   http://parrot.cs.wisc.edu/v7.0.license.html
 # you should process it with generate-tarball.sh:
@@ -95,7 +100,7 @@ Source1: condor_docs.tar.gz
 #   b482c4bfa350164427a1952113d53d03  condor_src-7.5.5-all-all.tar.gz
 #   2a1355cb24a56a71978d229ddc490bc5  condor_src-7.6.0-all-all.tar.gz
 # Note: The md5sum of each generated tarball may be different
-Source0: condor-%{tarball_version}.tar.gz
+Source0: htcondor-%{tarball_version}.tar.gz
 Source1: generate-tarball.sh
 %endif
 
@@ -178,6 +183,10 @@ BuildRequires: libcgroup-devel >= 0.37
 BuildRequires: blahp
 %endif
 
+BuildRequires: python-devel
+BuildRequires: boost-devel
+BuildRequires: boost-python
+
 %if %qmf
 BuildRequires: qpid-qmf-devel
 %endif
@@ -201,8 +210,8 @@ Requires: gsoap >= 2.7.12
 %endif
 Requires: mailx
 Requires: python >= 2.2
-Requires: condor-classads = %{version}-%{release}
-Requires: condor-procd = %{version}-%{release}
+Requires: htcondor-classads = %{version}-%{release}
+Requires: htcondor-procd = %{version}-%{release}
 %if %blahp
 Requires: blahp >= 1.16.1
 %endif
@@ -241,55 +250,60 @@ Requires(postun):/sbin/service
 #Provides: group(condor) = 43
 
 Obsoletes: condor-static < 7.2.0
-
+Obsoletes: condor <= 7.8.8
 
 %description
-Condor is a specialized workload management system for
-compute-intensive jobs. Like other full-featured batch systems, Condor
+HTCondor is a specialized workload management system for
+compute-intensive jobs. Like other full-featured batch systems, HTCondor
 provides a job queueing mechanism, scheduling policy, priority scheme,
 resource monitoring, and resource management. Users submit their
-serial or parallel jobs to Condor, Condor places them into a queue,
+serial or parallel jobs to HTCondor, HTCondor places them into a queue,
 chooses when and where to run the jobs based upon a policy, carefully
 monitors their progress, and ultimately informs the user upon
 completion.
 
 %package procd
-Summary: Condor Process tracking Daemon
+Summary: HTCondor Process tracking Daemon
 Group: Applications/System
+Obsoletes: condor-procd
+
 %description procd
 A daemon for tracking child processes started by a parent.
-Part of Condor, but able to be stand-alone
+Part of HTCondor, but able to be stand-alone
 
 %if %qmf
 %package qmf
-Summary: Condor QMF components
+Summary: HTCondor QMF components
 Group: Applications/System
 Requires: %name = %version-%release
 #Requires: qmf >= %{qmf_version}
 Requires: python-qmf >= 0.7.946106
-Requires: condor-classads = %{version}-%{release}
+Requires: %name-classads = %{version}-%{release}
 Obsoletes: condor-qmf-plugins
+Obsoletes: condor-qmf
 
 %description qmf
-Components to connect Condor to the QMF management bus.
+Components to connect HTCondor to the QMF management bus.
 %endif
 
 %if %aviary
 %package aviary
-Summary: Condor Aviary components
+Summary: HTCondor Aviary components
 Group: Applications/System
 Requires: %name = %version-%release
-Requires: condor-classads = %{version}-%{release}
+Requires: %name-classads = %{version}-%{release}
+Obsoletes: condor-aviary
 
 %description aviary
-Components to provide simplified WS interface to Condor.
+Components to provide simplified WS interface to HTCondor.
 %endif
 
 %package kbdd
-Summary: Condor Keyboard Daemon
+Summary: HTCondor Keyboard Daemon
 Group: Applications/System
 Requires: %name = %version-%release
-Requires: condor-classads = %{version}-%{release}
+Requires: %name-classads = %{version}-%{release}
+Obsoletes: condor-kbdd
 
 %description kbdd
 The condor_kbdd monitors logged in X users for activity. It is only
@@ -298,39 +312,42 @@ determine console idle time.
 
 
 %package vm-gahp
-Summary: Condor's VM Gahp
+Summary: HTCondor's VM Gahp
 Group: Applications/System
 Requires: %name = %version-%release
 Requires: libvirt
-Requires: condor-classads = %{version}-%{release}
+Requires: %name-classads = %{version}-%{release}
+Obsoletes: condor-vm-gahp
 
 %description vm-gahp
 The condor_vm-gahp enables the Virtual Machine Universe feature of
-Condor. The VM Universe uses libvirt to start and control VMs under
-Condor's Startd.
+HTCondor. The VM Universe uses libvirt to start and control VMs under
+HTCondor's Startd.
 
 %if %deltacloud
 %package deltacloud-gahp
-Summary: Condor's Deltacloud Gahp
+Summary: HTCondor's Deltacloud Gahp
 Group: Applications/System
 Requires: %name = %version-%release
+Obsoletes: condor-deltacloud-gahp
 
 %description deltacloud-gahp
-The deltacloud_gahp enables Condor's ability to manage jobs run on
+The deltacloud_gahp enables HTCondor's ability to manage jobs run on
 resources exposed by the deltacloud API.
 %endif
 
 %package classads
-Summary: Condor's classified advertisement language
+Summary: HTCondor's classified advertisement language
 Group: Development/Libraries
 Obsoletes: classads <= 1.0.8
 Obsoletes: classads-static <= 1.0.8
+Obsoletes: condor-classads
 Provides: classads = %version-%release
 
 %description classads
 Classified Advertisements (classads) are the lingua franca of
-Condor. They are used for describing jobs, workstations, and other
-resources. They are exchanged by Condor processes to schedule
+HTCondor. They are used for describing jobs, workstations, and other
+resources. They are exchanged by HTCondor processes to schedule
 jobs. They are logged to files for statistical and debugging
 purposes. They are used to enquire about current state of the system.
 
@@ -344,40 +361,67 @@ evaluates to true if the other ad has an attribute named size and the
 value of that attribute is (or evaluates to) an integer greater than
 three. Two classads match if each ad has an attribute requirements
 that evaluates to true in the context of the other ad. Classad
-matching is used by the Condor central manager to determine the
+matching is used by the HTCondor central manager to determine the
 compatibility of jobs and workstations where they may be run.
 
 
 %package classads-devel
-Summary: Headers for Condor's classified advertisement language
+Summary: Headers for HTCondor's classified advertisement language
 Group: Development/System
 Requires: %name-classads = %version-%release
 Requires: pcre-devel
 Obsoletes: classads-devel <= 1.0.8
+Obsoletes: condor-classads-devel
 Provides: classads-devel = %version-%release
 
 %description classads-devel
-Header files for Condor's ClassAd Library, a powerful and flexible,
+Header files for HTCondor's ClassAd Library, a powerful and flexible,
 semi-structured representation of data.
 
 %if %{cream}
 %package cream-gahp
-Summary: Condor's CREAM Gahp
+Summary: HTCondor's CREAM Gahp
 Group: Applications/System
 Requires: %name = %version-%release
-Requires: condor-classads = %{version}-%{release}
+Requires: %name-classads = %{version}-%{release}
+Obsoletes: condor-cream-gahp
 
 %description cream-gahp
-The condor-cream-gahp enables CREAM interoperability for Condor.
+The condor-cream-gahp enables CREAM interoperability for HTCondor.
 
 %endif #cream
+
+%package python
+Summary: Python bindings for HTCondor.
+Group: Applications/System
+Requires: %name = %version-%release
+
+%description python
+The python bindings allow one to directly invoke the C++ implementations of
+the ClassAd library and HTHTCondor from python
+
+%package bosco
+Summary: BOSCO, a HTCondor overlay system for managing jobs at remote clusters
+Url: http://bosco.opensciencegrid.org
+Group: Applications/System
+Requires: %name = %version-%release
+
+%description bosco
+BOSCO allows a locally-installed HTCondor to submit jobs to remote clusters,
+using SSH as a transit mechanism.  It is designed for cases where the remote
+cluster is using a different batch system such as PBS, SGE, LSF, or another
+HTCondor system.
+
+BOSCO provides an overlay system so the remote clusters appear to be a HTCondor
+cluster.  This allows the user to run their workflows using HTCondor tools across
+multiple clusters.
 
 
 %pre
 getent group condor >/dev/null || groupadd -r condor
 getent passwd condor >/dev/null || \
   useradd -r -g condor -d %_var/lib/condor -s /sbin/nologin \
-    -c "Owner of Condor Daemons" condor
+    -c "Owner of HTCondor Daemons" condor
 exit 0
 
 
@@ -393,15 +437,15 @@ exit 0
 %setup -q -n %{name}-%{tarball_version}
 %endif
 
-%patch0 -p1
-%patch3 -p1
-%patch8 -p1
-%if %cream
-%patch9 -p1
-%endif
-%if %blahp
-%patch10 -p1 -b .config_batch_gahp_path
-%endif
+# %patch0 -p1
+# %patch3 -p1
+# %patch8 -p1
+# %if %cream
+# %patch9 -p1
+# %endif
+# %if %blahp
+# %patch10 -p1 -b .config_batch_gahp_path
+# %endif
 
 # fix errant execute permissions
 find src -perm /a+x -type f -name "*.[Cch]" -exec chmod a-x {} \;
@@ -455,6 +499,7 @@ export CMAKE_PREFIX_PATH=/usr
        -DWITH_LIBDELTACLOUD:BOOL=FALSE \
 %endif
        -DWITH_GLOBUS:BOOL=TRUE \
+       -DWITH_PYTHON_BINDINGS:BOOL=TRUE \
 %if %blahp
        -DWITH_BLAHP:BOOL=TRUE \
        -DBLAHP_FOUND=/usr/libexec/blahp/BLClient \
@@ -498,7 +543,7 @@ mv %{buildroot}%{_datadir}/condor/lib*.so %{buildroot}%{_libdir}/
 populate %{_libdir}/condor/plugins %{buildroot}/%{_usr}/libexec/*-plugin.so
 %endif
 
-# It is proper to put Condor specific libexec binaries under libexec/condor/
+# It is proper to put HTCondor specific libexec binaries under libexec/condor/
 populate %_libexecdir/condor %{buildroot}/usr/libexec/*
 
 # man pages go under %{_mandir}
@@ -531,7 +576,7 @@ sed -e "s:^LIB\s*=.*:LIB = \$(RELEASE_DIR)/$LIB/condor:" \
   %{buildroot}/etc/examples/condor_config.generic \
   > %{buildroot}/%{_sysconfdir}/condor/condor_config
 
-# Install the basic configuration, a Personal Condor config. Allows for
+# Install the basic configuration, a Personal HTCondor config. Allows for
 # yum install condor + service condor start and go.
 mkdir -m0755 %{buildroot}/%{_sysconfdir}/condor/config.d
 cp %{buildroot}/etc/examples/condor_config.local %{buildroot}/%{_sysconfdir}/condor/config.d/00personal_condor.config
@@ -627,6 +672,10 @@ mkdir -p %{buildroot}/usr/share/osg/sysconfig
 install -m 0644 %{SOURCE4} %buildroot/usr/share/osg/sysconfig/condor
 %endif
 
+mkdir -p %{buildroot}%{python_sitearch}
+install -m 0755 src/python-bindings/{classad,htcondor}.so %{buildroot}%{python_sitearch}
+install -m 0755 src/python-bindings/libpyclassad_*.so %{buildroot}%{_libdir}
+
 # we must place the config examples in builddir so %doc can find them
 mv %{buildroot}/etc/examples %_builddir/%name-%tarball_version
 
@@ -703,6 +752,17 @@ rm -rf %{buildroot}%{_mandir}/man1/install_release.1*
 rm -rf %{buildroot}%{_mandir}/man1/uniq_pid_midwife.1*
 rm -rf %{buildroot}%{_mandir}/man1/uniq_pid_undertaker.1*
 
+rm -rf %{buildroot}%{_datadir}/condor/python/{htcondor,classad}.so
+rm -rf %{buildroot}%{_datadir}/condor/{libpyclassad_*,htcondor,classad}.so
+
+# Install BOSCO
+mkdir -p %{buildroot}%{python_sitelib}
+mv %{buildroot}%{_libexecdir}/condor/campus_factory/python-lib/GlideinWMS %{buildroot}%{python_sitelib}
+mv %{buildroot}%{_libexecdir}/condor/campus_factory/python-lib/campus_factory %{buildroot}%{python_sitelib}
+mv %{buildroot}%{_libexecdir}/condor/campus_factory/share/condor/condor_config.factory %{buildroot}%{_sysconfdir}/condor/config.d/60-campus_factory.config
+mv %{buildroot}%{_libexecdir}/condor/campus_factory/etc/campus_factory.conf %{buildroot}%{_sysconfdir}/condor/
+mv %{buildroot}%{_libexecdir}/condor/campus_factory/share %{buildroot}%{_datadir}/condor/campus_factory
+
 %clean
 rm -rf %{buildroot}
 
@@ -729,11 +789,11 @@ rm -rf %{buildroot}
 %_datadir/condor/Chirp.jar
 %_datadir/condor/CondorJavaInfo.class
 %_datadir/condor/CondorJavaWrapper.class
-%_datadir/condor/Condor.pm
+# %_datadir/condor/Condor.pm
 %_datadir/condor/scimark2lib.jar
-%_datadir/condor/CondorPersonal.pm
-%_datadir/condor/CondorTest.pm
-%_datadir/condor/CondorUtils.pm
+# %_datadir/condor/CondorPersonal.pm
+# %_datadir/condor/CondorTest.pm
+# %_datadir/condor/CondorUtils.pm
 %dir %_sysconfdir/condor/config.d/
 %_sysconfdir/condor/config.d/00personal_condor.config
 %_sysconfdir/condor/condor_ssh_to_job_sshd_config_template
@@ -771,6 +831,7 @@ rm -rf %{buildroot}
 %_libexecdir/condor/condor_glexec_setup
 %_libexecdir/condor/condor_power_state
 %_libexecdir/condor/condor_defrag
+%_libexecdir/condor/interactive.sub
 %if %include_man
 %_mandir/man1/condor_advertise.1.gz
 %_mandir/man1/condor_check_userlogs.1.gz
@@ -819,6 +880,7 @@ rm -rf %{buildroot}
 %endif
 # bin/condor is a link for checkpoint, reschedule, vacate
 %_bindir/condor_submit_dag
+%_bindir/condor_who
 %_bindir/condor_prio
 %_bindir/condor_transfer_data
 %_bindir/condor_check_userlogs
@@ -855,6 +917,9 @@ rm -rf %{buildroot}
 %_bindir/condor_drain
 %_bindir/condor_suspend
 %_bindir/condor_test_match
+%_bindir/condor_ping
+%_bindir/condor_tail
+%_bindir/condor_qsub
 # sbin/condor is a link for master_off, off, on, reconfig,
 # reconfig_schedd, restart
 %_sbindir/condor_advertise
@@ -886,6 +951,7 @@ rm -rf %{buildroot}
 %_sbindir/gahp_server
 %_sbindir/grid_monitor.sh
 %_sbindir/nordugrid_gahp
+%_libexecdir/condor/condor_gpu_discovery
 %if %blahp
 %dir %_libexecdir/condor/glite/bin
 %_libexecdir/condor/glite/bin/nqs_cancel.sh
@@ -980,8 +1046,8 @@ rm -rf %{buildroot}
 %files classads
 %defattr(-,root,root,-)
 %doc LICENSE-2.0.txt NOTICE.txt
-%_libdir/libclassad.so.3
-%_libdir/libclassad.so.%{version}
+%_libdir/libclassad.so.*
+#%_libdir/libclassad.so.%{version}
 
 %files classads-devel
 %defattr(-,root,root,-)
@@ -996,6 +1062,7 @@ rm -rf %{buildroot}
 %_includedir/classad/classadErrno.h
 %_includedir/classad/classad.h
 %_includedir/classad/classadItor.h
+%_includedir/classad/classadCache.h
 %_includedir/classad/classad_stl.h
 %_includedir/classad/collectionBase.h
 %_includedir/classad/collection.h
@@ -1027,6 +1094,33 @@ rm -rf %{buildroot}
 %_sbindir/cream_gahp
 %endif # cream
 
+%files python
+%defattr(-,root,root,-)
+%_libdir/libpyclassad_*.so
+%{python_sitearch}/classad.so
+%{python_sitearch}/htcondor.so
+
+%files bosco
+%defattr(-,root,root,-)
+%config(noreplace) %_sysconfdir/condor/campus_factory.conf
+%config(noreplace) %_sysconfdir/condor/config.d/60-campus_factory.config
+%_libexecdir/condor/shellselector
+%_libexecdir/condor/campus_factory
+%_sbindir/bosco_install
+%_sbindir/campus_factory
+%_sbindir/condor_ft-gahp
+%_sbindir/runfactory
+%_bindir/bosco_cluster
+%_bindir/bosco_ssh_start
+%_bindir/bosco_start
+%_bindir/bosco_stop
+%_bindir/bosco_findplatform
+%_bindir/bosco_uninstall
+%_sbindir/glidein_creation
+%_datadir/condor/campus_factory
+%{python_sitelib}/GlideinWMS
+%{python_sitelib}/campus_factory
+
 %if %systemd
 %post
 if [ $1 -eq 1 ] ; then
@@ -1056,18 +1150,18 @@ fi
 /bin/systemctl try-restart condor.service >/dev/null 2>&1 || :
 
 %else
-%post -n condor
+%post -n htcondor
 /sbin/chkconfig --add condor
 /sbin/ldconfig
 
-%preun -n condor
+%preun -n htcondor
 if [ $1 = 0 ]; then
   /sbin/service condor stop >/dev/null 2>&1 || :
   /sbin/chkconfig --del condor
 fi
 
 
-%postun -n condor
+%postun -n htcondor
 if [ "$1" -ge "1" ]; then
   /sbin/service condor condrestart >/dev/null 2>&1 || :
 fi
