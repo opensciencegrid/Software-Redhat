@@ -1,0 +1,10 @@
+--- do-component-build	2012-07-16 10:50:16.000000000 -0500
++++ do-component-build	2012-07-16 10:50:28.000000000 -0500
+@@ -23,6 +23,6 @@
+ # Change to cloudera/maven directory, and install
+ # (and if called from CDH nightly build, deploy) artifacts into Maven repository
+ cd cloudera/maven-packaging
+-mvn -Dnot.cdh.release.build=false -Dmaven.repo.local=${HOME}/.m2/repository  install $DO_MAVEN_DEPLOY
++/usr/share/apache-maven-3.0.4/bin/mvn -Dnot.cdh.release.build=false -Dmaven.repo.local=${HOME}/.m2/repository  install $DO_MAVEN_DEPLOY
+ 
+ 
