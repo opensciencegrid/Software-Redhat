@@ -1,7 +1,7 @@
 %define hadoop_version 2.0.0+545 
 %define hadoop_patched_version 2.0.0-cdh4.1.1 
 %define hadoop_base_version 2.0.0 
-%define hadoop_release 1.cdh4.1.1.p0.14%{?dist}
+%define hadoop_release 1.cdh4.1.1.p0.15%{?dist}
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
@@ -172,19 +172,26 @@ Source23: hadoop-hdfs-zkfc.svc
 Source24: hadoop-hdfs-journalnode.svc
 Source25: %{name}-bigtop-packaging.tar.gz
 Source26: hadoop-fuse.te
+
 Patch0: mvn304.patch
 Patch1: javafuse.patch
 Patch2: libhdfs-soversion.patch
 Patch3: libhdfs-soversion-install.patch
 Patch4: fix_chown.patch
+Patch5: pom.xml.patch
 
 Buildroot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id} -u -n)
 BuildRequires: python >= 2.4, git, fuse-devel,fuse, automake, autoconf,maven3,protobuf-compiler, cmake
 # not sure if I need this
-BuildRequires: java-devel
+BuildRequires: java7-devel
+BuildRequires: jpackage-utils
+BuildRequires: /usr/lib/java-1.7.0
+
 Requires: coreutils, /usr/sbin/useradd, /usr/sbin/usermod, /sbin/chkconfig, /sbin/service, bigtop-utils, zookeeper >= 3.4.0
 Requires: psmisc, %{netcat_package}
-Requires: java
+Requires: java7
+Requires: jpackage-utils
+Requires: /usr/lib/java-1.7.0
 Conflicts: hadoop-0.20
 # Sadly, Sun/Oracle JDK in RPM form doesn't provide libjvm.so, which means we have
 # to set AutoReq to no in order to minimize confusion. Not ideal, but seems to work.
@@ -481,6 +488,7 @@ pushd `dirname %{SOURCE25}`
 popd
 %patch2 -p0
 %patch4 -p0
+%patch5 -p0
 
 %build
 # This assumes that you installed Java JDK 6 and set JAVA_HOME
@@ -499,6 +507,8 @@ do
 done
 popd
 
+
+export JAVA_HOME=%{java_home}
 env FULL_VERSION=%{hadoop_patched_version} HADOOP_VERSION=%{hadoop_version} HADOOP_ARCH=%{hadoop_arch} bash %{SOURCE1}
 
 
@@ -849,6 +859,9 @@ fi
 
 
 %changelog
+* Thu May 16 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.0+545-1.cdh4.1.1.p0.15
+- Rebuild with java7
+
 * Fri Dec 28 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 2.0.0+545-1.cdh4.1.1.p0.14
 - Fix chown implementation in FUSE.
 
