@@ -1,0 +1,6 @@
+This package is only for downloading hadoop 2.0's dependencies during build time!
+Do not promote!
+Instructions:
+Use yumdownloader to download java-1.6.0-openjdk
+Extract usr/lib/jvm/java-1.6.0-openjdk-1.6.0.0.x86_64/jre/lib/security/cacerts
+
