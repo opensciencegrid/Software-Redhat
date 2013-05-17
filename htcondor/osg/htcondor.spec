@@ -175,8 +175,10 @@ BuildRequires: globus-ftp-control-devel
 BuildRequires: libtool-ltdl-devel
 BuildRequires: voms-devel
 
+# libcgroup < 0.37 has a bug that invalidates our accounting.
 %if %cgroups
 BuildRequires: libcgroup-devel >= 0.37
+Requires: libcgroup >= 0.37
 %endif
 
 %if %blahp
@@ -185,7 +187,13 @@ BuildRequires: blahp
 
 BuildRequires: python-devel
 BuildRequires: boost-devel
+%if 0%{?rhel} < 6
+BuildRequires: boost
+%else
 BuildRequires: boost-python
+%endif
+
+
 
 %if %qmf
 BuildRequires: qpid-qmf-devel
@@ -222,12 +230,6 @@ BuildRequires: glite-lbjp-common-gsoap-plugin-devel
 BuildRequires: glite-ce-cream-utils
 BuildRequires: log4cpp-devel
 BuildRequires: gridsite-devel
-%endif
-
-
-# libcgroup < 0.37 has a bug that invalidates our accounting.
-%if %cgroups
-Requires: libcgroup >= 0.37
 %endif
 
 Requires: initscripts
@@ -437,15 +439,15 @@ exit 0
 %setup -q -n %{name}-%{tarball_version}
 %endif
 
-# %patch0 -p1
-# %patch3 -p1
-# %patch8 -p1
-# %if %cream
-# %patch9 -p1
-# %endif
-# %if %blahp
-# %patch10 -p1 -b .config_batch_gahp_path
-# %endif
+%patch0 -p1
+%patch3 -p1
+%patch8 -p1
+%if %cream
+%patch9 -p1
+%endif
+%if %blahp
+%patch10 -p1 -b .config_batch_gahp_path
+%endif
 
 # fix errant execute permissions
 find src -perm /a+x -type f -name "*.[Cch]" -exec chmod a-x {} \;
@@ -511,7 +513,8 @@ export CMAKE_PREFIX_PATH=/usr
        -DLIBCGROUP_FOUND_SEARCH_cgroup=/%{_lib}/libcgroup.so.1
 %endif
 
-make %{?_smp_mflags}
+make -j 1
+#%{?_smp_mflags}
 
 
 %install
@@ -672,9 +675,16 @@ mkdir -p %{buildroot}/usr/share/osg/sysconfig
 install -m 0644 %{SOURCE4} %buildroot/usr/share/osg/sysconfig/condor
 %endif
 
+# Install perl modules
+install -m 0755 src/condor_scripts/Condor.pm %{buildroot}%{_datadir}/condor/
+install -m 0755 src/condor_scripts/CondorPersonal.pm %{buildroot}%{_datadir}/condor/
+install -m 0755 src/condor_scripts/CondorTest.pm %{buildroot}%{_datadir}/condor/
+install -m 0755 src/condor_scripts/CondorUtils.pm %{buildroot}%{_datadir}/condor/
+
+# Install python-binding libs
 mkdir -p %{buildroot}%{python_sitearch}
 install -m 0755 src/python-bindings/{classad,htcondor}.so %{buildroot}%{python_sitearch}
-install -m 0755 src/python-bindings/libpyclassad_*.so %{buildroot}%{_libdir}
+#install -m 0755 src/python-bindings/libpyclassad_*.so %{buildroot}%{_libdir}
 
 # we must place the config examples in builddir so %doc can find them
 mv %{buildroot}/etc/examples %_builddir/%name-%tarball_version
@@ -789,11 +799,11 @@ rm -rf %{buildroot}
 %_datadir/condor/Chirp.jar
 %_datadir/condor/CondorJavaInfo.class
 %_datadir/condor/CondorJavaWrapper.class
-# %_datadir/condor/Condor.pm
+%_datadir/condor/Condor.pm
 %_datadir/condor/scimark2lib.jar
-# %_datadir/condor/CondorPersonal.pm
-# %_datadir/condor/CondorTest.pm
-# %_datadir/condor/CondorUtils.pm
+%_datadir/condor/CondorPersonal.pm
+%_datadir/condor/CondorTest.pm
+%_datadir/condor/CondorUtils.pm
 %dir %_sysconfdir/condor/config.d/
 %_sysconfdir/condor/config.d/00personal_condor.config
 %_sysconfdir/condor/condor_ssh_to_job_sshd_config_template

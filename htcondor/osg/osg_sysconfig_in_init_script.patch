@@ -1,7 +1,7 @@
-Index: condor-7.8.1/src/condor_examples/condor.init
+Index: htcondor-7.9.6/src/condor_examples/condor.init
 ===================================================================
---- condor-7.8.1.orig/src/condor_examples/condor.init	2012-06-18 13:41:42.000000003 -0500
-+++ condor-7.8.1/src/condor_examples/condor.init	2012-06-18 13:58:43.000000003 -0500
+--- htcondor-7.9.6.orig/src/condor_examples/condor.init	2013-05-16 16:23:02.000000003 -0500
++++ htcondor-7.9.6/src/condor_examples/condor.init	2013-05-16 16:23:05.000000003 -0500
 @@ -26,6 +26,9 @@
  # Source function library
  . /etc/init.d/functions
