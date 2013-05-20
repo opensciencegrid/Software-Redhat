@@ -187,13 +187,9 @@ BuildRequires: blahp
 
 BuildRequires: python-devel
 BuildRequires: boost-devel
-%if 0%{?rhel} < 6
-BuildRequires: boost
-%else
+%if 0%{rhel} == 6
 BuildRequires: boost-python
 %endif
-
-
 
 %if %qmf
 BuildRequires: qpid-qmf-devel
@@ -464,7 +460,10 @@ popd
 
 export CMAKE_PREFIX_PATH=/usr
 
+# Since we don't package the tests and some tests require boost > 1.40, which
+# causes build issues with EL5, don't even bother building the tests.
 %cmake -DNO_PHONE_HOME:BOOL=TRUE \
+       -DBUILD_TESTING:BOOL=FALSE \
        -DHAVE_BACKFILL:BOOL=FALSE \
        -DHAVE_BOINC:BOOL=FALSE \
 %if %gsoap
@@ -513,8 +512,7 @@ export CMAKE_PREFIX_PATH=/usr
        -DLIBCGROUP_FOUND_SEARCH_cgroup=/%{_lib}/libcgroup.so.1
 %endif
 
-make -j 1
-#%{?_smp_mflags}
+make %{?_smp_mflags}
 
 
 %install
@@ -684,7 +682,7 @@ install -m 0755 src/condor_scripts/CondorUtils.pm %{buildroot}%{_datadir}/condor
 # Install python-binding libs
 mkdir -p %{buildroot}%{python_sitearch}
 install -m 0755 src/python-bindings/{classad,htcondor}.so %{buildroot}%{python_sitearch}
-#install -m 0755 src/python-bindings/libpyclassad_*.so %{buildroot}%{_libdir}
+install -m 0755 src/python-bindings/libpyclassad_*.so %{buildroot}%{_libdir}
 
 # we must place the config examples in builddir so %doc can find them
 mv %{buildroot}/etc/examples %_builddir/%name-%tarball_version
@@ -793,7 +791,7 @@ rm -rf %{buildroot}
 %{_unitdir}/condor.service
 %else
 %_initrddir/condor
-/usr/share/osg/sysconfig/condor
+%config(noreplace) /usr/share/osg/sysconfig/condor
 %endif
 %dir %_datadir/condor/
 %_datadir/condor/Chirp.jar
