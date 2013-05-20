@@ -1,7 +1,7 @@
 Summary: Generic Information Provider
 Name: gip
-Version: 1.3.8
-Release: 2%{?dist}
+Version: 1.3.9
+Release: 1%{?dist}
 License: TODO
 Group: Applications/Grid
 BuildArch: noarch
@@ -100,6 +100,9 @@ touch $RPM_BUILD_ROOT/%{_sysconfdir}/%{name}/remove-attributes.conf
 rm -rf %buildroot
 
 %changelog
+* Mon May 20 2013 Burt Holzman <burt@fnal.gov> - 1.3.9-1
+- Update to GIP 1.3.9
+
 * Tue Jun 19 2012 Burt Holzman <burt@fnal.gov> - 1.3.8-2
 - Add globus-proxy-utils dependency (for grid-proxy-init)
 
