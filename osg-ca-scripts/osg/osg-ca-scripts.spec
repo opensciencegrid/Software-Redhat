@@ -1,5 +1,5 @@
 Name:      osg-ca-scripts
-Version:   1.1.2
+Version:   1.1.3
 Release:   1%{?dist}
 Summary:   CA Certificate helper scripts
 
@@ -82,6 +82,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr(0755,root,root) %{_localstatedir}/lib/osg-ca-certs
 
 %changelog
+* Mon May 20 2013 Brian Lin <blin@cs.wisc.edu> 1.1.3-1
+- Fix --location bug
+
 * Fri May 10 2013 Brian Lin <blin@cs.wisc.edu> 1.1.2-1
 - Fix log-rotation for rpm installs
 
