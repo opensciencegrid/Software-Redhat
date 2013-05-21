@@ -16,8 +16,8 @@
 %define cgroups 0
 %endif
 
-%define blahp 1
-%define cream 1
+%define blahp 0
+%define cream 0
 
 # Things not turned on, or don't have Fedora packages yet
 %define qmf 0
@@ -55,7 +55,7 @@ Version: %{tarball_version}
 %define condor_release %condor_base_release
 %endif
 # Release: %condor_release%{?dist}.2
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -1045,7 +1045,7 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 %doc LICENSE-2.0.txt NOTICE.txt
 %_libdir/libclassad.so.*
-#%_libdir/libclassad.so.%{version}
+%_libdir/libclassad.so.%{version}
 
 %files classads-devel
 %defattr(-,root,root,-)
@@ -1168,11 +1168,10 @@ fi
 
 %changelog
 * Tue May 21 2013 Brian Lin <matyas@cs.wisc.edu> - 7.9.6-2
-- Rename package back to condor
+- Build without blahp/cream
 
-* Wed May 15 2013 Brian Lin <matyas@cs.wisc.edu> - 7.9.6-1
+* Tue May 21 2013 Brian Lin <matyas@cs.wisc.edu> - 7.9.6-1
 - New version
-- Rename package to htcondor
 
 * Wed May 08 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 7.8.8-1
 - New version
