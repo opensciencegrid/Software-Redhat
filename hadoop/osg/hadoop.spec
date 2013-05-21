@@ -1,7 +1,7 @@
 %define hadoop_version 2.0.0+545 
 %define hadoop_patched_version 2.0.0-cdh4.1.1 
 %define hadoop_base_version 2.0.0 
-%define hadoop_release 1.cdh4.1.1.p0.15%{?dist}
+%define hadoop_release 1.cdh4.1.1.p0.16%{?dist}
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
@@ -445,6 +445,7 @@ Requires: %{name} = %{version}-%{release}
 Requires: %{name}-libhdfs = %{version}-%{release}
 Requires: %{name}-client = %{version}-%{release}
 Requires: fuse
+Requires: java7-devel
 Obsoletes: hadoop-0.20-osg <= 0.20.2+737
 Obsoletes: hadoop-0.20-fuse <= 0.20.2+737
 AutoReq: no
@@ -859,6 +860,9 @@ fi
 
 
 %changelog
+* Mon May 20 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.0+545-1.cdh4.1.1.p0.16
+- Add java7-devel dependency to hdfs-fuse subpackage -- needed for libjvm.so
+
 * Thu May 16 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.0+545-1.cdh4.1.1.p0.15
 - Rebuild with java7
 
