@@ -43,7 +43,7 @@
 %endif
 
 Summary: HTCondor: High Throughput Computing
-Name: htcondor
+Name: condor
 Version: %{tarball_version}
 %global version_ %(tr . _ <<< %{version})
 
@@ -100,7 +100,7 @@ Source1: condor_docs.tar.gz
 #   b482c4bfa350164427a1952113d53d03  condor_src-7.5.5-all-all.tar.gz
 #   2a1355cb24a56a71978d229ddc490bc5  condor_src-7.6.0-all-all.tar.gz
 # Note: The md5sum of each generated tarball may be different
-Source0: htcondor-%{tarball_version}.tar.gz
+Source0: %{name}-%{tarball_version}.tar.gz
 Source1: generate-tarball.sh
 %endif
 
@@ -214,8 +214,8 @@ Requires: gsoap >= 2.7.12
 %endif
 Requires: mailx
 Requires: python >= 2.2
-Requires: htcondor-classads = %{version}-%{release}
-Requires: htcondor-procd = %{version}-%{release}
+Requires: condor-classads = %{version}-%{release}
+Requires: condor-procd = %{version}-%{release}
 %if %blahp
 Requires: blahp >= 1.16.1
 %endif
@@ -248,7 +248,6 @@ Requires(postun):/sbin/service
 #Provides: group(condor) = 43
 
 Obsoletes: condor-static < 7.2.0
-Obsoletes: condor <= 7.8.8
 
 %description
 HTCondor is a specialized workload management system for
@@ -263,7 +262,6 @@ completion.
 %package procd
 Summary: HTCondor Process tracking Daemon
 Group: Applications/System
-Obsoletes: condor-procd
 
 %description procd
 A daemon for tracking child processes started by a parent.
@@ -278,7 +276,6 @@ Requires: %name = %version-%release
 Requires: python-qmf >= 0.7.946106
 Requires: %name-classads = %{version}-%{release}
 Obsoletes: condor-qmf-plugins
-Obsoletes: condor-qmf
 
 %description qmf
 Components to connect HTCondor to the QMF management bus.
@@ -290,7 +287,6 @@ Summary: HTCondor Aviary components
 Group: Applications/System
 Requires: %name = %version-%release
 Requires: %name-classads = %{version}-%{release}
-Obsoletes: condor-aviary
 
 %description aviary
 Components to provide simplified WS interface to HTCondor.
@@ -301,7 +297,6 @@ Summary: HTCondor Keyboard Daemon
 Group: Applications/System
 Requires: %name = %version-%release
 Requires: %name-classads = %{version}-%{release}
-Obsoletes: condor-kbdd
 
 %description kbdd
 The condor_kbdd monitors logged in X users for activity. It is only
@@ -315,7 +310,6 @@ Group: Applications/System
 Requires: %name = %version-%release
 Requires: libvirt
 Requires: %name-classads = %{version}-%{release}
-Obsoletes: condor-vm-gahp
 
 %description vm-gahp
 The condor_vm-gahp enables the Virtual Machine Universe feature of
@@ -327,7 +321,6 @@ HTCondor's Startd.
 Summary: HTCondor's Deltacloud Gahp
 Group: Applications/System
 Requires: %name = %version-%release
-Obsoletes: condor-deltacloud-gahp
 
 %description deltacloud-gahp
 The deltacloud_gahp enables HTCondor's ability to manage jobs run on
@@ -339,7 +332,6 @@ Summary: HTCondor's classified advertisement language
 Group: Development/Libraries
 Obsoletes: classads <= 1.0.8
 Obsoletes: classads-static <= 1.0.8
-Obsoletes: condor-classads
 Provides: classads = %version-%release
 
 %description classads
@@ -369,7 +361,6 @@ Group: Development/System
 Requires: %name-classads = %version-%release
 Requires: pcre-devel
 Obsoletes: classads-devel <= 1.0.8
-Obsoletes: condor-classads-devel
 Provides: classads-devel = %version-%release
 
 %description classads-devel
@@ -382,7 +373,6 @@ Summary: HTCondor's CREAM Gahp
 Group: Applications/System
 Requires: %name = %version-%release
 Requires: %name-classads = %{version}-%{release}
-Obsoletes: condor-cream-gahp
 
 %description cream-gahp
 The condor-cream-gahp enables CREAM interoperability for HTCondor.
@@ -1158,18 +1148,18 @@ fi
 /bin/systemctl try-restart condor.service >/dev/null 2>&1 || :
 
 %else
-%post -n htcondor
+%post -n condor
 /sbin/chkconfig --add condor
 /sbin/ldconfig
 
-%preun -n htcondor
+%preun -n condor
 if [ $1 = 0 ]; then
   /sbin/service condor stop >/dev/null 2>&1 || :
   /sbin/chkconfig --del condor
 fi
 
 
-%postun -n htcondor
+%postun -n condor
 if [ "$1" -ge "1" ]; then
   /sbin/service condor condrestart >/dev/null 2>&1 || :
 fi
@@ -1177,6 +1167,9 @@ fi
 %endif
 
 %changelog
+* Tue May 21 2013 Brian Lin <matyas@cs.wisc.edu> - 7.9.6-2
+- Rename package back to condor
+
 * Wed May 15 2013 Brian Lin <matyas@cs.wisc.edu> - 7.9.6-1
 - New version
 - Rename package to htcondor
