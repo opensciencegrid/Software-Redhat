@@ -16,7 +16,7 @@ BuildRequires:  automake
 BuildRequires:  autoconf
 BuildRequires:  libtool
 BuildRequires:  glite-build-common-cpp
-BuildRequires:  htcondor-classads-devel
+BuildRequires:  condor-classads-devel >= 7.9.6
 BuildRequires:  globus-gss-assist-devel
 BuildRequires:  globus-gsi-credential-devel
 BuildRequires:  globus-gsi-proxy-core-devel
@@ -90,8 +90,8 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
-* Mon May 20 2013 Brian Lin <dweitzel@cse.unl.edu> - 1.18.4.bosco-2
-- Change condor-classad dependency to htcondor-classad
+* Tue May 20 2013 Brian Lin <blin@cs.wisc.edu> - 1.18.4.bosco-2
+- Building against latest condor
 
 * Thu Jan 17 2013 Derek Weitzel <dweitzel@cse.unl.edu> - 1.18.4.bosco-1
 - Fixing pbs_status.py via upstream SOFTWARE-905
