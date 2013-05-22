@@ -1,6 +1,6 @@
 Summary: Generic Information Provider
 Name: gip
-Version: 1.3.9
+Version: 1.3.10
 Release: 1%{?dist}
 License: TODO
 Group: Applications/Grid
@@ -100,6 +100,9 @@ touch $RPM_BUILD_ROOT/%{_sysconfdir}/%{name}/remove-attributes.conf
 rm -rf %buildroot
 
 %changelog
+* Wed May 22 2013 Burt Holzman <burt@fnal.gov> - 1.3.10-1
+- Updated to GIP 1.3.10
+
 * Mon May 20 2013 Burt Holzman <burt@fnal.gov> - 1.3.9-1
 - Update to GIP 1.3.9
 
