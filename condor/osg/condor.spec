@@ -6,12 +6,19 @@
 %define gsoap 0
 %define deltacloud 1
 %define aviary 1
+%ifarch %{ix86} x86_64
+# mongodb supports only x86/x86_64
+%define plumage 1
+%else
+%define plumage 0
+%endif
 %define systemd 1
 %define cgroups 1
 %else
 %define gsoap 1
 %define deltacloud 0
 %define aviary 0
+%define plumage 0
 %define systemd 0
 %define cgroups 0
 %endif
@@ -60,7 +67,7 @@ Version: %{tarball_version}
 %define condor_release %condor_base_release
 %endif
 # Release: %condor_release%{?dist}.2
-Release: 4%{?dist}
+Release: 5%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -180,6 +187,10 @@ BuildRequires: globus-ftp-control-devel
 BuildRequires: libtool-ltdl-devel
 BuildRequires: voms-devel
 
+%if %plumage
+BuildRequires: mongodb-devel >= 1.6.4-3
+%endif
+
 # libcgroup < 0.37 has a bug that invalidates our accounting.
 %if %cgroups
 BuildRequires: libcgroup-devel >= 0.37
@@ -298,6 +309,20 @@ Requires: %name-classads = %{version}-%{release}
 
 %description aviary
 Components to provide simplified WS interface to HTCondor.
+%endif
+
+%if %plumage
+%package plumage
+Summary: HTCondor Plumage components
+Group: Applications/System
+Requires: %name = %version-%release
+Requires: condor-classads = %{version}-%{release}
+Requires: mongodb >= 1.6.4
+Requires: pymongo >= 1.9
+Requires: python-dateutil >= 1.4.1
+
+%description plumage
+Components to provide a NoSQL operational data store for HTCondor.
 %endif
 
 %package kbdd
@@ -478,6 +503,11 @@ export CMAKE_PREFIX_PATH=/usr
        -DWITH_ZLIB:BOOL=FALSE \
        -DWITH_POSTGRESQL:BOOL=FALSE \
        -DWANT_CONTRIB:BOOL=ON \
+%if %plumage
+       -DWITH_PLUMAGE:BOOL=TRUE \
+%else
+       -DWITH_PLUMAGE:BOOL=FALSE \
+%endif
 %if %aviary
        -DWITH_AVIARY:BOOL=TRUE \
 %else
@@ -600,6 +630,14 @@ populate %_sysconfdir/condor/config.d %{buildroot}/etc/examples/61aviary.config
 mkdir -p %{buildroot}/%{_var}/lib/condor/aviary
 populate %{_var}/lib/condor/aviary %{buildroot}/usr/axis2.xml
 populate %{_var}/lib/condor/aviary %{buildroot}/usr/services/
+%endif
+
+%if %plumage
+# Install condor-plumage's base plugin configuration
+populate %_sysconfdir/condor/config.d %{buildroot}/etc/examples/62plumage.config
+rm -f %{buildroot}/%{_bindir}/ods_job_etl_tool
+rm -f %{buildroot}/%{_sbindir}/ods_job_etl_server
+mkdir -p -m0755 %{buildroot}/%{_var}/lib/condor/ViewHist
 %endif
 
 mkdir -p -m0755 %{buildroot}/%{_var}/run/condor
@@ -1041,6 +1079,26 @@ rm -rf %{buildroot}
 %_var/lib/condor/aviary/services/query/aviary-query.wsdl
 %endif
 
+%if %plumage
+%files plumage
+%defattr(-,root,root,-)
+%doc LICENSE-2.0.txt NOTICE.txt
+%_sysconfdir/condor/config.d/62plumage.config
+%dir %_libdir/condor/plugins
+%_libdir/condor/plugins/PlumageCollectorPlugin-plugin.so
+%dir %_datadir/condor/plumage
+%_sbindir/plumage_job_etl_server
+%_bindir/plumage_history_load
+%_bindir/plumage_stats
+%_bindir/plumage_history
+%_datadir/condor/plumage/README
+%_datadir/condor/plumage/SCHEMA
+%_datadir/condor/plumage/plumage_accounting
+%_datadir/condor/plumage/plumage_scheduler
+%_datadir/condor/plumage/plumage_utilization
+%defattr(-,condor,condor,-)
+%endif
+
 %files kbdd
 %defattr(-,root,root,-)
 %doc LICENSE-2.0.txt NOTICE.txt
@@ -1186,6 +1244,9 @@ fi
 %endif
 
 %changelog
+* Wed May 22 2013 Brian Lin <blin@cs.wisc.edu> - 7.9.6-5
+- Enable plumage for x86{,_64}
+
 * Wed May 22 2013 Brian Lin <blin@cs.wisc.edu> - 7.9.6-4
 - Enable cgroups for EL6
 
