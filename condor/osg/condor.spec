@@ -1,7 +1,7 @@
 %define tarball_version 7.9.6
 
 # Things for F15 or later
-%if 0%{?fedora} >= 15
+%if 0%{?fedora} >= 16
 # NOTE: HTCondor+gsoap doesn't work yet on F15; ticket not yet upstream AFAIK.  BB
 %define gsoap 0
 %define deltacloud 1
@@ -16,7 +16,12 @@
 %define cgroups 0
 %endif
 
+%if 0%{?rhel} >= 6
+%define cgroups 1
+%endif
+
 %define blahp 1
+%define glexec 1
 %define cream 1
 
 # Things not turned on, or don't have Fedora packages yet
@@ -55,7 +60,7 @@ Version: %{tarball_version}
 %define condor_release %condor_base_release
 %endif
 # Release: %condor_release%{?dist}.2
-Release: 3%{?dist}
+Release: 4%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -183,6 +188,9 @@ Requires: libcgroup >= 0.37
 
 %if %blahp
 BuildRequires: blahp
+%endif
+%if %glexec
+Requires: glexec
 %endif
 
 BuildRequires: python-devel
@@ -475,6 +483,7 @@ export CMAKE_PREFIX_PATH=/usr
 %else
        -DWITH_AVIARY:BOOL=FALSE \
 %endif
+       -DWANT_FULL_DEPLOYMENT:BOOL=TRUE \
 %if %qmf
        -DWITH_TRIGGERD:BOOL=TRUE \
        -DWITH_MANAGEMENT:BOOL=TRUE \
@@ -482,8 +491,22 @@ export CMAKE_PREFIX_PATH=/usr
        -DWITH_TRIGGERD:BOOL=FALSE \
        -DWITH_MANAGEMENT:BOOL=FALSE \
 %endif
-       -DWANT_FULL_DEPLOYMENT:BOOL=TRUE \
+%if %blahp
+       -DWITH_BLAHP:BOOL=TRUE \
+       -DBLAHP_FOUND=/usr/libexec/blahp/BLClient \
+%else
+       -DWITH_BLAHP:BOOL=FALSE \
+%endif
+%if %cream
+       -DWITH_CREAM:BOOL=TRUE \
+%else
+       -DWITH_CREAM:BOOL=FALSE \
+%endif
+%if %glexec
        -DWANT_GLEXEC:BOOL=TRUE \
+%else
+       -DWANT_GLEXEC:BOOL=FALSE \
+%endif
 %if %deltacloud
        -DWITH_LIBDELTACLOUD:BOOL=TRUE \
 %else
@@ -491,15 +514,9 @@ export CMAKE_PREFIX_PATH=/usr
 %endif
        -DWITH_GLOBUS:BOOL=TRUE \
        -DWITH_PYTHON_BINDINGS:BOOL=TRUE \
-%if %blahp
-       -DWITH_BLAHP:BOOL=TRUE \
-       -DBLAHP_FOUND=/usr/libexec/blahp/BLClient \
-%endif
-%if %cream
-       -DWITH_CREAM:BOOL=TRUE \
-%endif
 %if %cgroups
-       -DLIBCGROUP_FOUND_SEARCH_cgroup=/%{_lib}/libcgroup.so.1
+        -DWITH_LIBCGROUP:BOOL=TRUE \
+        -DLIBCGROUP_FOUND_SEARCH_cgroup=/%{_lib}/libcgroup.so.1
 %endif
 
 make %{?_smp_mflags}
@@ -809,12 +826,20 @@ rm -rf %{buildroot}
 %_libexecdir/condor/condor_ssh
 %_libexecdir/condor/sshd.sh
 %_libexecdir/condor/condor_job_router
+%if %glexec
+%_libexecdir/condor/condor_glexec_setup
+%_libexecdir/condor/condor_glexec_run
+%_libexecdir/condor/condor_glexec_job_wrapper
 %_libexecdir/condor/condor_glexec_update_proxy
+%_libexecdir/condor/condor_glexec_cleanup
+%_libexecdir/condor/condor_glexec_kill
+%endif
 %_libexecdir/condor/condor_limits_wrapper.sh
 %_libexecdir/condor/condor_rooster
 %_libexecdir/condor/condor_schedd.init
 %_libexecdir/condor/condor_ssh_to_job_shell_setup
 %_libexecdir/condor/condor_ssh_to_job_sshd_setup
+%_libexecdir/condor/condor_power_state
 %_libexecdir/condor/condor_kflops
 %_libexecdir/condor/condor_mips
 %_libexecdir/condor/data_plugin
@@ -822,12 +847,6 @@ rm -rf %{buildroot}
 %_libexecdir/condor/condor_shared_port
 %_libexecdir/condor/condor_glexec_wrapper
 %_libexecdir/condor/glexec_starter_setup.sh
-%_libexecdir/condor/condor_glexec_cleanup
-%_libexecdir/condor/condor_glexec_job_wrapper
-%_libexecdir/condor/condor_glexec_kill
-%_libexecdir/condor/condor_glexec_run
-%_libexecdir/condor/condor_glexec_setup
-%_libexecdir/condor/condor_power_state
 %_libexecdir/condor/condor_defrag
 %_libexecdir/condor/interactive.sub
 %if %include_man
@@ -1167,13 +1186,16 @@ fi
 %endif
 
 %changelog
-* Tue May 21 2013 Brian Lin <matyas@cs.wisc.edu> - 7.9.6-3
+* Wed May 22 2013 Brian Lin <blin@cs.wisc.edu> - 7.9.6-4
+- Enable cgroups for EL6
+
+* Tue May 21 2013 Brian Lin <blin@cs.wisc.edu> - 7.9.6-3
 - Building with blahp/cream
 
-* Tue May 21 2013 Brian Lin <matyas@cs.wisc.edu> - 7.9.6-2
+* Tue May 21 2013 Brian Lin <blin@cs.wisc.edu> - 7.9.6-2
 - Build without blahp/cream
 
-* Tue May 21 2013 Brian Lin <matyas@cs.wisc.edu> - 7.9.6-1
+* Tue May 21 2013 Brian Lin <blin@cs.wisc.edu> - 7.9.6-1
 - New version
 
 * Wed May 08 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 7.8.8-1
