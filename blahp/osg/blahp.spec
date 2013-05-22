@@ -1,6 +1,6 @@
 Name:		blahp
 Version:	1.18.4.bosco
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	gLite BLAHP daemon
 
 Group:		System/Libraries
@@ -90,8 +90,11 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
-* Tue May 20 2013 Brian Lin <blin@cs.wisc.edu> - 1.18.4.bosco-2
+* Tue May 20 2013 Brian Lin <blin@cs.wisc.edu> - 1.18.4.bosco-3
 - Building against latest condor
+
+* Mon May 20 2013 Brian Lin <blin@cs.wisc.edu> - 1.18.4.bosco-2
+- Change condor-classad dependency to htcondor-classad
 
 * Thu Jan 17 2013 Derek Weitzel <dweitzel@cse.unl.edu> - 1.18.4.bosco-1
 - Fixing pbs_status.py via upstream SOFTWARE-905
