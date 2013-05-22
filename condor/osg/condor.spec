@@ -16,8 +16,8 @@
 %define cgroups 0
 %endif
 
-%define blahp 0
-%define cream 0
+%define blahp 1
+%define cream 1
 
 # Things not turned on, or don't have Fedora packages yet
 %define qmf 0
@@ -55,7 +55,7 @@ Version: %{tarball_version}
 %define condor_release %condor_base_release
 %endif
 # Release: %condor_release%{?dist}.2
-Release: 2%{?dist}
+Release: 3%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -1167,6 +1167,9 @@ fi
 %endif
 
 %changelog
+* Tue May 21 2013 Brian Lin <matyas@cs.wisc.edu> - 7.9.6-3
+- Building with blahp/cream
+
 * Tue May 21 2013 Brian Lin <matyas@cs.wisc.edu> - 7.9.6-2
 - Build without blahp/cream
 
