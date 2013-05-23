@@ -67,7 +67,7 @@ Version: %{tarball_version}
 %define condor_release %condor_base_release
 %endif
 # Release: %condor_release%{?dist}.2
-Release: 5%{?dist}
+Release: 6%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -1244,6 +1244,9 @@ fi
 %endif
 
 %changelog
+* Thu May 23 2013 Brian Lin <blin@cs.wisc.edu> - 7.9.6-6
+- Rebuild against fixed glite-ce-cream-client-api-c
+
 * Wed May 22 2013 Brian Lin <blin@cs.wisc.edu> - 7.9.6-5
 - Enable plumage for x86{,_64}
 
