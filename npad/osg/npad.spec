@@ -1,6 +1,6 @@
 Name:           npad
 Version:        1.5.6
-Release:        2%{?dist}
+Release:        2.1%{?dist}
 Summary:        Network Diagnostic Tool
 
 Group:          Applications/Networking
@@ -26,6 +26,12 @@ Requires:       initscripts
 
 %description
 NPAD/pathdiag diagnostic servers can automatically diagnose most flaws in end-systems and last-mile networks that affect end-to-end application performance. See the end-user documentation or more details on the diagnostic methods and target audience.
+
+%package client
+Summary: The Network Path and Application Diagnosis (NPAD) client.
+
+%description client
+The Network Path and Application Diagnosis (NPAD) client.
 
 %prep
 %setup
@@ -56,11 +62,18 @@ NPAD/pathdiag diagnostic servers can automatically diagnose most flaws in end-sy
 %build
 make %{?_smp_mflags}
 
+# OSG addition: Build the client
+cd diag_server
+gcc diag-client.c -o diag-client
+
 %install
 rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
 
 %{__install} -D -m 0755 %SOURCE1 %{buildroot}%{_initrddir}/%{name}
+
+# OSG addition: Package the client
+%{__install} -D -m 0755 diag_server/diag-client %{buildroot}%{_bindir}/diag-client
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -89,7 +102,14 @@ fi
 /var/lib/npad/*
 %config(noreplace) %{_initrddir}/%{name}
 
+%files client
+%defattr(-,root,root,-)
+%{_bindir}/diag-client
+
 %changelog
+* Thu May 23 2013 Tim Cartwright <cat@cs.wisc.edu> - 1.5.6-2.1
+- Added the client subpackage.
+
 * Thu Jan 06 2011 Aaron Brown <aaron@internet2.edu> - 1.5.6-2
 - Fix an issue with stopping the server using the init script
 
