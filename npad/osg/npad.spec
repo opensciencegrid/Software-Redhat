@@ -30,6 +30,7 @@ NPAD/pathdiag diagnostic servers can automatically diagnose most flaws in end-sy
 
 %package client
 Summary: The Network Path and Application Diagnosis (NPAD) client.
+Group: Applications/Networking
 
 %description client
 The Network Path and Application Diagnosis (NPAD) client.
