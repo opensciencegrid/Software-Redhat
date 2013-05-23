@@ -16,6 +16,7 @@ Patch3:         config_xml.patch
 Patch4:         dont_create_users.patch
 Patch5:         diag_form_html.patch
 Patch6:         makefile_rpm_fix.patch
+Patch7:         pathdiag-makefile-dynlink.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires:  web100_userland
 BuildRequires:  python-devel
@@ -58,6 +59,9 @@ The Network Path and Application Diagnosis (NPAD) client.
 # Change the generated Makefile.config file so that it installs in the
 # appropriate place for RPM
 %patch6 -p1
+
+# OSG addition: Fix pathdiag/Makefile to link using $(CC), not ld directly
+%patch7 -p0
 
 %build
 make %{?_smp_mflags}

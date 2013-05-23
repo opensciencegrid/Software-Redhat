@@ -1,0 +1,11 @@
+--- pathdiag/Makefile	2008-05-16 16:37:07.000000000 -0500
++++ pathdiag/Makefile.new	2013-05-23 12:20:49.351214961 -0500
+@@ -3,7 +3,7 @@
+ PYINCLUDE  = -I`python -c 'import sys; print("%s/include/python%s"%(sys.prefix, sys.version[:3]))'`
+ # BEWARE: -fpic not needed or not correct with all compilers
+ PICFLAG    = -fpic
+-DYNLINK    = ld -shared -t
++DYNLINK    = $(CC) $(CFLAGS) $(LDFLAGS) -shared
+ EXEC_FILES = pathdiag.py* pathtools.py* prettyhtml.py* pathlib.py* _pathlib.so mkdatasummary.py *.fmt
+ LOGDIR_FILES = boxes.css help.html
+ 
