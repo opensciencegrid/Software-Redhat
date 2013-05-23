@@ -1,7 +1,7 @@
-%define hadoop_version 2.0.0+545 
-%define hadoop_patched_version 2.0.0-cdh4.1.1 
-%define hadoop_base_version 2.0.0 
-%define hadoop_release 1.cdh4.1.1.p0.16%{?dist}
+%define hadoop_version 2.0.0+545
+%define hadoop_patched_version 2.0.0-cdh4.1.1
+%define hadoop_base_version 2.0.0
+%define hadoop_release 1.cdh4.1.1.p0.17%{?dist}
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
@@ -156,7 +156,7 @@ Source7: hadoop-fuse-dfs.1
 Source8: hdfs.conf
 Source9: yarn.conf
 Source10: mapreduce.conf
-Source11: init.d.tmpl 
+Source11: init.d.tmpl
 Source12: hadoop-hdfs-namenode.svc
 Source13: hadoop-hdfs-datanode.svc
 Source14: hadoop-hdfs-secondarynamenode.svc
@@ -182,7 +182,6 @@ Patch5: pom.xml.patch
 
 Buildroot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id} -u -n)
 BuildRequires: python >= 2.4, git, fuse-devel,fuse, automake, autoconf,maven3,protobuf-compiler, cmake
-# not sure if I need this
 BuildRequires: java7-devel
 BuildRequires: jpackage-utils
 BuildRequires: /usr/lib/java-1.7.0
@@ -193,10 +192,6 @@ Requires: java7
 Requires: jpackage-utils
 Requires: /usr/lib/java-1.7.0
 Conflicts: hadoop-0.20
-# Sadly, Sun/Oracle JDK in RPM form doesn't provide libjvm.so, which means we have
-# to set AutoReq to no in order to minimize confusion. Not ideal, but seems to work.
-# I wish there was a way to disable just one auto dependency (libjvm.so)
-AutoReq: no
 Provides: hadoop
 Obsoletes: hadoop-0.20 <= 0.20.2+737
 
@@ -637,7 +632,7 @@ getent passwd hdfs >/dev/null || /usr/sbin/useradd --comment "Hadoop HDFS" --she
  alternatives --remove hadoop-0.20-conf /etc/hadoop-0.20/conf.empty || true
  alternatives --remove hadoop-0.20-conf /etc/hadoop-0.20/conf.osg || true
 
-%pre httpfs 
+%pre httpfs
 getent group httpfs >/dev/null   || groupadd -r httpfs
 getent passwd httpfs >/dev/null || /usr/sbin/useradd --comment "Hadoop HTTPFS" --shell /bin/bash -M -r -g httpfs -G httpfs --home %{run_httpfs} httpfs
 
@@ -682,15 +677,21 @@ fi
 /sbin/ldconfig
 # Force symlinks to be created if they are not
 #   Otherwise shared linking can be broken from hadoop-0.20 to hadoop 2.0.0
-ln -s %{_libdir}/libhdfs.so.0.0.0 %{_libdir}/libhdfs.so.0.0 || true
-ln -s %{_libdir}/libhdfs.so.0.0.0 %{_libdir}/libhdfs.so.0 || true
+if [ $1 -gt 0 ]; then
+    for link in %{_libdir}/libhdfs.so.0 %{_libdir}/libhdfs.so.0.0; do
+        [[ ! -e $link ]] && ln -s %{_libdir}/libhdfs.so.0.0.0 $link || :
+    done
+fi
+
 
 %postun libhdfs
 /sbin/ldconfig
-# Now delete symlinks
-rm -f %{_libdir}/libhdfs.so.0 || true
-rm -f %{_libdir}/libhdfs.so.0.0 || true
-
+if [ $1 -eq 0 ]; then
+    # Now delete symlinks
+    for link in %{_libdir}/libhdfs.so.0 %{_libdir}/libhdfs.so.0.0; do
+        [[ -L $link ]] && rm -f $link || :
+    done
+fi
 
 
 %post hdfs-fuse-selinux
@@ -860,6 +861,10 @@ fi
 
 
 %changelog
+* Tue May 21 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.0+545-1.cdh4.1.1.p0.17
+- Fix libhdfs postun script to not remove symlinks on upgrades
+- Turn AutoReq back on
+
 * Mon May 20 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.0+545-1.cdh4.1.1.p0.16
 - Add java7-devel dependency to hdfs-fuse subpackage -- needed for libjvm.so
 
