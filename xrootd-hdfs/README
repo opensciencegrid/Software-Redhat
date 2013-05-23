@@ -4,3 +4,4 @@ A HDFS plugin for Xrootd.
 This package is maintained by CMS.  The spec file is included upstream;
 any changes you make here should also be placed in upstream SVN.
 
+The sysconfig file xrootd-hdfs-2.0.sysconfig was obtained from https://github.com/bbockelm/hcc-config/blob/master/modules/xrootd/files/xrootd-hdfs
