@@ -1,7 +1,7 @@
 %define hadoop_version 2.0.0+545
 %define hadoop_patched_version 2.0.0-cdh4.1.1
 %define hadoop_base_version 2.0.0
-%define hadoop_release 1.cdh4.1.1.p0.17%{?dist}
+%define hadoop_release 1.cdh4.1.1.p0.18%{?dist}
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
@@ -617,7 +617,7 @@ getent group hadoop >/dev/null || groupadd -r hadoop
 
 %pre hdfs
 getent group hdfs >/dev/null   || groupadd -r hdfs
-getent passwd hdfs >/dev/null || /usr/sbin/useradd --comment "Hadoop HDFS" --shell /bin/bash -M -r -g hdfs -G hadoop --home %{state_hdfs} hdfs
+getent passwd hdfs >/dev/null || /usr/sbin/useradd --comment "Hadoop HDFS" --shell /bin/bash -M -r -g hdfs --home %{state_hdfs} hdfs
  alternatives --remove hadoop-default /usr/bin/hadoop-0.20 || true
  alternatives --remove hadoop-0.20-conf /etc/hadoop-0.20/conf.empty || true
  alternatives --remove hadoop-0.20-conf /etc/hadoop-0.20/conf.osg || true
@@ -634,7 +634,7 @@ getent passwd hdfs >/dev/null || /usr/sbin/useradd --comment "Hadoop HDFS" --she
 
 %pre httpfs
 getent group httpfs >/dev/null   || groupadd -r httpfs
-getent passwd httpfs >/dev/null || /usr/sbin/useradd --comment "Hadoop HTTPFS" --shell /bin/bash -M -r -g httpfs -G httpfs --home %{run_httpfs} httpfs
+getent passwd httpfs >/dev/null || /usr/sbin/useradd --comment "Hadoop HTTPFS" --shell /bin/bash -M -r -g httpfs --home %{run_httpfs} httpfs
 
 #%pre yarn
 #getent group yarn >/dev/null   || groupadd -r yarn
@@ -647,9 +647,17 @@ getent passwd httpfs >/dev/null || /usr/sbin/useradd --comment "Hadoop HTTPFS" -
 %post
 %{alternatives_cmd} --install %{config_hadoop} %{name}-conf %{etc_hadoop}/conf.empty 10
 
+# Add "httpfs" user to the "hadoop" group. This is in %%post because it needs to
+# be done after the "hadoop" group is created, i.e. after "hadoop"'s %%pre.
 %post httpfs
+getent group hadoop >/dev/null && /usr/sbin/usermod -G hadoop httpfs || true
 %{alternatives_cmd} --install %{config_httpfs} %{name}-httpfs-conf %{etc_httpfs}/conf.empty 10
 chkconfig --add %{name}-httpfs
+
+# Add "hdfs" user to the "hadoop" group. This is in %%post because it needs to
+# be done after the "hadoop" group is created, i.e. after "hadoop"'s %%pre.
+%post hdfs
+getent group hadoop >/dev/null && /usr/sbin/usermod -G hadoop hdfs || true
 
 %preun
 if [ "$1" = 0 ]; then
@@ -861,6 +869,10 @@ fi
 
 
 %changelog
+* Thu May 23 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.0+545-1.cdh4.1.1.p0.18
+- Fix creation of hdfs user in pre script
+- Fix creation of httpfs user in pre script
+
 * Tue May 21 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.0+545-1.cdh4.1.1.p0.17
 - Fix libhdfs postun script to not remove symlinks on upgrades
 - Turn AutoReq back on
