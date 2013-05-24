@@ -1,0 +1,40 @@
+diff --git a/src/condor_examples/condor.init b/src/condor_examples/condor.init
+index 97be80d..13831b4 100644
+--- a/src/condor_examples/condor.init
++++ b/src/condor_examples/condor.init
+@@ -71,6 +87,19 @@ reload() {
+     return $RETVAL
+ }
+ 
++drain() {
++    if [ -e /etc/grid-security/hostproxy.pem ] 
++    then
++	export X509_USER_PROXY=/etc/grid-security/hostproxy.pem
++        condor_off -peaceful
++        rc=$?
++        exit $rc
++    else
++	echo "No proxy found, can't do condor_off -peaceful"
++        echo "Use service condor stop to kill condor"
++    fi
++}
++
+ #
+ # Determine if a process is running only by looking in a pidfile.
+ # There is no use of pidof, which can find processes that are not
+@@ -226,8 +254,14 @@ case "$1" in
+ 	status -p $pidfile $prog
+ 	RETVAL=$?
+ 	;;
++
++    drain)
++	[ $running -eq 0 ] || exit 0
++	drain
++	RETVAL=$?
++       ;;
+     *)
+-	echo $"Usage: $0 {start|stop|restart|condrestart|try-restart|reload|force-reload|status}"
++	echo $"Usage: $0 {start|stop|restart|condrestart|try-restart|reload|force-reload|status|drain}"
+ 	RETVAL=2
+ esac
+ 

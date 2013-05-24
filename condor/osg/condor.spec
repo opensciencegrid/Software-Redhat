@@ -106,6 +106,7 @@ Source3: condor.service
 Source4: condor.osg-sysconfig
 
 Patch0: condor_config.generic.patch
+Patch1: condor_init_drain.patch
 Patch3: chkconfig_off.patch
 Patch8: osg_sysconfig_in_init_script.patch
 Patch9: proper_cream_v3.diff
@@ -394,6 +395,7 @@ exit 0
 %endif
 
 %patch0 -p1
+%patch1 -p1
 %patch3 -p1
 %patch8 -p1
 %if %cream
