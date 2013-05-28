@@ -1,7 +1,7 @@
 
 Name: xrootd-hdfs
 Version: 1.8.3
-Release: 9%{?dist}
+Release: 10%{?dist}
 Summary: HDFS plugin for xrootd
 
 Group: System Environment/Development
@@ -11,6 +11,7 @@ URL: https://github.com/bbockelm/xrootd-hdfs
 # git-archive master | gzip -7 > ~/rpmbuild/SOURCES/xrootd-hdfs.tar.gz
 Source0: xrootd-hdfs.tar.gz
 Source1: xrootd-hdfs.sysconfig
+Patch0: loadjvm-segfault.patch
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildRequires: xrootd-devel >= 1:3.3.1
 BuildRequires: xrootd-server-devel >= 1:3.3.1
@@ -20,6 +21,7 @@ BuildRequires: java7-devel
 BuildRequires: jpackage-utils
 Requires: xrootd-libs >= 1:3.3.1
 Conflicts: xrootd < 3.0.3-1
+
 
 %package devel
 Summary: Development headers for Xrootd HDFS plugin
@@ -33,6 +35,7 @@ Group: System Environment/Development
 
 %prep
 %setup -q -c -n %{name}-%{version}
+%patch0 -p1
 
 %build
 %cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo .
@@ -72,6 +75,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/XrdHdfs.hh
 
 %changelog
+* Tue May 28 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.8.3-10
+- Fix segfault when LD_LIBRARY_PATH exists but is empty
+
 * Thu May 23 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.8.3-9
 - Rebuild for hadoop 2.0; add sysconfig file
 
