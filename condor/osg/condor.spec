@@ -104,9 +104,11 @@ Source2: %{name}-tmpfiles.conf
 Source3: condor.service
 %endif
 Source4: condor.osg-sysconfig
+Source5: condor.init-sysconfig
 
 Patch0: condor_config.generic.patch
 Patch1: condor_init_drain.patch
+Patch2: condor_init_ulimit.patch
 Patch3: chkconfig_off.patch
 Patch8: osg_sysconfig_in_init_script.patch
 Patch9: proper_cream_v3.diff
@@ -396,6 +398,7 @@ exit 0
 
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 %patch3 -p1
 %patch8 -p1
 %if %cream
@@ -627,6 +630,8 @@ cp %{SOURCE3} %{buildroot}%{_unitdir}/condor.service
 install -Dp -m0755 %{buildroot}/etc/examples/condor.init %buildroot/%_initrddir/condor
 mkdir -p %{buildroot}/usr/share/osg/sysconfig
 install -m 0644 %{SOURCE4} %buildroot/usr/share/osg/sysconfig/condor
+mkdir -p %{buildroot}%{_sysconfdir}/sysconfig/condor
+install -m 0644 %{SOURCE5} %{buildroot}%{_sysconfdir}/sysconfig/condor
 %endif
 
 # we must place the config examples in builddir so %doc can find them
@@ -726,6 +731,7 @@ rm -rf %{buildroot}
 %else
 %_initrddir/condor
 /usr/share/osg/sysconfig/condor
+%config(noreplace) /etc/sysconfig/condor
 %endif
 %dir %_datadir/condor/
 %_datadir/condor/Chirp.jar
