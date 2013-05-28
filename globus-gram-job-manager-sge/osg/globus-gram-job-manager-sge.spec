@@ -16,7 +16,7 @@
 Name:		globus-gram-job-manager-sge
 %global _name %(tr - _ <<< %{name})
 Version:	1.0
-Release:	7.1%{?dist}
+Release:	7.2%{?dist}
 Summary:	Globus Toolkit - SGE Job Manager
 
 Group:		Applications/Internet
@@ -24,6 +24,7 @@ License:	LGPL 2.1 and Globus Toolkit Public License 3.0
 URL:		http://www.globus.org/
 Source:		http://www.globus.org/ftppub/gt5/5.2/5.2.0/packages/src/%{_name}-%{version}.tar.gz
 Source1:        sge.rvf
+Patch0:         seg_sge_module.c.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Obsoletes:      globus-gram-job-manager-setup-sge < 4.5
 
@@ -92,7 +93,7 @@ many others all over the world. A growing number of projects and companies are
 using the Globus Toolkit to unlock the potential of grids for their cause.
 
 The %{name} package contains:
-SGE Job Manager 
+SGE Job Manager
 
 %description doc
 The Globus Toolkit is an open source software toolkit used for building Grid
@@ -123,6 +124,7 @@ SGE Job Manager Setup using SEG to monitor job state
 
 %prep
 %setup -q -n %{_name}-%{version}
+%patch0 -p0
 
 %build
 # Remove files that should be replaced during bootstrap
@@ -257,7 +259,7 @@ fi
 %dir %{_datadir}/globus/packages/%{_name}
 %dir %{_docdir}/%{name}-%{version}
 %config(noreplace) %{_sysconfdir}/globus/globus-sge.conf
-%config(noreplace) %{_sysconfdir}/globus/gram/sge.rvf 
+%config(noreplace) %{_sysconfdir}/globus/gram/sge.rvf
 
 %files setup-poll -f package-setup-poll.filelist
 %defattr(-,root,root,-)
@@ -272,6 +274,9 @@ fi
 %dir %{_docdir}/%{name}-%{version}/html
 
 %changelog
+* Tue May 28 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0-7.2
+- Add seg_sge_module patch from Jeff Porter to fix extra 'acct' records at midnight
+
 * Fri Nov 02 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0-7.1
 - Add placeholder file for user-editable sge.rvf
 
