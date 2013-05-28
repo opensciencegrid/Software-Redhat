@@ -5,7 +5,7 @@
 
 Name:           osg-measurements-metrics-web
 Version:        1.2
-Release:        1%{?dist}
+Release:        3%{?dist}
 Summary:        OSG Measurements and Metrics web and database
 
 Group:          Applications/System
@@ -36,7 +36,7 @@ Requires:	gratia-probe-services
 
 
 %description
-
+GratiaWeb installation package for web
 
 %prep
 %setup -q
@@ -80,6 +80,17 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+
+* Tue May 28 2013 William B Hurst <wbhurst@cse.unl.edu>
+- added gratia_reporting.py and jot_reporting.py changes
+- exclude-vo = 'Unknown' and kicked up release by one
+
+* Thu May 23 2013 William B Hurst <wbhurst@cse.unl.edu>
+- primarily modified code in response to GRATIA-108
+- gratia-fix-unknown-vo. A request to revise filter
+- exclude-vo to 'Unknown|unknown|other'. The remaining
+- changes included small change to wlcg_json_data.py
+- implementing simplejson.loads(s).
 
 * Thu May 3 2013 William B Hurst <wbhurst@cse.unl.edu>
 - updated changelog
