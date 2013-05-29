@@ -1,7 +1,7 @@
 Summary: OASIS-specific configuration and metapackage for CVMFS
 Name: oasis-config
 Version: 2
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: ASL 2.0
 Group: Applications/Grid
 Source0: opensciencegrid.org.pub
@@ -56,6 +56,9 @@ install -m 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/cvmfs/domain.d
 
 
 %changelog
+* Wed May 29 2013 Dave Dykstra <dwd@fnal.gov> 2-2
+- Add --no-proxy to the wget probe in case $http_proxy is somehow set.
+
 * Wed May 29 2013 Dave Dykstra <dwd@fnal.gov> 2-1
 - Change from using the stratum 0 to using the GOC stratum 1 and
     the FNAL stratum 1 as servers.  Add logic to compute the best order
