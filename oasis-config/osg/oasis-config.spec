@@ -1,6 +1,6 @@
 Summary: OASIS-specific configuration and metapackage for CVMFS
 Name: oasis-config
-Version: 1
+Version: 2
 Release: 1%{?dist}
 License: ASL 2.0
 Group: Applications/Grid
@@ -9,6 +9,7 @@ Source1: opensciencegrid.org.conf
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildArch: noarch
 Requires: cvmfs
+Requires: wget
 
 %description
 %{summary}
@@ -55,6 +56,12 @@ install -m 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/cvmfs/domain.d
 
 
 %changelog
+* Wed May 29 2013 Dave Dykstra <dwd@fnal.gov> 2-1
+- Change from using the stratum 0 to using the GOC stratum 1 and
+    the FNAL stratum 1 as servers.  Add logic to compute the best order
+    between the servers the first time they are accessed after an rpm
+    upgrade, and to store the order in a file.
+
 * Wed Jan 16 2013 Matyas Selmeci <matyas@cs.wisc.edu> 1-1
 - Initial version
 
