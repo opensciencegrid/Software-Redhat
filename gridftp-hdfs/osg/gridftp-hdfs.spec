@@ -9,7 +9,7 @@
 
 Name:           gridftp-hdfs
 Version:        0.5.4
-Release:        7%{?dist}
+Release:        8%{?dist}
 Summary:        HDFS DSI plugin for GridFTP
 Group:          System Environment/Daemons
 License:        ASL 2.0
@@ -139,6 +139,9 @@ fi
 %endif
 
 %changelog
+* Thu May 30 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 0.5.4-8
+- Bump to rebuild against hadoop 2.0 built with OpenJDK 7
+
 * Tue Feb 26 2013 Carl Edquist <edquist@cs.wisc.edu> - 0.5.4-7
 - Update to build with OpenJDK 7; require java7-devel + jpackage-utils
 
