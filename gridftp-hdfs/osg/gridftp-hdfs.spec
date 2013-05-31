@@ -9,7 +9,7 @@
 
 Name:           gridftp-hdfs
 Version:        0.5.4
-Release:        8%{?dist}
+Release:        9%{?dist}
 Summary:        HDFS DSI plugin for GridFTP
 Group:          System Environment/Daemons
 License:        ASL 2.0
@@ -35,6 +35,8 @@ BuildRequires: globus-gridftp-server-devel
 BuildRequires: globus-common-devel
 
 Requires: hadoop-libhdfs
+Requires: hadoop-client >= 2.0.0+545
+# ^ was getting "No FileSystem for scheme: hdfs" without this
 # 6.14-2 added OSG plugin-style sysconfig instead of gridftp.conf.d
 Requires: globus-gridftp-server-progs >= 6.14-2
 Requires: xinetd
@@ -139,6 +141,9 @@ fi
 %endif
 
 %changelog
+* Fri May 31 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 0.5.4-9
+- Add hadoop-client dependency
+
 * Thu May 30 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 0.5.4-8
 - Bump to rebuild against hadoop 2.0 built with OpenJDK 7
 
