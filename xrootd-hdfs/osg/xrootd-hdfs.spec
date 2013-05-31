@@ -1,7 +1,7 @@
 
 Name: xrootd-hdfs
 Version: 1.8.3
-Release: 10%{?dist}
+Release: 11%{?dist}
 Summary: HDFS plugin for xrootd
 
 Group: System Environment/Development
@@ -20,6 +20,8 @@ BuildRequires: hadoop-libhdfs >= 2.0.0+545-1.cdh4.1.1
 BuildRequires: java7-devel
 BuildRequires: jpackage-utils
 Requires: xrootd-libs >= 1:3.3.1
+Requires: hadoop-client >= 2.0.0+545-1.cdh4.1.1
+# ^ was getting Input/output errors without this
 Conflicts: xrootd < 3.0.3-1
 
 
@@ -75,6 +77,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/XrdHdfs.hh
 
 %changelog
+* Fri May 31 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.8.3-11
+- Add hadoop-client dependency
+
 * Tue May 28 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.8.3-10
 - Fix segfault when LD_LIBRARY_PATH exists but is empty
 
