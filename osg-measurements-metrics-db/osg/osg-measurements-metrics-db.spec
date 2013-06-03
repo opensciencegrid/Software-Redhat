@@ -63,7 +63,7 @@ rm -rf $RPM_BUILD_ROOT
 
 * Mon Jun 03 2013 William B Hurst <wbhurst@cse.unl.edu>
 - revised apel_url in src/gratia/web/jot_reporting.py and
-- src/gratia/web/jot_reporting.py for accessing data
+- src/gratia/web/wlc_reporting.py for accessing data
 
 * Tue May 28 2013 William B Hurst <wbhurst@cse.unl.edu>
 - added gratia_reporting.py and jot_reporting.py changes
