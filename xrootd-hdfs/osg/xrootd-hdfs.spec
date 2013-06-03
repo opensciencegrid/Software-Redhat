@@ -1,7 +1,7 @@
 
 Name: xrootd-hdfs
 Version: 1.8.3
-Release: 11%{?dist}
+Release: 12%{?dist}
 Summary: HDFS plugin for xrootd
 
 Group: System Environment/Development
@@ -77,6 +77,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/XrdHdfs.hh
 
 %changelog
+* Mon Jun 03 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.8.3-12
+- Change to sysconfig file to handle symlinked $JAVA_HOME properly on el5
+
 * Fri May 31 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.8.3-11
 - Add hadoop-client dependency
 
