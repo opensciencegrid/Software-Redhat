@@ -13,7 +13,7 @@
 Name:		globus-gram-job-manager
 %global _name %(tr - _ <<< %{name})
 Version:	13.45
-Release:	1.3%{?dist}
+Release:	1.4%{?dist}
 Summary:	Globus Toolkit - GRAM Jobmanager
 
 Group:		Applications/Internet
@@ -33,6 +33,7 @@ Patch22:        fix-job-lock-location.patch
 Patch26:        allow-manager-restart.patch
 Patch27:        recompute-stdio-on-restart.patch
 Patch28:        gt-268-missing-normalize.patch
+Patch29:        gt-311-memory-leak.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -132,6 +133,7 @@ GRAM Jobmanager Documentation Files
 #%patch27 -p0
 
 %patch28 -p0
+%patch29 -p0
 
 %build
 # Remove files that should be replaced during bootstrap
@@ -228,6 +230,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_docdir}/%{name}-%{version}/html
 
 %changelog
+* Tue Jun 04 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 13.45-1.4
+- Add patch from GT-311 (memory leak)
+
 * Fri Nov 02 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 13.45-1.3
 - Add placeholder file for user-editable job-manager.rvf
 
