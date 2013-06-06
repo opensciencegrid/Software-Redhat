@@ -6,7 +6,7 @@ Name:           glideinwms
 
 %if %{v2_plus}
 %define version 2.7.1
-%define release 1.0
+%define release 1.1
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
 %endif
@@ -431,15 +431,21 @@ sed -i "s/FRONTEND_NAME_CHANGEME/$frontend_name/g" %{_sysconfdir}/gwms-frontend/
 sed -i "s/FRONTEND_HOSTNAME/$fqdn_hostname/g" %{_sysconfdir}/gwms-frontend/frontend.xml
 
 /sbin/chkconfig --add gwms-frontend
-ln -s %{web_dir}/monitor %{frontend_dir}/monitor
+if [ ! -e %{frontend_dir}/monitor ]; then
+    ln -s %{web_dir}/monitor %{frontend_dir}/monitor
+fi
 
 %post factory
 
 fqdn_hostname=`hostname -f`
 sed -i "s/FACTORY_HOSTNAME/$fqdn_hostname/g" %{_sysconfdir}/gwms-factory/glideinWMS.xml
 if [ "$1" = "1" ] ; then
-    ln -s %{factory_web_dir}/monitor %{factory_dir}/monitor
-    ln -s %{_localstatedir}/log/gwms-factory %{factory_dir}/log
+    if [ ! -e %{factory_dir}/monitor ]; then
+        ln -s %{factory_web_dir}/monitor %{factory_dir}/monitor
+    fi
+    if [ ! -e %{factory_dir}/log ]; then
+        ln -s %{_localstatedir}/log/gwms-factory %{factory_dir}/log
+    fi
 fi
 
 %pre vofrontend-standalone
@@ -684,6 +690,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Jun 5 2013 Parag Mhashilkar <parag@fnal.gov> - 2.7.1-1.1
+- Check existence of link before creating it to avoid scriptlet error.
+
 * Mon May 13 2013 Parag Mhashilkar <parag@fnal.gov> - 2.7.1-0.rc1.4
 - Removed libs directory from the vofrontend-standalone and added glideinwms-libs as its dependency.
 
