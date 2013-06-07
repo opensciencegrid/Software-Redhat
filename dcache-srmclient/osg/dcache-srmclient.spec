@@ -84,6 +84,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Thu Jun 06 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 2.2.11.1-2
 - Move /usr/sbin/url-copy.sh to /usr/share/srm/sbin since that's where scripts expect it.
+- Fix repeat count in supplied config
 
 * Thu May 30 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 2.2.11.1-1
 - New major version; update patch: remove the sections that are already
