@@ -67,7 +67,7 @@ Version: %{tarball_version}
 %define condor_release %condor_base_release
 %endif
 # Release: %condor_release%{?dist}.2
-Release: 7%{?dist}
+Release: 8%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -199,9 +199,6 @@ Requires: libcgroup >= 0.37
 
 %if %blahp
 BuildRequires: blahp
-%endif
-%if %glexec
-Requires: glexec
 %endif
 
 BuildRequires: python-devel
@@ -1244,6 +1241,9 @@ fi
 %endif
 
 %changelog
+* Tue Jun 07 2013 Brian Lin <blin@cs.wisc.edu> - 7.9.6-8
+- Remove glexec runtime dependency
+
 * Tue May 28 2013 Brian Lin <blin@cs.wisc.edu> - 7.9.6-7
 - Mark /usr/share/osg/sysconfig/condor as non-config file
 
