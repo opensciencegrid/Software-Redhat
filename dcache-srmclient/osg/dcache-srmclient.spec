@@ -2,10 +2,11 @@
 %define majorver 2.2.11
 %define minorver 1
 %define targetdir modules/srmclient/target/srmclient-%{majorver}-SNAPSHOT
+%define srm_path %{_datadir}/srm
 
 Name:    dcache-srmclient
 Version: %{majorver}.%{minorver}
-Release: 1%{?dist}
+Release: 2%{?dist}
 URL:     http://dcache.org
 Summary: SRM clients from dCache.org
 License: http://www.dcache.org/manuals/dCacheSoftwareLicence.html
@@ -56,17 +57,18 @@ mkdir -p $RPM_BUILD_ROOT%{_bindir}
 install -m 0755 %{targetdir}/usr/bin/* $RPM_BUILD_ROOT%{_bindir}
 
 mkdir -p $RPM_BUILD_ROOT%{_sbindir}
-install -m 0755 %{targetdir}/usr/sbin/* $RPM_BUILD_ROOT%{_sbindir}
+install -m 0755 %{targetdir}/usr/sbin/srm $RPM_BUILD_ROOT%{_sbindir}
 
-mkdir -p $RPM_BUILD_ROOT%{_datadir}/srm
-mv %{targetdir}/usr/share/srm/{conf,lib} $RPM_BUILD_ROOT%{_datadir}/srm/
+mkdir -p $RPM_BUILD_ROOT%{srm_path}/sbin
+install -m 0755 %{targetdir}/usr/sbin/url-copy.sh $RPM_BUILD_ROOT%{srm_path}/sbin
+mv %{targetdir}/usr/share/srm/{conf,lib} $RPM_BUILD_ROOT%{srm_path}/
 
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig
-cat > $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/dcache-srmclient << EOF
-export SRM_PATH=/usr/share/srm
-export SRM_CONFIG=/etc/dcache-srmclient-config.xml
+cat > $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/%{name} << EOF
+export SRM_PATH=%{srm_path}
+export SRM_CONFIG=/etc/%{name}-config.xml
 EOF
-install -m 0644 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/dcache-srmclient-config.xml
+install -m 0644 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}-config.xml
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -75,11 +77,14 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %{_bindir}/*
 %{_sbindir}/*
-%{_datadir}/srm/*
-%config(noreplace) %{_sysconfdir}/sysconfig/dcache-srmclient
-%config(noreplace) %{_sysconfdir}/dcache-srmclient-config.xml
+%{srm_path}/*
+%config(noreplace) %{_sysconfdir}/sysconfig/%{name}
+%config(noreplace) %{_sysconfdir}/%{name}-config.xml
 
 %changelog
+* Thu Jun 06 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 2.2.11.1-2
+- Move /usr/sbin/url-copy.sh to /usr/share/srm/sbin since that's where scripts expect it.
+
 * Thu May 30 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 2.2.11.1-1
 - New major version; update patch: remove the sections that are already
   upstream, and rename to match what's left
