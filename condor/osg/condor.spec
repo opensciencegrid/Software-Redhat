@@ -50,7 +50,7 @@ Version: %{tarball_version}
 %define condor_release %condor_base_release
 %endif
 # Release: %condor_release%{?dist}.2
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -1083,6 +1083,9 @@ fi
 %endif
 
 %changelog
+* Mon Jun 10 2013 Brian Lin <blin@cs.wisc.edu> - 7.8.8-2
+- Init script improvements
+
 * Wed May 08 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 7.8.8-1
 - New version
 - Removed condor_glidein -- was removed upstream
