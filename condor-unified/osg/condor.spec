@@ -118,9 +118,10 @@ Source1: generate-tarball.sh
 
 %if %systemd
 Source2: %{name}-tmpfiles.conf
-Source3: condor.service
-%endif
+Source3: %{name}.service
+%else
 Source4: condor.osg-sysconfig
+%endif
 
 Patch0: condor_config.generic.patch
 Patch3: chkconfig_off.patch
@@ -211,7 +212,7 @@ BuildRequires: gridsite-devel
 BuildRequires: blahp
 %endif
 
-%if 0%{?el6}|| 0%{?fedora}
+%if 0%{?rhel} >= 6 || 0%{?fedora}
 BuildRequires: boost-python
 BuildRequires: libuuid-devel
 Requires: libuuid
@@ -571,8 +572,8 @@ export CMAKE_PREFIX_PATH=/usr
        -DWITH_QPID:BOOL=FALSE \
 %endif
 %if %blahp
-       -DWITH_BLAHP:BOOL=TRUE \
        -DBLAHP_FOUND=/usr/libexec/blahp/BLClient \
+       -DWITH_BLAHP:BOOL=TRUE \
 %else
        -DWITH_BLAHP:BOOL=FALSE \
 %endif
@@ -1237,7 +1238,6 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 %doc LICENSE-2.0.txt NOTICE.txt
 %_libdir/libclassad.so.*
-%_libdir/libclassad.so.%{version}
 
 #################
 %files classads-devel
@@ -1327,6 +1327,7 @@ fi
 if [ $1 -eq 1 ] ; then
     # Initial installation 
     /bin/systemctl daemon-reload >/dev/null 2>&1 || :
+    /bin/systemd-tmpfiles --create /etc/tmpfiles.d/%{name}.conf 2>&1 || :
 fi
 
 %preun
