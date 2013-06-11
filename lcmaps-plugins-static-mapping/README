@@ -1,0 +1,19 @@
+
+This is the lcmaps-plugins-static-mapping package.
+
+This is a plugin for LCMAPS which has a static mapping policy;
+if user X invokes LCMAPS, then this plugin will always return 
+user Y as the result.  The primary use of this plugin is for
+glexec at sites which use per-slot users (a HTCondor feature).
+
+To our knowledge, this is only used at UCSD.
+
+The mapping from X to Y is controlled by a mapfile, documented
+here:
+
+https://github.com/bbockelm/lcmaps-plugins-static-mapping
+
+This package is based on a SRPM from the Nebraska Koji.  If
+any future edits are needed, we should fork it and maintain it
+in the osg/ directory.
+
