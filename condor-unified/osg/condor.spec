@@ -30,6 +30,7 @@
 %define blahp 1
 %define glexec 1
 %define cream 1
+%define parallel_setup 1
 
 # Things not turned on, or don't have Fedora packages yet
 %define qmf 0
@@ -67,7 +68,7 @@ Version: %{tarball_version}
 %define condor_release %condor_base_release
 %endif
 # Release: %condor_release%{?dist}.2
-Release: 8.unif.1%{?dist}
+Release: 8.unif.2%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -122,6 +123,7 @@ Source3: %{name}.service
 %else
 Source4: condor.osg-sysconfig
 %endif
+Source5: condor_config.local.dedicated.resource
 
 Patch0: condor_config.generic.patch
 Patch3: chkconfig_off.patch
@@ -453,6 +455,22 @@ The condor-cream-gahp enables CREAM interoperability for HTCondor.
 %endif
 
 #######################
+%if %parallel_setup
+%package parallel-setup
+Summary: Configure HTCondor for Parallel Universe jobs
+Group: Applications/System
+Requires: %name = %version-%release
+
+%description parallel-setup
+Running Parallel Universe jobs in HTCondor requires some configuration;
+in particular, a dedicated scheduler is required.  In order to support
+running parallel universe jobs out of the box, this sub-package provides
+a condor_config.local.dedicated.resource file that sets up the current
+host as the DedicatedScheduler.
+%endif
+
+
+#######################
 %package python
 Summary: Python bindings for HTCondor.
 Group: Applications/System
@@ -460,7 +478,7 @@ Requires: %name = %version-%release
 
 %description python
 The python bindings allow one to directly invoke the C++ implementations of
-the ClassAd library and HTHTCondor from python
+the ClassAd library and HTCondor from python
 
 
 #######################
@@ -659,6 +677,9 @@ sed -e "s:^LIB\s*=.*:LIB = \$(RELEASE_DIR)/$LIB/condor:" \
 # yum install condor + service condor start and go.
 mkdir -m0755 %{buildroot}/%{_sysconfdir}/condor/config.d
 cp %{buildroot}/etc/examples/condor_config.local %{buildroot}/%{_sysconfdir}/condor/config.d/00personal_condor.config
+%if %parallel_setup
+cp %{SOURCE5} %{buildroot}/%{_sysconfdir}/condor/config.d/20dedicated_scheduler_condor.config
+%endif
 
 %if %qmf
 # Install condor-qmf's base plugin configuration
@@ -1286,6 +1307,12 @@ rm -rf %{buildroot}
 %_sbindir/cream_gahp
 %endif
 
+%if %parallel_setup
+%files parallel-setup
+%defattr(-,root,root,-)
+%_sysconfdir/condor/config.d/20dedicated_scheduler_condor.config
+%endif
+
 %files python
 %defattr(-,root,root,-)
 %_libdir/libpyclassad_*.so
@@ -1371,6 +1398,10 @@ fi
 %endif
 
 %changelog
+* Tue Jun 11 2013 Carl Edquist <edquist@cs.wisc.edu> - 7.9.6-8.unif.2
+- Add a parallel-setup sub-package for parallel universe configuration,
+  namely setting up the host as a dedicated resource
+
 * Fri Jun 07 2013 Carl Edquist <edquist@cs.wisc.edu> - 7.9.6-8.unif.1
 - Add in missing features from Fedora rpm
 - Reorganize to reduce the diff size between this and the Fedora rpm
