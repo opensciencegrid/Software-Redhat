@@ -1,7 +1,7 @@
 Summary: SAML 2.0 profile of XACML v2.0 library
 Name: xacml
 Version: 1.1.1
-Release: 1.2%{?dist}
+Release: 1.3%{?dist}
 License: ASL 2.0
 Group: System Environment/Libraries
 URL: http://www.nikhef.nl/pub/projects/grid/gridwiki/index.php/Site_Access_Control
@@ -44,7 +44,7 @@ export CXXFLAGS
 CPPFLAG="-DXACML_ADDING_THREADING"
 export CPPFLAG
 
-%configure --disable-static
+%configure --disable-static CXXFLAGS='-DWITH_IPV6'
 
 # The following two lines were suggested by
 # https://fedoraproject.org/wiki/Packaging/Guidelines to prevent any
@@ -86,6 +86,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/xacml.pc
 
 %changelog
+* Wed Jun 12 2013 Brian Bockelman <bbockelm@cse.unl.edu> - 1.1.1-1.3
+- Compile with the IPV6 flag to prevent random segfaults when using the
+  EPEL/Fedora gsoap.
+
 * Thu Mar 08 2012 Dave Dykstra <dwd@fnal.gov> 1.1.1-1.2.osg
 - Rebuild after merging from branches/lcmaps-upgrade into trunk
 
