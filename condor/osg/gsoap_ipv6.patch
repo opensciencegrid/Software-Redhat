@@ -1,0 +1,118 @@
+diff --git a/build/cmake/macros/CondorDaemon.cmake b/build/cmake/macros/CondorDaemon.cmake
+index e55fea25ddea300bd625a0994525fd8decfe1296..9eda18e674a5695c2e5409dbe94993e2b58b9e57 100644
+--- a/build/cmake/macros/CondorDaemon.cmake
++++ b/build/cmake/macros/CondorDaemon.cmake
+@@ -31,6 +31,7 @@ MACRO (CONDOR_DAEMON _CNDR_TARGET _REMOVE_ELEMENTS _LINK_LIBS _INSTALL_LOC _GEN_
+ 		gsoap_gen( ${_CNDR_TARGET} ${_CNDR_TARGET}HDRS ${_CNDR_TARGET}SRCS )
+ 		list(APPEND ${_CNDR_TARGET}SRCS ${DAEMON_CORE}/soap_core.cpp ${DAEMON_CORE}/mimetypes.cpp)
+ 		list(APPEND ${_CNDR_TARGET}HDRS ${DAEMON_CORE}/soap_core.h ${DAEMON_CORE}/mimetypes.h)
++		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DWITH_IPV6")
+ 	endif()
+ 	if ( CONDOR_BUILD_SHARED_LIBS )
+ 		list(APPEND ${_CNDR_TARGET}SRCS ${CMAKE_SOURCE_DIR}/src/condor_utils/condor_version.cpp)
+@@ -44,7 +45,11 @@ MACRO (CONDOR_DAEMON _CNDR_TARGET _REMOVE_ELEMENTS _LINK_LIBS _INSTALL_LOC _GEN_
+ 		add_dependencies(condor_${_CNDR_TARGET} gen_${_CNDR_TARGET}_soapfiles)
+ 		# Do not export gsoap symbols - they may break loadable modules.
+ 		if ( LINUX )
+-			set_target_properties( condor_${_CNDR_TARGET} PROPERTIES LINK_FLAGS "-Wl,--exclude-libs=libgsoapssl++.a -Wl,--version-script=${CMAKE_CURRENT_SOURCE_DIR}/../condor_daemon_core.V6/daemon.version")
++			if ( PROPER )
++				set_target_properties( condor_${_CNDR_TARGET} PROPERTIES LINK_FLAGS "-Wl,--version-script=${CMAKE_CURRENT_SOURCE_DIR}/../condor_daemon_core.V6/daemon.version.proper")
++			else()
++				set_target_properties( condor_${_CNDR_TARGET} PROPERTIES LINK_FLAGS "-Wl,--exclude-libs=libgsoapssl++.a -Wl,--version-script=${CMAKE_CURRENT_SOURCE_DIR}/../condor_daemon_core.V6/daemon.version")
++			endif()
+ 		endif()
+ 	endif()
+ 	
+diff --git a/src/condor_daemon_core.V6/daemon.version.proper b/src/condor_daemon_core.V6/daemon.version.proper
+new file mode 100644
+index 0000000000000000000000000000000000000000..3264a0d1ff0a00ab60f7932cd9af305684322e0c
+--- /dev/null
++++ b/src/condor_daemon_core.V6/daemon.version.proper
+@@ -0,0 +1,13 @@
++# This is a linker script for Linux
++# This prevents the condor daemons from exporting gsoap symbols.
++#
++# Note we globally export dc_soap_*.  This is because no-op
++# stubs are available as weak symbols in libcondor_utils.  So,
++# without global strong symbols in this daemon, libcondor_utils will
++# prefer the ones that do not function.
++#
++condor_daemon {
++  # Note the C++ mangling here.
++  global: _Z14dc_soap_acceptP4SockPK4soap; _Z13dc_soap_serveP4soap; _Z12dc_soap_freeP4soap; _Z12dc_soap_initRP4soap; soap_putheader; soap_serializeheader; soap_faultstring; soap_faultsubcode; soap_faultcode; soap_getheader; soap_getfault; namespaces; soap_faultdetail; soap_putfault; soap_serializefault;
++  local: *;
++};
+diff --git a/src/condor_daemon_core.V6/soap_core.cpp b/src/condor_daemon_core.V6/soap_core.cpp
+index ee4c35ae018874d346cef66a6194a5e07226c52e..9f7d47a94026df9ba740fae9ce8725bd7cdda613 100644
+--- a/src/condor_daemon_core.V6/soap_core.cpp
++++ b/src/condor_daemon_core.V6/soap_core.cpp
+@@ -65,7 +65,19 @@ dc_soap_accept(Sock *socket, const struct soap *soap)
+ 		//   3. increase size of send and receive buffers
+ 		//   4. set SO_KEEPALIVE [done automatically by CEDAR accept()]
+ 	cursoap->socket = socket->get_file_desc();
+-	cursoap->peer = socket->peer_addr().to_sin();
++		// If you use Fedora's IPv6 patch for gsoap, peer is sockaddr_storage.
++		// Upstream has peer of type sockaddr_in.
++		// This trickery is done to keep the code compatible with both.
++	if (sizeof(cursoap->peer) == sizeof(sockaddr_storage))
++	{
++		sockaddr_storage store = socket->peer_addr().to_storage();
++		memcpy(&cursoap->peer, &store, sizeof(cursoap->peer));
++	}
++	else
++	{
++		sockaddr_in store = socket->peer_addr().to_sin();
++		memcpy(&cursoap->peer, &store, sizeof(cursoap->peer));
++	}
+ 	cursoap->recvfd = soap->socket;
+ 	cursoap->sendfd = soap->socket;
+ 	if ( cursoap->recv_timeout > 0 ) {
+diff --git a/src/condor_includes/condor_sockaddr.h b/src/condor_includes/condor_sockaddr.h
+index 0be7fcb9df92acf3812494ace2c0e2a3fb25d6ff..2744de42968a934c4c3b9427ed78ea4d2b814ecd 100644
+--- a/src/condor_includes/condor_sockaddr.h
++++ b/src/condor_includes/condor_sockaddr.h
+@@ -53,6 +53,7 @@ public:
+ 	condor_sockaddr(const sockaddr* saddr);
+ 	condor_sockaddr(const sockaddr_in* sin) ;
+ 	condor_sockaddr(const sockaddr_in6* sin6);
++	condor_sockaddr(const sockaddr_storage* sin);
+ 
+ private:
+ 	void init(uint32_t ip, unsigned port);
+diff --git a/src/condor_utils/condor_sockaddr.cpp b/src/condor_utils/condor_sockaddr.cpp
+index 3669d5c4568fa9dea3e6e406076b68016ad2d6ff..52c94b7c8e2164a37dd44ec253a58f580c14d888 100644
+--- a/src/condor_utils/condor_sockaddr.cpp
++++ b/src/condor_utils/condor_sockaddr.cpp
+@@ -65,6 +65,11 @@ condor_sockaddr::condor_sockaddr(const sockaddr* sa)
+ 	}
+ }
+ 
++condor_sockaddr::condor_sockaddr(const sockaddr_storage *sa)
++{
++	condor_sockaddr(reinterpret_cast<const sockaddr*>(sa));
++}
++
+ condor_sockaddr::condor_sockaddr(const sockaddr_in* sin) 
+ {
+ 	init(sin->sin_addr.s_addr, sin->sin_port);
+@@ -85,6 +90,20 @@ sockaddr_in6 condor_sockaddr::to_sin6() const
+ 	return v6;
+ }
+ 
++sockaddr_storage condor_sockaddr::to_storage() const
++{
++	sockaddr_storage tmp;
++	if (is_ipv4())
++	{
++		memcpy(&tmp, &v4, sizeof(v4));
++	}
++	else
++	{
++		memcpy(&tmp, &v6, sizeof(v6));
++	}
++	return tmp;
++}
++
+ bool condor_sockaddr::is_ipv4() const
+ {
+ 	return v4.sin_family == AF_INET;

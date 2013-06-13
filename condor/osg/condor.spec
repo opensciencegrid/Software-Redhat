@@ -1,4 +1,4 @@
-%define tarball_version 7.9.6
+%define tarball_version 8.0.0
 
 # Things for F15 or later
 %if 0%{?fedora} >= 16
@@ -67,7 +67,7 @@ Version: %{tarball_version}
 %define condor_release %condor_base_release
 %endif
 # Release: %condor_release%{?dist}.2
-Release: 8%{?dist}
+Release: 1%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -123,6 +123,7 @@ Source3: condor.service
 Source4: condor.osg-sysconfig
 
 Patch0: condor_config.generic.patch
+Patch1: gsoap_ipv6.patch
 Patch3: chkconfig_off.patch
 Patch8: osg_sysconfig_in_init_script.patch
 Patch9: proper_cream_v3.diff
@@ -456,6 +457,7 @@ exit 0
 %endif
 
 %patch0 -p1
+%patch1 -p1
 %patch3 -p1
 %patch8 -p1
 %if %cream
@@ -572,6 +574,7 @@ populate %{_datadir}/condor %{buildroot}/%{_usr}/lib/*
 # Except for the shared libs
 populate %{_libdir}/ %{buildroot}/%{_datadir}/condor/libclassad.so*
 rm -f %{buildroot}/%{_datadir}/condor/libclassad.a
+rm -f %{buildroot}/%{_datadir}/condor/libpyclassad_*.a
 mv %{buildroot}%{_datadir}/condor/lib*.so %{buildroot}%{_libdir}/
 
 %if %aviary || %qmf
@@ -724,7 +727,6 @@ install -m 0755 src/condor_scripts/CondorUtils.pm %{buildroot}%{_datadir}/condor
 # Install python-binding libs
 mkdir -p %{buildroot}%{python_sitearch}
 install -m 0755 src/python-bindings/{classad,htcondor}.so %{buildroot}%{python_sitearch}
-install -m 0755 src/python-bindings/libpyclassad_*.so %{buildroot}%{_libdir}
 
 # we must place the config examples in builddir so %doc can find them
 mv %{buildroot}/etc/examples %_builddir/%name-%tarball_version
@@ -901,6 +903,7 @@ rm -rf %{buildroot}
 %_mandir/man1/condor_preen.1.gz
 %_mandir/man1/condor_prio.1.gz
 %_mandir/man1/condor_q.1.gz
+%_mandir/man1/condor_qsub.1.gz
 %_mandir/man1/condor_qedit.1.gz
 %_mandir/man1/condor_reconfig.1.gz
 %_mandir/man1/condor_release.1.gz
@@ -1168,7 +1171,6 @@ rm -rf %{buildroot}
 
 %files python
 %defattr(-,root,root,-)
-%_libdir/libpyclassad_*.so
 %{python_sitearch}/classad.so
 %{python_sitearch}/htcondor.so
 
@@ -1241,6 +1243,9 @@ fi
 %endif
 
 %changelog
+* Wed Jun 12 2013 Brian Lin <blin@cs.wisc.edu> - 8.0.0-1
+- New version
+
 * Tue Jun 07 2013 Brian Lin <blin@cs.wisc.edu> - 7.9.6-8
 - Remove glexec runtime dependency
 
