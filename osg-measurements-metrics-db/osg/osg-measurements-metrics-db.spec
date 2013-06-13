@@ -5,7 +5,7 @@
 
 Name:           osg-measurements-metrics-db
 Version:        1.2
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        OSG Measurements and Metrics web and database
 
 Group:          Applications/System
@@ -60,6 +60,14 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+
+* Thu Jun 13 2013 William B Hurst <wbhurst@cse.unl.edu>
+- updated version release to 1.2-5
+- modified gratia_bar_queries.xml and wlcg_reporting.tmpl.
+- wlcg_reporting.tmpl was changed to modify column order
+- of WLCG plege information reports. The 
+- gratia_bar_queries.xml file was modified as first step
+- in responding to Gratia REQUEST-56.
 
 * Mon Jun 03 2013 William B Hurst <wbhurst@cse.unl.edu>
 - revised apel_url in src/gratia/web/jot_reporting.py and
