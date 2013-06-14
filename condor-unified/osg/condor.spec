@@ -68,7 +68,7 @@ Version: %{tarball_version}
 %define condor_release %condor_base_release
 %endif
 # Release: %condor_release%{?dist}.2
-Release: 8.unif.2%{?dist}
+Release: 8.unif.3%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -1456,6 +1456,9 @@ fi
 %endif
 
 %changelog
+* Thu Jun 13 2013 Carl Edquist <edquist@cs.wisc.edu> - 7.9.6-8.unif.3
+- Add a cgroup-setup sub-package for cgroups configuration
+
 * Tue Jun 11 2013 Carl Edquist <edquist@cs.wisc.edu> - 7.9.6-8.unif.2
 - Add a parallel-setup sub-package for parallel universe configuration,
   namely setting up the host as a dedicated resource
