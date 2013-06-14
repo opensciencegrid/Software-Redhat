@@ -1310,7 +1310,7 @@ rm -rf %{buildroot}
 %if %parallel_setup
 %files parallel-setup
 %defattr(-,root,root,-)
-%_sysconfdir/condor/config.d/20dedicated_scheduler_condor.config
+%config(noreplace) %_sysconfdir/condor/config.d/20dedicated_scheduler_condor.config
 %endif
 
 %files python
