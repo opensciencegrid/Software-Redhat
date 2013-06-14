@@ -1,0 +1,26 @@
+Index: OSGPKITools-1.2.0/osgpkitools/osg-cert-request
+===================================================================
+--- OSGPKITools-1.2.0.orig/osgpkitools/osg-cert-request	2013-06-13 18:33:30.000000002 -0500
++++ OSGPKITools-1.2.0/osgpkitools/osg-cert-request	2013-06-13 19:20:09.000000002 -0500
+@@ -21,7 +21,7 @@
+ import ssl
+ from pprint import pprint
+ 
+-import ConnectAPI
++from osgpkitools import ConnectAPI
+ from osgpkitools import OSGPKIUtils
+ from osgpkitools.OSGPKIUtils import version_info
+ from osgpkitools.OSGPKIUtils import CreateOIMConfig
+Index: OSGPKITools-1.2.0/osgpkitools/osg-cert-retrieve
+===================================================================
+--- OSGPKITools-1.2.0.orig/osgpkitools/osg-cert-retrieve	2013-06-13 18:33:30.000000002 -0500
++++ OSGPKITools-1.2.0/osgpkitools/osg-cert-retrieve	2013-06-13 19:20:22.000000002 -0500
+@@ -31,7 +31,7 @@
+ import ssl
+ import tempfile
+ 
+-import ConnectAPI
++from osgpkitools import ConnectAPI
+ from osgpkitools import OSGPKIUtils
+ from osgpkitools.OSGPKIUtils import charlimit_textwrap
+ from osgpkitools.OSGPKIUtils import CreateOIMConfig

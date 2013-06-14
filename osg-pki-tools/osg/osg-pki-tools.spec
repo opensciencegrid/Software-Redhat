@@ -1,8 +1,9 @@
 Summary: osg-pki-tools
 Name: osg-pki-tools
 Version: 1.2.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 Source: OSGPKITools-%{version}.tar.gz
+Patch0: connectapi-import-path.patch
 License: Apache 2.0
 Group: Grid
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
@@ -35,6 +36,7 @@ tests for osg-pki-tools
 
 %prep
 %setup -n OSGPKITools-%{version}
+%patch0 -p1
 
 %build
 %{__python} setup.py build
@@ -68,8 +70,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Thu Jun 13 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.2.0-1
+* Thu Jun 13 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.2.0-2
 - New version 1.2
+- Fix ConnectAPI imports in osg-cert-request and osg-cert-retrieve
 
 * Thu Mar 28 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.1.0-3
 - Rebuild with fix to scripts to look for pki-clients.ini in /etc/osg
