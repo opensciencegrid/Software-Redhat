@@ -1,7 +1,7 @@
 Summary: osg-pki-tools
 Name: osg-pki-tools
-Version: 1.1.0
-Release: 3%{?dist}
+Version: 1.2.0
+Release: 1%{?dist}
 Source: OSGPKITools-%{version}.tar.gz
 License: Apache 2.0
 Group: Grid
@@ -68,6 +68,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Jun 13 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.2.0-1
+- New version 1.2
+
 * Thu Mar 28 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.1.0-3
 - Rebuild with fix to scripts to look for pki-clients.ini in /etc/osg
 
