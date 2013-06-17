@@ -50,7 +50,7 @@ Version: %{tarball_version}
 %define condor_release %condor_base_release
 %endif
 # Release: %condor_release%{?dist}.2
-Release: 3%{?dist}
+Release: 4%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -1082,8 +1082,9 @@ fi
 %endif
 
 %changelog
-* Mon Jun 17 2013 Carl Edquist <edquist@cs.wisc.edu> - 7.8.8-3
+* Mon Jun 17 2013 Carl Edquist <edquist@cs.wisc.edu> - 7.8.8-4
 - Remove service restart for upgrades (#SOFTWARE-850)
+- Use MASTER_NEW_BINARY_RESTART=PEACEFUL
 
 * Mon Jun 10 2013 Brian Lin <blin@cs.wisc.edu> - 7.8.8-2
 - Init script improvements
