@@ -50,7 +50,7 @@ Version: %{tarball_version}
 %define condor_release %condor_base_release
 %endif
 # Release: %condor_release%{?dist}.2
-Release: 2%{?dist}
+Release: 3%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -1051,10 +1051,9 @@ fi
 
 %postun
 /bin/systemctl daemon-reload >/dev/null 2>&1 || :
-if [ $1 -ge 1 ] ; then
-    # Package upgrade, not uninstall
-    /bin/systemctl try-restart condor.service >/dev/null 2>&1 || :
-fi
+# Note we don't try to restart - HTCondor will automatically notice the
+# binary has changed and do graceful or peaceful restart, based on its
+# configuration
 
 %triggerun -- condor < 7.7.0-0.5
 
@@ -1076,13 +1075,16 @@ fi
 
 
 %postun -n condor
-if [ "$1" -ge "1" ]; then
-  /sbin/service condor condrestart >/dev/null 2>&1 || :
-fi
+# Note we don't try to restart - HTCondor will automatically notice the
+# binary has changed and do graceful or peaceful restart, based on its
+# configuration
 /sbin/ldconfig
 %endif
 
 %changelog
+* Mon Jun 17 2013 Carl Edquist <edquist@cs.wisc.edu> - 7.8.8-3
+- Remove service restart for upgrades (#SOFTWARE-850)
+
 * Mon Jun 10 2013 Brian Lin <blin@cs.wisc.edu> - 7.8.8-2
 - Init script improvements
 
