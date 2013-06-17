@@ -123,8 +123,14 @@ Source3: condor.service
 Source4: condor.osg-sysconfig
 
 Patch0: condor_config.generic.patch
-Patch1: gsoap_ipv6.patch
+# This patch is here until it is pushed into upstream
+# https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=3635
+Patch1: condor_peaceful_off.patch
+Patch2: condor_ulimit.patch
 Patch3: chkconfig_off.patch
+# This patch is here until it is pushed into upstream (8.0.1?)
+# https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=3698
+Patch4: gsoap_ipv6.patch
 Patch8: osg_sysconfig_in_init_script.patch
 Patch9: proper_cream_v3.diff
 %if %blahp
@@ -458,7 +464,9 @@ exit 0
 
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 %patch3 -p1
+%patch4 -p1
 %patch8 -p1
 %if %cream
 %patch9 -p1
@@ -713,9 +721,10 @@ mkdir -p %{buildroot}%{_unitdir}
 cp %{SOURCE3} %{buildroot}%{_unitdir}/condor.service
 %else
 # install the lsb init script
-install -Dp -m0755 %{buildroot}/etc/examples/condor.init %buildroot/%_initrddir/condor
-mkdir -p %{buildroot}/usr/share/osg/sysconfig
-install -m 0644 %{SOURCE4} %buildroot/usr/share/osg/sysconfig/condor
+install -Dp -m0755 %{buildroot}/etc/examples/condor.init %{buildroot}%{_initrddir}/condor
+install -Dp -m 0644 %{SOURCE4} %buildroot/usr/share/osg/sysconfig/condor
+mkdir %{buildroot}%{_sysconfdir}/sysconfig/
+install -Dp -m 0644 %{buildroot}/etc/examples/condor.sysconfig %{buildroot}%{_sysconfdir}/sysconfig/condor
 %endif
 
 # Install perl modules
@@ -836,6 +845,7 @@ rm -rf %{buildroot}
 %else
 %_initrddir/condor
 /usr/share/osg/sysconfig/condor
+%config(noreplace) /etc/sysconfig/condor
 %endif
 %dir %_datadir/condor/
 %_datadir/condor/Chirp.jar

@@ -1221,10 +1221,9 @@ fi
 
 %postun
 /bin/systemctl daemon-reload >/dev/null 2>&1 || :
-if [ $1 -ge 1 ] ; then
-    # Package upgrade, not uninstall
-    /bin/systemctl try-restart condor.service >/dev/null 2>&1 || :
-fi
+# Note we don't try to restart - HTCondor will automatically notice the
+# binary has changed and do graceful or peaceful restart, based on its
+# configuration
 
 %triggerun -- condor < 7.7.0-0.5
 
@@ -1246,9 +1245,9 @@ fi
 
 
 %postun -n condor
-if [ "$1" -ge "1" ]; then
-  /sbin/service condor condrestart >/dev/null 2>&1 || :
-fi
+# Note we don't try to restart - HTCondor will automatically notice the
+# binary has changed and do graceful or peaceful restart, based on its
+# configuration
 /sbin/ldconfig
 %endif
 

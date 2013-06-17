@@ -1,7 +1,5 @@
-Index: htcondor-7.9.6/src/condor_examples/condor_config.generic
-===================================================================
---- htcondor-7.9.6.orig/src/condor_examples/condor_config.generic	2013-05-08 16:14:37.000000003 -0500
-+++ htcondor-7.9.6/src/condor_examples/condor_config.generic	2013-05-16 15:26:44.000000003 -0500
+--- condor-7.8.8/src/condor_examples/condor_config.generic.orig	2013-03-21 13:13:42.000000000 -0500
++++ condor-7.8.8/src/condor_examples/condor_config.generic	2013-06-17 15:39:04.701434202 -0500
 @@ -1,12 +1,31 @@
  ######################################################################
 +######################################################################
@@ -76,8 +74,7 @@ Index: htcondor-7.9.6/src/condor_examples/condor_config.generic
  
  ## If the local config file is not present, is it an error?
  ## WARNING: This is a potential security issue. 
-@@ -409,7 +432,22 @@
- ##  condor account, it is probably condor.  Otherwise, it is whatever
+@@ -410,5 +432,20 @@
  ##  you've set in the CONDOR_IDS environment variable.  See the Admin
  ##  manual for details on this.
 -LOCK		= $(LOG)
@@ -99,7 +96,6 @@ Index: htcondor-7.9.6/src/condor_examples/condor_config.generic
 +LOCAL_DISK_LOCK_DIR = $(LOCK)/local
  
  ##  If you don't use a fully qualified name in your /etc/hosts file
- ##  (or NIS, etc.) for either your official hostname or as an alias,
 @@ -454,7 +492,8 @@
  ##  the execute machine and just make sure the two strings match.  The
  ##  default for this setting is False, since it is more secure this
@@ -132,7 +128,20 @@ Index: htcondor-7.9.6/src/condor_examples/condor_config.generic
  # High Availability Logs
  MAX_HAD_LOG		= 1000000
  HAD_DEBUG		=
-@@ -913,14 +956,18 @@
+@@ -600,6 +643,12 @@
+ ## the daemons touch the file (in seconds).
+ #TOUCH_LOG_INTERVAL = 60
+ 
++
++## What type of restart should condor_master do when it notices its binary has
++## changed?  Valid values are GRACEFUL, PEACEFUL, and NEVER, with a default
++## value of GRACEFUL.
++MASTER_NEW_BINARY_RESTART=PEACEFUL
++
+ ######################################################################
+ ######################################################################
+ ##  
+@@ -913,14 +962,18 @@
  ######################################################################
  
  ##  Pathnames
@@ -154,7 +163,7 @@ Index: htcondor-7.9.6/src/condor_examples/condor_config.generic
  
  ## If you leave HISTORY undefined (comment it out), no history file
  ## will be created. 
-@@ -944,6 +991,7 @@
+@@ -944,6 +997,7 @@
  REPLICATION_LOG	= $(LOG)/ReplicationLog
  TRANSFERER_LOG	= $(LOG)/TransfererLog
  HDFS_LOG	= $(LOG)/HDFSLog
@@ -162,7 +171,7 @@ Index: htcondor-7.9.6/src/condor_examples/condor_config.generic
  
  ##  Lock files
  SHADOW_LOCK	= $(LOCK)/ShadowLock
-@@ -1065,7 +1113,7 @@
+@@ -1065,7 +1119,7 @@
  #MASTER, STARTD, SCHEDD, KBDD, COLLECTOR, NEGOTIATOR, EVENTD, \
  #VIEW_SERVER, CONDOR_VIEW, VIEW_COLLECTOR, HAWKEYE, CREDD, HAD, \
  #DBMSD, QUILL, JOB_ROUTER, ROOSTER, LEASEMANAGER, HDFS, SHARED_PORT, \
@@ -171,7 +180,7 @@ Index: htcondor-7.9.6/src/condor_examples/condor_config.generic
  
  
  ##  Where are the binaries for these daemons?
-@@ -1083,6 +1131,7 @@
+@@ -1083,6 +1137,7 @@
  SHARED_PORT			= $(LIBEXEC)/condor_shared_port
  TRANSFERER			= $(LIBEXEC)/condor_transferer
  DEFRAG                          = $(LIBEXEC)/condor_defrag
@@ -179,7 +188,7 @@ Index: htcondor-7.9.6/src/condor_examples/condor_config.generic
  
  ##  When the master starts up, it can place it's address (IP and port)
  ##  into a file.  This way, tools running on the local machine don't
-@@ -1159,11 +1208,13 @@
+@@ -1159,11 +1214,13 @@
  ##--------------------------------------------------------------------
  ## Address to which Condor will send a weekly e-mail with output of
  ## condor_status.
@@ -195,7 +204,7 @@ Index: htcondor-7.9.6/src/condor_examples/condor_config.generic
  
  ##  When the collector starts up, it can place it's address (IP and port)
  ##  into a file.  This way, tools running on the local machine don't
-@@ -1180,6 +1231,7 @@
+@@ -1180,6 +1237,7 @@
  ## Determine if the Negotiator will honor SlotWeight attributes, which
  ## may be used to give a slot greater weight when calculating usage.
  #NEGOTIATOR_USE_SLOT_WEIGHTS = True
@@ -203,7 +212,7 @@ Index: htcondor-7.9.6/src/condor_examples/condor_config.generic
  
  
  ## How often the Negotaitor starts a negotiation cycle, defined in
-@@ -1617,7 +1669,7 @@
+@@ -1617,7 +1675,7 @@
  ##--------------------------------------------------------------------
  ##  condor_starter
  ##--------------------------------------------------------------------
@@ -212,7 +221,7 @@ Index: htcondor-7.9.6/src/condor_examples/condor_config.generic
  ##  jobs on your execute machines.  If you want this, uncomment the
  ##  following entry and set it to how "nice" you want the user
  ##  jobs. (1-19)  The larger the number, the lower priority the
-@@ -1670,7 +1722,7 @@
+@@ -1670,7 +1728,7 @@
  #     UNIX); the name will be something like:
  #         \\.\pipe\condor_procd
  #
@@ -221,7 +230,7 @@ Index: htcondor-7.9.6/src/condor_examples/condor_config.generic
  
  # Note that in other Condor daemons, turning on D_PROCFAMILY will
  # result in that daemon logging all of its interactions with the
-@@ -1769,7 +1821,7 @@
+@@ -1769,7 +1827,7 @@
  ## them here.  However, do not remove the existing entries, as Condor
  ## needs them.
  
@@ -230,7 +239,7 @@ Index: htcondor-7.9.6/src/condor_examples/condor_config.generic
  
  ##  JAVA_CLASSPATH_ARGUMENT describes the command-line parameter
  ##  used to introduce a new classpath:
-@@ -2378,7 +2430,7 @@
+@@ -2378,7 +2496,7 @@
  #SSH_TO_JOB_SSHD_ARGS = "-i -e -f %f"
  
  # sshd configuration template used by condor_ssh_to_job_sshd_setup.
