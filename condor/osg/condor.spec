@@ -67,7 +67,7 @@ Version: %{tarball_version}
 %define condor_release %condor_base_release
 %endif
 # Release: %condor_release%{?dist}.2
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -1252,6 +1252,10 @@ fi
 %endif
 
 %changelog
+* Wed Jun 12 2013 Brian Lin <blin@cs.wisc.edu> - 8.0.0-2
+- Init script improvements
+- Condor now restarts peacefully after an upgrade
+
 * Wed Jun 12 2013 Brian Lin <blin@cs.wisc.edu> - 8.0.0-1
 - New version
 
