@@ -68,7 +68,7 @@ Version: %{tarball_version}
 %define condor_release %condor_base_release
 %endif
 # Release: %condor_release%{?dist}.2
-Release: 8.unif.2%{?dist}
+Release: 8.unif.4%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -1366,10 +1366,9 @@ fi
 
 %postun
 /bin/systemctl daemon-reload >/dev/null 2>&1 || :
-if [ $1 -ge 1 ] ; then
-    # Package upgrade, not uninstall
-    /bin/systemctl try-restart condor.service >/dev/null 2>&1 || :
-fi
+# Note we don't try to restart - HTCondor will automatically notice the
+# binary has changed and do graceful or peaceful restart, based on its
+# configuration
 
 %triggerun -- condor < 7.7.0-0.5
 
@@ -1391,13 +1390,16 @@ fi
 
 
 %postun -n condor
-if [ "$1" -ge "1" ]; then
-  /sbin/service condor condrestart >/dev/null 2>&1 || :
-fi
+# Note we don't try to restart - HTCondor will automatically notice the
+# binary has changed and do graceful or peaceful restart, based on its
+# configuration
 /sbin/ldconfig
 %endif
 
 %changelog
+* Tue Jun 18 2013 Carl Edquist <edquist@cs.wisc.edu> - 7.9.6-8.unif.4
+- Remove service restart for upgrades
+
 * Tue Jun 11 2013 Carl Edquist <edquist@cs.wisc.edu> - 7.9.6-8.unif.2
 - Add a parallel-setup sub-package for parallel universe configuration,
   namely setting up the host as a dedicated resource
