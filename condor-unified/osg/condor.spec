@@ -68,7 +68,7 @@ Version: %{tarball_version}
 %define condor_release %condor_base_release
 %endif
 # Release: %condor_release%{?dist}.2
-Release: 8.unif.3%{?dist}
+Release: 8.unif.2%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -194,6 +194,12 @@ BuildRequires: wso2-axis2-devel >= 2.1.0-4
 
 %if %plumage
 BuildRequires: mongodb-devel >= 1.6.4-3
+%endif
+
+# libcgroup < 0.37 has a bug that invalidates our accounting.
+%if %cgroups
+BuildRequires: libcgroup-devel >= 0.37
+Requires: libcgroup >= 0.37
 %endif
 
 %if %cream
@@ -463,20 +469,6 @@ a condor_config.local.dedicated.resource file that sets up the current
 host as the DedicatedScheduler.
 %endif
 
-#######################
-%if %cgroups
-%package cgroup-setup
-Summary: Configure cgroups for HTCondor
-Group: Applications/System
-Requires: %name = %version-%release
-# libcgroup < 0.37 has a bug that invalidates our accounting.
-BuildRequires: libcgroup-devel >= 0.37
-Requires: libcgroup >= 0.37
-
-%description cgroup-setup
-Enabling cgroup support in HTCondor requires adding an htcondor group
-to the cgroup configuration.  This sub-package automates this setup.
-%endif
 
 #######################
 %package python
@@ -1359,23 +1351,6 @@ if [ $? = 0 ]; then
    # the number of extraneous SELinux warnings on f17 is very high
 fi
 %endif
-%if %cgroups
-# add htcondor group to cgroups config
-perl -pi -e '
-  BEGIN {undef $/}
-  s/\n?^### BEGIN HTCONDOR CONFIG ###.*^### END HTCONDOR CONFIG ###\n?$//ms;
-  s/$/
-### BEGIN HTCONDOR CONFIG ###
-group htcondor {
-        cpu {}
-        cpuacct {}
-        memory {}
-        freezer {}
-        blkio {}
-}
-### END HTCONDOR CONFIG ###
-/' /etc/cgconfig.conf
-%endif
 if [ $1 -eq 1 ] ; then
     # Initial installation 
     /bin/systemctl daemon-reload >/dev/null 2>&1 || :
@@ -1387,13 +1362,6 @@ if [ $1 -eq 0 ] ; then
     # Package removal, not upgrade
     /bin/systemctl --no-reload disable condor.service > /dev/null 2>&1 || :
     /bin/systemctl stop condor.service > /dev/null 2>&1 || :
-%if %cgroups
-    # remove htcondor group from cgroups config
-    perl -pi -e '
-      BEGIN {undef $/}
-      s/\n?^### BEGIN HTCONDOR CONFIG ###.*^### END HTCONDOR CONFIG ###\n//ms;
-    ' /etc/cgconfig.conf
-%endif
 fi
 
 %postun
@@ -1412,24 +1380,6 @@ fi
 
 %else
 %post -n condor
-%if %cgroups
-# add htcondor group to cgroups config
-perl -pi -e '
-  BEGIN {undef $/}
-  s/\n?^### BEGIN HTCONDOR CONFIG ###.*^### END HTCONDOR CONFIG ###\n?$//ms;
-  s/$/
-### BEGIN HTCONDOR CONFIG ###
-group htcondor {
-        cpu {}
-        cpuacct {}
-        memory {}
-        freezer {}
-        blkio {}
-}
-### END HTCONDOR CONFIG ###
-/' /etc/cgconfig.conf
-# /sbin/service cgconfig restart ?
-%endif
 /sbin/chkconfig --add condor
 /sbin/ldconfig
 
@@ -1437,14 +1387,6 @@ group htcondor {
 if [ $1 = 0 ]; then
   /sbin/service condor stop >/dev/null 2>&1 || :
   /sbin/chkconfig --del condor
-%if %cgroups
-  # remove htcondor group from cgroups config
-  perl -pi -e '
-    BEGIN {undef $/}
-    s/\n?^### BEGIN HTCONDOR CONFIG ###.*^### END HTCONDOR CONFIG ###\n//ms;
-  ' /etc/cgconfig.conf
-# /sbin/service cgconfig restart ?
-%endif
 fi
 
 
@@ -1456,9 +1398,6 @@ fi
 %endif
 
 %changelog
-* Thu Jun 13 2013 Carl Edquist <edquist@cs.wisc.edu> - 7.9.6-8.unif.3
-- Add a cgroup-setup sub-package for cgroups configuration
-
 * Tue Jun 11 2013 Carl Edquist <edquist@cs.wisc.edu> - 7.9.6-8.unif.2
 - Add a parallel-setup sub-package for parallel universe configuration,
   namely setting up the host as a dedicated resource
