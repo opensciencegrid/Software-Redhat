@@ -5,10 +5,10 @@
 %endif
 
 %global version1 1.9.19.2
-%global release1 7.3
+%global release1 7.4
 
 %global version2 2.0.8
-%global release2 1.6
+%global release2 1.7
 
 Name:		voms
 Version:	%{version2}
@@ -335,7 +335,6 @@ mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/grid-security/vomsdir
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/grid-security/%{name}
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/%{name}
 mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/log/%{name}
-mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/log/%{name}/old
 
 # Turn off default enabling of the service
 mkdir -p $RPM_BUILD_ROOT%{_initrddir}
@@ -462,7 +461,6 @@ fi
 %dir %{_sysconfdir}/grid-security/%{name}
 %config(noreplace) %{_sysconfdir}/logrotate.d/%{name}
 %attr(-,voms,voms) %dir %{_localstatedir}/log/%{name}
-%attr(-,voms,voms) %dir %{_localstatedir}/log/%{name}/old
 %{_datadir}/%{name}/mysql2oracle
 %{_datadir}/%{name}/upgrade1to2
 %{_datadir}/%{name}/voms.data
@@ -474,6 +472,9 @@ fi
 %doc README.Fedora
 
 %changelog
+* Tue Jun 18 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.8-1.7
+- Reverted previous logrotate change; fixed syntax error in logrotate file (SOFTWARE-1084)
+
 * Mon Jun 17 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.8-1.6
 - Updated logrotate file to rotate old logs into a separate directory (SOFTWARE-1084)
 
