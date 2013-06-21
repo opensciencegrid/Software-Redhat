@@ -27,6 +27,22 @@
 %define cgroups 1
 %endif
 
+%define uw_build 1
+
+%ifarch %{ix86}
+%if 0%{?rhel} >= 6
+# std universe is not ported to 32bit rhel6
+%define uw_build 0
+%endif
+%endif
+
+%if %uw_build
+%define debug 1
+%define verbose 1
+%define gsoap 0
+%else
+%endif
+
 %define blahp 1
 %define glexec 1
 %define cream 1
@@ -68,7 +84,7 @@ Version: %{tarball_version}
 %define condor_release %condor_base_release
 %endif
 # Release: %condor_release%{?dist}.2
-Release: 8.unif.4%{?dist}
+Release: 8.unif.5%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -132,6 +148,9 @@ Patch9: proper_cream_v3.diff
 %if %blahp
 Patch10: config_batch_gahp_path.patch
 %endif
+%if %uw_build
+Patch11: cmake-makes.patch
+%endif
 
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
@@ -152,6 +171,33 @@ BuildRequires: /usr/include/expat.h
 BuildRequires: openldap-devel
 BuildRequires: python-devel
 BuildRequires: boost-devel
+
+%if %uw_build
+BuildRequires: cmake >= 2.8
+BuildRequires: gcc-c++
+%if 0%{?rhel} >= 6
+BuildRequires: glibc-static
+BuildRequires: libuuid-devel
+%else
+BuildRequires: glibc-devel
+BuildRequires: /usr/include/uuid/uuid.h
+%endif
+BuildRequires: bison-devel
+BuildRequires: bison
+BuildRequires: byacc
+BuildRequires: flex
+BuildRequires: patch
+BuildRequires: libtool
+BuildRequires: libtool-ltdl-devel
+BuildRequires: pam-devel
+BuildRequires: nss-devel
+BuildRequires: openssl-devel
+BuildRequires: libxml2-devel
+BuildRequires: expat-devel
+BuildRequires: perl-Archive-Tar
+BuildRequires: perl-XML-Parser
+BuildRequires: python-devel
+%endif
 
 # Globus GSI build requirements
 BuildRequires: globus-gssapi-gsi-devel
@@ -498,6 +544,18 @@ BOSCO provides an overlay system so the remote clusters appear to be a HTCondor
 cluster.  This allows the user to run their workflows using HTCondor tools across
 multiple clusters.
 
+%if %uw_build
+%package static-shadow
+Summary: Statically linked condow_shadow and condor_master binaries
+Group: Applications/System
+Requires: %name = %version-%release
+
+%description static-shadow
+Provides condor_shadow_s and condor_master_s, which have all the globus
+libraries statically linked in and, as a result, have a smaller private
+memory footprint per process.  This makes it possible to run more shadows
+on a single machine at once when memory is the limiting factor.
+%endif
 
 %pre
 getent group condor >/dev/null || groupadd -r condor
@@ -531,6 +589,10 @@ exit 0
 %patch10 -p1 -b .config_batch_gahp_path
 %endif
 
+# % if %uw_build
+# % patch11 -p1
+# % endif
+
 # fix errant execute permissions
 find src -perm /a+x -type f -name "*.[Cch]" -exec chmod a-x {} \;
 
@@ -546,6 +608,21 @@ export CMAKE_PREFIX_PATH=/usr
 
 # Since we don't package the tests and some tests require boost > 1.40, which
 # causes build issues with EL5, don't even bother building the tests.
+
+%if %uw_build
+%cmake \
+       -DBUILDID:STRING=UW_development \
+       -DUW_BUILD:BOOL=TRUE \
+       -D_DEBUG:BOOL=TRUE \
+       -D_VERBOSE:BOOL=TRUE \
+       -DBUILD_TESTING:BOOL=FALSE \
+       -DHAVE_BACKFILL:BOOL=FALSE \
+       -DHAVE_BOINC:BOOL=FALSE \
+       -DWITH_POSTGRESQL:BOOL=FALSE \
+       -DWANT_LEASE_MANAGER:BOOL=FALSE
+
+%else
+
 %cmake -DNO_PHONE_HOME:BOOL=TRUE \
        -DBUILD_TESTING:BOOL=FALSE \
 %if 0%{?fedora}
@@ -616,9 +693,17 @@ export CMAKE_PREFIX_PATH=/usr
         -DWITH_LIBCGROUP:BOOL=TRUE \
         -DLIBCGROUP_FOUND_SEARCH_cgroup=/%{_lib}/libcgroup.so.1
 %endif
+%endif
 
-make %{?_smp_mflags}
+#%if %uw_build
+## build externals first to avoid dependency issues
+#make %{?_smp_mflags} externals
+#%endif
+#make %{?_smp_mflags}
 
+# should be able to build with -jN above, but there are still
+# intermittent errors in koji when building with many cores (-j24)
+make
 
 %install
 # installation happens into a temporary location, this function is
@@ -744,9 +829,11 @@ rm -f %{buildroot}/%{_mandir}/man1/filelock_undertaker.1
 rm -f %{buildroot}/%{_mandir}/man1/install_release.1
 rm -f %{buildroot}/%{_mandir}/man1/cleanup_release.1
 
+%if ! %uw_build
 # not packaging standard universe
 rm -f %{buildroot}/%{_mandir}/man1/condor_compile.1
 rm -f %{buildroot}/%{_mandir}/man1/condor_checkpoint.1
+%endif
 
 # not packaging configure/install scripts
 rm -f %{buildroot}/%{_mandir}/man1/condor_configure.1
@@ -824,6 +911,7 @@ rm -rf %{buildroot}%{_datadir}/condor/ExecuteLock.pm
 rm -rf %{buildroot}%{_datadir}/condor/FileLock.pm
 rm -rf %{buildroot}%{_usrsrc}/chirp/chirp_*
 rm -rf %{buildroot}%{_usrsrc}/startd_factory
+rm -rf %{buildroot}%{_usrsrc}/drmaa/drmaa-*
 rm -rf %{buildroot}/usr/DOC
 rm -rf %{buildroot}/usr/INSTALL
 rm -rf %{buildroot}/usr/LICENSE-2.0.txt
@@ -850,6 +938,8 @@ rm -rf %{buildroot}%{_includedir}/condor_exprtype.h
 rm -rf %{buildroot}%{_includedir}/condor_parser.h
 rm -rf %{buildroot}%{_includedir}/write_user_log.h
 rm -rf %{buildroot}%{_includedir}/condor_ast.h
+rm -rf %{buildroot}%{_includedir}/drmaa.h
+rm -rf %{buildroot}%{_includedir}/README
 rm -rf %{buildroot}%{_libexecdir}/condor/bgp_*
 rm -rf %{buildroot}%{_datadir}/condor/libchirp_client.a
 rm -rf %{buildroot}%{_datadir}/condor/libcondorapi.a
@@ -878,6 +968,28 @@ mv %{buildroot}%{_libexecdir}/condor/campus_factory/python-lib/campus_factory %{
 mv %{buildroot}%{_libexecdir}/condor/campus_factory/share/condor/condor_config.factory %{buildroot}%{_sysconfdir}/condor/config.d/60-campus_factory.config
 mv %{buildroot}%{_libexecdir}/condor/campus_factory/etc/campus_factory.conf %{buildroot}%{_sysconfdir}/condor/
 mv %{buildroot}%{_libexecdir}/condor/campus_factory/share %{buildroot}%{_datadir}/condor/campus_factory
+
+%if %uw_build
+populate %{_libdir}/condor %{buildroot}/%{_libdir}/libdrmaa.so
+populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/condor/libglobus*.so*
+populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/condor/libvomsapi*.so*
+populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/condor_rt0.o
+populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/libcomp_libgcc.a
+populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/libcomp_libgcc_eh.a
+populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/libcomp_libstdc++.a
+populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/libcondor_c.a
+populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/libcondor_nss_dns.a
+populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/libcondor_nss_files.a
+populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/libcondor_resolv.a
+populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/libcondor_z.a
+populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/libcondordrmaa.a
+populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/libcondorsyscall.a
+# these probably belong elsewhere
+populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/ld
+populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/real-ld
+populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/ugahp.jar
+%endif
+
 
 %clean
 rm -rf %{buildroot}
@@ -913,7 +1025,7 @@ rm -rf %{buildroot}
 %dir %_sysconfdir/condor/config.d/
 %_sysconfdir/condor/config.d/00personal_condor.config
 %_sysconfdir/condor/condor_ssh_to_job_sshd_config_template
-%if %gsoap
+%if %gsoap || %uw_build
 %dir %_datadir/condor/webservice/
 %_datadir/condor/webservice/condorCollector.wsdl
 %_datadir/condor/webservice/condorSchedd.wsdl
@@ -942,6 +1054,64 @@ rm -rf %{buildroot}
 %_libexecdir/condor/glite/bin/nqs_resume.sh
 %_libexecdir/condor/glite/bin/nqs_status.sh
 %_libexecdir/condor/glite/bin/nqs_submit.sh
+%if %uw_build
+%_libexecdir/condor/glite/bin/BLClient
+%_libexecdir/condor/glite/bin/BLParserLSF
+%_libexecdir/condor/glite/bin/BLParserPBS
+%_libexecdir/condor/glite/bin/BNotifier
+%_libexecdir/condor/glite/bin/BPRclient
+%_libexecdir/condor/glite/bin/BPRserver
+%_libexecdir/condor/glite/bin/BUpdaterCondor
+%_libexecdir/condor/glite/bin/BUpdaterLSF
+%_libexecdir/condor/glite/bin/BUpdaterPBS
+%_libexecdir/condor/glite/bin/BUpdaterSGE
+%_libexecdir/condor/glite/bin/batch_gahp
+%_libexecdir/condor/glite/bin/batch_gahp_daemon
+%_libexecdir/condor/glite/bin/blah_check_config
+%_libexecdir/condor/glite/bin/blah_common_submit_functions.sh
+%_libexecdir/condor/glite/bin/blah_job_registry_add
+%_libexecdir/condor/glite/bin/blah_job_registry_dump
+%_libexecdir/condor/glite/bin/blah_job_registry_lkup
+%_libexecdir/condor/glite/bin/blah_job_registry_scan_by_subject
+%_libexecdir/condor/glite/bin/blah_load_config.sh
+%_libexecdir/condor/glite/bin/blparser_master
+%_libexecdir/condor/glite/bin/condor_cancel.sh
+%_libexecdir/condor/glite/bin/condor_hold.sh
+%_libexecdir/condor/glite/bin/condor_resume.sh
+%_libexecdir/condor/glite/bin/condor_status.sh
+%_libexecdir/condor/glite/bin/condor_submit.sh
+%_libexecdir/condor/glite/bin/lsf_cancel.sh
+%_libexecdir/condor/glite/bin/lsf_hold.sh
+%_libexecdir/condor/glite/bin/lsf_resume.sh
+%_libexecdir/condor/glite/bin/lsf_status.sh
+%_libexecdir/condor/glite/bin/lsf_submit.sh
+%_libexecdir/condor/glite/bin/pbs_cancel.sh
+%_libexecdir/condor/glite/bin/pbs_hold.sh
+%_libexecdir/condor/glite/bin/pbs_resume.sh
+%_libexecdir/condor/glite/bin/pbs_status.sh
+%_libexecdir/condor/glite/bin/pbs_submit.sh
+%_libexecdir/condor/glite/bin/runcmd.pl.template
+%_libexecdir/condor/glite/bin/sge_cancel.sh
+%_libexecdir/condor/glite/bin/sge_filestaging
+%_libexecdir/condor/glite/bin/sge_helper
+%_libexecdir/condor/glite/bin/sge_hold.sh
+%_libexecdir/condor/glite/bin/sge_local_submit_attributes.sh
+%_libexecdir/condor/glite/bin/sge_resume.sh
+%_libexecdir/condor/glite/bin/sge_status.sh
+%_libexecdir/condor/glite/bin/sge_submit.sh
+%_libexecdir/condor/glite/bin/test_condor_logger
+# does this really belong here?
+%dir %_libexecdir/condor/glite/etc
+%_libexecdir/condor/glite/etc/glite-ce-blahparser
+%_libexecdir/condor/glite/etc/glite-ce-blparser
+%_libexecdir/condor/glite/etc/glite-ce-check-blparser
+%_libexecdir/condor/glite/etc/batch_gahp.config
+%_libexecdir/condor/glite/etc/batch_gahp.config.template
+%_libexecdir/condor/glite/etc/blparser.conf.template
+%dir %_libexecdir/condor/glite/share
+%dir %_libexecdir/condor/glite/share/doc
+%_libexecdir/condor/glite/share/doc/glite-ce-blahp-@PVER@/LICENSE
+%endif
 %endif
 %_libexecdir/condor/condor_limits_wrapper.sh
 %_libexecdir/condor/condor_rooster
@@ -1046,6 +1216,10 @@ rm -rf %{buildroot}
 %_bindir/condor_ping
 %_bindir/condor_tail
 %_bindir/condor_qsub
+%if %uw_build
+%_bindir/condor_checkpoint
+%_bindir/condor_compile   
+%endif
 # reconfig_schedd, restart
 # sbin/condor is a link for master_off, off, on, reconfig,
 %_sbindir/condor_advertise
@@ -1081,6 +1255,13 @@ rm -rf %{buildroot}
 %_sbindir/nordugrid_gahp
 %_libexecdir/condor/condor_gpu_discovery
 %_sbindir/condor_vm_vmware
+%if %uw_build
+%_sbindir/condor_ckpt_server
+%_sbindir/condor_shadow.std
+%_sbindir/condor_starter.std
+%_sbindir/deltacloud_gahp
+%_sbindir/unicore_gahp
+%endif
 %config(noreplace) %_var/lib/condor/condor_config.local
 %defattr(-,condor,condor,-)
 %dir %_var/lib/condor/
@@ -1094,6 +1275,28 @@ rm -rf %{buildroot}
 %dir %_var/lock/condor
 %dir %_var/lock/condor/local
 %dir %_var/run/condor
+%endif
+
+%if %uw_build
+%dir %_libdir/condor
+%_libdir/condor/libdrmaa.so
+%_libdir/condor/libglobus*.so*
+%_libdir/condor/libvomsapi*.so*
+%_libdir/condor/condor_rt0.o
+%_libdir/condor/libcomp_libgcc.a
+%_libdir/condor/libcomp_libgcc_eh.a
+%_libdir/condor/libcomp_libstdc++.a
+%_libdir/condor/libcondor_c.a
+%_libdir/condor/libcondor_nss_dns.a
+%_libdir/condor/libcondor_nss_files.a
+%_libdir/condor/libcondor_resolv.a
+%_libdir/condor/libcondor_z.a
+%_libdir/condor/libcondordrmaa.a
+%_libdir/condor/libcondorsyscall.a
+# these probably belong elsewhere
+%_libdir/condor/ld
+%_libdir/condor/real-ld
+%_libdir/condor/ugahp.jar
 %endif
 
 #################
@@ -1340,6 +1543,12 @@ rm -rf %{buildroot}
 %{python_sitelib}/GlideinWMS
 %{python_sitelib}/campus_factory
 
+%if %uw_build
+%files static-shadow
+%{_sbindir}/condor_master_s
+%{_sbindir}/condor_shadow_s
+%endif
+
 %if %systemd
 %post
 %if 0%{?fedora}
@@ -1397,6 +1606,9 @@ fi
 %endif
 
 %changelog
+* Fri Jun 21 2013 Carl Edquist <edquist@cs.wisc.edu> - 7.9.6-8.unif.5
+- Initial support for UW_BUILD
+
 * Tue Jun 18 2013 Carl Edquist <edquist@cs.wisc.edu> - 7.9.6-8.unif.4
 - Remove service restart for upgrades
 
