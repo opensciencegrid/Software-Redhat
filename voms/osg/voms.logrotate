@@ -5,5 +5,6 @@
   compress
   missingok
   olddir old
+  notifempty
 }
 

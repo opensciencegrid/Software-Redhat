@@ -5,10 +5,10 @@
 %endif
 
 %global version1 1.9.19.2
-%global release1 7.5
+%global release1 7.6
 
 %global version2 2.0.8
-%global release2 1.8
+%global release2 1.9
 
 Name:		voms
 Version:	%{version2}
@@ -474,6 +474,9 @@ fi
 %doc README.Fedora
 
 %changelog
+* Thu Jun 20 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.8-1.9
+- Do not rotate empty logfiles (SOFTWARE-1084). This avoids problems caused by 'copytruncate' on leftover bogus logs from before the 2.0.8-1.6 fix.
+
 * Tue Jun 18 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.8-1.8
 - Changed logrotate file so that rotation works for VOs with names ending in 'z' (SOFTWARE-1084)
 
