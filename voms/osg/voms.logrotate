@@ -1,8 +1,9 @@
-/var/log/voms/voms.*[!gz] {
+/var/log/voms/voms.* {
   copytruncate
   daily
   rotate 31
   compress
   missingok
+  olddir old
 }
 
