@@ -20,3 +20,6 @@ http://archive.cloudera.com/redhat/cdh/3b3/SRPMS/
   - A few FUSE memory leaks have been fixed.
   - Bootstrapping the CLASSPATH and the JRE location has been made more reliable.
 
+2013-06-24: The upstream location for the source RPMs is now
+http://archive.cloudera.com/cdh4/redhat/6/x86_64/cdh/*/SRPMS/
+
