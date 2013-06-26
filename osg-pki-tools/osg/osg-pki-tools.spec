@@ -1,9 +1,8 @@
 Summary: osg-pki-tools
 Name: osg-pki-tools
-Version: 1.2.0
-Release: 2%{?dist}
+Version: 1.2.1
+Release: 1%{?dist}
 Source: OSGPKITools-%{version}.tar.gz
-Patch0: connectapi-import-path.patch
 License: Apache 2.0
 Group: Grid
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
@@ -36,7 +35,6 @@ tests for osg-pki-tools
 
 %prep
 %setup -n OSGPKITools-%{version}
-%patch0 -p1
 
 %build
 %{__python} setup.py build
@@ -45,9 +43,13 @@ tests for osg-pki-tools
 %{__python} setup.py install --root=%{buildroot}
 rm -f %{buildroot}%{python_sitelib}/*.egg-info || :
 install -d %{buildroot}%{_bindir}
-install -m 755 osgpkitools/osg-cert-request %{buildroot}%{_bindir}
-install -m 755 osgpkitools/osg-cert-retrieve %{buildroot}%{_bindir}
-install -m 755 osgpkitools/osg-gridadmin-cert-request %{buildroot}%{_bindir}
+install -m 755 -t %{buildroot}%{_bindir}    \
+    osgpkitools/osg-cert-request            \
+    osgpkitools/osg-cert-retrieve           \
+    osgpkitools/osg-cert-revoke             \
+    osgpkitools/osg-gridadmin-cert-request  \
+    osgpkitools/osg-user-cert-renew         \
+    osgpkitools/osg-user-cert-revoke
 install -d %{buildroot}%{_sysconfdir}/osg
 install -m 644 osgpkitools/pki-clients.ini %{buildroot}%{_sysconfdir}/osg
 mv -f %{buildroot}%{python_sitelib}/tests %{buildroot}%{python_sitelib}/osgpkitools/tests
@@ -70,9 +72,13 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Thu Jun 13 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.2.0-2
+* Tue Jun 25 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.2.1-1
+- New version 1.2.1
+
+* Thu Jun 13 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.2.0-3
 - New version 1.2
 - Fix ConnectAPI imports in osg-cert-request and osg-cert-retrieve
+- Fix exception handling
 
 * Thu Mar 28 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.1.0-3
 - Rebuild with fix to scripts to look for pki-clients.ini in /etc/osg
