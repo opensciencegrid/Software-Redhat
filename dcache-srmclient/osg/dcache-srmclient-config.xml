@@ -151,6 +151,6 @@
 	<!--<type|negotiate> calculate and verify server and client checksum values using this type (adler32|MD4|MD5|....). If checksum value has been omitted, missing value will be computed over the local file. If negotiate is set - client will attempt to negotiate cksm type for the file checksum value avilable at the server. For gridftp transfers to/from servers that support checksumming features, default is null-->
 	<cksm_type> null </cksm_type>
 
-	<!--number of times to repeat a client run, default is null-->
-	<repeat> null </repeat>
+	<!--number of times to repeat a client run, default is 1-->
+	<repeat> 1 </repeat>
 </srm-configuration>

@@ -1,13 +1,12 @@
 
-%if 0
-%define install_root %{_javadir}/%{name}
-%else
-%define install_root %{_datadir}/java/%{name}
-%endif
+%define majorver 2.2.11
+%define minorver 1
+%define targetdir modules/srmclient/target/srmclient-%{majorver}-SNAPSHOT
+%define srm_path %{_datadir}/srm
 
-Name:    dcache-srmclient 
-Version: 1.9.5.23
-Release: 6.1%{?dist}
+Name:    dcache-srmclient
+Version: %{majorver}.%{minorver}
+Release: 2.1%{?dist}
 URL:     http://dcache.org
 Summary: SRM clients from dCache.org
 License: http://www.dcache.org/manuals/dCacheSoftwareLicence.html
@@ -18,42 +17,59 @@ BuildRequires: java7-devel
 BuildRequires: ant
 BuildRequires: jpackage-utils
 Requires: java7
+BuildRequires: /usr/share/java/xml-commons-apis.jar
+# maven >= 2.0.10 is needed for maven-ant
+BuildRequires: maven22
 Requires: /usr/bin/globus-url-copy
+Requires: /usr/share/java/xml-commons-apis.jar
 
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildArch: noarch
 
-Source0: srmclient-1.9.5-23.tar.gz
+Source0: srmclient-%{majorver}-%{minorver}.tgz
+#                             ^ note the dash in the tarball name
 Source1: dcache-srmclient-config.xml
 
-Patch0: remove-srm-path-warnings.patch
+# have srm scripts source /etc/sysconfig/dcache-srmclient if it exists
+Patch0: source-sysconfig.patch
+# fix build.xml so it works with the maven OSG uses for building
+Patch1: maven22.patch
 
 %description
 %{summary}
 
 %prep
-%setup -q -n srmclient-1.9.5-23
+%setup -q -n srmclient-%{majorver}-%{minorver}
 
 %patch0 -p0
+%patch1 -p0
 
 %build
 export JAVA_HOME=%{java_home}
+# This uses ant but actually starts up a maven build
 ant srmclient
 
+
 %install
+# DEBUG:
+find . -type f | cut -b 3- | sort
 
 mkdir -p $RPM_BUILD_ROOT%{_bindir}
-install -m 0755 dist/package/srmclient/opt/d-cache/srm/bin/* $RPM_BUILD_ROOT%{_bindir}
+install -m 0755 %{targetdir}/usr/bin/* $RPM_BUILD_ROOT%{_bindir}
 
-mkdir -p $RPM_BUILD_ROOT%{install_root}
-mv dist/package/srmclient/opt/d-cache/srm/{sbin,lib,conf} $RPM_BUILD_ROOT%{install_root}/
+mkdir -p $RPM_BUILD_ROOT%{_sbindir}
+install -m 0755 %{targetdir}/usr/sbin/srm $RPM_BUILD_ROOT%{_sbindir}
+
+mkdir -p $RPM_BUILD_ROOT%{srm_path}/sbin
+install -m 0755 %{targetdir}/usr/sbin/url-copy.sh $RPM_BUILD_ROOT%{srm_path}/sbin
+mv %{targetdir}/usr/share/srm/{conf,lib} $RPM_BUILD_ROOT%{srm_path}/
 
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig
-cat > $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/dcache-srmclient << EOF
-export SRM_PATH=/usr/share/java/dcache-srmclient
-export SRM_CONFIG=/etc/dcache-srmclient-config.xml
+cat > $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/%{name} << EOF
+export SRM_PATH=%{srm_path}
+export SRM_CONFIG=/etc/%{name}-config.xml
 EOF
-install -m 0644 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/dcache-srmclient-config.xml
+install -m 0644 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}-config.xml
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -61,11 +77,25 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root,-)
 %{_bindir}/*
-%{install_root}/*
-%config(noreplace) %{_sysconfdir}/sysconfig/dcache-srmclient
-%config(noreplace) %{_sysconfdir}/dcache-srmclient-config.xml
+%{_sbindir}/*
+%{srm_path}/*
+%config(noreplace) %{_sysconfdir}/sysconfig/%{name}
+%config(noreplace) %{_sysconfdir}/%{name}-config.xml
 
 %changelog
+* Thu Jun 06 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 2.2.11.1-2
+- Move /usr/sbin/url-copy.sh to /usr/share/srm/sbin since that's where scripts expect it.
+- Fix repeat count in supplied config
+
+* Thu May 30 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 2.2.11.1-1
+- New major version; update patch: remove the sections that are already
+  upstream, and rename to match what's left
+- Fix RPM to work with new paths -- almost everything in
+  /usr/share/java/dcache-srmclient was moved to /usr/share/srm except
+  /usr/share/java/dcache-srmclient/sbin/* was moved to /usr/sbin
+- Add xml-commons-apis dependency
+- Add maven22 build dependency
+
 * Thu Feb 07 2013 Matyas Selmeci <matyas@cs.wisc.edu> 1.9.5.23-6.1
 - Rebuild with openjdk 7 and ant17
 
