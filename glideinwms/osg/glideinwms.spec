@@ -1,6 +1,6 @@
 # The following should be either "v2_plus" or "v3_plus"
-%define v2_plus 1
-%define v3_plus 0
+%define v2_plus 0
+%define v3_plus 1
 
 Name:           glideinwms
 
@@ -12,8 +12,8 @@ Name:           glideinwms
 %endif
 
 %if %{v3_plus}
-%define version 3.0.0 
-%define release 5
+%define version 3.1
+%define release 0.rc1
 %define frontend_xml frontend.master.xml
 %define factory_xml glideinWMS.master.xml
 %endif
@@ -88,7 +88,7 @@ Group:          System Environment/Daemons
 Requires: httpd
 # We require Condor 7.6.0 (and newer) to support
 # condor_advertise -multiple -tcp which is enabled by default
-Requires: condor >= 7.6.0
+Requires: condor >= 7.8.0
 Requires: python-rrdtool
 Requires: m2crypto
 Requires: javascriptrrd
@@ -113,7 +113,7 @@ This package is for a standalone vofrontend install
 %package usercollector
 Summary:        The VOFrontend glideinWMS collector host
 Group:          System Environment/Daemons
-Requires: condor >= 7.6.0
+Requires: condor >= 7.8.0
 Requires: glideinwms-minimal-condor
 Requires: glideinwms-glidecondor-tools
 %description usercollector
@@ -124,7 +124,7 @@ It can be split off into its own node.
 %package userschedd
 Summary:        The VOFrontend glideinWMS submission host
 Group:          System Environment/Daemons
-Requires: condor >= 7.6.0
+Requires: condor >= 7.8.0
 Requires: glideinwms-minimal-condor
 Requires: glideinwms-glidecondor-tools
 %description userschedd
@@ -164,7 +164,7 @@ Provides:       GlideinWMSFactory = %{version}-%{release}
 Requires: httpd
 # We require Condor 7.6.0 (and newer) to support
 # condor_advertise -multiple -tcp which is enabled by default
-Requires: condor >= 7.6.0
+Requires: condor >= 7.8.0
 Requires: python-rrdtool
 Requires: m2crypto
 Requires: javascriptrrd
