@@ -984,6 +984,11 @@ populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/libcondor_resolv.a
 populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/libcondor_z.a
 populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/libcondordrmaa.a
 populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/libcondorsyscall.a
+%ifarch %{ix86}
+%if 0%{?rhel} == 5
+populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/libcondorzsyscall.a
+%endif
+%endif
 # these probably belong elsewhere
 populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/ld
 populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/real-ld
@@ -1293,6 +1298,11 @@ rm -rf %{buildroot}
 %_libdir/condor/libcondor_z.a
 %_libdir/condor/libcondordrmaa.a
 %_libdir/condor/libcondorsyscall.a
+%ifarch %{ix86}
+%if 0%{?rhel} == 5
+%_libdir/condor/libcondorzsyscall.a
+%endif
+%endif
 # these probably belong elsewhere
 %_libdir/condor/ld
 %_libdir/condor/real-ld
