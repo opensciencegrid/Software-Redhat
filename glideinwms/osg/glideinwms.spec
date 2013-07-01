@@ -578,6 +578,7 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/glideinwms/creation/lib/__init__.py
 %{python_sitelib}/glideinwms/creation/lib/__init__.pyc
 %{python_sitelib}/glideinwms/creation/lib/__init__.pyo
+%{python_sitelib}/glideinwms/creation/templates/factory_initd_startup_template
 %{python_sitelib}/glideinwms/factory
 %{python_sitelib}/glideinwms/lib
 %{python_sitelib}/glideinwms/tools
@@ -641,6 +642,7 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/glideinwms/creation/lib/__init__.py
 %{python_sitelib}/glideinwms/creation/lib/__init__.pyc
 %{python_sitelib}/glideinwms/creation/lib/__init__.pyo
+%{python_sitelib}/glideinwms/creation/templates/frontend_initd_startup_template
 %{_initrddir}/gwms-frontend
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/gwms-frontend.conf
 %attr(-, frontend, frontend) %dir %{_sysconfdir}/gwms-frontend
