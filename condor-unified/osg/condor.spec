@@ -148,9 +148,9 @@ Patch9: proper_cream_v3.diff
 %if %blahp
 Patch10: config_batch_gahp_path.patch
 %endif
-%if %uw_build
-Patch11: cmake-makes.patch
-%endif
+# % if %uw_build
+# Patch11: cmake-makes.patch
+# % endif
 
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
