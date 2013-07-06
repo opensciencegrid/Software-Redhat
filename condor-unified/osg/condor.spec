@@ -148,9 +148,10 @@ Patch9: proper_cream_v3.diff
 %if %blahp
 Patch10: config_batch_gahp_path.patch
 %endif
-# % if %uw_build
+%if %uw_build
 # Patch11: cmake-makes.patch
-# % endif
+Patch12: std_local_ref-stub_gen-dep.patch
+%endif
 
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
@@ -589,9 +590,10 @@ exit 0
 %patch10 -p1 -b .config_batch_gahp_path
 %endif
 
-# % if %uw_build
+%if %uw_build
 # % patch11 -p1
-# % endif
+%patch12 -p1
+%endif
 
 # fix errant execute permissions
 find src -perm /a+x -type f -name "*.[Cch]" -exec chmod a-x {} \;
@@ -695,15 +697,11 @@ export CMAKE_PREFIX_PATH=/usr
 %endif
 %endif
 
-#%if %uw_build
-## build externals first to avoid dependency issues
-#make %{?_smp_mflags} externals
-#%endif
-#make %{?_smp_mflags}
-
-# should be able to build with -jN above, but there are still
-# intermittent errors in koji when building with many cores (-j24)
-make
+%if %uw_build
+# build externals first to avoid dependency issues
+make %{?_smp_mflags} externals
+%endif
+make %{?_smp_mflags}
 
 %install
 # installation happens into a temporary location, this function is

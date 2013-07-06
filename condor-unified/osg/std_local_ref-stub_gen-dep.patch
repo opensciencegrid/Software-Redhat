@@ -1,0 +1,10 @@
+--- ./src/condor_syscall_lib/CMakeLists.txt.orig	2013-05-08 16:14:37.000000000 -0500
++++ ./src/condor_syscall_lib/CMakeLists.txt	2013-07-05 16:40:20.906454194 -0500
+@@ -132,6 +132,7 @@
+ 	add_dependencies( switches syscall_numbers stub_gen )
+ 	add_dependencies( senders syscall_numbers stub_gen )
+ 	add_dependencies( receivers syscall_numbers stub_gen )
++	add_dependencies( std_local_ref syscall_numbers stub_gen )
+ 	add_dependencies( sys-list syscall_numbers stub_gen )
+ 
+ 	#################################################
