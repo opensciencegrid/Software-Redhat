@@ -84,7 +84,7 @@ Version: %{tarball_version}
 %define condor_release %condor_base_release
 %endif
 # Release: %condor_release%{?dist}.2
-Release: 8.unif.5%{?dist}
+Release: 8.unif.6%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -1614,6 +1614,9 @@ fi
 %endif
 
 %changelog
+* Fri Jul 05 2013 Carl Edquist <edquist@cs.wisc.edu> - 7.9.6-8.unif.6
+- Address build dependency issue seen with -j24
+
 * Fri Jun 21 2013 Carl Edquist <edquist@cs.wisc.edu> - 7.9.6-8.unif.5
 - Initial support for UW_BUILD
 
