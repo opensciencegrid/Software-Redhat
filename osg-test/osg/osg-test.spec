@@ -6,7 +6,7 @@
 Summary:   Tests an OSG Software installation
 Name:      osg-test
 Version:   1.2.9
-Release:   2%{?dist}
+Release:   3%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
 Packager:  VDT <vdt-support@opensciencegrid.org>
@@ -39,6 +39,9 @@ rm -rf $RPM_BUILD_ROOT
 /etc/grid-security/certificates/bffdd190.*
 
 %changelog
+* Mon Jul 08 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.2.9-3
+- rebuilt
+
 * Mon Jul 08 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.2.9-2
 - Bump to rebuild
 
