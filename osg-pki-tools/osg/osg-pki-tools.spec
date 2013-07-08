@@ -1,8 +1,9 @@
 Summary: osg-pki-tools
 Name: osg-pki-tools
 Version: 1.2.1
-Release: 3%{?dist}
+Release: 4%{?dist}
 Source: OSGPKITools-%{version}.tar.gz
+Patch0: changelog.patch
 License: Apache 2.0
 Group: Grid
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
@@ -35,6 +36,7 @@ tests for osg-pki-tools
 
 %prep
 %setup -n OSGPKITools-%{version}
+%patch0 -p1
 
 %build
 %{__python} setup.py build
@@ -53,6 +55,8 @@ install -m 755 -t %{buildroot}%{_bindir}    \
 install -d %{buildroot}%{_sysconfdir}/osg
 install -m 644 osgpkitools/pki-clients.ini %{buildroot}%{_sysconfdir}/osg
 mv -f %{buildroot}%{python_sitelib}/tests %{buildroot}%{python_sitelib}/osgpkitools/tests
+install -d %{buildroot}%{_defaultdocdir}/%{name}-%{version}
+install -m 644 -t %{buildroot}%{_defaultdocdir}/%{name}-%{version} CHANGELOG.txt LICENSE.txt README.txt
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -64,6 +68,7 @@ rm -rf $RPM_BUILD_ROOT
 /usr/bin/*
 %dir %{_sysconfdir}/osg
 %config(noreplace) %{_sysconfdir}/osg/pki-clients.ini
+%{_defaultdocdir}/%{name}-%{version}/*
 
 %files tests
 %defattr(-,root,root)
@@ -72,6 +77,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Jul 08 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.2.1-4
+- Add documentation
+
 * Mon Jul 08 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.2.1-3
 - Bump to rebuild
 
