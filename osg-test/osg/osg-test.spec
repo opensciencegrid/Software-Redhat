@@ -5,7 +5,7 @@
 
 Summary:   Tests an OSG Software installation
 Name:      osg-test
-Version:   1.2.8
+Version:   1.2.9
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -39,6 +39,9 @@ rm -rf $RPM_BUILD_ROOT
 /etc/grid-security/certificates/bffdd190.*
 
 %changelog
+* Mon Jul 08 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.2.9-1
+- Fix CVMFS test to work with new CVMFS 2.1
+
 * Fri May 23 2013 Brian Lin <blin@cs.wisc.edu> - 1.2.8-1
 - Fix glexec create create user proxy test
 
