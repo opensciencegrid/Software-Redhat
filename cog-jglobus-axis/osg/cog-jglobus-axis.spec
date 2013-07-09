@@ -3,7 +3,7 @@ Name: cog-jglobus-axis
 Summary: An implementation of Globus for Java
 License: Apache 2.0
 Version: 1.8.0
-Release: 3%{?dist}
+Release: 4%{?dist}
 URL: http://dev.globus.org/wiki/CoG_JGlobus_1.8.0
 Group: System Environment/Libraries
 Source0: http://www.globus.org/cog/distribution/1.8.0/cog-jglobus-fx-1.8.0-src.tar.gz
@@ -64,7 +64,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_javadir}/*
 
 %changelog
-* Tue Jul 09 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.8.0-3
+* Tue Jul 09 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.8.0-4
 - Make jglobus2 requirement explicit (SOFTWARE-1101)
 
 * Thu Sep 20 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 1.8.0-2
