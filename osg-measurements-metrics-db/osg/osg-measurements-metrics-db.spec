@@ -5,7 +5,7 @@
 
 Name:           osg-measurements-metrics-db
 Version:        1.2
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        OSG Measurements and Metrics web and database
 
 Group:          Applications/System
@@ -60,6 +60,19 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+
+* Mon Jul 8 2013 William B Hurst <wbhurst@cse.unl.edu>
+- updated version release to 1.2-6
+- updated config/GratiaWeb
+- - GratiaWeb-34: exit 0 --> exit $? 
+- updated osg-measurements-metrics-web-spec
+- - Requires: python-json --> python-simplejson
+- updated setup/setup_Web.cfg 
+- - requires = python-jason --> python-simplejson
+- updated src/gratia/web/__init__.py
+- - GratiaWeb-35: added new function 'NotContainsRegex'
+- - and supporting code to use new function to test
+- - filter_dict['facility'] & and filter_dict['vo'] 
 
 * Thu Jun 13 2013 William B Hurst <wbhurst@cse.unl.edu>
 - updated version release to 1.2-5
