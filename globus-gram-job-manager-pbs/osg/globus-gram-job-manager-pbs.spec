@@ -16,7 +16,7 @@
 Name:		globus-gram-job-manager-pbs
 %global _name %(tr - _ <<< %{name})
 Version:	1.6
-Release:	1.3%{?dist}
+Release:	1.4%{?dist}
 Summary:	Globus Toolkit - PBS Job Manager
 
 Group:		Applications/Internet
@@ -24,7 +24,9 @@ License:	ASL 2.0
 URL:		http://www.globus.org/
 Source:		http://www.globus.org/ftppub/gt5/5.2/5.2.2/packages/src/%{_name}-%{version}.tar.gz
 Source1:        pbs.rvf
-Patch1:     osg-teragrid-pbs.patch
+Source2:        caching_qstat
+Patch1:         osg-teragrid-pbs.patch
+Patch2:         slurm-support-pbs.pm.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Obsoletes:      globus-gram-job-manager-setup-pbs < 4.5
 
@@ -104,7 +106,8 @@ many others all over the world. A growing number of projects and companies are
 using the Globus Toolkit to unlock the potential of grids for their cause.
 
 The %{name} package contains:
-PBS Job Manager 
+PBS Job Manager
+Patched with SLURM support
 
 %description doc
 The Globus Toolkit is an open source software toolkit used for building Grid
@@ -137,6 +140,7 @@ PBS Job Manager Setup using SEG to monitor job state
 %setup -q -n %{_name}-%{version}
 
 %patch1 -p0
+%patch2 -p0
 %build
 # Remove files that should be replaced during bootstrap
 rm -f doxygen/Doxyfile*
@@ -171,6 +175,10 @@ make install DESTDIR=$RPM_BUILD_ROOT
 # Remove jobmanager-pbs from install dir so that it can be
 # added/removed by post scripts
 rm $RPM_BUILD_ROOT/etc/grid-services/jobmanager-pbs
+
+# Install the caching_qstat
+install -d $RPM_BUILD_ROOT%{_bindir}
+install -m 755 %{SOURCE2} $RPM_BUILD_ROOT%{_bindir}
 
 GLOBUSPACKAGEDIR=$RPM_BUILD_ROOT%{_datadir}/globus/packages
 
@@ -260,6 +268,7 @@ fi
 
 %files -f package.filelist
 %defattr(-,root,root,-)
+%{_bindir}/caching_qstat
 %dir %{_datadir}/globus/packages/%{_name}
 %dir %{_docdir}/%{name}-%{version}
 %config(noreplace) %{_sysconfdir}/globus/globus-pbs.conf
@@ -278,6 +287,9 @@ fi
 %dir %{_docdir}/%{name}-%{version}/html
 
 %changelog
+* Tue Jul 09 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.6-1.4
+- Patch to work with SLURM's PBS emulation layer (SOFTWARE-1105)
+
 * Fri Nov 02 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.6-1.3
 - Update pbs.rvf with more info
 
