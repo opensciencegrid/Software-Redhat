@@ -2,7 +2,7 @@ Name: jglobus
 Summary: An implementation of Globus for Java
 License: Apache 2.0
 Version: 2.0.5
-Release: 3.1%{?dist}
+Release: 4.1%{?dist}
 URL: http://www.globus.org/toolkit/jglobus/
 Group: System Environment/Libraries
 
@@ -31,6 +31,7 @@ Requires: java7
 Requires: jpackage-utils
 Requires: bouncycastle
 Requires: log4j
+Conflicts: cog-jglobus-axis < 1.8.0
 
 Requires(post): jpackage-utils
 Requires(postun): jpackage-utils
@@ -93,6 +94,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mavendepmapfragdir}/jglobus
 
 %changelog
+* Tue Jul 09 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.5-4.1
+- Add Conflict against cog-jglobus-axis < 1.8.0, since it was built with an older version of JGlobus. (SOFTWARE-1101)
+
 * Tue Jul 09 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.5-3.1
 - Merge changes into JDK 7 rebuild
 
