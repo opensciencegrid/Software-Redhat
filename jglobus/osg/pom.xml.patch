@@ -1,9 +1,12 @@
---- pom.xml.orig	2012-10-10 10:19:32.000000000 -0500
-+++ pom.xml	2013-02-22 12:38:03.205347542 -0600
-@@ -46,4 +46,8 @@
- 		</snapshotRepository>
- 	</distributionManagement>
- 
+Index: pom.xml
+===================================================================
+--- pom.xml.orig	2013-03-25 09:17:47.000000002 -0500
++++ pom.xml	2013-07-09 15:37:59.000000002 -0500
+@@ -145,4 +145,9 @@
+ 			</dependency>
+ 		</dependencies>
+ 	</dependencyManagement>
++
 +	<properties>
 +		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 +	</properties>
