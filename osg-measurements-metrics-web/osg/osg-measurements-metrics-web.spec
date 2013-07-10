@@ -5,7 +5,7 @@
 
 Name:           osg-measurements-metrics-web
 Version:        1.2
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        OSG Measurements and Metrics web and database
 
 Group:          Applications/System
@@ -80,6 +80,14 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+
+* Wed Jul 10 2013 William B Hurst <wbhurst@cse.unl.edu>
+- updated version release to 1.2-7
+- Modifications made in response to GratiaWeb-39
+- 'Disable Monitoring Pages'. The files touched
+- by these changes are src/gratia/web/__init__.py and
+- src/gratia/web/navigate.py; then the various
+- setup/*.cfg files for the 'release' change.
 
 * Mon Jul 8 2013 William B Hurst <wbhurst@cse.unl.edu>
 - updated version release to 1.2-6
