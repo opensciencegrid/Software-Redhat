@@ -31,8 +31,8 @@
       <entry name="TEST_ENTRY" enabled="False" gatekeeper="gatekeeper.domain.tld/jobmanager-condor" gridtype="gt2" rsl="(queue=default)(jobtype=single)" schedd_name="schedd_glideins2@FACTORY_HOSTNAME" verbosity="std" work_dir="OSG">
          <config>
             <max_jobs>
-                <per_entry held="1000" idle="4000" running="10000">
-                <default_per_frontend held="100" idle="400" running="5000"/>
+                <per_entry held="1000" idle="4000" glideins="10000"/>
+                <default_per_frontend held="100" idle="400" glideins="5000"/>
                 <per_frontends>
                 </per_frontends>
             </max_jobs>

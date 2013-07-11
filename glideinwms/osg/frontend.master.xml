@@ -1,8 +1,8 @@
 <frontend advertise_delay="5" frontend_name="FRONTEND_NAME_CHANGEME" loop_delay="60" advertise_with_multiple="True" advertise_with_tcp="True" frontend_monitor_index_page="False" frontend_versioning="False">
    <log_retention>
       <process_logs>
-         <process_log max_days="7.0" max_mbytes="100.0" min_days="3.0" type="ALL"/>
-         <process_log max_days="7.0" max_mbytes="100.0" min_days="3.0" type="DEBUG"/>
+         <process_log max_days="7.0" max_mbytes="100.0" min_days="3.0" msg_types="ALL"/>
+         <process_log max_days="7.0" max_mbytes="100.0" min_days="3.0" msg_types="DEBUG"/>
       </process_logs>
    </log_retention>
    <match match_expr="True">
