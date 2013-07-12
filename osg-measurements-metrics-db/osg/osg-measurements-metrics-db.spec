@@ -5,7 +5,7 @@
 
 Name:           osg-measurements-metrics-db
 Version:        1.2
-Release:        7%{?dist}
+Release:        8%{?dist}
 Summary:        OSG Measurements and Metrics web and database
 
 Group:          Applications/System
@@ -60,6 +60,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+
+* Thu Jul 11 2013 William B Hurst <wbhurst@cse.unl.edu>
+- Modifications to resolve GratiaWeb-38 'Disable
+- Authentication Warnings': were achieved by commenting
+- out /src/gratia/templates files: bysite.tmpl, byvo.tmpl,
+- main.tmpl in the initial 'is_authenticated' section
 
 * Wed Jul 10 2013 William B Hurst <wbhurst@cse.unl.edu>
 - updated version release to 1.2-7
