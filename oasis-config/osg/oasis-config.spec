@@ -1,14 +1,14 @@
 Summary: OASIS-specific configuration and metapackage for CVMFS
 Name: oasis-config
 Version: 3
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: ASL 2.0
 Group: Applications/Grid
 Source0: opensciencegrid.org.pub
 Source1: opensciencegrid.org.conf
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildArch: noarch
-Requires: cvmfs >= 2.1.11
+Requires: cvmfs >= 2.1.12
 Requires: wget
 
 %description
@@ -56,6 +56,9 @@ install -m 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/cvmfs/domain.d
 
 
 %changelog
+* Wed Jul 12 2013 Dave Dykstra <dwd@fnal.gov> 3-3
+- Require cvmfs 2.1.12
+
 * Wed Jun 26 2013 Dave Dykstra <dwd@fnal.gov> 3-2
 - Require latest version of cvmfs
 
