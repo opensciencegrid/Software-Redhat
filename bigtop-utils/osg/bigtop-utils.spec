@@ -1,7 +1,7 @@
 %define bigtop_utils_version 0.4+300
 %define bigtop_utils_patched_version 0.4-cdh4.0.1
 %define bigtop_utils_base_version 0.4
-%define bigtop_utils_release 1.cdh4.0.1.p0.2%{?dist}
+%define bigtop_utils_release 1.cdh4.0.1.p0.3%{?dist}
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
@@ -56,8 +56,8 @@ install -p -m 644 %{SOURCE2} .
 %install
 install -d -p -m 755 $RPM_BUILD_ROOT%{_libexecdir}/
 install -d -p -m 755 $RPM_BUILD_ROOT/etc/default
-install -p -m 755 %{SOURCE0} $RPM_BUILD_ROOT%{_libexecdir}/
-install -p -m 644 %{SOURCE2} $RPM_BUILD_ROOT/etc/default/bigtop-utils
+install -p -m 755 bigtop-detect-javahome $RPM_BUILD_ROOT%{_libexecdir}/
+install -p -m 644 bigtop-utils.default $RPM_BUILD_ROOT/etc/default/bigtop-utils
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -71,6 +71,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libexecdir}/bigtop-detect-javahome
 
 %changelog
+* Fri Jul 12 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 0.4+300-1.cdh4.0.1.p0.3
+- Fix spec file so patches script ends up in RPM
+
 * Tue May 28 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 0.4+300-1.cdh4.0.1.p0.2
 - Patch for bigtop-detect-javahome to detect OpenJDK 7
 
