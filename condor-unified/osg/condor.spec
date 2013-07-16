@@ -142,6 +142,10 @@ Source4: condor.osg-sysconfig
 Source5: condor_config.local.dedicated.resource
 
 Patch0: condor_config.generic.patch
+# This patch is here until it is pushed into upstream
+# https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=3635
+Patch1: condor_peaceful_off.patch
+Patch2: condor_ulimit.patch
 Patch3: chkconfig_off.patch
 Patch8: osg_sysconfig_in_init_script.patch
 Patch9: proper_cream_v3.diff
@@ -579,6 +583,8 @@ exit 0
 %endif
 
 %patch0 -p1
+%patch1 -p1
+%patch2 -p1
 %patch3 -p1
 %patch8 -p1
 
@@ -861,9 +867,10 @@ mkdir -p %{buildroot}%{_unitdir}
 cp %{SOURCE3} %{buildroot}%{_unitdir}/condor.service
 %else
 # install the lsb init script
-install -Dp -m0755 %{buildroot}/etc/examples/condor.init %buildroot/%_initrddir/condor
-mkdir -p %{buildroot}/usr/share/osg/sysconfig
-install -m 0644 %{SOURCE4} %buildroot/usr/share/osg/sysconfig/condor
+install -Dp -m0755 %{buildroot}/etc/examples/condor.init %{buildroot}%{_initrddir}/condor
+install -Dp -m 0644 %{SOURCE4} %buildroot/usr/share/osg/sysconfig/condor
+mkdir %{buildroot}%{_sysconfdir}/sysconfig/
+install -Dp -m 0644 %{buildroot}/etc/examples/condor.sysconfig %{buildroot}%{_sysconfdir}/sysconfig/condor
 %endif
 
 # Install perl modules
@@ -1015,6 +1022,7 @@ rm -rf %{buildroot}
 %else
 %_initrddir/condor
 /usr/share/osg/sysconfig/condor
+%config(noreplace) /etc/sysconfig/condor
 %endif
 %dir %_datadir/condor/
 %_datadir/condor/Chirp.jar
@@ -1626,6 +1634,9 @@ fi
 * Tue Jun 11 2013 Carl Edquist <edquist@cs.wisc.edu> - 7.9.6-8.unif.2
 - Add a parallel-setup sub-package for parallel universe configuration,
   namely setting up the host as a dedicated resource
+
+* Mon Jun 10 2013 Brian Lin <blin@cs.wisc.edu> - 7.8.8-2
+- Init script improvements
 
 * Fri Jun 07 2013 Carl Edquist <edquist@cs.wisc.edu> - 7.9.6-8.unif.1
 - Add in missing features from Fedora rpm
