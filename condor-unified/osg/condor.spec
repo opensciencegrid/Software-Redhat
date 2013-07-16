@@ -560,6 +560,14 @@ Provides condor_shadow_s and condor_master_s, which have all the globus
 libraries statically linked in and, as a result, have a smaller private
 memory footprint per process.  This makes it possible to run more shadows
 on a single machine at once when memory is the limiting factor.
+
+%package std-universe
+Summary: Enable standard universe jobs for HTCondor
+Group: Applications/System
+Requires: %name = %version-%release
+
+%description std-universe
+Includes all the files necessary to support running standard universe jobs.
 %endif
 
 %pre
@@ -833,12 +841,6 @@ rm -f %{buildroot}/%{_mandir}/man1/filelock_undertaker.1
 rm -f %{buildroot}/%{_mandir}/man1/install_release.1
 rm -f %{buildroot}/%{_mandir}/man1/cleanup_release.1
 
-%if ! %uw_build
-# not packaging standard universe
-rm -f %{buildroot}/%{_mandir}/man1/condor_compile.1
-rm -f %{buildroot}/%{_mandir}/man1/condor_checkpoint.1
-%endif
-
 # not packaging configure/install scripts
 rm -f %{buildroot}/%{_mandir}/man1/condor_configure.1
 
@@ -949,10 +951,12 @@ rm -rf %{buildroot}%{_libexecdir}/condor/bgp_*
 rm -rf %{buildroot}%{_datadir}/condor/libchirp_client.a
 rm -rf %{buildroot}%{_datadir}/condor/libcondorapi.a
 rm -rf %{buildroot}%{_mandir}/man1/cleanup_release.1*
-rm -rf %{buildroot}%{_mandir}/man1/condor_checkpoint.1*
 rm -rf %{buildroot}%{_mandir}/man1/condor_cold_start.1*
 rm -rf %{buildroot}%{_mandir}/man1/condor_cold_stop.1*
+%if ! %uw_build
+rm -rf %{buildroot}%{_mandir}/man1/condor_checkpoint.1*
 rm -rf %{buildroot}%{_mandir}/man1/condor_compile.1*
+%endif
 rm -rf %{buildroot}%{_mandir}/man1/condor_config_bind.1*
 rm -rf %{buildroot}%{_mandir}/man1/condor_configure.1*
 rm -rf %{buildroot}%{_mandir}/man1/condor_load_history.1*
@@ -1227,10 +1231,6 @@ rm -rf %{buildroot}
 %_bindir/condor_ping
 %_bindir/condor_tail
 %_bindir/condor_qsub
-%if %uw_build
-%_bindir/condor_checkpoint
-%_bindir/condor_compile   
-%endif
 # reconfig_schedd, restart
 # sbin/condor is a link for master_off, off, on, reconfig,
 %_sbindir/condor_advertise
@@ -1267,9 +1267,6 @@ rm -rf %{buildroot}
 %_libexecdir/condor/condor_gpu_discovery
 %_sbindir/condor_vm_vmware
 %if %uw_build
-%_sbindir/condor_ckpt_server
-%_sbindir/condor_shadow.std
-%_sbindir/condor_starter.std
 %_sbindir/deltacloud_gahp
 %_sbindir/unicore_gahp
 %endif
@@ -1286,33 +1283,6 @@ rm -rf %{buildroot}
 %dir %_var/lock/condor
 %dir %_var/lock/condor/local
 %dir %_var/run/condor
-%endif
-
-%if %uw_build
-%dir %_libdir/condor
-%_libdir/condor/libdrmaa.so
-%_libdir/condor/libglobus*.so*
-%_libdir/condor/libvomsapi*.so*
-%_libdir/condor/condor_rt0.o
-%_libdir/condor/libcomp_libgcc.a
-%_libdir/condor/libcomp_libgcc_eh.a
-%_libdir/condor/libcomp_libstdc++.a
-%_libdir/condor/libcondor_c.a
-%_libdir/condor/libcondor_nss_dns.a
-%_libdir/condor/libcondor_nss_files.a
-%_libdir/condor/libcondor_resolv.a
-%_libdir/condor/libcondor_z.a
-%_libdir/condor/libcondordrmaa.a
-%_libdir/condor/libcondorsyscall.a
-%ifarch %{ix86}
-%if 0%{?rhel} == 5
-%_libdir/condor/libcondorzsyscall.a
-%endif
-%endif
-# these probably belong elsewhere
-%_libdir/condor/ld
-%_libdir/condor/real-ld
-%_libdir/condor/ugahp.jar
 %endif
 
 #################
@@ -1563,9 +1533,47 @@ rm -rf %{buildroot}
 %files static-shadow
 %{_sbindir}/condor_master_s
 %{_sbindir}/condor_shadow_s
+
+%files std-universe
+%_bindir/condor_checkpoint
+%_bindir/condor_compile   
+%_sbindir/condor_ckpt_server
+%_sbindir/condor_shadow.std
+%_sbindir/condor_starter.std
+%_mandir/man1/condor_compile.1.gz
+%_mandir/man1/condor_checkpoint.1.gz
+
+# not sure how many of these are actually specific to std universe,
+# but they are all uw_build specific
+%dir %_libdir/condor
+%_libdir/condor/libdrmaa.so
+%_libdir/condor/libglobus*.so*
+%_libdir/condor/libvomsapi*.so*
+%_libdir/condor/condor_rt0.o
+%_libdir/condor/libcomp_libgcc.a
+%_libdir/condor/libcomp_libgcc_eh.a
+%_libdir/condor/libcomp_libstdc++.a
+%_libdir/condor/libcondor_c.a
+%_libdir/condor/libcondor_nss_dns.a
+%_libdir/condor/libcondor_nss_files.a
+%_libdir/condor/libcondor_resolv.a
+%_libdir/condor/libcondor_z.a
+%_libdir/condor/libcondordrmaa.a
+%_libdir/condor/libcondorsyscall.a
+%ifarch %{ix86}
+%if 0%{?rhel} == 5
+%_libdir/condor/libcondorzsyscall.a
+%endif
+%endif
+# these probably belong elsewhere
+%_libdir/condor/ld
+%_libdir/condor/real-ld
+%_libdir/condor/ugahp.jar
+
 %endif
 
 %if %systemd
+
 %post
 %if 0%{?fedora}
 test -x /usr/sbin/selinuxenabled && /usr/sbin/selinuxenabled
