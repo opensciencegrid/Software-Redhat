@@ -4,7 +4,7 @@
  	add_dependencies( switches syscall_numbers stub_gen )
  	add_dependencies( senders syscall_numbers stub_gen )
  	add_dependencies( receivers syscall_numbers stub_gen )
-+	add_dependencies( std_local_ref syscall_numbers stub_gen )
++	add_dependencies( std_local_ref senders receivers )
  	add_dependencies( sys-list syscall_numbers stub_gen )
  
  	#################################################
