@@ -287,7 +287,7 @@ fi
 %dir %{_docdir}/%{name}-%{version}/html
 
 %changelog
-* Tue Jul 09 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.6-1.4
+* Thu Jul 18 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.6-1.4
 - Patch to work with SLURM's PBS emulation layer (SOFTWARE-1105)
 
 * Fri Nov 02 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.6-1.3
