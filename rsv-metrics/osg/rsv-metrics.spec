@@ -1,7 +1,7 @@
 
 Name:      rsv-metrics
-Version:   3.7.7
-Release:   2%{?dist}
+Version:   3.7.8
+Release:   1%{?dist}
 Summary:   RSV metrics
 
 Group:     Applications/Monitoring
@@ -94,6 +94,13 @@ rm -rf $RPM_BUILD_ROOT
 %attr(-,rsv,rsv) %{_localstatedir}/log/rsv/probes
 
 %changelog
+* Fri Jul 26 2013 Carl Edquist <edquist@cs.wisc.edu> - 3.7.8-1
+- Updated to 3.7.8
+- SOFTWARE-563 - have gratia probe distinguish between certinfo and probe files
+- SOFTWARE-775 - better diagnostics for crl-expiry errors
+- SOFTWARE-783 - change custom 'timeout' option in pigeon probe to 'job-timeout'
+- SOFTWARE-1125 - make Java version probe only run every 6 hours
+
 * Fri Feb 22 2013 Brian Lin <blin@cs.wisc.edu> - 3.7.7-2
 - Remove fetch-crl requirement.
 

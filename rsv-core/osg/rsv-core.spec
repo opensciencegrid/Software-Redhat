@@ -1,6 +1,6 @@
 
 Name:      rsv-core
-Version:   3.7.7
+Version:   3.7.8
 Release:   1%{?dist}
 Summary:   RSV Core Infrastructure
 
@@ -125,6 +125,11 @@ fi
 
 
 %changelog
+* Fri Jul 26 2013 Carl Edquist <edquist@cs.wisc.edu> - 3.7.8-1
+- Updated to 3.7.8
+- SOFTWARE-783 - Allow timeout or job-timeout options in probe meta files
+- SOFTWARE-1116 - Add additional condor-cron config files to rsv-profiler output
+
 * Thu Oct 25 2012 Matyas Selmeci <matyas@cs.wisc.edu> 3.7.7-1
 - Updated to 3.7.7
 
