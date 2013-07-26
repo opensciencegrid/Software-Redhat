@@ -1,7 +1,7 @@
 
 Name:      condor-cron
 Version:   1.0.9
-Release:   1%{?dist}
+Release:   2%{?dist}
 Summary:   A framework to run cron-style jobs within Condor
 
 Group:     Applications/System
@@ -9,6 +9,7 @@ License:   Apache 2.0
 URL:       http://www.cs.wisc.edu/condor
 
 Source0:   %{name}-%{version}.tar.gz
+Patch0:    condor_config.patch
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch: noarch
@@ -33,6 +34,7 @@ getent passwd cndrcron >/dev/null || useradd -r -g cndrcron -d /var/lib/condor-c
 
 %prep
 %setup -q
+%patch0 -p1
 
 
 %install
@@ -143,6 +145,11 @@ fi
 
 
 %changelog
+* Tue Jul 16 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0.9-2
+- Patch condor_config file to have more descriptive comments, and also remove
+  the CONDOR_IDS line because /etc/condor-cron/config.d/condor_ids will set
+  that anyway. (SOFTWARE-1124)
+
 * Thu Jul 05 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> 1.0.9-1
 - Update to 1.0.9
 - TECHONOLOGY-20 - patch for Condor-CE support
