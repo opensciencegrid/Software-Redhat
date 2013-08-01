@@ -1,5 +1,5 @@
 %global name osg-configure
-%global version 1.0.32
+%global version 1.0.33
 %global release 1%{?dist}
 
 Summary: Package for configure-osg and associated scripts
@@ -221,6 +221,10 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/osg/config.d/20-slurm.ini
 
 %changelog
+* Thu Aug 1 2013 Suchandra Thapa <sthapa@ci.uchicago.edu> 1.0.30-1
+- Fixes for lines with spaces at beginning of sections in ini files
+- Increase the allowed memory to 512GB per node in GIP sanity checks
+
 * Thu Apr 25 2013 Suchandra Thapa <sthapa@ci.uchicago.edu> 1.0.30-1
 - Remove duplicate and broken check for SGE log files
 
