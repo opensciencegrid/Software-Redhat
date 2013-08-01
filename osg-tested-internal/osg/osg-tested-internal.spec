@@ -1,7 +1,7 @@
 Name:      osg-tested-internal
 Summary:   All OSG packages we test (internal use only)
 Version:   1
-Release:   13%{?dist}
+Release:   14%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -11,10 +11,9 @@ BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
 ################################################################################
 #
-# RHEL 5
+# Common
 #
 ################################################################################
-%if 0%{?rhel} < 6
 Requires: edg-mkgridmap
 Requires: glexec
 Requires: osg-ce-condor
@@ -33,6 +32,23 @@ Requires: xrootd-client
 Requires: cvmfs
 Requires: osg-configure-tests
 Requires: cvmfs-keys
+
+Requires: gratia-service
+Requires: gratia-probe-psacct
+Requires: gratia-probe-condor
+Requires: gratia-probe-glexec
+Requires: gratia-probe-dcache-storage
+Requires: gratia-probe-gridftp-transfer
+Requires: gratia-probe-bdii-status
+Requires: gratia-probe-pbs-lsf
+
+################################################################################
+#
+# RHEL 5
+#
+################################################################################
+%if 0%{?rhel} < 6
+# nothing here right now
 %endif
 
 ################################################################################
@@ -41,24 +57,7 @@ Requires: cvmfs-keys
 #
 ################################################################################
 %if 0%{?rhel} == 6
-Requires: edg-mkgridmap
-Requires: glexec
-Requires: osg-ce-condor
-Requires: osg-se-bestman
-Requires: osg-se-bestman-xrootd
-Requires: osg-voms
-Requires: rsv
-Requires: yum-utils
-Requires: torque-server
-Requires: torque-mom
-Requires: torque-client
-Requires: torque-scheduler
-Requires: osg-ce-pbs
-Requires: xrootd
-Requires: xrootd-client
-Requires: cvmfs
-Requires: osg-configure-tests
-Requires: cvmfs-keys
+# nothing here right now
 %endif
 
 
@@ -75,6 +74,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Aug 01 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1-14
+- Add gratia-service and several probes
+
 * Thu Apr 04 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1-13
 - xrootd-server renamed to xrootd to match renaming in xrootd 3.3.1
 
