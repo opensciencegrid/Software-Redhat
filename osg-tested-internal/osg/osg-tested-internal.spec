@@ -1,7 +1,7 @@
 Name:      osg-tested-internal
 Summary:   All OSG packages we test (internal use only)
 Version:   1
-Release:   14%{?dist}
+Release:   15%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -16,6 +16,7 @@ BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 ################################################################################
 Requires: edg-mkgridmap
 Requires: glexec
+Requires: /usr/sbin/condor_master
 Requires: osg-ce-condor
 Requires: osg-se-bestman
 Requires: osg-se-bestman-xrootd
@@ -74,6 +75,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Aug 01 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1-15
+- Add /usr/sbin/condor_master so we get 'condor' and not 'empty-condor'
+
 * Thu Aug 01 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1-14
 - Add gratia-service and several probes
 
