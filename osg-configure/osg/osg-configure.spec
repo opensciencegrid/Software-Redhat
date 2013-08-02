@@ -221,7 +221,10 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/osg/config.d/20-slurm.ini
 
 %changelog
-* Thu Aug 1 2013 Suchandra Thapa <sthapa@ci.uchicago.edu> 1.0.30-1
+* Fri Aug 2 2013 Suchandra Thapa <sthapa@ci.uchicago.edu> 1.0.34-1
+- Add unit tests for spaces in ini files
+
+* Thu Aug 1 2013 Suchandra Thapa <sthapa@ci.uchicago.edu> 1.0.33-1
 - Fixes for lines with spaces at beginning of sections in ini files
 - Increase the allowed memory to 512GB per node in GIP sanity checks
 
