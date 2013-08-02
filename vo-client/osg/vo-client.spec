@@ -1,5 +1,5 @@
 Name:           vo-client
-Version:        45
+Version:        46
 Release:        1%{?dist}
 Summary:        Contains vomses file for use with user authentication and edg-mkgridmap.conf file that contains configuration information for edg-mkgridmap.
 
@@ -85,6 +85,14 @@ rm -rf $RPM_BUILD_ROOT
 %attr(0600,tomcat,tomcat) %config(noreplace) %{_sysconfdir}/gums/gums.config.template
 
 %changelog
+* Fri Aug 02 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 46-1
+- Updated to vo-client 46:
+  - Remove NWICG VO
+  - Add ENMR VO
+  - Add Darkside VO
+  - Change VOMS URL for NYSGRID
+  - Add production role for Belle VO
+
 * Tue Jul 02 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 45-1
 - Updated to vo-client v45:
   - Add GLAST VO
