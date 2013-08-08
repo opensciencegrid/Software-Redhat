@@ -1,0 +1,8 @@
+osg-control is a python wrapper script built on top of osg-configure to
+manage the system services listed with "osg-configure --enabled-services"
+
+
+The initial import of Tony Tiradani's osg-control was taken from:
+
+  http://home.fnal.gov/~tiradani/downloads/osg-control
+
