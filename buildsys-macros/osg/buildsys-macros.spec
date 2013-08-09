@@ -5,7 +5,7 @@ Version:	5
 %else
 Version:        %{?rhel}
 %endif
-Release:	7%{?dist}
+Release:	8%{?dist}
 License:	GPL
 Group:		Development/Buildsystem
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -13,7 +13,7 @@ Buildarch:  	noarch
 Requires:	rpmdevtools
 
 %description
-Macros for the Fedora Buildsystem
+Macros for the OSG Buildsystem
 
 %prep
 
@@ -26,6 +26,7 @@ VERSION=%{version}
 printf %s%b "%" "rhel $VERSION\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.disttag
 printf %s%b "%" "dist .osg.el$VERSION\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.disttag
 printf %s%b "%" "el$VERSION 1\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.disttag
+printf %s%b "%" "osg 1\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.disttag
 printf %s%b "%" "__arch_install_post /usr/lib/rpm/check-buildroot\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.checkbuild
 if [[ $VERSION -eq 5 ]]; then
     printf %s%b "%" "_source_filedigest_algorithm 1\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.digest
@@ -48,6 +49,9 @@ rm -rf $RPM_BUILD_ROOT
 /etc/rpm/macros.checkbuild
 
 %changelog
+* Fri Aug 09 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 6-8
+- Added 'osg' macro that's 1 for all osg builds
+
 * Wed Jan 18 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 6-7.osg
 - Added rhel6 version
 
