@@ -3,11 +3,12 @@
 %define local_maven /tmp/m2-repository
 # Don't want to repack jars
 %define __os_install_post %{nil}
+%define jglobus_version 2.0.5
 
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.3.18.009
-Release: 15.3%{?dist}
+Release: 16%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 %if 0%{?rhel} < 6
@@ -154,7 +155,12 @@ Summary: Tomcat service for GUMS
 %{mvn} install:install-file -B -DgroupId=org.apache.xalan -DartifactId=xalan -Dversion=2.7.1 -Dpackaging=jar -Dfile=`build-classpath xalan-j2` -Dmaven.repo.local=%{local_maven}
 %{mvn} install:install-file -B -DgroupId=log4j -DartifactId=log4j -Dversion=1.2.12 -Dpackaging=jar -Dfile=`build-classpath log4j` -Dmaven.repo.local=%{local_maven}
 
-
+# Add jglobus system deps
+%{mvn} install:install-file -B -DgroupId=jglobus -DartifactId=gridftp -Dversion=%{jglobus_version} -Dpackaging=jar -Dfile=`build-classpath jglobus/gridftp-%{jglobus_version}` -Dmaven.repo.local=%{local_maven}
+%{mvn} install:install-file -B -DgroupId=jglobus -DartifactId=gss -Dversion=%{jglobus_version} -Dpackaging=jar -Dfile=`build-classpath jglobus/gss-%{jglobus_version}` -Dmaven.repo.local=%{local_maven}
+%{mvn} install:install-file -B -DgroupId=jglobus -DartifactId=io -Dversion=%{jglobus_version} -Dpackaging=jar -Dfile=`build-classpath jglobus/io-%{jglobus_version}` -Dmaven.repo.local=%{local_maven}
+%{mvn} install:install-file -B -DgroupId=jglobus -DartifactId=jsse -Dversion=%{jglobus_version} -Dpackaging=jar -Dfile=`build-classpath jglobus/jsse-%{jglobus_version}` -Dmaven.repo.local=%{local_maven}
+%{mvn} install:install-file -B -DgroupId=jglobus -DartifactId=ssl-proxies -Dversion=%{jglobus_version} -Dpackaging=jar -Dfile=`build-classpath jglobus/ssl-proxies-%{jglobus_version}` -Dmaven.repo.local=%{local_maven}
 
 
 pushd gums-core
@@ -280,7 +286,7 @@ touch $RPM_BUILD_ROOT%{_javadir}/javamail.jar
 build-jar-repository $RPM_BUILD_ROOT%{_noarchlib}/%{dirname} jglobus trustmanager trustmanager-axis ant antlr bcprov commons-cli commons-codec commons-collections commons-digester commons-discovery commons-httpclient commons-lang commons-logging %{jacc} jta joda-time mysql-connector-java xerces-j2 xalan-j2 log4j
 
 mkdir -p $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib
-build-jar-repository $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib trustmanager trustmanager-axis ant antlr bcprov commons-beanutils commons-cli commons-codec commons-collections commons-digester commons-discovery commons-httpclient commons-lang commons-logging %{jacc} jta joda-time mysql-connector-java xalan-j2 xerces-j2 log4j
+build-jar-repository $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib jglobus trustmanager trustmanager-axis ant antlr bcprov commons-beanutils commons-cli commons-codec commons-collections commons-digester commons-discovery commons-httpclient commons-lang commons-logging %{jacc} jta joda-time mysql-connector-java xalan-j2 xerces-j2 log4j
 
 
 #Fix log4j mess and replace with standard ones
@@ -360,6 +366,9 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+* Fri Aug 02 2013 Brian Lin <blin@cs.wisc.edu> - 1.3.18.009-16
+- Use system dependency for jglobus
+
 * Tue Jan 29 2013 Doug Strain <dstrain@fnal.gov> - 1.3.18.009-15.3
 - Fix for directory location of gums client log files
 
