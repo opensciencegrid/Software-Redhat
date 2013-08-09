@@ -5,7 +5,7 @@
 
 Name:           osg-measurements-metrics-db
 Version:        1.2
-Release:        9%{?dist}
+Release:        10%{?dist}
 Summary:        OSG Measurements and Metrics web and database
 
 Group:          Applications/System
@@ -61,13 +61,12 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 
-* Thu Jul 25 2013 William B Hurst <wbhurst@cse.unl.edu>
-- Modification made to resolve GOC ticket 15719:
-- 'Unable to retrieve transfer data for USCMS-FNAL-WC1-SE'
-- file modified: src/gratia/config/generic_queries.xml
-- query name modified: 'summary'; change made was to
-- remove 'Unknown|unknown' from pre-populated:
-- 'exclude-vo' field
+* Fri Aug  9 2013 William B Hurst <wbhurst@cse.unl.edu>
+- For version GratiaWeb release version: 1.2-10
+- Additional changes made to resolve GratiaWeb-35 (^Batch$):
+- src/gratia/web/__init__.py: additional changes made to
+- function 'NotContainsRegex' and application of function
+- in code below (lines: 192 and 211)
 
 * Thu Jul 11 2013 William B Hurst <wbhurst@cse.unl.edu>
 - Modifications to resolve GratiaWeb-38 'Disable
