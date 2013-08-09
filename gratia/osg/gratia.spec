@@ -1,8 +1,8 @@
 Name: gratia
 Summary: Gratia OSG accounting system
 Group: Applications/System
-Version: 1.13.9
-Release: 7%{?dist}
+Version: 1.13.10
+Release: 1.1%{?dist}
 License: GPL
 Group: Applications/System
 URL: http://sourceforge.net/projects/gratia/
@@ -233,6 +233,9 @@ fi
 %attr(0640,root,tomcat) %config(noreplace) %{_sysconfdir}/gratia/services/service-configuration.properties
 %attr(0640,root,tomcat) %config(noreplace) %{_sysconfdir}/gratia/services/service-authorization.properties
 %config(noreplace) %{_sysconfdir}/gratia/services/log4j.properties
+%verify(not md5 size mtime user) %{_sysconfdir}/gratia/services/service-configuration.properties
+%verify(not md5 size mtime user) %{_sysconfdir}/gratia/services/service-authorization.properties
+%verify(not md5 size mtime user) %{_sysconfdir}/gratia/services/log4j.properties
 %attr(0750,tomcat,tomcat) %dir %{_var}/lib/%_tomcat/webapps/gratia-reporting/logs
 %attr(0750,tomcat,tomcat) %dir %{_var}/lib/%_tomcat/webapps/gratia-reporting/WEB-INF/platform/configuration
 %attr(0750,tomcat,tomcat)  %{_var}/lib/%_tomcat/webapps/gratia-reporting/WEB-INF/server-config.wsdd
@@ -268,7 +271,10 @@ fi
 %dir %{_sysconfdir}/gratia/services
 %attr(0640,root,tomcat) %config(noreplace) %{_sysconfdir}/gratia/services/service-configuration.properties
 %attr(0640,root,tomcat) %config(noreplace) %{_sysconfdir}/gratia/services/service-authorization.properties
+%verify(not md5 size mtime user) %{_sysconfdir}/gratia/services/service-configuration.properties
+%verify(not md5 size mtime user) %{_sysconfdir}/gratia/services/service-authorization.properties
 %config(noreplace) %{_sysconfdir}/gratia/services/log4j.properties
+%verify(not md5 size mtime user) %{_sysconfdir}/gratia/services/log4j.properties
 %attr(0750,tomcat,tomcat) %dir %{_var}/lib/%_tomcat/webapps/gratia-reporting/logs
 %attr(0750,tomcat,tomcat) %dir %{_var}/lib/%_tomcat/webapps/gratia-reporting/WEB-INF/platform/configuration
 %attr(0750,tomcat,tomcat)  %{_var}/lib/%_tomcat/webapps/gratia-reporting/WEB-INF/server-config.wsdd
@@ -332,6 +338,13 @@ fi
 
 
 %changelog
+* Fri Aug 09 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.13.10-1.1
+- rebuild with Java 7
+
+* Tue May 14 2013 Tanya Levshina <tlevshin@fnal.gov> - 1.13.10-1
+pre-proudction release, add verify not for configuration files.
+Hyunwoo fixes for SiteMgmt.java
+
 * Tue May 07 2013 Carl Edquist <edquist@cs.wisc.edu> - 1.13.9-7
 - Require missing java dir names instead of workaround package
 
