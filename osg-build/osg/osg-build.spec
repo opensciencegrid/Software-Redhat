@@ -1,6 +1,6 @@
 
 Name:           osg-build
-Version:        1.2.5
+Version:        1.2.6
 Release:        1%{?dist}
 Summary:        Build tools for the OSG
 
@@ -63,6 +63,10 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_docdir}/%{name}/sample-osg-build.ini
 
 %changelog
+* Fri Aug 09 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.2.6-1
+- Add %osg macro
+- Shorten arguments to rpmbuild
+
 * Fri Feb 15 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.2.5-1
 - Add --upcoming flag to osg-build koji
 - Code cleanup
