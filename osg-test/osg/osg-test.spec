@@ -5,7 +5,7 @@
 
 Summary:   Tests an OSG Software installation
 Name:      osg-test
-Version:   1.2.10
+Version:   1.2.11
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -39,6 +39,10 @@ rm -rf $RPM_BUILD_ROOT
 /etc/grid-security/certificates/bffdd190.*
 
 %changelog
+* Mon Aug 12 2013 Brian Lin <blin@cs.wisc.edu> - 1.2.11-1
+- Added gratia probe tests
+- Fixed bestman test bugs
+
 * Mon Jul 22 2013 Brian Lin <blin@cs.wisc.edu> - 1.2.10-1
 - New version: Made improvements to core and files library
 
