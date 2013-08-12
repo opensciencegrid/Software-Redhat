@@ -5,7 +5,7 @@
 
 Name:           osg-measurements-metrics-web
 Version:        1.2
-Release:        11%{?dist}
+Release:        12%{?dist}
 Summary:        OSG Measurements and Metrics web and database
 
 Group:          Applications/System
@@ -80,6 +80,18 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+
+* Mon Aug 12 2013 William B Hurst <wbhurst@cse.unl.edu>
+- For version GratiaWeb release version: 1.2-12
+- Changes made to resolve GOC ticket 15713 (BNL disappears):
+-   source modified: 
+-   src/gratia/config/generic_queries.xml
+-     lines 665 (simple_query), 776 (site_simple), 821 (site_summary)
+-     from exclude-vo options;
+-   source modified: 
+-   src/gratia/config/generic_secure_queries.xml
+-     line 27 (user_summary) to removed 'Unknown|unknown'
+-     from exclude-vo options;
 
 * Fri Aug  9 2013 William B Hurst <wbhurst@cse.unl.edu>
 - For version GratiaWeb release version: 1.2-11
