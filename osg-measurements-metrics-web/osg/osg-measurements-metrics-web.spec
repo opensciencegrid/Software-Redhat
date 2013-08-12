@@ -5,7 +5,7 @@
 
 Name:           osg-measurements-metrics-web
 Version:        1.2
-Release:        10%{?dist}
+Release:        11%{?dist}
 Summary:        OSG Measurements and Metrics web and database
 
 Group:          Applications/System
@@ -80,6 +80,17 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+
+* Fri Aug  9 2013 William B Hurst <wbhurst@cse.unl.edu>
+- For version GratiaWeb release version: 1.2-11
+- Changes made to resolve GratiaWeb Request-56 
+- (replace @ with , for csv output): the changes
+- made for this issue were: 
+- /src/gratia/config/gratia_bar_queries.xml:
+-   line 1190: <pivot_transform>displayNameSite --> displayNameCommaSite
+- /src/gratia/database/query_handler.py:
+-   lines added: 433-440 - for the addition of a new 
+- pivot_transform function using comma as the delimeter.
 
 * Fri Aug  9 2013 William B Hurst <wbhurst@cse.unl.edu>
 - For version GratiaWeb release version: 1.2-10
