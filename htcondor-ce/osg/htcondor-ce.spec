@@ -1,7 +1,7 @@
 
 Name: htcondor-ce
 Version: 0.5.6
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: A framework to run HTCondor as a CE
 
 Group: Applications/System
@@ -62,6 +62,7 @@ Summary: Client-side tools for submission to HTCondor-CE
 # Note the strange requirements (base package is not required!
 # Point is to be able to submit jobs without installing the server.
 Requires: condor
+Requires: condor-python
 Requires: /usr/bin/grid-proxy-init
 Requires: /usr/bin/voms-proxy-init
 
@@ -167,6 +168,9 @@ fi
 %{_bindir}/condor_ce_trace
 
 %changelog
+* Wed Aug 14 2013 Brian Lin <blin@cs.wisc.edu> - 0.5.6-2
+- Add condor-python requirement to htcondor-ce-client
+
 * Sat May 04 2013 Brian Bockelman <bbockelm@cse.unl.edu> - 0.5.6-1
 - Improve hold reason error message.
 - Enable HTCondor audit log by default. 
