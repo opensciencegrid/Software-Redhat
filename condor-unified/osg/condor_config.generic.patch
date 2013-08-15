@@ -1,5 +1,5 @@
 --- condor-7.9.6/src/condor_examples/condor_config.generic.orig	2013-05-08 16:14:37.000000000 -0500
-+++ condor-7.9.6/src/condor_examples/condor_config.generic	2013-06-18 13:46:06.956043343 -0500
++++ condor-7.9.6/src/condor_examples/condor_config.generic	2013-08-15 17:49:41.563545393 -0500
 @@ -1,12 +1,31 @@
  ######################################################################
 +######################################################################
@@ -36,7 +36,14 @@
  ##
  ##  The file is divided into four main parts:
  ##  Part 1:  Settings you likely want to customize 
-@@ -53,25 +72,29 @@
+@@ -47,31 +66,35 @@
+ ######################################################################
+ 
+ ##  What machine is your central manager?
+-CONDOR_HOST	= central-manager-hostname.your.domain
++CONDOR_HOST	= $(FULL_HOSTNAME)
+ 
+ ##--------------------------------------------------------------------
  ##  Pathnames:
  ##--------------------------------------------------------------------
  ##  Where have you installed the bin, sbin and lib condor directories?   
@@ -182,7 +189,11 @@
  
  
  ##  Where are the binaries for these daemons?
-@@ -1083,6 +1137,7 @@
+@@ -1079,10 +1133,10 @@
+ STARTER_LOCAL			= $(SBIN)/condor_starter
+ JOB_ROUTER                      = $(LIBEXEC)/condor_job_router
+ ROOSTER                         = $(LIBEXEC)/condor_rooster
+-HDFS				= $(SBIN)/condor_hdfs
  SHARED_PORT			= $(LIBEXEC)/condor_shared_port
  TRANSFERER			= $(LIBEXEC)/condor_transferer
  DEFRAG                          = $(LIBEXEC)/condor_defrag
@@ -190,7 +201,7 @@
  
  ##  When the master starts up, it can place it's address (IP and port)
  ##  into a file.  This way, tools running on the local machine don't
-@@ -1159,11 +1214,13 @@
+@@ -1159,11 +1213,13 @@
  ##--------------------------------------------------------------------
  ## Address to which Condor will send a weekly e-mail with output of
  ## condor_status.
@@ -206,7 +217,7 @@
  
  ##  When the collector starts up, it can place it's address (IP and port)
  ##  into a file.  This way, tools running on the local machine don't
-@@ -1180,6 +1237,7 @@
+@@ -1180,6 +1236,7 @@
  ## Determine if the Negotiator will honor SlotWeight attributes, which
  ## may be used to give a slot greater weight when calculating usage.
  #NEGOTIATOR_USE_SLOT_WEIGHTS = True
@@ -214,7 +225,7 @@
  
  
  ## How often the Negotaitor starts a negotiation cycle, defined in
-@@ -1617,7 +1675,7 @@
+@@ -1617,7 +1674,7 @@
  ##--------------------------------------------------------------------
  ##  condor_starter
  ##--------------------------------------------------------------------
@@ -223,16 +234,26 @@
  ##  jobs on your execute machines.  If you want this, uncomment the
  ##  following entry and set it to how "nice" you want the user
  ##  jobs. (1-19)  The larger the number, the lower priority the
-@@ -1670,7 +1728,7 @@
+@@ -1670,13 +1727,12 @@
  #     UNIX); the name will be something like:
  #         \\.\pipe\condor_procd
  #
 -PROCD_ADDRESS = $(LOCK)/procd_pipe
 +PROCD_ADDRESS = $(RUN)/procd_pipe
  
- # Note that in other Condor daemons, turning on D_PROCFAMILY will
- # result in that daemon logging all of its interactions with the
-@@ -1769,7 +1827,7 @@
+-# Note that in other Condor daemons, turning on D_PROCFAMILY will
+-# result in that daemon logging all of its interactions with the
+-# ProcD.
+-#
+-PROCD_LOG = $(LOG)/ProcLog
++## Note that in other Condor daemons, turning on D_PROCFAMILY will
++## result in that daemon logging all of its interactions with the
++## ProcD.
++#PROCD_LOG = $(LOG)/ProcLog
+ 
+ # This is the maximum period that the procd will use for taking
+ # snapshots (the actual period may be lower if a condor daemon registers
+@@ -1769,7 +1825,7 @@
  ## them here.  However, do not remove the existing entries, as Condor
  ## needs them.
  
@@ -241,7 +262,7 @@
  
  ##  JAVA_CLASSPATH_ARGUMENT describes the command-line parameter
  ##  used to introduce a new classpath:
-@@ -2378,7 +2436,7 @@
+@@ -2378,7 +2434,7 @@
  #SSH_TO_JOB_SSHD_ARGS = "-i -e -f %f"
  
  # sshd configuration template used by condor_ssh_to_job_sshd_setup.
@@ -250,3 +271,101 @@
  
  # Path to ssh-keygen
  #SSH_TO_JOB_SSH_KEYGEN = /usr/bin/ssh-keygen
+@@ -2388,97 +2444,6 @@
+ # %% --> %
+ #SSH_TO_JOB_SSH_KEYGEN_ARGS = "-N '' -C '' -q -f %f -t rsa"
+ 
+-######################################################################
+-##
+-##  Condor HDFS
+-##
+-##  This is the default local configuration file for configuring Condor
+-##  daemon responsible for running services related to hadoop 
+-##  distributed storage system.  You should copy this file to the
+-##  appropriate location and customize it for your needs.  
+-##
+-##  Unless otherwise specified, settings that are commented out show
+-##  the defaults that are used if you don't define a value.  Settings
+-##  that are defined here MUST BE DEFINED since they have no default
+-##  value.
+-##
+-######################################################################
+-
+-######################################################################
+-## FOLLOWING MUST BE CHANGED
+-######################################################################
+-
+-## The location for hadoop installation directory. The default location
+-## is under 'libexec' directory. The directory pointed by HDFS_HOME 
+-## should contain a lib folder that contains all the required Jars necessary
+-## to run HDFS name and data nodes. 
+-#HDFS_HOME = $(RELEASE_DIR)/libexec/hdfs
+-
+-## The host and port for hadoop's name node. If this machine is the
+-## name node (see HDFS_SERVICES) then the specified port will be used
+-## to run name node. 
+-HDFS_NAMENODE = hdfs://example.com:9000
+-HDFS_NAMENODE_WEB = example.com:8000
+-
+-HDFS_BACKUPNODE = hdfs://example.com:50100
+-HDFS_BACKUPNODE_WEB = example.com:50105
+-
+-## You need to pick one machine as name node by setting this parameter
+-## to HDFS_NAMENODE. The remaining machines in a storage cluster will
+-## act as data nodes (HDFS_DATANODE).
+-HDFS_NODETYPE = HDFS_DATANODE
+-
+-## If machine is selected to be NameNode then by a role should defined.
+-## If it selected to be DataNode then this parameter is ignored.
+-## Available options:
+-## ACTIVE: Active NameNode role (default value)
+-## BACKUP: Always synchronized with the active NameNode state, thus 
+-##         creating a backup of the namespace. Currently the NameNode
+-##         supports one Backup node at a time.
+-## CHECKPOINT: Periodically creates checkpoints of the namespace. 
+-HDFS_NAMENODE_ROLE = ACTIVE
+-
+-## The two set of directories that are required by HDFS are for name 
+-## node (HDFS_NAMENODE_DIR) and data node (HDFS_DATANODE_DIR). The 
+-## directory for name node is only required for a machine running 
+-## name node service and  is used to store critical meta data for 
+-## files. The data node needs its directory to store file blocks and 
+-## their replicas.
+-HDFS_NAMENODE_DIR = /tmp/hadoop_name
+-HDFS_DATANODE_DIR = /scratch/tmp/hadoop_data
+-
+-## Unlike name node address settings (HDFS_NAMENODE), that needs to be 
+-## well known across the storage cluster, data node can run on any 
+-## arbitrary port of given host.
+-#HDFS_DATANODE_ADDRESS = 0.0.0.0:0
+-
+-####################################################################
+-## OPTIONAL
+-#####################################################################
+-
+-## Sets the log4j debug level. All the emitted debug output from HDFS
+-## will go in 'hdfs.log' under $(LOG) directory.
+-#HDFS_LOG4J=DEBUG
+-
+-## The access to HDFS services both name node and data node can be 
+-## restricted by specifying IP/host based filters. By default settings
+-## from ALLOW_READ/ALLOW_WRITE and DENY_READ/DENY_WRITE
+-## are used to specify allow and deny list. The below two parameters can
+-## be used to override these settings. Read the Condor manual for 
+-## specification of these filters.
+-## WARN: HDFS doesn't make any distinction between read or write based connection.
+-#HDFS_ALLOW=*
+-#HDFS_DENY=*
+-
+-#Fully qualified name for Name node and Datanode class.
+-#HDFS_NAMENODE_CLASS=org.apache.hadoop.hdfs.server.namenode.NameNode
+-#HDFS_DATANODE_CLASS=org.apache.hadoop.hdfs.server.datanode.DataNode
+-#HDFS_DFSADMIN_CLASS=org.apache.hadoop.hdfs.tools.DFSAdmin
+-
+-## In case an old name for hdfs configuration files is required.
+-#HDFS_SITE_FILE = hdfs-site.xml
+-
+-
+ ##
+ ##--------------------------------------------------------------------
+ ##  file transfer plugin defaults
