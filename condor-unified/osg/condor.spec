@@ -306,7 +306,6 @@ BuildRequires: latex2html
 %endif
 
 Requires: mailx
-Requires: python >= 2.2
 Requires: condor-classads = %{version}-%{release}
 Requires: condor-procd = %{version}-%{release}
 
@@ -546,6 +545,7 @@ host as the DedicatedScheduler.
 %package python
 Summary: Python bindings for HTCondor.
 Group: Applications/System
+Requires: python >= 2.2
 Requires: %name = %version-%release
 
 %description python
@@ -558,6 +558,7 @@ the ClassAd library and HTCondor from python
 Summary: BOSCO, a HTCondor overlay system for managing jobs at remote clusters
 Url: http://bosco.opensciencegrid.org
 Group: Applications/System
+Requires: python >= 2.2
 Requires: %name = %version-%release
 
 %description bosco
