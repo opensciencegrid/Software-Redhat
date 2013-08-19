@@ -102,7 +102,7 @@ Version: %{tarball_version}
 %define condor_release %condor_base_release
 %endif
 # Release: %condor_release%{?dist}.2
-Release: 8.unif.6%{?dist}
+Release: 8.unif.7%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -1672,6 +1672,18 @@ fi
 %endif
 
 %changelog
+* Mon Aug 19 2013 Carl Edquist <edquist@cs.wisc.edu> - 7.9.6-8.unif.7
+- Merge init script improvements from trunk
+- Have std_local_ref depend on senders,receivers instead of stub_gen
+- Carve out std universe files into separate subpackage
+- Move uw_build-specific non-std-universe files into externals subpackage
+- Condor_config changes for #3645
+- Use %osg / %std_univ macros to control build type default
+- Support PROPER builds of std universe (ie, without UW_BUILD)
+- Use make jobserver when building glibc external instead of make -j2
+- Move python requirement out of main condor package (#3704)
+- Move condor_config.local from /var/lib/condor/ to /etc/condor/
+
 * Fri Jul 05 2013 Carl Edquist <edquist@cs.wisc.edu> - 7.9.6-8.unif.6
 - Address build dependency issue seen with -j24
 
