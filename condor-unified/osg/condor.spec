@@ -1,5 +1,11 @@
 %define tarball_version 7.9.6
 
+# optionally define any of these, here or externally
+# % define fedora   16
+# % define osg      0
+# % define uw_build 1
+# % define std_univ 1
+
 # Things for F15 or later
 %if 0%{?fedora} >= 16
 # NOTE: HTCondor+gsoap doesn't work yet on F15; ticket not yet upstream AFAIK.  BB
@@ -27,12 +33,24 @@
 %define cgroups 1
 %endif
 
+# default to uw_build if neither fedora nor osg is enabled
+%if 0%{!?uw_build:1}
+%if 0%{?fedora} || 0%{?osg}
+%define uw_build 0
+%else
 %define uw_build 1
+%endif
+%endif
+
+# enable std universe by default 
+%if 0%{!?std_univ:1}
+%define std_univ 1
+%endif
 
 %ifarch %{ix86}
 %if 0%{?rhel} >= 6
 # std universe is not ported to 32bit rhel6
-%define uw_build 0
+%define std_univ 0
 %endif
 %endif
 
@@ -152,7 +170,7 @@ Patch9: proper_cream_v3.diff
 %if %blahp
 Patch10: config_batch_gahp_path.patch
 %endif
-%if %uw_build
+%if %uw_build || %std_univ
 # Patch11: cmake-makes.patch
 Patch12: std_local_ref-stub_gen-dep.patch
 %endif
@@ -177,7 +195,7 @@ BuildRequires: openldap-devel
 BuildRequires: python-devel
 BuildRequires: boost-devel
 
-%if %uw_build
+%if %uw_build || %std_univ
 BuildRequires: cmake >= 2.8
 BuildRequires: gcc-c++
 %if 0%{?rhel} >= 6
@@ -205,6 +223,7 @@ BuildRequires: python-devel
 %endif
 
 # Globus GSI build requirements
+%if ! %uw_build
 BuildRequires: globus-gssapi-gsi-devel
 BuildRequires: globus-gass-server-ez-devel
 BuildRequires: globus-gass-transfer-devel
@@ -227,8 +246,9 @@ BuildRequires: globus-callout-devel
 BuildRequires: globus-common-devel
 BuildRequires: globus-ftp-client-devel
 BuildRequires: globus-ftp-control-devel
-BuildRequires: libtool-ltdl-devel
 BuildRequires: voms-devel
+%endif
+BuildRequires: libtool-ltdl-devel
 
 %if %gsoap
 BuildRequires: gsoap-devel >= 2.7.12-1
@@ -261,7 +281,7 @@ BuildRequires: log4cpp-devel
 BuildRequires: gridsite-devel
 %endif
 
-%if %blahp
+%if %blahp && ! %uw_build
 BuildRequires: blahp
 %endif
 
@@ -549,6 +569,17 @@ BOSCO provides an overlay system so the remote clusters appear to be a HTCondor
 cluster.  This allows the user to run their workflows using HTCondor tools across
 multiple clusters.
 
+%if %std_univ
+%package std-universe
+Summary: Enable standard universe jobs for HTCondor
+Group: Applications/System
+Requires: %name = %version-%release
+Requires: %name-externals = %version-%release
+
+%description std-universe
+Includes all the files necessary to support running standard universe jobs.
+%endif
+
 %if %uw_build
 %package static-shadow
 Summary: Statically linked condow_shadow and condor_master binaries
@@ -560,15 +591,6 @@ Provides condor_shadow_s and condor_master_s, which have all the globus
 libraries statically linked in and, as a result, have a smaller private
 memory footprint per process.  This makes it possible to run more shadows
 on a single machine at once when memory is the limiting factor.
-
-%package std-universe
-Summary: Enable standard universe jobs for HTCondor
-Group: Applications/System
-Requires: %name = %version-%release
-Requires: %name-externals = %version-%release
-
-%description std-universe
-Includes all the files necessary to support running standard universe jobs.
 
 %package externals
 Summary: External packages built into HTCondor
@@ -610,13 +632,14 @@ exit 0
 %patch9 -p1
 %endif
 
-%if %blahp
+%if %blahp && ! %uw_build
 %patch10 -p1 -b .config_batch_gahp_path
 %endif
 
-%if %uw_build
-# % patch11 -p1
+%if %std_univ
+%patch11 -p1
 %patch12 -p1
+%patch13 -p1
 %endif
 
 # fix errant execute permissions
@@ -721,7 +744,7 @@ export CMAKE_PREFIX_PATH=/usr
 %endif
 %endif
 
-%if %uw_build
+%if %uw_build || %std_univ
 # build externals first to avoid dependency issues
 make %{?_smp_mflags} externals
 %endif
@@ -963,7 +986,7 @@ rm -rf %{buildroot}%{_datadir}/condor/libcondorapi.a
 rm -rf %{buildroot}%{_mandir}/man1/cleanup_release.1*
 rm -rf %{buildroot}%{_mandir}/man1/condor_cold_start.1*
 rm -rf %{buildroot}%{_mandir}/man1/condor_cold_stop.1*
-%if ! %uw_build
+%if ! %std_univ
 rm -rf %{buildroot}%{_mandir}/man1/condor_checkpoint.1*
 rm -rf %{buildroot}%{_mandir}/man1/condor_compile.1*
 %endif
@@ -988,10 +1011,7 @@ mv %{buildroot}%{_libexecdir}/condor/campus_factory/share/condor/condor_config.f
 mv %{buildroot}%{_libexecdir}/condor/campus_factory/etc/campus_factory.conf %{buildroot}%{_sysconfdir}/condor/
 mv %{buildroot}%{_libexecdir}/condor/campus_factory/share %{buildroot}%{_datadir}/condor/campus_factory
 
-%if %uw_build
-populate %{_libdir}/condor %{buildroot}/%{_libdir}/libdrmaa.so
-populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/condor/libglobus*.so*
-populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/condor/libvomsapi*.so*
+%if %std_univ
 populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/condor_rt0.o
 populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/libcomp_libgcc.a
 populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/libcomp_libgcc_eh.a
@@ -1001,16 +1021,22 @@ populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/libcondor_nss_dns.a
 populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/libcondor_nss_files.a
 populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/libcondor_resolv.a
 populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/libcondor_z.a
-populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/libcondordrmaa.a
 populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/libcondorsyscall.a
 %ifarch %{ix86}
 %if 0%{?rhel} == 5
 populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/libcondorzsyscall.a
 %endif
 %endif
-# these probably belong elsewhere
 populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/ld
 populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/real-ld
+%endif
+
+%if %uw_build
+populate %{_libdir}/condor %{buildroot}/%{_libdir}/libdrmaa.so
+populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/condor/libglobus*.so*
+populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/condor/libvomsapi*.so*
+populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/libcondordrmaa.a
+# these probably belong elsewhere
 populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/ugahp.jar
 %endif
 
@@ -1477,11 +1503,7 @@ rm -rf %{buildroot}
 %{python_sitelib}/GlideinWMS
 %{python_sitelib}/campus_factory
 
-%if %uw_build
-%files static-shadow
-%{_sbindir}/condor_master_s
-%{_sbindir}/condor_shadow_s
-
+%if %std_univ
 %files std-universe
 %_bindir/condor_checkpoint
 %_bindir/condor_compile   
@@ -1507,6 +1529,12 @@ rm -rf %{buildroot}
 %_libdir/condor/libcondorzsyscall.a
 %endif
 %endif
+%endif
+
+%if %uw_build
+%files static-shadow
+%{_sbindir}/condor_master_s
+%{_sbindir}/condor_shadow_s
 
 %files externals
 %dir %_libdir/condor
