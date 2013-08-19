@@ -173,6 +173,7 @@ Patch10: config_batch_gahp_path.patch
 %if %uw_build || %std_univ
 # Patch11: cmake-makes.patch
 Patch12: std_local_ref-stub_gen-dep.patch
+Patch13: std-proper.patch
 %endif
 
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
@@ -662,6 +663,9 @@ export CMAKE_PREFIX_PATH=/usr
 %cmake \
        -DBUILDID:STRING=UW_development \
        -DUW_BUILD:BOOL=TRUE \
+%if ! %std_univ
+       -DCLIPPED:BOOL=TRUE \
+%endif
        -D_DEBUG:BOOL=TRUE \
        -D_VERBOSE:BOOL=TRUE \
        -DBUILD_TESTING:BOOL=FALSE \
@@ -674,6 +678,9 @@ export CMAKE_PREFIX_PATH=/usr
 
 %cmake -DNO_PHONE_HOME:BOOL=TRUE \
        -DBUILD_TESTING:BOOL=FALSE \
+%if %std_univ
+       -DCLIPPED:BOOL=FALSE \
+%endif
 %if 0%{?fedora}
        -DBUILDID:STRING=RH-%{version}-%{release} \
        -D_VERBOSE:BOOL=TRUE \
