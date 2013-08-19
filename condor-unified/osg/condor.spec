@@ -171,7 +171,7 @@ Patch9: proper_cream_v3.diff
 Patch10: config_batch_gahp_path.patch
 %endif
 %if %uw_build || %std_univ
-# Patch11: cmake-makes.patch
+Patch11: cmake-glibc.patch
 Patch12: std_local_ref-stub_gen-dep.patch
 Patch13: std-proper.patch
 %endif
