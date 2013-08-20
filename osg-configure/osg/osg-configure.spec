@@ -1,5 +1,5 @@
 %global name osg-configure
-%global version 1.0.35
+%global version 1.0.36
 %global release 1%{?dist}
 
 Summary: Package for configure-osg and associated scripts
@@ -221,6 +221,10 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/osg/config.d/20-slurm.ini
 
 %changelog
+* Mon Aug 5 2013 Suchandra Thapa <sthapa@ci.uchicago.edu> 1.0.36-1
+- Multiple bug fixes
+- Add Slurm gratia support
+
 * Mon Aug 5 2013 Suchandra Thapa <sthapa@ci.uchicago.edu> 1.0.35-1
 - Fix error message when ram_mb is too high
 
