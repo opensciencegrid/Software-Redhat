@@ -1,7 +1,7 @@
 
 Name: htcondor-ce
-Version: 0.5.6
-Release: 3%{?dist}
+Version: 0.5.7
+Release: 1%{?dist}
 Summary: A framework to run HTCondor as a CE
 
 Group: Applications/System
@@ -63,7 +63,6 @@ Summary: Client-side tools for submission to HTCondor-CE
 Requires: condor
 Requires: /usr/bin/grid-proxy-init
 Requires: /usr/bin/voms-proxy-init
-Requires: htcondor-ce
 
 %ifarch x86_64
 Requires: htcondor.so()(64bit)
@@ -123,14 +122,10 @@ fi
 %{_bindir}/condor_ce_history
 %{_bindir}/condor_ce_router_q
 
-%{_datadir}/condor-ce/condor_ce_env_bootstrap
 %{_datadir}/condor-ce/condor_ce_router_defaults
 
 %{_initrddir}/condor-ce
 
-%dir %{_sysconfdir}/condor-ce
-%dir %{_sysconfdir}/condor-ce/config.d
-%config %{_sysconfdir}/condor-ce/condor_config
 %config %{_sysconfdir}/condor-ce/config.d/01-ce-auth.conf
 %config %{_sysconfdir}/condor-ce/config.d/01-ce-router.conf
 %config %{_sysconfdir}/condor-ce/config.d/03-ce-shared-port.conf
@@ -158,6 +153,14 @@ fi
 %config %{_sysconfdir}/condor-ce/config.d/02-ce-pbs.conf
 
 %files client
+
+%dir %{_sysconfdir}/condor-ce
+%dir %{_sysconfdir}/condor-ce/config.d
+%config %{_sysconfdir}/condor-ce/condor_config
+%config %{_sysconfdir}/condor-ce/config.d/01-common-auth.conf
+
+%{_datadir}/condor-ce/condor_ce_env_bootstrap
+
 %{_bindir}/condor_ce_config_val
 %{_bindir}/condor_ce_hold
 %{_bindir}/condor_ce_q
@@ -171,8 +174,15 @@ fi
 %{_bindir}/condor_ce_status
 %{_bindir}/condor_ce_version
 %{_bindir}/condor_ce_trace
+%{_bindir}/condor_ce_ping
 
 %changelog
+* Wed Aug 21 2013 Brian Bockelman <bbockelm@cse.unl.edu> - 0.5.7-1
+- Addition of condor_ce_ping
+- Fix condor_ce_trace script; it was using condor_ping from the base condor config.
+- Re-organize auth configs so the client RPM could include the bootstrap.
+- A modest amount of Condor->HTCondor renaming in the configs.
+
 * Mon Aug 19 2013 Brian Lin <blin@cs.wisc.edu> - 0.5.6-3
 - Fixed incompatibility with the UW Condor RPM and empty-condor
 - Make separate builds for different architectures
