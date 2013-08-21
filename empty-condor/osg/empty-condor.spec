@@ -1,6 +1,6 @@
 Name:           empty-condor
 Version:        1.1
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        An empty Condor package
 
 Group:          Applications/System
@@ -8,7 +8,6 @@ License:        Unknown
 URL:            http://vdt.cs.wisc.edu
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildArch:      noarch
 
 # This fulfills depenendencies for most OSG packages that depend on Condor
 Provides:       condor
@@ -19,6 +18,13 @@ Conflicts:      /usr/sbin/condor_master
 Provides:       /usr/sbin/condor_procd
 Provides:       /usr/sbin/gidd_alloc
 Provides:       /usr/sbin/procd_ctl
+
+# This fulfills dependencies for htcondor-ce-client
+%ifarch x86_64
+Provides: htcondor.so()(64bit)
+%else
+Provides: htcondor.so()
+%endif
 
 %description
 
@@ -40,6 +46,10 @@ believes that Condor has been installed via RPM.
 %doc
 
 %changelog
+* Tue Aug 20 2013 Brian Lin <blin@cs.wisc.edu> - 1.1-3
+- Provide htcondor.so to work with htcondor-ce
+- Make separate builds for different architectures
+
 * Tue Aug 28 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.1-2
 - Conflict with /usr/sbin/condor_master to avoid having this being installed
   alongside a real RPM Condor.
