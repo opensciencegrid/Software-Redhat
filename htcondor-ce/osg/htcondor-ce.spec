@@ -1,7 +1,7 @@
 
 Name: htcondor-ce
 Version: 0.5.6
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: A framework to run HTCondor as a CE
 
 Group: Applications/System
@@ -11,7 +11,7 @@ URL: http://github.com/bbockelm/condor-ce
 Source0: %{name}-%{version}.tar.gz
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildArch: noarch
+#BuildArch: noarch
 
 Requires:  condor >= 7.9.2
 # This ought to pull in the HTCondor-CE specific version of the blahp
@@ -62,9 +62,15 @@ Summary: Client-side tools for submission to HTCondor-CE
 # Note the strange requirements (base package is not required!
 # Point is to be able to submit jobs without installing the server.
 Requires: condor
-Requires: condor-python
 Requires: /usr/bin/grid-proxy-init
 Requires: /usr/bin/voms-proxy-init
+Requires: htcondor-ce
+
+%ifarch x86_64
+Requires: htcondor.so()(64bit)
+%else
+Requires: htcondor.so()
+%endif
 
 Obsoletes: condor-ce-client < 0.5.4
 Provides:  condor-ce-client = %{version}
@@ -168,6 +174,10 @@ fi
 %{_bindir}/condor_ce_trace
 
 %changelog
+* Mon Aug 19 2013 Brian Lin <blin@cs.wisc.edu> - 0.5.6-3
+- Fixed incompatibility with the UW Condor RPM and empty-condor
+- Make separate builds for different architectures
+
 * Wed Aug 14 2013 Brian Lin <blin@cs.wisc.edu> - 0.5.6-2
 - Add condor-python requirement to htcondor-ce-client
 
