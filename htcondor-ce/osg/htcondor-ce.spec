@@ -11,7 +11,6 @@ URL: http://github.com/bbockelm/condor-ce
 Source0: %{name}-%{version}.tar.gz
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-#BuildArch: noarch
 
 Requires:  condor >= 7.9.2
 # This ought to pull in the HTCondor-CE specific version of the blahp
