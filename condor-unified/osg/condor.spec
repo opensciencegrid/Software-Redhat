@@ -102,7 +102,7 @@ Version: %{tarball_version}
 %define condor_release %condor_base_release
 %endif
 # Release: %condor_release%{?dist}.2
-Release: 8.unif.7%{?dist}
+Release: 8.unif.8%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -576,7 +576,6 @@ multiple clusters.
 Summary: Enable standard universe jobs for HTCondor
 Group: Applications/System
 Requires: %name = %version-%release
-Requires: %name-externals = %version-%release
 
 %description std-universe
 Includes all the files necessary to support running standard universe jobs.
@@ -1672,6 +1671,9 @@ fi
 %endif
 
 %changelog
+* Tue Aug 20 2013 Carl Edquist <edquist@cs.wisc.edu> - 7.9.6-8.unif.8
+- Remove externals dependency from std-universe subpackage
+
 * Mon Aug 19 2013 Carl Edquist <edquist@cs.wisc.edu> - 7.9.6-8.unif.7
 - Merge init script improvements from trunk
 - Have std_local_ref depend on senders,receivers instead of stub_gen
