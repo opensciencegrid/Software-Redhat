@@ -1,6 +1,6 @@
 Name:           empty-condor
 Version:        1.1
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        An empty Condor package
 
 Group:          Applications/System
@@ -46,7 +46,7 @@ believes that Condor has been installed via RPM.
 %doc
 
 %changelog
-* Tue Aug 20 2013 Brian Lin <blin@cs.wisc.edu> - 1.1-3
+* Tue Aug 20 2013 Brian Lin <blin@cs.wisc.edu> - 1.1-4
 - Provide htcondor.so to work with htcondor-ce
 - Make separate builds for different architectures
 
