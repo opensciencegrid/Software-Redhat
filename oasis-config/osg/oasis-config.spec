@@ -1,11 +1,12 @@
 Summary: OASIS-specific configuration
 Name: oasis-config
 Version: 4
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: ASL 2.0
 Group: Applications/Grid
 Source0: opensciencegrid.org.pub
 Source1: opensciencegrid.org.conf
+Source2: oasis.opensciencegrid.org.conf
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildArch: noarch
 Requires: cvmfs
@@ -36,8 +37,10 @@ exit 0
 [[ %{buildroot} != / ]] && rm -rf %{buildroot}
 mkdir -p %{buildroot}%{_sysconfdir}/cvmfs/keys
 mkdir -p %{buildroot}%{_sysconfdir}/cvmfs/domain.d
+mkdir -p %{buildroot}%{_sysconfdir}/cvmfs/config.d
 install -m 644 %{SOURCE0} %{buildroot}%{_sysconfdir}/cvmfs/keys 
 install -m 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/cvmfs/domain.d
+install -m 644 %{SOURCE2} %{buildroot}%{_sysconfdir}/cvmfs/config.d
 
 
 
@@ -50,12 +53,17 @@ install -m 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/cvmfs/domain.d
 %files
 %{_sysconfdir}/cvmfs/keys/*
 %{_sysconfdir}/cvmfs/domain.d/*
+%{_sysconfdir}/cvmfs/config.d/*
 
 
 
 
 
 %changelog
+* Thu Aug 22 2013 Dave Dykstra <dwd@fnal.gov> 4-2
+- Move the setting of OASIS_CERTIFICATES to where it more properly belongs
+  in new file /etc/cvmfs/config.d/oasis.opensciencegrid.org.conf
+
 * Thu Aug 22 2013 Dave Dykstra <dwd@fnal.gov> 4-1
 - Add default setting for OASIS_CERTIFICATES
 
