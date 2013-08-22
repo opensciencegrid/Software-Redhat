@@ -1,4 +1,4 @@
-%define tarball_version 7.9.6
+%define tarball_version 8.1.2
 
 # optionally define any of these, here or externally
 # % define fedora   16
@@ -71,10 +71,10 @@
 
 # These flags are meant for developers; it allows one to build HTCondor
 # based upon a git-derived tarball, instead of an upstream release tarball
-%define git_build 0
+%define git_build 1
 # If building with git tarball, Fedora requests us to record the rev.  Use:
 # git log -1 --pretty=format:'%h'
-%define git_rev 672537b1
+%define git_rev d65ec71
 %define git_build_man 0
 
 # Determine whether man pages will be included.
@@ -83,6 +83,9 @@
 %else
 %define include_man 0
 %endif
+
+# define this anyway...
+%define include_man 1
 
 %if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
 %{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
@@ -95,14 +98,14 @@ Version: %{tarball_version}
 %global version_ %(tr . _ <<< %{version})
 
 # Only edit the %condor_base_release to bump the rev number
-%define condor_base_release 0.6
+%define condor_base_release 0.unif.1
 %if %git_build
 %define condor_release %condor_base_release.%{git_rev}git
 %else
 %define condor_release %condor_base_release
 %endif
-# Release: %condor_release%{?dist}.2
-Release: 8.unif.8%{?dist}
+Release: %condor_release%{?dist}
+# Release: 0.unif.1.pre20130821.d65ec71%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -165,12 +168,14 @@ Patch0: condor_config.generic.patch
 Patch1: condor_peaceful_off.patch
 Patch2: condor_ulimit.patch
 Patch3: chkconfig_off.patch
+#% if 0%osg
 Patch8: osg_sysconfig_in_init_script.patch
+#% endif
 Patch9: proper_cream_v3.diff
 %if %blahp
 Patch10: config_batch_gahp_path.patch
 %endif
-%if %uw_build || %std_univ
+%if %std_univ
 Patch11: cmake-glibc.patch
 Patch12: std_local_ref-stub_gen-dep.patch
 Patch13: std-proper.patch
@@ -616,7 +621,8 @@ exit 0
 %if %git_build_man
 %setup -q -c -n %{name}-%{tarball_version} -a 1
 %else
-%setup -q -c -n %{name}-%{tarball_version}
+#% setup -q -c -n %{name}-%{tarball_version}
+%setup -q -n %{name}-%{tarball_version}
 %endif
 %else
 # For release tarballs
@@ -639,7 +645,8 @@ exit 0
 
 %if %std_univ
 %patch11 -p1
-%patch12 -p1
+# already merged into master
+# % patch12 -p1
 %patch13 -p1
 %endif
 
@@ -924,7 +931,7 @@ install -m 0755 src/condor_scripts/CondorUtils.pm %{buildroot}%{_datadir}/condor
 # Install python-binding libs
 mkdir -p %{buildroot}%{python_sitearch}
 install -m 0755 src/python-bindings/{classad,htcondor}.so %{buildroot}%{python_sitearch}
-install -m 0755 src/python-bindings/libpyclassad_*.so %{buildroot}%{_libdir}
+install -m 0755 src/python-bindings/libpyclassad*.so %{buildroot}%{_libdir}
 
 # we must place the config examples in builddir so %doc can find them
 mv %{buildroot}/etc/examples %_builddir/%name-%tarball_version
@@ -1008,7 +1015,7 @@ rm -rf %{buildroot}%{_mandir}/man1/uniq_pid_midwife.1*
 rm -rf %{buildroot}%{_mandir}/man1/uniq_pid_undertaker.1*
 
 rm -rf %{buildroot}%{_datadir}/condor/python/{htcondor,classad}.so
-rm -rf %{buildroot}%{_datadir}/condor/{libpyclassad_*,htcondor,classad}.so
+rm -rf %{buildroot}%{_datadir}/condor/{libpyclassad*,htcondor,classad}.so
 
 # Install BOSCO
 mkdir -p %{buildroot}%{python_sitelib}
@@ -1046,6 +1053,27 @@ populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/libcondordrmaa.a
 # these probably belong elsewhere
 populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/ugahp.jar
 %endif
+
+
+# TODO: add these to the appropriate places...
+rm -f %{buildroot}%{_sysconfdir}/condor/ganglia.d/00_default_metrics
+rm -f %{buildroot}%{_bindir}/bosco_quickstart
+rm -f %{buildroot}%{_bindir}/htsub
+rm -f %{buildroot}%{_libexecdir}/condor/condor_dagman_metrics_reporter
+rm -f %{buildroot}%{_libexecdir}/condor/condor_gangliad
+rm -f %{buildroot}%{_mandir}/man1/bosco_cluster.1*
+rm -f %{buildroot}%{_mandir}/man1/bosco_findplatform.1*
+rm -f %{buildroot}%{_mandir}/man1/bosco_install.1*
+rm -f %{buildroot}%{_mandir}/man1/bosco_ssh_start.1*
+rm -f %{buildroot}%{_mandir}/man1/bosco_start.1*
+rm -f %{buildroot}%{_mandir}/man1/bosco_stop.1*
+rm -f %{buildroot}%{_mandir}/man1/bosco_uninstall.1*
+rm -f %{buildroot}%{_mandir}/man1/condor_drain.1*
+rm -f %{buildroot}%{_mandir}/man1/condor_install.1*
+rm -f %{buildroot}%{_mandir}/man1/condor_ping.1*
+rm -f %{buildroot}%{_mandir}/man1/condor_rmdir.1*
+rm -f %{buildroot}%{_mandir}/man1/condor_tail.1*
+rm -f %{buildroot}%{_mandir}/man1/condor_who.1*
 
 
 %clean
@@ -1145,6 +1173,7 @@ rm -rf %{buildroot}
 %_mandir/man1/condor_preen.1.gz
 %_mandir/man1/condor_prio.1.gz
 %_mandir/man1/condor_q.1.gz
+%_mandir/man1/condor_qsub.1.gz
 %_mandir/man1/condor_qedit.1.gz
 %_mandir/man1/condor_reconfig.1.gz
 %_mandir/man1/condor_release.1.gz
@@ -1485,7 +1514,7 @@ rm -rf %{buildroot}
 
 %files python
 %defattr(-,root,root,-)
-%_libdir/libpyclassad_*.so
+%_libdir/libpyclassad*.so
 %{python_sitearch}/classad.so
 %{python_sitearch}/htcondor.so
 
