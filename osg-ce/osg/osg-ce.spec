@@ -41,6 +41,7 @@ Requires: osg-configure-managedfork
 Requires: osg-configure-misc
 Requires: osg-configure-network
 Requires: osg-configure-squid
+Requires: frontier-squid
 Requires(post): globus-gram-job-manager-scripts >= 4
 
 # The following is required for the RSV Gratia probes to work.
