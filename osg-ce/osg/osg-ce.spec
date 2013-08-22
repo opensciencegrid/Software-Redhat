@@ -1,7 +1,7 @@
 Name:      osg-ce
 Summary:   OSG Compute Element 
 Version:   3.0.0
-Release:   31%{?dist}
+Release:   32%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -121,7 +121,7 @@ rm -rf $RPM_BUILD_ROOT
 %files sge
 
 %changelog
-* Thu Aug 22 2013 Carl Edquist <edquist@cs.wisc.edu> - 3.0.0-31
+* Thu Aug 22 2013 Carl Edquist <edquist@cs.wisc.edu> - 3.0.0-32
 - Add dependency on frontier-squid
 
 * Fri Apr 13 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 3.0.0-30
