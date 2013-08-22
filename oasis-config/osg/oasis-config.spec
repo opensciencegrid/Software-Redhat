@@ -1,7 +1,7 @@
 Summary: OASIS-specific configuration
 Name: oasis-config
-Version: 3
-Release: 4%{?dist}
+Version: 4
+Release: 1%{?dist}
 License: ASL 2.0
 Group: Applications/Grid
 Source0: opensciencegrid.org.pub
@@ -56,6 +56,9 @@ install -m 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/cvmfs/domain.d
 
 
 %changelog
+* Thu Aug 22 2013 Dave Dykstra <dwd@fnal.gov> 4-1
+- Add default setting for OASIS_CERTIFICATES
+
 * Wed Jul 24 2013 Dave Dykstra <dwd@fnal.gov> 3-4
 - Remove metapackage designation and specific version requirement on cvmfs.
   Instead a new metapackage osg-oasis has been created.
