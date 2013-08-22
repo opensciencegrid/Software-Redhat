@@ -8,3 +8,12 @@ The spec file is from the HTCondor-CE source code itself.  Updates done in the
 OSG should be sent back upstream; there are no known reasons to have the two
 copies be different.
 
+UPSTREAM: https://github.com/bbockelm/condor-ce
+
+To build from upstream:
+
+autoreconf --force --install
+./configure
+make dist-gzip
+mkdir /p/vdt/public/html/upstream/htcondor-ce/<version>
+cp htcondor-ce-<version>.tar.gz /p/vdt/public/html/upstream/htcondor-ce/<version>
