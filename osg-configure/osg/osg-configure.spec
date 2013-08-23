@@ -1,5 +1,5 @@
 %global name osg-configure
-%global version 1.0.36
+%global version 1.0.37
 %global release 1%{?dist}
 
 Summary: Package for configure-osg and associated scripts
@@ -221,7 +221,11 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/osg/config.d/20-slurm.ini
 
 %changelog
-* Mon Aug 5 2013 Suchandra Thapa <sthapa@ci.uchicago.edu> 1.0.36-1
+* Fri Aug 23 2013 Suchandra Thapa <sthapa@ci.uchicago.edu> 1.0.36-1
+- Unit test fixes
+- Test squid location
+
+* Mon Aug 19 2013 Suchandra Thapa <sthapa@ci.uchicago.edu> 1.0.36-1
 - Multiple bug fixes
 - Add Slurm gratia support
 
