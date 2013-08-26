@@ -1,6 +1,6 @@
 
 Name:      rsv-core
-Version:   3.7.8
+Version:   3.7.9
 Release:   1%{?dist}
 Summary:   RSV Core Infrastructure
 
@@ -53,35 +53,7 @@ chown rsv: /var/rsv
 %install
 rm -fr $RPM_BUILD_ROOT
 
-# Create the logging directories
-install -d $RPM_BUILD_ROOT%{_localstatedir}/log/rsv
-
-# Create the temp file area
-install -d $RPM_BUILD_ROOT%{_localstatedir}/tmp/rsv
-
-# Install the executable
-install -d $RPM_BUILD_ROOT%{_bindir}
-install -m 0755 bin/rsv-control $RPM_BUILD_ROOT%{_bindir}/
-
-install -d $RPM_BUILD_ROOT%{_libexecdir}/rsv
-cp -r libexec/misc $RPM_BUILD_ROOT%{_libexecdir}/rsv/
-
-# Install the init script
-install -d $RPM_BUILD_ROOT%{_initrddir}
-install -m 0755 init/rsv.init $RPM_BUILD_ROOT%{_initrddir}/rsv
-
-# Install the configuration
-install -d $RPM_BUILD_ROOT%{_sysconfdir}/rsv
-install -m 0644 etc/consumers.conf $RPM_BUILD_ROOT%{_sysconfdir}/rsv/
-install -m 0644 etc/rsv.conf $RPM_BUILD_ROOT%{_sysconfdir}/rsv/
-
-# Install python libraries
-install -d $RPM_BUILD_ROOT%{python_sitelib}
-cp -r lib/python/rsv $RPM_BUILD_ROOT%{python_sitelib}/
-
-# Install the man page
-install -d $RPM_BUILD_ROOT%{_mandir}/man1
-install -m 0644 share/man/man1/rsv-control.1 $RPM_BUILD_ROOT%{_mandir}/man1/
+make install DESTDIR=$RPM_BUILD_ROOT
 
 
 %clean
@@ -125,6 +97,11 @@ fi
 
 
 %changelog
+* Mon Aug 26 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 3.7.9-1
+- Updated to 3.7.9
+- SOFTWARE-1048 - better HTCondor-CE support
+- SOFTWARE-819 - metric argument handling bugfixes
+
 * Fri Jul 26 2013 Carl Edquist <edquist@cs.wisc.edu> - 3.7.8-1
 - Updated to 3.7.8
 - SOFTWARE-783 - Allow timeout or job-timeout options in probe meta files

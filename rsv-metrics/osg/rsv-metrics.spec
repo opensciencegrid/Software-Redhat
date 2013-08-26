@@ -1,6 +1,6 @@
 
 Name:      rsv-metrics
-Version:   3.7.8
+Version:   3.7.9
 Release:   1%{?dist}
 Summary:   RSV metrics
 
@@ -47,30 +47,7 @@ getent passwd rsv >/dev/null || useradd -r -g rsv -d /var/rsv -s /bin/sh -c "RSV
 %install
 rm -fr $RPM_BUILD_ROOT
 
-# Install executables
-install -d $RPM_BUILD_ROOT%{_libexecdir}/rsv
-cp -r libexec/probes $RPM_BUILD_ROOT%{_libexecdir}/rsv/
-cp -r libexec/metrics $RPM_BUILD_ROOT%{_libexecdir}/rsv/
-
-# Install configuration
-install -d $RPM_BUILD_ROOT%{_sysconfdir}/rsv/meta
-cp -r etc/meta/metrics $RPM_BUILD_ROOT%{_sysconfdir}/rsv/meta/
-cp -r etc/metrics $RPM_BUILD_ROOT%{_sysconfdir}/rsv/
-
-# Install helper files
-install -d $RPM_BUILD_ROOT%{_datadir}/rsv/
-cp -r usr/share/rsv/probe-helper-files $RPM_BUILD_ROOT%{_datadir}/rsv/
-
-# Area for records awaiting processing
-install -d $RPM_BUILD_ROOT%{_localstatedir}/spool/rsv
-
-# Create the logging directories
-install -d $RPM_BUILD_ROOT%{_localstatedir}/log/rsv/metrics
-ln -s metrics $RPM_BUILD_ROOT%{_localstatedir}/log/rsv/probes
-
-# Put log rotation in place
-install -d $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d
-install -m 0644 logrotate/rsv-metrics.logrotate $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/rsv-metrics
+make install DESTDIR=$RPM_BUILD_ROOT
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -94,6 +71,11 @@ rm -rf $RPM_BUILD_ROOT
 %attr(-,rsv,rsv) %{_localstatedir}/log/rsv/probes
 
 %changelog
+* Mon Aug 26 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 3.7.9-1
+- Updated to 3.7.9
+- SOFTWARE-1048 - better HTCondor-CE support
+- SOFTWARE-819 - metric argument handling bugfixes
+
 * Fri Jul 26 2013 Carl Edquist <edquist@cs.wisc.edu> - 3.7.8-1
 - Updated to 3.7.8
 - SOFTWARE-563 - have gratia probe distinguish between certinfo and probe files

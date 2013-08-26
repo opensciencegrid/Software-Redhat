@@ -1,6 +1,6 @@
 
 Name:      rsv-consumers
-Version:   3.7.8
+Version:   3.7.9
 Release:   1%{?dist}
 Summary:   RSV Consumers Infrastructure
 
@@ -38,33 +38,7 @@ getent passwd rsv >/dev/null || useradd -r -g rsv -d /var/rsv -s /bin/sh -c "RSV
 %install
 rm -fr $RPM_BUILD_ROOT
 
-# Create the web areas
-install -d $RPM_BUILD_ROOT%{_datadir}/rsv
-install -d $RPM_BUILD_ROOT%{_datadir}/rsv/www
-install -m 0644 httpd/rsv.index.html $RPM_BUILD_ROOT%{_datadir}/rsv/www/index.html
-
-# Install the Apache configuration and index files
-install -d $RPM_BUILD_ROOT%{_sysconfdir}/httpd/conf.d
-install -d $RPM_BUILD_ROOT%{_datadir}/osg/www.d/
-install -m 0644 httpd/rsv.conf $RPM_BUILD_ROOT%{_sysconfdir}/httpd/conf.d/
-install -m 0644 httpd/rsv.site $RPM_BUILD_ROOT%{_datadir}/osg/www.d/
-
-# Install executables
-install -d $RPM_BUILD_ROOT%{_libexecdir}/rsv
-cp -r libexec/consumers $RPM_BUILD_ROOT%{_libexecdir}/rsv/
-
-# Install configuration
-install -d $RPM_BUILD_ROOT%{_sysconfdir}/rsv/meta
-cp -r etc/meta/consumers $RPM_BUILD_ROOT%{_sysconfdir}/rsv/meta/
-cp -r etc/consumers $RPM_BUILD_ROOT%{_sysconfdir}/rsv/
-cp etc/rsv-nagios.conf $RPM_BUILD_ROOT%{_sysconfdir}/rsv/
-
-# Create the log dir
-install -d $RPM_BUILD_ROOT%{_localstatedir}/log/rsv/consumers
-
-# Put log rotation in place
-install -d $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d
-install -m 0644 logrotate/rsv-consumers.logrotate $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/rsv-consumers
+make install DESTDIR=$RPM_BUILD_ROOT
 
 
 %clean
@@ -91,6 +65,11 @@ rm -rf $RPM_BUILD_ROOT
 %attr(-,rsv,rsv) %{_localstatedir}/log/rsv/consumers
 
 %changelog
+* Mon Aug 26 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 3.7.9-1
+- Updated to 3.7.9
+- SOFTWARE-1048 - better HTCondor-CE support
+- SOFTWARE-819 - metric argument handling bugfixes
+
 * Fri Jul 26 2013 Carl Edquist <edquist@cs.wisc.edu> - 3.7.8-1
 - Updated to 3.7.8
 
