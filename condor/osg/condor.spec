@@ -1,4 +1,4 @@
-%define tarball_version 8.0.0
+%define tarball_version 8.0.2
 
 # Things for F15 or later
 %if 0%{?fedora} >= 16
@@ -67,7 +67,7 @@ Version: %{tarball_version}
 %define condor_release %condor_base_release
 %endif
 # Release: %condor_release%{?dist}.2
-Release: 2%{?dist}
+Release: 1%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -582,7 +582,6 @@ populate %{_datadir}/condor %{buildroot}/%{_usr}/lib/*
 # Except for the shared libs
 populate %{_libdir}/ %{buildroot}/%{_datadir}/condor/libclassad.so*
 rm -f %{buildroot}/%{_datadir}/condor/libclassad.a
-rm -f %{buildroot}/%{_datadir}/condor/libpyclassad_*.a
 mv %{buildroot}%{_datadir}/condor/lib*.so %{buildroot}%{_libdir}/
 
 %if %aviary || %qmf
@@ -736,6 +735,7 @@ install -m 0755 src/condor_scripts/CondorUtils.pm %{buildroot}%{_datadir}/condor
 # Install python-binding libs
 mkdir -p %{buildroot}%{python_sitearch}
 install -m 0755 src/python-bindings/{classad,htcondor}.so %{buildroot}%{python_sitearch}
+install -m 0755 src/python-bindings/libpyclassad*.so %{buildroot}%{_libdir}
 
 # we must place the config examples in builddir so %doc can find them
 mv %{buildroot}/etc/examples %_builddir/%name-%tarball_version
@@ -814,7 +814,7 @@ rm -rf %{buildroot}%{_mandir}/man1/uniq_pid_midwife.1*
 rm -rf %{buildroot}%{_mandir}/man1/uniq_pid_undertaker.1*
 
 rm -rf %{buildroot}%{_datadir}/condor/python/{htcondor,classad}.so
-rm -rf %{buildroot}%{_datadir}/condor/{libpyclassad_*,htcondor,classad}.so
+rm -rf %{buildroot}%{_datadir}/condor/{libpyclassad*,htcondor,classad}.so
 
 # Install BOSCO
 mkdir -p %{buildroot}%{python_sitelib}
@@ -942,6 +942,12 @@ rm -rf %{buildroot}
 %_mandir/man1/condor_suspend.1.gz
 %_mandir/man1/condor_gather_info.1.gz
 %_mandir/man1/condor_router_rm.1.gz
+%_mandir/man1/condor_drain.1.gz
+%_mandir/man1/condor_install.1.gz
+%_mandir/man1/condor_ping.1.gz
+%_mandir/man1/condor_rmdir.1.gz
+%_mandir/man1/condor_tail.1.gz
+%_mandir/man1/condor_who.1.gz
 %endif
 # bin/condor is a link for checkpoint, reschedule, vacate
 %_bindir/condor_submit_dag
@@ -1132,7 +1138,6 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 %doc LICENSE-2.0.txt NOTICE.txt
 %_libdir/libclassad.so.*
-%_libdir/libclassad.so.%{version}
 
 %files classads-devel
 %defattr(-,root,root,-)
@@ -1181,6 +1186,7 @@ rm -rf %{buildroot}
 
 %files python
 %defattr(-,root,root,-)
+%_libdir/libpyclassad*.so
 %{python_sitearch}/classad.so
 %{python_sitearch}/htcondor.so
 
@@ -1194,16 +1200,29 @@ rm -rf %{buildroot}
 %_sbindir/campus_factory
 %_sbindir/condor_ft-gahp
 %_sbindir/runfactory
-%_bindir/bosco_cluster
+%_bindir/bosco_quickstart
 %_bindir/bosco_ssh_start
+%_bindir/bosco_cluster
 %_bindir/bosco_start
 %_bindir/bosco_stop
 %_bindir/bosco_findplatform
 %_bindir/bosco_uninstall
+%_bindir/htsub
 %_sbindir/glidein_creation
 %_datadir/condor/campus_factory
 %{python_sitelib}/GlideinWMS
 %{python_sitelib}/campus_factory
+
+%if %include_man
+%_mandir/man1/bosco_cluster.1.gz
+%_mandir/man1/bosco_findplatform.1.gz
+%_mandir/man1/bosco_install.1.gz
+%_mandir/man1/bosco_start.1.gz
+%_mandir/man1/bosco_stop.1.gz
+%_mandir/man1/bosco_uninstall.1.gz
+%_mandir/man1/bosco_ssh_start.1.gz
+%endif
+
 
 %if %systemd
 %post
@@ -1252,6 +1271,10 @@ fi
 %endif
 
 %changelog
+* Mon Aug 26 2013 Brian Lin <blin@cs.wisc.edu> - 8.0.2-1
+- New version
+- Fix missing libpyclassad shared object
+
 * Wed Jun 12 2013 Brian Lin <blin@cs.wisc.edu> - 8.0.0-2
 - Init script improvements
 - Condor now restarts peacefully after an upgrade
