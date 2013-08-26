@@ -1,6 +1,6 @@
 
 Name:           osg-build
-Version:        1.2.7
+Version:        1.2.8
 Release:        1%{?dist}
 Summary:        Build tools for the OSG
 
@@ -63,6 +63,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_docdir}/%{name}/sample-osg-build.ini
 
 %changelog
+* Mon Aug 26 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.2.8-1
+- fix syntax error in osg-promote
+
 * Mon Aug 19 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.2.7-1
 - Add git support (contributed by Brian Bockelman)
 
