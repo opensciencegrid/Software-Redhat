@@ -1,7 +1,7 @@
 
 Name:      rsv
 Summary:   RSV Meta Package
-Version:   3.7.8
+Version:   3.7.9
 Release:   1%{?dist}
 License:   Apache 2.0
 Group:     Applications/Monitoring
@@ -32,6 +32,11 @@ rm -rf $RPM_BUILD_ROOT
 # No files since this is a meta package
 
 %changelog
+* Mon Aug 26 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 3.7.9-1
+- Updated to 3.7.9
+- SOFTWARE-1048 - better HTCondor-CE support
+- SOFTWARE-819 - metric argument handling bugfixes
+
 * Fri Jul 26 2013 Carl Edquist <edquist@cs.wisc.edu> - 3.7.8-1
 - Set version to 3.7.8
 
