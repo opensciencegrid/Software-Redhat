@@ -16,7 +16,7 @@
 Name:		globus-gram-job-manager-pbs
 %global _name %(tr - _ <<< %{name})
 Version:	1.6
-Release:	1.4%{?dist}
+Release:	1.5%{?dist}
 Summary:	Globus Toolkit - PBS Job Manager
 
 Group:		Applications/Internet
@@ -27,6 +27,7 @@ Source1:        pbs.rvf
 Source2:        caching_qstat
 Patch1:         osg-teragrid-pbs.patch
 Patch2:         slurm-support-pbs.pm.patch
+Patch3:         bad-slurm-submits.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Obsoletes:      globus-gram-job-manager-setup-pbs < 4.5
 
@@ -141,6 +142,7 @@ PBS Job Manager Setup using SEG to monitor job state
 
 %patch1 -p0
 %patch2 -p0
+%patch3 -p0
 %build
 # Remove files that should be replaced during bootstrap
 rm -f doxygen/Doxyfile*
@@ -287,6 +289,9 @@ fi
 %dir %{_docdir}/%{name}-%{version}/html
 
 %changelog
+* Mon Aug 26 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.6-1.5
+- Patch to catch bad SLURM submits (SOFTWARE-1162)
+
 * Thu Jul 18 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.6-1.4
 - Patch to work with SLURM's PBS emulation layer (SOFTWARE-1105)
 
