@@ -1,7 +1,7 @@
 Name:      osg-tested-internal
 Summary:   All OSG packages we test (internal use only)
 Version:   1
-Release:   15%{?dist}
+Release:   16%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -20,6 +20,7 @@ Requires: /usr/sbin/condor_master
 Requires: osg-ce-condor
 Requires: osg-se-bestman
 Requires: osg-se-bestman-xrootd
+Requires: osg-gums
 Requires: osg-voms
 Requires: rsv
 Requires: yum-utils
@@ -75,6 +76,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Aug 28 2013 Brian Lin <blin@cs.wisc.edu> - 1-16
+- Add osg-gums
+
 * Thu Aug 01 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1-15
 - Add /usr/sbin/condor_master so we get 'condor' and not 'empty-condor'
 
