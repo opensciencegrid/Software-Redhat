@@ -1,5 +1,5 @@
 %global name osg-configure
-%global version 1.0.37
+%global version 1.0.38
 %global release 1%{?dist}
 
 Summary: Package for configure-osg and associated scripts
@@ -221,7 +221,11 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/osg/config.d/20-slurm.ini
 
 %changelog
-* Fri Aug 23 2013 Suchandra Thapa <sthapa@ci.uchicago.edu> 1.0.36-1
+* Fri Aug 23 2013 Suchandra Thapa <sthapa@ci.uchicago.edu> 1.0.38-1
+- Add unit tests for squid location check
+- Fixes for squid location check
+
+* Fri Aug 23 2013 Suchandra Thapa <sthapa@ci.uchicago.edu> 1.0.37-1
 - Unit test fixes
 - Test squid location
 
