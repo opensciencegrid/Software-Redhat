@@ -61,13 +61,21 @@
 %else
 %endif
 
-%define blahp 1
-%define glexec 1
-%define cream 1
-%define parallel_setup 1
-
 # Things not turned on, or don't have Fedora packages yet
 %define qmf 0
+
+%if 0%{?fedora}
+%define blahp 0
+%define cream 0
+# a handful of std universe files don't seem to get built in fedora...
+%define std_univ 0
+%else
+%define blahp 1
+%define cream 1
+%endif
+
+%define glexec 1
+%define parallel_setup 1
 
 # These flags are meant for developers; it allows one to build HTCondor
 # based upon a git-derived tarball, instead of an upstream release tarball
@@ -311,10 +319,6 @@ Requires: condor-procd = %{version}-%{release}
 
 %if %blahp
 Requires: blahp >= 1.16.1
-%endif
-
-%if %glexec
-Requires: glexec
 %endif
 
 %if %gsoap
@@ -830,6 +834,11 @@ populate %_sysconfdir/condor/config.d %{buildroot}/etc/examples/63aviary-hadoop.
 mkdir -p %{buildroot}/%{_var}/lib/condor/aviary
 populate %{_var}/lib/condor/aviary %{buildroot}/usr/axis2.xml
 populate %{_var}/lib/condor/aviary %{buildroot}/usr/services/
+populate %{_libdir}/condor/plugins src/condor_contrib/aviary/src/collector/libaviary_collector_axis.so
+populate %{_libdir}/condor/plugins src/condor_contrib/aviary/src/collector/AviaryCollectorPlugin-plugin.so
+populate %{_libdir}/condor/plugins src/condor_contrib/aviary/src/hadoop/AviaryHadoopPlugin-plugin.so
+populate %{_libdir}/condor/plugins src/condor_contrib/aviary/src/job/AviaryScheddPlugin-plugin.so
+populate %{_libdir}/condor/plugins src/condor_contrib/aviary/src/locator/AviaryLocatorPlugin-plugin.so
 %endif
 
 %if %plumage
@@ -1350,6 +1359,7 @@ rm -rf %{buildroot}
 %_var/lib/condor/aviary/services/collector/aviary-common.xsd
 %_var/lib/condor/aviary/services/collector/aviary-collector.xsd
 %_var/lib/condor/aviary/services/collector/aviary-collector.wsdl
+%_var/lib/condor/aviary/services/collector/libaviary_collector_axis.so
 
 %files aviary
 %defattr(-,root,root,-)
@@ -1706,7 +1716,7 @@ fi
 - Add in missing features from Fedora rpm
 - Reorganize to reduce the diff size between this and the Fedora rpm
 
-* Tue Jun 07 2013 Brian Lin <blin@cs.wisc.edu> - 7.9.6-8
+* Fri Jun 07 2013 Brian Lin <blin@cs.wisc.edu> - 7.9.6-8
 - Remove glexec runtime dependency
 
 * Tue May 28 2013 Brian Lin <blin@cs.wisc.edu> - 7.9.6-7
@@ -1734,7 +1744,7 @@ fi
 - New version
 - Removed condor_glidein -- was removed upstream
 
-* Fri Feb 13 2013 Dave Dykstra <dwd@fnal.gov> - 7.8.6-3
+* Wed Feb 13 2013 Dave Dykstra <dwd@fnal.gov> - 7.8.6-3
 - Renamed /etc/sysconfig/condor-lcmaps-env to /usr/share/osg/sysconfig/condor
   to match the new OSG method for handling daemon environment variables, 
   which keeps non-replaceable settings out of /etc/sysonfig
@@ -1798,7 +1808,7 @@ fi
 - Updated condor_config.generic.patch
 - Removed glexec-patch.diff
 
-* Fri Apr 1 2012 Alain Roy <roy@cs.wisc.edu> - 7.6.6-4
+* Sun Apr  1 2012 Alain Roy <roy@cs.wisc.edu> - 7.6.6-4
 - Backported patch from Condor 7.7 to fix glexec bugs
 - Enabled glexec
 
@@ -1829,7 +1839,7 @@ fi
 * Thu Aug 04 2011 Derek Weitzel <dweitzel@cse.unl.edu> - 7.6.2-0.5.672537b1git.1
 - Made LOCAL_DIR always point to /var/lib/condor rather than TILDE
 
-* Tue Jun  8 2011 <bbockelm@cse.unl.edu> - 7.7.0-0.5
+* Wed Jun  8 2011 <bbockelm@cse.unl.edu> - 7.7.0-0.5
 - Start to break build products into conditionals for future EPEL5 support.
 - Begun integration of a systemd service file.
 
@@ -1921,7 +1931,7 @@ fi
 * Fri Jul 24 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 7.2.1-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_12_Mass_Rebuild
 
-* Mon Feb 25 2009  <matt@redhat> - 7.2.1-1
+* Wed Feb 25 2009  <matt@redhat> - 7.2.1-1
 - Upgraded to 7.2.1 release
 - Pruned changes accepted upstream from condor_config.generic.patch
 - Removed Requires in favor of automatic dependencies on SONAMEs
@@ -1933,7 +1943,7 @@ fi
 * Thu Jan 15 2009 Tomas Mraz <tmraz@redhat.com> - 7.2.0-4
 - rebuild with new openssl
 
-* Mon Jan 14 2009  <matt@redhat> - 7.2.0-3
+* Wed Jan 14 2009  <matt@redhat> - 7.2.0-3
 - Fixed regression: initscript was on by default, now off again
 
 * Thu Jan  8 2009  <matt@redhat> - 7.2.0-2
