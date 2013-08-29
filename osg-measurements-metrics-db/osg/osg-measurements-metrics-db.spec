@@ -5,7 +5,7 @@
 
 Name:           osg-measurements-metrics-db
 Version:        1.2
-Release:        12%{?dist}
+Release:        13%{?dist}
 Summary:        OSG Measurements and Metrics web and database
 
 Group:          Applications/System
@@ -60,6 +60,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+
+* Thu Aug 29 2013 William B Hurst <wbhurst@cse.unl.edu>
+- For version GratiaWeb release version: 1.2-13
+- fixed VO copy/paste problem
 
 * Mon Aug 12 2013 William B Hurst <wbhurst@cse.unl.edu>
 - For version GratiaWeb release version: 1.2-12
