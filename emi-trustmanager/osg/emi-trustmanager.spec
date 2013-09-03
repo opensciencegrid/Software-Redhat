@@ -1,7 +1,7 @@
 Summary: Security utilities
 Name: emi-trustmanager
 Version: 3.0.3
-Release: 3%{?dist}
+Release: 5%{?dist}
 License: EMI
 Vendor: EMI
 Group: System Environment/Libraries
@@ -10,11 +10,18 @@ BuildArch: noarch
 BuildRequires: ant
 BuildRequires: bouncycastle
 BuildRequires: log4j
-BuildRequires: java-devel
+BuildRequires: java7-devel
+BuildRequires: jpackage-utils
+Requires: java7
+Requires: jpackage-utils
+# ensure these are present, from jpackage-utils or missing-java-1.7.0-dirs
+Requires: /usr/lib/java-1.7.0
+Requires: /usr/share/java-1.7.0
 BuildRoot: %{_builddir}/%{name}-root
 AutoReqProv: yes
 Source: emi-trustmanager-3.0.3-1.src.tar.gz
 Patch0: incorrect_oid.patch
+Patch1: build.xml.patch
 
 %description
 The java authentication and proxy generation implementation that supports grid proxies.
@@ -24,6 +31,7 @@ The java authentication and proxy generation implementation that supports grid p
 %setup  
 
 %patch0 -p0 
+%patch1 -p0
 
 %build
  
@@ -34,7 +42,7 @@ The java authentication and proxy generation implementation that supports grid p
 %install
 rm -rf $RPM_BUILD_ROOT
  mkdir -p $RPM_BUILD_ROOT
- ant dist -Dprefix=$RPM_BUILD_ROOT -Dstage=/ -Dmodule.version=3.0.3-1-E -Dant.build.javac.target=1.5
+ ant dist -Dprefix=$RPM_BUILD_ROOT -Dstage=/ -Dmodule.version=3.0.3-1-E -Dant.build.javac.target=1.7
  find $RPM_BUILD_ROOT -name '*.la' -exec rm -rf {} \;
  find $RPM_BUILD_ROOT -name '*.pc' -exec sed -i -e "s|$RPM_BUILD_ROOT||g" {} \;
 
@@ -206,11 +214,16 @@ rm -rf $RPM_BUILD_ROOT
 /usr/share/doc/trustmanager/html/deprecated-list.html
 /usr/share/doc/trustmanager/html/help-doc.html
 %dir /usr/share/doc/trustmanager/html/resources/
-/usr/share/doc/trustmanager/html/resources/inherit.gif
+/usr/share/doc/trustmanager/html/resources/*.gif
 /usr/share/doc/trustmanager/html/index-all.html
 
 %changelog
+* Tue May 07 2013 Carl Edquist <edquist@cs.wisc.edu> - 3.0.3-5
+- Require missing java dir names instead of workaround package
+
+* Mon Apr 01 2013 Carl Edquist <edquist@cs.wisc.edu> - 3.0.3-4
+- Build with OpenJDK7
+ 
 * Mon Sep 17 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 3.0.3-3
 - Fix for misspelled OID for pre-RFC proxies.
 
- 
