@@ -7,7 +7,7 @@
 
 Name:		voms-api-java
 Version:	2.0.8
-Release:	1.4%{?dist}
+Release:	1.5%{?dist}
 Summary:	Virtual Organization Membership Service Java API
 
 Group:		Development/Libraries
@@ -37,7 +37,7 @@ ExcludeArch:	ppc
 ExcludeArch:	ppc64
 %endif
 
-Requires:	java
+Requires:	java7
 Requires:	jpackage-utils
 Requires:	bouncycastle >= 1.39
 Requires:	jakarta-commons-cli
@@ -47,7 +47,7 @@ Requires:	log4j
 Provides:	vomsjapi = %{version}-%{release}
 Obsoletes:	vomsjapi < 2.0.7
 
-BuildRequires:	java-devel >= 1:1.6.0
+BuildRequires:	java7-devel
 BuildRequires:	jpackage-utils
 
 %if %maven
@@ -155,6 +155,9 @@ if [[ $1 -gt 0 && -e %{_javadir}/%{name}.jar ]]; then
 fi
 
 %changelog
+* Tue Feb 19 2013 Carl Edquist <edquist@cs.wisc.edu> - 2.0.8-1.5
+- Rebuilt with OpenJDK7 / changed java dependency to java7
+
 * Tue Nov 20 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.8-1.4
 - Fixed condition in triggerscript to not create a broken package if both packages are being removed.
 
