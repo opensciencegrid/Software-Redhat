@@ -1,24 +1,29 @@
 Summary: Tomcat and axis integration classes
 Name: emi-trustmanager-tomcat
 Version: 3.0.0
-Release: 4%{?dist}
+Release: 8%{?dist}
 License: Apache Software License
 Vendor: EMI
 Group: System Environment/Libraries
 Packager: ETICS
 BuildArch: noarch
 BuildRequires: bouncycastle
-BuildRequires: java-devel-sun
+BuildRequires: java7-devel
+BuildRequires: jpackage-utils
 %if 0%{rhel} <= 5
 BuildRequires: tomcat5
 %endif
 %if 0%{rhel} > 5
 BuildRequires: tomcat6
 %endif
+# ensure these are present, from jpackage-utils or missing-java-1.7.0-dirs
+Requires: /usr/lib/java-1.7.0
+Requires: /usr/share/java-1.7.0
 BuildRequires: emi-trustmanager
 BuildRequires: ant
 BuildRequires: log4j
-Requires: java-sun
+Requires: java7-devel
+Requires: jpackage-utils
 Requires: bouncycastle
 Requires: emi-trustmanager
 Requires: log4j
@@ -27,6 +32,7 @@ AutoReqProv: yes
 Source: emi-trustmanager-tomcat-3.0.0-1.src.tar.gz
 Source1: config.properties
 Patch0: configure.patch
+Patch1: build.xml.patch
 
 %description
 The classes for integrating the trustmanager with tomcat.
@@ -36,6 +42,7 @@ The classes for integrating the trustmanager with tomcat.
 
 %setup  
 %patch0 -p0
+%patch1 -p0
 
 %build
  
@@ -46,7 +53,10 @@ The classes for integrating the trustmanager with tomcat.
 %install
 rm -rf $RPM_BUILD_ROOT
  mkdir -p $RPM_BUILD_ROOT
- ant dist -Dprefix=$RPM_BUILD_ROOT -Dstage=/ -Dant.build.javac.target=1.5
+
+export JAVA_HOME=/etc/alternatives/java_sdk
+
+ ant dist -Dprefix=$RPM_BUILD_ROOT -Dstage=/ -Dant.build.javac.target=1.7
  find $RPM_BUILD_ROOT -name '*.la' -exec rm -rf {} \;
  find $RPM_BUILD_ROOT -name '*.pc' -exec sed -i -e "s|$RPM_BUILD_ROOT||g" {} \;
 
@@ -86,7 +96,7 @@ rm -rf $RPM_BUILD_ROOT
 /usr/share/doc/trustmanager-tomcat/html/deprecated-list.html
 /usr/share/doc/trustmanager-tomcat/html/help-doc.html
 %dir /usr/share/doc/trustmanager-tomcat/html/resources/
-/usr/share/doc/trustmanager-tomcat/html/resources/inherit.gif
+/usr/share/doc/trustmanager-tomcat/html/resources/*.gif
 /usr/share/doc/trustmanager-tomcat/html/index-all.html
 %dir /var/lib/trustmanager-tomcat/
 /var/lib/trustmanager-tomcat/server.xml.template
@@ -95,6 +105,22 @@ rm -rf $RPM_BUILD_ROOT
 /var/lib/trustmanager-tomcat/configure.sh
 
 %changelog
+* Tue May 07 2013 Carl Edquist <edquist@cs.wisc.edu> - 3.0.0-8
+- Require missing java dir names instead of workaround package
+
+* Wed Apr 03 2013 Carl Edquist <edquist@cs.wisc.edu> - 3.0.0-7
+- Rebuild for updated build dependency
+- Use /etc/alternatives instead of hard coding java-1.7.0 path
+
+* Tue Mar 26 2013 Carl Edquist <edquist@cs.wisc.edu> - 3.0.0-6
+- Workaround: Require missing-java-1.7.0-dirs in el5
+
+* Thu Feb 21 2013 Carl Edquist <edquist@cs.wisc.edu> - 3.0.0-5
+- Updates for JDK 7, require java7-devel + jpackage-utils
+- Explicitly point JAVA_HOME to java-1.7.0 to deal with el6 issue
+- Various different documentation .gif files are generated in JDK 7
+- Patch build.xml to change java target from 1.5->1.7, and fix a warning
+
 * Mon Mar 19 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 3.0.0-4
 rebuild with tomcat6 on el6
 
