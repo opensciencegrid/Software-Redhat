@@ -1,2 +1,4 @@
-Passthrough of source RPM from
-http://download.pegasus.isi.edu/wms/download/rhel/src/pegasus-4.2.0-1.src.rpm
+Source downloaded from
+'http://download.pegasus.isi.edu/wms/download/rhel/src/pegasus-4.2.0-1.src.rpm'
+
+We have edited the BuildRequires/Requires to build against and use java7
