@@ -4,16 +4,17 @@
 Summary: The VOMS Administration service
 Name: voms-admin-server
 Version: 2.7.0
-Release: 1.3%{?dist}
+Release: 1.5%{?dist}
 License:    ASL 2.0
 Group: System Environment/Libraries
 BuildRequires:  maven22
 BuildRequires:  jpackage-utils
-BuildRequires:  java-devel-sun
+BuildRequires:  java7-devel
 BuildRequires:  emi-trustmanager
 BuildRequires:  emi-trustmanager-axis
 
-Requires: java-sun
+Requires: jpackage-utils
+Requires: java7-devel
 Requires: emi-trustmanager
 Requires: emi-trustmanager-tomcat
 Requires: bouncycastle >= 1.39
@@ -146,6 +147,12 @@ fi
 %{tomcat_endorsed}/xalan-j2-serializer.jar
 
 %changelog
+* Thu Apr 04 2013 Carl Edquist <edquist@cs.wisc.edu> - 2.7.0-1.5
+- Rebuild for updated build dependency
+
+* Tue Feb 26 2013 Carl Edquist <edquist@cs.wisc.edu> - 2.7.0-1.4
+- Updates to build with OpenJDK 7; require java7-devel + jpackage-utils
+
 * Fri Feb 22 2013 Brian Lin <blin@cs.wisc.edu> - 2.7.0-1.3
 - Update rhel5 to require fetch-crl3 instead of fetch-crl.
 
