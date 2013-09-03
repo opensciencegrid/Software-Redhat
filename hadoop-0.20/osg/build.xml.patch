@@ -1,0 +1,11 @@
+--- build.xml.orig	2013-02-22 10:13:01.658674836 -0600
++++ build.xml	2013-02-22 10:13:05.028737528 -0600
+@@ -143,7 +143,7 @@
+   <property name="javac.debug" value="on"/>
+   <property name="javac.optimize" value="on"/>
+   <property name="javac.deprecation" value="off"/>
+-  <property name="javac.version" value="1.6"/>
++  <property name="javac.version" value="1.7"/>
+   <property name="javac.args" value=""/>
+   <property name="javac.args.warnings" value="-Xlint:unchecked"/>
+ 

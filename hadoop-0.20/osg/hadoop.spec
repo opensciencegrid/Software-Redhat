@@ -56,7 +56,7 @@
 
 Name: %{hadoop_name}-%{apache_branch}
 Version: %{cloudera_version}
-Release: 31%{?dist}
+Release: 33%{?dist}
 Summary: Hadoop is a software platform for processing vast amounts of data
 License: Apache License v2.0
 URL: http://hadoop.apache.org/core/
@@ -80,11 +80,12 @@ Patch5:  hadoop_fuse_dfs_libjvm.patch
 Patch6:  hdfs-799-backport.patch
 Patch7:  HDFS-2452.patch
 Patch8:  hadoop-7154.patch
+Patch9:  build.xml.patch
 
 Buildroot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildRequires: ant >= 1.7, ant-nodeps, ant-trax, jdk >= 1.6, lzo-devel, python >= 2.4, /usr/bin/git, subversion, fuse-libs, fuse-devel, fuse, automake, autoconf, libtool, redhat-rpm-config, openssl-devel
+BuildRequires: ant >= 1.7, ant-nodeps, ant-trax, java7-devel, jpackage-utils, lzo-devel, python >= 2.4, /usr/bin/git, subversion, fuse-libs, fuse-devel, fuse, automake, autoconf, libtool, redhat-rpm-config, openssl-devel
 
-Requires: sh-utils, textutils, /usr/sbin/useradd, /usr/sbin/usermod, /sbin/chkconfig, /sbin/service, jdk >= 1.6
+Requires: sh-utils, textutils, /usr/sbin/useradd, /usr/sbin/usermod, /sbin/chkconfig, /sbin/service, java7-devel, jpackage-utils
 Provides: hadoop
 Obsoletes: hadoop <= 0.20.0
 Obsoletes: hadoop-fuse <= 0.20.0
@@ -198,6 +199,9 @@ trying to debug programs that depend on Hadoop.
 Summary: Mountable HDFS
 Group: Development/Libraries
 Requires: %{name} == %{version}-%{release}, fuse-libs, fuse
+# require java7 explicitly to satisfy libjvm.so requirement
+Requires: java7
+Requires: jpackage-utils
 Provides: hadoop-fuse
 
 %description fuse
@@ -231,9 +235,11 @@ Native libraries for Hadoop compression
 %package libhdfs
 Summary: Hadoop Filesystem Library
 Group: Development/Libraries
-Requires: %{name} == %{version}-%{release}, jdk >= 1.6
-# TODO: reconcile libjvm
-AutoReq: no
+Requires: %{name} == %{version}-%{release}
+# require java7 explicitly to satisfy libjvm.so requirement
+Requires: java7
+Requires: java7-devel
+Requires: jpackage-utils
 Provides: hadoop-libhdfs
 
 %description libhdfs
@@ -275,15 +281,18 @@ before continuing operation.
 %patch6
 %patch7
 %patch8
+%patch9
 
 %build
-# This assumes that you installed Java JDK 6 via RPM
 
+# serializer is required but missing from classpath in el5
+export CLASSPATH=$CLASSPATH:/usr/share/java/serializer.jar
+export JAVA_HOME=/etc/alternatives/java_sdk
 export FORREST_HOME=$PWD/apache-forrest-0.8
 %ifarch noarch
-JAVA_HOME="/usr/java/default" ant -propertyfile cloudera/build.properties bin-package
+ant -propertyfile cloudera/build.properties bin-package
 %else
-JAVA_HOME="/usr/java/default" ant -propertyfile cloudera/build.properties -Dcompile.native=true -Dlibhdfs=1 -Dfusedfs=1 -Dcompile.c++=true -Djava5.home=${JAVA5_HOME} -Dforrest.home=${FORREST_HOME}  task-controller package
+ant -propertyfile cloudera/build.properties -Dcompile.native=true -Dlibhdfs=1 -Dfusedfs=1 -Dcompile.c++=true -Djava5.home=${JAVA_HOME} -Dforrest.home=${FORREST_HOME} task-controller package
 
 # Build the selinux policy file
 mkdir SELinux
@@ -585,6 +594,16 @@ fi
 %endif
 
 %changelog
+* Wed Apr 17 2013 Carl Edquist <edquist@cs.wisc.edu> - 0.20.2+737-33
+- explicitly require java7 for fuse/libhdfs packages to provide libjvm.so
+- use alternatives for JAVA_HOME
+
+* Tue Feb 26 2013 Carl Edquist <edquist@cs.wisc.edu> - 0.20.2+737-32
+- Update to build on OpenJDK 7; require java7-devel, jpackage-utils
+- Patch build.xml to change java source version from 1.6 -> 1.7
+- Explicitly point JAVA_HOME to 1.7.0
+- Add serializer.jar to CLASSPATH as it is be required but missing in el5
+
 * Thu Dec 20 2012 Doug Strain <dstrain@fnal.gov> - 0.20.2+737-31
 - Changed limits to a 91-hdfs.conf file in /etc/security/limits.d
 
