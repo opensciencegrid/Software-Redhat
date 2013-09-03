@@ -1,7 +1,7 @@
 Name:      osg-client
 Summary:   OSG Client
 Version:   3.0.0
-Release:   19%{?dist}
+Release:   20%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -10,7 +10,6 @@ BuildArch: noarch
 BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
 Requires: osg-version
-Requires: java-1.6.0-sun-compat
 Requires: osg-wn-client
 Requires: ndt-client
 Requires: bwctl-client
@@ -61,6 +60,9 @@ rm -rf $RPM_BUILD_ROOT
 %files condor
 
 %changelog
+* Wed Apr 03 2013 Brian Lin <blin@cs.wisc.edu> - 3.0.0-20
+- Update to remove java requirement since it's brought in by osg-wn-client
+
 * Thu Aug 30 2012 Doug Strain <dstrain@fnal.gov> - 3.0.0-19
 - AlsocChanged dependency on ndt to ndt-client so we do not 
   install the server
