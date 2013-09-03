@@ -1,7 +1,7 @@
 Name:           osg-se-bestman
 Summary:        OSG BeStMan Storage Element package for RPM distribution
 Version:        3.0.0
-Release:        8%{?dist}
+Release:        9%{?dist}
 License:        GPL
 Group:          System Environment/Daemons
 URL:            https://twiki.grid.iu.edu/twiki/bin/view/Storage/WebHome
@@ -10,7 +10,6 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 # from VDT
 Requires: osg-version
 Requires: osg-system-profiler
-Requires: java-1.6.0-sun-compat
 Requires: bestman2-server
 Requires: bestman2-client
 Requires: bestman2-tester
@@ -50,6 +49,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Apr 04 2013 Brian Lin <blin@cs.wisc.edu> - 3.0.0-9
+- Remove java dependency
+
 * Fri Feb 22 2013 Brian Lin <blin@cs.wisc.edu> - 3.0.0-8
 - Update rhel5 to require fetch-crl3 instead of fetch-crl.
 
