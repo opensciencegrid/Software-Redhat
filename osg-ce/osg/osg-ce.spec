@@ -1,7 +1,7 @@
 Name:      osg-ce
 Summary:   OSG Compute Element 
 Version:   3.0.0
-Release:   32%{?dist}
+Release:   33%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -10,7 +10,6 @@ BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
 Requires: osg-version
 Requires: grid-certificates
-Requires: java-1.6.0-sun-compat
 Requires: globus-gridftp-server-progs 
 Requires: osg-client
 Requires: lfc-client
@@ -41,7 +40,6 @@ Requires: osg-configure-managedfork
 Requires: osg-configure-misc
 Requires: osg-configure-network
 Requires: osg-configure-squid
-Requires: frontier-squid
 Requires(post): globus-gram-job-manager-scripts >= 4
 
 # The following is required for the RSV Gratia probes to work.
@@ -121,8 +119,14 @@ rm -rf $RPM_BUILD_ROOT
 %files sge
 
 %changelog
+* Tue Aug 27 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 3.0.0-33
+- Merged changes in trunk
+
 * Thu Aug 22 2013 Carl Edquist <edquist@cs.wisc.edu> - 3.0.0-32
 - Add dependency on frontier-squid
+
+* Wed Apr 03 2013 Brian Lin <blin@cs.wisc.edu> - 3.0.0-31
+- Update to remove java requirement since it's brought in by osg-client -> osg-wn-client
 
 * Fri Apr 13 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 3.0.0-30
 - Restored gums dependency on el6.
