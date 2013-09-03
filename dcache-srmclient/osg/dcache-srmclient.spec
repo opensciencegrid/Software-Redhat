@@ -6,19 +6,20 @@
 
 Name:    dcache-srmclient
 Version: %{majorver}.%{minorver}
-Release: 2%{?dist}
+Release: 2.1%{?dist}
 URL:     http://dcache.org
 Summary: SRM clients from dCache.org
 License: http://www.dcache.org/manuals/dCacheSoftwareLicence.html
 Group:   Development/Tools
 Obsoletes: SRM-Client-Fermi
 
-BuildRequires: java-devel
+BuildRequires: java7-devel
 BuildRequires: ant
+BuildRequires: jpackage-utils
+Requires: java7
 BuildRequires: /usr/share/java/xml-commons-apis.jar
 # maven >= 2.0.10 is needed for maven-ant
 BuildRequires: maven22
-Requires: java
 Requires: /usr/bin/globus-url-copy
 Requires: /usr/share/java/xml-commons-apis.jar
 
@@ -44,7 +45,7 @@ Patch1: maven22.patch
 %patch1 -p0
 
 %build
-unset JAVA_HOME
+export JAVA_HOME=%{java_home}
 # This uses ant but actually starts up a maven build
 ant srmclient
 
@@ -94,6 +95,9 @@ rm -rf $RPM_BUILD_ROOT
   /usr/share/java/dcache-srmclient/sbin/* was moved to /usr/sbin
 - Add xml-commons-apis dependency
 - Add maven22 build dependency
+
+* Thu Feb 07 2013 Matyas Selmeci <matyas@cs.wisc.edu> 1.9.5.23-6.1
+- Rebuild with openjdk 7 and ant17
 
 * Wed Jan 18 2012 Derek Weitzel <dweitzel@cse.unl.edu> - 1.9.5.23-6
 - Fixing patch command for sl6
