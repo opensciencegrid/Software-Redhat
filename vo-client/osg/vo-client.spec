@@ -1,5 +1,5 @@
 Name:           vo-client
-Version:        46
+Version:        47
 Release:        1%{?dist}
 Summary:        Contains vomses file for use with user authentication and edg-mkgridmap.conf file that contains configuration information for edg-mkgridmap.
 
@@ -85,6 +85,12 @@ rm -rf $RPM_BUILD_ROOT
 %attr(0600,tomcat,tomcat) %config(noreplace) %{_sysconfdir}/gums/gums.config.template
 
 %changelog
+* Tue Sep 03 2013 Brian Lin <blin@cs.wisc.edu> - 47-1
+- Updated to vo-client 47:
+  - Add OSG Cross CE VO
+  - Change SBGrid VOMS Certificate
+  - Change GLOW VOMS Certificate
+
 * Fri Aug 02 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 46-1
 - Updated to vo-client 46:
   - Remove NWICG VO
