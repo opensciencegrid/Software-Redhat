@@ -1,9 +1,11 @@
-%global with_gcj %{!?_without_gcj:1}%{?_without_gcj:0}
+# % global with_gcj %{!?_without_gcj:1}%{?_without_gcj:0}
+# We don't want to use gcj
+%global with_gcj 0
 %global tomcat %{?el5:tomcat5}%{?el6:tomcat6}
 
 Name:           glite-security-trustmanager
 Version:        2.5.5
-Release:        6.1%{?dist}
+Release:        6.2%{?dist}
 Summary:        Java trustmanager interface supporting a GSI grid name space
 
 Group:          System Environment/Libraries
@@ -37,7 +39,7 @@ BuildArch:      noarch
 %endif
 
 BuildRequires:  jpackage-utils
-BuildRequires:  java-devel >= 1:1.6.0
+BuildRequires:  java7-devel
 BuildRequires:  ant
 BuildRequires:  axis
 BuildRequires:  bouncycastle
@@ -57,7 +59,7 @@ BuildRequires:  tomcat5-server-lib
 BuildRequires:  tomcat6-lib
 %endif
 
-Requires:       java >= 1:1.6.0
+Requires:       java7
 Requires:       voms-api-java >= 2.0.8
 Requires:       jpackage-utils
 Requires:       axis
@@ -213,6 +215,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_javadocdir}/%{name}
 
 %changelog
+* Tue Apr 02 2013 Carl Edquist <edquist@cs.wisc.edu> - 2.5.5-6.2
+- Build for OpenJDK7, comment out gcj
+
 * Wed Nov 14 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 2.5.5-6.1
 - Conditionalize build to work with el5 (tomcat5) and el6 (tomcat6)
 - Change vomsjapi requirement to voms-api-java >= 2.0.8
