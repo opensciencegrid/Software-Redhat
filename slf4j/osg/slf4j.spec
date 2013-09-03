@@ -28,14 +28,16 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-%define gcj_support %{?_with_gcj_support:1}%{!?_with_gcj_support:%{?_without_gcj_support:0}%{!?_without_gcj_support:%{?_gcj_support:%{_gcj_support}}%{!?_gcj_support:0}}}
+# % define gcj_support %{?_with_gcj_support:1}%{!?_with_gcj_support:%{?_without_gcj_support:0}%{!?_without_gcj_support:%{?_gcj_support:%{_gcj_support}}%{!?_gcj_support:0}}}
+# We don't want to use gcj
+%define gcj_support 0
 
 %define section         free
 
 Summary:        Simple Logging Facade for Java
 Name:           slf4j
 Version:        1.5.2
-Release:        4%{dist}
+Release:        5%{dist}
 Epoch:          0
 Group:          System/Logging
 License:        MIT
@@ -45,7 +47,7 @@ Source1:        %{name}-settings.xml
 Source2:        %{name}-jpp-depmap.xml
 Patch0:         %{name}-pom_xml.patch
 BuildRequires:  jpackage-utils
-BuildRequires:  java-devel
+BuildRequires:  java7-devel
 BuildRequires:  ant >= 0:1
 BuildRequires:  junit >= 0:3.8.2
 BuildRequires:  maven22 >= 2.0.7
@@ -250,6 +252,9 @@ fi
 %{_docdir}/%{name}-%{version}/site
 
 %changelog
+* Wed Apr 03 2013 Carl Edquist <edquist@cs.wisc.edu> - 0:1.5.2-5
+- Build with OpenJDK7
+
 * Wed Nov 14 2012 Doug Strain <dstrain@fnal.gov> - 0:1.5.2-4
 - Rebuild for OSG. 
 - Note: a newer version is available for el6 in os repos
