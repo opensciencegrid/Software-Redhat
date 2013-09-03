@@ -1,6 +1,6 @@
 Name:		glite-data-transfer-interface
 Version:	3.7.0
-Release:	3%{?dist}
+Release:	4%{?dist}
 Summary:	WSDL and interface docs for FTS.
 
 Group:		Development/Languages/C and C++
@@ -11,7 +11,8 @@ URL:		http://glite.cvs.cern.ch/cgi-bin/glite.cgi/org.glite.data.transfer-interfa
 Source0:        org.glite.data.transfer-interface.tar.gz
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildArch:      noarch
-BuildRequires:  java-devel
+BuildRequires:  java7-devel
+BuildRequires:  jpackage-utils
 
 %description
 %{summary}
@@ -46,6 +47,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_docdir}/%{name}-%{version}/RELEASE-NOTES
 
 %changelog
+* Wed Apr 03 2013 Carl Edquist <edquist@cs.wisc.edu> - 3.7.0-4
+- Build with OpenJDK7
+
 * Fri Oct 28 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 3.7.0-3
 - rebuilt
 
