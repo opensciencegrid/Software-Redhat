@@ -16,7 +16,7 @@ SRM_HOME=/etc/bestman2
 BESTMAN_SYSCONF=/etc/sysconfig/bestman2
 BESTMAN_SYSCONF_LIB=/etc/sysconfig/bestman2lib
 BESTMAN2_CONF=/etc/bestman2/conf/bestman2.rc
-JAVA_HOME=/usr/java/latest
+JAVA_HOME=/etc/alternatives/java_sdk
 #
 #
 # BeStMan2 server system init variables
