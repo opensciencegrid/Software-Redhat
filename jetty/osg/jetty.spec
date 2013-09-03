@@ -36,7 +36,7 @@
 
 Name: %{jettyname}
 Version: 8.1.4.%{addver}
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: Java Webserver and Servlet Container
 Group: Applications/Internet
 # Jetty is dual licensed under both ASL 2.0 and EPL 1.0, see NOTICE.txt
@@ -45,7 +45,8 @@ URL: http://jetty.mortbay.org/jetty/
 Source0: http://vdt.cs.wisc.edu/upstream/jetty/8.1.4.v20120524/jetty-hightide-8.1.4.v20120524.tar.gz
 BuildRoot: %(mktemp -ud %{_tmppath}/%{jettyname}-%{version}-%{release}-XXXXXX)
 Provides: %{jettyname} = %{version}
-Requires: java
+Requires: java7
+Requires: jpackage-utils
 AutoProv: yes
 AutoReq: yes
 BuildArch: noarch
@@ -56,7 +57,7 @@ Jetty is a 100% Java HTTP Server and Servlet Container.
 %package ajp
 Summary:        ajp module for Jetty
 Group:		Applications/Internet
-Requires:       java
+Requires:       java7
 Requires:       jpackage-utils
 #Requires:       jetty-project = %{version}-%{release}
 Requires:       jetty-http    = %{version}-%{release}
@@ -69,7 +70,7 @@ Requires:       jetty-util    = %{version}-%{release}
 %package annotations
 Summary:        annotations module for Jetty
 Group:		Applications/Internet
-Requires:       java
+Requires:       java7
 Requires:       jpackage-utils
 #Requires:       jetty-project  = %{version}-%{release}
 Requires:       jetty-plus     = %{version}-%{release}
@@ -86,7 +87,7 @@ Requires:       tomcat-lib
 %package        client
 Summary:        client module for Jetty
 Group:		Applications/Internet
-Requires:       java
+Requires:       java7
 Requires:       jpackage-utils
 #Requires:       jetty-project = %{version}-%{release}
 Requires:       jetty-http    = %{version}-%{release}
@@ -97,7 +98,7 @@ Requires:       jetty-util    = %{version}-%{release}
 %package        continuation
 Summary:        continuation module for Jetty
 Group:		Applications/Internet
-Requires:       java
+Requires:       java7
 Requires:       jpackage-utils
 #Requires:       jetty-project = %{version}-%{release}
 Requires:       jetty-util    = %{version}-%{release}
@@ -107,7 +108,7 @@ Requires:       jetty-util    = %{version}-%{release}
 %package        deploy
 Summary:        deploy module for Jetty
 Group: 		Applications/Internet
-Requires:       java
+Requires:       java7
 Requires:       jpackage-utils
 #Requires:       jetty-project = %{version}-%{release}
 Requires:       jetty-jmx     = %{version}-%{release}
@@ -120,7 +121,7 @@ Requires:       jetty-xml     = %{version}-%{release}
 %package        http
 Summary:        http module for Jetty
 Group: 		Applications/Internet
-Requires:       java
+Requires:       java7
 Requires:       jpackage-utils
 #Requires:       jetty-project = %{version}-%{release}
 Requires:       jetty-io      = %{version}-%{release}
@@ -131,7 +132,7 @@ Requires:       jetty-util    = %{version}-%{release}
 %package        io
 Summary:        io module for Jetty
 Group:		Applications/Internet
-Requires:       java
+Requires:       java7
 Requires:       jpackage-utils
 #Requires:       jetty-project = %{version}-%{release}
 Requires:       jetty-util    = %{version}-%{release}
@@ -140,7 +141,7 @@ Requires:       jetty-util    = %{version}-%{release}
 %package        jmx
 Summary:        jmx module for Jetty
 Group:          Applications/Internet
-Requires:       java
+Requires:       java7
 Requires:       jpackage-utils
 #Requires:       jetty-project = %{version}-%{release}
 Requires:       jetty-util    = %{version}-%{release}
@@ -149,7 +150,7 @@ Requires:       jetty-util    = %{version}-%{release}
 %package        jndi
 Summary:        jndi module for Jetty
 Group: 		Applications/Internet
-Requires:       java
+Requires:       java7
 Requires:       jpackage-utils
 #Requires:       jetty-project = %{version}-%{release}
 Requires:       jetty-server  = %{version}-%{release}
@@ -161,7 +162,7 @@ Requires:       %{_javadir}/javamail/mail.jar
 %package        overlay-deployer
 Summary:        overlay-deployer module for Jetty
 Group:		Applications/Internet
-Requires:       java
+Requires:       java7
 Requires:       jpackage-utils
 #Requires:       jetty-project = %{version}-%{release}
 Requires:       jetty-deploy  = %{version}-%{release}
@@ -179,7 +180,7 @@ Requires:       geronimo-jta
 %package        plus
 Summary:        plus module for Jetty
 Group:		Applications/Internet
-Requires:       java
+Requires:       java7
 Requires:       jpackage-utils
 #Requires:       jetty-project  = %{version}-%{release}
 Requires:       jetty-jndi     = %{version}-%{release}
@@ -195,7 +196,7 @@ Requires:       jetty-xml      = %{version}-%{release}
 %package        policy
 Summary:        policy module for Jetty
 Group: 		Applications/Internet
-Requires:       java
+Requires:       java7
 Requires:       jpackage-utils
 #Requires:       jetty-project = %{version}-%{release}
 Requires:       jetty-util    = %{version}-%{release}
@@ -204,7 +205,7 @@ Requires:       jetty-util    = %{version}-%{release}
 %package        rewrite
 Summary:        rewrite module for Jetty
 Group:		Applications/Internet
-Requires:       java
+Requires:       java7
 Requires:       jpackage-utils
 #Requires:       jetty-project = %{version}-%{release}
 Requires:       jetty-client  = %{version}-%{release}
@@ -218,7 +219,7 @@ Requires:       jetty-util    = %{version}-%{release}
 %package        security
 Summary:        security module for Jetty
 Group: 		Applications/Internet
-Requires:       java
+Requires:       java7
 Requires:       jpackage-utils
 #Requires:       jetty-project = %{version}-%{release}
 Requires:       jetty-http    = %{version}-%{release}
@@ -230,7 +231,7 @@ Requires:       jetty-util    = %{version}-%{release}
 %package        server
 Summary:        server module for Jetty
 Group:		Applications/Internet
-Requires:       java
+Requires:       java7
 Requires:       jpackage-utils
 #Requires:       jetty-project      = %{version}-%{release}
 Requires:       jetty-continuation = %{version}-%{release}
@@ -244,7 +245,7 @@ Requires:       jetty-util         = %{version}-%{release}
 %package        servlet
 Summary:        servlet module for Jetty
 Group:		Applications/Internet
-Requires:       java
+Requires:       java7
 Requires:       jpackage-utils
 #Requires:       jetty-project      = %{version}-%{release}
 Requires:       jetty-continuation = %{version}-%{release}
@@ -260,7 +261,7 @@ Requires:       jetty-util         = %{version}-%{release}
 %package        servlets
 Summary:        servlets module for Jetty
 Group:		Applications/Internet
-Requires:       java
+Requires:       java7
 Requires:       jpackage-utils
 #Requires:       jetty-project      = %{version}-%{release}
 Requires:       jetty-client       = %{version}-%{release}
@@ -278,7 +279,7 @@ Summary:        util module for Jetty
 # Utf8Appendable.java is additionally under MIT license
 Group:		Applications/Internet
 License:        (ASL 2.0 or EPL) and MIT
-Requires:       java
+Requires:       java7
 Requires:       jpackage-utils
 #Requires:       jetty-project = %{version}-%{release}
 #Requires:       tomcat-servlet-3.0-api
@@ -289,7 +290,7 @@ Requires:       slf4j
 Summary:        webapp module for Jetty
 Group:		Applications/Internet
 License:        ASL 2.0 or EPL
-Requires:       java
+Requires:       java7
 Requires:       jpackage-utils
 #Requires:       jetty-project  = %{version}-%{release}
 Requires:       jetty-http     = %{version}-%{release}
@@ -308,7 +309,7 @@ Requires:       jakarta-taglibs-standard
 %package        websocket
 Summary:        websocket module for Jetty
 Group:		Applications/Internet
-Requires:       java
+Requires:       java7
 Requires:       jpackage-utils
 #Requires:       jetty-project = %{version}-%{release}
 Requires:       jetty-http    = %{version}-%{release}
@@ -321,7 +322,7 @@ Requires:       jetty-util    = %{version}-%{release}
 %package        xml
 Summary:        xml module for Jetty
 Group:		Applications/Internet
-Requires:       java
+Requires:       java7
 Requires:       jpackage-utils
 #Requires:       jetty-project = %{version}-%{release}
 Requires:       jetty-util    = %{version}-%{release}
@@ -331,7 +332,7 @@ Requires:       jetty-util    = %{version}-%{release}
 %package        nosql
 Summary:        nosql module for Jetty
 Group:		Applications/Internet
-Requires:       java
+Requires:       java7
 Requires:       jpackage-utils
 #Requires:       jetty-project = %{version}-%{release}
 Requires:       jetty-server  = %{version}-%{release}
@@ -343,7 +344,7 @@ Requires:       tomcat-servlet-3.0-api
 %package        osgi
 Summary:        OSGi module for Jetty
 Group:		Applications/Internet
-Requires:       java
+Requires:       java7
 Requires:       jpackage-utils
 #Requires:       jetty-project     = %{version}-%{release}
 Requires:       jetty-annotations = %{version}-%{release}
@@ -457,5 +458,8 @@ done
 %{_javadir}/jetty/jetty-xml-%{version}.jar
 
 %changelog
+* Wed Apr 03 2013 Carl Edquist <edquist@cs.wisc.edu> - 8.1.4-2
+- Build with OpenJDK7
+
 * Wed Jul 26 2012 Neha Sharma <neha@fnal.gov> - 8.1.4-1
 - Passing through the tarballs needed by Bestman
