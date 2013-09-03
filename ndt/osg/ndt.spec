@@ -1,6 +1,6 @@
 Name:           ndt
 Version:        3.6.5
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Network Diagnostic Tool
 
 Group:          Applications/Networking
@@ -20,11 +20,8 @@ Requires:       ndt-server, ndt-client
 BuildRequires:  web100_userland, libpcap-devel, jpackage-utils, I2util
 BuildRequires:  mysql-connector-odbc, unixODBC-devel, zlib-devel
 
-%if 0%{?fedora} >= 8
-BuildRequires:  java-1.5.0-gcj-devel
-%else
-BuildRequires:  java-1.6.0-openjdk-devel
-%endif
+BuildRequires:  java7-devel
+BuildRequires:  jpackage-utils
 
 
 %description
@@ -123,6 +120,9 @@ fi
 %{_bindir}/ndtclt
 
 %changelog
+* Wed Apr 03 2013 Carl Edquist <edquist@cs.wisc.edu> - 3.6.5-3
+- Build with OpenJDK7
+
 * Thu Aug 30 2012 Doug Strain <dstrain@fnal.gov> - 3.6.5-2
 - Updated Obsoletes so that OSG clients will update from ndt to ndt-client
 
