@@ -9,7 +9,7 @@
 
 Name:           gridftp-hdfs
 Version:        0.5.4
-Release:        6%{?dist}
+Release:        9%{?dist}
 Summary:        HDFS DSI plugin for GridFTP
 Group:          System Environment/Daemons
 License:        ASL 2.0
@@ -27,22 +27,21 @@ Patch0: osg-sysconfig.patch
 Patch1: hadoop200.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-# On SL6, build fails since java-devel pulls in java-1.5.0-gcj
-#  which has libjvm in /usr/lib64/gcj-4.4.0 and gcc can't find it.
-%if 0%{rhel} == 6
-BuildRequires: jdk java-1.6.0-sun-compat
-%else
-BuildRequires: java-devel
-%endif
+BuildRequires: java7-devel
+BuildRequires: jpackage-utils
 
 BuildRequires: hadoop-libhdfs
 BuildRequires: globus-gridftp-server-devel
 BuildRequires: globus-common-devel
 
 Requires: hadoop-libhdfs
+Requires: hadoop-client >= 2.0.0+545
+# ^ was getting "No FileSystem for scheme: hdfs" without this
 # 6.14-2 added OSG plugin-style sysconfig instead of gridftp.conf.d
 Requires: globus-gridftp-server-progs >= 6.14-2
 Requires: xinetd
+Requires: java7
+Requires: jpackage-utils
 
 Requires(pre): shadow-utils
 Requires(preun): initscripts
@@ -142,6 +141,15 @@ fi
 %endif
 
 %changelog
+* Fri May 31 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 0.5.4-9
+- Add hadoop-client dependency
+
+* Thu May 30 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 0.5.4-8
+- Bump to rebuild against hadoop 2.0 built with OpenJDK 7
+
+* Tue Feb 26 2013 Carl Edquist <edquist@cs.wisc.edu> - 0.5.4-7
+- Update to build with OpenJDK 7; require java7-devel + jpackage-utils
+
 * Tue Feb 19 2013 Dave Dykstra <dwd@fnal.gov> - 0.5.4-6.osg
 - Change sysconfig arrangement to use /usr/share/osg/sysconfig
   for OSG replaceable additions, and /etc/sysconfig/gridftp-hdfs
