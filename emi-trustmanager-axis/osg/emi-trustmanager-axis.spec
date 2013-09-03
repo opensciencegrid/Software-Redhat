@@ -1,7 +1,7 @@
 Summary: The java classes to integrate trustmanager with axis.
 Name: emi-trustmanager-axis
 Version: 1.0.1
-Release: 1.1%{?dist}
+Release: 1.2%{?dist}
 License: Apache Software License
 Vendor: EMI
 Group: System Environment/Libraries
@@ -9,16 +9,21 @@ Packager: ETICS
 BuildArch: noarch
 BuildRequires: bouncycastle
 BuildRequires: tomcat5
-BuildRequires: java-devel
+BuildRequires: java7-devel
+BuildRequires: jpackage-utils
 BuildRequires: emi-trustmanager
 BuildRequires: ant
 BuildRequires: log4j
 BuildRequires: axis
 Requires: emi-trustmanager
 Requires: axis
+Requires: java7
+Requires: jpackage-utils
 BuildRoot: %{_builddir}/%{name}-root
 AutoReqProv: yes
 Source: emi-trustmanager-axis-1.0.1-1.src.tar.gz
+Patch0: build.xml.patch
+
 
 %description
 The java classes to integrate trustmanager with axis.
@@ -27,6 +32,8 @@ The java classes to integrate trustmanager with axis.
  
 
 %setup  
+
+%patch0 -p0
 
 %build
  
@@ -88,8 +95,10 @@ rm -rf $RPM_BUILD_ROOT
 /usr/share/doc/trustmanager-axis/html/deprecated-list.html
 /usr/share/doc/trustmanager-axis/html/help-doc.html
 %dir /usr/share/doc/trustmanager-axis/html/resources/
-/usr/share/doc/trustmanager-axis/html/resources/inherit.gif
+/usr/share/doc/trustmanager-axis/html/resources/*.gif
 /usr/share/doc/trustmanager-axis/html/index-all.html
 
 %changelog
- 
+* Mon Apr 01 2013 Carl Edquist <edquist@cs.wisc.edu> - 1.0.1-1.2
+- Build for OpenJDK7
+
