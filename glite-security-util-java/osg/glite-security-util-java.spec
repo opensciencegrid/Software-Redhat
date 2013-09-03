@@ -1,8 +1,10 @@
-%global with_gcj %{!?_without_gcj:1}%{?_without_gcj:0}
+# % global with_gcj %{!?_without_gcj:1}%{?_without_gcj:0}
+# We don't want to use gcj
+%global with_gcj 0
 
 Name:           glite-security-util-java
 Version:        2.8.0
-Release:        3.1%{?dist}
+Release:        3.2%{?dist}
 Summary:        Java Utilities for GSI Credentials
 
 Group:          System Environment/Libraries
@@ -21,6 +23,7 @@ Source0:        %{name}-%{version}.tar.gz
 # The following script can be use to generate the source tar ball.
 # e.g  bash ./glite-security-util-java-generate-tarball.sh 2.7.1
 Source1:        %{name}-generate-tarball.sh
+Patch0:         build.xml.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 %if %{with_gcj}
@@ -41,7 +44,7 @@ ExcludeArch:    ppc64
 %endif
 
 BuildRequires:  jpackage-utils
-BuildRequires:  java-devel >= 1:1.6.0
+BuildRequires:  java7-devel
 BuildRequires:  ant
 BuildRequires:  bouncycastle
 BuildRequires:  log4j
@@ -55,7 +58,7 @@ BuildRequires:  axis
 BuildRequires:  voms-api-java >= 2.0.8
 
 Requires:       jpackage-utils
-Requires:       java
+Requires:       java7
 Requires:       bouncycastle
 Requires:       log4j
 Requires:       voms-api-java >= 2.0.8
@@ -91,6 +94,8 @@ This package contains the API documentation for %{name}.
 
 %prep
 %setup -q -n org.glite.security.util-java
+
+%patch0 -p0 
 
 # remove private copy of vomsjapi and use the provided package.
 rm -rf src/org/glite/security/voms
@@ -158,6 +163,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Apr 02 2013 Carl Edquist <edquist@cs.wisc.edu> - 2.8.0-3.2
+- Build for OpenJDK7, don't use gcj
+
 * Wed Nov 14 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 2.8.0-3.1
 - Conditionalize build to work on both el5 (with tomcat5) and el6 (with tomcat6)
 - Change vomsjapi requirement to voms-api-java >= 2.0.8
