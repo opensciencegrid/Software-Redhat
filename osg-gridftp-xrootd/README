@@ -1,5 +1,0 @@
-This is a meta-package for the GridFTP 
-with underlying xrootd storage element using fuse/dsi module.
-
-This is needed for systems with one bestman gateway on top 
-of multiple gridftp systems
