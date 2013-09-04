@@ -1,5 +1,5 @@
 %global name osg-configure
-%global version 1.0.39
+%global version 1.0.40
 %global release 1%{?dist}
 
 Summary: Package for configure-osg and associated scripts
@@ -221,6 +221,12 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/osg/config.d/20-slurm.ini
 
 %changelog
+* Thu Aug 29 2013 Suchandra Thapa <sthapa@ci.uchicago.edu> 1.0.40-1
+- Fix gratia condor probe configuration
+- Fix breakage when variable substitution across files or bad variable
+  substitution is present
+- Add unit tests for above issue
+
 * Thu Aug 29 2013 Suchandra Thapa <sthapa@ci.uchicago.edu> 1.0.39-1
 - Fix squid unit test
 
