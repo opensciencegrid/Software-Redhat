@@ -14,7 +14,7 @@
 
 Name:           bestman2
 Version:        2.3.0
-Release:        14%{?dist}
+Release:        15%{?dist}
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -441,10 +441,14 @@ fi
 
 
 %changelog
+* Wed Sep 04 2013 Neha Sharma <neha@fnal.gov> - 2.3.0-15
+- As per GOC ticket 14020, adding the copy-truncate logrotate option and 
+  modify logrotate to only handle bestman2.log, not event.srm.log 
+
 * Tue May 07 2013 Carl Edquist <edquist@cs.wisc.edu> - 2.3.0-14
 - Require missing java dir names instead of workaround package
 
-* Mon Apr 29 2013 Carl Edquist <edquist@cs.wisc.edu> - 2.3.0-13
+ Mon Apr 29 2013 Carl Edquist <edquist@cs.wisc.edu> - 2.3.0-13
 - Require missing-java-1.7.0-dirs for el5
 
 * Thu Apr 04 2013 Carl Edquist <edquist@cs.wisc.edu> - 2.3.0-12
