@@ -1,7 +1,7 @@
 Name:      osg-ce
 Summary:   OSG Compute Element 
 Version:   3.0.0
-Release:   33%{?dist}
+Release:   34%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -40,6 +40,7 @@ Requires: osg-configure-managedfork
 Requires: osg-configure-misc
 Requires: osg-configure-network
 Requires: osg-configure-squid
+Requires: frontier-squid
 Requires(post): globus-gram-job-manager-scripts >= 4
 
 # The following is required for the RSV Gratia probes to work.
@@ -119,6 +120,9 @@ rm -rf $RPM_BUILD_ROOT
 %files sge
 
 %changelog
+* Thu Sep 05 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 3.0.0-34
+- Re-add dependency on frontier-squid, which somehow got lost in the merge
+
 * Tue Aug 27 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 3.0.0-33
 - Merged changes in trunk
 
