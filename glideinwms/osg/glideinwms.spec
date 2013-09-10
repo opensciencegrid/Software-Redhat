@@ -696,6 +696,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Sep 09 2013 John Weigand <weigand@fnal.gov> - 2.7.2-0.1.rc3
+- No code changes from rc2. Just a change to Requires (dependencies) to
+  insure that the entire set of glideinwms rpms is updated as a set.
+
 * Mon Aug 26 2013 Parag Mhashilkar <parag@fnal.gov> - 2.7.2-0.1.rc2
 - Add update_proxy.py while generating the checksum for the version
 
