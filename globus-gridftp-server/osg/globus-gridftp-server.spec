@@ -14,7 +14,7 @@
 Name:		globus-gridftp-server
 %global _name %(tr - _ <<< %{name})
 Version:	6.14
-Release:	4%{?dist}
+Release:	5%{?dist}
 Summary:	Globus Toolkit - Globus GridFTP Server
 
 Group:		System Environment/Libraries
@@ -249,6 +249,9 @@ fi
 %defattr(-,root,root,-)
 
 %changelog
+* Tue Sep 10 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 6.14-5.osg
+- Use copytruncate for log rotation (SOFTWARE-1083)
+
 * Wed Feb 20 2013 Dave Dykstra <dwd@fnal.gov> - 6.14-4.osg
 - Add gridftp-conf-logging.patch to add back logging options in gridftp.conf
   that were (apparently) accidentally dropped in 6.14-1.osg
