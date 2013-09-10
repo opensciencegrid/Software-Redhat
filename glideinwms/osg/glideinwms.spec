@@ -6,7 +6,7 @@ Name:           glideinwms
 
 %if %{v2_plus}
 %define version 2.7.2
-%define release 0.2.rc3
+%define release 0.3.rc3
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
 %endif
@@ -164,11 +164,11 @@ Provides:       GlideinWMSFactory = %{version}-%{release}
 Requires: httpd
 # We require Condor 7.6.0 (and newer) to support
 # condor_advertise -multiple -tcp which is enabled by default
+Requires: glideinwms-factory-condor = %{version}-%{release}
 Requires: condor >= 7.8.0
 Requires: python-rrdtool
 Requires: m2crypto
 Requires: javascriptrrd
-Requires: gwms-factory-config = %{version}-%{release}
 Requires(post): /sbin/service
 Requires(post): /usr/sbin/useradd
 Requires(post): /sbin/chkconfig
