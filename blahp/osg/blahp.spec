@@ -1,6 +1,6 @@
 Name:		blahp
 Version:	1.18.4.bosco
-Release:	3%{?dist}
+Release:	4%{?dist}
 Summary:	gLite BLAHP daemon
 
 Group:		System/Libraries
@@ -16,7 +16,7 @@ BuildRequires:  automake
 BuildRequires:  autoconf
 BuildRequires:  libtool
 BuildRequires:  glite-build-common-cpp
-BuildRequires:  condor-classads-devel >= 7.9.6
+BuildRequires:  condor-classads-devel >= 8.1.0
 BuildRequires:  globus-gss-assist-devel
 BuildRequires:  globus-gsi-credential-devel
 BuildRequires:  globus-gsi-proxy-core-devel
@@ -90,6 +90,9 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Tue Sep 10 2013  <edquist@cs.wisc.edu> - 1.18.4.bosco-4
+- Building against latest condor
+
 * Tue May 20 2013 Brian Lin <blin@cs.wisc.edu> - 1.18.4.bosco-3
 - Building against latest condor
 
