@@ -5,7 +5,7 @@
 
 Name:           osg-measurements-metrics-web
 Version:        1.2
-Release:        13%{?dist}
+Release:        14%{?dist}
 Summary:        OSG Measurements and Metrics web and database
 
 Group:          Applications/System
@@ -80,6 +80,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+
+* Tue Sep 10 2013 William B Hurst <wbhurst@cse.unl.edu>
+- Modifications completed to resolve Jira Tickets
+- GratiaWeb-56  Gratia query that show usage by ProjectName
+- across OSG sites and GratiaWeb-36 ProjectName
+- Daily WallHours per Site
 
 * Thu Aug 29 2013 William B Hurst <wbhurst@cse.unl.edu>
 - For version GratiaWeb release version: 1.2-13
