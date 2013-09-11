@@ -13,7 +13,7 @@
 Name:		globus-gatekeeper
 %global _name %(tr - _ <<< %{name})
 Version:	9.6
-Release:	1.9%{?dist}
+Release:	1.10%{?dist}
 Summary:	Globus Toolkit - Globus Gatekeeper
 
 Group:		Applications/Internet
@@ -26,6 +26,7 @@ Source1:        globus-gatekeeper.osg-sysconfig
 #Patch0:         child_signals.patch
 Patch3:         init.patch
 Patch4:         GRAM-309.patch
+Patch5:         logrotate-copytruncate.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Requires:	globus-common >= 13.4
@@ -58,6 +59,7 @@ Globus Gatekeeper Setup
 #%patch0 -p0
 %patch3 -p0
 %patch4 -p0
+%patch5 -p0
 
 %build
 # Remove files that should be replaced during bootstrap
@@ -130,6 +132,9 @@ fi
 /usr/share/osg/sysconfig/%{name}
 
 %changelog
+* Wed Sep 11 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 9.6-1.10
+- Add copytruncate to logrotate (SOFTWARE-1083)
+
 * Thu Feb 22 2013 Dave Dykstra <dwd@fnal.gov> - 9.6-1.9.osg
 - Change to using LCMAPS_POLICY_NAME=authorize_only so globus does the
   user id switch, since globus can do it and globus-gatekeeper was the
