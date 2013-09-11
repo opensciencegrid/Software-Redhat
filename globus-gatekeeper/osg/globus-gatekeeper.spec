@@ -13,7 +13,7 @@
 Name:		globus-gatekeeper
 %global _name %(tr - _ <<< %{name})
 Version:	9.6
-Release:	1.10%{?dist}
+Release:	1.11%{?dist}
 Summary:	Globus Toolkit - Globus Gatekeeper
 
 Group:		Applications/Internet
@@ -132,6 +132,9 @@ fi
 /usr/share/osg/sysconfig/%{name}
 
 %changelog
+* Wed Sep 11 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 9.6-1.11
+- Avoid trigerring gatekeeper's own log rotation since we're using logrotate (SOFTWARE-1083)
+
 * Wed Sep 11 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 9.6-1.10
 - Add copytruncate to logrotate (SOFTWARE-1083)
 
