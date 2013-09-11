@@ -13,7 +13,7 @@
 Name:		globus-gram-job-manager
 %global _name %(tr - _ <<< %{name})
 Version:	13.45
-Release:	1.5%{?dist}
+Release:	1.6%{?dist}
 Summary:	Globus Toolkit - GRAM Jobmanager
 
 Group:		Applications/Internet
@@ -232,6 +232,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_docdir}/%{name}-%{version}/html
 
 %changelog
+* Wed Sep 11 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 13.45-1.6
+- Don't trigger GRAM's own log rotation in logrotate (SOFTWARE-1083)
+
 * Tue Sep 10 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 13.45-1.5
 - Change logrotate config to use copytruncate (SOFTWARE-1083)
 
