@@ -1,8 +1,8 @@
 Name: jglobus
 Summary: An implementation of Globus for Java
 License: Apache 2.0
-Version: 2.0.5
-Release: 4.1%{?dist}
+Version: 2.0.6
+Release: 2%{?dist}
 URL: http://www.globus.org/toolkit/jglobus/
 Group: System Environment/Libraries
 
@@ -41,7 +41,7 @@ Requires(postun): jpackage-utils
 
 %prep
 %setup -q -c -n JGlobus
-%patch0 -p1
+#%patch0 -p1
 %patch1 -p0
 
 find -name '*.class' -exec rm -f '{}' \;
@@ -94,6 +94,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mavendepmapfragdir}/jglobus
 
 %changelog
+* Fri Sep 13 2013 Brian Bockelman <bbockelm@cse.unl.edu> - 2.0.6-2
+- Update to 2.0.6 release.
+
 * Tue Jul 09 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.5-4.1
 - Add Conflict against cog-jglobus-axis < 1.8.0, since it was built with an older version of JGlobus. (SOFTWARE-1101)
 
