@@ -1,5 +1,5 @@
 %global name osg-configure
-%global version 1.0.43
+%global version 1.0.44
 %global release 1%{?dist}
 
 Summary: Package for configure-osg and associated scripts
@@ -221,6 +221,9 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/osg/config.d/20-slurm.ini
 
 %changelog
+* Wed Sep 16 2013 Suchandra Thapa <sthapa@ci.uchicago.edu> 1.0.44-1
+- Change http proxy validation per dicussions with Brian and Tim
+
 * Wed Sep 9 2013 Suchandra Thapa <sthapa@ci.uchicago.edu> 1.0.43-1
 - Fix gratia configuration errors for slurm configuration
 - Update squid location checks 
