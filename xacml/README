@@ -1,0 +1,11 @@
+
+This is a repackage of upstream plus one patch, xacml_namespaces.patch.
+
+xacml_namespaces.patch does two things:
+1) Renames namespaces -> xacml_namespaces
+2) Explicitly sets the namespace of struct soap to xacml_namespaces.
+
+HTCondor also exports a global variable named 'namespaces'; without this
+patch, HTCondor will clobber xacml's 'namespaces' global variable,
+resulting in difficult-to-debug GUMS issues.
+
