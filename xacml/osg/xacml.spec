@@ -1,7 +1,7 @@
 Summary: SAML 2.0 profile of XACML v2.0 library
 Name: xacml
 Version: 1.1.2
-Release: 5%{?dist}
+Release: 5.1%{?dist}
 License: ASL 2.0
 Group: System Environment/Libraries
 URL: http://wiki.nikhef.nl/grid/Site_Access_Control
@@ -104,6 +104,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/xacml.pc
 
 %changelog
+* Mon Sep 16 2013 Brian Bockelman <bbockelm@cse.unl.edu > 1.1.2-5.1
+- Rename global 'namespaces' to avoid conflicts with parent executable
+
 * Thu Jun 27 2013 Dennis van Dok <dennisvd@nikhef.nl> 1.1.2-5
 - Use pkg-config to find the gsoap cflags.
 
