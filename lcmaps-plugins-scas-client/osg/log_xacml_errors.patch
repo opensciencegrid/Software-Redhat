@@ -181,6 +181,15 @@
      /** B: Restore stderr and stdout streams ***/
  
  
+@@ -1504,6 +1548,8 @@
+ 
+         streams_redirected = 0;
+     }
++    if (pfd[0] >= 0) close(pfd[0]);
++    if (pfd[1] >= 0) close(pfd[1]);
+     /** B: Restore stderr and stdout streams ***/
+ 
+     /* Free stuff */
 @@ -1646,6 +1685,33 @@
      return 0;
  }
