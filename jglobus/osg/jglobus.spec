@@ -2,7 +2,7 @@ Name: jglobus
 Summary: An implementation of Globus for Java
 License: Apache 2.0
 Version: 2.0.6
-Release: 2%{?dist}
+Release: 3%{?dist}
 URL: http://www.globus.org/toolkit/jglobus/
 Group: System Environment/Libraries
 
@@ -20,11 +20,8 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires: java7-devel
 BuildRequires: jpackage-utils
-%if "%{?rhel}" == "6"
+BuildRequires: /usr/share/java-1.7.0
 BuildRequires: maven22
-%else
-BuildRequires: maven2
-%endif
 BuildRequires: bouncycastle
 
 Requires: java7
@@ -51,10 +48,7 @@ find -name '*.jar' -exec rm -f '{}' \;
 
 export MAVEN_REPO_LOCAL=$(pwd)/.m2/repository
 mkdir -p $MAVEN_REPO_LOCAL
-%define mvn %{_bindir}/mvn
-%if 0%{?rhel} >= 6
 %define mvn %{_bindir}/mvn22
-%endif
 
 # Force jglobus to build against the local bcprov
 %{mvn} install:install-file -B -DgroupId=org.bouncycastle -DartifactId=bcprov-jdk16 -Dversion=1.45 -Dpackaging=jar -Dfile=`build-classpath bcprov` -Dmaven.repo.local=$MAVEN_REPO_LOCAL
@@ -94,6 +88,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_mavendepmapfragdir}/jglobus
 
 %changelog
+* Tue Sep 17 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.6-3
+- Add /usr/share/java-1.7.0 to BuildRequires to build on el5
+- Require maven22 for el5 as well
+
 * Fri Sep 13 2013 Brian Bockelman <bbockelm@cse.unl.edu> - 2.0.6-2
 - Update to 2.0.6 release.
 
