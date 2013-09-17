@@ -1,13 +1,14 @@
 Summary: SCAS client plugin for the LCMAPS authorization framework
 Name: lcmaps-plugins-scas-client
 Version: 0.3.4
-Release: 1.2%{?dist}
+Release: 1.3%{?dist}
 Vendor: Nikhef
 License: ASL 2.0
 Group: System Environment/Libraries
 URL: http://www.nikhef.nl/pub/projects/grid/gridwiki/index.php/Site_Access_Control
 Source0: http://software.nikhef.nl/security/%{name}/%{name}-%{version}.tar.gz
 Patch0: ca_only.patch
+Patch1: log_xacml_errors.patch
 BuildRequires: openssl-devel
 BuildRequires: lcmaps-interface, saml2-xacml2-c-lib-devel
 
@@ -34,6 +35,7 @@ Summary: SAZ support for lcmaps
 %prep
 %setup -q
 %patch0 -p0
+%patch1 -p0
 
 %build
 
@@ -68,6 +70,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/man/man8/lcmaps_plugins_saz_client.8.gz
 
 %changelog
+* Mon Sep 16 2013 Brian Bockelman <bbockelm@cse.unl.edu> 0.3.4-1.3.osg
+- Log libxacml failures.
+
 * Thu Dec 27 2012 Dave Dykstra <dwd@fnal.gov> 0.3.4-1.2.osg
 - Remove %{_libdir}/modules symlink and %ghost files
 - Include a .so in lcmaps-plugins-saz-client package like all the
