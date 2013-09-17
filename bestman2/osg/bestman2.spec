@@ -14,7 +14,7 @@
 
 Name:           bestman2
 Version:        2.3.0
-Release:        15%{?dist}
+Release:        16%{?dist}
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -48,7 +48,9 @@ Patch0:		upgrade_exception_message.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
-BuildRequires:  java7-devel jpackage-utils wget ant axis jakarta-commons-logging jakarta-commons-discovery wsdl4j jakarta-commons-collections jakarta-commons-lang joda-time velocity xalan-j2 xml-security bouncycastle voms-api-java >= 2.0.8 slf4j log4j cog-jglobus-axis jglobus autoconf
+BuildRequires:  java7-devel jpackage-utils wget ant axis jakarta-commons-logging jakarta-commons-discovery wsdl4j jakarta-commons-collections jakarta-commons-lang joda-time velocity xalan-j2 xml-security bouncycastle voms-api-java >= 2.0.8 slf4j log4j cog-jglobus-axis autoconf
+# v NOTE: Must edit the jglobus-*.path lines in build.properties every time jglobus gets a new version!
+BuildRequires: jglobus = 2.0.6
 BuildRequires: jetty-client jetty-continuation jetty-deploy jetty-http jetty-io jetty-security jetty-server jetty-servlet jetty-util jetty-webapp jetty-xml
 BuildRequires: emi-trustmanager emi-trustmanager-axis
 BuildRequires: gums
@@ -202,7 +204,7 @@ pushd bestman2/branches/osg-dev
 
 #sed -i "s/Generating stubs from/Gen stubs \${axis.path}/" wsdl/build.xml
 
-ant build
+ant build # <- XXX dies here
 ant install
 popd
 
@@ -441,6 +443,9 @@ fi
 
 
 %changelog
+* Tue Sep 17 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 2.3.0-16
+- Fixed build to work with jglobus 2.0.6
+
 * Wed Sep 04 2013 Neha Sharma <neha@fnal.gov> - 2.3.0-15
 - As per GOC ticket 14020, adding the copy-truncate logrotate option and 
   modify logrotate to only handle bestman2.log, not event.srm.log 
