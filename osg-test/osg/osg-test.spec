@@ -5,7 +5,7 @@
 
 Summary:   Tests an OSG Software installation
 Name:      osg-test
-Version:   1.3.2
+Version:   1.3.3
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -39,6 +39,9 @@ rm -rf $RPM_BUILD_ROOT
 /etc/grid-security/certificates/bffdd190.*
 
 %changelog
+* Tue Sep 17 2013 Tim Cartwright <cat@cs.wisc.edu> - 1.3.3-1
+- New version: fix GUMS tests, add global timeout, add java-version RSV probe
+
 * Wed Sep 04 2013 Brian Lin <blin@cs.wisc.edu> - 1.3.2-1
 - Add GUMS and tarball tests
 
