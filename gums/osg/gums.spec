@@ -3,12 +3,12 @@
 %define local_maven /tmp/m2-repository
 # Don't want to repack jars
 %define __os_install_post %{nil}
-%define jglobus_version 2.0.5
+%define jglobus_version 2.0.6
 
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.3.18.009
-Release: 17%{?dist}
+Release: 18%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 %if 0%{?rhel} < 6
@@ -26,12 +26,12 @@ BuildRequires: maven22
 ## explicitly requiring this because I don't want yum to pick java-1.5.0-gcj-devel
 %endif
 BuildRequires: java7-devel
-BuildRequires: jglobus
+BuildRequires: jglobus = %{jglobus_version}
 # provides build-classpath
 BuildRequires: jpackage-utils 
 Requires: java7
 Requires: jpackage-utils 
-Requires: jglobus
+Requires: jglobus = %{jglobus_version}
 #BuildRequires: voms-api-java
 #Requires: voms-api-java
 BuildRequires: emi-trustmanager
@@ -374,6 +374,9 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+* Thu Sep 19 2013 Tim Cartwright <cat@cs.wisc.edu> - 1.3.18.009-18
+- Rebuild against jGlobus 2.0.6 and add versioned jGlobus dependencies
+
 * Wed Sep 04 2013 Brian Lin <blin@cs.wisc.edu> - 1.3.18.009-17
 - Revert changes made in 1.3.18.009-15.3
 
