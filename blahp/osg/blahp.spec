@@ -1,5 +1,5 @@
 Name:		blahp
-Version:	1.18.5.bosco
+Version:	1.18.7.bosco
 Release:	1%{?dist}
 Summary:	gLite BLAHP daemon
 
@@ -90,6 +90,9 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Fri Sep 20 2013 Brian Bockelman <bbockelm@cse.unl.edu> - 1.18.7.bosco-1
+- Do not close stderr fd from the blah.
+
 * Tue May 14 2013 Brian Bockelman <bbockelm@cse.unl.edu> - 1.18.5.bosco-1
 - Alter the pbs_status.py locking algorithm to add random component to 
   sleeps between poll.
