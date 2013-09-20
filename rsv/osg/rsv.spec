@@ -1,7 +1,7 @@
 
 Name:      rsv
 Summary:   RSV Meta Package
-Version:   3.7.9
+Version:   3.7.10
 Release:   1%{?dist}
 License:   Apache 2.0
 Group:     Applications/Monitoring
@@ -32,6 +32,10 @@ rm -rf $RPM_BUILD_ROOT
 # No files since this is a meta package
 
 %changelog
+* Fri Sep 20 2013  <edquist@cs.wisc.edu> - 3.7.10-1
+- Updated to 3.7.10
+- SOFTWARE-1170 - fix PLUGIN_HOST for nagios-consumer
+
 * Mon Aug 26 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 3.7.9-1
 - Updated to 3.7.9
 - SOFTWARE-1048 - better HTCondor-CE support

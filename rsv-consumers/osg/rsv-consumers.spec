@@ -1,6 +1,6 @@
 
 Name:      rsv-consumers
-Version:   3.7.9
+Version:   3.7.10
 Release:   1%{?dist}
 Summary:   RSV Consumers Infrastructure
 
@@ -65,6 +65,10 @@ rm -rf $RPM_BUILD_ROOT
 %attr(-,rsv,rsv) %{_localstatedir}/log/rsv/consumers
 
 %changelog
+* Fri Sep 20 2013  <edquist@cs.wisc.edu> - 3.7.10-1
+- Updated to 3.7.10
+- SOFTWARE-1170 - fix PLUGIN_HOST for nagios-consumer
+
 * Mon Aug 26 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 3.7.9-1
 - Updated to 3.7.9
 - SOFTWARE-1048 - better HTCondor-CE support
