@@ -39,8 +39,9 @@ rm -rf $RPM_BUILD_ROOT
 /etc/grid-security/certificates/bffdd190.*
 
 %changelog
-* Tue Sep 17 2013 Tim Cartwright <cat@cs.wisc.edu> - 1.3.3-1
+* Fri Sep 20 2013 Brian Lin <blin@cs.wisc.edu> - 1.3.3-1
 - New version: fix GUMS tests, add global timeout, add java-version RSV probe
+- Fix for monitoring a file that has been log rotated
 
 * Wed Sep 04 2013 Brian Lin <blin@cs.wisc.edu> - 1.3.2-1
 - Add GUMS and tarball tests
