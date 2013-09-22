@@ -1,0 +1,154 @@
+--- gums-core/src/main/java/gov/bnl/gums/admin/CertCache.java.orig	2013-09-22 07:35:03.960365844 -0500
++++ gums-core/src/main/java/gov/bnl/gums/admin/CertCache.java	2013-09-22 11:22:51.513237028 -0500
+@@ -8,11 +8,17 @@
+ 
+ import gov.bnl.gums.CertToolkit;
+ 
++import java.util.Vector;
++import java.util.List;
++
+ import java.security.cert.X509Certificate;
+ import javax.servlet.Filter;
+ import javax.servlet.ServletContext;
+ 
+ import org.glite.security.util.CertUtil;
++import org.glite.voms.VOMSValidator;
++import org.glite.voms.VOMSAttribute;
++import org.glite.voms.FQAN;
+ 
+ import org.apache.log4j.Logger;
+ 
+@@ -24,7 +29,12 @@
+ public class CertCache implements Filter {
+ 	static private Logger log = Logger.getLogger(CertCache.class);
+ 	static private ServletContext context;
++	// If you add a new variable here, make sure to add it to
++	// the reset method.
+ 	static private ThreadLocal certificate = new ThreadLocal();
++	static private ThreadLocal certificateChain = new ThreadLocal();
++	static private ThreadLocal dn = new ThreadLocal();
++	static private ThreadLocal fqan = new ThreadLocal();
+ 
+ 	/**
+ 	 * Get the directory path for the configuration files
+@@ -70,18 +80,62 @@
+ 	}
+ 
+ 	/**
++	 * Return the DN associated with the current client
++	 */
++	static public String getUserDN() {
++		return (String) dn.get();
++	}
++
++	/**
++	 * Return the FQAN associated with the current client
++	 */
++	static public String getUserFQAN() {
++		return (String) fqan.get();
++	}
++
++	/**
++	 * Set the certificate chain of the currently connected client
+ 	 * @param cert
+ 	 */
+-    static public String getUserDN() {
+-            return CertToolkit.getUserDN(getUserCertificate());
+-    }
+-
+-  	/**
+-  	 * @param cert
+-  	 */
+-  	static public void setUserCertificate(X509Certificate cert) {
+-  		certificate.set(cert);
+-  	}
++	static public void setUserCertificateChain(X509Certificate[] chain) {
++		certificateChain.set(chain);
++		int i = CertUtil.findClientCert(chain);
++		X509Certificate cert = null;
++		if (i < 0) {
++			log.warn("No client certificate found in the supplied certificate chain");
++		} else {
++			cert = chain[i];
++			certificate.set(cert);
++		}
++		Vector voms_list = VOMSValidator.parse(chain);
++		if ((voms_list != null) && (voms_list.size() > 0)) {
++			VOMSAttribute attribute = (VOMSAttribute)voms_list.get(0);
++			if (attribute != null) {
++				List fqans = attribute.getListOfFQAN();
++				if ((fqans != null) && (fqans.size() > 0)) {
++					fqan.set(((FQAN)(fqans.get(0))).getFQAN());
++				}
++			}
++		}
++		if (cert != null) {
++			dn.set(CertToolkit.getUserDN(getUserCertificate()));
++		}
++	}
++
++	/**
++	 * Returns the certificate chain of the currently connected client
++	 * @return X509Certificate[] object
++	 */
++	static public X509Certificate[] getUserCertificateChain() {
++		return (X509Certificate[]) certificateChain.get();
++	}
++
++	static public void reset() {
++		certificate.set(null);
++		certificateChain.set(null);
++		dn.set(null);
++		fqan.set(null);
++	}
+ 
+ 	public void destroy() {
+ 	}
+@@ -90,17 +144,12 @@
+ 			javax.servlet.ServletResponse servletResponse,
+ 			javax.servlet.FilterChain filterChain) throws java.io.IOException,
+ 			javax.servlet.ServletException {
+-		setUserCertificate(null);
++		reset();
+ 		if (servletRequest
+ 				.getAttribute("javax.servlet.request.X509Certificate") != null) {
+ 			X509Certificate[] chain = ((X509Certificate[]) servletRequest
+ 					.getAttribute("javax.servlet.request.X509Certificate"));
+-			int i = CertUtil.findClientCert(chain);
+-			if (i < 0) {
+-				log.warn("No client certificate found in the supplied certificate chain");
+-			} else {
+-				setUserCertificate(chain[i]);
+-			}
++			setUserCertificateChain(chain);
+ 		}
+ 		filterChain.doFilter(servletRequest, servletResponse);
+ 	}
+--- gums-core/pom.xml.orig	2013-09-22 10:49:06.272364190 -0500
++++ gums-core/pom.xml	2013-09-22 11:04:44.217367932 -0500
+@@ -339,6 +339,12 @@
+             <version>4.8.1</version>
+         </dependency>
+ 
++        <dependency>
++            <groupId>org.italiangrid</groupId>
++            <artifactId>voms-api-java</artifactId>
++            <version>[2.0.8,2.9.9)</version>
++        </dependency>
++
+         <!--provided-->
+         <dependency>
+             <groupId>commons-logging</groupId>
+--- gums-core/src/main/java/gov/bnl/gums/admin/GUMSAPIImpl.java.orig	2013-09-22 07:56:11.400388997 -0500
++++ gums-core/src/main/java/gov/bnl/gums/admin/GUMSAPIImpl.java	2013-09-22 07:56:36.210389014 -0500
+@@ -779,8 +779,9 @@
+ 	private GridUser currentUser() {
+ 		if (!isInWeb) return null;
+ 		String DN = CertCache.getUserDN();
++		String FQAN = CertCache.getUserFQAN();
+ 		if (DN != null) {
+-			return new GridUser(DN, null);
++			return new GridUser(DN, FQAN);
+ 		} else {
+ 			return null;
+ 		}
