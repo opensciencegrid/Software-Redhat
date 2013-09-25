@@ -1,7 +1,7 @@
 Name:      osg-tested-internal
 Summary:   All OSG packages we test (internal use only)
 Version:   1
-Release:   16%{?dist}
+Release:   17%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -77,6 +77,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Sep 25 2013 Tim Cartwright <cat@cs.wisc.edu> - 1-17
+- Add ndt-client to eliminate a skipped test
+
 * Wed Aug 28 2013 Brian Lin <blin@cs.wisc.edu> - 1-16
 - Add osg-gums
 
