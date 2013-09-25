@@ -34,6 +34,7 @@ Requires: xrootd-client
 Requires: cvmfs
 Requires: osg-configure-tests
 Requires: cvmfs-keys
+Requires: ndt-client
 
 Requires: gratia-service
 Requires: gratia-probe-psacct
