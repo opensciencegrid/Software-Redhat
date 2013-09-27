@@ -5,7 +5,7 @@
 
 Summary:   Tests an OSG Software installation
 Name:      osg-test
-Version:   1.3.5
+Version:   1.3.6
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -39,6 +39,9 @@ rm -rf $RPM_BUILD_ROOT
 /etc/grid-security/certificates/bffdd190.*
 
 %changelog
+* Fri Sep 27 2013 Tim Cartwright <cat@cs.wisc.edu> - 1.3.6-1
+- Fixed package requirements on two RSV tests
+
 * Thu Sep 26 2013 Tim Cartwright <cat@cs.wisc.edu> - 1.3.5-1
 - Many small fixes, especially for VM universe tests
 
