@@ -1,6 +1,6 @@
 Name:           osg-release-itb
 Version:        3.0
-Release:        22%{?dist}
+Release:        23%{?dist}
 Summary:        OSG Software for Enterprise Linux repository configuration
 
 Group:          System Environment/Base 
@@ -90,5 +90,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Oct 01 2013  <edquist@cs.wisc.edu> - 3.0-23
+- Update .repo files to point to new directory layout
+
 * Wed Sep 11 2013 Brian Lin <blin@cs.wisc.edu> - 3.0-22
 - Create osg-release-itb
