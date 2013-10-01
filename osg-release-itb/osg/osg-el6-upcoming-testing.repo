@@ -1,7 +1,7 @@
 [osg-upcoming-testing]
 name=OSG Software for Enterprise Linux 6 - Upcoming Testing - $basearch 
-#baseurl=http://repo-itb.grid.iu.edu/3.0/el6/osg-upcoming-testing/$basearch
-mirrorlist=http://repo-itb.grid.iu.edu/mirror/3.0/el6/osg-upcoming-testing/$basearch
+#baseurl=http://repo-itb.grid.iu.edu/osg/upcoming/el6/testing/$basearch
+mirrorlist=http://repo-itb.grid.iu.edu/mirror/osg/upcoming/el6/testing/$basearch
 failovermethod=priority
 priority=98
 enabled=0
@@ -11,7 +11,7 @@ consider_as_osg=yes
 
 [osg-upcoming-testing-source]
 name=OSG Software for Enterprise Linux 6 - Upcoming Testing - $basearch - Source
-baseurl=http://repo-itb.grid.iu.edu/3.0/el6/osg-upcoming-testing/source/SRPMS
+baseurl=http://repo-itb.grid.iu.edu/osg/upcoming/el6/testing/source/SRPMS
 failovermethod=priority
 priority=98
 enabled=0
@@ -20,7 +20,7 @@ gpgcheck=1
 
 [osg-upcoming-testing-debug]
 name=OSG Software for Enterprise Linux 6 - Upcoming Testing - $basearch - Debug
-baseurl=http://repo-itb.grid.iu.edu/3.0/el6/osg-upcoming-testing/$basearch/debug
+baseurl=http://repo-itb.grid.iu.edu/osg/upcoming/el6/testing/$basearch/debug
 failovermethod=priority
 priority=98
 enabled=0
