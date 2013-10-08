@@ -2,16 +2,15 @@
 Name:      osg-info-services
 Summary:   OSG Information Services uploader
 Version:   0.12
-Release:   1%{?dist}
+Release:   2%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
 BuildArch: noarch
 
-# Performed on 07 October 2013
-# git clone https://github.com/opensciencegrid/osg-info-services.git
-# cd osg-info-services
-# git archive --format=tar --prefix=osg-info-services-0.12/ v0.12 | gzip > osg-info-services-0.12.tar.gz
+# Performed on 08 October 2013
+# svn export https://vdt.cs.wisc.edu/svn/software/osg-info-services/tags/v0.12 osg-info-services-0.12
+# tar czf osg-info-services-0.12.tar.gz osg-info-services-0.12
 Source0:   %{name}-%{version}.tar.gz
 
 Patch0: fix-bool.patch
@@ -52,6 +51,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_sbindir}/%{name}
 
 %changelog
+* Tue Oct 08 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 0.12-2
+- Bump to rebuild with sources from SVN
+
 * Mon Oct 07 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 0.12-1
 - Update to 0.12
 
