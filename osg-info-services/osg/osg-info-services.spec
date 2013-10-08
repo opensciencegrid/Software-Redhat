@@ -1,16 +1,17 @@
 
 Name:      osg-info-services
 Summary:   OSG Information Services uploader
-Version:   0.11
-Release:   2%{?dist}
+Version:   0.12
+Release:   1%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
 BuildArch: noarch
 
-# Performed on 26 February 2012; r4612
-# svn export svn://t2.unl.edu/brian/osg_info_services osg-info-services-0.11
-# tar zcf osg-info-services-0.11.tar.gz osg-info-services-0.11/
+# Performed on 07 October 2013
+# git clone https://github.com/opensciencegrid/osg-info-services.git
+# cd osg-info-services
+# git archive --format=tar --prefix=osg-info-services-0.12/ v0.12 | gzip > osg-info-services-0.12.tar.gz
 Source0:   %{name}-%{version}.tar.gz
 
 Patch0: fix-bool.patch
@@ -51,6 +52,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_sbindir}/%{name}
 
 %changelog
+* Mon Oct 07 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 0.12-1
+- Update to 0.12
+
 * Mon Apr 22 2013 Brian Bockelman <bbockelm@cse.unl.edu> - 0.11-2
 - Fix reporting of boolean values.
 

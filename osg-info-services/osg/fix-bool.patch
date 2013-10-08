@@ -1,15 +1,8 @@
---- osg-info-services	(revision 4630)
-+++ osg-info-services	(working copy)
-@@ -1,5 +1,8 @@
- #!/usr/bin/python
- 
-+import warnings
-+warnings.filterwarnings("ignore", category=DeprecationWarning)
-+
- import os
- import re
- import pwd
-@@ -432,7 +437,7 @@
+Index: osg-info-services
+===================================================================
+--- osg-info-services.orig	2013-08-21 08:15:02.000000002 -0500
++++ osg-info-services	2013-10-07 16:05:23.000000002 -0500
+@@ -435,7 +435,7 @@
                  if isinstance(val, types.IntType):
                      out.append('%s = %i;' % (key, val))
                  elif val in ("TRUE", "FALSE"):
