@@ -23,7 +23,6 @@ Source:         http://www.globus.org/ftppub/gt5/5.2/5.2.0/packages/src/%{_name}
 
 # OSG customizations
 Source1:        globus-gatekeeper.osg-sysconfig
-#Patch0:         child_signals.patch
 Patch3:         init.patch
 Patch4:         GRAM-309.patch
 Patch5:         logrotate-copytruncate.patch
@@ -56,7 +55,6 @@ Globus Gatekeeper Setup
 %prep
 %setup -q -n %{_name}-%{version}
 
-#%patch0 -p0
 %patch3 -p0
 %patch4 -p0
 %patch5 -p0
