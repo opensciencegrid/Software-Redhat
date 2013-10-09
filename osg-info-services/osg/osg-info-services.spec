@@ -2,7 +2,7 @@
 Name:      osg-info-services
 Summary:   OSG Information Services uploader
 Version:   0.12
-Release:   2%{?dist}
+Release:   3%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -14,6 +14,7 @@ BuildArch: noarch
 Source0:   %{name}-%{version}.tar.gz
 
 Patch0: fix-bool.patch
+Patch1: 1223-cmdline-args.patch
 
 BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
@@ -26,6 +27,7 @@ Requires: gip
 %setup -q
 
 %patch0 -p0
+%patch1 -p0
 
 %build
 # No building - just a few python scripts!
@@ -51,6 +53,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_sbindir}/%{name}
 
 %changelog
+* Wed Oct 09 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 0.12-3
+- Add patch to work around command-line argument bug (SOFTWARE-1223)
+
 * Tue Oct 08 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 0.12-2
 - Bump to rebuild with sources from SVN
 
