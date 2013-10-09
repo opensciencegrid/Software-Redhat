@@ -5,8 +5,8 @@
 
 Summary:   Tests an OSG Software installation
 Name:      osg-test
-Version:   1.3.6
-Release:   2%{?dist}
+Version:   1.3.7
+Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
 Packager:  VDT <vdt-support@opensciencegrid.org>
@@ -39,7 +39,15 @@ rm -rf $RPM_BUILD_ROOT
 /etc/grid-security/certificates/bffdd190.*
 
 %changelog
-* Thu Oct 03 2013  <edquist@cs.wisc.edu> - 1.3.6-2
+* Wed Oct 9 2013 Tim Cartwright <cat@cs.wisc.edu> - 1.3.7-1
+- Reliability improvements to Gratia tests
+- Fixed a file reading bug in monitor_file()
+- Added a missing import in the timeout handler
+- Removed --quiet option to rpm --verify
+- Merge EL5 get_package_envra() fix from the ca-certs branch
+- Made the global timeout value a config file option
+
+* Thu Oct 03 2013 Carl Edquist <edquist@cs.wisc.edu> - 1.3.6-2
 - Bump release for 3.2 testing -- no functional change
 
 * Fri Sep 27 2013 Tim Cartwright <cat@cs.wisc.edu> - 1.3.6-1
