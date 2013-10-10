@@ -13,7 +13,7 @@ Name:           glideinwms
 
 %if %{v3_plus}
 %define version 3.2.0
-%define release 1.0
+%define release 2
 %define frontend_xml frontend.master.xml
 %define factory_xml glideinWMS.master.xml
 %endif
@@ -692,6 +692,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Oct 10 2013 Parag Mhashilkar <parag@fnal.gov> - 3.2.0-2
+- Fixed the NVR int the rpm version as per the convention
+
 * Mon Aug 26 2013 Parag Mhashilkar <parag@fnal.gov> - 3.2-0.2.rc2
 - Updated the frontend.xml and added update_proxy.py while generating the checksum for the version
 
