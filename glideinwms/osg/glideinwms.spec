@@ -68,9 +68,9 @@ Summary:        The VOFrontend for glideinWMS submission host
 Group:          System Environment/Daemons
 Provides:	GlideinWMSFrontend = %{version}-%{release}
 Obsoletes:	GlideinWMSFrontend < 2.5.1-11
-Requires: glideinwms-vofrontend-standalone
-Requires: glideinwms-userschedd
-Requires: glideinwms-usercollector
+Requires: glideinwms-vofrontend-standalone = %{version}-%{release}
+Requires: glideinwms-userschedd = %{version}-%{release}
+Requires: glideinwms-usercollector = %{version}-%{release}
 Obsoletes: glideinwms-vofrontend-condor < 2.6.2-2
 %description vofrontend
 The purpose of the glideinWMS is to provide a simple way 
@@ -93,8 +93,8 @@ Requires: python-rrdtool
 Requires: m2crypto
 Requires: javascriptrrd
 Requires: osg-client
-Requires: glideinwms-minimal-condor
-Requires: glideinwms-libs
+Requires: glideinwms-minimal-condor = %{version}-%{release}
+Requires: glideinwms-libs = %{version}-%{release}
 #To be added in 2.6.3+ once probe is finished.
 #Requires: gratia-probe-gwms
 #Requires: vdt-vofrontend-essentials
@@ -114,8 +114,8 @@ This package is for a standalone vofrontend install
 Summary:        The VOFrontend glideinWMS collector host
 Group:          System Environment/Daemons
 Requires: condor >= 7.8.0
-Requires: glideinwms-minimal-condor
-Requires: glideinwms-glidecondor-tools
+Requires: glideinwms-minimal-condor = %{version}-%{release}
+Requires: glideinwms-glidecondor-tools = %{version}-%{release}
 %description usercollector
 The user collector matches user jobs to glideins in the user pool.
 It can be split off into its own node.
@@ -125,8 +125,8 @@ It can be split off into its own node.
 Summary:        The VOFrontend glideinWMS submission host
 Group:          System Environment/Daemons
 Requires: condor >= 7.8.0
-Requires: glideinwms-minimal-condor
-Requires: glideinwms-glidecondor-tools
+Requires: glideinwms-minimal-condor = %{version}-%{release}
+Requires: glideinwms-glidecondor-tools = %{version}-%{release}
 %description userschedd
 This is a package for a glideinwms submit host.
 
@@ -143,7 +143,7 @@ This is a package provides common libraries used by glideinwms.
 %package glidecondor-tools
 Summary:        Condor tools useful with the glideinWMS.
 Group:          System Environment/Daemons
-Requires: glideinwms-libs
+Requires: glideinwms-libs = %{version}-%{release}
 %description glidecondor-tools
 This is a package provides common libraries used by glideinwms.
 
@@ -164,11 +164,11 @@ Provides:       GlideinWMSFactory = %{version}-%{release}
 Requires: httpd
 # We require Condor 7.6.0 (and newer) to support
 # condor_advertise -multiple -tcp which is enabled by default
+Requires: glideinwms-factory-condor = %{version}-%{release}
 Requires: condor >= 7.8.0
 Requires: python-rrdtool
 Requires: m2crypto
 Requires: javascriptrrd
-Requires: gwms-factory-config
 Requires(post): /sbin/service
 Requires(post): /usr/sbin/useradd
 Requires(post): /sbin/chkconfig
@@ -692,6 +692,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Oct 10 2013 Parag Mhashilkar <parag@fnal.gov> - 3.2.0-3
+- Changed Requires (dependencies) to insure that the entire set of glideinwms rpms is updated as a set.
+
 * Thu Oct 10 2013 Parag Mhashilkar <parag@fnal.gov> - 3.2.0-2
 - Fixed the NVR int the rpm version as per the convention
 
