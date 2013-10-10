@@ -1,4 +1,4 @@
-%define tarball_version 8.0.2
+%define tarball_version 8.0.3
 
 # Things for F15 or later
 %if 0%{?fedora} >= 16
@@ -1271,6 +1271,9 @@ fi
 %endif
 
 %changelog
+* Thu Sep 10 2013 Brian Lin <blin@cs.wisc.edu> - 8.0.3-1
+- New version
+
 * Mon Aug 26 2013 Brian Lin <blin@cs.wisc.edu> - 8.0.2-1
 - New version
 - Fix missing libpyclassad shared object
