@@ -5,7 +5,7 @@
 
 Summary:   Tests an OSG Software installation
 Name:      osg-test
-Version:   1.3.7
+Version:   1.4.0
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -39,6 +39,9 @@ rm -rf $RPM_BUILD_ROOT
 /etc/grid-security/certificates/bffdd190.*
 
 %changelog
+* Fri Oct 11 2013 Brian Lin <blin@cs.wisc.edu> - 1.4.0-1
+- Add creation of OSG CA/CRL and ability to sign host certs
+
 * Wed Oct 9 2013 Tim Cartwright <cat@cs.wisc.edu> - 1.3.7-1
 - Reliability improvements to Gratia tests
 - Fixed a file reading bug in monitor_file()
