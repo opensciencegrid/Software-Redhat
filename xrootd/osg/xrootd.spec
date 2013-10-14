@@ -2,14 +2,16 @@
 
 %{?perl_default_filter}
 
+%{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
+
 Name:		xrootd
 Epoch:		1
-Version:	3.3.1
-Release:	1.2%{?dist}
+Version:	3.3.3
+Release:	1.1%{?dist}
 Summary:	Extended ROOT file server
 
 Group:		System Environment/Daemons
-License:	BSD
+License:	LGPLv3+
 URL:		http://xrootd.org/
 Source0:	http://xrootd.org/download/v%{version}/%{name}-%{version}.tar.gz
 Source1:	%{name}.logrotate
@@ -95,6 +97,9 @@ This package contains libraries used by xrootd clients.
 %package client-devel
 Summary:	Development files for xrootd clients
 Group:		Development/Libraries
+Provides:	%{name}-cl-devel = %{epoch}:%{version}-%{release}
+Provides:	%{name}-cl-devel%{?_isa} = %{epoch}:%{version}-%{release}
+Obsoletes:	%{name}-cl-devel < %{epoch}:%{version}-%{release}
 Requires:	%{name}-devel%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-client-libs%{?_isa} = %{epoch}:%{version}-%{release}
 
@@ -138,6 +143,9 @@ versions is not guaranteed for these headers.
 %package client
 Summary:	Xrootd command line client tools
 Group:		Applications/Internet
+Provides:	%{name}-cl = %{epoch}:%{version}-%{release}
+Provides:	%{name}-cl%{?_isa} = %{epoch}:%{version}-%{release}
+Obsoletes:	%{name}-cl < %{epoch}:%{version}-%{release}
 Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-client-libs%{?_isa} = %{epoch}:%{version}-%{release}
 
@@ -255,8 +263,8 @@ mkdir %{buildroot}%{_sysconfdir}/logrotate.d
 install -p -m 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/logrotate.d/%{name}
 
 # Documentation
-mkdir -p %{buildroot}%{_docdir}/%{name}-%{version}
-cp -pr doxydoc/html %{buildroot}%{_docdir}/%{name}-%{version}
+mkdir -p %{buildroot}%{_pkgdocdir}
+cp -pr doxydoc/html %{buildroot}%{_pkgdocdir}
 
 %clean
 rm -rf %{buildroot}
@@ -359,6 +367,7 @@ fi
 %{_libdir}/libXrdCksCalczcrc32.so
 %{_libdir}/libXrdCryptossl.so
 %{_libdir}/libXrdSec*.so
+%doc COPYING* LICENSE
 
 %files devel
 %defattr(-,root,root,-)
@@ -461,11 +470,22 @@ fi
 
 %files doc
 %defattr(-,root,root,-)
-%doc %{_docdir}/%{name}-%{version}
-
-%files server
+%doc %{_pkgdocdir}
 
 %changelog
+* Mon Oct 14 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1:3.3.3-1.1
+- Merge OSG changes
+
+* Sat Jul 27 2013 Mattias Ellert <mattias.ellert@fysast.uu.se> - 1:3.3.3-1
+- Update to version 3.3.3
+- Change License tag to LGPLv3+ due to upstream license change
+
+* Wed Jul 17 2013 Petr Pisar <ppisar@redhat.com> - 1:3.3.2-2
+- Perl 5.18 rebuild
+
+* Sun Apr 28 2013 Mattias Ellert <mattias.ellert@fysast.uu.se> - 1:3.3.2-1
+- Update to version 3.3.2
+
 * Tue Apr 23 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1:3.3.1-1.2
 - Add xrootd-server dummy package
 
