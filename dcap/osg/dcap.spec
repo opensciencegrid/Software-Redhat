@@ -1,6 +1,6 @@
 Name:		dcap
 Version:	2.47.8
-Release:	1%{?dist}
+Release:	1.1%{?dist}
 Summary:	Client Tools for dCache
 
 Group:		Applications/Internet
@@ -8,15 +8,15 @@ Group:		Applications/Internet
 #		the rest - LGPLv2+ license
 License:	LGPLv2+ and BSD
 URL:		http://www.dcache.org/manuals/libdcap.shtml
-Source0:	%{version}.tar.gz
+Source0:	https://github.com/dCache/%{name}/archive/%{version}.tar.gz
 #		Allow loading of plugins outside default library search path
 Patch0:		%{name}-dlopen.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Requires:	%{name}-libs%{?_isa} = %{version}-%{release}
-BuildRequires:	globus-gssapi-gsi-devel%{?_isa}
-BuildRequires:	krb5-devel%{?_isa}
-BuildRequires:	openssl-devel%{?_isa}
+BuildRequires:	globus-gssapi-gsi-devel
+BuildRequires:	krb5-devel
+BuildRequires:	openssl-devel
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	libtool
@@ -94,31 +94,29 @@ sed 's!@@LIBDIR@@!%{_libdir}!' -i src/tunnelManager.c
 chmod +x bootstrap.sh
 ./bootstrap.sh
 
-# The defaults optflags creates a broken binary
-export CFLAGS="%optflags"
 %configure \
+    --disable-static \
     --with-globus-include="%{_includedir}/globus -I%{_libdir}/globus/include" \
     --with-globus-lib=/dummy
 make %{?_smp_mflags}
 
 %install
-rm -rf $RPM_BUILD_ROOT
+rm -rf %{buildroot}
 
-make install DESTDIR=$RPM_BUILD_ROOT
+make install DESTDIR=%{buildroot}
 
-# Remove static libraries and libtool archive files
-rm -rf $RPM_BUILD_ROOT/%{_libdir}/*.a
-rm -rf $RPM_BUILD_ROOT/%{_libdir}/*.la
+# Remove libtool archive files
+rm -rf %{buildroot}/%{_libdir}/*.la
 
 # Move plugins out of the default library path
-mkdir $RPM_BUILD_ROOT/%{_libdir}/%{name}
-mv $RPM_BUILD_ROOT/%{_libdir}/lib*Tunnel* $RPM_BUILD_ROOT/%{_libdir}/%{name}
+mkdir %{buildroot}/%{_libdir}/%{name}
+mv %{buildroot}/%{_libdir}/lib*Tunnel* %{buildroot}/%{_libdir}/%{name}
 
 # We are installing the docs in the files sections
-rm -rf $RPM_BUILD_ROOT/%{_docdir}
+rm -rf %{buildroot}/%{_docdir}
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+rm -rf %{buildroot}
 
 %post libs -p /sbin/ldconfig
 
@@ -163,14 +161,40 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/%{name}/libtelnetTunnel.so
 
 %changelog
-* Mon Oct 14 2013 Brian Lin <blin@cs.wisc.edu> - 2.47.8-3
+* Mon Oct 14 2013 Brian Lin <blin@cs.wisc.edu> - 2.47.8-1.1
+- Use EPEL's srpm
+
+* Thu Aug 15 2013 Mattias Ellert <mattias.ellert@fysast.uu.se> - 2.47.8-1
+- New upstream release
+- Drop patch dcap-segfault.patch - merged upstream
+
+* Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.47.7-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
+
+* Fri Jun 28 2013 Mattias Ellert <mattias.ellert@fysast.uu.se> - 2.47.7-3
+- Fix segfault
+
+* Wed Feb 13 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.47.7-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
+
+* Tue Nov 27 2012 Mattias Ellert <mattias.ellert@fysast.uu.se> - 2.47.7-1
 - New upstream release
 
-* Fri Oct 28 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 2.47.5-3
-- rebuilt
+* Wed Jul 18 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.47.6-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
 
-* Mon Sep 12 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 2.47.5-2
-- Rebuilt against updated Globus libraries
+* Thu Jul 12 2012 Mattias Ellert <mattias.ellert@fysast.uu.se> - 2.47.6-2
+- Remove encoding fixes
+
+* Thu May 24 2012 Mattias Ellert <mattias.ellert@fysast.uu.se> - 2.47.6-1
+- New upstream release (EMI 2 release)
+- Drop patches dcap-aliasing.patch and dcap-libs.patch implemented upstream
+
+* Fri Jan 13 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.47.5-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_17_Mass_Rebuild
+
+* Fri Feb 11 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.47.5-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
 
 * Sat Nov 06 2010 Mattias Ellert <mattias.ellert@fysast.uu.se> - 2.47.5-1
 - New upstream release
