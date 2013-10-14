@@ -1,6 +1,6 @@
 Name:		dcap
-Version:	2.47.5
-Release:	3%{?dist}
+Version:	2.47.8
+Release:	1%{?dist}
 Summary:	Client Tools for dCache
 
 Group:		Applications/Internet
@@ -8,19 +8,9 @@ Group:		Applications/Internet
 #		the rest - LGPLv2+ license
 License:	LGPLv2+ and BSD
 URL:		http://www.dcache.org/manuals/libdcap.shtml
-#		The source tarfile is created from a subversion checkout:
-#		svn export http://svn.dcache.org/dCache/tags/dcap-2.47.5-0 \
-#		    dcap-2.47.5
-#		tar -z -c -f dcap-2.47.5.tar.gz dcap-2.47.5
-Source0:	%{name}-%{version}.tar.gz
+Source0:	%{version}.tar.gz
 #		Allow loading of plugins outside default library search path
 Patch0:		%{name}-dlopen.patch
-#		Reduce overlinking
-#		http://rb.dcache.org/r/1646
-Patch1:		%{name}-libs.patch
-#		Fix strict aliasing warnings
-#		http://rb.dcache.org/r/2632
-Patch2:		%{name}-aliasing.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Requires:	%{name}-libs%{?_isa} = %{version}-%{release}
@@ -97,13 +87,6 @@ This library is dynamically loaded at runtime.
 %prep
 %setup -q
 %patch0 -p1
-%patch1 -p1
-%patch2 -p1
-
-for f in Copyright base64.c base64.h util.c ; do
-    iconv -f iso-8859-1 -t utf-8 plugins/gssapi/$f -o plugins/gssapi/$f.new
-    mv plugins/gssapi/$f.new plugins/gssapi/$f
-done
 
 sed 's!@@LIBDIR@@!%{_libdir}!' -i src/tunnelManager.c
 
@@ -144,11 +127,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root,-)
 %{_bindir}/dccp
-%{_bindir}/dcap_test
-%{_bindir}/dcap_url_test
-%{_bindir}/dcsuck
-%{_bindir}/readv_test
-%{_bindir}/wdccp
+%{_mandir}/man1/dccp.1*
 
 %files libs
 %defattr(-,root,root,-)
@@ -184,6 +163,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/%{name}/libtelnetTunnel.so
 
 %changelog
+* Mon Oct 14 2013 Brian Lin <blin@cs.wisc.edu> - 2.47.8-3
+- New upstream release
+
 * Fri Oct 28 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 2.47.5-3
 - rebuilt
 
