@@ -117,7 +117,7 @@ including a report of the resource that was above the limit.
 %build
 cd %{name}-%{version}-source
 ## Initial RPM will only workqueue
-./configure --without-system-resource_monitor_visualizer --without-system-doc --with-cvmfs-path /usr
+./configure --without-system-resource_monitor_visualizer --with-cvmfs-path /usr
 make
 
 ## need to have -devel packages in buildrequires.
@@ -171,14 +171,24 @@ mv %{buildroot}/usr/doc %{buildroot}/usr/share/doc/cctools
 # removing some files we probably dont need..
 rm %{buildroot}/usr/etc/Makefile.config
 
+%files
+%{_docdir}/cctools/allpairs.html
+%{_docdir}/cctools/awe.html
+%{_docdir}/cctools/ftsh.html
+%{_docdir}/cctools/index.html
+%{_docdir}/cctools/install.html
+
 %files resource_monitor
 %{_bindir}/resource_monitor
 %{_bindir}/resource_monitorv
 %{_libdir}/librmonitor_helper.so
+%{_docdir}/cctools/resource_monitor.html
 
 %files wavefront
 %{_bindir}/wavefront
 %{_bindir}/wavefront_master
+%{_docdir}/cctools/wavefront.html
+%{_docdir}/cctools/images/*
 
 %files sand
 %{_bindir}/allpairs_master
@@ -192,7 +202,7 @@ rm %{buildroot}/usr/etc/Makefile.config
 %{_bindir}/sand_runCA_7.0
 %{_bindir}/sand_uncompress_reads
 %{_bindir}/sand_filter_master
-
+%{_docdir}/cctools/sand.html
 
 %files makeflow
 %{_bindir}/makeflow
@@ -200,12 +210,13 @@ rm %{buildroot}/usr/etc/Makefile.config
 %{_bindir}/makeflow_monitor
 %{_bindir}/starch
 %{_bindir}/condor_submit_makeflow
-
+%{_docdir}/cctools/makeflow.html
 
 %files parrot
 ## ftp lite 
 %{_libdir}/libftp_lite.a
 %{_includedir}/cctools/ftp_lite.h
+%{_docdir}/cctools/ftp_lite.html
 ## s3tools
 %{_bindir}/make_growfs
 ## parrot proper
@@ -225,7 +236,7 @@ rm %{buildroot}/usr/etc/Makefile.config
 %{_includedir}/cctools/parrot_client.h
 %{_libdir}/libparrot_client.a
 %{_libdir}/libparrot_helper.so
-
+%{_docdir}/cctools/parrot.html
 
 %files chirp
 %{_bindir}/chirp
@@ -250,9 +261,8 @@ rm %{buildroot}/usr/etc/Makefile.config
 %{_includedir}/cctools/chirp_types.h
 %{_libdir}/libchirp.a
 %{_libdir}/libchirp_client.so
-# reenable with docs
-#%{_defaultdocdir}/chirp.html
-#%{_defaultdocdir}/chirp_protocol.html
+%{_docdir}/cctools/chirp.html
+%{_docdir}/cctools/chirp_protocol.html
 
 %files work_queue
 %{_bindir}/condor_submit_workers
@@ -273,6 +283,8 @@ rm %{buildroot}/usr/etc/Makefile.config
 %{python_sitelib}/_work_queue.so
 %{_includedir}/cctools/work_queue.h
 %{_docdir}/cctools/COPYING
+%{_docdir}/cctools/workqueue.html
+%{_docdir}/cctools/watchdog.html
 %{_docdir}/cctools/work_queue_example.c
 %{_docdir}/cctools/work_queue_example.pl
 %{_docdir}/cctools/work_queue_example.py
