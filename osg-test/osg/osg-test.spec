@@ -5,7 +5,7 @@
 
 Summary:   Tests an OSG Software installation
 Name:      osg-test
-Version:   1.4.0
+Version:   1.4.1
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -39,6 +39,9 @@ rm -rf $RPM_BUILD_ROOT
 /etc/grid-security/certificates/bffdd190.*
 
 %changelog
+* Wed Oct 16 2013 Brian Lin <blin@cs.wisc.edu> - 1.4.1-1
+- Preserve old MySQL data and restore them on test completion
+
 * Fri Oct 11 2013 Brian Lin <blin@cs.wisc.edu> - 1.4.0-1
 - Add creation of OSG CA/CRL and ability to sign host certs
 
