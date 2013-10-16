@@ -1,7 +1,7 @@
 [osg-upcoming]
 name=OSG Software for Enterprise Linux 5 - Upcoming - $basearch
-#baseurl=http://repo.grid.iu.edu/3.0/el5/osg-upcoming-release/$basearch
-mirrorlist=http://repo.grid.iu.edu/mirror/3.0/el5/osg-upcoming-release/$basearch
+#baseurl=http://repo.grid.iu.edu/osg/upcoming/el5/release/$basearch
+mirrorlist=http://repo.grid.iu.edu/mirror/osg/upcoming/el5/release/$basearch
 failovermethod=priority
 priority=98
 enabled=0
@@ -11,7 +11,7 @@ consider_as_osg=yes
 
 [osg-upcoming-source]
 name=OSG Software for Enterprise Linux 5 - Upcoming - $basearch - Source
-baseurl=http://repo.grid.iu.edu/3.0/el5/osg-upcoming-release/source/SRPMS
+baseurl=http://repo.grid.iu.edu/osg/upcoming/el5/release/source/SRPMS
 failovermethod=priority
 priority=98
 enabled=0
@@ -20,7 +20,7 @@ gpgcheck=1
 
 [osg-upcoming-debug]
 name=OSG Software for Enterprise Linux 5 - Upcoming - $basearch - Debug
-baseurl=http://repo.grid.iu.edu/3.0/el5/osg-upcoming-release/$basearch/debug
+baseurl=http://repo.grid.iu.edu/osg/upcoming/el5/release/$basearch/debug
 failovermethod=priority
 priority=98
 enabled=0

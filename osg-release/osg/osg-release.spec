@@ -1,6 +1,6 @@
 Name:           osg-release
-Version:        3.0
-Release:        22%{?dist}
+Version:        3.1
+Release:        1%{?dist}
 Summary:        OSG Software for Enterprise Linux repository configuration
 
 Group:          System Environment/Base 
@@ -90,6 +90,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Oct 16 2013 Carl Edquist <edquist@cs.wisc.edu> - 3.1-1
+- Update from old 3.0 repo layout to new osg/3.1 layout (SOFTWARE-1221)
+
 * Thu Feb 07 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 3.0-22
 - Add *upcoming* repos
 
