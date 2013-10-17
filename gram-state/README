@@ -1,0 +1,17 @@
+Some comments about gram-state, initially added very much post facto by cat, on
+the occasion of his being confused about the purpose of the package when moving
+to OSG 3.2.0.
+
+Brian Bockelman originally wrote a script called globus_state_parser for his own
+use when debugging Globus gatekeepers.  He submitted the initial RPM in early
+2012, and then Alain Roy did some clean up and a rename later that year.  The
+JIRA ticket for this work is:
+
+https://jira.opensciencegrid.org/browse/SOFTWARE-639
+
+The authoritative source now belongs to OSG Software and lives in our SVN repo:
+
+$SVN/software/gram-state
+
+Other than being mentioned in release notes, this tool is not documented on the
+OSG TWiki.
