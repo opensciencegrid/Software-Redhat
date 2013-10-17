@@ -1,6 +1,6 @@
 Name:           edg-mkgridmap
 Version:        4.0.0
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        Contains the init.d script and crontab for edg-mkgridmap
 
 Group:          system environment/base
@@ -49,6 +49,7 @@ make install prefix=$RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT/%{_sysconfdir}
 mkdir -p $RPM_BUILD_ROOT/%{_sysconfdir}/rc.d/init.d/
 mkdir -p $RPM_BUILD_ROOT/%{_sysconfdir}/cron.d/
+mkdir -p $RPM_BUILD_ROOT/%{_var}/lib/osg
 install -m 755 %{SOURCE1} $RPM_BUILD_ROOT/%{_sysconfdir}/rc.d/init.d/edg-mkgridmap
 install -m 644 %{SOURCE2} $RPM_BUILD_ROOT/%{_sysconfdir}/cron.d/edg-mkgridmap-cron
 
@@ -85,8 +86,12 @@ fi
 %{_defaultdocdir}/%{name}/MAINTAINERS
 %{_mandir}/man5/edg-mkgridmap.conf.5*
 %{_mandir}/man8/edg-mkgridmap.8*
+%dir %{_var}/lib/osg
 
 %changelog
+* Thu Oct 17 2013 Carl Edquist <edquist@cs.wisc.edu> - 4.0.0-6
+- Provide missing /var/lib/osg dir (SOFTWARE-495)
+
 * Thu Mar 22 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 4.0.0-5
 - Require osg-edg-mkgridmap-config instead of vo-client-edgmkgridmap
 
