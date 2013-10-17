@@ -1,9 +1,8 @@
 Summary: osg-pki-tools
 Name: osg-pki-tools
-Version: 1.2.1
-Release: 4%{?dist}
+Version: 1.2.2
+Release: 1%{?dist}
 Source: OSGPKITools-%{version}.tar.gz
-Patch0: changelog.patch
 License: Apache 2.0
 Group: Grid
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
@@ -36,7 +35,6 @@ tests for osg-pki-tools
 
 %prep
 %setup -n OSGPKITools-%{version}
-%patch0 -p1
 
 %build
 %{__python} setup.py build
@@ -77,6 +75,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Oct 17 2013 Brian Lin <blin@cs.wisc.edu> - 1.2.2-1
+* Improve exception handling when typos occur on the command-line (SOFTWARE-1183)
+
 * Mon Jul 08 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.2.1-4
 - Add documentation
 
