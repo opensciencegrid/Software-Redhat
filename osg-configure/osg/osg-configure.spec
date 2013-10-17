@@ -1,5 +1,5 @@
 %global name osg-configure
-%global version 1.0.45
+%global version 1.0.46
 %global release 1%{?dist}
 
 Summary: Package for configure-osg and associated scripts
@@ -30,60 +30,70 @@ Provides: osg-configure
 Summary: Configure-osg configuration files for rsv
 Group: Grid
 Provides: configure-osg-rsv
+Requires: %name = %version-%release
 %description rsv
 This package includes the ini file for configuring rsv using configure-osg
 %package cemon
 Summary: Configure-osg configuration files for cemon
 Group: Grid
 Provides: configure-osg-cemon
+Requires: %name = %version-%release
 %description cemon
 This package includes the ini file for configuring cemon using configure-osg
 %package gratia
 Summary: Configure-osg configuration files for gratia
 Group: Grid
 Provides: configure-osg-gratia
+Requires: %name = %version-%release
 %description gratia
 This package includes the ini file for configuring gratia using configure-osg
 %package gip
 Summary: Configure-osg configuration files for gip
 Group: Grid
 Provides: configure-osg-gip
+Requires: %name = %version-%release
 %description gip
 This package includes the ini file for configuring gip using configure-osg
 %package lsf
 Summary: Configure-osg configuration files for lsf
 Group: Grid
 Provides: configure-osg-lsf
+Requires: %name = %version-%release
 %description lsf
 This package includes the ini file for configuring lsf using configure-osg
 %package pbs
 Summary: Configure-osg configuration files for pbs
 Group: Grid
 Provides: configure-osg-pbs
+Requires: %name = %version-%release
 %description pbs
 This package includes the ini file for configuring pbs using configure-osg
 %package condor
 Summary: Configure-osg configuration files for condor
 Group: Grid
 Provides: configure-osg-condor
+Requires: %name = %version-%release
 %description condor
 This package includes the ini file for configuring condor using configure-osg
 %package sge
 Summary: Configure-osg configuration files for sge
 Group: Grid
 Provides: configure-osg-sge
+Requires: %name = %version-%release
 %description sge
 This package includes the ini file for configuring sge using configure-osg
 %package monalisa
 Summary: Configure-osg configuration files for monalisa
 Group: Grid
 Provides: configure-osg-monalisa
+Requires: %name = %version-%release
 %description monalisa
 This package includes the ini files for configuring monalisa
 %package ce
 Summary: Configure-osg configuration files for CE
 Group: Grid
 Provides: configure-osg-ce
+Requires: %name = %version-%release
 %description ce
 This package includes the ini files for configuring a basic CE using 
 configure-osg.  One of the packages for the job manager configuration also 
@@ -92,6 +102,7 @@ needs to be installed for the CE configuration.
 Summary: Configure-osg configuration files for misc software
 Group: Grid
 Provides: configure-osg-misc
+Requires: %name = %version-%release
 %description misc
 This package includes the ini files for various osg software including
 certificates setup and glexec
@@ -99,12 +110,14 @@ certificates setup and glexec
 Summary: Configure-osg configuration files for squid
 Group: Grid
 Provides: configure-osg-squid
+Requires: %name = %version-%release
 %description squid
 This package includes the ini files for configuring an OSG system to use squid
 %package managedfork
 Summary: Configure-osg configuration files for managedfork
 Group: Grid
 Provides: configure-osg-managedfork
+Requires: %name = %version-%release
 %description managedfork
 This package includes the ini files for configuring an OSG CE to use
 managedfork 
@@ -112,6 +125,7 @@ managedfork
 Summary: Configure-osg configuration files for network configuration
 Group: Grid
 Provides: configure-osg-network
+Requires: %name = %version-%release
 %description network
 This package includes the ini files for configuring network related information
 such as firewall ports that globus should use
@@ -119,6 +133,7 @@ such as firewall ports that globus should use
 Summary: Configure-osg configuration unit tests and configuration for unit testing
 Group: Grid
 Provides: configure-osg-tests
+Requires: %name = %version-%release
 %description tests
 This package includes the ini files and files for unit tests that osg-configure
 uses to verify functionality
@@ -126,6 +141,7 @@ uses to verify functionality
 Summary: Configure-osg configuration files for slurm
 Group: Grid
 Provides: configure-osg-slurm
+Requires: %name = %version-%release
 %description slurm
 This package includes the ini file for configuring slurm using configure-osg
 
@@ -221,6 +237,12 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/osg/config.d/20-slurm.ini
 
 %changelog
+* Thu Oct 17 2013 Suchandra Thapa <sthapa@ci.uchicago.edu> 1.0.46-1
+- Allow sge binary location to be specified
+- Give better error messages when options are missing
+- Add requires in sub-rpms for osg-configure main rpm
+- Check and fix condor-cron ids for RSV
+
 * Wed Sep 16 2013 Suchandra Thapa <sthapa@ci.uchicago.edu> 1.0.45-1
 - Update unit tests for http proxy validation
 
