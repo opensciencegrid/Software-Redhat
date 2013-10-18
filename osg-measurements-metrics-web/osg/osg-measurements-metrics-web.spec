@@ -5,7 +5,7 @@
 
 Name:           osg-measurements-metrics-web
 Version:        1.2
-Release:        17%{?dist}
+Release:        18%{?dist}
 Summary:        OSG Measurements and Metrics web and database
 
 Group:          Applications/System
@@ -80,6 +80,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+
+* Fri Oct  18 2013 William B Hurst <wbhurst@cse.unl.edu>
+- Additional changes requested for GratiaWeb-40 Field of
+- Science were completed
 
 * Mon Oct  7 2013 William B Hurst <wbhurst@cse.unl.edu>
 - last graph working. GratiaWeb-40 Field of Science
