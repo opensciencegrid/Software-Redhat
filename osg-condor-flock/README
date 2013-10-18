@@ -1,0 +1,10 @@
+This package contains HTCondor configuration files that define flocking hosts
+for the OSG glideinWMS VO frontends.  It is used by VOs that wish to flock jobs
+to the OSG; the main user is OSG-XSEDE.  In addition to the config files, the
+package acts as a meta-package, requiring HTCondor itself, the mandated Gratia
+HTCondor probe, and grid certificates.
+
+Derek Weitzel developed the package for the OSG Campus Grids area, especially
+OSG user support (mostly Mats Rynge).
+
+This information was last updated October 2013.
