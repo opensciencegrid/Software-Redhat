@@ -12,8 +12,8 @@ Name:           glideinwms
 %endif
 
 %if %{v3_plus}
-%define version 3.2.0
-%define release 3
+%define version 3.2.1
+%define release 1.rc1
 %define frontend_xml frontend.master.xml
 %define factory_xml glideinWMS.master.xml
 %endif
@@ -51,9 +51,11 @@ Source1:        frontend_startup
 Source2:        %{frontend_xml}
 Source3:        gwms-frontend.conf.httpd
 Source4:	%{factory_xml}
-Source5:       gwms-factory.conf.httpd
-Source6:       factory_startup
+Source5:        gwms-factory.conf.httpd
+Source6:        factory_startup
 Source7:	chksum.sh
+Source8:        gwms-frontend.sysconfig
+Source9:        gwms-factory.sysconfig
 
 %description
 This is a package for the glidein workload management system.
@@ -337,10 +339,12 @@ cp -arp creation/web_base/frontend/images $RPM_BUILD_ROOT%{web_dir}/monitor/
 # Install the frontend config dir
 install -d $RPM_BUILD_ROOT/%{_sysconfdir}/gwms-frontend
 install -m 0644 %{SOURCE2} $RPM_BUILD_ROOT/%{_sysconfdir}/gwms-frontend/frontend.xml
+install -m 0644 %{SOURCE8} $RPM_BUILD_ROOT/%{_sysconfdir}/sysconfig/gwms-frontend
 
 # Install the factory config dir
 install -d $RPM_BUILD_ROOT/%{_sysconfdir}/gwms-factory
 install -m 0644 %{SOURCE4} $RPM_BUILD_ROOT/%{_sysconfdir}/gwms-factory/glideinWMS.xml
+install -m 0644 %{SOURCE9} $RPM_BUILD_ROOT/%{_sysconfdir}/sysconfig/gwms-factory
 
 # Install the web base
 cp -r creation/web_base/* $RPM_BUILD_ROOT%{web_base}/
@@ -586,6 +590,7 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/gwms-factory.conf
 %attr(-, gfactory, gfactory) %dir %{_sysconfdir}/gwms-factory
 %attr(-, gfactory, gfactory) %config(noreplace) %{_sysconfdir}/gwms-factory/glideinWMS.xml
+%config(noreplace) %{_sysconfdir}/sysconfig/gwms-factory
 
 %files vofrontend-standalone
 %defattr(-,frontend,frontend,-)
@@ -647,6 +652,7 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/gwms-frontend.conf
 %attr(-, frontend, frontend) %dir %{_sysconfdir}/gwms-frontend
 %attr(-, frontend, frontend) %config(noreplace) %{_sysconfdir}/gwms-frontend/frontend.xml
+%config(noreplace) %{_sysconfdir}/sysconfig/gwms-frontend
 %if %{v3_plus}
 %attr(-, frontend, frontend) %{web_base}/../creation
 %endif
@@ -692,6 +698,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Oct 18 2013 Parag Mhashilkar <parag@fnal.gov> - 3.2.1-1.rc1
+- Added gwms-frontend and gwms-factory files in /etc/sysconfig in the respective rpms
+
 * Thu Oct 10 2013 Parag Mhashilkar <parag@fnal.gov> - 3.2.0-3
 - Changed Requires (dependencies) to insure that the entire set of glideinwms rpms is updated as a set.
 
