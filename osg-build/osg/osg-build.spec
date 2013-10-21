@@ -1,6 +1,6 @@
 
 Name:           osg-build
-Version:        1.2.8
+Version:        1.3.0
 Release:        1%{?dist}
 Summary:        Build tools for the OSG
 
@@ -48,7 +48,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/%{name}
 %{_bindir}/koji-tag-checker
 %{_bindir}/koji-tag-diff
-%{_bindir}/rpm-ripper
 %{_bindir}/osg-build-test
 %{_bindir}/osg-import-srpm
 %{_bindir}/osg-koji
@@ -63,6 +62,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_docdir}/%{name}/sample-osg-build.ini
 
 %changelog
+* Mon Oct 21 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.3.0-1
+- osg-next support
+
 * Mon Aug 26 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.2.8-1
 - Support for hcc repos and new koji tag names added to osg-promote (contributed by Brian Bockelman)
 
