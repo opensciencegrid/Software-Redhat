@@ -1,12 +1,14 @@
-Name: gratia-reporting
-Summary: Reporting Gratia OSG accounting system
+Name: gratia-reporting-email
+Summary: Email Reporting for Gratia OSG accounting system
 Group: Applications/System
 Version: 1.13.10
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: GPL
 Group: Applications/System
 URL: http://sourceforge.net/projects/gratia/
 
+Obsoletes: gratia-reporting < 1.13.10
+Provides: gratia-reporting = %{version}-%{release}
 Source0: gratia-%{version}.tar.gz
 
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
@@ -99,6 +101,9 @@ mkdir -p $RPM_BUILD_ROOT%{_var}/lib/gratia/tmp
 
 
 %changelog
+* Tue Oct 22 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.13.10-2
+- Renamed to gratia-reporting-email
+
 * Fri Apr 26 2013 Hyunwoo Kim <hyunwoo@fnal.gov> - 1.13.10 - 1
 modified AccountingReport.py and range_mutt_nightly.sh, and created transfertrvo, for a new report transfer vo decache
 
