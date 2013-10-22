@@ -1,0 +1,7 @@
+This depends on two perl modules that are only available from the DAG repos (on EL5) and RPMForge (EL6).
+The modules are perl-Text-Table and perl-IPC-Run.
+You'll have to install the DAG/RPMForge repos before you can test this package.
+Be sure to add the line
+includepkg=perl-Text-Table perl-IPC-Run
+to the dag .repo file so you only get those packages.
+
