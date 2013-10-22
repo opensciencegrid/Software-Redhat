@@ -1,6 +1,6 @@
 
 Name:           osg-build
-Version:        1.3.0
+Version:        1.3.1
 Release:        1%{?dist}
 Summary:        Build tools for the OSG
 
@@ -62,6 +62,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_docdir}/%{name}/sample-osg-build.ini
 
 %changelog
+* Tue Oct 22 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.3.1-1
+- bugfix for osg-next support
+
 * Mon Oct 21 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.3.0-1
 - osg-next support
 
