@@ -1,7 +1,7 @@
 Name:      osg-tested-internal
 Summary:   All OSG packages we test (internal use only)
 Version:   1
-Release:   17%{?dist}
+Release:   18%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -44,6 +44,7 @@ Requires: gratia-probe-dcache-storage
 Requires: gratia-probe-gridftp-transfer
 Requires: gratia-probe-bdii-status
 Requires: gratia-probe-pbs-lsf
+Requires: gratia-probe-sge
 
 ################################################################################
 #
@@ -77,6 +78,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Oct 22 2013 Brian Lin <blin@cs.wisc.edu> - 1-18
+- Add gratia-probe-sge 
+
 * Wed Sep 25 2013 Tim Cartwright <cat@cs.wisc.edu> - 1-17
 - Add ndt-client to eliminate a skipped test
 
