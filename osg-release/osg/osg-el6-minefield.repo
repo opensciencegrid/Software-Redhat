@@ -1,6 +1,6 @@
 [osg-minefield]
 name=OSG Software for Enterprise Linux 6 - Build Repository - $basearch 
-baseurl=http://koji-hub.batlab.org/mnt/koji/repos/el6-osg-development/latest/$basearch/
+baseurl=http://koji-hub.batlab.org/mnt/koji/repos/osg-3.1-el6-development/latest/$basearch/
 failovermethod=priority
 priority=98
 enabled=0

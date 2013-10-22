@@ -1,6 +1,6 @@
 [osg-upcoming-minefield]
 name=OSG Software for Enterprise Linux 5 - Upcoming Build Repository - $basearch 
-baseurl=http://koji-hub.batlab.org/mnt/koji/repos/el5-osg-upcoming-development/latest/$basearch/
+baseurl=http://koji-hub.batlab.org/mnt/koji/repos/osg-upcoming-el5-development/latest/$basearch/
 failovermethod=priority
 priority=98
 enabled=0
