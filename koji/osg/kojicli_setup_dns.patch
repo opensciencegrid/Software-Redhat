@@ -1,0 +1,12 @@
+Index: cli/koji
+===================================================================
+--- cli/koji.orig	2013-05-22 19:46:23.000000002 -0500
++++ cli/koji	2013-05-22 19:47:29.000000002 -0500
+@@ -1172,6 +1172,7 @@
+     else:
+         parser.error(_("Please specify one of: --tag, --task, --buildroot"))
+         assert False
++    opts['use_host_resolv'] = True # for OSG
+     output = koji.genMockConfig(name, arch, **opts)
+     if options.ofile:
+         fo = file(options.ofile, 'w')

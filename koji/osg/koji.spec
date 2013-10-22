@@ -2,7 +2,7 @@
 
 Name: koji
 Version: 1.6.0
-Release: 6%{?dist}
+Release: 7%{?dist}
 License: LGPLv2 and GPLv2+
 # koji.ssl libs (from plague) are GPLv2+
 Summary: Build system tools
@@ -14,6 +14,7 @@ Patch2: kojid_setup_dns.patch
 Patch3: kojid_scmbuild_check_spec_after_running_sourcecmd.patch
 Patch4: koji_passwd_retry.patch
 Patch5: koji_proxy_cert.patch
+Patch6: kojicli_setup_dns.patch
 
 Source: https://fedorahosted.org/releases/k/o/koji/%{name}-%{version}.tar.bz2
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -132,6 +133,7 @@ koji-web is a web UI to the Koji system.
 %patch3 -p0
 %patch4 -p0
 %patch5 -p0
+%patch6 -p0
 
 %build
 
@@ -234,6 +236,9 @@ if [ $1 = 0 ]; then
 fi
 
 %changelog
+* Wed May 22 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.6.0-7
+- Add use_host_resolv to opts in koji cli so koji --mock-config makes configs with DNS set up
+
 * Wed Oct 31 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.6.0-6
 - Add Brian Bockelman's patch to allow using proxy certs
 
