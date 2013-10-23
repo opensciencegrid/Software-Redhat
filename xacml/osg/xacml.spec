@@ -1,13 +1,11 @@
 Summary: SAML 2.0 profile of XACML v2.0 library
 Name: xacml
-Version: 1.1.2
-Release: 5.1%{?dist}
+Version: 1.3.0
+Release: 1.1%{?dist}
 License: ASL 2.0
 Group: System Environment/Libraries
 URL: http://wiki.nikhef.nl/grid/Site_Access_Control
 Source: http://software.nikhef.nl/security/xacml/xacml-%{version}.tar.gz
-Patch0: xacml_namespaces.patch
-
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildRequires: openssl-devel, zlib-devel, bison, flex, gsoap-devel, pkgconfig
 Provides: saml2-xacml2-c-lib = %{version}-%{release}
@@ -46,18 +44,16 @@ This package contains the development libraries and header files.
 
 %prep
 %setup -q
-%patch0 -p0
 
 %build
 
 CXXFLAGS=-fPIC
 export CXXFLAGS
-CPPFLAGS="-DXACML_ADDING_THREADING"
 # We *must* match the build flags of gsoap.so
 # or risk misalignment of the fields of struct soap
 # see: https://bugzilla.redhat.com/show_bug.cgi?id=978872
-CPPFLAGS="$CPPFLAGS "`pkg-config --cflags gsoap`
-export CPPFLAGS
+# Note: from xacml-1.1.5 onwards, this is implemented in the code so no longer
+# needed here.
 
 %configure --disable-static
 
@@ -66,9 +62,6 @@ export CPPFLAGS
 # RPATHs creeping in.
 sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
 sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
-
-make %{?_smp_mflags} XACMLAuthorizationPortTypeSOAPBinding.nsmap
-sed -i 's/SOAP_NMAC struct Namespace namespaces/SOAP_NMAC struct Namespace xacml_namespaces/' XACMLAuthorizationPortTypeSOAPBinding.nsmap
 
 make %{?_smp_mflags}
 
@@ -104,8 +97,29 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/xacml.pc
 
 %changelog
+* Thu Oct  9 2013 Dave Dykstra <dwd@fnal.gov> 1.3.0-1.1.osg
+- Reimported into osg
+- Removed xacml_namespaces.patch
+
+* Wed Oct  4 2013 Mischa Salle <msalle@nikhef.nl> 1.3.0-1
+- updated version
+
 * Mon Sep 16 2013 Brian Bockelman <bbockelm@cse.unl.edu > 1.1.2-5.1
 - Rename global 'namespaces' to avoid conflicts with parent executable
+
+* Wed Sep 11 2013 Mischa Salle <msalle@nikhef.nl> 1.2.0-1
+- removed CPPFLAGS for THREADING
+- updated version
+
+* Fri Aug 30 2013 Mischa Salle <msalle@nikhef.nl> 1.1.5-1
+- remove pkg-config line added in 1.1.2-5, it is now included in the source
+- updated version
+
+* Mon Jul 29 2013 Mischa Salle <msalle@nikhef.nl> 1.1.4-1
+- updated version
+
+* Mon Jul 29 2013 Mischa Salle <msalle@nikhef.nl> 1.1.3-1
+- updated version
 
 * Thu Jun 27 2013 Dennis van Dok <dennisvd@nikhef.nl> 1.1.2-5
 - Use pkg-config to find the gsoap cflags.
