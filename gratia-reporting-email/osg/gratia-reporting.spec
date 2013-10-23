@@ -7,7 +7,7 @@ License: GPL
 Group: Applications/System
 URL: http://sourceforge.net/projects/gratia/
 
-Obsoletes: gratia-reporting < 1.13.10
+Obsoletes: gratia-reporting < 1.13.10-2
 Provides: gratia-reporting = %{version}-%{release}
 Source0: gratia-%{version}.tar.gz
 
