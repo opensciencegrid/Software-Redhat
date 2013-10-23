@@ -1,18 +1,17 @@
 Summary: SCAS client plugin for the LCMAPS authorization framework
 Name: lcmaps-plugins-scas-client
-Version: 0.3.4
-Release: 1.3%{?dist}
-Vendor: Nikhef
+Version: 0.4.0
+Release: 1.1%{?dist}
 License: ASL 2.0
 Group: System Environment/Libraries
-URL: http://www.nikhef.nl/pub/projects/grid/gridwiki/index.php/Site_Access_Control
+URL: http://wiki.nikhef.nl/grid/Site_Access_Control
 Source0: http://software.nikhef.nl/security/%{name}/%{name}-%{version}.tar.gz
 Patch0: ca_only.patch
-Patch1: log_xacml_errors.patch
 BuildRequires: openssl-devel
-BuildRequires: lcmaps-interface, saml2-xacml2-c-lib-devel
-
+BuildRequires: lcmaps-interface, xacml-devel >= 1.3.0
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
+Requires: lcmaps%{?_isa} >= 1.5.0
+Requires: xacml%{?_isa} >= 1.3.0
 
 %description
 The Local Centre MAPping Service (LCMAPS) is a security middleware
@@ -35,7 +34,6 @@ Summary: SAZ support for lcmaps
 %prep
 %setup -q
 %patch0 -p0
-%patch1 -p0
 
 %build
 
@@ -52,24 +50,39 @@ find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
 #  is a symlink and lcmaps can't use the same module file twice
 cp $RPM_BUILD_ROOT%{_libdir}/lcmaps/liblcmaps_scas_client.so $RPM_BUILD_ROOT%{_libdir}/lcmaps/liblcmaps_saz_client.so
 ln -s liblcmaps_saz_client.so $RPM_BUILD_ROOT%{_libdir}/lcmaps/lcmaps_saz_client.mod
-cp $RPM_BUILD_ROOT%{_datadir}/man/man8/lcmaps_plugins_scas_client.8 $RPM_BUILD_ROOT%{_datadir}/man/man8/lcmaps_plugins_saz_client.8
+cp $RPM_BUILD_ROOT%{_mandir}/man8/lcmaps_plugins_scas_client.8 $RPM_BUILD_ROOT%{_mandir}/man8/lcmaps_plugins_saz_client.8
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)
-%doc AUTHORS  LICENSE
+%doc AUTHORS  LICENSE  BUGS
 %{_libdir}/lcmaps/lcmaps_scas_client.mod
 %{_libdir}/lcmaps/liblcmaps_scas_client.so
-%{_datadir}/man/man8/lcmaps_plugins_scas_client.8.gz
+%{_mandir}/man8/lcmaps_plugins_scas_client.8*
 
 %files -n lcmaps-plugins-saz-client
 %{_libdir}/lcmaps/lcmaps_saz_client.mod
 %{_libdir}/lcmaps/liblcmaps_saz_client.so
-%{_datadir}/man/man8/lcmaps_plugins_saz_client.8.gz
+%{_mandir}/man8/lcmaps_plugins_saz_client.8*
 
 %changelog
+* Wed Oct  9 2013 Dave Dykstra <dwd@fnal.gov> 0.4.0-1.1.osg
+- Reimported into OSG
+- Removed log_xacml_errors.patch
+
+* Tue Oct  4 2013 Mischa Salle <msalle@nikhef.nl> 0.4.0-1
+- update build requirement on xacml-devel plus minimal version
+- add requirement on xacml plus minimal version
+- bumped version
+
+* Tue Oct  3 2013 Mischa Salle <msalle@nikhef.nl> 0.3.5-1
+- installed BUGS as documentation
+- add requirement on LCMAPS plus minimal version
+- use mandir for installing man pages
+- bumped version
+
 * Mon Sep 16 2013 Brian Bockelman <bbockelm@cse.unl.edu> 0.3.4-1.3.osg
 - Log libxacml failures.
 
