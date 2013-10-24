@@ -2,7 +2,7 @@ Summary: C/C++ libraries for the client of the CREAM service
 Name: glite-ce-cream-client-api-c
 Version: 1.14.0
 %global upstream_release 4
-Release: %upstream_release.7%{?dist}
+Release: %upstream_release.8%{?dist}
 License: Apache Software License
 URL: http://glite.cern.ch/
 Group: System Environment/Libraries
@@ -11,7 +11,7 @@ BuildRequires: %{!?extbuilddir: glite-ce-wsdl, glite-build-common-cpp, } gsoap-d
 BuildRequires: %{!?extbuilddir: gridsite-devel,} libxml2-devel, boost-devel
 BuildRequires: %{!?extbuilddir: voms-devel} 
 BuildRequires: %{!?extbuilddir: glite-lbjp-common-gsoap-plugin-devel,} log4cpp-devel
-BuildRequires: condor-classads-devel >= 7.9.6
+BuildRequires: condor-classads-devel >= 8.0.4
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 AutoReqProv: yes
 Source5: %{name}-%{version}-%{upstream_release}.sl5.tar.gz
@@ -90,7 +90,7 @@ Requires: glite-jobid-api-cpp-devel, glite-jobid-api-c-devel,
 Requires: glite-lbjp-common-gsoap-plugin-devel
 Requires: boost-devel, log4cpp-devel, gsoap-devel
 Requires: voms-devel, gridsite-devel, libxml2-devel, glite-build-common-cpp
-Requires: condor-classads-devel >= 7.9.6
+Requires: condor-classads-devel >= 8.1.0
 
 %description -n glite-ce-cream-client-devel
 The package contains development files for the client of the CREAM service
@@ -113,8 +113,11 @@ The package contains development files for the client of the CREAM service
 
 
 %changelog
-* Thu Oct 24 2013 Brian Lin <blin@cs.wisc.edu> - 1.14.0-4.7.osg
+* Thu Oct 24 2013 Brian Lin <blin@cs.wisc.edu> - 1.14.0-4.8.osg
 - Build against condor-8.0.4-1
+
+* Tue Sep 10 2013  <edquist@cs.wisc.edu> - 1.14.0-4.7.osg
+- Rebuild against latest condor
 
 * Tue May 21 2013 Brian Lin <blin@cs.wisc.edu> - 1.14.0-4.6.osg
 - Changed classads-devel to condor-classads-devel
