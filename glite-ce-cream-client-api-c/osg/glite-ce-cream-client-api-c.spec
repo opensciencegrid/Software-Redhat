@@ -2,7 +2,7 @@ Summary: C/C++ libraries for the client of the CREAM service
 Name: glite-ce-cream-client-api-c
 Version: 1.14.0
 %global upstream_release 4
-Release: %upstream_release.6%{?dist}
+Release: %upstream_release.7%{?dist}
 License: Apache Software License
 URL: http://glite.cern.ch/
 Group: System Environment/Libraries
@@ -113,6 +113,9 @@ The package contains development files for the client of the CREAM service
 
 
 %changelog
+* Thu Oct 24 2013 Brian Lin <blin@cs.wisc.edu> - 1.14.0-4.7.osg
+- Build against condor-8.0.4-1
+
 * Tue May 21 2013 Brian Lin <blin@cs.wisc.edu> - 1.14.0-4.6.osg
 - Changed classads-devel to condor-classads-devel
 
