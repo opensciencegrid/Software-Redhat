@@ -67,7 +67,7 @@ Version: %{tarball_version}
 %define condor_release %condor_base_release
 %endif
 # Release: %condor_release%{?dist}.2
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -1271,6 +1271,9 @@ fi
 %endif
 
 %changelog
+* Thu Oct 24 2013 Brian Lin <blin@cs.wisc.edu> - 8.0.4-2
+- Build against glite-ce-cream-client-api-c-1.14.0-4.8.osg
+
 * Thu Oct 24 2013 Brian Lin <blin@cs.wisc.edu> - 8.0.4-1
 - New version
 
