@@ -2,7 +2,7 @@ Summary: C/C++ libraries for the client of the CREAM service
 Name: glite-ce-cream-client-api-c
 Version: 1.14.0
 %global upstream_release 4
-Release: %upstream_release.8%{?dist}
+Release: %upstream_release.9%{?dist}
 License: Apache Software License
 URL: http://glite.cern.ch/
 Group: System Environment/Libraries
@@ -90,7 +90,7 @@ Requires: glite-jobid-api-cpp-devel, glite-jobid-api-c-devel,
 Requires: glite-lbjp-common-gsoap-plugin-devel
 Requires: boost-devel, log4cpp-devel, gsoap-devel
 Requires: voms-devel, gridsite-devel, libxml2-devel, glite-build-common-cpp
-Requires: condor-classads-devel >= 8.1.0
+Requires: condor-classads-devel >= 8.0.4
 
 %description -n glite-ce-cream-client-devel
 The package contains development files for the client of the CREAM service
@@ -113,6 +113,9 @@ The package contains development files for the client of the CREAM service
 
 
 %changelog
+* Thu Oct 24 2013 Brian Lin <blin@cs.wisc.edu> - 1.14.0-4.9.osg
+- Fixed incorrect requires statement
+
 * Thu Oct 24 2013 Brian Lin <blin@cs.wisc.edu> - 1.14.0-4.8.osg
 - Build against condor-8.0.4-1
 
