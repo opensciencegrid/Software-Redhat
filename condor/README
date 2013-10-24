@@ -24,7 +24,7 @@ CHTC git repository.  The following process was tested with HTCondor 7.6.5:
 
 4. Tell git to create a source tarball for a tagged release:
 
-   git archive --prefix=condor-[VERSION]/ [GIT-TAG] | gzip -9 > [PATH]/condor-7.6.5.tar.gz
+   git archive --prefix=condor-[VERSION]/ [GIT-TAG] | gzip -9 > [PATH]/condor-[VERSION].tar.gz
 
    Where:
 
@@ -33,7 +33,7 @@ CHTC git repository.  The following process was tested with HTCondor 7.6.5:
    - [PATH] is the path to where you want to write the source tarball
 
 5. Verify that the tarball was created correctly; for example, each path in the
-   tarball should start with something like "htcondor-7.6.5/", and the whole
+   tarball should start with something like "condor-7.6.5/", and the whole
    tarball is likely to be about the same size as prior ones
 
 6. Upload the source tarball to the correct upstream path, e.g.:
