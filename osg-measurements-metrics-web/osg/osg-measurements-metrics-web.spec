@@ -5,7 +5,7 @@
 
 Name:           osg-measurements-metrics-web
 Version:        1.2
-Release:        18%{?dist}
+Release:        19%{?dist}
 Summary:        OSG Measurements and Metrics web and database
 
 Group:          Applications/System
@@ -80,6 +80,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+
+* Thu Oct 24 2013 William B Hurst <wbhurst@cse.unl.edu>
+- Changes made to fulfill the requests of GratiaWeb-42
+- 'gratiaweb/project doesn't show filter by ProjectName', 
+- and GratiaWeb-44 'FOS reports doesn't work for facility 
+- and probe.'
 
 * Fri Oct  18 2013 William B Hurst <wbhurst@cse.unl.edu>
 - Additional changes requested for GratiaWeb-40 Field of
