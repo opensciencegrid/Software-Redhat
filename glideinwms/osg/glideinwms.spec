@@ -11,6 +11,9 @@ Name:           glideinwms
 %define factory_xml glideinWMS.xml
 %endif
 
+# ------------------------------------------------------------------------------
+# For Release Candidate builds, check with Software team on release string
+# ------------------------------------------------------------------------------
 %if %{v3_plus}
 %define version 3.2.1
 %define release 1.rc2
