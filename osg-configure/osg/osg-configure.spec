@@ -1,5 +1,5 @@
 %global name osg-configure
-%global version 1.0.46
+%global version 1.0.47
 %global release 1%{?dist}
 
 Summary: Package for configure-osg and associated scripts
@@ -237,6 +237,10 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/osg/config.d/20-slurm.ini
 
 %changelog
+* Thu Oct 24 2013 Suchandra Thapa <sthapa@ci.uchicago.edu> 1.0.47-1
+- Fix for hostname identification on CentOS 6
+- Fixes for bugs in condor-cron id fixes
+
 * Thu Oct 17 2013 Suchandra Thapa <sthapa@ci.uchicago.edu> 1.0.46-1
 - Allow sge binary location to be specified
 - Give better error messages when options are missing
