@@ -16,7 +16,9 @@ Name:           glideinwms
 # ------------------------------------------------------------------------------
 %if %{v3_plus}
 %define version 3.2.1
-%define release 1.rc2
+#%define release 0.x.rcx
+#%define release 1
+%define release 0.1.rc2
 %define frontend_xml frontend.master.xml
 %define factory_xml glideinWMS.master.xml
 %endif
@@ -39,6 +41,7 @@ BuildArch:      noarch
 %define factory_web_base %{_localstatedir}/lib/gwms-factory/web-base
 %define factory_dir %{_localstatedir}/lib/gwms-factory/work-dir
 %define condor_dir %{_localstatedir}/lib/gwms-factory/condor
+%define sysconfig_dir %{_localstatedir}/etc/sysconfig
 
 
 #Source0:        http://www.uscms.org/SoftwareComputing/Grid/WMS/glideinWMS/glideinWMS_v2_5_1_frontend.tgz
@@ -279,7 +282,7 @@ rm -f $RPM_BUILD_ROOT%{python_sitelib}/glideinwms/creation/reconfig_glidein
 install -d  $RPM_BUILD_ROOT/%{_initrddir}
 install -m 0755 %{SOURCE1} $RPM_BUILD_ROOT/%{_initrddir}/gwms-frontend
 install -m 0755 %{SOURCE6} $RPM_BUILD_ROOT/%{_initrddir}/gwms-factory
-
+install -d $RPM_BUILD_ROOT%{sysconfig_dir}
 
 # Install the web directory
 install -d $RPM_BUILD_ROOT%{frontend_dir}
