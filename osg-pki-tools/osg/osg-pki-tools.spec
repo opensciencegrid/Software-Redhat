@@ -1,6 +1,6 @@
 Summary: osg-pki-tools
 Name: osg-pki-tools
-Version: 1.2.2
+Version: 1.2.3
 Release: 1%{?dist}
 Source: OSGPKITools-%{version}.tar.gz
 License: Apache 2.0
@@ -75,6 +75,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Oct 28 2013 Brian Lin <blin@cs.wisc.edu> - 1.2.3-1
+* Handle no such file/directory errors explicitly
+
 * Thu Oct 17 2013 Brian Lin <blin@cs.wisc.edu> - 1.2.2-1
 * Improve exception handling when typos occur on the command-line (SOFTWARE-1183)
 
