@@ -584,6 +584,9 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/glideinwms/creation/lib/cgWParams.py
 %{python_sitelib}/glideinwms/creation/lib/cgWParams.pyc
 %{python_sitelib}/glideinwms/creation/lib/cgWParams.pyo
+%{python_sitelib}/glideinwms/creation/lib/xslt.py
+%{python_sitelib}/glideinwms/creation/lib/xslt.pyc
+%{python_sitelib}/glideinwms/creation/lib/xslt.pyo
 %{python_sitelib}/glideinwms/creation/lib/__init__.py
 %{python_sitelib}/glideinwms/creation/lib/__init__.pyc
 %{python_sitelib}/glideinwms/creation/lib/__init__.pyo
@@ -649,6 +652,9 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/glideinwms/creation/lib/cvWParams.py
 %{python_sitelib}/glideinwms/creation/lib/cvWParams.pyc
 %{python_sitelib}/glideinwms/creation/lib/cvWParams.pyo
+%{python_sitelib}/glideinwms/creation/lib/xslt.py
+%{python_sitelib}/glideinwms/creation/lib/xslt.pyc
+%{python_sitelib}/glideinwms/creation/lib/xslt.pyo
 %{python_sitelib}/glideinwms/creation/lib/__init__.py
 %{python_sitelib}/glideinwms/creation/lib/__init__.pyc
 %{python_sitelib}/glideinwms/creation/lib/__init__.pyo
@@ -703,8 +709,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Fri Oct 18 2013 Parag Mhashilkar <parag@fnal.gov> - 3.2.1-1.rc1
+* Mon Oct 28 2013 Parag Mhashilkar <parag@fnal.gov> - 3.2.1-0.1.rc2
 - Added gwms-frontend and gwms-factory files in /etc/sysconfig in the respective rpms
+- Added new files, xslt.* to the list for respective rpms
 
 * Thu Oct 10 2013 Parag Mhashilkar <parag@fnal.gov> - 3.2.0-3
 - Changed Requires (dependencies) to insure that the entire set of glideinwms rpms is updated as a set.
