@@ -1,7 +1,7 @@
 [osg]
 name=OSG Software for Enterprise Linux 6 - $basearch
-#baseurl=http://repo.grid.iu.edu/osg/3.1/el6/release/$basearch
-mirrorlist=http://repo.grid.iu.edu/mirror/osg/3.1/el6/release/$basearch
+#baseurl=http://repo.grid.iu.edu/osg/3.2/el6/release/$basearch
+mirrorlist=http://repo.grid.iu.edu/mirror/osg/3.2/el6/release/$basearch
 failovermethod=priority
 priority=98
 enabled=1
@@ -11,7 +11,7 @@ consider_as_osg=yes
 
 [osg-source]
 name=OSG Software for Enterprise Linux 6 - $basearch - Source
-baseurl=http://repo.grid.iu.edu/osg/3.1/el6/release/source/SRPMS
+baseurl=http://repo.grid.iu.edu/osg/3.2/el6/release/source/SRPMS
 failovermethod=priority
 priority=98
 enabled=0
@@ -20,7 +20,7 @@ gpgcheck=1
 
 [osg-debug]
 name=OSG Software for Enterprise Linux 6 - $basearch - Debug
-baseurl=http://repo.grid.iu.edu/osg/3.1/el6/release/$basearch/debug
+baseurl=http://repo.grid.iu.edu/osg/3.2/el6/release/$basearch/debug
 failovermethod=priority
 priority=98
 enabled=0
