@@ -1,6 +1,6 @@
 Name:           osg-release-itb
-Version:        3.0
-Release:        23%{?dist}
+Version:        3.2
+Release:        1%{?dist}
 Summary:        OSG Software for Enterprise Linux repository configuration
 
 Group:          System Environment/Base 
@@ -90,6 +90,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Oct 29 2013 Carl Edquist <edquist@cs.wisc.edu> - 3.2-1
+- Update to osg-3.2, and new style koji tags for minefield repos
+
 * Tue Oct 01 2013  <edquist@cs.wisc.edu> - 3.0-23
 - Update .repo files to point to new directory layout
 

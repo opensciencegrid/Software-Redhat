@@ -1,6 +1,6 @@
 [osg-contrib]
 name=OSG Software for Enterprise Linux 6 - Contributed - $basearch 
-mirrorlist=http://repo-itb.grid.iu.edu/mirror/osg/3.1/el6/contrib/$basearch
+mirrorlist=http://repo-itb.grid.iu.edu/mirror/osg/3.2/el6/contrib/$basearch
 failovermethod=priority
 priority=98
 enabled=0
@@ -10,7 +10,7 @@ consider_as_osg=yes
 
 [osg-contrib-source]
 name=OSG Software for Enterprise Linux 6 - Contributed - $basearch - Source
-baseurl=http://repo-itb.grid.iu.edu/osg/3.1/el6/contrib/source/SRPMS
+baseurl=http://repo-itb.grid.iu.edu/osg/3.2/el6/contrib/source/SRPMS
 failovermethod=priority
 priority=98
 enabled=0
@@ -19,7 +19,7 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-OSG
 
 [osg-contrib-debug]
 name=OSG Software for Enterprise Linux 6 - Contributed - $basearch - Debug
-baseurl=http://repo-itb.grid.iu.edu/osg/3.1/el6/contrib/$basearch/debug
+baseurl=http://repo-itb.grid.iu.edu/osg/3.2/el6/contrib/$basearch/debug
 failovermethod=priority
 priority=98
 enabled=0
