@@ -1,2 +1,0 @@
-setenv VOMS_PROXY_INFO_DONT_VERIFY_AC true
-
