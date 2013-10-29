@@ -1315,6 +1315,9 @@ fi
 * Tue May 21 2013 Brian Lin <blin@cs.wisc.edu> - 7.9.6-1
 - New version
 
+* Mon Jun 10 2013 Brian Lin <blin@cs.wisc.edu> - 7.8.8-2
+- Init script improvements
+
 * Wed May 08 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 7.8.8-1
 - New version
 - Removed condor_glidein -- was removed upstream
