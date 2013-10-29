@@ -1,28 +1,40 @@
-%define tarball_version 7.8.8
+%define tarball_version 8.0.4
 
 # Things for F15 or later
-%if 0%{?fedora} >= 15
-# NOTE: Condor+gsoap doesn't work yet on F15; ticket not yet upstream AFAIK.  BB
+%if 0%{?fedora} >= 16
+# NOTE: HTCondor+gsoap doesn't work yet on F15; ticket not yet upstream AFAIK.  BB
 %define gsoap 0
 %define deltacloud 1
 %define aviary 1
+%ifarch %{ix86} x86_64
+# mongodb supports only x86/x86_64
+%define plumage 1
+%else
+%define plumage 0
+%endif
 %define systemd 1
 %define cgroups 1
 %else
 %define gsoap 1
 %define deltacloud 0
 %define aviary 0
+%define plumage 0
 %define systemd 0
 %define cgroups 0
 %endif
 
+%if 0%{?rhel} >= 6
+%define cgroups 1
+%endif
+
 %define blahp 1
+%define glexec 1
 %define cream 1
 
 # Things not turned on, or don't have Fedora packages yet
 %define qmf 0
 
-# These flags are meant for developers; it allows one to build Condor
+# These flags are meant for developers; it allows one to build HTCondor
 # based upon a git-derived tarball, instead of an upstream release tarball
 %define git_build 0
 # If building with git tarball, Fedora requests us to record the rev.  Use:
@@ -37,7 +49,12 @@
 %define include_man 0
 %endif
 
-Summary: Condor: High Throughput Computing
+%if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
+%{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
+%{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
+%endif
+
+Summary: HTCondor: High Throughput Computing
 Name: condor
 Version: %{tarball_version}
 %global version_ %(tr . _ <<< %{version})
@@ -50,7 +67,7 @@ Version: %{tarball_version}
 %define condor_release %condor_base_release
 %endif
 # Release: %condor_release%{?dist}.2
-Release: 4%{?dist}
+Release: 2%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -72,9 +89,9 @@ Source1: condor_docs.tar.gz
 %endif
 
 %else
-# The upstream Condor source tarball contains some source that cannot
+# The upstream HTCondor source tarball contains some source that cannot
 # be shipped as well as extraneous copies of packages the source
-# depends on. Additionally, the upstream Condor source requires a
+# depends on. Additionally, the upstream HTCondor source requires a
 # click-through license. Once you have downloaded the source from:
 #   http://parrot.cs.wisc.edu/v7.0.license.html
 # you should process it with generate-tarball.sh:
@@ -95,7 +112,7 @@ Source1: condor_docs.tar.gz
 #   b482c4bfa350164427a1952113d53d03  condor_src-7.5.5-all-all.tar.gz
 #   2a1355cb24a56a71978d229ddc490bc5  condor_src-7.6.0-all-all.tar.gz
 # Note: The md5sum of each generated tarball may be different
-Source0: condor-%{tarball_version}.tar.gz
+Source0: %{name}-%{tarball_version}.tar.gz
 Source1: generate-tarball.sh
 %endif
 
@@ -111,6 +128,9 @@ Patch0: condor_config.generic.patch
 Patch1: condor_peaceful_off.patch
 Patch2: condor_ulimit.patch
 Patch3: chkconfig_off.patch
+# This patch is here until it is pushed into upstream (8.0.1?)
+# https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=3698
+Patch4: gsoap_ipv6.patch
 Patch8: osg_sysconfig_in_init_script.patch
 Patch9: proper_cream_v3.diff
 %if %blahp
@@ -174,12 +194,24 @@ BuildRequires: globus-ftp-control-devel
 BuildRequires: libtool-ltdl-devel
 BuildRequires: voms-devel
 
+%if %plumage
+BuildRequires: mongodb-devel >= 1.6.4-3
+%endif
+
+# libcgroup < 0.37 has a bug that invalidates our accounting.
 %if %cgroups
 BuildRequires: libcgroup-devel >= 0.37
+Requires: libcgroup >= 0.37
 %endif
 
 %if %blahp
 BuildRequires: blahp
+%endif
+
+BuildRequires: python-devel
+BuildRequires: boost-devel
+%if 0%{rhel} == 6
+BuildRequires: boost-python
 %endif
 
 %if %qmf
@@ -219,12 +251,6 @@ BuildRequires: log4cpp-devel
 BuildRequires: gridsite-devel
 %endif
 
-
-# libcgroup < 0.37 has a bug that invalidates our accounting.
-%if %cgroups
-Requires: libcgroup >= 0.37
-%endif
-
 Requires: initscripts
 
 Requires(pre): shadow-utils
@@ -246,54 +272,68 @@ Requires(postun):/sbin/service
 
 Obsoletes: condor-static < 7.2.0
 
-
 %description
-Condor is a specialized workload management system for
-compute-intensive jobs. Like other full-featured batch systems, Condor
+HTCondor is a specialized workload management system for
+compute-intensive jobs. Like other full-featured batch systems, HTCondor
 provides a job queueing mechanism, scheduling policy, priority scheme,
 resource monitoring, and resource management. Users submit their
-serial or parallel jobs to Condor, Condor places them into a queue,
+serial or parallel jobs to HTCondor, HTCondor places them into a queue,
 chooses when and where to run the jobs based upon a policy, carefully
 monitors their progress, and ultimately informs the user upon
 completion.
 
 %package procd
-Summary: Condor Process tracking Daemon
+Summary: HTCondor Process tracking Daemon
 Group: Applications/System
+
 %description procd
 A daemon for tracking child processes started by a parent.
-Part of Condor, but able to be stand-alone
+Part of HTCondor, but able to be stand-alone
 
 %if %qmf
 %package qmf
-Summary: Condor QMF components
+Summary: HTCondor QMF components
 Group: Applications/System
 Requires: %name = %version-%release
 #Requires: qmf >= %{qmf_version}
 Requires: python-qmf >= 0.7.946106
-Requires: condor-classads = %{version}-%{release}
+Requires: %name-classads = %{version}-%{release}
 Obsoletes: condor-qmf-plugins
 
 %description qmf
-Components to connect Condor to the QMF management bus.
+Components to connect HTCondor to the QMF management bus.
 %endif
 
 %if %aviary
 %package aviary
-Summary: Condor Aviary components
+Summary: HTCondor Aviary components
+Group: Applications/System
+Requires: %name = %version-%release
+Requires: %name-classads = %{version}-%{release}
+
+%description aviary
+Components to provide simplified WS interface to HTCondor.
+%endif
+
+%if %plumage
+%package plumage
+Summary: HTCondor Plumage components
 Group: Applications/System
 Requires: %name = %version-%release
 Requires: condor-classads = %{version}-%{release}
+Requires: mongodb >= 1.6.4
+Requires: pymongo >= 1.9
+Requires: python-dateutil >= 1.4.1
 
-%description aviary
-Components to provide simplified WS interface to Condor.
+%description plumage
+Components to provide a NoSQL operational data store for HTCondor.
 %endif
 
 %package kbdd
-Summary: Condor Keyboard Daemon
+Summary: HTCondor Keyboard Daemon
 Group: Applications/System
 Requires: %name = %version-%release
-Requires: condor-classads = %{version}-%{release}
+Requires: %name-classads = %{version}-%{release}
 
 %description kbdd
 The condor_kbdd monitors logged in X users for activity. It is only
@@ -302,30 +342,30 @@ determine console idle time.
 
 
 %package vm-gahp
-Summary: Condor's VM Gahp
+Summary: HTCondor's VM Gahp
 Group: Applications/System
 Requires: %name = %version-%release
 Requires: libvirt
-Requires: condor-classads = %{version}-%{release}
+Requires: %name-classads = %{version}-%{release}
 
 %description vm-gahp
 The condor_vm-gahp enables the Virtual Machine Universe feature of
-Condor. The VM Universe uses libvirt to start and control VMs under
-Condor's Startd.
+HTCondor. The VM Universe uses libvirt to start and control VMs under
+HTCondor's Startd.
 
 %if %deltacloud
 %package deltacloud-gahp
-Summary: Condor's Deltacloud Gahp
+Summary: HTCondor's Deltacloud Gahp
 Group: Applications/System
 Requires: %name = %version-%release
 
 %description deltacloud-gahp
-The deltacloud_gahp enables Condor's ability to manage jobs run on
+The deltacloud_gahp enables HTCondor's ability to manage jobs run on
 resources exposed by the deltacloud API.
 %endif
 
 %package classads
-Summary: Condor's classified advertisement language
+Summary: HTCondor's classified advertisement language
 Group: Development/Libraries
 Obsoletes: classads <= 1.0.8
 Obsoletes: classads-static <= 1.0.8
@@ -333,8 +373,8 @@ Provides: classads = %version-%release
 
 %description classads
 Classified Advertisements (classads) are the lingua franca of
-Condor. They are used for describing jobs, workstations, and other
-resources. They are exchanged by Condor processes to schedule
+HTCondor. They are used for describing jobs, workstations, and other
+resources. They are exchanged by HTCondor processes to schedule
 jobs. They are logged to files for statistical and debugging
 purposes. They are used to enquire about current state of the system.
 
@@ -348,12 +388,12 @@ evaluates to true if the other ad has an attribute named size and the
 value of that attribute is (or evaluates to) an integer greater than
 three. Two classads match if each ad has an attribute requirements
 that evaluates to true in the context of the other ad. Classad
-matching is used by the Condor central manager to determine the
+matching is used by the HTCondor central manager to determine the
 compatibility of jobs and workstations where they may be run.
 
 
 %package classads-devel
-Summary: Headers for Condor's classified advertisement language
+Summary: Headers for HTCondor's classified advertisement language
 Group: Development/System
 Requires: %name-classads = %version-%release
 Requires: pcre-devel
@@ -361,27 +401,52 @@ Obsoletes: classads-devel <= 1.0.8
 Provides: classads-devel = %version-%release
 
 %description classads-devel
-Header files for Condor's ClassAd Library, a powerful and flexible,
+Header files for HTCondor's ClassAd Library, a powerful and flexible,
 semi-structured representation of data.
 
 %if %{cream}
 %package cream-gahp
-Summary: Condor's CREAM Gahp
+Summary: HTCondor's CREAM Gahp
 Group: Applications/System
 Requires: %name = %version-%release
-Requires: condor-classads = %{version}-%{release}
+Requires: %name-classads = %{version}-%{release}
 
 %description cream-gahp
-The condor-cream-gahp enables CREAM interoperability for Condor.
+The condor-cream-gahp enables CREAM interoperability for HTCondor.
 
 %endif #cream
+
+%package python
+Summary: Python bindings for HTCondor.
+Group: Applications/System
+Requires: %name = %version-%release
+
+%description python
+The python bindings allow one to directly invoke the C++ implementations of
+the ClassAd library and HTHTCondor from python
+
+%package bosco
+Summary: BOSCO, a HTCondor overlay system for managing jobs at remote clusters
+Url: http://bosco.opensciencegrid.org
+Group: Applications/System
+Requires: %name = %version-%release
+
+%description bosco
+BOSCO allows a locally-installed HTCondor to submit jobs to remote clusters,
+using SSH as a transit mechanism.  It is designed for cases where the remote
+cluster is using a different batch system such as PBS, SGE, LSF, or another
+HTCondor system.
+
+BOSCO provides an overlay system so the remote clusters appear to be a HTCondor
+cluster.  This allows the user to run their workflows using HTCondor tools across
+multiple clusters.
 
 
 %pre
 getent group condor >/dev/null || groupadd -r condor
 getent passwd condor >/dev/null || \
   useradd -r -g condor -d %_var/lib/condor -s /sbin/nologin \
-    -c "Owner of Condor Daemons" condor
+    -c "Owner of HTCondor Daemons" condor
 exit 0
 
 
@@ -401,6 +466,7 @@ exit 0
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
 %patch8 -p1
 %if %cream
 %patch9 -p1
@@ -424,7 +490,10 @@ popd
 
 export CMAKE_PREFIX_PATH=/usr
 
+# Since we don't package the tests and some tests require boost > 1.40, which
+# causes build issues with EL5, don't even bother building the tests.
 %cmake -DNO_PHONE_HOME:BOOL=TRUE \
+       -DBUILD_TESTING:BOOL=FALSE \
        -DHAVE_BACKFILL:BOOL=FALSE \
        -DHAVE_BOINC:BOOL=FALSE \
 %if %gsoap
@@ -441,11 +510,17 @@ export CMAKE_PREFIX_PATH=/usr
        -DWITH_ZLIB:BOOL=FALSE \
        -DWITH_POSTGRESQL:BOOL=FALSE \
        -DWANT_CONTRIB:BOOL=ON \
+%if %plumage
+       -DWITH_PLUMAGE:BOOL=TRUE \
+%else
+       -DWITH_PLUMAGE:BOOL=FALSE \
+%endif
 %if %aviary
        -DWITH_AVIARY:BOOL=TRUE \
 %else
        -DWITH_AVIARY:BOOL=FALSE \
 %endif
+       -DWANT_FULL_DEPLOYMENT:BOOL=TRUE \
 %if %qmf
        -DWITH_TRIGGERD:BOOL=TRUE \
        -DWITH_MANAGEMENT:BOOL=TRUE \
@@ -453,23 +528,32 @@ export CMAKE_PREFIX_PATH=/usr
        -DWITH_TRIGGERD:BOOL=FALSE \
        -DWITH_MANAGEMENT:BOOL=FALSE \
 %endif
-       -DWANT_FULL_DEPLOYMENT:BOOL=TRUE \
+%if %blahp
+       -DWITH_BLAHP:BOOL=TRUE \
+       -DBLAHP_FOUND=/usr/libexec/blahp/BLClient \
+%else
+       -DWITH_BLAHP:BOOL=FALSE \
+%endif
+%if %cream
+       -DWITH_CREAM:BOOL=TRUE \
+%else
+       -DWITH_CREAM:BOOL=FALSE \
+%endif
+%if %glexec
        -DWANT_GLEXEC:BOOL=TRUE \
+%else
+       -DWANT_GLEXEC:BOOL=FALSE \
+%endif
 %if %deltacloud
        -DWITH_LIBDELTACLOUD:BOOL=TRUE \
 %else
        -DWITH_LIBDELTACLOUD:BOOL=FALSE \
 %endif
        -DWITH_GLOBUS:BOOL=TRUE \
-%if %blahp
-       -DWITH_BLAHP:BOOL=TRUE \
-       -DBLAHP_FOUND=/usr/libexec/blahp/BLClient \
-%endif
-%if %cream
-       -DWITH_CREAM:BOOL=TRUE \
-%endif
+       -DWITH_PYTHON_BINDINGS:BOOL=TRUE \
 %if %cgroups
-       -DLIBCGROUP_FOUND_SEARCH_cgroup=/%{_lib}/libcgroup.so.1
+        -DWITH_LIBCGROUP:BOOL=TRUE \
+        -DLIBCGROUP_FOUND_SEARCH_cgroup=/%{_lib}/libcgroup.so.1
 %endif
 
 make %{?_smp_mflags}
@@ -504,7 +588,7 @@ mv %{buildroot}%{_datadir}/condor/lib*.so %{buildroot}%{_libdir}/
 populate %{_libdir}/condor/plugins %{buildroot}/%{_usr}/libexec/*-plugin.so
 %endif
 
-# It is proper to put Condor specific libexec binaries under libexec/condor/
+# It is proper to put HTCondor specific libexec binaries under libexec/condor/
 populate %_libexecdir/condor %{buildroot}/usr/libexec/*
 
 # man pages go under %{_mandir}
@@ -537,7 +621,7 @@ sed -e "s:^LIB\s*=.*:LIB = \$(RELEASE_DIR)/$LIB/condor:" \
   %{buildroot}/etc/examples/condor_config.generic \
   > %{buildroot}/%{_sysconfdir}/condor/condor_config
 
-# Install the basic configuration, a Personal Condor config. Allows for
+# Install the basic configuration, a Personal HTCondor config. Allows for
 # yum install condor + service condor start and go.
 mkdir -m0755 %{buildroot}/%{_sysconfdir}/condor/config.d
 cp %{buildroot}/etc/examples/condor_config.local %{buildroot}/%{_sysconfdir}/condor/config.d/00personal_condor.config
@@ -553,6 +637,14 @@ populate %_sysconfdir/condor/config.d %{buildroot}/etc/examples/61aviary.config
 mkdir -p %{buildroot}/%{_var}/lib/condor/aviary
 populate %{_var}/lib/condor/aviary %{buildroot}/usr/axis2.xml
 populate %{_var}/lib/condor/aviary %{buildroot}/usr/services/
+%endif
+
+%if %plumage
+# Install condor-plumage's base plugin configuration
+populate %_sysconfdir/condor/config.d %{buildroot}/etc/examples/62plumage.config
+rm -f %{buildroot}/%{_bindir}/ods_job_etl_tool
+rm -f %{buildroot}/%{_sbindir}/ods_job_etl_server
+mkdir -p -m0755 %{buildroot}/%{_var}/lib/condor/ViewHist
 %endif
 
 mkdir -p -m0755 %{buildroot}/%{_var}/run/condor
@@ -634,6 +726,17 @@ mkdir %{buildroot}%{_sysconfdir}/sysconfig/
 install -Dp -m 0644 %{buildroot}/etc/examples/condor.sysconfig %{buildroot}%{_sysconfdir}/sysconfig/condor
 %endif
 
+# Install perl modules
+install -m 0755 src/condor_scripts/Condor.pm %{buildroot}%{_datadir}/condor/
+install -m 0755 src/condor_scripts/CondorPersonal.pm %{buildroot}%{_datadir}/condor/
+install -m 0755 src/condor_scripts/CondorTest.pm %{buildroot}%{_datadir}/condor/
+install -m 0755 src/condor_scripts/CondorUtils.pm %{buildroot}%{_datadir}/condor/
+
+# Install python-binding libs
+mkdir -p %{buildroot}%{python_sitearch}
+install -m 0755 src/python-bindings/{classad,htcondor}.so %{buildroot}%{python_sitearch}
+install -m 0755 src/python-bindings/libpyclassad*.so %{buildroot}%{_libdir}
+
 # we must place the config examples in builddir so %doc can find them
 mv %{buildroot}/etc/examples %_builddir/%name-%tarball_version
 
@@ -710,6 +813,17 @@ rm -rf %{buildroot}%{_mandir}/man1/install_release.1*
 rm -rf %{buildroot}%{_mandir}/man1/uniq_pid_midwife.1*
 rm -rf %{buildroot}%{_mandir}/man1/uniq_pid_undertaker.1*
 
+rm -rf %{buildroot}%{_datadir}/condor/python/{htcondor,classad}.so
+rm -rf %{buildroot}%{_datadir}/condor/{libpyclassad*,htcondor,classad}.so
+
+# Install BOSCO
+mkdir -p %{buildroot}%{python_sitelib}
+mv %{buildroot}%{_libexecdir}/condor/campus_factory/python-lib/GlideinWMS %{buildroot}%{python_sitelib}
+mv %{buildroot}%{_libexecdir}/condor/campus_factory/python-lib/campus_factory %{buildroot}%{python_sitelib}
+mv %{buildroot}%{_libexecdir}/condor/campus_factory/share/condor/condor_config.factory %{buildroot}%{_sysconfdir}/condor/config.d/60-campus_factory.config
+mv %{buildroot}%{_libexecdir}/condor/campus_factory/etc/campus_factory.conf %{buildroot}%{_sysconfdir}/condor/
+mv %{buildroot}%{_libexecdir}/condor/campus_factory/share %{buildroot}%{_datadir}/condor/campus_factory
+
 %clean
 rm -rf %{buildroot}
 
@@ -759,12 +873,20 @@ rm -rf %{buildroot}
 %_libexecdir/condor/condor_ssh
 %_libexecdir/condor/sshd.sh
 %_libexecdir/condor/condor_job_router
+%if %glexec
+%_libexecdir/condor/condor_glexec_setup
+%_libexecdir/condor/condor_glexec_run
+%_libexecdir/condor/condor_glexec_job_wrapper
 %_libexecdir/condor/condor_glexec_update_proxy
+%_libexecdir/condor/condor_glexec_cleanup
+%_libexecdir/condor/condor_glexec_kill
+%endif
 %_libexecdir/condor/condor_limits_wrapper.sh
 %_libexecdir/condor/condor_rooster
 %_libexecdir/condor/condor_schedd.init
 %_libexecdir/condor/condor_ssh_to_job_shell_setup
 %_libexecdir/condor/condor_ssh_to_job_sshd_setup
+%_libexecdir/condor/condor_power_state
 %_libexecdir/condor/condor_kflops
 %_libexecdir/condor/condor_mips
 %_libexecdir/condor/data_plugin
@@ -772,13 +894,8 @@ rm -rf %{buildroot}
 %_libexecdir/condor/condor_shared_port
 %_libexecdir/condor/condor_glexec_wrapper
 %_libexecdir/condor/glexec_starter_setup.sh
-%_libexecdir/condor/condor_glexec_cleanup
-%_libexecdir/condor/condor_glexec_job_wrapper
-%_libexecdir/condor/condor_glexec_kill
-%_libexecdir/condor/condor_glexec_run
-%_libexecdir/condor/condor_glexec_setup
-%_libexecdir/condor/condor_power_state
 %_libexecdir/condor/condor_defrag
+%_libexecdir/condor/interactive.sub
 %if %include_man
 %_mandir/man1/condor_advertise.1.gz
 %_mandir/man1/condor_check_userlogs.1.gz
@@ -796,6 +913,7 @@ rm -rf %{buildroot}
 %_mandir/man1/condor_preen.1.gz
 %_mandir/man1/condor_prio.1.gz
 %_mandir/man1/condor_q.1.gz
+%_mandir/man1/condor_qsub.1.gz
 %_mandir/man1/condor_qedit.1.gz
 %_mandir/man1/condor_reconfig.1.gz
 %_mandir/man1/condor_release.1.gz
@@ -824,9 +942,16 @@ rm -rf %{buildroot}
 %_mandir/man1/condor_suspend.1.gz
 %_mandir/man1/condor_gather_info.1.gz
 %_mandir/man1/condor_router_rm.1.gz
+%_mandir/man1/condor_drain.1.gz
+%_mandir/man1/condor_install.1.gz
+%_mandir/man1/condor_ping.1.gz
+%_mandir/man1/condor_rmdir.1.gz
+%_mandir/man1/condor_tail.1.gz
+%_mandir/man1/condor_who.1.gz
 %endif
 # bin/condor is a link for checkpoint, reschedule, vacate
 %_bindir/condor_submit_dag
+%_bindir/condor_who
 %_bindir/condor_prio
 %_bindir/condor_transfer_data
 %_bindir/condor_check_userlogs
@@ -863,6 +988,9 @@ rm -rf %{buildroot}
 %_bindir/condor_drain
 %_bindir/condor_suspend
 %_bindir/condor_test_match
+%_bindir/condor_ping
+%_bindir/condor_tail
+%_bindir/condor_qsub
 # sbin/condor is a link for master_off, off, on, reconfig,
 # reconfig_schedd, restart
 %_sbindir/condor_advertise
@@ -894,6 +1022,7 @@ rm -rf %{buildroot}
 %_sbindir/gahp_server
 %_sbindir/grid_monitor.sh
 %_sbindir/nordugrid_gahp
+%_libexecdir/condor/condor_gpu_discovery
 %if %blahp
 %dir %_libexecdir/condor/glite/bin
 %_libexecdir/condor/glite/bin/nqs_cancel.sh
@@ -966,6 +1095,26 @@ rm -rf %{buildroot}
 %_var/lib/condor/aviary/services/query/aviary-query.wsdl
 %endif
 
+%if %plumage
+%files plumage
+%defattr(-,root,root,-)
+%doc LICENSE-2.0.txt NOTICE.txt
+%_sysconfdir/condor/config.d/62plumage.config
+%dir %_libdir/condor/plugins
+%_libdir/condor/plugins/PlumageCollectorPlugin-plugin.so
+%dir %_datadir/condor/plumage
+%_sbindir/plumage_job_etl_server
+%_bindir/plumage_history_load
+%_bindir/plumage_stats
+%_bindir/plumage_history
+%_datadir/condor/plumage/README
+%_datadir/condor/plumage/SCHEMA
+%_datadir/condor/plumage/plumage_accounting
+%_datadir/condor/plumage/plumage_scheduler
+%_datadir/condor/plumage/plumage_utilization
+%defattr(-,condor,condor,-)
+%endif
+
 %files kbdd
 %defattr(-,root,root,-)
 %doc LICENSE-2.0.txt NOTICE.txt
@@ -988,8 +1137,7 @@ rm -rf %{buildroot}
 %files classads
 %defattr(-,root,root,-)
 %doc LICENSE-2.0.txt NOTICE.txt
-%_libdir/libclassad.so.3
-%_libdir/libclassad.so.%{version}
+%_libdir/libclassad.so.*
 
 %files classads-devel
 %defattr(-,root,root,-)
@@ -1004,6 +1152,7 @@ rm -rf %{buildroot}
 %_includedir/classad/classadErrno.h
 %_includedir/classad/classad.h
 %_includedir/classad/classadItor.h
+%_includedir/classad/classadCache.h
 %_includedir/classad/classad_stl.h
 %_includedir/classad/collectionBase.h
 %_includedir/classad/collection.h
@@ -1034,6 +1183,46 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 %_sbindir/cream_gahp
 %endif # cream
+
+%files python
+%defattr(-,root,root,-)
+%_libdir/libpyclassad*.so
+%{python_sitearch}/classad.so
+%{python_sitearch}/htcondor.so
+
+%files bosco
+%defattr(-,root,root,-)
+%config(noreplace) %_sysconfdir/condor/campus_factory.conf
+%config(noreplace) %_sysconfdir/condor/config.d/60-campus_factory.config
+%_libexecdir/condor/shellselector
+%_libexecdir/condor/campus_factory
+%_sbindir/bosco_install
+%_sbindir/campus_factory
+%_sbindir/condor_ft-gahp
+%_sbindir/runfactory
+%_bindir/bosco_quickstart
+%_bindir/bosco_ssh_start
+%_bindir/bosco_cluster
+%_bindir/bosco_start
+%_bindir/bosco_stop
+%_bindir/bosco_findplatform
+%_bindir/bosco_uninstall
+%_bindir/htsub
+%_sbindir/glidein_creation
+%_datadir/condor/campus_factory
+%{python_sitelib}/GlideinWMS
+%{python_sitelib}/campus_factory
+
+%if %include_man
+%_mandir/man1/bosco_cluster.1.gz
+%_mandir/man1/bosco_findplatform.1.gz
+%_mandir/man1/bosco_install.1.gz
+%_mandir/man1/bosco_start.1.gz
+%_mandir/man1/bosco_stop.1.gz
+%_mandir/man1/bosco_uninstall.1.gz
+%_mandir/man1/bosco_ssh_start.1.gz
+%endif
+
 
 %if %systemd
 %post
@@ -1082,9 +1271,49 @@ fi
 %endif
 
 %changelog
-* Mon Jun 17 2013 Carl Edquist <edquist@cs.wisc.edu> - 7.8.8-4
-- Remove service restart for upgrades (#SOFTWARE-850)
-- Use MASTER_NEW_BINARY_RESTART=PEACEFUL
+* Thu Oct 24 2013 Brian Lin <blin@cs.wisc.edu> - 8.0.4-2
+- Build against glite-ce-cream-client-api-c-1.14.0-4.8.osg
+
+* Thu Oct 24 2013 Brian Lin <blin@cs.wisc.edu> - 8.0.4-1
+- New version
+
+* Thu Sep 10 2013 Brian Lin <blin@cs.wisc.edu> - 8.0.3-1
+- New version
+
+* Mon Aug 26 2013 Brian Lin <blin@cs.wisc.edu> - 8.0.2-1
+- New version
+- Fix missing libpyclassad shared object
+
+* Wed Jun 12 2013 Brian Lin <blin@cs.wisc.edu> - 8.0.0-2
+- Init script improvements
+- Condor now restarts peacefully after an upgrade
+
+* Wed Jun 12 2013 Brian Lin <blin@cs.wisc.edu> - 8.0.0-1
+- New version
+
+* Tue Jun 07 2013 Brian Lin <blin@cs.wisc.edu> - 7.9.6-8
+- Remove glexec runtime dependency
+
+* Tue May 28 2013 Brian Lin <blin@cs.wisc.edu> - 7.9.6-7
+- Mark /usr/share/osg/sysconfig/condor as non-config file
+
+* Thu May 23 2013 Brian Lin <blin@cs.wisc.edu> - 7.9.6-6
+- Rebuild against fixed glite-ce-cream-client-api-c
+
+* Wed May 22 2013 Brian Lin <blin@cs.wisc.edu> - 7.9.6-5
+- Enable plumage for x86{,_64}
+
+* Wed May 22 2013 Brian Lin <blin@cs.wisc.edu> - 7.9.6-4
+- Enable cgroups for EL6
+
+* Tue May 21 2013 Brian Lin <blin@cs.wisc.edu> - 7.9.6-3
+- Building with blahp/cream
+
+* Tue May 21 2013 Brian Lin <blin@cs.wisc.edu> - 7.9.6-2
+- Build without blahp/cream
+
+* Tue May 21 2013 Brian Lin <blin@cs.wisc.edu> - 7.9.6-1
+- New version
 
 * Mon Jun 10 2013 Brian Lin <blin@cs.wisc.edu> - 7.8.8-2
 - Init script improvements

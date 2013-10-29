@@ -1,93 +1,15 @@
-Index: condor-7.8.1/externals/bundles/cream/1.12.1_14/CMakeLists.txt
-===================================================================
---- condor-7.8.1.orig/externals/bundles/cream/1.12.1_14/CMakeLists.txt	2012-06-08 17:07:34.000000003 -0500
-+++ condor-7.8.1/externals/bundles/cream/1.12.1_14/CMakeLists.txt	2012-07-16 14:19:04.000000003 -0500
-@@ -16,12 +16,14 @@
-  # 
-  ############################################################### 
+diff --git a/externals/bundles/cream/1.12.1_14/CMakeLists.txt b/externals/bundles/cream/1.12.1_14/CMakeLists.txt
+index abff0a9..2cddbc1 100644
+--- a/externals/bundles/cream/1.12.1_14/CMakeLists.txt
++++ b/externals/bundles/cream/1.12.1_14/CMakeLists.txt
+@@ -257,8 +257,8 @@ else( NOT PROPER )
  
--if (NOT PROPER AND LINUX) #OR DARWIN
-+if (LINUX)
-   option( WITH_CREAM "Compiling with support for CREAM" ON )
--endif()
-+endif(LINUX)
-   
- if ( WITH_CREAM )
+         if ( ${SYSTEM_NAME} MATCHES "rhel6" OR ${SYSTEM_NAME} MATCHES "centos6" OR ${SYSTEM_NAME} MATCHES "sl6")
+-            find_multiple("glite_ce_cream_client_soap;glite_ce_cream_client_util;glite_security_gsoap_plugin_2716_cxx;glite_security_gss;gridsite" CREAM_FOUND )
++            find_multiple("glite_ce_cream_client_soap;glite_ce_cream_client_util;glite_security_gsoap_plugin_2716_cxx;glite_security_gss;log4cpp;gridsite;boost_thread;boost_regex" CREAM_FOUND )
+         else()
+-            find_multiple("glite_ce_cream_client_soap;glite_ce_cream_client_util;glite_security_gsoap_plugin_2713_cxx;glite_security_gss;gridsite" CREAM_FOUND )
++            find_multiple("glite_ce_cream_client_soap;glite_ce_cream_client_util;glite_security_gsoap_plugin_2713_cxx;glite_security_gss;log4cpp;gridsite;boost_thread;boost_regex" CREAM_FOUND )
+         endif()
  
-+if ( NOT PROPER )
-+
- 	if ( ${SYSTEM_NAME} MATCHES "rhel3" )
- 		set( KERBEROS_INCLUDE_FLAG -I/usr/kerberos/include )
- 	else()
-@@ -240,8 +242,30 @@
- 
- 		condor_post_external( cream include OFF )
- 
--		message (STATUS "external configured (CREAM_FOUND=${CREAM_FOUND})")
-+else( NOT PROPER )
-+
-+	if ( ${SYSTEM_NAME} MATCHES "rhel6" OR ${SYSTEM_NAME} MATCHES "centos6")
-+		find_multiple(
-+"glite_ce_cream_client_soap;glite_ce_cream_client_util;glite_security_gsoap_plugin_2716_cxx;glite_security_gss;log4cpp;gridsite;boost_thread;boost_regex"
-+CREAM_FOUND )
-+	else()
-+		find_multiple(
-+"glite_ce_cream_client_soap;glite_ce_cream_client_util;glite_security_gsoap_plugin_2713_cxx;glite_security_gss;log4cpp;gridsite;boost_thread;boost_regex"
-+CREAM_FOUND )
-+	endif()
- 
--else()
-+endif( NOT PROPER )
-+
-+else(WITH_CREAM)
- 	message (STATUS "external skipped (cream)")
--endif()
-+endif(WITH_CREAM)
-+
-+if (CREAM_FOUND)
-+        set( CREAM_FOUND ${CREAM_FOUND} PARENT_SCOPE )
-+        set( HAVE_EXT_CREAM ON PARENT_SCOPE )
-+        message ( STATUS "external configured
-+(CREAM_FOUND=${CREAM_FOUND})" )
-+else(CREAM_FOUND)
-+        message (STATUS "external skipped (cream)")
-+endif(CREAM_FOUND)
-+
-Index: condor-7.8.1/src/cream_gahp/CMakeLists.txt
-===================================================================
---- condor-7.8.1.orig/src/cream_gahp/CMakeLists.txt	2012-06-08 17:07:34.000000003 -0500
-+++ condor-7.8.1/src/cream_gahp/CMakeLists.txt	2012-07-16 14:18:03.000000003 -0500
-@@ -33,6 +33,19 @@
- 		OFF )
- else()
- 
-+if ( HAVE_EXT_CREAM )
-+
-+        add_definitions(-D_REENTRANT)
-+        condor_exe( cream_gahp
-+                "cream_gahp_server.cpp"
-+                ${C_SBIN}
-+                "${CREAM_FOUND};${OPENSSL_FOUND};${EXPAT_FOUND};${GLOBUS_THR_FOUND};${VOMS_FOUND};${CLASSADS_FOUND};${PCRE_FOUND}"
-+                OFF )
-+
-+else ( HAVE_EXT_CREAM )
-+
- 	message(STATUS "NOTE: *cream* targets will not be built HAVE_EXT_CREAM=${HAVE_EXT_CREAM}")
- 
-+endif ( HAVE_EXT_CREAM )
-+
- endif()
-Index: condor-7.8.1/src/cream_gahp/cream_gahp_server.cpp
-===================================================================
---- condor-7.8.1.orig/src/cream_gahp/cream_gahp_server.cpp	2012-06-08 17:07:34.000000003 -0500
-+++ condor-7.8.1/src/cream_gahp/cream_gahp_server.cpp	2012-07-16 14:18:03.000000003 -0500
-@@ -37,6 +37,9 @@
- using namespace std;
- using namespace glite::ce::cream_client_api::soap_proxy;
- 
-+// This symbol is necessary to prevent errors when dynamically linking
-+SOAP_NMAC struct Namespace namespaces[] = { { NULL, NULL } };
-+
- #define USE_QUICKLOG 0
- 
- #if USE_QUICKLOG
+         if (CREAM_FOUND)

@@ -74,8 +74,7 @@
  
  ## If the local config file is not present, is it an error?
  ## WARNING: This is a potential security issue. 
-@@ -409,7 +432,22 @@
- ##  condor account, it's probably condor.  Otherwise, it's whatever
+@@ -410,5 +432,20 @@
  ##  you've set in the CONDOR_IDS environment variable.  See the Admin
  ##  manual for details on this.
 -LOCK		= $(LOG)
@@ -97,7 +96,6 @@
 +LOCAL_DISK_LOCK_DIR = $(LOCK)/local
  
  ##  If you don't use a fully qualified name in your /etc/hosts file
- ##  (or NIS, etc.) for either your official hostname or as an alias,
 @@ -454,7 +492,8 @@
  ##  the execute machine and just make sure the two strings match.  The
  ##  default for this setting is False, since it is more secure this
@@ -241,7 +239,7 @@
  
  ##  JAVA_CLASSPATH_ARGUMENT describes the command-line parameter
  ##  used to introduce a new classpath:
-@@ -2438,7 +2496,7 @@
+@@ -2378,7 +2496,7 @@
  #SSH_TO_JOB_SSHD_ARGS = "-i -e -f %f"
  
  # sshd configuration template used by condor_ssh_to_job_sshd_setup.

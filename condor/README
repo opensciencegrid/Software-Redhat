@@ -1,6 +1,6 @@
 GENERAL INFORMATION
 
-This Condor is used built by the spec file adapted from fedora's system:
+This HTCondor is used built by the spec file adapted from fedora's system:
 http://pkgs.fedoraproject.org/gitweb/?p=condor.git
 
 This was repackaged from Fedora because fedora split out the condor_procd, which
@@ -11,8 +11,8 @@ Further, since it is from Fedora, we can follow fedora's packaging and updates.
 
 CREATING THE UPSTREAM SOURCE TARBALL
 
-We create the upstream source tarball for a Condor release directly from the
-CHTC git repository.  The following process was tested with Condor 7.6.5:
+We create the upstream source tarball for a HTCondor release directly from the
+CHTC git repository.  The following process was tested with HTCondor 7.6.5:
 
 1. Create and change to a temporary working directory
 
@@ -24,11 +24,11 @@ CHTC git repository.  The following process was tested with Condor 7.6.5:
 
 4. Tell git to create a source tarball for a tagged release:
 
-   git archive --prefix=condor-[VERSION]/ [GIT-TAG] | gzip -9 > [PATH]/condor-7.6.5.tar.gz
+   git archive --prefix=condor-[VERSION]/ [GIT-TAG] | gzip -9 > [PATH]/condor-[VERSION].tar.gz
 
    Where:
 
-   - [VERSION] is the dotted form of the Condor release; e.g., "7.6.5"
+   - [VERSION] is the dotted form of the HTCondor release; e.g., "7.6.5"
    - [GIT-TAG] is the git tag for the release; e.g., "V7_6_5"
    - [PATH] is the path to where you want to write the source tarball
 
