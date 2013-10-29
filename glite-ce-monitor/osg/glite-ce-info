@@ -1,3 +1,0 @@
-#!/bin/sh
-
-/usr/libexec/gip/osg-info-wrapper 2>> /var/log/glite-ce-monitor/glite-ce-info.log
