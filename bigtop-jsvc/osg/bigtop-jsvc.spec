@@ -14,7 +14,7 @@
 # limitations under the License.
 %define man_dir %{_mandir}
 %define bigtop_jsvc_version 0.3.0
-%define bigtop_jsvc_release 1%{?dist}
+%define bigtop_jsvc_release 1.1%{?dist}
 %define bigtop_jsvc_base_version 1.0.10
 
 %if  %{?suse_version:1}0
@@ -37,6 +37,8 @@ Source0: commons-daemon-%{bigtop_jsvc_base_version}.tar.gz
 Source1: do-component-build
 Source2: install_jsvc.sh
 BuildRequires: ant, autoconf, automake, gcc
+BuildRequires: java7-devel
+BuildRequires: jpackage-utils
 Provides: jsvc
 
 %description 
@@ -67,5 +69,7 @@ sh %{SOURCE2} \
 
 
 %changelog
+* Mon May 20 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 0.3.0-1.1
+- Rebuild with Java 7
 
 
