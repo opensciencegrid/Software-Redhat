@@ -5,7 +5,7 @@
 Name:           maven%{majmin}
 Epoch:          0
 Version:        2.2.1
-Release:        23.4.0%{?dist}
+Release:        23.4.1%{?dist}
 Summary:        Java project management and project comprehension tool
 Group:          Development/Build Tools
 License:        ASL 2.0 and MIT and BSD
@@ -65,7 +65,8 @@ Patch6:         maven2-RELEASE.patch
 Provides:       maven2 = %{epoch}:%{version}-%{release}
 %endif
 
-BuildRequires:  java-devel >= 1.6.0
+BuildRequires:  java7-devel
+BuildRequires:  jpackage-utils
 BuildRequires:  classworlds
 BuildRequires:  jdom
 
@@ -619,6 +620,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc
 
 %changelog
+* Wed Apr 03 2013 Carl Edquist <edquist@cs.wisc.edu> - 2.2.1-23.4.1.osg
+- Build with OpenJDK7
+
 * Tue Jun 12 2012 Matyas Selmeci <matyas@cs.wisc.edu> 2.2.1-23.4.0.osg
 - Rebuild for osg on el5 and el6; build as bootstrap
 
