@@ -1,7 +1,7 @@
 %define zookeeper_version 3.4.3+15 
 %define zookeeper_patched_version 3.4.3-cdh4.0.1 
 %define zookeeper_base_version 3.4.3 
-%define zookeeper_release 1.cdh4.0.1.p0.1%{?dist}
+%define zookeeper_release 1.cdh4.0.1.p0.2%{?dist}
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
@@ -83,12 +83,18 @@ BuildRequires: ant, autoconf, automake
 
 #ADDED BY OSG
 BuildRequires: maven3
+BuildRequires: java7-devel
+BuildRequires: jpackage-utils
+BuildRequires: /usr/lib/java-1.7.0
 Patch0: mvn304.patch
 
 Requires(pre): coreutils, shadow-utils, /usr/sbin/groupadd, /usr/sbin/useradd
 Requires(post): %{alternatives_dep}
 Requires(preun): %{alternatives_dep}
 Requires: bigtop-utils
+Requires: java7
+Requires: jpackage-utils
+Requires: /usr/lib/java-1.7.0
 Conflicts: hadoop-zookeeper
 
 %description 
@@ -209,3 +215,8 @@ fi
 %{bin_zookeeper}/zookeeper-server-cleanup
 %doc %{doc_zookeeper}
 %{man_dir}/man1/zookeeper.1.*
+
+%changelog
+* Thu May 16 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 3.4.3+15-1.cdh4.0.1.p0.2
+- Rebuild with java 7 / changed dependencies to java 7
+
