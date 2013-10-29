@@ -1,8 +1,0 @@
-
-This package is almost a pass-through of the java-1.6.0-sun-compat in
-the SL repo (originally JPackage repo).  The only differences are the
-use of the -29 JDK instead of -24 and building for the i386 arch.
-
-We pass it through because it is not present in RHEL 5 or CentOS 5,
-only in SL5, but we want to ensure we always have it.
-
