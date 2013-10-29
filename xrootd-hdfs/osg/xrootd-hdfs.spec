@@ -1,7 +1,7 @@
 
 Name: xrootd-hdfs
 Version: 1.8.3
-Release: 8%{?dist}
+Release: 12%{?dist}
 Summary: HDFS plugin for xrootd
 
 Group: System Environment/Development
@@ -9,16 +9,21 @@ License: BSD
 URL: https://github.com/bbockelm/xrootd-hdfs
 # Generated from:
 # git-archive master | gzip -7 > ~/rpmbuild/SOURCES/xrootd-hdfs.tar.gz
-Source0: %{name}.tar.gz
+Source0: xrootd-hdfs.tar.gz
+Source1: xrootd-hdfs.sysconfig
+Patch0: loadjvm-segfault.patch
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildRequires: xrootd-devel >= 1:3.3.1
 BuildRequires: xrootd-server-devel >= 1:3.3.1
 BuildRequires: cmake
-BuildRequires: hadoop-0.20-libhdfs >= 0.20.2+737-4
+BuildRequires: hadoop-libhdfs >= 2.0.0+545-1.cdh4.1.1
 BuildRequires: java7-devel
 BuildRequires: jpackage-utils
 Requires: xrootd-libs >= 1:3.3.1
+Requires: hadoop-client >= 2.0.0+545-1.cdh4.1.1
+# ^ was getting Input/output errors without this
 Conflicts: xrootd < 3.0.3-1
+
 
 %package devel
 Summary: Development headers for Xrootd HDFS plugin
@@ -32,6 +37,7 @@ Group: System Environment/Development
 
 %prep
 %setup -q -c -n %{name}-%{version}
+%patch0 -p1
 
 %build
 %cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo .
@@ -45,7 +51,7 @@ mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/xrootd
 sed -e "s#@LIBDIR@#%{_libdir}#" spec/xrootd.sample.hdfs.cfg.in > $RPM_BUILD_ROOT%{_sysconfdir}/xrootd/xrootd.sample.hdfs.cfg
 
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig
-install -m 0644 spec/xrootd-hdfs.sysconfig $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/xrootd-hdfs
+install -m 0644 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/xrootd-hdfs
 
 mkdir -p $RPM_BUILD_ROOT%{_libexecdir}/xrootd-hdfs
 install -m 0755 $RPM_BUILD_ROOT%{_bindir}/xrootd_hdfs_envcheck $RPM_BUILD_ROOT%{_libexecdir}/xrootd-hdfs
@@ -71,6 +77,18 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/XrdHdfs.hh
 
 %changelog
+* Mon Jun 03 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.8.3-12
+- Change to sysconfig file to handle symlinked $JAVA_HOME properly on el5
+
+* Fri May 31 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.8.3-11
+- Add hadoop-client dependency
+
+* Tue May 28 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.8.3-10
+- Fix segfault when LD_LIBRARY_PATH exists but is empty
+
+* Thu May 23 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.8.3-9
+- Rebuild for hadoop 2.0; add sysconfig file
+
 * Thu Apr 18 2013 Carl Edquist <edquist@cs.wisc.edu> - 1.8.3-8
 - Merge in xrootd 3.3.1 reqs
 

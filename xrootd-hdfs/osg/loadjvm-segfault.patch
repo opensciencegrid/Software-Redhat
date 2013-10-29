@@ -1,0 +1,12 @@
+Index: xrootd-hdfs-1.8.3/src/XrdHdfsBootstrap.cc
+===================================================================
+--- xrootd-hdfs-1.8.3.orig/src/XrdHdfsBootstrap.cc	2013-05-28 16:21:30.000000002 -0500
++++ xrootd-hdfs-1.8.3/src/XrdHdfsBootstrap.cc	2013-05-28 16:22:24.000000002 -0500
+@@ -51,6 +51,7 @@
+          if (dlopen(buf, RTLD_GLOBAL|RTLD_LAZY)) return 0;
+       }
+ 
++      if (!next) break;
+       path = next+1;
+       if (*path == '\0') break;
+       next = strchr(path, ':');
