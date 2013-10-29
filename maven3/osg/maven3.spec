@@ -1,7 +1,7 @@
 
 Name:           maven3
 Version:        3.0.4
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -21,8 +21,10 @@ BuildArch:      noarch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  ant >= 1.5
-BuildRequires:       java >= 1:1.6.0
-Requires:       java >= 1:1.6.0
+BuildRequires:  java7-devel
+BuildRequires:  jpackage-utils
+Requires:       java7
+Requires:       jpackage-utils
 
 # I am not sure it needs all this crap
 #Requires:       apache-commons-cli
@@ -105,6 +107,9 @@ popd
 
 
 %changelog
+* Wed Apr 03 2013 Carl Edquist <edquist@cs.wisc.edu> - 3.0.4-2
+- Build with OpenJDK7
+
 * Fri Jul 6 2012 Doug Strain <dstrain@fnal.gov> - 3.0.4-1
 - Created bootstrap rpm based off of some fedora srpms
 
