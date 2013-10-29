@@ -50,7 +50,7 @@ Version: %{tarball_version}
 %define condor_release %condor_base_release
 %endif
 # Release: %condor_release%{?dist}.2
-Release: 5%{?dist}
+Release: 4%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -498,7 +498,6 @@ populate %{_datadir}/condor %{buildroot}/%{_usr}/lib/*
 # Except for the shared libs
 populate %{_libdir}/ %{buildroot}/%{_datadir}/condor/libclassad.so*
 rm -f %{buildroot}/%{_datadir}/condor/libclassad.a
-rm -rf %{buildroot}%{_datadir}/condor/libchirp_client.so
 mv %{buildroot}%{_datadir}/condor/lib*.so %{buildroot}%{_libdir}/
 
 %if %aviary || %qmf
@@ -751,6 +750,7 @@ rm -rf %{buildroot}
 %_datadir/condor/webservice/condorCollector.wsdl
 %_datadir/condor/webservice/condorSchedd.wsdl
 %endif
+%_libdir/libchirp_client.so
 %_libdir/libcondor_utils_%{version_}.so
 %_libdir/libcondorapi.so
 %dir %_libexecdir/condor/
@@ -1082,9 +1082,6 @@ fi
 %endif
 
 %changelog
-* Mon Oct 28 2013 Brian Lin <blin@cs.wisc.edu> - 7.8.8-5
-- Remove libchirp_client.so since it conflicts with cctools
-
 * Mon Jun 17 2013 Carl Edquist <edquist@cs.wisc.edu> - 7.8.8-4
 - Remove service restart for upgrades (#SOFTWARE-850)
 - Use MASTER_NEW_BINARY_RESTART=PEACEFUL

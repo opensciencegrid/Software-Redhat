@@ -13,9 +13,7 @@ Group: System Environment/Daemons
 
 Source0: %{name}-%{version}-source.tar.gz
 BuildRoot:  %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildRequires: cvmfs-devel
-BuildRequires: xrootd-devel
-BuildRequires: fuse-devel
+BuildRequires: cvmfs-devel xrootd-devel fuse-devel
 BuildRequires: openssl-devel
 BuildRequires: zlib-devel
 BuildRequires: python-devel >= 2.4
