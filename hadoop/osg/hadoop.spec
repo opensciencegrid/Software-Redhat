@@ -1,7 +1,7 @@
-%define hadoop_version 2.0.0+545 
-%define hadoop_patched_version 2.0.0-cdh4.1.1 
-%define hadoop_base_version 2.0.0 
-%define hadoop_release 1.cdh4.1.1.p0.14%{?dist}
+%define hadoop_version 2.0.0+545
+%define hadoop_patched_version 2.0.0-cdh4.1.1
+%define hadoop_base_version 2.0.0
+%define hadoop_release 1.cdh4.1.1.p0.18%{?dist}
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
@@ -156,7 +156,7 @@ Source7: hadoop-fuse-dfs.1
 Source8: hdfs.conf
 Source9: yarn.conf
 Source10: mapreduce.conf
-Source11: init.d.tmpl 
+Source11: init.d.tmpl
 Source12: hadoop-hdfs-namenode.svc
 Source13: hadoop-hdfs-datanode.svc
 Source14: hadoop-hdfs-secondarynamenode.svc
@@ -172,24 +172,26 @@ Source23: hadoop-hdfs-zkfc.svc
 Source24: hadoop-hdfs-journalnode.svc
 Source25: %{name}-bigtop-packaging.tar.gz
 Source26: hadoop-fuse.te
+
 Patch0: mvn304.patch
 Patch1: javafuse.patch
 Patch2: libhdfs-soversion.patch
 Patch3: libhdfs-soversion-install.patch
 Patch4: fix_chown.patch
+Patch5: pom.xml.patch
 
 Buildroot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id} -u -n)
 BuildRequires: python >= 2.4, git, fuse-devel,fuse, automake, autoconf,maven3,protobuf-compiler, cmake
-# not sure if I need this
-BuildRequires: java-devel
+BuildRequires: java7-devel
+BuildRequires: jpackage-utils
+BuildRequires: /usr/lib/java-1.7.0
+
 Requires: coreutils, /usr/sbin/useradd, /usr/sbin/usermod, /sbin/chkconfig, /sbin/service, bigtop-utils, zookeeper >= 3.4.0
 Requires: psmisc, %{netcat_package}
-Requires: java
+Requires: java7
+Requires: jpackage-utils
+Requires: /usr/lib/java-1.7.0
 Conflicts: hadoop-0.20
-# Sadly, Sun/Oracle JDK in RPM form doesn't provide libjvm.so, which means we have
-# to set AutoReq to no in order to minimize confusion. Not ideal, but seems to work.
-# I wish there was a way to disable just one auto dependency (libjvm.so)
-AutoReq: no
 Provides: hadoop
 Obsoletes: hadoop-0.20 <= 0.20.2+737
 
@@ -438,6 +440,7 @@ Requires: %{name} = %{version}-%{release}
 Requires: %{name}-libhdfs = %{version}-%{release}
 Requires: %{name}-client = %{version}-%{release}
 Requires: fuse
+Requires: java7-devel
 Obsoletes: hadoop-0.20-osg <= 0.20.2+737
 Obsoletes: hadoop-0.20-fuse <= 0.20.2+737
 AutoReq: no
@@ -481,6 +484,7 @@ pushd `dirname %{SOURCE25}`
 popd
 %patch2 -p0
 %patch4 -p0
+%patch5 -p0
 
 %build
 # This assumes that you installed Java JDK 6 and set JAVA_HOME
@@ -499,6 +503,8 @@ do
 done
 popd
 
+
+export JAVA_HOME=%{java_home}
 env FULL_VERSION=%{hadoop_patched_version} HADOOP_VERSION=%{hadoop_version} HADOOP_ARCH=%{hadoop_arch} bash %{SOURCE1}
 
 
@@ -611,7 +617,7 @@ getent group hadoop >/dev/null || groupadd -r hadoop
 
 %pre hdfs
 getent group hdfs >/dev/null   || groupadd -r hdfs
-getent passwd hdfs >/dev/null || /usr/sbin/useradd --comment "Hadoop HDFS" --shell /bin/bash -M -r -g hdfs -G hadoop --home %{state_hdfs} hdfs
+getent passwd hdfs >/dev/null || /usr/sbin/useradd --comment "Hadoop HDFS" --shell /bin/bash -M -r -g hdfs --home %{state_hdfs} hdfs
  alternatives --remove hadoop-default /usr/bin/hadoop-0.20 || true
  alternatives --remove hadoop-0.20-conf /etc/hadoop-0.20/conf.empty || true
  alternatives --remove hadoop-0.20-conf /etc/hadoop-0.20/conf.osg || true
@@ -626,9 +632,9 @@ getent passwd hdfs >/dev/null || /usr/sbin/useradd --comment "Hadoop HDFS" --she
  alternatives --remove hadoop-0.20-conf /etc/hadoop-0.20/conf.empty || true
  alternatives --remove hadoop-0.20-conf /etc/hadoop-0.20/conf.osg || true
 
-%pre httpfs 
+%pre httpfs
 getent group httpfs >/dev/null   || groupadd -r httpfs
-getent passwd httpfs >/dev/null || /usr/sbin/useradd --comment "Hadoop HTTPFS" --shell /bin/bash -M -r -g httpfs -G httpfs --home %{run_httpfs} httpfs
+getent passwd httpfs >/dev/null || /usr/sbin/useradd --comment "Hadoop HTTPFS" --shell /bin/bash -M -r -g httpfs --home %{run_httpfs} httpfs
 
 #%pre yarn
 #getent group yarn >/dev/null   || groupadd -r yarn
@@ -641,9 +647,17 @@ getent passwd httpfs >/dev/null || /usr/sbin/useradd --comment "Hadoop HTTPFS" -
 %post
 %{alternatives_cmd} --install %{config_hadoop} %{name}-conf %{etc_hadoop}/conf.empty 10
 
+# Add "httpfs" user to the "hadoop" group. This is in %%post because it needs to
+# be done after the "hadoop" group is created, i.e. after "hadoop"'s %%pre.
 %post httpfs
+getent group hadoop >/dev/null && /usr/sbin/usermod -G hadoop httpfs || true
 %{alternatives_cmd} --install %{config_httpfs} %{name}-httpfs-conf %{etc_httpfs}/conf.empty 10
 chkconfig --add %{name}-httpfs
+
+# Add "hdfs" user to the "hadoop" group. This is in %%post because it needs to
+# be done after the "hadoop" group is created, i.e. after "hadoop"'s %%pre.
+%post hdfs
+getent group hadoop >/dev/null && /usr/sbin/usermod -G hadoop hdfs || true
 
 %preun
 if [ "$1" = 0 ]; then
@@ -671,15 +685,21 @@ fi
 /sbin/ldconfig
 # Force symlinks to be created if they are not
 #   Otherwise shared linking can be broken from hadoop-0.20 to hadoop 2.0.0
-ln -s %{_libdir}/libhdfs.so.0.0.0 %{_libdir}/libhdfs.so.0.0 || true
-ln -s %{_libdir}/libhdfs.so.0.0.0 %{_libdir}/libhdfs.so.0 || true
+if [ $1 -gt 0 ]; then
+    for link in %{_libdir}/libhdfs.so.0 %{_libdir}/libhdfs.so.0.0; do
+        [[ ! -e $link ]] && ln -s %{_libdir}/libhdfs.so.0.0.0 $link || :
+    done
+fi
+
 
 %postun libhdfs
 /sbin/ldconfig
-# Now delete symlinks
-rm -f %{_libdir}/libhdfs.so.0 || true
-rm -f %{_libdir}/libhdfs.so.0.0 || true
-
+if [ $1 -eq 0 ]; then
+    # Now delete symlinks
+    for link in %{_libdir}/libhdfs.so.0 %{_libdir}/libhdfs.so.0.0; do
+        [[ -L $link ]] && rm -f $link || :
+    done
+fi
 
 
 %post hdfs-fuse-selinux
@@ -849,6 +869,20 @@ fi
 
 
 %changelog
+* Thu May 23 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.0+545-1.cdh4.1.1.p0.18
+- Fix creation of hdfs user in pre script
+- Fix creation of httpfs user in pre script
+
+* Tue May 21 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.0+545-1.cdh4.1.1.p0.17
+- Fix libhdfs postun script to not remove symlinks on upgrades
+- Turn AutoReq back on
+
+* Mon May 20 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.0+545-1.cdh4.1.1.p0.16
+- Add java7-devel dependency to hdfs-fuse subpackage -- needed for libjvm.so
+
+* Thu May 16 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.0+545-1.cdh4.1.1.p0.15
+- Rebuild with java7
+
 * Fri Dec 28 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 2.0.0+545-1.cdh4.1.1.p0.14
 - Fix chown implementation in FUSE.
 
