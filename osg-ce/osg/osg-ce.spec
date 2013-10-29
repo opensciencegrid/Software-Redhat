@@ -1,7 +1,7 @@
 Name:      osg-ce
 Summary:   OSG Compute Element 
 Version:   3.0.0
-Release:   34%{?dist}
+Release:   35%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -13,7 +13,6 @@ Requires: grid-certificates
 Requires: globus-gridftp-server-progs 
 Requires: osg-client
 Requires: lfc-client
-Requires: glite-ce-monitor
 Requires: osg-info-services
 Requires: osg-vo-map
 Requires: vo-client
@@ -23,7 +22,6 @@ Requires: globus-gram-job-manager
 Requires: globus-gram-job-manager-fork
 Requires: globus-gram-job-manager-fork-setup-poll
 Requires: gip
-Requires: osg-info-services
 Requires: gums-client
 Requires: edg-mkgridmap
 Requires: gratia-probe-gram
@@ -120,6 +118,9 @@ rm -rf $RPM_BUILD_ROOT
 %files sge
 
 %changelog
+* Thu Oct 17 2013 Brian Lin <blin@cs.wisc.edu> - 3.0.0-35
+- Remove glite-ce-monitor dependency
+
 * Thu Sep 05 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 3.0.0-34
 - Re-add dependency on frontier-squid, which somehow got lost in the merge
 
