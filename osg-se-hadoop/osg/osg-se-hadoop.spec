@@ -1,7 +1,7 @@
 Name:           osg-se-hadoop
 Summary:        OSG Hadoop Storage Element package for RPM distribution
 Version:        3.0.0
-Release:        9%{?dist}
+Release:        10%{?dist}
 License:        GPL
 Group:          System Environment/Daemons
 URL:            https://twiki.grid.iu.edu/twiki/bin/view/Storage/WebHome
@@ -28,7 +28,6 @@ Requires: hadoop-hdfs-namenode
 Requires: gratia-probe-hadoop-storage
 Requires: osg-version
 Requires: osg-system-profiler
-Requires: java-1.6.0-sun-compat
 %description namenode
 This is the Hadoop namenode that stores directory and file system information
 for a Hadoop Storage Element.
@@ -40,7 +39,6 @@ Group: System Environment/Libraries
 Requires: hadoop-hdfs-datanode
 Requires: osg-version
 Requires: osg-system-profiler
-Requires: java-1.6.0-sun-compat
 %description datanode
 This is the Hadoop datanode that stores file data for a Hadoop Storage Element.
 
@@ -50,7 +48,6 @@ Group: System Environment/Libraries
 Requires: hadoop-hdfs-fuse
 Requires: osg-version
 Requires: osg-system-profiler
-Requires: java-1.6.0-sun-compat
 %description client
 This is the Hadoop client that has client binaries and fuse mount.
 
@@ -61,7 +58,6 @@ Requires: %{name}-client = %{version}-%{release}
 Requires: hadoop-hdfs-fuse
 Requires: osg-version
 Requires: osg-system-profiler
-Requires: java-1.6.0-sun-compat
 Requires: edg-mkgridmap
 %if 0%{?rhel} < 6
 Requires: fetch-crl3
@@ -89,7 +85,6 @@ Group: System Environment/Libraries
 Requires: grid-certificates
 Requires: osg-version
 Requires: osg-system-profiler
-Requires: java-1.6.0-sun-compat
 Requires: edg-mkgridmap
 %if 0%{?rhel} < 6
 Requires: fetch-crl3
@@ -134,6 +129,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/hadoop/conf.osg/
 
 %changelog
+* Thu Apr 04 2013 Brian Lin <blin@cs.wisc.edu> - 3.0.0-10
+- Remove java dependency.
+
 * Mon Feb 25 2013 Brian Lin <blin@cs.wisc.edu> - 3.0.0-9
 - Update -srm subpackage so that rhel5 requires fetch-crl3 instead of fetch-crl
 
