@@ -3,7 +3,7 @@
 Name:		buildsys-macros
 Summary:	Macros for the OSG Buildsystem
 Version:        7
-Release:	4%{?dist}
+Release:	5%{?dist}
 License:	GPL
 Group:		Development/Buildsystem
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -48,6 +48,9 @@ rm -rf $RPM_BUILD_ROOT
 /etc/rpm/macros.checkbuild
 
 %changelog
+* Wed Oct 30 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 7-5
+- Bump to rebuild with buildsys-macros 7-4
+
 * Wed Oct 30 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 7-4
 - Create upcoming version of buildsys-macros
 
