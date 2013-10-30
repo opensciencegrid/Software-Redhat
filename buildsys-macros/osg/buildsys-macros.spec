@@ -5,7 +5,7 @@
 Name:		buildsys-macros
 Summary:	Macros for the OSG Buildsystem
 Version:        7
-Release:	1%{?dist}
+Release:	2%{?dist}
 License:	GPL
 Group:		Development/Buildsystem
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -50,6 +50,9 @@ rm -rf $RPM_BUILD_ROOT
 /etc/rpm/macros.checkbuild
 
 %changelog
+* Tue Oct 29 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 7-2
+- Bump to rebuild with buildsys-macros 7-1
+
 * Tue Oct 29 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 7-1
 - Add osg major version to dist tag (e.g. .osg32.el5)
 - No longer base Version on the %%rhel macro
