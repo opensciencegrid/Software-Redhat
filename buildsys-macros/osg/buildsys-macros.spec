@@ -1,15 +1,15 @@
+%define osg_version 3.2
+
+%define dver %{?rhel}%{?!rhel:5}
+%define osgver %(tr -d . <<< %{osg_version})
 Name:		buildsys-macros
 Summary:	Macros for the OSG Buildsystem
-%if 0%{?rhel} < 6
-Version:	5
-%else
-Version:        %{?rhel}
-%endif
-Release:	8%{?dist}
+Version:        7
+Release:	1%{?dist}
 License:	GPL
 Group:		Development/Buildsystem
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-Buildarch:  	noarch
+BuildArch:      noarch
 Requires:	rpmdevtools
 
 %description
@@ -22,13 +22,14 @@ Macros for the OSG Buildsystem
 %install
 rm -rf $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT/etc/rpm/
-VERSION=%{version}
-printf %s%b "%" "rhel $VERSION\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.disttag
-printf %s%b "%" "dist .osg.el$VERSION\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.disttag
-printf %s%b "%" "el$VERSION 1\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.disttag
+DVER=%{dver}
+OSGVER=%{osgver}
+printf %s%b "%" "rhel $DVER\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.disttag
+printf %s%b "%" "dist .osg$OSGVER.el$DVER\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.disttag
+printf %s%b "%" "el$DVER 1\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.disttag
 printf %s%b "%" "osg 1\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.disttag
 printf %s%b "%" "__arch_install_post /usr/lib/rpm/check-buildroot\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.checkbuild
-if [[ $VERSION -eq 5 ]]; then
+if [[ $DVER -eq 5 ]]; then
     printf %s%b "%" "_source_filedigest_algorithm 1\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.digest
     printf %s%b "%" "_binary_filedigest_algorithm 1\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.digest
     printf %s%b "%" "_binary_payload w9.gzdio\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.digest
@@ -42,13 +43,17 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root)
-%if %{version} == 5
+%if %{dver} == 5
 /etc/rpm/macros.digest
 %endif
 /etc/rpm/macros.disttag
 /etc/rpm/macros.checkbuild
 
 %changelog
+* Tue Oct 29 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 7-1
+- Add osg major version to dist tag (e.g. .osg32.el5)
+- No longer base Version on the %%rhel macro
+
 * Fri Aug 09 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 6-8
 - Added 'osg' macro that's 1 for all osg builds
 
