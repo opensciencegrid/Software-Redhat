@@ -1,6 +1,6 @@
 Name:		blahp
 Version:	1.18.7.bosco
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	gLite BLAHP daemon
 
 Group:		System/Libraries
@@ -90,6 +90,9 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Wed Oct 30 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.18.7.bosco-2
+- Bump to rebuild against condor-8.0.4
+
 * Fri Sep 20 2013 Brian Bockelman <bbockelm@cse.unl.edu> - 1.18.7.bosco-1
 - Do not close stderr fd from the blah.
 
