@@ -5,7 +5,7 @@
 
 Summary:   Tests an OSG Software installation
 Name:      osg-test
-Version:   1.4.2
+Version:   1.4.3
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -39,6 +39,11 @@ rm -rf $RPM_BUILD_ROOT
 /etc/grid-security/certificates/bffdd190.*
 
 %changelog
+* Wed Oct 30 2013 Brian Lin <blin@cs.wisc.edu> - 1.4.3-1
+- Add gratia-probe-sge tests
+- Add BeStMan debugging
+- Additional MySQL backup fixes
+
 * Wed Oct 16 2013 Brian Lin <blin@cs.wisc.edu> - 1.4.2-1
 - MySQL backup bug fixes
 
