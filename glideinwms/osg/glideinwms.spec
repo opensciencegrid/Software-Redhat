@@ -4,6 +4,11 @@
 
 Name:           glideinwms
 
+# Release Candidates NVR format
+#%define release 0.1.rc1
+# Official Release NVR format
+#%define release 1
+
 %if %{v2_plus}
 %define version 2.7.1
 %define release 1.1
@@ -16,9 +21,7 @@ Name:           glideinwms
 # ------------------------------------------------------------------------------
 %if %{v3_plus}
 %define version 3.2.1
-#%define release 0.x.rcx
-#%define release 1
-%define release 0.1.rc2
+%define release 1
 %define frontend_xml frontend.master.xml
 %define factory_xml glideinWMS.master.xml
 %endif
