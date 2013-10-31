@@ -1,6 +1,6 @@
 [osg-prerelease]
 name=OSG Software for Enterprise Linux 6 - Prerelease Repository for Internal Use - $basearch 
-baseurl=http://koji-hub.batlab.org/mnt/koji/repos/el6-osg-prerelease/latest/$basearch/
+baseurl=http://koji-hub.batlab.org/mnt/koji/repos/osg-3.1-el6-prerelease/latest/$basearch/
 failovermethod=priority
 priority=98
 enabled=0
