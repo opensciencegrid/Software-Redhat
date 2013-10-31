@@ -2,7 +2,7 @@
 Name:      osg-info-services
 Summary:   OSG Information Services uploader
 Version:   0.12
-Release:   3%{?dist}
+Release:   4%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -15,6 +15,7 @@ Source0:   %{name}-%{version}.tar.gz
 
 Patch0: fix-bool.patch
 Patch1: 1223-cmdline-args.patch
+Patch2: 1225-error-msg.patch
 
 BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
@@ -28,6 +29,7 @@ Requires: gip
 
 %patch0 -p0
 %patch1 -p0
+%patch2 -p0
 
 %build
 # No building - just a few python scripts!
@@ -53,6 +55,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_sbindir}/%{name}
 
 %changelog
+* Thu Oct 31 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 0.12-4
+- Add patch to improve error message when uploading fails (SOFTWARE-1225)
+
 * Wed Oct 09 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 0.12-3
 - Add patch to work around command-line argument bug (SOFTWARE-1223)
 
