@@ -1,6 +1,6 @@
 Name:           osg-release
 Version:        3.2
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        OSG Software for Enterprise Linux repository configuration
 
 Group:          System Environment/Base 
@@ -90,6 +90,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Oct 31 2013 Carl Edquist <edquist@cs.wisc.edu> - 3.2-3
+- Update prerelease repos to new koji tags
+
 * Tue Oct 29 2013 Carl Edquist <edquist@cs.wisc.edu> - 3.2-2
 - Update minefield repos to new koji tags
 
