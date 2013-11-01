@@ -1291,6 +1291,9 @@ fi
 * Wed Jun 12 2013 Brian Lin <blin@cs.wisc.edu> - 8.0.0-1
 - New version
 
+* Mon Jun 10 2013 Brian Lin <blin@cs.wisc.edu> - 7.8.8-2
+- Init script improvements
+
 * Tue Jun 07 2013 Brian Lin <blin@cs.wisc.edu> - 7.9.6-8
 - Remove glexec runtime dependency
 
@@ -1314,9 +1317,6 @@ fi
 
 * Tue May 21 2013 Brian Lin <blin@cs.wisc.edu> - 7.9.6-1
 - New version
-
-* Mon Jun 10 2013 Brian Lin <blin@cs.wisc.edu> - 7.8.8-2
-- Init script improvements
 
 * Wed May 08 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 7.8.8-1
 - New version
