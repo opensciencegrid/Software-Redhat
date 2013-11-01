@@ -1,0 +1,14 @@
+Index: osg-info-services
+===================================================================
+--- osg-info-services.orig	2013-10-31 16:59:00.000000000 -0500
++++ osg-info-services	2013-10-31 17:32:05.277537098 -0500
+@@ -393,6 +393,9 @@
+             opener = urllib2.build_opener(auth_handler)
+             output = opener.open(req).read()
+             # print output
++        except urllib2.URLError, e:
++            msg = "Could not upload to %s: %s" % (endpoint, e.reason)
++            log.error(msg)
+         except Exception, e:
+             msg = "\nException occured for endpoint: %s \n\n%s" % (endpoint, str(e))
+             log.exception(msg)
