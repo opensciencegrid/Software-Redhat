@@ -33,13 +33,6 @@ Provides: configure-osg-rsv
 Requires: %name = %version-%release
 %description rsv
 This package includes the ini file for configuring rsv using configure-osg
-%package cemon
-Summary: Configure-osg configuration files for cemon
-Group: Grid
-Provides: configure-osg-cemon
-Requires: %name = %version-%release
-%description cemon
-This package includes the ini file for configuring cemon using configure-osg
 %package gratia
 Summary: Configure-osg configuration files for gratia
 Group: Grid
@@ -184,9 +177,6 @@ rm -rf $RPM_BUILD_ROOT
 %files rsv
 %defattr(-,root,root)
 %config(noreplace) %{_sysconfdir}/osg/config.d/30-rsv.ini
-%files cemon
-%defattr(-,root,root)
-%config(noreplace) %{_sysconfdir}/osg/config.d/30-cemon.ini
 %files gratia
 %defattr(-,root,root)
 %config(noreplace) %{_sysconfdir}/osg/config.d/30-gratia.ini
