@@ -162,7 +162,7 @@ mv $RPM_BUILD_ROOT/usr/bin/osg-configure $RPM_BUILD_ROOT/usr/sbin/osg-configure
 ln -s /usr/sbin/osg-configure $RPM_BUILD_ROOT/usr/sbin/configure-osg 
 rmdir $RPM_BUILD_ROOT/usr/bin
 # need this to prevent rpm from complaining about unpackaged files
-rm %{_sysconfdir}/osg/config.d/30-cemon.ini
+rm $RPM_BUILD_ROOT/%{_sysconfdir}/osg/config.d/30-cemon.ini
 
 %clean
 rm -rf $RPM_BUILD_ROOT
