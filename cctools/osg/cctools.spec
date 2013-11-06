@@ -150,7 +150,6 @@ rm %{buildroot}/usr/lib/lib/libparrot_helper.so
 %ifarch amd64 x86_64
 rm %{buildroot}/usr/lib/lib64/libparrot_helper.so
 mv %{buildroot}/usr/lib/libchirp.a %{buildroot}/%{_libdir}
-mv %{buildroot}/usr/lib/libchirp_client.so %{buildroot}/%{_libdir}
 mv %{buildroot}/usr/lib/libdttools.a %{buildroot}/%{_libdir}
 mv %{buildroot}/usr/lib/libftp_lite.a %{buildroot}/%{_libdir}
 mv %{buildroot}/usr/lib/librmonitor_helper.so %{buildroot}/%{_libdir}
@@ -163,6 +162,10 @@ mv %{buildroot}/usr/lib/libwork_queue.a %{buildroot}/%{_libdir}
 mkdir -p %{buildroot}%{_libdir}/perl5/vendor_perl
 # ## pm should be noarch and .so is 64-bit, and moved to vendor_perl
 mv %{buildroot}/usr/lib/perl5/site_perl/*/* %{buildroot}/%{_libdir}/perl5/vendor_perl/
+
+# Shared library conflicts with our condor package
+mkdir %{buildroot}/%{_libdir}/cctools
+mv %{buildroot}/usr/lib/libchirp_client.so %{buildroot}/%{_libdir}/cctools
 
 ## /usr/doc is not canonical. it's /usr/share/doc
 mkdir -p %{buildroot}/usr/share/doc/
@@ -260,7 +263,8 @@ rm %{buildroot}/usr/etc/Makefile.config
 %{_includedir}/cctools/chirp_stream.h
 %{_includedir}/cctools/chirp_types.h
 %{_libdir}/libchirp.a
-%{_libdir}/libchirp_client.so
+%dir %{_libdir}/cctools/
+%{_libdir}/cctools/libchirp_client.so
 %{_docdir}/cctools/chirp.html
 %{_docdir}/cctools/chirp_protocol.html
 
