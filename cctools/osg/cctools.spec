@@ -29,7 +29,7 @@ scale distributed systems, such as clusters, clouds, and grids.
 
 %package parrot
 Group: System Environment/Daemons
-Summary: Parrot is a transparent user-level virtual filesystem that allows any ordinary program to be attached to many different remote storage systems, including HDFS, iRODS, Chirp, and FTP.
+Summary: User-level virtual filesystem that allows programs to attach to remote storage systems
 %description parrot
 Parrot is a tool for attaching existing programs to remote I/O systems through
 the filesystem interface. Parrot "speaks" a variety of remote I/O services
@@ -41,7 +41,7 @@ desired.
 
 %package chirp
 Group: System Environment/Daemons
-Summary: Chirp is a personal user-level distributed filesystem that allows unprivileged users to share space securely, efficiently, and conveniently. 
+Summary: Personal user-level distributed filesystem 
 Requires: cctools-dttools
 %description chirp
 Chirp is a user-level file system for collaboration across distributed systems
@@ -51,7 +51,7 @@ area network.
 
 %package makeflow
 Group: Development/Tools
-Summary: Makeflow is a workflow system for parallel and distributed computing that uses a language very similar to Make.
+Summary: Workflow system for parallel and distributed computing
 %description makeflow
 Makeflow is a workflow engine for executing large complex workflows on clusters,
 clouds, and grids. Makeflow is very similar to traditional Make, so if you can
@@ -60,7 +60,7 @@ workflows in a matter of minutes.
 
 %package sand
 Group: Development/Tools
-Summary: The Scalable Assembler at Notre Dame (SAND) is a set of modules that augment the Celera genome assembler to scale up to thousands of nodes using the Work Queue system. 
+Summary: Modules augmenting the Celera genome assembler
 %description sand
 SAND is a set of modules for genome assembly that are built atop the Work Queue
 platform for large-scale distributed computation on clusters, clouds, or grids.
@@ -70,7 +70,7 @@ and alignment.
 
 %package work_queue
 Group: System Environment/Libraries
-Summary: Work Queue is a system and library for creating and managing scalable master-worker style programs that scale up to thousands machines on clusters, clouds, and grids. Work Queue programs are easy to write in C, Python or Perl.
+Summary: System and library for creation and management of master-worker style programs
 Requires: python >= 2.4
 Requires: perl
 %description work_queue
@@ -91,7 +91,7 @@ Common libraries for CCTools software
 
 %package wavefront
 Group: System Environment/Libraries
-Summary: Wavefront is a specialized framework for running very large dynamic programming problems by harnessing hundreds to thousands of machines.
+Summary: Framework for dynamic programming problems on distributed systems
 %description wavefront
 The Wavefront abstraction computes a two dimensional recurrence relation. You
 provide a function F that accepts the left (x), right (y), and diagonal (d)
@@ -102,7 +102,7 @@ load balancing, data movement, fault tolerance, and so on.
 
 %package resource_monitor
 Group: System Environment/Libraries
-Summary: Monitors the cpu, memory, io, and disk usage of applications running in distributed systems, and can optionally enforce limits on each resource.
+Summary: Resource monitoring tools for distributed systems
 %description resource_monitor
 Resource Monitor generates up to three report files: a summary file with the
 maximum values of resource used, a time-series that shows the resources used at
