@@ -1,5 +1,5 @@
 Name:           vo-client
-Version:        48
+Version:        49
 Release:        1%{?dist}
 Summary:        Contains vomses file for use with user authentication and edg-mkgridmap.conf file that contains configuration information for edg-mkgridmap.
 
@@ -85,6 +85,9 @@ rm -rf $RPM_BUILD_ROOT
 %attr(0600,tomcat,tomcat) %config(noreplace) %{_sysconfdir}/gums/gums.config.template
 
 %changelog
+* Wed Nov 06 2013 Carl Edquist <edquist@cs.wisc.edu> - 49-1
+- Update to vo-client 49 (SOFTWARE-1248)
+
 * Fri Oct 04 2013 Carl Edquist <edquist@cs.wisc.edu> - 48-1
 - Update to vo-client 48 (SOFTWARE-1216)
 
