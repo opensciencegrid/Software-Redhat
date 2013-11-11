@@ -1,6 +1,6 @@
 Name:      rsv
 Summary:   RSV Meta Package
-Version:   3.7.11
+Version:   3.7.12
 Release:   1%{?dist}
 License:   Apache 2.0
 Group:     Applications/Monitoring
@@ -204,6 +204,9 @@ fi
 
 
 %changelog
+* Mon Nov 11 2013 Carl Edquist <edquist@cs.wisc.edu> - 3.7.12-1
+- SOFTWARE-1281 - use 1024-bit proxies
+
 * Fri Oct 04 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 3.7.11-1
 - SOFTWARE-1210 - combine RSV builds
 
