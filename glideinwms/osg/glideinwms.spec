@@ -20,7 +20,7 @@ Name:           glideinwms
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
 %if %{v3_plus}
-%define version 3.2.1
+%define version 3.2.2
 %define release 1
 %define frontend_xml frontend.master.xml
 %define factory_xml glideinWMS.master.xml
