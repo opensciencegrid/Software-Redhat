@@ -1,7 +1,7 @@
 %define hadoop_version 2.0.0+545
 %define hadoop_patched_version 2.0.0-cdh4.1.1
 %define hadoop_base_version 2.0.0
-%define hadoop_release 1.cdh4.1.1.p0.18%{?dist}
+%define hadoop_release 1.cdh4.1.1.p0.19%{?dist}
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
@@ -179,6 +179,7 @@ Patch2: libhdfs-soversion.patch
 Patch3: libhdfs-soversion-install.patch
 Patch4: fix_chown.patch
 Patch5: pom.xml.patch
+Patch6: 1184-extendable-client.patch
 
 Buildroot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id} -u -n)
 BuildRequires: python >= 2.4, git, fuse-devel,fuse, automake, autoconf,maven3,protobuf-compiler, cmake
@@ -485,6 +486,7 @@ popd
 %patch2 -p0
 %patch4 -p0
 %patch5 -p0
+%patch6 -p1
 
 %build
 # This assumes that you installed Java JDK 6 and set JAVA_HOME
@@ -869,6 +871,9 @@ fi
 
 
 %changelog
+* Tue Nov 12 2013 Matyas Selmeci <matyas@cs.wisc.edu> 2.0.0+545-1.cdh4.1.1.p0.19
+- Build with Jeff Dost's extendable client patch (SOFTWARE-1184)
+
 * Thu May 23 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.0+545-1.cdh4.1.1.p0.18
 - Fix creation of hdfs user in pre script
 - Fix creation of httpfs user in pre script
