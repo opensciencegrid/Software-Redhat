@@ -1,0 +1,15 @@
+Index: globus_proxy_utils-5.0/programs/grid_proxy_init.c
+===================================================================
+--- globus_proxy_utils-5.0.orig/programs/grid_proxy_init.c	2011-02-03 15:39:07.000000000 -0600
++++ globus_proxy_utils-5.0/programs/grid_proxy_init.c	2013-11-12 13:28:12.941145562 -0600
+@@ -159,8 +159,8 @@
+     char **                             argv)
+ {
+     globus_result_t                     result  = GLOBUS_SUCCESS;
+-    /* default proxy to 512 bits */
+-    int                                 key_bits    = 512;
++    /* default proxy to 1024 bits */
++    int                                 key_bits    = 1024;
+     /* default to a 12 hour cert */
+     int                                 valid       = 12*60;
+     int                                 verify      = 0;
