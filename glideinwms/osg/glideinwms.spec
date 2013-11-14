@@ -1,19 +1,27 @@
 # The following should be either "v2_plus" or "v3_plus"
-%define v2_plus 1
-%define v3_plus 0
+%define v2_plus 0
+%define v3_plus 1
 
 Name:           glideinwms
 
+# Release Candidates NVR format
+#%define release 0.1.rc1
+# Official Release NVR format
+#%define release 1
+
 %if %{v2_plus}
 %define version 2.7.2
-%define release 1.1.0
+%define release 1
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
 %endif
 
+# ------------------------------------------------------------------------------
+# For Release Candidate builds, check with Software team on release string
+# ------------------------------------------------------------------------------
 %if %{v3_plus}
-%define version 3.1
-%define release 0.rc1
+%define version 3.2.2
+%define release 1
 %define frontend_xml frontend.master.xml
 %define factory_xml glideinWMS.master.xml
 %endif
@@ -51,9 +59,11 @@ Source1:        frontend_startup
 Source2:        %{frontend_xml}
 Source3:        gwms-frontend.conf.httpd
 Source4:	%{factory_xml}
-Source5:       gwms-factory.conf.httpd
-Source6:       factory_startup
+Source5:        gwms-factory.conf.httpd
+Source6:        factory_startup
 Source7:	chksum.sh
+Source8:        gwms-frontend.sysconfig
+Source9:        gwms-factory.sysconfig
 
 %description
 This is a package for the glidein workload management system.
@@ -275,7 +285,6 @@ install -d  $RPM_BUILD_ROOT/%{_initrddir}
 install -m 0755 %{SOURCE1} $RPM_BUILD_ROOT/%{_initrddir}/gwms-frontend
 install -m 0755 %{SOURCE6} $RPM_BUILD_ROOT/%{_initrddir}/gwms-factory
 
-
 # Install the web directory
 install -d $RPM_BUILD_ROOT%{frontend_dir}
 install -d $RPM_BUILD_ROOT%{web_base}
@@ -334,13 +343,16 @@ install -m 644 creation/web_base/factory/index.html $RPM_BUILD_ROOT%{factory_web
 cp -arp creation/web_base/factory/images $RPM_BUILD_ROOT%{factory_web_dir}/monitor/
 cp -arp creation/web_base/frontend/images $RPM_BUILD_ROOT%{web_dir}/monitor/
 
+install -d $RPM_BUILD_ROOT/%{_sysconfdir}/sysconfig
 # Install the frontend config dir
 install -d $RPM_BUILD_ROOT/%{_sysconfdir}/gwms-frontend
 install -m 0644 %{SOURCE2} $RPM_BUILD_ROOT/%{_sysconfdir}/gwms-frontend/frontend.xml
+install -m 0644 %{SOURCE8} $RPM_BUILD_ROOT/%{_sysconfdir}/sysconfig/gwms-frontend
 
 # Install the factory config dir
 install -d $RPM_BUILD_ROOT/%{_sysconfdir}/gwms-factory
 install -m 0644 %{SOURCE4} $RPM_BUILD_ROOT/%{_sysconfdir}/gwms-factory/glideinWMS.xml
+install -m 0644 %{SOURCE9} $RPM_BUILD_ROOT/%{_sysconfdir}/sysconfig/gwms-factory
 
 # Install the web base
 cp -r creation/web_base/* $RPM_BUILD_ROOT%{web_base}/
@@ -575,6 +587,9 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/glideinwms/creation/lib/cgWParams.py
 %{python_sitelib}/glideinwms/creation/lib/cgWParams.pyc
 %{python_sitelib}/glideinwms/creation/lib/cgWParams.pyo
+%{python_sitelib}/glideinwms/creation/lib/xslt.py
+%{python_sitelib}/glideinwms/creation/lib/xslt.pyc
+%{python_sitelib}/glideinwms/creation/lib/xslt.pyo
 %{python_sitelib}/glideinwms/creation/lib/__init__.py
 %{python_sitelib}/glideinwms/creation/lib/__init__.pyc
 %{python_sitelib}/glideinwms/creation/lib/__init__.pyo
@@ -588,6 +603,7 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/gwms-factory.conf
 %attr(-, gfactory, gfactory) %dir %{_sysconfdir}/gwms-factory
 %attr(-, gfactory, gfactory) %config(noreplace) %{_sysconfdir}/gwms-factory/glideinWMS.xml
+%config(noreplace) %{_sysconfdir}/sysconfig/gwms-factory
 
 %files vofrontend-standalone
 %defattr(-,frontend,frontend,-)
@@ -641,6 +657,9 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/glideinwms/creation/lib/cvWParams.py
 %{python_sitelib}/glideinwms/creation/lib/cvWParams.pyc
 %{python_sitelib}/glideinwms/creation/lib/cvWParams.pyo
+%{python_sitelib}/glideinwms/creation/lib/xslt.py
+%{python_sitelib}/glideinwms/creation/lib/xslt.pyc
+%{python_sitelib}/glideinwms/creation/lib/xslt.pyo
 %{python_sitelib}/glideinwms/creation/lib/__init__.py
 %{python_sitelib}/glideinwms/creation/lib/__init__.pyc
 %{python_sitelib}/glideinwms/creation/lib/__init__.pyo
@@ -651,6 +670,7 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/gwms-frontend.conf
 %attr(-, frontend, frontend) %dir %{_sysconfdir}/gwms-frontend
 %attr(-, frontend, frontend) %config(noreplace) %{_sysconfdir}/gwms-frontend/frontend.xml
+%config(noreplace) %{_sysconfdir}/sysconfig/gwms-frontend
 %if %{v3_plus}
 %attr(-, frontend, frontend) %{web_base}/../creation
 %endif
@@ -696,6 +716,19 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Oct 28 2013 Parag Mhashilkar <parag@fnal.gov> - 3.2.1-0.1.rc2
+- Added gwms-frontend and gwms-factory files in /etc/sysconfig in the respective rpms
+- Added new files, xslt.* to the list for respective rpms
+
+* Thu Oct 10 2013 Parag Mhashilkar <parag@fnal.gov> - 3.2.0-3
+- Changed Requires (dependencies) to insure that the entire set of glideinwms rpms is updated as a set.
+
+* Thu Oct 10 2013 Parag Mhashilkar <parag@fnal.gov> - 3.2.0-2
+- Fixed the NVR int the rpm version as per the convention
+
+* Mon Aug 26 2013 Parag Mhashilkar <parag@fnal.gov> - 3.2-0.2.rc2
+- Updated the frontend.xml and added update_proxy.py while generating the checksum for the version
+
 * Mon Sep 09 2013 John Weigand <weigand@fnal.gov> - 2.7.2-0.1.rc3
 - No code changes from rc2. Just a change to Requires (dependencies) to insure that the entire set of glideinwms rpms is updated as a set.
 

@@ -14,6 +14,8 @@ failure() {
  return 1
 }
 
+[ -f /etc/sysconfig/gwms-factory ] && . /etc/sysconfig/gwms-factory
+
 export HOME="/var/lib/gwms-factory"
 export X509_CERT_DIR="/etc/grid-security/certificates"
 factory_dir='/var/lib/gwms-factory/work-dir'

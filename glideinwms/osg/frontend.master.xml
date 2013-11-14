@@ -1,8 +1,8 @@
 <frontend advertise_delay="5" frontend_name="FRONTEND_NAME_CHANGEME" loop_delay="60" advertise_with_multiple="True" advertise_with_tcp="True" frontend_monitor_index_page="False" frontend_versioning="False">
    <log_retention>
       <process_logs>
-         <process_log max_days="7.0" max_mbytes="100.0" min_days="3.0" type="ALL"/>
-         <process_log max_days="7.0" max_mbytes="100.0" min_days="3.0" type="DEBUG"/>
+         <process_log extension="info" max_days="7.0" max_mbytes="100.0" min_days="3.0" msg_types="INFO"/>
+         <process_log extension="err" max_days="7.0" max_mbytes="100.0" min_days="3.0" msg_types="DEBUG,ERR,WARN,EXCEPTION"/>
       </process_logs>
    </log_retention>
    <match match_expr="True">
@@ -10,7 +10,7 @@
          <match_attrs>
          </match_attrs>
          <collectors>
-            <collector DN="/DC=org/DC=doegrids/OU=Services/CN=glidein-1.t2.ucsd.edu" comment="Define factory collector globally for simplicity" factory_identity="gfactory@glidein-1.t2.ucsd.edu" my_identity="<username>@glidein-1.t2.ucsd.edu" node="glidein-1.t2.ucsd.edu"/>
+            <collector DN="/DC=org/DC=doegrids/OU=Services/CN=gfactory-1.t2.ucsd.edu" comment="Define factory collector globally for simplicity" factory_identity="gfactory@gfactory-1.t2.ucsd.edu" my_identity="<username>@gfactory-1.t2.ucsd.edu" node="gfactory-1.t2.ucsd.edu"/>
          </collectors>
       </factory>
       <job comment="Define job constraint and schedds globally for simplicity" query_expr="(JobUniverse==5)&amp;&amp;(GLIDEIN_Is_Monitor =!= TRUE)&amp;&amp;(JOB_Is_Monitor =!= TRUE)">

@@ -5,7 +5,7 @@
       <summary_logs max_days="31.0" max_mbytes="100.0" min_days="3.0"/>
       <process_logs>
 		<process_log extension="info" max_days="7.0" max_mbytes="100.0" min_days="3.0" msg_types="INFO"/>
-		<process_log extension="err" max_days="7.0" max_mbytes="100.0" min_days="3.0" msg_types="DEBUG,ERR,WARN"/>
+		<process_log extension="err" max_days="7.0" max_mbytes="100.0" min_days="3.0" msg_types="DEBUG,ERR,WARN,EXCEPTION"/>
       </process_logs>
    </log_retention>
    <monitor base_dir="/var/lib/gwms-factory/web-area/monitor" flot_dir="/usr/share/javascriptrrd/flot" javascriptRRD_dir="/usr/share/javascriptrrd/js" jquery_dir="/usr/share/javascriptrrd/flot"/>
@@ -31,8 +31,8 @@
       <entry name="TEST_ENTRY" enabled="False" gatekeeper="gatekeeper.domain.tld/jobmanager-condor" gridtype="gt2" rsl="(queue=default)(jobtype=single)" schedd_name="schedd_glideins2@FACTORY_HOSTNAME" verbosity="std" work_dir="OSG">
          <config>
             <max_jobs>
-                <per_entry held="1000" idle="4000" running="10000">
-                <default_per_frontend held="100" idle="400" running="5000"/>
+                <per_entry held="1000" idle="4000" glideins="10000"/>
+                <default_per_frontend held="100" idle="400" glideins="5000"/>
                 <per_frontends>
                 </per_frontends>
             </max_jobs>
