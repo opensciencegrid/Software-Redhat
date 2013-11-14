@@ -35,7 +35,7 @@
 %global nologin 1
 
 %global gsi_openssh_rel 1
-%global gsi_openssh_ver 5.6
+%global gsi_openssh_ver 5.7
 
 %ifarch alpha ia64 ppc64 s390x sparc64 x86_64
 %global flavor gcc64
@@ -400,6 +400,9 @@ fi
 %attr(0644,root,root) /usr/share/osg/sysconfig/gsisshd
 
 %changelog
+* Thu Nov 14 2013 Carl Edquist <edquist@cs.wisc.edu> - 5.7-1.1
+- Update to 5.7
+
 * Tue Apr 09 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 5.6-1.1
 - Merge OSG changes
 
