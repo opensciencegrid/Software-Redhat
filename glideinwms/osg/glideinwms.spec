@@ -726,11 +726,11 @@ rm -rf $RPM_BUILD_ROOT
 * Thu Oct 10 2013 Parag Mhashilkar <parag@fnal.gov> - 3.2.0-2
 - Fixed the NVR int the rpm version as per the convention
 
-* Mon Aug 26 2013 Parag Mhashilkar <parag@fnal.gov> - 3.2-0.2.rc2
-- Updated the frontend.xml and added update_proxy.py while generating the checksum for the version
-
 * Mon Sep 09 2013 John Weigand <weigand@fnal.gov> - 2.7.2-0.1.rc3
 - No code changes from rc2. Just a change to Requires (dependencies) to insure that the entire set of glideinwms rpms is updated as a set.
+
+* Mon Aug 26 2013 Parag Mhashilkar <parag@fnal.gov> - 3.2-0.2.rc2
+- Updated the frontend.xml and added update_proxy.py while generating the checksum for the version
 
 * Mon Aug 26 2013 Parag Mhashilkar <parag@fnal.gov> - 2.7.2-0.1.rc2
 - Add update_proxy.py while generating the checksum for the version
@@ -741,7 +741,6 @@ rm -rf $RPM_BUILD_ROOT
 * Mon May 13 2013 Parag Mhashilkar <parag@fnal.gov> - 2.7.1-0.rc1.4
 - Removed libs directory from the vofrontend-standalone and added glideinwms-libs as its dependency.
 
-* Thu May 9 2013 Parag Mhashilkar <parag@fnal.gov> - 2.7.1-0.rc1.2
 * Fri May 10 2013 Parag Mhashilkar <parag@fnal.gov> - 2.7.1-0.rc1.3
 - Reverted the changes made in 2.7.1-0.rc1.2. Removed condor_q as a requirement whereever we require condor as this creates more conflicts.
 
