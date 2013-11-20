@@ -1,6 +1,6 @@
 Name:           pegasus
-Version:        4.2.0
-Release:        1.2%{?dist}
+Version:        4.3.0
+Release:        2%{?dist}
 Summary:        Workflow management system for Condor, grids, and clouds
 Group:          Applications/System
 License:        ASL 2.0
@@ -38,6 +38,9 @@ execute the steps in appropriate order.
 %build
 export CLASSPATH=$(build-classpath ant)
 ant dist
+
+# we want to use the tarball as that has been stripped of some git files                                                                                                                                                         
+(cd dist && rm -rf pegasus-%{version} && tar xzf pegasus-*.tar.gz)
 
 # strip executables
 strip dist/pegasus-%{version}/bin/pegasus-invoke
@@ -88,6 +91,9 @@ rm -Rf %{buildroot}
 
 
 %changelog
+* Wed Oct 23 2013 Mats Rynge <rynge@isi.edu> 4.3.0
+- 4.3.0 release
+
 * Tue May 07 2013 Carl Edquist <edquist@cs.wisc.edu> - 4.2.0-1.2
 - Require missing java dir names instead of workaround package
 
