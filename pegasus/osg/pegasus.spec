@@ -95,6 +95,12 @@ rm -Rf %{buildroot}
 * Wed Mar 13 2013 Mats Rynge <rynge@isi.edu> 4.2.1cvs
 - 4.2.1cvs release
 
+* Tue Apr 09 2013 Brian Lin <blin@cs.wisc.edu> 4.2.0-1.1
+- Change dependencies to use and build against java7
+
+* Fri Jan 11 2013 Mats Rynge <rynge@isi.edu> 4.2.0
+- 4.2.0 release
+
 * Tue Feb 7 2012 Mats Rynge <rynge@isi.edu> 4.1.0
 - 4.1.0 release
 
