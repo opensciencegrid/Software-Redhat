@@ -86,17 +86,20 @@ rm -Rf %{buildroot}
 
 %changelog
 * Wed Nov 20 2013 Edgar Fajardo <efajardo@cern.ch> 4.3.0-2.1
+- Changed the Requires and BuildRequires section so it enforces Java 7
 - Added the CLASSPATH hack to the build section
-- Changed the Requires and BuildRequires section so it inforces java 7
 
 * Wed Oct 23 2013 Mats Rynge <rynge@isi.edu> 4.3.0
 - 4.3.0 release
 
-* Wed Mar 13 2013 Mats Rynge <rynge@isi.edu> 4.2.1cvs
-- 4.2.1cvs release
+* Tue May 07 2013 Carl Edquist <edquist@cs.wisc.edu> - 4.2.0-1.2
+- Require missing java dir names instead of workaround package
 
 * Tue Apr 09 2013 Brian Lin <blin@cs.wisc.edu> 4.2.0-1.1
 - Change dependencies to use and build against java7
+
+* Wed Mar 13 2013 Mats Rynge <rynge@isi.edu> 4.2.1cvs
+- 4.2.1cvs release
 
 * Fri Jan 11 2013 Mats Rynge <rynge@isi.edu> 4.2.0
 - 4.2.0 release
@@ -119,6 +122,3 @@ rm -Rf %{buildroot}
 - Initial creation of spec file
 - Installs into /usr/share/pegasus-3.0.3
 - Binaries into /usr/bin
-
-
-
