@@ -1,6 +1,6 @@
 Summary: osg-pki-tools
 Name: osg-pki-tools
-Version: 1.2.4
+Version: 1.2.5
 Release: 1%{?dist}
 Source: OSGPKITools-%{version}.tar.gz
 License: Apache 2.0
@@ -75,14 +75,18 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Nov 21 2013 Brian Lin <blin@cs.wisc.edu> - 1.2.5-1
+- Handle blank lines in hostfile for osg-gridadmin-cert-request (SOFTWARE-1271)
+- Fix bugs in exception handling (SOFTWARE-1201)
+
 * Fri Nov 07 2013 Brian Lin <blin@cs.wisc.edu> - 1.2.4-1
-* Handle all IO errors
+- Handle all IO errors
 
 * Mon Oct 28 2013 Brian Lin <blin@cs.wisc.edu> - 1.2.3-1
-* Handle no such file/directory errors explicitly
+- Handle no such file/directory errors explicitly
 
 * Thu Oct 17 2013 Brian Lin <blin@cs.wisc.edu> - 1.2.2-1
-* Improve exception handling when typos occur on the command-line (SOFTWARE-1183)
+- Improve exception handling when typos occur on the command-line (SOFTWARE-1183)
 
 * Mon Jul 08 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.2.1-4
 - Add documentation
