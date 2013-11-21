@@ -13,8 +13,8 @@ BuildRoot:      %{_tmppath}/%{name}-root
 BuildRequires:  ant, ant-apache-regexp, java7-devel, gcc, groff, python-devel, gcc-c++, make 
 BuildRequires:  jpackage-utils
 # ensure these are present, from jpackage-utils or missing-java-1.7.0-dirs                                                                                                                                                      
-Requires: %{_libdir}/java-1.7.0
-Requires: %{_datadir}/java-1.7.0
+Requires: /usr/lib/java-1.7.0
+Requires: /usr/share/java-1.7.0
 
 Requires:       java7 >= 1:1.7.0, jpackage-utils, python >= 2.4, condor >= 7.6, graphviz
 
