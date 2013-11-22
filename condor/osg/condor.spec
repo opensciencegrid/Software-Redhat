@@ -67,7 +67,7 @@ Version: %{tarball_version}
 %define condor_release %condor_base_release
 %endif
 # Release: %condor_release%{?dist}.2
-Release: 2%{?dist}
+Release: 3%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -1271,6 +1271,9 @@ fi
 %endif
 
 %changelog
+* Fri Nov 22 2013 Brian Lin <blin@cs.wisc.edu> - 8.0.4-3
+- Make init script more bourne shell compatible (SOFTWARE-1307)
+
 * Thu Oct 24 2013 Brian Lin <blin@cs.wisc.edu> - 8.0.4-2
 - Build against glite-ce-cream-client-api-c-1.14.0-4.8.osg
 
