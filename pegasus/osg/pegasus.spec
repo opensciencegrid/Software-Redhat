@@ -8,7 +8,7 @@ URL:            http://pegasus.isi.edu/
 Packager:       Mats Rynge <rynge@isi.edu>
 
 Source:         pegasus-source-%{version}.tar.gz
-
+Patch:          py24compat.patch
 BuildRoot:      %{_tmppath}/%{name}-root
 BuildRequires:  ant, ant-apache-regexp, java7-devel, gcc, groff, python-devel, gcc-c++, make 
 BuildRequires:  jpackage-utils
@@ -35,6 +35,7 @@ execute the steps in appropriate order.
 
 %prep
 %setup -q -n %{sourcedir}
+%patch0 -p1
 
 %build
 export CLASSPATH=$(build-classpath ant)
@@ -88,6 +89,7 @@ rm -Rf %{buildroot}
 * Wed Nov 20 2013 Edgar Fajardo <efajardo@cern.ch> 4.3.0-2.1
 - Changed the Requires and BuildRequires section so it enforces Java 7
 - Added the CLASSPATH hack to the build section
+- Added the patch0 so the code is compatible with python2.4
 
 * Wed Oct 23 2013 Mats Rynge <rynge@isi.edu> 4.3.0
 - 4.3.0 release
