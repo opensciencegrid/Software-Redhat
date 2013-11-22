@@ -6,7 +6,7 @@ index 97be80d..13831b4 100644
      return $RETVAL
  }
  
-+peaceful-off() {
++peaceful_off() {
 +    condor_off -peaceful
 +    rc=$?
 +    exit $rc
@@ -22,7 +22,7 @@ index 97be80d..13831b4 100644
 +
 +    peaceful-off)
 +	[ $running -eq 0 ] || exit 0
-+	peaceful-off
++	peaceful_off
 +	RETVAL=$?
 +       ;;
      *)
