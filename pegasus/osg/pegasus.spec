@@ -8,7 +8,7 @@ URL:            http://pegasus.isi.edu/
 Packager:       Mats Rynge <rynge@isi.edu>
 
 Source:         pegasus-source-%{version}.tar.gz
-Patch:          py24compat.patch
+Patch0:         py24compat.patch
 BuildRoot:      %{_tmppath}/%{name}-root
 BuildRequires:  ant, ant-apache-regexp, java7-devel, gcc, groff, python-devel, gcc-c++, make 
 BuildRequires:  jpackage-utils
