@@ -1,8 +1,8 @@
 
 Name:      osg-info-services
 Summary:   OSG Information Services uploader
-Version:   0.12
-Release:   4%{?dist}
+Version:   1.0
+Release:   1%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -13,10 +13,6 @@ BuildArch: noarch
 # tar czf osg-info-services-0.12.tar.gz osg-info-services-0.12
 Source0:   %{name}-%{version}.tar.gz
 
-Patch0: fix-bool.patch
-Patch1: 1223-cmdline-args.patch
-Patch2: 1225-error-msg.patch
-
 BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
 Requires: gip
@@ -26,10 +22,6 @@ Requires: gip
 
 %prep
 %setup -q
-
-%patch0 -p0
-%patch1 -p0
-%patch2 -p0
 
 %build
 # No building - just a few python scripts!
@@ -55,6 +47,14 @@ rm -rf $RPM_BUILD_ROOT
 %{_sbindir}/%{name}
 
 %changelog
+* Mon Nov 25 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0-1
+- Upstreamed patches
+- Do not hardcode ConsumerURL (SOFTWARE-1224)
+- Fix ownership of /var/log/gip/gip.log (SOFTWARE-1273)
+- Don't print a stack backtrace when dying due to missing user-vo-map (also SOFTWARE-1273)
+- Fix exception in the fix to SOFTWARE-1225
+- Bump to 1.0
+
 * Thu Oct 31 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 0.12-4
 - Add patch to improve error message when uploading fails (SOFTWARE-1225)
 
