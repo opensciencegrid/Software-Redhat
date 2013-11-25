@@ -2,7 +2,7 @@
 Name:      osg-info-services
 Summary:   OSG Information Services uploader
 Version:   1.0
-Release:   1%{?dist}
+Release:   2%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -47,7 +47,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_sbindir}/%{name}
 
 %changelog
-* Mon Nov 25 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0-1
+* Mon Nov 25 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0-2
 - Upstreamed patches
 - Do not hardcode ConsumerURL (SOFTWARE-1224)
 - Fix ownership of /var/log/gip/gip.log (SOFTWARE-1273)
