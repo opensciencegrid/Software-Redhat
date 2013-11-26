@@ -1,7 +1,7 @@
 Name:      rsv
 Summary:   RSV Meta Package
 Version:   3.7.13
-Release:   1%{?dist}
+Release:   2%{?dist}
 License:   Apache 2.0
 Group:     Applications/Monitoring
 URL:       https://twiki.grid.iu.edu/bin/view/MonitoringInformation/RSV
@@ -204,6 +204,9 @@ fi
 
 
 %changelog
+* Tue Nov 26 2013 Carl Edquist <edquist@cs.wisc.edu> - 3.7.13-2
+- Bumb release to rebuild for koji issue
+
 * Tue Nov 26 2013 Carl Edquist <edquist@cs.wisc.edu> - 3.7.13-1
 - SOFTWARE-1147 - Create local version of Java RSV probe
 - SOFTWARE-1195 - Add rsv-profiler check for actual UID/GID of cndrcron user
