@@ -1,24 +1,22 @@
 Name:           pegasus
-Version:        4.3.0
-Release:        2.1%{?dist}
+Version:        4.3.1
+Release:        1%{?dist}
 Summary:        Workflow management system for HTCondor, grids, and clouds
 Group:          Applications/System
 License:        ASL 2.0
 URL:            http://pegasus.isi.edu/
-Packager:       Mats Rynge <rynge@isi.edu>
+Packager:       Pegasus Development Team <pegasus-support@isi.edu>
 
 Source:         pegasus-source-%{version}.tar.gz
-Patch0:         py24compat.patch
+
 BuildRoot:      %{_tmppath}/%{name}-root
-BuildRequires:  ant, ant-apache-regexp, java7-devel, gcc, groff, python-devel, gcc-c++, make 
+BuildRequires:  ant, ant-apache-regexp, java7-devel, gcc, groff, python-devel, gcc-c++, make
 BuildRequires:  jpackage-utils
 # ensure these are present, from jpackage-utils or missing-java-1.7.0-dirs                                                                                                                                                      
 Requires: /usr/lib/java-1.7.0
 Requires: /usr/share/java-1.7.0
 
 Requires:       java7 >= 1:1.7.0, jpackage-utils, python >= 2.4, condor >= 7.6, graphviz
-
-AutoReqProv:    no
 
 %define sourcedir %{name}-source-%{version}
 
@@ -35,7 +33,6 @@ execute the steps in appropriate order.
 
 %prep
 %setup -q -n %{sourcedir}
-%patch0 -p1
 
 %build
 export CLASSPATH=$(build-classpath ant)
@@ -86,6 +83,15 @@ rm -Rf %{buildroot}
 
 
 %changelog
+* Tue Nov 26 2013 Edgar Fajardo <efajardo@cern.ch> 4.3.1-1.1
+- Used the new upstream source rpm 4.3.1 that includes the patch so the code is compatible with python2.4
+- Changed the Requires and BuildRequires section so it enforces Java 7
+- Added the CLASSPATH hack to the build section
+
+
+* Mon Nov 25 2013 Pegasus Development Team <pegasus-support@isi.edu> 4.3.1
+- 4.3.1 automatic build
+
 * Wed Nov 20 2013 Edgar Fajardo <efajardo@cern.ch> 4.3.0-2.1
 - Changed the Requires and BuildRequires section so it enforces Java 7
 - Added the CLASSPATH hack to the build section
