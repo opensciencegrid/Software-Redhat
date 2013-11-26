@@ -10,7 +10,7 @@ Packager:       Pegasus Development Team <pegasus-support@isi.edu>
 Source:         pegasus-source-%{version}.tar.gz
 
 BuildRoot:      %{_tmppath}/%{name}-root
-BuildRequires:  ant, ant-apache-regexp, java7-devel, gcc, groff, python-devel, gcc-c++, make
+BuildRequires:  ant, ant-nodeps, ant-apache-regexp, java7-devel, gcc, groff, python-devel, gcc-c++, make
 BuildRequires:  jpackage-utils
 # ensure these are present, from jpackage-utils or missing-java-1.7.0-dirs                                                                                                                                                      
 Requires: /usr/lib/java-1.7.0
