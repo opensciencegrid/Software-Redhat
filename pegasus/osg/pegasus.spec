@@ -1,6 +1,6 @@
 Name:           pegasus
 Version:        4.3.1
-Release:        1%{?dist}
+Release:        1.1%{?dist}
 Summary:        Workflow management system for HTCondor, grids, and clouds
 Group:          Applications/System
 License:        ASL 2.0
