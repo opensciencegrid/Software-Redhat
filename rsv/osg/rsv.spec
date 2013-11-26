@@ -1,6 +1,6 @@
 Name:      rsv
 Summary:   RSV Meta Package
-Version:   3.7.12
+Version:   3.7.13
 Release:   1%{?dist}
 License:   Apache 2.0
 Group:     Applications/Monitoring
@@ -204,6 +204,12 @@ fi
 
 
 %changelog
+* Tue Nov 26 2013 Carl Edquist <edquist@cs.wisc.edu> - 3.7.13-1
+- SOFTWARE-1147 - Create local version of Java RSV probe
+- SOFTWARE-1195 - Add rsv-profiler check for actual UID/GID of cndrcron user
+- SOFTWARE-1199 - RSV: Fix --gatekeeper-type option for local tests
+- SOFTWARE-1309 - handle missing java/javac commands in java-version-probe
+
 * Mon Nov 11 2013 Carl Edquist <edquist@cs.wisc.edu> - 3.7.12-1
 - SOFTWARE-1281 - use 1024-bit proxies
 
