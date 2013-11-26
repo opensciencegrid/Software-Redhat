@@ -1,18 +1,18 @@
 Name:           pegasus
-Version:        4.2.0
-Release:        1.2%{?dist}
-Summary:        Workflow management system for Condor, grids, and clouds
+Version:        4.3.1
+Release:        1.1%{?dist}
+Summary:        Workflow management system for HTCondor, grids, and clouds
 Group:          Applications/System
 License:        ASL 2.0
 URL:            http://pegasus.isi.edu/
-Packager:       Mats Rynge <rynge@isi.edu>
+Packager:       Pegasus Development Team <pegasus-support@isi.edu>
 
 Source:         pegasus-source-%{version}.tar.gz
 
 BuildRoot:      %{_tmppath}/%{name}-root
-BuildRequires:  ant, ant-apache-regexp, java7-devel, gcc, groff, python-devel, gcc-c++, make
+BuildRequires:  ant, ant-nodeps, ant-apache-regexp, java7-devel, gcc, groff, python-devel, gcc-c++, make
 BuildRequires:  jpackage-utils
-# ensure these are present, from jpackage-utils or missing-java-1.7.0-dirs
+# ensure these are present, from jpackage-utils or missing-java-1.7.0-dirs                                                                                                                                                      
 Requires: /usr/lib/java-1.7.0
 Requires: /usr/share/java-1.7.0
 
@@ -34,10 +34,12 @@ execute the steps in appropriate order.
 %prep
 %setup -q -n %{sourcedir}
 
-
 %build
 export CLASSPATH=$(build-classpath ant)
+rm -rf dist
 ant dist
+# we want to use the tarball as that has been stripped of some git files
+(cd dist && rm -rf pegasus-%{version} && tar xzf pegasus-*.tar.gz)
 
 # strip executables
 strip dist/pegasus-%{version}/bin/pegasus-invoke
@@ -45,23 +47,16 @@ strip dist/pegasus-%{version}/bin/pegasus-cluster
 strip dist/pegasus-%{version}/bin/pegasus-kickstart
 strip dist/pegasus-%{version}/bin/pegasus-keg
 
-# fix pegasus-config on 64 bit systems
-if (echo %{_libdir} | grep lib64); then 
-    perl -p -i -e 's/^my \$lib.*/my \$lib         = "lib64";/' \
-         dist/pegasus-%{version}/bin/pegasus-config
-fi
-
 %install
 rm -Rf %{buildroot}
 
 mkdir -p %{buildroot}/%{_sysconfdir}/%{name}
 mkdir -p %{buildroot}/%{_bindir}
-mkdir -p %{buildroot}/%{_libdir}
 mkdir -p %{buildroot}/%{_datadir}
 
 cp -aR dist/pegasus-%{version}/etc/* %{buildroot}/%{_sysconfdir}/%{name}/
 cp -aR dist/pegasus-%{version}/bin/* %{buildroot}/%{_bindir}/
-cp -aR dist/pegasus-%{version}/lib/* %{buildroot}/%{_libdir}/
+cp -aR dist/pegasus-%{version}/lib* %{buildroot}/usr/
 cp -aR dist/pegasus-%{version}/share/* %{buildroot}/%{_datadir}/
 
 # rm unwanted files
@@ -70,7 +65,6 @@ rm -f %{buildroot}/%{_datadir}/%{name}/java/COPYING.*
 rm -f %{buildroot}/%{_datadir}/%{name}/java/EXCEPTIONS.*
 rm -f %{buildroot}/%{_datadir}/%{name}/java/LICENSE.*
 rm -f %{buildroot}/%{_datadir}/%{name}/java/NOTICE.*
-
 
 %clean
 ant clean
@@ -81,18 +75,39 @@ rm -Rf %{buildroot}
 %defattr(-,root,root,-)
 %config(noreplace) %{_sysconfdir}/%{name}/
 %{_bindir}/*
-%{_libdir}/%{name}/
+%{_libdir}/pegasus
+%{_libdir}/python*
 %{_datadir}/doc/%{name}
 %{_datadir}/man/man1/*
 %{_datadir}/%{name}
 
 
 %changelog
+* Tue Nov 26 2013 Edgar Fajardo <efajardo@cern.ch> 4.3.1-1.1
+- Used the new upstream source rpm 4.3.1 that includes the patch so the code is compatible with python2.4
+- Changed the Requires and BuildRequires section so it enforces Java 7
+- Added the CLASSPATH hack to the build section
+
+
+* Mon Nov 25 2013 Pegasus Development Team <pegasus-support@isi.edu> 4.3.1
+- 4.3.1 automatic build
+
+* Wed Nov 20 2013 Edgar Fajardo <efajardo@cern.ch> 4.3.0-2.1
+- Changed the Requires and BuildRequires section so it enforces Java 7
+- Added the CLASSPATH hack to the build section
+- Added the patch0 so the code is compatible with python2.4
+
+* Wed Oct 23 2013 Mats Rynge <rynge@isi.edu> 4.3.0
+- 4.3.0 release
+
 * Tue May 07 2013 Carl Edquist <edquist@cs.wisc.edu> - 4.2.0-1.2
 - Require missing java dir names instead of workaround package
 
 * Tue Apr 09 2013 Brian Lin <blin@cs.wisc.edu> 4.2.0-1.1
 - Change dependencies to use and build against java7
+
+* Wed Mar 13 2013 Mats Rynge <rynge@isi.edu> 4.2.1cvs
+- 4.2.1cvs release
 
 * Fri Jan 11 2013 Mats Rynge <rynge@isi.edu> 4.2.0
 - 4.2.0 release
@@ -115,6 +130,3 @@ rm -Rf %{buildroot}
 - Initial creation of spec file
 - Installs into /usr/share/pegasus-3.0.3
 - Binaries into /usr/bin
-
-
-
