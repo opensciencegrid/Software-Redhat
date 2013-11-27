@@ -1,6 +1,6 @@
 Name:           pegasus
 Version:        4.3.1
-Release:        1.1%{?dist}
+Release:        1.2%{?dist}
 Summary:        Workflow management system for HTCondor, grids, and clouds
 Group:          Applications/System
 License:        ASL 2.0
@@ -10,13 +10,14 @@ Packager:       Pegasus Development Team <pegasus-support@isi.edu>
 Source:         pegasus-source-%{version}.tar.gz
 
 BuildRoot:      %{_tmppath}/%{name}-root
-BuildRequires:  ant, ant-nodeps, ant-apache-regexp, java7-devel, gcc, groff, python-devel, gcc-c++, make
-BuildRequires:  jpackage-utils
-# ensure these are present, from jpackage-utils or missing-java-1.7.0-dirs                                                                                                                                                      
-Requires: /usr/lib/java-1.7.0
-Requires: /usr/share/java-1.7.0
 
-Requires:       java7 >= 1:1.7.0, jpackage-utils, python >= 2.4, condor >= 7.6, graphviz
+# Some OSG Software changes below to use Java 7
+BuildRequires:  ant, ant-apache-regexp, java7-devel, gcc, groff, python-devel, gcc-c++, make
+Requires:       java7 >= 1:1.7.0, python >= 2.4, condor >= 7.6, graphviz
+
+# Added by OSG Software, so that all builds and binaries work on el5 and el6
+BuildRequires:  ant-nodeps, jpackage-utils, /usr/share/java-1.7.0
+Requires:       jpackage-utils, /usr/lib/java-1.7.0, /usr/share/java-1.7.0
 
 %define sourcedir %{name}-source-%{version}
 
@@ -83,11 +84,14 @@ rm -Rf %{buildroot}
 
 
 %changelog
+* Wed Nov 27 2013 Tim Cartwright <cat@cs.wisc.edu> 4.3.1-1.2
+- Rebuild with unified spec file across OSG 3.1 and 3.2
+- Tweaked arrangement of requires lines to ease comparisons against original
+
 * Tue Nov 26 2013 Edgar Fajardo <efajardo@cern.ch> 4.3.1-1.1
 - Used the new upstream source rpm 4.3.1 that includes the patch so the code is compatible with python2.4
 - Changed the Requires and BuildRequires section so it enforces Java 7
 - Added the CLASSPATH hack to the build section
-
 
 * Mon Nov 25 2013 Pegasus Development Team <pegasus-support@isi.edu> 4.3.1
 - 4.3.1 automatic build
