@@ -12,6 +12,7 @@ Source:         pegasus-source-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-root
 BuildRequires:  ant, ant-nodeps, ant-apache-regexp, java7-devel, gcc, groff, python-devel, gcc-c++, make
 BuildRequires:  jpackage-utils
+BuildRequires:  /usr/share/java-1.7.0
 # ensure these are present, from jpackage-utils or missing-java-1.7.0-dirs                                                                                                                                                      
 Requires: /usr/lib/java-1.7.0
 Requires: /usr/share/java-1.7.0
