@@ -1,7 +1,7 @@
 Summary: User identity switching tool based on grid credentials
 Name: glexec
-Version: 0.9.8
-Release: 1.2%{?dist}
+Version: 0.9.9
+Release: 1.1%{?dist}
 License: ASL 2.0
 Group: Applications/System
 URL: http://wiki.nikhef.nl/grid/Site_Access_Control
@@ -10,7 +10,9 @@ Source1: glexec.conf
 Source2: glexec.logrotate
 Patch0: nowarn_allwhite.patch
 Patch1: nowarn_sigchld.patch
+%if %{?rhel}%{!?rhel:0} <= 5
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
+%endif
 BuildRequires: lcmaps-basic-interface >= 1.5.0
 Requires: logrotate
 # Since liblcmaps.so is dlopen'd we need this explicit requirement.
@@ -61,12 +63,11 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)
-%doc AUTHORS LICENSE 
+%doc AUTHORS LICENSE NEWS
 %config(noreplace) %{_sysconfdir}/logrotate.d/glexec
 %attr(600, glexec, root) %verify(not md5 size mtime) %config(noreplace) %{_sysconfdir}/glexec.conf
 %{_datadir}/man/man5/glexec.conf.5*
 %{_datadir}/man/man1/glexec.1*
-%attr(4755, root, root) %{_sbindir}/glexec
 %attr(4111, root, root) %{_sbindir}/glexec
 
 
@@ -79,6 +80,14 @@ getent passwd glexec >/dev/null || \
 exit 0
 
 %changelog
+* Thu Nov 27 2013 Dave Dykstra <dwd@fnal.gov> 0.9.9-1.1.osg
+- pull in new upstream version
+
+* Mon Nov 11 2013 Mischa Salle <msalle@nikhef.nl> 0.9.9-1
+- Adding NEWS file to doc
+- only define buildroot on RHEL5
+- updating version
+
 * Thu Jan 04 2013 Dave Dykstra <dwd@fnal.gov> 0.9.8-1.2.osg
 - Add a patch to move the log warning "Ignoring SIGCHLD from unknown
     finished child" from NOTICE to INFO level.  It is caused by
