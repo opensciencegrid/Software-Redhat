@@ -1,0 +1,22 @@
+Index: pbs.pm
+===================================================================
+--- pbs.pm.orig	2013-07-18 16:57:18.000000002 -0500
++++ pbs.pm	2013-07-18 17:01:31.000000002 -0500
+@@ -727,8 +727,15 @@
+     $self->nfssync( $pbs_qsub_err_name );
+     $self->nfssync( $description->stdout, 1 );
+     $self->nfssync( $description->stderr, 1 );
+-    $self->log("submitting job -- $qsub < $pbs_job_script_name $errfile");
+-    chomp($job_id = `$qsub < $pbs_job_script_name $errfile`);
++    $self->log("submitting job -- $qsub  $pbs_job_script_name $errfile");
++    chomp($qsub_out = `$qsub  $pbs_job_script_name $errfile`);
++    if ( $qsub_out =~ /Submitted batch job (\d+)/ ) {
++        $job_id = $1;
++    } elsif ( $qsub_out =~ /(\d+.*)/ ) {
++        $job_id = $1;
++    } else {
++        $job_id = 0;
++    }
+ 
+     if($? == 0)
+     {

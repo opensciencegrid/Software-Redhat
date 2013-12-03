@@ -1,0 +1,13 @@
+#
+# This RVF file allows you to override the defaults specified in
+# /usr/share/globus/globus_gram_job_manager/pbs.rvf
+# Instead of editing that file, you should place changes here; they will
+# be preserved on upgrade.
+#
+# Common RVF overrides include:
+# - Email notification settings
+# - Setting default number of nodes requested
+# - Setting default types of nodes requested
+# - Setting names of nodes requested
+#
+

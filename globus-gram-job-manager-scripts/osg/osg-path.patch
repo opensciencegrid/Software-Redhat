@@ -1,0 +1,14 @@
+Index: JobDescription.pm.in
+===================================================================
+--- JobDescription.pm.in.orig	2011-10-27 16:32:24.023553538 -0500
++++ JobDescription.pm.in	2011-10-27 16:33:19.558678388 -0500
+@@ -395,6 +395,9 @@
+     } else {
+         my %preset = ( %ENV ); # as meager as it may be
+ 
++        # PATH is no longer in the present environment, now that we don't use xinetd
++        $result{"PATH"} = "/bin:/usr/bin";
++
+         # no previous knowledge, need to read the file
+         my $fn = "/var/lib/osg/osg-job-environment.conf";
+         if ( open( INFO, "<$fn" ) ) {

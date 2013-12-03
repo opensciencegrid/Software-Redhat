@@ -1,0 +1,5 @@
+
+#Uncomment and modify to override default osg firewall behavior
+#export GLOBUS_TCP_PORT_RANGE=min,max
+#export GLOBUS_TCP_SOURCE_RANGE=min,max
+

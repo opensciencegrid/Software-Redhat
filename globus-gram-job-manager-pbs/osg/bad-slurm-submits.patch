@@ -1,0 +1,13 @@
+Index: pbs.pm
+===================================================================
+--- pbs.pm.orig	2013-08-26 16:09:17.000000002 -0500
++++ pbs.pm	2013-08-26 16:09:31.000000002 -0500
+@@ -737,7 +737,7 @@
+         $job_id = 0;
+     }
+ 
+-    if($? == 0)
++    if($? == 0 and $job_id != 0)
+     {
+         $self->log("job submission successful, setting state to PENDING");
+         return {JOB_ID => $job_id,
