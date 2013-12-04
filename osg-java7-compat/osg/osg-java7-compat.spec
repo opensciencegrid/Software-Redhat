@@ -1,10 +1,10 @@
 Name:		osg-java7-compat
-Version:	0.1
-Release:	4%{?dist}
+Version:	1.0
+Release:	1%{?dist}
 Summary:	Requires java >= 1:1.7.0 and provides java7
 BuildArch:	noarch
 Group:		Development/Tools
-License:	Freeware
+License:	ASL 2.0
 Requires:	java >= 1:1.7.0
 Provides:	java7 = 1:1.7.0
 
@@ -78,16 +78,6 @@ rm -rf $RPM_BUILD_ROOT
 %files -n osg-java7-devel-compat-openjdk
 
 %changelog
-* Tue Dec 03 2013 Carl Edquist <edquist@cs.wisc.edu> - 0.1-4
-- Explain purpose of packages in descriptions
-
-* Tue Dec 03 2013 Carl Edquist <edquist@cs.wisc.edu> - 0.1-3
-- Scrap conflicts, which didn't help
-- Add additional helper sub-packages to bring in openjdk/-devel
-
-* Tue Dec 03 2013 Carl Edquist <edquist@cs.wisc.edu> - 0.1-2
-- Add Conflicts for java-1.7.0-openjdk versions that provide java7
-
-* Mon Dec 02 2013 Carl Edquist <edquist@cs.wisc.edu> - 0.1-1
-- Initial version
+* Wed Dec 04 2013 Carl Edquist <edquist@cs.wisc.edu> - 1.0-1
+- Initial release
 
