@@ -1,0 +1,48 @@
+diff -ur globus_gssapi_gsi-10.10/library/globus_i_gsi_gss_utils.c /home/bamboo/gssapi_source/library/globus_i_gsi_gss_utils.c
+--- globus_gssapi_gsi-10.10/library/globus_i_gsi_gss_utils.c	2011-11-02 09:47:22.000000000 -0400
++++ /home/bamboo/gssapi_source/library/globus_i_gsi_gss_utils.c	2013-12-06 09:38:29.000000000 -0500
+@@ -1838,24 +1838,30 @@
+     BIO_read(bp, (char *) int_buffer, 4); 
+     N2L(int_buffer, length);
+ 
+-    if (BIO_pending(bp) < length)
++    if (length > 0)
+     {
+-        major_status = GSS_S_NO_CONTEXT;
+-        GLOBUS_GSI_GSSAPI_ERROR_RESULT(
+-            minor_status,
+-            GLOBUS_GSI_GSSAPI_ERROR_IMPEXP_BAD_LEN,
+-            (_GGSL("Invalid BIO - not enough data to read an int")));
+-        goto exit;
+-    }
++        if (BIO_pending(bp) < length)
++        {
++            major_status = GSS_S_NO_CONTEXT;
++            GLOBUS_GSI_GSSAPI_ERROR_RESULT(
++                minor_status,
++                GLOBUS_GSI_GSSAPI_ERROR_IMPEXP_BAD_LEN,
++                (_GGSL("Invalid BIO - not enough data to read an int")));
++            goto exit;
++        }
+ 
+-    ssl_handle->s3->tmp.key_block = (unsigned char *) OPENSSL_malloc(length);
+-    if (ssl_handle->s3->tmp.key_block == NULL)
++        ssl_handle->s3->tmp.key_block = (unsigned char *) OPENSSL_malloc(length);
++        if (ssl_handle->s3->tmp.key_block == NULL)
++        {
++            GLOBUS_GSI_GSSAPI_MALLOC_ERROR(minor_status);
++            major_status = GSS_S_FAILURE;
++            goto exit;
++        }
++    }
++    else
+     {
+-        GLOBUS_GSI_GSSAPI_MALLOC_ERROR(minor_status);
+-        major_status = GSS_S_FAILURE;
+-        goto exit;
++        ssl_handle->s3->tmp.key_block = NULL;
+     }
+-                
+     ssl_handle->s3->tmp.key_block_length = length;
+ 
+     GLOBUS_I_GSI_GSSAPI_DEBUG_FPRINTF(
