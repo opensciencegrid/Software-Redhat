@@ -1,6 +1,6 @@
 Name:           osg-release-itb
 Version:        3.2
-Release:        1%{?dist}
+Release:        4%{?dist}
 Summary:        OSG Software for Enterprise Linux repository configuration
 
 Group:          System Environment/Base 
@@ -18,6 +18,7 @@ Source2:        osg-testing.repo
 Source3:        osg-minefield.repo
 Source4:        osg-contrib.repo
 Source5:        osg-prerelease.repo
+Source6:        osg-empty.repo
 
 Source10:        osg-el6.repo
 Source11:        osg-el6-development.repo
@@ -25,6 +26,7 @@ Source12:        osg-el6-testing.repo
 Source13:        osg-el6-minefield.repo
 Source14:        osg-el6-contrib.repo
 Source15:        osg-el6-prerelease.repo
+Source16:        osg-el6-empty.repo
 
 Source20:        osg-upcoming.repo
 Source21:        osg-upcoming-development.repo
@@ -90,6 +92,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Dec 09 2013 Carl Edquist <edquist@cs.wisc.edu> - 3.2-4
+- Add osg-empty repos (SOFTWARE-1237)
+
+* Thu Oct 31 2013 Carl Edquist <edquist@cs.wisc.edu> - 3.2-3
+- Update prerelease repos to new koji tags
+
 * Tue Oct 29 2013 Carl Edquist <edquist@cs.wisc.edu> - 3.2-1
 - Update to osg-3.2, and new style koji tags for minefield repos
 
