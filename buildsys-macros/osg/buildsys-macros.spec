@@ -1,11 +1,9 @@
-%define osg_version 3.2
-
 %define dver %{?rhel}%{?!rhel:5}
-%define osgver %(tr -d . <<< %{osg_version})
+%define osgver int
 Name:		buildsys-macros
 Summary:	Macros for the OSG Buildsystem
 Version:        7
-Release:	2%{?dist}
+Release:	3%{?dist}
 License:	GPL
 Group:		Development/Buildsystem
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -50,6 +48,9 @@ rm -rf $RPM_BUILD_ROOT
 /etc/rpm/macros.checkbuild
 
 %changelog
+* Tue Dec 10 2013 Carl Edquist <edquist@cs.wisc.edu> - 7-3
+- Create osg-internal version of buildsys-macros
+
 * Tue Oct 29 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 7-2
 - Bump to rebuild with buildsys-macros 7-1
 
