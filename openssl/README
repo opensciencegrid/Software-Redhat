@@ -1,0 +1,7 @@
+Passthrough rebuild of openssl-1.0.0-27 from centos, downloaded from:
+
+http://vault.centos.org/6.4/updates/Source/SPackages/openssl-1.0.0-27.el6_4.2.src.rpm
+
+We are keeping this build around in osg-internal for now, as the new
+openssl-1.0.1 may cause some problems for us...
+
