@@ -1,6 +1,6 @@
 
 Name:           osg-build
-Version:        1.3.1
+Version:        1.3.2
 Release:        2%{?dist}
 Summary:        Build tools for the OSG
 
@@ -62,6 +62,12 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_docdir}/%{name}/sample-osg-build.ini
 
 %changelog
+* Wed Dec 11 2013 Carl Edquist <edquist@cs.wisc.edu> - 1.3.2-1
+- Add grid proxy support to osg-koji setup (SOFTWARE-1287)
+- Check client cert for expiration before use (SOFTWARE-1288)
+- Remove long-deprecated 'allbuild' task
+- Add support for --repo=internal in branches/osg-internal (SOFTWARE-1258)
+
 * Tue Oct 22 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.3.1-2
 - bugfixes for osg-next support
 
