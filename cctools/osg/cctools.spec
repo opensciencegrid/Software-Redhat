@@ -5,7 +5,7 @@
 %endif
 Name: cctools
 Version: 4.0.2
-Release: 4%{?dist}
+Release: 5%{?dist}
 Summary: A collection of tools for harnessing large scale distributed systems.
 License: GPL 2.0 
 URL: http://www3.nd.edu/~ccl/
