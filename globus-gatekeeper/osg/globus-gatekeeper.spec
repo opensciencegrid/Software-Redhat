@@ -13,7 +13,7 @@
 Name:		globus-gatekeeper
 %global _name %(tr - _ <<< %{name})
 Version:	9.6
-Release:	1.11%{?dist}
+Release:	1.12%{?dist}
 Summary:	Globus Toolkit - Globus Gatekeeper
 
 Group:		Applications/Internet
@@ -26,6 +26,7 @@ Source1:        globus-gatekeeper.osg-sysconfig
 Patch3:         init.patch
 Patch4:         GRAM-309.patch
 Patch5:         logrotate-copytruncate.patch
+Patch6:         GT-489-openssl-1.0.1-fix.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Requires:	globus-common >= 13.4
@@ -58,6 +59,7 @@ Globus Gatekeeper Setup
 %patch3 -p0
 %patch4 -p0
 %patch5 -p0
+%patch6 -p0
 
 %build
 # Remove files that should be replaced during bootstrap
@@ -130,10 +132,13 @@ fi
 /usr/share/osg/sysconfig/%{name}
 
 %changelog
-* Wed Sep 11 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 9.6-1.11
+* Wed Dec 11 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 9.6-1.12.osg
+- Add fork_and_proxy workaround patch for GT-489 (OpenSSL 1.0.1 compatibility issue)
+
+* Wed Sep 11 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 9.6-1.11.osg
 - Avoid trigerring gatekeeper's own log rotation since we're using logrotate (SOFTWARE-1083)
 
-* Wed Sep 11 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 9.6-1.10
+* Wed Sep 11 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 9.6-1.10.osg
 - Add copytruncate to logrotate (SOFTWARE-1083)
 
 * Thu Feb 22 2013 Dave Dykstra <dwd@fnal.gov> - 9.6-1.9.osg
