@@ -5,7 +5,7 @@
 %endif
 Name: cctools
 Version: 4.0.2
-Release: 4%{?dist}
+Release: 5%{?dist}
 Summary: A collection of tools for harnessing large scale distributed systems.
 License: GPL 2.0 
 URL: http://www3.nd.edu/~ccl/
@@ -21,6 +21,10 @@ BuildRequires: swig
 %if 0%{?rhel} > 5
 BuildRequires: perl-ExtUtils-Embed
 %endif
+#Addded so documentation is built 
+BuildRequires: m4 doxygen 
+BuildRequires: /usr/bin/nroff
+
 
 %description
 The Cooperative Computing Tools are a collection of tools for harnessing large
@@ -180,6 +184,11 @@ rm %{buildroot}/usr/etc/Makefile.config
 %{_docdir}/cctools/ftsh.html
 %{_docdir}/cctools/index.html
 %{_docdir}/cctools/install.html
+#Added so the documentation and the man pages are included
+%{_docdir}/%{name}/api/html/*
+%{_docdir}/%{name}/man/*
+%_mandir/man1/*
+
 
 %files resource_monitor
 %{_bindir}/resource_monitor
@@ -319,6 +328,9 @@ rm %{buildroot}/usr/etc/Makefile.config
 %{_includedir}/cctools/md5.h
 
 %changelog
+* Tue Dec 10 2013 Edgar Fajardo <efajardo@cern.ch> - 4.0.2-4
+- Added m4, doxygen and nroff so documentation is built.
+
 * Tue Oct 15 2013 Brian Lin <blin@cs.wisc.edu> - 4.0.2-3
 - Introduced to the OSG Software Stack
 
