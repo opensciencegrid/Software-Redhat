@@ -1,8 +1,8 @@
 Index: globus_gram_job_manager_request.c
 ===================================================================
---- globus_gram_job_manager_request.c.orig	2012-04-18 16:58:47.166096473 -0500
-+++ globus_gram_job_manager_request.c	2012-04-18 16:59:24.305973691 -0500
-@@ -3810,7 +3810,7 @@
+--- globus_gram_job_manager_request.c.orig	2013-12-11 16:50:08.278823724 -0600
++++ globus_gram_job_manager_request.c	2013-12-11 16:51:20.517714655 -0600
+@@ -3803,7 +3803,7 @@
  
      out_file = globus_common_create_string(
                  "%s/.globus/job/%s/%s",

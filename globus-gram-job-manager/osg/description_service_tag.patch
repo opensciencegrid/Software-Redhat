@@ -1,8 +1,8 @@
 Index: globus_gram_job_manager_script.c
 ===================================================================
---- globus_gram_job_manager_script.c.orig	2011-10-20 13:06:36.000000000 -0500
-+++ globus_gram_job_manager_script.c	2011-10-27 15:21:26.129686755 -0500
-@@ -1774,6 +1774,11 @@
+--- globus_gram_job_manager_script.c.orig	2013-04-10 10:27:45.000000000 -0500
++++ globus_gram_job_manager_script.c	2013-12-11 16:50:31.272107287 -0600
+@@ -1846,6 +1846,11 @@
                  ",\n    'jobdir' => [ '%s' ]",
                  request->job_dir);
      }
