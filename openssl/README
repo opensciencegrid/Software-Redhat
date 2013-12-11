@@ -5,3 +5,5 @@ http://vault.centos.org/6.4/updates/Source/SPackages/openssl-1.0.0-27.el6_4.2.sr
 We are keeping this build around in osg-internal for now, as the new
 openssl-1.0.1 may cause some problems for us...
 
+NOTE: This package MUST NOT be built for el5! el5 uses OpenSSL 0.9.8 so putting 1.0.1 in breaks everything.
+
