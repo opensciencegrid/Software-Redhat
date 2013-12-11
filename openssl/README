@@ -7,3 +7,14 @@ openssl-1.0.1 may cause some problems for us...
 
 NOTE: This package MUST NOT be built for el5! el5 uses OpenSSL 0.9.8 so putting 1.0.1 in breaks everything.
 
+HISTORY: OpenSSL 1.0.1 came out in RHEL 6.5 and spread to the other EL6s.
+Building an RPM against OpenSSL 1.0.1 renders it uninstallable (due to shared
+library version dependencies) on systems with older OpenSSL versions (1.0.0, on
+EL < 6.5).  However, most RPMs built against OpenSSL 1.0.0 work on an OpenSSL
+1.0.1 install. The notable exception is Globus GRAM, but we have a workaround
+in place (see <http://jira.globus.org/browse/GT-489> and also
+<http://jira.globus.org/browse/RIC-239>).
+
+Until we decide to stop support for EL 6.0 -- 6.4, we must build our RPMs
+with this version of OpenSSL on EL 6.
+
