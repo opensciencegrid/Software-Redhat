@@ -1,4 +1,1 @@
-Source received out-of-band from Joe Bester.
-In general, sources can be downloaded from
-'http://www.globus.org/ftppub/gt5/5.2/5.2.0/packages/rpm/centos/5/SRPMS/'
-
+EPEL with some OSG-specific patches that are unlikely to be upstreamed
