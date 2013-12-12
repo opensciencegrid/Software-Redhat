@@ -11,7 +11,7 @@
 Name:		globus-gatekeeper
 %global _name %(tr - _ <<< %{name})
 Version:	9.15
-Release:	1.1%{?dist}
+Release:	1.2%{?dist}
 Summary:	Globus Toolkit - Globus Gatekeeper
 
 Group:		Applications/Internet
@@ -25,6 +25,7 @@ Source8:	GLOBUS-GRAM5
 Source11:       globus-gatekeeper.osg-sysconfig
 Patch3:         init.patch
 Patch5:         logrotate-copytruncate.patch
+Patch6:         GT-489-openssl-1.0.1-fix.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 #		Keep providing globus-gatekeeper-setup until it is not needed
@@ -57,6 +58,7 @@ Globus Gatekeeper
 
 %patch3 -p0
 %patch5 -p0
+%patch6 -p0
 
 %build
 # Remove files that should be replaced during bootstrap
@@ -148,7 +150,10 @@ fi
 
 
 %changelog
-* Mon Dec 09 2013 Matyas Selmeci <matyas@cs.wisc.edu> 9.15-1.1
+* Thu Dec 11 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 9.15-1.2.osg
+- Add fork_and_proxy workaround patch for GT-489 (OpenSSL 1.0.1 compatibility issue)
+
+* Mon Dec 09 2013 Matyas Selmeci <matyas@cs.wisc.edu> 9.15-1.1.osg
 - Merge OSG changes
 - Drop patch GRAM-309.patch (fixed upstream)
 - Trim patch init.patch (most of it fixed upstream except for an OSG-specific change)
@@ -157,10 +162,10 @@ fi
 - Update to Globus Toolkit 5.2.5
 - Drop patch globus-gatekeeper-ac.patch (fixed upstream)
 
-* Wed Sep 11 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 9.6-1.11
+* Wed Sep 11 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 9.6-1.11.osg
 - Avoid trigerring gatekeeper's own log rotation since we're using logrotate (SOFTWARE-1083)
 
-* Wed Sep 11 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 9.6-1.10
+* Wed Sep 11 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 9.6-1.10.osg
 - Add copytruncate to logrotate (SOFTWARE-1083)
 
 * Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 9.14-6
