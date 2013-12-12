@@ -1,6 +1,6 @@
 Name:           osg-release
 Version:        3.2
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        OSG Software for Enterprise Linux repository configuration
 
 Group:          System Environment/Base 
@@ -79,7 +79,8 @@ mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d
 %if 0%{?el6}
 install -pm 644 $RPM_SOURCE_DIR/osg-el6*.repo $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d
 %else
-install -pm 644 $RPM_SOURCE_DIR/osg.repo $RPM_SOURCE_DIR/osg-[^e][^l][^6]*.repo $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d
+rm -f $RPM_SOURCE_DIR/osg-el6*.repo
+install -pm 644 $RPM_SOURCE_DIR/osg*.repo $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d
 %endif
 
 %clean
@@ -92,6 +93,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Dec 12 2013 Carl Edquist <edquist@cs.wisc.edu> - 3.2-5
+- Bugfix for el5; glob to exclude el6 packages was also excluding osg-empty
+
 * Mon Dec 09 2013 Carl Edquist <edquist@cs.wisc.edu> - 3.2-4
 - Add osg-empty repos (SOFTWARE-1237)
 
