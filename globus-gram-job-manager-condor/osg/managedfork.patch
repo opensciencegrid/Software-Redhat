@@ -1,5 +1,7 @@
---- _build_results/BUILD/globus_gram_job_manager_condor-0.0/condor.pm.orig	2011-08-17 08:44:40.000000000 -0500
-+++ condor.pm	2011-08-17 08:48:07.000000000 -0500
+Index: condor.pm
+===================================================================
+--- condor.pm.orig	2013-12-12 16:55:14.916832333 -0600
++++ condor.pm	2013-12-12 16:55:21.075908412 -0600
 @@ -37,7 +37,7 @@
  
  @ISA = qw(Globus::GRAM::JobManager);
@@ -134,7 +136,7 @@
      # NFS Lite mode
      if ($isNFSLite && !$isManagedFork) {
          print SCRIPT_FILE "should_transfer_files = YES\n";
-@@ -954,4 +1007,17 @@
+@@ -955,4 +1008,17 @@
      return 1; # Should return a proper Globus success code
  }
  
