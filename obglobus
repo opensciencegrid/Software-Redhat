@@ -1,0 +1,1 @@
+exec osg-build koji --ktt osg-el5-gt525 --ktt osg-el6-gt525 "$@"
