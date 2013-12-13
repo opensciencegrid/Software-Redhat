@@ -1,3 +1,2 @@
-Source downloaded from 'http://www.globus.org/ftppub/gt5/5.2/5.2.0/packages/rpm/centos/5/SRPMS/globus-gram-job-manager-sge-1.0-7.src.rpm'
-seg_sge_module.c.patch from 'http://portal.nersc.gov/project/alice/porter/seg_sge_module.c.patch'
+EPEL with a placeholder .rvf file the admin can modify
 
