@@ -1,8 +1,8 @@
 Index: JobDescription.pm.in
 ===================================================================
---- JobDescription.pm.in.orig	2011-08-24 10:59:48.000000000 -0500
-+++ JobDescription.pm.in	2011-09-07 11:52:44.000000000 -0500
-@@ -326,6 +326,136 @@
+--- JobDescription.pm.in.orig	2013-09-06 14:58:46.000000000 -0500
++++ JobDescription.pm.in	2013-12-12 18:34:40.719872233 -0600
+@@ -327,6 +327,136 @@
  
  =cut
  
@@ -139,7 +139,7 @@ Index: JobDescription.pm.in
  sub AUTOLOAD
  {
      use vars qw($AUTOLOAD);
-@@ -336,6 +466,8 @@
+@@ -337,6 +467,8 @@
      $name =~ s/_//g;
      $name = lc($name);
  
