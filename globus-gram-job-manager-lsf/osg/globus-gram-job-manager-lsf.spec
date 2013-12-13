@@ -19,7 +19,6 @@ License:	ASL 2.0
 URL:		http://www.globus.org/
 Source:		http://www.globus.org/ftppub/gt5/5.2/5.2.5/packages/src/%{_name}-%{version}.tar.gz
 Source1:        lsf.rvf
-Patch0:         host-xcount.patch
 #		README file
 Source8:	GLOBUS-GRAM5
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -100,7 +99,6 @@ state
 
 %prep
 %setup -q -n %{_name}-%{version}
-%patch0 -p0
 
 %build
 # Remove files that should be replaced during bootstrap
@@ -237,6 +235,7 @@ fi
 %changelog
 * Thu Dec 12 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.2-1.1.osg
 - Merge OSG changes
+- Drop patch host-xcount.patch (fixed upstream)
 
 * Thu Nov 07 2013 Mattias Ellert <mattias.ellert@fysast.uu.se> - 1.2-1
 - Update to Globus Toolkit 5.2.5
