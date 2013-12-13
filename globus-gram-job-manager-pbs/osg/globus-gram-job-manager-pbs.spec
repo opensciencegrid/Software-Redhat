@@ -161,9 +161,6 @@ grep 'lib.*\.la$' $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_dev.filelist \
   >> $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_rtl.filelist
 sed '/lib.*\.la$/d' -i $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_dev.filelist
 
-# Remove jobmanager-pbs from install dir - leave it for admin configuration
-rm %{buildroot}/etc/grid-services/jobmanager-pbs
-
 # Install README file
 install -m 644 -p %{SOURCE8} %{buildroot}%{_docdir}/%{name}-%{version}/README
 
