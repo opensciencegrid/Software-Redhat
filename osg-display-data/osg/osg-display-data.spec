@@ -1,6 +1,6 @@
 Name: osg-display-data
 Version: 1.0.5
-Release: 1
+Release: 1%{?dist}
 Summary: Scripts and tools to generate the OSG Display's data.
 Source: %{name}-%{version}.tar.gz
 License: UNKNOWN
@@ -34,6 +34,9 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root)
 
 %changelog
+* Fri Dec 13 2013 Carl Edquist <edquist@cs.wisc.edu> - 1.0.5-2
+- Add dist tag
+
 * Fri Dec 13 2013 Carl Edquist <edquist@cs.wisc.edu> - 1.0.5-1
 - Apply Brian Bockelman's fix to handle VOName 'Unknown' (SOFTWARE-1326)
 
