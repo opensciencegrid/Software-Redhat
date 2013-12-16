@@ -1,0 +1,12 @@
+#
+# This RVF file allows you to override the defaults specified in
+# /usr/share/globus/globus_gram_job_manager/globus-gram-job-manager.rvf
+# Instead of editing that file, you should place changes here; they will
+# be preserved on upgrade.
+#
+# Common RVF overrides include:
+# - Setting a default memory requirement
+# - Setting the default max CPU / wall time
+# - Setting a default queue, or limiting the available queues.
+#
+

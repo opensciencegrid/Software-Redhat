@@ -1,0 +1,28 @@
+# This file is replaced by package upgrades.
+# Variables may be overridden in /etc/sysconfig/globus-gridftp-server
+
+# lcas-lcmaps-gt4-interface configuration
+export LLGT_LOG_IDENT=gridftp-server-llgt
+export LCMAPS_DB_FILE=/etc/lcmaps.db
+# authorize_only is needed for -with-chroot and works in non-chroot mode
+export LCMAPS_POLICY_NAME=authorize_only
+# this is needed for the authorize_only policy
+export LLGT_LIFT_PRIVILEGED_PROTECTION=1
+#level 0: no messages, 1: errors, 2: also warnings, 3: also notices,
+#  4: also info, 5: maximum debug
+export LCMAPS_DEBUG_LEVEL=2
+
+# Source OSG firewall information if it exists
+if [ -e /var/lib/osg/globus-firewall ]; then
+    . /var/lib/osg/globus-firewall
+fi
+
+# Source user-edittable configuration
+if [ -e /etc/sysconfig/globus-gridftp-server ]; then
+    . /etc/sysconfig/globus-gridftp-server
+fi
+
+# Source gridftp plugin environment (e.g. gridftp-hdfs or xrootd-dsi), if any
+if [ -e /usr/share/osg/sysconfig/globus-gridftp-server-plugin ]; then
+    .  /usr/share/osg/sysconfig/globus-gridftp-server-plugin
+fi

@@ -1,0 +1,6 @@
+
+This package provides the configuration files necessary to enable managedfork
+in Globus.  Note that managedfork is no longer a perl module (all its
+functionality has been transferred to condor.pm); this is a pure config-file
+package.
+

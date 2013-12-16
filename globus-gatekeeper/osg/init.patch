@@ -1,0 +1,12 @@
+Index: init/globus-gatekeeper-lsb.in
+===================================================================
+--- init/globus-gatekeeper-lsb.in.orig	2012-05-14 10:26:38.000000000 -0500
++++ init/globus-gatekeeper-lsb.in	2013-12-09 18:44:03.910755754 -0600
+@@ -36,6 +36,7 @@
+ 
+ . ${libexecdir}/globus-script-initializer
+ 
++. /usr/share/osg/sysconfig/globus-gatekeeper
+ GLOBUS_GATEKEEPER_CONFIG=${GLOBUS_GATEKEEPER_CONFIG:-@GATEKEEPER_CONFIGDIR@/@GATEKEEPER_CONFIGFILE@}
+ test -f "${GLOBUS_GATEKEEPER_CONFIG}" && . "${GLOBUS_GATEKEEPER_CONFIG}"
+ prog="${sbindir}/globus-gatekeeper"

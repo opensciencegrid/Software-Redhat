@@ -1,0 +1,13 @@
+Index: condor.pm
+===================================================================
+--- condor.pm.orig	2012-09-12 11:42:18.000000000 -0500
++++ condor.pm	2013-12-12 16:54:25.848226354 -0600
+@@ -738,7 +738,7 @@
+ 
+     if($num_abort > 0)
+     {
+-        $state = Globus::GRAM::JobState::FAILED;
++        return Globus::GRAM::Error::SYSTEM_CANCELLED();
+     }
+     elsif($num_done == $description->count())
+     {

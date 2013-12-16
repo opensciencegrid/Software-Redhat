@@ -1,0 +1,20 @@
+Index: globus_gram_job_manager.c
+===================================================================
+--- globus_gram_job_manager.c.orig	2012-10-19 09:54:19.000000000 -0500
++++ globus_gram_job_manager.c	2013-12-11 16:49:18.998216030 -0600
+@@ -3050,6 +3050,7 @@
+         goto malloc_restart_rsl_failed;
+     }
+ 
++    GlobusGramJobManagerUnlock(manager);
+     rc = globus_gram_job_manager_request_init(
+             request,
+             manager,
+@@ -3061,6 +3062,7 @@
+             NULL,
+             NULL,
+             NULL);
++    GlobusGramJobManagerLock(manager);
+     free(restart_rsl);
+ malloc_restart_rsl_failed:
+     return rc;
