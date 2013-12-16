@@ -1,4 +1,4 @@
-%define tarball_version 8.0.4
+%define tarball_version 8.0.5
 
 # Things for F15 or later
 %if 0%{?fedora} >= 16
@@ -67,7 +67,7 @@ Version: %{tarball_version}
 %define condor_release %condor_base_release
 %endif
 # Release: %condor_release%{?dist}.2
-Release: 3%{?dist}
+Release: 1%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -1271,6 +1271,9 @@ fi
 %endif
 
 %changelog
+* Mon Dec 16 2013 Edgar Fajardo <efajardo@cern.ch> - 8.0.5-1
+- Update to new version 8.0.5
+ 
 * Fri Nov 22 2013 Brian Lin <blin@cs.wisc.edu> - 8.0.4-3
 - Make init script more bourne shell compatible (SOFTWARE-1307)
 
