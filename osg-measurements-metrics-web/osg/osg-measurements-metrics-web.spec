@@ -5,7 +5,7 @@
 
 Name:           osg-measurements-metrics-web
 Version:        1.2
-Release:        20%{?dist}
+Release:        21%{?dist}
 Summary:        OSG Measurements and Metrics web and database
 
 Group:          Applications/System
@@ -80,6 +80,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+
+* Mon Dec 16 2013 William B Hurst <wbhurst@cse.unl.edu>
+- two new queries added rsv_queries, deleted unneeded
+- code jot_reporting and wlcg_reporting
 
 * Fri Nov 15 2013 William B Hurst <wbhurst@cse.unl.edu>
 - More changes made to attempt to resolve GratiaWeb-42 
