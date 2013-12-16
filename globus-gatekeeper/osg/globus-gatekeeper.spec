@@ -11,7 +11,7 @@
 Name:		globus-gatekeeper
 %global _name %(tr - _ <<< %{name})
 Version:	9.15
-Release:	1.2%{?dist}
+Release:	1.3%{?dist}
 Summary:	Globus Toolkit - Globus Gatekeeper
 
 Group:		Applications/Internet
@@ -150,6 +150,9 @@ fi
 
 
 %changelog
+* Mon Dec 16 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 9.15-1.3.osg
+- Bump and rebuild with OpenSSL 1.0.0
+
 * Thu Dec 11 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 9.15-1.2.osg
 - Add fork_and_proxy workaround patch for GT-489 (OpenSSL 1.0.1 compatibility issue)
 
