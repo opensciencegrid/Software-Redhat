@@ -20,8 +20,9 @@ Name:           glideinwms
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
 %if %{v3_plus}
-%define version 3.2.2
-%define release 1
+%define version 3.2.3
+%define release 0.1.rc1
+#%define release 1
 %define frontend_xml frontend.master.xml
 %define factory_xml glideinWMS.master.xml
 %endif
@@ -213,7 +214,7 @@ install of wmscollector + wms factory
 cp %{SOURCE7} .
 chmod 700 chksum.sh
 ./chksum.sh v%{version}-%{release}.osg etc/checksum.frontend "CVS config_examples doc .git .gitattributes poolwatcher factory/check* factory/glideFactory* factory/test* factory/manage* factory/stop* factory/tools creation/create_glidein creation/reconfig_glidein creation/info_glidein creation/lib/cgW* creation/web_base/factory*html creation/web_base/collector_setup.sh creation/web_base/condor_platform_select.sh creation/web_base/condor_startup.sh creation/web_base/create_mapfile.sh creation/web_base/gcb_setup.sh creation/web_base/glexec_setup.sh creation/web_base/glidein_startup.sh creation/web_base/job_submit.sh creation/web_base/local_start.sh creation/web_base/setup_x509.sh creation/web_base/update_proxy.py creation/web_base/validate_node.sh chksum.sh etc/checksum*"
-./chksum.sh v%{version}-%{release}.osg etc/checksum.factory "CVS config_examples doc .git .gitattributes poolwatcher frontend/* creation/reconfig_glidein creation/lib/cgW* creation/web_base/factory*html creation/web_base/collector_setup.sh creation/web_base/condor_platform_select.sh creation/web_base/condor_startup.sh creation/web_base/create_mapfile.sh creation/web_base/gcb_setup.sh creation/web_base/glexec_setup.sh creation/web_base/glidein_startup.sh creation/web_base/job_submit.sh creation/web_base/local_start.sh creation/web_base/setup_x509.sh creation/web_base/update_proxy.py creation/web_base/validate_node.sh chksum.sh etc/checksum*"
+./chksum.sh v%{version}-%{release}.osg etc/checksum.factory "CVS config_examples doc .git .gitattributes poolwatcher frontend/* creation/reconfig_glidein creation/clone_glidein creation/lib/cgW* creation/web_base/factory*html creation/web_base/collector_setup.sh creation/web_base/condor_platform_select.sh creation/web_base/condor_startup.sh creation/web_base/create_mapfile.sh creation/web_base/gcb_setup.sh creation/web_base/glexec_setup.sh creation/web_base/glidein_startup.sh creation/web_base/job_submit.sh creation/web_base/local_start.sh creation/web_base/setup_x509.sh creation/web_base/update_proxy.py creation/web_base/validate_node.sh chksum.sh etc/checksum*"
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -233,6 +234,7 @@ sed -i "s/WEB_BASE_DIR=.*/WEB_BASE_DIR=\"\/var\/lib\/gwms-frontend\/web-base\"/"
 sed -i "s/STARTUP_DIR=.*/STARTUP_DIR=\"\/var\/lib\/gwms-frontend\/web-base\"/" creation/reconfig_frontend
 sed -i "s/WEB_BASE_DIR=.*/WEB_BASE_DIR=\"\/var\/lib\/gwms-factory\/web-base\"/" creation/reconfig_glidein
 sed -i "s/STARTUP_DIR =.*/STARTUP_DIR=\"\/var\/lib\/gwms-factory\/web-base\"/" creation/reconfig_glidein
+sed -i "s/STARTUP_DIR =.*/STARTUP_DIR=\"\/var\/lib\/gwms-factory\/web-base\"/" creation/clone_glidein
 
 # install the executables
 install -d $RPM_BUILD_ROOT%{_sbindir}
@@ -251,6 +253,7 @@ install -m 0500 factory/glideFactoryEntryGroup.py $RPM_BUILD_ROOT%{_sbindir}/
 install -m 0500 factory/manageFactoryDowntimes.py $RPM_BUILD_ROOT%{_sbindir}/
 install -m 0500 factory/stopFactory.py $RPM_BUILD_ROOT%{_sbindir}/
 install -m 0500 creation/reconfig_glidein $RPM_BUILD_ROOT%{_sbindir}/
+install -m 0500 creation/clone_glidein $RPM_BUILD_ROOT%{_sbindir}/
 install -m 0500 creation/info_glidein $RPM_BUILD_ROOT%{_sbindir}/
 
 
@@ -544,6 +547,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_sbindir}/info_glidein
 %attr(755,root,root) %{_sbindir}/manageFactoryDowntimes.py
 %attr(755,root,root) %{_sbindir}/reconfig_glidein
+%attr(755,root,root) %{_sbindir}/clone_glidein
 %attr(-, root, root) %dir %{_localstatedir}/lib/gwms-factory
 %attr(-, root, root) %{_localstatedir}/lib/gwms-factory/client-proxies
 %attr(-, gfactory, gfactory) %{factory_web_dir}
@@ -716,6 +720,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Dec 17 2013 Parag Mhashilkar <parag@fnal.gov> - 3.2.3-0.1.rc1
+- New features and bug fixes
+
 * Mon Oct 28 2013 Parag Mhashilkar <parag@fnal.gov> - 3.2.1-0.1.rc2
 - Added gwms-frontend and gwms-factory files in /etc/sysconfig in the respective rpms
 - Added new files, xslt.* to the list for respective rpms
