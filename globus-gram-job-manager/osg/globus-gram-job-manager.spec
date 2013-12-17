@@ -9,7 +9,7 @@
 Name:		globus-gram-job-manager
 %global _name %(tr - _ <<< %{name})
 Version:	13.53
-Release:	1.1%{?dist}
+Release:	1.2%{?dist}
 Summary:	Globus Toolkit - GRAM Jobmanager
 
 Group:		Applications/Internet
@@ -264,6 +264,9 @@ fi
 %dir %{_pkgdocdir}/html
 
 %changelog
+* Mon Dec 16 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 13.53-1.2.osg
+- Bump and rebuild with OpenSSL 1.0.0
+
 * Wed Dec 11 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 13.53-1.1.osg
 - Merge OSG changes
 - Remove gt-286-missing-normalize.patch (fixed upstream)
