@@ -1,0 +1,54 @@
+VOMS server configuration
+-------------------------
+
+In addition to the voms-server package a voms database plugin is needed.
+
+Plugins exists for mysql and oracle. Since the oracle client libraries
+are not open source software, only the mysql plugin is available in
+Fedora. To install the voms-mysql-plugin issue the following command
+as root:
+
+	yum install voms-mysql-plugin
+
+Before starting the server, you must create the databases used by
+VOMS. It is possible to run more than one VOMS server on a single host
+as long as they are configured to use different ports.
+
+You should have the grid CA certificates installed in
+/etc/grid-security/certificates before running the VOMS database
+creation script.
+
+To create the databases run the following command as root for each
+VOMS server you want to run:
+
+	/usr/share/voms/voms_install_db \
+		--voms-vo=<voname> \
+		--port=<portnumber> \
+		--db-type=mysql \
+		--db-admin=<mysqladminuser> \
+		--db-pwd=<mysqladminpwd> \
+		--sqlloc=/usr/lib/voms/libvomsmysql.so
+
+If you are running on a 64 bit host use instead:
+		--sqlloc=/usr/lib64/voms/libvomsmysql.so
+
+The voms server is configured to run as a special voms user. This user
+needs a copy of the host certificate and key:
+
+	cp -p /etc/grid-security/hostcert.pem /etc/grid-security/voms
+	cp -p /etc/grid-security/hostkey.pem /etc/grid-security/voms
+	chown voms:voms /etc/grid-security/voms/host*.pem
+
+After creating the databases, start the server by running the command:
+
+	service voms start
+
+If you want the server to be started automatically after each reboot run
+the command:
+
+	chkconfig voms on
+
+To check that the server is running and is configured correctly, run
+the following command:
+
+	/usr/share/voms/voms-ping <voname>
