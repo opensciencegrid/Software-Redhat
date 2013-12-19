@@ -1,108 +1,27 @@
-%if %{?fedora}%{!?fedora:0} >= 16 || %{?rhel}%{!?rhel:0} >= 7
-%global compat 0
-%else
-%global compat 1
-%endif
+%{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
 
-%global version1 1.9.19.2
-%global release1 7.6
-
-%global version2 2.0.8
-%global release2 1.9
+%global _hardened_build 1
 
 Name:		voms
-Version:	%{version2}
-Release:	%{release2}%{?dist}
+Version:	2.0.11
+%global tagver %(tr . _ <<< %{version})
+Release:	2.1%{?dist}
 Summary:	Virtual Organization Membership Service
 
 Group:		System Environment/Libraries
 License:	ASL 2.0
-URL:		http://glite.web.cern.ch/glite/
-#		This source tarball is created from a git checkout:
-#		git clone git://github.com/italiangrid/voms.git
-#		cd voms
-#		git archive --format tar --prefix voms-2.0.8/ 2_0_8 | \
-#		gzip - > ../voms-2.0.8.tar.gz
-Source0:	%{name}-%{version2}.tar.gz
-#		This source tarball is created from a CVS checkout:
-#		cvs -d:pserver:anonymous:@glite.cvs.cern.ch:/cvs/glite co \
-#		  -r glite-security-voms_R_1_9_19_2 \
-#		  -d voms-1.9.19.2 org.glite.security.voms
-#		tar -z -c --exclude CVS -f voms-1.9.19.2.tar.gz voms-1.9.19.2
-Source1:	%{name}-%{version1}.tar.gz
+URL:		https://wiki.italiangrid.it/VOMS
+#Source0:	https://github.com/italiangrid/%{name}/archive/%{tagver}.tar.gz
+Source0:        2_0_11.tar.gz
 #		Post-install setup instructions:
-Source2:	%{name}.INSTALL
-#		Build using Globus from Fedora/EPEL
-#		https://savannah.cern.ch/bugs/?54427
-Source3:        voms.logrotate
-Patch0:		%{name}-distribution-globus.patch
-#		Fix the start-up script
-#		https://savannah.cern.ch/bugs/?54428
-Patch1:		%{name}-initscript.patch
-#		Fix the --disable-glite configure option
-#		https://savannah.cern.ch/bugs/?54429
-Patch2:		%{name}-fix-enable-glite.patch
-#		Remove lib64 hardcoding
-#		https://savannah.cern.ch/bugs/?54430
-Patch3:		%{name}-nolib64.patch
-#		Make the Java API more compatible with the C API
-#		https://savannah.cern.ch/bugs/?54432
-Patch4:		%{name}-extra-vomses-java.patch
-#		Missing casts after Java cloning
-#		https://savannah.cern.ch/bugs/?54433
-Patch5:		%{name}-java-clone-cast.patch
-#		Fix permissions of installed jar
-#		https://savannah.cern.ch/bugs/?54434
-Patch6:		%{name}-jar-perms.patch
-#		Fix javadoc warnings
-#		https://savannah.cern.ch/bugs/?54435
-Patch7:		%{name}-javadoc.patch
-#		Fix syntax errors in shell scripts
-#		https://savannah.cern.ch/bugs/?54436
-Patch8:		%{name}-shell-syntax.patch
-#		Fix the database install script
-#		https://savannah.cern.ch/bugs/?54880
-Patch9:		%{name}-install-db.patch
-#		Error message glitch
-#		https://savannah.cern.ch/bugs/?55113
-Patch10:	%{name}-notknown-msg.patch
-#		Make the Java API build with gcj
-#		https://savannah.cern.ch/bugs/?55115
-Patch11:	%{name}-gcj.patch
-#		Support older autotools and older gcc
-#		https://savannah.cern.ch/bugs/?55116
-Patch12:	%{name}-portability.patch
-#		Support openssl 1.0
-#		https://savannah.cern.ch/bugs/?55390
-Patch13:	%{name}-openssl.patch
-#		Unconditional use of PIPE_BUF
-#		https://savannah.cern.ch/bugs/?55405
-Patch14:	%{name}-pipe-buf.patch
-#		Make sure -L/usr/lib and -L/usr/lib64 is not used
-#		https://savannah.cern.ch/bugs/?57261
-Patch15:	%{name}-expat.patch
-#		Add missing dependencies for stricter binutils
-#		https://savannah.cern.ch/bugs/?60979
-Patch16:	%{name}-deps.patch
-#		Changed multiple inclusion guard name
-Patch17:	%{name}-globus-compat.patch
-#		Fix the database install script
-Patch20:	%{name}-install-db2.patch
-#		Resolve race condition in Makefile documentation rules
-Patch21:	%{name}-doc-race.patch
+Source1:	%{name}.INSTALL
 #		Don't use embedded gsoap sources
-Patch22:	%{name}-gsoap.patch
-#               Fix duplicate definition of globus_mutex_t
-Patch100:       globus_thread_h.patch
-#               Fix segfault when mistyping passphrase when using p12
-Patch101:       p12.patch
-#               Set signature algorithm to depend on the issuer signature algorithm
-Patch102:       sha2-proxy.patch
+Patch0:		%{name}-gsoap.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires:	globus-gssapi-gsi-devel%{?_isa}
-BuildRequires:	globus-gss-assist-devel%{?_isa}
-BuildRequires:	openssl-devel%{?_isa}
+BuildRequires:	globus-gssapi-gsi-devel
+BuildRequires:	globus-gss-assist-devel
+BuildRequires:	openssl-devel
 BuildRequires:	expat-devel
 BuildRequires:	gsoap-devel
 BuildRequires:	libtool
@@ -110,10 +29,18 @@ BuildRequires:	pkgconfig
 BuildRequires:	libxslt
 BuildRequires:	docbook-style-xsl
 BuildRequires:	doxygen
-%if %{?fedora}%{!?fedora:0} >= 9 || %{?rhel}%{!?rhel:0} >= 5
 BuildRequires:	tex(latex)
-%else
-BuildRequires:	tetex-latex
+%if %{?fedora}%{!?fedora:0} >= 18 || %{?rhel}%{!?rhel:0} >= 7
+BuildRequires:	tex(sectsty.sty)
+BuildRequires:	tex(tocloft.sty)
+BuildRequires:	tex(xtab.sty)
+BuildRequires:	tex(multirow.sty)
+BuildRequires:	tex-ec
+BuildRequires:	tex-courier
+BuildRequires:	tex-helvetic
+BuildRequires:	tex-times
+BuildRequires:	tex-symbol
+BuildRequires:	tex-rsfs
 %endif
 
 %description
@@ -153,27 +80,7 @@ Requires:	%{name} = %{version}-%{release}
 %description doc
 Documentation for the Virtual Organization Membership Service.
 
-%if %{compat}
-%package compat
-Version:	%{version1}
-Release:	%{release1}%{?dist}
-Summary:	Virtual Organization Membership Service
-Group:		System Environment/Libraries
-
-%description compat
-In grid computing, and whenever the access to resources may be controlled
-by parties external to the resource provider, users may be grouped to
-Virtual Organizations (VOs). This package provides a VO Membership Service
-(VOMS), which informs on that association between users and their VOs:
-groups, roles and capabilities.
-
-This package offers libraries that applications using the VOMS functionality
-will bind to.
-%endif
-
 %package clients
-Version:	%{version2}
-Release:	%{release2}%{?dist}
 Summary:	Virtual Organization Membership Service Clients
 Group:		Applications/Internet
 Requires:	%{name}%{?_isa} = %{version}-%{release}
@@ -211,164 +118,63 @@ information in a special format (VOMS credential). The VO manager can
 administrate it remotely using command line tools or a web interface.
 
 %prep
-%if %{compat}
-%setup -q -a 1
-
-pushd %{name}-%{version1}
-
+%setup -q -n %{name}-%{tagver}
 %patch0 -p1
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
-%patch6 -p1
-%patch7 -p1
-%patch8 -p1
-%patch9 -p1
-%patch10 -p1
-%patch11 -p1
-%patch12 -p1
-%patch13 -p1
-%patch14 -p1
-%patch15 -p1
-%patch16 -p1
-%patch17 -p1
-
-# Fix bad permissions (which otherwise end up in the debuginfo package)
-find . '(' -name '*.h' -o -name '*.c' -o -name '*.cpp' -o \
-	   -name '*.cc' -o -name '*.java' ')' -exec chmod a-x {} ';'
-
-# Fix location dir
-sed -e 's/\(LOCATION_DIR.*\)"\$prefix"/\1""/g' -i project/acinclude.m4
-
-# Fix default Globus location
-sed -e 's!\(GLOBUS_LOCATION\)!{\1:-/usr}!' -i project/voms.m4
-
-# Fix default vomses file location
-sed -e 's!/opt/glite/etc/vomses!/etc/vomses!' -i src/api/ccapi/voms_api.cc
-
-# Use pdflatex
-sed -e 's!^\(USE_PDFLATEX *= *\)NO!\1YES!' -i src/api/ccapi/Makefile.am
-
-# Touch to avoid rerunning bison and flex
-touch -r src/utils/vomsfake.y src/utils/vomsparser.h
-touch -r src/utils/vomsfake.y src/utils/vomsparser.c
-touch -r src/utils/vomsfake.y src/utils/lex.yy.c
-
-# rebootstrap
-./autogen.sh
-
-popd
-
-%else
-%setup -q
-%endif
-
-%patch20 -p1
-%patch21 -p1
-%patch22 -p1
-%patch102 -p0
 
 # Remove embedded gsoap sources
 rm src/server/stdsoap2.c src/server/stdsoap2.h src/server/soap*
 
-# Fix bad permissions (which otherwise end up in the debuginfo package)
-find . '(' -name '*.h' -o -name '*.c' -o -name '*.cpp' -o \
-	   -name '*.cc' -o -name '*.java' ')' -exec chmod a-x {} ';'
-
-# Use pdflatex
-sed -e 's!^\(USE_PDFLATEX *= *\)NO!\1YES!' -i src/api/ccapi/Makefile.am
-
-# Touch to avoid rerunning bison and flex
-touch -r src/utils/vomsfake.y src/utils/vomsparser.h
-touch -r src/utils/vomsfake.y src/utils/vomsparser.c
-touch -r src/utils/vomsfake.y src/utils/lex.yy.c
-
 # rebootstrap
 ./autogen.sh
 
-install -m 644 %{SOURCE2} README.Fedora
+install -m 644 %{SOURCE1} README.Fedora
 
-# OSG patches
-%patch100 -p1
-%patch101 -p1
 %build
-%if %{compat}
-pushd %{name}-%{version1}
-%configure --disable-glite --libexecdir=%{_datadir} \
-	   --disable-static --disable-docs --disable-java \
-	   --with-api-only
-make -j1
-popd
-%endif
+%configure --disable-static --enable-docs --disable-parser-gen
 
-%configure --disable-glite --libexecdir=%{_datadir} \
-	   --disable-static --enable-docs
-
-make -j1
+make %{?_smp_mflags}
 
 ( cd doc/apidoc/api/VOMS_C_API/latex ; make )
 ( cd doc/apidoc/api/VOMS_CC_API/latex ; make )
 
 %install
-rm -rf $RPM_BUILD_ROOT
+rm -rf %{buildroot}
 
-%if %{compat}
-pushd %{name}-%{version1}
-make install DESTDIR=$RPM_BUILD_ROOT
-rm $RPM_BUILD_ROOT%{_libdir}/*.la
-rm $RPM_BUILD_ROOT%{_libdir}/*.so
-rm -rf $RPM_BUILD_ROOT%{_includedir}
-rm -rf $RPM_BUILD_ROOT%{_datadir}
-popd
-%endif
+make install DESTDIR=%{buildroot}
 
-make install DESTDIR=$RPM_BUILD_ROOT
+rm %{buildroot}%{_libdir}/*.la
 
-rm $RPM_BUILD_ROOT%{_libdir}/*.la
-
-sed -e 's/\$PREFIX//' -e 's/\.glite/.voms/' -e 's/RThis/R This/' \
-    -i $RPM_BUILD_ROOT%{_mandir}/man1/voms-proxy-init.1
-
-mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/grid-security/vomsdir
-mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/grid-security/%{name}
-mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/%{name}
-mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/log/%{name}
-mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/log/%{name}/old
+mkdir -p %{buildroot}%{_sysconfdir}/grid-security/vomsdir
+mkdir -p %{buildroot}%{_sysconfdir}/grid-security/%{name}
+mkdir -p %{buildroot}%{_sysconfdir}/%{name}
 
 # Turn off default enabling of the service
-mkdir -p $RPM_BUILD_ROOT%{_initrddir}
+mkdir -p %{buildroot}%{_initrddir}
 sed -e 's/\(chkconfig: \)\w*/\1-/' \
     -e '/Default-Start/d' \
     -e 's/\(Default-Stop:\s*\).*/\10 1 2 3 4 5 6/' \
-    -i $RPM_BUILD_ROOT%{_initrddir}/%{name}
+    -i %{buildroot}%{_initrddir}/%{name}
 
-mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig
-echo VOMS_USER=voms > $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/%{name}
+mkdir -p %{buildroot}%{_sysconfdir}/sysconfig
+echo VOMS_USER=voms > %{buildroot}%{_sysconfdir}/sysconfig/%{name}
 
-mkdir -p $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
-install -m 644 -p LICENSE AUTHORS $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
+mkdir -p %{buildroot}%{_pkgdocdir}
+install -m 644 -p AUTHORS LICENSE README.md %{buildroot}%{_pkgdocdir}
 
-mkdir -p $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/VOMS_C_API
-cp -pr doc/apidoc/api/VOMS_C_API/html \
-   $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/VOMS_C_API
-rm -f $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/VOMS_C_API/html/installdox
+mkdir -p %{buildroot}%{_pkgdocdir}/VOMS_C_API
+cp -pr doc/apidoc/api/VOMS_C_API/html %{buildroot}%{_pkgdocdir}/VOMS_C_API
+rm -f %{buildroot}%{_pkgdocdir}/VOMS_C_API/html/installdox
 install -m 644 doc/apidoc/api/VOMS_C_API/latex/refman.pdf \
-   $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/VOMS_C_API
+   %{buildroot}%{_pkgdocdir}/VOMS_C_API
 
-mkdir -p $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/VOMS_CC_API
-cp -pr doc/apidoc/api/VOMS_CC_API/html \
-   $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/VOMS_CC_API
-rm -f $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/VOMS_CC_API/html/installdox
+mkdir -p %{buildroot}%{_pkgdocdir}/VOMS_CC_API
+cp -pr doc/apidoc/api/VOMS_CC_API/html %{buildroot}%{_pkgdocdir}/VOMS_CC_API
+rm -f %{buildroot}%{_pkgdocdir}/VOMS_CC_API/html/installdox
 install -m 644 doc/apidoc/api/VOMS_CC_API/latex/refman.pdf \
-   $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/VOMS_CC_API
-
-mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d
-cp %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/%{name}
+   %{buildroot}%{_pkgdocdir}/VOMS_CC_API
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+rm -rf %{buildroot}
 
 %post -p /sbin/ldconfig
 
@@ -379,12 +185,6 @@ rm -rf $RPM_BUILD_ROOT
 if [ -r %{_sysconfdir}/vomses.rpmsave -a ! -r %{_sysconfdir}/vomses ] ; then
    mv %{_sysconfdir}/vomses.rpmsave %{_sysconfdir}/vomses
 fi
-
-%if %{compat}
-%post compat -p /sbin/ldconfig
-
-%postun compat -p /sbin/ldconfig
-%endif
 
 %pre server
 getent group %{name} >/dev/null || groupadd -r %{name}
@@ -415,9 +215,10 @@ fi
 %dir %{_sysconfdir}/grid-security/vomsdir
 %dir %{_datadir}/%{name}
 %{_datadir}/%{name}/vomses.template
-%doc %dir %{_docdir}/%{name}-%{version}
-%doc %{_docdir}/%{name}-%{version}/AUTHORS
-%doc %{_docdir}/%{name}-%{version}/LICENSE
+%doc %dir %{_pkgdocdir}
+%doc %{_pkgdocdir}/AUTHORS
+%doc %{_pkgdocdir}/LICENSE
+%doc %{_pkgdocdir}/README.md
 
 %files devel
 %defattr(-,root,root,-)
@@ -427,18 +228,10 @@ fi
 %{_datadir}/aclocal/%{name}.m4
 %{_mandir}/man3/*
 
-%if %{compat}
-%files compat
-%defattr(-,root,root,-)
-%{_libdir}/libvoms*.so.0*
-%doc %{name}-%{version1}/AUTHORS
-%doc %{name}-%{version1}/LICENSE
-%endif
-
 %files doc
 %defattr(-,root,root,-)
-%doc %{_docdir}/%{name}-%{version}/VOMS_C_API
-%doc %{_docdir}/%{name}-%{version}/VOMS_CC_API
+%doc %{_pkgdocdir}/VOMS_C_API
+%doc %{_pkgdocdir}/VOMS_CC_API
 
 %files clients
 %defattr(-,root,root,-)
@@ -460,9 +253,7 @@ fi
 %config(noreplace) %{_sysconfdir}/sysconfig/%{name}
 %dir %{_sysconfdir}/%{name}
 %dir %{_sysconfdir}/grid-security/%{name}
-%config(noreplace) %{_sysconfdir}/logrotate.d/%{name}
 %attr(-,voms,voms) %dir %{_localstatedir}/log/%{name}
-%attr(-,voms,voms) %dir %{_localstatedir}/log/%{name}/old
 %{_datadir}/%{name}/mysql2oracle
 %{_datadir}/%{name}/upgrade1to2
 %{_datadir}/%{name}/voms.data
@@ -474,6 +265,24 @@ fi
 %doc README.Fedora
 
 %changelog
+* Wed Dec 18 2013 Edgar Fajardo <efajardo@cern.ch> - 2.0.11-2.1
+- Upgraded to version 2.0.11
+
+* Wed Nov 27 2013 Mattias Ellert <mattias.ellert@fysast.uu.se> - 2.0.11-2
+- Specfile cleanup
+
+* Wed Nov 27 2013 Mattias Ellert <mattias.ellert@fysast.uu.se> - 2.0.11-1
+- Update to version 2.0.11
+- Drop patches voms-install-db2.patch and voms-doc-race.patch (accepted
+  upstream)
+
+* Thu Aug 08 2013 Mattias Ellert <mattias.ellert@fysast.uu.se> - 2.0.10-3
+- Activate hardened buildflags
+- Use _pkgdocdir
+
+* Sun Aug 04 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.0.10-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
+
 * Thu Jun 20 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.8-1.9
 - Do not rotate empty logfiles (SOFTWARE-1084). This avoids problems caused by 'copytruncate' on leftover bogus logs from before the 2.0.8-1.6 fix.
 
@@ -483,14 +292,21 @@ fi
 * Mon Jun 17 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.8-1.6
 - Updated logrotate file to rotate old logs into a separate directory (SOFTWARE-1084)
 
-* Wed Mar 27 2013 Brian Bockelman <bbockelm@cse.unl.edu> - 2.0.8-1.5
-- Add patch to enable SHA-2 proxy generation.
+* Tue Feb 12 2013 Mattias Ellert <mattias.ellert@fysast.uu.se> - 2.0.10-1
+- Update to version 2.0.10
+
+* Tue Nov 27 2012 Mattias Ellert <mattias.ellert@fysast.uu.se> - 2.0.9-1
+- Update to version 2.0.9
+- Add Build Requires for texlive 2012 (Fedora 18+)
 
 * Mon Aug 13 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.8-1.3
 - Release bump for koji
 
 * Mon Aug 13 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.8-1.1
 - Add OSG patches and logrotate file
+
+* Sun Jul 22 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.0.8-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
 
 * Thu May 24 2012 Mattias Ellert <mattias.ellert@fysast.uu.se> - 2.0.8-1
 - Update to version 2.0.8 (EMI 2 version)
@@ -655,7 +471,7 @@ fi
   - voms-struct_change.patch
     - Change API slightly - but now works with libxml2
 
-* Thu Jul 08 2007 Anders Wäänänen <waananen@nbi.dk> - 1.7.20-2ng
+* Sun Jul 08 2007 Anders Wäänänen <waananen@nbi.dk> - 1.7.20-2ng
 - Make conditinal dependency on expat-devel (OpenSuSE 10.20 has only expat)
 
 * Thu Jul 05 2007 Anders Wäänänen <waananen@nbi.dk> - 1.7.20-1ng
