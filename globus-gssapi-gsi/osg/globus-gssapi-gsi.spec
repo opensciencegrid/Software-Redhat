@@ -1,28 +1,23 @@
-%ifarch alpha ia64 ppc64 s390x sparc64 x86_64
+%ifarch aarch64 alpha ia64 ppc64 s390x sparc64 x86_64
 %global flavor gcc64
 %else
 %global flavor gcc32
 %endif
 
-%if "%{?rhel}" == "4" || "%{?rhel}" == "5"
-%global docdiroption "with-docdir"
-%else
-%global docdiroption "docdir"
-%endif
+%{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
 
 Name:		globus-gssapi-gsi
 %global _name %(tr - _ <<< %{name})
-Version:	10.7
-Release:	2.1%{?dist}
+Version:	10.10
+Release:	1.1%{?dist}
 Summary:	Globus Toolkit - GSSAPI library
 
 Group:		System Environment/Libraries
 License:	ASL 2.0
 URL:		http://www.globus.org/
-Source:		http://www.globus.org/ftppub/gt5/5.2/5.2.1/packages/src/%{_name}-%{version}.tar.gz
-#		This is a workaround for the broken epstopdf script in RHEL5
-#		See: https://bugzilla.redhat.com/show_bug.cgi?id=450388
-Source9:	epstopdf-2.9.5gw
+Source:		http://www.globus.org/ftppub/gt5/5.2/5.2.5/packages/src/%{_name}-%{version}.tar.gz
+#		README file
+Source8:	GLOBUS-GSIC
 Patch0:         gt489-impexp.diff
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -32,32 +27,38 @@ Requires:	globus-openssl-module%{?_isa} >= 3
 Requires:	globus-gsi-openssl-error%{?_isa} >= 2
 Requires:	globus-gsi-proxy-core%{?_isa} >= 6
 Requires:	globus-gsi-cert-utils%{?_isa} >= 8
+Requires:	globus-gsi-sysconfig%{?_isa} >= 5
 Requires:	globus-common%{?_isa} >= 14
-Requires:	openssl%{?_isa} 
-
 BuildRequires:	grid-packaging-tools >= 3.4
-BuildRequires:	globus-gsi-credential-devel%{?_isa} >= 5
-BuildRequires:	globus-gsi-callback-devel%{?_isa} >= 4
-BuildRequires:	globus-openssl-module-devel%{?_isa} >= 3
-BuildRequires:	globus-gsi-openssl-error-devel%{?_isa} >= 2
-BuildRequires:	globus-gsi-proxy-core-devel%{?_isa} >= 6
-BuildRequires:	globus-core%{?_isa} >= 8
-BuildRequires:	globus-gsi-cert-utils-devel%{?_isa} >= 8
-BuildRequires:	globus-common-devel%{?_isa} >= 14
+BuildRequires:	globus-core >= 8
+BuildRequires:	globus-gsi-credential-devel >= 5
+BuildRequires:	globus-gsi-callback-devel >= 4
+BuildRequires:	globus-openssl-module-devel >= 3
+BuildRequires:	globus-gsi-openssl-error-devel >= 2
+BuildRequires:	globus-gsi-proxy-core-devel >= 6
+BuildRequires:	globus-gsi-cert-utils-devel >= 8
+BuildRequires:	globus-gsi-sysconfig-devel >= 5
+BuildRequires:	globus-common-devel >= 14
+BuildRequires:	openssl-devel
 BuildRequires:	doxygen
 BuildRequires:	graphviz
 %if "%{?rhel}" == "5"
 BuildRequires:	graphviz-gd
 %endif
 BuildRequires:	ghostscript
-%if %{?fedora}%{!?fedora:0} >= 9 || %{?rhel}%{!?rhel:0} >= 6
 BuildRequires:	tex(latex)
-%else
-%if 0%{?suse_version} > 0
-BuildRequires:  texlive-latex
-%else
-BuildRequires:	tetex-latex
-%endif
+%if %{?fedora}%{!?fedora:0} >= 18 || %{?rhel}%{!?rhel:0} >= 7
+BuildRequires:	tex(fullpage.sty)
+BuildRequires:	tex(multirow.sty)
+BuildRequires:	tex(sectsty.sty)
+BuildRequires:	tex(tocloft.sty)
+BuildRequires:	tex(xtab.sty)
+BuildRequires:	tex-ec
+BuildRequires:	tex-courier
+BuildRequires:	tex-helvetic
+BuildRequires:	tex-times
+BuildRequires:	tex-symbol
+BuildRequires:	tex-rsfs
 %endif
 
 %package devel
@@ -71,7 +72,9 @@ Requires:	globus-gsi-openssl-error-devel%{?_isa} >= 2
 Requires:	globus-gsi-proxy-core-devel%{?_isa} >= 6
 Requires:	globus-core%{?_isa} >= 8
 Requires:	globus-gsi-cert-utils-devel%{?_isa} >= 8
+Requires:	globus-gsi-sysconfig-devel%{?_isa} >= 5
 Requires:	globus-common-devel%{?_isa} >= 14
+Requires:	openssl-devel%{?_isa}
 
 %package doc
 Summary:	Globus Toolkit - GSSAPI library Documentation Files
@@ -112,55 +115,47 @@ GSSAPI library Documentation Files
 %setup -q -n %{_name}-%{version}
 %patch0 -p1
 
-%if "%{rhel}" == "5"
-mkdir bin
-install %{SOURCE9} bin/epstopdf
-%endif
-
 %build
-%if "%{rhel}" == "5"
-export PATH=$PWD/bin:$PATH
-%endif
-
 # Remove files that should be replaced during bootstrap
 rm -f doxygen/Doxyfile*
 rm -f doxygen/Makefile.am
 rm -f pkgdata/Makefile.am
 rm -f globus_automake*
 rm -rf autom4te.cache
+
 unset GLOBUS_LOCATION
 unset GPT_LOCATION
-
 %{_datadir}/globus/globus-bootstrap.sh
 
-%configure --with-flavor=%{flavor} --enable-doxygen \
-           --%{docdiroption}=%{_docdir}/%{name}-%{version} \
-           --disable-static
+%configure --disable-static --with-flavor=%{flavor} \
+	   --enable-doxygen --with-docdir=%{_pkgdocdir}
+
+# Reduce overlinking
+sed 's!CC -shared !CC \${wl}--as-needed -shared !g' -i libtool
 
 make %{?_smp_mflags}
 
 %install
-%if "%{rhel}" == "5"
-export PATH=$PWD/bin:$PATH
-%endif
+rm -rf %{buildroot}
+make install DESTDIR=%{buildroot}
 
-rm -rf $RPM_BUILD_ROOT
-make install DESTDIR=$RPM_BUILD_ROOT
-
-GLOBUSPACKAGEDIR=$RPM_BUILD_ROOT%{_datadir}/globus/packages
+GLOBUSPACKAGEDIR=%{buildroot}%{_datadir}/globus/packages
 
 # Remove libtool archives (.la files)
-find $RPM_BUILD_ROOT%{_libdir} -name 'lib*.la' -exec rm -v '{}' \;
+find %{buildroot}%{_libdir} -name 'lib*.la' -exec rm -v '{}' \;
 sed '/lib.*\.la$/d' -i $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_dev.filelist
 
-# Remove unwanted documentation (needed for RHEL4)
-rm -f $RPM_BUILD_ROOT%{_mandir}/man3/*_%{_name}-%{version}_*.3
-sed -e '/_%{_name}-%{version}_.*\.3/d' \
-  -i $GLOBUSPACKAGEDIR/%{_name}/noflavor_doc.filelist
+# Move license file to main package
+grep GLOBUS_LICENSE $GLOBUSPACKAGEDIR/%{_name}/noflavor_doc.filelist \
+  >> $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_rtl.filelist
+sed /GLOBUS_LICENSE/d -i $GLOBUSPACKAGEDIR/%{_name}/noflavor_doc.filelist
 
 # Remove deprecated.3 man page (too common name)
-rm -f $RPM_BUILD_ROOT%{_mandir}/man3/deprecated.3
+rm -f %{buildroot}%{_mandir}/man3/deprecated.3
 sed -e '/deprecated\.3/d' -i $GLOBUSPACKAGEDIR/%{_name}/noflavor_doc.filelist
+
+# Install README file
+install -m 644 -p %{SOURCE8} %{buildroot}%{_pkgdocdir}/README
 
 # Generate package filelists
 cat $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_rtl.filelist \
@@ -168,75 +163,77 @@ cat $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_rtl.filelist \
 cat $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_dev.filelist \
   | sed s!^!%{_prefix}! > package-devel.filelist
 cat $GLOBUSPACKAGEDIR/%{_name}/noflavor_doc.filelist \
-  | grep -v GLOBUS_LICENSE \
   | sed -e 's!/man/.*!&*!' -e 's!^!%doc %{_prefix}!' > package-doc.filelist
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+rm -rf %{buildroot}
 
 %post -p /sbin/ldconfig
 
 %postun -p /sbin/ldconfig
 
 %files -f package.filelist
-%defattr(-,root,root,-)
 %dir %{_datadir}/globus/packages/%{_name}
-%dir %{_docdir}/%{name}-%{version}
-%doc %{_docdir}/%{name}-%{version}/GLOBUS_LICENSE
+%dir %{_pkgdocdir}
+%doc %{_pkgdocdir}/README
 
 %files -f package-devel.filelist devel
-%defattr(-,root,root,-)
 
 %files -f package-doc.filelist doc
-%defattr(-,root,root,-)
-%dir %{_docdir}/%{name}-%{version}/html
+%dir %{_pkgdocdir}/html
 
 %changelog
-* Fri Dec 06 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 10.7-2.1
+* Fri Dec 06 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 10.10-1.1
 - Add patch for OpenSSL 1.0.1e issue (GT-489)
 
-* Wed May 09 2012 Joseph Bester <bester@mcs.anl.gov> - 10.7-2
-- RHEL 4 patches
+* Thu Nov 07 2013 Mattias Ellert <mattias.ellert@fysast.uu.se> - 10.10-1
+- Update to Globus Toolkit 5.2.5
+- Drop patch globus-gssapi-gsi-doxygen.patch (fixed upstream)
+- Remove obsolete workaround for broken RHEL 5 epstopdf
 
-* Mon May 07 2012 Joseph Bester <bester@mcs.anl.gov> - 10.7-1
-- RIC-265: Memory leak in gss_accept_delegation()
+* Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 10.7-6
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
 
-* Fri May 04 2012 Joseph Bester <bester@mcs.anl.gov> - 10.6-2
-- SLES 11 patches
+* Sun Jul 28 2013 Mattias Ellert <mattias.ellert@fysast.uu.se> - 10.7-5
+- Implement updated packaging guidelines
 
-* Wed Apr 11 2012 Joseph Bester <bester@mcs.anl.gov> - 10.6-1
-- RIC-254: gssapi probe for whether it can use openssl internals doesn't always work
+* Tue May 21 2013 Mattias Ellert <mattias.ellert@fysast.uu.se> - 10.7-4
+- Add aarch64 to the list of 64 bit platforms
 
-* Fri Mar 09 2012 Joseph Bester <bester@mcs.anl.gov> - 10.5-1
-- RIC-243: gss_import_cred can't handle non-null terminated token
+* Wed Feb 13 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 10.7-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
 
-* Tue Feb 14 2012 Joseph Bester <bester@mcs.anl.gov> - 10.4-1
-- RIC-215: gss_import_cred() doesn't match properly the OID passed
-- RIC-224: Eliminate some doxygen warnings
-- RIC-226: Some dependencies are missing in GPT metadata
-- RIC-227: Potentially unsafe format strings in GSI
+* Thu Dec 06 2012 Mattias Ellert <mattias.ellert@fysast.uu.se> - 10.7-2
+- Add build requires for TexLive 2012
 
-* Mon Dec 05 2011 Joseph Bester <bester@mcs.anl.gov> - 10.2-3
-- Update for 5.2.0 release
+* Sun Jul 22 2012 Mattias Ellert <mattias.ellert@fysast.uu.se> - 10.7-1
+- Update to Globus Toolkit 5.2.2
 
-* Mon Dec 05 2011 Joseph Bester <bester@mcs.anl.gov> - 10.2-2
-- Last sync prior to 5.2.0
+* Thu Jul 19 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 10.6-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
 
-* Wed Nov 02 2011 Joseph Bester <bester@mcs.anl.gov> - 10.2-1
-- Bug 7159 - globus-gssapi-gsi uses openssl symbols that are not part of the
-  API
+* Fri Apr 27 2012 Mattias Ellert <mattias.ellert@fysast.uu.se> - 10.6-1
+- Update to Globus Toolkit 5.2.1
+- Drop patch globus-gssapi-gsi-deps.patch, globus-gssapi-gsi-format.patch
+  and globus-gssapi-gsi-doxygen.patch (fixed upstream)
 
-* Tue Oct 11 2011 Joseph Bester <bester@mcs.anl.gov> - 10.1-2
-- Add explicit dependencies on >= 5.2 libraries
+* Mon Jan 23 2012 Mattias Ellert <mattias.ellert@fysast.uu.se> - 10.2-2
+- Fix broken links in README file
 
-* Thu Oct 06 2011 Joseph Bester <bester@mcs.anl.gov> - 10.1-1
-- Add backward-compatibility aging
+* Wed Dec 14 2011 Mattias Ellert <mattias.ellert@fysast.uu.se> - 10.2-1
+- Update to Globus Toolkit 5.2.0
 
-* Tue Sep 20 2011  <bester@mcs.anl.gov> - 10.0-1
-- Add flag to force SSLv3 when initiating a security context
+* Fri Jun 03 2011 Mattias Ellert <mattias.ellert@fysast.uu.se> - 7.8-1
+- Update to Globus Toolkit 5.0.4
 
-* Thu Sep 01 2011 Joseph Bester <bester@mcs.anl.gov> - 9.0-2
-- Update for 5.1.2 release
+* Sun Apr 24 2011 Mattias Ellert <mattias.ellert@fysast.uu.se> - 7.6-2
+- Add README file
+
+* Fri Feb 25 2011 Mattias Ellert <mattias.ellert@fysast.uu.se> - 7.6-1
+- Update to Globus Toolkit 5.0.3
+
+* Fri Feb 11 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 7.5-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
 
 * Wed Apr 14 2010 Mattias Ellert <mattias.ellert@fysast.uu.se> - 7.5-1
 - Update to Globus Toolkit 5.0.1

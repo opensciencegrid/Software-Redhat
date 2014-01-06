@@ -1,8 +1,8 @@
 Index: globus_gram_job_manager_request.c
 ===================================================================
---- globus_gram_job_manager_request.c.orig	2012-03-22 13:15:56.000000000 -0500
-+++ globus_gram_job_manager_request.c	2012-04-18 16:58:47.166096473 -0500
-@@ -2137,6 +2137,13 @@
+--- globus_gram_job_manager_request.c.orig	2012-10-19 09:54:19.000000000 -0500
++++ globus_gram_job_manager_request.c	2013-12-11 16:50:08.278823724 -0600
+@@ -2140,6 +2140,13 @@
           * this process. If so, we'll merge the RSLs (as if we had done a
           * stdio update.
           */

@@ -1,8 +1,8 @@
 Index: init/globus-gatekeeper-lsb.in
 ===================================================================
---- init/globus-gatekeeper-lsb.in.orig	2013-12-11 11:19:08.000000000 -0600
-+++ init/globus-gatekeeper-lsb.in	2013-12-11 14:23:26.820563152 -0600
-@@ -85,9 +85,14 @@
+--- init/globus-gatekeeper-lsb.in.orig	2013-12-12 14:14:36.867179629 -0600
++++ init/globus-gatekeeper-lsb.in	2013-12-12 14:14:36.896179988 -0600
+@@ -79,9 +79,14 @@
          kflag=""
      fi
  
@@ -16,5 +16,5 @@ Index: init/globus-gatekeeper-lsb.in
 -        "$prog" \
 +        "$prog" ${openssl_is_1_0_1_or_higher:+-launch_method fork_and_proxy} \
          -pidfile ${GLOBUS_GATEKEEPER_PIDFILE} \
+         ${GLOBUS_GATEKEEPER_LOG_FACILITY:+-lf "$GLOBUS_GATEKEEPER_LOG_FACILITY"} \
          ${GLOBUS_GATEKEEPER_PORT:+-p ${GLOBUS_GATEKEEPER_PORT}} \
-         ${GLOBUS_GATEKEEPER_LOG:+-l "${GLOBUS_GATEKEEPER_LOG}"} \

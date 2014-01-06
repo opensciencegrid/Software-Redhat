@@ -1,54 +1,46 @@
-%ifarch alpha ia64 ppc64 s390x sparc64 x86_64
+%ifarch aarch64 alpha ia64 ppc64 s390x sparc64 x86_64
 %global flavor gcc64
 %else
 %global flavor gcc32
 %endif
 
-%if "%{?rhel}" == "5"
-%global docdiroption "with-docdir"
-%else
-%global docdiroption "docdir"
-%endif
+%{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
 
 Name:		globus-proxy-utils
 %global _name %(tr - _ <<< %{name})
-Version:	5.0
-Release:	5.1%{?dist}
+Version:	5.2
+Release:	1.1%{?dist}
 Summary:	Globus Toolkit - Globus GSI Proxy Utility Programs
 
 Group:		Applications/Internet
 License:	ASL 2.0
 URL:		http://www.globus.org/
-Source:		http://www.globus.org/ftppub/gt5/5.2/5.2.0/packages/src/%{_name}-%{version}.tar.gz
-Patch0:         1286-default-keylength.patch
+Source:		http://www.globus.org/ftppub/gt5/5.2/5.2.5/packages/src/%{_name}-%{version}.tar.gz
+#		README file
+Source8:	GLOBUS-GSIC
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-Requires:	openssl%{?_isa}
-Requires:	globus-gsi-proxy-ssl%{?_isa} >= 4
 Requires:	globus-gsi-credential%{?_isa} >= 5
 Requires:	globus-gsi-callback%{?_isa} >= 4
 Requires:	globus-openssl-module%{?_isa} >= 3
 Requires:	globus-gss-assist%{?_isa} >= 8
 Requires:	globus-gsi-openssl-error%{?_isa} >= 2
 Requires:	globus-gsi-proxy-core%{?_isa} >= 6
-Requires:	globus-gsi-cert-utils%{?_isa} >= 8
 Requires:	globus-common%{?_isa} >= 14
 Requires:	globus-gsi-sysconfig%{?_isa} >= 5
-
-
 BuildRequires:	grid-packaging-tools >= 3.4
-BuildRequires:	globus-gsi-proxy-ssl-devel%{?_isa} >= 4
-BuildRequires:	globus-gsi-credential-devel%{?_isa} >= 5
-BuildRequires:	globus-gsi-callback-devel%{?_isa} >= 4
-BuildRequires:	globus-openssl-module-devel%{?_isa} >= 3
-BuildRequires:	globus-gss-assist-devel%{?_isa} >= 8
-BuildRequires:	globus-gsi-openssl-error-devel%{?_isa} >= 2
-BuildRequires:	openssl-devel%{?_isa}
-BuildRequires:	globus-gsi-proxy-core-devel%{?_isa} >= 6
-BuildRequires:	globus-core%{?_isa} >= 8
-BuildRequires:	globus-gsi-cert-utils-devel%{?_isa} >= 8
-BuildRequires:	globus-common-devel%{?_isa} >= 14
-BuildRequires:	globus-gsi-sysconfig-devel%{?_isa} >= 5
+BuildRequires:	globus-core >= 8
+BuildRequires:	globus-gsi-proxy-ssl-devel >= 4
+BuildRequires:	globus-gsi-credential-devel >= 5
+BuildRequires:	globus-gsi-callback-devel >= 4
+BuildRequires:	globus-openssl-module-devel >= 3
+BuildRequires:	globus-gss-assist-devel >= 8
+BuildRequires:	globus-gsi-openssl-error-devel >= 2
+BuildRequires:	globus-gsi-proxy-core-devel >= 6
+BuildRequires:	globus-gsi-cert-utils-devel >= 8
+BuildRequires:	globus-common-devel >= 14
+BuildRequires:	globus-gsi-sysconfig-devel >= 5
+BuildRequires:	openssl-devel
 
 %description
 The Globus Toolkit is an open source software toolkit used for building Grid
@@ -61,7 +53,6 @@ Globus GSI Proxy Utility Programs
 
 %prep
 %setup -q -n %{_name}-%{version}
-%patch0 -p1
 
 %build
 # Remove files that should be replaced during bootstrap
@@ -70,52 +61,84 @@ rm -f doxygen/Makefile.am
 rm -f pkgdata/Makefile.am
 rm -f globus_automake*
 rm -rf autom4te.cache
+
 unset GLOBUS_LOCATION
 unset GPT_LOCATION
-
 %{_datadir}/globus/globus-bootstrap.sh
 
-%configure --with-flavor=%{flavor} \
-           --%{docdiroption}=%{_docdir}/%{name}-%{version}
+%configure --disable-static --with-flavor=%{flavor} \
+	   --with-docdir=%{_pkgdocdir}
+
+# Reduce overlinking
+sed 's!CC -shared !CC \${wl}--as-needed -shared !g' -i libtool
 
 make %{?_smp_mflags}
 
 %install
-rm -rf $RPM_BUILD_ROOT
-make install DESTDIR=$RPM_BUILD_ROOT
+rm -rf %{buildroot}
+make install DESTDIR=%{buildroot}
 
-GLOBUSPACKAGEDIR=$RPM_BUILD_ROOT%{_datadir}/globus/packages
+GLOBUSPACKAGEDIR=%{buildroot}%{_datadir}/globus/packages
 
+# Install README file
+install -m 644 -p %{SOURCE8} %{buildroot}%{_pkgdocdir}/README
 
 # Generate package filelists
 cat $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_pgm.filelist \
-    $GLOBUSPACKAGEDIR/%{_name}/noflavor_doc.filelist \
-    $GLOBUSPACKAGEDIR/%{_name}/noflavor_data.filelist \
-  | sed -e s!^!%{_prefix}! -e 's!.*/man/.*!%doc &*!' > package.filelist
+  | sed s!^!%{_prefix}! > package.filelist
+cat $GLOBUSPACKAGEDIR/%{_name}/noflavor_doc.filelist \
+  | sed -e 's!/man/.*!&*!' -e 's!^!%doc %{_prefix}!' >> package.filelist
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+rm -rf %{buildroot}
 
 %files -f package.filelist
-%defattr(-,root,root,-)
 %dir %{_datadir}/globus/packages/%{_name}
-%dir %{_docdir}/%{name}-%{version}
+%dir %{_pkgdocdir}
+%doc %{_pkgdocdir}/README
 
 %changelog
-* Tue Nov 12 2013 Matyas Selmeci <matyas@cs.wisc.edu> 5.0-5.1
-- Patch grid-proxy-init to default to 1024-bit proxies (SOFTWARE-1286)
+* Mon Dec 16 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 5.2-1.1
+- Bump to rebuild with OpenSSL 1.0.0
 
-* Mon Dec 05 2011 Joseph Bester <bester@mcs.anl.gov> - 5.0-5
-- Update for 5.2.0 release
+* Thu Nov 07 2013 Mattias Ellert <mattias.ellert@fysast.uu.se> - 5.2-1
+- Update to Globus Toolkit 5.2.5
+- Drop patch globus-proxy-utils-1024-bits.patch (fixed upstream)
 
-* Mon Dec 05 2011 Joseph Bester <bester@mcs.anl.gov> - 5.0-4
-- Last sync prior to 5.2.0
+* Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 5.0-8
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
 
-* Tue Oct 11 2011 Joseph Bester <bester@mcs.anl.gov> - 5.0-3
-- Add explicit dependencies on >= 5.2 libraries
+* Sun Jul 28 2013 Mattias Ellert <mattias.ellert@fysast.uu.se> - 5.0-7
+- Implement updated packaging guidelines
 
-* Thu Sep 01 2011 Joseph Bester <bester@mcs.anl.gov> - 5.0-2
-- Update for 5.1.2 release
+* Tue May 21 2013 Mattias Ellert <mattias.ellert@fysast.uu.se> - 5.0-6
+- Add aarch64 to the list of 64 bit platforms
+- Use 1024 bits as default for generated proxies
+
+* Wed Feb 13 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 5.0-5
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
+
+* Thu Dec 06 2012 Mattias Ellert <mattias.ellert@fysast.uu.se> - 5.0-4
+- Specfile clean-up
+
+* Thu Jul 19 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 5.0-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
+
+* Tue Jan 24 2012 Mattias Ellert <mattias.ellert@fysast.uu.se> - 5.0-2
+- Fix broken links in README file
+
+* Wed Dec 14 2011 Mattias Ellert <mattias.ellert@fysast.uu.se> - 5.0-1
+- Update to Globus Toolkit 5.2.0
+- Drop patch globus-proxy-utils-mingw.patch (fixed upstream)
+
+* Fri Jun 03 2011 Mattias Ellert <mattias.ellert@fysast.uu.se> - 3.10-1
+- Update to Globus Toolkit 5.0.4
+
+* Mon Apr 25 2011 Mattias Ellert <mattias.ellert@fysast.uu.se> - 3.9-3
+- Add README file
+
+* Tue Feb 08 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.9-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
 
 * Sat Jul 17 2010 Mattias Ellert <mattias.ellert@fysast.uu.se> - 3.9-1
 - Update to Globus Toolkit 5.0.2

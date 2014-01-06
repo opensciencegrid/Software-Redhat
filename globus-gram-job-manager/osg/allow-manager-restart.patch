@@ -1,8 +1,8 @@
 Index: globus_gram_job_manager.c
 ===================================================================
---- globus_gram_job_manager.c.orig	2012-04-18 16:48:08.000000000 -0500
-+++ globus_gram_job_manager.c	2012-04-18 16:56:15.671939316 -0500
-@@ -570,6 +570,10 @@
+--- globus_gram_job_manager.c.orig	2013-12-11 16:51:44.786013994 -0600
++++ globus_gram_job_manager.c	2013-12-11 16:52:09.931324168 -0600
+@@ -555,6 +555,10 @@
   *     Success.
   * @retval GLOBUS_GRAM_PROTOCOL_ERROR_MALLOC_FAILED
   *     Malloc failed.
@@ -15,8 +15,8 @@ Index: globus_gram_job_manager.c
  int
 Index: globus_gram_job_manager_query.c
 ===================================================================
---- globus_gram_job_manager_query.c.orig	2012-04-11 07:53:59.000000000 -0500
-+++ globus_gram_job_manager_query.c	2012-04-18 16:52:56.453833614 -0500
+--- globus_gram_job_manager_query.c.orig	2012-10-19 09:54:19.000000000 -0500
++++ globus_gram_job_manager_query.c	2013-12-11 16:52:09.931324168 -0600
 @@ -1431,7 +1431,7 @@
  
              if (out_size >= 0 && out_size != local_size_stdout)

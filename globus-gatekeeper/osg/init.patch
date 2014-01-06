@@ -1,50 +1,12 @@
---- init/globus-gatekeeper-lsb.in.orig	2013-02-15 14:53:51.843717000 -0600
-+++ init/globus-gatekeeper-lsb.in	2013-02-15 14:56:00.145498000 -0600
-@@ -36,9 +36,9 @@
+Index: init/globus-gatekeeper-lsb.in
+===================================================================
+--- init/globus-gatekeeper-lsb.in.orig	2012-05-14 10:26:38.000000000 -0500
++++ init/globus-gatekeeper-lsb.in	2013-12-09 18:44:03.910755754 -0600
+@@ -36,6 +36,7 @@
  
  . ${libexecdir}/globus-script-initializer
  
 +. /usr/share/osg/sysconfig/globus-gatekeeper
  GLOBUS_GATEKEEPER_CONFIG=${GLOBUS_GATEKEEPER_CONFIG:-@GATEKEEPER_CONFIGDIR@/@GATEKEEPER_CONFIGFILE@}
  test -f "${GLOBUS_GATEKEEPER_CONFIG}" && . "${GLOBUS_GATEKEEPER_CONFIG}"
--test -f ${sbindir}/globus-gatekeeper || exit 0
  prog="${sbindir}/globus-gatekeeper"
- progname="globus-gatekeeper"
- lockfile="@LOCKFILE@"
-@@ -48,9 +48,6 @@
- GLOBUS_GATEKEEPER_PIDFILE="${GLOBUS_GATEKEEPER_PIDFILE:-${localstatedir}/run/globus-gatekeeper.pid}"
- GLOBUS_GATEKEEPER_PORT="${GLOBUS_GATEKEEPER_PORT:-2119}"
- 
--test -f "${GLOBUS_GATEKEEPER_CERT_FILE:-${sysconfdir}/grid-security/hostcert.pem}" || exit 0
--test -f "${GLOBUS_GATEKEEPER_KEY_FILE:-${sysconfdir}/grid-security/hostkey.pem}" || exit 0
--
- lsb_ok=1
- 
- # Old versions of RH LSB init scripts cause infinite loops with the -p
-@@ -62,6 +59,26 @@
- 
- start()
- {
-+    if [ ! -f ${prog} ]; then
-+        echo "Error: ${prog} is missing."
-+        log_failure_msg "Failed to start globus-gatekeeper"
-+        exit 5
-+    fi
-+
-+    cert="${GLOBUS_GATEKEEPER_CERT_FILE:-${sysconfdir}/grid-security/hostcert.pem}"
-+    if [ ! -f $cert ]; then
-+        echo "Error: Gatekeeper's certificate file ($cert) is missing."
-+        log_failure_msg "Failed to start globus-gatekeeper"
-+        exit 6
-+    fi
-+
-+    key="${GLOBUS_GATEKEEPER_KEY_FILE:-${sysconfdir}/grid-security/hostkey.pem}" || exit 0
-+    if [ ! -f $key ]; then
-+        echo "Error: Gatekeeper's private key file is ($key) is missing."
-+        log_failure_msg "Failed to start globus-gatekeeper"
-+        exit 6
-+    fi
-+
-     if [ "${GLOBUS_GATEKEEPER_KERBEROS_ENABLED:-false}" = "true" ]; then
-         kflag="-k"
-     else

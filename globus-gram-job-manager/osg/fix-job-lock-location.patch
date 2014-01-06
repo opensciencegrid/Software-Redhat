@@ -1,7 +1,7 @@
 Index: globus_gram_job_manager.h
 ===================================================================
---- globus_gram_job_manager.h.orig	2012-03-27 10:19:02.000000000 -0500
-+++ globus_gram_job_manager.h	2012-04-18 16:59:38.404090272 -0500
+--- globus_gram_job_manager.h.orig	2012-06-18 11:44:17.000000000 -0500
++++ globus_gram_job_manager.h	2013-12-11 16:51:44.784013969 -0600
 @@ -355,9 +355,15 @@
       * This is the prefix to directory which will contain host+lrm specific
       * state files. By default, it is $HOME/.globus/job, but can be 
@@ -20,8 +20,8 @@ Index: globus_gram_job_manager.h
       */
 Index: globus_gram_job_manager_config.c
 ===================================================================
---- globus_gram_job_manager_config.c.orig	2012-04-11 01:00:29.000000000 -0500
-+++ globus_gram_job_manager_config.c	2012-04-18 16:59:38.405099922 -0500
+--- globus_gram_job_manager_config.c.orig	2012-08-17 09:37:15.000000000 -0500
++++ globus_gram_job_manager_config.c	2013-12-11 16:51:44.785013982 -0600
 @@ -564,11 +564,26 @@
          }
      }
@@ -53,9 +53,9 @@ Index: globus_gram_job_manager_config.c
          if (config->job_dir_home == NULL)
 Index: globus_gram_job_manager.c
 ===================================================================
---- globus_gram_job_manager.c.orig	2012-04-18 16:58:28.601091204 -0500
-+++ globus_gram_job_manager.c	2012-04-18 16:59:38.406094347 -0500
-@@ -217,7 +217,7 @@
+--- globus_gram_job_manager.c.orig	2013-12-11 16:49:18.998216030 -0600
++++ globus_gram_job_manager.c	2013-12-11 16:51:44.786013994 -0600
+@@ -212,7 +212,7 @@
      }
      dir_prefix = globus_common_create_string(
              "%s/%s",

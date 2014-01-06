@@ -1,47 +1,48 @@
-%ifarch alpha ia64 ppc64 s390x sparc64 x86_64
+%ifarch aarch64 alpha ia64 ppc64 s390x sparc64 x86_64
 %global flavor gcc64
 %else
 %global flavor gcc32
 %endif
 
-%if "%{?rhel}" == "5"
-%global docdiroption "with-docdir"
-%else
-%global docdiroption "docdir"
-%endif
+%{!?_initddir: %global _initddir %{_initrddir}}
+
+%{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
 
 Name:		globus-gatekeeper
 %global _name %(tr - _ <<< %{name})
-Version:	9.6
-Release:	1.12%{?dist}
+Version:	9.15
+Release:	1.3%{?dist}
 Summary:	Globus Toolkit - Globus Gatekeeper
 
 Group:		Applications/Internet
 License:	ASL 2.0
 URL:		http://www.globus.org/
-Source:         http://www.globus.org/ftppub/gt5/5.2/5.2.0/packages/src/%{_name}-%{version}.tar.gz
-
-# OSG customizations
-Source1:        globus-gatekeeper.osg-sysconfig
+Source:		http://www.globus.org/ftppub/gt5/5.2/5.2.5/packages/src/%{_name}-%{version}.tar.gz
+Source1:	%{name}
+Source2:	%{name}.README
+#		README file
+Source8:	GLOBUS-GRAM5
+Source11:       globus-gatekeeper.osg-sysconfig
 Patch3:         init.patch
-Patch4:         GRAM-309.patch
 Patch5:         logrotate-copytruncate.patch
 Patch6:         GT-489-openssl-1.0.1-fix.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-Requires:	globus-common >= 13.4
+#		Keep providing globus-gatekeeper-setup until it is not needed
+Provides:	%{name}-setup = 2.2
+Requires:	globus-common%{?_isa} >= 14
 Requires:	globus-gss-assist%{?_isa} >= 8
 Requires:	globus-gssapi-gsi%{?_isa} >= 9
-Requires:       psmisc
-
-Requires:       lsb
-Requires(post): globus-common-progs >= 13.4
-Requires(preun):globus-common-progs >= 13.4
-BuildRequires:  lsb
+Requires(post):		chkconfig
+Requires(preun):	chkconfig
+Requires(preun):	initscripts
+Requires(postun):	initscripts
 BuildRequires:	grid-packaging-tools >= 3.4
-BuildRequires:	globus-gss-assist-devel%{?_isa} >= 8
-BuildRequires:	globus-gssapi-gsi-devel%{?_isa} >= 9
-BuildRequires:	globus-core%{?_isa} >= 8
+BuildRequires:	globus-core >= 8
+BuildRequires:	globus-common-devel >= 14
+BuildRequires:	globus-gss-assist-devel >= 8
+BuildRequires:	globus-gssapi-gsi-devel >= 9
+BuildRequires:	openssl-devel
 
 %description
 The Globus Toolkit is an open source software toolkit used for building Grid
@@ -51,13 +52,11 @@ using the Globus Toolkit to unlock the potential of grids for their cause.
 
 The %{name} package contains:
 Globus Gatekeeper
-Globus Gatekeeper Setup
 
 %prep
 %setup -q -n %{_name}-%{version}
 
 %patch3 -p0
-%patch4 -p0
 %patch5 -p0
 %patch6 -p0
 
@@ -69,41 +68,58 @@ rm -f pkgdata/Makefile.am
 rm -f globus_automake*
 rm -rf autom4te.cache
 
+unset GLOBUS_LOCATION
+unset GPT_LOCATION
 %{_datadir}/globus/globus-bootstrap.sh
 
-%configure --with-flavor=%{flavor} \
-           --%{docdiroption}=%{_docdir}/%{name}-%{version} \
-           --disable-static \
-           --with-lsb \
+%configure --disable-static --with-flavor=%{flavor} \
+	   --with-docdir=%{_pkgdocdir} \
 	   --with-initscript-config-path=/etc/sysconfig/globus-gatekeeper \
-           --with-lockfile-path='${localstatedir}/lock/subsys/globus-gatekeeper'
+	   --with-lockfile-path='${localstatedir}/lock/subsys/globus-gatekeeper'
+
+# Reduce overlinking
+sed 's!CC -shared !CC \${wl}--as-needed -shared !g' -i libtool
 
 make %{?_smp_mflags}
 
 %install
-rm -rf $RPM_BUILD_ROOT
-make install DESTDIR=$RPM_BUILD_ROOT
+rm -rf %{buildroot}
+make install DESTDIR=%{buildroot}
 
-GLOBUSPACKAGEDIR=$RPM_BUILD_ROOT%{_datadir}/globus/packages
+GLOBUSPACKAGEDIR=%{buildroot}%{_datadir}/globus/packages
+
+# Remove start-up script
+rm -rf %{buildroot}%{_sysconfdir}/init.d
+sed '/init\.d/d' -i $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_pgm.filelist
+
+# Install start-up script
+mkdir -p %{buildroot}%{_initrddir}
+install -p %{SOURCE1} %{buildroot}%{_initrddir}
+
+# Install post installation instructions
+install -m 644 -p %{SOURCE2} \
+  %{buildroot}%{_pkgdocdir}/README.Fedora
+
+# Install README file
+install -m 644 -p %{SOURCE8} %{buildroot}%{_pkgdocdir}/README
 
 # Generate package filelists
 cat $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_pgm.filelist \
-    $GLOBUSPACKAGEDIR/%{_name}/noflavor_doc.filelist \
     $GLOBUSPACKAGEDIR/%{_name}/noflavor_data.filelist \
-  | grep -v '^/etc' \
-  | sed -e s!^!%{_prefix}! -e 's!.*/man/.*!%doc &*!' > package.filelist
-cat $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_pgm.filelist \
-    $GLOBUSPACKAGEDIR/%{_name}/noflavor_doc.filelist \
-    $GLOBUSPACKAGEDIR/%{_name}/noflavor_data.filelist \
-  | grep '^/etc' >> package.filelist
-mkdir -p $RPM_BUILD_ROOT/etc/grid-services
-mkdir -p $RPM_BUILD_ROOT/etc/grid-services/available
+  | sed -e s!^!%{_prefix}! \
+	-e 's!%{_prefix}%{_sysconfdir}!%config(noreplace) %{_sysconfdir}!' \
+  > package.filelist
+cat $GLOBUSPACKAGEDIR/%{_name}/noflavor_doc.filelist \
+  | sed -e 's!/man/.*!&*!' -e 's!^!%doc %{_prefix}!' >> package.filelist
+
+mkdir -p %{buildroot}/etc/grid-services
+mkdir -p %{buildroot}/etc/grid-services/available
 
 mkdir -p $RPM_BUILD_ROOT/usr/share/osg/sysconfig
-install -m 0644 %{SOURCE1} $RPM_BUILD_ROOT/usr/share/osg/sysconfig/%{name}
+install -m 0644 %{SOURCE11} $RPM_BUILD_ROOT/usr/share/osg/sysconfig/%{name}
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+rm -rf %{buildroot}
 
 %post
 if [ $1 -eq 1 ]; then
@@ -113,33 +129,57 @@ fi
 %preun
 if [ $1 -eq 0 ]; then
     /sbin/chkconfig --del %{name}
-    /sbin/service %{name} stop > /dev/null 2>&1 || :
 fi
 
 %postun
-if [ $1 -eq 1 ]; then
+if [ $1 -ge 1 ]; then
     /sbin/service %{name} condrestart > /dev/null 2>&1 || :
 fi
 
 %files -f package.filelist
-%defattr(-,root,root,-)
+%{_initddir}/%{name}
+%{_sysconfdir}/logrotate.d/%{name}
+%dir %{_sysconfdir}/grid-services
+%dir %{_sysconfdir}/grid-services/available
 %dir %{_datadir}/globus/packages/%{_name}
-%dir %{_docdir}/%{name}-%{version}
-%dir /etc/grid-services
-%dir /etc/grid-services/available
-%config(noreplace) /etc/sysconfig/globus-gatekeeper
-%config(noreplace) /etc/logrotate.d/globus-gatekeeper
+%dir %{_pkgdocdir}
+%doc %{_pkgdocdir}/README
+%doc %{_pkgdocdir}/README.Fedora
+%config(noreplace) %{_sysconfdir}/sysconfig/%{name}
 /usr/share/osg/sysconfig/%{name}
 
+
 %changelog
-* Wed Dec 11 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 9.6-1.12.osg
+* Mon Dec 16 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 9.15-1.3.osg
+- Bump and rebuild with OpenSSL 1.0.0
+
+* Thu Dec 11 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 9.15-1.2.osg
 - Add fork_and_proxy workaround patch for GT-489 (OpenSSL 1.0.1 compatibility issue)
+
+* Mon Dec 09 2013 Matyas Selmeci <matyas@cs.wisc.edu> 9.15-1.1.osg
+- Merge OSG changes
+- Drop patch GRAM-309.patch (fixed upstream)
+- Trim patch init.patch (most of it fixed upstream except for an OSG-specific change)
+
+* Thu Nov 07 2013 Mattias Ellert <mattias.ellert@fysast.uu.se> - 9.15-1
+- Update to Globus Toolkit 5.2.5
+- Drop patch globus-gatekeeper-ac.patch (fixed upstream)
 
 * Wed Sep 11 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 9.6-1.11.osg
 - Avoid trigerring gatekeeper's own log rotation since we're using logrotate (SOFTWARE-1083)
 
 * Wed Sep 11 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 9.6-1.10.osg
 - Add copytruncate to logrotate (SOFTWARE-1083)
+
+* Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 9.14-6
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
+
+* Sun Jul 28 2013 Mattias Ellert <mattias.ellert@fysast.uu.se> - 9.14-5
+- Implement updated packaging guidelines
+
+* Tue May 21 2013 Mattias Ellert <mattias.ellert@fysast.uu.se> - 9.14-4
+- Add aarch64 to the list of 64 bit platforms
+- Don't use AM_CONFIG_HEADER (automake 1.13)
 
 * Thu Feb 22 2013 Dave Dykstra <dwd@fnal.gov> - 9.6-1.9.osg
 - Change to using LCMAPS_POLICY_NAME=authorize_only so globus does the
@@ -154,6 +194,23 @@ fi
 - Change LCMAPS_POLICY_NAME to just be osg_default and no longer
   include the backward-compatible globus_gridftp_mapping policy
 
+* Wed Feb 13 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 9.14-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
+
+* Thu Dec 06 2012 Mattias Ellert <mattias.ellert@fysast.uu.se> - 9.14-2
+- Specfile clean-up
+
+* Sun Jul 22 2012 Mattias Ellert <mattias.ellert@fysast.uu.se> - 9.14-1
+- Update to Globus Toolkit 5.2.2
+- Drop patch globus-gatekeeper-porting.patch (fixed upstream)
+
+* Thu Jul 19 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 9.11-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
+
+* Sat Apr 28 2012 Mattias Ellert <mattias.ellert@fysast.uu.se> - 9.11-1
+- Update to Globus Toolkit 5.2.1
+- Drop patch globus-gatekeeper-deps.patch (fixed upstream)
+
 * Mon Apr 23 2012 Dave Dykstra <dwd@fnal.gov> - 9.6-1.7.osg
 - Remove variable in sysconfig for disabling voms certificate check;
   it is now the default
@@ -167,8 +224,15 @@ fi
 * Thu Mar 08 2012 Dave Dykstra <dwd@fnal.gov> - 9.6-1.4.osg
 - Rebuild after merging from branches/lcmaps-upgrade into trunk
 
+* Thu Feb 02 2012 Mattias Ellert <mattias.ellert@fysast.uu.se> - 9.6-3
+- Fix start-up script
+
 * Mon Jan 20 2012 Alain Roy <roy@cs.wisc.edu> - 9.6-1.3.osg
-- Updated sysconfig file to source firewall information if it exists. 
+- Updated sysconfig file to source firewall information if it exists.
+
+* Wed Jan 18 2012 Mattias Ellert <mattias.ellert@fysast.uu.se> - 9.6-2
+- Portability fixes
+- Fix broken links in README file
 
 * Fri Jan 6 2012 Dave Dykstra <dwd@fnal.gov> - 9.6-1.2.osg
 - Set LCMAPS_POLICY_NAME in /etc/sysconfig/globus-gatekeeper
@@ -191,8 +255,8 @@ fi
     chkconfig-off.patch
     maybe child_signals.patch
 
-* Mon Dec 12 2011 Joseph Bester <bester@mcs.anl.gov> - 9.6-1
-- init script fixes
+* Thu Dec 15 2011 Mattias Ellert <mattias.ellert@fysast.uu.se> - 9.6-1
+- Update to Globus Toolkit 5.2.0
 
 * Mon Dec 12 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 8.1-8
 - Set LCMAPS_MOD_HOME in /etc/sysconfig/globus-gatekeeper to "lcmaps", the
@@ -204,50 +268,13 @@ fi
 - Improved init script to provide better error messages.
 
 * Wed Dec 7 2011 Alain Roy <roy@cs.wisc.edu> - 8.1-6
-- Added log rotation. 
-
-* Mon Dec 05 2011 Joseph Bester <bester@mcs.anl.gov> - 9.5-3
-- Update for 5.2.0 release
-
-* Mon Dec 05 2011 Joseph Bester <bester@mcs.anl.gov> - 9.5-2
-- Last sync prior to 5.2.0
-
-* Mon Nov 28 2011 Joseph Bester <bester@mcs.anl.gov> - 9.5-1
-- GRAM-285: Set default gatekeeper log in native packages
-
-* Mon Nov 28 2011 Joseph Bester <bester@mcs.anl.gov> - 9.4-1
-- GRAM-287: Hang of globus-gatekeeper process
-
-* Wed Nov 23 2011 Joseph Bester <bester@mcs.anl.gov> - 9.3-1
-- Updated version numbers
-
-* Tue Nov 15 2011 Joseph Bester <bester@mcs.anl.gov> - 9.2-1
-- GRAM-276: Increase backlog for gatekeeper
+- Added log rotation.
 
 * Mon Nov 14 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 8.1-5
 - Default globus-gatekeeper service to off.
 
 * Thu Nov 10 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 8.1-4
 - Increase the backlog for the listening socket.  Done because the small default led to failures on the testbed setup.
-
-* Mon Nov 07 2011 Joseph Bester <bester@mcs.anl.gov> - 9.1-1
-- Add default chkconfig line
-
-* Mon Nov 07 2011 Joseph Bester <bester@mcs.anl.gov> - 9.0-1
-- GRAM-268: GRAM requires gss_export_sec_context to work
-
-* Fri Oct 28 2011 Joseph Bester <bester@mcs.anl.gov> - 8.2-1
-- GRAM-267: globus-gatekeeper uses inappropriate Default-Start in init script
-
-* Fri Oct 21 2011 Joseph Bester <bester@mcs.anl.gov> - 8.1-2
-- Fix %post* scripts to check for -eq 1
-- Add explicit dependencies on >= 5.2 libraries
-
-* Fri Sep 23 2011 Joe Bester <bester@mcs.anl.gov> - 8.1-1
-- GRAM-260: Detect and workaround bug in start_daemon for LSB < 4
-
-* Thu Sep 01 2011 Joseph Bester <bester@mcs.anl.gov> - 8.0-2
-- Update for 5.1.2 release
 
 * Thu Aug 18 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 7.3-2
 - Port OSG patches to released gatekeeper.
