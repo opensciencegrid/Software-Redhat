@@ -5,7 +5,7 @@
 %endif
 Name: cctools
 Version: 4.0.2
-Release: 6%{?dist}
+Release: 7%{?dist}
 Summary: A collection of tools for harnessing large scale distributed systems
 License: GPL 2.0 
 URL: http://www3.nd.edu/~ccl/
@@ -31,6 +31,7 @@ The Cooperative Computing Tools are a collection of tools for harnessing large
 scale distributed systems, such as clusters, clouds, and grids.
 
 %package doc
+Obsoletes: cctools < 4.0.2-7
 Group: Documentation
 Summary: Html documentation of all the subpackages of the Coperative Computing Tools (cctools)
 %description doc
@@ -352,6 +353,12 @@ rm %{buildroot}/usr/etc/Makefile.config
 
 
 %changelog
+* Mon Jan 06 2014 Edgar Fajardo  <efajardo@cern.ch> - 4.0.2-7
+- Addded the obsoletes part to the doc subpackage so a clean upgrade is done in cases users had older versions
+
+* Fri Dec 13 2013 Edgar Fajardo <efajardo@cern.ch> - 4.0.2-6
+- Created the doc package to include all html docummentation aswell as the api documentation
+
 * Fri Dec 13 2013 Edgar Fajardo <efajardo@cern.ch> - 4.0.2-6
 - Created the doc package to include all html docummentation aswell as the api documentation
 
