@@ -1,0 +1,46 @@
+--- xacml_io.cpp.orig	2013-09-16 11:44:16.067969090 -0500
++++ xacml_io.cpp	2013-09-16 11:45:10.722021249 -0500
+@@ -17,6 +17,8 @@
+ #include "xacml_i.h"
+ #include "soapH.h"
+ 
++extern SOAP_NMAC struct Namespace xacml_namespaces[]; SOAP_NMAC struct Namespace namespaces[] = { {NULL, NULL, NULL, NULL} };
++
+ #include <iostream>
+ #include <sstream>
+ #include <dlfcn.h>
+@@ -145,10 +147,10 @@
+      * the XACML message body
+      */
+     /* All namespaces */
+-    for (int i = 0 ; namespaces[i].ns; i++)
++    for (int i = 0 ; xacml_namespaces[i].ns; i++)
+     {
+-        namespace_prefixes << "xmlns:" << namespaces[i].id
+-                           << "=\"" << namespaces[i].ns << "\" ";
++        namespace_prefixes << "xmlns:" << xacml_namespaces[i].id
++                           << "=\"" << xacml_namespaces[i].ns << "\" ";
+     }
+ 
+     /* Find the Content-Length HTTP header */
+diff --git a/xacml_client.cpp.orig b/xacml_client.cpp
+index bf85675..b5579bb 100644
+--- xacml_client.cpp.orig
++++ xacml_client.cpp
+@@ -20,6 +20,8 @@
+ #include "soapStub.h"
+ #include "soapH.h"
+ 
++extern SOAP_NMAC struct Namespace xacml_namespaces[];
++
+ #include <cassert>
+ #include <ctime>
+ #include <sstream>
+@@ -449,6 +451,7 @@ xacml_query(
+     }
+ 
+     soap_init(&soap);
++    soap_set_namespaces(&soap, xacml_namespaces);
+ 
+     query = soap_new_XACMLsamlp__XACMLAuthzDecisionQueryType(&soap, -1);
+ 
