@@ -1,11 +1,13 @@
 Summary: SAML 2.0 profile of XACML v2.0 library
 Name: xacml
 Version: 1.3.0
-Release: 1.1%{?dist}
+Release: 1.2%{?dist}
 License: ASL 2.0
 Group: System Environment/Libraries
 URL: http://wiki.nikhef.nl/grid/Site_Access_Control
 Source: http://software.nikhef.nl/security/xacml/xacml-%{version}.tar.gz
+Patch0: xacml_namespaces.patch
+
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildRequires: openssl-devel, zlib-devel, bison, flex, gsoap-devel, pkgconfig
 Provides: saml2-xacml2-c-lib = %{version}-%{release}
@@ -44,6 +46,7 @@ This package contains the development libraries and header files.
 
 %prep
 %setup -q
+%patch0 -p0
 
 %build
 
@@ -62,6 +65,9 @@ export CXXFLAGS
 # RPATHs creeping in.
 sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
 sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
+
+make %{?_smp_mflags} XACMLAuthorizationPortTypeSOAPBinding.nsmap
+sed -i 's/SOAP_NMAC struct Namespace namespaces/SOAP_NMAC struct Namespace xacml_namespaces/' XACMLAuthorizationPortTypeSOAPBinding.nsmap
 
 make %{?_smp_mflags}
 
@@ -97,6 +103,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/xacml.pc
 
 %changelog
+* Mon Jan  6 2014 Dave Dykstra <dwd@fnal.gov> 1.3.0-1.2.osg
+- Restored xacml_namespaces.patch.  I thought it had been incorporated
+  upstream but it wasn't.  
+
 * Thu Oct  9 2013 Dave Dykstra <dwd@fnal.gov> 1.3.0-1.1.osg
 - Reimported into osg
 - Removed xacml_namespaces.patch
