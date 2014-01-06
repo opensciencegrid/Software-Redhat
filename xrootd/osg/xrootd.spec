@@ -6,7 +6,7 @@
 
 Name:		xrootd
 Epoch:		1
-Version:	3.3.3
+Version:	3.3.5
 Release:	1.1%{?dist}
 Summary:	Extended ROOT file server
 
@@ -185,7 +185,6 @@ BuildArch:	noarch
 %description doc
 This package contains the API documentation of the xrootd libraries.
 
-
 %package server
 Summary:        Transitional package for xrootd server
 Group:          System Environment/Daemons
@@ -193,7 +192,6 @@ Requires:       xrootd >= 1:3.3.1
 
 %description server
 A transitional package to ease the upgrade path from pre-3.3.1 to 3.3.1.
-
 
 %prep
 %setup -q
@@ -473,8 +471,20 @@ fi
 %doc %{_pkgdocdir}
 
 %changelog
-* Mon Oct 14 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1:3.3.3-1.1
+* Mon Jan 06 2014 Matyas Selmeci <matyas@cs.wisc.edu> - 1:3.3.5-1.1.osg
+- Merge OSG changes (SOFTWARE-1322)
+
+* Tue Dec 03 2013 Mattias Ellert <mattias.ellert@fysast.uu.se> - 1:3.3.5-1
+- Update to version 3.3.5
+
+* Tue Nov 19 2013 Mattias Ellert <mattias.ellert@fysast.uu.se> - 1:3.3.4-1
+- Update to version 3.3.4
+
+* Mon Oct 14 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1:3.3.3-1.1.osg
 - Merge OSG changes
+
+* Sun Aug 04 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:3.3.3-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
 
 * Sat Jul 27 2013 Mattias Ellert <mattias.ellert@fysast.uu.se> - 1:3.3.3-1
 - Update to version 3.3.3
@@ -486,7 +496,7 @@ fi
 * Sun Apr 28 2013 Mattias Ellert <mattias.ellert@fysast.uu.se> - 1:3.3.2-1
 - Update to version 3.3.2
 
-* Tue Apr 23 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1:3.3.1-1.2
+* Tue Apr 23 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1:3.3.1-1.2.osg
 - Add xrootd-server dummy package
 
 * Wed Mar 06 2013 Mattias Ellert <mattias.ellert@fysast.uu.se> - 1:3.3.1-1
