@@ -1,5 +1,5 @@
 Name: osg-display-data
-Version: 1.0.6
+Version: 1.0.7
 Release: 1%{?dist}
 Summary: Scripts and tools to generate the OSG Display's data.
 Source: %{name}-%{version}.tar.gz
