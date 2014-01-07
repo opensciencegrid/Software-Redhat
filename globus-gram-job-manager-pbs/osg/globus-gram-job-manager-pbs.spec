@@ -15,7 +15,7 @@
 Name:		globus-gram-job-manager-pbs
 %global _name %(tr - _ <<< %{name})
 Version:	1.6
-Release:	1.1%{?dist}
+Release:	1.6%{?dist}
 Summary:	Globus Toolkit - PBS Job Manager Support
 
 Group:		Applications/Internet
@@ -255,6 +255,9 @@ fi
 %config(noreplace) %{_sysconfdir}/globus/scheduler-event-generator/available/pbs
 
 %changelog
+* Tue Jan 07 2014 Matyas Selmeci <matyas@cs.wisc.edu> 1.6-1.6
+- Bump release to rebuild
+
 * Mon Aug 26 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.6-1.5.osg
 - Patch to catch bad SLURM submits (SOFTWARE-1162)
 
