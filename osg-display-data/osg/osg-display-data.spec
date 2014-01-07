@@ -41,6 +41,9 @@ rm -rf $RPM_BUILD_ROOT
 %config /etc/osg_display/osg_display.condor.cron
 
 %changelog
+* Tue Jan 07 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.0.7-1
+- Address "-1 hours ago" issue (DISPLAY-16)
+
 * Mon Jan 06 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.0.6-1
 - Use months=12 instead of 13, etc, in config file (SOFTWARE-1326)
 - Mark %%config files
