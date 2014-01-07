@@ -1,1 +1,4 @@
-Source downloaded from 'http://dl.fedoraproject.org/pub/epel/5/SRPMS/xrootd-3.3.3-1.el5.src.rpm'
+We make the following addition to what we get from EPEL: a transitional dummy
+package called 'xrootd-server' that just brings in 'xrootd'. This is to make
+upgrades from pre-3.3.X easier. Only the 3.3.X versions were ever in EPEL,
+which is why they don't have anything similar.
