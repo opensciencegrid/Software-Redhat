@@ -1,2 +1,5 @@
 EPEL with a few patches and a sample user-customizable .rvf file
 
+Note that EPEL strips out some 'devel' files from the setup-seg subpackage that
+cause test failures when we follow suit, so there are some spec file changes as
+well.

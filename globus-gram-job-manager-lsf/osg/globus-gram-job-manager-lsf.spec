@@ -11,7 +11,7 @@
 Name:		globus-gram-job-manager-lsf
 %global _name %(tr - _ <<< %{name})
 Version:	1.2
-Release:	1.1%{?dist}
+Release:	1.2%{?dist}
 Summary:	Globus Toolkit - LSF Job Manager Support
 
 Group:		Applications/Internet
@@ -150,20 +150,23 @@ rm %{buildroot}/etc/grid-services/jobmanager-lsf
 # Install README file
 install -m 644 -p %{SOURCE8} %{buildroot}%{_pkgdocdir}/README
 
-# Devel package is redundant
-rm %{buildroot}%{_libdir}/libglobus_seg_lsf.so
-rm %{buildroot}%{_libdir}/pkgconfig/globus-gram-job-manager-lsf.pc
-rm $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_dev.filelist
-rm $GLOBUSPACKAGEDIR/%{_name}/pkg_data_%{flavor}_dev.gpt
+## Devel package is redundant
+#rm %{buildroot}%{_libdir}/libglobus_seg_lsf.so
+#rm %{buildroot}%{_libdir}/pkgconfig/globus-gram-job-manager-lsf.pc
+#rm $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_dev.filelist
+#rm $GLOBUSPACKAGEDIR/%{_name}/pkg_data_%{flavor}_dev.gpt
 
-# List config files in each package - drop the file list
-rm $GLOBUSPACKAGEDIR/%{_name}/noflavor_data.filelist
-rm $GLOBUSPACKAGEDIR/%{_name}/pkg_data_noflavor_data.gpt
+## List config files in each package - drop the file list
+#rm $GLOBUSPACKAGEDIR/%{_name}/noflavor_data.filelist
+#rm $GLOBUSPACKAGEDIR/%{_name}/pkg_data_noflavor_data.gpt
 
 # Generate package filelists
-cat $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_rtl.filelist \
-    $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_pgm.filelist \
+cat $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_pgm.filelist \
+    $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_dev.filelist \
+    $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_rtl.filelist \
+    $GLOBUSPACKAGEDIR/%{_name}/noflavor_data.filelist \
   | sed -e s!^!%{_prefix}! -e 's!/man/.*!&*!' \
+        -e s!^%{_prefix}/etc!/etc! \
 	-e /lsf.pm/d > package-seg.filelist
 cat $GLOBUSPACKAGEDIR/%{_name}/noflavor_doc.filelist \
   | sed 's!^!%doc %{_prefix}!' > package.filelist
@@ -233,6 +236,9 @@ fi
 %config(noreplace) %{_sysconfdir}/globus/scheduler-event-generator/available/lsf
 
 %changelog
+* Wed Jan 08 2014 Matyas Selmeci <matyas@cs.wisc.edu> 1.2-1.2.osg
+- Re-add some 'devel' libraries and files to the setup-seg subpackage
+
 * Thu Dec 12 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.2-1.1.osg
 - Merge OSG changes
 - Drop patch host-xcount.patch (fixed upstream)
