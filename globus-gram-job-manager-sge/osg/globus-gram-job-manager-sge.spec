@@ -11,7 +11,7 @@
 Name:		globus-gram-job-manager-sge
 %global _name %(tr - _ <<< %{name})
 Version:	1.7
-Release:	1.1%{?dist}
+Release:	1.2%{?dist}
 Summary:	Globus Toolkit - Grid Engine Job Manager Support
 
 Group:		Applications/Internet
@@ -171,20 +171,23 @@ install -m 644 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/globus/gram/sge.rvf
 # Install README file
 install -m 644 -p %{SOURCE8} %{buildroot}%{_pkgdocdir}/README
 
-# Devel package is redundant
-rm %{buildroot}%{_libdir}/libglobus_seg_sge.so
-rm %{buildroot}%{_libdir}/pkgconfig/globus-gram-job-manager-sge.pc
-rm $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_dev.filelist
-rm $GLOBUSPACKAGEDIR/%{_name}/pkg_data_%{flavor}_dev.gpt
+## Devel package is redundant
+#rm %{buildroot}%{_libdir}/libglobus_seg_sge.so
+#rm %{buildroot}%{_libdir}/pkgconfig/globus-gram-job-manager-sge.pc
+#rm $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_dev.filelist
+#rm $GLOBUSPACKAGEDIR/%{_name}/pkg_data_%{flavor}_dev.gpt
 
-# List config files in each package - drop the file list
-rm $GLOBUSPACKAGEDIR/%{_name}/noflavor_data.filelist
-rm $GLOBUSPACKAGEDIR/%{_name}/pkg_data_noflavor_data.gpt
+## List config files in each package - drop the file list
+#rm $GLOBUSPACKAGEDIR/%{_name}/noflavor_data.filelist
+#rm $GLOBUSPACKAGEDIR/%{_name}/pkg_data_noflavor_data.gpt
 
 # Generate package filelists
-cat $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_rtl.filelist \
-    $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_pgm.filelist \
+cat $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_pgm.filelist \
+    $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_dev.filelist \
+    $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_rtl.filelist \
+    $GLOBUSPACKAGEDIR/%{_name}/noflavor_data.filelist \
   | sed -e s!^!%{_prefix}! -e 's!/man/.*!&*!' \
+        -e s!^%{_prefix}/etc!/etc! \
 	-e /sge.pm/d > package-seg.filelist
 cat $GLOBUSPACKAGEDIR/%{_name}/noflavor_doc.filelist \
   | sed 's!^!%doc %{_prefix}!' > package.filelist
@@ -254,6 +257,9 @@ fi
 %config(noreplace) %{_sysconfdir}/globus/scheduler-event-generator/available/sge
 
 %changelog
+* Wed Jan 08 2014 Matyas Selmeci <matyas@cs.wisc.edu> 1.7-1.2.osg
+- Re-add some 'devel' libraries and files to the setup-seg subpackage
+
 * Thu Dec 12 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.7-1.1.osg
 - Merge OSG changes
 - Drop seg_sge_module patch (fixed upstream)
