@@ -39,8 +39,10 @@ rm -rf $RPM_BUILD_ROOT
 /etc/grid-security/certificates/bffdd190.*
 
 %changelog
-* Mon Dec 23 2013 Tim Cartwright <cat@cs.wisc.edu> - 1.4.6-1
-- Extend VOMS Admin start-up timeout to 120 seconds
+* Wed Jan 08 2014 Brian Lin <blin@cs.wisc.edu> - 1.4.6-1
+- Increase VOMS admin timeouts
+- Clean yum cache after updating osg-release
+- Better messages for failed installs
 
 * Tue Dec 17 2013 Brian Lin <blin@cs.wisc.edu> - 1.4.5-1
 - Improve yum installation and cleanup
