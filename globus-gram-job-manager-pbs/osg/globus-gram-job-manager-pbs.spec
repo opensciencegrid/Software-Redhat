@@ -15,7 +15,7 @@
 Name:		globus-gram-job-manager-pbs
 %global _name %(tr - _ <<< %{name})
 Version:	1.6
-Release:	1.6%{?dist}
+Release:	1.7%{?dist}
 Summary:	Globus Toolkit - PBS Job Manager Support
 
 Group:		Applications/Internet
@@ -164,24 +164,27 @@ sed '/lib.*\.la$/d' -i $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_dev.filelist
 # Install README file
 install -m 644 -p %{SOURCE8} %{buildroot}%{_docdir}/%{name}-%{version}/README
 
-# Devel package is redundant
-rm %{buildroot}%{_libdir}/libglobus_seg_pbs.so
-rm %{buildroot}%{_libdir}/pkgconfig/globus-gram-job-manager-pbs.pc
-rm $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_dev.filelist
-rm $GLOBUSPACKAGEDIR/%{_name}/pkg_data_%{flavor}_dev.gpt
+## Devel package is redundant
+#rm %{buildroot}%{_libdir}/libglobus_seg_pbs.so
+#rm %{buildroot}%{_libdir}/pkgconfig/globus-gram-job-manager-pbs.pc
+#rm $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_dev.filelist
+#rm $GLOBUSPACKAGEDIR/%{_name}/pkg_data_%{flavor}_dev.gpt
 
-# List config files in each package - drop the file list
-rm $GLOBUSPACKAGEDIR/%{_name}/noflavor_data.filelist
-rm $GLOBUSPACKAGEDIR/%{_name}/pkg_data_noflavor_data.gpt
+## List config files in each package - drop the file list
+#rm $GLOBUSPACKAGEDIR/%{_name}/noflavor_data.filelist
+#rm $GLOBUSPACKAGEDIR/%{_name}/pkg_data_noflavor_data.gpt
 
 # Install the RVF file
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/globus/gram/
 install -m 644 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/globus/gram/pbs.rvf
 
 # Generate package filelists
-cat $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_rtl.filelist \
-    $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_pgm.filelist \
+cat $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_pgm.filelist \
+    $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_dev.filelist \
+    $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_rtl.filelist \
+    $GLOBUSPACKAGEDIR/%{_name}/noflavor_data.filelist \
   | sed -e s!^!%{_prefix}! -e 's!/man/.*!&*!' \
+        -e s!^%{_prefix}/etc!/etc! \
 	-e /pbs.pm/d > package-seg.filelist
 cat $GLOBUSPACKAGEDIR/%{_name}/noflavor_doc.filelist \
   | sed 's!^!%doc %{_prefix}!' > package.filelist
@@ -255,7 +258,10 @@ fi
 %config(noreplace) %{_sysconfdir}/globus/scheduler-event-generator/available/pbs
 
 %changelog
-* Tue Jan 07 2014 Matyas Selmeci <matyas@cs.wisc.edu> 1.6-1.6
+* Wed Jan 08 2014 Matyas Selmeci <matyas@cs.wisc.edu> 1.6-1.7.osg
+- Re-add some 'devel' libraries and files to the setup-seg subpackage
+
+* Tue Jan 07 2014 Matyas Selmeci <matyas@cs.wisc.edu> 1.6-1.6.osg
 - Bump release to rebuild
 
 * Mon Aug 26 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.6-1.5.osg

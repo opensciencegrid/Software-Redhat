@@ -1,1 +1,5 @@
 EPEL with some OSG-specific patches that are unlikely to be upstreamed
+
+Note that EPEL strips out some 'devel' files from the setup-seg subpackage that
+cause test failures when we follow suit, so there are some spec file changes as
+well.
