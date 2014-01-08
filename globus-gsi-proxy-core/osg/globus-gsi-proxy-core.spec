@@ -9,7 +9,7 @@
 Name:		globus-gsi-proxy-core
 %global _name %(tr - _ <<< %{name})
 Version:	6.2
-Release:	8%{?dist}
+Release:	8.1%{?dist}
 Summary:	Globus Toolkit - Globus GSI Proxy Core Library
 
 Group:		System Environment/Libraries
@@ -18,6 +18,7 @@ URL:		http://www.globus.org/
 Source:		http://www.globus.org/ftppub/gt5/5.2/5.2.1/packages/src/%{_name}-%{version}.tar.gz
 #		README file
 Source8:	GLOBUS-GSIC
+Patch0:         1346-default-proxy-bits.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Requires:	globus-gsi-proxy-ssl%{?_isa} >= 4
@@ -107,6 +108,7 @@ Globus GSI Proxy Core Library Documentation Files
 
 %prep
 %setup -q -n %{_name}-%{version}
+%patch0 -p1
 
 %build
 # Remove files that should be replaced during bootstrap
@@ -172,6 +174,9 @@ rm -rf %{buildroot}
 %dir %{_pkgdocdir}/html
 
 %changelog
+* Wed Jan 08 2014 Matyas Selmeci <matyas@cs.wisc.edu> 6.2-8.1.osg
+- Patch to default to 1024-bit proxies (SOFTWARE-1346)
+
 * Fri Oct 25 2013 Mattias Ellert <mattias.ellert@fysast.uu.se> - 6.2-8
 - Remove obsolete workaround for broken RHEL 5 epstopdf
 
