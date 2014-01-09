@@ -11,7 +11,7 @@
 Name:		globus-gatekeeper
 %global _name %(tr - _ <<< %{name})
 Version:	9.15
-Release:	1.4%{?dist}
+Release:	1.5%{?dist}
 Summary:	Globus Toolkit - Globus Gatekeeper
 
 Group:		Applications/Internet
@@ -73,6 +73,7 @@ unset GPT_LOCATION
 
 %configure --disable-static --with-flavor=%{flavor} \
 	   --with-docdir=%{_pkgdocdir} \
+           --with-lsb \
 	   --with-initscript-config-path=/etc/sysconfig/globus-gatekeeper \
 	   --with-lockfile-path='${localstatedir}/lock/subsys/globus-gatekeeper'
 
@@ -141,6 +142,9 @@ fi
 
 
 %changelog
+* Thu Jan 09 2014 Matyas Selmeci <matyas@cs.wisc.edu> 9.15-1.5.osg
+- Use LSB-style Globus init script
+
 * Wed Jan 08 2014 Matyas Selmeci <matyas@cs.wisc.edu> 9.15-1.4.osg
 - Do not override Globus-provided init script (which we patch for GT-489) with the EPEL-provided one
 
