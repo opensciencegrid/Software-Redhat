@@ -11,14 +11,13 @@
 Name:		globus-gatekeeper
 %global _name %(tr - _ <<< %{name})
 Version:	9.15
-Release:	1.3%{?dist}
+Release:	1.4%{?dist}
 Summary:	Globus Toolkit - Globus Gatekeeper
 
 Group:		Applications/Internet
 License:	ASL 2.0
 URL:		http://www.globus.org/
 Source:		http://www.globus.org/ftppub/gt5/5.2/5.2.5/packages/src/%{_name}-%{version}.tar.gz
-Source1:	%{name}
 Source2:	%{name}.README
 #		README file
 Source8:	GLOBUS-GRAM5
@@ -88,14 +87,6 @@ make install DESTDIR=%{buildroot}
 
 GLOBUSPACKAGEDIR=%{buildroot}%{_datadir}/globus/packages
 
-# Remove start-up script
-rm -rf %{buildroot}%{_sysconfdir}/init.d
-sed '/init\.d/d' -i $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_pgm.filelist
-
-# Install start-up script
-mkdir -p %{buildroot}%{_initrddir}
-install -p %{SOURCE1} %{buildroot}%{_initrddir}
-
 # Install post installation instructions
 install -m 644 -p %{SOURCE2} \
   %{buildroot}%{_pkgdocdir}/README.Fedora
@@ -137,7 +128,7 @@ if [ $1 -ge 1 ]; then
 fi
 
 %files -f package.filelist
-%{_initddir}/%{name}
+%{_sysconfdir}/init.d/%{name}
 %{_sysconfdir}/logrotate.d/%{name}
 %dir %{_sysconfdir}/grid-services
 %dir %{_sysconfdir}/grid-services/available
@@ -150,6 +141,9 @@ fi
 
 
 %changelog
+* Wed Jan 08 2014 Matyas Selmeci <matyas@cs.wisc.edu> 9.15-1.4.osg
+- Do not override Globus-provided init script (which we patch for GT-489) with the EPEL-provided one
+
 * Mon Dec 16 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 9.15-1.3.osg
 - Bump and rebuild with OpenSSL 1.0.0
 
