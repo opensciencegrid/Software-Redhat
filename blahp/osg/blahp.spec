@@ -1,6 +1,6 @@
 Name:		blahp
-Version:	1.18.7.bosco
-Release:	2%{?dist}
+Version:	1.18.9.bosco
+Release:	1%{?dist}
 Summary:	gLite BLAHP daemon
 
 Group:		System/Libraries
@@ -62,6 +62,45 @@ mv $RPM_BUILD_ROOT%{_sysconfdir}/blah.config.template $RPM_BUILD_ROOT%{_sysconfd
 mv $RPM_BUILD_ROOT%{_sysconfdir}/blparser.conf.template $RPM_BUILD_ROOT%{_sysconfdir}/blparser.conf
 echo "blah_libexec_directory=/usr/libexec/blahp" >> $RPM_BUILD_ROOT%{_sysconfdir}/blah.config
 
+install -m 0755 -d -p $RPM_BUILD_ROOT%{_sysconfdir}/%{name}
+mv $RPM_BUILD_ROOT%{_libexecdir}/blahp/sge_local_submit_attributes.sh $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/
+ln -s %{_sysconfdir}/%{name}/sge_local_submit_attributes.sh    $RPM_BUILD_ROOT%{_libexecdir}/blahp/sge_local_submit_attributes.sh
+
+for i in pbs lsf condor; do
+  ln -s %{_sysconfdir}/%{name}/${i}_local_submit_attributes.sh    $RPM_BUILD_ROOT%{_libexecdir}/blahp/${i}_local_submit_attributes.sh
+
+cat > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/${i}_local_submit_attributes.sh << EOF
+#/bin/sh
+
+# This file is sourced by blahp before submitting the job to ${i}
+# Anything printed to stdout is included in the submit file.
+# For example, to set a default walltime of 24 hours in PBS, you
+# could uncomment this line:
+
+# echo "#PBS -l walltime=24:00:00"
+
+# blahp allows arbitrary attributes to be passed to this script on a per-job
+# basis.  If you add the following to your HTCondor-G submit file:
+
+#+remote_cerequirements = NumJobs == 100 && foo = 5
+
+# Then an environment variable, NumJobs, will be exported prior to calling this
+# script and set to a value of 100.  The variable foo will be set to 5.
+
+# You could allow users to set the walltime for the job with the following
+# customization (PBS syntax given; adjust for the appropriate batch system):
+
+#if [ -n "\$Walltime" ]; then
+#  echo "#PBS -l walltime=\$Walltime"
+#else
+#  echo "#PBS -l walltime=24:00:00"
+#fi
+
+EOF
+done
+
+mv $RPM_BUILD_ROOT%{_docdir}/glite-ce-blahp-@PVER@ $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -82,14 +121,26 @@ fi
 %defattr(-,root,root,-)
 %{_bindir}/*
 %{_sbindir}/*
-%{_libexecdir}/blahp
-%{_docdir}/glite*
+%{_libexecdir}/%{name}
+%{_docdir}/%{name}-%{version}
 %config(noreplace) %{_sysconfdir}/blparser.conf
 %config(noreplace) %{_sysconfdir}/blah.config
+%dir %{_sysconfdir}/%{name}
+%config(noreplace) %{_sysconfdir}/%{name}/*.sh
 %{_mandir}/man1/*
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Thu Jan 09 2014 Brian Bockelman <bbockelm@cse.unl.edu> - 1.18.9.bosco-1
+- Fix proxy renewal in the case where no home directory exists.
+- Improve packaging of local customization scripts and include defaults.
+  These are now marked as config files and places in /etc.
+- Change name of documentation directory to reflect RPM name.
+
+* Tue Jan 07 2014 Brian Bockelman <bbockelm@cse.unl.edu> - 1.18.8.bosco-1
+- Fixes from PBS testing.  Blahp now handles multiple arguments correctly
+  and the wrapper script will remove the job proxy after it finishes.
+
 * Wed Oct 30 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.18.7.bosco-2
 - Bump to rebuild against condor-7.8.8-x (OSG-3.1) and condor-8.0.4-x (OSG 3.2)
 
