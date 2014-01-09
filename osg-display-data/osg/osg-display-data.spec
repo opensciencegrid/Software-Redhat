@@ -1,5 +1,5 @@
 Name: osg-display-data
-Version: 1.0.7
+Version: 1.0.8
 Release: 1%{?dist}
 Summary: Scripts and tools to generate the OSG Display's data.
 Source: %{name}-%{version}.tar.gz
@@ -41,6 +41,11 @@ rm -rf $RPM_BUILD_ROOT
 %config /etc/osg_display/osg_display.condor.cron
 
 %changelog
+* Thu Jan 09 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.0.8-1
+- Stop using deprecated sets module (SOFTWARE-1351)
+- Increase default timeout and add --notimeout option (SOFTWARE-1352)
+- Don't show stacktrace for --help output
+
 * Tue Jan 07 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.0.7-1
 - Address "-1 hours ago" issue (DISPLAY-16)
 
