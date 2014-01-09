@@ -15,7 +15,7 @@
 Name:		globus-gram-job-manager-pbs
 %global _name %(tr - _ <<< %{name})
 Version:	1.6
-Release:	1.7%{?dist}
+Release:	1.8%{?dist}
 Summary:	Globus Toolkit - PBS Job Manager Support
 
 Group:		Applications/Internet
@@ -107,7 +107,7 @@ state
 %setup -q -n %{_name}-%{version}
 %patch1 -p0
 %patch2 -p0
-%patch3 -p0
+#patch3 -p0
 
 %build
 # Remove files that should be replaced during bootstrap
@@ -258,6 +258,9 @@ fi
 %config(noreplace) %{_sysconfdir}/globus/scheduler-event-generator/available/pbs
 
 %changelog
+* Thu Jan 09 2014 Matyas Selmeci <matyas@cs.wisc.edu> 1.6-1.8.osg
+- Disable SOFTWARE-1162 patch
+
 * Wed Jan 08 2014 Matyas Selmeci <matyas@cs.wisc.edu> 1.6-1.7.osg
 - Re-add some 'devel' libraries and files to the setup-seg subpackage
 
