@@ -1,6 +1,6 @@
 Name: osg-display-data
 Version: 1.0.8
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: Scripts and tools to generate the OSG Display's data.
 Source: %{name}-%{version}.tar.gz
 License: UNKNOWN
@@ -37,10 +37,13 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root)
 %attr(-, apache, apache) /var/log/osg_display
 %attr(-, apache, apache) /var/www/html/osg_display
-%config %attr(600, apache, apache) /etc/osg_display/osg_display.conf
-%config /etc/osg_display/osg_display.condor.cron
+%config(noreplace) %attr(600, apache, apache) /etc/osg_display/osg_display.conf
+%config(noreplace) /etc/osg_display/osg_display.condor.cron
 
 %changelog
+* Fri Jan 10 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.0.8-2
+- Mark %%config files with noreplace
+
 * Thu Jan 09 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.0.8-1
 - Stop using deprecated sets module (SOFTWARE-1351)
 - Increase default timeout and add --notimeout option (SOFTWARE-1352)
