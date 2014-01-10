@@ -11,7 +11,7 @@
 Name:		globus-gatekeeper
 %global _name %(tr - _ <<< %{name})
 Version:	9.15
-Release:	1.5%{?dist}
+Release:	1.6%{?dist}
 Summary:	Globus Toolkit - Globus Gatekeeper
 
 Group:		Applications/Internet
@@ -25,6 +25,7 @@ Source11:       globus-gatekeeper.osg-sysconfig
 Patch3:         init.patch
 Patch5:         logrotate-copytruncate.patch
 Patch6:         GT-489-openssl-1.0.1-fix.patch
+Patch7:         1250-init-priorities.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 #		Keep providing globus-gatekeeper-setup until it is not needed
@@ -58,6 +59,7 @@ Globus Gatekeeper
 %patch3 -p0
 %patch5 -p0
 %patch6 -p0
+%patch7 -p0
 
 %build
 # Remove files that should be replaced during bootstrap
@@ -142,6 +144,9 @@ fi
 
 
 %changelog
+* Fri Jan 10 2014 Matyas Selmeci <matyas@cs.wisc.edu> 9.15-1.6.osg
+- Fix init script chkconfig priorities to run after netfs and autofs (SOFTWARE-1250)
+
 * Thu Jan 09 2014 Matyas Selmeci <matyas@cs.wisc.edu> 9.15-1.5.osg
 - Use LSB-style Globus init script
 
