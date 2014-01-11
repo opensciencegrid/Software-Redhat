@@ -1,8 +1,8 @@
 Index: init/globus-gatekeeper-lsb.in
 ===================================================================
---- init/globus-gatekeeper-lsb.in.orig	2014-01-10 16:59:34.000000000 -0600
-+++ init/globus-gatekeeper-lsb.in	2014-01-10 17:02:21.630472080 -0600
-@@ -1,7 +1,7 @@
+--- init/globus-gatekeeper-lsb.in.orig	2014-01-10 18:00:02.402153402 -0600
++++ init/globus-gatekeeper-lsb.in	2014-01-10 18:00:55.737827275 -0600
+@@ -1,12 +1,12 @@
  #! /bin/sh
  
  # globus-gatekeeper Authorize and execute a grid service
@@ -11,3 +11,10 @@ Index: init/globus-gatekeeper-lsb.in
  
  ### BEGIN INIT INFO
  # Provides:          globus-gatekeeper
+-# Required-Start:    $network $time
+-# Required-Stop:     $network
++# Required-Start:    $network $time $remote_fs
++# Required-Stop:     $network $remote_fs
+ @DEFAULT_START_LINE@
+ @DEFAULT_STOP_LINE@
+ # Short-Description: Globus Gatekeeper

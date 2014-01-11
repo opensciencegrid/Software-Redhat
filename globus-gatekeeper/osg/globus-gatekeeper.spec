@@ -11,7 +11,7 @@
 Name:		globus-gatekeeper
 %global _name %(tr - _ <<< %{name})
 Version:	9.15
-Release:	1.6%{?dist}
+Release:	1.7%{?dist}
 Summary:	Globus Toolkit - Globus Gatekeeper
 
 Group:		Applications/Internet
@@ -144,7 +144,7 @@ fi
 
 
 %changelog
-* Fri Jan 10 2014 Matyas Selmeci <matyas@cs.wisc.edu> 9.15-1.6.osg
+* Fri Jan 10 2014 Matyas Selmeci <matyas@cs.wisc.edu> 9.15-1.7.osg
 - Fix init script chkconfig priorities to run after netfs and autofs (SOFTWARE-1250)
 
 * Thu Jan 09 2014 Matyas Selmeci <matyas@cs.wisc.edu> 9.15-1.5.osg
