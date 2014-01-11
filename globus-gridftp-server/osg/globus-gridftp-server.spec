@@ -11,7 +11,7 @@
 Name:		globus-gridftp-server
 %global _name %(tr - _ <<< %{name})
 Version:	6.38
-Release:	1.1%{?dist}
+Release:	1.2%{?dist}
 Summary:	Globus Toolkit - Globus GridFTP Server
 
 Group:		System Environment/Libraries
@@ -27,9 +27,6 @@ Source6:	globus-gridftp-server.osg-sysconfig
 Source7:	globus-gridftp-server.logrotate
 #		README file
 Source8:	GLOBUS-GRIDFTP
-# can't use %patch0 macro because this patch works on Source files and
-#  not on files in the tarball like normal
-Patch0:		osg-sysconfig.patch
 Patch1:		gridftp-conf-logging.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -115,8 +112,6 @@ Globus GridFTP Server Development Files
 %prep
 %setup -q -n %{_name}-%{version}
 %patch1 -p1
-# apply Patch0 to SOURCE1 & SOURCE2 files
-(cd `dirname %{SOURCE1}`;patch -p0 <%{PATCH0})
 
 %build
 # Remove files that should be replaced during bootstrap
@@ -249,6 +244,9 @@ fi
 %files -f package-devel.filelist devel
 
 %changelog
+* Fri Jan 10 2014 Matyas Selmeci <matyas@cs.wisc.edu> 6.38-1.2.osg
+- Fix init script chkconfig priorities to run after netfs and autofs (SOFTWARE-1250)
+
 * Tue Dec 10 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 6.38-1.1.osg
 - Merge OSG changes
 
