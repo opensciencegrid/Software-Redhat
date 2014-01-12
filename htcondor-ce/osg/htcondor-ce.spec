@@ -1,6 +1,6 @@
 
 Name: htcondor-ce
-Version: 0.5.9
+Version: 0.6.0
 Release: 1%{?dist}
 Summary: A framework to run HTCondor as a CE
 
@@ -8,6 +8,9 @@ Group: Applications/System
 License: Apache 2.0
 URL: http://github.com/bbockelm/condor-ce
 
+# Generated with:
+# git archive --prefix=%{name}-%{version}/ v%{version} | gzip > %{name}-%{version}.tar.gz
+#
 Source0: %{name}-%{version}.tar.gz
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -15,7 +18,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Requires:  condor >= 8.0.0
 # This ought to pull in the HTCondor-CE specific version of the blahp
 Requires: blahp
-Requires: %{name}-client
+Requires: %{name} = %{version}-%{release}
 
 Obsoletes: condor-ce < 0.5.4
 Provides:  condor-ce = %{version}
@@ -58,12 +61,18 @@ Provides:  condor-ce-pbs = %{version}
 Group: Applications/System
 Summary: Client-side tools for submission to HTCondor-CE
 
+BuildRequires: boost-devel
+BuildRequires: globus-rsl-devel
+BuildRequires: condor-classads-devel
+
 # Note the strange requirements (base package is not required!
 # Point is to be able to submit jobs without installing the server.
 Requires: condor
 Requires: /usr/bin/grid-proxy-init
 Requires: /usr/bin/voms-proxy-init
 
+# Require the appropriate version of the python library.  This
+# is rather awkward, but better syntax isn't available until RHEL6
 %ifarch x86_64
 Requires: htcondor.so()(64bit)
 %else
@@ -80,8 +89,8 @@ Provides:  condor-ce-client = %{version}
 %setup -q
 
 %build
-%configure
-make
+%cmake
+make %{?_smp_mflags}
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -124,6 +133,8 @@ fi
 
 %{_datadir}/condor-ce/condor_ce_router_defaults
 
+%{_libdir}/condor/libeval_rsl.so
+
 %{_initrddir}/condor-ce
 
 %config %{_sysconfdir}/condor-ce/config.d/01-ce-auth.conf
@@ -165,8 +176,11 @@ fi
 
 %{_bindir}/condor_ce_config_val
 %{_bindir}/condor_ce_hold
+%{_bindir}/condor_ce_off
+%{_bindir}/condor_ce_on
 %{_bindir}/condor_ce_q
 %{_bindir}/condor_ce_qedit
+%{_bindir}/condor_ce_restart
 %{_bindir}/condor_ce_rm
 %{_bindir}/condor_ce_run
 %{_bindir}/condor_ce_release
@@ -179,6 +193,10 @@ fi
 %{_bindir}/condor_ce_ping
 
 %changelog
+* Sat Jan 11 2014 Brian Bockelman <bbockelm@cse.unl.edu> - 0.6.0-1
+- Add compatibility layer with GlobusRSL.  This allows GlobusRSL set
+  for HTCondor-G for GRAM to be reused by HTCondor-CE.
+
 * Mon Jan 06 2014 Brian Bockelman <bbockelm@cse.unl.edu> - 0.5.9-1
 - Add support for OSG extended attribute and UID tables.
 - Small config fixes for RHEL6's OpenSSL and the PBS backend.
