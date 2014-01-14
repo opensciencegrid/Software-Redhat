@@ -64,6 +64,7 @@ Summary: Client-side tools for submission to HTCondor-CE
 BuildRequires: boost-devel
 BuildRequires: globus-rsl-devel
 BuildRequires: condor-classads-devel
+BuildRequires: cmake
 
 # Note the strange requirements (base package is not required!
 # Point is to be able to submit jobs without installing the server.
