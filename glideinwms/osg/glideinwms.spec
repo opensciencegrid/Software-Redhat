@@ -21,7 +21,7 @@ Name:           glideinwms
 # ------------------------------------------------------------------------------
 %if %{v3_plus}
 %define version 3.2.3
-%define release 0.1.rc1
+%define release 0.2.rc2
 %define frontend_xml frontend.master.xml
 %define factory_xml glideinWMS.master.xml
 %endif
@@ -719,6 +719,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Jan 15 2014 Parag Mhashilkar <parag@fnal.gov> - 3.2.3-0.2.rc2
+- Bug fixes to factory log cleanup
+
 * Tue Dec 17 2013 Parag Mhashilkar <parag@fnal.gov> - 3.2.3-0.1.rc1
 - New features and bug fixes
 - Added clone_glidein tool
