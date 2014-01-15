@@ -11,7 +11,7 @@
 Name:		globus-gatekeeper
 %global _name %(tr - _ <<< %{name})
 Version:	9.15
-Release:	1.7%{?dist}
+Release:	1.8%{?dist}
 Summary:	Globus Toolkit - Globus Gatekeeper
 
 Group:		Applications/Internet
@@ -37,6 +37,7 @@ Requires(post):		chkconfig
 Requires(preun):	chkconfig
 Requires(preun):	initscripts
 Requires(postun):	initscripts
+Requires:       /lib/lsb/init-functions
 BuildRequires:	grid-packaging-tools >= 3.4
 BuildRequires:	globus-core >= 8
 BuildRequires:	globus-common-devel >= 14
@@ -144,6 +145,9 @@ fi
 
 
 %changelog
+* Wed Jan 15 2014 Matyas Selmeci <matyas@cs.wisc.edu> 9.15-1.8.osg
+- Add requirement for lsb init functions
+
 * Fri Jan 10 2014 Matyas Selmeci <matyas@cs.wisc.edu> 9.15-1.7.osg
 - Fix init script chkconfig priorities to run after netfs and autofs (SOFTWARE-1250)
 
