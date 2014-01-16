@@ -1,33 +1,38 @@
-
-# OSG packaging is a bit different from Globus
-%if "0%{?dist}" == "0.osg"
-%define _osg 1
-%else
-%define _osg 1
-%endif
-
+%define osg 1
 
 Name:           gridftp-hdfs
 Version:        0.5.4
-Release:        9%{?dist}
+Release:        10%{?dist}
 Summary:        HDFS DSI plugin for GridFTP
 Group:          System Environment/Daemons
 License:        ASL 2.0
 URL:            http://twiki.grid.iu.edu/bin/view/Storage/HadoopInstallation
-# TODO:  Check if this svn tag is the same as the source tarball available
-# for download.  That might simplify this a bit.
-# svn co svn://t2.unl.edu/brian/gridftp_hdfs
-# cd gridftp_hdfs
-# ./bootstrap
-# ./configure
-# make dist
 Source0:        %{name}-%{version}.tar.gz
 Source1: globus-gridftp-server-plugin.osg-sysconfig
+%if 0%{?osg} > 0
 Patch0: osg-sysconfig.patch
+%endif
 Patch1: hadoop200.patch
+Patch2: gridftp-hdfs-link.patch
+# OSG: we do not want this patch; it changes the format of the sysconfig file
+# such that it will no longer be a valid shell script.
+#Patch3: gridftp-hdfs-config.patch
+Patch4: gridftp-hdfs-rpath.patch
+Patch5: gridftp-hdfs-read_t.patch
+Patch6: gridftp-hdfs-readsize.patch
+# OSG: don't want this patch either -- was getting weird 'No such file or
+# directory' errors with it in
+#Patch7: gridftp-hdfs-classpath.patch
+Patch8: gridftp-hdfs-automake-modernize.patch
+Patch9: gridftp-hdfs-libjvm.patch
+Patch10: gridftp-hdfs-uninitialized-result.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires: java7-devel
+BuildRequires: autoconf
+BuildRequires: automake
+BuildRequires: libtool
+
+BuildRequires: java-devel >= 1:1.7.0
 BuildRequires: jpackage-utils
 
 BuildRequires: hadoop-libhdfs
@@ -39,25 +44,47 @@ Requires: hadoop-client >= 2.0.0+545
 # ^ was getting "No FileSystem for scheme: hdfs" without this
 # 6.14-2 added OSG plugin-style sysconfig instead of gridftp.conf.d
 Requires: globus-gridftp-server-progs >= 6.14-2
+%if 0%{?osg} > 0
 Requires: xinetd
-Requires: java7
+%endif
+Requires: java >= 1:1.7.0
 Requires: jpackage-utils
 
 Requires(pre): shadow-utils
 Requires(preun): initscripts
+%if 0%{?osg} == 0
 Requires(preun): chkconfig
 Requires(post): chkconfig
+%endif
 Requires(postun): initscripts
+%if 0%{?osg} > 0
 Requires(postun): xinetd
+%endif
 
 %description
-HDFS DSI plugin for GridFTP 
+HDFS DSI plugin for GridFTP
 
 %prep
 
 %setup -q
+%if 0%{?osg} > 0
 %patch0 -p1
+%endif
 %patch1 -p1
+%patch2 -p1
+##patch3 -p1
+%patch4 -p1
+%patch5 -p1
+%patch6 -p1
+##patch7 -p1
+%patch8 -p1
+%patch9 -p1
+%patch10 -p1
+
+aclocal
+libtoolize
+automake --foreign -a
+autoconf
 
 %build
 
@@ -74,17 +101,30 @@ make DESTDIR=$RPM_BUILD_ROOT install
 rm -f $RPM_BUILD_ROOT%{_libdir}/*.la
 rm -f $RPM_BUILD_ROOT%{_libdir}/*.a
 
-# Remove the init script - in GT5.2, this gets bootstrapped appropriately
-%if %_osg
-rm $RPM_BUILD_ROOT%{_sysconfdir}/init.d/%{name}
+%if 0%{?osg} == 0
+# GT 5.2 location of config directory
+mv $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/gridftp.conf.d \
+   $RPM_BUILD_ROOT%{_sysconfdir}/gridftp.d
 %endif
+
+# Remove the init script - in GT5.2, this gets bootstrapped appropriately
+rm $RPM_BUILD_ROOT%{_sysconfdir}/init.d/%{name}
 rm $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/gridftp.conf.d/%{name}-environment-bootstrap
 
-%if %_osg
+%if 0%{?osg} > 0
 mv $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/gridftp.conf.d/%{name} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig
 rmdir $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/gridftp.conf.d
 mkdir -p $RPM_BUILD_ROOT/usr/share/osg/sysconfig
 install -m 644 -p %{SOURCE1} $RPM_BUILD_ROOT/usr/share/osg/sysconfig/globus-gridftp-server-plugin
+%else
+rm $RPM_BUILD_ROOT%{_sysconfdir}/gridftp.d/%{name}-environment-bootstrap
+rm $RPM_BUILD_ROOT%{_sysconfdir}/gridftp-hdfs/gridftp-debug.conf
+rm $RPM_BUILD_ROOT%{_sysconfdir}/gridftp-hdfs/gridftp-inetd.conf
+rm $RPM_BUILD_ROOT%{_sysconfdir}/gridftp-hdfs/gridftp.conf
+rm $RPM_BUILD_ROOT%{_sysconfdir}/gridftp-hdfs/replica-map.conf
+rm $RPM_BUILD_ROOT%{_sysconfdir}/xinetd.d/gridftp-hdfs
+rm $RPM_BUILD_ROOT%{_bindir}/gridftp-hdfs-standalone
+rm $RPM_BUILD_ROOT%{_sbindir}/gridftp-hdfs-inetd
 %endif
 
 %clean
@@ -93,7 +133,7 @@ rm -rf $RPM_BUILD_ROOT
 %post
 /sbin/ldconfig
 
-%if %_osg
+%if 0%{?osg} > 0
 /sbin/service globus-gridftp-server condrestart >/dev/null 2>&1 || :
 %else
 /sbin/chkconfig --add %{name}
@@ -101,46 +141,49 @@ rm -rf $RPM_BUILD_ROOT
 
 %preun
 if [ "$1" = "0" ] ; then
+%if 0%{?osg} > 0
     /sbin/service xinetd condrestart >/dev/null 2>&1
-%if %_osg
-    /sbin/service globus-gridftp-server condrestart >/dev/null 2>&1 || :
-%else
-    /sbin/service %{name} stop >/dev/null 2>&1 || :
-    /sbin/chkconfig --del %{name}
 %endif
+    /sbin/service globus-gridftp-server condrestart >/dev/null 2>&1 || :
 fi
 
 %postun
 /sbin/ldconfig
 if [ "$1" -ge "1" ]; then
+%if 0%{?osg} > 0
     /sbin/service xinetd condrestart >/dev/null 2>&1
-%if %_osg
-    /sbin/service globus-gridftp-server condrestart >/dev/null 2>&1 || :
-%else
-    /sbin/service gridftp-hdfs condrestart >/dev/null 2>&1 || :
 %endif
+    /sbin/service globus-gridftp-server condrestart >/dev/null 2>&1 || :
 fi
 
 %files
 %defattr(-,root,root,-)
+%if 0%{?osg} > 0
 %{_sbindir}/gridftp-hdfs-inetd
 %{_bindir}/gridftp-hdfs-standalone
+%endif
 %{_libdir}/libglobus_gridftp_server_hdfs.so*
 %{_datadir}/%{name}/%{name}-environment
+%if 0%{?osg} > 0
 %config(noreplace) %{_sysconfdir}/xinetd.d/%{name}
 %config(noreplace) %{_sysconfdir}/%{name}/gridftp-debug.conf
 %config(noreplace) %{_sysconfdir}/%{name}/gridftp-inetd.conf
 %config(noreplace) %{_sysconfdir}/%{name}/gridftp.conf
 %config(noreplace) %{_sysconfdir}/%{name}/replica-map.conf
-%if %_osg
 %config(noreplace) %{_sysconfdir}/sysconfig/%{name}
 /usr/share/osg/sysconfig/globus-gridftp-server-plugin
 %else
 %config(noreplace) %{_sysconfdir}/sysconfig/gridftp.conf.d/%{name}
-%{_sysconfdir}/init.d/%{name}
+%{_sysconfdir}/sysconfig/gridftp.conf.d/%{name}-environment-bootstrap
+%config(noreplace) %{_sysconfdir}/gridftp.d/%{name}
 %endif
 
 %changelog
+* Wed Jan 15 2014 Matyas Selmeci <matyas@cs.wisc.edu> - 0.5.4-10.osg
+- Merged upstream changes as of GT 5.2.5 (SOFTWARE-1317)
+- Remove gridftp-hdfs-config.patch
+- Remove gridftp-hdfs-classpath.patch
+
 * Fri May 31 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 0.5.4-9
 - Add hadoop-client dependency
 
