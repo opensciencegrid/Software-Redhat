@@ -1,12 +1,3 @@
-This is a straight passthrough of gridsite from EPEL.
+Note from the packager: this is the EPEL version of gridsite with the gridsite_globus shared library restored.
 
-Source downloaded from:
-  https://dl.fedoraproject.org/pub/epel/6/SRPMS/gridsite-2.2.0-1.el6.src.rpm
-
-Per https://jira.opensciencegrid.org/browse/SOFTWARE-1348, we are no longer
-maintaining the osg version with the gridsite_globus shared library restored.
-However, since the EPEL gridsite is built against openssl 1.0.1e, we need to
-rebuild gridsite against the openssl 1.0.0 that we ship.
-
-Hopefully in OSG 3.3 we will not need to ship either openssl or gridsite.
-
+Source downloaded from 'https://dl.fedoraproject.org/pub/epel/5/SRPMS/gridsite-1.7.21-4.el5.src.rpm'
