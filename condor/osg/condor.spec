@@ -67,7 +67,7 @@ Version: %{tarball_version}
 %define condor_release %condor_base_release
 %endif
 # Release: %condor_release%{?dist}.2
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -129,8 +129,9 @@ Patch1: condor_peaceful_off.patch
 Patch2: condor_ulimit.patch
 Patch3: chkconfig_off.patch
 # This patch is here until it is pushed into upstream (8.0.1?)
-# https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=3698
+# https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=3698w
 Patch4: gsoap_ipv6.patch
+Patch5: keybits.patch
 Patch8: osg_sysconfig_in_init_script.patch
 Patch9: proper_cream_v3.diff
 %if %blahp
@@ -467,6 +468,7 @@ exit 0
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
+%patch5 -p1
 %patch8 -p1
 %if %cream
 %patch9 -p1
@@ -1271,6 +1273,9 @@ fi
 %endif
 
 %changelog
+* Fri Jan 17 2014 Brian Lin <blin@cs.wisc.edu> - 8.0.5-2
+- Add patch so that proxies are created with at least 1024 bits
+
 * Mon Dec 16 2013 Edgar Fajardo <efajardo@cern.ch> - 8.0.5-1
 - Update to new version 8.0.5
  
