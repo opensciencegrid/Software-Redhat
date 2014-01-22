@@ -21,7 +21,7 @@ Name:           glideinwms
 # ------------------------------------------------------------------------------
 %if %{v3_plus}
 %define version 3.2.3
-%define release 0.2.rc2
+%define release 0.3.rc3
 %define frontend_xml frontend.master.xml
 %define factory_xml glideinWMS.master.xml
 %endif
@@ -719,6 +719,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Jan 22 2014 Parag Mhashilkar <parag@fnal.gov> - 3.2.3-0.3.rc3
+- Support for HTCondor CE rsl and improvements to Frontend
+
 * Wed Jan 15 2014 Parag Mhashilkar <parag@fnal.gov> - 3.2.3-0.2.rc2
 - Bug fixes to factory log cleanup
 
