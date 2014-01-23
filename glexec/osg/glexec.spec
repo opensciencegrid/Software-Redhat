@@ -1,7 +1,7 @@
 Summary: User identity switching tool based on grid credentials
 Name: glexec
 Version: 0.9.9
-Release: 1.1%{?dist}
+Release: 1.2%{?dist}
 License: ASL 2.0
 Group: Applications/System
 URL: http://wiki.nikhef.nl/grid/Site_Access_Control
@@ -10,6 +10,7 @@ Source1: glexec.conf
 Source2: glexec.logrotate
 Patch0: nowarn_allwhite.patch
 Patch1: nowarn_sigchld.patch
+Patch2: log_init.patch
 %if %{?rhel}%{!?rhel:0} <= 5
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 %endif
@@ -34,6 +35,7 @@ logging-only mode.
 %setup -q
 %patch0 -p0
 %patch1 -p0
+%patch2 -p2
 
 %build
 %configure
@@ -80,6 +82,10 @@ getent passwd glexec >/dev/null || \
 exit 0
 
 %changelog
+* Thu Jan 27 2013 Dave Dykstra <dwd@fnal.gov> 0.9.9-1.2.osg
+- add patch from upstream to fix initialization of syslog so it
+  can correctly redirect to a different facility
+
 * Thu Nov 27 2013 Dave Dykstra <dwd@fnal.gov> 0.9.9-1.1.osg
 - pull in new upstream version
 
