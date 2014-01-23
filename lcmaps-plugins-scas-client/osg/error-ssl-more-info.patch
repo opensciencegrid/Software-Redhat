@@ -1,6 +1,6 @@
---- trunk/lcmaps-plugins-scas-client/src/saml2-xacml2/io_handler/ssl/ssl-common.c	2014/01/07 14:53:34	17274
-+++ trunk/lcmaps-plugins-scas-client/src/saml2-xacml2/io_handler/ssl/ssl-common.c	2014/01/15 13:47:12	17291
-@@ -418,7 +418,10 @@
+--- /home/dwd/work/vdt-native/redhat/trunk/lcmaps-plugins-scas-client/_build_results/BUILD/lcmaps-plugins-scas-client-0.4.0/src/saml2-xacml2/io_handler/ssl/ssl-common.c.orig	2012-01-18 12:21:21.000000000 -0600
++++ /home/dwd/work/vdt-native/redhat/trunk/lcmaps-plugins-scas-client/_build_results/BUILD/lcmaps-plugins-scas-client-0.4.0/src/saml2-xacml2/io_handler/ssl/ssl-common.c	2014-01-23 10:22:32.932586000 -0600
+@@ -379,7 +379,10 @@
      /* The retries are local to the system mostly, hence you can try a lot per connected client */
      if ((rc = SSL_connect(ssl)) <= 0)
      {
@@ -12,7 +12,7 @@
          if (print_ssl_error_msg (ssl, rc, 1, NULL))
          {
              SSL_free(ssl);
-@@ -956,10 +959,10 @@
+@@ -911,10 +914,10 @@
  
      lcmaps_log_debug (3, "%s: - Re-Verify certificate at depth: %i\n", logstr, errdepth);
      X509_NAME_oneline(X509_get_issuer_name(curr_cert), issuer, 256);
@@ -20,13 +20,13 @@
 +    lcmaps_log_debug (3, "%s:   issuer   = %s\n", logstr, issuer);
      X509_NAME_oneline(X509_get_subject_name(curr_cert), subject, 256);
 -    lcmaps_log_debug (3, "%s:  subject  = %s\n", logstr, subject);
--    lcmaps_log_debug (3, "%s:  errnum %d: %s\n", logstr, errnum, X509_verify_cert_error_string(errnum));
+-    lcmaps_log_debug (3, "%s:  errnum %d: %s\n", logstr, (int) errnum, X509_verify_cert_error_string(errnum));
 +    lcmaps_log_debug (3, "%s:   subject  = %s\n", logstr, subject);
 +    lcmaps_log_debug (3, "%s:   errnum %d: %s\n", logstr, errnum, X509_verify_cert_error_string(errnum));
  
  
      if (ok != 1)
-@@ -983,12 +986,12 @@
+@@ -938,12 +941,12 @@
              store_ctx -> error = errnum;
              if (errnum == X509_V_OK)
              {
@@ -41,7 +41,7 @@
              }
          }
  
-@@ -1015,9 +1018,9 @@
+@@ -970,9 +973,9 @@
          if (ok != 1)
          {
              lcmaps_log(LOG_ERR, "%s: Verification failure at depth %d\n", logstr, errdepth);
@@ -54,7 +54,7 @@
          }
      }
  
-@@ -1138,7 +1141,7 @@
+@@ -1090,7 +1093,7 @@
      {
          if ((depth - amount_of_CAs) > 0)
          {
@@ -63,7 +63,7 @@
              return X509_V_OK;
          }
          else
-@@ -1317,7 +1320,7 @@
+@@ -1265,7 +1268,7 @@
      ret = X509_check_issued(issuer, x);
      if (ret == X509_V_OK)
      {
@@ -72,7 +72,7 @@
          return 1;
      }
  
-@@ -1328,7 +1331,7 @@
+@@ -1276,7 +1279,7 @@
                         X509_get_subject_name(x)) != 0))
      {
          lcmaps_log_debug (3, "%s: X509_V_ERR_KEYUSAGE_NO_CERTSIGN && non-self-signed detected.\n", logstr);
@@ -81,7 +81,7 @@
          return 1;
      }
  
-@@ -1534,101 +1537,108 @@
+@@ -1481,94 +1484,107 @@
  
  Return:
      0 : Non lethal failure, should consider a retry of the SSL interaction
@@ -90,14 +90,16 @@
  ****************************************************/
  int print_ssl_error_msg (SSL * ssl, int ret, int printmsg, int * error_code )
  {
-     int rc = 0;
+-    long rc = 0;
++    int rc = 0;
      int unrecoverable = 0;
 +    int code;
  
      if (ssl)
      {
-         rc = SSL_get_error (ssl, ret); /* returns int following openssl/ssl.h */
+-        rc = SSL_get_error (ssl, ret);
 -    }
++        rc = SSL_get_error (ssl, ret); /* returns int following openssl/ssl.h */
 +	if (error_code)
 +	    *error_code = rc;
 +
@@ -170,16 +172,23 @@
 +    } /* if (ssl) */
      else
      {
- /*        rc = ERR_get_error();*/ /* returns unsigned long following openssl/err.h */
- 	/* No ssl object and cannot just convert the error from ERR_get_error()
- 	 * as they don't match at all... */
--	lcmaps_log(LOG_ERR,"%s: No SSL object, error: %s\n",
--		__func__,ERR_error_string(ERR_get_error(),NULL));
+-        rc = ERR_get_error();
++	/* No ssl object and cannot just convert the error from ERR_get_error()
++	 * as they don't match at all... */
 +	lcmaps_log(LOG_ERR,"%s: No SSL object\n",__func__);
- 	if (*error_code)
- 	    *error_code = SSL_ERROR_SSL; /* No obvious error )-: */
--	return 1;
++	if (*error_code)
++	    *error_code = SSL_ERROR_SSL; /* No obvious error )-: */
 +	unrecoverable = 1;
++    }
++
++    /* Print error queue */
++    if (printmsg)   {
++	while ((code=ERR_get_error())!=0)        {
++	    lcmaps_log(LOG_ERR,"   OpenSSL error queue: %s (function %s from %s)\n",
++		    ERR_reason_error_string(code),
++		    ERR_func_error_string(code),
++		    ERR_lib_error_string(code));
++	}
      }
  
 -
@@ -248,16 +257,8 @@
 -            unrecoverable = 1;
 -            break;
 -        }
-+    /* Print error queue */
-+    if (printmsg)   {
-+	while ((code=ERR_get_error())!=0)        {
-+	    lcmaps_log(LOG_ERR,"   OpenSSL error queue: %s (function %s from %s)\n",
-+		    ERR_reason_error_string(code),
-+		    ERR_func_error_string(code),
-+		    ERR_lib_error_string(code));
-+	}
-     }
- 
+-    }
+-
 -    if (error_code)
 -        *error_code = rc;
 -
