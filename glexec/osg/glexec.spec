@@ -10,6 +10,7 @@ Source1: glexec.conf
 Source2: glexec.logrotate
 Patch0: nowarn_allwhite.patch
 Patch1: nowarn_sigchld.patch
+# Patch2 is from https://ndpfsvn.nikhef.nl/viewvc/mwsec/trunk/glexec/src/main_util.c?r1=17182&r2=17277&view=patch
 Patch2: log_init.patch
 %if %{?rhel}%{!?rhel:0} <= 5
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
@@ -82,7 +83,7 @@ getent passwd glexec >/dev/null || \
 exit 0
 
 %changelog
-* Thu Jan 27 2013 Dave Dykstra <dwd@fnal.gov> 0.9.9-1.2.osg
+* Thu Jan 27 2014 Dave Dykstra <dwd@fnal.gov> 0.9.9-1.2.osg
 - add patch from upstream to fix initialization of syslog so it
   can correctly redirect to a different facility
 
