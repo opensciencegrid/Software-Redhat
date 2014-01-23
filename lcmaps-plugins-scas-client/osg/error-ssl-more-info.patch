@@ -1,5 +1,5 @@
---- /home/dwd/work/vdt-native/redhat/trunk/lcmaps-plugins-scas-client/_build_results/BUILD/lcmaps-plugins-scas-client-0.4.0/src/saml2-xacml2/io_handler/ssl/ssl-common.c.orig	2012-01-18 12:21:21.000000000 -0600
-+++ /home/dwd/work/vdt-native/redhat/trunk/lcmaps-plugins-scas-client/_build_results/BUILD/lcmaps-plugins-scas-client-0.4.0/src/saml2-xacml2/io_handler/ssl/ssl-common.c	2014-01-23 10:22:32.932586000 -0600
+--- src/saml2-xacml2/io_handler/ssl/ssl-common.c.orig	2012-01-18 12:21:21.000000000 -0600
++++ src/saml2-xacml2/io_handler/ssl/ssl-common.c	2014-01-23 10:22:32.932586000 -0600
 @@ -379,7 +379,10 @@
      /* The retries are local to the system mostly, hence you can try a lot per connected client */
      if ((rc = SSL_connect(ssl)) <= 0)
