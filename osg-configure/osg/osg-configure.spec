@@ -1,5 +1,5 @@
 %global name osg-configure
-%global version 1.0.47
+%global version 1.0.48
 %global release 1%{?dist}
 
 Summary: Package for configure-osg and associated scripts
@@ -135,8 +135,8 @@ Summary: Configure-osg configuration files for slurm
 Group: Grid
 Provides: configure-osg-slurm
 Requires: %name = %version-%release
-%description infoservice
-This package includes the ini file for configuring osg info service using configure-osg
+%description slurm
+This package includes the ini file for configuring slurm using configure-osg
 %package infoservice
 Summary: Configure-osg configuration files for the osg info service
 Group: Grid
