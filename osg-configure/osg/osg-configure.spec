@@ -168,7 +168,10 @@ mkdir -p $RPM_BUILD_ROOT/usr/sbin
 mv $RPM_BUILD_ROOT/usr/bin/osg-configure $RPM_BUILD_ROOT/usr/sbin/osg-configure
 ln -s /usr/sbin/osg-configure $RPM_BUILD_ROOT/usr/sbin/configure-osg 
 rmdir $RPM_BUILD_ROOT/usr/bin
-# need this to prevent rpm from complaining about unpackaged files
+# Remove cemon files, don't need this on OSG 3.2+
+rm -f $RPM_BUILD_ROOT/%{python_sitelib}/osg_configure/configure_modules/cemon.py*
+rm -fr $RPM_BUILD_ROOT/usr/share/osg-configure/tests/configs/cemon
+rm -fr $RPM_BUILD_ROOT/usr/share/osg-configure/tests/test_cemon.*
 
 %clean
 rm -rf $RPM_BUILD_ROOT
