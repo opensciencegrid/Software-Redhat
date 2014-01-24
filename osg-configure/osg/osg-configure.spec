@@ -146,8 +146,6 @@ Requires: %name = %version-%release
 This package includes the ini file for configuring the osg info service using configure-osg
 
 %prep
-
-%prep
 %setup
 
 %build
