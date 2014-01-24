@@ -135,8 +135,17 @@ Summary: Configure-osg configuration files for slurm
 Group: Grid
 Provides: configure-osg-slurm
 Requires: %name = %version-%release
-%description slurm
-This package includes the ini file for configuring slurm using configure-osg
+%description infoservice
+This package includes the ini file for configuring osg info service using configure-osg
+%package infoservice
+Summary: Configure-osg configuration files for the osg info service
+Group: Grid
+Provides: configure-osg-infoservice
+Requires: %name = %version-%release
+%description infoservice
+This package includes the ini file for configuring the osg info service using configure-osg
+
+%prep
 
 %prep
 %setup
@@ -162,7 +171,6 @@ mv $RPM_BUILD_ROOT/usr/bin/osg-configure $RPM_BUILD_ROOT/usr/sbin/osg-configure
 ln -s /usr/sbin/osg-configure $RPM_BUILD_ROOT/usr/sbin/configure-osg 
 rmdir $RPM_BUILD_ROOT/usr/bin
 # need this to prevent rpm from complaining about unpackaged files
-rm $RPM_BUILD_ROOT/%{_sysconfdir}/osg/config.d/30-cemon.ini
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -221,6 +229,9 @@ rm -rf $RPM_BUILD_ROOT
 %ghost /var/lib/osg/globus-firewall
 %ghost %{_sysconfdir}/profile.d/osg.sh
 %ghost %{_sysconfdir}/profile.d/osg.csh
+%files infoservice
+%defattr(-,root,root)
+%config(noreplace) %{_sysconfdir}/osg/config.d/30-cemon.ini
 %files tests
 %defattr(-,root,root)
 /usr/share/osg-configure/*
