@@ -1,5 +1,5 @@
 %global name osg-configure
-%global version 1.0.48
+%global version 1.0.49
 %global release 1%{?dist}
 
 Summary: Package for configure-osg and associated scripts
@@ -237,6 +237,9 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/osg/config.d/20-slurm.ini
 
 %changelog
+* Mon Jan 28 2014 Suchandra Thapa <sthapa@ci.uchicago.edu> 1.0.49-1
+- Fix unit test reliance on cemon config test files
+
 * Mon Jan 28 2014 Suchandra Thapa <sthapa@ci.uchicago.edu> 1.0.48-1
 - Add support for osg infoservice
 - Better checks in  gratia condor probe
