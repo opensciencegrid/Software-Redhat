@@ -1,7 +1,7 @@
 
 Name:           osg-build
-Version:        1.3.2
-Release:        2%{?dist}
+Version:        1.3.3
+Release:        1%{?dist}
 Summary:        Build tools for the OSG
 
 Group:          System Environment/Tools
@@ -55,6 +55,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/vdt-build
 %dir %{python_sitelib}/osgbuild
 %{python_sitelib}/osgbuild/*.py*
+%dir %{python_sitelib}/osgbuild/test
+%{python_sitelib}/osgbuild/test/*.py*
 %{_datadir}/%{name}/osg-koji-site.conf
 %{_datadir}/%{name}/osg-koji-home.conf
 %{_datadir}/%{name}/mock-auto.cfg.in
@@ -62,6 +64,11 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_docdir}/%{name}/sample-osg-build.ini
 
 %changelog
+* Mon Jan 27 2014 Matyas Selmeci <matyas@cs.wisc.edu> 1.3.3-1
+- Make client cert check Python 2.4-compatible (SOFTWARE-1366)
+- Allow simultaneous promotions to multiple routes (e.g. both 3.1-testing and 3.2-testing) in osg-promote (SOFTWARE-1289)
+- Refactoring and unit tests for osg-promote
+
 * Wed Dec 11 2013 Carl Edquist <edquist@cs.wisc.edu> - 1.3.2-1
 - Add grid proxy support to osg-koji setup (SOFTWARE-1287)
 - Check client cert for expiration before use (SOFTWARE-1288)
