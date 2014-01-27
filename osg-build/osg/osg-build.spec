@@ -1,7 +1,7 @@
 
 Name:           osg-build
 Version:        1.3.3
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Build tools for the OSG
 
 Group:          System Environment/Tools
@@ -64,7 +64,7 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_docdir}/%{name}/sample-osg-build.ini
 
 %changelog
-* Mon Jan 27 2014 Matyas Selmeci <matyas@cs.wisc.edu> 1.3.3-1
+* Mon Jan 27 2014 Matyas Selmeci <matyas@cs.wisc.edu> 1.3.3-2
 - Make client cert check Python 2.4-compatible (SOFTWARE-1366)
 - Allow simultaneous promotions to multiple routes (e.g. both 3.1-testing and 3.2-testing) in osg-promote (SOFTWARE-1289)
 - Refactoring and unit tests for osg-promote
