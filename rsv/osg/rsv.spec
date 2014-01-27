@@ -1,7 +1,7 @@
 Name:      rsv
 Summary:   RSV Meta Package
-Version:   3.7.13
-Release:   2%{?dist}
+Version:   3.7.14
+Release:   1%{?dist}
 License:   Apache 2.0
 Group:     Applications/Monitoring
 URL:       https://twiki.grid.iu.edu/bin/view/MonitoringInformation/RSV
@@ -204,6 +204,10 @@ fi
 
 
 %changelog
+* Mon Jan 27 2014 Carl Edquist <edquist@cs.wisc.edu> - 3.7.14-1
+- SOFTWARE-1336 - additional warnings for gratia probe
+- SOFTWARE-1358 - patch to support zabbix consumer
+
 * Tue Nov 26 2013 Carl Edquist <edquist@cs.wisc.edu> - 3.7.13-2
 - Bumb release to rebuild for koji issue
 
