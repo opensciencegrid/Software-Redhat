@@ -21,8 +21,8 @@
 
 
 Name:						lcg-util
-Version:					1.15.0
-Release:					0.1%{?dist}
+Version:					1.16.0
+Release:					2.1%{?dist}
 Summary:					Command line tools for wlcg storage system 
 Group:						Applications/Internet
 License:					ASL 2.0
@@ -52,6 +52,7 @@ BuildRequires:				python26-devel
 BuildRequires:				srm-ifce-devel
 BuildRequires:				swig
 BuildRequires:				voms-devel
+
 Obsoletes:	lcg-utils <= 1.13
 Provides: lcg-utils == %{version}
 
@@ -181,9 +182,7 @@ rm -rf %{buildroot}
 %files libs
 %defattr (-,root,root)
 %{_libdir}/liblcg_util.so.*
-%dir %{_docdir}/%{name}-%{version}
-%{_docdir}/%{name}-%{version}/README_LIBS
-%{_docdir}/%{name}-%{version}/RELEASE-NOTES
+%doc README_LIBS RELEASE-NOTES
 
 
 %files devel
@@ -197,7 +196,7 @@ rm -rf %{buildroot}
 %{python_sitearch}/lcg_util.py*
 %{python_sitearch}/_lcg_util.so
 %{python_sitearch}/_lcg_util.so.*
-%{_docdir}/%{name}-%{version}/README_PYTHON
+%doc README_PYTHON
 
 %if 0%{?python26_support}
 %files python26
@@ -210,17 +209,19 @@ rm -rf %{buildroot}
 
 %files
 %defattr (-,root,root)
-%{_docdir}/%{name}-%{version}/VERSION
-%{_docdir}/%{name}-%{version}/LICENSE
-%{_docdir}/%{name}-%{version}/README
+%doc VERSION LICENSE README
 %{_mandir}/man1/*
 %{_bindir}/*
 
 
 
 %changelog
-* Thu Jul 25 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.15.0-0.1
-- Merged OSG changes
+* Thu Jan 23 2014 Matyas Selmeci <matyas@cs.wisc.edu> - 1.16.0-2.1.osg
+- Merge OSG changes
+
+* Thu Sep 19 2013 Adrien Devresse <adevress at cern.ch> - 1.16.0-2
+ - Change default doc path to unversionned
+ - Release 1.16.0 of lcg-util
 
 * Wed Mar 20 2013 Adrien Devresse <adevress at cern.ch> - 1.15.0-0
  - EMI lcg-util 1.15.0 release
