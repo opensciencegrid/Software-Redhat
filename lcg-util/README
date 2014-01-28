@@ -1,0 +1,6 @@
+lcg-util srpm downloaded from EPEL:
+  https://dl.fedoraproject.org/pub/epel/6/SRPMS/lcg-util-1.16.0-2.el6.src.rpm
+
+The OSG repackaging adds proper 'Obsoletes' lines to handle the rename from
+'lcg-utils' to 'lcg-util', and adds globus-common-progs as a build requirement
+for for globus-version.
