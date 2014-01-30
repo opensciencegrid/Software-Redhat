@@ -107,7 +107,7 @@ state
 %setup -q -n %{_name}-%{version}
 %patch1 -p0
 %patch2 -p0
-%patch3 -p0
+#patch3 -p0
 
 %build
 # Remove files that should be replaced during bootstrap
