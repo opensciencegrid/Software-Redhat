@@ -5,7 +5,7 @@
 
 Name:           osg-measurements-metrics-web
 Version:        1.2
-Release:        22%{?dist}
+Release:        23%{?dist}
 Summary:        OSG Measurements and Metrics web and database
 
 Group:          Applications/System
@@ -80,6 +80,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+
+* Mon Jan 31 2014 William B Hurst <wbhurst@cse.unl.edu>
+- Major changes to 'WLCG Reporting (Detailed)' and 
+- 'WLCG Reporting (Overview)' pages in an attempt
+- to resolve GOC tickets 17939 and 18119.
 
 * Mon Jan  6 2014 William B Hurst <wbhurst@cse.unl.edu>
 - Requested change to close out GratiaWeb-42 project name
