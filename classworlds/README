@@ -1,0 +1,6 @@
+Pass-through rebuild of the classworlds package from the jpackage6 repo,
+required for building gums and voms-admin-server.
+
+Downloaded from:
+  http://mirror.batlab.org/pub/jpackage/6/SRPMS/classworlds-1.1-5.jpp6.src.rpm
+
