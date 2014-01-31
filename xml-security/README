@@ -1,0 +1,6 @@
+Pass-through rebuild of the xml-security package from the jpackage6 repo,
+required for building bestman2.
+
+Downloaded from:
+http://mirror.batlab.org/pub/jpackage/6/SRPMS/xml-security-1.4.2-5.jpp6.src.rpm
+
