@@ -1,6 +1,6 @@
 
 Name: htcondor-ce
-Version: 0.6.0
+Version: 0.6.1
 Release: 1%{?dist}
 Summary: A framework to run HTCondor as a CE
 
@@ -194,6 +194,9 @@ fi
 %{_bindir}/condor_ce_ping
 
 %changelog
+* Fri Jan 31 2014 Brian Bockelman <bbockelm@cse.unl.edu> - 0.6.1-1
+- Fix issue with older classads library.
+
 * Sat Jan 11 2014 Brian Bockelman <bbockelm@cse.unl.edu> - 0.6.0-1
 - Add compatibility layer with GlobusRSL.  This allows GlobusRSL set
   for HTCondor-G for GRAM to be reused by HTCondor-CE.
