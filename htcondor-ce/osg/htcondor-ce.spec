@@ -1,7 +1,7 @@
 
 Name: htcondor-ce
 Version: 0.6.1
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: A framework to run HTCondor as a CE
 
 Group: Applications/System
@@ -194,6 +194,9 @@ fi
 %{_bindir}/condor_ce_ping
 
 %changelog
+* Fri Jan 31 2014 Brian Bockelman <bbockelm@cse.unl.edu> - 0.6.1-2
+- Rebuild for HCC.
+
 * Fri Jan 31 2014 Brian Bockelman <bbockelm@cse.unl.edu> - 0.6.1-1
 - Fix issue with older classads library.
 
