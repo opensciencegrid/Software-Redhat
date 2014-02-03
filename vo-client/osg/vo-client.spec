@@ -1,6 +1,6 @@
 Name:           vo-client
-Version:        50
-Release:        2%{?dist}
+Version:        51
+Release:        1%{?dist}
 Summary:        Contains vomses file for use with user authentication and edg-mkgridmap.conf file that contains configuration information for edg-mkgridmap.
 
 Group:          System Environment/Base
@@ -22,7 +22,7 @@ Source0:        %{name}-%{version}-osg.tar.gz
 %{summary}
 
 %package edgmkgridmap
-Summary:	edg-mkgridmap.conf file that contains configuration information for edg-mkgridmap 
+Summary:	edg-mkgridmap.conf file that contains configuration information for edg-mkgridmap
 Group:          system environment/base
 Provides:       vo-client-edgmkgridmap = %{version}-%{release}
 Provides:       osg-edg-mkgridmap-config = %{version}-%{release}
@@ -85,6 +85,14 @@ rm -rf $RPM_BUILD_ROOT
 %attr(0600,tomcat,tomcat) %config(noreplace) %{_sysconfdir}/gums/gums.config.template
 
 %changelog
+* Mon Feb 03 2014 Carl Edquist <edquist@cs.wisc.edu> - 51-1
+- Update to vo-client 51 (SOFTWARE-1372)
+  - VOs hosted by Fermilab VOMS server transitioned to DigiCert certificates
+  - voms.fnal.gov was replaced by voms1/2.fnal.gov
+  - voms.opensciencegrid.org replaced by voms1/2.opensciencegrid.org
+  - Reference to GOC VOMS server corrected in gums template
+  - SBGrid LSC file updated for new DigiCert certificate
+
 * Fri Jan 10 2014 Carl Edquist <edquist@cs.wisc.edu> - 50-2
 - Remove trailing slash from atlas/ in edg-mkgridmap.conf (SOFTWARE-1344)
 
