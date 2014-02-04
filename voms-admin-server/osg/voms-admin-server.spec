@@ -12,6 +12,7 @@ BuildRequires:  jpackage-utils
 BuildRequires:  java7-devel
 BuildRequires:  emi-trustmanager
 BuildRequires:  emi-trustmanager-axis
+BuildRequires:  /usr/share/java/jta.jar
 
 Requires: jpackage-utils
 Requires: java7-devel
@@ -49,6 +50,8 @@ AutoReqProv: yes
 Source0:  %{name}-%{version}.tar.gz
 Patch1: directory-defaults.patch
 Patch2: maven-resources-disable.patch
+Patch3: cern-mirror-disable.patch
+Patch4: trustmanager-versions.patch
 
 Requires: osg-webapp-common
 
@@ -77,12 +80,19 @@ administration tasks.
 # include in the final package. -mat
 %patch2 -p0
 %endif
+%patch3 -p0
+%patch4 -p0
 
 %build
 # Fix tomcat directory location in init script
 # The directory-defaults.patch adds the line we're fixing here
 sed -i -e 's/@TOMCAT@/%{tomcat}/' resources/scripts/init-voms-admin.py
  
+# Adding system dependencies
+mvn22 install:install-file -DgroupId=emi -DartifactId=trustmanager -Dversion=3.0.3 -Dpackaging=jar -Dfile=`build-classpath trustmanager` -Dmaven.repo.local=/tmp/m2-repository
+mvn22 install:install-file -DgroupId=emi -DartifactId=trustmanager-axis -Dversion=1.0.1 -Dpackaging=jar -Dfile=`build-classpath trustmanager-axis` -Dmaven.repo.local=/tmp/m2-repository
+mvn22 install:install-file -DgroupId=javax.transaction -DartifactId=jta -Dversion=1.0.1B -Dpackaging=jar -Dfile=`build-classpath jta` -Dmaven.repo.local=/tmp/m2-repository
+
 export JAVA_HOME=%{java_home};
 mvn22 -B -s src/config/emi-build-settings.xml -e -P EMI -Dmaven.repo.local=/tmp/m2-repository package
   
