@@ -4,7 +4,7 @@
 Summary: The VOMS Administration service
 Name: voms-admin-server
 Version: 2.7.0
-Release: 1.5%{?dist}
+Release: 1.6%{?dist}
 License:    ASL 2.0
 Group: System Environment/Libraries
 BuildRequires:  maven22
@@ -159,6 +159,12 @@ fi
 %{tomcat_endorsed}/xalan-j2-serializer.jar
 
 %changelog
+* Tue Feb 04 2014 Carl Edquist <edquist@cs.wisc.edu> - 2.7.0-1.6
+- fix build for voms-admin-server (SOFTWARE-1299)
+  - disable cern mirror, fix trustmanager versions, explicitly build require
+    /usr/share/java/jta.jar, and add maven dependencies to local maven repo
+- apply patch to fix suspended/expired users (SOFTWARE-1349)
+
 * Thu Apr 04 2013 Carl Edquist <edquist@cs.wisc.edu> - 2.7.0-1.5
 - Rebuild for updated build dependency
 
