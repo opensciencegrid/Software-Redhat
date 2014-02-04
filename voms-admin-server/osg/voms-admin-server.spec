@@ -52,6 +52,7 @@ Patch1: directory-defaults.patch
 Patch2: maven-resources-disable.patch
 Patch3: cern-mirror-disable.patch
 Patch4: trustmanager-versions.patch
+Patch5: fix-suspended-users.patch
 
 Requires: osg-webapp-common
 
@@ -82,6 +83,7 @@ administration tasks.
 %endif
 %patch3 -p0
 %patch4 -p0
+%patch5 -p0
 
 %build
 # Fix tomcat directory location in init script
