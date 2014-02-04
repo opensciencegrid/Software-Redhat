@@ -1,0 +1,11 @@
+--- src/main/java/org/glite/security/voms/admin/persistence/dao/VOMSRoleDAO.java.orig	2012-05-21 15:27:53.000000000 -0500
++++ src/main/java/org/glite/security/voms/admin/persistence/dao/VOMSRoleDAO.java	2014-01-29 18:11:34.558102596 -0600
+@@ -440,7 +440,7 @@
+ 			throw new IllegalArgumentException(
+ 					"role parameter must be non-null!");
+ 
+-		String query = "select distinct c.subjectString from VOMSUser u join u.certificates c join u.mappings m where m.group =  :group and m.role = :role";
++		String query = "select distinct c.subjectString from VOMSUser u join u.certificates c join u.mappings m where m.group =  :group and m.role = :role and u.suspended = false and u.expired = false";
+ 
+ 		return HibernateFactory.getSession().createQuery(query).setEntity(
+ 				"group", g).setEntity("role", r).list();
