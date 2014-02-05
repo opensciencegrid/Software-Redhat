@@ -1,6 +1,6 @@
 Name:           osg-discovery
 Version:        1.0.7
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        OSG Discovery Tools
 Group:          System Environment
 License:        Stanford (modified BSD with advert clause)
@@ -14,7 +14,7 @@ Patch2:        nogrizzly.patch
 
 BuildRoot:      %{_tmppath}/%{name}-root
 BuildArch:      noarch
-BuildRequires:  maven2 subversion dos2unix
+BuildRequires:  maven22 subversion dos2unix java7-devel jpackage-utils
 Requires:  java
 
 %description
@@ -38,23 +38,23 @@ pushd osg
 pushd discovery
 sed -i "s/<scope>compile<\/scope>//" pom.xml
 sed -i "s/<doUpdate>true<\/doUpdate>/<doUpdate>false<\/doUpdate>/" pom.xml
-mvn install:install-file -npu -npr -c -Dfile=./external/el4j/lib/module-xml_merge-console-1.0.jar -DgroupId=ch.elca.el4j.modules -DartifactId=module-xml_merge-console -Dversion=1.0 -Dpackaging=jar
-mvn install:install-file -npu -npr -c -Dfile=./external/el4j/lib/module-xml_merge-common-1.0.jar -DgroupId=ch.elca.el4j.modules -DartifactId=module-xml_merge-common -Dversion=1.0 -Dpackaging=jar
-mvn install:install-file -npu -npr -c -Dfile=./external/xquery2007/lib/xqueryx-2007.jar -DgroupId=xquery -DartifactId=xqueryx -Dversion=2007 -Dpackaging=jar
-mvn install:install-file -npu -npr -c -Dfile=./external/saxon/lib/saxon-9.1.0.7.jar -DgroupId=saxon -DartifactId=saxon -Dversion=9.1.0.7 -Dpackaging=jar
-mvn install:install-file -npu -npr -c -Dfile=./external/dbxml/lib/dbxml-2.4.jar -DgroupId=oracle -DartifactId=dbxml -Dversion=2.4 -Dpackaging=jar
-mvn install:install-file -npu -npr -c -Dfile=./external/dbxml/lib/db-2.4.jar -DgroupId=oracle -DartifactId=db -Dversion=2.4 -Dpackaging=jar
+mvn22 install:install-file -npu -npr -c -Dfile=./external/el4j/lib/module-xml_merge-console-1.0.jar -DgroupId=ch.elca.el4j.modules -DartifactId=module-xml_merge-console -Dversion=1.0 -Dpackaging=jar
+mvn22 install:install-file -npu -npr -c -Dfile=./external/el4j/lib/module-xml_merge-common-1.0.jar -DgroupId=ch.elca.el4j.modules -DartifactId=module-xml_merge-common -Dversion=1.0 -Dpackaging=jar
+mvn22 install:install-file -npu -npr -c -Dfile=./external/xquery2007/lib/xqueryx-2007.jar -DgroupId=xquery -DartifactId=xqueryx -Dversion=2007 -Dpackaging=jar
+mvn22 install:install-file -npu -npr -c -Dfile=./external/saxon/lib/saxon-9.1.0.7.jar -DgroupId=saxon -DartifactId=saxon -Dversion=9.1.0.7 -Dpackaging=jar
+mvn22 install:install-file -npu -npr -c -Dfile=./external/dbxml/lib/dbxml-2.4.jar -DgroupId=oracle -DartifactId=dbxml -Dversion=2.4 -Dpackaging=jar
+mvn22 install:install-file -npu -npr -c -Dfile=./external/dbxml/lib/db-2.4.jar -DgroupId=oracle -DartifactId=db -Dversion=2.4 -Dpackaging=jar
 
 #sha1sum /usr/share/maven2/bootstrap_repo/JPP/maven2/poms/JPP.maven-surefire-surefire.pom > /usr/share/maven2/bootstrap_repo/JPP/maven2/poms/JPP.maven-surefire-surefire.pom.sha1
 
 
-mvn -e -npu -npr -c -X -Pdev package assembly:attached || true
+mvn22 -e -npu -npr -c -X -Pdev package assembly:attached || true
 ls -R ~/.m2
 pushd ~/.m2/repository/org/apache/maven/plugins/maven-surefire-plugin/2.4.3
 dos2unix *.pom
 patch -p0 < %SOURCE1
 popd
-mvn -e -npu -npr -c -X -Pdev package
+mvn22 -e -npu -npr -c -X -Pdev package
 
 
 popd
@@ -137,6 +137,9 @@ mkdir -p $RPM_BUILD_ROOT/var/log/%{name}
 
 
 %changelog
+* Tue Feb 04 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.0.7-6
+- Updating to build with maven22
+
 * Tue Apr 03 2012 Doug Strain <dstrain@fnal.gov> 1.0.7-5
 - Updating to get rid of grizzly web server and build on SL6
 - Also fixing EOF bash here-documents to not give warnings
