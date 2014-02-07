@@ -1,0 +1,7 @@
+HTCondor Admin Slot Status Graphs
+
+HTCondor administrator status webpage for viewing the slot and status count.
+As cron runs condor_status rrds are updated and graphed.
+
+Package contributed by Nathan Yehle -- see http://pages.cs.wisc.edu/~nyehle/
+
