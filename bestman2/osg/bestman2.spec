@@ -14,7 +14,7 @@
 
 Name:           bestman2
 Version:        2.3.0
-Release:        16%{?dist}
+Release:        17%{?dist}
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -44,6 +44,7 @@ Source9:        bestman2.rc
 Source10:       bestman2lib.sysconfig
 
 Patch0:		upgrade_exception_message.patch
+Patch1:		bestman2-2.2.1-2.2.2.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
@@ -182,6 +183,7 @@ cd ..
 %setup -T -b 0 -q -n %{name}
 
 %patch0 -p1
+%patch1 -p0
 
 pushd bestman2/setup-osg/bestman.in
 sed -i "s/@SRM_HOME@/\/etc\/bestman2/" *
@@ -443,6 +445,9 @@ fi
 
 
 %changelog
+* Mon Feb 10 2014 Carl Edquist <edquist@cs.wisc.edu> - 2.3.0-17
+- Patch to include "root" SRM transfer protocol from 2.2.2 (SOFTWARE-1379)
+
 * Tue Sep 17 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 2.3.0-16
 - Fixed build to work with jglobus 2.0.6
 
