@@ -1,5 +1,5 @@
 Name:      osg-ca-scripts
-Version:   1.1.4
+Version:   1.1.5
 Release:   1%{?dist}
 Summary:   CA Certificate helper scripts
 
@@ -82,6 +82,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr(0755,root,root) %{_localstatedir}/lib/osg-ca-certs
 
 %changelog
+* Wed Feb 12 2014 Brian Lin <blin@cs.wisc.edu> 1.1.5-1
+- Add --nosymlink option to prevent symlinks being made when specifying a location
+
 * Thu Jul 25 2013 Brian Lin <blin@cs.wisc.edu> 1.1.4-1
 - Fix cron.d entry to output to /dev/null
 
