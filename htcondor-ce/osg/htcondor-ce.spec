@@ -1,7 +1,7 @@
 
 Name: htcondor-ce
-Version: 0.6.1
-Release: 2%{?dist}
+Version: 0.6.2
+Release: 1%{?dist}
 Summary: A framework to run HTCondor as a CE
 
 Group: Applications/System
@@ -194,6 +194,11 @@ fi
 %{_bindir}/condor_ce_ping
 
 %changelog
+* Wed Feb 12 2014 Brian Bockelman <bbockelm@cse.unl.edu> - 0.6.2-1
+- Fix attribute names to be more compatible with glideinWMS's preferred usage.
+- Wall time, memory, and CPU count are now passed through to PBS correctly.
+- Remove PeriodicRemove inserted by HTCondor-G.
+
 * Fri Jan 31 2014 Brian Bockelman <bbockelm@cse.unl.edu> - 0.6.1-2
 - Rebuild for HCC.
 
