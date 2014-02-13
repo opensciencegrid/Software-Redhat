@@ -1,4 +1,4 @@
-%define tarball_version 8.0.5
+%define tarball_version 8.0.6
 
 # Things for F15 or later
 %if 0%{?fedora} >= 16
@@ -131,7 +131,6 @@ Patch3: chkconfig_off.patch
 # This patch is here until it is pushed into upstream (8.0.1?)
 # https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=3698w
 Patch4: gsoap_ipv6.patch
-Patch5: keybits.patch
 Patch8: osg_sysconfig_in_init_script.patch
 Patch9: proper_cream_v3.diff
 %if %blahp
@@ -468,7 +467,6 @@ exit 0
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
-%patch5 -p1
 %patch8 -p1
 %if %cream
 %patch9 -p1
@@ -1273,6 +1271,10 @@ fi
 %endif
 
 %changelog
+* Wed Feb 12 2014 Edgar Fajardo <efajardo@cern.ch> - 8.0.6
+- Updated to version 8.0.6
+- Removed the patching so that proxies are created with at least 1024 bits, since it comes from the upstream
+
 * Fri Jan 17 2014 Brian Lin <blin@cs.wisc.edu> - 8.0.5-2
 - Add patch so that proxies are created with at least 1024 bits
 
