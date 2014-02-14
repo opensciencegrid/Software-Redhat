@@ -1,7 +1,7 @@
 
 Name:           osg-build
 Version:        1.3.3
-Release:        2%{?dist}
+Release:        3.untagme%{?dist}
 Summary:        Build tools for the OSG
 
 Group:          System Environment/Tools
@@ -9,6 +9,7 @@ License:        Apache 2.0
 URL:            https://twiki.grid.iu.edu/bin/view/SoftwareTeam/OSGBuildTools
 
 Source0:        %{name}-%{version}.tar.gz
+Patch0:         koji-hub-testing.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
@@ -35,6 +36,7 @@ See %{url} for details.
 
 %prep
 %setup -q
+%patch0 -p1
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -64,6 +66,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_docdir}/%{name}/sample-osg-build.ini
 
 %changelog
+* Fri Feb 14 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.3.3-3.untagme
+- Add koji-hub-testing.patch
+
 * Mon Jan 27 2014 Matyas Selmeci <matyas@cs.wisc.edu> 1.3.3-2
 - Make client cert check Python 2.4-compatible (SOFTWARE-1366)
 - Allow simultaneous promotions to multiple routes (e.g. both 3.1-testing and 3.2-testing) in osg-promote (SOFTWARE-1289)
