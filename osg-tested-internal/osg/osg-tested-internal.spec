@@ -1,7 +1,7 @@
 Name:      osg-tested-internal
 Summary:   All OSG packages we test (internal use only)
 Version:   1
-Release:   18%{?dist}
+Release:   19%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -35,6 +35,10 @@ Requires: cvmfs
 Requires: osg-configure-tests
 Requires: cvmfs-keys
 Requires: ndt-client
+
+Requires: htcondor-ce
+Requires: htcondor-ce-client
+requires: htcondor-ce-condor
 
 Requires: gratia-service
 Requires: gratia-probe-psacct
@@ -78,6 +82,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Feb 17 2014 Brian Lin <blin@cs.wisc.edu> - 1-19
+- Add htcondor-ce requirements
+
 * Tue Oct 22 2013 Brian Lin <blin@cs.wisc.edu> - 1-18
 - Add gratia-probe-sge 
 
