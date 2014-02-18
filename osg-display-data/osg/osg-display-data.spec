@@ -1,6 +1,6 @@
 Name: osg-display-data
-Version: 1.0.8
-Release: 2%{?dist}
+Version: 1.0.9
+Release: 1%{?dist}
 Summary: Scripts and tools to generate the OSG Display's data.
 Source: %{name}-%{version}.tar.gz
 License: UNKNOWN
@@ -41,6 +41,9 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) /etc/osg_display/osg_display.condor.cron
 
 %changelog
+* Tue Feb 18 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.0.9-1
+- Don't discard most recent complete month (SOFTWARE-1400)
+
 * Fri Jan 10 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.0.8-2
 - Mark %%config files with noreplace
 
