@@ -6,7 +6,7 @@
 
 Name:		xrootd
 Epoch:		1
-Version:	3.3.5
+Version:	3.3.6
 Release:	1.1%{?dist}
 Summary:	Extended ROOT file server
 
@@ -471,6 +471,12 @@ fi
 %doc %{_pkgdocdir}
 
 %changelog
+* Wed Feb 19 2014 Edgar Fajardo <efajardo@cern.ch> - 1:3.3.6-1.1.osg
+- Bumped version to 3.3.6 (SOFTWARE-1399)
+
+* Thu Jan 30 2014 Mattias Ellert <mattias.ellert@fysast.uu.se> - 1:3.3.6-1
+- Update to version 3.3.6
+
 * Mon Jan 06 2014 Matyas Selmeci <matyas@cs.wisc.edu> - 1:3.3.5-1.1.osg
 - Merge OSG changes (SOFTWARE-1322)
 
@@ -563,7 +569,7 @@ fi
 - Proper fix for the atomic detection on ppc - no bug in gcc after all
 
 * Sun Apr 24 2011 Mattias Ellert <mattias.ellert@fysast.uu.se> - 1:3.0.3-1.1
-- Workaround for broken gcc on RHEL5 ppc (rhbz #699149)
+- Workaround for broken gcc on RHEL5 ppc (rhbz #699149)                                                                                                                    
 
 * Fri Apr 22 2011 Mattias Ellert <mattias.ellert@fysast.uu.se> - 1:3.0.3-1
 - Update to version 3.0.3
@@ -586,6 +592,9 @@ fi
 - New version scheme inroduced by upstream - add epoch
 
 * Wed Sep 01 2010 Mattias Ellert <mattias.ellert@fysast.uu.se> - 20100315-5
+- Disable threads in doxygen - causes memory corruption on ppc
+
+* Wed Sep 01 2010 Mattias Ellert <mattias.ellert@fysast.uu.se> - 20100315-4
 - Disable threads in doxygen - causes memory corruption on ppc
 
 * Wed Sep 01 2010 Mattias Ellert <mattias.ellert@fysast.uu.se> - 20100315-4
