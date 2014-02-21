@@ -1,7 +1,7 @@
 Summary: Generic Information Provider
 Name: gip
 Version: 1.3.10
-Release: 3%{?dist}
+Release: 5%{?dist}
 License: TODO
 Group: Applications/Grid
 BuildArch: noarch
@@ -10,10 +10,19 @@ Requires: globus-proxy-utils
 Source0: %{name}-%{version}.tgz
 Patch0: 1382-info-services-rename.patch
 
+%define tomcat_uid 91
+%define tomcat_gid 91
+
+%if 0%{?rhel} >= 6
+%define tomcat tomcat6
+%else
+%define tomcat tomcat5
+%endif
+
 %description
 
 The Open Science Grid (OSG) Generic Information Provider (GIP) is a core part of the OSG Information Infrastructure.
-The GIP is a grid information service that aggregates static and dynamic resource information for use with 
+The GIP is a grid information service that aggregates static and dynamic resource information for use with
 LDAP-based information systems.  It produces information based on the GLUE schema.  This information
 then can be sent via external services to information collection servers such as ReSS and BDII.
 
@@ -78,6 +87,15 @@ touch $RPM_BUILD_ROOT/%{_sysconfdir}/%{name}/add-attributes.conf
 touch $RPM_BUILD_ROOT/%{_sysconfdir}/%{name}/alter-attributes.conf
 touch $RPM_BUILD_ROOT/%{_sysconfdir}/%{name}/remove-attributes.conf
 
+
+# Create the tomcat user. We do not bring in tomcat5/tomcat6 via
+# glite-ce-monitor any more so we have to do this ourselves.
+%pre
+/usr/sbin/groupadd -g %tomcat_gid -r tomcat 2> /dev/null || :
+/usr/sbin/useradd -c "Apache Tomcat" -u %tomcat_uid -g tomcat \
+    -s /bin/sh -r -d /usr/share/%tomcat tomcat 2> /dev/null || :
+
+
 %files
 %defattr(-,root,root,-)
 %attr(755,root,root) %{_bindir}/*
@@ -101,6 +119,9 @@ touch $RPM_BUILD_ROOT/%{_sysconfdir}/%{name}/remove-attributes.conf
 rm -rf %buildroot
 
 %changelog
+* Fri Feb 21 2014 Matyas Selmeci <matyas@cs.wisc.edu> 1.3.10-5
+- Create tomcat user if necessary
+
 * Tue Feb 04 2014 Matyas Selmeci <matyas@cs.wisc.edu> 1.3.10-3
 - Add patch to read Infoservices section from OSG config file if present (SOFTWARE-1382)
 
