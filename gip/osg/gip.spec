@@ -1,7 +1,7 @@
 Summary: Generic Information Provider
 Name: gip
 Version: 1.3.10
-Release: 4%{?dist}
+Release: 3%{?dist}
 License: TODO
 Group: Applications/Grid
 BuildArch: noarch
@@ -9,7 +9,6 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 Requires: globus-proxy-utils 
 Source0: %{name}-%{version}.tgz
 Patch0: 1382-info-services-rename.patch
-Patch1: 1315-gip-user.patch
 
 %description
 
@@ -21,7 +20,6 @@ then can be sent via external services to information collection servers such as
 %prep
 %setup -q
 %patch0 -p1
-%patch1 -p1
 
 %install
 rm -rf %{buildroot}
@@ -80,10 +78,6 @@ touch $RPM_BUILD_ROOT/%{_sysconfdir}/%{name}/add-attributes.conf
 touch $RPM_BUILD_ROOT/%{_sysconfdir}/%{name}/alter-attributes.conf
 touch $RPM_BUILD_ROOT/%{_sysconfdir}/%{name}/remove-attributes.conf
 
-%pre
-getent group gip >/dev/null || groupadd -r gip || :
-getent passwd gip >/dev/null || useradd -r gip -g gip -s /sbin/nologin -c "GIP" 2>/dev/null || :
-
 %files
 %defattr(-,root,root,-)
 %attr(755,root,root) %{_bindir}/*
@@ -100,17 +94,13 @@ getent passwd gip >/dev/null || useradd -r gip -g gip -s /sbin/nologin -c "GIP" 
 %config(noreplace) %{_sysconfdir}/%{name}/remove-attributes.conf
 %config(noreplace) %{_sysconfdir}/%{name}/logging.conf
 %config(noreplace) %{_sysconfdir}/%{name}/ldif.d
-%attr(-, gip, gip) /var/log/%{name}
-%attr(-, gip, gip) /var/cache/%{name}
+%attr(-, tomcat, tomcat) /var/log/%{name}
+%attr(-, tomcat, tomcat) /var/cache/%{name}
 
 %clean
 rm -rf %buildroot
 
 %changelog
-* Wed Feb 19 2014 Matyas Selmeci <matyas@cs.wisc.edu> 1.3.10-4
-- Change the default GIP user from tomcat to gip. Add a gip user if one doesn't
-  already exist. (SOFTWARE-1315)
-
 * Tue Feb 04 2014 Matyas Selmeci <matyas@cs.wisc.edu> 1.3.10-3
 - Add patch to read Infoservices section from OSG config file if present (SOFTWARE-1382)
 
