@@ -1,7 +1,7 @@
 Name:      osg-ce
 Summary:   OSG Compute Element 
 Version:   3.0.0
-Release:   35%{?dist}
+Release:   36%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -31,7 +31,11 @@ Requires: osg-system-profiler
 Requires: osg-cleanup
 Requires: osg-configure
 Requires: osg-configure-ce
+%if 0%{?osgver} < 32
 Requires: osg-configure-cemon
+%else
+Requires: osg-configure-infoservices
+%endif
 Requires: osg-configure-gip
 Requires: osg-configure-gratia
 Requires: osg-configure-managedfork
@@ -118,6 +122,9 @@ rm -rf $RPM_BUILD_ROOT
 %files sge
 
 %changelog
+* Mon Feb 24 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 3.0.0-36
+- Replace osg-configure-cemon dependency with osg-configure-infoservices on OSG 3.2 (SOFTWARE-1276)
+
 * Thu Oct 17 2013 Brian Lin <blin@cs.wisc.edu> - 3.0.0-35
 - Remove glite-ce-monitor dependency
 
