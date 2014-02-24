@@ -122,7 +122,7 @@ rm -rf $RPM_BUILD_ROOT
 %files sge
 
 %changelog
-* Mon Feb 24 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 3.0.0-36
+* Mon Feb 24 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 3.0.0-37
 - Replace osg-configure-cemon dependency with osg-configure-infoservices on OSG 3.2 (SOFTWARE-1276)
 
 * Thu Oct 17 2013 Brian Lin <blin@cs.wisc.edu> - 3.0.0-35
