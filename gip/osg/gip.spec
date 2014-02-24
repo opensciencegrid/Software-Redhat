@@ -1,7 +1,7 @@
 Summary: Generic Information Provider
 Name: gip
 Version: 1.3.10
-Release: 5%{?dist}
+Release: 6%{?dist}
 License: TODO
 Group: Applications/Grid
 BuildArch: noarch
@@ -119,6 +119,9 @@ touch $RPM_BUILD_ROOT/%{_sysconfdir}/%{name}/remove-attributes.conf
 rm -rf %buildroot
 
 %changelog
+* Mon Feb 24 2014 Matyas Selmeci <matyas@cs.wisc.edu> 1.3.10-6
+- Read 'Info Services' section, not 'Infoservices' section (SOFTWARE-1382)
+
 * Fri Feb 21 2014 Matyas Selmeci <matyas@cs.wisc.edu> 1.3.10-5
 - Create tomcat user if necessary
 
