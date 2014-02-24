@@ -5,7 +5,7 @@
 
 Name:           osg-measurements-metrics-web
 Version:        1.2
-Release:        24%{?dist}
+Release:        25%{?dist}
 Summary:        OSG Measurements and Metrics web and database
 
 Group:          Applications/System
@@ -80,6 +80,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+
+* Fri Feb 21 2014 William B Hurst <wbhurst@cse.unl.edu>
+- changes to WLCG Reporting Overview page, small changes
+- to fix broken ATLAS data transfer graphing 
 
 * Tue Feb 12 2014 William B Hurst <wbhurst@cse.unl.edu>
 - Continued changes to improve WLCG Reporting pages.
