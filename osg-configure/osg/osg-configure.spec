@@ -1,5 +1,5 @@
 %global name osg-configure
-%global version 1.0.50
+%global version 1.0.51
 %global release 1%{?dist}
 
 Summary: Package for configure-osg and associated scripts
@@ -137,13 +137,13 @@ Provides: configure-osg-slurm
 Requires: %name = %version-%release
 %description slurm
 This package includes the ini file for configuring slurm using configure-osg
-%package infoservice
-Summary: Configure-osg configuration files for the osg info service
+%package infoservices
+Summary: Configure-osg configuration files for the osg info services
 Group: Grid
-Provides: configure-osg-infoservice
+Provides: configure-osg-infoservices
 Requires: %name = %version-%release
-%description infoservice
-This package includes the ini file for configuring the osg info service using configure-osg
+%description infoservices
+This package includes the ini file for configuring the osg info services using configure-osg
 
 %prep
 %setup
@@ -172,6 +172,7 @@ rmdir $RPM_BUILD_ROOT/usr/bin
 rm -f $RPM_BUILD_ROOT/%{python_sitelib}/osg_configure/configure_modules/cemon.py*
 rm -fr $RPM_BUILD_ROOT/usr/share/osg-configure/tests/configs/cemon
 rm -fr $RPM_BUILD_ROOT/usr/share/osg-configure/tests/test_cemon.*
+rm -f $RPM_BUILD_ROOT%{_sysconfdir}/osg/config.d/30-cemon.ini
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -230,9 +231,9 @@ rm -rf $RPM_BUILD_ROOT
 %ghost /var/lib/osg/globus-firewall
 %ghost %{_sysconfdir}/profile.d/osg.sh
 %ghost %{_sysconfdir}/profile.d/osg.csh
-%files infoservice
+%files infoservices
 %defattr(-,root,root)
-%config(noreplace) %{_sysconfdir}/osg/config.d/30-cemon.ini
+%config(noreplace) %{_sysconfdir}/osg/config.d/30-infoservices.ini
 %files tests
 %defattr(-,root,root)
 /usr/share/osg-configure/*
@@ -241,6 +242,9 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/osg/config.d/20-slurm.ini
 
 %changelog
+* Mon Feb 24 2014 Matyas Selmeci <matyas@cs.wisc.edu> 1.0.51-1
+- Info-services fixes, unit tests and new config file 30-infoservices.ini (SOFTWARE-1276)
+
 * Mon Feb 03 2014 Suchandra Thapa <sthapa@ci.uchicago.edu> 1.0.50-1
 - Error in listing enabled services 
 
