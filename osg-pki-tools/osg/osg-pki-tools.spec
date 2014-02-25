@@ -1,6 +1,6 @@
 Summary: osg-pki-tools
 Name: osg-pki-tools
-Version: 1.2.5
+Version: 1.2.6
 Release: 1%{?dist}
 Source: OSGPKITools-%{version}.tar.gz
 License: Apache 2.0
@@ -75,6 +75,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Feb 25 2014 Brian Lin <blin@cs.wisc.edu> - 1.2.6-1
+- Pull PKCS12 files from OIM (SOFTWARE-1229)
+- Add ability to add CC's to the GOC ticket when requesting certs (SOFTWARE-1318)
+- Fix VO option when requesting a new cert (SOFTWARE-1386)
+
 * Thu Nov 21 2013 Brian Lin <blin@cs.wisc.edu> - 1.2.5-1
 - Handle blank lines in hostfile for osg-gridadmin-cert-request (SOFTWARE-1271)
 - Fix bugs in exception handling (SOFTWARE-1201)
