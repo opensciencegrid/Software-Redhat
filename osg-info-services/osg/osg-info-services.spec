@@ -1,16 +1,17 @@
 
 Name:      osg-info-services
 Summary:   OSG Information Services uploader
-Version:   1.0
-Release:   2%{?dist}
+Version:   1.0.1
+Release:   1%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
 BuildArch: noarch
 
-# Performed on 08 October 2013
-# svn export https://vdt.cs.wisc.edu/svn/software/osg-info-services/tags/v0.12 osg-info-services-0.12
-# tar czf osg-info-services-0.12.tar.gz osg-info-services-0.12
+
+# Performed on 21 February 2014
+# svn export https://vdt.cs.wisc.edu/svn/software/osg-info-services/tags/1.0.1 osg-info-services-1.0.1
+# tar czf osg-info-services-1.0.1.tar.gz osg-info-services-1.0.1
 Source0:   %{name}-%{version}.tar.gz
 
 BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
@@ -47,6 +48,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_sbindir}/%{name}
 
 %changelog
+* Fri Feb 21 2014 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0.1-1
+- Quiet cron job (SOFTWARE-1383)
+
 * Mon Nov 25 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0-2
 - Upstreamed patches
 - Do not hardcode ConsumerURL (SOFTWARE-1224)
