@@ -1,7 +1,7 @@
 
 Name:           osg-build
-Version:        1.3.3
-Release:        3.untagme%{?dist}
+Version:        1.3.4
+Release:        1%{?dist}
 Summary:        Build tools for the OSG
 
 Group:          System Environment/Tools
@@ -36,7 +36,9 @@ See %{url} for details.
 
 %prep
 %setup -q
-%patch0 -p1
+
+# changes the koji-hub URL to koji-hub-testing.chtc.wisc.edu, for testing only
+# % patch0 -p1
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -66,6 +68,10 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_docdir}/%{name}/sample-osg-build.ini
 
 %changelog
+* Tue Feb 25 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.3.4-1
+- change 'contrib' promotion path to go from development -> contrib instead
+  of testing -> contrib, per the new osg-contrib policy  (SOFTWARE-1405)
+
 * Fri Feb 14 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.3.3-3.untagme
 - Add koji-hub-testing.patch
 
