@@ -4,7 +4,7 @@
 Summary: The VOMS Administration service
 Name: voms-admin-server
 Version: 2.7.0
-Release: 1.6%{?dist}
+Release: 1.7%{?dist}
 License:    ASL 2.0
 Group: System Environment/Libraries
 BuildRequires:  maven22
@@ -53,6 +53,7 @@ Patch2: maven-resources-disable.patch
 Patch3: cern-mirror-disable.patch
 Patch4: trustmanager-versions.patch
 Patch5: fix-suspended-users.patch
+Patch6: fix-certificate-issuer-check.patch
 
 Requires: osg-webapp-common
 
@@ -84,6 +85,7 @@ administration tasks.
 %patch3 -p0
 %patch4 -p0
 %patch5 -p0
+%patch6 -p0
 
 %build
 # Fix tomcat directory location in init script
@@ -159,6 +161,9 @@ fi
 %{tomcat_endorsed}/xalan-j2-serializer.jar
 
 %changelog
+* Thu Feb 27 2014 Carl Edquist <edquist@cs.wisc.edu> - 2.7.0-1.7
+- apply patch to fix check for adding new certificates (SOFTWARE-1408)
+
 * Tue Feb 04 2014 Carl Edquist <edquist@cs.wisc.edu> - 2.7.0-1.6
 - fix build for voms-admin-server (SOFTWARE-1299)
   - disable cern mirror, fix trustmanager versions, explicitly build require
