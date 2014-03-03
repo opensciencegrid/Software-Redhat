@@ -4,7 +4,7 @@
 Summary: The VOMS Administration service
 Name: voms-admin-server
 Version: 2.7.0
-Release: 1.8%{?dist}
+Release: 1.9%{?dist}
 License:    ASL 2.0
 Group: System Environment/Libraries
 BuildRequires:  maven22
@@ -162,6 +162,9 @@ fi
 %{tomcat_endorsed}/xalan-j2-serializer.jar
 
 %changelog
+* Mon Mar 03 2014 Carl Edquist <edquist@cs.wisc.edu> - 2.7.0-1.9
+- bump to rebuild against xml-commons from jpackage repo (SOFTWARE-1279)
+
 * Thu Feb 27 2014 Carl Edquist <edquist@cs.wisc.edu> - 2.7.0-1.8
 - Require glite-security-util-java (SOFTWARE-1408)
 
