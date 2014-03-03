@@ -2,7 +2,7 @@ Summary: Generic Information Provider
 Name: gip
 Version: 1.3.10
 Release: 7%{?dist}
-License: TODO
+License: Apache 2.0
 Group: Applications/Grid
 BuildArch: noarch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
@@ -123,6 +123,7 @@ rm -rf %buildroot
 %changelog
 * Thu Feb 27 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.3.10-7
 - Change default BDII servers for ITB sites (SOFTWARE-1406)
+- Fix License
 
 * Mon Feb 24 2014 Matyas Selmeci <matyas@cs.wisc.edu> 1.3.10-6
 - Read 'Info Services' section, not 'Infoservices' section (SOFTWARE-1382)
