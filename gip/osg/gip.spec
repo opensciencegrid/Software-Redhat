@@ -1,8 +1,8 @@
 Summary: Generic Information Provider
 Name: gip
 Version: 1.3.10
-Release: 6%{?dist}
-License: TODO
+Release: 7%{?dist}
+License: Apache 2.0
 Group: Applications/Grid
 BuildArch: noarch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
@@ -10,6 +10,7 @@ Requires: glite-ce-monitor
 Requires: globus-proxy-utils 
 Source0: %{name}-%{version}.tgz
 Patch0: 1382-info-services-rename.patch
+Patch1: 1406-default-itb-servers.patch
 
 %define tomcat_uid 91
 %define tomcat_gid 91
@@ -30,6 +31,7 @@ then can be sent via external services to information collection servers such as
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
 
 %install
 rm -rf %{buildroot}
@@ -120,6 +122,10 @@ touch $RPM_BUILD_ROOT/%{_sysconfdir}/%{name}/remove-attributes.conf
 rm -rf %buildroot
 
 %changelog
+* Thu Feb 27 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.3.10-7
+- Change default BDII servers for ITB sites (SOFTWARE-1406)
+- Fix License
+
 * Mon Feb 24 2014 Matyas Selmeci <matyas@cs.wisc.edu> 1.3.10-6
 - Read 'Info Services' section, not 'Infoservices' section (SOFTWARE-1382)
 
