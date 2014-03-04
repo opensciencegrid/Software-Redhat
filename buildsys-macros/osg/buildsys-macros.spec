@@ -2,7 +2,7 @@
 Name:		buildsys-macros
 Summary:	Macros for the Condor team's usage of the OSG Koji instance
 Version:        7
-Release:	6%{?dist}
+Release:	7%{?dist}
 License:	GPL
 Group:		Development/Buildsystem
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -46,6 +46,9 @@ rm -rf $RPM_BUILD_ROOT
 /etc/rpm/macros.checkbuild
 
 %changelog
+* Mon Mar 03 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 7-7
+- Bump to rebuild with buildsys-macros 7-6
+
 * Mon Mar 03 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 7-6
 - Bump to rebuild with buildsys-macros 7-5
 * Mon Mar 03 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 7-5
