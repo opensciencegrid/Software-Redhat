@@ -5,7 +5,7 @@
 
 Summary:   Tests an OSG Software installation
 Name:      osg-test
-Version:   1.4.8
+Version:   1.4.9
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -39,6 +39,12 @@ rm -rf $RPM_BUILD_ROOT
 /etc/grid-security/certificates/bffdd190.*
 
 %changelog
+* Tue Mar 04 2014 Brian Lin <blin@cs.wisc.edu> - 1.4.9-1
+- Add password to usercert (SOFTWARE-1377)
+- Fix condor_ce_trace test (SOFTWARE-1338)
+- Update gratia probe dependencies (SOFTWARE-1375)
+- Add more errors to yum retry
+
 * Mon Feb 03 2014 Brian Lin <blin@cs.wisc.edu> - 1.4.8-1
 - Add retries to package updates
 - Use SHA2 CAs/usercerts and test RFC proxies (SOFTWARE-1371)
