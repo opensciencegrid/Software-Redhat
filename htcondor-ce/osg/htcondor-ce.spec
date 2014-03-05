@@ -1,6 +1,6 @@
 
 Name: htcondor-ce
-Version: 0.6.2
+Version: 0.6.3
 Release: 1%{?dist}
 Summary: A framework to run HTCondor as a CE
 
@@ -18,7 +18,10 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Requires:  condor >= 8.0.0
 # This ought to pull in the HTCondor-CE specific version of the blahp
 Requires: blahp
-Requires: %{name} = %{version}-%{release}
+
+# Require the htcondor-ce-client subpackage.  The client provides necessary
+# configuration defaults and scripts for the CE itself.
+Requires: %{name}-client = %{version}-%{release}
 
 Obsoletes: condor-ce < 0.5.4
 Provides:  condor-ce = %{version}
@@ -138,11 +141,15 @@ fi
 
 %{_initrddir}/condor-ce
 
-%config %{_sysconfdir}/condor-ce/config.d/01-ce-auth.conf
-%config %{_sysconfdir}/condor-ce/config.d/01-ce-router.conf
-%config %{_sysconfdir}/condor-ce/config.d/03-ce-shared-port.conf
+%config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-auth.conf
+%config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-router.conf
+%config(noreplace) %{_sysconfdir}/condor-ce/config.d/03-ce-shared-port.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/condor_mapfile
 %config(noreplace) %{_sysconfdir}/sysconfig/condor-ce
+
+%{_datadir}/condor-ce/config.d/01-ce-auth-defaults.conf
+%{_datadir}/condor-ce/config.d/01-ce-router-defaults.conf
+%{_datadir}/condor-ce/config.d/03-ce-shared-port-defaults.conf
 
 %{_datadir}/condor-ce/osg-wrapper
 
@@ -159,19 +166,22 @@ fi
 %files condor
 %defattr(-,root,root,-)
 
-%config %{_sysconfdir}/condor-ce/config.d/02-ce-condor.conf
+%config(noreplace) %{_sysconfdir}/condor-ce/config.d/02-ce-condor.conf
+%{_datadir}/condor-ce/config.d/02-ce-condor-defaults.conf
 
 %files pbs
 %defattr(-,root,root,-)
 
-%config %{_sysconfdir}/condor-ce/config.d/02-ce-pbs.conf
+%config(noreplace) %{_sysconfdir}/condor-ce/config.d/02-ce-pbs.conf
+%{_datadir}/condor-ce/config.d/02-ce-pbs-defaults.conf
 
 %files client
 
 %dir %{_sysconfdir}/condor-ce
 %dir %{_sysconfdir}/condor-ce/config.d
 %config %{_sysconfdir}/condor-ce/condor_config
-%config %{_sysconfdir}/condor-ce/config.d/01-common-auth.conf
+%config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-common-auth.conf
+%{_datadir}/condor-ce/config.d/01-common-auth-defaults.conf
 
 %{_datadir}/condor-ce/condor_ce_env_bootstrap
 
@@ -194,6 +204,12 @@ fi
 %{_bindir}/condor_ce_ping
 
 %changelog
+* Tue Mar 04 2014 Brian Bockelman <bbockelm@cse.unl.edu> - 0.6.3-1
+- Do not use InputRSL unless we have an appropriate version of HTCondor.
+- Further tighten security defaults
+- Make a copy of all config files in /usr/share
+- Strip leading and trailing whitespaces from classad values
+
 * Wed Feb 12 2014 Brian Bockelman <bbockelm@cse.unl.edu> - 0.6.2-1
 - Fix attribute names to be more compatible with glideinWMS's preferred usage.
 - Wall time, memory, and CPU count are now passed through to PBS correctly.
