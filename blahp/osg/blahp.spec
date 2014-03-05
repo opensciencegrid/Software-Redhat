@@ -136,6 +136,8 @@ EOF
 
 mv $RPM_BUILD_ROOT%{_docdir}/glite-ce-blahp-@PVER@ $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
 
+chmod 644 $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/sge_local_submit_attributes.sh
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
