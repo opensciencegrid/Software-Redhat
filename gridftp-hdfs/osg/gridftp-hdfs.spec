@@ -2,7 +2,7 @@
 
 Name:           gridftp-hdfs
 Version:        0.5.4
-Release:        10%{?dist}
+Release:        11%{?dist}
 Summary:        HDFS DSI plugin for GridFTP
 Group:          System Environment/Daemons
 License:        ASL 2.0
@@ -26,6 +26,7 @@ Patch6: gridftp-hdfs-readsize.patch
 Patch8: gridftp-hdfs-automake-modernize.patch
 Patch9: gridftp-hdfs-libjvm.patch
 Patch10: gridftp-hdfs-uninitialized-result.patch
+Patch11: 1410-java-environment.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires: autoconf
@@ -80,6 +81,7 @@ HDFS DSI plugin for GridFTP
 %patch8 -p1
 %patch9 -p1
 %patch10 -p1
+%patch11 -p1
 
 aclocal
 libtoolize
@@ -179,6 +181,9 @@ fi
 %endif
 
 %changelog
+* Tue Mar 04 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 0.5.4-11.osg
+- Add 1410-environment.patch to fix problem with not finding libjsig.so in systems with OpenJDK (SOFTWARE-1410)
+
 * Wed Jan 15 2014 Matyas Selmeci <matyas@cs.wisc.edu> - 0.5.4-10.osg
 - Merged upstream changes as of GT 5.2.5 (SOFTWARE-1317)
 - Remove gridftp-hdfs-config.patch
