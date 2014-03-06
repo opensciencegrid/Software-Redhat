@@ -11,7 +11,7 @@
 
 Name:           web100_userland
 Version:        1.7
-Release:        3%{?dist}
+Release:        5%{?dist}
 Summary:        Web100 userland library and tools
 
 Group:          System Environment/Libraries
@@ -20,7 +20,7 @@ URL:            http://www.web100.org
 Source0:        %{name}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires:  python-devel, gtk2-devel
+BuildRequires:  python-devel, gtk2-devel, chrpath
 Requires:       python, gtk2
 
 
@@ -52,7 +52,6 @@ perl -pi -e "s/WEB100_DOC_DIR=\\\${prefix}\/doc\/web100/WEB100_DOC_DIR=\\\${data
 
 
 %build
-
 %configure --includedir=%{_includedir}
 perl -pi -e "s/libweb100includedir = \\\$\(WEB100_INCLUDE_DIR\)\/web100/libweb100includedir = \\\$\(WEB100_INCLUDE_DIR\)/" lib/Makefile
 %{__sed} -i -e 's|--install-platlib=${pyexecdir}|--install-platlib=${pyexecdir} --root=%{buildroot}|' python/Makefile
@@ -66,6 +65,9 @@ make %{?_smp_mflags}
 rm -rf %{buildroot}
 make install DESTDIR=%{buildroot}
 find %{buildroot} -name '*.la' -exec rm -f {} ';'
+for badbin in readvar readall writevar gutil deltavar; do
+    chrpath --delete %{buildroot}/%{_bindir}/$badbin
+done
 
 
 %clean
@@ -84,18 +86,22 @@ rm -rf %{buildroot}
 %{_bindir}/*
 %{_libdir}/libweb100*
 %{_includedir}/web100.h
-%{_mandir}/man1
-%{_mandir}/man3
-%{_mandir}/man7
+%{_mandir}/man1/*
+%{_mandir}/man3/*
+%{_mandir}/man7/*
 %{_datadir}/aclocal/web100.m4
 
-%{_sysconfdir}/*.rc
+%config(noreplace) %{_sysconfdir}/*.rc
 %dir %{_datadir}/web100/
 %{_datadir}/web100/*.gif
 %{python_sitelib}/*
 %{python_sitearch}/*
 
 %changelog
+* Wed Mar 05 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.7-5.osg
+- Remove rpaths (SOFTWARE-1395)
+- Mark /etc/*.rc as config files
+
 * Thu Jul 14 2011 Derek Weitzel <dweitzel@cse.unl.edu> - 1.7-4
 - Incorporate new python macros from fedora project
 - Change included directory to python sitearch directory
