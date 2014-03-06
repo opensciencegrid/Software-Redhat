@@ -1,6 +1,6 @@
 Name:           npad
 Version:        1.5.6
-Release:        2.1%{?dist}
+Release:        2.2%{?dist}
 Summary:        Network Diagnostic Tool
 
 Group:          Applications/Networking
@@ -20,6 +20,7 @@ Patch7:         pathdiag-makefile-dynlink.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires:  web100_userland
 BuildRequires:  python-devel
+BuildRequires:  chrpath
 Requires:       web100_userland
 Requires:       shadow-utils
 Requires:       chkconfig
@@ -74,6 +75,7 @@ gcc diag-client.c -o diag-client
 %install
 rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
+chrpath --delete %{buildroot}/opt/npad/_pathlib.so
 
 %{__install} -D -m 0755 %SOURCE1 %{buildroot}%{_initrddir}/%{name}
 
@@ -112,6 +114,9 @@ fi
 %{_bindir}/diag-client
 
 %changelog
+* Wed Mar 05 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.6-2.2
+- Remove rpath (SOFTWARE-1395)
+
 * Thu May 23 2013 Tim Cartwright <cat@cs.wisc.edu> - 1.5.6-2.1
 - Added the client subpackage.
 
