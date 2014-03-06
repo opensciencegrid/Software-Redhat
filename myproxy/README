@@ -1,1 +1,4 @@
-Source downloaded from 'http://www.globus.org/ftppub/gt5/5.2/5.2.0/packages/rpm/centos/5/SRPMS/myproxy-5.5-3.src.rpm'
+MyProxy is mostly a pass-through from EPEL. The one change we make is
+we disable the %check section in the build since it requires a locally
+running service, which we don't have in our build environment.
+We used to get it from the Globus repos earlier.
