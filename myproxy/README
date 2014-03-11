@@ -1,4 +1,4 @@
-MyProxy is mostly a pass-through from EPEL. The one change we make is
-we disable the %check section in the build since it requires a locally
-running service, which we don't have in our build environment.
-We used to get it from the Globus repos earlier.
+MyProxy is a pass-through from EPEL; we used to disable the %check section
+because it would fail, but the failure turned out to be caused by a problem
+with our firewall rules on the build machine. Originally, we got MyProxy from
+the Globus repos.
