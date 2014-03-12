@@ -1,6 +1,6 @@
 Name: udt
 Version: 4.11
-Release: 2g2
+Release: 2g2%{?dist}
 Summary: UDP-based Data Transfer
 Vendor:  UDT Team
 
