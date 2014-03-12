@@ -1,6 +1,6 @@
 <project name="saz" default="compile" basedir=".">
 	<property file="build.properties"/>
-	<property name="version" value="4.0.0-1"/>
+	<property name="version" value="4.0.0-2"/>
 	<property name="srcdir" value="${basedir}/src/service"/>
 	<property name="srcsetupdir" value="${basedir}/setup"/>
 	<property name="srcsqldir" value="${basedir}/sql"/>
@@ -132,7 +132,7 @@
 			<manifest>
                         	<attribute name="Package" value="SAZ Server"/>
                         	<attribute name="Built-By" value="Neha Sharma"/>
-                        	<attribute name="Time" value="May 15'2013"/>
+                        	<attribute name="Time" value="October 24'2013"/>
                 	</manifest>
 		</jar>
 	</target>

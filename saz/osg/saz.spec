@@ -2,29 +2,23 @@
 %define dirname saz
 # Don't want to repack jars
 %define __jar_repack %{nil}
-%if "%{?rhel}" == "5"
-%define __os_install_post \
-    /usr/lib/rpm/redhat/brp-compress  \
-    %{!?__debug_package:/usr/lib/rpm/redhat/brp-strip %{__strip}}  \
-    /usr/lib/rpm/redhat/brp-strip-static-archive %{__strip}  \
-    /usr/lib/rpm/redhat/brp-strip-comment-note %{__strip} %{__objdump}  \
-    /usr/lib/rpm/brp-python-bytecompile  \
-%{nil}
-%endif
+%define __os_install_post %{nil}
+%define jglobus_version 2.0.6
 
 Name:    saz
 Version: 4.0.0
-Release: 1%{?dist}
-Summary: Site AuthoriZation service.  Banning tool for grid sites.
+Release: 2%{?dist}
+Summary: Site AuthoriZation Service.  Banning tool for grid sites
 
 License: Fermilab
 Group:   System Environment/Daemons
 URL:     http://www.saz.fnal.gov
 
-Source0: %{name}-%{version}-1.tar.gz
+Source0: %{name}-%{version}-2.tar.gz
 Source1: %{name}-dependencies.tar.gz
 Source2: build.properties
 Source3: build.xml
+
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildArch: noarch
@@ -37,57 +31,60 @@ BuildArch: noarch
 %define tomcat tomcat6
 #This is probably not right, but one thing at a time
 ## explicitly requiring this because I don't want yum to pick java-1.5.0-gcj-devel
-BuildRequires: java-1.6.0-sun-compat
+#Neha commenting for now since probably not needed
+#BuildRequires: java-1.6.0-sun-compat
 %endif
 
-#Build time dependencies
 BuildRequires: ant
 BuildRequires: antlr
 BuildRequires: axis
+
 BuildRequires: emi-trustmanager
 BuildRequires: emi-trustmanager-axis
-BuildRequires: jdk
-BuildRequires: java-1.6.0-sun-compat
-BuildRequires: java-devel
+
+BuildRequires: java7-devel
+#BuildRequires: java-1.6.0-sun-compat
 BuildRequires: jaxrpc
 BuildRequires: jta
 BuildRequires: joda-time
-BuildRequires: jglobus
+BuildRequires: jglobus = %{jglobus_version}
 BuildRequires: jpackage-utils
 BuildRequires: jakarta-commons-codec
 BuildRequires: jakarta-commons-collections
 BuildRequires: jakarta-commons-discovery
 BuildRequires: jakarta-commons-lang
 BuildRequires: jakarta-commons-logging
+
 BuildRequires: log4j
+
 BuildRequires: voms-api-java >= 2.0.8
+
 BuildRequires: wsdl4j
+
 BuildRequires: xerces-j2
 BuildRequires: xalan-j2
+
 #  Commenting since package name contains number 5/6 and not sure how
 # to specify that in build.properties file. instead packaging in dependant tarball instead
 #BuildRequires: %{tomcat}-servlet-2.5-api
 #  Commenting since this is much older version that what is available. packaging instead.
 #BuildRequires: mysql-connector-java
 
-#Runtime dependencies
-Requires: antlr
-Requires: axis
+
+Requires: java7
+Requires: jglobus = %{jglobus_version}
 Requires: emi-trustmanager
 Requires: emi-trustmanager-axis
-Requires: jacc
-Requires: java
-Requires: jakarta-commons-codec 
-Requires: jakarta-commons-collections
-Requires: jakarta-commons-discovery
-Requires: jakarta-commons-lang 
-Requires: jakarta-commons-logging
-Requires: jglobus
+Requires: jakarta-commons-codec jakarta-commons-collections jakarta-commons-discovery jakarta-commons-lang jakarta-commons-logging
+Requires: jacc jta
+Requires: ant
+Requires: antlr
+Requires: axis
 Requires: joda-time
-Requires: jta
-Requires: log4j
-Requires: xalan-j2
-Requires: xerces-j2
+Requires: xerces-j2 xalan-j2 log4j
+# ensure these are present, from jpackage-utils or missing-java-1.7.0-dirs
+Requires: /usr/lib/java-1.7.0
+Requires: /usr/share/java-1.7.0
 
 %description
 %{summary}
@@ -135,6 +132,10 @@ function replace_conf {
   ln -s %{_sysconfdir}/%{dirname}/$1 $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/saz/WEB-INF/classes/$1
 }
 
+function replace_server_conf {
+  rm -f $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/saz/WEB-INF/classes/$1
+  ln -s %{_sysconfdir}/%{dirname}/$1 $RPM_BUILD_ROOT%{_usr}/share/java/$1
+}
 #Making sure the build root is empty
 rm -rf $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT
@@ -198,6 +199,11 @@ for x in "Admin.hbm.xml" "User.hbm.xml" "CA.hbm.xml" "VO.hbm.xml" "Role.hbm.xml"
     replace_conf $x
 done
 
+# Create symlink
+#ln -s %{_sysconfdir}/%{dirname}/$1 $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/saz/WEB-INF/classes/$1
+# Neha - 03/11/2014 commenting since build vbreaks 
+#ln -s %{_sysconfdir}/%{dirname}/$1 /usr/share/java/$1
+
 # Create symlinks in a given directory
 #build-jar-repository $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/saz/WEB-INF/lib ant antlr commons-codec commons-collections commons-discovery commons-httpclient commons-lang commons-logging jta joda-time jglobus log4j trustmanager trustmanager-axis wsdl4j xalan-j2-serializer xalan-j2 xerces-j2
 
@@ -249,6 +255,10 @@ rm -rf $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/%{dirname}/setup
 %{_bindir}/saz-add-mysql-admin
 
 %changelog
-
-* Wed May 15 2013 Neha Sharma <neha@fnal.gov> 4.0.0-1
-- Initial rpms for SAZ service
+* Tue Mar 12 2014 Neha Sharma <neha@fnal.gov> 4.0.0-2
+- Build using OpenJDK7, jglobus 2.0.6
+- Added SHA2 support
+- Removed support for SAZ legacy protocol
+- Newer hibernate (4.2.0), privilege-xacml (2.6.1)
+* Tue Apr 30 2013 Neha Sharma <neha@fnal.gov> 4.0.0-1
+- First attempt at creating rpm for SAZ service
