@@ -1,7 +1,7 @@
 Name:      osg-gridftp
 Summary:   Standalone OSG GridFTP w/lcmaps gums client
 Version:   3.0.0
-Release:   9%{?dist}
+Release:   10%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -47,7 +47,7 @@ gums support through lcmaps plugin and vo-client.
 %install
 %if 0%{?rhel} >= 6
 mkdir -p %{buildroot}%{_sysconfdir}/gridftp.d
-install %{SOURCE1} %{buildroot}%{_sysconfdir}/gridftp.d/
+install -m 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/gridftp.d/
 %endif
 
 %clean
@@ -55,6 +55,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %if 0%{?rhel} >= 6
+%defattr(-,root,root,-)
 %config(noreplace) %{_sysconfdir}/gridftp.d/udt-%{name}.conf
 %endif
 
