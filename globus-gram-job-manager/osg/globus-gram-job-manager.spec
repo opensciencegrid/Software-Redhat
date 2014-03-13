@@ -9,7 +9,7 @@
 Name:		globus-gram-job-manager
 %global _name %(tr - _ <<< %{name})
 Version:	13.53
-Release:	1.2%{?dist}
+Release:	1.3%{?dist}
 Summary:	Globus Toolkit - GRAM Jobmanager
 
 Group:		Applications/Internet
@@ -21,6 +21,7 @@ Source2:        job-manager.rvf
 #		README file
 Source8:	GLOBUS-GRAM5
 
+Patch0:         1418-broken-state-file-crash.patch
 # OSG-specific patches
 Patch9:         unlock_init.patch
 Patch11:        null_old_jm.patch
@@ -130,6 +131,7 @@ GRAM Jobmanager Documentation Files
 %prep
 %setup -q -n %{_name}-%{version}
 
+%patch0 -p0
 %patch9 -p0
 %patch11 -p0
 %patch16 -p0
@@ -264,6 +266,10 @@ fi
 %dir %{_pkgdocdir}/html
 
 %changelog
+* Thu Mar 13 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 13.53-1.3.osg
+- Add fix for SOFTWARE-1418 / GT-520 (crashing issue with state files that
+  don't have the client address in them)
+
 * Mon Dec 16 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 13.53-1.2.osg
 - Bump and rebuild with OpenSSL 1.0.0
 
