@@ -5,7 +5,7 @@
 
 Name:           osg-measurements-metrics-db
 Version:        1.2
-Release:        26%{?dist}
+Release:        27%{?dist}
 Summary:        OSG Measurements and Metrics web and database
 
 Group:          Applications/System
@@ -60,6 +60,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+
+* Fri Mar 14 2014 William B Hurst <wbhurst@cse.unl.edu>
+- bumping the version because last git-build failed
 
 * Mon Mar  3 2014 William B Hurst <wbhurst@cse.unl.edu>
 - small improvement to wlcg reports error handling
