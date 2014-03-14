@@ -4,7 +4,7 @@
 Summary: The VOMS Administration service
 Name: voms-admin-server
 Version: 2.7.0
-Release: 1.10%{?dist}
+Release: 1.11%{?dist}
 License:    ASL 2.0
 Group: System Environment/Libraries
 BuildRequires:  maven22
@@ -35,13 +35,13 @@ Requires: fetch-crl
 %define tomcat_endorsed /usr/share/tomcat6/endorsed
 %define catalina_home /usr/share/tomcat6
 %endif
-Requires: xml-commons-apis 
 Requires(post):/sbin/chkconfig
 Requires(preun):/sbin/chkconfig
 Requires(preun):/sbin/service
 Requires(postun):/sbin/service
 # The following requirement makes sure we get the RPM that provides this,
 # and not just the JDK which happens to provide it, but not in the right spot. 
+# Requires: xml-commons-apis
 Requires: /usr/share/java/xml-commons-apis.jar
 Requires: grid-certificates 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -56,6 +56,7 @@ Patch5: fix-suspended-users.patch
 Patch6: fix-certificate-issuer-check.patch
 
 Requires: osg-webapp-common
+Requires: glite-security-util-java
 
 %description
 The Virtual Organization Membership Service (VOMS) is an attribute authority
@@ -161,14 +162,12 @@ fi
 %{tomcat_endorsed}/xalan-j2-serializer.jar
 
 %changelog
-* Wed Mar 05 2014 Carl Edquist <edquist@cs.wisc.edu> - 2.7.0-1.10
-- remove unnecessary glite-security-util-java dependency (SOFTWARE-1408)
+* Wed Mar 12 2014 Carl Edquist <edquist@cs.wisc.edu> - 2.7.0-1.11
+- Require glite-security-util-java (SOFTWARE-1408)
+- Remove requirement for xml-commons-apis (covered by explicit jar name)
 
 * Mon Mar 03 2014 Carl Edquist <edquist@cs.wisc.edu> - 2.7.0-1.9
 - bump to rebuild against classworlds from jpackage repo (SOFTWARE-1279)
-
-* Thu Feb 27 2014 Carl Edquist <edquist@cs.wisc.edu> - 2.7.0-1.8
-- Require glite-security-util-java (SOFTWARE-1408)
 
 * Thu Feb 27 2014 Carl Edquist <edquist@cs.wisc.edu> - 2.7.0-1.7
 - apply patch to fix check for adding new certificates (SOFTWARE-1408)
