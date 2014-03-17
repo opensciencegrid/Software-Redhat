@@ -50,7 +50,7 @@ Version: %{tarball_version}
 %define condor_release %condor_base_release
 %endif
 # Release: %condor_release%{?dist}.2
-Release: 5%{?dist}
+Release: 6%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -743,7 +743,7 @@ rm -rf %{buildroot}
 %_datadir/condor/CondorTest.pm
 %_datadir/condor/CondorUtils.pm
 %dir %_sysconfdir/condor/config.d/
-%_sysconfdir/condor/config.d/00personal_condor.config
+%config(noreplace) %_sysconfdir/condor/config.d/00personal_condor.config
 %_sysconfdir/condor/condor_ssh_to_job_sshd_config_template
 %if %gsoap
 %dir %_datadir/condor/webservice/
@@ -1082,6 +1082,9 @@ fi
 %endif
 
 %changelog
+* Mon Mar 17 2014 Carl Edquist <edquist@cs.wisc.edu> - 7.8.8-6
+- Mark 00personal_condor.config as a %%config file (SOFTWARE-1423)
+
 * Fri Nov 22 2013 Brian Lin <blin@cs.wisc.edu> - 7.8.8-5
 - Make init script more bourne shell compatible (SOFTWARE-1307)
 
