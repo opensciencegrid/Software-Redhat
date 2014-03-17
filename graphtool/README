@@ -10,5 +10,5 @@ OLD README CONTENTS:
 #    svn://t2.unl.edu/brian/GraphTool
 #------------------------------------
 
-* Thu Sep 1 2011 Ashu Guru <aguru2@unl.edu> 
-- Initial Import for package from caltech Koji
+* Mon Mar 17 2014 William B Hurst <wbhurst@cse.unl.edu> 
+- python osg graphtool
