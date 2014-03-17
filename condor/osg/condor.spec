@@ -67,7 +67,7 @@ Version: %{tarball_version}
 %define condor_release %condor_base_release
 %endif
 # Release: %condor_release%{?dist}.2
-Release: 2%{?dist}
+Release: 3%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -857,7 +857,7 @@ rm -rf %{buildroot}
 %_datadir/condor/CondorTest.pm
 %_datadir/condor/CondorUtils.pm
 %dir %_sysconfdir/condor/config.d/
-%_sysconfdir/condor/config.d/00personal_condor.config
+%config(noreplace) %_sysconfdir/condor/config.d/00personal_condor.config
 %_sysconfdir/condor/condor_ssh_to_job_sshd_config_template
 %if %gsoap
 %dir %_datadir/condor/webservice/
@@ -1271,6 +1271,9 @@ fi
 %endif
 
 %changelog
+* Mon Mar 17 2014 Carl Edquist <edquist@cs.wisc.edu> - 8.0.6-3
+- Mark 00personal_condor.config as a %%config file (SOFTWARE-1423)
+
 * Wed Feb 12 2014 Edgar Fajardo <efajardo@cern.ch> - 8.0.6
 - Updated to version 8.0.6
 - Removed the patching so that proxies are created with at least 1024 bits, since it comes from the upstream
