@@ -1,41 +1,58 @@
-%define name graphtool
-%define version 0.6.6
-%define release 18
-%define _tmppath /var/tmp
-%define _unpackaged_files_terminate_build 0
+%if 0%{?rhel} && 0%{?rhel} <= 5
+%{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
+%{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
+%endif
 
-Summary: CMS Common Graphing Package.
-Name: %{name}
-Version: %{version}
-Release: %{release}
-Source0: %{name}-%{version}.tar.gz
-License: UNKNOWN
-Group: Development/Libraries
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
-Prefix: %{_prefix}
-BuildArch: noarch
-Vendor: Brian Bockelman <bbockelm@math.unl.edu>
-Requires: python >= 2.3 python-matplotlib >= 0.97.1 numpy >= 1.2.1 python-imaging >= 1.1.5
+Name:                   graphtool
+Version:                0.6.6
+Release:                19%{?dist}
+Summary:                CMS Common Graphing Package.
+
+Group:                  Development/Libraries
+License:                Apache 2.2.15
+URL:                    http://t2.unl.edu/documentation/graphtool
+Source0:                %{name}-%{version}.tar.gz
+BuildRoot:              %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+
+BuildArch:              noarch
+
+
+BuildRequires:          python-setuptools
+Requires:               python >= 2.3 
+Requires:               python-matplotlib >= 0.97.1 
+Requires:               numpy >= 1.2.1 
+Requires:               python-imaging >= 1.1.5
+Requires:               python-setuptools
 
 %description
 GraphTool is a python graphing tool using the matplotlib library that
 runs under CherryPy.
 
 %prep
-%setup
+%setup -q
 
 %build
-python setup.py build
+CFLAGS="$RPM_OPT_FLAGS" %{__python} setup.py build
 
 %install
-python setup.py install --root=$RPM_BUILD_ROOT --record=INSTALLED_FILES
+rm -rf $RPM_BUILD_ROOT
+
+%{__python} setup.py install --skip-build --root %{buildroot}
+
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%files -f INSTALLED_FILES
-%defattr(-,root,root)
+%files
+%defattr(-,root,root,-)
+%{python_sitelib}/*
+/usr/bin/graphtool
+
+
 %changelog
+
+* Tue Mar 18 2014 William B Hurst <wbhurst@cse.unl.edu>
+- package fixes and bump of version release
 
 * Fri Mar 14 2014 William B Hurst <wbhurst@cse.unl.edu>
 - Enhanced mysql database connector error handling as
