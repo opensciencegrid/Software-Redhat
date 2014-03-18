@@ -1,7 +1,3 @@
-%ifarch i386
-%define _target_arch i686
-%endif
-
 %{?suse_version:%define dist .suse%suse_version}
 %if 0%{?el6} || 0%{?fc17}
 %define selinux_cvmfs 1
