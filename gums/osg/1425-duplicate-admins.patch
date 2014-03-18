@@ -1,0 +1,54 @@
+Index: gums-core/src/main/sql/addAdmin.mysql
+===================================================================
+--- gums-core/src/main/sql/addAdmin.mysql.orig	2011-04-07 10:54:51.000000000 -0500
++++ gums-core/src/main/sql/addAdmin.mysql	2014-03-18 13:45:07.552493230 -0500
+@@ -1,3 +1,21 @@
+ USE GUMS_1_3;
+ 
+-INSERT INTO USERS SET DN="@ADMINDN@", GROUP_NAME="admins";
++DROP PROCEDURE IF EXISTS gumsAddMysqlAdminHelper;
++DELIMITER //
++CREATE PROCEDURE gumsAddMysqlAdminHelper(admindn varchar(255))
++BEGIN
++  DECLARE adminscount int;
++  SELECT COUNT(*) INTO adminscount FROM USERS WHERE DN=admindn AND GROUP_NAME="admins";
++  IF adminscount = 0 THEN
++    INSERT INTO USERS SET DN=admindn, GROUP_NAME="admins";
++  ELSE
++    # The following statement is not a no-op, it fixes the case of DN if it is
++    # different.
++    UPDATE USERS SET DN=admindn WHERE DN=admindn AND GROUP_NAME="admins";
++  END IF;
++END
++//
++DELIMITER ;
++CALL gumsAddMysqlAdminHelper("@ADMINDN@");
++DROP PROCEDURE IF EXISTS gumsAddMysqlAdminHelper;
++
+Index: gums-service/src/main/resources/sql/addAdmin.mysql
+===================================================================
+--- gums-service/src/main/resources/sql/addAdmin.mysql.orig	2011-04-13 10:30:54.000000000 -0500
++++ gums-service/src/main/resources/sql/addAdmin.mysql	2014-03-18 13:46:18.444363816 -0500
+@@ -1,3 +1,21 @@
+ USE GUMS_1_3;
+ 
+-INSERT INTO USERS SET DN="@ADMINDN@", GROUP_NAME="admins";
++DROP PROCEDURE IF EXISTS gumsAddMysqlAdminHelper;
++DELIMITER //
++CREATE PROCEDURE gumsAddMysqlAdminHelper(admindn varchar(255))
++BEGIN
++  DECLARE adminscount int;
++  SELECT COUNT(*) INTO adminscount FROM USERS WHERE DN=admindn AND GROUP_NAME="admins";
++  IF adminscount = 0 THEN
++    INSERT INTO USERS SET DN=admindn, GROUP_NAME="admins";
++  ELSE
++    # The following statement is not a no-op, it fixes the case of DN if it is
++    # different.
++    UPDATE USERS SET DN=admindn WHERE DN=admindn AND GROUP_NAME="admins";
++  END IF;
++END
++//
++DELIMITER ;
++CALL gumsAddMysqlAdminHelper("@ADMINDN@");
++DROP PROCEDURE IF EXISTS gumsAddMysqlAdminHelper;
++
