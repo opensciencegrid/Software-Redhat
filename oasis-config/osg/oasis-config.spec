@@ -1,7 +1,7 @@
 Summary: OASIS-specific configuration
 Name: oasis-config
-Version: 4
-Release: 2%{?dist}
+Version: 5
+Release: 1%{?dist}
 License: ASL 2.0
 Group: Applications/Grid
 Source0: opensciencegrid.org.pub
@@ -60,6 +60,12 @@ install -m 644 %{SOURCE2} %{buildroot}%{_sysconfdir}/cvmfs/config.d
 
 
 %changelog
+* Wed Mar 19 2014 Dave Dykstra <dwd@fnal.gov> 5-1
+- Use cvmfs-s1*.opensciencegrid.org DNS aliases for stratum 1s
+- Redirect errors from rm -f $SERVER_ORDER_FILE to /dev/null because
+  it is possible that it gets run as an unprivileged user from 
+  cvmfs_config after an rpm upgrade
+
 * Thu Aug 22 2013 Dave Dykstra <dwd@fnal.gov> 4-2
 - Move the setting of OASIS_CERTIFICATES to where it more properly belongs
   in new file /etc/cvmfs/config.d/oasis.opensciencegrid.org.conf
