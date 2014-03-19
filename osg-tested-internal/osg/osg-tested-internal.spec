@@ -1,7 +1,7 @@
 Name:      osg-tested-internal
 Summary:   All OSG packages we test (internal use only)
-Version:   1
-Release:   19%{?dist}
+Version:   3.2
+Release:   1%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -50,6 +50,9 @@ Requires: gratia-probe-bdii-status
 Requires: gratia-probe-pbs-lsf
 Requires: gratia-probe-sge
 
+Requires: myproxy
+Requires: myproxy-server
+
 ################################################################################
 #
 # RHEL 5
@@ -82,6 +85,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Mar 19 2014 Edgar Fajardo <efajardo@physics.ucsd.edu> - 3.2-1
+- Add myproxy and my proxy requirements.
+- Change of version from 1 to 3.2 and release from 19 to 1
+
 * Mon Feb 17 2014 Brian Lin <blin@cs.wisc.edu> - 1-19
 - Add htcondor-ce requirements
 
