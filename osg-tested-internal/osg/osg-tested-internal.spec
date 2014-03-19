@@ -1,7 +1,7 @@
 Name:      osg-tested-internal
 Summary:   All OSG packages we test (internal use only)
-Version:   1
-Release:   18%{?dist}
+Version:   3.1
+Release:   1%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -46,6 +46,9 @@ Requires: gratia-probe-bdii-status
 Requires: gratia-probe-pbs-lsf
 Requires: gratia-probe-sge
 
+Requires: myproxy
+Requires: myproxy-server
+
 ################################################################################
 #
 # RHEL 5
@@ -78,6 +81,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Feb 19 2014 Edgar Fajardo <efajardo@physics.ucsd.edu> - 3.1-1
+- Add myproxy requirements
+- Bumbed the version from 1 to 3.1
+
 * Tue Oct 22 2013 Brian Lin <blin@cs.wisc.edu> - 1-18
 - Add gratia-probe-sge 
 
