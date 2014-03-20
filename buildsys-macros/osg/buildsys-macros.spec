@@ -1,8 +1,8 @@
 %define dver %{?rhel}%{?!rhel:5}
 Name:		buildsys-macros
-Summary:	Macros for the Condor team's usage of the OSG Koji instance
+Summary:	Macros for the HTCondor team's usage of the OSG Koji instance
 Version:        7
-Release:	7%{?dist}
+Release:	8.uw.el%{dver}
 License:	GPL
 Group:		Development/Buildsystem
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -21,7 +21,7 @@ rm -rf $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT/etc/rpm/
 DVER=%{dver}
 printf %s%b "%" "rhel $DVER\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.disttag
-printf %s%b "%" "dist .el$DVER\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.disttag
+printf %s%b "%" "dist .uw.el$DVER\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.disttag
 printf %s%b "%" "el$DVER 1\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.disttag
 printf %s%b "%" "uw_build 1\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.disttag
 printf %s%b "%" "__arch_install_post /usr/lib/rpm/check-buildroot\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.checkbuild
@@ -46,6 +46,9 @@ rm -rf $RPM_BUILD_ROOT
 /etc/rpm/macros.checkbuild
 
 %changelog
+* Thu Mar 20 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 7-8.uw
+- Add .uw to the dist tag
+
 * Mon Mar 03 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 7-7
 - Bump to rebuild with buildsys-macros 7-6
 
