@@ -13,11 +13,12 @@
 Summary: CernVM File System
 Name: cvmfs
 Version: 2.1.17
-Release: 1.1%{?dist}
+Release: 1.2%{?dist}
 Source0: https://ecsft.cern.ch/dist/cvmfs/%{name}-%{version}.tar.gz
 %if 0%{?selinux_cvmfs}
 Source1: cvmfs.te
 %endif
+Patch0: defaultdomain.patch
 Group: Applications/System
 License: BSD
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -123,6 +124,7 @@ CernVM-FS unit tests binary.  This RPM is not required except for testing.
 
 %prep
 %setup -q
+%patch0 -p0
 
 %if 0%{?selinux_cvmfs}
 mkdir SELinux
@@ -312,6 +314,11 @@ fi
 %{_bindir}/cvmfs_unittests
 
 %changelog
+* Thu Mar 20 2014 Dave Dykstra <dwd@fnal.gov> - 2.1.17-1.2.osg
+- Add patch to set CVMFS_DEFAULT_DOMAIN in /etc/cvmfs/default.conf to
+  empty, because otherwise /etc/cvmfs/domain.d/cern.ch.* configs get
+  read in even for opensciencegrid.org domain, and the setting of
+  CVMFS_SERVER_URL there interferes with opensciencegrid.org.conf.
 * Tue Mar 18 2014 Dave Dykstra <dwd@fnal.gov> - 2.1.17-1.1.osg
 - Import 2.1.17 to OSG and change CXXFLAGS -march=i386 into -march=i686
   because otherwise build fails on koji el6 build machine
