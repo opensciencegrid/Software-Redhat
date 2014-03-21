@@ -5,7 +5,7 @@
 
 Summary:   Tests an OSG Software installation
 Name:      osg-test
-Version:   1.4.10
+Version:   1.4.11
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -39,6 +39,9 @@ rm -rf $RPM_BUILD_ROOT
 /etc/grid-security/certificates/bffdd190.*
 
 %changelog
+* Thu Mar 21 2014 Brian Lin <blin@cs.wisc.edu> - 1.4.11-1
+- Include the myproxy configuration file
+
 * Thu Mar 20 2014 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1.4.10-1
 - Added the myproxy tests (SOFTWARE-1414)
  
