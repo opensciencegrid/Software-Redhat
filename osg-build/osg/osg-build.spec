@@ -1,6 +1,6 @@
 
 Name:           osg-build
-Version:        1.3.4
+Version:        1.3.5
 Release:        1%{?dist}
 Summary:        Build tools for the OSG
 
@@ -68,6 +68,17 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_docdir}/%{name}/sample-osg-build.ini
 
 %changelog
+* Fri Mar 21 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.3.5-1
+- Allow multiple routes separated by commas in '-r', for osg-promote
+  and fix usage message (SOFTWARE-1390)
+- Add repo hints for 'condor' and 'perfsonar' repos (SOFTWARE-1413, SOFTWARE-1392)
+- Fix SVN URL handling so that you can specify an SVN URL to build from
+  instead of a package directory (SOFTWARE-1278)
+- Fix osg-promote misdetecting repo tag on packages with a dot in the release
+  number (e.g. 1.11) (SOFTWARE-1420)
+- Remove logic dealing with the koji tag renaming for osg-next (SOFTWARE-1416)
+- Minor bugfixes
+
 * Tue Feb 25 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.3.4-1
 - change 'contrib' promotion path to go from development -> contrib instead
   of testing -> contrib, per the new osg-contrib policy  (SOFTWARE-1405)
