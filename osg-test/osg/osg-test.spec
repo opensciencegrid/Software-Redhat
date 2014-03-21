@@ -39,7 +39,7 @@ rm -rf $RPM_BUILD_ROOT
 /etc/grid-security/certificates/bffdd190.*
 
 %changelog
-* Thu Mar 21 2014 Brian Lin <blin@cs.wisc.edu> - 1.4.11-1
+* Fri Mar 21 2014 Brian Lin <blin@cs.wisc.edu> - 1.4.11-1
 - Include the myproxy configuration file
 
 * Thu Mar 20 2014 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1.4.10-1
