@@ -5,7 +5,7 @@
 
 Name:           osg-measurements-metrics-web
 Version:        1.2
-Release:        27%{?dist}
+Release:        28%{?dist}
 Summary:        OSG Measurements and Metrics web and database
 
 Group:          Applications/System
@@ -17,20 +17,20 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
 BuildRequires:  python-setuptools
-Requires:       graphtool >= 0.6.4 
-Requires:	MySQL-python 
-Requires:	python-sqlite 
-Requires:	python-cheetah 
-Requires:	/usr/bin/ldapsearch 
-Requires:	python-cherrypy >= 3.1.2 
-Requires:	python-ZSI 
-Requires: 	python-setuptools 
-Requires: 	osg-measurements-metrics-db 
+Requires:       graphtool >= 0.6.4
+Requires:       MySQL-python
+Requires:       python-sqlite
+Requires:       python-cheetah
+Requires:       /usr/bin/ldapsearch
+Requires:       python-cherrypy >= 3.1.2
+Requires:       python-ZSI
+Requires:       python-setuptools
+Requires:       osg-measurements-metrics-db
 %if 0%{?el5}
-Requires:	python-simplejson 
+Requires:       python-simplejson
 %endif
-Requires:	gratia-probe-common   
-Requires:	gratia-probe-services
+Requires:       gratia-probe-common
+Requires:       gratia-probe-services
 
 
 
@@ -80,6 +80,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+
+* Fri Mar 21 2014 William B Hurst <wbhurst@cse.unl.edu
+- completed final step to move all URLs to a config file.
+
+* Fri Mar 14 2014 William B Hurst <wbhurst@cse.unl.edu>
+- bumping the version because last git-build failed
 
 * Mon Mar  3 2014 William B Hurst <wbhurst@cse.unl.edu>
 - bumping the version because last git build failed
