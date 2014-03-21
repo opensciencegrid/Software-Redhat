@@ -13,12 +13,13 @@
 Summary: CernVM File System
 Name: cvmfs
 Version: 2.1.17
-Release: 1.2%{?dist}
+Release: 1.3%{?dist}
 Source0: https://ecsft.cern.ch/dist/cvmfs/%{name}-%{version}.tar.gz
 %if 0%{?selinux_cvmfs}
 Source1: cvmfs.te
 %endif
 Patch0: defaultdomain.patch
+Patch1: autocvmfscolon.patch
 Group: Applications/System
 License: BSD
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -125,6 +126,7 @@ CernVM-FS unit tests binary.  This RPM is not required except for testing.
 %prep
 %setup -q
 %patch0 -p0
+%patch1 -p0
 
 %if 0%{?selinux_cvmfs}
 mkdir SELinux
@@ -314,6 +316,9 @@ fi
 %{_bindir}/cvmfs_unittests
 
 %changelog
+* Fri Mar 21 2014 Dave Dykstra <dwd@fnal.gov> - 2.1.17-1.3.osg
+- Add patch to prefix a colon on the repository name from /etc/auto.cvmfs.
+  Without it, automount fails on at least el6.2.
 * Thu Mar 20 2014 Dave Dykstra <dwd@fnal.gov> - 2.1.17-1.2.osg
 - Add patch to set CVMFS_DEFAULT_DOMAIN in /etc/cvmfs/default.conf to
   empty, because otherwise /etc/cvmfs/domain.d/cern.ch.* configs get

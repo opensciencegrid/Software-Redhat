@@ -1,0 +1,10 @@
+--- mount/auto.cvmfs.cc.O	2014-03-21 15:02:05.353264000 -0500
++++ mount/auto.cvmfs.cc	2014-03-21 15:02:15.478530000 -0500
+@@ -44,6 +44,6 @@
+   if (hostname[hostname.length()-1] == '.')
+     return 1;
+ 
+-  printf("-fstype=cvmfs %s\n", hostname.c_str());
++  printf("-fstype=cvmfs :%s\n", hostname.c_str());
+   return 0;
+ }
