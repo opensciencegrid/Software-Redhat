@@ -1,7 +1,7 @@
 
 Name:           osg-build
 Version:        1.3.5
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Build tools for the OSG
 
 Group:          System Environment/Tools
@@ -68,7 +68,7 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_docdir}/%{name}/sample-osg-build.ini
 
 %changelog
-* Fri Mar 21 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.3.5-1
+* Fri Mar 21 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.3.5-2
 - Allow multiple routes separated by commas in '-r', for osg-promote
   and fix usage message (SOFTWARE-1390)
 - Add repo hints for 'condor' and 'perfsonar' repos (SOFTWARE-1413, SOFTWARE-1392)
