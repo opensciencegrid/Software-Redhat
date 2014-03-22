@@ -1,7 +1,7 @@
+Pass-through rebuild of gfal, a build/runtime dependency of lcg-util.
 
-Packaging of the gLite project's libgfal.
+Downloaded from:
+  http://dl.fedoraproject.org/pub/epel/6/SRPMS/gfal-1.16.0-1.el6.src.rpm
 
-There are two patches here:
-1) A patch so automake can find the glite build macros that are compatible with the Fedora globus.
-2) gsoap 2.7 that ships with EPEL5 generates code with an interface that is incompatible with gfal.  The interface is patched back to the old behavior.
+Note: we do not want to continue shipping this in OSG-3.3+ (SOFTWARE-390)
 
