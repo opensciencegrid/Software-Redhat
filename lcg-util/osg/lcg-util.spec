@@ -22,7 +22,7 @@
 
 Name:						lcg-util
 Version:					1.16.0
-Release:					2.1%{?dist}
+Release:					2.2%{?dist}
 Summary:					Command line tools for wlcg storage system 
 Group:						Applications/Internet
 License:					ASL 2.0
@@ -216,6 +216,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Sat Mar 22 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.16.0-2.2.osg
+- Bump release to rebuild against new gfal/srm-ifce
+
 * Thu Jan 23 2014 Matyas Selmeci <matyas@cs.wisc.edu> - 1.16.0-2.1.osg
 - Merge OSG changes
 
