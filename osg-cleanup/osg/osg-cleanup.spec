@@ -1,6 +1,6 @@
 
 Name:      osg-cleanup
-Version:   1.7.1
+Version:   1.7.2
 Release:   1%{?dist}
 Summary:   OSG cleanup scripts
 
@@ -90,6 +90,9 @@ fi
 
 
 %changelog
+* Mon Mar 24 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.7.2-1
+- Fix references to undefined sub "log_msg" (SOFTWARE-1434)
+
 * Thu Jan 24 2013 Matyas Selmeci <matyas@cs.wisc.edu> 1.7.1-1
 - Fix log filename pattern in logrotate config (#SOFTWARE-920)
 
