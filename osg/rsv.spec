@@ -1,6 +1,6 @@
 Name:      rsv
 Summary:   RSV Meta Package
-Version:   3.7.14
+Version:   3.7.15
 Release:   1%{?dist}
 License:   Apache 2.0
 Group:     Applications/Monitoring
@@ -204,6 +204,10 @@ fi
 
 
 %changelog
+* Mon Mar 24 2014 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.7.15-1
+- SOFTWARE-1198 - Fix HTCondor-CE RSV metric org.osg.globus.gram-authentication
+- SOFTWARE-1388 - Deprecated "[allmetrics args]" config section
+
 * Mon Jan 27 2014 Carl Edquist <edquist@cs.wisc.edu> - 3.7.14-1
 - SOFTWARE-1336 - additional warnings for gratia probe
 - SOFTWARE-1358 - patch to support zabbix consumer
