@@ -1,7 +1,7 @@
 Name:      osg-wn-client
 Summary:   OSG Worker-Node Client
 Version:   3.0.0
-Release:   19%{?dist}
+Release:   20%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -18,7 +18,7 @@ Requires: /usr/bin/dccp
 Requires: dcap-tunnel-gsi
 Requires: edg-gridftp-client
 Requires: glite-fts-client
-Requires: lcg-utils
+Requires: lcg-util
 Requires: lfc-client
 Requires: lfc-python
 Requires: myproxy
@@ -94,6 +94,9 @@ rm -rf $RPM_BUILD_ROOT
 %files glexec
 
 %changelog
+* Tue Mar 25 2014 Carl Edquist <edquist@cs.wisc.edu> - 3.0.0-20
+- Update lcg-utils requirement to lcg-util (SOFTWARE-1373)
+
 * Wed Apr 03 2013 Brian Lin <blin@cs.wisc.edu> - 3.0.0-19.osg
 - Update to require java7-devel and jpackage-utils
 
