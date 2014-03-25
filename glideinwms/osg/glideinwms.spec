@@ -55,12 +55,12 @@ Source:	glideinwms.tar.gz
 # git archive v3_0_rc3 --prefix='glideinwms/' | gzip > ../glideinwms.tar.gz
 # change v3_0_rc3 to the proper tag in the above line
 
-Source1:        frontend_startup
+Source1:        creation/templates/frontend_startup
 Source2:        %{frontend_xml}
 Source3:        gwms-frontend.conf.httpd
 Source4:	%{factory_xml}
 Source5:        gwms-factory.conf.httpd
-Source6:        factory_startup
+Source6:        creation/templates/factory_startup
 Source7:	chksum.sh
 Source8:        gwms-frontend.sysconfig
 Source9:        gwms-factory.sysconfig
@@ -234,6 +234,9 @@ sed -i "s/STARTUP_DIR=.*/STARTUP_DIR=\"\/var\/lib\/gwms-frontend\/web-base\"/" c
 sed -i "s/WEB_BASE_DIR=.*/WEB_BASE_DIR=\"\/var\/lib\/gwms-factory\/web-base\"/" creation/reconfig_glidein
 sed -i "s/STARTUP_DIR =.*/STARTUP_DIR=\"\/var\/lib\/gwms-factory\/web-base\"/" creation/reconfig_glidein
 sed -i "s/STARTUP_DIR =.*/STARTUP_DIR=\"\/var\/lib\/gwms-factory\/web-base\"/" creation/clone_glidein
+
+#Create the RPM startup files (init.d) from the templates
+creation/create_rpm_startup . %{SOURCE1} %{SOURCE6}
 
 # install the executables
 install -d $RPM_BUILD_ROOT%{_sbindir}
