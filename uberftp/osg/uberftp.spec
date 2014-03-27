@@ -1,34 +1,38 @@
 Name:           uberftp
-Version:        2.6
-Release:        4%{?dist}
-Summary:        GridFTP-enabled ftp client
+Version:        2.8
+%global _version %(tr . _ <<< %{version})
+Release:        1%{?dist}
+Summary:        GridFTP-enabled FTP client
 
 Group:          Applications/Internet
 
 License:        NCSA
-URL:            http://dims.ncsa.illinois.edu/set/uberftp/
-Source0:        http://dims.ncsa.illinois.edu/set/uberftp/download/uberftp-client-%{version}.tar.gz
-Patch0:         configure.ac.patch
+URL:            https://github.com/JasonAlt/UberFTP
+Source0:        UberFTP-Version_%{_version}.tar.gz
 Patch1:         disconnected_server.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  grid-packaging-tools, globus-gssapi-gsi-devel
 
 %description
-UberFTP is the first interactive, GridFTP-enabled ftp client. 
-It supports GSI authentication, parallel data channels and 
-third party transfers. 
+UberFTP is the first interactive, GridFTP-enabled ftp client.
+It supports GSI authentication, parallel data channels and
+third party transfers.
 
 %prep
-%setup -q -n uberftp-client-%{version}
+%setup -q -n UberFTP-Version_%{_version}
 iconv -f iso8859-1 -t utf-8 copyright > copyright.conv && mv -f copyright.conv copyright
-%patch0 -p0
 %patch1 -p0
 
 %build
 mkdir pkgdata
 ln pkg_data_src.gpt.in pkgdata/pkg_data_src.gpt.in
 
+# lib64 is hardcoded in configure.ac -- fix it for 32-bit builds before running globus-bootstrap.sh
+%ifarch i386
+sed -i -e 's/lib64/lib/g' configure.ac
+%endif
+unset GLOBUS_LOCATION GPT_LOCATION
 %{_datadir}/globus/globus-bootstrap.sh
 
 %configure
@@ -51,6 +55,12 @@ rm -rf $RPM_BUILD_ROOT
 %doc Changelog.mssftp Changelog copyright
 
 %changelog
+* Wed Mar 26 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 2.8-1
+- New version 2.8 (SOFTWARE-1436)
+- Changed URL to GitHub
+- Remove configure.ac.patch (no longer needed)
+- Refresh disconnected_server.patch
+
 * Fri Jan 04 2013 Brian Bockelman <bbockelm@cse.unl.edu> - 2.6-4
 - Prevent uberftp from hanging when the command socket closes.
 
