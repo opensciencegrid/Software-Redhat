@@ -13,3 +13,11 @@ needed.)
 You can download UberFTP from the developer's web page at:
 http://dims.ncsa.illinois.edu/set/uberftp/
 
+
+
+2014-03-27:
+
+UberFTP now builds fine against Globus 5.2.5 albeit with a tweak in
+configure.ac necessary for 32-bit systems to work, but a full patch is
+not necessary.  It has been updated to 2.8, which was downloaded from
+the project's new GitHub repo.  EPEL is still several versions behind.
