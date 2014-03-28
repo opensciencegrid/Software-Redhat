@@ -1,17 +1,17 @@
---- gridftp-hdfs-0.5.4.orig/scripts/gridftp-hdfs-standalone.in	2011-10-15 12:36:03.000000000 -0500
-+++ gridftp-hdfs-0.5.4/scripts/gridftp-hdfs-standalone.in	2014-03-27 20:29:49.839321350 -0500
-@@ -14,5 +14,5 @@
+--- gridftp-hdfs-0.5.4.orig2/scripts/gridftp-hdfs-standalone.in	2014-03-27 21:44:47.358868325 -0500
++++ gridftp-hdfs-0.5.4/scripts/gridftp-hdfs-standalone.in	2014-03-27 21:49:00.999011415 -0500
+@@ -4,5 +4,5 @@
  
  export CLASSPATH=$CLASSPATH
                                                                        
 -exec /usr/sbin/globus-gridftp-server -c @sysconfdir_resolved@/gridftp-hdfs/gridftp-debug.conf -dsi hdfs -no-fork
 +exec /usr/sbin/globus-gridftp-server -c @sysconfdir_resolved@/gridftp-hdfs/gridftp-debug.conf -C /etc/gridftp.d -dsi hdfs -no-fork
  
---- gridftp-hdfs-0.5.4.orig/scripts/xinetd/gridftp-hdfs-inetd.in	2011-10-15 12:35:08.000000000 -0500
-+++ gridftp-hdfs-0.5.4/scripts/xinetd/gridftp-hdfs-inetd.in	2014-03-27 20:30:46.970458081 -0500
-@@ -12,5 +12,5 @@
-     . @sysconfdir_resolved@/sysconfig/gridftp-hdfs
- fi
+--- gridftp-hdfs-0.5.4.orig2/scripts/xinetd/gridftp-hdfs-inetd.in	2014-03-27 21:44:47.358868325 -0500
++++ gridftp-hdfs-0.5.4/scripts/xinetd/gridftp-hdfs-inetd.in	2014-03-27 21:48:43.276280866 -0500
+@@ -2,5 +2,5 @@
+ 
+ . /usr/share/osg/sysconfig/globus-gridftp-server
  
 -exec /usr/sbin/globus-gridftp-server -c @sysconfdir_resolved@/gridftp-hdfs/gridftp-inetd.conf -dsi hdfs
 +exec /usr/sbin/globus-gridftp-server -c @sysconfdir_resolved@/gridftp-hdfs/gridftp-inetd.conf -C /etc/gridftp.d -dsi hdfs
