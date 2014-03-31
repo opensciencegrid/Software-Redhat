@@ -127,7 +127,7 @@ Requires: condor >= 7.8.0
 Requires: glideinwms-minimal-condor = %{version}-%{release}
 Requires: glideinwms-glidecondor-tools = %{version}-%{release}
 %description usercollector
-The user collector matches user jobs to glideins in the user pool.
+The user collector matches user jobs to glideins in the WMS pool.
 It can be split off into its own node.
 
 
@@ -164,7 +164,7 @@ Group:          System Environment/Daemons
 Provides: gwms-condor-config
 %description minimal-condor
 This is an alternate condor config for just the minimal amount
-needed for vofrontend.
+needed for VOFrontend.
 
 
 %package factory
@@ -186,12 +186,12 @@ Requires(post): /sbin/chkconfig
 The purpose of the glideinWMS is to provide a simple way
 to access the Grid resources. GlideinWMS is a Glidein
 Based WMS (Workload Management System) that works on top of
-Condor. For those familiar with the Condor system, it is used
+HTCondor. For those familiar with the Condor system, it is used
 for scheduling and job control.
 
 
 %package factory-condor
-Summary:        The VOFrontend condor config
+Summary:        The GWMS Factory condor config
 Group:          System Environment/Daemons
 Provides: gwms-factory-config
 %description factory-condor
@@ -369,7 +369,7 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/condor/certs
 #make sure this (new) file exists, can be deprecated in gwms 2.7 or so
 touch install/templates/90_gwms_dns.config
-install -m 0644 install/templates/00_gwms_general.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/00_gwms_factory_general.config
+install -m 0644 install/templates/00_gwms_factory_general.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
 install -m 0644 install/templates/00_gwms_general.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
 install -m 0644 install/templates/01_gwms_collectors.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/01_gwms_factory_collectors.config
 install -m 0644 install/templates/01_gwms_collectors.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
