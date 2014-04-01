@@ -1,7 +1,7 @@
 Name:      osg-wn-client
 Summary:   OSG Worker-Node Client
 Version:   3.0.0
-Release:   20%{?dist}
+Release:   21%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -37,6 +37,7 @@ Requires: osg-system-profiler
 Requires: vo-client
 Requires: osg-version
 Requires: globus-gass-copy-progs
+Requires: globus-xio-udt-driver
 
 %description
 %{summary}
@@ -94,6 +95,9 @@ rm -rf $RPM_BUILD_ROOT
 %files glexec
 
 %changelog
+* Tue Apr 01 2014 Carl Edquist <edquist@cs.wisc.edu> - 3.0.0-21
+- Ship with UDT driver plugin (SOFTWARE-1443)
+
 * Tue Mar 25 2014 Carl Edquist <edquist@cs.wisc.edu> - 3.0.0-20
 - Update lcg-utils requirement to lcg-util (SOFTWARE-1373)
 
