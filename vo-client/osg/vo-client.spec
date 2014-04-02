@@ -1,5 +1,5 @@
 Name:           vo-client
-Version:        51
+Version:        52
 Release:        1%{?dist}
 Summary:        Contains vomses file for use with user authentication and edg-mkgridmap.conf file that contains configuration information for edg-mkgridmap.
 
@@ -85,6 +85,13 @@ rm -rf $RPM_BUILD_ROOT
 %attr(0600,tomcat,tomcat) %config(noreplace) %{_sysconfdir}/gums/gums.config.template
 
 %changelog
+* Mon Feb 03 2014 Carl Edquist <edquist@cs.wisc.edu> - 52-1
+- Update to vo-client 52 (SOFTWARE-1444)
+  - Add New Sub-VOs Lariat, Gendetrd, Lar1, and Okra
+  - New stanzas for Production Analysis and Glidein roles in gums template
+  - New VOMS Servers at CERN
+  - Removed Dayabay VO
+
 * Mon Feb 03 2014 Carl Edquist <edquist@cs.wisc.edu> - 51-1
 - Update to vo-client 51 (SOFTWARE-1372)
   - VOs hosted by Fermilab VOMS server transitioned to DigiCert certificates
