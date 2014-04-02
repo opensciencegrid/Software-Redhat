@@ -11,7 +11,7 @@
 Name:		globus-gridftp-server
 %global _name %(tr - _ <<< %{name})
 Version:	6.38
-Release:	1.2%{?dist}
+Release:	1.3%{?dist}
 Summary:	Globus Toolkit - Globus GridFTP Server
 
 Group:		System Environment/Libraries
@@ -151,6 +151,7 @@ mv %{buildroot}%{_sysconfdir}/gridftp.xinetd.default \
    %{buildroot}%{_sysconfdir}/xinetd.d/gridftp
 mv %{buildroot}%{_sysconfdir}/gridftp.gfork.default \
    %{buildroot}%{_sysconfdir}/gridftp.gfork
+mkdir -p %{buildroot}%{_sysconfdir}/gridftp.d
 rm $GLOBUSPACKAGEDIR/%{_name}/pkg_data_noflavor_data.gpt
 rm $GLOBUSPACKAGEDIR/%{_name}/noflavor_data.filelist
 
@@ -225,6 +226,7 @@ fi
 
 %files -f package.filelist
 %dir %{_datadir}/globus/packages/%{_name}
+%dir %{_sysconfdir}/gridftp.d
 %dir %{_pkgdocdir}
 %doc %{_pkgdocdir}/README
 
@@ -244,6 +246,9 @@ fi
 %files -f package-devel.filelist devel
 
 %changelog
+* Wed Apr 02 2014 Carl Edquist <edquist@cs.wisc.edu> - 6.38-1.3.osg
+- Provide config dir /etc/gridftp.d/ (SOFTWARE-1412)
+
 * Fri Jan 10 2014 Matyas Selmeci <matyas@cs.wisc.edu> 6.38-1.2.osg
 - Fix init script chkconfig priorities to run after netfs and autofs (SOFTWARE-1250)
 
