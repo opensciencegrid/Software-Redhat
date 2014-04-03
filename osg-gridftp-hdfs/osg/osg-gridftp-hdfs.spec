@@ -1,7 +1,7 @@
 Name:      osg-gridftp-hdfs
 Summary:   OSG GridFTP-HDFS meta package
 Version:   3.0.0
-Release:   5%{?dist}
+Release:   6%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -12,7 +12,8 @@ Source1: udt-%{name}.conf
 
 Requires: osg-version
 Requires: osg-system-profiler
-Requires: gridftp-hdfs
+# 0.5.4-13 uses /etc/gridftp.d config dir
+Requires: gridftp-hdfs >= 0.5.4-13
 Requires: vo-client
 Requires: grid-certificates
 %if 0%{?rhel} < 6
@@ -55,6 +56,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Thu Apr 03 2014 Carl Edquist <edquist@cs.wisc.edu> - 3.0.0-6
+- Add version requirement for gridftp-hdfs (SOFTWARE-1412)
+
 * Thu Mar 13 2014 Carl Edquist <edquist@cs.wisc.edu> - 3.0.0-4
 - Add globus-xio-udt-driver dependency for el6, and enable by default in
   /etc/gridftp.d/ (SOFTWARE-1412)
