@@ -1,7 +1,7 @@
 Name:           osg-se-hadoop
 Summary:        OSG Hadoop Storage Element package for RPM distribution
 Version:        3.0.0
-Release:        10%{?dist}
+Release:        11%{?dist}
 License:        GPL
 Group:          System Environment/Daemons
 URL:            https://twiki.grid.iu.edu/twiki/bin/view/Storage/WebHome
@@ -64,7 +64,8 @@ Requires: fetch-crl3
 %else
 Requires: fetch-crl
 %endif
-Requires: osg-gridftp-hdfs
+# 3.0.0-6 pulls in gridftp-hdfs that uses /etc/gridftp.d
+Requires: osg-gridftp-hdfs >= 3.0.0-6
 Requires: globus-gridftp-server-progs
 Requires: gratia-probe-gridftp-transfer
 Requires: gums-client
@@ -129,6 +130,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/hadoop/conf.osg/
 
 %changelog
+* Thu Apr 03 2014 Carl Edquist <edquist@cs.wisc.edu> - 3.0.0-11
+- Add version requirement for osg-gridftp-hdfs (SOFTWARE-1412)
+
 * Thu Apr 04 2013 Brian Lin <blin@cs.wisc.edu> - 3.0.0-10
 - Remove java dependency.
 
