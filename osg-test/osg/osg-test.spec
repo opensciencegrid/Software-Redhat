@@ -5,7 +5,7 @@
 
 Summary:   Tests an OSG Software installation
 Name:      osg-test
-Version:   1.4.12
+Version:   1.4.13
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -39,6 +39,11 @@ rm -rf $RPM_BUILD_ROOT
 /etc/grid-security/certificates/bffdd190.*
 
 %changelog
+* Mon Apr 7 2014 Brian Lin <blin@cs.wisc.edu> - 1.4.13-1
+- Add manual option and speed up fetch-crl tests
+- Add lcg-utils tests
+- Fixes to myproxy and cleanup tests
+
 * Fri Mar 21 2014 Brian Lin <blin@cs.wisc.edu> - 1.4.12-1
 - Allow package cleanup to be retried
 - Rebuild to fix dirty source from previous version
