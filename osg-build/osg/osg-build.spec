@@ -1,7 +1,7 @@
 
 Name:           osg-build
-Version:        1.3.5
-Release:        2%{?dist}
+Version:        1.3.6
+Release:        1%{?dist}
 Summary:        Build tools for the OSG
 
 Group:          System Environment/Tools
@@ -68,6 +68,11 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_docdir}/%{name}/sample-osg-build.ini
 
 %changelog
+* Mon Apr 7 2014 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.3.6-1
+- osg-koji setup no longer downloads deprecated DOEGrids certs (SOFTWARE-1437)
+- Tweak client.crt creation in osg-koji setup to insert newline between cert
+  and key and convert line endings
+
 * Fri Mar 21 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.3.5-2
 - Allow multiple routes separated by commas in '-r', for osg-promote
   and fix usage message (SOFTWARE-1390)
