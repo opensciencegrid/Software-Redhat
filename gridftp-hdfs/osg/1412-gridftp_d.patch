@@ -5,7 +5,7 @@
  export CLASSPATH=$CLASSPATH
                                                                        
 -exec /usr/sbin/globus-gridftp-server -c @sysconfdir_resolved@/gridftp-hdfs/gridftp-debug.conf -dsi hdfs -no-fork
-+exec /usr/sbin/globus-gridftp-server -c @sysconfdir_resolved@/gridftp-hdfs/gridftp-debug.conf -C /etc/gridftp.d -dsi hdfs -no-fork
++exec /usr/sbin/globus-gridftp-server -c @sysconfdir_resolved@/gridftp-hdfs/gridftp-debug.conf -C /etc/gridftp.d -no-fork
  
 --- gridftp-hdfs-0.5.4.orig2/scripts/xinetd/gridftp-hdfs-inetd.in	2014-03-27 21:44:47.358868325 -0500
 +++ gridftp-hdfs-0.5.4/scripts/xinetd/gridftp-hdfs-inetd.in	2014-03-27 21:48:43.276280866 -0500
@@ -14,5 +14,32 @@
  . /usr/share/osg/sysconfig/globus-gridftp-server
  
 -exec /usr/sbin/globus-gridftp-server -c @sysconfdir_resolved@/gridftp-hdfs/gridftp-inetd.conf -dsi hdfs
-+exec /usr/sbin/globus-gridftp-server -c @sysconfdir_resolved@/gridftp-hdfs/gridftp-inetd.conf -C /etc/gridftp.d -dsi hdfs
++exec /usr/sbin/globus-gridftp-server -c @sysconfdir_resolved@/gridftp-hdfs/gridftp-inetd.conf -C /etc/gridftp.d
  
+--- gridftp-hdfs-0.5.4/conf/gridftp-hdfs-environment	2014-04-04 14:58:02.498130529 -0500
++++ gridftp-hdfs-0.5.4-new/conf/gridftp-hdfs-environment	2014-04-08 16:11:45.348548546 -0500
+@@ -88,7 +88,7 @@
+ 
+ # New gridftp.conf override in GT 5.2
+ #export GRIDFTP_CONF=/etc/gridftp-hdfs/gridftp.conf
+-export conf=/etc/gridftp-hdfs/gridftp.conf
++#export conf=/etc/gridftp-hdfs/gridftp.conf
+ 
+ # Allow non-java-based signal handling
+ export LD_PRELOAD=libjsig.so
+--- gridftp-hdfs-0.5.4/conf/gridftp-debug.conf	2011-09-26 13:57:18.000000000 -0500
++++ gridftp-hdfs-0.5.4-new/conf/gridftp-debug.conf	2014-04-09 15:10:58.651685740 -0500
+@@ -3,5 +3,3 @@
+ log_module stdio
+ debug 1
+ port 5002
+-blocksize 1048576
+-load_dsi_module hdfs
+--- gridftp-hdfs-0.5.4/conf/gridftp-inetd.conf	2012-06-15 08:02:01.000000000 -0500
++++ gridftp-hdfs-0.5.4-new/conf/gridftp-inetd.conf	2014-04-09 15:11:05.174587383 -0500
+@@ -2,5 +2,3 @@
+ log_level ERROR,WARN,INFO
+ log_single /var/log/gridftp-auth.log
+ log_transfer /var/log/gridftp.log
+-blocksize 1048576
+-load_dsi_module hdfs

@@ -2,13 +2,14 @@
 
 Name:           gridftp-hdfs
 Version:        0.5.4
-Release:        13%{?dist}
+Release:        14%{?dist}
 Summary:        HDFS DSI plugin for GridFTP
 Group:          System Environment/Daemons
 License:        ASL 2.0
 URL:            http://twiki.grid.iu.edu/bin/view/Storage/HadoopInstallation
 Source0:        %{name}-%{version}.tar.gz
 Source1: globus-gridftp-server-plugin.osg-sysconfig
+Source2: %{name}.conf
 %if 0%{?osg} > 0
 Patch0: osg-sysconfig.patch
 %endif
@@ -110,6 +111,8 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/*.a
 # GT 5.2 location of config directory
 mv $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/gridftp.conf.d \
    $RPM_BUILD_ROOT%{_sysconfdir}/gridftp.d
+%else
+mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/gridftp.d
 %endif
 
 # Remove the init script - in GT5.2, this gets bootstrapped appropriately
@@ -119,8 +122,10 @@ rm $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/gridftp.conf.d/%{name}-environment-bo
 %if 0%{?osg} > 0
 mv $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/gridftp.conf.d/%{name} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig
 rmdir $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/gridftp.conf.d
+rm $RPM_BUILD_ROOT%{_sysconfdir}/gridftp-hdfs/gridftp.conf
 mkdir -p $RPM_BUILD_ROOT/usr/share/osg/sysconfig
 install -m 644 -p %{SOURCE1} $RPM_BUILD_ROOT/usr/share/osg/sysconfig/globus-gridftp-server-plugin
+install -m 644 %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/gridftp.d
 %else
 rm $RPM_BUILD_ROOT%{_sysconfdir}/gridftp.d/%{name}-environment-bootstrap
 rm $RPM_BUILD_ROOT%{_sysconfdir}/gridftp-hdfs/gridftp-debug.conf
@@ -173,9 +178,9 @@ fi
 %config(noreplace) %{_sysconfdir}/xinetd.d/%{name}
 %config(noreplace) %{_sysconfdir}/%{name}/gridftp-debug.conf
 %config(noreplace) %{_sysconfdir}/%{name}/gridftp-inetd.conf
-%config(noreplace) %{_sysconfdir}/%{name}/gridftp.conf
 %config(noreplace) %{_sysconfdir}/%{name}/replica-map.conf
 %config(noreplace) %{_sysconfdir}/sysconfig/%{name}
+%config(noreplace) %{_sysconfdir}/gridftp.d/%{name}.conf
 /usr/share/osg/sysconfig/globus-gridftp-server-plugin
 %else
 %config(noreplace) %{_sysconfdir}/sysconfig/gridftp.conf.d/%{name}
@@ -184,6 +189,9 @@ fi
 %endif
 
 %changelog
+* Wed Apr 09 2014 Carl Edquist <edquist@cs.wisc.edu> - 0.5.4-14.osg
+- Move hdfs-specific config into /etc/gridftp.d (SOFTWARE-1439)
+
 * Thu Apr 03 2014 Carl Edquist <edquist@cs.wisc.edu> - 0.5.4-13.osg
 - Update globus-gridftp-server version requirement (SOFTWARE-1412)
 
