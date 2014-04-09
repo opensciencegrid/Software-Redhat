@@ -2,7 +2,7 @@
 
 Name:           gridftp-hdfs
 Version:        0.5.4
-Release:        14%{?dist}
+Release:        15%{?dist}
 Summary:        HDFS DSI plugin for GridFTP
 Group:          System Environment/Daemons
 License:        ASL 2.0

@@ -1,5 +1,5 @@
---- gridftp-hdfs-0.5.4.orig2/scripts/gridftp-hdfs-standalone.in	2014-03-27 21:44:47.358868325 -0500
-+++ gridftp-hdfs-0.5.4/scripts/gridftp-hdfs-standalone.in	2014-03-27 21:49:00.999011415 -0500
+--- gridftp-hdfs-0.5.4/scripts/gridftp-hdfs-standalone.in	2014-03-27 21:44:47.358868325 -0500
++++ gridftp-hdfs-0.5.4-new/scripts/gridftp-hdfs-standalone.in	2014-03-27 21:49:00.999011415 -0500
 @@ -4,5 +4,5 @@
  
  export CLASSPATH=$CLASSPATH
@@ -7,8 +7,8 @@
 -exec /usr/sbin/globus-gridftp-server -c @sysconfdir_resolved@/gridftp-hdfs/gridftp-debug.conf -dsi hdfs -no-fork
 +exec /usr/sbin/globus-gridftp-server -c @sysconfdir_resolved@/gridftp-hdfs/gridftp-debug.conf -C /etc/gridftp.d -no-fork
  
---- gridftp-hdfs-0.5.4.orig2/scripts/xinetd/gridftp-hdfs-inetd.in	2014-03-27 21:44:47.358868325 -0500
-+++ gridftp-hdfs-0.5.4/scripts/xinetd/gridftp-hdfs-inetd.in	2014-03-27 21:48:43.276280866 -0500
+--- gridftp-hdfs-0.5.4/scripts/xinetd/gridftp-hdfs-inetd.in	2014-03-27 21:44:47.358868325 -0500
++++ gridftp-hdfs-0.5.4-new/scripts/xinetd/gridftp-hdfs-inetd.in	2014-03-27 21:48:43.276280866 -0500
 @@ -2,5 +2,5 @@
  
  . /usr/share/osg/sysconfig/globus-gridftp-server
@@ -35,11 +35,11 @@
  port 5002
 -blocksize 1048576
 -load_dsi_module hdfs
---- gridftp-hdfs-0.5.4/conf/gridftp-inetd.conf	2012-06-15 08:02:01.000000000 -0500
-+++ gridftp-hdfs-0.5.4-new/conf/gridftp-inetd.conf	2014-04-09 15:11:05.174587383 -0500
+--- gridftp-hdfs-0.5.4/conf/gridftp-inetd.conf.in	2011-09-26 13:58:24.000000000 -0500
++++ gridftp-hdfs-0.5.4-new/conf/gridftp-inetd.conf.in	2014-04-09 17:04:52.931651181 -0500
 @@ -2,5 +2,3 @@
  log_level ERROR,WARN,INFO
- log_single /var/log/gridftp-auth.log
- log_transfer /var/log/gridftp.log
+ log_single @logdir@/gridftp-auth.log
+ log_transfer @logdir@/gridftp.log
 -blocksize 1048576
 -load_dsi_module hdfs
