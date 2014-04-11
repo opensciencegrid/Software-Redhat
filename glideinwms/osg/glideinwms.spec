@@ -21,7 +21,7 @@ Name:           glideinwms
 # ------------------------------------------------------------------------------
 %if %{v3_plus}
 %define version 3.2.4
-%define release 0.1.rc2
+%define release 0.1.rc3
 %define frontend_xml frontend.master.xml
 %define factory_xml glideinWMS.master.xml
 %endif
