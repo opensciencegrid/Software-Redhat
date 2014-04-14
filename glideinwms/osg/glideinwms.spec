@@ -21,7 +21,7 @@ Name:           glideinwms
 # ------------------------------------------------------------------------------
 %if %{v3_plus}
 %define version 3.2.4
-%define release 0.1.rc3
+%define release 1
 %define frontend_xml frontend.master.xml
 %define factory_xml glideinWMS.master.xml
 %endif
@@ -723,6 +723,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Apr 14 2014 Parag Mhashilkar <parag@fnal.gov> - 3.2.4-1
+- Glideinwms v3.2.4 release
+- Unified the factory and frontend startup scripts in rpm and tarball versions from common templates
+
 * Mon Feb 03 2014 Parag Mhashilkar <parag@fnal.gov> - 3.2.3-1
 - Glideinwms v3.2.3 release
 - Final release does not include support for HTCondor CE rsl
