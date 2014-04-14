@@ -5,7 +5,7 @@
  					"role parameter must be non-null!");
  
 -		String query = "select distinct c.subjectString from VOMSUser u join u.certificates c join u.mappings m where m.group =  :group and m.role = :role";
-+		String query = "select distinct c.subjectString from VOMSUser u join u.certificates c join u.mappings m where m.group =  :group and m.role = :role and u.suspended = false and u.expired = false";
++		String query = "select distinct c.subjectString from VOMSUser u join u.certificates c join u.mappings m where m.group =  :group and m.role = :role and u.suspended = false";
  
  		return HibernateFactory.getSession().createQuery(query).setEntity(
  				"group", g).setEntity("role", r).list();
@@ -16,7 +16,7 @@
  		// "select distinct m.user.dn from org.glite.security.voms.admin.persistence.model.VOMSMapping m where m.group = :group and m.role is null";
  
 -		String query = "select distinct c.subjectString from VOMSUser u join u.certificates c join u.mappings m where m.group =  :group and m.role is null";
-+		String query = "select distinct c.subjectString from VOMSUser u join u.certificates c join u.mappings m where m.group =  :group and m.role is null and u.suspended = false and u.expired = false";
++		String query = "select distinct c.subjectString from VOMSUser u join u.certificates c join u.mappings m where m.group =  :group and m.role is null and u.suspended = false";
 +
  
  		return HibernateFactory.getSession().createQuery(query).setEntity(
