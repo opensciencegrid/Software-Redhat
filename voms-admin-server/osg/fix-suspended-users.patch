@@ -1,6 +1,6 @@
---- src/main/java/org/glite/security/voms/admin/persistence/dao/VOMSRoleDAO.java.orig	2012-05-21 15:27:53.000000000 -0500
-+++ src/main/java/org/glite/security/voms/admin/persistence/dao/VOMSRoleDAO.java	2014-01-29 18:11:34.558102596 -0600
-@@ -440,7 +440,7 @@
+--- src/main/java/org/glite/security/voms/admin/persistence/dao/VOMSRoleDAO.java.orig
++++ src/main/java/org/glite/security/voms/admin/persistence/dao/VOMSRoleDAO.java
+@@ -440,7 +440,7 @@ public class VOMSRoleDAO {
  			throw new IllegalArgumentException(
  					"role parameter must be non-null!");
  
@@ -9,3 +9,15 @@
  
  		return HibernateFactory.getSession().createQuery(query).setEntity(
  				"group", g).setEntity("role", r).list();
+--- src/main/java/org/glite/security/voms/admin/persistence/dao/VOMSGroupDAO.java.orig
++++ src/main/java/org/glite/security/voms/admin/persistence/dao/VOMSGroupDAO.java
+@@ -595,7 +595,8 @@ public class VOMSGroupDAO {
+ 		// String query =
+ 		// "select distinct m.user.dn from org.glite.security.voms.admin.persistence.model.VOMSMapping m where m.group = :group and m.role is null";
+ 
+-		String query = "select distinct c.subjectString from VOMSUser u join u.certificates c join u.mappings m where m.group =  :group and m.role is null";
++		String query = "select distinct c.subjectString from VOMSUser u join u.certificates c join u.mappings m where m.group =  :group and m.role is null and u.suspended = false and u.expired = false";
++
+ 
+ 		return HibernateFactory.getSession().createQuery(query).setEntity(
+ 				"group", g).list();
