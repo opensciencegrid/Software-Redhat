@@ -4,7 +4,7 @@
 Summary: The VOMS Administration service
 Name: voms-admin-server
 Version: 2.7.0
-Release: 1.11%{?dist}
+Release: 1.12%{?dist}
 License:    ASL 2.0
 Group: System Environment/Libraries
 BuildRequires:  maven22
@@ -162,6 +162,10 @@ fi
 %{tomcat_endorsed}/xalan-j2-serializer.jar
 
 %changelog
+* Tue Apr 15 2014 Carl Edquist <edquist@cs.wisc.edu> - 2.7.0-1.12
+- Do not return expired or suspended users or certificates with
+  getGridmapUsers from VOMSCompatibility interface (SOFTWARE-1349)
+
 * Wed Mar 12 2014 Carl Edquist <edquist@cs.wisc.edu> - 2.7.0-1.11
 - Require glite-security-util-java (SOFTWARE-1408)
 - Remove requirement for xml-commons-apis (covered by explicit jar name)
