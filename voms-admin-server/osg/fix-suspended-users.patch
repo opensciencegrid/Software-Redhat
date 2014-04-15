@@ -1,6 +1,14 @@
 --- src/main/java/org/glite/security/voms/admin/persistence/dao/VOMSRoleDAO.java.orig
 +++ src/main/java/org/glite/security/voms/admin/persistence/dao/VOMSRoleDAO.java
-@@ -440,9 +440,13 @@ public class VOMSRoleDAO {
+@@ -19,6 +19,7 @@
+  */
+ package org.glite.security.voms.admin.persistence.dao;
+ 
++import java.util.Date;
+ import java.util.Iterator;
+ import java.util.List;
+ 
+@@ -440,9 +441,13 @@ public class VOMSRoleDAO {
  			throw new IllegalArgumentException(
  					"role parameter must be non-null!");
  
@@ -19,7 +27,15 @@
  }
 --- src/main/java/org/glite/security/voms/admin/persistence/dao/VOMSGroupDAO.java.orig
 +++ src/main/java/org/glite/security/voms/admin/persistence/dao/VOMSGroupDAO.java
-@@ -595,9 +595,11 @@ public class VOMSGroupDAO {
+@@ -19,6 +19,7 @@
+  */
+ package org.glite.security.voms.admin.persistence.dao;
+ 
++import java.util.Date;
+ import java.util.Iterator;
+ import java.util.List;
+ import java.util.Set;
+@@ -595,9 +596,11 @@ public class VOMSGroupDAO {
  		// String query =
  		// "select distinct m.user.dn from org.glite.security.voms.admin.persistence.model.VOMSMapping m where m.group = :group and m.role is null";
  
