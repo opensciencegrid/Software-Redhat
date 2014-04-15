@@ -1,23 +1,36 @@
 --- src/main/java/org/glite/security/voms/admin/persistence/dao/VOMSRoleDAO.java.orig
 +++ src/main/java/org/glite/security/voms/admin/persistence/dao/VOMSRoleDAO.java
-@@ -440,7 +440,7 @@ public class VOMSRoleDAO {
+@@ -440,9 +440,13 @@ public class VOMSRoleDAO {
  			throw new IllegalArgumentException(
  					"role parameter must be non-null!");
  
 -		String query = "select distinct c.subjectString from VOMSUser u join u.certificates c join u.mappings m where m.group =  :group and m.role = :role";
-+		String query = "select distinct c.subjectString from VOMSUser u join u.certificates c join u.mappings m where m.group =  :group and m.role = :role and u.suspended = false";
  
- 		return HibernateFactory.getSession().createQuery(query).setEntity(
- 				"group", g).setEntity("role", r).list();
+-		return HibernateFactory.getSession().createQuery(query).setEntity(
+-				"group", g).setEntity("role", r).list();
++		Date now = new Date();
++		String query = "select distinct c.subjectString from VOMSUser u join u.certificates c join u.mappings m where m.group =  :group and m.role = :role and u.suspended = false and u.endTime >= :now";
++
++		return HibernateFactory.getSession().createQuery(query)
++				.setEntity("group", g)
++				.setEntity("role", r)
++				.setDate("now", now).list();
+ 	}
+ }
 --- src/main/java/org/glite/security/voms/admin/persistence/dao/VOMSGroupDAO.java.orig
 +++ src/main/java/org/glite/security/voms/admin/persistence/dao/VOMSGroupDAO.java
-@@ -595,7 +595,8 @@ public class VOMSGroupDAO {
+@@ -595,9 +595,11 @@ public class VOMSGroupDAO {
  		// String query =
  		// "select distinct m.user.dn from org.glite.security.voms.admin.persistence.model.VOMSMapping m where m.group = :group and m.role is null";
  
 -		String query = "select distinct c.subjectString from VOMSUser u join u.certificates c join u.mappings m where m.group =  :group and m.role is null";
-+		String query = "select distinct c.subjectString from VOMSUser u join u.certificates c join u.mappings m where m.group =  :group and m.role is null and u.suspended = false";
-+
++		Date now = new Date();
++		String query = "select distinct c.subjectString from VOMSUser u join u.certificates c join u.mappings m where m.group =  :group and m.role is null and u.suspended = false and u.endTime >= :now";
  
- 		return HibernateFactory.getSession().createQuery(query).setEntity(
- 				"group", g).list();
+-		return HibernateFactory.getSession().createQuery(query).setEntity(
+-				"group", g).list();
++		return HibernateFactory.getSession().createQuery(query)
++				.setEntity("group", g)
++				.setDate("now", now).list();
+ 	}
+ }
