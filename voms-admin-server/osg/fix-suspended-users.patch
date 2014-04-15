@@ -17,7 +17,7 @@
 -		return HibernateFactory.getSession().createQuery(query).setEntity(
 -				"group", g).setEntity("role", r).list();
 +		Date now = new Date();
-+		String query = "select distinct c.subjectString from VOMSUser u join u.certificates c join u.mappings m where m.group =  :group and m.role = :role and u.suspended = false and u.endTime >= :now";
++		String query = "select distinct c.subjectString from VOMSUser u join u.certificates c join u.mappings m where m.group =  :group and m.role = :role and u.suspended = false and u.endTime >= :now and c.suspended = false";
 +
 +		return HibernateFactory.getSession().createQuery(query)
 +				.setEntity("group", g)
@@ -41,7 +41,7 @@
  
 -		String query = "select distinct c.subjectString from VOMSUser u join u.certificates c join u.mappings m where m.group =  :group and m.role is null";
 +		Date now = new Date();
-+		String query = "select distinct c.subjectString from VOMSUser u join u.certificates c join u.mappings m where m.group =  :group and m.role is null and u.suspended = false and u.endTime >= :now";
++		String query = "select distinct c.subjectString from VOMSUser u join u.certificates c join u.mappings m where m.group =  :group and m.role is null and u.suspended = false and u.endTime >= :now and c.suspended = false";
  
 -		return HibernateFactory.getSession().createQuery(query).setEntity(
 -				"group", g).list();
