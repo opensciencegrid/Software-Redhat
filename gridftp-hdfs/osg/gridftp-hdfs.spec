@@ -2,7 +2,7 @@
 
 Name:           gridftp-hdfs
 Version:        0.5.4
-Release:        15%{?dist}
+Release:        16%{?dist}
 Summary:        HDFS DSI plugin for GridFTP
 Group:          System Environment/Daemons
 License:        ASL 2.0
@@ -180,6 +180,9 @@ fi
 %endif
 
 %changelog
+* Wed Apr 16 2014 Carl Edquist <edquist@cs.wisc.edu> - 0.5.4-15.osg
+- Remove conflicting /etc/gridftp.d notion from non-osg builds (SOFTWARE-1439)
+
 * Wed Apr 09 2014 Carl Edquist <edquist@cs.wisc.edu> - 0.5.4-14.osg
 - Move hdfs-specific config into /etc/gridftp.d (SOFTWARE-1439)
 
