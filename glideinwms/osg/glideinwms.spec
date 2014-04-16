@@ -21,7 +21,7 @@ Name:           glideinwms
 # ------------------------------------------------------------------------------
 %if %{v3_plus}
 %define version 3.2.4
-%define release 1
+%define release 2
 %define frontend_xml frontend.master.xml
 %define factory_xml glideinWMS.master.xml
 %endif
@@ -178,7 +178,7 @@ Requires: glideinwms-factory-condor = %{version}-%{release}
 Requires: condor >= 7.8.0
 Requires: python-rrdtool
 Requires: m2crypto
-Requires: javascriptrrd
+Requires: javascriptrrd >= 1.1.0
 Requires(post): /sbin/service
 Requires(post): /usr/sbin/useradd
 Requires(post): /sbin/chkconfig
@@ -723,6 +723,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Apr 16 2014 Parag Mhashilkar <parag@fnal.gov> - 3.2.4-2
+- Changed the javascriptrrd dependency to be 1.1.0+
+
 * Mon Apr 14 2014 Parag Mhashilkar <parag@fnal.gov> - 3.2.4-1
 - Glideinwms v3.2.4 release
 - Unified the factory and frontend startup scripts in rpm and tarball versions from common templates
