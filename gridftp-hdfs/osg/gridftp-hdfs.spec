@@ -107,13 +107,7 @@ make DESTDIR=$RPM_BUILD_ROOT install
 rm -f $RPM_BUILD_ROOT%{_libdir}/*.la
 rm -f $RPM_BUILD_ROOT%{_libdir}/*.a
 
-%if 0%{?osg} == 0
-# GT 5.2 location of config directory
-mv $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/gridftp.conf.d \
-   $RPM_BUILD_ROOT%{_sysconfdir}/gridftp.d
-%else
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/gridftp.d
-%endif
 
 # Remove the init script - in GT5.2, this gets bootstrapped appropriately
 rm $RPM_BUILD_ROOT%{_sysconfdir}/init.d/%{name}
@@ -127,7 +121,6 @@ mkdir -p $RPM_BUILD_ROOT/usr/share/osg/sysconfig
 install -m 644 -p %{SOURCE1} $RPM_BUILD_ROOT/usr/share/osg/sysconfig/globus-gridftp-server-plugin
 install -m 644 %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/gridftp.d
 %else
-rm $RPM_BUILD_ROOT%{_sysconfdir}/gridftp.d/%{name}-environment-bootstrap
 rm $RPM_BUILD_ROOT%{_sysconfdir}/gridftp-hdfs/gridftp-debug.conf
 rm $RPM_BUILD_ROOT%{_sysconfdir}/gridftp-hdfs/gridftp-inetd.conf
 rm $RPM_BUILD_ROOT%{_sysconfdir}/gridftp-hdfs/gridftp.conf
@@ -184,8 +177,6 @@ fi
 /usr/share/osg/sysconfig/globus-gridftp-server-plugin
 %else
 %config(noreplace) %{_sysconfdir}/sysconfig/gridftp.conf.d/%{name}
-%{_sysconfdir}/sysconfig/gridftp.conf.d/%{name}-environment-bootstrap
-%config(noreplace) %{_sysconfdir}/gridftp.d/%{name}
 %endif
 
 %changelog
