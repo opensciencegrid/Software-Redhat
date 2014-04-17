@@ -21,7 +21,7 @@ Name:           glideinwms
 # ------------------------------------------------------------------------------
 %if %{v3_plus}
 %define version 3.2.4
-%define release 2
+%define release 3
 %define frontend_xml frontend.master.xml
 %define factory_xml glideinWMS.master.xml
 %endif
@@ -101,7 +101,7 @@ Requires: httpd
 Requires: condor >= 7.8.0
 Requires: python-rrdtool
 Requires: m2crypto
-Requires: javascriptrrd
+Requires: javascriptrrd >= 1.1.0
 Requires: osg-client
 Requires: glideinwms-minimal-condor = %{version}-%{release}
 Requires: glideinwms-libs = %{version}-%{release}
@@ -723,6 +723,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Apr 17 2014 Parag Mhashilkar <parag@fnal.gov> - 3.2.4-3
+- Changed the javascriptrrd dependency to be 1.1.0+ for frontend as well
+
 * Mon Apr 16 2014 Parag Mhashilkar <parag@fnal.gov> - 3.2.4-2
 - Changed the javascriptrrd dependency to be 1.1.0+
 
