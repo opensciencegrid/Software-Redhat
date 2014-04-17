@@ -1,0 +1,98 @@
+Index: _quilt/privilege-xacml-2.6.1/src/main/java/org/opensciencegrid/authz/xacml/common/X509CertUtil.java
+===================================================================
+--- _quilt.orig/privilege-xacml-2.6.1/src/main/java/org/opensciencegrid/authz/xacml/common/X509CertUtil.java
++++ _quilt/privilege-xacml-2.6.1/src/main/java/org/opensciencegrid/authz/xacml/common/X509CertUtil.java
+@@ -6,7 +6,10 @@ import org.ietf.jgss.GSSContext;
+ import org.ietf.jgss.GSSException;
+ import org.ietf.jgss.GSSCredential;
+ import org.ietf.jgss.GSSManager;
++//GlobusCredential and X509Credential added to use this with jglobus and not with the old cog-jglobus 1.8
+ import org.globus.gsi.GlobusCredential;
++import org.globus.gsi.X509Credential;
++import org.globus.gsi.CredentialException;
+ import org.globus.gsi.GlobusCredentialException;
+ import org.globus.gsi.TrustedCertificates;
+ import org.globus.gsi.GSIConstants;
+@@ -72,6 +75,19 @@ public class X509CertUtil {
+ 
+     public static GSSContext getUserContext(String proxy_cert, String service_trusted_certs) throws GSSException {
+ 
++	X509Credential userCredential;
++	try {
++            userCredential =new X509Credential(proxy_cert, proxy_cert);
++        } catch(CredentialException gce) {
++            throw new GSSException(GSSException.NO_CRED , 0,
++				   "could not load host globus credentials "+gce.toString());
++        } catch(IOException ioe) {
++	    throw new GSSException(GSSException.DEFECTIVE_CREDENTIAL,0,"Could not read cert or key " + ioe.getMessage() + "\n" + ioe.getCause());
++	}
++	 
++	//Code changed to update from old cog-jglobus to jglobus 2.0 which doesn't have userCredential but X509 Credential
++	// and it can throw an IOExceptions
++	/*
+         GlobusCredential userCredential;
+         try {
+             userCredential =new GlobusCredential(proxy_cert, proxy_cert);
+@@ -79,7 +95,7 @@ public class X509CertUtil {
+             throw new GSSException(GSSException.NO_CRED , 0,
+                     "could not load host globus credentials "+gce.toString());
+         }
+-
++	*/
+         GSSCredential cred = new GlobusGSSCredentialImpl(
+                 userCredential,
+                 GSSCredential.INITIATE_AND_ACCEPT);
+@@ -219,8 +235,12 @@ public class X509CertUtil {
+             X509Certificate	testcert = chain[i];
+     //DERObject obj = BouncyCastleUtil.toDERObject(testcert.getTBSCertificate());
+ 	//tbsCert  =  TBSCertificateStructure.getInstance(obj);
+-            tbsCert  = BouncyCastleUtil.getTBSCertificateStructure(testcert);
+-            int certType = BouncyCastleUtil.getCertificateType(tbsCert);
++            //tbsCert  = BouncyCastleUtil.getTBSCertificateStructure(testcert);
++	    //TrustedCertificates trustedCerts = null;
++	    /* Change from cog-jglobus to jglobus 2.0 use getCertificate passing it the X509Certificate 
++	       and the getCertificateType is no longer an integer.
++	    */
++            int certType = BouncyCastleUtil.getCertificateType(testcert).getCode();
+             if (!org.globus.gsi.CertUtil.isImpersonationProxy(certType)) {
+                 clientcert = chain[i];
+                 break;
+@@ -243,7 +263,11 @@ public class X509CertUtil {
+     //DERObject obj = BouncyCastleUtil.toDERObject(testcert.getTBSCertificate());
+ 	//tbsCert  =  TBSCertificateStructure.getInstance(obj);
+             tbsCert  = BouncyCastleUtil.getTBSCertificateStructure(testcert);
+-            int certType = BouncyCastleUtil.getCertificateType(tbsCert);
++            //int certType = BouncyCastleUtil.getCertificateType(tbsCert);
++	    /* Change from cog-jglobus to jglobus 2.0 use getCertificate passing it the X509Certificate 
++	       and the getCertificateType is no longer an integer.
++	    */
++            int certType = BouncyCastleUtil.getCertificateType(testcert).getCode();
+             if (!org.globus.gsi.CertUtil.isImpersonationProxy(certType)) {
+                 clientcert = chain[i];
+                 break;
+@@ -268,7 +292,11 @@ public class X509CertUtil {
+ 
+             // No need to test certificate chain beyond the user cert
+             TBSCertificateStructure tbsCert  = BouncyCastleUtil.getTBSCertificateStructure(testcert);
+-            int certType = BouncyCastleUtil.getCertificateType(tbsCert);
++            //int certType = BouncyCastleUtil.getCertificateType(tbsCert);
++	    /* Change from cog-jglobus to jglobus 2.0 use getCertificate passing it the X509Certificate 
++	       and the getCertificateType is no longer an integer.
++	    */
++            int certType = BouncyCastleUtil.getCertificateType(testcert).getCode();
+             if (!org.globus.gsi.CertUtil.isImpersonationProxy(certType)) {
+                 break;
+             }
+@@ -292,7 +320,11 @@ public class X509CertUtil {
+ 
+             // No need to test certificate chain beyond the user cert
+             TBSCertificateStructure tbsCert  = BouncyCastleUtil.getTBSCertificateStructure(testcert);
+-            int certType = BouncyCastleUtil.getCertificateType(tbsCert);
++            //int certType = BouncyCastleUtil.getCertificateType(tbsCert);
++	    /* Change from cog-jglobus to jglobus 2.0 use getCertificate passing it the X509Certificate
++               and the getCertificateType is no longer an integer. 
++	    */
++            int certType = BouncyCastleUtil.getCertificateType(testcert).getCode();
+             if (!org.globus.gsi.CertUtil.isImpersonationProxy(certType)) {
+                 break;
+             }
