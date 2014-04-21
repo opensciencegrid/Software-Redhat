@@ -4,8 +4,8 @@
 %{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
 %endif
 Name: cctools
-Version: 4.0.2
-Release: 7%{?dist}
+Version: 4.1.3
+Release: 1%{?dist}
 Summary: A collection of tools for harnessing large scale distributed systems
 License: GPL 2.0 
 URL: http://www3.nd.edu/~ccl/
@@ -231,11 +231,18 @@ rm %{buildroot}/usr/etc/Makefile.config
 %{_bindir}/makeflow_monitor
 %{_bindir}/starch
 %{_bindir}/condor_submit_makeflow
+%{_bindir}/makeflow_linker
+%{_bindir}/makeflow_linker_perl_driver
+%{_bindir}/makeflow_linker_python_driver
+%{_bindir}/catalog_history_filter
+%{_bindir}/catalog_history_plot
+%{_bindir}/catalog_history_select
 #man pages
 %_mandir/man1/makeflow*.1.gz
 %_mandir/man1/starch.1.gz
 %_mandir/man1/split_fasta.1.gz
-
+%_mandir/man1/makeflow_linker*.1.gz
+%_mandir/man1/catalog_history*.1.gz
 
 %files parrot
 ## ftp lite 
@@ -306,6 +313,7 @@ rm %{buildroot}/usr/etc/Makefile.config
 %{_bindir}/work_queue_pool
 %{_bindir}/work_queue_status
 %{_bindir}/work_queue_worker
+%{_bindir}/wq_submit_workers.common
 %{python_sitelib}/work_queue.py
 %{python_sitelib}/work_queue.pyc
 %{python_sitelib}/work_queue.pyo
@@ -331,6 +339,7 @@ rm %{buildroot}/usr/etc/Makefile.config
 %files dttools
 %{_bindir}/catalog_server
 %{_bindir}/catalog_update
+%{_bindir}/cctools_gpu_autodetect
 %{_libdir}/libdttools.a
 %{_includedir}/cctools/auth.h
 %{_includedir}/cctools/auth_address.h
@@ -353,11 +362,11 @@ rm %{buildroot}/usr/etc/Makefile.config
 
 
 %changelog
+* Mon Apr 21 2014 Edgar Fajardo <efajardo@physics.ucsd.edu> - 4.1.3-1
+- Updated to version 4.1.3
+
 * Mon Jan 06 2014 Edgar Fajardo  <efajardo@cern.ch> - 4.0.2-7
 - Addded the obsoletes part to the doc subpackage so a clean upgrade is done in cases users had older versions
-
-* Fri Dec 13 2013 Edgar Fajardo <efajardo@cern.ch> - 4.0.2-6
-- Created the doc package to include all html docummentation aswell as the api documentation
 
 * Fri Dec 13 2013 Edgar Fajardo <efajardo@cern.ch> - 4.0.2-6
 - Created the doc package to include all html docummentation aswell as the api documentation
