@@ -1,0 +1,14 @@
+--- cvmfs/cvmfs.cc.O	2014-04-21 13:15:50.700218000 -0500
++++ cvmfs/cvmfs.cc	2014-04-21 13:16:13.645824000 -0500
+@@ -1849,9 +1849,9 @@
+   if (options::GetValue("CVMFS_BACKOFF_MAX", &parameter))
+     backoff_max = String2Uint64(parameter)*1000;
+   if (options::GetValue("CVMFS_SEND_INFO_HEADER", &parameter) &&
+-      !options::IsOn(parameter))
++      options::IsOn(parameter))
+   {
+-    send_info_header = false;
++    send_info_header = true;
+   }
+   if (options::GetValue("CVMFS_TRACEFILE", &parameter))
+     tracefile = parameter;
