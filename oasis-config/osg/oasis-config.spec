@@ -1,12 +1,13 @@
 Summary: OASIS-specific configuration
 Name: oasis-config
-Version: 5
+Version: 6
 Release: 1%{?dist}
 License: ASL 2.0
 Group: Applications/Grid
 Source0: opensciencegrid.org.pub
 Source1: opensciencegrid.org.conf
 Source2: oasis.opensciencegrid.org.conf
+Source3: 60-oasis.conf
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildArch: noarch
 Requires: cvmfs
@@ -38,9 +39,11 @@ exit 0
 mkdir -p %{buildroot}%{_sysconfdir}/cvmfs/keys
 mkdir -p %{buildroot}%{_sysconfdir}/cvmfs/domain.d
 mkdir -p %{buildroot}%{_sysconfdir}/cvmfs/config.d
+mkdir -p %{buildroot}%{_sysconfdir}/cvmfs/default.d
 install -m 644 %{SOURCE0} %{buildroot}%{_sysconfdir}/cvmfs/keys 
 install -m 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/cvmfs/domain.d
 install -m 644 %{SOURCE2} %{buildroot}%{_sysconfdir}/cvmfs/config.d
+install -m 644 %{SOURCE3} %{buildroot}%{_sysconfdir}/cvmfs/default.d
 
 
 
@@ -54,12 +57,17 @@ install -m 644 %{SOURCE2} %{buildroot}%{_sysconfdir}/cvmfs/config.d
 %{_sysconfdir}/cvmfs/keys/*
 %{_sysconfdir}/cvmfs/domain.d/*
 %{_sysconfdir}/cvmfs/config.d/*
+%{_sysconfdir}/cvmfs/default.d/*
 
 
 
 
 
 %changelog
+* Mon Apr 21 2014 Dave Dykstra <dwd@fnal.gov> 6-1
+- Add /etc/cvmfs/default.d/60-oasis.conf to set CVMFS_SEND_INFO_HEADER=yes
+  (which is a new feature for cvmfs 2.1.18)
+
 * Wed Mar 19 2014 Dave Dykstra <dwd@fnal.gov> 5-1
 - Use cvmfs-s1*.opensciencegrid.org DNS aliases for stratum 1s
 - Redirect errors from rm -f $SERVER_ORDER_FILE to /dev/null because
