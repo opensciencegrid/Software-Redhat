@@ -1,31 +1,43 @@
+
 %{?suse_version:%define dist .suse%suse_version}
-%if 0%{?el6} || 0%{?fc17}
+%if 0%{?el6} || 0%{?fc17} || 0%{?fc18} || 0%{?fc19} || 0%{?fc20}
 %define selinux_cvmfs 1
 %define selinux_variants mls strict targeted
+%endif
+%if 0%{?dist:1}
+%else
+  %define redhat_major %(cat /etc/issue | head -n1 | tr -cd [0-9] | head -c1)
+  %if 0%{?redhat_major} == 4
+    %define el4 1
+    %define dist .el4
+  %endif
 %endif
 
 %define __strip /bin/true
 %define debug_package %{nil}
-%if 0%{?el6} || 0%{?el5}
+%if 0%{?el6} || 0%{?el5} || 0%{?el4}
 %define __os_install_post %{nil}
 %endif
 
 Summary: CernVM File System
 Name: cvmfs
-Version: 2.1.17
-Release: 1.3%{?dist}
+Version: 2.1.18
+Release: 1%{?dist}
 Source0: https://ecsft.cern.ch/dist/cvmfs/%{name}-%{version}.tar.gz
 %if 0%{?selinux_cvmfs}
 Source1: cvmfs.te
 %endif
-Patch0: defaultdomain.patch
-Patch1: autocvmfscolon.patch
 Group: Applications/System
 License: BSD
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
+%if 0%{?el4}
+BuildRequires: gcc4
+BuildRequires: gcc4-c++
+%else
 BuildRequires: gcc
 BuildRequires: gcc-c++
+%endif
 BuildRequires: cmake
 BuildRequires: fuse-devel
 BuildRequires: pkgconfig
@@ -63,7 +75,7 @@ Requires: fuse-libs
 Requires: glibc-common
 Requires: which
 Requires: shadow-utils
-  %if 0%{?el5}
+  %if 0%{?el5} || 0%{?el4}
 Requires: SysVinit
   %else
 Requires: sysvinit-tools
@@ -113,6 +125,9 @@ Requires: attr
 Requires: openssl
 Requires: httpd
 Requires: cvmfs-keys >= 1.2
+
+Conflicts: cvmfs-server < 2.1
+
 %description server
 CernVM-FS tools to maintain Stratum 0/1 repositories
 
@@ -125,8 +140,6 @@ CernVM-FS unit tests binary.  This RPM is not required except for testing.
 
 %prep
 %setup -q
-%patch0 -p0
-%patch1 -p0
 
 %if 0%{?selinux_cvmfs}
 mkdir SELinux
@@ -134,8 +147,15 @@ cp %{SOURCE1} SELinux
 %endif
 
 %build
-%ifarch i386
-CXXFLAGS="`echo %{optflags}|sed 's/march=i386/march=i686/'`"
+
+%ifarch i386 i686
+export CXXFLAGS="`echo %{optflags}|sed 's/march=i386/march=i686/'`"
+export CFLAGS="`echo %{optflags}|sed 's/march=i386/march=i686/'`"
+%endif
+
+%if 0%{?el4}
+export CC=gcc4
+export CXX=g++4
 %endif
 
 %if 0%{?suse_version}
@@ -143,6 +163,7 @@ cmake -DCMAKE_INSTALL_LIBDIR:PATH=%{_lib} -DBUILD_SERVER=yes -DBUILD_SERVER_DEBU
 %else
 %cmake -DCMAKE_INSTALL_LIBDIR:PATH=%{_lib} -DBUILD_SERVER=yes -DBUILD_SERVER_DEBUG=yes -DBUILD_LIBCVMFS=yes -DBUILD_UNITTESTS=yes -DINSTALL_UNITTESTS=yes .
 %endif
+
 make %{?_smp_mflags}
 
 %if 0%{?selinux_cvmfs}
@@ -194,6 +215,7 @@ mkdir -p $RPM_BUILD_ROOT/var/lib/cvmfs
 mkdir -p $RPM_BUILD_ROOT/cvmfs
 mkdir -p $RPM_BUILD_ROOT/etc/cvmfs/config.d
 mkdir -p $RPM_BUILD_ROOT/etc/cvmfs/repositories.d
+mkdir -p $RPM_BUILD_ROOT/etc/bash_completion.d
 
 # Keys are in cvmfs-keys
 rm -f $RPM_BUILD_ROOT/etc/cvmfs/keys/*
@@ -202,6 +224,11 @@ rm -f $RPM_BUILD_ROOT/etc/cvmfs/keys/*
 %if 0%{?suse_version}
 mkdir -p %RPM_BUILD_ROOT/usr/share/doc/package/%{name}
 mv $RPM_BUILD_ROOT/usr/share/doc/%{name}-%{version} %RPM_BUILD_ROOT/usr/share/doc/package/%{name}
+%endif
+
+# Fix docdir on FC20
+%if 0%{?fc20}
+rm -rf $RPM_BUILD_ROOT/usr/share/doc/%{name}-%{version}
 %endif
 
 %if 0%{?selinux_cvmfs}
@@ -283,8 +310,11 @@ fi
 %dir %{_sysconfdir}/cvmfs/domain.d
 %dir /cvmfs
 %attr(700,cvmfs,cvmfs) %dir /var/lib/cvmfs
+%{_sysconfdir}/cvmfs/default.d/README
 %config %{_sysconfdir}/cvmfs/default.conf
 %config %{_sysconfdir}/cvmfs/domain.d/cern.ch.conf
+%dir %{_sysconfdir}/bash_completion.d
+%config(noreplace) %{_sysconfdir}/bash_completion.d/cvmfs
 %doc COPYING AUTHORS README ChangeLog
 
 %files devel 
@@ -316,17 +346,14 @@ fi
 %{_bindir}/cvmfs_unittests
 
 %changelog
-* Fri Mar 21 2014 Dave Dykstra <dwd@fnal.gov> - 2.1.17-1.3.osg
-- Add patch to prefix a colon on the repository name from /etc/auto.cvmfs.
-  Without it, automount fails on at least el6.2.
-* Thu Mar 20 2014 Dave Dykstra <dwd@fnal.gov> - 2.1.17-1.2.osg
-- Add patch to set CVMFS_DEFAULT_DOMAIN in /etc/cvmfs/default.conf to
-  empty, because otherwise /etc/cvmfs/domain.d/cern.ch.* configs get
-  read in even for opensciencegrid.org domain, and the setting of
-  CVMFS_SERVER_URL there interferes with opensciencegrid.org.conf.
-* Tue Mar 18 2014 Dave Dykstra <dwd@fnal.gov> - 2.1.17-1.1.osg
-- Import 2.1.17 to OSG and change CXXFLAGS -march=i386 into -march=i686
-  because otherwise build fails on koji el6 build machine
+* Thu Apr 10 2014 Jakob Blomer <jblomer@cern.ch> - 2.1.18
+- Add /etc/cvmfs/default.d
+* Thu Apr 3 2014 Jakob Blomer <jblomer@cern.ch> - 2.1.18
+- Fix for EL6.5 32bit
+* Tue Feb 11 2014 Jakob Blomer <jblomer@cern.ch> - 2.1.18
+- Fedora 20 compatibility fixes
+* Tue Jan 21 2014 Jakob Blomer <jblomer@cern.ch> - 2.1.17
+- SL4 compatibility fixes
 * Fri Dec 20 2013 Jakob Blomer <jblomer@cern.ch> - 2.1.16
 - Add cvmfs_suid_binary
 * Thu Nov 14 2013 Jakob Blomer <jblomer@cern.ch> - 2.1.16
