@@ -1,5 +1,5 @@
 %global name osg-configure
-%global version 1.0.51
+%global version 1.0.52
 %global release 1%{?dist}
 
 Summary: Package for configure-osg and associated scripts
@@ -209,6 +209,7 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/osg/config.d/20-sge.ini
 %files ce
 %defattr(-,root,root)
+%config(noreplace) %{_sysconfdir}/osg/config.d/10-ce.ini
 %config(noreplace) %{_sysconfdir}/osg/config.d/40-localsettings.ini
 %config(noreplace) %{_sysconfdir}/osg/config.d/40-siteinfo.ini
 %config(noreplace) %{_sysconfdir}/osg/config.d/10-storage.ini
@@ -242,6 +243,12 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/osg/config.d/20-slurm.ini
 
 %changelog
+* Wed Apr 23 2014 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.0.52-1
+- Ignore some fetch-crl errors the user has no control over (SOFTWARE-1428)
+- Add run-osg-configure-tests script to run all the unit tests (SOFTWARE-710)
+- Improve support for configuring RSV to use HTCondor-CE; add 10-ce.ini to
+  choose between GRAM and HTCondor-CE (SOFTWARE-1446)
+
 * Mon Feb 24 2014 Matyas Selmeci <matyas@cs.wisc.edu> 1.0.51-1
 - Info-services fixes, unit tests and new config file 30-infoservices.ini (SOFTWARE-1276)
 
