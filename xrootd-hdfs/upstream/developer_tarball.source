@@ -1,1 +1,4 @@
-xrootd-hdfs/1.8.3/xrootd-hdfs.tar.gz
+# git clone https://github.com/bbockelm/xrootd-hdfs.git
+# cd xrootd-hdfs
+# git archive 1.8.4 | gzip -7 > xrootd-hdfs.tar.gz
+xrootd-hdfs/1.8.4/xrootd-hdfs.tar.gz
