@@ -448,6 +448,12 @@ frontend_name=`echo $fqdn_hostname | sed 's/\./-/g'`_OSG_gWMSFrontend
 sed -i "s/FRONTEND_NAME_CHANGEME/$frontend_name/g" %{_sysconfdir}/gwms-frontend/frontend.xml
 sed -i "s/FRONTEND_HOSTNAME/$fqdn_hostname/g" %{_sysconfdir}/gwms-frontend/frontend.xml
 
+# If the startup log exists, change the ownership to frontend user
+# Ownership was fixed in v3.2.4 with the init script templates rewrite
+if [ -f %{_localstatedir}/log/gwms-frontend/frontend/startup.log ]; then
+    chown frontend.frontend %{_localstatedir}/log/gwms-frontend/frontend/startup.log
+fi
+
 /sbin/chkconfig --add gwms-frontend
 if [ ! -e %{frontend_dir}/monitor ]; then
     ln -s %{web_dir}/monitor %{frontend_dir}/monitor
@@ -723,7 +729,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Mon Apr 17 2014 Parag Mhashilkar <parag@fnal.gov> - 3.2.4-3
+* Mon Apr 28 2014 Parag Mhashilkar <parag@fnal.gov> - 3.2.4-3
+- Fix the ownership of startup.log file for frontend in post script
 - Changed the javascriptrrd dependency to be 1.1.0+ for frontend as well
 
 * Mon Apr 16 2014 Parag Mhashilkar <parag@fnal.gov> - 3.2.4-2
