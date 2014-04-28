@@ -12,8 +12,4 @@ UPSTREAM: https://github.com/bbockelm/condor-ce
 
 To build from upstream:
 
-autoreconf --force --install
-./configure
-make dist-gzip
-mkdir /p/vdt/public/html/upstream/htcondor-ce/<version>
-cp htcondor-ce-<version>.tar.gz /p/vdt/public/html/upstream/htcondor-ce/<version>
+git archive --prefix=%{name}-%{version}/ {git revision} | gzip > %{name}-%{version}.tar.gz
