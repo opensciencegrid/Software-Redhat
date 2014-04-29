@@ -1,4 +1,5 @@
 Source downloaded from
-'http://downloads.sourceforge.net/project/javascriptrrd/javascriptrrd/1.1.0/javascriptrrd-1.1.0-1.src.rpm'
 
-We could not pass through because the {?dist} macro in the Release entry was misssing.
+'http://sourceforge.net/projects/javascriptrrd/files/javascriptrrd/'
+
+We picked up the javascriptrrd 1.1.1 with flor 0.7 as advised with Igor which works with current gwms.
