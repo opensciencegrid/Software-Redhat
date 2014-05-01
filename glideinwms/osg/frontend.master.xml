@@ -10,22 +10,22 @@
          <match_attrs>
          </match_attrs>
          <collectors>
-            <collector DN="/DC=org/DC=doegrids/OU=Services/CN=gfactory-1.t2.ucsd.edu" comment="Define factory collector globally for simplicity" factory_identity="gfactory@gfactory-1.t2.ucsd.edu" my_identity="<username>@gfactory-1.t2.ucsd.edu" node="gfactory-1.t2.ucsd.edu"/>
+            <collector DN="/DC=com/DC=DigiCert-Grid/O=Open Science Grid/OU=Services/CN=gfactory-1.t2.ucsd.edu" comment="Define factory collector globally for simplicity" factory_identity="gfactory@gfactory-1.t2.ucsd.edu" my_identity="<username>@gfactory-1.t2.ucsd.edu" node="gfactory-1.t2.ucsd.edu"/>
          </collectors>
       </factory>
       <job comment="Define job constraint and schedds globally for simplicity" query_expr="(JobUniverse==5)&amp;&amp;(GLIDEIN_Is_Monitor =!= TRUE)&amp;&amp;(JOB_Is_Monitor =!= TRUE)">
          <match_attrs>
          </match_attrs>
          <schedds>
-            <schedd DN="/DC=org/DC=doegrids/OU=Services/CN=FRONTEND_HOSTNAME" fullname="FRONTEND_HOSTNAME"/>
-            <schedd DN="/DC=org/DC=doegrids/OU=Services/CN=FRONTEND_HOSTNAME" fullname="schedd_jobs2@FRONTEND_HOSTNAME"/>
+            <schedd DN="/DC=com/DC=DigiCert-Grid/O=Open Science Grid/OU=Services/CN=FRONTEND_HOSTNAME" fullname="FRONTEND_HOSTNAME"/>
+            <schedd DN="/DC=com/DC=DigiCert-Grid/O=Open Science Grid/OU=Services/CN=FRONTEND_HOSTNAME" fullname="schedd_jobs2@FRONTEND_HOSTNAME"/>
          </schedds>
       </job>
    </match>
    <monitor base_dir="/var/lib/gwms-frontend/web-area/monitor" flot_dir="/usr/share/javascriptrrd/flot" javascriptRRD_dir="/usr/share/javascriptrrd/js" jquery_dir="/usr/share/javascriptrrd/flot"/>
    <security classad_proxy="/tmp/vo_proxy" proxy_DN="DN of proxy owned by user nobody" proxy_selection_plugin="ProxyAll" security_name="The security name, this is used by factory" sym_key="aes_256_cbc">
       <credentials>
-         <credential absfname="/tmp/vo_proxy" security_class="frontend" trust_domain="OSG" type="grid_proxy"/>
+         <credential absfname="/tmp/vo_proxy" security_class="frontend" trust_domain="grid" type="grid_proxy"/>
       </credentials>
    </security>
    <stage base_dir="/var/lib/gwms-frontend/web-area/stage" use_symlink="True" web_base_url="http://FRONTEND_HOSTNAME/vofrontend/stage"/>
@@ -68,8 +68,8 @@
       </group>
    </groups>
    <collectors>
-      <collector DN="/DC=org/DC=doegrids/OU=Services/CN=FRONTEND_HOSTNAME" node="FRONTEND_HOSTNAME:9618" secondary="False"/>
-      <collector DN="/DC=org/DC=doegrids/OU=Services/CN=FRONTEND_HOSTNAME" node="FRONTEND_HOSTNAME:9620-9660" secondary="True"/>
+      <collector DN="/DC=com/DC=DigiCert-Grid/O=Open Science Grid/OU=Services/CN=FRONTEND_HOSTNAME" node="FRONTEND_HOSTNAME:9618" secondary="False"/>
+      <collector DN="/DC=com/DC=DigiCert-Grid/O=Open Science Grid/OU=Services/CN=FRONTEND_HOSTNAME" node="FRONTEND_HOSTNAME:9620-9660" secondary="True"/>
    </collectors>
    <files>
    </files>
