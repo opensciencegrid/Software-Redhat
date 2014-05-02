@@ -204,7 +204,7 @@ fi
 
 
 %changelog
-* Mon Apr 28 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 3.7.16-1
+* Thu May 01 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 3.7.16-1
 - SOFTWARE-1178 - Change 'condor-ce' RSV options to 'htcondor-ce'
 - SOFTWARE-1404 - Split out HTCondor-CE metrics into their own files,
   with a service type of 'OSG-HTCondor-CE'
