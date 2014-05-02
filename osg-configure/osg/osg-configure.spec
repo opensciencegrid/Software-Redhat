@@ -1,7 +1,7 @@
 Summary: Package for configure-osg and associated scripts
 Name: osg-configure
 Version: 1.0.53
-Release: 0.1rc1%{?dist}
+Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
 Group: Grid
@@ -289,7 +289,7 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Thu May 01 2014 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.0.53-0.1rc1
+* Thu May 01 2014 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.0.53-1
 - Rename 10-ce.ini to 10-gateway.ini and place it in a separate subpackage
 - Fix semantics of listing enabled gateway services
 
