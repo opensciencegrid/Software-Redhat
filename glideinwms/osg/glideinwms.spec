@@ -20,8 +20,8 @@ Name:           glideinwms
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
 %if %{v3_plus}
-%define version 3.2.4
-%define release 3
+%define version 3.2.5
+%define release 0.1.rc1
 %define frontend_xml frontend.master.xml
 %define factory_xml glideinWMS.master.xml
 %endif
@@ -729,6 +729,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri May 2 2014 Parag Mhashilkar <parag@fnal.gov> - 3.2.5-0.1.rc1
+- Glideinwms v3.2.5 rc1 release
+- Change the default trust_domain in frontend.xml from OSG to grid
+
 * Mon Apr 28 2014 Parag Mhashilkar <parag@fnal.gov> - 3.2.4-3
 - Fix the ownership of startup.log file for frontend in post script
 - Changed the javascriptrrd dependency to be 1.1.0+ for frontend as well
