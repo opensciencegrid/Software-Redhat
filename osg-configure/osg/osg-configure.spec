@@ -1,22 +1,16 @@
-%global name osg-configure
-%global version 1.0.52
-%global release 1%{?dist}
-
 Summary: Package for configure-osg and associated scripts
-Name: %{name}
-Version: %{version}
-Release: %{release}
+Name: osg-configure
+Version: 1.0.53
+Release: 0.1rc1%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
 Group: Grid
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 Prefix: %{_prefix}
 BuildArch: noarch
+BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 Vendor: Suchandra Thapa <sthapa@ci.uchicago.edu>
 Url: http://www.opensciencegrid.org
-Requires: python 
-Requires: yum
-Provides: osg-configure
+Provides: configure-osg
 
 %if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
 %{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
@@ -31,8 +25,10 @@ Summary: Configure-osg configuration files for rsv
 Group: Grid
 Provides: configure-osg-rsv
 Requires: %name = %version-%release
+Requires: %name-gateway
 %description rsv
 This package includes the ini file for configuring rsv using configure-osg
+
 %package gratia
 Summary: Configure-osg configuration files for gratia
 Group: Grid
@@ -40,6 +36,7 @@ Provides: configure-osg-gratia
 Requires: %name = %version-%release
 %description gratia
 This package includes the ini file for configuring gratia using configure-osg
+
 %package gip
 Summary: Configure-osg configuration files for gip
 Group: Grid
@@ -47,34 +44,43 @@ Provides: configure-osg-gip
 Requires: %name = %version-%release
 %description gip
 This package includes the ini file for configuring gip using configure-osg
+
 %package lsf
 Summary: Configure-osg configuration files for lsf
 Group: Grid
 Provides: configure-osg-lsf
 Requires: %name = %version-%release
+Requires: %name-gateway
 %description lsf
 This package includes the ini file for configuring lsf using configure-osg
+
 %package pbs
 Summary: Configure-osg configuration files for pbs
 Group: Grid
 Provides: configure-osg-pbs
 Requires: %name = %version-%release
+Requires: %name-gateway
 %description pbs
 This package includes the ini file for configuring pbs using configure-osg
+
 %package condor
 Summary: Configure-osg configuration files for condor
 Group: Grid
 Provides: configure-osg-condor
 Requires: %name = %version-%release
+Requires: %name-gateway
 %description condor
 This package includes the ini file for configuring condor using configure-osg
+
 %package sge
 Summary: Configure-osg configuration files for sge
 Group: Grid
 Provides: configure-osg-sge
 Requires: %name = %version-%release
+Requires: %name-gateway
 %description sge
 This package includes the ini file for configuring sge using configure-osg
+
 %package monalisa
 Summary: Configure-osg configuration files for monalisa
 Group: Grid
@@ -82,15 +88,18 @@ Provides: configure-osg-monalisa
 Requires: %name = %version-%release
 %description monalisa
 This package includes the ini files for configuring monalisa
+
 %package ce
 Summary: Configure-osg configuration files for CE
 Group: Grid
 Provides: configure-osg-ce
 Requires: %name = %version-%release
+Requires: %name-gateway
 %description ce
 This package includes the ini files for configuring a basic CE using 
 configure-osg.  One of the packages for the job manager configuration also 
 needs to be installed for the CE configuration.
+
 %package misc
 Summary: Configure-osg configuration files for misc software
 Group: Grid
@@ -99,6 +108,7 @@ Requires: %name = %version-%release
 %description misc
 This package includes the ini files for various osg software including
 certificates setup and glexec
+
 %package squid
 Summary: Configure-osg configuration files for squid
 Group: Grid
@@ -106,14 +116,17 @@ Provides: configure-osg-squid
 Requires: %name = %version-%release
 %description squid
 This package includes the ini files for configuring an OSG system to use squid
+
 %package managedfork
 Summary: Configure-osg configuration files for managedfork
 Group: Grid
 Provides: configure-osg-managedfork
 Requires: %name = %version-%release
+Requires: %name-gateway
 %description managedfork
 This package includes the ini files for configuring an OSG CE to use
-managedfork 
+managedfork
+
 %package network
 Summary: Configure-osg configuration files for network configuration
 Group: Grid
@@ -122,6 +135,7 @@ Requires: %name = %version-%release
 %description network
 This package includes the ini files for configuring network related information
 such as firewall ports that globus should use
+
 %package tests
 Summary: Configure-osg configuration unit tests and configuration for unit testing
 Group: Grid
@@ -130,13 +144,16 @@ Requires: %name = %version-%release
 %description tests
 This package includes the ini files and files for unit tests that osg-configure
 uses to verify functionality
+
 %package slurm
 Summary: Configure-osg configuration files for slurm
 Group: Grid
 Provides: configure-osg-slurm
 Requires: %name = %version-%release
+Requires: %name-gateway
 %description slurm
 This package includes the ini file for configuring slurm using configure-osg
+
 %package infoservices
 Summary: Configure-osg configuration files for the osg info services
 Group: Grid
@@ -144,6 +161,16 @@ Provides: configure-osg-infoservices
 Requires: %name = %version-%release
 %description infoservices
 This package includes the ini file for configuring the osg info services using configure-osg
+
+%package gateway
+Summary: Configure-osg configuration files for job gateways (globus-gatekeeper / htcondor-ce)
+Group: Grid
+Provides: configure-osg-gateway
+Requires: %name = %version-%release
+%description gateway
+This package includes the ini file for configuring the job gateways
+(globus-gatekeeper or htcondor-ce) using configure-osg
+
 
 %prep
 %setup
@@ -189,60 +216,83 @@ rm -rf $RPM_BUILD_ROOT
 %files rsv
 %defattr(-,root,root)
 %config(noreplace) %{_sysconfdir}/osg/config.d/30-rsv.ini
+
 %files gratia
 %defattr(-,root,root)
 %config(noreplace) %{_sysconfdir}/osg/config.d/30-gratia.ini
+
 %files gip
 %defattr(-,root,root)
 %config(noreplace) %{_sysconfdir}/osg/config.d/30-gip.ini
+
 %files lsf
 %defattr(-,root,root)
 %config(noreplace) %{_sysconfdir}/osg/config.d/20-lsf.ini
+
 %files pbs
 %defattr(-,root,root)
 %config(noreplace) %{_sysconfdir}/osg/config.d/20-pbs.ini
+
 %files condor
 %defattr(-,root,root)
 %config(noreplace) %{_sysconfdir}/osg/config.d/20-condor.ini
+
 %files sge
 %defattr(-,root,root)
 %config(noreplace) %{_sysconfdir}/osg/config.d/20-sge.ini
+
 %files ce
 %defattr(-,root,root)
-%config(noreplace) %{_sysconfdir}/osg/config.d/10-ce.ini
 %config(noreplace) %{_sysconfdir}/osg/config.d/40-localsettings.ini
 %config(noreplace) %{_sysconfdir}/osg/config.d/40-siteinfo.ini
 %config(noreplace) %{_sysconfdir}/osg/config.d/10-storage.ini
 %config(noreplace) %{_sysconfdir}/osg/grid3-locations.txt
+
 %files misc
 %defattr(-,root,root)
 %config(noreplace) %{_sysconfdir}/osg/config.d/10-misc.ini
+
 %files squid
 %defattr(-,root,root)
 %config(noreplace) %{_sysconfdir}/osg/config.d/01-squid.ini
+
 %files monalisa
 %defattr(-,root,root)
 %config(noreplace) %{_sysconfdir}/osg/config.d/02-monalisa.ini
+
 %files managedfork
 %defattr(-,root,root)
 %config(noreplace) %{_sysconfdir}/osg/config.d/15-managedfork.ini
+
 %files network
 %defattr(-,root,root)
 %config(noreplace) %{_sysconfdir}/osg/config.d/40-network.ini
 %ghost /var/lib/osg/globus-firewall
 %ghost %{_sysconfdir}/profile.d/osg.sh
 %ghost %{_sysconfdir}/profile.d/osg.csh
+
 %files infoservices
 %defattr(-,root,root)
 %config(noreplace) %{_sysconfdir}/osg/config.d/30-infoservices.ini
+
 %files tests
 %defattr(-,root,root)
 /usr/share/osg-configure/*
+
 %files slurm
 %defattr(-,root,root)
 %config(noreplace) %{_sysconfdir}/osg/config.d/20-slurm.ini
 
+%files gateway
+%defattr(-,root,root)
+%config(noreplace) %{_sysconfdir}/osg/config.d/10-gateway.ini
+
+
 %changelog
+* Thu May 01 2014 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.0.53-0.1rc1
+- Rename 10-ce.ini to 10-gateway.ini and place it in a separate subpackage
+- Fix semantics of listing enabled gateway services
+
 * Wed Apr 23 2014 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.0.52-1
 - Ignore some fetch-crl errors the user has no control over (SOFTWARE-1428)
 - Add run-osg-configure-tests script to run all the unit tests (SOFTWARE-710)
