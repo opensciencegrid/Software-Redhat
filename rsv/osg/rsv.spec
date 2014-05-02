@@ -1,6 +1,6 @@
 Name:      rsv
 Summary:   RSV Meta Package
-Version:   3.7.15
+Version:   3.7.16
 Release:   1%{?dist}
 License:   Apache 2.0
 Group:     Applications/Monitoring
@@ -204,6 +204,15 @@ fi
 
 
 %changelog
+* Thu May 01 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 3.7.16-1
+- SOFTWARE-1178 - Change 'condor-ce' RSV options to 'htcondor-ce'
+- SOFTWARE-1404 - Split out HTCondor-CE metrics into their own files,
+  with a service type of 'OSG-HTCondor-CE'
+- SOFTWARE-1446 - Changes for HTCondor-CE:
+  - Rename '--gatekeeper-type' option to '--ce-type'
+  - Add 'ce-type' option to rsv.conf
+  - Change service type of GRAM CE metrics to 'OSG-GRAM-CE'
+
 * Mon Mar 24 2014 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.7.15-1
 - SOFTWARE-1198 - Fix HTCondor-CE RSV metric org.osg.globus.gram-authentication
 - SOFTWARE-1388 - Deprecated "[allmetrics args]" config section
