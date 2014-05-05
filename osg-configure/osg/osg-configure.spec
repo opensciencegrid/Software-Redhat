@@ -1,7 +1,7 @@
 Summary: Package for configure-osg and associated scripts
 Name: osg-configure
 Version: 1.0.54
-Release: 2%{?dist}
+Release: 3%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
 Group: Grid
@@ -11,9 +11,6 @@ BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 Vendor: Suchandra Thapa <sthapa@ci.uchicago.edu>
 Url: http://www.opensciencegrid.org
 Provides: configure-osg
-
-# Workaround for SOFTWARE-1468:
-Obsoletes: osg-configure-cemon < 1.0.54
 
 %if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
 %{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
@@ -174,15 +171,14 @@ Requires: %name = %version-%release
 This package includes the ini file for configuring the job gateways
 (globus-gatekeeper or htcondor-ce) using configure-osg
 
-%if 0%{?rhel} < 6
 %package cemon
 Summary: Transitional dummy package for OSG 3.2
 Group: Grid
 Provides: configure-osg-cemon
+Requires: %name
 %description cemon
-This is an empty package created as a workaround to OSG 3.1->3.2 upgrade issues on EL5.
+This is an empty package created as a workaround to OSG 3.1->3.2 upgrade issues.
 It may safely be removed once the upgrade is finished.
-%endif
 
 
 %prep
@@ -300,13 +296,15 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root)
 %config(noreplace) %{_sysconfdir}/osg/config.d/10-gateway.ini
 
-%if 0%{?rhel} < 6
 %files cemon
 # This section intentionally left blank
-%endif
 
 
 %changelog
+* Mon May 05 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0.54-3
+- Create dummy osg-configure-cemon subpackage on el6 too (SOFTWARE-1468)
+- Remove the obsoletes line for osg-configure-cemon.
+
 * Mon May 05 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0.54-2
 - Added an obsoletes for osg-configure-cemon (SOFTWARE-1468)
 - Also added a dummy osg-configure-cemon subpackage because the obsoletes doesn't work properly on el5
