@@ -1,6 +1,6 @@
 
 Name:           osg-build
-Version:        1.3.6
+Version:        1.3.7
 Release:        1%{?dist}
 Summary:        Build tools for the OSG
 
@@ -68,6 +68,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_docdir}/%{name}/sample-osg-build.ini
 
 %changelog
+* Mon May 05 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.3.7-1
+- Fix race condition in osg-koji setup (SOFTWARE-1466)
+
 * Mon Apr 7 2014 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.3.6-1
 - osg-koji setup no longer downloads deprecated DOEGrids certs (SOFTWARE-1437)
 - Tweak client.crt creation in osg-koji setup to insert newline between cert
