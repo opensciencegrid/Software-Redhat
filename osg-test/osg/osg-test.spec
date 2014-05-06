@@ -5,7 +5,7 @@
 
 Summary:   Tests an OSG Software installation
 Name:      osg-test
-Version:   1.4.13
+Version:   1.4.14
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -39,6 +39,12 @@ rm -rf $RPM_BUILD_ROOT
 /etc/grid-security/certificates/bffdd190.*
 
 %changelog
+* Tue May 6 2014 Brian Lin <blin@cs.wisc.edu> - 1.4.14-1
+- Add GUMS and HTCondor-CE tests (SOFTWARE-696, SOFTWARE-13338)
+- Clean up osg-configure test (SOFTWARE-710)
+- Split out lcg-utils tests
+- Double gratia test timeouts 
+
 * Mon Apr 7 2014 Brian Lin <blin@cs.wisc.edu> - 1.4.13-1
 - Add manual option and speed up fetch-crl tests
 - Add lcg-utils tests
