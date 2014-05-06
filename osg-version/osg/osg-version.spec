@@ -34,6 +34,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/osg-version
 
 %changelog
+* Tue May 06 2014 Tim Theisen <tim@cs.wisc.edu> - 3.1.33-1
+- Updated to 3.1.33-1
+
 * Mon Mar 31 2014 Brian Lin <blin@cs.wisc.edu> - 3.1.32-1
 - Updated to 3.1.32-1
 
