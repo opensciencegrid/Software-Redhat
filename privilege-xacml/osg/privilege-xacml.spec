@@ -4,7 +4,7 @@
 %define jglobus_version 2.0.6
 Name:		privilege-xacml
 Version:	2.6.1
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	OSG-core java depenency
 
 Group:		OSG/Libraries
@@ -33,7 +33,7 @@ BuildRequires: joda-time
 BuildRequires: emi-trustmanager
 BuildRequires: emi-trustmanager-axis
 BuildRequires: wsdl4j
-BuildRequires: log4j >= 1.2.14
+BuildRequires: log4j
 BuildRequires: axis
 BuildRequires: jglobus
 #Added this requiremnt to deal with the commons* dep
@@ -46,7 +46,7 @@ BuildRequires: maven3
 BuildRequires: bouncycastle
 
 Requires: voms-api-java
-Requires: log4j >= 1.2.14
+Requires: log4j
 Requires: jglobus
 Requires: joda-time
 Requires: emi-trustmanager
@@ -144,5 +144,8 @@ rm -rf %{local_maven}
 %{_bindir}/XACMLClientTest.sh
 
 %changelog
+* Tue May 6 2014 Edgar Fajardo <emfajard@ucsd.edu> 2.6.1-1
+- Changed the non needed specific version on log4j
+
 * Thu Mar 27 2014 Edgar Fajardo <emfajard@ucsd.edu> 2.6.1-1
 - Initial packaging of privilege-xacml
