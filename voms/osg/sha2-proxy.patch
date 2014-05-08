@@ -1,17 +1,34 @@
---- src/sslutils/sslutils.c.orig	2013-03-26 15:15:48.075879092 -0500
-+++ src/sslutils/sslutils.c	2013-03-26 15:20:19.572878627 -0500
-@@ -925,9 +925,12 @@
-     else
-       issuer_name = NULL;
- 
--    if(proxy_sign_ext(user_cert,
-+    const EVP_MD *issuer_digest = (user_cert && user_cert->sig_alg) ? EVP_get_digestbynid(
-+            OBJ_obj2nid(user_cert->sig_alg->algorithm)) : EVP_sha1();
+--- voms-2_0_11/src/sslutils/sslutils.c.orig	2014-05-08 08:03:33.461316510 -0500
++++ voms-2_0_11/src/sslutils/sslutils.c	2014-05-08 08:03:44.134314804 -0500
+@@ -893,7 +893,8 @@
+     unsigned char                       md[SHA_DIGEST_LENGTH];
+     unsigned int                        len;
+     EVP_MD* sig_algo; 
+-    
 +
-+    if(!issuer_digest || proxy_sign_ext(user_cert,
-                       user_private_key,
--                      EVP_sha1(), 
-+                      issuer_digest,
-                       req,
-                       new_cert,
-                       subject_name,
++    OpenSSL_add_all_digests();
+     sig_algo = EVP_get_digestbyobj(req->sig_alg->algorithm);
+     if (sig_algo == NULL) sig_algo = EVP_sha1();
+ 
+@@ -904,10 +904,11 @@
+ 
+       user_public_key = X509_get_pubkey(user_cert);
+ 
++      EVP_MD* cn_sig_algo = EVP_sha1();
+ #ifdef TYPEDEF_I2D_OF
+-      ASN1_digest((i2d_of_void*)i2d_PUBKEY, sig_algo, (char *) user_public_key, md, &len);
++      ASN1_digest((i2d_of_void*)i2d_PUBKEY, cn_sig_algo, (char *) user_public_key, md, &len);
+ #else
+-      ASN1_digest(i2d_PUBKEY, sig_algo, (char *) user_public_key, md, &len);
++      ASN1_digest(i2d_PUBKEY, cn_sig_algo, (char *) user_public_key, md, &len);
+ #endif
+       EVP_PKEY_free(user_public_key);
+ 
+@@ -1042,7 +1043,6 @@
+     unsigned int                        len;
+     EVP_MD*                             sig_algo;
+ 
+-    sig_algo = EVP_get_digestbyobj(req->sig_alg->algorithm);
+     if (sig_algo == NULL) sig_algo = EVP_sha1();
+ 
+     if (!selfsigned)

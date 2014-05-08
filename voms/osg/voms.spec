@@ -17,6 +17,7 @@ Source0:        2_0_11.tar.gz
 Source1:	%{name}.INSTALL
 #		Don't use embedded gsoap sources
 Patch0:		%{name}-gsoap.patch
+Patch1:         sha2-proxy.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	globus-gssapi-gsi-devel
@@ -120,6 +121,7 @@ administrate it remotely using command line tools or a web interface.
 %prep
 %setup -q -n %{name}-%{tagver}
 %patch0 -p1
+%patch1 -p1
 
 # Remove embedded gsoap sources
 rm src/server/stdsoap2.c src/server/stdsoap2.h src/server/soap*
