@@ -4,7 +4,7 @@
 %define jglobus_version 2.0.6
 Name:		privilege-xacml
 Version:	2.6.1
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	OSG-core java depenency
 
 Group:		OSG/Libraries
@@ -110,8 +110,8 @@ install -d -m 755 %{buildroot}%{_javadir}
 install -m 755 target/%{name}-%{version}.jar %{buildroot}%{_javadir}/%{name}.jar
 install -d -m 755 %{buildroot}/usr/share/maven3/poms
 install -pm 644 pom.xml %{buildroot}/usr/share/maven3/poms/%{name}.pom
-install -d %{buildroot}%{_bindir}
-install -m 700 src/test/XACMLClientTest.sh %{buildroot}%{_bindir}/XACMLClientTest.sh
+install -d  %{buildroot}%{_libexecdir}/%{name}
+install -m 700 src/test/XACMLClientTest.sh %{buildroot}%{_libexecdir}/%{name}/XACMLClientTest.sh
 
 
 install -d -m 755 %{_otherlibs}
@@ -141,10 +141,13 @@ rm -rf %{local_maven}
 %{_javadir}/%{name}.jar
 /usr/share/maven3/poms/%{name}.pom
 %{_noarchlib}/%{name}/*.jar
-%{_bindir}/XACMLClientTest.sh
+%{_libexecdir}/%{name}/XACMLClientTest.sh
 
 %changelog
-* Tue May 6 2014 Edgar Fajardo <emfajard@ucsd.edu> 2.6.1-1
+*Wed May 7 2014 Edgar Fajardo <emfajard@ucsd.edu> 2.6.1-3
+- The XACMLClientTest was moved from /usr/bin to /usr/libexec
+
+* Tue May 6 2014 Edgar Fajardo <emfajard@ucsd.edu> 2.6.1-2
 - Changed the non needed specific version on log4j
 
 * Thu Mar 27 2014 Edgar Fajardo <emfajard@ucsd.edu> 2.6.1-1
