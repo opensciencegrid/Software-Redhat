@@ -1,5 +1,5 @@
 Name:           vo-client
-Version:        52
+Version:        53
 Release:        1%{?dist}
 Summary:        Contains vomses file for use with user authentication and edg-mkgridmap.conf file that contains configuration information for edg-mkgridmap.
 
@@ -85,6 +85,12 @@ rm -rf $RPM_BUILD_ROOT
 %attr(0600,tomcat,tomcat) %config(noreplace) %{_sysconfdir}/gums/gums.config.template
 
 %changelog
+* Thu May 08 2014 Carl Edquist <edquist@cs.wisc.edu> - 53-1
+- Update to vo-client 53 (SOFTWARE-1473)
+  - Modify CMS VOMS Address in GUMS Template
+  - Modify ILC VOMS Address in GUMS Template and vomses file
+  - Modify CompBioGrid vomses entry
+
 * Mon Feb 03 2014 Carl Edquist <edquist@cs.wisc.edu> - 52-1
 - Update to vo-client 52 (SOFTWARE-1444)
   - Add New Sub-VOs Lariat, Gendetrd, Lar1, and Okra
