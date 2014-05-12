@@ -5,7 +5,7 @@
 Name:		voms
 Version:	2.0.11
 %global tagver %(tr . _ <<< %{version})
-Release:	2.1%{?dist}
+Release:	2.2%{?dist}
 Summary:	Virtual Organization Membership Service
 
 Group:		System Environment/Libraries
@@ -267,6 +267,9 @@ fi
 %doc README.Fedora
 
 %changelog
+* Mon May 12 2014 Brian Lin <blin@cs.wisc.edu> - 2.0.11-2.2
+- Fix stack smashing when requesting an RFC-compliant, SHA2 proxy.
+
 * Wed Dec 18 2013 Edgar Fajardo <efajardo@cern.ch> - 2.0.11-2.1
 - Upgraded to version 2.0.11
 
