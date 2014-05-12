@@ -32,3 +32,15 @@
      if (sig_algo == NULL) sig_algo = EVP_sha1();
  
      if (!selfsigned)
+@@ -1118,9 +1118,9 @@
+           
+       new_public_key = X509_REQ_get_pubkey(req);
+ #ifdef TYPEDEF_I2D_OF
+-      ASN1_digest((i2d_of_void*)i2d_PUBKEY, sig_algo, (char *) new_public_key, md, &len);
++      ASN1_digest((i2d_of_void*)i2d_PUBKEY, EVP_sha1(), (char *) new_public_key, md, &len);
+ #else
+-      ASN1_digest(i2d_PUBKEY, sig_algo, (char *) new_public_key, md, &len);
++      ASN1_digest(i2d_PUBKEY, EVP_sha1(), (char *) new_public_key, md, &len);
+ #endif
+       EVP_PKEY_free(new_public_key);
+       new_public_key = NULL;
