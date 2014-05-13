@@ -1,16 +1,17 @@
 #-------------------------------------------------------------------------------
 # Package definitions
 #-------------------------------------------------------------------------------
+%define release_candidate rc1
 Name:      xrootd
 Epoch:     1
 Version:   4.0.0
-Release:   1%{?dist}
+Release:   0.1.rc1%{?dist}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
 URL:       http://xrootd.org/
 
-Source0:   %{name}-%{version}.tar.gz
+Source0:   %{name}-%{version}-%{release_candidate}.tar.gz
 
 BuildRoot: %{_tmppath}/%{name}-root
 
@@ -249,7 +250,7 @@ This package contains a set of CPPUnit tests for xrootd.
 %setup -c -n xrootd
 
 %build
-#cd xrootd
+cd %{name}-%{version}-%{release_candidate}
 mkdir build
 cd build
 
@@ -280,7 +281,7 @@ doxygen Doxyfile
 # Installation
 #-------------------------------------------------------------------------------
 %install
-#cd xrootd
+cd %{name}-%{version}-%{release_candidate}
 cd build
 rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
@@ -573,8 +574,8 @@ semodule -R
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
-* Tue May 13 2014 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1:4.0.0-1
-- Bumped to version 4.0.0
+* Tue May 13 2014 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1:4.0.0-0.1.rc1
+- Bumped to the release candidate 4.0.0.rc1
 
 * Tue Apr 01 2014 Lukasz Janyst <ljanyst@cern.ch> - 1:4.0.0-0
 - correct the license field (LGPLv3+)
