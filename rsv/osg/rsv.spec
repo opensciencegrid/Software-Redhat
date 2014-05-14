@@ -1,7 +1,7 @@
 Name:      rsv
 Summary:   RSV Meta Package
 Version:   3.7.16
-Release:   1%{?dist}
+Release:   2%{?dist}
 License:   Apache 2.0
 Group:     Applications/Monitoring
 URL:       https://twiki.grid.iu.edu/bin/view/MonitoringInformation/RSV
@@ -80,6 +80,7 @@ Requires: uberftp
 Requires: bestman2-client
 Requires: /usr/bin/ldapsearch
 Requires: logrotate
+Requires: /usr/bin/condor_ce_ping
 # No longer required
 # Requires: fetch-crl
 
@@ -204,6 +205,10 @@ fi
 
 
 %changelog
+* Wed May 14 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 3.7.16-2
+- SOFTWARE-1480 - Add '/usr/bin/condor_ce_ping' requirement (needed for the
+  org.osg.htcondor-ce.authentication metric)
+
 * Thu May 01 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 3.7.16-1
 - SOFTWARE-1178 - Change 'condor-ce' RSV options to 'htcondor-ce'
 - SOFTWARE-1404 - Split out HTCondor-CE metrics into their own files,
