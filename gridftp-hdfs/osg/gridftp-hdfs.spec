@@ -2,7 +2,7 @@
 
 Name:           gridftp-hdfs
 Version:        0.5.4
-Release:        16%{?dist}
+Release:        17%{?dist}
 Summary:        HDFS DSI plugin for GridFTP
 Group:          System Environment/Daemons
 License:        ASL 2.0
@@ -41,6 +41,8 @@ BuildRequires: jpackage-utils
 BuildRequires: hadoop-libhdfs
 BuildRequires: globus-gridftp-server-devel
 BuildRequires: globus-common-devel
+
+BuildRequires: chrpath
 
 Requires: hadoop-libhdfs
 Requires: hadoop-client >= 2.0.0+545
@@ -102,6 +104,9 @@ make %{?_smp_mflags}
 rm -rf $RPM_BUILD_ROOT
 
 make DESTDIR=$RPM_BUILD_ROOT install
+
+# Remove rpaths
+chrpath -d $RPM_BUILD_ROOT%{_libdir}/*.so
 
 # Remove libtool turds
 rm -f $RPM_BUILD_ROOT%{_libdir}/*.la
@@ -180,6 +185,9 @@ fi
 %endif
 
 %changelog
+* Wed May 21 2014 Mátyás Selmeci <matyas@cs.wisc.edu> - 0.5.4-17.osg
+- Remove rpath (SOFTWARE-1394)
+
 * Wed Apr 16 2014 Carl Edquist <edquist@cs.wisc.edu> - 0.5.4-15.osg
 - Remove conflicting /etc/gridftp.d notion from non-osg builds (SOFTWARE-1439)
 
