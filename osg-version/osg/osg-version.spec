@@ -34,6 +34,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/osg-version
 
 %changelog
+* Thu May 22 2014 Suchandra Thapa <sthapa@ci.uchicago.edu> - 3.1.34-1
+- Updated to 3.1.34-1
+
 * Tue May 06 2014 Tim Theisen <tim@cs.wisc.edu> - 3.1.33-1
 - Updated to 3.1.33-1
 
