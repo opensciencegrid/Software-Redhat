@@ -1,0 +1,83 @@
+diff --git a/src/server/stdsoap2.c b/src/server/stdsoap2.c
+index 0f20153..9df3c3d 100644
+--- a/src/server/stdsoap2.c
++++ b/src/server/stdsoap2.c
+@@ -4418,7 +4418,10 @@ soap_accept(struct soap *soap)
+       {
+ #ifdef WITH_IPV6
+ /* Use soap->host to store the numeric form of the remote host */
+-        getnameinfo((struct sockaddr*)&soap->peer, n, soap->host, sizeof(soap->host), NULL, 0, NI_NUMERICHOST | NI_NUMERICSERV); 
++        if (getnameinfo((struct sockaddr*)&soap->peer, n, soap->host, sizeof(soap->host), NULL, 0, NI_NUMERICHOST | NI_NUMERICSERV)) {
++            DBGLOG(TEST,SOAP_MESSAGE(fdebug, "getnameinfo() lookup failed in soap_accept()\n"));
++            return SOAP_INVALID_SOCKET;
++        }
+         DBGLOG(TEST,SOAP_MESSAGE(fdebug, "Accept socket %d from %s\n", soap->socket, soap->host));
+         soap->ip = 0; /* info stored in soap->peer and soap->host */
+         soap->port = 0; /* info stored in soap->peer and soap->host */
+diff --git a/src/socklib/Client.cpp b/src/socklib/Client.cpp
+index 45c72d6..b1a16eb 100644
+--- a/src/socklib/Client.cpp
++++ b/src/socklib/Client.cpp
+@@ -314,11 +314,14 @@ GSISocketClient::Open()
+   }
+ 
+  err:
+-  destroy_SSL_proxy_handler(ssl);
+-  SSL_clear(ssl);
+-  SSL_free(ssl);
+-  SSL_CTX_free(ctx);
+-  BIO_free(conn);
++  if (opened) {
++    destroy_SSL_proxy_handler(ssl);
++    SSL_clear(ssl);
++    SSL_free(ssl);
++    SSL_CTX_free(ctx);
++    BIO_free(conn);
++    opened=false;
++  }
+ 
+   return false;
+ }
+diff --git a/src/socklib/ipv6sock.cc b/src/socklib/ipv6sock.cc
+index c443200..dd7c8e8 100644
+--- a/src/socklib/ipv6sock.cc
++++ b/src/socklib/ipv6sock.cc
+@@ -69,6 +69,10 @@ static char *getid(struct sockaddr *client, char **symbolic, char **port)
+   if (result == 0) {
+     *symbolic = buffer;
+     *port = ports;
++  } else {
++    // where should this error message go?  do we even want to report it?
++    // fprintf(stderr, "getnameinfo() failed in getid()\n");
++    return NULL;
+   }
+ 
+   bufsize = 50;
+@@ -143,7 +147,10 @@ int bind_and_listen(char* port, int backlog, void *logh)
+   hints.ai_family    = AF_UNSPEC;
+   hints.ai_socktype  = SOCK_STREAM;
+ 
+-  getaddrinfo(NULL, port, &hints, &address_list);
++  if (getaddrinfo(NULL, port, &hints, &address_list)) {
++    LOGM(VARP, logh, LEV_ERROR, T_PRE, "getaddrinfo() failed for port %s!", port);
++    return -1;
++  }
+ 
+   paddress = address_list;
+ 
+@@ -210,7 +217,14 @@ int sock_connect(const char *host, char *port)
+   hints.ai_family = PF_UNSPEC;
+   hints.ai_socktype = SOCK_STREAM;
+ 
+-  getaddrinfo(host, port, &hints, &address_list);
++  if (getaddrinfo(host, port, &hints, &address_list)) {
++    // Is there an appropriate place to log this error?
++    // stderr doesn't quite seem to be the right place since this
++    // call happens in the middle of a line's output already...
++
++    // fprintf(stderr, " [sock_connect(): getaddrinfo() failed for %s:%s!]", host, port);
++    return -1;
++  }
+ 
+   paddress = address_list;
+ 
