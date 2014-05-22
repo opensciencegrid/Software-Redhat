@@ -5,7 +5,7 @@
 Name:		voms
 Version:	2.0.11
 %global tagver %(tr . _ <<< %{version})
-Release:	2.2%{?dist}
+Release:	2.3%{?dist}
 Summary:	Virtual Organization Membership Service
 
 Group:		System Environment/Libraries
@@ -18,6 +18,7 @@ Source1:	%{name}.INSTALL
 #		Don't use embedded gsoap sources
 Patch0:		%{name}-gsoap.patch
 Patch1:         sha2-proxy.patch
+Patch2:		handle-dns-failures.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	globus-gssapi-gsi-devel
@@ -122,6 +123,7 @@ administrate it remotely using command line tools or a web interface.
 %setup -q -n %{name}-%{tagver}
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 # Remove embedded gsoap sources
 rm src/server/stdsoap2.c src/server/stdsoap2.h src/server/soap*
@@ -267,6 +269,9 @@ fi
 %doc README.Fedora
 
 %changelog
+* Thu May 22 2014 Carl Edquist <edquist@cs.wisc.edu> - 2.0.11-2.3
+- Handle DNS failures (SOFTWARE-1463)
+
 * Mon May 12 2014 Brian Lin <blin@cs.wisc.edu> - 2.0.11-2.2
 - Fix stack smashing when requesting an RFC-compliant, SHA2 proxy.
 
