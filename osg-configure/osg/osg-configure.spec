@@ -1,6 +1,6 @@
 Summary: Package for configure-osg and associated scripts
 Name: osg-configure
-Version: 1.0.54
+Version: 1.0.55
 Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
@@ -93,9 +93,9 @@ This package includes the ini file for configuring sge using configure-osg
 Summary: Configure-osg configuration files for monalisa
 Group: Grid
 Provides: configure-osg-monalisa
-Requires: %name = %version-%release
 %description monalisa
-This package includes the ini files for configuring monalisa
+This is an empty package created as a workaround to upgrade issues.
+It may safely be removed.
 
 %package ce
 Summary: Configure-osg configuration files for CE
@@ -264,8 +264,7 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/osg/config.d/01-squid.ini
 
 %files monalisa
-%defattr(-,root,root)
-%config(noreplace) %{_sysconfdir}/osg/config.d/02-monalisa.ini
+# This section intentionally left blank
 
 %files managedfork
 %defattr(-,root,root)
@@ -296,6 +295,15 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu May 22 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0.55-1
+- New version 1.0.55 (SOFTWARE-1482) with these changes:
+-   Fix warnings when adding wlcg_* attributes to the [Site Information] section (SOFTWARE-1486)
+-   Add setting for SGE configuration location (SOFTWARE-1481)
+-   Fix path for SGE Gratia ProbeConfig file (SOFTWARE-1479)
+-   Improve error message when condor_location is set wrong (SOFTWARE-1475)
+-   Support one site with multiple CE types on different hosts (SOFTWARE-1471)
+-   Remove monalisa module (SOFTWARE-1465)
+
 * Fri May 02 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0.54-1
 - Rename 'htcondor_ce_gateway_enabled' to 'htcondor_gateway_enabled' (SOFTWARE-1446)
 
