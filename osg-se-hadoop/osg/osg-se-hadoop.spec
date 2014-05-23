@@ -1,7 +1,7 @@
 Name:           osg-se-hadoop
 Summary:        OSG Hadoop Storage Element package for RPM distribution
 Version:        3.0.0
-Release:        12%{?dist}
+Release:        13%{?dist}
 License:        GPL
 Group:          System Environment/Daemons
 URL:            https://twiki.grid.iu.edu/twiki/bin/view/Storage/WebHome
@@ -32,6 +32,16 @@ Requires: osg-system-profiler
 This is the Hadoop namenode that stores directory and file system information
 for a Hadoop Storage Element.
 
+%package secondarynamenode
+Summary: Secondary Namenode meta-package for Hadoop
+Group: System Environment/Libraries
+Requires: hadoop-hdfs-secondarynamenode
+Requires: gratia-probe-hadoop-storage
+Requires: osg-version
+Requires: osg-system-profiler
+%description secondarynamenode
+This is the Hadoop secondary namenode that stores directory and file system
+information for a Hadoop Storage Element.
 
 %package datanode
 Summary: Datanode meta-package for Hadoop
@@ -130,6 +140,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/hadoop/conf.osg/
 
 %changelog
+* Fri May 23 2014 Brian Lin <blin@cs.wisc.edu> - 3.0.0-12
+- Add secondarynamenode metapackage
+
 * Thu Apr 03 2014 Carl Edquist <edquist@cs.wisc.edu> - 3.0.0-11
 - Add version requirement for osg-gridftp-hdfs (SOFTWARE-1412)
 
