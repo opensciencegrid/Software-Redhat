@@ -1,5 +1,5 @@
 Name:           vo-client
-Version:        53
+Version:        54
 Release:        1%{?dist}
 Summary:        Contains vomses file for use with user authentication and edg-mkgridmap.conf file that contains configuration information for edg-mkgridmap.
 
@@ -85,6 +85,10 @@ rm -rf $RPM_BUILD_ROOT
 %attr(0600,tomcat,tomcat) %config(noreplace) %{_sysconfdir}/gums/gums.config.template
 
 %changelog
+* Fri May 23 2014 Carl Edquist <edquist@cs.wisc.edu> - 54-1
+- Update to vo-client 54 (SOFTWARE-1491)
+  - Add missing LCS files for voms2.cern.ch and lcg-voms2.cern.ch
+
 * Thu May 08 2014 Carl Edquist <edquist@cs.wisc.edu> - 53-1
 - Update to vo-client 53 (SOFTWARE-1473)
   - Modify CMS VOMS Address in GUMS Template
