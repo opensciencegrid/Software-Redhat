@@ -1,6 +1,6 @@
 Name:           edg-mkgridmap
 Version:        4.0.0
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        Contains the init.d script and crontab for edg-mkgridmap
 
 Group:          system environment/base
@@ -14,6 +14,7 @@ Source1:        edg-mkgridmap
 Source2:        edg-mkgridmap-cron
 
 Patch0:         edg-mkgridmap-wrapper-osg.patch
+Patch1:         use-net-ssl.patch
 
 # Steps to make tarball (correctly packaged):
 # Get GOC's tarball, edg-mkgridmap-10.tar.gz
@@ -40,6 +41,7 @@ Requires(preun): initscripts
 
 %setup -q
 %patch0 -p0
+%patch1 -p0
 %build
 
 
@@ -89,6 +91,9 @@ fi
 %dir %{_var}/lib/osg
 
 %changelog
+* Tue May 27 2014 Carl Edquist <edquist@cs.wisc.edu> - 4.0.0-7
+- use Net::SSL module in edg-mkgridmap.pl (SOFTWARE-1489)
+
 * Thu Oct 17 2013 Carl Edquist <edquist@cs.wisc.edu> - 4.0.0-6
 - Provide missing /var/lib/osg dir (SOFTWARE-495)
 
