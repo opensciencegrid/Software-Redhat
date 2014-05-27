@@ -1,7 +1,7 @@
 Name:           osg-se-hadoop
 Summary:        OSG Hadoop Storage Element package for RPM distribution
 Version:        3.0.0
-Release:        13%{?dist}
+Release:        14%{?dist}
 License:        GPL
 Group:          System Environment/Daemons
 URL:            https://twiki.grid.iu.edu/twiki/bin/view/Storage/WebHome
@@ -10,6 +10,7 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Source0: hdfs-site.xml
 Source1: core-site.xml
 Requires: %{name}-namenode = %{version}-%{release}
+Requires: %{name}-secondarynamenode = %{version}-%{release}
 Requires: %{name}-datanode = %{version}-%{release}
 Requires: %{name}-client = %{version}-%{release}
 Requires: %{name}-gridftp = %{version}-%{release}
@@ -127,6 +128,9 @@ rm -rf $RPM_BUILD_ROOT
 %files namenode
 %{_sysconfdir}/hadoop/conf.osg/
 
+%files secondarynamenode
+%{_sysconfdir}/hadoop/conf.osg/
+
 %files datanode
 %{_sysconfdir}/hadoop/conf.osg/
 
@@ -140,7 +144,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/hadoop/conf.osg/
 
 %changelog
-* Fri May 23 2014 Brian Lin <blin@cs.wisc.edu> - 3.0.0-12
+* Tue May 27 2014 Brian Lin <blin@cs.wisc.edu> - 3.0.0-14
+- Secondarynamenode metapackage didn't get created in the last build
+
+* Fri May 23 2014 Brian Lin <blin@cs.wisc.edu> - 3.0.0-13
 - Add secondarynamenode metapackage
 
 * Thu Apr 03 2014 Carl Edquist <edquist@cs.wisc.edu> - 3.0.0-11
