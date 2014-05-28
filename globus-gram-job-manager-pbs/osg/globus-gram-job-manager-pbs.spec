@@ -15,7 +15,7 @@
 Name:		globus-gram-job-manager-pbs
 %global _name %(tr - _ <<< %{name})
 Version:	1.6
-Release:	1.9%{?dist}
+Release:	1.10%{?dist}
 Summary:	Globus Toolkit - PBS Job Manager Support
 
 Group:		Applications/Internet
@@ -258,6 +258,9 @@ fi
 %config(noreplace) %{_sysconfdir}/globus/scheduler-event-generator/available/pbs
 
 %changelog
+* Wed May 28 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6-1.10.osg
+- Fix error in SOFTWARE-1162 patch if jobid started with 0
+
 * Thu Jan 31 2014 Suchandra Thapa <sthapa@ci.uchicago.edu> 1.6-1.9.osg
 - Reenable SOFTWARE-1162 patch
 
