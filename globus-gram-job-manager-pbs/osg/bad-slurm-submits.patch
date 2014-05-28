@@ -1,13 +1,31 @@
 Index: pbs.pm
 ===================================================================
---- pbs.pm.orig	2013-08-26 16:09:17.000000002 -0500
-+++ pbs.pm	2013-08-26 16:09:31.000000002 -0500
-@@ -737,7 +737,7 @@
-         $job_id = 0;
+--- pbs.pm.orig	2014-05-28 16:19:03.821688069 -0500
++++ pbs.pm	2014-05-28 16:20:44.912983241 -0500
+@@ -734,10 +734,10 @@
+     } elsif ( $qsub_out =~ /(\d+.*)/ ) {
+         $job_id = $1;
+     } else {
+-        $job_id = 0;
++        $job_id = undef;
      }
  
 -    if($? == 0)
-+    if($? == 0 and $job_id != 0)
++    if($? == 0 and defined($job_id))
      {
          $self->log("job submission successful, setting state to PENDING");
          return {JOB_ID => $job_id,
+@@ -751,7 +751,12 @@
+         my $stderr = <ERR>;
+         close(ERR);
+ 
+-        $self->log("qsub returned $job_id");
++        if (!defined($job_id)) {
++            $self->log("qsub did not return a job id");
++            $self->log("qsub stdout $qsub_out");
++        } else {
++            $self->log("qsub returned $job_id");
++        }
+         $self->log("qsub stderr $stderr");
+ 
+         open(ERR, ">" . $description->stderr());

@@ -16,8 +16,8 @@
 Name:		globus-gram-job-manager-pbs
 %global _name %(tr - _ <<< %{name})
 Version:	1.6
-Release:	1.5%{?dist}
-Summary:	Globus Toolkit - PBS Job Manager
+Release:	1.6%{?dist}
+Summary:	Globus Toolkit - PBS Job Manager Support
 
 Group:		Applications/Internet
 License:	ASL 2.0
@@ -289,6 +289,9 @@ fi
 %dir %{_docdir}/%{name}-%{version}/html
 
 %changelog
+* Wed May 28 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6-1.6.osg
+- Fix error in SOFTWARE-1162 patch if jobid started with 0
+
 * Mon Aug 26 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.6-1.5
 - Patch to catch bad SLURM submits (SOFTWARE-1162)
 
