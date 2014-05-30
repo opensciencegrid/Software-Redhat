@@ -1,8 +1,9 @@
 Summary: Package for configure-osg and associated scripts
 Name: osg-configure
 Version: 1.0.55
-Release: 1%{?dist}
+Release: 2%{?dist}
 Source0: %{name}-%{version}.tar.gz
+Patch0: 1475-condor-ini-typo.patch
 License: Apache 2.0
 Group: Grid
 Prefix: %{_prefix}
@@ -182,6 +183,7 @@ This package includes the ini file for configuring the job gateways
 
 %prep
 %setup
+%patch0 -p1
 
 %build
 %{__python} setup.py build
@@ -295,6 +297,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri May 30 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0.55-2
+- Fix typo in 20-config.ini (SOFTWARE-1475)
+
 * Thu May 22 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0.55-1
 - New version 1.0.55 (SOFTWARE-1482) with these changes:
 -   Fix warnings when adding wlcg_* attributes to the [Site Information] section (SOFTWARE-1486)
