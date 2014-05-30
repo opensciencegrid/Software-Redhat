@@ -6,7 +6,7 @@
 Name:      xrootd4
 Epoch:     1
 Version:   4.0.0
-Release:   0.1.%{release_candidate}%{?dist}%{?_with_cpp11:.cpp11}%{?_with_clang:.clang}
+Release:   0.2.%{release_candidate}%{?dist}%{?_with_cpp11:.cpp11}%{?_with_clang:.clang}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -61,7 +61,7 @@ Provides: xrootd-server = 1:%{version}-%{release}
 
 # Conflicts added to prevent old plugins from using the xrootd4 RPM 
 Conflicts: xrootd-cmstfc <= 1.5.1-6
-Conflicts: xrootd-dsi <= 3.0.4-11
+Conflicts: xrootd-dsi <= 0:3.0.4-11
 Conflicts: xrootd-hdfs <= 1.8.4-1
 Conflicts: xrootd-lcmaps <= 0.0.7-5
 Conflicts: xrootd-status-probe <= 0.0.3-6
@@ -591,7 +591,7 @@ semodule -R
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
-* Fri May 16 2014 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1:4.0.0-1.rc1
+* Fri May 16 2014 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1:4.0.0-2.rc1
 - First package on the osg repo of xrootd4. Release candidate 1.
 - Added the conflict statements for the xrootd plugins version not yet build with xrootd4.
 
