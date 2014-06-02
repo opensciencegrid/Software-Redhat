@@ -3,24 +3,21 @@
 %define _noarchlib %{_exec_prefix}/lib
 %define jglobus_version 2.0.6
 Name:		privilege-xacml
-Version:	2.6.1
-Release:	3%{?dist}
+Version:	2.6.2
+Release:	1%{?dist}
 Summary:	OSG-core java depenency
 
 Group:		OSG/Libraries
 License:	Apache 2.0
-#URL:		
+URL:		http://cdcvs.fnal.gov/subversion/privilege/branches/2.6.2
 Source0:	%{name}-%{version}.tar.gz
-#From voms-admin server
-#Source1:        opensaml-2.4.1.jar
 
 
-# Patch to modify the dependencies on the pom, towards ones which are shipped in mayor repos
-Patch0: dep-pom.xml.patch
-#Patch to modify some clasess to deal going from cog-jglobus 1.8 to jglobus 2.0
-Patch1: X509java.patch
+
+# Patch to modify the dependencies on the pom for the ws2l code generation
+Patch0: pom-wsdl-deps.patch
 # Patch to modify XACMLClientTest.sh so the test can actually run
-Patch2: clientTest.patch
+Patch1: clientTest.patch
 
 BuildArch: noarch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
@@ -68,7 +65,6 @@ Requires: java7
 %setup -q
 %patch0 -p2
 %patch1 -p2
-%patch2 -p2
 
 %build
 #log4j
@@ -98,8 +94,7 @@ Requires: java7
 %{mvn} install:install-file -B -DgroupId=org.slf4j -DartifactId=slf4j-simple -Dversion=1.5.8 -Dpackaging=jar -Dfile=`build-classpath slf4j/simple.jar` -Dmaven.repo.local=%{local_maven}
 #bouncycastle
 %{mvn} install:install-file -B -DgroupId=org.bouncycastle -DartifactId=bcprov-jdk15 -Dversion=1.46 -Dpackaging=jar -Dfile=`build-classpath bcprov` -Dmaven.repo.local=%{local_maven}
-#opensaml
-#%{mvn} install:install-file -B -DgroupId=org.opensaml -DartifactId=opensaml -Dversion=2.4.1 -Dpackaging=jar -Dfile=%{Source1} -Dmaven.repo.local=%{local_maven}
+
 
 %{mvn} -B -X package -Dmaven.repo.local=%{local_maven}
 
@@ -129,22 +124,21 @@ install -pm 744 %{local_maven}/org/opensaml/openws/1.4.1/openws-1.4.1.jar %{_oth
 
 
 
-#%check
-#source src/test/XACMLClientTest.sh
-
 %clean
 rm -rf %{buildroot}
 rm -rf %{local_maven}
 %files
 #%defattr(-,root,root,-)
-#%doc
 %{_javadir}/%{name}.jar
 /usr/share/maven3/poms/%{name}.pom
 %{_noarchlib}/%{name}/*.jar
 %{_libexecdir}/%{name}/XACMLClientTest.sh
 
 %changelog
-*Wed May 7 2014 Edgar Fajardo <emfajard@ucsd.edu> 2.6.1-3
+* Mon Jun 2 2014 Edgar Fajardo <emfajard@ucsd.edu> 2.6.2-1
+- The WSDL code generator is now working.
+
+* Wed May 7 2014 Edgar Fajardo <emfajard@ucsd.edu> 2.6.1-3
 - The XACMLClientTest was moved from /usr/bin to /usr/libexec
 
 * Tue May 6 2014 Edgar Fajardo <emfajard@ucsd.edu> 2.6.1-2
