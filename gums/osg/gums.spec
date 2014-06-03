@@ -93,13 +93,6 @@ Source12: openws-1.2.2.jar
 Source13: jargs-1.0.jar
 Source14: velocity-1.5.jar
 
-Patch0: xml-maven2.patch
-Patch1: gums-create-config2.patch
-Patch2: get-correct-client-cert.patch
-Patch3: emi-trustmanager-pom.patch
-Patch4: extract-voms.patch
-Patch5: 1425-duplicate-admins.patch
-
 %description
 %{summary}
 
