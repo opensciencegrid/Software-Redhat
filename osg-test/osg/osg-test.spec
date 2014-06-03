@@ -5,7 +5,7 @@
 
 Summary:   Tests an OSG Software installation
 Name:      osg-test
-Version:   1.4.14
+Version:   1.4.15
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -39,6 +39,12 @@ rm -rf $RPM_BUILD_ROOT
 /etc/grid-security/certificates/bffdd190.*
 
 %changelog
+* Tue Jun 3 2014 Brian Lin <blin@cs.wisc.edu> - 1.4.15-1
+- Fix error with removing user (SW-1345)
+- Add condor_ce_ping test (SW-1458)
+- Restored files get restored with original owner/group
+- Add more messages to retry list
+
 * Tue May 6 2014 Brian Lin <blin@cs.wisc.edu> - 1.4.14-1
 - Add GUMS and HTCondor-CE tests (SOFTWARE-696, SOFTWARE-13338)
 - Clean up osg-configure test (SOFTWARE-710)
