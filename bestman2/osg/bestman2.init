@@ -86,7 +86,7 @@ stop() {
    	RETVAL=0
 	if [ -f "$BESTMAN_PID" ]; then
 		read PID < "$BESTMAN_PID" 2> /dev/null
-		if [ "$PID" != "" -a "$PID" -gt 0 ]; then
+		if [ "$PID" != "" ] && [ "$PID" -gt 0 ]; then
 			if kill -0 "$PID" 2> /dev/null; then
 				kill -INT "$PID" 2>/dev/null
 				RETVAL=$?
