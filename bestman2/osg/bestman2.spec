@@ -14,7 +14,7 @@
 
 Name:           bestman2
 Version:        2.3.0
-Release:        17%{?dist}
+Release:        18%{?dist}
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -445,6 +445,9 @@ fi
 
 
 %changelog
+* Wed Jun 04 2014 Carl Edquist <edquist@cs.wisc.edu> - 2.3.0-18
+- handle empty pidfile in init script (SOFTWARE-1504)
+
 * Mon Feb 10 2014 Carl Edquist <edquist@cs.wisc.edu> - 2.3.0-17
 - Patch to include "root" SRM transfer protocol from 2.2.2 (SOFTWARE-1379)
 
