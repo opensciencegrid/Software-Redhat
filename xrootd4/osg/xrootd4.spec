@@ -1,12 +1,10 @@
-%define release_candidate rc1
-
 #-------------------------------------------------------------------------------
 # Package definitions
 #-------------------------------------------------------------------------------
 Name:      xrootd4
 Epoch:     1
 Version:   4.0.0
-Release:   0.3.%{release_candidate}%{?dist}%{?_with_cpp11:.cpp11}%{?_with_clang:.clang}
+Release:   1.1%{?dist}%{?_with_cpp11:.cpp11}%{?_with_clang:.clang}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -15,7 +13,7 @@ URL:       http://xrootd.org/
 # git clone http://xrootd.org/repo/xrootd.git xrootd
 # cd xrootd
 # git-archive master | gzip -9 > ~/rpmbuild/SOURCES/xrootd.tgz
-Source0:   %{name}-%{version}-%{release_candidate}.tar.gz
+Source0:   xrootd.tar.gz
 
 BuildRoot: %{_tmppath}/%{name}-root
 
@@ -55,11 +53,8 @@ BuildRequires: clang
 Requires:	  %{name}-libs        = %{epoch}:%{version}-%{release}
 Requires:	  %{name}-client-libs = %{epoch}:%{version}-%{release}
 Requires:	  %{name}-server-libs = %{epoch}:%{version}-%{release}
-Obsoletes:  xrootd < 1:4.0.0
-Provides: xrootd = 1:%{version}-%{release}
-Provides: xrootd-server = 1:%{version}-%{release}
-
-# Conflicts added to prevent old plugins from using the xrootd4 RPM 
+Conflicts:  xrootd
+#Added the conflicts statements to prevent old plugins from using xroot4 rpms
 Conflicts: xrootd-cmstfc < 1.5.1-7
 Conflicts: xrootd-dsi < 3.0.4-12
 Conflicts: xrootd-hdfs < 1.8.4-2
@@ -94,8 +89,7 @@ latency and increased throughput.
 %package libs
 Summary:	Libraries used by xrootd servers and clients
 Group:		System Environment/Libraries
-Obsoletes: xrootd-libs
-Provides: xrootd-libs = 1:%{version}-%{release}
+Conflicts: xrootd-libs
 
 %description libs
 This package contains libraries used by the xrootd servers and clients.
@@ -107,8 +101,7 @@ This package contains libraries used by the xrootd servers and clients.
 Summary:	Development files for xrootd
 Group:		Development/Libraries
 Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
-Obsoletes: xrootd-devel
-Provides: xrootd-devel = 1:%{version}-%{release}
+Conflicts: xrootd-devel
 
 %description devel
 This package contains header files and development libraries for xrootd
@@ -121,7 +114,7 @@ development.
 Summary:	Libraries used by xrootd clients
 Group:		System Environment/Libraries
 Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
-Obsoletes: xrootd-client-libs
+Conflicts: xrootd-client-libs
 
 %description client-libs
 This package contains libraries used by xrootd clients.
@@ -134,8 +127,7 @@ Summary:	Development files for xrootd clients
 Group:		Development/Libraries
 Requires:	%{name}-devel%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-client-libs%{?_isa} = %{epoch}:%{version}-%{release}
-Obsoletes: xrootd-client-devel
-Provides: xrootd-client-devel = 1:%{version}-%{release}
+Conflicts: xrootd-client-devel
 
 %description client-devel
 This package contains header files and development libraries for xrootd
@@ -149,7 +141,7 @@ Summary:	Libraries used by xrootd servers
 Group:		System Environment/Libraries
 Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-client-libs%{?_isa} = %{epoch}:%{version}-%{release}
-Obsoletes: xrootd-server-libs
+Conflicts: xrootd-server-libs
 
 %description server-libs
 This package contains libraries used by xrootd servers.
@@ -163,8 +155,7 @@ Group:		Development/Libraries
 Requires:	%{name}-devel%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-client-devel%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-server-libs%{?_isa} = %{epoch}:%{version}-%{release}
-Obsoletes: xrootd-server-devel
-Provides: xrootd-server-devel = %{epoch}:%{version}-%{release}
+Conflicts: xrootd-server-devel
 
 %description server-devel
 This package contains header files and development libraries for xrootd
@@ -178,9 +169,9 @@ Summary:	Legacy xrootd headers
 Group:		Development/Libraries
 Requires:	%{name}-libs = %{epoch}:%{version}-%{release}
 %if %{?fedora}%{!?fedora:0} >= 10 || %{?rhel}%{!?rhel:0} >= 6
-#BuildArch:	noarch
+BuildArch:	noarch
 %endif
-Obsoletes: xrootd-private-devel
+Conflicts: xrootd-private-devel
 
 %description private-devel
 This package contains some private xrootd headers. The use of these
@@ -195,8 +186,7 @@ Summary:	Xrootd command line client tools
 Group:		Applications/Internet
 Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-client-libs%{?_isa} = %{epoch}:%{version}-%{release}
-Obsoletes: xrootd-client
-Provides: xrootd-client = 1:%{version}-%{release}
+Conflicts: xrootd-client
 
 %description client
 This package contains the command line tools used to communicate with
@@ -211,8 +201,7 @@ Group:		Applications/Internet
 Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-client-libs%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	fuse
-Obsoletes: xrootd-fuse
-Provides: xrootd-fuse = 1:%{version}-%{release}
+Conflicts: xrootd-fuse
 
 %description fuse
 This package contains the FUSE (file system in user space) xrootd mount
@@ -225,7 +214,7 @@ tool.
 Summary:	Developer documentation for the xrootd libraries
 Group:		Documentation
 %if %{?fedora}%{!?fedora:0} >= 10 || %{?rhel}%{!?rhel:0} >= 6
-#BuildArch:	noarch
+BuildArch:	noarch
 %endif
 
 %description doc
@@ -238,7 +227,7 @@ This package contains the API documentation of the xrootd libraries.
 Summary:	 SELinux policy extensions for xrootd.
 Group:		 System Environment/Base
 %if %{?fedora}%{!?fedora:0} >= 10 || %{?rhel}%{!?rhel:0} >= 6
-#BuildArch: noarch
+BuildArch: noarch
 %endif
 Requires:  policycoreutils
 Requires:  selinux-policy-targeted
@@ -265,8 +254,7 @@ This package contains a set of CPPUnit tests for xrootd.
 %setup -c -n xrootd
 
 %build
-#cd xrootd
-cd xrootd-%{version}-%{release_candidate}
+cd xrootd
 mkdir build
 cd build
 
@@ -297,8 +285,7 @@ doxygen Doxyfile
 # Installation
 #-------------------------------------------------------------------------------
 %install
-#cd xrootd
-cd xrootd-%{version}-%{release_candidate}
+cd xrootd
 cd build
 rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
@@ -535,6 +522,7 @@ semodule -R
 %{_includedir}/xrootd/XrdOss
 %{_includedir}/xrootd/XrdSfs
 %{_includedir}/xrootd/XrdXrootd
+%{_includedir}/xrootd/XrdHttp
 # These libraries are not used as plugins
 %{_libdir}/libXrdOfs.so
 %{_libdir}/libXrdServer.so
@@ -591,12 +579,12 @@ semodule -R
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Thu Jun 5 2014 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1:4.0.0-1.1
+- First packaging of the official release 4.0.0
+
 * Fri May 16 2014 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1:4.0.0-3.rc1
 - First package on the osg repo of xrootd4. Release candidate 1.
 - Added the conflict statements for the xrootd plugins version not yet build with xrootd4.
-
-* Fri Apr 11 2014 Brian Bockelman <bbockelm@cse.unl.edu> - 1:4.0.0-0.pre2
-- Add a few more provide statements.
 
 * Tue Apr 01 2014 Lukasz Janyst <ljanyst@cern.ch>
 - correct the license field (LGPLv3+)
