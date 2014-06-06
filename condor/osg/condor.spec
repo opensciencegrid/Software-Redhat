@@ -1,4 +1,4 @@
-%define tarball_version 8.0.6
+%define tarball_version 8.0.7
 
 # Things for F15 or later
 %if 0%{?fedora} >= 16
@@ -67,7 +67,7 @@ Version: %{tarball_version}
 %define condor_release %condor_base_release
 %endif
 # Release: %condor_release%{?dist}.2
-Release: 3%{?dist}
+Release: 1%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -1271,6 +1271,10 @@ fi
 %endif
 
 %changelog
+* Fri Jun 06 2014 Brian Lin <bliN@cs.wisc.edu> - 8.0.7-1
+- Updated to version 8.0.7
+- Add patch that ensures HTCondor is run using the proper eUID
+
 * Mon Mar 17 2014 Carl Edquist <edquist@cs.wisc.edu> - 8.0.6-3
 - Mark 00personal_condor.config as a %%config file (SOFTWARE-1423)
 
