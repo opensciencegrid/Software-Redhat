@@ -3,21 +3,16 @@
 %define _noarchlib %{_exec_prefix}/lib
 %define jglobus_version 2.0.6
 Name:		privilege-xacml
-Version:	2.6.2
-Release:	1%{?dist}
+Version:	2.6.3
+Release:	0.1.rc1%{?dist}
 Summary:	OSG-core java depenency
 
 Group:		OSG/Libraries
 License:	Apache 2.0
-URL:		http://cdcvs.fnal.gov/subversion/privilege/branches/2.6.2
-Source0:	%{name}-%{version}.tar.gz
+URL:		http://cdcvs.fnal.gov/subversion/privilege
+Source0:	%{name}-%{version}.rc1.tar.gz
 
 
-
-# Patch to modify the dependencies on the pom for the ws2l code generation
-Patch0: pom-wsdl-deps.patch
-# Patch to modify XACMLClientTest.sh so the test can actually run
-Patch1: clientTest.patch
 
 BuildArch: noarch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
@@ -62,9 +57,7 @@ Requires: java7
 %{summary}
 
 %prep
-%setup -q
-%patch0 -p2
-%patch1 -p2
+%setup -n %{name}-%{version}.rc1
 
 %build
 #log4j
@@ -112,7 +105,7 @@ install -m 700 src/test/XACMLClientTest.sh %{buildroot}%{_libexecdir}/%{name}/XA
 install -d -m 755 %{_otherlibs}
 build-jar-repository %{_otherlibs} jglobus trustmanager-axis trustmanager voms-api-java wsdl4j jakarta-commons-lang jakarta-commons-codec jakarta-commons-discovery jakarta-commons-logging joda-time axis/axis.jar axis/jaxrpc.jar log4j slf4j/api.jar slf4j/simple.jar wsdl4j
 install -pm 744 %{local_maven}/org/opensaml/opensaml/2.4.1/opensaml-2.4.1.jar %{_otherlibs}/opensaml-2.4.1.jar
-install -pm 744 %{local_maven}/org/opensaml/xmltooling/1.3.1/xmltooling-1.3.1.jar %{_otherlibs}/xmltooling-1.3.1.jar
+install -pm 744 %{local_maven}/org/opensaml/xmltooling/*/*.jar  %{_otherlibs}/
 install -pm 744 %{local_maven}/org/apache/santuario/xmlsec/1.4.1/xmlsec-1.4.1.jar %{_otherlibs}/xmlsec-1.4.1.jar
 install -pm 744 %{local_maven}/org/codehaus/fabric3/fabric3-db-exist/sunxacml/1.0/sunxacml-1.0.jar %{_otherlibs}/sunxacml-1.0.jar
 install -pm 744 %{local_maven}/velocity/velocity/1.5/velocity-1.5.jar %{_otherlibs}/velocity-1.5.jar
@@ -135,6 +128,9 @@ rm -rf %{local_maven}
 %{_libexecdir}/%{name}/XACMLClientTest.sh
 
 %changelog
+* Fri Jun 6 2014 Edgar Fajardo <emfajard@ucsd.edu> 2.6.3-0.1.rc1
+- Updated to new tag 2.6.3.rc1
+
 * Mon Jun 2 2014 Edgar Fajardo <emfajard@ucsd.edu> 2.6.2-1
 - The WSDL code generator is now working.
 
