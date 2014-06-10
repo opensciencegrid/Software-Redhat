@@ -131,6 +131,9 @@ Patch3: chkconfig_off.patch
 # This patch is here until it is pushed into upstream (8.0.1?)
 # https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=3698w
 Patch4: gsoap_ipv6.patch
+# This patch is here until it is pushed into upstream (8.0.8)
+# https://htcondor-wiki.cs.wisc.edu/index.cgi/chngview?cn=40355
+Patch5: lcmaps_uid.patch
 Patch8: osg_sysconfig_in_init_script.patch
 Patch9: proper_cream_v3.diff
 %if %blahp
@@ -467,6 +470,7 @@ exit 0
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
+%patch5 -p1
 %patch8 -p1
 %if %cream
 %patch9 -p1
