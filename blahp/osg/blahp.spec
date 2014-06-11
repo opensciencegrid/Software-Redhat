@@ -1,6 +1,6 @@
 Name:		blahp
 Version:	1.18.9.bosco
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	gLite BLAHP daemon
 
 Group:		System/Libraries
@@ -168,6 +168,11 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Wed Jun 11 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.18.9.bosco-2
+- Make sure SGE file is not marked executable
+- Improve the PBS template for customization
+- Rebuild against condor 8.1.5 (SOFTWARE-1456)
+
 * Thu Jan 09 2014 Brian Bockelman <bbockelm@cse.unl.edu> - 1.18.9.bosco-1
 - Fix proxy renewal in the case where no home directory exists.
 - Improve packaging of local customization scripts and include defaults.
