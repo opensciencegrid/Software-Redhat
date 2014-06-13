@@ -496,8 +496,7 @@ export CMAKE_PREFIX_PATH=/usr
 
 # Since we don't package the tests and some tests require boost > 1.40, which
 # causes build issues with EL5, don't even bother building the tests.
-%cmake -DNO_PHONE_HOME:BOOL=TRUE \
-       -DBUILD_TESTING:BOOL=FALSE \
+%cmake -DBUILD_TESTING:BOOL=FALSE \
        -DHAVE_BACKFILL:BOOL=FALSE \
        -DHAVE_BOINC:BOOL=FALSE \
 %if %gsoap
