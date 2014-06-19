@@ -1274,9 +1274,10 @@ fi
 %endif
 
 %changelog
-* Fri Jun 06 2014 Brian Lin <bliN@cs.wisc.edu> - 8.0.7-1
+* Fri Jun 06 2014 Brian Lin <blin@cs.wisc.edu> - 8.0.7-1
 - Updated to version 8.0.7
 - Add patch that ensures HTCondor is run using the proper eUID
+- Remove NO_PHONE_HOME compile flag
 
 * Mon Mar 17 2014 Carl Edquist <edquist@cs.wisc.edu> - 8.0.6-3
 - Mark 00personal_condor.config as a %%config file (SOFTWARE-1423)
