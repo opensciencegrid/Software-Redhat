@@ -1,7 +1,7 @@
 Name:      osg-client
 Summary:   OSG Client
 Version:   3.0.0
-Release:   20%{?dist}
+Release:   21%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -60,6 +60,9 @@ rm -rf $RPM_BUILD_ROOT
 %files condor
 
 %changelog
+* Thu Jun 19 2014 Edgar Fajardo <efajardo@physics.ucsd.edu> - 3.0.0-21
+- Updated to remove the nmap requirement.
+
 * Wed Apr 03 2013 Brian Lin <blin@cs.wisc.edu> - 3.0.0-20
 - Update to remove java requirement since it's brought in by osg-wn-client
 
