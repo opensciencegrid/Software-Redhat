@@ -1,7 +1,7 @@
 Summary: SCAS client plugin for the LCMAPS authorization framework
 Name: lcmaps-plugins-scas-client
 Version: 0.4.0
-Release: 1.2%{?dist}
+Release: 1.3%{?dist}
 License: ASL 2.0
 Group: System Environment/Libraries
 URL: http://wiki.nikhef.nl/grid/Site_Access_Control
@@ -10,6 +10,7 @@ Patch0: ca_only.patch
 # Patch1 is from http://ndpfsvn.nikhef.nl/viewvc/mwsec/trunk/lcmaps-plugins-scas-client/src/saml2-xacml2/io_handler/ssl/ssl-common.c?r1=17274&r2=17291&view=patch
 #  but is adjusted for the 0.4.0 code base
 Patch1: error-ssl-more-info.patch
+Patch2: restore-euid-on-error.patch
 BuildRequires: openssl-devel
 BuildRequires: lcmaps-interface, xacml-devel >= 1.3.0
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
@@ -38,6 +39,7 @@ Summary: SAZ support for lcmaps
 %setup -q
 %patch0 -p0
 %patch1 -p0
+%patch2 -p0
 
 %build
 
@@ -72,6 +74,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man8/lcmaps_plugins_saz_client.8*
 
 %changelog
+* Thu Jun 19 2014 Dave Dykstra <dwd@fnal.gov> 0.4.0-1.3.osg
+- Add patch to restore effective user id after errors reading certs
+  or keys
+
 * Thu Jan 23 2014 Dave Dykstra <dwd@fnal.gov> 0.4.0-1.2.osg
 - Add patch from upstream to show SSL error queue when there is an
   openssl error

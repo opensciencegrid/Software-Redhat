@@ -1,0 +1,18 @@
+--- src/saml2-xacml2/io_handler/ssl/ssl-common.c.O	2014-06-13 06:39:24.412522000 -0500
++++ src/saml2-xacml2/io_handler/ssl/ssl-common.c	2014-06-13 06:40:58.218038000 -0500
+@@ -555,6 +555,7 @@
+                     clientcert ? clientcert : "n/a",
+                     ERR_reason_error_string(ERR_get_error()));
+         SSL_CTX_free (ctx);
++        restoreEffectiveToRealUid (stored_real_uid, stored_eff_uid);
+         return NULL;
+     }
+ 
+@@ -565,6 +566,7 @@
+                     clientkey,
+                     ERR_reason_error_string(ERR_get_error()));
+         SSL_CTX_free (ctx);
++        restoreEffectiveToRealUid (stored_real_uid, stored_eff_uid);
+         return NULL;
+     }
+ 
