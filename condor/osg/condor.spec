@@ -50,7 +50,7 @@ Version: %{tarball_version}
 %define condor_release %condor_base_release
 %endif
 # Release: %condor_release%{?dist}.2
-Release: 6%{?dist}
+Release: 7%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -424,8 +424,7 @@ popd
 
 export CMAKE_PREFIX_PATH=/usr
 
-%cmake -DNO_PHONE_HOME:BOOL=TRUE \
-       -DHAVE_BACKFILL:BOOL=FALSE \
+%cmake -DHAVE_BACKFILL:BOOL=FALSE \
        -DHAVE_BOINC:BOOL=FALSE \
 %if %gsoap
        -DWITH_GSOAP:BOOL=TRUE \
@@ -1082,6 +1081,9 @@ fi
 %endif
 
 %changelog
+* Thu Jun 19 2014 Brian Lin <blin@cs.wisc.edu> - 7.8.8-7
+- Remove NO_PHONE_HOME compile flag
+
 * Mon Mar 17 2014 Carl Edquist <edquist@cs.wisc.edu> - 7.8.8-6
 - Mark 00personal_condor.config as a %%config file (SOFTWARE-1423)
 
