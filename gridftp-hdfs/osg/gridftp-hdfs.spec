@@ -2,7 +2,7 @@
 
 Name:           gridftp-hdfs
 Version:        0.5.4
-Release:        17%{?dist}
+Release:        18%{?dist}
 Summary:        HDFS DSI plugin for GridFTP
 Group:          System Environment/Daemons
 License:        ASL 2.0
@@ -29,6 +29,7 @@ Patch9: gridftp-hdfs-libjvm.patch
 Patch10: gridftp-hdfs-uninitialized-result.patch
 Patch11: 1410-java-environment.patch
 Patch12: 1412-gridftp_d.patch
+Patch13: 1495-pthread-mutex.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires: autoconf
@@ -88,6 +89,7 @@ HDFS DSI plugin for GridFTP
 %patch10 -p1
 %patch11 -p1
 %patch12 -p1
+%patch13 -p1
 
 aclocal
 libtoolize
@@ -185,6 +187,9 @@ fi
 %endif
 
 %changelog
+* Thu Jun 19 2014 Carl Edquist <edquist@cs.wisc.edu> - 0.5.4-18.osg
+- Mutex fix for GLOBUS_THREAD_MODEL="pthread" (SOFTWARE-1495)
+
 * Wed May 21 2014 Mátyás Selmeci <matyas@cs.wisc.edu> - 0.5.4-17.osg
 - Remove rpath (SOFTWARE-1394)
 
