@@ -1,7 +1,7 @@
 Name:      osg-client
 Summary:   OSG Client
 Version:   3.0.0
-Release:   21%{?dist}
+Release:   22%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -14,7 +14,6 @@ Requires: osg-wn-client
 Requires: ndt-client
 Requires: bwctl-client
 Requires: gsi-openssh-clients
-Requires: nmap
 Requires: lcg-info
 Requires: lcg-infosites
 # No npad for now, because it installs server by default. Re-add later?
@@ -60,7 +59,7 @@ rm -rf $RPM_BUILD_ROOT
 %files condor
 
 %changelog
-* Thu Jun 19 2014 Edgar Fajardo <efajardo@physics.ucsd.edu> - 3.0.0-21
+* Thu Jun 19 2014 Edgar Fajardo <efajardo@physics.ucsd.edu> - 3.0.0-22
 - Updated to remove the nmap requirement.
 
 * Wed Apr 03 2013 Brian Lin <blin@cs.wisc.edu> - 3.0.0-20
