@@ -12,4 +12,4 @@ UPSTREAM: https://github.com/bbockelm/condor-ce
 
 To build from upstream:
 
-git archive --prefix=%{name}-%{version}/ {git revision} | gzip > %{name}-%{version}.tar.gz
+git archive --prefix=htcondor-ce-{VERSION}/ {GIT REVISION} | gzip > htcondor-ce-{VERSION}.tar.gz

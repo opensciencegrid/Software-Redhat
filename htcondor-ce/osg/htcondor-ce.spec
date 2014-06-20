@@ -1,7 +1,6 @@
-
 Name: htcondor-ce
-Version: 1.0
-Release: 2%{?dist}
+Version: 1.1
+Release: 1%{?dist}
 Summary: A framework to run HTCondor as a CE
 
 Group: Applications/System
@@ -58,6 +57,34 @@ Obsoletes: condor-ce-pbs < 0.5.4
 Provides:  condor-ce-pbs = %{version}
 
 %description pbs
+%{summary}
+
+%package lsf
+Group: Applications/System
+Summary: Default routes for submission to LSF
+
+Requires: %{name} = %{version}-%{release}
+Requires: /usr/bin/grid-proxy-init
+Requires: /usr/bin/voms-proxy-init
+
+Obsoletes: condor-ce-lsf < 0.5.4
+Provides:  condor-ce-lsf = %{version}
+
+%description lsf
+%{summary}
+
+%package sge
+Group: Applications/System
+Summary: Default routes for submission to SGE
+
+Requires: %{name} = %{version}-%{release}
+Requires: /usr/bin/grid-proxy-init
+Requires: /usr/bin/voms-proxy-init
+
+Obsoletes: condor-ce-sge < 0.5.4
+Provides:  condor-ce-sge = %{version}
+
+%description sge
 %{summary}
 
 %package client
@@ -177,6 +204,18 @@ fi
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/02-ce-pbs.conf
 %{_datadir}/condor-ce/config.d/02-ce-pbs-defaults.conf
 
+%files lsf
+%defattr(-,root,root,-)
+
+%config(noreplace) %{_sysconfdir}/condor-ce/config.d/02-ce-lsf.conf
+%{_datadir}/condor-ce/config.d/02-ce-lsf-defaults.conf
+
+%files sge
+%defattr(-,root,root,-)
+
+%config(noreplace) %{_sysconfdir}/condor-ce/config.d/02-ce-sge.conf
+%{_datadir}/condor-ce/config.d/02-ce-sge-defaults.conf
+
 %files client
 
 %dir %{_sysconfdir}/condor-ce
@@ -206,7 +245,13 @@ fi
 %{_bindir}/condor_ce_ping
 
 %changelog
-* Sun Apr 27 2014 Brian Lin <blin@cs.wisc.edu> - 1.0.0-1
+* Tue Jun 17 2014 Brian Lin <blin@cs.wisc.edu> - 1.1-1
+- Allow users to add ClassAd attr in condor_ce_trace
+- Add LSF and SGE job routes
+- Remove jobs that have been held longer than 24 hr
+- Don't set AccountingGroup when missing UID/extattr table
+
+* Sun Apr 27 2014 Brian Lin <blin@cs.wisc.edu> - 1.0-1
 - Add condor specific config files
 
 * Tue Mar 04 2014 Brian Bockelman <bbockelm@cse.unl.edu> - 0.6.3-1
