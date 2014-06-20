@@ -1,9 +1,8 @@
 Summary: Package for configure-osg and associated scripts
 Name: osg-configure
-Version: 1.0.55
-Release: 2%{?dist}
+Version: 1.0.56
+Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
-Patch0: 1475-condor-ini-typo.patch
 License: Apache 2.0
 Group: Grid
 Prefix: %{_prefix}
@@ -184,7 +183,6 @@ It may safely be removed once the upgrade is finished.
 
 %prep
 %setup
-%patch0 -p1
 
 %build
 %{__python} setup.py build
@@ -302,6 +300,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Jun 20 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0.56-1
+- Create service keys from host keys if desired (SOFTWARE-422)
+- Fix bug in detection of installed Gratia probes (SOFTWARE-1518)
+
 * Fri May 30 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0.55-2
 - Fix typo in 20-config.ini (SOFTWARE-1475)
 
