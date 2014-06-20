@@ -1,17 +1,21 @@
 Summary: OASIS-specific configuration
 Name: oasis-config
-Version: 6
+Version: 7
 Release: 1%{?dist}
 License: ASL 2.0
 Group: Applications/Grid
-Source0: opensciencegrid.org.pub
-Source1: opensciencegrid.org.conf
-Source2: oasis.opensciencegrid.org.conf
-Source3: 60-oasis.conf
+Source0: serverorder.sh
+Source1: 60-oasis.conf
+Source2: opensciencegrid.org.pub
+Source3: opensciencegrid.org.conf
+Source4: oasis.opensciencegrid.org.conf
+Source5: egi.eu.pub
+Source6: egi.eu.conf
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildArch: noarch
 Requires: cvmfs
-Requires: wget
+Requires: curl
+Conflicts: cvmfs-keys >= 1.5
 
 %description
 %{summary}
@@ -36,14 +40,17 @@ exit 0
 
 %install
 [[ %{buildroot} != / ]] && rm -rf %{buildroot}
+mkdir -p %{buildroot}%{_sysconfdir}/cvmfs/default.d
 mkdir -p %{buildroot}%{_sysconfdir}/cvmfs/keys
 mkdir -p %{buildroot}%{_sysconfdir}/cvmfs/domain.d
 mkdir -p %{buildroot}%{_sysconfdir}/cvmfs/config.d
-mkdir -p %{buildroot}%{_sysconfdir}/cvmfs/default.d
-install -m 644 %{SOURCE0} %{buildroot}%{_sysconfdir}/cvmfs/keys 
-install -m 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/cvmfs/domain.d
-install -m 644 %{SOURCE2} %{buildroot}%{_sysconfdir}/cvmfs/config.d
-install -m 644 %{SOURCE3} %{buildroot}%{_sysconfdir}/cvmfs/default.d
+install -m 644 %{SOURCE0} %{buildroot}%{_sysconfdir}/cvmfs
+install -m 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/cvmfs/default.d
+install -m 644 %{SOURCE2} %{buildroot}%{_sysconfdir}/cvmfs/keys 
+install -m 644 %{SOURCE3} %{buildroot}%{_sysconfdir}/cvmfs/domain.d
+install -m 644 %{SOURCE4} %{buildroot}%{_sysconfdir}/cvmfs/config.d
+install -m 644 %{SOURCE5} %{buildroot}%{_sysconfdir}/cvmfs/keys 
+install -m 644 %{SOURCE6} %{buildroot}%{_sysconfdir}/cvmfs/domain.d
 
 
 
@@ -54,16 +61,24 @@ install -m 644 %{SOURCE3} %{buildroot}%{_sysconfdir}/cvmfs/default.d
 
 
 %files
+%{_sysconfdir}/cvmfs/*.sh
+%{_sysconfdir}/cvmfs/default.d/*
 %{_sysconfdir}/cvmfs/keys/*
 %{_sysconfdir}/cvmfs/domain.d/*
 %{_sysconfdir}/cvmfs/config.d/*
-%{_sysconfdir}/cvmfs/default.d/*
 
 
+
+%postun
+if [ $1 = 0 ]; then rm -f %{_sysconfdir}/cvmfs/domain.d/*.serverorder; fi
 
 
 
 %changelog
+* Fri Jun 20 2014 Dave Dykstra <dwd@fnal.gov> 7-1
+- Add egi.eu configuration and key.  Add serverorder.sh and a conflicts
+  with cvmfs-keys >= 1.5.  Add a %postun to remove .serverorder files.
+
 * Mon Apr 21 2014 Dave Dykstra <dwd@fnal.gov> 6-1
 - Add /etc/cvmfs/default.d/60-oasis.conf to set CVMFS_SEND_INFO_HEADER=yes
   (which is a new feature for cvmfs 2.1.18)
