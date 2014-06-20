@@ -1,6 +1,6 @@
 Name:      rsv
 Summary:   RSV Meta Package
-Version:   3.7.16
+Version:   3.7.17
 Release:   1%{?dist}
 License:   Apache 2.0
 Group:     Applications/Monitoring
@@ -204,6 +204,9 @@ fi
 
 
 %changelog
+* Fri Jun 20 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 3.7.17-1
+- SOFTWARE-862 - gratia-config-probe: don't read crontab
+
 * Thu May 01 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 3.7.16-1
 - SOFTWARE-1178 - Change 'condor-ce' RSV options to 'htcondor-ce'
 - SOFTWARE-1404 - Split out HTCondor-CE metrics into their own files,
