@@ -1,7 +1,7 @@
 Summary: OASIS-specific configuration
 Name: oasis-config
 Version: 7
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: ASL 2.0
 Group: Applications/Grid
 Source0: serverorder.sh
@@ -75,6 +75,10 @@ if [ $1 = 0 ]; then rm -f %{_sysconfdir}/cvmfs/domain.d/*.serverorder; fi
 
 
 %changelog
+* Mon Jun 23 2014 Dave Dykstra <dwd@fnal.gov> 7-2
+- Include the opensciencegrid.org.pub key in egi.eu.conf, so the 
+  repositories can be replaced by OSG in an emergency.
+
 * Fri Jun 20 2014 Dave Dykstra <dwd@fnal.gov> 7-1
 - Add egi.eu configuration and key.  Add serverorder.sh and a conflicts
   with cvmfs-keys >= 1.5.  Add a %postun to remove .serverorder files.
