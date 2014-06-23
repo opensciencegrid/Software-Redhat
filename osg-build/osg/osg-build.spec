@@ -1,7 +1,7 @@
 
 Name:           osg-build
-Version:        1.3.7
-Release:        2%{?dist}
+Version:        1.3.8
+Release:        1%{?dist}
 Summary:        Build tools for the OSG
 
 Group:          System Environment/Tools
@@ -50,6 +50,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root,-)
 %{_bindir}/%{name}
+%{_bindir}/koji-blame
 %{_bindir}/koji-tag-checker
 %{_bindir}/koji-tag-diff
 %{_bindir}/osg-build-test
@@ -68,6 +69,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_docdir}/%{name}/sample-osg-build.ini
 
 %changelog
+* Mon Jun 23 2014 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.3.8-1
+- Add koji-blame, a tool for listing koji tagging history (SOFTWARE-1113)
+
 * Tue May 6 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.3.7-2
 - Fix race conditions in osg-koji setup (SOFTWARE-1466)
 
