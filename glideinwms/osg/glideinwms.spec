@@ -20,7 +20,7 @@ Name:           glideinwms
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
 %if %{v3_plus}
-%define version 3.2.5
+%define version 3.2.5.1
 %define release 1
 %define frontend_xml frontend.master.xml
 %define factory_xml glideinWMS.master.xml
@@ -729,6 +729,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Jun 23 2014 Parag Mhashilkar <parag@fnal.gov> - 3.2.5.1-1
+- Glideinwms v3.2.5.1 release
+
 * Mon May 19 2014 Parag Mhashilkar <parag@fnal.gov> - 3.2.5-1
 - Glideinwms v3.2.5 release
 
