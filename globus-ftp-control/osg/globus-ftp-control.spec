@@ -13,7 +13,7 @@
 Name:		globus-ftp-control
 %global _name %(tr - _ <<< %{name})
 Version:	4.2
-Release:	6%{?dist}
+Release:	7%{?dist}
 Summary:	Globus Toolkit - GridFTP Control Library
 
 Group:		System Environment/Libraries
@@ -25,6 +25,7 @@ Source:		http://www.globus.org/ftppub/gt5/5.2/5.2.0/packages/src/%{_name}-%{vers
 Source9:	epstopdf-2.9.5gw
 
 Patch0:         level-out-connection-speeds.patch
+Patch1:         ip-logging-bug.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -100,6 +101,7 @@ GridFTP Control Library Documentation Files
 %setup -q -n %{_name}-%{version}
 
 %patch0 -p 0
+%patch1 -p 1
 
 %if "%{rhel}" == "5"
 mkdir bin
@@ -184,6 +186,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_docdir}/%{name}-%{version}/html
 
 %changelog
+* Tue Jul 1 2014 Edgar Fajardo <efajardo@physics.ucsd.edu> - 4.2-7
+- Added the ip logging patch
+
 * Fri Dec 16 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 4.2-6
 - Merge OSG changes
 
