@@ -1,5 +1,5 @@
 Name:           vo-client
-Version:        54
+Version:        55
 Release:        1%{?dist}
 Summary:        Contains vomses file for use with user authentication and edg-mkgridmap.conf file that contains configuration information for edg-mkgridmap.
 
@@ -85,9 +85,16 @@ rm -rf $RPM_BUILD_ROOT
 %attr(0600,tomcat,tomcat) %config(noreplace) %{_sysconfdir}/gums/gums.config.template
 
 %changelog
+* Tue Jul 01 2014 Carl Edquist <edquist@cs.wisc.edu> - 55-1
+- Update to vo-client 55 (SOFTWARE-1528)
+  - Add snoplus.snolab.ca VO
+  - Remove Engage VO
+  - Update dosar LSC
+  - Fix DN mismatches in vomses
+
 * Fri May 23 2014 Carl Edquist <edquist@cs.wisc.edu> - 54-1
 - Update to vo-client 54 (SOFTWARE-1491)
-  - Add missing LCS files for voms2.cern.ch and lcg-voms2.cern.ch
+  - Add missing LSC files for voms2.cern.ch and lcg-voms2.cern.ch
 
 * Thu May 08 2014 Carl Edquist <edquist@cs.wisc.edu> - 53-1
 - Update to vo-client 53 (SOFTWARE-1473)
