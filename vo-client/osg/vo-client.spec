@@ -89,8 +89,10 @@ rm -rf $RPM_BUILD_ROOT
 - Update to vo-client 55 (SOFTWARE-1528)
   - Add snoplus.snolab.ca VO
   - Remove Engage VO
-  - Update dosar LSC
-  - Fix DN mismatches in vomses
+  - Cleanup:
+    - Update all outdated LSC files (including dosar)
+    - Fix DN mismatches in vomses
+    - Remove old LSC files no longer in vomses
 
 * Fri May 23 2014 Carl Edquist <edquist@cs.wisc.edu> - 54-1
 - Update to vo-client 54 (SOFTWARE-1491)
