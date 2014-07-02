@@ -1,6 +1,6 @@
 Name:           osg-ca-certs
 Version:        1.40
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        OSG Packaging of the IGTF CA Certs and OSG-specific CAs, in the new OpenSSL 0.9.8/1.0.0 format.  The OSG CA Distribution contains:  1) IGTF Distribution of Authority Root Certificates (CAs accredited by the International Grid Trust Federation) and 2) Purdue TeraGrid CA. Details of CAs in the OSG distribution can be found on twiki at https://twiki.grid.iu.edu/bin/view/Documentation/CaDistribution. For additional details what is in the current release, see the distribution site at http://software.grid.iu.edu/pacman/cadist/ and change log at http://software.grid.iu.edu/pacman/cadist/CHANGES. 
 
 
@@ -18,6 +18,7 @@ BuildArch:      noarch
 Provides:       grid-certificates = 7
 
 Conflicts:      osg-ca-scripts
+Conflicts:      cilogon-ca-certs < 1.0-5
 
 Obsoletes:      vdt-ca-certs
 Obsoletes:      osg-ca-certs-experimental
@@ -46,6 +47,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc
 
 %changelog
+* Wed Jul 2 2014 Anand Padmanabhan <apadmana@uiuc.edu> - 1.40-2
+- Added conflict for cilogon-ca-certs < 1.0-5
+
 * Mon Jun 30 2014 Anand Padmanabhan <apadmana@uiuc.edu> - 1.40-1
 - CA release corresponding to IGTF 1.58 release.
 - IGTF Accredited IOTA (Identifier-Only Trust Assurance Services) profile CAs (e.g. cilogon-basic) will be included from this release. Details on this profile are at https://www.eugridpma.org/guidelines/IOTA/.
