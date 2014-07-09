@@ -559,17 +559,17 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_sbindir}/clone_glidein
 %attr(-, root, root) %dir %{_localstatedir}/lib/gwms-factory
 %attr(-, root, root) %{_localstatedir}/lib/gwms-factory/client-proxies
-%attr(-, gfactory, gfactory) %{factory_web_dir}
-%attr(-, gfactory, gfactory) %{factory_web_base}
+%attr(-, gfactory, -) %{factory_web_dir}
+%attr(-, gfactory, -) %{factory_web_base}
 
 %if %{v3_plus}
-%attr(-, gfactory, gfactory) %{factory_web_base}/../creation
+%attr(-, gfactory, -) %{factory_web_base}/../creation
 %endif
-%attr(-, gfactory, gfactory) %{factory_dir}
-%attr(-, gfactory, gfactory) %dir %{condor_dir}
+%attr(-, gfactory, -) %{factory_dir}
+%attr(-, gfactory, -) %dir %{condor_dir}
 %attr(-, root, root) %dir %{_localstatedir}/log/gwms-factory
 %attr(-, root, root) %dir %{_localstatedir}/log/gwms-factory/client
-%attr(-, gfactory, gfactory) %{_localstatedir}/log/gwms-factory/server
+%attr(-, gfactory, -) %{_localstatedir}/log/gwms-factory/server
 %{python_sitelib}/glideinwms/__init__.py
 %{python_sitelib}/glideinwms/__init__.pyc
 %{python_sitelib}/glideinwms/__init__.pyo
@@ -614,8 +614,8 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/glideinwms/tools
 %{_initrddir}/gwms-factory
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/gwms-factory.conf
-%attr(-, gfactory, gfactory) %dir %{_sysconfdir}/gwms-factory
-%attr(-, gfactory, gfactory) %config(noreplace) %{_sysconfdir}/gwms-factory/glideinWMS.xml
+%attr(-, gfactory, -) %dir %{_sysconfdir}/gwms-factory
+%attr(-, gfactory, -) %config(noreplace) %{_sysconfdir}/gwms-factory/glideinWMS.xml
 %config(noreplace) %{_sysconfdir}/sysconfig/gwms-factory
 
 %files vofrontend-standalone
@@ -633,11 +633,11 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_sbindir}/glideinFrontendElement.py*
 %attr(755,root,root) %{_sbindir}/reconfig_frontend
 %attr(755,root,root) %{_sbindir}/stopFrontend
-%attr(-, frontend, frontend) %dir %{_localstatedir}/lib/gwms-frontend
-%attr(-, frontend, frontend) %{web_dir}
-%attr(-, frontend, frontend) %{web_base}
-%attr(-, frontend, frontend) %{frontend_dir}
-%attr(-, frontend, frontend) %{_localstatedir}/log/gwms-frontend
+%attr(-, frontend, -) %dir %{_localstatedir}/lib/gwms-frontend
+%attr(-, frontend, -) %{web_dir}
+%attr(-, frontend, -) %{web_base}
+%attr(-, frontend, -) %{frontend_dir}
+%attr(-, frontend, -) %{_localstatedir}/log/gwms-frontend
 %{python_sitelib}/glideinwms/__init__.py
 %{python_sitelib}/glideinwms/__init__.pyc
 %{python_sitelib}/glideinwms/__init__.pyo
@@ -681,11 +681,11 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 %{_initrddir}/gwms-frontend
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/gwms-frontend.conf
-%attr(-, frontend, frontend) %dir %{_sysconfdir}/gwms-frontend
-%attr(-, frontend, frontend) %config(noreplace) %{_sysconfdir}/gwms-frontend/frontend.xml
+%attr(-, frontend, -) %dir %{_sysconfdir}/gwms-frontend
+%attr(-, frontend, -) %config(noreplace) %{_sysconfdir}/gwms-frontend/frontend.xml
 %config(noreplace) %{_sysconfdir}/sysconfig/gwms-frontend
 %if %{v3_plus}
-%attr(-, frontend, frontend) %{web_base}/../creation
+%attr(-, frontend, -) %{web_base}/../creation
 %endif
 
 
