@@ -20,8 +20,8 @@ Name:           glideinwms
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
 %if %{v3_plus}
-%define version 3.2.5.1
-%define release 2
+%define version 3.2.6
+%define release 0.1.rc1
 %define frontend_xml frontend.master.xml
 %define factory_xml glideinWMS.master.xml
 %endif
@@ -525,7 +525,7 @@ rm -rf $RPM_BUILD_ROOT
 %files vofrontend
    
 %files factory
-%defattr(-,gfactory,gfactory,-)
+%defattr(-,gfactory,-,-)
 %doc LICENSE.txt
 %doc ACKNOWLEDGMENTS.txt
 %doc doc
@@ -619,7 +619,7 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/sysconfig/gwms-factory
 
 %files vofrontend-standalone
-%defattr(-,frontend,frontend,-)
+%defattr(-,frontend,-,-)
 %doc LICENSE.txt
 %doc ACKNOWLEDGMENTS.txt
 %doc doc
@@ -729,6 +729,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Jul 9 2014 Parag Mhashilkar <parag@fnal.gov> - 3.2.6-0.1.rc1
+- Removed the group name in the default dir ownership for factory and frontend
+
 * Wed Jun 25 2014 Parag Mhashilkar <parag@fnal.gov> - 3.2.5.1-2
 - Added GOC factory info in the factory config template
 
