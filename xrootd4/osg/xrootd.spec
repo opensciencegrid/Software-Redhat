@@ -4,7 +4,7 @@
 Name:      xrootd4
 Epoch:     1
 Version:   4.0.0
-Release:   1.2%{?dist}%{?_with_cpp11:.cpp11}%{?_with_clang:.clang}
+Release:   1.3%{?dist}%{?_with_cpp11:.cpp11}%{?_with_clang:.clang}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -91,7 +91,7 @@ latency and increased throughput.
 Summary:	Libraries used by xrootd servers and clients
 Group:		System Environment/Libraries
 #Conflicts: xrootd-libs
-Obsoletes: xrootd-libs
+Obsoletes: xrootd-libs < 1:4.0.0
 Provides: xrootd-libs = 1:%{version}-%{release}
 
 %description libs
@@ -105,7 +105,7 @@ Summary:	Development files for xrootd
 Group:		Development/Libraries
 Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
 #Conflicts: xrootd-devel
-Obsoletes: xrootd-devel
+Obsoletes: xrootd-devel < 1:4.0.0
 Provides: xrootd-devel = 1:%{version}-%{release}
 
 %description devel
@@ -120,7 +120,7 @@ Summary:	Libraries used by xrootd clients
 Group:		System Environment/Libraries
 Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
 #Conflicts: xrootd-client-libs
-Obsoletes: xrootd-client-libs
+Obsoletes: xrootd-client-libs < 1:4.0.0
 
 %description client-libs
 This package contains libraries used by xrootd clients.
@@ -134,7 +134,7 @@ Group:		Development/Libraries
 Requires:	%{name}-devel%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-client-libs%{?_isa} = %{epoch}:%{version}-%{release}
 #Conflicts: xrootd-client-devel
-Obsoletes: xrootd-client-devel
+Obsoletes: xrootd-client-devel < 1:4.0.0
 Provides: xrootd-client-devel = 1:%{version}-%{release}
 
 %description client-devel
@@ -150,7 +150,7 @@ Group:		System Environment/Libraries
 Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-client-libs%{?_isa} = %{epoch}:%{version}-%{release}
 #Conflicts: xrootd-server-libs
-Obsoletes: xrootd-server-libs
+Obsoletes: xrootd-server-libs < 1:4.0.0
 
 %description server-libs
 This package contains libraries used by xrootd servers.
@@ -165,7 +165,7 @@ Requires:	%{name}-devel%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-client-devel%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-server-libs%{?_isa} = %{epoch}:%{version}-%{release}
 #Conflicts: xrootd-server-devel
-Obsoletes: xrootd-server-devel
+Obsoletes: xrootd-server-devel < 1:4.0.0
 Provides: xrootd-server-devel = %{epoch}:%{version}-%{release}
 
 %description server-devel
@@ -183,7 +183,7 @@ Requires:	%{name}-libs = %{epoch}:%{version}-%{release}
 BuildArch:	noarch
 %endif
 #Conflicts: xrootd-private-devel
-Obsoletes: xrootd-private-devel
+Obsoletes: xrootd-private-devel < 1.4.0.0
 
 %description private-devel
 This package contains some private xrootd headers. The use of these
@@ -199,7 +199,7 @@ Group:		Applications/Internet
 Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-client-libs%{?_isa} = %{epoch}:%{version}-%{release}
 #Conflicts: xrootd-client
-Obsoletes: xrootd-client
+Obsoletes: xrootd-client < 1.4.0.0
 Provides: xrootd-client = 1:%{version}-%{release}
 
 %description client
@@ -216,7 +216,7 @@ Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-client-libs%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	fuse
 #Conflicts: xrootd-fuse
-Obsoletes: xrootd-fuse
+Obsoletes: xrootd-fuse < 1:4.0.0
 Provides: xrootd-fuse = 1:%{version}-%{release}
 
 
@@ -596,7 +596,7 @@ semodule -R
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
-* Thu Jun 5 2014 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1:4.0.0-1.2
+* Fri Jul 11 2014 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1:4.0.0-1.3
 - Added some obsoletes and provides statement from the hcc build
 
 * Thu Jun 5 2014 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1:4.0.0-1.1
