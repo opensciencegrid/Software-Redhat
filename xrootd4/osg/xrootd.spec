@@ -4,7 +4,7 @@
 Name:      xrootd4
 Epoch:     1
 Version:   4.0.0
-Release:   1.1%{?dist}%{?_with_cpp11:.cpp11}%{?_with_clang:.clang}
+Release:   1.2%{?dist}%{?_with_cpp11:.cpp11}%{?_with_clang:.clang}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -53,8 +53,9 @@ BuildRequires: clang
 Requires:	  %{name}-libs        = %{epoch}:%{version}-%{release}
 Requires:	  %{name}-client-libs = %{epoch}:%{version}-%{release}
 Requires:	  %{name}-server-libs = %{epoch}:%{version}-%{release}
-Conflicts:  xrootd
+#Conflicts:  xrootd
 #Added the conflicts statements to prevent old plugins from using xroot4 rpms
+Obsoletes: xrootd < 1:4.0.0
 Conflicts: xrootd-cmstfc < 1.5.1-7
 Conflicts: xrootd-dsi < 3.0.4-12
 Conflicts: xrootd-hdfs < 1.8.4-2
@@ -89,7 +90,9 @@ latency and increased throughput.
 %package libs
 Summary:	Libraries used by xrootd servers and clients
 Group:		System Environment/Libraries
-Conflicts: xrootd-libs
+#Conflicts: xrootd-libs
+Obsoletes: xrootd-libs
+Provides: xrootd-libs = 1:%{version}-%{release}
 
 %description libs
 This package contains libraries used by the xrootd servers and clients.
@@ -101,7 +104,9 @@ This package contains libraries used by the xrootd servers and clients.
 Summary:	Development files for xrootd
 Group:		Development/Libraries
 Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
-Conflicts: xrootd-devel
+#Conflicts: xrootd-devel
+Obsoletes: xrootd-devel
+Provides: xrootd-devel = 1:%{version}-%{release}
 
 %description devel
 This package contains header files and development libraries for xrootd
@@ -114,7 +119,8 @@ development.
 Summary:	Libraries used by xrootd clients
 Group:		System Environment/Libraries
 Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
-Conflicts: xrootd-client-libs
+#Conflicts: xrootd-client-libs
+Obsoletes: xrootd-client-libs
 
 %description client-libs
 This package contains libraries used by xrootd clients.
@@ -127,7 +133,9 @@ Summary:	Development files for xrootd clients
 Group:		Development/Libraries
 Requires:	%{name}-devel%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-client-libs%{?_isa} = %{epoch}:%{version}-%{release}
-Conflicts: xrootd-client-devel
+#Conflicts: xrootd-client-devel
+Obsoletes: xrootd-client-devel
+Provides: xrootd-client-devel = 1:%{version}-%{release}
 
 %description client-devel
 This package contains header files and development libraries for xrootd
@@ -141,7 +149,8 @@ Summary:	Libraries used by xrootd servers
 Group:		System Environment/Libraries
 Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-client-libs%{?_isa} = %{epoch}:%{version}-%{release}
-Conflicts: xrootd-server-libs
+#Conflicts: xrootd-server-libs
+Obsoletes: xrootd-server-libs
 
 %description server-libs
 This package contains libraries used by xrootd servers.
@@ -155,7 +164,9 @@ Group:		Development/Libraries
 Requires:	%{name}-devel%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-client-devel%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-server-libs%{?_isa} = %{epoch}:%{version}-%{release}
-Conflicts: xrootd-server-devel
+#Conflicts: xrootd-server-devel
+Obsoletes: xrootd-server-devel
+Provides: xrootd-server-devel = %{epoch}:%{version}-%{release}
 
 %description server-devel
 This package contains header files and development libraries for xrootd
@@ -171,7 +182,8 @@ Requires:	%{name}-libs = %{epoch}:%{version}-%{release}
 %if %{?fedora}%{!?fedora:0} >= 10 || %{?rhel}%{!?rhel:0} >= 6
 BuildArch:	noarch
 %endif
-Conflicts: xrootd-private-devel
+#Conflicts: xrootd-private-devel
+Obsoletes: xrootd-private-devel
 
 %description private-devel
 This package contains some private xrootd headers. The use of these
@@ -186,7 +198,9 @@ Summary:	Xrootd command line client tools
 Group:		Applications/Internet
 Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-client-libs%{?_isa} = %{epoch}:%{version}-%{release}
-Conflicts: xrootd-client
+#Conflicts: xrootd-client
+Obsoletes: xrootd-client
+Provides: xrootd-client = 1:%{version}-%{release}
 
 %description client
 This package contains the command line tools used to communicate with
@@ -201,7 +215,10 @@ Group:		Applications/Internet
 Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-client-libs%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	fuse
-Conflicts: xrootd-fuse
+#Conflicts: xrootd-fuse
+Obsoletes: xrootd-fuse
+Provides: xrootd-fuse = 1:%{version}-%{release}
+
 
 %description fuse
 This package contains the FUSE (file system in user space) xrootd mount
@@ -579,6 +596,9 @@ semodule -R
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Thu Jun 5 2014 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1:4.0.0-1.2
+- Added some obsoletes and provides statement from the hcc build
+
 * Thu Jun 5 2014 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1:4.0.0-1.1
 - First packaging of the official release 4.0.0
 
