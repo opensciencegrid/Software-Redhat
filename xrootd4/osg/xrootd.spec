@@ -4,7 +4,7 @@
 Name:      xrootd4
 Epoch:     1
 Version:   4.0.0
-Release:   1.3%{?dist}%{?_with_cpp11:.cpp11}%{?_with_clang:.clang}
+Release:   1.4%{?dist}%{?_with_cpp11:.cpp11}%{?_with_clang:.clang}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -183,7 +183,7 @@ Requires:	%{name}-libs = %{epoch}:%{version}-%{release}
 BuildArch:	noarch
 %endif
 #Conflicts: xrootd-private-devel
-Obsoletes: xrootd-private-devel < 1.4.0.0
+Obsoletes: xrootd-private-devel < 1:4.0.0
 
 %description private-devel
 This package contains some private xrootd headers. The use of these
@@ -199,7 +199,7 @@ Group:		Applications/Internet
 Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-client-libs%{?_isa} = %{epoch}:%{version}-%{release}
 #Conflicts: xrootd-client
-Obsoletes: xrootd-client < 1.4.0.0
+Obsoletes: xrootd-client < 1:4.0.0
 Provides: xrootd-client = 1:%{version}-%{release}
 
 %description client
@@ -596,7 +596,7 @@ semodule -R
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
-* Fri Jul 11 2014 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1:4.0.0-1.3
+* Fri Jul 11 2014 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1:4.0.0-1.4
 - Added some obsoletes and provides statement from the hcc build
 
 * Thu Jun 5 2014 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1:4.0.0-1.1
