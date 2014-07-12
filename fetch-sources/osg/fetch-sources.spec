@@ -6,7 +6,7 @@
 Summary:   Fetch sources from upstream (internal use)
 Name:      fetch-sources
 Version:   0.0.1
-Release:   2%{?dist}
+Release:   3%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
 Source0:   %{name}
@@ -35,6 +35,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/%{name}
 
 %changelog
+* Fri Jul 11 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 0.0.1-3
+- Bump to rebuild
+
 * Mon Feb 13 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 0.0.1-2
 bumped
 
