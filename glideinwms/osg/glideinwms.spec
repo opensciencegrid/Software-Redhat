@@ -730,6 +730,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 * Wed Jul 9 2014 Parag Mhashilkar <parag@fnal.gov> - 3.2.6-0.1.rc1
+- Glideinwms v3.2.6 rc1 release
 - Removed the group name in the default dir ownership for factory and frontend
 
 * Wed Jun 25 2014 Parag Mhashilkar <parag@fnal.gov> - 3.2.5.1-2
