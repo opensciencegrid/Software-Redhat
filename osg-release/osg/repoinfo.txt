@@ -1,0 +1,16 @@
+#YUMREPO                  SERIES    REPO         TEMPLATE  TITLE
+
+osg                       3.2       release      standard
+osg-development           3.2       development  standard  Development
+osg-testing               3.2       testing      standard  Testing
+osg-contrib               3.2       contrib      standard  Contributed
+osg-empty                 3.2       empty        basic     Empty_Packages
+osg-minefield             3.2       development  koji      Build_Repository
+osg-prerelease            3.2       prerelease   koji      Prerelease_Repository_for_Internal_Use
+
+osg-upcoming              upcoming  release      standard  Upcoming
+osg-upcoming-development  upcoming  development  standard  Upcoming_Development
+osg-upcoming-testing      upcoming  testing      standard  Upcoming_Testing
+osg-upcoming-minefield    upcoming  development  koji      Upcoming_Build_Repository
+osg-upcoming-prerelease   upcoming  prerelease   koji      Upcoming_Prerelease_Repository_for_Internal_Use
+
