@@ -1,9 +1,0 @@
-[osg-upcoming-minefield]
-name=OSG Software for Enterprise Linux 6 - Upcoming Build Repository - $basearch 
-baseurl=http://koji-hub.batlab.org/mnt/koji/repos/osg-upcoming-el6-development/latest/$basearch/
-failovermethod=priority
-priority=98
-enabled=0
-gpgcheck=1
-gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-OSG
-consider_as_osg=yes
