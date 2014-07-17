@@ -1,0 +1,29 @@
+[{YUMREPO}]
+name=OSG Software for Enterprise Linux {EL} {TITLE} $basearch
+#baseurl=http://repo-itb.grid.iu.edu/osg/{SERIES}/el{EL}/{REPO}/$basearch
+mirrorlist=http://repo-itb.grid.iu.edu/mirror/osg/{SERIES}/el{EL}/{REPO}/$basearch
+failovermethod=priority
+priority=98
+enabled={ENABLED}
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-OSG
+consider_as_osg=yes
+
+[{YUMREPO}-source]
+name=OSG Software for Enterprise Linux {EL} {TITLE} $basearch - Source
+baseurl=http://repo-itb.grid.iu.edu/osg/{SERIES}/el{EL}/{REPO}/source/SRPMS
+failovermethod=priority
+priority=98
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-OSG
+
+[{YUMREPO}-debug]
+name=OSG Software for Enterprise Linux {EL} {TITLE} $basearch - Debug
+baseurl=http://repo-itb.grid.iu.edu/osg/{SERIES}/el{EL}/{REPO}/$basearch/debug
+failovermethod=priority
+priority=98
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-OSG
+
