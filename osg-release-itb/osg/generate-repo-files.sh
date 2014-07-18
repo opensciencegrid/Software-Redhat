@@ -20,8 +20,8 @@ esac
 
 mkrepofile () {
   [[ $TEMPLATE ]] || return
-  if [[ ! -e $TEMPLATEDIR/$TEMPLATE.repo.template ]]; then
-    echo "Warning: $TEMPLATE.repo.template does not exist!" >&2
+  if [[ ! -e $TEMPLATEDIR/template.repo.$TEMPLATE ]]; then
+    echo "Warning: template.repo.$TEMPLATE does not exist!" >&2
     return
   fi
 
@@ -48,7 +48,7 @@ mkrepofile () {
     s/{SERIES}/$SERIES/
     s/{REPO}/$REPO/
     s/{TITLE}/$TITLE/
-  " "$TEMPLATEDIR/$TEMPLATE.repo.template" > "$REPOFILE"
+  " "$TEMPLATEDIR/template.repo.$TEMPLATE" > "$REPOFILE"
 
   echo "Wrote: $REPOFILE"
 }

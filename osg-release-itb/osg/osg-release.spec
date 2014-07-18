@@ -14,9 +14,9 @@ URL:            http://vdt.cs.wisc.edu/repos
 
 Source0:        generate-repo-files.sh
 Source1:        repoinfo.txt
-Source2:        standard.repo.template
-Source3:        basic.repo.template
-Source4:        koji.repo.template
+Source2:        template.repo.standard
+Source3:        template.repo.basic
+Source4:        template.repo.koji
 
 Source40:       RPM-GPG-KEY-OSG
 
