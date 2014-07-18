@@ -1,5 +1,5 @@
 Name: htcondor-ce
-Version: 1.2
+Version: 1.3
 Release: 1%{?dist}
 Summary: A framework to run HTCondor as a CE
 
@@ -245,6 +245,11 @@ fi
 %{_bindir}/condor_ce_ping
 
 %changelog
+* Fri Jul 18 2014 Brian Lin <blin@cs.wisc.edu> - 1.3-1
+- Fix bug that prevented HTCondor-CE from starting if running HTCondor > 8.0.x
+- Hold then remove jobs that don't match any job router entries
+- Enable special ClassAd attributes set by GlideinWMS Factories
+
 * Mon Jun 30 2014 Brian Lin <blin@cs.wisc.edu> - 1.2-1
 - Fix bug where condor-ce wouldn't start
 
