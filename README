@@ -1,0 +1,46 @@
+Branch for OSG packaging of PanDA
+
+PanDA Links / comments:  (from Jarka of PanDA team)
+
+RPM repository:
+  https://pandabuild.cern.ch/SRPMS/
+  https://pandabuild.cern.ch/x86_64/
+
+BigPanDA homepage:
+  http://pandawms.org/
+
+JenkinsCI instance:
+  http://pandabuild.cern.ch:8080/jenkins/
+Configuration of the projects (for the distutils and related commands sequence):
+  http://svnweb.cern.ch/guest/panda/panda-build/trunk/jenkinsCI-config/
+
+
+Code repository:
+* PanDA server:
+  since OSG plans to use MySQL DB, stick to mysql branch for now.
+  (planned to be merged into master in the next couple weeks)
+
+  https://github.com/PanDAWMS/panda-server/tree/mysql
+
+  Needs also
+    https://github.com/PanDAWMS/panda-common
+    https://github.com/PanDAWMS/panda-jedi
+
+
+* PanDA monitor:
+  currently in SVN: the job monitoring is currently parted into 2 packages,
+  will be re-rationalized when we migrate from SVN to GitHub:
+
+  http://svnweb.cern.ch/guest/panda/panda-bigmon/branches/wenaus/dev1/bigpandamon-core/
+  http://svnweb.cern.ch/guest/panda/panda-bigmon/branches/wenaus/dev1/bigpandamon-lsst/
+
+
+* PanDA pilot factory:
+  Get in touch with John Hover and Jose Caballero for this
+
+* PanDA pilot:
+  code in SVN, distributed via tarball releases placed on a known webserver
+  location, this location is propagated via pilot factory configuration
+
+  http://svnweb.cern.ch/guest/panda/pilot/trunk/
+
