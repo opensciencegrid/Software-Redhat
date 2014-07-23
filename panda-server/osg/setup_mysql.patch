@@ -1,0 +1,38 @@
+diff --git a/setup_mysql.py b/setup_mysql.py
+index 3e17b84..6e11e01 100755
+--- a/setup_mysql.py
++++ b/setup_mysql.py
+@@ -3,7 +3,8 @@
+ # Setup prog for Panda Server
+ #
+ #
+-from version import __version__, __provides__
++#from version import __version__, __provides__
++release_version='0.0.5'
+ prefix = '/data/atlpan/srv'
+ # prefix = '/data/pansrv/srv'
+ 
+@@ -121,6 +122,9 @@ class install_data_panda (install_data_org):
+                         raise RuntimeError,'unknown pattern %s in %s' % (item,srcFile)
+                     # get pattern
+                     patt = getattr(self,item)
++                    # remove install root, if any
++                    if self.root is not None and patt.startswith(self.root):
++                            patt = patt[len(self.root):]
+                     # remove build/*/dump for bdist
+                     patt = re.sub('build/[^/]+/dumb','',patt)
+                     # remove /var/tmp/*-buildroot for bdist_rpm
+@@ -145,9 +149,10 @@ class install_data_panda (install_data_org):
+         
+ # setup for distutils
+ setup(
+-#    name="panda-server-mysql",
+-    name=__provides__,
+-    version=__version__,
++    name="panda-server-mysql",
++#   name=__provides__,
++#   version=__version__,
++    version=release_version,
+     description='MySQL branch of the PanDA Server Package',
+     long_description='''This package contains PanDA Server Components''',
+     license='GPL',
