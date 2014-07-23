@@ -1,7 +1,16 @@
 diff --git a/setup.py b/setup.py
-index 43c13f5..c7e84eb 100644
+index 43c13f5..ad3ffbc 100644
 --- a/setup.py
 +++ b/setup.py
+@@ -23,7 +23,7 @@ from distutils.command.install_data import install_data as install_data_org
+ class install_panda(install_org):
+     def initialize_options (self):
+         install_org.initialize_options(self)
+-        self.prefix = '/data/atlpan/srv'
++#       self.prefix = '/data/atlpan/srv'
+                     
+ 
+ # generates files using templates and install them
 @@ -63,6 +63,9 @@ class install_data_panda (install_data_org):
                          raise RuntimeError,'unknown pattern %s in %s' % (item,srcFile)
                      # get pattern
@@ -12,3 +21,14 @@ index 43c13f5..c7e84eb 100644
                      # remove build/*/dump for bdist
                      patt = re.sub('build/[^/]+/dumb','',patt)
                      # remove /var/tmp/*-buildroot for bdist_rpm
+@@ -98,8 +101,8 @@ setup(
+                'pandacommon.pandautils',
+               ],
+     data_files=[ 
+-                ('etc/panda',  
+-                 ['templates/panda_common.cfg.rpmnew.template']
++                ('/etc/panda',
++                 ['templates/panda_common.cfg.template']
+                  ),
+                 ],
+     cmdclass={'install': install_panda,

@@ -1,7 +1,7 @@
 %define name panda-common
 %define version 0.0.5.3
 %define unmangled_version 0.0.5.3
-%define release 0.1
+%define release 0.2
 
 Summary:  PanDA Common Package
 Name: %{name}
@@ -29,12 +29,15 @@ This package contains PanDA Common Components
 
 %build
 python setup.py build
+rename .rpmnew. . templates/*.rpmnew.template
 
 %install
-python setup.py install -O1 --root=$RPM_BUILD_ROOT --prefix=/usr --record=INSTALLED_FILES
+python setup.py install -O1 --root=$RPM_BUILD_ROOT --record=INSTALLED_FILES
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files -f INSTALLED_FILES
 %defattr(-,root,root)
+%config(noreplace) /etc/panda/panda_common.cfg
+
