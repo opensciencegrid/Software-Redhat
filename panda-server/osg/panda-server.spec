@@ -1,6 +1,6 @@
 %define name panda-server
 %define version 0.0.20.28
-%define unmangled_version 0.0.20.28
+%define unmangled_version 0.0.20.28.mysql
 %define release 1
 
 Summary:  PanDA Server Package
