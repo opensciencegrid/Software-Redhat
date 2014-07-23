@@ -1,12 +1,12 @@
 %define name panda-common
 %define version 0.0.5.3
 %define unmangled_version 0.0.5.3
-%define release 1
+%define release 0.1
 
 Summary:  PanDA Common Package
 Name: %{name}
 Version: %{version}
-Release: %{release}
+Release: %{release}%{?dist}
 Source0: %{name}-%{unmangled_version}.tar.gz
 License: GPL
 Group: Development/Libraries
