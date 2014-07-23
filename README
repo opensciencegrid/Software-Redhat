@@ -1,5 +1,10 @@
 Branch for OSG packaging of PanDA
 
+Build with:
+
+  osg-build koji --el6 --ktt=panda-el6 [package]
+
+
 PanDA Links / comments:  (from Jarka of PanDA team)
 
 RPM repository:
