@@ -8,6 +8,7 @@ Name: %{name}
 Version: %{version}
 Release: %{release}%{?dist}
 Source0: %{name}-%{unmangled_version}.tar.gz
+Patch0: setup_mysql.patch
 License: GPL
 Group: Development/Libraries
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
@@ -24,12 +25,13 @@ This package contains PanDA Server Components
 
 %prep
 %setup -n %{name}-%{unmangled_version}
+%patch0 -p1
 
 %build
-python setup.py build
+python setup_mysql.py build
 
 %install
-python setup.py install -O1 --root=$RPM_BUILD_ROOT --record=INSTALLED_FILES
+python setup_mysql.py install -O1 --root=$RPM_BUILD_ROOT --prefix=/usr --record=INSTALLED_FILES
 
 %clean
 rm -rf $RPM_BUILD_ROOT
