@@ -1,0 +1,9 @@
+[osg-panda]
+name=OSG PanDA packages for Enterprise Linux 6 - $basearch
+baseurl=http://koji-hub.batlab.org/mnt/koji/repos/panda-el6/latest/$basearch/
+failovermethod=priority
+priority=98
+enabled=1
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-OSG
+
