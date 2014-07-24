@@ -1,14 +1,16 @@
+%global betatag beta1
 
 Name:           osg-build
-Version:        1.3.8
-Release:        1%{?dist}
+Version:        1.4.0
+#Release:        1%{?dist}
+Release:        0.1.%{betatag}%{?dist}
 Summary:        Build tools for the OSG
 
 Group:          System Environment/Tools
 License:        Apache 2.0
 URL:            https://twiki.grid.iu.edu/bin/view/SoftwareTeam/OSGBuildTools
 
-Source0:        %{name}-%{version}.tar.gz
+Source0:        %{name}-%{version}%{?betatag}.tar.gz
 Patch0:         koji-hub-testing.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -35,7 +37,7 @@ See %{url} for details.
 
 
 %prep
-%setup -q
+%setup -q -n %{name}-%{version}%{?betatag}
 
 # changes the koji-hub URL to koji-hub-testing.chtc.wisc.edu, for testing only
 # % patch0 -p1
@@ -51,7 +53,6 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %{_bindir}/%{name}
 %{_bindir}/koji-blame
-%{_bindir}/koji-tag-checker
 %{_bindir}/koji-tag-diff
 %{_bindir}/osg-build-test
 %{_bindir}/osg-import-srpm
@@ -69,6 +70,10 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_docdir}/%{name}/sample-osg-build.ini
 
 %changelog
+* Thu Jul 24 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.4.0-0.1.beta1
+- EL7 support
+- Removed koji-tag-checker
+
 * Mon Jun 23 2014 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.3.8-1
 - Add koji-blame, a tool for listing koji tagging history (SOFTWARE-1113)
 
