@@ -1,0 +1,83 @@
+diff --git a/setup_mysql.py b/setup_mysql.py
+index 3e17b84..9e26abc 100755
+--- a/setup_mysql.py
++++ b/setup_mysql.py
+@@ -3,8 +3,9 @@
+ # Setup prog for Panda Server
+ #
+ #
+-from version import __version__, __provides__
+-prefix = '/data/atlpan/srv'
++#from version import __version__, __provides__
++release_version='0.0.2'
++# prefix = '/data/atlpan/srv'
+ # prefix = '/data/pansrv/srv'
+ 
+ 
+@@ -52,7 +53,7 @@ class install_panda(install_org):
+     def initialize_options (self):
+         install_org.initialize_options(self)
+ #        self.prefix = '/data/atlpan/srv'
+-        self.prefix = prefix
++#        self.prefix = prefix
+ 
+ 
+ # generates files using templates and install them
+@@ -121,6 +122,9 @@ class install_data_panda (install_data_org):
+                         raise RuntimeError,'unknown pattern %s in %s' % (item,srcFile)
+                     # get pattern
+                     patt = getattr(self,item)
++                    # remove install root, if any
++                    if self.root is not None and patt.startswith(self.root):
++                            patt = patt[len(self.root):]
+                     # remove build/*/dump for bdist
+                     patt = re.sub('build/[^/]+/dumb','',patt)
+                     # remove /var/tmp/*-buildroot for bdist_rpm
+@@ -145,9 +149,10 @@ class install_data_panda (install_data_org):
+         
+ # setup for distutils
+ setup(
+-#    name="panda-server-mysql",
+-    name=__provides__,
+-    version=__version__,
++    name="panda-server-mysql",
++#   name=__provides__,
++#   version=__version__,
++    version=release_version,
+     description='MySQL branch of the PanDA Server Package',
+     long_description='''This package contains PanDA Server Components''',
+     license='GPL',
+@@ -166,26 +171,26 @@ setup(
+               ],
+     data_files=[
+                 # config files 
+-                ('etc/panda', ['templates/panda_server-httpd.conf.rpmnew.template',
+-                               'templates/panda_server-httpd-FastCGI.conf.rpmnew.template',
+-                               'templates/panda_server.cfg.rpmnew.template',
++                ('/etc/panda', ['templates/panda_server-httpd.conf.template',
++                               'templates/panda_server-httpd-FastCGI.conf.template',
++                               'templates/panda_server.cfg.template',
+                                'templates/panda_server-grid-env.sh.template',
+                                ]
+                  ),
+                 # sysconfig
+-                ('etc/sysconfig', ['templates/panda_server-sysconfig.rpmnew.template',
++                ('/etc/sysconfig', ['templates/panda_server-sysconfig.template',
+                                    ]
+                  ),
+                 # logrotate
+-                ('etc/logrotate.d', ['templates/panda_server-logrotate.template',
++                ('/etc/logrotate.d', ['templates/panda_server-logrotate.template',
+                                      ]
+                  ),
+                 # init script
+-                ('etc/init.d', ['templates/panda_server-ctl.exe.template',
++                ('/etc/init.d', ['templates/panda_server-ctl.exe.template',
+                                    ]
+                  ),
+                 # crons
+-                ('usr/bin', ['templates/panda_server-add.sh.exe.template',
++                ('/usr/bin', ['templates/panda_server-add.sh.exe.template',
+                              'templates/panda_server-priority.sh.exe.template',
+                              'templates/panda_server-copyArchive.sh.exe.template',
+                              'templates/panda_server-copyROOT.sh.exe.template',

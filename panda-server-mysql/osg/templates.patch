@@ -1,0 +1,214 @@
+diff --git a/templates/panda_server-add.sh.exe.template b/templates/panda_server-add.sh.exe.template
+index 9037160..8f98e1d 100755
+--- a/templates/panda_server-add.sh.exe.template
++++ b/templates/panda_server-add.sh.exe.template
+@@ -4,7 +4,7 @@
+ source /etc/profile.d/grid-env.sh
+ 
+ # import env vars from sysconfig
+-source @@install_dir@@/etc/sysconfig/panda_server-sysconfig
++source /etc/sysconfig/panda_server-sysconfig
+ 
+ # set PYTHONPATH for LFC.py
+ ### there is no /usr/lib64/python@@python_exec_version@@/site-packages
+diff --git a/templates/panda_server-archivelog.sh.exe.template b/templates/panda_server-archivelog.sh.exe.template
+index d2b6699..3cc8339 100755
+--- a/templates/panda_server-archivelog.sh.exe.template
++++ b/templates/panda_server-archivelog.sh.exe.template
+@@ -1,6 +1,6 @@
+ #!/bin/bash
+ 
+ # import env vars from sysconfig
+-source @@install_dir@@/etc/sysconfig/panda_server-sysconfig
++source /etc/sysconfig/panda_server-sysconfig
+ 
+ python@@python_exec_version@@ @@install_purelib@@/pandaserver/test/archivelogs.py
+diff --git a/templates/panda_server-backupJobArch.sh.exe.template b/templates/panda_server-backupJobArch.sh.exe.template
+index bc896d8..6b165f1 100644
+--- a/templates/panda_server-backupJobArch.sh.exe.template
++++ b/templates/panda_server-backupJobArch.sh.exe.template
+@@ -1,6 +1,6 @@
+ #!/bin/bash
+ 
+ # import env vars from sysconfig
+-source @@install_dir@@/etc/sysconfig/panda_server-sysconfig
++source /etc/sysconfig/panda_server-sysconfig
+ 
+ python @@install_purelib@@/pandaserver/test/backupJobArch.py
+diff --git a/templates/panda_server-boostUser.sh.exe.template b/templates/panda_server-boostUser.sh.exe.template
+index f154199..bb05a54 100755
+--- a/templates/panda_server-boostUser.sh.exe.template
++++ b/templates/panda_server-boostUser.sh.exe.template
+@@ -1,6 +1,6 @@
+ #!/bin/bash
+ 
+ # import env vars from sysconfig
+-source @@install_dir@@/etc/sysconfig/panda_server-sysconfig
++source /etc/sysconfig/panda_server-sysconfig
+ 
+ echo $1 | python2.5 @@install_purelib@@/pandaserver/test/boostUser.py
+diff --git a/templates/panda_server-callback.sh.exe.template b/templates/panda_server-callback.sh.exe.template
+index aab766c..b5f64ff 100755
+--- a/templates/panda_server-callback.sh.exe.template
++++ b/templates/panda_server-callback.sh.exe.template
+@@ -4,7 +4,7 @@
+ source /etc/profile.d/grid-env.sh
+ 
+ # import env vars from sysconfig
+-source @@install_dir@@/etc/sysconfig/panda_server-sysconfig
++source /etc/sysconfig/panda_server-sysconfig
+ 
+ # set PYTHONPATH for dashboard
+ export PYTHONPATH=/opt/dashboard/lib/dashboard:/opt/dashboard/lib:$PYTHONPATH
+diff --git a/templates/panda_server-copyArchive.sh.exe.template b/templates/panda_server-copyArchive.sh.exe.template
+index 6f0f82b..f88a7bd 100755
+--- a/templates/panda_server-copyArchive.sh.exe.template
++++ b/templates/panda_server-copyArchive.sh.exe.template
+@@ -4,6 +4,6 @@
+ source /opt/glite/etc/profile.d/grid-env.sh
+ 
+ # import env vars from sysconfig
+-source @@install_dir@@/etc/sysconfig/panda_server-sysconfig
++source /etc/sysconfig/panda_server-sysconfig
+ 
+ python@@python_exec_version@@ @@install_purelib@@/pandaserver/test/copyArchive.py
+diff --git a/templates/panda_server-copyROOT.sh.exe.template b/templates/panda_server-copyROOT.sh.exe.template
+index efbd483..345035e 100755
+--- a/templates/panda_server-copyROOT.sh.exe.template
++++ b/templates/panda_server-copyROOT.sh.exe.template
+@@ -1,6 +1,6 @@
+ #!/bin/bash
+ 
+ # import env vars from sysconfig
+-source @@install_dir@@/etc/sysconfig/panda_server-sysconfig
++source /etc/sysconfig/panda_server-sysconfig
+ 
+ python @@install_purelib@@/pandaserver/test/copyROOT.py
+diff --git a/templates/panda_server-ctl.exe.template b/templates/panda_server-ctl.exe.template
+index fcff347..f3bc77c 100755
+--- a/templates/panda_server-ctl.exe.template
++++ b/templates/panda_server-ctl.exe.template
+@@ -68,8 +68,8 @@ fi
+ STATUSURL="http://localhost:80/server-status"
+ 
+ # Source /etc/sysconfig/httpd for $HTTPD setting, etc.
+-if [ -r @@install_dir@@/etc/sysconfig/panda_server-sysconfig ]; then
+-   . @@install_dir@@/etc/sysconfig/panda_server-sysconfig
++if [ -r /etc/sysconfig/panda_server-sysconfig ]; then
++   . /etc/sysconfig/panda_server-sysconfig
+ fi
+ 
+ ERROR=0
+diff --git a/templates/panda_server-datasetManager.sh.exe.template b/templates/panda_server-datasetManager.sh.exe.template
+index 26bde7f..2542c8d 100644
+--- a/templates/panda_server-datasetManager.sh.exe.template
++++ b/templates/panda_server-datasetManager.sh.exe.template
+@@ -4,6 +4,6 @@
+ source /opt/glite/etc/profile.d/grid-env.sh
+ 
+ # import env vars from sysconfig
+-source @@install_dir@@/etc/sysconfig/panda_server-sysconfig
++source /etc/sysconfig/panda_server-sysconfig
+ 
+ python@@python_exec_version@@ @@install_purelib@@/pandaserver/test/datasetManager.py
+diff --git a/templates/panda_server-deleteJobs.sh.exe.template b/templates/panda_server-deleteJobs.sh.exe.template
+index fd48e9e..a8b4270 100644
+--- a/templates/panda_server-deleteJobs.sh.exe.template
++++ b/templates/panda_server-deleteJobs.sh.exe.template
+@@ -1,6 +1,6 @@
+ #!/bin/bash
+ 
+ # import env vars from sysconfig
+-source @@install_dir@@/etc/sysconfig/panda_server-sysconfig
++source /etc/sysconfig/panda_server-sysconfig
+ 
+ python @@install_purelib@@/pandaserver/test/deleteJobs.py
+diff --git a/templates/panda_server-evpPD2P.sh.exe.template b/templates/panda_server-evpPD2P.sh.exe.template
+index 55f6d1b..2807a45 100755
+--- a/templates/panda_server-evpPD2P.sh.exe.template
++++ b/templates/panda_server-evpPD2P.sh.exe.template
+@@ -4,6 +4,6 @@
+ source /opt/glite/etc/profile.d/grid-env.sh
+ 
+ # import env vars from sysconfig
+-source @@install_dir@@/etc/sysconfig/panda_server-sysconfig
++source /etc/sysconfig/panda_server-sysconfig
+ 
+ python@@python_exec_version@@ @@install_purelib@@/pandaserver/test/evpPD2P.py
+diff --git a/templates/panda_server-merge.sh.exe.template b/templates/panda_server-merge.sh.exe.template
+index 99bc833..305af66 100755
+--- a/templates/panda_server-merge.sh.exe.template
++++ b/templates/panda_server-merge.sh.exe.template
+@@ -4,6 +4,6 @@
+ source /opt/glite/etc/profile.d/grid-env.sh
+ 
+ # import env vars from sysconfig
+-source @@install_dir@@/etc/sysconfig/panda_server-sysconfig
++source /etc/sysconfig/panda_server-sysconfig
+ 
+ python@@python_exec_version@@ @@install_purelib@@/pandaserver/test/runMerger.py
+diff --git a/templates/panda_server-priority.sh.exe.template b/templates/panda_server-priority.sh.exe.template
+index 3d1fe75..de27130 100755
+--- a/templates/panda_server-priority.sh.exe.template
++++ b/templates/panda_server-priority.sh.exe.template
+@@ -1,6 +1,6 @@
+ #!/bin/bash
+ 
+ # import env vars from sysconfig
+-source @@install_dir@@/etc/sysconfig/panda_server-sysconfig
++source /etc/sysconfig/panda_server-sysconfig
+ 
+ python@@python_exec_version@@ @@install_purelib@@/pandaserver/test/prioryMassage.py
+diff --git a/templates/panda_server-runRebro.sh.exe.template b/templates/panda_server-runRebro.sh.exe.template
+index 23b1f4d..f300223 100755
+--- a/templates/panda_server-runRebro.sh.exe.template
++++ b/templates/panda_server-runRebro.sh.exe.template
+@@ -4,6 +4,6 @@
+ source /etc/profile.d/grid-env.sh
+ 
+ # import env vars from sysconfig
+-source @@install_dir@@/etc/sysconfig/panda_server-sysconfig
++source /etc/sysconfig/panda_server-sysconfig
+ 
+ python@@python_exec_version@@ @@install_purelib@@/pandaserver/test/runRebro.py
+diff --git a/templates/panda_server-sysconfig.template b/templates/panda_server-sysconfig.template
+index e280d8a..f2a3199 100644
+--- a/templates/panda_server-sysconfig.template
++++ b/templates/panda_server-sysconfig.template
+@@ -1,9 +1,9 @@
+ # Configuration file for the httpd service.
+ 
+-OPTIONS="-f @@install_dir@@/etc/panda/panda_server-httpd.conf"
++OPTIONS="-f /etc/panda/panda_server-httpd.conf"
+ 
+ # for FastCGI/WSGI
+-#OPTIONS="-f @@install_dir@@/etc/panda/panda_server-httpd-FastCGI.conf"
++#OPTIONS="-f /etc/panda/panda_server-httpd-FastCGI.conf"
+ #HTTPD='/usr/sbin/httpd'
+ 
+ # reset PATH/LD_LIBRARY_PATH since atlpan's ones break grid-tools
+diff --git a/templates/panda_server-tmpwatch.sh.exe.template b/templates/panda_server-tmpwatch.sh.exe.template
+index 40fbd27..0887a5d 100644
+--- a/templates/panda_server-tmpwatch.sh.exe.template
++++ b/templates/panda_server-tmpwatch.sh.exe.template
+@@ -1,6 +1,6 @@
+ #!/bin/bash
+ 
+ # import env vars from sysconfig
+-source @@install_dir@@/etc/sysconfig/panda_server-sysconfig
++source /etc/sysconfig/panda_server-sysconfig
+ 
+ python @@install_purelib@@/pandaserver/test/tmpwatch.py
+diff --git a/templates/panda_server-vomsrenew.sh.exe.template b/templates/panda_server-vomsrenew.sh.exe.template
+index ce741a9..d6456f8 100755
+--- a/templates/panda_server-vomsrenew.sh.exe.template
++++ b/templates/panda_server-vomsrenew.sh.exe.template
+@@ -3,7 +3,7 @@
+ source /etc/profile.d/grid-env.sh
+ 
+ # import env vars from sysconfig
+-source @@install_dir@@/etc/sysconfig/panda_server-sysconfig
++source /etc/sysconfig/panda_server-sysconfig
+ 
+ NOVOMS=${X509_USER_PROXY}_novoms
+ 
