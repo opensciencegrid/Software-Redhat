@@ -1,12 +1,12 @@
 %define name panda-server-mysql
 %define version 0.0.2
 %define unmangled_version 0.0.2
-%define release 1
+%define release 0.1
 
 Summary: MySQL branch of the PanDA Server Package
 Name: %{name}
 Version: %{version}
-Release: %{release}
+Release: %{release}%{?dist}
 Source0: %{name}-%{unmangled_version}.tar.gz
 License: GPL
 Group: Development/Libraries
