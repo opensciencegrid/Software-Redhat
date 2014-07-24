@@ -1,91 +1,211 @@
+diff --git a/templates/panda_server-add.exe.template b/templates/panda_server-add.exe.template
+new file mode 100755
+index 0000000..f7622f4
+--- /dev/null
++++ b/templates/panda_server-add.exe.template
+@@ -0,0 +1,15 @@
++#!/bin/bash
++
++# setup grid stuff
++source /etc/profile.d/grid-env.sh
++
++# import env vars from sysconfig
++source /etc/sysconfig/panda_server
++
++# set PYTHONPATH for LFC.py
++### there is no /usr/lib64/python@@python_exec_version@@/site-packages
++### on EC2 instance of BigPanDA
++### export PYTHONPATH=/usr/lib64/python@@python_exec_version@@/site-packages:$PYTHONPATH
++
++python@@python_exec_version@@ @@install_purelib@@/pandaserver/test/add.py
++
 diff --git a/templates/panda_server-add.sh.exe.template b/templates/panda_server-add.sh.exe.template
-index 9037160..8f98e1d 100755
+deleted file mode 100755
+index 9037160..0000000
 --- a/templates/panda_server-add.sh.exe.template
-+++ b/templates/panda_server-add.sh.exe.template
-@@ -4,7 +4,7 @@
- source /etc/profile.d/grid-env.sh
- 
- # import env vars from sysconfig
++++ /dev/null
+@@ -1,15 +0,0 @@
+-#!/bin/bash
+-
+-# setup grid stuff
+-source /etc/profile.d/grid-env.sh
+-
+-# import env vars from sysconfig
 -source @@install_dir@@/etc/sysconfig/panda_server-sysconfig
-+source /etc/sysconfig/panda_server-sysconfig
- 
- # set PYTHONPATH for LFC.py
- ### there is no /usr/lib64/python@@python_exec_version@@/site-packages
+-
+-# set PYTHONPATH for LFC.py
+-### there is no /usr/lib64/python@@python_exec_version@@/site-packages
+-### on EC2 instance of BigPanDA
+-### export PYTHONPATH=/usr/lib64/python@@python_exec_version@@/site-packages:$PYTHONPATH
+-
+-python@@python_exec_version@@ @@install_purelib@@/pandaserver/test/add.py
+-
+diff --git a/templates/panda_server-archivelog.exe.template b/templates/panda_server-archivelog.exe.template
+new file mode 100755
+index 0000000..64a670b
+--- /dev/null
++++ b/templates/panda_server-archivelog.exe.template
+@@ -0,0 +1,6 @@
++#!/bin/bash
++
++# import env vars from sysconfig
++source /etc/sysconfig/panda_server
++
++python@@python_exec_version@@ @@install_purelib@@/pandaserver/test/archivelogs.py
 diff --git a/templates/panda_server-archivelog.sh.exe.template b/templates/panda_server-archivelog.sh.exe.template
-index d2b6699..3cc8339 100755
+deleted file mode 100755
+index d2b6699..0000000
 --- a/templates/panda_server-archivelog.sh.exe.template
-+++ b/templates/panda_server-archivelog.sh.exe.template
-@@ -1,6 +1,6 @@
- #!/bin/bash
- 
- # import env vars from sysconfig
++++ /dev/null
+@@ -1,6 +0,0 @@
+-#!/bin/bash
+-
+-# import env vars from sysconfig
 -source @@install_dir@@/etc/sysconfig/panda_server-sysconfig
-+source /etc/sysconfig/panda_server-sysconfig
- 
- python@@python_exec_version@@ @@install_purelib@@/pandaserver/test/archivelogs.py
+-
+-python@@python_exec_version@@ @@install_purelib@@/pandaserver/test/archivelogs.py
+diff --git a/templates/panda_server-backupJobArch.exe.template b/templates/panda_server-backupJobArch.exe.template
+new file mode 100644
+index 0000000..39f4d84
+--- /dev/null
++++ b/templates/panda_server-backupJobArch.exe.template
+@@ -0,0 +1,6 @@
++#!/bin/bash
++
++# import env vars from sysconfig
++source /etc/sysconfig/panda_server
++
++python @@install_purelib@@/pandaserver/test/backupJobArch.py
 diff --git a/templates/panda_server-backupJobArch.sh.exe.template b/templates/panda_server-backupJobArch.sh.exe.template
-index bc896d8..6b165f1 100644
+deleted file mode 100644
+index bc896d8..0000000
 --- a/templates/panda_server-backupJobArch.sh.exe.template
-+++ b/templates/panda_server-backupJobArch.sh.exe.template
-@@ -1,6 +1,6 @@
- #!/bin/bash
- 
- # import env vars from sysconfig
++++ /dev/null
+@@ -1,6 +0,0 @@
+-#!/bin/bash
+-
+-# import env vars from sysconfig
 -source @@install_dir@@/etc/sysconfig/panda_server-sysconfig
-+source /etc/sysconfig/panda_server-sysconfig
- 
- python @@install_purelib@@/pandaserver/test/backupJobArch.py
+-
+-python @@install_purelib@@/pandaserver/test/backupJobArch.py
+diff --git a/templates/panda_server-boostUser.exe.template b/templates/panda_server-boostUser.exe.template
+new file mode 100755
+index 0000000..42f6b41
+--- /dev/null
++++ b/templates/panda_server-boostUser.exe.template
+@@ -0,0 +1,6 @@
++#!/bin/bash
++
++# import env vars from sysconfig
++source /etc/sysconfig/panda_server
++
++echo $1 | python2.5 @@install_purelib@@/pandaserver/test/boostUser.py
 diff --git a/templates/panda_server-boostUser.sh.exe.template b/templates/panda_server-boostUser.sh.exe.template
-index f154199..bb05a54 100755
+deleted file mode 100755
+index f154199..0000000
 --- a/templates/panda_server-boostUser.sh.exe.template
-+++ b/templates/panda_server-boostUser.sh.exe.template
-@@ -1,6 +1,6 @@
- #!/bin/bash
- 
- # import env vars from sysconfig
++++ /dev/null
+@@ -1,6 +0,0 @@
+-#!/bin/bash
+-
+-# import env vars from sysconfig
 -source @@install_dir@@/etc/sysconfig/panda_server-sysconfig
-+source /etc/sysconfig/panda_server-sysconfig
- 
- echo $1 | python2.5 @@install_purelib@@/pandaserver/test/boostUser.py
+-
+-echo $1 | python2.5 @@install_purelib@@/pandaserver/test/boostUser.py
+diff --git a/templates/panda_server-callback.exe.template b/templates/panda_server-callback.exe.template
+new file mode 100755
+index 0000000..3d6499c
+--- /dev/null
++++ b/templates/panda_server-callback.exe.template
+@@ -0,0 +1,13 @@
++#!/bin/bash
++
++# setup grid stuff
++source /etc/profile.d/grid-env.sh
++
++# import env vars from sysconfig
++source /etc/sysconfig/panda_server
++
++# set PYTHONPATH for dashboard
++export PYTHONPATH=/opt/dashboard/lib/dashboard:/opt/dashboard/lib:$PYTHONPATH
++
++python@@python_exec_version@@ @@install_purelib@@/pandaserver/test/fileCallbackListener.py
++#python@@python_exec_version@@ @@install_purelib@@/pandaserver/test/genCallbackConsumer.py
 diff --git a/templates/panda_server-callback.sh.exe.template b/templates/panda_server-callback.sh.exe.template
-index aab766c..b5f64ff 100755
+deleted file mode 100755
+index aab766c..0000000
 --- a/templates/panda_server-callback.sh.exe.template
-+++ b/templates/panda_server-callback.sh.exe.template
-@@ -4,7 +4,7 @@
- source /etc/profile.d/grid-env.sh
- 
- # import env vars from sysconfig
++++ /dev/null
+@@ -1,13 +0,0 @@
+-#!/bin/bash
+-
+-# setup grid stuff
+-source /etc/profile.d/grid-env.sh
+-
+-# import env vars from sysconfig
 -source @@install_dir@@/etc/sysconfig/panda_server-sysconfig
-+source /etc/sysconfig/panda_server-sysconfig
- 
- # set PYTHONPATH for dashboard
- export PYTHONPATH=/opt/dashboard/lib/dashboard:/opt/dashboard/lib:$PYTHONPATH
+-
+-# set PYTHONPATH for dashboard
+-export PYTHONPATH=/opt/dashboard/lib/dashboard:/opt/dashboard/lib:$PYTHONPATH
+-
+-python@@python_exec_version@@ @@install_purelib@@/pandaserver/test/fileCallbackListener.py
+-#python@@python_exec_version@@ @@install_purelib@@/pandaserver/test/genCallbackConsumer.py
+diff --git a/templates/panda_server-copyArchive.exe.template b/templates/panda_server-copyArchive.exe.template
+new file mode 100755
+index 0000000..f369bd4
+--- /dev/null
++++ b/templates/panda_server-copyArchive.exe.template
+@@ -0,0 +1,9 @@
++#!/bin/bash
++
++# setup grid stuff
++source /opt/glite/etc/profile.d/grid-env.sh
++
++# import env vars from sysconfig
++source /etc/sysconfig/panda_server
++
++python@@python_exec_version@@ @@install_purelib@@/pandaserver/test/copyArchive.py
 diff --git a/templates/panda_server-copyArchive.sh.exe.template b/templates/panda_server-copyArchive.sh.exe.template
-index 6f0f82b..f88a7bd 100755
+deleted file mode 100755
+index 6f0f82b..0000000
 --- a/templates/panda_server-copyArchive.sh.exe.template
-+++ b/templates/panda_server-copyArchive.sh.exe.template
-@@ -4,6 +4,6 @@
- source /opt/glite/etc/profile.d/grid-env.sh
- 
- # import env vars from sysconfig
++++ /dev/null
+@@ -1,9 +0,0 @@
+-#!/bin/bash
+-
+-# setup grid stuff
+-source /opt/glite/etc/profile.d/grid-env.sh
+-
+-# import env vars from sysconfig
 -source @@install_dir@@/etc/sysconfig/panda_server-sysconfig
-+source /etc/sysconfig/panda_server-sysconfig
- 
- python@@python_exec_version@@ @@install_purelib@@/pandaserver/test/copyArchive.py
+-
+-python@@python_exec_version@@ @@install_purelib@@/pandaserver/test/copyArchive.py
+diff --git a/templates/panda_server-copyROOT.exe.template b/templates/panda_server-copyROOT.exe.template
+new file mode 100755
+index 0000000..5265087
+--- /dev/null
++++ b/templates/panda_server-copyROOT.exe.template
+@@ -0,0 +1,6 @@
++#!/bin/bash
++
++# import env vars from sysconfig
++source /etc/sysconfig/panda_server
++
++python @@install_purelib@@/pandaserver/test/copyROOT.py
 diff --git a/templates/panda_server-copyROOT.sh.exe.template b/templates/panda_server-copyROOT.sh.exe.template
-index efbd483..345035e 100755
+deleted file mode 100755
+index efbd483..0000000
 --- a/templates/panda_server-copyROOT.sh.exe.template
-+++ b/templates/panda_server-copyROOT.sh.exe.template
-@@ -1,6 +1,6 @@
- #!/bin/bash
- 
- # import env vars from sysconfig
++++ /dev/null
+@@ -1,6 +0,0 @@
+-#!/bin/bash
+-
+-# import env vars from sysconfig
 -source @@install_dir@@/etc/sysconfig/panda_server-sysconfig
-+source /etc/sysconfig/panda_server-sysconfig
- 
- python @@install_purelib@@/pandaserver/test/copyROOT.py
+-
+-python @@install_purelib@@/pandaserver/test/copyROOT.py
 diff --git a/templates/panda_server-ctl.exe.template b/templates/panda_server-ctl.exe.template
-index fcff347..f3bc77c 100755
+index fcff347..1b287ce 100755
 --- a/templates/panda_server-ctl.exe.template
 +++ b/templates/panda_server-ctl.exe.template
 @@ -68,8 +68,8 @@ fi
@@ -94,121 +214,1640 @@ index fcff347..f3bc77c 100755
  # Source /etc/sysconfig/httpd for $HTTPD setting, etc.
 -if [ -r @@install_dir@@/etc/sysconfig/panda_server-sysconfig ]; then
 -   . @@install_dir@@/etc/sysconfig/panda_server-sysconfig
-+if [ -r /etc/sysconfig/panda_server-sysconfig ]; then
-+   . /etc/sysconfig/panda_server-sysconfig
++if [ -r /etc/sysconfig/panda_server ]; then
++   . /etc/sysconfig/panda_server
  fi
  
  ERROR=0
+diff --git a/templates/panda_server-datasetManager.exe.template b/templates/panda_server-datasetManager.exe.template
+new file mode 100644
+index 0000000..0677a57
+--- /dev/null
++++ b/templates/panda_server-datasetManager.exe.template
+@@ -0,0 +1,9 @@
++#!/bin/bash
++
++# setup grid stuff
++source /opt/glite/etc/profile.d/grid-env.sh
++
++# import env vars from sysconfig
++source /etc/sysconfig/panda_server
++
++python@@python_exec_version@@ @@install_purelib@@/pandaserver/test/datasetManager.py
 diff --git a/templates/panda_server-datasetManager.sh.exe.template b/templates/panda_server-datasetManager.sh.exe.template
-index 26bde7f..2542c8d 100644
+deleted file mode 100644
+index 26bde7f..0000000
 --- a/templates/panda_server-datasetManager.sh.exe.template
-+++ b/templates/panda_server-datasetManager.sh.exe.template
-@@ -4,6 +4,6 @@
- source /opt/glite/etc/profile.d/grid-env.sh
- 
- # import env vars from sysconfig
++++ /dev/null
+@@ -1,9 +0,0 @@
+-#!/bin/bash
+-
+-# setup grid stuff
+-source /opt/glite/etc/profile.d/grid-env.sh
+-
+-# import env vars from sysconfig
 -source @@install_dir@@/etc/sysconfig/panda_server-sysconfig
-+source /etc/sysconfig/panda_server-sysconfig
- 
- python@@python_exec_version@@ @@install_purelib@@/pandaserver/test/datasetManager.py
+-
+-python@@python_exec_version@@ @@install_purelib@@/pandaserver/test/datasetManager.py
+diff --git a/templates/panda_server-deleteJobs.exe.template b/templates/panda_server-deleteJobs.exe.template
+new file mode 100644
+index 0000000..9795f92
+--- /dev/null
++++ b/templates/panda_server-deleteJobs.exe.template
+@@ -0,0 +1,6 @@
++#!/bin/bash
++
++# import env vars from sysconfig
++source /etc/sysconfig/panda_server
++
++python @@install_purelib@@/pandaserver/test/deleteJobs.py
 diff --git a/templates/panda_server-deleteJobs.sh.exe.template b/templates/panda_server-deleteJobs.sh.exe.template
-index fd48e9e..a8b4270 100644
+deleted file mode 100644
+index fd48e9e..0000000
 --- a/templates/panda_server-deleteJobs.sh.exe.template
-+++ b/templates/panda_server-deleteJobs.sh.exe.template
-@@ -1,6 +1,6 @@
- #!/bin/bash
- 
- # import env vars from sysconfig
++++ /dev/null
+@@ -1,6 +0,0 @@
+-#!/bin/bash
+-
+-# import env vars from sysconfig
 -source @@install_dir@@/etc/sysconfig/panda_server-sysconfig
-+source /etc/sysconfig/panda_server-sysconfig
- 
- python @@install_purelib@@/pandaserver/test/deleteJobs.py
+-
+-python @@install_purelib@@/pandaserver/test/deleteJobs.py
+diff --git a/templates/panda_server-evpPD2P.exe.template b/templates/panda_server-evpPD2P.exe.template
+new file mode 100755
+index 0000000..31d23c4
+--- /dev/null
++++ b/templates/panda_server-evpPD2P.exe.template
+@@ -0,0 +1,9 @@
++#!/bin/bash
++
++# setup grid stuff
++source /opt/glite/etc/profile.d/grid-env.sh
++
++# import env vars from sysconfig
++source /etc/sysconfig/panda_server
++
++python@@python_exec_version@@ @@install_purelib@@/pandaserver/test/evpPD2P.py
 diff --git a/templates/panda_server-evpPD2P.sh.exe.template b/templates/panda_server-evpPD2P.sh.exe.template
-index 55f6d1b..2807a45 100755
+deleted file mode 100755
+index 55f6d1b..0000000
 --- a/templates/panda_server-evpPD2P.sh.exe.template
-+++ b/templates/panda_server-evpPD2P.sh.exe.template
-@@ -4,6 +4,6 @@
- source /opt/glite/etc/profile.d/grid-env.sh
- 
- # import env vars from sysconfig
++++ /dev/null
+@@ -1,9 +0,0 @@
+-#!/bin/bash
+-
+-# setup grid stuff
+-source /opt/glite/etc/profile.d/grid-env.sh
+-
+-# import env vars from sysconfig
 -source @@install_dir@@/etc/sysconfig/panda_server-sysconfig
-+source /etc/sysconfig/panda_server-sysconfig
- 
- python@@python_exec_version@@ @@install_purelib@@/pandaserver/test/evpPD2P.py
+-
+-python@@python_exec_version@@ @@install_purelib@@/pandaserver/test/evpPD2P.py
+diff --git a/templates/panda_server-httpd-FastCGI.conf.rpmnew.template b/templates/panda_server-httpd-FastCGI.conf.rpmnew.template
+deleted file mode 100644
+index aa78dc4..0000000
+--- a/templates/panda_server-httpd-FastCGI.conf.rpmnew.template
++++ /dev/null
+@@ -1,184 +0,0 @@
+-LoadModule authz_host_module modules/mod_authz_host.so
+-LoadModule alias_module modules/mod_alias.so
+-LoadModule rewrite_module modules/mod_rewrite.so
+-LoadModule mime_magic_module modules/mod_mime_magic.so
+-LoadModule mime_module modules/mod_mime.so
+-LoadModule include_module modules/mod_include.so
+-LoadModule log_config_module modules/mod_log_config.so
+-LoadModule env_module modules/mod_env.so
+-LoadModule deflate_module modules/mod_deflate.so
+-LoadModule setenvif_module modules/mod_setenvif.so
+-LoadModule dir_module modules/mod_dir.so
+-LoadModule ssl_module modules/mod_ssl.so
+-LoadModule headers_module modules/mod_headers.so
+-LoadModule gridsite_module modules/mod_gridsite.so
+-
+-# WSGI
+-LoadModule wsgi_module modules/mod_wsgi.so
+-
+-
+-User  atlpan
+-Group zp
+-
+-<IfModule prefork.c>
+-StartServers         25
+-MinSpareServers      25
+-ServerLimit          512
+-MaxSpareServers      512
+-MaxClients           512
+-MaxRequestsPerChild  2000
+-</IfModule>
+-
+-ServerName pandaserver.cern.ch
+-
+-DocumentRoot "@@install_purelib@@/pandaserver"
+-
+-<Files ~ "\.(py|pyc|conf)$">
+-    Order allow,deny
+-    Deny from all
+-</Files>
+-
+-RedirectMatch 403 "/panda.py$"
+-
+-<Directory />
+-    Options FollowSymLinks
+-    AllowOverride None
+-    Order allow,deny
+-    Allow from all
+-    Deny from 192.203.218.14
+-</Directory>
+-
+-Alias /trf/ "@@install_dir@@/var/trf/"
+-Alias /cache/ "@@install_dir@@/var/cache/pandaserver/"
+-Alias /appdir/ "@@install_dir@@/var/appdir/"
+-
+-<Directory "@@install_dir@@/var/cache/pandaserver">
+-    Options FollowSymLinks
+-    AllowOverride None
+-    Order allow,deny
+-    Allow from all
+-    Deny from 192.203.218.14
+-</Directory>
+-
+-<Directory "@@install_dir@@/var/cache/pandaserver/jedilog">
+-    Options FollowSymLinks
+-    AllowOverride None
+-    Order allow,deny
+-    Allow from all
+-    Header set Content-Encoding gzip
+-</Directory>
+-
+-<IfModule mod_fastcgi.c>
+-    FastCgiIpcDir @@install_dir@@/var/log/panda/fastsocks
+-    FastCgiServer @@install_purelib@@/pandaserver/server/panda.py \
+-	-processes 25 -idle-timeout 300 -listen-queue-depth 1 -flush \
+-	-initial-env PYTHONPATH \
+-	-initial-env TZ \
+-	-initial-env HOME \
+-	-initial-env PANDA_HOME \
+-	-initial-env X509_CERT_DIR \
+-	-initial-env X509_USER_PROXY \
+-	-initial-env PANDA_URL \
+-	-initial-env PANDA_URL_SSL
+-    ScriptAliasMatch ^/server/panda/(.+)$ @@install_purelib@@/pandaserver/server/panda.py
+-</IfModule>
+-
+-<IfModule mod_wsgi.c>
+-   WSGIDaemonProcess pandasrv_daemon processes=25 threads=2 home=/home/atlpan
+-   WSGIProcessGroup pandasrv_daemon
+-   WSGIApplicationGroup %{GLOBAL}
+-   WSGIScriptAliasMatch ^/server/panda/(.+)$ @@install_purelib@@/pandaserver/server/panda.py
+-   WSGISocketPrefix @@install_dir@@/var/log/panda/wsgisocks/wsgi
+-</IfModule>
+-
+-
+-Listen 25080
+-<VirtualHost *:25080>
+-
+-RewriteEngine on
+-RewriteCond %{REQUEST_METHOD} ^(TRACE|TRACK)
+-RewriteRule .* - [F]
+-# use Cassandra for cache
+-RewriteRule ^/cscache/(.*)$ /server/panda/getFile?fileName=$1 [PT,L]
+-
+-<Directory "@@install_purelib@@/pandaserver/server">
+-
+-   <Limit GET POST>
+-       Order allow,deny
+-       Allow from all
+-       Deny from 192.203.218.14
+-   </Limit>
+-
+-   # allow .py
+-   <Files ~ "\.py$">
+-       Order allow,deny
+-       Allow from all
+-   </Files>
+-
+-   # enable CGI	for FastCGI/WSGI
+-   Options FollowSymLinks +ExecCGI
+-
+-   # mod_gridsite
+-   GridSiteIndexes	on
+-   GridSiteAuth		on
+-   GridSiteDNlists	/etc/grid-security/dn-lists/
+-   GridSiteEnvs         on
+-
+-</Directory>
+-
+-</VirtualHost>
+-
+-Listen 25443
+-<VirtualHost *:25443>
+-
+-RewriteEngine on
+-RewriteCond %{REQUEST_METHOD} ^(TRACE|TRACK)
+-RewriteRule .* - [F]
+-# use Cassandra for cache
+-RewriteRule ^/cscache/(.*)$ /server/panda/getFile?fileName=$1 [PT,L]
+-
+-# CERN security recommendation to only allow the seven strongest ssl ciphers
+-SSLProtocol  -all +TLSv1 +SSLv3
+-SSLCipherSuite HIGH:MEDIUM:+SSLv3
+-
+-SSLEngine               on
+-SSLCertificateFile      /etc/grid-security/hostcert.pem
+-SSLCertificateKeyFile   /etc/grid-security/hostkey.pem
+-SSLCACertificatePath    /etc/grid-security/certificates
+-SSLVerifyClient         optional
+-SSLVerifyDepth          10
+-SSLOptions              +ExportCertData +StdEnvVars
+-
+-<Directory "@@install_purelib@@/pandaserver/server">
+-
+-   # allow .py
+-   <Files ~ "\.py$">
+-       Order allow,deny
+-       Allow from all
+-   </Files>
+-
+-   # enable CGI	for FastCGI/WSGI
+-   Options FollowSymLinks +ExecCGI
+-
+-   # mod_gridsite
+-   GridSiteIndexes       on
+-   GridSiteAuth          on
+-   GridSiteDNlists       /etc/grid-security/dn-lists/
+-   GridSiteGSIProxyLimit 1
+-   GridSiteEnvs          on
+-</Directory>
+-                                                                               
+-</VirtualHost>
+-
+-LogLevel info
+-
+-LogFormat "%t %h \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" combined
+-LogFormat "%t %h \"%r\" %>s %b" common
+-LogFormat "%{Referer}i -> %U" referer
+-LogFormat "%{User-agent}i" agent
+-CustomLog @@install_dir@@/var/log/panda/panda_server_access_log common
+-ErrorLog @@install_dir@@/var/log/panda/panda_server_error_log
+-
+-PidFile @@install_dir@@/var/log/panda/panda_server_httpd.pid
+-
+-TypesConfig /etc/mime.types
+diff --git a/templates/panda_server-httpd-FastCGI.conf.template b/templates/panda_server-httpd-FastCGI.conf.template
+new file mode 100644
+index 0000000..aa78dc4
+--- /dev/null
++++ b/templates/panda_server-httpd-FastCGI.conf.template
+@@ -0,0 +1,184 @@
++LoadModule authz_host_module modules/mod_authz_host.so
++LoadModule alias_module modules/mod_alias.so
++LoadModule rewrite_module modules/mod_rewrite.so
++LoadModule mime_magic_module modules/mod_mime_magic.so
++LoadModule mime_module modules/mod_mime.so
++LoadModule include_module modules/mod_include.so
++LoadModule log_config_module modules/mod_log_config.so
++LoadModule env_module modules/mod_env.so
++LoadModule deflate_module modules/mod_deflate.so
++LoadModule setenvif_module modules/mod_setenvif.so
++LoadModule dir_module modules/mod_dir.so
++LoadModule ssl_module modules/mod_ssl.so
++LoadModule headers_module modules/mod_headers.so
++LoadModule gridsite_module modules/mod_gridsite.so
++
++# WSGI
++LoadModule wsgi_module modules/mod_wsgi.so
++
++
++User  atlpan
++Group zp
++
++<IfModule prefork.c>
++StartServers         25
++MinSpareServers      25
++ServerLimit          512
++MaxSpareServers      512
++MaxClients           512
++MaxRequestsPerChild  2000
++</IfModule>
++
++ServerName pandaserver.cern.ch
++
++DocumentRoot "@@install_purelib@@/pandaserver"
++
++<Files ~ "\.(py|pyc|conf)$">
++    Order allow,deny
++    Deny from all
++</Files>
++
++RedirectMatch 403 "/panda.py$"
++
++<Directory />
++    Options FollowSymLinks
++    AllowOverride None
++    Order allow,deny
++    Allow from all
++    Deny from 192.203.218.14
++</Directory>
++
++Alias /trf/ "@@install_dir@@/var/trf/"
++Alias /cache/ "@@install_dir@@/var/cache/pandaserver/"
++Alias /appdir/ "@@install_dir@@/var/appdir/"
++
++<Directory "@@install_dir@@/var/cache/pandaserver">
++    Options FollowSymLinks
++    AllowOverride None
++    Order allow,deny
++    Allow from all
++    Deny from 192.203.218.14
++</Directory>
++
++<Directory "@@install_dir@@/var/cache/pandaserver/jedilog">
++    Options FollowSymLinks
++    AllowOverride None
++    Order allow,deny
++    Allow from all
++    Header set Content-Encoding gzip
++</Directory>
++
++<IfModule mod_fastcgi.c>
++    FastCgiIpcDir @@install_dir@@/var/log/panda/fastsocks
++    FastCgiServer @@install_purelib@@/pandaserver/server/panda.py \
++	-processes 25 -idle-timeout 300 -listen-queue-depth 1 -flush \
++	-initial-env PYTHONPATH \
++	-initial-env TZ \
++	-initial-env HOME \
++	-initial-env PANDA_HOME \
++	-initial-env X509_CERT_DIR \
++	-initial-env X509_USER_PROXY \
++	-initial-env PANDA_URL \
++	-initial-env PANDA_URL_SSL
++    ScriptAliasMatch ^/server/panda/(.+)$ @@install_purelib@@/pandaserver/server/panda.py
++</IfModule>
++
++<IfModule mod_wsgi.c>
++   WSGIDaemonProcess pandasrv_daemon processes=25 threads=2 home=/home/atlpan
++   WSGIProcessGroup pandasrv_daemon
++   WSGIApplicationGroup %{GLOBAL}
++   WSGIScriptAliasMatch ^/server/panda/(.+)$ @@install_purelib@@/pandaserver/server/panda.py
++   WSGISocketPrefix @@install_dir@@/var/log/panda/wsgisocks/wsgi
++</IfModule>
++
++
++Listen 25080
++<VirtualHost *:25080>
++
++RewriteEngine on
++RewriteCond %{REQUEST_METHOD} ^(TRACE|TRACK)
++RewriteRule .* - [F]
++# use Cassandra for cache
++RewriteRule ^/cscache/(.*)$ /server/panda/getFile?fileName=$1 [PT,L]
++
++<Directory "@@install_purelib@@/pandaserver/server">
++
++   <Limit GET POST>
++       Order allow,deny
++       Allow from all
++       Deny from 192.203.218.14
++   </Limit>
++
++   # allow .py
++   <Files ~ "\.py$">
++       Order allow,deny
++       Allow from all
++   </Files>
++
++   # enable CGI	for FastCGI/WSGI
++   Options FollowSymLinks +ExecCGI
++
++   # mod_gridsite
++   GridSiteIndexes	on
++   GridSiteAuth		on
++   GridSiteDNlists	/etc/grid-security/dn-lists/
++   GridSiteEnvs         on
++
++</Directory>
++
++</VirtualHost>
++
++Listen 25443
++<VirtualHost *:25443>
++
++RewriteEngine on
++RewriteCond %{REQUEST_METHOD} ^(TRACE|TRACK)
++RewriteRule .* - [F]
++# use Cassandra for cache
++RewriteRule ^/cscache/(.*)$ /server/panda/getFile?fileName=$1 [PT,L]
++
++# CERN security recommendation to only allow the seven strongest ssl ciphers
++SSLProtocol  -all +TLSv1 +SSLv3
++SSLCipherSuite HIGH:MEDIUM:+SSLv3
++
++SSLEngine               on
++SSLCertificateFile      /etc/grid-security/hostcert.pem
++SSLCertificateKeyFile   /etc/grid-security/hostkey.pem
++SSLCACertificatePath    /etc/grid-security/certificates
++SSLVerifyClient         optional
++SSLVerifyDepth          10
++SSLOptions              +ExportCertData +StdEnvVars
++
++<Directory "@@install_purelib@@/pandaserver/server">
++
++   # allow .py
++   <Files ~ "\.py$">
++       Order allow,deny
++       Allow from all
++   </Files>
++
++   # enable CGI	for FastCGI/WSGI
++   Options FollowSymLinks +ExecCGI
++
++   # mod_gridsite
++   GridSiteIndexes       on
++   GridSiteAuth          on
++   GridSiteDNlists       /etc/grid-security/dn-lists/
++   GridSiteGSIProxyLimit 1
++   GridSiteEnvs          on
++</Directory>
++                                                                               
++</VirtualHost>
++
++LogLevel info
++
++LogFormat "%t %h \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" combined
++LogFormat "%t %h \"%r\" %>s %b" common
++LogFormat "%{Referer}i -> %U" referer
++LogFormat "%{User-agent}i" agent
++CustomLog @@install_dir@@/var/log/panda/panda_server_access_log common
++ErrorLog @@install_dir@@/var/log/panda/panda_server_error_log
++
++PidFile @@install_dir@@/var/log/panda/panda_server_httpd.pid
++
++TypesConfig /etc/mime.types
+diff --git a/templates/panda_server-httpd.conf.rpmnew.template b/templates/panda_server-httpd.conf.rpmnew.template
+deleted file mode 100644
+index 6057f0c..0000000
+--- a/templates/panda_server-httpd.conf.rpmnew.template
++++ /dev/null
+@@ -1,141 +0,0 @@
+-LoadModule access_module modules/mod_access.so
+-LoadModule alias_module modules/mod_alias.so
+-LoadModule rewrite_module modules/mod_rewrite.so
+-LoadModule mime_magic_module modules/mod_mime_magic.so
+-LoadModule mime_module modules/mod_mime.so
+-LoadModule include_module modules/mod_include.so
+-LoadModule log_config_module modules/mod_log_config.so
+-LoadModule env_module modules/mod_env.so
+-LoadModule deflate_module modules/mod_deflate.so
+-LoadModule setenvif_module modules/mod_setenvif.so
+-LoadModule dir_module modules/mod_dir.so
+-LoadModule ssl_module modules/mod_ssl.so
+-LoadModule python_module modules/mod_python.so
+-LoadModule gridsite_module modules/mod_gridsite.so
+-
+-User  atlpan
+-Group zp
+-
+-<IfModule prefork.c>
+-StartServers         50
+-MinSpareServers      50
+-MaxSpareServers      50
+-MaxClients           50
+-MaxRequestsPerChild  0
+-</IfModule>
+-
+-<IfModule worker.c>
+-ServerLimit          10
+-StartServers         10
+-MaxClients           50
+-MinSpareThreads      50
+-MaxSpareThreads      50
+-ThreadsPerChild      5
+-MaxRequestsPerChild  0
+-</IfModule>
+-
+-ServerName pandaserver.cern.ch
+-
+-DocumentRoot "@@install_purelib@@/pandaserver"
+-
+-<Files ~ "\.(py|pyc|conf)$">
+-    Order allow,deny
+-    Deny from all
+-</Files>
+-
+-<Directory />
+-    Options FollowSymLinks
+-    AllowOverride None
+-    Order allow,deny
+-    Allow from all
+-    Deny from 192.203.218.14
+-</Directory>
+-
+-Alias /cache/ "@@install_dir@@/var/cache/pandaserver/"
+-
+-<Directory "@@install_dir@@/var/cache/pandaserver">
+-    Options FollowSymLinks
+-    AllowOverride None
+-    Order allow,deny
+-    Allow from all
+-    Deny from 192.203.218.14
+-</Directory>
+-
+-Listen 25080
+-<VirtualHost *:25080>
+-
+-RewriteEngine on
+-RewriteCond %{REQUEST_METHOD} ^(TRACE|TRACK)
+-RewriteRule .* - [F]
+-
+-<Directory "@@install_purelib@@/pandaserver/server">
+-
+-    <Limit GET POST>
+-        Order allow,deny
+-        Allow from all
+-        Deny from 192.203.218.14
+-    </Limit>
+-
+-   # mod_python
+-   SetHandler python-program
+-   PythonHandler mod_python.publisher
+-   PythonDebug On
+-
+-   # mod_gridsite
+-   GridSiteIndexes	on
+-   GridSiteAuth		on
+-   GridSiteDNlists	/etc/grid-security/dn-lists/
+-   GridSiteEnvs         on
+-
+-</Directory>
+-
+-</VirtualHost>
+-
+-Listen 25443
+-<VirtualHost *:25443>
+-
+-RewriteEngine on
+-RewriteCond %{REQUEST_METHOD} ^(TRACE|TRACK)
+-RewriteRule .* - [F]
+-
+-# CERN security recommendation to only allow the seven strongest ssl ciphers
+-SSLProtocol  -all +TLSv1 +SSLv3
+-SSLCipherSuite HIGH:MEDIUM:+SSLv3
+-
+-SSLEngine               on
+-SSLCertificateFile      /etc/grid-security/hostcert.pem
+-SSLCertificateKeyFile   /etc/grid-security/hostkey.pem
+-SSLCACertificatePath    /etc/grid-security/certificates
+-SSLVerifyClient         optional
+-SSLVerifyDepth          10
+-SSLOptions              +ExportCertData +StdEnvVars
+-
+-<Directory "@@install_purelib@@/pandaserver/server">
+-
+-   # mod_python
+-   SetHandler python-program
+-   PythonHandler mod_python.publisher
+-   PythonDebug On
+-
+-   # mod_gridsite
+-   GridSiteIndexes       on
+-   GridSiteAuth          on
+-   GridSiteDNlists       /etc/grid-security/dn-lists/
+-   GridSiteGSIProxyLimit 1
+-   GridSiteEnvs          on
+-</Directory>
+-                                                                               
+-</VirtualHost>
+-
+-LogLevel info
+-
+-LogFormat "%t %h \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" combined
+-LogFormat "%t %h \"%r\" %>s %b" common
+-LogFormat "%{Referer}i -> %U" referer
+-LogFormat "%{User-agent}i" agent
+-CustomLog @@install_dir@@/var/log/panda/panda_server_access_log common
+-ErrorLog @@install_dir@@/var/log/panda/panda_server_error_log
+-
+-PidFile @@install_dir@@/var/log/panda/panda_server_httpd.pid
+-
+-TypesConfig /etc/mime.types
+diff --git a/templates/panda_server-httpd.conf.template b/templates/panda_server-httpd.conf.template
+new file mode 100644
+index 0000000..6057f0c
+--- /dev/null
++++ b/templates/panda_server-httpd.conf.template
+@@ -0,0 +1,141 @@
++LoadModule access_module modules/mod_access.so
++LoadModule alias_module modules/mod_alias.so
++LoadModule rewrite_module modules/mod_rewrite.so
++LoadModule mime_magic_module modules/mod_mime_magic.so
++LoadModule mime_module modules/mod_mime.so
++LoadModule include_module modules/mod_include.so
++LoadModule log_config_module modules/mod_log_config.so
++LoadModule env_module modules/mod_env.so
++LoadModule deflate_module modules/mod_deflate.so
++LoadModule setenvif_module modules/mod_setenvif.so
++LoadModule dir_module modules/mod_dir.so
++LoadModule ssl_module modules/mod_ssl.so
++LoadModule python_module modules/mod_python.so
++LoadModule gridsite_module modules/mod_gridsite.so
++
++User  atlpan
++Group zp
++
++<IfModule prefork.c>
++StartServers         50
++MinSpareServers      50
++MaxSpareServers      50
++MaxClients           50
++MaxRequestsPerChild  0
++</IfModule>
++
++<IfModule worker.c>
++ServerLimit          10
++StartServers         10
++MaxClients           50
++MinSpareThreads      50
++MaxSpareThreads      50
++ThreadsPerChild      5
++MaxRequestsPerChild  0
++</IfModule>
++
++ServerName pandaserver.cern.ch
++
++DocumentRoot "@@install_purelib@@/pandaserver"
++
++<Files ~ "\.(py|pyc|conf)$">
++    Order allow,deny
++    Deny from all
++</Files>
++
++<Directory />
++    Options FollowSymLinks
++    AllowOverride None
++    Order allow,deny
++    Allow from all
++    Deny from 192.203.218.14
++</Directory>
++
++Alias /cache/ "@@install_dir@@/var/cache/pandaserver/"
++
++<Directory "@@install_dir@@/var/cache/pandaserver">
++    Options FollowSymLinks
++    AllowOverride None
++    Order allow,deny
++    Allow from all
++    Deny from 192.203.218.14
++</Directory>
++
++Listen 25080
++<VirtualHost *:25080>
++
++RewriteEngine on
++RewriteCond %{REQUEST_METHOD} ^(TRACE|TRACK)
++RewriteRule .* - [F]
++
++<Directory "@@install_purelib@@/pandaserver/server">
++
++    <Limit GET POST>
++        Order allow,deny
++        Allow from all
++        Deny from 192.203.218.14
++    </Limit>
++
++   # mod_python
++   SetHandler python-program
++   PythonHandler mod_python.publisher
++   PythonDebug On
++
++   # mod_gridsite
++   GridSiteIndexes	on
++   GridSiteAuth		on
++   GridSiteDNlists	/etc/grid-security/dn-lists/
++   GridSiteEnvs         on
++
++</Directory>
++
++</VirtualHost>
++
++Listen 25443
++<VirtualHost *:25443>
++
++RewriteEngine on
++RewriteCond %{REQUEST_METHOD} ^(TRACE|TRACK)
++RewriteRule .* - [F]
++
++# CERN security recommendation to only allow the seven strongest ssl ciphers
++SSLProtocol  -all +TLSv1 +SSLv3
++SSLCipherSuite HIGH:MEDIUM:+SSLv3
++
++SSLEngine               on
++SSLCertificateFile      /etc/grid-security/hostcert.pem
++SSLCertificateKeyFile   /etc/grid-security/hostkey.pem
++SSLCACertificatePath    /etc/grid-security/certificates
++SSLVerifyClient         optional
++SSLVerifyDepth          10
++SSLOptions              +ExportCertData +StdEnvVars
++
++<Directory "@@install_purelib@@/pandaserver/server">
++
++   # mod_python
++   SetHandler python-program
++   PythonHandler mod_python.publisher
++   PythonDebug On
++
++   # mod_gridsite
++   GridSiteIndexes       on
++   GridSiteAuth          on
++   GridSiteDNlists       /etc/grid-security/dn-lists/
++   GridSiteGSIProxyLimit 1
++   GridSiteEnvs          on
++</Directory>
++                                                                               
++</VirtualHost>
++
++LogLevel info
++
++LogFormat "%t %h \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" combined
++LogFormat "%t %h \"%r\" %>s %b" common
++LogFormat "%{Referer}i -> %U" referer
++LogFormat "%{User-agent}i" agent
++CustomLog @@install_dir@@/var/log/panda/panda_server_access_log common
++ErrorLog @@install_dir@@/var/log/panda/panda_server_error_log
++
++PidFile @@install_dir@@/var/log/panda/panda_server_httpd.pid
++
++TypesConfig /etc/mime.types
+diff --git a/templates/panda_server-merge.exe.template b/templates/panda_server-merge.exe.template
+new file mode 100755
+index 0000000..746c1d0
+--- /dev/null
++++ b/templates/panda_server-merge.exe.template
+@@ -0,0 +1,9 @@
++#!/bin/bash
++
++# setup grid stuff
++source /opt/glite/etc/profile.d/grid-env.sh
++
++# import env vars from sysconfig
++source /etc/sysconfig/panda_server
++
++python@@python_exec_version@@ @@install_purelib@@/pandaserver/test/runMerger.py
 diff --git a/templates/panda_server-merge.sh.exe.template b/templates/panda_server-merge.sh.exe.template
-index 99bc833..305af66 100755
+deleted file mode 100755
+index 99bc833..0000000
 --- a/templates/panda_server-merge.sh.exe.template
-+++ b/templates/panda_server-merge.sh.exe.template
-@@ -4,6 +4,6 @@
- source /opt/glite/etc/profile.d/grid-env.sh
- 
- # import env vars from sysconfig
++++ /dev/null
+@@ -1,9 +0,0 @@
+-#!/bin/bash
+-
+-# setup grid stuff
+-source /opt/glite/etc/profile.d/grid-env.sh
+-
+-# import env vars from sysconfig
 -source @@install_dir@@/etc/sysconfig/panda_server-sysconfig
-+source /etc/sysconfig/panda_server-sysconfig
- 
- python@@python_exec_version@@ @@install_purelib@@/pandaserver/test/runMerger.py
+-
+-python@@python_exec_version@@ @@install_purelib@@/pandaserver/test/runMerger.py
+diff --git a/templates/panda_server-priority.exe.template b/templates/panda_server-priority.exe.template
+new file mode 100755
+index 0000000..542ac9e
+--- /dev/null
++++ b/templates/panda_server-priority.exe.template
+@@ -0,0 +1,6 @@
++#!/bin/bash
++
++# import env vars from sysconfig
++source /etc/sysconfig/panda_server
++
++python@@python_exec_version@@ @@install_purelib@@/pandaserver/test/prioryMassage.py
 diff --git a/templates/panda_server-priority.sh.exe.template b/templates/panda_server-priority.sh.exe.template
-index 3d1fe75..de27130 100755
+deleted file mode 100755
+index 3d1fe75..0000000
 --- a/templates/panda_server-priority.sh.exe.template
-+++ b/templates/panda_server-priority.sh.exe.template
-@@ -1,6 +1,6 @@
- #!/bin/bash
- 
- # import env vars from sysconfig
++++ /dev/null
+@@ -1,6 +0,0 @@
+-#!/bin/bash
+-
+-# import env vars from sysconfig
 -source @@install_dir@@/etc/sysconfig/panda_server-sysconfig
-+source /etc/sysconfig/panda_server-sysconfig
- 
- python@@python_exec_version@@ @@install_purelib@@/pandaserver/test/prioryMassage.py
+-
+-python@@python_exec_version@@ @@install_purelib@@/pandaserver/test/prioryMassage.py
+diff --git a/templates/panda_server-runRebro.exe.template b/templates/panda_server-runRebro.exe.template
+new file mode 100755
+index 0000000..8170de8
+--- /dev/null
++++ b/templates/panda_server-runRebro.exe.template
+@@ -0,0 +1,9 @@
++#!/bin/bash
++
++# setup grid stuff
++source /etc/profile.d/grid-env.sh
++
++# import env vars from sysconfig
++source /etc/sysconfig/panda_server
++
++python@@python_exec_version@@ @@install_purelib@@/pandaserver/test/runRebro.py
 diff --git a/templates/panda_server-runRebro.sh.exe.template b/templates/panda_server-runRebro.sh.exe.template
-index 23b1f4d..f300223 100755
+deleted file mode 100755
+index 23b1f4d..0000000
 --- a/templates/panda_server-runRebro.sh.exe.template
-+++ b/templates/panda_server-runRebro.sh.exe.template
-@@ -4,6 +4,6 @@
- source /etc/profile.d/grid-env.sh
- 
- # import env vars from sysconfig
++++ /dev/null
+@@ -1,9 +0,0 @@
+-#!/bin/bash
+-
+-# setup grid stuff
+-source /etc/profile.d/grid-env.sh
+-
+-# import env vars from sysconfig
 -source @@install_dir@@/etc/sysconfig/panda_server-sysconfig
-+source /etc/sysconfig/panda_server-sysconfig
- 
- python@@python_exec_version@@ @@install_purelib@@/pandaserver/test/runRebro.py
-diff --git a/templates/panda_server-sysconfig.template b/templates/panda_server-sysconfig.template
-index e280d8a..f2a3199 100644
---- a/templates/panda_server-sysconfig.template
-+++ b/templates/panda_server-sysconfig.template
-@@ -1,9 +1,9 @@
- # Configuration file for the httpd service.
- 
+-
+-python@@python_exec_version@@ @@install_purelib@@/pandaserver/test/runRebro.py
+diff --git a/templates/panda_server-sysconfig.rpmnew.template b/templates/panda_server-sysconfig.rpmnew.template
+deleted file mode 100644
+index e280d8a..0000000
+--- a/templates/panda_server-sysconfig.rpmnew.template
++++ /dev/null
+@@ -1,35 +0,0 @@
+-# Configuration file for the httpd service.
+-
 -OPTIONS="-f @@install_dir@@/etc/panda/panda_server-httpd.conf"
-+OPTIONS="-f /etc/panda/panda_server-httpd.conf"
- 
- # for FastCGI/WSGI
+-
+-# for FastCGI/WSGI
 -#OPTIONS="-f @@install_dir@@/etc/panda/panda_server-httpd-FastCGI.conf"
+-#HTTPD='/usr/sbin/httpd'
+-
+-# reset PATH/LD_LIBRARY_PATH since atlpan's ones break grid-tools
+-export PATH=/bin:/usr/local/bin:/usr/bin
+-unset LD_LIBRARY_PATH
+-
+-# for DQ2
+-export X509_CERT_DIR=/etc/grid-security/certificates
+-export RUCIO_ACCOUNT=panda
+-export RUCIO_APPID=pandasrv
+-
+-# panda home
+-export PANDA_HOME=@@install_dir@@
+-
+-# timezone
+-export TZ=UTC
+-
+-# import panda modules
+-export PYTHONPATH=@@install_purelib@@/pandacommon:@@install_purelib@@/pandaserver
+-
+-# avoid to use AFS
+-export HOME=/home/atlpan
+-
+-# set user's proxy
+-export X509_USER_PROXY=FIXME
+-
+-# panda server URLs
+-export PANDA_URL='http://@@host_name@@:25080/server/panda'
+-export PANDA_URL_SSL='https://@@host_name@@:25443/server/panda'
+diff --git a/templates/panda_server-sysconfig.template b/templates/panda_server-sysconfig.template
+new file mode 100644
+index 0000000..f2a3199
+--- /dev/null
++++ b/templates/panda_server-sysconfig.template
+@@ -0,0 +1,35 @@
++# Configuration file for the httpd service.
++
++OPTIONS="-f /etc/panda/panda_server-httpd.conf"
++
++# for FastCGI/WSGI
 +#OPTIONS="-f /etc/panda/panda_server-httpd-FastCGI.conf"
- #HTTPD='/usr/sbin/httpd'
- 
- # reset PATH/LD_LIBRARY_PATH since atlpan's ones break grid-tools
++#HTTPD='/usr/sbin/httpd'
++
++# reset PATH/LD_LIBRARY_PATH since atlpan's ones break grid-tools
++export PATH=/bin:/usr/local/bin:/usr/bin
++unset LD_LIBRARY_PATH
++
++# for DQ2
++export X509_CERT_DIR=/etc/grid-security/certificates
++export RUCIO_ACCOUNT=panda
++export RUCIO_APPID=pandasrv
++
++# panda home
++export PANDA_HOME=@@install_dir@@
++
++# timezone
++export TZ=UTC
++
++# import panda modules
++export PYTHONPATH=@@install_purelib@@/pandacommon:@@install_purelib@@/pandaserver
++
++# avoid to use AFS
++export HOME=/home/atlpan
++
++# set user's proxy
++export X509_USER_PROXY=FIXME
++
++# panda server URLs
++export PANDA_URL='http://@@host_name@@:25080/server/panda'
++export PANDA_URL_SSL='https://@@host_name@@:25443/server/panda'
+diff --git a/templates/panda_server-tmpwatch.exe.template b/templates/panda_server-tmpwatch.exe.template
+new file mode 100644
+index 0000000..c5bc941
+--- /dev/null
++++ b/templates/panda_server-tmpwatch.exe.template
+@@ -0,0 +1,6 @@
++#!/bin/bash
++
++# import env vars from sysconfig
++source /etc/sysconfig/panda_server
++
++python @@install_purelib@@/pandaserver/test/tmpwatch.py
 diff --git a/templates/panda_server-tmpwatch.sh.exe.template b/templates/panda_server-tmpwatch.sh.exe.template
-index 40fbd27..0887a5d 100644
+deleted file mode 100644
+index 40fbd27..0000000
 --- a/templates/panda_server-tmpwatch.sh.exe.template
-+++ b/templates/panda_server-tmpwatch.sh.exe.template
-@@ -1,6 +1,6 @@
- #!/bin/bash
- 
- # import env vars from sysconfig
++++ /dev/null
+@@ -1,6 +0,0 @@
+-#!/bin/bash
+-
+-# import env vars from sysconfig
 -source @@install_dir@@/etc/sysconfig/panda_server-sysconfig
-+source /etc/sysconfig/panda_server-sysconfig
- 
- python @@install_purelib@@/pandaserver/test/tmpwatch.py
+-
+-python @@install_purelib@@/pandaserver/test/tmpwatch.py
+diff --git a/templates/panda_server-vomsrenew.exe.template b/templates/panda_server-vomsrenew.exe.template
+new file mode 100755
+index 0000000..210c955
+--- /dev/null
++++ b/templates/panda_server-vomsrenew.exe.template
+@@ -0,0 +1,23 @@
++#!/bin/bash
++
++source /etc/profile.d/grid-env.sh
++
++# import env vars from sysconfig
++source /etc/sysconfig/panda_server
++
++NOVOMS=${X509_USER_PROXY}_novoms
++
++voms-proxy-init -voms atlas:/atlas/Role=production -out $X509_USER_PROXY -valid 96:00 -cert=$NOVOMS
++
++# check lifetime of certificate
++grid-proxy-info -e -h 504 -f $NOVOMS
++if [ $? -ne 0 ]; then
++  echo $NOVOMS expires in 3 weeks on `hostname` | mail -s "WARNING : Grid certificate expires soon on panda server" atlas-adc-panda-support@cern.ch
++fi
++
++# check lifetime of certificate
++voms-proxy-info -exists -hours 72 -file $X509_USER_PROXY
++if [ $? -ne 0 ]; then
++  echo $X509_USER_PROXY expires in 3 days on `hostname` | mail -s "WARNING : Grid proxy expires soon on panda server" atlas-adc-panda-support@cern.ch,atlas-adc-expert@cern.ch
++fi
++
 diff --git a/templates/panda_server-vomsrenew.sh.exe.template b/templates/panda_server-vomsrenew.sh.exe.template
-index ce741a9..d6456f8 100755
+deleted file mode 100755
+index ce741a9..0000000
 --- a/templates/panda_server-vomsrenew.sh.exe.template
-+++ b/templates/panda_server-vomsrenew.sh.exe.template
-@@ -3,7 +3,7 @@
- source /etc/profile.d/grid-env.sh
- 
- # import env vars from sysconfig
++++ /dev/null
+@@ -1,23 +0,0 @@
+-#!/bin/bash
+-
+-source /etc/profile.d/grid-env.sh
+-
+-# import env vars from sysconfig
 -source @@install_dir@@/etc/sysconfig/panda_server-sysconfig
-+source /etc/sysconfig/panda_server-sysconfig
- 
- NOVOMS=${X509_USER_PROXY}_novoms
- 
+-
+-NOVOMS=${X509_USER_PROXY}_novoms
+-
+-voms-proxy-init -voms atlas:/atlas/Role=production -out $X509_USER_PROXY -valid 96:00 -cert=$NOVOMS
+-
+-# check lifetime of certificate
+-grid-proxy-info -e -h 504 -f $NOVOMS
+-if [ $? -ne 0 ]; then
+-  echo $NOVOMS expires in 3 weeks on `hostname` | mail -s "WARNING : Grid certificate expires soon on panda server" atlas-adc-panda-support@cern.ch
+-fi
+-
+-# check lifetime of certificate
+-voms-proxy-info -exists -hours 72 -file $X509_USER_PROXY
+-if [ $? -ne 0 ]; then
+-  echo $X509_USER_PROXY expires in 3 days on `hostname` | mail -s "WARNING : Grid proxy expires soon on panda server" atlas-adc-panda-support@cern.ch,atlas-adc-expert@cern.ch
+-fi
+-
+diff --git a/templates/panda_server.cfg.rpmnew.template b/templates/panda_server.cfg.rpmnew.template
+deleted file mode 100644
+index 412c147..0000000
+--- a/templates/panda_server.cfg.rpmnew.template
++++ /dev/null
+@@ -1,307 +0,0 @@
+-[server]
+-
+-
+-##########################
+-#
+-# Logger parameters
+-#
+-
+-# log directory
+-logdir=@@install_dir@@/var/log/panda
+-
+-# logger name
+-loggername = prod
+-
+-#### tmp, added by Jarka
+-serverhost = localhost
+-serverhostssl = pandawms.org
+-
+-
+-##########################
+-#
+-# Transaction parameters
+-#
+-
+-# lock file for getJobs
+-lockfile_getJobs = %(logdir)s/getJobs.lock
+-
+-# lock file for getSerialNumber
+-lockfile_getSN = %(logdir)s/getSN.lock
+-
+-# lock file for accessing email DB
+-lockfile_getMail = %(logdir)s/getMail.lock
+-
+-# lock file for updateDatasetStatus
+-lockfile_setDS = %(logdir)s/setDS.lock
+-
+-# lock file for getCloudTask
+-lockfile_getCT = %(logdir)s/getCT.lock
+-
+-# lock file for uuidgen
+-lockfile_getUU = %(logdir)s/getUU.lock
+-
+-
+-
+-##########################
+-#
+-# DA parameters
+-#
+-
+-# cache space
+-cache_dir = @@install_dir@@/var/cache/pandaserver
+-
+-
+-
+-##########################
+-#
+-# DDM parameters
+-#
+-
+-# dq2 dir
+-dq2_dir = /opt/dq2
+-
+-# globus dir
+-globus_dir = /opt/globus
+-
+-# path to native python 
+-native_python = /usr/bin
+-
+-# path to python for lfc client (/data/atlpan/bin/python cannot be used due to lack of libpythonX.Y.so)
+-native_python32 = /usr/bin
+-
+-# glite source file
+-glite_source = /etc/profile.d/grid-env.sh
+-
+-# location for Panda common
+-pandaCommon_dir = @@install_purelib@@/pandacommon
+-
+-# location for Panda server
+-pandaPython_dir = @@install_purelib@@/pandaserver
+-
+-# location for LFCclient
+-lfcClient_dir = %(pandaPython_dir)s/brokerage
+-
+-# home dir to change CWD
+-home_dir_cwd = /home/atlpan
+-
+-
+-
+-##########################
+-#
+-# Database parameters
+-#
+-
+-# host
+-dbhost = ADCR_PANDA
+-
+-# user
+-dbuser = ATLAS_PANDA_WRITER
+-
+-# password
+-dbpasswd = FIXME
+-
+-# database
+-dbname = PandaDB
+-
+-# number of connections
+-nDBConnection = 2
+-
+-# number of connections for FastCGI/WSGI
+-nDBConForFastCGIWSGI = 1
+-
+-# use timeout
+-usedbtimeout = True
+-
+-# timout value
+-dbtimeout = 300
+-
+-# verbose in bridge
+-dbbridgeverbose = False
+-
+-# SQL dumper
+-dump_sql = False
+-
+-### MySQL specific/generic backend
+-dbport = 4444
+-schemanamebase = 'ATLAS_PANDA'
+-schemanamemeta = 'ATLAS_PANDAMETA'
+-schemanamegris = 'ATLAS_GRISLI'
+-schemanamearch = 'ATLAS_PANDAARCH'
+-
+-# DB engine
+-#dbengine = oracle
+-dbengine = mysql
+-
+-# DB port
+-dbhostmysql = 107.22.166.93
+-dbportmysql = 23306
+-dbnamemysql = pandadb1
+-dbusermysql = pansrusr1
+-dbpasswdmysql = FIXME
+-
+-# LogDB
+-#logdbengine = oracle
+-logdbengine = mysql
+-logdbhost = 107.22.166.93
+-logdbport = 23306
+-logdbname = pandadb1
+-logdbuser = pansrusr1
+-logdbpasswd = FIXME
+-nLogDBConnection = 5
+-
+-# ArchiveDB
+-#archivedbengine = oracle
+-archivedbengine = mysql
+-archivedbhost = 107.22.166.93
+-archivedbport = 23306
+-archivedbname = pandadb1
+-archivedbuser = pansrusr1
+-archivedbpasswd = FIXME
+-nArchiveDBConnection = 5
+-
+-##########################
+-#
+-# Panda server parameters
+-#
+-
+-# port
+-pserverport = 25443
+-
+-
+-
+-##########################
+-#
+-# proxy parameters
+-#
+-
+-# http 
+-httpProxy = ""
+-
+-
+-
+-##########################
+-#
+-# E-mail DB parameters
+-#
+-
+-# database name for local caching
+-emailDB = %(logdir)s/email_db
+-
+-# SMTP server
+-emailSMTPsrv = cernmx.cern.ch
+-
+-# sender address for notification
+-emailSender = atlpan@cern.ch
+-
+-# login name for SMTP
+-emailLogin  = atlpan
+-
+-# login password for SMTP
+-emailPass = FIXME
+-
+-
+-
+-##########################
+-#
+-# parameters for dynamic task assignment 
+-#
+-
+-# enable dynamic task assignment 
+-enableDynamicTA = True
+-
+-
+-
+-##########################
+-#
+-# parameters for redirection service
+-#
+-
+-# enable redirection service
+-enableRedirection = False
+-
+-
+-
+-##########################
+-#
+-# parameters for FastCGI/WSGI
+-#
+-
+-# use FastCGI with flup
+-useFastCGI = False
+-
+-# use WSGI without flup
+-useWSGI = True
+-
+-# verbose in entry point
+-entryVerbose = False
+-
+-
+-
+-##########################
+-#
+-# parameters for memcached
+-#
+-
+-# use memcached
+-memcached_enable = True
+-
+-# memcached servers
+-memcached_srvs = voatlas248.cern.ch:11211,voatlas249.cern.ch:11211,voatlas250.cern.ch:11211,voatlas251.cern.ch:11211,voatlas252.cern.ch:11211,voatlas253.cern.ch:11211
+-
+-# expiration time in memcached
+-memcached_exptime = 86400
+-
+-
+-
+-##########################
+-#
+-# nRunning parameters
+-#
+-
+-# interval
+-nrun_interval = 5
+-
+-# the number of hosts
+-nrun_hosts = 3
+-
+-# serial number
+-nrun_snum = 999
+-
+-
+-
+-##########################
+-#
+-# Cassandra
+-#
+-
+-# use Cassandra for PandaCache
+-cacheUseCassandra = False
+-
+-# ignore Cassandra error
+-cacheIgnoreCassandraError = True
+-
+-# keyspace for PandaCache
+-cacheKeySpace = PandaCacheKeySpace
+-
+-# column family for files
+-cacheFileTable = FileTable
+-
+-
+-
+-##########################
+-#
+-# Job Status Monitor
+-#
+-
+-# enable job status change monitoring
+-record_statuschange = False
+-
+-
+-
+-##########################
+-#
+-# JEDI
+-#
+-
+-# use JEDI
+-useJEDI = False
+diff --git a/templates/panda_server.cfg.template b/templates/panda_server.cfg.template
+new file mode 100644
+index 0000000..412c147
+--- /dev/null
++++ b/templates/panda_server.cfg.template
+@@ -0,0 +1,307 @@
++[server]
++
++
++##########################
++#
++# Logger parameters
++#
++
++# log directory
++logdir=@@install_dir@@/var/log/panda
++
++# logger name
++loggername = prod
++
++#### tmp, added by Jarka
++serverhost = localhost
++serverhostssl = pandawms.org
++
++
++##########################
++#
++# Transaction parameters
++#
++
++# lock file for getJobs
++lockfile_getJobs = %(logdir)s/getJobs.lock
++
++# lock file for getSerialNumber
++lockfile_getSN = %(logdir)s/getSN.lock
++
++# lock file for accessing email DB
++lockfile_getMail = %(logdir)s/getMail.lock
++
++# lock file for updateDatasetStatus
++lockfile_setDS = %(logdir)s/setDS.lock
++
++# lock file for getCloudTask
++lockfile_getCT = %(logdir)s/getCT.lock
++
++# lock file for uuidgen
++lockfile_getUU = %(logdir)s/getUU.lock
++
++
++
++##########################
++#
++# DA parameters
++#
++
++# cache space
++cache_dir = @@install_dir@@/var/cache/pandaserver
++
++
++
++##########################
++#
++# DDM parameters
++#
++
++# dq2 dir
++dq2_dir = /opt/dq2
++
++# globus dir
++globus_dir = /opt/globus
++
++# path to native python 
++native_python = /usr/bin
++
++# path to python for lfc client (/data/atlpan/bin/python cannot be used due to lack of libpythonX.Y.so)
++native_python32 = /usr/bin
++
++# glite source file
++glite_source = /etc/profile.d/grid-env.sh
++
++# location for Panda common
++pandaCommon_dir = @@install_purelib@@/pandacommon
++
++# location for Panda server
++pandaPython_dir = @@install_purelib@@/pandaserver
++
++# location for LFCclient
++lfcClient_dir = %(pandaPython_dir)s/brokerage
++
++# home dir to change CWD
++home_dir_cwd = /home/atlpan
++
++
++
++##########################
++#
++# Database parameters
++#
++
++# host
++dbhost = ADCR_PANDA
++
++# user
++dbuser = ATLAS_PANDA_WRITER
++
++# password
++dbpasswd = FIXME
++
++# database
++dbname = PandaDB
++
++# number of connections
++nDBConnection = 2
++
++# number of connections for FastCGI/WSGI
++nDBConForFastCGIWSGI = 1
++
++# use timeout
++usedbtimeout = True
++
++# timout value
++dbtimeout = 300
++
++# verbose in bridge
++dbbridgeverbose = False
++
++# SQL dumper
++dump_sql = False
++
++### MySQL specific/generic backend
++dbport = 4444
++schemanamebase = 'ATLAS_PANDA'
++schemanamemeta = 'ATLAS_PANDAMETA'
++schemanamegris = 'ATLAS_GRISLI'
++schemanamearch = 'ATLAS_PANDAARCH'
++
++# DB engine
++#dbengine = oracle
++dbengine = mysql
++
++# DB port
++dbhostmysql = 107.22.166.93
++dbportmysql = 23306
++dbnamemysql = pandadb1
++dbusermysql = pansrusr1
++dbpasswdmysql = FIXME
++
++# LogDB
++#logdbengine = oracle
++logdbengine = mysql
++logdbhost = 107.22.166.93
++logdbport = 23306
++logdbname = pandadb1
++logdbuser = pansrusr1
++logdbpasswd = FIXME
++nLogDBConnection = 5
++
++# ArchiveDB
++#archivedbengine = oracle
++archivedbengine = mysql
++archivedbhost = 107.22.166.93
++archivedbport = 23306
++archivedbname = pandadb1
++archivedbuser = pansrusr1
++archivedbpasswd = FIXME
++nArchiveDBConnection = 5
++
++##########################
++#
++# Panda server parameters
++#
++
++# port
++pserverport = 25443
++
++
++
++##########################
++#
++# proxy parameters
++#
++
++# http 
++httpProxy = ""
++
++
++
++##########################
++#
++# E-mail DB parameters
++#
++
++# database name for local caching
++emailDB = %(logdir)s/email_db
++
++# SMTP server
++emailSMTPsrv = cernmx.cern.ch
++
++# sender address for notification
++emailSender = atlpan@cern.ch
++
++# login name for SMTP
++emailLogin  = atlpan
++
++# login password for SMTP
++emailPass = FIXME
++
++
++
++##########################
++#
++# parameters for dynamic task assignment 
++#
++
++# enable dynamic task assignment 
++enableDynamicTA = True
++
++
++
++##########################
++#
++# parameters for redirection service
++#
++
++# enable redirection service
++enableRedirection = False
++
++
++
++##########################
++#
++# parameters for FastCGI/WSGI
++#
++
++# use FastCGI with flup
++useFastCGI = False
++
++# use WSGI without flup
++useWSGI = True
++
++# verbose in entry point
++entryVerbose = False
++
++
++
++##########################
++#
++# parameters for memcached
++#
++
++# use memcached
++memcached_enable = True
++
++# memcached servers
++memcached_srvs = voatlas248.cern.ch:11211,voatlas249.cern.ch:11211,voatlas250.cern.ch:11211,voatlas251.cern.ch:11211,voatlas252.cern.ch:11211,voatlas253.cern.ch:11211
++
++# expiration time in memcached
++memcached_exptime = 86400
++
++
++
++##########################
++#
++# nRunning parameters
++#
++
++# interval
++nrun_interval = 5
++
++# the number of hosts
++nrun_hosts = 3
++
++# serial number
++nrun_snum = 999
++
++
++
++##########################
++#
++# Cassandra
++#
++
++# use Cassandra for PandaCache
++cacheUseCassandra = False
++
++# ignore Cassandra error
++cacheIgnoreCassandraError = True
++
++# keyspace for PandaCache
++cacheKeySpace = PandaCacheKeySpace
++
++# column family for files
++cacheFileTable = FileTable
++
++
++
++##########################
++#
++# Job Status Monitor
++#
++
++# enable job status change monitoring
++record_statuschange = False
++
++
++
++##########################
++#
++# JEDI
++#
++
++# use JEDI
++useJEDI = False

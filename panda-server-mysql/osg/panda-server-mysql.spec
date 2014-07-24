@@ -1,7 +1,7 @@
 %define name panda-server-mysql
 %define version 0.0.2
 %define unmangled_version 0.0.2
-%define release 0.1
+%define release 0.2
 
 Summary: MySQL branch of the PanDA Server Package
 Name: %{name}
@@ -27,7 +27,8 @@ This package contains PanDA Server Components
 %prep
 %setup -n %{name}-%{unmangled_version}
 %patch0 -p1
-rename .rpmnew. . templates/*.rpmnew.template
+#rename .rpmnew. . templates/*.rpmnew.template
+#rename .sh.     . templates/*.sh.exe.template
 %patch1 -p1
 
 %build
@@ -44,5 +45,5 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) /etc/panda/panda_server.cfg
 %config(noreplace) /etc/panda/panda_server-httpd.conf
 %config(noreplace) /etc/panda/panda_server-httpd-FastCGI.conf
-%config(noreplace) /etc/sysconfig/panda_server-sysconfig
+%config(noreplace) /etc/sysconfig/panda_server
 
