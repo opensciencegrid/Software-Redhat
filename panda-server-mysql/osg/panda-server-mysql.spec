@@ -1,7 +1,7 @@
 %define name panda-server-mysql
 %define version 0.0.2
 %define unmangled_version 0.0.2
-%define release 0.3
+%define release 0.4
 
 Summary: MySQL branch of the PanDA Server Package
 Name: %{name}
@@ -36,6 +36,9 @@ python setup_mysql.py build
 
 %install
 python setup_mysql.py install -O1 --root=$RPM_BUILD_ROOT --record=INSTALLED_FILES
+mkdir -pm 0755 /var/log/panda/wsgisocks
+mkdir -pm 0755 /var/cache/pandaserver
+
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -46,4 +49,7 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) /etc/panda/panda_server-httpd.conf
 %config(noreplace) /etc/panda/panda_server-httpd-FastCGI.conf
 %config(noreplace) /etc/sysconfig/panda_server
+%dir /var/log/panda
+%dir /var/log/panda/wsgisocks
+%dir /var/cache/pandaserver
 
