@@ -36,8 +36,8 @@ python setup_mysql.py build
 
 %install
 python setup_mysql.py install -O1 --root=$RPM_BUILD_ROOT --record=INSTALLED_FILES
-mkdir -pm 0755 /var/log/panda/wsgisocks
-mkdir -pm 0755 /var/cache/pandaserver
+mkdir -pm 0755 $RPM_BUILD_ROOT/var/log/panda/wsgisocks
+mkdir -pm 0755 $RPM_BUILD_ROOT/var/cache/pandaserver
 
 
 %clean
