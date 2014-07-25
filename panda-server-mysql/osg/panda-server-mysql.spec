@@ -1,7 +1,7 @@
 %define name panda-server-mysql
 %define version 0.0.2
 %define unmangled_version 0.0.2
-%define release 0.5
+%define release 0.6
 %define panda_user  pansrv
 %define panda_group pansrv
 
@@ -43,8 +43,9 @@ mkdir -pm 0755 $RPM_BUILD_ROOT/var/log/panda/wsgisocks
 mkdir -pm 0755 $RPM_BUILD_ROOT/var/cache/pandaserver
 
 %pre
-getent group %{panda_group} >/dev/null || groupadd %{panda_group} || :
-getent passwd %{panda_user} >/dev/null || useradd -g %{panda_group} %{panda_user} || :
+getent group %{panda_group} >/dev/null || groupadd -r %{panda_group} || :
+getent passwd %{panda_user} >/dev/null || \
+  useradd -c "PanDA Server" -g %{panda_group} -r %{panda_user} || :
 
 %clean
 rm -rf $RPM_BUILD_ROOT
