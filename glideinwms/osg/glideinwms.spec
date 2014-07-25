@@ -21,7 +21,7 @@ Name:           glideinwms
 # ------------------------------------------------------------------------------
 %if %{v3_plus}
 %define version 3.2.6
-%define release 0.2.rc2
+%define release 0.3.rc3
 %define frontend_xml frontend.master.xml
 %define factory_xml glideinWMS.master.xml
 %endif
@@ -473,23 +473,30 @@ if [ "$1" = "1" ] ; then
 fi
 
 %pre vofrontend-standalone
-
-# Add the "frontend" user 
+# Add the "frontend" user and group if they do not exist
 getent group frontend >/dev/null || groupadd -r frontend
 getent passwd frontend >/dev/null || \
        useradd -r -g frontend -d /var/lib/gwms-frontend \
 	-c "VO Frontend user" -s /sbin/nologin frontend
+# If the frontend user already exists make sure it is part of frontend group
+usermod --append --groups frontend frontend >/dev/null
 
 %pre factory
-# Add the "gfactory" user 
+# Add the "gfactory" user and group if they do not exist
 getent group gfactory >/dev/null || groupadd -r gfactory
 getent passwd gfactory >/dev/null || \
        useradd -r -g gfactory -d /var/lib/gwms-factory \
 	-c "GlideinWMS Factory user" -s /sbin/nologin gfactory
+# If the gfactory user already exists make sure it is part of gfactory group
+usermod --append --groups gfactory gfactory >/dev/null
+
+# Add the "frontend" user and group if they do not exist
 getent group frontend >/dev/null || groupadd -r frontend
 getent passwd frontend >/dev/null || \
        useradd -r -g frontend -d /var/lib/gwms-frontend \
 	-c "VO Frontend user" -s /sbin/nologin frontend
+# If the frontend user already exists make sure it is part of frontend group
+usermod --append --groups frontend frontend >/dev/null
 
 %preun vofrontend-standalone
 # $1 = 0 - Action is uninstall
@@ -525,7 +532,7 @@ rm -rf $RPM_BUILD_ROOT
 %files vofrontend
    
 %files factory
-%defattr(-,gfactory,-,-)
+%defattr(-,gfactory,gfactory,-)
 %doc LICENSE.txt
 %doc ACKNOWLEDGMENTS.txt
 %doc doc
@@ -559,17 +566,17 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_sbindir}/clone_glidein
 %attr(-, root, root) %dir %{_localstatedir}/lib/gwms-factory
 %attr(-, root, root) %{_localstatedir}/lib/gwms-factory/client-proxies
-%attr(-, gfactory, -) %{factory_web_dir}
-%attr(-, gfactory, -) %{factory_web_base}
+%attr(-, gfactory, gfactory) %{factory_web_dir}
+%attr(-, gfactory, gfactory) %{factory_web_base}
 
 %if %{v3_plus}
-%attr(-, gfactory, -) %{factory_web_base}/../creation
+%attr(-, gfactory, gfactory) %{factory_web_base}/../creation
 %endif
-%attr(-, gfactory, -) %{factory_dir}
-%attr(-, gfactory, -) %dir %{condor_dir}
+%attr(-, gfactory, gfactory) %{factory_dir}
+%attr(-, gfactory, gfactory) %dir %{condor_dir}
 %attr(-, root, root) %dir %{_localstatedir}/log/gwms-factory
 %attr(-, root, root) %dir %{_localstatedir}/log/gwms-factory/client
-%attr(-, gfactory, -) %{_localstatedir}/log/gwms-factory/server
+%attr(-, gfactory, gfactory) %{_localstatedir}/log/gwms-factory/server
 %{python_sitelib}/glideinwms/__init__.py
 %{python_sitelib}/glideinwms/__init__.pyc
 %{python_sitelib}/glideinwms/__init__.pyo
@@ -614,12 +621,12 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/glideinwms/tools
 %{_initrddir}/gwms-factory
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/gwms-factory.conf
-%attr(-, gfactory, -) %dir %{_sysconfdir}/gwms-factory
-%attr(-, gfactory, -) %config(noreplace) %{_sysconfdir}/gwms-factory/glideinWMS.xml
+%attr(-, gfactory, gfactory) %dir %{_sysconfdir}/gwms-factory
+%attr(-, gfactory, gfactory) %config(noreplace) %{_sysconfdir}/gwms-factory/glideinWMS.xml
 %config(noreplace) %{_sysconfdir}/sysconfig/gwms-factory
 
 %files vofrontend-standalone
-%defattr(-,frontend,-,-)
+%defattr(-,frontend,frontend,-)
 %doc LICENSE.txt
 %doc ACKNOWLEDGMENTS.txt
 %doc doc
@@ -633,11 +640,11 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_sbindir}/glideinFrontendElement.py*
 %attr(755,root,root) %{_sbindir}/reconfig_frontend
 %attr(755,root,root) %{_sbindir}/stopFrontend
-%attr(-, frontend, -) %dir %{_localstatedir}/lib/gwms-frontend
-%attr(-, frontend, -) %{web_dir}
-%attr(-, frontend, -) %{web_base}
-%attr(-, frontend, -) %{frontend_dir}
-%attr(-, frontend, -) %{_localstatedir}/log/gwms-frontend
+%attr(-, frontend, frontend) %dir %{_localstatedir}/lib/gwms-frontend
+%attr(-, frontend, frontend) %{web_dir}
+%attr(-, frontend, frontend) %{web_base}
+%attr(-, frontend, frontend) %{frontend_dir}
+%attr(-, frontend, frontend) %{_localstatedir}/log/gwms-frontend
 %{python_sitelib}/glideinwms/__init__.py
 %{python_sitelib}/glideinwms/__init__.pyc
 %{python_sitelib}/glideinwms/__init__.pyo
@@ -681,11 +688,11 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 %{_initrddir}/gwms-frontend
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/gwms-frontend.conf
-%attr(-, frontend, -) %dir %{_sysconfdir}/gwms-frontend
-%attr(-, frontend, -) %config(noreplace) %{_sysconfdir}/gwms-frontend/frontend.xml
+%attr(-, frontend, frontend) %dir %{_sysconfdir}/gwms-frontend
+%attr(-, frontend, frontend) %config(noreplace) %{_sysconfdir}/gwms-frontend/frontend.xml
 %config(noreplace) %{_sysconfdir}/sysconfig/gwms-frontend
 %if %{v3_plus}
-%attr(-, frontend, -) %{web_base}/../creation
+%attr(-, frontend, frontend) %{web_base}/../creation
 %endif
 
 
@@ -729,6 +736,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Jul 25 2014 Parag Mhashilkar <parag@fnal.gov> - 3.2.6-0.3.rc3
+- Glideinwms v3.2.6 rc3 release
+- Reverted group name in default dir ownership but we now explicitly make gfactory and fronend users part of the gfactory and frontend group respectively
+
 * Fri Jul 18 2014 Parag Mhashilkar <parag@fnal.gov> - 3.2.6-0.2.rc2
 - Glideinwms v3.2.6 rc2 release
 
