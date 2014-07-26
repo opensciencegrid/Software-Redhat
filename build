@@ -1,0 +1,8 @@
+#!/bin/bash
+
+[[ $1 ]] || { echo need package dir...; exit; }
+
+set -x
+
+osg-build koji --el6 --ktt=panda-el6 "$@"
+
