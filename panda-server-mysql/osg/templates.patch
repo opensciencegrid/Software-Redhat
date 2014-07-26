@@ -1143,11 +1143,11 @@ index 6057f0c..0000000
 -TypesConfig /etc/mime.types
 diff --git a/templates/panda_server-httpd.conf.template b/templates/panda_server-httpd.conf.template
 new file mode 100644
-index 0000000..414cb53
+index 0000000..95687da
 --- /dev/null
 +++ b/templates/panda_server-httpd.conf.template
 @@ -0,0 +1,141 @@
-+LoadModule access_module modules/mod_access.so
++LoadModule authz_host_module modules/mod_authz_host.so
 +LoadModule alias_module modules/mod_alias.so
 +LoadModule rewrite_module modules/mod_rewrite.so
 +LoadModule mime_magic_module modules/mod_mime_magic.so
