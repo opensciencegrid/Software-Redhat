@@ -1,8 +1,8 @@
 diff --git a/setup_mysql.py b/setup_mysql.py
-index 3e17b84..4be092f 100755
+index 3e17b84..53d407a 100755
 --- a/setup_mysql.py
 +++ b/setup_mysql.py
-@@ -3,8 +3,9 @@
+@@ -3,11 +3,13 @@
  # Setup prog for Panda Server
  #
  #
@@ -14,7 +14,11 @@ index 3e17b84..4be092f 100755
  # prefix = '/data/pansrv/srv'
  
  
-@@ -52,7 +53,7 @@ class install_panda(install_org):
++import os
+ import re
+ import sys
+ import socket
+@@ -52,7 +54,7 @@ class install_panda(install_org):
      def initialize_options (self):
          install_org.initialize_options(self)
  #        self.prefix = '/data/atlpan/srv'
@@ -23,14 +27,15 @@ index 3e17b84..4be092f 100755
  
  
  # generates files using templates and install them
-@@ -107,6 +108,7 @@ class install_data_panda (install_data_org):
+@@ -107,7 +109,7 @@ class install_data_panda (install_data_org):
                      raise RuntimeError,"%s doesn't have the .template extension" % srcFile
                  # dest filename
                  destFile = re.sub('(\.exe)*\.template$','',srcFile)
-+                destFile = re.sub('-(ctl|logrotate|sysconfig)$','',destFile)
-                 destFile = destFile.split('/')[-1]
+-                destFile = destFile.split('/')[-1]
++                destFile = re.sub(r'^templates/','',destFile)
                  destFile = '%s/%s' % (tmpDir,destFile)
                  # open src
+                 inFile = open(srcFile)
 @@ -121,6 +123,9 @@ class install_data_panda (install_data_org):
                          raise RuntimeError,'unknown pattern %s in %s' % (item,srcFile)
                      # get pattern
@@ -41,7 +46,18 @@ index 3e17b84..4be092f 100755
                      # remove build/*/dump for bdist
                      patt = re.sub('build/[^/]+/dumb','',patt)
                      # remove /var/tmp/*-buildroot for bdist_rpm
-@@ -145,9 +150,10 @@ class install_data_panda (install_data_org):
+@@ -128,6 +133,10 @@ class install_data_panda (install_data_org):
+                     # replace
+                     filedata = filedata.replace('@@%s@@' % item, patt)
+                 # write to dest
++                if '/' in destFile:
++                    destSubDir = os.path.dirname(destFile)
++                    if not os.path.exists(destSubDir):
++                        os.makedirs(destSubDir)
+                 oFile = open(destFile,'w')
+                 oFile.write(filedata)
+                 oFile.close()
+@@ -145,9 +154,10 @@ class install_data_panda (install_data_org):
          
  # setup for distutils
  setup(
@@ -55,7 +71,7 @@ index 3e17b84..4be092f 100755
      description='MySQL branch of the PanDA Server Package',
      long_description='''This package contains PanDA Server Components''',
      license='GPL',
-@@ -166,41 +172,41 @@ setup(
+@@ -166,41 +176,41 @@ setup(
                ],
      data_files=[
                  # config files 
@@ -70,17 +86,17 @@ index 3e17b84..4be092f 100755
                   ),
                  # sysconfig
 -                ('etc/sysconfig', ['templates/panda_server-sysconfig.rpmnew.template',
-+                ('/etc/sysconfig', ['templates/panda_server-sysconfig.template',
++                ('/etc/sysconfig', ['templates/sysconfig/panda_server.template',
                                     ]
                   ),
                  # logrotate
 -                ('etc/logrotate.d', ['templates/panda_server-logrotate.template',
-+                ('/etc/logrotate.d', ['templates/panda_server-logrotate.template',
++                ('/etc/logrotate.d', ['templates/logrotate.d/panda_server.template',
                                       ]
                   ),
                  # init script
 -                ('etc/init.d', ['templates/panda_server-ctl.exe.template',
-+                ('/etc/rc.d/init.d', ['templates/panda_server-ctl.exe.template',
++                ('/etc/rc.d/init.d', ['templates/init.d/panda_server.exe.template',
                                     ]
                   ),
                  # crons

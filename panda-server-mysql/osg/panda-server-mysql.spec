@@ -1,7 +1,7 @@
 %define name panda-server-mysql
 %define version 0.0.2
 %define unmangled_version 0.0.2
-%define release 0.6
+%define release 0.7
 %define panda_user  pansrv
 %define panda_group pansrv
 
