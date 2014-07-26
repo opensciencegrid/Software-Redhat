@@ -24,6 +24,11 @@ Provides: panda-server-mysql
 Requires: python
 Requires: panda-common
 Requires: httpd
+Requires: mod_ssl
+Requires: mod_python
+Requires: gridsite
+# Requires: osg-ca-certs
+# Requires: /etc/grid-security/certificates
 Requires(pre): /usr/sbin/useradd
 Url: https://twiki.cern.ch/twiki/bin/view/PanDA/PanDA
 
