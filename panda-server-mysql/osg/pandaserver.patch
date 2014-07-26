@@ -1,0 +1,252 @@
+diff --git a/pandaserver/dataservice/AdderCmsPlugin.py b/pandaserver/dataservice/AdderCmsPlugin.py
+index 11dec09..17c4261 100644
+--- a/pandaserver/dataservice/AdderCmsPlugin.py
++++ b/pandaserver/dataservice/AdderCmsPlugin.py
+@@ -24,7 +24,7 @@ class AdderCmsPlugin(AdderPluginBase):
+ 
+         # Define the logger attribute
+         self.logger = logging.getLogger('ASOPlugin')
+-        hdlr = logging.FileHandler('/data/atlpan/srv/var/log/panda/ASOPlugin.log')
++        hdlr = logging.FileHandler('/var/log/panda/ASOPlugin.log')
+         formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
+         hdlr.setFormatter(formatter)
+         self.logger.addHandler(hdlr)
+diff --git a/pandaserver/dataservice/AddressFinder.py b/pandaserver/dataservice/AddressFinder.py
+index c96099b..d4e9d92 100644
+--- a/pandaserver/dataservice/AddressFinder.py
++++ b/pandaserver/dataservice/AddressFinder.py
+@@ -58,60 +58,60 @@ def getEmailPhonebook(dn):
+                  'email']:
+         if sTry == 'full':
+             # try full name
+-            com = '~atlpan/phonebook --firstname "%s" --surname "%s" --all' \
++            com = '~pansrv/phonebook --firstname "%s" --surname "%s" --all' \
+                   % (extractedDN.split()[0],extractedDN.split()[-1])
+         if sTry == 'full_rev':
+             # try full name
+-            com = '~atlpan/phonebook --firstname "%s" --surname "%s" --all' \
++            com = '~pansrv/phonebook --firstname "%s" --surname "%s" --all' \
+                   % (extractedDN.split()[-1],extractedDN.split()[0])
+         elif sTry == 'fullwc':
+             # try full name with wildcard
+-            com = '~atlpan/phonebook --firstname "*%s*" --surname "*%s*" --all' \
++            com = '~pansrv/phonebook --firstname "*%s*" --surname "*%s*" --all' \
+                   % (extractedDN.split()[0],extractedDN.split()[-1])
+         elif sTry == 'fullwc_rev':
+             # try full name with wildcard
+-            com = '~atlpan/phonebook --firstname "*%s*" --surname "*%s*" --all' \
++            com = '~pansrv/phonebook --firstname "*%s*" --surname "*%s*" --all' \
+                   % (extractedDN.split()[-1],extractedDN.split()[0])
+         elif sTry == 'suronly':
+             if len(extractedDN.split()) == 2:
+                 # try surname only
+-                com = '~atlpan/phonebook --surname "%s" --all' \
++                com = '~pansrv/phonebook --surname "%s" --all' \
+                       % extractedDN.split()[-1]
+             else:
+                 # try surname with wildcard
+-                com = '~atlpan/phonebook --surname "*%s*" --all' \
++                com = '~pansrv/phonebook --surname "*%s*" --all' \
+                       % extractedDN.split()[-1]
+         elif sTry == 'suronly_rev':
+             if len(extractedDN.split()) == 2:            
+                 # try surname only
+-                com = '~atlpan/phonebook --surname "%s" --all' \
++                com = '~pansrv/phonebook --surname "%s" --all' \
+                       % extractedDN.split()[0]
+             else:
+                 # try surname with wildcard
+-                com = '~atlpan/phonebook --surname "*%s*" --all' \
++                com = '~pansrv/phonebook --surname "*%s*" --all' \
+                       % extractedDN.split()[0]
+         elif sTry == 'firstonly':
+             if len(extractedDN.split()) == 2:
+                 # try firstname only
+-                com = '~atlpan/phonebook --firstname "%s" --all' \
++                com = '~pansrv/phonebook --firstname "%s" --all' \
+                       % extractedDN.split()[0]
+             else:
+                 # try firstname with wildcard
+-                com = '~atlpan/phonebook --firstname "*%s*" --all' \
++                com = '~pansrv/phonebook --firstname "*%s*" --all' \
+                       % extractedDN.split()[0]
+         elif sTry == 'firstonly_rev':
+             if len(extractedDN.split()) == 2:
+                 # try firstname only
+-                com = '~atlpan/phonebook --firstname "%s" --all' \
++                com = '~pansrv/phonebook --firstname "%s" --all' \
+                       % extractedDN.split()[-1]
+             else:
+                 # try firstname with wildcard
+-                com = '~atlpan/phonebook --firstname "*%s*" --all' \
++                com = '~pansrv/phonebook --firstname "*%s*" --all' \
+                       % extractedDN.split()[-1]
+         elif sTry == 'email':
+             # try email
+             mailPatt = re.sub(' +','*',extractedDN)
+-            com = '~atlpan/phonebook --email "*%s*" --all' \
++            com = '~pansrv/phonebook --email "*%s*" --all' \
+                   % mailPatt
+         _logger.debug(com)
+         # execute
+diff --git a/pandaserver/test/add.py b/pandaserver/test/add.py
+index eaf23ba..916f126 100755
+--- a/pandaserver/test/add.py
++++ b/pandaserver/test/add.py
+@@ -40,7 +40,7 @@ try:
+     for line in out.split('\n'):
+         items = line.split()
+         # owned process
+-        if not items[0] in ['sm','atlpan','root']: # ['os.getlogin()']: doesn't work in cron
++        if not items[0] in ['sm','atlpan','pansrv','root']: # ['os.getlogin()']: doesn't work in cron
+             continue
+         # look for python
+         if re.search('python',line) == None:
+@@ -228,7 +228,7 @@ class ForkThr (threading.Thread):
+ 
+     def run(self):
+         setupStr  = 'source %s; ' % panda_config.glite_source
+-        setupStr += 'source /data/atlpan/srv/etc/sysconfig/panda_server-sysconfig; '
++        setupStr += 'source /data/atlpan/srv/etc/sysconfig/panda_server; '
+         runStr  = '%s/python -Wignore ' % panda_config.native_python
+         runStr += panda_config.pandaPython_dir + '/dataservice/forkSetupper.py -i '
+         runStr += self.fileName
+diff --git a/pandaserver/test/backupJobArch.py b/pandaserver/test/backupJobArch.py
+index 6ebc8da..620792e 100755
+--- a/pandaserver/test/backupJobArch.py
++++ b/pandaserver/test/backupJobArch.py
+@@ -80,7 +80,7 @@ try:
+             continue
+         items = line.split()
+         # owned process
+-        if not items[0] in ['sm','atlpan','root']: # ['os.getlogin()']: doesn't work in cron
++        if not items[0] in ['sm','atlpan','pansrv','root']: # ['os.getlogin()']: doesn't work in cron
+             continue
+         # look for python
+         if re.search('python',line) == None:
+diff --git a/pandaserver/test/copyArchive.py b/pandaserver/test/copyArchive.py
+index 486e286..199f829 100755
+--- a/pandaserver/test/copyArchive.py
++++ b/pandaserver/test/copyArchive.py
+@@ -80,7 +80,7 @@ try:
+             continue
+         items = line.split()
+         # owned process
+-        if not items[0] in ['sm','atlpan','root']: # ['os.getlogin()']: doesn't work in cron
++        if not items[0] in ['sm','atlpan','pansrv','root']: # ['os.getlogin()']: doesn't work in cron
+             continue
+         # look for python
+         if re.search('python',line) == None:
+@@ -110,7 +110,7 @@ try:
+     for line in out.split('\n'):
+         items = line.split()
+         # owned process
+-        if not items[0] in ['sm','atlpan','root']: # ['os.getlogin()']: doesn't work in cron
++        if not items[0] in ['sm','atlpan','pansrv','root']: # ['os.getlogin()']: doesn't work in cron
+             continue
+         # look for python
+         if re.search('python',line) == None:
+diff --git a/pandaserver/test/datasetManager.py b/pandaserver/test/datasetManager.py
+index b5f8b71..4f0b15b 100644
+--- a/pandaserver/test/datasetManager.py
++++ b/pandaserver/test/datasetManager.py
+@@ -83,7 +83,7 @@ try:
+             continue
+         items = line.split()
+         # owned process
+-        if not items[0] in ['sm','atlpan','root']: # ['os.getlogin()']: doesn't work in cron
++        if not items[0] in ['sm','atlpan','pansrv','root']: # ['os.getlogin()']: doesn't work in cron
+             continue
+         # look for python
+         if re.search('python',line) == None:
+diff --git a/pandaserver/test/deleteJobs.py b/pandaserver/test/deleteJobs.py
+index 18195c2..af560d0 100755
+--- a/pandaserver/test/deleteJobs.py
++++ b/pandaserver/test/deleteJobs.py
+@@ -78,7 +78,7 @@ try:
+     for line in out.split('\n'):
+         items = line.split()
+         # owned process
+-        if not items[0] in ['sm','atlpan','root']: # ['os.getlogin()']: doesn't work in cron
++        if not items[0] in ['sm','atlpan','pansrv','root']: # ['os.getlogin()']: doesn't work in cron
+             continue
+         # look for python
+         if re.search('python',line) == None:
+diff --git a/pandaserver/test/evpPD2P.py b/pandaserver/test/evpPD2P.py
+index 27cb721..aa419f9 100644
+--- a/pandaserver/test/evpPD2P.py
++++ b/pandaserver/test/evpPD2P.py
+@@ -34,7 +34,7 @@ try:
+     for line in out.split('\n'):
+         items = line.split()
+         # owned process
+-        if not items[0] in ['sm','atlpan','root']: # ['os.getlogin()']: doesn't work in cron
++        if not items[0] in ['sm','atlpan','pansrv''root']: # ['os.getlogin()']: doesn't work in cron
+             continue
+         # look for python
+         if re.search('python',line) == None:
+diff --git a/pandaserver/test/fileCallbackListener.py b/pandaserver/test/fileCallbackListener.py
+index 9606331..4a8981b 100644
+--- a/pandaserver/test/fileCallbackListener.py
++++ b/pandaserver/test/fileCallbackListener.py
+@@ -239,7 +239,7 @@ if __name__ == "__main__":
+         for line in out.split('\n'):
+             items = line.split()
+             # owned process
+-            if not items[0] in ['sm','atlpan','root']: # ['os.getlogin()']: doesn't work in cron
++            if not items[0] in ['sm','atlpan','pansrv','root']: # ['os.getlogin()']: doesn't work in cron
+                 continue
+             # look for python
+             if re.search('python',line) == None:
+diff --git a/pandaserver/test/genCallbackConsumer.py b/pandaserver/test/genCallbackConsumer.py
+index 3c7eb75..2f8a963 100644
+--- a/pandaserver/test/genCallbackConsumer.py
++++ b/pandaserver/test/genCallbackConsumer.py
+@@ -190,7 +190,7 @@ if __name__ == "__main__":
+         for line in out.split('\n'):
+             items = line.split()
+             # owned process
+-            if not items[0] in ['sm','atlpan','root']: # ['os.getlogin()']: doesn't work in cron
++            if not items[0] in ['sm','atlpan','pansrv','root']: # ['os.getlogin()']: doesn't work in cron
+                 continue
+             # look for python
+             if re.search('python',line) == None:
+diff --git a/pandaserver/test/runMerger.py b/pandaserver/test/runMerger.py
+index ba765b1..d66eb91 100644
+--- a/pandaserver/test/runMerger.py
++++ b/pandaserver/test/runMerger.py
+@@ -35,7 +35,7 @@ try:
+     for line in out.split('\n'):
+         items = line.split()
+         # owned process
+-        if not items[0] in ['sm','atlpan','root']: # ['os.getlogin()']: doesn't work in cron
++        if not items[0] in ['sm','atlpan','pansrv','root']: # ['os.getlogin()']: doesn't work in cron
+             continue
+         # look for python
+         if re.search('python',line) == None:
+diff --git a/pandaserver/test/runRebro.py b/pandaserver/test/runRebro.py
+index 494a079..50b4d39 100755
+--- a/pandaserver/test/runRebro.py
++++ b/pandaserver/test/runRebro.py
+@@ -79,7 +79,7 @@ try:
+     for line in out.split('\n'):
+         items = line.split()
+         # owned process
+-        if not items[0] in ['sm','atlpan','root']: # ['os.getlogin()']: doesn't work in cron
++        if not items[0] in ['sm','atlpan','pansrv','root']: # ['os.getlogin()']: doesn't work in cron
+             continue
+         # look for python
+         if re.search('python',line) == None:
+diff --git a/pandaserver/test/tmpwatch.py b/pandaserver/test/tmpwatch.py
+index ee75d27..d3a132b 100644
+--- a/pandaserver/test/tmpwatch.py
++++ b/pandaserver/test/tmpwatch.py
+@@ -12,7 +12,7 @@ optP.add_option('-h',action='store',type='int',dest='limit',default=12,
+ options,args = optP.parse_args()
+ 
+ # patterns of tmp files
+-tmpPatts = ['/tmp/tmp*','/tmp/atlpan/tmp*']
++tmpPatts = ['/tmp/tmp*','/tmp/atlpan/tmp*','/tmp/pansrv/tmp*']
+ 
+ # limit
+ timeLimit = datetime.datetime.utcnow() - datetime.timedelta(hours=options.limit)

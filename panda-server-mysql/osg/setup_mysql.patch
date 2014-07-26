@@ -1,8 +1,8 @@
 diff --git a/setup_mysql.py b/setup_mysql.py
-index 3e17b84..53d407a 100755
+index 3e17b84..f675da8 100755
 --- a/setup_mysql.py
 +++ b/setup_mysql.py
-@@ -3,11 +3,13 @@
+@@ -3,11 +3,15 @@
  # Setup prog for Panda Server
  #
  #
@@ -12,13 +12,15 @@ index 3e17b84..53d407a 100755
 +release_version='0.0.2'
 +# prefix = '/data/atlpan/srv'
  # prefix = '/data/pansrv/srv'
++panda_user = 'pansrv'
++panda_group = 'pansrv'
  
  
 +import os
  import re
  import sys
  import socket
-@@ -52,7 +54,7 @@ class install_panda(install_org):
+@@ -52,7 +56,7 @@ class install_panda(install_org):
      def initialize_options (self):
          install_org.initialize_options(self)
  #        self.prefix = '/data/atlpan/srv'
@@ -27,7 +29,17 @@ index 3e17b84..53d407a 100755
  
  
  # generates files using templates and install them
-@@ -107,7 +109,7 @@ class install_data_panda (install_data_org):
+@@ -61,7 +65,8 @@ class install_data_panda (install_data_org):
+     def initialize_options (self):
+         install_data_org.initialize_options (self)
+         self.install_purelib = None
+-        self.host_name = socket.getfqdn()
++        self.panda_user = panda_user
++        self.panda_group = panda_group
+         self.python_exec_version = '%s.%s' % sys.version_info[:2]
+         
+     def finalize_options (self):
+@@ -107,7 +112,7 @@ class install_data_panda (install_data_org):
                      raise RuntimeError,"%s doesn't have the .template extension" % srcFile
                  # dest filename
                  destFile = re.sub('(\.exe)*\.template$','',srcFile)
@@ -36,7 +48,7 @@ index 3e17b84..53d407a 100755
                  destFile = '%s/%s' % (tmpDir,destFile)
                  # open src
                  inFile = open(srcFile)
-@@ -121,6 +123,9 @@ class install_data_panda (install_data_org):
+@@ -121,6 +126,9 @@ class install_data_panda (install_data_org):
                          raise RuntimeError,'unknown pattern %s in %s' % (item,srcFile)
                      # get pattern
                      patt = getattr(self,item)
@@ -46,7 +58,7 @@ index 3e17b84..53d407a 100755
                      # remove build/*/dump for bdist
                      patt = re.sub('build/[^/]+/dumb','',patt)
                      # remove /var/tmp/*-buildroot for bdist_rpm
-@@ -128,6 +133,10 @@ class install_data_panda (install_data_org):
+@@ -128,6 +136,10 @@ class install_data_panda (install_data_org):
                      # replace
                      filedata = filedata.replace('@@%s@@' % item, patt)
                  # write to dest
@@ -57,7 +69,7 @@ index 3e17b84..53d407a 100755
                  oFile = open(destFile,'w')
                  oFile.write(filedata)
                  oFile.close()
-@@ -145,9 +154,10 @@ class install_data_panda (install_data_org):
+@@ -145,9 +157,10 @@ class install_data_panda (install_data_org):
          
  # setup for distutils
  setup(
@@ -71,7 +83,7 @@ index 3e17b84..53d407a 100755
      description='MySQL branch of the PanDA Server Package',
      long_description='''This package contains PanDA Server Components''',
      license='GPL',
-@@ -166,41 +176,41 @@ setup(
+@@ -166,41 +179,41 @@ setup(
                ],
      data_files=[
                  # config files 

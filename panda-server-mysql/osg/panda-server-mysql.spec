@@ -1,7 +1,7 @@
 %define name panda-server-mysql
 %define version 0.0.2
 %define unmangled_version 0.0.2
-%define release 0.7
+%define release 0.8
 %define panda_user  pansrv
 %define panda_group pansrv
 
@@ -12,6 +12,7 @@ Release: %{release}%{?dist}
 Source0: %{name}-%{unmangled_version}.tar.gz
 Patch0: setup_mysql.patch
 Patch1: templates.patch
+Patch2: pandaserver.patch
 License: GPL
 Group: Development/Libraries
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
@@ -35,6 +36,7 @@ This package contains PanDA Server Components
 #rename .rpmnew. . templates/*.rpmnew.template
 #rename .sh.     . templates/*.sh.exe.template
 %patch1 -p1
+%patch2 -p1
 
 %build
 python setup_mysql.py build

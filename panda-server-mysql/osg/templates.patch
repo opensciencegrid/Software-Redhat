@@ -1,6 +1,6 @@
 diff --git a/templates/init.d/panda_server.exe.template b/templates/init.d/panda_server.exe.template
 new file mode 100755
-index 0000000..1b287ce
+index 0000000..f157da2
 --- /dev/null
 +++ b/templates/init.d/panda_server.exe.template
 @@ -0,0 +1,147 @@
@@ -10,7 +10,7 @@ index 0000000..1b287ce
 +#
 +# description: Panda server webserver
 +# processname: httpd
-+# config: /data/atlpan/srv/etc/panda/panda_server-httpd.conf
++# config: /etc/panda/panda_server-httpd.conf
 +# config: /etc/sysconfig/httpd-pandasrv
 +# pidfile: /var/run/httpd-pandasrv.pid
 +#
@@ -153,11 +153,11 @@ index 0000000..1b287ce
 +
 diff --git a/templates/logrotate.d/panda_server.template b/templates/logrotate.d/panda_server.template
 new file mode 100644
-index 0000000..252a23e
+index 0000000..a0426d0
 --- /dev/null
 +++ b/templates/logrotate.d/panda_server.template
 @@ -0,0 +1,14 @@
-+@@install_dir@@/var/log/panda/*log {
++/var/log/panda/*log {
 +    rotate 180
 +    daily
 +    compress    
@@ -166,8 +166,8 @@ index 0000000..252a23e
 +    sharedscripts
 +    daily       
 +    postrotate
-+	killall -u atlpan python > /dev/null 2>/dev/null || true
-+        killall -u atlpan python@@python_exec_version@@ > /dev/null 2>/dev/null || true
++	killall -u @@panda_user@@ python > /dev/null 2>/dev/null || true
++        killall -u @@panda_user@@ python@@python_exec_version@@ > /dev/null 2>/dev/null || true
 +	/sbin/service httpd-pandasrv graceful > /dev/null 2>/dev/null || true
 +    endscript
 +}
@@ -806,7 +806,7 @@ index aa78dc4..0000000
 -TypesConfig /etc/mime.types
 diff --git a/templates/panda_server-httpd-FastCGI.conf.template b/templates/panda_server-httpd-FastCGI.conf.template
 new file mode 100644
-index 0000000..aa78dc4
+index 0000000..d2d5d8c
 --- /dev/null
 +++ b/templates/panda_server-httpd-FastCGI.conf.template
 @@ -0,0 +1,184 @@
@@ -829,8 +829,8 @@ index 0000000..aa78dc4
 +LoadModule wsgi_module modules/mod_wsgi.so
 +
 +
-+User  atlpan
-+Group zp
++User  @@panda_user@@
++Group @@panda_group@@
 +
 +<IfModule prefork.c>
 +StartServers         25
@@ -861,10 +861,10 @@ index 0000000..aa78dc4
 +</Directory>
 +
 +Alias /trf/ "@@install_dir@@/var/trf/"
-+Alias /cache/ "@@install_dir@@/var/cache/pandaserver/"
++Alias /cache/ "/var/cache/pandaserver/"
 +Alias /appdir/ "@@install_dir@@/var/appdir/"
 +
-+<Directory "@@install_dir@@/var/cache/pandaserver">
++<Directory "/var/cache/pandaserver">
 +    Options FollowSymLinks
 +    AllowOverride None
 +    Order allow,deny
@@ -872,7 +872,7 @@ index 0000000..aa78dc4
 +    Deny from 192.203.218.14
 +</Directory>
 +
-+<Directory "@@install_dir@@/var/cache/pandaserver/jedilog">
++<Directory "/var/cache/pandaserver/jedilog">
 +    Options FollowSymLinks
 +    AllowOverride None
 +    Order allow,deny
@@ -881,7 +881,7 @@ index 0000000..aa78dc4
 +</Directory>
 +
 +<IfModule mod_fastcgi.c>
-+    FastCgiIpcDir @@install_dir@@/var/log/panda/fastsocks
++    FastCgiIpcDir /var/log/panda/fastsocks
 +    FastCgiServer @@install_purelib@@/pandaserver/server/panda.py \
 +	-processes 25 -idle-timeout 300 -listen-queue-depth 1 -flush \
 +	-initial-env PYTHONPATH \
@@ -896,11 +896,11 @@ index 0000000..aa78dc4
 +</IfModule>
 +
 +<IfModule mod_wsgi.c>
-+   WSGIDaemonProcess pandasrv_daemon processes=25 threads=2 home=/home/atlpan
++   WSGIDaemonProcess pandasrv_daemon processes=25 threads=2 home=~@@panda_user@@
 +   WSGIProcessGroup pandasrv_daemon
 +   WSGIApplicationGroup %{GLOBAL}
 +   WSGIScriptAliasMatch ^/server/panda/(.+)$ @@install_purelib@@/pandaserver/server/panda.py
-+   WSGISocketPrefix @@install_dir@@/var/log/panda/wsgisocks/wsgi
++   WSGISocketPrefix /var/log/panda/wsgisocks/wsgi
 +</IfModule>
 +
 +
@@ -988,10 +988,10 @@ index 0000000..aa78dc4
 +LogFormat "%t %h \"%r\" %>s %b" common
 +LogFormat "%{Referer}i -> %U" referer
 +LogFormat "%{User-agent}i" agent
-+CustomLog @@install_dir@@/var/log/panda/panda_server_access_log common
-+ErrorLog @@install_dir@@/var/log/panda/panda_server_error_log
++CustomLog /var/log/panda/panda_server_access_log common
++ErrorLog /var/log/panda/panda_server_error_log
 +
-+PidFile @@install_dir@@/var/log/panda/panda_server_httpd.pid
++PidFile /var/log/panda/panda_server_httpd.pid
 +
 +TypesConfig /etc/mime.types
 diff --git a/templates/panda_server-httpd.conf.rpmnew.template b/templates/panda_server-httpd.conf.rpmnew.template
@@ -1143,7 +1143,7 @@ index 6057f0c..0000000
 -TypesConfig /etc/mime.types
 diff --git a/templates/panda_server-httpd.conf.template b/templates/panda_server-httpd.conf.template
 new file mode 100644
-index 0000000..6057f0c
+index 0000000..414cb53
 --- /dev/null
 +++ b/templates/panda_server-httpd.conf.template
 @@ -0,0 +1,141 @@
@@ -1162,8 +1162,8 @@ index 0000000..6057f0c
 +LoadModule python_module modules/mod_python.so
 +LoadModule gridsite_module modules/mod_gridsite.so
 +
-+User  atlpan
-+Group zp
++User  @@panda_user@@
++Group @@panda_group@@
 +
 +<IfModule prefork.c>
 +StartServers         50
@@ -1200,9 +1200,9 @@ index 0000000..6057f0c
 +    Deny from 192.203.218.14
 +</Directory>
 +
-+Alias /cache/ "@@install_dir@@/var/cache/pandaserver/"
++Alias /cache/ "/var/cache/pandaserver/"
 +
-+<Directory "@@install_dir@@/var/cache/pandaserver">
++<Directory "/var/cache/pandaserver">
 +    Options FollowSymLinks
 +    AllowOverride None
 +    Order allow,deny
@@ -1282,10 +1282,10 @@ index 0000000..6057f0c
 +LogFormat "%t %h \"%r\" %>s %b" common
 +LogFormat "%{Referer}i -> %U" referer
 +LogFormat "%{User-agent}i" agent
-+CustomLog @@install_dir@@/var/log/panda/panda_server_access_log common
-+ErrorLog @@install_dir@@/var/log/panda/panda_server_error_log
++CustomLog /var/log/panda/panda_server_access_log common
++ErrorLog /var/log/panda/panda_server_error_log
 +
-+PidFile @@install_dir@@/var/log/panda/panda_server_httpd.pid
++PidFile /var/log/panda/panda_server_httpd.pid
 +
 +TypesConfig /etc/mime.types
 diff --git a/templates/panda_server-logrotate.template b/templates/panda_server-logrotate.template
@@ -1308,6 +1308,40 @@ index 252a23e..0000000
 -	/sbin/service httpd-pandasrv graceful > /dev/null 2>/dev/null || true
 -    endscript
 -}
+diff --git a/templates/panda_server-makeSlsXml.exe.template b/templates/panda_server-makeSlsXml.exe.template
+index 5703cf0..d32b225 100755
+--- a/templates/panda_server-makeSlsXml.exe.template
++++ b/templates/panda_server-makeSlsXml.exe.template
+@@ -235,7 +235,7 @@ def count_processes() :
+ 	output = subprocess.Popen( ['ps', 'aux'], stdout=subprocess.PIPE ).communicate()[0]
+ 	count = 0
+ 	for line in output.split( '\n' ) :
+-		if( re.match( 'atlpan', line ) ) :
++		if( re.match( '$$panda_user@@', line ) ) :
+ 			if( re.search( 'http', line ) ) :
+ 				count += 1
+ 	return count
+@@ -252,7 +252,7 @@ def count_add_processes() :
+ 	return count
+ 
+ def count_holdings() :
+-	output = subprocess.Popen("ls /data/atlpan/srv/var/log/panda/ | egrep '(finished|failed)'",
++	output = subprocess.Popen("ls /var/log/panda/ | egrep '(finished|failed)'",
+ 				  stdout=subprocess.PIPE,shell=True).communicate()[0]
+         count =0
+ 	for line in output.split( '\n' ) :
+@@ -266,9 +266,9 @@ def registration_time(timeSlice=False,onlyDQ2=False) :
+ 	aveRegTime = '0.0'
+ 	try:
+ 		if onlyDQ2:
+-			com = "grep registraion /data/atlpan/srv/var/log/panda/panda-Adder.log | grep DQ2 | grep -v LFC"
++			com = "grep registraion /var/log/panda/panda-Adder.log | grep DQ2 | grep -v LFC"
+ 		else:
+-			com = "grep 'LFC+DQ2' /data/atlpan/srv/var/log/panda/panda-Adder.log"
++			com = "grep 'LFC+DQ2' /var/log/panda/panda-Adder.log"
+ 		if not timeSlice:
+ 			com += ' | tail -1000'
+ 		output = subprocess.Popen(com,stdout=subprocess.PIPE,shell=True).communicate()[0]
 diff --git a/templates/panda_server-merge.exe.template b/templates/panda_server-merge.exe.template
 new file mode 100755
 index 0000000..746c1d0
@@ -1830,7 +1864,7 @@ index 412c147..0000000
 -useJEDI = False
 diff --git a/templates/panda_server.cfg.template b/templates/panda_server.cfg.template
 new file mode 100644
-index 0000000..412c147
+index 0000000..6c2a2de
 --- /dev/null
 +++ b/templates/panda_server.cfg.template
 @@ -0,0 +1,307 @@
@@ -1843,7 +1877,7 @@ index 0000000..412c147
 +#
 +
 +# log directory
-+logdir=@@install_dir@@/var/log/panda
++logdir=/var/log/panda
 +
 +# logger name
 +loggername = prod
@@ -1884,7 +1918,7 @@ index 0000000..412c147
 +#
 +
 +# cache space
-+cache_dir = @@install_dir@@/var/cache/pandaserver
++cache_dir = /var/cache/pandaserver
 +
 +
 +
@@ -1918,7 +1952,7 @@ index 0000000..412c147
 +lfcClient_dir = %(pandaPython_dir)s/brokerage
 +
 +# home dir to change CWD
-+home_dir_cwd = /home/atlpan
++home_dir_cwd = /home/@@panda_user@@
 +
 +
 +
@@ -2143,7 +2177,7 @@ index 0000000..412c147
 +useJEDI = False
 diff --git a/templates/sysconfig/panda_server.template b/templates/sysconfig/panda_server.template
 new file mode 100644
-index 0000000..f2a3199
+index 0000000..5fd9a62
 --- /dev/null
 +++ b/templates/sysconfig/panda_server.template
 @@ -0,0 +1,35 @@
@@ -2174,11 +2208,11 @@ index 0000000..f2a3199
 +export PYTHONPATH=@@install_purelib@@/pandacommon:@@install_purelib@@/pandaserver
 +
 +# avoid to use AFS
-+export HOME=/home/atlpan
++#export HOME=~@@panda_user@@
 +
 +# set user's proxy
 +export X509_USER_PROXY=FIXME
 +
 +# panda server URLs
-+export PANDA_URL='http://@@host_name@@:25080/server/panda'
-+export PANDA_URL_SSL='https://@@host_name@@:25443/server/panda'
++export PANDA_URL='http://$HOSTNAME:25080/server/panda'
++export PANDA_URL_SSL='https://$HOSTNAME:25443/server/panda'
