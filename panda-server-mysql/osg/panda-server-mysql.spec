@@ -20,7 +20,9 @@ BuildArch: noarch
 Vendor: Panda Team <hn-atlas-panda-pathena@cern.ch>
 Packager: Panda Team <hn-atlas-panda-pathena@cern.ch>
 Provides: panda-server-mysql
-Requires: python panda-common
+Requires: python
+Requires: panda-common
+Requires: httpd
 Requires(pre): /usr/sbin/useradd
 Url: https://twiki.cern.ch/twiki/bin/view/PanDA/PanDA
 
