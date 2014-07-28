@@ -5,7 +5,7 @@
 Name:      %{gramce}
 Summary:   OSG Compute Element (GRAM-based)
 Version:   3.2
-Release:   2%{?dist}
+Release:   3%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -147,6 +147,7 @@ Summary: Condor meta-package for the HTCondor-CE OSG-CE
 
 Requires: %{htcce} = %{version}-%{release}
 Requires: %{basece}-condor = %{version}-%{release}
+Requires: htcondor-ce-condor
 
 %description -n %{htcce}-condor
 %{summary}
@@ -157,6 +158,7 @@ Group: Grid
 Summary: PBS meta-package for the HTCondor-CE OSG-CE
 Requires: %{htcce} = %{version}-%{release}
 Requires: %{basece}-pbs = %{version}-%{release}
+Requires: htcondor-ce-pbs
 
 %description -n %{htcce}-pbs
 %{summary}
@@ -166,6 +168,7 @@ Group: Grid
 Summary: LSF meta-package for the HTCondor-CE OSG-CE
 Requires: %{htcce} = %{version}-%{release}
 Requires: %{basece}-lsf = %{version}-%{release}
+Requires: htcondor-ce-lsf
 
 %description -n %{htcce}-lsf
 %{summary}
@@ -175,6 +178,7 @@ Group: Grid
 Summary: SGE meta-package for the HTCondor-CE OSG-CE
 Requires: %{htcce} = %{version}-%{release}
 Requires: %{basece}-sge = %{version}-%{release}
+Requires: htcondor-ce-sge
 
 %description -n %{htcce}-sge
 %{summary}
@@ -251,7 +255,7 @@ exit 0
 %files -n %{gramce}-sge
 
 %changelog
-* Mon Jul 28 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 3.2-2
+* Mon Jul 28 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 3.2-3
 - Add htcondor-ce metapackages
 
 * Mon Feb 24 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 3.2-1
