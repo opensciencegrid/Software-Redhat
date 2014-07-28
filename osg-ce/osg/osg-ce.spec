@@ -1,30 +1,52 @@
-Name:      osg-ce
-Summary:   OSG Compute Element
+%global htcce osg-htcondor-ce
+%global basece osg-base-ce
+%global gramce osg-ce
+
+Name:      %{gramce}
+Summary:   OSG Compute Element (GRAM-based)
 Version:   3.2
-Release:   1%{?dist}
+Release:   2%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
 
 BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
+Requires: globus-gatekeeper
+Requires: globus-gram-job-manager
+Requires: globus-gram-job-manager-fork
+Requires: globus-gram-job-manager-fork-setup-poll
+Requires: gratia-probe-gram
+Requires(post): globus-gram-job-manager-scripts >= 4
+
+Requires: %{basece} = %{version}-%{release}
+
+%description
+%{summary}
+
+%post -n %{gramce}
+# We always want the default jobmanager to be fork (OSG convention), so we
+# force it on both install and upgrade.
+/usr/sbin/globus-gatekeeper-admin -e jobmanager-fork-poll -n jobmanager > /dev/null 2>&1 || :
+
+###############################################################################
+# Base subpackages
+###############################################################################
+%package -n %{basece}
+Group: Grid
+Summary: Meta-package of gateway-independent components of the OSG CE
+Requires: globus-gridftp-server-progs
 Requires: osg-version
 Requires: grid-certificates
-Requires: globus-gridftp-server-progs 
 Requires: osg-client
 Requires: lfc-client
 Requires: osg-info-services
 Requires: osg-vo-map
 Requires: vo-client
 Requires: osg-site-web-page
-Requires: globus-gatekeeper
-Requires: globus-gram-job-manager
-Requires: globus-gram-job-manager-fork
-Requires: globus-gram-job-manager-fork-setup-poll
 Requires: gip
 Requires: gums-client
 Requires: edg-mkgridmap
-Requires: gratia-probe-gram
 Requires: gratia-probe-gridftp-transfer
 Requires: osg-site-verify
 Requires: osg-system-profiler
@@ -38,7 +60,6 @@ Requires: osg-configure-misc
 Requires: osg-configure-network
 Requires: osg-configure-squid
 Requires: frontier-squid
-Requires(post): globus-gram-job-manager-scripts >= 4
 
 # New in 3.2:
 Requires: osg-configure-infoservices
@@ -53,73 +74,186 @@ Requires: liblcas_lcmaps_gt4_mapping.so.0
 Requires: liblcas_lcmaps_gt4_mapping.so.0()(64bit)
 %endif
 
-%post
-# We always want the default jobmanager to be fork (OSG convention), so we
-# force it on both install and upgrade. 
-/usr/sbin/globus-gatekeeper-admin -e jobmanager-fork-poll -n jobmanager > /dev/null 2>&1 || :
-
-%description
+%description -n %{basece}
 %{summary}
 
-%package condor
-Group: Grid
-Summary: Condor meta-package for the OSG-CE
 
-Requires: %{name} = %{version}-%{release}
+%package -n %{basece}-condor
+Group: Grid
+Summary: Gateway-less Condor meta-package for OSG-CE
+
+Requires: %{basece} = %{version}-%{release}
 Requires: condor
 Requires: gratia-probe-condor
-Requires: globus-gram-job-manager-condor
 Requires: osg-configure-condor
 
-%description condor
+%description -n %{basece}-condor
 %{summary}
 
-%package pbs
+
+%package -n %{basece}-pbs
 Group: Grid
-Summary: PBS meta-package for the OSG-CE
-Requires: %{name} = %{version}-%{release}
+Summary: Gateway-less PBS meta-package for OSG-CE
+
+Requires: %{basece} = %{version}-%{release}
 Requires: gratia-probe-pbs-lsf
-Requires: globus-gram-job-manager-pbs-setup-seg
 Requires: osg-configure-pbs
 
-%description pbs
+%description -n %{basece}-pbs
 %{summary}
 
-%package lsf
+
+%package -n %{basece}-lsf
 Group: Grid
-Summary: LSF meta-package for the OSG-CE
-Requires: %{name} = %{version}-%{release}
+Summary: Gateway-less LSF meta-package for OSG-CE
+
+Requires: %{basece} = %{version}-%{release}
 Requires: gratia-probe-pbs-lsf
-Requires: globus-gram-job-manager-lsf-setup-seg
 Requires: osg-configure-lsf
 
-%description lsf
+%description -n %{basece}-lsf
 %{summary}
 
-%package sge
+
+%package -n %{basece}-sge
 Group: Grid
-Summary: SGE meta-package for the OSG-CE
-Requires: %{name} = %{version}-%{release}
+Summary: Gateway-less SGE meta-package for OSG-CE
+
+Requires: %{basece} = %{version}-%{release}
 Requires: gratia-probe-sge
-Requires: globus-gram-job-manager-sge-setup-seg
 Requires: osg-configure-sge
 
-%description sge
+%description -n %{basece}-sge
 %{summary}
 
+
+###############################################################################
+# HTCondor-CE subpackages
+###############################################################################
+%package -n %{htcce}
+Group: Grid
+Summary: OSG Compute Element (HTCondor-CE-based)
+
+Requires: %{basece} = %{version}-%{release}
+Requires: htcondor-ce
+
+%description -n %{htcce}
+%{summary}
+
+
+%package -n %{htcce}-condor
+Group: Grid
+Summary: Condor meta-package for the HTCondor-CE OSG-CE
+
+Requires: %{htcce} = %{version}-%{release}
+Requires: %{basece}-condor = %{version}-%{release}
+
+%description -n %{htcce}-condor
+%{summary}
+
+
+%package -n %{htcce}-pbs
+Group: Grid
+Summary: PBS meta-package for the HTCondor-CE OSG-CE
+Requires: %{htcce} = %{version}-%{release}
+Requires: %{basece}-pbs = %{version}-%{release}
+
+%description -n %{htcce}-pbs
+%{summary}
+
+%package -n %{htcce}-lsf
+Group: Grid
+Summary: LSF meta-package for the HTCondor-CE OSG-CE
+Requires: %{htcce} = %{version}-%{release}
+Requires: %{basece}-lsf = %{version}-%{release}
+
+%description -n %{htcce}-lsf
+%{summary}
+
+%package -n %{htcce}-sge
+Group: Grid
+Summary: SGE meta-package for the HTCondor-CE OSG-CE
+Requires: %{htcce} = %{version}-%{release}
+Requires: %{basece}-sge = %{version}-%{release}
+
+%description -n %{htcce}-sge
+%{summary}
+
+
+###############################################################################
+# GRAM subpackages
+###############################################################################
+%package -n %{gramce}-condor
+Group: Grid
+Summary: Condor meta-package for the GRAM OSG-CE
+
+Requires: %{gramce} = %{version}-%{release}
+Requires: %{basece}-condor = %{version}-%{release}
+Requires: globus-gram-job-manager-condor
+
+%description -n %{gramce}-condor
+%{summary}
+
+%package -n %{gramce}-pbs
+Group: Grid
+Summary: PBS meta-package for the GRAM OSG-CE
+Requires: %{gramce} = %{version}-%{release}
+Requires: %{basece}-pbs = %{version}-%{release}
+Requires: globus-gram-job-manager-pbs-setup-seg
+
+%description -n %{gramce}-pbs
+%{summary}
+
+%package -n %{gramce}-lsf
+Group: Grid
+Summary: LSF meta-package for the GRAM OSG-CE
+Requires: %{gramce} = %{version}-%{release}
+Requires: %{basece}-lsf = %{version}-%{release}
+Requires: globus-gram-job-manager-lsf-setup-seg
+
+%description -n %{gramce}-lsf
+%{summary}
+
+%package -n %{gramce}-sge
+Group: Grid
+Summary: SGE meta-package for the GRAM OSG-CE
+Requires: %{gramce} = %{version}-%{release}
+Requires: %{basece}-sge = %{version}-%{release}
+Requires: globus-gram-job-manager-sge-setup-seg
+
+%description -n %{gramce}-sge
+%{summary}
+
+%build
+exit 0
+
 %install
+exit 0
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+exit 0
 
-%files
 
-%files condor
-%files pbs
-%files lsf
-%files sge
+%files -n %{basece}
+%files -n %{basece}-condor
+%files -n %{basece}-pbs
+%files -n %{basece}-lsf
+%files -n %{basece}-sge
+%files -n %{htcce}
+%files -n %{htcce}-condor
+%files -n %{htcce}-pbs
+%files -n %{htcce}-lsf
+%files -n %{htcce}-sge
+%files -n %{gramce}
+%files -n %{gramce}-condor
+%files -n %{gramce}-pbs
+%files -n %{gramce}-lsf
+%files -n %{gramce}-sge
 
 %changelog
+* Mon Jul 28 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 3.2-2
+- Add htcondor-ce metapackages
+
 * Mon Feb 24 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 3.2-1
 - Replace osg-configure-cemon dependency with osg-configure-infoservices on OSG 3.2 (SOFTWARE-1276)
 - Change version to match release series
