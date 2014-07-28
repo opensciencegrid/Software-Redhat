@@ -4,7 +4,7 @@
 Name:      xrootd4
 Epoch:     1
 Version:   4.0.0
-Release:   1.4%{?dist}%{?_with_cpp11:.cpp11}%{?_with_clang:.clang}
+Release:   1.5%{?dist}%{?_with_cpp11:.cpp11}%{?_with_clang:.clang}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -49,13 +49,16 @@ BuildRequires:	graphviz-gd
 %if %{?_with_clang:1}%{!?_with_clang:0}
 BuildRequires: clang
 %endif
-
+	
 Requires:	  %{name}-libs        = %{epoch}:%{version}-%{release}
 Requires:	  %{name}-client-libs = %{epoch}:%{version}-%{release}
 Requires:	  %{name}-server-libs = %{epoch}:%{version}-%{release}
 #Conflicts:  xrootd
 #Added the conflicts statements to prevent old plugins from using xroot4 rpms
 Obsoletes: xrootd < 1:4.0.0
+Provides: xrootd = %{epoch}:%{version}-%{release}
+Provides: xrootd-server = %{epoch}:%{version}-%{release}
+
 Conflicts: xrootd-cmstfc < 1.5.1-7
 Conflicts: xrootd-dsi < 3.0.4-12
 Conflicts: xrootd-hdfs < 1.8.4-2
@@ -92,7 +95,7 @@ Summary:	Libraries used by xrootd servers and clients
 Group:		System Environment/Libraries
 #Conflicts: xrootd-libs
 Obsoletes: xrootd-libs < 1:4.0.0
-Provides: xrootd-libs = 1:%{version}-%{release}
+Provides: xrootd-libs = %{epoch}:%{version}-%{release}
 
 %description libs
 This package contains libraries used by the xrootd servers and clients.
@@ -106,7 +109,7 @@ Group:		Development/Libraries
 Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
 #Conflicts: xrootd-devel
 Obsoletes: xrootd-devel < 1:4.0.0
-Provides: xrootd-devel = 1:%{version}-%{release}
+Provides: xrootd-devel = %{epoch}:%{version}-%{release}
 
 %description devel
 This package contains header files and development libraries for xrootd
@@ -121,6 +124,7 @@ Group:		System Environment/Libraries
 Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
 #Conflicts: xrootd-client-libs
 Obsoletes: xrootd-client-libs < 1:4.0.0
+Provides: xrootd-client-libs = %{epoch}:%{version}-%{release}
 
 %description client-libs
 This package contains libraries used by xrootd clients.
@@ -135,7 +139,7 @@ Requires:	%{name}-devel%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-client-libs%{?_isa} = %{epoch}:%{version}-%{release}
 #Conflicts: xrootd-client-devel
 Obsoletes: xrootd-client-devel < 1:4.0.0
-Provides: xrootd-client-devel = 1:%{version}-%{release}
+Provides: xrootd-client-devel = %{epoch}:%{version}-%{release}
 
 %description client-devel
 This package contains header files and development libraries for xrootd
@@ -151,6 +155,7 @@ Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-client-libs%{?_isa} = %{epoch}:%{version}-%{release}
 #Conflicts: xrootd-server-libs
 Obsoletes: xrootd-server-libs < 1:4.0.0
+Provides: xrootd-server-libs = %{epoch}:%{version}-%{release}
 
 %description server-libs
 This package contains libraries used by xrootd servers.
@@ -184,6 +189,7 @@ BuildArch:	noarch
 %endif
 #Conflicts: xrootd-private-devel
 Obsoletes: xrootd-private-devel < 1:4.0.0
+Provides: xrootd-private-devel = %{epoch}:%{version}-%{release}
 
 %description private-devel
 This package contains some private xrootd headers. The use of these
@@ -200,7 +206,7 @@ Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-client-libs%{?_isa} = %{epoch}:%{version}-%{release}
 #Conflicts: xrootd-client
 Obsoletes: xrootd-client < 1:4.0.0
-Provides: xrootd-client = 1:%{version}-%{release}
+Provides: xrootd-client = %{epoch}:%{version}-%{release}
 
 %description client
 This package contains the command line tools used to communicate with
@@ -217,7 +223,7 @@ Requires:	%{name}-client-libs%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	fuse
 #Conflicts: xrootd-fuse
 Obsoletes: xrootd-fuse < 1:4.0.0
-Provides: xrootd-fuse = 1:%{version}-%{release}
+Provides: xrootd-fuse = %{epoch}:%{version}-%{release}
 
 
 %description fuse
@@ -596,6 +602,9 @@ semodule -R
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Mon Jul 28 2014 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1:4.0.0-1.5
+- Added some provides statements to the subpackages.
+
 * Fri Jul 11 2014 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1:4.0.0-1.4
 - Added some obsoletes and provides statement from the hcc build
 
