@@ -1,7 +1,7 @@
 Name:      rsv
 Summary:   RSV Meta Package
 Version:   3.7.18
-Release:   1%{?dist}
+Release:   2%{?dist}
 License:   Apache 2.0
 Group:     Applications/Monitoring
 URL:       https://twiki.grid.iu.edu/bin/view/MonitoringInformation/RSV
@@ -204,8 +204,9 @@ fi
 
 
 %changelog
-* Mon Jul 28 2014 Carl Edquist <edquist@cs.wisc.edu> - 3.7.18-1
+* Mon Jul 28 2014 Carl Edquist <edquist@cs.wisc.edu> - 3.7.18-2
 - SOFTWARE-1546 - Change default port for HTCondor-CE probe
+- SOFTWARE-862 - Correctly check for missing gratia-probe cron jobs
 
 * Fri Jun 20 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 3.7.17-1
 - SOFTWARE-862 - gratia-config-probe: don't read crontab
