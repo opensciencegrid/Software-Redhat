@@ -1,0 +1,26 @@
+diff --git a/templates/panda_common.cfg.rpmnew.template b/templates/panda_common.cfg.rpmnew.template
+deleted file mode 100644
+index fea205f..0000000
+--- a/templates/panda_common.cfg.rpmnew.template
++++ /dev/null
+@@ -1,7 +0,0 @@
+-[logger]
+-loghost=panda.cern.ch
+-monport-apache=80
+-monurlprefix=/logger/logger/query
+-logdir=@@install_dir@@/var/log/panda
+-nemitters=10
+-
+diff --git a/templates/panda_common.cfg.template b/templates/panda_common.cfg.template
+new file mode 100644
+index 0000000..9bad0e3
+--- /dev/null
++++ b/templates/panda_common.cfg.template
+@@ -0,0 +1,7 @@
++[logger]
++loghost=panda.cern.ch
++monport-apache=80
++monurlprefix=/logger/logger/query
++logdir=/var/log/panda
++nemitters=10
++
