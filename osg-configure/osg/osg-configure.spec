@@ -1,6 +1,6 @@
 Summary: Package for configure-osg and associated scripts
 Name: osg-configure
-Version: 1.0.56
+Version: 1.0.57
 Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
@@ -295,6 +295,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Jul 29 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0.57-1
+- Change error when no batch system is set to be configured into a warning (SOFTWARE-771)
+- Improve error messages for missing job environment attributes (SOFTWARE-1537)
+- Improve HTCondor-CE configuration for the Condor batch system (SOFTWARE-1551)
+- Set PATH in osg-job-environment.conf (SOFTWARE-1554)
+
 * Fri Jun 20 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0.56-1
 - Create service keys from host keys if desired (SOFTWARE-422)
 - Fix bug in detection of installed Gratia probes (SOFTWARE-1518)
