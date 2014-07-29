@@ -21,7 +21,7 @@ Name:           glideinwms
 # ------------------------------------------------------------------------------
 %if %{v3_plus}
 %define version 3.2.6
-%define release 0.3.rc3
+%define release 1
 %define frontend_xml frontend.master.xml
 %define factory_xml glideinWMS.master.xml
 %endif
@@ -736,6 +736,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Jul 25 2014 Parag Mhashilkar <parag@fnal.gov> - 3.2.6-1
+- Glideinwms v3.2.6 release
+
 * Fri Jul 25 2014 Parag Mhashilkar <parag@fnal.gov> - 3.2.6-0.3.rc3
 - Glideinwms v3.2.6 rc3 release
 - Reverted group name in default dir ownership but we now explicitly make gfactory and fronend users part of the gfactory and frontend group respectively
