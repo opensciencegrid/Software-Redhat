@@ -5,7 +5,7 @@
 Name:      %{gramce}
 Summary:   OSG Compute Element (GRAM-based)
 Version:   3.2
-Release:   3%{?dist}
+Release:   4%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -51,7 +51,7 @@ Requires: gratia-probe-gridftp-transfer
 Requires: osg-site-verify
 Requires: osg-system-profiler
 Requires: osg-cleanup
-Requires: osg-configure
+Requires: osg-configure >= 1.0.57
 Requires: osg-configure-ce
 Requires: osg-configure-gip
 Requires: osg-configure-gratia
@@ -255,8 +255,11 @@ exit 0
 %files -n %{gramce}-sge
 
 %changelog
+* Tue Jul 29 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 3.2-4
+- Require osg-configure >= 1.0.57 (SOFTWARE-1552)
+
 * Mon Jul 28 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 3.2-3
-- Add htcondor-ce metapackages
+- Add htcondor-ce metapackages (SOFTWARE-1552)
 
 * Mon Feb 24 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 3.2-1
 - Replace osg-configure-cemon dependency with osg-configure-infoservices on OSG 3.2 (SOFTWARE-1276)
