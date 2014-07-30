@@ -1,17 +1,19 @@
 %global htcce osg-htcondor-ce
 %global basece osg-base-ce
-%global gramce osg-ce
 
-Name:      %{gramce}
-Summary:   OSG Compute Element (GRAM-based)
+Name:      osg-ce
+Summary:   OSG Compute Element
 Version:   3.2
-Release:   4%{?dist}
+Release:   5%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
 
 BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
+Requires: %{htcce} = %{version}-%{release}
+
+# GRAM-specific
 Requires: globus-gatekeeper
 Requires: globus-gram-job-manager
 Requires: globus-gram-job-manager-fork
@@ -19,14 +21,12 @@ Requires: globus-gram-job-manager-fork-setup-poll
 Requires: gratia-probe-gram
 Requires(post): globus-gram-job-manager-scripts >= 4
 
-Requires: %{basece} = %{version}-%{release}
-
 %description
 %{summary}
 
-%post -n %{gramce}
+%post
 # We always want the default jobmanager to be fork (OSG convention), so we
-# force it on both install and upgrade.
+# force it on both install and upgrade. (GRAM-specific)
 /usr/sbin/globus-gatekeeper-admin -e jobmanager-fork-poll -n jobmanager > /dev/null 2>&1 || :
 
 ###############################################################################
@@ -132,7 +132,7 @@ Requires: osg-configure-sge
 ###############################################################################
 %package -n %{htcce}
 Group: Grid
-Summary: OSG Compute Element (HTCondor-CE-based)
+Summary: OSG Compute Element (HTCondor-CE-only)
 
 Requires: %{basece} = %{version}-%{release}
 Requires: htcondor-ce
@@ -185,47 +185,51 @@ Requires: htcondor-ce-sge
 
 
 ###############################################################################
-# GRAM subpackages
+# Main (both HTCondor-CE and GRAM-CE) subpackages
 ###############################################################################
-%package -n %{gramce}-condor
+%package condor
 Group: Grid
-Summary: Condor meta-package for the GRAM OSG-CE
+Summary: Condor meta-package for the OSG-CE
 
-Requires: %{gramce} = %{version}-%{release}
-Requires: %{basece}-condor = %{version}-%{release}
+Requires: %{name} = %{version}-%{release}
+Requires: %{htcce}-condor = %{version}-%{release}
+# GRAM:
 Requires: globus-gram-job-manager-condor
 
-%description -n %{gramce}-condor
+%description condor
 %{summary}
 
-%package -n %{gramce}-pbs
+%package pbs
 Group: Grid
-Summary: PBS meta-package for the GRAM OSG-CE
-Requires: %{gramce} = %{version}-%{release}
-Requires: %{basece}-pbs = %{version}-%{release}
+Summary: PBS meta-package for the OSG-CE
+Requires: %{name} = %{version}-%{release}
+Requires: %{htcce}-pbs = %{version}-%{release}
+# GRAM:
 Requires: globus-gram-job-manager-pbs-setup-seg
 
-%description -n %{gramce}-pbs
+%description pbs
 %{summary}
 
-%package -n %{gramce}-lsf
+%package lsf
 Group: Grid
-Summary: LSF meta-package for the GRAM OSG-CE
-Requires: %{gramce} = %{version}-%{release}
-Requires: %{basece}-lsf = %{version}-%{release}
+Summary: LSF meta-package for the OSG-CE
+Requires: %{name} = %{version}-%{release}
+Requires: %{htcce}-lsf = %{version}-%{release}
+# GRAM:
 Requires: globus-gram-job-manager-lsf-setup-seg
 
-%description -n %{gramce}-lsf
+%description lsf
 %{summary}
 
-%package -n %{gramce}-sge
+%package sge
 Group: Grid
-Summary: SGE meta-package for the GRAM OSG-CE
-Requires: %{gramce} = %{version}-%{release}
-Requires: %{basece}-sge = %{version}-%{release}
+Summary: SGE meta-package for the OSG-CE
+Requires: %{name} = %{version}-%{release}
+Requires: %{htcce}-sge = %{version}-%{release}
+# GRAM:
 Requires: globus-gram-job-manager-sge-setup-seg
 
-%description -n %{gramce}-sge
+%description sge
 %{summary}
 
 %build
@@ -248,13 +252,16 @@ exit 0
 %files -n %{htcce}-pbs
 %files -n %{htcce}-lsf
 %files -n %{htcce}-sge
-%files -n %{gramce}
-%files -n %{gramce}-condor
-%files -n %{gramce}-pbs
-%files -n %{gramce}-lsf
-%files -n %{gramce}-sge
+%files
+%files condor
+%files pbs
+%files lsf
+%files sge
 
 %changelog
+* Wed Jul 30 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 3.2-5
+- Have main osg-ce packages install both HTCondor-CE and GRAM (SOFTWARE-1559)
+
 * Tue Jul 29 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 3.2-4
 - Require osg-configure >= 1.0.57 (SOFTWARE-1552)
 
