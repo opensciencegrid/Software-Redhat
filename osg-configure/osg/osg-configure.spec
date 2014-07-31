@@ -1,6 +1,6 @@
 Summary: Package for configure-osg and associated scripts
 Name: osg-configure
-Version: 1.0.57
+Version: 1.0.58
 Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
@@ -295,6 +295,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Jul 30 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0.58-1
+- Since job environment attributes may be mapped to more than one section/option, display a list on error (SOFTWARE-1537)
+- Don't require OSG_JOB_CONTACT if (a) there's no place to specify it (i.e. no jobmanager module is enabled) or (b) gram is disabled (SOFTWARE-771)
+- Only set PATH if using htcondor-ce with condor (SOFTWARE-1554)
+
 * Tue Jul 29 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0.57-1
 - Change error when no batch system is set to be configured into a warning (SOFTWARE-771)
 - Improve error messages for missing job environment attributes (SOFTWARE-1537)
