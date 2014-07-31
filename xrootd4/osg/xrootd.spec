@@ -4,7 +4,7 @@
 Name:      xrootd4
 Epoch:     1
 Version:   4.0.0
-Release:   1.6%{?dist}%{?_with_cpp11:.cpp11}%{?_with_clang:.clang}
+Release:   1.7%{?dist}%{?_with_cpp11:.cpp11}%{?_with_clang:.clang}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -53,7 +53,7 @@ BuildRequires: clang
 Requires:	  %{name}-libs        = %{epoch}:%{version}-%{release}
 Requires:	  %{name}-client-libs = %{epoch}:%{version}-%{release}
 Requires:	  %{name}-server-libs = %{epoch}:%{version}-%{release}
-Conflicts:  xrootd
+#Conflicts:  xrootd
 #Added the conflicts statements to prevent old plugins from using xroot4 rpms
 Obsoletes: xrootd < 1:4.0.0
 Provides: xrootd = %{epoch}:%{version}-%{release}
@@ -93,7 +93,7 @@ latency and increased throughput.
 %package libs
 Summary:	Libraries used by xrootd servers and clients
 Group:		System Environment/Libraries
-Conflicts: xrootd-libs
+#Conflicts: xrootd-libs
 Obsoletes: xrootd-libs < 1:4.0.0
 Provides: xrootd-libs = %{epoch}:%{version}-%{release}
 
@@ -107,7 +107,7 @@ This package contains libraries used by the xrootd servers and clients.
 Summary:	Development files for xrootd
 Group:		Development/Libraries
 Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
-Conflicts: xrootd-devel
+#Conflicts: xrootd-devel
 Obsoletes: xrootd-devel < 1:4.0.0
 Provides: xrootd-devel = %{epoch}:%{version}-%{release}
 
@@ -122,7 +122,7 @@ development.
 Summary:	Libraries used by xrootd clients
 Group:		System Environment/Libraries
 Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
-Conflicts: xrootd-client-libs
+#Conflicts: xrootd-client-libs
 Obsoletes: xrootd-client-libs < 1:4.0.0
 Provides: xrootd-client-libs = %{epoch}:%{version}-%{release}
 
@@ -137,7 +137,7 @@ Summary:	Development files for xrootd clients
 Group:		Development/Libraries
 Requires:	%{name}-devel%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-client-libs%{?_isa} = %{epoch}:%{version}-%{release}
-Conflicts: xrootd-client-devel
+#Conflicts: xrootd-client-devel
 Obsoletes: xrootd-client-devel < 1:4.0.0
 Provides: xrootd-client-devel = %{epoch}:%{version}-%{release}
 
@@ -153,7 +153,7 @@ Summary:	Libraries used by xrootd servers
 Group:		System Environment/Libraries
 Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-client-libs%{?_isa} = %{epoch}:%{version}-%{release}
-Conflicts: xrootd-server-libs
+#Conflicts: xrootd-server-libs
 Obsoletes: xrootd-server-libs < 1:4.0.0
 Provides: xrootd-server-libs = %{epoch}:%{version}-%{release}
 
@@ -169,7 +169,7 @@ Group:		Development/Libraries
 Requires:	%{name}-devel%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-client-devel%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-server-libs%{?_isa} = %{epoch}:%{version}-%{release}
-Conflicts: xrootd-server-devel
+#Conflicts: xrootd-server-devel
 Obsoletes: xrootd-server-devel < 1:4.0.0
 Provides: xrootd-server-devel = %{epoch}:%{version}-%{release}
 
@@ -187,7 +187,7 @@ Requires:	%{name}-libs = %{epoch}:%{version}-%{release}
 %if %{?fedora}%{!?fedora:0} >= 10 || %{?rhel}%{!?rhel:0} >= 6
 BuildArch:	noarch
 %endif
-Conflicts: xrootd-private-devel
+#Conflicts: xrootd-private-devel
 Obsoletes: xrootd-private-devel < 1:4.0.0
 Provides: xrootd-private-devel = %{epoch}:%{version}-%{release}
 
@@ -204,7 +204,7 @@ Summary:	Xrootd command line client tools
 Group:		Applications/Internet
 Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-client-libs%{?_isa} = %{epoch}:%{version}-%{release}
-Conflicts: xrootd-client
+#Conflicts: xrootd-client
 Obsoletes: xrootd-client < 1:4.0.0
 Provides: xrootd-client = %{epoch}:%{version}-%{release}
 
@@ -221,7 +221,7 @@ Group:		Applications/Internet
 Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-client-libs%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	fuse
-Conflicts: xrootd-fuse
+#Conflicts: xrootd-fuse
 Obsoletes: xrootd-fuse < 1:4.0.0
 Provides: xrootd-fuse = %{epoch}:%{version}-%{release}
 
@@ -602,6 +602,9 @@ semodule -R
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Thu Jul 31 2014 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1:4.0.0-1.7
+- Removed the conflicts statements.
+
 * Wed Jul 30 2014 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1:4.0.0-1.6
 - Added some conflicts statements.
 
