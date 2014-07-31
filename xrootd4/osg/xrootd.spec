@@ -4,7 +4,7 @@
 Name:      xrootd4
 Epoch:     1
 Version:   4.0.0
-Release:   1.8%{?dist}%{?_with_cpp11:.cpp11}%{?_with_clang:.clang}
+Release:   1.9%{?dist}%{?_with_cpp11:.cpp11}%{?_with_clang:.clang}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -205,7 +205,6 @@ Summary:	Xrootd command line client tools
 Group:		Applications/Internet
 Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-client-libs%{?_isa} = %{epoch}:%{version}-%{release}
-Conflicts: xrootd-client < 1:4.0.0
 Obsoletes: xrootd-client < 1:4.0.0
 Provides: xrootd-client = %{epoch}:%{version}-%{release}
 
@@ -604,7 +603,7 @@ semodule -R
 #-------------------------------------------------------------------------------
 %changelog
 
-* Thu Jul 31 2014 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1:4.0.0-1.8
+* Thu Jul 31 2014 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1:4.0.0-1.9
 - Removed the conflicts statements in the subpackages and added a general one
 
 * Wed Jul 30 2014 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1:4.0.0-1.6
