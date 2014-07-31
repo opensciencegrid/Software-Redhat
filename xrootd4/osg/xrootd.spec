@@ -4,7 +4,7 @@
 Name:      xrootd4
 Epoch:     1
 Version:   4.0.0
-Release:   1.7%{?dist}%{?_with_cpp11:.cpp11}%{?_with_clang:.clang}
+Release:   1.8%{?dist}%{?_with_cpp11:.cpp11}%{?_with_clang:.clang}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -64,6 +64,7 @@ Conflicts: xrootd-dsi < 3.0.4-12
 Conflicts: xrootd-hdfs < 1.8.4-2
 Conflicts: xrootd-lcmaps < 0.0.7-6
 Conflicts: xrootd-status-probe < 0.0.3-7
+Conflicts: xrootd < 1:4.0.0
 
 Requires(pre):		shadow-utils
 Requires(pre):		chkconfig
@@ -204,7 +205,7 @@ Summary:	Xrootd command line client tools
 Group:		Applications/Internet
 Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-client-libs%{?_isa} = %{epoch}:%{version}-%{release}
-#Conflicts: xrootd-client
+Conflicts: xrootd-client < 1:4.0.0
 Obsoletes: xrootd-client < 1:4.0.0
 Provides: xrootd-client = %{epoch}:%{version}-%{release}
 
@@ -602,8 +603,9 @@ semodule -R
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
-* Thu Jul 31 2014 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1:4.0.0-1.7
-- Removed the conflicts statements.
+
+* Thu Jul 31 2014 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1:4.0.0-1.8
+- Removed the conflicts statements in the subpackages and added a general one
 
 * Wed Jul 30 2014 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1:4.0.0-1.6
 - Added some conflicts statements.
