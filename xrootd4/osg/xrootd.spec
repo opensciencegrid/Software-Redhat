@@ -4,7 +4,7 @@
 Name:      xrootd4
 Epoch:     1
 Version:   4.0.3
-Release:   1.9%{?dist}%{?_with_cpp11:.cpp11}%{?_with_clang:.clang}
+Release:   1%{?dist}%{?_with_cpp11:.cpp11}%{?_with_clang:.clang}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -605,6 +605,7 @@ semodule -R
 
 * Mon Aug 04 2014 Jose Caballero <jcaballero@BNL.gov> - 1:4.0.3-1
 - Releasing 4.0.3 
+- Removed 1.9 from Release 
 
 * Thu Jul 31 2014 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1:4.0.0-1.9
 - Removed the conflicts statements in the subpackages and added a general one
