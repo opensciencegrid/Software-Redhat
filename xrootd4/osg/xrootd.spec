@@ -3,7 +3,7 @@
 #-------------------------------------------------------------------------------
 Name:      xrootd4
 Epoch:     1
-Version:   4.0.0
+Version:   4.0.3
 Release:   1.9%{?dist}%{?_with_cpp11:.cpp11}%{?_with_clang:.clang}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
@@ -55,7 +55,7 @@ Requires:	  %{name}-client-libs = %{epoch}:%{version}-%{release}
 Requires:	  %{name}-server-libs = %{epoch}:%{version}-%{release}
 #Conflicts:  xrootd
 #Added the conflicts statements to prevent old plugins from using xroot4 rpms
-Obsoletes: xrootd < 1:4.0.0
+Obsoletes: xrootd < 1:4.0.3
 Provides: xrootd = %{epoch}:%{version}-%{release}
 Provides: xrootd-server = %{epoch}:%{version}-%{release}
 
@@ -64,7 +64,7 @@ Conflicts: xrootd-dsi < 3.0.4-12
 Conflicts: xrootd-hdfs < 1.8.4-2
 Conflicts: xrootd-lcmaps < 0.0.7-6
 Conflicts: xrootd-status-probe < 0.0.3-7
-Conflicts: xrootd < 1:4.0.0
+Conflicts: xrootd < 1:4.0.3
 
 Requires(pre):		shadow-utils
 Requires(pre):		chkconfig
@@ -95,7 +95,7 @@ latency and increased throughput.
 Summary:	Libraries used by xrootd servers and clients
 Group:		System Environment/Libraries
 #Conflicts: xrootd-libs
-Obsoletes: xrootd-libs < 1:4.0.0
+Obsoletes: xrootd-libs < 1:4.0.3
 Provides: xrootd-libs = %{epoch}:%{version}-%{release}
 
 %description libs
@@ -109,7 +109,7 @@ Summary:	Development files for xrootd
 Group:		Development/Libraries
 Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
 #Conflicts: xrootd-devel
-Obsoletes: xrootd-devel < 1:4.0.0
+Obsoletes: xrootd-devel < 1:4.0.3
 Provides: xrootd-devel = %{epoch}:%{version}-%{release}
 
 %description devel
@@ -124,7 +124,7 @@ Summary:	Libraries used by xrootd clients
 Group:		System Environment/Libraries
 Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
 #Conflicts: xrootd-client-libs
-Obsoletes: xrootd-client-libs < 1:4.0.0
+Obsoletes: xrootd-client-libs < 1:4.0.3
 Provides: xrootd-client-libs = %{epoch}:%{version}-%{release}
 
 %description client-libs
@@ -139,7 +139,7 @@ Group:		Development/Libraries
 Requires:	%{name}-devel%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-client-libs%{?_isa} = %{epoch}:%{version}-%{release}
 #Conflicts: xrootd-client-devel
-Obsoletes: xrootd-client-devel < 1:4.0.0
+Obsoletes: xrootd-client-devel < 1:4.0.3
 Provides: xrootd-client-devel = %{epoch}:%{version}-%{release}
 
 %description client-devel
@@ -155,7 +155,7 @@ Group:		System Environment/Libraries
 Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-client-libs%{?_isa} = %{epoch}:%{version}-%{release}
 #Conflicts: xrootd-server-libs
-Obsoletes: xrootd-server-libs < 1:4.0.0
+Obsoletes: xrootd-server-libs < 1:4.0.3
 Provides: xrootd-server-libs = %{epoch}:%{version}-%{release}
 
 %description server-libs
@@ -171,7 +171,7 @@ Requires:	%{name}-devel%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-client-devel%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-server-libs%{?_isa} = %{epoch}:%{version}-%{release}
 #Conflicts: xrootd-server-devel
-Obsoletes: xrootd-server-devel < 1:4.0.0
+Obsoletes: xrootd-server-devel < 1:4.0.3
 Provides: xrootd-server-devel = %{epoch}:%{version}-%{release}
 
 %description server-devel
@@ -189,7 +189,7 @@ Requires:	%{name}-libs = %{epoch}:%{version}-%{release}
 BuildArch:	noarch
 %endif
 #Conflicts: xrootd-private-devel
-Obsoletes: xrootd-private-devel < 1:4.0.0
+Obsoletes: xrootd-private-devel < 1:4.0.3
 Provides: xrootd-private-devel = %{epoch}:%{version}-%{release}
 
 %description private-devel
@@ -205,7 +205,7 @@ Summary:	Xrootd command line client tools
 Group:		Applications/Internet
 Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-client-libs%{?_isa} = %{epoch}:%{version}-%{release}
-Obsoletes: xrootd-client < 1:4.0.0
+Obsoletes: xrootd-client < 1:4.0.3
 Provides: xrootd-client = %{epoch}:%{version}-%{release}
 
 %description client
@@ -222,7 +222,7 @@ Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-client-libs%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	fuse
 #Conflicts: xrootd-fuse
-Obsoletes: xrootd-fuse < 1:4.0.0
+Obsoletes: xrootd-fuse < 1:4.0.3
 Provides: xrootd-fuse = %{epoch}:%{version}-%{release}
 
 
@@ -602,6 +602,9 @@ semodule -R
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+
+* Mon Aug 04 2014 Jose Caballero <jcaballero@BNL.gov> - 1:4.0.3-1
+- Releasing 4.0.3 
 
 * Thu Jul 31 2014 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1:4.0.0-1.9
 - Removed the conflicts statements in the subpackages and added a general one
