@@ -1,7 +1,7 @@
 Name:      osg-tested-internal
 Summary:   All OSG packages we test (internal use only)
 Version:   3.2
-Release:   3%{?dist}
+Release:   4%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -29,8 +29,8 @@ Requires: torque-mom
 Requires: torque-client
 Requires: torque-scheduler
 Requires: osg-ce-pbs
-Requires: xrootd
-Requires: xrootd-client
+Requires: xrootd4
+Requires: xrootd4-client
 Requires: cvmfs
 Requires: osg-configure-tests
 Requires: cvmfs-keys
@@ -85,6 +85,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Aug 04 2014 Carl Edquist <edquist@cs.wisc.edu> - 3.2-4
+- update xrootd requirements to xrootd4
+
 * Mon Apr 21 2014 Brian Lin <blin@cs.wisc.edu> - 3.2-3
 - Re-add htcondor-ce requirements 
 
