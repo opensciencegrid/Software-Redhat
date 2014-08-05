@@ -185,7 +185,7 @@ Summary:	Legacy xrootd headers
 Group:		Development/Libraries
 Requires:	%{name}-libs = %{epoch}:%{version}-%{release}
 %if %{?fedora}%{!?fedora:0} >= 10 || %{?rhel}%{!?rhel:0} >= 6
-BuildArch:	noarch
+###BuildArch:	noarch
 %endif
 #Conflicts: xrootd-private-devel
 Obsoletes: xrootd-private-devel < 1:4.0.0
@@ -236,7 +236,7 @@ tool.
 Summary:	Developer documentation for the xrootd libraries
 Group:		Documentation
 %if %{?fedora}%{!?fedora:0} >= 10 || %{?rhel}%{!?rhel:0} >= 6
-BuildArch:	noarch
+###BuildArch:	noarch
 %endif
 
 %description doc
@@ -249,7 +249,7 @@ This package contains the API documentation of the xrootd libraries.
 Summary:	 SELinux policy extensions for xrootd.
 Group:		 System Environment/Base
 %if %{?fedora}%{!?fedora:0} >= 10 || %{?rhel}%{!?rhel:0} >= 6
-BuildArch: noarch
+###BuildArch: noarch
 %endif
 Requires:  policycoreutils
 Requires:  selinux-policy-targeted
