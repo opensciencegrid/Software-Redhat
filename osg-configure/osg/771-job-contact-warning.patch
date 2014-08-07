@@ -1,16 +1,16 @@
 Index: osg-configure-1.0.58/scripts/osg-configure
 ===================================================================
 --- osg-configure-1.0.58.orig/scripts/osg-configure	2014-07-30 23:39:54.000000000 -0500
-+++ osg-configure-1.0.58/scripts/osg-configure	2014-08-07 10:59:08.571465637 -0500
++++ osg-configure-1.0.58/scripts/osg-configure	2014-08-07 15:28:32.227521670 -0500
 @@ -240,7 +240,10 @@
                       "unable to run jobs.")
        try:
          job_environment_attributes.remove('OSG_JOB_CONTACT')
 -        logger.warning("Not setting OSG_JOB_CONTACT (no place to specify it).")
-+        logger.info("""\
-+Not setting the OSG_JOB_CONTACT variable, since that requires a batch
-+system to be enabled (see above). Other than enabling a batch system,
-+there is no further action to take.""")
++        logger.warning("Not setting the OSG_JOB_CONTACT variable, since that "
++                       "requires a batch system to be enabled (see above). "
++                       "Other than enabling a batch system, there is no further "
++                       "action to take.")
        except ValueError:
          pass
      else:

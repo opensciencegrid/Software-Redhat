@@ -1,7 +1,7 @@
 Summary: Package for configure-osg and associated scripts
 Name: osg-configure
 Version: 1.0.58
-Release: 2%{?dist}
+Release: 3%{?dist}
 Source0: %{name}-%{version}.tar.gz
 Patch0: 771-job-contact-warning.patch
 License: Apache 2.0
@@ -305,8 +305,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Tue Aug 05 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0.58-2
-- Downgrade warning message when OSG_JOB_CONTACT cannot be set because no batch system modules exist/are enabled to info, and improve phrasing (SOFTWARE-771)
+* Tue Aug 05 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0.58-3
+- Improve phrasing of warning message when OSG_JOB_CONTACT cannot be set because no batch system modules exist/are enabled (SOFTWARE-771)
 - Mark the config file that gets created in /etc/condor-ce/config.d as a ghost file so it gets properly removed (SOFTWARE-1551)
 
 * Wed Jul 30 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0.58-1
