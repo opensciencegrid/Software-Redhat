@@ -1,8 +1,9 @@
 Summary: Package for configure-osg and associated scripts
 Name: osg-configure
 Version: 1.0.58
-Release: 1%{?dist}
+Release: 2%{?dist}
 Source0: %{name}-%{version}.tar.gz
+Patch0: 771-job-contact-warning.patch
 License: Apache 2.0
 Group: Grid
 Prefix: %{_prefix}
@@ -183,12 +184,15 @@ It may safely be removed once the upgrade is finished.
 
 %prep
 %setup
+%patch0 -p1
 
 %build
 %{__python} setup.py build
 
 %install
 %{__python} setup.py install --root=$RPM_BUILD_ROOT
+mkdir -p $RPM_BUILD_ROOT/etc/condor-ce/config.d
+touch $RPM_BUILD_ROOT/etc/condor-ce/config.d/50-osg-configure.conf
 mkdir -p $RPM_BUILD_ROOT/var/log/osg/
 touch $RPM_BUILD_ROOT/var/log/osg/osg-configure.log
 mkdir -p $RPM_BUILD_ROOT/var/lib/osg
@@ -221,6 +225,7 @@ rm -rf $RPM_BUILD_ROOT
 %ghost /var/lib/osg/osg-attributes.conf
 %ghost /var/lib/osg/osg-local-job-environment.conf
 %ghost /var/lib/osg/osg-job-environment.conf
+%ghost /etc/condor-ce/config.d/50-osg-configure.conf
 
 %files rsv
 %defattr(-,root,root)
@@ -300,6 +305,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Aug 05 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0.58-2
+- Downgrade warning message when OSG_JOB_CONTACT cannot be set because no batch system modules exist/are enabled to info, and improve phrasing (SOFTWARE-771)
+- Mark the config file that gets created in /etc/condor-ce/config.d as a ghost file so it gets properly removed (SOFTWARE-1551)
+
 * Wed Jul 30 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0.58-1
 - Since job environment attributes may be mapped to more than one section/option, display a list on error (SOFTWARE-1537)
 - Don't require OSG_JOB_CONTACT if (a) there's no place to specify it (i.e. no jobmanager module is enabled) or (b) gram is disabled (SOFTWARE-771)
