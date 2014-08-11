@@ -6,7 +6,7 @@
 %define jglobus_version 2.0.6
 
 %define _alphatag pre3
-%define _release 1
+%define _release 2
 
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
@@ -96,6 +96,8 @@ Source12: openws-1.2.2.jar
 Source13: jargs-1.0.jar
 Source14: velocity-1.5.jar
 
+Patch0: gums-add-mysql-admin.patch
+
 %description
 %{summary}
 
@@ -135,6 +137,7 @@ Summary: Tomcat service for GUMS
 %prep
 
 %setup -n %{name}-%{version}.%{_alphatag}
+%patch0 -p1
 
 %build
 
@@ -375,6 +378,9 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+* Mon Aug 11 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.4.0-0.2.pre3
+- Make gums-add-mysql-admin suitable for automated use (SOFTWARE-1577)
+
 * Thu Jun 05 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.4.0-0.1.pre3
 - NVR-sortable pre-release package versioning (SOFTWARE-1498)
 
