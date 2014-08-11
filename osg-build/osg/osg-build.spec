@@ -1,9 +1,9 @@
-%global betatag beta1
+#global betatag beta1
 
 Name:           osg-build
 Version:        1.4.0
-#Release:        1%{?dist}
-Release:        0.1.%{betatag}%{?dist}
+Release:        1%{?dist}
+#Release:        0.1.%{betatag}%{?dist}
 Summary:        Build tools for the OSG
 
 Group:          System Environment/Tools
@@ -70,7 +70,7 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_docdir}/%{name}/sample-osg-build.ini
 
 %changelog
-* Thu Jul 24 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.4.0-0.1.beta1
+* Mon Aug 11 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.4.0-1
 - EL7 support
 - Removed koji-tag-checker
 

@@ -1,4 +1,4 @@
 # To generate the tarball, check out software/osg-build/trunk from the VDT SVN
 # and run 'make dist'. Run 'make afsdist' to automatically place it into the
 # upstream directory on AFS.
-osg-build/1.4.0beta1/osg-build-1.4.0beta1.tar.gz
+osg-build/1.4.0/osg-build-1.4.0.tar.gz
