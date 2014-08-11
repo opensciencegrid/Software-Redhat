@@ -1,8 +1,8 @@
 diff --git a/gums-service/src/main/resources/scripts/gums-add-mysql-admin b/gums-service/src/main/resources/scripts/gums-add-mysql-admin
-index fa65ac9..3056446 100755
+index fa65ac9..da625f7 100755
 --- a/gums-service/src/main/resources/scripts/gums-add-mysql-admin
 +++ b/gums-service/src/main/resources/scripts/gums-add-mysql-admin
-@@ -1,37 +1,56 @@
+@@ -1,37 +1,62 @@
 -#!/bin/sh
 +#!/bin/bash
  
@@ -18,7 +18,7 @@ index fa65ac9..3056446 100755
 -  echo Example:
 -  echo   $0 \"/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi 12345\"
 -  exit -1
-+  echo "Usage: $s [-y] [DN for administrator] [PASSWORD]"
++  echo "Usage: $script [-y] [DN for administrator] [PASSWORD]"
 +  echo
 +  echo "If '-y' is specified, do not do not prompt user for 'yes'."
 +  echo "If PASSWORD for gums db is not specified, mysql will prompt for one."
@@ -27,7 +27,7 @@ index fa65ac9..3056446 100755
 +  echo "  $script $dn"
 +  echo
 +  echo "Example for automated use:"
-+  echo "  $script -y $dn secret"
++  echo "  $script -y $dn \"secret\""
 +  echo
 +  exit 1
 +}
@@ -42,17 +42,23 @@ index fa65ac9..3056446 100755
  
 -MYSQLPARAM="-u gums -p"
  ADMINDN=$1
-+PASSWORD=$2
++if [[ $# -lt 2 ]]; then    # have mysql prompt for password
++  PASSWORD=(-p)
++elif [[ $2 == "" ]]; then  # explicit empty password
++  PASSWORD=()
++else                       # non-empty password
++  PASSWORD=("-p$2")
++fi
  
 -echo WARNING: You must have created the database before running this script!
-+echo 'WARNING: You must have created the database before running this script!'
- echo
+-echo
 -echo Adding the following DN to the local database:
 -echo Certificate DN for administrator: \"$ADMINDN\"
-+echo "Adding the following DN to the local database:"
-+echo "Certificate DN for administrator: \"$ADMINDN\""
++echo 'WARNING: You must have created the database before running this script!'
  echo
 -echo "Is this correct? (Enter 'yes' to proceed)"
++echo "Adding the following DN to the local database:"
++echo "Certificate DN for administrator: \"$ADMINDN\""
  
 -read response
 -if [ "$response" != "yes" ]
@@ -60,6 +66,7 @@ index fa65ac9..3056446 100755
 -  exit -1
 -fi
 +if [[ -t 0 && -t 1 && ! $YES ]]; then
++  echo
 +  echo "Is this correct? (Enter 'yes' to proceed)"
  
 +  read response
@@ -69,15 +76,16 @@ index fa65ac9..3056446 100755
 +fi
  
  echo
- echo Adding the admin:
+-echo Adding the admin:
 -echo Enter the gums mysql password
 -echo "/usr/lib/gums/sql/addAdmin.mysql | sed -e "s%@ADMINDN@%$ADMINDN%g" | mysql $MYSQLPARAM"
 -cat /usr/lib/gums/sql/addAdmin.mysql | sed -e "s%@ADMINDN@%$ADMINDN%g" | mysql $MYSQLPARAM
 -echo
-+if [[ ! $PASSWORD ]]; then
-+  echo Enter the gums mysql password
++echo Adding the admin...
++if [[ $PASSWORD = -p ]]; then
++  echo Enter the gums mysql password:
 +fi
 +
 +sed "s%@ADMINDN@%$ADMINDN%g" /usr/lib/gums/sql/addAdmin.mysql \
-+| mysql -u gums -p"$PASSWORD"
++| mysql -u gums "${PASSWORD[@]}" && echo Done.
  

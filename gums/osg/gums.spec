@@ -6,7 +6,7 @@
 %define jglobus_version 2.0.6
 
 %define _alphatag pre3
-%define _release 2
+%define _release 3
 
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
@@ -378,7 +378,7 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
-* Mon Aug 11 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.4.0-0.2.pre3
+* Mon Aug 11 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.4.0-0.3.pre3
 - Make gums-add-mysql-admin suitable for automated use (SOFTWARE-1577)
 
 * Thu Jun 05 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.4.0-0.1.pre3
