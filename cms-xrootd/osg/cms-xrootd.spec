@@ -2,7 +2,7 @@
 Summary: CMS meta-RPM for Xrootd
 Name: cms-xrootd
 Version: 1.2
-Release: 7%{?dist}
+Release: 8%{?dist}
 Group: System Environment/Daemons
 License: Public Domain
 URL: https://twiki.cern.ch/twiki/bin/view/Main/CmsXrootdArchitecture
@@ -15,7 +15,7 @@ Source2:  Authfile
 Source3:  xrootd.sample.dcache.cfg.in
 Source4:  xrootd.sample.proxy.cfg.in
 
-Requires: xrootd >= 1:3.3.1
+Requires: xrootd4 >= 1:4.0.0
 
 %ifarch %{ix86}
 Requires: libXrdLcmaps.so.0
@@ -41,7 +41,7 @@ BuildArch: noarch
 Summary: CMS meta-RPM for Xrootd over HDFS
 Group: System Environment/Daemons
 Requires: %{name} = %{version}-%{release}
-Requires: xrootd-hdfs >= 1.5.0-2
+Requires: xrootd-hdfs >= 1.8.4-2
 %ifarch %{ix86}
 Requires: libXrdHdfs.so.0
 %else
@@ -62,7 +62,7 @@ Requires: %{name} = %{version}-%{release}
 %package dcache
 Summary: CMS meta-RPM for Xrootd over dCache
 Group: System Environment/Daemons
-Requires: xrootd >= 1:3.3.1
+Requires: xrootd4 >= 1:4.0.0
 
 %description dcache
 %{summary}
@@ -95,6 +95,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/xrootd/xrootd.sample.proxy.cfg
 
 %changelog
+* Wed Aug 13 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.2-8
+- Update to use xrootd4
+
 * Thu Apr 18 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.2-7
 - Fix epoch in xrootd requires lines
 
