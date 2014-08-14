@@ -1,12 +1,10 @@
 
-%define majorver 2.2.11
-%define minorver 1
-%define targetdir modules/srmclient/target/srmclient-%{majorver}-SNAPSHOT
+%define targetdir modules/srmclient/target/srmclient-%{version}
 %define srm_path %{_datadir}/srm
 
 Name:    dcache-srmclient
-Version: %{majorver}.%{minorver}
-Release: 2.1%{?dist}
+Version: 2.2.27
+Release: 1%{?dist}
 URL:     http://dcache.org
 Summary: SRM clients from dCache.org
 License: http://www.dcache.org/manuals/dCacheSoftwareLicence.html
@@ -26,8 +24,7 @@ Requires: /usr/share/java/xml-commons-apis.jar
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildArch: noarch
 
-Source0: srmclient-%{majorver}-%{minorver}.tgz
-#                             ^ note the dash in the tarball name
+Source0: dcache-%{version}.tar.gz
 Source1: dcache-srmclient-config.xml
 
 # have srm scripts source /etc/sysconfig/dcache-srmclient if it exists
@@ -39,7 +36,7 @@ Patch1: maven22.patch
 %{summary}
 
 %prep
-%setup -q -n srmclient-%{majorver}-%{minorver}
+%setup -q -n dcache-%{version}
 
 %patch0 -p0
 %patch1 -p0
@@ -83,6 +80,9 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/%{name}-config.xml
 
 %changelog
+* Thu Aug 14 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 2.2.27-1
+- New version; some build tweaks (SOFTWARE-1566)
+
 * Thu Jun 06 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 2.2.11.1-2
 - Move /usr/sbin/url-copy.sh to /usr/share/srm/sbin since that's where scripts expect it.
 - Fix repeat count in supplied config
