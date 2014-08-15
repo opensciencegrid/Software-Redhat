@@ -1,17 +1,13 @@
 Summary: Generic Information Provider
 Name: gip
-Version: 1.3.10
-Release: 8%{?dist}
+Version: 1.3.11
+Release: 1%{?dist}
 License: Apache 2.0
 Group: Applications/Grid
 BuildArch: noarch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 Requires: globus-proxy-utils 
 Source0: %{name}-%{version}.tgz
-Patch0: 1382-info-services-rename.patch
-Patch1: 1406-default-itb-servers.patch
-Patch2: 1536-silence-deprecation.patch
-Patch3: 1527-read-rvfs-in-etc.patch
 
 %define tomcat_uid 91
 %define tomcat_gid 91
@@ -31,10 +27,6 @@ then can be sent via external services to information collection servers such as
 
 %prep
 %setup -q
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
 
 %install
 rm -rf %{buildroot}
@@ -125,6 +117,9 @@ touch $RPM_BUILD_ROOT/%{_sysconfdir}/%{name}/remove-attributes.conf
 rm -rf %buildroot
 
 %changelog
+* Fri Aug 15 2014 Burt Holzman <burt@fnal.gov> - 1.3.11-1
+- Updated to GIP 1.3.11 (includes Matyas's patches below)
+
 * Thu Jul 03 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.3.10-8
 - Silence DeprecationWarnings (SOFTWARE-1536)
 - Read user-customized .rvf files in /etc/globus/gram if they are present (SOFTWARE-1527)
