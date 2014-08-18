@@ -1,6 +1,6 @@
 Summary: osg-pki-tools
 Name: osg-pki-tools
-Version: 1.2.8
+Version: 1.2.9
 Release: 1%{?dist}
 Source: OSGPKITools-%{version}.tar.gz
 License: Apache 2.0
@@ -75,6 +75,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Aug 18 2014 Brian Lin <blin@cs.wisc.edu> - 1.2.9-1
+- Add ability to revoke specific certs by serial ID (SOFTWARE-1494)
+
 * Tue Jun 17 2014 Brian Lin <blin@cs.wisc.edu> - 1.2.8-1
 - Change required options in retrieve/revoke tools to be required args (SOFTWARE-1500)
 - Fix redundant input param when providing CSR (SOFTWARE-1502)
