@@ -6,7 +6,7 @@
 %define jglobus_version 2.0.6
 
 %define _alphatag pre3
-%define _release 3
+%define _release 4
 
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
@@ -102,7 +102,6 @@ Patch0: gums-add-mysql-admin.patch
 %{summary}
 
 %package client
-Requires: %{name} = %{version}-%{release}
 Requires: osg-vo-map
 Requires(post): chkconfig
 Requires(preun): chkconfig
@@ -339,6 +338,10 @@ EOL
 %dir /var/log/%{dirname}
 %config(noreplace) %{_sysconfdir}/cron.d/gums-client-cron
 %{_sysconfdir}/rc.d/init.d/gums-client-cron
+%{_noarchlib}/%{dirname}/gums-client-1.4.0.pre3.jar
+%{_noarchlib}/%{dirname}/gums-core-1.4.0.pre3.jar
+%{_noarchlib}/%{dirname}/log4j-1.2.12.jar
+%{_noarchlib}/%{dirname}/log4j-over-slf4j-1.6.1.jar
 
 %post client
 /sbin/chkconfig --add gums-client-cron
@@ -378,6 +381,10 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+* Tue Aug 19 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.4.0-0.4.pre3
+- Remove gums-client dependency on core gums jars (SOFTWARE-173)
+- Use /etc/rc.d/init.d instead of /etc/init.d
+
 * Mon Aug 11 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.4.0-0.3.pre3
 - Make gums-add-mysql-admin suitable for automated use (SOFTWARE-1577)
 
