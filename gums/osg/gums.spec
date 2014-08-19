@@ -285,10 +285,10 @@ cat > $RPM_BUILD_ROOT/var/lib/osg/supported-vo-list << EOF
 # Run gums-host-cron to generate a real one.
 EOF
 
-mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/{init.d,cron.d}
+mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/{rc.d/init.d,cron.d}
 mv %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/cron.d/gums-client-cron
-mv %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/init.d/gums-client-cron
-chmod +x $RPM_BUILD_ROOT%{_sysconfdir}/init.d/gums-client-cron
+mv %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d/gums-client-cron
+chmod +x $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d/gums-client-cron
 
 mkdir -p $RPM_BUILD_ROOT%{_javadir}
 touch $RPM_BUILD_ROOT%{_javadir}/javamail.jar
@@ -338,7 +338,7 @@ EOL
 %config(noreplace) /var/lib/osg/supported-vo-list
 %dir /var/log/%{dirname}
 %config(noreplace) %{_sysconfdir}/cron.d/gums-client-cron
-%{_sysconfdir}/init.d/gums-client-cron
+%{_sysconfdir}/rc.d/init.d/gums-client-cron
 
 %post client
 /sbin/chkconfig --add gums-client-cron
