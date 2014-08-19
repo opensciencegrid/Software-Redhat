@@ -1,6 +1,6 @@
 Summary: osg-pki-tools
 Name: osg-pki-tools
-Version: 1.2.9
+Version: 1.2.10
 Release: 1%{?dist}
 Source: OSGPKITools-%{version}.tar.gz
 License: Apache 2.0
@@ -75,6 +75,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Aug 19 2014 Brian Lin <blin@cs.wisc.edu> - 1.2.10-1
+- Catch uncaught exceptions when missing request VO (SOFTWARE-1584)
+
 * Mon Aug 18 2014 Brian Lin <blin@cs.wisc.edu> - 1.2.9-1
 - Add ability to revoke specific certs by serial ID (SOFTWARE-1494)
 
