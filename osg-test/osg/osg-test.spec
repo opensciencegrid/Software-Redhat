@@ -5,7 +5,7 @@
 
 Summary:   Tests an OSG Software installation
 Name:      osg-test
-Version:   1.4.15
+Version:   1.4.16
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -39,6 +39,11 @@ rm -rf $RPM_BUILD_ROOT
 /etc/grid-security/certificates/bffdd190.*
 
 %changelog
+* Wed Aug 20 2014 Brian Lin <blin@cs.wisc.edu> - 1.4.16-1
+- Add osg-info-services tests
+- Update xrootd tests to work with xrootd4 (SOFTWARE-1558)
+- Prep work for EL7 (SOFTWARE-1579)
+
 * Tue Jun 3 2014 Brian Lin <blin@cs.wisc.edu> - 1.4.15-1
 - Fix error with removing user (SW-1345)
 - Add condor_ce_ping test (SW-1458)
