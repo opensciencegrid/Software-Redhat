@@ -1,3 +1,16 @@
+diff --git a/autopyfactory/factory.py b/autopyfactory/factory.py
+index e7ae29c..d52679e 100644
+--- a/autopyfactory/factory.py
++++ b/autopyfactory/factory.py
+@@ -183,7 +183,7 @@ Jose Caballero <jcaballero@bnl.gov>
+                           metavar="TIME", 
+                           help="Sleep TIME seconds between cycles [default %default]")
+         parser.add_option("--conf", dest="confFiles", 
+-                          default="/etc/apf/factory.conf",
++                          default="/etc/autopyfactory/factory.conf",
+                           action="store", 
+                           metavar="FILE1[,FILE2,FILE3]", 
+                           help="Load configuration from FILEs (comma separated list)")
 diff --git a/docs/autopyfactory-factory.conf.5 b/docs/autopyfactory-factory.conf.5
 deleted file mode 100644
 index 295bf02..0000000
@@ -3206,10 +3219,39 @@ index 0000000..47d845e
 +.\".BR xyzzy (1)
 +
 +.\" groff -man -Tasc
+diff --git a/etc/apf-cleanlogs b/etc/apf-cleanlogs
+index ef5f251..8fdd735 100644
+--- a/etc/apf-cleanlogs
++++ b/etc/apf-cleanlogs
+@@ -1 +1 @@
+-17 3 * * * /usr/bin/cleanLogs.py --compress=3 --delete=10 --conf=/etc/apf/factory.conf
++17 3 * * * /usr/bin/cleanLogs.py --compress=3 --delete=10 --conf=/etc/autopyfactory/factory.conf
+diff --git a/etc/apf-search-failed.sh-example b/etc/apf-search-failed.sh-example
+index 4bb6d17..1d52f28 100644
+--- a/etc/apf-search-failed.sh-example
++++ b/etc/apf-search-failed.sh-example
+@@ -10,7 +10,7 @@
+ 
+ 
+ # first, do file rotation
+-/usr/sbin/logrotate -f -s /dev/null /etc/apf/logsmonitor.rotate.conf
++/usr/sbin/logrotate -f -s /dev/null /etc/autopyfactory/logsmonitor.rotate.conf
+ 
+ # second, create new file
+ /usr/share/apf/apf-search-failed > /tmp/error.lasthour.html
 diff --git a/etc/factory b/etc/factory
-index 028a9b2..c2246f4 100755
+index 028a9b2..2a686fa 100755
 --- a/etc/factory
 +++ b/etc/factory
+@@ -7,7 +7,7 @@
+ # chkconfig: 345 26 74
+ # description: Submit pilot jobs to grid sites. 
+ # processname: factory
+-# config: /etc/apf/factory.conf 
++# config: /etc/autopyfactory/factory.conf 
+ # pidfile: /var/run/factory.pid
+ #
+ #
 @@ -63,14 +63,14 @@ f_factdir
  
  if [ `id -u` = 0 ]; then
@@ -3217,7 +3259,8 @@ index 028a9b2..c2246f4 100755
 -    SYSCONF=/etc/sysconfig/factory.sysconfig
 +    SYSCONF=/etc/sysconfig/factory
      BINDIR=/usr/bin
-     ETCDIR=/etc/apf
+-    ETCDIR=/etc/apf
++    ETCDIR=/etc/autopyfactory
      PIDFILE=/var/run/factory.pid
  else
      APFHEAD=`dirname $FACTDIR`
@@ -3227,9 +3270,23 @@ index 028a9b2..c2246f4 100755
      BINDIR=$APFHEAD/bin
      ETCDIR=$APFHEAD/etc
      PIDFILE=$APFHEAD/var/run/factory.pid
+@@ -115,10 +115,10 @@ create_var_run(){
+ }
+ 
+ create_var_log(){
+-    # function to create directory  $APFHEAD/var/log/apf 
++    # function to create directory  $APFHEAD/var/log/autopyfactory
+     # if it does not exist. 
+-    if [ ! -d $APFHEAD/var/log/apf ]; then
+-        mkdir -p $APFHEAD/var/log/apf/
++    if [ ! -d $APFHEAD/var/log/autopyfactory ]; then
++        mkdir -p $APFHEAD/var/log/autopyfactory/
+     fi
+ }
+ 
 diff --git a/etc/factory.conf b/etc/factory.conf
 new file mode 100644
-index 0000000..e4e1809
+index 0000000..bb2766a
 --- /dev/null
 +++ b/etc/factory.conf
 @@ -0,0 +1,165 @@
@@ -3354,7 +3411,7 @@ index 0000000..e4e1809
 +#
 +# queueDirConf = directory with a set of configuration files, 
 +#            all of them to be used at the same time. 
-+#            i.e.  /etc/apf/queues.d/
++#            i.e.  /etc/autopyfactory/queues.d/
 +#            Cannot be used at the same time that queueConf
 +#
 +# monitorConf = local path to the configuration file for Monitor plugins.
@@ -3377,13 +3434,13 @@ index 0000000..e4e1809
 +factoryUser = apf
 +enablequeues = True
 +
-+queueConf = file:///etc/apf/queues.conf
-+queueDirConf = /etc/apf/queues.d/
-+proxyConf = /etc/apf/proxy.conf
++queueConf = file:///etc/autopyfactory/queues.conf
++queueDirConf = /etc/autopyfactory/queues.d/
++proxyConf = /etc/autopyfactory/proxy.conf
 +proxymanager.enabled = True
 +proxymanager.sleep = 30
 +
-+monitorConf = /etc/apf/monitor.conf
++monitorConf = /etc/autopyfactory/monitor.conf
 +
 +cycles = None
 +cleanlogs.keepdays = 14
@@ -3646,11 +3703,11 @@ index 0a45448..0000000
 -# GRIDSETUP=/opt/osg-client/setup.sh
 diff --git a/etc/logrotate/factory b/etc/logrotate/factory
 new file mode 100644
-index 0000000..f37598c
+index 0000000..5bcf908
 --- /dev/null
 +++ b/etc/logrotate/factory
 @@ -0,0 +1,32 @@
-+/var/log/apf/apf.log {
++/var/log/autopyfactory/apf.log {
 +  missingok
 +  notifempty
 +  sharedscripts
@@ -3666,7 +3723,7 @@ index 0000000..f37598c
 +    [ -e /etc/init.d/factory ] && /etc/init.d/factory start >/dev/null 2>&1 || true
 +  endscript
 +}
-+/var/log/apf/console.log {
++/var/log/autopyfactory/console.log {
 +  missingok
 +  notifempty
 +  sharedscripts
@@ -4081,9 +4138,18 @@ index e1ed82b..0000000
 -myproxy_passphrase = ppfortwo
 -
 diff --git a/etc/proxymanager b/etc/proxymanager
-index 1e7f03b..ccc6d39 100755
+index 1e7f03b..39f1d91 100755
 --- a/etc/proxymanager
 +++ b/etc/proxymanager
+@@ -7,7 +7,7 @@
+ # chkconfig: 345 26 74
+ # description: Submit pilot jobs to grid sites. 
+ # processname: proxymanager
+-# config: /etc/apf/proxy.conf 
++# config: /etc/autopyfactory/proxy.conf 
+ # pidfile: /var/run/proxymanager.pid
+ #
+ #
 @@ -62,14 +62,14 @@ done
  f_factdir
  
@@ -4091,7 +4157,8 @@ index 1e7f03b..ccc6d39 100755
 -    SYSCONF=/etc/sysconfig/proxymanager.sysconfig
 +    SYSCONF=/etc/sysconfig/proxymanager
      BINDIR=/usr/bin
-     ETCDIR=/etc/apf
+-    ETCDIR=/etc/apf
++    ETCDIR=/etc/autopyfactory
      PIDFILE=/var/run/proxymanager.pid
  else
      APFHEAD=`dirname $FACTDIR`
@@ -6387,7 +6454,7 @@ index f5580a9..0000000
 -executable.arguments = %(executable.defaultarguments)s --script=pilot.py --libcode=pilotcode.tar.gz,pilotcode-rc.tar.gz --pilotsrcurl=http://panda.cern.ch:25880/cache --user user
 diff --git a/etc/sysconfig/factory b/etc/sysconfig/factory
 new file mode 100644
-index 0000000..0a45448
+index 0000000..f11520d
 --- /dev/null
 +++ b/etc/sysconfig/factory
 @@ -0,0 +1,31 @@
@@ -6411,11 +6478,11 @@ index 0000000..0a45448
 +#
 +# Override default conffile path if desired. 
 +#
-+# CONFFILE=/etc/apf/factory.conf
++# CONFFILE=/etc/autopyfactory/factory.conf
 +# CONFFILE="/usatlas/us/caballer/etc/factory.conf"
 +
-+OPTIONS="--debug --sleep=60 --runas=apf --log=/var/log/apf/apf.log"
-+CONSOLE_LOG=/var/log/apf/console.log
++OPTIONS="--debug --sleep=60 --runas=apf --log=/var/log/autopyfactory/apf.log"
++CONSOLE_LOG=/var/log/autopyfactory/console.log
 +
 +#
 +# Use this to provide voms-proxy-* on the path if it is not pre-setup by
@@ -6424,7 +6491,7 @@ index 0000000..0a45448
 +# GRIDSETUP=/opt/osg-client/setup.sh
 diff --git a/etc/sysconfig/proxymanager b/etc/sysconfig/proxymanager
 new file mode 100644
-index 0000000..a9d73d7
+index 0000000..24db112
 --- /dev/null
 +++ b/etc/sysconfig/proxymanager
 @@ -0,0 +1,28 @@
@@ -6445,11 +6512,11 @@ index 0000000..a9d73d7
 +#
 +# Override default conffile path if desired. 
 +#
-+# CONFFILE=/etc/apf/factory.conf
++# CONFFILE=/etc/autopyfactory/factory.conf
 +# CONFFILE="/usatlas/us/caballer/etc/factory.conf"
 +
-+OPTIONS="--debug --log=/var/log/apf/proxymanager.log"
-+CONSOLE_LOG=/var/log/apf/console.log
++OPTIONS="--debug --log=/var/log/autopyfactory/proxymanager.log"
++CONSOLE_LOG=/var/log/autopyfactory/console.log
 +
 +#
 +# Use this to provide voms-proxy-* on the path if it is not pre-setup by
@@ -6457,7 +6524,7 @@ index 0000000..a9d73d7
 +#
 +# GRIDSETUP=/opt/osg-client/setup.sh
 diff --git a/setup.py b/setup.py
-index 3f2a203..4bd1c4b 100644
+index 3f2a203..83e98e1 100644
 --- a/setup.py
 +++ b/setup.py
 @@ -30,20 +30,22 @@ if major == 2:
@@ -6505,7 +6572,7 @@ index 3f2a203..4bd1c4b 100644
  # NOTE: these utils are going to be distributed from now on 
  #       in a separated RPM
  #
-@@ -65,19 +74,25 @@ docs_files.append('RELEASE_NOTES')
+@@ -65,19 +74,24 @@ docs_files.append('RELEASE_NOTES')
  
  # -----------------------------------------------------------
  
@@ -6515,15 +6582,14 @@ index 3f2a203..4bd1c4b 100644
 -                ('/etc/logrotate.d',   logrotate_files),                                        
 -                ('/usr/share/doc/apf', docs_files),                                        
 -                #('/usr/share/apf',     utils_files),                                        
-+rpm_data_files=[('/etc/apf',            libexec_files),
-+                ('/etc/apf',            etc_files),
-+                ('/etc/rc.d/init.d',    initd_files),
-+                ('/etc/logrotate.d',    logrotate_files),
-+                ('/etc/sysconfig',      sysconfig_files),
-+                ('/usr/share/doc/apf',  docs_files),
-+                ('/usr/share/man/man1', man1_files),
-+                ('/usr/share/man/man5', man5_files),
-+                #('/usr/share/apf',     utils_files),
++rpm_data_files=[('/etc/autopyfactory',         libexec_files),
++                ('/etc/autopyfactory',         etc_files),
++                ('/etc/rc.d/init.d',           initd_files),
++                ('/etc/logrotate.d',           logrotate_files),
++                ('/etc/sysconfig',             sysconfig_files),
++                ('/usr/share/man/man1',        man1_files),
++                ('/usr/share/man/man5',        man5_files),
++                #('/usr/share/autopyfactory',  utils_files),
                 ]
  
 -home_data_files=[('etc',       libexec_files),
@@ -6531,14 +6597,14 @@ index 3f2a203..4bd1c4b 100644
 -                 ('etc',       initd_files),
 -                 ('doc/apf',   docs_files ),
 -                 #('share/apf', utils_files),                                        
-+home_data_files=[('etc',           libexec_files),
-+                 ('etc',           etc_files),
-+                 ('etc/init.d',    initd_files),
-+                 ('etc/sysconfig', sysconfig_files),
-+                 ('doc/apf',       docs_files),
-+                 ('man/man1',      man1_files),
-+                 ('man/man5',      man5_files),
-+                 #('share/apf',    utils_files),
++home_data_files=[('etc',                   libexec_files),
++                 ('etc',                   etc_files),
++                 ('etc/init.d',            initd_files),
++                 ('etc/sysconfig',         sysconfig_files),
++                 ('doc/autopyfactory',     docs_files),
++                 ('man/man1',              man1_files),
++                 ('man/man5',              man5_files),
++                 #('share/autopyfactory',  utils_files),
                  ]
  
  # -----------------------------------------------------------

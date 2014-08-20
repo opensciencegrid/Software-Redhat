@@ -1,7 +1,7 @@
 %define name autopyfactory
 %define version 2.3.9
 %define unmangled_version 2.3.9
-%define release 1.1
+%define release 1.2
 
 Summary: autopyfactory package
 Name: %{name}
@@ -34,6 +34,8 @@ python setup.py build
 %install
 python setup.py install -O1 --root=$RPM_BUILD_ROOT --record=INSTALLED_FILES
 
+mkdir -pm0755 $RPM_BUILD_ROOT%{_var}/log/autopyfactory
+
 # add .gz extension to man files
 sed -i '/\/man\/man[1-9]\/.*\.[1-9]/s/$/\.gz/' INSTALLED_FILES
 
@@ -44,8 +46,9 @@ rm -rf $RPM_BUILD_ROOT
 if id apf > /dev/null 2>&1; then
     : # do nothing
 else
-    /usr/sbin/useradd --comment "AutoPyFactory service account" --shell /bin/bash apf
-fi 
+    /usr/sbin/useradd --comment "AutoPyFactory service account" \
+                      --shell /bin/bash apf
+fi
 
 %post
 /sbin/chkconfig --add factory
@@ -55,7 +58,7 @@ fi
 
 
 %preun
-# Stop factory before uninstalling or upgrading. 
+# Stop factory before uninstalling or upgrading.
 #if [ -x /etc/init.d/factory ] ; then
 #  /etc/init.d/factory stop > /dev/null 2>&1
 #fi
@@ -64,11 +67,15 @@ fi
 %files -f INSTALLED_FILES
 %defattr(-,root,root)
 %doc CHANGELOG INSTALL-ROOT INSTALL-USER NOTES CONFIGURATION LICENSE README
-%config(noreplace) %{_sysconfdir}/apf/factory.conf
-%config(noreplace) %{_sysconfdir}/apf/logsmonitor.rotate.conf
-%config(noreplace) %{_sysconfdir}/apf/monitor.conf
-%config(noreplace) %{_sysconfdir}/apf/proxy.conf
-%config(noreplace) %{_sysconfdir}/apf/queues.conf
+%doc RELEASE_NOTES
+%doc docs/*.html
+%doc docs/*.png
+%dir %{_var}/log/autopyfactory
+%config(noreplace) %{_sysconfdir}/autopyfactory/factory.conf
+%config(noreplace) %{_sysconfdir}/autopyfactory/logsmonitor.rotate.conf
+%config(noreplace) %{_sysconfdir}/autopyfactory/monitor.conf
+%config(noreplace) %{_sysconfdir}/autopyfactory/proxy.conf
+%config(noreplace) %{_sysconfdir}/autopyfactory/queues.conf
 %config(noreplace) %{_sysconfdir}/sysconfig/factory
 %config(noreplace) %{_sysconfdir}/sysconfig/proxymanager
 
