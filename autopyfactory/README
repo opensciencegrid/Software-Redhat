@@ -2,12 +2,12 @@ AutoPyFactory
 
 upstream source acquired with:
 
-  pandasvn=http://svnweb.cern.ch/guest/panda
+  svn=http://svnweb.cern.ch/guest/panda/panda-autopyfactory
   tag=2.3.9-1
   ver=${tag%-*}
   upstream=/p/vdt/public/html/upstream/autopyfactory/$ver
 
-  svn co $pandasvn/panda-autopyfactory/tag/$tag autopyfactory
+  svn co $svn/tag/$tag autopyfactory
   cd autopyfactory
   sed -i s/panda-autopyfactory/autopyfactory/g setup.{py,cfg}
   /usr/bin/python setup.py bdist_rpm
