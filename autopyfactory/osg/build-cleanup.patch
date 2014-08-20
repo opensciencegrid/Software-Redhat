@@ -11,6 +11,50 @@ index e7ae29c..d52679e 100644
                            action="store", 
                            metavar="FILE1[,FILE2,FILE3]", 
                            help="Load configuration from FILEs (comma separated list)")
+diff --git a/bin/autopyfactory b/bin/autopyfactory
+new file mode 100755
+index 0000000..c2f2204
+--- /dev/null
++++ b/bin/autopyfactory
+@@ -0,0 +1,16 @@
++#!/usr/bin/env python
++#
++# Very simple wrapper to go in /usr/bin to be executed by init script. 
++#
++from autopyfactory.factory import FactoryCLI 
++
++def main():
++    '''
++    Simplest possible invocation of AutoPyFactory program. Does not have the .py extension
++    to keep the RPM building system happy. 
++    '''
++    apf = FactoryCLI()
++    apf.run()
++        
++if __name__ == "__main__":
++    main()
+diff --git a/bin/factory b/bin/factory
+deleted file mode 100755
+index c2f2204..0000000
+--- a/bin/factory
++++ /dev/null
+@@ -1,16 +0,0 @@
+-#!/usr/bin/env python
+-#
+-# Very simple wrapper to go in /usr/bin to be executed by init script. 
+-#
+-from autopyfactory.factory import FactoryCLI 
+-
+-def main():
+-    '''
+-    Simplest possible invocation of AutoPyFactory program. Does not have the .py extension
+-    to keep the RPM building system happy. 
+-    '''
+-    apf = FactoryCLI()
+-    apf.run()
+-        
+-if __name__ == "__main__":
+-    main()
 diff --git a/docs/autopyfactory-factory.conf.5 b/docs/autopyfactory-factory.conf.5
 deleted file mode 100644
 index 295bf02..0000000
@@ -3239,51 +3283,482 @@ index 4bb6d17..1d52f28 100644
  
  # second, create new file
  /usr/share/apf/apf-search-failed > /tmp/error.lasthour.html
-diff --git a/etc/factory b/etc/factory
-index 028a9b2..2a686fa 100755
---- a/etc/factory
-+++ b/etc/factory
-@@ -7,7 +7,7 @@
- # chkconfig: 345 26 74
- # description: Submit pilot jobs to grid sites. 
- # processname: factory
--# config: /etc/apf/factory.conf 
+diff --git a/etc/autopyfactory b/etc/autopyfactory
+new file mode 100755
+index 0000000..e06ef0e
+--- /dev/null
++++ b/etc/autopyfactory
+@@ -0,0 +1,232 @@
++#!/bin/bash
++#
++#	/etc/rc.d/init.d/autopyfactory
++#
++# Starts the autopyfactory daemon
++#
++# chkconfig: 345 26 74
++# description: Submit pilot jobs to grid sites. 
++# processname: autopyfactory
 +# config: /etc/autopyfactory/factory.conf 
- # pidfile: /var/run/factory.pid
- #
- #
-@@ -63,14 +63,14 @@ f_factdir
- 
- if [ `id -u` = 0 ]; then
-     APFHEAD=/
--    SYSCONF=/etc/sysconfig/factory.sysconfig
-+    SYSCONF=/etc/sysconfig/factory
-     BINDIR=/usr/bin
--    ETCDIR=/etc/apf
++# pidfile: /var/run/autopyfactory.pid
++#
++#
++
++### BEGIN INIT INFO
++# Provides: factory.py
++# Required-Start: $syslog $local_fs
++# Required-Stop: $syslog $local_fs
++# Default-Start:  2 3 4 5
++# Default-Stop: 0 1 6
++# Short-Description: start and stop autopyfactory
++# Description: Submit PANDA pilots. 
++### END INIT INFO
++
++f_factdir(){
++    # little function to find out where actually
++    # this script is located.
++    # In case of an user custom installation it could
++    # be in a place different that both /etc/init.d/ or the $HOME dir.
++    # The current location is recorded in variable FACTDIR
++    
++    OLD_DIR=$PWD
++    DIRPATH=`dirname $0`
++    cd $DIRPATH
++    FACTDIR=$PWD
++    cd $OLD_DIR
++}
++
++# Source function library.
++# Standard RedHat
++if [ -f /etc/rc.d/init.d/functions ]; then
++   . /etc/rc.d/init.d/functions
++fi
++
++# Use LSB locations for e.g. SuSE
++if [ -f /lib/lsb/init-functions ]; then
++   . /lib/lsb/init-functions
++fi
++
++# Source standard environment
++for i in /etc/profile.d/*.sh; do
++    if [ -r "$i" ]; then
++            . $i >/dev/null 2>&1
++    fi
++done
++
++# Determine usage context and set paths accordingly.  
++#   -- for root it means RPM
++#   -- for non-root, the head of the path tree can be calculated from the output of f_factdir
++#      the relative paths for the rest of files are like ../bin, ../var, etc.
++
++f_factdir
++
++if [ `id -u` = 0 ]; then
++    APFHEAD=/
++    SYSCONF=/etc/sysconfig/autopyfactory
++    BINDIR=/usr/bin
 +    ETCDIR=/etc/autopyfactory
-     PIDFILE=/var/run/factory.pid
- else
-     APFHEAD=`dirname $FACTDIR`
- 
--    SYSCONF=$APFHEAD/etc/factory.sysconfig
-+    SYSCONF=$APFHEAD/etc/sysconfig/factory
-     BINDIR=$APFHEAD/bin
-     ETCDIR=$APFHEAD/etc
-     PIDFILE=$APFHEAD/var/run/factory.pid
-@@ -115,10 +115,10 @@ create_var_run(){
- }
- 
- create_var_log(){
--    # function to create directory  $APFHEAD/var/log/apf 
++    PIDFILE=/var/run/autopyfactory.pid
++else
++    APFHEAD=`dirname $FACTDIR`
++
++    SYSCONF=$APFHEAD/etc/sysconfig/autopyfactory
++    BINDIR=$APFHEAD/bin
++    ETCDIR=$APFHEAD/etc
++    PIDFILE=$APFHEAD/var/run/autopyfactory.pid
++fi
++
++CONFFILE=$ETCDIR/factory.conf
++
++# Source settings from sysconfig
++# overriding default if present
++
++if [ -f $SYSCONF ]; then
++   . $SYSCONF
++fi
++
++if [ -f /etc/profile ]; then
++   . /etc/profile
++fi
++
++if [ -n "$GRIDSETUP" ]; then
++   . $GRIDSETUP
++fi
++
++
++
++RETVAL=0
++#
++# See how we were called.
++#
++check() {
++	
++	# Check if factory.py is executable
++	test -x $BINDIR/autopyfactory || exit 5
++}
++
++create_var_run(){
++    # function to create directory  $APFHEAD/var/run 
++    # if it does not exist. 
++    # It is needed to place the file autopyfactory.pid 
++    if [ ! -d $APFHEAD/var/run/ ]; then
++        mkdir -p $APFHEAD/var/run/
++    fi
++}
++
++create_var_log(){
 +    # function to create directory  $APFHEAD/var/log/autopyfactory
-     # if it does not exist. 
--    if [ ! -d $APFHEAD/var/log/apf ]; then
--        mkdir -p $APFHEAD/var/log/apf/
++    # if it does not exist. 
 +    if [ ! -d $APFHEAD/var/log/autopyfactory ]; then
 +        mkdir -p $APFHEAD/var/log/autopyfactory/
-     fi
- }
- 
++    fi
++}
++
++
++start() {
++	# Check if it is already running
++	PROGRETVAL=0
++	if [ ! -f $PIDFILE ]; then
++		echo -n $"Starting APF daemon: "	
++        create_var_run
++        create_var_log
++	    # daemon --pidfile=${PIDFILE} "$BINDIR/autopyfactory --conf $CONFFILE $OPTIONS "
++        if [ -n "$CONSOLE_LOG" ]; then
++        	$BINDIR/autopyfactory --conf $CONFFILE $OPTIONS >> $CONSOLE_LOG 2>&1 &
++        else
++            $BINDIR/autopyfactory --conf $CONFFILE $OPTIONS &
++        fi
++        RETVAL=$?
++		PID=$!
++	    [ "$RETVAL" -eq 0 ] && echo $! > $PIDFILE        
++
++		sleep 3
++		if checkpid $PID; then
++			PROGRETVAL=0
++		else
++			wait $PID
++			PROGRETVAL=$?
++			rm -f $PIDFILE
++		fi
++        [ "$PROGRETVAL" -eq 0 ] && success $"autopyfactory startup" || failure $"autopyfactory startup"
++	    echo
++	else
++		if checkpid $PID; then
++			echo "$0: daemon with PID $PID already running." && success $"autopyfactory startup"
++			PROGRETVAL=0
++		else
++			echo "$0: daemon dead but PID file exists: $PIDFILE" && failure $"autopyfactory startup"
++	    	PROGRETVAL=1
++	    fi
++	fi
++
++	return $PROGRETVAL
++}
++
++stop() {
++
++	check
++	echo -n $"Stopping APF daemon: "
++	killproc -p $PIDFILE autopyfactory
++	RETVAL=$?
++	[ $RETVAL -eq 0 ] && rm -f $PIDFILE && success $"autopyfactory shutdown" || failure $"autopyfactory shutdown"
++	echo
++    return $RETVAL
++}
++
++
++restart() {
++	stop
++	sleep 2
++	start
++	RETVAL=$?
++	return $RETVAL
++}	
++
++reload() {
++
++	check
++	
++	trap "" SIGHUP
++	action $"Reloading APF daemon:" killall -HUP factory.py
++	RETVAL=$?
++	return $RETVAL
++}	
++
++case "$1" in
++start)
++	start
++	RETVAL=$?
++	;;
++stop)
++	stop
++    RETVAL=$?
++	;;
++reload)
++	echo "$0: Unimplemented feature."
++    RETVAL=3
++	;;
++force-reload)
++	echo "$0: Unimplemented feature."
++	RETVAL=3
++	;;
++restart)
++	restart
++	RETVAL=$?
++	;;
++condrestart)
++	if [ -f /var/lock/subsys/autopyfactory ]; then
++	    restart
++	fi
++	RETVAL=$?
++	;;
++status)
++	status autopyfactory
++	RETVAL=$?
++	;;
++*)
++	echo $"Usage: $0 {start|stop|status|restart|condrestart|reload|force-reload}"
++	RETVAL=2
++esac
++
++exit $RETVAL
+diff --git a/etc/factory b/etc/factory
+deleted file mode 100755
+index 028a9b2..0000000
+--- a/etc/factory
++++ /dev/null
+@@ -1,232 +0,0 @@
+-#!/bin/bash
+-#
+-#	/etc/rc.d/init.d/factory
+-#
+-# Starts the autopyfactory daemon
+-#
+-# chkconfig: 345 26 74
+-# description: Submit pilot jobs to grid sites. 
+-# processname: factory
+-# config: /etc/apf/factory.conf 
+-# pidfile: /var/run/factory.pid
+-#
+-#
+-
+-### BEGIN INIT INFO
+-# Provides: factory.py
+-# Required-Start: $syslog $local_fs
+-# Required-Stop: $syslog $local_fs
+-# Default-Start:  2 3 4 5
+-# Default-Stop: 0 1 6
+-# Short-Description: start and stop autopyfactory
+-# Description: Submit PANDA pilots. 
+-### END INIT INFO
+-
+-f_factdir(){
+-    # little function to find out where actually
+-    # this script is located.
+-    # In case of an user custom installation it could
+-    # be in a place different that both /etc/init.d/ or the $HOME dir.
+-    # The current location is recorded in variable FACTDIR
+-    
+-    OLD_DIR=$PWD
+-    DIRPATH=`dirname $0`
+-    cd $DIRPATH
+-    FACTDIR=$PWD
+-    cd $OLD_DIR
+-}
+-
+-# Source function library.
+-# Standard RedHat
+-if [ -f /etc/rc.d/init.d/functions ]; then
+-   . /etc/rc.d/init.d/functions
+-fi
+-
+-# Use LSB locations for e.g. SuSE
+-if [ -f /lib/lsb/init-functions ]; then
+-   . /lib/lsb/init-functions
+-fi
+-
+-# Source standard environment
+-for i in /etc/profile.d/*.sh; do
+-    if [ -r "$i" ]; then
+-            . $i >/dev/null 2>&1
+-    fi
+-done
+-
+-# Determine usage context and set paths accordingly.  
+-#   -- for root it means RPM
+-#   -- for non-root, the head of the path tree can be calculated from the output of f_factdir
+-#      the relative paths for the rest of files are like ../bin, ../var, etc.
+-
+-f_factdir
+-
+-if [ `id -u` = 0 ]; then
+-    APFHEAD=/
+-    SYSCONF=/etc/sysconfig/factory.sysconfig
+-    BINDIR=/usr/bin
+-    ETCDIR=/etc/apf
+-    PIDFILE=/var/run/factory.pid
+-else
+-    APFHEAD=`dirname $FACTDIR`
+-
+-    SYSCONF=$APFHEAD/etc/factory.sysconfig
+-    BINDIR=$APFHEAD/bin
+-    ETCDIR=$APFHEAD/etc
+-    PIDFILE=$APFHEAD/var/run/factory.pid
+-fi
+-
+-CONFFILE=$ETCDIR/factory.conf
+-
+-# Source settings from sysconfig
+-# overriding default if present
+-
+-if [ -f $SYSCONF ]; then
+-   . $SYSCONF
+-fi
+-
+-if [ -f /etc/profile ]; then
+-   . /etc/profile
+-fi
+-
+-if [ -n "$GRIDSETUP" ]; then
+-   . $GRIDSETUP
+-fi
+-
+-
+-
+-RETVAL=0
+-#
+-# See how we were called.
+-#
+-check() {
+-	
+-	# Check if factory.py is executable
+-	test -x $BINDIR/factory || exit 5
+-}
+-
+-create_var_run(){
+-    # function to create directory  $APFHEAD/var/run 
+-    # if it does not exist. 
+-    # It is needed to place the file factory.pid 
+-    if [ ! -d $APFHEAD/var/run/ ]; then
+-        mkdir -p $APFHEAD/var/run/
+-    fi
+-}
+-
+-create_var_log(){
+-    # function to create directory  $APFHEAD/var/log/apf 
+-    # if it does not exist. 
+-    if [ ! -d $APFHEAD/var/log/apf ]; then
+-        mkdir -p $APFHEAD/var/log/apf/
+-    fi
+-}
+-
+-
+-start() {
+-	# Check if it is already running
+-	PROGRETVAL=0
+-	if [ ! -f $PIDFILE ]; then
+-		echo -n $"Starting APF daemon: "	
+-        create_var_run
+-        create_var_log
+-	    # daemon --pidfile=${PIDFILE} "$BINDIR/factory --conf $CONFFILE $OPTIONS "
+-        if [ -n "$CONSOLE_LOG" ]; then
+-        	$BINDIR/factory --conf $CONFFILE $OPTIONS >> $CONSOLE_LOG 2>&1 &
+-        else
+-            $BINDIR/factory --conf $CONFFILE $OPTIONS &
+-        fi
+-        RETVAL=$?
+-		PID=$!
+-	    [ "$RETVAL" -eq 0 ] && echo $! > $PIDFILE        
+-
+-		sleep 3
+-		if checkpid $PID; then
+-			PROGRETVAL=0
+-		else
+-			wait $PID
+-			PROGRETVAL=$?
+-			rm -f $PIDFILE
+-		fi
+-        [ "$PROGRETVAL" -eq 0 ] && success $"factory startup" || failure $"factory startup"
+-	    echo
+-	else
+-		if checkpid $PID; then
+-			echo "$0: daemon with PID $PID already running." && success $"factory startup"
+-			PROGRETVAL=0
+-		else
+-			echo "$0: daemon dead but PID file exists: $PIDFILE" && failure $"factory startup"
+-	    	PROGRETVAL=1
+-	    fi
+-	fi
+-
+-	return $PROGRETVAL
+-}
+-
+-stop() {
+-
+-	check
+-	echo -n $"Stopping APF daemon: "
+-	killproc -p $PIDFILE factory
+-	RETVAL=$?
+-	[ $RETVAL -eq 0 ] && rm -f $PIDFILE && success $"factory shutdown" || failure $"factory shutdown"
+-	echo
+-    return $RETVAL
+-}
+-
+-
+-restart() {
+-	stop
+-	sleep 2
+-	start
+-	RETVAL=$?
+-	return $RETVAL
+-}	
+-
+-reload() {
+-
+-	check
+-	
+-	trap "" SIGHUP
+-	action $"Reloading APF daemon:" killall -HUP factory.py
+-	RETVAL=$?
+-	return $RETVAL
+-}	
+-
+-case "$1" in
+-start)
+-	start
+-	RETVAL=$?
+-	;;
+-stop)
+-	stop
+-    RETVAL=$?
+-	;;
+-reload)
+-	echo "$0: Unimplemented feature."
+-    RETVAL=3
+-	;;
+-force-reload)
+-	echo "$0: Unimplemented feature."
+-	RETVAL=3
+-	;;
+-restart)
+-	restart
+-	RETVAL=$?
+-	;;
+-condrestart)
+-	if [ -f /var/lock/subsys/factory ]; then
+-	    restart
+-	fi
+-	RETVAL=$?
+-	;;
+-status)
+-	status factory
+-	RETVAL=$?
+-	;;
+-*)
+-	echo $"Usage: $0 {start|stop|status|restart|condrestart|reload|force-reload}"
+-	RETVAL=2
+-esac
+-
+-exit $RETVAL
 diff --git a/etc/factory.conf b/etc/factory.conf
 new file mode 100644
 index 0000000..bb2766a
@@ -3701,11 +4176,11 @@ index 0a45448..0000000
 -# default. 
 -#
 -# GRIDSETUP=/opt/osg-client/setup.sh
-diff --git a/etc/logrotate/factory b/etc/logrotate/factory
+diff --git a/etc/logrotate/autopyfactory b/etc/logrotate/autopyfactory
 new file mode 100644
-index 0000000..5bcf908
+index 0000000..3595b9a
 --- /dev/null
-+++ b/etc/logrotate/factory
++++ b/etc/logrotate/autopyfactory
 @@ -0,0 +1,32 @@
 +/var/log/autopyfactory/apf.log {
 +  missingok
@@ -3714,13 +4189,13 @@ index 0000000..5bcf908
 +  size 100M
 +  rotate 10 
 +  prerotate
-+    [ -e /etc/init.d/factory ] && /etc/init.d/factory stop >/dev/null 2>&1 || true
++    [ -e /etc/init.d/autopyfactory ] && /etc/init.d/autopyfactory stop >/dev/null 2>&1 || true
 +    sleep 5
 +  endscript
 +  postrotate
 +    sleep 5
 +    [ -e /etc/profile ] && . /etc/profile >/dev/null 2>&1 || true
-+    [ -e /etc/init.d/factory ] && /etc/init.d/factory start >/dev/null 2>&1 || true
++    [ -e /etc/init.d/autopyfactory ] && /etc/init.d/autopyfactory start >/dev/null 2>&1 || true
 +  endscript
 +}
 +/var/log/autopyfactory/console.log {
@@ -3730,13 +4205,13 @@ index 0000000..5bcf908
 +  size 50M
 +  rotate 2
 +  prerotate
-+    [ -e /etc/init.d/factory ] && /etc/init.d/factory stop >/dev/null 2>&1 || true
++    [ -e /etc/init.d/autopyfactory ] && /etc/init.d/autopyfactory stop >/dev/null 2>&1 || true
 +    sleep 5
 +  endscript
 +  postrotate
 +    sleep 5
 +    [ -e /etc/profile ] && . /etc/profile >/dev/null 2>&1 || true
-+    [ -e /etc/init.d/factory ] && /etc/init.d/factory start >/dev/null 2>&1 || true
++    [ -e /etc/init.d/autopyfactory ] && /etc/init.d/autopyfactory start >/dev/null 2>&1 || true
 +  endscript
 +}
 diff --git a/etc/logsmonitor.rotate.conf b/etc/logsmonitor.rotate.conf
@@ -4138,10 +4613,10 @@ index e1ed82b..0000000
 -myproxy_passphrase = ppfortwo
 -
 diff --git a/etc/proxymanager b/etc/proxymanager
-index 1e7f03b..39f1d91 100755
+index 1e7f03b..820f11d 100755
 --- a/etc/proxymanager
 +++ b/etc/proxymanager
-@@ -7,7 +7,7 @@
+@@ -7,13 +7,13 @@
  # chkconfig: 345 26 74
  # description: Submit pilot jobs to grid sites. 
  # processname: proxymanager
@@ -4150,6 +4625,13 @@ index 1e7f03b..39f1d91 100755
  # pidfile: /var/run/proxymanager.pid
  #
  #
+ 
+ ### BEGIN INIT INFO
+-# Provides: factory.py
++# Provides: proxymanager.py
+ # Required-Start: $syslog $local_fs
+ # Required-Stop: $syslog $local_fs
+ # Default-Start:  2 3 4 5
 @@ -62,14 +62,14 @@ done
  f_factdir
  
@@ -4168,6 +4650,33 @@ index 1e7f03b..39f1d91 100755
      BINDIR=$APFHEAD/bin
      ETCDIR=$APFHEAD/etc
      PIDFILE=$APFHEAD/var/run/proxymanager.pid
+@@ -107,7 +107,7 @@ check() {
+ create_var_run(){
+     # function to create directory  $APFHEAD/var/run 
+     # if it does not exist. 
+-    # It is needed to place the file factory.pid 
++    # It is needed to place the file proxymanager.pid
+     if [ ! -d $APFHEAD/var/run/ ]; then
+         mkdir -p $APFHEAD/var/run/
+     fi
+@@ -140,7 +140,7 @@ stop() {
+ 
+ 	check
+ 	echo -n $"Stopping Proxymanager daemon: "
+-	killproc -p $PIDFILE factory
++	killproc -p $PIDFILE proxymanager
+ 	RETVAL=$?
+ 	[ $RETVAL -eq 0 ] && rm -f $PIDFILE
+ 	echo
+@@ -190,7 +190,7 @@ condrestart)
+ 	fi
+ 	;;
+ status)
+-	status factory
++	status proxymanager
+ 	RETVAL=$?
+ 	;;
+ *)
 diff --git a/etc/proxymanager.sysconfig-example b/etc/proxymanager.sysconfig-example
 deleted file mode 100644
 index a9d73d7..0000000
@@ -6452,11 +6961,11 @@ index f5580a9..0000000
 -sched.maxpending.maximum = 50
 -
 -executable.arguments = %(executable.defaultarguments)s --script=pilot.py --libcode=pilotcode.tar.gz,pilotcode-rc.tar.gz --pilotsrcurl=http://panda.cern.ch:25880/cache --user user
-diff --git a/etc/sysconfig/factory b/etc/sysconfig/factory
+diff --git a/etc/sysconfig/autopyfactory b/etc/sysconfig/autopyfactory
 new file mode 100644
 index 0000000..f11520d
 --- /dev/null
-+++ b/etc/sysconfig/factory
++++ b/etc/sysconfig/autopyfactory
 @@ -0,0 +1,31 @@
 +#
 +# Sysconfig file for autopyfactory
@@ -6524,7 +7033,7 @@ index 0000000..24db112
 +#
 +# GRIDSETUP=/opt/osg-client/setup.sh
 diff --git a/setup.py b/setup.py
-index 3f2a203..83e98e1 100644
+index 3f2a203..ba52956 100644
 --- a/setup.py
 +++ b/setup.py
 @@ -30,20 +30,22 @@ if major == 2:
@@ -6546,13 +7055,14 @@ index 3f2a203..83e98e1 100644
               'etc/apf-search-failed.sh-example',
               ]
  
- initd_files = ['etc/factory',
+-initd_files = ['etc/factory',
++initd_files = ['etc/autopyfactory',
                 'etc/proxymanager']
  
 -logrotate_files = ['etc/factory.logrotate',]
-+logrotate_files = ['etc/logrotate/factory',]
++logrotate_files = ['etc/logrotate/autopyfactory',]
 +
-+sysconfig_files = ['etc/sysconfig/factory',
++sysconfig_files = ['etc/sysconfig/autopyfactory',
 +                   'etc/sysconfig/proxymanager',
 +                  ]
  
@@ -6608,3 +7118,12 @@ index 3f2a203..83e98e1 100644
                  ]
  
  # -----------------------------------------------------------
+@@ -126,7 +140,7 @@ setup(
+               'autopyfactory.plugins.wmsstatus',
+               ],
+     scripts = [ # Utilities and main script
+-               'bin/factory',
++               'bin/autopyfactory',
+                'bin/proxymanager'
+               ],
+     

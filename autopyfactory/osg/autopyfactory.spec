@@ -51,16 +51,16 @@ else
 fi
 
 %post
-/sbin/chkconfig --add factory
+/sbin/chkconfig --add autopyfactory
 
-# By default on install set factory off?
-#/sbin/chkconfig factory off
+# By default on install set autopyfactory off?
+#/sbin/chkconfig autopyfactory off
 
 
 %preun
-# Stop factory before uninstalling or upgrading.
-#if [ -x /etc/init.d/factory ] ; then
-#  /etc/init.d/factory stop > /dev/null 2>&1
+# Stop autopyfactory before uninstalling or upgrading.
+#if [ -x /etc/init.d/autopyfactory ] ; then
+#  /etc/init.d/autopyfactory stop > /dev/null 2>&1
 #fi
 
 
@@ -76,6 +76,7 @@ fi
 %config(noreplace) %{_sysconfdir}/autopyfactory/monitor.conf
 %config(noreplace) %{_sysconfdir}/autopyfactory/proxy.conf
 %config(noreplace) %{_sysconfdir}/autopyfactory/queues.conf
-%config(noreplace) %{_sysconfdir}/sysconfig/factory
+%config(noreplace) %{_sysconfdir}/logrotate.d/autopyfactory
+%config(noreplace) %{_sysconfdir}/sysconfig/autopyfactory
 %config(noreplace) %{_sysconfdir}/sysconfig/proxymanager
 
