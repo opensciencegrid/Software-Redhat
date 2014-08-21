@@ -1,7 +1,7 @@
 %define name autopyfactory
 %define version 2.3.9
 %define unmangled_version 2.3.9
-%define release 1.2
+%define release 1.3
 
 Summary: autopyfactory package
 Name: %{name}
@@ -27,6 +27,8 @@ This package contains autopyfactory
 %prep
 %setup -n %{name}-%{unmangled_version}
 %patch0 -p1
+# patch doesn't always preserve permissions across renames
+chmod 0755 bin/* etc/initd/*
 
 %build
 python setup.py build
