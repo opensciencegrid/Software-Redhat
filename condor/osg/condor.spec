@@ -67,7 +67,7 @@ Version: %{tarball_version}
 %define condor_release %condor_base_release
 %endif
 # Release: %condor_release%{?dist}.2
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -128,12 +128,20 @@ Patch0: condor_config.generic.patch
 Patch1: condor_peaceful_off.patch
 Patch2: condor_ulimit.patch
 Patch3: chkconfig_off.patch
-# This patch is here until it is pushed into upstream (8.0.1?)
-# https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=3698w
+
+# The gsoap_ipv6 patch is here until it is pushed into upstream (8.0.1?)
+# https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=3698
 Patch4: gsoap_ipv6.patch
-# This patch is here until it is pushed into upstream (8.0.8)
+
+# The lcmaps_uid patch is here until it is pushed into upstream (8.0.8)
 # https://htcondor-wiki.cs.wisc.edu/index.cgi/chngview?cn=40355
 Patch5: lcmaps_uid.patch
+
+# The condor_gt4540_aws patch applies to HTCondor 8.0 and is currently (19
+# Aug 2014) scheduled to be incorporated upstream into HTCondor 8.2.3.
+# https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=4540
+Patch6: condor_gt4540_aws.patch
+
 Patch8: osg_sysconfig_in_init_script.patch
 Patch9: proper_cream_v3.diff
 %if %blahp
@@ -471,6 +479,7 @@ exit 0
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
+%patch6 -p1
 %patch8 -p1
 %if %cream
 %patch9 -p1
@@ -1274,6 +1283,9 @@ fi
 %endif
 
 %changelog
+* Wed Aug 20 2014 Tim Cartwright <cat@cs.wisc.edu> - 8.0.7-2
+- Added patch for EC2 GAHP when trying to contact Amazon Web Services
+
 * Fri Jun 06 2014 Brian Lin <blin@cs.wisc.edu> - 8.0.7-1
 - Updated to version 8.0.7
 - Add patch that ensures HTCondor is run using the proper eUID
