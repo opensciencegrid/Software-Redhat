@@ -1,7 +1,7 @@
 %define name autopyfactory
 %define version 2.3.9
 %define unmangled_version 2.3.9
-%define release 1.3
+%define release 1.4
 
 Summary: autopyfactory package
 Name: %{name}
@@ -17,6 +17,8 @@ Vendor: Jose Caballero <jcaballero@bnl.gov>
 Requires: panda-userinterface >= 1.0-4
 Requires: python-simplejson
 Requires: python-pycurl
+Requires: myproxy
+Requires: voms-clients
 Url: https://twiki.cern.ch/twiki/bin/view/Atlas/PanDA
 
 Patch0: build-cleanup.patch
