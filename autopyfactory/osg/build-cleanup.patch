@@ -7382,10 +7382,10 @@ index 0000000..24db112
 +#
 +# GRIDSETUP=/opt/osg-client/setup.sh
 diff --git a/setup.py b/setup.py
-index 3f2a203..25f6d1d 100644
+index 3f2a203..f576988 100644
 --- a/setup.py
 +++ b/setup.py
-@@ -30,20 +30,22 @@ if major == 2:
+@@ -30,20 +30,21 @@ if major == 2:
  
  libexec_files = ['libexec/%s' %file for file in os.listdir('libexec') if os.path.isfile('libexec/%s' %file)]
  
@@ -7396,12 +7396,12 @@ index 3f2a203..25f6d1d 100644
 -             'etc/factory.sysconfig-example',
 -             'etc/proxymanager.sysconfig-example',
 -             'etc/logsmonitor.rotate.conf-example',
+-             'etc/apf-search-failed.sh-example',
 +etc_files = ['etc/factory.conf',
 +             'etc/queues.conf',
 +             'etc/proxy.conf',
 +             'etc/monitor.conf',
 +             'etc/logsmonitor.rotate.conf',
-              'etc/apf-search-failed.sh-example',
               ]
  
 -initd_files = ['etc/factory',
@@ -7418,7 +7418,7 @@ index 3f2a203..25f6d1d 100644
  
  # docs files:
  #   --everything in the docs/ directory
-@@ -51,6 +53,13 @@ logrotate_files = ['etc/factory.logrotate',]
+@@ -51,6 +52,13 @@ logrotate_files = ['etc/factory.logrotate',]
  docs_files = ['docs/%s' %file for file in os.listdir('docs') if os.path.isfile('docs/%s' %file)]
  docs_files.append('RELEASE_NOTES')
  
@@ -7432,7 +7432,7 @@ index 3f2a203..25f6d1d 100644
  # NOTE: these utils are going to be distributed from now on 
  #       in a separated RPM
  #
-@@ -65,19 +74,24 @@ docs_files.append('RELEASE_NOTES')
+@@ -65,19 +73,22 @@ docs_files.append('RELEASE_NOTES')
  
  # -----------------------------------------------------------
  
@@ -7442,8 +7442,7 @@ index 3f2a203..25f6d1d 100644
 -                ('/etc/logrotate.d',   logrotate_files),                                        
 -                ('/usr/share/doc/apf', docs_files),                                        
 -                #('/usr/share/apf',     utils_files),                                        
-+rpm_data_files=[('/etc/autopyfactory',         libexec_files),
-+                ('/etc/autopyfactory',         etc_files),
++rpm_data_files=[('/etc/autopyfactory',         etc_files),
 +                ('/etc/rc.d/init.d',           initd_files),
 +                ('/etc/logrotate.d',           logrotate_files),
 +                ('/etc/sysconfig',             sysconfig_files),
@@ -7457,8 +7456,7 @@ index 3f2a203..25f6d1d 100644
 -                 ('etc',       initd_files),
 -                 ('doc/apf',   docs_files ),
 -                 #('share/apf', utils_files),                                        
-+home_data_files=[('etc',                   libexec_files),
-+                 ('etc',                   etc_files),
++home_data_files=[('etc',                   etc_files),
 +                 ('etc/init.d',            initd_files),
 +                 ('etc/sysconfig',         sysconfig_files),
 +                 ('doc/autopyfactory',     docs_files),
@@ -7468,7 +7466,7 @@ index 3f2a203..25f6d1d 100644
                  ]
  
  # -----------------------------------------------------------
-@@ -126,7 +140,7 @@ setup(
+@@ -126,7 +137,7 @@ setup(
                'autopyfactory.plugins.wmsstatus',
                ],
      scripts = [ # Utilities and main script
