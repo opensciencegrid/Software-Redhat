@@ -6,7 +6,7 @@
 %define jglobus_version 2.0.6
 
 %define _alphatag pre3
-%define _release 6
+%define _release 7
 
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
@@ -223,6 +223,7 @@ ln -s %{_sysconfdir}/%{dirname}/gums.config $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}
 # it. Get it from the exploded WAR instead.
 install -m 0644 $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib/slf4j-api-1.5.5.jar $RPM_BUILD_ROOT%{_noarchlib}/%{dirname}/
 
+%if 0%{?rhel} < 6
 # Remove system JARs to whatever extent possible.  We will later link these directly.
 rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/ant-1.6.3.jar
 rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/antlr-2.7.5H3.jar
@@ -241,11 +242,12 @@ rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROO
 
 
 ## Link the exploded WAR to gums-core JARs, instead of including a copy
-# this works because we explicitly configure tomcat6 with allowLinking="true"
+# tomcat6 doesn't seem to like this.
 for x in $RPM_BUILD_ROOT%{_noarchlib}/%{dirname}/*.jar; do
     replace_jar $(basename $x)
 done
 
+%endif
 
 # Delete broken RPMs from the Shibboleth repository
 #  (we need to fix the build so that they are not even pulled in)
@@ -400,6 +402,9 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+* Thu Aug 21 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.4.0-0.7.pre3
+- Revert WEB-INF symlinks, which were still causing problems (SOFTWARE-173)
+
 * Wed Aug 20 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.4.0-0.6.pre3
 - Separate out jars required for client into client-libs, also required by
   gums to avoid installed version mismatches (SOFTWARE-173)
