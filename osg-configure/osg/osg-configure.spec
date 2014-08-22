@@ -1,9 +1,8 @@
 Summary: Package for configure-osg and associated scripts
 Name: osg-configure
-Version: 1.0.58
-Release: 3%{?dist}
+Version: 1.0.59
+Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
-Patch0: 771-job-contact-warning.patch
 License: Apache 2.0
 Group: Grid
 Prefix: %{_prefix}
@@ -184,7 +183,6 @@ It may safely be removed once the upgrade is finished.
 
 %prep
 %setup
-%patch0 -p1
 
 %build
 %{__python} setup.py build
@@ -305,6 +303,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Aug 22 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0.59-1
+- Remove SOFTWARE-771 patch (in upstream)
+- Allow unsetting OSG_APP by setting app_dir to a special 'UNSET' value (SOFTWARE-1567)
+
 * Tue Aug 05 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0.58-3
 - Improve phrasing of warning message when OSG_JOB_CONTACT cannot be set because no batch system modules exist/are enabled (SOFTWARE-771)
 - Mark the config file that gets created in /etc/condor-ce/config.d as a ghost file so it gets properly removed (SOFTWARE-1551)
