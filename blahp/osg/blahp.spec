@@ -1,6 +1,6 @@
 Name:		blahp
 Version:	1.18.9.bosco
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	gLite BLAHP daemon
 
 Group:		System/Libraries
@@ -23,6 +23,7 @@ BuildRequires:  globus-gsi-proxy-core-devel
 BuildRequires:  globus-gsi-cert-utils-devel
 BuildRequires:  docbook-style-xsl, libxslt
 
+Patch0: lsf_status.patch
 #Requires(post):         chkconfig
 #Requires(preun):        chkconfig
 #Requires(preun):        initscripts
@@ -33,6 +34,7 @@ BuildRequires:  docbook-style-xsl, libxslt
 
 %prep
 %setup -c -n %{name}-%{version}
+%patch0 -p0
 
 %build
 ./bootstrap
@@ -168,6 +170,9 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Mon Aug 25 2014 Brian Lin <blin@cs.wisc.edu> - 1.18.9.bosco-2
+- Fix for memory allocation failure when tracking LSF jobs (SOFTWARE-1589)
+
 * Thu Jan 09 2014 Brian Bockelman <bbockelm@cse.unl.edu> - 1.18.9.bosco-1
 - Fix proxy renewal in the case where no home directory exists.
 - Improve packaging of local customization scripts and include defaults.
