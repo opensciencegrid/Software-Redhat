@@ -67,7 +67,7 @@ Version: %{tarball_version}
 %define condor_release %condor_base_release
 %endif
 # Release: %condor_release%{?dist}.2
-Release: 2%{?dist}
+Release: 3%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -123,10 +123,16 @@ Source3: condor.service
 Source4: condor.osg-sysconfig
 
 Patch0: condor_config.generic.patch
-# This patch is here until it is pushed into upstream
+
+# This patch is here until it is pushed into upstream (8.2.2)
 # https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=3635
 Patch1: condor_peaceful_off.patch
+
+# This patch is here until it is pushed into upstream (8.2.2)
+# https://jira.opensciencegrid.org/browse/SOFTWARE-1050
 Patch2: condor_ulimit.patch
+
+# This patch is here until it is pushed into upstream (8.2.2)
 Patch3: chkconfig_off.patch
 
 # The gsoap_ipv6 patch is here until it is pushed into upstream (8.0.1?)
@@ -142,8 +148,15 @@ Patch5: lcmaps_uid.patch
 # https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=4540
 Patch6: condor_gt4540_aws.patch
 
+# This patch is applied in the upstream rpm in 8.2.2
+# https://jira.opensciencegrid.org/browse/SOFTWARE-691
 Patch8: osg_sysconfig_in_init_script.patch
+
+# This patch is here until it is pushed into upstream (8.2.2)
+# https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=2481
 Patch9: proper_cream_v3.diff
+
+# This patch becomes a drop-in config file in the upstream rpm in 8.2.2
 %if %blahp
 Patch10: config_batch_gahp_path.patch
 %endif
@@ -1283,6 +1296,9 @@ fi
 %endif
 
 %changelog
+* Mon Aug 25 2014 Carl Edquist <edquist@cs.wisc.edu> - 8.0.7-3
+- Add comments to patches
+
 * Wed Aug 20 2014 Tim Cartwright <cat@cs.wisc.edu> - 8.0.7-2
 - Added patch for EC2 GAHP when trying to contact Amazon Web Services
 
