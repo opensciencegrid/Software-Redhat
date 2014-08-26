@@ -122,26 +122,32 @@ Source3: condor.service
 %endif
 Source4: condor.osg-sysconfig
 
+# This patch makes many changes to the default condor config file.
+# It appears to have accumulated many changes over a long time,
+# some of which may still be relevant.  We no longer need this patch
+# as of 8.2.2.
 Patch0: condor_config.generic.patch
 
-# This patch is here until it is pushed into upstream (8.2.2)
+# This patch has been pushed into upstream as of 8.2.2, except for
+# the change from peaceful-off to peaceful_off (SOFTWARE-1307),
+# which we hope (as of Aug 2014) to see upstream by 8.2.3.
 # https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=3635
 Patch1: condor_peaceful_off.patch
 
-# This patch is here until it is pushed into upstream (8.2.2)
+# This patch has been pushed into upstream as of 8.2.2.
 # https://jira.opensciencegrid.org/browse/SOFTWARE-1050
 Patch2: condor_ulimit.patch
 
-# This patch is here until it is pushed into upstream (8.2.2)
+# This patch has been pushed into upstream as of 8.2.2.
 Patch3: chkconfig_off.patch
 
-# The gsoap_ipv6 patch is here until it is pushed into upstream (8.0.1)
+# The gsoap_ipv6 patch was pushed into upstream in 8.0.1
 # https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=3698
 # Reverted and fixed again in upstream 8.1.0
 # https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=3740
 Patch4: gsoap_ipv6.patch
 
-# The lcmaps_uid patch is here until it is pushed into upstream (8.0.8)
+# The lcmaps_uid patch was pushed into upstream in 8.2.0.
 # https://htcondor-wiki.cs.wisc.edu/index.cgi/chngview?cn=40355
 Patch5: lcmaps_uid.patch
 
@@ -150,15 +156,15 @@ Patch5: lcmaps_uid.patch
 # https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=4540
 Patch6: condor_gt4540_aws.patch
 
-# This patch is applied in the upstream rpm in 8.2.2
+# This patch is applied in the upstream source rpm in 8.2.2.
 # https://jira.opensciencegrid.org/browse/SOFTWARE-691
 Patch8: osg_sysconfig_in_init_script.patch
 
-# This patch is here until it is pushed into upstream (8.2.2)
+# This patch has been pushed into upstream as of 8.2.2.
 # https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=2481
 Patch9: proper_cream_v3.diff
 
-# This patch becomes a drop-in config file in the upstream rpm in 8.2.2
+# This patch became a drop-in config file in the upstream source rpm in 8.2.2.
 %if %blahp
 Patch10: config_batch_gahp_path.patch
 %endif
