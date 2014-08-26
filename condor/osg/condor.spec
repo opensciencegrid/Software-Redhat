@@ -135,8 +135,10 @@ Patch2: condor_ulimit.patch
 # This patch is here until it is pushed into upstream (8.2.2)
 Patch3: chkconfig_off.patch
 
-# The gsoap_ipv6 patch is here until it is pushed into upstream (8.0.1?)
+# The gsoap_ipv6 patch is here until it is pushed into upstream (8.0.1)
 # https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=3698
+# Reverted and fixed again in upstream 8.1.0
+# https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=3740
 Patch4: gsoap_ipv6.patch
 
 # The lcmaps_uid patch is here until it is pushed into upstream (8.0.8)
