@@ -210,6 +210,10 @@ Patch15: wso2-axis2.patch
 # https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=4540
 Patch20: condor_gt4540_aws.patch
 
+# Make peaceful off function bourne shell compatible (SOFTWARE-1307)
+# Should be incorporated upstream shortly (8.2.3?)
+Patch21: condor_peaceful_off.patch
+
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
 BuildRequires: cmake
@@ -655,6 +659,7 @@ exit 0
 %endif
 
 %patch20 -p1
+%patch21 -p1
 
 # fix errant execute permissions
 find src -perm /a+x -type f -name "*.[Cch]" -exec chmod a-x {} \;
