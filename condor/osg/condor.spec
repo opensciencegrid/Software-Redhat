@@ -1745,16 +1745,16 @@ fi
 * Wed Aug 27 2014 Carl Edquist <edquist@cs.wisc.edu> - 8.2.2-2.3
 - Include config file for MASTER_NEW_BINARY_RESTART = PEACEFUL (SOFTWARE-850)
 
-* Tue 26 Aug 2014 Carl Edquist <edquist@cs.wisc.edu> - 8.2.2-2.2
+* Tue Aug 26 2014 Carl Edquist <edquist@cs.wisc.edu> - 8.2.2-2.2
 - Include peaceful_off patch (SOFTWARE-1307)
 
-* Mon 25 Aug 2014 Carl Edquist <edquist@cs.wisc.edu> - 8.2.2-2.1
+* Mon Aug 25 2014 Carl Edquist <edquist@cs.wisc.edu> - 8.2.2-2.1
 - Include condor_gt4540_aws patch for #4540
 
-* Fri 22 Aug 2014 Carl Edquist <edquist@cs.wisc.edu> - 8.2.2-2
+* Fri Aug 22 2014 Carl Edquist <edquist@cs.wisc.edu> - 8.2.2-2
 - Strict pass-through with fixes from 8.2.2-1.1
 
-* Thu 21 Aug 2014 Carl Edquist <edquist@cs.wisc.edu> - 8.2.2-1.1
+* Thu Aug 21 2014 Carl Edquist <edquist@cs.wisc.edu> - 8.2.2-1.1
 - Update to 8.2.2 with build fixes for non-UW builds
 
 * Mon Sep 09 2013  <edquist@cs.wisc.edu> - 8.1.2-0.3
