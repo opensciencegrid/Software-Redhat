@@ -1047,7 +1047,7 @@ mv %{buildroot}%{_libexecdir}/condor/campus_factory/share %{buildroot}%{_datadir
 install -p -m 0644 %{SOURCE6} %{buildroot}%{_sysconfdir}/condor/config.d/10-batch_gahp_blahp.config
 %endif
 
-%if %uw_build
+%if ! %uw_build
 install -p -m 0644 %{SOURCE7} %{buildroot}%{_sysconfdir}/condor/config.d/00-restart_peaceful.config
 %endif
 
