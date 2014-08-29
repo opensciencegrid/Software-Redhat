@@ -2,7 +2,7 @@ AutoPyFactory
 
 upstream source acquired with:
 
-  svn=http://svnweb.cern.ch/guest/panda/panda-autopyfactory
+  svn=http://svn.cern.ch/guest/panda/panda-autopyfactory
   tag=2.3.9-1
   ver=${tag%-*}
   upstream=/p/vdt/public/html/upstream/autopyfactory/$ver
