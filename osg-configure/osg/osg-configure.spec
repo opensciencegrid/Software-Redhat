@@ -1,8 +1,9 @@
 Summary: Package for configure-osg and associated scripts
 Name: osg-configure
 Version: 1.0.59
-Release: 1%{?dist}
+Release: 2%{?dist}
 Source0: %{name}-%{version}.tar.gz
+Patch0: 1567-grid3-locations.patch
 License: Apache 2.0
 Group: Grid
 Prefix: %{_prefix}
@@ -183,6 +184,7 @@ It may safely be removed once the upgrade is finished.
 
 %prep
 %setup
+%patch0 -p1
 
 %build
 %{__python} setup.py build
@@ -303,6 +305,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Sep 02 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0.59-2
+- Add patch to not try to mess with grid3-locations.txt if OSG_APP is UNSET (SOFTWARE-1567)
+
 * Fri Aug 22 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0.59-1
 - Remove SOFTWARE-771 patch (in upstream)
 - Allow unsetting OSG_APP by setting app_dir to a special 'UNSET' value (SOFTWARE-1567)

@@ -1,0 +1,16 @@
+Index: osg-configure-1.0.59/osg_configure/configure_modules/storage.py
+===================================================================
+--- osg-configure-1.0.59.orig/osg_configure/configure_modules/storage.py	2014-08-22 17:57:38.000000000 -0500
++++ osg-configure-1.0.59/osg_configure/configure_modules/storage.py	2014-09-02 14:09:45.875716028 -0500
+@@ -128,6 +128,11 @@
+       self.log("StorageConfiguration.configure completed")
+       return True
+       
++    if self.options['app_dir'].value == 'UNSET':
++      self.log('OSG_APP unset, exiting')
++      self.log('StorageConfiguration.configure completed')
++      return True
++
+     status = True
+     grid3_location = os.path.join(self.options['app_dir'].value,
+                                   'etc',
