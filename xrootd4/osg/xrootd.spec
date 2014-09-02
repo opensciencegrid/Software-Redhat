@@ -602,8 +602,8 @@ semodule -R
 #-------------------------------------------------------------------------------
 %changelog
 
-* Mon Aug 04 2014 Jose Caballero <jcaballero@BNL.gov> - 1:4.0.3-1
-- Bumped to 4.0.3 
+* Mon Aug 04 2014 Jose Caballero <jcaballero@BNL.gov> - 4.0.3-1.1
+- Bumped to 4.0.3-1 
 
 * Thu Jul 31 2014 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1:4.0.0-1.9
 - Removed the conflicts statements in the subpackages and added a general one
