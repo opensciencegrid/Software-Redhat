@@ -2,5 +2,10 @@ Upstream obtained from:
 
 http://xrootd.cern.ch/sw/releases/4.0.0/rpms/source/
 
-wget http://xrootd.cern.ch/sw/releases/4.0.3/rpms/source/xrootd4-4.0.3-1.src.rpm
+NOTE: the "BuildArch: noarch" lines were commented-out in the osg/xrootd.spec file
+because Koji gets confused when it sees those lines and thinks that they are supposed to
+apply to the entire package, leading to errors like this
 
+    $ osg-build koji --scratch xrootd4
+    ...
+    124773 build (osg-el6, xrootd4-4.0.3-1.1.osg.el6.src.rpm): open (kojibuilder3.chtc.wisc.edu) -> FAILED: BuildError: error building package (arch noarch), mock exited with status 1; see build.log for more information
