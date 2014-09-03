@@ -5,7 +5,7 @@
 
 Summary:   Tests an OSG Software installation
 Name:      osg-test
-Version:   1.4.16
+Version:   1.4.17
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -39,6 +39,12 @@ rm -rf $RPM_BUILD_ROOT
 /etc/grid-security/certificates/bffdd190.*
 
 %changelog
+* Wed Sep 03 2014 Brian Lin <blin@cs.wisc.edu> - 1.4.17-1
+- Add oasis-config tests (SOFTWARE-901)
+- Add condor_ce_trace tests against PBS (SOFTWARE-1459)
+- Disable osg-release on EL7
+- Fix xrootd4 cleanup errors
+
 * Wed Aug 20 2014 Brian Lin <blin@cs.wisc.edu> - 1.4.16-1
 - Add osg-info-services tests
 - Update xrootd tests to work with xrootd4 (SOFTWARE-1558)
