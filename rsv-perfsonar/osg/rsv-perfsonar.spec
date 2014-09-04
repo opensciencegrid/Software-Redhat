@@ -1,6 +1,6 @@
 Name:      rsv-perfsonar
 Version:   0.0.1
-Release:   1%{?dist}
+Release:   2%{?dist}
 Summary:   RSV Metrics to monitor pefsonar
 Packager:  OSG-Software
 Group:     Applications/Monitoring
@@ -51,9 +51,12 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/rsv/metrics/org.osg.general.perfsonar-simple.conf
 %config(noreplace) %{_sysconfdir}/rsv/metrics/org.osg.local.network-monitoring-local.conf
 %config(noreplace) %{_sysconfdir}/logrotate.d/rsv-perfsonar-metrics
-%attr(-,rsv,rsv) %{_localstatedir}/log/rsv/
+#%attr(-,rsv,rsv) %{_localstatedir}/log/rsv/
 %attr(-,rsv,rsv)  %{_sysconfdir}/rsv
 
 %changelog
+* Mon Sep 03 2014 <efajardo@physics.ucsd.edu> - 0.0.1-2
+- Removed the log from the rsv log from the files not to collide with the rsv-metrics
+
 * Fri Aug 29 2014  <efajardo@physics.ucsd.edu> - 0.0.1-1
 - Creating a first RPM for rsv-perfsonar
