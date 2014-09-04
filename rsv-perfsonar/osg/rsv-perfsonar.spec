@@ -1,6 +1,6 @@
 Name:      rsv-perfsonar
 Version:   0.0.1
-Release:   2%{?dist}
+Release:   3%{?dist}
 Summary:   RSV Metrics to monitor pefsonar
 Packager:  OSG-Software
 Group:     Applications/Monitoring
@@ -12,10 +12,7 @@ Source0:   %{name}-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch: noarch
 
-Requires: gratia-probe-metric
-Requires: rsv-metrics
-Requires: rsv-core
-Requires: rsv-consumers
+Requires: rsv
 Requires: esmond
 
 %if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
@@ -55,7 +52,10 @@ rm -rf $RPM_BUILD_ROOT
 %attr(-,rsv,rsv)  %{_sysconfdir}/rsv
 
 %changelog
-* Mon Sep 03 2014 <efajardo@physics.ucsd.edu> - 0.0.1-2
+* Thu Sep 04 2014 <efajardo@physics.ucsd.edu> - 0.0.1-3
+- Removed the different rsv* requirements and added rsv.
+
+* Wed Sep 03 2014 <efajardo@physics.ucsd.edu> - 0.0.1-2
 - Removed the log from the rsv log from the files not to collide with the rsv-metrics
 
 * Fri Aug 29 2014  <efajardo@physics.ucsd.edu> - 0.0.1-1
