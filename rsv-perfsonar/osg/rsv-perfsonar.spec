@@ -1,6 +1,6 @@
 Name:      rsv-perfsonar
-Version:   0.0.1
-Release:   5%{?dist}
+Version:   0.0.2
+Release:   1%{?dist}
 Summary:   RSV Metrics to monitor pefsonar
 Packager:  OSG-Software
 Group:     Applications/Monitoring
@@ -66,6 +66,9 @@ ln -s /var/www/html/rsv /usr/share/rsv/www
 
 
 %changelog
+* Fri Sep 05 2014 <efajardo@physics.ucsd.edu> - 0.0.2-1
+- The rsv master probe now turns on the dummy probes
+
 * Thu Sep 04 2014 <efajardo@physics.ucsd.edu> - 0.0.1-5
 - Corrected the permission on the django.log
 
