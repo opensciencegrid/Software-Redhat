@@ -1,6 +1,6 @@
 Name:      rsv-perfsonar
 Version:   0.0.1
-Release:   3%{?dist}
+Release:   4%{?dist}
 Summary:   RSV Metrics to monitor pefsonar
 Packager:  OSG-Software
 Group:     Applications/Monitoring
@@ -48,10 +48,25 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/rsv/metrics/org.osg.general.perfsonar-simple.conf
 %config(noreplace) %{_sysconfdir}/rsv/metrics/org.osg.local.network-monitoring-local.conf
 %config(noreplace) %{_sysconfdir}/logrotate.d/rsv-perfsonar-metrics
-#%attr(-,rsv,rsv) %{_localstatedir}/log/rsv/
 %attr(-,rsv,rsv)  %{_sysconfdir}/rsv
 
+%post -p /bin/bash
+# Change the permissions for the perfsonar probes to work
+# Not a big deal since they never really use the log.
+chown rsv /var/log/esmond/esmond.log
+chmod a+w /var/log/esmond/esmond.log
+# Create the html dir in the correct place
+mkdir /var/www/html/rsv
+chown rsv /var/www/html/rsv
+rm -rf /usr/share/rsv/www
+ln -s /var/www/html/rsv /usr/share/rsv/www
+
+
 %changelog
+* Thu Sep 04 2014 <efajardo@physics.ucsd.edu> - 0.0.1-4
+- Added the post section to deal with some file permission changes
+- Added the softlinking to the standard http location
+
 * Thu Sep 04 2014 <efajardo@physics.ucsd.edu> - 0.0.1-3
 - Removed the different rsv* requirements and added rsv.
 
