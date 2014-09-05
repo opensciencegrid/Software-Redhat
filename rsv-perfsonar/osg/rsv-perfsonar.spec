@@ -1,6 +1,6 @@
 Name:      rsv-perfsonar
 Version:   0.0.1
-Release:   4%{?dist}
+Release:   5%{?dist}
 Summary:   RSV Metrics to monitor pefsonar
 Packager:  OSG-Software
 Group:     Applications/Monitoring
@@ -13,6 +13,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch: noarch
 
 Requires: rsv
+#The perfsonar probe libraries need it. Getting it from I2 repo for now
 Requires: esmond
 
 %if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
@@ -53,6 +54,8 @@ rm -rf $RPM_BUILD_ROOT
 %post -p /bin/bash
 # Change the permissions for the perfsonar probes to work
 # Not a big deal since they never really use the log.
+chown rsv /var/log/esmond/django.log
+chmod a+w /var/log/esmond/django.log
 chown rsv /var/log/esmond/esmond.log
 chmod a+w /var/log/esmond/esmond.log
 # Create the html dir in the correct place
@@ -63,6 +66,9 @@ ln -s /var/www/html/rsv /usr/share/rsv/www
 
 
 %changelog
+* Thu Sep 04 2014 <efajardo@physics.ucsd.edu> - 0.0.1-5
+- Corrected the permission on the django.log
+
 * Thu Sep 04 2014 <efajardo@physics.ucsd.edu> - 0.0.1-4
 - Added the post section to deal with some file permission changes
 - Added the softlinking to the standard http location
