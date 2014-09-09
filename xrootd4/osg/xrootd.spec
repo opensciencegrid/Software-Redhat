@@ -4,7 +4,7 @@
 Name:      xrootd4
 Epoch:     1
 Version:   4.0.3
-Release:   1.1%{?dist}%{?_with_cpp11:.cpp11}%{?_with_clang:.clang}
+Release:   1.2%{?dist}%{?_with_cpp11:.cpp11}%{?_with_clang:.clang}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -601,6 +601,9 @@ semodule -R
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+
+* Tue Sep 09 2014 Jose Caballero <jcaballero@BNL.gov> - 4.0.3-1.2
+  Updated release number to -1.2 
 
 * Mon Aug 04 2014 Jose Caballero <jcaballero@BNL.gov> - 4.0.3-1.1
 - Bumped to 4.0.3-1 
