@@ -382,8 +382,9 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
-* Fri Aug 22 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.3.18.009-22
+* Wed Sep 10 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.3.18.009-22
 - Make gums-add-mysql-admin suitable for automated use (SOFTWARE-1577)
+- Update versions in pom to fix EL5 build (SOFTWARE-1577)
 
 * Mon Mar 17 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.3.18.009-21
 - Do not create duplicate admins in gums-add-mysql-admin (SOFTWARE-1425)
