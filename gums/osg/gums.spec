@@ -95,6 +95,7 @@ Patch3: emi-trustmanager-pom.patch
 Patch4: extract-voms.patch
 Patch5: 1425-duplicate-admins.patch
 Patch6: gums-add-mysql-admin.patch
+Patch7: 1577-pom-version-fixes.patch
 
 %description
 %{summary}
@@ -142,6 +143,7 @@ Summary: Tomcat service for GUMS
 %patch4 -p0
 %patch5 -p0
 %patch6 -p1
+%patch7 -p1
 
 %build
 
@@ -166,7 +168,7 @@ Summary: Tomcat service for GUMS
 #%{mvn} install:install-file -B -DgroupId=org.slf4j -DartifactId=slf4j-simple -Dversion=1.6.1 -Dpackaging=jar -Dfile=`build-classpath slf4j/simple` -Dmaven.repo.local=%{local_maven}
 
 # Adding system dependencies
-%{mvn} install:install-file -B -DgroupId=xerces -DartifactId=xercesImpl -Dversion=2.8.0 -Dpackaging=jar -Dfile=`build-classpath xerces-j2` -Dmaven.repo.local=%{local_maven}
+%{mvn} install:install-file -B -DgroupId=org.apache.xerces -DartifactId=xercesImpl -Dversion=2.10.0 -Dpackaging=jar -Dfile=`build-classpath xerces-j2` -Dmaven.repo.local=%{local_maven}
 %{mvn} install:install-file -B -DgroupId=org.apache.xalan -DartifactId=xalan -Dversion=2.7.1 -Dpackaging=jar -Dfile=`build-classpath xalan-j2` -Dmaven.repo.local=%{local_maven}
 %{mvn} install:install-file -B -DgroupId=log4j -DartifactId=log4j -Dversion=1.2.12 -Dpackaging=jar -Dfile=`build-classpath log4j` -Dmaven.repo.local=%{local_maven}
 
@@ -224,7 +226,7 @@ rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROO
 rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/antlr-2.7.5H3.jar
 #rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/axis-{1.4,ant-1.4,jaxrpc-1.4,saaj-1.4}.jar
 rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/bcprov-jdk15-*.jar
-rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/commons-{beanutils-1.7.0,cli-1.2,codec-1.3,collections-3.2,digester-1.8,discovery-0.2,httpclient-3.0,lang-2.1,logging-1.1}.jar
+rm -f {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/commons-{beanutils-1.7.0,cli-1.2,codec-1.3,collections-3.2,digester-1.8,discovery-0.2,httpclient-3.0,lang-2.1,logging-1.1}.jar
 rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/emi-trustmanager-3.0.3.jar
 rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/joda-time-1.6.2.jar
 rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/{jacc-1.0,jta-1.0.1B}.jar
@@ -245,11 +247,11 @@ done
 
 # Delete broken RPMs from the Shibboleth repository
 #  (we need to fix the build so that they are not even pulled in)
-rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/resolver-2.9.1.jar
-rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/serializer-2.9.1.jar
-rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/xml-apis-2.9.1.jar
-rm $RPM_BUILD_ROOT%{_noarchlib}/%{dirname}/endorsed/xercesImpl-2.9.1.jar
-rm $RPM_BUILD_ROOT%{_noarchlib}/%{dirname}/endorsed/xml-apis-2.9.1.jar
+rm -f {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/resolver-2.9.1.jar
+rm -f {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/serializer-2.9.1.jar
+rm -f {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/xml-apis-2.9.1.jar
+rm -f $RPM_BUILD_ROOT%{_noarchlib}/%{dirname}/endorsed/xercesImpl-2.9.1.jar
+rm -f $RPM_BUILD_ROOT%{_noarchlib}/%{dirname}/endorsed/xml-apis-2.9.1.jar
 
 ## gums-core and gums-service use different versions here...
 rm -f $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib/slf4j-jdk14-1.5.2.jar
