@@ -8,7 +8,7 @@
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.3.18.009
-Release: 21%{?dist}
+Release: 22%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 %if 0%{?rhel} < 6
@@ -94,6 +94,7 @@ Patch2: get-correct-client-cert.patch
 Patch3: emi-trustmanager-pom.patch
 Patch4: extract-voms.patch
 Patch5: 1425-duplicate-admins.patch
+Patch6: gums-add-mysql-admin.patch
 
 %description
 %{summary}
@@ -140,6 +141,7 @@ Summary: Tomcat service for GUMS
 %patch3 -p0
 %patch4 -p0
 %patch5 -p0
+%patch6 -p1
 
 %build
 
@@ -378,6 +380,9 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+* Fri Aug 22 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.3.18.009-22
+- Make gums-add-mysql-admin suitable for automated use (SOFTWARE-1577)
+
 * Mon Mar 17 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.3.18.009-21
 - Do not create duplicate admins in gums-add-mysql-admin (SOFTWARE-1425)
 
