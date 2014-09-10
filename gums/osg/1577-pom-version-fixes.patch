@@ -1,0 +1,62 @@
+diff --git a/gums-client/pom.xml b/gums-client/pom.xml
+index 6d95bd1..fc01a11 100644
+--- a/gums-client/pom.xml
++++ b/gums-client/pom.xml
+@@ -192,9 +192,9 @@
+ 							<tasks>
+ 								<mkdir dir="target/lib" />
+ 								<copy filtering="on" todir="target/lib/endorsed">
+-   								     <fileset includes="*.jar" dir="${settings.localRepository}/org/apache/xerces/xercesImpl/2.9.1" />
+-                                     <fileset includes="*.jar" dir="${settings.localRepository}/org/apache/xerces/xml-apis/2.9.1" />
+-							    </copy>
++									<fileset includes="*.jar" dir="${settings.localRepository}/org/apache/xerces/xercesImpl/2.10.0" />
++									<!--<fileset includes="*.jar" dir="${settings.localRepository}/org/apache/xerces/xml-apis/2.10.0" />-->
++								</copy>
+ 								<copy filtering="on" todir="target/lib">
+ 									<fileset includes="*.jar" dir="target" />
+ 								</copy>
+@@ -383,7 +383,7 @@ However, it can only be run from the normal lifecycle, no via rpm:rpm, so it mus
+ 		<dependency>
+             <groupId>org.opensaml</groupId>
+             <artifactId>opensaml</artifactId>
+-            <version>2.2.3</version>
++            <version>2.4.1</version>
+         </dependency>
+ 		<dependency>
+             <groupId>org.opensaml</groupId>
+@@ -401,9 +401,9 @@ However, it can only be run from the normal lifecycle, no via rpm:rpm, so it mus
+             <version>2.2.4</version>
+         </dependency>
+ 		<dependency>
+-			<groupId>xerces</groupId>
++			<groupId>org.apache.xerces</groupId>
+ 			<artifactId>xercesImpl</artifactId>
+-			<version>2.9.1</version>
++			<version>2.10.0</version>
+ 		</dependency>
+ 		<dependency>
+ 			<groupId>org.apache.santuario</groupId>
+diff --git a/gums-service/pom.xml b/gums-service/pom.xml
+index 10c4b0a..4729dd7 100644
+--- a/gums-service/pom.xml
++++ b/gums-service/pom.xml
+@@ -273,17 +273,12 @@
+         <dependency>
+             <groupId>org.opensaml</groupId>
+             <artifactId>opensaml</artifactId>
+-            <version>1.0.1</version>
+-        </dependency>
+-        <dependency>
+-            <groupId>org.opensaml</groupId>
+-            <artifactId>opensaml</artifactId>
+-            <version>2.2.3</version>
++            <version>2.4.1</version>
+         </dependency>
+ 	<dependency>
+ 		<groupId>org.opensaml</groupId>
+ 		<artifactId>xmltooling</artifactId>
+-		<version>1.3.2-1</version>
++		<version>1.3.1</version>
+ 	</dependency>
+     	<dependency>
+ 		<groupId>javax.activation</groupId>
