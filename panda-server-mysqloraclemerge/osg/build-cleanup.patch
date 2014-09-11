@@ -1,0 +1,3157 @@
+diff --git a/LICENSE.txt b/LICENSE.txt
+new file mode 100644
+index 0000000..d645695
+--- /dev/null
++++ b/LICENSE.txt
+@@ -0,0 +1,202 @@
++
++                                 Apache License
++                           Version 2.0, January 2004
++                        http://www.apache.org/licenses/
++
++   TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
++
++   1. Definitions.
++
++      "License" shall mean the terms and conditions for use, reproduction,
++      and distribution as defined by Sections 1 through 9 of this document.
++
++      "Licensor" shall mean the copyright owner or entity authorized by
++      the copyright owner that is granting the License.
++
++      "Legal Entity" shall mean the union of the acting entity and all
++      other entities that control, are controlled by, or are under common
++      control with that entity. For the purposes of this definition,
++      "control" means (i) the power, direct or indirect, to cause the
++      direction or management of such entity, whether by contract or
++      otherwise, or (ii) ownership of fifty percent (50%) or more of the
++      outstanding shares, or (iii) beneficial ownership of such entity.
++
++      "You" (or "Your") shall mean an individual or Legal Entity
++      exercising permissions granted by this License.
++
++      "Source" form shall mean the preferred form for making modifications,
++      including but not limited to software source code, documentation
++      source, and configuration files.
++
++      "Object" form shall mean any form resulting from mechanical
++      transformation or translation of a Source form, including but
++      not limited to compiled object code, generated documentation,
++      and conversions to other media types.
++
++      "Work" shall mean the work of authorship, whether in Source or
++      Object form, made available under the License, as indicated by a
++      copyright notice that is included in or attached to the work
++      (an example is provided in the Appendix below).
++
++      "Derivative Works" shall mean any work, whether in Source or Object
++      form, that is based on (or derived from) the Work and for which the
++      editorial revisions, annotations, elaborations, or other modifications
++      represent, as a whole, an original work of authorship. For the purposes
++      of this License, Derivative Works shall not include works that remain
++      separable from, or merely link (or bind by name) to the interfaces of,
++      the Work and Derivative Works thereof.
++
++      "Contribution" shall mean any work of authorship, including
++      the original version of the Work and any modifications or additions
++      to that Work or Derivative Works thereof, that is intentionally
++      submitted to Licensor for inclusion in the Work by the copyright owner
++      or by an individual or Legal Entity authorized to submit on behalf of
++      the copyright owner. For the purposes of this definition, "submitted"
++      means any form of electronic, verbal, or written communication sent
++      to the Licensor or its representatives, including but not limited to
++      communication on electronic mailing lists, source code control systems,
++      and issue tracking systems that are managed by, or on behalf of, the
++      Licensor for the purpose of discussing and improving the Work, but
++      excluding communication that is conspicuously marked or otherwise
++      designated in writing by the copyright owner as "Not a Contribution."
++
++      "Contributor" shall mean Licensor and any individual or Legal Entity
++      on behalf of whom a Contribution has been received by Licensor and
++      subsequently incorporated within the Work.
++
++   2. Grant of Copyright License. Subject to the terms and conditions of
++      this License, each Contributor hereby grants to You a perpetual,
++      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
++      copyright license to reproduce, prepare Derivative Works of,
++      publicly display, publicly perform, sublicense, and distribute the
++      Work and such Derivative Works in Source or Object form.
++
++   3. Grant of Patent License. Subject to the terms and conditions of
++      this License, each Contributor hereby grants to You a perpetual,
++      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
++      (except as stated in this section) patent license to make, have made,
++      use, offer to sell, sell, import, and otherwise transfer the Work,
++      where such license applies only to those patent claims licensable
++      by such Contributor that are necessarily infringed by their
++      Contribution(s) alone or by combination of their Contribution(s)
++      with the Work to which such Contribution(s) was submitted. If You
++      institute patent litigation against any entity (including a
++      cross-claim or counterclaim in a lawsuit) alleging that the Work
++      or a Contribution incorporated within the Work constitutes direct
++      or contributory patent infringement, then any patent licenses
++      granted to You under this License for that Work shall terminate
++      as of the date such litigation is filed.
++
++   4. Redistribution. You may reproduce and distribute copies of the
++      Work or Derivative Works thereof in any medium, with or without
++      modifications, and in Source or Object form, provided that You
++      meet the following conditions:
++
++      (a) You must give any other recipients of the Work or
++          Derivative Works a copy of this License; and
++
++      (b) You must cause any modified files to carry prominent notices
++          stating that You changed the files; and
++
++      (c) You must retain, in the Source form of any Derivative Works
++          that You distribute, all copyright, patent, trademark, and
++          attribution notices from the Source form of the Work,
++          excluding those notices that do not pertain to any part of
++          the Derivative Works; and
++
++      (d) If the Work includes a "NOTICE" text file as part of its
++          distribution, then any Derivative Works that You distribute must
++          include a readable copy of the attribution notices contained
++          within such NOTICE file, excluding those notices that do not
++          pertain to any part of the Derivative Works, in at least one
++          of the following places: within a NOTICE text file distributed
++          as part of the Derivative Works; within the Source form or
++          documentation, if provided along with the Derivative Works; or,
++          within a display generated by the Derivative Works, if and
++          wherever such third-party notices normally appear. The contents
++          of the NOTICE file are for informational purposes only and
++          do not modify the License. You may add Your own attribution
++          notices within Derivative Works that You distribute, alongside
++          or as an addendum to the NOTICE text from the Work, provided
++          that such additional attribution notices cannot be construed
++          as modifying the License.
++
++      You may add Your own copyright statement to Your modifications and
++      may provide additional or different license terms and conditions
++      for use, reproduction, or distribution of Your modifications, or
++      for any such Derivative Works as a whole, provided Your use,
++      reproduction, and distribution of the Work otherwise complies with
++      the conditions stated in this License.
++
++   5. Submission of Contributions. Unless You explicitly state otherwise,
++      any Contribution intentionally submitted for inclusion in the Work
++      by You to the Licensor shall be under the terms and conditions of
++      this License, without any additional terms or conditions.
++      Notwithstanding the above, nothing herein shall supersede or modify
++      the terms of any separate license agreement you may have executed
++      with Licensor regarding such Contributions.
++
++   6. Trademarks. This License does not grant permission to use the trade
++      names, trademarks, service marks, or product names of the Licensor,
++      except as required for reasonable and customary use in describing the
++      origin of the Work and reproducing the content of the NOTICE file.
++
++   7. Disclaimer of Warranty. Unless required by applicable law or
++      agreed to in writing, Licensor provides the Work (and each
++      Contributor provides its Contributions) on an "AS IS" BASIS,
++      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
++      implied, including, without limitation, any warranties or conditions
++      of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A
++      PARTICULAR PURPOSE. You are solely responsible for determining the
++      appropriateness of using or redistributing the Work and assume any
++      risks associated with Your exercise of permissions under this License.
++
++   8. Limitation of Liability. In no event and under no legal theory,
++      whether in tort (including negligence), contract, or otherwise,
++      unless required by applicable law (such as deliberate and grossly
++      negligent acts) or agreed to in writing, shall any Contributor be
++      liable to You for damages, including any direct, indirect, special,
++      incidental, or consequential damages of any character arising as a
++      result of this License or out of the use or inability to use the
++      Work (including but not limited to damages for loss of goodwill,
++      work stoppage, computer failure or malfunction, or any and all
++      other commercial damages or losses), even if such Contributor
++      has been advised of the possibility of such damages.
++
++   9. Accepting Warranty or Additional Liability. While redistributing
++      the Work or Derivative Works thereof, You may choose to offer,
++      and charge a fee for, acceptance of support, warranty, indemnity,
++      or other liability obligations and/or rights consistent with this
++      License. However, in accepting such obligations, You may act only
++      on Your own behalf and on Your sole responsibility, not on behalf
++      of any other Contributor, and only if You agree to indemnify,
++      defend, and hold each Contributor harmless for any liability
++      incurred by, or claims asserted against, such Contributor by reason
++      of your accepting any such warranty or additional liability.
++
++   END OF TERMS AND CONDITIONS
++
++   APPENDIX: How to apply the Apache License to your work.
++
++      To apply the Apache License to your work, attach the following
++      boilerplate notice, with the fields enclosed by brackets "[]"
++      replaced with your own identifying information. (Don't include
++      the brackets!)  The text should be enclosed in the appropriate
++      comment syntax for the file format. We also recommend that a
++      file or class name and description of purpose be included on the
++      same "printed page" as the copyright notice for easier
++      identification within third-party archives.
++
++   Copyright [yyyy] [name of copyright owner]
++
++   Licensed under the Apache License, Version 2.0 (the "License");
++   you may not use this file except in compliance with the License.
++   You may obtain a copy of the License at
++
++       http://www.apache.org/licenses/LICENSE-2.0
++
++   Unless required by applicable law or agreed to in writing, software
++   distributed under the License is distributed on an "AS IS" BASIS,
++   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++   See the License for the specific language governing permissions and
++   limitations under the License.
+diff --git a/pandaserver/dataservice/AdderCmsPlugin.py b/pandaserver/dataservice/AdderCmsPlugin.py
+index 11dec09..17c4261 100644
+--- a/pandaserver/dataservice/AdderCmsPlugin.py
++++ b/pandaserver/dataservice/AdderCmsPlugin.py
+@@ -24,7 +24,7 @@ class AdderCmsPlugin(AdderPluginBase):
+ 
+         # Define the logger attribute
+         self.logger = logging.getLogger('ASOPlugin')
+-        hdlr = logging.FileHandler('/data/atlpan/srv/var/log/panda/ASOPlugin.log')
++        hdlr = logging.FileHandler('/var/log/panda/ASOPlugin.log')
+         formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
+         hdlr.setFormatter(formatter)
+         self.logger.addHandler(hdlr)
+diff --git a/pandaserver/dataservice/AddressFinder.py b/pandaserver/dataservice/AddressFinder.py
+index c96099b..d4e9d92 100644
+--- a/pandaserver/dataservice/AddressFinder.py
++++ b/pandaserver/dataservice/AddressFinder.py
+@@ -58,60 +58,60 @@ def getEmailPhonebook(dn):
+                  'email']:
+         if sTry == 'full':
+             # try full name
+-            com = '~atlpan/phonebook --firstname "%s" --surname "%s" --all' \
++            com = '~pansrv/phonebook --firstname "%s" --surname "%s" --all' \
+                   % (extractedDN.split()[0],extractedDN.split()[-1])
+         if sTry == 'full_rev':
+             # try full name
+-            com = '~atlpan/phonebook --firstname "%s" --surname "%s" --all' \
++            com = '~pansrv/phonebook --firstname "%s" --surname "%s" --all' \
+                   % (extractedDN.split()[-1],extractedDN.split()[0])
+         elif sTry == 'fullwc':
+             # try full name with wildcard
+-            com = '~atlpan/phonebook --firstname "*%s*" --surname "*%s*" --all' \
++            com = '~pansrv/phonebook --firstname "*%s*" --surname "*%s*" --all' \
+                   % (extractedDN.split()[0],extractedDN.split()[-1])
+         elif sTry == 'fullwc_rev':
+             # try full name with wildcard
+-            com = '~atlpan/phonebook --firstname "*%s*" --surname "*%s*" --all' \
++            com = '~pansrv/phonebook --firstname "*%s*" --surname "*%s*" --all' \
+                   % (extractedDN.split()[-1],extractedDN.split()[0])
+         elif sTry == 'suronly':
+             if len(extractedDN.split()) == 2:
+                 # try surname only
+-                com = '~atlpan/phonebook --surname "%s" --all' \
++                com = '~pansrv/phonebook --surname "%s" --all' \
+                       % extractedDN.split()[-1]
+             else:
+                 # try surname with wildcard
+-                com = '~atlpan/phonebook --surname "*%s*" --all' \
++                com = '~pansrv/phonebook --surname "*%s*" --all' \
+                       % extractedDN.split()[-1]
+         elif sTry == 'suronly_rev':
+             if len(extractedDN.split()) == 2:            
+                 # try surname only
+-                com = '~atlpan/phonebook --surname "%s" --all' \
++                com = '~pansrv/phonebook --surname "%s" --all' \
+                       % extractedDN.split()[0]
+             else:
+                 # try surname with wildcard
+-                com = '~atlpan/phonebook --surname "*%s*" --all' \
++                com = '~pansrv/phonebook --surname "*%s*" --all' \
+                       % extractedDN.split()[0]
+         elif sTry == 'firstonly':
+             if len(extractedDN.split()) == 2:
+                 # try firstname only
+-                com = '~atlpan/phonebook --firstname "%s" --all' \
++                com = '~pansrv/phonebook --firstname "%s" --all' \
+                       % extractedDN.split()[0]
+             else:
+                 # try firstname with wildcard
+-                com = '~atlpan/phonebook --firstname "*%s*" --all' \
++                com = '~pansrv/phonebook --firstname "*%s*" --all' \
+                       % extractedDN.split()[0]
+         elif sTry == 'firstonly_rev':
+             if len(extractedDN.split()) == 2:
+                 # try firstname only
+-                com = '~atlpan/phonebook --firstname "%s" --all' \
++                com = '~pansrv/phonebook --firstname "%s" --all' \
+                       % extractedDN.split()[-1]
+             else:
+                 # try firstname with wildcard
+-                com = '~atlpan/phonebook --firstname "*%s*" --all' \
++                com = '~pansrv/phonebook --firstname "*%s*" --all' \
+                       % extractedDN.split()[-1]
+         elif sTry == 'email':
+             # try email
+             mailPatt = re.sub(' +','*',extractedDN)
+-            com = '~atlpan/phonebook --email "*%s*" --all' \
++            com = '~pansrv/phonebook --email "*%s*" --all' \
+                   % mailPatt
+         _logger.debug(com)
+         # execute
+diff --git a/pandaserver/test/add.py b/pandaserver/test/add.py
+index 1a73282..09e1516 100755
+--- a/pandaserver/test/add.py
++++ b/pandaserver/test/add.py
+@@ -41,7 +41,7 @@ try:
+     for line in out.split('\n'):
+         items = line.split()
+         # owned process
+-        if not items[0] in ['sm','atlpan','root']: # ['os.getlogin()']: doesn't work in cron
++        if not items[0] in ['sm','atlpan','pansrv','root']: # ['os.getlogin()']: doesn't work in cron
+             continue
+         # look for python
+         if re.search('python',line) == None:
+@@ -229,7 +229,7 @@ class ForkThr (threading.Thread):
+ 
+     def run(self):
+         setupStr  = 'source %s; ' % panda_config.glite_source
+-        setupStr += 'source /data/atlpan/srv/etc/sysconfig/panda_server-sysconfig; '
++        setupStr += 'source /data/atlpan/srv/etc/sysconfig/panda_server; '
+         runStr  = '%s/python -Wignore ' % panda_config.native_python
+         runStr += panda_config.pandaPython_dir + '/dataservice/forkSetupper.py -i '
+         runStr += self.fileName
+diff --git a/pandaserver/test/backupJobArch.py b/pandaserver/test/backupJobArch.py
+index 6ebc8da..620792e 100755
+--- a/pandaserver/test/backupJobArch.py
++++ b/pandaserver/test/backupJobArch.py
+@@ -80,7 +80,7 @@ try:
+             continue
+         items = line.split()
+         # owned process
+-        if not items[0] in ['sm','atlpan','root']: # ['os.getlogin()']: doesn't work in cron
++        if not items[0] in ['sm','atlpan','pansrv','root']: # ['os.getlogin()']: doesn't work in cron
+             continue
+         # look for python
+         if re.search('python',line) == None:
+diff --git a/pandaserver/test/copyArchive.py b/pandaserver/test/copyArchive.py
+index b025f37..11edcc4 100755
+--- a/pandaserver/test/copyArchive.py
++++ b/pandaserver/test/copyArchive.py
+@@ -80,7 +80,7 @@ try:
+             continue
+         items = line.split()
+         # owned process
+-        if not items[0] in ['sm','atlpan','root']: # ['os.getlogin()']: doesn't work in cron
++        if not items[0] in ['sm','atlpan','pansrv','root']: # ['os.getlogin()']: doesn't work in cron
+             continue
+         # look for python
+         if re.search('python',line) == None:
+@@ -110,7 +110,7 @@ try:
+     for line in out.split('\n'):
+         items = line.split()
+         # owned process
+-        if not items[0] in ['sm','atlpan','root']: # ['os.getlogin()']: doesn't work in cron
++        if not items[0] in ['sm','atlpan','pansrv','root']: # ['os.getlogin()']: doesn't work in cron
+             continue
+         # look for python
+         if re.search('python',line) == None:
+diff --git a/pandaserver/test/datasetManager.py b/pandaserver/test/datasetManager.py
+index 53e8388..98c5ac3 100644
+--- a/pandaserver/test/datasetManager.py
++++ b/pandaserver/test/datasetManager.py
+@@ -84,7 +84,7 @@ try:
+             continue
+         items = line.split()
+         # owned process
+-        if not items[0] in ['sm','atlpan','root']: # ['os.getlogin()']: doesn't work in cron
++        if not items[0] in ['sm','atlpan','pansrv','root']: # ['os.getlogin()']: doesn't work in cron
+             continue
+         # look for python
+         if re.search('python',line) == None:
+diff --git a/pandaserver/test/deleteJobs.py b/pandaserver/test/deleteJobs.py
+index 18195c2..af560d0 100755
+--- a/pandaserver/test/deleteJobs.py
++++ b/pandaserver/test/deleteJobs.py
+@@ -78,7 +78,7 @@ try:
+     for line in out.split('\n'):
+         items = line.split()
+         # owned process
+-        if not items[0] in ['sm','atlpan','root']: # ['os.getlogin()']: doesn't work in cron
++        if not items[0] in ['sm','atlpan','pansrv','root']: # ['os.getlogin()']: doesn't work in cron
+             continue
+         # look for python
+         if re.search('python',line) == None:
+diff --git a/pandaserver/test/evpPD2P.py b/pandaserver/test/evpPD2P.py
+index 27cb721..aa419f9 100644
+--- a/pandaserver/test/evpPD2P.py
++++ b/pandaserver/test/evpPD2P.py
+@@ -34,7 +34,7 @@ try:
+     for line in out.split('\n'):
+         items = line.split()
+         # owned process
+-        if not items[0] in ['sm','atlpan','root']: # ['os.getlogin()']: doesn't work in cron
++        if not items[0] in ['sm','atlpan','pansrv''root']: # ['os.getlogin()']: doesn't work in cron
+             continue
+         # look for python
+         if re.search('python',line) == None:
+diff --git a/pandaserver/test/fileCallbackListener.py b/pandaserver/test/fileCallbackListener.py
+index 02cd288..733a566 100644
+--- a/pandaserver/test/fileCallbackListener.py
++++ b/pandaserver/test/fileCallbackListener.py
+@@ -240,7 +240,7 @@ if __name__ == "__main__":
+         for line in out.split('\n'):
+             items = line.split()
+             # owned process
+-            if not items[0] in ['sm','atlpan','root']: # ['os.getlogin()']: doesn't work in cron
++            if not items[0] in ['sm','atlpan','pansrv','root']: # ['os.getlogin()']: doesn't work in cron
+                 continue
+             # look for python
+             if re.search('python',line) == None:
+diff --git a/pandaserver/test/genCallbackConsumer.py b/pandaserver/test/genCallbackConsumer.py
+index 3c7eb75..2f8a963 100644
+--- a/pandaserver/test/genCallbackConsumer.py
++++ b/pandaserver/test/genCallbackConsumer.py
+@@ -190,7 +190,7 @@ if __name__ == "__main__":
+         for line in out.split('\n'):
+             items = line.split()
+             # owned process
+-            if not items[0] in ['sm','atlpan','root']: # ['os.getlogin()']: doesn't work in cron
++            if not items[0] in ['sm','atlpan','pansrv','root']: # ['os.getlogin()']: doesn't work in cron
+                 continue
+             # look for python
+             if re.search('python',line) == None:
+diff --git a/pandaserver/test/runMerger.py b/pandaserver/test/runMerger.py
+index ba765b1..d66eb91 100644
+--- a/pandaserver/test/runMerger.py
++++ b/pandaserver/test/runMerger.py
+@@ -35,7 +35,7 @@ try:
+     for line in out.split('\n'):
+         items = line.split()
+         # owned process
+-        if not items[0] in ['sm','atlpan','root']: # ['os.getlogin()']: doesn't work in cron
++        if not items[0] in ['sm','atlpan','pansrv','root']: # ['os.getlogin()']: doesn't work in cron
+             continue
+         # look for python
+         if re.search('python',line) == None:
+diff --git a/pandaserver/test/runRebro.py b/pandaserver/test/runRebro.py
+index 3e1ea72..fcad7b6 100755
+--- a/pandaserver/test/runRebro.py
++++ b/pandaserver/test/runRebro.py
+@@ -79,7 +79,7 @@ try:
+     for line in out.split('\n'):
+         items = line.split()
+         # owned process
+-        if not items[0] in ['sm','atlpan','root']: # ['os.getlogin()']: doesn't work in cron
++        if not items[0] in ['sm','atlpan','pansrv','root']: # ['os.getlogin()']: doesn't work in cron
+             continue
+         # look for python
+         if re.search('python',line) == None:
+diff --git a/pandaserver/test/tmpwatch.py b/pandaserver/test/tmpwatch.py
+index ee75d27..d3a132b 100644
+--- a/pandaserver/test/tmpwatch.py
++++ b/pandaserver/test/tmpwatch.py
+@@ -12,7 +12,7 @@ optP.add_option('-h',action='store',type='int',dest='limit',default=12,
+ options,args = optP.parse_args()
+ 
+ # patterns of tmp files
+-tmpPatts = ['/tmp/tmp*','/tmp/atlpan/tmp*']
++tmpPatts = ['/tmp/tmp*','/tmp/atlpan/tmp*','/tmp/pansrv/tmp*']
+ 
+ # limit
+ timeLimit = datetime.datetime.utcnow() - datetime.timedelta(hours=options.limit)
+diff --git a/setup_mysql.py b/setup_mysql.py
+index 3e17b84..f675da8 100755
+--- a/setup_mysql.py
++++ b/setup_mysql.py
+@@ -3,11 +3,15 @@
+ # Setup prog for Panda Server
+ #
+ #
+-from version import __version__, __provides__
+-prefix = '/data/atlpan/srv'
++#from version import __version__, __provides__
++release_version='0.0.2'
++# prefix = '/data/atlpan/srv'
+ # prefix = '/data/pansrv/srv'
++panda_user = 'pansrv'
++panda_group = 'pansrv'
+ 
+ 
++import os
+ import re
+ import sys
+ import socket
+@@ -52,7 +56,7 @@ class install_panda(install_org):
+     def initialize_options (self):
+         install_org.initialize_options(self)
+ #        self.prefix = '/data/atlpan/srv'
+-        self.prefix = prefix
++#        self.prefix = prefix
+ 
+ 
+ # generates files using templates and install them
+@@ -61,7 +65,8 @@ class install_data_panda (install_data_org):
+     def initialize_options (self):
+         install_data_org.initialize_options (self)
+         self.install_purelib = None
+-        self.host_name = socket.getfqdn()
++        self.panda_user = panda_user
++        self.panda_group = panda_group
+         self.python_exec_version = '%s.%s' % sys.version_info[:2]
+         
+     def finalize_options (self):
+@@ -107,7 +112,7 @@ class install_data_panda (install_data_org):
+                     raise RuntimeError,"%s doesn't have the .template extension" % srcFile
+                 # dest filename
+                 destFile = re.sub('(\.exe)*\.template$','',srcFile)
+-                destFile = destFile.split('/')[-1]
++                destFile = re.sub(r'^templates/','',destFile)
+                 destFile = '%s/%s' % (tmpDir,destFile)
+                 # open src
+                 inFile = open(srcFile)
+@@ -121,6 +126,9 @@ class install_data_panda (install_data_org):
+                         raise RuntimeError,'unknown pattern %s in %s' % (item,srcFile)
+                     # get pattern
+                     patt = getattr(self,item)
++                    # remove install root, if any
++                    if self.root is not None and patt.startswith(self.root):
++                            patt = patt[len(self.root):]
+                     # remove build/*/dump for bdist
+                     patt = re.sub('build/[^/]+/dumb','',patt)
+                     # remove /var/tmp/*-buildroot for bdist_rpm
+@@ -128,6 +136,10 @@ class install_data_panda (install_data_org):
+                     # replace
+                     filedata = filedata.replace('@@%s@@' % item, patt)
+                 # write to dest
++                if '/' in destFile:
++                    destSubDir = os.path.dirname(destFile)
++                    if not os.path.exists(destSubDir):
++                        os.makedirs(destSubDir)
+                 oFile = open(destFile,'w')
+                 oFile.write(filedata)
+                 oFile.close()
+@@ -145,9 +157,10 @@ class install_data_panda (install_data_org):
+         
+ # setup for distutils
+ setup(
+-#    name="panda-server-mysql",
+-    name=__provides__,
+-    version=__version__,
++    name="panda-server-mysql",
++#   name=__provides__,
++#   version=__version__,
++    version=release_version,
+     description='MySQL branch of the PanDA Server Package',
+     long_description='''This package contains PanDA Server Components''',
+     license='GPL',
+@@ -166,41 +179,41 @@ setup(
+               ],
+     data_files=[
+                 # config files 
+-                ('etc/panda', ['templates/panda_server-httpd.conf.rpmnew.template',
+-                               'templates/panda_server-httpd-FastCGI.conf.rpmnew.template',
+-                               'templates/panda_server.cfg.rpmnew.template',
++                ('/etc/panda', ['templates/panda_server-httpd.conf.template',
++                               'templates/panda_server-httpd-FastCGI.conf.template',
++                               'templates/panda_server.cfg.template',
+                                'templates/panda_server-grid-env.sh.template',
+                                ]
+                  ),
+                 # sysconfig
+-                ('etc/sysconfig', ['templates/panda_server-sysconfig.rpmnew.template',
++                ('/etc/sysconfig', ['templates/sysconfig/panda_server.template',
+                                    ]
+                  ),
+                 # logrotate
+-                ('etc/logrotate.d', ['templates/panda_server-logrotate.template',
++                ('/etc/logrotate.d', ['templates/logrotate.d/panda_server.template',
+                                      ]
+                  ),
+                 # init script
+-                ('etc/init.d', ['templates/panda_server-ctl.exe.template',
++                ('/etc/rc.d/init.d', ['templates/init.d/panda_server.exe.template',
+                                    ]
+                  ),
+                 # crons
+-                ('usr/bin', ['templates/panda_server-add.sh.exe.template',
+-                             'templates/panda_server-priority.sh.exe.template',
+-                             'templates/panda_server-copyArchive.sh.exe.template',
+-                             'templates/panda_server-copyROOT.sh.exe.template',
+-                             'templates/panda_server-vomsrenew.sh.exe.template',
+-                             'templates/panda_server-archivelog.sh.exe.template',
+-                             'templates/panda_server-tmpwatch.sh.exe.template',
+-                             'templates/panda_server-backupJobArch.sh.exe.template',
+-                             'templates/panda_server-deleteJobs.sh.exe.template',
+-                             'templates/panda_server-merge.sh.exe.template',
+-                             'templates/panda_server-datasetManager.sh.exe.template',
+-                             'templates/panda_server-evpPD2P.sh.exe.template',
+-                             'templates/panda_server-callback.sh.exe.template',
++                ('/usr/bin', ['templates/panda_server-add.exe.template',
++                             'templates/panda_server-priority.exe.template',
++                             'templates/panda_server-copyArchive.exe.template',
++                             'templates/panda_server-copyROOT.exe.template',
++                             'templates/panda_server-vomsrenew.exe.template',
++                             'templates/panda_server-archivelog.exe.template',
++                             'templates/panda_server-tmpwatch.exe.template',
++                             'templates/panda_server-backupJobArch.exe.template',
++                             'templates/panda_server-deleteJobs.exe.template',
++                             'templates/panda_server-merge.exe.template',
++                             'templates/panda_server-datasetManager.exe.template',
++                             'templates/panda_server-evpPD2P.exe.template',
++                             'templates/panda_server-callback.exe.template',
+                              'templates/panda_server-makeSlsXml.exe.template',
+-                             'templates/panda_server-boostUser.sh.exe.template',
+-                             'templates/panda_server-runRebro.sh.exe.template',
++                             'templates/panda_server-boostUser.exe.template',
++                             'templates/panda_server-runRebro.exe.template',
+                              ]
+                  ),
+                 # var dirs
+diff --git a/setup_mysqloraclemerge.py b/setup_mysqloraclemerge.py
+index 67cc85d..294731d 100755
+--- a/setup_mysqloraclemerge.py
++++ b/setup_mysqloraclemerge.py
+@@ -3,11 +3,14 @@
+ # Setup prog for Panda Server
+ #
+ #
+-from version_mysqloraclemerge import __version__, __provides__
+-prefix = '/data/pansrvtest/srv'
++#from version_mysqloraclemerge import __version__, __provides__
++release_version='0.0.2'
++# prefix = '/data/pansrvtest/srv'
+ # prefix = '/data/pansrv/srv'
++panda_user = 'pansrv'
++panda_group = 'pansrv'
+ 
+-
++import os
+ import re
+ import sys
+ import socket
+@@ -52,7 +55,7 @@ class install_panda(install_org):
+     def initialize_options (self):
+         install_org.initialize_options(self)
+ #        self.prefix = '/data/atlpan/srv'
+-        self.prefix = prefix
++#        self.prefix = prefix
+ 
+ 
+ # generates files using templates and install them
+@@ -61,7 +64,8 @@ class install_data_panda (install_data_org):
+     def initialize_options (self):
+         install_data_org.initialize_options (self)
+         self.install_purelib = None
+-        self.host_name = socket.getfqdn()
++        self.panda_user = panda_user
++        self.panda_group = panda_group
+         self.python_exec_version = '%s.%s' % sys.version_info[:2]
+         
+     def finalize_options (self):
+@@ -107,7 +111,7 @@ class install_data_panda (install_data_org):
+                     raise RuntimeError,"%s doesn't have the .template extension" % srcFile
+                 # dest filename
+                 destFile = re.sub('(\.exe)*\.template$','',srcFile)
+-                destFile = destFile.split('/')[-1]
++                destFile = re.sub(r'^templates/','',destFile)
+                 destFile = '%s/%s' % (tmpDir,destFile)
+                 # open src
+                 inFile = open(srcFile)
+@@ -121,6 +125,9 @@ class install_data_panda (install_data_org):
+                         raise RuntimeError,'unknown pattern %s in %s' % (item,srcFile)
+                     # get pattern
+                     patt = getattr(self,item)
++                    # remove install root, if any
++                    if self.root is not None and patt.startswith(self.root):
++                            patt = patt[len(self.root):]
+                     # remove build/*/dump for bdist
+                     patt = re.sub('build/[^/]+/dumb','',patt)
+                     # remove /var/tmp/*-buildroot for bdist_rpm
+@@ -128,6 +135,10 @@ class install_data_panda (install_data_org):
+                     # replace
+                     filedata = filedata.replace('@@%s@@' % item, patt)
+                 # write to dest
++                if '/' in destFile:
++                    destSubDir = os.path.dirname(destFile)
++                    if not os.path.exists(destSubDir):
++                        os.makedirs(destSubDir)
+                 oFile = open(destFile,'w')
+                 oFile.write(filedata)
+                 oFile.close()
+@@ -145,9 +156,10 @@ class install_data_panda (install_data_org):
+         
+ # setup for distutils
+ setup(
+-#    name="panda-server-mysql",
+-    name=__provides__,
+-    version=__version__,
++    name="panda-server-mysqloraclemerge",
++#   name=__provides__,
++#   version=__version__,
++    version=release_version,
+     description='MySQL+Oracle+Merged branch of the PanDA Server Package',
+     long_description='''This package contains PanDA Server Components''',
+     license='GPL',
+@@ -167,41 +179,41 @@ setup(
+               ],
+     data_files=[
+                 # config files 
+-                ('etc/panda', ['templates/panda_server-httpd.conf.rpmnew.template',
+-                               'templates/panda_server-httpd-FastCGI.conf.rpmnew.template',
+-                               'templates/panda_server.cfg.rpmnew.template',
++                ('/etc/panda', ['templates/panda_server-httpd.conf.template',
++                               'templates/panda_server-httpd-FastCGI.conf.template',
++                               'templates/panda_server.cfg.template',
+                                'templates/panda_server-grid-env.sh.template',
+                                ]
+                  ),
+                 # sysconfig
+-                ('etc/sysconfig', ['templates/panda_server-sysconfig.rpmnew.template',
++                ('/etc/sysconfig', ['templates/sysconfig/panda_server.template',
+                                    ]
+                  ),
+                 # logrotate
+-                ('etc/logrotate.d', ['templates/panda_server-logrotate.template',
++                ('/etc/logrotate.d', ['templates/logrotate.d/panda_server.template',
+                                      ]
+                  ),
+                 # init script
+-                ('etc/init.d', ['templates/panda_server-ctl.exe.template',
++                ('/etc/rc.d/init.d', ['templates/init.d/panda_server.exe.template',
+                                    ]
+                  ),
+                 # crons
+-                ('usr/bin', ['templates/panda_server-add.sh.exe.template',
+-                             'templates/panda_server-priority.sh.exe.template',
+-                             'templates/panda_server-copyArchive.sh.exe.template',
+-                             'templates/panda_server-copyROOT.sh.exe.template',
+-                             'templates/panda_server-vomsrenew.sh.exe.template',
+-                             'templates/panda_server-archivelog.sh.exe.template',
+-                             'templates/panda_server-tmpwatch.sh.exe.template',
+-                             'templates/panda_server-backupJobArch.sh.exe.template',
+-                             'templates/panda_server-deleteJobs.sh.exe.template',
+-                             'templates/panda_server-merge.sh.exe.template',
+-                             'templates/panda_server-datasetManager.sh.exe.template',
+-                             'templates/panda_server-evpPD2P.sh.exe.template',
+-                             'templates/panda_server-callback.sh.exe.template',
++                ('/usr/bin', ['templates/panda_server-add.exe.template',
++                             'templates/panda_server-priority.exe.template',
++                             'templates/panda_server-copyArchive.exe.template',
++                             'templates/panda_server-copyROOT.exe.template',
++                             'templates/panda_server-vomsrenew.exe.template',
++                             'templates/panda_server-archivelog.exe.template',
++                             'templates/panda_server-tmpwatch.exe.template',
++                             'templates/panda_server-backupJobArch.exe.template',
++                             'templates/panda_server-deleteJobs.exe.template',
++                             'templates/panda_server-merge.exe.template',
++                             'templates/panda_server-datasetManager.exe.template',
++                             'templates/panda_server-evpPD2P.exe.template',
++                             'templates/panda_server-callback.exe.template',
+                              'templates/panda_server-makeSlsXml.exe.template',
+-                             'templates/panda_server-boostUser.sh.exe.template',
+-                             'templates/panda_server-runRebro.sh.exe.template',
++                             'templates/panda_server-boostUser.exe.template',
++                             'templates/panda_server-runRebro.exe.template',
+                              ]
+                  ),
+                 # var dirs
+diff --git a/templates/init.d/panda_server.exe.template b/templates/init.d/panda_server.exe.template
+new file mode 100755
+index 0000000..82047e1
+--- /dev/null
++++ b/templates/init.d/panda_server.exe.template
+@@ -0,0 +1,164 @@
++#!/bin/sh
++#
++# chkconfig: - 85 15
++#
++# description: Panda server webserver
++# processname: httpd
++# config: /etc/panda/panda_server-httpd.conf
++# config: /etc/sysconfig/httpd-pandasrv
++# pidfile: /var/run/httpd-pandasrv.pid
++#
++# Copyright 2000-2004 The Apache Software Foundation
++#
++# Licensed under the Apache License, Version 2.0 (the "License");
++# you may not use this file except in compliance with the License.
++# You may obtain a copy of the License at
++#
++#     http://www.apache.org/licenses/LICENSE-2.0
++#
++# Unless required by applicable law or agreed to in writing, software
++# distributed under the License is distributed on an "AS IS" BASIS,
++# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++# See the License for the specific language governing permissions and
++# limitations under the License.
++#
++#
++# Apache control script designed to allow an easy command line interface
++# to controlling Apache.  Written by Marc Slemko, 1997/08/23
++# 
++# The exit codes returned are:
++#   XXX this doc is no longer correct now that the interesting
++#   XXX functions are handled by httpd
++#	0 - operation completed successfully
++#	1 - 
++#	2 - usage error
++#	3 - httpd could not be started
++#	4 - httpd could not be stopped
++#	5 - httpd could not be started during a restart
++#	6 - httpd could not be restarted during a restart
++#	7 - httpd could not be restarted during a graceful restart
++#	8 - configuration syntax error
++#
++# When multiple arguments are given, only the error from the _last_
++# one is reported.  Run "apachectl help" for usage info
++#
++ARGV="$@"
++#
++# |||||||||||||||||||| START CONFIGURATION SECTION  ||||||||||||||||||||
++# --------------------                              --------------------
++# 
++# the path to your httpd binary, including options if necessary
++HTTPD='/usr/sbin/httpd'
++
++#
++# a command that outputs a formatted text version of the HTML at the
++# url given on the command line.  Designed for lynx, however other
++# programs may work.  
++if [ -x /usr/bin/links ]; then
++   LYNX="links -dump"
++elif [ -x /usr/bin/lynx ]; then
++   LYNX="lynx -dump"
++else
++   LYNX="none"
++fi
++
++#
++# the URL to your server's mod_status status page.  If you do not
++# have one, then status and fullstatus will not work.
++STATUSURL="http://localhost:25080/server-status"
++
++# Source /etc/sysconfig/httpd for $HTTPD setting, etc.
++if [ -r /etc/sysconfig/panda_server ]; then
++   . /etc/sysconfig/panda_server
++fi
++
++ERROR=0
++if [ "x$ARGV" = "x" ] ; then 
++    ARGV="-h"
++fi
++
++function check13() {
++# check for 1.3 configuration
++GONE="(ServerType|BindAddress|Port|AddModule|ClearModuleList|"
++GONE="${GONE}AgentLog|RefererLog|RefererIgnore|FancyIndexing|"
++GONE="${GONE}AccessConfig|ResourceConfig)"
++if grep -Eiq "^[[:space:]]*($GONE)" /etc/httpd/conf/httpd.conf; then
++  echo "$0: Apache 1.3 configuration directives found"
++  echo "$0: please read /usr/share/doc/httpd-2.0.52/migration.html"
++  exit 2
++fi
++}
++
++function checklynx() {
++if [ "$LYNX" = "none" ]; then
++   echo "The 'links' package is required for this functionality."
++   exit 8
++fi
++}
++
++function testconfig() {
++# httpd is denied terminal access in SELinux, so run in the
++# current context to get stdout from $HTTPD -t.
++if test -x /usr/sbin/selinuxenabled && /usr/sbin/selinuxenabled; then
++  runcon -- `id -Z` $HTTPD $OPTIONS -t
++else
++  $HTTPD $OPTIONS -t
++fi
++ERROR=$?
++}
++
++function check_pidfile () {
++    if [ -r @@install_dir@@/var/log/panda/panda_server_httpd.pid ]; then
++        COMSTR=`echo $HTTPD $OPTIONS -k $ARGV`
++        COMSTR=`echo $COMSTR | sed -e 's/ //g'`
++        PSOUT=`ps -f -p \`cat @@install_dir@@/var/log/panda/panda_server_httpd.pid\` | cat | tail -1`
++        PSOUT=`echo $PSOUT | sed -e 's/ //g'`
++        if [ ! `echo $PSOUT | grep $COMSTR` ]; then
++	    echo "deleting @@install_dir@@/var/log/panda/panda_server_httpd.pid"
++            rm -rf @@install_dir@@/var/log/panda/panda_server_httpd.pid
++        fi
++    fi
++}
++
++case $ARGV in
++restart|graceful)
++    if $HTTPD -t >&/dev/null; then
++       $HTTPD $OPTIONS -k $ARGV
++       ERROR=$?
++    else
++       echo "apachectl: Configuration syntax error, will not run \"$ARGV\":"
++       testconfig
++    fi
++    ;;
++start|stop)
++    check13
++    case $ARGV in
++        start)
++            check_pidfile
++    esac
++    $HTTPD $OPTIONS -k $ARGV
++    ERROR=$?
++    ;;
++startssl|sslstart|start-SSL)
++    check13
++    $HTTPD $OPTIONS -DSSL -k start
++    ERROR=$?
++    ;;
++configtest)
++    testconfig
++    ;;
++status)
++    checklynx
++    $LYNX $STATUSURL | awk ' /process$/ { print; exit } { print } '
++    ;;
++fullstatus)
++    checklynx
++    $LYNX $STATUSURL
++    ;;
++*)
++    $HTTPD $OPTIONS $ARGV
++    ERROR=$?
++esac
++
++exit $ERROR
++
+diff --git a/templates/logrotate.d/panda_server.template b/templates/logrotate.d/panda_server.template
+new file mode 100644
+index 0000000..a50b01e
+--- /dev/null
++++ b/templates/logrotate.d/panda_server.template
+@@ -0,0 +1,18 @@
++/var/log/panda/*log {
++    rotate 180
++    daily
++    compress    
++    missingok
++    notifempty
++    sharedscripts
++    daily       
++    prerotate
++        killall -u atlpan python > /dev/null 2>/dev/null || true
++        killall -u atlpan python@@python_exec_version@@ > /dev/null 2>/dev/null || true
++    endscript
++    postrotate
++	killall -u @@panda_user@@ python > /dev/null 2>/dev/null || true
++        killall -u @@panda_user@@ python@@python_exec_version@@ > /dev/null 2>/dev/null || true
++	/sbin/service httpd-pandasrv graceful > /dev/null 2>/dev/null || true
++    endscript
++}
+diff --git a/templates/panda_server-add.exe.template b/templates/panda_server-add.exe.template
+new file mode 100755
+index 0000000..f7622f4
+--- /dev/null
++++ b/templates/panda_server-add.exe.template
+@@ -0,0 +1,15 @@
++#!/bin/bash
++
++# setup grid stuff
++source /etc/profile.d/grid-env.sh
++
++# import env vars from sysconfig
++source /etc/sysconfig/panda_server
++
++# set PYTHONPATH for LFC.py
++### there is no /usr/lib64/python@@python_exec_version@@/site-packages
++### on EC2 instance of BigPanDA
++### export PYTHONPATH=/usr/lib64/python@@python_exec_version@@/site-packages:$PYTHONPATH
++
++python@@python_exec_version@@ @@install_purelib@@/pandaserver/test/add.py
++
+diff --git a/templates/panda_server-add.sh.exe.template b/templates/panda_server-add.sh.exe.template
+deleted file mode 100755
+index 9037160..0000000
+--- a/templates/panda_server-add.sh.exe.template
++++ /dev/null
+@@ -1,15 +0,0 @@
+-#!/bin/bash
+-
+-# setup grid stuff
+-source /etc/profile.d/grid-env.sh
+-
+-# import env vars from sysconfig
+-source @@install_dir@@/etc/sysconfig/panda_server-sysconfig
+-
+-# set PYTHONPATH for LFC.py
+-### there is no /usr/lib64/python@@python_exec_version@@/site-packages
+-### on EC2 instance of BigPanDA
+-### export PYTHONPATH=/usr/lib64/python@@python_exec_version@@/site-packages:$PYTHONPATH
+-
+-python@@python_exec_version@@ @@install_purelib@@/pandaserver/test/add.py
+-
+diff --git a/templates/panda_server-archivelog.exe.template b/templates/panda_server-archivelog.exe.template
+new file mode 100755
+index 0000000..64a670b
+--- /dev/null
++++ b/templates/panda_server-archivelog.exe.template
+@@ -0,0 +1,6 @@
++#!/bin/bash
++
++# import env vars from sysconfig
++source /etc/sysconfig/panda_server
++
++python@@python_exec_version@@ @@install_purelib@@/pandaserver/test/archivelogs.py
+diff --git a/templates/panda_server-archivelog.sh.exe.template b/templates/panda_server-archivelog.sh.exe.template
+deleted file mode 100755
+index d2b6699..0000000
+--- a/templates/panda_server-archivelog.sh.exe.template
++++ /dev/null
+@@ -1,6 +0,0 @@
+-#!/bin/bash
+-
+-# import env vars from sysconfig
+-source @@install_dir@@/etc/sysconfig/panda_server-sysconfig
+-
+-python@@python_exec_version@@ @@install_purelib@@/pandaserver/test/archivelogs.py
+diff --git a/templates/panda_server-backupJobArch.exe.template b/templates/panda_server-backupJobArch.exe.template
+new file mode 100644
+index 0000000..39f4d84
+--- /dev/null
++++ b/templates/panda_server-backupJobArch.exe.template
+@@ -0,0 +1,6 @@
++#!/bin/bash
++
++# import env vars from sysconfig
++source /etc/sysconfig/panda_server
++
++python @@install_purelib@@/pandaserver/test/backupJobArch.py
+diff --git a/templates/panda_server-backupJobArch.sh.exe.template b/templates/panda_server-backupJobArch.sh.exe.template
+deleted file mode 100644
+index bc896d8..0000000
+--- a/templates/panda_server-backupJobArch.sh.exe.template
++++ /dev/null
+@@ -1,6 +0,0 @@
+-#!/bin/bash
+-
+-# import env vars from sysconfig
+-source @@install_dir@@/etc/sysconfig/panda_server-sysconfig
+-
+-python @@install_purelib@@/pandaserver/test/backupJobArch.py
+diff --git a/templates/panda_server-boostUser.exe.template b/templates/panda_server-boostUser.exe.template
+new file mode 100755
+index 0000000..42f6b41
+--- /dev/null
++++ b/templates/panda_server-boostUser.exe.template
+@@ -0,0 +1,6 @@
++#!/bin/bash
++
++# import env vars from sysconfig
++source /etc/sysconfig/panda_server
++
++echo $1 | python2.5 @@install_purelib@@/pandaserver/test/boostUser.py
+diff --git a/templates/panda_server-boostUser.sh.exe.template b/templates/panda_server-boostUser.sh.exe.template
+deleted file mode 100755
+index f154199..0000000
+--- a/templates/panda_server-boostUser.sh.exe.template
++++ /dev/null
+@@ -1,6 +0,0 @@
+-#!/bin/bash
+-
+-# import env vars from sysconfig
+-source @@install_dir@@/etc/sysconfig/panda_server-sysconfig
+-
+-echo $1 | python2.5 @@install_purelib@@/pandaserver/test/boostUser.py
+diff --git a/templates/panda_server-callback.exe.template b/templates/panda_server-callback.exe.template
+new file mode 100755
+index 0000000..3d6499c
+--- /dev/null
++++ b/templates/panda_server-callback.exe.template
+@@ -0,0 +1,13 @@
++#!/bin/bash
++
++# setup grid stuff
++source /etc/profile.d/grid-env.sh
++
++# import env vars from sysconfig
++source /etc/sysconfig/panda_server
++
++# set PYTHONPATH for dashboard
++export PYTHONPATH=/opt/dashboard/lib/dashboard:/opt/dashboard/lib:$PYTHONPATH
++
++python@@python_exec_version@@ @@install_purelib@@/pandaserver/test/fileCallbackListener.py
++#python@@python_exec_version@@ @@install_purelib@@/pandaserver/test/genCallbackConsumer.py
+diff --git a/templates/panda_server-callback.sh.exe.template b/templates/panda_server-callback.sh.exe.template
+deleted file mode 100755
+index aab766c..0000000
+--- a/templates/panda_server-callback.sh.exe.template
++++ /dev/null
+@@ -1,13 +0,0 @@
+-#!/bin/bash
+-
+-# setup grid stuff
+-source /etc/profile.d/grid-env.sh
+-
+-# import env vars from sysconfig
+-source @@install_dir@@/etc/sysconfig/panda_server-sysconfig
+-
+-# set PYTHONPATH for dashboard
+-export PYTHONPATH=/opt/dashboard/lib/dashboard:/opt/dashboard/lib:$PYTHONPATH
+-
+-python@@python_exec_version@@ @@install_purelib@@/pandaserver/test/fileCallbackListener.py
+-#python@@python_exec_version@@ @@install_purelib@@/pandaserver/test/genCallbackConsumer.py
+diff --git a/templates/panda_server-copyArchive.exe.template b/templates/panda_server-copyArchive.exe.template
+new file mode 100755
+index 0000000..f369bd4
+--- /dev/null
++++ b/templates/panda_server-copyArchive.exe.template
+@@ -0,0 +1,9 @@
++#!/bin/bash
++
++# setup grid stuff
++source /opt/glite/etc/profile.d/grid-env.sh
++
++# import env vars from sysconfig
++source /etc/sysconfig/panda_server
++
++python@@python_exec_version@@ @@install_purelib@@/pandaserver/test/copyArchive.py
+diff --git a/templates/panda_server-copyArchive.sh.exe.template b/templates/panda_server-copyArchive.sh.exe.template
+deleted file mode 100755
+index 6f0f82b..0000000
+--- a/templates/panda_server-copyArchive.sh.exe.template
++++ /dev/null
+@@ -1,9 +0,0 @@
+-#!/bin/bash
+-
+-# setup grid stuff
+-source /opt/glite/etc/profile.d/grid-env.sh
+-
+-# import env vars from sysconfig
+-source @@install_dir@@/etc/sysconfig/panda_server-sysconfig
+-
+-python@@python_exec_version@@ @@install_purelib@@/pandaserver/test/copyArchive.py
+diff --git a/templates/panda_server-copyROOT.exe.template b/templates/panda_server-copyROOT.exe.template
+new file mode 100755
+index 0000000..5265087
+--- /dev/null
++++ b/templates/panda_server-copyROOT.exe.template
+@@ -0,0 +1,6 @@
++#!/bin/bash
++
++# import env vars from sysconfig
++source /etc/sysconfig/panda_server
++
++python @@install_purelib@@/pandaserver/test/copyROOT.py
+diff --git a/templates/panda_server-copyROOT.sh.exe.template b/templates/panda_server-copyROOT.sh.exe.template
+deleted file mode 100755
+index efbd483..0000000
+--- a/templates/panda_server-copyROOT.sh.exe.template
++++ /dev/null
+@@ -1,6 +0,0 @@
+-#!/bin/bash
+-
+-# import env vars from sysconfig
+-source @@install_dir@@/etc/sysconfig/panda_server-sysconfig
+-
+-python @@install_purelib@@/pandaserver/test/copyROOT.py
+diff --git a/templates/panda_server-ctl.exe.template b/templates/panda_server-ctl.exe.template
+deleted file mode 100755
+index a3ff5e0..0000000
+--- a/templates/panda_server-ctl.exe.template
++++ /dev/null
+@@ -1,164 +0,0 @@
+-#!/bin/sh
+-#
+-# chkconfig: - 85 15
+-#
+-# description: Panda server webserver
+-# processname: httpd
+-# config: /data/atlpan/srv/etc/panda/panda_server-httpd.conf
+-# config: /etc/sysconfig/httpd-pandasrv
+-# pidfile: /var/run/httpd-pandasrv.pid
+-#
+-# Copyright 2000-2004 The Apache Software Foundation
+-#
+-# Licensed under the Apache License, Version 2.0 (the "License");
+-# you may not use this file except in compliance with the License.
+-# You may obtain a copy of the License at
+-#
+-#     http://www.apache.org/licenses/LICENSE-2.0
+-#
+-# Unless required by applicable law or agreed to in writing, software
+-# distributed under the License is distributed on an "AS IS" BASIS,
+-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+-# See the License for the specific language governing permissions and
+-# limitations under the License.
+-#
+-#
+-# Apache control script designed to allow an easy command line interface
+-# to controlling Apache.  Written by Marc Slemko, 1997/08/23
+-# 
+-# The exit codes returned are:
+-#   XXX this doc is no longer correct now that the interesting
+-#   XXX functions are handled by httpd
+-#	0 - operation completed successfully
+-#	1 - 
+-#	2 - usage error
+-#	3 - httpd could not be started
+-#	4 - httpd could not be stopped
+-#	5 - httpd could not be started during a restart
+-#	6 - httpd could not be restarted during a restart
+-#	7 - httpd could not be restarted during a graceful restart
+-#	8 - configuration syntax error
+-#
+-# When multiple arguments are given, only the error from the _last_
+-# one is reported.  Run "apachectl help" for usage info
+-#
+-ARGV="$@"
+-#
+-# |||||||||||||||||||| START CONFIGURATION SECTION  ||||||||||||||||||||
+-# --------------------                              --------------------
+-# 
+-# the path to your httpd binary, including options if necessary
+-HTTPD='/usr/sbin/httpd'
+-
+-#
+-# a command that outputs a formatted text version of the HTML at the
+-# url given on the command line.  Designed for lynx, however other
+-# programs may work.  
+-if [ -x /usr/bin/links ]; then
+-   LYNX="links -dump"
+-elif [ -x /usr/bin/lynx ]; then
+-   LYNX="lynx -dump"
+-else
+-   LYNX="none"
+-fi
+-
+-#
+-# the URL to your server's mod_status status page.  If you do not
+-# have one, then status and fullstatus will not work.
+-STATUSURL="http://localhost:25080/server-status"
+-
+-# Source /etc/sysconfig/httpd for $HTTPD setting, etc.
+-if [ -r @@install_dir@@/etc/sysconfig/panda_server-sysconfig ]; then
+-   . @@install_dir@@/etc/sysconfig/panda_server-sysconfig
+-fi
+-
+-ERROR=0
+-if [ "x$ARGV" = "x" ] ; then 
+-    ARGV="-h"
+-fi
+-
+-function check13() {
+-# check for 1.3 configuration
+-GONE="(ServerType|BindAddress|Port|AddModule|ClearModuleList|"
+-GONE="${GONE}AgentLog|RefererLog|RefererIgnore|FancyIndexing|"
+-GONE="${GONE}AccessConfig|ResourceConfig)"
+-if grep -Eiq "^[[:space:]]*($GONE)" /etc/httpd/conf/httpd.conf; then
+-  echo "$0: Apache 1.3 configuration directives found"
+-  echo "$0: please read /usr/share/doc/httpd-2.0.52/migration.html"
+-  exit 2
+-fi
+-}
+-
+-function checklynx() {
+-if [ "$LYNX" = "none" ]; then
+-   echo "The 'links' package is required for this functionality."
+-   exit 8
+-fi
+-}
+-
+-function testconfig() {
+-# httpd is denied terminal access in SELinux, so run in the
+-# current context to get stdout from $HTTPD -t.
+-if test -x /usr/sbin/selinuxenabled && /usr/sbin/selinuxenabled; then
+-  runcon -- `id -Z` $HTTPD $OPTIONS -t
+-else
+-  $HTTPD $OPTIONS -t
+-fi
+-ERROR=$?
+-}
+-
+-function check_pidfile () {
+-    if [ -r @@install_dir@@/var/log/panda/panda_server_httpd.pid ]; then
+-        COMSTR=`echo $HTTPD $OPTIONS -k $ARGV`
+-        COMSTR=`echo $COMSTR | sed -e 's/ //g'`
+-        PSOUT=`ps -f -p \`cat @@install_dir@@/var/log/panda/panda_server_httpd.pid\` | cat | tail -1`
+-        PSOUT=`echo $PSOUT | sed -e 's/ //g'`
+-        if [ ! `echo $PSOUT | grep $COMSTR` ]; then
+-	    echo "deleting @@install_dir@@/var/log/panda/panda_server_httpd.pid"
+-            rm -rf @@install_dir@@/var/log/panda/panda_server_httpd.pid
+-        fi
+-    fi
+-}
+-
+-case $ARGV in
+-restart|graceful)
+-    if $HTTPD -t >&/dev/null; then
+-       $HTTPD $OPTIONS -k $ARGV
+-       ERROR=$?
+-    else
+-       echo "apachectl: Configuration syntax error, will not run \"$ARGV\":"
+-       testconfig
+-    fi
+-    ;;
+-start|stop)
+-    check13
+-    case $ARGV in
+-        start)
+-            check_pidfile
+-    esac
+-    $HTTPD $OPTIONS -k $ARGV
+-    ERROR=$?
+-    ;;
+-startssl|sslstart|start-SSL)
+-    check13
+-    $HTTPD $OPTIONS -DSSL -k start
+-    ERROR=$?
+-    ;;
+-configtest)
+-    testconfig
+-    ;;
+-status)
+-    checklynx
+-    $LYNX $STATUSURL | awk ' /process$/ { print; exit } { print } '
+-    ;;
+-fullstatus)
+-    checklynx
+-    $LYNX $STATUSURL
+-    ;;
+-*)
+-    $HTTPD $OPTIONS $ARGV
+-    ERROR=$?
+-esac
+-
+-exit $ERROR
+-
+diff --git a/templates/panda_server-datasetManager.exe.template b/templates/panda_server-datasetManager.exe.template
+new file mode 100644
+index 0000000..0677a57
+--- /dev/null
++++ b/templates/panda_server-datasetManager.exe.template
+@@ -0,0 +1,9 @@
++#!/bin/bash
++
++# setup grid stuff
++source /opt/glite/etc/profile.d/grid-env.sh
++
++# import env vars from sysconfig
++source /etc/sysconfig/panda_server
++
++python@@python_exec_version@@ @@install_purelib@@/pandaserver/test/datasetManager.py
+diff --git a/templates/panda_server-datasetManager.sh.exe.template b/templates/panda_server-datasetManager.sh.exe.template
+deleted file mode 100644
+index 26bde7f..0000000
+--- a/templates/panda_server-datasetManager.sh.exe.template
++++ /dev/null
+@@ -1,9 +0,0 @@
+-#!/bin/bash
+-
+-# setup grid stuff
+-source /opt/glite/etc/profile.d/grid-env.sh
+-
+-# import env vars from sysconfig
+-source @@install_dir@@/etc/sysconfig/panda_server-sysconfig
+-
+-python@@python_exec_version@@ @@install_purelib@@/pandaserver/test/datasetManager.py
+diff --git a/templates/panda_server-deleteJobs.exe.template b/templates/panda_server-deleteJobs.exe.template
+new file mode 100644
+index 0000000..9795f92
+--- /dev/null
++++ b/templates/panda_server-deleteJobs.exe.template
+@@ -0,0 +1,6 @@
++#!/bin/bash
++
++# import env vars from sysconfig
++source /etc/sysconfig/panda_server
++
++python @@install_purelib@@/pandaserver/test/deleteJobs.py
+diff --git a/templates/panda_server-deleteJobs.sh.exe.template b/templates/panda_server-deleteJobs.sh.exe.template
+deleted file mode 100644
+index fd48e9e..0000000
+--- a/templates/panda_server-deleteJobs.sh.exe.template
++++ /dev/null
+@@ -1,6 +0,0 @@
+-#!/bin/bash
+-
+-# import env vars from sysconfig
+-source @@install_dir@@/etc/sysconfig/panda_server-sysconfig
+-
+-python @@install_purelib@@/pandaserver/test/deleteJobs.py
+diff --git a/templates/panda_server-evpPD2P.exe.template b/templates/panda_server-evpPD2P.exe.template
+new file mode 100755
+index 0000000..9a8f27d
+--- /dev/null
++++ b/templates/panda_server-evpPD2P.exe.template
+@@ -0,0 +1,9 @@
++#!/bin/bash
++
++# setup grid stuff
++source /etc/profile.d/grid-env.sh
++
++# import env vars from sysconfig
++source /etc/sysconfig/panda_server
++
++python@@python_exec_version@@ @@install_purelib@@/pandaserver/test/evpPD2P.py
+diff --git a/templates/panda_server-evpPD2P.sh.exe.template b/templates/panda_server-evpPD2P.sh.exe.template
+deleted file mode 100755
+index 88ed684..0000000
+--- a/templates/panda_server-evpPD2P.sh.exe.template
++++ /dev/null
+@@ -1,9 +0,0 @@
+-#!/bin/bash
+-
+-# setup grid stuff
+-source /etc/profile.d/grid-env.sh
+-
+-# import env vars from sysconfig
+-source @@install_dir@@/etc/sysconfig/panda_server-sysconfig
+-
+-python@@python_exec_version@@ @@install_purelib@@/pandaserver/test/evpPD2P.py
+diff --git a/templates/panda_server-httpd-FastCGI.conf.rpmnew.template b/templates/panda_server-httpd-FastCGI.conf.rpmnew.template
+deleted file mode 100644
+index 9440258..0000000
+--- a/templates/panda_server-httpd-FastCGI.conf.rpmnew.template
++++ /dev/null
+@@ -1,192 +0,0 @@
+-LoadModule authz_host_module modules/mod_authz_host.so
+-LoadModule alias_module modules/mod_alias.so
+-LoadModule rewrite_module modules/mod_rewrite.so
+-LoadModule mime_magic_module modules/mod_mime_magic.so
+-LoadModule mime_module modules/mod_mime.so
+-LoadModule include_module modules/mod_include.so
+-LoadModule log_config_module modules/mod_log_config.so
+-LoadModule env_module modules/mod_env.so
+-LoadModule deflate_module modules/mod_deflate.so
+-LoadModule setenvif_module modules/mod_setenvif.so
+-LoadModule dir_module modules/mod_dir.so
+-LoadModule ssl_module modules/mod_ssl.so
+-LoadModule headers_module modules/mod_headers.so
+-LoadModule gridsite_module modules/mod_gridsite.so
+-LoadModule status_module modules/mod_status.so
+-
+-# WSGI
+-LoadModule wsgi_module modules/mod_wsgi.so
+-
+-
+-User  atlpan
+-Group zp
+-
+-<IfModule prefork.c>
+-StartServers         25
+-MinSpareServers      25
+-ServerLimit          512
+-MaxSpareServers      512
+-MaxClients           512
+-MaxRequestsPerChild  2000
+-</IfModule>
+-
+-ServerName pandaserver.cern.ch
+-
+-DocumentRoot "@@install_purelib@@/pandaserver"
+-
+-<Files ~ "\.(py|pyc|conf)$">
+-    Order allow,deny
+-    Deny from all
+-</Files>
+-
+-RedirectMatch 403 "/panda.py$"
+-
+-<Directory />
+-    Options FollowSymLinks
+-    AllowOverride None
+-    Order allow,deny
+-    Allow from all
+-    Deny from 192.203.218.14
+-</Directory>
+-
+-Alias /trf/ "@@install_dir@@/var/trf/"
+-Alias /cache/ "@@install_dir@@/var/cache/pandaserver/"
+-Alias /appdir/ "@@install_dir@@/var/appdir/"
+-
+-<Location /server-status>
+-    SetHandler server-status
+-    Order deny,allow
+-    Deny from all
+-    Allow from localhost
+-</Location>
+-
+-<Directory "@@install_dir@@/var/cache/pandaserver">
+-    Options FollowSymLinks
+-    AllowOverride None
+-    Order allow,deny
+-    Allow from all
+-    Deny from 192.203.218.14
+-</Directory>
+-
+-<Directory "@@install_dir@@/var/cache/pandaserver/jedilog">
+-    Options FollowSymLinks
+-    AllowOverride None
+-    Order allow,deny
+-    Allow from all
+-    Header set Content-Encoding gzip
+-</Directory>
+-
+-<IfModule mod_fastcgi.c>
+-    FastCgiIpcDir @@install_dir@@/var/log/panda/fastsocks
+-    FastCgiServer @@install_purelib@@/pandaserver/server/panda.py \
+-	-processes 25 -idle-timeout 300 -listen-queue-depth 1 -flush \
+-	-initial-env PYTHONPATH \
+-	-initial-env TZ \
+-	-initial-env HOME \
+-	-initial-env PANDA_HOME \
+-	-initial-env X509_CERT_DIR \
+-	-initial-env X509_USER_PROXY \
+-	-initial-env PANDA_URL \
+-	-initial-env PANDA_URL_SSL
+-    ScriptAliasMatch ^/server/panda/(.+)$ @@install_purelib@@/pandaserver/server/panda.py
+-</IfModule>
+-
+-<IfModule mod_wsgi.c>
+-   WSGIDaemonProcess pandasrv_daemon processes=25 threads=2 home=/home/atlpan
+-   WSGIProcessGroup pandasrv_daemon
+-   WSGIApplicationGroup %{GLOBAL}
+-   WSGIScriptAliasMatch ^/server/panda/(.+)$ @@install_purelib@@/pandaserver/server/panda.py
+-   WSGISocketPrefix @@install_dir@@/var/log/panda/wsgisocks/wsgi
+-</IfModule>
+-
+-
+-Listen 25080
+-<VirtualHost *:25080>
+-
+-RewriteEngine on
+-RewriteCond %{REQUEST_METHOD} ^(TRACE|TRACK)
+-RewriteRule .* - [F]
+-# use Cassandra for cache
+-RewriteRule ^/cscache/(.*)$ /server/panda/getFile?fileName=$1 [PT,L]
+-
+-<Directory "@@install_purelib@@/pandaserver/server">
+-
+-   <Limit GET POST>
+-       Order allow,deny
+-       Allow from all
+-       Deny from 192.203.218.14
+-   </Limit>
+-
+-   # allow .py
+-   <Files ~ "\.py$">
+-       Order allow,deny
+-       Allow from all
+-   </Files>
+-
+-   # enable CGI	for FastCGI/WSGI
+-   Options FollowSymLinks +ExecCGI
+-
+-   # mod_gridsite
+-   GridSiteIndexes	on
+-   GridSiteAuth		on
+-   GridSiteDNlists	/etc/grid-security/dn-lists/
+-   GridSiteEnvs         on
+-
+-</Directory>
+-
+-</VirtualHost>
+-
+-Listen 25443
+-<VirtualHost *:25443>
+-
+-RewriteEngine on
+-RewriteCond %{REQUEST_METHOD} ^(TRACE|TRACK)
+-RewriteRule .* - [F]
+-# use Cassandra for cache
+-RewriteRule ^/cscache/(.*)$ /server/panda/getFile?fileName=$1 [PT,L]
+-
+-# CERN security recommendation to only allow the seven strongest ssl ciphers
+-SSLProtocol  -all +TLSv1 +SSLv3
+-SSLCipherSuite HIGH:MEDIUM:+SSLv3
+-
+-SSLEngine               on
+-SSLCertificateFile      /etc/grid-security/hostcert.pem
+-SSLCertificateKeyFile   /etc/grid-security/hostkey.pem
+-SSLCACertificatePath    /etc/grid-security/certificates
+-SSLVerifyClient         optional
+-SSLVerifyDepth          10
+-SSLOptions              +ExportCertData +StdEnvVars
+-
+-<Directory "@@install_purelib@@/pandaserver/server">
+-
+-   # allow .py
+-   <Files ~ "\.py$">
+-       Order allow,deny
+-       Allow from all
+-   </Files>
+-
+-   # enable CGI	for FastCGI/WSGI
+-   Options FollowSymLinks +ExecCGI
+-
+-   # mod_gridsite
+-   GridSiteIndexes       on
+-   GridSiteAuth          on
+-   GridSiteDNlists       /etc/grid-security/dn-lists/
+-   GridSiteGSIProxyLimit 1
+-   GridSiteEnvs          on
+-</Directory>
+-                                                                               
+-</VirtualHost>
+-
+-LogLevel info
+-
+-LogFormat "%t %h \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" combined
+-LogFormat "%t %h \"%r\" %>s %b" common
+-LogFormat "%{Referer}i -> %U" referer
+-LogFormat "%{User-agent}i" agent
+-CustomLog @@install_dir@@/var/log/panda/panda_server_access_log common
+-ErrorLog @@install_dir@@/var/log/panda/panda_server_error_log
+-
+-PidFile @@install_dir@@/var/log/panda/panda_server_httpd.pid
+-
+-TypesConfig /etc/mime.types
+diff --git a/templates/panda_server-httpd-FastCGI.conf.template b/templates/panda_server-httpd-FastCGI.conf.template
+new file mode 100644
+index 0000000..3bdcee1
+--- /dev/null
++++ b/templates/panda_server-httpd-FastCGI.conf.template
+@@ -0,0 +1,192 @@
++LoadModule authz_host_module modules/mod_authz_host.so
++LoadModule alias_module modules/mod_alias.so
++LoadModule rewrite_module modules/mod_rewrite.so
++LoadModule mime_magic_module modules/mod_mime_magic.so
++LoadModule mime_module modules/mod_mime.so
++LoadModule include_module modules/mod_include.so
++LoadModule log_config_module modules/mod_log_config.so
++LoadModule env_module modules/mod_env.so
++LoadModule deflate_module modules/mod_deflate.so
++LoadModule setenvif_module modules/mod_setenvif.so
++LoadModule dir_module modules/mod_dir.so
++LoadModule ssl_module modules/mod_ssl.so
++LoadModule headers_module modules/mod_headers.so
++LoadModule gridsite_module modules/mod_gridsite.so
++LoadModule status_module modules/mod_status.so
++
++# WSGI
++LoadModule wsgi_module modules/mod_wsgi.so
++
++
++User  @@panda_user@@
++Group @@panda_group@@
++
++<IfModule prefork.c>
++StartServers         25
++MinSpareServers      25
++ServerLimit          512
++MaxSpareServers      512
++MaxClients           512
++MaxRequestsPerChild  2000
++</IfModule>
++
++ServerName pandaserver.cern.ch
++
++DocumentRoot "@@install_purelib@@/pandaserver"
++
++<Files ~ "\.(py|pyc|conf)$">
++    Order allow,deny
++    Deny from all
++</Files>
++
++RedirectMatch 403 "/panda.py$"
++
++<Directory />
++    Options FollowSymLinks
++    AllowOverride None
++    Order allow,deny
++    Allow from all
++    Deny from 192.203.218.14
++</Directory>
++
++Alias /trf/ "@@install_dir@@/var/trf/"
++Alias /cache/ "/var/cache/pandaserver/"
++Alias /appdir/ "@@install_dir@@/var/appdir/"
++
++<Location /server-status>
++    SetHandler server-status
++    Order deny,allow
++    Deny from all
++    Allow from localhost
++</Location>
++
++<Directory "/var/cache/pandaserver">
++    Options FollowSymLinks
++    AllowOverride None
++    Order allow,deny
++    Allow from all
++    Deny from 192.203.218.14
++</Directory>
++
++<Directory "/var/cache/pandaserver/jedilog">
++    Options FollowSymLinks
++    AllowOverride None
++    Order allow,deny
++    Allow from all
++    Header set Content-Encoding gzip
++</Directory>
++
++<IfModule mod_fastcgi.c>
++    FastCgiIpcDir /var/log/panda/fastsocks
++    FastCgiServer @@install_purelib@@/pandaserver/server/panda.py \
++	-processes 25 -idle-timeout 300 -listen-queue-depth 1 -flush \
++	-initial-env PYTHONPATH \
++	-initial-env TZ \
++	-initial-env HOME \
++	-initial-env PANDA_HOME \
++	-initial-env X509_CERT_DIR \
++	-initial-env X509_USER_PROXY \
++	-initial-env PANDA_URL \
++	-initial-env PANDA_URL_SSL
++    ScriptAliasMatch ^/server/panda/(.+)$ @@install_purelib@@/pandaserver/server/panda.py
++</IfModule>
++
++<IfModule mod_wsgi.c>
++   WSGIDaemonProcess pandasrv_daemon processes=25 threads=2 home=~@@panda_user@@
++   WSGIProcessGroup pandasrv_daemon
++   WSGIApplicationGroup %{GLOBAL}
++   WSGIScriptAliasMatch ^/server/panda/(.+)$ @@install_purelib@@/pandaserver/server/panda.py
++   WSGISocketPrefix /var/log/panda/wsgisocks/wsgi
++</IfModule>
++
++
++Listen 25080
++<VirtualHost *:25080>
++
++RewriteEngine on
++RewriteCond %{REQUEST_METHOD} ^(TRACE|TRACK)
++RewriteRule .* - [F]
++# use Cassandra for cache
++RewriteRule ^/cscache/(.*)$ /server/panda/getFile?fileName=$1 [PT,L]
++
++<Directory "@@install_purelib@@/pandaserver/server">
++
++   <Limit GET POST>
++       Order allow,deny
++       Allow from all
++       Deny from 192.203.218.14
++   </Limit>
++
++   # allow .py
++   <Files ~ "\.py$">
++       Order allow,deny
++       Allow from all
++   </Files>
++
++   # enable CGI	for FastCGI/WSGI
++   Options FollowSymLinks +ExecCGI
++
++   # mod_gridsite
++   GridSiteIndexes	on
++   GridSiteAuth		on
++   GridSiteDNlists	/etc/grid-security/dn-lists/
++   GridSiteEnvs         on
++
++</Directory>
++
++</VirtualHost>
++
++Listen 25443
++<VirtualHost *:25443>
++
++RewriteEngine on
++RewriteCond %{REQUEST_METHOD} ^(TRACE|TRACK)
++RewriteRule .* - [F]
++# use Cassandra for cache
++RewriteRule ^/cscache/(.*)$ /server/panda/getFile?fileName=$1 [PT,L]
++
++# CERN security recommendation to only allow the seven strongest ssl ciphers
++SSLProtocol  -all +TLSv1 +SSLv3
++SSLCipherSuite HIGH:MEDIUM:+SSLv3
++
++SSLEngine               on
++SSLCertificateFile      /etc/grid-security/hostcert.pem
++SSLCertificateKeyFile   /etc/grid-security/hostkey.pem
++SSLCACertificatePath    /etc/grid-security/certificates
++SSLVerifyClient         optional
++SSLVerifyDepth          10
++SSLOptions              +ExportCertData +StdEnvVars
++
++<Directory "@@install_purelib@@/pandaserver/server">
++
++   # allow .py
++   <Files ~ "\.py$">
++       Order allow,deny
++       Allow from all
++   </Files>
++
++   # enable CGI	for FastCGI/WSGI
++   Options FollowSymLinks +ExecCGI
++
++   # mod_gridsite
++   GridSiteIndexes       on
++   GridSiteAuth          on
++   GridSiteDNlists       /etc/grid-security/dn-lists/
++   GridSiteGSIProxyLimit 1
++   GridSiteEnvs          on
++</Directory>
++                                                                               
++</VirtualHost>
++
++LogLevel info
++
++LogFormat "%t %h \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" combined
++LogFormat "%t %h \"%r\" %>s %b" common
++LogFormat "%{Referer}i -> %U" referer
++LogFormat "%{User-agent}i" agent
++CustomLog /var/log/panda/panda_server_access_log common
++ErrorLog /var/log/panda/panda_server_error_log
++
++PidFile /var/log/panda/panda_server_httpd.pid
++
++TypesConfig /etc/mime.types
+diff --git a/templates/panda_server-httpd.conf.rpmnew.template b/templates/panda_server-httpd.conf.rpmnew.template
+deleted file mode 100644
+index 6057f0c..0000000
+--- a/templates/panda_server-httpd.conf.rpmnew.template
++++ /dev/null
+@@ -1,141 +0,0 @@
+-LoadModule access_module modules/mod_access.so
+-LoadModule alias_module modules/mod_alias.so
+-LoadModule rewrite_module modules/mod_rewrite.so
+-LoadModule mime_magic_module modules/mod_mime_magic.so
+-LoadModule mime_module modules/mod_mime.so
+-LoadModule include_module modules/mod_include.so
+-LoadModule log_config_module modules/mod_log_config.so
+-LoadModule env_module modules/mod_env.so
+-LoadModule deflate_module modules/mod_deflate.so
+-LoadModule setenvif_module modules/mod_setenvif.so
+-LoadModule dir_module modules/mod_dir.so
+-LoadModule ssl_module modules/mod_ssl.so
+-LoadModule python_module modules/mod_python.so
+-LoadModule gridsite_module modules/mod_gridsite.so
+-
+-User  atlpan
+-Group zp
+-
+-<IfModule prefork.c>
+-StartServers         50
+-MinSpareServers      50
+-MaxSpareServers      50
+-MaxClients           50
+-MaxRequestsPerChild  0
+-</IfModule>
+-
+-<IfModule worker.c>
+-ServerLimit          10
+-StartServers         10
+-MaxClients           50
+-MinSpareThreads      50
+-MaxSpareThreads      50
+-ThreadsPerChild      5
+-MaxRequestsPerChild  0
+-</IfModule>
+-
+-ServerName pandaserver.cern.ch
+-
+-DocumentRoot "@@install_purelib@@/pandaserver"
+-
+-<Files ~ "\.(py|pyc|conf)$">
+-    Order allow,deny
+-    Deny from all
+-</Files>
+-
+-<Directory />
+-    Options FollowSymLinks
+-    AllowOverride None
+-    Order allow,deny
+-    Allow from all
+-    Deny from 192.203.218.14
+-</Directory>
+-
+-Alias /cache/ "@@install_dir@@/var/cache/pandaserver/"
+-
+-<Directory "@@install_dir@@/var/cache/pandaserver">
+-    Options FollowSymLinks
+-    AllowOverride None
+-    Order allow,deny
+-    Allow from all
+-    Deny from 192.203.218.14
+-</Directory>
+-
+-Listen 25080
+-<VirtualHost *:25080>
+-
+-RewriteEngine on
+-RewriteCond %{REQUEST_METHOD} ^(TRACE|TRACK)
+-RewriteRule .* - [F]
+-
+-<Directory "@@install_purelib@@/pandaserver/server">
+-
+-    <Limit GET POST>
+-        Order allow,deny
+-        Allow from all
+-        Deny from 192.203.218.14
+-    </Limit>
+-
+-   # mod_python
+-   SetHandler python-program
+-   PythonHandler mod_python.publisher
+-   PythonDebug On
+-
+-   # mod_gridsite
+-   GridSiteIndexes	on
+-   GridSiteAuth		on
+-   GridSiteDNlists	/etc/grid-security/dn-lists/
+-   GridSiteEnvs         on
+-
+-</Directory>
+-
+-</VirtualHost>
+-
+-Listen 25443
+-<VirtualHost *:25443>
+-
+-RewriteEngine on
+-RewriteCond %{REQUEST_METHOD} ^(TRACE|TRACK)
+-RewriteRule .* - [F]
+-
+-# CERN security recommendation to only allow the seven strongest ssl ciphers
+-SSLProtocol  -all +TLSv1 +SSLv3
+-SSLCipherSuite HIGH:MEDIUM:+SSLv3
+-
+-SSLEngine               on
+-SSLCertificateFile      /etc/grid-security/hostcert.pem
+-SSLCertificateKeyFile   /etc/grid-security/hostkey.pem
+-SSLCACertificatePath    /etc/grid-security/certificates
+-SSLVerifyClient         optional
+-SSLVerifyDepth          10
+-SSLOptions              +ExportCertData +StdEnvVars
+-
+-<Directory "@@install_purelib@@/pandaserver/server">
+-
+-   # mod_python
+-   SetHandler python-program
+-   PythonHandler mod_python.publisher
+-   PythonDebug On
+-
+-   # mod_gridsite
+-   GridSiteIndexes       on
+-   GridSiteAuth          on
+-   GridSiteDNlists       /etc/grid-security/dn-lists/
+-   GridSiteGSIProxyLimit 1
+-   GridSiteEnvs          on
+-</Directory>
+-                                                                               
+-</VirtualHost>
+-
+-LogLevel info
+-
+-LogFormat "%t %h \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" combined
+-LogFormat "%t %h \"%r\" %>s %b" common
+-LogFormat "%{Referer}i -> %U" referer
+-LogFormat "%{User-agent}i" agent
+-CustomLog @@install_dir@@/var/log/panda/panda_server_access_log common
+-ErrorLog @@install_dir@@/var/log/panda/panda_server_error_log
+-
+-PidFile @@install_dir@@/var/log/panda/panda_server_httpd.pid
+-
+-TypesConfig /etc/mime.types
+diff --git a/templates/panda_server-httpd.conf.template b/templates/panda_server-httpd.conf.template
+new file mode 100644
+index 0000000..95687da
+--- /dev/null
++++ b/templates/panda_server-httpd.conf.template
+@@ -0,0 +1,141 @@
++LoadModule authz_host_module modules/mod_authz_host.so
++LoadModule alias_module modules/mod_alias.so
++LoadModule rewrite_module modules/mod_rewrite.so
++LoadModule mime_magic_module modules/mod_mime_magic.so
++LoadModule mime_module modules/mod_mime.so
++LoadModule include_module modules/mod_include.so
++LoadModule log_config_module modules/mod_log_config.so
++LoadModule env_module modules/mod_env.so
++LoadModule deflate_module modules/mod_deflate.so
++LoadModule setenvif_module modules/mod_setenvif.so
++LoadModule dir_module modules/mod_dir.so
++LoadModule ssl_module modules/mod_ssl.so
++LoadModule python_module modules/mod_python.so
++LoadModule gridsite_module modules/mod_gridsite.so
++
++User  @@panda_user@@
++Group @@panda_group@@
++
++<IfModule prefork.c>
++StartServers         50
++MinSpareServers      50
++MaxSpareServers      50
++MaxClients           50
++MaxRequestsPerChild  0
++</IfModule>
++
++<IfModule worker.c>
++ServerLimit          10
++StartServers         10
++MaxClients           50
++MinSpareThreads      50
++MaxSpareThreads      50
++ThreadsPerChild      5
++MaxRequestsPerChild  0
++</IfModule>
++
++ServerName pandaserver.cern.ch
++
++DocumentRoot "@@install_purelib@@/pandaserver"
++
++<Files ~ "\.(py|pyc|conf)$">
++    Order allow,deny
++    Deny from all
++</Files>
++
++<Directory />
++    Options FollowSymLinks
++    AllowOverride None
++    Order allow,deny
++    Allow from all
++    Deny from 192.203.218.14
++</Directory>
++
++Alias /cache/ "/var/cache/pandaserver/"
++
++<Directory "/var/cache/pandaserver">
++    Options FollowSymLinks
++    AllowOverride None
++    Order allow,deny
++    Allow from all
++    Deny from 192.203.218.14
++</Directory>
++
++Listen 25080
++<VirtualHost *:25080>
++
++RewriteEngine on
++RewriteCond %{REQUEST_METHOD} ^(TRACE|TRACK)
++RewriteRule .* - [F]
++
++<Directory "@@install_purelib@@/pandaserver/server">
++
++    <Limit GET POST>
++        Order allow,deny
++        Allow from all
++        Deny from 192.203.218.14
++    </Limit>
++
++   # mod_python
++   SetHandler python-program
++   PythonHandler mod_python.publisher
++   PythonDebug On
++
++   # mod_gridsite
++   GridSiteIndexes	on
++   GridSiteAuth		on
++   GridSiteDNlists	/etc/grid-security/dn-lists/
++   GridSiteEnvs         on
++
++</Directory>
++
++</VirtualHost>
++
++Listen 25443
++<VirtualHost *:25443>
++
++RewriteEngine on
++RewriteCond %{REQUEST_METHOD} ^(TRACE|TRACK)
++RewriteRule .* - [F]
++
++# CERN security recommendation to only allow the seven strongest ssl ciphers
++SSLProtocol  -all +TLSv1 +SSLv3
++SSLCipherSuite HIGH:MEDIUM:+SSLv3
++
++SSLEngine               on
++SSLCertificateFile      /etc/grid-security/hostcert.pem
++SSLCertificateKeyFile   /etc/grid-security/hostkey.pem
++SSLCACertificatePath    /etc/grid-security/certificates
++SSLVerifyClient         optional
++SSLVerifyDepth          10
++SSLOptions              +ExportCertData +StdEnvVars
++
++<Directory "@@install_purelib@@/pandaserver/server">
++
++   # mod_python
++   SetHandler python-program
++   PythonHandler mod_python.publisher
++   PythonDebug On
++
++   # mod_gridsite
++   GridSiteIndexes       on
++   GridSiteAuth          on
++   GridSiteDNlists       /etc/grid-security/dn-lists/
++   GridSiteGSIProxyLimit 1
++   GridSiteEnvs          on
++</Directory>
++                                                                               
++</VirtualHost>
++
++LogLevel info
++
++LogFormat "%t %h \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" combined
++LogFormat "%t %h \"%r\" %>s %b" common
++LogFormat "%{Referer}i -> %U" referer
++LogFormat "%{User-agent}i" agent
++CustomLog /var/log/panda/panda_server_access_log common
++ErrorLog /var/log/panda/panda_server_error_log
++
++PidFile /var/log/panda/panda_server_httpd.pid
++
++TypesConfig /etc/mime.types
+diff --git a/templates/panda_server-logrotate.template b/templates/panda_server-logrotate.template
+deleted file mode 100644
+index 94161e0..0000000
+--- a/templates/panda_server-logrotate.template
++++ /dev/null
+@@ -1,18 +0,0 @@
+-@@install_dir@@/var/log/panda/*log {
+-    rotate 180
+-    daily
+-    compress    
+-    missingok
+-    notifempty
+-    sharedscripts
+-    daily       
+-    prerotate
+-        killall -u atlpan python > /dev/null 2>/dev/null || true
+-        killall -u atlpan python@@python_exec_version@@ > /dev/null 2>/dev/null || true
+-    endscript
+-    postrotate
+-	killall -u atlpan python > /dev/null 2>/dev/null || true
+-        killall -u atlpan python@@python_exec_version@@ > /dev/null 2>/dev/null || true
+-	/sbin/service httpd-pandasrv graceful > /dev/null 2>/dev/null || true
+-    endscript
+-}
+diff --git a/templates/panda_server-makeSlsXml.exe.template b/templates/panda_server-makeSlsXml.exe.template
+index b2cebec..d7a888a 100755
+--- a/templates/panda_server-makeSlsXml.exe.template
++++ b/templates/panda_server-makeSlsXml.exe.template
+@@ -239,7 +239,7 @@ def count_processes() :
+ 	output = subprocess.Popen( ['ps', 'aux'], stdout=subprocess.PIPE ).communicate()[0]
+ 	count = 0
+ 	for line in output.split( '\n' ) :
+-		if( re.match( 'atlpan', line ) ) :
++		if( re.match( '@@panda_user@@', line ) ) :
+ 			if( re.search( 'http', line ) ) :
+ 				count += 1
+ 	return count
+@@ -256,7 +256,7 @@ def count_add_processes() :
+ 	return count
+ 
+ def count_holdings() :
+-	output = subprocess.Popen("ls /data/atlpan/srv/var/log/panda/ | egrep '(finished|failed)'",
++	output = subprocess.Popen("ls /var/log/panda/ | egrep '(finished|failed)'",
+ 				  stdout=subprocess.PIPE,shell=True).communicate()[0]
+         count =0
+ 	for line in output.split( '\n' ) :
+@@ -270,9 +270,9 @@ def registration_time(timeSlice=False,onlyDQ2=False) :
+ 	aveRegTime = '0.0'
+ 	try:
+ 		if onlyDQ2:
+-			com = "grep registraion /data/atlpan/srv/var/log/panda/panda-Adder.log | grep DQ2 | grep -v LFC"
++			com = "grep registraion /var/log/panda/panda-Adder.log | grep DQ2 | grep -v LFC"
+ 		else:
+-			com = "grep 'LFC+DQ2' /data/atlpan/srv/var/log/panda/panda-Adder.log"
++			com = "grep 'LFC+DQ2' /var/log/panda/panda-Adder.log"
+ 		if not timeSlice:
+ 			com += ' | tail -1000'
+ 		output = subprocess.Popen(com,stdout=subprocess.PIPE,shell=True).communicate()[0]
+diff --git a/templates/panda_server-merge.exe.template b/templates/panda_server-merge.exe.template
+new file mode 100755
+index 0000000..746c1d0
+--- /dev/null
++++ b/templates/panda_server-merge.exe.template
+@@ -0,0 +1,9 @@
++#!/bin/bash
++
++# setup grid stuff
++source /opt/glite/etc/profile.d/grid-env.sh
++
++# import env vars from sysconfig
++source /etc/sysconfig/panda_server
++
++python@@python_exec_version@@ @@install_purelib@@/pandaserver/test/runMerger.py
+diff --git a/templates/panda_server-merge.sh.exe.template b/templates/panda_server-merge.sh.exe.template
+deleted file mode 100755
+index 99bc833..0000000
+--- a/templates/panda_server-merge.sh.exe.template
++++ /dev/null
+@@ -1,9 +0,0 @@
+-#!/bin/bash
+-
+-# setup grid stuff
+-source /opt/glite/etc/profile.d/grid-env.sh
+-
+-# import env vars from sysconfig
+-source @@install_dir@@/etc/sysconfig/panda_server-sysconfig
+-
+-python@@python_exec_version@@ @@install_purelib@@/pandaserver/test/runMerger.py
+diff --git a/templates/panda_server-priority.exe.template b/templates/panda_server-priority.exe.template
+new file mode 100755
+index 0000000..542ac9e
+--- /dev/null
++++ b/templates/panda_server-priority.exe.template
+@@ -0,0 +1,6 @@
++#!/bin/bash
++
++# import env vars from sysconfig
++source /etc/sysconfig/panda_server
++
++python@@python_exec_version@@ @@install_purelib@@/pandaserver/test/prioryMassage.py
+diff --git a/templates/panda_server-priority.sh.exe.template b/templates/panda_server-priority.sh.exe.template
+deleted file mode 100755
+index 3d1fe75..0000000
+--- a/templates/panda_server-priority.sh.exe.template
++++ /dev/null
+@@ -1,6 +0,0 @@
+-#!/bin/bash
+-
+-# import env vars from sysconfig
+-source @@install_dir@@/etc/sysconfig/panda_server-sysconfig
+-
+-python@@python_exec_version@@ @@install_purelib@@/pandaserver/test/prioryMassage.py
+diff --git a/templates/panda_server-runRebro.exe.template b/templates/panda_server-runRebro.exe.template
+new file mode 100755
+index 0000000..8170de8
+--- /dev/null
++++ b/templates/panda_server-runRebro.exe.template
+@@ -0,0 +1,9 @@
++#!/bin/bash
++
++# setup grid stuff
++source /etc/profile.d/grid-env.sh
++
++# import env vars from sysconfig
++source /etc/sysconfig/panda_server
++
++python@@python_exec_version@@ @@install_purelib@@/pandaserver/test/runRebro.py
+diff --git a/templates/panda_server-runRebro.sh.exe.template b/templates/panda_server-runRebro.sh.exe.template
+deleted file mode 100755
+index 23b1f4d..0000000
+--- a/templates/panda_server-runRebro.sh.exe.template
++++ /dev/null
+@@ -1,9 +0,0 @@
+-#!/bin/bash
+-
+-# setup grid stuff
+-source /etc/profile.d/grid-env.sh
+-
+-# import env vars from sysconfig
+-source @@install_dir@@/etc/sysconfig/panda_server-sysconfig
+-
+-python@@python_exec_version@@ @@install_purelib@@/pandaserver/test/runRebro.py
+diff --git a/templates/panda_server-sysconfig.rpmnew.template b/templates/panda_server-sysconfig.rpmnew.template
+deleted file mode 100644
+index ff50a6f..0000000
+--- a/templates/panda_server-sysconfig.rpmnew.template
++++ /dev/null
+@@ -1,42 +0,0 @@
+-# Configuration file for the httpd service.
+-
+-OPTIONS="-f @@install_dir@@/etc/panda/panda_server-httpd.conf"
+-
+-# for FastCGI/WSGI
+-#OPTIONS="-f @@install_dir@@/etc/panda/panda_server-httpd-FastCGI.conf"
+-#HTTPD='/usr/sbin/httpd'
+-
+-# reset PATH/LD_LIBRARY_PATH since atlpan's ones break grid-tools
+-export PATH=/bin:/usr/local/bin:/usr/bin
+-unset LD_LIBRARY_PATH
+-
+-# for DQ2
+-export X509_CERT_DIR=/etc/grid-security/certificates
+-export RUCIO_ACCOUNT=panda
+-export RUCIO_APPID=pandasrv
+-
+-# panda home
+-export PANDA_HOME=@@install_dir@@
+-
+-# timezone
+-export TZ=UTC
+-
+-# import panda modules
+-export PYTHONPATH=@@install_purelib@@/pandacommon:@@install_purelib@@/pandaserver
+-
+-# avoid to use AFS
+-export HOME=/home/atlpan
+-
+-# set user's proxy
+-export X509_USER_PROXY=FIXME
+-
+-# panda server ports
+-export PANDA_HTTPS_PORT=25443
+-export PANDA_HTTP_PORT=25080
+-export PANDA_CACHE_PORT=25085
+-
+-# panda server URLs
+-export PANDA_URL='http://@@host_name@@:'${PANDA_HTTP_PORT}'/server/panda'
+-export PANDA_URL_SSL='https://@@host_name@@:'${PANDA_HTTPS_PORT}'/server/panda'
+-
+-
+diff --git a/templates/panda_server-tmpwatch.exe.template b/templates/panda_server-tmpwatch.exe.template
+new file mode 100644
+index 0000000..c5bc941
+--- /dev/null
++++ b/templates/panda_server-tmpwatch.exe.template
+@@ -0,0 +1,6 @@
++#!/bin/bash
++
++# import env vars from sysconfig
++source /etc/sysconfig/panda_server
++
++python @@install_purelib@@/pandaserver/test/tmpwatch.py
+diff --git a/templates/panda_server-tmpwatch.sh.exe.template b/templates/panda_server-tmpwatch.sh.exe.template
+deleted file mode 100644
+index 40fbd27..0000000
+--- a/templates/panda_server-tmpwatch.sh.exe.template
++++ /dev/null
+@@ -1,6 +0,0 @@
+-#!/bin/bash
+-
+-# import env vars from sysconfig
+-source @@install_dir@@/etc/sysconfig/panda_server-sysconfig
+-
+-python @@install_purelib@@/pandaserver/test/tmpwatch.py
+diff --git a/templates/panda_server-vomsrenew.exe.template b/templates/panda_server-vomsrenew.exe.template
+new file mode 100755
+index 0000000..9c80b01
+--- /dev/null
++++ b/templates/panda_server-vomsrenew.exe.template
+@@ -0,0 +1,23 @@
++#!/bin/bash
++
++source /etc/profile.d/grid-env.sh
++
++# import env vars from sysconfig
++source /etc/sysconfig/panda_server
++
++NOVOMS=${X509_USER_PROXY}_novoms
++
++voms-proxy-init -voms atlas:/atlas/Role=production -out $X509_USER_PROXY -valid 96:00 -cert=$NOVOMS
++
++# check lifetime of certificate
++grid-proxy-info -e -h 504 -f $NOVOMS
++if [ $? -ne 0 ]; then
++  echo $NOVOMS expires in 3 weeks on `hostname` | mail -s "WARNING : Grid certificate expires soon on panda server" atlas-adc-panda-service@cern.ch
++fi
++
++# check lifetime of certificate
++voms-proxy-info -exists -hours 72 -file $X509_USER_PROXY
++if [ $? -ne 0 ]; then
++  echo $X509_USER_PROXY expires in 3 days on `hostname` | mail -s "WARNING : Grid proxy expires soon on panda server" atlas-adc-panda-service@cern.ch
++fi
++
+diff --git a/templates/panda_server-vomsrenew.sh.exe.template b/templates/panda_server-vomsrenew.sh.exe.template
+deleted file mode 100755
+index a225e35..0000000
+--- a/templates/panda_server-vomsrenew.sh.exe.template
++++ /dev/null
+@@ -1,23 +0,0 @@
+-#!/bin/bash
+-
+-source /etc/profile.d/grid-env.sh
+-
+-# import env vars from sysconfig
+-source @@install_dir@@/etc/sysconfig/panda_server-sysconfig
+-
+-NOVOMS=${X509_USER_PROXY}_novoms
+-
+-voms-proxy-init -voms atlas:/atlas/Role=production -out $X509_USER_PROXY -valid 96:00 -cert=$NOVOMS
+-
+-# check lifetime of certificate
+-grid-proxy-info -e -h 504 -f $NOVOMS
+-if [ $? -ne 0 ]; then
+-  echo $NOVOMS expires in 3 weeks on `hostname` | mail -s "WARNING : Grid certificate expires soon on panda server" atlas-adc-panda-service@cern.ch
+-fi
+-
+-# check lifetime of certificate
+-voms-proxy-info -exists -hours 72 -file $X509_USER_PROXY
+-if [ $? -ne 0 ]; then
+-  echo $X509_USER_PROXY expires in 3 days on `hostname` | mail -s "WARNING : Grid proxy expires soon on panda server" atlas-adc-panda-service@cern.ch
+-fi
+-
+diff --git a/templates/panda_server.cfg.rpmnew.template b/templates/panda_server.cfg.rpmnew.template
+deleted file mode 100644
+index ffff13e..0000000
+--- a/templates/panda_server.cfg.rpmnew.template
++++ /dev/null
+@@ -1,363 +0,0 @@
+-[server]
+-
+-
+-##########################
+-#
+-# Logger parameters
+-#
+-
+-# log directory
+-logdir=@@install_dir@@/var/log/panda
+-
+-# logger name
+-loggername = prod
+-
+-
+-
+-##########################
+-#
+-# Transaction parameters
+-#
+-
+-# lock file for getJobs
+-lockfile_getJobs = %(logdir)s/getJobs.lock
+-
+-# lock file for getSerialNumber
+-lockfile_getSN = %(logdir)s/getSN.lock
+-
+-# lock file for accessing email DB
+-lockfile_getMail = %(logdir)s/getMail.lock
+-
+-# lock file for updateDatasetStatus
+-lockfile_setDS = %(logdir)s/setDS.lock
+-
+-# lock file for getCloudTask
+-lockfile_getCT = %(logdir)s/getCT.lock
+-
+-# lock file for uuidgen
+-lockfile_getUU = %(logdir)s/getUU.lock
+-
+-
+-
+-##########################
+-#
+-# DA parameters
+-#
+-
+-# cache space
+-cache_dir = @@install_dir@@/var/cache/pandaserver
+-
+-
+-
+-##########################
+-#
+-# DDM parameters
+-#
+-
+-# dq2 dir
+-dq2_dir = /opt/dq2
+-
+-# globus dir
+-globus_dir = /opt/globus
+-
+-# path to native python 
+-native_python = /usr/bin
+-
+-# path to python for lfc client (/data/atlpan/bin/python cannot be used due to lack of libpythonX.Y.so)
+-native_python32 = /usr/bin
+-
+-# glite source file
+-glite_source = /etc/profile.d/grid-env.sh
+-
+-# location for Panda common
+-pandaCommon_dir = @@install_purelib@@/pandacommon
+-
+-# location for Panda server
+-pandaPython_dir = @@install_purelib@@/pandaserver
+-
+-# location for LFCclient
+-lfcClient_dir = %(pandaPython_dir)s/brokerage
+-
+-# home dir to change CWD
+-home_dir_cwd = /home/atlpan
+-
+-
+-
+-##########################
+-#
+-# Database parameters
+-#
+-
+-# host
+-dbhost = ADCR_PANDA
+-
+-# user
+-dbuser = ATLAS_PANDA_WRITER
+-
+-# password
+-dbpasswd = FIXME
+-
+-# database
+-dbname = PandaDB
+-
+-# number of connections
+-nDBConnection = 2
+-
+-# number of connections for FastCGI/WSGI
+-nDBConForFastCGIWSGI = 1
+-
+-# use timeout
+-usedbtimeout = True
+-
+-# timout value
+-dbtimeout = 300
+-
+-# verbose in bridge
+-dbbridgeverbose = False
+-
+-# SQL dumper
+-dump_sql = False
+-
+-# DB schema names
+-schemaPANDA = ATLAS_PANDA
+-schemaMETA = ATLAS_PANDAMETA
+-schemaGRISLI = ATLAS_GRISLI
+-schemaPANDAARCH = ATLAS_PANDAARCH
+-schemaJEDI = ATLAS_PANDA
+-schemaDEFT = ATLAS_DEFT
+-
+-# DB backend
+-backend = oracle
+-#backend = mysql
+-
+-# DB port
+-dbport = 4444
+-
+-dbhostmysql = pandawms.org
+-dbportmysql = 23306
+-dbnamemysql = pandadb1
+-dbusermysql = pansrusr1
+-dbpasswdmysql = FIXME
+-
+-# LogDB
+-#logdbengine = oracle
+-logdbengine = mysql
+-logdbhost = pandawms.org
+-logdbport = 23306
+-logdbname = pandadb1
+-logdbuser = pansrusr1
+-logdbpasswd = FIXME
+-nLogDBConnection = 5
+-
+-# ArchiveDB
+-#archivedbengine = oracle
+-archivedbengine = mysql
+-archivedbhost = pandawms.org
+-archivedbport = 23306
+-archivedbname = pandadb1
+-archivedbuser = pansrusr1
+-archivedbpasswd = FIXME
+-nArchiveDBConnection = 5
+-
+-##########################
+-#
+-# Panda server parameters
+-#
+-
+-# port for https
+-pserverport = 25443
+-
+-# port for http
+-pserverporthttp = 25080
+-
+-# port for cache
+-pserverportcache = 25085
+-
+-# alias
+-pserveralias = pandaserver.cern.ch
+-
+-# host
+-pserverhost = localhost
+-pserverhostssl = pandaserver.cern.ch
+-#pserverhost = localhost
+-#pserverhostssl = pandawms.org
+-
+-
+-# space to keep key pairs
+-keyDir = @@install_dir@@/var/keys
+-
+-
+-
+-##########################
+-#
+-# proxy parameters
+-#
+-
+-# http 
+-httpProxy = ""
+-
+-
+-
+-##########################
+-#
+-# E-mail DB parameters
+-#
+-
+-# database name for local caching
+-emailDB = %(logdir)s/email_db
+-
+-# SMTP server
+-emailSMTPsrv = cernmx.cern.ch
+-
+-# sender address for notification
+-emailSender = atlpan@cern.ch
+-
+-# login name for SMTP
+-emailLogin  = atlpan
+-
+-# login password for SMTP
+-emailPass = FIXME
+-
+-
+-
+-##########################
+-#
+-# parameters for dynamic task assignment 
+-#
+-
+-# enable dynamic task assignment 
+-enableDynamicTA = True
+-
+-
+-
+-##########################
+-#
+-# parameters for redirection service
+-#
+-
+-# enable redirection service
+-enableRedirection = False
+-
+-
+-
+-##########################
+-#
+-# parameters for FastCGI/WSGI
+-#
+-
+-# use FastCGI with flup
+-useFastCGI = False
+-
+-# use WSGI without flup
+-useWSGI = True
+-
+-# verbose in entry point
+-entryVerbose = False
+-
+-
+-
+-##########################
+-#
+-# parameters for memcached
+-#
+-
+-# use memcached
+-memcached_enable = True
+-
+-# memcached servers
+-memcached_srvs = voatlas248.cern.ch:11211,voatlas249.cern.ch:11211,voatlas250.cern.ch:11211,voatlas251.cern.ch:11211,voatlas252.cern.ch:11211,voatlas253.cern.ch:11211
+-
+-# expiration time in memcached
+-memcached_exptime = 86400
+-
+-
+-
+-##########################
+-#
+-# nRunning parameters
+-#
+-
+-# interval
+-nrun_interval = 5
+-
+-# the number of hosts
+-nrun_hosts = 3
+-
+-# serial number
+-nrun_snum = 999
+-
+-
+-
+-##########################
+-#
+-# Cassandra
+-#
+-
+-# use Cassandra for PandaCache
+-cacheUseCassandra = False
+-
+-# ignore Cassandra error
+-cacheIgnoreCassandraError = True
+-
+-# keyspace for PandaCache
+-cacheKeySpace = PandaCacheKeySpace
+-
+-# column family for files
+-cacheFileTable = FileTable
+-
+-
+-
+-##########################
+-#
+-# Job Status Monitor
+-#
+-
+-# enable job status change monitoring
+-record_statuschange = False
+-
+-
+-
+-##########################
+-#
+-# JEDI
+-#
+-
+-# use JEDI
+-useJEDI = False
+-
+-
+-
+-##########################
+-#
+-# Proxy Cache
+-#
+-
+-# use Proxy Cache
+-useProxyCache = False
+-
+-
+-
+-##########################
+-#
+-# Plugin setup
+-#
+-
+-# plugins for Adder. format=vo1(|vo2(vo3...):moduleName:className(,vo4...) 
+-adder_plugins = local:dataservice.AdderDummyPlugin:AdderDummyPlugin
+-
+-# plugins for Setupper. format=vo1(|vo2(vo3...):moduleName:className(,vo4...) 
+-setupper_plugins = local:dataservice.SetupperDummyPlugin:SetupperDummyPlugin
+-
+-
+-##########################
+-#
+-# Default siteIDs
+-#
+-
+-### for ATLAS
+-defaultSiteID = BNL_ATLAS_1
+-defaultAnalySiteID = ANALY_BNL_ATLAS_1
+-### for LSST
+-# defaultSiteID = BNL-LSST
+-# defaultAnalySiteID = ANALY_BNL-LSST
+-
+diff --git a/templates/panda_server.cfg.template b/templates/panda_server.cfg.template
+new file mode 100644
+index 0000000..5a99f8a
+--- /dev/null
++++ b/templates/panda_server.cfg.template
+@@ -0,0 +1,363 @@
++[server]
++
++
++##########################
++#
++# Logger parameters
++#
++
++# log directory
++logdir=/var/log/panda
++
++# logger name
++loggername = prod
++
++
++
++##########################
++#
++# Transaction parameters
++#
++
++# lock file for getJobs
++lockfile_getJobs = %(logdir)s/getJobs.lock
++
++# lock file for getSerialNumber
++lockfile_getSN = %(logdir)s/getSN.lock
++
++# lock file for accessing email DB
++lockfile_getMail = %(logdir)s/getMail.lock
++
++# lock file for updateDatasetStatus
++lockfile_setDS = %(logdir)s/setDS.lock
++
++# lock file for getCloudTask
++lockfile_getCT = %(logdir)s/getCT.lock
++
++# lock file for uuidgen
++lockfile_getUU = %(logdir)s/getUU.lock
++
++
++
++##########################
++#
++# DA parameters
++#
++
++# cache space
++cache_dir = /var/cache/pandaserver
++
++
++
++##########################
++#
++# DDM parameters
++#
++
++# dq2 dir
++dq2_dir = /opt/dq2
++
++# globus dir
++globus_dir = /opt/globus
++
++# path to native python 
++native_python = /usr/bin
++
++# path to python for lfc client (/data/atlpan/bin/python cannot be used due to lack of libpythonX.Y.so)
++native_python32 = /usr/bin
++
++# glite source file
++glite_source = /etc/profile.d/grid-env.sh
++
++# location for Panda common
++pandaCommon_dir = @@install_purelib@@/pandacommon
++
++# location for Panda server
++pandaPython_dir = @@install_purelib@@/pandaserver
++
++# location for LFCclient
++lfcClient_dir = %(pandaPython_dir)s/brokerage
++
++# home dir to change CWD
++home_dir_cwd = /home/@@panda_user@@
++
++
++
++##########################
++#
++# Database parameters
++#
++
++# host
++dbhost = ADCR_PANDA
++
++# user
++dbuser = ATLAS_PANDA_WRITER
++
++# password
++dbpasswd = FIXME
++
++# database
++dbname = PandaDB
++
++# number of connections
++nDBConnection = 2
++
++# number of connections for FastCGI/WSGI
++nDBConForFastCGIWSGI = 1
++
++# use timeout
++usedbtimeout = True
++
++# timout value
++dbtimeout = 300
++
++# verbose in bridge
++dbbridgeverbose = False
++
++# SQL dumper
++dump_sql = False
++
++# DB schema names
++schemaPANDA = ATLAS_PANDA
++schemaMETA = ATLAS_PANDAMETA
++schemaGRISLI = ATLAS_GRISLI
++schemaPANDAARCH = ATLAS_PANDAARCH
++schemaJEDI = ATLAS_PANDA
++schemaDEFT = ATLAS_DEFT
++
++# DB backend
++backend = oracle
++#backend = mysql
++
++# DB port
++dbport = 4444
++
++dbhostmysql = pandawms.org
++dbportmysql = 23306
++dbnamemysql = pandadb1
++dbusermysql = pansrusr1
++dbpasswdmysql = FIXME
++
++# LogDB
++#logdbengine = oracle
++logdbengine = mysql
++logdbhost = pandawms.org
++logdbport = 23306
++logdbname = pandadb1
++logdbuser = pansrusr1
++logdbpasswd = FIXME
++nLogDBConnection = 5
++
++# ArchiveDB
++#archivedbengine = oracle
++archivedbengine = mysql
++archivedbhost = pandawms.org
++archivedbport = 23306
++archivedbname = pandadb1
++archivedbuser = pansrusr1
++archivedbpasswd = FIXME
++nArchiveDBConnection = 5
++
++##########################
++#
++# Panda server parameters
++#
++
++# port for https
++pserverport = 25443
++
++# port for http
++pserverporthttp = 25080
++
++# port for cache
++pserverportcache = 25085
++
++# alias
++pserveralias = pandaserver.cern.ch
++
++# host
++pserverhost = localhost
++pserverhostssl = pandaserver.cern.ch
++#pserverhost = localhost
++#pserverhostssl = pandawms.org
++
++
++# space to keep key pairs
++keyDir = @@install_dir@@/var/keys
++
++
++
++##########################
++#
++# proxy parameters
++#
++
++# http 
++httpProxy = ""
++
++
++
++##########################
++#
++# E-mail DB parameters
++#
++
++# database name for local caching
++emailDB = %(logdir)s/email_db
++
++# SMTP server
++emailSMTPsrv = cernmx.cern.ch
++
++# sender address for notification
++emailSender = atlpan@cern.ch
++
++# login name for SMTP
++emailLogin  = atlpan
++
++# login password for SMTP
++emailPass = FIXME
++
++
++
++##########################
++#
++# parameters for dynamic task assignment 
++#
++
++# enable dynamic task assignment 
++enableDynamicTA = True
++
++
++
++##########################
++#
++# parameters for redirection service
++#
++
++# enable redirection service
++enableRedirection = False
++
++
++
++##########################
++#
++# parameters for FastCGI/WSGI
++#
++
++# use FastCGI with flup
++useFastCGI = False
++
++# use WSGI without flup
++useWSGI = True
++
++# verbose in entry point
++entryVerbose = False
++
++
++
++##########################
++#
++# parameters for memcached
++#
++
++# use memcached
++memcached_enable = True
++
++# memcached servers
++memcached_srvs = voatlas248.cern.ch:11211,voatlas249.cern.ch:11211,voatlas250.cern.ch:11211,voatlas251.cern.ch:11211,voatlas252.cern.ch:11211,voatlas253.cern.ch:11211
++
++# expiration time in memcached
++memcached_exptime = 86400
++
++
++
++##########################
++#
++# nRunning parameters
++#
++
++# interval
++nrun_interval = 5
++
++# the number of hosts
++nrun_hosts = 3
++
++# serial number
++nrun_snum = 999
++
++
++
++##########################
++#
++# Cassandra
++#
++
++# use Cassandra for PandaCache
++cacheUseCassandra = False
++
++# ignore Cassandra error
++cacheIgnoreCassandraError = True
++
++# keyspace for PandaCache
++cacheKeySpace = PandaCacheKeySpace
++
++# column family for files
++cacheFileTable = FileTable
++
++
++
++##########################
++#
++# Job Status Monitor
++#
++
++# enable job status change monitoring
++record_statuschange = False
++
++
++
++##########################
++#
++# JEDI
++#
++
++# use JEDI
++useJEDI = False
++
++
++
++##########################
++#
++# Proxy Cache
++#
++
++# use Proxy Cache
++useProxyCache = False
++
++
++
++##########################
++#
++# Plugin setup
++#
++
++# plugins for Adder. format=vo1(|vo2(vo3...):moduleName:className(,vo4...) 
++adder_plugins = local:dataservice.AdderDummyPlugin:AdderDummyPlugin
++
++# plugins for Setupper. format=vo1(|vo2(vo3...):moduleName:className(,vo4...) 
++setupper_plugins = local:dataservice.SetupperDummyPlugin:SetupperDummyPlugin
++
++
++##########################
++#
++# Default siteIDs
++#
++
++### for ATLAS
++defaultSiteID = BNL_ATLAS_1
++defaultAnalySiteID = ANALY_BNL_ATLAS_1
++### for LSST
++# defaultSiteID = BNL-LSST
++# defaultAnalySiteID = ANALY_BNL-LSST
++
+diff --git a/templates/sysconfig/panda_server.template b/templates/sysconfig/panda_server.template
+new file mode 100644
+index 0000000..0ddbd1a
+--- /dev/null
++++ b/templates/sysconfig/panda_server.template
+@@ -0,0 +1,41 @@
++# Configuration file for the httpd service.
++
++OPTIONS="-f /etc/panda/panda_server-httpd.conf"
++
++# for FastCGI/WSGI
++#OPTIONS="-f /etc/panda/panda_server-httpd-FastCGI.conf"
++#HTTPD='/usr/sbin/httpd'
++
++# reset PATH/LD_LIBRARY_PATH since atlpan's ones break grid-tools
++export PATH=/bin:/usr/local/bin:/usr/bin
++unset LD_LIBRARY_PATH
++
++# for DQ2
++export X509_CERT_DIR=/etc/grid-security/certificates
++export RUCIO_ACCOUNT=panda
++export RUCIO_APPID=pandasrv
++
++# panda home
++export PANDA_HOME=@@install_dir@@
++
++# timezone
++export TZ=UTC
++
++# import panda modules
++export PYTHONPATH=@@install_purelib@@/pandacommon:@@install_purelib@@/pandaserver
++
++# avoid to use AFS
++#export HOME=~@@panda_user@@
++
++# set user's proxy
++export X509_USER_PROXY=FIXME
++
++# panda server ports
++export PANDA_HTTPS_PORT=25443
++export PANDA_HTTP_PORT=25080
++export PANDA_CACHE_PORT=25085
++
++# panda server URLs
++export PANDA_URL="http://${HOSTNAME}:${PANDA_HTTP_PORT}/server/panda"
++export PANDA_URL_SSL="https://${HOSTNAME}:${PANDA_HTTPS_PORT}/server/panda"
++
