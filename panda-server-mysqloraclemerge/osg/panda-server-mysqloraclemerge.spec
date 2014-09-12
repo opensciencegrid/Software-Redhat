@@ -1,7 +1,7 @@
 %define name panda-server-mysqloraclemerge
 %define version 0.0.2
 %define unmangled_version 0.0.2.dev-83-92a9877-134183
-%define release 0.1
+%define release 0.2
 %define panda_user  pansrv
 %define panda_group pansrv
 
@@ -35,6 +35,9 @@ This package contains PanDA Server Components
 %prep
 %setup -n %{name}-%{unmangled_version}
 %patch0 -p1
+
+# with release_type = dev, version.py will expect to see a git checkout...
+sed -i '/^release_type\>/s/\<dev$/stable/' setup_mysqloraclemerge.cfg
 
 %build
 python setup_mysqloraclemerge.py build
