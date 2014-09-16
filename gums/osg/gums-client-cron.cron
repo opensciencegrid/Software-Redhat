@@ -1,0 +1,2 @@
+# The double negative here is because we don't want the job to _fail_ if the lock file isn't there.
+0 */6 * * * root [[ ! -f /var/lock/subsys/gums-host-cron ]] || /usr/bin/gums-host-cron
