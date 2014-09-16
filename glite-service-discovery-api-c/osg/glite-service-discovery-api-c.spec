@@ -1,7 +1,7 @@
 Summary: C libraries for accessing the service discovery system
 Name: glite-service-discovery-api-c
 Version: 2.2.3
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: Apache License 2.0
 Vendor: EMI
 Group: System Environment/Libraries
@@ -48,16 +48,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libglite-sd-c.so.2
 %{_libdir}/libglite-sd-c.so.2.0.2
 
-%changelog
-* Wed Jan 18 2012 Derek Weitzel <dweitzel@cse.unl.edu> - 2.2.3-3
-- Run the bootstrap script before configuring the code
-
-* Fri Oct 28 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 2.2.3-2.sl5
-- rebuilt
-
-* Sun Jul  3 2011 Brian Bockelman <bbockelm@cse.unl.edu> 2.2.3-1
-- Initial packaging, adopted from CVS and EMI.
-
 %package devel
 Summary: C libraries for accessing the service discovery system (development files)
 Group: System Environment/Libraries
@@ -86,5 +76,23 @@ Documentation files for the service discovery system API
 %doc %{_docdir}/%{name}-%{version}/html/*.html
 %doc %{_docdir}/%{name}-%{version}/html/*.css
 %doc %{_docdir}/%{name}-%{version}/html/*.png
+%if 0%{?rhel} < 7
 %doc %{_docdir}/%{name}-%{version}/html/*.gif
+%else
+%doc %{_docdir}/%{name}-%{version}/html/*.js
+%endif
+
+
+%changelog
+* Tue Sep 16 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 2.2.3-4
+- Doc subpackage: remove *.gif, add *.js on EL7 (doxygen apparently makes different files on EL7 than on previous versions)
+
+* Wed Jan 18 2012 Derek Weitzel <dweitzel@cse.unl.edu> - 2.2.3-3
+- Run the bootstrap script before configuring the code
+
+* Fri Oct 28 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 2.2.3-2.sl5
+- rebuilt
+
+* Sun Jul  3 2011 Brian Bockelman <bbockelm@cse.unl.edu> 2.2.3-1
+- Initial packaging, adopted from CVS and EMI.
 
