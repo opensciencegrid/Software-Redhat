@@ -1,7 +1,7 @@
-%define zookeeper_version 3.4.3+15 
-%define zookeeper_patched_version 3.4.3-cdh4.0.1 
-%define zookeeper_base_version 3.4.3 
-%define zookeeper_release 1.cdh4.0.1.p0.2%{?dist}
+%define zookeeper_version 3.4.3+15
+%define zookeeper_patched_version 3.4.3-cdh4.0.1
+%define zookeeper_base_version 3.4.3
+%define zookeeper_release 1.cdh4.0.1.p0.3%{?dist}
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
@@ -82,7 +82,11 @@ BuildArch: noarch
 BuildRequires: ant, autoconf, automake
 
 #ADDED BY OSG
+%if 0%{?rhel} > 6
+BuildRequires: maven >= 3
+%else
 BuildRequires: maven3
+%endif
 BuildRequires: java7-devel
 BuildRequires: jpackage-utils
 BuildRequires: /usr/lib/java-1.7.0
@@ -142,7 +146,9 @@ This package starts the zookeeper server on startup
 
 #Changes needed to do-component-build
 cp %{SOURCE1} .
-%patch0 -p0 
+%if 0%{?rhel} < 7
+%patch0 -p0
+%endif
 
 %build
 env FULL_VERSION=%{zookeeper_patched_version} bash do-component-build
@@ -217,6 +223,9 @@ fi
 %{man_dir}/man1/zookeeper.1.*
 
 %changelog
+* Tue Sep 16 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 3.4.3+15-1.cdh4.0.1.p0.3
+- Use system maven on EL 7 (SOFTWARE-1541)
+
 * Thu May 16 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 3.4.3+15-1.cdh4.0.1.p0.2
 - Rebuild with java 7 / changed dependencies to java 7
 
