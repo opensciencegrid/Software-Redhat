@@ -1,18 +1,21 @@
 %define local_maven /tmp/m2-repository
-%define mvn /usr/share/apache-maven-3.0.4/bin/mvn
+#%define mvn /usr/share/apache-maven-3.0.4/bin/mvn
+%define mvn /usr/bin/mvn22
 %define _noarchlib %{_exec_prefix}/lib
 %define jglobus_version 2.0.6
 Name:		privilege-xacml
-Version:	2.6.3
-Release:	0.1.rc1%{?dist}
-Summary:	OSG-core java depenency
+Version:	2.6.3.1
+Release:	1%{?dist}
+Summary:	Core bindings for XACML interoperability profile.
 
 Group:		OSG/Libraries
 License:	Apache 2.0
 URL:		http://cdcvs.fnal.gov/subversion/privilege
-Source0:	%{name}-%{version}.rc1.tar.gz
 
-
+# To generate:
+# svn export svn+ssh://p-privilege@cdcvs.fnal.gov/cvs/projects/privilege/tags/v%{version} %{name}-%{version}
+# tar zcf %{name}-%{version}.tar.gz %{name}-%{version}
+Source0:	%{name}-%{version}.tar.gz
 
 BuildArch: noarch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
@@ -34,7 +37,7 @@ BuildRequires: jakarta-commons-discovery
 BuildRequires: jakarta-commons-logging
 BuildRequires: jakarta-commons-lang
 BuildRequires: slf4j
-BuildRequires: maven3
+#BuildRequires: maven3
 BuildRequires: bouncycastle
 
 Requires: voms-api-java
@@ -57,7 +60,7 @@ Requires: java7
 %{summary}
 
 %prep
-%setup -n %{name}-%{version}.rc1
+%setup -n %{name}-%{version}
 
 %build
 #log4j
@@ -95,7 +98,7 @@ Requires: java7
 %define _otherlibs %{buildroot}%{_noarchlib}/%{name}
 rm -rf %{buildroot}
 install -d -m 755 %{buildroot}%{_javadir}
-install -m 755 target/%{name}-%{version}.jar %{buildroot}%{_javadir}/%{name}.jar
+install -m 755 target/%{name}-2.6.3.jar %{buildroot}%{_javadir}/%{name}.jar
 install -d -m 755 %{buildroot}/usr/share/maven3/poms
 install -pm 644 pom.xml %{buildroot}/usr/share/maven3/poms/%{name}.pom
 install -d  %{buildroot}%{_libexecdir}/%{name}
@@ -128,6 +131,10 @@ rm -rf %{local_maven}
 %{_libexecdir}/%{name}/XACMLClientTest.sh
 
 %changelog
+* Tue Sep 16 2014 Brian Bockelman <bbockelm@cse.unl.edu> - 2.6.3.1-1
+- Final 2.6.3 release.
+- 2.6.3.1 fixes a release branching issue; 2.6.3 base should be ignored.
+
 * Fri Jun 6 2014 Edgar Fajardo <emfajard@ucsd.edu> 2.6.3-0.1.rc1
 - Updated to new tag 2.6.3.rc1
 
