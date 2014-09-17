@@ -8,7 +8,7 @@
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.4.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 %if 0%{?rhel} < 6
@@ -208,7 +208,9 @@ ln -s %{_sysconfdir}/%{dirname}/gums.config $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}
 # it. Get it from the exploded WAR instead.
 install -m 0644 $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib/slf4j-api-1.5.5.jar $RPM_BUILD_ROOT%{_noarchlib}/%{dirname}/
 
-%if 0%{?rhel} < 6
+%define remove_system_jars 0
+
+%if %remove_system_jars && 0%{?rhel} < 6
 # Remove system JARs to whatever extent possible.  We will later link these directly.
 rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/ant-1.6.3.jar
 rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/antlr-2.7.5H3.jar
@@ -372,6 +374,9 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+* Wed Sep 17 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.4.0-2
+- Do not remove system jars for EL5 (SOFTWARE-1498)
+
 * Tue Sep 16 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.4.0-1
 - Update to GUMS 1.4.0 (SOFTWARE-1498)
 
