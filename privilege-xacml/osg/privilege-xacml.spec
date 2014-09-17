@@ -5,7 +5,7 @@
 %define jglobus_version 2.0.6
 Name:		privilege-xacml
 Version:	2.6.3.1
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Core bindings for XACML interoperability profile.
 
 Group:		OSG/Libraries
@@ -39,6 +39,7 @@ BuildRequires: jakarta-commons-lang
 BuildRequires: slf4j
 #BuildRequires: maven3
 BuildRequires: bouncycastle
+BuildRequires: maven22
 
 Requires: voms-api-java
 Requires: log4j
@@ -131,6 +132,9 @@ rm -rf %{local_maven}
 %{_libexecdir}/%{name}/XACMLClientTest.sh
 
 %changelog
+* Tue Sep 16 2014 Edgar Fajardo <emfajard@ucsd.edu> - 2.6.3.1-2
+- Added build requires maven22
+
 * Tue Sep 16 2014 Brian Bockelman <bbockelm@cse.unl.edu> - 2.6.3.1-1
 - Final 2.6.3 release.
 - 2.6.3.1 fixes a release branching issue; 2.6.3 base should be ignored.
