@@ -5,13 +5,10 @@
 %define __os_install_post %{nil}
 %define jglobus_version 2.0.6
 
-%define _alphatag pre3
-%define _release 3
-
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.4.0
-Release: 0.%{_release}.%{_alphatag}%{?dist}
+Release: 1%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 %if 0%{?rhel} < 6
@@ -77,7 +74,7 @@ Requires: privilege-xacml
 # For git-based releases, one can do:
 # git archive --format=tar --prefix=gums-1.4.0.pre1/ v1.4.0.pre1 | gzip > gums-1.4.0.pre1.tar.gz
 #
-Source0: %{name}-%{version}.%{_alphatag}.tar.gz
+Source0: %{name}-%{version}.tar.gz
 Source1: gums-host-cron
 Source2: gums-client-cron.cron
 Source3: gums-client-cron.init
@@ -95,8 +92,6 @@ Source11: xmltooling.pom
 Source12: openws-1.2.2.jar
 Source13: jargs-1.0.jar
 Source14: velocity-1.5.jar
-
-Patch0: gums-add-mysql-admin.patch
 
 %description
 %{summary}
@@ -136,8 +131,7 @@ Summary: Tomcat service for GUMS
 
 %prep
 
-%setup -n %{name}-%{version}.%{_alphatag}
-%patch0 -p1
+%setup
 
 %build
 
@@ -164,7 +158,7 @@ Summary: Tomcat service for GUMS
 %{mvn} install:install-file -B -DgroupId=org.apache.xerces -DartifactId=xercesImpl -Dversion=2.10.0 -Dpackaging=jar -Dfile=`build-classpath xerces-j2` -Dmaven.repo.local=%{local_maven}
 %{mvn} install:install-file -B -DgroupId=org.apache.xalan -DartifactId=xalan -Dversion=2.7.1 -Dpackaging=jar -Dfile=`build-classpath xalan-j2` -Dmaven.repo.local=%{local_maven}
 %{mvn} install:install-file -B -DgroupId=log4j -DartifactId=log4j -Dversion=1.2.12 -Dpackaging=jar -Dfile=`build-classpath log4j` -Dmaven.repo.local=%{local_maven}
-%{mvn} install:install-file -B -DgroupId=org.opensciencegrid -DartifactId=privilege-xacml -Dversion=2.6.2 -Dpackaging=jar -Dfile=`build-classpath privilege-xacml` -Dmaven.repo.local=%{local_maven}
+%{mvn} install:install-file -B -DgroupId=org.opensciencegrid -DartifactId=privilege-xacml -Dversion=2.6.3 -Dpackaging=jar -Dfile=`build-classpath privilege-xacml` -Dmaven.repo.local=%{local_maven}
 
 # Add jglobus system deps
 %{mvn} install:install-file -B -DgroupId=jglobus -DartifactId=gridftp -Dversion=%{jglobus_version} -Dpackaging=jar -Dfile=`build-classpath jglobus/gridftp-%{jglobus_version}` -Dmaven.repo.local=%{local_maven}
@@ -378,6 +372,12 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+* Tue Sep 16 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.4.0-1
+- Update to GUMS 1.4.0 (SOFTWARE-1498)
+
+* Tue Aug 19 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.4.0-0.4.pre3
+- Use /etc/rc.d/init.d instead of /etc/init.d
+
 * Mon Aug 11 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.4.0-0.3.pre3
 - Make gums-add-mysql-admin suitable for automated use (SOFTWARE-1577)
 
