@@ -60,11 +60,6 @@ BuildRequires: /usr/lib/gums/openws-1.4.1.jar
 BuildRequires: /usr/lib/gums/privilege-xacml-2.6.3.jar
 BuildRequires: /usr/lib/gums/xmltooling-1.3.2-1.jar
 
-Requires: cog-jglobus-axis >= 1.8.0-2
-Requires: gums >= 1.4.0-1
-Obsoletes: bestman
-Provides: bestman
-
 %description
 BeStMan 2 - Berkeley Storage Manager
 
@@ -89,7 +84,7 @@ through Lawrence Berkeley National Laboratory.  See LICENSE file for details.
 %package common-libs
 Summary: Common files BeStMan SRM server client and tester
 Group: System Environment/Libraries
-Requires:  java7 jpackage-utils axis jakarta-commons-logging jakarta-commons-discovery wsdl4j log4j jglobus cog-jglobus-axis
+Requires:  java7 jpackage-utils axis jakarta-commons-logging jakarta-commons-discovery wsdl4j log4j jglobus cog-jglobus-axis >= 1.8.0-2
 # The following are needed for srm client tools and probably tester too
 Requires:  joda-time glite-security-trustmanager glite-security-util-java xalan-j2 voms-api-java >= 2.0.8 jakarta-commons-collections
 # ensure these are present, from jpackage-utils or missing-java-1.7.0-dirs
