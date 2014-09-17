@@ -1,4 +1,11 @@
 
+Source tarball generated with:
+
+  git clone https://github.com/bbockelm/gums.git
+  cd gums
+  git archive --prefix=gums-1.4.0/ v1.4.0 | gzip > gums-1.4.0.tar.gz
+
+
 This is a new package for GUMS.  Notes:
 
 1) The maven auto-generated RPM was not used.  Too far from FHS standards.
