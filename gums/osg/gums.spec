@@ -8,7 +8,7 @@
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.4.0
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 %if 0%{?rhel} < 6
@@ -81,6 +81,8 @@ Source3: gums-client-cron.init
 Source4: log4j-client.properties
 Source5: log4j-service.properties
 
+Patch0: xmltooling-version.patch
+
 # Binary JARs not available from public maven repos.  To be eliminated, one-by-one.
 #Source4: glite-security-trustmanager-2.5.5.jar
 #Source5: glite-security-util-java-2.8.6.jar
@@ -132,6 +134,7 @@ Summary: Tomcat service for GUMS
 %prep
 
 %setup
+%patch0 -p1
 
 %build
 
@@ -374,6 +377,10 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+* Thu Sep 18 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.4.0-3
+- Include commons-beanutils system jar in /usr/lib/gums (SOFTWARE-1498)
+- Have xmltooling version match between gums/gums-service (SOFTWARE-1498)
+
 * Wed Sep 17 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.4.0-2
 - Do not remove system jars for EL5 (SOFTWARE-1498)
 
