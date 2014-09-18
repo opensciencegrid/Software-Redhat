@@ -290,7 +290,7 @@ mkdir -p $RPM_BUILD_ROOT%{_javadir}
 touch $RPM_BUILD_ROOT%{_javadir}/javamail.jar
 
 # jglobus is required by XACML callouts in gums-client, but not gums-core.
-build-jar-repository $RPM_BUILD_ROOT%{_noarchlib}/%{dirname} jglobus trustmanager trustmanager-axis ant antlr bcprov commons-cli commons-codec commons-collections commons-digester commons-discovery commons-httpclient commons-lang commons-logging %{jacc} jta joda-time mysql-connector-java xerces-j2 xalan-j2 log4j privilege-xacml
+build-jar-repository $RPM_BUILD_ROOT%{_noarchlib}/%{dirname} jglobus trustmanager trustmanager-axis ant antlr bcprov commons-beanutils commons-cli commons-codec commons-collections commons-digester commons-discovery commons-httpclient commons-lang commons-logging %{jacc} jta joda-time mysql-connector-java xalan-j2 xerces-j2 log4j privilege-xacml
 
 mkdir -p $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib
 build-jar-repository $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib jglobus trustmanager trustmanager-axis ant antlr bcprov commons-beanutils commons-cli commons-codec commons-collections commons-digester commons-discovery commons-httpclient commons-lang commons-logging %{jacc} jta joda-time mysql-connector-java xalan-j2 xerces-j2 log4j privilege-xacml
