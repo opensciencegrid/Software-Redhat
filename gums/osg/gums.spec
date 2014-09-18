@@ -8,7 +8,7 @@
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.4.0
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 %if 0%{?rhel} < 6
@@ -211,9 +211,9 @@ ln -s %{_sysconfdir}/%{dirname}/gums.config $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}
 # it. Get it from the exploded WAR instead.
 install -m 0644 $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib/slf4j-api-1.5.5.jar $RPM_BUILD_ROOT%{_noarchlib}/%{dirname}/
 
-%define remove_system_jars 0
+%define remove_system_jars 1
 
-%if %remove_system_jars && 0%{?rhel} < 6
+%if %remove_system_jars
 # Remove system JARs to whatever extent possible.  We will later link these directly.
 rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/ant-1.6.3.jar
 rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/antlr-2.7.5H3.jar
@@ -377,6 +377,9 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+* Thu Sep 18 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.4.0-4
+- Enable service jar symlinking and system jar removal (SOFTWARE-1498)
+
 * Thu Sep 18 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.4.0-3
 - Include commons-beanutils system jar in /usr/lib/gums (SOFTWARE-1498)
 - Have xmltooling version match between gums/gums-service (SOFTWARE-1498)
