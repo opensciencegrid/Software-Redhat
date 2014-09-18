@@ -1,7 +1,10 @@
 Name:      osg-wn-client
 Summary:   OSG Worker-Node Client
 Version:   3.0.0
-Release:   22%{?dist}
+%if 0%{?el7}
+%define release_suffix _clipped
+%endif
+Release:   23%{?release_suffix}%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -10,21 +13,27 @@ BuildArch: noarch
 BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
 # Java included because users expect it to be available
+%if ! 0%{?el7}
 Requires: jpackage-utils
-Requires: java7-devel 
+Requires: java7-devel
+%endif
 
 Requires: /usr/bin/curl
 Requires: /usr/bin/dccp
 Requires: dcap-tunnel-gsi
 Requires: edg-gridftp-client
+%if ! 0%{?el7}
 Requires: glite-fts-client
 Requires: lcg-util
+%endif
 Requires: lfc-client
 Requires: lfc-python
 Requires: myproxy
 Requires: /usr/bin/ldapsearch
+%if ! 0%{?el7}
 Requires: dcache-srmclient
 Requires: bestman2-client
+%endif
 Requires: /usr/bin/uberftp
 Requires: /usr/bin/wget
 Requires: grid-certificates
@@ -97,6 +106,9 @@ rm -rf $RPM_BUILD_ROOT
 %files glexec
 
 %changelog
+* Wed Sep 17 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 3.0.0-23_clipped
+- Create clipped release for EL7 containing only the packages that we were able to build (SOFTWARE-1604)
+
 * Tue Apr 01 2014 Carl Edquist <edquist@cs.wisc.edu> - 3.0.0-22
 - Ship with UDT driver plugin (SOFTWARE-1443)
 
