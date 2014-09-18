@@ -14,7 +14,7 @@
 
 Name:           bestman2
 Version:        2.3.0
-Release:        19%{?dist}
+Release:        20%{?dist}
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -49,7 +49,7 @@ Patch1:		bestman2-2.2.1-2.2.2.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
-BuildRequires:  java7-devel jpackage-utils wget ant axis jakarta-commons-logging jakarta-commons-discovery wsdl4j jakarta-commons-collections jakarta-commons-lang joda-time velocity xalan-j2 xml-security bouncycastle voms-api-java >= 2.0.8 slf4j log4j cog-jglobus-axis autoconf
+BuildRequires:  java7-devel jpackage-utils wget ant axis jakarta-commons-logging jakarta-commons-discovery wsdl4j jakarta-commons-collections jakarta-commons-lang joda-time velocity xalan-j2 xml-security bouncycastle voms-api-java >= 2.0.8 slf4j log4j cog-jglobus-axis autoconf privilege-xacml
 # v NOTE: Must edit the jglobus-*.path lines in build.properties every time jglobus gets a new version!
 BuildRequires: jglobus = 2.0.6
 BuildRequires: jetty-client jetty-continuation jetty-deploy jetty-http jetty-io jetty-security jetty-server jetty-servlet jetty-util jetty-webapp jetty-xml
@@ -57,8 +57,7 @@ BuildRequires: emi-trustmanager emi-trustmanager-axis
 # GUMS jars
 BuildRequires: /usr/lib/gums/opensaml-2.4.1.jar
 BuildRequires: /usr/lib/gums/openws-1.4.1.jar
-BuildRequires: /usr/lib/gums/privilege-xacml-2.6.3.jar
-BuildRequires: /usr/lib/gums/xmltooling-1.3.2-1.jar
+BuildRequires: /usr/lib/gums/xmltooling-1.3.1.jar
 
 %description
 BeStMan 2 - Berkeley Storage Manager
@@ -125,12 +124,11 @@ The BeStMan Server SRM Java libraries
 %package server-dep-libs
 Summary: BeStMan Server SRM Java libraries
 Group: System Environment/Libraries
-Requires: java7-devel jpackage-utils jakarta-commons-lang joda-time emi-trustmanager emi-trustmanager-axis xalan-j2 voms-api-java >= 2.0.8 jakarta-commons-collections
+Requires: java7-devel jpackage-utils jakarta-commons-lang joda-time emi-trustmanager emi-trustmanager-axis xalan-j2 voms-api-java >= 2.0.8 jakarta-commons-collections privilege-xacml
 Requires: jetty-client jetty-continuation jetty-deploy jetty-http jetty-io jetty-security jetty-server jetty-servlet jetty-util jetty-webapp jetty-xml
 # GUMS jars
 Requires: /usr/lib/gums/opensaml-2.4.1.jar
 Requires: /usr/lib/gums/openws-1.4.1.jar
-Requires: /usr/lib/gums/privilege-xacml-2.6.3.jar
 Requires: /usr/lib/gums/velocity-1.5.jar
 Requires: /usr/lib/gums/xmlsec-1.4.2.jar
 Requires: /usr/lib/gums/xmltooling-1.3.1.jar
@@ -451,6 +449,10 @@ fi
 
 
 %changelog
+* Thu Sep 18 2014 Carl Edquist <edquist@cs.wisc.edu> - 2.3.0-20
+- use system privilege-xacml and fix xmltooling version to match latest GUMS
+  (SOFTWARE-1610)
+
 * Wed Sep 17 2014 Carl Edquist <edquist@cs.wisc.edu> - 2.3.0-19
 - update GUMS dependencies to require specific jars (SOFTWARE-1610)
 
