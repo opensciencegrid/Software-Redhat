@@ -1,7 +1,7 @@
 
 Name:      condor-cron
 Version:   1.0.9
-Release:   2%{?dist}
+Release:   3%{?dist}
 Summary:   A framework to run cron-style jobs within Condor
 
 Group:     Applications/System
@@ -15,6 +15,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch: noarch
 
 Requires:  condor
+Requires:  which
 
 Requires(post): chkconfig
 Requires(preun): chkconfig
@@ -145,6 +146,9 @@ fi
 
 
 %changelog
+* Fri Sep 19 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.0.9-3
+- Require "which" package for init script (SOFTWARE-1611)
+
 * Tue Jul 16 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0.9-2
 - Patch condor_config file to have more descriptive comments, and also remove
   the CONDOR_IDS line because /etc/condor-cron/config.d/condor_ids will set
