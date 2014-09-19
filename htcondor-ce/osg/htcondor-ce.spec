@@ -1,7 +1,7 @@
-%define gitrev 3757889
+%define gitrev 4bfe757
 Name: htcondor-ce
 Version: 1.6
-Release: 1.1.%{gitrev}git%{?dist}
+Release: 1.2%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 
 Group: Applications/System
@@ -9,10 +9,10 @@ License: Apache 2.0
 URL: http://github.com/bbockelm/condor-ce
 
 # Generated with:
-# git archive --prefix=%{name}-%{version}/ %{gitrev} | gzip > %{name}-%{version}-infoservices.tar.gz
-# where the gitrev was the tip of the info_services branch at the time of the checkout (2014-09-16)
-#
-Source0: %{name}-%{version}-infoservices.tar.gz
+# git archive --prefix=%{name}-%{version}/ %{gitrev} | gzip > %{name}-%{version}-%{gitrev}.tar.gz
+# This gitrev was the head of master from matyasselmeci/condor-ce since it
+# contained a patch that was not accepted upstream yet. (2014-09-18)
+Source0: %{name}-%{version}%{?gitrev:-%{gitrev}}.tar.gz
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -270,7 +270,7 @@ fi
 
 %files collector
 
-%{_bindir}/condor_ce_generator
+%{_bindir}/condor_ce_config_generator
 %{_initrddir}/condor-ce-collector
 %{_datadir}/condor-ce/config.d/01-ce-collector-defaults.conf
 
@@ -279,7 +279,22 @@ fi
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/02-ce-auth-generated.conf
 %config(noreplace) %{_sysconfdir}/cron.d/condor-ce-collector-generator.cron
 
+%attr(-,condor,condor) %dir %{_localstatedir}/run/condor-ce
+%attr(-,condor,condor) %dir %{_localstatedir}/log/condor-ce
+%attr(1777,condor,condor) %dir %{_localstatedir}/log/condor-ce/user
+%attr(-,condor,condor) %dir %{_localstatedir}/lib/condor-ce
+%attr(-,condor,condor) %dir %{_localstatedir}/lib/condor-ce/spool
+%attr(-,condor,condor) %dir %{_localstatedir}/lib/condor-ce/execute
+%attr(-,condor,condor) %dir %{_localstatedir}/lock/condor-ce
+%attr(1777,condor,condor) %dir %{_localstatedir}/lock/condor-ce/user
+%attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
+
 %changelog
+* Thu Sep 18 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6-1.2.4bfe757git
+- collector subpackage also owns dirs under /var/log
+- Replace htcondor.param.get call since it's not available in condor-python < 8.2
+- Rename condor_ce_generator to condor_ce_config_generator and improve config file text
+
 * Tue Sep 16 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6-1.1.3757889git
 - New version from info_services branch
 
