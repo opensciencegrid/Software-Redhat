@@ -54,7 +54,10 @@ BuildRequires:  java7-devel jpackage-utils wget ant axis jakarta-commons-logging
 BuildRequires: jglobus = 2.0.6
 BuildRequires: jetty-client jetty-continuation jetty-deploy jetty-http jetty-io jetty-security jetty-server jetty-servlet jetty-util jetty-webapp jetty-xml
 BuildRequires: emi-trustmanager emi-trustmanager-axis
-BuildRequires: gums
+BuildRequires: /usr/lib/gums/opensaml-2.4.1.jar
+BuildRequires: /usr/lib/gums/openws-1.4.1.jar
+BuildRequires: /usr/lib/gums/privilege-xacml-2.2.4.jar
+BuildRequires: /usr/lib/gums/xmltooling-1.3.2-1.jar
 
 Requires: cog-jglobus-axis >= 1.8.0-2, gums >= 1.3.18.009-6
 Obsoletes: bestman
@@ -127,7 +130,12 @@ Summary: BeStMan Server SRM Java libraries
 Group: System Environment/Libraries
 Requires: java7-devel jpackage-utils jakarta-commons-lang joda-time emi-trustmanager emi-trustmanager-axis xalan-j2 voms-api-java >= 2.0.8 jakarta-commons-collections
 Requires: jetty-client jetty-continuation jetty-deploy jetty-http jetty-io jetty-security jetty-server jetty-servlet jetty-util jetty-webapp jetty-xml
-Requires: gums
+Requires: /usr/lib/gums/opensaml-2.4.1.jar
+Requires: /usr/lib/gums/openws-1.4.1.jar
+Requires: /usr/lib/gums/privilege-xacml-2.2.4.jar
+Requires: /usr/lib/gums/velocity-1.5.jar
+Requires: /usr/lib/gums/xmlsec-1.4.2.jar
+Requires: /usr/lib/gums/xmltooling-1.3.2-1.jar
 
 %description server-dep-libs
 The BeStMan Server SRM Java libraries
