@@ -14,7 +14,7 @@
 
 Name:           bestman2
 Version:        2.3.0
-Release:        18%{?dist}
+Release:        20%{?dist}
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -449,6 +449,9 @@ fi
 
 
 %changelog
+* Fri Sep 19 2014 Carl Edquist <edquist@cs.wisc.edu> - 2.3.0-20
+- update GUMS dependencies to require specific jars (SOFTWARE-1610)
+
 * Wed Jun 04 2014 Carl Edquist <edquist@cs.wisc.edu> - 2.3.0-18
 - handle empty pidfile in init script (SOFTWARE-1504)
 
