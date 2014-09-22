@@ -1,7 +1,7 @@
-%define gitrev 4bfe757
+%define gitrev ab20a7b
 Name: htcondor-ce
 Version: 1.6
-Release: 1.2%{?gitrev:.%{gitrev}git}%{?dist}
+Release: 1.3%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 
 Group: Applications/System
@@ -290,6 +290,10 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Mon Sep 22 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6-1.3.ab20a7bgit
+- Revert replacement of htcondor.param.get; add implementation of htcondor.param.git instead
+- Add config last gen time as an attribute (LastCEConfigGenerateTime)
+
 * Thu Sep 18 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6-1.2.4bfe757git
 - collector subpackage also owns dirs under /var/log
 - Replace htcondor.param.get call since it's not available in condor-python < 8.2
