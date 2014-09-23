@@ -1340,6 +1340,7 @@ fi
 - Add JobRouter debugging tool
 - Fix UDP invalidations being sent to non-UDP hosts
 - Make it easier to append values to JOB_ROUTER_DEFAULTS
+- Added NETWORK_HOSTNAME configuration variable
 
 * Mon Aug 25 2014 Carl Edquist <edquist@cs.wisc.edu> - 8.0.7-3
 - Add comments to patches
