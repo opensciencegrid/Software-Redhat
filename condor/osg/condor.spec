@@ -67,7 +67,7 @@ Version: %{tarball_version}
 %define condor_release %condor_base_release
 %endif
 # Release: %condor_release%{?dist}.2
-Release: 3%{?dist}
+Release: 4%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -156,6 +156,11 @@ Patch5: lcmaps_uid.patch
 # https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=4540
 Patch6: condor_gt4540_aws.patch
 
+# Fix UDP invalidations being sent to hosts without any
+# UDP command socket
+# https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=4556
+Patch7: udp_invalidations.patch
+
 # This patch is applied in the upstream source rpm in 8.2.2.
 # https://jira.opensciencegrid.org/browse/SOFTWARE-691
 Patch8: osg_sysconfig_in_init_script.patch
@@ -168,6 +173,26 @@ Patch9: proper_cream_v3.diff
 %if %blahp
 Patch10: config_batch_gahp_path.patch
 %endif
+
+# This patch to allow users to be able to more easily append values
+# to JOB_ROUTER_DEFAULTS
+# https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=4433
+Patch11: append_router_defaults.patch
+
+# Add a tool to help debug job routes
+# https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=4569
+# https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=4590
+Patch12: condor_job_router_tool.patch
+
+# These two patches provide functions from v8.2 to support
+# the previous patch
+Patch13: dprintf_writeerroronbuffer.patch
+Patch14: tool_args.patch
+
+# Allow override of hostname with the config knob 'NETWORK_HOSTNAME'
+# Some changes were made to the param_info.in diff to get it to apply
+# https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=4570
+Patch15: network_hostname.patch
 
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
@@ -501,6 +526,7 @@ exit 0
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
+%patch7 -p1
 %patch8 -p1
 %if %cream
 %patch9 -p1
@@ -508,6 +534,11 @@ exit 0
 %if %blahp
 %patch10 -p1 -b .config_batch_gahp_path
 %endif
+%patch11 -p1
+%patch12 -p1
+%patch13 -p1
+%patch14 -p1
+%patch15 -p1
 
 # fix errant execute permissions
 find src -perm /a+x -type f -name "*.[Cch]" -exec chmod a-x {} \;
@@ -1024,6 +1055,7 @@ rm -rf %{buildroot}
 %_bindir/condor_ping
 %_bindir/condor_tail
 %_bindir/condor_qsub
+%_bindir/condor_job_router_tool
 # sbin/condor is a link for master_off, off, on, reconfig,
 # reconfig_schedd, restart
 %_sbindir/condor_advertise
@@ -1304,6 +1336,11 @@ fi
 %endif
 
 %changelog
+* Tue Sep 23 2014 Brian Lin <blin@cs.wisc.edu> - 8.0.7-4
+- Add JobRouter debugging tool
+- Fix UDP invalidations being sent to non-UDP hosts
+- Make it easier to append values to JOB_ROUTER_DEFAULTS
+
 * Mon Aug 25 2014 Carl Edquist <edquist@cs.wisc.edu> - 8.0.7-3
 - Add comments to patches
 

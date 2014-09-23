@@ -1,0 +1,395 @@
+--- a/src/condor_includes/condor_debug.h
++++ b/src/condor_includes/condor_debug.h
+@@ -177,6 +177,7 @@ int dprintf_config(
+ 	int c_info = 0); // in: number of entries in p_info array on input.                  
+ 
+ int dprintf_config_tool(const char* subsys = NULL, int flags = 0);
++int dprintf_config_tool_on_error(int flags = 0);
+ 
+ // parse strflags and cat_and_flags and merge them into the in,out args
+ // for backward compatibility, the D_ALWAYS bit will always be set in basic
+@@ -234,6 +235,18 @@ double dprintf_get_lock_delay(void);
+ */
+ int dprintf_getCount(void);
+ 
++/* flush the buffered output that is created when TOOL_DEBUG_ON_ERROR is set
++ */
++int dprintf_WriteOnErrorBuffer(FILE * out, int fClearBuffer);
++
++/* flush the buffered output that is created when TOOL_DEBUG_ON_ERROR is set
++ * to this file on exit (during global class destruction), if code passed to 
++ * dprintf_SetExitCode is 0, the OnErrorBuffer is discarded, otherwise it is 
++ * written to out
++ */
++FILE * dprintf_OnExitDumpOnErrorBuffer(FILE * out);
++int dprintf_SetExitCode(int code);
++
+ /* wrapper for fclose() that soaks up EINTRs up to maxRetries number of times.
+  */
+ int fclose_wrapper( FILE *stream, int maxRetries );
+	Modified   src/condor_includes/dprintf_internal.h
+diff --git a/src/condor_includes/dprintf_internal.h b/src/condor_includes/dprintf_internal.h
+index 7509e94..e256c7a 100644
+--- a/src/condor_includes/dprintf_internal.h
++++ b/src/condor_includes/dprintf_internal.h
+@@ -129,9 +129,12 @@ struct dprintf_output_settings
+ 
+ void dprintf_set_outputs(const struct dprintf_output_settings *p_info, int c_info);
+ 
++void * dprintf_get_onerror_data();
++
+ const char* _format_global_header(int cat_and_flags, int hdr_flags, DebugHeaderInfo & info);
+ //Global dprint functions meant as fallbacks.
+ void _dprintf_global_func(int cat_and_flags, int hdr_flags, DebugHeaderInfo & info, const char* message, DebugFileInfo* dbgInfo);
++void _dprintf_to_buffer(int cat_and_flags, int hdr_flags, DebugHeaderInfo & info, const char* message, DebugFileInfo* dbgInfo);
+ 
+ #ifdef WIN32
+ //Output to dbg string
+	Modified   src/condor_q.V6/queue.cpp
+diff --git a/src/condor_q.V6/queue.cpp b/src/condor_q.V6/queue.cpp
+index 9983a59..1bc4a9e 100644
+--- a/src/condor_q.V6/queue.cpp
++++ b/src/condor_q.V6/queue.cpp
+@@ -57,13 +57,9 @@
+ #include "../classad_analysis/analysis.h"
+ #include "classad/classadCache.h" // for CachedExprEnvelope
+ 
+-/*
+-#ifndef WIN32
+-#include <sys/types.h>
+-#include <unistd.h>
+-#include <pwd.h>
+-#endif
+-*/
++// pass the exit code through dprintf_SetExitCode so that it knows
++// whether to print out the on-error buffer or not.
++#define exit(n) (exit)(dprintf_SetExitCode(n))
+ 
+ #ifdef HAVE_EXT_POSTGRESQL
+ #include "sqlquery.h"
+@@ -593,8 +589,9 @@ int main (int argc, char **argv)
+ 	// load up configuration file
+ 	myDistro->Init( argc, argv );
+ 	config();
+-
+-	classad::ClassAdSetExpressionCaching( param_boolean( "ENABLE_CLASSAD_CACHING", false ) );
++	dprintf_config_tool_on_error(0);
++	dprintf_OnExitDumpOnErrorBuffer(stderr);
++	//classad::ClassAdSetExpressionCaching( param_boolean( "ENABLE_CLASSAD_CACHING", false ) );
+ 
+ #ifdef HAVE_EXT_POSTGRESQL
+ 		/* by default check the configuration for local database */
+	Modified   src/condor_scripts/CondorPersonal.pm
+diff --git a/src/condor_scripts/CondorPersonal.pm b/src/condor_scripts/CondorPersonal.pm
+index 1b1653e..33bc533 100755
+--- a/src/condor_scripts/CondorPersonal.pm
++++ b/src/condor_scripts/CondorPersonal.pm
+@@ -935,4 +935,7 @@ debug( "HMMMMMMMMMMM opening to write <$topleveldir/$personal_local>\n",$debugle
+ 	print NEW "DAGMAN_USER_LOG_SCAN_INTERVAL = 1\n";
++ 	# bill make tools more forgiving of being busy
++ 	print NEW "TOOL_TIMEOUT_MULTIPLIER = 10\n";
++	print NEW "TOOL_DEBUG_ON_ERROR = D_ANY D_ALWAYS:2\n";
+ 
+ 	if($personal_daemons ne "")
+ 	{
+	Modified   src/condor_status.V6/status.cpp
+diff --git a/src/condor_status.V6/status.cpp b/src/condor_status.V6/status.cpp
+index 56380b4..7b446ed 100644
+--- a/src/condor_status.V6/status.cpp
++++ b/src/condor_status.V6/status.cpp
+@@ -134,6 +134,7 @@ main (int argc, char *argv[])
+ 	myDistro->Init( argc, argv );
+ 	myName = argv[0];
+ 	config();
++	dprintf_config_tool_on_error(0);
+ 
+ 	// The arguments take two passes to process --- the first pass
+ 	// figures out the mode, after which we can instantiate the required
+@@ -148,6 +149,7 @@ main (int argc, char *argv[])
+ 
+ 	// instantiate query object
+ 	if (!(query = new CondorQuery (type))) {
++		dprintf_WriteOnErrorBuffer(stderr, true);
+ 		fprintf (stderr, "Error:  Out of memory\n");
+ 		exit (1);
+ 	}
+@@ -428,11 +430,12 @@ main (int argc, char *argv[])
+ 				addr = d->addr();
+ 				requested_daemon = d;
+ 			} else {
+-			        const char* id = d->idStr();
+-                                if (NULL == id) id = d->name();
++				const char* id = d->idStr();
++				if (NULL == id) id = d->name();
++				dprintf_WriteOnErrorBuffer(stderr, true);
+ 				if (NULL == id) id = "daemon";
+-           	                fprintf(stderr, "Error: Failed to locate %s\n", id);
+-                                fprintf(stderr, "%s\n", d->error());
++				fprintf(stderr, "Error: Failed to locate %s\n", id);
++				fprintf(stderr, "%s\n", d->error());
+ 				exit( 1 );
+ 			}
+ 		}
+@@ -455,6 +458,7 @@ main (int argc, char *argv[])
+ 
+ 	// if any error was encountered during the query, report it and exit 
+         if (Q_OK != q) {
++            dprintf_WriteOnErrorBuffer(stderr, true);
+                 // we can always provide these messages:
+ 	        fprintf( stderr, "Error: %s\n", getStrQueryResult(q) );
+ 		fprintf( stderr, "%s\n", errstack.getFullText(true).c_str() );
+@@ -620,6 +624,7 @@ firstPass (int argc, char *argv[])
+ 			}
+ 			pool = new DCCollector( argv[i] );
+ 			if( !pool->addr() ) {
++				dprintf_WriteOnErrorBuffer(stderr, true);
+ 				fprintf( stderr, "Error: %s\n", pool->error() );
+ 				if (!expert) {
+ 					printf("\n");
+@@ -1087,6 +1092,7 @@ secondPass (int argc, char *argv[])
+ 					// use what we are given and do not flag an error.
+ 					daemonname = strnewp(argv[i]);
+ 				} else {
++					dprintf_WriteOnErrorBuffer(stderr, true);
+ 					fprintf( stderr, "%s: unknown host %s\n",
+ 								 argv[0], get_host_part(argv[i]) );
+ 					exit(1);
+diff --git a/src/condor_utils/dprintf.cpp b/src/condor_utils/dprintf.cpp
+index b12744b..34af8d1 100644
+--- a/src/condor_utils/dprintf.cpp
++++ b/src/condor_utils/dprintf.cpp
+@@ -125,6 +125,45 @@ int		DebugUseTimestamps = 0;
+ char *	DebugTimeFormat = NULL;
+ 
+ /*
++ * if TOOL_DEBUG_ON_ERROR is set, then every dprintf writes to this buffer
++ * in addition to anything defined in TOOL_DEBUG.  The contents of this buffer
++ * can be flushed and written by calling dprintf_WriteOnErrorBuffer
++ */
++static std::stringstream DebugOnErrorBuffer;
++void * dprintf_get_onerror_data() { return (void*)&DebugOnErrorBuffer; }
++int dprintf_WriteOnErrorBuffer(FILE * out, int fClearBuffer) {
++	int cch = 0;
++	if (out) {
++		if ( ! DebugOnErrorBuffer.str().empty()) {
++			cch = (int)fwrite(DebugOnErrorBuffer.str().c_str(), 1, DebugOnErrorBuffer.str().length(), out);
++		}
++	}
++	if (fClearBuffer) {
++		DebugOnErrorBuffer.clear();
++	}
++	return cch;
++}
++
++static class dpf_on_error_trigger {
++	FILE * file;
++	int    code; // write if code is non-zero
++public:
++	dpf_on_error_trigger() : file(NULL), code(1) {}
++	~dpf_on_error_trigger() {
++		if (code && file && ! DebugOnErrorBuffer.str().empty()) {
++			fprintf(file, "\n---------------- TOOL_DEBUG_ON_ERROR output -----------------\n");
++			dprintf_WriteOnErrorBuffer(file, true);
++			fprintf(file, "---------------- TOOL_DEBUG_ON_ERROR ends -------------------\n");
++		}
++	}
++	FILE * WriteOnErrorExit(FILE * out) { FILE * tmp = file; file = out; return tmp; }
++	int ExitCode(int n) { return code = n; }
++} _dprintf_on_error_trigger;
++FILE * dprintf_OnExitDumpOnErrorBuffer(FILE * out) { return _dprintf_on_error_trigger.WriteOnErrorExit(out); }
++int dprintf_SetExitCode(int code) { return _dprintf_on_error_trigger.ExitCode(code); }
++
++
++/*
+  * When true, don't exit even if we fail to open the debug output file.
+  * Added so that on Win32 the kbdd (which is running as a user) won't quit 
+  * if it does't have access to the directory where log files live.
+@@ -1910,6 +1949,19 @@ dprintf_dump_stack(void) {
+ }
+ #endif
+ 
++void _dprintf_to_buffer(int cat_and_flags, int hdr_flags, DebugHeaderInfo & info, const char* message, DebugFileInfo* dbgInfo)
++{
++	void * pvUser = dbgInfo->userData;
++	if (pvUser) {
++		std::stringstream * pstm = (std::stringstream *)pvUser;
++		const char* header = _format_global_header(cat_and_flags, hdr_flags, info);
++		if (header) {
++			(*pstm) << header;
++		}
++		(*pstm) << message;
++	}
++}
++
+ #ifdef WIN32
+ void dprintf_to_outdbgstr(int cat_and_flags, int hdr_flags, DebugHeaderInfo & info, const char* message, DebugFileInfo* dbgInfo)
+ {
+	Modified   src/condor_utils/dprintf_common.cpp
+diff --git a/src/condor_utils/dprintf_common.cpp b/src/condor_utils/dprintf_common.cpp
+index 292b7f2..43e80a6 100644
+--- a/src/condor_utils/dprintf_common.cpp
++++ b/src/condor_utils/dprintf_common.cpp
+@@ -233,16 +233,16 @@ _condor_parse_merge_debug_flags(
+ 	}
+ }
+ 
+-// set global debug global flags and header options
++// convert old style flags to DebugOutputChoice
+ //
+ void
+-_condor_set_debug_flags( const char *strflags, int cat_and_flags )
++_condor_set_debug_flags_ex(
++	const char *strflags,
++	int cat_and_flags,
++	unsigned int & header,
++	DebugOutputChoice & choice,
++	DebugOutputChoice & verbose)
+ {
+-	// set default values for flags and header options before we parse the passed in args
+-	unsigned int      header = 0;
+-	DebugOutputChoice choice = (1<<D_ALWAYS) | (1<<D_ERROR) | (1<<D_STATUS);
+-	DebugOutputChoice verbose = 0;
+-
+ 	// special case. if a single category to be passed in cat_and_flags
+ 	// in practice, this category is always D_ALWAYS which is set above anyway.
+ 	choice |= 1<<(cat_and_flags & D_CATEGORY_MASK);
+@@ -251,7 +251,18 @@ _condor_set_debug_flags( const char *strflags, int cat_and_flags )
+ 
+ 	// parse and merge strflags and cat_and_flags into header & choice
+ 	_condor_parse_merge_debug_flags(strflags, (cat_and_flags & ~D_CATEGORY_RESERVED_MASK), header, choice, verbose);
++}
+ 
++// set global debug global flags and header options
++//
++void
++_condor_set_debug_flags( const char *strflags, int cat_and_flags )
++{
++	// set default values for flags and header options before we parse the passed in args
++	unsigned int      header = 0;
++	DebugOutputChoice choice = (1<<D_ALWAYS) | (1<<D_ERROR) | (1<<D_STATUS);
++	DebugOutputChoice verbose = 0;
++	_condor_set_debug_flags_ex(strflags, cat_and_flags, header, choice, verbose);
+ 	DebugHeaderOptions = header;
+ 	AnyDebugBasicListener = choice;
+ 	AnyDebugVerboseListener = verbose;
+	Modified   src/condor_utils/dprintf_config.cpp
+diff --git a/src/condor_utils/dprintf_config.cpp b/src/condor_utils/dprintf_config.cpp
+index bde8806..0edfff0 100644
+--- a/src/condor_utils/dprintf_config.cpp
++++ b/src/condor_utils/dprintf_config.cpp
+@@ -54,6 +54,49 @@ dprintf_config_ContinueOnFailure ( int fContinue )
+ 	return fOld;
+ }
+ 
++// configure tool_on_error output from cat_and_flags, or if cat_and_flags is 0
++// configure it from the TOOL_ON_ERROR_DEBUG parameter.
++int
++dprintf_config_tool_on_error(int cat_and_flags)
++{
++	dprintf_output_settings tool_output[1];
++	int cOutputs = 0;
++
++	if (cat_and_flags) {
++		extern void _condor_set_debug_flags_ex(const char *, int, unsigned int &, DebugOutputChoice &, DebugOutputChoice &);
++		tool_output[cOutputs].logPath = ">BUFFER";
++		tool_output[cOutputs].HeaderOpts = 0;
++		tool_output[cOutputs].choice = 0;
++		tool_output[cOutputs].VerboseCats = 0;
++		_condor_set_debug_flags_ex(NULL, cat_and_flags,
++			tool_output[cOutputs].HeaderOpts,
++			tool_output[cOutputs].choice,
++			tool_output[cOutputs].VerboseCats);
++		if (tool_output[cOutputs].choice & 1<<D_ALWAYS) tool_output[cOutputs].accepts_all = true;
++		++cOutputs;
++	} else {
++		char * pval = param("TOOL_DEBUG_ON_ERROR");
++		if (pval) {
++			tool_output[cOutputs].logPath = ">BUFFER";
++			tool_output[cOutputs].HeaderOpts = 0;
++			tool_output[cOutputs].choice |= (1<<D_ALWAYS | 1<<D_ERROR);
++			tool_output[cOutputs].VerboseCats = 0;
++			tool_output[cOutputs].accepts_all = true;
++			_condor_parse_merge_debug_flags( pval, 0,
++				tool_output[cOutputs].HeaderOpts,
++				tool_output[cOutputs].choice,
++				tool_output[cOutputs].VerboseCats);
++			++cOutputs;
++			free(pval);
++		}
++	}
++
++	if (cOutputs > 0) {
++		dprintf_set_outputs(tool_output, cOutputs);
++	}
++	return cOutputs;
++}
++
+ int
+ dprintf_config_tool(const char* subsys, int /*flags*/)
+ {
+@@ -64,16 +107,16 @@ dprintf_config_tool(const char* subsys, int /*flags*/)
+ 
+ 	PRAGMA_REMIND("TJ: allow callers of dprintf_config_tool to pass logging verbosity and flags");
+ 
+-	dprintf_output_settings tool_output;
+-	tool_output.choice = 1<<D_ALWAYS | 1<<D_ERROR;
+-	tool_output.accepts_all = true;
++	dprintf_output_settings tool_output[2];
++	tool_output[0].choice = 1<<D_ALWAYS | 1<<D_ERROR;
++	tool_output[0].accepts_all = true;
+ 	
+ 	/*
+ 	** First, add the debug flags that are shared by everyone.
+ 	*/
+ 	pval = param("ALL_DEBUG");//dprintf_param_funcs->param("ALL_DEBUG");
+ 	if( pval ) {
+-		_condor_parse_merge_debug_flags( pval, 0, HeaderOpts, tool_output.choice, verbose);
++		_condor_parse_merge_debug_flags( pval, 0, HeaderOpts, tool_output[0].choice, verbose);
+ 		free( pval );
+ 	}
+ 
+@@ -86,7 +129,7 @@ dprintf_config_tool(const char* subsys, int /*flags*/)
+ 		pval = param("DEFAULT_DEBUG");//dprintf_param_funcs->param("DEFAULT_DEBUG");
+ 	}
+ 	if( pval ) {
+-		_condor_parse_merge_debug_flags( pval, 0, HeaderOpts, tool_output.choice, verbose);
++		_condor_parse_merge_debug_flags( pval, 0, HeaderOpts, tool_output[0].choice, verbose);
+ 		free( pval );
+ 	}
+ 
+@@ -112,11 +155,12 @@ dprintf_config_tool(const char* subsys, int /*flags*/)
+ 		}
+ 	}
+ 
+-	tool_output.logPath = "2>";
+-	tool_output.HeaderOpts = HeaderOpts;
+-	tool_output.VerboseCats = verbose;
++	tool_output[0].logPath = "2>";
++	tool_output[0].HeaderOpts = HeaderOpts;
++	tool_output[0].VerboseCats = verbose;
++	int cOutputs = 1;
+ 
+-	dprintf_set_outputs(&tool_output, 1);
++	dprintf_set_outputs(tool_output, cOutputs);
+ 
+ 	return 0;
+ }
+	Modified   src/condor_utils/dprintf_setup.cpp
+diff --git a/src/condor_utils/dprintf_setup.cpp b/src/condor_utils/dprintf_setup.cpp
+index 251b735..d6448e7 100644
+--- a/src/condor_utils/dprintf_setup.cpp
++++ b/src/condor_utils/dprintf_setup.cpp
+@@ -145,6 +145,12 @@ void dprintf_set_outputs(const struct dprintf_output_settings *p_info, int c_inf
+ 					it->userData = static_cast<void*>(DprintfSyslogFactory::NewLog(LOG_DAEMON));
+ 				}
+ #endif
++				else if (logPath == ">BUFFER")
++				{
++					it->outputTarget = OUTPUT_DEBUG_STR;
++					it->dprintfFunc = _dprintf_to_buffer;
++					it->userData = dprintf_get_onerror_data();
++				}
+ 				else
+ 				{
+ 					it->outputTarget = FILE_OUT;
+
