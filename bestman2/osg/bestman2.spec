@@ -57,7 +57,7 @@ BuildRequires: emi-trustmanager emi-trustmanager-axis
 BuildRequires: /usr/lib/gums/opensaml-2.4.1.jar
 BuildRequires: /usr/lib/gums/openws-1.4.1.jar
 BuildRequires: /usr/lib/gums/privilege-xacml-2.2.4.jar
-BuildRequires: /usr/lib/gums/xmltooling-1.3.2-1.jar
+BuildRequires: /usr/lib/gums/xmltooling-1.3.1.jar
 
 %description
 BeStMan 2 - Berkeley Storage Manager
@@ -131,7 +131,7 @@ Requires: /usr/lib/gums/openws-1.4.1.jar
 Requires: /usr/lib/gums/privilege-xacml-2.2.4.jar
 Requires: /usr/lib/gums/velocity-1.5.jar
 Requires: /usr/lib/gums/xmlsec-1.4.2.jar
-Requires: /usr/lib/gums/xmltooling-1.3.2-1.jar
+Requires: /usr/lib/gums/xmltooling-1.3.1.jar
 
 %description server-dep-libs
 The BeStMan Server SRM Java libraries
@@ -449,7 +449,10 @@ fi
 
 
 %changelog
-* Fri Sep 19 2014 Carl Edquist <edquist@cs.wisc.edu> - 2.3.0-20
+* Tue Sep 23 2014 Carl Edquist <edquist@cs.wisc.edu> - 2.3.0-20
+- fix xmltooling version to match latest GUMS (SOFTWARE-1610)
+
+* Fri Sep 19 2014 Carl Edquist <edquist@cs.wisc.edu> - 2.3.0-19
 - update GUMS dependencies to require specific jars (SOFTWARE-1610)
 
 * Wed Jun 04 2014 Carl Edquist <edquist@cs.wisc.edu> - 2.3.0-18
