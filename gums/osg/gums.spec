@@ -8,7 +8,7 @@
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.3.18.009
-Release: 22%{?dist}
+Release: 23%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 %if 0%{?rhel} < 6
@@ -299,7 +299,7 @@ mkdir -p $RPM_BUILD_ROOT%{_javadir}
 touch $RPM_BUILD_ROOT%{_javadir}/javamail.jar
 
 # jglobus is required by XACML callouts in gums-client, but not gums-core.
-build-jar-repository $RPM_BUILD_ROOT%{_noarchlib}/%{dirname} jglobus trustmanager trustmanager-axis ant antlr bcprov commons-cli commons-codec commons-collections commons-digester commons-discovery commons-httpclient commons-lang commons-logging %{jacc} jta joda-time mysql-connector-java xerces-j2 xalan-j2 log4j
+build-jar-repository $RPM_BUILD_ROOT%{_noarchlib}/%{dirname} jglobus trustmanager trustmanager-axis ant antlr bcprov commons-beanutils commons-cli commons-codec commons-collections commons-digester commons-discovery commons-httpclient commons-lang commons-logging %{jacc} jta joda-time mysql-connector-java xalan-j2 xerces-j2 log4j
 
 mkdir -p $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib
 build-jar-repository $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib jglobus trustmanager trustmanager-axis ant antlr bcprov commons-beanutils commons-cli commons-codec commons-collections commons-digester commons-discovery commons-httpclient commons-lang commons-logging %{jacc} jta joda-time mysql-connector-java xalan-j2 xerces-j2 log4j
@@ -382,6 +382,10 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+* Tue Sep 23 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.3.18.009-23
+- Include commons-beanutils system jar in /usr/lib/gums (SOFTWARE-1498)
+- Have xmltooling version match between gums/gums-service (SOFTWARE-1498)
+
 * Wed Sep 10 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.3.18.009-22
 - Make gums-add-mysql-admin suitable for automated use (SOFTWARE-1577)
 - Update versions in pom to fix EL5 build (SOFTWARE-1577)
