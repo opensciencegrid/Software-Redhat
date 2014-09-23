@@ -2,7 +2,7 @@ Name: jglobus
 Summary: An implementation of Globus for Java
 License: Apache 2.0
 Version: 2.0.6
-Release: 3%{?dist}
+Release: 4%{?dist}
 URL: http://www.globus.org/toolkit/jglobus/
 Group: System Environment/Libraries
 
@@ -14,6 +14,7 @@ Source0: JGlobus.tar.gz
 
 Patch0: crl-updates.patch
 Patch1: pom.xml.patch
+Patch2: 1607-fix-sl6-certs.patch
 
 BuildArch: noarch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -40,6 +41,7 @@ Requires(postun): jpackage-utils
 %setup -q -c -n JGlobus
 #%patch0 -p1
 %patch1 -p0
+%patch2 -p1
 
 find -name '*.class' -exec rm -f '{}' \;
 find -name '*.jar' -exec rm -f '{}' \;
@@ -88,6 +90,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mavendepmapfragdir}/jglobus
 
 %changelog
+* Mon Sep 22 2014 Carl Edquist <edquist@cs.wisc.edu> - 2.0.6-4
+- Patch to work around SL6-generated certificate issue (SOFTWARE-1607)
+
 * Tue Sep 17 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.6-3
 - Add /usr/share/java-1.7.0 to BuildRequires to build on el5
 - Require maven22 for el5 as well
