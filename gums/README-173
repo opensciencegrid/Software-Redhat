@@ -1,0 +1,23 @@
+
+This branch is for SOFTWARE-173.  See the ticket for more details:
+
+        https://jira.opensciencegrid.org/browse/SOFTWARE-173
+
+The idea was to break out a limited subset of jars required for a gums-client
+install, without needing to bring in all the extra jars.
+
+A minimal set of jars was moved out of 'gums' into a new gums-client-libs,
+changing the package requirements from:
+
+        gums-client  -> gums
+        gums-service -> gums
+
+to:
+        gums-client  -> gums-client-libs
+        gums         -> gums-client-libs
+        gums-service -> gums
+
+
+SOFTWARE-173 was abandoned for adding packaging complexity that was not worth
+it for ~20M savings on client-only installs.
+
