@@ -8,7 +8,7 @@
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.4.0
-Release: 4%{?dist}
+Release: 5%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 %if 0%{?rhel} < 6
@@ -377,6 +377,9 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+* Wed Sep 24 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.4.0-5
+- Modify gums-host-cron to support local-user-vo-map (SOFTWARE-1606)
+
 * Thu Sep 18 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.4.0-4
 - Enable service jar symlinking and system jar removal (SOFTWARE-1498)
 
