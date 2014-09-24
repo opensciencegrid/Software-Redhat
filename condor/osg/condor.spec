@@ -67,7 +67,7 @@ Version: %{tarball_version}
 %define condor_release %condor_base_release
 %endif
 # Release: %condor_release%{?dist}.2
-Release: 4%{?dist}
+Release: 5%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -179,20 +179,18 @@ Patch10: config_batch_gahp_path.patch
 # https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=4433
 Patch11: append_router_defaults.patch
 
-# Add a tool to help debug job routes
+# Add a tool to help debug job routes. condor_job_router_tool.patch is a
+# collection of all the commits in the v8.2 branch while
+# improved_tool_output.patch is a collection of the v8.3 changes
 # https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=4569
 # https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=4590
 Patch12: condor_job_router_tool.patch
-
-# These two patches provide functions from v8.2 to support
-# the previous patch
-Patch13: dprintf_writeerroronbuffer.patch
-Patch14: tool_args.patch
+Patch13: improved_tool_output.patch
 
 # Allow override of hostname with the config knob 'NETWORK_HOSTNAME'
 # Some changes were made to the param_info.in diff to get it to apply
 # https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=4570
-Patch15: network_hostname.patch
+Patch14: network_hostname.patch
 
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
@@ -538,7 +536,6 @@ exit 0
 %patch12 -p1
 %patch13 -p1
 %patch14 -p1
-%patch15 -p1
 
 # fix errant execute permissions
 find src -perm /a+x -type f -name "*.[Cch]" -exec chmod a-x {} \;
@@ -1336,6 +1333,9 @@ fi
 %endif
 
 %changelog
+* Wed Sep 24 2014 Brian Lin <blin@cs.wisc.edu> - 8.0.7-5
+- Various improvements and fixes to the JobRouter debugging tool 
+
 * Tue Sep 23 2014 Brian Lin <blin@cs.wisc.edu> - 8.0.7-4
 - Add JobRouter debugging tool
 - Fix UDP invalidations being sent to non-UDP hosts
