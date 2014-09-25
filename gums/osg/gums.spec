@@ -8,7 +8,7 @@
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.3.18.009
-Release: 23%{?dist}
+Release: 24%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 %if 0%{?rhel} < 6
@@ -382,6 +382,9 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+* Wed Sep 24 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.3.18.009-24
+- Modify gums-host-cron to support local-user-vo-map (SOFTWARE-1606)
+
 * Tue Sep 23 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.3.18.009-23
 - Include commons-beanutils system jar in /usr/lib/gums (SOFTWARE-1498)
 - Have xmltooling version match between gums/gums-service (SOFTWARE-1498)

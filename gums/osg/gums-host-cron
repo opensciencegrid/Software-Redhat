@@ -274,7 +274,12 @@ attempting to generate the $INVERSEMAP file.
   logit "gums-host command completed successfully"
   logit "--------------------------------------"
 
-  
+  # --- Add local user accounts maps (if existing)
+  if [ -e $LOCALUSERMAP ]; then
+    cat $LOCALUSERMAP >> $INVERSEMAP_NEW
+    logit "Added to $INVERSEMAP_NEW the local mapping defined in $LOCALUSERMAP"
+  fi
+
   # Check to see if all the username entries in the
   # osg-user-vo-map.txt file have UNIX accounts and also create
   # a osg-supported-vo-list.txt if changed
@@ -304,7 +309,7 @@ attempting to generate the $INVERSEMAP file.
   rtn=$?
   logit "$(basename $script) RETURN CODE: $rtn"
   logit "--------------------------------------"
-  
+
   replace_if_changed $INVERSEMAP_NEW.tmp   $INVERSEMAP
   replace_if_changed $SUPPORTEDVOS_NEW $SUPPORTEDVOS
   replace_if_changed $UNDEFINED_NEW    $UNDEFINED
@@ -324,6 +329,8 @@ OSG_LOCATION=/var/lib/osg
 
 INVERSEMAP=$OSG_LOCATION/user-vo-map
 INVERSEMAP_NEW=$INVERSEMAP.new
+
+LOCALUSERMAP=/etc/osg/local-user-vo-map
 
 SUPPORTEDVOS=$OSG_LOCATION/supported-vo-list
 SUPPORTEDVOS_NEW=$SUPPORTEDVOS.new
