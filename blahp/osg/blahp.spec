@@ -1,6 +1,6 @@
 Name:		blahp
-Version:	1.18.9.bosco
-Release:	2%{?dist}
+Version:	1.18.10.bosco
+Release:	1%{?dist}
 Summary:	gLite BLAHP daemon
 
 Group:		System/Libraries
@@ -23,7 +23,6 @@ BuildRequires:  globus-gsi-proxy-core-devel
 BuildRequires:  globus-gsi-cert-utils-devel
 BuildRequires:  docbook-style-xsl, libxslt
 
-Patch0: lsf_status.patch
 #Requires(post):         chkconfig
 #Requires(preun):        chkconfig
 #Requires(preun):        initscripts
@@ -34,7 +33,6 @@ Patch0: lsf_status.patch
 
 %prep
 %setup -c -n %{name}-%{version}
-%patch0 -p0
 
 %build
 ./bootstrap
@@ -133,6 +131,10 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Thu Sep 25 2014 Brian Lin <blin@cs.wisc.edu> - 1.18.10.bosco-1
+- Fixes to LSF scripts pushed upstream (SOFTWARE-1589, creating a temp file in /tmp)
+- Fix to PBS script that tracks job status (SOFTWARE-1594)
+
 * Mon Aug 25 2014 Brian Lin <blin@cs.wisc.edu> - 1.18.9.bosco-2
 - Fix for memory allocation failure when tracking LSF jobs (SOFTWARE-1589)
 
