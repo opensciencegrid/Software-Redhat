@@ -1,5 +1,5 @@
 Name: htcondor-ce
-Version: 1.5.1
+Version: 1.6
 Release: 1%{?dist}
 Summary: A framework to run HTCondor as a CE
 
@@ -29,6 +29,11 @@ Requires(post): chkconfig
 Requires(preun): chkconfig
 # This is for /sbin/service
 Requires(preun): initscripts
+
+# On RHEL6 and later, we use this utility to setup a custom hostname.
+%if 0%{?rhel} >= 6
+Requires: /usr/bin/unshare
+%endif
 
 %description
 %{summary}
@@ -116,11 +121,22 @@ Provides:  condor-ce-client = %{version}
 %description client
 %{summary}
 
+%package collector
+Group: Applications/System
+Summary: Central HTCondor-CE information services collector
+
+Requires: %{name}-client = %{version}-%{release}
+Requires: libxml2-python
+Conflicts: %{name}
+
+%description collector
+%{summary}
+
 %prep
 %setup -q
 
 %build
-%cmake
+%cmake -DHTCONDORCE_VERSION=%{version} -DCMAKE_INSTALL_LIBDIR=%{_libdir}
 make %{?_smp_mflags}
 
 %install
@@ -173,10 +189,10 @@ fi
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-router.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/03-ce-shared-port.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/03-managed-fork.conf
-%config(noreplace) %{_sysconfdir}/condor-ce/condor_mapfile
 %config(noreplace) %{_sysconfdir}/sysconfig/condor-ce
 
 %{_datadir}/condor-ce/config.d/01-ce-auth-defaults.conf
+%{_datadir}/condor-ce/config.d/01-ce-info-services-defaults.conf
 %{_datadir}/condor-ce/config.d/01-ce-router-defaults.conf
 %{_datadir}/condor-ce/config.d/03-ce-shared-port-defaults.conf
 %{_datadir}/condor-ce/config.d/03-managed-fork-defaults.conf
@@ -226,12 +242,16 @@ fi
 %config %{_sysconfdir}/condor-ce/condor_config
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-common-auth.conf
 %{_datadir}/condor-ce/config.d/01-common-auth-defaults.conf
+%config(noreplace) %{_sysconfdir}/condor-ce/condor_mapfile
 
 %{_datadir}/condor-ce/condor_ce_env_bootstrap
 %{_datadir}/condor-ce/condor_ce_client_env_bootstrap
+%{_datadir}/condor-ce/condor_ce_startup
+%{_datadir}/condor-ce/condor_ce_startup_internal
 
 %{_bindir}/condor_ce_config_val
 %{_bindir}/condor_ce_hold
+%{_bindir}/condor_ce_job_router_tool
 %{_bindir}/condor_ce_off
 %{_bindir}/condor_ce_on
 %{_bindir}/condor_ce_q
@@ -248,7 +268,23 @@ fi
 %{_bindir}/condor_ce_trace
 %{_bindir}/condor_ce_ping
 
+%files collector
+
+%{_bindir}/condor_ce_config_generator
+%{_initrddir}/condor-ce-collector
+%{_datadir}/condor-ce/config.d/01-ce-collector-defaults.conf
+
+%config(noreplace) %{_sysconfdir}/sysconfig/condor-ce-collector
+%config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-collector.conf
+%config(noreplace) %{_sysconfdir}/condor-ce/config.d/02-ce-auth-generated.conf
+%config(noreplace) %{_sysconfdir}/cron.d/condor-ce-collector-generator.cron
+
 %changelog
+* Wed Sep 29 2014 Brian Lin <blin@cs.wisc.edu> - 1.6-1
+- Allow sysadmins to set a custom hostname.
+- Advertise the HTCondor-CE version in the ClassAd.
+- Add condor_ce_job_router_tool
+
 * Thu Sep 4 2014 Brian Lin <blin@cs.wisc.edu> - 1.5.1-1
 - Fix idle jobs getting held even if they have a matching route
 
