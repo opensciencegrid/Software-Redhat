@@ -103,6 +103,8 @@ EOF
 done
 
 # A more appropriate template for PBS; actually does something
+ln -s %{_sysconfdir}/%{name}/pbs_local_submit_attributes.sh    $RPM_BUILD_ROOT%{_libexecdir}/blahp/pbs_local_submit_attributes.sh
+
 cat > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/pbs_local_submit_attributes.sh << EOF
 #/bin/sh
 
