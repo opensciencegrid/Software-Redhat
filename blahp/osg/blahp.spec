@@ -64,9 +64,12 @@ echo "blah_libexec_directory=/usr/libexec/blahp" >> $RPM_BUILD_ROOT%{_sysconfdir
 
 install -m 0755 -d -p $RPM_BUILD_ROOT%{_sysconfdir}/%{name}
 mv $RPM_BUILD_ROOT%{_libexecdir}/blahp/sge_local_submit_attributes.sh $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/
+chmod 0644 $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/sge_local_submit_attributes.sh
 ln -s %{_sysconfdir}/%{name}/sge_local_submit_attributes.sh    $RPM_BUILD_ROOT%{_libexecdir}/blahp/sge_local_submit_attributes.sh
 
-for i in pbs lsf condor; do
+
+# Insert appropriate templates for LSF and HTCondor; admins will need to change these
+for i in lsf condor; do
   ln -s %{_sysconfdir}/%{name}/${i}_local_submit_attributes.sh    $RPM_BUILD_ROOT%{_libexecdir}/blahp/${i}_local_submit_attributes.sh
 
 cat > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/${i}_local_submit_attributes.sh << EOF
@@ -99,7 +102,43 @@ cat > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/${i}_local_submit_attributes.sh << E
 EOF
 done
 
+# A more appropriate template for PBS; actually does something
+ln -s %{_sysconfdir}/%{name}/pbs_local_submit_attributes.sh    $RPM_BUILD_ROOT%{_libexecdir}/blahp/pbs_local_submit_attributes.sh
+
+cat > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/pbs_local_submit_attributes.sh << EOF
+#/bin/sh
+
+# This file is sourced by blahp before submitting the job to PBS
+# Anything printed to stdout is included in the submit file.
+# For example, to set a default walltime of 24 hours in PBS, you
+# could uncomment this line:
+
+# echo "#PBS -l walltime=24:00:00"
+
+# blahp allows arbitrary attributes to be passed to this script on a per-job
+# basis.  If you add the following to your HTCondor-G submit file:
+
+#+remote_cerequirements = NumJobs == 100 && foo = 5
+
+# Then an environment variable, NumJobs, will be exported prior to calling this
+# script and set to a value of 100.  The variable foo will be set to 5.
+
+# You could allow users to set the walltime for the job with the following
+# customization (PBS syntax given; adjust for the appropriate batch system):
+
+# Uncomment the else block to default to 24 hours of runtime; otherwise, the queue
+# default is used.
+if [ -n "\$Walltime" ]; then
+  echo "#PBS -l walltime=\$Walltime"
+#else
+#  echo "#PBS -l walltime=24:00:00"
+fi
+
+EOF
+
 mv $RPM_BUILD_ROOT%{_docdir}/glite-ce-blahp-@PVER@ $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
+
+chmod 644 $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/sge_local_submit_attributes.sh
 
 %clean
 rm -rf $RPM_BUILD_ROOT
