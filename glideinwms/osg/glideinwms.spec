@@ -20,8 +20,8 @@ Name:           glideinwms
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
 %if %{v3_plus}
-%define version 3.2.6
-%define release 1
+%define version 3.2.7
+%define release 0.1.rc1
 %define frontend_xml frontend.master.xml
 %define factory_xml glideinWMS.master.xml
 %endif
@@ -145,6 +145,7 @@ This is a package for a glideinwms submit host.
 Summary:        The glideinWMS common libraries.
 Group:          System Environment/Daemons
 Requires: python-rrdtool
+Requires: python-ldap
 Requires: m2crypto
 %description libs
 This is a package provides common libraries used by glideinwms.
@@ -177,6 +178,7 @@ Requires: httpd
 Requires: glideinwms-factory-condor = %{version}-%{release}
 Requires: condor >= 7.8.0
 Requires: python-rrdtool
+Requires: python-ldap
 Requires: m2crypto
 Requires: javascriptrrd >= 1.1.0
 Requires(post): /sbin/service
@@ -736,6 +738,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Sep 29 2014 Parag Mhashilkar <parag@fnal.gov> - 3.2.7-0.1.rc1
+- Glideinwms v3.2.7 rc1 release
+- Added python-ldap as dependency to glideinwms-libs and glideinwms-factory
+
 * Fri Jul 25 2014 Parag Mhashilkar <parag@fnal.gov> - 3.2.6-1
 - Glideinwms v3.2.6 release
 
