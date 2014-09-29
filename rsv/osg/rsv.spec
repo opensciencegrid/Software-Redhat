@@ -1,7 +1,7 @@
 Name:      rsv
 Summary:   RSV Meta Package
-Version:   3.7.18
-Release:   2%{?dist}
+Version:   3.7.19
+Release:   1%{?dist}
 License:   Apache 2.0
 Group:     Applications/Monitoring
 URL:       https://twiki.grid.iu.edu/bin/view/MonitoringInformation/RSV
@@ -205,6 +205,10 @@ fi
 
 
 %changelog
+* Mon Sep 29 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 3.7.19-1
+- SOFTWARE-1618 - Fix bogus "unexpected error" message in crl freshness probe
+- SOFTWARE-1602 - Refine messages in gratia-config-probe if /etc/cron.d inaccessible
+
 * Mon Jul 28 2014 Carl Edquist <edquist@cs.wisc.edu> - 3.7.18-2
 - SOFTWARE-1546 - Change default port for HTCondor-CE probe
 - SOFTWARE-862 - Correctly check for missing gratia-probe cron jobs
