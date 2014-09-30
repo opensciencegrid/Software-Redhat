@@ -1,9 +1,8 @@
 Summary: Package for configure-osg and associated scripts
 Name: osg-configure
-Version: 1.0.59
-Release: 2%{?dist}
+Version: 1.0.60
+Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
-Patch0: 1567-grid3-locations.patch
 License: Apache 2.0
 Group: Grid
 Prefix: %{_prefix}
@@ -184,7 +183,6 @@ It may safely be removed once the upgrade is finished.
 
 %prep
 %setup
-%patch0 -p1
 
 %build
 %{__python} setup.py build
@@ -206,7 +204,7 @@ touch $RPM_BUILD_ROOT/etc/profile.d/osg.csh
 # following is needed to move script to sbin directory
 mkdir -p $RPM_BUILD_ROOT/usr/sbin
 mv $RPM_BUILD_ROOT/usr/bin/osg-configure $RPM_BUILD_ROOT/usr/sbin/osg-configure
-ln -s /usr/sbin/osg-configure $RPM_BUILD_ROOT/usr/sbin/configure-osg 
+ln -s /usr/sbin/osg-configure $RPM_BUILD_ROOT/usr/sbin/configure-osg
 rmdir $RPM_BUILD_ROOT/usr/bin
 # Remove cemon files, don't need this on OSG 3.2+
 rm -f $RPM_BUILD_ROOT/%{python_sitelib}/osg_configure/configure_modules/cemon.py*
@@ -305,6 +303,14 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Sep 30 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0.60-1
+- Remove SOFTWARE-1567 patch (in upstream)
+- Work for Phase 1 of the HTCondor-CE Info-Services project:
+    - Advertise some OSG-CE attributes in HTCondor-CE (SOFTWARE-1592)
+    - Set CONDOR_VIEW_HOST in HTCondor-CE configs (SOFTWARE-1615)
+- Increase core count limit in Gip configuration module (SOFTWARE-1605)
+- Skip CEMon configuration of CEMon is missing
+
 * Tue Sep 02 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0.59-2
 - Add patch to not try to mess with grid3-locations.txt if OSG_APP is UNSET (SOFTWARE-1567)
 
