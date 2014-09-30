@@ -1,7 +1,7 @@
 #global betatag beta1
 
 Name:           osg-build
-Version:        1.4.0
+Version:        1.4.1
 Release:        1%{?dist}
 #Release:        0.1.%{betatag}%{?dist}
 Summary:        Build tools for the OSG
@@ -70,6 +70,11 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_docdir}/%{name}/sample-osg-build.ini
 
 %changelog
+* Tue Sep 30 2014 Matyas Selmeci <matyas@cs.wisc.edu> 1.4.1-1
+- Do not promote EL7 unless --el7 flag is passed (SOFTWARE-1586)
+- Add --background option for koji builds to lower priority (SOFTWARE-1609)
+- Exit nonzero if watched builds fail
+
 * Mon Aug 11 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.4.0-1
 - EL7 support
 - Removed koji-tag-checker
