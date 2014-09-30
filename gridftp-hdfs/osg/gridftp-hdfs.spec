@@ -2,7 +2,7 @@
 
 Name:           gridftp-hdfs
 Version:        0.5.4
-Release:        18%{?dist}
+Release:        19%{?dist}
 Summary:        HDFS DSI plugin for GridFTP
 Group:          System Environment/Daemons
 License:        ASL 2.0
@@ -30,6 +30,7 @@ Patch10: gridftp-hdfs-uninitialized-result.patch
 Patch11: 1410-java-environment.patch
 Patch12: 1412-gridftp_d.patch
 Patch13: 1495-pthread-mutex.patch
+Patch14: 1495-optimal-concurrency.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires: autoconf
@@ -90,6 +91,7 @@ HDFS DSI plugin for GridFTP
 %patch11 -p1
 %patch12 -p1
 %patch13 -p1
+%patch14 -p1
 
 aclocal
 libtoolize
@@ -187,6 +189,9 @@ fi
 %endif
 
 %changelog
+* Tue Sep 30 2014 Carl Edquist <edquist@cs.wisc.edu> - 0.5.4-19.osg
+- Limit concurrency to 1 for no-parallelism transfers (SOFTWARE-1495)
+
 * Thu Jun 19 2014 Carl Edquist <edquist@cs.wisc.edu> - 0.5.4-18.osg
 - Mutex fix for GLOBUS_THREAD_MODEL="pthread" (SOFTWARE-1495)
 
