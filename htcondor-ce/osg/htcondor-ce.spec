@@ -1,5 +1,5 @@
 # Have gitrev be the short hash or branch name if doing a prerelease build
-%define gitrev master
+#define gitrev master
 
 Name: htcondor-ce
 Version: 1.6
@@ -297,7 +297,7 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
-* Mon Sep 29 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6-2
+* Tue Sep 30 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6-2
 - Add grid-certificates virtual dependency
 - Add CONDOR_VIEW_CLASSAD_TYPES setting (SOFTWARE-1616)
 - Add LastCEConfigGenerateTime to COLLECTOR_ATTRS to include it in the collector classad
@@ -306,7 +306,7 @@ fi
 - collector subpackage also owns dirs under /var/log
 - Rename condor_ce_generator to condor_ce_config_generator and improve config file text
 
-* Wed Sep 29 2014 Brian Lin <blin@cs.wisc.edu> - 1.6-1
+* Mon Sep 29 2014 Brian Lin <blin@cs.wisc.edu> - 1.6-1
 - Allow sysadmins to set a custom hostname.
 - Advertise the HTCondor-CE version in the ClassAd.
 - Add condor_ce_job_router_tool
