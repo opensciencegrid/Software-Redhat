@@ -1,7 +1,7 @@
 Summary:   Profiles your system for debugging
 Name:      osg-system-profiler
-Version:   1.0.11
-Release:   2%{?dist}
+Version:   1.1.0
+Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
 Packager:  VDT <vdt-support@opensciencegrid.org>
@@ -38,12 +38,17 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root)
 %{_bindir}/%{name}
+%{_bindir}/osg-installed-versions
 
 %files viewer
 %defattr(-,root,root)
 %{_bindir}/%{name}-viewer
 
 %changelog
+* Mon Sep 29 2014 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.1.0-1
+- Look for enabled gratia probe cronjobs
+- Add osg-installed-versions script
+
 * Tue Apr 02 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0.11-2
 - Fix for looking at fetch-crl.conf in tarball case
 
