@@ -18,7 +18,7 @@ enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-OSG
 
-[{YUMREPO}-debug]
+[{YUMREPO}-debuginfo]
 name=OSG Software for Enterprise Linux {EL} {TITLE} $basearch - Debug
 baseurl=http://repo.grid.iu.edu/osg/{SERIES}/el{EL}/{REPO}/$basearch/debug
 failovermethod=priority

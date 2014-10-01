@@ -1,6 +1,6 @@
 Name:           osg-release
 Version:        3.2
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        OSG Software for Enterprise Linux repository configuration
 
 Group:          System Environment/Base 
@@ -63,6 +63,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Sep 30 2014 Carl Edquist <edquist@cs.wisc.edu> - 3.2-7
+- Rename debug repos to *-debuginfo (SOFTWARE-1622)
+
 * Thu Jul 17 2014 Carl Edquist <edquist@cs.wisc.edu> - 3.2-6
 - Use .repo file templates and support el7 (SOFTWARE-1541)
 
