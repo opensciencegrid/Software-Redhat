@@ -1,6 +1,9 @@
+# Have gitrev be the short hash or branch name if doing a prerelease build
+#define gitrev master
+
 Name: htcondor-ce
-Version: 1.5.1
-Release: 1%{?dist}
+Version: 1.6
+Release: 2%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 
 Group: Applications/System
@@ -10,7 +13,10 @@ URL: http://github.com/bbockelm/condor-ce
 # Generated with:
 # git archive --prefix=%{name}-%{version}/ v%{version} | gzip > %{name}-%{version}.tar.gz
 #
-Source0: %{name}-%{version}.tar.gz
+# Pre-release build tarballs should be generated with:
+# git archive --prefix=%{name}-%{version}/ %{gitrev} | gzip > %{name}-%{version}-%{gitrev}.tar.gz
+#
+Source0: %{name}-%{version}%{?gitrev:-%{gitrev}}.tar.gz
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -29,6 +35,11 @@ Requires(post): chkconfig
 Requires(preun): chkconfig
 # This is for /sbin/service
 Requires(preun): initscripts
+
+# On RHEL6 and later, we use this utility to setup a custom hostname.
+%if 0%{?rhel} >= 6
+Requires: /usr/bin/unshare
+%endif
 
 %description
 %{summary}
@@ -101,6 +112,7 @@ BuildRequires: cmake
 Requires: condor
 Requires: /usr/bin/grid-proxy-init
 Requires: /usr/bin/voms-proxy-init
+Requires: grid-certificates
 
 # Require the appropriate version of the python library.  This
 # is rather awkward, but better syntax isn't available until RHEL6
@@ -116,11 +128,22 @@ Provides:  condor-ce-client = %{version}
 %description client
 %{summary}
 
+%package collector
+Group: Applications/System
+Summary: Central HTCondor-CE information services collector
+
+Requires: %{name}-client = %{version}-%{release}
+Requires: libxml2-python
+Conflicts: %{name}
+
+%description collector
+%{summary}
+
 %prep
 %setup -q
 
 %build
-%cmake
+%cmake -DHTCONDORCE_VERSION=%{version} -DCMAKE_INSTALL_LIBDIR=%{_libdir}
 make %{?_smp_mflags}
 
 %install
@@ -173,10 +196,10 @@ fi
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-router.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/03-ce-shared-port.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/03-managed-fork.conf
-%config(noreplace) %{_sysconfdir}/condor-ce/condor_mapfile
 %config(noreplace) %{_sysconfdir}/sysconfig/condor-ce
 
 %{_datadir}/condor-ce/config.d/01-ce-auth-defaults.conf
+%{_datadir}/condor-ce/config.d/01-ce-info-services-defaults.conf
 %{_datadir}/condor-ce/config.d/01-ce-router-defaults.conf
 %{_datadir}/condor-ce/config.d/03-ce-shared-port-defaults.conf
 %{_datadir}/condor-ce/config.d/03-managed-fork-defaults.conf
@@ -226,12 +249,16 @@ fi
 %config %{_sysconfdir}/condor-ce/condor_config
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-common-auth.conf
 %{_datadir}/condor-ce/config.d/01-common-auth-defaults.conf
+%config(noreplace) %{_sysconfdir}/condor-ce/condor_mapfile
 
 %{_datadir}/condor-ce/condor_ce_env_bootstrap
 %{_datadir}/condor-ce/condor_ce_client_env_bootstrap
+%{_datadir}/condor-ce/condor_ce_startup
+%{_datadir}/condor-ce/condor_ce_startup_internal
 
 %{_bindir}/condor_ce_config_val
 %{_bindir}/condor_ce_hold
+%{_bindir}/condor_ce_job_router_tool
 %{_bindir}/condor_ce_off
 %{_bindir}/condor_ce_on
 %{_bindir}/condor_ce_q
@@ -248,9 +275,48 @@ fi
 %{_bindir}/condor_ce_trace
 %{_bindir}/condor_ce_ping
 
+%files collector
+
+%{_bindir}/condor_ce_config_generator
+%{_initrddir}/condor-ce-collector
+%{_datadir}/condor-ce/config.d/01-ce-collector-defaults.conf
+
+%config(noreplace) %{_sysconfdir}/sysconfig/condor-ce-collector
+%config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-collector.conf
+%config(noreplace) %{_sysconfdir}/condor-ce/config.d/02-ce-auth-generated.conf
+%config(noreplace) %{_sysconfdir}/cron.d/condor-ce-collector-generator.cron
+
+%attr(-,condor,condor) %dir %{_localstatedir}/run/condor-ce
+%attr(-,condor,condor) %dir %{_localstatedir}/log/condor-ce
+%attr(1777,condor,condor) %dir %{_localstatedir}/log/condor-ce/user
+%attr(-,condor,condor) %dir %{_localstatedir}/lib/condor-ce
+%attr(-,condor,condor) %dir %{_localstatedir}/lib/condor-ce/spool
+%attr(-,condor,condor) %dir %{_localstatedir}/lib/condor-ce/execute
+%attr(-,condor,condor) %dir %{_localstatedir}/lock/condor-ce
+%attr(1777,condor,condor) %dir %{_localstatedir}/lock/condor-ce/user
+%attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
+
 %changelog
+* Tue Sep 30 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6-2
+- Add grid-certificates virtual dependency
+- Add CONDOR_VIEW_CLASSAD_TYPES setting (SOFTWARE-1616)
+- Add LastCEConfigGenerateTime to COLLECTOR_ATTRS to include it in the collector classad
+- Add implementation of htcondor.param.git (if missing)
+- Add config last gen time as an attribute (LastCEConfigGenerateTime)
+- collector subpackage also owns dirs under /var/log
+- Rename condor_ce_generator to condor_ce_config_generator and improve config file text
+
+* Mon Sep 29 2014 Brian Lin <blin@cs.wisc.edu> - 1.6-1
+- Allow sysadmins to set a custom hostname.
+- Advertise the HTCondor-CE version in the ClassAd.
+- Add condor_ce_job_router_tool
+
 * Thu Sep 4 2014 Brian Lin <blin@cs.wisc.edu> - 1.5.1-1
 - Fix idle jobs getting held even if they have a matching route
+
+* Wed Sep 03 2014 Brian Bockelman <bbockelm@cse.unl.edu> - 1.6-1
+- Allow sysadmins to set a custom hostname.
+- Advertise the HTCondor-CE version in the ClassAd.
 
 * Mon Aug 25 2014 Brian Lin <blin@cs.wisc.edu> - 1.5-1
 - Add workaround to fix client tool segfault with mismatched ClassAd versions
