@@ -1,4 +1,4 @@
-%define tarball_version 8.2.2
+%define tarball_version 8.2.3
 
 # optionally define any of these, here or externally
 # % define fedora   16
@@ -31,6 +31,9 @@
 
 %if 0%{?rhel} >= 6
 %define cgroups 1
+%endif
+%if 0%{?rhel} >= 7
+%define systemd 1
 %endif
 
 # default to uw_build if neither fedora nor osg is enabled
@@ -94,7 +97,7 @@
 %define git_build 0
 # If building with git tarball, Fedora requests us to record the rev.  Use:
 # git log -1 --pretty=format:'%h'
-%define git_rev 4cc98dd
+%define git_rev e3b42ed
 
 %if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
 %{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
@@ -108,7 +111,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 2.3
+%define condor_base_release 1
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -205,15 +208,6 @@ Patch8: osg_sysconfig_in_init_script.patch
 # See gt3158
 Patch14: 0001-Apply-the-user-s-condor_config-last-rather-than-firs.patch
 Patch15: wso2-axis2.patch
-
-# The condor_gt4540_aws patch applies to HTCondor 8.0 and is currently (19
-# Aug 2014) scheduled to be incorporated upstream into HTCondor 8.2.3.
-# https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=4540
-Patch20: condor_gt4540_aws.patch
-
-# Make peaceful off function bourne shell compatible (SOFTWARE-1307)
-# Should be incorporated upstream shortly (8.2.3?)
-Patch21: condor_peaceful_off.patch
 
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
@@ -659,9 +653,6 @@ exit 0
 %patch15 -p0
 %endif
 
-%patch20 -p1
-%patch21 -p1
-
 # fix errant execute permissions
 find src -perm /a+x -type f -name "*.[Cch]" -exec chmod a-x {} \;
 
@@ -1047,7 +1038,7 @@ mv %{buildroot}%{_libexecdir}/condor/campus_factory/share %{buildroot}%{_datadir
 install -p -m 0644 %{SOURCE6} %{buildroot}%{_sysconfdir}/condor/config.d/10-batch_gahp_blahp.config
 %endif
 
-%if ! %uw_build
+%if 0%{?osg} || 0%{?hcc}
 install -p -m 0644 %{SOURCE7} %{buildroot}%{_sysconfdir}/condor/config.d/00-restart_peaceful.config
 %endif
 
@@ -1152,7 +1143,7 @@ rm -rf %{buildroot}
 %config(noreplace) %{_sysconfdir}/condor/config.d/10-batch_gahp_blahp.config
 %endif
 %endif
-%if ! %uw_build
+%if 0%{?osg} || 0%{?hcc}
 %config(noreplace) %{_sysconfdir}/condor/config.d/00-restart_peaceful.config
 %endif
 %_libexecdir/condor/condor_limits_wrapper.sh
@@ -1271,6 +1262,7 @@ rm -rf %{buildroot}
 %_bindir/condor_tail
 %_bindir/condor_qsub
 %_bindir/condor_pool_job_report
+%_bindir/condor_job_router_tool
 # reconfig_schedd, restart
 # sbin/condor is a link for master_off, off, on, reconfig,
 %_sbindir/condor_advertise
