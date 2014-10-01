@@ -1,8 +1,9 @@
 Summary: Package for configure-osg and associated scripts
 Name: osg-configure
 Version: 1.0.60
-Release: 1%{?dist}
+Release: 2%{?dist}
 Source0: %{name}-%{version}.tar.gz
+Patch0: ce_collectors.patch
 License: Apache 2.0
 Group: Grid
 Prefix: %{_prefix}
@@ -183,6 +184,7 @@ It may safely be removed once the upgrade is finished.
 
 %prep
 %setup
+%patch0 -p1
 
 %build
 %{__python} setup.py build
@@ -303,6 +305,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Oct 1 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0.60-2
+- Add patch to fix ce_collectors special values
+
 * Tue Sep 30 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0.60-1
 - Remove SOFTWARE-1567 patch (in upstream)
 - Work for Phase 1 of the HTCondor-CE Info-Services project:

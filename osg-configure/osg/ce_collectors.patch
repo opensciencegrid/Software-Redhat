@@ -1,0 +1,40 @@
+From 28300125f5e0f2adbbdae88c3d365f95c930d615 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Wed, 1 Oct 2014 10:37:58 -0500
+Subject: [PATCH] Fix the special values (PRODUCTION and ITB) for ce_collectors
+
+---
+ osg_configure/configure_modules/infoservices.py | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/osg_configure/configure_modules/infoservices.py b/osg_configure/configure_modules/infoservices.py
+index 64a0a81..6f771cf 100644
+--- a/osg_configure/configure_modules/infoservices.py
++++ b/osg_configure/configure_modules/infoservices.py
+@@ -77,6 +77,14 @@ class InfoServicesConfiguration(BaseConfiguration):
+       else:
+         self.options[key].default_value = self.__production_defaults[key]
+ 
++  def __parse_ce_collectors(self, val):
++    if val == 'PRODUCTION':
++      return self.__production_defaults['ce_collectors'].split(',')
++    elif val == 'ITB':
++      return self.__itb_defaults['ce_collectors'].split(',')
++    else:
++      return val.split(',')
++
+   def parseConfiguration(self, configuration):
+     """
+     Try to get configuration information from ConfigParser or SafeConfigParser object given
+@@ -113,7 +121,7 @@ class InfoServicesConfiguration(BaseConfiguration):
+ 
+     self.ress_servers = self.__parse_servers(self.options['ress_servers'].value)
+     self.bdii_servers = self.__parse_servers(self.options['bdii_servers'].value)
+-    self.ce_collectors = self.options['ce_collectors'].value.split(',')
++    self.ce_collectors = self.__parse_ce_collectors(self.options['ce_collectors'].value)
+ 
+     def csg(section, option):
+       return utilities.config_safe_get(configuration, section, option, None)
+-- 
+2.0.1
+
