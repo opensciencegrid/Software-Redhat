@@ -4,3 +4,6 @@ Right now, we are using the following fork -
 
 https://github.com/osg-bosco/BLAH
 
+Particularly the v1_18_bosco branch and we're building the tarball with:
+
+git archive <version tag> | gzip -9 > blahp.tar.gz

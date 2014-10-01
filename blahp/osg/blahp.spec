@@ -1,6 +1,6 @@
 Name:		blahp
-Version:	1.18.9.bosco
-Release:	3%{?dist}
+Version:	1.18.11.bosco
+Release:	1%{?dist}
 Summary:	gLite BLAHP daemon
 
 Group:		System/Libraries
@@ -168,6 +168,13 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Mon Sep 29 2014 Brian Lin <blin@cs.wisc.edu> - 1.18.11.bosco-1
+- Fix bug in PBS status script
+
+* Thu Sep 25 2014 Brian Lin <blin@cs.wisc.edu> - 1.18.10.bosco-1
+- Fixes to LSF scripts pushed upstream (SOFTWARE-1589, creating a temp file in /tmp)
+- Fix to PBS script that tracks job status (SOFTWARE-1594)
+
 * Fri Aug 22 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.18.9.bosco-3
 - Rebuild against condor 8.2.2 (SOFTWARE-1456)
 
