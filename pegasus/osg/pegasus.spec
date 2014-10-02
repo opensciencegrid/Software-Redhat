@@ -1,6 +1,6 @@
 Name:           pegasus
 Version:        4.3.1
-Release:        1.2%{?dist}
+Release:        1.3%{?dist}
 Summary:        Workflow management system for HTCondor, grids, and clouds
 Group:          Applications/System
 License:        ASL 2.0
@@ -16,7 +16,10 @@ BuildRequires:  ant, ant-apache-regexp, java7-devel, gcc, groff, python-devel, g
 Requires:       java7 >= 1:1.7.0, python >= 2.4, condor >= 7.6, graphviz
 
 # Added by OSG Software, so that all builds and binaries work on el5 and el6
-BuildRequires:  ant-nodeps, jpackage-utils, /usr/share/java-1.7.0
+%if 0%{?rhel} < 7
+BuildRequires:  ant-nodeps
+%endif
+BuildRequires:  jpackage-utils, /usr/share/java-1.7.0
 Requires:       jpackage-utils, /usr/lib/java-1.7.0, /usr/share/java-1.7.0
 
 %define sourcedir %{name}-source-%{version}
@@ -84,6 +87,9 @@ rm -Rf %{buildroot}
 
 
 %changelog
+* Thu Oct 02 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 4.3.1-1.3
+- Remove ant-nodeps buildrequire on EL7
+
 * Wed Nov 27 2013 Tim Cartwright <cat@cs.wisc.edu> 4.3.1-1.2
 - Rebuild with unified spec file across OSG 3.1 and 3.2
 - Tweaked arrangement of requires lines to ease comparisons against original
