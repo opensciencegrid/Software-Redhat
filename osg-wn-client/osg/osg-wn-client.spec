@@ -4,7 +4,7 @@ Version:   3.0.0
 %if 0%{?el7}
 %define release_suffix _clipped
 %endif
-Release:   23%{?release_suffix}%{?dist}
+Release:   24%{?release_suffix}%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -49,6 +49,13 @@ Requires: globus-gass-copy-progs
 %if 0%{?rhel} >= 6
 Requires: globus-xio-udt-driver
 %endif
+
+Requires: gfal2
+Requires: gfal2-util
+Requires: gfal2-plugin-srm
+Requires: gfal2-plugin-gridftp
+# the xrootd plugin doesn't work with the xrootd4 in OSG...
+# Requires: gfal2-plugin-xrootd
 
 %description
 %{summary}
@@ -106,6 +113,9 @@ rm -rf $RPM_BUILD_ROOT
 %files glexec
 
 %changelog
+* Thu Oct 02 2014 Carl Edquist <edquist@cs.wisc.edu> - 3.0.0-24
+- Bring in GFAL2 tools (SOFTWARE-1603)
+
 * Wed Sep 17 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 3.0.0-23_clipped
 - Create clipped release for EL7 containing only the packages that we were able to build (SOFTWARE-1604)
 
