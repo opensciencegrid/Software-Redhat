@@ -3,7 +3,7 @@
 
 Name:           joda-time
 Version:        1.5.2
-Release:        7.1.%{tzversion}%{?dist}
+Release:        7.2.%{tzversion}%{?dist}
 Summary:        Java date and time API
 
 Group:          Development/Libraries
@@ -17,7 +17,9 @@ BuildArch:      noarch
 
 BuildRequires:  java7-devel
 BuildRequires:  ant
+%if 0%{?rhel} < 7
 BuildRequires:  ant-nodeps
+%endif
 BuildRequires:  jpackage-utils
 BuildRequires:  junit
 Requires:       java7
@@ -96,6 +98,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Thu Oct 02 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.2-7.2.tzdata2008d
+- Remove ant-nodeps build dep on EL7
+
 * Thu Apr 04 2013 Carl Edquist <edquist@cs.wisc.edu> - 1.5.2-7.1.tzdata2008d
 - Build with OpenJDK7
 
