@@ -19,7 +19,6 @@
          </match_attrs>
          <schedds>
             <schedd DN="/DC=com/DC=DigiCert-Grid/O=Open Science Grid/OU=Services/CN=FRONTEND_HOSTNAME" fullname="FRONTEND_HOSTNAME"/>
-            <schedd DN="/DC=com/DC=DigiCert-Grid/O=Open Science Grid/OU=Services/CN=FRONTEND_HOSTNAME" fullname="schedd_jobs2@FRONTEND_HOSTNAME"/>
          </schedds>
       </job>
    </match>

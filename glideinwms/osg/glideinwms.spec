@@ -740,6 +740,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Tue Sep 29 2014 Parag Mhashilkar <parag@fnal.gov> - 3.2.7-0.1.rc1
 - Glideinwms v3.2.7 rc1 release
+- Disabled secondarsy schedd in the frontend configuration
 - Added python-ldap as dependency to glideinwms-libs and glideinwms-factory
 
 * Fri Jul 25 2014 Parag Mhashilkar <parag@fnal.gov> - 3.2.6-1
