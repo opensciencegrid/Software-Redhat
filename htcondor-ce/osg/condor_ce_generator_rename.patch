@@ -1,0 +1,35 @@
+From b4d5e8ea675f70730a1fde527d0171024a4df5ad Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Fri, 3 Oct 2014 11:41:51 -0500
+Subject: [PATCH] Fix condor_ce_generator -> condor_ce_config_generator rename
+
+Looks like I missed the cron job and the init script when renaming
+condor_ce_generator to condor_ce_config_generator. This commit fixes that.
+---
+ config/condor-ce-collector-generator.cron | 2 +-
+ src/condor-ce-collector                   | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/config/condor-ce-collector-generator.cron b/config/condor-ce-collector-generator.cron
+index 155ead7..9d6b252 100644
+--- a/config/condor-ce-collector-generator.cron
++++ b/config/condor-ce-collector-generator.cron
+@@ -1 +1 @@
+-*/10 * * * * root [[ ! -f /var/lock/subsys/condor-ce-collector ]] || /usr/bin/condor_ce_generator
++*/10 * * * * root [[ ! -f /var/lock/subsys/condor-ce-collector ]] || /usr/bin/condor_ce_config_generator
+diff --git a/src/condor-ce-collector b/src/condor-ce-collector
+index 8835c04..9a17604 100755
+--- a/src/condor-ce-collector
++++ b/src/condor-ce-collector
+@@ -52,7 +52,7 @@ fi
+ grep -q 'GENERATED AT' /etc/condor-ce/config.d/02-ce-auth-generated.conf &> /dev/null
+ if [ $? -ne 0 ]; then
+   echo "No auth configuration present; generating a new one now."
+-  condor_ce_generator
++  condor_ce_config_generator
+ fi
+ 
+ start() {
+-- 
+2.0.1
+
