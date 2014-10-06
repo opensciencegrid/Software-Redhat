@@ -1,6 +1,6 @@
 Name:		glite-data-delegation-api-c
 Version:	2.0.0.7
-Release:	6%{?dist}
+Release:	7%{?dist}
 Summary:	Library for using the gLite delegation API from C
 
 Group:		Development/Languages/C and C++
@@ -35,9 +35,24 @@ BuildRequires:  globus-gss-assist-devel
 ./bootstrap
 
 # Note the gsoap version is hardcoded.  The true gsoap version doesn't matter, only that it is greater than 2.3
-%configure --with-delegation-wsdl=/usr/share/glite-security-delegation-interface/interface/www.gridsite.org-delegation-2.0.0.wsdl --with-gsoap-version=2.7.13 --with-interface-version=2.0.0
+export CGSI_GSOAP_LOCATION=/usr
+export CGSI_GSOAP_CFLAGS=-I/usr/include
+export CGSI_GSOAP_LIBS='-L/usr/lib64 -lcgsi_plugin'
+%configure \
+    --with-delegation-wsdl=/usr/share/glite-security-delegation-interface/interface/www.gridsite.org-delegation-2.0.0.wsdl \
+    --with-gsoap-version=2.7.13 \
+    --with-interface-version=2.0.0 \
+    --with-globus-nothr-flavor=gcc64dbg \
+    --with-globus-thr-flavor=gcc64dbgpthr \
+    --disable-static
 
-make %{?_smp_mflags}
+# libcgsi_plugin_gsoap_2.7 is now just called libcgsi_plugin.
+# Globus no longer uses flavors
+# The configure script ignores these settings so I have to fix the makefiles myself.
+find . -name Makefile -exec sed -i -e 's/cgsi_plugin_gsoap_2.7/cgsi_plugin/g' {} \;
+find . -name Makefile -exec sed -r -i -e 's/_gcc64dbg(pthr)?//g' {} \;
+
+make -j1
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -65,6 +80,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/glite/data/delegation
 
 %changelog
+* Mon Oct 06 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 2.0.0.7-7
+- Fix name of cgsi_plugin library and remove globus flavors so this builds again
+  (SOFTWARE-1298)
+- Single process build to avoid race condition
+- First build for el7 (SOFTWARE-1604)
+
 * Thu Jan 19 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 2.0.0.7-6
 - Remove stdsoap2.c dependency, making it less dependent on a specific version of gsoap.
 
@@ -83,7 +104,7 @@ rm -rf $RPM_BUILD_ROOT
 * Sat Jul  2 2011 Brian Bockelman <bbockelm@cse.unl.edu> 1.11.14-1
 - Update to latest release.
 
-* Thu Sep 10 2010 Brian Bockelman <bbockelm@cse.unl.edu> 1.3.3.2-1
+* Fri Sep 10 2010 Brian Bockelman <bbockelm@cse.unl.edu> 1.3.3.2-1
 - Initial RPM packaging
 - A few configure changes in order to force the builds to find the Fedora/EPEL
   globus libraries and includes
