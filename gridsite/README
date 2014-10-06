@@ -1,0 +1,7 @@
+Gridsite was brought in because the EPEL version removes the
+libgridsite_globus shared libraries, which are needed for
+glite-data-util-c (and thus glite-fts-client, which is in the
+wn-client).  See SOFTWARE-1298 and SOFTWARE-1348.
+
+Note this is the EL 7 version, which does not include the compat
+(gridsite-1.X) libraries.
