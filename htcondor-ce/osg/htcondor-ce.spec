@@ -3,7 +3,7 @@
 
 Name: htcondor-ce
 Version: 1.6
-Release: 2%{?gitrev:.%{gitrev}git}%{?dist}
+Release: 3%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 
 Group: Applications/System
@@ -17,6 +17,7 @@ URL: http://github.com/bbockelm/condor-ce
 # git archive --prefix=%{name}-%{version}/ %{gitrev} | gzip > %{name}-%{version}-%{gitrev}.tar.gz
 #
 Source0: %{name}-%{version}%{?gitrev:-%{gitrev}}.tar.gz
+Patch0: condor_ce_generator_rename.patch
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -141,6 +142,7 @@ Conflicts: %{name}
 
 %prep
 %setup -q
+%patch0 -p1
 
 %build
 %cmake -DHTCONDORCE_VERSION=%{version} -DCMAKE_INSTALL_LIBDIR=%{_libdir}
@@ -297,6 +299,9 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Fri Oct 03 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6-3
+- Fix condor_ce_generator rename issue in collector cron job and init script (SOFTWARE-1621)
+
 * Tue Sep 30 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6-2
 - Add grid-certificates virtual dependency
 - Add CONDOR_VIEW_CLASSAD_TYPES setting (SOFTWARE-1616)
@@ -311,7 +316,7 @@ fi
 - Advertise the HTCondor-CE version in the ClassAd.
 - Add condor_ce_job_router_tool
 
-* Thu Sep 4 2014 Brian Lin <blin@cs.wisc.edu> - 1.5.1-1
+* Thu Sep 04 2014 Brian Lin <blin@cs.wisc.edu> - 1.5.1-1
 - Fix idle jobs getting held even if they have a matching route
 
 * Wed Sep 03 2014 Brian Bockelman <bbockelm@cse.unl.edu> - 1.6-1
