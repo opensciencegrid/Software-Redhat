@@ -3,7 +3,7 @@
 
 Name:           gfal2-plugin-xrootd
 Version:        0.3.pre1
-Release:        2%{?dist}
+Release:        2.1%{?dist}
 Summary:        Provide xrootd support for GFAL2
 
 Group:          Applications/Internet
@@ -19,7 +19,7 @@ BuildRequires:  boost141-devel
 %endif
 BuildRequires:  cmake
 BuildRequires:  gfal2-devel
-BuildRequires:  xrootd-client-devel
+BuildRequires:  xrootd-client-devel >= 1:4.0.0
 
 %description
 The Grid File Access Library, GFAL2, provides a simple POSIX-like API for file
@@ -58,6 +58,9 @@ rm -rf %{buildroot}
 %{_pkgdocdir}/*
 
 %changelog
+* Tue Oct 07 2014 Carl Edquist <edquist@cs.wisc.edu> - 0.3.pre1-2.1
+- Force building against xrootd 4+ (SOFTWARE-1603)
+
 * Sat Aug 16 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.3.pre1-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_22_Mass_Rebuild
 
