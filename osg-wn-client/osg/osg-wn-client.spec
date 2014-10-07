@@ -4,7 +4,7 @@ Version:   3.0.0
 %if 0%{?el7}
 %define release_suffix _clipped
 %endif
-Release:   26%{?release_suffix}%{?dist}
+Release:   27%{?release_suffix}%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -22,8 +22,8 @@ Requires: /usr/bin/curl
 Requires: /usr/bin/dccp
 Requires: dcap-tunnel-gsi
 Requires: edg-gridftp-client
-%if ! 0%{?el7}
 Requires: glite-fts-client
+%if ! 0%{?el7}
 Requires: lcg-util
 %endif
 Requires: lfc-client
@@ -116,6 +116,9 @@ rm -rf $RPM_BUILD_ROOT
 %files glexec
 
 %changelog
+* Tue Oct 07 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 3.0.0-27_clipped
+- Bring in glite-fts-client on EL7
+
 * Tue Oct 07 2014 Carl Edquist <edquist@cs.wisc.edu> - 3.0.0-26
 - Require CGSI-gSOAP >= 1.3.6 for gfal2-plugin-srm (SOFTWARE-1603)
 
