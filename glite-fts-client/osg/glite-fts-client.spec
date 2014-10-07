@@ -1,6 +1,6 @@
 Name:		glite-fts-client
 Version:	3.7.4
-Release:	7%{?dist}
+Release:	8%{?dist}
 Summary:	gLite FTS client
 
 Group:		Development/Languages/C and C++
@@ -11,13 +11,13 @@ URL:		http://glite.cvs.cern.ch/cgi-bin/glite.cgi/org.glite.data.transfer-cli
 Source0:        org.glite.data.transfer-cli.tar.gz
 
 Patch0:         glite_fts_client_fedora.patch
-Patch1:         channel_internal_fixelsif.sl6.patch 
+Patch1:         channel_internal_fixelsif.sl6.patch
 Patch2:         add_gsoap_support.patch
 Patch3:         add_gsoap_tools.patch
 
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 Requires:	CGSI-gSOAP
-BuildRequires:  automake autoconf libtool 
+BuildRequires:  automake autoconf libtool
 BuildRequires:  CGSI-gSOAP-devel%{?_isa}
 BuildRequires:  glite-build-common-cpp
 BuildRequires:  glite-data-build
@@ -26,7 +26,7 @@ BuildRequires:  glite-data-delegation-cli-devel%{?_isa}
 BuildRequires:  glite-data-transfer-interface
 BuildRequires:  /usr/bin/xsltproc
 BuildRequires:  glib2-devel%{?_isa}
-%if 0%{?el6}
+%if 0%{?rhel} >= 6
 BuildRequires:  libuuid-devel
 %else
 BuildRequires:  e2fsprogs-devel
@@ -47,7 +47,7 @@ BuildRequires:  doxygen
 %patch0 -p0
 
 # Fix elsif in channel_internal.h
-%if 0%{?el6}
+%if 0%{?rhel} >= 6
 %patch1 -p0
 %endif
 
@@ -56,9 +56,30 @@ BuildRequires:  doxygen
 
 %build
 ./bootstrap
-%configure --with-channel-wsdl=/usr/share/glite-data-transfer-interface/interface/org.glite.data-channel-3.7.0.wsdl --with-fts-wsdl=/usr/share/glite-data-transfer-interface/interface/org.glite.data-fts-3.7.0.wsdl --with-gsoap-version=2.7.13 --with-version=%{version}  --with-release=%{release} --with-interface-version=3.7.0
+# Note the gsoap version is hardcoded.  The true gsoap version doesn't matter, only that it is greater than 2.3
+export CGSI_GSOAP_LOCATION=/usr
+export CGSI_GSOAP_CFLAGS=-I/usr/include
+export CGSI_GSOAP_LIBS='-L/usr/lib64 -lcgsi_plugin'
+export LIBS='-lgridsite_globus -lcrypto'
+%configure \
+    --with-channel-wsdl=/usr/share/glite-data-transfer-interface/interface/org.glite.data-channel-3.7.0.wsdl \
+    --with-fts-wsdl=/usr/share/glite-data-transfer-interface/interface/org.glite.data-fts-3.7.0.wsdl \
+    --with-gsoap-version=2.7.13 \
+    --with-version=%{version}  \
+    --with-interface-version=3.7.0 \
+    --with-globus-nothr-flavor=DELETEME \
+    --with-globus-thr-flavor=DELETEME \
+    --disable-static
 
-make %{?_smp_mflags}
+# Remove globus flavors and rename cgsi_plugin by hand
+find . -name Makefile -exec \
+    sed -r -i \
+        -e 's/_?DELETEME//g' \
+        -e 's/cgsi_plugin_gsoap_2.7/cgsi_plugin/g' \
+    {} +
+
+#make %{?_smp_mflags}
+make -j1
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -85,25 +106,6 @@ rm -rf $RPM_BUILD_ROOT
 
 %{_mandir}/man1/glite*
 %{_bindir}/glite-transfer*
-
-%changelog
-* Thu Jan 19 2012 Derek Weitzel <dweitzel@cse.unl.edu> - 3.7.4-7
-- Adding patch for malformed elsif
-
-* Thu Jan 19 2012 Derek Weitzel <dweitzel@cse.unl.edu> - 3.7.4-6
-- Adding libuuid dependency for sl6
-
-* Thu Jan 19 2012 Derek Weitzel <dweitzel@cse.unl.edu> - 3.7.4-5
-- Adding python macros
-
-* Fri Oct 28 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 3.7.4-4
-- rebuilt
-
-* Mon Sep 12 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 3.7.4-3
-- Rebuilt against updated Globus libraries
-
-* Tue Jul  5 2011 Brian Bockelman <bbockelm@cse.unl.edu> 2.0.1.3-1
-- Initial OSG packaging.
 
 
 %package devel
@@ -134,6 +136,29 @@ Group: Documentation
 %doc %{_docdir}/glite-data-transfer-cli
 
 %changelog
+* Tue Oct 07 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 3.7.4-8
+- Fix name of cgsi_plugin library and remove globus flavors so this builds
+  again (SOFTWARE-1298)
+- Build on EL7
+
+* Thu Jan 19 2012 Derek Weitzel <dweitzel@cse.unl.edu> - 3.7.4-7
+- Adding patch for malformed elsif
+
+* Thu Jan 19 2012 Derek Weitzel <dweitzel@cse.unl.edu> - 3.7.4-6
+- Adding libuuid dependency for sl6
+
+* Thu Jan 19 2012 Derek Weitzel <dweitzel@cse.unl.edu> - 3.7.4-5
+- Adding python macros
+
+* Fri Oct 28 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 3.7.4-4
+- rebuilt
+
+* Mon Sep 12 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 3.7.4-3
+- Rebuilt against updated Globus libraries
+
 * Fri Jul 15 2011 Brian Bockelman <bbockelm@cse.unl.edu> 3.7.4-2
 - Added interface-version to build script.
+
+* Tue Jul  5 2011 Brian Bockelman <bbockelm@cse.unl.edu> 2.0.1.3-1
+- Initial OSG packaging.
 
