@@ -1,0 +1,322 @@
+Index: org.glite.data.delegation-cli/src/tools/Makefile.am
+===================================================================
+--- org.glite.data.delegation-cli.orig/src/tools/Makefile.am	2009-01-20 20:13:12.000000000 -0600
++++ org.glite.data.delegation-cli/src/tools/Makefile.am	2014-10-07 14:40:26.056199867 -0500
+@@ -14,8 +14,7 @@
+ 
+ LDADD = ../c/libglite_data_delegation_api_simple_c.la $(GLIB_LIBS) $(GRIDSITE_GLOBUS_LIBS)
+ 
+-bin_PROGRAMS = glite-delegation-init glite-delegation-info glite-delegation-destroy \
+-	test-glite-delegation-bug-33641
++bin_PROGRAMS = glite-delegation-init glite-delegation-info glite-delegation-destroy
+ 
+ glite_delegation_init_SOURCES = client.c delegation-main.c
+ glite_delegation_init_LDADD = \
+@@ -32,14 +31,3 @@
+ 		../c/libglite_data_delegation_api_simple_c.la \
+ 		$(LDADD)
+ 
+-test_glite_delegation_bug_33641_SOURCES = test_33641.c delegation-main.c
+-test_glite_delegation_bug_33641_CPPFLAGS = 	\
+-	$(GSOAP_CFLAGS) \
+-	$(CGSI_GSOAP_CFLAGS) \
+-	$(GRIDSITE_GLOBUS_CFLAGS) \
+-	$(GLOBUS_NOTHR_CFLAGS) \
+-	$(GLIB_CFLAGS)
+-test_glite_delegation_bug_33641_LDADD = \
+-		../c/libglite_data_delegation_api_simple_c.la \
+-		$(LDADD)
+-
+Index: org.glite.data.delegation-cli/src/tools/test_33641.c
+===================================================================
+--- org.glite.data.delegation-cli.orig/src/tools/test_33641.c	2014-10-07 14:29:30.000000000 -0500
++++ org.glite.data.delegation-cli/src/tools/test_33641.c	2014-10-07 14:40:03.302903510 -0500
+@@ -1,288 +1 @@
+-/*
+- *  Copyright (c) Members of the EGEE Collaboration. 2009.
+- *  See http://eu-egee.org/partners/ for details on the copyright holders.
+- *  For license conditions see the license file or http://eu-egee.org/license.html
+- *
+- *  test for bug#33641
+- *
+- *  Authors: Akos Frohner <Akos.Frohner@cern.ch>
+- *
+- */
+ 
+-#ifdef HAVE_CONFIG_H
+-#include <config.h>
+-#endif
+-
+-#include <glite/data/delegation/c/delegation-simple.h>
+-
+-#include "delegation-main.h"
+-
+-#include <stdlib.h>
+-#include <stdio.h>
+-
+-#include "gridsite.h"
+-
+-#include <glib.h>
+-#include <stdlib.h>
+-#include <stdarg.h>
+-#include <cgsi_plugin.h>
+-#include <globus_gsi_system_config.h>
+-#include <glite/data/delegation/c/delegation.nsmap>
+-#include <glite/data/delegation/c/delegation-simple.h>
+-
+-struct _glite_delegation_ctx
+-{
+-    struct soap             *soap;
+-    char                    *endpoint;
+-    char                    *error_message;
+-    int                     error;
+-};
+-
+-#include "ServiceDiscovery.h"
+-#include <glite/data/glite-util.h>
+-
+-
+-/**********************************************************************
+- * Global variables
+- */
+-
+-/* Usage message */
+-const char *tool_usage = "[DELEGATION_ID]";
+-
+-/* Help message */
+-const char *tool_help = 
+-	"\t-e TIME\t\tSet expiration time in minutes\n";
+-
+-/* getguid-specific command line options */
+-const char *tool_options = "e:f";
+-
+-/* Expiration time in minutes, default to one day */
+-static int exp_time = 60*24;
+-
+-/* If the delegation is to be forced, even when there is a valid credential. */
+-static int force_delegation = 0;
+-
+-/**********************************************************************
+- * Tool implementation
+- */
+-
+-int tool_doit(glite_delegation_ctx *ctx, int argc, char *argv[])
+-{
+-	int ret;
+-	char *delegation_id;
+-    char *sdelegationID = "", *localproxy;
+-    char *A_sdelegationID = "", *A_certreq, *A_certtxt, *A_scerttxt;
+-    char *B_sdelegationID = "", *B_certreq, *B_certtxt, *B_scerttxt;
+-    struct delegation__getNewProxyReqResponse A_req_resp, B_req_resp;
+-    struct delegation__renewProxyReqResponse A_renew_resp, B_renew_resp;
+-	
+-	delegation_id = (argc ? argv[0] : "");
+-    
+-    if (force_delegation) 
+-        info("Warning: forcing the delegation!");
+-
+-    if (NULL == (localproxy = getenv("X509_USER_PROXY")))
+-    {
+-        if (GLOBUS_GSI_SYSCONFIG_GET_PROXY_FILENAME(&localproxy,
+-            GLOBUS_PROXY_FILE_INPUT))
+-        {
+-		    error("Error: %s", "glite_delegation_dowork: unable to get"
+-                " user proxy filename!");
+-            return -1;
+-        }
+-    }
+-
+-    /* error is already set */
+-    if (!ctx->soap) {
+-		error("Error: %s", glite_delegation_get_error(ctx));
+-        return -1;
+-    }
+-
+-    if (delegation_id)
+-    {
+-        sdelegationID = soap_strdup(ctx->soap, delegation_id);
+-        if (!sdelegationID)
+-        {
+-		    error("Error: %s", "glite_delegation_dowork: soap_strdup()"
+-                           " of delegationID failed!");
+-            return -1;
+-        }
+-    }
+-    /* Problem description:
+-        1. client A:
+-        (idA, reqA) = renewProxyReq(null)
+-        --> keyA is stored in the DB with idA
+-        where idA = hash(DN, VOMS atttrs)
+-        certA = sign(reqA)
+-
+-        2. client B:
+-        (idB, reqB) = getNewProxyReq(null)
+-        --> keyB is stored in the DB with idB
+-        where idB = hash(DN, VOMS atttrs)
+-        i.e. idA == idB!
+-        certB = sign(reqB)
+-
+-        3. client B:
+-        putProxy(idB, certB)
+-        --> <idB, keyB> is fetched from the DB
+-        and the delegated credential is stored
+-        as <idB, certB, idB>
+-
+-        4. client A:
+-        putProxy(idA, certA)
+-        --> <idA, keyA> is fetched from the DB,
+-        however because of idA == idB, keyA has
+-        been already overwritten by keyB in step 2,
+-        so we store <idA, certA, keyB> as the
+-        delegated credential
+-    */
+-
+-    /* TEST 1. */
+-    /* using certreq as a marker */
+-    A_certreq = NULL;
+-    if (force_delegation) 
+-    {
+-        /* force the renewal of the proxy */
+-        ret = soap_call_delegation__renewProxyReq(ctx->soap, ctx->endpoint, NULL,
+-                                                  sdelegationID, &A_renew_resp);
+-        if (SOAP_OK != ret)
+-        {
+-		    error("Error: %s", "SOAP Fault in A.renewProxyReq()");
+-            //_fault_to_error(ctx, __func__);
+-            return -1;
+-        }
+-        A_certreq = A_renew_resp._renewProxyReqReturn;
+-        A_sdelegationID = sdelegationID;
+-    }
+-
+-    /* if it was forced and failed, or if it was not forced at all */
+-    if (NULL == A_certreq) 
+-    {
+-        /* there was no proxy, or not forcing -- the normal path */
+-        ret = soap_call_delegation__getNewProxyReq(ctx->soap, ctx->endpoint, NULL,
+-                                                        &A_req_resp);
+-        if (SOAP_OK != ret)
+-        {
+-	        error("Error: %s", "SOAP Fault in A.getNewProxyReq()");
+-            //_fault_to_error(ctx, __func__);
+-            return -1;
+-        }
+-        A_certreq = A_req_resp.getNewProxyReqReturn->proxyRequest;
+-        A_sdelegationID = A_req_resp.getNewProxyReqReturn->delegationID;
+-    }
+-
+-    /* generating a certificate from the request */
+-    ret = GRSTx509MakeProxyCert(&A_certtxt, stderr, A_certreq, 
+-        localproxy, localproxy, exp_time);
+-    if (ret != GRST_RET_OK)
+-    {
+-		error("Error: %s", "glite_delegation_delegate: "
+-                                   "GRSTx509MakeProxyCert call failed");
+-        return -1;
+-    }
+-
+-    A_scerttxt = soap_strdup(ctx->soap, A_certtxt);
+-    if (!A_scerttxt)
+-    {
+-		error("Error: %s", "glite_delegation_delegate: soap_strdup()"
+-                                   " of delegationID failed!");
+-        return -1;
+-    }
+-
+-    /* TEST 2. */
+-    /* using certreq as a marker */
+-    B_certreq = NULL;
+-    if (force_delegation) 
+-    {
+-        /* force the renewal of the proxy */
+-        ret = soap_call_delegation__renewProxyReq(ctx->soap, ctx->endpoint, NULL,
+-                                                  sdelegationID, &B_renew_resp);
+-        if (SOAP_OK != ret)
+-        {
+-		    error("Error: %s", "SOAP Fault in A.renewProxyReq()");
+-            //_fault_to_error(ctx, __func__);
+-            return -1;
+-        }
+-        B_certreq = B_renew_resp._renewProxyReqReturn;
+-        B_sdelegationID = sdelegationID;
+-    }
+-
+-    /* if it was forced and failed, or if it was not forced at all */
+-    if (NULL == B_certreq) 
+-    {
+-        /* there was no proxy, or not forcing -- the normal path */
+-        ret = soap_call_delegation__getNewProxyReq(ctx->soap, ctx->endpoint, NULL,
+-                                                        &B_req_resp);
+-        if (SOAP_OK != ret)
+-        {
+-	        error("Error: %s", "SOAP Fault in A.getNewProxyReq()");
+-            //_fault_to_error(ctx, __func__);
+-            return -1;
+-        }
+-        B_certreq = B_req_resp.getNewProxyReqReturn->proxyRequest;
+-        B_sdelegationID = B_req_resp.getNewProxyReqReturn->delegationID;
+-    }
+-
+-    /* generating a certificate from the request */
+-    ret = GRSTx509MakeProxyCert(&B_certtxt, stderr, B_certreq, 
+-        localproxy, localproxy, exp_time);
+-    if (ret != GRST_RET_OK)
+-    {
+-		error("Error: %s", "glite_delegation_delegate: "
+-                                   "GRSTx509MakeProxyCert call failed");
+-        return -1;
+-    }
+-
+-    B_scerttxt = soap_strdup(ctx->soap, B_certtxt);
+-    if (!B_scerttxt)
+-    {
+-		error("Error: %s", "glite_delegation_delegate: soap_strdup()"
+-                                   " of delegationID failed!");
+-        return -1;
+-    }
+-
+-
+-    /* TEST 3. */
+-    if (SOAP_OK != soap_call_delegation__putProxy(ctx->soap, ctx->endpoint, NULL,
+-                                                  A_sdelegationID, A_scerttxt, NULL))
+-    {
+-	    error("Error: %s", "SOAP Fault in A.putProxy()");
+-        //_fault_to_error(ctx, __func__);
+-        return -1;
+-    }
+-    info("The credential for A is delegated [%s]\n", delegation_id);
+-
+-
+-    /* TEST 4. */
+-    if (SOAP_OK != soap_call_delegation__putProxy(ctx->soap, ctx->endpoint, NULL,
+-                                                  B_sdelegationID, B_scerttxt, NULL))
+-    {
+-	    error("Error: %s", "SOAP Fault in A.putProxy()");
+-        //_fault_to_error(ctx, __func__);
+-        return -1;
+-    }
+-
+-    info("The credential for B is delegated [%s]\n", delegation_id);
+-	return 0;
+-}
+-
+-/**********************************************************************
+- * Command line parsing
+- */
+-
+-int tool_parse_cmdline(int c, char *opt_arg)
+-{
+-	switch (c)
+-	{
+-		case 'e':
+-			if (!sscanf(opt_arg, "%d", &exp_time))
+-				return -1;
+-			return 0;
+-        case 'f':
+-            force_delegation = 1;
+-            return 0;
+-		default:
+-			return -1;
+-	}				
+-	return -1;
+-}
