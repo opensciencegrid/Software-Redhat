@@ -4,7 +4,7 @@ Version:   3.0.0
 %if 0%{?el7}
 %define release_suffix _clipped
 %endif
-Release:   24%{?release_suffix}%{?dist}
+Release:   25%{?release_suffix}%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -54,8 +54,7 @@ Requires: gfal2
 Requires: gfal2-util
 Requires: gfal2-plugin-srm
 Requires: gfal2-plugin-gridftp
-# the xrootd plugin doesn't work with the xrootd4 in OSG...
-# Requires: gfal2-plugin-xrootd
+Requires: gfal2-plugin-xrootd
 
 %description
 %{summary}
@@ -113,6 +112,9 @@ rm -rf $RPM_BUILD_ROOT
 %files glexec
 
 %changelog
+* Tue Oct 07 2014 Carl Edquist <edquist@cs.wisc.edu> - 3.0.0-25
+- Bring in gfal2-plugin-xrootd too, now built against xrootd4 (SOFTWARE-1603)
+
 * Thu Oct 02 2014 Carl Edquist <edquist@cs.wisc.edu> - 3.0.0-24
 - Bring in GFAL2 tools (SOFTWARE-1603)
 
