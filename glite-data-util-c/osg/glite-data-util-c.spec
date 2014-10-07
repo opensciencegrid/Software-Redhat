@@ -34,7 +34,7 @@ BuildRequires:  libxml2-devel
 
 %build
 ./bootstrap
-export CFLAGS="%{optflags} -I%{_libdir}/globus/include" 
+export CFLAGS="%{optflags} -I%{_libdir}/globus/include -I/usr/include/globus"
 %configure --with-glite-location=/usr
 make
 
