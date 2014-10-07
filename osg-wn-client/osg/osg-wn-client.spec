@@ -4,7 +4,7 @@ Version:   3.0.0
 %if 0%{?el7}
 %define release_suffix _clipped
 %endif
-Release:   25%{?release_suffix}%{?dist}
+Release:   26%{?release_suffix}%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -55,6 +55,10 @@ Requires: gfal2-util
 Requires: gfal2-plugin-srm
 Requires: gfal2-plugin-gridftp
 Requires: gfal2-plugin-xrootd
+
+# the previous OSG version of CGSI-gSOAP (1.3.4.2) did not provide the symbol
+# cgsi_plugin_set_credentials, needed at runtime for gfal2-plugin-srm
+Requires: CGSI-gSOAP >= 1.3.6
 
 %description
 %{summary}
@@ -112,6 +116,9 @@ rm -rf $RPM_BUILD_ROOT
 %files glexec
 
 %changelog
+* Tue Oct 07 2014 Carl Edquist <edquist@cs.wisc.edu> - 3.0.0-26
+- Require CGSI-gSOAP >= 1.3.6 for gfal2-plugin-srm (SOFTWARE-1603)
+
 * Tue Oct 07 2014 Carl Edquist <edquist@cs.wisc.edu> - 3.0.0-25
 - Bring in gfal2-plugin-xrootd too, now built against xrootd4 (SOFTWARE-1603)
 
