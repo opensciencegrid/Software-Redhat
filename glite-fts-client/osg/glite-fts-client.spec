@@ -1,6 +1,6 @@
 Name:		glite-fts-client
 Version:	3.7.4
-Release:	8%{?dist}
+Release:	9%{?dist}
 Summary:	gLite FTS client
 
 Group:		Development/Languages/C and C++
@@ -60,7 +60,9 @@ BuildRequires:  doxygen
 export CGSI_GSOAP_LOCATION=/usr
 export CGSI_GSOAP_CFLAGS=-I/usr/include
 export CGSI_GSOAP_LIBS='-L/usr/lib64 -lcgsi_plugin'
+%if 0%{?rhel} >= 7
 export LIBS='-lgridsite_globus -lcrypto'
+%endif
 %configure \
     --with-channel-wsdl=/usr/share/glite-data-transfer-interface/interface/org.glite.data-channel-3.7.0.wsdl \
     --with-fts-wsdl=/usr/share/glite-data-transfer-interface/interface/org.glite.data-fts-3.7.0.wsdl \
@@ -78,7 +80,6 @@ find . -name Makefile -exec \
         -e 's/cgsi_plugin_gsoap_2.7/cgsi_plugin/g' \
     {} +
 
-#make %{?_smp_mflags}
 make -j1
 
 %install
@@ -136,7 +137,7 @@ Group: Documentation
 %doc %{_docdir}/glite-data-transfer-cli
 
 %changelog
-* Tue Oct 07 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 3.7.4-8
+* Tue Oct 07 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 3.7.4-9
 - Fix name of cgsi_plugin library and remove globus flavors so this builds
   again (SOFTWARE-1298)
 - Build on EL7
