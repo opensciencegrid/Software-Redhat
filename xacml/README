@@ -1,14 +1,2 @@
-This is a pass-through of upstream.
+This is a pass-through of upstream.  Our single patch was upstreamed by 1.4.0.
 
-Previous builds had a patch called xacml_namespaces.patch that did two
-things:
-
-1) Renamed namespaces -> xacml_namespaces
-2) Explicitly set the namespace of struct soap to xacml_namespaces
-
-The original reason for the patch was because HTCondor also exported a
-global variable named `namespaces' and would clobber xacml's global of
-the same name, resulting in difficult-to-debug GUMS issues.
-
-In xacml 1.5.0, namespaces had already been renamed to
-xacml_soap_namespaces so this patch is no longer necessary.
