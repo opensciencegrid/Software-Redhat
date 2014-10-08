@@ -21,7 +21,7 @@ Name:           glideinwms
 # ------------------------------------------------------------------------------
 %if %{v3_plus}
 %define version 3.2.7
-%define release 0.1.rc1
+%define release 0.2.rc2
 %define frontend_xml frontend.master.xml
 %define factory_xml glideinWMS.master.xml
 %endif
@@ -738,6 +738,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Oct 8 2014 Parag Mhashilkar <parag@fnal.gov> - 3.2.7-0.2.rc2
+- Glideinwms v3.2.7 rc2 release
+
 * Mon Oct 6 2014 Parag Mhashilkar <parag@fnal.gov> - 3.2.7-0.1.rc1
 - Glideinwms v3.2.7 rc1 release
 - Disabled secondarsy schedd in the frontend configuration
