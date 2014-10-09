@@ -13,7 +13,7 @@
 Name:		globus-gatekeeper
 %global _name %(tr - _ <<< %{name})
 Version:	9.6
-Release:	1.12%{?dist}
+Release:	1.13%{?dist}
 Summary:	Globus Toolkit - Globus Gatekeeper
 
 Group:		Applications/Internet
@@ -30,6 +30,7 @@ Patch6:         GT-489-openssl-1.0.1-fix.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Requires:	globus-common >= 13.4
+Requires:       globus-common-progs%{?_isa} >= 14
 Requires:	globus-gss-assist%{?_isa} >= 8
 Requires:	globus-gssapi-gsi%{?_isa} >= 9
 Requires:       psmisc
@@ -132,6 +133,9 @@ fi
 /usr/share/osg/sysconfig/%{name}
 
 %changelog
+* Thu Oct 09 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 9.6-1.13.osg
+- Add globus-common-progs dependency (SOFTWARE-1630)
+
 * Wed Dec 11 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 9.6-1.12.osg
 - Add fork_and_proxy workaround patch for GT-489 (OpenSSL 1.0.1 compatibility issue)
 
