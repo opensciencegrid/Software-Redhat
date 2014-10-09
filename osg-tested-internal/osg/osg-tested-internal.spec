@@ -1,7 +1,7 @@
 Name:      osg-tested-internal
 Summary:   All OSG packages we test (internal use only)
 Version:   3.2
-Release:   4%{?dist}
+Release:   5%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -17,30 +17,11 @@ BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 Requires: edg-mkgridmap
 Requires: glexec
 Requires: /usr/sbin/condor_master
-Requires: osg-ce-condor
-Requires: osg-se-bestman
-Requires: osg-se-bestman-xrootd
-Requires: osg-gums
-Requires: osg-voms
-Requires: rsv
 Requires: yum-utils
-Requires: torque-server
-Requires: torque-mom
-Requires: torque-client
-Requires: torque-scheduler
-Requires: osg-ce-pbs
-Requires: xrootd4
-Requires: xrootd4-client
 Requires: cvmfs
 Requires: osg-configure-tests
 Requires: cvmfs-keys
-Requires: ndt-client
 
-Requires: htcondor-ce
-Requires: htcondor-ce-client
-Requires: htcondor-ce-condor
-
-Requires: gratia-service
 Requires: gratia-probe-psacct
 Requires: gratia-probe-condor
 Requires: gratia-probe-glexec
@@ -55,20 +36,48 @@ Requires: myproxy-server
 
 ################################################################################
 #
-# RHEL 5
+# Non-RHEL 7
 #
 ################################################################################
-%if 0%{?rhel} < 6
-# nothing here right now
+%if 0%{?rhel} < 7
+Requires: osg-ce-condor
+Requires: osg-se-bestman
+Requires: osg-se-bestman-xrootd
+Requires: osg-gums
+Requires: osg-voms
+Requires: rsv
+Requires: torque-server
+Requires: torque-mom
+Requires: torque-client
+Requires: torque-scheduler
+Requires: osg-ce-pbs
+Requires: xrootd4
+Requires: xrootd4-client
+Requires: ndt-client
+
+Requires: htcondor-ce
+Requires: htcondor-ce-client
+Requires: htcondor-ce-condor
+
+Requires: gratia-service
 %endif
 
 ################################################################################
 #
-# RHEL 6
+# RHEL 7
 #
 ################################################################################
-%if 0%{?rhel} == 6
-# nothing here right now
+%if 0%{?rhel} == 7
+Requires: osg-wn-client-glexec
+Requires: condor
+Requires: globus-gatekeeper
+Requires: globus-common-progs
+Requires: globus-gram-client-tools
+Requires: globus-gram-job-manager-fork-setup-poll
+Requires: globus-gram-job-manager-condor
+Requires: globus-gridftp-server
+Requires: globus-gridftp-server-control
+Requires: globus-gridftp-server-progs
 %endif
 
 
@@ -85,6 +94,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Oct 09 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 3.2-5
+- Add RHEL 7 and non-RHEL 7 sections
+
 * Mon Aug 04 2014 Carl Edquist <edquist@cs.wisc.edu> - 3.2-4
 - update xrootd requirements to xrootd4
 
