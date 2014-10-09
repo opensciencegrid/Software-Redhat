@@ -5,7 +5,7 @@
 
 Name:           osg-measurements-metrics-db
 Version:        1.2
-Release:        29%{?dist}
+Release:        30%{?dist}
 Summary:        OSG Measurements and Metrics web and database
 
 Group:          Applications/System
@@ -60,6 +60,18 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+
+* Thu Oct 09 2014 Juan F. Mosquera <jmorales@fnal.gov>
+- modifications and program additions to resolve OSG
+- GRATIAWEB-53 and GRATIAWEB-65.
+
+* Tue Sep 30 2014 Juan F. Mosquera <jmorales@fnal.gov>
+- modifications and program additions to resolve OSG
+- GRATIAWEB-53 and GRATIAWEB-64 tickets on JIRA. Distinguish 
+- between transfers in and out (Additional parameter options
+- are (IN|OUT|BOTH)), an additional plot to distinguish
+- between Owned and Opportunistic resources. Remove changes
+- made on Mon Jun 30 (Cleaning process cronjob).
 
 * Mon Aug 18 2014 Juan F. Mosquera <jmorales@fnal.gov>
 - modifications and program additions to resolve OSG
