@@ -11,7 +11,7 @@
 Name:		globus-gatekeeper
 %global _name %(tr - _ <<< %{name})
 Version:	9.15
-Release:	1.8%{?dist}
+Release:	1.9%{?dist}
 Summary:	Globus Toolkit - Globus Gatekeeper
 
 Group:		Applications/Internet
@@ -31,6 +31,7 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 #		Keep providing globus-gatekeeper-setup until it is not needed
 Provides:	%{name}-setup = 2.2
 Requires:	globus-common%{?_isa} >= 14
+Requires:       globus-common-progs%{?_isa} >= 14
 Requires:	globus-gss-assist%{?_isa} >= 8
 Requires:	globus-gssapi-gsi%{?_isa} >= 9
 Requires(post):		chkconfig
@@ -145,6 +146,9 @@ fi
 
 
 %changelog
+* Thu Oct 09 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 9.15-1.9.osg
+- Add globus-common-progs dependency (SOFTWARE-1630)
+
 * Wed Jan 15 2014 Matyas Selmeci <matyas@cs.wisc.edu> 9.15-1.8.osg
 - Add requirement for lsb init functions
 
