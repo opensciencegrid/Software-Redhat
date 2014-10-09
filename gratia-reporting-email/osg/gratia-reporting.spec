@@ -1,8 +1,8 @@
 Name: gratia-reporting-email
 Summary: Email Reporting for Gratia OSG accounting system
 Group: Applications/System
-Version: 1.13.10
-Release: 2%{?dist}
+Version: 1.15.1
+Release: 1%{?dist}
 License: GPL
 Group: Applications/System
 URL: http://sourceforge.net/projects/gratia/
@@ -101,6 +101,9 @@ mkdir -p $RPM_BUILD_ROOT%{_var}/lib/gratia/tmp
 
 
 %changelog
+* Thu Oct 09 2014 Hyunwoo Kim <hyunwoo@fnal.gov> - 1.15.1 - 1
+modified AccountingReport.py to deal with NULL in DB caused by zero WallDuration reported by some probes
+
 * Tue Oct 22 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.13.10-2
 - Renamed to gratia-reporting-email
 
