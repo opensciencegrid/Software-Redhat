@@ -5,7 +5,7 @@
 
 Name:                   graphtool
 Version:                0.6.6
-Release:                19%{?dist}
+Release:                20%{?dist}
 Summary:                CMS Common Graphing Package.
 
 Group:                  Development/Libraries
@@ -50,6 +50,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+
+* Tue Sep 30 2014 Juan F. Mosquera <jmorales@fnal.gov>
+- modifications and program additions to resolve OSG
+- GRATIAWEB-58.
 
 * Tue Mar 18 2014 William B Hurst <wbhurst@cse.unl.edu>
 - package fixes and bump of version release
