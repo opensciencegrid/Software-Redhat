@@ -131,6 +131,7 @@ f_restart_daemon $1
 # so everyone can write but each user can only delete her own content
 %dir %attr(1777, root, root)  %{_var}/run/oasis
 
+
 %config(noreplace) %{_sysconfdir}/oasis/oasis.conf
 %config(noreplace) %{_sysconfdir}/oasis/oasisprojects.conf
 %config(noreplace) %{_sysconfdir}/oasis/oasisprobes.conf
