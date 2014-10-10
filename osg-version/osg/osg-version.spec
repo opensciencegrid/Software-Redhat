@@ -1,6 +1,6 @@
 Name:      osg-version
 Summary:   OSG Version
-Version:   3.2.15
+Version:   3.2.16
 Release:   1%{?dist}
 License:   Apache 2.0
 Group:     Grid
@@ -34,6 +34,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/osg-version
 
 %changelog
+* Fri Oct 10 2014 Tim Theisen <tim@cs.wisc.edu> - 3.2.16-1
+- Updated to 3.2.16-1
+
 * Tue Aug 28 2014 Suchandra Thapa <sthapa@ci.uchicago.edu> - 3.2.15-1
 - Updated to 3.2.15-1
 
