@@ -111,7 +111,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.1
+%define condor_base_release 1.2
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -207,6 +207,7 @@ Patch2: 4590-improved_tool_output.patch
 
 #% if 0%osg
 Patch8: osg_sysconfig_in_init_script.patch
+Patch9: sw1636-cream_gahp-dlopen.patch
 #% endif
 
 # HCC patches
@@ -551,6 +552,8 @@ Summary: HTCondor's CREAM Gahp
 Group: Applications/System
 Requires: %name = %version-%release
 Requires: %name-classads = %{version}-%{release}
+# The cream gahp dlopens this
+Requires: %{_libdir}/libglobus_thread_pthread.so.0
 
 %description cream-gahp
 The condor-cream-gahp enables CREAM interoperability for HTCondor.
@@ -655,6 +658,7 @@ exit 0
 %patch2 -p1
 
 %patch8 -p1
+%patch9 -p1
 
 %if 0%{?hcc}
 %patch14 -p1
@@ -1742,6 +1746,9 @@ fi
 %endif
 
 %changelog
+* Thu Oct 16 2014 Mátyás Selmeci <matyas@cs.wisc.edu> - 8.2.3-1.2
+- Patch cream_gahp to dlopen versioned globus_thread_pthread library (SOFTWARE-1636)
+
 * Wed Oct 01 2014 Carl Edquist <edquist@cs.wisc.edu> - 8.2.3-1.1
 - Include patches from 8.3.2 for #4556 and #4590
 
