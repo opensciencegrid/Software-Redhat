@@ -87,9 +87,8 @@
 %define aviary 1
 %endif
 
-# temporary bootstrap build for el7
+# temporary clipped build for el7
 %if 0%{?osg} && 0%{?rhel} >= 7
-%define blahp 0
 %define cream 0
 %define aviary 0
 %define std_univ 0
@@ -119,7 +118,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.1_clipped
+%define condor_base_release 1.2
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
