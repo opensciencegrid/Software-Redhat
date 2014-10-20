@@ -1,6 +1,6 @@
 Name:		blahp
 Version:	1.18.11.bosco
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	gLite BLAHP daemon
 
 Group:		System/Libraries
@@ -36,8 +36,13 @@ BuildRequires:  docbook-style-xsl, libxslt
 
 %build
 ./bootstrap
+%if 0%{?rhel} >= 7
+export CPPFLAGS="-I/usr/include/classad -std=c++11"
+export LDFLAGS="-lclassad -lglobus_gsi_credential -lglobus_common -lglobus_gsi_proxy_core"
+%else
 export CPPFLAGS="-I/usr/include/classad"
 export LDFLAGS="-lclassad"
+%endif
 %configure --with-classads-prefix=/usr --with-globus-prefix=/usr --with-glite-location=/usr
 unset CPPFLAGS
 unset LDFLAGS
@@ -170,6 +175,9 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Mon Oct 20 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.18.11.bosco-2
+- Build fixes for el7 (SOFTWARE-1604)
+
 * Mon Sep 29 2014 Brian Lin <blin@cs.wisc.edu> - 1.18.11.bosco-1
 - Fix bug in PBS status script
 
@@ -206,7 +214,7 @@ fi
 * Thu Dec 13 2012 Brian Bockelman <bbockelm@cse.unl.edu> 1.18.3.bosco-1.osg
 - Merge BOSCO and OSG distribution of blahp.
 
-* Fri Dec 05 2012 John Thiltges <jthiltges2@unl.edu> 1.18.0.4-9.osg
+* Wed Dec 05 2012 John Thiltges <jthiltges2@unl.edu> 1.18.0.4-9.osg
 - Fix pbs_status.sh in spec file
 
 * Fri Oct 12 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 1.18.0.4-8.osg
@@ -216,7 +224,7 @@ fi
 - Fix submissions with a relative proxy path.
 - Release bumped a few extra versions to stay in line with the Caltech Koji.
 
-* Thu Aug 29 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.18.0.4-5.osg
+* Wed Aug 29 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.18.0.4-5.osg
 - Fixed paths in init script
 - Added default options for condor
 
