@@ -1,7 +1,7 @@
 Name:      osg-tested-internal
 Summary:   All OSG packages we test (internal use only)
 Version:   3.2
-Release:   5%{?dist}
+Release:   6%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -34,6 +34,10 @@ Requires: gratia-probe-sge
 Requires: myproxy
 Requires: myproxy-server
 
+Requires: htcondor-ce
+Requires: htcondor-ce-client
+Requires: htcondor-ce-condor
+
 ################################################################################
 #
 # Non-RHEL 7
@@ -54,10 +58,6 @@ Requires: osg-ce-pbs
 Requires: xrootd4
 Requires: xrootd4-client
 Requires: ndt-client
-
-Requires: htcondor-ce
-Requires: htcondor-ce-client
-Requires: htcondor-ce-condor
 
 Requires: gratia-service
 %endif
@@ -94,6 +94,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Oct 20 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 3.2-6
+- Move htcondor-ce to common now that it builds on EL7
+
 * Thu Oct 09 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 3.2-5
 - Add RHEL 7 and non-RHEL 7 sections
 
@@ -101,7 +104,7 @@ rm -rf $RPM_BUILD_ROOT
 - update xrootd requirements to xrootd4
 
 * Mon Apr 21 2014 Brian Lin <blin@cs.wisc.edu> - 3.2-3
-- Re-add htcondor-ce requirements 
+- Re-add htcondor-ce requirements
 
 * Tue Apr 1 2014 Brian Lin <blin@cs.wisc.edu> - 3.2-2
 - Remove htcondor-ce requirements until htcondor-ce tests are fixed in osg-test
