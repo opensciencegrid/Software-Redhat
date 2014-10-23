@@ -1,5 +1,5 @@
 Name: osg-control
-Version: 1.0
+Version: 1.0.1
 Release: 1%{?dist}
 Summary: Wrapper for managing osg-configure services
 Group: Grid
@@ -32,6 +32,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_sbindir}/osg-control
 
 %changelog
+* Thu Oct 23 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.0.1-1
+- Update to 1.0.1 -- supports start/stop dependency order (SOFTWARE-1640)
+
 * Mon Aug 26 2013 Carl Edquist <edquist@cs.wisc.edu> - 1.0-1
 - 1.0 release
 
