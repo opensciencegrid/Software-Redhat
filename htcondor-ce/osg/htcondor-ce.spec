@@ -3,7 +3,7 @@
 
 Name: htcondor-ce
 Version: 1.6
-Release: 3%{?gitrev:.%{gitrev}git}%{?dist}
+Release: 4%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 
 Group: Applications/System
@@ -17,7 +17,9 @@ URL: http://github.com/bbockelm/condor-ce
 # git archive --prefix=%{name}-%{version}/ %{gitrev} | gzip > %{name}-%{version}-%{gitrev}.tar.gz
 #
 Source0: %{name}-%{version}%{?gitrev:-%{gitrev}}.tar.gz
+Source1: GeneratorLog.logrotate
 Patch0: condor_ce_generator_rename.patch
+Patch1: s1643-generator-cronjob-fix.patch
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -143,6 +145,7 @@ Conflicts: %{name}
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
 
 %build
 %cmake -DHTCONDORCE_VERSION=%{version} -DCMAKE_INSTALL_LIBDIR=%{_libdir}
@@ -163,6 +166,9 @@ install -m 0755 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lib/condor-ce/execute
 install -m 0755 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lock/condor-ce
 install -m 1777 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lock/condor-ce/user
 install -m 1777 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lib/gratia/condorce_data
+
+install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d
+install -m 0644 %{SOURCE1}  $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d/GeneratorLog
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -287,6 +293,7 @@ fi
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-collector.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/02-ce-auth-generated.conf
 %config(noreplace) %{_sysconfdir}/cron.d/condor-ce-collector-generator.cron
+%config(noreplace) %{_sysconfdir}/logrotate.d/GeneratorLog
 
 %attr(-,condor,condor) %dir %{_localstatedir}/run/condor-ce
 %attr(-,condor,condor) %dir %{_localstatedir}/log/condor-ce
@@ -299,6 +306,11 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Thu Oct 23 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6-4
+- Add logrotate file for GeneratorLog (made by condor_ce_config_generator) (SOFTWARE-1642)
+- Fix failure with condor_ce_config_generator calling condor_ce_reconfig in cron (SOFTWARE-1643)
+- Decrease condor_ce_config_generator cronjob frequency (SOFTWARE-1643)
+
 * Fri Oct 03 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6-3
 - Fix condor_ce_generator rename issue in collector cron job and init script (SOFTWARE-1621)
 
