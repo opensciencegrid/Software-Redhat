@@ -1,7 +1,7 @@
 Summary: OASIS-specific configuration
 Name: oasis-config
 Version: 7
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: ASL 2.0
 Group: Applications/Grid
 Source0: serverorder.sh
@@ -75,6 +75,12 @@ if [ $1 = 0 ]; then rm -f %{_sysconfdir}/cvmfs/domain.d/*.serverorder; fi
 
 
 %changelog
+* Fri Oct 24 2014 Dave Dykstra <dwd@fnal.gov> 7-3
+- Move the GOC stratum 1 always to the end of the stratum 1 list, for
+  both opensciencegrid.org and egi.eu repositories, because that
+  stratum 1 also distributes updates to other stratum 1s and so may
+  sometimes be heavily loaded.
+
 * Mon Jun 23 2014 Dave Dykstra <dwd@fnal.gov> 7-2
 - Include the opensciencegrid.org.pub key in egi.eu.conf, so the 
   repositories can be replaced by OSG in an emergency.
