@@ -1,6 +1,6 @@
 Summary: osg-pki-tools
 Name: osg-pki-tools
-Version: 1.2.10
+Version: 1.2.11
 Release: 1%{?dist}
 Source: OSGPKITools-%{version}.tar.gz
 License: Apache 2.0
@@ -75,6 +75,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Oct 24 2014 Brian Lin <blin@cs.wisc.edu> - 1.2.11-1
+- Fix to avoid SSLv3 due to the POODLE vulnerability
+
 * Tue Aug 19 2014 Brian Lin <blin@cs.wisc.edu> - 1.2.10-1
 - Catch uncaught exceptions when missing request VO (SOFTWARE-1584)
 
