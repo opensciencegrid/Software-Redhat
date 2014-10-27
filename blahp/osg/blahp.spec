@@ -1,6 +1,6 @@
 Name:		blahp
 Version:	1.18.11.bosco
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	gLite BLAHP daemon
 
 Group:		System/Libraries
@@ -175,6 +175,9 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Mon Oct 27 2014 Brian Lin <blin@cs.wisc.edu> - 1.18.11.bosco-3
+- Rebuild against condor-8.2.3
+
 * Mon Oct 20 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.18.11.bosco-2
 - Build fixes for el7 (SOFTWARE-1604)
 
