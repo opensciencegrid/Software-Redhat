@@ -1,6 +1,6 @@
 Name:      rsv
 Summary:   RSV Meta Package
-Version:   3.7.19
+Version:   3.7.20
 Release:   1%{?dist}
 License:   Apache 2.0
 Group:     Applications/Monitoring
@@ -204,6 +204,11 @@ fi
 
 
 %changelog
+* Mon Oct 27 2014 Carl Edquist <edquist@cs.wisc.edu> - 3.7.20-1
+- SOFTWARE-1080 - Improve init script return codes and add status function
+- SOFTWARE-806 - Fix a number of shell quoting issues in probes
+- SOFTWARE-1631 - detect when gratia-config-probe needs to be re-run as root
+
 * Mon Sep 29 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 3.7.19-1
 - SOFTWARE-1618 - Fix bogus "unexpected error" message in crl freshness probe
 - SOFTWARE-1602 - Refine messages in gratia-config-probe if /etc/cron.d inaccessible
