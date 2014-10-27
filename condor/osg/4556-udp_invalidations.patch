@@ -1,8 +1,8 @@
 diff --git a/src/condor_daemon_core.V6/daemon_core.cpp b/src/condor_daemon_core.V6/daemon_core.cpp
-index 1998353..8aaf009 100644
+index 3d59dc9..988bc11 100644
 --- a/src/condor_daemon_core.V6/daemon_core.cpp
 +++ b/src/condor_daemon_core.V6/daemon_core.cpp
-@@ -10660,7 +10660,7 @@ void DaemonCore::send_invalidate_session ( const char* sinful, const char* sessi
+@@ -10576,7 +10576,7 @@ void DaemonCore::send_invalidate_session ( const char* sinful, const char* sessi
  	msg->setSuccessDebugLevel(D_SECURITY);
  	msg->setRawProtocol(true);
  
@@ -11,4 +11,3 @@ index 1998353..8aaf009 100644
  		msg->setStreamType(Stream::reli_sock);
  	}
  	else {
-
