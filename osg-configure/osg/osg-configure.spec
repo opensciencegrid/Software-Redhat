@@ -1,8 +1,9 @@
 Summary: Package for configure-osg and associated scripts
 Name: osg-configure
 Version: 1.0.61
-Release: 1%{?dist}
+Release: 2%{?dist}
 Source0: %{name}-%{version}.tar.gz
+Patch0: s1653-gateway-type.patch
 License: Apache 2.0
 Group: Grid
 Prefix: %{_prefix}
@@ -182,6 +183,7 @@ This package includes the ini file for configuring the job gateways
 
 %prep
 %setup
+%patch0 -p1
 
 %build
 %{__python} setup.py build
@@ -298,6 +300,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Oct 28 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0.61-2
+- Change default gateway type to HTCondor-CE (SOFTWARE-1653)
+
 * Mon Oct 27 2014 Matyas Selmeci <matyas@cs.wisc.edu> 1.0.61-1
 - Remove ce_collectors patch (in upstream)
 - Make gratia configuration not require Condor to be started before running (SOFTWARE-1564)
