@@ -1,8 +1,8 @@
 # Have gitrev be the short hash or branch name if doing a prerelease build
-#define gitrev master
+#define gitrev osg
 
 Name: htcondor-ce
-Version: 1.6.1
+Version: 1.7
 Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 
@@ -287,7 +287,7 @@ fi
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-collector.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/02-ce-auth-generated.conf
 %config(noreplace) %{_sysconfdir}/cron.d/condor-ce-collector-generator.cron
-%config(noreplace) %{_sysconfdir}/logrotate.d/GeneratorLog
+%config(noreplace) %{_sysconfdir}/logrotate.d/condor-ce-collector
 
 %attr(-,condor,condor) %dir %{_localstatedir}/run/condor-ce
 %attr(-,condor,condor) %dir %{_localstatedir}/log/condor-ce
@@ -300,6 +300,11 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Tue Oct 28 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.7-1
+- Rename logrotate file for GeneratorLog (SOFTWARE-1642)
+- Set cronjob frequency back to original (SOFTWARE-1643)
+- Decrease logging verbosity at default level (SOFTWARE-1650)
+
 * Mon Oct 27 2014 Matyas Selmeci <matyas@cs.wisc.edu> 1.6.1-1
 - Rebuild with condor-8.2
 
