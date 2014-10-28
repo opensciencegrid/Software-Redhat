@@ -3,6 +3,7 @@ Name: osg-configure
 Version: 1.0.61
 Release: 2%{?dist}
 Source0: %{name}-%{version}.tar.gz
+# This patch is for 3.2 only!
 Patch0: s1653-gateway-type.patch
 License: Apache 2.0
 Group: Grid
