@@ -3,9 +3,13 @@
 %define mvn /usr/bin/mvn22
 %define _noarchlib %{_exec_prefix}/lib
 %define jglobus_version 2.0.6
+
+%define _alphatag rc1
+%define _release 1
+
 Name:		privilege-xacml
-Version:	2.6.3.1
-Release:	2%{?dist}
+Version:	2.6.4
+Release:	0.%{_release}.%{_alphatag}%{?dist}
 Summary:	Core bindings for XACML interoperability profile.
 
 Group:		OSG/Libraries
@@ -15,7 +19,7 @@ URL:		http://cdcvs.fnal.gov/subversion/privilege
 # To generate:
 # svn export svn+ssh://p-privilege@cdcvs.fnal.gov/cvs/projects/privilege/tags/v%{version} %{name}-%{version}
 # tar zcf %{name}-%{version}.tar.gz %{name}-%{version}
-Source0:	%{name}-%{version}.tar.gz
+Source0:	%{name}-%{version}.%{_alphatag}.tar.gz
 
 BuildArch: noarch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
@@ -61,7 +65,7 @@ Requires: java7
 %{summary}
 
 %prep
-%setup -n %{name}-%{version}
+%setup -n %{name}-%{version}.%{_alphatag}
 
 %build
 #log4j
@@ -132,6 +136,9 @@ rm -rf %{local_maven}
 %{_libexecdir}/%{name}/XACMLClientTest.sh
 
 %changelog
+* Wed Oct 29 2014 Carl Edquist <edquist@cs.wisc.edu> - 2.6.4-0.1.rc1
+- Updated to 2.6.4.rc1
+
 * Tue Sep 16 2014 Edgar Fajardo <emfajard@ucsd.edu> - 2.6.3.1-2
 - Added build requires maven22
 
