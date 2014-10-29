@@ -164,7 +164,7 @@ Summary: Tomcat service for GUMS
 %{mvn} install:install-file -B -DgroupId=org.apache.xerces -DartifactId=xercesImpl -Dversion=2.10.0 -Dpackaging=jar -Dfile=`build-classpath xerces-j2` -Dmaven.repo.local=%{local_maven}
 %{mvn} install:install-file -B -DgroupId=org.apache.xalan -DartifactId=xalan -Dversion=2.7.1 -Dpackaging=jar -Dfile=`build-classpath xalan-j2` -Dmaven.repo.local=%{local_maven}
 %{mvn} install:install-file -B -DgroupId=log4j -DartifactId=log4j -Dversion=1.2.12 -Dpackaging=jar -Dfile=`build-classpath log4j` -Dmaven.repo.local=%{local_maven}
-%{mvn} install:install-file -B -DgroupId=org.opensciencegrid -DartifactId=privilege-xacml -Dversion=2.6.3 -Dpackaging=jar -Dfile=`build-classpath privilege-xacml` -Dmaven.repo.local=%{local_maven}
+%{mvn} install:install-file -B -DgroupId=org.opensciencegrid -DartifactId=privilege-xacml -Dversion=2.6.4 -Dpackaging=jar -Dfile=`build-classpath privilege-xacml` -Dmaven.repo.local=%{local_maven}
 
 # Add jglobus system deps
 %{mvn} install:install-file -B -DgroupId=jglobus -DartifactId=gridftp -Dversion=%{jglobus_version} -Dpackaging=jar -Dfile=`build-classpath jglobus/gridftp-%{jglobus_version}` -Dmaven.repo.local=%{local_maven}
