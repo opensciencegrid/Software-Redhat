@@ -1,9 +1,11 @@
 
 Source tarball generated with:
 
+  VER=1.4.1.pre1  # set appropriately
+
   git clone https://github.com/bbockelm/gums.git
   cd gums
-  git archive --prefix=gums-1.4.0/ v1.4.0 | gzip > gums-1.4.0.tar.gz
+  git archive --prefix=gums-$VER/ v$VER | gzip > gums-$VER.tar.gz
 
 
 This is a new package for GUMS.  Notes:

@@ -5,10 +5,13 @@
 %define __os_install_post %{nil}
 %define jglobus_version 2.0.6
 
+%define _alphatag pre1
+%define _release 1
+
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.4.0
-Release: 5%{?dist}
+Release: 0.%{_release}.%{_alphatag}%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 %if 0%{?rhel} < 6
@@ -74,7 +77,7 @@ Requires: privilege-xacml
 # For git-based releases, one can do:
 # git archive --format=tar --prefix=gums-1.4.0.pre1/ v1.4.0.pre1 | gzip > gums-1.4.0.pre1.tar.gz
 #
-Source0: %{name}-%{version}.tar.gz
+Source0: %{name}-%{version}.%{_alphatag}.tar.gz
 Source1: gums-host-cron
 Source2: gums-client-cron.cron
 Source3: gums-client-cron.init
@@ -377,6 +380,12 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+* Wed Oct 29 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.4.1-0.1.pre1
+- Update to GUMS 1.4.1.pre1 (SOFTWARE-1654)
+  - Support is added for new "account" obligation extension to XACML profile
+  - Almost all mysql queries are cached in memory by Hibernate
+  - Hibernate is updated from 3.0.3 to 3.6.10
+
 * Wed Sep 24 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.4.0-5
 - Modify gums-host-cron to support local-user-vo-map (SOFTWARE-1606)
 
