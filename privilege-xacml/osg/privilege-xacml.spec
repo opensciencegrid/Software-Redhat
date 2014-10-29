@@ -6,6 +6,7 @@
 
 %define _alphatag rc1
 %define _release 1
+%define _jar_version 2.6.4
 
 Name:		privilege-xacml
 Version:	2.6.4
@@ -103,7 +104,7 @@ Requires: java7
 %define _otherlibs %{buildroot}%{_noarchlib}/%{name}
 rm -rf %{buildroot}
 install -d -m 755 %{buildroot}%{_javadir}
-install -m 755 target/%{name}-2.6.3.jar %{buildroot}%{_javadir}/%{name}.jar
+install -m 755 target/%{name}-%{_jar_version}.jar %{buildroot}%{_javadir}/%{name}.jar
 install -d -m 755 %{buildroot}/usr/share/maven3/poms
 install -pm 644 pom.xml %{buildroot}/usr/share/maven3/poms/%{name}.pom
 install -d  %{buildroot}%{_libexecdir}/%{name}
