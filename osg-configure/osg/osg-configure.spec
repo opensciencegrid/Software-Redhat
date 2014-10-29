@@ -3,8 +3,9 @@ Name: osg-configure
 Version: 1.0.61
 Release: 2%{?dist}
 Source0: %{name}-%{version}.tar.gz
-# This patch is for 3.2 only!
-Patch0: s1653-gateway-type.patch
+## This patch is for 3.2 only!
+# Patch disabled until we can do this in a way that will not affect upgrades.
+#Patch0: s1653-gateway-type.patch
 License: Apache 2.0
 Group: Grid
 Prefix: %{_prefix}
@@ -185,7 +186,7 @@ It may safely be removed once the upgrade is finished.
 
 %prep
 %setup
-%patch0 -p1
+#patch0 -p1
 
 %build
 %{__python} setup.py build
