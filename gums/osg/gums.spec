@@ -136,7 +136,7 @@ Summary: Tomcat service for GUMS
 
 %prep
 
-%setup
+%setup -n %{name}-%{version}.%{_alphatag}
 %patch0 -p1
 
 %build
