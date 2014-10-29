@@ -1,7 +1,7 @@
 Name:      rsv
 Summary:   RSV Meta Package
 Version:   3.7.20
-Release:   2%{?dist}
+Release:   1%{?dist}
 License:   Apache 2.0
 Group:     Applications/Monitoring
 URL:       https://twiki.grid.iu.edu/bin/view/MonitoringInformation/RSV
@@ -19,8 +19,6 @@ Requires: osg-configure
 Requires: osg-configure-rsv
 Requires: grid-certificates
 Requires: voms-clients
-
-Patch0: 1653-default-htcondor-ce.patch
 
 %if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
 %{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
@@ -93,7 +91,6 @@ Requires: /usr/bin/condor_ce_ping
 
 %prep
 %setup -q
-%patch0 -p0
 
 
 %install
@@ -208,9 +205,6 @@ fi
 
 
 %changelog
-* Tue Oct 28 2014 Carl Edquist <edquist@cs.wisc.edu> - 3.7.20-2
-- SOFTWARE-1653 - Change default ce-type to htcondor-ce
-
 * Mon Oct 27 2014 Carl Edquist <edquist@cs.wisc.edu> - 3.7.20-1
 - SOFTWARE-1080 - Improve init script return codes and add status function
 - SOFTWARE-806 - Fix a number of shell quoting issues in probes
