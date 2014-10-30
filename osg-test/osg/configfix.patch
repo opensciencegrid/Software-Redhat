@@ -1,0 +1,11 @@
+--- osg-test	(revision 20033)
++++ osg-test	(working copy)
+@@ -59,7 +59,7 @@
+             sys.exit(1)
+             
+         # Get union of config file values and defaults with the config values overriding any defaults
+-        for x,value in config_file.items('Config'):
++        for key,value in config_file.items('Config'):
+             if key in defaults: 
+                 if key == 'packages':
+                     defaults[key] = re.split(',\s*', value)
