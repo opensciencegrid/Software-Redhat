@@ -5,7 +5,7 @@
 
 Summary:   Tests an OSG Software installation
 Name:      osg-test
-Version:   1.4.17
+Version:   1.4.18
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -39,6 +39,11 @@ rm -rf $RPM_BUILD_ROOT
 /etc/grid-security/certificates/bffdd190.*
 
 %changelog
+* Thu Oct 30 2014 Brian Lin <blin@cs.wisc.edu> - 1.4.18-1
+- Fix various tests to work with EL7
+- Add gfal2 tests (SOFTWARE-1603)
+- Add ability to specify multiple update repos
+
 * Wed Sep 03 2014 Brian Lin <blin@cs.wisc.edu> - 1.4.17-1
 - Add oasis-config tests (SOFTWARE-901)
 - Add condor_ce_trace tests against PBS (SOFTWARE-1459)
