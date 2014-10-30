@@ -1,7 +1,7 @@
 Summary: Security utilities
 Name: emi-trustmanager
 Version: 3.0.3
-Release: 5%{?dist}
+Release: 6%{?dist}
 License: EMI
 Vendor: EMI
 Group: System Environment/Libraries
@@ -22,6 +22,8 @@ AutoReqProv: yes
 Source: emi-trustmanager-3.0.3-1.src.tar.gz
 Patch0: incorrect_oid.patch
 Patch1: build.xml.patch
+Patch2: better_log.patch
+Patch3: X509Name_cast.patch
 
 %description
 The java authentication and proxy generation implementation that supports grid proxies.
@@ -32,6 +34,8 @@ The java authentication and proxy generation implementation that supports grid p
 
 %patch0 -p0 
 %patch1 -p0
+%patch2 -p0
+%patch3 -p0
 
 %build
  
@@ -218,6 +222,9 @@ rm -rf $RPM_BUILD_ROOT
 /usr/share/doc/trustmanager/html/index-all.html
 
 %changelog
+* Wed Oct 29 2014 Brian Bockelman <bbockelm@cse.unl.edu> - 3.0.3-6
+- Fix issues with newer bcprov.
+
 * Tue May 07 2013 Carl Edquist <edquist@cs.wisc.edu> - 3.0.3-5
 - Require missing java dir names instead of workaround package
 
