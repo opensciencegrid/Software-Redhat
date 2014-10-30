@@ -6,7 +6,7 @@
 Summary:   Tests an OSG Software installation
 Name:      osg-test
 Version:   1.4.18
-Release:   1%{?dist}
+Release:   2%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
 Packager:  VDT <vdt-support@opensciencegrid.org>
@@ -16,12 +16,16 @@ AutoProv:  yes
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 BuildArch: noarch
 
+Patch0: configfix.patch
+
 %description
 The OSG Test system runs functional integration tests against an OSG Software
 installation.
 
 %prep
 %setup -q
+
+%patch0 -p0
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -39,6 +43,9 @@ rm -rf $RPM_BUILD_ROOT
 /etc/grid-security/certificates/bffdd190.*
 
 %changelog
+* Thu Oct 30 2014 Brian Lin <blin@cs.wisc.edu> - 1.4.18-2
+- Fix configuration bug that caused osg-test to error out
+
 * Thu Oct 30 2014 Brian Lin <blin@cs.wisc.edu> - 1.4.18-1
 - Fix various tests to work with EL7
 - Add gfal2 tests (SOFTWARE-1603)
