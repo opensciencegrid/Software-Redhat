@@ -11,7 +11,7 @@ License: Apache 2.0
 URL: http://github.com/bbockelm/condor-ce
 
 # _unitdir not defined on el6 build hosts
-%if X%{?_unitdir} == X
+%if 0%{?!_unitdir:1}
 %define _unitdir %{_prefix}/lib/systemd/system
 %endif
 
