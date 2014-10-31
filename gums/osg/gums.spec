@@ -5,7 +5,7 @@
 %define __os_install_post %{nil}
 %define jglobus_version 2.0.6
 
-%define _alphatag pre2
+%define _alphatag pre3
 %define _release 1
 
 Name: gums
@@ -83,8 +83,6 @@ Source2: gums-client-cron.cron
 Source3: gums-client-cron.init
 Source4: log4j-client.properties
 Source5: log4j-service.properties
-
-Patch0: xmltooling-version.patch
 
 # Binary JARs not available from public maven repos.  To be eliminated, one-by-one.
 #Source4: glite-security-trustmanager-2.5.5.jar
@@ -380,6 +378,9 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+* Fri Oct 31 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.4.1-0.1.pre3
+- Update to GUMS 1.4.1.pre3 (SOFTWARE-1654)
+
 * Thu Oct 30 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.4.1-0.1.pre2
 - Update to GUMS 1.4.1.pre2 (SOFTWARE-1654)
 
