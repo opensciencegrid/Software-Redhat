@@ -111,7 +111,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.2
+%define condor_base_release 1.3
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -204,6 +204,10 @@ Source123: zlib-1.2.3.tar.gz
 # https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=4590
 Patch1: 4556-udp_invalidations.patch
 Patch2: 4590-improved_tool_output.patch
+
+# This is an 8.2.3-specific problem, fixed in 8.2.4
+# https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=4687
+Patch3: 4687-claim_8.0_startds.patch
 
 #% if 0%osg
 Patch8: osg_sysconfig_in_init_script.patch
@@ -656,6 +660,7 @@ exit 0
 
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 %patch8 -p1
 %patch9 -p1
@@ -1746,6 +1751,9 @@ fi
 %endif
 
 %changelog
+* Fri Oct 31 2014 Carl Edquist <edquist@cs.wisc.edu> - 8.2.3-1.3
+- Patch to allow 8.2.3 schedds to claim 8.0 startds (SOFTWARE-1661)
+
 * Thu Oct 16 2014 Mátyás Selmeci <matyas@cs.wisc.edu> - 8.2.3-1.2
 - Patch cream_gahp to dlopen versioned globus_thread_pthread library (SOFTWARE-1636)
 
