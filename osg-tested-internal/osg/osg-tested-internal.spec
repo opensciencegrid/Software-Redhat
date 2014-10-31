@@ -1,7 +1,7 @@
 Name:      osg-tested-internal
 Summary:   All OSG packages we test (internal use only)
 Version:   3.2
-Release:   6%{?dist}
+Release:   7%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -78,6 +78,7 @@ Requires: globus-gram-job-manager-condor
 Requires: globus-gridftp-server
 Requires: globus-gridftp-server-control
 Requires: globus-gridftp-server-progs
+Requires: lcas-lcmaps-gt4-interface
 %endif
 
 
@@ -94,6 +95,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Oct 31 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 3.2-7
+- Add lcas-lcmaps-gt4-interface to RHEL 7
+
 * Mon Oct 20 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 3.2-6
 - Move htcondor-ce to common now that it builds on EL7
 
