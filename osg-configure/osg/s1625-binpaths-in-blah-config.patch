@@ -22,3 +22,29 @@ index 51a52af..c5fcae5 100644
 -- 
 2.0.1
 
+From 6019642af2a0343cc957f7327d21327f5a5466f1 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Mon, 3 Nov 2014 17:39:27 -0600
+Subject: [PATCH] Fix modifying binpaths for blah.config (SOFTWARE-1625) (take
+ 2)
+
+---
+ osg_configure/configure_modules/sge.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/osg_configure/configure_modules/sge.py b/osg_configure/configure_modules/sge.py
+index 7377e65..90c1aa3 100644
+--- a/osg_configure/configure_modules/sge.py
++++ b/osg_configure/configure_modules/sge.py
+@@ -263,7 +263,7 @@ class SGEConfiguration(JobManagerConfiguration):
+         self.set_default_jobmanager('fork')
+ 
+     if self.htcondor_gateway_enabled:
+-      self.write_binpaths_to_blah_config('sge', self.options['sge_bin_location'])
++      self.write_binpaths_to_blah_config('sge', self.options['sge_bin_location'].value)
+ 
+     self.log('SGEConfiguration.configure started')    
+     return True
+-- 
+2.0.1
+
