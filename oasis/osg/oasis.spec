@@ -1,6 +1,6 @@
 %define name oasis
 %define version 2.0.0
-%define release 1
+%define release 2
 
 Summary: OASIS package
 Name: %{name}
@@ -116,6 +116,7 @@ f_restart_daemon(){
         #$1 == 0 => uninstall 
 
         service oasisd condrestart >/dev/null 2>&1
+    fi
 }
 f_restart_daemon $1
 
