@@ -146,3 +146,14 @@ f_restart_daemon $1
 
 # ensure oasis-admin-* tools has execution permissions only for root
 %attr(0744, root, root) %{_sbindir}/oasis-admin-*
+
+
+#-------------------------------------------------------------------------------
+# Changelog
+#-------------------------------------------------------------------------------
+%changelog
+
+* Mon Nov 03 2014 Jose Caballero <jcaballero@BNL.gov> - 2.0.0-2
+- Bumped to 2.0.0-2
+- fixed bug in rpm script postun
+
