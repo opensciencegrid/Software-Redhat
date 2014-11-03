@@ -1,7 +1,7 @@
 Summary: Package for configure-osg and associated scripts
 Name: osg-configure
 Version: 1.0.61
-Release: 2%{?dist}
+Release: 3%{?dist}
 Source0: %{name}-%{version}.tar.gz
 ## This patch is for 3.2 only!
 # Patch disabled until we can do this in a way that will not affect upgrades.
@@ -309,7 +309,7 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Mon Nov 3 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0.61-2
+* Mon Nov 3 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0.61-3
 - Fix bug in setting blah.config binpaths (SOFTWARE-1625)
 
 * Mon Oct 27 2014 Matyas Selmeci <matyas@cs.wisc.edu> 1.0.61-1
