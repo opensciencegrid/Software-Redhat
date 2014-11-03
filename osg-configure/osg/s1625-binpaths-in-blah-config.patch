@@ -1,0 +1,24 @@
+From 069d2b3f841ed89d8b5eed84a55dad296ccc0b22 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Mon, 3 Nov 2014 16:01:46 -0600
+Subject: [PATCH] Fix modifying binpaths for blah.config (SOFTWARE-1625)
+
+---
+ osg_configure/modules/jobmanagerbase.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/osg_configure/modules/jobmanagerbase.py b/osg_configure/modules/jobmanagerbase.py
+index 51a52af..c5fcae5 100644
+--- a/osg_configure/modules/jobmanagerbase.py
++++ b/osg_configure/modules/jobmanagerbase.py
+@@ -260,6 +260,6 @@ class JobManagerConfiguration(BaseConfiguration):
+     """
+     if os.path.exists(self.BLAH_CONFIG):
+       contents = utilities.read_file(self.BLAH_CONFIG)
+-      utilities.add_or_replace_setting(contents, jobmanager + "_binpath", submit_binpath, quote_value=False)
++      contents = utilities.add_or_replace_setting(contents, jobmanager + "_binpath", submit_binpath, quote_value=False)
+       utilities.atomic_write(self.BLAH_CONFIG, contents)
+ 
+-- 
+2.0.1
+
