@@ -1,0 +1,27 @@
+From 7cd3452213eaf70eefcd82ae608a3b6b913effd7 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Mon, 3 Nov 2014 18:45:29 -0600
+Subject: [PATCH] Call JobManagerConfiguration.parseConfiguration in
+ PBSConfiguration so it will set gram_gateway_enabled and
+ htcondor_gateway_enabled
+
+---
+ osg_configure/configure_modules/pbs.py | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/osg_configure/configure_modules/pbs.py b/osg_configure/configure_modules/pbs.py
+index 1e0029e..28324a8 100644
+--- a/osg_configure/configure_modules/pbs.py
++++ b/osg_configure/configure_modules/pbs.py
+@@ -65,6 +65,8 @@ class PBSConfiguration(JobManagerConfiguration):
+     """Try to get configuration information from ConfigParser or SafeConfigParser object given
+     by configuration and write recognized settings to attributes dict
+     """
++    super(PBSConfiguration, self).parseConfiguration(configuration)
++
+     self.log('PBSConfiguration.parseConfiguration started')    
+ 
+     self.checkConfig(configuration)
+-- 
+2.0.1
+

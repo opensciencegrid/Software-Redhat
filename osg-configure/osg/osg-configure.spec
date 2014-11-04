@@ -1,12 +1,13 @@
 Summary: Package for configure-osg and associated scripts
 Name: osg-configure
 Version: 1.0.61
-Release: 4%{?dist}
+Release: 5%{?dist}
 Source0: %{name}-%{version}.tar.gz
 ## This patch is for 3.2 only!
 # Patch disabled until we can do this in a way that will not affect upgrades.
 #Patch0: s1653-gateway-type.patch
 Patch1: s1625-binpaths-in-blah-config.patch
+Patch2: pbs-parseconfiguration.patch
 License: Apache 2.0
 Group: Grid
 Prefix: %{_prefix}
@@ -189,6 +190,7 @@ It may safely be removed once the upgrade is finished.
 %setup
 #patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %build
 %{__python} setup.py build
@@ -309,8 +311,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Mon Nov 3 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0.61-4
+* Mon Nov 3 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0.61-5
 - Fix bug in setting blah.config binpaths (SOFTWARE-1625)
+- Fix PBS configuration bug which caused the 10-gateway.ini settings to be ignored
 
 * Mon Oct 27 2014 Matyas Selmeci <matyas@cs.wisc.edu> 1.0.61-1
 - Remove ce_collectors patch (in upstream)
