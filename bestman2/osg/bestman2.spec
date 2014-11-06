@@ -14,7 +14,7 @@
 
 Name:           bestman2
 Version:        2.3.0
-Release:        20%{?dist}
+Release:        21%{?dist}
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -130,7 +130,7 @@ Requires: jetty-client jetty-continuation jetty-deploy jetty-http jetty-io jetty
 Requires: /usr/lib/gums/opensaml-2.4.1.jar
 Requires: /usr/lib/gums/openws-1.4.1.jar
 Requires: /usr/lib/gums/velocity-1.5.jar
-Requires: /usr/lib/gums/xmlsec-1.4.2.jar
+Requires: /usr/lib/gums/xmlsec-1.4.4.jar
 Requires: /usr/lib/gums/xmltooling-1.3.1.jar
 
 %description server-dep-libs
@@ -449,6 +449,9 @@ fi
 
 
 %changelog
+* Wed Nov 05 2014 Carl Edquist <edquist@cs.wisc.edu> - 2.3.0-21
+- update xmlsec jar requirement to 1.4.4, for GUMS 1.4.1 (SOFTWARE-1654)
+
 * Thu Sep 18 2014 Carl Edquist <edquist@cs.wisc.edu> - 2.3.0-20
 - use system privilege-xacml and fix xmltooling version to match latest GUMS
   (SOFTWARE-1610)
