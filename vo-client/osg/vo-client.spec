@@ -1,5 +1,5 @@
 Name:           vo-client
-Version:        56
+Version:        57
 Release:        1%{?dist}
 Summary:        Contains vomses file for use with user authentication and edg-mkgridmap.conf file that contains configuration information for edg-mkgridmap.
 
@@ -85,6 +85,11 @@ rm -rf $RPM_BUILD_ROOT
 %attr(0600,tomcat,tomcat) %config(noreplace) %{_sysconfdir}/gums/gums.config.template
 
 %changelog
+* Thu Nov 06 2014 Carl Edquist <edquist@cs.wisc.edu> - 57-1
+- Update to vo-client 57 (SOFTWARE-1657)
+  - Switched voms.cern.ch to voms2.cern.ch
+  - Vomses additions for atlas, cms, alice, ops, geant4
+
 * Mon Aug 04 2014 Carl Edquist <edquist@cs.wisc.edu> - 56-1
 - Update to vo-client 56 (SOFTWARE-1562)
   - Remove I2U2 VO
