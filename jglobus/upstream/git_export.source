@@ -1,1 +1,5 @@
-jglobus/2.0.6/JGlobus.tar.gz
+# Created by running
+#     git archive --format=tar.gz JGlobus-Release-2.1.0 > JGlobus-Release-2.1.0.tar.gz
+# in a git clone of
+#     https://github.com/jglobus/JGlobus.git
+jglobus/2.1.0/JGlobus-Release-2.1.0.tar.gz
