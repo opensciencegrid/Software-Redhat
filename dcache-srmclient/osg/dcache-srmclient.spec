@@ -111,10 +111,10 @@ rm -rf $RPM_BUILD_ROOT
 * Tue Aug 30 2011 Matyas Selmeci <matyas@cs.wisc.edu> 1.9.5.23-3
 - Rebuilt against Globus 5.2
 
-* Fri Jul  7 2011 Brian Bockelman <bbockelm@cse.unl.edu> 1.9.5.23-2
+* Thu Jul  7 2011 Brian Bockelman <bbockelm@cse.unl.edu> 1.9.5.23-2
 - Set buildarch to noarch.
 
-* Fri Jul  7 2011 Brian Bockelman <bbockelm@cse.unl.edu> 1.9.5.23-1
+* Thu Jul  7 2011 Brian Bockelman <bbockelm@cse.unl.edu> 1.9.5.23-1
 - Don't use upstream version number in release value.
 - Rename to use the upstream vendor's RPM name.
 
