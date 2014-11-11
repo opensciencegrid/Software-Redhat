@@ -1,13 +1,10 @@
 Summary: Package for configure-osg and associated scripts
 Name: osg-configure
-Version: 1.0.61
-Release: 5%{?dist}
+Version: 1.0.62
+Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
-## This patch is for 3.2 only!
-# Patch disabled until we can do this in a way that will not affect upgrades.
-#Patch0: s1653-gateway-type.patch
-Patch1: s1625-binpaths-in-blah-config.patch
-Patch2: pbs-parseconfiguration.patch
+Patch0: s1653-gateway-type.patch
+## ^ This patch is for 3.2 only!
 License: Apache 2.0
 Group: Grid
 Prefix: %{_prefix}
@@ -188,15 +185,16 @@ It may safely be removed once the upgrade is finished.
 
 %prep
 %setup
-#patch0 -p1
-%patch1 -p1
-%patch2 -p1
+# 3.2 only patch
+%patch0 -p1
 
 %build
 %{__python} setup.py build
 
 %install
-%{__python} setup.py install --root=$RPM_BUILD_ROOT
+# 3.1 should use "make install-3.1 instead"
+make install DESTDIR=$RPM_BUILD_ROOT
+
 mkdir -p $RPM_BUILD_ROOT/etc/condor-ce/config.d
 touch $RPM_BUILD_ROOT/etc/condor-ce/config.d/50-osg-configure.conf
 mkdir -p $RPM_BUILD_ROOT/var/log/osg/
@@ -209,21 +207,11 @@ touch $RPM_BUILD_ROOT/var/lib/osg/globus-firewall
 mkdir -p $RPM_BUILD_ROOT/etc/profile.d/
 touch $RPM_BUILD_ROOT/etc/profile.d/osg.sh
 touch $RPM_BUILD_ROOT/etc/profile.d/osg.csh
-# following is needed to move script to sbin directory
-mkdir -p $RPM_BUILD_ROOT/usr/sbin
-mv $RPM_BUILD_ROOT/usr/bin/osg-configure $RPM_BUILD_ROOT/usr/sbin/osg-configure
-ln -s /usr/sbin/osg-configure $RPM_BUILD_ROOT/usr/sbin/configure-osg
-rmdir $RPM_BUILD_ROOT/usr/bin
-# Remove cemon files, don't need this on OSG 3.2+
-rm -f $RPM_BUILD_ROOT/%{python_sitelib}/osg_configure/configure_modules/cemon.py*
-rm -fr $RPM_BUILD_ROOT/usr/share/osg-configure/tests/configs/cemon
-rm -fr $RPM_BUILD_ROOT/usr/share/osg-configure/tests/test_cemon.*
-rm -f $RPM_BUILD_ROOT%{_sysconfdir}/osg/config.d/30-cemon.ini
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%files 
+%files
 %defattr(-,root,root)
 %{python_sitelib}/*
 /usr/sbin/*
@@ -310,7 +298,40 @@ rm -rf $RPM_BUILD_ROOT
 # This section intentionally left blank
 
 
+# For 3.2 only:
+
+# 1.0.62-1 and up use HTCondor-CE as the default gateway, but we don't
+# want to change it for users upgrading from old versions so do some
+# hackery.
+
+# The backup file needs to be the same in both the pre scriptlet and
+# the triggerun scriptlets so I can't use mktemp or similar
+%define backup_file %{_tmppath}/._%name-10-gateway.ini-backup
+%define gateway_ini %{_sysconfdir}/osg/config.d/10-gateway.ini
+%pre gateway
+if [ $1 -gt 1 ]; then # upgrading
+    rm -f  %backup_file  ||  :
+    if [ -e %gateway_ini ]; then
+        cp -fp  %gateway_ini  %backup_file  ||  :
+    fi
+fi
+
+%triggerun gateway -- %name-gateway < 1.0.62-1
+if [ $1 -gt 0 ]; then # upgrading, not uninstalling
+    if [ -e %backup_file ]; then
+        mv -f  %backup_file  %gateway_ini  ||  :
+    fi
+fi
+
+# End 3.2 only section
+
+
+
 %changelog
+* Mon Nov 10 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0.62-1
+- Change default gateway type to HTCondor-CE (SOFTWARE-1653)
+- Remove upstreamed patches
+
 * Mon Nov 3 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0.61-5
 - Fix bug in setting blah.config binpaths (SOFTWARE-1625)
 - Fix PBS configuration bug which caused the 10-gateway.ini settings to be ignored
