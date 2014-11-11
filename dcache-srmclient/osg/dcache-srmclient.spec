@@ -11,13 +11,24 @@ License: http://www.dcache.org/manuals/dCacheSoftwareLicence.html
 Group:   Development/Tools
 Obsoletes: SRM-Client-Fermi
 
-BuildRequires: java7-devel
 BuildRequires: ant
 BuildRequires: jpackage-utils
-Requires: java7
 BuildRequires: /usr/share/java/xml-commons-apis.jar
 # maven >= 2.0.10 is needed for maven-ant
+%if %rhel < 7
 BuildRequires: maven22
+%else
+BuildRequires: maven-local
+BuildRequires: java7-devel
+%endif
+
+%if 0%{?el7}
+Requires: java-headless >= 1:1.7.0
+Requires: jpackage-utils
+%else
+Requires: java7
+%endif
+
 Requires: /usr/bin/globus-url-copy
 Requires: /usr/share/java/xml-commons-apis.jar
 
@@ -39,11 +50,17 @@ Patch1: maven22.patch
 %setup -q -n dcache-%{version}
 
 %patch0 -p0
+%if %rhel < 7
 %patch1 -p0
+%endif
 
 %build
 export JAVA_HOME=%{java_home}
 # This uses ant but actually starts up a maven build
+%if 0%{?el7}
+sed -i -e "/maven\.home/s#/usr/share/maven2/#/usr/share/maven/#"  build.xml
+%endif
+
 ant srmclient
 
 
