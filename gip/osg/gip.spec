@@ -1,13 +1,14 @@
 Summary: Generic Information Provider
 Name: gip
 Version: 1.3.11
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: Apache 2.0
 Group: Applications/Grid
 BuildArch: noarch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 Requires: globus-proxy-utils 
 Source0: %{name}-%{version}.tgz
+Patch0: 1662-slurm_queue_info.patch
 
 %define tomcat_uid 91
 %define tomcat_gid 91
@@ -27,6 +28,7 @@ then can be sent via external services to information collection servers such as
 
 %prep
 %setup -q
+%patch0 -p1
 
 %install
 rm -rf %{buildroot}
@@ -117,6 +119,9 @@ touch $RPM_BUILD_ROOT/%{_sysconfdir}/%{name}/remove-attributes.conf
 rm -rf %buildroot
 
 %changelog
+* Mon Nov 03 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.3.11-2
+- Add patch for fixing SLURM queue info parsing (SOFTWARE-1662)
+
 * Fri Aug 15 2014 Burt Holzman <burt@fnal.gov> - 1.3.11-1
 - Updated to GIP 1.3.11 (includes Matyas's patches below)
 

@@ -1,0 +1,13 @@
+Index: gip-1.3.11/gip/lib/python/slurm_common.py
+===================================================================
+--- gip-1.3.11.orig/gip/lib/python/slurm_common.py	2014-11-03 13:53:47.000000000 -0600
++++ gip-1.3.11/gip/lib/python/slurm_common.py	2014-11-03 13:54:01.099484424 -0600
+@@ -18,7 +18,7 @@
+ # TODO: replace with slurm equivalents
+ batch_system_info_cmd = "sinfo -V"
+ jobs_cmd = 'squeue -h -o "%i %u %T %P"'
+-queue_info_cmd = 'sinfo -h -o "%P %a %C %l"'
++queue_info_cmd = 'sinfo -h -o "%R %a %C %l"'
+ #queue_info_cmd = "qstat -Q -f %(slurmHost)s"
+ #jobs_cmd = "qstat"
+ #slurmnodes_cmd = "slurmnodes -a"
