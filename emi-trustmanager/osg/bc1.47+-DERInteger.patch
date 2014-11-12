@@ -1,0 +1,33 @@
+Index: emi-trustmanager-3.0.3/src/org/glite/security/util/proxy/ProxyCertInfoExtension.java
+===================================================================
+--- emi-trustmanager-3.0.3.orig/src/org/glite/security/util/proxy/ProxyCertInfoExtension.java	2014-11-11 23:02:02.000000000 -0600
++++ emi-trustmanager-3.0.3/src/org/glite/security/util/proxy/ProxyCertInfoExtension.java	2014-11-11 23:09:52.018272199 -0600
+@@ -23,7 +23,7 @@
+ import org.bouncycastle.asn1.ASN1EncodableVector;
+ import org.bouncycastle.asn1.ASN1Primitive;
+ import org.bouncycastle.asn1.ASN1Sequence;
+-import org.bouncycastle.asn1.DERInteger;
++import org.bouncycastle.asn1.ASN1Integer;
+ import org.bouncycastle.asn1.ASN1Primitive;
+ import org.bouncycastle.asn1.DERSequence;
+ 
+@@ -95,8 +95,8 @@
+     public ProxyCertInfoExtension(ASN1Sequence seq) {
+         int index = 0;
+         if (seq != null && seq.size() > 0) {
+-            if (seq.getObjectAt(0) instanceof DERInteger) {
+-                m_pathLen = ((DERInteger) seq.getObjectAt(0)).getValue().intValue();
++            if (seq.getObjectAt(0) instanceof ASN1Integer) {
++                m_pathLen = ((ASN1Integer) seq.getObjectAt(0)).getValue().intValue();
+                 index = 1;
+             }
+             if (seq.size() <= index) {
+@@ -144,7 +144,7 @@
+     public ASN1Primitive toASN1Primitive() {
+         ASN1EncodableVector v = new ASN1EncodableVector();
+         if (m_pathLen > -1) {
+-            v.add(new DERInteger(m_pathLen));
++            v.add(new ASN1Integer(m_pathLen));
+         }
+         if (m_policy != null) {
+             v.add(m_policy.toASN1Primitive());

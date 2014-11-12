@@ -1,0 +1,13 @@
+Index: emi-trustmanager-3.0.3/src/org/glite/security/util/proxy/ProxyCertificateGenerator.java
+===================================================================
+--- emi-trustmanager-3.0.3.orig/src/org/glite/security/util/proxy/ProxyCertificateGenerator.java	2014-11-11 23:04:57.000000000 -0600
++++ emi-trustmanager-3.0.3/src/org/glite/security/util/proxy/ProxyCertificateGenerator.java	2014-11-11 23:07:09.079164035 -0600
+@@ -395,7 +395,7 @@
+         newCnPart.add(new DERPrintableString(newCN));
+ 
+         // copy the RDNs to a new vector so that the new part can be added.
+-        ASN1Sequence subjectSequence = (ASN1Sequence) basename.getDERObject();
++        ASN1Sequence subjectSequence = (ASN1Sequence) basename.toASN1Primitive();
+         Enumeration subjectParts = subjectSequence.getObjects();
+ 
+         ASN1EncodableVector subjectVector = new ASN1EncodableVector();

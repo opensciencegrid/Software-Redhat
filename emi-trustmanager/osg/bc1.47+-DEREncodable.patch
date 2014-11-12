@@ -1,0 +1,57 @@
+Index: emi-trustmanager-3.0.3/src/org/glite/security/util/proxy/CertificateExtensionData.java
+===================================================================
+--- emi-trustmanager-3.0.3.orig/src/org/glite/security/util/proxy/CertificateExtensionData.java	2010-04-22 10:49:57.000000000 -0500
++++ emi-trustmanager-3.0.3/src/org/glite/security/util/proxy/CertificateExtensionData.java	2014-11-11 22:56:57.637279116 -0600
+@@ -16,7 +16,7 @@
+  */
+ package org.glite.security.util.proxy;
+ 
+-import org.bouncycastle.asn1.DEREncodable;
++import org.bouncycastle.asn1.ASN1Encodable;
+ import org.bouncycastle.asn1.DERObjectIdentifier;
+ 
+ /**
+@@ -36,7 +36,7 @@
+     /**
+      * The contents of the extension.
+      */
+-    public DEREncodable value;
++    public ASN1Encodable value;
+ 
+     /**
+      * Creates the extension object out of the given arguments.
+@@ -45,9 +45,9 @@
+      * @param critical The criticality flag of the extension.
+      * @param value The contents of the extension.
+      */
+-    public CertificateExtensionData(DERObjectIdentifier oid, boolean critical, DEREncodable value) {
++    public CertificateExtensionData(DERObjectIdentifier oid, boolean critical, ASN1Encodable value) {
+         this.oid = oid;
+         this.critical = critical;
+         this.value = value;
+     }
+-}
+\ No newline at end of file
++}
+Index: emi-trustmanager-3.0.3/src/org/glite/security/util/proxy/ProxyCertificateGenerator.java
+===================================================================
+--- emi-trustmanager-3.0.3.orig/src/org/glite/security/util/proxy/ProxyCertificateGenerator.java	2011-03-29 17:33:02.000000000 -0500
++++ emi-trustmanager-3.0.3/src/org/glite/security/util/proxy/ProxyCertificateGenerator.java	2014-11-11 22:56:47.821152896 -0600
+@@ -39,7 +39,7 @@
+ import org.apache.log4j.Logger;
+ import org.bouncycastle.asn1.ASN1EncodableVector;
+ import org.bouncycastle.asn1.ASN1Sequence;
+-import org.bouncycastle.asn1.DEREncodable;
++import org.bouncycastle.asn1.ASN1Encodable;
+ import org.bouncycastle.asn1.DERObject;
+ import org.bouncycastle.asn1.DERObjectIdentifier;
+ import org.bouncycastle.asn1.DEROctetString;
+@@ -213,7 +213,7 @@
+      * @param critical whether the extension is critical or not.
+      * @param value The extension value.
+      */
+-    public void addExtension(String oid, boolean critical, DEREncodable value) {
++    public void addExtension(String oid, boolean critical, ASN1Encodable value) {
+         m_certGen.addExtension(new DERObjectIdentifier(oid), critical, value);
+     }
+ 

@@ -1,0 +1,20 @@
+--- src/org/glite/security/trustmanager/OpensslTrustmanager.java.orig	2014-10-29 19:01:39.249120090 -0500
++++ src/org/glite/security/trustmanager/OpensslTrustmanager.java	2011-03-29 22:53:30.000000000 -0500
+@@ -84,7 +84,7 @@
+         try {
+             m_validator.check(arg0);
+         } catch (Exception e) {
+-            LOGGER.info("The certificate validation for [" + arg0[0].getSubjectDN() + "] failed: " + e.getMessage());
++            LOGGER.info("The certificate validation for [" + arg0[0].getSubjectDN() + "] failed: " + e.getMessage()); LOGGER.debug("The certificate validation for [" + arg0[0].getSubjectDN() + "] failed: " + e.getMessage(), e);
+             throw new CertificateException(e.getMessage());
+         }
+     }
+@@ -98,7 +98,7 @@
+         try {
+         	checkClientTrusted(arg0, arg1);
+         } catch (CertificateException e) {
+-            LOGGER.error("The certificate validation for [" + arg0[0].getSubjectDN() + "] failed: " + e.getMessage());
++            LOGGER.error("The certificate validation for [" + arg0[0].getSubjectDN() + "] failed: " + e.getMessage()); LOGGER.debug("The certificate validation for [" + arg0[0].getSubjectDN() + "] failed: " + e.getMessage(), e);
+             throw e;
+         }
+     }

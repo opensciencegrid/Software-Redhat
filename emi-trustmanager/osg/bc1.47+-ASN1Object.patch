@@ -1,0 +1,214 @@
+Index: emi-trustmanager-3.0.3/src/org/glite/security/util/CertUtil.java
+===================================================================
+--- emi-trustmanager-3.0.3.orig/src/org/glite/security/util/CertUtil.java	2010-10-06 09:34:56.000000000 -0500
++++ emi-trustmanager-3.0.3/src/org/glite/security/util/CertUtil.java	2014-11-11 22:50:38.268409715 -0600
+@@ -24,7 +24,7 @@
+ import java.security.interfaces.RSAKey;
+ 
+ import org.apache.log4j.Logger;
+-import org.bouncycastle.asn1.ASN1Object;
++import org.bouncycastle.asn1.ASN1Primitive;
+ import org.bouncycastle.asn1.DEROctetString;
+ import org.bouncycastle.openssl.PEMWriter;
+ 
+@@ -183,7 +183,7 @@
+         if(bytes == null){
+             return null;
+         }
+-        DEROctetString valueOctets = (DEROctetString)ASN1Object.fromByteArray(bytes);
++        DEROctetString valueOctets = (DEROctetString)ASN1Primitive.fromByteArray(bytes);
+         return valueOctets.getOctets();
+     }
+     
+Index: emi-trustmanager-3.0.3/src/org/glite/security/util/FileCRLChecker.java
+===================================================================
+--- emi-trustmanager-3.0.3.orig/src/org/glite/security/util/FileCRLChecker.java	2011-03-29 22:53:30.000000000 -0500
++++ emi-trustmanager-3.0.3/src/org/glite/security/util/FileCRLChecker.java	2014-11-11 22:50:23.959226415 -0600
+@@ -29,7 +29,7 @@
+ import java.util.Vector;
+ 
+ import org.apache.log4j.Logger;
+-import org.bouncycastle.asn1.ASN1Object;
++import org.bouncycastle.asn1.ASN1Primitive;
+ import org.bouncycastle.asn1.ASN1Sequence;
+ import org.bouncycastle.asn1.DEROctetString;
+ import org.bouncycastle.asn1.x509.IssuingDistributionPoint;
+@@ -294,13 +294,13 @@
+ 	private void checkIssuinDistributionPoint() throws CertificateException, IOException {
+ 		byte extensionBytes[] = m_crl.getExtensionValue(X509Extensions.IssuingDistributionPoint.toString());
+ 
+-		ASN1Object object = ASN1Object.fromByteArray(extensionBytes);
++		ASN1Primitive object = ASN1Primitive.fromByteArray(extensionBytes);
+ 		if (!(object instanceof DEROctetString)) {
+ 			throw new CertificateException("Invalid data in IssuingDistributionPoint extension, not DEROctetString");
+ 		}
+ 		DEROctetString string = (DEROctetString) object;
+ 
+-		object = ASN1Object.fromByteArray(string.getOctets());
++		object = ASN1Primitive.fromByteArray(string.getOctets());
+ 		if (!(object instanceof ASN1Sequence)) {
+ 			throw new CertificateException("Invalid data in IssuingDistributionPoint extension, not ASN1Sequence");
+ 		}
+Index: emi-trustmanager-3.0.3/src/org/glite/security/util/PrivateKeyReader.java
+===================================================================
+--- emi-trustmanager-3.0.3.orig/src/org/glite/security/util/PrivateKeyReader.java	2011-03-28 18:43:34.000000000 -0500
++++ emi-trustmanager-3.0.3/src/org/glite/security/util/PrivateKeyReader.java	2014-11-11 22:50:31.448322347 -0600
+@@ -19,7 +19,7 @@
+ 
+ import org.apache.log4j.Logger;
+ 
+-import org.bouncycastle.asn1.ASN1Object;
++import org.bouncycastle.asn1.ASN1Primitive;
+ import org.bouncycastle.asn1.DEROutputStream;
+ import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
+ import org.bouncycastle.asn1.pkcs.RSAPrivateKeyStructure;
+@@ -394,7 +394,7 @@
+         byte[] keyData = Base64.decode(buf.toString());
+         
+         try {
+-            PrivateKeyInfo info = PrivateKeyInfo.getInstance(ASN1Object.fromByteArray(keyData));
++            PrivateKeyInfo info = PrivateKeyInfo.getInstance(ASN1Primitive.fromByteArray(keyData));
+             PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(keyData);
+ 
+             KeyFactory keyFact = KeyFactory.getInstance(info.getAlgorithmId().getObjectId().getId(), "BC");
+Index: emi-trustmanager-3.0.3/src/org/glite/security/util/proxy/ProxyCertInfoExtension.java
+===================================================================
+--- emi-trustmanager-3.0.3.orig/src/org/glite/security/util/proxy/ProxyCertInfoExtension.java	2014-11-11 22:45:27.000000000 -0600
++++ emi-trustmanager-3.0.3/src/org/glite/security/util/proxy/ProxyCertInfoExtension.java	2014-11-11 22:49:11.878303509 -0600
+@@ -21,7 +21,7 @@
+ 
+ import org.bouncycastle.asn1.ASN1Encodable;
+ import org.bouncycastle.asn1.ASN1EncodableVector;
+-import org.bouncycastle.asn1.ASN1Object;
++import org.bouncycastle.asn1.ASN1Primitive;
+ import org.bouncycastle.asn1.ASN1Sequence;
+ import org.bouncycastle.asn1.DERInteger;
+ import org.bouncycastle.asn1.DERObject;
+@@ -84,7 +84,7 @@
+      * @throws IOException thrown in case the parsing of the byte array fails.
+      */
+     public ProxyCertInfoExtension(byte[] bytes) throws IOException {
+-        this((ASN1Sequence) ASN1Object.fromByteArray(bytes));
++        this((ASN1Sequence) ASN1Primitive.fromByteArray(bytes));
+     }
+ 
+     /**
+@@ -139,15 +139,15 @@
+ 
+     /*
+      * Return the extension in DER format.
+-     * @see org.bouncycastle.asn1.ASN1Encodable#toASN1Object()
++     * @see org.bouncycastle.asn1.ASN1Encodable#toASN1Primitive()
+      */
+-    public DERObject toASN1Object() {
++    public DERObject toASN1Primitive() {
+         ASN1EncodableVector v = new ASN1EncodableVector();
+         if (m_pathLen > -1) {
+             v.add(new DERInteger(m_pathLen));
+         }
+         if (m_policy != null) {
+-            v.add(m_policy.toASN1Object());
++            v.add(m_policy.toASN1Primitive());
+         } else {
+             throw new IllegalArgumentException("Can't generate ProxyCertInfoExtension without mandatory policy");
+         }
+@@ -155,4 +155,8 @@
+         return new DERSequence(v);
+     }
+ 
++    public DERObject toASN1Object() {
++        return this.toASN1Primitive();
++    }
++
+ }
+Index: emi-trustmanager-3.0.3/src/org/glite/security/util/proxy/ProxyPolicy.java
+===================================================================
+--- emi-trustmanager-3.0.3.orig/src/org/glite/security/util/proxy/ProxyPolicy.java	2010-04-22 10:49:57.000000000 -0500
++++ emi-trustmanager-3.0.3/src/org/glite/security/util/proxy/ProxyPolicy.java	2014-11-11 22:49:52.535823989 -0600
+@@ -136,9 +136,9 @@
+     /**
+      * output the ASN1 object of the proxy policy.
+      * 
+-     * @see org.bouncycastle.asn1.ASN1Encodable#toASN1Object()
++     * @see org.bouncycastle.asn1.ASN1Encodable#toASN1Primitive()
+      */
+-    public DERObject toASN1Object() {
++    public DERObject toASN1Primitive() {
+         ASN1EncodableVector v = new ASN1EncodableVector();
+         v.add(new DERObjectIdentifier(m_oid));
+         if (m_policy != null) {
+@@ -148,4 +148,8 @@
+         return new DERSequence(v);
+     }
+ 
++    public DERObject toASN1Object() {
++        return this.toASN1Primitive();
++    }
++
+ }
+Index: emi-trustmanager-3.0.3/src/org/glite/security/util/proxy/ProxyRestrictionData.java
+===================================================================
+--- emi-trustmanager-3.0.3.orig/src/org/glite/security/util/proxy/ProxyRestrictionData.java	2010-04-22 10:49:57.000000000 -0500
++++ emi-trustmanager-3.0.3/src/org/glite/security/util/proxy/ProxyRestrictionData.java	2014-11-11 22:50:04.218973595 -0600
+@@ -22,7 +22,7 @@
+ 
+ import org.apache.log4j.Logger;
+ import org.bouncycastle.asn1.ASN1EncodableVector;
+-import org.bouncycastle.asn1.ASN1Object;
++import org.bouncycastle.asn1.ASN1Primitive;
+ import org.bouncycastle.asn1.ASN1OctetString;
+ import org.bouncycastle.asn1.ASN1Sequence;
+ import org.bouncycastle.asn1.DERObject;
+@@ -97,7 +97,7 @@
+      * @throws IOException In case there is a problem parsing the structure.
+      */
+     public ProxyRestrictionData(byte[] bytes) throws IOException {
+-        ASN1Sequence nameSpaceRestrictionsSeq = (ASN1Sequence) ASN1Object.fromByteArray(bytes);
++        ASN1Sequence nameSpaceRestrictionsSeq = (ASN1Sequence) ASN1Primitive.fromByteArray(bytes);
+         switch (nameSpaceRestrictionsSeq.size()) {
+         case 0:
+             return;
+Index: emi-trustmanager-3.0.3/src/org/glite/security/util/proxy/ProxyTracingExtension.java
+===================================================================
+--- emi-trustmanager-3.0.3.orig/src/org/glite/security/util/proxy/ProxyTracingExtension.java	2010-04-22 10:49:57.000000000 -0500
++++ emi-trustmanager-3.0.3/src/org/glite/security/util/proxy/ProxyTracingExtension.java	2014-11-11 22:48:23.392683115 -0600
+@@ -18,7 +18,7 @@
+ 
+ import java.io.IOException;
+ 
+-import org.bouncycastle.asn1.ASN1Object;
++import org.bouncycastle.asn1.ASN1Primitive;
+ import org.bouncycastle.asn1.ASN1Sequence;
+ import org.bouncycastle.asn1.DERIA5String;
+ import org.bouncycastle.asn1.x509.GeneralName;
+@@ -109,7 +109,7 @@
+      * @throws IOException In case the byte array does not contain a valid ASN1 encoded proxy tracing extension.
+      */
+     public ProxyTracingExtension(byte[] bytes) throws IOException {
+-        m_names = new GeneralNames((ASN1Sequence) ASN1Object.fromByteArray(bytes));
++        m_names = new GeneralNames((ASN1Sequence) ASN1Primitive.fromByteArray(bytes));
+         m_name = m_names.getNames()[0];
+     }
+ 
+Index: emi-trustmanager-3.0.3/src/org/glite/security/util/proxy/SAMLExtension.java
+===================================================================
+--- emi-trustmanager-3.0.3.orig/src/org/glite/security/util/proxy/SAMLExtension.java	2010-04-22 10:49:57.000000000 -0500
++++ emi-trustmanager-3.0.3/src/org/glite/security/util/proxy/SAMLExtension.java	2014-11-11 22:50:15.311115651 -0600
+@@ -18,7 +18,7 @@
+ 
+ import java.io.IOException;
+ 
+-import org.bouncycastle.asn1.ASN1Object;
++import org.bouncycastle.asn1.ASN1Primitive;
+ import org.bouncycastle.asn1.DEROctetString;
+ 
+ /**
+@@ -42,7 +42,7 @@
+      * @throws IOException
+      */
+     public SAMLExtension(byte[] bytes) throws IOException {
+-        m_string = (DEROctetString) ASN1Object.fromByteArray(bytes);
++        m_string = (DEROctetString) ASN1Primitive.fromByteArray(bytes);
+ 
+     }
+ 

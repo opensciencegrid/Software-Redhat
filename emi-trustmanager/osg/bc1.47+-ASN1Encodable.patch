@@ -1,0 +1,62 @@
+Index: emi-trustmanager-3.0.3/src/org/glite/security/util/proxy/ProxyCertInfoExtension.java
+===================================================================
+--- emi-trustmanager-3.0.3.orig/src/org/glite/security/util/proxy/ProxyCertInfoExtension.java	2014-11-11 22:49:11.000000000 -0600
++++ emi-trustmanager-3.0.3/src/org/glite/security/util/proxy/ProxyCertInfoExtension.java	2014-11-11 22:54:37.631479903 -0600
+@@ -19,7 +19,7 @@
+ 
+ import java.io.IOException;
+ 
+-import org.bouncycastle.asn1.ASN1Encodable;
++import org.bouncycastle.asn1.ASN1Object;
+ import org.bouncycastle.asn1.ASN1EncodableVector;
+ import org.bouncycastle.asn1.ASN1Primitive;
+ import org.bouncycastle.asn1.ASN1Sequence;
+@@ -40,7 +40,7 @@
+  * 
+  * @author Joni Hahkala
+  */
+-public class ProxyCertInfoExtension extends ASN1Encodable {
++public class ProxyCertInfoExtension extends ASN1Object {
+ 
+     /** Identifier for no proxy path length limit. */
+     public static final int UNLIMITED = Integer.MAX_VALUE;
+@@ -139,7 +139,7 @@
+ 
+     /*
+      * Return the extension in DER format.
+-     * @see org.bouncycastle.asn1.ASN1Encodable#toASN1Primitive()
++     * @see org.bouncycastle.asn1.ASN1Object#toASN1Primitive()
+      */
+     public DERObject toASN1Primitive() {
+         ASN1EncodableVector v = new ASN1EncodableVector();
+Index: emi-trustmanager-3.0.3/src/org/glite/security/util/proxy/ProxyPolicy.java
+===================================================================
+--- emi-trustmanager-3.0.3.orig/src/org/glite/security/util/proxy/ProxyPolicy.java	2014-11-11 22:49:52.000000000 -0600
++++ emi-trustmanager-3.0.3/src/org/glite/security/util/proxy/ProxyPolicy.java	2014-11-11 22:54:47.655608647 -0600
+@@ -18,7 +18,7 @@
+ 
+ package org.glite.security.util.proxy;
+ 
+-import org.bouncycastle.asn1.ASN1Encodable;
++import org.bouncycastle.asn1.ASN1Object;
+ import org.bouncycastle.asn1.ASN1EncodableVector;
+ import org.bouncycastle.asn1.ASN1OctetString;
+ import org.bouncycastle.asn1.ASN1Sequence;
+@@ -32,7 +32,7 @@
+  * 
+  * @author Joni Hahkala
+  */
+-public class ProxyPolicy extends ASN1Encodable {
++public class ProxyPolicy extends ASN1Object {
+     /**
+      * The normal, default policy, the proxy inherits the rights of the parent. Defined in RFC 3820.
+      */
+@@ -136,7 +136,7 @@
+     /**
+      * output the ASN1 object of the proxy policy.
+      * 
+-     * @see org.bouncycastle.asn1.ASN1Encodable#toASN1Primitive()
++     * @see org.bouncycastle.asn1.ASN1Object#toASN1Primitive()
+      */
+     public DERObject toASN1Primitive() {
+         ASN1EncodableVector v = new ASN1EncodableVector();

@@ -1,0 +1,13 @@
+Index: emi-trustmanager-3.0.3/src/org/glite/security/trustmanager/OpensslTrustmanager.java
+===================================================================
+--- emi-trustmanager-3.0.3.orig/src/org/glite/security/trustmanager/OpensslTrustmanager.java	2014-11-11 22:45:27.000000000 -0600
++++ emi-trustmanager-3.0.3/src/org/glite/security/trustmanager/OpensslTrustmanager.java	2014-11-11 23:23:44.224870086 -0600
+@@ -133,7 +133,7 @@
+      */
+     @SuppressWarnings("boxing")
+     public static String getOpenSSLCAHash(X509Name subject) {
+-        byte[] bytes = subject.getDEREncoded();
++        byte[] bytes = subject.getEncoded(ASN1Encoding.DER);
+ 
+         MD5Digest digest = new MD5Digest();
+         digest.update(bytes, 0, bytes.length);

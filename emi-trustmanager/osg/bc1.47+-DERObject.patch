@@ -1,0 +1,136 @@
+Index: emi-trustmanager-3.0.3/src/org/glite/security/util/proxy/ProxyCertInfoExtension.java
+===================================================================
+--- emi-trustmanager-3.0.3.orig/src/org/glite/security/util/proxy/ProxyCertInfoExtension.java	2014-11-11 22:54:37.000000000 -0600
++++ emi-trustmanager-3.0.3/src/org/glite/security/util/proxy/ProxyCertInfoExtension.java	2014-11-11 23:02:02.549205788 -0600
+@@ -24,7 +24,7 @@
+ import org.bouncycastle.asn1.ASN1Primitive;
+ import org.bouncycastle.asn1.ASN1Sequence;
+ import org.bouncycastle.asn1.DERInteger;
+-import org.bouncycastle.asn1.DERObject;
++import org.bouncycastle.asn1.ASN1Primitive;
+ import org.bouncycastle.asn1.DERSequence;
+ 
+ /**
+@@ -141,7 +141,7 @@
+      * Return the extension in DER format.
+      * @see org.bouncycastle.asn1.ASN1Object#toASN1Primitive()
+      */
+-    public DERObject toASN1Primitive() {
++    public ASN1Primitive toASN1Primitive() {
+         ASN1EncodableVector v = new ASN1EncodableVector();
+         if (m_pathLen > -1) {
+             v.add(new DERInteger(m_pathLen));
+@@ -155,7 +155,7 @@
+         return new DERSequence(v);
+     }
+ 
+-    public DERObject toASN1Object() {
++    public ASN1Primitive toASN1Object() {
+         return this.toASN1Primitive();
+     }
+ 
+Index: emi-trustmanager-3.0.3/src/org/glite/security/util/proxy/ProxyCertificateGenerator.java
+===================================================================
+--- emi-trustmanager-3.0.3.orig/src/org/glite/security/util/proxy/ProxyCertificateGenerator.java	2014-11-11 22:59:56.000000000 -0600
++++ emi-trustmanager-3.0.3/src/org/glite/security/util/proxy/ProxyCertificateGenerator.java	2014-11-11 23:04:57.523463979 -0600
+@@ -40,7 +40,7 @@
+ import org.bouncycastle.asn1.ASN1EncodableVector;
+ import org.bouncycastle.asn1.ASN1Sequence;
+ import org.bouncycastle.asn1.ASN1Encodable;
+-import org.bouncycastle.asn1.DERObject;
++import org.bouncycastle.asn1.ASN1Primitive;
+ import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+ import org.bouncycastle.asn1.DEROctetString;
+ import org.bouncycastle.asn1.DERPrintableString;
+@@ -401,7 +401,7 @@
+         ASN1EncodableVector subjectVector = new ASN1EncodableVector();
+ 
+         while (subjectParts.hasMoreElements()) {
+-            DERObject part = (DERObject) subjectParts.nextElement();
++            ASN1Primitive part = (ASN1Primitive) subjectParts.nextElement();
+             subjectVector.add(part);
+         }
+ 
+@@ -425,7 +425,7 @@
+      */
+     private String guessCN(X509Name basename, boolean addLimited) {
+         String newCN;
+-        ASN1Sequence subjectSequence = (ASN1Sequence) basename.getDERObject();
++        ASN1Sequence subjectSequence = (ASN1Sequence) basename.getASN1Primitive();
+         int rdns = subjectSequence.size();
+         DERSet rdn = (DERSet) subjectSequence.getObjectAt(rdns - 1);
+         DERSequence rdnSequence = (DERSequence) rdn.getObjectAt(0);
+@@ -461,7 +461,7 @@
+      */
+     @SuppressWarnings("unchecked")
+     private void setupDNs(String newCn) {
+-        ASN1Sequence seqSubject = (ASN1Sequence) m_baseName.getDERObject();
++        ASN1Sequence seqSubject = (ASN1Sequence) m_baseName.getASN1Primitive();
+ 
+         ASN1EncodableVector newCnPart = new ASN1EncodableVector();
+         newCnPart.add(X509Name.CN);
+@@ -472,7 +472,7 @@
+         ASN1EncodableVector subjectVector = new ASN1EncodableVector();
+ 
+         while (subjectParts.hasMoreElements()) {
+-            DERObject part = (DERObject) subjectParts.nextElement();
++            ASN1Primitive part = (ASN1Primitive) subjectParts.nextElement();
+             subjectVector.add(part);
+         }
+ 
+Index: emi-trustmanager-3.0.3/src/org/glite/security/util/proxy/ProxyPolicy.java
+===================================================================
+--- emi-trustmanager-3.0.3.orig/src/org/glite/security/util/proxy/ProxyPolicy.java	2014-11-11 22:59:36.000000000 -0600
++++ emi-trustmanager-3.0.3/src/org/glite/security/util/proxy/ProxyPolicy.java	2014-11-11 23:02:08.503282573 -0600
+@@ -22,7 +22,7 @@
+ import org.bouncycastle.asn1.ASN1EncodableVector;
+ import org.bouncycastle.asn1.ASN1OctetString;
+ import org.bouncycastle.asn1.ASN1Sequence;
+-import org.bouncycastle.asn1.DERObject;
++import org.bouncycastle.asn1.ASN1Primitive;
+ import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+ import org.bouncycastle.asn1.DEROctetString;
+ import org.bouncycastle.asn1.DERSequence;
+@@ -138,7 +138,7 @@
+      * 
+      * @see org.bouncycastle.asn1.ASN1Object#toASN1Primitive()
+      */
+-    public DERObject toASN1Primitive() {
++    public ASN1Primitive toASN1Primitive() {
+         ASN1EncodableVector v = new ASN1EncodableVector();
+         v.add(new ASN1ObjectIdentifier(m_oid));
+         if (m_policy != null) {
+@@ -148,7 +148,7 @@
+         return new DERSequence(v);
+     }
+ 
+-    public DERObject toASN1Object() {
++    public ASN1Primitive toASN1Object() {
+         return this.toASN1Primitive();
+     }
+ 
+Index: emi-trustmanager-3.0.3/src/org/glite/security/util/proxy/ProxyRestrictionData.java
+===================================================================
+--- emi-trustmanager-3.0.3.orig/src/org/glite/security/util/proxy/ProxyRestrictionData.java	2014-11-11 22:50:04.000000000 -0600
++++ emi-trustmanager-3.0.3/src/org/glite/security/util/proxy/ProxyRestrictionData.java	2014-11-11 23:02:15.224369255 -0600
+@@ -25,7 +25,7 @@
+ import org.bouncycastle.asn1.ASN1Primitive;
+ import org.bouncycastle.asn1.ASN1OctetString;
+ import org.bouncycastle.asn1.ASN1Sequence;
+-import org.bouncycastle.asn1.DERObject;
++import org.bouncycastle.asn1.ASN1Primitive;
+ import org.bouncycastle.asn1.DERSequence;
+ import org.bouncycastle.asn1.DERTaggedObject;
+ import org.bouncycastle.asn1.x509.GeneralName;
+@@ -165,9 +165,9 @@
+      * @param vector The target to copy the parsed GeneralSubtree objects.
+      */
+     private static void copyCondSequenceToVector(DERSequence subSeq, Vector<GeneralSubtree> vector) {
+-        Enumeration<DERObject> subTreeEnum = subSeq.getObjects();
++        Enumeration<ASN1Primitive> subTreeEnum = subSeq.getObjects();
+         while (subTreeEnum.hasMoreElements()) {
+-            DERObject object = subTreeEnum.nextElement();
++            ASN1Primitive object = subTreeEnum.nextElement();
+             vector.add(new GeneralSubtree((ASN1Sequence) object));
+         }
+     }

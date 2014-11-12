@@ -1,0 +1,278 @@
+Index: emi-trustmanager-3.0.3/src/org/glite/security/util/DNImpl.java
+===================================================================
+--- emi-trustmanager-3.0.3.orig/src/org/glite/security/util/DNImpl.java	2010-03-02 07:41:01.000000000 -0600
++++ emi-trustmanager-3.0.3/src/org/glite/security/util/DNImpl.java	2014-11-11 23:00:06.637711775 -0600
+@@ -16,7 +16,7 @@
+  */
+ package org.glite.security.util;
+ 
+-import org.bouncycastle.asn1.DERObjectIdentifier;
++import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+ import org.bouncycastle.asn1.x509.X509Name;
+ 
+ import java.security.Principal;
+@@ -41,7 +41,7 @@
+      *            The number of fields in the DN (both oids and rdns have to
+      *            have this number of items).
+      */
+-    public DNImpl(DERObjectIdentifier[] newOids, String[] newRdns, int newCount) {
++    public DNImpl(ASN1ObjectIdentifier[] newOids, String[] newRdns, int newCount) {
+         super(newOids, newRdns, newCount);
+     }
+ 
+Index: emi-trustmanager-3.0.3/src/org/glite/security/util/DNImplRFC2253.java
+===================================================================
+--- emi-trustmanager-3.0.3.orig/src/org/glite/security/util/DNImplRFC2253.java	2011-03-28 18:43:34.000000000 -0500
++++ emi-trustmanager-3.0.3/src/org/glite/security/util/DNImplRFC2253.java	2014-11-11 23:00:19.983883718 -0600
+@@ -18,7 +18,7 @@
+ 
+ import org.apache.log4j.Logger;
+ 
+-import org.bouncycastle.asn1.DERObjectIdentifier;
++import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+ import org.bouncycastle.asn1.x509.X509Name;
+ 
+ import org.bouncycastle.jce.X509Principal;
+@@ -66,7 +66,7 @@
+     public String[] m_rdns = null;
+ 
+     /** The array of object identifiers. */
+-    public DERObjectIdentifier[] m_oids = null;
++    public ASN1ObjectIdentifier[] m_oids = null;
+ 
+     /** The number of fields in the DN. */
+     public int m_count = 0;
+@@ -78,7 +78,7 @@
+      * @param newRdns The array or relative distinguished names.
+      * @param newCount The number of fields in the DN (both oids and rdns have to have this number of items).
+      */
+-    public DNImplRFC2253(DERObjectIdentifier[] newOids, String[] newRdns, int newCount) {
++    public DNImplRFC2253(ASN1ObjectIdentifier[] newOids, String[] newRdns, int newCount) {
+         m_oids = newOids;
+         m_rdns = newRdns;
+         m_count = newCount;
+@@ -163,7 +163,7 @@
+             }
+         }
+ 
+-        m_oids = (DERObjectIdentifier[]) x509Principal.getOIDs().toArray(new DERObjectIdentifier[] {});
++        m_oids = (ASN1ObjectIdentifier[]) x509Principal.getOIDs().toArray(new ASN1ObjectIdentifier[] {});
+         m_rdns = (String[]) x509Principal.getValues().toArray(new String[] {});
+         m_count = m_oids.length;
+     }
+@@ -175,7 +175,7 @@
+      */
+     @SuppressWarnings("unchecked")
+ 	public DNImplRFC2253(X509Name x509Name) {
+-        m_oids = (DERObjectIdentifier[]) x509Name.getOIDs().toArray(new DERObjectIdentifier[] {});
++        m_oids = (ASN1ObjectIdentifier[]) x509Name.getOIDs().toArray(new ASN1ObjectIdentifier[] {});
+         m_rdns = (String[]) x509Name.getValues().toArray(new String[0]);
+         m_count = m_oids.length;
+ 
+@@ -349,7 +349,7 @@
+ 	private void parse(String inputDN, boolean reversed) {
+         X509Principal x509Principal = new X509Principal(reversed, inputDN);
+ 
+-        m_oids = (DERObjectIdentifier[]) x509Principal.getOIDs().toArray(new DERObjectIdentifier[] {});
++        m_oids = (ASN1ObjectIdentifier[]) x509Principal.getOIDs().toArray(new ASN1ObjectIdentifier[] {});
+         m_rdns = (String[]) x509Principal.getValues().toArray(new String[0]);
+         m_count = m_oids.length;
+     }
+@@ -389,7 +389,7 @@
+ 
+         X509Principal x509Principal = new X509Principal(false, newInput.toString());
+ 
+-        m_oids = (DERObjectIdentifier[]) x509Principal.getOIDs().toArray(new DERObjectIdentifier[] {});
++        m_oids = (ASN1ObjectIdentifier[]) x509Principal.getOIDs().toArray(new ASN1ObjectIdentifier[] {});
+         m_rdns = (String[]) x509Principal.getValues().toArray(new String[0]);
+         m_count = m_oids.length;
+     }
+@@ -404,7 +404,7 @@
+     public boolean equals(Object inputDN2) {
+         int count;
+         String[] rdns = null;
+-        DERObjectIdentifier[] oids = null;
++        ASN1ObjectIdentifier[] oids = null;
+         
+         if (inputDN2 instanceof DNImpl) {
+             DNImpl dn2 = (DNImpl) inputDN2;
+@@ -475,7 +475,7 @@
+         int newCount = m_count - 1;
+ 
+         String[] newRdns = new String[newCount];
+-        DERObjectIdentifier[] newOids = new DERObjectIdentifier[newCount];
++        ASN1ObjectIdentifier[] newOids = new ASN1ObjectIdentifier[newCount];
+ 
+         for (int n = 0; n < newCount; n++) {
+             newRdns[n] = m_rdns[n];
+Index: emi-trustmanager-3.0.3/src/org/glite/security/util/proxy/CertificateExtensionData.java
+===================================================================
+--- emi-trustmanager-3.0.3.orig/src/org/glite/security/util/proxy/CertificateExtensionData.java	2014-11-11 22:56:57.000000000 -0600
++++ emi-trustmanager-3.0.3/src/org/glite/security/util/proxy/CertificateExtensionData.java	2014-11-11 23:00:01.726648509 -0600
+@@ -17,7 +17,7 @@
+ package org.glite.security.util.proxy;
+ 
+ import org.bouncycastle.asn1.ASN1Encodable;
+-import org.bouncycastle.asn1.DERObjectIdentifier;
++import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+ 
+ /**
+  * A class representing a x509 certificate extension for easily handling them.
+@@ -28,7 +28,7 @@
+     /**
+      * The oid of the extension.
+      */
+-    public DERObjectIdentifier oid;
++    public ASN1ObjectIdentifier oid;
+     /**
+      * The flag for whether the extension is critical. 
+      */
+@@ -45,7 +45,7 @@
+      * @param critical The criticality flag of the extension.
+      * @param value The contents of the extension.
+      */
+-    public CertificateExtensionData(DERObjectIdentifier oid, boolean critical, ASN1Encodable value) {
++    public CertificateExtensionData(ASN1ObjectIdentifier oid, boolean critical, ASN1Encodable value) {
+         this.oid = oid;
+         this.critical = critical;
+         this.value = value;
+Index: emi-trustmanager-3.0.3/src/org/glite/security/util/proxy/ProxyCertUtil.java
+===================================================================
+--- emi-trustmanager-3.0.3.orig/src/org/glite/security/util/proxy/ProxyCertUtil.java	2010-04-22 10:49:57.000000000 -0500
++++ emi-trustmanager-3.0.3/src/org/glite/security/util/proxy/ProxyCertUtil.java	2014-11-11 22:59:51.522517066 -0600
+@@ -20,7 +20,7 @@
+ import java.util.Vector;
+ import java.util.regex.Pattern;
+ 
+-import org.bouncycastle.asn1.DERObjectIdentifier;
++import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+ import org.bouncycastle.asn1.x509.X509Name;
+ import org.glite.security.util.DN;
+ 
+@@ -59,13 +59,13 @@
+      */
+     public static BigInteger getSN(X509Name dn) {
+         Vector oids = dn.getOIDs();
+-        DERObjectIdentifier oid = (DERObjectIdentifier) oids.elementAt(0);
++        ASN1ObjectIdentifier oid = (ASN1ObjectIdentifier) oids.elementAt(0);
+         String sn = (String) dn.getValues().elementAt(0);
+         BigInteger bi = testGetSN(oid, sn);
+         if (bi != null) {
+             return bi;
+         }
+-        oid = (DERObjectIdentifier) oids.elementAt(oids.size() - 1);
++        oid = (ASN1ObjectIdentifier) oids.elementAt(oids.size() - 1);
+         sn = (String) dn.getValues().elementAt(oids.size() - 1);
+         return testGetSN(oid, sn);
+ 
+@@ -78,7 +78,7 @@
+      * @param value The value of the RDN.
+      * @return The serial number if the oid was CN and the value just a integer number.
+      */
+-    private static BigInteger testGetSN(DERObjectIdentifier oid, String value) {
++    private static BigInteger testGetSN(ASN1ObjectIdentifier oid, String value) {
+         if (oid == X509Name.CN) {
+             if (Pattern.matches("\\d*", value)) {
+                 return new BigInteger(value);
+Index: emi-trustmanager-3.0.3/src/org/glite/security/util/proxy/ProxyCertificateGenerator.java
+===================================================================
+--- emi-trustmanager-3.0.3.orig/src/org/glite/security/util/proxy/ProxyCertificateGenerator.java	2014-11-11 22:56:47.000000000 -0600
++++ emi-trustmanager-3.0.3/src/org/glite/security/util/proxy/ProxyCertificateGenerator.java	2014-11-11 22:59:56.920586602 -0600
+@@ -41,7 +41,7 @@
+ import org.bouncycastle.asn1.ASN1Sequence;
+ import org.bouncycastle.asn1.ASN1Encodable;
+ import org.bouncycastle.asn1.DERObject;
+-import org.bouncycastle.asn1.DERObjectIdentifier;
++import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+ import org.bouncycastle.asn1.DEROctetString;
+ import org.bouncycastle.asn1.DERPrintableString;
+ import org.bouncycastle.asn1.DERSequence;
+@@ -214,7 +214,7 @@
+      * @param value The extension value.
+      */
+     public void addExtension(String oid, boolean critical, ASN1Encodable value) {
+-        m_certGen.addExtension(new DERObjectIdentifier(oid), critical, value);
++        m_certGen.addExtension(new ASN1ObjectIdentifier(oid), critical, value);
+     }
+ 
+     /**
+@@ -429,7 +429,7 @@
+         int rdns = subjectSequence.size();
+         DERSet rdn = (DERSet) subjectSequence.getObjectAt(rdns - 1);
+         DERSequence rdnSequence = (DERSequence) rdn.getObjectAt(0);
+-        DERObjectIdentifier oid = (DERObjectIdentifier) rdnSequence.getObjectAt(0);
++        ASN1ObjectIdentifier oid = (ASN1ObjectIdentifier) rdnSequence.getObjectAt(0);
+         if (oid.equals(X509Name.CN)) {
+             String cn = rdnSequence.getObjectAt(1).toString();
+             if (cn.equals("proxy")) { // old style unlimited proxy
+Index: emi-trustmanager-3.0.3/src/org/glite/security/util/proxy/ProxyCertificateInfo.java
+===================================================================
+--- emi-trustmanager-3.0.3.orig/src/org/glite/security/util/proxy/ProxyCertificateInfo.java	2011-03-29 16:36:32.000000000 -0500
++++ emi-trustmanager-3.0.3/src/org/glite/security/util/proxy/ProxyCertificateInfo.java	2014-11-11 22:59:44.378425050 -0600
+@@ -21,7 +21,7 @@
+ import java.security.cert.X509Certificate;
+ 
+ import org.bouncycastle.asn1.ASN1OctetString;
+-import org.bouncycastle.asn1.DERObjectIdentifier;
++import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+ import org.bouncycastle.asn1.x509.X509Name;
+ import org.glite.security.util.CertUtil;
+ 
+@@ -92,7 +92,7 @@
+         // If not, check if the DN ends with either "cn=proxy" or "cn=limited"
+         // proxy indicating that it is legacy proxy.
+         X509Name subject = (X509Name) m_cert.getSubjectDN();
+-        DERObjectIdentifier oid = (DERObjectIdentifier) subject.getOIDs().lastElement();
++        ASN1ObjectIdentifier oid = (ASN1ObjectIdentifier) subject.getOIDs().lastElement();
+ 
+         // not ending with CN RDN, don't know what this cert is.
+         if (!X509Name.CN.equals(oid)) {
+@@ -119,7 +119,7 @@
+      * @return true in case DN is legacy proxy dn.
+      */
+     public static boolean isLegacyDN(X509Name subject) {
+-        DERObjectIdentifier oid = (DERObjectIdentifier) subject.getOIDs().lastElement();
++        ASN1ObjectIdentifier oid = (ASN1ObjectIdentifier) subject.getOIDs().lastElement();
+         // not ending with CN RDN, don't know what this cert is.
+         if (oid != X509Name.CN) {
+             return false;
+@@ -148,7 +148,7 @@
+             // If not, check if the DN ends with "cn=limited proxy" proxy
+             // indicating that it is limited legacy proxy.
+             X509Name subject = (X509Name) m_cert.getSubjectDN();
+-            DERObjectIdentifier oid = (DERObjectIdentifier) subject.getOIDs().lastElement();
++            ASN1ObjectIdentifier oid = (ASN1ObjectIdentifier) subject.getOIDs().lastElement();
+ 
+             // not ending with CN RDN, this shouldn't happen as it passed the
+             // getProxyType, but check anyway, defence in depth and all...
+Index: emi-trustmanager-3.0.3/src/org/glite/security/util/proxy/ProxyPolicy.java
+===================================================================
+--- emi-trustmanager-3.0.3.orig/src/org/glite/security/util/proxy/ProxyPolicy.java	2014-11-11 22:54:47.000000000 -0600
++++ emi-trustmanager-3.0.3/src/org/glite/security/util/proxy/ProxyPolicy.java	2014-11-11 22:59:36.002317172 -0600
+@@ -23,7 +23,7 @@
+ import org.bouncycastle.asn1.ASN1OctetString;
+ import org.bouncycastle.asn1.ASN1Sequence;
+ import org.bouncycastle.asn1.DERObject;
+-import org.bouncycastle.asn1.DERObjectIdentifier;
++import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+ import org.bouncycastle.asn1.DEROctetString;
+ import org.bouncycastle.asn1.DERSequence;
+ 
+@@ -84,7 +84,7 @@
+      */
+     public ProxyPolicy(ASN1Sequence seq) {
+         if (seq != null && seq.size() > 0) {
+-            if (seq.getObjectAt(0) instanceof DERObjectIdentifier) {
++            if (seq.getObjectAt(0) instanceof ASN1ObjectIdentifier) {
+                 m_oid = seq.getObjectAt(0).toString();
+             } else {
+                 throw new IllegalArgumentException("ProxyPolicy parser error, expected object identifier, but got:"
+@@ -140,7 +140,7 @@
+      */
+     public DERObject toASN1Primitive() {
+         ASN1EncodableVector v = new ASN1EncodableVector();
+-        v.add(new DERObjectIdentifier(m_oid));
++        v.add(new ASN1ObjectIdentifier(m_oid));
+         if (m_policy != null) {
+             v.add(new DEROctetString(m_policy));
+         }
