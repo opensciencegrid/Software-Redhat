@@ -13,6 +13,7 @@ Packager: ETICS
 BuildArch: noarch
 BuildRequires: ant
 BuildRequires: bouncycastle
+BuildRequires: bouncycastle-pkix
 BuildRequires: log4j
 Requires: java-headless >= 1:1.7.0
 Requires: jpackage-utils
@@ -30,6 +31,7 @@ Patch14: bc1.47+-DERObject.patch
 Patch15: bc1.47+-getDERObject.patch
 Patch16: bc1.47+-DERInteger.patch
 Patch17: bc1.47+-getDEREncoded.patch
+Patch18: bcpkix.patch
 
 
 %description
@@ -52,6 +54,7 @@ The java authentication and proxy generation implementation that supports grid p
 %patch15 -p1
 %patch16 -p1
 %patch17 -p1
+%patch18 -p1
 
 
 %build
