@@ -1,7 +1,7 @@
 Name:      rsv
 Summary:   RSV Meta Package
 Version:   3.7.20
-Release:   2%{?dist}
+Release:   3%{?dist}
 License:   Apache 2.0
 Group:     Applications/Monitoring
 URL:       https://twiki.grid.iu.edu/bin/view/MonitoringInformation/RSV
@@ -244,8 +244,8 @@ fi
 
 
 %changelog
-* Thu Nov 13 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 3.7.20-2
-- Set default gateway type to HTCondor-CE (SOFTWARE-1653)
+* Thu Nov 13 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 3.7.20-3
+- Set default gateway type to HTCondor-CE for fresh installs (SOFTWARE-1653)
 
 * Mon Oct 27 2014 Carl Edquist <edquist@cs.wisc.edu> - 3.7.20-1
 - SOFTWARE-1080 - Improve init script return codes and add status function
