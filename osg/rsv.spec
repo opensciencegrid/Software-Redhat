@@ -1,12 +1,18 @@
 Name:      rsv
 Summary:   RSV Meta Package
 Version:   3.7.20
-Release:   1%{?dist}
+Release:   2%{?dist}
 License:   Apache 2.0
 Group:     Applications/Monitoring
 URL:       https://twiki.grid.iu.edu/bin/view/MonitoringInformation/RSV
 
 Source0:   %{name}-%{version}.tar.gz
+# osg 3.2:
+Patch0:    1653-default-ce-type.patch
+%define backup_file %_tmppath/._%name-rsv.conf-backup
+%define rsv_conf %_sysconfdir/rsv/rsv.conf
+# end osg 3.2
+
 BuildArch: noarch
 
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
@@ -91,6 +97,8 @@ Requires: /usr/bin/condor_ce_ping
 
 %prep
 %setup -q
+# 3.2 only patch
+%patch0 -p1
 
 
 %install
@@ -118,6 +126,32 @@ rm -rf $RPM_BUILD_ROOT
 
 %pre core
 %make_rsv_user_group
+
+# For 3.2 only:
+
+# 3.7.20-2 and up use HTCondor-CE as the default gateway, but we don't
+# want to change it for users upgrading from old versions so do some
+# hackery.
+
+# The backup file needs to be the same in both the pre scriptlet and
+# the triggerun scriptlets so I can't use mktemp or similar
+
+# (still part of %%pre core)
+if [ $1 -gt 1 ]; then # upgrading
+    rm -f  %backup_file  ||  :
+    if [ -e %rsv_conf ]; then
+        cp -fp  %rsv_conf  %backup_file  ||  :
+    fi
+fi
+
+%triggerun core -- %name-core < 3.7.20-2
+if [ $1 -gt 0 ]; then # upgrading, not uninstalling
+    if [ -e %backup_file ]; then
+        mv -f  %backup_file  %rsv_conf  ||  :
+    fi
+fi
+
+# End 3.2 only section
 
 
 %pre metrics
@@ -204,7 +238,15 @@ fi
 %attr(-,rsv,rsv) %{_localstatedir}/log/rsv/probes
 
 
+
+
+
+
+
 %changelog
+* Thu Nov 13 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 3.7.20-2
+- Set default gateway type to HTCondor-CE (SOFTWARE-1653)
+
 * Mon Oct 27 2014 Carl Edquist <edquist@cs.wisc.edu> - 3.7.20-1
 - SOFTWARE-1080 - Improve init script return codes and add status function
 - SOFTWARE-806 - Fix a number of shell quoting issues in probes

@@ -1,0 +1,11 @@
+Index: rsv-3.7.20/rsv-core/etc/rsv.conf
+===================================================================
+--- rsv-3.7.20.orig/rsv-core/etc/rsv.conf	2014-10-27 17:42:03.000000000 -0500
++++ rsv-3.7.20/rsv-core/etc/rsv.conf	2014-11-13 15:36:06.647103250 -0600
+@@ -29,5 +29,5 @@
+ # service/daemon) or to a CE with an HTCondor-CE gateway (condor-ce
+ # service/condor-job-router daemon)?
+ # Valid values are 'gram', 'htcondor-ce' or 'condor-ce'.
+ # If left blank, defaults to gram.
+-ce-type = gram
++ce-type = htcondor-ce
