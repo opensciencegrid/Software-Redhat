@@ -5,8 +5,8 @@
 %define __os_install_post %{nil}
 %define jglobus_version 2.0.6
 
-%define _alphatag pre3
-%define _release 1
+%define _alphatag pre4
+%define _release 4
 
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
@@ -377,6 +377,12 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+* Wed Nov 12 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.4.1-0.4.pre4
+- Update to GUMS 1.4.1.pre4 (SOFTWARE-1654)
+  - Updated Ban Users UI (SOFTWARE-1655)
+  - Pre-compile JSP pages
+  - Logging improvements
+
 * Fri Oct 31 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.4.1-0.1.pre3
 - Update to GUMS 1.4.1.pre3 (SOFTWARE-1654)
 
