@@ -51,6 +51,10 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 
+* Fri Nov 14 2014 Juan F. Mosquera <jmorales@fnal.gov>
+- modifications and program additions to resolve OSG
+- SOFTWARE-1671 and GRATIAWEB-60.
+
 * Tue Sep 30 2014 Juan F. Mosquera <jmorales@fnal.gov>
 - modifications and program additions to resolve OSG
 - GRATIAWEB-58.
