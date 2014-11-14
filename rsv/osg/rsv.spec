@@ -1,17 +1,13 @@
 Name:      rsv
 Summary:   RSV Meta Package
 Version:   3.7.20
-Release:   3%{?dist}
+Release:   4%{?dist}
 License:   Apache 2.0
 Group:     Applications/Monitoring
 URL:       https://twiki.grid.iu.edu/bin/view/MonitoringInformation/RSV
 
 Source0:   %{name}-%{version}.tar.gz
-# osg 3.2:
 Patch0:    1653-default-ce-type.patch
-%define backup_file %_tmppath/._%name-rsv.conf-backup
-%define rsv_conf %_sysconfdir/rsv/rsv.conf
-# end osg 3.2
 
 BuildArch: noarch
 
@@ -30,6 +26,9 @@ Requires: voms-clients
 %{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
 %{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
 %endif
+
+%define rsv_conf %_sysconfdir/rsv/rsv.conf
+%define rsv_conf_backup %_datadir/%name/.rsv.conf-backup
 
 %description
 %{summary}
@@ -97,7 +96,6 @@ Requires: /usr/bin/condor_ce_ping
 
 %prep
 %setup -q
-# 3.2 only patch
 %patch0 -p1
 
 
@@ -106,6 +104,9 @@ rm -rf $RPM_BUILD_ROOT
 for subpackage in rsv-core rsv-consumers rsv-metrics; do
     make -C $subpackage install DESTDIR=$RPM_BUILD_ROOT
 done
+
+mkdir -p %buildroot%_datadir/%name
+touch %buildroot%rsv_conf_backup
 
 
 %clean
@@ -124,34 +125,24 @@ rm -rf $RPM_BUILD_ROOT
 %make_rsv_user_group
 
 
+# 3.7.20-2 and up use HTCondor-CE as the default gateway, but we don't want to
+# change it for users upgrading from old versions so backup and restore
+# rsv.conf when upgrading from an old version.
+
+# The backup file has a fixed name because it needs to be the same in both the
+# pre scriptlet and the triggerun scriptlet
 %pre core
 %make_rsv_user_group
 
-# For 3.2 only:
-
-# 3.7.20-2 and up use HTCondor-CE as the default gateway, but we don't
-# want to change it for users upgrading from old versions so do some
-# hackery.
-
-# The backup file needs to be the same in both the pre scriptlet and
-# the triggerun scriptlets so I can't use mktemp or similar
-
-# (still part of %%pre core)
 if [ $1 -gt 1 ]; then # upgrading
-    rm -f  %backup_file  ||  :
-    if [ -e %rsv_conf ]; then
-        cp -fp  %rsv_conf  %backup_file  ||  :
-    fi
+    %__rm -f  %rsv_conf_backup  ||  :
+    %__cp -fp  %rsv_conf  %rsv_conf_backup  ||  :
 fi
 
 %triggerun core -- %name-core < 3.7.20-2
 if [ $1 -gt 0 ]; then # upgrading, not uninstalling
-    if [ -e %backup_file ]; then
-        mv -f  %backup_file  %rsv_conf  ||  :
-    fi
+    %__mv -f  %rsv_conf_backup  %rsv_conf  ||  :
 fi
-
-# End 3.2 only section
 
 
 %pre metrics
@@ -219,6 +210,8 @@ fi
 
 %{_mandir}/man1/rsv-control.1*
 
+%ghost %rsv_conf_backup
+
 
 %files metrics
 %defattr(-,root,root,-)
@@ -244,7 +237,7 @@ fi
 
 
 %changelog
-* Thu Nov 13 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 3.7.20-3
+* Thu Nov 13 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 3.7.20-4
 - Set default gateway type to HTCondor-CE for fresh installs (SOFTWARE-1653)
 
 * Mon Oct 27 2014 Carl Edquist <edquist@cs.wisc.edu> - 3.7.20-1
