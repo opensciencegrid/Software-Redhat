@@ -6,7 +6,7 @@
 %define jglobus_version 2.0.6
 
 %define _alphatag pre4
-%define _release 4
+%define _release 5
 
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
@@ -96,6 +96,9 @@ Source12: openws-1.2.2.jar
 Source13: jargs-1.0.jar
 Source14: velocity-1.5.jar
 
+# use correct jspc compiler to match tomcat version
+Patch0: jspc-compiler-tomcat5.patch
+
 %description
 %{summary}
 
@@ -135,6 +138,10 @@ Summary: Tomcat service for GUMS
 %prep
 
 %setup -n %{name}-%{version}.%{_alphatag}
+
+%if 0%{?rhel} < 6
+%patch0 -p1
+%endif
 
 %build
 
@@ -377,6 +384,9 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+* Fri Nov 14 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.4.1-0.5.pre4
+- Patch to use correct version of jspc-compiler-tomcat artifact (SOFTWARE-1654)
+
 * Wed Nov 12 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.4.1-0.4.pre4
 - Update to GUMS 1.4.1.pre4 (SOFTWARE-1654)
   - Updated Ban Users UI (SOFTWARE-1655)
