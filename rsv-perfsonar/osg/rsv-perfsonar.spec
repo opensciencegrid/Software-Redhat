@@ -1,5 +1,5 @@
 Name:      rsv-perfsonar
-Version:   0.0.4
+Version:   0.0.5
 Release:   1%{?dist}
 Summary:   RSV Metrics to monitor pefsonar
 Packager:  OSG-Software
@@ -66,6 +66,9 @@ ln -s /var/www/html/rsv /usr/share/rsv/www
 
 
 %changelog
+* Fri Nov 14 2014  <efajardo@physics.ucsd.edu> - 0.0.5-1
+- Now uploading of packet-loss-rate as a fraction not float
+
 * Tue Nov 4 2014  <efajardo@physics.ucsd.edu> - 0.0.4-1
 - Added sleep time for the probe.
 - Added the start knob to fix some issues.
