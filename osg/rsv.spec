@@ -1,7 +1,7 @@
 Name:      rsv
 Summary:   RSV Meta Package
 Version:   3.7.20
-Release:   4%{?dist}
+Release:   5%{?dist}
 License:   Apache 2.0
 Group:     Applications/Monitoring
 URL:       https://twiki.grid.iu.edu/bin/view/MonitoringInformation/RSV
@@ -28,7 +28,7 @@ Requires: voms-clients
 %endif
 
 %define rsv_conf %_sysconfdir/rsv/rsv.conf
-%define rsv_conf_backup %_datadir/%name/.rsv.conf-backup
+%define rsv_conf_backup /var/lib/misc/rsv.conf-backup
 
 %description
 %{summary}
@@ -105,7 +105,7 @@ for subpackage in rsv-core rsv-consumers rsv-metrics; do
     make -C $subpackage install DESTDIR=$RPM_BUILD_ROOT
 done
 
-mkdir -p %buildroot%_datadir/%name
+mkdir -p $(dirname %buildroot%rsv_conf_backup)
 touch %buildroot%rsv_conf_backup
 
 
@@ -237,7 +237,7 @@ fi
 
 
 %changelog
-* Thu Nov 13 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 3.7.20-4
+* Thu Nov 13 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 3.7.20-5
 - Set default gateway type to HTCondor-CE for fresh installs (SOFTWARE-1653)
 
 * Mon Oct 27 2014 Carl Edquist <edquist@cs.wisc.edu> - 3.7.20-1
