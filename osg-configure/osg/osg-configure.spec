@@ -1,7 +1,7 @@
 Summary: Package for configure-osg and associated scripts
 Name: osg-configure
 Version: 1.0.62
-Release: 2%{?dist}
+Release: 3%{?dist}
 Source0: %{name}-%{version}.tar.gz
 Patch0: s1653-gateway-type.patch
 License: Apache 2.0
@@ -20,7 +20,7 @@ Provides: configure-osg
 
 
 %define gateway_ini %_sysconfdir/osg/config.d/10-gateway.ini
-%define gateway_ini_backup %_datadir/%name/.10-gateway.ini-backup
+%define gateway_ini_backup /var/lib/misc/10-gateway.ini-backup
 
 
 %description
@@ -209,7 +209,7 @@ touch $RPM_BUILD_ROOT/var/lib/osg/globus-firewall
 mkdir -p $RPM_BUILD_ROOT/etc/profile.d/
 touch $RPM_BUILD_ROOT/etc/profile.d/osg.sh
 touch $RPM_BUILD_ROOT/etc/profile.d/osg.csh
-mkdir -p $RPM_BUILD_ROOT/%_datadir/%name
+mkdir -p $(dirname $RPM_BUILD_ROOT/%gateway_ini_backup)
 touch $RPM_BUILD_ROOT/%gateway_ini_backup
 
 %clean
@@ -323,7 +323,7 @@ fi
 
 
 %changelog
-* Thu Nov 13 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0.62-2
+* Thu Nov 13 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0.62-3
 - Tweaks to default gateway upgrade hack (SOFTWARE-1653)
 
 * Mon Nov 10 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0.62-1
