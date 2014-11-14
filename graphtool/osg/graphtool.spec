@@ -5,7 +5,7 @@
 
 Name:                   graphtool
 Version:                0.6.6
-Release:                20%{?dist}
+Release:                21%{?dist}
 Summary:                CMS Common Graphing Package.
 
 Group:                  Development/Libraries
