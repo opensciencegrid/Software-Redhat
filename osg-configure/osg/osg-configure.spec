@@ -1,10 +1,9 @@
 Summary: Package for configure-osg and associated scripts
 Name: osg-configure
 Version: 1.0.62
-Release: 1%{?dist}
+Release: 2%{?dist}
 Source0: %{name}-%{version}.tar.gz
 Patch0: s1653-gateway-type.patch
-## ^ This patch is for 3.2 only!
 License: Apache 2.0
 Group: Grid
 Prefix: %{_prefix}
@@ -18,6 +17,11 @@ Provides: configure-osg
 %{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
 %{!?python_sitearch: %define python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
 %endif
+
+
+%define gateway_ini %_sysconfdir/osg/config.d/10-gateway.ini
+%define gateway_ini_backup %_datadir/%name/.10-gateway.ini-backup
+
 
 %description
 %{summary}
@@ -185,14 +189,12 @@ It may safely be removed once the upgrade is finished.
 
 %prep
 %setup
-# 3.2 only patch
 %patch0 -p1
 
 %build
 %{__python} setup.py build
 
 %install
-# 3.1 should use "make install-3.1 instead"
 make install DESTDIR=$RPM_BUILD_ROOT
 
 mkdir -p $RPM_BUILD_ROOT/etc/condor-ce/config.d
@@ -207,6 +209,8 @@ touch $RPM_BUILD_ROOT/var/lib/osg/globus-firewall
 mkdir -p $RPM_BUILD_ROOT/etc/profile.d/
 touch $RPM_BUILD_ROOT/etc/profile.d/osg.sh
 touch $RPM_BUILD_ROOT/etc/profile.d/osg.csh
+mkdir -p $RPM_BUILD_ROOT/%_datadir/%name
+touch $RPM_BUILD_ROOT/%gateway_ini_backup
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -293,41 +297,35 @@ rm -rf $RPM_BUILD_ROOT
 %files gateway
 %defattr(-,root,root)
 %config(noreplace) %{_sysconfdir}/osg/config.d/10-gateway.ini
+%ghost %gateway_ini_backup
 
 %files cemon
 # This section intentionally left blank
 
 
-# For 3.2 only:
+# 1.0.62-1 and up use HTCondor-CE as the default gateway, but we don't want to
+# change it for users upgrading from old versions so backup and restore
+# 10-gateway.ini when upgrading from an old version.
 
-# 1.0.62-1 and up use HTCondor-CE as the default gateway, but we don't
-# want to change it for users upgrading from old versions so do some
-# hackery.
-
-# The backup file needs to be the same in both the pre scriptlet and
-# the triggerun scriptlets so I can't use mktemp or similar
-%define backup_file %{_tmppath}/._%name-10-gateway.ini-backup
-%define gateway_ini %{_sysconfdir}/osg/config.d/10-gateway.ini
+# The backup file has a fixed name because it needs to be the same in both the
+# pre scriptlet and the triggerun scriptlet.
 %pre gateway
 if [ $1 -gt 1 ]; then # upgrading
-    rm -f  %backup_file  ||  :
-    if [ -e %gateway_ini ]; then
-        cp -fp  %gateway_ini  %backup_file  ||  :
-    fi
+    %__rm -f  %gateway_ini_backup  ||  :
+    %__cp -fp  %gateway_ini  %gateway_ini_backup  ||  :
 fi
 
 %triggerun gateway -- %name-gateway < 1.0.62-1
 if [ $1 -gt 0 ]; then # upgrading, not uninstalling
-    if [ -e %backup_file ]; then
-        mv -f  %backup_file  %gateway_ini  ||  :
-    fi
+    %__mv -f  %gateway_ini_backup  %gateway_ini  ||  :
 fi
-
-# End 3.2 only section
 
 
 
 %changelog
+* Thu Nov 13 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0.62-2
+- Tweaks to default gateway upgrade hack (SOFTWARE-1653)
+
 * Mon Nov 10 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0.62-1
 - Change default gateway type to HTCondor-CE (SOFTWARE-1653)
 - Remove upstreamed patches
