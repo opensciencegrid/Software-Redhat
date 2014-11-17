@@ -1,7 +1,7 @@
 Summary: Package for configure-osg and associated scripts
 Name: osg-configure
-Version: 1.0.62
-Release: 3%{?dist}
+Version: 1.0.63
+Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
 Patch0: s1653-gateway-type.patch
 License: Apache 2.0
@@ -323,6 +323,10 @@ fi
 
 
 %changelog
+* Mon Nov 17 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0.63-1
+- Prepend "TARGET." to terms in generated requirements expression so we can
+  match against it (SOFTWARE-1688)
+
 * Thu Nov 13 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0.62-3
 - Tweaks to default gateway upgrade hack (SOFTWARE-1653)
 
