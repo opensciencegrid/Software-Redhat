@@ -111,7 +111,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.3
+%define condor_base_release 1.4
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -211,7 +211,6 @@ Patch3: 4687-claim_8.0_startds.patch
 
 #% if 0%osg
 Patch8: osg_sysconfig_in_init_script.patch
-Patch9: sw1636-cream_gahp-dlopen.patch
 #% endif
 
 # HCC patches
@@ -557,7 +556,7 @@ Group: Applications/System
 Requires: %name = %version-%release
 Requires: %name-classads = %{version}-%{release}
 # The cream gahp dlopens this
-Requires: %{_libdir}/libglobus_thread_pthread.so.0
+Requires: %{_libdir}/libglobus_thread_pthread.so
 
 %description cream-gahp
 The condor-cream-gahp enables CREAM interoperability for HTCondor.
@@ -663,7 +662,6 @@ exit 0
 %patch3 -p1
 
 %patch8 -p1
-%patch9 -p1
 
 %if 0%{?hcc}
 %patch14 -p1
@@ -1751,6 +1749,10 @@ fi
 %endif
 
 %changelog
+* Mon Nov 17 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 8.2.3-1.4
+- Revert SOFTWARE-1636 patch and add globus_thread_pthread library as a
+  dependency to the cream-gahp subpackage (SOFTWARE-1689)
+
 * Fri Oct 31 2014 Carl Edquist <edquist@cs.wisc.edu> - 8.2.3-1.3
 - Patch to allow 8.2.3 schedds to claim 8.0 startds (SOFTWARE-1661)
 
