@@ -1,18 +1,7 @@
-GENERAL INFORMATION
+CREATING THE UPSTREAM SOURCE RPM
 
-This HTCondor is used built by the spec file adapted from fedora's system:
-http://pkgs.fedoraproject.org/gitweb/?p=condor.git
-
-This was repackaged from Fedora because fedora split out the condor_procd, which
-is required by the wn/client/somewhere...
-
-Further, since it is from Fedora, we can follow fedora's packaging and updates.
-
-
-CREATING THE UPSTREAM SOURCE TARBALL
-
-We create the upstream source tarball for a HTCondor release directly from the
-CHTC git repository.  The following process was tested with HTCondor 7.6.5:
+We create the upstream source rpm for a HTCondor release directly from the
+CHTC git repository.
 
 1. Create and change to a temporary working directory
 
@@ -20,22 +9,21 @@ CHTC git repository.  The following process was tested with HTCondor 7.6.5:
 
    git clone http://condor-git.cs.wisc.edu/repos/condor.git
 
+   Or, if you have access to UW AFS:
+
+   git clone /p/condor/repository/CONDOR_SRC.git condor
+
 3. Change into the resulting "condor" directory
 
-4. Tell git to create a source tarball for a tagged release:
+4. Create a source rpm for a tagged release:
 
-   git archive --prefix=condor-[VERSION]/ [GIT-TAG] | gzip -9 > [PATH]/condor-[VERSION].tar.gz
+   ./build/packaging/srpm/makesrpm.sh --condor-release VERSION
 
-   Where:
+   Where VERSION is the dotted form of the HTCondor release; e.g., "8.2.4"
 
-   - [VERSION] is the dotted form of the HTCondor release; e.g., "7.6.5"
-   - [GIT-TAG] is the git tag for the release; e.g., "V7_6_5"
-   - [PATH] is the path to where you want to write the source tarball
+   You should find the new src.rpm in the current directory, named something
+   like condor-8.2.4-1.el6.src.rpm
 
-5. Verify that the tarball was created correctly; for example, each path in the
-   tarball should start with something like "condor-7.6.5/", and the whole
-   tarball is likely to be about the same size as prior ones
+5. Upload the source tarball to the correct upstream path, e.g.:
 
-6. Upload the source tarball to the correct upstream path, e.g.:
-
-   /p/vdt/public/html/upstream/condor/7.6.5/condor-7.6.5.tar.gz
+   /p/vdt/public/html/upstream/condor/8.2.4/condor-8.2.4-1.el6.src.rpm
