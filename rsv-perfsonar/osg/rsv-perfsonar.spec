@@ -1,5 +1,5 @@
 Name:      rsv-perfsonar
-Version:   0.0.5
+Version:   0.0.6
 Release:   1%{?dist}
 Summary:   RSV Metrics to monitor pefsonar
 Packager:  OSG-Software
@@ -66,6 +66,9 @@ ln -s /var/www/html/rsv /usr/share/rsv/www
 
 
 %changelog
+* Mon Nov 17 2014 <efajardo@physics.ucsd.edu> - 0.0.6-1
+- Added the option for a super mesh as a json url that contains other meshes
+
 * Fri Nov 14 2014  <efajardo@physics.ucsd.edu> - 0.0.5-1
 - Now uploading of packet-loss-rate as a fraction not float
 
