@@ -1,5 +1,5 @@
 Name:      rsv-perfsonar
-Version:   0.0.6
+Version:   0.0.7
 Release:   1%{?dist}
 Summary:   RSV Metrics to monitor pefsonar
 Packager:  OSG-Software
@@ -66,6 +66,9 @@ ln -s /var/www/html/rsv /usr/share/rsv/www
 
 
 %changelog
+* Tue Nov 18 2014 <efajardo@physics.ucsd.edu> - 0.0.7-1
+- Increased the efficiency on posting and reading data
+
 * Mon Nov 17 2014 <efajardo@physics.ucsd.edu> - 0.0.6-1
 - Added the option for a super mesh as a json url that contains other meshes
 
