@@ -6,7 +6,7 @@
 %define jglobus_version 2.0.6
 
 %define _alphatag pre4
-%define _release 5
+%define _release 6
 
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
@@ -97,7 +97,10 @@ Source13: jargs-1.0.jar
 Source14: velocity-1.5.jar
 
 # use correct jspc compiler to match tomcat version
-Patch0: jspc-compiler-tomcat5.patch
+#Patch0: jspc-compiler-tomcat5.patch
+
+# Can't get el5 build working with jsp precompile
+Patch0: undo-jsp-precompile.patch
 
 %description
 %{summary}
@@ -378,12 +381,19 @@ fi
 %post service
 %{_sbindir}/update-alternatives --install %{_javadir}/javamail.jar javamail %{_noarchlib}/%{dirname}/mail-1.4.1.jar 5000
 
+# clear out cached jsp pages on install/update
+rm -f %{_usr}/share/%{tomcat}/work/Catalina/localhost/gums/org/apache/jsp/*
+
 %postun service
 if [ $1 -eq 0 ]; then
     %{_sbindir}/update-alternatives --remove javamail %{_noarchlib}/%{dirname}/mail-1.4.1.jar
 fi
 
 %changelog
+* Mon Nov 17 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.4.1-0.6.pre4
+- Buildfix: don't pre-compile jsp pages for el5 (SOFTWARE-1654)
+- Remove cached jsp pages on install/upgrade
+
 * Fri Nov 14 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.4.1-0.5.pre4
 - Patch to use correct version of jspc-compiler-tomcat artifact (SOFTWARE-1654)
 

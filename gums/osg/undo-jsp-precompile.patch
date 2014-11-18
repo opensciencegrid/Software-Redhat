@@ -1,0 +1,574 @@
+diff --git a/gums-service/pom.xml b/gums-service/pom.xml
+index 5df73cb..b74ea00 100644
+--- a/gums-service/pom.xml
++++ b/gums-service/pom.xml
+@@ -1,174 +1,221 @@
+-<?xml version="1.0" encoding="utf-8"?>
+-<project xmlns="http://maven.apache.org/POM/4.0.0"
+-xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+-xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+-
+-  <modelVersion>4.0.0</modelVersion>
+-  <groupId>gov.bnl.racf.gums</groupId>
+-  <artifactId>gums-service</artifactId>
+-  <packaging>war</packaging>
+-  <name>gums-service</name>
+-  <version>1.4.1.pre4</version>
+-  <description>GUMS Service provides web services used by the
+-  client tool and a web interface for administering
+-  GUMS</description>
++<?xml version="1.0" encoding="UTF-8"?>
++<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
++	<modelVersion>4.0.0</modelVersion>
++	<groupId>gov.bnl.racf.gums</groupId>
++	<artifactId>gums-service</artifactId>
++	<packaging>war</packaging>
++	<name>gums-service</name>
++	<version>1.4.1.pre4</version>
++	<description>GUMS Service provides web services used by the client tool and a 
++		web interface for administering GUMS</description>
++    
+   <distributionManagement>
+-    <repository>
+-      <id>internal</id>
+-      <url>
+-      http://dev.racf.bnl.gov/archiva/repository/internal/</url>
+-    </repository>
+-    <snapshotRepository>
+-      <id>snapshots</id>
+-      <name>Archiva Managed Snapshot Repository</name>
+-      <url>
+-      http://dev.racf.bnl.gov/archiva/repository/snapshots/</url>
+-      <uniqueVersion>false</uniqueVersion>
+-    </snapshotRepository>
+-  </distributionManagement>
+-  <repositories></repositories>
+-  <pluginRepositories>
+-    <pluginRepository>
+-      <id>codehaus snapshot repository</id>
+-      <url>http://snapshots.repository.codehaus.org/</url>
+-      <releases>
+-        <enabled>true</enabled>
+-      </releases>
+-    </pluginRepository>
+-  </pluginRepositories>
+-  <scm>
+-    <connection>
+-    scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/tags/gums-1.4.1.pre4/gums-service</connection>
+-    <developerConnection>
+-    scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/tags/gums-1.4.1.pre4/gums-service</developerConnection>
+-    <url>
+-    https://svn.usatlas.bnl.gov/svn/privilege/tags/gums-1.4.1.pre4/gums-service</url>
+-  </scm>
+-  <build>
+-    <finalName>gums</finalName>
+-    <plugins>
+-      <plugin>
+-        <groupId>org.codehaus.mojo.jspc</groupId>
+-        <artifactId>jspc-maven-plugin</artifactId>
+-        <executions>
+-          <execution>
+-            <goals>
+-              <goal>compile</goal>
+-            </goals>
+-          </execution>
+-        </executions>
+-        <configuration>
+-          <inputwebxml>
+-          ${pom.basedir}/src/main/webapp/WEB-INF/web.xml</inputwebxml>
+-          <source>1.5</source>
+-          <target>1.5</target>
+-          <sources>
+-            <directory>${pom.basedir}/src/main/webapp</directory>
+-            <includes>
+-              <include>**/*.jsp</include>
+-            </includes>
+-          </sources>
+-        </configuration>
+-        <dependencies>
+-          <dependency>
+-            <groupId>org.codehaus.mojo.jspc</groupId>
+-            <artifactId>jspc-compiler-tomcat6</artifactId>
+-            <version>2.0-alpha-3</version>
+-          </dependency>
+-        </dependencies>
+-      </plugin>
+-      <plugin>
+-        <groupId>org.apache.maven.plugins</groupId>
+-        <artifactId>maven-compiler-plugin</artifactId>
+-        <configuration>
+-          <compilerVersion>1.6</compilerVersion>
+-          <source>1.5</source>
+-          <target>1.5</target>
+-          <debug>false</debug>
+-          <showDeprecation>true</showDeprecation>
+-          <showWarnings>true</showWarnings>
+-          <optimize>false</optimize>
+-          <verbose>false</verbose>
+-          <includes>
+-            <include>**/*.*</include>
+-          </includes>
+-          <excludes>
+-            <exclude>**/.svn</exclude>
+-          </excludes>
+-        </configuration>
+-      </plugin>
+-      <plugin>
+-        <groupId>org.apache.maven.plugins</groupId>
+-        <artifactId>maven-surefire-plugin</artifactId>
+-        <configuration>
+-          <excludes>
+-            <exclude>**/.svn</exclude>
+-          </excludes>
+-        </configuration>
+-      </plugin>
+-      <plugin>
+-        <groupId>org.apache.maven.plugins</groupId>
+-        <artifactId>maven-war-plugin</artifactId>
+-        <configuration>
+-          <webResources>
+-            <resource>
+-              <directory>src/main/config</directory>
+-              <targetPath>WEB-INF/config</targetPath>
+-              <filtering>false</filtering>
+-            </resource>
+-            <resource>
+-              <directory>target/jsp-source</directory>
+-              <targetPath>WEB-INF/classes</targetPath>
+-            </resource>
+-            <resource>
+-              <directory>target/classes</directory>
+-              <targetPath>WEB-INF/classes</targetPath>
+-              <filtering>true</filtering>
+-              <includes>
+-                <include>*.properties</include>
+-              </includes>
+-            </resource>
+-            <resource>
+-              <directory>src/main/resources</directory>
+-              <targetPath>WEB-INF</targetPath>
+-              <filtering>false</filtering>
+-            </resource>
+-          </webResources>
+-          <warSourceExcludes>*.jsp,*.jspf</warSourceExcludes>
+-          <webXml>target/jspweb.xml</webXml>
+-        </configuration>
+-      </plugin>
+-      <plugin>
+-        <groupId>org.codehaus.cargo</groupId>
+-        <artifactId>cargo-maven2-plugin</artifactId>
+-        <version>0.3</version>
+-        <configuration>
+-          <container>
+-            <containerId>tomcat5x</containerId>
+-            <type>remote</type>
+-          </container>
+-          <configuration>
+-            <type>runtime</type>
+-            <properties>
+-              <cargo.tomcat.manager.url>
+-              http://localhost:8080/manager</cargo.tomcat.manager.url>
+-              <cargo.remote.username>
+-              manager</cargo.remote.username>
+-              <cargo.remote.password>gums</cargo.remote.password>
+-            </properties>
+-          </configuration>
+-          <deployer>
+-            <deployables>
+-              <deployable>
+-                <properties>
+-                  <context>gums</context>
+-                </properties>
+-              </deployable>
+-            </deployables>
+-          </deployer>
+-        </configuration>
+-      </plugin>
+-      <!--
++      <repository>
++        <id>internal</id>
++        <url>http://dev.racf.bnl.gov/archiva/repository/internal/</url>
++      </repository>
++
++      <snapshotRepository>
++         <id>snapshots</id>
++         <name>Archiva Managed Snapshot Repository</name>
++         <url>http://dev.racf.bnl.gov/archiva/repository/snapshots/</url>
++         <uniqueVersion>false</uniqueVersion>
++      </snapshotRepository>
++
++   </distributionManagement>
++
++  <repositories>
++
++  </repositories>
++ 
++    <pluginRepositories>
++		<pluginRepository>
++          <id>codehaus snapshot repository</id>
++			<url>http://snapshots.repository.codehaus.org/</url>
++			<releases>
++				<enabled>true</enabled>
++			</releases>
++		</pluginRepository>
++    </pluginRepositories>
++
++
++	<scm>
++		<connection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/tags/gums-1.4.1.pre4/gums-service</connection>
++		<developerConnection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/tags/gums-1.4.1.pre4/gums-service</developerConnection>
++		   <url>https://svn.usatlas.bnl.gov/svn/privilege/tags/gums-1.4.1.pre4/gums-service</url>
++	</scm>
++
++  	<build>
++  	    <finalName>gums</finalName>	
++		<plugins>
++	 		<!-- 
++	 		<plugin>
++				<artifactId>maven-antrun-plugin</artifactId>
++				<version>1.3</version> 
++				<executions>
++					<execution>
++						<id>1</id>
++						<phase>generate-resources</phase>
++						<configuration>
++							<tasks>
++								<delete includeemptydirs="true">
++									<fileset dir="src/main/resources" includes="log4j.properties.template" />
++									<fileset dir="src/main/resources" includes="c3p0.properties.template" />
++									<fileset dir="src/main/resources" includes="gums.*" />
++									<fileset dir="src/main/resources" includes="*README*" />
++									<fileset dir="src/main/resources/sql" includes="*" />
++									<fileset dir="src/main/resources/scripts" includes="*" />
++								</delete>
++							
++				                <unzip dest="src/main/resources">
++				                    <fileset dir="${settings.localRepository}/gov/bnl/racf/gums/gums-core">
++        								<include name="**/gums-core-${version}.jar" />
++								    </fileset>
++									<patternset>
++										<include name="gums.config.template" />
++										<include name="gums.config.devel" />
++										<include name="gums.config.schema" />
++										<include name="gums.config.transform" />
++										<include name="c3p0.properties.template" />
++										<include name="log4j.properties.template" />
++										<include name="sql/**" />
++										<include name="scripts/**" />
++									</patternset>
++				                </unzip>
++				                
++				                <copy file="src/main/resources/gums.config.devel" tofile="src/main/config/gums.config" overwrite="yes" />
++				                <copy file="src/main/resources/log4j.properties.template" tofile="src/main/classes/log4j.properties" overwrite="yes" />
++				                <copy file="src/main/resources/c3p0.properties.template" tofile="src/main/classes/c3p0.properties" overwrite="yes" />
++
++   				                <chmod file="src/main/resources/scripts/gums-add-mysql-admin" perm="ug+x" />
++				                <chmod file="src/main/resources/scripts/gums-create-config" perm="ug+x" />
++				                <chmod file="src/main/resources/scripts/gums-setup-mysql-database" perm="ug+x" />
++								<chmod file="src/main/resources/scripts/addMySQLAdmin" perm="ug+x" />
++								<chmod file="src/main/resources/scripts/setupMySQLDatabase" perm="ug+x" />
++								<chmod file="src/main/config/gums.config" perm="640" />
++							</tasks>
++						</configuration>
++						<goals>
++							<goal>run</goal>
++						</goals>
++					</execution>
++				</executions>
++			</plugin>
++			-->
++			 	
++			<plugin>
++				<groupId>org.apache.maven.plugins</groupId>
++				<artifactId>maven-compiler-plugin</artifactId>
++				<configuration>
++					<compilerVersion>1.6</compilerVersion>
++					<source>1.5</source>
++					<target>1.5</target>
++					<debug>false</debug>
++					<showDeprecation>true</showDeprecation>
++					<showWarnings>true</showWarnings>
++					<optimize>false</optimize>
++					<verbose>false</verbose>
++					<includes>
++						<include>**/*.*</include>
++					</includes>
++					<excludes>                            
++						<exclude>**/.svn</exclude>
++					</excludes>
++				</configuration>
++			</plugin>				
++			<plugin>
++		        <groupId>org.apache.maven.plugins</groupId>
++		        <artifactId>maven-surefire-plugin</artifactId>
++		        <configuration>
++			      <excludes>
++		            <exclude>**/.svn</exclude>
++		          </excludes>
++		        </configuration>
++        	</plugin>
++        	
++        	<!--  
++        	<plugin>
++		        <groupId>org.apache.maven.plugins</groupId>
++		        <artifactId>maven-war-plugin</artifactId>
++		        <configuration>
++			       <webResources>
++			         <resource>
++			           <directory>src/main/config</directory>
++			           <targetPath>WEB-INF/config</targetPath>
++			           <filtering>false</filtering>
++			         </resource>
++			         </webResources>
++			         <resource>
++			           <directory>src/main/resources</directory>
++			           <targetPath>WEB-INF/classes</targetPath>
++			           <filtering>true</filtering>
++			           <includes>
++			              <include>*.properties</include>
++			              <include>*.schema</include>
++			              <include>*.template</include>
++			           </includes>
++			         </resource>
++        		  </configuration>
++        	</plugin>
++        	
++        	-->
++        	<plugin>
++		        <groupId>org.apache.maven.plugins</groupId>
++		        <artifactId>maven-war-plugin</artifactId>
++		        <configuration>
++			       <webResources>
++			         <resource>
++			           <directory>src/main/config</directory>
++			           <targetPath>WEB-INF/config</targetPath>
++			           <filtering>false</filtering>
++			         </resource>
++			         <resource>
++			           <directory>target/classes</directory>
++			           <targetPath>WEB-INF/classes</targetPath>
++			           <filtering>true</filtering>
++			           <includes>
++			              <include>*.properties</include>
++			           </includes>
++			         </resource>
++			         <resource>
++			           <directory>src/main/resources</directory>
++			           <targetPath>WEB-INF</targetPath>
++			           <filtering>false</filtering>
++			         </resource>
++			       </webResources>
++			    </configuration>
++        	</plugin>
++
++        	
++            <plugin>
++               <groupId>org.codehaus.cargo</groupId>
++               <artifactId>cargo-maven2-plugin</artifactId>
++               <version>0.3</version>
++               <configuration>
++                   <container>
++                        <containerId>tomcat5x</containerId>
++                        <type>remote</type>
++                   </container>
++                   <configuration>
++                        <type>runtime</type>
++                        <properties>
++                            <cargo.tomcat.manager.url>http://localhost:8080/manager</cargo.tomcat.manager.url>
++                            <cargo.remote.username>manager</cargo.remote.username>
++                            <cargo.remote.password>gums</cargo.remote.password>
++                        </properties>
++                    </configuration>
++                    <deployer>
++                            <deployables>
++                                    <deployable>
++                                            <properties>
++                                                    <context>gums</context>
++                                            </properties>
++                                    </deployable>
++                        </deployables>
++                    </deployer>
++                </configuration>
++           </plugin>
++<!--
+            <plugin>
+             <artifactId>maven-release-plugin</artifactId>
+             <version>2.1</version>
+@@ -179,70 +226,73 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
+             </configuration>
+             </plugin>
+ -->
+-    </plugins>
+-    <!-- 
++        </plugins>
++        <!-- 
+        <resources>
+-              <resource>
+-                <directory>src/main/java</directory>
+-                <includes>
+-                  <include>**/*.wsdd</include>
+-                  <include>**/log4j.properties</include>
+-                </includes>
+-              </resource>
+-              <resource>
+-                <directory>src/main/resources</directory>
+-                <includes>
+-                  <include>**/log4j.properties</include>
+-                </includes>
+-              </resource>
+-            </resources>
+-            -->
+-  </build>
+-  <dependencies>
+-    <dependency>
+-      <groupId>gov.bnl.racf.gums</groupId>
+-      <artifactId>gums-core</artifactId>
+-      <version>1.4.1.pre4</version>
+-    </dependency>
+-    <dependency>
+-      <groupId>log4j</groupId>
+-      <artifactId>log4j</artifactId>
+-      <version>1.2.12</version>
+-    </dependency>
+-    <dependency>
+-      <groupId>org.slf4j</groupId>
+-      <artifactId>slf4j-simple</artifactId>
+-      <version>1.5.5</version>
+-    </dependency>
+-    <dependency>
+-      <groupId>org.opensciencegrid</groupId>
+-      <artifactId>privilege</artifactId>
+-      <version>1.0.1.3</version>
+-    </dependency>
+-    <dependency>
+-      <groupId>org.opensciencegrid</groupId>
+-      <artifactId>privilege-xacml</artifactId>
+-      <version>2.6.4</version>
+-    </dependency>
+-    <dependency>
+-      <groupId>org.opensaml</groupId>
+-      <artifactId>opensaml</artifactId>
+-      <version>2.4.1</version>
+-    </dependency>
+-    <dependency>
+-      <groupId>org.opensaml</groupId>
+-      <artifactId>xmltooling</artifactId>
+-      <version>1.3.1</version>
+-    </dependency>
+-    <dependency>
+-      <groupId>javax.activation</groupId>
+-      <artifactId>activation</artifactId>
+-      <version>1.1</version>
+-    </dependency>
+-    <dependency>
+-      <groupId>javax.mail</groupId>
+-      <artifactId>mail</artifactId>
+-      <version>1.4.1</version>
+-    </dependency>
+-  </dependencies>
++	      <resource>
++	        <directory>src/main/java</directory>
++	        <includes>
++	          <include>**/*.wsdd</include>
++	          <include>**/log4j.properties</include>
++	        </includes>
++	      </resource>
++	      <resource>
++	        <directory>src/main/resources</directory>
++	        <includes>
++	          <include>**/log4j.properties</include>
++	        </includes>
++	      </resource>
++	    </resources>
++	    -->
++	     
++	</build>
++  
++ 	<dependencies> 
++        <dependency>
++            <groupId>gov.bnl.racf.gums</groupId>
++            <artifactId>gums-core</artifactId>
++            <version>1.4.1.pre4</version>
++        </dependency>
++		<dependency>
++            <groupId>log4j</groupId>
++            <artifactId>log4j</artifactId>
++            <version>1.2.12</version>
++        </dependency>
++	<dependency>
++		<groupId>org.slf4j</groupId>
++		<artifactId>slf4j-simple</artifactId>
++		<version>1.5.5</version>
++	</dependency>
++        <dependency>
++            <groupId>org.opensciencegrid</groupId>
++            <artifactId>privilege</artifactId>
++            <version>1.0.1.3</version>
++        </dependency>
++        <dependency>
++            <groupId>org.opensciencegrid</groupId>
++            <artifactId>privilege-xacml</artifactId>
++            <version>2.6.4</version>
++        </dependency>
++        <dependency>
++            <groupId>org.opensaml</groupId>
++            <artifactId>opensaml</artifactId>
++            <version>2.4.1</version>
++        </dependency>
++	<dependency>
++		<groupId>org.opensaml</groupId>
++		<artifactId>xmltooling</artifactId>
++		<version>1.3.1</version>
++	</dependency>
++    	<dependency>
++		<groupId>javax.activation</groupId>
++		<artifactId>activation</artifactId>
++		<version>1.1</version>
++	</dependency>	
++    	<dependency>
++		<groupId>javax.mail</groupId>
++		<artifactId>mail</artifactId>
++		<version>1.4.1</version>
++	</dependency>	
++ 	</dependencies>  
++  
+ </project>
+diff --git a/gums-service/src/main/webapp/autherror.jsp b/gums-service/src/main/webapp/autherror.jsp
+index 6dd678f..3f4ee13 100644
+--- a/gums-service/src/main/webapp/autherror.jsp
++++ b/gums-service/src/main/webapp/autherror.jsp
+@@ -3,7 +3,6 @@
+ <%@page pageEncoding="UTF-8"%>
+ <%@page import="java.io.PrintWriter"%>
+ <%@page import="gov.bnl.gums.*"%>
+-<jsp:useBean id="gums" scope="application" class="gov.bnl.gums.admin.GUMSAPIImpl" />
+ <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+ <html>
+ <head>
+diff --git a/gums-service/src/main/webapp/error.jsp b/gums-service/src/main/webapp/error.jsp
+index 0ae1de0..5346c32 100644
+--- a/gums-service/src/main/webapp/error.jsp
++++ b/gums-service/src/main/webapp/error.jsp
+@@ -3,7 +3,6 @@
+ <%@page pageEncoding="UTF-8"%>
+ <%@page import="java.io.PrintWriter"%>
+ <%@page import="gov.bnl.gums.*"%>
+-<jsp:useBean id="gums" scope="application" class="gov.bnl.gums.admin.GUMSAPIImpl" />
+ <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+ <html>
+ <head>
+diff --git a/gums-service/src/main/webapp/testMapGridIdentity.jsp b/gums-service/src/main/webapp/testMapGridIdentity.jsp
+index 8abbd0f..e2a1ac3 100644
+--- a/gums-service/src/main/webapp/testMapGridIdentity.jsp
++++ b/gums-service/src/main/webapp/testMapGridIdentity.jsp
+@@ -1,8 +1,8 @@
+ <%@page import="gov.bnl.gums.*"%><jsp:useBean id="gums" scope="application" class="gov.bnl.gums.admin.GUMSAPIImpl" /><% 
+-	AccountInfo account = null;
++	String account = null;
+ 	try {
+ 		account = gums.mapUser("/DC=com/DC=example/OU=Services/CN=example.site.com", "/DC=com/DC=example/OU=People/CN=Example User 12345", null);
+-		if ("test".equals(account.getUser()))
++		if ("test".equals(account))
+ 			out.print("OK");
+ 		else
+ 			out.print("FAIL");
