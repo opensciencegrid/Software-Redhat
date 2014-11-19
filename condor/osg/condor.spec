@@ -1,4 +1,4 @@
-%define tarball_version 8.2.3
+%define tarball_version 8.3.1
 
 # optionally define any of these, here or externally
 # % define fedora   16
@@ -32,7 +32,7 @@
 %if 0%{?rhel} >= 6
 %define cgroups 1
 %endif
-%if 0%{?rhel} >= 7
+%if 0%{?rhel} > 7
 %define systemd 1
 %endif
 
@@ -84,7 +84,14 @@
 %if 0%{?hcc}
 %define blahp 0
 %define cream 0
+%if 0%{?rhel} >= 7
+%define aviary 0
+%else
 %define aviary 1
+%endif
+%if 0%{?rhel} >= 6
+%define std_univ 0
+%endif
 %endif
 
 %define glexec 1
@@ -97,7 +104,7 @@
 %define git_build 0
 # If building with git tarball, Fedora requests us to record the rev.  Use:
 # git log -1 --pretty=format:'%h'
-%define git_rev e3b42ed
+%define git_rev ca97ea2
 
 %if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
 %{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
@@ -111,7 +118,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.2
+%define condor_base_release 1
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -169,7 +176,6 @@ Source4: condor.osg-sysconfig
 Source5: condor_config.local.dedicated.resource
 
 Source6: 10-batch_gahp_blahp.config
-Source7: 00-restart_peaceful.config
 
 %if %bundle_uw_externals
 Source101: blahp-1.16.5.1.tar.gz
@@ -199,20 +205,13 @@ Source122: glibc-2.5-20061008T1257-x86_64-p0.tar.gz
 Source123: zlib-1.2.3.tar.gz
 %endif
 
-# These make it into 8.3.2, and hopefully will in 8.2.4 also
-# https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=4556
-# https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=4590
-Patch1: 4556-udp_invalidations.patch
-Patch2: 4590-improved_tool_output.patch
-
+Patch1: sw1636-cream_gahp-dlopen.patch
 #% if 0%osg
 Patch8: osg_sysconfig_in_init_script.patch
-Patch9: sw1636-cream_gahp-dlopen.patch
 #% endif
 
 # HCC patches
 # See gt3158
-Patch14: 0001-Apply-the-user-s-condor_config-last-rather-than-firs.patch
 Patch15: wso2-axis2.patch
 
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
@@ -552,8 +551,6 @@ Summary: HTCondor's CREAM Gahp
 Group: Applications/System
 Requires: %name = %version-%release
 Requires: %name-classads = %{version}-%{release}
-# The cream gahp dlopens this
-Requires: %{_libdir}/libglobus_thread_pthread.so.0
 
 %description cream-gahp
 The condor-cream-gahp enables CREAM interoperability for HTCondor.
@@ -655,13 +652,9 @@ exit 0
 %endif
 
 %patch1 -p1
-%patch2 -p1
-
 %patch8 -p1
-%patch9 -p1
 
 %if 0%{?hcc}
-%patch14 -p1
 %patch15 -p0
 %endif
 
@@ -1050,10 +1043,6 @@ mv %{buildroot}%{_libexecdir}/condor/campus_factory/share %{buildroot}%{_datadir
 install -p -m 0644 %{SOURCE6} %{buildroot}%{_sysconfdir}/condor/config.d/10-batch_gahp_blahp.config
 %endif
 
-%if 0%{?osg} || 0%{?hcc}
-install -p -m 0644 %{SOURCE7} %{buildroot}%{_sysconfdir}/condor/config.d/00-restart_peaceful.config
-%endif
-
 %if %std_univ
 populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/condor_rt0.o
 populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/libcomp_libgcc.a
@@ -1154,9 +1143,6 @@ rm -rf %{buildroot}
 %if ! %uw_build
 %config(noreplace) %{_sysconfdir}/condor/config.d/10-batch_gahp_blahp.config
 %endif
-%endif
-%if 0%{?osg} || 0%{?hcc}
-%config(noreplace) %{_sysconfdir}/condor/config.d/00-restart_peaceful.config
 %endif
 %_libexecdir/condor/condor_limits_wrapper.sh
 %_libexecdir/condor/condor_rooster
@@ -1274,7 +1260,6 @@ rm -rf %{buildroot}
 %_bindir/condor_tail
 %_bindir/condor_qsub
 %_bindir/condor_pool_job_report
-%_bindir/condor_job_router_tool
 # reconfig_schedd, restart
 # sbin/condor is a link for master_off, off, on, reconfig,
 %_sbindir/condor_advertise
@@ -1746,27 +1731,6 @@ fi
 %endif
 
 %changelog
-* Thu Oct 16 2014 Mátyás Selmeci <matyas@cs.wisc.edu> - 8.2.3-1.2
-- Patch cream_gahp to dlopen versioned globus_thread_pthread library (SOFTWARE-1636)
-
-* Wed Oct 01 2014 Carl Edquist <edquist@cs.wisc.edu> - 8.2.3-1.1
-- Include patches from 8.3.2 for #4556 and #4590
-
-* Wed Aug 27 2014 Carl Edquist <edquist@cs.wisc.edu> - 8.2.2-2.3
-- Include config file for MASTER_NEW_BINARY_RESTART = PEACEFUL (SOFTWARE-850)
-
-* Tue Aug 26 2014 Carl Edquist <edquist@cs.wisc.edu> - 8.2.2-2.2
-- Include peaceful_off patch (SOFTWARE-1307)
-
-* Mon Aug 25 2014 Carl Edquist <edquist@cs.wisc.edu> - 8.2.2-2.1
-- Include condor_gt4540_aws patch for #4540
-
-* Fri Aug 22 2014 Carl Edquist <edquist@cs.wisc.edu> - 8.2.2-2
-- Strict pass-through with fixes from 8.2.2-1.1
-
-* Thu Aug 21 2014 Carl Edquist <edquist@cs.wisc.edu> - 8.2.2-1.1
-- Update to 8.2.2 with build fixes for non-UW builds
-
 * Mon Sep 09 2013  <edquist@cs.wisc.edu> - 8.1.2-0.3
 - Include misc unpackaged files from 8.x.x
 
