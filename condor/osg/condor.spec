@@ -1,4 +1,4 @@
-%define tarball_version 8.2.3
+%define tarball_version 8.2.4
 
 # optionally define any of these, here or externally
 # % define fedora   16
@@ -111,7 +111,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.4
+%define condor_base_release 1.1
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -199,15 +199,11 @@ Source122: glibc-2.5-20061008T1257-x86_64-p0.tar.gz
 Source123: zlib-1.2.3.tar.gz
 %endif
 
-# These make it into 8.3.2, and hopefully will in 8.2.4 also
+# These make it into 8.3.2, the 8.2.x timeline is unclear
 # https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=4556
 # https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=4590
 Patch1: 4556-udp_invalidations.patch
 Patch2: 4590-improved_tool_output.patch
-
-# This is an 8.2.3-specific problem, fixed in 8.2.4
-# https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=4687
-Patch3: 4687-claim_8.0_startds.patch
 
 #% if 0%osg
 Patch8: osg_sysconfig_in_init_script.patch
@@ -659,7 +655,6 @@ exit 0
 
 %patch1 -p1
 %patch2 -p1
-%patch3 -p1
 
 %patch8 -p1
 
@@ -883,7 +878,7 @@ mkdir -p -m1777 %{buildroot}/%{_var}/lock/condor/local
 mkdir -p -m0755 %{buildroot}/%{_var}/lib/condor/spool
 mkdir -p -m1777 %{buildroot}/%{_var}/lib/condor/execute
 
-cat >> %{buildroot}/%_sysconfdir/condor/condor_config.local << EOF
+cat >> %{buildroot}/%_sysconfdir/condor/condor_config << EOF
 CONDOR_DEVELOPERS = NONE
 CONDOR_HOST = \$(FULL_HOSTNAME)
 COLLECTOR_NAME = Personal Condor
@@ -894,9 +889,6 @@ KILL = FALSE
 DAEMON_LIST = COLLECTOR, MASTER, NEGOTIATOR, SCHEDD, STARTD
 NEGOTIATOR_INTERVAL = 20
 EOF
-
-# this gets around a bug whose fix is not yet merged
-echo "TRUST_UID_DOMAIN = TRUE" >> %{buildroot}/%_sysconfdir/condor/condor_config.local
 
 # no master shutdown program for now
 rm -f %{buildroot}/%{_sbindir}/condor_set_shutdown
@@ -1319,7 +1311,6 @@ rm -rf %{buildroot}
 %endif
 %_libexecdir/condor/condor_gpu_discovery
 %_sbindir/condor_vm_vmware
-%config(noreplace) %_sysconfdir/condor/condor_config.local
 %config(noreplace) %_sysconfdir/condor/ganglia.d/00_default_metrics
 %defattr(-,condor,condor,-)
 %dir %_var/lib/condor/
@@ -1734,6 +1725,34 @@ fi
 /sbin/chkconfig --add condor
 /sbin/ldconfig
 
+#Recover any condor_config.local.rpmsave files created by 8.2.4 upgrade
+# If there is a saved condor_config.local, place it into the configuration directory
+if [ -f /etc/condor/condor_config.local.rpmsave ]; then
+    # Configuration directory should already be there
+    if [ ! -d /etc/condor/condor.d ]; then
+        mkdir /etc/condor/condor.d
+    fi
+    # Make sure that we don't overwrite something in the configuration directory
+    if [ ! -f /etc/condor/condor.d/zz-condor_config.local ]; then
+        file="/etc/condor/condor.d/zz-condor_config.local"
+    else
+        i="1"
+        while [ -f /etc/condor/condor.d/zz-condor_config.local.$i ]; do
+            i=$[$i+1]
+        done
+        file="/etc/condor/condor.d/zz-condor_config.local.$i"
+    fi
+
+cat <<EOF > $file
+# This file recovered from /etc/condor/condor_config.local.rpmsave
+# during rpm update on `date`
+#
+EOF
+
+    cat /etc/condor/condor_config.local.rpmsave >> $file 
+    rm -f /etc/condor/condor_config.local.rpmsave
+fi
+
 %preun -n condor
 if [ $1 = 0 ]; then
   /sbin/service condor stop >/dev/null 2>&1 || :
@@ -1749,6 +1768,9 @@ fi
 %endif
 
 %changelog
+* Wed Nov 19 2014 Carl Edquist <edquist@cs.wisc.edu> - 8.2.4-1.1
+- Include fix from 8.2.5 to move condor_config.local to config.d (#4731)
+
 * Mon Nov 17 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 8.2.3-1.4
 - Revert SOFTWARE-1636 patch and add globus_thread_pthread library as a
   dependency to the cream-gahp subpackage (SOFTWARE-1689)
