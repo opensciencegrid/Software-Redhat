@@ -1,5 +1,5 @@
 diff --git a/src/condor_job_router/JobRouter.cpp b/src/condor_job_router/JobRouter.cpp
-index 06d92c0..7c6116a 100644
+index c193c8e..33e3b68 100644
 --- a/src/condor_job_router/JobRouter.cpp
 +++ b/src/condor_job_router/JobRouter.cpp
 @@ -750,7 +750,8 @@ JobRouter::ParseRoutingEntries( std::string const &routing_string, char const *p
@@ -70,7 +70,7 @@ index 06d92c0..7c6116a 100644
  
  	constraint_tree = parser.ParseExpression(umbrella_constraint);
  	if(!constraint_tree) {
--		EXCEPT("JobRouter: Failed to parse umbrella constraint: '%s'\n",umbrella_constraint.c_str());
+-		EXCEPT("JobRouter: Failed to parse umbrella constraint: '%s'",umbrella_constraint.c_str());
 +		EXCEPT("JobRouter: Failed to parse umbrella constraint: %s\n",umbrella_constraint.c_str());
  	}
  
