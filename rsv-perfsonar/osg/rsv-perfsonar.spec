@@ -1,5 +1,5 @@
 Name:      rsv-perfsonar
-Version:   0.0.8
+Version:   0.0.9
 Release:   1%{?dist}
 Summary:   RSV Metrics to monitor pefsonar
 Packager:  OSG-Software
@@ -66,6 +66,9 @@ ln -s /var/www/html/rsv /usr/share/rsv/www
 
 
 %changelog
+* Thu Nov 20 2014 <efajardo@physics.ucsd.edu> - 0.0.9-1
+- Using EventBulk to increase efficiency in posting
+
 * Tue Nov 18 2014 <efajardo@physics.ucsd.edu> - 0.0.8-1
 - Increased efficiency on enabling and disabling dummy probes
 
