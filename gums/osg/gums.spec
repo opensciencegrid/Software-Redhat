@@ -5,13 +5,10 @@
 %define __os_install_post %{nil}
 %define jglobus_version 2.0.6
 
-%define _alphatag pre4
-%define _release 6
-
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.4.1
-Release: 0.%{_release}.%{_alphatag}%{?dist}
+Release: 1%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 %if 0%{?rhel} < 6
@@ -77,7 +74,7 @@ Requires: privilege-xacml >= 2.6.4
 # For git-based releases, one can do:
 # git archive --format=tar --prefix=gums-1.4.0.pre1/ v1.4.0.pre1 | gzip > gums-1.4.0.pre1.tar.gz
 #
-Source0: %{name}-%{version}.%{_alphatag}.tar.gz
+Source0: %{name}-%{version}.tar.gz
 Source1: gums-host-cron
 Source2: gums-client-cron.cron
 Source3: gums-client-cron.init
@@ -95,9 +92,6 @@ Source11: xmltooling.pom
 Source12: openws-1.2.2.jar
 Source13: jargs-1.0.jar
 Source14: velocity-1.5.jar
-
-# use correct jspc compiler to match tomcat version
-#Patch0: jspc-compiler-tomcat5.patch
 
 # Can't get el5 build working with jsp precompile
 Patch0: undo-jsp-precompile.patch
@@ -140,7 +134,7 @@ Summary: Tomcat service for GUMS
 
 %prep
 
-%setup -n %{name}-%{version}.%{_alphatag}
+%setup -n %{name}-%{version}
 
 %if 0%{?rhel} < 6
 %patch0 -p1
@@ -390,6 +384,9 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+* Fri Nov 21 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.4.1-1
+- Update to GUMS 1.4.1 (SOFTWARE-1654)
+
 * Mon Nov 17 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.4.1-0.6.pre4
 - Buildfix: don't pre-compile jsp pages for el5 (SOFTWARE-1654)
 - Remove cached jsp pages on install/upgrade
