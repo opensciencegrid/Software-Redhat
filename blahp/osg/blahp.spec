@@ -1,6 +1,6 @@
 Name:		blahp
 Version:	1.18.11.bosco
-Release:	1%{?dist}
+Release:	3%{?dist}
 Summary:	gLite BLAHP daemon
 
 Group:		System/Libraries
@@ -36,8 +36,13 @@ BuildRequires:  docbook-style-xsl, libxslt
 
 %build
 ./bootstrap
+%if 0%{?rhel} >= 7
+export CPPFLAGS="-I/usr/include/classad -std=c++11"
+export LDFLAGS="-lclassad -lglobus_gsi_credential -lglobus_common -lglobus_gsi_proxy_core"
+%else
 export CPPFLAGS="-I/usr/include/classad"
 export LDFLAGS="-lclassad"
+%endif
 %configure --with-classads-prefix=/usr --with-globus-prefix=/usr --with-glite-location=/usr
 unset CPPFLAGS
 unset LDFLAGS
@@ -103,6 +108,8 @@ EOF
 done
 
 # A more appropriate template for PBS; actually does something
+ln -s %{_sysconfdir}/%{name}/pbs_local_submit_attributes.sh    $RPM_BUILD_ROOT%{_libexecdir}/blahp/pbs_local_submit_attributes.sh
+
 cat > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/pbs_local_submit_attributes.sh << EOF
 #/bin/sh
 
@@ -168,6 +175,12 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Mon Oct 27 2014 Brian Lin <blin@cs.wisc.edu> - 1.18.11.bosco-3
+- Rebuild against condor-8.2.3
+
+* Mon Oct 20 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.18.11.bosco-2
+- Build fixes for el7 (SOFTWARE-1604)
+
 * Mon Sep 29 2014 Brian Lin <blin@cs.wisc.edu> - 1.18.11.bosco-1
 - Fix bug in PBS status script
 
@@ -175,13 +188,8 @@ fi
 - Fixes to LSF scripts pushed upstream (SOFTWARE-1589, creating a temp file in /tmp)
 - Fix to PBS script that tracks job status (SOFTWARE-1594)
 
-* Fri Aug 22 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.18.9.bosco-3
-- Rebuild against condor 8.2.2 (SOFTWARE-1456)
-
-* Wed Jun 11 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.18.9.bosco-2
-- Make sure SGE file is not marked executable
-- Improve the PBS template for customization
-- Rebuild against condor 8.1.5 (SOFTWARE-1456)
+* Mon Aug 25 2014 Brian Lin <blin@cs.wisc.edu> - 1.18.9.bosco-2
+- Fix for memory allocation failure when tracking LSF jobs (SOFTWARE-1589)
 
 * Thu Jan 09 2014 Brian Bockelman <bbockelm@cse.unl.edu> - 1.18.9.bosco-1
 - Fix proxy renewal in the case where no home directory exists.
@@ -209,7 +217,7 @@ fi
 * Thu Dec 13 2012 Brian Bockelman <bbockelm@cse.unl.edu> 1.18.3.bosco-1.osg
 - Merge BOSCO and OSG distribution of blahp.
 
-* Fri Dec 05 2012 John Thiltges <jthiltges2@unl.edu> 1.18.0.4-9.osg
+* Wed Dec 05 2012 John Thiltges <jthiltges2@unl.edu> 1.18.0.4-9.osg
 - Fix pbs_status.sh in spec file
 
 * Fri Oct 12 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 1.18.0.4-8.osg
@@ -219,7 +227,7 @@ fi
 - Fix submissions with a relative proxy path.
 - Release bumped a few extra versions to stay in line with the Caltech Koji.
 
-* Thu Aug 29 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.18.0.4-5.osg
+* Wed Aug 29 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.18.0.4-5.osg
 - Fixed paths in init script
 - Added default options for condor
 
