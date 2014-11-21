@@ -8,7 +8,7 @@
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.4.1
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 %if 0%{?rhel} < 6
@@ -34,8 +34,8 @@ Requires: jpackage-utils
 Requires: jglobus = %{jglobus_version}
 BuildRequires: voms-api-java
 Requires: voms-api-java
-BuildRequires: emi-trustmanager
-Requires: emi-trustmanager
+BuildRequires: emi-trustmanager >= 3.0.3-6
+Requires: emi-trustmanager >= 3.0.3-6
 BuildRequires: emi-trustmanager-axis
 Requires: emi-trustmanager-axis
 # Standard RPMs from the system
@@ -384,8 +384,9 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
-* Fri Nov 21 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.4.1-1
+* Fri Nov 21 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.4.1-2
 - Update to GUMS 1.4.1 (SOFTWARE-1654)
+- Add versioned dependency on emi-trustmanager >= 3.0.3-6
 
 * Mon Nov 17 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.4.1-0.6.pre4
 - Buildfix: don't pre-compile jsp pages for el5 (SOFTWARE-1654)
