@@ -1,10 +1,9 @@
 Summary: Package for configure-osg and associated scripts
 Name: osg-configure
-Version: 1.0.63
-Release: 2%{?dist}
+Version: 1.0.64
+Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
 Patch0: s1653-gateway-type.patch
-Patch1: s1688-allowedvos.patch
 License: Apache 2.0
 Group: Grid
 Prefix: %{_prefix}
@@ -191,7 +190,6 @@ It may safely be removed once the upgrade is finished.
 %prep
 %setup
 %patch0 -p1
-%patch1 -p1
 
 %build
 %{__python} setup.py build
@@ -325,6 +323,9 @@ fi
 
 
 %changelog
+* Fri Nov 21 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0.64-1
+- Add MaxWallTime attribute to OSG_ResourceCatalog entries (SOFTWARE-1692)
+
 * Mon Nov 17 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0.63-2
 - Prepend "TARGET." to terms in generated requirements expression so we can
   match against it (SOFTWARE-1688)
