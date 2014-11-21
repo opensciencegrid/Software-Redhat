@@ -1,4 +1,12 @@
-Upstream obtained:
+Upstream obtained with:
 
-svn co http://cdcvs.fnal.gov/subversion/privilege/tags/v2.6.3.rc1/ privilege-xacml-2.6.3.rc1
-tar -cvzf privilege-xacml-2.6.3.rc1.tar.gz privilege-xacml-2.6.3.rc1/
+  TAG=v2.6.4
+  VER=${TAG#v}
+
+  svn export -q http://cdcvs.fnal.gov/subversion/privilege/tags/$TAG/ privilege-xacml-$VER
+  tar czf privilege-xacml-$VER.tar.gz privilege-xacml-$VER/
+
+To list available tags:
+
+  svn ls http://cdcvs.fnal.gov/subversion/privilege/tags/
+
