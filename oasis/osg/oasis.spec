@@ -1,6 +1,6 @@
 %define name oasis
-%define version 2.0.0
-%define release 2
+%define version 2.0.1
+%define release 1
 
 Summary: OASIS package
 Name: %{name}
@@ -152,6 +152,11 @@ f_restart_daemon $1
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+
+
+* Fri Nov 21 2014 Jose Caballero <jcaballero@BNL.gov> - 2.0.1-1
+- Bumped to 2.0.1-1
+- Added script generate_replicas
 
 * Mon Nov 03 2014 Jose Caballero <jcaballero@BNL.gov> - 2.0.0-2
 - Bumped to 2.0.0-2
