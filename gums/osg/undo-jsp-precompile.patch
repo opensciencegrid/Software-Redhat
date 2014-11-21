@@ -1,5 +1,5 @@
 diff --git a/gums-service/pom.xml b/gums-service/pom.xml
-index 5df73cb..b74ea00 100644
+index c6013ab..8fbb045 100644
 --- a/gums-service/pom.xml
 +++ b/gums-service/pom.xml
 @@ -1,174 +1,221 @@
@@ -13,7 +13,7 @@ index 5df73cb..b74ea00 100644
 -  <artifactId>gums-service</artifactId>
 -  <packaging>war</packaging>
 -  <name>gums-service</name>
--  <version>1.4.1.pre4</version>
+-  <version>1.4.1</version>
 -  <description>GUMS Service provides web services used by the
 -  client tool and a web interface for administering
 -  GUMS</description>
@@ -24,7 +24,7 @@ index 5df73cb..b74ea00 100644
 +	<artifactId>gums-service</artifactId>
 +	<packaging>war</packaging>
 +	<name>gums-service</name>
-+	<version>1.4.1.pre4</version>
++	<version>1.4.1</version>
 +	<description>GUMS Service provides web services used by the client tool and a 
 +		web interface for administering GUMS</description>
 +    
@@ -54,11 +54,11 @@ index 5df73cb..b74ea00 100644
 -  </pluginRepositories>
 -  <scm>
 -    <connection>
--    scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/tags/gums-1.4.1.pre4/gums-service</connection>
+-    scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/tags/gums-1.4.1/gums-service</connection>
 -    <developerConnection>
--    scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/tags/gums-1.4.1.pre4/gums-service</developerConnection>
+-    scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/tags/gums-1.4.1/gums-service</developerConnection>
 -    <url>
--    https://svn.usatlas.bnl.gov/svn/privilege/tags/gums-1.4.1.pre4/gums-service</url>
+-    https://svn.usatlas.bnl.gov/svn/privilege/tags/gums-1.4.1/gums-service</url>
 -  </scm>
 -  <build>
 -    <finalName>gums</finalName>
@@ -215,9 +215,9 @@ index 5df73cb..b74ea00 100644
 +
 +
 +	<scm>
-+		<connection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/tags/gums-1.4.1.pre4/gums-service</connection>
-+		<developerConnection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/tags/gums-1.4.1.pre4/gums-service</developerConnection>
-+		   <url>https://svn.usatlas.bnl.gov/svn/privilege/tags/gums-1.4.1.pre4/gums-service</url>
++		<connection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/tags/gums-1.4.1/gums-service</connection>
++		<developerConnection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/tags/gums-1.4.1/gums-service</developerConnection>
++		   <url>https://svn.usatlas.bnl.gov/svn/privilege/tags/gums-1.4.1/gums-service</url>
 +	</scm>
 +
 +  	<build>
@@ -423,7 +423,7 @@ index 5df73cb..b74ea00 100644
 -    <dependency>
 -      <groupId>gov.bnl.racf.gums</groupId>
 -      <artifactId>gums-core</artifactId>
--      <version>1.4.1.pre4</version>
+-      <version>1.4.1</version>
 -    </dependency>
 -    <dependency>
 -      <groupId>log4j</groupId>
@@ -488,7 +488,7 @@ index 5df73cb..b74ea00 100644
 +        <dependency>
 +            <groupId>gov.bnl.racf.gums</groupId>
 +            <artifactId>gums-core</artifactId>
-+            <version>1.4.1.pre4</version>
++            <version>1.4.1</version>
 +        </dependency>
 +		<dependency>
 +            <groupId>log4j</groupId>
