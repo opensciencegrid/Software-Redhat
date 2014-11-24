@@ -1,6 +1,6 @@
 Name:           edg-mkgridmap
 Version:        4.0.0
-Release:        7%{?dist}
+Release:        8%{?dist}
 Summary:        Contains the init.d script and crontab for edg-mkgridmap
 
 Group:          system environment/base
@@ -15,6 +15,7 @@ Source2:        edg-mkgridmap-cron
 
 Patch0:         edg-mkgridmap-wrapper-osg.patch
 Patch1:         use-net-ssl.patch
+Patch2:         skip_blank_entries.patch	
 
 # Steps to make tarball (correctly packaged):
 # Get GOC's tarball, edg-mkgridmap-10.tar.gz
@@ -42,6 +43,7 @@ Requires(preun): initscripts
 %setup -q
 %patch0 -p0
 %patch1 -p0
+%patch2 -p0
 %build
 
 
@@ -91,6 +93,9 @@ fi
 %dir %{_var}/lib/osg
 
 %changelog
+* Mon Nov 24 2014 Brian Lin <blin@cs.wisc.edu> - 4.0.0-8
+- Handle blank entries in edg-mkgridmap (SOFTWARE-1698)
+
 * Tue May 27 2014 Carl Edquist <edquist@cs.wisc.edu> - 4.0.0-7
 - use Net::SSL module in edg-mkgridmap.pl (SOFTWARE-1489)
 
