@@ -3,7 +3,7 @@
 
 Name: htcondor-ce
 Version: 1.8
-Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
+Release: 2%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 
 Group: Applications/System
@@ -17,6 +17,7 @@ URL: http://github.com/bbockelm/condor-ce
 # git archive --prefix=%{name}-%{version}/ %{gitrev} | gzip > %{name}-%{version}-%{gitrev}.tar.gz
 #
 Source0: %{name}-%{version}%{?gitrev:-%{gitrev}}.tar.gz
+Patch0: shared_port_config_fix.patch
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -141,6 +142,7 @@ Conflicts: %{name}
 
 %prep
 %setup -q
+%patch0 -p1
 
 %build
 %cmake -DHTCONDORCE_VERSION=%{version} -DCMAKE_INSTALL_LIBDIR=%{_libdir}
@@ -301,6 +303,9 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Mon Nov 24 2014 Brian Lin <blin@cs.wisc.edu> - 1.8-2
+- Fix configuration issue preventing htcondor-ce startup
+
 * Sun Nov 23 2014 Brian Bockelman <bbockelm@cse.unl.edu> - 1.8-1
 - Initial v1.8 release.
 - On newer HTCondor versions, have the collector and shared_port
