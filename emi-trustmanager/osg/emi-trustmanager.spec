@@ -34,6 +34,11 @@ Patch17: bc1.47+-getDEREncoded.patch
 Patch18: bcpkix.patch
 Patch19: bc1.47+-PEMReader.patch
 Patch20: bc1.47+-JDKKeyPairGenerator.patch
+Patch21: bc1.47+-getASN1Primitive.patch
+Patch22: bc1.47+-GeneralSubtree.patch
+Patch23: bc1.47+-IssuingDistributionPoint.patch
+Patch24: bc1.47+-GeneralNames.patch
+Patch25: bc1.47+-DEROctetString.patch
 
 
 %description
@@ -59,6 +64,11 @@ The java authentication and proxy generation implementation that supports grid p
 %patch18 -p1
 %patch19 -p1
 %patch20 -p1
+%patch21 -p1
+%patch22 -p1
+%patch23 -p1
+%patch24 -p1
+%patch25 -p1
 
 
 %build

@@ -1,0 +1,22 @@
+Index: emi-trustmanager-3.0.3/src/org/glite/security/util/proxy/ProxyCertificateGenerator.java
+===================================================================
+--- emi-trustmanager-3.0.3.orig/src/org/glite/security/util/proxy/ProxyCertificateGenerator.java	2014-11-25 14:28:46.000000000 -0600
++++ emi-trustmanager-3.0.3/src/org/glite/security/util/proxy/ProxyCertificateGenerator.java	2014-11-25 14:33:43.233865508 -0600
+@@ -429,7 +429,7 @@
+      */
+     private String guessCN(X509Name basename, boolean addLimited) {
+         String newCN;
+-        ASN1Sequence subjectSequence = (ASN1Sequence) basename.getASN1Primitive();
++        ASN1Sequence subjectSequence = (ASN1Sequence) basename.toASN1Primitive();
+         int rdns = subjectSequence.size();
+         DERSet rdn = (DERSet) subjectSequence.getObjectAt(rdns - 1);
+         DERSequence rdnSequence = (DERSequence) rdn.getObjectAt(0);
+@@ -465,7 +465,7 @@
+      */
+     @SuppressWarnings("unchecked")
+     private void setupDNs(String newCn) {
+-        ASN1Sequence seqSubject = (ASN1Sequence) m_baseName.getASN1Primitive();
++        ASN1Sequence seqSubject = (ASN1Sequence) m_baseName.toASN1Primitive();
+ 
+         ASN1EncodableVector newCnPart = new ASN1EncodableVector();
+         newCnPart.add(X509Name.CN);

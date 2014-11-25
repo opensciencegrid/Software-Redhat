@@ -1,0 +1,13 @@
+Index: emi-trustmanager-3.0.3/src/org/glite/security/util/proxy/ProxyTracingExtension.java
+===================================================================
+--- emi-trustmanager-3.0.3.orig/src/org/glite/security/util/proxy/ProxyTracingExtension.java	2014-11-25 14:28:46.000000000 -0600
++++ emi-trustmanager-3.0.3/src/org/glite/security/util/proxy/ProxyTracingExtension.java	2014-11-25 16:23:07.806237710 -0600
+@@ -109,7 +109,7 @@
+      * @throws IOException In case the byte array does not contain a valid ASN1 encoded proxy tracing extension.
+      */
+     public ProxyTracingExtension(byte[] bytes) throws IOException {
+-        m_names = new GeneralNames((ASN1Sequence) ASN1Primitive.fromByteArray(bytes));
++        m_names = new GeneralNames(GeneralName.getInstance(ASN1Primitive.fromByteArray(bytes)));
+         m_name = m_names.getNames()[0];
+     }
+ 

@@ -1,0 +1,31 @@
+Index: emi-trustmanager-3.0.3/src/org/glite/security/util/FileCRLChecker.java
+===================================================================
+--- emi-trustmanager-3.0.3.orig/src/org/glite/security/util/FileCRLChecker.java	2014-11-25 16:03:25.384185417 -0600
++++ emi-trustmanager-3.0.3/src/org/glite/security/util/FileCRLChecker.java	2014-11-25 16:20:08.015949887 -0600
+@@ -276,7 +276,7 @@
+ 			throw new CertificateException("Usupported critical extension in CRL: DeltaCRLIndicator");
+ 		}
+ 		if (oid.equals(X509Extensions.IssuingDistributionPoint.toString())) {
+-			checkIssuinDistributionPoint();
++			checkIssuingDistributionPoint();
+ 			return;
+ 		}
+ 
+@@ -291,7 +291,7 @@
+ 	 * @throws IOException
+ 	 *             thrown in case the extension parsing fails.
+ 	 */
+-	private void checkIssuinDistributionPoint() throws CertificateException, IOException {
++	private void checkIssuingDistributionPoint() throws CertificateException, IOException {
+ 		byte extensionBytes[] = m_crl.getExtensionValue(X509Extensions.IssuingDistributionPoint.toString());
+ 
+ 		ASN1Primitive object = ASN1Primitive.fromByteArray(extensionBytes);
+@@ -305,7 +305,7 @@
+ 			throw new CertificateException("Invalid data in IssuingDistributionPoint extension, not ASN1Sequence");
+ 		}
+ 
+-		IssuingDistributionPoint issuingDistributionPoint = new IssuingDistributionPoint((ASN1Sequence) object);
++		IssuingDistributionPoint issuingDistributionPoint = IssuingDistributionPoint.getInstance(object);
+ 
+ 		if (issuingDistributionPoint.onlyContainsAttributeCerts()) {
+ 			throw new CertificateException("CRL only contains attribute certs, not useful for authentication.");
