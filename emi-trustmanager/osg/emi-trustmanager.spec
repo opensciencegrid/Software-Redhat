@@ -32,6 +32,8 @@ Patch15: bc1.47+-getDERObject.patch
 Patch16: bc1.47+-DERInteger.patch
 Patch17: bc1.47+-getDEREncoded.patch
 Patch18: bcpkix.patch
+Patch19: bc1.47+-PEMReader.patch
+Patch20: bc1.47+-JDKKeyPairGenerator.patch
 
 
 %description
@@ -55,6 +57,8 @@ The java authentication and proxy generation implementation that supports grid p
 %patch16 -p1
 %patch17 -p1
 %patch18 -p1
+%patch19 -p1
+%patch20 -p1
 
 
 %build

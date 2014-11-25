@@ -1,0 +1,32 @@
+Index: emi-trustmanager-3.0.3/src/org/glite/security/util/PrivateKeyReader.java
+===================================================================
+--- emi-trustmanager-3.0.3.orig/src/org/glite/security/util/PrivateKeyReader.java	2014-11-12 00:51:07.000000000 -0600
++++ emi-trustmanager-3.0.3/src/org/glite/security/util/PrivateKeyReader.java	2014-11-24 17:30:20.018943239 -0600
+@@ -25,8 +25,8 @@
+ import org.bouncycastle.asn1.pkcs.RSAPrivateKeyStructure;
+ 
+ import org.bouncycastle.jce.provider.BouncyCastleProvider;
+-import org.bouncycastle.openssl.PEMReader;
+ import org.bouncycastle.openssl.PasswordFinder;
++import org.bouncycastle.openssl.PEMParser;
+ import org.bouncycastle.util.encoders.Base64;
+ 
+ import java.io.BufferedInputStream;
+@@ -105,14 +105,14 @@
+             
+             
+ //            TestBase.printInterval("setup");
+-            PEMReader pemReader = new PEMReader(reader, finder, "BC");
++            PEMParser pemParser = new PEMParser(reader);
+ //            TestBase.printInterval("setup reader");
+-            Object o = pemReader.readObject();
++            Object o = pemParser.readObject();
+ //            TestBase.printInterval("read key");
+             
+             // skip possible certificates in the file.
+             while (o instanceof X509Certificate){
+-                o = pemReader.readObject();            	
++                o = pemParser.readObject();
+             }
+             
+             if(o == null){
