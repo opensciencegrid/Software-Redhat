@@ -39,7 +39,8 @@ Patch22: bc1.47+-GeneralSubtree.patch
 Patch23: bc1.47+-IssuingDistributionPoint.patch
 Patch24: bc1.47+-GeneralNames.patch
 Patch25: bc1.47+-DEROctetString.patch
-
+Patch26: bc1.47+-CertificationRequestInfo.patch
+Patch27: bc1.47+-generateKeys.patch
 
 %description
 The java authentication and proxy generation implementation that supports grid proxies.
@@ -69,6 +70,8 @@ The java authentication and proxy generation implementation that supports grid p
 %patch23 -p1
 %patch24 -p1
 %patch25 -p1
+%patch26 -p1
+%patch27 -p1
 
 
 %build
