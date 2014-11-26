@@ -374,23 +374,15 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}/condor/certs
 touch install/templates/90_gwms_dns.config
 install -m 0644 install/templates/00_gwms_factory_general.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
 install -m 0644 install/templates/00_gwms_general.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
-install -m 0644 install/templates/01_gwms_collectors.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/01_gwms_factory_collectors.config
+install -m 0644 install/templates/01_gwms_factory_collectors.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
 install -m 0644 install/templates/01_gwms_collectors.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
 install -m 0644 install/templates/02_gwms_factory_schedds.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
 install -m 0644 install/templates/02_gwms_schedds.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
-install -m 0644 install/templates/03_gwms_local.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/03_gwms_factory_local.config
 install -m 0644 install/templates/03_gwms_local.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
-install -m 0644 install/templates/11_gwms_secondary_collectors.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/11_gwms_factory_secondary_collectors.config
 install -m 0644 install/templates/11_gwms_secondary_collectors.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
 install -m 0644 install/templates/90_gwms_dns.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
 install -m 0644 install/templates/condor_mapfile $RPM_BUILD_ROOT%{_sysconfdir}/condor/certs/
 install -m 0644 install/templates/privsep_config $RPM_BUILD_ROOT%{_sysconfdir}/condor/
-
-sed -i "s/^COLLECTOR_NAME = .*$/COLLECTOR_NAME = wmscollector_service/" $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/01_gwms_factory_collectors.config
-sed -i "s/^DAEMON_LIST.*=.*$//" $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/01_gwms_factory_collectors.config
-sed -i 's/^COLLECTOR[0-9]*.\\//' $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/01_gwms_factory_collectors.config
-echo 'DAEMON_LIST   = $(DAEMON_LIST),  COLLECTOR, NEGOTIATOR' >> $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/01_gwms_factory_collectors.config
-
 
 #Install condor schedd dirs
 for schedd in "schedd_glideins2" "schedd_glideins3" "schedd_glideins4" "schedd_glideins5" "schedd_jobs2"; do
@@ -702,8 +694,7 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/condor/config.d/00_gwms_factory_general.config
 %config(noreplace) %{_sysconfdir}/condor/config.d/01_gwms_factory_collectors.config
 %config(noreplace) %{_sysconfdir}/condor/config.d/02_gwms_factory_schedds.config
-%config(noreplace) %{_sysconfdir}/condor/config.d/03_gwms_factory_local.config
-%config(noreplace) %{_sysconfdir}/condor/config.d/11_gwms_factory_secondary_collectors.config
+%config(noreplace) %{_sysconfdir}/condor/config.d/03_gwms_local.config
 %config(noreplace) %{_sysconfdir}/condor/privsep_config
 %config(noreplace) %{_sysconfdir}/condor/certs/condor_mapfile
 %attr(-, condor, condor) %{_localstatedir}/lib/condor/schedd_glideins2
