@@ -1,8 +1,23 @@
-Index: emi-trustmanager-3.0.3/src/org/glite/security/util/FileCRLChecker.java
-===================================================================
---- emi-trustmanager-3.0.3.orig/src/org/glite/security/util/FileCRLChecker.java	2014-11-25 16:03:25.384185417 -0600
-+++ emi-trustmanager-3.0.3/src/org/glite/security/util/FileCRLChecker.java	2014-11-25 16:20:08.015949887 -0600
-@@ -276,7 +276,7 @@
+From dc2f2f468fc404aae3e2169ec6a16b0da366a1e0 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Tue, 25 Nov 2014 21:05:03 -0600
+Subject: [PATCH 23/26] IssuingDistributionPoint constructor fix (bc1.47)
+
+The IssuingDistributionPoint(ASN1Sequence) constuctor was gone, so
+instead I used the getInstance() factory method, as recommended by the
+porting guide.
+
+I also fixed a typo in the name of a private function (Issuin ->
+Issuing).
+---
+ src/org/glite/security/util/FileCRLChecker.java | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/src/org/glite/security/util/FileCRLChecker.java b/src/org/glite/security/util/FileCRLChecker.java
+index 9996a2b..747403c 100644
+--- a/src/org/glite/security/util/FileCRLChecker.java
++++ b/src/org/glite/security/util/FileCRLChecker.java
+@@ -276,7 +276,7 @@ public class FileCRLChecker extends RevocationChecker {
  			throw new CertificateException("Usupported critical extension in CRL: DeltaCRLIndicator");
  		}
  		if (oid.equals(X509Extensions.IssuingDistributionPoint.toString())) {
@@ -11,7 +26,7 @@ Index: emi-trustmanager-3.0.3/src/org/glite/security/util/FileCRLChecker.java
  			return;
  		}
  
-@@ -291,7 +291,7 @@
+@@ -291,7 +291,7 @@ public class FileCRLChecker extends RevocationChecker {
  	 * @throws IOException
  	 *             thrown in case the extension parsing fails.
  	 */
@@ -20,7 +35,7 @@ Index: emi-trustmanager-3.0.3/src/org/glite/security/util/FileCRLChecker.java
  		byte extensionBytes[] = m_crl.getExtensionValue(X509Extensions.IssuingDistributionPoint.toString());
  
  		ASN1Primitive object = ASN1Primitive.fromByteArray(extensionBytes);
-@@ -305,7 +305,7 @@
+@@ -305,7 +305,7 @@ public class FileCRLChecker extends RevocationChecker {
  			throw new CertificateException("Invalid data in IssuingDistributionPoint extension, not ASN1Sequence");
  		}
  
@@ -29,3 +44,6 @@ Index: emi-trustmanager-3.0.3/src/org/glite/security/util/FileCRLChecker.java
  
  		if (issuingDistributionPoint.onlyContainsAttributeCerts()) {
  			throw new CertificateException("CRL only contains attribute certs, not useful for authentication.");
+-- 
+2.0.1
+

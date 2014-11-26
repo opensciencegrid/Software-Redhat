@@ -1,8 +1,18 @@
-Index: emi-trustmanager-3.0.3/src/org/glite/security/util/proxy/ProxyCertInfoExtension.java
-===================================================================
---- emi-trustmanager-3.0.3.orig/src/org/glite/security/util/proxy/ProxyCertInfoExtension.java	2014-11-11 22:49:11.000000000 -0600
-+++ emi-trustmanager-3.0.3/src/org/glite/security/util/proxy/ProxyCertInfoExtension.java	2014-11-11 22:54:37.631479903 -0600
-@@ -19,7 +19,7 @@
+From 3475cc151107e3978ecf1fd5408149cd60c03162 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Tue, 25 Nov 2014 20:44:12 -0600
+Subject: [PATCH 11/26] ASN1Encodable -> ASN1Object (bc1.47)
+
+---
+ src/org/glite/security/util/proxy/ProxyCertInfoExtension.java | 6 +++---
+ src/org/glite/security/util/proxy/ProxyPolicy.java            | 6 +++---
+ 2 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/src/org/glite/security/util/proxy/ProxyCertInfoExtension.java b/src/org/glite/security/util/proxy/ProxyCertInfoExtension.java
+index 4ce6cb8..384cde1 100644
+--- a/src/org/glite/security/util/proxy/ProxyCertInfoExtension.java
++++ b/src/org/glite/security/util/proxy/ProxyCertInfoExtension.java
+@@ -19,7 +19,7 @@ package org.glite.security.util.proxy;
  
  import java.io.IOException;
  
@@ -11,7 +21,7 @@ Index: emi-trustmanager-3.0.3/src/org/glite/security/util/proxy/ProxyCertInfoExt
  import org.bouncycastle.asn1.ASN1EncodableVector;
  import org.bouncycastle.asn1.ASN1Primitive;
  import org.bouncycastle.asn1.ASN1Sequence;
-@@ -40,7 +40,7 @@
+@@ -40,7 +40,7 @@ import org.bouncycastle.asn1.DERSequence;
   * 
   * @author Joni Hahkala
   */
@@ -20,7 +30,7 @@ Index: emi-trustmanager-3.0.3/src/org/glite/security/util/proxy/ProxyCertInfoExt
  
      /** Identifier for no proxy path length limit. */
      public static final int UNLIMITED = Integer.MAX_VALUE;
-@@ -139,7 +139,7 @@
+@@ -139,7 +139,7 @@ public class ProxyCertInfoExtension extends ASN1Encodable {
  
      /*
       * Return the extension in DER format.
@@ -29,11 +39,11 @@ Index: emi-trustmanager-3.0.3/src/org/glite/security/util/proxy/ProxyCertInfoExt
       */
      public DERObject toASN1Primitive() {
          ASN1EncodableVector v = new ASN1EncodableVector();
-Index: emi-trustmanager-3.0.3/src/org/glite/security/util/proxy/ProxyPolicy.java
-===================================================================
---- emi-trustmanager-3.0.3.orig/src/org/glite/security/util/proxy/ProxyPolicy.java	2014-11-11 22:49:52.000000000 -0600
-+++ emi-trustmanager-3.0.3/src/org/glite/security/util/proxy/ProxyPolicy.java	2014-11-11 22:54:47.655608647 -0600
-@@ -18,7 +18,7 @@
+diff --git a/src/org/glite/security/util/proxy/ProxyPolicy.java b/src/org/glite/security/util/proxy/ProxyPolicy.java
+index 38309c6..310936c 100644
+--- a/src/org/glite/security/util/proxy/ProxyPolicy.java
++++ b/src/org/glite/security/util/proxy/ProxyPolicy.java
+@@ -18,7 +18,7 @@ limitations under the License.
  
  package org.glite.security.util.proxy;
  
@@ -42,7 +52,7 @@ Index: emi-trustmanager-3.0.3/src/org/glite/security/util/proxy/ProxyPolicy.java
  import org.bouncycastle.asn1.ASN1EncodableVector;
  import org.bouncycastle.asn1.ASN1OctetString;
  import org.bouncycastle.asn1.ASN1Sequence;
-@@ -32,7 +32,7 @@
+@@ -32,7 +32,7 @@ import org.bouncycastle.asn1.DERSequence;
   * 
   * @author Joni Hahkala
   */
@@ -51,7 +61,7 @@ Index: emi-trustmanager-3.0.3/src/org/glite/security/util/proxy/ProxyPolicy.java
      /**
       * The normal, default policy, the proxy inherits the rights of the parent. Defined in RFC 3820.
       */
-@@ -136,7 +136,7 @@
+@@ -136,7 +136,7 @@ public class ProxyPolicy extends ASN1Encodable {
      /**
       * output the ASN1 object of the proxy policy.
       * 
@@ -60,3 +70,6 @@ Index: emi-trustmanager-3.0.3/src/org/glite/security/util/proxy/ProxyPolicy.java
       */
      public DERObject toASN1Primitive() {
          ASN1EncodableVector v = new ASN1EncodableVector();
+-- 
+2.0.1
+

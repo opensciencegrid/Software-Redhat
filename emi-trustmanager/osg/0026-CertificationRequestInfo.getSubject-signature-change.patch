@@ -1,0 +1,39 @@
+From d99a519ff09d38bf67e1c66d6e2b806a6ce74c1d Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Tue, 25 Nov 2014 21:10:56 -0600
+Subject: [PATCH 26/26] CertificationRequestInfo.getSubject() signature change
+ (bc1.47)
+
+CertificationRequestInfo.getSubject() has changed from returning an
+X509Name to an X500Name.  Since much of the code expects to see an
+X509Name, I attempt to convert it by converting the X500Name to an
+ASN1Primitive and then using X509Name.getInstance() on the primitive.
+
+Of all the changes I've made, this is the one I'm least sure about.  The
+problem with getInstance() is that it takes a java.lang.Object as the
+argument -- bypassing compile-time checks.  So I won't find out this is
+broken until runtime.
+
+The alternative is to propagate the X509Name -> X500Name change
+throughout the ProxyCertificate* classes.  Since the internal structure
+of the classes is very different, I am reluctant to do that right now.
+---
+ src/org/glite/security/util/proxy/ProxyCertificateGenerator.java | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/org/glite/security/util/proxy/ProxyCertificateGenerator.java b/src/org/glite/security/util/proxy/ProxyCertificateGenerator.java
+index de7841c..3441844 100644
+--- a/src/org/glite/security/util/proxy/ProxyCertificateGenerator.java
++++ b/src/org/glite/security/util/proxy/ProxyCertificateGenerator.java
+@@ -158,7 +158,7 @@ public class ProxyCertificateGenerator {
+ 
+         // m_certReq = certReq;
+         m_publicKey = certReq.getPublicKey();
+-        m_newDN = certReq.getCertificationRequestInfo().getSubject();
++        m_newDN = X509Name.getInstance(certReq.getCertificationRequestInfo().getSubject().toASN1Primitive());
+         /*
+          * // test for DN violation, the new DN must be composed of the parentDN // and and additional CN component. DN
+          * baseDN = DNHandler.getSubject(m_parentCert); DN reqSubject = DNHandler.getDN(m_newDN); try{
+-- 
+2.0.1
+

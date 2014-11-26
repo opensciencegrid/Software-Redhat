@@ -1,8 +1,17 @@
-Index: emi-trustmanager-3.0.3/src/org/glite/security/util/proxy/ProxyCertificateGenerator.java
-===================================================================
---- emi-trustmanager-3.0.3.orig/src/org/glite/security/util/proxy/ProxyCertificateGenerator.java	2014-11-25 14:28:46.000000000 -0600
-+++ emi-trustmanager-3.0.3/src/org/glite/security/util/proxy/ProxyCertificateGenerator.java	2014-11-25 14:33:43.233865508 -0600
-@@ -429,7 +429,7 @@
+From ef3f2d9b0296ccbc91d108e2b5aaaeb23d21bfe2 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Tue, 25 Nov 2014 21:01:35 -0600
+Subject: [PATCH 21/26] getASN1Primitive() -> toASN1Primitive() (bc1.47)
+
+---
+ src/org/glite/security/util/proxy/ProxyCertificateGenerator.java | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/org/glite/security/util/proxy/ProxyCertificateGenerator.java b/src/org/glite/security/util/proxy/ProxyCertificateGenerator.java
+index ba56cae..de7841c 100644
+--- a/src/org/glite/security/util/proxy/ProxyCertificateGenerator.java
++++ b/src/org/glite/security/util/proxy/ProxyCertificateGenerator.java
+@@ -434,7 +434,7 @@ public class ProxyCertificateGenerator {
       */
      private String guessCN(X509Name basename, boolean addLimited) {
          String newCN;
@@ -11,7 +20,7 @@ Index: emi-trustmanager-3.0.3/src/org/glite/security/util/proxy/ProxyCertificate
          int rdns = subjectSequence.size();
          DERSet rdn = (DERSet) subjectSequence.getObjectAt(rdns - 1);
          DERSequence rdnSequence = (DERSequence) rdn.getObjectAt(0);
-@@ -465,7 +465,7 @@
+@@ -470,7 +470,7 @@ public class ProxyCertificateGenerator {
       */
      @SuppressWarnings("unchecked")
      private void setupDNs(String newCn) {
@@ -20,3 +29,6 @@ Index: emi-trustmanager-3.0.3/src/org/glite/security/util/proxy/ProxyCertificate
  
          ASN1EncodableVector newCnPart = new ASN1EncodableVector();
          newCnPart.add(X509Name.CN);
+-- 
+2.0.1
+

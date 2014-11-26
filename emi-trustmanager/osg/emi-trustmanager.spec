@@ -23,24 +23,24 @@ Patch0: incorrect_oid.patch
 Patch1: build.xml.patch
 Patch2: better_log.patch
 Patch3: X509Name_cast.patch
-Patch10: bc1.47+-ASN1Object.patch
-Patch11: bc1.47+-ASN1Encodable.patch
-Patch12: bc1.47+-DEREncodable.patch
-Patch13: bc1.47+-DERObjectIdentifier.patch
-Patch14: bc1.47+-DERObject.patch
-Patch15: bc1.47+-getDERObject.patch
-Patch16: bc1.47+-DERInteger.patch
-Patch17: bc1.47+-getDEREncoded.patch
-Patch18: bcpkix.patch
-Patch19: bc1.47+-PEMReader.patch
-Patch20: bc1.47+-JDKKeyPairGenerator.patch
-Patch21: bc1.47+-getASN1Primitive.patch
-Patch22: bc1.47+-GeneralSubtree.patch
-Patch23: bc1.47+-IssuingDistributionPoint.patch
-Patch24: bc1.47+-GeneralNames.patch
-Patch25: bc1.47+-DEROctetString.patch
-Patch26: bc1.47+-CertificationRequestInfo.patch
-Patch27: bc1.47+-generateKeys.patch
+
+Patch10: 0010-ASN1Object-ASN1Primitive-bc1.47.patch
+Patch11: 0011-ASN1Encodable-ASN1Object-bc1.47.patch
+Patch12: 0012-DEREncodable-ASN1Encodable-bc1.47.patch
+Patch13: 0013-DERObjectIdentifier-ASN1ObjectIdentifier-bc1.47.patch
+Patch14: 0014-DERObject-ASN1Primitive-bc1.47.patch
+Patch15: 0015-getDERObject-toASN1Primitive-bc1.47.patch
+Patch16: 0016-DERInteger-ASN1Integer-bc1.47.patch
+Patch17: 0017-getDEREncoded-getEncoded-ASN1Encoding.DER-bc1.47.patch
+Patch18: 0018-Add-bcpkix-.jar-to-build.xml-EL7.patch
+Patch19: 0019-PEMReader-PEMParser-bc1.47.patch
+Patch20: 0020-JDKKeyPairGenerator-KeyPairGenerator-bc1.47.patch
+Patch21: 0021-getASN1Primitive-toASN1Primitive-bc1.47.patch
+Patch22: 0022-GeneralSubtree-constructor-fix-bc1.47.patch
+Patch23: 0023-IssuingDistributionPoint-constructor-fix-bc1.47.patch
+Patch24: 0024-GeneralNames-constuctor-fix-bc1.47.patch
+Patch25: 0025-DEROctetString-new-exception-bc1.47.patch
+Patch26: 0026-CertificationRequestInfo.getSubject-signature-change.patch
 
 %description
 The java authentication and proxy generation implementation that supports grid proxies.
@@ -71,7 +71,6 @@ The java authentication and proxy generation implementation that supports grid p
 %patch24 -p1
 %patch25 -p1
 %patch26 -p1
-%patch27 -p1
 
 
 %build

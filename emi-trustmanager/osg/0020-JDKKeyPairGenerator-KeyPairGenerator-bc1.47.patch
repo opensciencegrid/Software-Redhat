@@ -1,0 +1,124 @@
+From 070d9a240a4e98242a5afb2277bdc9e7a0e99dfe Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Tue, 25 Nov 2014 20:57:14 -0600
+Subject: [PATCH 20/26] JDKKeyPairGenerator -> KeyPairGenerator (bc1.47)
+
+This was a class that was removed from BC because an equivalent (though
+with different semantics) is now available in the Java standard
+libraries.
+
+KeyPairGenerator threw a set of new exceptions, namely
+InvalidAlgorithmParameterException, NoSuchAlgorithmException,
+NoSuchProviderException, which I caught in the generate() method and
+rethrew as Errors (i.e. unchecked exceptions). I _think_ it's a serious
+problem if they get raised at all.
+---
+ .../util/proxy/ProxyCertificateGenerator.java         | 19 ++++++++++++++-----
+ .../org/glite/security/util/PrivateKeyReaderTest.java | 11 ++++++++---
+ 2 files changed, 22 insertions(+), 8 deletions(-)
+
+diff --git a/src/org/glite/security/util/proxy/ProxyCertificateGenerator.java b/src/org/glite/security/util/proxy/ProxyCertificateGenerator.java
+index b18c5ae..ba56cae 100644
+--- a/src/org/glite/security/util/proxy/ProxyCertificateGenerator.java
++++ b/src/org/glite/security/util/proxy/ProxyCertificateGenerator.java
+@@ -19,8 +19,10 @@ package org.glite.security.util.proxy;
+ import java.io.IOException;
+ import java.io.StringWriter;
+ import java.math.BigInteger;
++import java.security.InvalidAlgorithmParameterException;
+ import java.security.InvalidKeyException;
+ import java.security.KeyPair;
++import java.security.KeyPairGenerator;
+ import java.security.NoSuchAlgorithmException;
+ import java.security.NoSuchProviderException;
+ import java.security.PrivateKey;
+@@ -30,6 +32,7 @@ import java.security.Security;
+ import java.security.SignatureException;
+ import java.security.cert.CertificateEncodingException;
+ import java.security.cert.X509Certificate;
++import java.security.spec.RSAKeyGenParameterSpec;
+ import java.util.Calendar;
+ import java.util.Date;
+ import java.util.Enumeration;
+@@ -51,7 +54,6 @@ import org.bouncycastle.asn1.x509.X509Extensions;
+ import org.bouncycastle.asn1.x509.X509Name;
+ import org.bouncycastle.jce.PKCS10CertificationRequest;
+ import org.bouncycastle.jce.provider.BouncyCastleProvider;
+-import org.bouncycastle.jce.provider.JDKKeyPairGenerator;
+ import org.bouncycastle.openssl.PEMWriter;
+ import org.bouncycastle.x509.X509V3CertificateGenerator;
+ import org.glite.security.util.PrivateKeyReader;
+@@ -249,7 +251,11 @@ public class ProxyCertificateGenerator {
+                         "Only private key of the proxy is set. As it is, also public key has to be set.");
+             }
+ 
+-            generateKeys();
++            try {
++                generateKeys();
++            } catch (InvalidAlgorithmParameterException|NoSuchProviderException e) {
++                throw new Error("(should not happen) from generateKeys(): ", e);
++            }
+         }
+ 
+         // default to RFC proxy id all else fails.
+@@ -282,9 +288,12 @@ public class ProxyCertificateGenerator {
+     /**
+      * Generates the private and public keys if they are not given.
+      */
+-    private void generateKeys() {
+-        JDKKeyPairGenerator.RSA keyPairGen = new JDKKeyPairGenerator.RSA();
+-        keyPairGen.initialize(m_keyLength, new SecureRandom());
++    private void generateKeys() throws InvalidAlgorithmParameterException, NoSuchAlgorithmException, NoSuchProviderException {
++        KeyPairGenerator keyPairGen = KeyPairGenerator.getInstance("RSA", "BC");
++        keyPairGen.initialize(
++            new RSAKeyGenParameterSpec(m_keyLength,
++            BigInteger.valueOf(65537)),
++            new SecureRandom());
+         KeyPair pair = keyPairGen.generateKeyPair();
+         m_privateKey = pair.getPrivate();
+         m_publicKey = pair.getPublic();
+diff --git a/test/src/org/glite/security/util/PrivateKeyReaderTest.java b/test/src/org/glite/security/util/PrivateKeyReaderTest.java
+index 64df8ee..5eae5a6 100644
+--- a/test/src/org/glite/security/util/PrivateKeyReaderTest.java
++++ b/test/src/org/glite/security/util/PrivateKeyReaderTest.java
+@@ -22,11 +22,11 @@ import junit.framework.TestSuite;
+ 
+ import org.apache.log4j.Logger;
+ 
+-import org.bouncycastle.jce.provider.JDKKeyPairGenerator;
+ import org.bouncycastle.openssl.PasswordFinder;
+ 
+ import org.glite.security.TestBase;
+ 
++import java.math.BigInteger;
+ import java.io.BufferedInputStream;
+ import java.io.BufferedReader;
+ import java.io.FileInputStream;
+@@ -35,8 +35,10 @@ import java.io.IOException;
+ import java.io.StringBufferInputStream;
+ import java.io.StringReader;
+ import java.security.KeyPair;
++import java.security.KeyPairGenerator;
+ import java.security.PrivateKey;
+ import java.security.SecureRandom;
++import java.security.spec.RSAKeyGenParameterSpec;
+ 
+ 
+ /**
+@@ -432,8 +434,11 @@ public class PrivateKeyReaderTest extends TestBase {
+      * @throws Throwable DOCUMENT ME!
+      */
+     public void testWriteRead() throws Throwable {
+-        JDKKeyPairGenerator.RSA keyPairGen = new JDKKeyPairGenerator.RSA();
+-        keyPairGen.initialize(1024, new SecureRandom());
++        KeyPairGenerator keyPairGen = KeyPairGenerator.getInstance("RSA", "BC");
++        keyPairGen.initialize(
++            new RSAKeyGenParameterSpec(1024,
++            BigInteger.valueOf(65537)),
++            new SecureRandom());
+         KeyPair pair = keyPairGen.generateKeyPair();
+         PrivateKey privateKey = pair.getPrivate();
+         
+-- 
+2.0.1
+
