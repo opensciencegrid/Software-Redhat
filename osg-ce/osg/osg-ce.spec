@@ -4,7 +4,7 @@
 Name:      osg-ce
 Summary:   OSG Compute Element
 Version:   3.2
-Release:   5%{?dist}
+Release:   6%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -96,6 +96,7 @@ Group: Grid
 Summary: Gateway-less PBS meta-package for OSG-CE
 
 Requires: %{basece} = %{version}-%{release}
+Requires: torque-client
 Requires: gratia-probe-pbs-lsf
 Requires: osg-configure-pbs
 
@@ -120,6 +121,7 @@ Group: Grid
 Summary: Gateway-less SGE meta-package for OSG-CE
 
 Requires: %{basece} = %{version}-%{release}
+Requires: gridengine
 Requires: gratia-probe-sge
 Requires: osg-configure-sge
 
@@ -259,6 +261,9 @@ exit 0
 %files sge
 
 %changelog
+* Wed Nov 26 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 3.2-6
+- Have pbs and sge metapackages install their respective batch systems (SOFTWARE-1701)
+
 * Wed Jul 30 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 3.2-5
 - Have main osg-ce packages install both HTCondor-CE and GRAM (SOFTWARE-1559)
 
