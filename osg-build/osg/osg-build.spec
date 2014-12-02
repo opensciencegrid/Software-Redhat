@@ -1,9 +1,9 @@
-#global betatag beta1
+#%%global betatag .beta1
+%global _release 1
 
 Name:           osg-build
-Version:        1.4.1
-Release:        1%{?dist}
-#Release:        0.1.%{betatag}%{?dist}
+Version:        1.4.2
+Release:        %{?betatag:0.}%{_release}%{?betatag}%{?dist}
 Summary:        Build tools for the OSG
 
 Group:          System Environment/Tools
@@ -70,6 +70,12 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_docdir}/%{name}/sample-osg-build.ini
 
 %changelog
+* Mon Dec 01 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.4.2-1
+- Don't require a cert when doing a mock build using a koji config
+- Change contrib promotion route to go from testing to contrib instead of
+  development to contrib (SOFTWARE-1682)
+- Use current dir as package dir if not specified (SOFTWARE-1424)
+
 * Tue Sep 30 2014 Matyas Selmeci <matyas@cs.wisc.edu> 1.4.1-1
 - Do not promote EL7 unless --el7 flag is passed (SOFTWARE-1586)
 - Add --background option for koji builds to lower priority (SOFTWARE-1609)
