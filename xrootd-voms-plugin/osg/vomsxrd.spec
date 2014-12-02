@@ -4,11 +4,11 @@
 Name:      xrootd-voms-plugin
 Epoch:     1
 Version:   0.2.0
-Release:   1.1%{?dist}
+Release:   1.2%{?dist}
 Summary:   VOMS attribute extractor plug-in for XRootD
 Group:     System Environment/Libraries
 License:   BSD
-URL:       https://github.com/gganis/voms
+URL:       https://github.com/gganis/vomsxrd
 Prefix:    /usr
 
 # git clone git://github.com/gganis/voms.git vomsxrd
@@ -20,11 +20,15 @@ BuildRoot: %{_tmppath}/%{name}-root
 BuildRequires: cmake >= 2.6
 BuildRequires: voms >= 2.0.6
 BuildRequires: voms-devel >= 2.0.6
-BuildRequires: xrootd-libs >= 1:3.3.1
-BuildRequires: xrootd-libs-devel >= 1:3.3.1
+#BuildRequires: xrootd4-libs 
+#BuildRequires: xrootd4-devel
+BuildRequires: xrootd-libs >= 4.0.1
+BuildRequires: xrootd-devel >= 4.0.1
+
 
 Requires: voms >= 2.0.6
-Requires: xrootd-libs >= 1:3.3.1
+Requires: xrootd-libs >= 4.0.1
+Conflicts: xrootd < 3.0.3-1
 
 %description
 The VOMS attribute extractor plug-in for XRootD
@@ -93,6 +97,9 @@ rm -rf $RPM_BUILD_ROOT
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Tue Dec 2 2014 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1:0.2.0-1.2
+- Rebuild with xroot4 libraries
+
 * Mon Apr 22 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1:0.2.0-1.1
 - Rebuild for OSG
 - Fix epoch and version on xrootd dependencies
