@@ -1,0 +1,44 @@
+From 2d0bc21a135fe7f714c0243bb4fd76203eb21de2 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Mon, 1 Dec 2014 19:40:25 -0600
+Subject: [PATCH] OptionParser Python 2.4 compat fix
+
+Python 2.4 OptionParser can't display an epilog message so tack it onto
+the end of the usage.  This does not look as nice, but still gets the
+point across.  (SOFTWARE-1669)
+---
+ src/condor_ce_info_status | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
+
+diff --git a/src/condor_ce_info_status b/src/condor_ce_info_status
+index a1a6ab1..7b147ef 100755
+--- a/src/condor_ce_info_status
++++ b/src/condor_ce_info_status
+@@ -206,14 +206,21 @@ which results in:
+             ...
+         ]
+ 
+ ''' % {'prog': os.path.basename(argv[0])}
+ 
+-    # Don't reformat the epilog string (https://stackoverflow.com/questions/1857346)
+-    optparse.OptionParser.format_epilog = lambda self, formatter: self.epilog
++    try:
++        parser = optparse.OptionParser(usage=usage, epilog=epilog)
++        # Don't reformat the epilog string (https://stackoverflow.com/questions/1857346)
++        optparse.OptionParser.format_epilog = lambda self, formatter: self.epilog
++    except TypeError:
++        # Python 2.4 does not have epilog so append epilog onto usage
++        usage += "\n" + epilog
++        parser = optparse.OptionParser(usage=usage)
++        # Don't reformat the usage string (https://stackoverflow.com/questions/1857346)
++        optparse.OptionParser.format_usage = lambda self, formatter: self.usage
+ 
+-    parser = optparse.OptionParser(usage=usage, epilog=epilog)
+     parser.add_option("--cpus", default=1, type='int',
+                       help="CPUs requested")
+     parser.add_option("--memory", default=1, type='int',
+                       help="Memory requested (in megabytes)")
+     parser.add_option("--walltime", default=0, type='int',
+-- 
+2.0.1
+
