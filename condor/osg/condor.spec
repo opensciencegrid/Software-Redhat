@@ -111,7 +111,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.1
+%define condor_base_release 1.2
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -507,7 +507,7 @@ resources exposed by the deltacloud API.
 %package classads
 Summary: HTCondor's classified advertisement language
 Group: Development/Libraries
-Obsoletes: classads <= 1.0.8
+Obsoletes: classads <= 1.0.10
 Obsoletes: classads-static <= 1.0.8
 Provides: classads = %version-%release
 
@@ -1773,6 +1773,9 @@ fi
 %endif
 
 %changelog
+* Tue Dec 02 2014 Carl Edquist <edquist@cs.wisc.edu> - 8.2.5-1.2
+- Update Obsoletes for latest classads in EPEL (SOFTWARE-1697)
+
 * Thu Nov 20 2014 Carl Edquist <edquist@cs.wisc.edu> - 8.2.4-1.2
 - Include upstream fixes for preserving a modified condor_config.local (#4731)
 
