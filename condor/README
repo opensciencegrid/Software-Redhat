@@ -1,4 +1,24 @@
-Upstream source RPM obtained from UW AFS under:
+Upstream source RPM obtained from UW AFS:
+
+  /p/condor/public/binaries/v$SERIES/$VERSION/condor-$VERSION-1.src.rpm
+
+  (for VERSION=X.Y.Z and SERIES=X.Y)
+
+For example:
 
   /p/condor/public/binaries/v8.2/8.2.5/condor-8.2.5-1.src.rpm
+
+
+Instructions for updating upstream source:
+
+  VERSION=8.2.5
+  SERIES=${VERSION%.*}
+  SRPM=condor-$VERSION-1.src.rpm
+  PUBLIC_SRPM=/p/condor/public/binaries/v$SERIES/$VERSION/$SRPM
+  UPSTREAM=/p/vdt/public/html/upstream/condor/$VERSION/
+
+  mkdir -p $UPSTREAM
+  cp $PUBLIC_SRPM $UPSTREAM
+
+  echo condor/$VERSION/$SRPM > upstream/developer.srpm.source
 
