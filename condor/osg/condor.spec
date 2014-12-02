@@ -205,6 +205,11 @@ Source123: zlib-1.2.3.tar.gz
 Patch1: 4556-udp_invalidations.patch
 Patch2: 4590-improved_tool_output.patch
 
+# This makes it into 8.3.1, but not 8.2.x
+# https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=3158
+# https://jira.opensciencegrid.org/browse/SOFTWARE-1553
+Patch3: 3158-user-specific-configs.patch
+
 #% if 0%osg
 Patch8: osg_sysconfig_in_init_script.patch
 #% endif
@@ -1775,6 +1780,7 @@ fi
 %changelog
 * Tue Dec 02 2014 Carl Edquist <edquist@cs.wisc.edu> - 8.2.5-1.2
 - Update Obsoletes for latest classads in EPEL (SOFTWARE-1697)
+- Allow user specific condor configs (#3158 / SOFTWARE-1553)
 
 * Thu Nov 20 2014 Carl Edquist <edquist@cs.wisc.edu> - 8.2.4-1.2
 - Include upstream fixes for preserving a modified condor_config.local (#4731)
