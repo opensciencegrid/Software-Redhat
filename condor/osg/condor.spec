@@ -1,4 +1,4 @@
-%define tarball_version 8.2.4
+%define tarball_version 8.2.5
 
 # optionally define any of these, here or externally
 # % define fedora   16
@@ -97,7 +97,7 @@
 %define git_build 0
 # If building with git tarball, Fedora requests us to record the rev.  Use:
 # git log -1 --pretty=format:'%h'
-%define git_rev e3b42ed
+%define git_rev d4b8b96
 
 %if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
 %{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
@@ -111,7 +111,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.2
+%define condor_base_release 1.1
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -1262,7 +1262,7 @@ rm -rf %{buildroot}
 %_bindir/condor_tail
 %_bindir/condor_qsub
 %_bindir/condor_pool_job_report
-%_bindir/condor_job_router_tool
+%_bindir/condor_job_router_info
 # reconfig_schedd, restart
 # sbin/condor is a link for master_off, off, on, reconfig,
 %_sbindir/condor_advertise
