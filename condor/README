@@ -1,8 +1,4 @@
-OBTAINING THE UPSTREAM SOURCE RPM
+Upstream source RPM obtained from UW AFS under:
 
-The CHTC plans to make the HTCondor Unified Source RPM available for download;
-we'll update this page when that happens.
-
-Until then, contact the HTCondor Release Manager, Tim Theisen <tim@cs.wisc.edu>
-for details.
+  /p/condor/public/binaries/v8.2/8.2.5/condor-8.2.5-1.src.rpm
 
