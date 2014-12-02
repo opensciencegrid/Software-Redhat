@@ -3,7 +3,7 @@
 
 Name: htcondor-ce
 Version: 1.8
-Release: 3%{?gitrev:.%{gitrev}git}%{?dist}
+Release: 4%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 
 Group: Applications/System
@@ -19,6 +19,7 @@ URL: http://github.com/bbockelm/condor-ce
 Source0: %{name}-%{version}%{?gitrev:-%{gitrev}}.tar.gz
 Patch0: shared_port_config_fix.patch
 Patch1: nested_try.patch
+Patch2: OptionParser-Python-2.4-compat-fix.patch
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -145,6 +146,7 @@ Conflicts: %{name}
 %setup -q
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %build
 %cmake -DHTCONDORCE_VERSION=%{version} -DCMAKE_INSTALL_LIBDIR=%{_libdir}
@@ -305,6 +307,9 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Mon Dec 01 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.8-4
+- Fix help message code so it is Python 2.4 compatible
+
 * Mon Nov 24 2014 Brian Lin <blin@cs.wisc.edu> - 1.8-3
 - Nest try/except/finally for python 2.4 compatability
 
