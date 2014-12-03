@@ -8,7 +8,7 @@
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.4.1
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 %if 0%{?rhel} < 6
@@ -96,6 +96,10 @@ Source14: velocity-1.5.jar
 # Can't get el5 build working with jsp precompile
 Patch0: undo-jsp-precompile.patch
 
+# should make it into upstream GUMS 1.4.2
+# https://jira.opensciencegrid.org/browse/SOFTWARE-992
+Patch1: 992-remove-saml-service.patch
+
 %description
 %{summary}
 
@@ -139,6 +143,8 @@ Summary: Tomcat service for GUMS
 %if 0%{?rhel} < 6
 %patch0 -p1
 %endif
+
+%patch1 -p1
 
 %build
 
@@ -384,6 +390,9 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+* Wed Dec 03 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.4.1-3
+- remove the GUMS SAML service definition (SOFTWARE-992)
+
 * Fri Nov 21 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.4.1-2
 - Update to GUMS 1.4.1 (SOFTWARE-1654)
 - Add versioned dependency on emi-trustmanager >= 3.0.3-6

@@ -1,0 +1,46 @@
+diff --git a/gums-service/src/main/webapp/WEB-INF/server-config.wsdd b/gums-service/src/main/webapp/WEB-INF/server-config.wsdd
+index 7e2cccf..912042c 100644
+--- a/gums-service/src/main/webapp/WEB-INF/server-config.wsdd
++++ b/gums-service/src/main/webapp/WEB-INF/server-config.wsdd
+@@ -9,41 +9,6 @@
+       <parameter name="wsdlPortType" value="GUMSAPI"/>
+       <parameter name="scope" value="Application"/>
+   </service>
+-  <service name="GUMSAuthorizationServicePort" provider="java:RPC" style="wrapped" use="literal">
+-      <wsdlFile>/org/opensciencegrid/authz/stubs/AuthZ.wsdl</wsdlFile>
+-      <parameter name="wsdlTargetNamespace" value="http://www.gridforum.org/namespaces/2004/03/ogsa-authz/saml"/>
+-      <parameter name="wsdlServiceElement" value="AuthorizationService"/>
+-      <parameter name="wsdlServicePort" value="AuthorizationServicePort"/>
+-      <parameter name="className" value="gov.bnl.gums.service.GUMSAuthZService"/>
+-      <parameter name="wsdlPortType" value="SAMLRequestPortType"/>
+-      <parameter name="allowedMethods" value="*"/>
+-      <parameter name="scope" value="Request"/>
+-
+-      <typeMapping
+-        xmlns:ns="http://www.gridforum.org/namespaces/2004/03/ogsa-authz/saml"
+-        qname="ns:SAMLResponseType"
+-        type="java:org.opensciencegrid.authz.stubs.SAMLResponseType"
+-        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+-        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+-        encodingStyle=""
+-      />
+-      <typeMapping
+-        xmlns:ns="http://www.gridforum.org/namespaces/2004/03/ogsa-authz/saml"
+-        qname="ns:SAMLRequestType"
+-        type="java:org.opensciencegrid.authz.stubs.SAMLRequestType"
+-        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+-        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+-        encodingStyle=""
+-      />
+-      <typeMapping
+-        xmlns:ns="http://www.gridforum.org/namespaces/2004/03/ogsa-authz/saml"
+-        qname="ns:>SAMLRequestResponse"
+-        type="java:org.opensciencegrid.authz.stubs._SAMLRequestResponse"
+-        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+-        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+-        encodingStyle=""
+-      />
+-  </service>
+   <service name="GUMSXACMLAuthorizationServicePort" provider="java:RPC" style="document" use="literal">
+       <parameter name="wsdlTargetNamespace" value="urn:stubs.xacml.authz.opensciencegrid.org/service"/>
+       <parameter name="wsdlServiceElement" value="XACMLAuthorizationService"/>
