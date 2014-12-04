@@ -1,6 +1,6 @@
 Name:           vo-client
 Version:        58
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Contains vomses file for use with user authentication and edg-mkgridmap.conf file that contains configuration information for edg-mkgridmap.
 
 Group:          System Environment/Base
@@ -85,6 +85,9 @@ rm -rf $RPM_BUILD_ROOT
 %attr(0600,tomcat,tomcat) %config(noreplace) %{_sysconfdir}/gums/gums.config.template
 
 %changelog
+* Thu Dec 04 2014 Carl Edquist <edquist@cs.wisc.edu> - 58-2
+- Bring .lsc files up to date (SOFTWARE-1711)
+
 * Wed Dec 03 2014 Carl Edquist <edquist@cs.wisc.edu> - 58-1
 - Update to vo-client 58 (SOFTWARE-1711)
   - Added Fermilab Analysis Role
