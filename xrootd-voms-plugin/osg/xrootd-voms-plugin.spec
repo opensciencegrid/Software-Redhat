@@ -4,11 +4,11 @@
 Name:      xrootd-voms-plugin
 Epoch:     1
 Version:   0.2.0
-Release:   1.2%{?dist}
+Release:   1.3%{?dist}
 Summary:   VOMS attribute extractor plug-in for XRootD
 Group:     System Environment/Libraries
 License:   BSD
-URL:       https://github.com/gganis/vomsxrd
+URL:       http://gganis.github.io/vomsxrd/
 Prefix:    /usr
 
 # git clone git://github.com/gganis/voms.git vomsxrd
@@ -97,6 +97,10 @@ rm -rf $RPM_BUILD_ROOT
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Thur Dec 4 2014 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1:0.2.0-1.3
+- Chaanged the name of the spec file
+- Added testing instructions to the README
+
 * Tue Dec 2 2014 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1:0.2.0-1.2
 - Rebuild with xroot4 libraries
 
