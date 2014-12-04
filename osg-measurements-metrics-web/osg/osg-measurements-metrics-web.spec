@@ -5,7 +5,7 @@
 
 Name:           osg-measurements-metrics-web
 Version:        1.2
-Release:        30%{?dist}
+Release:        31%{?dist}
 Summary:        OSG Measurements and Metrics web and database
 
 Group:          Applications/System
@@ -80,6 +80,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+
+* Wed Dec 03 2014 Juan F. Mosquera <jmorales@fnal.gov>
+- modifications and program additions to resolve OSG
+- GRATIAWEB-67.
 
 * Thu Oct 09 2014 Juan F. Mosquera <jmorales@fnal.gov>
 - modifications and program additions to resolve OSG
