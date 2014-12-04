@@ -1,5 +1,5 @@
 Name:           vo-client
-Version:        57
+Version:        58
 Release:        1%{?dist}
 Summary:        Contains vomses file for use with user authentication and edg-mkgridmap.conf file that contains configuration information for edg-mkgridmap.
 
@@ -85,6 +85,12 @@ rm -rf $RPM_BUILD_ROOT
 %attr(0600,tomcat,tomcat) %config(noreplace) %{_sysconfdir}/gums/gums.config.template
 
 %changelog
+* Wed Dec 03 2014 Carl Edquist <edquist@cs.wisc.edu> - 58-1
+- Update to vo-client 58 (SOFTWARE-1711)
+  - Added Fermilab Analysis Role
+  - Removed all old CERN VOMS addresses
+  - Replaced old {lcg-,}voms.cern.ch with {lcg-,}voms2.cern.ch
+
 * Thu Nov 06 2014 Carl Edquist <edquist@cs.wisc.edu> - 57-1
 - Update to vo-client 57 (SOFTWARE-1657)
   - Switched voms.cern.ch to voms2.cern.ch
