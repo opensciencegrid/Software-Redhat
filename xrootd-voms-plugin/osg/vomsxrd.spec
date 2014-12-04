@@ -97,9 +97,9 @@ rm -rf $RPM_BUILD_ROOT
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
-* Thur Dec 4 2014 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1:0.2.0-1.3
-- Chaanged the name of the spec file
+* Thu Dec 4 2014 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1:0.2.0-1.3
 - Added testing instructions to the README
+- Changed the name of the spec file back to vomsxrd.spec
 
 * Tue Dec 2 2014 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1:0.2.0-1.2
 - Rebuild with xroot4 libraries
