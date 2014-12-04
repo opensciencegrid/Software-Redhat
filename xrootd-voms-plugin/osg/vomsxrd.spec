@@ -4,7 +4,7 @@
 Name:      xrootd-voms-plugin
 Epoch:     1
 Version:   0.2.0
-Release:   1.3%{?dist}
+Release:   1.4%{?dist}
 Summary:   VOMS attribute extractor plug-in for XRootD
 Group:     System Environment/Libraries
 License:   BSD
@@ -20,15 +20,15 @@ BuildRoot: %{_tmppath}/%{name}-root
 BuildRequires: cmake >= 2.6
 BuildRequires: voms >= 2.0.6
 BuildRequires: voms-devel >= 2.0.6
-#BuildRequires: xrootd4-libs 
-#BuildRequires: xrootd4-devel
-BuildRequires: xrootd-libs >= 4.0.1
-BuildRequires: xrootd-devel >= 4.0.1
+BuildRequires: xrootd4-libs 
+BuildRequires: xrootd4-devel
+#BuildRequires: xrootd-libs >= 4.0.1
+#BuildRequires: xrootd-devel >= 4.0.1
 
 
 Requires: voms >= 2.0.6
-Requires: xrootd-libs >= 4.0.1
-Conflicts: xrootd < 3.0.3-1
+Requires: xrootd4-libs >= 1:4.0.0
+
 
 %description
 The VOMS attribute extractor plug-in for XRootD
@@ -97,6 +97,9 @@ rm -rf $RPM_BUILD_ROOT
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Thu Dec 4 2014 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1:0.2.0-1.4
+- Explicetly require the xrootd4 libraries
+
 * Thu Dec 4 2014 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1:0.2.0-1.3
 - Added testing instructions to the README
 - Changed the name of the spec file back to vomsxrd.spec
