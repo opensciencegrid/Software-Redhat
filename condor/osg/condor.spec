@@ -111,7 +111,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.2
+%define condor_base_release 1.3
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -204,6 +204,11 @@ Source123: zlib-1.2.3.tar.gz
 # https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=4590
 Patch1: 4556-udp_invalidations.patch
 Patch2: 4590-improved_tool_output.patch
+
+# This makes it into 8.2.6
+# https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=4753
+# https://jira.opensciencegrid.org/browse/SOFTWARE-1717
+Patch4: 4753-log_rotation.patch
 
 #% if 0%osg
 Patch8: osg_sysconfig_in_init_script.patch
@@ -655,6 +660,8 @@ exit 0
 
 %patch1 -p1
 %patch2 -p1
+
+%patch4 -p1
 
 %patch8 -p1
 
@@ -1773,6 +1780,9 @@ fi
 %endif
 
 %changelog
+* Fri Dec 05 2014 Carl Edquist <edquist@cs.wisc.edu> - 8.2.4-1.3
+- Include fix from 8.2.6 for daemon log rotation (#4753)
+
 * Thu Nov 20 2014 Carl Edquist <edquist@cs.wisc.edu> - 8.2.4-1.2
 - Include upstream fixes for preserving a modified condor_config.local (#4731)
 
