@@ -1,23 +1,8 @@
-diff --git a/doc/version-history/8-2.history.tex b/doc/version-history/8-2.history.tex
-index 742f159..3fdb7a5 100644
---- a/doc/version-history/8-2.history.tex
-+++ b/doc/version-history/8-2.history.tex
-@@ -53,10 +53,6 @@ caused the \Condor{shadow} to put the job on hold, the job would be put
- in the held status, but change to idle status when released.
- \Ticket{4619}
- 
--\item Fixed a bug that could cause a daemon to write to an old daemon log
--file after log rotation.
--\Ticket{3106}
--
- \item The HTCondor DRMAA library now works correctly when
- \Macro{SCHEDD\_HOST} is set in the configuration file.
- \Ticket{4629}
 diff --git a/src/condor_utils/dprintf.cpp b/src/condor_utils/dprintf.cpp
-index ed95b2c..7a11717 100644
+index fbba263..025b902 100644
 --- a/src/condor_utils/dprintf.cpp
 +++ b/src/condor_utils/dprintf.cpp
-@@ -196,8 +196,6 @@ int		LockFd = -1;
+@@ -186,8 +186,6 @@ int		LockFd = -1;
  
  int		log_keep_open = 0;
  
@@ -26,7 +11,7 @@ index ed95b2c..7a11717 100644
  static	int DprintfBroken = 0;
  static	int DebugUnlockBroken = 0;
  #if !defined(WIN32) && defined(HAVE_PTHREADS)
-@@ -1035,7 +1033,7 @@ debug_lock_it(struct DebugFileInfo* it, const char *mode, int force_lock, bool d
+@@ -991,7 +989,7 @@ debug_lock_it(struct DebugFileInfo* it, const char *mode, int force_lock, bool d
  	}
  
  	//This is checking for a non-zero max length.  Zero is infinity.
@@ -35,7 +20,7 @@ index ed95b2c..7a11717 100644
  		if( !locked ) {
  			/*
  			 * We only need to redo everything if there is a lock defined
-@@ -1859,14 +1857,6 @@ dprintf_init_fork_child( ) {
+@@ -1824,14 +1822,6 @@ dprintf_init_fork_child( ) {
  		close( LockFd );
  		LockFd = -1;
  	}

@@ -208,7 +208,7 @@ Patch2: 4590-improved_tool_output.patch
 # This makes it into 8.2.6
 # https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=4753
 # https://jira.opensciencegrid.org/browse/SOFTWARE-1717
-Patch4: 4753-log_rotation.patch
+Patch4: 3106-revert-log_rotation.patch
 
 #% if 0%osg
 Patch8: osg_sysconfig_in_init_script.patch
