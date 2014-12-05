@@ -18,7 +18,7 @@
 
 Name:           myproxy
 Version:        5.9
-Release:        8.2%{?dist}
+Release:        8.3%{?dist}
 Summary:        Manage X.509 Public Key Infrastructure (PKI) security credentials
 
 Group:          Applications/Internet
@@ -462,7 +462,7 @@ fi
 %doc %{_pkgdocdir}/refman.pdf
 
 %changelog
-* Fri Dec 05 2014 Carl Edquist <edquist@cs.wisc.edu> - 5.9-8.2
+* Fri Dec 05 2014 Carl Edquist <edquist@cs.wisc.edu> - 5.9-8.3
 - Add dummy package to mask myproxy-voms >= 6.1.6 from EPEL (SOFTWARE-1715)
 
 * Fri Jan 31 2014 Mattias Ellert <mattias.ellert@fysast.uu.se> - 5.9-8
