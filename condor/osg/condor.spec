@@ -111,7 +111,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.3
+%define condor_base_release 1.4
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -1780,6 +1780,9 @@ fi
 %endif
 
 %changelog
+* Fri Dec 05 2014 Carl Edquist <edquist@cs.wisc.edu> - 8.2.4-1.4
+- Revert change from #3106 that caused log rotation bug (SOFTWARE-1717)
+
 * Fri Dec 05 2014 Carl Edquist <edquist@cs.wisc.edu> - 8.2.4-1.3
 - Include fix from 8.2.6 for daemon log rotation (#4753)
 
