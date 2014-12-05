@@ -18,7 +18,7 @@
 
 Name:           myproxy
 Version:        5.9
-Release:        8%{?dist}
+Release:        8.1%{?dist}
 Summary:        Manage X.509 Public Key Infrastructure (PKI) security credentials
 
 Group:          Applications/Internet
@@ -103,6 +103,13 @@ Users run myproxy-logon to authenticate and obtain credentials, including
 trusted CA certificates and Certificate Revocation Lists (CRLs).
 
 Package %{name}-libs contains runtime libs for MyProxy.
+
+%package voms
+Summary:        Dummy package to mask %{name}-voms >= 6.1.6 from EPEL
+Group:          System Environment/Libraries
+
+%description voms
+Dummy package to mask %{name}-voms >= 6.1.6 from EPEL
 
 %package devel
 Summary:        Develop X.509 Public Key Infrastructure (PKI) security credentials
@@ -395,6 +402,8 @@ fi
 %doc %{_pkgdocdir}/README
 %doc %{_pkgdocdir}/VERSION
 
+%files voms
+
 %files devel
 %{_includedir}/globus/myproxy.h
 %{_includedir}/globus/myproxy_authorization.h
@@ -453,6 +462,9 @@ fi
 %doc %{_pkgdocdir}/refman.pdf
 
 %changelog
+* Fri Dec 05 2014 Carl Edquist <edquist@cs.wisc.edu> - 5.9-8.1
+- Add dummy package to mask myproxy-voms >= 6.1.6 from EPEL (SOFTWARE-1715)
+
 * Fri Jan 31 2014 Mattias Ellert <mattias.ellert@fysast.uu.se> - 5.9-8
 - Fix broken postun scriptlet
 
