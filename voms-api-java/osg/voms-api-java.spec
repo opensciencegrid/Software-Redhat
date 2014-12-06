@@ -7,7 +7,7 @@
 
 Name:		voms-api-java
 Version:	2.0.8
-Release:	1.5%{?dist}
+Release:	1.6%{?dist}
 Summary:	Virtual Organization Membership Service Java API
 
 Group:		Development/Libraries
@@ -51,7 +51,7 @@ BuildRequires:	java7-devel
 BuildRequires:	jpackage-utils
 
 %if %maven
-BuildRequires:	maven
+BuildRequires:	maven-local
 BuildRequires:	maven-compiler-plugin
 BuildRequires:	maven-install-plugin
 BuildRequires:	maven-jar-plugin
@@ -101,7 +101,7 @@ sed -e s/bcprov-ext-jdk16/bcprov-jdk16/ -e s/1.45/1.46/ -i pom.xml
 
 %build
 %if %{maven}
-mvn-rpmbuild install javadoc:aggregate
+mvn -B install javadoc:aggregate
 %else
 export CLASSPATH=$(build-classpath bcprov log4j commons-cli commons-lang)
 ant package javadoc
@@ -155,6 +155,9 @@ if [[ $1 -gt 0 && -e %{_javadir}/%{name}.jar ]]; then
 fi
 
 %changelog
+* Fri Dec 05 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 2.0.8-1.6
+- Fix build failures on EL7
+
 * Tue Feb 19 2013 Carl Edquist <edquist@cs.wisc.edu> - 2.0.8-1.5
 - Rebuilt with OpenJDK7 / changed java dependency to java7
 
