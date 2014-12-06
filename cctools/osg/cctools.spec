@@ -5,7 +5,7 @@
 %endif
 Name: cctools
 Version: 4.1.3
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: A collection of tools for harnessing large scale distributed systems
 License: GPL 2.0 
 URL: http://www3.nd.edu/~ccl/
@@ -13,7 +13,12 @@ Group: System Environment/Daemons
 
 Source0: %{name}-%{version}-source.tar.gz
 BuildRoot:  %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildRequires: cvmfs-devel xrootd4-devel fuse-devel
+BuildRequires: cvmfs-devel fuse-devel
+%if 0%?rhel >= 7
+BuildRequires: xrootd-devel >= 1:4.0.0
+%else
+BuildRequires: xrootd4-devel
+%endif
 BuildRequires: openssl-devel
 BuildRequires: zlib-devel
 BuildRequires: python-devel >= 2.4
@@ -362,6 +367,9 @@ rm %{buildroot}/usr/etc/Makefile.config
 
 
 %changelog
+* Fri Dec 05 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 4.1.3-3
+- Fix build failure on EL7
+
 * Wed Aug 13 2014 Carl Edquist <edquist@cs.wisc.edu> - 4.1.3-2
 - Rebuild against xrootd4-devel
 
