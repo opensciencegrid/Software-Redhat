@@ -1,7 +1,7 @@
 
 Name: xrootd-cmstfc
 Version: 1.5.1
-Release: 8%{?dist}
+Release: 9%{?dist}
 Summary: CMS TFC plugin for xrootd
 
 Group: System Environment/Daemons
@@ -15,7 +15,11 @@ BuildRequires: xrootd-devel >= 1:4.0.0
 BuildRequires: xerces-c-devel pcre-devel
 BuildRequires: cmake
 Requires: /usr/bin/xrootd pcre xerces-c
+%if 0%{?rhel} < 7
 Requires: xrootd4 >= 1:4.0.0
+%else
+Requires: xrootd >= 1:4.0.0
+%endif
 
 %package devel
 Summary: Development headers and libraries for Xrootd CMSTFC plugin
@@ -52,6 +56,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/XrdCmsTfc.hh
 
 %changelog
+* Fri Dec 05 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.1-9%{?dist}
+- Require xrootd (instead of xrootd4) on EL7
+
 * Mon Jul 14 2014 Edgar Fakardo <efajardo@physics.ucsd.edu> - 1.5.1-8
 - Rebuild against xrootd4 and fixed xrootd4 requirements
 
