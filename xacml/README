@@ -1,11 +1,10 @@
+The source rpm for this package came from 
 
-This is a repackage of upstream plus one patch, xacml_namespaces.patch.
+http://software.nikhef.nl/dist/mwsec/rpm/epel5/SRPMS/
 
-xacml_namespaces.patch does two things:
-1) Renames namespaces -> xacml_namespaces
-2) Explicitly sets the namespace of struct soap to xacml_namespaces.
+The spec file comes from
 
-HTCondor also exports a global variable named 'namespaces'; without this
-patch, HTCondor will clobber xacml's 'namespaces' global variable,
-resulting in difficult-to-debug GUMS issues.
+http://ndpfsvn.nikhef.nl/viewvc/mwsec/packaging/fedora/trunk/xacml.spec
 
+but starting with version 1.5.0 OSG does not need any patches so we
+can pass it through unchanged.
