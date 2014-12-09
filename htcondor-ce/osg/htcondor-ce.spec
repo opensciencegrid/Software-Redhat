@@ -3,7 +3,7 @@
 
 Name: htcondor-ce
 Version: 1.8
-Release: 4%{?gitrev:.%{gitrev}git}%{?dist}
+Release: 5%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 
 Group: Applications/System
@@ -20,6 +20,7 @@ Source0: %{name}-%{version}%{?gitrev:-%{gitrev}}.tar.gz
 Patch0: shared_port_config_fix.patch
 Patch1: nested_try.patch
 Patch2: OptionParser-Python-2.4-compat-fix.patch
+Patch3: sw1705-condor_ce_reconfig_error_msg.patch
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -147,6 +148,7 @@ Conflicts: %{name}
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 %build
 %cmake -DHTCONDORCE_VERSION=%{version} -DCMAKE_INSTALL_LIBDIR=%{_libdir}
@@ -307,6 +309,9 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Thu Dec 04 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.8-5
+- Add a user-friendly error message when condor_ce_reconfig fails in condor_ce_config_generator (SOFTWARE-1705)
+
 * Mon Dec 01 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.8-4
 - Fix help message code so it is Python 2.4 compatible
 
