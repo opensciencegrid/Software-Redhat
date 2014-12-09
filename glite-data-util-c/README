@@ -1,5 +1,11 @@
 
-Two notes from the packager:
+Three notes from the packager:
 1) Added the Fedora-compatible glite m4 macros to the bootstrap script.
 2) Could not find the GLITE_LIB64 macro; simply commented it out.
+3) The build originally required the 'gridsite_globus' libs. In the current
+   version of gridsite, the gridsite_globus libs are just copies of the
+   gridsite libs, for compatibility. The EPEL version of the gridsite package
+   removes the gridsite_globus libs, causing this build to fail, so I patched
+   one of the makefiles to replace the gridsite_globus depedency with just
+   gridsite.
 

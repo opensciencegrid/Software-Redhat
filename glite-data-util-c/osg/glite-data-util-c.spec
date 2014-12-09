@@ -1,6 +1,6 @@
 Name:		glite-data-util-c
 Version:	1.2.3
-Release:	4%{?dist}
+Release:	5%{?dist}
 Summary:	gLite data C utilties
 
 Group:		System/Libraries
@@ -10,6 +10,7 @@ URL:		http://glite.cvs.cern.ch/cgi-bin/glite.cgi/org.glite.data.util-c
 # http://glite.cvs.cern.ch/cgi-bin/glite.cgi/org.glite.data.util-c.tar.gz?view=tar&pathrev=glite-data-util-c_R_1_2_3_1
 Source0:        org.glite.data.util-c.tar.gz
 Patch0:         glite_data_util_c_fedora.patch
+Patch1:         remove_gridsite_globus.patch
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
 BuildRequires:  automake
@@ -31,6 +32,7 @@ BuildRequires:  libxml2-devel
 %setup -n org.glite.data.util-c
 
 %patch0 -p0
+%patch1 -p1
 
 %build
 ./bootstrap
@@ -57,6 +59,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_docdir}/*
 
 %changelog
+* Tue Dec 09 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.2.3-5
+- Patch to remove gridsite_globus dep
+
 * Fri Oct 28 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.2.3-4
 - rebuilt
 

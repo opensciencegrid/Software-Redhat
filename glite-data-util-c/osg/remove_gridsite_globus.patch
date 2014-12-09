@@ -1,0 +1,42 @@
+From 0ccc095af3e7296fa2cd214a347accdafcbafc08 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Tue, 9 Dec 2014 15:44:24 -0600
+Subject: [PATCH] No gridsite_globus -- use gridsite instead
+
+---
+ src/Makefile.am | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/Makefile.am b/src/Makefile.am
+index d3a1f9d..444e926 100644
+--- a/src/Makefile.am
++++ b/src/Makefile.am
+@@ -19,11 +19,11 @@ include $(top_srcdir)/Makefile.am.common
+ AM_CPPFLAGS= \
+ 	-I$(top_srcdir)/interface \
+ 	$(GLOBUS_THR_CFLAGS) \
+ 	$(GLIB_CFLAGS) \
+ 	$(GLITE_SERVICE_DISCOVERY_API_C_CFLAGS) \
+-	$(GRIDSITE_GLOBUS_CFLAGS)
++	$(GRIDSITE_CFLAGS)
+ 
+ lib_LTLIBRARIES = \
+ 	libglite_data_util.la 
+ 
+ libglite_data_util_la_SOURCES = \
+@@ -32,11 +32,11 @@ libglite_data_util_la_SOURCES = \
+ 	util.c
+ 
+ libglite_data_util_la_LIBADD = \
+ 	$(GLIB_LIBS) \
+ 	$(GLITE_SERVICE_DISCOVERY_API_C_LIBS) \
+-	$(GRIDSITE_GLOBUS_LIBS)
++	$(GRIDSITE_LIBS)
+ 
+ libglite_data_util_la_LDFLAGS = \
+ 	-version-info $(INTERFACE_LIBTOOL_CURRENT):$(INTERFACE_LIBTOOL_REVISION):$(INTERFACE_LIBTOOL_AGE)
+ 
+ # 
+-- 
+2.0.1
+
