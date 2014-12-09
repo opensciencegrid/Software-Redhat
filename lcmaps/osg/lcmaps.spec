@@ -18,7 +18,7 @@
 Summary: Grid (X.509) and VOMS credentials to local account mapping service
 Name: lcmaps
 Version: 1.6.4
-Release: 1.1%{?dist}
+Release: 1.2%{?dist}
 License: ASL 2.0
 Group: System Environment/Libraries
 URL: http://wiki.nikhef.nl/grid/LCMAPS
@@ -319,9 +319,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Dec 09 2014 Dave Dykstra <dwd@fnal.gov> 1.6.4-1.2.osg
+- Removed requirement of lcmaps-plugins-saz-client
+
 * Tue Dec 09 2014 Dave Dykstra <dwd@fnal.gov> 1.6.4-1.1.osg
 - Reimported upstream version into OSG
-- Removed requirement of lcmaps-plugins-saz-client
 
 * Fri Feb 28 2014 Mischa Salle <msalle@nikhef.nl> 1.6.4-1
 - updated version
