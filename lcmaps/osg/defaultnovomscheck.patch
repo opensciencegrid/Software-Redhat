@@ -1,11 +1,11 @@
---- src/grid_credential_handling/gsi_handling/lcmaps_voms_attributes.c.O	2012-04-18 16:41:34.548000000 -0500
-+++ src/grid_credential_handling/gsi_handling/lcmaps_voms_attributes.c	2012-04-18 16:42:14.290000000 -0500
+--- src/grid_credential_handling/gsi_handling/lcmaps_voms_attributes.c.O	2013-12-20 10:09:48.540462000 -0600
++++ src/grid_credential_handling/gsi_handling/lcmaps_voms_attributes.c	2013-12-20 10:13:37.873766000 -0600
 @@ -108,10 +108,9 @@
  static char *vomsdir = NULL;
  
  /*
 - * Always verify VOMS credentials by default
-- * as designed by the VOMS developers 
+- * as designed by the VOMS developers
 + * Don't verify VOMS credentials by default
   */
 -static int   verify_voms_credentials = 1;

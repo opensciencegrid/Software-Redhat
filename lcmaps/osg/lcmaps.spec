@@ -1,24 +1,32 @@
 # Notes:
-# The *-interface packages are meant for developing client
+# The lcmaps-*-devel packages are meant for developing client
 # programs. The preferred model of development is to dlopen() the
 # interface library at run-time, which means that a) the libraries are
 # not required for development at all and b) client programs become
-# independent of the run-time version of LCMAPS.
-# This is why the interface packages only contain header files and do
-# not depend on the base package. It is also the reason that the .so
-# symlinks are in the run-time package and not in the devel package.
+# independent of the run-time version of LCMAPS.  This is why the
+# devel packages only contain header files and the .so symlinks are in
+# the run-time package.
+#
+# The LCMAPS interfaces are:
+# -basic, which are very simple and do not require openssl,
+# -openssl, which include 'basic' and require openssl for x509 structures,
+# -globus, which include 'openssl' and require Globus Toolkit functions.
+#
+# The lcmaps-devel package is the most inclusive, so it's a safe choice
+# to install in case of any development work.
 
 Summary: Grid (X.509) and VOMS credentials to local account mapping service
 Name: lcmaps
-Version: 1.5.7
-Release: 1.4%{?dist}
+Version: 1.6.4
+Release: 1.1%{?dist}
 License: ASL 2.0
 Group: System Environment/Libraries
-URL: http://wiki.nikhef.nl/grid/Site_Access_Control
-Source0: lcmaps-%{version}.tar.gz
+URL: http://wiki.nikhef.nl/grid/LCMAPS
+Source0: http://software.nikhef.nl/security/lcmaps/lcmaps-%{version}.tar.gz
 Source1: lcmaps.db
 Patch0: defaultnovomscheck.patch
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
+# BuildRoot is still required for EPEL5
+BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildRequires: globus-core
 BuildRequires: globus-common-devel
 BuildRequires: globus-gssapi-gsi-devel
@@ -26,7 +34,6 @@ BuildRequires: globus-gss-assist-devel
 BuildRequires: globus-gsi-credential-devel
 BuildRequires: voms-devel
 BuildRequires: flex, bison
-BuildRequires: automake, autoconf, libtool
 
 # these should be in a metapackage instead of here
 Requires: lcmaps-plugins-gums-client
@@ -69,78 +76,24 @@ see the lcmaps-interface package.
 This version is built without support for the GSI protocol.
 
 
-%package globus-interface
-Group: Development/Libraries
-Summary: LCMAPS plug-in API header files
-Requires: %{name}-openssl-interface = %{version}-%{release}
-Requires: globus-gssapi-gsi-devel
-# the pkgconfig requirement is only necessary for EPEL5 and below;
-# it's automatic for Fedora and EPEL6.
-%if %{?rhel}%{!?rhel:0} <= 5
-Requires: pkgconfig
-%endif
-%if %{?fedora}%{!?fedora:0} >= 10 || %{?rhel}%{!?rhel:0} >= 6
-BuildArch: noarch
-%endif
-Provides: %{name}-interface = %{version}-%{release}
-Obsoletes: %{name}-interface < 1.4.31-1
-
-%package openssl-interface
-Group: Development/Libraries
-Summary: LCMAPS plug-in API header files
-Requires: %{name}-basic-interface = %{version}-%{release}
-Requires: openssl-devel
-%if %{?rhel}%{!?rhel:0} <= 5
-Requires: pkgconfig
-%endif
-%if %{?fedora}%{!?fedora:0} >= 10 || %{?rhel}%{!?rhel:0} >= 6
-BuildArch: noarch
-%endif
-
-%package basic-interface
-Group: Development/Libraries
-Summary: LCMAPS plug-in API header files
-%if %{?rhel}%{!?rhel:0} <= 5
-Requires: pkgconfig
-%endif
-%if %{?fedora}%{!?fedora:0} >= 10 || %{?rhel}%{!?rhel:0} >= 6
-BuildArch: noarch
-%endif
-
-
-%description globus-interface
-The Local Centre MAPping Service (LCMAPS) is a security middleware
-component that processes the users Grid credentials (typically X.509
-proxy certificates and VOMS attributes) and maps the user to a local
-account based on the site local policy.
-
-This package contains the header files and interface definitions
-that depend on Globus Toolkit data structures.
-
-%description openssl-interface
-The Local Centre MAPping Service (LCMAPS) is a security middleware
-component that processes the users Grid credentials (typically X.509
-proxy certificates and VOMS attributes) and maps the user to a local
-account based on the site local policy.
-
-This package contains the header files and interface definitions
-that depend on openssl data structures.
-
-%description basic-interface
-The Local Centre MAPping Service (LCMAPS) is a security middleware
-component that processes the users Grid credentials (typically X.509
-proxy certificates and VOMS attributes) and maps the user to a local
-account based on the site local policy.
-
-This package contains the header files and interface definitions
-for client applications.
-
-
 %package devel
 Group: Development/Libraries
-Summary: LCMAPS development libraries
-Requires: %{name}-globus-interface = %{version}-%{release}
-Requires: %{name} = %{version}-%{release}
+Summary: LCMAPS plug-in API header files
+Requires: %{name}%{?_isa} = %{version}-%{release}
+Requires: %{name}-common-devel%{?_isa} = %{version}-%{release}
+Requires: globus-gssapi-gsi-devel%{?_isa}
+Requires: openssl-devel%{?_isa}
+Provides: %{name}-globus-interface = %{version}-%{release}
+Obsoletes: %{name}-globus-interface < 1.6.1-4
+Provides: %{name}-openssl-interface = %{version}-%{release}
+Obsoletes: %{name}-openssl-interface < 1.6.1-4
+Provides: %{name}-interface = %{version}-%{release}
+Obsoletes: %{name}-interface < 1.4.31-1
+# the pkgconfig requirement is only necessary for EPEL5 and below;
+# it's automatic for Fedora and EPEL6.
+%if %{?rhel}%{!?rhel:6} <= 5
+Requires: pkgconfig
+%endif
 
 %description devel
 The Local Centre MAPping Service (LCMAPS) is a security middleware
@@ -153,14 +106,41 @@ available to tailor almost every need. Since this is middleware, it
 does not interact with the user directly; to use it in a program please
 see the lcmaps-interface package.
 
-This package contains the development libraries.
+This package contains the files necessary to compile and link
+against the LCMAPS library.
+
+
+%package common-devel
+Group: Development/Libraries
+Summary: LCMAPS plug-in API header files
+Provides: %{name}-basic-interface = %{version}-%{release}
+Obsoletes: %{name}-basic-interface < 1.6.1-4
+# the pkgconfig requirement is only necessary for EPEL5 and below;
+# it's automatic for Fedora and EPEL6.
+%if %{?rhel}%{!?rhel:6} <= 5
+Requires: pkgconfig
+%endif
+
+%description common-devel
+The Local Centre MAPping Service (LCMAPS) is a security middleware
+component that processes the users Grid credentials (typically X.509
+proxy certificates and VOMS attributes) and maps the user to a local
+account based on the site local policy.
+
+This package contains the header files and interface definitions
+for client applications.
 
 
 %package without-gsi-devel
 Group: Development/Libraries
 Summary: LCMAPS development libraries
-Requires: %{name}-basic-interface = %{version}-%{release}
-Requires: %{name}-without-gsi = %{version}-%{release}
+Requires: %{name}-without-gsi%{?_isa} = %{version}-%{release}
+Requires: %{name}-common-devel%{?_isa} = %{version}-%{release}
+# the pkgconfig requirement is only necessary for EPEL5 and below;
+# it's automatic for Fedora and EPEL6.
+%if %{?rhel}%{!?rhel:6} <= 5
+Requires: pkgconfig
+%endif
 
 %description without-gsi-devel
 The Local Centre MAPping Service (LCMAPS) is a security middleware
@@ -173,9 +153,8 @@ available to tailor almost every need. Since this is middleware, it
 does not interact with the user directly; to use it in a program please
 see the lcmaps-interface package.
 
-This version is built without support for the GSI protocol.
-This package contains the development libraries.
-
+This package contains the development libraries to build
+without the GSI protocol.
 
 
 %prep
@@ -187,24 +166,24 @@ This package contains the development libraries.
 # First configure and build the without-gsi version
 mkdir build-without-gsi && cd build-without-gsi && ln -s ../configure
 %configure --disable-gsi-mode --disable-static
-# The following two lines were suggested by
-# https://fedoraproject.org/wiki/Packaging/Guidelines to prevent any
-# RPATHs creeping in.
-sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
-sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
 
+# The following lines were suggested by
+# https://fedoraproject.org/wiki/Packaging/Guidelines to prevent any
+# RPATHs creeping in, and by
+# https://fedoraproject.org/wiki/Common_Rpmlint_issues#unused-direct-shlib-dependency
+# to prevent unnecessary linking
+%define fixlibtool() sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool\
+sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool\
+sed -i -e 's! -shared ! -Wl,--as-needed\\0!g' libtool
+
+%fixlibtool
 make %{?_smp_mflags}
 cd ..
 
 # configure and build the full version
 mkdir build && cd build && ln -s ../configure
 %{configure} --disable-static
-# The following two lines were suggested by
-# https://fedoraproject.org/wiki/Packaging/Guidelines to prevent any
-# RPATHs creeping in.
-sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
-sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
-
+%fixlibtool
 make %{?_smp_mflags}
 cd ..
 
@@ -227,11 +206,13 @@ find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
 mkdir -p ${RPM_BUILD_ROOT}%{_sysconfdir}
 cp %{SOURCE1} $RPM_BUILD_ROOT/%{_sysconfdir}
 
+# create empty plugin directory
+mkdir -p ${RPM_BUILD_ROOT}%{_libdir}/lcmaps
+
 # clean up installed files
 rm -rf ${RPM_BUILD_ROOT}%{_docdir}
-rm ${RPM_BUILD_ROOT}%{_libdir}/lcmaps/lcmaps_plugin_example*.mod
-rm ${RPM_BUILD_ROOT}%{_libdir}/lcmaps/liblcmaps_plugin_example*.so
 
+# Retain the clean section for EPEL5
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -244,7 +225,6 @@ rm -rf $RPM_BUILD_ROOT
 %postun without-gsi -p /sbin/ldconfig
 
 %files
-%defattr(-,root,root,-)
 %config(noreplace) %{_sysconfdir}/lcmaps.db
 # The libraries are meant to be dlopened by client applications,
 # so the .so symlinks are here and not in devel.
@@ -265,14 +245,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/liblcmaps_verify_account_from_pem.so.0.0.0
 %{_datadir}/man/man3/lcmaps.3*
 %dir %{_libdir}/lcmaps
-%doc AUTHORS doc/INSTALL_WITH_WORKSPACE_SERVICE LICENSE
+%doc BUGS AUTHORS doc/INSTALL_WITH_WORKSPACE_SERVICE LICENSE
 %doc README README.NO_LDAP
 %doc build/etc/lcmaps.db build/etc/groupmapfile build/etc/vomapfile
 
 %files without-gsi
-%defattr(-,root,root,-)
 # These libraries are dlopened, so the .so symlinks cannot be in devel
-
 %{_libdir}/liblcmaps_without_gsi.so
 %{_libdir}/liblcmaps_without_gsi.so.0
 %{_libdir}/liblcmaps_without_gsi.so.0.0.0
@@ -284,28 +262,29 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/liblcmaps_gss_assist_gridmap_without_gsi.so.0.0.0
 %{_datadir}/man/man3/lcmaps.3*
 %dir %{_libdir}/lcmaps
-%doc AUTHORS doc/INSTALL_WITH_WORKSPACE_SERVICE LICENSE
+%doc BUGS AUTHORS LICENSE
 %doc README README.NO_LDAP
 %doc build-without-gsi/etc/lcmaps.db
 %doc build-without-gsi/etc/groupmapfile
 %doc build-without-gsi/etc/vomapfile
 
-%files globus-interface
-%defattr(-,root,root,-)
+%files devel
 %{_includedir}/lcmaps/lcmaps_return_poolindex.h
 %{_includedir}/lcmaps/_lcmaps_return_poolindex.h
 %{_includedir}/lcmaps/lcmaps.h
 %{_includedir}/lcmaps/lcmaps_globus.h
-%{_datadir}/pkgconfig/lcmaps-globus-interface.pc
-%{_datadir}/pkgconfig/lcmaps-interface.pc
-
-%files openssl-interface
-%defattr(-,root,root,-)
 %{_includedir}/lcmaps/lcmaps_openssl.h
 %{_datadir}/pkgconfig/lcmaps-openssl-interface.pc
+%{_datadir}/pkgconfig/lcmaps-globus-interface.pc
+%{_datadir}/pkgconfig/lcmaps-interface.pc
+%{_libdir}/pkgconfig/lcmaps-gss-assist-gridmap.pc
+%{_libdir}/pkgconfig/lcmaps-return-account-from-pem.pc
+%{_libdir}/pkgconfig/lcmaps-return-poolindex.pc
+%{_libdir}/pkgconfig/lcmaps-verify-account-from-pem.pc
+%{_libdir}/pkgconfig/lcmaps.pc
+%doc LICENSE
 
-%files basic-interface
-%defattr(-,root,root,-)
+%files common-devel
 %dir %{_includedir}/lcmaps
 %{_includedir}/lcmaps/lcmaps_version.h
 %{_includedir}/lcmaps/lcmaps_account.h
@@ -328,27 +307,61 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/lcmaps/lcmaps_verify_account_from_pem.h
 %{_includedir}/lcmaps/lcmaps_vo_data.h
 %{_includedir}/lcmaps/lcmaps_return_poolindex_without_gsi.h
+%{_includedir}/lcmaps/lcmaps_plugin_typedefs.h
+%{_includedir}/lcmaps/lcmaps_plugin_prototypes.h
 %{_datadir}/pkgconfig/lcmaps-basic-interface.pc
 %doc LICENSE
 
-
-%files devel
-%defattr(-,root,root,-)
-%{_libdir}/pkgconfig/lcmaps-gss-assist-gridmap.pc
-%{_libdir}/pkgconfig/lcmaps-return-account-from-pem.pc
-%{_libdir}/pkgconfig/lcmaps-return-poolindex.pc
-%{_libdir}/pkgconfig/lcmaps-verify-account-from-pem.pc
-%{_libdir}/pkgconfig/lcmaps.pc
-
-
 %files without-gsi-devel
-%defattr(-,root,root,-)
 %{_libdir}/pkgconfig/lcmaps-return-poolindex-without-gsi.pc
 %{_libdir}/pkgconfig/lcmaps-gss-assist-gridmap-without-gsi.pc
 %{_libdir}/pkgconfig/lcmaps-without-gsi.pc
+%doc LICENSE
 
 
 %changelog
+* Tue Dec 09 2014 Dave Dykstra <dwd@fnal.gov> 1.6.4-1.1.osg
+- Reimported upstream version into OSG
+
+* Fri Feb 28 2014 Mischa Salle <msalle@nikhef.nl> 1.6.4-1
+- updated version
+- do not install very old doc/INSTALL_WITH_WORKSPACE_SERVICE
+
+* Sun Feb 16 2014 Mischa Salle <msalle@nikhef.nl> 1.6.3-2
+- fix macro expansion for pkgconfig to include only rhel not fedora
+
+* Thu Feb 13 2014 Mischa Salle <msalle@nikhef.nl> 1.6.3-1
+- updated version
+
+* Fri Feb  7 2014 Mischa Salle <msalle@nikhef.nl> 1.6.2-1
+- Add new interface files
+- Remove unused patch
+- Create empty plugin directory
+- Do not remove lcmaps_plugin_example related files, as they are not installed
+- updated version
+
+* Tue Nov 12 2013 Dennis van Dok <dennisvd@nikhef.nl> 1.6.1-6
+- Make requirements arch-specific for devel package
+
+* Mon Nov 11 2013 Dennis van Dok <dennisvd@nikhef.nl> 1.6.1-5
+- put BuildRoot and clean section back in for EPEL5
+- Add requirement on pkgconfig for EPEL5
+- Include Provides/Obsoletes to rename interface packages
+
+* Wed Oct 30 2013 Dennis van Dok <dennisvd@nikhef.nl> 1.6.1-3
+- Reduced the number of development packages
+
+* Wed Oct 23 2013 Dennis van Dok <dennisvd@nikhef.nl> 1.6.1-2
+- Renamed the -interface packages to -devel
+- Dropped buildroot and defattr
+
+* Wed Feb 27 2013 Mischa Salle <msalle@nikhef.nl> 1.6.1-1
+- install BUGS as doc
+- updated version
+
+* Tue Feb 26 2013 Mischa Salle <msalle@nikhef.nl> 1.6.0-1
+- updated version
+
 * Thu Feb 21 2013 Dave Dykstra <dwd@fnal.gov> 1.5.7-1.4.osg
 - Remove the osg_default policy from lcmaps.db since it is no longer 
   used by any application
