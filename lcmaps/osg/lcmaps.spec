@@ -37,7 +37,6 @@ BuildRequires: flex, bison
 
 # these should be in a metapackage instead of here
 Requires: lcmaps-plugins-gums-client
-Requires: lcmaps-plugins-saz-client
 Requires: lcmaps-plugins-basic
 Requires: lcmaps-plugins-verify-proxy
 
@@ -322,6 +321,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Tue Dec 09 2014 Dave Dykstra <dwd@fnal.gov> 1.6.4-1.1.osg
 - Reimported upstream version into OSG
+- Removed requirement of lcmaps-plugins-saz-client
 
 * Fri Feb 28 2014 Mischa Salle <msalle@nikhef.nl> 1.6.4-1
 - updated version
