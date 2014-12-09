@@ -1,0 +1,74 @@
+From 4e9ded71061b7348f81eb620053d1a8ae86ce101 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Tue, 9 Dec 2014 17:07:24 -0600
+Subject: [PATCH] Replace gridsite_globus dep with gridsite dep
+
+---
+ src/c/Makefile.am     | 4 ++--
+ src/tools/Makefile.am | 6 +++---
+ 2 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/src/c/Makefile.am b/src/c/Makefile.am
+index e594210..02cf616 100644
+--- a/src/c/Makefile.am
++++ b/src/c/Makefile.am
+@@ -11,21 +11,21 @@
+ include $(top_srcdir)/Makefile.am.common
+ 
+ AM_CPPFLAGS= \
+ 	$(GSOAP_CFLAGS) \
+ 	$(CGSI_GSOAP_CFLAGS) \
+-	$(GRIDSITE_GLOBUS_CFLAGS) \
++	$(GRIDSITE_CFLAGS) \
+ 	$(GLOBUS_NOTHR_CFLAGS) \
+ 	$(GLIB_CFLAGS)
+ 
+ lib_LTLIBRARIES = libglite_data_delegation_api_simple_c.la
+ 
+ libglite_data_delegation_api_simple_c_la_SOURCES  = delegation_simple_api.c
+ 
+ libglite_data_delegation_api_simple_c_la_LIBADD = \
+ 	-lglite_data_delegation_api_c \
+-	$(GRIDSITE_GLOBUS_LIBS) \
++	$(GRIDSITE_LIBS) \
+ 	-lglite_data_util \
+ 	$(XML2_LIBS) \
+ 	$(GLIB_LIBS) \
+ 	$(GLOBUS_GSS_NOTHR_LIBS)
+ 
+diff --git a/src/tools/Makefile.am b/src/tools/Makefile.am
+index 7dd4a79..2f46dcb 100644
+--- a/src/tools/Makefile.am
++++ b/src/tools/Makefile.am
+@@ -8,13 +8,13 @@
+ #  		Akos Frohner <Akos.Frohner@cern.ch>
+ #
+ 
+ include $(top_srcdir)/Makefile.am.common
+ 
+-AM_CPPFLAGS = $(GLIB_CFLAGS) $(GRIDSITE_GLOBUS_CFLAGS)
++AM_CPPFLAGS = $(GLIB_CFLAGS) $(GRIDSITE_CFLAGS)
+ 
+-LDADD = ../c/libglite_data_delegation_api_simple_c.la $(GLIB_LIBS) $(GRIDSITE_GLOBUS_LIBS)
++LDADD = ../c/libglite_data_delegation_api_simple_c.la $(GLIB_LIBS) $(GRIDSITE_LIBS)
+ 
+ bin_PROGRAMS = glite-delegation-init glite-delegation-info glite-delegation-destroy \
+ 	test-glite-delegation-bug-33641
+ 
+ glite_delegation_init_SOURCES = client.c delegation-main.c
+@@ -34,11 +34,11 @@ glite_delegation_destroy_LDADD = \
+ 
+ test_glite_delegation_bug_33641_SOURCES = test_33641.c delegation-main.c
+ test_glite_delegation_bug_33641_CPPFLAGS = 	\
+ 	$(GSOAP_CFLAGS) \
+ 	$(CGSI_GSOAP_CFLAGS) \
+-	$(GRIDSITE_GLOBUS_CFLAGS) \
++	$(GRIDSITE_CFLAGS) \
+ 	$(GLOBUS_NOTHR_CFLAGS) \
+ 	$(GLIB_CFLAGS)
+ test_glite_delegation_bug_33641_LDADD = \
+ 		../c/libglite_data_delegation_api_simple_c.la \
+ 		$(LDADD)
+-- 
+2.0.1
+

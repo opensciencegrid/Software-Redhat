@@ -1,6 +1,6 @@
 Name:		glite-data-delegation-cli
 Version:	2.0.1.3
-Release:	7%{?dist}
+Release:	8%{?dist}
 Summary:	gLite delegation API command-line tools
 
 Group:		Development/Languages/C and C++
@@ -14,6 +14,7 @@ Patch1:         testcase_new_gsoap.patch
 Patch2:         rename_doxygen_output-sl6.patch
 Patch3:         el7-autoconf.patch
 Patch4:         disable_test_33641.patch
+Patch5:         remove_gridsite_globus.patch
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
 BuildRequires:  automake autoconf libtool
@@ -51,6 +52,8 @@ BuildRequires:  doxygen
 %patch3 -p1
 %patch4 -p1
 %endif
+
+%patch5 -p1
 
 %build
 ./bootstrap
@@ -93,6 +96,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/glite-*
 
 %changelog
+* Tue Dec 09 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 2.0.1.3-8
+- Replace gridsite_globus dependency with gridsite dependency (SOFTWARE-1298)
+
 * Tue Oct 07 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 2.0.1.3-7
 - Patch configure.ac to get this to build with el7's autoconf
 - Fix name of cgsi_plugin library and remove globus flavors so this builds again
