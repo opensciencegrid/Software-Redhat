@@ -1,5 +1,5 @@
 Name:      rsv-perfsonar
-Version:   0.0.9
+Version:   0.0.10
 Release:   1%{?dist}
 Summary:   RSV Metrics to monitor pefsonar
 Packager:  OSG-Software
@@ -14,7 +14,7 @@ BuildArch: noarch
 
 Requires: rsv
 #The perfsonar probe libraries need it. Getting it from I2 repo for now
-Requires: esmond
+Requires: esmond >= 1.0-9
 
 %if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
 Requires: python-simplejson
@@ -66,6 +66,12 @@ ln -s /var/www/html/rsv /usr/share/rsv/www
 
 
 %changelog
+* Mon Dec 8 2014 <efajardo@physics.ucsd.edu> - 0.0.10-1
+- Fixed bug when reading data
+- Added soft time out and warning for the probes
+- Added the option to debug for more content
+- Added timestamps in the logs
+
 * Thu Nov 20 2014 <efajardo@physics.ucsd.edu> - 0.0.9-1
 - Using EventBulk to increase efficiency in posting
 
