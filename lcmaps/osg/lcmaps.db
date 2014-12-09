@@ -12,8 +12,7 @@
 # 
 # 1) The gumsclient module definition (in Section 1)
 #    This is where you configure the GUMS host you are using. This is
-#    true for both glexec and lcmaps for a service. (Ditto for the SAZ
-#    host in the sazclient.)
+#    true for both glexec and lcmaps for a service.
 # 2) The glexectracking module (in Section 1)
 #    If you are using glexec, uncomment the glexectracking module
 #    definition and edit appropriately. You should always uncomment
@@ -30,7 +29,7 @@
 # Section 1: Module definitions
 # 
 # These generally should not be modified, except for the GUMS host in
-# gumsclient and the SAZ host in sazclient.
+# gumsclient.
 #
 #-----------------------------------------------------------------------------
 
@@ -45,19 +44,6 @@ gumsclient = "lcmaps_gums_client.mod"
              "--endpoint https://yourgums.yourdomain:8443/gums/services/GUMSXACMLAuthorizationServicePort"
 # Uncomment this to set a different expected host certificate name for server
 #            "--override-expected-hostname overridegumsname.yourdomain"
-
-sazclient = "lcmaps_saz_client.mod"
-            "-resourcetype ce"
-            "-actiontype execute-now"
-            "-capath /etc/grid-security/certificates"
-            "-cert   /etc/grid-security/hostcert.pem"
-            "-key    /etc/grid-security/hostkey.pem"
-            "--cert-owner root"
-            "-authorization-only"
-# Change this URL to your SAZ server if you have one
-            "--endpoint https://yoursaz.yourdomain:8443/saz/services/SAZXACMLAuthorizationServicePort"
-# Uncomment this to set a different expected host certificate name for server
-#            "--override-expected-hostname overridesazname.yourdomain"
 
 # Uncomment the first two lines in order to enable glexec tracking
 #glexectracking = "lcmaps_glexec_tracking.mod"
@@ -123,18 +109,15 @@ bad         = "lcmaps_dummy_bad.mod"
 ## sure that only one authorize_only policy is uncommented--the other
 ## policies should be commented out. For example, if you want policy #2,
 ## put a hash mark before the first "gumsclient" line and remove the hash
-## mark on two lines: just before "sazclient" and just before the next
+## mark on two lines: just before "gridmapfile" and just before the next
 ## "gumsclient". 
 
 authorize_only:
 
-## Policy 1: GUMS but not SAZ (most common, default)
+## Policy 1: GUMS (most common, default)
 gumsclient -> good | bad
 
-## Policy 2: GUMS & SAZ
-#sazclient -> gumsclient
-
-## Policy 3: grid-mapfile
+## Policy 2: grid-mapfile
 #gridmapfile -> good | bad
 
 
@@ -147,15 +130,10 @@ glexec:
 ## If you use glexec, pick an appropriate policy from the ones below.
 ## Make sure that only one policy is uncommented.
 
-## Policy 1: GUMS but not SAZ (most common)
+## Policy 1: GUMS (most common)
 #verifyproxy -> gumsclient
 #gumsclient -> glexectracking
 
-## Policy 2: GUMS & SAZ
-#verifyproxy -> sazclient
-#sazclient -> gumsclient
-#gumsclient -> glexectracking
-
-## Policy 3: grid-mapfile
+## Policy 2: grid-mapfile
 #verifyproxy -> gridmapfile
 #gridmapfile -> glexectracking
