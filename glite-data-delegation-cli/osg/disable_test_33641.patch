@@ -1,10 +1,10 @@
 Index: org.glite.data.delegation-cli/src/tools/Makefile.am
 ===================================================================
---- org.glite.data.delegation-cli.orig/src/tools/Makefile.am	2009-01-20 20:13:12.000000000 -0600
-+++ org.glite.data.delegation-cli/src/tools/Makefile.am	2014-10-07 14:40:26.056199867 -0500
+--- org.glite.data.delegation-cli.orig/src/tools/Makefile.am	2014-12-09 17:28:24.000000000 -0600
++++ org.glite.data.delegation-cli/src/tools/Makefile.am	2014-12-09 17:32:03.684736408 -0600
 @@ -14,8 +14,7 @@
  
- LDADD = ../c/libglite_data_delegation_api_simple_c.la $(GLIB_LIBS) $(GRIDSITE_GLOBUS_LIBS)
+ LDADD = ../c/libglite_data_delegation_api_simple_c.la $(GLIB_LIBS) $(GRIDSITE_LIBS)
  
 -bin_PROGRAMS = glite-delegation-init glite-delegation-info glite-delegation-destroy \
 -	test-glite-delegation-bug-33641
@@ -20,7 +20,7 @@ Index: org.glite.data.delegation-cli/src/tools/Makefile.am
 -test_glite_delegation_bug_33641_CPPFLAGS = 	\
 -	$(GSOAP_CFLAGS) \
 -	$(CGSI_GSOAP_CFLAGS) \
--	$(GRIDSITE_GLOBUS_CFLAGS) \
+-	$(GRIDSITE_CFLAGS) \
 -	$(GLOBUS_NOTHR_CFLAGS) \
 -	$(GLIB_CFLAGS)
 -test_glite_delegation_bug_33641_LDADD = \
@@ -29,8 +29,8 @@ Index: org.glite.data.delegation-cli/src/tools/Makefile.am
 -
 Index: org.glite.data.delegation-cli/src/tools/test_33641.c
 ===================================================================
---- org.glite.data.delegation-cli.orig/src/tools/test_33641.c	2014-10-07 14:29:30.000000000 -0500
-+++ org.glite.data.delegation-cli/src/tools/test_33641.c	2014-10-07 14:40:03.302903510 -0500
+--- org.glite.data.delegation-cli.orig/src/tools/test_33641.c	2014-12-09 17:28:21.000000000 -0600
++++ org.glite.data.delegation-cli/src/tools/test_33641.c	2014-12-09 17:30:48.796782087 -0600
 @@ -1,288 +1 @@
 -/*
 - *  Copyright (c) Members of the EGEE Collaboration. 2009.

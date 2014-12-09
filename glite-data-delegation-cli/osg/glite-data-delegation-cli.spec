@@ -1,6 +1,6 @@
 Name:		glite-data-delegation-cli
 Version:	2.0.1.3
-Release:	8%{?dist}
+Release:	9%{?dist}
 Summary:	gLite delegation API command-line tools
 
 Group:		Development/Languages/C and C++
@@ -11,10 +11,10 @@ URL:		http://glite.cvs.cern.ch/cgi-bin/glite.cgi/org.glite.data.delegation-cli
 Source0:        org.glite.data.delegation-cli.tar.gz
 Patch0:         glite_data_delegation_cli_fedora.patch
 Patch1:         testcase_new_gsoap.patch
-Patch2:         rename_doxygen_output-sl6.patch
-Patch3:         el7-autoconf.patch
-Patch4:         disable_test_33641.patch
-Patch5:         remove_gridsite_globus.patch
+Patch2:         remove_gridsite_globus.patch
+Patch3:         rename_doxygen_output-sl6.patch
+Patch4:         el7-autoconf.patch
+Patch5:         disable_test_33641.patch
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
 BuildRequires:  automake autoconf libtool
@@ -43,17 +43,17 @@ BuildRequires:  doxygen
 
 %patch0 -p0
 %patch1 -p0
+%patch2 -p1
 
 %if 0%{?rhel} >= 6
-%patch2 -p0
+%patch3 -p0
 %endif
 
 %if 0%{?rhel} >= 7
-%patch3 -p1
 %patch4 -p1
+%patch5 -p1
 %endif
 
-%patch5 -p1
 
 %build
 ./bootstrap
@@ -96,7 +96,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/glite-*
 
 %changelog
-* Tue Dec 09 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 2.0.1.3-8
+* Tue Dec 09 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 2.0.1.3-9
 - Replace gridsite_globus dependency with gridsite dependency (SOFTWARE-1298)
 
 * Tue Oct 07 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 2.0.1.3-7
