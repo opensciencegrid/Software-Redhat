@@ -1,21 +1,20 @@
 Summary: SCAS client plugin for the LCMAPS authorization framework
 Name: lcmaps-plugins-scas-client
-Version: 0.4.0
-Release: 1.3%{?dist}
+Version: 0.5.4
+Release: 1%{?dist}
 License: ASL 2.0
 Group: System Environment/Libraries
 URL: http://wiki.nikhef.nl/grid/Site_Access_Control
 Source0: http://software.nikhef.nl/security/%{name}/%{name}-%{version}.tar.gz
-Patch0: ca_only.patch
-# Patch1 is from http://ndpfsvn.nikhef.nl/viewvc/mwsec/trunk/lcmaps-plugins-scas-client/src/saml2-xacml2/io_handler/ssl/ssl-common.c?r1=17274&r2=17291&view=patch
-#  but is adjusted for the 0.4.0 code base
-Patch1: error-ssl-more-info.patch
-Patch2: restore-euid-on-error.patch
 BuildRequires: openssl-devel
-BuildRequires: lcmaps-interface, xacml-devel >= 1.3.0
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
+# xacml 1.3.0 is probably ok, but prefer newer one
+BuildRequires: lcmaps-devel, xacml-devel >= 1.4.0
 Requires: lcmaps%{?_isa} >= 1.5.0
 Requires: xacml%{?_isa} >= 1.3.0
+Obsoletes: lcmaps-plugins-saz-client
+
+# BuildRoot is still required for EPEL5
+BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
 %description
 The Local Centre MAPping Service (LCMAPS) is a security middleware
@@ -27,23 +26,23 @@ This package contains the SCAS client plug-in. This LCMAPS plugin
 functions as the PEP (client side) implementation to an Site Central
 Authorization Service (SCAS) or GUMS (new style) service.
 
-%package -n lcmaps-plugins-saz-client
-Group: System Environment/Libraries
-Obsoletes: lcmaps-plugins-saz
-Summary: SAZ support for lcmaps
-
-%description -n lcmaps-plugins-saz-client
-%{summary}
 
 %prep
 %setup -q
-%patch0 -p0
-%patch1 -p0
-%patch2 -p0
 
 %build
-
 %configure --disable-static
+
+# The following two lines were suggested by
+# https://fedoraproject.org/wiki/Packaging/Guidelines to prevent any
+# RPATHs creeping in.
+# https://fedoraproject.org/wiki/Common_Rpmlint_issues#unused-direct-shlib-dependency
+# to prevent unnecessary linking
+%define fixlibtool() sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool\
+sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool\
+sed -i -e 's! -shared ! -Wl,--as-needed\\0!g' libtool
+
+%fixlibtool
 make %{?_smp_mflags}
 
 %install
@@ -52,31 +51,52 @@ rm -rf $RPM_BUILD_ROOT
 make DESTDIR=$RPM_BUILD_ROOT install
 find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
 
-# the module must be a copy, not a symlink, because the gums-client
-#  is a symlink and lcmaps can't use the same module file twice
-cp $RPM_BUILD_ROOT%{_libdir}/lcmaps/liblcmaps_scas_client.so $RPM_BUILD_ROOT%{_libdir}/lcmaps/liblcmaps_saz_client.so
-ln -s liblcmaps_saz_client.so $RPM_BUILD_ROOT%{_libdir}/lcmaps/lcmaps_saz_client.mod
-cp $RPM_BUILD_ROOT%{_mandir}/man8/lcmaps_plugins_scas_client.8 $RPM_BUILD_ROOT%{_mandir}/man8/lcmaps_plugins_saz_client.8
+# clean up installed documentation files
+rm -rf ${RPM_BUILD_ROOT}%{_docdir}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
-%defattr(-,root,root,-)
-%doc AUTHORS  LICENSE  BUGS
+%doc AUTHORS LICENSE BUGS NEWS
 %{_libdir}/lcmaps/lcmaps_scas_client.mod
 %{_libdir}/lcmaps/liblcmaps_scas_client.so
 %{_mandir}/man8/lcmaps_plugins_scas_client.8*
 
-%files -n lcmaps-plugins-saz-client
-%{_libdir}/lcmaps/lcmaps_saz_client.mod
-%{_libdir}/lcmaps/liblcmaps_saz_client.so
-%{_mandir}/man8/lcmaps_plugins_saz_client.8*
 
 %changelog
+* Tue Dec  9 2014 Dave Dykstra <dwd@fnal.gov> 0.5.4-1.1.osg
+- pull in upstream version, removing OSG-specific patches
+- eliminate saz-client copy, and add Obsoletes line for it to make rpm
+  delete it
+
+* Tue Jul 15 2014 Mischa Salle <msalle@nikhef.nl> 0.5.4-1
+- updated version
+
 * Thu Jun 19 2014 Dave Dykstra <dwd@fnal.gov> 0.4.0-1.3.osg
 - Add patch to restore effective user id after errors reading certs
   or keys
+
+* Thu Mar 27 2014 Mischa Salle <msalle@nikhef.nl> 0.5.3-1
+- updated version
+
+* Fri Mar 21 2014 Mischa Salle <msalle@nikhef.nl> 0.5.2-1
+- updated version
+
+* Mon Mar  3 2014 Mischa Salle <msalle@nikhef.nl> 0.5.1-1
+- install NEWS file
+- updated version
+
+* Fri Feb 14 2014 Mischa Salle <msalle@nikhef.nl> 0.5.0-2
+- clean up installed documentation files (breaks Fedora20)
+- correct bogus dates in changelog (breaks Fedora20)
+
+* Thu Feb 13 2014 Mischa Salle <msalle@nikhef.nl> 0.5.0-1
+- update builddep on lcmaps-devel instead of -interface
+- prevent unnecessary linking
+- specify BuildRoot (and clean section) for EPEL5
+- remove defattr
+- updated version
 
 * Thu Jan 23 2014 Dave Dykstra <dwd@fnal.gov> 0.4.0-1.2.osg
 - Add patch from upstream to show SSL error queue when there is an
@@ -86,12 +106,12 @@ rm -rf $RPM_BUILD_ROOT
 - Reimported into OSG
 - Removed log_xacml_errors.patch
 
-* Tue Oct  4 2013 Mischa Salle <msalle@nikhef.nl> 0.4.0-1
+* Fri Oct  4 2013 Mischa Salle <msalle@nikhef.nl> 0.4.0-1
 - update build requirement on xacml-devel plus minimal version
 - add requirement on xacml plus minimal version
 - bumped version
 
-* Tue Oct  3 2013 Mischa Salle <msalle@nikhef.nl> 0.3.5-1
+* Thu Oct  3 2013 Mischa Salle <msalle@nikhef.nl> 0.3.5-1
 - installed BUGS as documentation
 - add requirement on LCMAPS plus minimal version
 - use mandir for installing man pages
@@ -109,11 +129,11 @@ rm -rf $RPM_BUILD_ROOT
 - Reimported to OSG
 - Removed keepalive patch
 
-* Tue Mar  8 2012 Mischa Salle <msalle@nikhef.nl> 0.3.4-1
-- bumped version
-
 * Thu Mar 08 2012 Dave Dykstra <dwd@fnal.gov> 0.3.3-1.3.osg
 - Rebuild after merging from branches/lcmaps-upgrade into trunk
+
+* Tue Mar  6 2012 Mischa Salle <msalle@nikhef.nl> 0.3.4-1
+- bumped version
 
 * Wed Feb 29 2012 Dave Dykstra <dwd@fnal.gov> 0.3.3-1.2.osg
 - Add enablekeepalive patch to turn on the --enable-keepalive option by
@@ -123,7 +143,7 @@ rm -rf $RPM_BUILD_ROOT
 - Upgraded upstream package, which adds certificate valid date messages
   to the authorization server for use by SAZ
 
-* Mon Feb 28 2012 Mischa Salle <msalle@nikhef.nl> 0.3.3-1
+* Tue Feb 28 2012 Mischa Salle <msalle@nikhef.nl> 0.3.3-1
 - bumped version
 
 * Tue Feb 21 2012 Dave Dykstra <dwd@fnal.gov> 0.3.2-1.1.osg
