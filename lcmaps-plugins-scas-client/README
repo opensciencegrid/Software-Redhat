@@ -1,10 +1,8 @@
+This is a repackage of upstream, with basically the only diffference
+being an "Obsoletes: lcmaps-plugins-saz-client" to force that old
+subrpm to be removed.
 
-This is a repackage of upstream, plus two packages:
-
-1) ca_only.patch: When HTCondor invokes LCMAPS, it will erroneously give
-   a handle with only CAs present.  While this is invalid behavior, without
-   this patch, the plugin segfaults.
-2) log_xacml_errors.patch: libxacml will log all interesting failure messages
-   to stderr; scas-client redirects stderr to /dev/null.  With this patch,
-   the stderr of libxacml will be logged with the lcmaps_log facility.
-
+Source rpm comes from
+    http://software.nikhef.nl/dist/mwsec/rpm/epel5/SRPMS/
+and the .spec source comes from
+    http://ndpfsvn.nikhef.nl/viewvc/mwsec/packaging/fedora/trunk/lcmaps-plugins-scas-client.spec
