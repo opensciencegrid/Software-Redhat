@@ -1,8 +1,4 @@
-This is a repackage of upstream, with basically the only diffference
-being an "Obsoletes: lcmaps-plugins-saz-client" to force that old
-subrpm to be removed.
-
-Source rpm comes from
+This is now a pass-through.  Source rpm comes from
     http://software.nikhef.nl/dist/mwsec/rpm/epel5/SRPMS/
-and the .spec source comes from
+and if needed the .spec source can come from
     http://ndpfsvn.nikhef.nl/viewvc/mwsec/packaging/fedora/trunk/lcmaps-plugins-scas-client.spec
