@@ -1,6 +1,6 @@
---- src/grid_credential_handling/gsi_handling/lcmaps_voms_attributes.c.O	2013-12-20 10:09:48.540462000 -0600
-+++ src/grid_credential_handling/gsi_handling/lcmaps_voms_attributes.c	2013-12-20 10:13:37.873766000 -0600
-@@ -108,10 +108,9 @@
+--- src/grid_credential_handling/gsi_handling/lcmaps_voms_attributes.c.orig	2014-02-28 06:55:27.000000000 -0600
++++ src/grid_credential_handling/gsi_handling/lcmaps_voms_attributes.c	2014-12-10 16:56:48.000000000 -0600
+@@ -110,10 +110,9 @@
  static char *vomsdir = NULL;
  
  /*
@@ -11,5 +11,5 @@
 -static int   verify_voms_credentials = 1;
 +static int   verify_voms_credentials = 0;
  
+ #ifdef GRST_ACTIVE
  
- /* Everything ok (= OpenSSL X509_V_OK) */
