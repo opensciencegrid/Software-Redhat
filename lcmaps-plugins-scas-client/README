@@ -1,4 +1,10 @@
-This is now a pass-through.  Source rpm comes from
+This should be changed to a pass-through the next time we pull in a
+new upstream version.  The only difference is the version number,
+because the decision to pass-through wasn't taken until after a
+slightly different build with the same version was already done, and
+koji wouldn't allow a re-build.
+
+Source rpm comes from
     http://software.nikhef.nl/dist/mwsec/rpm/epel5/SRPMS/
-and if needed the .spec source can come from
+the .spec source comes from.
     http://ndpfsvn.nikhef.nl/viewvc/mwsec/packaging/fedora/trunk/lcmaps-plugins-scas-client.spec
