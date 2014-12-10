@@ -4,7 +4,7 @@ Version:   3.0.0
 %if 0%{?el7}
 %define release_suffix _clipped
 %endif
-Release:   27%{?release_suffix}%{?dist}
+Release:   28%{?release_suffix}%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -16,6 +16,8 @@ BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 %if ! 0%{?el7}
 Requires: jpackage-utils
 Requires: java7-devel
+%else
+Requires: java-devel >= 1:1.7.0
 %endif
 
 Requires: /usr/bin/curl
@@ -30,8 +32,8 @@ Requires: lfc-client
 Requires: lfc-python
 Requires: myproxy
 Requires: /usr/bin/ldapsearch
-%if ! 0%{?el7}
 Requires: dcache-srmclient
+%if ! 0%{?el7}
 Requires: bestman2-client
 %endif
 Requires: /usr/bin/uberftp
@@ -116,6 +118,10 @@ rm -rf $RPM_BUILD_ROOT
 %files glexec
 
 %changelog
+* Tue Nov 11 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 3.0.0-28_clipped
+- Bring in dcache-srmclient on EL7
+- Include java-devel on EL7
+
 * Tue Oct 07 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 3.0.0-27_clipped
 - Bring in glite-fts-client on EL7
 
