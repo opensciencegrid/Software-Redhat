@@ -1,20 +1,19 @@
 Summary: User identity switching tool based on grid credentials
 Name: glexec
-Version: 0.9.9
-Release: 1.2%{?dist}
+Version: 0.9.11
+Release: 1.1%{?dist}
 License: ASL 2.0
 Group: Applications/System
-URL: http://wiki.nikhef.nl/grid/Site_Access_Control
+URL: http://wiki.nikhef.nl/grid/GLExec
 Source0: http://software.nikhef.nl/security/%{name}/%{name}-%{version}.tar.gz
 Source1: glexec.conf
 Source2: glexec.logrotate
 Patch0: nowarn_allwhite.patch
 Patch1: nowarn_sigchld.patch
-# Patch2 is from https://ndpfsvn.nikhef.nl/viewvc/mwsec/trunk/glexec/src/main_util.c?r1=17182&r2=17277&view=patch
-Patch2: log_init.patch
-%if %{?rhel}%{!?rhel:0} <= 5
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
+%if %{?rhel}%{!?rhel:6} <= 5
+BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 %endif
+BuildRequires: lcmaps-devel >= 1.4.31
 BuildRequires: lcmaps-basic-interface >= 1.5.0
 Requires: logrotate
 # Since liblcmaps.so is dlopen'd we need this explicit requirement.
@@ -36,7 +35,6 @@ logging-only mode.
 %setup -q
 %patch0 -p0
 %patch1 -p0
-%patch2 -p2
 
 %build
 %configure
@@ -51,7 +49,7 @@ chmod u+r ${RPM_BUILD_ROOT}%{_sbindir}/glexec
 
 # OSG default config
 rm -rf $RPM_BUILD_ROOT/%{_sysconfdir}/lcmaps
-cp %{SOURCE1} $RPM_BUILD_ROOT/%{_sysconfdir}/glexec.conf
+cp -f %{SOURCE1} $RPM_BUILD_ROOT/%{_sysconfdir}/glexec.conf
 cat %{SOURCE2} >>$RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d/glexec
 
 # glexec-configure doesn't work for OSG
@@ -65,7 +63,6 @@ chmod 600 %{_sysconfdir}/glexec.conf
 rm -rf $RPM_BUILD_ROOT
 
 %files
-%defattr(-,root,root,-)
 %doc AUTHORS LICENSE NEWS
 %config(noreplace) %{_sysconfdir}/logrotate.d/glexec
 %attr(600, glexec, root) %verify(not md5 size mtime) %config(noreplace) %{_sysconfdir}/glexec.conf
@@ -83,6 +80,22 @@ getent passwd glexec >/dev/null || \
 exit 0
 
 %changelog
+* Wed Dec 10 2014 Dave Dykstra <dwd@fnal.gov> 0.9.11-1.1
+- Pull in new upstream version, remove syslog init patch
+
+* Fri Feb 28 2014 Mischa Salle <msalle@nikhef.nl> 0.9.11-1
+- updated version
+
+* Sun Feb 16 2014 Mischa Salle <msalle@nikhef.nl> 0.9.10-2
+- fix macro expansion for buildroot to include only rhel not fedora
+
+* Thu Feb 13 2014 Mischa Salle <msalle@nikhef.nl> 0.9.10-1
+- added dependency on lcmaps-devel instead of lcmaps-basic-interface
+- changed URL to gLExec specific page
+- update buildroot definition
+- remove defattr
+- updated version
+
 * Thu Jan 27 2014 Dave Dykstra <dwd@fnal.gov> 0.9.9-1.2.osg
 - add patch from upstream to fix initialization of syslog so it
   can correctly redirect to a different facility
