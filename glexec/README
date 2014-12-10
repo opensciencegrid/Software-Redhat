@@ -1,4 +1,10 @@
+The OSG version of this package overrides glexec.conf with an
+OSG-default version of it, adds a logrotate.d file to rotate
+/var/log/glexec.log since the setup for that is in the install
+instructions, and silences a couple of log warnings.
 
 This package is based on the glexec.spec found at
+  http://ndpfsvn.nikhef.nl/viewvc/mwsec/packaging/fedora/trunk/glexec.spec
+Source RPMs are from 
+  http://software.nikhef.nl/dist/mwsec/rpm/epel5/SRPMS/
 
-https://ndpfsvn.nikhef.nl/repos/mwsec/packaging/fedora/trunk/
