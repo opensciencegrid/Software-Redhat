@@ -1,5 +1,5 @@
 Name:      rsv-perfsonar
-Version:   0.0.10
+Version:   0.0.11
 Release:   1%{?dist}
 Summary:   RSV Metrics to monitor pefsonar
 Packager:  OSG-Software
@@ -66,6 +66,10 @@ ln -s /var/www/html/rsv /usr/share/rsv/www
 
 
 %changelog
+* Thu Dec 11 2014 <efajardo@physics.ucsd.edu> - 0.0.11-1
+- Added the feature of omiting uploading summaries
+- Upgraded suggested configuration options
+
 * Mon Dec 8 2014 <efajardo@physics.ucsd.edu> - 0.0.10-1
 - Fixed bug when reading data
 - Added soft time out and warning for the probes
