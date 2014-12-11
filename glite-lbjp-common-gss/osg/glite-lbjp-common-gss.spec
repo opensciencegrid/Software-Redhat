@@ -1,7 +1,7 @@
 Summary: Wrapper of Globus GSS/SSL implementation used by gLite LB and JP
 Name: glite-lbjp-common-gss
 Version: 3.1.3
-Release: 2.1%{?dist}
+Release: 2.2%{?dist}
 Url: http://glite.cern.ch
 License: ASL 2.0
 Vendor: EMI
@@ -17,6 +17,8 @@ Obsoletes: glite-security-gss%{?_isa} < 2.1.5-1
 AutoReqProv: yes
 Source: http://eticssoft.web.cern.ch/eticssoft/repository/emi/emi.lbjp-common.gss/%{version}/src/%{name}-3.1.3-2.src.tar.gz
 Patch0: proxy_file.patch
+# patch from https://tomtools.its.cern.ch/jira/browse/GTSL-40 
+Patch1: glite-lbjp-common-gss-resolverFix.patch
 
 
 %description
@@ -43,6 +45,7 @@ library.
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
 
 
 %build
@@ -89,6 +92,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Dec 11 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 3.1.3-2.2.osg
+- Add patch to fix "Resolver internal error" issue at SDSC (SOFTWARE-1722)
+
 * Thu Jul 26 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 3.1.3-2.1.osg
 - Fix proxy file filename getting truncated
 
