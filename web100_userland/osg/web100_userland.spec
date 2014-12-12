@@ -11,7 +11,7 @@
 
 Name:           web100_userland
 Version:        1.7
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        Web100 userland library and tools
 
 Group:          System Environment/Libraries
@@ -98,6 +98,9 @@ rm -rf %{buildroot}
 %{python_sitearch}/*
 
 %changelog
+* Fri Dec 12 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.7-6.osg
+- link with -lm to fix el7 build (SOFTWARE-1604)
+
 * Wed Mar 05 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.7-5.osg
 - Remove rpaths (SOFTWARE-1395)
 - Mark /etc/*.rc as config files
