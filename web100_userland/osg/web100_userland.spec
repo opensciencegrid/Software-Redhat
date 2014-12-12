@@ -52,7 +52,7 @@ perl -pi -e "s/WEB100_DOC_DIR=\\\${prefix}\/doc\/web100/WEB100_DOC_DIR=\\\${data
 
 
 %build
-%configure --includedir=%{_includedir}
+%configure --includedir=%{_includedir} LDFLAGS=-lm
 perl -pi -e "s/libweb100includedir = \\\$\(WEB100_INCLUDE_DIR\)\/web100/libweb100includedir = \\\$\(WEB100_INCLUDE_DIR\)/" lib/Makefile
 %{__sed} -i -e 's|--install-platlib=${pyexecdir}|--install-platlib=${pyexecdir} --root=%{buildroot}|' python/Makefile
 
