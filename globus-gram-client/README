@@ -1,1 +1,14 @@
-Pass-through from EPEL
+This used to be a pass-through from EPEL, downloaded from:
+
+  http://dl.fedoraproject.org/pub/epel/5/SRPMS/globus-gram-client-12.4-8.el5.src.rpm
+
+We needed to update to 12.5, which was not in EPEL, but we wanted to continue
+using the spec layout from the EPEL srpm.  So, our osg/globus-gram-client.spec
+is borrowed from the above srpm, but the upstream source tarball is from:
+
+  http://www.globus.org/ftppub/gt5/5.2/5.2.5/updates/src/globus_gram_client-12.5.tar.gz
+
+
+In the future we can go back to a pass-through from EPEL, when we update to
+a version they provide.
+
