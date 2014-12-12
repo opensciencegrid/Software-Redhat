@@ -8,14 +8,14 @@
 
 Name:		globus-gram-client
 %global _name %(tr - _ <<< %{name})
-Version:	12.4
-Release:	8%{?dist}
+Version:	12.5
+Release:	1%{?dist}
 Summary:	Globus Toolkit - GRAM Client Library
 
 Group:		System Environment/Libraries
 License:	ASL 2.0
 URL:		http://www.globus.org/
-Source:		http://www.globus.org/ftppub/gt5/5.2/5.2.1/packages/src/%{_name}-%{version}.tar.gz
+Source:		http://www.globus.org/ftppub/gt5/5.2/5.2.5/updates/src/%{_name}-%{version}.tar.gz
 #		README file
 Source8:	GLOBUS-GRAM5
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -168,6 +168,11 @@ rm -rf %{buildroot}
 %dir %{_pkgdocdir}/html
 
 %changelog
+* Fri Dec 12 2014 Carl Edquist <edquist@cs.wisc.edu> - 12.5-1
+- Update to 12.5 (SOFTWARE-1724)
+  - GT-567: Remove requirement that GRAM5 use SSLv3
+  - Fix latex dependencies for newer fedora/rhel
+
 * Sat Oct 26 2013 Mattias Ellert <mattias.ellert@fysast.uu.se> - 12.4-8
 - Remove obsolete workaround for broken RHEL 5 epstopdf
 
