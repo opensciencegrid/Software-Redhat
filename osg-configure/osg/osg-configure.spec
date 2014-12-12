@@ -1,6 +1,6 @@
 Summary: Package for configure-osg and associated scripts
 Name: osg-configure
-Version: 1.0.64
+Version: 1.0.65
 Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
 Patch0: s1653-gateway-type.patch
@@ -323,6 +323,9 @@ fi
 
 
 %changelog
+* Thu Dec 11 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0.65-1
+- Make run-osg-configure-tests return nonzero on failure (SOFTWARE-1703)
+
 * Fri Nov 21 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0.64-1
 - Add MaxWallTime attribute to OSG_ResourceCatalog entries (SOFTWARE-1692)
 
