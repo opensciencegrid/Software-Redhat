@@ -18,7 +18,7 @@
 
 Name:           myproxy
 Version:        5.9
-Release:        8.3%{?dist}
+Release:        8.4%{?dist}
 Summary:        Manage X.509 Public Key Infrastructure (PKI) security credentials
 
 Group:          Applications/Internet
@@ -474,7 +474,7 @@ fi
 %doc %{_pkgdocdir}/refman.pdf
 
 %changelog
-* Fri Dec 12 2014 Carl Edquist <edquist@cs.wisc.edu> - 5.9-8.3
+* Fri Dec 12 2014 Carl Edquist <edquist@cs.wisc.edu> - 5.9-8.4
 - Pull globus 6 update to allow TLS (SOFTWARE-1725)
 
 * Fri Dec 05 2014 Carl Edquist <edquist@cs.wisc.edu> - 5.9-8.2
