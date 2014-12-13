@@ -1,0 +1,53 @@
+diff --git a/myproxy/myproxy.c b/myproxy/myproxy.c
+index 3bd7cca..8da6a59 100644
+--- a/myproxy/myproxy.c
++++ b/myproxy/myproxy.c
+@@ -540,8 +540,9 @@ myproxy_bootstrap_trust(myproxy_socket_attrs_t *attrs)
+     }
+ 
+     /* get trust root(s) from the myproxy-server */
+-    ctx = SSL_CTX_new(SSLv3_client_method());
+-    SSL_CTX_set_options(ctx, SSL_OP_DONT_INSERT_EMPTY_FRAGMENTS);
++    ctx = SSL_CTX_new(SSLv23_client_method());
++    SSL_CTX_set_options(ctx, SSL_OP_NO_SSLv2 |
++			SSL_OP_DONT_INSERT_EMPTY_FRAGMENTS);
+ 
+     if (!(sbio = BIO_new_ssl_connect(ctx))) goto error;
+     if ( (sockfd = get_connected_myproxy_host_socket(
+diff --git a/myproxy/myproxy_ocsp.c b/myproxy/myproxy_ocsp.c
+index 440f6ef..d39e1dc 100644
+--- a/myproxy/myproxy_ocsp.c
++++ b/myproxy/myproxy_ocsp.c
+@@ -311,11 +311,12 @@ int myproxy_ocsp_verify(X509 *cert, X509 *issuer) {
+     goto end;
+   }
+   X509_LOOKUP_add_dir(lookup, certdir, X509_FILETYPE_PEM);
+-  ctx = SSL_CTX_new(SSLv3_client_method());
++  ctx = SSL_CTX_new(SSLv23_client_method());
+   if (ctx == NULL) {
+     result = MYPROXY_OCSPRESULT_ERROR_OUTOFMEMORY;
+     goto end;
+   }
++  SSL_CTX_set_options(ctx, SSL_OP_NO_SSLv2);
+   SSL_CTX_set_cert_store(ctx, store);
+   SSL_CTX_set_verify(ctx,SSL_VERIFY_PEER,NULL);
+ 
+diff --git a/myproxy/ssl_utils.c b/myproxy/ssl_utils.c
+index 3ad7739..0b215a6 100644
+--- a/myproxy/ssl_utils.c
++++ b/myproxy/ssl_utils.c
+@@ -2142,12 +2142,13 @@ ssl_verify_gsi_chain(SSL_CREDENTIALS *chain)
+    X509_LOOKUP_add_dir(lookup, certdir, X509_FILETYPE_PEM);
+    X509_STORE_CTX_init(&csc, cert_store, chain->certificate, NULL);
+    
+-   sslContext = SSL_CTX_new(SSLv3_server_method());
++   sslContext = SSL_CTX_new(SSLv23_server_method());
+    if (sslContext == NULL) {
+       verror_put_string("Initializing SSL_CTX");
+       ssl_error_to_verror();
+       goto end;
+    }
++   SSL_CTX_set_options(sslContext, SSL_OP_NO_SSLv2);
+ 
+    SSL_CTX_set_purpose(sslContext, X509_PURPOSE_ANY);
+ 
