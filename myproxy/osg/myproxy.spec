@@ -18,7 +18,7 @@
 
 Name:           myproxy
 Version:        5.9
-Release:        8.2%{?dist}
+Release:        8.3%{?dist}
 Summary:        Manage X.509 Public Key Infrastructure (PKI) security credentials
 
 Group:          Applications/Internet
@@ -34,6 +34,17 @@ Source3:        README.Fedora
 #               http://jira.globus.org/browse/GT-502
 Patch0:         %{name}-deps.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+
+# Add TLS support
+# https://jira.opensciencegrid.org/browse/SOFTWARE-1725
+# https://jira.opensciencegrid.org/browse/SOFTWARE-1719
+# created with:
+#   git clone git://github.com/globus/globus-toolkit
+#   cd globus-toolkit
+#   git checkout -b myproxy-5.9 MYPROXY_5_9
+#   git cherry-pick 775fef9
+#   git diff HEAD^ > 1725-allow-tls.patch
+Patch1:         1725-allow-tls.patch
 
 BuildRequires:  grid-packaging-tools >= 3.4
 BuildRequires:  globus-core >= 8
@@ -203,6 +214,7 @@ Package %{name}-doc contains the MyProxy documentation.
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p2
 
 %if %{?with_sysv}
 cp -p %{SOURCE1} .   #myproxy.init
@@ -462,6 +474,9 @@ fi
 %doc %{_pkgdocdir}/refman.pdf
 
 %changelog
+* Fri Dec 12 2014 Carl Edquist <edquist@cs.wisc.edu> - 5.9-8.3
+- Pull globus 6 update to allow TLS (SOFTWARE-1725)
+
 * Fri Dec 05 2014 Carl Edquist <edquist@cs.wisc.edu> - 5.9-8.2
 - Add dummy package to mask myproxy-voms >= 6.1.6 from EPEL (SOFTWARE-1715)
 
