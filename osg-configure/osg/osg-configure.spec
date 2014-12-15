@@ -1,9 +1,10 @@
 Summary: Package for configure-osg and associated scripts
 Name: osg-configure
-Version: 1.0.65
+Version: 1.0.66
 Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
 Patch0: s1653-gateway-type.patch
+Patch1: s1703-gateway-type-tests.patch
 License: Apache 2.0
 Group: Grid
 Prefix: %{_prefix}
@@ -190,6 +191,7 @@ It may safely be removed once the upgrade is finished.
 %prep
 %setup
 %patch0 -p1
+%patch1 -p1
 
 %build
 %{__python} setup.py build
@@ -323,6 +325,10 @@ fi
 
 
 %changelog
+* Mon Dec 15 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0.66-1
+- Fix test failures caused by default job gateway change (SOFTWARE-1703)
+- Change generated job transform expressions to make compatibility aliases for job attributes (SOFTWARE-1727)
+
 * Thu Dec 11 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0.65-1
 - Make run-osg-configure-tests return nonzero on failure (SOFTWARE-1703)
 

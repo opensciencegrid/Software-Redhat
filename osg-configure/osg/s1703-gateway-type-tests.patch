@@ -1,0 +1,160 @@
+From a9b092bf380e31a40ea027e4d6b9e195062d544d Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Mon, 15 Dec 2014 15:48:15 -0600
+Subject: [PATCH] Fix default job gateway in unit tests (SOFTWARE-1703)
+
+---
+ tests/test_condor.py      | 2 +-
+ tests/test_lsf.py         | 2 +-
+ tests/test_managedfork.py | 2 +-
+ tests/test_pbs.py         | 5 +++--
+ tests/test_sge.py         | 5 +++--
+ tests/test_slurm.py       | 4 ++--
+ 6 files changed, 11 insertions(+), 9 deletions(-)
+
+diff --git a/tests/test_condor.py b/tests/test_condor.py
+index c0971b4..696417b 100755
+--- a/tests/test_condor.py
++++ b/tests/test_condor.py
+@@ -352,11 +352,11 @@ class TestCondor(unittest.TestCase):
+     try:
+       settings.parseConfiguration(configuration)
+     except Exception, e:
+       self.fail("Received exception while parsing configuration: %s" % e)
+     services = settings.enabledServices()
+-    expected_services = set(['globus-gatekeeper', 'globus-gridftp-server'])
++    expected_services = set(['condor-ce', 'globus-gridftp-server'])
+     self.assertEqual(services, expected_services,
+                      "List of enabled services incorrect, " +
+                      "got %s but expected %s" % (services, expected_services))
+     
+     
+diff --git a/tests/test_lsf.py b/tests/test_lsf.py
+index 3a946b4..85f5424 100755
+--- a/tests/test_lsf.py
++++ b/tests/test_lsf.py
+@@ -229,11 +229,11 @@ class TestLSF(unittest.TestCase):
+     try:
+       settings.parseConfiguration(configuration)
+     except Exception, e:
+       self.fail("Received exception while parsing configuration: %s" % e)
+     services = settings.enabledServices()
+-    expected_services = set(['globus-gatekeeper', 'globus-gridftp-server'])
++    expected_services = set(['condor-ce', 'globus-gridftp-server'])
+     self.assertEqual(services, expected_services,
+                      "List of enabled services incorrect, " +
+                      "got %s but expected %s" % (services, expected_services))
+     
+     
+diff --git a/tests/test_managedfork.py b/tests/test_managedfork.py
+index 7d514d2..d4cd891 100755
+--- a/tests/test_managedfork.py
++++ b/tests/test_managedfork.py
+@@ -174,11 +174,11 @@ class TestManagedFork(unittest.TestCase):
+     try:
+       settings.parseConfiguration(configuration)
+     except Exception, e:
+       self.fail("Received exception while parsing configuration: %s" % e)
+     services = settings.enabledServices()
+-    expected_services = set(['globus-gatekeeper', 'condor'])
++    expected_services = set(['condor-ce', 'condor'])
+     self.assertEqual(services, expected_services,
+                      "List of enabled services incorrect, " +
+                      "got %s but expected %s" % (services, expected_services))
+     
+     
+diff --git a/tests/test_pbs.py b/tests/test_pbs.py
+index 7f2bcf6..b31adb6 100755
+--- a/tests/test_pbs.py
++++ b/tests/test_pbs.py
+@@ -212,11 +212,11 @@ class TestPBS(unittest.TestCase):
+     try:
+       settings.parseConfiguration(configuration)
+     except Exception, e:
+       self.fail("Received exception while parsing configuration: %s" % e)
+     services = settings.enabledServices()
+-    expected_services = set(['globus-gatekeeper',
++    expected_services = set(['condor-ce',
+                                   'globus-gridftp-server'])
+     self.assertEqual(services, expected_services,
+                      "List of enabled services incorrect, " +
+                      "got %s but expected %s" % (services, expected_services))
+     
+@@ -228,11 +228,12 @@ class TestPBS(unittest.TestCase):
+     try:
+       settings.parseConfiguration(configuration)
+     except Exception, e:
+       self.fail("Received exception while parsing configuration: %s" % e)
+     services = settings.enabledServices()
+-    expected_services = set(['globus-gatekeeper', 
++    expected_services = set(['condor-ce', 
++                             'globus-gatekeeper',
+                              'globus-gridftp-server',
+                              'globus-scheduler-event-generator'])
+     self.assertEqual(services, expected_services,
+                      "List of enabled services incorrect, " +
+                      "got %s but expected %s" % (services, expected_services))
+diff --git a/tests/test_sge.py b/tests/test_sge.py
+index d2a0f7a..f09c195 100755
+--- a/tests/test_sge.py
++++ b/tests/test_sge.py
+@@ -353,11 +353,11 @@ class TestSGE(unittest.TestCase):
+     try:
+       settings.parseConfiguration(configuration)
+     except Exception, e:
+       self.fail("Received exception while parsing configuration: %s" % e)
+     services = settings.enabledServices()
+-    expected_services = set(['globus-gatekeeper',
++    expected_services = set(['condor-ce',
+                                   'globus-gridftp-server'])
+     self.assertEqual(services, expected_services,
+                      "List of enabled services incorrect, " +
+                      "got %s but expected %s" % (services, expected_services))
+     
+@@ -370,11 +370,12 @@ class TestSGE(unittest.TestCase):
+     try:
+       settings.parseConfiguration(configuration)
+     except Exception, e:
+       self.fail("Received exception while parsing configuration: %s" % e)
+     services = settings.enabledServices()
+-    expected_services = set(['globus-gatekeeper', 
++    expected_services = set(['condor-ce', 
++                                  'globus-gatekeeper', 
+                                   'globus-gridftp-server',
+                                   'globus-scheduler-event-generator'])
+     self.assertEqual(services, expected_services,
+                      "List of enabled services incorrect, " +
+                      "got %s but expected %s" % (services, expected_services))
+diff --git a/tests/test_slurm.py b/tests/test_slurm.py
+index d3f2540..8ecc81b 100644
+--- a/tests/test_slurm.py
++++ b/tests/test_slurm.py
+@@ -231,11 +231,11 @@ class TestSlurm(unittest.TestCase):
+     try:
+       settings.parseConfiguration(configuration)
+     except Exception, e:
+       self.fail("Received exception while parsing configuration: %s" % e)
+     services = settings.enabledServices()
+-    expected_services = set(['globus-gatekeeper',
++    expected_services = set(['condor-ce',
+                              'globus-gridftp-server'])
+     self.assertEqual(services, expected_services,
+                      "List of enabled services incorrect, " +
+                      "got %s but expected %s" % (services, expected_services))
+     
+@@ -247,11 +247,11 @@ class TestSlurm(unittest.TestCase):
+     try:
+       settings.parseConfiguration(configuration)
+     except Exception, e:
+       self.fail("Received exception while parsing configuration: %s" % e)
+     services = settings.enabledServices()
+-    expected_services = set(['globus-gatekeeper', 
++    expected_services = set(['condor-ce', 
+                              'globus-gridftp-server'])
+     self.assertEqual(services, expected_services,
+                      "List of enabled services incorrect, " +
+                      "got %s but expected %s" % (services, expected_services))
+     
+-- 
+2.0.1
+
