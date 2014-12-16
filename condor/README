@@ -22,3 +22,18 @@ Instructions for updating upstream source:
 
   echo condor/$VERSION/$SRPM > upstream/developer.srpm.source
 
+
+Notes on updating osg/condor.spec:
+
+If we are using our own version of condor.spec (which is the case if we are
+carying any patches), it is a good idea to compare our version to the version
+in the new upstream srpm.  This way we can catch any updates to the upstream
+condor.spec.
+
+Expected changes between our condor.spec and upstream's:
+ - 'tarball_version' should be the same (if necessary, update it to match)
+ - 'condor_base_release' in ours should get a .n (eg, 1.1 if upstream has 1)
+ - PatchN/%patchN lines added for patches we carry
+ - %changelog entries for OSG-specific changes
+ - any other tweaks we continue to add, which should be in the %changelog
+
