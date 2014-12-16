@@ -1,5 +1,5 @@
 Name:      rsv-perfsonar
-Version:   0.0.11
+Version:   0.0.12
 Release:   1%{?dist}
 Summary:   RSV Metrics to monitor pefsonar
 Packager:  OSG-Software
@@ -66,6 +66,10 @@ ln -s /var/www/html/rsv /usr/share/rsv/www
 
 
 %changelog
+* Tue Dec 16 2014 <efajardo@physics.ucsd.edu> - 0.0.12-1
+- Added the option to dynamically adjust the start query time on the perf boxes
+- Only certain type of events are uploaded (the ones that are usefull)
+
 * Thu Dec 11 2014 <efajardo@physics.ucsd.edu> - 0.0.11-1
 - Added the feature of omiting uploading summaries
 - Upgraded suggested configuration options
