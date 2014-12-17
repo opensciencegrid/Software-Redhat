@@ -1,0 +1,13 @@
+Index: blahp-1.18.11.bosco/src/scripts/condor_submit.sh
+===================================================================
+--- blahp-1.18.11.bosco.orig/src/scripts/condor_submit.sh	2014-09-26 17:17:21.000000000 -0500
++++ blahp-1.18.11.bosco/src/scripts/condor_submit.sh	2014-12-03 17:06:08.929350582 -0600
+@@ -183,7 +183,7 @@
+ 	if [ ! -z "${remap_files[0]}" ] ; then
+ 	    map=${remap_files[$i]}
+ 	else
+-	    map=${output_files$i]}
++	    map=${output_files[$i]}
+ 	fi
+ 	transfer_output_remaps="$transfer_output_remaps;${output_files[$i]}=$map"
+     done
