@@ -3,26 +3,19 @@
 %global _hardened_build 1
 
 Name:		voms
-Version:	2.0.11
-%global tagver %(tr . _ <<< %{version})
-Release:	2.3%{?dist}
+Version:	2.0.12
+Release:	1.1%{?dist}
 Summary:	Virtual Organization Membership Service
 
 Group:		System Environment/Libraries
 License:	ASL 2.0
 URL:		https://wiki.italiangrid.it/VOMS
-#Source0:	https://github.com/italiangrid/%{name}/archive/%{tagver}.tar.gz
-Source0:        2_0_11.tar.gz
+#Source0:	https://github.com/italiangrid/%{name}/archive/v%{version}.tar.gz
+Source0:        v2.0.12.tar.gz
 #		Post-install setup instructions:
 Source1:	%{name}.INSTALL
-#		Don't use embedded gsoap sources
-Patch0:		%{name}-gsoap.patch
-Patch1:         sha2-proxy.patch
-Patch2:		handle-dns-failures.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires:	globus-gssapi-gsi-devel
-BuildRequires:	globus-gss-assist-devel
 BuildRequires:	openssl-devel
 BuildRequires:	expat-devel
 BuildRequires:	gsoap-devel
@@ -31,28 +24,16 @@ BuildRequires:	pkgconfig
 BuildRequires:	libxslt
 BuildRequires:	docbook-style-xsl
 BuildRequires:	doxygen
-BuildRequires:	tex(latex)
-%if %{?fedora}%{!?fedora:0} >= 18 || %{?rhel}%{!?rhel:0} >= 7
-BuildRequires:	tex(sectsty.sty)
-BuildRequires:	tex(tocloft.sty)
-BuildRequires:	tex(xtab.sty)
-BuildRequires:	tex(multirow.sty)
-BuildRequires:	tex-ec
-BuildRequires:	tex-courier
-BuildRequires:	tex-helvetic
-BuildRequires:	tex-times
-BuildRequires:	tex-symbol
-BuildRequires:	tex-rsfs
-%endif
 
 %description
-In grid computing, and whenever the access to resources may be controlled
-by parties external to the resource provider, users may be grouped to
-Virtual Organizations (VOs). This package provides a VO Membership Service
-(VOMS), which informs on that association between users and their VOs:
-groups, roles and capabilities.
+The Virtual Organization Membership Service (VOMS) is an attribute authority
+which serves as central repository for VO user authorization information,
+providing support for sorting users into group hierarchies, keeping track of
+their roles and other attributes in order to issue trusted attribute
+certificates and SAML assertions used in the Grid environment for
+authorization purposes.
 
-This package offers libraries that applications using the VOMS functionality
+This package provides libraries that applications using the VOMS functionality
 will bind to.
 
 %package devel
@@ -60,16 +41,16 @@ Summary:	Virtual Organization Membership Service Development Files
 Group:		Development/Libraries
 Requires:	%{name}%{?_isa} = %{version}-%{release}
 Requires:	openssl-devel%{?_isa}
-Requires:	automake
 
 %description devel
-In grid computing, and whenever the access to resources may be controlled
-by parties external to the resource provider, users may be grouped to
-Virtual Organizations (VOs). This package provides a VO Membership Service
-(VOMS), which informs on that association between users and their VOs:
-groups, roles and capabilities.
+The Virtual Organization Membership Service (VOMS) is an attribute authority
+which serves as central repository for VO user authorization information,
+providing support for sorting users into group hierarchies, keeping track of
+their roles and other attributes in order to issue trusted attribute
+certificates and SAML assertions used in the Grid environment for
+authorization purposes.
 
-This package offers header files for programming with the VOMS libraries.
+This package provides header files for programming with the VOMS libraries.
 
 %package doc
 Summary:	Virtual Organization Membership Service Documentation
@@ -77,7 +58,6 @@ Group:		Documentation
 %if %{?fedora}%{!?fedora:0} >= 10 || %{?rhel}%{!?rhel:0} >= 6
 BuildArch:	noarch
 %endif
-Requires:	%{name} = %{version}-%{release}
 
 %description doc
 Documentation for the Virtual Organization Membership Service.
@@ -87,12 +67,16 @@ Summary:	Virtual Organization Membership Service Clients
 Group:		Applications/Internet
 Requires:	%{name}%{?_isa} = %{version}-%{release}
 
+Requires(post):		%{_sbindir}/update-alternatives
+Requires(postun):	%{_sbindir}/update-alternatives
+
 %description clients
-In grid computing, and whenever the access to resources may be controlled
-by parties external to the resource provider, users may be grouped to
-Virtual Organizations (VOs). This package provides a VO Membership Service
-(VOMS), which informs on that association between users and their VOs:
-groups, roles and capabilities.
+The Virtual Organization Membership Service (VOMS) is an attribute authority
+which serves as central repository for VO user authorization information,
+providing support for sorting users into group hierarchies, keeping track of
+their roles and other attributes in order to issue trusted attribute
+certificates and SAML assertions used in the Grid environment for
+authorization purposes.
 
 This package provides command line applications to access the VOMS
 services.
@@ -109,26 +93,18 @@ Requires(preun):	initscripts
 Requires(postun):	initscripts
 
 %description server
-In grid computing, and whenever the access to resources may be controlled
-by parties external to the resource provider, users may be grouped to
-Virtual Organizations (VOs). This package provides a VO Membership Service
-(VOMS), which informs on that association between users and their VOs:
-groups, roles and capabilities.
+The Virtual Organization Membership Service (VOMS) is an attribute authority
+which serves as central repository for VO user authorization information,
+providing support for sorting users into group hierarchies, keeping track of
+their roles and other attributes in order to issue trusted attribute
+certificates and SAML assertions used in the Grid environment for
+authorization purposes.
 
-The service can be understood as an account database, which serves the
-information in a special format (VOMS credential). The VO manager can
-administrate it remotely using command line tools or a web interface.
+This package provides the VOMS service.
 
 %prep
-%setup -q -n %{name}-%{tagver}
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
+%setup -q
 
-# Remove embedded gsoap sources
-rm src/server/stdsoap2.c src/server/stdsoap2.h src/server/soap*
-
-# rebootstrap
 ./autogen.sh
 
 install -m 644 %{SOURCE1} README.Fedora
@@ -138,19 +114,12 @@ install -m 644 %{SOURCE1} README.Fedora
 
 make %{?_smp_mflags}
 
-( cd doc/apidoc/api/VOMS_C_API/latex ; make )
-( cd doc/apidoc/api/VOMS_CC_API/latex ; make )
-
 %install
 rm -rf %{buildroot}
 
 make install DESTDIR=%{buildroot}
 
 rm %{buildroot}%{_libdir}/*.la
-
-mkdir -p %{buildroot}%{_sysconfdir}/grid-security/vomsdir
-mkdir -p %{buildroot}%{_sysconfdir}/grid-security/%{name}
-mkdir -p %{buildroot}%{_sysconfdir}/%{name}
 
 # Turn off default enabling of the service
 mkdir -p %{buildroot}%{_initrddir}
@@ -168,14 +137,20 @@ install -m 644 -p AUTHORS LICENSE README.md %{buildroot}%{_pkgdocdir}
 mkdir -p %{buildroot}%{_pkgdocdir}/VOMS_C_API
 cp -pr doc/apidoc/api/VOMS_C_API/html %{buildroot}%{_pkgdocdir}/VOMS_C_API
 rm -f %{buildroot}%{_pkgdocdir}/VOMS_C_API/html/installdox
-install -m 644 doc/apidoc/api/VOMS_C_API/latex/refman.pdf \
-   %{buildroot}%{_pkgdocdir}/VOMS_C_API
 
 mkdir -p %{buildroot}%{_pkgdocdir}/VOMS_CC_API
 cp -pr doc/apidoc/api/VOMS_CC_API/html %{buildroot}%{_pkgdocdir}/VOMS_CC_API
 rm -f %{buildroot}%{_pkgdocdir}/VOMS_CC_API/html/installdox
-install -m 644 doc/apidoc/api/VOMS_CC_API/latex/refman.pdf \
-   %{buildroot}%{_pkgdocdir}/VOMS_CC_API
+
+for b in voms-proxy-init voms-proxy-info voms-proxy-destroy; do
+  ## Rename client binaries 
+  mv %{buildroot}%{_bindir}/${b} %{buildroot}%{_bindir}/${b}2
+  touch %{buildroot}/%{_bindir}/${b}
+  chmod 755 %{buildroot}/%{_bindir}/${b}
+  ## and man pages
+  mv %{buildroot}%{_mandir}/man1/${b}.1 %{buildroot}%{_mandir}/man1/${b}2.1
+  touch %{buildroot}%{_mandir}/man1/${b}.1
+done
 
 %clean
 rm -rf %{buildroot}
@@ -212,8 +187,43 @@ if [ $1 -ge 1 ]; then
     /sbin/service %{name} condrestart >/dev/null 2>&1 || :
 fi
 
+%pre clients
+if [ $1 -gt 1 ]; then
+  for c in voms-proxy-init voms-proxy-info voms-proxy-destroy; do
+    if [ -r %{_bindir}/$c -a ! -h %{_bindir}/$c ]; then
+      rm -f %{_bindir}/$c
+    fi
+    if [ -r %{_mandir}/man1/$c.1.gz -a ! -h %{_mandir}/man1/$c.1.gz ]; then
+      rm -f %{_mandir}/man1/$c.1.gz
+    fi
+  done
+fi
+
+%post clients
+%{_sbindir}/update-alternatives --install %{_bindir}/voms-proxy-init \
+    voms-proxy-init %{_bindir}/voms-proxy-init2 50 \
+    --slave %{_mandir}/man1/voms-proxy-init.1.gz voms-proxy-init-man \
+    %{_mandir}/man1/voms-proxy-init2.1.gz
+%{_sbindir}/update-alternatives --install %{_bindir}/voms-proxy-info \
+    voms-proxy-info %{_bindir}/voms-proxy-info2 50 \
+    --slave %{_mandir}/man1/voms-proxy-info.1.gz voms-proxy-info-man \
+    %{_mandir}/man1/voms-proxy-info2.1.gz
+%{_sbindir}/update-alternatives --install %{_bindir}/voms-proxy-destroy \
+    voms-proxy-destroy %{_bindir}/voms-proxy-destroy2 50 \
+    --slave %{_mandir}/man1/voms-proxy-destroy.1.gz voms-proxy-destroy-man \
+    %{_mandir}/man1/voms-proxy-destroy2.1.gz
+
+%postun clients
+if [ $1 -eq 0 ] ; then
+    %{_sbindir}/update-alternatives --remove voms-proxy-init \
+    %{_bindir}/voms-proxy-init2
+    %{_sbindir}/update-alternatives --remove voms-proxy-info \
+    %{_bindir}/voms-proxy-info2
+    %{_sbindir}/update-alternatives --remove voms-proxy-destroy \
+    %{_bindir}/voms-proxy-destroy2
+fi
+
 %files
-%defattr(-,root,root,-)
 %{_libdir}/libvomsapi.so.1*
 %dir %{_sysconfdir}/grid-security
 %dir %{_sysconfdir}/grid-security/vomsdir
@@ -225,7 +235,6 @@ fi
 %doc %{_pkgdocdir}/README.md
 
 %files devel
-%defattr(-,root,root,-)
 %{_libdir}/libvomsapi.so
 %{_includedir}/%{name}
 %{_libdir}/pkgconfig/%{name}-2.0.pc
@@ -233,29 +242,34 @@ fi
 %{_mandir}/man3/*
 
 %files doc
-%defattr(-,root,root,-)
+%doc %{_pkgdocdir}/AUTHORS
+%doc %{_pkgdocdir}/LICENSE
 %doc %{_pkgdocdir}/VOMS_C_API
 %doc %{_pkgdocdir}/VOMS_CC_API
 
 %files clients
-%defattr(-,root,root,-)
-%{_bindir}/voms-proxy-destroy
-%{_bindir}/voms-proxy-info
-%{_bindir}/voms-proxy-init
+%{_bindir}/voms-proxy-destroy2
+%{_bindir}/voms-proxy-info2
+%{_bindir}/voms-proxy-init2
 %{_bindir}/voms-proxy-fake
 %{_bindir}/voms-proxy-list
-%{_mandir}/man1/voms-proxy-destroy.1*
-%{_mandir}/man1/voms-proxy-info.1*
-%{_mandir}/man1/voms-proxy-init.1*
+%ghost %{_bindir}/voms-proxy-destroy
+%ghost %{_bindir}/voms-proxy-info
+%ghost %{_bindir}/voms-proxy-init
+%{_mandir}/man1/voms-proxy-destroy2.1*
+%{_mandir}/man1/voms-proxy-info2.1*
+%{_mandir}/man1/voms-proxy-init2.1*
 %{_mandir}/man1/voms-proxy-fake.1*
 %{_mandir}/man1/voms-proxy-list.1*
+%ghost %{_mandir}/man1/voms-proxy-destroy.1*
+%ghost %{_mandir}/man1/voms-proxy-info.1*
+%ghost %{_mandir}/man1/voms-proxy-init.1*
 
 %files server
-%defattr(-,root,root,-)
 %{_sbindir}/%{name}
 %{_initrddir}/%{name}
 %config(noreplace) %{_sysconfdir}/sysconfig/%{name}
-%dir %{_sysconfdir}/%{name}
+%attr(-,voms,voms) %dir %{_sysconfdir}/%{name}
 %dir %{_sysconfdir}/grid-security/%{name}
 %attr(-,voms,voms) %dir %{_localstatedir}/log/%{name}
 %{_datadir}/%{name}/mysql2oracle
@@ -269,6 +283,40 @@ fi
 %doc README.Fedora
 
 %changelog
+* Tue Dec 16 2014 Jeff Dost <jdost@ucsd.edu> - 2.0.12-1.1
+- Upgraded to version 2.0.12
+
+* Mon Nov 17 2014 Mattias Ellert <mattias.ellert@fysast.uu.se> - 2.0.12-1
+- Update to version 2.0.12
+- Drop patches voms-gsoap.patch, voms-sha2-proxy.patch and voms-strndup.patch
+  (accepted upstream)
+- Add alternatives to the client package to allow parallel installation of
+  the java implementation of the client tools
+
+* Mon Aug 18 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.0.11-10
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_22_Mass_Rebuild
+
+* Sun Jul 13 2014 Mattias Ellert <mattias.ellert@fysast.uu.se> - 2.0.11-9
+- Rebuild properly
+
+* Sun Jul 13 2014 Mattias Ellert <mattias.ellert@fysast.uu.se> - 2.0.11-8
+- Rebuild for gsoap 2.8.17 (Fedora 22)
+
+* Wed Jul 02 2014 Mattias Ellert <mattias.ellert@fysast.uu.se> - 2.0.11-7
+- Update the gsoap patch
+
+* Thu Jun 26 2014 Mattias Ellert <mattias.ellert@fysast.uu.se> - 2.0.11-6
+- Clean up SHA2 patch
+
+* Thu Jun 26 2014 Mattias Ellert <mattias.ellert@fysast.uu.se> - 2.0.11-5
+- Fix compilation problems when strndup is already defined
+
+* Thu Jun 26 2014 Mattias Ellert <mattias.ellert@fysast.uu.se> - 2.0.11-4
+- Patch that fixes a stack smash when SHA2 certificates are used
+
+* Sun Jun 08 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.0.11-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
+
 * Thu May 22 2014 Carl Edquist <edquist@cs.wisc.edu> - 2.0.11-2.3
 - Handle DNS failures (SOFTWARE-1463)
 
