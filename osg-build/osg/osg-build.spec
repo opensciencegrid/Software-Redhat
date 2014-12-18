@@ -2,7 +2,7 @@
 %global _release 1
 
 Name:           osg-build
-Version:        1.4.2
+Version:        1.4.3
 Release:        %{?betatag:0.}%{_release}%{?betatag}%{?dist}
 Summary:        Build tools for the OSG
 
@@ -70,6 +70,12 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_docdir}/%{name}/sample-osg-build.ini
 
 %changelog
+* Wed Dec 17 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.4.3-1
+- Add retry loop to watching tasks (SOFTWARE-1343)
+- Allow --target-arch option on scratch koji builds (SOFTWARE-1629)
+- Handle mixed git/svn directories (SOFTWARE-1247)
+- Update usage text
+
 * Mon Dec 01 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.4.2-1
 - Don't require a cert when doing a mock build using a koji config
 - Change contrib promotion route to go from testing to contrib instead of
