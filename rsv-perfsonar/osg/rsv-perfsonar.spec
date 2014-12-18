@@ -1,5 +1,5 @@
 Name:      rsv-perfsonar
-Version:   0.0.12
+Version:   1.0.0
 Release:   1%{?dist}
 Summary:   RSV Metrics to monitor pefsonar
 Packager:  OSG-Software
@@ -26,7 +26,7 @@ Requires: python-simplejson
 %{summary}
 
 %prep
-%setup -n %{name}
+%setup -n %{name}-%{version}
 
 %install
 rm -fr $RPM_BUILD_ROOT
@@ -66,6 +66,10 @@ ln -s /var/www/html/rsv /usr/share/rsv/www
 
 
 %changelog
+* Thu Dec 18 2014 <efajardo@physics.ucsd.edu> - 1.0.0-1
+- Bumped to first production version
+- Code is basically same as 0.0.12
+
 * Tue Dec 16 2014 <efajardo@physics.ucsd.edu> - 0.0.12-1
 - Added the option to dynamically adjust the start query time on the perf boxes
 - Only certain type of events are uploaded (the ones that are usefull)
@@ -93,7 +97,7 @@ ln -s /var/www/html/rsv /usr/share/rsv/www
 - Added the option for a super mesh as a json url that contains other meshes
 
 * Fri Nov 14 2014  <efajardo@physics.ucsd.edu> - 0.0.5-1
-- Now uploading of packet-loss-rate as a fraction not float
+ - Now uploading of packet-loss-rate as a fraction not float
 
 * Tue Nov 4 2014  <efajardo@physics.ucsd.edu> - 0.0.4-1
 - Added sleep time for the probe.
