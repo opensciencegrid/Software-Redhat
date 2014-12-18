@@ -1,11 +1,10 @@
 Name:           edg-mkgridmap
-Version:        4.0.0
-Release:        8%{?dist}
-Summary:        Contains the init.d script and crontab for edg-mkgridmap
-
+Version:        4.0.1
+Release:        1%{?dist}
+Summary:        A tool to build the grid map-file from VO servers
 Group:          system environment/base
 License:        Apache 2.0
-URL:            http://www.opensciencegrid.org/osg/
+URL:            http://svnweb.cern.ch/world/wsvn/curios/edg-mkgridmap
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
@@ -17,18 +16,13 @@ Patch0:         edg-mkgridmap-wrapper-osg.patch
 Patch1:         use-net-ssl.patch
 Patch2:         skip_blank_entries.patch	
 
-# Steps to make tarball (correctly packaged):
-# Get GOC's tarball, edg-mkgridmap-10.tar.gz
-# tar xzf edg-mkgridmap-4.0.0.tar.gz
-# cp edg-mkgridmap ./
-# cp edg-mkgridmap-cron ./
-
 Requires:       osg-edg-mkgridmap-config
 Requires:       osg-vo-map
 
 Requires:       perl-libwww-perl
 Requires:       perl-Net-SSLeay
 Requires:       perl-Crypt-SSLeay
+
 
 Requires(post): chkconfig
 Requires(preun): chkconfig
@@ -40,7 +34,8 @@ Requires(preun): initscripts
 
 %prep
 
-%setup -q
+#%setup -q
+%setup -q -n %{name}-%{version}
 %patch0 -p0
 %patch1 -p0
 %patch2 -p0
@@ -56,6 +51,7 @@ mkdir -p $RPM_BUILD_ROOT/%{_sysconfdir}/cron.d/
 mkdir -p $RPM_BUILD_ROOT/%{_var}/lib/osg
 install -m 755 %{SOURCE1} $RPM_BUILD_ROOT/%{_sysconfdir}/rc.d/init.d/edg-mkgridmap
 install -m 644 %{SOURCE2} $RPM_BUILD_ROOT/%{_sysconfdir}/cron.d/edg-mkgridmap-cron
+
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -75,24 +71,22 @@ if [ "$1" -ge "1" ] ; then
 fi
 
 %files
-%defattr(-,root,root,-)
-%{_sysconfdir}/rc.d/init.d/edg-mkgridmap
-%{_sysconfdir}/cron.d/edg-mkgridmap-cron
-%docdir %{_defaultdocdir}/%{name}
-%docdir %{_mandir}/man5
-%docdir %{_mandir}/man8
-%{_libexecdir}/edg-mkgridmap
+%defattr(-,root,root)
+%doc AUTHORS LICENSE MAINTAINERS
+%dir %{_libexecdir}/edg-mkgridmap
 %{_libexecdir}/edg-mkgridmap/edg-mkgridmap.pl
 %{_sbindir}/edg-mkgridmap
-%{_defaultdocdir}/%{name}
-%{_defaultdocdir}/%{name}/AUTHORS
-%{_defaultdocdir}/%{name}/LICENSE
-%{_defaultdocdir}/%{name}/MAINTAINERS
 %{_mandir}/man5/edg-mkgridmap.conf.5*
 %{_mandir}/man8/edg-mkgridmap.8*
+%{_sysconfdir}/rc.d/init.d/edg-mkgridmap
+%{_sysconfdir}/cron.d/edg-mkgridmap-cron
 %dir %{_var}/lib/osg
 
 %changelog
+* Wed Dec 17 2014 Edgar Fajardo <efajardo@physics.ucsd.edu> - 4.0.1-1
+- Bumped to version 4.0.1
+- Added support for TLS (SOFTWARE-1728)
+
 * Mon Nov 24 2014 Brian Lin <blin@cs.wisc.edu> - 4.0.0-8
 - Handle blank entries in edg-mkgridmap (SOFTWARE-1698)
 
