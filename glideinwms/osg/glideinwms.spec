@@ -376,6 +376,8 @@ install -m 0644 install/templates/00_gwms_factory_general.config $RPM_BUILD_ROOT
 install -m 0644 install/templates/00_gwms_general.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
 install -m 0644 install/templates/01_gwms_factory_collectors.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
 install -m 0644 install/templates/01_gwms_collectors.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
+install -m 0644 install/templates/01_gwms_ganglia.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
+install -m 0644 install/templates/01_gwms_metrics.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
 install -m 0644 install/templates/02_gwms_factory_schedds.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
 install -m 0644 install/templates/02_gwms_schedds.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
 install -m 0644 install/templates/03_gwms_local.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
@@ -704,6 +706,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %files usercollector
 %config(noreplace) %{_sysconfdir}/condor/config.d/01_gwms_collectors.config
+%config(noreplace) %{_sysconfdir}/condor/config.d/01_gwms_ganglia.config
+%config(noreplace) %{_sysconfdir}/condor/config.d/01_gwms_metrics.config
 %config(noreplace) %{_sysconfdir}/condor/config.d/11_gwms_secondary_collectors.config
 
 %files userschedd
