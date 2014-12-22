@@ -733,6 +733,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Dec 22 2014 Parag Mhashilkar <parag@fnal.gov> - 3.2.8-0.1.rc1
+- Glideinwms v3.2.8 rc1 release
+
 * Wed Nov 6 2014 Parag Mhashilkar <parag@fnal.gov> - 3.2.7.2-1
 - Glideinwms v3.2.7.2 release
 - Sets MASTER.USE_SHARED_PORT in schedd's config to support HTCondor v8.2.3
