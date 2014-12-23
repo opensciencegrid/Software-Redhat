@@ -5,7 +5,7 @@
 
 Summary:   Tests an OSG Software installation
 Name:      osg-test
-Version:   1.4.20
+Version:   1.4.21
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -37,10 +37,14 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/osgtest
 
 %changelog
-* Wed Dec 10 2014 Brian Lin <blin@cs.wisc.edu> - 1.4.20
+* Mon Dec 22 2014 Tim Cartwright <cat@cs.wisc.edu> - 1.4.21-1
+- Improve timeout semantics for yum installs & updates (per command)
+- Add tests for job environment variables in routine job tests
+
+* Wed Dec 10 2014 Brian Lin <blin@cs.wisc.edu> - 1.4.20-1
 - Fix for cleanup tests trying to remove pre-installed packages
 
-* Wed Dec 03 2014 Brian Lin <blin@cs.wisc.edu> - 1.4.19
+* Wed Dec 03 2014 Brian Lin <blin@cs.wisc.edu> - 1.4.19-1
 - Improvements to update and cleanup tests for EL5
 - Additional changes for EL7 support
 - Fix for intermittent failure of condor_ce_ping tests
