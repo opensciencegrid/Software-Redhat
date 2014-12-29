@@ -21,7 +21,7 @@ Name:           glideinwms
 # ------------------------------------------------------------------------------
 %if %{v3_plus}
 %define version 3.2.8
-%define release 0.1.rc1
+%define release 0.2.rc1
 %define frontend_xml frontend.master.xml
 %define factory_xml glideinWMS.master.xml
 %endif
@@ -369,6 +369,7 @@ rm -rf $RPM_BUILD_ROOT%{web_base}/CVS
 
 # Install condor stuff
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d
+install -d $RPM_BUILD_ROOT%{_sysconfdir}/condor/ganglia.d
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/condor/certs
 #make sure this (new) file exists, can be deprecated in gwms 2.7 or so
 touch install/templates/90_gwms_dns.config
@@ -377,12 +378,12 @@ install -m 0644 install/templates/00_gwms_general.config $RPM_BUILD_ROOT%{_sysco
 install -m 0644 install/templates/01_gwms_factory_collectors.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
 install -m 0644 install/templates/01_gwms_collectors.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
 install -m 0644 install/templates/01_gwms_ganglia.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
-install -m 0644 install/templates/01_gwms_metrics.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
 install -m 0644 install/templates/02_gwms_factory_schedds.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
 install -m 0644 install/templates/02_gwms_schedds.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
 install -m 0644 install/templates/03_gwms_local.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
 install -m 0644 install/templates/11_gwms_secondary_collectors.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
 install -m 0644 install/templates/90_gwms_dns.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
+install -m 0644 install/templates/01_gwms_metrics.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/ganglia.d/
 install -m 0644 install/templates/condor_mapfile $RPM_BUILD_ROOT%{_sysconfdir}/condor/certs/
 install -m 0644 install/templates/privsep_config $RPM_BUILD_ROOT%{_sysconfdir}/condor/
 
@@ -707,8 +708,8 @@ rm -rf $RPM_BUILD_ROOT
 %files usercollector
 %config(noreplace) %{_sysconfdir}/condor/config.d/01_gwms_collectors.config
 %config(noreplace) %{_sysconfdir}/condor/config.d/01_gwms_ganglia.config
-%config(noreplace) %{_sysconfdir}/condor/config.d/01_gwms_metrics.config
 %config(noreplace) %{_sysconfdir}/condor/config.d/11_gwms_secondary_collectors.config
+%config(noreplace) %{_sysconfdir}/condor/ganglia.d/01_gwms_metrics.config
 
 %files userschedd
 %config(noreplace) %{_sysconfdir}/condor/config.d/02_gwms_schedds.config
@@ -733,6 +734,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Dec 29 2014 Parag Mhashilkar <parag@fnal.gov> - 3.2.8-0.2.rc1
+- Fixed install location of 01_gwms_metrics.config to /etc/condor/ganglia.d
+
 * Mon Dec 22 2014 Parag Mhashilkar <parag@fnal.gov> - 3.2.8-0.1.rc1
 - Glideinwms v3.2.8 rc1 release
 
