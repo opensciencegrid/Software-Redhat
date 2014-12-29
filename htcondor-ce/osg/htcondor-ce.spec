@@ -2,8 +2,8 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 1.8
-Release: 4%{?gitrev:.%{gitrev}git}%{?dist}
+Version: 1.9
+Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 
 Group: Applications/System
@@ -17,9 +17,6 @@ URL: http://github.com/bbockelm/condor-ce
 # git archive --prefix=%{name}-%{version}/ %{gitrev} | gzip > %{name}-%{version}-%{gitrev}.tar.gz
 #
 Source0: %{name}-%{version}%{?gitrev:-%{gitrev}}.tar.gz
-Patch0: shared_port_config_fix.patch
-Patch1: nested_try.patch
-Patch2: OptionParser-Python-2.4-compat-fix.patch
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -144,9 +141,6 @@ Conflicts: %{name}
 
 %prep
 %setup -q
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
 
 %build
 %cmake -DHTCONDORCE_VERSION=%{version} -DCMAKE_INSTALL_LIBDIR=%{_libdir}
@@ -257,6 +251,8 @@ fi
 %config %{_sysconfdir}/condor-ce/condor_config
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-common-auth.conf
 %{_datadir}/condor-ce/config.d/01-common-auth-defaults.conf
+%{_datadir}/condor-ce/config.d/01-common-collector-defaults.conf
+%{_datadir}/condor-ce/ce-status.cpf
 %config(noreplace) %{_sysconfdir}/condor-ce/condor_mapfile
 
 %{_datadir}/condor-ce/condor_ce_env_bootstrap
@@ -289,9 +285,11 @@ fi
 %{_bindir}/condor_ce_config_generator
 %{_initrddir}/condor-ce-collector
 %{_datadir}/condor-ce/config.d/01-ce-collector-defaults.conf
+%{_datadir}/condor-ce/config.d/01-ce-auth-defaults.conf
 
 %config(noreplace) %{_sysconfdir}/sysconfig/condor-ce-collector
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-collector.conf
+%config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-auth.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/02-ce-auth-generated.conf
 %config(noreplace) %{_sysconfdir}/cron.d/condor-ce-collector-generator.cron
 %config(noreplace) %{_sysconfdir}/logrotate.d/condor-ce-collector
@@ -307,6 +305,14 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Fri Dec 18 2014 Brian Lin <blin@cs.wisc.edu> - 1.9-1
+- Add auth file to the collector RPM.
+- Updates and fixes to condor_ce_info_status and condor_ce_trace
+- Fixes to default security settings
+
+* Thu Dec 04 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.8-5
+- Add a user-friendly error message when condor_ce_reconfig fails in condor_ce_config_generator (SOFTWARE-1705)
+
 * Mon Dec 01 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.8-4
 - Fix help message code so it is Python 2.4 compatible
 
