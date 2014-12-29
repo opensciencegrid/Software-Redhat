@@ -1,4 +1,4 @@
-%define tarball_version 8.3.1
+%define tarball_version 8.3.2
 
 # optionally define any of these, here or externally
 # % define fedora   16
@@ -32,7 +32,7 @@
 %if 0%{?rhel} >= 6
 %define cgroups 1
 %endif
-%if 0%{?rhel} > 7
+%if 0%{?rhel} >= 7
 %define systemd 1
 %endif
 
@@ -104,7 +104,7 @@
 %define git_build 0
 # If building with git tarball, Fedora requests us to record the rev.  Use:
 # git log -1 --pretty=format:'%h'
-%define git_rev ca97ea2
+%define git_rev 0df6e0d
 
 %if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
 %{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
@@ -118,7 +118,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1
+%define condor_base_release 1.1
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -176,6 +176,7 @@ Source4: condor.osg-sysconfig
 Source5: condor_config.local.dedicated.resource
 
 Source6: 10-batch_gahp_blahp.config
+Source7: 00-restart_peaceful.config
 
 %if %bundle_uw_externals
 Source101: blahp-1.16.5.1.tar.gz
@@ -873,20 +874,10 @@ mkdir -p -m1777 %{buildroot}/%{_var}/lock/condor/local
 mkdir -p -m0755 %{buildroot}/%{_var}/lib/condor/spool
 mkdir -p -m1777 %{buildroot}/%{_var}/lib/condor/execute
 
-cat >> %{buildroot}/%_sysconfdir/condor/condor_config.local << EOF
-CONDOR_DEVELOPERS = NONE
+cat >> %{buildroot}/%_sysconfdir/condor/condor_config << EOF
 CONDOR_HOST = \$(FULL_HOSTNAME)
-COLLECTOR_NAME = Personal Condor
-START = TRUE
-SUSPEND = FALSE
-PREEMPT = FALSE
-KILL = FALSE
 DAEMON_LIST = COLLECTOR, MASTER, NEGOTIATOR, SCHEDD, STARTD
-NEGOTIATOR_INTERVAL = 20
 EOF
-
-# this gets around a bug whose fix is not yet merged
-echo "TRUST_UID_DOMAIN = TRUE" >> %{buildroot}/%_sysconfdir/condor/condor_config.local
 
 # no master shutdown program for now
 rm -f %{buildroot}/%{_sbindir}/condor_set_shutdown
@@ -1043,6 +1034,10 @@ mv %{buildroot}%{_libexecdir}/condor/campus_factory/share %{buildroot}%{_datadir
 install -p -m 0644 %{SOURCE6} %{buildroot}%{_sysconfdir}/condor/config.d/10-batch_gahp_blahp.config
 %endif
 
+%if 0%{?osg} || 0%{?hcc}
+install -p -m 0644 %{SOURCE7} %{buildroot}%{_sysconfdir}/condor/config.d/00-restart_peaceful.config
+%endif
+
 %if %std_univ
 populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/condor_rt0.o
 populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/libcomp_libgcc.a
@@ -1144,6 +1139,9 @@ rm -rf %{buildroot}
 %config(noreplace) %{_sysconfdir}/condor/config.d/10-batch_gahp_blahp.config
 %endif
 %endif
+%if 0%{?osg} || 0%{?hcc}
+%config(noreplace) %{_sysconfdir}/condor/config.d/00-restart_peaceful.config
+%endif
 %_libexecdir/condor/condor_limits_wrapper.sh
 %_libexecdir/condor/condor_rooster
 %_libexecdir/condor/condor_schedd.init
@@ -1173,6 +1171,7 @@ rm -rf %{buildroot}
 %_mandir/man1/condor_gpu_discovery.1.gz
 %_mandir/man1/condor_history.1.gz
 %_mandir/man1/condor_hold.1.gz
+%_mandir/man1/condor_job_router_info.1.gz
 %_mandir/man1/condor_master.1.gz
 %_mandir/man1/condor_off.1.gz
 %_mandir/man1/condor_on.1.gz
@@ -1195,6 +1194,7 @@ rm -rf %{buildroot}
 %_mandir/man1/condor_submit.1.gz
 %_mandir/man1/condor_submit_dag.1.gz
 %_mandir/man1/condor_transfer_data.1.gz
+%_mandir/man1/condor_update_machine_ad.1.gz
 %_mandir/man1/condor_updates_stats.1.gz
 %_mandir/man1/condor_urlfetch.1.gz
 %_mandir/man1/condor_userlog.1.gz
@@ -1260,6 +1260,8 @@ rm -rf %{buildroot}
 %_bindir/condor_tail
 %_bindir/condor_qsub
 %_bindir/condor_pool_job_report
+%_bindir/condor_job_router_info
+%_bindir/condor_update_machine_ad
 # reconfig_schedd, restart
 # sbin/condor is a link for master_off, off, on, reconfig,
 %_sbindir/condor_advertise
@@ -1301,7 +1303,6 @@ rm -rf %{buildroot}
 %endif
 %_libexecdir/condor/condor_gpu_discovery
 %_sbindir/condor_vm_vmware
-%config(noreplace) %_sysconfdir/condor/condor_config.local
 %config(noreplace) %_sysconfdir/condor/ganglia.d/00_default_metrics
 %defattr(-,condor,condor,-)
 %dir %_var/lib/condor/
@@ -1716,6 +1717,46 @@ fi
 /sbin/chkconfig --add condor
 /sbin/ldconfig
 
+%posttrans -n condor
+# If there is a saved condor_config.local, recover it
+if [ -f /etc/condor/condor_config.local.rpmsave ]; then
+    if [ ! -f /etc/condor/condor_config.local ]; then
+        mv /etc/condor/condor_config.local.rpmsave \
+           /etc/condor/condor_config.local
+
+        # Drop a README file to tell what we have done
+        # Make sure that we don't overwrite a previous README
+        if [ ! -f /etc/condor/README.condor_config.local ]; then
+            file="/etc/condor/README.condor_config.local"
+        else
+            i="1"
+            while [ -f /etc/condor/README.condor_config.local.$i ]; do
+                i=$((i+1))
+            done
+            file="/etc/condor/README.condor_config.local.$i"
+        fi
+
+cat <<EOF > $file
+On `date`, while installing or upgrading to
+HTCondor %version, the /etc/condor directory contained a file named
+"condor_config.local.rpmsave" but did not contain one named
+"condor_config.local".  This situation may be the result of prior
+modifications to "condor_config.local" that were preserved after the
+HTCondor RPM stopped including that file.  In any case, the contents
+of the old "condor_config.local.rpmsave" file may still be useful.
+So after the install it was moved back into place and this README
+file was created.  Here is a directory listing for the restored file
+at that time:
+
+`ls -l /etc/condor/condor_config.local`
+
+See the "Configuration" section (3.3) of the HTCondor manual for more
+information on configuration files.
+EOF
+
+    fi
+fi
+
 %preun -n condor
 if [ $1 = 0 ]; then
   /sbin/service condor stop >/dev/null 2>&1 || :
@@ -1731,6 +1772,25 @@ fi
 %endif
 
 %changelog
+* Mon Dec 29 2014 Tim Cartwright <cat@cs.wisc.edu> - 8.3.2-1.1
+- Update to HTCondor 8.3.2
+- Retain OSG patch for CREAM GAHP linking (SOFTWARE-1636)
+
+* Wed Aug 27 2014 Carl Edquist <edquist@cs.wisc.edu> - 8.2.2-2.3
+- Include config file for MASTER_NEW_BINARY_RESTART = PEACEFUL (SOFTWARE-850)
+
+* Tue Aug 26 2014 Carl Edquist <edquist@cs.wisc.edu> - 8.2.2-2.2
+- Include peaceful_off patch (SOFTWARE-1307)
+
+* Mon Aug 25 2014 Carl Edquist <edquist@cs.wisc.edu> - 8.2.2-2.1
+- Include condor_gt4540_aws patch for #4540
+
+* Fri Aug 22 2014 Carl Edquist <edquist@cs.wisc.edu> - 8.2.2-2
+- Strict pass-through with fixes from 8.2.2-1.1
+
+* Thu Aug 21 2014 Carl Edquist <edquist@cs.wisc.edu> - 8.2.2-1.1
+- Update to 8.2.2 with build fixes for non-UW builds
+
 * Mon Sep 09 2013  <edquist@cs.wisc.edu> - 8.1.2-0.3
 - Include misc unpackaged files from 8.x.x
 
