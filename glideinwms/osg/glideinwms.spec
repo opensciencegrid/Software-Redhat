@@ -21,7 +21,7 @@ Name:           glideinwms
 # ------------------------------------------------------------------------------
 %if %{v3_plus}
 %define version 3.2.8
-%define release 0.2.rc1
+%define release 1
 %define frontend_xml frontend.master.xml
 %define factory_xml glideinWMS.master.xml
 %endif
@@ -734,6 +734,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Dec 30 2014 Parag Mhashilkar <parag@fnal.gov> - 3.2.8-1
+-  Glideinwms v3.2.8 release
+
 * Mon Dec 29 2014 Parag Mhashilkar <parag@fnal.gov> - 3.2.8-0.2.rc1
 - Fixed install location of 01_gwms_metrics.config to /etc/condor/ganglia.d
 
