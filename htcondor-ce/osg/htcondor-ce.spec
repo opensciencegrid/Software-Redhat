@@ -3,7 +3,7 @@
 
 Name: htcondor-ce
 Version: 1.9
-Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
+Release: 2%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 
 Group: Applications/System
@@ -19,6 +19,8 @@ URL: http://github.com/bbockelm/condor-ce
 Source0: %{name}-%{version}%{?gitrev:-%{gitrev}}.tar.gz
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+
+Patch0: explicit_condor_port.patch
 
 Requires:  condor >= 8.0.0
 # This ought to pull in the HTCondor-CE specific version of the blahp
@@ -141,6 +143,8 @@ Conflicts: %{name}
 
 %prep
 %setup -q
+
+%patch0 -p1
 
 %build
 %cmake -DHTCONDORCE_VERSION=%{version} -DCMAKE_INSTALL_LIBDIR=%{_libdir}
@@ -305,6 +309,9 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Tue Jan 06 2015 Brian Lin <blin@cs.wisc.edu> - 1.9-2
+- Fix HTCondor jobs routing incorrectly in 8.3.x
+
 * Fri Dec 18 2014 Brian Lin <blin@cs.wisc.edu> - 1.9-1
 - Add auth file to the collector RPM.
 - Updates and fixes to condor_ce_info_status and condor_ce_trace
