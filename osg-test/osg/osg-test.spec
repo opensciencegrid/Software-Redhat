@@ -5,7 +5,7 @@
 
 Summary:   Tests an OSG Software installation
 Name:      osg-test
-Version:   1.4.21
+Version:   1.4.22
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -37,6 +37,9 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/osgtest
 
 %changelog
+* Tue Jan 06 2015 Tim Cartwright <cat@cs.wisc.edu> - 1.4.22-1
+- Small tweaks to HTCondor CE tests based on automated test results
+
 * Mon Dec 22 2014 Tim Cartwright <cat@cs.wisc.edu> - 1.4.21-1
 - Improve timeout semantics for yum installs & updates (per command)
 - Add tests for job environment variables in routine job tests
