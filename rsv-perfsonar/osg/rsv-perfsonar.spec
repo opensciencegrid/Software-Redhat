@@ -1,6 +1,6 @@
 Name:      rsv-perfsonar
 Version:   1.0.1
-Release:   1%{?dist}
+Release:   2%{?dist}
 Summary:   RSV Metrics to monitor pefsonar
 Packager:  OSG-Software
 Group:     Applications/Monitoring
@@ -66,10 +66,13 @@ rm -rf /usr/share/rsv/www
 ln -s /var/www/html/rsv /usr/share/rsv/www
 # Instaling the reqesocks library
 scl enable python27 - << \EOF
-pip install requesocks
+/opt/esmond/bin/pip install requesocks
 EOF 
 
 %changelog
+* Thu Jan 8 2015 <efajardo@physics.ucsd.edu> - 1.0.1-2
+- Fix requesocks library installation
+
 * Thu Jan 8 2015 <efajardo@physics.ucsd.edu> - 1.0.1-1
 - Added the socsk5 proxy requirement for accessing sites in the LHCOne
 - Added the installation fo the requesocks library
