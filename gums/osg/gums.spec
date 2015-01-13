@@ -8,7 +8,7 @@
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.4.1
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 %if 0%{?rhel} < 6
@@ -100,6 +100,8 @@ Patch0: undo-jsp-precompile.patch
 # https://jira.opensciencegrid.org/browse/SOFTWARE-992
 Patch1: 992-remove-saml-service.patch
 
+Patch2: 1749-scas-client-bugfix.patch
+
 %description
 %{summary}
 
@@ -145,6 +147,8 @@ Summary: Tomcat service for GUMS
 %endif
 
 %patch1 -p1
+
+%patch2 -p1
 
 %build
 
@@ -390,6 +394,9 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+* Mon Jan 12 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.4.1-4
+- bugfix related to new scas client (SOFTWARE-1749)
+
 * Wed Dec 03 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.4.1-3
 - remove the GUMS SAML service definition (SOFTWARE-992)
 
