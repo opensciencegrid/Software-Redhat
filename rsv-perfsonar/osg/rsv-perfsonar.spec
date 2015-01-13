@@ -1,6 +1,6 @@
 Name:      rsv-perfsonar
-Version:   1.0.1
-Release:   2%{?dist}
+Version:   1.0.2
+Release:   1%{?dist}
 Summary:   RSV Metrics to monitor pefsonar
 Packager:  OSG-Software
 Group:     Applications/Monitoring
@@ -70,6 +70,9 @@ scl enable python27 - << \EOF
 EOF 
 
 %changelog
+* Mon Jan 12 2015 <efajardo@physics.ucsd.edu> 1.0.2-1
+- Improved memmory footprint of the probes
+
 * Thu Jan 8 2015 <efajardo@physics.ucsd.edu> - 1.0.1-2
 - Fix requesocks library installation
 
