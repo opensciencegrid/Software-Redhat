@@ -818,6 +818,9 @@ The SLURM probe for the Gratia OSG accounting system.
 %endif # noarch
 
 %changelog
+* Wed Jan 14 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.13.31-1.1
+- Handle leading/trailing whitespace in voi/VOc lines in user-vo-map
+
 * Mon Nov 3 2014 Marco Mambelli <marcom@fnal.gov> - 1.13.31-1
 - Changed logic reporting VOName (GRATIA-156)
 - certinfo files not checked for transfer probes (GRATIA-159)
