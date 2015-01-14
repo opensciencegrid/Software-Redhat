@@ -2,7 +2,7 @@ Name:               gratia-probe
 Summary:            Gratia OSG accounting system probes
 Group:              Applications/System
 Version:            1.13.31
-Release:            1%{?dist}
+Release:            1.1%{?dist}
 
 License:            GPL
 Group:              Applications/System
@@ -55,6 +55,8 @@ Source16: %{name}-bdii-status-%{version}.tar.bz2
 Source17: %{name}-onevm-%{version}.tar.bz2
 Source18: %{name}-slurm-%{version}.tar.bz2
 
+Patch1: voi-VOc-whitespace-fix.patch
+
 ########################################################################
 
 # Build settings.
@@ -85,6 +87,8 @@ Prefix: /etc
 %setup -q -D -T -a 16
 %setup -q -D -T -a 17
 %setup -q -D -T -a 18 
+
+%patch1 -p1
 
 %build
 %ifnarch noarch
