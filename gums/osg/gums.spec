@@ -72,7 +72,7 @@ Requires: privilege-xacml >= 2.6.4
 # tar zcf gums-1.3.18.009.tar.gz gums/
 
 # For git-based releases, one can do:
-# git archive --format=tar --prefix=gums-1.4.0.pre1/ v1.4.0.pre1 | gzip > gums-1.4.0.pre1.tar.gz
+# git archive --format=tgz --prefix=gums-1.4.0.pre1/ v1.4.0.pre1 > gums-1.4.0.pre1.tar.gz
 #
 Source0: %{name}-%{version}.tar.gz
 Source1: gums-host-cron
