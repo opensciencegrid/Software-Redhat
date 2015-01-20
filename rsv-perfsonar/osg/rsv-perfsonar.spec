@@ -1,5 +1,5 @@
 Name:      rsv-perfsonar
-Version:   1.0.3
+Version:   1.0.4
 Release:   1%{?dist}
 Summary:   RSV Metrics to monitor pefsonar
 Packager:  OSG-Software
@@ -70,6 +70,9 @@ scl enable python27 - << \EOF
 EOF 
 
 %changelog
+* Mon Jan 20 2015 <efajardo@physics.ucsd.edu> 1.0.4-1
+- Added the config option for the allowedEvents
+
 * Wed Jan 14 2015 <efajardo@physics.ucsd.edu> 1.0.3-1
 - Fixed bug in last version that prevented event types to be added to the post
 
