@@ -1,6 +1,6 @@
 Name:      rsv-vo-gwms
 Version:   0.0.1
-Release:   1%{?dist}
+Release:   2%{?dist}
 Summary:   RSV metrics to test CE's from gwms factory
 Packager:  OSG-Software
 Group:     Applications/Monitoring
@@ -13,7 +13,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch: noarch
 
 Requires: rsv
-Requires: python-condor
+Requires: condor-python
 
 
 %description
@@ -51,5 +51,8 @@ ln -s /var/www/html/rsv /usr/share/rsv/www
 
 
 %changelog
+* Wed Nov 14 2014 <efajardo@physics.ucsd.edu> - 0.0.1-2
+- Fixed the requires condor-python
+
 * Wed Nov 14 2014 <efajardo@physics.ucsd.edu> - 0.0.1-1
 - Creating a first RPM for rsv-vo-gwms
