@@ -1,6 +1,6 @@
 Name:      rsv
 Summary:   RSV Meta Package
-Version:   3.7.21
+Version:   3.7.22
 Release:   1%{?dist}
 License:   Apache 2.0
 Group:     Applications/Monitoring
@@ -237,6 +237,10 @@ fi
 
 
 %changelog
+* Thu Jan 22 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.7.22-1
+- SOFTWARE-1737 - Fix CA certs URL used for ITB sites
+- SOFTWARE-1674 - Clarify gratia-config-probe output when checks can't be made due to lack of privileges
+
 * Tue Nov 18 2014 Carl Edquist <edquist@cs.wisc.edu> - 3.7.21-1
 - SOFTWARE-1652 - Shell quoting improvements for remaining probes
 
