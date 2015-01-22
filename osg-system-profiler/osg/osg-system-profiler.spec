@@ -1,6 +1,6 @@
 Summary:   Profiles your system for debugging
 Name:      osg-system-profiler
-Version:   1.1.0
+Version:   1.2.0
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -39,12 +39,16 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root)
 %{_bindir}/%{name}
 %{_bindir}/osg-installed-versions
+%{_libexecdir}/%{name}/gratia-pbs-lsf-config-check
 
 %files viewer
 %defattr(-,root,root)
 %{_bindir}/%{name}-viewer
 
 %changelog
+* Thu Jan 22 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.2.0-1
+- Add gratia-pbs-lsf-config-check (SOFTWARE-1674)
+
 * Mon Sep 29 2014 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.1.0-1
 - Look for enabled gratia probe cronjobs
 - Add osg-installed-versions script
