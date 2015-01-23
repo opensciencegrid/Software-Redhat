@@ -1,6 +1,6 @@
 Summary: Package for configure-osg and associated scripts
 Name: osg-configure
-Version: 1.0.66
+Version: 1.0.67
 Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
 Patch0: s1653-gateway-type.patch
@@ -325,6 +325,14 @@ fi
 
 
 %changelog
+* Fri Jan 23 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0.67-1
+- Reload condor and condor-ce configs if we change them (SOFTWARE-1732)
+- Fix various bugs related to checking PER_JOB_HISTORY_DIR in the gratia config (SOFTWARE-1735)
+- Look at COLLECTOR_PORT when setting JOB_ROUTER_SCHEDD2_POOL (SOFTWARE-1744)
+- Warn about /etc/condor/config.d not being searched by Condor configuration (SOFTWARE-1746)
+- Allow admins to specify queue and extra transforms in the resource ads for htcondor-ce (SOFTWARE-1759)
+- Parallelize CRL downloads
+
 * Mon Dec 15 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0.66-1
 - Fix test failures caused by default job gateway change (SOFTWARE-1703)
 - Change generated job transform expressions to make compatibility aliases for job attributes (SOFTWARE-1727)
