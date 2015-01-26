@@ -15,3 +15,6 @@ upstream source acquired with:
   mkdir -p $upstream/
   cp dist/autopyfactory-$tag.src.rpm $upstream/
 
+
+# THIS IS A TEMPORARTY MESSAGE UNTIL THERE IS A FINAL URL FOR TARBALLs/SRC.RPMs DISTRIBUTION
+  http://dev.racf.bnl.gov/dist/src/tgz/
