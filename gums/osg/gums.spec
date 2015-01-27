@@ -7,8 +7,8 @@
 
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
-Version: 1.4.1
-Release: 5%{?dist}
+Version: 1.4.2
+Release: 1%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 %if 0%{?rhel} < 6
@@ -96,14 +96,6 @@ Source14: velocity-1.5.jar
 # Can't get el5 build working with jsp precompile
 Patch0: undo-jsp-precompile.patch
 
-# should make it into upstream GUMS 1.4.2
-# https://jira.opensciencegrid.org/browse/SOFTWARE-992
-Patch1: 992-remove-saml-service.patch
-
-Patch2: 1749-scas-client-bugfix.patch
-
-Patch3: 1714-simple-host-matching.patch
-
 %description
 %{summary}
 
@@ -147,12 +139,6 @@ Summary: Tomcat service for GUMS
 %if 0%{?rhel} < 6
 %patch0 -p1
 %endif
-
-%patch1 -p1
-
-%patch2 -p1
-
-%patch3 -p1
 
 %build
 
@@ -398,6 +384,9 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+* Tue Jan 27 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.4.2-1
+- Update to GUMS 1.4.2 (SOFTWARE-1770)
+
 * Mon Jan 26 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.4.1-5
 - configuration update for simple host matching (SOFTWARE-1714)
 
