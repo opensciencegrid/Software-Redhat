@@ -8,7 +8,7 @@
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.4.1
-Release: 4%{?dist}
+Release: 5%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 %if 0%{?rhel} < 6
@@ -102,6 +102,8 @@ Patch1: 992-remove-saml-service.patch
 
 Patch2: 1749-scas-client-bugfix.patch
 
+Patch3: 1714-simple-host-matching.patch
+
 %description
 %{summary}
 
@@ -149,6 +151,8 @@ Summary: Tomcat service for GUMS
 %patch1 -p1
 
 %patch2 -p1
+
+%patch3 -p1
 
 %build
 
@@ -394,6 +398,9 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+* Mon Jan 26 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.4.1-5
+- configuration update for simple host matching (SOFTWARE-1714)
+
 * Mon Jan 12 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.4.1-4
 - bugfix related to new scas client (SOFTWARE-1749)
 
