@@ -1,6 +1,6 @@
 Name:      rsv-vo-gwms
 Version:   0.0.1
-Release:   2%{?dist}
+Release:   3%{?dist}
 Summary:   RSV metrics to test CE's from gwms factory
 Packager:  OSG-Software
 Group:     Applications/Monitoring
@@ -41,6 +41,7 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/logrotate.d/rsv-vo-gwms-metrics
 %attr(-,rsv,rsv)  %{_sysconfdir}/rsv
 %attr(-,rsv,rsv)  %{_sysconfdir}/rsv/metrics
+%attr(0755, -, -) %{_libexecdir}/rsv/metrics/org.osg.local-gfactory-querying-local
 
 %post -p /bin/bash
 # Create the html dir in the correct place
@@ -51,6 +52,9 @@ ln -s /var/www/html/rsv /usr/share/rsv/www
 
 
 %changelog
+* Tue Jan 27 2015 <efajardo@physics.ucsd.edu> - 0.0.1-3
+- Fixed permissions on local probe
+
 * Wed Nov 14 2014 <efajardo@physics.ucsd.edu> - 0.0.1-2
 - Fixed the requires condor-python
 
