@@ -3,7 +3,7 @@
 
 Name: htcondor-ce
 Version: 1.9
-Release: 2%{?gitrev:.%{gitrev}git}%{?dist}
+Release: 3%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 
 Group: Applications/System
@@ -21,6 +21,9 @@ Source0: %{name}-%{version}%{?gitrev:-%{gitrev}}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Patch0: explicit_condor_port.patch
+Patch1: sw1745_inconsistent_condor_ver.patch
+Patch2: sw1741_rename_job_router_tool.patch
+Patch3: sw1750_trace_error_handling.patch
 
 Requires:  condor >= 8.0.0
 # This ought to pull in the HTCondor-CE specific version of the blahp
@@ -145,6 +148,9 @@ Conflicts: %{name}
 %setup -q
 
 %patch0 -p1
+%patch1 -p1
+%patch2 -p1
+%patch3 -p1
 
 %build
 %cmake -DHTCONDORCE_VERSION=%{version} -DCMAKE_INSTALL_LIBDIR=%{_libdir}
@@ -267,7 +273,7 @@ fi
 %{_bindir}/condor_ce_config_val
 %{_bindir}/condor_ce_hold
 %{_bindir}/condor_ce_info_status
-%{_bindir}/condor_ce_job_router_tool
+%{_bindir}/condor_ce_job_router_info
 %{_bindir}/condor_ce_off
 %{_bindir}/condor_ce_on
 %{_bindir}/condor_ce_q
@@ -309,6 +315,10 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Mon Jan 26 2015 Brian Lin <blin@cs.wisc.edu> - 1.9-3
+- Improvements to error handling and environment verification of condor_ce_trace
+- Change the name of the job router diagnostic tool to condor_ce_job_router_info
+
 * Tue Jan 06 2015 Brian Lin <blin@cs.wisc.edu> - 1.9-2
 - Fix HTCondor jobs routing incorrectly in 8.3.x
 

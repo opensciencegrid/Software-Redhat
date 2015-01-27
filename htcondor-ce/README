@@ -8,7 +8,7 @@ The spec file is from the HTCondor-CE source code itself.  Updates done in the
 OSG should be sent back upstream; there are no known reasons to have the two
 copies be different.
 
-UPSTREAM: https://github.com/bbockelm/condor-ce
+UPSTREAM: https://github.com/opensciencegrid/htcondor-ce
 
 To build from upstream:
 
@@ -16,4 +16,6 @@ git archive --prefix=htcondor-ce-{VERSION}/ {GIT REVISION} | gzip -9 > htcondor-
 
 (note that the tarball used in 1.6-2 was built from
 https://github.com/matyasselmeci/condor-ce
+and 1.9-* was built from
+https://github.com/opensciencegrid/htcondor-ce/commit/01bc40cbc529c1ce1e0409c5fc5afda4c3e9127c
 )
