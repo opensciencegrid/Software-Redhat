@@ -2,7 +2,7 @@
 
 Name: koji
 Version: 1.6.0
-Release: 8%{?dist}
+Release: 9%{?dist}
 License: LGPLv2 and GPLv2+
 # koji.ssl libs (from plague) are GPLv2+
 Summary: Build system tools
