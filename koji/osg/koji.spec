@@ -137,7 +137,7 @@ koji-web is a web UI to the Koji system.
 %patch5 -p0
 %patch6 -p0
 %patch7 -p1
-%patch7 -p1
+%patch8 -p1
 
 %build
 
