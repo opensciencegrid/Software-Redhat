@@ -16,6 +16,7 @@ Patch4: koji_passwd_retry.patch
 Patch5: koji_proxy_cert.patch
 Patch6: kojicli_setup_dns.patch
 Patch7: koji_no_sslv3.patch
+Patch8: pkgorigins_filename.patch
 
 Source: https://fedorahosted.org/releases/k/o/koji/%{name}-%{version}.tar.bz2
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -136,6 +137,7 @@ koji-web is a web UI to the Koji system.
 %patch5 -p0
 %patch6 -p0
 %patch7 -p1
+%patch7 -p1
 
 %build
 
@@ -238,6 +240,10 @@ if [ $1 = 0 ]; then
 fi
 
 %changelog
+* Thu Jan 29 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.6.0-9
+- Bring in upstream fix to parse repomd.xml for pkgorigins filename,
+  required for el6 koji upgrade (SOFTWARE-1442)
+
 * Thu Oct 16 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.6.0-8
 - Add patch to allow using TLSv1 instead of SSLv3 (SOFTWARE-1637)
 
