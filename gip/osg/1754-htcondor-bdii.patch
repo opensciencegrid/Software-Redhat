@@ -1,0 +1,133 @@
+diff --git a/gip/lib/python/gip_batch.py b/gip/lib/python/gip_batch.py
+index 8850c3d..dca628e 100644
+--- a/gip/lib/python/gip_batch.py
++++ b/gip/lib/python/gip_batch.py
+@@ -2,9 +2,12 @@
+ Common functions for GIP batch system providers and plugins.
+ """
+ 
+-from gip_common import cp_getBoolean, cp_get, cp_getList, cp_getInt
++from gip_common import cp_getBoolean, cp_get, cp_getList, cp_getInt, vdtDir
+ from gip_cluster import getOSGVersion
+ from gip_sections import ce
++from gip_testing import runCommand
++import os
++import logging
+ 
+ __author__ = "Burt Holzman"
+ 
+@@ -12,6 +15,8 @@ def buildCEUniqueID(cp, ce_name, batch, queue):
+     ce_prefix = 'jobmanager'
+     if cp_getBoolean(cp, 'cream', 'enabled', False):
+         ce_prefix = 'cream'
++    if cp_getBoolean(cp, 'htcondorce', 'enabled', False):
++        ce_prefix = 'htcondorce'    
+ 
+     port = getPort(cp)
+     ce_unique_id = '%s:%d/%s-%s-%s' % (ce_name, port, ce_prefix, batch, queue)
+@@ -21,21 +26,62 @@ def getGramVersion(cp):
+     gramVersion = '\n' + 'GlueCEInfoGRAMVersion: 5.0'
+     if cp_getBoolean(cp, 'cream', 'enabled', False):    
+         gramVersion = ''
++    if cp_getBoolean(cp, 'htcondorce', 'enabled', False):    
++        gramVersion = ''
+ 
+     return gramVersion
+-        
++
++def getHTCondorCEVersion(cp):
++    """
++    Returns the running version of the HTCondor CE
++    Copied from getOSGVersion() in gip_cluster.py
++    """
++    log = logging.getLogger()
++    htcondorce_ver_backup = cp_get(cp, "ce", "htcondorce_version", "1.8")
++    htcondorce_version_script = cp_get(cp, "gip", "htcondorce_version_script",
++        "")
++    htcondorce_ver = ''
++
++    if len(htcondorce_version_script) == 0:
++        htcondorce_version_script = vdtDir('$VDT_LOCATION/condor_ce_config_val',
++                                    '/usr/bin/condor_ce_config_val')
++
++        htcondorce_version_script = os.path.expandvars(htcondorce_version_script)
++
++        if not os.path.exists(htcondorce_version_script):
++            htcondorce_version_script = os.path.expandvars("$VDT_LOCATION/osg/bin/" \
++                "osg-version")
++
++    if os.path.exists(htcondorce_version_script):
++        try:
++            htcondorce_version_script += " HTCondorCEVersion"
++            htcondorce_ver = runCommand(htcondorce_version_script).read().strip()
++            htcondorce_ver = htcondorce_ver.replace('"','')
++        except Exception, e:
++            log.exception(e)
++
++    if len(htcondorce_ver) == 0:
++        htcondorce_ver = htcondorce_ver_backup
++    return htcondorce_ver
++    
++      
+ def getCEImpl(cp):
+     ceImpl = 'Globus'
+     ceImplVersion = cp_get(cp, ce, 'globus_version', '4.0.6')    
+     if cp_getBoolean(cp, 'cream', 'enabled', False):
+         ceImpl = 'CREAM'
+         ceImplVersion = getOSGVersion(cp)
++    if cp_getBoolean(cp, 'htcondorce', 'enabled', False):
++        ceImpl = 'HTCondorCE'
++        ceImplVersion = getHTCondorCEVersion(cp)
+     return (ceImpl, ceImplVersion)
+ 
+ def getPort(cp):
+     port = 2119
+     if cp_getBoolean(cp, 'cream', 'enabled', False):
+         port = 8443
++    if cp_getBoolean(cp, 'htcondorce', 'enabled', False):
++        port = 9619
+     return port
+     
+ def buildContactString(cp, batch, queue, ce_unique_id, log):
+diff --git a/gip/lib/python/gip_osg.py b/gip/lib/python/gip_osg.py
+index 21c0de2..49aaea4 100644
+--- a/gip/lib/python/gip_osg.py
++++ b/gip/lib/python/gip_osg.py
+@@ -9,7 +9,7 @@ import socket
+ import ConfigParser
+ 
+ from gip_sections import ce, site, pbs, condor, sge, lsf, se, subcluster, \
+-    cluster, cesebind, cream, slurm
++    cluster, cesebind, cream, slurm, htcondorce
+ from gip_common import getLogger, py23, vdtDir, get_file_list
+ 
+ log = getLogger("GIP")
+@@ -25,6 +25,7 @@ dcache_sec = 'dcache'
+ lsf_sec = 'LSF'
+ cream_sec = 'CREAM'
+ slurm_sec = 'SLURM'
++htcondorce_sec = 'HTCondorCE'
+ 
+ default_osg_ress_servers = \
+     "https://osg-ress-1.fnal.gov:8443/ig/services/CEInfoCollector[OLD_CLASSAD]"
+@@ -289,6 +290,10 @@ def configOsg(cp):
+     if cp2.has_section(cream_sec) and cp2.has_option(cream_sec, 'enabled'):
+         __write_config(cream_sec, 'enabled', cream, 'enabled')
+ 
++    # [HTCondorCE]
++    if cp2.has_section(htcondorce_sec) and cp2.has_option(htcondorce_sec, 'enabled'):
++        __write_config(htcondorce_sec, 'enabled', htcondorce, 'enabled')
++
+     # [Misc Services]
+     glexec_enabled = False
+     if cp2.has_section(misc_sec) and cp2.has_option(misc_sec, 'glexec_location'):
+diff --git a/gip/lib/python/gip_sections.py b/gip/lib/python/gip_sections.py
+index ce2ca83..3d283f8 100644
+--- a/gip/lib/python/gip_sections.py
++++ b/gip/lib/python/gip_sections.py
+@@ -10,4 +10,5 @@ condor = 'condor'
+ sge = 'sge'
+ lsf = 'lsf'
+ cream = 'cream'
++htcondorce = 'htcondorce'
+ slurm = 'slurm'
