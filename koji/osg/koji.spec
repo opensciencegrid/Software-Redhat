@@ -2,7 +2,7 @@
 
 Name: koji
 Version: 1.6.0
-Release: 9%{?dist}
+Release: 10%{?dist}
 License: LGPLv2 and GPLv2+
 # koji.ssl libs (from plague) are GPLv2+
 Summary: Build system tools
@@ -17,6 +17,7 @@ Patch5: koji_proxy_cert.patch
 Patch6: kojicli_setup_dns.patch
 Patch7: koji_no_sslv3.patch
 Patch8: pkgorigins_filename.patch
+Patch9: createrepo_sha1.patch
 
 Source: https://fedorahosted.org/releases/k/o/koji/%{name}-%{version}.tar.bz2
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -138,6 +139,9 @@ koji-web is a web UI to the Koji system.
 %patch6 -p0
 %patch7 -p1
 %patch8 -p1
+%if 0%{?rhel} > 5
+%patch9 -p1
+%endif
 
 %build
 
@@ -240,6 +244,10 @@ if [ $1 = 0 ]; then
 fi
 
 %changelog
+* Fri Jan 30 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6.0-10
+- Patch kojid to request sha1 when running createrepo, for el5 compatibility
+  (SOFTWARE-1442)
+
 * Thu Jan 29 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.6.0-9
 - Bring in upstream fix to parse repomd.xml for pkgorigins filename,
   required for el6 koji upgrade (SOFTWARE-1442)
