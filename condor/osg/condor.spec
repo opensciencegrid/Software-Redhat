@@ -200,9 +200,7 @@ Source123: zlib-1.2.3.tar.gz
 %endif
 
 # These make it into 8.3.2, the 8.2.x timeline is unclear
-# https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=4556
 # https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=4590
-Patch1: 4556-udp_invalidations.patch
 Patch2: 4590-improved_tool_output.patch
 
 # This makes it into 8.3.1, but not 8.2.x
@@ -658,7 +656,6 @@ exit 0
 %setup -q -n %{name}-%{tarball_version}
 %endif
 
-%patch1 -p1
 %patch2 -p1
 
 %patch8 -p1
