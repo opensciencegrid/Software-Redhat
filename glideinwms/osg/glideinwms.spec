@@ -96,9 +96,10 @@ This package is for a one-node vofrontend install
 Summary:        The VOFrontend for glideinWMS submission host
 Group:          System Environment/Daemons
 Requires: httpd
-# We require Condor 7.6.0 (and newer) to support
-# condor_advertise -multiple -tcp which is enabled by default
-Requires: condor >= 7.8.0
+# Most functions work with HTCondor 7.8.0 (and newer) 
+# gangliad enabled by default requires 8.2 - disable it if you have an older condor
+# 8.2.2 should be avoided because incompatible with 8.0
+Requires: condor >= 8.2.3
 Requires: python-rrdtool
 Requires: m2crypto
 Requires: javascriptrrd >= 1.1.0
