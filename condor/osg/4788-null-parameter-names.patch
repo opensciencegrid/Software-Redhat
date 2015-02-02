@@ -1,0 +1,38 @@
+diff --git a/src/condor_daemon_core.V6/daemon_core_main.cpp b/src/condor_daemon_core.V6/daemon_core_main.cpp
+index 5f385d8..20d372b 100644
+--- a/src/condor_daemon_core.V6/daemon_core_main.cpp
++++ b/src/condor_daemon_core.V6/daemon_core_main.cpp
+@@ -1258,7 +1258,7 @@ handle_config( Service *, int cmd, Stream *stream )
+ 		to_check = strdup(admin);
+ 	}
+ 	if (!is_valid_param_name(to_check)) {
+-		dprintf( D_ALWAYS, "Rejecting attempt to set param with invalid name (%s)\n", to_check);
++		dprintf( D_ALWAYS, "Rejecting attempt to set param with invalid name (%s)\n", (to_check?to_check:"(null)") );
+ 		free(admin); free(config);
+ 		rval = -1;
+ 		failed = true;
+diff --git a/src/condor_utils/config.cpp b/src/condor_utils/config.cpp
+index f4afb98..bf8911c 100644
+--- a/src/condor_utils/config.cpp
++++ b/src/condor_utils/config.cpp
+@@ -81,6 +81,11 @@ condor_isidchar(int c)
+ 
+ int is_valid_param_name(const char *name)
+ {
++	// NULL or empty param names are not valid
++	if(!name || !name[0]) {
++		return 0;
++	}
++
+ 		/* Check that "name" is a legal identifier : only
+ 		   alphanumeric characters and _ allowed*/
+ 	while( *name ) {
+@@ -334,7 +339,7 @@ Read_config( const char* config_source, BUCKET** table,
+ 		if( !is_valid_param_name(name) ) {
+ 			fprintf( stderr,
+ 					 "Configuration Error File <%s>, Line %d: Illegal Identifier: <%s>\n",
+-					 config_source, ConfigLineNo, name );
++					 config_source, ConfigLineNo, (name?name:"(null)") );
+ 			retval = -1;
+ 			goto cleanup;
+ 		}

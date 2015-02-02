@@ -50,7 +50,7 @@ Version: %{tarball_version}
 %define condor_release %condor_base_release
 %endif
 # Release: %condor_release%{?dist}.2
-Release: 7%{?dist}
+Release: 8%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -116,6 +116,9 @@ Patch9: proper_cream_v3.diff
 %if %blahp
 Patch10: config_batch_gahp_path.patch
 %endif
+
+Patch11: 4764-sendmail.patch
+Patch12: 4788-null-parameter-names.patch
 
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
@@ -408,6 +411,8 @@ exit 0
 %if %blahp
 %patch10 -p1 -b .config_batch_gahp_path
 %endif
+%patch11 -p1
+%patch12 -p1
 
 # fix errant execute permissions
 find src -perm /a+x -type f -name "*.[Cch]" -exec chmod a-x {} \;
@@ -1081,6 +1086,10 @@ fi
 %endif
 
 %changelog
+* Mon Feb 02 2015 Carl Edquist <edquist@cs.wisc.edu> - 7.8.8-8
+- Disallow NULL or empty parameter names #4788
+- Use sendmail by default #4764 (SOFTWARE-1774)
+
 * Thu Jun 19 2014 Brian Lin <blin@cs.wisc.edu> - 7.8.8-7
 - Remove NO_PHONE_HOME compile flag
 
