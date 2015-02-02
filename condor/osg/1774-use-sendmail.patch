@@ -1,0 +1,16 @@
+diff --git a/src/condor_examples/condor_config.generic b/src/condor_examples/condor_config.generic
+index 7458e20..f2f194a 100644
+--- a/src/condor_examples/condor_config.generic
++++ b/src/condor_examples/condor_config.generic
+@@ -108,9 +108,8 @@ LOCAL_CONFIG_DIR_EXCLUDE_REGEXP = ^((\..*)|(.*~)|(#.*)|(.*\.rpmsave)|(.*\.rpmnew
+ ##  the email?
+ CONDOR_ADMIN		= root@$(FULL_HOSTNAME)
+ 
+-##  Full path to a mail delivery program that understands that "-s"
+-##  means you want to specify a subject:
+-MAIL			= /bin/mail
++##  Full path to a mail delivery program:
++SENDMAIL		= /usr/sbin/sendmail
+ 
+ ##--------------------------------------------------------------------
+ ##  Network domain parameters:
