@@ -118,7 +118,8 @@ Patch10: config_batch_gahp_path.patch
 %endif
 
 Patch11: 4764-sendmail.patch
-Patch12: 4788-null-parameter-names.patch
+Patch12: 1774-use-sendmail.patch
+Patch13: 4788-null-parameter-names.patch
 
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
@@ -413,6 +414,7 @@ exit 0
 %endif
 %patch11 -p1
 %patch12 -p1
+%patch13 -p1
 
 # fix errant execute permissions
 find src -perm /a+x -type f -name "*.[Cch]" -exec chmod a-x {} \;
