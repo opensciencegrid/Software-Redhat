@@ -1,0 +1,14 @@
+diff --git a/src/condor_examples/condor_config.generic b/src/condor_examples/condor_config.generic
+index f329950..484130a 100644
+--- a/src/condor_examples/condor_config.generic
++++ b/src/condor_examples/condor_config.generic
+@@ -49,6 +49,9 @@ use SECURITY : HOST_BASED
+ ##  FLOCK_TO defines the central managers that your schedd will advertise itself to (i.e. these pools will give matches to your schedd).
+ #FLOCK_TO = condor.cs.wisc.edu, cm.example.edu
+ 
++##  Full path to a mail delivery program:
++SENDMAIL = /usr/sbin/sendmail
++
+ ##--------------------------------------------------------------------
+ ## Values set by the condor_configure script:
+ ##--------------------------------------------------------------------

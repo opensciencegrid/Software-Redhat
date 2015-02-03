@@ -1,0 +1,51 @@
+diff --git a/src/condor_daemon_core.V6/daemon_core_main.cpp b/src/condor_daemon_core.V6/daemon_core_main.cpp
+index 2ffb3a4..1090009 100644
+--- a/src/condor_daemon_core.V6/daemon_core_main.cpp
++++ b/src/condor_daemon_core.V6/daemon_core_main.cpp
+@@ -1539,7 +1539,7 @@ handle_config( Service *, int cmd, Stream *stream )
+ 		to_check = strdup(admin);
+ 	}
+ 	if (!is_valid_param_name(to_check + is_meta)) {
+-		dprintf( D_ALWAYS, "Rejecting attempt to set param with invalid name (%s)\n", to_check);
++		dprintf( D_ALWAYS, "Rejecting attempt to set param with invalid name (%s)\n", (to_check?to_check:"(null)") );
+ 		free(admin); free(config);
+ 		rval = -1;
+ 		failed = true;
+diff --git a/src/condor_tools/config_val.cpp b/src/condor_tools/config_val.cpp
+index 0563006..c49575b 100644
+--- a/src/condor_tools/config_val.cpp
++++ b/src/condor_tools/config_val.cpp
+@@ -1700,7 +1700,7 @@ SetRemoteParam( Daemon* target, char* param_value, ModeType mt )
+ 	if( !is_valid_param_name(config_name + is_meta) ) {
+ 		fprintf( stderr, 
+ 				 "%s: Error: Configuration variable name (%s) is not valid, alphanumeric and _ only\n",
+-				 MyName, config_name + is_meta );
++				 MyName, ((config_name+is_meta)?(config_name+is_meta):"(null)") );
+ 		my_exit( 1 );
+ 	}
+ 
+diff --git a/src/condor_utils/config.cpp b/src/condor_utils/config.cpp
+index 84b0cb4..576410f 100644
+--- a/src/condor_utils/config.cpp
++++ b/src/condor_utils/config.cpp
+@@ -87,6 +87,11 @@ condor_isidchar(int c)
+ 
+ int is_valid_param_name(const char *name)
+ {
++	// NULL or empty param names are not valid
++	if(!name || !name[0]) {
++		return 0;
++	}
++
+ 		/* Check that "name" is a legal identifier : only
+ 		   alphanumeric characters and _ allowed*/
+ 	while( *name ) {
+@@ -1235,7 +1240,7 @@ Read_config(const char* config_source,
+ 			if( !is_valid_param_name(name) ) {
+ 				fprintf( stderr,
+ 						 "Configuration Error \"%s\", Line %d: Illegal Identifier: <%s>\n",
+-						 config_source, ConfigLineNo, name );
++						 config_source, ConfigLineNo, (name?name:"(null)") );
+ 				retval = -1;
+ 				goto cleanup;
+ 			}

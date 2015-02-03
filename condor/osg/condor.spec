@@ -118,7 +118,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.1
+%define condor_base_release 1.2
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -207,6 +207,11 @@ Source123: zlib-1.2.3.tar.gz
 %endif
 
 Patch1: sw1636-cream_gahp-dlopen.patch
+# https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=4788
+Patch2: 4788-null-parameter-names.patch
+# https://jira.opensciencegrid.org/browse/SOFTWARE-1776
+Patch3: 1776-use-sendmail.patch
+
 #% if 0%osg
 Patch8: osg_sysconfig_in_init_script.patch
 #% endif
@@ -653,6 +658,9 @@ exit 0
 %endif
 
 %patch1 -p1
+%patch2 -p1
+%patch3 -p1
+
 %patch8 -p1
 
 %if 0%{?hcc}
@@ -1772,6 +1780,10 @@ fi
 %endif
 
 %changelog
+* Mon Feb 02 2015 Carl Edquist <edquist@cs.wisc.edu> - 8.3.2-1.2
+- Disallow NULL or empty parameter names #4788
+- Use sendmail by default (SOFTWARE-1776)
+
 * Mon Dec 29 2014 Tim Cartwright <cat@cs.wisc.edu> - 8.3.2-1.1
 - Update to HTCondor 8.3.2
 - Retain OSG patch for CREAM GAHP linking (SOFTWARE-1636)
