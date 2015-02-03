@@ -1,5 +1,5 @@
 Name:      rsv-perfsonar
-Version:   1.0.5
+Version:   1.0.6
 Release:   1%{?dist}
 Summary:   RSV Metrics to monitor pefsonar
 Packager:  OSG-Software
@@ -14,7 +14,7 @@ BuildArch: noarch
 
 Requires: rsv
 #The perfsonar probe libraries need it. Getting it from I2 repo for now
-Requires: esmond >= 1.0-9
+Requires: esmond >= 1.0-10
 
 %if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
 Requires: python-simplejson
@@ -26,7 +26,8 @@ Requires: python-simplejson
 %{summary}
 
 %prep
-%setup -n %{name}
+%setup -n trunk
+#%setup -n %{name}
 #%setup -n %{name}-%{version}
 
 %install
@@ -70,6 +71,10 @@ scl enable python27 - << \EOF
 EOF 
 
 %changelog
+* Tue Feb 03 2015 <efajardo@physics.ucsd.edu> 1.0.6-1
+- INcluded Andrew Lake's fix for uploading the summaries
+- Changed the required esmond version
+
 * Thu Jan 22 2015 <efajardo@physics.ucsd.edu> 1.0.5-1
 - Fixed bug when uploading summaries
 
