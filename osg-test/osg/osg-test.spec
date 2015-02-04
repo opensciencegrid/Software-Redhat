@@ -5,7 +5,7 @@
 
 Summary:   Tests an OSG Software installation
 Name:      osg-test
-Version:   1.4.22
+Version:   1.4.23
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -37,6 +37,12 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/osgtest
 
 %changelog
+* Wed Feb 04 2015 Brian Lin <blin@cs.wisc.edu> - 1.4.23-1
+- Whitelist gratia-dCache and fetch-crl network failures (SOFTWARE-1748, SOFTWARE-1613)
+- Fix skip mechanic of job tests (SOFTWARE-1730)
+- Add support for secure passwords with -s/--securepass (SOFTWARE-644)
+- Install Java according to the TWiki documentation (SOFTWARE-1720)
+
 * Tue Jan 06 2015 Tim Cartwright <cat@cs.wisc.edu> - 1.4.22-1
 - Small tweaks to HTCondor CE tests based on automated test results
 
