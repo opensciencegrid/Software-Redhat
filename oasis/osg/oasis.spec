@@ -1,5 +1,5 @@
 %define name oasis
-%define version 2.0.1
+%define version 2.0.2
 %define release 1
 
 Summary: OASIS package
@@ -153,6 +153,17 @@ f_restart_daemon $1
 #-------------------------------------------------------------------------------
 %changelog
 
+
+* Wed Feb 02 2015 Dave Dykstra <dwd@fnal.gov> - 2.0.2-1
+- Bumped to 2.0.2-1, which has CHANGELOG entries of:
+  * Fixed the layout in trunk/ directory, to be equal to the one in tags
+    directories.
+  * Added spec file to trunk/misc directory
+  * Fixed the rpm scripts to be equal to the those in the tags directories
+  * Fixed the distutils files setup.py and setup.cfg
+  * Fixed blank_osg_repository, unblank_osg_repository, and
+    set_repository_property as detailed in OO-31
+  * Changed generate_replicas to ignore blanked repositories
 
 * Fri Nov 21 2014 Jose Caballero <jcaballero@BNL.gov> - 2.0.1-1
 - Bumped to 2.0.1-1
