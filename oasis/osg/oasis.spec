@@ -1,5 +1,5 @@
 %define name oasis
-%define version 2.0.2
+%define version 2.0.3
 %define release 1
 
 Summary: OASIS package
@@ -154,8 +154,17 @@ f_restart_daemon $1
 %changelog
 
 
+* Thu Feb 03 2015 Dave Dykstra <dwd@fnal.gov> - 2.0.3-1
+- Upgraded to oasis 2.0.3 tarball which has CHANGELOG entries of:
+  * Changed unblank_osg_repository to not print scary-looking prompt
+    when cleaning up blanked repository
+  * Added -a option to add_osg_repository to only and and not run snapshot
+  * Fixed add_osg_repository to avoid being confused when the signature
+    on .cvmfswhitelist begins with a capital N
+  * Added print_osg_repos tool
+
 * Wed Feb 02 2015 Dave Dykstra <dwd@fnal.gov> - 2.0.2-1
-- Bumped to 2.0.2-1, which has CHANGELOG entries of:
+- Upgraded to 2.0.2-1 tarball which has CHANGELOG entries of:
   * Fixed the layout in trunk/ directory, to be equal to the one in tags
     directories.
   * Added spec file to trunk/misc directory
