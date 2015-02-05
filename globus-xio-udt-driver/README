@@ -1,0 +1,6 @@
+Downloaded from:
+http://koji-hub.batlab.org/mnt/koji/packages/globus-xio-udt-driver/0.6/2.hcc.el6/src/globus-xio-udt-driver-0.6-2.hcc.el6.src.rpm
+
+The udt_driver_nice.patch removes dependencies on some Fedora 19 versions of
+packages.
+

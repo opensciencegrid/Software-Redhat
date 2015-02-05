@@ -1,0 +1,1 @@
+stderr_log,local_cred - /usr/sbin/globus-job-manager globus-job-manager -conf /etc/globus/globus-gram-job-manager.conf -type condor -service-tag managedfork
