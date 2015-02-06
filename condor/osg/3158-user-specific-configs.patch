@@ -1,16 +1,8 @@
 diff --git a/src/condor_utils/condor_config.cpp b/src/condor_utils/condor_config.cpp
-index 4a6f6ea..d9ed268 100644
+index d8a04c3..5dc5a5a 100644
 --- a/src/condor_utils/condor_config.cpp
 +++ b/src/condor_utils/condor_config.cpp
-@@ -86,6 +86,7 @@
- #include "param_info.h"
- #include "param_info_tables.h"
- #include "Regex.h"
-+#include "filename_tools.h"
- #include <algorithm> // for std::sort
- 
- // define this to keep param who's values match defaults from going into to runtime param table.
-@@ -114,6 +115,7 @@ void process_locals( const char*, const char*);
+@@ -121,6 +121,7 @@ void process_locals( const char*, const char*);
  void process_directory( const char* dirlist, const char* host);
  static int  process_dynamic_configs();
  void check_params();
@@ -18,7 +10,7 @@ index 4a6f6ea..d9ed268 100644
  
  // External variables
  extern int	ConfigLineNo;
-@@ -980,6 +982,18 @@ real_config(const char* host, int wantsQuiet, int config_options)
+@@ -987,6 +988,18 @@ real_config(const char* host, int wantsQuiet, int config_options)
  	if(dirlist) { free(dirlist); dirlist = NULL; }
  	if(newdirlist) { free(newdirlist); newdirlist = NULL; }
  
@@ -37,7 +29,7 @@ index 4a6f6ea..d9ed268 100644
  		// Now, insert any macros defined in the environment.
  	char **my_environ = GetEnviron();
  	for( int i = 0; my_environ[i]; i++ ) {
-@@ -1333,6 +1347,54 @@ find_global(int config_options)
+@@ -1340,6 +1353,54 @@ find_global(int config_options)
  	return find_file( EnvGetName(ENV_CONFIG), file.Value(), config_options );
  }
  
@@ -92,7 +84,7 @@ index 4a6f6ea..d9ed268 100644
  
  // Find location of specified file
  char*
-@@ -1396,11 +1458,8 @@ find_file(const char *env_name, const char *file_name, int config_options)
+@@ -1403,11 +1464,8 @@ find_file(const char *env_name, const char *file_name, int config_options)
  		const int locations_length = 4;
  		MyString locations[locations_length];
  			// 1) $HOME/.condor/condor_config
@@ -107,10 +99,10 @@ index 4a6f6ea..d9ed268 100644
  		locations[1].formatstr( "/etc/%s/%s", myDistro->Get(), file_name );
  			// 3) /usr/local/etc/condor_config (FreeBSD)
 diff --git a/src/condor_utils/param_info.in b/src/condor_utils/param_info.in
-index b945d94..6861ccf 100644
+index 0c61a90..c48df9e 100644
 --- a/src/condor_utils/param_info.in
 +++ b/src/condor_utils/param_info.in
-@@ -3608,6 +3608,13 @@ friendly_name=Runtime Config Admin
+@@ -3619,6 +3619,13 @@ friendly_name=Runtime Config Admin
  review=?
  tags=c++_util,condor_config
  

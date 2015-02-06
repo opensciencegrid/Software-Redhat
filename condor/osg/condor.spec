@@ -657,6 +657,7 @@ exit 0
 %endif
 
 %patch2 -p1
+%patch3 -p1
 
 %patch8 -p1
 
@@ -1778,6 +1779,7 @@ fi
 * Thu Feb 05 2015 Carl Edquist <edquist@cs.wisc.edu> - 8.2.7-1.1
 - Update to 8.2.7 with OSG patches
 - Drop 4556-udp_invalidations.patch, now upstream
+- Include missing patch for user specific condor configs (#3158)
 
 * Tue Dec 16 2014 Carl Edquist <edquist@cs.wisc.edu> - 8.2.6-1.1
 - Update to 8.2.6 with OSG patches
