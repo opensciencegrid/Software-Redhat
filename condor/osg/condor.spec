@@ -1,4 +1,4 @@
-%define tarball_version 8.2.6
+%define tarball_version 8.2.7
 
 # optionally define any of these, here or externally
 # % define fedora   16
@@ -97,7 +97,7 @@
 %define git_build 0
 # If building with git tarball, Fedora requests us to record the rev.  Use:
 # git log -1 --pretty=format:'%h'
-%define git_rev 6501751
+%define git_rev a056261
 
 %if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
 %{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
@@ -1775,6 +1775,10 @@ fi
 %endif
 
 %changelog
+* Thu Feb 05 2015 Carl Edquist <edquist@cs.wisc.edu> - 8.2.7-1.1
+- Update to 8.2.7 with OSG patches
+- Drop 4556-udp_invalidations.patch, now upstream
+
 * Tue Dec 16 2014 Carl Edquist <edquist@cs.wisc.edu> - 8.2.6-1.1
 - Update to 8.2.6 with OSG patches
 
