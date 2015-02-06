@@ -1,3 +1,1 @@
-Mostly a pass-through from EPEL; we apply one patch to change the default proxy
-size to 1024 bits (SOFTWARE-1346) since OpenSSL 1.0.1 has issues with 512-bit
-proxies.
+Pass-through from EPEL
