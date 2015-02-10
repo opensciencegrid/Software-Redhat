@@ -5,7 +5,7 @@
 
 Name:                   graphtool
 Version:                0.6.6
-Release:                22%{?dist}
+Release:                23%{?dist}
 Summary:                CMS Common Graphing Package.
 
 Group:                  Development/Libraries
@@ -50,6 +50,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+
+* Tue Feb 10 2015 Juan F. Mosquera <jmorales@fnal.gov>
+- modifications to solve bug GRATIAWEB-69
 
 * Tue Jan 06 2015 Carl Edquist <edquist@cs.wisc.edu> - 0.6.6-22
 - revert mysql_util / regex reducing changes for now (goc/23461)
