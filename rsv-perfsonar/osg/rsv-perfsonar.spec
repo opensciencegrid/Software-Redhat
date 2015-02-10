@@ -1,5 +1,5 @@
 Name:      rsv-perfsonar
-Version:   1.0.6
+Version:   1.0.7
 Release:   1%{?dist}
 Summary:   RSV Metrics to monitor pefsonar
 Packager:  OSG-Software
@@ -71,8 +71,11 @@ scl enable python27 - << \EOF
 EOF 
 
 %changelog
+* Mon Feb 09 2015 <efajardo@physics.ucsd.edu> 1.0.7-1
+- Fix to prevent duplicate entries by storing original metada key
+
 * Tue Feb 03 2015 <efajardo@physics.ucsd.edu> 1.0.6-1
-- INcluded Andrew Lake's fix for uploading the summaries
+- Included Andrew Lake's fix for uploading the summaries
 - Changed the required esmond version
 
 * Thu Jan 22 2015 <efajardo@physics.ucsd.edu> 1.0.5-1
