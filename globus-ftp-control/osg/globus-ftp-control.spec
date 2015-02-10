@@ -1,73 +1,41 @@
-%ifarch aarch64 alpha ia64 ppc64 s390x sparc64 x86_64
-%global flavor gcc64
-%else
-%global flavor gcc32
-%endif
-
 %{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
 
 Name:		globus-ftp-control
 %global _name %(tr - _ <<< %{name})
-Version:	4.7
-Release:	1.2%{?dist}
+Version:	6.3
+Release:	1.1%{?dist}
 Summary:	Globus Toolkit - GridFTP Control Library
 
 Group:		System Environment/Libraries
 License:	ASL 2.0
 URL:		http://www.globus.org/
-Source:		http://www.globus.org/ftppub/gt5/5.2/5.2.5/packages/src/%{_name}-%{version}.tar.gz
+Source:		http://www.globus.org/ftppub/gt6/packages/%{_name}-%{version}.tar.gz
 #		README file
 Source8:	GLOBUS-GRIDFTP
 Patch0:         level-out-connection-speeds.patch
-Patch1:         ip-logging-bug.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-Requires:	globus-common%{?_isa} >= 14
-Requires:	globus-gssapi-error%{?_isa} >= 4
-Requires:	globus-xio%{?_isa} >= 3
-Requires:	globus-gss-assist%{?_isa} >= 8
-Requires:	globus-io%{?_isa} >= 8
-Requires:	globus-gssapi-gsi%{?_isa} >= 9
-BuildRequires:	grid-packaging-tools >= 3.4
-BuildRequires:	globus-core >= 8
-BuildRequires:	globus-common-devel >= 14
-BuildRequires:	globus-gssapi-error-devel >= 4
-BuildRequires:	globus-xio-devel >= 3
+BuildRequires:	globus-common-devel >= 15
 BuildRequires:	globus-gss-assist-devel >= 8
-BuildRequires:	globus-io-devel >= 8
 BuildRequires:	globus-gssapi-gsi-devel >= 9
+BuildRequires:	globus-io-devel >= 11
+BuildRequires:	globus-xio-devel >= 3
+BuildRequires:	globus-gssapi-error-devel >= 4
 BuildRequires:	doxygen
-BuildRequires:	graphviz
-%if "%{?rhel}" == "5"
-BuildRequires:	graphviz-gd
-%endif
-BuildRequires:	ghostscript
-BuildRequires:	tex(latex)
-%if %{?fedora}%{!?fedora:0} >= 18 || %{?rhel}%{!?rhel:0} >= 7
-BuildRequires:	tex(fullpage.sty)
-BuildRequires:	tex(multirow.sty)
-BuildRequires:	tex(sectsty.sty)
-BuildRequires:	tex(tocloft.sty)
-BuildRequires:	tex(xtab.sty)
-BuildRequires:	tex-ec
-BuildRequires:	tex-courier
-BuildRequires:	tex-helvetic
-BuildRequires:	tex-times
-BuildRequires:	tex-symbol
-BuildRequires:	tex-rsfs
-%endif
+#		Additional requirements for make check
+BuildRequires:	openssl
+Requires:	globus-io%{?_isa} >= 11
 
 %package devel
 Summary:	Globus Toolkit - GridFTP Control Library Development Files
 Group:		Development/Libraries
 Requires:	%{name}%{?_isa} = %{version}-%{release}
-Requires:	globus-common-devel%{?_isa} >= 14
-Requires:	globus-gssapi-error-devel%{?_isa} >= 4
-Requires:	globus-xio-devel%{?_isa} >= 3
+Requires:	globus-common-devel%{?_isa} >= 15
 Requires:	globus-gss-assist-devel%{?_isa} >= 8
-Requires:	globus-io-devel%{?_isa} >= 8
 Requires:	globus-gssapi-gsi-devel%{?_isa} >= 9
-Requires:	globus-core%{?_isa} >= 8
+Requires:	globus-io-devel%{?_isa} >= 11
+Requires:	globus-xio-devel%{?_isa} >= 3
+Requires:	globus-gssapi-error-devel%{?_isa} >= 4
 
 %package doc
 Summary:	Globus Toolkit - GridFTP Control Library Documentation Files
@@ -75,7 +43,6 @@ Group:		Documentation
 %if %{?fedora}%{!?fedora:0} >= 10 || %{?rhel}%{!?rhel:0} >= 6
 BuildArch:	noarch
 %endif
-Requires:	%{name} = %{version}-%{release}
 
 %description
 The Globus Toolkit is an open source software toolkit used for building Grid
@@ -108,22 +75,15 @@ GridFTP Control Library Documentation Files
 %setup -q -n %{_name}-%{version}
 
 %patch0 -p 0
-%patch1 -p 1
 
 %build
-# Remove files that should be replaced during bootstrap
-rm -f doxygen/Doxyfile*
-rm -f doxygen/Makefile.am
-rm -f pkgdata/Makefile.am
-rm -f globus_automake*
-rm -rf autom4te.cache
+# Reduce overlinking
+export LDFLAGS="-Wl,--as-needed -Wl,-z,defs %{?__global_ldflags}"
 
-unset GLOBUS_LOCATION
-unset GPT_LOCATION
-%{_datadir}/globus/globus-bootstrap.sh
-
-%configure --disable-static --with-flavor=%{flavor} \
-	   --enable-doxygen --with-docdir=%{_pkgdocdir}
+%configure --disable-static \
+	   --includedir='${prefix}/include/globus' \
+	   --libexecdir='${datadir}/globus' \
+	   --docdir=%{_pkgdocdir}
 
 # Reduce overlinking
 sed 's!CC -shared !CC \${wl}--as-needed -shared !g' -i libtool
@@ -134,33 +94,14 @@ make %{?_smp_mflags}
 rm -rf %{buildroot}
 make install DESTDIR=%{buildroot}
 
-GLOBUSPACKAGEDIR=%{buildroot}%{_datadir}/globus/packages
-
 # Remove libtool archives (.la files)
-find %{buildroot}%{_libdir} -name 'lib*.la' -exec rm -v '{}' \;
-sed '/lib.*\.la$/d' -i $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_dev.filelist
-
-# Move license file to main package
-grep GLOBUS_LICENSE $GLOBUSPACKAGEDIR/%{_name}/noflavor_doc.filelist \
-  >> $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_rtl.filelist
-sed /GLOBUS_LICENSE/d -i $GLOBUSPACKAGEDIR/%{_name}/noflavor_doc.filelist
-
-# Fix doxygen glitches
-for f in %{buildroot}%{_mandir}/man3/globus_ftp_control_client.c.3 \
-	 %{buildroot}%{_mandir}/man3/globus_ftp_extensions.3 ; do
-  sed 's/P\.RS/P\n.RS/' -i $f
-done
+rm %{buildroot}%{_libdir}/*.la
 
 # Install README file
 install -m 644 -p %{SOURCE8} %{buildroot}%{_pkgdocdir}/README
 
-# Generate package filelists
-cat $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_rtl.filelist \
-  | sed s!^!%{_prefix}! > package.filelist
-cat $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_dev.filelist \
-  | sed s!^!%{_prefix}! > package-devel.filelist
-cat $GLOBUSPACKAGEDIR/%{_name}/noflavor_doc.filelist \
-  | sed -e 's!/man/.*!&*!' -e 's!^!%doc %{_prefix}!' > package-doc.filelist
+%check
+make %{?_smp_mflags} check VERBOSE=1
 
 %clean
 rm -rf %{buildroot}
@@ -169,22 +110,57 @@ rm -rf %{buildroot}
 
 %postun -p /sbin/ldconfig
 
-%files -f package.filelist
-%dir %{_datadir}/globus/packages/%{_name}
+%files
+%{_libdir}/libglobus_ftp_control.so.*
 %dir %{_pkgdocdir}
+%doc %{_pkgdocdir}/GLOBUS_LICENSE
 %doc %{_pkgdocdir}/README
 
-%files -f package-devel.filelist devel
+%files devel
+%{_includedir}/globus/*
+%{_libdir}/libglobus_ftp_control.so
+%{_libdir}/pkgconfig/%{name}.pc
 
-%files -f package-doc.filelist doc
+%files doc
+%doc %{_mandir}/man3/*
+%dir %{_pkgdocdir}
+%doc %{_pkgdocdir}/GLOBUS_LICENSE
 %dir %{_pkgdocdir}/html
+%doc %{_pkgdocdir}/html/*
 
 %changelog
+* Tue Feb 10 2015 Matyas Selmeci <matyas@cs.wisc.edu> - 6.3-1.1
+- Merge OSG changes
+- Drop ip-logging-bug.patch (fixed upstream)
+
+* Thu Nov 13 2014 Mattias Ellert <mattias.ellert@fysast.uu.se> - 6.3-1
+- GT6 update
+- Drop patches globus-ftp-control-memleak.patch and
+  globus-ftp-control-tests-localhost.patch (fixed upstream)
+
+* Sun Oct 26 2014 Mattias Ellert <mattias.ellert@fysast.uu.se> - 5.12-1
+- GT6 update
+- Drop patch globus-ftp-control-doxygen.patch (fixed upstream)
+
+* Tue Sep 30 2014 Mattias Ellert <mattias.ellert@fysast.uu.se> - 5.11-2
+- Fix memory leak
+
+* Fri Sep 12 2014 Mattias Ellert <mattias.ellert@fysast.uu.se> - 5.11-1
+- Update to Globus Toolkit 6.0
+- Drop GPT build system and GPT packaging metadata
+- Enable checks
+
+* Sat Aug 16 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 4.7-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_22_Mass_Rebuild
+
 * Tue Jul 01 2014 Edgar Fajardo <efajardo@physics.ucsd.edu> - 4.7-1.2
 - Added the Ip logging patch
 
-* Mon Dec 09 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 4.7-1.1
-- Merge OSG changes
+* Sat Jun 07 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 4.7-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
+
+* Tue May 20 2014 Brent Baude <baude@us.ibm.com> - 4.7-2
+- Replace arch def of ppc64 with power64 macro for ppc64le enablement
 
 * Thu Nov 07 2013 Mattias Ellert <mattias.ellert@fysast.uu.se> - 4.7-1
 - Update to Globus Toolkit 5.2.5
