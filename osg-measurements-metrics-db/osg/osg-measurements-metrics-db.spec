@@ -5,7 +5,7 @@
 
 Name:           osg-measurements-metrics-db
 Version:        1.2
-Release:        31%{?dist}
+Release:        32%{?dist}
 Summary:        OSG Measurements and Metrics web and database
 
 Group:          Applications/System
@@ -60,6 +60,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+
+* Tue Feb 10 2015 Juan F. Mosquera <jmorales@fnal.gov>
+- Modifications to include the FOS requests and increase 
+- on the web server pool size
 
 * Wed Dec 03 2014 Juan F. Mosquera <jmorales@fnal.gov>
 - modifications and program additions to resolve OSG
