@@ -1,8 +1,10 @@
 Index: condor.pm
 ===================================================================
---- condor.pm.orig	2012-09-12 11:42:18.000000000 -0500
-+++ condor.pm	2013-12-12 16:54:25.848226354 -0600
-@@ -738,7 +738,7 @@
+--- condor.pm.orig	2015-02-11 13:51:24.370578898 -0600
++++ condor.pm	2015-02-11 13:51:27.717618667 -0600
+@@ -893,11 +893,11 @@
+         return { JOB_STATE => Globus::GRAM::JobState::DONE };
+     }
  
      if($num_abort > 0)
      {
@@ -11,3 +13,5 @@ Index: condor.pm
      }
      elsif($num_done == $description->count())
      {
+         $self->nfssync( $description->stdout(), 0 )
+             if $description->stdout() ne '';

@@ -1,15 +1,15 @@
-%{!?perl_vendorlib: %global perl_vendorlib %(eval "`perl -V:installvendorlib`"; echo $installvendorlib)}
+%{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
 
 Name:		globus-gram-job-manager-condor
 %global _name %(tr - _ <<< %{name})
-Version:	1.4
+Version:	2.5
 Release:	1.1%{?dist}
 Summary:	Globus Toolkit - Condor Job Manager Support
 
 Group:		Applications/Internet
 License:	ASL 2.0
 URL:		http://www.globus.org/
-Source:		http://www.globus.org/ftppub/gt5/5.2/5.2.3/packages/src/%{_name}-%{version}.tar.gz
+Source:		http://www.globus.org/ftppub/gt6/packages/%{_name}-%{version}.tar.gz
 Source1:        condor_accounting_groups.pm
 Source2:        condor.rvf
 #		README file
@@ -17,28 +17,21 @@ Source8:	GLOBUS-GRAM5
 # OSG Patches
 Patch0:         job_status.patch
 Patch1:         gratia.patch
-Patch2:         nfslite.patch
-Patch3:         groupacct.patch
 Patch4:         managedfork.patch
 Patch5:         conf_location.patch
-Patch6:         669-xcount.patch
 Patch7:         717-max-walltime.patch
 
-BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:	noarch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Requires:	globus-gram-job-manager >= 13
 Requires:	globus-gram-job-manager-scripts >= 4
 Requires:	globus-gass-cache-program >= 5
-Requires:	globus-common-progs >= 14
 Requires:	globus-gatekeeper >= 9
 Requires:	perl(:MODULE_COMPAT_%(eval "`perl -V:version`"; echo $version))
 Provides:	globus-gram-job-manager-setup-condor = 4.5
 Obsoletes:	globus-gram-job-manager-setup-condor < 4.5
 Obsoletes:	globus-gram-job-manager-setup-condor-doc < 4.5
-BuildRequires:	grid-packaging-tools >= 3.4
-BuildRequires:	globus-core >= 8
 
 Requires(preun):	globus-gram-job-manager-scripts >= 4
 
@@ -55,30 +48,18 @@ Condor Job Manager Support
 %setup -q -n %{_name}-%{version}
 %patch0 -p0
 %patch1 -p0
-%patch2 -p0
-%patch3 -p0
 %patch4 -p0
 %patch5 -p0
-%patch6 -p0
 %patch7 -p0
 
 %build
-# Remove files that should be replaced during bootstrap
-rm -f doxygen/Doxyfile*
-rm -f doxygen/Makefile.am
-rm -f pkgdata/Makefile.am
-rm -f globus_automake*
-rm -rf autom4te.cache
-
-unset GLOBUS_LOCATION
-unset GPT_LOCATION
-%{_datadir}/globus/globus-bootstrap.sh
-
-export CONDOR_RM=/usr/bin/condor_rm
-export CONDOR_SUBMIT=/usr/bin/condor_submit
-%configure --disable-static --without-flavor \
-	   --with-docdir=%{_docdir}/%{name}-%{version} \
-	   --with-globus-state-dir=%{_localstatedir}/lib/globus
+export CONDOR_RM=%{_bindir}/condor_rm
+export CONDOR_SUBMIT=%{_bindir}/condor_submit
+%configure --disable-static \
+	   --includedir='${prefix}/include/globus' \
+	   --libexecdir='${datadir}/globus' \
+	   --docdir=%{_pkgdocdir} \
+	   --with-perlmoduledir=%{perl_vendorlib}
 
 make %{?_smp_mflags}
 
@@ -86,23 +67,11 @@ make %{?_smp_mflags}
 rm -rf %{buildroot}
 make install DESTDIR=%{buildroot}
 
-GLOBUSPACKAGEDIR=%{buildroot}%{_datadir}/globus/packages
-
 # Remove jobmanager-condor from install dir - leave it for admin configuration
 rm %{buildroot}/etc/grid-services/jobmanager-condor
 
 # Install README file
-install -m 644 -p %{SOURCE8} %{buildroot}%{_docdir}/%{name}-%{version}/README
-
-# List config files in each package - drop the file list
-rm $GLOBUSPACKAGEDIR/%{_name}/noflavor_data.filelist
-rm $GLOBUSPACKAGEDIR/%{_name}/pkg_data_noflavor_data.gpt
-
-# Generate package filelists
-cat $GLOBUSPACKAGEDIR/%{_name}/noflavor_rtl.filelist \
-  | sed s!^!%{_prefix}! > package.filelist
-cat $GLOBUSPACKAGEDIR/%{_name}/noflavor_doc.filelist \
-  | sed -e 's!/man/.*!&*!' -e 's!^!%doc %{_prefix}!' >> package.filelist
+install -m 644 -p %{SOURCE8} %{buildroot}%{_pkgdocdir}/README
 
 ## OSG-specific additions
 cat >> $RPM_BUILD_ROOT%{_sysconfdir}/globus/globus-condor.conf << EOF
@@ -144,26 +113,59 @@ if [ $1 -eq 0 -a ! -f /etc/grid-services/jobmanager ]; then
     globus-gatekeeper-admin -E > /dev/null 2>&1 || :
 fi
 
-%files -f package.filelist
-%defattr(-,root,root,-)
+%files
+%{_datadir}/globus/globus_gram_job_manager/condor.rvf
 %dir %{perl_vendorlib}/Globus
 %dir %{perl_vendorlib}/Globus/GRAM
 %dir %{perl_vendorlib}/Globus/GRAM/JobManager
-%{_datadir}/globus/globus_gram_job_manager/condor.rvf
+%{perl_vendorlib}/Globus/GRAM/JobManager/condor.pm
 %config(noreplace) %{_sysconfdir}/globus/globus-condor.conf
 %config(noreplace) %{_sysconfdir}/grid-services/available/jobmanager-condor
-%dir %{_datadir}/globus/packages/%{_name}
-%dir %{_docdir}/%{name}-%{version}
-%doc %{_docdir}/%{name}-%{version}/README
+%dir %{_pkgdocdir}
+%doc %{_pkgdocdir}/GLOBUS_LICENSE
+%doc %{_pkgdocdir}/README
 %config(noreplace) %{_sysconfdir}/grid-services/available/jobmanager-condor
 %config(noreplace) %{_sysconfdir}/osg/extattr_table.txt
 %config(noreplace) %{_sysconfdir}/osg/uid_table.txt
 %{perl_vendorlib}/Globus/GRAM/JobManager/condor_accounting_groups.pm
 %config(noreplace) %{_sysconfdir}/globus/gram/condor.rvf 
+%{_datadir}/globus/globus_gram_job_manager/condor.rvf
 
 %changelog
-* Thu Dec 12 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.4-1.1.osg
+* Wed Feb 11 2015 Matyas Selmeci <matyas@cs.wisc.edu> - 2.5-1.1.osg
 - Merge OSG changes
+
+* Mon Oct 27 2014 Mattias Ellert <mattias.ellert@fysast.uu.se> - 2.5-1
+- GT6 update
+- Includes improvements from Open Science Grid (OSG)
+
+* Fri Sep 12 2014 Mattias Ellert <mattias.ellert@fysast.uu.se> - 2.4-1
+- Update to Globus Toolkit 6.0
+- Drop GPT build system and GPT packaging metadata
+
+* Thu Aug 28 2014 Jitka Plesnikova <jplesnik@redhat.com> - 1.4-9
+- Perl 5.20 rebuild
+
+* Sat Jun 07 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.4-8
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
+
+* Thu Jan 09 2014 Mattias Ellert <mattias.ellert@fysast.uu.se> - 1.4-7
+- Remove unused configure option
+
+* Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.4-6
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
+
+* Sun Jul 28 2013 Mattias Ellert <mattias.ellert@fysast.uu.se> - 1.4-5
+- Implement updated packaging guidelines
+
+* Wed Jul 17 2013 Petr Pisar <ppisar@redhat.com> - 1.4-4
+- Perl 5.18 rebuild
+
+* Thu May 23 2013 Mattias Ellert <mattias.ellert@fysast.uu.se> - 1.4-3
+- Specfile clean-up
+
+* Wed Feb 13 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.4-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
 
 * Thu Dec 06 2012 Mattias Ellert <mattias.ellert@fysast.uu.se> - 1.4-1
 - Update to Globus Toolkit 5.2.3
@@ -194,13 +196,10 @@ fi
 
 * Sat Apr 28 2012 Mattias Ellert <mattias.ellert@fysast.uu.se> - 1.3-1
 - Update to Globus Toolkit 5.2.1
-- Drop patch globus-gram-job-manager-condor-desc.patch (fixed upsream)
+- Drop patch globus-gram-job-manager-condor-desc.patch (fixed upstream)
 
 * Tue Jan 24 2012 Mattias Ellert <mattias.ellert@fysast.uu.se> - 1.0-2
 - Fix broken links in README file
-
-* Mon Dec 19 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0-11.osg
-- Merge OSG changes
 
 * Thu Dec 15 2011 Mattias Ellert <mattias.ellert@fysast.uu.se> - 1.0-1
 - Autogenerated

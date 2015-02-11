@@ -1,11 +1,13 @@
 Index: condor.pm
 ===================================================================
---- condor.pm.orig	2013-12-12 16:54:25.848226354 -0600
-+++ condor.pm	2013-12-12 16:54:49.167514311 -0600
-@@ -414,6 +414,13 @@
-             "print: $script_filename: $!",
-             Globus::GRAM::Error::TEMP_SCRIPT_FILE_FAILED());
+--- condor.pm.orig	2015-02-11 13:41:57.000000000 -0600
++++ condor.pm	2015-02-11 13:48:14.949329592 -0600
+@@ -522,10 +522,17 @@
+             print SCRIPT_FILE "\n";
+         }
      }
+     # End NFS Lite Mode
+ 
 +    $rc = print SCRIPT_FILE "+GratiaJobOrigin=\"GRAM\"\n";
 +    if (!$rc)
 +    {
@@ -16,7 +18,11 @@ Index: condor.pm
      $rc = print SCRIPT_FILE "#Extra attributes specified by client\n";
      if (!$rc)
      {
-@@ -738,6 +745,7 @@
+         return $self->respond_with_failure_extension(
+             "print: $script_filename: $!",
+@@ -893,19 +900,21 @@
+         return { JOB_STATE => Globus::GRAM::JobState::DONE };
+     }
  
      if($num_abort > 0)
      {
@@ -24,7 +30,9 @@ Index: condor.pm
          return Globus::GRAM::Error::SYSTEM_CANCELLED();
      }
      elsif($num_done == $description->count())
-@@ -747,6 +755,7 @@
+     {
+         $self->nfssync( $description->stdout(), 0 )
+             if $description->stdout() ne '';
          $self->nfssync( $description->stderr(), 0 )
              if $description->stderr() ne '';
  
@@ -32,7 +40,11 @@ Index: condor.pm
          $state = Globus::GRAM::JobState::DONE;
      }
      elsif($num_run == 0)
-@@ -803,4 +812,30 @@
+     {
+         $state = Globus::GRAM::JobState::PENDING;
+@@ -958,6 +967,32 @@
+ 
+     $self->respond({GT3_FAILURE_MESSAGE => $msg });
      return $rc;
  }
  
@@ -42,7 +54,7 @@ Index: condor.pm
 +    my $self = shift;
 +    my $log_filename = $self->{condor_logfile};
 +    my $log_dir = "/var/lib/gratia/data/";
-+    
++
 +    if ( -d $log_dir ) {
 +      # For now assume that the existence of the directory means that
 +      # accounting is enabled.

@@ -1,8 +1,10 @@
 Index: condor.pm
 ===================================================================
---- condor.pm.orig	2012-11-19 16:26:33.000000003 -0600
-+++ condor.pm	2012-11-19 16:33:44.000000003 -0600
-@@ -582,6 +582,19 @@
+--- condor.pm.orig	2015-02-11 13:52:23.834285581 -0600
++++ condor.pm	2015-02-11 13:52:25.526305693 -0600
+@@ -545,10 +545,23 @@
+                 "print: $script_filename: $!",
+                 Globus::GRAM::Error::TEMP_SCRIPT_FILE_FAILED());
          }
      }
  
@@ -22,3 +24,5 @@ Index: condor.pm
      # NFS Lite mode
      if ($isNFSLite && !$isManagedFork) {
          print SCRIPT_FILE "should_transfer_files = YES\n";
+         print SCRIPT_FILE "when_to_transfer_output = ON_EXIT\n";
+         print SCRIPT_FILE "transfer_output = true\n";
