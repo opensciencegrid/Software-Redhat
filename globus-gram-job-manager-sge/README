@@ -1,6 +1,1 @@
-EPEL with a placeholder .rvf file the admin can modify
-
-Note that EPEL strips out some 'devel' files from the setup-seg subpackage that
-cause test failures when we follow suit, so there are some spec file changes as
-well.
-
+EPEL with a placeholder .rvf file the admin can modify and the associated spec file changes
