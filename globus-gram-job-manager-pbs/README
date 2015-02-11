@@ -1,1 +1,4 @@
-EPEL with some OSG-specific patches and associated spec file changes that are unlikely to be upstreamed
+EPEL with a sample user-customizable .rvf file plus associated spec file changes
+We also make the *-setup-* subpackages provide globus-gram-job-manager-setup
+and add post-install scriptlets
+We also have some OSG-specific patches that are unlikely to be upstreamed
