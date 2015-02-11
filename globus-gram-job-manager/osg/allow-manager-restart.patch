@@ -1,8 +1,10 @@
 Index: globus_gram_job_manager.c
 ===================================================================
---- globus_gram_job_manager.c.orig	2013-12-11 16:51:44.786013994 -0600
-+++ globus_gram_job_manager.c	2013-12-11 16:52:09.931324168 -0600
-@@ -555,6 +555,10 @@
+--- globus_gram_job_manager.c.orig	2015-02-11 14:15:14.212499497 -0600
++++ globus_gram_job_manager.c	2015-02-11 14:15:56.875002332 -0600
+@@ -547,10 +547,14 @@ globus_gram_job_manager_log(
+  *
+  * @retval GLOBUS_SUCCESS
   *     Success.
   * @retval GLOBUS_GRAM_PROTOCOL_ERROR_MALLOC_FAILED
   *     Malloc failed.
@@ -13,11 +15,15 @@ Index: globus_gram_job_manager.c
   *
   */
  int
+ globus_gram_job_manager_add_request(
+     globus_gram_job_manager_t *         manager,
 Index: globus_gram_job_manager_query.c
 ===================================================================
---- globus_gram_job_manager_query.c.orig	2012-10-19 09:54:19.000000000 -0500
-+++ globus_gram_job_manager_query.c	2013-12-11 16:52:09.931324168 -0600
-@@ -1431,7 +1431,7 @@
+--- globus_gram_job_manager_query.c.orig	2015-02-11 14:13:56.640585671 -0600
++++ globus_gram_job_manager_query.c	2015-02-11 14:15:56.875002332 -0600
+@@ -1423,11 +1423,11 @@ globus_l_gram_job_manager_signal(
+                 local_size_stderr = st.st_size;
+             }
  
              if (out_size >= 0 && out_size != local_size_stdout)
              {
@@ -26,7 +32,11 @@ Index: globus_gram_job_manager_query.c
                  globus_gram_job_manager_request_log(
                          request,
                          GLOBUS_GRAM_JOB_MANAGER_LOG_WARN,
-@@ -1458,7 +1458,7 @@
+                         "event=gram.signal.end "
+                         "level=WARN "
+@@ -1450,11 +1450,11 @@ globus_l_gram_job_manager_signal(
+                         (long int) local_size_stdout,
+                         globus_gram_protocol_error_string(rc));
              }
              else if (err_size >= 0 && err_size != local_size_stderr)
              {
@@ -35,3 +45,5 @@ Index: globus_gram_job_manager_query.c
                  globus_gram_job_manager_request_log(
                          request,
                          GLOBUS_GRAM_JOB_MANAGER_LOG_WARN,
+                         "event=gram.signal.end "
+                         "level=WARN "

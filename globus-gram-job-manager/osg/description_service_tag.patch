@@ -1,16 +1,20 @@
 Index: globus_gram_job_manager_script.c
 ===================================================================
---- globus_gram_job_manager_script.c.orig	2013-04-10 10:27:45.000000000 -0500
-+++ globus_gram_job_manager_script.c	2013-12-11 16:50:31.272107287 -0600
-@@ -1846,6 +1846,11 @@
+--- globus_gram_job_manager_script.c.orig	2015-02-11 14:13:56.750586967 -0600
++++ globus_gram_job_manager_script.c	2015-02-11 14:14:39.329088485 -0600
+@@ -1848,10 +1848,15 @@ globus_l_gram_enqueue_description(
+         rc = globus_l_gram_enqueue_string(
+                 fifo,
                  ",\n    'jobdir' => [ '%s' ]",
                  request->job_dir);
      }
 +    rc = globus_l_gram_enqueue_string(
 +            fifo,
 +            ",\n    'servicetag' => [ '%s' ]",
-+            request->config->service_tag == 0 ? "untagged" : 
++            request->config->service_tag == 0 ? "untagged" :
 +                request->config->service_tag);
  
      rc = globus_l_gram_enqueue_string(
              fifo,
+             ",\n    'streamingdisabled' => [ %d ]",
+             request->config->streaming_disabled);

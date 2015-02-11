@@ -1,8 +1,10 @@
 Index: globus_gram_job_manager_request.c
 ===================================================================
---- globus_gram_job_manager_request.c.orig	2012-10-19 09:54:19.000000000 -0500
-+++ globus_gram_job_manager_request.c	2013-12-11 16:50:08.278823724 -0600
-@@ -2140,6 +2140,13 @@
+--- globus_gram_job_manager_request.c.orig	2015-02-11 14:13:56.790587439 -0600
++++ globus_gram_job_manager_request.c	2015-02-11 14:14:25.613926919 -0600
+@@ -2161,10 +2161,17 @@ globus_l_gram_restart(
+     {
+         /* Something is handling this request already. We'll check if it is
           * this process. If so, we'll merge the RSLs (as if we had done a
           * stdio update.
           */
@@ -16,3 +18,5 @@ Index: globus_gram_job_manager_request.c
          rc = globus_gram_job_manager_add_reference(
                  request->manager,
                  request->job_contact_path,
+                 "restart",
+                 old_job_request);

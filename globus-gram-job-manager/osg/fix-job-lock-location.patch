@@ -1,8 +1,10 @@
 Index: globus_gram_job_manager.h
 ===================================================================
---- globus_gram_job_manager.h.orig	2012-06-18 11:44:17.000000000 -0500
-+++ globus_gram_job_manager.h	2013-12-11 16:51:44.784013969 -0600
-@@ -355,9 +355,15 @@
+--- globus_gram_job_manager.h.orig	2015-02-11 14:13:56.706586450 -0600
++++ globus_gram_job_manager.h	2015-02-11 14:15:14.210499474 -0600
+@@ -346,13 +346,19 @@ typedef struct
+     char *                              service_tag;
+     /**
       * This is the prefix to directory which will contain host+lrm specific
       * state files. By default, it is $HOME/.globus/job, but can be 
       * modified by -globus-job-dir command-line option
@@ -18,27 +20,31 @@ Index: globus_gram_job_manager.h
       * Boolean flag indicating whether to enable GSI callouts
       * on GRAM operations or not. Default to no.
       */
+     globus_bool_t                       enable_callout;
+ }
 Index: globus_gram_job_manager_config.c
 ===================================================================
---- globus_gram_job_manager_config.c.orig	2012-08-17 09:37:15.000000000 -0500
-+++ globus_gram_job_manager_config.c	2013-12-11 16:51:44.785013982 -0600
-@@ -564,11 +564,26 @@
+--- globus_gram_job_manager_config.c.orig	2015-02-11 14:13:56.707586462 -0600
++++ globus_gram_job_manager_config.c	2015-02-11 14:15:14.210499474 -0600
+@@ -557,15 +557,30 @@ globus_gram_job_manager_config_init(
+ 
+             goto out;
          }
      }
  
 +    if (config->job_dir_locks == NULL)
-+    {               
-+        config->job_dir_locks = 
++    {
++        config->job_dir_locks =
 +            globus_common_create_string("%s/%s",
 +                    config->job_state_file_dir,
 +                    config->logname);
-+                    
++
 +        if (config->job_dir_locks == NULL)
-+        {           
++        {
 +            rc = GLOBUS_GRAM_PROTOCOL_ERROR_MALLOC_FAILED;
-+                    
++
 +            goto out;
-+        }           
++        }
 +    }
 +
      if (config->job_dir_home == NULL)
@@ -51,11 +57,15 @@ Index: globus_gram_job_manager_config.c
                      config->logname);
  
          if (config->job_dir_home == NULL)
+         {
+             rc = GLOBUS_GRAM_PROTOCOL_ERROR_MALLOC_FAILED;
 Index: globus_gram_job_manager.c
 ===================================================================
---- globus_gram_job_manager.c.orig	2013-12-11 16:49:18.998216030 -0600
-+++ globus_gram_job_manager.c	2013-12-11 16:51:44.786013994 -0600
-@@ -212,7 +212,7 @@
+--- globus_gram_job_manager.c.orig	2015-02-11 14:14:02.942659890 -0600
++++ globus_gram_job_manager.c	2015-02-11 14:15:14.212499497 -0600
+@@ -204,11 +204,11 @@ globus_gram_job_manager_init(
+ 
+         goto job_id_hashtable_init_failed;
      }
      dir_prefix = globus_common_create_string(
              "%s/%s",
@@ -64,3 +74,5 @@ Index: globus_gram_job_manager.c
              manager->config->short_hostname);
      if (dir_prefix == NULL)
      {
+         rc = GLOBUS_GRAM_PROTOCOL_ERROR_MALLOC_FAILED;
+         goto malloc_dir_prefix_failed;
