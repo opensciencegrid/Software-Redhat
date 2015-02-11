@@ -1,8 +1,4 @@
-%ifarch aarch64 alpha ia64 ppc64 s390x sparc64 x86_64
-%global flavor gcc64
-%else
-%global flavor gcc32
-%endif
+%global _hardened_build 1
 
 %{!?_initddir: %global _initddir %{_initrddir}}
 
@@ -10,38 +6,29 @@
 
 Name:		globus-gatekeeper
 %global _name %(tr - _ <<< %{name})
-Version:	9.15
-Release:	1.9%{?dist}
+Version:	10.9
+Release:	1.1%{?dist}
 Summary:	Globus Toolkit - Globus Gatekeeper
 
 Group:		Applications/Internet
 License:	ASL 2.0
 URL:		http://www.globus.org/
-Source:		http://www.globus.org/ftppub/gt5/5.2/5.2.5/packages/src/%{_name}-%{version}.tar.gz
+Source:		http://www.globus.org/ftppub/gt6/packages/%{_name}-%{version}.tar.gz
 Source2:	%{name}.README
 #		README file
 Source8:	GLOBUS-GRAM5
 Source11:       globus-gatekeeper.osg-sysconfig
 Patch3:         init.patch
-Patch5:         logrotate-copytruncate.patch
 Patch6:         GT-489-openssl-1.0.1-fix.patch
 Patch7:         1250-init-priorities.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-#		Keep providing globus-gatekeeper-setup until it is not needed
-Provides:	%{name}-setup = 2.2
-Requires:	globus-common%{?_isa} >= 14
-Requires:       globus-common-progs%{?_isa} >= 14
-Requires:	globus-gss-assist%{?_isa} >= 8
-Requires:	globus-gssapi-gsi%{?_isa} >= 9
 Requires(post):		chkconfig
 Requires(preun):	chkconfig
 Requires(preun):	initscripts
 Requires(postun):	initscripts
 Requires:       /lib/lsb/init-functions
-BuildRequires:	grid-packaging-tools >= 3.4
-BuildRequires:	globus-core >= 8
-BuildRequires:	globus-common-devel >= 14
+BuildRequires:	globus-common-devel >= 15
 BuildRequires:	globus-gss-assist-devel >= 8
 BuildRequires:	globus-gssapi-gsi-devel >= 9
 BuildRequires:	openssl-devel
@@ -59,27 +46,19 @@ Globus Gatekeeper
 %setup -q -n %{_name}-%{version}
 
 %patch3 -p0
-%patch5 -p0
 %patch6 -p0
 %patch7 -p0
 
 %build
-# Remove files that should be replaced during bootstrap
-rm -f doxygen/Doxyfile*
-rm -f doxygen/Makefile.am
-rm -f pkgdata/Makefile.am
-rm -f globus_automake*
-rm -rf autom4te.cache
+# Reduce overlinking
+export LDFLAGS="-Wl,--as-needed -Wl,-z,defs %{?__global_ldflags}"
 
-unset GLOBUS_LOCATION
-unset GPT_LOCATION
-%{_datadir}/globus/globus-bootstrap.sh
-
-%configure --disable-static --with-flavor=%{flavor} \
-	   --with-docdir=%{_pkgdocdir} \
-           --with-lsb \
-	   --with-initscript-config-path=/etc/sysconfig/globus-gatekeeper \
-	   --with-lockfile-path='${localstatedir}/lock/subsys/globus-gatekeeper'
+%configure --disable-static \
+	   --includedir='${prefix}/include/globus' \
+	   --libexecdir='${datadir}/globus' \
+	   --docdir=%{_pkgdocdir} \
+	   --with-initscript-config-path=/etc/sysconfig/%{name} \
+	   --with-lockfile-path='${localstatedir}/lock/subsys/%{name}'
 
 # Reduce overlinking
 sed 's!CC -shared !CC \${wl}--as-needed -shared !g' -i libtool
@@ -90,23 +69,11 @@ make %{?_smp_mflags}
 rm -rf %{buildroot}
 make install DESTDIR=%{buildroot}
 
-GLOBUSPACKAGEDIR=%{buildroot}%{_datadir}/globus/packages
-
 # Install post installation instructions
-install -m 644 -p %{SOURCE2} \
-  %{buildroot}%{_pkgdocdir}/README.Fedora
+install -m 644 -p %{SOURCE2} %{buildroot}%{_pkgdocdir}/README.Fedora
 
 # Install README file
 install -m 644 -p %{SOURCE8} %{buildroot}%{_pkgdocdir}/README
-
-# Generate package filelists
-cat $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_pgm.filelist \
-    $GLOBUSPACKAGEDIR/%{_name}/noflavor_data.filelist \
-  | sed -e s!^!%{_prefix}! \
-	-e 's!%{_prefix}%{_sysconfdir}!%config(noreplace) %{_sysconfdir}!' \
-  > package.filelist
-cat $GLOBUSPACKAGEDIR/%{_name}/noflavor_doc.filelist \
-  | sed -e 's!/man/.*!&*!' -e 's!^!%doc %{_prefix}!' >> package.filelist
 
 mkdir -p %{buildroot}/etc/grid-services
 mkdir -p %{buildroot}/etc/grid-services/available
@@ -132,13 +99,18 @@ if [ $1 -ge 1 ]; then
     /sbin/service %{name} condrestart > /dev/null 2>&1 || :
 fi
 
-%files -f package.filelist
+%files
+%{_sbindir}/globus-gatekeeper
+%{_sbindir}/globus-k5
 %{_sysconfdir}/init.d/%{name}
-%{_sysconfdir}/logrotate.d/%{name}
+%config(noreplace) %{_sysconfdir}/sysconfig/%{name}
+%config(noreplace) %{_sysconfdir}/logrotate.d/%{name}
 %dir %{_sysconfdir}/grid-services
 %dir %{_sysconfdir}/grid-services/available
-%dir %{_datadir}/globus/packages/%{_name}
+%doc %{_mandir}/man8/globus-gatekeeper.8*
+%doc %{_mandir}/man8/globus-k5.8*
 %dir %{_pkgdocdir}
+%doc %{_pkgdocdir}/GLOBUS_LICENSE
 %doc %{_pkgdocdir}/README
 %doc %{_pkgdocdir}/README.Fedora
 %config(noreplace) %{_sysconfdir}/sysconfig/%{name}
@@ -146,8 +118,31 @@ fi
 
 
 %changelog
+* Tue Feb 10 2015 Matyas Selmeci <matyas@cs.wisc.edu> - 10.9-1.1.osg
+- Merge OSG changes
+
+* Thu Nov 13 2014 Mattias Ellert <mattias.ellert@fysast.uu.se> - 10.9-1
+- GT6 update
+
+* Sun Oct 26 2014 Mattias Ellert <mattias.ellert@fysast.uu.se> - 10.8-1
+- GT6 update
+
 * Thu Oct 09 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 9.15-1.9.osg
 - Add globus-common-progs dependency (SOFTWARE-1630)
+
+* Fri Sep 12 2014 Mattias Ellert <mattias.ellert@fysast.uu.se> - 10.7-1
+- Update to Globus Toolkit 6.0
+- Drop GPT build system and GPT packaging metadata
+- Activate hardening flags
+
+* Sat Aug 16 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 9.15-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_22_Mass_Rebuild
+
+* Sat Jun 07 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 9.15-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
+
+* Tue May 27 2014 Brent Baude <baude@us.ibm.com> - 9.15-2
+- Changing ppc64 arch to power64
 
 * Wed Jan 15 2014 Matyas Selmeci <matyas@cs.wisc.edu> 9.15-1.8.osg
 - Add requirement for lsb init functions

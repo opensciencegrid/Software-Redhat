@@ -1,8 +1,8 @@
 Index: init/globus-gatekeeper-lsb.in
 ===================================================================
---- init/globus-gatekeeper-lsb.in.orig	2013-12-12 14:14:36.867179629 -0600
-+++ init/globus-gatekeeper-lsb.in	2013-12-12 14:14:36.896179988 -0600
-@@ -79,9 +79,14 @@
+--- init/globus-gatekeeper-lsb.in.orig	2015-02-10 18:27:45.971398866 -0600
++++ init/globus-gatekeeper-lsb.in	2015-02-10 18:28:00.472580892 -0600
+@@ -95,9 +95,14 @@
          kflag=""
      fi
  
