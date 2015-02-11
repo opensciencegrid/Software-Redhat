@@ -123,12 +123,6 @@ install -m 644 -p %{SOURCE8} %{buildroot}%{_pkgdocdir}/README
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/globus/gram
 install -m 0644 %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/globus/gram/job-manager.rvf
 
-%check
-# Checks fail in koji for EPEL5 and EPEL6
-%if %{?fedora}%{!?fedora:0} || %{?rhel}%{!?rhel:0} >= 7
-make %{?_smp_mflags} check VERBOSE=1
-%endif
-
 %clean
 rm -rf %{buildroot}
 
