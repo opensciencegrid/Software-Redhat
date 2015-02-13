@@ -1,5 +1,5 @@
 Name:      rsv-perfsonar
-Version:   1.0.7
+Version:   1.0.8
 Release:   1%{?dist}
 Summary:   RSV Metrics to monitor pefsonar
 Packager:  OSG-Software
@@ -14,7 +14,7 @@ BuildArch: noarch
 
 Requires: rsv
 #The perfsonar probe libraries need it. Getting it from I2 repo for now
-Requires: esmond >= 1.0-10
+Requires: esmond >= 1.0-12
 
 %if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
 Requires: python-simplejson
@@ -71,6 +71,11 @@ scl enable python27 - << \EOF
 EOF 
 
 %changelog
+* Fri Feb 13 2015 <efajardo@physics.ucsd.edu> 1.0.8-1
+- Updated requirement for esmond. To bug fix posting double values for throughput
+- Stopped checking for old keys to gain efficiency
+
+
 * Mon Feb 09 2015 <efajardo@physics.ucsd.edu> 1.0.7-1
 - Fix to prevent duplicate entries by storing original metada key
 
