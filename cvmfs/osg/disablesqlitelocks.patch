@@ -1,0 +1,14 @@
+*** cvmfs/cvmfs.cc.O	Thu Jun 26 15:00:06 2014
+--- cvmfs/cvmfs.cc	Thu Jun 26 15:00:31 2014
+***************
+*** 1969,1974 ****
+--- 1969,1977 ----
+    retval = sqlite3_config(SQLITE_CONFIG_LOOKASIDE, 32, 128);
+    assert(retval == SQLITE_OK);
+  
++   // Disable SQlite3 locks
++   sqlite3_vfs_register(sqlite3_vfs_find("unix-none"), 1);
++ 
+    // Meta-data memory caches
+    const double memcache_unit_size =
+      7.0 * lru::Md5PathCache::GetEntrySize() +

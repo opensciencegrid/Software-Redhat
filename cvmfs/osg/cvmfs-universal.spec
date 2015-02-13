@@ -22,11 +22,17 @@
 Summary: CernVM File System
 Name: cvmfs
 Version: 2.1.19
-Release: 1%{?dist}
+Release: 1.8%{?dist}
 Source0: https://ecsft.cern.ch/dist/cvmfs/%{name}-%{version}.tar.gz
 %if 0%{?selinux_cvmfs}
 Source1: cvmfs.te
 %endif
+Patch0: disablesqlitelocks.patch
+Patch1: unsharechecksum.patch
+Patch2: alienhdfsfix.patch
+Patch3: nfsrename.patch
+Patch4: nocatalogrename.patch
+Patch5: httpredirects.patch
 Group: Applications/System
 License: BSD
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -142,6 +148,12 @@ CernVM-FS unit tests binary.  This RPM is not required except for testing.
 
 %prep
 %setup -q
+%patch0 -p0
+%patch1 -p1
+%patch2 -p1
+%patch3 -p1
+%patch4 -p1
+%patch5 -p1
 
 %if 0%{?selinux_cvmfs}
 mkdir SELinux
@@ -348,6 +360,26 @@ fi
 %{_bindir}/cvmfs_unittests
 
 %changelog
+* Fri Feb 13 2014 Dave Dykstra <dwd@fnal.gov> - 2.1.19-1.8.osg
+- Build for OSG release
+* Mon Nov 24 2014 Dave Dykstra <dwd@fnal.gov> - 2.1.19-1.7.osg
+- Support http redirects
+* Mon Nov 01 2014 Dave Dykstra <dwd@fnal.gov> - 2.1.19-1.6.osg
+- When opening a catalog from alien cache, skip temporarily renaming it
+* Mon Oct 14 2014 Dave Dykstra <dwd@fnal.gov> - 2.1.19-1.5.osg
+- Update the last patch to only take effect when the alien cache is on 
+  a file type of NFS
+* Mon Sep 29 2014 Dave Dykstra <dwd@fnal.gov> - 2.1.19-1.4.osg
+- Add patch to use link/unlink instead of rename for alien cache, to
+  avoid stale NFS file handles
+* Mon Aug 04 2014 Dave Dykstra <dwd@fnal.gov> - 2.1.19-1.3.osg
+- Add patch so hadoop-fuse-dfs as alien cache won't see assert(size > 0)
+  failures
+* Wed Jul 30 2014 Dave Dykstra <dwd@fnal.gov> - 2.1.19-1.2.osg
+- Add patch so shared alien cache will see catalog updates
+* Thu Jun 26 2014 Dave Dykstra <dwd@fnal.gov> - 2.1.19-1.1.osg
+- Add patch to disable sqlite locks, to make work with an alien cache
+  on Lustre
 * Thu Apr 10 2014 Jakob Blomer <jblomer@cern.ch> - 2.1.18
 - Add /etc/cvmfs/default.d
 * Thu Apr 3 2014 Jakob Blomer <jblomer@cern.ch> - 2.1.18
