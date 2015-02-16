@@ -2,11 +2,12 @@
 
 Name:		globus-gram-job-manager-sge
 %global _name %(tr - _ <<< %{name})
-Version:	2.4
+Version:	2.5
 Release:	1.1%{?dist}
 Summary:	Globus Toolkit - Grid Engine Job Manager Support
 
 Group:		Applications/Internet
+#		The sge.pm file is LGPLv2, the rest is ASL 2.0
 License:	ASL 2.0 and LGPLv2
 URL:		http://www.globus.org/
 Source:		http://www.globus.org/ftppub/gt6/packages/%{_name}-%{version}.tar.gz
@@ -115,7 +116,7 @@ export SUN_MPRUN=no
 	   --without-pe-validation
 
 # Reduce overlinking
-sed 's!CC -shared !CC \${wl}--as-needed -shared !g' -i libtool
+sed 's!CC \(.*-shared\) !CC \\\${wl}--as-needed \1 !' -i libtool
 
 make %{?_smp_mflags}
 
@@ -135,6 +136,10 @@ install -m 644 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/globus/gram/sge.rvf
 
 # Install README file
 install -m 644 -p %{SOURCE8} %{buildroot}%{_pkgdocdir}/README
+
+# Remove license files from pkgdocdir if licensedir is used
+%{?_licensedir: rm %{buildroot}%{_pkgdocdir}/GLOBUS_LICENSE}
+%{?_licensedir: rm %{buildroot}%{_pkgdocdir}/LICENSE*}
 
 %clean
 rm -rf %{buildroot}
@@ -195,21 +200,27 @@ fi
 %dir %{_pkgdocdir}
 %doc %{_pkgdocdir}/AUTHORS
 %doc %{_pkgdocdir}/CREDITS
-%doc %{_pkgdocdir}/GLOBUS_LICENSE
-%doc %{_pkgdocdir}/LICENSE*
 %doc %{_pkgdocdir}/README
+%{!?_licensedir: %doc %{_pkgdocdir}/GLOBUS_LICENSE}
+%{!?_licensedir: %doc %{_pkgdocdir}/LICENSE*}
+%{?_licensedir: %license GLOBUS_LICENSE LICENSE*}
 
 %files setup-poll
 %config(noreplace) %{_sysconfdir}/grid-services/available/jobmanager-sge-poll
 
 %files setup-seg
+# This is a loadable module (plugin)
 %{_libdir}/libglobus_seg_sge.so
 %config(noreplace) %{_sysconfdir}/grid-services/available/jobmanager-sge-seg
 %config(noreplace) %{_sysconfdir}/globus/scheduler-event-generator/available/sge
 
 %changelog
-* Wed Feb 11 2015 Matyas Selmeci <matyas@cs.wisc.edu> - 2.4-1.1.osg
+* Mon Feb 16 2015 Matyas Selmeci <matyas@cs.wisc.edu> - 2.5-1.1.osg
 - Merge OSG changes
+
+* Tue Jan 27 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 2.5-1
+- Implement updated license packaging guidelines
+- GT6 update (Handle UGE 8.2.0 timestamp format change)
 
 * Fri Sep 12 2014 Mattias Ellert <mattias.ellert@fysast.uu.se> - 2.4-1
 - Update to Globus Toolkit 6.0
