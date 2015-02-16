@@ -6,7 +6,7 @@
 
 Name:		globus-gridftp-server
 %global _name %(tr - _ <<< %{name})
-Version:	7.18
+Version:	7.20
 Release:	1.1%{?dist}
 Summary:	Globus Toolkit - Globus GridFTP Server
 
@@ -117,7 +117,7 @@ export GLOBUS_VERSION=6.0
 	   --docdir=%{_pkgdocdir}
 
 # Reduce overlinking
-sed 's!CC -shared !CC \${wl}--as-needed -shared !g' -i libtool
+sed 's!CC \(.*-shared\) !CC \\\${wl}--as-needed \1 !' -i libtool
 
 make %{?_smp_mflags}
 
@@ -163,6 +163,9 @@ install -m 0644 %{SOURCE6} $RPM_BUILD_ROOT/usr/share/osg/sysconfig/%{name}
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d
 install -m 0644 %{SOURCE7} $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/%{name}.logrotate
 
+# Remove license file from pkgdocdir if licensedir is used
+%{?_licensedir: rm %{buildroot}%{_pkgdocdir}/GLOBUS_LICENSE}
+
 %clean
 rm -rf %{buildroot}
 
@@ -194,8 +197,9 @@ fi
 %{_libdir}/libglobus_gridftp_server.so.*
 %dir %{_sysconfdir}/gridftp.d
 %dir %{_pkgdocdir}
-%doc %{_pkgdocdir}/GLOBUS_LICENSE
 %doc %{_pkgdocdir}/README
+%{!?_licensedir: %doc %{_pkgdocdir}/GLOBUS_LICENSE}
+%{?_licensedir: %license GLOBUS_LICENSE}
 
 %files progs
 %{_sbindir}/gfs-dynbe-client
@@ -222,8 +226,12 @@ fi
 %{_libdir}/pkgconfig/%{name}.pc
 
 %changelog
-* Tue Feb 10 2015 Matyas Selmeci <matyas@cs.wisc.edu> - 7.18-1.1.osg
+* Mon Feb 16 2015 Matyas Selmeci <matyas@cs.wisc.edu> - 7.20-1.1.osg
 - Merge OSG changes
+
+* Fri Jan 23 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 7.20-1
+- Implement updated license packaging guidelines
+- GT6 update (-help fix)
 
 * Wed Jan 07 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 7.18-1
 - GT6 update (net mgr support)
