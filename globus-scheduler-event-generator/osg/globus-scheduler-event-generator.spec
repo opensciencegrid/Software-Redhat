@@ -6,7 +6,7 @@
 
 Name:		globus-scheduler-event-generator
 %global _name %(tr - _ <<< %{name})
-Version:	5.9
+Version:	5.10
 Release:	1.1%{?dist}
 Summary:	Globus Toolkit - Scheduler Event Generator
 
@@ -105,7 +105,7 @@ export LDFLAGS="-Wl,--as-needed -Wl,-z,defs %{?__global_ldflags}"
 	   --with-lockfile-path='${localstatedir}/lock/subsys/%{name}'
 
 # Reduce overlinking
-sed 's!CC -shared !CC \${wl}--as-needed -shared !g' -i libtool
+sed 's!CC \(.*-shared\) !CC \\\${wl}--as-needed \1 !' -i libtool
 
 make %{?_smp_mflags}
 
@@ -129,6 +129,9 @@ sed 's!${localstatedir}/lib/globus/!${localstatedir}/log/globus/!' \
 
 # Install README file
 install -m 644 -p %{SOURCE8} %{buildroot}%{_pkgdocdir}/README
+
+# Remove license file from pkgdocdir if licensedir is used
+%{?_licensedir: rm %{buildroot}%{_pkgdocdir}/GLOBUS_LICENSE}
 
 %check
 make %{?_smp_mflags} check VERBOSE=1
@@ -158,8 +161,9 @@ fi
 %files
 %{_libdir}/libglobus_scheduler_event_generator.so.*
 %dir %{_pkgdocdir}
-%doc %{_pkgdocdir}/GLOBUS_LICENSE
 %doc %{_pkgdocdir}/README
+%{!?_licensedir: %doc %{_pkgdocdir}/GLOBUS_LICENSE}
+%{?_licensedir: %license GLOBUS_LICENSE}
 
 %files progs
 %{_sbindir}/globus-scheduler-event-generator
@@ -180,13 +184,18 @@ fi
 %files doc
 %doc %{_mandir}/man3/*
 %dir %{_pkgdocdir}
-%doc %{_pkgdocdir}/GLOBUS_LICENSE
 %dir %{_pkgdocdir}/html
 %doc %{_pkgdocdir}/html/*
+%{!?_licensedir: %doc %{_pkgdocdir}/GLOBUS_LICENSE}
+%{?_licensedir: %license GLOBUS_LICENSE}
 
 %changelog
-* Fri Feb 06 2015 Matyas Selmeci <matyas@cs.wisc.edu> - 5.9-1.1.osg
+* Mon Feb 16 2015 Matyas Selmeci <matyas@cs.wisc.edu> - 5.10-1.1.osg
 - Merge OSG changes
+
+* Fri Jan 23 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 5.10-1
+- Implement updated license packaging guidelines
+- GT6 update (test fixes)
 
 * Fri Dec 12 2014 Mattias Ellert <mattias.ellert@fysast.uu.se> - 5.9-1
 - GT6 update
