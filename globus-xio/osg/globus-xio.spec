@@ -2,7 +2,7 @@
 
 Name:		globus-xio
 %global _name %(tr - _ <<< %{name})
-Version:	5.2
+Version:	5.4
 Release:	1.1%{?dist}
 Summary:	Globus Toolkit - Globus XIO Framework
 
@@ -77,7 +77,7 @@ export LDFLAGS="-Wl,--as-needed -Wl,-z,defs %{?__global_ldflags}"
 	   --docdir=%{_pkgdocdir}
 
 # Reduce overlinking
-sed 's!CC -shared !CC \${wl}--as-needed -shared !g' -i libtool
+sed 's!CC \(.*-shared\) !CC \\\${wl}--as-needed \1 !' -i libtool
 
 make %{?_smp_mflags}
 
@@ -90,6 +90,9 @@ rm %{buildroot}%{_libdir}/*.la
 
 # Install README file
 install -m 644 -p %{SOURCE8} %{buildroot}%{_pkgdocdir}/README
+
+# Remove license file from pkgdocdir if licensedir is used
+%{?_licensedir: rm %{buildroot}%{_pkgdocdir}/GLOBUS_LICENSE}
 
 %check
 GLOBUS_HOSTNAME=localhost make %{?_smp_mflags} check VERBOSE=1
@@ -104,8 +107,9 @@ rm -rf %{buildroot}
 %files
 %{_libdir}/libglobus_xio.so.*
 %dir %{_pkgdocdir}
-%doc %{_pkgdocdir}/GLOBUS_LICENSE
 %doc %{_pkgdocdir}/README
+%{!?_licensedir: %doc %{_pkgdocdir}/GLOBUS_LICENSE}
+%{?_licensedir: %license GLOBUS_LICENSE}
 
 %files devel
 %{_includedir}/globus/*
@@ -115,16 +119,22 @@ rm -rf %{buildroot}
 %files doc
 %doc %{_mandir}/man3/*
 %dir %{_pkgdocdir}
-%doc %{_pkgdocdir}/GLOBUS_LICENSE
 %dir %{_pkgdocdir}/html
 %doc %{_pkgdocdir}/html/*
+%{!?_licensedir: %doc %{_pkgdocdir}/GLOBUS_LICENSE}
+%{?_licensedir: %license GLOBUS_LICENSE}
 
 %changelog
-* Tue Feb 10 2015 Matyas Selmeci <matyas@cs.wisc.edu> - 5.2-1.1
+* Mon Feb 16 2015 Matyas Selmeci <matyas@cs.wisc.edu> - 5.4-1.1.osg
 - Merge OSG changes
+
+* Fri Jan 23 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 5.4-1
+- Implement updated license packaging guidelines
+- GT6 update (test fixes)
 
 * Wed Jan 07 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 5.2-1
 - GT6 update (GLOBUS_XIO_GET_STRING_OPTIONS, GLOBUS_XIO_GET_DRIVER_NAME)
+- Set GLOBUS_HOSTNAME during make check
 
 * Thu Nov 13 2014 Mattias Ellert <mattias.ellert@fysast.uu.se> - 4.17-1
 - GT6 update
