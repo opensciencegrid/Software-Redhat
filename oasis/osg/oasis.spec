@@ -1,5 +1,5 @@
 %define name oasis
-%define version 2.0.4
+%define version 2.0.5
 %define release 1
 
 Summary: OASIS package
@@ -152,6 +152,11 @@ f_restart_daemon $1
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Mon Feb 16 2015 Dave Dykstra <dwd@fnal.gov> - 2.0.5-1
+- Upgraded to oasis 2.0.5 tarball which has a CHANGELOG entry of:
+  * Added /usr/share/oasis/oasis_replica_status which generates
+    /var/www/html/stamp file for OSG GOC monitoring
+
 * Fri Feb 14 2015 Dave Dykstra <dwd@fnal.gov> - 2.0.4-1
 - Upgraded to oasis 2.0.4 tarball which has CHANGELOG entries of:
   * Updated blank_osg_repository for cvmfs-2.1.20
