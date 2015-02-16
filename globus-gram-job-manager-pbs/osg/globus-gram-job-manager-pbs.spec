@@ -9,7 +9,7 @@
 Name:		globus-gram-job-manager-pbs
 %global _name %(tr - _ <<< %{name})
 Version:	2.4
-Release:	1.1%{?dist}
+Release:	2.1%{?dist}
 Summary:	Globus Toolkit - PBS Job Manager Support
 
 Group:		Applications/Internet
@@ -116,7 +116,7 @@ export QSUB=%{_bindir}/qsub-torque
 	   --with-log-path=%{pbs_log_path}
 
 # Reduce overlinking
-sed 's!CC -shared !CC \${wl}--as-needed -shared !g' -i libtool
+sed 's!CC \(.*-shared\) !CC \\\${wl}--as-needed \1 !' -i libtool
 
 make %{?_smp_mflags}
 
@@ -140,6 +140,9 @@ install -m 644 -p %{SOURCE8} %{buildroot}%{_pkgdocdir}/README
 # Install the RVF file
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/globus/gram/
 install -m 644 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/globus/gram/pbs.rvf
+
+# Remove license file from pkgdocdir if licensedir is used
+%{?_licensedir: rm %{buildroot}%{_pkgdocdir}/GLOBUS_LICENSE}
 
 
 %clean
@@ -200,20 +203,25 @@ fi
 %config(noreplace) %{_sysconfdir}/globus/globus-pbs.conf
 %config(noreplace) %{_sysconfdir}/globus/gram/pbs.rvf 
 %dir %{_pkgdocdir}
-%doc %{_pkgdocdir}/GLOBUS_LICENSE
 %doc %{_pkgdocdir}/README
+%{!?_licensedir: %doc %{_pkgdocdir}/GLOBUS_LICENSE}
+%{?_licensedir: %license GLOBUS_LICENSE}
 
 %files setup-poll
 %config(noreplace) %{_sysconfdir}/grid-services/available/jobmanager-pbs-poll
 
 %files setup-seg
+# This is a loadable module (plugin)
 %{_libdir}/libglobus_seg_pbs.so
 %config(noreplace) %{_sysconfdir}/grid-services/available/jobmanager-pbs-seg
 %config(noreplace) %{_sysconfdir}/globus/scheduler-event-generator/available/pbs
 
 %changelog
-* Wed Feb 11 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 2.4-1.1.osg
+* Wed Feb 11 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 2.4-2.1.osg
 - Merge OSG changes
+
+* Fri Jan 23 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 2.4-2
+- Implement updated license packaging guidelines
 
 * Fri Sep 12 2014 Mattias Ellert <mattias.ellert@fysast.uu.se> - 2.4-1
 - Update to Globus Toolkit 6.0
