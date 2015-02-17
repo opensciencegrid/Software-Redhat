@@ -7,7 +7,7 @@
 Name:		globus-scheduler-event-generator
 %global _name %(tr - _ <<< %{name})
 Version:	5.10
-Release:	1.1%{?dist}
+Release:	1.2%{?dist}
 Summary:	Globus Toolkit - Scheduler Event Generator
 
 Group:		System Environment/Libraries
@@ -190,6 +190,9 @@ fi
 %{?_licensedir: %license GLOBUS_LICENSE}
 
 %changelog
+* Mon Feb 16 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 5.10-1.2.osg
+- Add workaround for log file reading hang
+
 * Mon Feb 16 2015 Matyas Selmeci <matyas@cs.wisc.edu> - 5.10-1.1.osg
 - Merge OSG changes
 
