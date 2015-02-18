@@ -1,7 +1,7 @@
 Summary: Generic Information Provider
 Name: gip
 Version: 1.3.11
-Release: 4%{?dist}
+Release: 5%{?dist}
 License: Apache 2.0
 Group: Applications/Grid
 BuildArch: noarch
@@ -11,6 +11,8 @@ Source0: %{name}-%{version}.tgz
 Patch0: 1662-slurm_queue_info.patch
 Patch1: 1752-slurm_path.patch
 Patch2: 1754-htcondor-bdii.patch
+Patch3: 1795-htcondor-bdii-1.patch
+Patch4: 1795-htcondor-bdii-2.patch
 
 %define tomcat_uid 91
 %define tomcat_gid 91
@@ -33,6 +35,8 @@ then can be sent via external services to information collection servers such as
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
+%patch4 -p1
 
 %install
 rm -rf %{buildroot}
@@ -123,6 +127,9 @@ touch $RPM_BUILD_ROOT/%{_sysconfdir}/%{name}/remove-attributes.conf
 rm -rf %buildroot
 
 %changelog
+* Wed Feb 18 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.3.11-5
+- Add patches for improved HTCondor CE reporting (SOFTWARE-1795)
+
 * Wed Jan 28 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.3.11-4
 - Add patch for feature/htcondor-bdii branch (SOFTWARE-1754)
 

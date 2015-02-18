@@ -1,0 +1,96 @@
+From 1392cb90431ca7416bb5eb3c2258e2067e7398c3 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Tue, 17 Feb 2015 20:44:50 -0600
+Subject: [PATCH] Get condor-ce port from condor_ce_config_val
+
+---
+ gip/lib/python/gip_batch.py | 51 ++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 50 insertions(+), 1 deletion(-)
+
+diff --git a/gip/lib/python/gip_batch.py b/gip/lib/python/gip_batch.py
+index dca628e..6bb01ec 100644
+--- a/gip/lib/python/gip_batch.py
++++ b/gip/lib/python/gip_batch.py
+@@ -5,11 +5,13 @@ Common functions for GIP batch system providers and plugins.
+ from gip_common import cp_getBoolean, cp_get, cp_getList, cp_getInt, vdtDir
+ from gip_cluster import getOSGVersion
+ from gip_sections import ce
+ from gip_testing import runCommand
+ import os
++import re
+ import logging
++import subprocess
+ 
+ __author__ = "Burt Holzman"
+ 
+ def buildCEUniqueID(cp, ce_name, batch, queue):
+     ce_prefix = 'jobmanager'
+@@ -79,11 +81,11 @@ def getCEImpl(cp):
+ def getPort(cp):
+     port = 2119
+     if cp_getBoolean(cp, 'cream', 'enabled', False):
+         port = 8443
+     if cp_getBoolean(cp, 'htcondorce', 'enabled', False):
+-        port = 9619
++        port = getHTCondorCEPort()
+     return port
+     
+ def buildContactString(cp, batch, queue, ce_unique_id, log):
+     contact_string = cp_get(cp, batch, 'job_contact', ce_unique_id)
+ 
+@@ -146,5 +148,52 @@ def getHTPCInfo(cp, batch, queue, log):
+     # acbr stuff?
+ 
+     return ('HTPCrsl: %s' % queueRSL, htpcMaxSlots)
+         
+         
++
++def getHTCondorCEPort():
++    """Get what port condor-ce is running on based on its configuration"""
++
++    # If COLLECTOR_HOST is defined and has a port number, use that.
++    # Else, if COLLECTOR_PORT is defined, use that.
++    # Else, use 9619.
++
++    collector_host = getCondorCEConfigVal('COLLECTOR_HOST')
++    if collector_host:
++        if collector_host.count(':') > 1:
++            # ipv6 address, must be bracketed if it has a port at the end, i.e. [ADDR]:PORT
++            match = re.search(r'\]:(\d+)$', collector_host)
++            if match:
++                return int(match.group(1))
++        else:
++            # at most 1 colon -> hostname or ipv4 address with or without port
++            match = re.search(r':(\d+)$', collector_host)
++            if match:
++                return int(match.group(1))
++
++    try:
++        return int(getCondorCEConfigVal('COLLECTOR_PORT'))
++    except (TypeError, ValueError):
++        return 9619
++
++
++def getCondorCEConfigVal(variable):
++    """Use condor_ce_config_val to return the expanded value of a variable.
++    Returns: the stripped output of condor_ce_config_val, or None if the
++    variable is undefined or there is an error.
++    """
++    log = logging.getLogger()
++    try:
++        process = subprocess.Popen(['condor_ce_config_val', '-expand', variable],
++                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE)
++        output, error = process.communicate()
++        if error and not error.startswith('Not defined:'):
++            log.warning('condor_ce_config_val on %s reported error: %s' % (variable, error))
++        if process.returncode != 0:
++          return None
++        return output.strip()
++    except OSError:
++        return None
++
++
++
+-- 
+2.0.1
+
