@@ -1,8 +1,10 @@
 Index: init/globus-gatekeeper-lsb.in
 ===================================================================
---- init/globus-gatekeeper-lsb.in.orig	2015-02-10 18:27:45.971398866 -0600
-+++ init/globus-gatekeeper-lsb.in	2015-02-10 18:28:00.472580892 -0600
-@@ -95,9 +95,14 @@
+--- init/globus-gatekeeper-lsb.in.orig	2015-02-18 14:00:07.647092088 -0600
++++ init/globus-gatekeeper-lsb.in	2015-02-18 14:02:09.872559320 -0600
+@@ -93,13 +93,18 @@ start()
+         kflag="-k"
+     else
          kflag=""
      fi
  
@@ -18,3 +20,28 @@ Index: init/globus-gatekeeper-lsb.in
          -pidfile ${GLOBUS_GATEKEEPER_PIDFILE} \
          ${GLOBUS_GATEKEEPER_LOG_FACILITY:+-lf "$GLOBUS_GATEKEEPER_LOG_FACILITY"} \
          ${GLOBUS_GATEKEEPER_PORT:+-p ${GLOBUS_GATEKEEPER_PORT}} \
+         ${GLOBUS_GATEKEEPER_LOG:+-l "${GLOBUS_GATEKEEPER_LOG}"} \
+         ${GLOBUS_GATEKEEPER_GRID_SERVICES:+-grid_services "${GLOBUS_GATEKEEPER_GRID_SERVICES}"} \
+Index: init/globus-gatekeeper-nolsb.in
+===================================================================
+--- init/globus-gatekeeper-nolsb.in.orig	2015-02-18 14:01:55.000000000 -0600
++++ init/globus-gatekeeper-nolsb.in	2015-02-18 14:03:03.810206842 -0600
+@@ -99,12 +99,17 @@ start()
+         kflag="-k"
+     else
+         kflag=""
+     fi
+ 
++    unset openssl_is_1_0_1_or_higher
++    if openssl version | grep -q "OpenSSL [1-9]\.[0-9]\.[1-9]"; then
++        openssl_is_1_0_1_or_higher=1
++    fi
++
+     ${GLOBUS_GATEKEEPER_NICE_LEVEL:+nice -n "${GLOBUS_GATEKEEPER_NICE_LEVEL}"} \
+-    ${sbindir}/globus-gatekeeper \
++    ${sbindir}/globus-gatekeeper ${openssl_is_1_0_1_or_higher:+-launch_method fork_and_proxy} \
+         -pidfile ${GLOBUS_GATEKEEPER_PIDFILE} \
+         ${GLOBUS_GATEKEEPER_LOG_FACILITY:+-lf "$GLOBUS_GATEKEEPER_LOG_FACILITY"} \
+         ${GLOBUS_GATEKEEPER_PORT:+-p ${GLOBUS_GATEKEEPER_PORT}} \
+         ${GLOBUS_GATEKEEPER_LOG:+-l "${GLOBUS_GATEKEEPER_LOG}"} \
+         ${GLOBUS_GATEKEEPER_GRID_SERVICES:+-grid_services "${GLOBUS_GATEKEEPER_GRID_SERVICES}"} \

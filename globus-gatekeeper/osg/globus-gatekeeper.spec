@@ -7,7 +7,7 @@
 Name:		globus-gatekeeper
 %global _name %(tr - _ <<< %{name})
 Version:	10.9
-Release:	1.1%{?dist}
+Release:	1.2%{?dist}
 Summary:	Globus Toolkit - Globus Gatekeeper
 
 Group:		Applications/Internet
@@ -118,6 +118,9 @@ fi
 
 
 %changelog
+* Wed Feb 18 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 10.9-1.2
+- Update OSG init script patches to apply to the nolsb init script as well
+
 * Tue Feb 10 2015 Matyas Selmeci <matyas@cs.wisc.edu> - 10.9-1.1.osg
 - Merge OSG changes
 

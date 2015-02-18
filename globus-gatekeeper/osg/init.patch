@@ -1,8 +1,10 @@
 Index: init/globus-gatekeeper-lsb.in
 ===================================================================
---- init/globus-gatekeeper-lsb.in.orig	2014-11-04 07:48:09.270503378 -0600
-+++ init/globus-gatekeeper-lsb.in	2015-02-10 18:22:09.319169131 -0600
-@@ -52,6 +52,7 @@
+--- init/globus-gatekeeper-lsb.in.orig	2015-02-18 14:00:00.077001217 -0600
++++ init/globus-gatekeeper-lsb.in	2015-02-18 14:00:07.647092088 -0600
+@@ -50,10 +50,11 @@ if [ -r ${libexecdir}/globus-script-init
+ else
+     echo "Unable to locate globus-script-initializer" 1>&2
      exit 1
  fi
  
@@ -10,3 +12,22 @@ Index: init/globus-gatekeeper-lsb.in
  GLOBUS_GATEKEEPER_CONFIG=${GLOBUS_GATEKEEPER_CONFIG:-@GATEKEEPER_CONFIGDIR@/@GATEKEEPER_CONFIGFILE@}
  test -f "${GLOBUS_GATEKEEPER_CONFIG}" && . "${GLOBUS_GATEKEEPER_CONFIG}"
  prog="${sbindir}/globus-gatekeeper"
+ progname="globus-gatekeeper"
+ lockfile="@LOCKFILE@"
+Index: init/globus-gatekeeper-nolsb.in
+===================================================================
+--- init/globus-gatekeeper-nolsb.in.orig	2014-11-04 07:48:09.000000000 -0600
++++ init/globus-gatekeeper-nolsb.in	2015-02-18 14:01:55.958392279 -0600
+@@ -50,10 +50,12 @@ if [ -r ${libexecdir}/globus-script-init
+ else
+     echo "Unable to locate globus-script-initializer" 1>&2
+     exit 1
+ fi
+ 
++test -f /usr/share/osg/sysconfig/globus-gatekeeper && . /usr/share/osg/sysconfig/globus-gatekeeper
++
+ GLOBUS_GATEKEEPER_CONFIG=${GLOBUS_GATEKEEPER_CONFIG:-@GATEKEEPER_CONFIGDIR@/@GATEKEEPER_CONFIGFILE@}
+ test -f "${GLOBUS_GATEKEEPER_CONFIG}" && . "${GLOBUS_GATEKEEPER_CONFIG}"
+ test -f ${sbindir}/globus-gatekeeper || exit 0
+ prog="${sbindir}/globus-gatekeeper"
+ progname="globus-gatekeeper"

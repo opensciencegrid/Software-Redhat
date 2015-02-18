@@ -1,8 +1,8 @@
 Index: init/globus-gatekeeper-lsb.in
 ===================================================================
---- init/globus-gatekeeper-lsb.in.orig	2014-01-10 18:00:02.402153402 -0600
-+++ init/globus-gatekeeper-lsb.in	2014-01-10 18:00:55.737827275 -0600
-@@ -1,12 +1,12 @@
+--- init/globus-gatekeeper-lsb.in.orig	2015-02-18 14:02:09.872559320 -0600
++++ init/globus-gatekeeper-lsb.in	2015-02-18 14:03:34.525575594 -0600
+@@ -1,14 +1,14 @@
  #! /bin/sh
  
  # globus-gatekeeper Authorize and execute a grid service
@@ -18,3 +18,28 @@ Index: init/globus-gatekeeper-lsb.in
  @DEFAULT_START_LINE@
  @DEFAULT_STOP_LINE@
  # Short-Description: Globus Gatekeeper
+ # Description:       The Globus Gatekeeper service authenticates network
+ #                    connections using an SSL-based protocol and then
+Index: init/globus-gatekeeper-nolsb.in
+===================================================================
+--- init/globus-gatekeeper-nolsb.in.orig	2015-02-18 14:03:03.000000000 -0600
++++ init/globus-gatekeeper-nolsb.in	2015-02-18 14:04:01.549900039 -0600
+@@ -1,14 +1,14 @@
+ #! /bin/sh
+ 
+-# globua-gatekeeper Authorize and execute a grid service
+-# chkconfig: @CHKCONFIG_DEFAULT@ 20 80
++# globus-gatekeeper Authorize and execute a grid service
++# chkconfig: @CHKCONFIG_DEFAULT@ 30 70
+ 
+ ### BEGIN INIT INFO
+ # Provides:          globus-gatekeeper
+-# Required-Start:    $network $time
+-# Required-Stop:     $network
++# Required-Start:    $network $time $remote_fs
++# Required-Stop:     $network $remote_fs
+ @DEFAULT_START_LINE@
+ @DEFAULT_STOP_LINE@
+ # Short-Description: Globus Gatekeeper
+ # Description:       The Globus Gatekeeper service authenticates network
+ #                    connections using an SSL-based protocol and then
