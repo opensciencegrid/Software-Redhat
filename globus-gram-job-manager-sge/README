@@ -1,6 +1,3 @@
-EPEL with a placeholder .rvf file the admin can modify
-
-Note that EPEL strips out some 'devel' files from the setup-seg subpackage that
-cause test failures when we follow suit, so there are some spec file changes as
-well.
-
+EPEL with a sample user-customizable .rvf file plus associated spec file changes
+We also make the *-setup-* subpackages provide globus-gram-job-manager-setup
+and add post-install scriptlets

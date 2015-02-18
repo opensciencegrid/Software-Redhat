@@ -1,27 +1,21 @@
-%ifarch alpha ia64 ppc64 s390x sparc64 x86_64
-%global flavor gcc64
-%else
-%global flavor gcc32
-%endif
-
-%{!?perl_vendorlib: %global perl_vendorlib %(eval "`perl -V:installvendorlib`"; echo $installvendorlib)}
-
 %if %{?fedora}%{!?fedora:0} >= 14 || %{?rhel}%{!?rhel:0} >= 6
 %global pbs_log_path /var/log/torque/server_logs 
 %else
 %global pbs_log_path /var/torque/server_logs
 %endif
 
+%{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
+
 Name:		globus-gram-job-manager-pbs
 %global _name %(tr - _ <<< %{name})
-Version:	1.6
-Release:	1.10%{?dist}
+Version:	2.4
+Release:	2.1%{?dist}
 Summary:	Globus Toolkit - PBS Job Manager Support
 
 Group:		Applications/Internet
 License:	ASL 2.0
 URL:		http://www.globus.org/
-Source:		http://www.globus.org/ftppub/gt5/5.2/5.2.3/packages/src/%{_name}-%{version}.tar.gz
+Source:		http://www.globus.org/ftppub/gt6/packages/%{_name}-%{version}.tar.gz
 Source1:        pbs.rvf
 Source2:        caching_qstat
 #		README file
@@ -34,18 +28,14 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Requires:	globus-gram-job-manager >= 13
 Requires:	globus-gram-job-manager-scripts >= 4
 Requires:	globus-gass-cache-program >= 5
-Requires:	globus-common-progs >= 14
 Requires:	globus-gatekeeper >= 9
 Requires:	perl(:MODULE_COMPAT_%(eval "`perl -V:version`"; echo $version))
-Requires:	torque-client
-Requires:	%{name}-setup
+Requires:	%{name}-setup = %{version}-%{release}
 Provides:	globus-gram-job-manager-setup-pbs = 4.5
 Obsoletes:	globus-gram-job-manager-setup-pbs < 4.5
 Obsoletes:	globus-gram-job-manager-setup-pbs-doc < 4.5
-BuildRequires:	grid-packaging-tools >= 3.4
-BuildRequires:	globus-core%{?_isa} >= 8
-BuildRequires:	globus-scheduler-event-generator-devel%{?_isa} >= 4
-BuildRequires:	globus-common-devel%{?_isa} >= 14
+BuildRequires:	globus-common-devel >= 15
+BuildRequires:	globus-scheduler-event-generator-devel >= 4
 
 %package setup-poll
 Summary:	Globus Toolkit - PBS Job Manager Support using polling
@@ -53,8 +43,8 @@ Group:		Applications/Internet
 %if %{?fedora}%{!?fedora:0} >= 10 || %{?rhel}%{!?rhel:0} >= 6
 BuildArch:	noarch
 %endif
-Provides:	%{name}-setup
-Provides:       globus-gram-job-manager-setup
+Provides:	%{name}-setup = %{version}-%{release}
+Provides:       globus-gram-job-manager-setup = %{version}-%{release}
 Requires:	%{name} = %{version}-%{release}
 
 Requires(preun):	globus-gram-job-manager-scripts >= 4
@@ -62,11 +52,10 @@ Requires(preun):	globus-gram-job-manager-scripts >= 4
 %package setup-seg
 Summary:	Globus Toolkit - PBS Job Manager Support using SEG
 Group:		Applications/Internet
-Provides:	%{name}-setup
-Provides:       globus-gram-job-manager-setup
+Provides:	%{name}-setup = %{version}-%{release}
+Provides:       globus-gram-job-manager-setup = %{version}-%{release}
 Requires:	%{name}%{?_isa} = %{version}-%{release}
-Requires:	globus-scheduler-event-generator%{?_isa} >= 4
-Requires:	globus-common%{?_isa} >= 14
+Requires:	globus-scheduler-event-generator-progs >= 4
 
 Requires(preun):	globus-gram-job-manager-scripts >= 4
 Requires(preun):	globus-scheduler-event-generator-progs >= 4
@@ -110,29 +99,24 @@ state
 %patch3 -p0
 
 %build
-# Remove files that should be replaced during bootstrap
-rm -f doxygen/Doxyfile*
-rm -f doxygen/Makefile.am
-rm -f pkgdata/Makefile.am
-rm -f globus_automake*
-rm -rf autom4te.cache
-
-unset GLOBUS_LOCATION
-unset GPT_LOCATION
-%{_datadir}/globus/globus-bootstrap.sh
+# Reduce overlinking
+export LDFLAGS="-Wl,--as-needed -Wl,-z,defs %{?__global_ldflags}"
 
 export MPIEXEC=no
 export MPIRUN=no
-export QDEL=/usr/bin/qdel-torque
-export QSTAT=/usr/bin/qstat-torque
-export QSUB=/usr/bin/qsub-torque
-%configure --disable-static --with-flavor=%{flavor} \
-	   --with-docdir=%{_docdir}/%{name}-%{version} \
-	   --with-globus-state-dir=%{_localstatedir}/lib/globus \
+export QDEL=%{_bindir}/qdel-torque
+export QSTAT=%{_bindir}/qstat-torque
+export QSUB=%{_bindir}/qsub-torque
+%configure --disable-static \
+	   --includedir='${prefix}/include/globus' \
+	   --libexecdir='${datadir}/globus' \
+	   --docdir=%{_pkgdocdir} \
+	   --with-perlmoduledir=%{perl_vendorlib} \
+	   --with-globus-state-dir=%{_localstatedir}/log/globus \
 	   --with-log-path=%{pbs_log_path}
 
 # Reduce overlinking
-sed 's!CC -shared !CC \${wl}--as-needed -shared !g' -i libtool
+sed 's!CC \(.*-shared\) !CC \\\${wl}--as-needed \1 !' -i libtool
 
 make %{?_smp_mflags}
 
@@ -140,54 +124,26 @@ make %{?_smp_mflags}
 rm -rf %{buildroot}
 make install DESTDIR=%{buildroot}
 
-# Remove jobmanager-pbs from install dir so that it can be
-# added/removed by post scripts
-rm %{buildroot}/etc/grid-services/jobmanager-pbs
-
 # Install the caching_qstat
 install -d %{buildroot}%{_bindir}
 install -m 755 %{SOURCE2} %{buildroot}%{_bindir}
 
-GLOBUSPACKAGEDIR=%{buildroot}%{_datadir}/globus/packages
+# Remove libtool archives (.la files)
+rm %{buildroot}%{_libdir}/*.la
 
-# This library is opened using lt_dlopenext, so the libtool archive
-# (.la file) can not be removed - fix the libdir and clear dependency_libs
-# ... and move it to the main package
-for lib in `find %{buildroot}%{_libdir} -name 'lib*.la'` ; do
-  sed -e "s!^libdir=.*!libdir=\'%{_libdir}\'!" \
-      -e "s!^dependency_libs=.*!dependency_libs=\'\'!" -i $lib
-done
-grep 'lib.*\.la$' $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_dev.filelist \
-  >> $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_rtl.filelist
-sed '/lib.*\.la$/d' -i $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_dev.filelist
+# Remove jobmanager-pbs from install dir - leave it for admin configuration
+rm %{buildroot}/etc/grid-services/jobmanager-pbs
 
 # Install README file
-install -m 644 -p %{SOURCE8} %{buildroot}%{_docdir}/%{name}-%{version}/README
-
-## Devel package is redundant
-#rm %{buildroot}%{_libdir}/libglobus_seg_pbs.so
-#rm %{buildroot}%{_libdir}/pkgconfig/globus-gram-job-manager-pbs.pc
-#rm $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_dev.filelist
-#rm $GLOBUSPACKAGEDIR/%{_name}/pkg_data_%{flavor}_dev.gpt
-
-## List config files in each package - drop the file list
-#rm $GLOBUSPACKAGEDIR/%{_name}/noflavor_data.filelist
-#rm $GLOBUSPACKAGEDIR/%{_name}/pkg_data_noflavor_data.gpt
+install -m 644 -p %{SOURCE8} %{buildroot}%{_pkgdocdir}/README
 
 # Install the RVF file
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/globus/gram/
 install -m 644 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/globus/gram/pbs.rvf
 
-# Generate package filelists
-cat $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_pgm.filelist \
-    $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_dev.filelist \
-    $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_rtl.filelist \
-    $GLOBUSPACKAGEDIR/%{_name}/noflavor_data.filelist \
-  | sed -e s!^!%{_prefix}! -e 's!/man/.*!&*!' \
-        -e s!^%{_prefix}/etc!/etc! \
-	-e /pbs.pm/d > package-seg.filelist
-cat $GLOBUSPACKAGEDIR/%{_name}/noflavor_doc.filelist \
-  | sed 's!^!%doc %{_prefix}!' > package.filelist
+# Remove license file from pkgdocdir if licensedir is used
+%{?_licensedir: rm %{buildroot}%{_pkgdocdir}/GLOBUS_LICENSE}
+
 
 %clean
 rm -rf %{buildroot}
@@ -232,52 +188,87 @@ fi
 if [ $1 -eq 1 ]; then
     globus-gatekeeper-admin -e jobmanager-pbs-seg > /dev/null 2>&1 || :
     globus-scheduler-event-generator-admin -e pbs > /dev/null 2>&1 || :
-    service globus-scheduler-event-generator condrestart pbs > /dev/null 2>&1 || :
+    /sbin/service globus-scheduler-event-generator condrestart pbs > /dev/null 2>&1 || :
 elif [ $1 -eq 0 -a ! -f /etc/grid-services/jobmanager ]; then
     globus-gatekeeper-admin -E > /dev/null 2>&1 || :
 fi
 
-%files -f package.filelist
-%defattr(-,root,root,-)
+%files
 %{_bindir}/caching_qstat
 %{_datadir}/globus/globus_gram_job_manager/pbs.rvf
-%{perl_vendorlib}/Globus
+%dir %{perl_vendorlib}/Globus
+%dir %{perl_vendorlib}/Globus/GRAM
+%dir %{perl_vendorlib}/Globus/GRAM/JobManager
+%{perl_vendorlib}/Globus/GRAM/JobManager/pbs.pm
 %config(noreplace) %{_sysconfdir}/globus/globus-pbs.conf
 %config(noreplace) %{_sysconfdir}/globus/gram/pbs.rvf 
-%dir %{_datadir}/globus/packages/%{_name}
-%dir %{_docdir}/%{name}-%{version}
-%doc %{_docdir}/%{name}-%{version}/README
+%dir %{_pkgdocdir}
+%doc %{_pkgdocdir}/README
+%{!?_licensedir: %doc %{_pkgdocdir}/GLOBUS_LICENSE}
+%{?_licensedir: %license GLOBUS_LICENSE}
 
 %files setup-poll
-%defattr(-,root,root,-)
 %config(noreplace) %{_sysconfdir}/grid-services/available/jobmanager-pbs-poll
 
-%files -f package-seg.filelist setup-seg
-%defattr(-,root,root,-)
+%files setup-seg
+# This is a loadable module (plugin)
+%{_libdir}/libglobus_seg_pbs.so
 %config(noreplace) %{_sysconfdir}/grid-services/available/jobmanager-pbs-seg
 %config(noreplace) %{_sysconfdir}/globus/scheduler-event-generator/available/pbs
 
 %changelog
+* Wed Feb 11 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 2.4-2.1.osg
+- Merge OSG changes
+
+* Fri Jan 23 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 2.4-2
+- Implement updated license packaging guidelines
+
+* Fri Sep 12 2014 Mattias Ellert <mattias.ellert@fysast.uu.se> - 2.4-1
+- Update to Globus Toolkit 6.0
+- Drop GPT build system and GPT packaging metadata
+- Drop patch globus-gram-job-manager-pbs-enosr.patch (fixed upstream)
+
+* Thu Aug 28 2014 Jitka Plesnikova <jplesnik@redhat.com> - 1.6-11
+- Perl 5.20 rebuild
+
+* Sat Aug 16 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.6-10
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_22_Mass_Rebuild
+
+* Sat Jun 07 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.6-9
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
+
 * Wed May 28 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6-1.10.osg
 - Fix error in SOFTWARE-1162 patch if jobid started with 0
 
-* Thu Jan 31 2014 Suchandra Thapa <sthapa@ci.uchicago.edu> 1.6-1.9.osg
-- Reenable SOFTWARE-1162 patch
+* Mon May 26 2014 Brent Baude <baude@us.ibm.com> - 1.6-8
+- Changing ppc64 arch to power64 macro
 
-* Thu Jan 09 2014 Matyas Selmeci <matyas@cs.wisc.edu> 1.6-1.8.osg
-- Disable SOFTWARE-1162 patch
+* Thu Jan 09 2014 Mattias Ellert <mattias.ellert@fysast.uu.se> - 1.6-7
+- Fix logfile location
 
 * Wed Jan 08 2014 Matyas Selmeci <matyas@cs.wisc.edu> 1.6-1.7.osg
 - Re-add some 'devel' libraries and files to the setup-seg subpackage
 
-* Tue Jan 07 2014 Matyas Selmeci <matyas@cs.wisc.edu> 1.6-1.6.osg
-- Bump release to rebuild
-
 * Mon Aug 26 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.6-1.5.osg
 - Patch to catch bad SLURM submits (SOFTWARE-1162)
 
+* Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.6-6
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
+
+* Sun Jul 28 2013 Mattias Ellert <mattias.ellert@fysast.uu.se> - 1.6-5
+- Implement updated packaging guidelines
+
 * Thu Jul 18 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.6-1.4.osg
 - Patch to work with SLURM's PBS emulation layer (SOFTWARE-1105)
+
+* Wed Jul 17 2013 Petr Pisar <ppisar@redhat.com> - 1.6-4
+- Perl 5.18 rebuild
+
+* Tue May 21 2013 Mattias Ellert <mattias.ellert@fysast.uu.se> - 1.6-3
+- Add aarch64 to the list of 64 bit platforms
+
+* Wed Feb 13 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.6-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
 
 * Thu Dec 06 2012 Mattias Ellert <mattias.ellert@fysast.uu.se> - 1.6-1
 - Update to Globus Toolkit 5.2.3

@@ -1,8 +1,4 @@
-%ifarch aarch64 alpha ia64 ppc64 s390x sparc64 x86_64
-%global flavor gcc64
-%else
-%global flavor gcc32
-%endif
+%global _hardened_build 1
 
 %{!?_initddir: %global _initddir %{_initrddir}}
 
@@ -10,14 +6,14 @@
 
 Name:		globus-gridftp-server
 %global _name %(tr - _ <<< %{name})
-Version:	6.38
-Release:	1.3%{?dist}
+Version:	7.20
+Release:	1.1%{?dist}
 Summary:	Globus Toolkit - Globus GridFTP Server
 
 Group:		System Environment/Libraries
 License:	ASL 2.0
 URL:		http://www.globus.org/
-Source:		http://www.globus.org/ftppub/gt5/5.2/5.2.5/packages/src/%{_name}-%{version}.tar.gz
+Source:		http://www.globus.org/ftppub/gt6/packages/%{_name}-%{version}.tar.gz
 Source1:	%{name}
 Source2:	globus-gridftp-sshftp
 Source3:	globus-gridftp-password.8
@@ -30,35 +26,28 @@ Source8:	GLOBUS-GRIDFTP
 Patch1:		gridftp-conf-logging.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-Requires:	globus-gsi-credential%{?_isa} >= 6
-Requires:	globus-gss-assist%{?_isa} >= 9
-Requires:	globus-xio%{?_isa} >= 3
-Requires:	globus-authz%{?_isa} >= 2
-Requires:	globus-gfork%{?_isa} >= 3
-Requires:	globus-ftp-control%{?_isa} >= 4
-Requires:	globus-gridftp-server-control%{?_isa} >= 2
-Requires:	globus-common%{?_isa} >= 14
-Requires:	globus-usage%{?_isa} >= 3
 Requires:	globus-xio-gsi-driver%{?_isa} >= 2
-BuildRequires:	grid-packaging-tools >= 3.4
-BuildRequires:	globus-core >= 8
-BuildRequires:	globus-gsi-credential-devel >= 6
-BuildRequires:	globus-gss-assist-devel >= 9
-BuildRequires:	globus-xio-devel >= 3
-BuildRequires:	globus-authz-devel >= 2
-BuildRequires:	globus-gfork-devel >= 3
-BuildRequires:	globus-ftp-control-devel >= 4
-BuildRequires:	globus-gridftp-server-control-devel >= 2
-BuildRequires:	globus-common-devel >= 14
-BuildRequires:	globus-usage-devel >= 3
+BuildRequires:	globus-common-devel >= 15
+BuildRequires:	globus-xio-devel >= 5
 BuildRequires:	globus-xio-gsi-driver-devel >= 2
+BuildRequires:	globus-gfork-devel >= 3
+BuildRequires:	globus-gridftp-server-control-devel >= 2
+BuildRequires:	globus-ftp-control-devel >= 6
+BuildRequires:	globus-authz-devel >= 2
+BuildRequires:	globus-usage-devel >= 3
+BuildRequires:	globus-gssapi-gsi-devel >= 10
+BuildRequires:	globus-gss-assist-devel >= 9
+BuildRequires:	globus-gsi-credential-devel >= 6
+BuildRequires:	globus-gsi-sysconfig-devel >= 5
+BuildRequires:	globus-io-devel >= 9
 BuildRequires:	openssl-devel
+Requires:	globus-xio%{?_isa} >= 5
+Requires:	globus-ftp-control%{?_isa} >= 6
 
 %package progs
 Summary:	Globus Toolkit - Globus GridFTP Server Programs
 Group:		Applications/Internet
 Requires:	%{name}%{?_isa} = %{version}-%{release}
-Requires:	globus-xio-gsi-driver%{?_isa} >= 2
 Requires(post):		chkconfig
 Requires(preun):	chkconfig
 Requires(preun):	initscripts
@@ -70,16 +59,19 @@ Conflicts:	xrootd-dsi%{?_isa} < 3.0.4-9
 Summary:	Globus Toolkit - Globus GridFTP Server Development Files
 Group:		Development/Libraries
 Requires:	%{name}%{?_isa} = %{version}-%{release}
-Requires:	globus-gsi-credential-devel%{?_isa} >= 6
-Requires:	globus-gss-assist-devel%{?_isa} >= 9
-Requires:	globus-xio-devel%{?_isa} >= 3
-Requires:	globus-authz-devel%{?_isa} >= 2
-Requires:	globus-gfork-devel%{?_isa} >= 3
-Requires:	globus-ftp-control-devel%{?_isa} >= 4
-Requires:	globus-gridftp-server-control-devel%{?_isa} >= 2
-Requires:	globus-common-devel%{?_isa} >= 14
-Requires:	globus-usage-devel%{?_isa} >= 3
+Requires:	globus-common-devel%{?_isa} >= 15
+Requires:	globus-xio-devel%{?_isa} >= 5
 Requires:	globus-xio-gsi-driver-devel%{?_isa} >= 2
+Requires:	globus-gfork-devel%{?_isa} >= 3
+Requires:	globus-gridftp-server-control-devel%{?_isa} >= 2
+Requires:	globus-ftp-control-devel%{?_isa} >= 6
+Requires:	globus-authz-devel%{?_isa} >= 2
+Requires:	globus-usage-devel%{?_isa} >= 3
+Requires:	globus-gssapi-gsi-devel%{?_isa} >= 10
+Requires:	globus-gss-assist-devel%{?_isa} >= 9
+Requires:	globus-gsi-credential-devel%{?_isa} >= 6
+Requires:	globus-gsi-sysconfig-devel%{?_isa} >= 5
+Requires:	globus-io-devel%{?_isa} >= 9
 Requires:	openssl-devel%{?_isa}
 
 %description
@@ -114,23 +106,18 @@ Globus GridFTP Server Development Files
 %patch1 -p1
 
 %build
-# Remove files that should be replaced during bootstrap
-rm -f doxygen/Doxyfile*
-rm -f doxygen/Makefile.am
-rm -f pkgdata/Makefile.am
-rm -f globus_automake*
-rm -rf autom4te.cache
-
-unset GLOBUS_LOCATION
-unset GPT_LOCATION
-%{_datadir}/globus/globus-bootstrap.sh
+# Reduce overlinking
+export LDFLAGS="-Wl,--as-needed -Wl,-z,defs %{?__global_ldflags}"
 
 export GRIDMAP=/etc/grid-security/grid-mapfile
-%configure --disable-static --with-flavor=%{flavor} \
-	   --with-docdir=%{_pkgdocdir}
+export GLOBUS_VERSION=6.0
+%configure --disable-static \
+	   --includedir='${prefix}/include/globus' \
+	   --libexecdir='${datadir}/globus' \
+	   --docdir=%{_pkgdocdir}
 
 # Reduce overlinking
-sed 's!CC -shared !CC \${wl}--as-needed -shared !g' -i libtool
+sed 's!CC \(.*-shared\) !CC \\\${wl}--as-needed \1 !' -i libtool
 
 make %{?_smp_mflags}
 
@@ -138,11 +125,8 @@ make %{?_smp_mflags}
 rm -rf %{buildroot}
 make install DESTDIR=%{buildroot}
 
-GLOBUSPACKAGEDIR=%{buildroot}%{_datadir}/globus/packages
-
 # Remove libtool archives (.la files)
-find %{buildroot}%{_libdir} -name 'lib*.la' -exec rm -v '{}' \;
-sed '/lib.*\.la$/d' -i $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_dev.filelist
+rm %{buildroot}%{_libdir}/*.la
 
 mv %{buildroot}%{_sysconfdir}/gridftp.conf.default \
    %{buildroot}%{_sysconfdir}/gridftp.conf
@@ -152,8 +136,6 @@ mv %{buildroot}%{_sysconfdir}/gridftp.xinetd.default \
 mv %{buildroot}%{_sysconfdir}/gridftp.gfork.default \
    %{buildroot}%{_sysconfdir}/gridftp.gfork
 mkdir -p %{buildroot}%{_sysconfdir}/gridftp.d
-rm $GLOBUSPACKAGEDIR/%{_name}/pkg_data_noflavor_data.gpt
-rm $GLOBUSPACKAGEDIR/%{_name}/noflavor_data.filelist
 
 # No need for environment in conf files
 sed '/ env /d' -i %{buildroot}%{_sysconfdir}/gridftp.gfork
@@ -161,16 +143,10 @@ sed '/^env /d' -i %{buildroot}%{_sysconfdir}/xinetd.d/gridftp
 
 # Remove start-up scripts
 rm -rf %{buildroot}%{_sysconfdir}/init.d
-sed '/init\.d/d' -i $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_pgm.filelist
 
 # Install start-up scripts
 mkdir -p %{buildroot}%{_initddir}
 install -p %{SOURCE1} %{SOURCE2} %{buildroot}%{_initddir}
-
-# Move server man pages to progs package
-grep '.[18]$' $GLOBUSPACKAGEDIR/%{_name}/noflavor_doc.filelist \
-  >> $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_pgm.filelist
-sed '/.[18]$/d' -i $GLOBUSPACKAGEDIR/%{_name}/noflavor_doc.filelist
 
 # Install additional man pages
 install -m 644 -p %{SOURCE3} %{SOURCE4} %{buildroot}%{_mandir}/man8
@@ -187,15 +163,8 @@ install -m 0644 %{SOURCE6} $RPM_BUILD_ROOT/usr/share/osg/sysconfig/%{name}
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d
 install -m 0644 %{SOURCE7} $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/%{name}.logrotate
 
-# Generate package filelists
-cat $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_rtl.filelist \
-  | sed s!^!%{_prefix}! > package.filelist
-cat $GLOBUSPACKAGEDIR/%{_name}/noflavor_doc.filelist \
-  | sed -e 's!/man/.*!&*!' -e 's!^!%doc %{_prefix}!' >> package.filelist
-cat $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_pgm.filelist \
-  | sed -e s!^!%{_prefix}! -e 's!.*/man/.*!%doc &*!' > package-progs.filelist
-cat $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_dev.filelist \
-  | sed s!^!%{_prefix}! > package-devel.filelist
+# Remove license file from pkgdocdir if licensedir is used
+%{?_licensedir: rm %{buildroot}%{_pkgdocdir}/GLOBUS_LICENSE}
 
 %clean
 rm -rf %{buildroot}
@@ -224,14 +193,21 @@ if [ $1 -ge 1 ]; then
     /sbin/service globus-gridftp-sshftp condrestart > /dev/null 2>&1 || :
 fi
 
-%files -f package.filelist
-%dir %{_datadir}/globus/packages/%{_name}
+%files
+%{_libdir}/libglobus_gridftp_server.so.*
 %dir %{_sysconfdir}/gridftp.d
 %dir %{_pkgdocdir}
 %doc %{_pkgdocdir}/README
+%{!?_licensedir: %doc %{_pkgdocdir}/GLOBUS_LICENSE}
+%{?_licensedir: %license GLOBUS_LICENSE}
 
-%files -f package-progs.filelist progs
-%defattr(-,root,root,-)
+%files progs
+%{_sbindir}/gfs-dynbe-client
+%{_sbindir}/gfs-gfork-master
+%{_sbindir}/globus-gridftp-password
+%{_sbindir}/globus-gridftp-server
+%{_sbindir}/globus-gridftp-server-enable-sshftp
+%{_sbindir}/globus-gridftp-server-setup-chroot
 %config(noreplace) %{_sysconfdir}/logrotate.d/%{name}.logrotate
 %config(noreplace) %{_sysconfdir}/sysconfig/%{name}
 %config(noreplace) %{_sysconfdir}/gridftp.conf
@@ -241,11 +217,53 @@ fi
 %{_initddir}/%{name}
 %{_initddir}/globus-gridftp-sshftp
 %doc %{_mandir}/man8/globus-gridftp-password.8*
+%doc %{_mandir}/man8/globus-gridftp-server.8*
 %doc %{_mandir}/man8/globus-gridftp-server-setup-chroot.8*
 
-%files -f package-devel.filelist devel
+%files devel
+%{_includedir}/globus/*
+%{_libdir}/libglobus_gridftp_server.so
+%{_libdir}/pkgconfig/%{name}.pc
 
 %changelog
+* Mon Feb 16 2015 Matyas Selmeci <matyas@cs.wisc.edu> - 7.20-1.1.osg
+- Merge OSG changes
+
+* Fri Jan 23 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 7.20-1
+- Implement updated license packaging guidelines
+- GT6 update (-help fix)
+
+* Wed Jan 07 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 7.18-1
+- GT6 update (net mgr support)
+
+* Fri Dec 12 2014 Mattias Ellert <mattias.ellert@fysast.uu.se> - 7.17-1
+- GT6 update
+
+* Thu Nov 13 2014 Mattias Ellert <mattias.ellert@fysast.uu.se> - 7.15-1
+- GT6 update
+- Drop patch globus-gridftp-server-ipv6log.patch (fixed upstream)
+
+* Mon Oct 27 2014 Mattias Ellert <mattias.ellert@fysast.uu.se> - 7.12-1
+- GT6 update
+- Drop patch globus-gridftp-server-deps.patch (fixed upstream)
+
+* Tue Sep 30 2014 Mattias Ellert <mattias.ellert@fysast.uu.se> - 7.11-2
+- Fix logging of IPv6 addresses
+
+* Fri Sep 12 2014 Mattias Ellert <mattias.ellert@fysast.uu.se> - 7.11-1
+- Update to Globus Toolkit 6.0
+- Drop GPT build system and GPT packaging metadata
+- Activate hardening flags
+
+* Sat Aug 16 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 6.38-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_22_Mass_Rebuild
+
+* Sat Jun 07 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 6.38-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
+
+* Tue May 20 2014 Brent Baude <baude@us.ibm.com> - 6.38-2
+- Replace arch def of ppc64 with power64 macro for ppc64le enablement
+
 * Wed Apr 02 2014 Carl Edquist <edquist@cs.wisc.edu> - 6.38-1.3.osg
 - Provide config dir /etc/gridftp.d/ (SOFTWARE-1412)
 

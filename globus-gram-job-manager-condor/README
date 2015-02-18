@@ -1,2 +1,2 @@
-EPEL with OSG patches, mostly to support accounting groups. These are not
-likely to be upstreamed.
+EPEL with a sample user-customizable .rvf file plus associated spec file changes
+We also have patches for gratia and managedfork, among others

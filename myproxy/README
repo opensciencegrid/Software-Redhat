@@ -1,4 +1,1 @@
-MyProxy is a pass-through from EPEL; we used to disable the %check section
-because it would fail, but the failure turned out to be caused by a problem
-with our firewall rules on the build machine. Originally, we got MyProxy from
-the Globus repos.
+Pass-through from EPEL

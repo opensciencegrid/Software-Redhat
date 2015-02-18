@@ -1,114 +1,73 @@
-%ifarch aarch64 alpha ia64 ppc64 s390x sparc64 x86_64
-%global flavor gcc64
-%else
-%global flavor gcc32
-%endif
-
 %{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
 
 Name:		globus-gram-job-manager
 %global _name %(tr - _ <<< %{name})
-Version:	13.53
-Release:	1.3%{?dist}
+Version:	14.25
+Release:	1.1%{?dist}
 Summary:	Globus Toolkit - GRAM Jobmanager
 
 Group:		Applications/Internet
 License:	ASL 2.0
 URL:		http://www.globus.org/
-Source:		http://www.globus.org/ftppub/gt5/5.2/5.2.5/packages/src/%{_name}-%{version}.tar.gz
+Source:		http://www.globus.org/ftppub/gt6/packages/%{_name}-%{version}.tar.gz
 Source1:        globus-gram-job-manager-logging
 Source2:        job-manager.rvf
 #		README file
 Source8:	GLOBUS-GRAM5
 
-Patch0:         1418-broken-state-file-crash.patch
 # OSG-specific patches
 Patch9:         unlock_init.patch
 Patch11:        null_old_jm.patch
 Patch16:        description_service_tag.patch
-Patch19:        load_requests_before_activating_socket.patch
 Patch20:        fix-job-home-dir.patch
 Patch22:        fix-job-lock-location.patch
 Patch26:        allow-manager-restart.patch
 Patch27:        recompute-stdio-on-restart.patch
-Patch30:        logrotate-copytruncate.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-#		Keep providing globus-gram-job-manager-setup until not needed
-Provides:	%{name}-setup = 4.3
-Requires:	globus-gsi-credential%{?_isa} >= 5
-Requires:	globus-scheduler-event-generator%{?_isa} >= 4
 Requires:	globus-xio-popen-driver%{?_isa} >= 2
-Requires:	globus-xio%{?_isa} >= 3
-Requires:	globus-gss-assist%{?_isa} >= 8
-Requires:	globus-gsi-sysconfig%{?_isa} >= 5
-Requires:	globus-callout%{?_isa} >= 2
-Requires:	globus-gssapi-gsi%{?_isa} >= 10
-Requires:	globus-gram-job-manager-callout-error%{?_isa} >= 2
-Requires:	globus-gram-protocol%{?_isa} >= 11
-Requires:	globus-common%{?_isa} >= 14
-Requires:	globus-usage%{?_isa} >= 3
-Requires:	globus-rsl%{?_isa} >= 9
-Requires:	globus-gass-cache%{?_isa} >= 8
-Requires:	globus-gass-transfer%{?_isa} >= 7
-Requires:	globus-gram-protocol >= 11
-Requires:	globus-gram-job-manager-scripts >= 4
-Requires:	globus-gass-copy-progs >= 8
-Requires:	globus-proxy-utils >= 5
-Requires:	globus-gass-cache-program >= 5
+Requires:	globus-common-progs >= 15
 Requires:	globus-gatekeeper >= 9
-Requires:	psmisc
-BuildRequires:	grid-packaging-tools >= 3.4
-BuildRequires:	globus-core >= 8
+Requires:	globus-gram-client-tools >= 10
+Requires:	globus-gass-copy-progs >= 8
+Requires:	globus-gass-cache-program >= 5
+Requires:	globus-gram-job-manager-scripts >= 6
+Requires:	globus-proxy-utils >= 5
+Requires:	globus-gsi-cert-utils-progs
+Obsoletes:	%{name}-doc < 14
+BuildRequires:	globus-common-devel >= 15
 BuildRequires:	globus-gsi-credential-devel >= 5
-BuildRequires:	globus-scheduler-event-generator-devel >= 4
-BuildRequires:	globus-xio-popen-driver-devel >= 2
-BuildRequires:	globus-xio-devel >= 3
+BuildRequires:	globus-gass-cache-devel >= 8
+BuildRequires:	globus-gass-transfer-devel >= 7
+BuildRequires:	globus-gram-protocol-devel >= 11
+BuildRequires:	globus-gssapi-gsi-devel >= 10
 BuildRequires:	globus-gss-assist-devel >= 8
 BuildRequires:	globus-gsi-sysconfig-devel >= 5
 BuildRequires:	globus-callout-devel >= 2
-BuildRequires:	globus-gssapi-gsi-devel >= 10
-BuildRequires:	globus-gram-job-manager-callout-error-devel >= 2
-BuildRequires:	globus-gram-protocol-devel >= 11
-BuildRequires:	globus-common-devel >= 14
-BuildRequires:	globus-usage-devel >= 3
+BuildRequires:	globus-xio-devel >= 3
+BuildRequires:	globus-xio-popen-driver-devel >= 2
 BuildRequires:	globus-rsl-devel >= 9
-BuildRequires:	globus-gass-cache-devel >= 8
-BuildRequires:	globus-gass-transfer-devel >= 7
-BuildRequires:	globus-common-progs >= 14
-BuildRequires:	globus-gram-protocol-doc >= 11
-BuildRequires:	globus-common-doc >= 14
+BuildRequires:	globus-gram-job-manager-callout-error-devel >= 2
+BuildRequires:	globus-scheduler-event-generator-devel >= 4
+BuildRequires:	globus-usage-devel >= 3
 BuildRequires:	openssl-devel
 BuildRequires:	libxml2-devel
-BuildRequires:	doxygen
-BuildRequires:	graphviz
-%if "%{?rhel}" == "5"
-BuildRequires:	graphviz-gd
-%endif
-BuildRequires:	ghostscript
-BuildRequires:	tex(latex)
-%if %{?fedora}%{!?fedora:0} >= 18 || %{?rhel}%{!?rhel:0} >= 7
-BuildRequires:	tex(fullpage.sty)
-BuildRequires:	tex(multirow.sty)
-BuildRequires:	tex(sectsty.sty)
-BuildRequires:	tex(tocloft.sty)
-BuildRequires:	tex(xtab.sty)
-BuildRequires:	tex-ec
-BuildRequires:	tex-courier
-BuildRequires:	tex-helvetic
-BuildRequires:	tex-times
-BuildRequires:	tex-symbol
-BuildRequires:	tex-rsfs
-%endif
-
-%package doc
-Summary:	Globus Toolkit - GRAM Jobmanager Documentation Files
-Group:		Documentation
-%if %{?fedora}%{!?fedora:0} >= 10 || %{?rhel}%{!?rhel:0} >= 6
-BuildArch:	noarch
-%endif
-Requires:	%{name} = %{version}-%{release}
+#		Additional requirements for make check
+BuildRequires:	globus-io-devel >= 9
+BuildRequires:	globus-gram-client-devel >= 3
+BuildRequires:	globus-gass-server-ez-devel >= 2
+BuildRequires:	globus-common-progs >= 15
+BuildRequires:	globus-gatekeeper >= 9
+BuildRequires:	globus-gram-client-tools >= 10
+BuildRequires:	globus-gass-copy-progs >= 8
+BuildRequires:	globus-gass-cache-program >= 5
+BuildRequires:	globus-gram-job-manager-scripts >= 6
+BuildRequires:	globus-proxy-utils >= 5
+BuildRequires:	globus-gsi-cert-utils-progs
+BuildRequires:	globus-gram-job-manager-fork-setup-poll
+BuildRequires:	openssl
+BuildRequires:	perl(Test::More)
 
 %description
 The Globus Toolkit is an open source software toolkit used for building Grid
@@ -119,23 +78,12 @@ using the Globus Toolkit to unlock the potential of grids for their cause.
 The %{name} package contains:
 GRAM Jobmanager
 
-%description doc
-The Globus Toolkit is an open source software toolkit used for building Grid
-systems and applications. It is being developed by the Globus Alliance and
-many others all over the world. A growing number of projects and companies are
-using the Globus Toolkit to unlock the potential of grids for their cause.
-
-The %{name}-doc package contains:
-GRAM Jobmanager Documentation Files
-
 %prep
 %setup -q -n %{_name}-%{version}
 
-%patch0 -p0
 %patch9 -p0
 %patch11 -p0
 %patch16 -p0
-%patch19 -p0
 %patch20 -p0
 %patch22 -p0
 %patch26 -p0
@@ -146,23 +94,15 @@ GRAM Jobmanager Documentation Files
 # I think it's a better default, but am waiting on more info.
 #%patch27 -p0
 
-%patch30 -p0
-sed 's!globus_gram_audit!globus/gram-audit!' -i configure.in
-
 %build
-# Remove files that should be replaced during bootstrap
-rm -f doxygen/Doxyfile*
-rm -f doxygen/Makefile.am
-rm -f pkgdata/Makefile.am
-rm -f globus_automake*
-rm -rf autom4te.cache
+# Reduce overlinking
+export LDFLAGS="-Wl,--as-needed -Wl,-z,defs %{?__global_ldflags}"
 
-unset GLOBUS_LOCATION
-unset GPT_LOCATION
-aclocal_includes="-I ." %{_datadir}/globus/globus-bootstrap.sh
-
-%configure --disable-static --with-flavor=%{flavor} \
-	   --enable-doxygen --with-docdir=%{_pkgdocdir}
+export GLOBUS_VERSION=6.0
+%configure --disable-static \
+	   --includedir='${prefix}/include/globus' \
+	   --libexecdir='${datadir}/globus' \
+	   --docdir=%{_pkgdocdir}
 
 # Reduce overlinking
 sed 's!CC -shared !CC \${wl}--as-needed -shared !g' -i libtool
@@ -173,60 +113,11 @@ make %{?_smp_mflags}
 rm -rf %{buildroot}
 make install DESTDIR=%{buildroot}
 
-GLOBUSPACKAGEDIR=%{buildroot}%{_datadir}/globus/packages
-
-# This library is opened using lt_dlopenext, so the libtool archive
-# (.la file) can not be removed - fix the libdir and clear dependency_libs
-# ... and move it to the main package
-for lib in `find %{buildroot}%{_libdir} -name 'lib*.la'` ; do
-  sed -e "s!^libdir=.*!libdir=\'%{_libdir}\'!" \
-      -e "s!^dependency_libs=.*!dependency_libs=\'\'!" -i $lib
-done
-grep 'lib.*\.la$' $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_dev.filelist \
-  >> $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_rtl.filelist
-sed '/lib.*\.la$/d' -i $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_dev.filelist
-
-# Move license file to main package
-grep GLOBUS_LICENSE $GLOBUSPACKAGEDIR/%{_name}/noflavor_doc.filelist \
-  >> $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_rtl.filelist
-sed /GLOBUS_LICENSE/d -i $GLOBUSPACKAGEDIR/%{_name}/noflavor_doc.filelist
-
-# Move client and server man pages to main package
-grep '.[18]$' $GLOBUSPACKAGEDIR/%{_name}/noflavor_doc.filelist \
-  >> $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_pgm.filelist
-sed '/.[18]$/d' -i $GLOBUSPACKAGEDIR/%{_name}/noflavor_doc.filelist
-
-# Fix doxygen glitches
-for f in globus_gram_job_manager_configuration.3 \
-	 globus_gram_job_manager_job_execution_environment.3 \
-	 globus_gram_job_manager_rsl_validation_file.3 ; do
-  sed 's/P\.RS/P\n.RS/' -i %{buildroot}%{_mandir}/man3/$f
-done
-
-# Devel package is redundant
-rm %{buildroot}%{_libdir}/libglobus_seg_job_manager.so
-rm $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_dev.filelist
-rm $GLOBUSPACKAGEDIR/%{_name}/pkg_data_%{flavor}_dev.gpt
+# Remove libtool archives (.la files)
+rm %{buildroot}%{_libdir}/*.la
 
 # Install README file
 install -m 644 -p %{SOURCE8} %{buildroot}%{_pkgdocdir}/README
-
-# Generate package filelists
-cat $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_pgm.filelist \
-    $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_rtl.filelist \
-    $GLOBUSPACKAGEDIR/%{_name}/noflavor_data.filelist \
-  | sed -e 's!/man/.*!&*!' -e s!^!%{_prefix}! \
-        -e 's!%{_prefix}%{_sysconfdir}!%config(noreplace) %{_sysconfdir}!' \
-  > package.filelist
-cat $GLOBUSPACKAGEDIR/%{_name}/noflavor_doc.filelist \
-  | sed -e 's!/man/.*!&*!' -e 's!^!%doc %{_prefix}!' > package-doc.filelist
-
-# Add logging
-mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/globus
-cat %{SOURCE1} >> $RPM_BUILD_ROOT%{_sysconfdir}/globus/globus-gram-job-manager.conf
-
-mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/log/globus
-chmod 01777 $RPM_BUILD_ROOT%{_localstatedir}/log/globus 
 
 # Add user-editable RVF file
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/globus/gram
@@ -250,28 +141,73 @@ fi
 
 %postun -p /sbin/ldconfig
 
-%files -f package.filelist
+%files
+%{_bindir}/globus-personal-gatekeeper
+%{_sbindir}/globus-gram-streamer
+%{_sbindir}/globus-job-manager
+%{_sbindir}/globus-job-manager-lock-test
+%{_sbindir}/globus-rvf-check
+%{_sbindir}/globus-rvf-edit
+%{_libdir}/libglobus_seg_job_manager.so
+%dir %{_datadir}/globus
 %dir %{_datadir}/globus/%{_name}
+%{_datadir}/globus/%{_name}/globus-gram-job-manager.rvf
 %config(noreplace) %{_sysconfdir}/logrotate.d/globus-job-manager
 %dir %{_localstatedir}/lib/globus
 %dir %{_localstatedir}/lib/globus/gram_job_state
 %dir %{_localstatedir}/log/globus
+%dir %{_sysconfdir}/globus
 %config(noreplace) %{_sysconfdir}/globus/globus-gram-job-manager.conf
 %config(noreplace) %{_sysconfdir}/globus/gram/job-manager.rvf
-%dir %{_datadir}/globus/packages/%{_name}
+%doc %{_mandir}/man1/globus-personal-gatekeeper.1*
+%doc %{_mandir}/man5/rsl.5*
+%doc %{_mandir}/man8/globus-job-manager.8*
+%doc %{_mandir}/man8/globus-rvf-check.8*
+%doc %{_mandir}/man8/globus-rvf-edit.8*
 %dir %{_pkgdocdir}
+%doc %{_pkgdocdir}/GLOBUS_LICENSE
 %doc %{_pkgdocdir}/README
 
-%files -f package-doc.filelist doc
-%dir %{_pkgdocdir}/html
-
 %changelog
+* Wed Feb 11 2015 Matyas Selmeci <matyas@cs.wisc.edu> - 14.25-1.1.osg
+- Merge OSG changes
+
+* Thu Nov 13 2014 Mattias Ellert <mattias.ellert@fysast.uu.se> - 14.25-1
+- GT6 update
+- Drop patch globus-gram-job-manager-personal-gk.patch (fixed upstream)
+
+* Tue Oct 28 2014 Mattias Ellert <mattias.ellert@fysast.uu.se> - 14.22-2
+- Fixes to the globus-personal-gatekeeper (fixes parallel make check)
+
+* Sun Oct 26 2014 Mattias Ellert <mattias.ellert@fysast.uu.se> - 14.22-1
+- GT6 update
+- Includes improvements from Open Science Grid (OSG)
+
+* Fri Sep 12 2014 Mattias Ellert <mattias.ellert@fysast.uu.se> - 14.20-1
+- Update to Globus Toolkit 6.0
+- Drop GPT build system and GPT packaging metadata
+- Enable checks
+- Remove documentation package
+- Disable checks on EPEL5 and EPEL6
+
+* Sat Aug 16 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 13.53-5
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_22_Mass_Rebuild
+
+* Sat Jun 07 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 13.53-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
+
+* Sat May 24 2014 Brent Baude <baude@us.ibm.com> - 13.53-3
+- Replaced ppc64 with power64 macro 
+
 * Thu Mar 13 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 13.53-1.3.osg
 - Add fix for SOFTWARE-1418 / GT-520 (crashing issue with state files that
   don't have the client address in them)
 
 * Mon Dec 16 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 13.53-1.2.osg
 - Bump and rebuild with OpenSSL 1.0.0
+
+* Fri Dec 13 2013 Mattias Ellert <mattias.ellert@fysast.uu.se> - 13.53-2
+- Proper ownership of /etc/globus
 
 * Wed Dec 11 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 13.53-1.1.osg
 - Merge OSG changes

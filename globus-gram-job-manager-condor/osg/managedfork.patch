@@ -1,8 +1,10 @@
 Index: condor.pm
 ===================================================================
---- condor.pm.orig	2013-12-12 16:55:14.916832333 -0600
-+++ condor.pm	2013-12-12 16:55:21.075908412 -0600
-@@ -37,7 +37,7 @@
+--- condor.pm.orig	2015-02-11 13:51:38.874751244 -0600
++++ condor.pm	2015-02-11 13:51:47.745856664 -0600
+@@ -35,11 +35,11 @@
+ 
+ package Globus::GRAM::JobManager::condor;
  
  @ISA = qw(Globus::GRAM::JobManager);
  
@@ -11,7 +13,11 @@ Index: condor.pm
  
  BEGIN
  {
-@@ -59,6 +59,7 @@
+     my $config = new Globus::Core::Config(
+             '${sysconfdir}/globus/globus-condor.conf');
+@@ -57,10 +57,11 @@
+     {
+         $ENV{CONDOR_CONFIG} = $condor_config;
      }
  
      $isNFSLite = 0;
@@ -19,7 +25,11 @@ Index: condor.pm
  }
  
  sub new
-@@ -89,6 +90,12 @@
+ {
+     my $proto = shift;
+@@ -87,10 +88,16 @@
+             }
+             close(FH);
          }
      }
  
@@ -32,7 +42,11 @@ Index: condor.pm
      if (! exists($self->{condor_logfile}))
      {
          if(! exists($ENV{GLOBUS_SPOOL_DIR}))
-@@ -146,14 +153,7 @@
+         {
+             $log_dir = $self->job_dir(); 
+@@ -144,18 +151,11 @@
+     my $pid;
+     my $status;
      my ($condor_submit_out, $condor_submit_err);
      my $rc;
      my $scratch_isset = 0; # Flag if the SCRATCH_DIRECTORY environment variable is set indicating likely GRAM job
@@ -48,7 +62,11 @@ Index: condor.pm
  
      if($description->jobtype() eq 'single' ||
         $description->jobtype() eq 'multiple')
-@@ -177,6 +177,10 @@
+     {
+ 	$universe = 'vanilla';
+@@ -175,10 +175,14 @@
+     }
+     else
      {
  	return Globus::GRAM::Error::JOBTYPE_NOT_SUPPORTED();
      }
@@ -59,7 +77,11 @@ Index: condor.pm
  
      # Validate some RSL parameters
      if(!defined($description->directory()))
-@@ -219,6 +223,32 @@
+     {
+         return Globus::GRAM::Error::RSL_DIRECTORY;
+@@ -217,10 +221,36 @@
+ 	{
+ 	    return Globus::GRAM::Error::EXECUTABLE_PERMISSIONS();
  	}
      }
  
@@ -84,7 +106,7 @@ Index: condor.pm
 +    # Reject jobs that want streaming, if so configured
 +    if ( $description->streamingrequested() &&
 +         $description->streamingdisabled() && !$is_grid_monitor ) {
-+    
++
 +        $self->log("Streaming is not allowed.");
 +        return Globus::GRAM::Error::OPENING_STDOUT;
 +    }
@@ -92,7 +114,11 @@ Index: condor.pm
      @environment = $description->environment();
  
      foreach my $tuple ($description->environment())
-@@ -268,6 +298,13 @@
+     {
+         if(!ref($tuple) || scalar(@$tuple) != 2)
+@@ -266,10 +296,17 @@
+             push(@environment,["MY_INITIAL_DIR",$description->directory()] );
+         }
      }       
      # NFS Lite End
  
@@ -106,7 +132,11 @@ Index: condor.pm
      $environment_string = join(';',
                                 map {$_->[0] . "=" . $_->[1]} @environment);
  
-@@ -410,6 +447,12 @@
+     @arguments = $description->arguments();
+     foreach (@arguments)
+@@ -408,10 +445,16 @@
+     if($description->min_memory() ne '')
+     {
          push(@requirements, " Memory >= " . $description->min_memory());
      }
  
@@ -114,12 +144,16 @@ Index: condor.pm
 +    {
 +        $requirements = ("True");
 +    }
-+ 
++
 +
      if (scalar(@requirements) > 0)
      {
          $rc = print SCRIPT_FILE "Requirements = ", join(" && ", @requirements) ."\n";
-@@ -501,6 +544,16 @@
+     }
+     if (!$rc)
+@@ -492,10 +535,20 @@
+     {
+         return $self->respond_with_failure_extension(
              "print: $script_filename: $!",
              Globus::GRAM::Error::TEMP_SCRIPT_FILE_FAILED());
      }
@@ -136,14 +170,18 @@ Index: condor.pm
      # NFS Lite mode
      if ($isNFSLite && !$isManagedFork) {
          print SCRIPT_FILE "should_transfer_files = YES\n";
-@@ -955,4 +1008,17 @@
+         print SCRIPT_FILE "when_to_transfer_output = ON_EXIT\n";
+         print SCRIPT_FILE "transfer_output = true\n";
+@@ -993,6 +1046,19 @@
+       }
+     }
      return 1; # Should return a proper Globus success code
  }
  
 +# Append to a path if it exists, create it if it does not
 +sub append_path_array {
 +    my ($arr_ref, $var, $path) = @_;
-+    
++
 +    foreach my $val (@$arr_ref) {
 +        if($val->[0] eq "$var") {
 +            $val->[1] .= ":$path";

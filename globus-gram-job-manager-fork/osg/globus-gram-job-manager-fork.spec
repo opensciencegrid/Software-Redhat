@@ -1,41 +1,38 @@
-%ifarch alpha ia64 ppc64 s390x sparc64 x86_64
-%global flavor gcc64
-%else
-%global flavor gcc32
-%endif
-
-%{!?perl_vendorlib: %global perl_vendorlib %(eval "`perl -V:installvendorlib`"; echo $installvendorlib)}
+%{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
 
 Name:		globus-gram-job-manager-fork
 %global _name %(tr - _ <<< %{name})
-Version:	1.5
+Version:	2.4
 Release:	1.1%{?dist}
 Summary:	Globus Toolkit - Fork Job Manager Support
 
 Group:		Applications/Internet
 License:	ASL 2.0
 URL:		http://www.globus.org/
-Source:		http://www.globus.org/ftppub/gt5/5.2/5.2.1/packages/src/%{_name}-%{version}.tar.gz
+Source:		http://www.globus.org/ftppub/gt6/packages/%{_name}-%{version}.tar.gz
 #		README file
 Source8:	GLOBUS-GRAM5
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-Requires:	globus-gram-job-manager >= 13
+#		A requirement on globus-gram-job-manager would make sense.
+#		However, that would create a circular build dependency when
+#		building the globus-gram-job-manager package, since the test
+#		suite for that package requires globus-gram-job-manager-fork
+#		to run.
+# Requires:	globus-gram-job-manager >= 13
 Requires:	globus-gram-job-manager-scripts >= 4
 Requires:	globus-gass-cache-program >= 5
 Requires:	globus-common-progs >= 14
 Requires:	globus-gatekeeper >= 9
 Requires:	perl(:MODULE_COMPAT_%(eval "`perl -V:version`"; echo $version))
-Requires:	%{name}-setup
+Requires:	%{name}-setup = %{version}-%{release}
 Provides:	globus-gram-job-manager-setup-fork = 4.3
 Obsoletes:	globus-gram-job-manager-setup-fork < 4.3
 Obsoletes:	globus-gram-job-manager-setup-fork-doc < 4.3
-BuildRequires:	grid-packaging-tools >= 3.4
-BuildRequires:	globus-core%{?_isa} >= 8
-BuildRequires:	globus-gram-protocol-devel%{?_isa} >= 11
-BuildRequires:	globus-scheduler-event-generator-devel%{?_isa} >= 4
-BuildRequires:	globus-common-devel%{?_isa} >= 14
-BuildRequires:	globus-xio-devel%{?_isa} >= 3
+BuildRequires:	globus-common-devel >= 15
+BuildRequires:	globus-xio-devel >= 3
+BuildRequires:	globus-scheduler-event-generator-devel >= 4
+BuildRequires:	globus-gram-protocol-devel >= 11
 
 %package setup-poll
 Summary:	Globus Toolkit - Fork Job Manager Support using polling
@@ -43,7 +40,7 @@ Group:		Applications/Internet
 %if %{?fedora}%{!?fedora:0} >= 10 || %{?rhel}%{!?rhel:0} >= 6
 BuildArch:	noarch
 %endif
-Provides:	%{name}-setup
+Provides:	%{name}-setup = %{version}-%{release}
 Requires:	%{name} = %{version}-%{release}
 
 Requires(preun):	globus-gram-job-manager-scripts >= 4
@@ -51,12 +48,9 @@ Requires(preun):	globus-gram-job-manager-scripts >= 4
 %package setup-seg
 Summary:	Globus Toolkit - Fork Job Manager Support using SEG
 Group:		Applications/Internet
-Provides:	%{name}-setup
+Provides:	%{name}-setup = %{version}-%{release}
 Requires:	%{name}%{?_isa} = %{version}-%{release}
-Requires:	globus-gram-protocol%{?_isa} >= 11
-Requires:	globus-scheduler-event-generator%{?_isa} >= 4
-Requires:	globus-common%{?_isa} >= 14
-Requires:	globus-xio%{?_isa} >= 3
+Requires:	globus-scheduler-event-generator-progs >= 4
 
 Requires(preun):	globus-gram-job-manager-scripts >= 4
 Requires(preun):	globus-scheduler-event-generator-progs >= 4
@@ -96,22 +90,17 @@ state
 %setup -q -n %{_name}-%{version}
 
 %build
-# Remove files that should be replaced during bootstrap
-rm -f doxygen/Doxyfile*
-rm -f doxygen/Makefile.am
-rm -f pkgdata/Makefile.am
-rm -f globus_automake*
-rm -rf autom4te.cache
-
-unset GLOBUS_LOCATION
-unset GPT_LOCATION
-%{_datadir}/globus/globus-bootstrap.sh
+# Reduce overlinking
+export LDFLAGS="-Wl,--as-needed -Wl,-z,defs %{?__global_ldflags}"
 
 export MPIEXEC=no
 export MPIRUN=no
-%configure --disable-static --with-flavor=%{flavor} \
-	   --with-docdir=%{_docdir}/%{name}-%{version} \
-	   --with-globus-state-dir=%{_localstatedir}/lib/globus
+%configure --disable-static \
+	   --includedir='${prefix}/include/globus' \
+	   --libexecdir='${datadir}/globus' \
+	   --docdir=%{_pkgdocdir} \
+	   --with-perlmoduledir=%{perl_vendorlib} \
+	   --with-globus-state-dir=%{_localstatedir}/log/globus
 
 # Reduce overlinking
 sed 's!CC -shared !CC \${wl}--as-needed -shared !g' -i libtool
@@ -119,54 +108,20 @@ sed 's!CC -shared !CC \${wl}--as-needed -shared !g' -i libtool
 make %{?_smp_mflags}
 
 %install
-rm -rf $RPM_BUILD_ROOT
-make install DESTDIR=$RPM_BUILD_ROOT
+rm -rf %{buildroot}
+make install DESTDIR=%{buildroot}
 
-GLOBUSPACKAGEDIR=$RPM_BUILD_ROOT%{_datadir}/globus/packages
-
-# This library is opened using lt_dlopenext, so the libtool archive
-# (.la file) can not be removed - fix the libdir and clear dependency_libs
-# ... and move it to the main package
-for lib in `find $RPM_BUILD_ROOT%{_libdir} -name 'lib*.la'` ; do
-  sed -e "s!^libdir=.*!libdir=\'%{_libdir}\'!" \
-      -e "s!^dependency_libs=.*!dependency_libs=\'\'!" -i $lib
-done
-grep 'lib.*\.la$' $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_dev.filelist \
-  >> $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_rtl.filelist
-sed '/lib.*\.la$/d' -i $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_dev.filelist
+# Remove libtool archives (.la files)
+rm %{buildroot}%{_libdir}/*.la
 
 # Remove jobmanager-fork from install dir - leave it for admin configuration
-rm $RPM_BUILD_ROOT/etc/grid-services/jobmanager-fork
-
-# Move script man pages to progs package
-grep '.[18]$' $GLOBUSPACKAGEDIR/%{_name}/noflavor_doc.filelist \
-  >> $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_pgm.filelist
-sed '/.[18]$/d' -i $GLOBUSPACKAGEDIR/%{_name}/noflavor_doc.filelist
+rm %{buildroot}/etc/grid-services/jobmanager-fork
 
 # Install README file
-install -m 644 -p %{SOURCE8} \
-  $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/README
-
-# Devel package is redundant
-rm $RPM_BUILD_ROOT%{_libdir}/libglobus_seg_fork.so
-rm $RPM_BUILD_ROOT%{_libdir}/pkgconfig/globus-gram-job-manager-fork.pc
-rm $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_dev.filelist
-rm $GLOBUSPACKAGEDIR/%{_name}/pkg_data_%{flavor}_dev.gpt
-
-# List config files in each package - drop the file list
-rm $GLOBUSPACKAGEDIR/%{_name}/noflavor_data.filelist
-rm $GLOBUSPACKAGEDIR/%{_name}/pkg_data_noflavor_data.gpt
-
-# Generate package filelists
-cat $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_rtl.filelist \
-    $GLOBUSPACKAGEDIR/%{_name}/%{flavor}_pgm.filelist \
-  | sed -e s!^!%{_prefix}! -e 's!/man/.*!&*!' \
-	-e /fork.pm/d > package-seg.filelist
-cat $GLOBUSPACKAGEDIR/%{_name}/noflavor_doc.filelist \
-  | sed 's!^!%doc %{_prefix}!' > package.filelist
+install -m 644 -p %{SOURCE8} %{buildroot}%{_pkgdocdir}/README
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+rm -rf %{buildroot}
 
 %post setup-poll
 if [ $1 -eq 1 ]; then
@@ -203,6 +158,7 @@ if [ $1 -eq 0 ]; then
     globus-scheduler-event-generator-admin -d fork > /dev/null 2>&1 || :
 fi
 
+
 %postun setup-seg
 /sbin/ldconfig
 if [ $1 -eq 1 ]; then
@@ -213,27 +169,70 @@ elif [ $1 -eq 0 -a ! -f /etc/grid-services/jobmanager ]; then
     globus-gatekeeper-admin -E > /dev/null 2>&1 || :
 fi
 
-
-%files -f package.filelist
-%defattr(-,root,root,-)
-%{perl_vendorlib}/Globus
+%files
+%dir %{perl_vendorlib}/Globus
+%dir %{perl_vendorlib}/Globus/GRAM
+%dir %{perl_vendorlib}/Globus/GRAM/JobManager
+%{perl_vendorlib}/Globus/GRAM/JobManager/fork.pm
+%dir %{_sysconfdir}/globus
 %config(noreplace) %{_sysconfdir}/globus/globus-fork.conf
-%dir %{_datadir}/globus/packages/%{_name}
-%dir %{_docdir}/%{name}-%{version}
-%doc %{_docdir}/%{name}-%{version}/README
+%dir %{_pkgdocdir}
+%doc %{_pkgdocdir}/GLOBUS_LICENSE
+%doc %{_pkgdocdir}/README
 
 %files setup-poll
-%defattr(-,root,root,-)
 %config(noreplace) %{_sysconfdir}/grid-services/available/jobmanager-fork-poll
 
-%files -f package-seg.filelist setup-seg
-%defattr(-,root,root,-)
+%files setup-seg
+%{_libdir}/libglobus_seg_fork.so
+%{_sbindir}/globus-fork-starter
+%doc %{_mandir}/man8/globus-fork-starter.8*
 %config(noreplace) %{_sysconfdir}/grid-services/available/jobmanager-fork-seg
 %config(noreplace) %{_sysconfdir}/globus/scheduler-event-generator/available/fork
 
 %changelog
+* Fri Feb 6 2015 Matyas Selmeci <matyas@cs.wisc.edu> 2.4-1.1.osg
+- Merge OSG changes
+
+* Fri Sep 12 2014 Mattias Ellert <mattias.ellert@fysast.uu.se> - 2.4-1
+- Update to Globus Toolkit 6.0
+- Drop GPT build system and GPT packaging metadata
+
+* Thu Aug 28 2014 Jitka Plesnikova <jplesnik@redhat.com> - 1.5-12
+- Perl 5.20 rebuild
+
+* Sat Aug 16 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.5-11
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_22_Mass_Rebuild
+
+* Sat Jun 07 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.5-10
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
+
+* Mon May 26 2014 Brent Baude <baude@us.ibm.com> - 1.5-9
+- Replace ppc64 arch with power64 macro
+
+* Thu Jan 09 2014 Mattias Ellert <mattias.ellert@fysast.uu.se> - 1.5-8
+- Fix logfile location
+
 * Fri Dec 20 2013 Matyas Selmeci <matyas@cs.wisc.edu> 1.5-1.1.osg
 - Use globus-gatekeeper-admin to set up "jobmanager-fork" aliases for "jobmanager-fork-seg" and "jobmanager-fork-poll"
+
+* Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.5-7
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
+
+* Sun Jul 28 2013 Mattias Ellert <mattias.ellert@fysast.uu.se> - 1.5-6
+- Implement updated packaging guidelines
+
+* Wed Jul 17 2013 Petr Pisar <ppisar@redhat.com> - 1.5-5
+- Perl 5.18 rebuild
+
+* Tue May 21 2013 Mattias Ellert <mattias.ellert@fysast.uu.se> - 1.5-4
+- Add aarch64 to the list of 64 bit platforms
+
+* Wed Feb 13 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.5-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
+
+* Thu Dec 06 2012 Mattias Ellert <mattias.ellert@fysast.uu.se> - 1.5-2
+- Specfile clean-up
 
 * Sat Apr 28 2012 Mattias Ellert <mattias.ellert@fysast.uu.se> - 1.5-1
 - Update to Globus Toolkit 5.2.1
