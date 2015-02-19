@@ -63,8 +63,7 @@ for lrm in "${GLOBUS_SEG_LRM_DIR}"/*; do
 done
 
 GLOBUS_SEG_PIDFMT="${GLOBUS_SEG_PIDFMT:-/var/run/${progname}-%s.pid}"
-GLOBUS_SEG_LOGFMT="${GLOBUS_SEG_LOGFMT:-/var/log/globus/globus-seg-%s}"
-GLOBUS_SEG_OLDLOGFMT="${GLOBUS_SEG_OLDLOGFMT:-/var/lib/globus/globus-seg-%s}"
+GLOBUS_SEG_LOGFMT="${GLOBUS_SEG_LOGFMT:-/var/lib/globus/globus-seg-%s}"
 
 start()
 {
@@ -74,7 +73,6 @@ start()
     for lrm in $lrms; do
         pidfile="$(printf "$GLOBUS_SEG_PIDFMT" "$lrm")"
         logdir="$(printf "$GLOBUS_SEG_LOGFMT" "$lrm")"
-        oldlogdir="$(printf "$GLOBUS_SEG_OLDLOGFMT" "$lrm")"
 
         status $lrm > /dev/null
         rc=$?
@@ -84,9 +82,6 @@ start()
 
         if [ ! -d "$logdir" ]; then
             (umask 022; mkdir "$logdir")
-        fi
-        if [ ! -e "$oldlogdir" ]; then
-            (umask 022; ln -snf "$logdir" "$oldlogdir")
         fi
         ${GLOBUS_SEG_NICE_LEVEL:+nice -n "${GLOBUS_SEG_NICE_LEVEL}"} \
             "${prog}" \

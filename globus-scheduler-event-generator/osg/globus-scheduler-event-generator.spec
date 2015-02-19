@@ -7,7 +7,7 @@
 Name:		globus-scheduler-event-generator
 %global _name %(tr - _ <<< %{name})
 Version:	5.10
-Release:	1.2%{?dist}
+Release:	2.1%{?dist}
 Summary:	Globus Toolkit - Scheduler Event Generator
 
 Group:		System Environment/Libraries
@@ -123,10 +123,6 @@ rm -rf %{buildroot}%{_sysconfdir}/init.d
 mkdir -p %{buildroot}%{_initddir}
 install -p %{SOURCE1} %{buildroot}%{_initddir}
 
-# Fix logfile location
-sed 's!${localstatedir}/lib/globus/!${localstatedir}/log/globus/!' \
-  -i %{buildroot}%{_sysconfdir}/sysconfig/%{name}
-
 # Install README file
 install -m 644 -p %{SOURCE8} %{buildroot}%{_pkgdocdir}/README
 
@@ -190,11 +186,14 @@ fi
 %{?_licensedir: %license GLOBUS_LICENSE}
 
 %changelog
+- Thu Feb 19 2015 Matyas Selmeci <matyas@cs.wisc.edu> - 5.10-2.1.osg
+- Merge OSG changes; remove workaround for log file reading hang
+
+* Wed Feb 18 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 5.10-2
+- Revert logfile location change
+
 * Mon Feb 16 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 5.10-1.2.osg
 - Add workaround for log file reading hang
-
-* Mon Feb 16 2015 Matyas Selmeci <matyas@cs.wisc.edu> - 5.10-1.1.osg
-- Merge OSG changes
 
 * Fri Jan 23 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 5.10-1
 - Implement updated license packaging guidelines
