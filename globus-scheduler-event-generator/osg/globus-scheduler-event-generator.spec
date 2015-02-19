@@ -186,7 +186,7 @@ fi
 %{?_licensedir: %license GLOBUS_LICENSE}
 
 %changelog
-- Thu Feb 19 2015 Matyas Selmeci <matyas@cs.wisc.edu> - 5.10-2.1.osg
+* Thu Feb 19 2015 Matyas Selmeci <matyas@cs.wisc.edu> - 5.10-2.1.osg
 - Merge OSG changes; remove workaround for log file reading hang
 
 * Wed Feb 18 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 5.10-2
