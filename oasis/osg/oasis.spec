@@ -1,6 +1,6 @@
 %define name oasis
 %define version 2.0.5
-%define release 1
+%define release 2
 
 Summary: OASIS package
 Name: %{name}
@@ -123,7 +123,7 @@ f_restart_daemon $1
 
 %files -f INSTALLED_FILES
 %defattr(-,root,root)
-%doc CHANGELOG LICENSE README etc/*
+%doc CHANGELOG LICENSE README etc/condor_oasis.conf-example
 
 # ensure the /var/log/oasis directory has the sticky bit
 # so everyone can write but each user can only delete her own content
@@ -133,11 +133,12 @@ f_restart_daemon $1
 # so everyone can write but each user can only delete her own content
 %dir %attr(1777, root, root)  %{_var}/run/oasis
 
-#   %config(noreplace) %{_sysconfdir}/oasis/oasis.conf
-#   %config(noreplace) %{_sysconfdir}/oasis/oasisprojects.conf
-#   %config(noreplace) %{_sysconfdir}/oasis/oasisprobes.conf
-#   %config(noreplace) %{_sysconfdir}/sysconfig/oasis
-#   %config(noreplace) %{_sysconfdir}/logrotate.d/oasis
+%config(noreplace) %{_sysconfdir}/oasis/oasis.conf
+%config(noreplace) %{_sysconfdir}/oasis/projects.conf
+%config(noreplace) %{_sysconfdir}/oasis/repositories.conf
+%config(noreplace) %{_sysconfdir}/oasis/probes.conf
+%config(noreplace) %{_sysconfdir}/sysconfig/oasis
+%config(noreplace) %{_sysconfdir}/logrotate.d/oasis
 # ensure the /etc/oasis is created
 %dir %attr(0755, root, root)  %{_sysconfdir}/oasis
 
@@ -152,6 +153,18 @@ f_restart_daemon $1
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Thu Feb 19 2015 Jose Caballero <jcaballero@bnl.gov> - 2.0.5-2
+- Bumped to 2.0.5-2
+- config files, including sysconfig and logrotate, placed directly into
+  final directory with final name. Only the condor config file is treated
+  as doc file.
+- non-needed code from config file commented out. Only minimum to allow
+  the daemon to start without exploding is left.
+- only one logrotate file, with no prerotate section.
+  The postrotate section restart the daemon only if there is a PID file
+- condor wrapper placed in /usr/libexec/oasis
+
+
 * Mon Feb 16 2015 Dave Dykstra <dwd@fnal.gov> - 2.0.5-1
 - Upgraded to oasis 2.0.5 tarball which has a CHANGELOG entry of:
   * Added /usr/share/oasis/oasis_replica_status which generates
