@@ -1,5 +1,5 @@
 Name:      rsv-perfsonar
-Version:   1.0.9
+Version:   1.0.10
 Release:   1%{?dist}
 Summary:   RSV Metrics to monitor pefsonar
 Packager:  OSG-Software
@@ -72,6 +72,9 @@ scl enable python27 - << \EOF
 EOF 
 
 %changelog
+*Fri Feb 20 2015 <efajardo@physics.ucsd.edu> 1.0.10-1
+* The code changes for increased debugging and packet loss rate did not make it to 1.0.9
+
 * Thu Feb 19 2015 <efajardo@physics.ucsd.edu> 1.0.9-1
 - New way of uploading packet loss rate
 - Efficency tweaks provided by Brian B.
