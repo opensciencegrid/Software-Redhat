@@ -1,7 +1,7 @@
 Name:      rsv
 Summary:   RSV Meta Package
 Version:   3.8.0
-Release:   1%{?dist}
+Release:   2%{?dist}
 License:   Apache 2.0
 Group:     Applications/Monitoring
 URL:       https://twiki.grid.iu.edu/bin/view/MonitoringInformation/RSV
@@ -237,8 +237,8 @@ fi
 
 
 %changelog
-* Thu Feb 19 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.8.0-1
-- New version; drop upstreamed patch
+* Thu Feb 19 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.8.0-2
+- New version; drop upstreamed patch for probe runtime interval and fix 'Next Run Time' display
 
 * Thu Feb 19 2015 Brian Bockelman <bbockelm@cse.unl.edu> - 3.7.22-2
 - SOFTWARE-1798 - Allow probes to specify runtime interval
