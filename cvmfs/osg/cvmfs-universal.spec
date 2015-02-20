@@ -360,7 +360,7 @@ fi
 %{_bindir}/cvmfs_unittests
 
 %changelog
-* Fri Feb 13 2014 Dave Dykstra <dwd@fnal.gov> - 2.1.19-1.8.osg
+* Fri Feb 13 2015 Dave Dykstra <dwd@fnal.gov> - 2.1.19-1.8.osg
 - Build for OSG release
 * Mon Nov 24 2014 Dave Dykstra <dwd@fnal.gov> - 2.1.19-1.7.osg
 - Support http redirects
