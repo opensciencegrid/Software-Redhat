@@ -4,7 +4,7 @@
 Name:      osg-ce
 Summary:   OSG Compute Element
 Version:   3.2
-Release:   6%{?dist}
+Release:   7%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -128,6 +128,16 @@ Requires: osg-configure-sge
 %description -n %{basece}-sge
 %{summary}
 
+%package -n %{basece}-slurm
+Group: Grid
+Summary: Gateway-less SLURM meta-package for OSG-CE
+
+Requires: %{basece} = %{version}-%{release}
+Requires: gratia-probe-slurm
+Requires: osg-configure-slurm
+
+%description -n %{basece}-slurm
+%{summary}
 
 ###############################################################################
 # HTCondor-CE subpackages
@@ -185,6 +195,15 @@ Requires: htcondor-ce-sge
 %description -n %{htcce}-sge
 %{summary}
 
+%package -n %{htcce}-slurm
+Group: Grid
+Summary: SLURM meta-package for the HTCondor-CE OSG-CE
+Requires: %{htcce} = %{version}-%{release}
+Requires: %{basece}-slurm = %{version}-%{release}
+Requires: htcondor-ce-pbs
+
+%description -n %{htcce}-slurm
+%{summary}
 
 ###############################################################################
 # Main (both HTCondor-CE and GRAM-CE) subpackages
@@ -234,6 +253,17 @@ Requires: globus-gram-job-manager-sge-setup-seg
 %description sge
 %{summary}
 
+%package slurm
+Group: Grid
+Summary: Slurm meta-package for the OSG-CE
+Requires: %{name} = %{version}-%{release}
+Requires: %{htcce}-slurm = %{version}-%{release}
+# GRAM:
+Requires: globus-gram-job-manager-slurm
+
+%description slurm
+%{summary}
+
 %build
 exit 0
 
@@ -249,18 +279,24 @@ exit 0
 %files -n %{basece}-pbs
 %files -n %{basece}-lsf
 %files -n %{basece}-sge
+%files -n %{basece}-slurm
 %files -n %{htcce}
 %files -n %{htcce}-condor
 %files -n %{htcce}-pbs
 %files -n %{htcce}-lsf
 %files -n %{htcce}-sge
+%files -n %{htcce}-slurm
 %files
 %files condor
 %files pbs
 %files lsf
 %files sge
+%files slurm
 
 %changelog
+* Fri Feb 20 2015 Brian Lin <blin@cs.wisc.edu> 3.2-7
+- Add SLURM metapackage
+
 * Wed Nov 26 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 3.2-6
 - Have pbs and sge metapackages install their respective batch systems (SOFTWARE-1701)
 
