@@ -1,6 +1,6 @@
 Summary: Package for configure-osg and associated scripts
 Name: osg-configure
-Version: 1.0.67
+Version: 1.0.68
 Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
 Patch0: s1653-gateway-type.patch
@@ -325,6 +325,9 @@ fi
 
 
 %changelog
+* Thu Feb 19 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0.68-1
+- Allow max_wall_time to be 0 or unspecified (SOFTWARE-1779)
+
 * Fri Jan 23 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0.67-1
 - Reload condor and condor-ce configs if we change them (SOFTWARE-1732)
 - Fix various bugs related to checking PER_JOB_HISTORY_DIR in the gratia config (SOFTWARE-1735)
