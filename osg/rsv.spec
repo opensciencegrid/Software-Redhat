@@ -1,14 +1,13 @@
 Name:      rsv
 Summary:   RSV Meta Package
-Version:   3.7.22
-Release:   2%{?dist}
+Version:   3.8.0
+Release:   1%{?dist}
 License:   Apache 2.0
 Group:     Applications/Monitoring
 URL:       https://twiki.grid.iu.edu/bin/view/MonitoringInformation/RSV
 
 Source0:   %{name}-%{version}.tar.gz
 Patch0:    1653-default-ce-type.patch
-Patch1:    probe-interval.patch
 
 BuildArch: noarch
 
@@ -98,7 +97,6 @@ Requires: /usr/bin/condor_ce_ping
 %prep
 %setup -q
 %patch0 -p1
-%patch1 -p0
 
 
 %install
@@ -239,8 +237,11 @@ fi
 
 
 %changelog
+* Thu Feb 19 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.8.0-1
+- New version; drop upstreamed patch
+
 * Thu Feb 19 2015 Brian Bockelman <bbockelm@cse.unl.edu> - 3.7.22-2
-- Allow probes to specify runtime interval (SOFTWARE-1798).
+- SOFTWARE-1798 - Allow probes to specify runtime interval
 
 * Thu Jan 22 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.7.22-1
 - SOFTWARE-1737 - Fix CA certs URL used for ITB sites
