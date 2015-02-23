@@ -1,4 +1,4 @@
-%define tarball_version 8.3.2
+%define tarball_version 8.3.3
 
 # optionally define any of these, here or externally
 # % define fedora   16
@@ -104,7 +104,7 @@
 %define git_build 0
 # If building with git tarball, Fedora requests us to record the rev.  Use:
 # git log -1 --pretty=format:'%h'
-%define git_rev 0df6e0d
+%define git_rev 8320c6a
 
 %if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
 %{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
@@ -118,7 +118,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.2
+%define condor_base_release 1.1
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -207,10 +207,6 @@ Source123: zlib-1.2.3.tar.gz
 %endif
 
 Patch1: sw1636-cream_gahp-dlopen.patch
-# https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=4788
-Patch2: 4788-null-parameter-names.patch
-# https://jira.opensciencegrid.org/browse/SOFTWARE-1776
-Patch3: 1776-use-sendmail.patch
 
 #% if 0%osg
 Patch8: osg_sysconfig_in_init_script.patch
@@ -350,6 +346,11 @@ BuildRequires: latex2html
 Requires: mailx
 Requires: condor-classads = %{version}-%{release}
 Requires: condor-procd = %{version}-%{release}
+
+# ecryptfs was pulled from rhel 7
+%if (0%{?rhel} == 5 || 0%{?rhel} == 6)
+Requires: ecryptfs-utils
+%endif
 
 %if %blahp && ! %uw_build
 Requires: blahp >= 1.16.1
@@ -658,10 +659,6 @@ exit 0
 %endif
 
 %patch1 -p1
-%patch2 -p1
-%patch3 -p1
-
-%patch8 -p1
 
 %if 0%{?hcc}
 %patch15 -p0
@@ -1545,6 +1542,7 @@ rm -rf %{buildroot}
 %files python
 %defattr(-,root,root,-)
 %_libdir/libpyclassad*.so
+%_libexecdir/condor/libclassad_python_user.so
 %{python_sitearch}/classad.so
 %{python_sitearch}/htcondor.so
 
@@ -1780,6 +1778,10 @@ fi
 %endif
 
 %changelog
+* Mon Feb 23 2015 Carl Edquist <edquist@cs.wisc.edu> - 8.3.3-1.1
+- Update to HTCondor 8.3.3 (SOFTWARE-1807)
+- Drop patches now in upstream
+
 * Mon Feb 02 2015 Carl Edquist <edquist@cs.wisc.edu> - 8.3.2-1.2
 - Disallow NULL or empty parameter names #4788
 - Use sendmail by default (SOFTWARE-1776)
