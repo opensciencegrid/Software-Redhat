@@ -2,8 +2,8 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 1.9
-Release: 3%{?gitrev:.%{gitrev}git}%{?dist}
+Version: 1.10
+Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 
 Group: Applications/System
@@ -19,11 +19,6 @@ URL: http://github.com/bbockelm/condor-ce
 Source0: %{name}-%{version}%{?gitrev:-%{gitrev}}.tar.gz
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-
-Patch0: explicit_condor_port.patch
-Patch1: sw1745_inconsistent_condor_ver.patch
-Patch2: sw1741_rename_job_router_tool.patch
-Patch3: sw1750_trace_error_handling.patch
 
 Requires:  condor >= 8.0.0
 # This ought to pull in the HTCondor-CE specific version of the blahp
@@ -44,6 +39,11 @@ Requires(preun): initscripts
 # On RHEL6 and later, we use this utility to setup a custom hostname.
 %if 0%{?rhel} >= 6
 Requires: /usr/bin/unshare
+%endif
+
+%if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
+%{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
+%{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
 %endif
 
 %description
@@ -147,13 +147,8 @@ Conflicts: %{name}
 %prep
 %setup -q
 
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-
 %build
-%cmake -DHTCONDORCE_VERSION=%{version} -DCMAKE_INSTALL_LIBDIR=%{_libdir}
+%cmake -DHTCONDORCE_VERSION=%{version} -DCMAKE_INSTALL_LIBDIR=%{_libdir} -DPYTHON_SITELIB=%{python_sitelib}
 make %{?_smp_mflags}
 
 %install
@@ -290,6 +285,8 @@ fi
 %{_bindir}/condor_ce_trace
 %{_bindir}/condor_ce_ping
 
+%{python_sitelib}/condor_ce_info_query.py*
+
 %files collector
 
 %{_bindir}/condor_ce_config_generator
@@ -315,6 +312,14 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Mon Feb 23 2015 Brian Lin <blin@cs.wisc.edu> - 1.10-1
+- Add dry-run option to condor_ce_run (SOFTWARE-1787)
+- Add minWalltime attribute
+- Allow the collector to accept startd ads from worker nodes
+- Advertise the collector's address in the job environment
+- Fix --vo broken if missing in condor_ce_info_status (SOFTWARE-1782)
+- Fix cleanup bug in condor_ce_run
+
 * Mon Jan 26 2015 Brian Lin <blin@cs.wisc.edu> - 1.9-3
 - Improvements to error handling and environment verification of condor_ce_trace
 - Change the name of the job router diagnostic tool to condor_ce_job_router_info
