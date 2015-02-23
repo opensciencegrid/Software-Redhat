@@ -1,5 +1,5 @@
 Name:      rsv-perfsonar
-Version:   1.0.10
+Version:   1.0.11
 Release:   1%{?dist}
 Summary:   RSV Metrics to monitor pefsonar
 Packager:  OSG-Software
@@ -26,9 +26,9 @@ Requires: python-simplejson
 %{summary}
 
 %prep
-%setup -n trunk
+#%setup -n trunk
 #%setup -n %{name}
-#%setup -n %{name}-%{version}
+%setup -n %{version}
 
 %install
 rm -fr $RPM_BUILD_ROOT
