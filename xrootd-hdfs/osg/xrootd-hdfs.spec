@@ -1,7 +1,7 @@
 
 Name: xrootd-hdfs
 Version: 1.8.4
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: HDFS plugin for xrootd
 
 Group: System Environment/Development
@@ -11,13 +11,16 @@ URL: https://github.com/bbockelm/xrootd-hdfs
 # git-archive master | gzip -7 > ~/rpmbuild/SOURCES/xrootd-hdfs.tar.gz
 Source0: %{name}.tar.gz
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
-BuildRequires: xrootd4-devel
-BuildRequires: xrootd4-server-devel
+BuildRequires: xrootd-devel >= 4.1
+BuildRequires: xrootd-server-devel >= 4.1
 BuildRequires: cmake
 BuildRequires: hadoop-libhdfs >= 2.0.0+545-1.cdh4.1.1
 BuildRequires: java7-devel
 BuildRequires: jpackage-utils
+BuildRequires: xrootd-compat-libs
+
 Requires: hadoop-client >= 2.0.0+545-1.cdh4.1.1
+Requires: xrootd-compat-libs
 Conflicts: xrootd < 3.0.3-1
 
 %package devel
@@ -71,6 +74,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/XrdHdfs.hh
 
 %changelog
+* Tue Feb 24 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1.8.4-3
+- Change requirements to xrootd and added xrootd-compat-libs
+
 * Thu Jul 10 2014 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1.8.4-2
 - Recompiled using xrootd4 libraries.
 
