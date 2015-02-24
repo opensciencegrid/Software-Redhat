@@ -1,7 +1,7 @@
 
 Name: xrootd-hdfs
 Version: 1.8.4
-Release: 3%{?dist}
+Release: 4%{?dist}
 Summary: HDFS plugin for xrootd
 
 Group: System Environment/Development
@@ -17,10 +17,10 @@ BuildRequires: cmake
 BuildRequires: hadoop-libhdfs >= 2.0.0+545-1.cdh4.1.1
 BuildRequires: java7-devel
 BuildRequires: jpackage-utils
-BuildRequires: xrootd-compat-libs
+#BuildRequires: xrootd-compat-libs
 
 Requires: hadoop-client >= 2.0.0+545-1.cdh4.1.1
-Requires: xrootd-compat-libs
+#Requires: xrootd-compat-libs
 Conflicts: xrootd < 3.0.3-1
 
 %package devel
@@ -74,6 +74,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/XrdHdfs.hh
 
 %changelog
+* Tue Feb 24 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1.8.4-4
+- Remove xrootd-compat-libs not necessary 
+- Removed xrootd4 requirements
+
 * Tue Feb 24 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1.8.4-3
 - Change requirements to xrootd and added xrootd-compat-libs
 
