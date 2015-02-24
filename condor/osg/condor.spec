@@ -118,7 +118,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.1
+%define condor_base_release 1.2
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -207,6 +207,11 @@ Source123: zlib-1.2.3.tar.gz
 %endif
 
 Patch1: sw1636-cream_gahp-dlopen.patch
+
+# This will make it into upstream 8.3.4
+# https://jira.opensciencegrid.org/browse/SOFTWARE-1807
+# https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=4588
+Patch2: sw1807-py_import.patch
 
 #% if 0%osg
 Patch8: osg_sysconfig_in_init_script.patch
@@ -659,6 +664,7 @@ exit 0
 %endif
 
 %patch1 -p1
+%patch2 -p1
 
 %if 0%{?hcc}
 %patch15 -p0
@@ -1778,6 +1784,9 @@ fi
 %endif
 
 %changelog
+* Tue Feb 24 2015 Carl Edquist <edquist@cs.wisc.edu> - 8.3.3-1.2
+- Build fix for EL5 PROPER build (SOFTWARE-1807)
+
 * Mon Feb 23 2015 Carl Edquist <edquist@cs.wisc.edu> - 8.3.3-1.1
 - Update to HTCondor 8.3.3 (SOFTWARE-1807)
 - Drop patches now in upstream

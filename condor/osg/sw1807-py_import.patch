@@ -1,0 +1,66 @@
+diff --git a/src/python-bindings/classad_python_user.cpp b/src/python-bindings/classad_python_user.cpp
+index 9b09be0..b092311 100644
+--- a/src/python-bindings/classad_python_user.cpp
++++ b/src/python-bindings/classad_python_user.cpp
+@@ -63,7 +63,7 @@ extern "C"
+         {
+             try
+             {
+-                boost::python::import(boost::python::str(tmpMod));
++                py_import(boost::python::str(tmpMod));
+             }
+             catch (...)
+             {
+@@ -95,7 +95,7 @@ handle_pyerror()
+     boost::python::object formatted_list, formatted;
+     PyErr_Fetch(&exc,&val,&tb);
+     boost::python::handle<> hexc(exc), hval(boost::python::allow_null(val)), htb(boost::python::allow_null(tb)); 
+-    boost::python::object traceback(boost::python::import("traceback"));
++    boost::python::object traceback(py_import("traceback"));
+     boost::python::object format_exception(traceback.attr("format_exception"));
+     formatted_list = format_exception(hexc,hval,htb);
+     formatted = boost::python::str("\n").join(formatted_list);
+@@ -138,7 +138,7 @@ python_invoke_internal (boost::python::object                        pyFunc,
+         pyKw["state"] = wrapper;
+     }
+ 
+-    boost::python::object pyResult = boost::python::import("__main__").attr("__builtins__").attr("apply")(pyFunc, pyArgs, pyKw);
++    boost::python::object pyResult = py_import("__main__").attr("__builtins__").attr("apply")(pyFunc, pyArgs, pyKw);
+     classad::ExprTree* exprTreeResult = convert_python_to_exprtree(pyResult);
+     if (!exprTreeResult || !exprTreeResult->Evaluate(state, result))
+     {
+@@ -220,7 +220,7 @@ python_invoke (const char *                 name,
+ 
+     try
+     {
+-        boost::python::object module = boost::python::import(boost::python::str(moduleName));
++        boost::python::object module = py_import(boost::python::str(moduleName));
+         boost::python::object pyFunc = module.attr(functionName.c_str());
+         return python_invoke_internal(pyFunc, arguments, state, result);
+     }
+diff --git a/src/python-bindings/config.cpp b/src/python-bindings/config.cpp
+index acad3ea..1ef3320 100644
+--- a/src/python-bindings/config.cpp
++++ b/src/python-bindings/config.cpp
+@@ -316,7 +316,7 @@ struct RemoteParam
+ 
+     void refresh()
+     {
+-        m_attrs = boost::python::import("__main__").attr("__builtins__").attr("set")();
++        m_attrs = py_import("__main__").attr("__builtins__").attr("set")();
+         m_lookup = boost::python::dict();
+         m_queried_attrs = false;
+     }
+diff --git a/src/python-bindings/event.cpp b/src/python-bindings/event.cpp
+index 5595248..6a2b0d9 100644
+--- a/src/python-bindings/event.cpp
++++ b/src/python-bindings/event.cpp
+@@ -152,7 +152,7 @@ EventIterator::poll(int timeout_ms)
+ boost::python::object
+ EventIterator::next_nostop()
+ {
+-    boost::python::object stopIteration = boost::python::import("exceptions").attr("StopIteration");
++    boost::python::object stopIteration = py_import("exceptions").attr("StopIteration");
+     boost::python::object result = boost::python::object();
+     try
+     {
