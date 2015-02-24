@@ -1,7 +1,7 @@
 
 Name: xrootd-status-probe
 Version: 0.0.3
-Release: 10%{?dist}
+Release: 11%{?dist}
 Summary: Probes to check the health of an Xrootd server
 
 Group: System/Monitoring
@@ -9,15 +9,10 @@ License: GPL
 URL: svn://t2.unl.edu/brian/xrootd_status_probe
 Source0: %{name}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-#%if 0%{?rhel} >= 7
+
 BuildRequires: xrootd-client-devel >= 1:4.1.0
-BuildRequires: xrootd-compat-libs
 Requires: xrootd-client-libs >= 1:4.1.0
-Requires: xrootd-compat-libs
-#%else
-#BuildRequires: xrootd4-client-devel >= 4.0.0
-#Requires: xrootd4-client-libs >= 1:4.0.0
-#%endif
+
 
 %description
 
@@ -43,6 +38,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_defaultdocdir}/xrootd-status-probe/README
 
 %changelog
+* Tue Feb 24 2015 Edgar Fajardo <emmfajard@ucsd.edu> 0.0.3-11
+- Removed the xrootd-compat-libs requirement not needed
+
 * Tue Feb 24 2015 Edgar Fajardo <emmfajard@ucsd.edu> 0.0.3-10
 - Require xrootd compat libs
 - Require xrootd (not xrootd4) for all buillds
