@@ -21,6 +21,7 @@ Requires: yum-utils
 Requires: cvmfs
 Requires: osg-configure-tests
 Requires: cvmfs-keys
+Requires: gfal2-plugin-file
 
 Requires: gratia-probe-psacct
 Requires: gratia-probe-condor
@@ -95,6 +96,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Feb 25 2015 Brian Lin <blin@cs.wisc.edu> 3.2-8
+- Add gfal2-plugin-file for both RHEL 7 and non-RHEL 7
+
 * Fri Oct 31 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 3.2-7
 - Add lcas-lcmaps-gt4-interface to RHEL 7
 
