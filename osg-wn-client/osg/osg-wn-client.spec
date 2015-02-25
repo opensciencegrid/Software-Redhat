@@ -119,7 +119,7 @@ rm -rf $RPM_BUILD_ROOT
 %files glexec
 
 %changelog
-* Wed Feb 25 2015 Brian Lin <blin@cs.wisc.edu> 3.0.0-29_clipped
+* Wed Feb 25 2015 Brian Lin <blin@cs.wisc.edu> 3.0.0-29
 - Bring in gfal2-plugin-file (SOFTWARE-1799)
 
 * Tue Nov 11 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 3.0.0-28_clipped
