@@ -4,7 +4,7 @@ Version:   3.0.0
 %if 0%{?el7}
 %define release_suffix _clipped
 %endif
-Release:   28%{?release_suffix}%{?dist}
+Release:   29%{?release_suffix}%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -54,6 +54,7 @@ Requires: globus-xio-udt-driver
 
 Requires: gfal2
 Requires: gfal2-util
+Requires: gfal2-plugin-file
 Requires: gfal2-plugin-srm
 Requires: gfal2-plugin-gridftp
 Requires: gfal2-plugin-xrootd
@@ -118,6 +119,9 @@ rm -rf $RPM_BUILD_ROOT
 %files glexec
 
 %changelog
+* Wed Feb 25 2015 Brian Lin <blin@cs.wisc.edu> 3.0.0-29_clipped
+- Bring in gfal2-plugin-file (SOFTWARE-1799)
+
 * Tue Nov 11 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 3.0.0-28_clipped
 - Bring in dcache-srmclient on EL7
 - Include java-devel on EL7
