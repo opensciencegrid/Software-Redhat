@@ -1,0 +1,5 @@
+Source rpm obtained from:
+
+http://dl.fedoraproject.org/pub/epel/6/SRPMS/xrootd-compat-3.3.6-1.el6.src.rpm
+
+Almost a strict passthrough removing the conflicts, so rhel5 installations will work
