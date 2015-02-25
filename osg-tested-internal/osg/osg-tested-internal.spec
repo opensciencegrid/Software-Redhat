@@ -21,7 +21,6 @@ Requires: yum-utils
 Requires: cvmfs
 Requires: osg-configure-tests
 Requires: cvmfs-keys
-Requires: gfal2-plugin-file
 
 Requires: gratia-probe-psacct
 Requires: gratia-probe-condor
