@@ -4,7 +4,7 @@
 Name:      xrootd-voms-plugin
 Epoch:     1
 Version:   0.2.0
-Release:   1.5%{?dist}
+Release:   1.6%{?dist}
 Summary:   VOMS attribute extractor plug-in for XRootD
 Group:     System Environment/Libraries
 License:   BSD
@@ -15,6 +15,7 @@ Prefix:    /usr
 # cd vomsxrd
 # ./packaging/maketar.sh --prefix vomsxrd --output ~/rpmbuild/SOURCES/vomsxrd.tar.gz
 Source0:   vomsxrd.tar.gz
+Patch0:    xrootd-4.1-build.patch
 BuildRoot: %{_tmppath}/%{name}-root
 
 BuildRequires: cmake >= 2.6
@@ -22,14 +23,12 @@ BuildRequires: voms >= 2.0.6
 BuildRequires: voms-devel >= 2.0.6
 #BuildRequires: xrootd4-libs 
 #BuildRequires: xrootd4-devel
-BuildRequires: xrootd-libs >= 4.1.0
-BuildRequires: xrootd-devel >= 4.1.0
-BuildRequires: xrootd-compat-libs
+BuildRequires: xrootd-libs >= 1:4.1.0
+BuildRequires: xrootd-devel >= 1:4.1.0
 
 
 Requires: voms >= 2.0.6
 Requires: xrootd-libs >= 1:4.1.0
-Requires: xrootd-compat-libs
 
 %description
 The VOMS attribute extractor plug-in for XRootD
@@ -49,6 +48,7 @@ Headers for using the VOMS attribute extractor plug-in
 #-------------------------------------------------------------------------------
 %prep
 %setup -c -n vomsxrd
+%patch0 -p0
 
 %build
 cd vomsxrd
@@ -98,6 +98,9 @@ rm -rf $RPM_BUILD_ROOT
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Wed Feb 25 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1:0.2.0-1.6.osg
+- Patch to not require xrootd-compat-libs
+
 * Mon Feb 23 2015 Edgar Fajardo <emfajard@ucsd.edu> - 1:0.2.0-1.4
 - Added the xrootd-compat-libs requirement for smooth transitioning to xrootd 4.1.1
 

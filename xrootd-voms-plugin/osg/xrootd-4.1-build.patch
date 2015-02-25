@@ -1,0 +1,17 @@
+Index: vomsxrd/cmake/FindXRootD.cmake
+===================================================================
+--- vomsxrd/cmake/FindXRootD.cmake.orig	2013-03-25 13:57:34.000000000 -0500
++++ vomsxrd/cmake/FindXRootD.cmake	2015-02-25 15:14:59.433154685 -0600
+@@ -45,11 +45,11 @@ else()
+     
+   set( XROOTD_INCLUDE_DIRS ${XROOTD_INCLUDE_DIR})
+ 
+   find_library(
+     XROOTD_LIBRARY
+-    NAMES XrdCryptossl
++    NAMES XrdCryptossl-4
+     HINTS
+     ${XROOTD_ROOT_DIR}
+     PATH_SUFFIXES lib64
+     ${LIBRARY_PATH_PREFIX}
+     ${LIB_SEARCH_OPTIONS})

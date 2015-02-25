@@ -1,7 +1,7 @@
 
 Name: xrootd-lcmaps
 Version: 0.0.7
-Release: 10%{?dist}
+Release: 11%{?dist}
 Summary: LCMAPS plugin for xrootd
 
 Group: System Environment/Daemons
@@ -11,13 +11,13 @@ URL: https://github.com/bbockelm/xrootd-lcmaps
 # git-archive master | gzip -7 > ~/rpmbuild/SOURCES/xrootd-lcmaps.tar.gz
 Source0: %{name}.tar.gz
 Patch0: lcmaps-modules-path.patch
+Patch1: xrootd-4.1-build.patch
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
 BuildRequires: xrootd-devel >= 1:4.1.0
 BuildRequires: lcmaps-interface
 BuildRequires: lcmaps
 BuildRequires: cmake
-BuildRequires: xrootd-compat-libs
 
 
 Requires: xrootd >= 1:4.1.0
@@ -30,6 +30,7 @@ Requires: lcas-lcmaps-gt4-interface
 %prep
 %setup -q -c -n %{name}-%{version}
 %patch0 -p0
+%patch1 -p0
 
 %build
 #cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=RelWithDebInfo .
@@ -61,6 +62,9 @@ getent passwd xrootd >/dev/null || \
 %config(noreplace) %{_sysconfdir}/xrootd/lcmaps.cfg
 
 %changelog
+* Wed Feb 25 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 0.0.7-11.osg
+- Patch to not require xrootd-compat-libs
+
 * Thu Feb 24 2015 Edgar Fajardo <emfajard@ucsd.edu>  0.0.7-10
 - The xrootd-compat-libs were only needed at built time not required during installation
 
