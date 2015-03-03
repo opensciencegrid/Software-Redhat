@@ -1,7 +1,7 @@
 Name:      osg-tested-internal
 Summary:   All OSG packages we test (internal use only)
 Version:   3.2
-Release:   7%{?dist}
+Release:   8%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -55,8 +55,8 @@ Requires: torque-mom
 Requires: torque-client
 Requires: torque-scheduler
 Requires: osg-ce-pbs
-Requires: xrootd4
-Requires: xrootd4-client
+Requires: xrootd
+Requires: xrootd-client
 Requires: ndt-client
 
 Requires: gratia-service
@@ -95,8 +95,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Wed Feb 25 2015 Brian Lin <blin@cs.wisc.edu> 3.2-8
-- Add gfal2-plugin-file for both RHEL 7 and non-RHEL 7
+* Tue Mar 03 2015 Brian Lin <blin@cs.wisc.edu> 3.2-8
+- Change xrootd requirements to reflect reversion to old package name
 
 * Fri Oct 31 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 3.2-7
 - Add lcas-lcmaps-gt4-interface to RHEL 7
