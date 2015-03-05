@@ -5,7 +5,7 @@
 
 Summary:   Tests an OSG Software installation
 Name:      osg-test
-Version:   1.4.23
+Version:   1.4.24
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -37,7 +37,13 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/osgtest
 
 %changelog
-* Wed Feb 04 2015 Brian Lin <blin@cs.wisc.edu> - 1.4.23-1
+* Thu Mar 05 2015 Brian Lin <blin@cs.wisc.edu> - 1.4.24-1
+- Fix install/update failures involving 3.1 due to new xrootd-compat packages in EPEL
+- Fix cleanup bug for tests with extra repos
+- Add gfal2-plugin-file requirement to gfal2 tests (SOFTWARE-1799)
+- Fix fetch-crl whitelist bug (SOFTWARE-1780)
+
+* Wed Feb 04 2015 Brian Lin <blin@cs.wisc.edu> - 1.4.23-1 
 - Whitelist gratia-dCache and fetch-crl network failures (SOFTWARE-1748, SOFTWARE-1613)
 - Fix skip mechanic of job tests (SOFTWARE-1730)
 - Add support for secure passwords with -s/--securepass (SOFTWARE-644)
