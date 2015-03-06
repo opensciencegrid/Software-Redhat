@@ -1,4 +1,4 @@
-%define tarball_version 8.3.3
+%define tarball_version 8.3.4
 
 # optionally define any of these, here or externally
 # % define fedora   16
@@ -104,7 +104,7 @@
 %define git_build 0
 # If building with git tarball, Fedora requests us to record the rev.  Use:
 # git log -1 --pretty=format:'%h'
-%define git_rev 8320c6a
+%define git_rev 3c8a289
 
 %if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
 %{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
@@ -118,7 +118,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.2
+%define condor_base_release 1.1
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -208,7 +208,7 @@ Source123: zlib-1.2.3.tar.gz
 
 Patch1: sw1636-cream_gahp-dlopen.patch
 
-# This will make it into upstream 8.3.4
+# This should make it into upstream 8.3.5
 # https://jira.opensciencegrid.org/browse/SOFTWARE-1807
 # https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=4588
 Patch2: sw1807-py_import.patch
@@ -1784,6 +1784,9 @@ fi
 %endif
 
 %changelog
+* Fri Mar 06 2015 Carl Edquist <edquist@cs.wisc.edu> - 8.3.4-1.1
+- Update to HTCondor 8.3.4 (SOFTWARE-1807)
+
 * Tue Feb 24 2015 Carl Edquist <edquist@cs.wisc.edu> - 8.3.3-1.2
 - Build fix for EL5 PROPER build (SOFTWARE-1807)
 
