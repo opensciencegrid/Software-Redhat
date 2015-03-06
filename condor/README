@@ -23,6 +23,9 @@ Instructions for updating upstream source:
   echo condor/$VERSION/$SRPM > upstream/developer.srpm.source
 
 
+You can also do this by running: ./pull-condor-srpm 8.2.5
+
+
 Notes on updating osg/condor.spec:
 
 If we are using our own version of condor.spec (which is the case if we are
