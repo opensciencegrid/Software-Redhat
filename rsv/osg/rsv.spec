@@ -1,12 +1,14 @@
+%define _alphatag .pre1
+
 Name:      rsv
 Summary:   RSV Meta Package
-Version:   3.8.0
-Release:   2%{?dist}
+Version:   3.9.0
+Release:   0.1%{?_alphatag}%{?dist}
 License:   Apache 2.0
 Group:     Applications/Monitoring
 URL:       https://twiki.grid.iu.edu/bin/view/MonitoringInformation/RSV
 
-Source0:   %{name}-%{version}.tar.gz
+Source0:   %{name}-%{version}%{?_alphatag}.tar.gz
 Patch0:    1653-default-ce-type.patch
 
 BuildArch: noarch
@@ -95,7 +97,7 @@ Requires: /usr/bin/condor_ce_ping
 
 
 %prep
-%setup -q
+%setup -q -n %{name}-%{version}%{?_alphatag}
 %patch0 -p1
 
 
@@ -237,6 +239,9 @@ fi
 
 
 %changelog
+* Thu Mar 05 2015 Carl Edquist <edquist@cs.wisc.edu> - 3.9.0-0.1.pre1
+- SOFTWARE-793 - pre-release of prototype batch system probe
+
 * Thu Feb 19 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.8.0-2
 - New version; drop upstreamed patch for probe runtime interval and fix 'Next Run Time' display
 
