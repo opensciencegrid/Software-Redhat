@@ -4,7 +4,7 @@ Version:   3.0.0
 %if 0%{?el7}
 %define release_suffix _clipped
 %endif
-Release:   29%{?release_suffix}%{?dist}
+Release:   30%{?release_suffix}%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -31,6 +31,7 @@ Requires: lcg-util
 Requires: lfc-client
 Requires: lfc-python
 Requires: myproxy
+Requires: voms-clients
 Requires: /usr/bin/ldapsearch
 Requires: dcache-srmclient
 %if ! 0%{?el7}
@@ -119,6 +120,9 @@ rm -rf $RPM_BUILD_ROOT
 %files glexec
 
 %changelog
+* Mon Mar 09 2015 Brian Lin <blin@cs.wisc.edu> 3.0.0-30
+- Explicitly require voms-clients
+
 * Wed Feb 25 2015 Brian Lin <blin@cs.wisc.edu> 3.0.0-29
 - Bring in gfal2-plugin-file (SOFTWARE-1799)
 
