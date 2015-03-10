@@ -4,7 +4,7 @@
 Name:      osg-ce
 Summary:   OSG Compute Element
 Version:   3.2
-Release:   7%{?dist}
+Release:   8%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -83,7 +83,6 @@ Group: Grid
 Summary: Gateway-less Condor meta-package for OSG-CE
 
 Requires: %{basece} = %{version}-%{release}
-Requires: condor
 Requires: gratia-probe-condor
 Requires: osg-configure-condor
 
@@ -96,7 +95,6 @@ Group: Grid
 Summary: Gateway-less PBS meta-package for OSG-CE
 
 Requires: %{basece} = %{version}-%{release}
-Requires: torque-client
 Requires: gratia-probe-pbs-lsf
 Requires: osg-configure-pbs
 
@@ -121,7 +119,6 @@ Group: Grid
 Summary: Gateway-less SGE meta-package for OSG-CE
 
 Requires: %{basece} = %{version}-%{release}
-Requires: gridengine
 Requires: gratia-probe-sge
 Requires: osg-configure-sge
 
@@ -294,6 +291,9 @@ exit 0
 %files slurm
 
 %changelog
+* Tue Mar 10 2015 Brian Lin <blin@cs.wisc.edu> 3.2-8
+- Drop batch system requirements (SOFTWARE-1796)
+
 * Fri Feb 20 2015 Brian Lin <blin@cs.wisc.edu> 3.2-7
 - Add SLURM metapackage
 
