@@ -5,7 +5,7 @@
 
 Name:                   graphtool
 Version:                0.6.6
-Release:                23%{?dist}
+Release:                24%{?dist}
 Summary:                CMS Common Graphing Package.
 
 Group:                  Development/Libraries
@@ -50,6 +50,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+
+* Tue Mar 10 2015 Juan F. Mosquera <jmorales@fnal.gov>
+- modifications to include query timeouts, query 
+- distinguishing images and fix for plots not including
+- title from url parameter
 
 * Tue Feb 10 2015 Juan F. Mosquera <jmorales@fnal.gov>
 - modifications to solve bug GRATIAWEB-69
