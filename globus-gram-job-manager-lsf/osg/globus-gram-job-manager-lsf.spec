@@ -3,7 +3,7 @@
 Name:		globus-gram-job-manager-lsf
 %global _name %(tr - _ <<< %{name})
 Version:	2.6
-Release:	1.1%{?dist}
+Release:	1.2%{?dist}
 Summary:	Globus Toolkit - LSF Job Manager Support
 
 Group:		Applications/Internet
@@ -13,6 +13,7 @@ Source:		http://www.globus.org/ftppub/gt6/packages/%{_name}-%{version}.tar.gz
 Source1:        lsf.rvf
 #		README file
 Source8:	GLOBUS-GRAM5
+Patch0:         sw1836-mcore.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Requires:	globus-gram-job-manager >= 13
@@ -85,6 +86,7 @@ state
 
 %prep
 %setup -q -n %{_name}-%{version}
+%patch0 -p1
 
 %build
 # Reduce overlinking
@@ -196,6 +198,9 @@ fi
 %config(noreplace) %{_sysconfdir}/globus/scheduler-event-generator/available/lsf
 
 %changelog
+* Wed Mar 11 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 2.6-1.2.osg
+- Add MCORE patch (SOFTWARE-1836)
+
 * Wed Feb 11 2015 Matyas Selmeci <matyas@cs.wisc.edu> - 2.6-1.1.osg
 - Merge OSG changes
 

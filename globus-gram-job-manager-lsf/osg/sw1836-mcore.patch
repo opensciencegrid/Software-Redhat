@@ -1,0 +1,34 @@
+Index: globus_gram_job_manager_lsf-2.6/lsf.pm
+===================================================================
+--- globus_gram_job_manager_lsf-2.6.orig/lsf.pm	2014-09-29 07:42:32.000000000 -0500
++++ globus_gram_job_manager_lsf-2.6/lsf.pm	2015-03-11 17:16:59.891850700 -0500
+@@ -349,20 +349,26 @@ EOF
+         return $self->respond_with_failure_extension(
+             "print: $lsf_job_script_name: $!",
+             Globus::GRAM::Error::TEMP_SCRIPT_FILE_FAILED());
+     }
+     $self->nfssync( $description->stderr(), 1 );
+-    $rc = print JOB '#BSUB -n ', $description->count(), "\n";
++    my @xcount, @host_xcount;
++    @xcount = $description->xcount();
++    if (defined($xcount[0]) && (int($xcount[0]) > 1)) {
++        $rc = print JOB '#BSUB -n ', $xcount[0], "\n";
++    } else { 
++        $rc = print JOB '#BSUB -n ', $description->count(), "\n";
++    }
+     if (!$rc)
+     {
+         return $self->respond_with_failure_extension(
+             "print: $lsf_job_script_name: $!",
+             Globus::GRAM::Error::TEMP_SCRIPT_FILE_FAILED());
+     }
+ 
+-    my @xcount, @host_xcount;
+-    @xcount = $description->xcount();
++#    my @xcount, @host_xcount;
++#    @xcount = $description->xcount();
+     @host_xcount = $description->host_xcount();
+ 
+     if (@host_xcount)
+     {
+         my $res = "";
