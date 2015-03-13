@@ -1,4 +1,4 @@
-%define _alphatag .pre1
+%define _alphatag .pre2
 
 Name:      rsv
 Summary:   RSV Meta Package
@@ -239,6 +239,9 @@ fi
 
 
 %changelog
+* Thu Mar 12 2015 Carl Edquist <edquist@cs.wisc.edu> - 3.9.0-0.1.pre2
+- SOFTWARE-793 - second pre-release of prototype batch system probe
+
 * Thu Mar 05 2015 Carl Edquist <edquist@cs.wisc.edu> - 3.9.0-0.1.pre1
 - SOFTWARE-793 - pre-release of prototype batch system probe
 
