@@ -1,9 +1,9 @@
-%define _alphatag .pre2
+%define _alphatag .pre3
 
 Name:      rsv
 Summary:   RSV Meta Package
 Version:   3.9.0
-Release:   0.1%{?_alphatag}%{?dist}
+Release:   0.3%{?_alphatag}%{?dist}
 License:   Apache 2.0
 Group:     Applications/Monitoring
 URL:       https://twiki.grid.iu.edu/bin/view/MonitoringInformation/RSV
@@ -239,6 +239,9 @@ fi
 
 
 %changelog
+* Tue Mar 17 2015 Carl Edquist <edquist@cs.wisc.edu> - 3.9.0-0.3.pre3
+- SOFTWARE-793 - third pre-release; with non-htcondor batch support
+
 * Thu Mar 12 2015 Carl Edquist <edquist@cs.wisc.edu> - 3.9.0-0.1.pre2
 - SOFTWARE-793 - second pre-release of prototype batch system probe
 
