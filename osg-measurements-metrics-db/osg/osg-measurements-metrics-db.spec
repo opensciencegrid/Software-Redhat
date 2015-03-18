@@ -5,7 +5,7 @@
 
 Name:           osg-measurements-metrics-db
 Version:        1.2
-Release:        33%{?dist}
+Release:        34%{?dist}
 Summary:        OSG Measurements and Metrics web and database
 
 Group:          Applications/System
@@ -60,6 +60,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+
+* Wed Mar 18 2015 Juan F. Mosquera <jmorales@fnal.gov>
+- modifications to replace unescaped characters in cron job
 
 * Tue Mar 10 2015 Juan F. Mosquera <jmorales@fnal.gov>
 - modifications to include fnal tape queries, and changes
