@@ -1,15 +1,11 @@
---- src/grid_credential_handling/gsi_handling/lcmaps_voms_attributes.c.orig	2014-02-28 06:55:27.000000000 -0600
-+++ src/grid_credential_handling/gsi_handling/lcmaps_voms_attributes.c	2014-12-10 16:56:48.000000000 -0600
-@@ -110,10 +110,9 @@
- static char *vomsdir = NULL;
+--- src/grid_credential_handling/gsi_handling/lcmaps_voms_attributes.c.O	2015-03-24 15:27:03.257146000 -0500
++++ src/grid_credential_handling/gsi_handling/lcmaps_voms_attributes.c	2015-03-24 15:27:21.936625000 -0500
+@@ -126,7 +126,7 @@
+ /*
+  * Always verify all VOMS credentials by default
+  */
+-static unsigned int verify_voms_flags = VERIFY_FULL;
++static unsigned int verify_voms_flags = VERIFY_NONE;
  
  /*
-- * Always verify VOMS credentials by default
-- * as designed by the VOMS developers
-+ * Don't verify VOMS credentials by default
-  */
--static int   verify_voms_credentials = 1;
-+static int   verify_voms_credentials = 0;
- 
- #ifdef GRST_ACTIVE
- 
+  * Verification time for proxy. In case voms_verify_time_flags==1 the time is
