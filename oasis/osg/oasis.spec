@@ -1,5 +1,5 @@
 %define name oasis
-%define version 2.0.17
+%define version 2.0.18
 %define release 1
 
 Summary: OASIS package
@@ -153,6 +153,10 @@ f_restart_daemon $1
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+
+* Mon Mar 23 2015 Jose Caballero <jcaballero@bnl.gvo> - 2.0.18-1
+
+- typo fixed
 
 * Mon Mar 23 2015 Jose Caballero <jcaballero@bnl.gvo> - 2.0.17-1
 
