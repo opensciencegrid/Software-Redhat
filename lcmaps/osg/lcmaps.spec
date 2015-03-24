@@ -17,8 +17,8 @@
 
 Summary: Grid (X.509) and VOMS credentials to local account mapping service
 Name: lcmaps
-Version: 1.6.4
-Release: 1.3%{?dist}
+Version: 1.6.6
+Release: 1.1%{?dist}
 License: ASL 2.0
 Group: System Environment/Libraries
 URL: http://wiki.nikhef.nl/grid/LCMAPS
@@ -27,11 +27,11 @@ Source1: lcmaps.db
 Patch0: defaultnovomscheck.patch
 # BuildRoot is still required for EPEL5
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
-BuildRequires: globus-core
 BuildRequires: globus-common-devel
 BuildRequires: globus-gssapi-gsi-devel
 BuildRequires: globus-gss-assist-devel
 BuildRequires: globus-gsi-credential-devel
+BuildRequires: globus-gsi-proxy-core-devel
 BuildRequires: voms-devel
 BuildRequires: flex, bison
 
@@ -242,10 +242,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/liblcmaps_verify_account_from_pem.so
 %{_libdir}/liblcmaps_verify_account_from_pem.so.0
 %{_libdir}/liblcmaps_verify_account_from_pem.so.0.0.0
-%{_datadir}/man/man3/lcmaps.3*
+%{_mandir}/man3/lcmaps.3*
 %dir %{_libdir}/lcmaps
-%doc BUGS AUTHORS doc/INSTALL_WITH_WORKSPACE_SERVICE LICENSE
-%doc README README.NO_LDAP
+%doc BUGS AUTHORS LICENSE README README.NO_LDAP NEWS
 %doc build/etc/lcmaps.db build/etc/groupmapfile build/etc/vomapfile
 
 %files without-gsi
@@ -259,10 +258,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/liblcmaps_gss_assist_gridmap_without_gsi.so
 %{_libdir}/liblcmaps_gss_assist_gridmap_without_gsi.so.0
 %{_libdir}/liblcmaps_gss_assist_gridmap_without_gsi.so.0.0.0
-%{_datadir}/man/man3/lcmaps.3*
+%{_mandir}/man3/lcmaps.3*
 %dir %{_libdir}/lcmaps
-%doc BUGS AUTHORS LICENSE
-%doc README README.NO_LDAP
+%doc BUGS AUTHORS LICENSE README README.NO_LDAP NEWS
 %doc build-without-gsi/etc/lcmaps.db
 %doc build-without-gsi/etc/groupmapfile
 %doc build-without-gsi/etc/vomapfile
@@ -319,6 +317,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Feb 18 2015 Mischa Salle <msalle@nikhef.nl> 1.6.6-1
+- updated version
+- update globus dependencies
+
 * Wed Dec 10 2014 Dave Dykstra <dwd@fnal.gov> 1.6.4-1.3.osg
 - Updated defaultnovomscheck.patch for current source code context.
   Apparently the el5 patch was forgiving enough so as to not notice.
@@ -328,6 +330,11 @@ rm -rf $RPM_BUILD_ROOT
 
 * Tue Dec 09 2014 Dave Dykstra <dwd@fnal.gov> 1.6.4-1.1.osg
 - Reimported upstream version into OSG
+
+* Tue Mar  4 2014 Mischa Salle <msalle@nikhef.nl> 1.6.5-1
+- updated version
+- do not install very old doc/INSTALL_WITH_WORKSPACE_SERVICE
+- install NEWS file
 
 * Fri Feb 28 2014 Mischa Salle <msalle@nikhef.nl> 1.6.4-1
 - updated version
