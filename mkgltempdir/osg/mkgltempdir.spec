@@ -1,6 +1,6 @@
 Summary: Create a directory owned by the gLExec target user
 Name: mkgltempdir
-Version: 0.0.4
+Version: 0.0.5
 Release: 1.1%{?dist}
 Vendor: Nikhef
 License: ASL 2.0
@@ -37,6 +37,9 @@ make DESTDIR=$RPM_BUILD_ROOT install
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Tue Mar 24 2015 Jose Caballero <jcaballero@bnl.gov> - 0.0.5-1.1
+  Bumped to 0.0.5-1
+
 * Thu Nov 20 2014 Jose Caballero <jcaballero@bnl.gov> - 0.0.4-1.1
   Bumped to 0.0.4-1
 
