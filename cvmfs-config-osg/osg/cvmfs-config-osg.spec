@@ -1,10 +1,11 @@
 Summary: CernVM File System OSG Configuration and Public Keys
 Name: cvmfs-config-osg
 Version: 1.1
-Release: 3%{?dist}
+Release: 4%{?dist}
 %define cvmfsversion 2.1.20
 Source0: https://ecsft.cern.ch/dist/cvmfs/cvmfs-%{cvmfsversion}.tar.gz
 Source1: 60-osg.conf
+Patch0: osgstratum1s.patch
 BuildArch: noarch
 Group: Applications/System
 License: BSD
@@ -24,6 +25,7 @@ to repositories under the cern.ch, egi.eu, and opensciencegrid.org domains
 
 %prep
 %setup -q -n cvmfs-%{cvmfsversion}
+%patch0 -p0
 
 %install
 cp `find mount -mindepth 1 \( -name "*.conf" -o -name "*.pub" \)` .
@@ -76,6 +78,9 @@ done
 %config %{_sysconfdir}/cvmfs/config.d/*
 
 %changelog
+* Wed Mar 24 2015 Dave Dykstra <dwd@fnal.gov> - 1.1-4
+- add patch to set egi and osg repo servers to only OSG stratum 1s
+
 * Wed Mar 24 2015 Dave Dykstra <dwd@fnal.gov> - 1.1-3
 - add %{?dist} to release number
 
