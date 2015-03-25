@@ -1,0 +1,12 @@
+Index: globus_ftp_client-8.19/gridftp-ssh.in
+===================================================================
+--- globus_ftp_client-8.19.orig/gridftp-ssh.in	2015-02-12 11:55:02.000000000 -0600
++++ globus_ftp_client-8.19/gridftp-ssh.in	2015-03-25 09:37:06.051396136 -0500
+@@ -42,6 +42,6 @@ fi
+ 
+ if [ "X" != "X$GLOBUS_SSHFTP_PRINT_ON_CONNECT" ]; then
+     echo "Connecting to $1 ..." >/dev/tty
+ fi
+ 
+-exec @SSH_BIN@ $port_str $remote_host $remote_program
++exec /usr/bin/ssh $port_str $remote_host $remote_program

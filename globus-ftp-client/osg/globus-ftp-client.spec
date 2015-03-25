@@ -3,7 +3,7 @@
 Name:		globus-ftp-client
 %global _name %(tr - _ <<< %{name})
 Version:	8.19
-Release:	1.1%{?dist}
+Release:	1.2%{?dist}
 Summary:	Globus Toolkit - GridFTP Client Library
 
 Group:		System Environment/Libraries
@@ -12,6 +12,7 @@ URL:		http://www.globus.org/
 Source:		http://www.globus.org/ftppub/gt6/packages/%{_name}-%{version}.tar.gz
 #		README file
 Source8:	GLOBUS-GRIDFTP
+Patch0:         1853-ssh-bin.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Requires:	globus-xio-popen-driver%{?_isa} >= 2
@@ -81,6 +82,7 @@ GridFTP Client Library Documentation Files
 
 %prep
 %setup -q -n %{_name}-%{version}
+%patch0 -p1
 
 %build
 # Reduce overlinking
@@ -144,6 +146,9 @@ rm -rf %{buildroot}
 %{?_licensedir: %license GLOBUS_LICENSE}
 
 %changelog
+* Wed Mar 25 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 8.19-1.2.osg
+- Fix @SSH_BIN@ in gridftp-ssh script (SOFTWARE-1853)
+
 * Fri Mar 13 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 8.19-1.1.osg
 - Disable checks because they hang
 
