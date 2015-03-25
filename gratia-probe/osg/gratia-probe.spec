@@ -1,8 +1,8 @@
 Name:               gratia-probe
 Summary:            Gratia OSG accounting system probes
 Group:              Applications/System
-Version:            1.14.0.pre00
-Release:            9%{?dist}
+Version:            1.14.0
+Release:            1%{?dist}
 
 License:            GPL
 Group:              Applications/System
@@ -148,7 +148,8 @@ install -d $RPM_BUILD_ROOT/%{_sysconfdir}/gratia
     install -m 644 common/ProbeConfigTemplate.osg $PROBE_DIR/ProbeConfig
     ln -s %{_sysconfdir}/gratia/$probe/ProbeConfig $RPM_BUILD_ROOT/%{_datadir}/gratia/$probe/ProbeConfig
 
-    # lines in ProbeConfig.add added before @PROBE_SPECIFIC_DATA@ tag
+    ## Probe-specific customizations
+    # Probe template addon lines in ProbeConfig.add (in probe directory) added before @PROBE_SPECIFIC_DATA@ tag
     if [ -e "$probe/ProbeConfig.add" ]; then
       sed -i.bck "/@PROBE_SPECIFIC_DATA@/ {
           h
@@ -160,6 +161,7 @@ install -d $RPM_BUILD_ROOT/%{_sysconfdir}/gratia
       rm "$PROBE_DIR/ProbeConfig.bck"
     fi
 
+    # Collector strings
     if [ $probe == "enstore-*" -o $probe == "dCache-storagegroup" ]; then
       # must be first to catch enstrore-transfer/storage
       endpoint=%{enstore_collector}:%{default_collector_port}
@@ -180,8 +182,7 @@ install -d $RPM_BUILD_ROOT/%{_sysconfdir}/gratia
            -e "s#@SSL_REGISTRATION_ENDPOINT@#$endpoint#" \
         $PROBE_DIR/ProbeConfig
 
-    # Probe-specific customizations
-    # TODO: probe template addon - in directory, cat
+    # Other Probe-specific customizations
     if [ $probe == "psacct" ]; then
       sed -i -e 's#@PROBE_SPECIFIC_DATA@#PSACCTFileRepository="/var/lib/gratia/account/" \
     PSACCTBackupFileRepository="/var/lib/gratia/backup/" \
@@ -220,6 +221,8 @@ install -d $RPM_BUILD_ROOT/%{_sysconfdir}/gratia
     SlurmDbPasswordFile="/etc/gratia/slurm/pwfile" \
     SlurmDbName="slurm_acct_db" \
     SlurmCluster="mycluster"#' $PROBE_DIR/ProbeConfig
+    elif [ $probe == "condor" ]; then
+      sed -i -e 's#@PROBE_SPECIFIC_DATA@#NoCertinfoBatchRecordsAreLocal="0"#' $PROBE_DIR/ProbeConfig
     else
       sed -i -e 's#@PROBE_SPECIFIC_DATA@##' $PROBE_DIR/ProbeConfig
     fi
@@ -1015,11 +1018,26 @@ The dCache storagegroup probe for the Gratia OSG accounting system.
 %endif # noarch
 
 %changelog
-* Fri Mar 06 2015 Marco Mambelli <marcom@fnal.gov> - 1.14.rc0
-- new common files in common2 module
+* Tue Mar 24 2015 Marco Mambelli <marcom@fnal.gov> - 1.14.0-1
+- merging of sample-probe branch into trunk. sample-probe development started in Summer 2014
+- new common files in common2 module (base classes for probes)
 - Adding dCache storagegroup probe
 - Adding Enstore probes: transfer, storage, tape drive
-- Adding LSF python probe
+- Adding LSF python probe 
+
+* Mon Nov 3 2014 Marco Mambelli <marcom@fnal.gov> - 1.13.31-1
+- Changed logic reporting VOName (GRATIA-156)
+- certinfo files not checked for transfer probes (GRATIA-159)
+- dCache transfer scalability improved (GRATIA-159)
+
+* Tue Jul 15 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.13.30-3
+- Fix syntax error in condor_meter
+
+* Thu Jul 10 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.13.30-2
+- Set NoCertinfoBatchRecordsAreLocal="0" by default (GRATIA-149)
+
+* Thu Jul 10 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.13.30-1
+- Bugfix for condor grid jobs incorrectly interpreted as Local (GRATIA-149)
 
 * Tue Jun 03 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.13.29-1
 - Bugfix for hadoop storage probe (GRATIA-137)
