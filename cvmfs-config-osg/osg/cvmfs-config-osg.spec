@@ -1,7 +1,7 @@
 Summary: CernVM File System OSG Configuration and Public Keys
 Name: cvmfs-config-osg
 Version: 1.1
-Release: 2
+Release: 3%{?dist}
 %define cvmfsversion 2.1.20
 Source0: https://ecsft.cern.ch/dist/cvmfs/cvmfs-%{cvmfsversion}.tar.gz
 Source1: 60-osg.conf
@@ -76,6 +76,9 @@ done
 %config %{_sysconfdir}/cvmfs/config.d/*
 
 %changelog
+* Wed Mar 24 2015 Dave Dykstra <dwd@fnal.gov> - 1.1-3
+- add %{?dist} to release number
+
 * Wed Mar 24 2015 Dave Dykstra <dwd@fnal.gov> - 1.1-2
 - bump release only to allow koji to rebuild; the first attempt failed
   because of a mysterious error in koji
