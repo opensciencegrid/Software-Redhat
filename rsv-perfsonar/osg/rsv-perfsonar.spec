@@ -1,5 +1,5 @@
 Name:      rsv-perfsonar
-Version:   1.0.12
+Version:   1.0.13
 Release:   1%{?dist}
 Summary:   RSV Metrics to monitor pefsonar
 Packager:  OSG-Software
@@ -46,7 +46,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libexecdir}/rsv/probes/worker-scripts/esmond*
 %{_libexecdir}/rsv/metrics/org.osg.general.perfsonar-simple
 %{_libexecdir}/rsv/metrics/org.osg.local.network-monitoring-local
-%config(noreplace) %{_sysconfdir}/condor-cron/config.d/config.d/50-rsv-perfsonar.config
+%config %{_sysconfdir}/condor-cron/config.d/50-rsv-perfsonar.config
 %config %{_sysconfdir}/rsv/meta/metrics/org.osg.general.perfsonar-simple.meta
 %config %{_sysconfdir}/rsv/meta/metrics/org.osg.local.network-monitoring-local.meta
 %config(noreplace) %{_sysconfdir}/rsv/metrics/org.osg.general.perfsonar-simple.conf
@@ -72,6 +72,9 @@ scl enable python27 - << \EOF
 EOF 
 
 %changelog
+* Thu Mar 26 2015 <efajardo@physics.ucsd.edu> 1.0.13-1
+- Sanitized the url from the meshes to prevent the main probe from choking
+
 * Tue Mar 3 2015 <efajardo@physics.ucsd.edu> 1.0.12-1
 - Changed the way the packet-loss-rate is uploaded for increased accurancy
 
