@@ -1,10 +1,11 @@
 Summary: CernVM File System OSG Configuration and Public Keys
 Name: cvmfs-config-osg
 Version: 1.1
-Release: 4%{?dist}
+Release: 5%{?dist}
 %define cvmfsversion 2.1.20
 Source0: https://ecsft.cern.ch/dist/cvmfs/cvmfs-%{cvmfsversion}.tar.gz
 Source1: 60-osg.conf
+Source2: oasis.opensciencegrid.org.conf
 Patch0: osgstratum1s.patch
 BuildArch: noarch
 Group: Applications/System
@@ -60,7 +61,7 @@ done
 for defaultconf in %{SOURCE1}; do
     install -D -m 444 "${defaultconf}" $RPM_BUILD_ROOT%{_sysconfdir}/cvmfs/default.d
 done
-for conf in ${SOURCE11} ${SOURCE12} ${SOURCE13}; do
+for conf in ${SOURCE11} ${SOURCE12} ${SOURCE13} %{SOURCE2}; do
     install -D -m 444 "${conf}" $RPM_BUILD_ROOT%{_sysconfdir}/cvmfs/config.d
 done
 
@@ -78,15 +79,18 @@ done
 %config %{_sysconfdir}/cvmfs/config.d/*
 
 %changelog
-* Wed Mar 24 2015 Dave Dykstra <dwd@fnal.gov> - 1.1-4
+* Fri Mar 27 2015 Dave Dykstra <dwd@fnal.gov> - 1.1-5
+- add oasis.opensciencegrid.org.conf to set $OASIS_CERTIFICATES
+
+* Wed Mar 25 2015 Dave Dykstra <dwd@fnal.gov> - 1.1-4
 - add patch to set egi and osg repo servers to only OSG stratum 1s
 
-* Wed Mar 24 2015 Dave Dykstra <dwd@fnal.gov> - 1.1-3
+* Wed Mar 25 2015 Dave Dykstra <dwd@fnal.gov> - 1.1-3
 - add %{?dist} to release number
 
-* Wed Mar 24 2015 Dave Dykstra <dwd@fnal.gov> - 1.1-2
+* Wed Mar 25 2015 Dave Dykstra <dwd@fnal.gov> - 1.1-2
 - bump release only to allow koji to rebuild; the first attempt failed
   because of a mysterious error in koji
 
-* Wed Mar 24 2015 Dave Dykstra <dwd@fnal.gov> - 1.1-1
+* Wed Mar 25 2015 Dave Dykstra <dwd@fnal.gov> - 1.1-1
 - initial creation, based on cvmfs-config-default.spec
