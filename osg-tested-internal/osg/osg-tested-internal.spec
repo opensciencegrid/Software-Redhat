@@ -1,7 +1,7 @@
 Name:      osg-tested-internal
 Summary:   All OSG packages we test (internal use only)
 Version:   3.2
-Release:   8%{?dist}
+Release:   9%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -20,7 +20,7 @@ Requires: /usr/sbin/condor_master
 Requires: yum-utils
 Requires: cvmfs
 Requires: osg-configure-tests
-Requires: cvmfs-keys
+Requires: cvmfs-config
 
 Requires: gratia-probe-psacct
 Requires: gratia-probe-condor
@@ -95,6 +95,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Mar 27 2015 Carl Edquist <edquist@cs.wisc.edu> - 3.2-9
+- Change cvmfs-keys requirement to cvmfs-config (SOFTWARE-1848)
+
 * Tue Mar 03 2015 Brian Lin <blin@cs.wisc.edu> 3.2-8
 - Change xrootd requirements to reflect reversion to old package name
 
