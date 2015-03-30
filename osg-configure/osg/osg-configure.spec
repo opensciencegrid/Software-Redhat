@@ -1,6 +1,6 @@
 Summary: Package for configure-osg and associated scripts
 Name: osg-configure
-Version: 1.0.68
+Version: 1.0.69
 Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
 Patch0: s1653-gateway-type.patch
@@ -325,6 +325,12 @@ fi
 
 
 %changelog
+* Mon Mar 30 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0.69-1.osg
+- Fix edg-mkgridmap path (SOFTWARE-1841)
+- Use SCHEDD_ATTRS instead of SCHEDD_EXPRS (SOFTWARE-1838)
+- Add warning if OSG_ResourceCatalog overridden (SOFTWARE-1847)
+- Write blah_disable_wn_proxy_renewal=yes to blah config if not using Condor as the batch system (SOFTWARE-1803)
+
 * Thu Feb 19 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0.68-1
 - Allow max_wall_time to be 0 or unspecified (SOFTWARE-1779)
 
