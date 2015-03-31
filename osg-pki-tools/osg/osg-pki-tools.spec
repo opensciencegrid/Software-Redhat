@@ -1,6 +1,6 @@
 Summary: osg-pki-tools
 Name: osg-pki-tools
-Version: 1.2.11
+Version: 1.2.12
 Release: 1%{?dist}
 Source: OSGPKITools-%{version}.tar.gz
 License: Apache 2.0
@@ -75,6 +75,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Mar 31 2015 Brian Lin <blin@cs.wisc.edu> - 1.2.12-1
+- Fix to osg-user-cert-renew using old SSL protocols
+- Check write permissions of output dir before renewing certs
+
 * Fri Oct 24 2014 Brian Lin <blin@cs.wisc.edu> - 1.2.11-1
 - Fix to avoid SSLv3 due to the POODLE vulnerability
 
