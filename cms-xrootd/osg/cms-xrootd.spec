@@ -2,7 +2,7 @@
 Summary: CMS meta-RPM for Xrootd
 Name: cms-xrootd
 Version: 1.2
-Release: 8%{?dist}
+Release: 9%{?dist}
 Group: System Environment/Daemons
 License: Public Domain
 URL: https://twiki.cern.ch/twiki/bin/view/Main/CmsXrootdArchitecture
@@ -15,7 +15,7 @@ Source2:  Authfile
 Source3:  xrootd.sample.dcache.cfg.in
 Source4:  xrootd.sample.proxy.cfg.in
 
-Requires: xrootd4 >= 1:4.0.0
+Requires: xrootd >= 1:4.1.0
 
 %ifarch %{ix86}
 Requires: libXrdLcmaps.so.0
@@ -62,7 +62,7 @@ Requires: %{name} = %{version}-%{release}
 %package dcache
 Summary: CMS meta-RPM for Xrootd over dCache
 Group: System Environment/Daemons
-Requires: xrootd4 >= 1:4.0.0
+Requires: xrootd >= 1:4.1.0
 
 %description dcache
 %{summary}
@@ -95,6 +95,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/xrootd/xrootd.sample.proxy.cfg
 
 %changelog
+* Tue Mar 31 2015 Edgar Fajardo <emfajard@ucsd.edu> - 1.2-9
+- Remove xrootd4 and replaced it with xrootd and version number
+
 * Wed Aug 13 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.2-8
 - Update to use xrootd4
 
