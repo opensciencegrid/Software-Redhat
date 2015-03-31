@@ -1,7 +1,7 @@
 Name:           osg-gridftp-xrootd
 Summary:        OSG GridFTP XRootd Storage Element package
 Version:        3.0.0
-Release:        5%{?dist}
+Release:        6%{?dist}
 License:        GPL
 Group:          System Environment/Daemons
 URL:            https://twiki.grid.iu.edu/twiki/bin/view/Storage/WebHome
@@ -30,7 +30,7 @@ Requires: liblcas_lcmaps_gt4_mapping.so.0()(64bit)
 
 #Xrootd stuff
 Requires: xrootd-dsi
-Requires: xrootd4-fuse
+Requires: xrootd-fuse >= 1:4.1.0
 Requires: gratia-probe-xrootd-transfer
 Requires: gratia-probe-xrootd-storage
 
@@ -48,6 +48,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Mar 31 2015 Edgar Fajardo <emfajard@ucsd.edu> - 3.0.0-6
+- Removed the xroot4-fuse for xrootd-fuse and version
+
 * Tue Aug 12 2014 Carl Edquist <edquist@cs.wisc.edu> - 3.0.0-5
 - Update xrootd-fuse requirement to xrootd4-fuse
 
