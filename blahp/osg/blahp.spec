@@ -1,6 +1,6 @@
 Name:		blahp
-Version:	1.18.11.bosco
-Release:	4%{?dist}
+Version:	1.18.12.bosco
+Release:	1%{?dist}
 Summary:	gLite BLAHP daemon
 
 Group:		System/Libraries
@@ -10,8 +10,7 @@ URL:		https://github.com/osg-bosco/BLAH
 # Tarball created with the following command:
 # git archive v1_18_bosco | gzip -8 > ~/rpmbuild/SOURCES/blahp.tar.gz
 Source0:        blahp.tar.gz
-Patch0:         condor_submit_syntax.patch
-Patch1:         sw1709-osg-job-env-vars.patch
+Patch0:         sw1709-osg-job-env-vars.patch
 
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildRequires:  automake
@@ -36,7 +35,6 @@ BuildRequires:  docbook-style-xsl, libxslt
 %prep
 %setup -c -n %{name}-%{version}
 %patch0 -p1
-%patch1 -p1
 
 %build
 ./bootstrap
@@ -179,6 +177,9 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Mon Mar 30 2015 Brian Lin <blin@cs.wisc.edu> - 1.18.12.bosco-1
+- Source profile.lsf for LSF job submission
+
 * Wed Dec 03 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.18.11.bosco-4
 - Fix syntax error in condor_submit.sh
 - Source OSG job environment variables in generated submit scripts for pbs,
