@@ -2,7 +2,7 @@
 %global _release 1
 
 Name:           osg-build
-Version:        1.4.3
+Version:        1.4.4
 Release:        %{?betatag:0.}%{_release}%{?betatag}%{?dist}
 Summary:        Build tools for the OSG
 
@@ -70,6 +70,14 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_docdir}/%{name}/sample-osg-build.ini
 
 %changelog
+* Wed Apr 1 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.4.4-1
+- Add log line with destination SRPM path for osg-build prebuild
+- Increase max retries for watching koji tasks
+- Actually ignore target-arch on non-scratch builds
+- Fix a few NameErrors in osg-import-srpm
+- Add some hackery to keep osg-promote working even after the 3.3 tags have
+  been created
+
 * Wed Dec 17 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.4.3-1
 - Add retry loop to watching tasks (SOFTWARE-1343)
 - Allow --target-arch option on scratch koji builds (SOFTWARE-1629)
