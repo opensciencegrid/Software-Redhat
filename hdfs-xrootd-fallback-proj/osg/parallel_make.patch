@@ -1,0 +1,32 @@
+diff --git a/hdfs-xrootd-fallback/Makefile.in b/hdfs-xrootd-fallback/Makefile.in
+index 7d70685..aebf370 100644
+--- a/hdfs-xrootd-fallback/Makefile.in
++++ b/hdfs-xrootd-fallback/Makefile.in
+@@ -30,18 +30,19 @@ clean:
+ distclean: clean
+ 	rm -f Makefile config.status config.log
+ 
+-hdfs-xrootd-fallback-$(vers).jar: src/org/xrootd/hdfs/fallback/XrdFallBackFileSystem.class \
+-src/org/xrootd/hdfs/fallback/XFBFSClient.class src/org/xrootd/hdfs/fallback/XFBFSInputStream.class \
+-src/org/xrootd/hdfs/fallback/XFBFSClient$$Config.class src/org/xrootd/hdfs/fallback/XrdBlockFetcher.class \
+-src/org/xrootd/hdfs/fallback/XrdUdpLog.class
+-	jar cvf $@ $(patsubst src/%,-C src '%',$^)
++hdfs-xrootd-fallback-$(vers).jar: java_stuff
++	jar cvf $@ -C src 'org/xrootd/hdfs/fallback/XrdFallBackFileSystem.class' -C src 'org/xrootd/hdfs/fallback/XFBFSClient.class' -C src 'org/xrootd/hdfs/fallback/XFBFSInputStream.class' -C src 'org/xrootd/hdfs/fallback/XFBFSClient$$Config.class' -C src 'org/xrootd/hdfs/fallback/XrdBlockFetcher.class' -C src 'org/xrootd/hdfs/fallback/XrdUdpLog.class'
+ 
+-%.class: %.java
++java_stuff: src/org/xrootd/hdfs/fallback/XrdFallBackFileSystem.java \
++src/org/xrootd/hdfs/fallback/XFBFSClient.java \
++src/org/xrootd/hdfs/fallback/XFBFSInputStream.java \
++src/org/xrootd/hdfs/fallback/XrdBlockFetcher.java \
++src/org/xrootd/hdfs/fallback/XrdUdpLog.java
+ 	javac -classpath src:$(hd_common_jar):$(hd_annotations_jar):$(hd_hdfs_jar) $<
+ 
+-src/%.h: src/org/xrootd/hdfs/fallback/%.class
++src/XrdBlockFetcher.h: java_stuff
+ 	cd src && \
+-	javah -jni -classpath .:$(hd_common_jar) -force -o $(patsubst src/%,%,$@) $(subst /,.,$(basename $(patsubst src/%,%,$<)))
++	javah -jni -classpath .:$(hd_common_jar) -force -o XrdBlockFetcher.h org.xrootd.hdfs.fallback.XrdBlockFetcher
+ 
+ %.o: src/%.cxx src/%.h
+ 	${CXX} ${CPPFLAGS} -I${JAVA_HOME}/include -I${JAVA_HOME}/include/linux ${CXXFLAGS} -fPIC -c $<
