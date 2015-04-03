@@ -5,7 +5,7 @@
 Name:		voms
 Version:	2.0.11
 %global tagver %(tr . _ <<< %{version})
-Release:	2.3%{?dist}
+Release:	2.4%{?dist}
 Summary:	Virtual Organization Membership Service
 
 Group:		System Environment/Libraries
@@ -96,6 +96,23 @@ groups, roles and capabilities.
 
 This package provides command line applications to access the VOMS
 services.
+
+
+%package clients-cpp
+Summary:        Shim package for voms-clients
+Group:		Applications/Internet
+Requires:	%{name}-clients%{?_isa} = %{version}-%{release}
+
+%description clients-cpp
+In grid computing, and whenever the access to resources may be controlled
+by parties external to the resource provider, users may be grouped to
+Virtual Organizations (VOs). This package provides a VO Membership Service
+(VOMS), which informs on that association between users and their VOs:
+groups, roles and capabilities.
+
+This package is a shim to work around compatibility issues with EPEL
+packaging. It may be removed at any time.
+
 
 %package server
 Summary:	Virtual Organization Membership Service Server
@@ -269,6 +286,9 @@ fi
 %doc README.Fedora
 
 %changelog
+* Fri Apr 03 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 2.0.11-2.4
+- Add voms-clients-cpp dummy package
+
 * Thu May 22 2014 Carl Edquist <edquist@cs.wisc.edu> - 2.0.11-2.3
 - Handle DNS failures (SOFTWARE-1463)
 
