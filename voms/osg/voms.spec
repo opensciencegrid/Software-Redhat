@@ -5,7 +5,7 @@
 Name:		voms
 Version:	2.0.11
 %global tagver %(tr . _ <<< %{version})
-Release:	2.4%{?dist}
+Release:	2.5%{?dist}
 Summary:	Virtual Organization Membership Service
 
 Group:		System Environment/Libraries
@@ -254,6 +254,9 @@ fi
 %doc %{_pkgdocdir}/VOMS_C_API
 %doc %{_pkgdocdir}/VOMS_CC_API
 
+%files clients-cpp
+# dummy
+
 %files clients
 %defattr(-,root,root,-)
 %{_bindir}/voms-proxy-destroy
@@ -286,7 +289,7 @@ fi
 %doc README.Fedora
 
 %changelog
-* Fri Apr 03 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 2.0.11-2.4
+* Fri Apr 03 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 2.0.11-2.5
 - Add voms-clients-cpp dummy package
 
 * Thu May 22 2014 Carl Edquist <edquist@cs.wisc.edu> - 2.0.11-2.3
