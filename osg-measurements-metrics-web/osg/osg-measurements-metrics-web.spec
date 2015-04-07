@@ -69,8 +69,8 @@ rm -rf $RPM_BUILD_ROOT
 %config %{_sysconfdir}/wlcg_email.conf.rpmnew
 %config %{_sysconfdir}/access.db
 %config %{_sysconfdir}/osg_graphs.conf
-%{_sysconfdir}/cron.d/*
-%{_sysconfdir}/logrotate.d/*
+%config(noreplace) %{_sysconfdir}/cron.d/*
+%config(noreplace) %{_sysconfdir}/logrotate.d/*
 %{_initrddir}/*
 
 
