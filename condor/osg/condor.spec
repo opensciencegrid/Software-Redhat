@@ -111,7 +111,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.1
+%define condor_base_release 1.2
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -1125,6 +1125,8 @@ rm -rf %{buildroot}
 #make check-seralized
 
 #################
+%files all
+#################
 %files
 %defattr(-,root,root,-)
 %doc LICENSE-2.0.txt examples
@@ -1816,6 +1818,9 @@ fi
 %endif
 
 %changelog
+* Wed Apr 08 2015 Carl Edquist <edquist@cs.wisc.edu> - 8.2.8-1.2
+- add missing %files all section
+
 * Tue Apr 07 2015 Carl Edquist <edquist@cs.wisc.edu> - 8.2.8-1.1
 - Update to 8.2.8 with OSG patches
 
