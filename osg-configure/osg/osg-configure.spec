@@ -1,7 +1,7 @@
 Summary: Package for configure-osg and associated scripts
 Name: osg-configure
-Version: 1.0.69
-Release: 2%{?dist}
+Version: 1.0.70
+Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
 Patch0: s1653-gateway-type.patch
 Patch1: s1703-gateway-type-tests.patch
@@ -13,8 +13,6 @@ BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 Vendor: Suchandra Thapa <sthapa@ci.uchicago.edu>
 Url: http://www.opensciencegrid.org
 Provides: configure-osg
-
-Requires: condor-python >= 8.2.0
 
 %if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
 %{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
@@ -327,6 +325,9 @@ fi
 
 
 %changelog
+* Tue Apr 07 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0.70-1.osg
+- Do not require the HTCondor Python bindings; handle their absence gracefully (SOFTWARE-1869)
+
 * Mon Mar 30 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0.69-2.osg
 - Require the HTCondor Python bindings
 
