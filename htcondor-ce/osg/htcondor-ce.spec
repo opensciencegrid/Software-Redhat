@@ -1,9 +1,9 @@
 # Have gitrev be the short hash or branch name if doing a prerelease build
-#define gitrev osg
+%define gitrev fbe4d72
 
 Name: htcondor-ce
-Version: 1.7
-Release: 2%{?gitrev:.%{gitrev}git}%{?dist}
+Version: 1.12
+Release: 0.1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 
 Group: Applications/System
@@ -47,6 +47,11 @@ Requires(preun): initscripts
 # On RHEL6 and later, we use this utility to setup a custom hostname.
 %if 0%{?rhel} >= 6
 Requires: /usr/bin/unshare
+%endif
+
+%if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
+%{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
+%{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
 %endif
 
 %description
@@ -152,7 +157,7 @@ Conflicts: %{name}
 %patch0 -p1
 
 %build
-%cmake -DHTCONDORCE_VERSION=%{version} -DCMAKE_INSTALL_LIBDIR=%{_libdir}
+%cmake -DHTCONDORCE_VERSION=%{version} -DCMAKE_INSTALL_LIBDIR=%{_libdir} -DPYTHON_SITELIB=%{python_sitelib}
 make %{?_smp_mflags}
 
 %install
@@ -270,6 +275,8 @@ fi
 %config %{_sysconfdir}/condor-ce/condor_config
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-common-auth.conf
 %{_datadir}/condor-ce/config.d/01-common-auth-defaults.conf
+%{_datadir}/condor-ce/config.d/01-common-collector-defaults.conf
+%{_datadir}/condor-ce/ce-status.cpf
 %config(noreplace) %{_sysconfdir}/condor-ce/condor_mapfile
 
 %{_datadir}/condor-ce/condor_ce_env_bootstrap
@@ -279,7 +286,8 @@ fi
 
 %{_bindir}/condor_ce_config_val
 %{_bindir}/condor_ce_hold
-%{_bindir}/condor_ce_job_router_tool
+%{_bindir}/condor_ce_info_status
+%{_bindir}/condor_ce_job_router_info
 %{_bindir}/condor_ce_off
 %{_bindir}/condor_ce_on
 %{_bindir}/condor_ce_q
@@ -296,11 +304,15 @@ fi
 %{_bindir}/condor_ce_trace
 %{_bindir}/condor_ce_ping
 
+%{python_sitelib}/condor_ce_info_query.py*
+%{python_sitelib}/condor_ce_tools.py*
+
 %files collector
 
 %{_bindir}/condor_ce_config_generator
 %{_initrddir}/condor-ce-collector
 %{_datadir}/condor-ce/config.d/01-ce-collector-defaults.conf
+%{_datadir}/condor-ce/config.d/01-ce-auth-defaults.conf
 
 %if %{?rhel} >= 7
 %{_unitdir}/condor-ce-collector.service
@@ -308,6 +320,8 @@ fi
 
 %config(noreplace) %{_sysconfdir}/sysconfig/condor-ce-collector
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-collector.conf
+%config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-auth.conf
+%config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-collector-requirements.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/02-ce-auth-generated.conf
 %config(noreplace) %{_sysconfdir}/cron.d/condor-ce-collector-generator.cron
 %config(noreplace) %{_sysconfdir}/logrotate.d/condor-ce-collector
@@ -323,6 +337,55 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Mon Apr 13 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.12-0.1.fbe4d72git
+- Add 01-ce-collector-requirements.conf
+
+* Mon Mar 30 2015 Brian Lin <blin@cs.wisc.edu> - 1.11-1
+- Add code for generating submit file additions (SOFTWARE-1760)
+- Bug fix for matching pilot DN's
+
+* Mon Feb 23 2015 Brian Lin <blin@cs.wisc.edu> - 1.10-1
+- Add dry-run option to condor_ce_run (SOFTWARE-1787)
+- Add minWalltime attribute
+- Allow the collector to accept startd ads from worker nodes
+- Advertise the collector's address in the job environment
+- Fix --vo broken if missing in condor_ce_info_status (SOFTWARE-1782)
+- Fix cleanup bug in condor_ce_run
+
+* Mon Jan 26 2015 Brian Lin <blin@cs.wisc.edu> - 1.9-3
+- Improvements to error handling and environment verification of condor_ce_trace
+- Change the name of the job router diagnostic tool to condor_ce_job_router_info
+
+* Tue Jan 06 2015 Brian Lin <blin@cs.wisc.edu> - 1.9-2
+- Fix HTCondor jobs routing incorrectly in 8.3.x
+
+* Fri Dec 18 2014 Brian Lin <blin@cs.wisc.edu> - 1.9-1
+- Add auth file to the collector RPM.
+- Updates and fixes to condor_ce_info_status and condor_ce_trace
+- Fixes to default security settings
+
+* Thu Dec 04 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.8-5
+- Add a user-friendly error message when condor_ce_reconfig fails in condor_ce_config_generator (SOFTWARE-1705)
+
+* Mon Dec 01 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.8-4
+- Fix help message code so it is Python 2.4 compatible
+
+* Mon Nov 24 2014 Brian Lin <blin@cs.wisc.edu> - 1.8-3
+- Nest try/except/finally for python 2.4 compatability
+
+* Mon Nov 24 2014 Brian Lin <blin@cs.wisc.edu> - 1.8-2
+- Fix configuration issue preventing htcondor-ce startup
+
+* Sun Nov 23 2014 Brian Bockelman <bbockelm@cse.unl.edu> - 1.8-1
+- Initial v1.8 release.
+- On newer HTCondor versions, have the collector and shared_port
+  use the same TCP port (SOFTWARE-1696).
+- Add tools for querying the central collector and parsing the
+  results (akin to condor_status for OSG). (SOFTWARE-1669, 1692, 1688)
+- Improve usability and usefulness of condor_ce_trace (SOFTWARE-1678, 1679)
+- Update the central collector with TCP instead of UDP (SOFTWARE-1676)
+- Set GRIDMANAGER_MAX_SUBMITTED_JOBS_PER_RESOURCE by default.
+
 * Fri Oct 31 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.7-2
 - Add basic systemd service files for condor-ce and condor-ce-collector (SOFTWARE-1541)
 - Fix name and description in the LSB lines in the init scripts
