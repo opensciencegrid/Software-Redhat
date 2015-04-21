@@ -307,8 +307,8 @@ build-jar-repository $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/l
 rm $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/log4j.properties
 rm $RPM_BUILD_ROOT%{_sysconfdir}/%{dirname}/log4j.properties
 rm $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/classes/log4j.properties
-install %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/%{dirname}/log4j.properties
-install %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/%{dirname}/log4j-service.properties
+install -m 0644 %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/%{dirname}/log4j.properties
+install -m 0644 %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/%{dirname}/log4j-service.properties
 ln -s %{_sysconfdir}/%{dirname}/log4j-service.properties $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/classes/log4j.properties
 
 # Add context to allow sym linking
