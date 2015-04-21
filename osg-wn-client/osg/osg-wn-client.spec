@@ -4,7 +4,7 @@ Version:   3.0.0
 %if 0%{?el7}
 %define release_suffix _clipped
 %endif
-Release:   30%{?release_suffix}%{?dist}
+Release:   31%{?release_suffix}%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -24,7 +24,11 @@ Requires: /usr/bin/curl
 Requires: /usr/bin/dccp
 Requires: dcap-tunnel-gsi
 Requires: edg-gridftp-client
+%if ! 0%{?el7}
 Requires: glite-fts-client
+%else
+Requires: fts-client
+%endif
 %if ! 0%{?el7}
 Requires: lcg-util
 %endif
@@ -120,6 +124,9 @@ rm -rf $RPM_BUILD_ROOT
 %files glexec
 
 %changelog
+* Tue Apr 21 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.0.0-31_clipped
+- Use fts-client instead of glite-fts-client for el7
+
 * Mon Mar 09 2015 Brian Lin <blin@cs.wisc.edu> 3.0.0-30
 - Explicitly require voms-clients
 

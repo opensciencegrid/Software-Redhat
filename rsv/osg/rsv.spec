@@ -1,7 +1,10 @@
 Name:      rsv
 Summary:   RSV Meta Package
 Version:   3.8.0
-Release:   2%{?dist}
+%if 0%{?el7}
+%define release_suffix _clipped
+%endif
+Release:   3%{?release_suffix}%{?dist}
 License:   Apache 2.0
 Group:     Applications/Monitoring
 URL:       https://twiki.grid.iu.edu/bin/view/MonitoringInformation/RSV
@@ -82,7 +85,9 @@ Requires: /usr/bin/globus-job-run
 Requires: /usr/bin/globusrun
 Requires: /usr/bin/globus-url-copy
 Requires: uberftp
+%if ! 0%{?el7}
 Requires: bestman2-client
+%endif
 Requires: /usr/bin/ldapsearch
 Requires: logrotate
 Requires: /usr/bin/condor_ce_ping
@@ -237,6 +242,9 @@ fi
 
 
 %changelog
+* Tue Apr 21 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.8.0-3_clipped
+- Add clipped version for el7
+
 * Thu Feb 19 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.8.0-2
 - New version; drop upstreamed patch for probe runtime interval and fix 'Next Run Time' display
 

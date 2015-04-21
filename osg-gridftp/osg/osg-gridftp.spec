@@ -1,7 +1,10 @@
 Name:      osg-gridftp
 Summary:   Standalone OSG GridFTP w/lcmaps gums client
 Version:   3.0.0
-Release:   10%{?dist}
+%if 0%{?el7}
+%define release_suffix _clipped
+%endif
+Release:   11%{?release_suffix}%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -16,7 +19,9 @@ Requires: globus-gridftp-server-progs
 Requires: vo-client
 Requires: grid-certificates
 Requires: gratia-probe-gridftp-transfer
+%if ! 0%{?el7}
 Requires: gums-client
+%endif
 %if 0%{?rhel} < 6
 Requires: fetch-crl3
 %else
@@ -61,6 +66,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Apr 21 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.0.0-11_clipped
+- Create clipped version for el7
+
 * Thu Mar 13 2014 Carl Edquist <edquist@cs.wisc.edu> - 3.0.0-9
 - Add globus-xio-udt-driver dependency for el6, and enable by default in
   /etc/gridftp.d/ (SOFTWARE-1412)

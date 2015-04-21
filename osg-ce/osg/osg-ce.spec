@@ -4,7 +4,10 @@
 Name:      osg-ce
 Summary:   OSG Compute Element
 Version:   3.2
-Release:   8%{?dist}
+%if 0%{?el7}
+%define release_suffix _clipped
+%endif
+Release:   9%{?release_suffix}%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -45,7 +48,9 @@ Requires: osg-vo-map
 Requires: vo-client
 Requires: osg-site-web-page
 Requires: gip
+%if ! 0%{?el7}
 Requires: gums-client
+%endif
 Requires: edg-mkgridmap
 Requires: gratia-probe-gridftp-transfer
 Requires: osg-site-verify
@@ -291,6 +296,9 @@ exit 0
 %files slurm
 
 %changelog
+* Tue Apr 21 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.2-9_clipped
+- Create clipped version for el7
+
 * Tue Mar 10 2015 Brian Lin <blin@cs.wisc.edu> 3.2-8
 - Drop batch system requirements (SOFTWARE-1796)
 

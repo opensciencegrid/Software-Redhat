@@ -1,7 +1,10 @@
 Name:      osg-client
 Summary:   OSG Client
 Version:   3.0.0
-Release:   22%{?dist}
+%if 0%{?el7}
+%define release_suffix _clipped
+%endif
+Release:   23%{?release_suffix}%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -12,15 +15,17 @@ BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 Requires: osg-version
 Requires: osg-wn-client
 Requires: ndt-client
+%if ! 0%{?el7}
 Requires: bwctl-client
+%endif
 Requires: gsi-openssh-clients
 Requires: lcg-info
 Requires: lcg-infosites
 # No npad for now, because it installs server by default. Re-add later?
 #Requires: npad
 
-# Don't require osg-discovery for el6, not working...
-%if 0%{?el6}
+# Don't require osg-discovery for el6 or el7, not working...
+%if 0%{?el6} || 0%{?el7}
 %else
 Requires: osg-discovery
 %endif
@@ -59,6 +64,9 @@ rm -rf $RPM_BUILD_ROOT
 %files condor
 
 %changelog
+* Tue Apr 21 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.0.0-23_clipped
+- Create clipped version for el7
+
 * Thu Jun 19 2014 Edgar Fajardo <efajardo@physics.ucsd.edu> - 3.0.0-22
 - Updated to remove the nmap requirement.
 
