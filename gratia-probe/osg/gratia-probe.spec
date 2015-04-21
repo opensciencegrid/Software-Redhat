@@ -2,7 +2,7 @@ Name:               gratia-probe
 Summary:            Gratia OSG accounting system probes
 Group:              Applications/System
 Version:            1.14.1
-Release:            00pre0%{?dist}
+Release:            1%{?dist}
 
 License:            GPL
 Group:              Applications/System
@@ -131,7 +131,8 @@ install -d $RPM_BUILD_ROOT/%{_sysconfdir}/gratia
   for probe in %{noarch_packs}
   do
     # Install the cronjob
-    if [ -e $probe/gratia-probe-$probe.cron -o $probe == "dCache-storage" ]; then
+    if [ -e $probe/gratia-probe-$probe.cron -o $probe == "dCache-storage" -o $probe == "dCache-storagegroup" ]; then
+      # wildcards not working in this test: if [ -e "$probe/gratia-probe-*.cron" ]; then
       install -m 644 $probe/*.cron $RPM_BUILD_ROOT%{_sysconfdir}/cron.d/
       rm $RPM_BUILD_ROOT%{_datadir}/gratia/$probe/*.cron
     fi
@@ -1003,12 +1004,12 @@ The dCache storagegroup probe for the Gratia OSG accounting system.
 %defattr(-,root,root,-)
 %doc %{default_prefix}/gratia/dCache-storagegroup/README.html
 %dir %{default_prefix}/gratia/dCache-storagegroup
-%{default_prefix}/gratia/dCache-storagegroup/dCache_storage_group_probe
+%{default_prefix}/gratia/dCache-storagegroup/dcache-storagegroup
 
 %{default_prefix}/gratia/dCache-storagegroup/ProbeConfig
 %config(noreplace) %verify(not md5 size mtime) %{_sysconfdir}/gratia/dCache-storagegroup/ProbeConfig
 
-%config(noreplace) %{_sysconfdir}/cron.d/gratia-probe-dCache-storagegroup.cron
+%config(noreplace) %{_sysconfdir}/cron.d/gratia-probe-dcache-storagegroup.cron
 
 %post dCache-storagegroup
 %customize_probeconfig -d dCache-storagegroup
@@ -1018,6 +1019,12 @@ The dCache storagegroup probe for the Gratia OSG accounting system.
 %endif # noarch
 
 %changelog
+* Tue Apr 21 2015 Kevin Retzke <kretzke@fnal.gov> - 1.14.1-1
+- renamed dCache-storagegroup probe to all lowercase (GRATIA-172)
+- added LogFileName option (GRATIA-165)
+- fixes to checkpoint for Enstore probes (GRATIA-173, GRATIA-174)
+- missing HTCondor PER_JOB_HISTORY_DIR demoted to warning, not stopping the probe
+
 * Tue Mar 24 2015 Marco Mambelli <marcom@fnal.gov> - 1.14.0-1
 - merging of sample-probe branch into trunk. sample-probe development started in Summer 2014
 - new common files in common2 module (base classes for probes)
