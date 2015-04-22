@@ -1,0 +1,23 @@
+# https://confluence.grid.iu.edu/pages/viewpage.action?title=Installing+an+XRootD+server+for+Stash+Cache&spaceKey=STAS
+
+all.export   /
+xrd.allow host *
+sec.protocol  host
+sec.protbind  * none
+all.adminpath /var/spool/xrootd
+all.pidpath /var/run/xrootd
+
+xrootd.trace emsg login stall redirect
+ofs.trace all
+xrd.trace all
+cms.trace all
+
+ofs.osslib  libXrdPss.so
+pss.origin  data.ci-connect.net:1094
+pss.cachelib libXrdFileCache.so
+
+pfc.cachedir  /stash
+pfc.nramprefetch 4
+pfc.nramread 4
+pfc.diskusage 0.98 0.99
+
