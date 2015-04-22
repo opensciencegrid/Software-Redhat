@@ -1,4 +1,4 @@
-Name:           cilogon-osg-ca-certs
+Name:           cilogon-osg-ca-cert
 Version:        1.0
 Release:        1%{?dist}
 Summary:        OSG Packaging of the CILogon OSG CA Certs, in new OpenSSL 0.9.8/1.0.0 format
