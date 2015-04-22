@@ -4,7 +4,7 @@ xrd.port 1094
 
 # The roles this server will play.
 all.role server
-all.manager TODO:1213
+all.manager @ORIGINHOST@:1213
 
 # Allow any path to be exported; this is further refined in the authfile.
 all.export / nostage
@@ -48,6 +48,6 @@ cms.fxhold 60s
 
 # Monitoring configuration.  The latest recommendations are also kept at:
 # https://twiki.cern.ch/twiki/bin/view/Main/XrootdMonitoring
-xrd.report TODO:9931 every 60s all sync
-xrootd.monitor all auth flush io 60s ident 5m mbuff 8k rbuff 4k rnums 3 window 10s dest files io info user redir TODO:9930
+xrd.report @ORIGINHOST@:9931 every 60s all sync
+xrootd.monitor all auth flush io 60s ident 5m mbuff 8k rbuff 4k rnums 3 window 10s dest files io info user redir @ORIGINHOST@:9930
 

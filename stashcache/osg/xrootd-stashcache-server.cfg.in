@@ -13,7 +13,7 @@ xrd.trace all
 cms.trace all
 
 ofs.osslib  libXrdPss.so
-pss.origin  data.ci-connect.net:1094
+pss.origin  @ORIGINHOST@:1094
 pss.cachelib libXrdFileCache.so
 
 pfc.cachedir  /stash
