@@ -1,7 +1,7 @@
 Name:      osg-tested-internal
 Summary:   All OSG packages we test (internal use only)
 Version:   3.2
-Release:   9%{?dist}
+Release:   10%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -38,18 +38,18 @@ Requires: htcondor-ce
 Requires: htcondor-ce-client
 Requires: htcondor-ce-condor
 
+Requires: osg-ce-condor
+Requires: rsv
 ################################################################################
 #
 # Non-RHEL 7
 #
 ################################################################################
 %if 0%{?rhel} < 7
-Requires: osg-ce-condor
 Requires: osg-se-bestman
 Requires: osg-se-bestman-xrootd
 Requires: osg-gums
 Requires: osg-voms
-Requires: rsv
 Requires: torque-server
 Requires: torque-mom
 Requires: torque-client
@@ -95,6 +95,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Apr 22 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.2-10
+- Add rsv and osg-ce-condor to el7
+
 * Fri Mar 27 2015 Carl Edquist <edquist@cs.wisc.edu> - 3.2-9
 - Change cvmfs-keys requirement to cvmfs-config (SOFTWARE-1848)
 
