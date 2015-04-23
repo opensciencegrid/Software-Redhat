@@ -1,5 +1,5 @@
 #%%global betatag .beta1
-%global _release 1
+%global _release 2
 
 Name:           osg-build
 Version:        1.4.4
@@ -70,6 +70,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_docdir}/%{name}/sample-osg-build.ini
 
 %changelog
+* Thu Apr 23 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.4.4-2
+- Fix missing import (SOFTWARE-1870)
+
 * Wed Apr 1 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.4.4-1
 - Add log line with destination SRPM path for osg-build prebuild
 - Increase max retries for watching koji tasks
