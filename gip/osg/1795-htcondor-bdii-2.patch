@@ -1,18 +1,26 @@
-From 1392cb90431ca7416bb5eb3c2258e2067e7398c3 Mon Sep 17 00:00:00 2001
+From 917b57cbbcb80743fc866b9b58df57bcc45d8b47 Mon Sep 17 00:00:00 2001
 From: Matyas Selmeci <matyas@cs.wisc.edu>
 Date: Tue, 17 Feb 2015 20:44:50 -0600
 Subject: [PATCH] Get condor-ce port from condor_ce_config_val
 
+getHTCondorCEPort and getCondorCEConfigVal is in gip_common.py so I can
+reuse it
 ---
- gip/lib/python/gip_batch.py | 51 ++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 50 insertions(+), 1 deletion(-)
+ gip/lib/python/gip_batch.py  |  7 +++++--
+ gip/lib/python/gip_common.py | 49 ++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 54 insertions(+), 2 deletions(-)
 
 diff --git a/gip/lib/python/gip_batch.py b/gip/lib/python/gip_batch.py
-index dca628e..6bb01ec 100644
+index dca628e..0ebfb1b 100644
 --- a/gip/lib/python/gip_batch.py
 +++ b/gip/lib/python/gip_batch.py
-@@ -5,11 +5,13 @@ Common functions for GIP batch system providers and plugins.
- from gip_common import cp_getBoolean, cp_get, cp_getList, cp_getInt, vdtDir
+@@ -1,15 +1,17 @@
+ """
+ Common functions for GIP batch system providers and plugins.
+ """
+ 
+-from gip_common import cp_getBoolean, cp_get, cp_getList, cp_getInt, vdtDir
++from gip_common import cp_getBoolean, cp_get, cp_getList, cp_getInt, vdtDir, getHTCondorCEPort
  from gip_cluster import getOSGVersion
  from gip_sections import ce
  from gip_testing import runCommand
@@ -38,12 +46,36 @@ index dca628e..6bb01ec 100644
  def buildContactString(cp, batch, queue, ce_unique_id, log):
      contact_string = cp_get(cp, batch, 'job_contact', ce_unique_id)
  
-@@ -146,5 +148,52 @@ def getHTPCInfo(cp, batch, queue, log):
+@@ -146,5 +148,6 @@ def getHTPCInfo(cp, batch, queue, log):
      # acbr stuff?
  
      return ('HTPCrsl: %s' % queueRSL, htpcMaxSlots)
          
          
++
+diff --git a/gip/lib/python/gip_common.py b/gip/lib/python/gip_common.py
+index 59b95c6..e9da869 100644
+--- a/gip/lib/python/gip_common.py
++++ b/gip/lib/python/gip_common.py
+@@ -19,10 +19,11 @@ import socket
+ import traceback
+ import ConfigParser
+ import urllib
+ import tempfile
+ import glob
++import subprocess
+ 
+ from gip_ldap import read_bdii
+ 
+ #pylint: disable-msg=W0105
+ 
+@@ -977,5 +978,53 @@ class _Constants: #pylint: disable-msg=C0103
+     """
+     
+     def __init__(self):
+         self.CR = '\r'
+         self.LF = '\n'
++
 +
 +def getHTCondorCEPort():
 +    """Get what port condor-ce is running on based on its configuration"""
