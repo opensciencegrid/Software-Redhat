@@ -1,10 +1,10 @@
 Name:      rsv
 Summary:   RSV Meta Package
-Version:   3.8.0
+Version:   3.9.0
 %if 0%{?el7}
 %define release_suffix _clipped
 %endif
-Release:   3%{?release_suffix}%{?dist}
+Release:   1%{?release_suffix}%{?dist}
 License:   Apache 2.0
 Group:     Applications/Monitoring
 URL:       https://twiki.grid.iu.edu/bin/view/MonitoringInformation/RSV
@@ -242,6 +242,10 @@ fi
 
 
 %changelog
+* Thu Apr 23 2015 Carl Edquist <edquist@cs.wisc.edu> - 3.9.0-1
+- SOFTWARE-793 - new batch submission probe
+- SOFTWARE-1888 - use gfal2 commands in srmcp-srm-probe
+
 * Tue Apr 21 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.8.0-3_clipped
 - Add clipped version for el7
 
