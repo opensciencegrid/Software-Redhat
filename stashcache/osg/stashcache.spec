@@ -6,8 +6,8 @@ License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
 BuildArch: noarch
-Source0:   xrootd-stashcache-origin.cfg.in
-Source1:   xrootd-stashcache-server.cfg.in
+Source0:   xrootd-stashcache-origin-server.cfg.in
+Source1:   xrootd-stashcache-cache-server.cfg.in
 
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
@@ -32,7 +32,7 @@ Summary: Metapackage for a cache server
 
 Requires: xrootd-server >= 1:4.1.0
 
-%description server
+%description cache-server
 %{summary}
 
 
@@ -51,17 +51,17 @@ done
 rm -rf %{_buildroot}
 
 %files origin-server
-%config(noreplace) %{_sysconfdir}/xrootd/xrootd-stashcache-origin.cfg
-%config(noreplace) %{_sysconfdir}/xrootd/xrootd-stashcache-origin-itb.cfg
+%config(noreplace) %{_sysconfdir}/xrootd/xrootd-stashcache-origin-server.cfg
+%config(noreplace) %{_sysconfdir}/xrootd/xrootd-stashcache-origin-server-itb.cfg
 
 %files cache-server
-%config(noreplace) %{_sysconfdir}/xrootd/xrootd-stashcache-server.cfg
-%config(noreplace) %{_sysconfdir}/xrootd/xrootd-stashcache-server-itb.cfg
+%config(noreplace) %{_sysconfdir}/xrootd/xrootd-stashcache-cache-server.cfg
+%config(noreplace) %{_sysconfdir}/xrootd/xrootd-stashcache-cache-server-itb.cfg
 
 %changelog
 * Thu Apr 23 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 0.1-2.osg
 - Renamed stashcache-server to stashcache-cache-server, and stashcache-origin
-  to stashcache-origin-server
+  to stashcache-origin-server; rename config files to match
 
 * Wed Apr 22 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 0.1-1.osg
 - Created metapackages with stub config files
