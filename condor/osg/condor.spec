@@ -1,4 +1,4 @@
-%define tarball_version 8.3.4
+%define tarball_version 8.3.5
 
 # optionally define any of these, here or externally
 # % define fedora   16
@@ -104,7 +104,7 @@
 %define git_build 0
 # If building with git tarball, Fedora requests us to record the rev.  Use:
 # git log -1 --pretty=format:'%h'
-%define git_rev 3c8a289
+%define git_rev f9e8f64
 
 %if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
 %{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
@@ -118,7 +118,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.1
+%define condor_base_release 315103
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -207,11 +207,6 @@ Source123: zlib-1.2.3.tar.gz
 %endif
 
 Patch1: sw1636-cream_gahp-dlopen.patch
-
-# This should make it into upstream 8.3.5
-# https://jira.opensciencegrid.org/browse/SOFTWARE-1807
-# https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=4588
-Patch2: sw1807-py_import.patch
 
 #% if 0%osg
 Patch8: osg_sysconfig_in_init_script.patch
@@ -348,7 +343,7 @@ BuildRequires: systemd-units
 BuildRequires: transfig
 BuildRequires: latex2html
 
-Requires: mailx
+Requires: /usr/sbin/sendmail
 Requires: condor-classads = %{version}-%{release}
 Requires: condor-procd = %{version}-%{release}
 
@@ -647,6 +642,29 @@ Includes the external packages built when UW_BUILD is enabled
 
 %endif
 
+%package all
+Summary: All condor packages in a typical installation
+Group: Applications/System
+Requires: %name = %version-%release
+Requires: %name-procd = %version-%release
+Requires: %name-kbdd = %version-%release
+Requires: %name-vm-gahp = %version-%release
+Requires: %name-classads = %version-%release
+%if %cream
+Requires: %name-cream-gahp = %version-%release
+%endif
+Requires: %name-python = %version-%release
+Requires: %name-bosco = %version-%release
+%if %std_univ
+Requires: %name-std-universe = %version-%release
+%endif
+%if %uw_build
+Requires: %name-externals = %version-%release
+%endif
+
+%description all
+Include dependencies for all condor packages in a typical installation
+
 %pre
 getent group condor >/dev/null || groupadd -r condor
 getent passwd condor >/dev/null || \
@@ -685,8 +703,10 @@ export CMAKE_PREFIX_PATH=/usr
 # causes build issues with EL5, don't even bother building the tests.
 
 %if %uw_build
+%define condor_build_id 315103
+
 %cmake \
-       -DBUILDID:STRING=UW_development \
+       -DBUILDID:STRING=%condor_build_id \
        -DUW_BUILD:BOOL=TRUE \
 %if ! %std_univ
        -DCLIPPED:BOOL=TRUE \
@@ -845,7 +865,6 @@ sed -e "s:^LIB\s*=.*:LIB = \$(RELEASE_DIR)/$LIB/condor:" \
 # Install the basic configuration, a Personal HTCondor config. Allows for
 # yum install condor + service condor start and go.
 mkdir -m0755 %{buildroot}/%{_sysconfdir}/condor/config.d
-# cp %{buildroot}/etc/examples/condor_config.local %{buildroot}/%{_sysconfdir}/condor/config.d/00personal_condor.config
 %if %parallel_setup
 cp %{SOURCE5} %{buildroot}/%{_sysconfdir}/condor/config.d/20dedicated_scheduler_condor.config
 %endif
@@ -884,11 +903,6 @@ mkdir -p -m1777 %{buildroot}/%{_var}/lock/condor/local
 # Note we use %{_var}/lib instead of %{_sharedstatedir} for RHEL5 compatibility
 mkdir -p -m0755 %{buildroot}/%{_var}/lib/condor/spool
 mkdir -p -m1777 %{buildroot}/%{_var}/lib/condor/execute
-
-cat >> %{buildroot}/%_sysconfdir/condor/condor_config << EOF
-CONDOR_HOST = \$(FULL_HOSTNAME)
-DAEMON_LIST = COLLECTOR, MASTER, NEGOTIATOR, SCHEDD, STARTD
-EOF
 
 # no master shutdown program for now
 rm -f %{buildroot}/%{_sbindir}/condor_set_shutdown
@@ -1037,8 +1051,10 @@ rm -rf %{buildroot}%{_datadir}/condor/{libpyclassad*,htcondor,classad}.so
 mkdir -p %{buildroot}%{python_sitelib}
 mv %{buildroot}%{_libexecdir}/condor/campus_factory/python-lib/GlideinWMS %{buildroot}%{python_sitelib}
 mv %{buildroot}%{_libexecdir}/condor/campus_factory/python-lib/campus_factory %{buildroot}%{python_sitelib}
+%if 0%{?osg} || 0%{?hcc}
 mv %{buildroot}%{_libexecdir}/condor/campus_factory/share/condor/condor_config.factory %{buildroot}%{_sysconfdir}/condor/config.d/60-campus_factory.config
 mv %{buildroot}%{_libexecdir}/condor/campus_factory/etc/campus_factory.conf %{buildroot}%{_sysconfdir}/condor/
+%endif
 mv %{buildroot}%{_libexecdir}/condor/campus_factory/share %{buildroot}%{_datadir}/condor/campus_factory
 
 %if %blahp && ! %uw_build
@@ -1088,6 +1104,8 @@ rm -rf %{buildroot}
 #cd condor_tests
 #make check-seralized
 
+#################  
+%files all
 #################
 %files
 %defattr(-,root,root,-)
@@ -1112,7 +1130,6 @@ rm -rf %{buildroot}
 %_datadir/condor/CondorTest.pm
 %_datadir/condor/CondorUtils.pm
 %dir %_sysconfdir/condor/config.d/
-#%_sysconfdir/condor/config.d/00personal_condor.config
 %_sysconfdir/condor/condor_ssh_to_job_sshd_config_template
 %if %gsoap || %uw_build
 %dir %_datadir/condor/webservice/
@@ -1170,6 +1187,8 @@ rm -rf %{buildroot}
 %_libexecdir/condor/interactive.sub
 %_libexecdir/condor/condor_dagman_metrics_reporter
 %_libexecdir/condor/condor_gangliad
+%_libexecdir/condor/panda-plugin.so
+%_libexecdir/condor/pandad
 %_mandir/man1/condor_advertise.1.gz
 %_mandir/man1/condor_check_userlogs.1.gz
 %_mandir/man1/condor_chirp.1.gz
@@ -1310,6 +1329,7 @@ rm -rf %{buildroot}
 %_sbindir/nordugrid_gahp
 %_sbindir/gce_gahp
 %if %uw_build
+%_sbindir/condor_master_s
 %_sbindir/boinc_gahp
 %endif
 %_libexecdir/condor/condor_gpu_discovery
@@ -1554,8 +1574,10 @@ rm -rf %{buildroot}
 
 %files bosco
 %defattr(-,root,root,-)
+%if 0%{?osg} || 0%{?hcc}
 %config(noreplace) %_sysconfdir/condor/campus_factory.conf
 %config(noreplace) %_sysconfdir/condor/config.d/60-campus_factory.config
+%endif
 %_libexecdir/condor/shellselector
 %_libexecdir/condor/campus_factory
 %_sbindir/bosco_install
@@ -1613,7 +1635,6 @@ rm -rf %{buildroot}
 
 %if %uw_build
 %files static-shadow
-%{_sbindir}/condor_master_s
 %{_sbindir}/condor_shadow_s
 
 %files externals
@@ -1784,6 +1805,11 @@ fi
 %endif
 
 %changelog
+* Fri Mar 24 2015 Jose Caballero <jcaballero@bnl.gov> - 8.3.5-1.315103
+- Update to HTCondor 8.3.5 (SOFTWARE-1886)
+- merged all changes in spec file from 8.3.5
+- removed Patch2 sw1807-py_import.patch
+
 * Fri Mar 06 2015 Carl Edquist <edquist@cs.wisc.edu> - 8.3.4-1.1
 - Update to HTCondor 8.3.4 (SOFTWARE-1807)
 
