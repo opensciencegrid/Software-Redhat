@@ -1,7 +1,7 @@
 Summary: Tomcat and axis integration classes
 Name: emi-trustmanager-tomcat
 Version: 3.0.0
-Release: 8%{?dist}
+Release: 9%{?dist}
 License: Apache Software License
 Vendor: EMI
 Group: System Environment/Libraries
@@ -33,6 +33,7 @@ Source: emi-trustmanager-tomcat-3.0.0-1.src.tar.gz
 Source1: config.properties
 Patch0: configure.patch
 Patch1: build.xml.patch
+Patch2: log4j-trustmanager.patch
 
 %description
 The classes for integrating the trustmanager with tomcat.
@@ -43,6 +44,7 @@ The classes for integrating the trustmanager with tomcat.
 %setup  
 %patch0 -p0
 %patch1 -p0
+%patch2 -p1
 
 %build
  
@@ -105,6 +107,9 @@ rm -rf $RPM_BUILD_ROOT
 /var/lib/trustmanager-tomcat/configure.sh
 
 %changelog
+* Fri Apr 24 2015 Carl Edquist <edquist@cs.wisc.edu> - 3.0.0-9
+- decrease trustmanager log level to WARN (SOFTWARE-1890)
+
 * Tue May 07 2013 Carl Edquist <edquist@cs.wisc.edu> - 3.0.0-8
 - Require missing java dir names instead of workaround package
 
