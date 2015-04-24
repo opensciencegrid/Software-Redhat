@@ -118,7 +118,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 315103
+%define condor_base_release 1.315103
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -682,7 +682,6 @@ exit 0
 %endif
 
 %patch1 -p1
-%patch2 -p1
 
 %if 0%{?hcc}
 %patch15 -p0
