@@ -4,7 +4,7 @@ Version:   3.9.0
 %if 0%{?el7}
 %define release_suffix _clipped
 %endif
-Release:   1%{?release_suffix}%{?dist}
+Release:   2%{?release_suffix}%{?dist}
 License:   Apache 2.0
 Group:     Applications/Monitoring
 URL:       https://twiki.grid.iu.edu/bin/view/MonitoringInformation/RSV
@@ -88,6 +88,11 @@ Requires: uberftp
 %if ! 0%{?el7}
 Requires: bestman2-client
 %endif
+Requires: gfal2
+Requires: gfal2-util
+Requires: gfal2-plugin-file
+Requires: gfal2-plugin-srm
+Requires: gfal2-plugin-gridftp
 Requires: /usr/bin/ldapsearch
 Requires: logrotate
 Requires: /usr/bin/condor_ce_ping
