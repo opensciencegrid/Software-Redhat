@@ -1,6 +1,6 @@
 Summary: Package for configure-osg and associated scripts
 Name: osg-configure
-Version: 1.0.70
+Version: 1.0.71
 Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
 Patch0: s1653-gateway-type.patch
@@ -325,6 +325,12 @@ fi
 
 
 %changelog
+* Sun Apr 26 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0.71-1.osg
+- Handle multiple spaces in user-vo-map (SOFTWARE-1873)
+- Fix broken link in job-environment.conf files (SOFTWARE-1834)
+- Set lsf_confpath in /etc/blah.config (SOFTWARE-1843)
+- Add default for MaxWallTime for CE Collector (SOFTWARE-1872)
+
 * Tue Apr 07 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0.70-1.osg
 - Do not require the HTCondor Python bindings; handle their absence gracefully (SOFTWARE-1869)
 
