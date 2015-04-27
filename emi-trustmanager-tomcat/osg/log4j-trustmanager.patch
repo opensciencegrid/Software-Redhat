@@ -1,12 +1,18 @@
 diff --git a/config/log4j-trustmanager.properties b/config/log4j-trustmanager.properties
-index 19661f9..d557d5b 100644
+index 19661f9..3208b97 100644
 --- a/config/log4j-trustmanager.properties
 +++ b/config/log4j-trustmanager.properties
-@@ -24,7 +24,7 @@
- # the default logger level is set to INFO
+@@ -21,10 +21,12 @@
+ #
+ #############################################################
+ 
+-# the default logger level is set to INFO
++# the default logger level is set to WARN
  # possible values are: DEBUG, INFO, WARN, ERROR and FATAL
  # (DEBUG shows the maximum information, FATAL least)
 -log4j.logger.org.glite.security=INFO, fileout
++# Set to INFO to see trustmanager.OpensslCertPathValidator messages like this:
++# certificate path for DC=org,DC=doegrids,OU=Services,CN=host/red.unl.edu is valid
 +log4j.logger.org.glite.security=WARN, fileout
  
  log4j.appender.fileout=org.apache.log4j.RollingFileAppender
