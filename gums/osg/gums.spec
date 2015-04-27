@@ -7,7 +7,7 @@
 
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
-Version: 1.4.2
+Version: 1.4.3
 Release: 1%{?dist}
 License: Unknown
 Group: System Environment/Daemons
@@ -384,6 +384,9 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+* Mon Apr 27 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.4.2-2
+- Update to GUMS 1.4.3 (SOFTWARE-1891)
+
 * Tue Jan 27 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.4.2-1
 - Update to GUMS 1.4.2 (SOFTWARE-1770)
 
