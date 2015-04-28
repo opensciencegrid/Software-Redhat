@@ -32,7 +32,7 @@
 
 Name:           relaxngDatatype
 Version:        1.0
-Release:        3%{?dist}
+Release:        3.1%{?dist}
 Epoch:          0
 Summary:        RELAX NG Datatype API
 
@@ -45,7 +45,7 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 BuildRequires:  jpackage-utils >= 0:1.6
 BuildRequires:  ant >= 0:1.6
-Obsoletes:	msv
+# Obsoletes:	msv
 
 %description
 %{summary}
@@ -92,6 +92,9 @@ ln -s %{name}-%{version} %{_javadocdir}/%{name}
 %ghost %doc %{_javadocdir}/%{name}
 
 %changelog
+* Mon Apr 27 2015 Carl Edquist <edquist@cs.wisc.edu> - 0:1.0-3.1
+- drop Obsoletes for msv
+
 * Tue Apr 11 2006 Ralph Apel <r.apel@r-apel.de>- 0:1.0-3jpp
 - First JPP-1.7 release
 
