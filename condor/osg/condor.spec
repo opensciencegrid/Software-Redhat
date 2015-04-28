@@ -118,7 +118,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.315103
+%define condor_base_release 2
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -723,8 +723,7 @@ export CMAKE_PREFIX_PATH=/usr
 
 %else
 
-%cmake -DNO_PHONE_HOME:BOOL=TRUE \
-       -DBUILD_TESTING:BOOL=FALSE \
+%cmake -DBUILD_TESTING:BOOL=FALSE \
 %if %std_univ
        -DCLIPPED:BOOL=FALSE \
 %endif
@@ -1103,7 +1102,7 @@ rm -rf %{buildroot}
 #cd condor_tests
 #make check-seralized
 
-#################  
+#################
 %files all
 #################
 %files
@@ -1804,6 +1803,9 @@ fi
 %endif
 
 %changelog
+* Tue Apr 28 2015 Carl Edquist <edquist@cs.wisc.edu> - 8.3.5-2
+- drop NO_PNONE_HOME option; ie, always phone home (SOFTWARE-1897)
+
 * Fri Mar 24 2015 Jose Caballero <jcaballero@bnl.gov> - 8.3.5-1.315103
 - Update to HTCondor 8.3.5 (SOFTWARE-1886)
 - merged all changes in spec file from 8.3.5
