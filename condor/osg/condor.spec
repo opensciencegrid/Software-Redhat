@@ -111,7 +111,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.2
+%define condor_base_release 1.3
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -740,8 +740,7 @@ export CMAKE_PREFIX_PATH=/usr
 
 %else
 
-%cmake -DNO_PHONE_HOME:BOOL=TRUE \
-       -DBUILD_TESTING:BOOL=FALSE \
+%cmake -DBUILD_TESTING:BOOL=FALSE \
 %if %std_univ
        -DCLIPPED:BOOL=FALSE \
 %endif
@@ -1818,6 +1817,9 @@ fi
 %endif
 
 %changelog
+* Tue Apr 28 2015 Carl Edquist <edquist@cs.wisc.edu> - 8.2.8-1.3
+- drop NO_PNONE_HOME option; ie, always phone home (SOFTWARE-1897)
+
 * Wed Apr 08 2015 Carl Edquist <edquist@cs.wisc.edu> - 8.2.8-1.2
 - add missing %files all section
 
