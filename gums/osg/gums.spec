@@ -46,6 +46,8 @@ BuildRequires: jakarta-commons-beanutils jakarta-commons-cli jakarta-commons-cod
 Requires: jakarta-commons-beanutils jakarta-commons-cli jakarta-commons-codec jakarta-commons-collections jakarta-commons-digester jakarta-commons-discovery jakarta-commons-httpclient jakarta-commons-lang jakarta-commons-logging
 BuildRequires: jacc jta
 Requires: jacc jta
+Requires: /usr/share/java/jacc.jar
+BuildRequires: /usr/share/java/jacc.jar
 #RHEL5 version of axis is too old
 #BuildRequires: axis
 #Requires: axis
