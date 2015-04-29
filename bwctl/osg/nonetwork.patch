@@ -1,0 +1,11 @@
+--- conf/bwctld.init.orig	2008-01-15 09:43:41.000000000 -0600
++++ conf/bwctld.init	2012-08-31 09:54:33.000000000 -0500
+@@ -2,7 +2,7 @@
+ #
+ # Init file for  Bandwidth Control daemon
+ #
+-# chkconfig: 2345 60 20
++# chkconfig: - 60 20
+ # description: Bandwidth Control daemon
+ #
+ # processname: bwctld 

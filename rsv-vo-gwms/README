@@ -1,0 +1,4 @@
+Upstream obtained from OSG software repo:
+svn checkout https://vdt.cs.wisc.edu/svn/software/rsv-vo-gwms/trunk rsv-vo-gwms
+tar -zcvf rsv-vo-gwms-0.0.1.tar.gz rsv-vo-gwms
+

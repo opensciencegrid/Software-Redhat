@@ -1,0 +1,15 @@
+
+This packaging was created from the SRPM for web100_userland found at:
+
+http://software.internet2.edu/rpms/SRPMS/
+
+This is not passed through because the original rpm does not acccurately
+catch all python files installed.  Added:
+%files
+...
+-%{py_sitedir}/*
++%{python_sitelib}/*
++%{python_sitearch}/*
+
+
+

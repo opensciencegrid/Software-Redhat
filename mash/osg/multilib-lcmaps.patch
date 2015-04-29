@@ -1,0 +1,14 @@
+Index: mash-0.5.22/mash/multilib.py
+===================================================================
+--- mash-0.5.22.orig/mash/multilib.py	2012-09-27 14:50:00.000000003 -0500
++++ mash-0.5.22/mash/multilib.py	2012-09-27 14:53:36.000000003 -0500
+@@ -160,6 +160,9 @@
+             # wine
+             if fnmatch(dirname, '/usr/lib*/wine') and filename.endswith('.so'):
+                 return True
++            # OSG addition: LCMAPS plugins
++            if fnmatch(dirname, '/usr/lib*/lcmaps') and filename.endswith('.mod'):
++                return True
+         return False
+ 
+ class DevelMultilibMethod(RuntimeMultilibMethod):

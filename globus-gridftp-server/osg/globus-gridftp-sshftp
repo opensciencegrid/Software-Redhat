@@ -1,0 +1,104 @@
+#!/bin/bash
+#
+# globus-gridftp-sshftp
+#
+# OSG change: run after netfs/autofs
+# chkconfig: - 30 80
+# description: Controls sshftp access to the globus-gridftp-server.
+#
+### BEGIN INIT INFO
+# Provides:          globus-gridftp-sshftp
+# Required-Start:    $remote_fs $syslog $network
+# Required-Stop:     $remote_fs $syslog
+# Default-Stop:      0 1 2 3 4 5 6
+# Short-Description: Globus GridFTP SSHFTP
+# Description:       sshftp access to the Globus Gridftp Server
+### END INIT INFO
+
+# source function library
+. /etc/init.d/functions
+
+sbindir=/usr/sbin
+sysconfdir=/etc
+
+rc=0
+defaultconf=${sysconfdir}/gridftp-sshftp
+enabledconf=/etc/grid-security/sshftp
+
+# OSG addition: source our sysconfig file
+. /usr/share/osg/sysconfig/globus-gridftp-server
+
+start() {
+	echo -n "Enabling sshftp access to globus-gridftp-server: "
+
+	if [ ! -f $defaultconf ]; then	
+	  ${sbindir}/globus-gridftp-server-enable-sshftp -out $defaultconf
+	  rc=$?
+	fi
+
+	if [ $rc -eq 0 -a ! -d /etc/grid-security ] ; then
+	  mkdir /etc/grid-security
+	  rc=$?
+	fi
+
+	if [ $rc -eq 0 -a ! -f $enabledconf ]; then
+	  ln -s $defaultconf $enabledconf
+	  rc=$?
+	fi
+
+	[ $rc -eq 0 ] && success || failure
+
+	echo
+	return $rc
+}
+
+stop() {
+	echo -n "Disabling sshftp access to globus-gridftp-server: "
+
+	if [ -L $enabledconf ]; then
+	  rm $enabledconf
+	  rc=$?
+	elif [ -f $enabledconf ]; then
+	  mv $enabledconf ${enabledconf}.save
+	  rc=$?
+	fi
+	
+	[ $rc -eq 0 ] && success || failure
+
+	echo
+	return $rc
+}
+
+case "$1" in
+    start)
+	start
+	;;
+    stop)
+	stop
+	;;
+    status)
+	if [ -f $enabledconf ]; then
+	  echo "sshftp access to globus-gridftp-server is enabled."
+	  exit 0
+	else
+	  echo "sshftp access to globus-gridftp-server is disabled."
+	  exit 3
+	fi
+	;;
+    restart|force-reload)
+	stop
+	start
+	;;
+    reload)
+	;;
+    reconfigure)
+	stop
+	${sbindir}/globus-gridftp-server-enable-sshftp -force -out $defaultconf
+	start
+	;;
+    *)
+	echo "Usage: $0 {start|stop|status|restart|reload|reconfigure}"
+	exit 1
+	;;
+esac
+exit $rc

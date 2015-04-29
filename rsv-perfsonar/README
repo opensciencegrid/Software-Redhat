@@ -1,0 +1,4 @@
+Upstream obtained from OSG software repo:
+svn checkout  https://vdt.cs.wisc.edu/svn/software/rsv-perfsonar/tags/1.0.0/ rsv-perfsonar-1.0.0
+tar -zcvf rsv-perfsonar-1.0.0.tar.gz rsv-perfsonar-1.0.0
+

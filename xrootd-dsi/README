@@ -1,0 +1,14 @@
+
+xrootd-dsi Package
+
+DSI plugin for xrootd.  Allows the user to mount XrootDfs
+mounts using the XrootDPosixPreload functionality.
+
+This package requires Globus source in order to build.
+This is a bit tricky to do, and, consequently, this package
+still needs a bit work.
+
+Source can be found at:
+http://wt2.slac.stanford.edu/gridftp/
+
+- Doug Strain <dstrain@fnal.gov>

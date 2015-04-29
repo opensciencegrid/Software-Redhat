@@ -1,0 +1,13 @@
+Index: gridftp-hdfs-0.5.4/conf/gridftp-hdfs-environment
+===================================================================
+--- gridftp-hdfs-0.5.4.orig/conf/gridftp-hdfs-environment	2014-03-04 17:07:45.000000000 -0600
++++ gridftp-hdfs-0.5.4/conf/gridftp-hdfs-environment	2014-03-04 17:21:10.986687832 -0600
+@@ -21,7 +21,7 @@
+ fi
+ 
+ if [ "x$JAVA_HOME" = "x" ]; then
+-JAVA_HOME=/usr/java/default
++JAVA_HOME=/usr/lib/jvm/java
+ fi
+ # Often, libjvm gets hidden off the path.
+ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$JAVA_HOME/jre/lib/i386:$JAVA_HOME/jre/lib/i386/server:$JAVA_HOME/jre/lib/amd64:$JAVA_HOME/jre/lib/amd64/server:/usr/lib/hadoop/lib/native

@@ -1,0 +1,13 @@
+CernVM File System (CernVM-FS) is a network file system based on HTTP 
+and optimized to deliver experiment software in a fast, scalable, 
+and reliable way. Files and file metadata are aggressively cached 
+and downloaded on demand. Thereby the CernVM-FS decouples the life 
+cycle management of the application software releases from the operating 
+system. CernVM-FS is included in CernVM, however it can also be used 
+outside CernVM. To download CernVM-FS please go to:
+http://cernvm.cern.ch/portal/filesystem/downloads
+the technical report on CernVM-FS is available here:
+http://cernvm.cern.ch/portal/filesystem/techinformation
+The review of CernVM-FS from the security perspective can be obtained:
+http://cernvm.cern.ch/portal/filesystem/security
+

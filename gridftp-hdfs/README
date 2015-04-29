@@ -1,0 +1,11 @@
+GridFTP-HDFS is a plugin for GridFTP that allows it to directly use an HDFS
+file system as a backend. We originally got it directly from the developer
+(Brian Bockelman at UNL). Looks like the project was sent to the Globus team,
+who based their RPM off of our RPM.
+
+Now we get it from Globus; it's not in EPEL, and is unlikely to be in EPEL
+since it requires HDFS packages to build and HDFS is not in EPEL. The Globus
+team has added several patches, some of which we can't use. They've also
+conditionalized the build such that if the proper macro is defined, it will
+build the way OSG wants it. I've had to adjust some of that, but we might be
+able to send those changes back to the Globus team.

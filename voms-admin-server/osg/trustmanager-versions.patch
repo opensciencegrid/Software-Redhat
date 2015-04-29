@@ -1,0 +1,13 @@
+--- pom.xml.orig	2012-05-21 15:27:53.000000000 -0500
++++ pom.xml	2013-11-21 17:13:00.385595458 -0600
+@@ -26,8 +26,8 @@
+ 		<c3p0.version>0.9.1</c3p0.version>
+ 		<axis.version>1.2.1</axis.version>
+ 		<bouncycastle.version>1.45</bouncycastle.version>
+-		<trustmanager.version>3.0.5</trustmanager.version>
+-		<trustmanager-axis.version>1.0.0</trustmanager-axis.version>
++		<trustmanager.version>3.0.3</trustmanager.version>
++		<trustmanager-axis.version>1.0.1</trustmanager-axis.version>
+ 		<opensaml.version>2.4.1</opensaml.version>
+ 		<package.catalina_home>${env.CATALINA_HOME}</package.catalina_home>
+ 	</properties>

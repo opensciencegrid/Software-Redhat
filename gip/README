@@ -1,0 +1,9 @@
+Package: gip
+
+This is the Generic Information Provider for OSG.
+https://twiki.grid.iu.edu/bin/view/ReleaseDocumentation/GenericInformationProviders
+
+Source is from
+
+svn://t2.unl.edu/browser/gip
+

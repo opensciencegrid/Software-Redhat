@@ -1,0 +1,12 @@
+--- src/main_util.c.O	2011-12-28 15:46:35.924000000 -0600
++++ src/main_util.c	2011-12-28 15:46:55.041000000 -0600
+@@ -1793,9 +1793,6 @@
+           return 1;
+         }
+       } else if ((n==1) && (wl_entry[0] == '*')) { /* ANY account */
+-        glexec_log(GLEXEC_LOG_WARNING,
+-	    "All users are allowed to use glexec, "
+-	    "this might not be what you want.\n");
+         glexec_free_list(wl_list);
+         return 1;
+       } else if (n>1 && (wl_entry[n-1]=='*')) { /* account* MAY ONLY BE POOLACCOUNT */

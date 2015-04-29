@@ -1,0 +1,11 @@
+--- src/glexec_ipc.c.O	2013-01-04 11:13:38.548491000 -0600
++++ src/glexec_ipc.c	2013-01-04 11:14:14.535540000 -0600
+@@ -1752,7 +1752,7 @@
+ 			global_ipc_epilogpid);
+ 	    } else if (info->si_pid!=global_ipc_childpid &&
+ 		       info->si_pid!=global_ipc_epilogpid) 
+-		glexec_signal_log(GLEXEC_LOG_NOTICE,
++		glexec_signal_log(GLEXEC_LOG_INFO,
+ 		    "Ignoring SIGCHLD from unknown finished child %d.\n",
+ 		    info->si_pid);
+ 	    break;

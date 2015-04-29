@@ -1,0 +1,12 @@
+
+This package is the IGTF CA certificate set, in the mixed OpenSSL 0.9.8/1.0.0
+format, as prepared by the OSG-Security team.
+
+The packages satisfy the virtual dependency of "grid-certificates" and purposely
+conflict with osg-ca-certs and osg-ca-manage
+
+For more information, see:
+
+http://twiki.grid.iu.edu/bin/view/Security/CreatingCADistributions
+
+

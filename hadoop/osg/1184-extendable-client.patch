@@ -1,0 +1,202 @@
+diff -ru orig/src/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/DFSClient.java new/src/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/DFSClient.java
+--- orig/src/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/DFSClient.java	2013-09-19 11:41:37.039376286 -0700
++++ new/src/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/DFSClient.java	2013-09-19 11:41:37.522376293 -0700
+@@ -504,7 +504,7 @@
+     return dfsClientConf.connectToDnViaHostname;
+   }
+ 
+-  void checkOpen() throws IOException {
++  public void checkOpen() throws IOException {
+     if (!clientRunning) {
+       IOException result = new IOException("Filesystem closed");
+       throw result;
+@@ -2077,4 +2077,8 @@
+   void disableShortCircuit() {
+     shortCircuitLocalReads = false;
+   }
++  
++  public FileSystem.Statistics getStats() {
++    return stats;
++  }
+ }
+diff -ru orig/src/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/DFSInputStream.java new/src/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/DFSInputStream.java
+--- orig/src/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/DFSInputStream.java	2013-09-19 11:41:37.186376292 -0700
++++ new/src/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/DFSInputStream.java	2013-09-19 11:41:37.614376293 -0700
+@@ -62,10 +62,11 @@
+ public class DFSInputStream extends FSInputStream implements ByteBufferReadable {
+   private final SocketCache socketCache;
+ 
+-  private final DFSClient dfsClient;
+-  private boolean closed = false;
++  protected final DFSClient dfsClient;
++  protected boolean closed = false;
++
++  protected final String src;
+ 
+-  private final String src;
+   private final long prefetchSize;
+   private BlockReader blockReader = null;
+   private final boolean verifyChecksum;
+@@ -88,6 +89,25 @@
+    * capped at maxBlockAcquireFailures
+    */
+   private int failures = 0;
++  
++  // Work around class for thread unsafety and general dubiousness of
++  // failures data-member. Its problems:
++  // * unclear what happens when several threads do read requests:
++  //   - new readers reset failure to 0 at random times;
++  //   - reaching the limit will abort all threads.
++  // * why should the count be reset for every read and not for every block?
++  // Declaring a local counter of the same name removes thread-unsafety and
++  // makes every block search use predictable number of queries.  
++  private static class Counter {
++    private int i = 0;
++    
++    public void inc() {
++      i++;
++    }
++    public int get() {
++      return i;
++    }
++  }
+   private final int timeWindow;
+ 
+   /* XXX Use of CocurrentHashMap is temp fix. Need to fix 
+@@ -104,7 +124,7 @@
+     deadNodes.put(dnInfo, dnInfo);
+   }
+   
+-  DFSInputStream(DFSClient dfsClient, String src, int buffersize, boolean verifyChecksum
++  public DFSInputStream(DFSClient dfsClient, String src, int buffersize, boolean verifyChecksum
+                  ) throws IOException, UnresolvedLinkException {
+     this.dfsClient = dfsClient;
+     this.verifyChecksum = verifyChecksum;
+@@ -346,7 +366,7 @@
+    * @return consequent segment of located blocks
+    * @throws IOException
+    */
+-  private synchronized List<LocatedBlock> getBlockRange(long offset, 
++  protected synchronized List<LocatedBlock> getBlockRange(long offset, 
+                                                         long length) 
+                                                       throws IOException {
+     // getFileLength(): returns total file length
+@@ -437,6 +457,7 @@
+     
+     boolean connectFailedOnce = false;
+ 
++    Counter failures = new Counter();
+     while (true) {
+       //
+       // Compute desired block
+@@ -445,7 +466,7 @@
+       assert (target==pos) : "Wrong postion " + pos + " expect " + target;
+       long offsetIntoBlock = target - targetBlock.getStartOffset();
+ 
+-      DNAddrPair retval = chooseDataNode(targetBlock);
++      DNAddrPair retval = chooseDataNode(targetBlock, failures);
+       chosenNode = retval.info;
+       InetSocketAddress targetAddr = retval.addr;
+ 
+@@ -715,7 +736,7 @@
+     }
+   }
+       
+-  private DNAddrPair chooseDataNode(LocatedBlock block)
++  private DNAddrPair chooseDataNode(LocatedBlock block, Counter failures)
+     throws IOException {
+     while (true) {
+       DatanodeInfo[] nodes = block.getLocations();
+@@ -730,7 +751,7 @@
+         return new DNAddrPair(chosenNode, targetAddr);
+       } catch (IOException ie) {
+         String blockInfo = block.getBlock() + " file=" + src;
+-        if (failures >= dfsClient.getMaxBlockAcquireFailures()) {
++        if (failures.get() >= dfsClient.getMaxBlockAcquireFailures()) {
+           throw new BlockMissingException(src, "Could not obtain block: " + blockInfo,
+                                           block.getStartOffset());
+         }
+@@ -751,22 +772,22 @@
+           // alleviating the request rate from the server. Similarly the 3rd retry
+           // will wait 6000ms grace period before retry and the waiting window is
+           // expanded to 9000ms. 
+-          double waitTime = timeWindow * failures +       // grace period for the last round of attempt
+-            timeWindow * (failures + 1) * DFSUtil.getRandom().nextDouble(); // expanding time window for each failure
+-          DFSClient.LOG.warn("DFS chooseDataNode: got # " + (failures + 1) + " IOException, will wait for " + waitTime + " msec.");
++          double waitTime = timeWindow * failures.get() +       // grace period for the last round of attempt
++            timeWindow * (failures.get() + 1) * DFSUtil.getRandom().nextDouble(); // expanding time window for each failure
++          DFSClient.LOG.warn("DFS chooseDataNode: got # " + (failures.get() + 1) + " IOException, will wait for " + waitTime + " msec.");
+           Thread.sleep((long)waitTime);
+         } catch (InterruptedException iex) {
+         }
+         deadNodes.clear(); //2nd option is to remove only nodes[blockId]
+         openInfo();
+         block = getBlockAt(block.getStartOffset(), false);
+-        failures++;
++        failures.inc();
+         continue;
+       }
+     }
+   } 
+       
+-  private void fetchBlockByteRange(LocatedBlock block, long start, long end,
++  protected void fetchBlockByteRange(LocatedBlock block, long start, long end,
+       byte[] buf, int offset,
+       Map<ExtendedBlock, Set<DatanodeInfo>> corruptedBlockMap)
+       throws IOException {
+@@ -776,12 +797,13 @@
+     int refetchToken = 1; // only need to get a new access token once
+     int refetchEncryptionKey = 1; // only need to get a new encryption key once
+     
++    Counter failures = new Counter();
+     while (true) {
+       // cached block locations may have been updated by chooseDataNode()
+       // or fetchBlockAt(). Always get the latest list of locations at the 
+       // start of the loop.
+       block = getBlockAt(block.getStartOffset(), false);
+-      DNAddrPair retval = chooseDataNode(block);
++      DNAddrPair retval = chooseDataNode(block, failures);
+       DatanodeInfo chosenNode = retval.info;
+       InetSocketAddress targetAddr = retval.addr;
+       BlockReader reader = null;
+@@ -1030,7 +1052,7 @@
+    * @param corruptedBlockMap, map of corrupted blocks
+    * @param dataNodeCount, number of data nodes who contains the block replicas
+    */
+-  private void reportCheckSumFailure(
++  protected void reportCheckSumFailure(
+       Map<ExtendedBlock, Set<DatanodeInfo>> corruptedBlockMap, 
+       int dataNodeCount) {
+     if (corruptedBlockMap.isEmpty()) {
+diff -ru orig/src/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/DistributedFileSystem.java new/src/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/DistributedFileSystem.java
+--- orig/src/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/DistributedFileSystem.java	2013-09-19 11:41:37.420376294 -0700
++++ new/src/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/DistributedFileSystem.java	2013-09-19 11:41:37.883376296 -0700
+@@ -81,7 +81,7 @@
+   private Path workingDir;
+   private URI uri;
+ 
+-  DFSClient dfs;
++  protected DFSClient dfs;
+   private boolean verifyChecksum = true;
+   
+   static{
+diff -ru orig/src/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/server/namenode/NameNode.java new/src/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/server/namenode/NameNode.java
+--- orig/src/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/server/namenode/NameNode.java	2013-09-19 11:41:37.322376281 -0700
++++ new/src/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/server/namenode/NameNode.java	2013-09-19 11:41:37.747376306 -0700
+@@ -325,13 +325,15 @@
+           "Invalid URI for NameNode address (check %s): %s has no authority.",
+           FileSystem.FS_DEFAULT_NAME_KEY, filesystemURI.toString()));
+     }
+-    if (!HdfsConstants.HDFS_URI_SCHEME.equalsIgnoreCase(
++    // comment this out so we can use schemes other than hdfs!!
++    /* if (!HdfsConstants.HDFS_URI_SCHEME.equalsIgnoreCase(
+         filesystemURI.getScheme())) {
+       throw new IllegalArgumentException(String.format(
+           "Invalid URI for NameNode address (check %s): %s is not of scheme '%s'.",
+           FileSystem.FS_DEFAULT_NAME_KEY, filesystemURI.toString(),
+           HdfsConstants.HDFS_URI_SCHEME));
+     }
++    */
+     return getAddress(authority);
+   }
+ 

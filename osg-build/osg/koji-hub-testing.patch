@@ -1,0 +1,81 @@
+From dcd644c8d3acbf7b81b3cc1f3bd35ee1f6a3bc4f Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Thu, 13 Feb 2014 18:18:08 -0600
+Subject: [PATCH] Changed koji-hub url to koji-hub-testing.chtc.wisc.edu
+
+---
+ data/osg-koji-home.conf | 6 +++---
+ data/osg-koji-site.conf | 6 +++---
+ osgbuild/constants.py   | 4 ++--
+ osgbuild/kojiinter.py   | 2 +-
+ 4 files changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/data/osg-koji-home.conf b/data/osg-koji-home.conf
+index f716cc4..013da7f 100644
+--- a/data/osg-koji-home.conf
++++ b/data/osg-koji-home.conf
+@@ -1,11 +1,11 @@
+ [koji]
+ ;configuration for koji cli tool
+ ;url of XMLRPC server
+-server = http://koji-hub.batlab.org/kojihub
++server = http://koji-hub-testing.chtc.wisc.edu/kojihub
+ ;url of web interface
+-weburl = http://koji-hub.batlab.org/koji
++weburl = http://koji-hub-testing.chtc.wisc.edu/koji
+ ;url of package download site
+-pkgurl = http://koji-hub.batlab.org/packages
++pkgurl = http://koji-hub-testing.chtc.wisc.edu/packages
+ ;path to the koji top directory
+ topdir = /mnt/koji
+ ;configuration for SSL authentication
+diff --git a/data/osg-koji-site.conf b/data/osg-koji-site.conf
+index 85fc504..707ecd4 100644
+--- a/data/osg-koji-site.conf
++++ b/data/osg-koji-site.conf
+@@ -1,11 +1,11 @@
+ [koji]
+ ;configuration for koji cli tool
+ ;url of XMLRPC server
+-server = http://koji-hub.batlab.org/kojihub
++server = http://koji-hub-testing.chtc.wisc.edu/kojihub
+ ;url of web interface
+-weburl = http://koji-hub.batlab.org/koji
++weburl = http://koji-hub-testing.chtc.wisc.edu/koji
+ ;url of package download site
+-pkgurl = http://koji-hub.batlab.org/packages
++pkgurl = http://koji-hub-testing.chtc.wisc.edu/packages
+ ;path to the koji top directory
+ topdir = /mnt/koji
+ ;configuration for SSL authentication
+diff --git a/osgbuild/constants.py b/osgbuild/constants.py
+index fe23a4a..e7e174a 100644
+--- a/osgbuild/constants.py
++++ b/osgbuild/constants.py
+@@ -21,8 +21,8 @@ KOJI_CONF = "osg-koji-site.conf"
+ OLD_KOJI_CONF = "osg-koji.conf"
+ DATA_DIR = "/usr/share/osg-build"
+ 
+-KOJI_HUB = "http://koji-hub.batlab.org"
+-HTTPS_KOJI_HUB = "https://koji-hub.batlab.org"
++KOJI_HUB = "http://koji-hub-testing.chtc.wisc.edu"
++HTTPS_KOJI_HUB = "https://koji-hub-testing.chtc.wisc.edu"
+ 
+ DATA_FILE_SEARCH_PATH = [sys.path[0],
+                          os.path.join(sys.path[0], "data"),
+diff --git a/osgbuild/kojiinter.py b/osgbuild/kojiinter.py
+index 2150a90..07de900 100644
+--- a/osgbuild/kojiinter.py
++++ b/osgbuild/kojiinter.py
+@@ -87,7 +87,7 @@ def download_koji_file(task_id, filename, destdir):
+     in destdir/task_id/filename
+ 
+     """
+-    url = "http://koji-hub.batlab.org/koji/getfile?taskID=%d&name=%s" % (task_id, filename)
++    url = "http://koji-hub-testing.chtc.wisc.edu/koji/getfile?taskID=%d&name=%s" % (task_id, filename)
+     log.debug('Retrieving ' + url)
+     handle = urllib2.urlopen(url)
+     utils.safe_makedirs(destdir)
+-- 
+1.7.12
+

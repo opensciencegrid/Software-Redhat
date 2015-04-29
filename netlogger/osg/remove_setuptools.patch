@@ -1,0 +1,19 @@
+--- _build_results/BUILD/netlogger-trunk/setup.py	2011-02-08 16:01:42.000000000 -0600
++++ setup.py	2011-08-22 10:33:18.000000000 -0500
+@@ -1,7 +1,4 @@
+-try:
+-    from setuptools import setup
+-except:
+-    from distutils.core import setup
++from distutils.core import setup
+ from glob import glob
+ import os
+ import sys
+@@ -77,7 +74,6 @@
+       scripts = glob('scripts/nl_*') + \
+           ['scripts/netlogd'] +  glob('scripts/utilities/nl_*') +\
+           ['scripts/utilities/mongo_dump', 'scripts/utilities/nlmid'],
+-      install_requires=["magicdate >= 0.1.2" ],
+       # metadata for upload to PyPI
+       author = "Dan Gunter",
+       author_email = "dkgunter@lbl.gov",

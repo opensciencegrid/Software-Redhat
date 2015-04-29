@@ -1,0 +1,12 @@
+--- netlogger/parsers/base.py	2011-08-17 22:42:53.000000000 -0500
++++ netlogger/parsers/base.py	2012-11-28 15:15:02.773525000 -0600
+@@ -399,8 +399,7 @@
+                 if self._ufile:
+                     self._ufile.write(line)
+                 else:
+-                    self.log.warn("unparsed.event", 
+-                                  value=line.strip(), msg=E)
++                    self.log.warn("unparsed.event" + line.strip())
+                 result = False
+             # A skipped line means that it will never
+             # be parsed, but there was no error.

@@ -1,0 +1,10 @@
+Packaging of the PPDG-Cert-Scripts
+
+(Renamed to OSG-Cert-Scripts for 2.7-5)
+
+Bad things:
+- Requires modified M2crypto for multi-cert-gridadmin.  Ignoring for now.
+  Means multi-cert-gridadmin will probably fail tragically
+- Tar file is named differently from the package.
+
+

@@ -1,0 +1,35 @@
+This is a repackaging of a tarball that is provided by the GOC.
+We provide the following files and dirs:
+    edg-mkgridmap.conf
+    gums.config.template
+    vomsdir/
+    vomses
+
+The GOC's package also provides a gums template config,
+but the one we want to ship is in the new GUMS config format.
+
+The following steps were used to create the vo-client-43 tarball:
+
+1. Get vo-package-43.tar.gz from http://software-itb.grid.iu.edu/pacman/tarballs/, untar it.
+2. Rename edg-mkgridmap.osg to edg-mkgridmap.conf
+3. Get rid of gums.template and gums-fqan.txt
+4. Copy gums.config.template from the previous vo-client package
+5. Move vomsdir out of the way (if present)
+6. Copy vomsdir from previous vo-client package.
+7. Run ./osg-make-vomsdir --vomsdir vomsdir --vomses vomses;
+   you will need to either run this as root on a machine that has host certs,
+   or run it as yourself using your grid credentials.
+8. Merge vomsdir dir with the one you moved out of the way.
+9. Get rid of the scripts and anything else that's not mentioned in the spec file.
+10. Rename the directory vo-client-$version
+11. Tar up the directory into vo-client-$version-osg.tar.gz
+
+---------------------------------------------------------------------------
+
+Tim's notes, 1 November 2012
+
+The process by which this version was created is completely broken and must
+be fixed!  Simply copying the gums.config.template from the prior version
+means that we lose any changes that Rob makes in the upstream, old-format
+version.  So, I will work with Rob Quick and the GOC to create and document
+a sustainable process for future releases.

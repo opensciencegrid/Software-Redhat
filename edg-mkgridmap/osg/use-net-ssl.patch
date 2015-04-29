@@ -1,0 +1,10 @@
+--- sbin/edg-mkgridmap.pl.orig	2011-04-02 20:31:56.000000000 -0500
++++ sbin/edg-mkgridmap.pl	2014-05-27 11:19:35.220653215 -0500
+@@ -51,6 +51,7 @@
+ use Net::LDAP;
+ use Net::LDAP::Util qw(ldap_error_desc);
+ use Net::LDAPS;
++use Net::SSL;
+ use LWP::UserAgent;
+ use XML::DOM;
+ use XML::Parser;

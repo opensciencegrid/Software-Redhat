@@ -1,0 +1,40 @@
+diff -ru orig/src/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/server/datanode/DirectoryScanner.java new/src/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/server/datanode/DirectoryScanner.java
+index 55e87c7..64abf2d 100644
+--- orig/src/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/server/datanode/DirectoryScanner.java
++++ new/src/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/server/datanode/DirectoryScanner.java
+@@ -162,6 +162,11 @@ public class DirectoryScanner implements Runnable {
+     private final File blockFile;
+     private final FsVolumeSpi volume;
+ 
++    /**
++     * Get the file's length in async block scan
++     */
++    private final long blockFileLength;
++
+     ScanInfo(long blockId) {
+       this(blockId, null, null, null);
+     }
+@@ -170,9 +175,14 @@ public class DirectoryScanner implements Runnable {
+       this.blockId = blockId;
+       this.metaFile = metaFile;
+       this.blockFile = blockFile;
++      this.blockFileLength = (blockFile != null) ? blockFile.length() : 0;
+       this.volume = vol;
+     }
+ 
++    long getBlockFileLength() {
++      return blockFileLength;
++    }
++
+     File getMetaFile() {
+       return metaFile;
+     }
+@@ -389,7 +399,7 @@ public class DirectoryScanner implements Runnable {
+             // Block metadata file exits and block file is missing
+             addDifference(diffRecord, statsRecord, info);
+           } else if (info.getGenStamp() != memBlock.getGenerationStamp()
+-              || info.getBlockFile().length() != memBlock.getNumBytes()) {
++              || info.getBlockFileLength() != memBlock.getNumBytes()) {
+             // Block metadata file is missing or has wrong generation stamp,
+             // or block file length is different than expected
+             statsRecord.mismatchBlocks++;

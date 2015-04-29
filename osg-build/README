@@ -1,0 +1,10 @@
+
+osg-build is used to create new native packages for the VDT infrastructure.
+
+It is modelled on Fedora's fedpkg; the ultimate goal is to provide a friendly
+interface for contributors to the OSG-Software effort.
+
+Documentation can be found at:
+
+https://twiki.grid.iu.edu/bin/view/SoftwareTeam/OSGBuildTools
+

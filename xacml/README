@@ -1,0 +1,10 @@
+The source rpm for this package came from 
+
+http://software.nikhef.nl/dist/mwsec/rpm/epel5/SRPMS/
+
+The spec file comes from
+
+http://ndpfsvn.nikhef.nl/viewvc/mwsec/packaging/fedora/trunk/xacml.spec
+
+but starting with version 1.5.0 OSG does not need any patches so we
+can pass it through unchanged.
