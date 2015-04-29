@@ -1,5 +1,5 @@
 Name:      rsv-perfsonar
-Version:   1.0.13
+Version:   1.0.14
 Release:   1%{?dist}
 Summary:   RSV Metrics to monitor pefsonar
 Packager:  OSG-Software
@@ -72,6 +72,9 @@ scl enable python27 - << \EOF
 EOF 
 
 %changelog
+* Wed Apr 29 2015 <efajardo@physics.ucsd.edu> 1.0.14-1
+- Added SSL support to query remote perfsonar hosts
+
 * Thu Mar 26 2015 <efajardo@physics.ucsd.edu> 1.0.13-1
 - Sanitized the url from the meshes to prevent the main probe from choking
 
