@@ -1,7 +1,7 @@
 Name:      osg-gums
 Summary:   OSG GUMS
-Version:   1.0.0
-Release:   2%{?dist}
+Version:   3.3
+Release:   1%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -31,6 +31,9 @@ rm -rf $RPM_BUILD_ROOT
 %files
 
 %changelog
+* Wed Apr 29 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.3-1
+- Rebuild for OSG 3.3
+
 * Tue Jul 23 2013 Carl Edquist <edquist@cs.wisc.edu> - 1.0.0-2
 - Require fetch-crl (SOFTWARE-967)
 * Sat Jun 23 2012 Alain Roy <roy@cs.wisc.edu> - 1.0.0-1

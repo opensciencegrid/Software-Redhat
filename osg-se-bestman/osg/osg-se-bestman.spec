@@ -1,7 +1,7 @@
 Name:           osg-se-bestman
 Summary:        OSG BeStMan Storage Element package for RPM distribution
-Version:        3.0.0
-Release:        9%{?dist}
+Version:        3.3
+Release:        1%{?dist}
 License:        GPL
 Group:          System Environment/Daemons
 URL:            https://twiki.grid.iu.edu/twiki/bin/view/Storage/WebHome
@@ -49,6 +49,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Apr 29 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.3-1
+- Rebuild for OSG 3.3
+
 * Thu Apr 04 2013 Brian Lin <blin@cs.wisc.edu> - 3.0.0-9
 - Remove java dependency
 

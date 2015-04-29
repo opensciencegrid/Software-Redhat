@@ -1,7 +1,7 @@
 Name:      osg-tested-internal
 Summary:   All OSG packages we test (internal use only)
-Version:   3.2
-Release:   10%{?dist}
+Version:   3.3
+Release:   1%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -95,6 +95,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Apr 29 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.3-1
+- Rebuild for OSG 3.3
+
 * Wed Apr 22 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.2-10
 - Add rsv and osg-ce-condor to el7
 

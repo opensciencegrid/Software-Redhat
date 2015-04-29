@@ -1,7 +1,7 @@
 Name:      osg-voms
 Summary:   OSG VOMS
-Version:   3.0.0
-Release:   3%{?dist}
+Version:   3.3
+Release:   1%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -38,6 +38,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Apr 29 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.3-1
+- Rebuild for OSG 3.3
+
 * Wed Apr 22 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.0.0-3
 - Use mariadb on el7
 
