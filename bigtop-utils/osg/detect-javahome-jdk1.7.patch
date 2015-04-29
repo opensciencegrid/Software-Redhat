@@ -1,0 +1,15 @@
+Index: _quilt/bigtop-detect-javahome
+===================================================================
+--- _quilt.orig/bigtop-detect-javahome	2013-05-28 15:51:59.000000002 -0500
++++ _quilt/bigtop-detect-javahome	2013-05-28 15:58:26.000000002 -0500
+@@ -36,7 +36,9 @@
+     /usr/lib/jvm/java-openjdk \
+     /usr/lib/jvm/jre-openjdk \
+     /usr/lib/jvm/java-1.6.0-openjdk-1.6.* \
+-    /usr/lib/jvm/jre-1.6.0-openjdk* ; do
++    /usr/lib/jvm/java-1.7.0-openjdk-1.7.* \
++    /usr/lib/jvm/jre-1.6.0-openjdk* \
++    /usr/lib/jvm/jre-1.7.0-openjdk*; do
+     if [ -e $candidate/bin/java ]; then
+       export JAVA_HOME=$candidate
+       break
