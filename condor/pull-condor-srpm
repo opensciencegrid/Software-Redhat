@@ -1,0 +1,25 @@
+#!/bin/bash
+set -e
+
+cd "$(dirname "$0")"
+
+usage () {
+  echo "Which condor version?"
+  echo
+  echo "usage: $(basename "$0") X.Y.Z"
+  exit
+}
+
+[[ $1 =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || usage
+
+VERSION=$1
+SERIES=${VERSION%.*}
+SRPM=condor-$VERSION-1.src.rpm
+PUBLIC_SRPM=/p/condor/public/binaries/v$SERIES/$VERSION/$SRPM
+UPSTREAM=/p/vdt/public/html/upstream/condor/$VERSION/
+
+mkdir -p $UPSTREAM
+cp $PUBLIC_SRPM $UPSTREAM
+
+echo condor/$VERSION/$SRPM > upstream/developer.srpm.source
+
