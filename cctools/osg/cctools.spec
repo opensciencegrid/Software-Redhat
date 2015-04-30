@@ -4,8 +4,8 @@
 %{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
 %endif
 Name: cctools
-Version: 4.1.3
-Release: 3%{?dist}
+Version: 4.4.0
+Release: 1%{?dist}
 Summary: A collection of tools for harnessing large scale distributed systems
 License: GPL 2.0 
 URL: http://www3.nd.edu/~ccl/
@@ -14,11 +14,7 @@ Group: System Environment/Daemons
 Source0: %{name}-%{version}-source.tar.gz
 BuildRoot:  %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: cvmfs-devel fuse-devel
-%if 0%?rhel >= 7
-BuildRequires: xrootd-devel >= 1:4.0.0
-%else
-BuildRequires: xrootd4-devel
-%endif
+BuildRequires: xrootd-devel >= 1:4.1.0
 BuildRequires: openssl-devel
 BuildRequires: zlib-devel
 BuildRequires: python-devel >= 2.4
@@ -29,6 +25,7 @@ BuildRequires: perl-ExtUtils-Embed
 #Addded so documentation is built 
 BuildRequires: m4 doxygen 
 BuildRequires: /usr/bin/nroff
+BuildRequires: libuuid-devel
 
 
 %description
@@ -132,7 +129,7 @@ including a report of the resource that was above the limit.
 %build
 cd %{name}-%{version}-source
 ## Initial RPM will only workqueue
-./configure --without-system-resource_monitor_visualizer --with-cvmfs-path /usr
+./configure --without-system-resource_monitor_visualizer --without-system-weaver --with-cvmfs-path /usr
 make
 
 ## need to have -devel packages in buildrequires.
@@ -171,6 +168,7 @@ mv %{buildroot}/usr/lib/librmonitor_helper.so %{buildroot}/%{_libdir}
 mv %{buildroot}/usr/lib/libparrot_helper.so %{buildroot}/%{_libdir}
 mv %{buildroot}/usr/lib/libparrot_client.a %{buildroot}/%{_libdir}
 mv %{buildroot}/usr/lib/libwork_queue.a %{buildroot}/%{_libdir}
+mv %{buildroot}/usr/lib/librmonitor_poll.a %{buildroot}/%{_libdir}
 %endif
 
 ## apparently site_perl is no longer in vogue. need to create vendor_perl
@@ -178,17 +176,15 @@ mkdir -p %{buildroot}%{_libdir}/perl5/vendor_perl
 # ## pm should be noarch and .so is 64-bit, and moved to vendor_perl
 mv %{buildroot}/usr/lib/perl5/site_perl/*/* %{buildroot}/%{_libdir}/perl5/vendor_perl/
 
-# Shared library conflicts with our condor package
-mkdir %{buildroot}/%{_libdir}/cctools
-mv %{buildroot}/usr/lib/libchirp_client.so %{buildroot}/%{_libdir}/cctools
-
 ## /usr/doc is not canonical. it's /usr/share/doc
 mkdir -p %{buildroot}/usr/share/doc/
 mv %{buildroot}/usr/doc %{buildroot}/usr/share/doc/cctools
 
 # removing some files we probably dont need..
-rm %{buildroot}/usr/etc/Makefile.config
-
+rm %{buildroot}/usr/etc/config.mk
+# removing man pages of unbuilt packages..
+rm %{buildroot}/usr/share/man/man1/deltadb*.1.gz
+rm %{buildroot}/usr/share/man/man1/weaver.1.gz
 
 
 %files doc
@@ -197,11 +193,16 @@ rm %{buildroot}/usr/etc/Makefile.config
 %{_docdir}/%{name}/api/html/*
 %{_docdir}/%{name}/man/*.html
 %{_docdir}/cctools/images/*
+%{_docdir}/%{name}/manual.css
 
 %files resource_monitor
 %{_bindir}/resource_monitor
 %{_bindir}/resource_monitorv
+%{_bindir}/piggybacker
+%{_bindir}/resource_monitor_cluster
+%{_bindir}/resource_monitor_histograms
 %{_libdir}/librmonitor_helper.so
+%{_libdir}/librmonitor_poll.a
 #man pages
 %_mandir/man1/resource_monitor*.1.gz
 
@@ -232,22 +233,17 @@ rm %{buildroot}/usr/etc/Makefile.config
 
 %files makeflow
 %{_bindir}/makeflow
-%{_bindir}/makeflow_log_parser
+#%{_bindir}/makeflow_log_parser
 %{_bindir}/makeflow_monitor
 %{_bindir}/starch
 %{_bindir}/condor_submit_makeflow
-%{_bindir}/makeflow_linker
-%{_bindir}/makeflow_linker_perl_driver
-%{_bindir}/makeflow_linker_python_driver
-%{_bindir}/catalog_history_filter
-%{_bindir}/catalog_history_plot
-%{_bindir}/catalog_history_select
+%{_bindir}/makeflow_analyze
+%{_bindir}/makeflow_graph_log
+%{_bindir}/makeflow_viz
 #man pages
 %_mandir/man1/makeflow*.1.gz
 %_mandir/man1/starch.1.gz
 %_mandir/man1/split_fasta.1.gz
-%_mandir/man1/makeflow_linker*.1.gz
-%_mandir/man1/catalog_history*.1.gz
 
 %files parrot
 ## ftp lite 
@@ -269,12 +265,16 @@ rm %{buildroot}/usr/etc/Makefile.config
 %{_bindir}/parrot_setacl
 %{_bindir}/parrot_whoami
 %{_bindir}/parrot_timeout
+%{_bindir}/chroot_package_run
+%{_bindir}/parrot_package_create
+%{_bindir}/parrot_package_run
 %{_includedir}/cctools/parrot_client.h
 %{_libdir}/libparrot_client.a
 %{_libdir}/libparrot_helper.so
 #Man pages
 %_mandir/man1/parrot*.1.gz
 %_mandir/man1/make_growfs.1.gz
+%_mandir/man1/chroot_package_run.1.gz
 
 
 %files chirp
@@ -299,8 +299,6 @@ rm %{buildroot}/usr/etc/Makefile.config
 %{_includedir}/cctools/chirp_stream.h
 %{_includedir}/cctools/chirp_types.h
 %{_libdir}/libchirp.a
-%dir %{_libdir}/cctools/
-%{_libdir}/cctools/libchirp_client.so
 #man pages
 %_mandir/man1/chirp*.1.gz
 
@@ -319,6 +317,7 @@ rm %{buildroot}/usr/etc/Makefile.config
 %{_bindir}/work_queue_status
 %{_bindir}/work_queue_worker
 %{_bindir}/wq_submit_workers.common
+%{_bindir}/work_queue_graph_log
 %{python_sitelib}/work_queue.py
 %{python_sitelib}/work_queue.pyc
 %{python_sitelib}/work_queue.pyo
@@ -333,6 +332,8 @@ rm %{buildroot}/usr/etc/Makefile.config
 %{_libdir}/libwork_queue.a 
 %{_libdir}/perl5/vendor_perl/work_queue.pm
 %{_libdir}/perl5/vendor_perl/work_queue.so
+%{_libdir}/perl5/vendor_perl/Work_Queue/Queue.pm
+%{_libdir}/perl5/vendor_perl/Work_Queue/Task.pm
 #man pages
 %_mandir/man1/work_queue*.1.gz
 %_mandir/man1/*submit_workers*.1.gz
@@ -361,12 +362,17 @@ rm %{buildroot}/usr/etc/Makefile.config
 %{_includedir}/cctools/timestamp.h
 %{_includedir}/cctools/buffer.h
 %{_includedir}/cctools/md5.h
+%{_includedir}/cctools/link.h
+%{_includedir}/cctools/rmsummary.h
 #man pages
 %_mandir/man1/catalog_server*.1.gz
 %_mandir/man1/catalog_update*.1.gz
 
 
 %changelog
+* Wed Apr 22 2015 Jeff Dost <jdost@ucsd.edu> - 4.4.0-1
+- Updated to version 4.4.0, updated xrootd build requirements
+
 * Fri Dec 05 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 4.1.3-3
 - Fix build failure on EL7
 
