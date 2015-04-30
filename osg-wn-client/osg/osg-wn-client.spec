@@ -1,10 +1,7 @@
 Name:      osg-wn-client
 Summary:   OSG Worker-Node Client
 Version:   3.3
-%if 0%{?el7}
-%define release_suffix _clipped
-%endif
-Release:   1%{?release_suffix}%{?dist}
+Release:   2%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -21,41 +18,20 @@ Requires: java-devel >= 1:1.7.0
 %endif
 
 Requires: /usr/bin/curl
-Requires: /usr/bin/dccp
-Requires: dcap-tunnel-gsi
 Requires: edg-gridftp-client
-%if ! 0%{?el7}
-Requires: glite-fts-client
-%else
 Requires: fts-client
-%endif
-%if ! 0%{?el7}
-Requires: lcg-util
-%endif
-Requires: lfc-client
-Requires: lfc-python
 Requires: myproxy
 Requires: voms-clients
 Requires: /usr/bin/ldapsearch
-Requires: dcache-srmclient
-%if ! 0%{?el7}
-Requires: bestman2-client
-%endif
 Requires: /usr/bin/uberftp
 Requires: /usr/bin/wget
 Requires: grid-certificates
-%if 0%{?rhel} < 6
-Requires: fetch-crl3
-%else
 Requires: fetch-crl
-%endif
 Requires: osg-system-profiler
 Requires: vo-client
 Requires: osg-version
 Requires: globus-gass-copy-progs
-%if 0%{?rhel} >= 6
 Requires: globus-xio-udt-driver
-%endif
 
 Requires: gfal2
 Requires: gfal2-util
@@ -124,6 +100,11 @@ rm -rf $RPM_BUILD_ROOT
 %files glexec
 
 %changelog
+* Thu Apr 30 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.3-2
+- Remove requirements dropped from 3.3
+- Remove conditionals for el5
+- Remove _clipped version -- el7 now supports everything el6 does
+
 * Wed Apr 29 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.3-1
 - Rebuild for OSG 3.3
 
