@@ -14,6 +14,8 @@ Requires: voms-admin-client
 Requires: osg-version
 Requires: osg-system-profiler
 #
+# This metapackage requires a database _server_. voms-mysql-plugin only brings
+# in the client.
 %if 0%{?rhel} < 7
 Requires: mysql-server
 %else
@@ -21,6 +23,7 @@ Requires: mariadb-server
 %endif
 #from epel
 Requires: voms-server
+
 Requires: voms-mysql-plugin
 
 %description
