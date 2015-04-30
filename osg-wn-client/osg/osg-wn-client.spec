@@ -18,7 +18,6 @@ Requires: java-devel >= 1:1.7.0
 %endif
 
 Requires: /usr/bin/curl
-Requires: edg-gridftp-client
 Requires: fts-client
 Requires: myproxy
 Requires: voms-clients
