@@ -14,7 +14,7 @@
 
 Name:           bestman2
 Version:        2.3.0
-Release:        22%{?dist}
+Release:        23%{?dist}
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -45,6 +45,7 @@ Source10:       bestman2lib.sysconfig
 
 Patch0:		upgrade_exception_message.patch
 Patch1:		bestman2-2.2.1-2.2.2.patch
+Patch2:		gucpath.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
@@ -144,6 +145,8 @@ Summary: Bestman LBNL SRM client
 Group: Applications/Internet
 Requires: %{name}-client-libs = %{version}-%{release}
 Requires: %{name}-common-libs = %{version}-%{release}
+# for globus-url-copy
+Requires: globus-gass-copy-progs
 %description client
 The srm-* client tools
 
@@ -188,6 +191,7 @@ cd ..
 
 %patch0 -p1
 %patch1 -p0
+%patch2 -p1
 
 pushd bestman2/setup-osg/bestman.in
 sed -i "s/@SRM_HOME@/\/etc\/bestman2/" *
@@ -449,6 +453,9 @@ fi
 
 
 %changelog
+* Fri May 01 2015 Carl Edquist <edquist@cs.wisc.edu> - 2.3.0-23
+- use globus-url-copy by default (SOFTWARE-1889)
+
 * Fri May 01 2015 Carl Edquist <edquist@cs.wisc.edu> - 2.3.0-22
 - drop glite-security-trustmanager glite-security-util-java requirements
   in favor of emi-trustmanager (SOFTWARE-1880)
