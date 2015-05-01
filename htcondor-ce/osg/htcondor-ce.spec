@@ -3,7 +3,7 @@
 
 Name: htcondor-ce
 Version: 1.13
-Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
+Release: 2%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 
 Group: Applications/System
@@ -313,6 +313,9 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Fri May 01 2015 Brian Lin <blin@cs.wisc.edu> - 1.13-2
+- Rebuild for EL5 against HTCondor 8.3.4
+
 * Mon Apr 27 2015 Brian Lin <blin@cs.wisc.edu> - 1.13-1
 - Fix bug that prevented HTCondor CE service from starting with multiple job routes
 
