@@ -1,0 +1,52 @@
+diff --git a/build/cmake/CondorConfigure.cmake b/build/cmake/CondorConfigure.cmake
+index 3453c8f0187f5dd5729ddf177867146d438fadcb..a0e784cd44f3b439fb6da34521d7490d46a30679 100644
+--- b/build/cmake/CondorConfigure.cmake
++++ a/build/cmake/CondorConfigure.cmake
+@@ -530,8 +530,6 @@
+ 	#The following checks are for std:u only.
+ 	glibc_detect( GLIBC_VERSION )
+ 
+-	set(HAVE_GNU_LD ON)
+-
+ elseif(${OS_NAME} STREQUAL "AIX")
+ 	set(AIX ON)
+ 	set(DOES_SAVE_SIGSTATE ON)
+diff --git a/src/condor_includes/config.h.cmake b/src/condor_includes/config.h.cmake
+index 22e0751a879b8d6181bd7548bd21cdc8b5dfce49..f286363c2ba742da0ebd4b9505dba1985943ac36 100644
+--- b/src/condor_includes/config.h.cmake
++++ a/src/condor_includes/config.h.cmake
+@@ -345,8 +345,8 @@
+ #cmakedefine HAVE_CLOCK_MONOTONIC_RAW 1
+ #cmakedefine HAVE_CLOCK_REALTIME_COARSE 1
+ 
+-/* are we using the GNU linker (USED) */
+-#cmakedefine HAVE_GNU_LD 1
++///* are we using the GNU linker (USED)- I want to remove this comments are untrue*/
++//#cmakedefine HAVE_GNU_LD 1
+ 
+ /* Define to 1 if the system has the type 'id_t'. (USED)*/
+ #cmakedefine HAVE_ID_T 1
+diff --git a/src/condor_utils/CMakeLists.txt b/src/condor_utils/CMakeLists.txt
+index 140dffb05f9491620390506787664e21a8519809..20af0df0d56ce3baa49840b5101db8fdcb5dc190 100644
+--- b/src/condor_utils/CMakeLists.txt
++++ a/src/condor_utils/CMakeLists.txt
+@@ -83,9 +83,6 @@
+ 	message(FATAL_ERROR "Can't determine Condor version!")
+ endif()
+ set_target_properties( condor_utils PROPERTIES OUTPUT_NAME "${UTILS_LIB_NAME}" )
+-if (HAVE_GNU_LD)
+-	target_link_libraries( condor_utils -Wl,--wrap,exit )
+-endif()
+ 
+ # for linux also make a static version of condor_utils
+ #
+@@ -93,9 +90,6 @@
+    condor_static_lib( condor_utils_s "${HeaderFiles};${SourceFiles};${EXTRA_SRCS}" )
+    add_dependencies( condor_utils_s utils_genparams syscall_numbers )
+    set_target_properties( condor_utils_s PROPERTIES OUTPUT_NAME "${UTILS_LIB_NAME}" )
+-   if (HAVE_GNU_LD)
+-	target_link_libraries( condor_utils_s -Wl,--wrap,exit )
+-   endif()
+ endif(LINUX OR DARWIN)
+ 
+ 
