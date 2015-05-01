@@ -14,7 +14,7 @@
 
 Name:           bestman2
 Version:        2.3.0
-Release:        21%{?dist}
+Release:        22%{?dist}
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -85,7 +85,7 @@ Summary: Common files BeStMan SRM server client and tester
 Group: System Environment/Libraries
 Requires:  java7 jpackage-utils axis jakarta-commons-logging jakarta-commons-discovery wsdl4j log4j jglobus cog-jglobus-axis >= 1.8.0-2
 # The following are needed for srm client tools and probably tester too
-Requires:  joda-time glite-security-trustmanager glite-security-util-java xalan-j2 voms-api-java >= 2.0.8 jakarta-commons-collections
+Requires:  joda-time xalan-j2 voms-api-java >= 2.0.8 jakarta-commons-collections
 # ensure these are present, from jpackage-utils or missing-java-1.7.0-dirs
 Requires: /usr/lib/java-1.7.0
 Requires: /usr/share/java-1.7.0
@@ -449,6 +449,10 @@ fi
 
 
 %changelog
+* Fri May 01 2015 Carl Edquist <edquist@cs.wisc.edu> - 2.3.0-22
+- drop glite-security-trustmanager glite-security-util-java requirements
+  in favor of emi-trustmanager (SOFTWARE-1880)
+
 * Wed Nov 05 2014 Carl Edquist <edquist@cs.wisc.edu> - 2.3.0-21
 - update xmlsec jar requirement to 1.4.4, for GUMS 1.4.1 (SOFTWARE-1654)
 
