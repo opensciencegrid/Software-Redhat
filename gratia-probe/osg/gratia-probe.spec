@@ -2,7 +2,7 @@ Name:               gratia-probe
 Summary:            Gratia OSG accounting system probes
 Group:              Applications/System
 Version:            1.14.2
-Release:            1%{?dist}
+Release:            2%{?dist}
 
 License:            GPL
 Group:              Applications/System
@@ -1019,6 +1019,12 @@ The dCache storagegroup probe for the Gratia OSG accounting system.
 %endif # noarch
 
 %changelog
+* Fri May 1 2015 Marco Mambelli <marcom@fnal.gov> - 1.14.2-2
+- fixed possible deadlock in enstore-tapedrive when dismount is lost and tape not used
+- cleaned up code and docstrings to produce sphinx documentation 
+- added script for local deployment to generate probe documentation via sphinx
+- added to the repo a script to help rcover lsf quarantined files
+ 
 * Thu Apr 30 2015 Marco Mambelli <marcom@fnal.gov> - 1.14.2-1
 - added option to force manual execution also when a probe is disabled in the config file
 - changed enstore-storage to support also fetching of current usage data 
