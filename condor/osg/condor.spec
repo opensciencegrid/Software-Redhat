@@ -118,7 +118,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 3
+%define condor_base_release 2
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -207,9 +207,7 @@ Source123: zlib-1.2.3.tar.gz
 %endif
 
 Patch1: sw1636-cream_gahp-dlopen.patch
-# Reverts gittrac#4910 due to HTCondor CE failures in EL5
-# This can be dropped when 
-Patch2: revert_wrap_exit.patch
+
 #% if 0%osg
 Patch8: osg_sysconfig_in_init_script.patch
 #% endif
@@ -684,9 +682,7 @@ exit 0
 %endif
 
 %patch1 -p1
-%if 0%{?rhel} == 5
-%patch2 -p1
-%endif
+
 %if 0%{?hcc}
 %patch15 -p0
 %endif
@@ -1807,9 +1803,6 @@ fi
 %endif
 
 %changelog
-* Thu Apr 30 2015 Brian Lin <blin@cs.wisc.edu> - 8.3.5-3
-- Revert gnu linker option (gittrac \#4910) that caused failures in HTCondor CE (SOFTWARE-1901)
-
 * Tue Apr 28 2015 Carl Edquist <edquist@cs.wisc.edu> - 8.3.5-2
 - drop NO_PNONE_HOME option; ie, always phone home (SOFTWARE-1897)
 
