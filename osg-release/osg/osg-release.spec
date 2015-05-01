@@ -1,10 +1,10 @@
 Name:           osg-release
-Version:        3.2
-Release:        7%{?dist}
+Version:        3.3
+Release:        1%{?dist}
 Summary:        OSG Software for Enterprise Linux repository configuration
 
-Group:          System Environment/Base 
-License:        GPL 
+Group:          System Environment/Base
+License:        GPL
 URL:            http://vdt.cs.wisc.edu/repos
 
 # This is a OSG Software maintained package which is specific to
@@ -63,6 +63,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri May 01 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.3-1
+- Make osg-3.3 version
+
 * Tue Sep 30 2014 Carl Edquist <edquist@cs.wisc.edu> - 3.2-7
 - Rename debug repos to *-debuginfo (SOFTWARE-1622)
 
