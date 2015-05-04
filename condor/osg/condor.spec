@@ -1804,9 +1804,9 @@ fi
 
 %changelog
 * Tue Apr 28 2015 Carl Edquist <edquist@cs.wisc.edu> - 8.3.5-2
-- drop NO_PNONE_HOME option; ie, always phone home (SOFTWARE-1897)
+- drop NO_PHONE_HOME option; ie, always phone home (SOFTWARE-1897)
 
-* Fri Mar 24 2015 Jose Caballero <jcaballero@bnl.gov> - 8.3.5-1.315103
+* Tue Mar 24 2015 Jose Caballero <jcaballero@bnl.gov> - 8.3.5-1.315103
 - Update to HTCondor 8.3.5 (SOFTWARE-1886)
 - merged all changes in spec file from 8.3.5
 - removed Patch2 sw1807-py_import.patch
