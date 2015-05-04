@@ -1,0 +1,16 @@
+osg-release is the yum repository setup required to install OSG software.  
+This release includes:
+ - Production (named 'osg') (default)
+ - Testing
+ - Development
+ - Minefield (Directly off koji)
+ - Pre-Release (Directly off koji)
+
+The osg-release is designed for both el5 and el6.  It only installs the
+appropriate repo files for the platform.
+
+By default, only the Production repo is enabled.  This can be changed by 
+editing the yum.repos.d/osg-*.repo files and setting:
+enabled=1
+
+
