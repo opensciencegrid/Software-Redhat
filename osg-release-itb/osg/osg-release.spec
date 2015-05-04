@@ -72,21 +72,6 @@ rm -rf $RPM_BUILD_ROOT
 * Thu Jul 17 2014 Carl Edquist <edquist@cs.wisc.edu> - 3.2-6
 - Use .repo file templates and support el7 (SOFTWARE-1541)
 
-* Tue Oct 29 2013 Carl Edquist <edquist@cs.wisc.edu> - 3.2-2
-- Update minefield repos to new koji tags
-
-* Tue Oct 22 2013 Carl Edquist <edquist@cs.wisc.edu> - 3.1-2
-- Update minefield repos to new koji tags
-
-* Wed Oct 16 2013 Carl Edquist <edquist@cs.wisc.edu> - 3.2-1
-- Update to osg/3.2 (SOFTWARE-1221)
-
-* Wed Oct 16 2013 Carl Edquist <edquist@cs.wisc.edu> - 3.1-1
-- Update from old 3.0 repo layout to new osg/3.1 layout (SOFTWARE-1221)
-
-* Thu Feb 07 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 3.0-22
-- Add *upcoming* repos
-
 * Thu Dec 12 2013 Carl Edquist <edquist@cs.wisc.edu> - 3.2-5
 - Bugfix for el5; glob to exclude el6 packages was also excluding osg-empty
 
