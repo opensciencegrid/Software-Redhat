@@ -25,7 +25,11 @@ BuildRequires: perl-ExtUtils-Embed
 #Addded so documentation is built 
 BuildRequires: m4 doxygen 
 BuildRequires: /usr/bin/nroff
+%if 0%{?rhel} > 5
 BuildRequires: libuuid-devel
+%else
+BuildRequires: e2fsprogs-devel
+%endif
 
 
 %description
