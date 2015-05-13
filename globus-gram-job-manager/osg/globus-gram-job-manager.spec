@@ -23,6 +23,7 @@ Patch20:        fix-job-home-dir.patch
 Patch22:        fix-job-lock-location.patch
 Patch26:        allow-manager-restart.patch
 Patch27:        recompute-stdio-on-restart.patch
+Patch28:        active-state.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -87,6 +88,7 @@ GRAM Jobmanager
 %patch20 -p0
 %patch22 -p0
 %patch26 -p0
+%patch28 -p4
 
 # This one is difficult.  Stdio stageout is not atomic - on restart,
 # you need to either assume in-progress transfers "always fail" or
