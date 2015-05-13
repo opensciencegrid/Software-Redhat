@@ -118,7 +118,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 3
+%define condor_base_release 4
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -1816,7 +1816,7 @@ fi
 %endif
 
 %changelog
-* Wed May 13 2015 Carl Edquist <edquist@cs.wisc.edu> - 8.3.5-3
+* Wed May 13 2015 Carl Edquist <edquist@cs.wisc.edu> - 8.3.5-4
 - Revert selected changes in 8.3.5 for EL5 (SOFTWARE-1921)
 
 * Tue Apr 28 2015 Carl Edquist <edquist@cs.wisc.edu> - 8.3.5-2
