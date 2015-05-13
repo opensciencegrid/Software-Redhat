@@ -3,7 +3,7 @@
 Name:		globus-gram-job-manager
 %global _name %(tr - _ <<< %{name})
 Version:	14.25
-Release:	1.1%{?dist}
+Release:	1.2%{?dist}
 Summary:	Globus Toolkit - GRAM Jobmanager
 
 Group:		Applications/Internet
@@ -171,6 +171,9 @@ fi
 %doc %{_pkgdocdir}/README
 
 %changelog
+* Wed May 13 2015 Brian Lin <blin@cs.wisc.edu> - 14.25-1.2.osg
+- Fix SEG not recognizing job state changes (SOFTWARE-1922)
+
 * Wed Feb 11 2015 Matyas Selmeci <matyas@cs.wisc.edu> - 14.25-1.1.osg
 - Merge OSG changes
 
