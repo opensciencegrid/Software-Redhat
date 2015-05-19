@@ -1,3 +1,4 @@
-Downloaded source RPM from EPEL as it is a strict passthrough
+Downloaded source RPM from xrootd as it is a strict passthrough
 
-http://dl.fedoraproject.org/pub/epel/6/SRPMS/xrootd-4.1.1-1.el6.src.rpm
+http://xrootd.cern.ch/sw/releases/4.2.0/rpms/source/xrootd-4.2.0-1.src.rpm
+
