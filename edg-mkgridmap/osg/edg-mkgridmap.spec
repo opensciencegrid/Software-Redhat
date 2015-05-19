@@ -1,5 +1,5 @@
 Name:           edg-mkgridmap
-Version:        4.0.1
+Version:        4.0.2
 Release:        1%{?dist}
 Summary:        A tool to build the grid map-file from VO servers
 Group:          system environment/base
@@ -14,7 +14,7 @@ Source2:        edg-mkgridmap-cron
 
 Patch0:         edg-mkgridmap-wrapper-osg.patch
 Patch1:         use-net-ssl.patch
-Patch2:         skip_blank_entries.patch	
+#Patch2:         skip_blank_entries.patch	
 
 Requires:       osg-edg-mkgridmap-config
 Requires:       osg-vo-map
@@ -24,13 +24,15 @@ Requires:       perl-Net-SSLeay
 Requires:       perl-Crypt-SSLeay
 
 
+
 Requires(post): chkconfig
 Requires(preun): chkconfig
 # This is for /sbin/service
 Requires(preun): initscripts
 
 %description
-%{summary}
+edg-mkgridmap is a tool to build the grid map-file from VO servers,
+taking into account both VO and local policies.
 
 %prep
 
@@ -38,7 +40,7 @@ Requires(preun): initscripts
 %setup -q -n %{name}-%{version}
 %patch0 -p0
 %patch1 -p0
-%patch2 -p0
+#%patch2 -p0
 %build
 
 
@@ -83,6 +85,10 @@ fi
 %dir %{_var}/lib/osg
 
 %changelog
+* Mon May 19 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> - 4.0.2-1
+- Bumped to version 4.0.2 (SOFTWARE-1904)
+- Removed the patch to remove blank entries fixed on base code
+ 
 * Wed Dec 17 2014 Edgar Fajardo <efajardo@physics.ucsd.edu> - 4.0.1-1
 - Bumped to version 4.0.1
 - Added support for TLS (SOFTWARE-1728)

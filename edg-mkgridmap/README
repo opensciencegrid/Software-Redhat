@@ -3,7 +3,10 @@ edg-mkgridmap package
 It is a tool which consults a list of voms servers and a configuration file that describes how 
 to map the users in each virtual organization (VO) to local users to generate a globus gridmap file.
 
-SRC RPM obtained directly from http://emisoft.web.cern.ch/emisoft/dist/EMI/3/sl6/SRPMS/updates/edg-mkgridmap-4.0.1-1.el6.src.rpm
+Source obtained:
+
+# svn export http://svn.cern.ch/guest/curios/edg-mkgridmap/tags/v4_0_2 edg-mkgridmap-4.0.2
+# tar czf edg-mkgridmap-4.0.2.tar.gz edg-mkgridmap-4.0.2
 
 This includes OSG patches to redirect log output, and to create a user-vo-map.
 
