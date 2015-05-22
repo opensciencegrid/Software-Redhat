@@ -1,5 +1,5 @@
 Name:      rsv-perfsonar
-Version:   1.0.14
+Version:   1.0.15
 Release:   1%{?dist}
 Summary:   RSV Metrics to monitor pefsonar
 Packager:  OSG-Software
@@ -14,7 +14,7 @@ BuildArch: noarch
 
 Requires: rsv
 #The perfsonar probe libraries need it. Getting it from I2 repo for now
-Requires: esmond >= 1.0-12
+Requires: esmond >= 1.0-14
 
 %if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
 Requires: python-simplejson
@@ -72,6 +72,10 @@ scl enable python27 - << \EOF
 EOF 
 
 %changelog
+* Fri May 22 2015 <efajardo@physics.ucsd.edu> 1.0.15-1
+- Cannonically post input source and destination
+- Changed requirement for esmond
+ 
 * Wed Apr 29 2015 <efajardo@physics.ucsd.edu> 1.0.14-1
 - Added SSL support to query remote perfsonar hosts
 
