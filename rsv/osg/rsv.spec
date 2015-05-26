@@ -1,6 +1,6 @@
 Name:      rsv
 Summary:   RSV Meta Package
-Version:   3.9.0
+Version:   3.9.1
 %if 0%{?el7}
 %define release_suffix _clipped
 %endif
@@ -10,7 +10,6 @@ Group:     Applications/Monitoring
 URL:       https://twiki.grid.iu.edu/bin/view/MonitoringInformation/RSV
 
 Source0:   %{name}-%{version}.tar.gz
-Patch0:    1653-default-ce-type.patch
 
 BuildArch: noarch
 
@@ -106,7 +105,6 @@ Requires: /usr/bin/condor_ce_ping
 
 %prep
 %setup -q
-%patch0 -p1
 
 
 %install
@@ -247,9 +245,13 @@ fi
 
 
 %changelog
+* Tue May 26 2015 Carl Edquist <edquist@cs.wisc.edu> - 3.9.1-1
+- SOFTWARE-1917 - Integrate 1653-default-ce-type.patch
+- SOFTWARE-1888 - Bugfix for gfal2 commands: specify port explicitly
+
 * Thu Apr 23 2015 Carl Edquist <edquist@cs.wisc.edu> - 3.9.0-1
-- SOFTWARE-793 - new batch submission probe
-- SOFTWARE-1888 - use gfal2 commands in srmcp-srm-probe
+- SOFTWARE-793  - New batch submission probe
+- SOFTWARE-1888 - Use gfal2 commands in srmcp-srm-probe
 
 * Tue Apr 21 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.8.0-3_clipped
 - Add clipped version for el7
