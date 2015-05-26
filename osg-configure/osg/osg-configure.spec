@@ -1,10 +1,8 @@
 Summary: Package for configure-osg and associated scripts
 Name: osg-configure
-Version: 1.0.71
+Version: 1.0.72
 Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
-Patch0: s1653-gateway-type.patch
-Patch1: s1703-gateway-type-tests.patch
 License: Apache 2.0
 Group: Grid
 Prefix: %{_prefix}
@@ -166,6 +164,7 @@ Summary: Configure-osg configuration files for the osg info services
 Group: Grid
 Provides: configure-osg-infoservices
 Requires: %name = %version-%release
+Requires: %name-gip
 %description infoservices
 This package includes the ini file for configuring the osg info services using configure-osg
 
@@ -190,8 +189,6 @@ It may safely be removed once the upgrade is finished.
 
 %prep
 %setup
-%patch0 -p1
-%patch1 -p1
 
 %build
 %{__python} setup.py build
@@ -325,6 +322,11 @@ fi
 
 
 %changelog
+* Tue May 26 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0.72-1.osg
+- Make osg-configure-info-services require osg-configure-gip (SOFTWARE-1911)
+- Do not require subcluster sections in gip config if CE not installed (SOFTWARE-1912)
+- Remove gateway-type patches (in upstream) (SOFTWARE-1918)
+
 * Sun Apr 26 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0.71-1.osg
 - Handle multiple spaces in user-vo-map (SOFTWARE-1873)
 - Fix broken link in job-environment.conf files (SOFTWARE-1834)
