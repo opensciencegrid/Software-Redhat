@@ -5,6 +5,8 @@
 %{!?python2_sitearch: %global python2_sitearch %(%{__python2} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
 %endif
 
+
+
 %{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
 
 %if %{?fedora}%{!?fedora:0} >= 19 || %{?rhel}%{!?rhel:0} >= 7
@@ -600,13 +602,7 @@ fi
 %{_mandir}/man1/xrootdfs.1*
 
 %files python
-%{python2_sitearch}/XRootD/*.py
-%{python2_sitearch}/XRootD/*.pyc
-%{python2_sitearch}/XRootD/client/*.py
-%{python2_sitearch}/XRootD/client/*.pyc
-%{python2_sitearch}/pyxrootd/*.py
-%{python2_sitearch}/pyxrootd/*.pyc
-%{python2_sitearch}/pyxrootd/*.so
+%{python2_sitearch}/XRootD/*
 %{python2_sitearch}/pyxrootd*
 
 %files doc
