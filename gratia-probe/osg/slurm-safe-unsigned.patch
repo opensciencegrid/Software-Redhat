@@ -1,0 +1,16 @@
+diff --git a/slurm/SlurmProbe.py b/slurm/SlurmProbe.py
+index c63b833..5d6795b 100644
+--- a/slurm/SlurmProbe.py
++++ b/slurm/SlurmProbe.py
+@@ -306,7 +306,10 @@ class SlurmAcct(object):
+             , MIN(j.time_start) AS time_start
+             , MAX(j.time_end) AS time_end
+             , SUM(j.time_suspended) AS time_suspended
+-            , SUM(j.time_end - j.time_start - j.time_suspended) AS wall_time
++            , SUM(CASE WHEN j.time_end < j.time_start + j.time_suspended
++                       THEN 0
++                       ELSE j.time_end - j.time_start - j.time_suspended
++                  END CASE) AS wall_time
+             , a.acct
+             , a.user
+             , ( SELECT MAX(s.max_rss)
