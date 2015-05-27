@@ -18,7 +18,7 @@
 Name:		xrootd
 Epoch:		1
 Version:	4.2.0
-Release:	1%{?dist}%{?dist}%{?_with_cpp11:.cpp11}%{?_with_clang:.clang}
+Release:	2%{?dist}%{?_with_cpp11:.cpp11}%{?_with_clang:.clang}
 Summary:	Extended ROOT file server
 
 Group:		System Environment/Daemons
@@ -609,6 +609,9 @@ fi
 %doc %{_pkgdocdir}
 
 %changelog
+* Wed May 27 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> -1:4.2.0-2
+- Fixed the dist tag been twice in the release field
+
 * Tue May 26 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> -1:4.2.0-1
 - Update to 4.2.0
 - Added some macros for the python bindings
