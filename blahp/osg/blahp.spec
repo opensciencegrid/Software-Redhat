@@ -1,6 +1,6 @@
 Name:		blahp
 Version:	1.18.13.bosco
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	gLite BLAHP daemon
 
 Group:		System/Libraries
