@@ -1,5 +1,5 @@
 Name:		blahp
-Version:	1.18.12.bosco
+Version:	1.18.13.bosco
 Release:	1%{?dist}
 Summary:	gLite BLAHP daemon
 
@@ -177,6 +177,9 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Mon May 28 2015 Brian Lin <blin@cs.wisc.edu> - 1.18.13.bosco-1
+- Fixes to PBS and HTCondor submission
+
 * Mon Mar 30 2015 Brian Lin <blin@cs.wisc.edu> - 1.18.12.bosco-1
 - Source profile.lsf for LSF job submission
 
