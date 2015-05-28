@@ -177,6 +177,9 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Mon May 28 2015 Brian Lin <blin@cs.wisc.edu> - 1.18.13.bosco-2
+- Rebuild against latest version
+
 * Mon May 28 2015 Brian Lin <blin@cs.wisc.edu> - 1.18.13.bosco-1
 - Fixes to PBS and HTCondor submission
 
