@@ -1,7 +1,7 @@
 Name:      stashcache-daemon
 Summary:   Manage StashCache with HTCondor
 Version:   0.1
-Release:   2%{?dist}
+Release:   3%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -10,7 +10,7 @@ Source0:   %{name}-%{version}.tar.gz
 
 Requires: xrootd-server
 Requires: xrootd-python >= 1:4.2.0
-Requires: condor-python >= 1:8.3.4
+Requires: condor-python >= 8.3.4
 
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
@@ -40,6 +40,9 @@ rm -rf %{buildroot}
 %{python_sitelib}/xrootd_cache_stats.py*
 
 %changelog
+* Thu May 28 2015 Brian Lin <blin@cs.wisc.edu> 0.1-3.osg
+- Remove epoch from condor-python requirement
+
 * Thu May 28 2015 Brian Lin <blin@cs.wisc.edu> 0.1-2.osg
 - Updated requirements
 
