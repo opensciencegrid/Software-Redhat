@@ -17,8 +17,8 @@
 
 Name:		xrootd
 Epoch:		1
-Version:	4.2.0
-Release:	2%{?dist}%{?_with_cpp11:.cpp11}%{?_with_clang:.clang}
+Version:	4.2.1
+Release:	1%{?dist}
 Summary:	Extended ROOT file server
 
 Group:		System Environment/Daemons
@@ -47,11 +47,13 @@ BuildRequires:	systemd
 %endif
 BuildRequires: python2-devel
 
-
-
-%if %{?_with_clang:1}%{!?_with_clang:0}
-BuildRequires: clang
+%if %{?fedora}%{!?fedora:0} >= 14 || %{?rhel}%{!?rhel:0} >= 7
+BuildRequires: python-sphinx
 %endif
+%if %{?rhel}%{!?rhel:0} == 6
+BuildRequires: python-sphinx10
+%endif
+
 
 
 Requires:	%{name}-server%{?_isa} = %{epoch}:%{version}-%{release}
@@ -210,6 +212,16 @@ Requires:	fuse
 %description fuse
 This package contains the FUSE (file system in user space) xrootd mount
 tool.
+
+%if %{?fedora}%{!?fedora:0} >= 22
+%package ceph
+Summary: Ceph back-end plug-in for xrootd
+Group:	      Development/Tools
+Requires:     %{name}-server%{?_isa} = %{epoch}:%{version}-%{release}
+
+%description ceph
+This package contains a ceph back-end plug-in for xrootd.
+%endif
 #-------------------------------------------------------------------------------                                                                             
 # python                                                                                                                                                     
 #-------------------------------------------------------------------------------                                                                             
@@ -232,58 +244,46 @@ BuildArch:	noarch
 This package contains the API documentation of the xrootd libraries.
 
 
-#-------------------------------------------------------------------------------                                                                             
-# tests                                                                                                                                                      
-#-------------------------------------------------------------------------------                                                                             
-%if %{?_with_tests:1}%{!?_with_tests:0}
-%package tests
-Summary: CPPUnit tests
-Group:   Development/Tools
-Requires: %{name}-client = %{epoch}:%{version}-%{release}
-%description tests
-This package contains a set of CPPUnit tests for xrootd.
-%endif
-
-
 %prep
 %setup -q
-#%setup -c -n xrootd
+
 
 %if %{?fedora}%{!?fedora:0} <= 9 && %{?rhel}%{!?rhel:0} <= 5
 # Older versions of SELinux do not have policy for open
 sed 's/ open / /' -i packaging/common/%{name}.te
 %endif
 
+# Rename documentation file to get the includes right
+mv bindings/python/examples/copy_example.py bindings/python/examples/copy.py
+
+# Create missing documentation file
+touch bindings/python/README.rst
+
 %build
-%if %{?_with_cpp11:1}%{!?_with_cpp11:0}
-export CXXFLAGS=-std=c++11
-%endif
-
-%if %{?_with_clang:1}%{!?_with_clang:0}
-export CC=clang
-export CXX=clang++
-%endif
-
 mkdir build
 
 pushd build
-#%cmake ..                                                                                                                                                   
-#make %{?_smp_mflags}                                                                                                                                        
-#popd 
-%if %{?_with_tests:1}%{!?_with_tests:0}
-cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=RelWithDebInfo -DENABLE_TESTS=TRUE ../
-%else
-cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=RelWithDebInfo ../
-%endif
-
-make -i VERBOSE=1 %{?_smp_mflags}
-popd
+%cmake ..                                                                                                                                                   
+make %{?_smp_mflags}                                                                                                                                        
+popd 
 
 pushd packaging/common
 make -f /usr/share/selinux/devel/Makefile
 popd
 
 doxygen Doxyfile
+
+%if %{?fedora}%{!?fedora:0} >= 14 || %{?rhel}%{!?rhel:0} >= 6
+export PYTHONPATH=$(cd build/bindings/python/build/lib.* ; pwd)
+export LD_LIBRARY_PATH=${PWD}/build/src/XrdCl:${PWD}/build/src
+pushd bindings/python/docs
+%if %{?rhel}%{!?rhel:0} == 6
+make html SPHINXBUILD=sphinx-1.0-build
+%else
+make html
+%endif
+popd
+%endif
 
 
 
@@ -292,7 +292,6 @@ rm -rf %{buildroot}
 
 pushd build
 make install DESTDIR=%{buildroot}
-#cat PYTHON_INSTALLED | sed -e "s|$RPM_BUILD_ROOT||g" > PYTHON_INSTALLED_FILES
 popd
 
 # configuration stuff                                                                                                                                        
@@ -340,6 +339,13 @@ sed 's!/usr/bin/env perl!/usr/bin/perl!' -i \
     %{buildroot}%{_datadir}/%{name}/utils/XrdCmsNotify.pm \
     %{buildroot}%{_datadir}/%{name}/utils/XrdOlbMonPerf
 
+%if %{?fedora}%{!?fedora:0} >= 22
+rm %{buildroot}%{_libdir}/libXrdCephPosix.so
+%endif
+
+chmod 755 %{buildroot}%{python2_sitearch}/pyxrootd/client.so
+
+
 mkdir -p %{buildroot}%{_localstatedir}/log/%{name}
 mkdir -p %{buildroot}%{_localstatedir}/spool/%{name}
 
@@ -355,6 +361,11 @@ install -m 644 -p packaging/common/%{name}.pp \
 mkdir -p %{buildroot}%{_pkgdocdir}
 cp -pr doxydoc/html %{buildroot}%{_pkgdocdir}
 
+%if %{?fedora}%{!?fedora:0} >= 14 || %{?rhel}%{!?rhel:0} >= 6
+cp -pr bindings/python/docs/build/html %{buildroot}%{_pkgdocdir}/python
+%endif
+
+
 %clean
 rm -rf %{buildroot}
 
@@ -369,6 +380,11 @@ rm -rf %{buildroot}
 %post server-libs -p /sbin/ldconfig
 
 %postun server-libs -p /sbin/ldconfig
+
+%if %{?fedora}%{!?fedora:0} >= 22
+%post ceph -p /sbin/ldconfig
+%postun ceph -p /sbin/ldconfig
+%endif
 
 %pre server
 getent group %{name} >/dev/null || groupadd -r %{name}
@@ -601,14 +617,25 @@ fi
 %{_bindir}/xrootdfs
 %{_mandir}/man1/xrootdfs.1*
 
+%if %{?fedora}%{!?fedora:0} >= 22
+%files ceph
+%{_libdir}/libXrdCeph-4.so
+%{_libdir}/libXrdCephXattr-4.so
+%{_libdir}/libXrdCephPosix.so.*
+%endif
+
+
 %files python
-%{python2_sitearch}/XRootD/*
-%{python2_sitearch}/pyxrootd*
+%{python2_sitearch}/*
 
 %files doc
 %doc %{_pkgdocdir}
 
 %changelog
+* Mon Jun 1 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> -1:4.2.1-1
+- Updated to 4.2.1
+- Included ceph subpackage
+
 * Wed May 27 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> -1:4.2.0-2
 - Fixed the dist tag been twice in the release field
 
