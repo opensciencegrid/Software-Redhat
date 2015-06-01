@@ -2,7 +2,7 @@ Source originally downloaded from 'http://koji.hep.caltech.edu/public/packages/b
 
 Right now, we are using the following fork - 
 
-https://github.com/osg-bosco/BLAH
+https://github.com/brianhlin/BLAH
 
 Particularly the v1_18_bosco branch and we're building the tarball with:
 
