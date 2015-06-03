@@ -2,7 +2,7 @@ Name:               gratia-probe
 Summary:            Gratia OSG accounting system probes
 Group:              Applications/System
 Version:            1.14.2
-Release:            0pre01%{?dist}
+Release:            4%{?dist}
 
 License:            GPL
 Group:              Applications/System
@@ -62,6 +62,7 @@ Source22: %{name}-enstore-tapedrive-%{version}.tar.bz2
 Source23: %{name}-dCache-storagegroup-%{version}.tar.bz2
 Source24:  %{name}-lsf-%{version}.tar.bz2
 
+Patch0: slurm-safe-unsigned.patch
 
 ########################################################################
 
@@ -99,6 +100,8 @@ Prefix: /etc
 %setup -q -D -T -a 22
 %setup -q -D -T -a 23
 %setup -q -D -T -a 24
+
+%patch0 -p1
 
 %build
 %ifnarch noarch
@@ -436,22 +439,11 @@ fi
 %{default_prefix}/gratia/common/ProbeConfigTemplate
 %{default_prefix}/gratia/common/cron_check
 
-%package common2
-Summary: Common files for Gratia OSG accounting system probes V2
-Group: Applications/System
-Requires: %{name}-common >= %{version}-%{release}
-Requires(post): chkconfig
-Requires(preun): chkconfig
+# %description common2
+# Common files and examples for Gratia OSG accounting system probes. Version 2.
 
-%description common2
-Common files and examples for Gratia OSG accounting system probes. Version 2.
-
-# %pre common2
-# %post
-# %preun
-
-%files common2
-%defattr(-,root,root,-)
+# %files common2
+# %defattr(-,root,root,-)
 %{_initrddir}/gratia-probes-cron
 #%doc common2/README
 %doc %{default_prefix}/gratia/common2/README
@@ -881,7 +873,6 @@ The SLURM probe for the Gratia OSG accounting system.
 Summary: A LSF probe
 Group: Applications/System
 Requires: %{name}-common >= %{version}-%{release}
-Requires: %{name}-common2 >= %{version}-%{release}
 # Requires: lsf (can get the version form the configuration)
 BuildRequires: python-devel
 License: See LICENSE.
@@ -910,7 +901,6 @@ The alternative LSF probe for the Gratia OSG accounting system.
 Summary: Enstore transfer probe
 Group: Applications/System
 Requires: %{name}-common >= %{version}-%{release}
-Requires: %{name}-common2 >= %{version}-%{release}
 Requires: python-psycopg2
 BuildRequires: python-devel
 License: See LICENSE.
@@ -936,7 +926,6 @@ The Enstore transfer probe for the Gratia OSG accounting system.
 Summary: Enstore storage probe
 Group: Applications/System
 Requires: %{name}-common >= %{version}-%{release}
-Requires: %{name}-common2 >= %{version}-%{release}
 Requires: %{name}-services >= %{version}-%{release}
 Requires: python-psycopg2
 BuildRequires: python-devel
@@ -963,7 +952,6 @@ The Enstore storage probe for the Gratia OSG accounting system.
 Summary: Enstore tapedrive probe
 Group: Applications/System
 Requires: %{name}-common >= %{version}-%{release}
-Requires: %{name}-common2 >= %{version}-%{release}
 Requires: %{name}-services >= %{version}-%{release}
 Requires: python-psycopg2
 BuildRequires: python-devel
@@ -988,7 +976,7 @@ The Enstore tape drive probe for the Gratia OSG accounting system.
 
 # dCache storagegroup
 
-%package dCache-storagegroup
+%package dcache-storagegroup
 Summary: dCache storagegroup probe
 Group: Applications/System
 Requires: %{name}-common >= %{version}-%{release}
@@ -997,10 +985,10 @@ Requires: python-psycopg2
 BuildRequires: python-devel
 License: See LICENSE.
 
-%description dCache-storagegroup
+%description dcache-storagegroup
 The dCache storagegroup probe for the Gratia OSG accounting system.
 
-%files dCache-storagegroup
+%files dcache-storagegroup
 %defattr(-,root,root,-)
 %doc %{default_prefix}/gratia/dCache-storagegroup/README.html
 %dir %{default_prefix}/gratia/dCache-storagegroup
@@ -1011,7 +999,7 @@ The dCache storagegroup probe for the Gratia OSG accounting system.
 
 %config(noreplace) %{_sysconfdir}/cron.d/gratia-probe-dcache-storagegroup.cron
 
-%post dCache-storagegroup
+%post dcache-storagegroup
 %customize_probeconfig -d dCache-storagegroup
 
 
@@ -1019,10 +1007,28 @@ The dCache storagegroup probe for the Gratia OSG accounting system.
 %endif # noarch
 
 %changelog
+* Tue May 26 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.14.2-4
+- slurm probe fix for mysql/mariadb 5.5 (goc/24516)
+
+* Tue May 26 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.14.2-3
+- rename gratia-probe-dCache-storagegroup to all-lowercase
+- include common2 library in gratia-probe-common
+
+* Fri May 1 2015 Marco Mambelli <marcom@fnal.gov> - 1.14.2-2
+- fixed possible deadlock in enstore-tapedrive when dismount is lost and tape not used
+- cleaned up code and docstrings to produce sphinx documentation 
+- added script for local deployment to generate probe documentation via sphinx
+- added to the repo a script to help rcover lsf quarantined files
+ 
+* Thu Apr 30 2015 Marco Mambelli <marcom@fnal.gov> - 1.14.2-1
+- added option to force manual execution also when a probe is disabled in the config file
+- changed enstore-storage to support also fetching of current usage data 
+- fixes to checkpoint for Enstore probes (GRATIA-173, GRATIA-174)
+- fixed lsf probe to use start time in GlobalID (like pbs-lsf) and not handle correctly config file
+
 * Tue Apr 21 2015 Kevin Retzke <kretzke@fnal.gov> - 1.14.1-1
 - renamed dCache-storagegroup probe to all lowercase (GRATIA-172)
 - added LogFileName option (GRATIA-165)
-- fixes to checkpoint for Enstore probes (GRATIA-173, GRATIA-174)
 - missing HTCondor PER_JOB_HISTORY_DIR demoted to warning, not stopping the probe
 
 * Tue Mar 24 2015 Marco Mambelli <marcom@fnal.gov> - 1.14.0-1
