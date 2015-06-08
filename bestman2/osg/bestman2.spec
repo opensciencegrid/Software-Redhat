@@ -46,7 +46,7 @@ Source10:       bestman2lib.sysconfig
 Patch0:		upgrade_exception_message.patch
 Patch1:		bestman2-2.2.1-2.2.2.patch
 Patch2:		gucpath.patch
-Patch2:		parallelism.patch
+Patch3:		parallelism.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
