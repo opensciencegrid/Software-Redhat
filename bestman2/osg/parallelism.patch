@@ -1,0 +1,34 @@
+diff --git a/bestman2/branches/osg-dev/client/src/gov/lbl/srm/client/main/GUCScriptFileTransfer.java b/bestman2/branches/osg-dev/client/src/gov/lbl/srm/client/main/GUCScriptFileTransfer.java
+index 94e4ccc..296f398 100644
+--- a/bestman2/branches/osg-dev/client/src/gov/lbl/srm/client/main/GUCScriptFileTransfer.java
++++ b/bestman2/branches/osg-dev/client/src/gov/lbl/srm/client/main/GUCScriptFileTransfer.java
+@@ -235,8 +235,10 @@ private void gucFileTransfer() {
+       //vec.addElement("-bs");
+       vec.addElement("-tcp-bs");
+       vec.addElement(""+bufferSize);
+-      vec.addElement("-p");
+-      vec.addElement(""+parallelism);
++      if (parallelism > 1) {
++        vec.addElement("-p");
++        vec.addElement(""+parallelism);
++      }
+ 	  if(!dcau) {
+         vec.addElement("-nodcau");			   
+ 	  }
+diff --git a/bestman2/branches/osg-dev/tester/src/tester/util.java b/bestman2/branches/osg-dev/tester/src/tester/util.java
+index f06ecc5..3cfceac 100644
+--- a/bestman2/branches/osg-dev/tester/src/tester/util.java
++++ b/bestman2/branches/osg-dev/tester/src/tester/util.java
+@@ -1045,8 +1045,10 @@ private static void runGUC(String gucScriptPath, String scriptPathDir,
+            Vector vec = new Vector ();
+            vec.addElement("-bs");
+            vec.addElement(""+bufferSize);
+-           vec.addElement("-p");
+-           vec.addElement(""+parallelism);
++           if (parallelism > 1) {
++             vec.addElement("-p");
++             vec.addElement(""+parallelism);
++           }
+            if(!dcau) { 
+              vec.addElement("-nodcau");
+            }

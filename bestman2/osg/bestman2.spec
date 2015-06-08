@@ -14,7 +14,7 @@
 
 Name:           bestman2
 Version:        2.3.0
-Release:        24%{?dist}
+Release:        25%{?dist}
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -46,6 +46,7 @@ Source10:       bestman2lib.sysconfig
 Patch0:		upgrade_exception_message.patch
 Patch1:		bestman2-2.2.1-2.2.2.patch
 Patch2:		gucpath.patch
+Patch2:		parallelism.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
@@ -192,6 +193,7 @@ cd ..
 %patch0 -p1
 %patch1 -p0
 %patch2 -p1
+%patch3 -p1
 
 pushd bestman2/setup-osg/bestman.in
 sed -i "s/@SRM_HOME@/\/etc\/bestman2/" *
@@ -453,6 +455,10 @@ fi
 
 
 %changelog
+* Mon Jun 08 2015 Carl Edquist <edquist@cs.wisc.edu> - 2.3.0-25
+- only add -p N to GUC command line if parallelism > 1,
+  remove previous Parallelism=0 default (SOFTWARE-1889)
+
 * Mon Jun 08 2015 Carl Edquist <edquist@cs.wisc.edu> - 2.3.0-24
 - use Parallelism=0 by default to avoid incoming connection requirement
   for globus-url-copy (SOFTWARE-1889)
