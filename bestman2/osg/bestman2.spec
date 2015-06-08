@@ -14,7 +14,7 @@
 
 Name:           bestman2
 Version:        2.3.0
-Release:        23%{?dist}
+Release:        24%{?dist}
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -453,6 +453,10 @@ fi
 
 
 %changelog
+* Mon Jun 08 2015 Carl Edquist <edquist@cs.wisc.edu> - 2.3.0-24
+- use Parallelism=0 by default to avoid incoming connection requirement
+  for globus-url-copy (SOFTWARE-1889)
+
 * Fri May 01 2015 Carl Edquist <edquist@cs.wisc.edu> - 2.3.0-23
 - use globus-url-copy by default (SOFTWARE-1889)
 
