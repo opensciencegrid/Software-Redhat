@@ -1,7 +1,7 @@
 Name:      osg-wn-client
 Summary:   OSG Worker-Node Client
 Version:   3.3
-Release:   2%{?dist}
+Release:   3%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -20,7 +20,7 @@ Requires: java-devel >= 1:1.7.0
 Requires: /usr/bin/curl
 Requires: fts-client
 Requires: myproxy
-Requires: voms-clients
+Requires: voms-clients-cpp
 Requires: /usr/bin/ldapsearch
 Requires: /usr/bin/uberftp
 Requires: /usr/bin/wget
@@ -99,6 +99,9 @@ rm -rf $RPM_BUILD_ROOT
 %files glexec
 
 %changelog
+* Wed Jun 10 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.3-3
+- Explicitly require the C++ version of the voms clients
+
 * Thu Apr 30 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.3-2
 - Remove requirements dropped from 3.3
 - Remove conditionals for el5
