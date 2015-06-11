@@ -111,7 +111,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.3
+%define condor_base_release 1.4
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -198,6 +198,11 @@ Source121: glibc-2.5-20061008T1257-p0.tar.gz
 Source122: glibc-2.5-20061008T1257-x86_64-p0.tar.gz
 Source123: zlib-1.2.3.tar.gz
 %endif
+
+# This should make it into 8.2.9
+# https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=5059
+# https://jira.opensciencegrid.org/browse/SOFTWARE-1941
+Patch1: 5059-JAVA_CLASSPATH_DEFAULT.patch
 
 # These make it into 8.3.2, the 8.2.x timeline is unclear
 # https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=4590
@@ -696,6 +701,7 @@ exit 0
 %setup -q -n %{name}-%{tarball_version}
 %endif
 
+%patch1 -p1
 %patch2 -p1
 %patch3 -p1
 
@@ -1817,6 +1823,9 @@ fi
 %endif
 
 %changelog
+* Thu Jun 11 2015 Carl Edquist <edquist@cs.wisc.edu> - 8.2.8-1.4
+- fix JAVA_CLASSPATH_DEFAULT for java universe (SOFTWARE-1941)
+
 * Tue Apr 28 2015 Carl Edquist <edquist@cs.wisc.edu> - 8.2.8-1.3
 - drop NO_PNONE_HOME option; ie, always phone home (SOFTWARE-1897)
 
