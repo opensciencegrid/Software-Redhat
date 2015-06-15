@@ -181,6 +181,7 @@ Patch4: fix_chown.patch
 Patch5: pom.xml.patch
 Patch6: 1184-extendable-client.patch
 Patch7: HDFS-5341.004.patch
+Patch8: mvn-quiet.patch
 
 Buildroot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id} -u -n)
 BuildRequires: python >= 2.4, git, fuse-devel,fuse, automake, autoconf, protobuf-compiler, cmake
@@ -482,18 +483,20 @@ selinux policy files for the Hadoop fuse hdfs mounts
 
 
 %prep
-%setup -n %{name}-%{hadoop_patched_version}
-tar -C `dirname %{SOURCE25}` -xzf %{SOURCE25}
-pushd `dirname %{SOURCE25}`
+%setup -q -n %{name}-%{hadoop_patched_version}
+%setup -D -T -a 25 -n %{name}-%{hadoop_patched_version}
+#tar -C `dirname %{SOURCE25}` -xzf %{SOURCE25}
+#pushd `dirname %{SOURCE25}`
 %patch0 -p1
 %patch1 -p1
 %patch3 -p1
-popd
+#popd
 %patch2 -p0
 %patch4 -p0
 %patch5 -p0
 %patch6 -p1
 %patch7 -p1
+%patch8 -p1
 
 %build
 # This assumes that you installed Java JDK 6 and set JAVA_HOME

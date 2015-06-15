@@ -1,37 +1,14 @@
 diff -ru orig/do-component-build new/do-component-build
 --- orig/do-component-build	2012-10-18 15:36:54.000000000 -0500
 +++ new/do-component-build	2012-10-18 15:36:31.000000000 -0500
-@@ -33,20 +33,20 @@
+@@ -33,9 +33,9 @@
  MAVEN_SKIP_TESTS="-DskipTests -DskipTest -DskipITs"
  JAVA_OPTS="-Xmx1536m -Xms256m -XX:MaxPermSize=256m" \
    MAVEN_OPTS="-Xmx1536m -Xms256m -XX:MaxPermSize=256m" \
--  mvn $BUNDLE_SNAPPY \
+   mvn $BUNDLE_SNAPPY \
 -    -Pdist -Pnative -Pfuse -Psrc -Dtar -Drequire.fuse=true \
-+  /usr/share/apache-maven-3.0.4/bin/mvn $BUNDLE_SNAPPY \
 +    -e -Pdist -Pnative -Pfuse -Psrc -Dtar -Drequire.fuse=true \
      ${MAVEN_SKIP_TESTS} \
      install \
      "$@" \
      $DO_MAVEN_DEPLOY
--JAVA_OPTS="-Xmx1536m -Xms256m -XX:MaxPermSize=256m" MAVEN_OPTS="-Xmx1536m -Xms256m -XX:MaxPermSize=256m" mvn site site:stage ${MAVEN_SKIP_TESTS} $@
-+JAVA_OPTS="-Xmx1536m -Xms256m -XX:MaxPermSize=256m" MAVEN_OPTS="-Xmx1536m -Xms256m -XX:MaxPermSize=256m" /usr/share/apache-maven-3.0.4/bin/mvn site site:stage ${MAVEN_SKIP_TESTS} $@
- 
- # Copy generated docs
- mkdir -p build/hadoop-${FULL_VERSION}/share/doc/
- cp -r target/staging/hadoop-project/* build/hadoop-${FULL_VERSION}/share/doc/
- 
--# Rebuild and now mvn deploy the tarball - note the '-pl hadoop-dist' - if we chdir into hadoop-dist and build, it fails.
--JAVA_OPTS="-Xmx1536m -Xms256m -XX:MaxPermSize=256m" MAVEN_OPTS="-Xmx1536m -Xms256m -XX:MaxPermSize=256m" mvn -pl hadoop-dist -Pdist -Psrc -Dtar ${MAVEN_SKIP_TESTS} -Dmaven.javadoc.skip=true -Dmaven.deploy.skip=false install "$@" $DO_MAVEN_DEPLOY
-+# Rebuild and now /usr/share/apache-maven-3.0.4/bin/mvn deploy the tarball - note the '-pl hadoop-dist' - if we chdir into hadoop-dist and build, it fails.
-+JAVA_OPTS="-Xmx1536m -Xms256m -XX:MaxPermSize=256m" MAVEN_OPTS="-Xmx1536m -Xms256m -XX:MaxPermSize=256m" /usr/share/apache-maven-3.0.4/bin/mvn -pl hadoop-dist -Pdist -Psrc -Dtar ${MAVEN_SKIP_TESTS} -Dmaven.javadoc.skip=true -Dmaven.deploy.skip=false install "$@" $DO_MAVEN_DEPLOY
- 
- (cd build/hadoop-${FULL_VERSION} ; tar --strip-components=1 -xzvf  ../../hadoop-dist/target/hadoop-${FULL_VERSION}.tar.gz)
- # (cd build/hadoop-${FULL_VERSION}/src ; tar --strip-components=1 -xzvf  ../../../hadoop-dist/target/hadoop-${FULL_VERSION}-src.tar.gz)
-@@ -86,6 +86,6 @@
-   </dependencies>
- </project>
- __EOT__
--mvn -f hadoop-mr1-client/pom.xml dependency:copy-dependencies -DincludeScope=runtime
-+/usr/share/apache-maven-3.0.4/bin/mvn -f hadoop-mr1-client/pom.xml dependency:copy-dependencies -DincludeScope=runtime
- (cd hadoop-mr1-client/target/dependency ; ls | grep -v hadoop-client) > build/hadoop-${FULL_VERSION}/hadoop-mr1-client.list
- rm -rf hadoop-mr1-client

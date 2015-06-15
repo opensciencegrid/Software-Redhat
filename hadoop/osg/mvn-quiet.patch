@@ -1,0 +1,41 @@
+Index: hadoop-2.0.0-cdh4.1.1/do-component-build
+===================================================================
+--- hadoop-2.0.0-cdh4.1.1.orig/do-component-build	2015-03-11 16:33:42.000000000 -0500
++++ hadoop-2.0.0-cdh4.1.1/do-component-build	2015-03-11 16:51:24.563090525 -0500
+@@ -32,23 +32,23 @@ fi
+ # Build artifacts
+ MAVEN_SKIP_TESTS="-DskipTests -DskipTest -DskipITs"
+ JAVA_OPTS="-Xmx1536m -Xms256m -XX:MaxPermSize=256m" \
+   MAVEN_OPTS="-Xmx1536m -Xms256m -XX:MaxPermSize=256m" \
+   mvn $BUNDLE_SNAPPY \
+-    -e -Pdist -Pnative -Pfuse -Psrc -Dtar -Drequire.fuse=true \
++    -e -B -Pdist -Pnative -Pfuse -Psrc -Dtar -Drequire.fuse=true \
+     ${MAVEN_SKIP_TESTS} \
+     install \
+     "$@" \
+     $DO_MAVEN_DEPLOY
+-JAVA_OPTS="-Xmx1536m -Xms256m -XX:MaxPermSize=256m" MAVEN_OPTS="-Xmx1536m -Xms256m -XX:MaxPermSize=256m" mvn site site:stage ${MAVEN_SKIP_TESTS} $@
++JAVA_OPTS="-Xmx1536m -Xms256m -XX:MaxPermSize=256m" MAVEN_OPTS="-Xmx1536m -Xms256m -XX:MaxPermSize=256m" mvn -B site site:stage ${MAVEN_SKIP_TESTS} $@
+ 
+ # Copy generated docs
+ mkdir -p build/hadoop-${FULL_VERSION}/share/doc/
+ cp -r target/staging/hadoop-project/* build/hadoop-${FULL_VERSION}/share/doc/
+ 
+ # Rebuild and now mvn deploy the tarball - note the '-pl hadoop-dist' - if we chdir into hadoop-dist and build, it fails.
+-JAVA_OPTS="-Xmx1536m -Xms256m -XX:MaxPermSize=256m" MAVEN_OPTS="-Xmx1536m -Xms256m -XX:MaxPermSize=256m" mvn -pl hadoop-dist -Pdist -Psrc -Dtar ${MAVEN_SKIP_TESTS} -Dmaven.javadoc.skip=true -Dmaven.deploy.skip=false install "$@" $DO_MAVEN_DEPLOY
++JAVA_OPTS="-Xmx1536m -Xms256m -XX:MaxPermSize=256m" MAVEN_OPTS="-Xmx1536m -Xms256m -XX:MaxPermSize=256m" mvn -B -pl hadoop-dist -Pdist -Psrc -Dtar ${MAVEN_SKIP_TESTS} -Dmaven.javadoc.skip=true -Dmaven.deploy.skip=false install "$@" $DO_MAVEN_DEPLOY
+ 
+ (cd build/hadoop-${FULL_VERSION} ; tar --strip-components=1 -xzvf  ../../hadoop-dist/target/hadoop-${FULL_VERSION}.tar.gz)
+ # (cd build/hadoop-${FULL_VERSION}/src ; tar --strip-components=1 -xzvf  ../../../hadoop-dist/target/hadoop-${FULL_VERSION}-src.tar.gz)
+ (cd build/hadoop-${FULL_VERSION} ; cp -r ../../cloudera .)
+ 
+@@ -84,8 +84,8 @@ cat > hadoop-mr1-client/pom.xml <<__EOT_
+       <scope>runtime</scope>
+     </dependency>
+   </dependencies>
+ </project>
+ __EOT__
+-mvn -f hadoop-mr1-client/pom.xml dependency:copy-dependencies -DincludeScope=runtime
++mvn -B -f hadoop-mr1-client/pom.xml dependency:copy-dependencies -DincludeScope=runtime
+ (cd hadoop-mr1-client/target/dependency ; ls | grep -v hadoop-client) > build/hadoop-${FULL_VERSION}/hadoop-mr1-client.list
+ rm -rf hadoop-mr1-client
