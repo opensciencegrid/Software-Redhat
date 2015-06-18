@@ -1,5 +1,5 @@
 Name:      rsv-perfsonar
-Version:   1.0.16
+Version:   1.0.17
 Release:   1%{?dist}
 Summary:   RSV Metrics to monitor pefsonar
 Packager:  OSG-Software
@@ -69,9 +69,15 @@ ln -s /var/www/html/rsv /usr/share/rsv/www
 # Instaling the reqesocks library
 scl enable python27 - << \EOF
 /opt/esmond/bin/pip install requesocks
+#/opt/esmond/bin/pip install dirq
+#/opt/esmond/bin/pip install messaging
 EOF 
 
 %changelog
+* Wed Jun 17 2015 <efajardo@physics.ucsd.edu> 1.0.17-1
+- Add missing pactek-count-lost/sent datapoints
+- Don't run multiple probes for hosts sharing same IP
+ 
 * Mon Jun 08 2015 <efajardo@physics.ucsd.edu> 1.0.16-1
 - Mark as an error packet-loss-rate when problems occurr.
 
@@ -98,7 +104,6 @@ EOF
 * Fri Feb 13 2015 <efajardo@physics.ucsd.edu> 1.0.8-1
 - Updated requirement for esmond. To bug fix posting double values for throughput
 - Stopped checking for old keys to gain efficiency
-
 
 * Mon Feb 09 2015 <efajardo@physics.ucsd.edu> 1.0.7-1
 - Fix to prevent duplicate entries by storing original metada key
