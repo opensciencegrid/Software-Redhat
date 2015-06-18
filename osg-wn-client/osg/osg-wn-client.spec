@@ -4,7 +4,7 @@ Version:   3.0.0
 %if 0%{?el7}
 %define release_suffix _clipped
 %endif
-Release:   31%{?release_suffix}%{?dist}
+Release:   32%{?release_suffix}%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -18,6 +18,10 @@ Requires: jpackage-utils
 Requires: java7-devel
 %else
 Requires: java-devel >= 1:1.7.0
+%endif
+
+%if 0%{?rhel} <= 6
+Requires: /usr/bin/xrdcp
 %endif
 
 Requires: /usr/bin/curl
@@ -124,6 +128,9 @@ rm -rf $RPM_BUILD_ROOT
 %files glexec
 
 %changelog
+* Thu Jun 18 2015 Jose Caballero <jcaballero@bnl.gov> 3.0.0-32
+- Added dependency to /usr/bin/xrdcp for RHEL 5 and RHEL 6
+
 * Tue Apr 21 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.0.0-31_clipped
 - Use fts-client instead of glite-fts-client for el7
 
