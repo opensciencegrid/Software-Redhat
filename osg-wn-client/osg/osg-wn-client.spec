@@ -4,7 +4,7 @@ Version:   3.0.0
 %if 0%{?el7}
 %define release_suffix _clipped
 %endif
-Release:   32%{?release_suffix}%{?dist}
+Release:   33%{?release_suffix}%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -20,10 +20,7 @@ Requires: java7-devel
 Requires: java-devel >= 1:1.7.0
 %endif
 
-%if 0%{?rhel} <= 6
 Requires: /usr/bin/xrdcp
-%endif
-
 Requires: /usr/bin/curl
 Requires: /usr/bin/dccp
 Requires: dcap-tunnel-gsi
@@ -128,6 +125,9 @@ rm -rf $RPM_BUILD_ROOT
 %files glexec
 
 %changelog
+* Thu Jun 18 2015 Jose Caballero <jcaballero@bnl.gov> 3.0.0-33
+- Removed the check on EL version for the dependency to /usr/bin/xrdcp
+
 * Thu Jun 18 2015 Jose Caballero <jcaballero@bnl.gov> 3.0.0-32
 - Added dependency to /usr/bin/xrdcp for RHEL 5 and RHEL 6
 
