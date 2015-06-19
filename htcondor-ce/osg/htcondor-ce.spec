@@ -1,9 +1,9 @@
 # Have gitrev be the short hash or branch name if doing a prerelease build
-%define gitrev fbe4d72
+#%%define gitrev fbe4d72
 
 Name: htcondor-ce
-Version: 1.12
-Release: 0.1%{?gitrev:.%{gitrev}git}%{?dist}
+Version: 1.13
+Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 
 Group: Applications/System
@@ -337,8 +337,16 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
-* Mon Apr 13 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.12-0.1.fbe4d72git
-- Add 01-ce-collector-requirements.conf
+* Mon Apr 27 2015 Brian Lin <blin@cs.wisc.edu> - 1.13-1
+- Fix bug that prevented HTCondor CE service from starting with multiple job routes
+
+* Mon Apr 27 2015 Brian Lin <blin@cs.wisc.edu> - 1.12-1
+- Add ability to constrain via arbitrary ClassAd expression in condor_ce_info_status (SOFTWARE-1842)
+- condor_ce_run now accepts extra attributes via file (SOFTWARE-1641)
+- Support for dynamic assignment of OSG env variables (SOFTWARE-1862)
+- Catch socket exceptions in condor_ce_trace (SOFTWARE-1821)
+- Add support for CILogon certificates
+- Fix gridmanager job limit configuration
 
 * Mon Mar 30 2015 Brian Lin <blin@cs.wisc.edu> - 1.11-1
 - Add code for generating submit file additions (SOFTWARE-1760)
