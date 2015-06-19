@@ -1,7 +1,7 @@
 Name:      osg-wn-client
 Summary:   OSG Worker-Node Client
 Version:   3.3
-Release:   3%{?dist}
+Release:   4%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -17,6 +17,7 @@ Requires: java7-devel
 Requires: java-devel >= 1:1.7.0
 %endif
 
+Requires: /usr/bin/xrdcp
 Requires: /usr/bin/curl
 Requires: fts-client
 Requires: myproxy
@@ -99,6 +100,9 @@ rm -rf $RPM_BUILD_ROOT
 %files glexec
 
 %changelog
+* Fri Jun 19 2015 Jose Caballero <jcaballero@bnl.gov> 3.3-4
+- Added dependency to /usr/bin/xrdcp 
+
 * Wed Jun 10 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.3-3
 - Explicitly require the C++ version of the voms clients
 
