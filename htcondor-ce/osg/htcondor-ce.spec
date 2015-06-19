@@ -1,9 +1,9 @@
 # Have gitrev be the short hash or branch name if doing a prerelease build
-#%%define gitrev fbe4d72
+%define gitrev 8e7415f
 
 Name: htcondor-ce
-Version: 1.13
-Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
+Version: 1.14
+Release: 0.1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 
 Group: Applications/System
@@ -323,6 +323,7 @@ fi
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-auth.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-collector-requirements.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/02-ce-auth-generated.conf
+%config(noreplace) %{_sysconfdir}/condor-ce/config.d/04-ce-collector-auth.conf
 %config(noreplace) %{_sysconfdir}/cron.d/condor-ce-collector-generator.cron
 %config(noreplace) %{_sysconfdir}/logrotate.d/condor-ce-collector
 
@@ -337,6 +338,9 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Fri Jun 19 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.14-0.1.8e7415fgit
+- Add 01-ce-collector-requirements.conf and 04-ce-collector-auth.conf (SOFTWARE-1790)
+
 * Mon Apr 27 2015 Brian Lin <blin@cs.wisc.edu> - 1.13-1
 - Fix bug that prevented HTCondor CE service from starting with multiple job routes
 
