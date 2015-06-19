@@ -1,5 +1,5 @@
 # Have gitrev be the short hash or branch name if doing a prerelease build
-%define gitrev 8e7415f
+%define gitrev 44ebb9e
 
 Name: htcondor-ce
 Version: 1.14
@@ -338,7 +338,7 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
-* Fri Jun 19 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.14-0.1.8e7415fgit
+* Fri Jun 19 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.14-0.1.44ebb9egit
 - Add 01-ce-collector-requirements.conf and 04-ce-collector-auth.conf (SOFTWARE-1790)
 
 * Mon Apr 27 2015 Brian Lin <blin@cs.wisc.edu> - 1.13-1
