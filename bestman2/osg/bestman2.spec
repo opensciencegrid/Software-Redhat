@@ -14,7 +14,7 @@
 
 Name:           bestman2
 Version:        2.3.0
-Release:        21%{?dist}
+Release:        25%{?dist}
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -45,6 +45,8 @@ Source10:       bestman2lib.sysconfig
 
 Patch0:		upgrade_exception_message.patch
 Patch1:		bestman2-2.2.1-2.2.2.patch
+Patch2:		gucpath.patch
+Patch3:		parallelism.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
@@ -85,7 +87,7 @@ Summary: Common files BeStMan SRM server client and tester
 Group: System Environment/Libraries
 Requires:  java7 jpackage-utils axis jakarta-commons-logging jakarta-commons-discovery wsdl4j log4j jglobus cog-jglobus-axis >= 1.8.0-2
 # The following are needed for srm client tools and probably tester too
-Requires:  joda-time glite-security-trustmanager glite-security-util-java xalan-j2 voms-api-java >= 2.0.8 jakarta-commons-collections
+Requires:  joda-time xalan-j2 voms-api-java >= 2.0.8 jakarta-commons-collections
 # ensure these are present, from jpackage-utils or missing-java-1.7.0-dirs
 Requires: /usr/lib/java-1.7.0
 Requires: /usr/share/java-1.7.0
@@ -144,6 +146,8 @@ Summary: Bestman LBNL SRM client
 Group: Applications/Internet
 Requires: %{name}-client-libs = %{version}-%{release}
 Requires: %{name}-common-libs = %{version}-%{release}
+# for globus-url-copy
+Requires: globus-gass-copy-progs
 %description client
 The srm-* client tools
 
@@ -188,6 +192,8 @@ cd ..
 
 %patch0 -p1
 %patch1 -p0
+%patch2 -p1
+%patch3 -p1
 
 pushd bestman2/setup-osg/bestman.in
 sed -i "s/@SRM_HOME@/\/etc\/bestman2/" *
@@ -449,6 +455,21 @@ fi
 
 
 %changelog
+* Mon Jun 08 2015 Carl Edquist <edquist@cs.wisc.edu> - 2.3.0-25
+- only add -p N to GUC command line if parallelism > 1,
+  remove previous Parallelism=0 default (SOFTWARE-1889)
+
+* Mon Jun 08 2015 Carl Edquist <edquist@cs.wisc.edu> - 2.3.0-24
+- use Parallelism=0 by default to avoid incoming connection requirement
+  for globus-url-copy (SOFTWARE-1889)
+
+* Fri May 01 2015 Carl Edquist <edquist@cs.wisc.edu> - 2.3.0-23
+- use globus-url-copy by default (SOFTWARE-1889)
+
+* Fri May 01 2015 Carl Edquist <edquist@cs.wisc.edu> - 2.3.0-22
+- drop glite-security-trustmanager glite-security-util-java requirements
+  in favor of emi-trustmanager (SOFTWARE-1880)
+
 * Wed Nov 05 2014 Carl Edquist <edquist@cs.wisc.edu> - 2.3.0-21
 - update xmlsec jar requirement to 1.4.4, for GUMS 1.4.1 (SOFTWARE-1654)
 

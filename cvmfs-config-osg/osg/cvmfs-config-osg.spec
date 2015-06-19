@@ -1,7 +1,7 @@
 Summary: CernVM File System OSG Configuration and Public Keys
 Name: cvmfs-config-osg
 Version: 1.1
-Release: 5%{?dist}
+Release: 6%{?dist}
 %define cvmfsversion 2.1.20
 Source0: https://ecsft.cern.ch/dist/cvmfs/cvmfs-%{cvmfsversion}.tar.gz
 Source1: 60-osg.conf
@@ -13,9 +13,15 @@ License: BSD
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Provides: cvmfs-config = %{version}-%{release}
-Obsoletes: cvmfs-keys
-Obsoletes: cvmfs-init-scripts
-Obsoletes: oasis-config
+Obsoletes: cvmfs-keys < 1.6
+Provides: cvmfs-keys = 1.6
+Obsoletes: cvmfs-init-scripts < 1.0.21
+Provides: cvmfs-init-scripts = 1.0.21
+
+Obsoletes: oasis-config < 8
+Provides: oasis-config = 8
+
+Conflicts: cvmfs-config-default
 
 Conflicts: cvmfs < 2.1.20
 Conflicts: cvmfs-server < 2.1.20
@@ -79,6 +85,12 @@ done
 %config %{_sysconfdir}/cvmfs/config.d/*
 
 %changelog
+* Fri May 22 2015 Dave Dykstra <dwd@fnal.gov> - 1.1-6
+- Add specific versions on Obsoletes of cvmfs-keys and cvmfs-init-scripts,
+  and add a Provides of a version, as was done to cvmfs-config-default
+  upstream to follow Fedora packaging guidelines.  Do likewise for
+  oasis-config.  Add Conflicts for cvmfs-config-default.
+
 * Fri Mar 27 2015 Dave Dykstra <dwd@fnal.gov> - 1.1-5
 - add oasis.opensciencegrid.org.conf to set $OASIS_CERTIFICATES
 

@@ -1,6 +1,6 @@
 Name:           vo-client
-Version:        58
-Release:        3%{?dist}
+Version:        59
+Release:        1%{?dist}
 Summary:        Contains vomses file for use with user authentication and edg-mkgridmap.conf file that contains configuration information for edg-mkgridmap.
 
 Group:          System Environment/Base
@@ -85,6 +85,13 @@ rm -rf $RPM_BUILD_ROOT
 %attr(0600,tomcat,tomcat) %config(noreplace) %{_sysconfdir}/gums/gums.config.template
 
 %changelog
+* Fri May 15 2015 Carl Edquist <edquist@cs.wisc.edu> - 59-1
+- Update to vo-client 59 (SOFTWARE-1747)
+  - Restructured/removed various Fermilab entries from gums template
+  - Removed ATLAS VOMS server vo.racf.bnl.gov
+  - Removed GPN, Superbvo VOs
+  - Updated nysgrid VOMS address to NYSGRID
+
 * Thu Dec 04 2014 Carl Edquist <edquist@cs.wisc.edu> - 58-3
 - Fix https:/// in url (SOFTWARE-1711)
 

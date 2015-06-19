@@ -1,0 +1,18 @@
+diff --git a/bestman2/setup-osg/bestman.in/bestmanclient.conf.in b/bestman2/setup-osg/bestman.in/bestmanclient.conf.in
+index 6c5325d..5fe8ddb 100644
+--- a/bestman2/setup-osg/bestman.in/bestmanclient.conf.in
++++ b/bestman2/setup-osg/bestman.in/bestmanclient.conf.in
+@@ -52,6 +52,13 @@ ServiceHandle=/srm/v2/server
+ #Parallelism=1
+ ###########################################################
+ #
++# Use external globus-url-copy by default.
++# Comment out to use internal implementation.
++#
++###########################################################
++GUCPath=/usr/bin/globus-url-copy
++###########################################################
++#
+ # User personal GSI related settings
+ #
+ ###########################################################

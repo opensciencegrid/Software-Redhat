@@ -1,2 +1,12 @@
 Source retrieved from
-http://www3.nd.edu/~ccl/software/download.shtml
+http://ccl.cse.nd.edu/software/downloadfiles.php
+
+cctools 4.4.0 in its current state is not ready for push to development repo
+we still have to figure out how to build in rhel5 for cvmfs 2.1.20
+
+also I temporarily disabled new weaver package with
+--without-system-weaver
+
+until we sort out cvmfs issue.  This will likely require a new subpackage
+ref:
+https://jira.opensciencegrid.org/browse/SOFTWARE-1865

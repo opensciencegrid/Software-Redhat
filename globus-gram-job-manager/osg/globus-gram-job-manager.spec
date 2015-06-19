@@ -3,7 +3,7 @@
 Name:		globus-gram-job-manager
 %global _name %(tr - _ <<< %{name})
 Version:	14.25
-Release:	1.1%{?dist}
+Release:	1.2%{?dist}
 Summary:	Globus Toolkit - GRAM Jobmanager
 
 Group:		Applications/Internet
@@ -23,6 +23,7 @@ Patch20:        fix-job-home-dir.patch
 Patch22:        fix-job-lock-location.patch
 Patch26:        allow-manager-restart.patch
 Patch27:        recompute-stdio-on-restart.patch
+Patch28:        active-state.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -87,6 +88,7 @@ GRAM Jobmanager
 %patch20 -p0
 %patch22 -p0
 %patch26 -p0
+%patch28 -p4
 
 # This one is difficult.  Stdio stageout is not atomic - on restart,
 # you need to either assume in-progress transfers "always fail" or
@@ -169,6 +171,9 @@ fi
 %doc %{_pkgdocdir}/README
 
 %changelog
+* Wed May 13 2015 Brian Lin <blin@cs.wisc.edu> - 14.25-1.2.osg
+- Fix SEG not recognizing job state changes (SOFTWARE-1922)
+
 * Wed Feb 11 2015 Matyas Selmeci <matyas@cs.wisc.edu> - 14.25-1.1.osg
 - Merge OSG changes
 

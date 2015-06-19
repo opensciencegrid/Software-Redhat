@@ -8,7 +8,7 @@
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.4.3
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 %if 0%{?rhel} < 6
@@ -98,6 +98,9 @@ Source14: velocity-1.5.jar
 # Can't get el5 build working with jsp precompile
 Patch0: undo-jsp-precompile.patch
 
+# this will make it into v1.4.4
+Patch1: no-save-gums-test.patch
+
 %description
 %{summary}
 
@@ -141,6 +144,8 @@ Summary: Tomcat service for GUMS
 %if 0%{?rhel} < 6
 %patch0 -p1
 %endif
+
+%patch1 -p1
 
 %build
 
@@ -386,7 +391,10 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
-* Mon Apr 27 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.4.2-2
+* Mon Apr 27 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.4.3-2
+- Don't save 'gums-test' entries when writing gums.config
+
+* Mon Apr 27 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.4.3-1
 - Update to GUMS 1.4.3 (SOFTWARE-1891)
 
 * Tue Jan 27 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.4.2-1

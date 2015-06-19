@@ -4,7 +4,7 @@
 Summary: The VOMS Administration service
 Name: voms-admin-server
 Version: 2.7.0
-Release: 1.12%{?dist}
+Release: 1.13%{?dist}
 License:    ASL 2.0
 Group: System Environment/Libraries
 BuildRequires:  maven22
@@ -56,7 +56,6 @@ Patch5: fix-suspended-users.patch
 Patch6: fix-certificate-issuer-check.patch
 
 Requires: osg-webapp-common
-Requires: glite-security-util-java
 
 %description
 The Virtual Organization Membership Service (VOMS) is an attribute authority
@@ -162,6 +161,9 @@ fi
 %{tomcat_endorsed}/xalan-j2-serializer.jar
 
 %changelog
+* Fri May 01 2015 Carl Edquist <edquist@cs.wisc.edu> - 2.7.0-1.13
+- drop glite-security-util-java requirement (SOFTWARE-1880)
+
 * Tue Apr 15 2014 Carl Edquist <edquist@cs.wisc.edu> - 2.7.0-1.12
 - Do not return expired or suspended users or certificates with
   getGridmapUsers from VOMSCompatibility interface (SOFTWARE-1349)

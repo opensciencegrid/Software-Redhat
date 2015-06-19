@@ -2,7 +2,7 @@ Name:               gratia-probe
 Summary:            Gratia OSG accounting system probes
 Group:              Applications/System
 Version:            1.14.2
-Release:            5%{?dist}
+Release:            6%{?dist}
 
 License:            GPL
 Group:              Applications/System
@@ -1013,6 +1013,9 @@ The dCache storagegroup probe for the Gratia OSG accounting system.
 %endif # noarch
 
 %changelog
+* Thu Jun 11 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.14.2-6
+- slurm probe bugfix for previous patch (goc/25834)
+
 * Wed Jun 03 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.14.2-5
 - Work around noarch probes not building on el7 by making them all arch-specific on el7
 

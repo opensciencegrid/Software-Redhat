@@ -1,5 +1,5 @@
 Name:      rsv-perfsonar
-Version:   1.0.13
+Version:   1.0.17
 Release:   1%{?dist}
 Summary:   RSV Metrics to monitor pefsonar
 Packager:  OSG-Software
@@ -14,7 +14,7 @@ BuildArch: noarch
 
 Requires: rsv
 #The perfsonar probe libraries need it. Getting it from I2 repo for now
-Requires: esmond >= 1.0-12
+Requires: esmond >= 1.0-14
 
 %if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
 Requires: python-simplejson
@@ -69,9 +69,25 @@ ln -s /var/www/html/rsv /usr/share/rsv/www
 # Instaling the reqesocks library
 scl enable python27 - << \EOF
 /opt/esmond/bin/pip install requesocks
+#/opt/esmond/bin/pip install dirq
+#/opt/esmond/bin/pip install messaging
 EOF 
 
 %changelog
+* Wed Jun 17 2015 <efajardo@physics.ucsd.edu> 1.0.17-1
+- Add missing pactek-count-lost/sent datapoints
+- Don't run multiple probes for hosts sharing same IP
+ 
+* Mon Jun 08 2015 <efajardo@physics.ucsd.edu> 1.0.16-1
+- Mark as an error packet-loss-rate when problems occurr.
+
+* Fri May 22 2015 <efajardo@physics.ucsd.edu> 1.0.15-1
+- Cannonically post input source and destination
+- Changed requirement for esmond
+ 
+* Wed Apr 29 2015 <efajardo@physics.ucsd.edu> 1.0.14-1
+- Added SSL support to query remote perfsonar hosts
+
 * Thu Mar 26 2015 <efajardo@physics.ucsd.edu> 1.0.13-1
 - Sanitized the url from the meshes to prevent the main probe from choking
 
@@ -88,7 +104,6 @@ EOF
 * Fri Feb 13 2015 <efajardo@physics.ucsd.edu> 1.0.8-1
 - Updated requirement for esmond. To bug fix posting double values for throughput
 - Stopped checking for old keys to gain efficiency
-
 
 * Mon Feb 09 2015 <efajardo@physics.ucsd.edu> 1.0.7-1
 - Fix to prevent duplicate entries by storing original metada key
@@ -147,7 +162,7 @@ EOF
 - Added the option for a super mesh as a json url that contains other meshes
 
 * Fri Nov 14 2014  <efajardo@physics.ucsd.edu> - 0.0.5-1
- - Now uploading of packet-loss-rate as a fraction not float
+- Now uploading of packet-loss-rate as a fraction not float
 
 * Tue Nov 4 2014  <efajardo@physics.ucsd.edu> - 0.0.4-1
 - Added sleep time for the probe.
