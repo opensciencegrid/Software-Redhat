@@ -1,6 +1,6 @@
 Name:      rsv
 Summary:   RSV Meta Package
-Version:   3.9.1
+Version:   3.10.0
 %if 0%{?el7}
 %define release_suffix _clipped
 %endif
@@ -245,6 +245,9 @@ fi
 
 
 %changelog
+* Fri Jun 19 2015 Carl Edquist <edquist@cs.wisc.edu> - 3.10.0-1
+- SOFTWARE-1820 - Support for xrootd-multi-probe metrics
+
 * Tue May 26 2015 Carl Edquist <edquist@cs.wisc.edu> - 3.9.1-1
 - SOFTWARE-1917 - Integrate 1653-default-ce-type.patch
 - SOFTWARE-1888 - Bugfix for gfal2 commands: specify port explicitly
