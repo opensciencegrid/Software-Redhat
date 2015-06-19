@@ -18,7 +18,7 @@ Requires:       tomcat6
 %global         webappsdir %{_datadir}/tomcat6/webapps/ROOT/
 %endif
 %if 0%{?el7}
-Requires:       tomcat7
+Requires:       tomcat
 %global         webappsdir %{_datadir}/tomcat/webapps/ROOT/
 %endif
 
