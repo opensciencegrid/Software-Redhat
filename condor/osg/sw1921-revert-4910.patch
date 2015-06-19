@@ -1,0 +1,52 @@
+diff --git a/build/cmake/CondorConfigure.cmake b/build/cmake/CondorConfigure.cmake
+index ed2dd09..33a69ee 100644
+--- a/build/cmake/CondorConfigure.cmake
++++ b/build/cmake/CondorConfigure.cmake
+@@ -530,8 +530,6 @@ elseif(${OS_NAME} STREQUAL "LINUX")
+ 	#The following checks are for std:u only.
+ 	glibc_detect( GLIBC_VERSION )
+ 
+-	set(HAVE_GNU_LD ON)
+-
+ elseif(${OS_NAME} STREQUAL "AIX")
+ 	set(AIX ON)
+ 	set(DOES_SAVE_SIGSTATE ON)
+diff --git a/src/condor_includes/config.h.cmake b/src/condor_includes/config.h.cmake
+index f286363..22e0751 100644
+--- a/src/condor_includes/config.h.cmake
++++ b/src/condor_includes/config.h.cmake
+@@ -345,8 +345,8 @@
+ #cmakedefine HAVE_CLOCK_MONOTONIC_RAW 1
+ #cmakedefine HAVE_CLOCK_REALTIME_COARSE 1
+ 
+-/* are we using the GNU linker (USED) */
+-#cmakedefine HAVE_GNU_LD 1
++///* are we using the GNU linker (USED)- I want to remove this comments are untrue*/
++//#cmakedefine HAVE_GNU_LD 1
+ 
+ /* Define to 1 if the system has the type 'id_t'. (USED)*/
+ #cmakedefine HAVE_ID_T 1
+diff --git a/src/condor_utils/CMakeLists.txt b/src/condor_utils/CMakeLists.txt
+index 20af0df..140dffb 100644
+--- a/src/condor_utils/CMakeLists.txt
++++ b/src/condor_utils/CMakeLists.txt
+@@ -83,9 +83,6 @@ else()
+ 	message(FATAL_ERROR "Can't determine Condor version!")
+ endif()
+ set_target_properties( condor_utils PROPERTIES OUTPUT_NAME "${UTILS_LIB_NAME}" )
+-if (HAVE_GNU_LD)
+-	target_link_libraries( condor_utils -Wl,--wrap,exit )
+-endif()
+ 
+ # for linux also make a static version of condor_utils
+ #
+@@ -93,9 +90,6 @@ if (LINUX OR DARWIN)
+    condor_static_lib( condor_utils_s "${HeaderFiles};${SourceFiles};${EXTRA_SRCS}" )
+    add_dependencies( condor_utils_s utils_genparams syscall_numbers )
+    set_target_properties( condor_utils_s PROPERTIES OUTPUT_NAME "${UTILS_LIB_NAME}" )
+-   if (HAVE_GNU_LD)
+-	target_link_libraries( condor_utils_s -Wl,--wrap,exit )
+-   endif()
+ endif(LINUX OR DARWIN)
+ 
+ 

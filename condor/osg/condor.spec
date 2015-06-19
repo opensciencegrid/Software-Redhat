@@ -118,7 +118,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 2
+%define condor_base_release 4
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -207,6 +207,14 @@ Source123: zlib-1.2.3.tar.gz
 %endif
 
 Patch1: sw1636-cream_gahp-dlopen.patch
+
+# Needed for EL5, not sure whether upstream will revert them.
+# https://jira.opensciencegrid.org/browse/SOFTWARE-1921
+# https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=4910
+# https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=4998
+Patch2: sw1921-revert-4910.patch
+Patch3: sw1921-revert-4998.patch
+
 
 #% if 0%osg
 Patch8: osg_sysconfig_in_init_script.patch
@@ -682,6 +690,11 @@ exit 0
 %endif
 
 %patch1 -p1
+
+%if 0%{?rhel} < 6
+%patch2 -p1
+%patch3 -p1
+%endif
 
 %if 0%{?hcc}
 %patch15 -p0
@@ -1803,8 +1816,11 @@ fi
 %endif
 
 %changelog
+* Wed May 13 2015 Carl Edquist <edquist@cs.wisc.edu> - 8.3.5-4
+- Revert selected changes in 8.3.5 for EL5 (SOFTWARE-1921)
+
 * Tue Apr 28 2015 Carl Edquist <edquist@cs.wisc.edu> - 8.3.5-2
-- drop NO_PHONE_HOME option; ie, always phone home (SOFTWARE-1897)
+- Drop NO_PNONE_HOME option; ie, always phone home (SOFTWARE-1897)
 
 * Tue Mar 24 2015 Jose Caballero <jcaballero@bnl.gov> - 8.3.5-1.315103
 - Update to HTCondor 8.3.5 (SOFTWARE-1886)
