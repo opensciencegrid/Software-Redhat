@@ -18,7 +18,7 @@
 Name:		xrootd
 Epoch:		1
 Version:	4.2.1
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Extended ROOT file server
 
 Group:		System Environment/Daemons
@@ -53,6 +53,13 @@ BuildRequires: python-sphinx
 %if %{?rhel}%{!?rhel:0} == 6
 BuildRequires: python-sphinx10
 %endif
+
+
+#
+# Patch XRootD 4.2.1 to fix file cache hangs
+# Bug report https://github.com/xrootd/xrootd/issues/239
+# fix https://github.com/xrootd/xrootd/commit/923a6a3cb14eddcd11618d4f2fdd7229b15e2390
+Patch0: fixfilecachehangs.patch
 
 
 
@@ -246,7 +253,7 @@ This package contains the API documentation of the xrootd libraries.
 
 %prep
 %setup -q
-
+%patch0 -p1
 
 %if %{?fedora}%{!?fedora:0} <= 9 && %{?rhel}%{!?rhel:0} <= 5
 # Older versions of SELinux do not have policy for open
@@ -632,6 +639,9 @@ fi
 %doc %{_pkgdocdir}
 
 %changelog
+* Mon Jun 22 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> -1:4.2.1-2
+- Added patch to fix file cache hangs
+
 * Mon Jun 1 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> -1:4.2.1-1
 - Updated to 4.2.1
 - Included ceph subpackage
