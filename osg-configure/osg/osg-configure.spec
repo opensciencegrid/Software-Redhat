@@ -1,6 +1,6 @@
 Summary: Package for configure-osg and associated scripts
 Name: osg-configure
-Version: 1.0.72
+Version: 1.1.0
 Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
@@ -322,6 +322,15 @@ fi
 
 
 %changelog
+* Tue Jun 23 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.1.0-1.osg
+- Switch to Semantic Versioning
+- Support Zabbix consumers in RSV (SOFTWARE-1923)
+  (contributed by Trey Dockendorf)
+- Improve handling of app_dir and data_dir settings (SOFTWARE-1946)
+- Add sentinel value to HTCondor CE config (SOFTWARE-1954)
+- Removed cemon code (SOFTWARE-1955)
+
+
 * Tue May 26 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0.72-1.osg
 - Make osg-configure-info-services require osg-configure-gip (SOFTWARE-1911)
 - Do not require subcluster sections in gip config if CE not installed (SOFTWARE-1912)
