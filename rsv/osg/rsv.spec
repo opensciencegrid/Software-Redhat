@@ -1,6 +1,6 @@
 Name:      rsv
 Summary:   RSV Meta Package
-Version:   3.10.0
+Version:   3.10.1
 %if 0%{?el7}
 %define release_suffix _clipped
 %endif
@@ -245,6 +245,9 @@ fi
 
 
 %changelog
+* Tue Jun 23 2015 Carl Edquist <edquist@cs.wisc.edu> - 3.10.1-1
+- SOFTWARE-1937 - Prevent //'s in urls for gfal commands
+
 * Fri Jun 19 2015 Carl Edquist <edquist@cs.wisc.edu> - 3.10.0-1
 - SOFTWARE-1820 - Support for xrootd-multi-probe metrics
 
