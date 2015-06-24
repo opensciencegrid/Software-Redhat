@@ -1,4 +1,4 @@
-%define tarball_version 8.3.5
+%define tarball_version 8.3.6
 
 # optionally define any of these, here or externally
 # % define fedora   16
@@ -118,7 +118,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 4
+%define condor_base_release 1.1
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -213,7 +213,6 @@ Patch1: sw1636-cream_gahp-dlopen.patch
 # https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=4910
 # https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=4998
 Patch2: sw1921-revert-4910.patch
-Patch3: sw1921-revert-4998.patch
 
 
 #% if 0%osg
@@ -243,6 +242,7 @@ BuildRequires: /usr/include/expat.h
 BuildRequires: openldap-devel
 BuildRequires: python-devel
 BuildRequires: boost-devel
+BuildRequires: redhat-rpm-config
 
 %if %uw_build || %std_univ
 BuildRequires: cmake >= 2.8
@@ -522,8 +522,8 @@ resources exposed by the deltacloud API.
 %package classads
 Summary: HTCondor's classified advertisement language
 Group: Development/Libraries
-Obsoletes: classads <= 1.0.8
-Obsoletes: classads-static <= 1.0.8
+Obsoletes: classads <= 1.0.10
+Obsoletes: classads-static <= 1.0.10
 Provides: classads = %version-%release
 
 %description classads
@@ -552,12 +552,22 @@ Summary: Headers for HTCondor's classified advertisement language
 Group: Development/System
 Requires: %name-classads = %version-%release
 Requires: pcre-devel
-Obsoletes: classads-devel <= 1.0.8
+Obsoletes: classads-devel <= 1.0.10
 Provides: classads-devel = %version-%release
 
 %description classads-devel
 Header files for HTCondor's ClassAd Library, a powerful and flexible,
 semi-structured representation of data.
+
+#######################
+%package test
+Summary: HTCondor Self Tests
+Group: Applications/System
+Requires: %name = %version-%release
+Requires: %name-classads = %{version}-%{release}
+
+%description test
+A collection of tests to verify that HTCondor is operating properly.
 
 #######################
 %if %cream
@@ -632,7 +642,6 @@ Includes all the files necessary to support running standard universe jobs.
 %package static-shadow
 Summary: Statically linked condow_shadow and condor_master binaries
 Group: Applications/System
-Requires: %name = %version-%release
 
 %description static-shadow
 Provides condor_shadow_s and condor_master_s, which have all the globus
@@ -647,6 +656,13 @@ Requires: %name = %version-%release
 
 %description externals
 Includes the external packages built when UW_BUILD is enabled
+
+%package external-libs
+Summary: Libraries for external packages built into HTCondor
+Group: Applications/System
+
+%description external-libs
+Includes the libraries for external packages built when UW_BUILD is enabled
 
 %endif
 
@@ -668,6 +684,7 @@ Requires: %name-std-universe = %version-%release
 %endif
 %if %uw_build
 Requires: %name-externals = %version-%release
+Requires: %name-external-libs = %version-%release
 %endif
 
 %description all
@@ -693,7 +710,6 @@ exit 0
 
 %if 0%{?rhel} < 6
 %patch2 -p1
-%patch3 -p1
 %endif
 
 %if 0%{?hcc}
@@ -715,7 +731,7 @@ export CMAKE_PREFIX_PATH=/usr
 # causes build issues with EL5, don't even bother building the tests.
 
 %if %uw_build
-%define condor_build_id 315103
+%define condor_build_id 325064
 
 %cmake \
        -DBUILDID:STRING=%condor_build_id \
@@ -1563,6 +1579,12 @@ rm -rf %{buildroot}
 %_includedir/classad/xmlSink.h
 %_includedir/classad/xmlSource.h
 
+#################
+%files test
+%defattr(-,root,root,-)
+%_libexecdir/condor/condor_sinful
+%_libexecdir/condor/condor_testingd
+
 %if %cream
 %files cream-gahp
 %defattr(-,root,root,-)
@@ -1648,13 +1670,15 @@ rm -rf %{buildroot}
 %files static-shadow
 %{_sbindir}/condor_shadow_s
 
-%files externals
+%files external-libs
 %dir %_libdir/condor
 %_libdir/condor/libcondordrmaa.a
 %_libdir/condor/libdrmaa.so
 %_libdir/condor/libglobus*.so*
 %_libdir/condor/libvomsapi*.so*
 %_libdir/condor/ugahp.jar
+
+%files externals
 %_sbindir/deltacloud_gahp
 %_sbindir/unicore_gahp
 %if %blahp
@@ -1816,6 +1840,10 @@ fi
 %endif
 
 %changelog
+* Wed Jun 24 2015 Brian Lin <blin@cs.wisc.edu> - 8.3.6-1.1
+- Bump version to 8.3.6
+- Drop patch reverting gittrac #4998
+
 * Wed May 13 2015 Carl Edquist <edquist@cs.wisc.edu> - 8.3.5-4
 - Revert selected changes in 8.3.5 for EL5 (SOFTWARE-1921)
 
