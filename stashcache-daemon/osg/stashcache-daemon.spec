@@ -1,6 +1,6 @@
 Name:      stashcache-daemon
 Summary:   Manage StashCache with HTCondor
-Version:   0.2
+Version:   0.3
 Release:   1%{?dist}
 License:   Apache 2.0
 Group:     Grid
@@ -40,11 +40,14 @@ rm -rf %{buildroot}
 %{python_sitelib}/xrootd_cache_stats.py*
 
 %changelog
-* Fri May 29 2015 Brian Lin <blin@cs.wisc.edu> 0.2-1.osg
+* Thu Jun 25 2015 Brian Lin <blin@cs.wisc.edu> 0.3-1
+- Update the cache query script
+
+* Fri May 29 2015 Brian Lin <blin@cs.wisc.edu> 0.2-1
 - Fix Python 2.6isms
 - HTCondor heartbeats require at least condor-python 8.3.5
 
-* Thu May 28 2015 Brian Lin <blin@cs.wisc.edu> 0.1-3.osg
+* Thu May 28 2015 Brian Lin <blin@cs.wisc.edu> 0.1-3
 - Remove epoch from condor-python requirement
 
 * Thu May 28 2015 Brian Lin <blin@cs.wisc.edu> 0.1-2.osg
