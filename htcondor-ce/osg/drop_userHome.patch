@@ -1,0 +1,243 @@
+diff --git a/.gitignore b/.gitignore
+index 52ee4f2..5ece1bb 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -11,5 +11,3 @@ CMakeFiles
+ CMakeCache.txt
+ config/01-ce-router.conf
+ config/01-ce-router-defaults.conf
+-libclassad_ce.so
+-classad_ce_tester
+	Modified   CMakeLists.txt
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index a69d42a..c50a83b 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -31,12 +31,7 @@ add_library ( eval_rsl MODULE src/rslConverter.cpp )
+ target_link_libraries ( eval_rsl ${GLOBUS_RSL_LIBRARIES} ${CLASSAD_LIBRARIES} )
+ set_property ( TARGET eval_rsl APPEND PROPERTY COMPILE_FLAGS "${_GLOBUS_RSL_CFLAGS_OTHER}" )
+ 
+-add_library ( classad_ce MODULE src/classad_ce.cpp )
+-target_link_libraries ( classad_ce ${CLASSAD_LIBRARIES} )
+-
+ add_executable ( rsl_tester src/rslTester.cpp )
+-add_executable ( classad_ce_tester src/classad_ce_tester.cpp )
+-target_link_libraries ( classad_ce_tester ${CLASSAD_LIBRARIES} )
+ target_link_libraries ( rsl_tester ${CLASSAD_LIBRARIES} )
+ 
+ set(SHARE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}/share" CACHE PATH "Base directory for files which go to share/")
+@@ -58,8 +53,6 @@ configure_file (
+ )
+ 
+ install(TARGETS eval_rsl LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}/condor")
+-install(TARGETS classad_ce LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}/condor")
+-
+ install(PROGRAMS src/condor-ce src/condor-ce-collector DESTINATION ${SYSCONF_INSTALL_DIR}/rc.d/init.d)
+ install(PROGRAMS src/condor_ce_startup src/condor_ce_startup_internal src/condor_ce_env_bootstrap src/condor_ce_client_env_bootstrap src/condor_ce_router_defaults src/osg-wrapper DESTINATION ${SHARE_INSTALL_PREFIX}/condor-ce)
+ install(PROGRAMS src/condor_ce_config_generator src/condor_ce_config_val src/condor_ce_history src/condor_ce_hold src/condor_ce_info_status src/condor_ce_q src/condor_ce_qedit src/condor_ce_release src/condor_ce_rm src/condor_ce_submit src/condor_ce_version src/condor_ce_reconfig src/condor_ce_router_q src/condor_ce_status src/condor_ce_reschedule src/condor_ce_run src/condor_ce_trace src/condor_ce_ping src/condor_ce_off src/condor_ce_on src/condor_ce_restart src/condor_ce_job_router_info DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
+	Modified   config/01-ce-router-defaults.conf.in
+diff --git a/config/01-ce-router-defaults.conf.in b/config/01-ce-router-defaults.conf.in
+index c8b3a43..5b6af87 100644
+--- a/config/01-ce-router-defaults.conf.in
++++ b/config/01-ce-router-defaults.conf.in
+@@ -35,7 +35,7 @@ GRIDMANAGER_MAX_SUBMITTED_JOBS_PER_RESOURCE = $(CONDORCE_MAX_JOBS)
+ # Only route jobs for an up-to-date client
+ # NOTE: disabled because HTCondor-G appears to not set this properly
+ #JOB_ROUTER_SOURCE_JOB_CONSTRAINT = ((target.LastClientContact =?= UNDEFINED) || (target.LastClientContact - time() < 30*60)) && (target.CondorCE is True)
+-CLASSAD_USER_LIBS = @CMAKE_INSTALL_LIBDIR@/condor/libclassad_ce.so, @CMAKE_INSTALL_LIBDIR@/condor/libeval_rsl.so, $(CLASSAD_USER_LIBS)
++CLASSAD_USER_LIBS = @CMAKE_INSTALL_LIBDIR@/condor/libeval_rsl.so, $(CLASSAD_USER_LIBS)
+ 
+ # Only route jobs with a valid, non-expired proxy for either the vanilla or standard universe.
+ JOB_ROUTER_SOURCE_JOB_CONSTRAINT = (target.x509userproxysubject =!= UNDEFINED) && (target.x509UserProxyExpiration =!= UNDEFINED) && (time() < target.x509UserProxyExpiration) && (target.JobUniverse =?= 5 || target.JobUniverse =?= 1)
+	Modified   config/01-ce-router.conf.in
+diff --git a/config/01-ce-router.conf.in b/config/01-ce-router.conf.in
+index 41c8be5..8e1a855 100644
+--- a/config/01-ce-router.conf.in
++++ b/config/01-ce-router.conf.in
+@@ -31,7 +31,7 @@ CONDORCE_MAX_JOBS = 10000
+ # Only route jobs for an up-to-date client
+ # NOTE: disabled because HTCondor-G appears to not set this properly
+ #JOB_ROUTER_SOURCE_JOB_CONSTRAINT = ((target.LastClientContact =?= UNDEFINED) || (target.LastClientContact - time() < 30*60)) && (target.CondorCE is True)
+-CLASSAD_USER_LIBS = @CMAKE_INSTALL_LIBDIR@/condor/libclassad_ce.so, @CMAKE_INSTALL_LIBDIR@/condor/libeval_rsl.so, $(CLASSAD_USER_LIBS)
++CLASSAD_USER_LIBS = @CMAKE_INSTALL_LIBDIR@/condor/libeval_rsl.so, $(CLASSAD_USER_LIBS)
+ 
+ # Only route jobs with a valid, non-expired proxy for either the vanilla or standard universe.
+ JOB_ROUTER_SOURCE_JOB_CONSTRAINT = (target.x509userproxysubject =!= UNDEFINED) && (target.x509UserProxyExpiration =!= UNDEFINED) && (time() < target.x509UserProxyExpiration) && (target.JobUniverse =?= 5 || target.JobUniverse =?= 1)
+	Deleted    src/classad_ce.cpp
+diff --git a/src/classad_ce.cpp b/src/classad_ce.cpp
+deleted file mode 100644
+index d0b4483..0000000
+--- a/src/classad_ce.cpp
++++ /dev/null
+@@ -1,114 +0,0 @@
+-
+-#include <sstream>
+-
+-#include "classad/classad.h"
+-#include "classad/literals.h"
+-#include "classad/fnCall.h"
+-#include "classad/sink.h"
+-
+-#include <sys/types.h>
+-#include <pwd.h>
+-
+-static bool
+-user_home (const char *                 name,
+-          const classad::ArgumentList &arguments,
+-          classad::EvalState          &state,
+-          classad::Value              &result);
+-
+-static classad::ClassAdFunctionMapping functions[] = 
+-{
+-    { "userHome",  (void *) user_home, 0 },
+-    { "user_home", (void *) user_home, 0 },
+-    { "",          NULL,               0 }
+-};
+-
+-extern "C" 
+-{
+-    classad::ClassAdFunctionMapping *Init(void)
+-    {
+-        return functions;
+-    }
+-
+-}
+-
+-
+-static bool
+-return_result(const std::string &default_home,
+-              const std::string &error_msg,
+-              classad::Value    &result)
+-{
+-    if (default_home.size())
+-    {
+-        result.SetStringValue(default_home);
+-        return true;
+-    }
+-    else
+-    {
+-        result.SetErrorValue();
+-        classad::CondorErrMsg = error_msg;
+-        return false;
+-    }
+-}
+-
+-static bool
+-user_home (const char *                 name,
+-           const classad::ArgumentList &arguments,
+-           classad::EvalState          &state,
+-           classad::Value              &result)
+-{
+-
+-    if ((arguments.size() != 1) && (arguments.size() != 2))
+-    {
+-        std::stringstream ss;
+-        result.SetErrorValue();
+-        ss << "Invalid number of arguments passed to " << name << "; " << arguments.size() << "given, 1 required and 1 optional.";
+-        classad::CondorErrMsg = ss.str();
+-        return false;
+-    }
+-
+-
+-    std::string default_home;
+-    classad::Value default_home_value;
+-    if (arguments.size() != 2 || !arguments[1]->Evaluate(state, default_home_value) || !default_home_value.IsStringValue(default_home))
+-    {
+-        default_home = "";
+-    }
+-
+-
+-    std::string owner_string;
+-    classad::Value owner_value;
+-    if (!arguments[0]->Evaluate(state, owner_value) || (!owner_value.IsStringValue(owner_string)))
+-    {
+-        std::string unp_string;
+-        std::stringstream ss;
+-        classad::ClassAdUnParser unp; unp.Unparse(unp_string, arguments[0]);
+-        ss << "Could not evaluate the first argument of " << name << " to string.  Expression: " << unp_string << ".";
+-        return return_result(default_home, ss.str(), result);
+-    }
+-
+-    errno = 0;
+-    struct passwd *info = getpwnam(owner_string.c_str());
+-    if (!info)
+-    {
+-        std::stringstream ss;
+-        ss << "Unable to find home directory for user " << owner_string;
+-        if (errno) {
+-            ss << ": " << strerror(errno) << "(errno=" << errno << ")";
+-        } else {
+-            ss << ": No such user.";
+-        }
+-        return return_result(default_home, ss.str(), result);
+-    }
+-
+-    if (!info->pw_dir)
+-    {
+-        std::stringstream ss;
+-        ss << "User " << owner_string << " has no home directory.";
+-        return return_result(default_home, ss.str(), result);
+-    }
+-    std::string home_string = info->pw_dir;
+-    result.SetStringValue(home_string);
+-
+-    return true;
+-}
+-
+	Deleted    src/classad_ce_tester.cpp
+diff --git a/src/classad_ce_tester.cpp b/src/classad_ce_tester.cpp
+deleted file mode 100644
+index a842470..0000000
+--- a/src/classad_ce_tester.cpp
++++ /dev/null
+@@ -1,49 +0,0 @@
+-
+-#include <iostream>
+-
+-#include "classad/exprTree.h"
+-#include "classad/fnCall.h"
+-#include "classad/sink.h"
+-
+-int main ( int argc, const char *argv[] )
+-{
+-    if ((argc != 3) && (argc != 4))
+-    {
+-        std::cerr << "Usage: " << argv[0] << " <module file> <user string> [default]" << std::endl;
+-        return 1;
+-    }
+-
+-    if (!classad::FunctionCall::RegisterSharedLibraryFunctions(argv[1]))
+-    {
+-        std::cout << "Failed to load ClassAd user lib (" << argv[1] << "): " << classad::CondorErrMsg << std::endl;
+-        return 2;
+-    }
+-
+-    classad::Value val; val.SetStringValue(argv[2]);
+-    classad::ExprTree *lit = classad::Literal::MakeLiteral(val);
+-    std::vector<classad::ExprTree*> argList; argList.push_back(lit);
+-    if (argc == 4)
+-    {
+-        classad::Value val2; val2.SetStringValue(argv[3]);
+-        classad::ExprTree *lit2 = classad::Literal::MakeLiteral(val2);
+-        argList.push_back(lit2);
+-    }
+-    classad::ExprTree *expr = classad::FunctionCall::MakeFunctionCall("userHome", argList);
+-    classad::Value result;
+-    classad::EvalState state;
+-    if (!expr->Evaluate(state, result))
+-    {
+-        std::cerr << "Unable to map username to home directory; (error: " << classad::CondorErrMsg << ")." << std::endl;
+-        return 3;
+-    }
+-    delete expr;
+-
+-    std::cout << "Resulting home directory: ";
+-    classad::PrettyPrint pp;
+-    std::string text_result;
+-    pp.Unparse(text_result, result);
+-    std::cout << text_result << std::endl;
+-
+-    return 0;
+-}
+-
+
