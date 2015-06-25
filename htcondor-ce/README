@@ -14,8 +14,9 @@ To build from upstream:
 
 git archive --prefix=htcondor-ce-{VERSION}/ {GIT REVISION} | gzip -9 > htcondor-ce-{VERSION}.tar.gz
 
-(note that the tarball used in 1.6-2 was built from
-https://github.com/matyasselmeci/condor-ce
-and 1.9-* was built from
+Notes:
+- The tarball used in 1.6-2 was built from https://github.com/matyasselmeci/condor-ce
+and 1.9-* was built from:
 https://github.com/opensciencegrid/htcondor-ce/commit/01bc40cbc529c1ce1e0409c5fc5afda4c3e9127c
-)
+- Starting with 1.14, we include a patch to drop the userHome function since it's included in upstream
+HTCondor 8.3.6. This cannot be pushed upstream since OSG 3.2 is still on 8.2.x.

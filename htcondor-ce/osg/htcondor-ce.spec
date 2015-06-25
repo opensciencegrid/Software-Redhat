@@ -2,8 +2,8 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 1.13
-Release: 2%{?gitrev:.%{gitrev}git}%{?dist}
+Version: 1.14
+Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 
 Group: Applications/System
@@ -17,6 +17,8 @@ URL: http://github.com/bbockelm/condor-ce
 # git archive --prefix=%{name}-%{version}/ %{gitrev} | gzip > %{name}-%{version}-%{gitrev}.tar.gz
 #
 Source0: %{name}-%{version}%{?gitrev:-%{gitrev}}.tar.gz
+
+Patch0: drop_userHome.patch
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -146,6 +148,7 @@ Conflicts: %{name}
 
 %prep
 %setup -q
+%patch0 -p1
 
 %build
 %cmake -DHTCONDORCE_VERSION=%{version} -DCMAKE_INSTALL_LIBDIR=%{_libdir} -DPYTHON_SITELIB=%{python_sitelib}
@@ -195,7 +198,6 @@ fi
 %{_datadir}/condor-ce/condor_ce_router_defaults
 
 %{_libdir}/condor/libeval_rsl.so
-%{_libdir}/condor/libclassad_ce.so
 
 %{_initrddir}/condor-ce
 
@@ -297,8 +299,10 @@ fi
 
 %config(noreplace) %{_sysconfdir}/sysconfig/condor-ce-collector
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-collector.conf
+%config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-collector-requirements.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-auth.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/02-ce-auth-generated.conf
+%config(noreplace) %{_sysconfdir}/condor-ce/config.d/04-ce-collector-auth.conf
 %config(noreplace) %{_sysconfdir}/cron.d/condor-ce-collector-generator.cron
 %config(noreplace) %{_sysconfdir}/logrotate.d/condor-ce-collector
 
@@ -313,8 +317,14 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
-* Fri May 01 2015 Brian Lin <blin@cs.wisc.edu> - 1.13-2
-- Rebuild for EL5 against HTCondor 8.3.4
+* Wed Jun 24 2015 Brian Lin <blin@cs.wisc.edu> - 1.14-1
+- CE Collector should accept all CEs (SOFTWARE-1790)
+- Do not utilize the CE config when submitting a job with condor_ce_run without the -r option (SOFTWARE-1910)
+- Verify value of QUEUE_SUPER_USER_MAY_IMPERSONATE for HTCondor batch systems (SOFTWARE-1943)
+- Ensure that the HTCondor Python bindings are in the PYTHONPATH (SOFTWARE-1927)
+- HTCondor CE should warn if osg-configure has not been run (SOFTWARE-1914)
+- Improvements to condor_ce_run error messages
+- Drop userHome function since it's included in upstream HTCondor 8.3.6
 
 * Mon Apr 27 2015 Brian Lin <blin@cs.wisc.edu> - 1.13-1
 - Fix bug that prevented HTCondor CE service from starting with multiple job routes
