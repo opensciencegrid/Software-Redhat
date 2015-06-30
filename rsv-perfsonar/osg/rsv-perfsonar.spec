@@ -1,5 +1,5 @@
 Name:      rsv-perfsonar
-Version:   1.0.17
+Version:   1.0.18
 Release:   1%{?dist}
 Summary:   RSV Metrics to monitor pefsonar
 Packager:  OSG-Software
@@ -15,6 +15,9 @@ BuildArch: noarch
 Requires: rsv
 #The perfsonar probe libraries need it. Getting it from I2 repo for now
 Requires: esmond >= 1.0-14
+#This requirments to publish data to the CERN message brokers
+Requires: stompclt
+Requires: python-simplevisor
 
 %if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
 Requires: python-simplejson
@@ -52,7 +55,10 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/rsv/metrics/org.osg.general.perfsonar-simple.conf
 %config(noreplace) %{_sysconfdir}/rsv/metrics/org.osg.local.network-monitoring-local.conf
 %config(noreplace) %{_sysconfdir}/logrotate.d/rsv-perfsonar-metrics
+%config(noreplace) %{_sysconfdir}/rsv/stompclt/default.conf
+%config(noreplace) %{_sysconfdir}/rsv/stompclt/simplevisor.cfg
 %attr(-,rsv,rsv)  %{_sysconfdir}/rsv
+%attr(-,rsv,rsv)  %{_localstatedir}/run/rsv-perfsonar/
 
 %post -p /bin/bash
 # Change the permissions for the perfsonar probes to work
@@ -69,11 +75,15 @@ ln -s /var/www/html/rsv /usr/share/rsv/www
 # Instaling the reqesocks library
 scl enable python27 - << \EOF
 /opt/esmond/bin/pip install requesocks
-#/opt/esmond/bin/pip install dirq
-#/opt/esmond/bin/pip install messaging
+#This ones are need for publish data to CERN message queue
+/opt/esmond/bin/pip install dirq
+/opt/esmond/bin/pip install messaging
 EOF 
 
 %changelog
+* Mon Jun 29 2015 <efajardo@physics.ucsd.edu> 1.0.18-1
+- Added the support for message passing queue from Marian Babik
+
 * Wed Jun 17 2015 <efajardo@physics.ucsd.edu> 1.0.17-1
 - Add missing pactek-count-lost/sent datapoints
 - Don't run multiple probes for hosts sharing same IP
