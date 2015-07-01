@@ -5,7 +5,7 @@
 
 Summary:   Tests an OSG Software installation
 Name:      osg-test
-Version:   1.4.24
+Version:   1.4.26
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -37,6 +37,16 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/osgtest
 
 %changelog
+* Tue Jun 30 2015 Brian Lin <blin@cs.wisc.edu> - 1.4.26-1
+- Fix RSV version probe assertion
+- Add GPG checks back to the OSG 3.3 tests
+
+* Wed May 20 2015 Brian Lin <blin@cs.wisc.edu> - 1.4.25-1
+- Add support for OSG 3.3
+- Fix torque configuration (SOFTWARE-1899)
+- BadSkip HTCondor CE tests if the service failed to start (SOFTWARE-1898)
+- Remove osg-configure unit test output that confused our test reporting (SOFTWARE-1818)
+
 * Thu Mar 05 2015 Brian Lin <blin@cs.wisc.edu> - 1.4.24-1
 - Fix install/update failures involving 3.1 due to new xrootd-compat packages in EPEL
 - Fix cleanup bug for tests with extra repos
