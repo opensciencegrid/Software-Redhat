@@ -3,7 +3,7 @@
 
 Name: htcondor-ce
 Version: 1.14
-Release: 2%{?gitrev:.%{gitrev}git}%{?dist}
+Release: 3%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 
 Group: Applications/System
@@ -149,7 +149,12 @@ Conflicts: %{name}
 %prep
 %setup -q
 %patch0 -p1
+# Due to SOFTWARE-1921, we are not shipping HTCondor > 8.3.4 for EL5 in upcoming.
+# Since the userHome function was included in 8.3.6+, we cannot drop the function
+# from the CE yet.
+%if 0%{?rhel} >= 6
 %patch1 -p1
+%endif
 
 %build
 %cmake -DHTCONDORCE_VERSION=%{version} -DCMAKE_INSTALL_LIBDIR=%{_libdir} -DPYTHON_SITELIB=%{python_sitelib}
@@ -198,6 +203,9 @@ fi
 
 %{_datadir}/condor-ce/condor_ce_router_defaults
 
+%if 0%{?rhel} < 6
+%{_libdir}/condor/libclassad_ce.so
+%endif
 %{_libdir}/condor/libeval_rsl.so
 
 %{_initrddir}/condor-ce
@@ -318,6 +326,9 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Wed Jul 01 2015 Brian Lin <blin@cs.wisc.edu> - 1.14-3
+- Only drop userHome function for EL6 since we are not shipping HTCondor 8.3.6+ for EL5
+
 * Tue Jun 30 2015 Brian Lin <blin@cs.wisc.edu> - 1.14-2
 - Authorization fix when running condor_ce_run without '-r' (SOFTWARE-1910)
 
