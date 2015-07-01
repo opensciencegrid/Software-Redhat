@@ -1,6 +1,6 @@
 Name:           igtf-ca-certs
 Version:        1.64
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        OSG Packaging of the IGTF CA Certs, in new OpenSSL 0.9.8/1.0.0 format. For details what is in the current release, see the distribution site at http://software.grid.iu.edu/pacman/cadist/ and change log at http://software.grid.iu.edu/pacman/cadist/CHANGES.
 
 Group:          System Environment/Base
@@ -19,6 +19,7 @@ Conflicts:      cilogon-ca-certs < 1.0-5
 
 Obsoletes:      vdt-ca-certs
 Obsoletes:      igtf-ca-certs-experimental
+Obsoletes:      igtf-ca-certs-compat <= 1.55
 
 %description
 %{summary}
@@ -44,6 +45,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc
 
 %changelog
+* Wed Jul 01 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.64-2
+- Obsolete igtf-ca-certs-compat (SOFTWARE-1883)
+
 * Mon Jun 01 2015 Kevin M. Hill <kevinh@fnal.gov> - 1.64-1
 - IGTF release corresponding to OSG release 1.46.
 
