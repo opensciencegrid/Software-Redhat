@@ -3,7 +3,7 @@
 
 Name: htcondor-ce
 Version: 1.14
-Release: 2%{?gitrev:.%{gitrev}git}%{?dist}
+Release: 3%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 
 Group: Applications/System
@@ -127,7 +127,7 @@ BuildRequires: cmake
 Requires: condor
 Requires: /usr/bin/grid-proxy-init
 Requires: /usr/bin/voms-proxy-init
-Requires: grid-certificates
+Requires: grid-certificates >= 7
 
 # Require the appropriate version of the python library.  This
 # is rather awkward, but better syntax isn't available until RHEL6
@@ -341,6 +341,9 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Wed Jul 01 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.14-3
+- Require grid-certificates >= 7 (SOFTWARE-1883)
+
 * Tue Jun 30 2015 Brian Lin <blin@cs.wisc.edu> - 1.14-2
 - Authorization fix when running condor_ce_run without '-r' (SOFTWARE-1910)
 

@@ -1,6 +1,6 @@
 Name:           vo-client
 Version:        59
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Contains vomses file for use with user authentication and edg-mkgridmap.conf file that contains configuration information for edg-mkgridmap.
 
 Group:          System Environment/Base
@@ -9,7 +9,7 @@ URL:            http://www.opensciencegrid.org/osg/
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
-Requires:       grid-certificates
+Requires: grid-certificates >= 7
 
 Source0:        %{name}-%{version}-osg.tar.gz
 
@@ -85,6 +85,9 @@ rm -rf $RPM_BUILD_ROOT
 %attr(0600,tomcat,tomcat) %config(noreplace) %{_sysconfdir}/gums/gums.config.template
 
 %changelog
+* Wed Jul 01 2015 Mátyás Selmeci <matyas@cs.wisc.edu> - 59-2
+- Require grid-certificates >= 7 (SOFTWARE-1883)
+
 * Fri May 15 2015 Carl Edquist <edquist@cs.wisc.edu> - 59-1
 - Update to vo-client 59 (SOFTWARE-1747)
   - Restructured/removed various Fermilab entries from gums template

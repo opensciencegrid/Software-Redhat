@@ -1,6 +1,6 @@
 Name:           empty-ca-certs
 Version:        1.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        An empty grid CA cert package
 
 Group:          System Environment/Base
@@ -10,7 +10,7 @@ URL:            http://vdt.cs.wisc.edu
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
-Provides:       grid-certificates = 1
+Provides:       grid-certificates = 7
 Conflicts:      osg-ca-scripts
 Conflicts:      osg-ca-certs
 Conflicts:      osg-ca-certs-compat
@@ -40,5 +40,8 @@ a shared filesystem.
 %doc
 
 %changelog
+* Wed Jul 01 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0-2.osg
+- Provide grid-certificates = 7
+
 * Thu Sep 19 2011 Alain Roy <roy@cs.wisc.edu> - 1.0-1
 - Initial version

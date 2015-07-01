@@ -1,6 +1,6 @@
 Name:      osg-ca-scripts
 Version:   1.1.5
-Release:   1%{?dist}
+Release:   2%{?dist}
 Summary:   CA Certificate helper scripts
 
 Group:     System Environment/Base
@@ -15,7 +15,7 @@ BuildArch: noarch
 Requires: /usr/bin/openssl
 Requires: logrotate
 
-Provides: grid-certificates = 6
+Provides: grid-certificates = 7
 Conflicts: osg-ca-certs
 Conflicts: osg-ca-certs-experimental
 Conflicts: igtf-ca-certs
@@ -82,6 +82,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr(0755,root,root) %{_localstatedir}/lib/osg-ca-certs
 
 %changelog
+* Wed Jul 01 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.1.5-2
+- Provide grid-certificates = 7
+
 * Wed Feb 12 2014 Brian Lin <blin@cs.wisc.edu> 1.1.5-1
 - Add --nosymlink option to prevent symlinks being made when specifying a location
 

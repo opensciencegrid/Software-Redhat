@@ -6,7 +6,7 @@
 
 Name:           osg-cert-scripts
 Version:        2.7.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Command-line interface to the DOEGrids CA web site, and more.
 
 Group:          Grid
@@ -17,7 +17,7 @@ BuildArch:      noarch
 
 Requires:       /usr/bin/ldapsearch
 Requires:       /usr/bin/openssl
-Requires:       grid-certificates
+Requires:       grid-certificates >= 7
 Requires:	perl(Crypt::SSLeay)
 Requires: 	perl(LWP::UserAgent)
 Requires: 	perl(Date::Format)
@@ -74,6 +74,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Jul 01 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 2.7.2-2
+- Require grid-certificates >= 7 (SOFTWARE-1883)
+
 * Mon Feb 16 2012 Anand Padmanabhan <apadmana@uiuc.edu> - 2.7.2-1
 - Fix for Jira ticket 546
 

@@ -1,7 +1,7 @@
 Name:           osg-se-hadoop
 Summary:        OSG Hadoop Storage Element package for RPM distribution
 Version:        3.3
-Release:        1%{?dist}
+Release:        2%{?dist}
 License:        GPL
 Group:          System Environment/Daemons
 URL:            https://twiki.grid.iu.edu/twiki/bin/view/Storage/WebHome
@@ -94,7 +94,7 @@ This is a Globus GridFTP frontend for a Hadoop Storage Element.
 %package srm
 Summary: Datanode meta-package for Hadoop
 Group: System Environment/Libraries
-Requires: grid-certificates
+Requires: grid-certificates >= 7
 Requires: osg-version
 Requires: osg-system-profiler
 Requires: edg-mkgridmap
@@ -144,6 +144,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/hadoop/conf.osg/
 
 %changelog
+* Wed Jul 01 2015 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.3-2
+- Require grid-certificates >= 7 (SOFTWARE-1883)
+
 * Wed Apr 29 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.3-1
 - Rebuild for OSG 3.3
 

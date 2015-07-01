@@ -4,7 +4,7 @@ Version:   3.3
 %if 0%{?el7}
 %define release_suffix _clipped
 %endif
-Release:   1%{?release_suffix}%{?dist}
+Release:   2%{?release_suffix}%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -17,7 +17,7 @@ Requires: osg-version
 Requires: osg-system-profiler
 Requires: globus-gridftp-server-progs
 Requires: vo-client
-Requires: grid-certificates
+Requires: grid-certificates >= 7
 Requires: gratia-probe-gridftp-transfer
 %if ! 0%{?el7}
 Requires: gums-client
@@ -66,6 +66,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Jul 01 2015 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.3-2
+- Require grid-certificates >= 7 (SOFTWARE-1883)
+
 * Wed Apr 29 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.3-1
 - Rebuild for OSG 3.3
 
