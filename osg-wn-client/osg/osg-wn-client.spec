@@ -1,7 +1,7 @@
 Name:      osg-wn-client
 Summary:   OSG Worker-Node Client
 Version:   3.3
-Release:   4%{?dist}
+Release:   5%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -25,7 +25,7 @@ Requires: voms-clients-cpp
 Requires: /usr/bin/ldapsearch
 Requires: /usr/bin/uberftp
 Requires: /usr/bin/wget
-Requires: grid-certificates
+Requires: grid-certificates >= 7
 Requires: fetch-crl
 Requires: osg-system-profiler
 Requires: vo-client
@@ -100,6 +100,9 @@ rm -rf $RPM_BUILD_ROOT
 %files glexec
 
 %changelog
+* Wed Jul 01 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.3-5
+- Require grid-certificates >= 7 (SOFTWARE-1883)
+
 * Fri Jun 19 2015 Jose Caballero <jcaballero@bnl.gov> 3.3-4
 - Added dependency to /usr/bin/xrdcp 
 
