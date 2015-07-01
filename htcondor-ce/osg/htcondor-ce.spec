@@ -3,7 +3,7 @@
 
 Name: htcondor-ce
 Version: 1.14
-Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
+Release: 2%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 
 Group: Applications/System
@@ -17,8 +17,8 @@ URL: http://github.com/bbockelm/condor-ce
 # git archive --prefix=%{name}-%{version}/ %{gitrev} | gzip > %{name}-%{version}-%{gitrev}.tar.gz
 #
 Source0: %{name}-%{version}%{?gitrev:-%{gitrev}}.tar.gz
-
-Patch0: drop_userHome.patch
+Patch0: sw1910_run_without_r.patch
+Patch1: drop_userHome.patch
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -149,6 +149,7 @@ Conflicts: %{name}
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
 
 %build
 %cmake -DHTCONDORCE_VERSION=%{version} -DCMAKE_INSTALL_LIBDIR=%{_libdir} -DPYTHON_SITELIB=%{python_sitelib}
@@ -317,6 +318,9 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Tue Jun 30 2015 Brian Lin <blin@cs.wisc.edu> - 1.14-2
+- Authorization fix when running condor_ce_run without '-r' (SOFTWARE-1910)
+
 * Wed Jun 24 2015 Brian Lin <blin@cs.wisc.edu> - 1.14-1
 - CE Collector should accept all CEs (SOFTWARE-1790)
 - Do not utilize the CE config when submitting a job with condor_ce_run without the -r option (SOFTWARE-1910)
