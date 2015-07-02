@@ -4,7 +4,7 @@ Version:   3.10.1
 %if 0%{?el7}
 %define release_suffix _clipped
 %endif
-Release:   1%{?release_suffix}%{?dist}
+Release:   1.1test%{?release_suffix}%{?dist}
 License:   Apache 2.0
 Group:     Applications/Monitoring
 URL:       https://twiki.grid.iu.edu/bin/view/MonitoringInformation/RSV
@@ -21,7 +21,7 @@ Requires: rsv-core
 Requires: rsv-metrics
 Requires: osg-configure
 Requires: osg-configure-rsv
-Requires: grid-certificates
+Requires: grid-certificates >= 7
 Requires: voms-clients
 
 %if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
@@ -245,6 +245,9 @@ fi
 
 
 %changelog
+* Thu Jul 02 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.10.1-1.1test
+- Require grid-certificates >= 7
+
 * Tue Jun 23 2015 Carl Edquist <edquist@cs.wisc.edu> - 3.10.1-1
 - SOFTWARE-1937 - Prevent //'s in urls for gfal commands
 
