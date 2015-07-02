@@ -1,8 +1,8 @@
 #%%global betatag .beta1
-%global _release 2
+%global _release 1
 
 Name:           osg-build
-Version:        1.4.4
+Version:        1.5.0
 Release:        %{?betatag:0.}%{_release}%{?betatag}%{?dist}
 Summary:        Build tools for the OSG
 
@@ -70,6 +70,10 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_docdir}/%{name}/sample-osg-build.ini
 
 %changelog
+* Thu Jul 02 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.0-1
+- Build for el6 and el7 for OSG 3.3 by default (instead of el5 and el6) (SOFTWARE-1902)
+- Allow promotion to prerelease for osg-promote
+
 * Thu Apr 23 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.4.4-2
 - Fix missing import (SOFTWARE-1870)
 
