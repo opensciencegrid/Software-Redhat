@@ -1,0 +1,3 @@
+axis is a build-time dependency of emi-trustmanager-axis for el7.
+This package was taken from the Fedora 20 repos, and modified to fix a build
+error apparently caused by weird timestamp issues.
