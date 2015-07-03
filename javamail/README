@@ -1,2 +1,2 @@
-This provides javax.mail, a runtime dependency of axis.
+This provides javax.mail, a runtime dependency of axis for el7.
 It is a pass-through from the Fedora 20 repos.
