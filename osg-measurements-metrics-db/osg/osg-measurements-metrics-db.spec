@@ -4,8 +4,8 @@
 %endif
 
 Name:           osg-measurements-metrics-db
-Version:        1.2
-Release:        34%{?dist}
+Version:        1.3
+Release:        1%{?dist}
 Summary:        OSG Measurements and Metrics web and database
 
 Group:          Applications/System
@@ -18,7 +18,7 @@ BuildArch:      noarch
 
 
 BuildRequires:  python-setuptools
-Requires:       graphtool >= 0.6.4
+Requires:       graphtool >= 0.7.0
 Requires:       MySQL-python
 Requires:       python-sqlite
 Requires:       python-cheetah
@@ -60,6 +60,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+
+* Mon Jul 6 2015 Juan F. Mosquera <jmorales@fnal.gov>
+- modifications to include Google Charts and Opportunistic filter
 
 * Wed Mar 18 2015 Juan F. Mosquera <jmorales@fnal.gov>
 - modifications to replace unescaped characters in cron job
