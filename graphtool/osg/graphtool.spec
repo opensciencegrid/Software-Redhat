@@ -4,8 +4,8 @@
 %endif
 
 Name:                   graphtool
-Version:                0.6.6
-Release:                25%{?dist}
+Version:                0.7.0
+Release:                1%{?dist}
 Summary:                CMS Common Graphing Package.
 
 Group:                  Development/Libraries
@@ -50,6 +50,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+
+* Mon Jul 6 2015 Juan F. Mosquera <jmorales@fnal.gov>
+- modifications to include Google Charts and Opportunistic filter
 
 * Wed Mar 25 2015 Juan F. Mosquera <jmorales@fnal.gov>
 - modifications to include jquery support to fill 
