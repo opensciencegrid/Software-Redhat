@@ -4,8 +4,8 @@
 %endif
 
 Name:           osg-measurements-metrics-web
-Version:        1.2
-Release:        34%{?dist}
+Version:        1.3
+Release:        1%{?dist}
 Summary:        OSG Measurements and Metrics web and database
 
 Group:          Applications/System
@@ -17,7 +17,7 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
 BuildRequires:  python-setuptools
-Requires:       graphtool >= 0.6.4
+Requires:       graphtool >= 0.7.0
 Requires:       MySQL-python
 Requires:       python-sqlite
 Requires:       python-cheetah
@@ -25,7 +25,7 @@ Requires:       /usr/bin/ldapsearch
 Requires:       python-cherrypy >= 3.1.2
 Requires:       python-ZSI
 Requires:       python-setuptools
-Requires:       osg-measurements-metrics-db
+Requires:       osg-measurements-metrics-db >= 1.3
 %if 0%{?el5}
 Requires:       python-simplejson
 %endif
@@ -80,6 +80,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+
+* Mon Jul 6 2015 Juan F. Mosquera <jmorales@fnal.gov>
+- modifications to include Google Charts and Opportunistic filter
 
 * Wed Mar 18 2015 Juan F. Mosquera <jmorales@fnal.gov>
 - modifications to replace unescaped characters in cron job
