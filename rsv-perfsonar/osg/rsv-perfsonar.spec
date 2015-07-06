@@ -1,5 +1,5 @@
 Name:      rsv-perfsonar
-Version:   1.0.18
+Version:   1.0.19
 Release:   1%{?dist}
 Summary:   RSV Metrics to monitor pefsonar
 Packager:  OSG-Software
@@ -81,6 +81,9 @@ scl enable python27 - << \EOF
 EOF 
 
 %changelog
+* Mon Jul 6 2015 <efajardo@physics.ucsd.edu> 1.0.19-1
+- Fixed bug when directory queue is not present
+
 * Mon Jun 29 2015 <efajardo@physics.ucsd.edu> 1.0.18-1
 - Added the support for message passing queue from Marian Babik
 
