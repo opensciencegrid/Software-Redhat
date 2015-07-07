@@ -1,5 +1,5 @@
 #%%global betatag .beta1
-%global _release 1
+%global _release 2
 
 Name:           osg-build
 Version:        1.5.0
@@ -12,6 +12,7 @@ URL:            https://twiki.grid.iu.edu/bin/view/SoftwareTeam/OSGBuildTools
 
 Source0:        %{name}-%{version}%{?betatag}.tar.gz
 Patch0:         koji-hub-testing.patch
+Patch1:         Add-upcoming-prerelease-route.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
@@ -42,6 +43,8 @@ See %{url} for details.
 # changes the koji-hub URL to koji-hub-testing.chtc.wisc.edu, for testing only
 # % patch0 -p1
 
+%patch1 -p1
+
 %install
 rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
@@ -70,6 +73,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_docdir}/%{name}/sample-osg-build.ini
 
 %changelog
+* Tue Jul 07 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.0-2
+- Allow promotion to upcoming-prerelease for osg-promote
+
 * Thu Jul 02 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.0-1
 - Build for el6 and el7 for OSG 3.3 by default (instead of el5 and el6) (SOFTWARE-1902)
 - Allow promotion to prerelease for osg-promote
