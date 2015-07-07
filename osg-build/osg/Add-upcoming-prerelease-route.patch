@@ -1,0 +1,41 @@
+From 583682ca139f87a121360a92f3d20dd06d0e9d8d Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Tue, 7 Jul 2015 13:39:01 -0500
+Subject: [PATCH] Add upcoming-prerelease route
+
+---
+ osgbuild/promoter.py | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/osgbuild/promoter.py b/osgbuild/promoter.py
+index 7313d94..1382e4e 100644
+--- a/osgbuild/promoter.py
++++ b/osgbuild/promoter.py
+@@ -96,10 +96,11 @@ class Reject(object):
+         return self.reason % {'pkg_or_build': self.pkg_or_build, 'dist': self.dist}
+ 
+ STATIC_ROUTES = {
+     "hcc": Route("hcc-%s-testing", "hcc-%s-release", "hcc"),
+     "upcoming": Route("osg-upcoming-%s-development", "osg-upcoming-%s-testing", "osgup"),
++    "upcoming-prerelease": Route("osg-upcoming-%s-testing", "osg-upcoming-%s-prerelease", "osgup"),
+    }
+ 
+ #
+ # Utility functions
+ #
+@@ -656,11 +657,11 @@ def write_jira(kojihelper, promoted_builds, routes, out=None):
+ def parse_cmdline_args(all_dvers, valid_routes, argv):
+     """Return a tuple of (options, positional args)"""
+     helpstring = "%prog [-r|--route ROUTE]... [options] <packages or builds>"
+     helpstring += "\n\nValid routes are:\n"
+     for route in sorted(valid_routes.keys()):
+-        helpstring += " - %-14s: %-30s -> %s\n" % (
++        helpstring += " - %-20s: %-26s -> %s\n" % (
+             route, valid_routes[route][0] % '*', valid_routes[route][1] % '*')
+ 
+     parser = OptionParser(helpstring)
+ 
+     parser.add_option("-r", "--route", dest="routes", action="append",
+-- 
+1.8.3.1
+
