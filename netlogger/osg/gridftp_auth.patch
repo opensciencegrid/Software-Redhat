@@ -1,6 +1,8 @@
---- netlogger/parsers/modules/gridftp_auth.py	2010-04-29 15:01:18.000000000 -0500
-+++ netlogger/parsers/modules/gridftp_auth.py	2012-11-28 15:09:57.595797000 -0600
-@@ -15,6 +15,12 @@
+diff --git netlogger/parsers/modules/gridftp_auth.py netlogger/parsers/modules/gridftp_auth.py
+index 21e8548..f622880 100644
+--- netlogger/parsers/modules/gridftp_auth.py
++++ netlogger/parsers/modules/gridftp_auth.py
+@@ -15,6 +15,12 @@ from netlogger.parsers.base import BaseParser
  from netlogger.nldate import parseSyslogDate
  from netlogger import util
  
@@ -13,7 +15,7 @@
  def ns(s):
      return 'gridftp_auth.%s' % s
  
-@@ -33,6 +39,8 @@
+@@ -33,6 +39,8 @@ class Parser(BaseParser):
          BaseParser.__init__(self, f, fullname=__name__, **kw)
          self._batch = [ ]
          self._cur_pid = None
@@ -22,28 +24,34 @@
          self._gen_errs = error_events
          if self._gen_errs:
              self._hdr_host = None
-@@ -46,6 +54,20 @@
+@@ -46,6 +54,26 @@ class Parser(BaseParser):
          pid_str = '^\[(\d+)\]'
          self._line_re = re.compile(pid_str + '(.*?)::.(.*)$')
  
 +    def set_hostport(self, message):
++        # dealing with "New connection from: 0.0.0.0"
 +        rcolon=message.rfind(':')
 +        try:
 +           self.port = int(message[rcolon+1:])
-+        except ValueError:
-+           self.log.error("Could not parse New event: " + message.strip())
++        except:
++           self.log.error("Could not parse New event:%s; Set port to 0. " % ( message.strip()))
++        self.port=0
 +        rsqbrace=message.rfind(']')
-+        if rcolon-rsqbrace==1:
-+           lsqbrace=message.rfind('[')
-+           self.host=message[lsqbrace+1:rcolon-1]
-+        else:
-+           logtokens=message.split(':',2)
-+           self.host=logtokens[1].lstrip()
++        try:
++            if rcolon-rsqbrace==1:
++                lsqbrace=message.rfind('[')
++                self.host=message[lsqbrace+1:rcolon-1]
++            else:
++                logtokens=message.split(':',2)
++                self.host=logtokens[1].lstrip()
++        except:
++            self.host="unknown"
++
 +
      def process(self, line):
          self.log.debug("process.start", line=line)
          m = self._line_re.match(line)
-@@ -60,26 +82,38 @@
+@@ -60,23 +88,35 @@ class Parser(BaseParser):
          elif message.startswith('Configuration'):
              event = dict(event=ns('config'))
          elif message.startswith('New'):
@@ -57,40 +65,30 @@
          elif message.startswith('DN'):
               m = re.search('DN\s+(\/.*)\s+successfully', message)
 +             if m is None:
-+                self.log.error("Could not parse DN event: " + message.strip()) 
-+                return ()
++                 self.log.error("Could not parse DN event: " + message.strip())
++                 return ()
               event = dict(event=ns('conn.auth.dn'), DN=m.group(1))
          elif message.startswith('User'):
--            m = re.search('User\s+(\S+)\s+successfully', message)
--            event = dict(event=ns('conn.auth.user'), user=m.group(1))
-+             m = re.search('User\s+(\S+)\s+successfully', message)
-+             if m is None:
-+                self.log.error("Could not parse User event: " + message.strip()) 
-+                return () 
-+             event = dict(event=ns('conn.auth.user'), user=m.group(1))
-         elif message.startswith('Starting'):
--            m = re.search('transfer \"([^"]*)\"', message)
--            event = dict(event=ns('conn.transfer.start'), 
-+             m = re.search('transfer \"([^"]*)\"', message)
-+             if m is None: 
-+                self.log.error("Could not parse Starting event: " + message.strip())    
+             m = re.search('User\s+(\S+)\s+successfully', message)
++            if m is None:
++                self.log.error("Could not parse User event: " + message.strip())
 +                return ()
-+             else:
+             event = dict(event=ns('conn.auth.user'), user=m.group(1))
+         elif message.startswith('Starting'):
+             m = re.search('transfer \"([^"]*)\"', message)
+-            event = dict(event=ns('conn.transfer.start'), 
++            if m is None:
++                self.log.error("Could not parse Starting event: " + message.strip())
++                return ()
++            else:
 +                event = dict(event=ns('conn.transfer.start'), 
                           filename=m.group(1))
--            msg_type = 1
-+             msg_type = 1
+             msg_type = 1
          elif message.startswith('Finished'):
--            m = re.search('transferring \"([^"]*)\"', message)
--            event = dict(event=ns('conn.transfer.end'),
-+             m = re.search('transferring \"([^"]*)\"', message)
-+             if m is None:
-+                self.log.error("Could not parse Finished event: " + message.strip()) 
+             m = re.search('transferring \"([^"]*)\"', message)
++            if m is None:
++                self.log.error("Could not parse Finished event: " + message.strip())
 +                return ()
-+             event = dict(event=ns('conn.transfer.end'),
+             event = dict(event=ns('conn.transfer.end'),
                           filename=m.group(1))
--            msg_type = 2
-+             msg_type = 2
-         elif message.startswith('Closed'):
-             event = dict(event=ns('end'))
-         else:
+             msg_type = 2
