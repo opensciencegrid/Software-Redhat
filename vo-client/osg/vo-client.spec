@@ -1,5 +1,5 @@
 Name:           vo-client
-Version:        59
+Version:        60
 Release:        1%{?dist}
 Summary:        Contains vomses file for use with user authentication and edg-mkgridmap.conf file that contains configuration information for edg-mkgridmap.
 
@@ -85,6 +85,10 @@ rm -rf $RPM_BUILD_ROOT
 %attr(0600,tomcat,tomcat) %config(noreplace) %{_sysconfdir}/gums/gums.config.template
 
 %changelog
+* Tue Jul 07 2015 Carl Edquist <edquist@cs.wisc.edu> - 60-1
+- Update to vo-client 60 (SOFTWARE-1967)
+  - Added LZ VO
+
 * Fri May 15 2015 Carl Edquist <edquist@cs.wisc.edu> - 59-1
 - Update to vo-client 59 (SOFTWARE-1747)
   - Restructured/removed various Fermilab entries from gums template
