@@ -1,5 +1,5 @@
 #%%global betatag .beta1
-%global _release 2
+%global _release 3
 
 Name:           osg-build
 Version:        1.5.0
@@ -13,6 +13,7 @@ URL:            https://twiki.grid.iu.edu/bin/view/SoftwareTeam/OSGBuildTools
 Source0:        %{name}-%{version}%{?betatag}.tar.gz
 Patch0:         koji-hub-testing.patch
 Patch1:         Add-upcoming-prerelease-route.patch
+Patch2:         osg-promote-exact-route-names-should-never-be-ambigu.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
@@ -44,6 +45,7 @@ See %{url} for details.
 # % patch0 -p1
 
 %patch1 -p1
+%patch2 -p1
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -73,6 +75,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_docdir}/%{name}/sample-osg-build.ini
 
 %changelog
+* Wed Jul 08 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.0-3
+- Fix ambiguity with 'upcoming' promotion route
+
 * Tue Jul 07 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.0-2
 - Allow promotion to upcoming-prerelease for osg-promote
 
