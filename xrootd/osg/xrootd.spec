@@ -18,7 +18,7 @@
 Name:		xrootd
 Epoch:		1
 Version:	4.2.1
-Release:	3%{?dist}
+Release:	4%{?dist}
 Summary:	Extended ROOT file server
 
 Group:		System Environment/Daemons
@@ -68,6 +68,10 @@ Patch0: fixfilecachehangs.patch
 # should be in 4.2.2
 Patch1: readsExceedFileSizeCache.patch
 
+# Patch XRootD 4.2.1 to fix seg faulting when asking for the file size
+# Bug report: https://github.com/xrootd/xrootd/issues/256
+# fix https://github.com/xrootd/xrootd/commit/98df5250dbfc6f0f8373b51df78a0d2633170e83
+Patch2: filesizePythonBingingsSegFault.patch
 
 Requires:	%{name}-server%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-selinux = %{epoch}:%{version}-%{release}
@@ -261,6 +265,7 @@ This package contains the API documentation of the xrootd libraries.
 %setup -q
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %if %{?fedora}%{!?fedora:0} <= 9 && %{?rhel}%{!?rhel:0} <= 5
 # Older versions of SELinux do not have policy for open
@@ -646,6 +651,9 @@ fi
 %doc %{_pkgdocdir}
 
 %changelog
+* Fri Jul 10 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> -1:4.2.1-4
+- Added patch to avoid seg faulting on the python bindings when askign file size
+
 * Fri Jul 10 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> -1:4.2.1-3
 - Added patch for reads in the cache exceeding file size
 
