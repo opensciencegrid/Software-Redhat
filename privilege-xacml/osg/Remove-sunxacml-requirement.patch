@@ -1,0 +1,95 @@
+From 34e76daa2f07c23cbb506a2b012c65861475885d Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Mon, 6 Jul 2015 15:50:28 -0500
+Subject: [PATCH] Remove sunxacml requirement
+
+This was used for a single string constant.
+Since I couldn't get the actual sunxacml maven library to work, I just copied the constant.
+---
+ pom.xml                                                            | 7 -------
+ .../opensciencegrid/authz/xacml/client/MapCredentialsClient.java   | 2 +-
+ src/main/java/org/opensciencegrid/authz/xacml/client/Status.java   | 6 ++++++
+ .../java/org/opensciencegrid/authz/xacml/client/XACMLClient.java   | 4 ++--
+ 4 files changed, 9 insertions(+), 10 deletions(-)
+ create mode 100644 src/main/java/org/opensciencegrid/authz/xacml/client/Status.java
+
+diff --git a/pom.xml b/pom.xml
+index c3c4839..bb55799 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -253,17 +253,10 @@
+ 			<artifactId>xmlsec</artifactId>
+ 			<version>1.4.1</version>
+ 		</dependency>
+ 		<!--provided scope--> 
+ 		<dependency>
+-			<groupId>org.codehaus.fabric3.fabric3-db-exist</groupId>
+-			<artifactId>sunxacml</artifactId>
+-			<version>[1.0,)</version>
+-			<scope>provided</scope>
+-		</dependency>
+-
+-		<dependency>
+ 			<groupId>commons-logging</groupId>
+ 			<artifactId>commons-logging-api</artifactId>
+ 			<version>1.0.4</version>
+ 			<scope>provided</scope>
+ 		</dependency>
+diff --git a/src/main/java/org/opensciencegrid/authz/xacml/client/MapCredentialsClient.java b/src/main/java/org/opensciencegrid/authz/xacml/client/MapCredentialsClient.java
+index 9319e9a..dbfe611 100644
+--- a/src/main/java/org/opensciencegrid/authz/xacml/client/MapCredentialsClient.java
++++ b/src/main/java/org/opensciencegrid/authz/xacml/client/MapCredentialsClient.java
+@@ -22,11 +22,11 @@ import java.rmi.RemoteException;
+ import java.util.Iterator;
+ import java.util.Set;
+ import java.util.TreeSet;
+ import java.util.Vector;
+ 
+-import com.sun.xacml.ctx.Status;
++import org.opensciencegrid.authz.xacml.client.Status;
+ 
+ public class MapCredentialsClient extends XACMLClient {
+ 
+     public LocalId mapCredentials(String authzServiceUrlStr) throws Exception {
+ 
+diff --git a/src/main/java/org/opensciencegrid/authz/xacml/client/Status.java b/src/main/java/org/opensciencegrid/authz/xacml/client/Status.java
+new file mode 100644
+index 0000000..4053b5f
+--- /dev/null
++++ b/src/main/java/org/opensciencegrid/authz/xacml/client/Status.java
+@@ -0,0 +1,6 @@
++package org.opensciencegrid.authz.xacml.client;
++
++public class Status {
++    // from http://sunxacml.sourceforge.net/javadoc/com/sun/xacml/ctx/Status.html#STATUS_PROCESSING_ERROR
++    public static final String STATUS_PROCESSING_ERROR = "urn:oasis:names:tc:xacml:1.0:status:processing-error";
++}
+diff --git a/src/main/java/org/opensciencegrid/authz/xacml/client/XACMLClient.java b/src/main/java/org/opensciencegrid/authz/xacml/client/XACMLClient.java
+index 844356f..f2b1241 100644
+--- a/src/main/java/org/opensciencegrid/authz/xacml/client/XACMLClient.java
++++ b/src/main/java/org/opensciencegrid/authz/xacml/client/XACMLClient.java
+@@ -59,11 +59,11 @@ import org.apache.commons.logging.LogFactory;
+ import org.apache.axis.types.URI;
+ import org.apache.axis.types.Id;
+ import org.apache.axis.types.NCName;
+ import org.apache.axis.message.PrefixedQName;
+ import org.apache.axis.utils.XMLUtils;
+-import com.sun.xacml.ctx.Status;
++import org.opensciencegrid.authz.xacml.client.Status;
+ import javax.xml.namespace.QName;
+ import javax.xml.soap.Name;
+ 
+ import org.opensciencegrid.authz.xacml.common.XACMLConstants;
+ import org.opensciencegrid.authz.xacml.common.OSGSAMLBootstrap;
+@@ -1130,6 +1130,6 @@ public class XACMLClient {
+ 
+     public void setRSL_string(String RSL_string) {
+         this.RSL_string = RSL_string;
+     }
+ 
+-}
+\ No newline at end of file
++}
+-- 
+1.8.3.1
+

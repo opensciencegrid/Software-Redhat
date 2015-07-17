@@ -1,6 +1,5 @@
 %define local_maven /tmp/m2-repository
 #%define mvn /usr/share/apache-maven-3.0.4/bin/mvn
-%define mvn /usr/bin/mvn22
 %define _noarchlib %{_exec_prefix}/lib
 %define jglobus_version 2.0.6
 
@@ -8,7 +7,7 @@
 
 Name:		privilege-xacml
 Version:	2.6.4
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Core bindings for XACML interoperability profile.
 
 Group:		OSG/Libraries
@@ -19,6 +18,10 @@ URL:		http://cdcvs.fnal.gov/subversion/privilege
 # svn export svn+ssh://p-privilege@cdcvs.fnal.gov/cvs/projects/privilege/tags/v%{version} %{name}-%{version}
 # tar zcf %{name}-%{version}.tar.gz %{name}-%{version}
 Source0:	%{name}-%{version}.tar.gz
+Patch0:         Remove-sunxacml-requirement.patch
+Patch1:         0001-DERString-ASN1String-bc1.47.patch
+Patch2:         0002-getDERObject-toASN1Primitive-bc1.47.patch
+Patch3:         0003-ASN1Sequence-use-getInstance-instead-of-casts-bc-1.4.patch
 
 BuildArch: noarch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
@@ -35,14 +38,33 @@ BuildRequires: log4j
 BuildRequires: axis
 BuildRequires: jglobus
 #Added this requiremnt to deal with the commons* dep
-BuildRequires: jakarta-commons-codec
-BuildRequires: jakarta-commons-discovery
-BuildRequires: jakarta-commons-logging
-BuildRequires: jakarta-commons-lang
 BuildRequires: slf4j
 #BuildRequires: maven3
 BuildRequires: bouncycastle
+
+%if 0%{?rhel} < 7
 BuildRequires: maven22
+%define mvn mvn22
+
+%define commons_logging jakarta-commons-logging
+%define commons_codec jakarta-commons-codec
+%define commons_discovery jakarta-commons-discovery
+%define commons_lang jakarta-commons-lang
+
+%else
+
+BuildRequires: maven-local
+%define mvn xmvn
+%define commons_logging apache-commons-logging
+%define commons_codec apache-commons-codec
+%define commons_discovery apache-commons-discovery
+%define commons_lang apache-commons-lang
+
+%endif
+BuildRequires: %commons_logging
+BuildRequires: %commons_codec
+BuildRequires: %commons_discovery
+BuildRequires: %commons_lang
 
 Requires: voms-api-java
 Requires: log4j
@@ -53,10 +75,10 @@ Requires: emi-trustmanager-axis
 Requires: wsdl4j
 Requires: axis
 Requires: bouncycastle
-Requires: jakarta-commons-lang
-Requires: jakarta-commons-codec
-Requires: jakarta-commons-discovery
-Requires: jakarta-commons-logging
+Requires: %commons_lang
+Requires: %commons_codec
+Requires: %commons_discovery
+Requires: %commons_logging
 Requires: slf4j
 Requires: java7
 
@@ -65,6 +87,12 @@ Requires: java7
 
 %prep
 %setup -n %{name}-%{version}
+%if 0%{?rhel} >= 7
+%patch0 -p1
+%patch1 -p1
+%patch2 -p1
+%patch3 -p1
+%endif
 
 %build
 #log4j
@@ -80,10 +108,10 @@ Requires: java7
 %{mvn} install:install-file -B -DgroupId=org.apache.axis  -DartifactId=axis-jaxrpc -Dversion=1.4 -Dpackaging=jar -Dfile=`build-classpath axis/jaxrpc.jar` -Dmaven.repo.local=%{local_maven}
 %{mvn} install:install-file -B -DgroupId=axis -DartifactId=axis-wsdl4j -Dversion=1.5.2 -Dpackaging=jar -Dfile=`build-classpath wsdl4j` -Dmaven.repo.local=%{local_maven}
 #jakarta dependencies commons-codec
-%{mvn} install:install-file -B -DgroupId=commons-codec -DartifactId=commons-codec -Dversion=1.3 -Dpackaging=jar -Dfile=`build-classpath jakarta-commons-codec` -Dmaven.repo.local=%{local_maven}
-%{mvn} install:install-file -B -DgroupId=commons-discovery -DartifactId=commons-discovery -Dversion=0.4 -Dpackaging=jar -Dfile=`build-classpath jakarta-commons-discovery` -Dmaven.repo.local=%{local_maven}
-%{mvn} install:install-file -B -DgroupId=commons-discovery -DartifactId=commons-discovery -Dversion=2.4 -Dpackaging=jar -Dfile=`build-classpath jakarta-commons-lang` -Dmaven.repo.local=%{local_maven}
-%{mvn} install:install-file -B -DgroupId=commons-logging -DartifactId=commons-logging-api -Dversion=1.0.4 -Dpackaging=jar -Dfile=`build-classpath jakarta-commons-logging` -Dmaven.repo.local=%{local_maven}
+%{mvn} install:install-file -B -DgroupId=commons-codec -DartifactId=commons-codec -Dversion=1.3 -Dpackaging=jar -Dfile=`build-classpath %commons_codec` -Dmaven.repo.local=%{local_maven}
+%{mvn} install:install-file -B -DgroupId=commons-discovery -DartifactId=commons-discovery -Dversion=0.4 -Dpackaging=jar -Dfile=`build-classpath %commons_discovery` -Dmaven.repo.local=%{local_maven}
+%{mvn} install:install-file -B -DgroupId=commons-discovery -DartifactId=commons-discovery -Dversion=2.4 -Dpackaging=jar -Dfile=`build-classpath %commons_lang` -Dmaven.repo.local=%{local_maven}
+%{mvn} install:install-file -B -DgroupId=commons-logging -DartifactId=commons-logging-api -Dversion=1.0.4 -Dpackaging=jar -Dfile=`build-classpath %commons_logging` -Dmaven.repo.local=%{local_maven}
 #Added the jglobus required jars to replace the old cog-jglobus deps
 %{mvn} install:install-file -B -DgroupId=globus -DartifactId=jglobus-ssl-proxies -Dversion=%{jglobus_version} -Dpackaging=jar -Dfile=`build-classpath jglobus/ssl-proxies-%{jglobus_version}.jar` -Dmaven.repo.local=%{local_maven}
 %{mvn} install:install-file -B -DgroupId=globus -DartifactId=jglobus-gss -Dversion=%{jglobus_version} -Dpackaging=jar -Dfile=`build-classpath jglobus/gss-%{jglobus_version}.jar` -Dmaven.repo.local=%{local_maven}
@@ -110,11 +138,10 @@ install -m 700 src/test/XACMLClientTest.sh %{buildroot}%{_libexecdir}/%{name}/XA
 
 
 install -d -m 755 %{_otherlibs}
-build-jar-repository %{_otherlibs} jglobus trustmanager-axis trustmanager voms-api-java wsdl4j jakarta-commons-lang jakarta-commons-codec jakarta-commons-discovery jakarta-commons-logging joda-time axis/axis.jar axis/jaxrpc.jar log4j slf4j/api.jar slf4j/simple.jar wsdl4j
+build-jar-repository %{_otherlibs} jglobus trustmanager-axis trustmanager voms-api-java wsdl4j %commons_lang %commons_codec %commons_discovery %commons_logging joda-time axis/axis.jar axis/jaxrpc.jar log4j slf4j/api.jar slf4j/simple.jar wsdl4j
 install -pm 744 %{local_maven}/org/opensaml/opensaml/2.4.1/opensaml-2.4.1.jar %{_otherlibs}/opensaml-2.4.1.jar
 install -pm 744 %{local_maven}/org/opensaml/xmltooling/*/*.jar  %{_otherlibs}/
 install -pm 744 %{local_maven}/org/apache/santuario/xmlsec/1.4.1/xmlsec-1.4.1.jar %{_otherlibs}/xmlsec-1.4.1.jar
-install -pm 744 %{local_maven}/org/codehaus/fabric3/fabric3-db-exist/sunxacml/1.0/sunxacml-1.0.jar %{_otherlibs}/sunxacml-1.0.jar
 install -pm 744 %{local_maven}/velocity/velocity/1.5/velocity-1.5.jar %{_otherlibs}/velocity-1.5.jar
 install -pm 744 %{local_maven}/xerces/xercesImpl/2.9.1/xercesImpl-2.9.1.jar %{_otherlibs}/xercesImpl-2.9.1.jar
 install -pm 744	%{local_maven}/xerces/xmlParserAPIs/2.6.2/xmlParserAPIs-2.6.2.jar %{_otherlibs}/xmlParserAPIs-2.6.2.jar
@@ -135,6 +162,9 @@ rm -rf %{local_maven}
 %{_libexecdir}/%{name}/XACMLClientTest.sh
 
 %changelog
+* Mon Jul 06 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 2.6.4-2.osg
+- Add changes for el7 build
+
 * Fri Nov 21 2014 Carl Edquist <edquist@cs.wisc.edu> - 2.6.4-1
 - Final 2.6.4 release
 
