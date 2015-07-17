@@ -1,10 +1,10 @@
 Name:      osg-wn-client
 Summary:   OSG Worker-Node Client
-Version:   3.0.0
+Version:   3.2
 %if 0%{?el7}
 %define release_suffix _clipped
 %endif
-Release:   33%{?release_suffix}%{?dist}
+Release:   1%{?release_suffix}%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -44,7 +44,7 @@ Requires: bestman2-client
 %endif
 Requires: /usr/bin/uberftp
 Requires: /usr/bin/wget
-Requires: grid-certificates
+Requires: grid-certificates >= 7
 %if 0%{?rhel} < 6
 Requires: fetch-crl3
 %else
@@ -125,6 +125,10 @@ rm -rf $RPM_BUILD_ROOT
 %files glexec
 
 %changelog
+* Fri Jul 17 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.2-1
+- Require grid-certificates >= 7 (SOFTWARE-1883)
+- Change version number to match release series
+
 * Thu Jun 18 2015 Jose Caballero <jcaballero@bnl.gov> 3.0.0-33
 - Removed the check on EL version for the dependency to /usr/bin/xrdcp
 

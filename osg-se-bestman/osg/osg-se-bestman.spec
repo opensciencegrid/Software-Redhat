@@ -1,7 +1,7 @@
 Name:           osg-se-bestman
 Summary:        OSG BeStMan Storage Element package for RPM distribution
-Version:        3.0.0
-Release:        9%{?dist}
+Version:        3.2
+Release:        1%{?dist}
 License:        GPL
 Group:          System Environment/Daemons
 URL:            https://twiki.grid.iu.edu/twiki/bin/view/Storage/WebHome
@@ -22,7 +22,7 @@ Requires: fetch-crl
 # From osg-gridftp meta package
 Requires: globus-gridftp-server-progs
 Requires: vo-client
-Requires: grid-certificates
+Requires: grid-certificates >= 7
 Requires: gratia-probe-gridftp-transfer
 Requires: gums-client
 %ifarch %{ix86}
@@ -49,6 +49,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Jul 17 2015 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.2-1
+- Require grid-certificates >= 7 (SOFTWARE-1883)
+- Change version number to match release series
+
 * Thu Apr 04 2013 Brian Lin <blin@cs.wisc.edu> - 3.0.0-9
 - Remove java dependency
 

@@ -1,7 +1,7 @@
 Name:           osg-gridftp-xrootd
 Summary:        OSG GridFTP XRootd Storage Element package
-Version:        3.0.0
-Release:        6%{?dist}
+Version:        3.2
+Release:        1%{?dist}
 License:        GPL
 Group:          System Environment/Daemons
 URL:            https://twiki.grid.iu.edu/twiki/bin/view/Storage/WebHome
@@ -19,7 +19,7 @@ Requires: fetch-crl
 # From osg-gridftp meta package
 Requires: globus-gridftp-server-progs
 Requires: vo-client
-Requires: grid-certificates
+Requires: grid-certificates >= 7
 Requires: gratia-probe-gridftp-transfer
 Requires: gums-client
 %ifarch %{ix86}
@@ -48,6 +48,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Jul 17 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.2-1
+- Require grid-certificates >= 7 (SOFTWARE-1883)
+- Change version number to match release series
+
 * Tue Mar 31 2015 Edgar Fajardo <emfajard@ucsd.edu> - 3.0.0-6
 - Removed the xroot4-fuse for xrootd-fuse and version
 

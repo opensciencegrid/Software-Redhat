@@ -4,7 +4,7 @@
 Summary: The VOMS Administration service
 Name: voms-admin-server
 Version: 2.7.0
-Release: 1.13%{?dist}
+Release: 1.14%{?dist}
 License:    ASL 2.0
 Group: System Environment/Libraries
 BuildRequires:  maven22
@@ -43,7 +43,7 @@ Requires(postun):/sbin/service
 # and not just the JDK which happens to provide it, but not in the right spot. 
 # Requires: xml-commons-apis
 Requires: /usr/share/java/xml-commons-apis.jar
-Requires: grid-certificates 
+Requires: grid-certificates >= 7
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch: noarch
 AutoReqProv: yes
@@ -161,6 +161,9 @@ fi
 %{tomcat_endorsed}/xalan-j2-serializer.jar
 
 %changelog
+* Wed Jul 01 2015 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.7.0-1.14
+- Require grid-certificates >= 7 (SOFTWARE-1883)
+
 * Fri May 01 2015 Carl Edquist <edquist@cs.wisc.edu> - 2.7.0-1.13
 - drop glite-security-util-java requirement (SOFTWARE-1880)
 

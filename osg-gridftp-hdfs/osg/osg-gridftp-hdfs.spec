@@ -1,7 +1,7 @@
 Name:      osg-gridftp-hdfs
 Summary:   OSG GridFTP-HDFS meta package
-Version:   3.0.0
-Release:   7%{?dist}
+Version:   3.2
+Release:   1%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -15,7 +15,7 @@ Requires: osg-system-profiler
 # 0.5.4-13 uses /etc/gridftp.d config dir
 Requires: gridftp-hdfs >= 0.5.4-16
 Requires: vo-client
-Requires: grid-certificates
+Requires: grid-certificates >= 7
 %if 0%{?rhel} < 6
 Requires: fetch-crl3
 %else
@@ -56,6 +56,10 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Fri Jul 17 2015 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.2-1
+- Require grid-certificates >= 7 (SOFTWARE-1883)
+- Change version number to match release series
+
 * Thu Apr 03 2014 Carl Edquist <edquist@cs.wisc.edu> - 3.0.0-6
 - Add version requirement for gridftp-hdfs (SOFTWARE-1412)
 
