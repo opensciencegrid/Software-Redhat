@@ -72,7 +72,7 @@ install -m 0755 libexec/condor-cron.sh $RPM_BUILD_ROOT%{_libexecdir}/condor-cron
 install -d $RPM_BUILD_ROOT%{_initrddir}
 install -m 0755 etc/condor.init $RPM_BUILD_ROOT%{_initrddir}/condor-cron
 %if 0%{?rhel} >= 7
-install -m 0644 $RPM_BUILD_ROOT%{_unitdir}/
+install -m 0644 %{SOURCE1} $RPM_BUILD_ROOT%{_unitdir}/
 %endif
 
 # Make working directories
@@ -107,7 +107,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/condor_cron_config_val
 
 %{_initrddir}/condor-cron
+%if 0%{?rhel} >= 7
 %{_unitdir}/condor-cron.service
+%endif
 
 %config %{_sysconfdir}/condor-cron/condor_config
 %config %{_sysconfdir}/condor-cron/config.d/condor_ids
