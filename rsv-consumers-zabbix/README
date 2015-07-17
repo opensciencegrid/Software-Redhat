@@ -1,0 +1,4 @@
+This package belongs in the contrib repos. See SOFTWARE-1355.
+The original SRPM was received out-of-band, but sources and a spec file can be downloaded from Github:
+https://github.com/treydock/rsv-consumers-zabbix
+

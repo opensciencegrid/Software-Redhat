@@ -1,0 +1,14 @@
+This package implements some graphing tools for the gratiaweb site.  It was
+originally written and maintained at UNL and has since become the responsibility
+of the OSG Software team.  The only known user is the GOC, especially Soichi.
+
+For more background, search the OSG JIRA for "graphtool".
+
+OLD README CONTENTS:
+
+#------------------------------------
+#    svn://t2.unl.edu/brian/GraphTool
+#------------------------------------
+
+* Tue Mar 18 2014 William B Hurst <wbhurst@cse.unl.edu> 
+- python osg graphtool

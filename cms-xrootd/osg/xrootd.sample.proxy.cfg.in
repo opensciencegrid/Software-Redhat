@@ -1,0 +1,73 @@
+# Port specifications; only the redirector needs to use a well-known port
+# "any" will cause rooted to bind to any available port.  Change as needed for firewalls.
+#
+# For the dCache template, we change the port to 1095, as the dCache xrootd door
+# is likely running on the default port.
+#
+xrd.port 1095
+
+# The roles this server will play.
+all.role server
+# The known redirectors; uncomment at least one.
+# Test endpoint:
+all.manager xrootd-itb.unl.edu:1213
+# US production redirector:
+# all.manager xrootd.unl.edu:1213
+# EU production redirector:
+# all.manager xrootd.ba.infn.it:1213
+
+# Allow any path to be exported
+all.export / nostage
+
+# Hosts allowed to use this xrootd cluster
+cms.allow host *
+
+### Standard directives
+# Simple sites probably don't need to touch these.
+# Logging verbosity
+xrootd.trace emsg login stall redirect
+ofs.trace none
+xrd.trace conn
+cms.trace all
+
+# Integrate with CMS TFC, placed in /etc/xrootd/storage.xml
+# This file can be found in:
+# $VO_CMS_SW_DIR/SITECONF/local/PhEDEx/storage.xml
+oss.namelib @LIBDIR@/libXrdCmsTfc.so file:/etc/xrootd/storage.xml?protocol=direct
+
+# Security configuration
+sec.protocol @LIBDIR@ gsi -certdir:/etc/grid-security/certificates -cert:/etc/grid-security/xrd/xrdcert.pem -key:/etc/grid-security/xrd/xrdkey.pem -crl:3
+
+# The following is the suggestion configuration if you use GUMS/ARGUS; you will need the xrootd-lcmaps RPM
+# See the documentation for further details.
+# sec.protocol @LIBDIR@ gsi -certdir:/etc/grid-security/certificates -cert:/etc/grid-security/xrd/xrdcert.pem -key:/etc/grid-security/xrd/xrdkey.pem -crl:3 -authzfun:libXrdLcmaps.so -authzfunparms:--osg,--lcmapscfg,/etc/xrootd/lcmaps.cfg,--loglevel,0|useglobals -gmapopt:10 -gmapto:0
+# Note that LCMAPS logs currently go into /var/log/messages
+
+xrootd.seclib @LIBDIR@/libXrdSec.so
+xrootd.fslib @LIBDIR@/libXrdOfs.so
+ofs.osslib /usr/lib64/libXrdPss.so
+all.adminpath /var/run/xrootd
+all.pidpath /var/run/xrootd
+
+cms.delay startup 10
+cms.fxhold 60s
+
+# Monitoring configuration.  The latest recommendations are also kept at:
+# https://twiki.cern.ch/twiki/bin/view/Main/XrootdMonitoring
+xrd.report xrootd.t2.ucsd.edu:9931 every 60s all sync
+xrootd.monitor all auth flush io 60s ident 5m mbuff 8k rbuff 4k rnums 3 window 10s dest files io info user redir xrootd.t2.ucsd.edu:9930
+
+# Replace with the hostname of the dCache xrootd door.
+pss.origin dcache-xrootd.example.com:1094
+# After doing tests, set this back to 0; very noisy
+pss.setopt DebugLevel 1
+# Default cache size is 512MB per file; prune
+pss.setopt ReadAheadSize 32768
+pss.setopt ReadCacheSize 8388608
+pss.setopt ReadAheadStrategy 0
+pss.setopt ReadTrimBlockSize 16384
+# dCache xrootd door has a big perf hit for async.
+xrootd.async off
+# Default workers setting thread contention on load.
+pss.config workers 32
+
