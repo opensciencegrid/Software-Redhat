@@ -1,7 +1,7 @@
 Summary: Security utilities
 Name: emi-trustmanager
 Version: 3.0.3
-Release: 7%{?dist}
+Release: 8%{?dist}
 License: EMI
 Vendor: EMI
 Group: System Environment/Libraries
@@ -9,19 +9,21 @@ Packager: ETICS
 BuildArch: noarch
 BuildRequires: ant
 BuildRequires: bouncycastle
-%if 0%{?rhel} >= 7
-BuildRequires: bouncycastle-pkix
-%endif
 BuildRequires: log4j
 %if 0%{?rhel} >= 7
+BuildRequires: bouncycastle-pkix
 Requires: java-headless >= 1:1.7.0
 %else
+BuildRequires: java7-devel
+BuildRequires: jpackage-utils
 Requires: java7
-Requires: /usr/lib/java-1.7.0
-Requires: /usr/share/java-1.7.0
 %endif
 Requires: jpackage-utils
+# ensure these are present, from jpackage-utils or missing-java-1.7.0-dirs
+Requires: /usr/lib/java-1.7.0
+Requires: /usr/share/java-1.7.0
 BuildRoot: %{_builddir}/%{name}-root
+AutoReqProv: yes
 Source: emi-trustmanager-3.0.3-1.src.tar.gz
 Patch0: incorrect_oid.patch
 Patch1: build.xml.patch
@@ -265,6 +267,9 @@ rm -rf $RPM_BUILD_ROOT
 /usr/share/doc/trustmanager/html/index-all.html
 
 %changelog
+* Mon Jul 20 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.0.3-8
+- Bump to rebuild
+
 * Tue Nov 11 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 3.0.3-7
 - Build with bouncycastle 1.50 and patch API breakage
 
