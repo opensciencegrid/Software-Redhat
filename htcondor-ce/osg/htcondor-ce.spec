@@ -3,7 +3,7 @@
 
 Name: htcondor-ce
 Version: 1.14
-Release: 3%{?gitrev:.%{gitrev}git}%{?dist}
+Release: 4%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 
 Group: Applications/System
@@ -339,6 +339,9 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Mon Jul 20 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.14-4
+- bump to rebuild
+
 * Wed Jul 01 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.14-3
 - Require grid-certificates >= 7 (SOFTWARE-1883)
 
