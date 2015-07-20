@@ -1,0 +1,27 @@
+From 5e9399df200b28455aa78e62f8fb4007bfb8db74 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Tue, 25 Nov 2014 21:07:05 -0600
+Subject: [PATCH 24/26] GeneralNames constuctor fix (bc1.47)
+
+Replaced call to missing constructor with call to getInstance() factory
+method.
+---
+ src/org/glite/security/util/proxy/ProxyTracingExtension.java | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/org/glite/security/util/proxy/ProxyTracingExtension.java b/src/org/glite/security/util/proxy/ProxyTracingExtension.java
+index 0d61efe..2ae19ee 100644
+--- a/src/org/glite/security/util/proxy/ProxyTracingExtension.java
++++ b/src/org/glite/security/util/proxy/ProxyTracingExtension.java
+@@ -109,7 +109,7 @@ public class ProxyTracingExtension {
+      * @throws IOException In case the byte array does not contain a valid ASN1 encoded proxy tracing extension.
+      */
+     public ProxyTracingExtension(byte[] bytes) throws IOException {
+-        m_names = new GeneralNames((ASN1Sequence) ASN1Primitive.fromByteArray(bytes));
++        m_names = new GeneralNames(GeneralName.getInstance(ASN1Primitive.fromByteArray(bytes)));
+         m_name = m_names.getNames()[0];
+     }
+ 
+-- 
+2.0.1
+
