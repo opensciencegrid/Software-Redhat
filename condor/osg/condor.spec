@@ -8,60 +8,59 @@
 
 # Things for F15 or later
 %if 0%{?fedora} >= 16
-# NOTE: HTCondor+gsoap doesn't work yet on F15; ticket not yet upstream AFAIK.  BB
-%define gsoap 0
-%define deltacloud 1
-%define aviary 1
-%ifarch %{ix86} x86_64
-# mongodb supports only x86/x86_64
-%define plumage 1
+    # NOTE: HTCondor+gsoap doesn't work yet on F15; ticket not yet upstream AFAIK.  BB
+    %define gsoap 0
+    %define deltacloud 1
+    %define aviary 1
+    %ifarch %{ix86} x86_64
+        # mongodb supports only x86/x86_64
+        %define plumage 1
+    %else
+        %define plumage 0
+    %endif
+    %define systemd 1
+    %define cgroups 1
 %else
-%define plumage 0
-%endif
-%define systemd 1
-%define cgroups 1
-%else
-%define gsoap 1
-%define deltacloud 0
-%define aviary 0
-%define plumage 0
-%define systemd 0
-%define cgroups 0
+    %define gsoap 1
+    %define deltacloud 0
+    %define aviary 0
+    %define plumage 0
+    %define systemd 0
+    %define cgroups 0
 %endif
 
 %if 0%{?rhel} >= 6
-%define cgroups 1
+    %define cgroups 1
 %endif
 %if 0%{?rhel} >= 7
-%define systemd 1
+    %define systemd 1
 %endif
 
 # default to uw_build if neither fedora nor osg is enabled
 %if %undefined uw_build
-%if 0%{?fedora} || 0%{?osg} || 0%{?hcc}
-%define uw_build 0
-%else
-%define uw_build 1
-%endif
+    %if 0%{?fedora} || 0%{?osg} || 0%{?hcc}
+        %define uw_build 0
+    %else
+        %define uw_build 1
+    %endif
 %endif
 
 # enable std universe by default 
 %if %undefined std_univ
-%define std_univ 1
+    %define std_univ 1
 %endif
 
 %ifarch %{ix86}
-%if 0%{?rhel} >= 6
-# std universe is not ported to 32bit rhel6
-%define std_univ 0
-%endif
+    %if 0%{?rhel} >= 6
+        # std universe is not ported to 32bit rhel6
+        %define std_univ 0
+    %endif
 %endif
 
 %if %uw_build
-%define debug 1
-%define verbose 1
-%define gsoap 0
-%else
+    %define debug 1
+    %define verbose 1
+    %define gsoap 0
 %endif
 
 # define these to 1 if you want to include externals in source rpm
@@ -72,26 +71,26 @@
 %define qmf 0
 
 %if 0%{?fedora}
-%define blahp 0
-%define cream 0
-# a handful of std universe files don't seem to get built in fedora...
-%define std_univ 0
+    %define blahp 0
+    %define cream 0
+    # a handful of std universe files don't seem to get built in fedora...
+    %define std_univ 0
 %else
-%define blahp 1
-%define cream 1
+    %define blahp 1
+    %define cream 1
 %endif
 
 %if 0%{?hcc}
-%define blahp 0
-%define cream 0
-%if 0%{?rhel} >= 7
-%define aviary 0
-%else
-%define aviary 1
-%endif
-%if 0%{?rhel} >= 6
-%define std_univ 0
-%endif
+    %define blahp 0
+    %define cream 0
+    %if 0%{?rhel} >= 7
+        %define aviary 0
+    %else
+        %define aviary 1
+    %endif
+    %if 0%{?rhel} >= 6
+        %define std_univ 0
+    %endif
 %endif
 %if ( 0%{?osg} && 0%{?rhel} == 7 )
     %define aviary 0
@@ -114,8 +113,8 @@
 %define git_rev f9e8f64
 
 %if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
-%{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
-%{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
+    %{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
+    %{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
 %endif
 
 Summary: HTCondor: High Throughput Computing
@@ -127,9 +126,9 @@ Version: %{tarball_version}
 %define condor_git_base_release 0.1
 %define condor_base_release 1.2
 %if %git_build
-        %define condor_release %condor_git_base_release.%{git_rev}.git
+    %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
-        %define condor_release %condor_base_release
+    %define condor_release %condor_base_release
 %endif
 Release: %condor_release%{?suffix}%{?dist}
 
@@ -738,17 +737,17 @@ export CMAKE_PREFIX_PATH=/usr
 # causes build issues with EL5, don't even bother building the tests.
 
 %if %uw_build
-%define condor_build_id 325064
+    %define condor_build_id 325064
 
-%cmake \
+    %cmake \
        -DBUILDID:STRING=%condor_build_id \
        -DUW_BUILD:BOOL=TRUE \
-%if ! %std_univ
-       -DCLIPPED:BOOL=TRUE \
-%endif
-%if %bundle_uw_externals || %bundle_std_univ_externals
-       -DEXTERNALS_SOURCE_URL:STRING="$RPM_SOURCE_DIR" \
-%endif
+    %if ! %std_univ
+           -DCLIPPED:BOOL=TRUE \
+    %endif
+    %if %bundle_uw_externals || %bundle_std_univ_externals
+           -DEXTERNALS_SOURCE_URL:STRING="$RPM_SOURCE_DIR" \
+    %endif
        -D_DEBUG:BOOL=TRUE \
        -D_VERBOSE:BOOL=TRUE \
        -DBUILD_TESTING:BOOL=FALSE \
@@ -760,23 +759,23 @@ export CMAKE_PREFIX_PATH=/usr
 %else
 
 %cmake -DBUILD_TESTING:BOOL=FALSE \
-%if %std_univ
-       -DCLIPPED:BOOL=FALSE \
-%endif
-%if %bundle_uw_externals || %bundle_std_univ_externals
-       -DEXTERNALS_SOURCE_URL:STRING="$RPM_SOURCE_DIR" \
-%endif
-%if 0%{?fedora}
-       -DBUILDID:STRING=RH-%{version}-%{release} \
-       -D_VERBOSE:BOOL=TRUE \
-%endif
+    %if %std_univ
+           -DCLIPPED:BOOL=FALSE \
+    %endif
+    %if %bundle_uw_externals || %bundle_std_univ_externals
+           -DEXTERNALS_SOURCE_URL:STRING="$RPM_SOURCE_DIR" \
+    %endif
+    %if 0%{?fedora}
+           -DBUILDID:STRING=RH-%{version}-%{release} \
+           -D_VERBOSE:BOOL=TRUE \
+    %endif
        -DHAVE_BACKFILL:BOOL=FALSE \
        -DHAVE_BOINC:BOOL=FALSE \
-%if %gsoap
-       -DWITH_GSOAP:BOOL=TRUE \
-%else
-       -DWITH_GSOAP:BOOL=FALSE \
-%endif
+    %if %gsoap
+           -DWITH_GSOAP:BOOL=TRUE \
+    %else
+           -DWITH_GSOAP:BOOL=FALSE \
+    %endif
        -DWITH_POSTGRESQL:BOOL=FALSE \
        -DHAVE_KBDD:BOOL=TRUE \
        -DHAVE_HIBERNATION:BOOL=TRUE \
@@ -787,61 +786,61 @@ export CMAKE_PREFIX_PATH=/usr
        -DWITH_POSTGRESQL:BOOL=FALSE \
        -DWANT_CONTRIB:BOOL=ON \
        -DWITH_PIGEON:BOOL=FALSE \
-%if %plumage
-       -DWITH_PLUMAGE:BOOL=TRUE \
-%else
-       -DWITH_PLUMAGE:BOOL=FALSE \
-%endif
-%if %aviary
-       -DWITH_AVIARY:BOOL=TRUE \
-%else
-       -DWITH_AVIARY:BOOL=FALSE \
-%endif
+    %if %plumage
+           -DWITH_PLUMAGE:BOOL=TRUE \
+    %else
+           -DWITH_PLUMAGE:BOOL=FALSE \
+    %endif
+    %if %aviary
+           -DWITH_AVIARY:BOOL=TRUE \
+    %else
+           -DWITH_AVIARY:BOOL=FALSE \
+    %endif
        -DWANT_FULL_DEPLOYMENT:BOOL=TRUE \
-%if %qmf
-       -DWITH_TRIGGERD:BOOL=TRUE \
-       -DWITH_MANAGEMENT:BOOL=TRUE \
-       -DWITH_QPID:BOOL=TRUE \
-%else
-       -DWITH_TRIGGERD:BOOL=FALSE \
-       -DWITH_MANAGEMENT:BOOL=FALSE \
-       -DWITH_QPID:BOOL=FALSE \
-%endif
-%if %blahp
-       -DBLAHP_FOUND=/usr/libexec/blahp/BLClient \
-       -DWITH_BLAHP:BOOL=TRUE \
-%else
-       -DWITH_BLAHP:BOOL=FALSE \
-%endif
-%if %cream
-       -DWITH_CREAM:BOOL=TRUE \
-%else
-       -DWITH_CREAM:BOOL=FALSE \
-%endif
-%if %glexec
-       -DWANT_GLEXEC:BOOL=TRUE \
-%else
-       -DWANT_GLEXEC:BOOL=FALSE \
-%endif
-%if %deltacloud
-       -DWITH_LIBDELTACLOUD:BOOL=TRUE \
-%else
-       -DWITH_LIBDELTACLOUD:BOOL=FALSE \
-%endif
+    %if %qmf
+           -DWITH_TRIGGERD:BOOL=TRUE \
+           -DWITH_MANAGEMENT:BOOL=TRUE \
+           -DWITH_QPID:BOOL=TRUE \
+    %else
+           -DWITH_TRIGGERD:BOOL=FALSE \
+           -DWITH_MANAGEMENT:BOOL=FALSE \
+           -DWITH_QPID:BOOL=FALSE \
+    %endif
+    %if %blahp
+           -DBLAHP_FOUND=/usr/libexec/blahp/BLClient \
+           -DWITH_BLAHP:BOOL=TRUE \
+    %else
+           -DWITH_BLAHP:BOOL=FALSE \
+    %endif
+    %if %cream
+           -DWITH_CREAM:BOOL=TRUE \
+    %else
+           -DWITH_CREAM:BOOL=FALSE \
+    %endif
+    %if %glexec
+           -DWANT_GLEXEC:BOOL=TRUE \
+    %else
+           -DWANT_GLEXEC:BOOL=FALSE \
+    %endif
+    %if %deltacloud
+           -DWITH_LIBDELTACLOUD:BOOL=TRUE \
+    %else
+           -DWITH_LIBDELTACLOUD:BOOL=FALSE \
+    %endif
        -DWITH_GLOBUS:BOOL=TRUE \
        -DWITH_PYTHON_BINDINGS:BOOL=TRUE \
-%if %cgroups
-        -DWITH_LIBCGROUP:BOOL=TRUE \
-        -DLIBCGROUP_FOUND_SEARCH_cgroup=/%{_lib}/libcgroup.so.1
-%endif
+    %if %cgroups
+            -DWITH_LIBCGROUP:BOOL=TRUE \
+            -DLIBCGROUP_FOUND_SEARCH_cgroup=/%{_lib}/libcgroup.so.1
+    %endif
 %endif
 
 # Patch condor_config.generic for 64-bit rpm
 (cd src/condor_examples; patch < condor_config.generic.rpm.patch)
 
 %if %uw_build || %std_univ
-# build externals first to avoid dependency issues
-make %{?_smp_mflags} externals
+    # build externals first to avoid dependency issues
+    make %{?_smp_mflags} externals
 %endif
 make %{?_smp_mflags}
 
@@ -871,7 +870,7 @@ rm -f %{buildroot}/%{_datadir}/condor/libclassad.a
 mv %{buildroot}%{_datadir}/condor/lib*.so %{buildroot}%{_libdir}/
 
 %if %aviary || %qmf
-populate %{_libdir}/condor/plugins %{buildroot}/%{_usr}/libexec/*-plugin.so
+    populate %{_libdir}/condor/plugins %{buildroot}/%{_usr}/libexec/*-plugin.so
 %endif
 
 # It is proper to put HTCondor specific libexec binaries under libexec/condor/
@@ -900,34 +899,34 @@ sed -e "s:^LIB\s*=.*:LIB = \$(RELEASE_DIR)/$LIB/condor:" \
 # yum install condor + service condor start and go.
 mkdir -m0755 %{buildroot}/%{_sysconfdir}/condor/config.d
 %if %parallel_setup
-cp %{SOURCE5} %{buildroot}/%{_sysconfdir}/condor/config.d/20dedicated_scheduler_condor.config
+    cp %{SOURCE5} %{buildroot}/%{_sysconfdir}/condor/config.d/20dedicated_scheduler_condor.config
 %endif
 
 %if %qmf
-# Install condor-qmf's base plugin configuration
-populate %_sysconfdir/condor/config.d %{buildroot}/etc/examples/60condor-qmf.config
+    # Install condor-qmf's base plugin configuration
+    populate %_sysconfdir/condor/config.d %{buildroot}/etc/examples/60condor-qmf.config
 %endif
 %if %aviary
-# Install condor-aviary's base plugin configuration
-populate %_sysconfdir/condor/config.d %{buildroot}/etc/examples/61aviary.config
-populate %_sysconfdir/condor/config.d %{buildroot}/etc/examples/63aviary-hadoop.config
+    # Install condor-aviary's base plugin configuration
+    populate %_sysconfdir/condor/config.d %{buildroot}/etc/examples/61aviary.config
+    populate %_sysconfdir/condor/config.d %{buildroot}/etc/examples/63aviary-hadoop.config
 
-mkdir -p %{buildroot}/%{_var}/lib/condor/aviary
-populate %{_var}/lib/condor/aviary %{buildroot}/usr/axis2.xml
-populate %{_var}/lib/condor/aviary %{buildroot}/usr/services/
-populate %{_libdir}/condor/plugins src/condor_contrib/aviary/src/collector/libaviary_collector_axis.so
-populate %{_libdir}/condor/plugins src/condor_contrib/aviary/src/collector/AviaryCollectorPlugin-plugin.so
-populate %{_libdir}/condor/plugins src/condor_contrib/aviary/src/hadoop/AviaryHadoopPlugin-plugin.so
-populate %{_libdir}/condor/plugins src/condor_contrib/aviary/src/job/AviaryScheddPlugin-plugin.so
-populate %{_libdir}/condor/plugins src/condor_contrib/aviary/src/locator/AviaryLocatorPlugin-plugin.so
+    mkdir -p %{buildroot}/%{_var}/lib/condor/aviary
+    populate %{_var}/lib/condor/aviary %{buildroot}/usr/axis2.xml
+    populate %{_var}/lib/condor/aviary %{buildroot}/usr/services/
+    populate %{_libdir}/condor/plugins src/condor_contrib/aviary/src/collector/libaviary_collector_axis.so
+    populate %{_libdir}/condor/plugins src/condor_contrib/aviary/src/collector/AviaryCollectorPlugin-plugin.so
+    populate %{_libdir}/condor/plugins src/condor_contrib/aviary/src/hadoop/AviaryHadoopPlugin-plugin.so
+    populate %{_libdir}/condor/plugins src/condor_contrib/aviary/src/job/AviaryScheddPlugin-plugin.so
+    populate %{_libdir}/condor/plugins src/condor_contrib/aviary/src/locator/AviaryLocatorPlugin-plugin.so
 %endif
 
 %if %plumage
-# Install condor-plumage's base plugin configuration
-populate %_sysconfdir/condor/config.d %{buildroot}/etc/examples/62plumage.config
-rm -f %{buildroot}/%{_bindir}/ods_job_etl_tool
-rm -f %{buildroot}/%{_sbindir}/ods_job_etl_server
-mkdir -p -m0755 %{buildroot}/%{_var}/lib/condor/ViewHist
+    # Install condor-plumage's base plugin configuration
+    populate %_sysconfdir/condor/config.d %{buildroot}/etc/examples/62plumage.config
+    rm -f %{buildroot}/%{_bindir}/ods_job_etl_tool
+    rm -f %{buildroot}/%{_sbindir}/ods_job_etl_server
+    mkdir -p -m0755 %{buildroot}/%{_var}/lib/condor/ViewHist
 %endif
 
 mkdir -p -m0755 %{buildroot}/%{_var}/run/condor
@@ -972,18 +971,18 @@ rm -rf %{buildroot}/%{_sysconfdir}/sysconfig
 rm -rf %{buildroot}/%{_sysconfdir}/init.d
 
 %if %systemd
-# install tmpfiles.d/condor.conf
-mkdir -p %{buildroot}%{_sysconfdir}/tmpfiles.d
-install -m 0644 %{SOURCE2} %{buildroot}%{_sysconfdir}/tmpfiles.d/%{name}.conf
+    # install tmpfiles.d/condor.conf
+    mkdir -p %{buildroot}%{_sysconfdir}/tmpfiles.d
+    install -m 0644 %{SOURCE2} %{buildroot}%{_sysconfdir}/tmpfiles.d/%{name}.conf
 
-mkdir -p %{buildroot}%{_unitdir}
-cp %{SOURCE3} %{buildroot}%{_unitdir}/condor.service
+    mkdir -p %{buildroot}%{_unitdir}
+    cp %{SOURCE3} %{buildroot}%{_unitdir}/condor.service
 %else
-# install the lsb init script
-install -Dp -m0755 %{buildroot}/etc/examples/condor.init %{buildroot}%{_initrddir}/condor
-install -Dp -m 0644 %{SOURCE4} %buildroot/usr/share/osg/sysconfig/condor
-mkdir %{buildroot}%{_sysconfdir}/sysconfig/
-install -Dp -m 0644 %{buildroot}/etc/examples/condor.sysconfig %{buildroot}%{_sysconfdir}/sysconfig/condor
+    # install the lsb init script
+    install -Dp -m0755 %{buildroot}/etc/examples/condor.init %{buildroot}%{_initrddir}/condor
+    install -Dp -m 0644 %{SOURCE4} %buildroot/usr/share/osg/sysconfig/condor
+    mkdir %{buildroot}%{_sysconfdir}/sysconfig/
+    install -Dp -m 0644 %{buildroot}/etc/examples/condor.sysconfig %{buildroot}%{_sysconfdir}/sysconfig/condor
 %endif
 
 # Install perl modules
@@ -1065,8 +1064,8 @@ rm -rf %{buildroot}%{_mandir}/man1/cleanup_release.1*
 rm -rf %{buildroot}%{_mandir}/man1/condor_cold_start.1*
 rm -rf %{buildroot}%{_mandir}/man1/condor_cold_stop.1*
 %if ! %std_univ
-rm -rf %{buildroot}%{_mandir}/man1/condor_checkpoint.1*
-rm -rf %{buildroot}%{_mandir}/man1/condor_compile.1*
+    rm -rf %{buildroot}%{_mandir}/man1/condor_checkpoint.1*
+    rm -rf %{buildroot}%{_mandir}/man1/condor_compile.1*
 %endif
 rm -rf %{buildroot}%{_mandir}/man1/condor_config_bind.1*
 rm -rf %{buildroot}%{_mandir}/man1/condor_configure.1*
@@ -1086,46 +1085,46 @@ mkdir -p %{buildroot}%{python_sitelib}
 mv %{buildroot}%{_libexecdir}/condor/campus_factory/python-lib/GlideinWMS %{buildroot}%{python_sitelib}
 mv %{buildroot}%{_libexecdir}/condor/campus_factory/python-lib/campus_factory %{buildroot}%{python_sitelib}
 %if 0%{?osg} || 0%{?hcc}
-mv %{buildroot}%{_libexecdir}/condor/campus_factory/share/condor/condor_config.factory %{buildroot}%{_sysconfdir}/condor/config.d/60-campus_factory.config
-mv %{buildroot}%{_libexecdir}/condor/campus_factory/etc/campus_factory.conf %{buildroot}%{_sysconfdir}/condor/
+    mv %{buildroot}%{_libexecdir}/condor/campus_factory/share/condor/condor_config.factory %{buildroot}%{_sysconfdir}/condor/config.d/60-campus_factory.config
+    mv %{buildroot}%{_libexecdir}/condor/campus_factory/etc/campus_factory.conf %{buildroot}%{_sysconfdir}/condor/
 %endif
 mv %{buildroot}%{_libexecdir}/condor/campus_factory/share %{buildroot}%{_datadir}/condor/campus_factory
 
 %if %blahp && ! %uw_build
-install -p -m 0644 %{SOURCE6} %{buildroot}%{_sysconfdir}/condor/config.d/10-batch_gahp_blahp.config
+    install -p -m 0644 %{SOURCE6} %{buildroot}%{_sysconfdir}/condor/config.d/10-batch_gahp_blahp.config
 %endif
 
 %if 0%{?osg} || 0%{?hcc}
-install -p -m 0644 %{SOURCE7} %{buildroot}%{_sysconfdir}/condor/config.d/00-restart_peaceful.config
+    install -p -m 0644 %{SOURCE7} %{buildroot}%{_sysconfdir}/condor/config.d/00-restart_peaceful.config
 %endif
 
 %if %std_univ
-populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/condor_rt0.o
-populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/libcomp_libgcc.a
-populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/libcomp_libgcc_eh.a
-populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/libcomp_libstdc++.a
-populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/libcondor_c.a
-populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/libcondor_nss_dns.a
-populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/libcondor_nss_files.a
-populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/libcondor_resolv.a
-populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/libcondor_z.a
-populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/libcondorsyscall.a
-%ifarch %{ix86}
-%if 0%{?rhel} == 5
-populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/libcondorzsyscall.a
-%endif
-%endif
-populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/ld
-populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/real-ld
+    populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/condor_rt0.o
+    populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/libcomp_libgcc.a
+    populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/libcomp_libgcc_eh.a
+    populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/libcomp_libstdc++.a
+    populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/libcondor_c.a
+    populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/libcondor_nss_dns.a
+    populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/libcondor_nss_files.a
+    populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/libcondor_resolv.a
+    populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/libcondor_z.a
+    populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/libcondorsyscall.a
+    %ifarch %{ix86}
+        %if 0%{?rhel} == 5
+            populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/libcondorzsyscall.a
+        %endif
+    %endif
+    populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/ld
+    populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/real-ld
 %endif
 
 %if %uw_build
-populate %{_libdir}/condor %{buildroot}/%{_libdir}/libdrmaa.so
-populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/condor/libglobus*.so*
-populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/condor/libvomsapi*.so*
-populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/libcondordrmaa.a
-# these probably belong elsewhere
-populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/ugahp.jar
+    populate %{_libdir}/condor %{buildroot}/%{_libdir}/libdrmaa.so
+    populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/condor/libglobus*.so*
+    populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/condor/libvomsapi*.so*
+    populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/libcondordrmaa.a
+    # these probably belong elsewhere
+    populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/ugahp.jar
 %endif
 
 
@@ -1147,12 +1146,12 @@ rm -rf %{buildroot}
 %dir %_sysconfdir/condor/
 %config(noreplace) %_sysconfdir/condor/condor_config
 %if %systemd
-%config(noreplace) %_sysconfdir/tmpfiles.d/%{name}.conf
-%{_unitdir}/condor.service
+    %config(noreplace) %_sysconfdir/tmpfiles.d/%{name}.conf
+    %{_unitdir}/condor.service
 %else
-%_initrddir/condor
-/usr/share/osg/sysconfig/condor
-%config(noreplace) /etc/sysconfig/condor
+    %_initrddir/condor
+    /usr/share/osg/sysconfig/condor
+    %config(noreplace) /etc/sysconfig/condor
 %endif
 %dir %_datadir/condor/
 %_datadir/condor/Chirp.jar
@@ -1166,9 +1165,9 @@ rm -rf %{buildroot}
 %dir %_sysconfdir/condor/config.d/
 %_sysconfdir/condor/condor_ssh_to_job_sshd_config_template
 %if %gsoap || %uw_build
-%dir %_datadir/condor/webservice/
-%_datadir/condor/webservice/condorCollector.wsdl
-%_datadir/condor/webservice/condorSchedd.wsdl
+    %dir %_datadir/condor/webservice/
+    %_datadir/condor/webservice/condorCollector.wsdl
+    %_datadir/condor/webservice/condorSchedd.wsdl
 %endif
 %_libdir/libchirp_client.so
 %_libdir/libcondor_utils_%{version_}.so
@@ -1183,26 +1182,26 @@ rm -rf %{buildroot}
 %_libexecdir/condor/condor_pid_ns_init
 %_libexecdir/condor/condor_urlfetch
 %if %glexec
-%_libexecdir/condor/condor_glexec_setup
-%_libexecdir/condor/condor_glexec_run
-%_libexecdir/condor/condor_glexec_job_wrapper
-%_libexecdir/condor/condor_glexec_update_proxy
-%_libexecdir/condor/condor_glexec_cleanup
-%_libexecdir/condor/condor_glexec_kill
+    %_libexecdir/condor/condor_glexec_setup
+    %_libexecdir/condor/condor_glexec_run
+    %_libexecdir/condor/condor_glexec_job_wrapper
+    %_libexecdir/condor/condor_glexec_update_proxy
+    %_libexecdir/condor/condor_glexec_cleanup
+    %_libexecdir/condor/condor_glexec_kill
 %endif
 %if %blahp
-%dir %_libexecdir/condor/glite/bin
-%_libexecdir/condor/glite/bin/nqs_cancel.sh
-%_libexecdir/condor/glite/bin/nqs_hold.sh
-%_libexecdir/condor/glite/bin/nqs_resume.sh
-%_libexecdir/condor/glite/bin/nqs_status.sh
-%_libexecdir/condor/glite/bin/nqs_submit.sh
-%if ! %uw_build
-%config(noreplace) %{_sysconfdir}/condor/config.d/10-batch_gahp_blahp.config
-%endif
+    %dir %_libexecdir/condor/glite/bin
+    %_libexecdir/condor/glite/bin/nqs_cancel.sh
+    %_libexecdir/condor/glite/bin/nqs_hold.sh
+    %_libexecdir/condor/glite/bin/nqs_resume.sh
+    %_libexecdir/condor/glite/bin/nqs_status.sh
+    %_libexecdir/condor/glite/bin/nqs_submit.sh
+    %if ! %uw_build
+        %config(noreplace) %{_sysconfdir}/condor/config.d/10-batch_gahp_blahp.config
+    %endif
 %endif
 %if 0%{?osg} || 0%{?hcc}
-%config(noreplace) %{_sysconfdir}/condor/config.d/00-restart_peaceful.config
+    %config(noreplace) %{_sysconfdir}/condor/config.d/00-restart_peaceful.config
 %endif
 %_libexecdir/condor/condor_limits_wrapper.sh
 %_libexecdir/condor/condor_rooster
@@ -1363,8 +1362,8 @@ rm -rf %{buildroot}
 %_sbindir/nordugrid_gahp
 %_sbindir/gce_gahp
 %if %uw_build
-%_sbindir/condor_master_s
-%_sbindir/boinc_gahp
+    %_sbindir/condor_master_s
+    %_sbindir/boinc_gahp
 %endif
 %_libexecdir/condor/condor_gpu_discovery
 %_sbindir/condor_vm_vmware
@@ -1375,12 +1374,12 @@ rm -rf %{buildroot}
 %dir %_var/log/condor/
 %dir %_var/lib/condor/spool/
 %if %systemd
-%ghost %dir %_var/lock/condor/
-%ghost %dir %_var/run/condor/
+    %ghost %dir %_var/lock/condor/
+    %ghost %dir %_var/run/condor/
 %else
-%dir %_var/lock/condor
-%dir %_var/lock/condor/local
-%dir %_var/run/condor
+    %dir %_var/lock/condor
+    %dir %_var/lock/condor/local
+    %dir %_var/run/condor
 %endif
 
 #################
@@ -1395,128 +1394,128 @@ rm -rf %{buildroot}
 #################
 %if %qmf
 %files qmf
-%defattr(-,root,root,-)
-%doc LICENSE-2.0.txt NOTICE.txt
-%_sysconfdir/condor/config.d/60condor-qmf.config
-%dir %_libdir/condor/plugins
-%_libdir/condor/plugins/MgmtCollectorPlugin-plugin.so
-%_libdir/condor/plugins/MgmtMasterPlugin-plugin.so
-%_libdir/condor/plugins/MgmtNegotiatorPlugin-plugin.so
-%_libdir/condor/plugins/MgmtScheddPlugin-plugin.so
-%_libdir/condor/plugins/MgmtStartdPlugin-plugin.so
-%_bindir/get_trigger_data
-%_sbindir/condor_trigger_config
-%_sbindir/condor_triggerd
-%_sbindir/condor_job_server
+    %defattr(-,root,root,-)
+    %doc LICENSE-2.0.txt NOTICE.txt
+    %_sysconfdir/condor/config.d/60condor-qmf.config
+    %dir %_libdir/condor/plugins
+    %_libdir/condor/plugins/MgmtCollectorPlugin-plugin.so
+    %_libdir/condor/plugins/MgmtMasterPlugin-plugin.so
+    %_libdir/condor/plugins/MgmtNegotiatorPlugin-plugin.so
+    %_libdir/condor/plugins/MgmtScheddPlugin-plugin.so
+    %_libdir/condor/plugins/MgmtStartdPlugin-plugin.so
+    %_bindir/get_trigger_data
+    %_sbindir/condor_trigger_config
+    %_sbindir/condor_triggerd
+    %_sbindir/condor_job_server
 %endif
 
 #################
 %if %aviary
 %files aviary-common
-%defattr(-,root,root,-)
-%doc LICENSE-2.0.txt NOTICE.txt
-%_sysconfdir/condor/config.d/61aviary.config
-%dir %_libdir/condor/plugins
-%_libdir/condor/plugins/AviaryScheddPlugin-plugin.so
-%_libdir/condor/plugins/AviaryLocatorPlugin-plugin.so
-%_libdir/condor/plugins/AviaryCollectorPlugin-plugin.so
-%_libdir/condor/plugins/libaviary_collector_axis.so
-%_sbindir/aviary_query_server
-%dir %_datadir/condor/aviary
-%_datadir/condor/aviary/jobcontrol.py*
-%_datadir/condor/aviary/jobquery.py*
-%_datadir/condor/aviary/submissions.py*
-%_datadir/condor/aviary/submission_ids.py*
-%_datadir/condor/aviary/subinventory.py*
-%_datadir/condor/aviary/submit.py*
-%_datadir/condor/aviary/setattr.py*
-%_datadir/condor/aviary/jobinventory.py*
-%_datadir/condor/aviary/locator.py*
-%_datadir/condor/aviary/collector_tool.py*
-%dir %_datadir/condor/aviary/dag
-%_datadir/condor/aviary/dag/diamond.dag
-%_datadir/condor/aviary/dag/dag-submit.py*
-%_datadir/condor/aviary/dag/job.sub
-%dir %_datadir/condor/aviary/module
-%_datadir/condor/aviary/module/aviary/util.py*
-%_datadir/condor/aviary/module/aviary/https.py*
-%_datadir/condor/aviary/module/aviary/__init__.py*
-%_datadir/condor/aviary/README
-%dir %_var/lib/condor/aviary
-%_var/lib/condor/aviary/axis2.xml
-%dir %_var/lib/condor/aviary/services
-%dir %_var/lib/condor/aviary/services/job
-%_var/lib/condor/aviary/services/job/services.xml
-%_var/lib/condor/aviary/services/job/aviary-common.xsd
-%_var/lib/condor/aviary/services/job/aviary-job.xsd
-%_var/lib/condor/aviary/services/job/aviary-job.wsdl
-%dir %_var/lib/condor/aviary/services/query
-%_var/lib/condor/aviary/services/query/services.xml
-%_var/lib/condor/aviary/services/query/aviary-common.xsd
-%_var/lib/condor/aviary/services/query/aviary-query.xsd
-%_var/lib/condor/aviary/services/query/aviary-query.wsdl
-%dir %_var/lib/condor/aviary/services/locator
-%_var/lib/condor/aviary/services/locator/services.xml
-%_var/lib/condor/aviary/services/locator/aviary-common.xsd
-%_var/lib/condor/aviary/services/locator/aviary-locator.xsd
-%_var/lib/condor/aviary/services/locator/aviary-locator.wsdl
-%dir %_var/lib/condor/aviary/services/collector
-%_var/lib/condor/aviary/services/collector/services.xml
-%_var/lib/condor/aviary/services/collector/aviary-common.xsd
-%_var/lib/condor/aviary/services/collector/aviary-collector.xsd
-%_var/lib/condor/aviary/services/collector/aviary-collector.wsdl
-%_var/lib/condor/aviary/services/collector/libaviary_collector_axis.so
+    %defattr(-,root,root,-)
+    %doc LICENSE-2.0.txt NOTICE.txt
+    %_sysconfdir/condor/config.d/61aviary.config
+    %dir %_libdir/condor/plugins
+    %_libdir/condor/plugins/AviaryScheddPlugin-plugin.so
+    %_libdir/condor/plugins/AviaryLocatorPlugin-plugin.so
+    %_libdir/condor/plugins/AviaryCollectorPlugin-plugin.so
+    %_libdir/condor/plugins/libaviary_collector_axis.so
+    %_sbindir/aviary_query_server
+    %dir %_datadir/condor/aviary
+    %_datadir/condor/aviary/jobcontrol.py*
+    %_datadir/condor/aviary/jobquery.py*
+    %_datadir/condor/aviary/submissions.py*
+    %_datadir/condor/aviary/submission_ids.py*
+    %_datadir/condor/aviary/subinventory.py*
+    %_datadir/condor/aviary/submit.py*
+    %_datadir/condor/aviary/setattr.py*
+    %_datadir/condor/aviary/jobinventory.py*
+    %_datadir/condor/aviary/locator.py*
+    %_datadir/condor/aviary/collector_tool.py*
+    %dir %_datadir/condor/aviary/dag
+    %_datadir/condor/aviary/dag/diamond.dag
+    %_datadir/condor/aviary/dag/dag-submit.py*
+    %_datadir/condor/aviary/dag/job.sub
+    %dir %_datadir/condor/aviary/module
+    %_datadir/condor/aviary/module/aviary/util.py*
+    %_datadir/condor/aviary/module/aviary/https.py*
+    %_datadir/condor/aviary/module/aviary/__init__.py*
+    %_datadir/condor/aviary/README
+    %dir %_var/lib/condor/aviary
+    %_var/lib/condor/aviary/axis2.xml
+    %dir %_var/lib/condor/aviary/services
+    %dir %_var/lib/condor/aviary/services/job
+    %_var/lib/condor/aviary/services/job/services.xml
+    %_var/lib/condor/aviary/services/job/aviary-common.xsd
+    %_var/lib/condor/aviary/services/job/aviary-job.xsd
+    %_var/lib/condor/aviary/services/job/aviary-job.wsdl
+    %dir %_var/lib/condor/aviary/services/query
+    %_var/lib/condor/aviary/services/query/services.xml
+    %_var/lib/condor/aviary/services/query/aviary-common.xsd
+    %_var/lib/condor/aviary/services/query/aviary-query.xsd
+    %_var/lib/condor/aviary/services/query/aviary-query.wsdl
+    %dir %_var/lib/condor/aviary/services/locator
+    %_var/lib/condor/aviary/services/locator/services.xml
+    %_var/lib/condor/aviary/services/locator/aviary-common.xsd
+    %_var/lib/condor/aviary/services/locator/aviary-locator.xsd
+    %_var/lib/condor/aviary/services/locator/aviary-locator.wsdl
+    %dir %_var/lib/condor/aviary/services/collector
+    %_var/lib/condor/aviary/services/collector/services.xml
+    %_var/lib/condor/aviary/services/collector/aviary-common.xsd
+    %_var/lib/condor/aviary/services/collector/aviary-collector.xsd
+    %_var/lib/condor/aviary/services/collector/aviary-collector.wsdl
+    %_var/lib/condor/aviary/services/collector/libaviary_collector_axis.so
 
 %files aviary
-%defattr(-,root,root,-)
-%doc LICENSE-2.0.txt NOTICE.txt
-%_libdir/libaviary_axis_provider.so
-%_libdir/libaviary_wso2_common.so
-%dir %_libdir/condor/plugins
-%_var/lib/condor/aviary/services/job/libaviary_job_axis.so
-%_var/lib/condor/aviary/services/query/libaviary_query_axis.so
-%_var/lib/condor/aviary/services/locator/libaviary_locator_axis.so
+    %defattr(-,root,root,-)
+    %doc LICENSE-2.0.txt NOTICE.txt
+    %_libdir/libaviary_axis_provider.so
+    %_libdir/libaviary_wso2_common.so
+    %dir %_libdir/condor/plugins
+    %_var/lib/condor/aviary/services/job/libaviary_job_axis.so
+    %_var/lib/condor/aviary/services/query/libaviary_query_axis.so
+    %_var/lib/condor/aviary/services/locator/libaviary_locator_axis.so
 
 %files aviary-hadoop-common
-%defattr(-,root,root,-)
-%doc LICENSE-2.0.txt NOTICE.txt
-%_var/lib/condor/aviary/services/hadoop/services.xml
-%_var/lib/condor/aviary/services/hadoop/aviary-common.xsd
-%_var/lib/condor/aviary/services/hadoop/aviary-hadoop.xsd
-%_var/lib/condor/aviary/services/hadoop/aviary-hadoop.wsdl
-%_datadir/condor/aviary/hadoop_tool.py*
+    %defattr(-,root,root,-)
+    %doc LICENSE-2.0.txt NOTICE.txt
+    %_var/lib/condor/aviary/services/hadoop/services.xml
+    %_var/lib/condor/aviary/services/hadoop/aviary-common.xsd
+    %_var/lib/condor/aviary/services/hadoop/aviary-hadoop.xsd
+    %_var/lib/condor/aviary/services/hadoop/aviary-hadoop.wsdl
+    %_datadir/condor/aviary/hadoop_tool.py*
 
 %files aviary-hadoop
-%defattr(-,root,root,-)
-%doc LICENSE-2.0.txt NOTICE.txt
-%_var/lib/condor/aviary/services/hadoop/libaviary_hadoop_axis.so
-%_libdir/condor/plugins/AviaryHadoopPlugin-plugin.so
-%_sysconfdir/condor/config.d/63aviary-hadoop.config
-%_datadir/condor/aviary/hdfs_datanode.sh
-%_datadir/condor/aviary/hdfs_namenode.sh
-%_datadir/condor/aviary/mapred_jobtracker.sh
-%_datadir/condor/aviary/mapred_tasktracker.sh
+    %defattr(-,root,root,-)
+    %doc LICENSE-2.0.txt NOTICE.txt
+    %_var/lib/condor/aviary/services/hadoop/libaviary_hadoop_axis.so
+    %_libdir/condor/plugins/AviaryHadoopPlugin-plugin.so
+    %_sysconfdir/condor/config.d/63aviary-hadoop.config
+    %_datadir/condor/aviary/hdfs_datanode.sh
+    %_datadir/condor/aviary/hdfs_namenode.sh
+    %_datadir/condor/aviary/mapred_jobtracker.sh
+    %_datadir/condor/aviary/mapred_tasktracker.sh
 %endif
 
 #################
 %if %plumage
 %files plumage
-%defattr(-,root,root,-)
-%doc LICENSE-2.0.txt NOTICE.txt
-%_sysconfdir/condor/config.d/62plumage.config
-%dir %_libdir/condor/plugins
-%_libdir/condor/plugins/PlumageCollectorPlugin-plugin.so
-%dir %_datadir/condor/plumage
-%_sbindir/plumage_job_etl_server
-%_bindir/plumage_history_load
-%_bindir/plumage_stats
-%_bindir/plumage_history
-%_datadir/condor/plumage/README
-%_datadir/condor/plumage/SCHEMA
-%_datadir/condor/plumage/plumage_accounting
-%_datadir/condor/plumage/plumage_scheduler
-%_datadir/condor/plumage/plumage_utilization
-%defattr(-,condor,condor,-)
+    %defattr(-,root,root,-)
+    %doc LICENSE-2.0.txt NOTICE.txt
+    %_sysconfdir/condor/config.d/62plumage.config
+    %dir %_libdir/condor/plugins
+    %_libdir/condor/plugins/PlumageCollectorPlugin-plugin.so
+    %dir %_datadir/condor/plumage
+    %_sbindir/plumage_job_etl_server
+    %_bindir/plumage_history_load
+    %_bindir/plumage_stats
+    %_bindir/plumage_history
+    %_datadir/condor/plumage/README
+    %_datadir/condor/plumage/SCHEMA
+    %_datadir/condor/plumage/plumage_accounting
+    %_datadir/condor/plumage/plumage_scheduler
+    %_datadir/condor/plumage/plumage_utilization
+    %defattr(-,condor,condor,-)
 %endif
 
 #################
@@ -1535,9 +1534,9 @@ rm -rf %{buildroot}
 #################
 %if %deltacloud
 %files deltacloud-gahp
-%defattr(-,root,root,-)
-%doc LICENSE-2.0.txt NOTICE.txt
-%_sbindir/deltacloud_gahp
+    %defattr(-,root,root,-)
+    %doc LICENSE-2.0.txt NOTICE.txt
+    %_sbindir/deltacloud_gahp
 %endif
 
 #################
@@ -1594,15 +1593,15 @@ rm -rf %{buildroot}
 
 %if %cream
 %files cream-gahp
-%defattr(-,root,root,-)
-%doc LICENSE-2.0.txt NOTICE.txt
-%_sbindir/cream_gahp
+    %defattr(-,root,root,-)
+    %doc LICENSE-2.0.txt NOTICE.txt
+    %_sbindir/cream_gahp
 %endif
 
 %if %parallel_setup
 %files parallel-setup
-%defattr(-,root,root,-)
-%config(noreplace) %_sysconfdir/condor/config.d/20dedicated_scheduler_condor.config
+    %defattr(-,root,root,-)
+    %config(noreplace) %_sysconfdir/condor/config.d/20dedicated_scheduler_condor.config
 %endif
 
 %files python
@@ -1615,8 +1614,8 @@ rm -rf %{buildroot}
 %files bosco
 %defattr(-,root,root,-)
 %if 0%{?osg} || 0%{?hcc}
-%config(noreplace) %_sysconfdir/condor/campus_factory.conf
-%config(noreplace) %_sysconfdir/condor/config.d/60-campus_factory.config
+    %config(noreplace) %_sysconfdir/condor/campus_factory.conf
+    %config(noreplace) %_sysconfdir/condor/config.d/60-campus_factory.config
 %endif
 %_libexecdir/condor/shellselector
 %_libexecdir/condor/campus_factory
@@ -1646,172 +1645,172 @@ rm -rf %{buildroot}
 
 %if %std_univ
 %files std-universe
-%_bindir/condor_checkpoint
-%_bindir/condor_compile   
-%_sbindir/condor_ckpt_server
-%_sbindir/condor_shadow.std
-%_sbindir/condor_starter.std
-%_mandir/man1/condor_compile.1.gz
-%_mandir/man1/condor_checkpoint.1.gz
-%_libdir/condor/ld
-%_libdir/condor/real-ld
-%_libdir/condor/condor_rt0.o
-%_libdir/condor/libcomp_libgcc.a
-%_libdir/condor/libcomp_libgcc_eh.a
-%_libdir/condor/libcomp_libstdc++.a
-%_libdir/condor/libcondor_c.a
-%_libdir/condor/libcondor_nss_dns.a
-%_libdir/condor/libcondor_nss_files.a
-%_libdir/condor/libcondor_resolv.a
-%_libdir/condor/libcondor_z.a
-%_libdir/condor/libcondorsyscall.a
-%_libexecdir/condor/condor_ckpt_probe
-%ifarch %{ix86}
-%if 0%{?rhel} == 5
-%_libdir/condor/libcondorzsyscall.a
-%endif
-%endif
+    %_bindir/condor_checkpoint
+    %_bindir/condor_compile   
+    %_sbindir/condor_ckpt_server
+    %_sbindir/condor_shadow.std
+    %_sbindir/condor_starter.std
+    %_mandir/man1/condor_compile.1.gz
+    %_mandir/man1/condor_checkpoint.1.gz
+    %_libdir/condor/ld
+    %_libdir/condor/real-ld
+    %_libdir/condor/condor_rt0.o
+    %_libdir/condor/libcomp_libgcc.a
+    %_libdir/condor/libcomp_libgcc_eh.a
+    %_libdir/condor/libcomp_libstdc++.a
+    %_libdir/condor/libcondor_c.a
+    %_libdir/condor/libcondor_nss_dns.a
+    %_libdir/condor/libcondor_nss_files.a
+    %_libdir/condor/libcondor_resolv.a
+    %_libdir/condor/libcondor_z.a
+    %_libdir/condor/libcondorsyscall.a
+    %_libexecdir/condor/condor_ckpt_probe
+    %ifarch %{ix86}
+        %if 0%{?rhel} == 5
+        %_libdir/condor/libcondorzsyscall.a
+        %endif
+    %endif
 %endif
 
 %if %uw_build
 %files static-shadow
-%{_sbindir}/condor_shadow_s
+    %{_sbindir}/condor_shadow_s
 
 %files external-libs
-%dir %_libdir/condor
-%_libdir/condor/libcondordrmaa.a
-%_libdir/condor/libdrmaa.so
-%_libdir/condor/libglobus*.so*
-%_libdir/condor/libvomsapi*.so*
-%_libdir/condor/ugahp.jar
+    %dir %_libdir/condor
+    %_libdir/condor/libcondordrmaa.a
+    %_libdir/condor/libdrmaa.so
+    %_libdir/condor/libglobus*.so*
+    %_libdir/condor/libvomsapi*.so*
+    %_libdir/condor/ugahp.jar
 
 %files externals
-%_sbindir/deltacloud_gahp
-%_sbindir/unicore_gahp
-%if %blahp
-%_libexecdir/condor/glite/bin/BLClient
-%_libexecdir/condor/glite/bin/BLParserLSF
-%_libexecdir/condor/glite/bin/BLParserPBS
-%_libexecdir/condor/glite/bin/BNotifier
-%_libexecdir/condor/glite/bin/BPRclient
-%_libexecdir/condor/glite/bin/BPRserver
-%_libexecdir/condor/glite/bin/BUpdaterCondor
-%_libexecdir/condor/glite/bin/BUpdaterLSF
-%_libexecdir/condor/glite/bin/BUpdaterPBS
-%_libexecdir/condor/glite/bin/BUpdaterSGE
-%_libexecdir/condor/glite/bin/batch_gahp
-%_libexecdir/condor/glite/bin/batch_gahp_daemon
-%_libexecdir/condor/glite/bin/blah_check_config
-%_libexecdir/condor/glite/bin/blah_common_submit_functions.sh
-%_libexecdir/condor/glite/bin/blah_job_registry_add
-%_libexecdir/condor/glite/bin/blah_job_registry_dump
-%_libexecdir/condor/glite/bin/blah_job_registry_lkup
-%_libexecdir/condor/glite/bin/blah_job_registry_scan_by_subject
-%_libexecdir/condor/glite/bin/blah_load_config.sh
-%_libexecdir/condor/glite/bin/blparser_master
-%_libexecdir/condor/glite/bin/condor_cancel.sh
-%_libexecdir/condor/glite/bin/condor_hold.sh
-%_libexecdir/condor/glite/bin/condor_resume.sh
-%_libexecdir/condor/glite/bin/condor_status.sh
-%_libexecdir/condor/glite/bin/condor_submit.sh
-%_libexecdir/condor/glite/bin/lsf_cancel.sh
-%_libexecdir/condor/glite/bin/lsf_hold.sh
-%_libexecdir/condor/glite/bin/lsf_resume.sh
-%_libexecdir/condor/glite/bin/lsf_status.sh
-%_libexecdir/condor/glite/bin/lsf_submit.sh
-%_libexecdir/condor/glite/bin/pbs_cancel.sh
-%_libexecdir/condor/glite/bin/pbs_hold.sh
-%_libexecdir/condor/glite/bin/pbs_resume.sh
-%_libexecdir/condor/glite/bin/pbs_status.sh
-%_libexecdir/condor/glite/bin/pbs_submit.sh
-%_libexecdir/condor/glite/bin/runcmd.pl.template
-%_libexecdir/condor/glite/bin/sge_cancel.sh
-%_libexecdir/condor/glite/bin/sge_filestaging
-%_libexecdir/condor/glite/bin/sge_helper
-%_libexecdir/condor/glite/bin/sge_hold.sh
-%_libexecdir/condor/glite/bin/sge_local_submit_attributes.sh
-%_libexecdir/condor/glite/bin/sge_resume.sh
-%_libexecdir/condor/glite/bin/sge_status.sh
-%_libexecdir/condor/glite/bin/sge_submit.sh
-%_libexecdir/condor/glite/bin/test_condor_logger
-# does this really belong here?
-%dir %_libexecdir/condor/glite/etc
-%_libexecdir/condor/glite/etc/glite-ce-blahparser
-%_libexecdir/condor/glite/etc/glite-ce-blparser
-%_libexecdir/condor/glite/etc/glite-ce-check-blparser
-%_libexecdir/condor/glite/etc/batch_gahp.config
-%_libexecdir/condor/glite/etc/batch_gahp.config.template
-%_libexecdir/condor/glite/etc/blparser.conf.template
-%dir %_libexecdir/condor/glite/share
-%dir %_libexecdir/condor/glite/share/doc
-%_libexecdir/condor/glite/share/doc/glite-ce-blahp-@PVER@/LICENSE
-%endif
+    %_sbindir/deltacloud_gahp
+    %_sbindir/unicore_gahp
+    %if %blahp
+        %_libexecdir/condor/glite/bin/BLClient
+        %_libexecdir/condor/glite/bin/BLParserLSF
+        %_libexecdir/condor/glite/bin/BLParserPBS
+        %_libexecdir/condor/glite/bin/BNotifier
+        %_libexecdir/condor/glite/bin/BPRclient
+        %_libexecdir/condor/glite/bin/BPRserver
+        %_libexecdir/condor/glite/bin/BUpdaterCondor
+        %_libexecdir/condor/glite/bin/BUpdaterLSF
+        %_libexecdir/condor/glite/bin/BUpdaterPBS
+        %_libexecdir/condor/glite/bin/BUpdaterSGE
+        %_libexecdir/condor/glite/bin/batch_gahp
+        %_libexecdir/condor/glite/bin/batch_gahp_daemon
+        %_libexecdir/condor/glite/bin/blah_check_config
+        %_libexecdir/condor/glite/bin/blah_common_submit_functions.sh
+        %_libexecdir/condor/glite/bin/blah_job_registry_add
+        %_libexecdir/condor/glite/bin/blah_job_registry_dump
+        %_libexecdir/condor/glite/bin/blah_job_registry_lkup
+        %_libexecdir/condor/glite/bin/blah_job_registry_scan_by_subject
+        %_libexecdir/condor/glite/bin/blah_load_config.sh
+        %_libexecdir/condor/glite/bin/blparser_master
+        %_libexecdir/condor/glite/bin/condor_cancel.sh
+        %_libexecdir/condor/glite/bin/condor_hold.sh
+        %_libexecdir/condor/glite/bin/condor_resume.sh
+        %_libexecdir/condor/glite/bin/condor_status.sh
+        %_libexecdir/condor/glite/bin/condor_submit.sh
+        %_libexecdir/condor/glite/bin/lsf_cancel.sh
+        %_libexecdir/condor/glite/bin/lsf_hold.sh
+        %_libexecdir/condor/glite/bin/lsf_resume.sh
+        %_libexecdir/condor/glite/bin/lsf_status.sh
+        %_libexecdir/condor/glite/bin/lsf_submit.sh
+        %_libexecdir/condor/glite/bin/pbs_cancel.sh
+        %_libexecdir/condor/glite/bin/pbs_hold.sh
+        %_libexecdir/condor/glite/bin/pbs_resume.sh
+        %_libexecdir/condor/glite/bin/pbs_status.sh
+        %_libexecdir/condor/glite/bin/pbs_submit.sh
+        %_libexecdir/condor/glite/bin/runcmd.pl.template
+        %_libexecdir/condor/glite/bin/sge_cancel.sh
+        %_libexecdir/condor/glite/bin/sge_filestaging
+        %_libexecdir/condor/glite/bin/sge_helper
+        %_libexecdir/condor/glite/bin/sge_hold.sh
+        %_libexecdir/condor/glite/bin/sge_local_submit_attributes.sh
+        %_libexecdir/condor/glite/bin/sge_resume.sh
+        %_libexecdir/condor/glite/bin/sge_status.sh
+        %_libexecdir/condor/glite/bin/sge_submit.sh
+        %_libexecdir/condor/glite/bin/test_condor_logger
+        # does this really belong here?
+        %dir %_libexecdir/condor/glite/etc
+        %_libexecdir/condor/glite/etc/glite-ce-blahparser
+        %_libexecdir/condor/glite/etc/glite-ce-blparser
+        %_libexecdir/condor/glite/etc/glite-ce-check-blparser
+        %_libexecdir/condor/glite/etc/batch_gahp.config
+        %_libexecdir/condor/glite/etc/batch_gahp.config.template
+        %_libexecdir/condor/glite/etc/blparser.conf.template
+        %dir %_libexecdir/condor/glite/share
+        %dir %_libexecdir/condor/glite/share/doc
+        %_libexecdir/condor/glite/share/doc/glite-ce-blahp-@PVER@/LICENSE
+    %endif
 
 %endif
 
 %if %systemd
 
 %post
-%if 0%{?fedora}
-test -x /usr/sbin/selinuxenabled && /usr/sbin/selinuxenabled
-if [ $? = 0 ]; then
-   restorecon -R -v /var/lock/condor
-   setsebool -P condor_domain_can_network_connect 1
-   semanage port -a -t condor_port_t -p tcp 12345
-   # the number of extraneous SELinux warnings on f17 is very high
-fi
+    %if 0%{?fedora}
+        test -x /usr/sbin/selinuxenabled && /usr/sbin/selinuxenabled
+        if [ $? = 0 ]; then
+           restorecon -R -v /var/lock/condor
+           setsebool -P condor_domain_can_network_connect 1
+           semanage port -a -t condor_port_t -p tcp 12345
+           # the number of extraneous SELinux warnings on f17 is very high
+        fi
 %endif
-if [ $1 -eq 1 ] ; then
-    # Initial installation 
-    /bin/systemctl daemon-reload >/dev/null 2>&1 || :
-    /bin/systemd-tmpfiles --create /etc/tmpfiles.d/%{name}.conf 2>&1 || :
-fi
+    if [ $1 -eq 1 ] ; then
+        # Initial installation 
+        /bin/systemctl daemon-reload >/dev/null 2>&1 || :
+        /bin/systemd-tmpfiles --create /etc/tmpfiles.d/%{name}.conf 2>&1 || :
+    fi
 
 %preun
-if [ $1 -eq 0 ] ; then
-    # Package removal, not upgrade
-    /bin/systemctl --no-reload disable condor.service > /dev/null 2>&1 || :
-    /bin/systemctl stop condor.service > /dev/null 2>&1 || :
-fi
+    if [ $1 -eq 0 ] ; then
+        # Package removal, not upgrade
+        /bin/systemctl --no-reload disable condor.service > /dev/null 2>&1 || :
+        /bin/systemctl stop condor.service > /dev/null 2>&1 || :
+    fi
 
 %postun
-/bin/systemctl daemon-reload >/dev/null 2>&1 || :
-# Note we don't try to restart - HTCondor will automatically notice the
-# binary has changed and do graceful or peaceful restart, based on its
-# configuration
+    /bin/systemctl daemon-reload >/dev/null 2>&1 || :
+    # Note we don't try to restart - HTCondor will automatically notice the
+    # binary has changed and do graceful or peaceful restart, based on its
+    # configuration
 
 %triggerun -- condor < 7.7.0-0.5
 
-/usr/bin/systemd-sysv-convert --save condor >/dev/null 2>&1 ||:
+    /usr/bin/systemd-sysv-convert --save condor >/dev/null 2>&1 ||:
 
-/sbin/chkconfig --del condor >/dev/null 2>&1 || :
-/bin/systemctl try-restart condor.service >/dev/null 2>&1 || :
+    /sbin/chkconfig --del condor >/dev/null 2>&1 || :
+    /bin/systemctl try-restart condor.service >/dev/null 2>&1 || :
 
 %else
 %post -n condor
-/sbin/chkconfig --add condor
-/sbin/ldconfig
+    /sbin/chkconfig --add condor
+    /sbin/ldconfig
 
 %posttrans -n condor
-# If there is a saved condor_config.local, recover it
-if [ -f /etc/condor/condor_config.local.rpmsave ]; then
-    if [ ! -f /etc/condor/condor_config.local ]; then
-        mv /etc/condor/condor_config.local.rpmsave \
-           /etc/condor/condor_config.local
+    # If there is a saved condor_config.local, recover it
+    if [ -f /etc/condor/condor_config.local.rpmsave ]; then
+        if [ ! -f /etc/condor/condor_config.local ]; then
+            mv /etc/condor/condor_config.local.rpmsave \
+               /etc/condor/condor_config.local
 
-        # Drop a README file to tell what we have done
-        # Make sure that we don't overwrite a previous README
-        if [ ! -f /etc/condor/README.condor_config.local ]; then
-            file="/etc/condor/README.condor_config.local"
-        else
-            i="1"
-            while [ -f /etc/condor/README.condor_config.local.$i ]; do
-                i=$((i+1))
-            done
-            file="/etc/condor/README.condor_config.local.$i"
-        fi
+            # Drop a README file to tell what we have done
+            # Make sure that we don't overwrite a previous README
+            if [ ! -f /etc/condor/README.condor_config.local ]; then
+                file="/etc/condor/README.condor_config.local"
+            else
+                i="1"
+                while [ -f /etc/condor/README.condor_config.local.$i ]; do
+                    i=$((i+1))
+                done
+                file="/etc/condor/README.condor_config.local.$i"
+            fi
 
-cat <<EOF > $file
+    cat <<EOF > $file
 On `date`, while installing or upgrading to
 HTCondor %version, the /etc/condor directory contained a file named
 "condor_config.local.rpmsave" but did not contain one named
@@ -1829,21 +1828,21 @@ See the "Configuration" section (3.3) of the HTCondor manual for more
 information on configuration files.
 EOF
 
+        fi
     fi
-fi
 
 %preun -n condor
-if [ $1 = 0 ]; then
-  /sbin/service condor stop >/dev/null 2>&1 || :
-  /sbin/chkconfig --del condor
-fi
+    if [ $1 = 0 ]; then
+      /sbin/service condor stop >/dev/null 2>&1 || :
+      /sbin/chkconfig --del condor
+    fi
 
 
 %postun -n condor
-# Note we don't try to restart - HTCondor will automatically notice the
-# binary has changed and do graceful or peaceful restart, based on its
-# configuration
-/sbin/ldconfig
+    # Note we don't try to restart - HTCondor will automatically notice the
+    # binary has changed and do graceful or peaceful restart, based on its
+    # configuration
+    /sbin/ldconfig
 %endif
 
 %changelog
