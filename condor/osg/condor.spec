@@ -93,6 +93,13 @@
 %define std_univ 0
 %endif
 %endif
+%if ( 0%{?osg} && 0%{?rhel} == 7 )
+    %define aviary 0
+    %define std_univ 0
+    %define cream 0
+
+    %define suffix _nocream
+%endif
 
 %define glexec 1
 
@@ -118,13 +125,13 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.1
+%define condor_base_release 1.2
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
         %define condor_release %condor_base_release
 %endif
-Release: %condor_release%{?dist}
+Release: %condor_release%{?suffix}%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -1840,6 +1847,12 @@ fi
 %endif
 
 %changelog
+* Mon Jul 20 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 8.3.6-1.2_nocream.osg
+- Turn off features for osg that don't (yet) build on el7
+  - cream
+  - aviary
+  - std universe
+
 * Wed Jun 24 2015 Brian Lin <blin@cs.wisc.edu> - 8.3.6-1.1
 - Bump version to 8.3.6
 - Drop patch reverting gittrac #4998
