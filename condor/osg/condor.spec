@@ -124,7 +124,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.2
+%define condor_base_release 1.3
 %if %git_build
     %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -610,6 +610,17 @@ Summary: Python bindings for HTCondor.
 Group: Applications/System
 Requires: python >= 2.2
 Requires: %name = %version-%release
+
+%if 0%{?rhel} >= 7
+# auto provides generator does not pick these up for some reason
+    %ifarch x86_64
+Provides: classad.so()(64bit)
+Provides: htcondor.so()(64bit)
+    %else
+Provides: classad.so
+Provides: htcondor.so
+    %endif
+%endif
 
 %description python
 The python bindings allow one to directly invoke the C++ implementations of
@@ -1846,6 +1857,9 @@ EOF
 %endif
 
 %changelog
+* Tue Jul 21 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 8.3.6-1.3_nocream.osg
+- Provide htcondor.so and classad.so in condor-python on el7
+
 * Mon Jul 20 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 8.3.6-1.2_nocream.osg
 - Turn off features for osg that don't (yet) build on el7
   - cream
