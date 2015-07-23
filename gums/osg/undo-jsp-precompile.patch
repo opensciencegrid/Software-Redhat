@@ -1,5 +1,5 @@
 diff --git a/gums-service/pom.xml b/gums-service/pom.xml
-index c6013ab..0d5952d 100644
+index e6eafe5..e56af4b 100644
 --- a/gums-service/pom.xml
 +++ b/gums-service/pom.xml
 @@ -48,36 +48,6 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
@@ -84,7 +84,7 @@ index 0ae1de0..5346c32 100644
  <html>
  <head>
 diff --git a/gums-service/src/main/webapp/testMapGridIdentity.jsp b/gums-service/src/main/webapp/testMapGridIdentity.jsp
-index 8abbd0f..e2a1ac3 100644
+index 0362821..634f4b8 100644
 --- a/gums-service/src/main/webapp/testMapGridIdentity.jsp
 +++ b/gums-service/src/main/webapp/testMapGridIdentity.jsp
 @@ -1,8 +1,8 @@
@@ -92,7 +92,7 @@ index 8abbd0f..e2a1ac3 100644
 -	AccountInfo account = null;
 +	String account = null;
  	try {
- 		account = gums.mapUser("/DC=com/DC=example/OU=Services/CN=example.site.com", "/DC=com/DC=example/OU=People/CN=Example User 12345", null);
+ 		account = gums.mapUser("/DC=com/DC=example/OU=Services/CN=example.site.com", "/DC=com/DC=example/OU=People/CN=Example User 12345", null, false);
 -		if ("test".equals(account.getUser()))
 +		if ("test".equals(account))
  			out.print("OK");
