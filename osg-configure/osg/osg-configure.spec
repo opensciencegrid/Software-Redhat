@@ -1,6 +1,6 @@
 Summary: Package for configure-osg and associated scripts
 Name: osg-configure
-Version: 1.1.0
+Version: 1.1.1
 Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
@@ -322,6 +322,9 @@ fi
 
 
 %changelog
+* Mon Jul 27 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.1.1-1.osg
+- Fix spurious 'None' values in the job environment (SOFTWARE-1968)
+
 * Tue Jun 23 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.1.0-1.osg
 - Switch to Semantic Versioning
 - Support Zabbix consumers in RSV (SOFTWARE-1923)
