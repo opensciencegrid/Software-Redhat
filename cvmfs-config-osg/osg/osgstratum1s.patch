@@ -1,12 +1,13 @@
---- mount/domain.d/egi.eu.conf.O	2015-03-24 23:48:31.251042000 -0500
-+++ mount/domain.d/egi.eu.conf	2015-03-24 23:50:36.565246000 -0500
+--- mount/domain.d/egi.eu.conf.O	2015-07-28 13:49:48.477170000 -0500
++++ mount/domain.d/egi.eu.conf	2015-07-28 13:49:56.940391000 -0500
 @@ -1,6 +1,6 @@
  # Don't edit here.  Create /etc/cvmfs/domain.d/egi.eu.local
  # As a rule of thumb, overwrite only parameters you find in here.
  
 -CVMFS_SERVER_URL="http://cvmfs-egi.gridpp.rl.ac.uk:8000/cvmfs/@fqrn@;http://klei.nikhef.nl:8000/cvmfs/@fqrn@;http://cvmfsrepo.lcg.triumf.ca:8000/cvmfs/@fqrn@;http://cvmfsrep.grid.sinica.edu.tw:8000/cvmfs/@fqrn@"
+-CVMFS_KEYS_DIR=/etc/cvmfs/keys/egi.eu
 +CVMFS_SERVER_URL="http://cvmfs-s1bnl.opensciencegrid.org:8000/cvmfs/@fqrn@;http://cvmfs-s1fnal.opensciencegrid.org:8000/cvmfs/@fqrn@;http://cvmfs-s1goc.opensciencegrid.org/cvmfs/@fqrn@"
- CVMFS_KEYS_DIR=/etc/cvmfs/keys/egi.eu
++CVMFS_PUBLIC_KEY=/etc/cvmfs/keys/egi.eu/egi.eu.pub:/etc/cvmfs/keys/opensciencegrid.org/opensciencegrid.org.pub
  CVMFS_USE_GEOAPI=yes
 --- mount/domain.d/opensciencegrid.org.conf.O	2015-03-24 23:48:26.443920000 -0500
 +++ mount/domain.d/opensciencegrid.org.conf	2015-03-24 23:50:52.208646000 -0500
