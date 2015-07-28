@@ -1,7 +1,7 @@
 Summary: CernVM File System OSG Configuration and Public Keys
 Name: cvmfs-config-osg
 Version: 1.1
-Release: 6%{?dist}
+Release: 7%{?dist}
 %define cvmfsversion 2.1.20
 Source0: https://ecsft.cern.ch/dist/cvmfs/cvmfs-%{cvmfsversion}.tar.gz
 Source1: 60-osg.conf
@@ -85,6 +85,11 @@ done
 %config %{_sysconfdir}/cvmfs/config.d/*
 
 %changelog
+* Tue Jul 28 2015 Dave Dykstra <dwd@fnal.gov> - 1.1-7
+- Change patch of /etc/cvmfs/domain.d/egi.eu.conf to include the
+  OSG public key as legitimate signer of egi.eu repositories, for
+  the purpose of emergency blanking.
+
 * Fri May 22 2015 Dave Dykstra <dwd@fnal.gov> - 1.1-6
 - Add specific versions on Obsoletes of cvmfs-keys and cvmfs-init-scripts,
   and add a Provides of a version, as was done to cvmfs-config-default
