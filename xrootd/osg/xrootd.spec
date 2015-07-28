@@ -54,30 +54,6 @@ BuildRequires: python-sphinx
 BuildRequires: python-sphinx10
 %endif
 
-
-#
-# Patch XRootD 4.2.1 to fix file cache hangs
-# Bug report https://github.com/xrootd/xrootd/issues/239
-# fix https://github.com/xrootd/xrootd/commit/923a6a3cb14eddcd11618d4f2fdd7229b15e2390
-# should be in 4.2.2
-Patch0: fixfilecachehangs.patch
-
-# Patch XRootD 4.2.1 to fix file cache hangs
-# Bug report: https://github.com/xrootd/xrootd/issues/249
-# fix https://github.com/xrootd/xrootd/commit/9b2f49000bb158b9bcc7dfc89ac9bde24c93829a
-# should be in 4.2.2
-Patch1: readsExceedFileSizeCache.patch
-
-# Patch XRootD 4.2.1 to fix seg faulting when asking for the file size
-# Bug report: https://github.com/xrootd/xrootd/issues/256
-# fix https://github.com/xrootd/xrootd/commit/98df5250dbfc6f0f8373b51df78a0d2633170e83
-Patch2: filesizePythonBingingsSegFault.patch
-
-# Patch XRootD 4.2.1 to fix cmsd blocking when thread limit is reached
-# Fix https://github.com/xrootd/xrootd/issues/137
-# Commit https://github.com/xrootd/xrootd/commit/fff70581cfb0cc9f934e630200cb3950c96d4b21
-Patch3: cmsdtreadlimit.patch
-
 Requires:	%{name}-server%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-selinux = %{epoch}:%{version}-%{release}
 Obsoletes:	%{name} < 1:4.0.0
@@ -268,10 +244,6 @@ This package contains the API documentation of the xrootd libraries.
 
 %prep
 %setup -q -n %{name}
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
 
 %if %{?fedora}%{!?fedora:0} <= 9 && %{?rhel}%{!?rhel:0} <= 5
 # Older versions of SELinux do not have policy for open
