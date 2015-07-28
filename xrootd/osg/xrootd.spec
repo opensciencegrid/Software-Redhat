@@ -17,8 +17,8 @@
 
 Name:		xrootd
 Epoch:		1
-Version:	4.2.1
-Release:	5%{?dist}
+Version:	4.2.2
+Release:	1%{?dist}
 Summary:	Extended ROOT file server
 
 Group:		System Environment/Daemons
@@ -657,6 +657,9 @@ fi
 %doc %{_pkgdocdir}
 
 %changelog
+* Tue Jul 28 2015 Carl Edquist <edquist@cs.wisc.edu> - 1:4.2.2-1
+- Update to 4.2.2
+
 * Mon Jul 13 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1:4.2.1-5
 - Added patch to avoid cmsd stalling when thread limit is reached
 
