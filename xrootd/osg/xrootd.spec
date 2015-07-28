@@ -17,8 +17,8 @@
 
 Name:		xrootd
 Epoch:		1
-Version:	4.2.1
-Release:	5%{?dist}
+Version:	4.2.2
+Release:	1%{?dist}
 Summary:	Extended ROOT file server
 
 Group:		System Environment/Daemons
@@ -53,30 +53,6 @@ BuildRequires: python-sphinx
 %if %{?rhel}%{!?rhel:0} == 6
 BuildRequires: python-sphinx10
 %endif
-
-
-#
-# Patch XRootD 4.2.1 to fix file cache hangs
-# Bug report https://github.com/xrootd/xrootd/issues/239
-# fix https://github.com/xrootd/xrootd/commit/923a6a3cb14eddcd11618d4f2fdd7229b15e2390
-# should be in 4.2.2
-Patch0: fixfilecachehangs.patch
-
-# Patch XRootD 4.2.1 to fix file cache hangs
-# Bug report: https://github.com/xrootd/xrootd/issues/249
-# fix https://github.com/xrootd/xrootd/commit/9b2f49000bb158b9bcc7dfc89ac9bde24c93829a
-# should be in 4.2.2
-Patch1: readsExceedFileSizeCache.patch
-
-# Patch XRootD 4.2.1 to fix seg faulting when asking for the file size
-# Bug report: https://github.com/xrootd/xrootd/issues/256
-# fix https://github.com/xrootd/xrootd/commit/98df5250dbfc6f0f8373b51df78a0d2633170e83
-Patch2: filesizePythonBingingsSegFault.patch
-
-# Patch XRootD 4.2.1 to fix cmsd blocking when thread limit is reached
-# Fix https://github.com/xrootd/xrootd/issues/137
-# Commit https://github.com/xrootd/xrootd/commit/fff70581cfb0cc9f934e630200cb3950c96d4b21
-Patch3: cmsdtreadlimit.patch
 
 Requires:	%{name}-server%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-selinux = %{epoch}:%{version}-%{release}
@@ -267,22 +243,12 @@ This package contains the API documentation of the xrootd libraries.
 
 
 %prep
-%setup -q
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
+%setup -q -n %{name}
 
 %if %{?fedora}%{!?fedora:0} <= 9 && %{?rhel}%{!?rhel:0} <= 5
 # Older versions of SELinux do not have policy for open
 sed 's/ open / /' -i packaging/common/%{name}.te
 %endif
-
-# Rename documentation file to get the includes right
-mv bindings/python/examples/copy_example.py bindings/python/examples/copy.py
-
-# Create missing documentation file
-touch bindings/python/README.rst
 
 %build
 mkdir build
@@ -657,26 +623,29 @@ fi
 %doc %{_pkgdocdir}
 
 %changelog
-* Mon Jul 13 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> -1:4.2.1-5
+* Tue Jul 28 2015 Carl Edquist <edquist@cs.wisc.edu> - 1:4.2.2-1
+- Update to 4.2.2
+
+* Mon Jul 13 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1:4.2.1-5
 - Added patch to avoid cmsd stalling when thread limit is reached
 
-* Fri Jul 10 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> -1:4.2.1-4
+* Fri Jul 10 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1:4.2.1-4
 - Added patch to avoid seg faulting on the python bindings when askign file size
 
-* Fri Jul 10 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> -1:4.2.1-3
+* Fri Jul 10 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1:4.2.1-3
 - Added patch for reads in the cache exceeding file size
 
-* Mon Jun 22 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> -1:4.2.1-2
+* Mon Jun 22 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1:4.2.1-2
 - Added patch to fix file cache hangs
 
-* Mon Jun 1 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> -1:4.2.1-1
+* Mon Jun 1 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1:4.2.1-1
 - Updated to 4.2.1
 - Included ceph subpackage
 
-* Wed May 27 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> -1:4.2.0-2
+* Wed May 27 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1:4.2.0-2
 - Fixed the dist tag been twice in the release field
 
-* Tue May 26 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> -1:4.2.0-1
+* Tue May 26 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1:4.2.0-1
 - Update to 4.2.0
 - Added some macros for the python bindings
 
