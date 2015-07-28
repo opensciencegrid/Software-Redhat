@@ -250,12 +250,6 @@ This package contains the API documentation of the xrootd libraries.
 sed 's/ open / /' -i packaging/common/%{name}.te
 %endif
 
-# Rename documentation file to get the includes right
-mv bindings/python/examples/copy_example.py bindings/python/examples/copy.py
-
-# Create missing documentation file
-touch bindings/python/README.rst
-
 %build
 mkdir build
 
