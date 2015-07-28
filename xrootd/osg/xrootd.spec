@@ -657,26 +657,26 @@ fi
 %doc %{_pkgdocdir}
 
 %changelog
-* Mon Jul 13 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> -1:4.2.1-5
+* Mon Jul 13 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1:4.2.1-5
 - Added patch to avoid cmsd stalling when thread limit is reached
 
-* Fri Jul 10 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> -1:4.2.1-4
+* Fri Jul 10 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1:4.2.1-4
 - Added patch to avoid seg faulting on the python bindings when askign file size
 
-* Fri Jul 10 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> -1:4.2.1-3
+* Fri Jul 10 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1:4.2.1-3
 - Added patch for reads in the cache exceeding file size
 
-* Mon Jun 22 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> -1:4.2.1-2
+* Mon Jun 22 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1:4.2.1-2
 - Added patch to fix file cache hangs
 
-* Mon Jun 1 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> -1:4.2.1-1
+* Mon Jun 1 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1:4.2.1-1
 - Updated to 4.2.1
 - Included ceph subpackage
 
-* Wed May 27 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> -1:4.2.0-2
+* Wed May 27 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1:4.2.0-2
 - Fixed the dist tag been twice in the release field
 
-* Tue May 26 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> -1:4.2.0-1
+* Tue May 26 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1:4.2.0-1
 - Update to 4.2.0
 - Added some macros for the python bindings
 
