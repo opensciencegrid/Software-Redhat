@@ -1,6 +1,6 @@
 Name:           osg-release
 Version:        3.3
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        OSG Software for Enterprise Linux repository configuration
 
 Group:          System Environment/Base
@@ -64,8 +64,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Thu Jul 30 2015 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.3-3
-- Add goc-itb, goc-production repos
+* Thu Jul 30 2015 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.3-4
+- Add goc-itb, goc repos (SOFTWARE-1969)
 
 * Thu Jul 16 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.3-2
 - Disable gpgcheck for minefield repos since some packages are unsigned
