@@ -1,6 +1,6 @@
 Name:           osg-release
 Version:        3.2
-Release:        8%{?dist}
+Release:        9%{?dist}
 Summary:        OSG Software for Enterprise Linux repository configuration
 
 Group:          System Environment/Base
@@ -63,8 +63,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Thu Jul 30 2015 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.2-8
-- Add goc-itb, goc-production repos
+* Thu Jul 30 2015 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.2-9
+- Add goc-itb, goc repos (SOFTWARE-1969)
 
 * Tue Sep 30 2014 Carl Edquist <edquist@cs.wisc.edu> - 3.2-7
 - Rename debug repos to *-debuginfo (SOFTWARE-1622)

@@ -1,6 +1,6 @@
 Name:           osg-release-itb
 Version:        3.2
-Release:        7%{?dist}
+Release:        8%{?dist}
 Summary:        OSG Software for Enterprise Linux repository configuration
 
 Group:          System Environment/Base
@@ -63,8 +63,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Thu Jul 30 2015 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.2-7
-- Add goc-itb, goc-production repos
+* Thu Jul 30 2015 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.2-8
+- Add goc-itb, goc repos (SOFTWARE-1969)
 
 * Thu Jul 17 2014 Carl Edquist <edquist@cs.wisc.edu> - 3.2-6
 - Use .repo file templates and support el7 (SOFTWARE-1541)
