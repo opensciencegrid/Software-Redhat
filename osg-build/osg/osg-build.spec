@@ -1,8 +1,8 @@
 #%%global betatag .beta1
-%global _release 3
+%global _release 1
 
 Name:           osg-build
-Version:        1.5.0
+Version:        1.6.0
 Release:        %{?betatag:0.}%{_release}%{?betatag}%{?dist}
 Summary:        Build tools for the OSG
 
@@ -12,8 +12,6 @@ URL:            https://twiki.grid.iu.edu/bin/view/SoftwareTeam/OSGBuildTools
 
 Source0:        %{name}-%{version}%{?betatag}.tar.gz
 Patch0:         koji-hub-testing.patch
-Patch1:         Add-upcoming-prerelease-route.patch
-Patch2:         osg-promote-exact-route-names-should-never-be-ambigu.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
@@ -44,9 +42,6 @@ See %{url} for details.
 # changes the koji-hub URL to koji-hub-testing.chtc.wisc.edu, for testing only
 # % patch0 -p1
 
-%patch1 -p1
-%patch2 -p1
-
 %install
 rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
@@ -71,10 +66,17 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/%{name}/osg-koji-site.conf
 %{_datadir}/%{name}/osg-koji-home.conf
 %{_datadir}/%{name}/mock-auto.cfg.in
+%{_datadir}/%{name}/promoter.ini
 %{_datadir}/%{name}/rpmlint.cfg
 %doc %{_docdir}/%{name}/sample-osg-build.ini
 
 %changelog
+* Thu Jul 30 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6.0-1
+- Add promotion routes for goc repos (SOFTWARE-1969)
+- Read promotion route definitions from an ini file instead of guessing from available Koji tags
+- Fix promotion problems for repos with different supported dvers (SOFTWARE-1988)
+- Fix promotion route for contrib to go from development instead of testing
+
 * Wed Jul 08 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.0-3
 - Fix ambiguity with 'upcoming' promotion route
 
