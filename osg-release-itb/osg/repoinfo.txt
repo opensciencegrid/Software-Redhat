@@ -15,5 +15,5 @@ osg-upcoming-minefield    upcoming  development  koji      Upcoming_Build_Reposi
 osg-upcoming-prerelease   upcoming  prerelease   koji      Upcoming_Prerelease_Repository_for_Internal_Use
 
 goc-itb                   goc       itb          standard  GOC_ITB
-goc-production            goc       production   standard  GOC_Production
+goc                       goc       production   standard  GOC_Production
 
