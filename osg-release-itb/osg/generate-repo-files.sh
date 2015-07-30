@@ -37,8 +37,8 @@ mkrepofile () {
   esac
   
   case $TITLE in
-    ?* ) TITLE="- ${TITLE//_/ } -" ;;
-     * ) TITLE="-" ;;
+    "" ) TITLE="-" ;;
+     * ) TITLE="- ${TITLE//_/ } -" ;;
   esac
 
   sed "
