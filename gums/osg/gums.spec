@@ -8,7 +8,7 @@
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.4.4
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 %if 0%{?rhel} < 6
