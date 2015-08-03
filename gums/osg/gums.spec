@@ -8,7 +8,7 @@
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.4.4
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 %if 0%{?rhel} < 6
@@ -145,6 +145,8 @@ Summary: Tomcat service for GUMS
 %if 0%{?rhel} < 6
 %patch0 -p1
 %endif
+
+%patch1 -p1
 
 %build
 
@@ -390,7 +392,7 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
-* Mon Aug 03 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.4.4-2
+* Mon Aug 03 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.4.4-3
 - Bugfix; handle null objects correctly if using an older lcmaps client or
   gums-host (SOFTWARE-1989)
 
