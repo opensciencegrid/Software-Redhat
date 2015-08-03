@@ -111,7 +111,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.4
+%define condor_base_release 1.5
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -212,6 +212,13 @@ Patch2: 4590-improved_tool_output.patch
 # https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=3158
 # https://jira.opensciencegrid.org/browse/SOFTWARE-1553
 Patch3: 3158-user-specific-configs.patch
+
+# These should make it into 8.2.9
+# https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=5181
+# https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=5190
+# https://jira.opensciencegrid.org/browse/SOFTWARE-1992
+Patch4: 5181-remove-SUBMIT_Iwd.patch
+Patch5: 5190-ghap-reopen.patch
 
 #% if 0%osg
 Patch8: osg_sysconfig_in_init_script.patch
@@ -704,6 +711,8 @@ exit 0
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
+%patch5 -p1
 
 %patch8 -p1
 
@@ -1823,6 +1832,9 @@ fi
 %endif
 
 %changelog
+* Mon Aug 03 2015 Carl Edquist <edquist@cs.wisc.edu> - 8.2.8-1.5
+- pull in #5181 and #5181 from 8.2.9 (SOFTWARE-1992)
+
 * Thu Jun 11 2015 Carl Edquist <edquist@cs.wisc.edu> - 8.2.8-1.4
 - fix JAVA_CLASSPATH_DEFAULT for java universe (SOFTWARE-1941)
 
