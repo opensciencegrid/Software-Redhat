@@ -98,6 +98,10 @@ Source14: velocity-1.5.jar
 # Can't get el5 build working with jsp precompile
 Patch0: undo-jsp-precompile.patch
 
+# Should make it into v1.4.5
+# https://github.com/bbockelm/gums/commit/7e9d1ba283e5c7e80a89067b3664fdb1c2ede31d
+Patch1: check_null_obj.patch
+
 %description
 %{summary}
 
@@ -386,6 +390,10 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+* Mon Aug 03 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.4.4-2
+- Bugfix; handle null objects correctly if using an older lcmaps client or
+  gums-host (SOFTWARE-1989)
+
 * Thu Jul 23 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.4.4-1
 - Update to GUMS 1.4.4 (SOFTWARE-1726)
   - Add support for recycling accounts
