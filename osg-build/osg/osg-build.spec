@@ -1,5 +1,5 @@
 #%%global betatag .beta1
-%global _release 1
+%global _release 2
 
 Name:           osg-build
 Version:        1.6.0
@@ -12,6 +12,7 @@ URL:            https://twiki.grid.iu.edu/bin/view/SoftwareTeam/OSGBuildTools
 
 Source0:        %{name}-%{version}%{?betatag}.tar.gz
 Patch0:         koji-hub-testing.patch
+Patch1:         upcoming-routes.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
@@ -38,6 +39,7 @@ See %{url} for details.
 
 %prep
 %setup -q -n %{name}-%{version}%{?betatag}
+%patch1 -p1
 
 # changes the koji-hub URL to koji-hub-testing.chtc.wisc.edu, for testing only
 # % patch0 -p1
@@ -71,6 +73,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_docdir}/%{name}/sample-osg-build.ini
 
 %changelog
+* Tue Aug 04 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6.0-2
+- Change default dvers for upcoming* promotion routes to be el6 and el7 (instead of el5 and el6)
+
 * Thu Jul 30 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6.0-1
 - Add promotion routes for goc repos (SOFTWARE-1969)
 - Read promotion route definitions from an ini file instead of guessing from available Koji tags
