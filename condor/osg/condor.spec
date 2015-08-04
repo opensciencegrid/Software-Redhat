@@ -125,7 +125,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.3
+%define condor_base_release 1.1
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -221,6 +221,12 @@ Patch1: sw1636-cream_gahp-dlopen.patch
 # https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=4998
 Patch2: sw1921-revert-4910.patch
 
+# These should make it into 8.3.8
+# https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=5181
+# https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=5190
+# https://jira.opensciencegrid.org/browse/SOFTWARE-1991
+Patch3: 5181-remove-SUBMIT_Iwd.patch
+Patch4: 5190-ghap-reopen.patch
 
 #% if 0%osg
 Patch8: osg_sysconfig_in_init_script.patch
@@ -729,6 +735,9 @@ exit 0
 %if 0%{?rhel} < 6
 %patch2 -p1
 %endif
+
+%patch3 -p1
+%patch4 -p1
 
 %if 0%{?hcc}
 %patch15 -p0
@@ -1855,6 +1864,9 @@ fi
 %endif
 
 %changelog
+* Mon Aug 03 2015 Carl Edquist <edquist@cs.wisc.edu> - 8.3.7-1.1
+- pull in #5181 and #5181 from 8.3.8 (SOFTWARE-1991)
+
 * Tue Jul 21 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 8.3.6-1.3_nocream.osg
 - Provide htcondor.so and classad.so in condor-python on el7
 
