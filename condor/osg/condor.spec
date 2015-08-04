@@ -1,4 +1,4 @@
-%define tarball_version 8.3.7
+%define tarball_version 8.3.6
 
 # optionally define any of these, here or externally
 # % define fedora   16
@@ -758,7 +758,7 @@ export CMAKE_PREFIX_PATH=/usr
 # causes build issues with EL5, don't even bother building the tests.
 
 %if %uw_build
-%define condor_build_id 331383
+%define condor_build_id 325064
 
 %cmake \
        -DBUILDID:STRING=%condor_build_id \
@@ -958,6 +958,10 @@ mkdir -p -m1777 %{buildroot}/%{_var}/lock/condor/local
 mkdir -p -m0755 %{buildroot}/%{_var}/lib/condor/spool
 mkdir -p -m1777 %{buildroot}/%{_var}/lib/condor/execute
 
+# no master shutdown program for now
+rm -f %{buildroot}/%{_sbindir}/condor_set_shutdown
+rm -f %{buildroot}/%{_mandir}/man1/condor_set_shutdown.1
+
 # not packaging deployment tools
 rm -f %{buildroot}/%{_mandir}/man1/condor_config_bind.1
 rm -f %{buildroot}/%{_mandir}/man1/condor_cold_start.1
@@ -1024,11 +1028,13 @@ rm -rf %{buildroot}%{_sbindir}/condor_cold_start
 rm -rf %{buildroot}%{_sbindir}/condor_cold_stop
 rm -rf %{buildroot}%{_sbindir}/condor_config_bind
 rm -rf %{buildroot}%{_sbindir}/condor_configure
+rm -rf %{buildroot}%{_sbindir}/condor_credd
 rm -rf %{buildroot}%{_sbindir}/condor_install
 rm -rf %{buildroot}%{_sbindir}/condor_install_local
 rm -rf %{buildroot}%{_sbindir}/condor_local_start
 rm -rf %{buildroot}%{_sbindir}/condor_local_stop
 rm -rf %{buildroot}%{_sbindir}/condor_startd_factory
+rm -rf %{buildroot}%{_sbindir}/condor_vm-gahp-vmware
 rm -rf %{buildroot}%{_sbindir}/condor_vm_vmware.pl
 rm -rf %{buildroot}%{_sbindir}/filelock_midwife
 rm -rf %{buildroot}%{_sbindir}/filelock_undertaker
@@ -1085,6 +1091,7 @@ rm -rf %{buildroot}%{_mandir}/man1/condor_compile.1*
 rm -rf %{buildroot}%{_mandir}/man1/condor_config_bind.1*
 rm -rf %{buildroot}%{_mandir}/man1/condor_configure.1*
 rm -rf %{buildroot}%{_mandir}/man1/condor_load_history.1*
+rm -rf %{buildroot}%{_mandir}/man1/condor_set_shutdown.1*
 rm -rf %{buildroot}%{_mandir}/man1/filelock_midwife.1*
 rm -rf %{buildroot}%{_mandir}/man1/filelock_undertaker.1*
 rm -rf %{buildroot}%{_mandir}/man1/install_release.1*
@@ -1264,7 +1271,6 @@ rm -rf %{buildroot}
 %_mandir/man1/condor_restart.1.gz
 %_mandir/man1/condor_rm.1.gz
 %_mandir/man1/condor_run.1.gz
-%_mandir/man1/condor_set_shutdown.1.gz
 %_mandir/man1/condor_sos.1.gz
 %_mandir/man1/condor_stats.1.gz
 %_mandir/man1/condor_status.1.gz
@@ -1346,7 +1352,6 @@ rm -rf %{buildroot}
 %_sbindir/condor_c-gahp
 %_sbindir/condor_c-gahp_worker_thread
 %_sbindir/condor_collector
-%_sbindir/condor_credd
 %_sbindir/condor_fetchlog
 %_sbindir/condor_had
 %_sbindir/condor_init
@@ -1360,7 +1365,6 @@ rm -rf %{buildroot}
 %_sbindir/condor_restart
 %attr(6755, root, root) %_sbindir/condor_root_switchboard
 %_sbindir/condor_schedd
-%_sbindir/condor_set_shutdown
 %_sbindir/condor_shadow
 %_sbindir/condor_sos
 %_sbindir/condor_startd
@@ -1383,7 +1387,6 @@ rm -rf %{buildroot}
 %_sbindir/boinc_gahp
 %endif
 %_libexecdir/condor/condor_gpu_discovery
-%_sbindir/condor_vm-gahp-vmware
 %_sbindir/condor_vm_vmware
 %config(noreplace) %_sysconfdir/condor/ganglia.d/00_default_metrics
 %defattr(-,condor,condor,-)
