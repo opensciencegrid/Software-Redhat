@@ -4,12 +4,20 @@
 Summary: The VOMS Administration service
 Name: voms-admin-server
 Version: 2.7.0
-Release: 1.14%{?dist}
+Release: 1.15%{?dist}
 License:    ASL 2.0
 Group: System Environment/Libraries
+%if %{?rhel} < 7
 BuildRequires:  maven22
 BuildRequires:  jpackage-utils
 BuildRequires:  java7-devel
+%define mvn mvn22
+%define mvnopts -B
+%else
+BuildRequires:  maven-local
+%define mvn xmvn
+%define mvnopts -B -o
+%endif
 BuildRequires:  emi-trustmanager
 BuildRequires:  emi-trustmanager-axis
 BuildRequires:  /usr/share/java/jta.jar
@@ -19,6 +27,7 @@ Requires: java7-devel
 Requires: emi-trustmanager
 Requires: emi-trustmanager-tomcat
 Requires: bouncycastle >= 1.39
+
 %if 0%{?rhel} <= 5
 Requires: tomcat5
 Requires: fetch-crl3
@@ -27,6 +36,7 @@ Requires: fetch-crl3
 %define tomcat_endorsed /usr/share/tomcat5/common/endorsed
 %define catalina_home /usr/share/tomcat5
 %endif
+
 %if 0%{?rhel} == 6
 Requires: tomcat6
 Requires: fetch-crl
@@ -35,6 +45,22 @@ Requires: fetch-crl
 %define tomcat_endorsed /usr/share/tomcat6/endorsed
 %define catalina_home /usr/share/tomcat6
 %endif
+
+%if 0%{?rhel} >= 7
+Requires: tomcat
+Requires: fetch-crl
+%define tomcat tomcat
+%define tomcat_lib /usr/share/%tomcat/lib
+%define tomcat_endorsed /usr/share/%tomcat/endorsed
+%define catalina_home /usr/share/%tomcat
+
+BuildRequires: maven-war-plugin
+BuildRequires: maven-compiler-plugin
+BuildRequires: maven-install-plugin
+BuildRequires: maven-clean-plugin
+BuildRequires: plexus-digest
+%endif
+
 Requires(post):/sbin/chkconfig
 Requires(preun):/sbin/chkconfig
 Requires(preun):/sbin/service
@@ -48,12 +74,23 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch: noarch
 AutoReqProv: yes
 Source0:  %{name}-%{version}.tar.gz
+Source1:  axistools-maven-plugin-1.4.jar
+Source2:  axistools-maven-plugin-1.4.pom
+%define axistools_jarfile %{SOURCE1}
+%define axistools_pomfile %{SOURCE2}
+Source3:  maven-license-plugin-1.5.1.jar
+Source4:  maven-license-plugin-1.5.1.pom
+%define license_plugin_jarfile %{SOURCE3}
+%define license_plugin_pomfile %{SOURCE4}
+
+
 Patch1: directory-defaults.patch
 Patch2: maven-resources-disable.patch
 Patch3: cern-mirror-disable.patch
 Patch4: trustmanager-versions.patch
 Patch5: fix-suspended-users.patch
 Patch6: fix-certificate-issuer-check.patch
+Patch7: Fix-versions-of-packages-in-pom.xml-for-EL7.patch
 
 Requires: osg-webapp-common
 
@@ -74,7 +111,7 @@ administration tasks.
 
 %setup -q -n voms-admin
 %patch1 -p0
-%if 0%{?rhel} == 6
+%if 0%{?rhel} >= 6
 # Tried to "BuildRequires: maven-resources-plugin" like in voms-admin-client,
 # but it gave me an odd NoClassDefFoundError
 # so I'm using a patch to disable using the maven-resources-plugin for el6
@@ -87,20 +124,64 @@ administration tasks.
 %patch5 -p0
 %patch6 -p0
 
+%if 0%{?rhel} >= 7
+%patch7 -p1
+%endif
+
+%define local_maven /tmp/m2/repository
+
 %build
 # Fix tomcat directory location in init script
 # The directory-defaults.patch adds the line we're fixing here
 sed -i -e 's/@TOMCAT@/%{tomcat}/' resources/scripts/init-voms-admin.py
- 
+
+mvn_install_file () {
+    groupId=$1
+    artifactId=$2
+    version=$3
+    file=$4
+
+    # Get out of the package dir so maven won't look at the package's pom.xml
+    pushd /tmp
+
+    %mvn %mvnopts install:install-file \
+        -DgroupId="$groupId" \
+        -DartifactId="$artifactId" \
+        -Dversion="$version" \
+        -Dpackaging=jar \
+        -Dfile="$file" \
+        -Dmaven.repo.local="%{local_maven}"
+    popd
+}
+
+mvn_install_file_with_pom () {
+    file=$1
+    pomFile=$2
+
+    # Get out of the package dir so maven won't look at the package's pom.xml
+    pushd /tmp
+
+    %mvn %mvnopts install:install-file \
+        -Dfile="$file" \
+        -DpomFile="$pomFile" \
+        -Dmaven.repo.local="%{local_maven}"
+    popd
+}
+
+%if 0%{?rhel} >= 7
+    mvn_install_file_with_pom  %license_plugin_jarfile  %license_plugin_pomfile
+    mvn_install_file_with_pom  %axistools_jarfile  %axistools_pomfile
+%endif
+
 # Adding system dependencies
-mvn22 install:install-file -DgroupId=emi -DartifactId=trustmanager -Dversion=3.0.3 -Dpackaging=jar -Dfile=`build-classpath trustmanager` -Dmaven.repo.local=/tmp/m2-repository
-mvn22 install:install-file -DgroupId=emi -DartifactId=trustmanager-axis -Dversion=1.0.1 -Dpackaging=jar -Dfile=`build-classpath trustmanager-axis` -Dmaven.repo.local=/tmp/m2-repository
-mvn22 install:install-file -DgroupId=javax.transaction -DartifactId=jta -Dversion=1.0.1B -Dpackaging=jar -Dfile=`build-classpath jta` -Dmaven.repo.local=/tmp/m2-repository
+mvn_install_file  emi trustmanager 3.0.3 "`build-classpath trustmanager`"
+mvn_install_file  emi trustmanager-axis 1.0.1 "`build-classpath trustmanager-axis`"
+mvn_install_file  javax.transaction jta 1.0.1B "`build-classpath jta`"
 
 export JAVA_HOME=%{java_home};
-mvn22 -B -s src/config/emi-build-settings.xml -e -P EMI -Dmaven.repo.local=/tmp/m2-repository package
-  
-  
+%mvn %mvnopts -s src/config/emi-build-settings.xml -e -P EMI -Dmaven.repo.local="%{local_maven}" package
+
+
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -161,6 +242,9 @@ fi
 %{tomcat_endorsed}/xalan-j2-serializer.jar
 
 %changelog
+* Tue Jul 21 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 2.7.0-1.15.osg
+- Changes to build on el7 with tomcat 7
+
 * Wed Jul 01 2015 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.7.0-1.14
 - Require grid-certificates >= 7 (SOFTWARE-1883)
 

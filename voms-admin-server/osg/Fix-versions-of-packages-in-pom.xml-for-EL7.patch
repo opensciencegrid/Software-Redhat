@@ -1,0 +1,56 @@
+From 6e055dee85ae20d9711ca60be36791f52b522ffc Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Wed, 5 Aug 2015 13:17:20 -0500
+Subject: [PATCH] Fix versions of packages in pom.xml for EL7
+
+---
+ pom.xml | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/pom.xml b/pom.xml
+index b106e9a..602d1ab 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -112,11 +112,11 @@
+ 				</configuration>
+ 			</plugin>
+ 			<plugin>
+ 				<groupId>org.apache.maven.plugins</groupId>
+ 				<artifactId>maven-war-plugin</artifactId>
+-				<version>2.1.1</version>
++				<version>SYSTEM</version>
+ 				<executions>
+ 
+ 					<!-- Siblings WAR -->
+ 					<execution>
+ 						<id>VOMS-Admin siblings war creation</id>
+@@ -186,12 +186,12 @@
+ 				</executions>
+ 			</plugin>
+ 
+ 			<plugin>
+ 				<groupId>org.codehaus.mojo</groupId>
+-				<artifactId>axistools-maven-plugin
+-				</artifactId>
++				<artifactId>axistools-maven-plugin</artifactId>
++				<version>1.4</version>
+ 				<executions>
+ 					<execution>
+ 						<goals>
+ 							<goal>wsdl2java</goal>
+ 						</goals>
+@@ -267,10 +267,11 @@
+ 
+ 
+ 			<plugin>
+ 				<groupId>org.apache.maven.plugins</groupId>
+ 				<artifactId>maven-compiler-plugin</artifactId>
++				<version>SYSTEM</version>
+ 				<configuration>
+ 					<source>1.5</source>
+ 					<target>1.5</target>
+ 				</configuration>
+ 			</plugin>
+-- 
+2.4.6
+
