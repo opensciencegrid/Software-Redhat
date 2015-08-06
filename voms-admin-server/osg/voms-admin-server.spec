@@ -1,23 +1,37 @@
 ## Turn off meaningless jar repackaging 
 %define __jar_repack 0
 
+# If set, the maven build is done in offline mode and a tarball of the maven
+# dependencies (basically the local repository tarred up) is used.
+%define maven_offline 0
+
 Summary: The VOMS Administration service
 Name: voms-admin-server
 Version: 2.7.0
-Release: 1.15%{?dist}
-License:    ASL 2.0
+Release: 1.16%{?dist}
+License: ASL 2.0
 Group: System Environment/Libraries
+
 %if %{?rhel} < 7
+
 BuildRequires:  maven22
 BuildRequires:  jpackage-utils
 BuildRequires:  java7-devel
 %define mvn mvn22
-%define mvnopts -B
+
 %else
-BuildRequires:  maven-local
-%define mvn xmvn
-%define mvnopts -B -o
+
+BuildRequires:  maven >= 3.0
+%define mvn mvn
+
 %endif
+
+%if 0%{?maven_offline}
+%define mvnopts -B -o
+%else
+%define mvnopts -B
+%endif
+
 BuildRequires:  emi-trustmanager
 BuildRequires:  emi-trustmanager-axis
 BuildRequires:  /usr/share/java/jta.jar
@@ -53,12 +67,6 @@ Requires: fetch-crl
 %define tomcat_lib /usr/share/%tomcat/lib
 %define tomcat_endorsed /usr/share/%tomcat/endorsed
 %define catalina_home /usr/share/%tomcat
-
-BuildRequires: maven-war-plugin
-BuildRequires: maven-compiler-plugin
-BuildRequires: maven-install-plugin
-BuildRequires: maven-clean-plugin
-BuildRequires: plexus-digest
 %endif
 
 Requires(post):/sbin/chkconfig
@@ -74,14 +82,21 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch: noarch
 AutoReqProv: yes
 Source0:  %{name}-%{version}.tar.gz
-Source1:  axistools-maven-plugin-1.4.jar
-Source2:  axistools-maven-plugin-1.4.pom
-%define axistools_jarfile %{SOURCE1}
-%define axistools_pomfile %{SOURCE2}
-Source3:  maven-license-plugin-1.5.1.jar
-Source4:  maven-license-plugin-1.5.1.pom
-%define license_plugin_jarfile %{SOURCE3}
-%define license_plugin_pomfile %{SOURCE4}
+
+%if 0%{?maven_offline}
+
+Source6:     voms-admin-server-mvn-deps-el6.tar.gz
+Source7:     voms-admin-server-mvn-deps-el7.tar.gz
+
+    %if 0%{?el6}
+        %define mvn_deps_tarball %{SOURCE6}
+    %endif
+
+    %if 0%{?el7}
+        %define mvn_deps_tarball %{SOURCE7}
+    %endif
+
+%endif
 
 
 Patch1: directory-defaults.patch
@@ -90,7 +105,7 @@ Patch3: cern-mirror-disable.patch
 Patch4: trustmanager-versions.patch
 Patch5: fix-suspended-users.patch
 Patch6: fix-certificate-issuer-check.patch
-Patch7: Fix-versions-of-packages-in-pom.xml-for-EL7.patch
+Patch7: axistools-version.patch
 
 Requires: osg-webapp-common
 
@@ -130,7 +145,36 @@ administration tasks.
 
 %define local_maven /tmp/m2/repository
 
+
 %build
+
+# If we're using maven in offline mode, then copy our maven dependencies from
+# the tarball(s) we have into the local mvn repo
+%if 0%{?maven_offline}
+
+    rm -rf "%{local_maven}"
+    # Do not copy over these deps into the local repo because we already have
+    # them by other means
+    DEP_BLACKLIST=(
+                   emi/trustmanager
+                   emi/trustmanager-axis
+                   javax/transaction
+                  )
+
+    tar -xzf "%{mvn_deps_tarball}"
+
+    (
+        cd repository
+        for dep in "${DEP_BLACKLIST[@]}"; do
+            rm -rf "$dep"
+        done
+        mkdir -p "%{local_maven}"
+        mv -f * "%{local_maven}/"
+    )
+    rm -rf repository
+
+%endif
+
 # Fix tomcat directory location in init script
 # The directory-defaults.patch adds the line we're fixing here
 sed -i -e 's/@TOMCAT@/%{tomcat}/' resources/scripts/init-voms-admin.py
@@ -153,25 +197,6 @@ mvn_install_file () {
         -Dmaven.repo.local="%{local_maven}"
     popd
 }
-
-mvn_install_file_with_pom () {
-    file=$1
-    pomFile=$2
-
-    # Get out of the package dir so maven won't look at the package's pom.xml
-    pushd /tmp
-
-    %mvn %mvnopts install:install-file \
-        -Dfile="$file" \
-        -DpomFile="$pomFile" \
-        -Dmaven.repo.local="%{local_maven}"
-    popd
-}
-
-%if 0%{?rhel} >= 7
-    mvn_install_file_with_pom  %license_plugin_jarfile  %license_plugin_pomfile
-    mvn_install_file_with_pom  %axistools_jarfile  %axistools_pomfile
-%endif
 
 # Adding system dependencies
 mvn_install_file  emi trustmanager 3.0.3 "`build-classpath trustmanager`"
@@ -242,6 +267,9 @@ fi
 %{tomcat_endorsed}/xalan-j2-serializer.jar
 
 %changelog
+* Thu Aug 06 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 2.7.0-1.16.osg
+- Build for el6 and el7; optionally use a bundle of mvn dependencies so we can build in offline mode
+
 * Tue Jul 21 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 2.7.0-1.15.osg
 - Changes to build on el7 with tomcat 7
 
