@@ -1,6 +1,6 @@
 Name:           vo-client
-Version:        60
-Release:        2%{?dist}
+Version:        61
+Release:        1%{?dist}
 Summary:        Contains vomses file for use with user authentication and edg-mkgridmap.conf file that contains configuration information for edg-mkgridmap.
 
 Group:          System Environment/Base
@@ -85,6 +85,10 @@ rm -rf $RPM_BUILD_ROOT
 %attr(0600,tomcat,tomcat) %config(noreplace) %{_sysconfdir}/gums/gums.config.template
 
 %changelog
+* Fri Aug 07 2015 Carl Edquist <edquist@cs.wisc.edu> - 61-1
+- Update to vo-client 61 (SOFTWARE-1993)
+  - Added DUNE VO
+
 * Fri Jul 17 2015 Mátyás Selmeci <matyas@cs.wisc.edu> - 60-2
 - Require grid-certificates >= 7 (SOFTWARE-1883)
 
