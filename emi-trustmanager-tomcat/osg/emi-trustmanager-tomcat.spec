@@ -37,7 +37,7 @@ Source1: config.properties
 Patch0: configure.patch
 Patch1: build.xml.patch
 Patch2: log4j-trustmanager.patch
-Patch10: 0010-Tomcat-7-ServerSocketFactory-changed-from-abstract-cl.patch
+Patch10: 0010-Tomcat-7-ServerSocketFactory-changed-from-abstract-c.patch
 Patch11: 0011-Tomcat-7-Implement-getSSLUtil-in-TMSSLImplementation.patch
 Patch12: 0012-Tomcat-7-getServerSocketFactory-that-takes-an-Abstra.patch
 Patch13: 0013-Tomcat-7-Don-t-catch-ClassNotFoundException.patch
