@@ -21,7 +21,7 @@ Name:           glideinwms
 # ------------------------------------------------------------------------------
 %if %{v3_plus}
 %define version 3.3
-%define release 0.1.rc1
+%define release 0.2.rc2
 %define frontend_xml frontend.master.xml
 %define factory_xml glideinWMS.master.xml
 %endif
@@ -590,6 +590,9 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/glideinwms/creation/lib/cWParams.py
 %{python_sitelib}/glideinwms/creation/lib/cWParams.pyc
 %{python_sitelib}/glideinwms/creation/lib/cWParams.pyo
+%{python_sitelib}/glideinwms/creation/lib/cWParamDict.py
+%{python_sitelib}/glideinwms/creation/lib/cWParamDict.pyc
+%{python_sitelib}/glideinwms/creation/lib/cWParamDict.pyo
 %{python_sitelib}/glideinwms/creation/lib/cgWConsts.py
 %{python_sitelib}/glideinwms/creation/lib/cgWConsts.pyc
 %{python_sitelib}/glideinwms/creation/lib/cgWConsts.pyo
@@ -660,6 +663,9 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/glideinwms/creation/lib/cWParams.py
 %{python_sitelib}/glideinwms/creation/lib/cWParams.pyc
 %{python_sitelib}/glideinwms/creation/lib/cWParams.pyo
+%{python_sitelib}/glideinwms/creation/lib/cWParamDict.py
+%{python_sitelib}/glideinwms/creation/lib/cWParamDict.pyc
+%{python_sitelib}/glideinwms/creation/lib/cWParamDict.pyo
 %{python_sitelib}/glideinwms/creation/lib/cvWConsts.py
 %{python_sitelib}/glideinwms/creation/lib/cvWConsts.pyc
 %{python_sitelib}/glideinwms/creation/lib/cvWConsts.pyo
@@ -735,6 +741,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Aug 12 2015 Parag Mhashilkar <parag@fnal.gov> - 3.3-0.2.rc2
+- Glideinwms v3.3 rc2 release
+- Release Notes: http://www.uscms.org/SoftwareComputing/Grid/WMS/glideinWMS/doc.dev/history.html
+
 * Thu Jul 16 2015 Parag Mhashilkar <parag@fnal.gov> - 3.3-0.1.rc1
 - Glideinwms v3.3 rc1 release
 - Release Notes: http://www.uscms.org/SoftwareComputing/Grid/WMS/glideinWMS/doc.dev/history.html
