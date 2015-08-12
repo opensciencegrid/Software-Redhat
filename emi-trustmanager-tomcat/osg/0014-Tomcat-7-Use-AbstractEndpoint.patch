@@ -1,0 +1,199 @@
+From 63c2c02aa9a6084bc73f15dbc6655ea3995743e1 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Mon, 10 Aug 2015 13:48:46 -0500
+Subject: [PATCH 14/14] Tomcat 7: Use AbstractEndpoint
+
+Many of the "attributes" from the old ServerSocketFactory class are now
+accessible as members of the AbstractEndpoint that gets passed to the
+ServerSocketFactory constructor; use those instead.
+
+We need to write it to a Properties object that the glite libraries will
+use, so we have to get the attributes one at a time from the
+AbstractEndpoint.
+---
+ .../trustmanager/tomcat/TMSSLImplementation.java   |  6 +--
+ .../tomcat/TMSSLServerSocketFactory.java           | 55 ++++++++++++++++++----
+ 2 files changed, 47 insertions(+), 14 deletions(-)
+
+diff --git a/src/org/glite/security/trustmanager/tomcat/TMSSLImplementation.java b/src/org/glite/security/trustmanager/tomcat/TMSSLImplementation.java
+index 1ce2952..593d22d 100644
+--- a/src/org/glite/security/trustmanager/tomcat/TMSSLImplementation.java
++++ b/src/org/glite/security/trustmanager/tomcat/TMSSLImplementation.java
+@@ -95,16 +95,12 @@ public class TMSSLImplementation extends SSLImplementation {
+      * The method used by Tomcat to get the actual SSLServerSocketFactory to use
+      * to create the ServerSockets.
+      *
+      * @see org.apache.tomcat.util.net.SSLImplementation#getServerSocketFactory()
+      */
+-    public ServerSocketFactory getServerSocketFactory() {
+-        return new TMSSLServerSocketFactory();
+-    }
+-
+     public ServerSocketFactory getServerSocketFactory(AbstractEndpoint endpoint) {
+-        return new TMSSLServerSocketFactory();
++        return new TMSSLServerSocketFactory(endpoint);
+     }
+ 
+     /*
+      * The method used to get the class that provides the SSL support functions.
+      * Current implementation reuses Tomcat's own JSSE SSLSupport class as we
+diff --git a/src/org/glite/security/trustmanager/tomcat/TMSSLServerSocketFactory.java b/src/org/glite/security/trustmanager/tomcat/TMSSLServerSocketFactory.java
+index fc844bc..d89b94a 100644
+--- a/src/org/glite/security/trustmanager/tomcat/TMSSLServerSocketFactory.java
++++ b/src/org/glite/security/trustmanager/tomcat/TMSSLServerSocketFactory.java
+@@ -81,10 +81,16 @@ public class TMSSLServerSocketFactory implements ServerSocketFactory {
+     /**
+      * Flag to allow the renegotiation, and thus exposing the connection to man in the middle attack.
+      */
+     private boolean m_allowUnsafeLegacyRenegotiation = false;
+ 
++    private AbstractEndpoint endpoint;
++
++    public TMSSLServerSocketFactory(AbstractEndpoint endpoint) {
++        this.endpoint = endpoint;
++    }
++
+     /*
+      * (non-Javadoc)
+      *
+      * @see org.apache.tomcat.util.net.ServerSocketFactory#acceptSocket(java.net.ServerSocket)
+      */
+@@ -184,49 +190,49 @@ public class TMSSLServerSocketFactory implements ServerSocketFactory {
+      */
+     void init() throws IOException {
+         LOGGER.debug("TMSSLServerSocketFactory.init:");
+ 
+         try {
+-            String clientAuthStr = (String) attributes.get("clientauth");
++            String clientAuthStr = endpoint.getClientAuth();
+ 
+             if ("true".equalsIgnoreCase(clientAuthStr) || "yes".equalsIgnoreCase(clientAuthStr)) {
+                 requireClientAuth = true;
+             } else if ("want".equalsIgnoreCase(clientAuthStr)) {
+                 wantClientAuth = true;
+             }
+ 
+             // SSL protocol variant (e.g., TLS, SSL v3, etc.)
+-            String protocol = (String) attributes.get("protocol");
++            String protocol = endpoint.getSslProtocol();
+ 
+             if (protocol == null) {
+                 protocol = ContextWrapper.SSL_PROTOCOL_DEFAULT;
+             }
+ 
+             // Certificate encoding algorithm (e.g., SunX509)
+-            String algorithm = (String) attributes.get("algorithm");
++            String algorithm = endpoint.getAlgorithm();
+ 
+             if (algorithm == null) {
+                 algorithm = defaultAlgorithm;
+             }
+ 
+-            String keystoreType = (String) attributes.get("keystoreType");
++            String keystoreType = endpoint.getKeystoreType();
+ 
+             if (keystoreType == null) {
+                 keystoreType = ContextWrapper.KEYSTORE_TYPE_DEFAULT;
+             }
+ 
+-            String trustAlgorithm = (String) attributes.get("truststoreAlgorithm");
++            String trustAlgorithm = endpoint.getTruststoreAlgorithm();
+ 
+             if (trustAlgorithm == null) {
+                 trustAlgorithm = algorithm;
+             }
+ 
+             // Create and init SSLContext
+             initProxy();
+ 
+             // Determine which cipher suites to enable
+-            String requestedCiphers = (String) attributes.get("ciphers");
++            String requestedCiphers = endpoint.getCiphers();
+ 
+             if (requestedCiphers != null) {
+                 enabledCiphers = getEnabledCiphers(requestedCiphers, sslProxy.getSupportedCipherSuites());
+             }
+         } catch (Exception e) {
+@@ -314,21 +320,52 @@ public class TMSSLServerSocketFactory implements ServerSocketFactory {
+         }
+ 
+         return acceptedCiphers;
+     }
+ 
++
++    private void putAttributesInProps(Properties props) {
++        String[] keys = { "credentialsUpdateInterval"
++                        , "crlEnabled"
++                        , "crlFiles"
++                        , "crlRequired"
++                        , "crlUpdateInterval"
++                        , "gridProxyFile"
++                        , "internalOverrideExpirationCheck"
++                        , "log4jConfFile"
++                        , "logFile"
++                        , "sslCAFiles"
++                        , "sslCAStore"
++                        , "sslCAStorePasswd"
++                        , "sslCAStoreType"
++                        , "sslCertFile"
++                        , "sslCertStore"
++                        , "sslCertStorePasswd"
++                        , "sslCertStoreType"
++                        , "sslConfigFile"
++                        , "sslKey"
++                        , "sslKeyPasswd"
++                        , "sslProtocol"
++                        , "sslTimeout"
++                        , "trustStoreDir"
++                        , "wantLog4jSetup"
++                        };
++        for (String key : keys) {
++            props.put(key, (String)endpoint.getAttribute(key));
++        }
++    }
+     /**
+      * Initialize the SSL socket factory.
+      * 
+      * @exception IOException if an input/output error occurs
+      */
+     private void initProxy() throws IOException {
+         LOGGER.debug("TMSSLServerSocketFactory.initProxy:");
+ 
+         try {
+             Properties props = new Properties();
+-            props.putAll(attributes);
++            putAttributesInProps(props);
+             LOGGER.debug(props);
+             
+             String crlsEnabled = props.getProperty(ContextWrapper.CRL_ENABLED, ContextWrapper.CRL_ENABLED_DEFAULT);
+             
+             // only set the default if the crls are not disabled.
+@@ -359,11 +396,11 @@ public class TMSSLServerSocketFactory implements ServerSocketFactory {
+     private void initServerSocket(ServerSocket ssocket) {
+         LOGGER.debug("TMSSLServerSocketFactory.initServerSocket:");
+ 
+         SSLServerSocket socket = (SSLServerSocket) ssocket;
+ 
+-        if (attributes.get("ciphers") != null) {
++        if (endpoint.getCiphers() != null) {
+             socket.setEnabledCipherSuites(enabledCiphers);
+         }else{
+             String[] ciphers;
+             ArrayList<String> newCiphers;
+             int i;
+@@ -381,11 +418,11 @@ public class TMSSLServerSocketFactory implements ServerSocketFactory {
+             }
+             socket.setEnabledCipherSuites(newCiphers.toArray(new String[] {}));                    
+             
+         }
+ 
+-        String requestedProtocols = (String) attributes.get("protocols");
++        String requestedProtocols = endpoint.getSslProtocol();
+         setEnabledProtocols(socket, getEnabledProtocols(socket, requestedProtocols));
+ 
+         // we don't know if client auth is needed -
+         // after parsing the request we may re-handshake
+         configureClientAuth(socket);
+-- 
+2.4.6
+
