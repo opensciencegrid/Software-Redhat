@@ -1,0 +1,20 @@
+--- pathdiag/Makefile	2008-05-16 16:37:07.000000000 -0500
++++ pathdiag/Makefile.new	2013-05-23 12:34:41.506231202 -0500
+@@ -3,7 +3,7 @@
+ PYINCLUDE  = -I`python -c 'import sys; print("%s/include/python%s"%(sys.prefix, sys.version[:3]))'`
+ # BEWARE: -fpic not needed or not correct with all compilers
+ PICFLAG    = -fpic
+-DYNLINK    = ld -shared -t
++DYNLINK    = $(CC) $(CFLAGS) $(LDFLAGS) -shared
+ EXEC_FILES = pathdiag.py* pathtools.py* prettyhtml.py* pathlib.py* _pathlib.so mkdatasummary.py *.fmt
+ LOGDIR_FILES = boxes.css help.html
+ 
+@@ -57,7 +57,7 @@
+ 
+ _pathlib.so: pathlib_wrap.c pathlib.o
+ 	$(CC) -g $(PYINCLUDE) -DSWIG_PYTHON_SILENT_MEMLEAK -I$(WC_PREFIX)/include -fno-stack-protector -c $(PICFLAG) pathlib_wrap.c
+-	$(DYNLINK) -o _pathlib.so pathlib_wrap.o pathlib.o -rpath $(WC_PREFIX)/lib -L$(WC_PREFIX)/lib -lweb100
++	$(DYNLINK) -o _pathlib.so pathlib_wrap.o pathlib.o -Wl,-rpath,$(WC_PREFIX)/lib -L$(WC_PREFIX)/lib -lweb100
+ 
+ clean:
+ 	rm -f *.o *.so *.pyc pathlib.py temp* *_wrap.c $(TARGETS)

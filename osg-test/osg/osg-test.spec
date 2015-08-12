@@ -5,8 +5,8 @@
 
 Summary:   Tests an OSG Software installation
 Name:      osg-test
-Version:   1.3.6
-Release:   2%{?dist}
+Version:   1.4.26
+Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
 Packager:  VDT <vdt-support@opensciencegrid.org>
@@ -35,11 +35,146 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/osg-test
 %{_sbindir}/%{name}
 %{python_sitelib}/osgtest
-/etc/grid-security/certificates/4eca18ce.*
-/etc/grid-security/certificates/bffdd190.*
 
 %changelog
-* Thu Oct 03 2013  <edquist@cs.wisc.edu> - 1.3.6-2
+* Tue Jun 30 2015 Brian Lin <blin@cs.wisc.edu> - 1.4.26-1
+- Fix RSV version probe assertion
+- Add GPG checks back to the OSG 3.3 tests
+
+* Wed May 20 2015 Brian Lin <blin@cs.wisc.edu> - 1.4.25-1
+- Add support for OSG 3.3
+- Fix torque configuration (SOFTWARE-1899)
+- BadSkip HTCondor CE tests if the service failed to start (SOFTWARE-1898)
+- Remove osg-configure unit test output that confused our test reporting (SOFTWARE-1818)
+
+* Thu Mar 05 2015 Brian Lin <blin@cs.wisc.edu> - 1.4.24-1
+- Fix install/update failures involving 3.1 due to new xrootd-compat packages in EPEL
+- Fix cleanup bug for tests with extra repos
+- Add gfal2-plugin-file requirement to gfal2 tests (SOFTWARE-1799)
+- Fix fetch-crl whitelist bug (SOFTWARE-1780)
+
+* Wed Feb 04 2015 Brian Lin <blin@cs.wisc.edu> - 1.4.23-1 
+- Whitelist gratia-dCache and fetch-crl network failures (SOFTWARE-1748, SOFTWARE-1613)
+- Fix skip mechanic of job tests (SOFTWARE-1730)
+- Add support for secure passwords with -s/--securepass (SOFTWARE-644)
+- Install Java according to the TWiki documentation (SOFTWARE-1720)
+
+* Tue Jan 06 2015 Tim Cartwright <cat@cs.wisc.edu> - 1.4.22-1
+- Small tweaks to HTCondor CE tests based on automated test results
+
+* Mon Dec 22 2014 Tim Cartwright <cat@cs.wisc.edu> - 1.4.21-1
+- Improve timeout semantics for yum installs & updates (per command)
+- Add tests for job environment variables in routine job tests
+
+* Wed Dec 10 2014 Brian Lin <blin@cs.wisc.edu> - 1.4.20-1
+- Fix for cleanup tests trying to remove pre-installed packages
+
+* Wed Dec 03 2014 Brian Lin <blin@cs.wisc.edu> - 1.4.19-1
+- Improvements to update and cleanup tests for EL5
+- Additional changes for EL7 support
+- Fix for intermittent failure of condor_ce_ping tests
+
+* Thu Oct 30 2014 Brian Lin <blin@cs.wisc.edu> - 1.4.18-2
+- Fix configuration bug that caused osg-test to error out
+
+* Thu Oct 30 2014 Brian Lin <blin@cs.wisc.edu> - 1.4.18-1
+- Fix various tests to work with EL7
+- Add gfal2 tests (SOFTWARE-1603)
+- Add ability to specify multiple update repos
+
+* Wed Sep 03 2014 Brian Lin <blin@cs.wisc.edu> - 1.4.17-1
+- Add oasis-config tests (SOFTWARE-901)
+- Add condor_ce_trace tests against PBS (SOFTWARE-1459)
+- Disable osg-release on EL7
+- Fix xrootd4 cleanup errors
+
+* Wed Aug 20 2014 Brian Lin <blin@cs.wisc.edu> - 1.4.16-1
+- Add osg-info-services tests
+- Update xrootd tests to work with xrootd4 (SOFTWARE-1558)
+- Prep work for EL7 (SOFTWARE-1579)
+
+* Tue Jun 3 2014 Brian Lin <blin@cs.wisc.edu> - 1.4.15-1
+- Fix error with removing user (SW-1345)
+- Add condor_ce_ping test (SW-1458)
+- Restored files get restored with original owner/group
+- Add more messages to retry list
+
+* Tue May 6 2014 Brian Lin <blin@cs.wisc.edu> - 1.4.14-1
+- Add GUMS and HTCondor-CE tests (SOFTWARE-696, SOFTWARE-13338)
+- Clean up osg-configure test (SOFTWARE-710)
+- Split out lcg-utils tests
+- Double gratia test timeouts 
+
+* Mon Apr 7 2014 Brian Lin <blin@cs.wisc.edu> - 1.4.13-1
+- Add manual option and speed up fetch-crl tests
+- Add lcg-utils tests
+- Fixes to myproxy and cleanup tests
+
+* Fri Mar 21 2014 Brian Lin <blin@cs.wisc.edu> - 1.4.12-1
+- Allow package cleanup to be retried
+- Rebuild to fix dirty source from previous version
+
+* Fri Mar 21 2014 Brian Lin <blin@cs.wisc.edu> - 1.4.11-1
+- Include the myproxy configuration file
+- Add more retriable messages to yum commands
+
+* Thu Mar 20 2014 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1.4.10-1
+- Added the myproxy tests (SOFTWARE-1414)
+ 
+* Tue Mar 04 2014 Brian Lin <blin@cs.wisc.edu> - 1.4.9-1
+- Add password to usercert (SOFTWARE-1377)
+- Fix condor_ce_trace test (SOFTWARE-1338)
+- Update gratia probe dependencies (SOFTWARE-1375)
+- Add more errors to yum retry
+
+* Mon Feb 03 2014 Brian Lin <blin@cs.wisc.edu> - 1.4.8-1
+- Add retries to package updates
+- Use SHA2 CAs/usercerts and test RFC proxies (SOFTWARE-1371)
+- Add badskips to globus-job-run tests (SOFTWARE-1363)
+- Add preliminary htcondor-ce tests (SOFTWARE-1338)
+- Skip osg-configure-cemon tests in OSG 3.2
+
+* Fri Jan 24 2014 Brian Lin <blin@cs.wisc.edu> - 1.4.7-1
+- Add retries to package installs
+- Downgrade packages that were updated in installation
+- Fix bug in osg-release upgrades
+
+* Wed Jan 08 2014 Brian Lin <blin@cs.wisc.edu> - 1.4.6-1
+- Increase VOMS admin timeouts
+- Clean yum cache after updating osg-release
+- Better messages for failed installs
+
+* Tue Dec 17 2013 Brian Lin <blin@cs.wisc.edu> - 1.4.5-1
+- Improve yum installation and cleanup
+
+* Mon Nov 25 2013 Brian Lin <blin@cs.wisc.edu> - 1.4.4-1
+- All proxies created are now 1024 bits
+- Add blahp test and updated PBS setup test accordingly
+- Add support for testing updates between OSG versions
+
+* Wed Oct 30 2013 Brian Lin <blin@cs.wisc.edu> - 1.4.3-1
+- Add gratia-probe-sge tests
+- Add BeStMan debugging
+- Additional MySQL backup fixes
+
+* Wed Oct 16 2013 Brian Lin <blin@cs.wisc.edu> - 1.4.2-1
+- MySQL backup bug fixes
+
+* Wed Oct 16 2013 Brian Lin <blin@cs.wisc.edu> - 1.4.1-1
+- Preserve old MySQL data and restore them on test completion
+
+* Fri Oct 11 2013 Brian Lin <blin@cs.wisc.edu> - 1.4.0-1
+- Add creation of OSG CA/CRL and ability to sign host certs
+
+* Wed Oct 9 2013 Tim Cartwright <cat@cs.wisc.edu> - 1.3.7-1
+- Reliability improvements to Gratia tests
+- Fixed a file reading bug in monitor_file()
+- Added a missing import in the timeout handler
+- Removed --quiet option to rpm --verify
+- Merge EL5 get_package_envra() fix from the ca-certs branch
+- Made the global timeout value a config file option
+
+* Thu Oct 03 2013 Carl Edquist <edquist@cs.wisc.edu> - 1.3.6-2
 - Bump release for 3.2 testing -- no functional change
 
 * Fri Sep 27 2013 Tim Cartwright <cat@cs.wisc.edu> - 1.3.6-1

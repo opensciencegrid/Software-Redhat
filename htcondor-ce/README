@@ -1,0 +1,21 @@
+
+The HTCondor-CE provides a remote interface to the local batch system.
+It is comparable to other gatekeeper software (such as GRAM or CREAM), but is
+entirely built out of HTCondor components.  It is a special configuration of
+HTCondor and has no daemon components not provided by the HTCondor team.
+
+The spec file is from the HTCondor-CE source code itself.  Updates done in the
+OSG should be sent back upstream; there are no known reasons to have the two
+copies be different.
+
+UPSTREAM: https://github.com/opensciencegrid/htcondor-ce
+
+To build from upstream:
+
+git archive --prefix=htcondor-ce-{VERSION}/ {GIT REVISION} | gzip -9 > htcondor-ce-{VERSION}.tar.gz
+
+(note that the tarball used in 1.6-2 was built from
+https://github.com/matyasselmeci/condor-ce
+and 1.9-* was built from
+https://github.com/opensciencegrid/htcondor-ce/commit/01bc40cbc529c1ce1e0409c5fc5afda4c3e9127c
+)

@@ -1,0 +1,15 @@
+To get an updated version of gsh:
+
+1) Get the name of the tag
+2) git clone https://github.com/tiradani/gsh.git
+3) git tag -l
+4) git checkout v0.1
+5) tar czf gsh.tar.gz gsh/bin gsh/osg_gsh/ gsh/LICENSE gsh/README
+6) Copy the gsh.spec to our repo. Edit it if needed. I needed to:
+   - Tweak the release to include the %{?dist} . 
+   - %doc README LICENSE
+   Hopefully these will be pushed upstream soon. 
+
+Browse gsh's git repo:
+
+    https://github.com/tiradani/gsh

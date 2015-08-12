@@ -1,0 +1,8 @@
+
+Packager notes:
+- The upstream package name is called glite-data-transfer-cli.  The current name of glite-fts-client is due to historical reasons in the OSG
+- stdsoap2.c from gsoap 2.7.13 is copied; see the note in glite-data-delegation-api-c.
+- Fedora-complaint glite m4 patch is included
+- Fixed a typo in an ifdef.
+- When updating, you want to check and see if you need to bump the interface version number in the .spec file
+

@@ -1,0 +1,64 @@
+#!/bin/bash
+#
+# gums-client-cron  This shell script enables the automatic use of gums-host-cron
+#
+# Author:       Matyas Selmeci <matyas@cs.wisc.edu>
+#   based on init script for edg-mkgridmap by Neha Sharma <neha@fnal.gov>
+#
+# chkconfig:	- 51 01
+#
+# description:  Enable daily run of gums-host-cron
+# processname:  gums-host-cron
+#
+
+# source function library
+. /etc/rc.d/init.d/functions
+lockfile=/var/lock/subsys/gums-host-cron
+
+RETVAL=0
+
+start() {
+	action $"Enabling periodic gums-host-cron: " touch "$lockfile" 
+	RETVAL=$?
+}
+
+stop() {
+	action $"Disabling periodic gums-host-cron: " rm -f "$lockfile" 
+	RETVAL=$?
+}
+
+restart() {
+	stop
+	start
+}
+
+case "$1" in
+  start)
+	start
+	;;
+  stop) 
+	stop
+	;;
+  restart|force-reload)
+	restart
+	;;
+  reload)
+	;;
+  condrestart)
+	[ -f "$lockfile" ] && restart
+	;;
+  status)
+	if [ -f $lockfile ]; then
+		echo $"Periodic gums-host-cron is enabled."
+		RETVAL=
+	else
+		echo $"Periodic gums-host-cron is disabled."
+		RETVAL=3
+	fi
+	;;
+  *)
+	echo $"Usage: $0 {start|stop|status|restart|reload|force-reload|condrestart}"
+	exit 1
+esac
+
+exit $RETVAL

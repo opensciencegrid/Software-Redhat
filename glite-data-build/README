@@ -1,0 +1,7 @@
+
+This package contains the contents of org.glite.data/project.
+
+Specifically, to build glite-data-delegation-api-c (and maybe other org.glite.data sub-packages), one needs the m4 macros contained in this package.
+
+This package is only for building other glite packages (not useful for users), and not released as a separate package in glite.
+

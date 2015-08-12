@@ -1,0 +1,24 @@
+Index: gip-1.3.11/gip/lib/python/gip_osg.py
+===================================================================
+--- gip-1.3.11.orig/gip/lib/python/gip_osg.py	2014-08-15 10:30:44.000000000 -0500
++++ gip-1.3.11/gip/lib/python/gip_osg.py	2015-01-15 11:36:50.224022414 -0600
+@@ -327,6 +327,7 @@
+     __write_all_options_config(lsf_sec, lsf)
+ 
+     # [Slurm]
++    __write_config(slurm_sec, "slurm_location", slurm, "slurm_path")
+     __write_all_options_config(slurm_sec, slurm)
+ 
+     # [Storage]
+Index: gip-1.3.11/gip/lib/python/slurm_common.py
+===================================================================
+--- gip-1.3.11.orig/gip/lib/python/slurm_common.py	2015-01-15 11:34:50.000000000 -0600
++++ gip-1.3.11/gip/lib/python/slurm_common.py	2015-01-15 11:34:58.868556902 -0600
+@@ -116,6 +116,7 @@
+     for orig_line in slurmCommand(queue_info_cmd, cp):
+         queue_data = {}
+         queue_name, status, nodestatus, timelimit = orig_line.split()
++        queue_name = queue_name.replace("*", "")
+         active, idle, other, total = nodestatus.split('/')
+ 
+         if status == 'up':

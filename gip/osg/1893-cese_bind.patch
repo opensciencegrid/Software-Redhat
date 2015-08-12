@@ -1,0 +1,44 @@
+From da11d2880291c76bb0fa9aadbe230515503d82e5 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Mon, 13 Apr 2015 15:55:23 -0500
+Subject: [PATCH] Handle htcondorce in gip_cese_bind.getCEList
+
+This is used by gip/providers/cluster.py to generate the GlueForeignKey: GlueCEUniqueID=... strings
+---
+ gip/lib/python/gip_cese_bind.py | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/gip/lib/python/gip_cese_bind.py b/gip/lib/python/gip_cese_bind.py
+index 4403ef0..d9c333b 100644
+--- a/gip/lib/python/gip_cese_bind.py
++++ b/gip/lib/python/gip_cese_bind.py
+@@ -3,11 +3,11 @@
+ Provide information about the CEs of this site, the SEs, and
+ the bindings between the two.
+ """
+ import re
+ 
+-from gip_common import cp_get, cp_getBoolean
++from gip_common import cp_get, cp_getBoolean, getHTCondorCEPort
+ from gip_storage import getPath
+ from pbs_common import getQueueList as getPBSQueueList
+ from lsf_common import getQueueList as getLSFQueueList
+ from condor_common import getQueueList as getCondorQueueList
+ from sge_common import getQueueList as getSGEQueueList
+@@ -32,10 +32,13 @@ def getCEList(cp, extraCEs=[]):
+     prefix = 'jobmanager'
+     port = 2119
+     if cp_getBoolean(cp, 'cream', 'enabled', False):
+         prefix = 'cream'
+         port = 8443
++    if cp_getBoolean(cp, 'htcondorce', 'enabled', False):
++        prefix = 'htcondorce'
++        port = getHTCondorCEPort()
+     ce_names = ['%s:%d/%s-%s-%%s' % (hostname, port, prefix, jobman) for hostname in hostnames]
+ 
+     ce_list = []
+     if jobman == 'pbs':
+         queue_entries = getPBSQueueList(cp)
+-- 
+2.0.1
+

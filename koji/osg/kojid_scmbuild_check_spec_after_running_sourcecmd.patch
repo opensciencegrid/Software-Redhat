@@ -1,0 +1,52 @@
+Index: builder/kojid
+===================================================================
+--- builder/kojid.orig	2011-10-28 20:48:18.000000000 -0500
++++ builder/kojid	2011-10-28 21:00:46.846410302 -0500
+@@ -382,8 +382,7 @@
+         msg = '; see %s for more information' % logfile
+         return parseStatus(rv, 'mock') + msg
+ 
+-    def build_srpm(self, specfile, sourcedir, source_cmd):
+-        self.session.host.setBuildRootState(self.id,'BUILDING')
++    def scm_call_source_cmd(self, sourcedir, source_cmd):
+         if source_cmd:
+             # call the command defined by source_cmd in the chroot so any required files not stored in
+             # the SCM can be retrieved
+@@ -395,6 +394,10 @@
+                 self.expire()
+                 raise koji.BuildError, "error retrieving sources, %s" % self._mockResult(rv)
+ 
++
++
++    def build_srpm(self, specfile, sourcedir):
++        self.session.host.setBuildRootState(self.id,'BUILDING')
+         args = ['--no-clean', '--buildsrpm', '--spec', specfile, '--sources', sourcedir]
+ 
+         rv = self.mock(args)
+@@ -1515,7 +1518,7 @@
+ 
+         #build srpm
+         self.logger.debug("Running srpm build")
+-        buildroot.build_srpm(specfile, specdir, None)
++        buildroot.build_srpm(specfile, specdir)
+ 
+         srpms = glob.glob('%s/*.src.rpm' % buildroot.resultdir())
+         if len(srpms) == 0:
+@@ -2150,6 +2153,8 @@
+             for filename in filenames:
+                 os.chown(os.path.join(dirpath, filename), uid, gid)
+ 
++        # Run the source_cmd
++        broot.scm_call_source_cmd(sourcedir, scm.source_cmd)
+         # Find and verify that there is only one spec file.
+         spec_files = glob.glob("%s/*.spec" % sourcedir)
+         if len(spec_files) == 0:
+@@ -2163,7 +2168,7 @@
+ 
+         #build srpm
+         self.logger.debug("Running srpm build")
+-        broot.build_srpm(spec_file, sourcedir, scm.source_cmd)
++        broot.build_srpm(spec_file, sourcedir)
+ 
+         srpms = glob.glob('%s/*.src.rpm' % broot.resultdir())
+         if len(srpms) == 0:

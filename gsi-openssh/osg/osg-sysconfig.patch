@@ -1,0 +1,10 @@
+--- gsisshd.init.orig	2013-02-20 13:30:49.228181000 -0600
++++ gsisshd.init	2013-02-20 13:31:20.910856000 -0600
+@@ -30,6 +30,7 @@
+ . /etc/rc.d/init.d/functions
+ 
+ # pull in sysconfig settings
++. /usr/share/osg/sysconfig/gsisshd
+ [ -f /etc/sysconfig/gsisshd ] && . /etc/sysconfig/gsisshd
+ 
+ RETVAL=0

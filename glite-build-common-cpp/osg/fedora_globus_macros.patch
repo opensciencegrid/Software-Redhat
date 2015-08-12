@@ -1,0 +1,80 @@
+Index: m4/cgsi-gsoap.m4
+===================================================================
+RCS file: /cvs/glite/org.glite.build.common-cpp/m4/cgsi-gsoap.m4,v
+retrieving revision 1.2
+diff -u -r1.2 cgsi-gsoap.m4
+--- m4/cgsi-gsoap.m4	18 Jun 2010 08:42:09 -0000	1.2
++++ m4/cgsi-gsoap.m4	2 Jul 2011 19:15:36 -0000
+@@ -25,8 +25,8 @@
+ 		    ac_cgsi_gsoap_ldlib="-L$with_cgsi_gsoap_location/lib"
+         fi
+ 		ac_cgsi_gsop_version="gsoap_$GSOAP_MAIN_VERSION"
+-		CGSI_GSOAP_LIBS="$ac_cgsi_gsoap_ldlib -lcgsi_plugin_$ac_cgsi_gsop_version"
+-		CGSI_GSOAP_STATIC_LIBS="$with_cgsi_gsoap_location/lib/libcgsi_plugin_$ac_cgsi_gsop_version.a"
++		CGSI_GSOAP_LIBS="$ac_cgsi_gsoap_ldlib -lcgsi_plugin"
++		CGSI_GSOAP_STATIC_LIBS="$with_cgsi_gsoap_location/lib/libcgsi_plugin.a"
+     else
+ 		CGSI_GSOAP_LOCATION=""
+ 		CGSI_GSOAP_CFLAGS=""
+Index: m4/globus.m4
+===================================================================
+RCS file: /cvs/glite/org.glite.build.common-cpp/m4/globus.m4,v
+retrieving revision 1.5
+diff -u -r1.5 globus.m4
+--- m4/globus.m4	15 Mar 2011 12:51:09 -0000	1.5
++++ m4/globus.m4	2 Jul 2011 19:15:36 -0000
+@@ -66,35 +66,38 @@
+     ac_cv_globus_thr_valid1=no
+     ac_cv_globus_thr_valid2=no
+ 
+-    GLOBUS_NOTHR_CFLAGS="-I$with_globus_prefix/include/$with_globus_nothr_flavor"
+-    GLOBUS_THR_CFLAGS="-I$with_globus_prefix/include/$with_globus_thr_flavor"
++    #GLOBUS_NOTHR_CFLAGS="-I$with_globus_prefix/include/$with_globus_nothr_flavor"
++    #GLOBUS_THR_CFLAGS="-I$with_globus_prefix/include/$with_globus_thr_flavor"
++    GLOBUS_NOTHR_CFLAGS="-I/usr/include/globus -I/usr/lib64/globus/include"
++    GLOBUS_THR_CFLAGS="-I/usr/include/globus -I/usr/lib64/globus/include"
+ 
+-    ac_globus_ldlib="-L$with_globus_prefix/lib"
+ 
+-    GLOBUS_COMMON_NOTHR_LIBS="$ac_globus_ldlib -lglobus_common_$with_globus_nothr_flavor"
+-    GLOBUS_COMMON_THR_LIBS="$ac_globus_ldlib -lglobus_common_$with_globus_thr_flavor"
++    ac_globus_ldlib="-L/usr/lib64"
+ 
+-    GLOBUS_STATIC_COMMON_NOTHR_LIBS="$with_globus_prefix/lib/libglobus_common_$with_globus_nothr_flavor.a"
+-    GLOBUS_STATIC_COMMON_THR_LIBS="$with_globus_prefix/lib/libglobus_common_$with_globus_thr_flavor.a"
++    GLOBUS_COMMON_NOTHR_LIBS="$ac_globus_ldlib -lglobus_common"
++    GLOBUS_COMMON_THR_LIBS="$ac_globus_ldlib -lglobus_common"
+ 
+-    GLOBUS_FTP_CLIENT_NOTHR_LIBS="$ac_globus_ldlib -lglobus_ftp_client_$with_globus_nothr_flavor"
+-    GLOBUS_FTP_CLIENT_THR_LIBS="$ac_globus_ldlib -lglobus_ftp_client_$with_globus_thr_flavor"
++    GLOBUS_STATIC_COMMON_NOTHR_LIBS="$with_globus_prefix/lib/libglobus_common.a"
++    GLOBUS_STATIC_COMMON_THR_LIBS="$with_globus_prefix/lib/libglobus_common.a"
+ 
+-    GLOBUS_GSS_NOTHR_LIBS="$ac_globus_ldlib -lglobus_gssapi_gsi_$with_globus_nothr_flavor -lglobus_gss_assist_$with_globus_nothr_flavor"
+-    GLOBUS_GSS_THR_LIBS="$ac_globus_ldlib -lglobus_gssapi_gsi_$with_globus_thr_flavor -lglobus_gss_assist_$with_globus_thr_flavor"
++    GLOBUS_FTP_CLIENT_NOTHR_LIBS="$ac_globus_ldlib -lglobus_ftp_client"
++    GLOBUS_FTP_CLIENT_THR_LIBS="$ac_globus_ldlib -lglobus_ftp_client"
+ 
+-    GLOBUS_LDAP_THR_LIBS="$ac_globus_ldlib -lldap_$with_globus_thr_flavor -llber_$with_globus_thr_flavor"
++    GLOBUS_GSS_NOTHR_LIBS="$ac_globus_ldlib -lglobus_gssapi_gsi -lglobus_gss_assist"
++    GLOBUS_GSS_THR_LIBS="$ac_globus_ldlib -lglobus_gssapi_gsi -lglobus_gss_assist"
++
++    GLOBUS_LDAP_THR_LIBS="$ac_globus_ldlib -lldap -llber"
+ 
+     dnl Needed by LCAS/LCMAPS voms plugins
+-    GLOBUS_GSI_NOTHR_LIBS="$ac_globus_ldlib -lglobus_gsi_credential_$with_globus_nothr_flavor"
+-    GLOBUS_GSI_THR_LIBS="$ac_globus_ldlib -lglobus_gsi_credential_$with_globus_thr_flavor"
++    GLOBUS_GSI_NOTHR_LIBS="$ac_globus_ldlib -lglobus_gsi_credential"
++    GLOBUS_GSI_THR_LIBS="$ac_globus_ldlib -lglobus_gsi_credential"
+ 
+     dnl
+     dnl check whether globus in place, if not return error
+     dnl
+     AC_MSG_CHECKING([for globus version])
+-    if test -f $with_globus_prefix/bin/globus-version; then
+-        grep GLOBUS_VERSION= $with_globus_prefix/bin/globus-version | cut -d'"' -f2 >& globus.version
++    if test -f /usr/bin/globus-version; then
++        grep GLOBUS_VERSION= /usr/bin/globus-version | cut -d'"' -f2 >& globus.version
+         ac_globus_version=`cat globus.version`
+         ac_globus_point_version=`cut -d. -f3 globus.version`
+         ac_globus_minor_version=`cut -d. -f2 globus.version`

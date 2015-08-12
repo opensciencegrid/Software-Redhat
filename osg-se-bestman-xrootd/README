@@ -1,0 +1,3 @@
+This is a meta-package for the BeStMan (Berkeley Storage Manager)
+with underlying xrootd storage element using fuse/dsi module.
+

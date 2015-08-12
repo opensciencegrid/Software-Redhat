@@ -1,0 +1,409 @@
+#!/bin/sh
+
+###########################################################################
+function usage {
+ echo "\
+
+ This script is intended to be run as a root cron process.
+
+ It executes the GUMS client script in order to refresh the
+ following files for a CE node from the site's GUMS server:
+
+  1. $MAPFILE
+      This refresh will only occur when the LCMAPS callout is NOT in effect 
+      for the CE node, based on:
+      - the absence of the $LCMAPS_CALLOUT file
+      - and the absence of the LCMAPS callout string in the above conf file:
+          $LCMAPS_CALLOUT_STRING
+
+  2. $INVERSEMAP
+      This refresh will always occur for an OSG site.
+      The criteria defining an OSG site is the presence of a
+      $OSG_SITE_CRITERIA file.
+
+  3. $SUPPORTEDVOS
+      This identifies the list of VOs that can be authorized bu this CE node
+      based on the either the gridmap file or GUMS server used for authorization
+      and the existence of a UNIX account for the VO members.
+      This refresh will always occur for an OSG site. 
+
+  4. $UNDEFINED
+      This identifies a list of UNIX accounts that can potentially be
+      authorized but do not exist and therefore the VO member will be 
+      unable to access services on this CE node.
+      This refresh will always occur for an OSG site. 
+
+ This script will perform the task as follows for each map file:
+  a. The GUMS client script will create a new map file with a '.new' suffix.
+  b. It will check to see if the '.new' file differs for the current file.
+  c. If a change has occurred:
+     - it will backup the current file in a directory called './$BACKUP_DIR'
+       (in the same directory as the map file) with a timestamped suffix 
+       indicating when it was replaced. 
+     - it will replace the current map file with  the '.new' file.
+     - a maximum of 10 backups will be maintained by the script
+  d. If no change has occured: 
+     - no replacement will occur and the '.new' file will be removed.
+  e. An empty '.last_checked' suffix map file will be created each time a map 
+     file is successfully checked in order to provide a visible indication of 
+     the currency of the data.
+
+ Usage: $PGM [--help | -help | -h ] [--gumsdebug]
+"
+ exit 0
+}
+
+###########################################################################
+# See the usage function for a general explanation
+#
+# The only required modification to this file is the setting of the
+# VDT_LOCATION variable.  No other environmental settings are required.
+# It does have to source the VDT_LOCATION/setup.sh file in order to
+# insure the VDT version of java is used.
+#
+# Note: The replacement of the map files only when a change has occured is
+#       done because some CE node components cache these map files and are
+#       designed to re-cache when the timestamp changes.
+#       - MonALISA does this with the $INVERSMAP file
+#       - Globus web services does this with the $MAPFILE when the
+#         default gridmap authz method is used.
+#
+# Updates:
+# 1. 9/28/2006 (John Weigand)
+#    - This change is one in a set of changes to bring some integrity to
+#      the mapping of users to VOs (MonaAlisa) and in identifying the
+#      VO's that a CE node actually supports.  The actual changes made 
+#      here address the migriation of the grid3-user-vo-map.txt file
+#      that is generated to a new name (osg-user-vo-map.txt file).
+#      To do this, the script will create the 'real' file as 
+#      osg-user-vo-map.txt and symlink the deprecated grid3-user-vo-map.txt
+#      file to it.
+#    - A second change is to refine the criteria for determining if
+#      LCMAPS/GUMS is being used as the authorization service or not.
+#      The previous test was just for the existence of the gsi-authz.conf
+#      which was not completely accurate.  It will now test for the
+#      actual LCMAPS callout in that file.  The only caveat with this
+#      method is that if the callout string changes, this must change.
+#    - The osg-user-vo-map.txt file is only created for OSG sites.
+#      The criterea for determining an OSG site is the existence
+#      of the $VDT_LOCATION/monitoring/osg-attributes.conf file.
+#      If this file does NOT exist, then the inverse map file will
+#      NOT be created.
+# 2. 11/13/06 (John Weigand)
+#    - added a usage function
+#    - added the executtion of the check-vo-map file if it is an OSG
+#      installation
+#    - added creation of a link from the grid3-user-vo-map.txt file
+#      to the new osg- suffixed one if it does not exist.
+#    - added backups directory that will maintained a maximum of 10 backups
+# 3. 12/29/06 (John Weigand)
+#    - added execution of configure_gip
+# 4. 10/05/07 (John Hover)
+#    - $LCMAPS_CALLOUT_STRING shortened so that it will be caught on both
+#      32-bit and 64-bit systems.
+# 5. 2/06/07 (Jay Packard)
+#    - Added --gumsdebug option, which simply passes that option to the gums 
+#      scripts that are called by this script.
+# 6. 29/07/11 (Brian Bockelman
+#    - Removed VDT_LOCATION; prepare it for FHS / RPM install
+#
+#
+###########################################################################
+
+function logit {
+  ts=$(date  +'%Y-%m-%dT%H-%M-%S')  #--- timestamp for log file ---
+  echo "$ts $1" >>$LOGFILE
+  if [ "$DEBUG" == "1" ];then
+    echo "$ts $1"
+  fi 
+}
+#-----------------
+function logerr {
+  logit "ERROR: $1"
+  logit "$PGM process terminated prematurely"
+  logit "=============================================="
+  exit 1
+}
+#-----------------------------
+function verify_permissions {
+  if [ ! -f $1 ];then
+    if [ ! -w $(dirname $1) ];then 
+      logit  "This process needs to modify or create several files."
+      logerr "Access/permissions denied for file $1"
+    fi
+  elif [ ! -w $1 ];then
+    logit  "This process needs to modify or create several files."
+    logerr "Access/permissions denied for file $1"
+  fi
+}
+#-----------------------------
+function create_directory {
+  dir=$1
+  if [ ! -d $dir ];then
+    mkdir -p $dir
+  fi
+
+}
+#-----------------------------
+function replace_if_changed {
+  new=$1
+  current=$2
+  logit "Checking for changes in $current"
+  diff -q $current $new >/dev/null 2>&1
+  rtn=$?
+  if [ "$rtn" = "1" ];then
+    backupdir=`dirname $current`/$BACKUP_DIR
+    create_directory $backupdir
+    prefix=$backupdir/`basename $current`
+    backupfile=${prefix}.$BACKUP_DATE
+    logit "... changes have occurred"
+    logit "... backing up to: $backupfile"
+    logit "... version: $current"
+    cp -pf $current $backupfile
+    mv $new $current
+    #---- clean backup dir 10 copies only ---
+    MAX_BACKUPS=10
+    cnt=`ls ${prefix}.* 2>/dev/null  |wc -l |sed -e"s/ //g"`
+    rm_cnt=`expr $cnt - $MAX_BACKUPS`
+    if [ $rm_cnt -gt 0 ];then
+      for backup in `ls ${prefix}.* 2>/dev/null | head -$rm_cnt`
+      do
+        test  -f $backup  || continue
+        rm -f $backup
+        logit "... removed old backup file: $backup"
+      done
+    fi
+  else
+   logit "... no change"
+  fi
+  rm -f $1
+  >$2.last_checked
+  logit "--------------------------------------"
+}
+
+#-------------------------------
+function generate_grid_mapfile {
+  #--- check to see if LCMAPS callout is used --
+  GRID_MAP_USED=no
+  if [ ! -f $LCMAPS_CALLOUT ];then
+    GRID_MAP_USED=yes   
+  else
+    rtn=$(grep -v "^#" $LCMAPS_CALLOUT | grep -q "$LCMAPS_CALLOUT_STRING";echo $?)
+    if [ $rtn -ne 0 ];then
+      GRID_MAP_USED=yes
+    fi
+  fi
+  if [ "$GRID_MAP_USED" = "no" ];then
+    logit "The LCMAPS callout is in effect therefore no grid-mapfile is needed."
+    return
+  fi
+
+  #--- generate grid-mapfile if callout not used --
+  # this is in the event no grid-mapfile exists
+  if [ ! -e $MAPFILE ];then
+    touch $MAPFILE
+    chmod 644 $MAPFILE
+  fi
+  for file in $MAPFILE $MAPFILE_NEW
+  do
+    verify_permissions $file
+  done
+  script="/usr/bin/gums-host $DEBUG_OPTION generateGridMapfile"
+  logit "--------------------------------------"
+  logit "Updating $(basename $MAPFILE)"
+  logit "RUNNING: $script"
+  $script  >$MAPFILE_NEW 2>>$LOGFILE
+  rtn=$?
+  logit "gums-host completed with return code: $rtn"
+  if [ "$rtn" != "0" ];then
+    logerr "The GUMS client generateGridMapfile process failed while attempting to generate the $MAPFILE file.
+
+---- output --------------------------------------
+$(cat $MAPFILE_NEW)
+"
+  fi
+
+  logit "--------------------------------------"
+  replace_if_changed $MAPFILE_NEW $MAPFILE 
+}
+
+#-------------------------------
+function generate_user_vo_mapfile {
+  #---- transition code for new name ----
+  # this is the section that can be removed when all 
+  # software using this file is changed AND all sites
+  # are at the appropriate release
+  verify_permissions $INVERSEMAP
+  #
+  
+  # ----------------------------------------------------
+  # No changes should be needed here after the transition 
+  # to the new name is complete and all software is
+  # upgraded.
+  #
+  for file in $INVERSEMAP $INVERSEMAP_NEW 
+  do
+    verify_permissions $file
+  done
+
+  # This check makes sure a map file exists to later
+  # 'diff' against in the replace_if_changed function.
+  if [ ! -e $INVERSEMAP ];then
+    touch $INVERSEMAP
+    chmod 644 $INVERSEMAP
+  fi
+  if [ ! -L $INVERSEMAP_DEPRECATED ];then
+    ln -s $INVERSEMAP $INVERSEMAP_DEPRECATED
+  fi
+
+  #--- generate the user-vo map file ----
+  script="/usr/bin/gums-host $DEBUG_OPTION generateOsgUserVoMap" 
+  logit "--------------------------------------"
+  logit "Updating $(basename $INVERSEMAP)"
+  logit "RUNNING: $script"
+  $script  >$INVERSEMAP_NEW 2>>$LOGFILE
+  if [ "$?" != "0" ];then
+    logerr "The GUMS client generateOsgUserVoMap process failed while 
+attempting to generate the $INVERSEMAP file.
+
+---- output --------------------------------------
+  $(cat $INVERSEMAP_NEW)
+" 
+  fi
+  logit "... $INVERSEMAP_NEW created"
+  logit "gums-host command completed successfully"
+  logit "--------------------------------------"
+
+  # --- Add local user accounts maps (if existing)
+  if [ -e $LOCALUSERMAP ]; then
+    cat $LOCALUSERMAP >> $INVERSEMAP_NEW
+    logit "Added to $INVERSEMAP_NEW the local mapping defined in $LOCALUSERMAP"
+  fi
+
+  # Check to see if all the username entries in the
+  # osg-user-vo-map.txt file have UNIX accounts and also create
+  # a osg-supported-vo-list.txt if changed
+
+  # --- verify installation supports this ---
+  script=/usr/sbin/check-vo-map
+  if [ ! -x $script ];then
+    logit "ERROR: Installation misconfigured. Cannot find script ($script)"
+    return
+  fi
+  # --- if supported vo file does not exist, create empty one (1 time deal)
+  if [ ! -e $SUPPORTEDVOS ];then
+    touch $SUPPORTEDVOS
+  fi
+  # --- if supported vo file does not exist, create empty one (1 time deal)
+  if [ ! -e $UNDEFINED ];then
+    touch $UNDEFINED
+  fi
+
+  logit "Validating  $(basename $INVERSEMAP_NEW)"
+  logit "RUNNING: $script"
+  $script --input $INVERSEMAP_NEW \
+         --output $INVERSEMAP_NEW.tmp \
+         --volist $SUPPORTEDVOS_NEW \
+         --undefined $UNDEFINED_NEW \
+         --log $LOGFILE
+  rtn=$?
+  logit "$(basename $script) RETURN CODE: $rtn"
+  logit "--------------------------------------"
+
+  replace_if_changed $INVERSEMAP_NEW.tmp   $INVERSEMAP
+  replace_if_changed $SUPPORTEDVOS_NEW $SUPPORTEDVOS
+  replace_if_changed $UNDEFINED_NEW    $UNDEFINED
+
+}
+
+#### MAIN ###############################################################
+PGM=$(basename $0)
+LCMAPS_CALLOUT=/etc/grid-security/gsi-authz.conf
+LCMAPS_CALLOUT_STRING="liblcas_lcmaps_gt4_mapping.so"
+
+MAPFILE=/etc/grid-security/grid-mapfile
+MAPFILE_NEW=$MAPFILE.new
+
+#--- this directories existence identifies if this is an OSG site or not ------
+OSG_LOCATION=/var/lib/osg
+
+INVERSEMAP=$OSG_LOCATION/user-vo-map
+INVERSEMAP_NEW=$INVERSEMAP.new
+
+LOCALUSERMAP=/etc/osg/local-user-vo-map
+
+SUPPORTEDVOS=$OSG_LOCATION/supported-vo-list
+SUPPORTEDVOS_NEW=$SUPPORTEDVOS.new
+
+UNDEFINED=$OSG_LOCATION/gums-undefined-accounts
+UNDEFINED_NEW=$UNDEFINED.new
+
+#
+LOGFILE=/var/log/gums/gums-host-cron.log
+
+BACKUP_DIR=backups
+BACKUP_DATE=$(date '+%Y-%m-%dT%H-%M-%S')
+
+#------------------------------
+#  check command line args 
+#------------------------------
+ARGS=""
+DEBUG=0
+DEBUG_OPTION=""
+for arg ; do
+	case $arg in
+		--gumsdebug)
+		DEBUG=1
+		DEBUG_OPTION="--gumsdebug"
+		shift
+		;;
+		
+		--help)
+		usage
+		;;
+		
+		-h)
+		usage
+		;;
+
+        --log)
+        LOGFILE=$2
+        shift
+        ;;
+
+
+		*)
+		origlen=${#arg}
+		nospace=${arg//' '/''}
+		newlen=${#nospace}
+		if [ $newlen -lt $origlen ]; then
+			ARGS="$ARGS \"$arg\""
+		else
+			ARGS="$ARGS $arg"
+		fi
+		;;
+	esac
+done
+
+#----------------------------
+#  create log file directory 
+#----------------------------
+create_directory $(dirname $LOGFILE)
+
+logit "============================================"
+logit "$PGM STARTED"
+
+#--------------------
+#  gridmap file  
+#--------------------
+generate_grid_mapfile
+
+#-----------------------------------------------------
+#  user-vo map & supported vo files                ---
+#-----------------------------------------------------
+generate_user_vo_mapfile
+
+logit "$PGM COMPLETED"
+logit "============================================"
+
+exit 0

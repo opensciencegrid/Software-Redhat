@@ -1,0 +1,11 @@
+diff -uNr pakiti-2.1.4/client/pakiti2-client pakiti-2.1.4o1/client/pakiti2-client
+--- pakiti-2.1.4/client/pakiti2-client	2010-08-19 08:37:06.000000000 -0500
++++ pakiti-2.1.4o1/client/pakiti2-client	2012-09-25 14:14:03.930517560 -0500
+@@ -251,6 +251,7 @@
+ 	 	break
+  	fi
+ done 
++[[ $OS == "unknown" ]] && [[ -x $(type -p lsb_release) ]] && OS="$(lsb_release -d | cut -f 2-)"
+ 
+ SERVERS_REPORTED_CORRECTLY=0
+ # Iterate over all servers

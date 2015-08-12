@@ -1,0 +1,9 @@
+Upstream source downloaded from:
+
+http://dl.fedoraproject.org/pub/epel/7/SRPMS/g/gfal2-plugin-xrootd-0.3.pre1-2.el7.src.rpm
+
+We bring this package into OSG to build for xrootd 4; the EPEL 5/6 versions
+are built against xrootd 3 and fail to install alongside xrootd 4.
+
+https://jira.opensciencegrid.org/browse/SOFTWARE-1603
+

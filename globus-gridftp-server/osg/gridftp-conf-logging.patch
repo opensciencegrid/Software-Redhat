@@ -1,0 +1,11 @@
+diff -ur globus_gridftp_server-6.14-orig/gridftp.conf.default.in globus_gridftp_server-6.14/gridftp.conf.default.in
+--- globus_gridftp_server-6.14-orig/gridftp.conf.default.in	2011-08-31 21:12:07.000000000 -0500
++++ globus_gridftp_server-6.14/gridftp.conf.default.in	2013-02-20 13:00:42.805655000 -0600
+@@ -8,4 +8,6 @@
+ 
+ # port
+ port 2811
+-
++log_level ERROR,WARN,INFO
++log_single /var/log/gridftp-auth.log
++log_transfer /var/log/gridftp.log

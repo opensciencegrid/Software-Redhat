@@ -1,0 +1,63 @@
+#!/bin/bash
+#
+# edg-mkgridmap  This shell script enables the automatic use of edg-mkgridmap
+#
+# Author:       Neha Sharma <neha@fnal.gov>
+#
+# chkconfig:	- 51 01
+#
+# description:  Enable daily run of edg-mkgridmap
+# processname:  edg-mkgridmap
+#
+
+# source function library
+. /etc/rc.d/init.d/functions
+lockfile=/var/lock/subsys/edg-mkgridmap
+
+RETVAL=0
+
+start() {
+	action $"Enabling periodic edg-mkgridmap: " touch "$lockfile" 
+	RETVAL=$?
+}
+
+stop() {
+	action $"Disabling periodic edg-mkgridmap: " rm -f "$lockfile" 
+	RETVAL=$?
+}
+
+restart() {
+	stop
+	start
+}
+
+case "$1" in
+  start)
+	start
+	;;
+  stop) 
+	stop
+	;;
+  restart|force-reload)
+	restart
+	;;
+  reload)
+	;;
+  condrestart)
+	[ -f "$lockfile" ] && restart
+	;;
+  status)
+	if [ -f $lockfile ]; then
+		echo $"Periodic edg-mkgridmap is enabled."
+		RETVAL=
+	else
+		echo $"Periodic edg-mkgridmap is disabled."
+		RETVAL=3
+	fi
+	;;
+  *)
+	echo $"Usage: $0 {start|stop|status|restart|reload|force-reload|condrestart}"
+	exit 1
+esac
+
+exit $RETVAL

@@ -1,0 +1,57 @@
+Index: src/c/channel_soapconv.c
+===================================================================
+RCS file: /cvs/glite/org.glite.data.transfer-cli/src/c/channel_soapconv.c,v
+retrieving revision 1.15
+diff -u -r1.15 channel_soapconv.c
+--- src/c/channel_soapconv.c	19 Jan 2009 14:29:51 -0000	1.15
++++ src/c/channel_soapconv.c	5 Jul 2011 19:10:52 -0000
+@@ -378,7 +378,7 @@
+     channel3->VOShares = g_new0(glite_transfer_VOShareElement *, channel3->__sizeVOShares);
+     for (i = 0; i < channel3->__sizeVOShares; i++) {
+         channel3->VOShares[i] = g_new0(glite_transfer_VOShareElement, 1);
+-        #if _GSOAP_VERSION >= 0x030709
++        #if _GSOAP_VERSION >= 0x020709
+             channel3->VOShares[i]->VOName = g_strdup(schannel3->VOShares[i].string1);
+             channel3->VOShares[i]->share = g_strdup(schannel3->VOShares[i].string2);
+         #else
+@@ -391,7 +391,7 @@
+     channel3->VOLimits = g_new0(glite_transfer_VOLimitElement *, channel3->__sizeVOLimits);
+     for (i = 0; i < channel3->__sizeVOLimits; i++) {
+         channel3->VOLimits[i] = g_new0(glite_transfer_VOLimitElement, 1);
+-        #if _GSOAP_VERSION >= 0x030709
++        #if _GSOAP_VERSION >= 0x020709
+             channel3->VOLimits[i]->VOName = g_strdup(schannel3->VOLimits[i].string1);
+             channel3->VOLimits[i]->limit = g_strdup(schannel3->VOLimits[i].string2);
+         #else
+Index: src/c/Makefile.am
+===================================================================
+RCS file: /cvs/glite/org.glite.data.transfer-cli/src/c/Makefile.am,v
+retrieving revision 1.14
+diff -u -r1.14 Makefile.am
+--- src/c/Makefile.am	9 Jan 2009 11:26:54 -0000	1.14
++++ src/c/Makefile.am	5 Jul 2011 19:10:52 -0000
+@@ -86,7 +86,7 @@
+ 
+ # Copy gsoap file
+ stdsoap2.c:
+-	cp -f $(GSOAP_LOCATION)/src/$@ $@
++	cp -f $(top_builddir)/$@ $@
+ 	$(STDSOAP2_C_FIX)
+ 
+ # Common Files
+Index: bootstrap
+===================================================================
+RCS file: /cvs/glite/org.glite.data.transfer-cli/bootstrap,v
+retrieving revision 1.1
+diff -u -r1.1 bootstrap
+--- bootstrap	3 Mar 2005 17:25:59 -0000	1.1
++++ bootstrap	5 Jul 2011 19:10:52 -0000
+@@ -7,7 +7,7 @@
+ 
+ mkdir -p src/autogen
+ set -x
+-aclocal -I project
++aclocal -I project -I /usr/share/glite-build-common-cpp/m4 -I /usr/share/glite-data-build/
+ libtoolize --force
+ autoheader
+ automake --foreign --add-missing --copy

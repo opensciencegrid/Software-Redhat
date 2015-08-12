@@ -1,0 +1,11 @@
+diff -u -r1.1 Makefile.am
+--- src/Makefile.am	19 Jan 2011 15:03:10 -0000	1.1
++++ src/Makefile.am	5 Jul 2011 17:39:29 -0000
+@@ -21,6 +21,7 @@
+ 			log4c.c
+ 
+ libglite_sd_c_la_LDFLAGS = -version-info 2:2
++libglite_sd_c_la_LIBADD = -ldl
+ 
+ AM_CFLAGS = -I$(topdir)/src \
+ 		-fexceptions

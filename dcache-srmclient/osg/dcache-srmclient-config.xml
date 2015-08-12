@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<srm-configuration>
+
+	<!--default SRM port number, default is 8443-->
+	<default_port> 8443 </default_port>
+
+	<!--enable debug output (including stack traces), default is false-->
+	<debug> false </debug>
+
+	<!--path to srmcp product directory, default is ..-->
+	<!--<srmcphome> /usr/share/java/dcache-srmclient </srmcphome>-->
+
+	<!--path to the urlcopy script, default is sbin/urlcopy.sh-->
+	<!--<urlcopy> /usr/share/java/dcache-srmclient/sbin/url-copy.sh </urlcopy>-->
+
+	<!--name of ftp client "globus-url-copy" or "kftp", default is globus-url-copy-->
+	<gsiftpclient> globus-url-copy </gsiftpclient>
+
+	<!--use http over gsi over ssl for SOAP invocations or plain http, default is true-->
+	<gsissl> true </gsissl>
+
+	<!--path to the "glue" mapfile, default is conf/SRMServerV1.map-->
+	<!--<mapfile> /usr/share/java/dcache-srmclient/conf/SRMServerV1.map </mapfile>-->
+
+	<!--path to wsdl in web service url, default is null-->
+	<webservice_path> null </webservice_path>
+
+	<!--srm webservice protocol, default is http-->
+	<webservice_protocol> https </webservice_protocol>
+
+	<!--use user proxy(true) or use certificates directly(false), default is true-->
+	<use_proxy> true </use_proxy>
+
+	<!--absolute path to user proxy, default is null-->
+	<x509_user_proxy>  </x509_user_proxy>
+
+	<!--absolute path to user (or host) certificate, default is null-->
+	<x509_user_cert>  </x509_user_cert>
+
+	<!--absolute path to user (or host) private key, default is null-->
+	<x509_user_key>  </x509_user_key>
+
+	<!--absolute path to the trusted certificates directory, default is /etc/grid-security/certificates-->
+	<!--<x509_user_trusted_certificates> /etc/grid-security/certificates </x509_user_trusted_certificates>-->
+
+	<!--comma separated globus tcp port range, like MIN,MAX, default is null-->
+	<globus_tcp_port_range> null </globus_tcp_port_range>
+
+	<!--gss expected name, default is null-->
+	<gss_expected_name> null </gss_expected_name>
+
+	<!--comma separated list of protocol names, default is gsiftp,dcap,http-->
+	<protocols> gsiftp,dcap,http </protocols>
+
+	<!--true for pushmode and false for pullmode, default is false-->
+	<pushmode> false </pushmode>
+
+	<!--buffer size, nonnegative integer, default is 131072 (bytes)-->
+	<buffer_size> 131072 </buffer_size>
+
+	<!--tcp buffer size, nonnegative integer, (0 means do not set tcp_buffer_size at all), default is 0 (bytes)-->
+	<tcp_buffer_size> 0 </tcp_buffer_size>
+
+	<!--number of streams, nonnegative integer. Multi-stream extended block transfer require writes to be performed in server-passive and reads in server active mode. If client specified server_mode option conflicts with the multi-stream required mode, the transfer will be performed in a single stream mode, regardless of value specified for the streams_num option, default is 10-->
+	<streams_num> 1 </streams_num>
+
+	<!--remove files when executing srm-release-files, default is false-->
+	<do_remove> false </do_remove>
+
+	<!--comma separated array of client networks, default is null-->
+	<array_of_client_networks> null </array_of_client_networks>
+
+	<!--retention policy, default is null-->
+	<retention_policy> null </retention_policy>
+
+	<!--access latency, default is null-->
+	<access_latency> null </access_latency>
+
+	<!--access pattern ("TRANSFER_MODE"|"PROCESSING_MODE"), default is null-->
+	<access_pattern> null </access_pattern>
+
+	<!--connection type, ("WAN"|"LAN"), default is null-->
+	<connection_type> null </connection_type>
+
+	<!--force space reservation release, default is false-->
+	<force> false </force>
+
+	<!--is the path to the text file containing list of sources and destination, default is null-->
+	<copyjobfile> null </copyjobfile>
+
+	<!--full URL to web service WSDL, overrides "-webservice_path" and "-webservice_protocol" options, default is null-->
+	<wsdl_url> null </wsdl_url>
+
+	<!--if true, use urlcopy script, otherwise use java native copiers, default is false-->
+	<use_urlcopy_script> false </use_urlcopy_script>
+
+	<!--number of seconds to add to current time to extend file lifetime of SURL(s), default is null-->
+	<file_lifetime> null </file_lifetime>
+
+	<!--number of seconds to add to current time to extend pin lifetime of SURL(s), default is null-->
+	<pin_lifetime> null </pin_lifetime>
+
+	<!--number of miliseconds to sleep after a failure, default is 10000 (milliseconds)-->
+	<retry_timeout> 10000 </retry_timeout>
+
+	<!--number of retries before client gives up, default is 20-->
+	<retry_num> 20 </retry_num>
+
+	<!--connect to WSDL instead of connecting to the server directly, default is false-->
+	<connect_to_wsdl> false </connect_to_wsdl>
+
+	<!--enables delegation of user credenital to the server, default is true-->
+	<delegate> true </delegate>
+
+	<!--specifies type (full or limited) of delegation, default is true-->
+	<full_delegation> true </full_delegation>
+
+	<!--the path to the report file, default is null-->
+	<report> null </report>
+
+	<!--gridftp server mode for data transfer ("passive" or "active"). Needs to be explicitly specified to appropriate value if client or ftp server is behind a firewall, default is null-->
+	<server_mode> null </server_mode>
+
+	<!--<permanent|volatile|durable> to specify type of storage to use, default is null-->
+	<storagetype> null </storagetype>
+
+	<!--long format mode, default is false-->
+	<l> false </l>
+
+	<!--offset the number of elements to report, default is 0-->
+	<offset> 0 </offset>
+
+	<!--number of elements to report, default is null-->
+	<count> null </count>
+
+	<!--srm protocol version, default is 0-->
+	<srm_protocol_version> 2 </srm_protocol_version>
+
+	<!--<num of seconds> request lifetime, default is 86400 (seconds)-->
+	<request_lifetime> 86400 </request_lifetime>
+
+	<!--specify request priority, 0 is lowest, default is 0-->
+	<priority> 0 </priority>
+
+	<!--<ALWAYS|NEVER|WHEN_FILES_ARE_DIFFERENT>, default is null-->
+	<overwrite_mode> null </overwrite_mode>
+
+	<!--send check sum to gridftp server, default is true-->
+	<send_cksm> true </send_cksm>
+
+	<!--<type|negotiate> calculate and verify server and client checksum values using this type (adler32|MD4|MD5|....). If checksum value has been omitted, missing value will be computed over the local file. If negotiate is set - client will attempt to negotiate cksm type for the file checksum value avilable at the server. For gridftp transfers to/from servers that support checksumming features, default is null-->
+	<cksm_type> null </cksm_type>
+
+	<!--number of times to repeat a client run, default is 1-->
+	<repeat> 1 </repeat>
+</srm-configuration>

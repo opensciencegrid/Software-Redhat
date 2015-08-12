@@ -1,0 +1,14 @@
+Index: builder/kojid
+===================================================================
+--- builder/kojid.orig	2010-12-16 15:13:17.000000000 -0600
++++ builder/kojid	2011-10-11 14:17:03.000000000 -0500
+@@ -976,7 +976,8 @@
+         self.updateWeight(name)
+ 
+         rootopts = {
+-            'repo_id': repo_id
++            'repo_id': repo_id,
++            'setup_dns': True,
+             }
+         br_arch = self.find_arch(arch, self.session.host.getHost(), self.session.getBuildConfig(root, event=event_id))
+         broot = BuildRoot(self.session, self.options, root, br_arch, self.id, **rootopts)

@@ -1,0 +1,11 @@
+#
+# This RVF file allows you to override the defaults specified in
+# /usr/share/globus/globus_gram_job_manager/condor.rvf
+# Instead of editing that file, you should place changes here; they will
+# be preserved on upgrade.
+#
+# Common RVF overrides include:
+# - Setting number of cores to use
+# - Setting advertised OS and Architecture
+#
+

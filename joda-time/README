@@ -1,0 +1,8 @@
+
+joda-time
+
+Java Date and Time
+Needed by BeStMan2 dependencies
+
+This was retrieved from the EPEL 5 repository
+(missing in EPEL 6)

@@ -1,0 +1,8 @@
+
+CMake is used to control the software compilation process using simple platform and compiler independent configuration files. CMake generates native makefiles and workspaces that can be used in the compiler environment of your choice. CMake is quite sophisticated: it is possible to support complex environments requiring system configuration, pre-processor generation, code generation, and template instantiation.
+
+This package is based off the Fedora package for cmake 2.8.4.
+
+Note: cmake 2.8+ is required for xrootd 3.1.0.
+
+

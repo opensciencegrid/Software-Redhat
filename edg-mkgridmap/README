@@ -1,0 +1,14 @@
+edg-mkgridmap package
+
+It is a tool which consults a list of voms servers and a configuration file that describes how 
+to map the users in each virtual organization (VO) to local users to generate a globus gridmap file.
+
+Source obtained:
+
+# svn export http://svn.cern.ch/guest/curios/edg-mkgridmap/tags/v4_0_2 edg-mkgridmap-4.0.2
+# tar czf edg-mkgridmap-4.0.2.tar.gz edg-mkgridmap-4.0.2
+
+This includes OSG patches to redirect log output, and to create a user-vo-map.
+
+Neha Sharma <neha@fnal.gov>
+Brian Bockelman <bbockelm@cse.unl.edu>

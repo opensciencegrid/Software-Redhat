@@ -1,0 +1,46 @@
+From 0a30fdb0fc0065a3e1eac1b17c4e3bc83438d976 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Tue, 17 Feb 2015 14:45:20 -0600
+Subject: [PATCH] Read if HTCondor CE enabled from Gateway config section
+
+---
+ gip/lib/python/gip_osg.py | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/gip/lib/python/gip_osg.py b/gip/lib/python/gip_osg.py
+index 49aaea4..9aceef5 100644
+--- a/gip/lib/python/gip_osg.py
++++ b/gip/lib/python/gip_osg.py
+@@ -23,11 +23,11 @@ storage_sec = 'Storage'
+ gip_sec = 'GIP'
+ dcache_sec = 'dcache'
+ lsf_sec = 'LSF'
+ cream_sec = 'CREAM'
+ slurm_sec = 'SLURM'
+-htcondorce_sec = 'HTCondorCE'
++gateway_sec = 'Gateway'
+ 
+ default_osg_ress_servers = \
+     "https://osg-ress-1.fnal.gov:8443/ig/services/CEInfoCollector[OLD_CLASSAD]"
+ default_osg_bdii_servers = \
+     "http://is1.grid.iu.edu:14001[RAW], http://is2.grid.iu.edu:14001[RAW]"
+@@ -288,13 +288,13 @@ def configOsg(cp):
+ 
+     # [CREAM]
+     if cp2.has_section(cream_sec) and cp2.has_option(cream_sec, 'enabled'):
+         __write_config(cream_sec, 'enabled', cream, 'enabled')
+ 
+-    # [HTCondorCE]
+-    if cp2.has_section(htcondorce_sec) and cp2.has_option(htcondorce_sec, 'enabled'):
+-        __write_config(htcondorce_sec, 'enabled', htcondorce, 'enabled')
++    # [Gateway]
++    if cp2.has_section(gateway_sec) and cp2.has_option(gateway_sec, 'htcondor_gateway_enabled'):
++        __write_config(gateway_sec, 'htcondor_gateway_enabled', htcondorce, 'enabled')
+ 
+     # [Misc Services]
+     glexec_enabled = False
+     if cp2.has_section(misc_sec) and cp2.has_option(misc_sec, 'glexec_location'):
+         gLexecLocation = cp2.get(misc_sec, 'glexec_location')
+-- 
+2.0.1
+

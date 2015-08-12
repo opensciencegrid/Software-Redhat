@@ -1,0 +1,29 @@
+BeStMan 2 - Berkeley Storage Manager
+
+User's guide : http://sdm.lbl.gov/bestman
+General support and bug report to <srm@lbl.gov>
+
+Open Science Grid (OSG) support:  osg-storage@opensciencegrid.org
+All Tier 3 sites and users
+    for ATLAS, Doug Benjamin <benjamin@phy.duke.edu>
+    for CMS, Rob Snihur <snihur@fnal.gov>
+
+BeStMan Copyright (c) 2010-2011, The Regents of the University of California, 
+through Lawrence Berkeley National Laboratory.  See LICENSE file for details.
+
+Packaged by Neha Sharma <neha@fnal.gov>
+
+The upstream source tarball for Bestman is created by the following procedure:
+
+- cd in to [working_dir]
+- svn checkout https://codeforge.lbl.gov/anonscm/bestman
+- mv bestman bestman2
+- cd bestman2
+- rm -rf tags 
+- rm -rf bestman2/tags
+- find . -name .svn -print0 | xargs -0 rm -rf
+- cd ../
+- tar -cvzf bestman2.tar.gz bestman2
+
+The tarball that contains the dependencies can be downloaded from
+http://vdt.cs.wisc.edu/upstream/bestman2/2.2.1a/dependent.jars.tar.gz

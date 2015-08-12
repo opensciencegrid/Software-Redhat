@@ -1,0 +1,49 @@
+? Makefile
+? config.log
+? config.status
+? globus.version
+? libtool
+? interface/Makefile
+? interface/Makefile.in
+? project/compile
+? project/depcomp
+? project/install-sh
+? project/missing
+? src/.deps
+? src/.libs
+? src/Makefile
+? src/Makefile.in
+? src/autogen
+? src/cfg.lo
+? src/uri.lo
+? src/util.loT
+? test/Makefile
+? test/Makefile.in
+Index: bootstrap
+===================================================================
+RCS file: /cvs/glite/org.glite.data.util-c/bootstrap,v
+retrieving revision 1.2
+diff -u -r1.2 bootstrap
+--- bootstrap	31 May 2007 15:26:20 -0000	1.2
++++ bootstrap	3 Jul 2011 20:19:52 -0000
+@@ -2,7 +2,7 @@
+ 
+ mkdir -p src/autogen
+ set -x
+-aclocal -I project
++aclocal -I project -I /usr/share/glite-build-common-cpp/m4 -I /usr/share/glite-service-discovery-build-common-cpp/m4
+ libtoolize --force
+ autoheader
+ automake --foreign --add-missing --copy
+diff -u -r1.7 configure.ac
+--- configure.ac	6 Jun 2007 09:05:48 -0000	1.7
++++ configure.ac	5 Jul 2011 17:49:13 -0000
+@@ -72,7 +72,7 @@
+ fi
+ 
+ GLITE_SERVICE_DISCOVERY
+-GLITE_LIB64
++#GLITE_LIB64
+ 
+ # Location of the HTML documentation
+ AC_ARG_WITH([htmldir],

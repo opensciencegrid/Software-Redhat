@@ -1,0 +1,12 @@
+Source downloaded from 'http://emisoft.web.cern.ch/emisoft/dist/EMI/2/sl5/SRPMS/base/voms-admin-server-2.7.0-1.src.rpm'
+
+Old README:
+
+
+This is mostly a pass-through of the EMI build.  Notes:
+
+1.  I removed Oracle support and dependencies.  I noticed they re-distributed one of the Oracle JARs, which might actually be illegal for us to do; not sure, but don't want to risk it.
+2.  Haven't figured out the exact EMI maven environment; they don't use jpackage though.  I had to patch some of the XML files to match the versions of the deps in jpackage.
+3.  There are some files that needed to be chmod'd; this seems to be simply an error in their SRPM.
+4.  I include a work-around for current tomcat5/jpackage combination.  If you grab tomcat5 from JPackage and eclipse-ecj from RHEL5, then you end up with an broken link to /usr/share/java/ecj.jar (renamed in the RHEL5 package).  Without ecj, no JSP pages work, and VOMS-Admin is useless.  If the link is not broken, the one this package creates will be ignored due to ClassLoader ordering.
+5. added xmi-commons-apis dependency to fix tomcat start/stop warning 

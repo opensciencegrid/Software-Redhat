@@ -1,0 +1,27 @@
+diff --git a/gums-core/src/main/java/gov/bnl/gums/configuration/Configuration.java b/gums-core/src/main/java/gov/bnl/gums/configuration/Configuration.java
+index 5c96360..edb9130 100644
+--- a/gums-core/src/main/java/gov/bnl/gums/configuration/Configuration.java
++++ b/gums-core/src/main/java/gov/bnl/gums/configuration/Configuration.java
+@@ -579,7 +579,7 @@ public class Configuration {
+ 			out.write("\t</hostToGroupMappings>\n\n");
+ 		}                
+ 
+-		out.write("</gums>");   	
++		out.write("</gums>\n");
+     }
+ 	 
+     public void mergeConfiguration(Configuration configuraton, String persistenceFactory, String hostToGroupMapping) {
+diff --git a/gums-core/src/main/java/gov/bnl/gums/configuration/FileConfigurationStore.java b/gums-core/src/main/java/gov/bnl/gums/configuration/FileConfigurationStore.java
+index 2624f27..019c103 100644
+--- a/gums-core/src/main/java/gov/bnl/gums/configuration/FileConfigurationStore.java
++++ b/gums-core/src/main/java/gov/bnl/gums/configuration/FileConfigurationStore.java
+@@ -241,7 +241,8 @@ public class FileConfigurationStore extends ConfigurationStore {
+ 				int ch;
+ 				while ((ch = fileInputStream.read()) != -1)
+ 					configBuffer.append((char)ch);
+-				this.conf = ConfigurationToolkit.parseConfiguration(configBuffer.toString(), true);
++				ConfigurationToolkit.parseConfiguration(configBuffer.toString(), true);
++				this.conf = ConfigurationToolkit.parseConfiguration(configBuffer.toString(), false);
+ 				curModification = new Date(new File(configPath).lastModified());
+ 			} catch (Exception e) {
+ 				throw new RuntimeException(e.getMessage(), e);

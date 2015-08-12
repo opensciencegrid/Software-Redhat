@@ -1,0 +1,27 @@
+--- sbin/edg-mkgridmap.pl.old	2014-05-27 16:48:08.000000000 -0500
++++ sbin/edg-mkgridmap.pl	2014-11-24 13:28:13.154260071 -0600
+@@ -681,11 +681,19 @@
+ 
+ 	for my $sn (@snList)
+ 	  {
+-	    if ($sn->getNodeTypeName eq "ELEMENT_NODE")
+-	      {
+-		$subject = $sn->getFirstChild->getData;
+-		push(@Subject, $subject);
+-	      }
++	    if ($sn->getNodeTypeName eq "ELEMENT_NODE") 
++              {
++                if ($sn->getFirstChild)
++                  {
++                      $subject = $sn->getFirstChild->getData;
++                      push(@Subject, $subject);
++                  }
++                else
++                  {
++                      $error_mesg = "voms search(%uri): Skipping blank entry";
++                      writeErrLog("$error_mesg\n\n");
++                  }
++              }
+ 	  }
+       }
+     else

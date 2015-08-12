@@ -1,0 +1,12 @@
+diff -ru xrootd-dsi-orig/globus_gridftp_server_posix.c xrootd-dsi/globus_gridftp_server_posix.c
+--- xrootd-dsi-orig/globus_gridftp_server_posix.c	2011-09-01 10:12:56.000000000 -0500
++++ xrootd-dsi/globus_gridftp_server_posix.c	2011-09-01 10:13:13.000000000 -0500
+@@ -632,7 +632,7 @@
+         rc = GLOBUS_FAILURE;
+         break;
+       case GLOBUS_GFS_CMD_RNTO:
+-        (rename(cmd_info->rnfr_pathname, PathName) == 0) || 
++        (rename(cmd_info->pathname, PathName) == 0) || 
+             (rc = GlobusGFSErrorGeneric("rename() fail"));
+         break;
+       case GLOBUS_GFS_CMD_SITE_CHMOD:

@@ -1,0 +1,24 @@
+# xrootd-dsi plugin for setting environment in globus-gridftp-server
+# variables may be overridden in /etc/sysconfig/xrootd-dsi
+
+
+#############################################
+# xrootd-dsi module support
+#############################################
+# Note: This defines the path of the posix preload mount and
+# which xrootd server it points.
+# NOTE:  local_path is where the access via this node (ie GridFTP)
+# will be from.  remote_path refers to the path on the XRootD node.
+# Uncommenting this will set the XrootD location
+export XROOTD_VMP="redirector_node:1094:/local_path=/remote_path"
+
+# Uncommenting these will enable xrootd posix preload support
+# Set XROOTDLIB to /usr/lib64 for 64 bit architectures
+# and /usr/lib for 32 bit architectures.
+export XROOTDLIB=/usr/lib
+export LD_PRELOAD=$XROOTDLIB/libXrdPosixPreload.so
+export conf=/etc/xrootd-dsi/gridftp-xrootd.conf
+
+if [ -e /etc/sysconfig/xrootd-dsi ]; then
+    . /etc/sysconfig/xrootd-dsi
+fi

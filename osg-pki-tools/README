@@ -1,0 +1,3 @@
+Source lives in $SVN/software/osg-cert-scripts-v3.
+
+Build the tarball with 'python setup.py sdist' (NOTE: this doesn't work on AFS)

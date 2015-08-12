@@ -1,0 +1,34 @@
+diff --git a/src/gridftp_hdfs_send.c b/src/gridftp_hdfs_send.c
+index f33c352..65c1e70 100644
+--- a/src/gridftp_hdfs_send.c
++++ b/src/gridftp_hdfs_send.c
+@@ -379,13 +379,17 @@ hdfs_dispatch_read(
+ 
+     globus_gridftp_server_get_optimal_concurrency(hdfs_handle->op,
+                                                   &hdfs_handle->optimal_count);
++    if (hdfs_handle->optimal_count == 2) {
++        hdfs_handle->optimal_count = 1;
++    }
+ 
+     // Verify we have sufficient buffer space.
+     if ((rc = allocate_buffers(hdfs_handle, hdfs_handle->optimal_count)) != GLOBUS_SUCCESS) {
+         goto cleanup;
+     }
+ 
+-    while ((hdfs_handle->outstanding < hdfs_handle->optimal_count) && !is_done(hdfs_handle)) {
++    while (!is_done(hdfs_handle)) {
++
+         // Determine the size of this read operation.
+         read_length = hdfs_handle->block_size;
+         if ((hdfs_handle->op_length != -1)
+@@ -399,6 +403,10 @@ hdfs_dispatch_read(
+             break;
+         }
+ 
++        if (hdfs_handle->outstanding >= hdfs_handle->optimal_count) {
++            break;
++        }
++
+         // Determine a buffer for this read to use.
+         if ((idx = find_empty_buffer(hdfs_handle)) < 0) {
+             GenericError(hdfs_handle, "Ran out of buffer space", rc)

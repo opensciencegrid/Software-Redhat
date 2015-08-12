@@ -1,0 +1,5 @@
+
+xalan-j2 is a dependency of the gratia-probe-dcache-storage RPM.
+Previously, we just included a copy in gratia-common.
+This is a pass-through of the jpackage version.
+

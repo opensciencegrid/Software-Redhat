@@ -1,0 +1,10 @@
+# Cron job running by default every 6 hours.
+# The lock file can be enabled or disabled via a
+# service edg-mkgridmap start
+# chkconfig edg-mkgridmap on
+
+# Note the lock file not existing is success hence the the slightly odd logic
+# below.
+# run every 6 hours but sleep for random time every 5 hours
+
+0 */6 * * * root perl -e 'sleep rand 18000'; [ ! -f /var/lock/subsys/edg-mkgridmap ] || /usr/sbin/edg-mkgridmap

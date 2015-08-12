@@ -1,0 +1,7 @@
+
+This package is the CILogon CA certificate set, in the OpenSSL 0.9.x
+format, as prepared by the OSG-Security team.
+
+For more information on CILogon, see:
+http://cilogon.org/
+http://ca.cilogon.org/downloads

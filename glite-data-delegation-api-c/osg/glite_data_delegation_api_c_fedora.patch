@@ -1,0 +1,113 @@
+? Makefile
+? Makefile.in
+? aclocal.m4
+? autom4te.cache
+? config.log
+? config.status
+? configure
+? globus.version
+? libtool
+? stdsoap2.c
+? doc/Makefile
+? doc/Makefile.in
+? interface/Makefile
+? interface/Makefile.in
+? interface/glite
+? project/compile
+? project/depcomp
+? project/install-sh
+? project/missing
+? src/Makefile
+? src/Makefile.in
+? src/autogen
+? src/c/.deps
+? src/c/.libs
+? src/c/DelegationSoapBinding.destroy.req.xml
+? src/c/DelegationSoapBinding.destroy.res.xml
+? src/c/DelegationSoapBinding.getInterfaceVersion.req.xml
+? src/c/DelegationSoapBinding.getInterfaceVersion.res.xml
+? src/c/DelegationSoapBinding.getNewProxyReq.req.xml
+? src/c/DelegationSoapBinding.getNewProxyReq.res.xml
+? src/c/DelegationSoapBinding.getProxyReq.req.xml
+? src/c/DelegationSoapBinding.getProxyReq.res.xml
+? src/c/DelegationSoapBinding.getServiceMetadata.req.xml
+? src/c/DelegationSoapBinding.getServiceMetadata.res.xml
+? src/c/DelegationSoapBinding.getTerminationTime.req.xml
+? src/c/DelegationSoapBinding.getTerminationTime.res.xml
+? src/c/DelegationSoapBinding.getVersion.req.xml
+? src/c/DelegationSoapBinding.getVersion.res.xml
+? src/c/DelegationSoapBinding.putProxy.req.xml
+? src/c/DelegationSoapBinding.putProxy.res.xml
+? src/c/DelegationSoapBinding.renewProxyReq.req.xml
+? src/c/DelegationSoapBinding.renewProxyReq.res.xml
+? src/c/Makefile
+? src/c/Makefile.in
+? src/c/delegation.nsmap
+? src/c/delegationC.c
+? src/c/delegationClient.c
+? src/c/delegationClientLib.c
+? src/c/delegationClientLib.lo
+? src/c/delegationH.h
+? src/c/delegationServer.c
+? src/c/delegationServerLib.c
+? src/c/delegationStub.h
+? src/c/env.c
+? src/c/env.lo
+? src/c/libglite_data_delegation_api_c.la
+? src/c/libglite_data_delegation_api_c.ver
+? src/c/libglite_data_delegation_server_api_c.ver
+? src/c/soapdefs.h
+? src/c/stdsoap2.c
+? src/c/stdsoap2.lo
+? src/c/www.gridsite.org-delegation-2.0.0.h
+? src/cpp/.deps
+? src/cpp/Makefile
+? src/cpp/Makefile.in
+Index: bootstrap
+===================================================================
+RCS file: /cvs/glite/org.glite.data.delegation-api-c/bootstrap,v
+retrieving revision 1.1.1.1
+diff -u -r1.1.1.1 bootstrap
+--- bootstrap	7 Oct 2005 12:22:36 -0000	1.1.1.1
++++ bootstrap	5 Jul 2011 15:55:59 -0000
+@@ -2,7 +2,7 @@
+ 
+ mkdir -p src/autogen
+ set -x
+-aclocal -I project
++aclocal -I project -I /usr/share/glite-build-common-cpp/m4 -I /usr/share/glite-data-build/
+ libtoolize --force
+ autoheader
+ automake --foreign --add-missing --copy
+Index: src/c/Makefile.am
+===================================================================
+RCS file: /cvs/glite/org.glite.data.delegation-api-c/src/c/Makefile.am,v
+retrieving revision 1.3
+diff -u -r1.3 Makefile.am
+--- src/c/Makefile.am	30 Jan 2007 11:58:07 -0000	1.3
++++ src/c/Makefile.am	5 Jul 2011 15:55:59 -0000
+@@ -18,7 +18,7 @@
+ 
+ # Copy gsoap file
+ stdsoap2.c:
+-	cp -f $(GSOAP_LOCATION)/src/$@ $@
++	cp -f $(top_builddir)/$@ $@
+ 
+ # Common Files
+ soapdefs.h:
+Index: src/cpp/Makefile.am
+===================================================================
+RCS file: /cvs/glite/org.glite.data.delegation-api-c/src/cpp/Makefile.am,v
+retrieving revision 1.2
+diff -u -r1.2 Makefile.am
+--- src/cpp/Makefile.am	24 Jan 2007 17:36:03 -0000	1.2
++++ src/cpp/Makefile.am	5 Jul 2011 15:55:59 -0000
+@@ -18,7 +18,7 @@
+ 
+ # copy gsoap file locally
+ stdsoap2.cpp:
+-	cp -f $(GSOAP_LOCATION)/src/$@ $@
++	cp -f $(top_builddir)/$@ $@
+ 
+ # Common Files
+ env.h:

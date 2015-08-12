@@ -1,0 +1,80 @@
+diff --git a/ssl-proxies/src/main/java/org/globus/gsi/OpenSSLKey.java b/ssl-proxies/src/main/java/org/globus/gsi/OpenSSLKey.java
+index cb2d31d..ea04f4d 100644
+--- a/ssl-proxies/src/main/java/org/globus/gsi/OpenSSLKey.java
++++ b/ssl-proxies/src/main/java/org/globus/gsi/OpenSSLKey.java
+@@ -35,9 +35,11 @@ import java.io.Writer;
+ import java.security.GeneralSecurityException;
+ import java.security.InvalidKeyException;
+ import java.security.Key;
++import java.security.KeyFactory;
+ import java.security.MessageDigest;
+ import java.security.PrivateKey;
+ import java.security.SecureRandom;
++import java.security.spec.PKCS8EncodedKeySpec;
+ import java.util.StringTokenizer;
+ 
+ import javax.crypto.Cipher;
+@@ -172,8 +174,17 @@ public abstract class OpenSSLKey implements Serializable {
+         if (isEncrypted()) {
+             this.keyData = null;
+         } else {
+-            this.keyData = Base64.decode(encodedKey);
+-            this.intKey = getKey(keyAlg, keyData);
++            if (keyAlg != "PKCS8") {
++                this.keyData = Base64.decode(encodedKey);
++                this.intKey = getKey(keyAlg, keyData);
++            } else {
++                // workaround for PKCS#8 encoded keys (only for keys without encryption)
++                keyAlg = "RSA";
++                PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(Base64.decode(encodedKey));
++                KeyFactory kfac = KeyFactory.getInstance("RSA");
++                this.intKey = kfac.generatePrivate(spec);
++                this.keyData = getEncoded(this.intKey);
++            }
+         }
+     }
+ 
+@@ -210,7 +221,10 @@ public abstract class OpenSSLKey implements Serializable {
+     private void parseKeyAlgorithm(BufferedReader in) throws IOException, InvalidKeyException {
+         String next = in.readLine();
+         while (next != null) {
+-            if (next.indexOf("PRIVATE KEY") != -1) {
++            if (next.indexOf("BEGIN PRIVATE KEY") != -1) {
++                keyAlg = "PKCS8";
++                break;
++            } else if (next.indexOf("PRIVATE KEY") != -1) {
+                 keyAlg = getKeyAlgorithm(next);
+                 break;
+             }
+diff --git a/ssl-proxies/src/main/java/org/globus/gsi/X509Credential.java b/ssl-proxies/src/main/java/org/globus/gsi/X509Credential.java
+index 239127c..7b7017c 100644
+--- a/ssl-proxies/src/main/java/org/globus/gsi/X509Credential.java
++++ b/ssl-proxies/src/main/java/org/globus/gsi/X509Credential.java
+@@ -41,6 +41,7 @@ import java.io.FileInputStream;
+ import java.security.cert.CertificateException;
+ import org.globus.gsi.bc.BouncyCastleUtil;
+ import java.security.interfaces.RSAPrivateKey;
++import java.security.spec.PKCS8EncodedKeySpec;
+ import java.io.BufferedReader;
+ import java.io.ByteArrayInputStream;
+ import java.io.EOFException;
+@@ -53,6 +54,7 @@ import java.io.OutputStream;
+ import java.io.Serializable;
+ import java.security.GeneralSecurityException;
+ import java.security.Key;
++import java.security.KeyFactory;
+ import java.security.PrivateKey;
+ import java.security.cert.CertificateEncodingException;
+ import java.security.cert.X509Certificate;
+@@ -583,6 +585,11 @@ public class X509Credential implements Serializable {
+                 } else if (line.indexOf("BEGIN RSA PRIVATE KEY") != -1) {
+                     byte[] data = getDecodedPEMObject(reader);
+                     this.opensslKey = new BouncyCastleOpenSSLKey("RSA", data);
++                } else if (line.indexOf("BEGIN PRIVATE KEY") != -1) {
++                    byte[] data = getDecodedPEMObject(reader);
++                    PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(data);
++                    KeyFactory kfac = KeyFactory.getInstance("RSA");
++                    this.opensslKey = new BouncyCastleOpenSSLKey(kfac.generatePrivate(spec));
+                 }
+             }
+         } catch (Exception e) {

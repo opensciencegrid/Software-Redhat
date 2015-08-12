@@ -1,0 +1,9 @@
+/var/log/glexec.log {
+  daily
+  rotate 31
+  copytruncate
+  compress
+  delaycompress
+  missingok
+  create 0600 root root
+}

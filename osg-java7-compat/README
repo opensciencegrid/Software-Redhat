@@ -1,0 +1,7 @@
+This is a minimal metapackage that requires java >= 1:1.7.0 and provides
+java7, and does the same for the -devel equivalents.
+
+This is written to support osg packages that currently require java7 /
+java7-devel, which the latest version of java-openjdk from RedHat has
+removed, and now provides java / java-devel = 1:1.7.0 instead.
+

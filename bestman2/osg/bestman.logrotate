@@ -1,0 +1,8 @@
+/var/log/bestman2/bestman2.log {
+    weekly
+    rotate 10
+    missingok
+    copytruncate
+    notifempty
+}
+

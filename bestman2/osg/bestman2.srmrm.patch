@@ -1,0 +1,476 @@
+Index: bestman2/sources/server/src/gov/lbl/srm/transfer/mss/FileObj.java
+===================================================================
+--- bestman2/sources/server/src/gov/lbl/srm/transfer/mss/FileObj.java	(revision 65)
++++ bestman2/sources/server/src/gov/lbl/srm/transfer/mss/FileObj.java	(working copy)
+@@ -79,15 +79,20 @@
+ private String tapeId="";
+ private String hsiPath=""; //we need this don't remove
+ 
++// ==>added by Junmin
++private SRM_MSS _parent;
+ public void clean() {
+ 	taskThread = null;
++	_parent.finished(requestToken);
+ }
++// <==
+ 
+-public FileObj( SRM_ACCESS_TYPE accessType, 
++public FileObj( SRM_MSS mss, SRM_ACCESS_TYPE accessType, 
+                 SRM_ACCESS_INFO accessInfo,
+                 mssIntf mssintf, String rid,
+ 				String type, Object obj) {
+ 
++			_parent = mss;
+             this.accessType = accessType;
+             this.accessInfo = accessInfo;
+             this.mssintf = mssintf;
+Index: bestman2/sources/server/src/gov/lbl/srm/transfer/mss/SRM_MSS.java
+===================================================================
+--- bestman2/sources/server/src/gov/lbl/srm/transfer/mss/SRM_MSS.java	(revision 65)
++++ bestman2/sources/server/src/gov/lbl/srm/transfer/mss/SRM_MSS.java	(working copy)
+@@ -129,6 +129,9 @@
+ 
+  public File scriptPathDir=null;
+ 
++protected void finished(String rid) {
++	statusMap.remove(rid);
++}
+ //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+ // SRM_MSS
+ //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+@@ -1410,16 +1413,16 @@
+    Object obj = userInfo.get(accessInfo.getUserId());
+    String requestId = generateRequestNumber("gethomedir");
+    if(obj == null) {
+-     Hashtable requestInfo = new Hashtable();
++     //Hashtable requestInfo = new Hashtable();
+      status.setRequestToken(requestId);
+-	 requestInfo.put("gethomedir", status);
+-     userInfo.put(accessInfo.getUserId(),requestInfo);
++	 //requestInfo.put("gethomedir", status);
++     //userInfo.put(accessInfo.getUserId(),requestInfo);
+      statusMap.put(requestId,status);
+    }
+    else {
+-    Hashtable requestInfo = (Hashtable) obj;
++    //Hashtable requestInfo = (Hashtable) obj;
+     status.setRequestToken(requestId);
+-    requestInfo.put("gethomedir", status);
++   // requestInfo.put("gethomedir", status);
+     statusMap.put(requestId,status);
+    }
+ 
+@@ -1433,7 +1436,7 @@
+      }
+    }
+     
+-   FileObj fObj = new FileObj(accessType, accessInfo,  
++   FileObj fObj = new FileObj(this, accessType, accessInfo,  
+ 							  mssintf, requestId, "gethomedir", 
+ 							  status);
+ 
+@@ -1526,16 +1529,16 @@
+    Object obj = userInfo.get(accessInfo.getUserId());
+    String requestId = generateRequestNumber("mkdir");
+    if(obj == null) {
+-     Hashtable requestInfo = new Hashtable();
++    // Hashtable requestInfo = new Hashtable();
+      status.setRequestToken(requestId);
+-	 requestInfo.put(source+"-mkdir", status);
+-     userInfo.put(accessInfo.getUserId(),requestInfo);
++	 //requestInfo.put(source+"-mkdir", status);
++    // userInfo.put(accessInfo.getUserId(),requestInfo);
+      statusMap.put(requestId,status);
+    }
+    else {
+-    Hashtable requestInfo = (Hashtable) obj;
++    //Hashtable requestInfo = (Hashtable) obj;
+     status.setRequestToken(requestId);
+-    requestInfo.put(source+"-mkdir", status);
++    //requestInfo.put(source+"-mkdir", status);
+     statusMap.put(requestId,status);
+    }
+ 
+@@ -1549,7 +1552,7 @@
+      }
+    }
+     
+-   FileObj fObj = new FileObj(accessType, accessInfo,  
++   FileObj fObj = new FileObj(this, accessType, accessInfo,  
+ 							  mssintf, requestId, "mkdir", 
+ 							  status);
+ 
+@@ -1674,17 +1677,17 @@
+    String requestId = generateRequestNumber("mssput");
+ 
+    if(obj == null) {
+-     Hashtable requestInfo = new Hashtable();
++    // Hashtable requestInfo = new Hashtable();
+      srmMSSFileStatus.setRequestToken(requestId);
+-	 requestInfo.put(source+"-put", srmMSSFileStatus);
+-     userInfo.put(accessInfo.getUserId(),requestInfo);
++	 //requestInfo.put(source+"-put", srmMSSFileStatus);
++     //userInfo.put(accessInfo.getUserId(),requestInfo);
+      statusMap.put(requestId,srmMSSFileStatus);
+    }
+    else {
+-    Hashtable requestInfo = (Hashtable) obj;
+-    Object statusObj = requestInfo.get(source+"-put");
++    //Hashtable requestInfo = (Hashtable) obj;
++    //Object statusObj = requestInfo.get(source+"-put");
+     srmMSSFileStatus.setRequestToken(requestId);
+-    requestInfo.put(source+"-put", srmMSSFileStatus);
++    //requestInfo.put(source+"-put", srmMSSFileStatus);
+     statusMap.put(requestId,srmMSSFileStatus);
+    }
+ 
+@@ -1745,7 +1748,7 @@
+      }
+    }
+     
+-   FileObj fObj = new FileObj(accessType, accessInfo, 
++   FileObj fObj = new FileObj(this, accessType, accessInfo, 
+ 									mssintf, requestId, 
+ 						            "put", srmMSSFileStatus);
+    fObj.setSource(source);
+@@ -1846,16 +1849,16 @@
+    Object obj = userInfo.get(accessInfo.getUserId());
+    String requestId = generateRequestNumber("mssget");
+    if(obj == null) {
+-     Hashtable requestInfo = new Hashtable();
++     //Hashtable requestInfo = new Hashtable();
+      srmMSSFileStatus.setRequestToken(requestId);
+-	 requestInfo.put(source+"-get", srmMSSFileStatus);
+-     userInfo.put(accessInfo.getUserId(),requestInfo);
++	 //requestInfo.put(source+"-get", srmMSSFileStatus);
++     //userInfo.put(accessInfo.getUserId(),requestInfo);
+      statusMap.put(requestId,srmMSSFileStatus);
+    }
+    else {
+-    Hashtable requestInfo = (Hashtable) obj;
++    //Hashtable requestInfo = (Hashtable) obj;
+     srmMSSFileStatus.setRequestToken(requestId);
+-    requestInfo.put(source+"-get", srmMSSFileStatus);
++    //requestInfo.put(source+"-get", srmMSSFileStatus);
+ 	statusMap.put(requestId,srmMSSFileStatus);
+     }
+ 
+@@ -1888,7 +1891,7 @@
+    }
+ 
+ 
+-   FileObj fObj = new FileObj(accessType,accessInfo,
++   FileObj fObj = new FileObj(this, accessType,accessInfo,
+ 								mssintf,requestId, 
+ 								"get",srmMSSFileStatus);
+    fObj.setSource(target);
+@@ -2010,16 +2013,16 @@
+    Object obj = userInfo.get(accessInfo.getUserId());
+    String requestId = generateRequestNumber("msscopy");
+    if(obj == null) {
+-     Hashtable requestInfo = new Hashtable();
++    // Hashtable requestInfo = new Hashtable();
+      status.setRequestToken(requestId);
+-     requestInfo.put(sourcePath+"-copy", status);
+-     userInfo.put(accessInfo.getUserId(),requestInfo);
++     //requestInfo.put(sourcePath+"-copy", status);
++     //userInfo.put(accessInfo.getUserId(),requestInfo);
+      statusMap.put(requestId, status);
+    }
+    else {
+-    Hashtable requestInfo = (Hashtable) obj;
++    //Hashtable requestInfo = (Hashtable) obj;
+     status.setRequestToken(requestId);
+-    requestInfo.put(sourcePath+"-copy", status);
++    //requestInfo.put(sourcePath+"-copy", status);
+     statusMap.put(requestId, status);
+    }
+ 
+@@ -2033,7 +2036,7 @@
+      }
+    }
+ 
+-   FileObj fObj = new FileObj(accessType,accessInfo,mssintf,
++   FileObj fObj = new FileObj(this, accessType,accessInfo,mssintf,
+ 			requestId, "copy",status);
+ 
+    fObj.setSource(sourcePath);
+@@ -2144,16 +2147,16 @@
+    Object obj = userInfo.get(accessInfo.getUserId());
+    String requestId = generateRequestNumber("mssdelete");
+    if(obj == null) {
+-     Hashtable requestInfo = new Hashtable();
++     //Hashtable requestInfo = new Hashtable();
+      status.setRequestToken(requestId);
+-     requestInfo.put(dirPath+"-del", status);
+-     userInfo.put(accessInfo.getUserId(),requestInfo);
++     //requestInfo.put(dirPath+"-del", status);
++     //userInfo.put(accessInfo.getUserId(),requestInfo);
+      statusMap.put(requestId,status);
+    }
+    else {
+-    Hashtable requestInfo = (Hashtable) obj;
++    //Hashtable requestInfo = (Hashtable) obj;
+     status.setRequestToken(requestId);
+-    requestInfo.put(dirPath+"-del", status);
++    //requestInfo.put(dirPath+"-del", status);
+     statusMap.put(requestId,status);
+    }
+ 
+@@ -2168,7 +2171,7 @@
+      }
+    }
+ 
+-   FileObj fObj = new FileObj(accessType, accessInfo, 
++   FileObj fObj = new FileObj(this, accessType, accessInfo, 
+ 							   mssintf, requestId, 
+ 							   "delete", status);
+    fObj.setFilePath(dirPath);
+@@ -2247,16 +2250,16 @@
+    Object obj = userInfo.get(accessInfo.getUserId());
+    String requestId = generateRequestNumber("getsize");
+    if(obj == null) {
+-     Hashtable requestInfo = new Hashtable();
++     //Hashtable requestInfo = new Hashtable();
+      srmFile.setRequestToken(requestId);
+-     requestInfo.put(path+"-getsize", srmFile);
+-     userInfo.put(accessInfo.getUserId(),requestInfo);
++     //requestInfo.put(path+"-getsize", srmFile);
++     //userInfo.put(accessInfo.getUserId(),requestInfo);
+      statusMap.put(requestId,srmFile);
+    }
+    else {
+-    Hashtable requestInfo = (Hashtable) obj;
++    //Hashtable requestInfo = (Hashtable) obj;
+     srmFile.setRequestToken(requestId);
+-    requestInfo.put(path+"-getsize", srmFile);
++    //requestInfo.put(path+"-getsize", srmFile);
+     statusMap.put(requestId,srmFile);
+    }
+ 
+@@ -2270,7 +2273,7 @@
+      }
+    }
+ 
+-   FileObj fObj = new FileObj(accessType, accessInfo, 
++   FileObj fObj = new FileObj(this, accessType, accessInfo, 
+ 			                   mssintf, requestId, 
+ 						       "getfilesize", srmFile);
+    fObj.setFilePath(path);
+@@ -2351,16 +2354,16 @@
+    Object obj = userInfo.get(accessInfo.getUserId());
+    String requestId = generateRequestNumber("srmls");
+    if(obj == null) {
+-     Hashtable requestInfo = new Hashtable();
++     //Hashtable requestInfo = new Hashtable();
+      srmMSSPath.setRequestToken(requestId);
+-     requestInfo.put(path+"-ls", srmMSSPath);
+-     userInfo.put(accessInfo.getUserId(),requestInfo);
++     //requestInfo.put(path+"-ls", srmMSSPath);
++     //userInfo.put(accessInfo.getUserId(),requestInfo);
+      statusMap.put(requestId,srmMSSPath); 
+    }
+    else {
+-    Hashtable requestInfo = (Hashtable) obj;
++    //Hashtable requestInfo = (Hashtable) obj;
+     srmMSSPath.setRequestToken(requestId);
+-    requestInfo.put(path+"-ls", srmMSSPath);
++    //requestInfo.put(path+"-ls", srmMSSPath);
+     statusMap.put(requestId,srmMSSPath); 
+    }
+ 
+@@ -2377,7 +2380,7 @@
+ 
+    long startMemoryUse = getMemoryUse();
+ 
+-   FileObj fObj = new FileObj(accessType, accessInfo, 
++   FileObj fObj = new FileObj(this, accessType, accessInfo, 
+ 			                   mssintf, requestId, "ls", 
+ 							   srmMSSPath);
+    long endMemoryUse = getMemoryUse();
+Index: bestman2/server/src/gov/lbl/srm/transfer/mss/hpss/SRM_MSS_HPSS.java
+===================================================================
+--- bestman2/server/src/gov/lbl/srm/transfer/mss/hpss/SRM_MSS_HPSS.java	(revision 65)
++++ bestman2/server/src/gov/lbl/srm/transfer/mss/hpss/SRM_MSS_HPSS.java	(working copy)
+@@ -3545,7 +3545,7 @@
+                SRM_PATH newPath = new SRM_PATH();
+                newPath.setRequestToken(requestToken); 
+                FileObj newFObj = new FileObj
+-                  (accessType,accessInfo,fObj.getMSSIntf(),requestToken,
++                  (this, accessType,accessInfo,fObj.getMSSIntf(),requestToken,
+ 					"ls",newPath);
+                newFObj.setFilePath(newDir);
+                newFObj.setRecursive(recursive);
+Index: bestman2/server/src/gov/lbl/srm/util/TSRMUtil.java
+===================================================================
+--- bestman2/server/src/gov/lbl/srm/util/TSRMUtil.java	(revision 65)
++++ bestman2/server/src/gov/lbl/srm/util/TSRMUtil.java	(working copy)
+@@ -675,7 +675,8 @@
+ 	    return urlInfo;
+ 	} catch (URI.MalformedURIException e) {
+ 	    //e.printStackTrace();
+-	    TSRMLog.exception(TSRMUtil.class, "failedWithSurl:"+surl, e);
++	    //TSRMLog.exception(TSRMUtil.class, "failedWithSurl:"+surl, e);
++		TSRMLog.debug(TSRMUtil.class, null, "event=notURI", "surl="+surl);
+ 	    return null;
+ 	}
+     }
+Index: bestman2/sources/client/src/gov/lbl/srm/client/main/SRMClientRmdir.java
+===================================================================
+--- bestman2/sources/client/src/gov/lbl/srm/client/main/SRMClientRmdir.java	(revision 65)
++++ bestman2/sources/client/src/gov/lbl/srm/client/main/SRMClientRmdir.java	(working copy)
+@@ -1066,6 +1066,12 @@
+     FileInfo f = (FileInfo) fInfo.elementAt(i);
+     String surl = f.getOrigSURL();
+     String turl = f.getOrigTURL();
++    if(surl.startsWith("file:")) {
++        doLocalLsList = true;
++    }
++    if(surl.startsWith("gsiftp:")) {
++        doGridFTPList = true;
++    }
+     if(request.getModeType().equalsIgnoreCase("dir")) {
+        if(!surl.startsWith("srm://") && !doLocalLsList && !doGridFTPList) {
+           inputVec.clear(); 
+Index: bestman2/sources/client/src/gov/lbl/srm/client/main/SRMClientRmFile.java
+===================================================================
+--- bestman2/sources/client/src/gov/lbl/srm/client/main/SRMClientRmFile.java	(revision 65)
++++ bestman2/sources/client/src/gov/lbl/srm/client/main/SRMClientRmFile.java	(working copy)
+@@ -1051,6 +1051,12 @@
+     FileInfo f = (FileInfo) fInfo.elementAt(i);
+     String surl = f.getOrigSURL();
+     String turl = f.getOrigTURL();
++    if(surl.startsWith("file://")) {
++       doLocalLsList = true;
++    }
++    if(surl.startsWith("gsiftp://")) {
++       doGridFTPList = true;
++    }
+     if(request.getModeType().equalsIgnoreCase("dir")) {
+        if(!surl.startsWith("srm://") && (!doLocalLsList) && (!doGridFTPList)) {
+           util.printMessage("\nSRM-DIR: source url is not valid " + surl, 
+Index: bestman2/client/src/gov/lbl/srm/client/main/SRMClientMkdir.java
+===================================================================
+--- bestman2/sources/client/src/gov/lbl/srm/client/main/SRMClientMkdir.java	(revision 65)
++++ bestman2/sources/client/src/gov/lbl/srm/client/main/SRMClientMkdir.java	(working copy)
+@@ -808,7 +808,9 @@
+       }
+ 
+       serviceUrl = gov.lbl.srm.client.util.Util.getServiceUrl(
+-			temp,serviceURL,serviceHandle,servicePortNumber,1, silent,useLog,_theLogger,logger);
++	temp,serviceURL,serviceHandle,
++	servicePortNumber,1, silent,useLog,_theLogger,logger);
++
+       if(serviceUrl == null) showUsage(false);
+ 
+       for(int i = 0; i < fileInfo.size(); i++) {
+@@ -1063,6 +1065,12 @@
+     FileInfo f = (FileInfo) fInfo.elementAt(i);
+     String surl = f.getOrigSURL();
+     String turl = f.getOrigTURL();
++    if(surl.startsWith("gsiftp")){
++       doGsiFTPList=true;
++    }
++    if(surl.startsWith("file")){
++       doLocalLsList=true;
++    }
+     if(request.getModeType().equalsIgnoreCase("dir")) {
+        if(!surl.startsWith("srm://") && !doLocalLsList && !doGsiFTPList) {
+           inputVec.clear();
+Index: bestman2/sources/client/src/gov/lbl/srm/client/wsdl/SRMPutClient.java
+===================================================================
+--- bestman2/sources/client/src/gov/lbl/srm/client/wsdl/SRMPutClient.java	(revision 65)
++++ bestman2/sources/client/src/gov/lbl/srm/client/wsdl/SRMPutClient.java	(working copy)
+@@ -769,7 +769,8 @@
+     TStatusCode temp = null;
+ 
+     if(result == null) {
+-      inputVec.addElement("SRM returned null result for the srmPutDone request");
++      inputVec.addElement
++          ("SRM returned null result for the srmPutDone request");
+       util.printEventLog(_theLogger,"Response from srmPutDone", 
+ 	inputVec,silent,useLog);
+       util.printMessage("\nSRM-CLIENT: " + new Date() + 
+@@ -791,18 +792,23 @@
+       return;
+     }
+ 
+-    util.printMessage("Result.status="+result.getReturnStatus().getStatusCode(),logger,silent);
+-    util.printMessage("Result.status="+result.getReturnStatus().getStatusCode(),pIntf);
+-    util.printMessage("Result.Explanation="+result.getReturnStatus().getExplanation(),logger,silent);
+-    util.printMessage("Result.Explanation="+result.getReturnStatus().getExplanation(),pIntf);
++    util.printMessage("Result.status="+
++        result.getReturnStatus().getStatusCode(),logger,silent);
++    util.printMessage("Result.status="+
++        result.getReturnStatus().getStatusCode(),pIntf);
++    util.printMessage("Result.Explanation="+
++        result.getReturnStatus().getExplanation(),logger,silent);
++    util.printMessage("Result.Explanation="+
++        result.getReturnStatus().getExplanation(),pIntf);
+ 
+     if(result.getArrayOfFileStatuses() == null) {
+        inputVec.clear();
+        util.printMessage("\nSRM-CLIENT: " + new Date() + 
+-		" SRM returned null getArrayOfFileStatus for srmPutDone request",
+-          logger,silent);
++		" SRM returned null getArrayOfFileStatus " +
++                "for srmPutDone request", logger,silent);
+        util.printMessage("\nSRM-CLIENT: " + new Date() + 
+-	" SRM returned null getArrayOfFileStatus for srmPutDone request", pIntf);
++	" SRM returned null getArrayOfFileStatus for " +
++          "srmPutDone request", pIntf);
+        inputVec.addElement
+         ("SRM returned null getArrayOfFileStatus for srmPutDone request");
+        util.printEventLog
+@@ -815,7 +821,8 @@
+     temp = status.getStatus().getStatusCode();
+     checkUrl = status.getSurl().toString();
+     if(_debug) {
+-      util.printMessage("SRM-CLIENT: " + "### Output of SRM ### ", logger,silent);
++      util.printMessage("SRM-CLIENT: " + "### Output of SRM ### ", 
++                logger,silent);
+       util.printMessage("SRM-CLIENT: " + "### Output of SRM ### ", pIntf);
+     }
+     inputVec.clear();
+@@ -832,7 +839,8 @@
+            fInfo.setFileExplanation(status.getStatus().getExplanation());
+          }
+          else {
+-           fInfo.setFileExplanation("SRM-CLIENT: PutDone is called successfully");
++           fInfo.setFileExplanation
++                ("SRM-CLIENT: PutDone is called successfully");
+          }
+       }
+     }
+@@ -852,6 +860,7 @@
+     TPutRequestFileStatus[] statuses= null;
+     TPutRequestFileStatus f_status = null;
+     StringBuffer rCode = new StringBuffer();
++
+     if(remotePutCase && !noWaitOnRemotePut) {
+       URI uuri = new URI(siteUrl);
+       Vector siteUrls = new Vector();
+@@ -925,7 +934,8 @@
+ 			logger,silent);
+        util.printMessage("\tsurl="+status.getSurl().toString(),pIntf);
+        util.printMessage("\tstatus="+temp,pIntf);
+-       util.printMessage("\texplanation="+status.getStatus().getExplanation(), pIntf);
++       util.printMessage("\texplanation="+status.getStatus().getExplanation(), 
++                pIntf);
+      }
+     }
+   }catch(Exception e) {
+@@ -2471,8 +2481,11 @@
+    }
+ 
+    if(_debug) {
+-     util.printMessage("\nSRM-CLIENT:  ....Input parameters for SrmStatusOfPutRequest temp ...", logger,silent);
+-     util.printMessage("\nSRM-CLIENT:  ....Input parameters for SrmStatusOfPutRequest...", pIntf);
++     util.printMessage
++        ("\nSRM-CLIENT:  ....Input parameters for " +
++         "SrmStatusOfPutRequest temp ...", logger,silent);
++     util.printMessage("\nSRM-CLIENT:  ....Input parameters for " +
++                "SrmStatusOfPutRequest...", pIntf);
+      util.printMessage("SRM-CLIENT: UID="+uid, logger,silent);
+      util.printMessage("SRM-CLIENT: UID="+uid, pIntf);
+      util.printMessage("SRM-CLIENT: RequestToken="+rToken, logger,silent);

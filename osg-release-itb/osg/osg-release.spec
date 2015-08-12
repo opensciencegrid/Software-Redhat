@@ -1,10 +1,10 @@
 Name:           osg-release-itb
 Version:        3.2
-Release:        1%{?dist}
+Release:        8%{?dist}
 Summary:        OSG Software for Enterprise Linux repository configuration
 
-Group:          System Environment/Base 
-License:        GPL 
+Group:          System Environment/Base
+License:        GPL
 URL:            http://vdt.cs.wisc.edu/repos
 
 # This is a OSG Software maintained package which is specific to
@@ -12,45 +12,21 @@ URL:            http://vdt.cs.wisc.edu/repos
 # within this srpm.
 
 
-Source0:        osg.repo
-Source1:        osg-development.repo
-Source2:        osg-testing.repo
-Source3:        osg-minefield.repo
-Source4:        osg-contrib.repo
-Source5:        osg-prerelease.repo
+Source0:        generate-repo-files.sh
+Source1:        repoinfo.txt
+Source2:        template.repo.standard
+Source3:        template.repo.basic
+Source4:        template.repo.koji
 
-Source10:        osg-el6.repo
-Source11:        osg-el6-development.repo
-Source12:        osg-el6-testing.repo
-Source13:        osg-el6-minefield.repo
-Source14:        osg-el6-contrib.repo
-Source15:        osg-el6-prerelease.repo
-
-Source20:        osg-upcoming.repo
-Source21:        osg-upcoming-development.repo
-Source22:        osg-upcoming-testing.repo
-Source23:        osg-upcoming-minefield.repo
-Source24:        osg-upcoming-prerelease.repo
-
-Source30:        osg-el6-upcoming.repo
-Source31:        osg-el6-upcoming-development.repo
-Source32:        osg-el6-upcoming-testing.repo
-Source33:        osg-el6-upcoming-minefield.repo
-Source34:        osg-el6-upcoming-prerelease.repo
-
-Source40:        RPM-GPG-KEY-OSG
+Source40:       RPM-GPG-KEY-OSG
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildArch:     noarch
+BuildArch:      noarch
 
-%if 0%{?el6}
-Requires:      redhat-release >=  6
-%else
-Requires:      redhat-release >=  5
-%endif
+Requires:       redhat-release >= %{rhel}
 
-Obsoletes:     vdt-release
+Obsoletes:      vdt-release
 
 %description
 This package contains the OSG Software for Enterprise Linux repository
@@ -60,7 +36,8 @@ configuration for yum.
 exit 0
 
 %build
-exit 0
+# generate .repo files for current rhel version
+%{SOURCE0} %{SOURCE1} %{rhel}
 
 
 %install
@@ -74,11 +51,7 @@ install -pm 644 %{SOURCE40} \
 # yum
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d
 
-%if 0%{?el6}
-install -pm 644 $RPM_SOURCE_DIR/osg-el6*.repo $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d
-%else
-install -pm 644 $RPM_SOURCE_DIR/osg.repo $RPM_SOURCE_DIR/osg-[^e][^l][^6]*.repo $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d
-%endif
+install -m 644 *.repo $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -90,8 +63,23 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Thu Oct 03 2013  <edquist@cs.wisc.edu> - 3.2-1
-- Bump version to 3.2
+* Thu Jul 30 2015 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.2-8
+- Add goc-itb, goc repos (SOFTWARE-1969)
+
+* Thu Jul 17 2014 Carl Edquist <edquist@cs.wisc.edu> - 3.2-6
+- Use .repo file templates and support el7 (SOFTWARE-1541)
+
+* Thu Dec 12 2013 Carl Edquist <edquist@cs.wisc.edu> - 3.2-5
+- Bugfix for el5; glob to exclude el6 packages was also excluding osg-empty
+
+* Mon Dec 09 2013 Carl Edquist <edquist@cs.wisc.edu> - 3.2-4
+- Add osg-empty repos (SOFTWARE-1237)
+
+* Thu Oct 31 2013 Carl Edquist <edquist@cs.wisc.edu> - 3.2-3
+- Update prerelease repos to new koji tags
+
+* Tue Oct 29 2013 Carl Edquist <edquist@cs.wisc.edu> - 3.2-1
+- Update to osg-3.2, and new style koji tags for minefield repos
 
 * Tue Oct 01 2013  <edquist@cs.wisc.edu> - 3.0-23
 - Update .repo files to point to new directory layout

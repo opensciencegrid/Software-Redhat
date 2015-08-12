@@ -1,0 +1,7 @@
+
+This is a simple packaging of the service-discovery build macros
+
+NOTE!  There is a critical error in the latest release that prevents us from using this package.
+
+Hence, we are using HEAD (r1.5 of glite_service_discovery.m4)
+

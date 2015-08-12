@@ -1,0 +1,15 @@
+osg-condor-flock Configuration README
+
+Documentation can be found at:
+https://twiki.grid.iu.edu/bin/view/CampusGrids/InstallCondorFlockSubmit
+
+Two configuration files control the behavior of the OSG Flocking:
+- /etc/condor/config.d/99_osg_flock.conf 
+  Administrators should edit this in order to enable which hosts should
+  be in flocked to.
+
+- /etc/condor/config.d/98_flock_hosts.conf 
+  System Administrators should not edit this file.  It is full of Condor
+  macros that will be updated when new flocking hosts are added
+
+

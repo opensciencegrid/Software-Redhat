@@ -1,0 +1,46 @@
+--- sbin/edg-mkgridmap	2011-04-02 20:31:56.000000000 -0500
++++ sbin/edg-mkgridmap	2011-12-02 11:23:55.000000000 -0600
+@@ -9,6 +9,12 @@
+ X509_USER_CERT=${X509_USER_CERT:-/etc/grid-security/hostcert.pem}
+ X509_USER_KEY=${X509_USER_KEY:-/etc/grid-security/hostkey.pem}
+ 
++USER_VO_MAP=${USER_VO_MAP:-/var/lib/osg/user-vo-map}
++LOCAL_USER_VO_MAP=${LOCAL_USER_VO_MAP:-/etc/osg/local-user-vo-map}
++VO_LIST_FILE=${VO_LIST_FILE:-/var/lib/osg/supported-vo-list}
++UNDEFINED_ACCTS_FILE=${UNDEFINED_ACCTS_FILE:-/var/lib/osg/undefined-accounts}
++EDG_MKGRIDMAP_LOG=${EDG_MKGRIDMAP_LOG:-/var/log/edg-mkgridmap.log}
++
+ export GRIDMAP
+ export CERTDIR
+ export X509_USER_CERT
+@@ -16,7 +22,29 @@
+ export http_proxy
+ export https_proxy
+ 
++log_message()
++{
++    d=`date +'%Y-%m-%dT%H-%M-%S'`
++    echo $d $@ >> ${EDG_MKGRIDMAP_LOG}
++}
++
+ prog=/usr/libexec/edg-mkgridmap/edg-mkgridmap.pl
+ 
+-exec $prog $EDG_MKGRIDMAP_OPTIONS "$@"
++log_message "#######################"
++log_message "Running $prog"
++$prog --safe --output ${GRIDMAP} $EDG_MKGRIDMAP_OPTIONS "$@" >> ${EDG_MKGRIDMAP_LOG} 2>&1
++
++/usr/sbin/generate-vo-map --input /etc/edg-mkgridmap.conf --output ${USER_VO_MAP}.new --log ${EDG_MKGRIDMAP_LOG}
++
++if [ -r ${LOCAL_USER_VO_MAP} ]; then 
++    cat ${LOCAL_USER_VO_MAP} >> ${USER_VO_MAP}.new
++fi
++
++log_message "Running /usr/sbin/check-vo-map"
++
++/usr/sbin/check-vo-map --input ${USER_VO_MAP}.new --output ${USER_VO_MAP} --volist ${VO_LIST_FILE} --undefined_ids ${UNDEFINED_ACCTS_FILE} --log ${EDG_MKGRIDMAP_LOG}
++
++rm ${USER_VO_MAP}.new
++touch ${USER_VO_MAP}.last_checked
+ 
++log_message "Finished"

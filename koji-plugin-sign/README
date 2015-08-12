@@ -1,0 +1,4 @@
+Website: https://fedorahosted.org/koji/ticket/203
+Download instructions:
+    wget 'https://fedorahosted.org/koji/attachment/ticket/203/sign.2.py?format=raw' -O sign.py
+    wget 'https://fedorahosted.org/koji/attachment/ticket/203/sign.conf?format=raw' -O sign.conf

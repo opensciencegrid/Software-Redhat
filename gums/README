@@ -1,0 +1,20 @@
+
+Source tarball generated with:
+
+  VER=1.4.1  # set appropriately
+
+  git clone https://github.com/opensciencegrid/gums.git
+  cd gums
+  git archive --format=tgz --prefix=gums-$VER/ v$VER > gums-$VER.tar.gz
+
+
+This is a new package for GUMS.  Notes:
+
+1) The maven auto-generated RPM was not used.  Too far from FHS standards.
+2) I had to hand-remove a few maven plugins (RPM and release).  These aren't required for packaging.
+3) JARs are currently in the wrong location.  We'll work with upstream to get them in the right place there first.
+4) gums-host-cron was largely rewritten to remove $VDT_LOCATION.
+5) There are two significant patches:
+  a) We fetch the client certificate from the SSL auth chain, instead of the first certificate (which may be a proxy).
+  b) We extract and record the VOMS extensions in the proxy in the SSL auth chain (if present).
+

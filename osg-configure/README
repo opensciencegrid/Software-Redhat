@@ -1,0 +1,7 @@
+RPM packages for the configure-osg and ini files
+
+osg-configure uses Distutils to create tarballs and installs instead of a
+makefile.  To get tarball from osg-configure svn checkout, make sure the 
+setup.py and Manifest.in are up to date, then run python setup.py sdist .  
+The tarball will be in dist/  .  
+

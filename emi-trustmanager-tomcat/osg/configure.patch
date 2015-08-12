@@ -1,0 +1,11 @@
+--- /var/lib/trustmanager-tomcat/configure.sh	2011-07-18 15:23:13.000000000 -0500
++++ config/configure.sh	2011-07-18 16:51:37.000000000 -0500
+@@ -302,7 +302,7 @@
+ 
+ JARS2="trustmanager.jar trustmanager-tomcat.jar"
+ for jar in $JARS2; do
+-    condLinkFile $jar $INSTALLROOT/share/java ${SERVER_LIB} $FORCE
++    condLinkFile $jar $INSTALLROOT/usr/share/java ${SERVER_LIB} $FORCE
+ done
+ 
+ log4j="log4j-trustmanager.properties"
