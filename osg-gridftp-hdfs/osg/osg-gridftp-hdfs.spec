@@ -1,7 +1,7 @@
 Name:      osg-gridftp-hdfs
 Summary:   OSG GridFTP-HDFS meta package
-Version:   3.2
-Release:   1%{?dist}
+Version:   3.3
+Release:   2%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -56,9 +56,11 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
-* Fri Jul 17 2015 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.2-1
+* Wed Jul 01 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.3-2
 - Require grid-certificates >= 7 (SOFTWARE-1883)
-- Change version number to match release series
+
+* Wed Apr 29 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.3-1
+- Rebuild for OSG 3.3
 
 * Thu Apr 03 2014 Carl Edquist <edquist@cs.wisc.edu> - 3.0.0-6
 - Add version requirement for gridftp-hdfs (SOFTWARE-1412)

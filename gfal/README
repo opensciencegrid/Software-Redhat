@@ -1,7 +1,0 @@
-Pass-through rebuild of gfal, a build/runtime dependency of lcg-util.
-
-Downloaded from:
-  http://dl.fedoraproject.org/pub/epel/6/SRPMS/gfal-1.16.0-1.el6.src.rpm
-
-Note: we do not want to continue shipping this in OSG-3.3+ (SOFTWARE-390)
-

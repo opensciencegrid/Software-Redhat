@@ -1,9 +1,0 @@
-This package creates a site home page. It relies on information discovered at the site, mainly in the config.ini file.
-
-The main source repository is in VDT and can be found:
-https://vdt.cs.wisc.edu/svn/software/osg-site-web-page/
-svn checkout https://vdt.cs.wisc.edu/svn/software/osg-site-web-page/trunk/ osg-site-web-page
-
-The current maintainer is:
-Marco Mambelli <marco@hep.uchicago.edu>
-

@@ -1,15 +1,37 @@
 ## Turn off meaningless jar repackaging 
 %define __jar_repack 0
 
+# If set, the maven build is done in offline mode and a tarball of the maven
+# dependencies (basically the local repository tarred up) is used.
+%define maven_offline 0
+
 Summary: The VOMS Administration service
 Name: voms-admin-server
 Version: 2.7.0
-Release: 1.14%{?dist}
-License:    ASL 2.0
+Release: 1.16%{?dist}
+License: ASL 2.0
 Group: System Environment/Libraries
+
+%if %{?rhel} < 7
+
 BuildRequires:  maven22
 BuildRequires:  jpackage-utils
 BuildRequires:  java7-devel
+%define mvn mvn22
+
+%else
+
+BuildRequires:  maven >= 3.0
+%define mvn mvn
+
+%endif
+
+%if 0%{?maven_offline}
+%define mvnopts -B -o
+%else
+%define mvnopts -B
+%endif
+
 BuildRequires:  emi-trustmanager
 BuildRequires:  emi-trustmanager-axis
 BuildRequires:  /usr/share/java/jta.jar
@@ -19,6 +41,7 @@ Requires: java7-devel
 Requires: emi-trustmanager
 Requires: emi-trustmanager-tomcat
 Requires: bouncycastle >= 1.39
+
 %if 0%{?rhel} <= 5
 Requires: tomcat5
 Requires: fetch-crl3
@@ -27,6 +50,7 @@ Requires: fetch-crl3
 %define tomcat_endorsed /usr/share/tomcat5/common/endorsed
 %define catalina_home /usr/share/tomcat5
 %endif
+
 %if 0%{?rhel} == 6
 Requires: tomcat6
 Requires: fetch-crl
@@ -35,6 +59,16 @@ Requires: fetch-crl
 %define tomcat_endorsed /usr/share/tomcat6/endorsed
 %define catalina_home /usr/share/tomcat6
 %endif
+
+%if 0%{?rhel} >= 7
+Requires: tomcat
+Requires: fetch-crl
+%define tomcat tomcat
+%define tomcat_lib /usr/share/%tomcat/lib
+%define tomcat_endorsed /usr/share/%tomcat/endorsed
+%define catalina_home /usr/share/%tomcat
+%endif
+
 Requires(post):/sbin/chkconfig
 Requires(preun):/sbin/chkconfig
 Requires(preun):/sbin/service
@@ -48,12 +82,30 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch: noarch
 AutoReqProv: yes
 Source0:  %{name}-%{version}.tar.gz
+
+%if 0%{?maven_offline}
+
+Source6:     voms-admin-server-mvn-deps-el6.tar.gz
+Source7:     voms-admin-server-mvn-deps-el7.tar.gz
+
+    %if 0%{?el6}
+        %define mvn_deps_tarball %{SOURCE6}
+    %endif
+
+    %if 0%{?el7}
+        %define mvn_deps_tarball %{SOURCE7}
+    %endif
+
+%endif
+
+
 Patch1: directory-defaults.patch
 Patch2: maven-resources-disable.patch
 Patch3: cern-mirror-disable.patch
 Patch4: trustmanager-versions.patch
 Patch5: fix-suspended-users.patch
 Patch6: fix-certificate-issuer-check.patch
+Patch7: axistools-version.patch
 
 Requires: osg-webapp-common
 
@@ -74,7 +126,7 @@ administration tasks.
 
 %setup -q -n voms-admin
 %patch1 -p0
-%if 0%{?rhel} == 6
+%if 0%{?rhel} >= 6
 # Tried to "BuildRequires: maven-resources-plugin" like in voms-admin-client,
 # but it gave me an odd NoClassDefFoundError
 # so I'm using a patch to disable using the maven-resources-plugin for el6
@@ -87,20 +139,74 @@ administration tasks.
 %patch5 -p0
 %patch6 -p0
 
+%if 0%{?rhel} >= 7
+%patch7 -p1
+%endif
+
+%define local_maven /tmp/m2/repository
+
+
 %build
+
+# If we're using maven in offline mode, then copy our maven dependencies from
+# the tarball(s) we have into the local mvn repo
+%if 0%{?maven_offline}
+
+    rm -rf "%{local_maven}"
+    # Do not copy over these deps into the local repo because we already have
+    # them by other means
+    DEP_BLACKLIST=(
+                   emi/trustmanager
+                   emi/trustmanager-axis
+                   javax/transaction
+                  )
+
+    tar -xzf "%{mvn_deps_tarball}"
+
+    (
+        cd repository
+        for dep in "${DEP_BLACKLIST[@]}"; do
+            rm -rf "$dep"
+        done
+        mkdir -p "%{local_maven}"
+        mv -f * "%{local_maven}/"
+    )
+    rm -rf repository
+
+%endif
+
 # Fix tomcat directory location in init script
 # The directory-defaults.patch adds the line we're fixing here
 sed -i -e 's/@TOMCAT@/%{tomcat}/' resources/scripts/init-voms-admin.py
- 
+
+mvn_install_file () {
+    groupId=$1
+    artifactId=$2
+    version=$3
+    file=$4
+
+    # Get out of the package dir so maven won't look at the package's pom.xml
+    pushd /tmp
+
+    %mvn %mvnopts install:install-file \
+        -DgroupId="$groupId" \
+        -DartifactId="$artifactId" \
+        -Dversion="$version" \
+        -Dpackaging=jar \
+        -Dfile="$file" \
+        -Dmaven.repo.local="%{local_maven}"
+    popd
+}
+
 # Adding system dependencies
-mvn22 install:install-file -DgroupId=emi -DartifactId=trustmanager -Dversion=3.0.3 -Dpackaging=jar -Dfile=`build-classpath trustmanager` -Dmaven.repo.local=/tmp/m2-repository
-mvn22 install:install-file -DgroupId=emi -DartifactId=trustmanager-axis -Dversion=1.0.1 -Dpackaging=jar -Dfile=`build-classpath trustmanager-axis` -Dmaven.repo.local=/tmp/m2-repository
-mvn22 install:install-file -DgroupId=javax.transaction -DartifactId=jta -Dversion=1.0.1B -Dpackaging=jar -Dfile=`build-classpath jta` -Dmaven.repo.local=/tmp/m2-repository
+mvn_install_file  emi trustmanager 3.0.3 "`build-classpath trustmanager`"
+mvn_install_file  emi trustmanager-axis 1.0.1 "`build-classpath trustmanager-axis`"
+mvn_install_file  javax.transaction jta 1.0.1B "`build-classpath jta`"
 
 export JAVA_HOME=%{java_home};
-mvn22 -B -s src/config/emi-build-settings.xml -e -P EMI -Dmaven.repo.local=/tmp/m2-repository package
-  
-  
+%mvn %mvnopts -s src/config/emi-build-settings.xml -e -P EMI -Dmaven.repo.local="%{local_maven}" package
+
+
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -161,6 +267,12 @@ fi
 %{tomcat_endorsed}/xalan-j2-serializer.jar
 
 %changelog
+* Thu Aug 06 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 2.7.0-1.16.osg
+- Build for el6 and el7; optionally use a bundle of mvn dependencies so we can build in offline mode
+
+* Tue Jul 21 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 2.7.0-1.15.osg
+- Changes to build on el7 with tomcat 7
+
 * Wed Jul 01 2015 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.7.0-1.14
 - Require grid-certificates >= 7 (SOFTWARE-1883)
 

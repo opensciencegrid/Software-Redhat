@@ -1,0 +1,103 @@
+From 436316da5952257765da370cf25346c0df34c0cc Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Tue, 25 Nov 2014 20:50:00 -0600
+Subject: [PATCH 17/26] getDEREncoded() -> getEncoded(ASN1Encoding.DER)
+ (bc1.47)
+
+getEncoded also throws IOException, which getDEREncoded did not use to
+do.  I declared the throw in OpensslTrustmanager.getOpenSSLCAHash() and
+caught and logged (and mostly rethrew) the error in the methods that
+called getOpenSSLCAHash.
+---
+ .../trustmanager/OpensslCertPathValidator.java     | 24 +++++++++++++++++++---
+ .../security/trustmanager/OpensslTrustmanager.java |  8 +++++---
+ 2 files changed, 26 insertions(+), 6 deletions(-)
+
+diff --git a/src/org/glite/security/trustmanager/OpensslCertPathValidator.java b/src/org/glite/security/trustmanager/OpensslCertPathValidator.java
+index 4a69230..bde93d9 100644
+--- a/src/org/glite/security/trustmanager/OpensslCertPathValidator.java
++++ b/src/org/glite/security/trustmanager/OpensslCertPathValidator.java
+@@ -152,7 +152,13 @@ public class OpensslCertPathValidator {
+         } else {
+             issuerDN = new X509Name(true, firstCert.getIssuerX500Principal().getName());
+         }
+-        String hash = OpensslTrustmanager.getOpenSSLCAHash(issuerDN);
++        String hash;
++        try {
++            hash = OpensslTrustmanager.getOpenSSLCAHash(issuerDN);
++        } catch (IOException e) {
++            LOGGER.info("getOpenSSLCAHash threw an exception: " + e.getMessage());
++            return false;
++        }
+ 
+         FullTrustAnchor acceptedAnchor = null;
+ 
+@@ -217,7 +223,13 @@ public class OpensslCertPathValidator {
+             } else {
+                 subjectDN = new X509Name(true, caCert.getIssuerX500Principal().getName());
+             }
+-            String hash = OpensslTrustmanager.getOpenSSLCAHash(subjectDN);
++            String hash;
++            try {
++                hash = OpensslTrustmanager.getOpenSSLCAHash(subjectDN);
++            } catch (IOException e) {
++                LOGGER.info("getOpenSSLCAHash threw an exception: " + e.getMessage());
++                throw new CertPathValidatorException("Could not get hash of subject DN " + subjectDN);
++            }
+ 
+             FullTrustAnchor acceptedAnchor = null;
+ 
+@@ -657,7 +669,13 @@ public class OpensslCertPathValidator {
+         } else {
+             subjectDN = new X509Name(true, caCert.getIssuerX500Principal().getName());
+         }
+-        String hash = OpensslTrustmanager.getOpenSSLCAHash(subjectDN);
++        String hash;
++        try {
++            hash = OpensslTrustmanager.getOpenSSLCAHash(subjectDN);
++        } catch (IOException e) {
++            LOGGER.info("getOpenSSLCAHash threw an exception: " + e.getMessage());
++            throw new CertPathValidatorException("Could not get hash of subject DN " + subjectDN);
++        }
+ 
+         FullTrustAnchor currentAnchor = null;
+ 
+diff --git a/src/org/glite/security/trustmanager/OpensslTrustmanager.java b/src/org/glite/security/trustmanager/OpensslTrustmanager.java
+index a65afcd..8982895 100644
+--- a/src/org/glite/security/trustmanager/OpensslTrustmanager.java
++++ b/src/org/glite/security/trustmanager/OpensslTrustmanager.java
+@@ -27,6 +27,7 @@ import java.text.ParseException;
+ import javax.net.ssl.X509TrustManager;
+ 
+ import org.apache.log4j.Logger;
++import org.bouncycastle.asn1.ASN1Encoding;
+ import org.bouncycastle.asn1.x509.X509Name;
+ import org.bouncycastle.crypto.digests.MD5Digest;
+ import org.glite.security.util.CaseInsensitiveProperties;
+@@ -129,11 +130,12 @@ public class OpensslTrustmanager implements X509TrustManager {
+      * of 8 least significant bytes of a MD5 digest of the the ASN.1 encoded DN.
+      * 
+      * @param subject the DN to hash.
++     * @throws IOException thrown in case of encoding error
+      * @return the 8 character string of the hexadecimal hash.
+      */
+     @SuppressWarnings("boxing")
+-    public static String getOpenSSLCAHash(X509Name subject) {
+-        byte[] bytes = subject.getDEREncoded();
++    public static String getOpenSSLCAHash(X509Name subject) throws IOException {
++        byte[] bytes = subject.getEncoded(ASN1Encoding.DER);
+ 
+         MD5Digest digest = new MD5Digest();
+         digest.update(bytes, 0, bytes.length);
+@@ -172,7 +174,7 @@ public class OpensslTrustmanager implements X509TrustManager {
+      * @param cert the certificate from which the subject DN is taken and hashed.
+      * @return the 8 character string of the hexadecimal hash.
+      */
+-    public static String getOpenSSLCAHash(X509Certificate cert) {
++    public static String getOpenSSLCAHash(X509Certificate cert) throws IOException {
+         X509Name subject = (X509Name) cert.getSubjectDN();
+ 
+         return getOpenSSLCAHash(subject);
+-- 
+2.0.1
+

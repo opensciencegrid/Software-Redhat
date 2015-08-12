@@ -1,3 +1,0 @@
-This is a pass-through of SLF4J from the SL Fermi repos, created because we
-accidentally shipped an older version and wish to correct that. This is only to
-be built on EL6.

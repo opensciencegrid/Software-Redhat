@@ -1,0 +1,29 @@
+From 0b71e230a2b617b59c3a158d43591e72e0b0b638 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Tue, 25 Nov 2014 20:53:56 -0600
+Subject: [PATCH 18/26] Add bcpkix*.jar to build.xml (EL7)
+
+The openssl classes are located in the bcpkix*.jar files, which come
+from the bouncycastle-pkix package.
+---
+ build.xml | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/build.xml b/build.xml
+index e03ad08..719fda4 100644
+--- a/build.xml
++++ b/build.xml
+@@ -83,6 +83,10 @@ limitations under the License.
+ 			<fileset dir="${bouncycastle.location}">
+ 				<include name="**/bcprov*.jar" />
+ 			</fileset>
++
++			<fileset dir="${bouncycastle.location}">
++				<include name="**/bcpkix*.jar" />
++			</fileset>
+ 		</path>
+ 		<path id="test.classpath">
+ 
+-- 
+2.0.1
+

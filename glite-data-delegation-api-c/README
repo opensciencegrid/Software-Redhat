@@ -1,8 +1,0 @@
-
-Packaging of the C API for gLite delegation
-
-Notes:
-- gsoap in EPEL does not package stdsoap2.c; I copied the stdsoap2.c from gsoap-debuginfo and added it as a second source here, and patch the makefile accordingly.  This likely will have to be redone for each major gsoap release (what a pain!).
-- gsoap 2.7.13 contains a bug in parsing wsdl; see the notes for glite-security-delegation-interface.
-- There is non-functioning compatibility code for gsoap <= 2.3.  The configure script doesn't detect the gsoap version automatically; you have to specify it.  Right now, any number > 2.3 is fine; doesn't actually have to be the installed version.
-

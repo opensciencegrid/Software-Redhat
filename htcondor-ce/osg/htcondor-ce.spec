@@ -3,12 +3,15 @@
 
 Name: htcondor-ce
 Version: 1.14
-Release: 3%{?gitrev:.%{gitrev}git}%{?dist}
+Release: 4%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 
 Group: Applications/System
 License: Apache 2.0
 URL: http://github.com/bbockelm/condor-ce
+
+# _unitdir not defined on el6 build hosts
+%{!?_unitdir: %global _unitdir %{_prefix}/lib/systemd/system}
 
 # Generated with:
 # git archive --prefix=%{name}-%{version}/ v%{version} | gzip > %{name}-%{version}.tar.gz
@@ -17,7 +20,11 @@ URL: http://github.com/bbockelm/condor-ce
 # git archive --prefix=%{name}-%{version}/ %{gitrev} | gzip > %{name}-%{version}-%{gitrev}.tar.gz
 #
 Source0: %{name}-%{version}%{?gitrev:-%{gitrev}}.tar.gz
-Patch0: sw1910_run_without_r.patch
+Source1: condor-ce.service
+Source2: condor-ce-collector.service
+Patch0: init-script-lsb-lines.patch
+Patch1: sw1910_run_without_r.patch
+Patch2: drop_userHome.patch
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -148,6 +155,8 @@ Conflicts: %{name}
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
+%patch2 -p1
 
 %build
 %cmake -DHTCONDORCE_VERSION=%{version} -DCMAKE_INSTALL_LIBDIR=%{_libdir} -DPYTHON_SITELIB=%{python_sitelib}
@@ -157,6 +166,12 @@ make %{?_smp_mflags}
 rm -rf $RPM_BUILD_ROOT
 
 make install DESTDIR=$RPM_BUILD_ROOT
+
+%if %{?rhel} >= 7
+mkdir -p $RPM_BUILD_ROOT/%{_unitdir}
+install -m 0644 %{SOURCE1} $RPM_BUILD_ROOT/%{_unitdir}/condor-ce.service
+install -m 0644 %{SOURCE2} $RPM_BUILD_ROOT/%{_unitdir}/condor-ce-collector.service
+%endif
 
 # Directories necessary for HTCondor-CE files
 install -m 0755 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/run/condor-ce
@@ -197,9 +212,12 @@ fi
 %{_datadir}/condor-ce/condor_ce_router_defaults
 
 %{_libdir}/condor/libeval_rsl.so
-%{_libdir}/condor/libclassad_ce.so
 
 %{_initrddir}/condor-ce
+
+%if %{?rhel} >= 7
+%{_unitdir}/condor-ce.service
+%endif
 
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-auth.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-router.conf
@@ -297,6 +315,10 @@ fi
 %{_datadir}/condor-ce/config.d/01-ce-collector-defaults.conf
 %{_datadir}/condor-ce/config.d/01-ce-auth-defaults.conf
 
+%if %{?rhel} >= 7
+%{_unitdir}/condor-ce-collector.service
+%endif
+
 %config(noreplace) %{_sysconfdir}/sysconfig/condor-ce-collector
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-collector.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-collector-requirements.conf
@@ -317,6 +339,9 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Mon Jul 20 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.14-4
+- bump to rebuild
+
 * Wed Jul 01 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.14-3
 - Require grid-certificates >= 7 (SOFTWARE-1883)
 
@@ -330,6 +355,11 @@ fi
 - Ensure that the HTCondor Python bindings are in the PYTHONPATH (SOFTWARE-1927)
 - HTCondor CE should warn if osg-configure has not been run (SOFTWARE-1914)
 - Improvements to condor_ce_run error messages
+- Drop userHome function since it's included in upstream HTCondor 8.3.6
+
+* Fri Jun 19 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.13-3
+- Add basic systemd service files for condor-ce and condor-ce-collector (SOFTWARE-1541)
+- Fix name and description in the LSB lines in the init scripts
 
 * Mon Apr 27 2015 Brian Lin <blin@cs.wisc.edu> - 1.13-1
 - Fix bug that prevented HTCondor CE service from starting with multiple job routes

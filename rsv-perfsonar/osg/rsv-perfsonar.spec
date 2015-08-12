@@ -1,5 +1,5 @@
 Name:      rsv-perfsonar
-Version:   1.0.20
+Version:   1.0.19
 Release:   1%{?dist}
 Summary:   RSV Metrics to monitor pefsonar
 Packager:  OSG-Software
@@ -81,10 +81,6 @@ scl enable python27 - << \EOF
 EOF 
 
 %changelog
-* Tue Aug 4 2015 <efajardo@physics.ucsd.edu> 1.0.20-1
-- Removed the sleep option since no longer needed
-- Added error handling for import problems with esmond
-
 * Mon Jul 6 2015 <efajardo@physics.ucsd.edu> 1.0.19-1
 - Fixed bug when directory queue is not present
 

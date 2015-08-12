@@ -1,4 +1,4 @@
-%define tarball_version 8.2.8
+%define tarball_version 8.3.6
 
 # optionally define any of these, here or externally
 # % define fedora   16
@@ -84,7 +84,21 @@
 %if 0%{?hcc}
 %define blahp 0
 %define cream 0
+%if 0%{?rhel} >= 7
+%define aviary 0
+%else
 %define aviary 1
+%endif
+%if 0%{?rhel} >= 6
+%define std_univ 0
+%endif
+%endif
+%if ( 0%{?osg} && 0%{?rhel} == 7 )
+    %define aviary 0
+    %define std_univ 0
+    %define cream 0
+
+    %define suffix _nocream
 %endif
 
 %define glexec 1
@@ -111,13 +125,13 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.5
+%define condor_base_release 1.4
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
         %define condor_release %condor_base_release
 %endif
-Release: %condor_release%{?dist}
+Release: %condor_release%{?suffix}%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -199,26 +213,20 @@ Source122: glibc-2.5-20061008T1257-x86_64-p0.tar.gz
 Source123: zlib-1.2.3.tar.gz
 %endif
 
-# This should make it into 8.2.9
-# https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=5059
-# https://jira.opensciencegrid.org/browse/SOFTWARE-1941
-Patch1: 5059-JAVA_CLASSPATH_DEFAULT.patch
+Patch1: sw1636-cream_gahp-dlopen.patch
 
-# These make it into 8.3.2, the 8.2.x timeline is unclear
-# https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=4590
-Patch2: 4590-improved_tool_output.patch
+# Needed for EL5, not sure whether upstream will revert them.
+# https://jira.opensciencegrid.org/browse/SOFTWARE-1921
+# https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=4910
+# https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=4998
+Patch2: sw1921-revert-4910.patch
 
-# This makes it into 8.3.1, but not 8.2.x
-# https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=3158
-# https://jira.opensciencegrid.org/browse/SOFTWARE-1553
-Patch3: 3158-user-specific-configs.patch
-
-# These should make it into 8.2.9
+# These should make it into 8.3.8
 # https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=5181
 # https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=5190
-# https://jira.opensciencegrid.org/browse/SOFTWARE-1992
-Patch4: 5181-remove-SUBMIT_Iwd.patch
-Patch5: 5190-ghap-reopen.patch
+# https://jira.opensciencegrid.org/browse/SOFTWARE-1991
+Patch3: 5181-remove-SUBMIT_Iwd.patch
+Patch4: 5190-ghap-reopen.patch
 
 #% if 0%osg
 Patch8: osg_sysconfig_in_init_script.patch
@@ -226,7 +234,6 @@ Patch8: osg_sysconfig_in_init_script.patch
 
 # HCC patches
 # See gt3158
-Patch14: 0001-Apply-the-user-s-condor_config-last-rather-than-firs.patch
 Patch15: wso2-axis2.patch
 
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
@@ -248,6 +255,7 @@ BuildRequires: /usr/include/expat.h
 BuildRequires: openldap-devel
 BuildRequires: python-devel
 BuildRequires: boost-devel
+BuildRequires: redhat-rpm-config
 
 %if %uw_build || %std_univ
 BuildRequires: cmake >= 2.8
@@ -359,6 +367,11 @@ BuildRequires: latex2html
 Requires: /usr/sbin/sendmail
 Requires: condor-classads = %{version}-%{release}
 Requires: condor-procd = %{version}-%{release}
+
+# ecryptfs was pulled from rhel 7
+%if (0%{?rhel} == 5 || 0%{?rhel} == 6)
+Requires: ecryptfs-utils
+%endif
 
 %if %blahp && ! %uw_build
 Requires: blahp >= 1.16.1
@@ -523,7 +536,7 @@ resources exposed by the deltacloud API.
 Summary: HTCondor's classified advertisement language
 Group: Development/Libraries
 Obsoletes: classads <= 1.0.10
-Obsoletes: classads-static <= 1.0.8
+Obsoletes: classads-static <= 1.0.10
 Provides: classads = %version-%release
 
 %description classads
@@ -552,12 +565,22 @@ Summary: Headers for HTCondor's classified advertisement language
 Group: Development/System
 Requires: %name-classads = %version-%release
 Requires: pcre-devel
-Obsoletes: classads-devel <= 1.0.8
+Obsoletes: classads-devel <= 1.0.10
 Provides: classads-devel = %version-%release
 
 %description classads-devel
 Header files for HTCondor's ClassAd Library, a powerful and flexible,
 semi-structured representation of data.
+
+#######################
+%package test
+Summary: HTCondor Self Tests
+Group: Applications/System
+Requires: %name = %version-%release
+Requires: %name-classads = %{version}-%{release}
+
+%description test
+A collection of tests to verify that HTCondor is operating properly.
 
 #######################
 %if %cream
@@ -566,8 +589,6 @@ Summary: HTCondor's CREAM Gahp
 Group: Applications/System
 Requires: %name = %version-%release
 Requires: %name-classads = %{version}-%{release}
-# The cream gahp dlopens this
-Requires: %{_libdir}/libglobus_thread_pthread.so
 
 %description cream-gahp
 The condor-cream-gahp enables CREAM interoperability for HTCondor.
@@ -596,6 +617,17 @@ Summary: Python bindings for HTCondor.
 Group: Applications/System
 Requires: python >= 2.2
 Requires: %name = %version-%release
+
+%if 0%{?rhel} >= 7
+# auto provides generator does not pick these up for some reason
+    %ifarch x86_64
+Provides: classad.so()(64bit)
+Provides: htcondor.so()(64bit)
+    %else
+Provides: classad.so
+Provides: htcondor.so
+    %endif
+%endif
 
 %description python
 The python bindings allow one to directly invoke the C++ implementations of
@@ -634,7 +666,6 @@ Includes all the files necessary to support running standard universe jobs.
 %package static-shadow
 Summary: Statically linked condow_shadow and condor_master binaries
 Group: Applications/System
-Requires: %name = %version-%release
 
 %description static-shadow
 Provides condor_shadow_s and condor_master_s, which have all the globus
@@ -650,6 +681,13 @@ Requires: %name = %version-%release
 %description externals
 Includes the external packages built when UW_BUILD is enabled
 
+%package external-libs
+Summary: Libraries for external packages built into HTCondor
+Group: Applications/System
+
+%description external-libs
+Includes the libraries for external packages built when UW_BUILD is enabled
+
 %endif
 
 %package all
@@ -657,25 +695,9 @@ Summary: All condor packages in a typical installation
 Group: Applications/System
 Requires: %name = %version-%release
 Requires: %name-procd = %version-%release
-%if %qmf
-Requires: %name-qmf = %version-%release
-%endif
-%if %aviary
-Requires: %name-aviary-common = %version-%release
-Requires: %name-aviary = %version-%release
-Requires: %name-aviary-hadoop-common = %version-%release
-Requires: %name-aviary-hadoop = %version-%release
-%endif
-%if %plumage
-Requires: %name-plumage = %version-%release
-%endif
 Requires: %name-kbdd = %version-%release
 Requires: %name-vm-gahp = %version-%release
-%if %deltacloud
-Requires: %name-deltacloud-gahp = %version-%release
-%endif
 Requires: %name-classads = %version-%release
-#Requires: %name-classads-devel = %version-%release
 %if %cream
 Requires: %name-cream-gahp = %version-%release
 %endif
@@ -685,8 +707,8 @@ Requires: %name-bosco = %version-%release
 Requires: %name-std-universe = %version-%release
 %endif
 %if %uw_build
-Requires: %name-static-shadow = %version-%release
 Requires: %name-externals = %version-%release
+Requires: %name-external-libs = %version-%release
 %endif
 
 %description all
@@ -709,15 +731,15 @@ exit 0
 %endif
 
 %patch1 -p1
+
+%if 0%{?rhel} < 6
 %patch2 -p1
+%endif
+
 %patch3 -p1
 %patch4 -p1
-%patch5 -p1
-
-%patch8 -p1
 
 %if 0%{?hcc}
-%patch14 -p1
 %patch15 -p0
 %endif
 
@@ -736,8 +758,10 @@ export CMAKE_PREFIX_PATH=/usr
 # causes build issues with EL5, don't even bother building the tests.
 
 %if %uw_build
+%define condor_build_id 325064
+
 %cmake \
-       -DBUILDID:STRING=UW_development \
+       -DBUILDID:STRING=%condor_build_id \
        -DUW_BUILD:BOOL=TRUE \
 %if ! %std_univ
        -DCLIPPED:BOOL=TRUE \
@@ -895,7 +919,6 @@ sed -e "s:^LIB\s*=.*:LIB = \$(RELEASE_DIR)/$LIB/condor:" \
 # Install the basic configuration, a Personal HTCondor config. Allows for
 # yum install condor + service condor start and go.
 mkdir -m0755 %{buildroot}/%{_sysconfdir}/condor/config.d
-# cp %{buildroot}/etc/examples/condor_config.local %{buildroot}/%{_sysconfdir}/condor/config.d/00personal_condor.config
 %if %parallel_setup
 cp %{SOURCE5} %{buildroot}/%{_sysconfdir}/condor/config.d/20dedicated_scheduler_condor.config
 %endif
@@ -934,11 +957,6 @@ mkdir -p -m1777 %{buildroot}/%{_var}/lock/condor/local
 # Note we use %{_var}/lib instead of %{_sharedstatedir} for RHEL5 compatibility
 mkdir -p -m0755 %{buildroot}/%{_var}/lib/condor/spool
 mkdir -p -m1777 %{buildroot}/%{_var}/lib/condor/execute
-
-cat >> %{buildroot}/%_sysconfdir/condor/condor_config << EOF
-CONDOR_HOST = \$(FULL_HOSTNAME)
-DAEMON_LIST = COLLECTOR, MASTER, NEGOTIATOR, SCHEDD, STARTD
-EOF
 
 # no master shutdown program for now
 rm -f %{buildroot}/%{_sbindir}/condor_set_shutdown
@@ -1087,8 +1105,10 @@ rm -rf %{buildroot}%{_datadir}/condor/{libpyclassad*,htcondor,classad}.so
 mkdir -p %{buildroot}%{python_sitelib}
 mv %{buildroot}%{_libexecdir}/condor/campus_factory/python-lib/GlideinWMS %{buildroot}%{python_sitelib}
 mv %{buildroot}%{_libexecdir}/condor/campus_factory/python-lib/campus_factory %{buildroot}%{python_sitelib}
+%if 0%{?osg} || 0%{?hcc}
 mv %{buildroot}%{_libexecdir}/condor/campus_factory/share/condor/condor_config.factory %{buildroot}%{_sysconfdir}/condor/config.d/60-campus_factory.config
 mv %{buildroot}%{_libexecdir}/condor/campus_factory/etc/campus_factory.conf %{buildroot}%{_sysconfdir}/condor/
+%endif
 mv %{buildroot}%{_libexecdir}/condor/campus_factory/share %{buildroot}%{_datadir}/condor/campus_factory
 
 %if %blahp && ! %uw_build
@@ -1164,7 +1184,6 @@ rm -rf %{buildroot}
 %_datadir/condor/CondorTest.pm
 %_datadir/condor/CondorUtils.pm
 %dir %_sysconfdir/condor/config.d/
-#%_sysconfdir/condor/config.d/00personal_condor.config
 %_sysconfdir/condor/condor_ssh_to_job_sshd_config_template
 %if %gsoap || %uw_build
 %dir %_datadir/condor/webservice/
@@ -1222,6 +1241,8 @@ rm -rf %{buildroot}
 %_libexecdir/condor/interactive.sub
 %_libexecdir/condor/condor_dagman_metrics_reporter
 %_libexecdir/condor/condor_gangliad
+%_libexecdir/condor/panda-plugin.so
+%_libexecdir/condor/pandad
 %_mandir/man1/condor_advertise.1.gz
 %_mandir/man1/condor_check_userlogs.1.gz
 %_mandir/man1/condor_chirp.1.gz
@@ -1234,6 +1255,7 @@ rm -rf %{buildroot}
 %_mandir/man1/condor_gpu_discovery.1.gz
 %_mandir/man1/condor_history.1.gz
 %_mandir/man1/condor_hold.1.gz
+%_mandir/man1/condor_job_router_info.1.gz
 %_mandir/man1/condor_master.1.gz
 %_mandir/man1/condor_off.1.gz
 %_mandir/man1/condor_on.1.gz
@@ -1256,6 +1278,7 @@ rm -rf %{buildroot}
 %_mandir/man1/condor_submit.1.gz
 %_mandir/man1/condor_submit_dag.1.gz
 %_mandir/man1/condor_transfer_data.1.gz
+%_mandir/man1/condor_update_machine_ad.1.gz
 %_mandir/man1/condor_updates_stats.1.gz
 %_mandir/man1/condor_urlfetch.1.gz
 %_mandir/man1/condor_userlog.1.gz
@@ -1322,6 +1345,7 @@ rm -rf %{buildroot}
 %_bindir/condor_qsub
 %_bindir/condor_pool_job_report
 %_bindir/condor_job_router_info
+%_bindir/condor_update_machine_ad
 # reconfig_schedd, restart
 # sbin/condor is a link for master_off, off, on, reconfig,
 %_sbindir/condor_advertise
@@ -1359,6 +1383,7 @@ rm -rf %{buildroot}
 %_sbindir/nordugrid_gahp
 %_sbindir/gce_gahp
 %if %uw_build
+%_sbindir/condor_master_s
 %_sbindir/boinc_gahp
 %endif
 %_libexecdir/condor/condor_gpu_discovery
@@ -1581,6 +1606,12 @@ rm -rf %{buildroot}
 %_includedir/classad/xmlSink.h
 %_includedir/classad/xmlSource.h
 
+#################
+%files test
+%defattr(-,root,root,-)
+%_libexecdir/condor/condor_sinful
+%_libexecdir/condor/condor_testingd
+
 %if %cream
 %files cream-gahp
 %defattr(-,root,root,-)
@@ -1597,13 +1628,16 @@ rm -rf %{buildroot}
 %files python
 %defattr(-,root,root,-)
 %_libdir/libpyclassad*.so
+%_libexecdir/condor/libclassad_python_user.so
 %{python_sitearch}/classad.so
 %{python_sitearch}/htcondor.so
 
 %files bosco
 %defattr(-,root,root,-)
+%if 0%{?osg} || 0%{?hcc}
 %config(noreplace) %_sysconfdir/condor/campus_factory.conf
 %config(noreplace) %_sysconfdir/condor/config.d/60-campus_factory.config
+%endif
 %_libexecdir/condor/shellselector
 %_libexecdir/condor/campus_factory
 %_sbindir/bosco_install
@@ -1661,16 +1695,17 @@ rm -rf %{buildroot}
 
 %if %uw_build
 %files static-shadow
-%{_sbindir}/condor_master_s
 %{_sbindir}/condor_shadow_s
 
-%files externals
+%files external-libs
 %dir %_libdir/condor
 %_libdir/condor/libcondordrmaa.a
 %_libdir/condor/libdrmaa.so
 %_libdir/condor/libglobus*.so*
 %_libdir/condor/libvomsapi*.so*
 %_libdir/condor/ugahp.jar
+
+%files externals
 %_sbindir/deltacloud_gahp
 %_sbindir/unicore_gahp
 %if %blahp
@@ -1832,51 +1867,50 @@ fi
 %endif
 
 %changelog
-* Mon Aug 03 2015 Carl Edquist <edquist@cs.wisc.edu> - 8.2.8-1.5
-- pull in #5181 and #5181 from 8.2.9 (SOFTWARE-1992)
+* Tue Aug 04 2015 Carl Edquist <edquist@cs.wisc.edu> - 8.3.6-1.4
+- pull in #5181 and #5181 from 8.3.8 (SOFTWARE-1991)
 
-* Thu Jun 11 2015 Carl Edquist <edquist@cs.wisc.edu> - 8.2.8-1.4
-- fix JAVA_CLASSPATH_DEFAULT for java universe (SOFTWARE-1941)
+* Tue Jul 21 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 8.3.6-1.3_nocream.osg
+- Provide htcondor.so and classad.so in condor-python on el7
 
-* Tue Apr 28 2015 Carl Edquist <edquist@cs.wisc.edu> - 8.2.8-1.3
-- drop NO_PNONE_HOME option; ie, always phone home (SOFTWARE-1897)
+* Mon Jul 20 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 8.3.6-1.2_nocream.osg
+- Turn off features for osg that don't (yet) build on el7
+  - cream
+  - aviary
+  - std universe
 
-* Wed Apr 08 2015 Carl Edquist <edquist@cs.wisc.edu> - 8.2.8-1.2
-- add missing %files all section
+* Wed Jun 24 2015 Brian Lin <blin@cs.wisc.edu> - 8.3.6-1.1
+- Bump version to 8.3.6
+- Drop patch reverting gittrac #4998
 
-* Tue Apr 07 2015 Carl Edquist <edquist@cs.wisc.edu> - 8.2.8-1.1
-- Update to 8.2.8 with OSG patches
+* Wed May 13 2015 Carl Edquist <edquist@cs.wisc.edu> - 8.3.5-4
+- Revert selected changes in 8.3.5 for EL5 (SOFTWARE-1921)
 
-* Thu Feb 05 2015 Carl Edquist <edquist@cs.wisc.edu> - 8.2.7-1.1
-- Update to 8.2.7 with OSG patches
-- Drop 4556-udp_invalidations.patch, now upstream
-- Include missing patch for user specific condor configs (#3158)
+* Tue Apr 28 2015 Carl Edquist <edquist@cs.wisc.edu> - 8.3.5-2
+- Drop NO_PNONE_HOME option; ie, always phone home (SOFTWARE-1897)
 
-* Tue Dec 16 2014 Carl Edquist <edquist@cs.wisc.edu> - 8.2.6-1.1
-- Update to 8.2.6 with OSG patches
+* Tue Mar 24 2015 Jose Caballero <jcaballero@bnl.gov> - 8.3.5-1.315103
+- Update to HTCondor 8.3.5 (SOFTWARE-1886)
+- merged all changes in spec file from 8.3.5
+- removed Patch2 sw1807-py_import.patch
 
-* Tue Dec 02 2014 Carl Edquist <edquist@cs.wisc.edu> - 8.2.5-1.2
-- Update Obsoletes for latest classads in EPEL (SOFTWARE-1697)
-- Allow user specific condor configs (#3158 / SOFTWARE-1553)
+* Fri Mar 06 2015 Carl Edquist <edquist@cs.wisc.edu> - 8.3.4-1.1
+- Update to HTCondor 8.3.4 (SOFTWARE-1807)
 
-* Thu Nov 20 2014 Carl Edquist <edquist@cs.wisc.edu> - 8.2.4-1.2
-- Include upstream fixes for preserving a modified condor_config.local (#4731)
+* Tue Feb 24 2015 Carl Edquist <edquist@cs.wisc.edu> - 8.3.3-1.2
+- Build fix for EL5 PROPER build (SOFTWARE-1807)
 
-* Wed Nov 19 2014 Carl Edquist <edquist@cs.wisc.edu> - 8.2.4-1.1
-- Include fix from 8.2.5 to move condor_config.local to config.d (#4731)
+* Mon Feb 23 2015 Carl Edquist <edquist@cs.wisc.edu> - 8.3.3-1.1
+- Update to HTCondor 8.3.3 (SOFTWARE-1807)
+- Drop patches now in upstream
 
-* Mon Nov 17 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 8.2.3-1.4
-- Revert SOFTWARE-1636 patch and add globus_thread_pthread library as a
-  dependency to the cream-gahp subpackage (SOFTWARE-1689)
+* Mon Feb 02 2015 Carl Edquist <edquist@cs.wisc.edu> - 8.3.2-1.2
+- Disallow NULL or empty parameter names #4788
+- Use sendmail by default (SOFTWARE-1776)
 
-* Fri Oct 31 2014 Carl Edquist <edquist@cs.wisc.edu> - 8.2.3-1.3
-- Patch to allow 8.2.3 schedds to claim 8.0 startds (SOFTWARE-1661)
-
-* Thu Oct 16 2014 Mátyás Selmeci <matyas@cs.wisc.edu> - 8.2.3-1.2
-- Patch cream_gahp to dlopen versioned globus_thread_pthread library (SOFTWARE-1636)
-
-* Wed Oct 01 2014 Carl Edquist <edquist@cs.wisc.edu> - 8.2.3-1.1
-- Include patches from 8.3.2 for #4556 and #4590
+* Mon Dec 29 2014 Tim Cartwright <cat@cs.wisc.edu> - 8.3.2-1.1
+- Update to HTCondor 8.3.2
+- Retain OSG patch for CREAM GAHP linking (SOFTWARE-1636)
 
 * Wed Aug 27 2014 Carl Edquist <edquist@cs.wisc.edu> - 8.2.2-2.3
 - Include config file for MASTER_NEW_BINARY_RESTART = PEACEFUL (SOFTWARE-850)

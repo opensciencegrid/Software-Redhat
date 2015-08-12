@@ -1,7 +1,7 @@
 Name:           osg-se-bestman-xrootd
 Summary:        OSG BeStMan XRootd Storage Element package
-Version:        3.2
-Release:        1%{?dist}
+Version:        3.3
+Release:        2%{?dist}
 License:        GPL
 Group:          System Environment/Daemons
 URL:            https://twiki.grid.iu.edu/twiki/bin/view/Storage/WebHome
@@ -51,9 +51,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Fri Jul 17 2015 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.2-1
-- Change version to match release series
+* Wed Jul 01 2015 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.3-2
 - Require grid-certificates >= 7 (SOFTWARE-1883)
+
+* Wed Apr 29 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.3-1
+- Rebuild for OSG 3.3
 
 * Tue Mar 31 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> - 3.0.0-8
 - Removed the xrootd4 requirement change it for just xrootd and version.

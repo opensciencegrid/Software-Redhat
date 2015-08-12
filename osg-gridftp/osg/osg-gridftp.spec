@@ -1,10 +1,10 @@
 Name:      osg-gridftp
 Summary:   Standalone OSG GridFTP w/lcmaps gums client
-Version:   3.2
+Version:   3.3
 %if 0%{?el7}
 %define release_suffix _clipped
 %endif
-Release:   1%{?release_suffix}%{?dist}
+Release:   2%{?release_suffix}%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -66,9 +66,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Fri Jul 17 2015 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.2-1
+* Wed Jul 01 2015 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.3-2
 - Require grid-certificates >= 7 (SOFTWARE-1883)
-- Change version number to match release series
+
+* Wed Apr 29 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.3-1
+- Rebuild for OSG 3.3
 
 * Tue Apr 21 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.0.0-11_clipped
 - Create clipped version for el7

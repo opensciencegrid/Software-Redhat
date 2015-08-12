@@ -1,11 +1,18 @@
-%define osg_version 3.2
+# Instructions:
+# Just define osg_version and dver here, use osg-build rpmbuild, then
+# "osg-koji import" the resulting rpm and osg-koji tag-pkg the build into the
+# appropriate osg-*-development tag
+# This will require koji admin permissions.
+%define osg_version 3.3
+%define dver   7
 
-%define dver %{?rhel}%{?!rhel:5}
 %define osgver %(tr -d . <<< %{osg_version})
+%define dist .osg%{osgver}.el%{dver}
+
 Name:		buildsys-macros
 Summary:	Macros for the OSG Buildsystem
 Version:        7
-Release:	4%{?dist}
+Release:	5%{dist}
 License:	GPL
 Group:		Development/Buildsystem
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -24,8 +31,9 @@ rm -rf $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT/etc/rpm/
 DVER=%{dver}
 OSGVER=%{osgver}
+DIST=%{dist}
 printf %s%b "%" "rhel $DVER\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.disttag
-printf %s%b "%" "dist .osg$OSGVER.el$DVER\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.disttag
+printf %s%b "%" "dist $DIST\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.disttag
 printf %s%b "%" "el$DVER 1\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.disttag
 printf %s%b "%" "osg 1\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.disttag
 printf %s%b "%" "__arch_install_post /usr/lib/rpm/check-buildroot\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.checkbuild
@@ -50,6 +58,9 @@ rm -rf $RPM_BUILD_ROOT
 /etc/rpm/macros.checkbuild
 
 %changelog
+* Wed Apr 29 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 7-5
+- Bump to rebuild for OSG 3.3
+
 * Fri Jul 11 2014 Mátyás Selmeci <matyas@cs.wisc.edu> - 7-4.osg.el7
 - Bump to rebuild with buildsys-macros 7-3 for el7
 

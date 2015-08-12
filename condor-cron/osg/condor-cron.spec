@@ -1,7 +1,7 @@
 
 Name:      condor-cron
 Version:   1.0.9
-Release:   3%{?dist}
+Release:   4%{?dist}
 Summary:   A framework to run cron-style jobs within Condor
 
 Group:     Applications/System
@@ -9,6 +9,7 @@ License:   Apache 2.0
 URL:       http://www.cs.wisc.edu/condor
 
 Source0:   %{name}-%{version}.tar.gz
+Source1:   condor-cron.service
 Patch0:    condor_config.patch
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -21,6 +22,9 @@ Requires(post): chkconfig
 Requires(preun): chkconfig
 # This is for /sbin/service
 Requires(preun): initscripts
+
+# _unitdir not defined on el6 build hosts
+%{!?_unitdir: %global _unitdir %{_prefix}/lib/systemd/system}
 
 
 %description
@@ -67,6 +71,10 @@ install -m 0755 libexec/condor-cron.sh $RPM_BUILD_ROOT%{_libexecdir}/condor-cron
 # Copy init script into place
 install -d $RPM_BUILD_ROOT%{_initrddir}
 install -m 0755 etc/condor.init $RPM_BUILD_ROOT%{_initrddir}/condor-cron
+%if 0%{?rhel} >= 7
+install -d $RPM_BUILD_ROOT%{_unitdir}
+install -m 0644 %{SOURCE1} $RPM_BUILD_ROOT%{_unitdir}/
+%endif
 
 # Make working directories
 install -d $RPM_BUILD_ROOT%{_localstatedir}/run/condor-cron
@@ -100,6 +108,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/condor_cron_config_val
 
 %{_initrddir}/condor-cron
+%if 0%{?rhel} >= 7
+%{_unitdir}/condor-cron.service
+%endif
 
 %config %{_sysconfdir}/condor-cron/condor_config
 %config %{_sysconfdir}/condor-cron/config.d/condor_ids
@@ -146,6 +157,9 @@ fi
 
 
 %changelog
+* Fri Jul 17 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0.9-4
+- Add systemd .service file (SOFTWARE-1604)
+
 * Fri Sep 19 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.0.9-3
 - Require "which" package for init script (SOFTWARE-1611)
 

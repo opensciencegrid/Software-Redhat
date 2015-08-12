@@ -1,6 +1,6 @@
 Name:           osg-release
-Version:        3.2
-Release:        9%{?dist}
+Version:        3.3
+Release:        4%{?dist}
 Summary:        OSG Software for Enterprise Linux repository configuration
 
 Group:          System Environment/Base
@@ -52,6 +52,7 @@ install -pm 644 %{SOURCE40} \
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d
 
 install -m 644 *.repo $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d
+sed -i -e 's/gpgcheck=1/gpgcheck=0/' $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d/*-minefield.repo
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -63,8 +64,14 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Thu Jul 30 2015 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.2-9
+* Thu Jul 30 2015 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.3-4
 - Add goc-itb, goc repos (SOFTWARE-1969)
+
+* Thu Jul 16 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.3-2
+- Disable gpgcheck for minefield repos since some packages are unsigned
+
+* Fri May 01 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.3-1
+- Make osg-3.3 version
 
 * Tue Sep 30 2014 Carl Edquist <edquist@cs.wisc.edu> - 3.2-7
 - Rename debug repos to *-debuginfo (SOFTWARE-1622)

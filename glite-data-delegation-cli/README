@@ -1,6 +1,0 @@
-
-This package was added because it is a dependency for the FTS clients.
-
-Note that we patch the test case to get it to build; seems to be a type error with the newer gsoap.
-The test-case code shouldn't effect the final CLI tools.
-

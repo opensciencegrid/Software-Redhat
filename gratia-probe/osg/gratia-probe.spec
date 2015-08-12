@@ -13,6 +13,10 @@ BuildRequires:      python-devel
 
 BuildRequires: gcc-c++
 
+%if 0%{?rhel} == 7
+ExcludeArch: noarch
+%endif
+
 %define default_prefix /usr/share
 
 # Default probe configuration items for post-install.
@@ -77,7 +81,7 @@ Prefix: /etc
 %setup -q -c
 %setup -q -D -T -a 1
 %setup -q -D -T -a 2
-%ifnarch noarch
+%if 0%{?rhel} == 7 || %_arch != noarch
 %setup -q -D -T -a 3
 %endif
 %setup -q -D -T -a 5
@@ -104,7 +108,7 @@ Prefix: /etc
 %patch0 -p1
 
 %build
-%ifnarch noarch
+%if 0%{?rhel} == 7 || %_arch != noarch
 cd pbs-lsf/urCollector-src
 %{__make} clean
 %{__make}
@@ -117,7 +121,7 @@ rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT/%{_datadir}/gratia
 install -d $RPM_BUILD_ROOT/%{_sysconfdir}/gratia
 
-%ifarch noarch
+%if 0%{?rhel} == 7 || %_arch == noarch
   # Obtain files
 
 %define noarch_packs common condor psacct sge glexec metric dCache-transfer dCache-storage gridftp-transfer services hadoop-storage condor-events xrootd-transfer xrootd-storage bdii-status onevm slurm common2 enstore-storage enstore-transfer enstore-tapedrive dCache-storagegroup lsf
@@ -306,7 +310,8 @@ install -d $RPM_BUILD_ROOT/%{_sysconfdir}/gratia
   install -d $RPM_BUILD_ROOT%{_localstatedir}/lib/gratia/{tmp,data,data/quarantine,logs}
   chmod 1777  $RPM_BUILD_ROOT%{_localstatedir}/lib/gratia/data
 
-%else
+%endif
+%if 0%{?rhel} == 7 || %_arch != noarch
 
   # PBS / LSF probe
   PROBE_DIR=$RPM_BUILD_ROOT%{_datadir}/gratia/pbs-lsf
@@ -360,7 +365,7 @@ rm -rf $RPM_BUILD_ROOT
 %description
 Probes for the Gratia OSG accounting system
 
-%ifnarch noarch
+%if 0%{?rhel} == 7 || %_arch != noarch
 
 %package pbs-lsf
 Summary: Gratia OSG accounting system probe for PBS and LSF batch systems.
@@ -396,7 +401,8 @@ This product includes software developed by The EU EGEE Project
 %config(noreplace) %verify(not md5 size mtime) %{_sysconfdir}/gratia/pbs-lsf/ProbeConfig
 %config(noreplace) %{_sysconfdir}/cron.d/gratia-probe-pbs-lsf.cron
 
-%else
+%endif
+%if 0%{?rhel} == 7 || %_arch == noarch
 
 %package common
 Summary: Common files for Gratia OSG accounting system probes
@@ -1009,6 +1015,9 @@ The dCache storagegroup probe for the Gratia OSG accounting system.
 %changelog
 * Thu Jun 11 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.14.2-6
 - slurm probe bugfix for previous patch (goc/25834)
+
+* Wed Jun 03 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.14.2-5
+- Work around noarch probes not building on el7 by making them all arch-specific on el7
 
 * Tue May 26 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.14.2-4
 - slurm probe fix for mysql/mariadb 5.5 (goc/24516)

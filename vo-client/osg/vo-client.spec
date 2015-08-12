@@ -89,12 +89,12 @@ rm -rf $RPM_BUILD_ROOT
 - Update to vo-client 61 (SOFTWARE-1993)
   - Added DUNE VO
 
-* Fri Jul 17 2015 Mátyás Selmeci <matyas@cs.wisc.edu> - 60-2
-- Require grid-certificates >= 7 (SOFTWARE-1883)
-
 * Tue Jul 07 2015 Carl Edquist <edquist@cs.wisc.edu> - 60-1
 - Update to vo-client 60 (SOFTWARE-1967)
   - Added LZ VO
+
+* Wed Jul 01 2015 Mátyás Selmeci <matyas@cs.wisc.edu> - 59-2
+- Require grid-certificates >= 7 (SOFTWARE-1883)
 
 * Fri May 15 2015 Carl Edquist <edquist@cs.wisc.edu> - 59-1
 - Update to vo-client 59 (SOFTWARE-1747)

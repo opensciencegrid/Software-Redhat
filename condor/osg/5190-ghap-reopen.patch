@@ -1,8 +1,8 @@
 diff --git a/src/condor_c-gahp/schedd_client.cpp b/src/condor_c-gahp/schedd_client.cpp
-index ece0231..8d1156b 100644
+index abae85f..10cf8ba 100644
 --- a/src/condor_c-gahp/schedd_client.cpp
 +++ b/src/condor_c-gahp/schedd_client.cpp
-@@ -1026,6 +1026,18 @@ submit_report_result:
+@@ -1031,6 +1031,18 @@ submit_report_result:
  		
  	// STATUS_CONSTRAINED
  	command_queue.Rewind();
@@ -21,7 +21,7 @@ index ece0231..8d1156b 100644
  	while (command_queue.Next(current_command)) {
  
  		if (current_command->status != SchedDRequest::SDCS_NEW)
-@@ -1042,8 +1054,6 @@ submit_report_result:
+@@ -1047,8 +1059,6 @@ submit_report_result:
  		if (qmgr_connection != NULL) {
  			SimpleList <std::string *> matching_ads;
  

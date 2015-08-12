@@ -1,6 +1,6 @@
 Name:           osg-webapp-common
 Version:        1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Common files to be used for tomcat webapps.
 
 Group:          System Environment/Base
@@ -16,6 +16,10 @@ Requires:       tomcat5
 %if 0%{?el6}
 Requires:       tomcat6
 %global         webappsdir %{_datadir}/tomcat6/webapps/ROOT/
+%endif
+%if 0%{?el7}
+Requires:       tomcat
+%global         webappsdir %{_datadir}/tomcat/webapps/ROOT/
 %endif
 
 Source0:        robots.txt
@@ -44,6 +48,9 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{webappsdir}/robots.txt
 
 %changelog
+* Fri Jun 19 2015 Jose Caballero <jcaballero@bnl.gov> - 1.2
+- added support for Tomcat7 on EL7
+
 * Fri May 25 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1-1
 - Created.
 

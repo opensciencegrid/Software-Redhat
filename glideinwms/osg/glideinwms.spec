@@ -27,7 +27,7 @@ Name:           glideinwms
 %endif
 
 Version:        %{version}
-Release:        %{release}%{?dist}
+Release:        %{release}.1%{?dist}
 
 Summary:        The VOFrontend for glideinWMS submission host
 
@@ -103,7 +103,18 @@ Requires: condor >= 8.2.3
 Requires: python-rrdtool
 Requires: m2crypto
 Requires: javascriptrrd >= 1.1.0
-Requires: osg-client
+
+# former osg-client requirements (minus networking stuff)
+Requires: globus-common-progs
+Requires: globus-gram-client-tools
+Requires: globus-gsi-cert-utils-progs
+Requires: gsi-openssh-clients
+Requires: osg-cert-scripts
+Requires: osg-system-profiler
+Requires: osg-version
+Requires: osg-wn-client
+Requires: vo-client
+
 Requires: glideinwms-minimal-condor = %{version}-%{release}
 Requires: glideinwms-libs = %{version}-%{release}
 #To be added in 2.6.3+ once probe is finished.
@@ -735,6 +746,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Jul 16 2015 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.2.10-1.1.osg
+- vofrontend-standalone: Replace osg-client dep with most of osg-client's
+  contents (except the networking stuff), since osg-client has been dropped in
+  OSG 3.3
+
 * Mon Jun 01 2015 Parag Mhashilkar <parag@fnal.gov> - 3.2.10-1
 - Glideinwms v3.2.10 release
 - Release Notes: http://www.uscms.org/SoftwareComputing/Grid/WMS/glideinWMS/doc.prd/history.html

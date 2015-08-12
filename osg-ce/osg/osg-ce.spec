@@ -3,11 +3,11 @@
 
 Name:      osg-ce
 Summary:   OSG Compute Element
-Version:   3.2
+Version:   3.3
 %if 0%{?el7}
 %define release_suffix _clipped
 %endif
-Release:   10%{?release_suffix}%{?dist}
+Release:   3%{?release_suffix}%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -41,20 +41,26 @@ Summary: Meta-package of gateway-independent components of the OSG CE
 Requires: globus-gridftp-server-progs
 Requires: osg-version
 Requires: grid-certificates >= 7
-Requires: osg-client
-Requires: lfc-client
+
+# former osg-client requirements (minus networking stuff)
+Requires: globus-common-progs
+Requires: globus-gram-client-tools
+Requires: globus-gsi-cert-utils-progs
+Requires: gsi-openssh-clients
+Requires: osg-cert-scripts
+Requires: osg-system-profiler
+Requires: osg-version
+Requires: osg-wn-client
+Requires: vo-client
+
 Requires: osg-info-services
 Requires: osg-vo-map
-Requires: vo-client
-Requires: osg-site-web-page
 Requires: gip
 %if ! 0%{?el7}
 Requires: gums-client
 %endif
 Requires: edg-mkgridmap
 Requires: gratia-probe-gridftp-transfer
-Requires: osg-site-verify
-Requires: osg-system-profiler
 Requires: osg-cleanup
 Requires: osg-configure >= 1.0.57
 Requires: osg-configure-ce
@@ -296,8 +302,15 @@ exit 0
 %files slurm
 
 %changelog
-* Fri Jul 17 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.2-10
+* Thu Jul 16 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.3-3
+- Drop lfc-client, osg-site-verify, osg-site-web-page deps
+- Replace osg-client dep with its contents (minus networking stuff)
+
+* Wed Jul 01 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.3-2
 - Require grid-certificates >= 7 (SOFTWARE-1883)
+
+* Wed Apr 29 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.3-1
+- Rebuild for OSG 3.3
 
 * Tue Apr 21 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.2-9_clipped
 - Create clipped version for el7

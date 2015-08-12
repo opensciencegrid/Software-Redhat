@@ -1,6 +1,6 @@
 Name:           osg-ca-certs
 Version:        1.47
-Release:        2%{?dist}
+Release:        1%{?dist}
 Summary:        OSG Packaging of the IGTF CA Certs and OSG-specific CAs, in the new OpenSSL 0.9.8/1.0.0 format.  The OSG CA Distribution contains:  1) IGTF Distribution of Authority Root Certificates (CAs accredited by the International Grid Trust Federation). Details of CAs in the OSG distribution can be found on twiki at https://twiki.grid.iu.edu/bin/view/Documentation/CaDistribution. For additional details what is in the current release, see the distribution site at http://software.grid.iu.edu/pacman/cadist/ and change log at http://software.grid.iu.edu/pacman/cadist/CHANGES. 
 
 
@@ -48,11 +48,11 @@ rm -rf $RPM_BUILD_ROOT
 %doc
 
 %changelog
-* Fri Jul 17 2015 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.47-2
-- Obsolete osg-ca-certs-compat (SOFTWARE-1883)
-
 * Wed Jul 8 2015 Jeny Teheran <jteheran@fnal.gov> - 1.47-1
 - CA release corresponding to IGTF 1.65 release.
+
+* Wed Jul 1 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.46-2
+- Obsolete osg-ca-certs-compat (SOFTWARE-1883)
 
 * Mon Jun 1 2015 Kevin M. Hill <kevinh@fnal.gov> - 1.46-1
 - CA release corresponding to IGTF 1.64 release.

@@ -1,7 +1,0 @@
-This packaging was created from the SRPM for lcg-infosites made for
-EMI-1. In particular, it can be found from:
-
-http://emisoft.web.cern.ch/emisoft/dist/EMI/1/sl5/SRPMS
-
-Any updates should again simply be repackaging from that source.
-

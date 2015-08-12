@@ -3,7 +3,7 @@ Name: cog-jglobus-axis
 Summary: An implementation of Globus for Java
 License: Apache 2.0
 Version: 1.8.0
-Release: 7%{?dist}
+Release: 8%{?dist}
 URL: http://dev.globus.org/wiki/CoG_JGlobus_1.8.0
 Group: System Environment/Libraries
 Source0: http://www.globus.org/cog/distribution/1.8.0/cog-jglobus-fx-1.8.0-src.tar.gz
@@ -17,7 +17,12 @@ BuildRequires: jpackage-utils
 BuildRequires: jglobus
 BuildRequires: axis
 BuildRequires: jakarta-commons-httpclient
-BuildRequires: jakarta-commons-logging
+%if 0%{?el7}
+%global commons_logging apache-commons-logging
+%else
+%global commons_logging jakarta-commons-logging
+%endif
+BuildRequires: %commons_logging
 BuildRequires: junit
 BuildRequires: /usr/share/java-1.7.0
 
@@ -25,7 +30,7 @@ Requires: java7
 Requires: jpackage-utils
 Requires: jglobus >= 2.0.0
 Requires: jakarta-commons-httpclient
-Requires: jakarta-commons-logging
+Requires: %commons_logging
 
 %description
 %{summary}
@@ -39,7 +44,7 @@ find -name '*.jar' -exec rm -f '{}' \;
 pushd gsi
 
 mkdir -p jwscore/lib
-build-jar-repository -s -p jwscore/lib axis jglobus commons-httpclient junit jakarta-commons-logging
+build-jar-repository -s -p jwscore/lib axis jglobus commons-httpclient junit %commons_logging
 
 cp %{SOURCE1} .
 
@@ -65,6 +70,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_javadir}/*
 
 %changelog
+* Mon Jul 06 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.8.0-8.osg
+- Use apache-commons-logging on el7
+
 * Fri Oct 18 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.8.0-7
 - Bump to rebuild with latest jglobus2
 

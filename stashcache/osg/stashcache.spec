@@ -1,15 +1,23 @@
 Name:      stashcache
 Summary:   StashCache metapackages
-Version:   0.1
-Release:   2%{?dist}
+Version:   0.3
+Release:   4%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
 BuildArch: noarch
-Source0:   xrootd-stashcache-origin-server.cfg.in
-Source1:   xrootd-stashcache-cache-server.cfg.in
+Source0:   %{name}-%{version}.tar.gz
+Source1:   xrootd-stashcache-origin-server.cfg.in
+Source2:   xrootd-stashcache-cache-server.cfg.in
+Patch0:    remove_2.6isms.patch
+Patch1:    update_central_collector.patch
 
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
+
+%if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
+%{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
+%{!?python_sitearch: %define python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
+%endif
 
 %define originhost_prod stash.opensciencegrid.org
 %define originhost_itb  stash-itb.opensciencegrid.org
@@ -17,11 +25,29 @@ BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 %description
 %{summary}
 
+%package daemon
+Group: Grid
+Summary: Scripts and configuration for StashCache management
+
+Requires: xrootd-server >= 1:4.1.0
+Requires: xrootd-python >= 1:4.2.0
+Requires: condor-python >= 8.3.5
+Requires: grid-certificates >= 7
+%if 0%{?rhel} < 6
+Requires: fetch-crl3
+%else
+Requires: fetch-crl
+%endif
+
+%description daemon
+%{summary}
+
 %package origin-server
 Group: Grid
 Summary: Metapackage for the origin server
 
 Requires: xrootd-server >= 1:4.1.0
+Requires: %{name}-daemon
 
 %description origin-server
 %{summary}
@@ -31,14 +57,20 @@ Group: Grid
 Summary: Metapackage for a cache server
 
 Requires: xrootd-server >= 1:4.1.0
+Requires: %{name}-daemon
 
 %description cache-server
 %{summary}
 
+%prep
+%setup -q
+%patch0 -p3
+%patch1 -p3
 
 %install
 mkdir -p %{buildroot}%{_sysconfdir}/xrootd
-for src in "%{SOURCE0}" "%{SOURCE1}"; do
+make install DESTDIR=%{buildroot}
+for src in "%{SOURCE1}" "%{SOURCE2}"; do
     dst=$(basename "$src" .cfg.in)
     sed -i -e "s#@LIBDIR@#%{_libdir}#" "$src"
     sed -e "s#@ORIGINHOST@#%{originhost_prod}#" \
@@ -50,6 +82,12 @@ done
 %clean
 rm -rf %{_buildroot}
 
+%files daemon
+%defattr(-,root,root)
+%{_sbindir}/stashcache
+%{_sysconfdir}/condor/config.d/01-stashcache.conf
+%{python_sitelib}/xrootd_cache_stats.py*
+
 %files origin-server
 %config(noreplace) %{_sysconfdir}/xrootd/xrootd-stashcache-origin-server.cfg
 %config(noreplace) %{_sysconfdir}/xrootd/xrootd-stashcache-origin-server-itb.cfg
@@ -59,6 +97,25 @@ rm -rf %{_buildroot}
 %config(noreplace) %{_sysconfdir}/xrootd/xrootd-stashcache-cache-server-itb.cfg
 
 %changelog
+* Wed Jul 15 2015 Brian Lin <blin@cs.wisc.edu> 0.3-4
+- Merge stashcache and stashcache-daemon packages
+
+* Tue Jul 07 2015 Brian Lin <blin@cs.wisc.edu> 0.3-3
+- Advertise stashcache startd and master ads to the central collector (SOFTWARE-1966)
+
+* Tue Jun 30 2015 Brian Lin <blin@cs.wisc.edu> 0.3-2
+- Restore ability for the daemon to run on EL5
+
+* Thu Jun 25 2015 Brian Lin <blin@cs.wisc.edu> 0.3-1
+- Update the cache query script
+
+* Fri May 29 2015 Brian Lin <blin@cs.wisc.edu> 0.2-1
+- Fix Python 2.6isms
+- HTCondor heartbeats require at least condor-python 8.3.5
+
+* Thu May 28 2015 Brian Lin <blin@cs.wisc.edu> 0.1-3
+- Remove epoch from condor-python requirement
+
 * Thu Apr 23 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 0.1-2.osg
 - Renamed stashcache-server to stashcache-cache-server, and stashcache-origin
   to stashcache-origin-server; rename config files to match

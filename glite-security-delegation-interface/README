@@ -1,7 +1,0 @@
-
-Interface files for the gLite delegation API.
-
-This RPM is a dependency of the gLite delegation API implementations; not immediately useful for users.
-
-wsdl2h in gsoap 2.7.13 contains a bug that prevents type information from being correctly parsed for anonymous complex types in a xsd:element.  The patch fixes this issue by creating a explicitly named type.  This is needed for anything using the WSDL with gsoap (i.e., glite-data-delegation-api-c package).
-

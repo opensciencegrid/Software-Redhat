@@ -1,7 +1,7 @@
 Summary: Security utilities
 Name: emi-trustmanager
 Version: 3.0.3
-Release: 6%{?dist}
+Release: 8%{?dist}
 License: EMI
 Vendor: EMI
 Group: System Environment/Libraries
@@ -10,9 +10,14 @@ BuildArch: noarch
 BuildRequires: ant
 BuildRequires: bouncycastle
 BuildRequires: log4j
+%if 0%{?rhel} >= 7
+BuildRequires: bouncycastle-pkix
+Requires: java-headless >= 1:1.7.0
+%else
 BuildRequires: java7-devel
 BuildRequires: jpackage-utils
 Requires: java7
+%endif
 Requires: jpackage-utils
 # ensure these are present, from jpackage-utils or missing-java-1.7.0-dirs
 Requires: /usr/lib/java-1.7.0
@@ -25,17 +30,57 @@ Patch1: build.xml.patch
 Patch2: better_log.patch
 Patch3: X509Name_cast.patch
 
+Patch10: 0010-ASN1Object-ASN1Primitive-bc1.47.patch
+Patch11: 0011-ASN1Encodable-ASN1Object-bc1.47.patch
+Patch12: 0012-DEREncodable-ASN1Encodable-bc1.47.patch
+Patch13: 0013-DERObjectIdentifier-ASN1ObjectIdentifier-bc1.47.patch
+Patch14: 0014-DERObject-ASN1Primitive-bc1.47.patch
+Patch15: 0015-getDERObject-toASN1Primitive-bc1.47.patch
+Patch16: 0016-DERInteger-ASN1Integer-bc1.47.patch
+Patch17: 0017-getDEREncoded-getEncoded-ASN1Encoding.DER-bc1.47.patch
+Patch18: 0018-Add-bcpkix-.jar-to-build.xml-EL7.patch
+Patch19: 0019-PEMReader-PEMParser-bc1.47.patch
+Patch20: 0020-JDKKeyPairGenerator-KeyPairGenerator-bc1.47.patch
+Patch21: 0021-getASN1Primitive-toASN1Primitive-bc1.47.patch
+Patch22: 0022-GeneralSubtree-constructor-fix-bc1.47.patch
+Patch23: 0023-IssuingDistributionPoint-constructor-fix-bc1.47.patch
+Patch24: 0024-GeneralNames-constuctor-fix-bc1.47.patch
+Patch25: 0025-DEROctetString-new-exception-bc1.47.patch
+Patch26: 0026-CertificationRequestInfo.getSubject-signature-change.patch
+
 %description
 The java authentication and proxy generation implementation that supports grid proxies.
 
 %prep
 
-%setup  
+%setup
 
-%patch0 -p0 
+%patch0 -p0
 %patch1 -p0
 %patch2 -p0
 %patch3 -p0
+
+%if 0%{?rhel} >= 7
+# bouncycastle patches
+%patch10 -p1
+%patch11 -p1
+%patch12 -p1
+%patch13 -p1
+%patch14 -p1
+%patch15 -p1
+%patch16 -p1
+%patch17 -p1
+%patch18 -p1
+%patch19 -p1
+%patch20 -p1
+%patch21 -p1
+%patch22 -p1
+%patch23 -p1
+%patch24 -p1
+%patch25 -p1
+%patch26 -p1
+%endif
+
 
 %build
  
@@ -222,6 +267,12 @@ rm -rf $RPM_BUILD_ROOT
 /usr/share/doc/trustmanager/html/index-all.html
 
 %changelog
+* Mon Jul 20 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.0.3-8
+- Bump to rebuild
+
+* Tue Nov 11 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 3.0.3-7
+- Build with bouncycastle 1.50 and patch API breakage
+
 * Wed Oct 29 2014 Brian Bockelman <bbockelm@cse.unl.edu> - 3.0.3-6
 - Fix issues with newer bcprov.
 
