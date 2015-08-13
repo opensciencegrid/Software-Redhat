@@ -178,6 +178,7 @@ Requires: httpd
 # condor_advertise -multiple -tcp which is enabled by default
 Requires: glideinwms-factory-condor = %{version}-%{release}
 Requires: condor >= 7.8.0
+Requires: fetch-crl
 Requires: python-rrdtool
 Requires: python-ldap
 Requires: m2crypto
