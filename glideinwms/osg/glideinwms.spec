@@ -21,7 +21,7 @@ Name:           glideinwms
 # ------------------------------------------------------------------------------
 %if %{v3_plus}
 %define version 3.2.11
-%define release 0.1.rc1
+%define release 0.2.rc2
 %define frontend_xml frontend.master.xml
 %define factory_xml glideinWMS.master.xml
 %endif
@@ -742,8 +742,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Aug 13 2015 Parag Mhashilkar <parag@fnal.gov> - 3.2.11-0.2.rc2
+- Glideinwms v3.2.11 rc2 release
+- Release Notes: http://www.uscms.org/SoftwareComputing/Grid/WMS/glideinWMS/doc.v3_2_11/history.html
+
 * Wed Aug 12 2015 Parag Mhashilkar <parag@fnal.gov> - 3.2.11-0.1.rc1
-- Glideinwms v3.3 rc1 release
+- Glideinwms v3.2.11 rc1 release
 - Release Notes: http://www.uscms.org/SoftwareComputing/Grid/WMS/glideinWMS/doc.v3_2_11/history.html
 
 * Mon Jun 01 2015 Parag Mhashilkar <parag@fnal.gov> - 3.2.10-1
