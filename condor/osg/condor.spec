@@ -219,8 +219,10 @@ Patch1: sw1636-cream_gahp-dlopen.patch
 # https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=5181
 # https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=5190
 # https://jira.opensciencegrid.org/browse/SOFTWARE-1991
+# https://jira.opensciencegrid.org/browse/SOFTWARE-1995
 Patch3: 5181-remove-SUBMIT_Iwd.patch
 Patch4: 5190-ghap-reopen.patch
+Patch5: 5184-enable-fPIC.patch
 
 #% if 0%osg
 Patch8: osg_sysconfig_in_init_script.patch
@@ -727,6 +729,7 @@ exit 0
 %patch1 -p1
 %patch3 -p1
 %patch4 -p1
+%patch5 -p1
 
 %if 0%{?hcc}
 %patch15 -p0
