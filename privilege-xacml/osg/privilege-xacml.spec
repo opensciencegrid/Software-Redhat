@@ -8,7 +8,7 @@
 
 Name:		privilege-xacml
 Version:	2.6.4
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Core bindings for XACML interoperability profile.
 
 Group:		OSG/Libraries
@@ -19,6 +19,9 @@ URL:		http://cdcvs.fnal.gov/subversion/privilege
 # svn export svn+ssh://p-privilege@cdcvs.fnal.gov/cvs/projects/privilege/tags/v%{version} %{name}-%{version}
 # tar zcf %{name}-%{version}.tar.gz %{name}-%{version}
 Source0:	%{name}-%{version}.tar.gz
+
+# should be in upstream 2.6.5
+Patch1: sw1990-logging.patch
 
 BuildArch: noarch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
@@ -65,6 +68,7 @@ Requires: java7
 
 %prep
 %setup -n %{name}-%{version}
+%patch1 -p1
 
 %build
 #log4j
@@ -135,6 +139,9 @@ rm -rf %{local_maven}
 %{_libexecdir}/%{name}/XACMLClientTest.sh
 
 %changelog
+* Mon Aug 17 2015 Carl Edquist <edquist@cs.wisc.edu> - 2.6.4-2
+- Improved logging for mapping errors (SOFTWARE-1990)
+
 * Fri Nov 21 2014 Carl Edquist <edquist@cs.wisc.edu> - 2.6.4-1
 - Final 2.6.4 release
 
