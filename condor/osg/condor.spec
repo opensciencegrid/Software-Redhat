@@ -215,12 +215,6 @@ Source123: zlib-1.2.3.tar.gz
 
 Patch1: sw1636-cream_gahp-dlopen.patch
 
-# Needed for EL5, not sure whether upstream will revert them.
-# https://jira.opensciencegrid.org/browse/SOFTWARE-1921
-# https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=4910
-# https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=4998
-Patch2: sw1921-revert-4910.patch
-
 # These should make it into 8.3.8
 # https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=5181
 # https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=5190
@@ -731,11 +725,6 @@ exit 0
 %endif
 
 %patch1 -p1
-
-%if 0%{?rhel} < 6
-%patch2 -p1
-%endif
-
 %patch3 -p1
 %patch4 -p1
 
