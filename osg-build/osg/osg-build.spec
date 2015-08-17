@@ -1,8 +1,8 @@
 #%%global betatag .beta1
-%global _release 3
+%global _release 1
 
 Name:           osg-build
-Version:        1.6.0
+Version:        1.6.1
 Release:        %{?betatag:0.}%{_release}%{?betatag}%{?dist}
 Summary:        Build tools for the OSG
 
@@ -12,8 +12,6 @@ URL:            https://twiki.grid.iu.edu/bin/view/SoftwareTeam/OSGBuildTools
 
 Source0:        %{name}-%{version}%{?betatag}.tar.gz
 Patch0:         koji-hub-testing.patch
-Patch1:         upcoming-routes.patch
-Patch2:         Make-el6-and-el7-the-default-dvers.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
@@ -40,7 +38,6 @@ See %{url} for details.
 
 %prep
 %setup -q -n %{name}-%{version}%{?betatag}
-%patch1 -p1
 
 # changes the koji-hub URL to koji-hub-testing.chtc.wisc.edu, for testing only
 # % patch0 -p1
@@ -74,6 +71,11 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_docdir}/%{name}/sample-osg-build.ini
 
 %changelog
+* Mon Aug 17 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6.1-1
+- Change promotion aliases testing, prerelease, and contrib to point to 3.3 instead of 3.2
+- Fix unit tests to work with new default dvers
+- Drop upstreamed patches
+
 * Wed Aug 12 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6.0-3
 - Change default dvers for building out of trunk to be el6 and el7 (instead of el5 and el6)
 
