@@ -125,7 +125,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.4
+%define condor_base_release 1.1
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -1856,6 +1856,9 @@ fi
 %endif
 
 %changelog
+* Mon Aug 17 2015 Carl Edquist <edquist@cs.wisc.edu> - 8.3.7-1.1
+- update to 8.3.7, include #5184 -fPIC build fix (SOFTWARE-1995)
+
 * Tue Aug 04 2015 Carl Edquist <edquist@cs.wisc.edu> - 8.3.6-1.4
 - pull in #5181 and #5181 from 8.3.8 (SOFTWARE-1991)
 
