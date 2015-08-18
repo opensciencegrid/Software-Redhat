@@ -219,10 +219,14 @@ Patch1: sw1636-cream_gahp-dlopen.patch
 # https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=5181
 # https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=5190
 # https://jira.opensciencegrid.org/browse/SOFTWARE-1991
-# https://jira.opensciencegrid.org/browse/SOFTWARE-1995
 Patch3: 5181-remove-SUBMIT_Iwd.patch
 Patch4: 5190-ghap-reopen.patch
-Patch5: 5184-enable-fPIC.patch
+
+# This reverts a change from 8.3.7 that broke PROPER builds;
+# the timeline for fixing upstream is unknown.
+# https://htcondor-wiki.cs.wisc.edu/index.cgi/chngview?cn=44834
+# https://jira.opensciencegrid.org/browse/SOFTWARE-1995
+Patch5: sw1995-PROPER-buildfix.patch
 
 #% if 0%osg
 Patch8: osg_sysconfig_in_init_script.patch
@@ -1857,7 +1861,7 @@ fi
 
 %changelog
 * Mon Aug 17 2015 Carl Edquist <edquist@cs.wisc.edu> - 8.3.7-1.1
-- update to 8.3.7, include #5184 -fPIC build fix (SOFTWARE-1995)
+- update to 8.3.7, build fix for PROPER (SOFTWARE-1995)
 
 * Tue Aug 04 2015 Carl Edquist <edquist@cs.wisc.edu> - 8.3.6-1.4
 - pull in #5181 and #5181 from 8.3.8 (SOFTWARE-1991)
