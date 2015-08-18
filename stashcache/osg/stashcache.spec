@@ -9,8 +9,6 @@ BuildArch: noarch
 Source0:   %{name}-%{version}.tar.gz
 Source1:   xrootd-stashcache-origin-server.cfg.in
 Source2:   xrootd-stashcache-cache-server.cfg.in
-Patch0:    remove_2.6isms.patch
-Patch1:    update_central_collector.patch
 
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
@@ -64,8 +62,6 @@ Requires: %{name}-daemon
 
 %prep
 %setup -q
-%patch0 -p3
-%patch1 -p3
 
 %install
 mkdir -p %{buildroot}%{_sysconfdir}/xrootd
