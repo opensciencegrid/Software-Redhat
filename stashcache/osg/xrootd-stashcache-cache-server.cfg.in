@@ -15,6 +15,7 @@ cms.trace all
 ofs.osslib  libXrdPss.so
 pss.origin  @ORIGINHOST@:1094
 pss.cachelib libXrdFileCache.so
+pss.trace all # Increase debug level
 
 pfc.cachedir  /stash
 pfc.nramprefetch 4

@@ -51,3 +51,5 @@ cms.fxhold 60s
 xrd.report @ORIGINHOST@:9931 every 60s all sync
 xrootd.monitor all auth flush io 60s ident 5m mbuff 8k rbuff 4k rnums 3 window 10s dest files io info user redir @ORIGINHOST@:9930
 
+# Increase debug level
+pss.trace all
