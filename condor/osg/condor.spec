@@ -125,7 +125,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.1
+%define condor_base_release 1.2
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -222,9 +222,7 @@ Patch1: sw1636-cream_gahp-dlopen.patch
 Patch3: 5181-remove-SUBMIT_Iwd.patch
 Patch4: 5190-ghap-reopen.patch
 
-# This reverts a change from 8.3.7 that broke PROPER builds;
-# the timeline for fixing upstream is unknown.
-# https://htcondor-wiki.cs.wisc.edu/index.cgi/chngview?cn=44834
+# This fix for PROPER builds (which broke in 8.3.7) makes it into 8.3.8
 # https://jira.opensciencegrid.org/browse/SOFTWARE-1995
 Patch5: sw1995-PROPER-buildfix.patch
 
@@ -1860,6 +1858,9 @@ fi
 %endif
 
 %changelog
+* Wed Aug 19 2015 Carl Edquist <edquist@cs.wisc.edu> - 8.3.7-1.2
+- different build fix for PROPER, taken from 8.3.8 (SOFTWARE-1995)
+
 * Mon Aug 17 2015 Carl Edquist <edquist@cs.wisc.edu> - 8.3.7-1.1
 - update to 8.3.7, build fix for PROPER (SOFTWARE-1995)
 
