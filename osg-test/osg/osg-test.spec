@@ -5,7 +5,7 @@
 
 Summary:   Tests an OSG Software installation
 Name:      osg-test
-Version:   1.4.27
+Version:   1.4.28
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -37,6 +37,10 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/osgtest
 
 %changelog
+* Wed Aug 19 2015 Brian Lin <blin@cs.wisc.edu> - 1.4.28-1
+- Fix OSG 3.3 release install bug
+- Handle mariadb on EL7
+
 * Tue Aug 13 2015 Brian Lin <blin@cs.wisc.edu> - 1.4.27-1
 - Skip lfc-multilib test in 3.3 for compatability
 - Improvements to bootstrap-osg-test
