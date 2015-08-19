@@ -4,12 +4,14 @@ Version:   3.10.2
 %if 0%{?el7}
 %define release_suffix _clipped
 %endif
-Release:   1%{?release_suffix}%{?dist}
+Release:   2%{?release_suffix}%{?dist}
 License:   Apache 2.0
 Group:     Applications/Monitoring
 URL:       https://twiki.grid.iu.edu/bin/view/MonitoringInformation/RSV
 
 Source0:   %{name}-%{version}.tar.gz
+
+Patch0:   Fix-ValueError-if-Submitter-not-in-condor_cron_q-out.patch
 
 BuildArch: noarch
 
@@ -245,6 +247,9 @@ fi
 
 
 %changelog
+* Wed Aug 19 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.10.2-2
+- Fix ValueError in rsv-control
+
 * Thu Jul 23 2015 Carl Edquist <edquist@cs.wisc.edu> - 3.10.2-1
 - SOFTWARE-1962 - Add verbose option for srmcp-srm-probe
 
