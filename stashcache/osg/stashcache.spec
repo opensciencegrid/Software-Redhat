@@ -1,7 +1,7 @@
 Name:      stashcache
 Summary:   StashCache metapackages
-Version:   0.3
-Release:   4%{?dist}
+Version:   0.4
+Release:   1%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -93,6 +93,11 @@ rm -rf %{_buildroot}
 %config(noreplace) %{_sysconfdir}/xrootd/xrootd-stashcache-cache-server-itb.cfg
 
 %changelog
+* Thu Aug 20 2015 Brian Lin <blin@cs.wisc.edu> 0.4-1
+- Advertise STASHCACHE_DaemonVersion in MasterAd (SOFTWARE-1971)
+- Log daemon activity to /var/log/condor/StashcacheLog
+- Use TCP to advertise StashCache ads
+
 * Wed Jul 15 2015 Brian Lin <blin@cs.wisc.edu> 0.3-4
 - Merge stashcache and stashcache-daemon packages
 
