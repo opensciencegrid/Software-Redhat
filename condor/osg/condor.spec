@@ -201,21 +201,21 @@ Source123: zlib-1.2.3.tar.gz
 
 # These make it into 8.3.2, the 8.2.x timeline is unclear
 # https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=4590
-Patch2: 4590-improved_tool_output.patch
+Patch1: 4590-improved_tool_output.patch
 
 # This makes it into 8.3.1, but not 8.2.x
 # https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=3158
 # https://jira.opensciencegrid.org/browse/SOFTWARE-1553
-Patch3: 3158-user-specific-configs.patch
+Patch2: 3158-user-specific-configs.patch
 
 #% if 0%osg
-Patch8: osg_sysconfig_in_init_script.patch
+Patch3: osg_sysconfig_in_init_script.patch
 #% endif
 
 # HCC patches
 # See gt3158
-Patch14: 0001-Apply-the-user-s-condor_config-last-rather-than-firs.patch
-Patch15: wso2-axis2.patch
+Patch4: 0001-Apply-the-user-s-condor_config-last-rather-than-firs.patch
+Patch5: wso2-axis2.patch
 
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
