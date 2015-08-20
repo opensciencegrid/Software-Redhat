@@ -4,7 +4,7 @@ Version:   3.10.2
 %if 0%{?el7}
 %define release_suffix _clipped
 %endif
-Release:   3%{?release_suffix}%{?dist}
+Release:   4%{?release_suffix}%{?dist}
 License:   Apache 2.0
 Group:     Applications/Monitoring
 URL:       https://twiki.grid.iu.edu/bin/view/MonitoringInformation/RSV
@@ -248,6 +248,9 @@ fi
 
 
 %changelog
+* Thu Aug 20 2015 Carl Edquist <edquist@cs.wisc.edu> - 3.10.2-4
+- don't rely on condor_cron_q text output (SOFTWARE-1995)
+
 * Thu Aug 20 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.10.2-3
 - Fix ValueError in rsv-control
 

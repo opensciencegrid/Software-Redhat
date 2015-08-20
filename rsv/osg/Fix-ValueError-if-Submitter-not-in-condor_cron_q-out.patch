@@ -1,30 +1,13 @@
-From 9f26375b9f41b9c1311a99f0c016235e1ecb41e7 Mon Sep 17 00:00:00 2001
-From: matyas <matyas@4e558342-562e-0410-864c-e07659590f8c>
-Date: Wed, 19 Aug 2015 14:46:10 +0000
-Subject: [PATCH] Fix ValueError if '-- Submitter' not in condor_cron_q output
-
-git-svn-id: file:///p/vdt/workspace/svn/software/rsv/trunk@21518 4e558342-562e-0410-864c-e07659590f8c
----
- rsv-core/lib/python/rsv/Condor.py | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/rsv-core/lib/python/rsv/Condor.py b/rsv-core/lib/python/rsv/Condor.py
-index b649fc2..6e533ff 100644
---- a/rsv-core/lib/python/rsv/Condor.py
-+++ b/rsv-core/lib/python/rsv/Condor.py
-@@ -21,11 +21,11 @@ class Condor:
-         Determine if Condor-Cron is running.  Return True is so, false otherwise
-         """
+Index: Condor.py
+===================================================================
+--- Condor.py	(.../tags/3.10.2/rsv-core/lib/python/rsv/Condor.py)	(revision 21532)
++++ Condor.py	(.../trunk/rsv-core/lib/python/rsv/Condor.py)	(revision 21532)
+@@ -23,7 +23,7 @@
  
          (ret, out) = self.commands_getstatusoutput("condor_cron_q")
  
 -        if not ret and out.index("-- Submitter") != -1:
-+        if not ret and out.find("-- Submitter") != -1:
++        if not ret:
              self.rsv.log("DEBUG", "Condor is running.  Output of condor_cron_q:\n%s" % out)
              return True
  
-         self.rsv.log("INFO", "Condor-Cron does not seem to be running.  " +
-                      "Output of condor_cron_q:\n%s" % out)
--- 
-2.4.6
-
