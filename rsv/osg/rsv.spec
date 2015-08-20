@@ -1,17 +1,15 @@
 Name:      rsv
 Summary:   RSV Meta Package
-Version:   3.10.2
+Version:   3.10.3
 %if 0%{?el7}
 %define release_suffix _clipped
 %endif
-Release:   4%{?release_suffix}%{?dist}
+Release:   1%{?release_suffix}%{?dist}
 License:   Apache 2.0
 Group:     Applications/Monitoring
 URL:       https://twiki.grid.iu.edu/bin/view/MonitoringInformation/RSV
 
 Source0:   %{name}-%{version}.tar.gz
-
-Patch0:   Fix-ValueError-if-Submitter-not-in-condor_cron_q-out.patch
 
 BuildArch: noarch
 
@@ -248,6 +246,10 @@ fi
 
 
 %changelog
+* Thu Aug 20 2015 Carl Edquist <edquist@cs.wisc.edu> - 3.10.3-1
+- SOFTWARE-1987 - Drop DAEMON privs requirement for htcondor-ce-auth probe
+- SOFTWARE-1995 - rsv-control fixes for condor 8.3.7
+
 * Thu Aug 20 2015 Carl Edquist <edquist@cs.wisc.edu> - 3.10.2-4
 - don't rely on condor_cron_q text output (SOFTWARE-1995)
 
