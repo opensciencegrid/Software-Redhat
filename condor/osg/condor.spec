@@ -199,11 +199,6 @@ Source122: glibc-2.5-20061008T1257-x86_64-p0.tar.gz
 Source123: zlib-1.2.3.tar.gz
 %endif
 
-# This should make it into 8.2.9
-# https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=5059
-# https://jira.opensciencegrid.org/browse/SOFTWARE-1941
-Patch1: 5059-JAVA_CLASSPATH_DEFAULT.patch
-
 # These make it into 8.3.2, the 8.2.x timeline is unclear
 # https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=4590
 Patch2: 4590-improved_tool_output.patch
@@ -212,13 +207,6 @@ Patch2: 4590-improved_tool_output.patch
 # https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=3158
 # https://jira.opensciencegrid.org/browse/SOFTWARE-1553
 Patch3: 3158-user-specific-configs.patch
-
-# These should make it into 8.2.9
-# https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=5181
-# https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=5190
-# https://jira.opensciencegrid.org/browse/SOFTWARE-1992
-Patch4: 5181-remove-SUBMIT_Iwd.patch
-Patch5: 5190-ghap-reopen.patch
 
 #% if 0%osg
 Patch8: osg_sysconfig_in_init_script.patch
@@ -1832,6 +1820,11 @@ fi
 %endif
 
 %changelog
+* Thu Aug 20 2015 John Hover <jhover@bnl.gov> - 8.2.9-1
+- Drop 5059-JAVA_CLASSPATH_DEFAULT.patch, now upstream 
+- Drop 5181-remove-SUBMIT_Iwd.patch, now upstream
+- Drop 5190-ghap-reopen.patch, now upstream
+
 * Mon Aug 03 2015 Carl Edquist <edquist@cs.wisc.edu> - 8.2.8-1.5
 - pull in #5181 and #5181 from 8.2.9 (SOFTWARE-1992)
 
