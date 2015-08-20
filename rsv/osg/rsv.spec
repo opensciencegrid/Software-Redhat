@@ -105,7 +105,6 @@ Requires: /usr/bin/condor_ce_ping
 
 %prep
 %setup -q
-%patch0 -p1
 
 
 %install
