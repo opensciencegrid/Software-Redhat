@@ -699,15 +699,12 @@ exit 0
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
-%patch4 -p1
-%patch5 -p1
-
-%patch8 -p1
 
 %if 0%{?hcc}
-%patch14 -p1
-%patch15 -p0
+%patch4 -p1
+%patch5 -p0
 %endif
+
 
 # fix errant execute permissions
 find src -perm /a+x -type f -name "*.[Cch]" -exec chmod a-x {} \;
