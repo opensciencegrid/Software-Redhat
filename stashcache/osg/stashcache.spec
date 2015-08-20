@@ -1,7 +1,7 @@
 Name:      stashcache
 Summary:   StashCache metapackages
 Version:   0.4
-Release:   1%{?dist}
+Release:   2%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -9,6 +9,7 @@ BuildArch: noarch
 Source0:   %{name}-%{version}.tar.gz
 Source1:   xrootd-stashcache-origin-server.cfg.in
 Source2:   xrootd-stashcache-cache-server.cfg.in
+Patch0:    fix_central_coll_advertisement.patch
 
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
@@ -63,6 +64,8 @@ Requires: %{name}-daemon
 %prep
 %setup -q
 
+%patch0 -p0
+
 %install
 mkdir -p %{buildroot}%{_sysconfdir}/xrootd
 make install DESTDIR=%{buildroot}
@@ -93,6 +96,9 @@ rm -rf %{_buildroot}
 %config(noreplace) %{_sysconfdir}/xrootd/xrootd-stashcache-cache-server-itb.cfg
 
 %changelog
+* Thu Aug 20 2015 Brian Lin <blin@cs.wisc.edu> 0.4-2
+- Fix advertisement to central collector
+
 * Thu Aug 20 2015 Brian Lin <blin@cs.wisc.edu> 0.4-1
 - Advertise STASHCACHE_DaemonVersion in MasterAd (SOFTWARE-1971)
 - Log daemon activity to /var/log/condor/StashcacheLog
