@@ -1,7 +1,7 @@
 Name:      osg-tested-internal
 Summary:   All OSG packages we test (internal use only)
 Version:   3.3
-Release:   1%{?dist}
+Release:   2%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -40,45 +40,26 @@ Requires: htcondor-ce-condor
 
 Requires: osg-ce-condor
 Requires: rsv
+
+Requires: xrootd
+Requires: xrootd-client
+
+Requires: ndt-client
+
+Requires: gratia-service
 ################################################################################
 #
 # Non-RHEL 7
 #
 ################################################################################
 %if 0%{?rhel} < 7
+# as of 2015-08-21, bestman hasn't been successfully built
 Requires: osg-se-bestman
 Requires: osg-se-bestman-xrootd
+# as of 2015-08-21, gums hasn't been successfully built
 Requires: osg-gums
+# as of 2015-08-21, voms tests fail due to non-trivial issues
 Requires: osg-voms
-Requires: torque-server
-Requires: torque-mom
-Requires: torque-client
-Requires: torque-scheduler
-Requires: osg-ce-pbs
-Requires: xrootd
-Requires: xrootd-client
-Requires: ndt-client
-
-Requires: gratia-service
-%endif
-
-################################################################################
-#
-# RHEL 7
-#
-################################################################################
-%if 0%{?rhel} == 7
-Requires: osg-wn-client-glexec
-Requires: condor
-Requires: globus-gatekeeper
-Requires: globus-common-progs
-Requires: globus-gram-client-tools
-Requires: globus-gram-job-manager-fork-setup-poll
-Requires: globus-gram-job-manager-condor
-Requires: globus-gridftp-server
-Requires: globus-gridftp-server-control
-Requires: globus-gridftp-server-progs
-Requires: lcas-lcmaps-gt4-interface
 %endif
 
 
@@ -95,6 +76,13 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Aug 21 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.3-2
+- Install more el7 packages now that we have more:
+  - torque and osg-ce-pbs
+  - xrootd and xrootd-client
+  - ndt-client
+- Remove the %%if 0%%{?rhel} == 7 section: all packages within it are now brought in by the common packages
+
 * Wed Apr 29 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.3-1
 - Rebuild for OSG 3.3
 
