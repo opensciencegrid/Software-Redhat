@@ -1,7 +1,7 @@
 Name:      osg-tested-internal
 Summary:   All OSG packages we test (internal use only)
 Version:   3.3
-Release:   2%{?dist}
+Release:   3%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -39,6 +39,13 @@ Requires: htcondor-ce-client
 Requires: htcondor-ce-condor
 
 Requires: osg-ce-condor
+
+Requires: torque-server
+Requires: torque-mom
+Requires: torque-client
+Requires: torque-scheduler
+Requires: osg-ce-pbs
+
 Requires: rsv
 
 Requires: xrootd
@@ -76,6 +83,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Aug 21 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.3-3
+- Actually include torque
+
 * Fri Aug 21 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.3-2
 - Install more el7 packages now that we have more:
   - torque and osg-ce-pbs
