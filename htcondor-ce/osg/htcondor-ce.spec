@@ -2,8 +2,8 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 1.14
-Release: 4%{?gitrev:.%{gitrev}git}%{?dist}
+Version: 1.15
+Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 
 Group: Applications/System
@@ -339,6 +339,11 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Fri Aug 21 2015 Brian Lin <blin@cs.wisc.edu> 1.15-1
+- Add 'default_remote_cerequirements' attribute to the JOB_ROUTER_DEFAULTS
+- Verify the first route in JOB_ROUTER_ENTRIES in the init script
+- htcondor-ce-collecotr now uses /etc/sysconfig/condor-ce-collector for additional configuration
+
 * Mon Jul 20 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.14-4
 - bump to rebuild
 
@@ -391,7 +396,7 @@ fi
 * Tue Jan 06 2015 Brian Lin <blin@cs.wisc.edu> - 1.9-2
 - Fix HTCondor jobs routing incorrectly in 8.3.x
 
-* Fri Dec 18 2014 Brian Lin <blin@cs.wisc.edu> - 1.9-1
+* Thu Dec 18 2014 Brian Lin <blin@cs.wisc.edu> - 1.9-1
 - Add auth file to the collector RPM.
 - Updates and fixes to condor_ce_info_status and condor_ce_trace
 - Fixes to default security settings
