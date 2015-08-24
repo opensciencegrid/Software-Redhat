@@ -1,6 +1,6 @@
 Summary: Package for configure-osg and associated scripts
 Name: osg-configure
-Version: 1.1.1
+Version: 1.2.0
 Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
@@ -322,6 +322,10 @@ fi
 
 
 %changelog
+* Mon Aug 24 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.2.0-1.osg
+- Support IPv6 addresses in config files (SOFTWARE-1952)
+- Add default for AllowedVOs for CE Collector (SOFTWARE-1895)
+
 * Mon Jul 27 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.1.1-1.osg
 - Fix spurious 'None' values in the job environment (SOFTWARE-1968)
 
