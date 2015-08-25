@@ -1,0 +1,38 @@
+From 49d19ac5387ec5961ee4ffe44fc340372de5c3f8 Mon Sep 17 00:00:00 2001
+From: matyas <matyas@4e558342-562e-0410-864c-e07659590f8c>
+Date: Tue, 25 Aug 2015 00:00:04 +0000
+Subject: [PATCH] "fix" valid_hostname so it rejects hostnames that are just
+ numbers (e.g. '80')
+
+Technically it's allowed by the RFC but it's almost always a mistake so reject it anyway.
+
+git-svn-id: file:///p/vdt/workspace/svn/software/osg-configure/trunk@21571 4e558342-562e-0410-864c-e07659590f8c
+---
+ osg_configure/modules/validation.py | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/osg_configure/modules/validation.py b/osg_configure/modules/validation.py
+index 4240331..734aa35 100644
+--- a/osg_configure/modules/validation.py
++++ b/osg_configure/modules/validation.py
+@@ -72,10 +72,17 @@ def _all(iterable):
+ def valid_hostname(hostname):
+     """Return if a hostname is valid according to the standard"""
+     # from https://stackoverflow.com/a/2532344
+     if len(hostname) > 255:
+         return False
++    try:
++        # technically, '80' is a valid hostname (and apparently it resolves
++        # too!) but it's usually a mistake so reject it
++        int(hostname)
++        return False
++    except ValueError:
++        pass
+     if hostname[-1] == ".":
+         hostname = hostname[:-1] # strip exactly one dot from the right, if present
+     allowed = re.compile("(?!-)[A-Z\d-]{1,63}(?<!-)$", re.IGNORECASE)
+     return _all(allowed.match(x) for x in hostname.split("."))
+ 
+-- 
+2.4.6
+
