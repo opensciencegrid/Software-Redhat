@@ -1,0 +1,65 @@
+--- src/hadoop-hdfs-project/hadoop-hdfs/src/main/native/libhdfs/exception.c.orig	2012-10-16 12:36:58.000000000 -0500
++++ src/hadoop-hdfs-project/hadoop-hdfs/src/main/native/libhdfs/exception.c	2015-08-24 10:04:55.264119834 -0500
+@@ -35,36 +35,55 @@
+ 
+ static const struct ExceptionInfo gExceptionInfo[] = {
+     {
+-        .name = "java/io/FileNotFoundException",
++        .name = "java.io.FileNotFoundException",
+         .noPrintFlag = NOPRINT_EXC_FILE_NOT_FOUND,
+         .excErrno = ENOENT,
+     },
+     {
+-        .name = "org/apache/hadoop/security/AccessControlException",
++        .name = "org.apache.hadoop.security.AccessControlException",
+         .noPrintFlag = NOPRINT_EXC_ACCESS_CONTROL,
+         .excErrno = EACCES,
+     },
+     {
+-        .name = "org/apache/hadoop/fs/UnresolvedLinkException",
++        .name = "org.apache.hadoop.fs.UnresolvedLinkException",
+         .noPrintFlag = NOPRINT_EXC_UNRESOLVED_LINK,
+         .excErrno = ENOLINK,
+     },
+     {
+-        .name = "org/apache/hadoop/fs/ParentNotDirectoryException",
++        .name = "org.apache.hadoop.fs.ParentNotDirectoryException",
+         .noPrintFlag = NOPRINT_EXC_PARENT_NOT_DIRECTORY,
+         .excErrno = ENOTDIR,
+     },
+     {
+-        .name = "java/lang/IllegalArgumentException",
++        .name = "java.lang.IllegalArgumentException",
+         .noPrintFlag = NOPRINT_EXC_ILLEGAL_ARGUMENT,
+         .excErrno = EINVAL,
+     },
+     {
+-        .name = "java/lang/OutOfMemoryError",
++        .name = "java.lang.OutOfMemoryError",
+         .noPrintFlag = 0,
+         .excErrno = ENOMEM,
+     },
+-    
++    {
++        .name = "org.apache.hadoop.hdfs.server.namenode.SafeModeException",
++        .noPrintFlag = 0,
++        .excErrno = EROFS,
++    },
++    {
++        .name = "org.apache.hadoop.fs.FileAlreadyExistsException",
++        .noPrintFlag = 0,
++        .excErrno = EEXIST,
++    },
++    {
++        .name = "org.apache.hadoop.hdfs.protocol.QuotaExceededException",
++        .noPrintFlag = 0,
++        .excErrno = EDQUOT,
++    },
++    {
++        .name = "org.apache.hadoop.hdfs.server.namenode.LeaseExpiredException",
++        .noPrintFlag = 0,
++        .excErrno = ESTALE,
++    },
+ };
+ 
+ int printExceptionAndFreeV(JNIEnv *env, jthrowable exc, int noPrintFlags,
