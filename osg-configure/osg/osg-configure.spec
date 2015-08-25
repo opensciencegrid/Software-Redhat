@@ -1,7 +1,7 @@
 Summary: Package for configure-osg and associated scripts
 Name: osg-configure
 Version: 1.2.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
 Group: Grid
@@ -11,6 +11,7 @@ BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 Vendor: Suchandra Thapa <sthapa@ci.uchicago.edu>
 Url: http://www.opensciencegrid.org
 Provides: configure-osg
+Patch0: fix-valid_hostname.patch
 
 %if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
 %{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
@@ -189,6 +190,7 @@ It may safely be removed once the upgrade is finished.
 
 %prep
 %setup
+%patch0 -p1
 
 %build
 %{__python} setup.py build
@@ -322,7 +324,7 @@ fi
 
 
 %changelog
-* Mon Aug 24 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.2.0-1.osg
+* Mon Aug 24 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.2.0-2.osg
 - Support IPv6 addresses in config files (SOFTWARE-1952)
 - Add default for AllowedVOs for CE Collector (SOFTWARE-1895)
 
