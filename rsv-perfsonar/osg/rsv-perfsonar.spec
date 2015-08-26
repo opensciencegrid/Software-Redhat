@@ -1,5 +1,5 @@
 Name:      rsv-perfsonar
-Version:   1.0.20
+Version:   1.0.21
 Release:   1%{?dist}
 Summary:   RSV Metrics to monitor pefsonar
 Packager:  OSG-Software
@@ -13,8 +13,6 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch: noarch
 
 Requires: rsv
-#The perfsonar probe libraries need it. Getting it from I2 repo for now
-Requires: esmond >= 1.0-14
 #This requirments to publish data to the CERN message brokers
 Requires: stompclt
 Requires: python-simplevisor
@@ -59,28 +57,22 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/rsv/stompclt/simplevisor.cfg
 %attr(-,rsv,rsv)  %{_sysconfdir}/rsv
 %attr(-,rsv,rsv)  %{_localstatedir}/run/rsv-perfsonar/
+%attr(-,rsv,rsv)  %{_localstatedir}/rsv/
 
 %post -p /bin/bash
-# Change the permissions for the perfsonar probes to work
-# Not a big deal since they never really use the log.
-chown rsv /var/log/esmond/django.log
-chmod a+w /var/log/esmond/django.log
-chown rsv /var/log/esmond/esmond.log
-chmod a+w /var/log/esmond/esmond.log
 # Create the html dir in the correct place
 mkdir /var/www/html/rsv
 chown rsv /var/www/html/rsv
 rm -rf /usr/share/rsv/www
 ln -s /var/www/html/rsv /usr/share/rsv/www
-# Instaling the reqesocks library
-scl enable python27 - << \EOF
-/opt/esmond/bin/pip install requesocks
-#This ones are need for publish data to CERN message queue
-/opt/esmond/bin/pip install dirq
-/opt/esmond/bin/pip install messaging
-EOF 
+
 
 %changelog
+* Tue Aug 25 2015  <efajardo@physics.ucsd.edu> 1.0.21-1
+- Removed changing the permission of the logs of esmond
+- No longer using esmond rpm but esmond-client via pip
+- Removed the pip installation for the message queue
+ 
 * Tue Aug 4 2015 <efajardo@physics.ucsd.edu> 1.0.20-1
 - Removed the sleep option since no longer needed
 - Added error handling for import problems with esmond
