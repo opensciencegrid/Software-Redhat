@@ -1,9 +1,5 @@
 Name:      rsv-perfsonar
-<<<<<<< .working
-Version:   1.0.19
-=======
 Version:   1.0.21
->>>>>>> .merge-right.r21586
 Release:   1%{?dist}
 Summary:   RSV Metrics to monitor pefsonar
 Packager:  OSG-Software
@@ -72,8 +68,6 @@ ln -s /var/www/html/rsv /usr/share/rsv/www
 
 
 %changelog
-<<<<<<< .working
-=======
 * Tue Aug 25 2015  <efajardo@physics.ucsd.edu> 1.0.21-1
 - Removed changing the permission of the logs of esmond
 - No longer using esmond rpm but esmond-client via pip
@@ -83,7 +77,6 @@ ln -s /var/www/html/rsv /usr/share/rsv/www
 - Removed the sleep option since no longer needed
 - Added error handling for import problems with esmond
 
->>>>>>> .merge-right.r21586
 * Mon Jul 6 2015 <efajardo@physics.ucsd.edu> 1.0.19-1
 - Fixed bug when directory queue is not present
 
