@@ -1,5 +1,5 @@
 Name:      rsv-perfsonar
-Version:   1.0.21
+Version:   1.0.22
 Release:   1%{?dist}
 Summary:   RSV Metrics to monitor pefsonar
 Packager:  OSG-Software
@@ -13,7 +13,9 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch: noarch
 
 Requires: rsv
-#This requirments to publish data to the CERN message brokers
+# Still needs esmond rpm to bring the python 2.7
+Requires: esmond
+#This requirements to publish data to the CERN message brokers
 Requires: stompclt
 Requires: python-simplevisor
 
@@ -57,7 +59,9 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/rsv/stompclt/simplevisor.cfg
 %attr(-,rsv,rsv)  %{_sysconfdir}/rsv
 %attr(-,rsv,rsv)  %{_localstatedir}/run/rsv-perfsonar/
+# For the virtual enviroment of the python2.7 for the probes
 %attr(-,rsv,rsv)  %{_localstatedir}/rsv/
+%attr(-,rsv,rsv)  %{_localstatedir}/rsv/localenv
 
 %post -p /bin/bash
 # Create the html dir in the correct place
@@ -66,8 +70,22 @@ chown rsv /var/www/html/rsv
 rm -rf /usr/share/rsv/www
 ln -s /var/www/html/rsv /usr/share/rsv/www
 
+# Create the virtual enviroment for rsv to use python2.7 and installed the requuired libraries
+sudo -su rsv <<EOF                                                                                                                                           
+mkdir /var/rsv/localenv                                                                                                                                    
+source /opt/rh/python27/enable                                                                                                                               
+/opt/rh/python27/root/usr/bin/virtualenv --prompt="(esmondup)" /var/rsv/localenv                                                                            
+. /var/rsv/localenv/bin/activate                                                                                                                            
+pip install esmond-client                                                                                                                                    
+pip install requesocks                                                                                                                                       
+pip install dirq                                                                                                                                             
+pip install messaging                                                                                                                                        
+EOF   
 
 %changelog
+* Tue Aug 25 2015  <efajardo@physics.ucsd.edu> 1.0.22-1
+- All probes use the same python enviroment for efficiency
+
 * Tue Aug 25 2015  <efajardo@physics.ucsd.edu> 1.0.21-1
 - Removed changing the permission of the logs of esmond
 - No longer using esmond rpm but esmond-client via pip
