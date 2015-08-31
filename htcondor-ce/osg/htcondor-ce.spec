@@ -339,6 +339,9 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Mon Aug 31 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.15-2
+- bump release to rebuild against condor 8.3.8 (SOFTWARE-1995)
+
 * Fri Aug 21 2015 Brian Lin <blin@cs.wisc.edu> 1.15-1
 - Add 'default_remote_cerequirements' attribute to the JOB_ROUTER_DEFAULTS
 - Verify the first route in JOB_ROUTER_ENTRIES in the init script
