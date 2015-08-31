@@ -1,4 +1,4 @@
-%define tarball_version 8.3.7
+%define tarball_version 8.3.8
 
 # optionally define any of these, here or externally
 # % define fedora   16
@@ -125,7 +125,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.2
+%define condor_base_release 1.1
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -214,17 +214,6 @@ Source123: zlib-1.2.3.tar.gz
 %endif
 
 Patch1: sw1636-cream_gahp-dlopen.patch
-
-# These should make it into 8.3.8
-# https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=5181
-# https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=5190
-# https://jira.opensciencegrid.org/browse/SOFTWARE-1991
-Patch3: 5181-remove-SUBMIT_Iwd.patch
-Patch4: 5190-ghap-reopen.patch
-
-# This fix for PROPER builds (which broke in 8.3.7) makes it into 8.3.8
-# https://jira.opensciencegrid.org/browse/SOFTWARE-1995
-Patch5: sw1995-PROPER-buildfix.patch
 
 #% if 0%osg
 Patch8: osg_sysconfig_in_init_script.patch
@@ -729,9 +718,6 @@ exit 0
 %endif
 
 %patch1 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
 
 %if 0%{?hcc}
 %patch15 -p0
@@ -752,7 +738,7 @@ export CMAKE_PREFIX_PATH=/usr
 # causes build issues with EL5, don't even bother building the tests.
 
 %if %uw_build
-%define condor_build_id 331383
+%define condor_build_id 338845
 
 %cmake \
        -DBUILDID:STRING=%condor_build_id \
@@ -1181,6 +1167,7 @@ rm -rf %{buildroot}
 %_libdir/libcondor_utils_%{version_}.so
 %_libdir/libcondorapi.so
 %dir %_libexecdir/condor/
+%_libexecdir/condor/linux_kernel_tuning
 %_libexecdir/condor/accountant_log_fixer
 %_libexecdir/condor/condor_chirp
 %_libexecdir/condor/condor_ssh
@@ -1858,6 +1845,9 @@ fi
 %endif
 
 %changelog
+* Mon Aug 31 2015 Carl Edquist <edquist@cs.wisc.edu> - 8.3.8-1.1
+- update to 8.3.8 (SOFTWARE-1995)
+
 * Wed Aug 19 2015 Carl Edquist <edquist@cs.wisc.edu> - 8.3.7-1.2
 - different build fix for PROPER, taken from 8.3.8 (SOFTWARE-1995)
 
