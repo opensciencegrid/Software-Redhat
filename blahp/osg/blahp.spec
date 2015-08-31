@@ -1,6 +1,6 @@
 Name:		blahp
 Version:	1.18.13.bosco
-Release:	3%{?dist}
+Release:	4%{?dist}
 Summary:	gLite BLAHP daemon
 
 Group:		System/Libraries
@@ -177,6 +177,9 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Mon Aug 31 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.18.13.bosco-4
+- Rebuild against HTCondor 8.3.8 (SOFTWARE-1995)
+
 * Mon Jul 20 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.18.13.bosco-3
 - bump to rebuild
 
