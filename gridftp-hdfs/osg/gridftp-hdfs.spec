@@ -2,7 +2,7 @@
 
 Name:           gridftp-hdfs
 Version:        0.5.4
-Release:        20%{?dist}
+Release:        22%{?dist}
 Summary:        HDFS DSI plugin for GridFTP
 Group:          System Environment/Daemons
 License:        ASL 2.0
@@ -32,7 +32,7 @@ Patch12: 1412-gridftp_d.patch
 Patch13: 1495-pthread-mutex.patch
 Patch14: 1495-optimal-concurrency.patch
 Patch15: 2006-gridftp-hdfs-get-checksum.patch
-
+Patch16: 2011-capture_stderr.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires: autoconf
@@ -95,6 +95,7 @@ HDFS DSI plugin for GridFTP
 %patch13 -p1
 %patch14 -p1
 %patch15 -p1
+%patch16 -p1
 
 aclocal
 libtoolize
@@ -192,6 +193,12 @@ fi
 %endif
 
 %changelog
+* Wed Sep 2 2015 Edgar Fajardo <emfajard@ucsd.edu> - 0.5.4-22.osg
+- Update to the patch (SOFTWARE-2011) to correctly deal when replication errors
+
+* Mon Aug 31 2015 Edgar Fajardo <emfajard@ucsd.edu> - 0.5.4-21.osg
+- Applied patch to capture stderr to the gridftp-auth log (SOFTWARE-2011)
+ 
 * Mon Aug 24 2015 Edgar Fajardo <emfajard@ucsd.edu> - 0.5.4-20.osg
 - Changed checksum names (adler32, md5, etc) to be case-insensitive (SOFTWARE-2006)
 
