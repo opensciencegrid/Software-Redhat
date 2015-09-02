@@ -2,7 +2,7 @@
 
 Name:           gridftp-hdfs
 Version:        0.5.4
-Release:        21%{?dist}
+Release:        22%{?dist}
 Summary:        HDFS DSI plugin for GridFTP
 Group:          System Environment/Daemons
 License:        ASL 2.0
@@ -193,6 +193,9 @@ fi
 %endif
 
 %changelog
+* Wed Sep 2 2015 Edgar Fajardo <emfajard@ucsd.edu> - 0.5.4-22.osg
+- Update to the patch (SOFTWARE-2011) to correctly deal when replication errors
+
 * Mon Aug 31 2015 Edgar Fajardo <emfajard@ucsd.edu> - 0.5.4-21.osg
 - Applied patch to capture stderr to the gridftp-auth log (SOFTWARE-2011)
  
