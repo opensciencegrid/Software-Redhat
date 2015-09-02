@@ -1,5 +1,5 @@
 Name:           edg-mkgridmap
-Version:        4.0.2
+Version:        4.0.3
 Release:        1%{?dist}
 Summary:        A tool to build the grid map-file from VO servers
 Group:          system environment/base
@@ -85,6 +85,10 @@ fi
 %dir %{_var}/lib/osg
 
 %changelog
+* Wed Sep 2 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> - 4.0.3-1
+- Bumped to version 4.0.3 (SOFTWARE-2021)
+- Actually brings el7 compat
+
 * Mon May 19 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> - 4.0.2-1
 - Bumped to version 4.0.2 (SOFTWARE-1904)
 - Removed the patch to remove blank entries fixed on base code
