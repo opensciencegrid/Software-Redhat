@@ -5,8 +5,8 @@ to map the users in each virtual organization (VO) to local users to generate a 
 
 Source obtained:
 
-# svn export http://svn.cern.ch/guest/curios/edg-mkgridmap/tags/v4_0_2 edg-mkgridmap-4.0.2
-# tar czf edg-mkgridmap-4.0.2.tar.gz edg-mkgridmap-4.0.2
+# svn export http://svn.cern.ch/guest/curios/edg-mkgridmap/tags/v4_0_3 edg-mkgridmap-4.0.3
+# tar czf edg-mkgridmap-4.0.2.tar.gz edg-mkgridmap-4.0.3
 
 This includes OSG patches to redirect log output, and to create a user-vo-map.
 
