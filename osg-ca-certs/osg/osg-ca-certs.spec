@@ -48,7 +48,6 @@ rm -rf $RPM_BUILD_ROOT
 %doc
 
 %changelog
-=======
 * Thu Sep 3 2015 Anand Padmanabhan <apadmana@uiuc.edu> - 1.48-1
 - CA release corresponding to IGTF 1.67 release.
 
