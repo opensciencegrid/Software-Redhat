@@ -1,8 +1,8 @@
 diff --git a/gums-service/pom.xml b/gums-service/pom.xml
-index e6eafe5..e56af4b 100644
+index ff364d1..51bc893 100644
 --- a/gums-service/pom.xml
 +++ b/gums-service/pom.xml
-@@ -48,36 +48,6 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
+@@ -39,36 +39,6 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
      <finalName>gums</finalName>
      <plugins>
        <plugin>
@@ -39,7 +39,7 @@ index e6eafe5..e56af4b 100644
          <groupId>org.apache.maven.plugins</groupId>
          <artifactId>maven-compiler-plugin</artifactId>
          <configuration>
-@@ -117,10 +87,6 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
+@@ -110,10 +80,6 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
                <filtering>false</filtering>
              </resource>
              <resource>
@@ -50,31 +50,19 @@ index e6eafe5..e56af4b 100644
                <directory>target/classes</directory>
                <targetPath>WEB-INF/classes</targetPath>
                <filtering>true</filtering>
-@@ -134,8 +100,6 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
+@@ -127,8 +93,6 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
                <filtering>false</filtering>
              </resource>
            </webResources>
 -          <warSourceExcludes>*.jsp,*.jspf</warSourceExcludes>
 -          <webXml>target/jspweb.xml</webXml>
          </configuration>
+         <version>2.4</version>
        </plugin>
-       <plugin>
 diff --git a/gums-service/src/main/webapp/autherror.jsp b/gums-service/src/main/webapp/autherror.jsp
 index 6dd678f..3f4ee13 100644
 --- a/gums-service/src/main/webapp/autherror.jsp
 +++ b/gums-service/src/main/webapp/autherror.jsp
-@@ -3,7 +3,6 @@
- <%@page pageEncoding="UTF-8"%>
- <%@page import="java.io.PrintWriter"%>
- <%@page import="gov.bnl.gums.*"%>
--<jsp:useBean id="gums" scope="application" class="gov.bnl.gums.admin.GUMSAPIImpl" />
- <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
- <html>
- <head>
-diff --git a/gums-service/src/main/webapp/error.jsp b/gums-service/src/main/webapp/error.jsp
-index 0ae1de0..5346c32 100644
---- a/gums-service/src/main/webapp/error.jsp
-+++ b/gums-service/src/main/webapp/error.jsp
 @@ -3,7 +3,6 @@
  <%@page pageEncoding="UTF-8"%>
  <%@page import="java.io.PrintWriter"%>
