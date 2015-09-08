@@ -7,8 +7,8 @@
 
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
-Version: 1.4.4
-Release: 3%{?dist}
+Version: 1.5.0
+Release: 1%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 %if 0%{?rhel} < 6
@@ -98,10 +98,6 @@ Source14: velocity-1.5.jar
 # Can't get el5 build working with jsp precompile
 Patch0: undo-jsp-precompile.patch
 
-# Should make it into v1.4.5
-# https://github.com/bbockelm/gums/commit/7e9d1ba283e5c7e80a89067b3664fdb1c2ede31d
-Patch1: check_null_obj.patch
-
 %description
 %{summary}
 
@@ -146,7 +142,6 @@ Summary: Tomcat service for GUMS
 %patch0 -p1
 %endif
 
-%patch1 -p1
 
 %build
 
@@ -392,6 +387,10 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+* Mon Aug 31 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.5.0-1
+- Update to GUMS 1.5.0 (SOFTWARE-2007)
+  - Add support for CSRF and XSS prevention
+
 * Mon Aug 03 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.4.4-3
 - Bugfix; handle null objects correctly if using an older lcmaps client or
   gums-host (SOFTWARE-1989)
