@@ -125,7 +125,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.1
+%define condor_base_release 1.2
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -214,6 +214,7 @@ Source123: zlib-1.2.3.tar.gz
 %endif
 
 Patch1: sw1636-cream_gahp-dlopen.patch
+Patch2: revert-gt4903.patch
 
 #% if 0%osg
 Patch8: osg_sysconfig_in_init_script.patch
@@ -718,6 +719,7 @@ exit 0
 %endif
 
 %patch1 -p1
+%patch2 -p1
 
 %if 0%{?hcc}
 %patch15 -p0
@@ -1845,6 +1847,9 @@ fi
 %endif
 
 %changelog
+* Wed Sep 09 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 8.3.8-1.2
+- Patch to revert GT #4903
+
 * Mon Aug 31 2015 Carl Edquist <edquist@cs.wisc.edu> - 8.3.8-1.1
 - update to 8.3.8 (SOFTWARE-1995)
 
