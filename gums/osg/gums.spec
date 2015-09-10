@@ -8,7 +8,7 @@
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.5.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 %if 0%{?rhel} < 6
@@ -98,6 +98,8 @@ Source14: velocity-1.5.jar
 # Can't get el5 build working with jsp precompile
 Patch0: undo-jsp-precompile.patch
 
+Patch1: fix-mapAccount.patch
+
 %description
 %{summary}
 
@@ -142,6 +144,7 @@ Summary: Tomcat service for GUMS
 %patch0 -p1
 %endif
 
+%patch1 -p1
 
 %build
 
@@ -387,6 +390,9 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+* Thu Sep 10 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.5.0-2
+- Fix functionality of mapAccount (SOFTWARE-2028)
+
 * Mon Aug 31 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.5.0-1
 - Update to GUMS 1.5.0 (SOFTWARE-2007)
   - Add support for CSRF and XSS prevention
