@@ -16,7 +16,7 @@ Packaged by Neha Sharma <neha@fnal.gov>
 The upstream source tarball for Bestman is created by the following procedure:
 
 - cd in to [working_dir]
-- svn checkout https://codeforge.lbl.gov/anonscm/bestman
+- svn checkout https://code.lbl.gov/svn/bestman   # user/pw = anonsvn/anonsvn
 - mv bestman bestman2
 - cd bestman2
 - rm -rf tags 
