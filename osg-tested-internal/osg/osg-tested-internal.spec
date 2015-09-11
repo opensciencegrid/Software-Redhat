@@ -1,7 +1,7 @@
 Name:      osg-tested-internal
 Summary:   All OSG packages we test (internal use only)
 Version:   3.3
-Release:   3%{?dist}
+Release:   4%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -69,6 +69,9 @@ Requires: osg-gums
 Requires: osg-voms
 %endif
 
+%if 0%{?rhel} == 5
+Requires: globus-grid-job-manager-pbs-setup-poll
+%endif
 
 %description
 %{summary}
@@ -83,6 +86,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Sep 11 2015 Brian Lin <blin@cs.wisc.edu> 3.3-4
+- Install globus-grid-job-manager-pbs-setup-poll for EL5 (SOFTWARE-1929)
+
 * Fri Aug 21 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.3-3
 - Actually include torque
 
