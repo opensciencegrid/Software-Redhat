@@ -1,6 +1,6 @@
 Name:           edg-mkgridmap
 Version:        4.0.3
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A tool to build the grid map-file from VO servers
 Group:          system environment/base
 License:        Apache 2.0
@@ -22,6 +22,10 @@ Requires:       osg-vo-map
 Requires:       perl-libwww-perl
 Requires:       perl-Net-SSLeay
 Requires:       perl-Crypt-SSLeay
+
+%if %{?fedora}%{!?fedora:0} >= 14 || %{?rhel}%{!?rhel:0} >= 7
+Requires:       perl-LWP-Protocol-https
+%endif
 
 
 
@@ -85,6 +89,9 @@ fi
 %dir %{_var}/lib/osg
 
 %changelog
+* Wed Sep 2 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> - 4.0.3-2
+- Added the perl-LWP-Protocol-https package for the requirements for el7
+
 * Wed Sep 2 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> - 4.0.3-1
 - Bumped to version 4.0.3 (SOFTWARE-2021)
 - Actually brings el7 compat
