@@ -1,7 +1,7 @@
 Name:      osg-tested-internal
 Summary:   All OSG packages we test (internal use only)
 Version:   3.2
-Release:   10%{?dist}
+Release:   11%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -39,48 +39,39 @@ Requires: htcondor-ce-client
 Requires: htcondor-ce-condor
 
 Requires: osg-ce-condor
+
+Requires: torque-server
+Requires: torque-mom
+Requires: torque-client
+Requires: torque-scheduler
+Requires: osg-ce-pbs
+
 Requires: rsv
+
+Requires: xrootd
+Requires: xrootd-client
+
+Requires: ndt-client
+
+Requires: gratia-service
 ################################################################################
 #
 # Non-RHEL 7
 #
 ################################################################################
 %if 0%{?rhel} < 7
+# as of 2015-08-21, bestman hasn't been successfully built
 Requires: osg-se-bestman
 Requires: osg-se-bestman-xrootd
+# as of 2015-08-21, gums hasn't been successfully built
 Requires: osg-gums
+# as of 2015-08-21, voms tests fail due to non-trivial issues
 Requires: osg-voms
-Requires: torque-server
-Requires: torque-mom
-Requires: torque-client
-Requires: torque-scheduler
-Requires: osg-ce-pbs
-Requires: xrootd
-Requires: xrootd-client
-Requires: ndt-client
-
-Requires: gratia-service
 %endif
 
-################################################################################
-#
-# RHEL 7
-#
-################################################################################
-%if 0%{?rhel} == 7
-Requires: osg-wn-client-glexec
-Requires: condor
-Requires: globus-gatekeeper
-Requires: globus-common-progs
-Requires: globus-gram-client-tools
-Requires: globus-gram-job-manager-fork-setup-poll
-Requires: globus-gram-job-manager-condor
-Requires: globus-gridftp-server
-Requires: globus-gridftp-server-control
-Requires: globus-gridftp-server-progs
-Requires: lcas-lcmaps-gt4-interface
+%if 0%{?rhel} == 5
+Requires: globus-grid-job-manager-pbs-setup-poll
 %endif
-
 
 %description
 %{summary}
@@ -95,6 +86,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Sep 11 2015 Brian Lin <blin@cs.wisc.edu> 3.2-11
+- Merge changes from OSG 3.3
+- Install globus-grid-job-manager-pbs-setup-poll for EL5 (SOFTWARE-1929)
+
 * Wed Apr 22 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.2-10
 - Add rsv and osg-ce-condor to el7
 
