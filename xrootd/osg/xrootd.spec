@@ -17,7 +17,7 @@
 
 Name:		xrootd
 Epoch:		1
-Version:	4.2.2
+Version:	4.2.3
 Release:	1%{?dist}
 Summary:	Extended ROOT file server
 
@@ -243,8 +243,8 @@ This package contains the API documentation of the xrootd libraries.
 
 
 %prep
-%setup -q -n %{name}
-
+#%setup -q -n %{name}
+%setup -q -n %{name}-%{version}
 %if %{?fedora}%{!?fedora:0} <= 9 && %{?rhel}%{!?rhel:0} <= 5
 # Older versions of SELinux do not have policy for open
 sed 's/ open / /' -i packaging/common/%{name}.te
@@ -623,6 +623,9 @@ fi
 %doc %{_pkgdocdir}
 
 %changelog
+* Fri Sep 11 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1:4.2.3-1
+- Update to 4.2.3
+
 * Tue Jul 28 2015 Carl Edquist <edquist@cs.wisc.edu> - 1:4.2.2-1
 - Update to 4.2.2
 
