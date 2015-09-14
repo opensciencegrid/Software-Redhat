@@ -1,5 +1,5 @@
 Name:      rsv-perfsonar
-Version:   1.0.22
+Version:   1.0.23
 Release:   1%{?dist}
 Summary:   RSV Metrics to monitor pefsonar
 Packager:  OSG-Software
@@ -71,18 +71,21 @@ rm -rf /usr/share/rsv/www
 ln -s /var/www/html/rsv /usr/share/rsv/www
 
 # Create the virtual enviroment for rsv to use python2.7 and installed the requuired libraries
-sudo -su rsv <<EOF                                                                                                                                           
 mkdir /var/rsv/localenv                                                                                                                                    
 source /opt/rh/python27/enable                                                                                                                               
 /opt/rh/python27/root/usr/bin/virtualenv --prompt="(esmondup)" /var/rsv/localenv                                                                            
-. /var/rsv/localenv/bin/activate                                                                                                                            
-pip install esmond-client                                                                                                                                    
-pip install requesocks                                                                                                                                       
-pip install dirq                                                                                                                                             
-pip install messaging                                                                                                                                        
-EOF   
+. /var/rsv/localenv/bin/activate
+pip install esmond-client --upgrade                                                                                                                          
+pip install requesocks --upgrade
+pip install dirq --upgrade
+pip install messaging  --upgrade                                                                                                                            
+
+
 
 %changelog
+* Mon Sep 14 2015 <efajardo@physics.ucsd.edu> 1.0.23-1
+- Each probes writes a dictionary for each meatadata key with the last timestamp of a succesfull run
+
 * Tue Aug 25 2015  <efajardo@physics.ucsd.edu> 1.0.22-1
 - All probes use the same python enviroment for efficiency
 
