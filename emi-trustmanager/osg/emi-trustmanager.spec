@@ -47,6 +47,7 @@ Patch23: 0023-IssuingDistributionPoint-constructor-fix-bc1.47.patch
 Patch24: 0024-GeneralNames-constuctor-fix-bc1.47.patch
 Patch25: 0025-DEROctetString-new-exception-bc1.47.patch
 Patch26: 0026-CertificationRequestInfo.getSubject-signature-change.patch
+Patch27: private_key_exception.patch
 
 %description
 The java authentication and proxy generation implementation that supports grid proxies.
@@ -79,6 +80,7 @@ The java authentication and proxy generation implementation that supports grid p
 %patch24 -p1
 %patch25 -p1
 %patch26 -p1
+%patch27 -p0
 %endif
 
 
