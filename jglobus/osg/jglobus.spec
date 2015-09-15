@@ -1,12 +1,8 @@
-%if ! 0%{?el7}
-%{warn:"*** THIS BUILD IS FOR EL7 ONLY ***"}
-%endif
-
 Name: jglobus
 Summary: An implementation of Globus for Java
 License: Apache 2.0
 Version: 2.1.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 URL: http://www.globus.org/toolkit/jglobus/
 Group: System Environment/Libraries
 
@@ -19,14 +15,37 @@ Source0: JGlobus-Release-2.1.0.tar.gz
 BuildArch: noarch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
+%if 0%{?rhel} >= 7
+%define mvn mvn
 BuildRequires: maven-local
+%else
+%define mvn mvn22
+BuildRequires: maven22
+%endif
 
+BuildRequires: java7-devel
+BuildRequires: jpackage-utils
+BuildRequires: /usr/share/java-1.7.0
+BuildRequires: bouncycastle
+
+%if 0%{?rhel} >= 7
 Requires: java-headless >= 1:1.7.0
+%else
+Requires: java7
+%endif
 Requires: jpackage-utils
-#Requires: bouncycastle
-#Requires: log4j
-#Requires: tomcat
-#Conflicts: cog-jglobus-axis < 1.8.0
+Requires: bouncycastle
+Requires: log4j
+%if 0%{?rhel} <= 5
+Requires: tomcat5
+%endif
+%if 0%{?rhel} == 6
+Requires: tomcat6
+%endif
+%if 0%{?rhel} >= 7
+Requires: tomcat
+%endif
+Conflicts: cog-jglobus-axis < 1.8.0
 
 
 %description
@@ -44,15 +63,24 @@ find -name '*.jar' -exec rm -f '{}' \;
 export MAVEN_REPO_LOCAL=$(pwd)/.m2/repository
 mkdir -p $MAVEN_REPO_LOCAL
 
-xmvn \
-    -B \
+%if 0%{?rhel} < 7
+%mvn install:install-file -B -DgroupId=org.bouncycastle -DartifactId=bcprov-jdk16 -Dversion=1.45 -Dpackaging=jar -Dfile=`build-classpath bcprov` -Dmaven.repo.local=$MAVEN_REPO_LOCAL
+%else
+%mvn install:install-file -B -DgroupId=org.bouncycastle -DartifactId=bcprov -Dversion=1.50 -Dpackaging=jar -Dfile=`build-classpath bcprov` -Dmaven.repo.local=$MAVEN_REPO_LOCAL
+%endif
+
+%mvn \
+    --batch-mode \
+    --errors \
+    --fail-fast \
     -DskipTests \
     -Dmaven.repo.local=$MAVEN_REPO_LOCAL \
     install
 
-xmvn \
-    -B \
-    -e \
+%mvn \
+    --batch-mode \
+    --errors \
+    --fail-fast \
     -DskipTests \
     -Dmaven.repo.local=$MAVEN_REPO_LOCAL \
     install javadoc:javadoc
@@ -93,6 +121,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mavendepmapfragdir}/%{name}
 
 %changelog
+* Tue Sep 15 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 2.1.0-2.osg
+- Build on EL7 and EL6
+
 * Fri Nov 07 2014 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.1.0-1
 - Update to 2.1.0 for EL7 (SOFTWARE-1541)
 - Remove crl-updates.patch (upstream)
