@@ -6,6 +6,10 @@ Release: 2%{?dist}
 URL: http://www.globus.org/toolkit/jglobus/
 Group: System Environment/Libraries
 
+# If set, the maven build is done in offline mode and a tarball of the maven
+# dependencies (basically the local repository tarred up) is used.
+%define maven_offline 1
+
 # git clone git://github.com/jglobus/JGlobus.git JGlobus
 # cd JGlobus
 # git-archive JGlobus-Release-2.1.0 | gzip -9 > JGlobus-Release-2.1.0.tar.gz
@@ -15,18 +19,30 @@ Source0: JGlobus-Release-2.1.0.tar.gz
 BuildArch: noarch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-%if 0%{?rhel} >= 7
-%define mvn mvn
-BuildRequires: maven-local
-%else
+BuildRequires: /usr/share/java-1.7.0
+
+%if %{?rhel} < 7
+
+BuildRequires:  maven22
+BuildRequires:  jpackage-utils
+BuildRequires:  java7-devel
 %define mvn mvn22
-BuildRequires: maven22
+
+%else
+
+BuildRequires:  maven >= 3.0
+%define mvn mvn
+
 %endif
 
-BuildRequires: java7-devel
-BuildRequires: jpackage-utils
-BuildRequires: /usr/share/java-1.7.0
-BuildRequires: bouncycastle
+%define local_maven /tmp/m2/%{name}/repository
+%global mvnopts --batch-mode --errors --fail-fast -Dmaven.repo.local="%{local_maven}"
+
+%if 0%{?maven_offline}
+%global mvnopts %mvnopts --offline
+%else
+%global mvnopts %mvnopts
+%endif
 
 %if 0%{?rhel} >= 7
 Requires: java-headless >= 1:1.7.0
@@ -34,7 +50,6 @@ Requires: java-headless >= 1:1.7.0
 Requires: java7
 %endif
 Requires: jpackage-utils
-Requires: bouncycastle
 Requires: log4j
 %if 0%{?rhel} <= 5
 Requires: tomcat5
@@ -47,6 +62,23 @@ Requires: tomcat
 %endif
 Conflicts: cog-jglobus-axis < 1.8.0
 
+%if 0%{?maven_offline}
+
+Source6: %{name}-mvn-deps-el6.tar.gz
+Source7: %{name}-mvn-deps-el7.tar.gz
+
+
+    %if 0%{?el6}
+        %define mvn_deps_tarball %{SOURCE6}
+    %endif
+
+    %if 0%{?el7}
+        %define mvn_deps_tarball %{SOURCE7}
+    %endif
+
+%endif
+
+
 
 %description
 %{summary}
@@ -57,32 +89,35 @@ Conflicts: cog-jglobus-axis < 1.8.0
 find -name '*.class' -exec rm -f '{}' \;
 find -name '*.jar' -exec rm -f '{}' \;
 
+
+
+
 %build
 
-#define xmvn_bootstrap 1
-export MAVEN_REPO_LOCAL=$(pwd)/.m2/repository
-mkdir -p $MAVEN_REPO_LOCAL
 
-%if 0%{?rhel} < 7
-%mvn install:install-file -B -DgroupId=org.bouncycastle -DartifactId=bcprov-jdk16 -Dversion=1.45 -Dpackaging=jar -Dfile=`build-classpath bcprov` -Dmaven.repo.local=$MAVEN_REPO_LOCAL
-%else
-%mvn install:install-file -B -DgroupId=org.bouncycastle -DartifactId=bcprov -Dversion=1.50 -Dpackaging=jar -Dfile=`build-classpath bcprov` -Dmaven.repo.local=$MAVEN_REPO_LOCAL
+# If we're using maven in offline mode, then copy our maven dependencies from
+# the tarball(s) we have into the local mvn repo
+%if 0%{?maven_offline}
+
+    rm -rf "%{local_maven}"
+    tar -xzf "%{mvn_deps_tarball}"
+
+    (
+        cd repository
+        mkdir -p "%{local_maven}"
+        mv -f * "%{local_maven}/"
+    )
+    rm -rf repository
+
 %endif
 
-%mvn \
-    --batch-mode \
-    --errors \
-    --fail-fast \
+
+%mvn %mvnopts \
     -DskipTests \
-    -Dmaven.repo.local=$MAVEN_REPO_LOCAL \
     install
 
-%mvn \
-    --batch-mode \
-    --errors \
-    --fail-fast \
+%mvn %mvnopts \
     -DskipTests \
-    -Dmaven.repo.local=$MAVEN_REPO_LOCAL \
     install javadoc:javadoc
 
 %install
@@ -122,7 +157,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 * Tue Sep 15 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 2.1.0-2.osg
-- Build on EL7 and EL6
+- Build on EL7 and EL6; use a bundle of mvn dependencies so we can build in offline mode
 
 * Fri Nov 07 2014 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.1.0-1
 - Update to 2.1.0 for EL7 (SOFTWARE-1541)
