@@ -1,7 +1,7 @@
 Summary: Tomcat and axis integration classes
 Name: emi-trustmanager-tomcat
 Version: 3.0.0
-Release: 12%{?dist}
+Release: 13%{?dist}
 License: Apache Software License
 Vendor: EMI
 Group: System Environment/Libraries
@@ -42,6 +42,7 @@ Patch11: 0011-Tomcat-7-Implement-getSSLUtil-in-TMSSLImplementation.patch
 Patch12: 0012-Tomcat-7-getServerSocketFactory-that-takes-an-Abstra.patch
 Patch13: 0013-Tomcat-7-Don-t-catch-ClassNotFoundException.patch
 Patch14: 0014-Tomcat-7-Use-AbstractEndpoint.patch
+Patch15: initproxy.patch
 
 %description
 The classes for integrating the trustmanager with tomcat.
@@ -60,6 +61,7 @@ The classes for integrating the trustmanager with tomcat.
 %patch12 -p1
 %patch13 -p1
 %patch14 -p1
+%patch15 -p0
 %endif
 
 %build
@@ -123,6 +125,9 @@ rm -rf $RPM_BUILD_ROOT
 /var/lib/trustmanager-tomcat/configure.sh
 
 %changelog
+* Tue Sep 15 2015 Brian Bockelman <bbockelm@cse.unl.edu> - 3.0.0-13
+- Avoid NPE when initializing security settings.
+
 * Wed Aug 12 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.0.0-12
 - Patch to build on el7 (SOFTWARE-1604)
 

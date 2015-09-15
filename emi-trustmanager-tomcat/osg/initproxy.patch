@@ -1,0 +1,25 @@
+--- ./src/org/glite/security/trustmanager/tomcat/TMSSLServerSocketFactory.java.orig	2015-09-15 12:49:17.510800455 -0500
++++ ./src/org/glite/security/trustmanager/tomcat/TMSSLServerSocketFactory.java	2015-09-15 12:49:27.901801010 -0500
+@@ -383,7 +383,7 @@
+         } catch (Exception e) {
+             LOGGER.fatal("Server socket factory creation failed:  " + e);
+ //            e.printStackTrace(System.out);
+-            throw new IOException(e.toString());
++            throw new IOException(e);
+         }
+     }
+ 
+--- src/org/glite/security/trustmanager/tomcat/TMSSLServerSocketFactory.java.orig	2015-09-15 13:03:30.658803254 -0500
++++ src/org/glite/security/trustmanager/tomcat/TMSSLServerSocketFactory.java	2015-09-15 13:04:03.954036586 -0500
+@@ -350,7 +350,10 @@
+                         , "wantLog4jSetup"
+                         };
+         for (String key : keys) {
+-            props.put(key, (String)endpoint.getAttribute(key));
++            String value = (String)endpoint.getAttribute(key);
++            if (value != null) {
++              props.put(key, value);
++            }
+         }
+     }
+     /**
