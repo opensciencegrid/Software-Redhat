@@ -1,0 +1,71 @@
+--- config/configure.sh.orig	2011-03-24 11:11:52.000000000 -0500
++++ config/configure.sh	2015-09-15 14:56:24.682978530 -0500
+@@ -160,14 +160,18 @@
+     TCCONFIG_DIR="/etc/tomcat5"
+     SERVER_LIB=${CATALINA_HOME}/server/lib
+ 
+-else
+-if [ -r "/etc/tomcat6/tomcat6.conf" ]; then
++elif [ -r "/etc/tomcat6/tomcat6.conf" ]; then
+     source "/etc/tomcat6/tomcat6.conf"
+     TCCONFIG_DIR="/etc/tomcat6"
+     SERVER_LIB=${CATALINA_HOME}/lib
+     TOMCAT_VERSION=6
+-    else
+-        if [ -z "$CATALINA_HOME" ]; then
++elif [ -r "/etc/tomcat/tomcat.conf" ]; then
++    source "/etc/tomcat/tomcat.conf"
++    TCCONFIG_DIR="/etc/tomcat"
++    SERVER_LIB=${CATALINA_HOME}/lib
++    TOMCAT_VERSION=7
++else
++    if [ -z "$CATALINA_HOME" ]; then
+ 	    echo "Please set the CATALINA_HOME environmental variable!"
+ 	    exit 2
+ 	fi
+@@ -181,7 +185,6 @@
+ 	    SERVER_LIB=${CATALINA_HOME}/lib
+ 	    TOMCAT_VERSION=6
+ 	fi
+-    fi
+ fi
+ 
+ SERVERXML="${TCCONFIG_DIR}/server.xml"
+@@ -256,7 +259,11 @@
+ #fi
+ 
+ $DRYRUN cp -p $SERVERXML $OLDSERVERXML
++if [ $TOMCAT_VERSION == "7" ]; then
++$DRYRUN cp $CONFIGDIR/server7.xml $SERVERXML
++else
+ $DRYRUN cp $CONFIGDIR/server.xml $SERVERXML
++fi
+ if [ ! -z "$TOMCAT_USER" ]; then
+     $DRYRUN chown $TOMCAT_USER $SERVERXML
+ fi
+@@ -301,7 +308,7 @@
+ 
+ JARS2="trustmanager.jar trustmanager-tomcat.jar"
+ for jar in $JARS2; do
+-    condLinkFile $jar $INSTALLROOT/share/java ${SERVER_LIB} $FORCE
++    condLinkFile $jar $INSTALLROOT/usr/share/java ${SERVER_LIB} $FORCE
+ done
+ 
+ log4j="log4j-trustmanager.properties"
+@@ -311,6 +318,8 @@
+ 
+ if [ $TOMCAT_VERSION == "6" ]; then
+     condLinkFile commons-logging.jar /usr/share/java ${SERVER_LIB} $FORCE
++elif [ $TOMCAT_VERSION == "7" ]; then
++    condLinkFile commons-logging.jar /usr/share/java ${SERVER_LIB} $FORCE
+ fi
+ 
+ $SILENT_ECHO "Info: you can clean up using the following commands"
+@@ -322,5 +331,7 @@
+ $SILENT_ECHO "      rm -f ${CONFIGDIR}/server.xml"
+ if [ $TOMCAT_VERSION == "6" ]; then
+     $SILENT_ECHO "      rm -f ${SERVER_LIB}/commons-logging*.jar"
++elif [ $TOMCAT_VERSION == "7" ]; then
++    $SILENT_ECHO "      rm -f ${SERVER_LIB}/commons-logging*.jar"
+ fi
+ 

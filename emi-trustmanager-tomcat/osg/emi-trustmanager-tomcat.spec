@@ -34,6 +34,7 @@ BuildRoot: %{_builddir}/%{name}-root
 AutoReqProv: yes
 Source: emi-trustmanager-tomcat-3.0.0-1.src.tar.gz
 Source1: config.properties
+Source2: server7.xml.template
 Patch0: configure.patch
 Patch1: build.xml.patch
 Patch2: log4j-trustmanager.patch
@@ -43,6 +44,7 @@ Patch12: 0012-Tomcat-7-getServerSocketFactory-that-takes-an-Abstra.patch
 Patch13: 0013-Tomcat-7-Don-t-catch-ClassNotFoundException.patch
 Patch14: 0014-Tomcat-7-Use-AbstractEndpoint.patch
 Patch15: initproxy.patch
+Patch16: configure_tomcat7.patch
 
 %description
 The classes for integrating the trustmanager with tomcat.
@@ -51,7 +53,6 @@ The classes for integrating the trustmanager with tomcat.
  
 
 %setup  
-%patch0 -p0
 %patch1 -p0
 %patch2 -p1
 
@@ -62,6 +63,9 @@ The classes for integrating the trustmanager with tomcat.
 %patch13 -p1
 %patch14 -p1
 %patch15 -p0
+%patch16 -p0
+%else
+%patch0 -p0
 %endif
 
 %build
@@ -81,6 +85,9 @@ export JAVA_HOME=/etc/alternatives/java_sdk
  find $RPM_BUILD_ROOT -name '*.pc' -exec sed -i -e "s|$RPM_BUILD_ROOT||g" {} \;
 
 cp %SOURCE1 $RPM_BUILD_ROOT/var/lib/trustmanager-tomcat/config.properties
+%if 0%{?rhel} == 7
+cp %SOURCE2 $RPM_BUILD_ROOT/var/lib/trustmanager-tomcat/server7.xml.template
+%endif
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -120,6 +127,7 @@ rm -rf $RPM_BUILD_ROOT
 /usr/share/doc/trustmanager-tomcat/html/index-all.html
 %dir /var/lib/trustmanager-tomcat/
 /var/lib/trustmanager-tomcat/server.xml.template
+/var/lib/trustmanager-tomcat/server7.xml.template
 /var/lib/trustmanager-tomcat/log4j-trustmanager.properties
 /var/lib/trustmanager-tomcat/config.properties
 /var/lib/trustmanager-tomcat/configure.sh
