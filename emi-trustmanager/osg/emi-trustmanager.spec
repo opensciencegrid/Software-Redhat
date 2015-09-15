@@ -1,7 +1,7 @@
 Summary: Security utilities
 Name: emi-trustmanager
 Version: 3.0.3
-Release: 8%{?dist}
+Release: 9%{?dist}
 License: EMI
 Vendor: EMI
 Group: System Environment/Libraries
@@ -269,6 +269,9 @@ rm -rf $RPM_BUILD_ROOT
 /usr/share/doc/trustmanager/html/index-all.html
 
 %changelog
+* Tue Sep 15 2015 Brian Bockelman <bbockelm@cse.unl.edu> - 3.0.3-9
+- Avoid exception when creating SSL socket on RHEL7.
+
 * Mon Jul 20 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.0.3-8
 - Bump to rebuild
 
