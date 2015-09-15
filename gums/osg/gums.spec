@@ -8,7 +8,7 @@
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.5.0
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 %if 0%{?rhel} < 6
@@ -24,6 +24,11 @@ BuildRequires: maven2
 %define jacc %{nil}
 BuildRequires: maven22
 ## explicitly requiring this because I don't want yum to pick java-1.5.0-gcj-devel
+%endif
+%if 0%{?rhel} == 6
+%define mvnprofileops -P tomcat6
+%else
+%define mvnprofileops %{nil}
 %endif
 BuildRequires: java7-devel
 BuildRequires: jglobus = %{jglobus_version}
@@ -96,7 +101,7 @@ Source13: jargs-1.0.jar
 Source14: velocity-1.5.jar
 
 # Can't get el5 build working with jsp precompile
-Patch0: undo-jsp-precompile.patch
+Patch0: jspc-profile.patch
 
 Patch1: fix-mapAccount.patch
 
@@ -140,10 +145,7 @@ Summary: Tomcat service for GUMS
 
 %setup -n %{name}-%{version}
 
-%if 0%{?rhel} < 6
 %patch0 -p1
-%endif
-
 %patch1 -p1
 
 %build
@@ -188,7 +190,7 @@ pushd gums-client
 %{mvn} -B -e -Dmaven.repo.local=/tmp/m2-repository -Dmaven.test.skip=true install
 popd
 pushd gums-service
-%{mvn} -B -e -Dmaven.repo.local=/tmp/m2-repository -Dmaven.test.skip=true install
+%{mvn} -B -e -Dmaven.repo.local=/tmp/m2-repository -Dmaven.test.skip=true %{mvnprofileops} install
 popd
 
 %install
@@ -390,6 +392,9 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+* Tue Sep 15 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.5.0-3
+- Use maven profile to disable jsp precompilation for el5 (SOFTWARE-1981)
+
 * Thu Sep 10 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.5.0-2
 - Fix functionality of mapAccount (SOFTWARE-2028)
 
