@@ -27,7 +27,6 @@ BuildRequires:  maven22
 BuildRequires:  jpackage-utils
 BuildRequires:  java7-devel
 %define mvn mvn22
-%define maven_offline 0
 
 %else
 
