@@ -2,7 +2,7 @@ Name: jglobus
 Summary: An implementation of Globus for Java
 License: Apache 2.0
 Version: 2.1.0
-Release: 2%{?dist}
+Release: 3%{?dist}
 URL: http://www.globus.org/toolkit/jglobus/
 Group: System Environment/Libraries
 
@@ -27,6 +27,7 @@ BuildRequires:  maven22
 BuildRequires:  jpackage-utils
 BuildRequires:  java7-devel
 %define mvn mvn22
+%define maven_offline 0
 
 %else
 
@@ -138,7 +139,12 @@ installjar () {
     %add_maven_depmap  -a "org.jglobus:$module"  "$pomfile"  "$jarfile"
 }
 
-for  module  in  gridftp gss io jsse ssl-proxies
+# Inexplicably, the axis sub-module produces a JAR named 'axisg'
+# This messes up the installjar macro; seems to be better to rename
+# the build directory than to try and rename the actual product.
+mv axis axisg
+
+for  module  in  gridftp gss io jsse ssl-proxies axisg
 do
     installjar $module
 done
@@ -156,6 +162,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mavendepmapfragdir}/%{name}
 
 %changelog
+* Wed Sep 16 2015 Brian Bockelman <bbockelm@cse.unl.edu> - 2.1.0-3
+- Package axisg sub-module (replaces cog-jglobus-axis).
+
 * Tue Sep 15 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 2.1.0-2.osg
 - Build on EL7 and EL6; use a bundle of mvn dependencies so we can build in offline mode
 
