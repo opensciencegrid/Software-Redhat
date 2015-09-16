@@ -1,0 +1,53 @@
+From 6b447c7697f1b966c77cee1f08e9f880f558f228 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Wed, 16 Sep 2015 11:32:17 -0500
+Subject: [PATCH] Remove bouncycastle requirement; bump jglobus requirement to
+ 2.1.0
+
+---
+ pom.xml | 10 ++--------
+ 1 file changed, 2 insertions(+), 8 deletions(-)
+
+diff --git a/pom.xml b/pom.xml
+index 0dc345d..348e8cd 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -195,16 +195,16 @@
+ 			<version>2.4.1</version>
+ 		</dependency>
+ 		<dependency>
+ 			<groupId>org.jglobus</groupId>
+ 			<artifactId>ssl-proxies</artifactId>
+-			<version>2.0.6</version>
++			<version>2.1.0</version>
+ 		</dependency>
+ 		<dependency>
+ 			<groupId>org.jglobus</groupId>
+ 			<artifactId>gss</artifactId>
+-			<version>2.0.6</version>
++			<version>2.1.0</version>
+ 		</dependency>
+ 		<dependency>
+ 			<groupId>joda-time</groupId>
+ 			<artifactId>joda-time</artifactId>
+ 			<version>1.5.2</version>
+@@ -245,16 +245,10 @@
+ 			<scope>test</scope>
+ 		</dependency>
+ 
+ 		<!--runtime scope--> 
+ 		<dependency>
+-			<groupId>org.bouncycastle</groupId>
+-			<artifactId>bcprov-jdk15</artifactId>
+-			<version>1.46</version>
+-			<scope>provided</scope>
+-		</dependency>  
+-		<dependency>
+ 			<groupId>org.italiangrid</groupId>
+ 			<artifactId>voms-api-java</artifactId>
+ 			<version>2.0.8</version>
+ 			<scope>provided</scope>
+ 		</dependency>	   
+-- 
+2.4.6
+

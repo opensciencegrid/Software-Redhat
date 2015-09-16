@@ -1,31 +1,29 @@
+## Turn off meaningless jar repackaging
+%define __jar_repack 0
+
 %define local_maven /tmp/m2-repository
 #%define mvn /usr/share/apache-maven-3.0.4/bin/mvn
 %define _noarchlib %{_exec_prefix}/lib
-%define jglobus_version 2.0.6
+%define jglobus_version 2.1.0
 
-%define _jar_version 2.6.4
+%define _jar_version 2.6.5
 
 Name:		privilege-xacml
-Version:	2.6.4
-Release:	2%{?dist}
+Version:	2.6.5
+Release:	1%{?dist}
 Summary:	Core bindings for XACML interoperability profile.
 
 Group:		OSG/Libraries
 License:	Apache 2.0
-URL:		http://cdcvs.fnal.gov/subversion/privilege
+URL:		http://github.com/opensciencegrid/privilege-xacml
 
-# To generate:
-# svn export svn+ssh://p-privilege@cdcvs.fnal.gov/cvs/projects/privilege/tags/v%{version} %{name}-%{version}
-# tar zcf %{name}-%{version}.tar.gz %{name}-%{version}
 Source0:	%{name}-%{version}.tar.gz
-Patch0:         Remove-sunxacml-requirement.patch
-Patch1:         0001-DERString-ASN1String-bc1.47.patch
-Patch2:         0002-getDERObject-toASN1Primitive-bc1.47.patch
-Patch3:         0003-ASN1Sequence-use-getInstance-instead-of-casts-bc-1.4.patch
+Patch10:        update-2.6.5-requirements.patch
 
 BuildArch: noarch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
+#define slf4j_version 1.5.8
 
 BuildRequires: jpackage-utils
 BuildRequires: java7-devel
@@ -36,11 +34,7 @@ BuildRequires: emi-trustmanager-axis
 BuildRequires: wsdl4j
 BuildRequires: log4j
 BuildRequires: axis
-BuildRequires: jglobus
-#Added this requiremnt to deal with the commons* dep
-BuildRequires: slf4j
-#BuildRequires: maven3
-BuildRequires: bouncycastle
+BuildRequires: jglobus >= %jglobus_version
 
 %if 0%{?rhel} < 7
 BuildRequires: maven22
@@ -53,12 +47,14 @@ BuildRequires: maven22
 
 %else
 
-BuildRequires: maven-local
-%define mvn xmvn
+BuildRequires: maven >= 3.0.0
+%define mvn mvn
 %define commons_logging apache-commons-logging
 %define commons_codec apache-commons-codec
 %define commons_discovery apache-commons-discovery
 %define commons_lang apache-commons-lang
+BuildRequires: maven-clean-plugin
+BuildRequires: maven-install-plugin
 
 %endif
 BuildRequires: %commons_logging
@@ -68,18 +64,16 @@ BuildRequires: %commons_lang
 
 Requires: voms-api-java
 Requires: log4j
-Requires: jglobus
+Requires: jglobus >= %jglobus_version
 Requires: joda-time
 Requires: emi-trustmanager
 Requires: emi-trustmanager-axis
 Requires: wsdl4j
 Requires: axis
-Requires: bouncycastle
 Requires: %commons_lang
 Requires: %commons_codec
 Requires: %commons_discovery
 Requires: %commons_logging
-Requires: slf4j
 Requires: java7
 
 %description
@@ -87,22 +81,19 @@ Requires: java7
 
 %prep
 %setup -n %{name}-%{version}
-%if 0%{?rhel} >= 7
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%endif
+%patch10 -p1
 
 %build
+mkdir -p %{local_maven}
+pushd %{local_maven} # don't read project's pom file while we're just installing deps
 #log4j
 %{mvn} install:install-file -B -DgroupId=log4j -DartifactId=log4j -Dversion=1.2.14 -Dpackaging=jar -Dfile=`build-classpath log4j` -Dmaven.repo.local=%{local_maven}
 #emi-trustmanager-axis
 %{mvn} install:install-file -B -DgroupId=emi -DartifactId=emi-trustmanager-axis -Dversion=1.0.1 -Dpackaging=jar -Dfile=`build-classpath trustmanager-axis` -Dmaven.repo.local=%{local_maven}
-#trustmanager     
-%{mvn} install:install-file -B -DgroupId=emi -DartifactId=emi-security-trustmanager -Dversion=3.0.3 -Dpackaging=jar -Dfile=`build-classpath trustmanager` -Dmaven.repo.local=%{local_maven}
+#trustmanager
+%{mvn} install:install-file -B -DgroupId=emi -DartifactId=emi-trustmanager -Dversion=3.0.3 -Dpackaging=jar -Dfile=`build-classpath trustmanager` -Dmaven.repo.local=%{local_maven}
 #voms-api-java
-%{mvn} install:install-file -B -DgroupId=voms -DartifactId=vomsjapi -Dversion=2.0.0 -Dpackaging=jar -Dfile=`build-classpath voms-api-java` -Dmaven.repo.local=%{local_maven}
+%{mvn} install:install-file -B -DgroupId=org.italiangrid -DartifactId=voms-api-java -Dversion=2.0.8 -Dpackaging=jar -Dfile=`build-classpath voms-api-java` -Dmaven.repo.local=%{local_maven}
 #axis
 %{mvn} install:install-file -B  -DgroupId=axis -DartifactId=axis -Dversion=1.4 -Dpackaging=jar -Dfile=`build-classpath axis/axis.jar` -Dmaven.repo.local=%{local_maven}
 %{mvn} install:install-file -B -DgroupId=org.apache.axis  -DartifactId=axis-jaxrpc -Dversion=1.4 -Dpackaging=jar -Dfile=`build-classpath axis/jaxrpc.jar` -Dmaven.repo.local=%{local_maven}
@@ -117,14 +108,10 @@ Requires: java7
 %{mvn} install:install-file -B -DgroupId=globus -DartifactId=jglobus-gss -Dversion=%{jglobus_version} -Dpackaging=jar -Dfile=`build-classpath jglobus/gss-%{jglobus_version}.jar` -Dmaven.repo.local=%{local_maven}
 #joda-time
 %{mvn} install:install-file -B -DgroupId=joda-time -DartifactId=joda-time -Dversion=1.5.2 -Dpackaging=jar -Dfile=`build-classpath joda-time` -Dmaven.repo.local=%{local_maven}
-#slf4j
-%{mvn} install:install-file -B -DgroupId=org.slf4j -DartifactId=slf4j-api -Dversion=1.5.8 -Dpackaging=jar -Dfile=`build-classpath slf4j/api.jar` -Dmaven.repo.local=%{local_maven}
-%{mvn} install:install-file -B -DgroupId=org.slf4j -DartifactId=slf4j-simple -Dversion=1.5.8 -Dpackaging=jar -Dfile=`build-classpath slf4j/simple.jar` -Dmaven.repo.local=%{local_maven}
-#bouncycastle
-%{mvn} install:install-file -B -DgroupId=org.bouncycastle -DartifactId=bcprov-jdk15 -Dversion=1.46 -Dpackaging=jar -Dfile=`build-classpath bcprov` -Dmaven.repo.local=%{local_maven}
+popd
 
 
-%{mvn} -B -X package -Dmaven.repo.local=%{local_maven}
+%{mvn} -B -ff package -Dmaven.repo.local=%{local_maven}
 
 %install
 %define _otherlibs %{buildroot}%{_noarchlib}/%{name}
@@ -138,7 +125,7 @@ install -m 700 src/test/XACMLClientTest.sh %{buildroot}%{_libexecdir}/%{name}/XA
 
 
 install -d -m 755 %{_otherlibs}
-build-jar-repository %{_otherlibs} jglobus trustmanager-axis trustmanager voms-api-java wsdl4j %commons_lang %commons_codec %commons_discovery %commons_logging joda-time axis/axis.jar axis/jaxrpc.jar log4j slf4j/api.jar slf4j/simple.jar wsdl4j
+build-jar-repository %{_otherlibs} jglobus trustmanager-axis trustmanager voms-api-java wsdl4j %commons_lang %commons_codec %commons_discovery %commons_logging joda-time axis/axis.jar axis/jaxrpc.jar log4j wsdl4j
 install -pm 744 %{local_maven}/org/opensaml/opensaml/2.4.1/opensaml-2.4.1.jar %{_otherlibs}/opensaml-2.4.1.jar
 install -pm 744 %{local_maven}/org/opensaml/xmltooling/*/*.jar  %{_otherlibs}/
 install -pm 744 %{local_maven}/org/apache/santuario/xmlsec/1.4.1/xmlsec-1.4.1.jar %{_otherlibs}/xmlsec-1.4.1.jar
@@ -148,6 +135,8 @@ install -pm 744	%{local_maven}/xerces/xmlParserAPIs/2.6.2/xmlParserAPIs-2.6.2.ja
 install -pm 744 %{local_maven}/xalan/xalan/2.7.1/xalan-2.7.1.jar %{_otherlibs}/xalan-2.7.1.jar
 install -pm 744 %{local_maven}/commons-collections/commons-collections/3.1/commons-collections-3.1.jar %{_otherlibs}/commons-collections-3.1.jar
 install -pm 744 %{local_maven}/org/opensaml/openws/1.4.1/openws-1.4.1.jar %{_otherlibs}/openws-1.4.1.jar
+install -pm 744 %{local_maven}/org/slf4j/slf4j-api/*/*.jar  %{_otherlibs}/
+install -pm 744 %{local_maven}/org/slf4j/slf4j-simple/*/*.jar  %{_otherlibs}/
 
 
 
@@ -155,15 +144,21 @@ install -pm 744 %{local_maven}/org/opensaml/openws/1.4.1/openws-1.4.1.jar %{_oth
 rm -rf %{buildroot}
 rm -rf %{local_maven}
 %files
-#%defattr(-,root,root,-)
+%defattr(-,root,root,-)
 %{_javadir}/%{name}.jar
 /usr/share/maven3/poms/%{name}.pom
 %{_noarchlib}/%{name}/*.jar
 %{_libexecdir}/%{name}/XACMLClientTest.sh
 
 %changelog
-* Mon Jul 06 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 2.6.4-2.osg
+* Tue Sep 15 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 2.6.5-1.osg
 - Add changes for el7 build
+- Update to 2.6.5
+- Remove bouncycastle requirement
+- Don't require system slf4j (it's not the version that gets used anyway)
+
+* Mon Aug 17 2015 Carl Edquist <edquist@cs.wisc.edu> - 2.6.4-2
+- Improved logging for mapping errors (SOFTWARE-1990)
 
 * Fri Nov 21 2014 Carl Edquist <edquist@cs.wisc.edu> - 2.6.4-1
 - Final 2.6.4 release
