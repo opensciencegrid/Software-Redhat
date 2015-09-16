@@ -51,9 +51,9 @@ Patch3:		parallelism.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
-BuildRequires:  java7-devel jpackage-utils wget ant axis jakarta-commons-logging jakarta-commons-discovery wsdl4j jakarta-commons-collections jakarta-commons-lang joda-time velocity xalan-j2 xml-security bouncycastle voms-api-java >= 2.0.8 slf4j log4j cog-jglobus-axis autoconf privilege-xacml
+BuildRequires:  java7-devel jpackage-utils wget ant axis jakarta-commons-logging jakarta-commons-discovery wsdl4j jakarta-commons-collections jakarta-commons-lang joda-time velocity xalan-j2 xml-security bouncycastle voms-api-java >= 2.0.8 slf4j log4j autoconf privilege-xacml
 # v NOTE: Must edit the jglobus-*.path lines in build.properties every time jglobus gets a new version!
-BuildRequires: jglobus = 2.0.6
+BuildRequires: jglobus = 2.1.0
 BuildRequires: jetty-client jetty-continuation jetty-deploy jetty-http jetty-io jetty-security jetty-server jetty-servlet jetty-util jetty-webapp jetty-xml
 BuildRequires: emi-trustmanager emi-trustmanager-axis
 # GUMS jars
@@ -85,7 +85,8 @@ through Lawrence Berkeley National Laboratory.  See LICENSE file for details.
 %package common-libs
 Summary: Common files BeStMan SRM server client and tester
 Group: System Environment/Libraries
-Requires:  java7 jpackage-utils axis jakarta-commons-logging jakarta-commons-discovery wsdl4j log4j jglobus cog-jglobus-axis >= 1.8.0-2
+Requires:  java7 jpackage-utils axis jakarta-commons-logging jakarta-commons-discovery wsdl4j log4j jglobus
+Requires: /usr/share/java/jglobus/axisg.jar
 # The following are needed for srm client tools and probably tester too
 Requires:  joda-time xalan-j2 voms-api-java >= 2.0.8 jakarta-commons-collections
 # ensure these are present, from jpackage-utils or missing-java-1.7.0-dirs
@@ -128,6 +129,8 @@ Summary: BeStMan Server SRM Java libraries
 Group: System Environment/Libraries
 Requires: java7-devel jpackage-utils jakarta-commons-lang joda-time emi-trustmanager emi-trustmanager-axis xalan-j2 voms-api-java >= 2.0.8 jakarta-commons-collections privilege-xacml
 Requires: jetty-client jetty-continuation jetty-deploy jetty-http jetty-io jetty-security jetty-server jetty-servlet jetty-util jetty-webapp jetty-xml
+# bestman2 is not quite ready for Jetty 9 -- some simple source incompatibilities exist still.
+Requires: jetty-http < 9.0
 # GUMS jars
 Requires: /usr/lib/gums/opensaml-2.4.1.jar
 Requires: /usr/lib/gums/openws-1.4.1.jar
