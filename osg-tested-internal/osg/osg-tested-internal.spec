@@ -70,7 +70,7 @@ Requires: osg-voms
 %endif
 
 %if 0%{?rhel} == 5
-Requires: globus-grid-job-manager-pbs-setup-poll
+Requires: globus-gram-job-manager-pbs-setup-poll
 %endif
 
 %description
@@ -86,6 +86,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Sep 15 2015 Brian Lin <blin@cs.wisc.edu> 3.3-5
+- Fix pbs-setup-poll package name
+
 * Fri Sep 11 2015 Brian Lin <blin@cs.wisc.edu> 3.3-4
 - Install globus-grid-job-manager-pbs-setup-poll for EL5 (SOFTWARE-1929)
 
