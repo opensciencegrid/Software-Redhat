@@ -3,12 +3,12 @@
 %define local_maven /tmp/m2-repository
 # Don't want to repack jars
 %define __os_install_post %{nil}
-%define jglobus_version 2.0.6
+%define jglobus_version 2.1.0
 
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.5.0
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 %if 0%{?rhel} < 6
@@ -392,6 +392,9 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+* Wed Sep 16 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.0-4
+- Rebuild against jGlobus 2.1.0 (SOFTWARE-2036)
+
 * Tue Sep 15 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.5.0-3
 - Use maven profile to disable jsp precompilation for el5 (SOFTWARE-1981)
 
