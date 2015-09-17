@@ -5,7 +5,7 @@
 
 Summary:   Tests an OSG Software installation
 Name:      osg-test
-Version:   1.4.29
+Version:   1.4.30
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -37,6 +37,11 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/osgtest
 
 %changelog
+* Mon Sep 16 2015 Brian Lin <blin@cs.wisc.edu> 1.4.30-1
+- Disable SEG on EL5 (SOFTWARE-1929)
+- Generalize retriable yum install error for EL7
+- Fix osg-configure skips
+
 * Mon Aug 31 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.4.29-1
 - Skip myproxy tests if server fails to start
 - Add skip for supported vo RSV probe in case gums-client is not installed
