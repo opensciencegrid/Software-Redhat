@@ -1,6 +1,6 @@
 Name:      rsv
 Summary:   RSV Meta Package
-Version:   3.10.3
+Version:   3.10.4
 %if 0%{?el7}
 %define release_suffix _clipped
 %endif
@@ -245,6 +245,9 @@ fi
 
 
 %changelog
+* Fri Sep 18 2015 Carl Edquist <edquist@cs.wisc.edu> - 3.10.4-1
+- SOFTWARE-2043 - Accommodate nfs delays in srmcp-srm-probe
+
 * Thu Aug 20 2015 Carl Edquist <edquist@cs.wisc.edu> - 3.10.3-1
 - SOFTWARE-1987 - Drop DAEMON privs requirement for htcondor-ce-auth probe
 - SOFTWARE-1995 - rsv-control fixes for condor 8.3.7
