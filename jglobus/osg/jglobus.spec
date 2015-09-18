@@ -64,9 +64,13 @@ Conflicts: cog-jglobus-axis < 1.8.0
 
 %if 0%{?maven_offline}
 
+Source5: %{name}-mvn-deps-el5.tar.gz
 Source6: %{name}-mvn-deps-el6.tar.gz
 Source7: %{name}-mvn-deps-el7.tar.gz
 
+    %if 0%{?el5}
+        %define mvn_deps_tarball %{SOURCE5}
+    %endif
 
     %if 0%{?el6}
         %define mvn_deps_tarball %{SOURCE6}
@@ -135,7 +139,11 @@ installjar () {
     install -pm 644  "pom.xml"                              "$RPM_BUILD_ROOT%_mavenpomdir/$pomfile"
     ln -s            "$module-%version.jar"                 "$RPM_BUILD_ROOT%_javadir/$jarfile"
 
+%if 0%{rhel} >= 6
     %add_maven_depmap  -a "org.jglobus:$module"  "$pomfile"  "$jarfile"
+%else
+    %add_to_maven_depmap  org.jglobus  jglobus-all  "%{version}"  JPP  "$module-%{version}.jar"
+%endif
 }
 
 # Inexplicably, the axis sub-module produces a JAR named 'axisg'
