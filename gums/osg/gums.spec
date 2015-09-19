@@ -13,32 +13,39 @@
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.5.0
-Release: 6%{?dist}
+Release: 7%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 URL: https://github.com/opensciencegrid/gums
+
+
+#This is probably not right, but one thing at a time
+%define jacc %{nil}
 
 %if 0%{?rhel} <= 5
 BuildRequires: maven2
 %define tomcat tomcat5
 %define mvn %{_bindir}/mvn
-%define jacc jacc
+
+%define commons_codec jakarta-commons-codec
+%define commons_digester jakarta-commons-digester
+
+%else
+
+%define commons_codec apache-commons-codec
+%define commons_digester apache-commons-digester
 %endif
 
 %if 0%{?rhel} == 6
 BuildRequires: maven22
 %define tomcat tomcat6
 %define mvn %{_bindir}/mvn22
-#This is probably not right, but one thing at a time
-%define jacc %{nil}
 %endif
 
 %if 0%{?rhel} >= 7
 BuildRequires: maven >= 3.0.0
 %define tomcat tomcat
 %define mvn %{_bindir}/mvn
-#This is probably not right, but one thing at a time
-%define jacc %{nil}
 %endif
 
 %if 0%{?rhel} == 6
@@ -46,6 +53,7 @@ BuildRequires: maven >= 3.0.0
 %else
 %define mvnprofileops %{nil}
 %endif
+
 
 ## explicitly requiring this because I don't want yum to pick java-1.5.0-gcj-devel
 BuildRequires: java7-devel
@@ -65,8 +73,8 @@ Requires: emi-trustmanager-axis
 # "Naive" use of slf4j doesn't appear to work
 #BuildRequires: slf4j
 #Requires: slf4j
-BuildRequires: jakarta-commons-beanutils jakarta-commons-cli apache-commons-codec jakarta-commons-collections apache-commons-digester jakarta-commons-discovery jakarta-commons-httpclient jakarta-commons-lang jakarta-commons-logging
-Requires: jakarta-commons-beanutils jakarta-commons-cli apache-commons-codec jakarta-commons-collections apache-commons-digester jakarta-commons-discovery jakarta-commons-httpclient jakarta-commons-lang jakarta-commons-logging
+BuildRequires: jakarta-commons-beanutils jakarta-commons-cli %commons_codec jakarta-commons-collections %commons_digester jakarta-commons-discovery jakarta-commons-httpclient jakarta-commons-lang jakarta-commons-logging
+Requires: jakarta-commons-beanutils jakarta-commons-cli %commons_codec jakarta-commons-collections %commons_digester jakarta-commons-discovery jakarta-commons-httpclient jakarta-commons-lang jakarta-commons-logging
 #BuildRequires: jacc jta
 #Requires: jacc jta
 #Requires: /usr/share/java/jacc.jar
@@ -451,6 +459,9 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+* Fri Sep 18 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.0-7.osg
+- Build on el5 again
+
 * Thu Sep 17 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.0-6.osg
 - Apply changes to build on el6 again
 
