@@ -1,5 +1,8 @@
 %define _noarchlib %{_exec_prefix}/lib
 %define gumsdirname gums
+%define gumslibdir %{_noarchlib}/%{gumsdirname}
+%define webinfdir %{_var}/lib/%{tomcat}/webapps/gums/WEB-INF
+
 %define local_maven /tmp/m2-repository
 # Don't want to repack jars
 %define __os_install_post %{nil}
@@ -185,114 +188,123 @@ mvn_install_file () {
 # Binary JARs not available from public maven repos.
 # gums-core
 # Trustmanager is available from RPMs.
-%{mvn} install:install-file -B -DgroupId=emi -DartifactId=emi-trustmanager -Dversion=3.0.3 -Dpackaging=jar -Dfile=`build-classpath trustmanager` -Dmaven.repo.local=%{local_maven}
-%{mvn} install:install-file -B -DgroupId=javax.transaction -DartifactId=jta -Dversion=1.0.1B -Dpackaging=jar -Dfile=%{SOURCE6} -Dmaven.repo.local=%{local_maven}
-%{mvn} install:install-file -B -DgroupId=javax.security -DartifactId=jacc -Dversion=1.0 -Dpackaging=jar -Dfile=%{SOURCE7} -Dmaven.repo.local=%{local_maven}
+mvn_install_file  emi               emi-trustmanager 3.0.3  `build-classpath trustmanager`
+mvn_install_file  javax.transaction jta              1.0.1B %{SOURCE6}
+mvn_install_file  javax.security    jacc             1.0    %{SOURCE7}
 
 # These used to be available from the internet2 shibboleth project, but that server is now dead.
-%{mvn} install:install-file -B -DgroupId=org.opensaml -DartifactId=openws -Dversion=1.2.2 -Dpackaging=jar -Dfile=%{SOURCE12} -Dmaven.repo.local=%{local_maven}
-%{mvn} install:install-file -B -DgroupId=jargs -DartifactId=jargs -Dversion=1.0 -Dpackaging=jar -Dfile=%{SOURCE13} -Dmaven.repo.local=%{local_maven}
-%{mvn} install:install-file -B -DgroupId=velocity -DartifactId=velocity -Dversion=1.5 -Dpackaging=jar -Dfile=%{SOURCE14} -Dmaven.repo.local=%{local_maven}
-%{mvn} install:install-file -B -DgroupId=org.italiangrid -DartifactId=voms-api-java -Dversion=2.0.8 -Dpackaging=jar -Dfile=`build-classpath voms-api-java` -Dmaven.repo.local=%{local_maven}
-# gums-client
-%{mvn} install:install-file -B -DgroupId=org.opensciencegrid -DartifactId=privilege -Dversion=1.0.1.3 -Dpackaging=jar -Dfile=%{SOURCE9} -Dmaven.repo.local=%{local_maven}
-%{mvn} install:install-file -B -DgroupId=org.opensaml -DartifactId=xmltooling -Dversion=1.1.1 -Dpackaging=jar -Dfile=%{SOURCE10} -DpomFile=%{SOURCE11} -Dmaven.repo.local=%{local_maven}
-# Take SLF4J from the OS.
-#%{mvn} install:install-file -B -DgroupId=org.slf4j -DartifactId=slf4j-simple -Dversion=1.5.5 -Dpackaging=jar -Dfile=`build-classpath slf4j/simple` -Dmaven.repo.local=%{local_maven}
-#%{mvn} install:install-file -B -DgroupId=org.slf4j -DartifactId=slf4j-simple -Dversion=1.6.1 -Dpackaging=jar -Dfile=`build-classpath slf4j/simple` -Dmaven.repo.local=%{local_maven}
+mvn_install_file  org.opensaml    openws        1.2.2 %{SOURCE12}
+mvn_install_file  jargs           jargs         1.0   %{SOURCE13}
+mvn_install_file  velocity        velocity      1.5   %{SOURCE14}
 
+# gums-client
+mvn_install_file  org.opensciencegrid privilege  1.0.1.3 %{SOURCE9}
+mvn_install_file  org.opensaml        xmltooling 1.1.1   %{SOURCE10} %{SOURCE11}
+# Take SLF4J from the OS.
+#mvn_install_file  org.slf4j slf4j-simple 1.5.5 `build-classpath slf4j/simple`
+#mvn_install_file  org.slf4j slf4j-simple 1.6.1 `build-classpath slf4j/simple`
+
+mvn_install_file  org.italiangrid voms-api-java 2.0.8 `build-classpath voms-api-java`
 # Adding system dependencies
-%{mvn} install:install-file -B -DgroupId=org.apache.xerces -DartifactId=xercesImpl -Dversion=2.10.0 -Dpackaging=jar -Dfile=`build-classpath xerces-j2` -Dmaven.repo.local=%{local_maven}
-%{mvn} install:install-file -B -DgroupId=org.apache.xalan -DartifactId=xalan -Dversion=2.7.1 -Dpackaging=jar -Dfile=`build-classpath xalan-j2` -Dmaven.repo.local=%{local_maven}
-%{mvn} install:install-file -B -DgroupId=log4j -DartifactId=log4j -Dversion=1.2.12 -Dpackaging=jar -Dfile=`build-classpath log4j` -Dmaven.repo.local=%{local_maven}
-%{mvn} install:install-file -B -DgroupId=org.opensciencegrid -DartifactId=privilege-xacml -Dversion=%privilege_xacml_version -Dpackaging=jar -Dfile=`build-classpath privilege-xacml` -Dmaven.repo.local=%{local_maven}
+mvn_install_file  org.apache.xerces   xercesImpl      2.10.0                   `build-classpath xerces-j2`
+mvn_install_file  org.apache.xalan    xalan           2.7.1                    `build-classpath xalan-j2`
+mvn_install_file  log4j               log4j           1.2.12                   `build-classpath log4j`
+mvn_install_file  org.opensciencegrid privilege-xacml %privilege_xacml_version `build-classpath privilege-xacml`
 
 # Add jglobus system deps
-%{mvn} install:install-file -B -DgroupId=jglobus -DartifactId=gridftp -Dversion=%{jglobus_version} -Dpackaging=jar -Dfile=`build-classpath jglobus/gridftp-%{jglobus_version}` -Dmaven.repo.local=%{local_maven}
-%{mvn} install:install-file -B -DgroupId=jglobus -DartifactId=gss -Dversion=%{jglobus_version} -Dpackaging=jar -Dfile=`build-classpath jglobus/gss-%{jglobus_version}` -Dmaven.repo.local=%{local_maven}
-%{mvn} install:install-file -B -DgroupId=jglobus -DartifactId=io -Dversion=%{jglobus_version} -Dpackaging=jar -Dfile=`build-classpath jglobus/io-%{jglobus_version}` -Dmaven.repo.local=%{local_maven}
-%{mvn} install:install-file -B -DgroupId=jglobus -DartifactId=jsse -Dversion=%{jglobus_version} -Dpackaging=jar -Dfile=`build-classpath jglobus/jsse-%{jglobus_version}` -Dmaven.repo.local=%{local_maven}
-%{mvn} install:install-file -B -DgroupId=jglobus -DartifactId=ssl-proxies -Dversion=%{jglobus_version} -Dpackaging=jar -Dfile=`build-classpath jglobus/ssl-proxies-%{jglobus_version}` -Dmaven.repo.local=%{local_maven}
+mvn_install_file  jglobus gridftp     %{jglobus_version} `build-classpath jglobus/gridftp-%{jglobus_version}`
+mvn_install_file  jglobus gss         %{jglobus_version} `build-classpath jglobus/gss-%{jglobus_version}`
+mvn_install_file  jglobus io          %{jglobus_version} `build-classpath jglobus/io-%{jglobus_version}`
+mvn_install_file  jglobus jsse        %{jglobus_version} `build-classpath jglobus/jsse-%{jglobus_version}`
+mvn_install_file  jglobus ssl-proxies %{jglobus_version} `build-classpath jglobus/ssl-proxies-%{jglobus_version}`
 
 
 pushd gums-core
-%{mvn} -B -e -Dmaven.repo.local=/tmp/m2-repository -Dmaven.test.skip=true install
+%{mvn} %{mvnopts} -e -Dmaven.test.skip=true install
 popd
 pushd gums-client
-%{mvn} -B -e -Dmaven.repo.local=/tmp/m2-repository -Dmaven.test.skip=true install
+%{mvn} %{mvnopts} -e -Dmaven.test.skip=true install
 popd
 pushd gums-service
-%{mvn} -B -e -Dmaven.repo.local=/tmp/m2-repository -Dmaven.test.skip=true %{mvnprofileops} install
+%{mvn} %{mvnopts} -e -Dmaven.test.skip=true %{mvnprofileops} install
 popd
 
 %install
 
-function replace_jar {
-    if [[ -e $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib/$1 ]]; then
-        rm -f $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib/$1
-        ln -s %{_noarchlib}/%{gumsdirname}/$1 $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib/$1
-    fi
-}
 rm -rf $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT
 
 # JARs
-mkdir -p $RPM_BUILD_ROOT%{_noarchlib}/%{gumsdirname}
-mkdir -p $RPM_BUILD_ROOT%{_noarchlib}/%{gumsdirname}/endorsed
-install -m 0644 gums-client/target/lib/*.jar $RPM_BUILD_ROOT%{_noarchlib}/%{gumsdirname}/
-install -m 0644 gums-core/target/*.jar $RPM_BUILD_ROOT%{_noarchlib}/%{gumsdirname}/
-install -m 0644 gums-client/target/lib/endorsed/*.jar $RPM_BUILD_ROOT%{_noarchlib}/%{gumsdirname}/endorsed/
+mkdir -p $RPM_BUILD_ROOT%{gumslibdir}
+mkdir -p $RPM_BUILD_ROOT%{gumslibdir}/endorsed
+install -m 0644 gums-client/target/lib/*.jar $RPM_BUILD_ROOT%{gumslibdir}/
+install -m 0644 gums-core/target/*.jar $RPM_BUILD_ROOT%{gumslibdir}/
+install -m 0644 gums-client/target/lib/endorsed/*.jar $RPM_BUILD_ROOT%{gumslibdir}/endorsed/
 
 # Service
 mkdir -p $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/
 pushd $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/
 jar xf $OLDPWD/gums-service/target/gums.war 
 popd
-rm $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/config/gums.config
-ln -s %{_sysconfdir}/%{gumsdirname}/gums.config $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/config
+rm $RPM_BUILD_ROOT%{webinfdir}/config/gums.config
+ln -s %{_sysconfdir}/%{gumsdirname}/gums.config $RPM_BUILD_ROOT%{webinfdir}/config
 
 # Hack: we want slf4j-api-1.5.5 in core, but that's not what comes with
 # it. Get it from the exploded WAR instead.
-install -m 0644 $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib/slf4j-api-1.5.5.jar $RPM_BUILD_ROOT%{_noarchlib}/%{gumsdirname}/
+install -m 0644 $RPM_BUILD_ROOT%{webinfdir}/lib/slf4j-api-1.5.5.jar $RPM_BUILD_ROOT%{gumslibdir}/
 
 %define remove_system_jars 1
 
 %if %remove_system_jars
+
 # Remove system JARs to whatever extent possible.  We will later link these directly.
-#rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{gumsdirname}}/ant-1.6.3.jar
-rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{gumsdirname}}/antlr-2.7.*.jar
-#rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{gumsdirname}}/axis-{1.4,ant-1.4,jaxrpc-1.4,saaj-1.4}.jar
-rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{gumsdirname}}/bcprov-jdk15-*.jar
-rm -f {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{gumsdirname}}/commons-{beanutils-1.7.0,cli-1.2,codec-1.3,collections-3.2,digester-1.8,discovery-0.2,httpclient-3.0,lang-2.1,logging-1.1}.jar
-rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{gumsdirname}}/emi-trustmanager-3.0.3.jar
-rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{gumsdirname}}/joda-time-1.6.2.jar
-rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{gumsdirname}}/{jacc-1.0,jta-1.0.1B}.jar
-rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{gumsdirname}}/mysql-connector-java-5.1.6.jar
-#rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{gumsdirname}}/*slf4j*.jar
-rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{gumsdirname}}/xercesImpl*.jar
-rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{gumsdirname}}/xalan*.jar
-rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{gumsdirname}}/log4j*.jar
-rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{gumsdirname}}/privilege-xacml*.jar
+
+systemjars=()
+#systemjars+=(ant-1.6.3.jar)
+systemjars+=(antlr-2.7.\*.jar)
+#systemjars+=(axis-{1.4,ant-1.4,jaxrpc-1.4,saaj-1.4}.jar)
+systemjars+=(bcprov-jdk15-\*.jar)
+systemjars+=(commons-{beanutils-1.7.0,cli-1.2,codec-1.3,collections-3.2,digester-1.8,discovery-0.2,httpclient-3.0,lang-2.1,logging-1.1}.jar)
+systemjars+=(emi-trustmanager-3.0.3.jar)
+systemjars+=(jacc-1.0.jar)
+systemjars+=(joda-time-1.6.2.jar)
+systemjars+=(jta-1.0.1B.jar)
+systemjars+=(log4j\*.jar)
+systemjars+=(mysql-connector-java-5.1.6.jar)
+systemjars+=(privilege-xacml\*.jar)
+#systemjars+=(\*slf4j\*.jar)
+systemjars+=(xalan\*.jar)
+systemjars+=(xercesImpl\*.jar)
+
+for libdir in  %{webinfdir}/lib  %{gumslibdir}; do
+    for systemjar in "${systemjars[@]}"; do
+        eval rm -f "$RPM_BUILD_ROOT$libdir/$systemjar"
+    done
+done
+
 
 
 ## Link the exploded WAR to gums-core JARs, instead of including a copy
-# tomcat6 doesn't seem to like this.
-for x in $RPM_BUILD_ROOT%{_noarchlib}/%{gumsdirname}/*.jar; do
-    replace_jar $(basename $x)
+for jarpath in $RPM_BUILD_ROOT%{gumslibdir}/*.jar; do
+    jarfile=$(basename $jarpath)
+    if [[ -e $RPM_BUILD_ROOT%{webinfdir}/lib/$jarfile ]]; then
+        rm -f $RPM_BUILD_ROOT%{webinfdir}/lib/$jarfile
+        ln -s %{gumslibdir}/$jarfile $RPM_BUILD_ROOT%{webinfdir}/lib/$jarfile
+    fi
 done
 
 %endif
 
 # Delete broken RPMs from the Shibboleth repository
 #  (we need to fix the build so that they are not even pulled in)
-rm -f {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{gumsdirname}}/resolver-2.9.1.jar
-rm -f {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{gumsdirname}}/serializer-2.9.1.jar
-rm -f {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{gumsdirname}}/xml-apis-2.9.1.jar
-rm -f $RPM_BUILD_ROOT%{_noarchlib}/%{gumsdirname}/endorsed/xercesImpl-2.9.1.jar
-rm -f $RPM_BUILD_ROOT%{_noarchlib}/%{gumsdirname}/endorsed/xml-apis-2.9.1.jar
+rm -f {$RPM_BUILD_ROOT%{webinfdir}/lib,$RPM_BUILD_ROOT%{gumslibdir}}/resolver-2.9.1.jar
+rm -f {$RPM_BUILD_ROOT%{webinfdir}/lib,$RPM_BUILD_ROOT%{gumslibdir}}/serializer-2.9.1.jar
+rm -f {$RPM_BUILD_ROOT%{webinfdir}/lib,$RPM_BUILD_ROOT%{gumslibdir}}/xml-apis-2.9.1.jar
+rm -f $RPM_BUILD_ROOT%{gumslibdir}/endorsed/xercesImpl-2.9.1.jar
+rm -f $RPM_BUILD_ROOT%{gumslibdir}/endorsed/xml-apis-2.9.1.jar
 
 ## gums-core and gums-service use different versions here...
-rm -f $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib/slf4j-jdk14-1.5.2.jar
+rm -f $RPM_BUILD_ROOT%{webinfdir}/lib/slf4j-jdk14-1.5.2.jar
 
 
 # Scripts
@@ -309,10 +321,10 @@ install -m 0644 gums-client/src/main/config/*  $RPM_BUILD_ROOT%{_sysconfdir}/%{g
 install -m 0600 gums-service/src/main/config/gums.config $RPM_BUILD_ROOT%{_sysconfdir}/%{gumsdirname}
 
 # Templates
-mkdir -p $RPM_BUILD_ROOT%{_noarchlib}/%{gumsdirname}/sql
-mkdir -p $RPM_BUILD_ROOT%{_noarchlib}/%{gumsdirname}/config
-install -m 0644 gums-service/src/main/resources/sql/{addAdmin,setupDatabase}.mysql $RPM_BUILD_ROOT%{_noarchlib}/%{gumsdirname}/sql/
-install -m 0644 gums-service/src/main/resources/gums.config.template $RPM_BUILD_ROOT%{_noarchlib}/%{gumsdirname}/config/
+mkdir -p $RPM_BUILD_ROOT%{gumslibdir}/sql
+mkdir -p $RPM_BUILD_ROOT%{gumslibdir}/config
+install -m 0644 gums-service/src/main/resources/sql/{addAdmin,setupDatabase}.mysql $RPM_BUILD_ROOT%{gumslibdir}/sql/
+install -m 0644 gums-service/src/main/resources/gums.config.template $RPM_BUILD_ROOT%{gumslibdir}/config/
 
 # Log directory
 mkdir -p $RPM_BUILD_ROOT/var/log/%{gumsdirname}
@@ -337,19 +349,34 @@ mkdir -p $RPM_BUILD_ROOT%{_javadir}
 touch $RPM_BUILD_ROOT%{_javadir}/javamail.jar
 
 # jglobus is required by XACML callouts in gums-client, but not gums-core.
-build-jar-repository $RPM_BUILD_ROOT%{_noarchlib}/%{gumsdirname} jglobus trustmanager trustmanager-axis ant antlr bcprov commons-beanutils commons-cli commons-codec commons-collections commons-digester commons-discovery commons-httpclient commons-lang commons-logging %{jacc} jta joda-time mysql-connector-java xalan-j2 xerces-j2 log4j privilege-xacml
-
-mkdir -p $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib
-build-jar-repository $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib jglobus trustmanager trustmanager-axis ant antlr bcprov commons-beanutils commons-cli commons-codec commons-collections commons-digester commons-discovery commons-httpclient commons-lang commons-logging %{jacc} jta joda-time mysql-connector-java xalan-j2 xerces-j2 log4j privilege-xacml
-
+packages=()
+packages+=(ant)
+packages+=(antlr)
+packages+=(bcprov)
+packages+=(commons-{beanutils,cli,codec,collections,digester,discovery,httpclient,lang,logging})
+packages+=(%{jacc})
+packages+=(jglobus)
+packages+=(jta)
+packages+=(joda-time)
+packages+=(log4j)
+packages+=(mysql-connector-java)
+packages+=(privilege-xacml)
+packages+=(trustmanager)
+packages+=(trustmanager-axis)
+packages+=(xalan-j2)
+packages+=(xerces-j2)
+for jardir in %{gumslibdir} %{webinfdir}/lib; do
+    mkdir -p "$RPM_BUILD_ROOT$jardir"
+    build-jar-repository "$RPM_BUILD_ROOT$jardir" "${packages[@]}"
+done
 
 #Fix log4j mess and replace with standard ones
-rm $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/log4j.properties
+rm $RPM_BUILD_ROOT%{webinfdir}/log4j.properties
 rm $RPM_BUILD_ROOT%{_sysconfdir}/%{gumsdirname}/log4j.properties
-rm $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/classes/log4j.properties
+rm $RPM_BUILD_ROOT%{webinfdir}/classes/log4j.properties
 install -m 0644 %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/%{gumsdirname}/log4j.properties
 install -m 0644 %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/%{gumsdirname}/log4j-service.properties
-ln -s %{_sysconfdir}/%{gumsdirname}/log4j-service.properties $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/classes/log4j.properties
+ln -s %{_sysconfdir}/%{gumsdirname}/log4j-service.properties $RPM_BUILD_ROOT%{webinfdir}/classes/log4j.properties
 
 # Add context to allow sym linking
 cat > $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/META-INF/context.xml << EOL
@@ -360,9 +387,9 @@ EOL
 
 %files
 %defattr(-,root,root,-)
-%dir %{_noarchlib}/%{gumsdirname}
-%{_noarchlib}/%{gumsdirname}/endorsed
-%{_noarchlib}/%{gumsdirname}/*.jar
+%dir %{gumslibdir}
+%{gumslibdir}/endorsed
+%{gumslibdir}/*.jar
 
 %files client
 %defattr(-,root,root,-)
@@ -402,25 +429,25 @@ fi
 %dir %{_sysconfdir}/%{gumsdirname}
 %config(noreplace) %{_sysconfdir}/%{gumsdirname}/log4j-service.properties
 %attr(0600,tomcat,tomcat) %config(noreplace) %{_sysconfdir}/%{gumsdirname}/gums.config
-%attr(0750,tomcat,tomcat) %dir %{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/config
+%attr(0750,tomcat,tomcat) %dir %{webinfdir}/config
 %dir %{_var}/lib/%{tomcat}/webapps/gums
 %{_var}/lib/%{tomcat}/webapps/gums
-%{_noarchlib}/%{gumsdirname}/sql
-%{_noarchlib}/%{gumsdirname}/config
+%{gumslibdir}/sql
+%{gumslibdir}/config
 %{_bindir}/gums-add-mysql-admin
 %{_bindir}/gums-create-config
 %{_bindir}/gums-setup-mysql-database
 %ghost %{_javadir}/javamail.jar
 
 %post service
-%{_sbindir}/update-alternatives --install %{_javadir}/javamail.jar javamail %{_noarchlib}/%{gumsdirname}/mail-1.4.1.jar 5000
+%{_sbindir}/update-alternatives --install %{_javadir}/javamail.jar javamail %{gumslibdir}/mail-1.4.1.jar 5000
 
 # clear out cached jsp pages on install/update
 rm -f %{_usr}/share/%{tomcat}/work/Catalina/localhost/gums/org/apache/jsp/*
 
 %postun service
 if [ $1 -eq 0 ]; then
-    %{_sbindir}/update-alternatives --remove javamail %{_noarchlib}/%{gumsdirname}/mail-1.4.1.jar
+    %{_sbindir}/update-alternatives --remove javamail %{gumslibdir}/mail-1.4.1.jar
 fi
 
 %changelog
