@@ -12,6 +12,8 @@
 %{nil}
 %endif
 
+%define jglobus_version 2.1.0
+
 Name:           bestman2
 Version:        2.3.0
 Release:        26%{?dist}
@@ -52,8 +54,7 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
 BuildRequires:  java7-devel jpackage-utils wget ant axis jakarta-commons-logging jakarta-commons-discovery wsdl4j jakarta-commons-collections jakarta-commons-lang joda-time velocity xalan-j2 xml-security bouncycastle voms-api-java >= 2.0.8 slf4j log4j cog-jglobus-axis autoconf privilege-xacml
-# v NOTE: Must edit the jglobus-*.path lines in build.properties every time jglobus gets a new version!
-BuildRequires: jglobus = 2.1.0
+BuildRequires: jglobus = %jglobus_version
 BuildRequires: jetty-client jetty-continuation jetty-deploy jetty-http jetty-io jetty-security jetty-server jetty-servlet jetty-util jetty-webapp jetty-xml
 BuildRequires: emi-trustmanager emi-trustmanager-axis
 # GUMS jars
@@ -208,6 +209,7 @@ cp %{SOURCE7} bestman2/branches/osg-dev/
 cp %{SOURCE7} bestman2/setup-osg/
 sed -i "s/install.root=.*/install.root=dist/" bestman2/setup-osg/build.properties
 sed -i "s|@BUILDROOT@|$BUILDROOT|"  bestman2/setup-osg/build.properties bestman2/branches/osg-dev/build.properties
+sed -i "s|@JGLOBUS_VERSION@|%jglobus_version|"  bestman2/setup-osg/build.properties bestman2/branches/osg-dev/build.properties
 
 cp %{SOURCE8} bestman2/setup-osg/
 
