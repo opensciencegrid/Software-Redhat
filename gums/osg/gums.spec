@@ -1,5 +1,5 @@
 %define _noarchlib %{_exec_prefix}/lib
-%define dirname gums
+%define gumsdirname gums
 %define local_maven /tmp/m2-repository
 # Don't want to repack jars
 %define __os_install_post %{nil}
@@ -8,7 +8,7 @@
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.5.0
-Release: 4%{?dist}
+Release: 5%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 %if 0%{?rhel} < 6
@@ -18,11 +18,11 @@ BuildRequires: maven2
 %define jacc jacc
 %endif
 %if 0%{?rhel} >= 6
-%define tomcat tomcat6
-%define mvn %{_bindir}/mvn22
+%define tomcat tomcat
+%define mvn %{_bindir}/mvn
 #This is probably not right, but one thing at a time
 %define jacc %{nil}
-BuildRequires: maven22
+BuildRequires: maven
 ## explicitly requiring this because I don't want yum to pick java-1.5.0-gcj-devel
 %endif
 %if 0%{?rhel} == 6
@@ -47,12 +47,12 @@ Requires: emi-trustmanager-axis
 # "Naive" use of slf4j doesn't appear to work
 #BuildRequires: slf4j
 #Requires: slf4j
-BuildRequires: jakarta-commons-beanutils jakarta-commons-cli jakarta-commons-codec jakarta-commons-collections jakarta-commons-digester jakarta-commons-discovery jakarta-commons-httpclient jakarta-commons-lang jakarta-commons-logging
-Requires: jakarta-commons-beanutils jakarta-commons-cli jakarta-commons-codec jakarta-commons-collections jakarta-commons-digester jakarta-commons-discovery jakarta-commons-httpclient jakarta-commons-lang jakarta-commons-logging
-BuildRequires: jacc jta
-Requires: jacc jta
-Requires: /usr/share/java/jacc.jar
-BuildRequires: /usr/share/java/jacc.jar
+BuildRequires: jakarta-commons-beanutils jakarta-commons-cli apache-commons-codec jakarta-commons-collections apache-commons-digester jakarta-commons-discovery jakarta-commons-httpclient jakarta-commons-lang jakarta-commons-logging
+Requires: jakarta-commons-beanutils jakarta-commons-cli apache-commons-codec jakarta-commons-collections apache-commons-digester jakarta-commons-discovery jakarta-commons-httpclient jakarta-commons-lang jakarta-commons-logging
+#BuildRequires: jacc jta
+#Requires: jacc jta
+#Requires: /usr/share/java/jacc.jar
+#BuildRequires: /usr/share/java/jacc.jar
 #RHEL5 version of axis is too old
 #BuildRequires: axis
 #Requires: axis
@@ -128,7 +128,7 @@ Requires: %{name} = %{version}-%{release}
 Requires: /usr/share/java/xml-commons-apis.jar
 Requires: %{tomcat}
 Requires: emi-trustmanager-tomcat
-Requires: mysql-server
+Requires: mariadb-server
 Requires: osg-webapp-common
 Requires(post): %{_sbindir}/update-alternatives
 Requires(postun): %{_sbindir}/update-alternatives
@@ -198,18 +198,18 @@ popd
 function replace_jar {
     if [[ -e $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib/$1 ]]; then
         rm -f $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib/$1
-        ln -s %{_noarchlib}/%{dirname}/$1 $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib/$1
+        ln -s %{_noarchlib}/%{gumsdirname}/$1 $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib/$1
     fi
 }
 rm -rf $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT
 
 # JARs
-mkdir -p $RPM_BUILD_ROOT%{_noarchlib}/%{dirname}
-mkdir -p $RPM_BUILD_ROOT%{_noarchlib}/%{dirname}/endorsed
-install -m 0644 gums-client/target/lib/*.jar $RPM_BUILD_ROOT%{_noarchlib}/%{dirname}/
-install -m 0644 gums-core/target/*.jar $RPM_BUILD_ROOT%{_noarchlib}/%{dirname}/
-install -m 0644 gums-client/target/lib/endorsed/*.jar $RPM_BUILD_ROOT%{_noarchlib}/%{dirname}/endorsed/
+mkdir -p $RPM_BUILD_ROOT%{_noarchlib}/%{gumsdirname}
+mkdir -p $RPM_BUILD_ROOT%{_noarchlib}/%{gumsdirname}/endorsed
+install -m 0644 gums-client/target/lib/*.jar $RPM_BUILD_ROOT%{_noarchlib}/%{gumsdirname}/
+install -m 0644 gums-core/target/*.jar $RPM_BUILD_ROOT%{_noarchlib}/%{gumsdirname}/
+install -m 0644 gums-client/target/lib/endorsed/*.jar $RPM_BUILD_ROOT%{_noarchlib}/%{gumsdirname}/endorsed/
 
 # Service
 mkdir -p $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/
@@ -217,35 +217,35 @@ pushd $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/
 jar xf $OLDPWD/gums-service/target/gums.war 
 popd
 rm $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/config/gums.config
-ln -s %{_sysconfdir}/%{dirname}/gums.config $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/config
+ln -s %{_sysconfdir}/%{gumsdirname}/gums.config $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/config
 
 # Hack: we want slf4j-api-1.5.5 in core, but that's not what comes with
 # it. Get it from the exploded WAR instead.
-install -m 0644 $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib/slf4j-api-1.5.5.jar $RPM_BUILD_ROOT%{_noarchlib}/%{dirname}/
+install -m 0644 $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib/slf4j-api-1.5.5.jar $RPM_BUILD_ROOT%{_noarchlib}/%{gumsdirname}/
 
 %define remove_system_jars 1
 
 %if %remove_system_jars
 # Remove system JARs to whatever extent possible.  We will later link these directly.
-#rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/ant-1.6.3.jar
-rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/antlr-2.7.*.jar
-#rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/axis-{1.4,ant-1.4,jaxrpc-1.4,saaj-1.4}.jar
-rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/bcprov-jdk15-*.jar
-rm -f {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/commons-{beanutils-1.7.0,cli-1.2,codec-1.3,collections-3.2,digester-1.8,discovery-0.2,httpclient-3.0,lang-2.1,logging-1.1}.jar
-rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/emi-trustmanager-3.0.3.jar
-rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/joda-time-1.6.2.jar
-rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/{jacc-1.0,jta-1.0.1B}.jar
-rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/mysql-connector-java-5.1.6.jar
-#rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/*slf4j*.jar
-rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/xercesImpl*.jar
-rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/xalan*.jar
-rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/log4j*.jar
-rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/privilege-xacml*.jar
+#rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{gumsdirname}}/ant-1.6.3.jar
+rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{gumsdirname}}/antlr-2.7.*.jar
+#rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{gumsdirname}}/axis-{1.4,ant-1.4,jaxrpc-1.4,saaj-1.4}.jar
+rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{gumsdirname}}/bcprov-jdk15-*.jar
+rm -f {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{gumsdirname}}/commons-{beanutils-1.7.0,cli-1.2,codec-1.3,collections-3.2,digester-1.8,discovery-0.2,httpclient-3.0,lang-2.1,logging-1.1}.jar
+rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{gumsdirname}}/emi-trustmanager-3.0.3.jar
+rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{gumsdirname}}/joda-time-1.6.2.jar
+rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{gumsdirname}}/{jacc-1.0,jta-1.0.1B}.jar
+rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{gumsdirname}}/mysql-connector-java-5.1.6.jar
+#rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{gumsdirname}}/*slf4j*.jar
+rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{gumsdirname}}/xercesImpl*.jar
+rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{gumsdirname}}/xalan*.jar
+rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{gumsdirname}}/log4j*.jar
+rm {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{gumsdirname}}/privilege-xacml*.jar
 
 
 ## Link the exploded WAR to gums-core JARs, instead of including a copy
 # tomcat6 doesn't seem to like this.
-for x in $RPM_BUILD_ROOT%{_noarchlib}/%{dirname}/*.jar; do
+for x in $RPM_BUILD_ROOT%{_noarchlib}/%{gumsdirname}/*.jar; do
     replace_jar $(basename $x)
 done
 
@@ -253,11 +253,11 @@ done
 
 # Delete broken RPMs from the Shibboleth repository
 #  (we need to fix the build so that they are not even pulled in)
-rm -f {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/resolver-2.9.1.jar
-rm -f {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/serializer-2.9.1.jar
-rm -f {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{dirname}}/xml-apis-2.9.1.jar
-rm -f $RPM_BUILD_ROOT%{_noarchlib}/%{dirname}/endorsed/xercesImpl-2.9.1.jar
-rm -f $RPM_BUILD_ROOT%{_noarchlib}/%{dirname}/endorsed/xml-apis-2.9.1.jar
+rm -f {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{gumsdirname}}/resolver-2.9.1.jar
+rm -f {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{gumsdirname}}/serializer-2.9.1.jar
+rm -f {$RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib,$RPM_BUILD_ROOT%{_noarchlib}/%{gumsdirname}}/xml-apis-2.9.1.jar
+rm -f $RPM_BUILD_ROOT%{_noarchlib}/%{gumsdirname}/endorsed/xercesImpl-2.9.1.jar
+rm -f $RPM_BUILD_ROOT%{_noarchlib}/%{gumsdirname}/endorsed/xml-apis-2.9.1.jar
 
 ## gums-core and gums-service use different versions here...
 rm -f $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib/slf4j-jdk14-1.5.2.jar
@@ -272,18 +272,18 @@ install -m 0755 gums-service/src/main/resources/scripts/gums-add-mysql-admin $RP
 install -m 0755 gums-service/src/main/resources/scripts/gums-create-config $RPM_BUILD_ROOT%{_bindir}/
 
 # Configuration files
-mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/%{dirname}
-install -m 0644 gums-client/src/main/config/*  $RPM_BUILD_ROOT%{_sysconfdir}/%{dirname}/
-install -m 0600 gums-service/src/main/config/gums.config $RPM_BUILD_ROOT%{_sysconfdir}/%{dirname}
+mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/%{gumsdirname}
+install -m 0644 gums-client/src/main/config/*  $RPM_BUILD_ROOT%{_sysconfdir}/%{gumsdirname}/
+install -m 0600 gums-service/src/main/config/gums.config $RPM_BUILD_ROOT%{_sysconfdir}/%{gumsdirname}
 
 # Templates
-mkdir -p $RPM_BUILD_ROOT%{_noarchlib}/%{dirname}/sql
-mkdir -p $RPM_BUILD_ROOT%{_noarchlib}/%{dirname}/config
-install -m 0644 gums-service/src/main/resources/sql/{addAdmin,setupDatabase}.mysql $RPM_BUILD_ROOT%{_noarchlib}/%{dirname}/sql/
-install -m 0644 gums-service/src/main/resources/gums.config.template $RPM_BUILD_ROOT%{_noarchlib}/%{dirname}/config/
+mkdir -p $RPM_BUILD_ROOT%{_noarchlib}/%{gumsdirname}/sql
+mkdir -p $RPM_BUILD_ROOT%{_noarchlib}/%{gumsdirname}/config
+install -m 0644 gums-service/src/main/resources/sql/{addAdmin,setupDatabase}.mysql $RPM_BUILD_ROOT%{_noarchlib}/%{gumsdirname}/sql/
+install -m 0644 gums-service/src/main/resources/gums.config.template $RPM_BUILD_ROOT%{_noarchlib}/%{gumsdirname}/config/
 
 # Log directory
-mkdir -p $RPM_BUILD_ROOT/var/log/%{dirname}
+mkdir -p $RPM_BUILD_ROOT/var/log/%{gumsdirname}
 
 mkdir -p $RPM_BUILD_ROOT/var/lib/osg
 cat > $RPM_BUILD_ROOT/var/lib/osg/user-vo-map << EOF
@@ -305,7 +305,7 @@ mkdir -p $RPM_BUILD_ROOT%{_javadir}
 touch $RPM_BUILD_ROOT%{_javadir}/javamail.jar
 
 # jglobus is required by XACML callouts in gums-client, but not gums-core.
-build-jar-repository $RPM_BUILD_ROOT%{_noarchlib}/%{dirname} jglobus trustmanager trustmanager-axis ant antlr bcprov commons-beanutils commons-cli commons-codec commons-collections commons-digester commons-discovery commons-httpclient commons-lang commons-logging %{jacc} jta joda-time mysql-connector-java xalan-j2 xerces-j2 log4j privilege-xacml
+build-jar-repository $RPM_BUILD_ROOT%{_noarchlib}/%{gumsdirname} jglobus trustmanager trustmanager-axis ant antlr bcprov commons-beanutils commons-cli commons-codec commons-collections commons-digester commons-discovery commons-httpclient commons-lang commons-logging %{jacc} jta joda-time mysql-connector-java xalan-j2 xerces-j2 log4j privilege-xacml
 
 mkdir -p $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib
 build-jar-repository $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/lib jglobus trustmanager trustmanager-axis ant antlr bcprov commons-beanutils commons-cli commons-codec commons-collections commons-digester commons-discovery commons-httpclient commons-lang commons-logging %{jacc} jta joda-time mysql-connector-java xalan-j2 xerces-j2 log4j privilege-xacml
@@ -313,11 +313,11 @@ build-jar-repository $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/l
 
 #Fix log4j mess and replace with standard ones
 rm $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/log4j.properties
-rm $RPM_BUILD_ROOT%{_sysconfdir}/%{dirname}/log4j.properties
+rm $RPM_BUILD_ROOT%{_sysconfdir}/%{gumsdirname}/log4j.properties
 rm $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/classes/log4j.properties
-install -m 0644 %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/%{dirname}/log4j.properties
-install -m 0644 %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/%{dirname}/log4j-service.properties
-ln -s %{_sysconfdir}/%{dirname}/log4j-service.properties $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/classes/log4j.properties
+install -m 0644 %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/%{gumsdirname}/log4j.properties
+install -m 0644 %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/%{gumsdirname}/log4j-service.properties
+ln -s %{_sysconfdir}/%{gumsdirname}/log4j-service.properties $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/classes/log4j.properties
 
 # Add context to allow sym linking
 cat > $RPM_BUILD_ROOT%{_var}/lib/%{tomcat}/webapps/gums/META-INF/context.xml << EOL
@@ -328,9 +328,9 @@ EOL
 
 %files
 %defattr(-,root,root,-)
-%dir %{_noarchlib}/%{dirname}
-%{_noarchlib}/%{dirname}/endorsed
-%{_noarchlib}/%{dirname}/*.jar
+%dir %{_noarchlib}/%{gumsdirname}
+%{_noarchlib}/%{gumsdirname}/endorsed
+%{_noarchlib}/%{gumsdirname}/*.jar
 
 %files client
 %defattr(-,root,root,-)
@@ -341,13 +341,13 @@ EOL
 %{_bindir}/gums-nagios
 %{_bindir}/gums-service
 %{_bindir}/gums-vogridmapfile
-%dir %{_sysconfdir}/%{dirname}
-%config(noreplace) %{_sysconfdir}/%{dirname}/gums-client.properties
-%config(noreplace) %{_sysconfdir}/%{dirname}/gums-nagios.conf
-%config(noreplace) %{_sysconfdir}/%{dirname}/log4j.properties
+%dir %{_sysconfdir}/%{gumsdirname}
+%config(noreplace) %{_sysconfdir}/%{gumsdirname}/gums-client.properties
+%config(noreplace) %{_sysconfdir}/%{gumsdirname}/gums-nagios.conf
+%config(noreplace) %{_sysconfdir}/%{gumsdirname}/log4j.properties
 %config(noreplace) /var/lib/osg/user-vo-map
 %config(noreplace) /var/lib/osg/supported-vo-list
-%dir /var/log/%{dirname}
+%dir /var/log/%{gumsdirname}
 %config(noreplace) %{_sysconfdir}/cron.d/gums-client-cron
 %{_sysconfdir}/rc.d/init.d/gums-client-cron
 
@@ -367,31 +367,34 @@ fi
 
 %files service
 %defattr(-,root,root,-)
-%dir %{_sysconfdir}/%{dirname}
-%config(noreplace) %{_sysconfdir}/%{dirname}/log4j-service.properties
-%attr(0600,tomcat,tomcat) %config(noreplace) %{_sysconfdir}/%{dirname}/gums.config
+%dir %{_sysconfdir}/%{gumsdirname}
+%config(noreplace) %{_sysconfdir}/%{gumsdirname}/log4j-service.properties
+%attr(0600,tomcat,tomcat) %config(noreplace) %{_sysconfdir}/%{gumsdirname}/gums.config
 %attr(0750,tomcat,tomcat) %dir %{_var}/lib/%{tomcat}/webapps/gums/WEB-INF/config
 %dir %{_var}/lib/%{tomcat}/webapps/gums
 %{_var}/lib/%{tomcat}/webapps/gums
-%{_noarchlib}/%{dirname}/sql
-%{_noarchlib}/%{dirname}/config
+%{_noarchlib}/%{gumsdirname}/sql
+%{_noarchlib}/%{gumsdirname}/config
 %{_bindir}/gums-add-mysql-admin
 %{_bindir}/gums-create-config
 %{_bindir}/gums-setup-mysql-database
 %ghost %{_javadir}/javamail.jar
 
 %post service
-%{_sbindir}/update-alternatives --install %{_javadir}/javamail.jar javamail %{_noarchlib}/%{dirname}/mail-1.4.1.jar 5000
+%{_sbindir}/update-alternatives --install %{_javadir}/javamail.jar javamail %{_noarchlib}/%{gumsdirname}/mail-1.4.1.jar 5000
 
 # clear out cached jsp pages on install/update
 rm -f %{_usr}/share/%{tomcat}/work/Catalina/localhost/gums/org/apache/jsp/*
 
 %postun service
 if [ $1 -eq 0 ]; then
-    %{_sbindir}/update-alternatives --remove javamail %{_noarchlib}/%{dirname}/mail-1.4.1.jar
+    %{_sbindir}/update-alternatives --remove javamail %{_noarchlib}/%{gumsdirname}/mail-1.4.1.jar
 fi
 
 %changelog
+* Thu Sep 17 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.0-5.osg
+- Apply Brian Bockelman's patch from SOFTWARE-2040 to build against EL7
+
 * Wed Sep 16 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.0-4
 - Rebuild against jGlobus 2.1.0 (SOFTWARE-2036)
 
