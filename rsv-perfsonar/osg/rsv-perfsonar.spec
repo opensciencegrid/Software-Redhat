@@ -1,5 +1,5 @@
 Name:      rsv-perfsonar
-Version:   1.0.23
+Version:   1.0.24
 Release:   1%{?dist}
 Summary:   RSV Metrics to monitor pefsonar
 Packager:  OSG-Software
@@ -18,6 +18,9 @@ Requires: esmond
 #This requirements to publish data to the CERN message brokers
 Requires: stompclt
 Requires: python-simplevisor
+# This is for /sbin/service                                                                                                                                  
+Requires(preun): initscripts
+
 
 %if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
 Requires: python-simplejson
@@ -62,6 +65,8 @@ rm -rf $RPM_BUILD_ROOT
 # For the virtual enviroment of the python2.7 for the probes
 %attr(-,rsv,rsv)  %{_localstatedir}/rsv/
 %attr(-,rsv,rsv)  %{_localstatedir}/rsv/localenv
+# for the simplevisor init script
+%{_initrddir}/simplevisor
 
 %post -p /bin/bash
 # Create the html dir in the correct place
@@ -83,6 +88,10 @@ pip install messaging  --upgrade
 
 
 %changelog
+* Fri Sep 18 2015  <efajardo@physics.ucsd.edu> 1.0.24-1
+- Made the directory to write each metadata key to be configurable
+- Added the initScript for the simplevisor
+
 * Mon Sep 14 2015 <efajardo@physics.ucsd.edu> 1.0.23-1
 - Each probes writes a dictionary for each meatadata key with the last timestamp of a succesfull run
 
