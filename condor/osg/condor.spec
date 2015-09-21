@@ -718,7 +718,6 @@ exit 0
 %endif
 
 %patch1 -p1
-%patch2 -p1
 
 %if 0%{?hcc}
 %patch15 -p0
