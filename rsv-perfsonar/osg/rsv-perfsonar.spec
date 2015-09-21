@@ -90,6 +90,7 @@ pip install messaging  --upgrade
 %changelog
 * Fri Sep 18 2015  <efajardo@physics.ucsd.edu> 1.0.24-1
 - Made the directory to write each metadata key to be configurable
+- Added the initScript for the simplevisor
 
 * Mon Sep 14 2015 <efajardo@physics.ucsd.edu> 1.0.23-1
 - Each probes writes a dictionary for each meatadata key with the last timestamp of a succesfull run
