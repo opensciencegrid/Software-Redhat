@@ -1,4 +1,4 @@
-%define tarball_version 8.3.8
+%define tarball_version 8.4.0
 
 # optionally define any of these, here or externally
 # % define fedora   16
@@ -125,7 +125,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.2
+%define condor_base_release 1.1
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -214,7 +214,6 @@ Source123: zlib-1.2.3.tar.gz
 %endif
 
 Patch1: sw1636-cream_gahp-dlopen.patch
-Patch2: revert-gt4903.patch
 
 #% if 0%osg
 Patch8: osg_sysconfig_in_init_script.patch
@@ -740,7 +739,7 @@ export CMAKE_PREFIX_PATH=/usr
 # causes build issues with EL5, don't even bother building the tests.
 
 %if %uw_build
-%define condor_build_id 338845
+%define condor_build_id 341253
 
 %cmake \
        -DBUILDID:STRING=%condor_build_id \
@@ -1847,6 +1846,9 @@ fi
 %endif
 
 %changelog
+* Mon Sep 21 2015 Carl Edquist <edquist@cs.wisc.edu> - 8.4.0-1.1
+- update to 8.4.0 and drop revert-gt4903.patch (SOFTWARE-2039)
+
 * Wed Sep 09 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 8.3.8-1.2
 - Patch to revert GT #4903
 
