@@ -20,14 +20,14 @@ Name:           glideinwms
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
 %if %{v3_plus}
-%define version 3.2.10
+%define version 3.2.11.2
 %define release 1
 %define frontend_xml frontend.master.xml
 %define factory_xml glideinWMS.master.xml
 %endif
 
 Version:        %{version}
-Release:        %{release}.1%{?dist}
+Release:        %{release}%{?dist}
 
 Summary:        The VOFrontend for glideinWMS submission host
 
@@ -601,6 +601,9 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/glideinwms/creation/lib/cWParams.py
 %{python_sitelib}/glideinwms/creation/lib/cWParams.pyc
 %{python_sitelib}/glideinwms/creation/lib/cWParams.pyo
+%{python_sitelib}/glideinwms/creation/lib/cWParamDict.py
+%{python_sitelib}/glideinwms/creation/lib/cWParamDict.pyc
+%{python_sitelib}/glideinwms/creation/lib/cWParamDict.pyo
 %{python_sitelib}/glideinwms/creation/lib/cgWConsts.py
 %{python_sitelib}/glideinwms/creation/lib/cgWConsts.pyc
 %{python_sitelib}/glideinwms/creation/lib/cgWConsts.pyo
@@ -671,6 +674,9 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/glideinwms/creation/lib/cWParams.py
 %{python_sitelib}/glideinwms/creation/lib/cWParams.pyc
 %{python_sitelib}/glideinwms/creation/lib/cWParams.pyo
+%{python_sitelib}/glideinwms/creation/lib/cWParamDict.py
+%{python_sitelib}/glideinwms/creation/lib/cWParamDict.pyc
+%{python_sitelib}/glideinwms/creation/lib/cWParamDict.pyo
 %{python_sitelib}/glideinwms/creation/lib/cvWConsts.py
 %{python_sitelib}/glideinwms/creation/lib/cvWConsts.pyc
 %{python_sitelib}/glideinwms/creation/lib/cvWConsts.pyo
@@ -746,6 +752,26 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Sep 18 2015 Parag Mhashilkar <parag@fnal.gov> - 3.2.11.2-1
+- Glideinwms v3.2.11.2 release
+- Release Notes: http://www.uscms.org/SoftwareComputing/Grid/WMS/glideinWMS/doc.v3_2_11_2/history.html
+
+* Wed Sep 02 2015 Parag Mhashilkar <parag@fnal.gov> - 3.2.11.1-1
+- Glideinwms v3.2.11.1 release
+- Release Notes: http://www.uscms.org/SoftwareComputing/Grid/WMS/glideinWMS/doc.v3_2_11_1/history.html
+
+* Thu Aug 20 2015 Parag Mhashilkar <parag@fnal.gov> - 3.2.11-1
+- Glideinwms v3.2.11 release
+- Release Notes: http://www.uscms.org/SoftwareComputing/Grid/WMS/glideinWMS/doc.v3_2_11/history.html
+
+* Thu Aug 13 2015 Parag Mhashilkar <parag@fnal.gov> - 3.2.11-0.2.rc2
+- Glideinwms v3.2.11 rc2 release
+- Release Notes: http://www.uscms.org/SoftwareComputing/Grid/WMS/glideinWMS/doc.v3_2_11/history.html
+
+* Wed Aug 12 2015 Parag Mhashilkar <parag@fnal.gov> - 3.2.11-0.1.rc1
+- Glideinwms v3.2.11 rc1 release
+- Release Notes: http://www.uscms.org/SoftwareComputing/Grid/WMS/glideinWMS/doc.v3_2_11/history.html
+
 * Thu Jul 16 2015 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.2.10-1.1.osg
 - vofrontend-standalone: Replace osg-client dep with most of osg-client's
   contents (except the networking stuff), since osg-client has been dropped in
