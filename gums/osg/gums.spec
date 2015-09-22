@@ -13,7 +13,7 @@
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.5.0
-Release: 7%{?dist}
+Release: 8%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 URL: https://github.com/opensciencegrid/gums
@@ -26,26 +26,24 @@ URL: https://github.com/opensciencegrid/gums
 BuildRequires: maven2
 %define tomcat tomcat5
 %define mvn %{_bindir}/mvn
-
 %define commons_codec jakarta-commons-codec
 %define commons_digester jakarta-commons-digester
-
-%else
-
-%define commons_codec apache-commons-codec
-%define commons_digester apache-commons-digester
 %endif
 
 %if 0%{?rhel} == 6
 BuildRequires: maven22
 %define tomcat tomcat6
 %define mvn %{_bindir}/mvn22
+%define commons_codec jakarta-commons-codec
+%define commons_digester jakarta-commons-digester
 %endif
 
 %if 0%{?rhel} >= 7
 BuildRequires: maven >= 3.0.0
 %define tomcat tomcat
 %define mvn %{_bindir}/mvn
+%define commons_codec apache-commons-codec
+%define commons_digester apache-commons-digester
 %endif
 
 %if 0%{?rhel} == 6
@@ -74,7 +72,7 @@ Requires: emi-trustmanager-axis
 #BuildRequires: slf4j
 #Requires: slf4j
 BuildRequires: jakarta-commons-beanutils jakarta-commons-cli %commons_codec jakarta-commons-collections %commons_digester jakarta-commons-discovery jakarta-commons-httpclient jakarta-commons-lang jakarta-commons-logging
-Requires: jakarta-commons-beanutils jakarta-commons-cli %commons_codec jakarta-commons-collections %commons_digester jakarta-commons-discovery jakarta-commons-httpclient jakarta-commons-lang jakarta-commons-logging
+Requires:      jakarta-commons-beanutils jakarta-commons-cli %commons_codec jakarta-commons-collections %commons_digester jakarta-commons-discovery jakarta-commons-httpclient jakarta-commons-lang jakarta-commons-logging
 #BuildRequires: jacc jta
 #Requires: jacc jta
 #Requires: /usr/share/java/jacc.jar
@@ -459,6 +457,9 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+* Tue Sep 22 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.0-8.osg
+- Fix commons dependencies on el6
+
 * Fri Sep 18 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.0-7.osg
 - Build on el5 again
 
