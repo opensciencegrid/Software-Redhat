@@ -124,6 +124,9 @@ Patch1: fix-mapAccount.patch
 
 Patch2: Update-privilege-xacml-version-to-2.6.5.patch
 
+# https://jira.opensciencegrid.org/browse/SOFTWARE-2035
+Patch3: null-fqan.patch
+
 %description
 %{summary}
 
@@ -171,6 +174,7 @@ Summary: Tomcat service for GUMS
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 %build
 
