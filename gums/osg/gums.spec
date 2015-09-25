@@ -13,7 +13,7 @@
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.5.0
-Release: 8%{?dist}
+Release: 9%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 URL: https://github.com/opensciencegrid/gums
@@ -461,6 +461,9 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+* Fri Sep 25 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.5.0-9
+- Handle null FQANs in vomsUserGroup (SOFTWARE-2035)
+
 * Tue Sep 22 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.0-8
 - Fix commons dependencies on el6
 
