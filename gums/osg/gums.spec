@@ -461,16 +461,16 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
-* Tue Sep 22 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.0-8.osg
+* Tue Sep 22 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.0-8
 - Fix commons dependencies on el6
 
-* Fri Sep 18 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.0-7.osg
+* Fri Sep 18 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.0-7
 - Build on el5 again
 
-* Thu Sep 17 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.0-6.osg
+* Thu Sep 17 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.0-6
 - Apply changes to build on el6 again
 
-* Thu Sep 17 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.0-5.osg
+* Thu Sep 17 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.0-5
 - Apply Brian Bockelman's patch from SOFTWARE-2040 to build against el7
 
 * Wed Sep 16 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.0-4
