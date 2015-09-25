@@ -13,7 +13,7 @@
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.5.0
-Release: 8%{?dist}
+Release: 9%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 URL: https://github.com/opensciencegrid/gums
@@ -124,6 +124,9 @@ Patch1: fix-mapAccount.patch
 
 Patch2: Update-privilege-xacml-version-to-2.6.5.patch
 
+# https://jira.opensciencegrid.org/browse/SOFTWARE-2035
+Patch3: null-fqan.patch
+
 %description
 %{summary}
 
@@ -171,6 +174,7 @@ Summary: Tomcat service for GUMS
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 %build
 
@@ -457,16 +461,19 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
-* Tue Sep 22 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.0-8.osg
+* Fri Sep 25 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.5.0-9
+- Handle null FQANs in vomsUserGroup (SOFTWARE-2035)
+
+* Tue Sep 22 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.0-8
 - Fix commons dependencies on el6
 
-* Fri Sep 18 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.0-7.osg
+* Fri Sep 18 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.0-7
 - Build on el5 again
 
-* Thu Sep 17 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.0-6.osg
+* Thu Sep 17 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.0-6
 - Apply changes to build on el6 again
 
-* Thu Sep 17 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.0-5.osg
+* Thu Sep 17 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.0-5
 - Apply Brian Bockelman's patch from SOFTWARE-2040 to build against el7
 
 * Wed Sep 16 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.0-4
