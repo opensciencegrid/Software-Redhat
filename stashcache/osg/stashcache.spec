@@ -1,7 +1,7 @@
 Name:      stashcache
 Summary:   StashCache metapackages
 Version:   0.5
-Release:   1%{?dist}
+Release:   2%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -9,6 +9,7 @@ BuildArch: noarch
 Source0:   %{name}-%{version}.tar.gz
 Source1:   xrootd-stashcache-origin-server.cfg.in
 Source2:   xrootd-stashcache-cache-server.cfg.in
+Patch0:    systemd_support.patch
 
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
@@ -62,6 +63,7 @@ Requires: %{name}-daemon
 
 %prep
 %setup -q
+%patch0 -p1
 
 %install
 mkdir -p %{buildroot}%{_sysconfdir}/xrootd
@@ -93,6 +95,9 @@ rm -rf %{_buildroot}
 %config(noreplace) %{_sysconfdir}/xrootd/xrootd-stashcache-cache-server-itb.cfg
 
 %changelog
+* Fri Sep 25 2015 Brian Lin <blin@cs.wisc.edu> 0.5-2
+- Add systemd support
+
 * Fri Sep 25 2015 Brian Lin <blin@cs.wisc.edu> 0.5-1
 - Use FQDN instead of hostname in stashcache-daemon (SOFTWARE-2049)
 - Refuse to start if missing host cert or key (SOFTWARE-2026)
