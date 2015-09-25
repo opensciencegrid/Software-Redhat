@@ -1,6 +1,6 @@
 Summary: Package for configure-osg and associated scripts
 Name: osg-configure
-Version: 1.2.1
+Version: 1.2.2
 Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
@@ -322,6 +322,9 @@ fi
 
 
 %changelog
+* Fri Sep 25 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.2.2-1.osg
+- Fix DeprecationWarning in resource catalog code (SOFTWARE-2031)
+
 * Thu Sep 10 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.2.1-1.osg
 - Fix wrong permissions in created files (SOFTWARE-2022)
 
