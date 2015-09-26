@@ -13,7 +13,7 @@
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.5.0
-Release: 9%{?dist}
+Release: 10%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 URL: https://github.com/opensciencegrid/gums
@@ -120,12 +120,17 @@ Source14: velocity-1.5.jar
 # Can't get el5 build working with jsp precompile
 Patch0: jspc-profile.patch
 
+# https://jira.opensciencegrid.org/browse/SOFTWARE-2028
 Patch1: fix-mapAccount.patch
 
+# https://jira.opensciencegrid.org/browse/SOFTWARE-2040
 Patch2: Update-privilege-xacml-version-to-2.6.5.patch
 
 # https://jira.opensciencegrid.org/browse/SOFTWARE-2035
 Patch3: null-fqan.patch
+
+# https://jira.opensciencegrid.org/browse/SOFTWARE-2047
+Patch4: pool-acct-mapper-groups.patch
 
 %description
 %{summary}
@@ -175,6 +180,7 @@ Summary: Tomcat service for GUMS
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
 
 %build
 
@@ -461,6 +467,9 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+* Fri Sep 25 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.5.0-10
+- Support groupName in pool account mappers (SOFTWARE-2047)
+
 * Fri Sep 25 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.5.0-9
 - Handle null FQANs in vomsUserGroup (SOFTWARE-2035)
 

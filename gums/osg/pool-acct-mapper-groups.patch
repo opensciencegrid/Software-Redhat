@@ -1,0 +1,202 @@
+diff --git a/gums-core/src/main/config/gums.config.schema b/gums-core/src/main/config/gums.config.schema
+index a723248..d0c6254 100644
+--- a/gums-core/src/main/config/gums.config.schema
++++ b/gums-core/src/main/config/gums.config.schema
+@@ -196,6 +196,7 @@
+ 										<xs:attribute name="name" type="xs:string" use="required"/>
+ 										<xs:attribute name="description" type="xs:string"/>
+ 										<xs:attribute name="persistenceFactory" type="xs:string" use="required"/>
++										<xs:attribute name="groupName" type="xs:string"/>
+ 										<xs:attribute name="accountPool" type="xs:string" use="required"/>
+ 										<xs:attribute name="recyclable" type="xs:boolean"/>
+ 										<xs:attribute name="expiration" type="xs:int"/>
+diff --git a/gums-core/src/main/java/gov/bnl/gums/account/AccountPoolMapper.java b/gums-core/src/main/java/gov/bnl/gums/account/AccountPoolMapper.java
+index e452ac3..ce622ef 100644
+--- a/gums-core/src/main/java/gov/bnl/gums/account/AccountPoolMapper.java
++++ b/gums-core/src/main/java/gov/bnl/gums/account/AccountPoolMapper.java
+@@ -42,6 +42,7 @@ public class AccountPoolMapper extends AccountMapper {
+     private AccountPoolMapperDB db;
+     private String persistenceFactory = "";
+ 	private String accountPool = "";
++    private String groupName = "";
+     private boolean recyclable = false;
+     private int expiry = 60;
+ 	private static Map assignments = Collections.synchronizedMap(new HashMap());
+@@ -63,6 +64,7 @@ public class AccountPoolMapper extends AccountMapper {
+     	accountMapper.setDescription(new String(getDescription()));
+     	accountMapper.setAccountPool(new String(accountPool));
+     	accountMapper.setPersistenceFactory(new String(persistenceFactory));
++        accountMapper.setGroupName(new String(groupName));
+         accountMapper.setRecyclable(recyclable);
+         accountMapper.setExpiration(expiry);
+     	return accountMapper;
+@@ -71,7 +73,11 @@ public class AccountPoolMapper extends AccountMapper {
+     public String getAccountPool() {
+     	return accountPool;
+     }
+-    
++
++    public String getGroupName() {
++        return groupName;
++    }
++
+     public String getAccountPoolRoot() {
+     	int index = accountPool.indexOf(".");
+     	if (index != -1)
+@@ -163,6 +169,9 @@ public class AccountPoolMapper extends AccountMapper {
+ 
+     @Override
+     public AccountInfo mapUser(GridUser user, boolean createIfDoesNotExist) {
++        if (groupName != null && !groupName.equals("")) {
++            return new AccountInfo(getDB().retrieveMapping(user.getCertificateDN()), groupName);
++        }
+         String account = getDB().retrieveAccount(user);
+         if (account != null) return new AccountInfo(account);
+         if (createIfDoesNotExist) {
+@@ -181,7 +190,11 @@ public class AccountPoolMapper extends AccountMapper {
+     public void setAccountPool(String accountPool) {
+     	this.accountPool = accountPool;
+     }
+-    
++
++    public void setGroupName(String groupName) {
++        this.groupName = groupName;
++    }
++
+     public void setPersistenceFactory(String persistenceFactory) {
+         this.persistenceFactory = persistenceFactory;
+     }
+@@ -213,13 +226,18 @@ public class AccountPoolMapper extends AccountMapper {
+     }
+     
+     public String toXML() {
+-    	return "\t\t<accountPoolMapper\n"+
+-			"\t\t\tname='"+getName()+"'\n"+
+-			"\t\t\tdescription='"+getDescription()+"'\n"+
+-			"\t\t\tpersistenceFactory='"+persistenceFactory+"'\n" +
+-			"\t\t\trecyclable='"+recyclable+"'\n" +
+-			"\t\t\texpiration='"+expiry+"'\n" +
+-    		"\t\t\taccountPool='"+accountPool+"'/>\n\n";
++        String retStr =
++            "\t\t<accountPoolMapper\n"+
++            "\t\t\tname='"+getName()+"'\n"+
++            "\t\t\tdescription='"+getDescription()+"'\n"+
++            "\t\t\tpersistenceFactory='"+persistenceFactory+"'\n" +
++            "\t\t\trecyclable='"+recyclable+"'\n" +
++            "\t\t\texpiration='"+expiry+"'\n" +
++            "\t\t\taccountPool='"+accountPool+"'";
++        if (groupName != null && !groupName.equals(""))
++            retStr += "\n\t\t\tgroupName='"+groupName+"'";
++        retStr += "/>\n\n";
++        return retStr;
+     }
+     
+     private static String getRoot(String account) {
+diff --git a/gums-core/src/main/java/gov/bnl/gums/db/AccountPoolMapperDB.java b/gums-core/src/main/java/gov/bnl/gums/db/AccountPoolMapperDB.java
+index f269f31..4659d70 100644
+--- a/gums-core/src/main/java/gov/bnl/gums/db/AccountPoolMapperDB.java
++++ b/gums-core/src/main/java/gov/bnl/gums/db/AccountPoolMapperDB.java
+@@ -75,6 +75,14 @@ public interface AccountPoolMapperDB {
+      */
+     String retrieveAccount(GridUser user);
+     
++    /**
++     * Retrieves a user mapping from the database.
++     * 
++     * @param userDN a certificate DN
++     * @return the UNIX account provided by the mapping
++     */
++    String retrieveMapping(String userDN);
++
+     /** Retrieves a user to account map.
+      * 
+      * @return a Map between the userDN (String) as the key and the account (String).
+diff --git a/gums-core/src/main/java/gov/bnl/gums/persistence/LocalPersistenceFactory.java b/gums-core/src/main/java/gov/bnl/gums/persistence/LocalPersistenceFactory.java
+index 3af1843..20b58fc 100644
+--- a/gums-core/src/main/java/gov/bnl/gums/persistence/LocalPersistenceFactory.java
++++ b/gums-core/src/main/java/gov/bnl/gums/persistence/LocalPersistenceFactory.java
+@@ -101,6 +101,10 @@ public class LocalPersistenceFactory extends PersistenceFactory {
+ 			return account;
+ 		}
+ 
++		public String retrieveMapping(String userDN) {
++			return db.retrieveMapping(userDN);
++		}
++
+ 		public java.util.Map retrieveAccountMap() {
+ 			return db.retrieveAccountMap();
+ 		}
+diff --git a/gums-core/src/test/java/gov/bnl/gums/db/MockAccountPoolMapperDB.java b/gums-core/src/test/java/gov/bnl/gums/db/MockAccountPoolMapperDB.java
+index f331f3f..508c97b 100644
+--- a/gums-core/src/test/java/gov/bnl/gums/db/MockAccountPoolMapperDB.java
++++ b/gums-core/src/test/java/gov/bnl/gums/db/MockAccountPoolMapperDB.java
+@@ -95,6 +95,10 @@ public class MockAccountPoolMapperDB implements AccountPoolMapperDB {
+         throw new RuntimeException("Account info is not available for mock pool accounts.");
+     }
+     
++    public String retrieveMapping(String userDN) {
++        return (String) userToAccount.get(userDN);
++    }
++
+     public java.util.Map retrieveAccountMap() {
+         return Collections.unmodifiableMap(userToAccount);
+     }
+diff --git a/gums-service/src/main/java/gov/bnl/gums/service/ConfigurationWebToolkit.java b/gums-service/src/main/java/gov/bnl/gums/service/ConfigurationWebToolkit.java
+index 92e718b..4f9f94c 100644
+--- a/gums-service/src/main/java/gov/bnl/gums/service/ConfigurationWebToolkit.java
++++ b/gums-service/src/main/java/gov/bnl/gums/service/ConfigurationWebToolkit.java
+@@ -141,6 +141,8 @@ public class ConfigurationWebToolkit implements Remote {
+ 				}
+ 				((AccountPoolMapper)accountMapper).setExpiration(expiry);
+ 			}
++			if (request.getParameter("groupName")!=null)
++				((AccountPoolMapper)accountMapper).setGroupName( request.getParameter("groupName").trim() );
+ 		}
+ 		else if (type.equals(GecosLdapAccountMapper.getTypeStatic())) {
+ 			accountMapper = new GecosLdapAccountMapper();
+diff --git a/gums-service/src/main/resources/gums.config.schema b/gums-service/src/main/resources/gums.config.schema
+index a723248..d0c6254 100644
+--- a/gums-service/src/main/resources/gums.config.schema
++++ b/gums-service/src/main/resources/gums.config.schema
+@@ -196,6 +196,7 @@
+ 										<xs:attribute name="name" type="xs:string" use="required"/>
+ 										<xs:attribute name="description" type="xs:string"/>
+ 										<xs:attribute name="persistenceFactory" type="xs:string" use="required"/>
++										<xs:attribute name="groupName" type="xs:string"/>
+ 										<xs:attribute name="accountPool" type="xs:string" use="required"/>
+ 										<xs:attribute name="recyclable" type="xs:boolean"/>
+ 										<xs:attribute name="expiration" type="xs:int"/>
+diff --git a/gums-service/src/main/webapp/accountMappers.jsp b/gums-service/src/main/webapp/accountMappers.jsp
+index 6ceaeef..3afed2a 100644
+--- a/gums-service/src/main/webapp/accountMappers.jsp
++++ b/gums-service/src/main/webapp/accountMappers.jsp
+@@ -181,6 +181,14 @@ if (request.getParameter("command")==null ||
+ 				    		</a>
+ 						<br />
+ 				    		Description: <%=accountMapper.getDescription()%><br>	
++<%
++						AccountPoolMapper pMapper = (AccountPoolMapper)accountMapper;
++						if (pMapper.getGroupName() != null && !pMapper.getGroupName().equals("")) {
++%>
++							Group: <%=pMapper.getGroupName()%><br>
++<%
++						}
++%>
+ 							Pool: <%=((AccountPoolMapper)accountMapper).getAccountPool()%><br>
+ 							Recyclable: <%=((AccountPoolMapper)accountMapper).getRecyclable()%><br/>
+ 							Expiration Days: <%=((AccountPoolMapper)accountMapper).getExpiration()%><br/>
+@@ -454,6 +462,14 @@ else if ("edit".equals(request.getParameter("command"))
+ 		</tr>
+ 		<tr>
+ 			<td nowrap style="text-align: right;">
++				Group:
++			</td>
++			<td>
++				<input maxlength="256" size="32" name="groupName" value="<%=((AccountPoolMapper)accountMapper).getGroupName()%>"/> (the primary Unix group to map to)
++			</td>
++		</tr>
++		<tr>
++			<td nowrap style="text-align: right;">
+ 	    		i.e.
+ 		    </td>
+ 		    <td nowrap>
