@@ -1,6 +1,6 @@
 Name:		blahp
-Version:	1.18.13.bosco
-Release:	4%{?dist}
+Version:	1.18.14.bosco
+Release:	1%{?dist}
 Summary:	gLite BLAHP daemon
 
 Group:		System/Libraries
@@ -9,7 +9,7 @@ URL:		https://github.com/osg-bosco/BLAH
 
 # Tarball created with the following command:
 # git archive v1_18_bosco | gzip -8 > ~/rpmbuild/SOURCES/blahp.tar.gz
-Source0:        blahp.tar.gz
+Source0:        %{name}-%{version}.tar.gz
 Patch0:         sw1709-osg-job-env-vars.patch
 
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
@@ -177,19 +177,25 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Tue Sep 29 2015 Brian Lin <blin@cs.wisc.edu> - 1.18.14.bosco-1
+- Added PBS Pro support (SOFTWARE-1958)
+- Fix for job registry losing track of LSF jobs in its registry (gittrac #5062)
+- Added 'blah_disable_limited_proxies' to disable creation of limited proxies
+- Reduce 'blah_max_threaded_commands' to 50 (SOFTWARE-1980)
+
 * Mon Aug 31 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.18.13.bosco-4
 - Rebuild against HTCondor 8.3.8 (SOFTWARE-1995)
 
 * Mon Jul 20 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.18.13.bosco-3
 - bump to rebuild
 
-* Mon Jun 25 2015 Brian Lin <blin@cs.wisc.edu> - 1.18.13.bosco-2
+* Thu Jun 25 2015 Brian Lin <blin@cs.wisc.edu> - 1.18.13.bosco-2
 - Rebuild against HTCondor 8.3.6
 
-* Mon May 28 2015 Brian Lin <blin@cs.wisc.edu> - 1.18.13.bosco-1
+* Thu May 28 2015 Brian Lin <blin@cs.wisc.edu> - 1.18.13.bosco-1
 - Fixes to PBS and HTCondor submission
 
-* Mon Apr 28 2015 Brian Lin <blin@cs.wisc.edu> - 1.18.12.bosco-2
+* Tue Apr 28 2015 Brian Lin <blin@cs.wisc.edu> - 1.18.12.bosco-2
 - Rebuild against HTCondor 8.3.5
 
 * Mon Mar 30 2015 Brian Lin <blin@cs.wisc.edu> - 1.18.12.bosco-1

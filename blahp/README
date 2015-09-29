@@ -1,9 +1,13 @@
 Source originally downloaded from 'http://koji.hep.caltech.edu/public/packages/blahp/1.18.0.4/3/src/blahp-1.18.0.4-3.src.rpm'
 
-Right now, we are using the following fork - 
+We are using the following fork - 
 
 https://github.com/brianhlin/BLAH
 
 Particularly the v1_18_bosco branch and we're building the tarball with:
 
-git archive <version tag> | gzip -9 > blahp.tar.gz
+git archive <version tag> | gzip -9 > blahp-<version>.tar.gz
+
+Example:
+
+git archive v1.18.14.bosco | gzip -9 > blahp-1.18.14.bosco.tar.gz
