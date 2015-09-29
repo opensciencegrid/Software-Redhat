@@ -45,15 +45,6 @@ BuildRequires: maven >= 3.0.0
 %define commons_codec apache-commons-codec
 %define commons_digester apache-commons-digester
 %endif
-
-%if 0%{?rhel} == 6
-%define mvnprofileops -P tomcat6
-%else
-%define mvnprofileops %{nil}
-%endif
-
-
-## explicitly requiring this because I don't want yum to pick java-1.5.0-gcj-devel
 BuildRequires: java7-devel
 BuildRequires: jglobus = %{jglobus_version}
 # provides build-classpath
@@ -118,7 +109,7 @@ Source13: jargs-1.0.jar
 Source14: velocity-1.5.jar
 
 # Can't get el5 build working with jsp precompile
-Patch0: jspc-profile.patch
+Patch0: undo-jsp-precompile.patch
 
 # https://jira.opensciencegrid.org/browse/SOFTWARE-2028
 Patch1: fix-mapAccount.patch
@@ -176,7 +167,10 @@ Summary: Tomcat service for GUMS
 
 %setup -n %{name}-%{version}
 
+%if 0%{?rhel} < 6
 %patch0 -p1
+%endif
+
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
@@ -242,7 +236,7 @@ pushd gums-client
 %{mvn} %{mvnopts} -e -Dmaven.test.skip=true install
 popd
 pushd gums-service
-%{mvn} %{mvnopts} -e -Dmaven.test.skip=true %{mvnprofileops} install
+%{mvn} %{mvnopts} -e -Dmaven.test.skip=true install
 popd
 
 %install
