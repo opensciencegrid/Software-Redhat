@@ -13,7 +13,7 @@
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.5.0
-Release: 11%{?dist}
+Release: 12%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 URL: https://github.com/opensciencegrid/gums
@@ -461,6 +461,9 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+* Wed Sep 30 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.5.0-12
+- Minor fix for pool account mapper groupName support (SOFTWARE-2047)
+
 * Tue Sep 29 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.5.0-11
 - Drop patch from -3 build, shown to be broken in nightlies (SOFTWARE-1981)
 - Code cleanup for pool account mapper groupName support (SOFTWARE-2047)
