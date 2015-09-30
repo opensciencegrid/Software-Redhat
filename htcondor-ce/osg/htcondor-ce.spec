@@ -2,7 +2,7 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 1.15
+Version: 1.16
 Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 
@@ -17,7 +17,6 @@ URL: http://github.com/bbockelm/condor-ce
 # git archive --prefix=%{name}-%{version}/ %{gitrev} | gzip > %{name}-%{version}-%{gitrev}.tar.gz
 #
 Source0: %{name}-%{version}%{?gitrev:-%{gitrev}}.tar.gz
-Patch0: sw1910_run_without_r.patch
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -147,7 +146,6 @@ Conflicts: %{name}
 
 %prep
 %setup -q
-%patch0 -p1
 
 %build
 %cmake -DHTCONDORCE_VERSION=%{version} -DCMAKE_INSTALL_LIBDIR=%{_libdir} -DPYTHON_SITELIB=%{python_sitelib}
@@ -157,6 +155,12 @@ make %{?_smp_mflags}
 rm -rf $RPM_BUILD_ROOT
 
 make install DESTDIR=$RPM_BUILD_ROOT
+
+%if %{?rhel} >= 7
+mkdir -p $RPM_BUILD_ROOT/%{_unitdir}
+install -m 0644 config/condor-ce.service $RPM_BUILD_ROOT/%{_unitdir}/condor-ce.service
+install -m 0644 config/condor-ce-collector.service $RPM_BUILD_ROOT/%{_unitdir}/condor-ce-collector.service
+%endif
 
 # Directories necessary for HTCondor-CE files
 install -m 0755 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/run/condor-ce
@@ -214,6 +218,8 @@ fi
 %{_datadir}/condor-ce/config.d/03-managed-fork-defaults.conf
 
 %{_datadir}/condor-ce/osg-wrapper
+
+%{_bindir}/condor_ce_host_network_check
 
 %attr(-,condor,condor) %dir %{_localstatedir}/run/condor-ce
 %attr(-,condor,condor) %dir %{_localstatedir}/log/condor-ce
@@ -317,6 +323,12 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Mon Sep 25 2015 Brian Lin <blin@cs.wisc.edu> - 1.16-1
+- Add network troubleshooting tool (condor_ce_host_network_check)
+- Add ability to disable glideins advertising to the CE
+- Add non-DigiCert hostcerts for CERN
+- Improvements to 'condor_ce_run' error messages
+
 * Fri Aug 21 2015 Brian Lin <blin@cs.wisc.edu> 1.15-1
 - Add 'default_remote_cerequirements' attribute to the JOB_ROUTER_DEFAULTS
 - Verify the first route in JOB_ROUTER_ENTRIES in the init script
