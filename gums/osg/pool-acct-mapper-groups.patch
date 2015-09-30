@@ -11,7 +11,7 @@ index a723248..d0c6254 100644
  										<xs:attribute name="recyclable" type="xs:boolean"/>
  										<xs:attribute name="expiration" type="xs:int"/>
 diff --git a/gums-core/src/main/java/gov/bnl/gums/account/AccountPoolMapper.java b/gums-core/src/main/java/gov/bnl/gums/account/AccountPoolMapper.java
-index e452ac3..da156ac 100644
+index e452ac3..c89e7be 100644
 --- a/gums-core/src/main/java/gov/bnl/gums/account/AccountPoolMapper.java
 +++ b/gums-core/src/main/java/gov/bnl/gums/account/AccountPoolMapper.java
 @@ -42,6 +42,7 @@ public class AccountPoolMapper extends AccountMapper {
@@ -43,16 +43,26 @@ index e452ac3..da156ac 100644
      public String getAccountPoolRoot() {
      	int index = accountPool.indexOf(".");
      	if (index != -1)
-@@ -164,7 +170,7 @@ public class AccountPoolMapper extends AccountMapper {
+@@ -164,7 +170,8 @@ public class AccountPoolMapper extends AccountMapper {
      @Override
      public AccountInfo mapUser(GridUser user, boolean createIfDoesNotExist) {
          String account = getDB().retrieveAccount(user);
 -        if (account != null) return new AccountInfo(account);
-+        if (account != null) return new AccountInfo(account, groupName);
++        String group = groupName == null || groupName.equals("") ? null : groupName;
++        if (account != null) return new AccountInfo(account, group);
          if (createIfDoesNotExist) {
          	String newAccount = getDB().assignAccount(user);
          	if (newAccount==null) {
-@@ -181,7 +187,11 @@ public class AccountPoolMapper extends AccountMapper {
+@@ -172,7 +179,7 @@ public class AccountPoolMapper extends AccountMapper {
+         		gumsAdminLog.warn(message);
+         		GUMS.gumsAdminEmailLog.put("noPoolAccounts", message, false);
+         	}
+-        	return new AccountInfo(newAccount);
++        	return new AccountInfo(newAccount, group);
+         }
+         else
+         	return null;
+@@ -181,7 +188,11 @@ public class AccountPoolMapper extends AccountMapper {
      public void setAccountPool(String accountPool) {
      	this.accountPool = accountPool;
      }
@@ -65,7 +75,7 @@ index e452ac3..da156ac 100644
      public void setPersistenceFactory(String persistenceFactory) {
          this.persistenceFactory = persistenceFactory;
      }
-@@ -213,13 +223,18 @@ public class AccountPoolMapper extends AccountMapper {
+@@ -213,13 +224,18 @@ public class AccountPoolMapper extends AccountMapper {
      }
      
      public String toXML() {
