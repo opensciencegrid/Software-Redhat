@@ -144,7 +144,8 @@ install -m 644 %SOURCE3 .
 
 %build
 %if %{maven}
-mvn -B -o install javadoc:aggregate
+mvn -B install javadoc:aggregate
+#mvn -B -o install javadoc:aggregate
 %else
 export CLASSPATH=$(build-classpath bcprov log4j commons-cli commons-lang)
 ant package javadoc
