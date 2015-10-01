@@ -1,0 +1,779 @@
+diff -ur JGlobus-JGlobus-Release-2.1.0.orig/pom.xml JGlobus-JGlobus-Release-2.1.0/pom.xml
+--- JGlobus-JGlobus-Release-2.1.0.orig/pom.xml	2014-09-26 05:46:02.000000000 +0200
++++ JGlobus-JGlobus-Release-2.1.0/pom.xml	2014-10-01 15:05:09.420521469 +0200
+@@ -148,8 +148,8 @@
+ 			</dependency>
+ 			<dependency>
+ 				<groupId>org.bouncycastle</groupId>
+-				<artifactId>bcprov-jdk15on</artifactId>
+-				<version>1.50</version>
++				<artifactId>bcprov-jdk16</artifactId>
++				<version>1.46</version>
+ 			</dependency>
+ 			<dependency>
+ 				<groupId>commons-io</groupId>
+diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/pom.xml JGlobus-JGlobus-Release-2.1.0/ssl-proxies/pom.xml
+--- JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/pom.xml	2014-09-26 05:46:02.000000000 +0200
++++ JGlobus-JGlobus-Release-2.1.0/ssl-proxies/pom.xml	2014-10-01 15:05:09.420521469 +0200
+@@ -41,7 +41,7 @@
+ 		</dependency>
+ 		<dependency>
+ 			<groupId>org.bouncycastle</groupId>
+-			<artifactId>bcprov-jdk15on</artifactId>
++			<artifactId>bcprov-jdk16</artifactId>
+ 		</dependency>
+ 		<dependency>
+ 			<groupId>commons-io</groupId>
+diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus/gsi/bc/BouncyCastleCertProcessingFactory.java JGlobus-JGlobus-Release-2.1.0/ssl-proxies/src/main/java/org/globus/gsi/bc/BouncyCastleCertProcessingFactory.java
+--- JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus/gsi/bc/BouncyCastleCertProcessingFactory.java	2014-09-26 05:46:02.000000000 +0200
++++ JGlobus-JGlobus-Release-2.1.0/ssl-proxies/src/main/java/org/globus/gsi/bc/BouncyCastleCertProcessingFactory.java	2014-10-01 15:05:09.421521479 +0200
+@@ -14,7 +14,6 @@
+  */
+ package org.globus.gsi.bc;
+ 
+-import org.bouncycastle.asn1.x500.style.BCStyle;
+ import org.globus.gsi.util.CertificateLoadUtil;
+ import org.globus.gsi.util.ProxyCertificateUtil;
+ 
+@@ -49,13 +48,13 @@
+ import org.bouncycastle.jce.PKCS10CertificationRequest;
+ import org.bouncycastle.jce.provider.X509CertificateObject;
+ import org.bouncycastle.asn1.DERSet;
++import org.bouncycastle.asn1.DERObject;
+ import org.bouncycastle.asn1.DERBitString;
+ import org.bouncycastle.asn1.x509.X509Name;
+-import org.bouncycastle.asn1.ASN1Primitive;
+ import org.bouncycastle.asn1.ASN1InputStream;
+ import org.bouncycastle.asn1.ASN1Sequence;
+-import org.bouncycastle.asn1.x509.Certificate;
+ import org.bouncycastle.asn1.x509.TBSCertificateStructure;
++import org.bouncycastle.asn1.x509.X509CertificateStructure;
+ import org.bouncycastle.asn1.x509.X509Extensions;
+ import org.bouncycastle.asn1.x509.X509Extension;
+ import org.bouncycastle.asn1.x509.KeyUsage;
+@@ -150,7 +149,7 @@
+         throws IOException, GeneralSecurityException {
+ 
+         ASN1InputStream derin = new ASN1InputStream(certRequestInputStream);
+-        ASN1Primitive reqInfo = derin.readObject();
++        DERObject reqInfo = derin.readObject();
+         PKCS10CertificationRequest certReq = new PKCS10CertificationRequest((ASN1Sequence) reqInfo);
+ 
+         boolean rs = certReq.verify();
+@@ -414,11 +413,11 @@
+                     X509Extension ext;
+ 
+                     // handle key usage ext
+-                    ext = extensions.getExtension(X509Extension.keyUsage);
++                    ext = extensions.getExtension(X509Extensions.KeyUsage);
+                     if (ext != null) {
+ 
+                         // TBD: handle this better
+-                        if (extSet != null && (extSet.get(X509Extension.keyUsage.getId()) != null)) {
++                        if (extSet != null && (extSet.get(X509Extensions.KeyUsage.getId()) != null)) {
+                             String err = i18n.getMessage("keyUsageExt");
+                             throw new GeneralSecurityException(err);
+                         }
+@@ -438,7 +437,7 @@
+ 
+                         bits = new DERBitString(bytes, bits.getPadBits());
+ 
+-                        certGen.addExtension(X509Extension.keyUsage, ext.isCritical(), bits);
++                        certGen.addExtension(X509Extensions.KeyUsage, ext.isCritical(), bits);
+                     }
+                 }
+ 
+@@ -482,7 +481,7 @@
+         X509NameHelper issuer = new X509NameHelper(issuerDN);
+ 
+         X509NameHelper subject = new X509NameHelper(issuerDN);
+-        subject.add(BCStyle.CN, (cnValue == null) ? delegDN : cnValue);
++        subject.add(X509Name.CN, (cnValue == null) ? delegDN : cnValue);
+ 
+         certGen.setSubjectDN(subject.getAsName());
+         certGen.setIssuerDN(issuer.getAsName());
+@@ -573,7 +572,7 @@
+         String cnValue) throws IOException, GeneralSecurityException {
+ 
+         ASN1InputStream derin = new ASN1InputStream(certRequestInputStream);
+-        ASN1Primitive reqInfo = derin.readObject();
++        DERObject reqInfo = derin.readObject();
+         PKCS10CertificationRequest certReq = new PKCS10CertificationRequest((ASN1Sequence) reqInfo);
+ 
+         boolean rs = certReq.verify();
+@@ -818,11 +817,11 @@
+                     X509Extension ext;
+ 
+                     // handle key usage ext
+-                    ext = extensions.getExtension(X509Extension.keyUsage);
++                    ext = extensions.getExtension(X509Extensions.KeyUsage);
+                     if (ext != null) {
+ 
+                         // TBD: handle this better
+-                        if (extSet != null && (extSet.get(X509Extension.keyUsage.getId()) != null)) {
++                        if (extSet != null && (extSet.get(X509Extensions.KeyUsage.getId()) != null)) {
+                             String err = i18n.getMessage("keyUsageExt");
+                             throw new GeneralSecurityException(err);
+                         }
+@@ -842,7 +841,7 @@
+ 
+                         bits = new DERBitString(bytes, bits.getPadBits());
+ 
+-                        certGen.addExtension(X509Extension.keyUsage, ext.isCritical(), bits);
++                        certGen.addExtension(X509Extensions.KeyUsage, ext.isCritical(), bits);
+                     }
+                 }
+ 
+@@ -884,7 +883,7 @@
+         }
+         X509NameHelper issuer = new X509NameHelper(issuerDN);
+         X509NameHelper subject = new X509NameHelper(issuerDN);
+-        subject.add(BCStyle.CN, (cnValue == null) ? delegDN : cnValue);
++        subject.add(X509Name.CN, (cnValue == null) ? delegDN : cnValue);
+ 
+         certGen.setSubjectDN(subject.getAsName());
+         certGen.setIssuerDN(issuer.getAsName());
+@@ -923,9 +922,9 @@
+      */
+     public X509Certificate loadCertificate(InputStream in) throws IOException, GeneralSecurityException {
+         ASN1InputStream derin = new ASN1InputStream(in);
+-        ASN1Primitive certInfo = derin.readObject();
++        DERObject certInfo = derin.readObject();
+         ASN1Sequence seq = ASN1Sequence.getInstance(certInfo);
+-        return new X509CertificateObject(Certificate.getInstance(seq));
++        return new X509CertificateObject(new X509CertificateStructure(seq));
+     }
+ 
+     /**
+diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus/gsi/bc/BouncyCastleOpenSSLKey.java JGlobus-JGlobus-Release-2.1.0/ssl-proxies/src/main/java/org/globus/gsi/bc/BouncyCastleOpenSSLKey.java
+--- JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus/gsi/bc/BouncyCastleOpenSSLKey.java	2014-09-26 05:46:02.000000000 +0200
++++ JGlobus-JGlobus-Release-2.1.0/ssl-proxies/src/main/java/org/globus/gsi/bc/BouncyCastleOpenSSLKey.java	2014-10-01 15:05:09.421521479 +0200
+@@ -28,8 +28,8 @@
+ import java.security.interfaces.RSAPrivateCrtKey;
+ import java.security.spec.PKCS8EncodedKeySpec;
+ import org.bouncycastle.asn1.ASN1InputStream;
+-import org.bouncycastle.asn1.ASN1Primitive;
+ import org.bouncycastle.asn1.ASN1Sequence;
++import org.bouncycastle.asn1.DERObject;
+ import org.bouncycastle.asn1.DERObjectIdentifier;
+ import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
+ import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
+@@ -121,12 +121,12 @@
+ 				}
+ 				ByteArrayInputStream bis = new ByteArrayInputStream(data);
+ 				ASN1InputStream derin = new ASN1InputStream(bis);
+-				ASN1Primitive keyInfo = derin.readObject();
++				DERObject keyInfo = derin.readObject();
+ 
+ 				DERObjectIdentifier rsaOid = PKCSObjectIdentifiers.rsaEncryption;
+ 				AlgorithmIdentifier rsa = new AlgorithmIdentifier(rsaOid);
+ 				PrivateKeyInfo pkeyinfo = new PrivateKeyInfo(rsa, keyInfo);
+-				ASN1Primitive derkey = pkeyinfo.toASN1Primitive();
++				DERObject derkey = pkeyinfo.getDERObject();
+ 				byte[] keyData = BouncyCastleUtil.toByteArray(derkey);
+ 				// The DER object needs to be mangled to
+ 				// create a proper ProvateKeyInfo object
+@@ -150,10 +150,10 @@
+ 				&& (format.equalsIgnoreCase("PKCS#8") || format
+ 						.equalsIgnoreCase("PKCS8"))) {
+ 			try {
+-				ASN1Primitive keyInfo = BouncyCastleUtil.toASN1Primitive(key
++				DERObject keyInfo = BouncyCastleUtil.toDERObject(key
+ 						.getEncoded());
+ 				PrivateKeyInfo pkey = new PrivateKeyInfo((ASN1Sequence) keyInfo);
+-				ASN1Primitive derKey = pkey.getPrivateKey();
++				DERObject derKey = pkey.getPrivateKey();
+ 				return BouncyCastleUtil.toByteArray(derKey);
+ 			} catch (IOException e) {
+ 				// that should never happen
+@@ -169,7 +169,7 @@
+ 					.getPrivateExponent(), pKey.getPrimeP(), pKey.getPrimeQ(),
+ 					pKey.getPrimeExponentP(), pKey.getPrimeExponentQ(), pKey
+ 							.getCrtCoefficient());
+-			ASN1Primitive ob = st.toASN1Primitive();
++			DERObject ob = st.getDERObject();
+ 
+ 			try {
+ 				return BouncyCastleUtil.toByteArray(ob);
+diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus/gsi/bc/BouncyCastleUtil.java JGlobus-JGlobus-Release-2.1.0/ssl-proxies/src/main/java/org/globus/gsi/bc/BouncyCastleUtil.java
+--- JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus/gsi/bc/BouncyCastleUtil.java	2014-09-26 05:46:02.000000000 +0200
++++ JGlobus-JGlobus-Release-2.1.0/ssl-proxies/src/main/java/org/globus/gsi/bc/BouncyCastleUtil.java	2014-10-01 15:15:20.557670350 +0200
+@@ -30,15 +30,16 @@
+ 
+ import org.bouncycastle.asn1.ASN1InputStream;
+ import org.bouncycastle.asn1.ASN1OctetString;
+-import org.bouncycastle.asn1.ASN1Primitive;
+ import org.bouncycastle.asn1.ASN1Sequence;
+ import org.bouncycastle.asn1.ASN1Set;
+-import org.bouncycastle.asn1.ASN1String;
+ import org.bouncycastle.asn1.DERBitString;
++import org.bouncycastle.asn1.DERBoolean;
++import org.bouncycastle.asn1.DEREncodable;
++import org.bouncycastle.asn1.DERInteger;
++import org.bouncycastle.asn1.DERObject;
+ import org.bouncycastle.asn1.DERObjectIdentifier;
+ import org.bouncycastle.asn1.DEROutputStream;
+-import org.bouncycastle.asn1.x500.X500Name;
+-import org.bouncycastle.asn1.x500.style.BCStyle;
++import org.bouncycastle.asn1.DERString;
+ import org.bouncycastle.asn1.x509.BasicConstraints;
+ import org.bouncycastle.asn1.x509.TBSCertificateStructure;
+ import org.bouncycastle.asn1.x509.X509Extension;
+@@ -75,7 +76,7 @@
+      * @return the DER-encoded byte array
+      * @exception IOException if conversion fails
+      */
+-    public static byte[] toByteArray(ASN1Primitive obj)
++    public static byte[] toByteArray(DERObject obj)
+ 	throws IOException {
+ 	ByteArrayOutputStream bout = new ByteArrayOutputStream();
+ 	DEROutputStream der = new DEROutputStream(bout);
+@@ -91,7 +92,7 @@
+      * @return the DERObject.
+      * @exception IOException if conversion fails
+      */
+-    public static ASN1Primitive toASN1Primitive(byte[] data)
++    public static DERObject toDERObject(byte[] data)
+ 	throws IOException {
+         ByteArrayInputStream inStream = new ByteArrayInputStream(data);
+         ASN1InputStream derInputStream = new ASN1InputStream(inStream);
+@@ -107,9 +108,9 @@
+      * @return a copy of the DERObject.
+      * @exception IOException if replication fails
+      */
+-    public static ASN1Primitive duplicate(ASN1Primitive obj)
++    public static DERObject duplicate(DERObject obj)
+ 	throws IOException {
+-	return toASN1Primitive(toByteArray(obj));
++	return toDERObject(toByteArray(obj));
+     }
+ 
+     /**
+@@ -122,7 +123,7 @@
+      */
+     public static TBSCertificateStructure getTBSCertificateStructure(X509Certificate cert)
+ 	throws CertificateEncodingException, IOException {
+-	ASN1Primitive obj = BouncyCastleUtil.toASN1Primitive(cert.getTBSCertificate());
++	DERObject obj = BouncyCastleUtil.toDERObject(cert.getTBSCertificate());
+ 	return TBSCertificateStructure.getInstance(obj);
+     }
+ 
+@@ -132,9 +133,9 @@
+      * @param ext the certificate extension to extract the value from.
+      * @exception IOException if extraction fails.
+      */
+-    public static ASN1Primitive getExtensionObject(X509Extension ext)
++    public static DERObject getExtensionObject(X509Extension ext)
+ 	throws IOException {
+-	return toASN1Primitive(ext.getValue().getOctets());
++	return toDERObject(ext.getValue().getOctets());
+     }
+ 
+     /**
+@@ -294,9 +295,9 @@
+ 	X509Extension ext = null;
+ 
+ 	if (extensions != null) {
+-	    ext = extensions.getExtension(X509Extension.basicConstraints);
++	    ext = extensions.getExtension(X509Extensions.BasicConstraints);
+ 	    if (ext != null) {
+-		BasicConstraints basicExt = BasicConstraints.getInstance(ext);
++		BasicConstraints basicExt = getBasicConstraints(ext);
+ 		if (basicExt.isCA()) {
+ 		    return GSIConstants.CertificateType.CA;
+ 		}
+@@ -306,12 +307,12 @@
+ 	GSIConstants.CertificateType type = GSIConstants.CertificateType.EEC;
+ 
+ 	// does not handle multiple AVAs
+-	X500Name subject = crt.getSubject();
++	X509Name subject = crt.getSubject();
+ 
+ 	ASN1Set entry = X509NameHelper.getLastNameEntry(subject);
+ 	ASN1Sequence ava = (ASN1Sequence)entry.getObjectAt(0);
+-	if (BCStyle.CN.equals(ava.getObjectAt(0))) {
+-	    String value = ((ASN1String)ava.getObjectAt(1)).getString();
++	if (X509Name.CN.equals(ava.getObjectAt(0))) {
++	    String value = ((DERString)ava.getObjectAt(1)).getString();
+ 	    if (value.equalsIgnoreCase("proxy")) {
+ 		type = GSIConstants.CertificateType.GSI_2_PROXY;
+ 	    } else if (value.equalsIgnoreCase("limited proxy")) {
+@@ -369,7 +370,7 @@
+ 		X509NameHelper iss = new X509NameHelper(crt.getIssuer());
+ 		iss.add((ASN1Set)BouncyCastleUtil.duplicate(entry));
+ 		X509Name issuer = iss.getAsName();
+-		if (!issuer.equals(X509Name.getInstance(subject))) {
++		if (!issuer.equals(subject)) {
+                     String err = i18n.getMessage("proxyDNErr");
+ 		    throw new CertificateException(err);
+ 		}
+@@ -403,6 +404,36 @@
+     }
+ 
+     /**
++     * Creates a <code>BasicConstraints</code> object from given
++     * extension.
++     *
++     * @param ext the extension.
++     * @return the <code>BasicConstraints</code> object.
++     * @exception IOException if something fails.
++     */
++    public static BasicConstraints getBasicConstraints(X509Extension ext) 
++	throws IOException {
++	DERObject obj = BouncyCastleUtil.getExtensionObject(ext);
++	if (obj instanceof ASN1Sequence) {
++	    ASN1Sequence seq = (ASN1Sequence)obj;
++	    int size = seq.size();
++	    if (size == 0) {
++		return new BasicConstraints(false);
++	    } else if (size == 1) {
++		DEREncodable value = seq.getObjectAt(0);
++		if (value instanceof DERInteger) {
++		    int length = ((DERInteger)value).getValue().intValue();
++		    return new BasicConstraints(false, length);
++		} else if (value instanceof DERBoolean) {
++		    boolean ca = ((DERBoolean)value).isTrue();
++		    return new BasicConstraints(ca);
++		}
++	    } 
++	}
++	return BasicConstraints.getInstance(obj);
++    }
++
++    /**
+      * Creates a <code>ProxyCertInfo</code> object from given
+      * extension.
+      *
+@@ -500,7 +531,7 @@
+ 	throws IOException {
+ 	ByteArrayInputStream inStream = new ByteArrayInputStream(certExtValue);
+ 	ASN1InputStream derInputStream = new ASN1InputStream(inStream);
+-        ASN1Primitive object = derInputStream.readObject();
++	DERObject object = derInputStream.readObject();
+ 	if (object instanceof ASN1OctetString) {
+ 	    return ((ASN1OctetString)object).getOctets();
+ 	} else {
+diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus/gsi/bc/BouncyCastleX509Extension.java JGlobus-JGlobus-Release-2.1.0/ssl-proxies/src/main/java/org/globus/gsi/bc/BouncyCastleX509Extension.java
+--- JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus/gsi/bc/BouncyCastleX509Extension.java	2014-09-26 05:46:02.000000000 +0200
++++ JGlobus-JGlobus-Release-2.1.0/ssl-proxies/src/main/java/org/globus/gsi/bc/BouncyCastleX509Extension.java	2014-10-01 15:05:09.422521489 +0200
+@@ -16,7 +16,7 @@
+ 
+ import java.io.IOException;
+ 
+-import org.bouncycastle.asn1.ASN1Encodable;
++import org.bouncycastle.asn1.DEREncodable;
+ 
+ import org.globus.gsi.X509Extension;
+ 
+@@ -36,22 +36,22 @@
+ 	this(oid, false, null);
+     }
+ 
+-    public BouncyCastleX509Extension(String oid, ASN1Encodable value) {
++    public BouncyCastleX509Extension(String oid, DEREncodable value) {
+ 	this(oid, false, value);
+     }
+ 
+     public BouncyCastleX509Extension(String oid, boolean critical,
+-				     ASN1Encodable value) {
++				     DEREncodable value) {
+ 	super(oid, critical, null);
+ 	setValue(value);
+     }
+ 
+-    protected void setValue(ASN1Encodable value) {
++    protected void setValue(DEREncodable value) {
+ 	if (value == null) {
+ 	    return;
+ 	}
+     	try {
+-	    setValue(BouncyCastleUtil.toByteArray(value.toASN1Primitive()));
++	    setValue(BouncyCastleUtil.toByteArray(value.getDERObject()));
+ 	} catch (IOException e) {
+ 	    throw new RuntimeException(i18n.getMessage("byteArrayErr") +
+ 				       e.getMessage());
+diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus/gsi/bc/X509NameHelper.java JGlobus-JGlobus-Release-2.1.0/ssl-proxies/src/main/java/org/globus/gsi/bc/X509NameHelper.java
+--- JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus/gsi/bc/X509NameHelper.java	2014-09-26 05:46:02.000000000 +0200
++++ JGlobus-JGlobus-Release-2.1.0/ssl-proxies/src/main/java/org/globus/gsi/bc/X509NameHelper.java	2014-10-01 15:05:09.423521499 +0200
+@@ -21,13 +21,11 @@
+ import org.bouncycastle.asn1.ASN1EncodableVector;
+ import org.bouncycastle.asn1.ASN1Sequence;
+ import org.bouncycastle.asn1.ASN1Set;
+-import org.bouncycastle.asn1.ASN1String;
+ import org.bouncycastle.asn1.DERObjectIdentifier;
+ import org.bouncycastle.asn1.DERPrintableString;
+ import org.bouncycastle.asn1.DERSequence;
+ import org.bouncycastle.asn1.DERSet;
+-import org.bouncycastle.asn1.x500.RDN;
+-import org.bouncycastle.asn1.x500.X500Name;
++import org.bouncycastle.asn1.DERString;
+ import org.bouncycastle.asn1.x509.X509Name;
+ 
+ /**
+@@ -47,21 +45,6 @@
+     }
+ 
+     /**
+-     * Creates an instance using existing {@link X500Name X500Name}
+-     * object.
+-     * This behaves like a copy constructor.
+-     *
+-     * @param name existing <code>X500Name</code>
+-     */
+-    public X509NameHelper(X500Name name) {
+-        try {
+-            this.seq = (ASN1Sequence)BouncyCastleUtil.duplicate(name.toASN1Primitive());
+-        } catch (IOException e) {
+-            throw new RuntimeException(e.getMessage());
+-        }
+-    }
+-
+-    /**
+      * Creates an instance using existing {@link X509Name X509Name}
+      * object.
+      * This behaves like a copy constructor.
+@@ -70,7 +53,7 @@
+      */
+     public X509NameHelper(X509Name name) {
+         try {
+-            this.seq = (ASN1Sequence)BouncyCastleUtil.duplicate(name.toASN1Primitive());
++            this.seq = (ASN1Sequence)BouncyCastleUtil.duplicate(name.getDERObject());
+         } catch (IOException e) {
+             throw new RuntimeException(e.getMessage());
+         }
+@@ -142,10 +125,10 @@
+      *
+      * @return the last name component. Null if there is none.
+      */
+-    public static ASN1Set getLastNameEntry(X500Name name) {
+-        RDN[] rdns = name.getRDNs();
+-        int size = rdns.length;
+-        return (size > 0) ? (ASN1Set) rdns[size - 1].toASN1Primitive() : null;
++    public static ASN1Set getLastNameEntry(X509Name name) {
++        ASN1Sequence seq = (ASN1Sequence) name.getDERObject();
++        int size = seq.size();
++        return (size > 0) ? (ASN1Set) seq.getObjectAt(size - 1) : null;
+     }
+ 
+     /**
+@@ -159,7 +142,7 @@
+         if (name == null) {
+             return null;
+         }
+-        return toString((ASN1Sequence)name.toASN1Primitive());
++        return toString((ASN1Sequence)name.getDERObject());
+     }
+ 
+     private static String toString(ASN1Sequence seq) {
+@@ -176,14 +159,14 @@
+             while (ee.hasMoreElements()) {
+                 ASN1Sequence s = (ASN1Sequence)ee.nextElement();
+                 DERObjectIdentifier oid = (DERObjectIdentifier)s.getObjectAt(0);
+-                String sym = (String)X509Name.DefaultSymbols.get(oid);
++                String sym = (String)X509Name.OIDLookUp.get(oid);
+                 if (sym == null) {
+                     buf.append(oid.getId());
+                 } else {
+                     buf.append(sym);
+                 }
+                 buf.append('=');
+-                buf.append(((ASN1String)s.getObjectAt(1)).getString());
++                buf.append(((DERString)s.getObjectAt(1)).getString());
+                 if (ee.hasMoreElements()) {
+                     buf.append('+');
+                 }
+diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus/gsi/proxy/ext/ProxyCertInfo.java JGlobus-JGlobus-Release-2.1.0/ssl-proxies/src/main/java/org/globus/gsi/proxy/ext/ProxyCertInfo.java
+--- JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus/gsi/proxy/ext/ProxyCertInfo.java	2014-09-26 05:46:02.000000000 +0200
++++ JGlobus-JGlobus-Release-2.1.0/ssl-proxies/src/main/java/org/globus/gsi/proxy/ext/ProxyCertInfo.java	2014-10-01 15:05:09.423521499 +0200
+@@ -20,11 +20,11 @@
+ 
+ import java.io.IOException;
+ 
+-import org.bouncycastle.asn1.ASN1Encodable;
+ import org.bouncycastle.asn1.ASN1EncodableVector;
+-import org.bouncycastle.asn1.ASN1Primitive;
+ import org.bouncycastle.asn1.ASN1Sequence;
++import org.bouncycastle.asn1.DEREncodable;
+ import org.bouncycastle.asn1.DERInteger;
++import org.bouncycastle.asn1.DERObject;
+ import org.bouncycastle.asn1.DERSequence;
+ 
+ /**
+@@ -34,7 +34,7 @@
+  * ProxyCertInfo ::= SEQUENCE { pCPathLenConstraint      INTEGER (0..MAX) OPTIONAL, proxyPolicy ProxyPolicy }
+  * </PRE>
+  */
+-public class ProxyCertInfo implements ASN1Encodable {
++public class ProxyCertInfo implements DEREncodable {
+ 
+     /** ProxyCertInfo extension OID */
+     public static final DERObjectIdentifier OID
+@@ -111,9 +111,9 @@
+         } else if (obj instanceof ASN1Sequence) {
+             return new ProxyCertInfo((ASN1Sequence) obj);
+         } else if (obj instanceof byte[]) {
+-            ASN1Primitive derObj;
++            DERObject derObj;
+             try {
+-                derObj = CertificateUtil.toASN1Primitive((byte[]) obj);
++                derObj = CertificateUtil.toDERObject((byte[]) obj);
+             } catch (IOException e) {
+                 throw new IllegalArgumentException(e.getMessage(), e);
+             }
+@@ -129,14 +129,14 @@
+      *
+      * @return <code>DERObject</code> the encoded representation of the extension.
+      */
+-    public ASN1Primitive toASN1Primitive() {
++    public DERObject getDERObject() {
+         ASN1EncodableVector vec = new ASN1EncodableVector();
+ 
+         if (this.pathLenConstraint != null) {
+             vec.add(this.pathLenConstraint);
+         }
+ 
+-        vec.add(this.proxyPolicy.toASN1Primitive());
++        vec.add(this.proxyPolicy.getDERObject());
+ 
+         return new DERSequence(vec);
+     }
+diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus/gsi/proxy/ext/ProxyPolicy.java JGlobus-JGlobus-Release-2.1.0/ssl-proxies/src/main/java/org/globus/gsi/proxy/ext/ProxyPolicy.java
+--- JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus/gsi/proxy/ext/ProxyPolicy.java	2014-09-26 05:46:02.000000000 +0200
++++ JGlobus-JGlobus-Release-2.1.0/ssl-proxies/src/main/java/org/globus/gsi/proxy/ext/ProxyPolicy.java	2014-10-01 15:05:09.423521499 +0200
+@@ -14,10 +14,10 @@
+  */
+ package org.globus.gsi.proxy.ext;
+ 
+-import org.bouncycastle.asn1.ASN1Encodable;
+ import org.bouncycastle.asn1.ASN1EncodableVector;
+-import org.bouncycastle.asn1.ASN1Primitive;
+ import org.bouncycastle.asn1.ASN1Sequence;
++import org.bouncycastle.asn1.DEREncodable;
++import org.bouncycastle.asn1.DERObject;
+ import org.bouncycastle.asn1.DERObjectIdentifier;
+ import org.bouncycastle.asn1.DEROctetString;
+ import org.bouncycastle.asn1.DERSequence;
+@@ -27,7 +27,7 @@
+  * Represents the policy part of the ProxyCertInfo extension. <BR> <PRE>
+  * ProxyPolicy ::= SEQUENCE { policyLanguage    OBJECT IDENTIFIER, policy OCTET STRING OPTIONAL } </PRE>
+  */
+-public class ProxyPolicy implements ASN1Encodable {
++public class ProxyPolicy implements DEREncodable {
+ 
+     /**
+      * Impersonation proxy OID
+@@ -58,7 +58,7 @@
+         }
+         this.policyLanguage = (DERObjectIdentifier) seq.getObjectAt(0);
+         if (seq.size() > 1) {
+-            ASN1Encodable obj = seq.getObjectAt(1);
++            DEREncodable obj = seq.getObjectAt(1);
+             if (obj instanceof DERTaggedObject) {
+                 obj = ((DERTaggedObject) obj).getObject();
+             }
+@@ -133,7 +133,7 @@
+      * @return <code>DERObject</code> the encoded representation of the proxy
+      *         policy.
+      */
+-    public ASN1Primitive toASN1Primitive() {
++    public DERObject getDERObject() {
+ 
+         ASN1EncodableVector vec = new ASN1EncodableVector();
+ 
+diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus/gsi/trustmanager/X509ProxyCertPathValidator.java JGlobus-JGlobus-Release-2.1.0/ssl-proxies/src/main/java/org/globus/gsi/trustmanager/X509ProxyCertPathValidator.java
+--- JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus/gsi/trustmanager/X509ProxyCertPathValidator.java	2014-09-26 05:46:02.000000000 +0200
++++ JGlobus-JGlobus-Release-2.1.0/ssl-proxies/src/main/java/org/globus/gsi/trustmanager/X509ProxyCertPathValidator.java	2014-10-01 15:05:09.424521509 +0200
+@@ -500,12 +500,12 @@
+             while (e.hasMoreElements()) {
+                 oid = (DERObjectIdentifier) e.nextElement();
+                 proxyExtension = extensions.getExtension(oid);
+-                if (oid.equals(X509Extension.subjectAlternativeName)
+-                        || oid.equals(X509Extension.issuerAlternativeName)) {
++                if (oid.equals(X509Extensions.SubjectAlternativeName)
++                        || oid.equals(X509Extensions.IssuerAlternativeName)) {
+                     // No Alt name extensions - 3.2 & 3.5
+                     throw new CertPathValidatorException(
+                             "Proxy violation: no Subject or Issuer Alternative Name");
+-                } else if (oid.equals(X509Extension.basicConstraints)) {
++                } else if (oid.equals(X509Extensions.BasicConstraints)) {
+                     // Basic Constraint must not be true - 3.8
+                     BasicConstraints basicExt =
+                             CertificateUtil.getBasicConstraints(proxyExtension);
+@@ -513,7 +513,7 @@
+                         throw new CertPathValidatorException(
+                                 "Proxy violation: Basic Constraint CA is set to true");
+                     }
+-                } else if (oid.equals(X509Extension.keyUsage)) {
++                } else if (oid.equals(X509Extensions.KeyUsage)) {
+                     proxyKeyUsage = proxyExtension;
+ 
+                     checkKeyUsage(issuer, proxyExtension);
+@@ -543,7 +543,7 @@
+     }
+ 
+     private void checkExtension(DERObjectIdentifier oid, X509Extension proxyExtension, X509Extension proxyKeyUsage) throws CertPathValidatorException {
+-        if (oid.equals(X509Extension.keyUsage)) {
++        if (oid.equals(X509Extensions.KeyUsage)) {
+             // If issuer has it then proxy must have it also
+             if (proxyKeyUsage == null) {
+                 throw new CertPathValidatorException(
+diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus/gsi/util/CertificateIOUtil.java JGlobus-JGlobus-Release-2.1.0/ssl-proxies/src/main/java/org/globus/gsi/util/CertificateIOUtil.java
+--- JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus/gsi/util/CertificateIOUtil.java	2014-09-26 05:46:02.000000000 +0200
++++ JGlobus-JGlobus-Release-2.1.0/ssl-proxies/src/main/java/org/globus/gsi/util/CertificateIOUtil.java	2014-10-01 15:05:09.424521509 +0200
+@@ -107,7 +107,7 @@
+     public static byte[] encodePrincipal(X509Name subject) throws IOException {
+         ByteArrayOutputStream bout = new ByteArrayOutputStream();
+         DEROutputStream der = new DEROutputStream(bout);
+-        der.writeObject(subject.toASN1Primitive());
++        der.writeObject(subject.getDERObject());
+         return bout.toByteArray();
+     }
+ 
+diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus/gsi/util/CertificateUtil.java JGlobus-JGlobus-Release-2.1.0/ssl-proxies/src/main/java/org/globus/gsi/util/CertificateUtil.java
+--- JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus/gsi/util/CertificateUtil.java	2014-09-26 05:46:02.000000000 +0200
++++ JGlobus-JGlobus-Release-2.1.0/ssl-proxies/src/main/java/org/globus/gsi/util/CertificateUtil.java	2014-10-01 15:05:09.425521519 +0200
+@@ -18,14 +18,12 @@
+ import org.apache.commons.logging.LogFactory;
+ import org.bouncycastle.asn1.ASN1InputStream;
+ import org.bouncycastle.asn1.ASN1Object;
+-import org.bouncycastle.asn1.ASN1Primitive;
+ import org.bouncycastle.asn1.ASN1Sequence;
+ import org.bouncycastle.asn1.ASN1Set;
+-import org.bouncycastle.asn1.ASN1String;
+ import org.bouncycastle.asn1.DERBitString;
++import org.bouncycastle.asn1.DERObject;
+ import org.bouncycastle.asn1.DERObjectIdentifier;
+-import org.bouncycastle.asn1.x500.X500Name;
+-import org.bouncycastle.asn1.x500.style.BCStyle;
++import org.bouncycastle.asn1.DERString;
+ import org.bouncycastle.asn1.x509.BasicConstraints;
+ import org.bouncycastle.asn1.x509.TBSCertificateStructure;
+ import org.bouncycastle.asn1.x509.X509Extension;
+@@ -190,7 +188,7 @@
+             return -1;
+         }
+         X509Extension proxyExtension =
+-                extensions.getExtension(X509Extension.basicConstraints);
++                extensions.getExtension(X509Extensions.BasicConstraints);
+         if (proxyExtension != null) {
+             BasicConstraints basicExt =
+                     getBasicConstraints(proxyExtension);
+@@ -284,7 +282,7 @@
+         X509Extension ext = null;
+ 
+         if (extensions != null) {
+-            ext = extensions.getExtension(X509Extension.basicConstraints);
++            ext = extensions.getExtension(X509Extensions.BasicConstraints);
+             if (ext != null) {
+                 BasicConstraints basicExt = getBasicConstraints(ext);
+                 if (basicExt.isCA()) {
+@@ -296,11 +294,11 @@
+         GSIConstants.CertificateType type = GSIConstants.CertificateType.EEC;
+ 
+         // does not handle multiple AVAs
+-        X500Name subject = crt.getSubject();
++        X509Name subject = crt.getSubject();
+ 
+         ASN1Set entry = X509NameHelper.getLastNameEntry(subject);
+         ASN1Sequence ava = (ASN1Sequence) entry.getObjectAt(0);
+-        if (BCStyle.CN.equals(ava.getObjectAt(0))) {
++        if (X509Name.CN.equals(ava.getObjectAt(0))) {
+             type = processCN(extensions, type, ava);
+         }
+ 
+@@ -310,7 +308,7 @@
+     private static GSIConstants.CertificateType processCN(
+             X509Extensions extensions, GSIConstants.CertificateType type, ASN1Sequence ava) throws CertificateException {
+         X509Extension ext;
+-        String value = ((ASN1String) ava.getObjectAt(1)).getString();
++        String value = ((DERString) ava.getObjectAt(1)).getString();
+         GSIConstants.CertificateType certType = type;
+         if (value.equalsIgnoreCase("proxy")) {
+             certType = GSIConstants.CertificateType.GSI_2_PROXY;
+@@ -405,7 +403,7 @@
+      * @return the DERObject.
+      * @throws IOException if conversion fails
+      */
+-    public static ASN1Primitive toASN1Primitive(byte[] data)
++    public static DERObject toDERObject(byte[] data)
+             throws IOException {
+         ByteArrayInputStream inStream = new ByteArrayInputStream(data);
+         ASN1InputStream derInputStream = new ASN1InputStream(inStream);
+@@ -424,7 +422,7 @@
+     public static TBSCertificateStructure getTBSCertificateStructure(
+             X509Certificate cert)
+             throws CertificateEncodingException, IOException {
+-        ASN1Primitive obj = toASN1Primitive(cert.getTBSCertificate());
++        DERObject obj = toDERObject(cert.getTBSCertificate());
+         return TBSCertificateStructure.getInstance(obj);
+     }
+ 
+@@ -463,9 +461,9 @@
+      * @param ext the certificate extension to extract the value from.
+      * @throws IOException if extraction fails.
+      */
+-    public static ASN1Primitive getExtensionObject(X509Extension ext)
++    public static DERObject getExtensionObject(X509Extension ext)
+             throws IOException {
+-        return toASN1Primitive(ext.getValue().getOctets());
++        return toDERObject(ext.getValue().getOctets());
+     }
+ 
+     /**
+diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/test/java/org/globus/gsi/bc/BouncyCastleCertProcessingFactoryTest.java JGlobus-JGlobus-Release-2.1.0/ssl-proxies/src/test/java/org/globus/gsi/bc/BouncyCastleCertProcessingFactoryTest.java
+--- JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/test/java/org/globus/gsi/bc/BouncyCastleCertProcessingFactoryTest.java	2014-09-26 05:46:02.000000000 +0200
++++ JGlobus-JGlobus-Release-2.1.0/ssl-proxies/src/test/java/org/globus/gsi/bc/BouncyCastleCertProcessingFactoryTest.java	2014-10-01 15:06:34.749379995 +0200
+@@ -26,11 +26,6 @@
+ import org.globus.gsi.proxy.ext.ProxyCertInfo;
+ import org.globus.gsi.proxy.ext.ProxyCertInfoExtension;
+ 
+-import org.bouncycastle.asn1.ASN1Boolean;
+-import org.bouncycastle.asn1.ASN1Encodable;
+-import org.bouncycastle.asn1.ASN1Integer;
+-import org.bouncycastle.asn1.DERBoolean;
+-import org.bouncycastle.asn1.DERSequence;
+ import org.bouncycastle.asn1.x509.BasicConstraints;
+ import org.bouncycastle.asn1.x509.X509Extensions;
+ 
+@@ -94,9 +89,8 @@
+     ext = new X509Extension(oid, critical, expectedValue.getBytes());
+     extSet.add(ext);
+ 
+-    DERSequence seq = new DERSequence(new ASN1Encodable[] { DERBoolean.FALSE, new ASN1Integer(15) });
+-    BasicConstraints constraints = BasicConstraints.getInstance(seq);
+-    ext = new BouncyCastleX509Extension(org.bouncycastle.asn1.x509.X509Extension.basicConstraints.getId(),
++    BasicConstraints constraints = new BasicConstraints(false, 15);
++    ext = new BouncyCastleX509Extension(X509Extensions.BasicConstraints.getId(),
+                         false, constraints);
+     extSet.add(ext);
+ 
+diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/test/java/org/globus/gsi/proxy/ext/ProxyCertInfoTest.java JGlobus-JGlobus-Release-2.1.0/ssl-proxies/src/test/java/org/globus/gsi/proxy/ext/ProxyCertInfoTest.java
+--- JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/test/java/org/globus/gsi/proxy/ext/ProxyCertInfoTest.java	2014-09-26 05:46:02.000000000 +0200
++++ JGlobus-JGlobus-Release-2.1.0/ssl-proxies/src/test/java/org/globus/gsi/proxy/ext/ProxyCertInfoTest.java	2014-10-01 15:05:09.426521529 +0200
+@@ -24,7 +24,7 @@
+ 
+ import org.bouncycastle.asn1.DERObjectIdentifier;
+ import org.bouncycastle.asn1.DEROutputStream;
+-import org.bouncycastle.asn1.ASN1Primitive;
++import org.bouncycastle.asn1.DERObject;
+ import org.bouncycastle.asn1.ASN1Sequence;
+ 
+ import junit.framework.TestCase;
+@@ -63,7 +63,7 @@
+ 	ByteArrayInputStream bIn =
+ 	    new ByteArrayInputStream(bOut.toByteArray());
+ 	ASN1InputStream dIn = new ASN1InputStream(bIn);
+-	ASN1Primitive obj = dIn.readObject();
++	DERObject obj = dIn.readObject();
+ 
+ 	assertTrue(obj instanceof ASN1Sequence);
+ 
+@@ -112,7 +112,7 @@
+ 	ByteArrayInputStream bIn =
+ 	    new ByteArrayInputStream(bOut.toByteArray());
+ 	ASN1InputStream dIn = new ASN1InputStream(bIn);
+-	ASN1Primitive obj = dIn.readObject();
++	DERObject obj = dIn.readObject();
+ 
+ 	ProxyCertInfo testInfo = new ProxyCertInfo((ASN1Sequence)obj);
+ 
