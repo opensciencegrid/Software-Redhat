@@ -2,19 +2,22 @@ Name: jglobus
 Summary: An implementation of Globus for Java
 License: Apache 2.0
 Version: 2.1.0
-Release: 3%{?dist}
+Release: 4%{?dist}
 URL: http://www.globus.org/toolkit/jglobus/
 Group: System Environment/Libraries
 
 # If set, the maven build is done in offline mode and a tarball of the maven
 # dependencies (basically the local repository tarred up) is used.
-%define maven_offline 1
+%define maven_offline 0
 
 # git clone git://github.com/jglobus/JGlobus.git JGlobus
 # cd JGlobus
 # git-archive JGlobus-Release-2.1.0 | gzip -9 > JGlobus-Release-2.1.0.tar.gz
 
 Source0: JGlobus-Release-2.1.0.tar.gz
+
+# jglobus-bc146 patch obtained from EPEL version of jglobus 2.1.0
+Patch0:  jglobus-bc146.patch
 
 BuildArch: noarch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -89,6 +92,10 @@ Source7: %{name}-mvn-deps-el7.tar.gz
 
 %prep
 %setup -q -c -n JGlobus
+
+%if 0%{?rhel} < 7
+%patch0 -p1
+%endif
 
 find -name '*.class' -exec rm -f '{}' \;
 find -name '*.jar' -exec rm -f '{}' \;
@@ -169,6 +176,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_mavendepmapfragdir}/%{name}
 
 %changelog
+* Thu Oct 01 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 2.1.0-4
+- Add patch to EL5 and EL6 builds to fix bouncycastle API compatibility (SOFTWARE-2036)
+- Had to disable offline mode for builds to work
+
 * Wed Sep 16 2015 Brian Bockelman <bbockelm@cse.unl.edu> - 2.1.0-3
 - Package axisg sub-module (replaces cog-jglobus-axis).
 
