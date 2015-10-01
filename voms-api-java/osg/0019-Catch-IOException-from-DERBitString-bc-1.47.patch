@@ -1,0 +1,94 @@
+From 95b2e9aea22e4aa0ec6704ffef3055a2bdb41389 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Wed, 30 Sep 2015 11:38:02 -0500
+Subject: [PATCH 19/24] Catch IOException from DERBitString (bc 1.47+)
+
+In AttributeCertificateInfo, I could re-throw it as an
+IllegalArgumentException instead; I saw nearby parts of the code doing
+that.
+
+In ObjectDigestInfo I had to ignore it because nothing is expecting an
+exception from this constructor and I do not want the interface change
+to propagate.  I couldn't even log it.
+---
+ .../java/org/glite/voms/ac/AttributeCertificateInfo.java  | 15 ++++++++++-----
+ src/main/java/org/glite/voms/ac/ObjectDigestInfo.java     |  7 ++++++-
+ 2 files changed, 16 insertions(+), 6 deletions(-)
+
+diff --git a/src/main/java/org/glite/voms/ac/AttributeCertificateInfo.java b/src/main/java/org/glite/voms/ac/AttributeCertificateInfo.java
+index 2742614..f55f870 100644
+--- a/src/main/java/org/glite/voms/ac/AttributeCertificateInfo.java
++++ b/src/main/java/org/glite/voms/ac/AttributeCertificateInfo.java
+@@ -32,10 +32,11 @@
+  */
+ 
+ package org.glite.voms.ac;
+ 
+ import java.io.ByteArrayInputStream;
++import java.io.IOException;
+ import java.util.Enumeration;
+ import java.util.Iterator;
+ import java.util.List;
+ import java.util.Vector;
+ 
+@@ -176,15 +177,19 @@ public class AttributeCertificateInfo implements ASN1Encodable {
+             }
+         }
+         
+         // check if the following two can be detected better!!! 
+         // for example, is it possible to have only the extensions? how to detect this?
+-        if (seq.size() > 8) {
+-            issuerUniqueID = new DERBitString(seq.getObjectAt(7));
+-            extensions = new X509Extensions((ASN1Sequence) seq.getObjectAt(8));
+-        } else if (seq.size() > 7) {
+-            extensions = new X509Extensions((ASN1Sequence) seq.getObjectAt(7));
++        try {
++            if (seq.size() > 8) {
++                issuerUniqueID = new DERBitString(seq.getObjectAt(7));
++                extensions = new X509Extensions((ASN1Sequence) seq.getObjectAt(8));
++            } else if (seq.size() > 7) {
++                extensions = new X509Extensions((ASN1Sequence) seq.getObjectAt(7));
++            }
++        } catch (IOException e) {
++            throw new IllegalArgumentException("DERO: " + e.getMessage());
+         }
+ 
+         // start parsing of known extensions
+         if (extensions.getExtension(AC_TARGET_OID_DER) != null) {
+             byte[] data = (extensions.getExtension(AC_TARGET_OID_DER).getValue().getOctets());
+diff --git a/src/main/java/org/glite/voms/ac/ObjectDigestInfo.java b/src/main/java/org/glite/voms/ac/ObjectDigestInfo.java
+index 2966c66..9885df5 100644
+--- a/src/main/java/org/glite/voms/ac/ObjectDigestInfo.java
++++ b/src/main/java/org/glite/voms/ac/ObjectDigestInfo.java
+@@ -26,10 +26,11 @@
+  * For license conditions see the license file or http://eu-egee.org/license.html
+  */
+ 
+ package org.glite.voms.ac;
+ 
++import java.io.IOException;
+ import org.bouncycastle.asn1.ASN1EncodableVector;
+ import org.bouncycastle.asn1.ASN1Sequence;
+ import org.bouncycastle.asn1.DERBitString;
+ import org.bouncycastle.asn1.ASN1Encodable;
+ import org.bouncycastle.asn1.ASN1Enumerated;
+@@ -56,11 +57,15 @@ public class ObjectDigestInfo implements ASN1Encodable {
+             offset++;
+         }
+ 
+         digestAlgorithm = AlgorithmIdentifier.getInstance(seq.getObjectAt(1 + offset));
+ 
+-        objectDigest = new DERBitString(seq.getObjectAt(2 + offset));
++        try {
++            objectDigest = new DERBitString(seq.getObjectAt(2 + offset));
++        } catch (IOException e) {
++            ; // I hate doing this
++        }
+     }
+ 
+     public ASN1Enumerated getDigestedObjectType() {
+         return digestedObjectType;
+     }
+-- 
+2.4.6
+

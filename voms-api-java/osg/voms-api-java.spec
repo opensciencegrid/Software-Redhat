@@ -7,7 +7,7 @@
 
 Name:		voms-api-java
 Version:	2.0.8
-Release:	1.6%{?dist}
+Release:	1.7%{?dist}
 Summary:	Virtual Organization Membership Service Java API
 
 Group:		Development/Libraries
@@ -26,6 +26,21 @@ Source0:	%{name}-%{version}.tar.gz
 Source1:	build.xml
 Source2:	maven-build.xml
 Source3:	maven-build.properties
+Patch10:        0010-EL7-use-bouncycastle-1.50.patch
+Patch11:        0011-ASN1Object-ASN1Primitive-bc-1.47.patch
+Patch12:        0012-DEREncodable-ASN1Encodable-bc-1.47.patch
+Patch13:        0013-DERObject-ASN1Primitive-bc-1.47.patch
+Patch14:        0014-DERObjectIdentifier-ASN1ObjectIdentifier-bc-1.47.patch
+Patch15:        0015-DERInteger-ASN1Integer-bc-1.47.patch
+Patch16:        0016-DEREnumerated-ASN1Enumerated-bc-1.47.patch
+Patch17:        0017-PEMReader-PEMParser-bc-1.47-incomplete.patch
+Patch18:        0018-AttCertValidityPeriod-signature-change-bc-1.47.patch
+Patch19:        0019-Catch-IOException-from-DERBitString-bc-1.47.patch
+Patch20:        0020-IssuerSerial-interface-change-bc-1.47-AND-ACTarget.s.patch
+Patch21:        0021-Use-getInstance-instead-of-private-constructor-for-G.patch
+Patch22:        0022-X509CertificateObject-constructor-interface-change-b.patch
+Patch23:        0023-AuthorityKeyIdentifier-constructor-interface-change-.patch
+Patch24:        0024-BasicConstraints-constructor-interface-change-bc-1.4.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:	noarch
 
@@ -39,7 +54,12 @@ ExcludeArch:	ppc64
 
 Requires:	java7
 Requires:	jpackage-utils
+%if 0%{?el7}
+Requires:       mvn(org.bouncycastle:bcprov-jdk15on) = 1.50
+Requires:       mvn(org.bouncycastle:bcpkix-jdk15on) = 1.50
+%else
 Requires:	bouncycastle >= 1.39
+%endif
 Requires:	jakarta-commons-cli
 Requires:	jakarta-commons-lang
 Requires:	log4j
@@ -65,7 +85,12 @@ BuildRequires:	ant
 BuildRequires:	ant-junit
 %endif
 
+%if 0%{?el7}
+BuildRequires:  mvn(org.bouncycastle:bcprov-jdk15on) = 1.50
+BuildRequires:  mvn(org.bouncycastle:bcpkix-jdk15on) = 1.50
+%else
 BuildRequires:	bouncycastle >= 1.39
+%endif
 BuildRequires:	jakarta-commons-cli
 BuildRequires:	jakarta-commons-lang
 BuildRequires:	log4j
@@ -93,15 +118,33 @@ Virtual Organization Membership Service (VOMS) Java API Documentation.
 
 %prep
 %setup -q
+%if 0%{?el7}
+%patch10 -p1
+%patch11 -p1
+%patch12 -p1
+%patch13 -p1
+%patch14 -p1
+%patch15 -p1
+%patch16 -p1
+%patch17 -p1
+%patch18 -p1
+%patch19 -p1
+%patch20 -p1
+%patch21 -p1
+%patch22 -p1
+%patch23 -p1
+%patch24 -p1
+%else
+sed -e s/bcprov-ext-jdk16/bcprov-jdk16/ -e s/1.45/1.46/ -i pom.xml
+%endif
 install -m 644 %SOURCE1 .
 install -m 644 %SOURCE2 .
 install -m 644 %SOURCE3 .
 
-sed -e s/bcprov-ext-jdk16/bcprov-jdk16/ -e s/1.45/1.46/ -i pom.xml
 
 %build
 %if %{maven}
-mvn -B install javadoc:aggregate
+mvn -B -o install javadoc:aggregate
 %else
 export CLASSPATH=$(build-classpath bcprov log4j commons-cli commons-lang)
 ant package javadoc
@@ -155,6 +198,9 @@ if [[ $1 -gt 0 && -e %{_javadir}/%{name}.jar ]]; then
 fi
 
 %changelog
+* Mon Sep 21 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 2.0.8-1.7
+- Use bouncycastle 1.50 on EL7
+
 * Fri Dec 05 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 2.0.8-1.6
 - Fix build failures on EL7
 

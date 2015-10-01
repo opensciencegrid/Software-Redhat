@@ -1,0 +1,116 @@
+From 345186d6efa5e048435b8b34460757febb596bf2 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Thu, 24 Sep 2015 17:48:21 -0500
+Subject: [PATCH 17/24] PEMReader -> PEMParser (bc 1.47+) (incomplete)
+
+This is not a simple rename.  In bc 1.47,
+org.bouncycastle.openssl.PEMReader was removed PEMParser was the
+replacement.  Problem is, PEMReader took a PasswordFinder as an
+argument, and did the decrypting of encrypted keys for us, whereas
+PEMParser doesn't.
+
+I adapted some code from this stack overflow answer:
+    https://stackoverflow.com/a/24262342
+
+An encrypted keypair is now read as a PEMEncryptedKeyPair object, which
+can decrypt itself, if given a PEMDecryptorProvider.  A
+PEMDecryptorProvider is created using a JcePEMDecryptorProviderBuilder,
+which is what takes the password (as a char[] instead of a
+PasswordFinder).
+
+Once the PEMEncryptedKeyPair has decrypted itself, you need a
+JcaPEMKeyConverter to convert the decrypted key into a vanilla
+java.security.KeyPair object, from which we can get just the private key
+using getPrivate().
+
+NOTE: This code does not handle standalone private keys, only key pairs,
+and so needs following up.
+---
+ src/main/java/org/glite/voms/PKIUtils.java | 38 ++++++++++++++++++++++++++----
+ 1 file changed, 33 insertions(+), 5 deletions(-)
+
+diff --git a/src/main/java/org/glite/voms/PKIUtils.java b/src/main/java/org/glite/voms/PKIUtils.java
+index 62307d8..0105979 100644
+--- a/src/main/java/org/glite/voms/PKIUtils.java
++++ b/src/main/java/org/glite/voms/PKIUtils.java
+@@ -74,13 +74,17 @@ import org.bouncycastle.asn1.x509.GeneralNames;
+ import org.bouncycastle.asn1.x509.SubjectKeyIdentifier;
+ import org.bouncycastle.asn1.x509.X509Name;
+ import org.bouncycastle.jce.X509Principal;
+ import org.bouncycastle.jce.provider.BouncyCastleProvider;
+ import org.bouncycastle.jce.provider.JCERSAPrivateKey;
+-import org.bouncycastle.openssl.PEMReader;
+ import org.bouncycastle.openssl.PasswordFinder;
+-
++import org.bouncycastle.openssl.PEMDecryptorProvider;
++import org.bouncycastle.openssl.PEMEncryptedKeyPair;
++import org.bouncycastle.openssl.PEMKeyPair;
++import org.bouncycastle.openssl.PEMParser;
++import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
++import org.bouncycastle.openssl.jcajce.JcePEMDecryptorProviderBuilder;
+ 
+ public class PKIUtils {
+     private static final Pattern emailPattern = Pattern.compile("/emailaddress", Pattern.CASE_INSENSITIVE);
+     private static final Pattern uidPattern   = Pattern.compile("/USERID");
+     private static final Pattern basename_pattern = Pattern.compile("(.*)\\.[^\\.]*");
+@@ -679,30 +683,54 @@ public class PKIUtils {
+ 
+      static public PrivateKey loadPrivateKey(String filename, PasswordFinder finder) {
+          return loadPrivateKey(new File(filename), finder);
+      }
+ 
++     // Modifications for bouncycastle 1.50 adapted from:
++     // https://stackoverflow.com/a/24262342
+      static public PrivateKey loadPrivateKey(File file, PasswordFinder finder) {
+-         PEMReader pem = null;
++         PEMParser pem = null;
++         char[] password = finder.getPassword();
+          try {
+-             pem = new PEMReader(new FileReader(file), finder);
++             pem = new PEMParser(new FileReader(file));
+              logger.debug("pem = " + pem);
+              Object read = null;
+ 
++             Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
++             JcaPEMKeyConverter converter = new JcaPEMKeyConverter().setProvider("BC");
+              do {
+                  read = pem.readObject();
+                  logger.debug("File is: " + file.getAbsolutePath());
+                  logger.debug("Object read is: " + read);
+                  logger.debug("Object class is: " + read.getClass().getCanonicalName());
+-             } while (!((read instanceof KeyPair) || (read instanceof JCERSAPrivateKey)) && read != null);
++             } while (!((read instanceof KeyPair)
++                     || (read instanceof JCERSAPrivateKey)
++                     || (read instanceof PEMEncryptedKeyPair)
++                     || (read instanceof PEMKeyPair))
++                     && read != null);
+ 
+              if (read != null) {
+                  if (read instanceof KeyPair) {
+                      KeyPair pair = (KeyPair)read;
+                      logger.debug("key = " + pair );
+                      return pair.getPrivate();
+                  }
++                 else if (read instanceof PEMEncryptedKeyPair) {
++                     // Encrypted key
++                     PEMEncryptedKeyPair ckp = (PEMEncryptedKeyPair) read;
++                     PEMDecryptorProvider decProv = new JcePEMDecryptorProviderBuilder().build(password);
++                     KeyPair pair = converter.getKeyPair(ckp.decryptKeyPair(decProv));
++                     logger.debug("key = " + pair );
++                     return pair.getPrivate();
++                 }
++                 else if (read instanceof PEMKeyPair) {
++                     // Unencrypted key
++                     PEMKeyPair ukp = (PEMKeyPair) read;
++                     KeyPair pair = converter.getKeyPair(ukp);
++                     logger.debug("key = " + pair );
++                     return pair.getPrivate();
++                 }
+                  else if (read instanceof JCERSAPrivateKey) {
+                      logger.debug("key = " + read);
+                      return (PrivateKey)read;
+                  }
+                  else if (read instanceof PrivateKey) {
+-- 
+2.4.6
+

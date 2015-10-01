@@ -1,0 +1,492 @@
+From 5c31ba0518305591a147994b96019a640e16361e Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Thu, 24 Sep 2015 14:57:00 -0500
+Subject: [PATCH 12/24] DEREncodable -> ASN1Encodable (bc 1.47+)
+
+---
+ src/main/java/org/glite/voms/ac/ACCerts.java                  | 4 ++--
+ src/main/java/org/glite/voms/ac/ACTarget.java                 | 4 ++--
+ src/main/java/org/glite/voms/ac/ACTargets.java                | 4 ++--
+ src/main/java/org/glite/voms/ac/AttCertIssuer.java            | 6 +++---
+ src/main/java/org/glite/voms/ac/AttributeCertificate.java     | 4 ++--
+ src/main/java/org/glite/voms/ac/AttributeCertificateInfo.java | 4 ++--
+ src/main/java/org/glite/voms/ac/AttributeHolder.java          | 4 ++--
+ src/main/java/org/glite/voms/ac/FullAttributes.java           | 4 ++--
+ src/main/java/org/glite/voms/ac/GenericAttribute.java         | 4 ++--
+ src/main/java/org/glite/voms/ac/Holder.java                   | 4 ++--
+ src/main/java/org/glite/voms/ac/IetfAttrSyntax.java           | 6 +++---
+ src/main/java/org/glite/voms/ac/ObjectDigestInfo.java         | 4 ++--
+ src/main/java/org/glite/voms/ac/V2Form.java                   | 4 ++--
+ src/main/java/org/glite/voms/contact/MyProxyCertInfo.java     | 4 ++--
+ src/main/java/org/glite/voms/contact/ProxyPolicy.java         | 6 +++---
+ 15 files changed, 33 insertions(+), 33 deletions(-)
+
+diff --git a/src/main/java/org/glite/voms/ac/ACCerts.java b/src/main/java/org/glite/voms/ac/ACCerts.java
+index 30845c6..3433283 100644
+--- a/src/main/java/org/glite/voms/ac/ACCerts.java
++++ b/src/main/java/org/glite/voms/ac/ACCerts.java
+@@ -35,11 +35,11 @@ import java.util.List;
+ import java.util.ListIterator;
+ import java.util.Vector;
+ 
+ import org.bouncycastle.jce.provider.BouncyCastleProvider;
+ import org.bouncycastle.asn1.ASN1Sequence;
+-import org.bouncycastle.asn1.DEREncodable;
++import org.bouncycastle.asn1.ASN1Encodable;
+ import org.bouncycastle.asn1.ASN1EncodableVector;
+ import org.bouncycastle.asn1.DERObject;
+ import org.bouncycastle.asn1.DERSequence;
+ import org.bouncycastle.asn1.x509.X509CertificateStructure;
+ import org.bouncycastle.jce.provider.X509CertificateObject;
+@@ -47,11 +47,11 @@ import org.bouncycastle.jce.provider.X509CertificateObject;
+ /**
+  * This class represents the ACCerts extension which may be present in the AC.
+  *
+  * @author Vincenzo Ciaschini.
+  */
+-public class ACCerts implements DEREncodable {
++public class ACCerts implements ASN1Encodable {
+     List l;
+ 
+     /**
+      * Creates an empty ACCerts object.
+      */
+diff --git a/src/main/java/org/glite/voms/ac/ACTarget.java b/src/main/java/org/glite/voms/ac/ACTarget.java
+index 52175fc..a868440 100644
+--- a/src/main/java/org/glite/voms/ac/ACTarget.java
++++ b/src/main/java/org/glite/voms/ac/ACTarget.java
+@@ -24,11 +24,11 @@
+  *********************************************************************/
+ package org.glite.voms.ac;
+ 
+ import org.bouncycastle.asn1.ASN1Sequence;
+ import org.bouncycastle.asn1.ASN1TaggedObject;
+-import org.bouncycastle.asn1.DEREncodable;
++import org.bouncycastle.asn1.ASN1Encodable;
+ import org.bouncycastle.asn1.ASN1EncodableVector;
+ import org.bouncycastle.asn1.DERIA5String;
+ import org.bouncycastle.asn1.DERObject;
+ import org.bouncycastle.asn1.DERSequence;
+ import org.bouncycastle.asn1.DERTaggedObject;
+@@ -60,11 +60,11 @@ class NameConverter {
+ /**
+  * The intent of this class is to represent a single target.
+  *
+  * @author Vincenzo Ciaschini
+  */
+-public class ACTarget implements DEREncodable {
++public class ACTarget implements ASN1Encodable {
+     private GeneralName  name;
+     private GeneralName  group;
+     private IssuerSerial cert;
+ 
+     /**
+diff --git a/src/main/java/org/glite/voms/ac/ACTargets.java b/src/main/java/org/glite/voms/ac/ACTargets.java
+index ca36472..44aea71 100644
+--- a/src/main/java/org/glite/voms/ac/ACTargets.java
++++ b/src/main/java/org/glite/voms/ac/ACTargets.java
+@@ -28,22 +28,22 @@ import java.util.Enumeration;
+ import java.util.List;
+ import java.util.ListIterator;
+ import java.util.Vector;
+ 
+ import org.bouncycastle.asn1.ASN1Sequence;
+-import org.bouncycastle.asn1.DEREncodable;
++import org.bouncycastle.asn1.ASN1Encodable;
+ import org.bouncycastle.asn1.ASN1EncodableVector;
+ import org.bouncycastle.asn1.DERObject;
+ import org.bouncycastle.asn1.DERSequence;
+ 
+ /**
+  * The intent of this class is to represent the ACTargets extension which
+  * may be present in the AC.
+  *
+  * @author Vincenzo Ciaschini
+  */
+-public class ACTargets implements DEREncodable {
++public class ACTargets implements ASN1Encodable {
+     private List l;
+     private List parsed;
+ 
+     /**
+      * Empty constructor.
+diff --git a/src/main/java/org/glite/voms/ac/AttCertIssuer.java b/src/main/java/org/glite/voms/ac/AttCertIssuer.java
+index c4c16db..273b486 100644
+--- a/src/main/java/org/glite/voms/ac/AttCertIssuer.java
++++ b/src/main/java/org/glite/voms/ac/AttCertIssuer.java
+@@ -33,11 +33,11 @@
+ 
+ package org.glite.voms.ac;
+ 
+ import org.bouncycastle.asn1.ASN1Sequence;
+ import org.bouncycastle.asn1.ASN1TaggedObject;
+-import org.bouncycastle.asn1.DEREncodable;
++import org.bouncycastle.asn1.ASN1Encodable;
+ import org.bouncycastle.asn1.DERObject;
+ import org.bouncycastle.asn1.DERTaggedObject;
+ import org.bouncycastle.asn1.x509.GeneralNames;
+ 
+ 
+@@ -45,16 +45,16 @@ import org.bouncycastle.asn1.x509.GeneralNames;
+  * Shadow implementation of AttributeCertificateInfo from
+  * BouncyCastle
+  *
+  * @author Joni Hahkala, Olle Mulmo
+  */
+-public class AttCertIssuer implements DEREncodable {
++public class AttCertIssuer implements ASN1Encodable {
+     GeneralNames v1Form;
+     V2Form v2Form;
+     int version = -1;
+ 
+-    public AttCertIssuer(DEREncodable obj) {
++    public AttCertIssuer(ASN1Encodable obj) {
+         if (obj instanceof ASN1TaggedObject) {
+             ASN1TaggedObject cObj = (ASN1TaggedObject) obj;
+ 
+             if (cObj.isExplicit() && (cObj.getTagNo() == 0)) {
+                 v2Form = new V2Form(ASN1Sequence.getInstance(cObj, /*explicit=*/
+diff --git a/src/main/java/org/glite/voms/ac/AttributeCertificate.java b/src/main/java/org/glite/voms/ac/AttributeCertificate.java
+index f60df63..d533c99 100644
+--- a/src/main/java/org/glite/voms/ac/AttributeCertificate.java
++++ b/src/main/java/org/glite/voms/ac/AttributeCertificate.java
+@@ -56,11 +56,11 @@ import org.bouncycastle.asn1.ASN1EncodableVector;
+ import org.bouncycastle.asn1.ASN1Sequence;
+ import org.bouncycastle.asn1.ASN1TaggedObject;
+ import org.bouncycastle.asn1.ASN1InputStream;
+ import org.bouncycastle.asn1.DERBitString;
+ import org.bouncycastle.asn1.DERSet;
+-import org.bouncycastle.asn1.DEREncodable;
++import org.bouncycastle.asn1.ASN1Encodable;
+ import org.bouncycastle.asn1.DERGeneralizedTime;
+ import org.bouncycastle.asn1.DERInteger;
+ import org.bouncycastle.asn1.DERObject;
+ import org.bouncycastle.asn1.DERObjectIdentifier;
+ import org.bouncycastle.asn1.DEROutputStream;
+@@ -79,11 +79,11 @@ import org.glite.voms.PKIUtils;
+  * A shadow implementation of the non-working BouncyCastle implementation
+  * of X.509 Attribute Certificates
+  *
+  * @author Joni Hahkala, Olle Mulmo
+  */
+-public class AttributeCertificate implements DEREncodable {
++public class AttributeCertificate implements ASN1Encodable {
+     protected static final Logger logger = Logger.getLogger(AttributeCertificate.class);
+     AttributeCertificateInfo acInfo;
+     AlgorithmIdentifier signatureAlgorithm;
+     DERBitString signatureValue;
+     DERObject signedObj = null;
+diff --git a/src/main/java/org/glite/voms/ac/AttributeCertificateInfo.java b/src/main/java/org/glite/voms/ac/AttributeCertificateInfo.java
+index 5b45c13..b2509c0 100644
+--- a/src/main/java/org/glite/voms/ac/AttributeCertificateInfo.java
++++ b/src/main/java/org/glite/voms/ac/AttributeCertificateInfo.java
+@@ -44,11 +44,11 @@ import org.bouncycastle.asn1.ASN1InputStream;
+ import org.bouncycastle.asn1.ASN1OctetString;
+ import org.bouncycastle.asn1.ASN1Sequence;
+ import org.bouncycastle.asn1.ASN1TaggedObject;
+ import org.bouncycastle.asn1.DERBitString;
+ import org.bouncycastle.asn1.DERSet;
+-import org.bouncycastle.asn1.DEREncodable;
++import org.bouncycastle.asn1.ASN1Encodable;
+ import org.bouncycastle.asn1.ASN1EncodableVector;
+ import org.bouncycastle.asn1.DERGeneralizedTime;
+ import org.bouncycastle.asn1.DERIA5String;
+ import org.bouncycastle.asn1.DERInteger;
+ import org.bouncycastle.asn1.DERObject;
+@@ -66,11 +66,11 @@ import org.glite.voms.FQAN;
+  * Shadow implementation of AttributeCertificateInfo from
+  * BouncyCastle
+  *
+  * @author Joni Hahkala, Olle Mulmo
+  */
+-public class AttributeCertificateInfo implements DEREncodable {
++public class AttributeCertificateInfo implements ASN1Encodable {
+     DERInteger version;
+     Holder holder;
+     AttCertIssuer issuer;
+     AlgorithmIdentifier signature;
+     DERInteger serialNumber;
+diff --git a/src/main/java/org/glite/voms/ac/AttributeHolder.java b/src/main/java/org/glite/voms/ac/AttributeHolder.java
+index 18196cf..02c084a 100644
+--- a/src/main/java/org/glite/voms/ac/AttributeHolder.java
++++ b/src/main/java/org/glite/voms/ac/AttributeHolder.java
+@@ -29,11 +29,11 @@ import java.util.Enumeration;
+ import java.util.List;
+ import java.util.ListIterator;
+ import java.util.Vector;
+ 
+ import org.bouncycastle.asn1.ASN1Sequence;
+-import org.bouncycastle.asn1.DEREncodable;
++import org.bouncycastle.asn1.ASN1Encodable;
+ import org.bouncycastle.asn1.ASN1EncodableVector;
+ import org.bouncycastle.asn1.DERIA5String;
+ import org.bouncycastle.asn1.DERObject;
+ import org.bouncycastle.asn1.DERSequence;
+ import org.bouncycastle.asn1.x509.GeneralName;
+@@ -43,11 +43,11 @@ import org.bouncycastle.asn1.x509.GeneralNames;
+ /**
+  * This calss represents an Attribute Holder object.
+  *
+  * @author Vincenzo Ciaschini
+  */
+-public class AttributeHolder implements DEREncodable {
++public class AttributeHolder implements ASN1Encodable {
+     private List l;
+     private GeneralNames grantor;
+ 
+     /**
+      * Empty constructor.
+diff --git a/src/main/java/org/glite/voms/ac/FullAttributes.java b/src/main/java/org/glite/voms/ac/FullAttributes.java
+index 59ef08d..a1f981b 100644
+--- a/src/main/java/org/glite/voms/ac/FullAttributes.java
++++ b/src/main/java/org/glite/voms/ac/FullAttributes.java
+@@ -28,22 +28,22 @@ import java.util.Enumeration;
+ import java.util.List;
+ import java.util.ListIterator;
+ import java.util.Vector;
+ 
+ import org.bouncycastle.asn1.ASN1Sequence;
+-import org.bouncycastle.asn1.DEREncodable;
++import org.bouncycastle.asn1.ASN1Encodable;
+ import org.bouncycastle.asn1.ASN1EncodableVector;
+ import org.bouncycastle.asn1.DERObject;
+ import org.bouncycastle.asn1.DERSequence;
+ 
+ /**
+  * This class represents the GenericAttributes extension which may be found
+  * in the AC.
+  *
+  * @author Vincenzo Ciaschini
+  */
+-public class FullAttributes implements DEREncodable {
++public class FullAttributes implements ASN1Encodable {
+     private List l;
+ 
+     /**
+      * Empty contructor
+      */
+diff --git a/src/main/java/org/glite/voms/ac/GenericAttribute.java b/src/main/java/org/glite/voms/ac/GenericAttribute.java
+index 9abd52b..4113818 100644
+--- a/src/main/java/org/glite/voms/ac/GenericAttribute.java
++++ b/src/main/java/org/glite/voms/ac/GenericAttribute.java
+@@ -24,11 +24,11 @@
+  *********************************************************************/
+ package org.glite.voms.ac;
+ 
+ import org.bouncycastle.asn1.ASN1OctetString;
+ import org.bouncycastle.asn1.ASN1Sequence;
+-import org.bouncycastle.asn1.DEREncodable;
++import org.bouncycastle.asn1.ASN1Encodable;
+ import org.bouncycastle.asn1.ASN1EncodableVector;
+ import org.bouncycastle.asn1.DERObject;
+ import org.bouncycastle.asn1.DEROctetString;
+ import org.bouncycastle.asn1.DERSequence;
+ 
+@@ -36,11 +36,11 @@ import org.bouncycastle.asn1.DERSequence;
+ /**
+  * This class represents the single Generic Attribute.
+  *
+  * @author Vincenzo Ciaschini
+  */
+-public class GenericAttribute implements DEREncodable {
++public class GenericAttribute implements ASN1Encodable {
+     private String name;
+     private String value;
+     private String qualifier;
+ 
+     /**
+diff --git a/src/main/java/org/glite/voms/ac/Holder.java b/src/main/java/org/glite/voms/ac/Holder.java
+index 248b309..b244a5b 100644
+--- a/src/main/java/org/glite/voms/ac/Holder.java
++++ b/src/main/java/org/glite/voms/ac/Holder.java
+@@ -38,11 +38,11 @@ import java.util.Enumeration;
+ import javax.security.auth.x500.X500Principal;
+ 
+ import org.bouncycastle.asn1.ASN1EncodableVector;
+ import org.bouncycastle.asn1.ASN1Sequence;
+ import org.bouncycastle.asn1.ASN1TaggedObject;
+-import org.bouncycastle.asn1.DEREncodable;
++import org.bouncycastle.asn1.ASN1Encodable;
+ import org.bouncycastle.asn1.ASN1EncodableVector;
+ import org.bouncycastle.asn1.DERInteger;
+ import org.bouncycastle.asn1.DERObject;
+ import org.bouncycastle.asn1.DEROutputStream;
+ import org.bouncycastle.asn1.DERSequence;
+@@ -64,11 +64,11 @@ import org.bouncycastle.asn1.x509.IssuerSerial;
+  *                 -- used to directly authenticate the holder,
+  *                 -- for example, an executable
+  *  }
+  * </pre>
+  */
+-public class Holder implements DEREncodable {
++public class Holder implements ASN1Encodable {
+     IssuerSerial baseCertificateID = null;
+     GeneralNames entityName = null;
+     ObjectDigestInfo objectDigestInfo = null;
+ 
+     public Holder(X509Certificate cert) {
+diff --git a/src/main/java/org/glite/voms/ac/IetfAttrSyntax.java b/src/main/java/org/glite/voms/ac/IetfAttrSyntax.java
+index b3d523a..c7f8f86 100644
+--- a/src/main/java/org/glite/voms/ac/IetfAttrSyntax.java
++++ b/src/main/java/org/glite/voms/ac/IetfAttrSyntax.java
+@@ -35,11 +35,11 @@ import java.util.Iterator;
+ import java.util.List;
+ import java.util.Vector;
+ 
+ import org.bouncycastle.asn1.ASN1Sequence;
+ import org.bouncycastle.asn1.ASN1TaggedObject;
+-import org.bouncycastle.asn1.DEREncodable;
++import org.bouncycastle.asn1.ASN1Encodable;
+ import org.bouncycastle.asn1.ASN1EncodableVector;
+ import org.bouncycastle.asn1.DERObject;
+ import org.bouncycastle.asn1.DERObjectIdentifier;
+ import org.bouncycastle.asn1.DEROctetString;
+ import org.bouncycastle.asn1.DERSequence;
+@@ -63,11 +63,11 @@ import org.bouncycastle.asn1.x509.GeneralNames;
+  * }
+  * </pre>
+  *
+  * @author mulmo
+  */
+-public class IetfAttrSyntax implements DEREncodable {
++public class IetfAttrSyntax implements ASN1Encodable {
+     public static final int VALUE_OCTETS = 1;
+     public static final int VALUE_OID = 2;
+     public static final int VALUE_UTF8 = 3;
+     GeneralNames policyAuthority = null;
+     Vector values = new Vector();
+@@ -137,11 +137,11 @@ public class IetfAttrSyntax implements DEREncodable {
+         }
+ 
+         ASN1EncodableVector v2 = new ASN1EncodableVector();
+ 
+         for (Iterator i = values.iterator(); i.hasNext();) {
+-            v2.add((DEREncodable) i.next());
++            v2.add((ASN1Encodable) i.next());
+         }
+ 
+         v.add(new DERSequence(v2));
+ 
+         return new DERSequence(v);
+diff --git a/src/main/java/org/glite/voms/ac/ObjectDigestInfo.java b/src/main/java/org/glite/voms/ac/ObjectDigestInfo.java
+index 9bc5dcb..a3a83fb 100644
+--- a/src/main/java/org/glite/voms/ac/ObjectDigestInfo.java
++++ b/src/main/java/org/glite/voms/ac/ObjectDigestInfo.java
+@@ -29,20 +29,20 @@
+ package org.glite.voms.ac;
+ 
+ import org.bouncycastle.asn1.ASN1EncodableVector;
+ import org.bouncycastle.asn1.ASN1Sequence;
+ import org.bouncycastle.asn1.DERBitString;
+-import org.bouncycastle.asn1.DEREncodable;
++import org.bouncycastle.asn1.ASN1Encodable;
+ import org.bouncycastle.asn1.DEREnumerated;
+ import org.bouncycastle.asn1.DERObject;
+ import org.bouncycastle.asn1.DERObjectIdentifier;
+ import org.bouncycastle.asn1.DERSequence;
+ import org.bouncycastle.asn1.DERTaggedObject;
+ import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
+ 
+ 
+-public class ObjectDigestInfo implements DEREncodable {
++public class ObjectDigestInfo implements ASN1Encodable {
+     DEREnumerated digestedObjectType;
+     DERObjectIdentifier otherObjectTypeID;
+     AlgorithmIdentifier digestAlgorithm;
+     DERBitString objectDigest;
+ 
+diff --git a/src/main/java/org/glite/voms/ac/V2Form.java b/src/main/java/org/glite/voms/ac/V2Form.java
+index e4f8450..49581eb 100644
+--- a/src/main/java/org/glite/voms/ac/V2Form.java
++++ b/src/main/java/org/glite/voms/ac/V2Form.java
+@@ -31,22 +31,22 @@
+ package org.glite.voms.ac;
+ 
+ import org.bouncycastle.asn1.ASN1EncodableVector;
+ import org.bouncycastle.asn1.ASN1Sequence;
+ import org.bouncycastle.asn1.ASN1TaggedObject;
+-import org.bouncycastle.asn1.DEREncodable;
++import org.bouncycastle.asn1.ASN1Encodable;
+ import org.bouncycastle.asn1.DERObject;
+ import org.bouncycastle.asn1.DERSequence;
+ import org.bouncycastle.asn1.DERTaggedObject;
+ import org.bouncycastle.asn1.x509.GeneralNames;
+ import org.bouncycastle.asn1.x509.IssuerSerial;
+ 
+ 
+ /**
+  * @author mulmo
+  */
+-public class V2Form implements DEREncodable {
++public class V2Form implements ASN1Encodable {
+     GeneralNames issuerName;
+     IssuerSerial baseCertificateID;
+     ObjectDigestInfo objectDigestInfo;
+ 
+     public V2Form(GeneralNames issuerName) {
+diff --git a/src/main/java/org/glite/voms/contact/MyProxyCertInfo.java b/src/main/java/org/glite/voms/contact/MyProxyCertInfo.java
+index 4b2ae21..4c79c9f 100644
+--- a/src/main/java/org/glite/voms/contact/MyProxyCertInfo.java
++++ b/src/main/java/org/glite/voms/contact/MyProxyCertInfo.java
+@@ -29,16 +29,16 @@ import java.io.ByteArrayInputStream;
+ import java.io.IOException;
+ 
+ import org.bouncycastle.asn1.ASN1EncodableVector;
+ import org.bouncycastle.asn1.ASN1InputStream;
+ import org.bouncycastle.asn1.ASN1Sequence;
+-import org.bouncycastle.asn1.DEREncodable;
++import org.bouncycastle.asn1.ASN1Encodable;
+ import org.bouncycastle.asn1.DERInteger;
+ import org.bouncycastle.asn1.DERObject;
+ import org.bouncycastle.asn1.DERSequence;
+ 
+-public class MyProxyCertInfo implements DEREncodable {
++public class MyProxyCertInfo implements ASN1Encodable {
+ 
+     private int pathLen;
+     private ProxyPolicy policy;
+     private int version;
+ 
+diff --git a/src/main/java/org/glite/voms/contact/ProxyPolicy.java b/src/main/java/org/glite/voms/contact/ProxyPolicy.java
+index b52c494..e152b39 100644
+--- a/src/main/java/org/glite/voms/contact/ProxyPolicy.java
++++ b/src/main/java/org/glite/voms/contact/ProxyPolicy.java
+@@ -22,20 +22,20 @@
+  * follows.
+  *
+  *********************************************************************/
+ package org.glite.voms.contact;
+ 
+-import org.bouncycastle.asn1.DEREncodable;
++import org.bouncycastle.asn1.ASN1Encodable;
+ import org.bouncycastle.asn1.ASN1EncodableVector;
+ import org.bouncycastle.asn1.DERObject;
+ import org.bouncycastle.asn1.ASN1Sequence;
+ import org.bouncycastle.asn1.DERSequence;
+ import org.bouncycastle.asn1.DERObjectIdentifier;
+ import org.bouncycastle.asn1.DERTaggedObject;
+ import org.bouncycastle.asn1.DEROctetString;
+ 
+-public class ProxyPolicy implements DEREncodable {
++public class ProxyPolicy implements ASN1Encodable {
+     private DERObjectIdentifier oid;
+     private DEROctetString      policy;
+ 
+     public static final DERObjectIdentifier IMPERSONATION = new DERObjectIdentifier("1.3.6.1.5.5.7.21.1");
+     public static final DERObjectIdentifier INDEPENDENT = new DERObjectIdentifier("1.3.6.1.5.5.7.21.2");
+@@ -72,11 +72,11 @@ public class ProxyPolicy implements DEREncodable {
+     }
+ 
+     public ProxyPolicy(ASN1Sequence seq) {
+         this.oid = (DERObjectIdentifier)seq.getObjectAt(0);
+         if (seq.size() > 1) {
+-            DEREncodable obj = seq.getObjectAt(1);
++            ASN1Encodable obj = seq.getObjectAt(1);
+             if (obj instanceof DERTaggedObject) {
+                 obj = ((DERTaggedObject)obj).getObject();
+             }
+             this.policy = (DEROctetString)obj;
+         }
+-- 
+2.4.6
+

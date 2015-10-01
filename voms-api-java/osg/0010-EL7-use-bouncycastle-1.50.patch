@@ -1,0 +1,48 @@
+From 0b2334aaf1cae72f3b01a897a1a7fd8d8221564c Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Mon, 21 Sep 2015 15:19:03 -0500
+Subject: [PATCH 10/24] EL7: use bouncycastle 1.50
+
+---
+ pom.xml | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/pom.xml b/pom.xml
+index 0575a0f..24cd577 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -15,11 +15,11 @@
+ 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+ 
+ 		<assembly.java.dir>/usr/share/java</assembly.java.dir>
+ 		<assembly.doc.dir>/usr/share/doc/${project.name}-${project.version}</assembly.doc.dir>
+ 		<assembly.javadoc.dir>/usr/share/javadoc/${project.name}</assembly.javadoc.dir>
+-		<bouncycastle.version>1.45</bouncycastle.version>
++		<bouncycastle.version>1.50</bouncycastle.version>
+ 	</properties>
+ 
+ 	<developers>
+ 		<developer>
+ 			<id>andreac</id>
+@@ -93,11 +93,17 @@
+ 			<scope>test</scope>
+ 		</dependency>
+ 
+ 		<dependency>
+ 			<groupId>org.bouncycastle</groupId>
+-			<artifactId>bcprov-ext-jdk16</artifactId>
++			<artifactId>bcprov-jdk15on</artifactId>
++			<version>${bouncycastle.version}</version>
++		</dependency>
++
++		<dependency>
++			<groupId>org.bouncycastle</groupId>
++			<artifactId>bcpkix-jdk15on</artifactId>
+ 			<version>${bouncycastle.version}</version>
+ 		</dependency>
+ 
+ 
+ 		<dependency>
+-- 
+2.4.6
+
