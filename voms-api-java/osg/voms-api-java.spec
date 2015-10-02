@@ -7,7 +7,7 @@
 
 Name:		voms-api-java
 Version:	2.0.8
-Release:	1.7%{?dist}
+Release:	1.8%{?dist}
 Summary:	Virtual Organization Membership Service Java API
 
 Group:		Development/Libraries
@@ -144,8 +144,7 @@ install -m 644 %SOURCE3 .
 
 %build
 %if %{maven}
-mvn -B install javadoc:aggregate
-#mvn -B -o install javadoc:aggregate
+%mvn_build
 %else
 export CLASSPATH=$(build-classpath bcprov log4j commons-cli commons-lang)
 ant package javadoc
@@ -199,6 +198,9 @@ if [[ $1 -gt 0 && -e %{_javadir}/%{name}.jar ]]; then
 fi
 
 %changelog
+* Fri Oct 02 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 2.0.8-1.8
+- Use mvn_build macro on el7
+
 * Mon Sep 21 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 2.0.8-1.7
 - Use bouncycastle 1.50 on EL7
 
