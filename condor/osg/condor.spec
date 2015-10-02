@@ -125,7 +125,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.1
+%define condor_base_release 1.2
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -214,6 +214,11 @@ Source123: zlib-1.2.3.tar.gz
 %endif
 
 Patch1: sw1636-cream_gahp-dlopen.patch
+
+# should make it into upstream 8.4.1
+# https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=5288
+# https://jira.opensciencegrid.org/browse/SOFTWARE-2039
+Patch2: gt5288-NETWORK_HOSTNAME.patch
 
 #% if 0%osg
 Patch8: osg_sysconfig_in_init_script.patch
@@ -718,6 +723,7 @@ exit 0
 %endif
 
 %patch1 -p1
+%patch2 -p1
 
 %if 0%{?hcc}
 %patch15 -p0
@@ -1845,6 +1851,9 @@ fi
 %endif
 
 %changelog
+* Fri Oct 02 2015 Carl Edquist <edquist@cs.wisc.edu> - 8.4.0-1.2
+- patch to fix broken NETWORK_HOSTNAME (#5288)
+
 * Mon Sep 21 2015 Carl Edquist <edquist@cs.wisc.edu> - 8.4.0-1.1
 - update to 8.4.0 and drop revert-gt4903.patch (SOFTWARE-2039)
 
