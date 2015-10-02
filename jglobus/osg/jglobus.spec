@@ -2,7 +2,7 @@ Name: jglobus
 Summary: An implementation of Globus for Java
 License: Apache 2.0
 Version: 2.1.0
-Release: 4%{?dist}
+Release: 5%{?dist}
 URL: http://www.globus.org/toolkit/jglobus/
 Group: System Environment/Libraries
 
@@ -18,6 +18,10 @@ Source0: JGlobus-Release-2.1.0.tar.gz
 
 # jglobus-bc146 patch obtained from EPEL version of jglobus 2.1.0
 Patch0:  jglobus-bc146.patch
+
+# Posted to JGlobus github as a fix for key format issues.
+# See SOFTWARE-1607
+Patch1: 1607-fix-sl6-certs.patch
 
 BuildArch: noarch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -96,6 +100,7 @@ Source7: %{name}-mvn-deps-el7.tar.gz
 %if 0%{?rhel} < 7
 %patch0 -p1
 %endif
+%patch1 -p1
 
 find -name '*.class' -exec rm -f '{}' \;
 find -name '*.jar' -exec rm -f '{}' \;
@@ -176,6 +181,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mavendepmapfragdir}/%{name}
 
 %changelog
+* Thu Oct 01 2015 Brian Bockelman <bbockelm@cse.unl.edu> - 2.1.0-5
+- Add back patch from SOFTWARE-1607 for OpenSSL 1.0 keys.
+
 * Thu Oct 01 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 2.1.0-4
 - Add patch to EL5 and EL6 builds to fix bouncycastle API compatibility (SOFTWARE-2036)
 - Had to disable offline mode for builds to work
