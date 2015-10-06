@@ -117,6 +117,8 @@ Requires: vo-client
 
 Requires: glideinwms-minimal-condor = %{version}-%{release}
 Requires: glideinwms-libs = %{version}-%{release}
+Requires: glidecondor-tools = %{version}-%{release}
+Requires: glidecondor-common-tools = %{version}-%{release}
 #To be added in 2.6.3+ once probe is finished.
 #Requires: gratia-probe-gwms
 #Requires: vdt-vofrontend-essentials
@@ -175,9 +177,26 @@ This is a package provides common libraries used by glideinwms.
 Summary:        The VOFrontend minimal condor config
 Group:          System Environment/Daemons
 Provides: gwms-condor-config
+Requires: glideinwms-condor-common-config = %{version}-%{release}
 %description minimal-condor
 This is an alternate condor config for just the minimal amount
 needed for VOFrontend.
+
+
+%package condor-common-config
+Summary:        Shared condor config files
+Group:          System Environment/Daemons
+%description condor-common-config
+This contains condor config files shared between alternate
+condor config setups (minimal-condor and factory-condor).
+
+
+%package common-tools
+Summary:        Shared tools
+Group:          System Environment/Daemons
+%description common-tools
+This contains tools common to both the glideinwms factory and vofrontend
+standalone packages.
 
 
 %package factory
@@ -188,6 +207,9 @@ Requires: httpd
 # We require Condor 7.6.0 (and newer) to support
 # condor_advertise -multiple -tcp which is enabled by default
 Requires: glideinwms-factory-condor = %{version}-%{release}
+Requires: glideinwms-libs = %{version}-%{release}
+Requires: glidecondor-tools = %{version}-%{release}
+Requires: glidecondor-common-tools = %{version}-%{release}
 Requires: condor >= 7.8.0
 Requires: python-rrdtool
 Requires: python-ldap
@@ -208,6 +230,7 @@ for scheduling and job control.
 Summary:        The GWMS Factory condor config
 Group:          System Environment/Daemons
 Provides: gwms-factory-config
+Requires: glideinwms-condor-common-config = %{version}-%{release}
 %description factory-condor
 This is a package including condor_config for a full one-node
 install of wmscollector + wms factory
@@ -540,12 +563,75 @@ rm -rf $RPM_BUILD_ROOT
 
 %files vofrontend
    
+%files common-tools
+%defattr(-,root,root,-)
+%attr(755,root,root) %{_bindir}/glidein_cat
+%attr(755,root,root) %{_bindir}/glidein_gdb
+%attr(755,root,root) %{_bindir}/glidein_interactive
+%attr(755,root,root) %{_bindir}/glidein_ls
+%attr(755,root,root) %{_bindir}/glidein_ps
+%attr(755,root,root) %{_bindir}/glidein_status
+%attr(755,root,root) %{_bindir}/glidein_top
+%attr(755,root,root) %{_bindir}/wmsTxtView
+%attr(755,root,root) %{_bindir}/wmsXMLView
+%{python_sitelib}/glideinwms/tools
+%{python_sitelib}/glideinwms/creation/__init__.py
+%{python_sitelib}/glideinwms/creation/__init__.pyc
+%{python_sitelib}/glideinwms/creation/__init__.pyo
+%{python_sitelib}/glideinwms/creation/lib/cWConsts.py
+%{python_sitelib}/glideinwms/creation/lib/cWConsts.pyc
+%{python_sitelib}/glideinwms/creation/lib/cWConsts.pyo
+%{python_sitelib}/glideinwms/creation/lib/cWDictFile.py
+%{python_sitelib}/glideinwms/creation/lib/cWDictFile.pyc
+%{python_sitelib}/glideinwms/creation/lib/cWDictFile.pyo
+%{python_sitelib}/glideinwms/creation/lib/cWParams.py
+%{python_sitelib}/glideinwms/creation/lib/cWParams.pyc
+%{python_sitelib}/glideinwms/creation/lib/cWParams.pyo
+%{python_sitelib}/glideinwms/creation/lib/cWParamDict.py
+%{python_sitelib}/glideinwms/creation/lib/cWParamDict.pyc
+%{python_sitelib}/glideinwms/creation/lib/cWParamDict.pyo
+%{python_sitelib}/glideinwms/creation/lib/xslt.py
+%{python_sitelib}/glideinwms/creation/lib/xslt.pyc
+%{python_sitelib}/glideinwms/creation/lib/xslt.pyo
+%{python_sitelib}/glideinwms/creation/lib/__init__.py
+%{python_sitelib}/glideinwms/creation/lib/__init__.pyc
+%{python_sitelib}/glideinwms/creation/lib/__init__.pyo
+
 %files factory
 %defattr(-,gfactory,gfactory,-)
 %doc LICENSE.txt
 %doc ACKNOWLEDGMENTS.txt
 %doc doc
-%attr(755,root,root) %{_bindir}/*
+%attr(755,root,root) %{_bindir}/__init__
+%attr(755,root,root) %{_bindir}/analyze_entries
+%attr(755,root,root) %{_bindir}/analyze_frontends
+%attr(755,root,root) %{_bindir}/analyze_queues
+%attr(755,root,root) %{_bindir}/cat_MasterLog
+%attr(755,root,root) %{_bindir}/cat_StartdHistoryLog
+%attr(755,root,root) %{_bindir}/cat_StartdLog
+%attr(755,root,root) %{_bindir}/cat_StarterLog
+%attr(755,root,root) %{_bindir}/cat_XMLResult
+%attr(755,root,root) %{_bindir}/cat_logs
+%attr(755,root,root) %{_bindir}/configGUI
+%attr(755,root,root) %{_bindir}/convert_factory_2to3.sh
+%attr(755,root,root) %{_bindir}/convert_factory_2to3.xslt
+%attr(755,root,root) %{_bindir}/convert_factory_rrds_2to3.sh
+%attr(755,root,root) %{_bindir}/create_condor_tarball
+%attr(755,root,root) %{_bindir}/entry_ls
+%attr(755,root,root) %{_bindir}/entry_q
+%attr(755,root,root) %{_bindir}/entry_rm
+%attr(755,root,root) %{_bindir}/extract_EC2_Address
+%attr(755,root,root) %{_bindir}/find_StartdLogs
+%attr(755,root,root) %{_bindir}/find_ids_not_published
+%attr(755,root,root) %{_bindir}/find_logs
+%attr(755,root,root) %{_bindir}/find_matching_ids
+%attr(755,root,root) %{_bindir}/find_missing_ids
+%attr(755,root,root) %{_bindir}/find_new_entries
+%attr(755,root,root) %{_bindir}/find_partial_matching_ids
+%attr(755,root,root) %{_bindir}/gwms-logcat.sh
+%attr(755,root,root) %{_bindir}/infosys_lib
+%attr(755,root,root) %{_bindir}/manual_glidein_submit
+%attr(755,root,root) %{_bindir}/proxy_info
 %attr(755,root,root) %{_sbindir}/checkFactory.py
 %attr(755,root,root) %{_sbindir}/stopFactory.py
 %attr(755,root,root) %{_sbindir}/glideFactory.py
@@ -566,9 +652,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_sbindir}/stopFactory.pyc
 %attr(755,root,root) %{_sbindir}/stopFactory.pyo
 %endif
-%attr(755,root,root) %{_sbindir}/glidecondor_addDN
-%attr(755,root,root) %{_sbindir}/glidecondor_createSecSched
-%attr(755,root,root) %{_sbindir}/glidecondor_createSecCol
 %attr(755,root,root) %{_sbindir}/info_glidein
 %attr(755,root,root) %{_sbindir}/manageFactoryDowntimes.py
 %attr(755,root,root) %{_sbindir}/reconfig_glidein
@@ -586,24 +669,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(-, root, root) %dir %{_localstatedir}/log/gwms-factory
 %attr(-, root, root) %dir %{_localstatedir}/log/gwms-factory/client
 %attr(-, gfactory, gfactory) %{_localstatedir}/log/gwms-factory/server
-%{python_sitelib}/glideinwms/__init__.py
-%{python_sitelib}/glideinwms/__init__.pyc
-%{python_sitelib}/glideinwms/__init__.pyo
-%{python_sitelib}/glideinwms/creation/__init__.py
-%{python_sitelib}/glideinwms/creation/__init__.pyc
-%{python_sitelib}/glideinwms/creation/__init__.pyo
-%{python_sitelib}/glideinwms/creation/lib/cWConsts.py
-%{python_sitelib}/glideinwms/creation/lib/cWConsts.pyc
-%{python_sitelib}/glideinwms/creation/lib/cWConsts.pyo
-%{python_sitelib}/glideinwms/creation/lib/cWDictFile.py
-%{python_sitelib}/glideinwms/creation/lib/cWDictFile.pyc
-%{python_sitelib}/glideinwms/creation/lib/cWDictFile.pyo
-%{python_sitelib}/glideinwms/creation/lib/cWParams.py
-%{python_sitelib}/glideinwms/creation/lib/cWParams.pyc
-%{python_sitelib}/glideinwms/creation/lib/cWParams.pyo
-%{python_sitelib}/glideinwms/creation/lib/cWParamDict.py
-%{python_sitelib}/glideinwms/creation/lib/cWParamDict.pyc
-%{python_sitelib}/glideinwms/creation/lib/cWParamDict.pyo
 %{python_sitelib}/glideinwms/creation/lib/cgWConsts.py
 %{python_sitelib}/glideinwms/creation/lib/cgWConsts.pyc
 %{python_sitelib}/glideinwms/creation/lib/cgWConsts.pyo
@@ -619,18 +684,10 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/glideinwms/creation/lib/cgWParams.py
 %{python_sitelib}/glideinwms/creation/lib/cgWParams.pyc
 %{python_sitelib}/glideinwms/creation/lib/cgWParams.pyo
-%{python_sitelib}/glideinwms/creation/lib/xslt.py
-%{python_sitelib}/glideinwms/creation/lib/xslt.pyc
-%{python_sitelib}/glideinwms/creation/lib/xslt.pyo
-%{python_sitelib}/glideinwms/creation/lib/__init__.py
-%{python_sitelib}/glideinwms/creation/lib/__init__.pyc
-%{python_sitelib}/glideinwms/creation/lib/__init__.pyo
 %if %{v3_plus}
 %{python_sitelib}/glideinwms/creation/templates/factory_initd_startup_template
 %endif
 %{python_sitelib}/glideinwms/factory
-%{python_sitelib}/glideinwms/lib
-%{python_sitelib}/glideinwms/tools
 %{_initrddir}/gwms-factory
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/gwms-factory.conf
 %attr(-, gfactory, gfactory) %dir %{_sysconfdir}/gwms-factory
@@ -642,12 +699,7 @@ rm -rf $RPM_BUILD_ROOT
 %doc LICENSE.txt
 %doc ACKNOWLEDGMENTS.txt
 %doc doc
-%attr(755,root,root) %{_bindir}/glidein_*
-%attr(755,root,root) %{_bindir}/wms*
 %attr(755,root,root) %{_sbindir}/checkFrontend
-%attr(755,root,root) %{_sbindir}/glidecondor_addDN
-%attr(755,root,root) %{_sbindir}/glidecondor_createSecSched
-%attr(755,root,root) %{_sbindir}/glidecondor_createSecCol
 %attr(755,root,root) %{_sbindir}/glideinFrontend
 %attr(755,root,root) %{_sbindir}/glideinFrontendElement.py*
 %attr(755,root,root) %{_sbindir}/reconfig_frontend
@@ -657,26 +709,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(-, frontend, frontend) %{web_base}
 %attr(-, frontend, frontend) %{frontend_dir}
 %attr(-, frontend, frontend) %{_localstatedir}/log/gwms-frontend
-%{python_sitelib}/glideinwms/__init__.py
-%{python_sitelib}/glideinwms/__init__.pyc
-%{python_sitelib}/glideinwms/__init__.pyo
 %{python_sitelib}/glideinwms/frontend
-%{python_sitelib}/glideinwms/tools
-%{python_sitelib}/glideinwms/creation/__init__.py
-%{python_sitelib}/glideinwms/creation/__init__.pyc
-%{python_sitelib}/glideinwms/creation/__init__.pyo
-%{python_sitelib}/glideinwms/creation/lib/cWConsts.py
-%{python_sitelib}/glideinwms/creation/lib/cWConsts.pyc
-%{python_sitelib}/glideinwms/creation/lib/cWConsts.pyo
-%{python_sitelib}/glideinwms/creation/lib/cWDictFile.py
-%{python_sitelib}/glideinwms/creation/lib/cWDictFile.pyc
-%{python_sitelib}/glideinwms/creation/lib/cWDictFile.pyo
-%{python_sitelib}/glideinwms/creation/lib/cWParams.py
-%{python_sitelib}/glideinwms/creation/lib/cWParams.pyc
-%{python_sitelib}/glideinwms/creation/lib/cWParams.pyo
-%{python_sitelib}/glideinwms/creation/lib/cWParamDict.py
-%{python_sitelib}/glideinwms/creation/lib/cWParamDict.pyc
-%{python_sitelib}/glideinwms/creation/lib/cWParamDict.pyo
 %{python_sitelib}/glideinwms/creation/lib/cvWConsts.py
 %{python_sitelib}/glideinwms/creation/lib/cvWConsts.pyc
 %{python_sitelib}/glideinwms/creation/lib/cvWConsts.pyo
@@ -692,12 +725,6 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/glideinwms/creation/lib/cvWParams.py
 %{python_sitelib}/glideinwms/creation/lib/cvWParams.pyc
 %{python_sitelib}/glideinwms/creation/lib/cvWParams.pyo
-%{python_sitelib}/glideinwms/creation/lib/xslt.py
-%{python_sitelib}/glideinwms/creation/lib/xslt.pyc
-%{python_sitelib}/glideinwms/creation/lib/xslt.pyo
-%{python_sitelib}/glideinwms/creation/lib/__init__.py
-%{python_sitelib}/glideinwms/creation/lib/__init__.pyc
-%{python_sitelib}/glideinwms/creation/lib/__init__.pyo
 %if %{v3_plus}
 %{python_sitelib}/glideinwms/creation/templates/frontend_initd_startup_template
 %endif
@@ -715,9 +742,7 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/condor/config.d/00_gwms_factory_general.config
 %config(noreplace) %{_sysconfdir}/condor/config.d/01_gwms_factory_collectors.config
 %config(noreplace) %{_sysconfdir}/condor/config.d/02_gwms_factory_schedds.config
-%config(noreplace) %{_sysconfdir}/condor/config.d/03_gwms_local.config
 %config(noreplace) %{_sysconfdir}/condor/privsep_config
-%config(noreplace) %{_sysconfdir}/condor/certs/condor_mapfile
 %attr(-, condor, condor) %{_localstatedir}/lib/condor/schedd_glideins2
 %attr(-, condor, condor) %{_localstatedir}/lib/condor/schedd_glideins3
 %attr(-, condor, condor) %{_localstatedir}/lib/condor/schedd_glideins4
@@ -746,10 +771,11 @@ rm -rf $RPM_BUILD_ROOT
 
 %files minimal-condor
 %config(noreplace) %{_sysconfdir}/condor/config.d/00_gwms_general.config
-%config(noreplace) %{_sysconfdir}/condor/config.d/03_gwms_local.config
 %config(noreplace) %{_sysconfdir}/condor/config.d/90_gwms_dns.config
-%config(noreplace) %{_sysconfdir}/condor/certs/condor_mapfile
 
+%files condor-common-config
+%config(noreplace) %{_sysconfdir}/condor/config.d/03_gwms_local.config
+%config(noreplace) %{_sysconfdir}/condor/certs/condor_mapfile
 
 %changelog
 * Fri Sep 18 2015 Parag Mhashilkar <parag@fnal.gov> - 3.2.11.2-1
