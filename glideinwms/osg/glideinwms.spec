@@ -435,14 +435,16 @@ done
 # Install tools
 install -d $RPM_BUILD_ROOT%{_bindir}
 # Install the tools as the non-*.py filenames
-for file in `ls tools/*.py`; do
+for file in tools/[!_]*.py; do
    newname=`echo $file | sed -e 's/.*\/\(.*\)\.py/\1/'`
    cp $file $RPM_BUILD_ROOT%{_bindir}/$newname
 done
-for file in `find factory/tools -type f -maxdepth 1`; do
-   newname=`echo $file | sed -e 's/\(.*\)\.py/\1/'`
-   newname=`echo $newname | sed -e 's/.*\/\(.*\)/\1/'`
-   cp $file $RPM_BUILD_ROOT%{_bindir}/$newname
+for file in factory/tools/[!_]*; do
+   if [ -f "$file" ]; then
+      newname=`echo $file | sed -e 's/\(.*\)\.py/\1/'`
+      newname=`echo $newname | sed -e 's/.*\/\(.*\)/\1/'`
+      cp $file $RPM_BUILD_ROOT%{_bindir}/$newname
+   fi
 done
 cp creation/create_condor_tarball $RPM_BUILD_ROOT%{_bindir}
 
@@ -602,7 +604,6 @@ rm -rf $RPM_BUILD_ROOT
 %doc LICENSE.txt
 %doc ACKNOWLEDGMENTS.txt
 %doc doc
-%attr(755,root,root) %{_bindir}/__init__
 %attr(755,root,root) %{_bindir}/analyze_entries
 %attr(755,root,root) %{_bindir}/analyze_frontends
 %attr(755,root,root) %{_bindir}/analyze_queues
