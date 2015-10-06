@@ -6,14 +6,12 @@
 %define local_maven /tmp/m2-repository
 # Don't want to repack jars
 %define __os_install_post %{nil}
-%define jglobus_version 2.1.0
-%define privilege_xacml_version 2.6.5
 %define mvnopts --batch-mode -Dmaven.repo.local="%{local_maven}"
 
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.5.1
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 URL: https://github.com/opensciencegrid/gums
@@ -28,6 +26,9 @@ BuildRequires: maven2
 %define mvn %{_bindir}/mvn
 %define commons_codec jakarta-commons-codec
 %define commons_digester jakarta-commons-digester
+# jglobus 2.1.0 requires bouncycastle features newer than the EL5 version
+%define jglobus_version 2.0.6
+%define privilege_xacml_version 2.6.4
 %endif
 
 %if 0%{?rhel} == 6
@@ -36,6 +37,8 @@ BuildRequires: maven22
 %define mvn %{_bindir}/mvn22
 %define commons_codec jakarta-commons-codec
 %define commons_digester jakarta-commons-digester
+%define jglobus_version 2.1.0
+%define privilege_xacml_version 2.6.5
 %endif
 
 %if 0%{?rhel} >= 7
@@ -44,6 +47,8 @@ BuildRequires: maven >= 3.0.0
 %define mvn %{_bindir}/mvn
 %define commons_codec apache-commons-codec
 %define commons_digester apache-commons-digester
+%define jglobus_version 2.1.0
+%define privilege_xacml_version 2.6.5
 %endif
 BuildRequires: java7-devel
 BuildRequires: jglobus = %{jglobus_version}
@@ -111,6 +116,9 @@ Source14: velocity-1.5.jar
 # Can't get el5 build working with jsp precompile
 Patch0: undo-jsp-precompile.patch
 
+# el5 only; as long as we're stuck with jglobus 2.1.0 (SOFTWARE-2036)
+Patch1: privilege-xacml-2.6.4.patch
+
 %description
 %{summary}
 
@@ -157,6 +165,7 @@ Summary: Tomcat service for GUMS
 
 %if 0%{?rhel} < 6
 %patch0 -p1
+%patch1 -p1
 %endif
 
 %build
@@ -444,6 +453,9 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+* Tue Oct 06 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.5.1-2
+- Revert to jglobus 2.0.6 & privilege-xacml 2.6.4 for EL5 (SOFTWARE-2036)
+
 * Wed Sep 30 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.5.1-1
 - Update to GUMS 1.5.1 (SOFTWARE-2055)
   - Fix functionality of mapAccount (SOFTWARE-2028)

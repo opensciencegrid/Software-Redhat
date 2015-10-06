@@ -1,0 +1,26 @@
+diff --git a/gums-client/pom.xml b/gums-client/pom.xml
+index 50e0ad6..d0157cd 100644
+--- a/gums-client/pom.xml
++++ b/gums-client/pom.xml
+@@ -377,7 +377,7 @@ However, it can only be run from the normal lifecycle, no via rpm:rpm, so it mus
+         <dependency>
+             <groupId>org.opensciencegrid</groupId>
+             <artifactId>privilege-xacml</artifactId>
+-            <version>2.6.5</version>
++            <version>2.6.4</version>
+         </dependency>
+ 		<dependency>
+ 			<groupId>org.apache.xerces</groupId>
+diff --git a/gums-service/pom.xml b/gums-service/pom.xml
+index d1e4583..301c4e2 100644
+--- a/gums-service/pom.xml
++++ b/gums-service/pom.xml
+@@ -216,7 +216,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
+     <dependency>
+       <groupId>org.opensciencegrid</groupId>
+       <artifactId>privilege-xacml</artifactId>
+-      <version>2.6.5</version>
++      <version>2.6.4</version>
+     </dependency>
+     <dependency>
+       <groupId>org.opensaml</groupId>
