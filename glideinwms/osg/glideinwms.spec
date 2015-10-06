@@ -117,8 +117,8 @@ Requires: vo-client
 
 Requires: glideinwms-minimal-condor = %{version}-%{release}
 Requires: glideinwms-libs = %{version}-%{release}
-Requires: glidecondor-tools = %{version}-%{release}
-Requires: glidecondor-common-tools = %{version}-%{release}
+Requires: glideinwms-glidecondor-tools = %{version}-%{release}
+Requires: glideinwms-common-tools = %{version}-%{release}
 #To be added in 2.6.3+ once probe is finished.
 #Requires: gratia-probe-gwms
 #Requires: vdt-vofrontend-essentials
@@ -208,8 +208,8 @@ Requires: httpd
 # condor_advertise -multiple -tcp which is enabled by default
 Requires: glideinwms-factory-condor = %{version}-%{release}
 Requires: glideinwms-libs = %{version}-%{release}
-Requires: glidecondor-tools = %{version}-%{release}
-Requires: glidecondor-common-tools = %{version}-%{release}
+Requires: glideinwms-glidecondor-tools = %{version}-%{release}
+Requires: glideinwms-common-tools = %{version}-%{release}
 Requires: condor >= 7.8.0
 Requires: python-rrdtool
 Requires: python-ldap
