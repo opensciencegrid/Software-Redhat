@@ -13,7 +13,7 @@
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.5.1
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 URL: https://github.com/opensciencegrid/gums
@@ -111,6 +111,8 @@ Source14: velocity-1.5.jar
 # Can't get el5 build working with jsp precompile
 Patch0: undo-jsp-precompile.patch
 
+Patch1: EL7-Remove-TYPE-InnoDB-from-SQL-templates.patch
+
 %description
 %{summary}
 
@@ -157,6 +159,9 @@ Summary: Tomcat service for GUMS
 
 %if 0%{?rhel} < 6
 %patch0 -p1
+%endif
+%if 0%{?rhel} >= 7
+%patch1 -p1
 %endif
 
 %build
@@ -444,6 +449,9 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+* Thu Oct 08 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.1-2.osg
+- Fix gums db creation template to avoid syntax error with mariadb (SOFTWARE-2040)
+
 * Wed Sep 30 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.5.1-1
 - Update to GUMS 1.5.1 (SOFTWARE-2055)
   - Fix functionality of mapAccount (SOFTWARE-2028)
