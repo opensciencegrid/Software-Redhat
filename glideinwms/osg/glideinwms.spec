@@ -21,7 +21,7 @@ Name:           glideinwms
 # ------------------------------------------------------------------------------
 %if %{v3_plus}
 %define version 3.2.11.2
-%define release 3
+%define release 4
 %define frontend_xml frontend.master.xml
 %define factory_xml glideinWMS.master.xml
 %endif
@@ -64,6 +64,8 @@ Source6:        creation/templates/factory_startup
 Source7:	chksum.sh
 Source8:        gwms-frontend.sysconfig
 Source9:        gwms-factory.sysconfig
+
+Patch0:         No-collectors-behind-shared-port.patch
 
 %description
 This is a package for the glidein workload management system.
@@ -241,7 +243,7 @@ install of wmscollector + wms factory
 %prep
 %setup -q -n glideinwms
 # Apply the patches
-#%patch -P 0 -p1
+%patch -P 0 -p1
 #%patch -P 1 -p1
 #%patch -P 2 -p1
 #%patch -P 3 -p1
@@ -779,6 +781,9 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/condor/certs/condor_mapfile
 
 %changelog
+* Thu Oct 08 2015 Matyas Selmeci <matyas@cs.wisc.edu> - 3.2.11.2-4
+- Don't put collectors behind shared port (needed for HTCondor 8.4.0) (SOFTWARE-2015)
+
 * Mon Oct 05 2015 Carl Edquist <edquist@cs.wisc.edu> - 3.2.11.2-2
 - Repartition subpackages to avoid overlapping files (SOFTWARE-2015)
 
