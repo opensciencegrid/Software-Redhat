@@ -1,5 +1,5 @@
 Name:      rsv-perfsonar
-Version:   1.0.25
+Version:   1.0.26
 Release:   1%{?dist}
 Summary:   RSV Metrics to monitor pefsonar
 Packager:  OSG-Software
@@ -88,6 +88,9 @@ pip install messaging  --upgrade
 
 
 %changelog
+* Mon Oct 12 2015 <efajardo@physics.ucsd.edu> 1.0.26-1
+- Fixed bug when the tmp directory knob was not being used
+
 * Mon Oct 5 2015 <efajardo@physics.ucsd.edu> 1.0.25-1
 - Changed the bulk posts to only posts at most 100 datapoints per event type at a time
 
