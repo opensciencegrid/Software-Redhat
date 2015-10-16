@@ -3,7 +3,7 @@ Summary: Gratia OSG accounting system
 Group: Applications/System
 #Version: 1.13.12
 Version: 1.16.3
-Release: 2%{?dist}
+Release: 2.1%{?dist}
 License: GPL
 Group: Applications/System
 URL: http://sourceforge.net/projects/gratia/
@@ -38,6 +38,11 @@ Requires: tomcat5
 Requires: fetch-crl
 Requires: tomcat6
 %define _tomcat tomcat6
+%endif
+%if 0%{?rhel} == 7
+Requires: fetch-crl
+Requires: tomcat
+%define _tomcat tomcat
 %endif
 
 Requires: osg-version 
@@ -237,6 +242,9 @@ fi
 
 
 %changelog
+* Fri Oct 16 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.16.3-2.1
+- Require tomcat for rhel7
+
 * Fri Sep 18 2015 Kevin Retzke - 1.16.3-2
 - Changed primary key id generator to hilo for compatability with MySQL cluster.
 
