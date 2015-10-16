@@ -1,7 +1,6 @@
 %define name oasis
 %define version 2.0.38
-%define unmangled_version 2.0.38
-%define release 2
+%define release 1
 
 Summary: OASIS package
 Name: %{name}
@@ -22,167 +21,13 @@ Url: http://www.opensciencegrid.org
 This package contains OASIS
 
 %prep
-%setup -n %{name}-%{unmangled_version}
+%setup
 
 %build
 python setup.py build
 
 %install
 python setup.py install --root=$RPM_BUILD_ROOT --record=INSTALLED_FILES
-
-
-### BEGIN TEST ####
-echo /etc/init.d/oasisd >> INSTALLED_FILES_SERVER
-echo /etc/init.d/oasis-initclean >> INSTALLED_FILES_SERVER
-echo /etc/init.d/oasis-login-initclean >> INSTALLED_FILES_SERVER
-echo /etc/logrotate.d/oasis >> INSTALLED_FILES_SERVER
-echo /etc/oasis/oasis.conf >> INSTALLED_FILES_SERVER
-echo /etc/oasis/probes.conf >> INSTALLED_FILES_SERVER
-echo /etc/oasis/projects.conf >> INSTALLED_FILES_SERVER
-echo /etc/oasis/repositories.conf >> INSTALLED_FILES_SERVER
-echo /etc/sysconfig/oasis >> INSTALLED_FILES_SERVER
-echo /usr/bin/oasisd >> INSTALLED_FILES_SERVER
-echo /usr/bin/oasis >> INSTALLED_FILES_SERVER
-echo /usr/bin/oasis-runprobe-filesize >> INSTALLED_FILES_SERVER
-echo /usr/bin/oasis-runprobe-forbiddenfiles >> INSTALLED_FILES_SERVER
-echo /usr/bin/oasis-runprobe-nodelete >> INSTALLED_FILES_SERVER
-echo /usr/bin/oasis-runprobe-no >> INSTALLED_FILES_SERVER
-echo /usr/bin/oasis-runprobe-numberfiles >> INSTALLED_FILES_SERVER
-echo /usr/bin/oasis-runprobe-quota >> INSTALLED_FILES_SERVER
-echo /usr/bin/oasis-runprobe-readable >> INSTALLED_FILES_SERVER
-echo /usr/bin/oasis-runprobe-relocatable >> INSTALLED_FILES_SERVER
-echo /usr/bin/oasis-runprobe-yes >> INSTALLED_FILES_SERVER
-echo /usr/bin/oasis-user-preinstall >> INSTALLED_FILES_SERVER
-echo /usr/bin/oasis-user-publish >> INSTALLED_FILES_SERVER
-echo /usr/bin/set_repository_property >> INSTALLED_FILES_SERVER
-echo /usr/libexec/oasis/oasis_job_wrapper.sh >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasis-2.0.38-py2.6.egg-info >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/flagfiles.pyc >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/flagfiles.py >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/flagfiles.pyo >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/__init__.pyc >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/__init__.py >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/__init__.pyo >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/interfaces.pyc >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/interfaces.py >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/interfaces.pyo >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/oasisAPI.pyc >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/oasisAPI.py >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/oasisAPI.pyo >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/oasisexcpetions.pyc >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/oasisexcpetions.py >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/oasisexcpetions.pyo >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/oasisLogger.pyc >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/oasisLogger.py >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/oasisLogger.pyo >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/plugins/distribution/cvmfs20.pyc >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/plugins/distribution/cvmfs20.py >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/plugins/distribution/cvmfs20.pyo >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/plugins/distribution/cvmfs21.pyc >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/plugins/distribution/cvmfs21.py >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/plugins/distribution/cvmfs21.pyo >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/plugins/distribution/cvmfs.pyc >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/plugins/distribution/cvmfs.py >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/plugins/distribution/cvmfs.pyo >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/plugins/distribution/__init__.pyc >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/plugins/distribution/__init__.py >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/plugins/distribution/__init__.pyo >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/plugins/distribution/mock.pyc >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/plugins/distribution/mock.py >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/plugins/distribution/mock.pyo >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/plugins/__init__.pyc >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/plugins/__init__.py >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/plugins/__init__.pyo >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/probes/filesize.pyc >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/probes/filesize.py >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/probes/filesize.pyo >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/probes/forbiddenfiles.pyc >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/probes/forbiddenfiles.py >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/probes/forbiddenfiles.pyo >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/probes/makecatalogs.pyc >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/probes/makecatalogs.py >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/probes/makecatalogs.pyo >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/probes/nodelete.pyc >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/probes/nodelete.py >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/probes/nodelete.pyo >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/probes/no.pyc >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/probes/no.py >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/probes/no.pyo >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/probes/nosvn.pyc >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/probes/nosvn.py >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/probes/nosvn.pyo >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/probes/notarball.pyc >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/probes/notarball.py >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/probes/notarball.pyo >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/probes/numberfiles.pyc >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/probes/numberfiles.py >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/probes/numberfiles.pyo >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/probes/quota.pyc >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/probes/quota.py >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/probes/quota.pyo >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/probes/readable.pyc >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/probes/readable.py >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/probes/readable.pyo >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/probes/relocatable.pyc >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/probes/relocatable.py >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/probes/relocatable.pyo >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/probes/yes.pyc >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/probes/yes.py >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/probes/yes.pyo >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/projects.pyc >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/projects.py >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/projects.pyo >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/utils.pyc >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/utils.py >> INSTALLED_FILES_SERVER
-echo /usr/lib/python2.6/site-packages/oasispackage/utils.pyo >> INSTALLED_FILES_SERVER
-echo /usr/sbin/oasis-admin-projectadd >> INSTALLED_FILES_SERVER
-echo /usr/sbin/oasis-admin-restart >> INSTALLED_FILES_SERVER
-echo /usr/sbin/oasis-admin-start >> INSTALLED_FILES_SERVER
-echo /usr/sbin/oasis-admin-status >> INSTALLED_FILES_SERVER
-echo /usr/sbin/oasis-admin-stop >> INSTALLED_FILES_SERVER
-echo /usr/share/oasis/cvmfs_rsync >> INSTALLED_FILES_SERVER
-echo /usr/share/oasis/cvmfs_server_hooks.sh >> INSTALLED_FILES_SERVER
-
-
-echo /etc/init.d/oasisreplicad >> INSTALLED_FILES_REPLICA
-echo /etc/init.d/oasis-replica-initclean >> INSTALLED_FILES_REPLICA
-echo /etc/logrotate.d/oasis >> INSTALLED_FILES_REPLICA
-echo /etc/oasis/oasisreplica.conf >> INSTALLED_FILES_REPLICA
-echo /etc/oasis/oasisreplicarepositories.conf >> INSTALLED_FILES_REPLICA
-echo /etc/sysconfig/oasisreplica >> INSTALLED_FILES_REPLICA
-echo /usr/lib/python2.6/site-packages/oasis-2.0.38-py2.6.egg-info >> INSTALLED_FILES_REPLICA
-echo /usr/lib/python2.6/site-packages/oasispackage/oasisreplicaAPI.pyc >> INSTALLED_FILES_REPLICA
-echo /usr/lib/python2.6/site-packages/oasispackage/oasisreplicaAPI.py >> INSTALLED_FILES_REPLICA
-echo /usr/lib/python2.6/site-packages/oasispackage/oasisreplicaAPI.pyo >> INSTALLED_FILES_REPLICA
-
-
-echo /etc/init.d/oasis-replica-initclean >> INSTALLED_FILES_GOC
-echo /usr/bin/add_osg_repository >> INSTALLED_FILES_GOC
-echo /usr/bin/blank_osg_repository >> INSTALLED_FILES_GOC
-echo /usr/bin/osg-batch-update >> INSTALLED_FILES_GOC
-echo /usr/bin/osg-oasis-update >> INSTALLED_FILES_GOC
-echo /usr/bin/print_osg_repos >> INSTALLED_FILES_GOC
-echo /usr/bin/resign_osg_whitelist >> INSTALLED_FILES_GOC
-echo /usr/bin/set_repository_property >> INSTALLED_FILES_GOC
-echo /usr/bin/unblank_osg_repository >> INSTALLED_FILES_GOC
-echo /usr/share/oasis/cvmfs_rsync >> INSTALLED_FILES_GOC
-echo /usr/share/oasis/cvmfs_server_hooks.sh >> INSTALLED_FILES_GOC
-echo /usr/share/oasis/do_oasis_update >> INSTALLED_FILES_GOC
-echo /usr/share/oasis/generate_adduser >> INSTALLED_FILES_GOC
-echo /usr/share/oasis/generate_condormap >> INSTALLED_FILES_GOC
-echo /usr/share/oasis/generate_config_projects >> INSTALLED_FILES_GOC
-echo /usr/share/oasis/generate_gridmap >> INSTALLED_FILES_GOC
-echo /usr/share/oasis/generate_replicas >> INSTALLED_FILES_GOC
-echo /usr/share/oasis/oasis-batch-worker >> INSTALLED_FILES_GOC
-echo /usr/share/oasis/oasis_login_status >> INSTALLED_FILES_GOC
-echo /usr/share/oasis/oasis_replica_status >> INSTALLED_FILES_GOC
-echo /usr/share/oasis/oasis_status_stamp >> INSTALLED_FILES_GOC
-echo /usr/share/oasis/print_oasis_vonames >> INSTALLED_FILES_GOC
-echo /usr/share/oasis/replicate_whitelists >> INSTALLED_FILES_GOC
-echo /usr/share/oasis/request_oasis_update >> INSTALLED_FILES_GOC
-echo /usr/share/oasis/update_oasis_vos >> INSTALLED_FILES_GOC
-
-### BEGIN TEST ####
 
 mkdir -pm0755 $RPM_BUILD_ROOT%{_var}/log/oasis
 mkdir -pm0755 $RPM_BUILD_ROOT%{_var}/run/oasis
@@ -276,42 +121,9 @@ f_restart_daemon(){
 f_restart_daemon $1
 
 
-#################################################################################
-
-%package -n oasis-goc
-Summary: oasis goc
-Group: Development/Libraries
-%description -n oasis-goc
-This package contains oasis GOC
-
-%files -n oasis-goc -f INSTALLED_FILES_GOC
-%defattr(-,root,root)
-
-
-#################################################################################
-
-%package -n oasis-replica
-Summary: oasis replica
-Group: Development/Libraries
-%description -n oasis-replica
-This package contains oasis replica 
-
-%files -n oasis-replica -f INSTALLED_FILES_REPLICA
-%defattr(-,root,root)
-
-#################################################################################
-
-%package -n oasis-server 
-Summary: oasis server
-Group: Development/Libraries
-%description -n oasis-server
-This package contains oasis server 
-
-%files -n oasis-server -f INSTALLED_FILES_SERVER
+%files -f INSTALLED_FILES
 %defattr(-,root,root)
 %doc CHANGELOG LICENSE README etc/condor_oasis.conf-example
-
-
 
 # ensure the /var/log/oasis directory has the sticky bit
 # so everyone can write but each user can only delete her own content
@@ -337,10 +149,10 @@ This package contains oasis server
 %attr(0744, root, root) %{_sbindir}/oasis-admin-*
 
 
+#-------------------------------------------------------------------------------
+# Changelog
+#-------------------------------------------------------------------------------
 %changelog
-* Fri Oct 16 2015 Jose Caballero <jcaballero@bnl.gov> 2.0.38-2
-- split the package into 3 RPMs
-
 * Thu Oct 01 2015 Dave Dykstra <dwd@fnal.gov> - 2.0.38-1
 - Add misc/cvmfs_rsync to the package and use it from misc/do_oasis_update
 
