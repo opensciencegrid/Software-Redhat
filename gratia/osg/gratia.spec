@@ -12,6 +12,8 @@ URL: http://sourceforge.net/projects/gratia/
 # tar zcf gratia-1.14.0.tar.gz gratia-1.14.0
 Source0: gratia-%{version}.tar.gz
 
+Patch0: tomcat7.patch
+
 %description
 Gratia OSG accounting system
 %package service
@@ -68,6 +70,7 @@ BuildRequires: ant
 %prep
 %setup -q -n gratia-%{version}
 
+%patch0 -p1
 
 %build
 pushd build-scripts
@@ -243,7 +246,7 @@ fi
 
 %changelog
 * Fri Oct 16 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.16.3-2.1
-- Require tomcat for rhel7
+- Require "tomcat" for rhel7 (SOFTWARE-2075)
 
 * Fri Sep 18 2015 Kevin Retzke - 1.16.3-2
 - Changed primary key id generator to hilo for compatability with MySQL cluster.
