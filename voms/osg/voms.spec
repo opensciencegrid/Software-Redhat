@@ -4,7 +4,7 @@
 
 Name:		voms
 Version:	2.0.12
-Release:	3%{?dist}
+Release:	3.1%{?dist}
 Summary:	Virtual Organization Membership Service
 
 Group:		System Environment/Libraries
@@ -23,6 +23,9 @@ BuildRequires:	pkgconfig
 BuildRequires:	libxslt
 BuildRequires:	docbook-style-xsl
 BuildRequires:	doxygen
+
+# for el7/mariadb
+Patch0: mariadb-innodb.patch
 
 %description
 The Virtual Organization Membership Service (VOMS) is an attribute authority
@@ -105,6 +108,10 @@ This package provides the VOMS service.
 
 %prep
 %setup -q
+
+%if %{?rhel}%{!?rhel:0} >= 7
+%patch0 -p1
+%endif
 
 ./autogen.sh
 
@@ -303,6 +310,9 @@ fi
 %doc README.Fedora
 
 %changelog
+* Fri Oct 16 2015 Carl Edquist <edquist@cs.wisc.edu> - 2.0.12-3.1
+- Fix SQL syntax for mariadb in EL7 (SOFTWARE-1604)
+
 * Wed Mar 18 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 2.0.12-3
 - Rename client package and make voms-clients a virtual provides
 
