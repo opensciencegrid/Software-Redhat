@@ -1,0 +1,49 @@
+commit 09da6fe3d7fa58c387fe7fa7e8179d428f335ee9
+Author: Carl Edquist <edquist@cs.wisc.edu>
+Date:   Fri Oct 16 21:59:05 2015 -0500
+
+    support mariadb in install-database script for EL7 (SOFTWARE-2075)
+    
+    Ha, there was even a warning about RHEL7...
+
+diff --git a/common/configuration/install-database b/common/configuration/install-database
+index b047801..ac025c5 100644
+--- a/common/configuration/install-database
++++ b/common/configuration/install-database
+@@ -15,6 +15,7 @@ CONFIGURATIONS=/etc/gratia/services/service-configuration.properties
+ AUTHORIZATIONS=/etc/gratia/services/service-authorization.properties
+ MYSQL_CONFIG=/etc/my.cnf
+ DEFAULT_MYSQL_PORT=3306
++MYSQL_SERVICE=mysqld
+ 
+ 
+ ########## TMP FILES
+@@ -125,7 +126,11 @@ function verify_mysql_installed {
+     echo "You must install and configure MySQL 5 before configuring Gratia."
+     exit 1
+   fi
+-  if [ ! -e "/etc/init.d/mysqld" ]; then
++  if [ -e "/etc/init.d/mysqld" ]; then
++    : OK
++  elif [ -e /usr/lib/systemd/system/mariadb.service ]; then
++    MYSQL_SERVICE=mariadb
++  else
+     echo "ERROR: Could not find initd service: /etc/init.d/mysqld"
+     echo "Did you install of MySql work correctly?"
+     exit 1
+@@ -136,12 +141,12 @@ function verify_mysql_installed {
+ #-------------------------------
+ # Check the service status
+ function verify_mysql_running {
+-  [ -z "$QUIET" ] && echo "... verifying mysqld daemon is running"
+-  cmd="service mysqld status"
++  [ -z "$QUIET" ] && echo "... verifying $MYSQL_SERVICE daemon is running"
++  cmd="service $MYSQL_SERVICE status"
+   echo "$cmd"
+   $cmd; rtn=$?
+   if [ $rtn -ne 0 ]; then
+-    echo "ERROR: The MySql mysqld daemon does not appear to be running"
++    echo "ERROR: The MySql $MYSQL_SERVICE daemon does not appear to be running"
+     echo "You will need it running to complete this installation."
+     exit 1
+   fi

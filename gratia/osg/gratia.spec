@@ -3,7 +3,7 @@ Summary: Gratia OSG accounting system
 Group: Applications/System
 #Version: 1.13.12
 Version: 1.16.3
-Release: 2.1%{?dist}
+Release: 2.2%{?dist}
 License: GPL
 Group: Applications/System
 URL: http://sourceforge.net/projects/gratia/
@@ -13,6 +13,7 @@ URL: http://sourceforge.net/projects/gratia/
 Source0: gratia-%{version}.tar.gz
 
 Patch0: tomcat7.patch
+Patch1: mariadb.patch
 
 %description
 Gratia OSG accounting system
@@ -71,6 +72,7 @@ BuildRequires: ant
 %setup -q -n gratia-%{version}
 
 %patch0 -p1
+%patch1 -p1
 
 %build
 pushd build-scripts
@@ -245,6 +247,9 @@ fi
 
 
 %changelog
+* Fri Oct 16 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.16.3-2.2
+- Support mariadb for rhel7 in install-database script (SOFTWARE-2075)
+
 * Fri Oct 16 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.16.3-2.1
 - Require "tomcat" for rhel7 (SOFTWARE-2075)
 
