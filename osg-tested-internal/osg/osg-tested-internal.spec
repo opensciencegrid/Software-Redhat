@@ -1,7 +1,7 @@
 Name:      osg-tested-internal
 Summary:   All OSG packages we test (internal use only)
 Version:   3.3
-Release:   5%{?dist}
+Release:   6%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -73,6 +73,11 @@ Requires: osg-voms
 Requires: globus-gram-job-manager-pbs-setup-poll
 %endif
 
+%if 0%{?rhel} == 7
+# osg-tested-internal packages in el7 don't currently pull in mysql/mariadb
+Requires: mariadb-server
+%endif
+
 %description
 %{summary}
 
@@ -86,6 +91,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Oct 19 2015 Carl Edquist <edquist@cs.wisc.edu> - 3.3-6
+- Add mariadb-server requirement for el7 (SOFTWARE-1996)
+
 * Tue Sep 15 2015 Brian Lin <blin@cs.wisc.edu> 3.3-5
 - Fix pbs-setup-poll package name
 
