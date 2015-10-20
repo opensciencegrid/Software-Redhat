@@ -6,8 +6,8 @@
 %endif
 
 Name:		voms-api-java
-Version:	2.0.8
-Release:	1.8%{?dist}
+Version:	2.0.10
+Release:	4%{?dist}
 Summary:	Virtual Organization Membership Service Java API
 
 Group:		Development/Libraries
@@ -198,6 +198,9 @@ if [[ $1 -gt 0 && -e %{_javadir}/%{name}.jar ]]; then
 fi
 
 %changelog
+* Tue Oct 20 2015 Jose Caballero <jcaballero@bnl.gov> 2.0.10-4
+- attempt #1 to upgrade to version 2.0.10
+
 * Fri Oct 02 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 2.0.8-1.8
 - Use mvn_build macro on el7
 
