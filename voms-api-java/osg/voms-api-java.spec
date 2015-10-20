@@ -6,8 +6,8 @@
 %endif
 
 Name:		voms-api-java
-Version:	2.0.10
-Release:	4%{?dist}
+Version:	2.0.8
+Release:	1.8%{?dist}
 Summary:	Virtual Organization Membership Service Java API
 
 Group:		Development/Libraries
@@ -18,10 +18,7 @@ URL:		http://glite.web.cern.ch/glite/
 #		cd voms-api-java
 #		git archive --format tar --prefix voms-api-java-2.0.8/ 2_0_8 \
 #		  | gzip - > ../voms-api-java-2.0.8.tar.gz
-### BEGIN TEST JC ###
-###Source0:	%{name}-%{version}.tar.gz
-Source0: 2_0_10.tar.gz
-### BEGIN END JC ###
+Source0:	%{name}-%{version}.tar.gz
 #		These are build instructions for ant generated from the maven
 #		build instrutions using the maven ant plugin.
 #		These are used for building on EPEL since there is no maven
@@ -201,9 +198,6 @@ if [[ $1 -gt 0 && -e %{_javadir}/%{name}.jar ]]; then
 fi
 
 %changelog
-* Tue Oct 20 2015 Jose Caballero <jcaballero@bnl.gov> 2.0.10-4
-- attempt #1 to upgrade to version 2.0.10
-
 * Fri Oct 02 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 2.0.8-1.8
 - Use mvn_build macro on el7
 
