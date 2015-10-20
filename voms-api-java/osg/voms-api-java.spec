@@ -18,7 +18,10 @@ URL:		http://glite.web.cern.ch/glite/
 #		cd voms-api-java
 #		git archive --format tar --prefix voms-api-java-2.0.8/ 2_0_8 \
 #		  | gzip - > ../voms-api-java-2.0.8.tar.gz
-Source0:	%{name}-%{version}.tar.gz
+### BEGIN TEST JC ###
+###Source0:	%{name}-%{version}.tar.gz
+Source0: 2_0_10.tar.gz
+### BEGIN END JC ###
 #		These are build instructions for ant generated from the maven
 #		build instrutions using the maven ant plugin.
 #		These are used for building on EPEL since there is no maven
