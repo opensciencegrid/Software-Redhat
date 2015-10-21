@@ -1,0 +1,23 @@
+commit 50b623923005b339127b26a96d4a4c4577e02150
+Author: Carl Edquist <edquist@cs.wisc.edu>
+Date:   Wed Oct 21 22:49:56 2015 +0000
+
+    fix syntax for python 2.4 / el5 compatibility (SOFTWARE-1947)
+    
+    sadly the inline-if syntax is not valid for python 2.4 ...
+    
+    git-svn-id: file:///p/condor/workspaces/vdt/svn/software/rsv/trunk@21885 4e558342-562e-0410-864c-e07659590f8c
+
+diff --git a/rsv-metrics/libexec/probes/xrootd-cache-probe b/rsv-metrics/libexec/probes/xrootd-cache-probe
+index f87ccc9..0eb3f1c 100755
+--- a/rsv-metrics/libexec/probes/xrootd-cache-probe
++++ b/rsv-metrics/libexec/probes/xrootd-cache-probe
+@@ -38,7 +38,7 @@ def human_size(n):
+     while n >= 4096:
+         n /= 1024
+         u += 1
+-    return "%d%s" % (n, " KMGTPEZY"[u]) if u else str(n)
++    return ("%d%s" % (n, " KMGTPEZY"[u])).rstrip()
+ 
+ def human_elapsed(n):
+     u = 0
