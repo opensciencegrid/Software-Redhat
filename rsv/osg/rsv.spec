@@ -1,6 +1,6 @@
 Name:      rsv
 Summary:   RSV Meta Package
-Version:   3.10.4
+Version:   3.11.0
 %if 0%{?el7}
 %define release_suffix _clipped
 %endif
@@ -245,6 +245,9 @@ fi
 
 
 %changelog
+* Wed Oct 21 2015 Carl Edquist <edquist@cs.wisc.edu> - 3.11.0-1
+- SOFTWARE-1947 - new xrootd stash cache probe
+
 * Fri Sep 18 2015 Carl Edquist <edquist@cs.wisc.edu> - 3.10.4-1
 - SOFTWARE-2043 - Accommodate nfs delays in srmcp-srm-probe
 
