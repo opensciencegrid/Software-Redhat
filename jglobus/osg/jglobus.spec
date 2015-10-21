@@ -101,10 +101,10 @@ Source7: %{name}-mvn-deps-el7.tar.gz
 %prep
 %setup -q -c -n JGlobus
 
-%if 0%{?rhel} < 7
+%if 0%{?rhel} == 6
 %patch0 -p1
 %endif
-%if 0%{?rhel} < 6
+%if 0%{?rhel} <= 5
 %patch3 -p1
 %endif
 %patch1 -p1
