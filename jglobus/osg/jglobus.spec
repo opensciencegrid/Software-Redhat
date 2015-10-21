@@ -21,13 +21,12 @@ Source0: JGlobus-Release-2.1.0.tar.gz
 # jglobus-bc146 patch obtained from EPEL version of jglobus 2.1.0
 Patch0:  jglobus-bc146.patch
 
+# EL5 has bouncycastle 1.45, not 1.46
+Patch1: jglobus-bc146-to-145.patch
+
 # Posted to JGlobus github as a fix for key format issues.
 # See SOFTWARE-1607
-Patch1: 1607-fix-sl6-certs.patch
-
-# EL5 has bouncycastle 1.45, not 1.46
-Patch3: jglobus-bc145.patch
-Patch4: Add-X509Extension_keyUsage-constant-introduced-in-bc.patch
+Patch2: 1607-fix-sl6-certs.patch
 
 BuildArch: noarch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -104,14 +103,13 @@ Source7: %{name}-mvn-deps-el7.tar.gz
 %prep
 %setup -q -c -n JGlobus
 
-%patch1 -p1
-%if 0%{?rhel} == 6
+%if 0%{?rhel} < 7
 %patch0 -p1
 %endif
 %if 0%{?rhel} <= 5
-%patch3 -p1
-%patch4 -p1
+%patch1 -p1
 %endif
+%patch2 -p1
 
 find -name '*.class' -exec rm -f '{}' \;
 find -name '*.jar' -exec rm -f '{}' \;
