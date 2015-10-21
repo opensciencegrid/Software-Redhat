@@ -1,0 +1,43 @@
+From 59ff7f8590ba1e0a11afdf8cb9507543e6411180 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Tue, 20 Oct 2015 17:49:13 -0500
+Subject: [PATCH] Add X509Extension_keyUsage constant (introduced in bc 1.46)
+
+---
+ ssl-proxies/src/main/java/org/globus/gsi/util/CertificateUtil.java | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/ssl-proxies/src/main/java/org/globus/gsi/util/CertificateUtil.java b/ssl-proxies/src/main/java/org/globus/gsi/util/CertificateUtil.java
+index 8cbfd9b..443613f 100644
+--- a/ssl-proxies/src/main/java/org/globus/gsi/util/CertificateUtil.java
++++ b/ssl-proxies/src/main/java/org/globus/gsi/util/CertificateUtil.java
+@@ -78,10 +78,13 @@ public final class CertificateUtil {
+ 
+     private static final Map<String, String> KEYWORD_MAP = new HashMap<String, String>();
+ 
+     private static final Map<String, String> OID_MAP = new HashMap<String, String>();
+ 
++    // from BC 1.46:
++    public static final X509Extension_keyUsage = new DERObjectIdentifier("2.5.29.15");
++
+ 
+     static {
+         // Taken from BouncyCastle 2.46
+         KEYWORD_MAP.put("SN", SERIALNUMBER.oid);
+         KEYWORD_MAP.put("E", EmailAddress.oid);
+@@ -431,11 +434,11 @@ public final class CertificateUtil {
+         X509Extensions extensions = crt.getExtensions();
+         if (extensions == null) {
+             return null;
+         }
+         X509Extension extension =
+-                extensions.getExtension(X509Extension.keyUsage);
++                extensions.getExtension(X509Extension_keyUsage);
+         return (extension != null) ? getKeyUsage(extension) : null;
+     }
+ 
+     /**
+      * Gets a boolean array representing bits of the KeyUsage extension.
+-- 
+2.4.6
+

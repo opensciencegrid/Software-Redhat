@@ -27,6 +27,7 @@ Patch1: 1607-fix-sl6-certs.patch
 
 # EL5 has bouncycastle 1.45, not 1.46
 Patch3: jglobus-bc145.patch
+Patch4: Add-X509Extension_keyUsage-constant-introduced-in-bc.patch
 
 BuildArch: noarch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -109,6 +110,7 @@ Source7: %{name}-mvn-deps-el7.tar.gz
 %endif
 %if 0%{?rhel} <= 5
 %patch3 -p1
+%patch4 -p1
 %endif
 
 find -name '*.class' -exec rm -f '{}' \;
