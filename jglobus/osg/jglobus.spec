@@ -103,13 +103,13 @@ Source7: %{name}-mvn-deps-el7.tar.gz
 %prep
 %setup -q -c -n JGlobus
 
+%patch1 -p1
 %if 0%{?rhel} == 6
 %patch0 -p1
 %endif
 %if 0%{?rhel} <= 5
 %patch3 -p1
 %endif
-%patch1 -p1
 
 find -name '*.class' -exec rm -f '{}' \;
 find -name '*.jar' -exec rm -f '{}' \;
