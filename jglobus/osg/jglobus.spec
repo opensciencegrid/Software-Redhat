@@ -2,7 +2,7 @@ Name: jglobus
 Summary: An implementation of Globus for Java
 License: Apache 2.0
 Version: 2.1.0
-Release: 5%{?dist}
+Release: 6%{?dist}
 URL: http://www.globus.org/toolkit/jglobus/
 Group: System Environment/Libraries
 
@@ -22,6 +22,9 @@ Patch0:  jglobus-bc146.patch
 # Posted to JGlobus github as a fix for key format issues.
 # See SOFTWARE-1607
 Patch1: 1607-fix-sl6-certs.patch
+
+# EL5 has bouncycastle 1.45, not 1.46
+Patch3: jglobus-bc145.patch
 
 BuildArch: noarch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -43,7 +46,8 @@ BuildRequires:  maven >= 3.0
 %endif
 
 %define local_maven /tmp/m2/%{name}/repository
-%global mvnopts --batch-mode --errors --fail-fast -Dmaven.repo.local="%{local_maven}"
+#global mvnopts --batch-mode --fail-fast -Dmaven.repo.local="%{local_maven}"
+%global mvnopts --batch-mode -Dmaven.repo.local="%{local_maven}"
 
 %if 0%{?maven_offline}
 %global mvnopts %mvnopts --offline
@@ -100,12 +104,13 @@ Source7: %{name}-mvn-deps-el7.tar.gz
 %if 0%{?rhel} < 7
 %patch0 -p1
 %endif
+%if 0%{?rhel} < 6
+%patch3 -p1
+%endif
 %patch1 -p1
 
 find -name '*.class' -exec rm -f '{}' \;
 find -name '*.jar' -exec rm -f '{}' \;
-
-
 
 
 %build
