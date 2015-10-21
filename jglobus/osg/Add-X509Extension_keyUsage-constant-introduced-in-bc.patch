@@ -1,4 +1,4 @@
-From 59ff7f8590ba1e0a11afdf8cb9507543e6411180 Mon Sep 17 00:00:00 2001
+From d6d18fe6ed237e9179c366b571652bc744f138ac Mon Sep 17 00:00:00 2001
 From: Matyas Selmeci <matyas@cs.wisc.edu>
 Date: Tue, 20 Oct 2015 17:49:13 -0500
 Subject: [PATCH] Add X509Extension_keyUsage constant (introduced in bc 1.46)
@@ -8,7 +8,7 @@ Subject: [PATCH] Add X509Extension_keyUsage constant (introduced in bc 1.46)
  1 file changed, 4 insertions(+), 1 deletion(-)
 
 diff --git a/ssl-proxies/src/main/java/org/globus/gsi/util/CertificateUtil.java b/ssl-proxies/src/main/java/org/globus/gsi/util/CertificateUtil.java
-index 8cbfd9b..443613f 100644
+index 8cbfd9b..25724b1 100644
 --- a/ssl-proxies/src/main/java/org/globus/gsi/util/CertificateUtil.java
 +++ b/ssl-proxies/src/main/java/org/globus/gsi/util/CertificateUtil.java
 @@ -78,10 +78,13 @@ public final class CertificateUtil {
@@ -18,7 +18,7 @@ index 8cbfd9b..443613f 100644
      private static final Map<String, String> OID_MAP = new HashMap<String, String>();
  
 +    // from BC 1.46:
-+    public static final X509Extension_keyUsage = new DERObjectIdentifier("2.5.29.15");
++    public static final DERObjectIdentifier X509Extension_keyUsage = new DERObjectIdentifier("2.5.29.15");
 +
  
      static {
