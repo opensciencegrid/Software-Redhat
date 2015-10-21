@@ -11,7 +11,7 @@
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.5.1
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 URL: https://github.com/opensciencegrid/gums
@@ -26,9 +26,8 @@ BuildRequires: maven2
 %define mvn %{_bindir}/mvn
 %define commons_codec jakarta-commons-codec
 %define commons_digester jakarta-commons-digester
-# jglobus 2.1.0 requires bouncycastle features newer than the EL5 version
-%define jglobus_version 2.0.6
-%define privilege_xacml_version 2.6.4
+%define jglobus_version 2.1.0
+%define privilege_xacml_version 2.6.5
 %endif
 
 %if 0%{?rhel} == 6
@@ -116,9 +115,6 @@ Source14: velocity-1.5.jar
 # Can't get el5 build working with jsp precompile
 Patch0: undo-jsp-precompile.patch
 
-# el5 only; as long as we're stuck with jglobus 2.1.0 (SOFTWARE-2036)
-Patch1: privilege-xacml-2.6.4.patch
-
 %description
 %{summary}
 
@@ -165,7 +161,6 @@ Summary: Tomcat service for GUMS
 
 %if 0%{?rhel} < 6
 %patch0 -p1
-%patch1 -p1
 %endif
 
 %build
@@ -453,6 +448,9 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+* Wed Oct 21 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.1-3
+- Try jglobus-2.1.0 and privilege-xacml 2.6.5 again (SOFTWARE-2036)
+
 * Tue Oct 06 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.5.1-2
 - Revert to jglobus 2.0.6 & privilege-xacml 2.6.4 for EL5 (SOFTWARE-2036)
 
