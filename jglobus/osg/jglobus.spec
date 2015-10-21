@@ -186,6 +186,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mavendepmapfragdir}/%{name}
 
 %changelog
+* Wed Oct 21 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 2.1.0-6
+- Patch to build with bouncycastle 1.45 on EL5 (SOFTWARE-2068)
+
 * Thu Oct 01 2015 Brian Bockelman <bbockelm@cse.unl.edu> - 2.1.0-5
 - Add back patch from SOFTWARE-1607 for OpenSSL 1.0 keys.
 
