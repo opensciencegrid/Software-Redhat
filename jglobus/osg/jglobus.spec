@@ -1,5 +1,3 @@
-%global rhel 5
-
 Name: jglobus
 Summary: An implementation of Globus for Java
 License: Apache 2.0
