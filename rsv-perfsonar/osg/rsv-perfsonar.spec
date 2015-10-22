@@ -1,5 +1,5 @@
 Name:      rsv-perfsonar
-Version:   1.0.26
+Version:   1.1.0
 Release:   1%{?dist}
 Summary:   RSV Metrics to monitor pefsonar
 Packager:  OSG-Software
@@ -32,9 +32,9 @@ Requires: python-simplejson
 %{summary}
 
 %prep
-%setup -n trunk
+#%setup -n trunk
 #%setup -n %{name}
-#%setup -n %{version}
+%setup -n %{version}
 
 %install
 rm -fr $RPM_BUILD_ROOT
@@ -88,6 +88,10 @@ pip install messaging  --upgrade
 
 
 %changelog
+* Thu Oct 22 2015 <efajardo@physics.ucsd.edu> 1.1.0-1
+- Bumped to version 1.1.0 to go into the release
+- Fixed the https bugs on probes not falling back to it
+ 
 * Mon Oct 12 2015 <efajardo@physics.ucsd.edu> 1.0.26-1
 - Fixed bug when the tmp directory knob was not being used
 
