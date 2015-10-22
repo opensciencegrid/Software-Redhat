@@ -11,6 +11,7 @@ URL:		https://github.com/osg-bosco/BLAH
 # git archive v1_18_bosco | gzip -8 > ~/rpmbuild/SOURCES/blahp.tar.gz
 Source0:        %{name}-%{version}.tar.gz
 Patch0:         sw1709-osg-job-env-vars.patch
+Patch1:         store_qsub_errors.patch
 
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildRequires:  automake
@@ -35,6 +36,7 @@ BuildRequires:  docbook-style-xsl, libxslt
 %prep
 %setup -c -n %{name}-%{version}
 %patch0 -p1
+%patch1 -p1
 
 %build
 ./bootstrap
