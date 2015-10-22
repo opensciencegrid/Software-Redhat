@@ -1,5 +1,5 @@
 Name:           osg-ca-certs-updater
-Version:        1.2
+Version:        1.3
 Release:        1%{?dist}
 Summary:        Automatic CA certs updates for OSG
 
@@ -55,6 +55,9 @@ fi
 %doc %{_defaultdocdir}/%{name}-%{version}/README*
 
 %changelog
+* Thu Oct 22 2015 Brian Lin <blin@cs.wisc.edu> - 1.3-1
+- Bug fix for verifying osg-release version
+
 * Thu Oct 22 2015 Brian Lin <blin@cs.wisc.edu> - 1.2-1
 - Verify OSG version with osg-release instead of osg-version
 
