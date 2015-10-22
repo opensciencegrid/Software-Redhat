@@ -2,7 +2,7 @@ Name: jglobus
 Summary: An implementation of Globus for Java
 License: Apache 2.0
 Version: 2.1.0
-Release: 5%{?dist}
+Release: 6%{?dist}
 URL: http://www.globus.org/toolkit/jglobus/
 Group: System Environment/Libraries
 
@@ -19,9 +19,12 @@ Source0: JGlobus-Release-2.1.0.tar.gz
 # jglobus-bc146 patch obtained from EPEL version of jglobus 2.1.0
 Patch0:  jglobus-bc146.patch
 
+# EL5 has bouncycastle 1.45, not 1.46
+Patch1: jglobus-bc146-to-145.patch
+
 # Posted to JGlobus github as a fix for key format issues.
 # See SOFTWARE-1607
-Patch1: 1607-fix-sl6-certs.patch
+Patch2: 1607-fix-sl6-certs.patch
 
 BuildArch: noarch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -43,7 +46,8 @@ BuildRequires:  maven >= 3.0
 %endif
 
 %define local_maven /tmp/m2/%{name}/repository
-%global mvnopts --batch-mode --errors --fail-fast -Dmaven.repo.local="%{local_maven}"
+#global mvnopts --batch-mode --fail-fast -Dmaven.repo.local="%{local_maven}"
+%global mvnopts --batch-mode -Dmaven.repo.local="%{local_maven}"
 
 %if 0%{?maven_offline}
 %global mvnopts %mvnopts --offline
@@ -100,12 +104,13 @@ Source7: %{name}-mvn-deps-el7.tar.gz
 %if 0%{?rhel} < 7
 %patch0 -p1
 %endif
+%if 0%{?rhel} <= 5
 %patch1 -p1
+%endif
+%patch2 -p1
 
 find -name '*.class' -exec rm -f '{}' \;
 find -name '*.jar' -exec rm -f '{}' \;
-
-
 
 
 %build
@@ -181,6 +186,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mavendepmapfragdir}/%{name}
 
 %changelog
+* Wed Oct 21 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 2.1.0-6
+- Patch to build with bouncycastle 1.45 on EL5 (SOFTWARE-2068)
+
 * Thu Oct 01 2015 Brian Bockelman <bbockelm@cse.unl.edu> - 2.1.0-5
 - Add back patch from SOFTWARE-1607 for OpenSSL 1.0 keys.
 

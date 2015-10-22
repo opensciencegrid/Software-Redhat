@@ -1,7 +1,32 @@
-diff -ur JGlobus-JGlobus-Release-2.1.0.orig/pom.xml JGlobus-JGlobus-Release-2.1.0/pom.xml
---- JGlobus-JGlobus-Release-2.1.0.orig/pom.xml	2014-09-26 05:46:02.000000000 +0200
-+++ JGlobus-JGlobus-Release-2.1.0/pom.xml	2014-10-01 15:05:09.420521469 +0200
-@@ -148,8 +148,8 @@
+From cc2eae0ca29e81c66ec2def25b1680156ac67020 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Wed, 21 Oct 2015 10:25:12 -0500
+Subject: [PATCH] jglobus-bc146.patch
+
+---
+ pom.xml                                            |  4 +-
+ ssl-proxies/pom.xml                                |  2 +-
+ .../gsi/bc/BouncyCastleCertProcessingFactory.java  | 29 +++++-----
+ .../org/globus/gsi/bc/BouncyCastleOpenSSLKey.java  | 12 ++--
+ .../java/org/globus/gsi/bc/BouncyCastleUtil.java   | 67 ++++++++++++++++------
+ .../globus/gsi/bc/BouncyCastleX509Extension.java   | 10 ++--
+ .../java/org/globus/gsi/bc/X509NameHelper.java     | 35 +++--------
+ .../org/globus/gsi/proxy/ext/ProxyCertInfo.java    | 14 ++---
+ .../java/org/globus/gsi/proxy/ext/ProxyPolicy.java | 10 ++--
+ .../trustmanager/X509ProxyCertPathValidator.java   | 10 ++--
+ .../org/globus/gsi/util/CertificateIOUtil.java     |  2 +-
+ .../java/org/globus/gsi/util/CertificateUtil.java  | 24 ++++----
+ .../bc/BouncyCastleCertProcessingFactoryTest.java  | 10 +---
+ .../globus/gsi/proxy/ext/ProxyCertInfoTest.java    |  6 +-
+ 14 files changed, 120 insertions(+), 115 deletions(-)
+
+diff --git a/pom.xml b/pom.xml
+index 34838a5..844c548 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -146,12 +146,12 @@
+ 				<version>1.2.14</version>
+ 				<scope>compile</scope>
  			</dependency>
  			<dependency>
  				<groupId>org.bouncycastle</groupId>
@@ -12,10 +37,15 @@ diff -ur JGlobus-JGlobus-Release-2.1.0.orig/pom.xml JGlobus-JGlobus-Release-2.1.
  			</dependency>
  			<dependency>
  				<groupId>commons-io</groupId>
-diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/pom.xml JGlobus-JGlobus-Release-2.1.0/ssl-proxies/pom.xml
---- JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/pom.xml	2014-09-26 05:46:02.000000000 +0200
-+++ JGlobus-JGlobus-Release-2.1.0/ssl-proxies/pom.xml	2014-10-01 15:05:09.420521469 +0200
-@@ -41,7 +41,7 @@
+ 				<artifactId>commons-io</artifactId>
+ 				<version>1.4</version>
+diff --git a/ssl-proxies/pom.xml b/ssl-proxies/pom.xml
+index f32d148..28cd567 100644
+--- a/ssl-proxies/pom.xml
++++ b/ssl-proxies/pom.xml
+@@ -39,11 +39,11 @@
+ 			<artifactId>log4j</artifactId>
+ 			<scope>compile</scope>
  		</dependency>
  		<dependency>
  			<groupId>org.bouncycastle</groupId>
@@ -24,10 +54,15 @@ diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/pom.xml JGlobus-JGlobus-
  		</dependency>
  		<dependency>
  			<groupId>commons-io</groupId>
-diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus/gsi/bc/BouncyCastleCertProcessingFactory.java JGlobus-JGlobus-Release-2.1.0/ssl-proxies/src/main/java/org/globus/gsi/bc/BouncyCastleCertProcessingFactory.java
---- JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus/gsi/bc/BouncyCastleCertProcessingFactory.java	2014-09-26 05:46:02.000000000 +0200
-+++ JGlobus-JGlobus-Release-2.1.0/ssl-proxies/src/main/java/org/globus/gsi/bc/BouncyCastleCertProcessingFactory.java	2014-10-01 15:05:09.421521479 +0200
-@@ -14,7 +14,6 @@
+ 			<artifactId>commons-io</artifactId>
+ 		</dependency>
+diff --git a/ssl-proxies/src/main/java/org/globus/gsi/bc/BouncyCastleCertProcessingFactory.java b/ssl-proxies/src/main/java/org/globus/gsi/bc/BouncyCastleCertProcessingFactory.java
+index 135f019..7b03475 100644
+--- a/ssl-proxies/src/main/java/org/globus/gsi/bc/BouncyCastleCertProcessingFactory.java
++++ b/ssl-proxies/src/main/java/org/globus/gsi/bc/BouncyCastleCertProcessingFactory.java
+@@ -12,11 +12,10 @@
+  *
+  * See the License for the specific language governing permissions and limitations under the License.
   */
  package org.globus.gsi.bc;
  
@@ -35,7 +70,11 @@ diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus
  import org.globus.gsi.util.CertificateLoadUtil;
  import org.globus.gsi.util.ProxyCertificateUtil;
  
-@@ -49,13 +48,13 @@
+ import org.globus.gsi.X509Credential;
+ 
+@@ -47,17 +46,17 @@ import org.globus.gsi.proxy.ext.ProxyCertInfoExtension;
+ import org.globus.gsi.proxy.ext.GlobusProxyCertInfoExtension;
+ import org.bouncycastle.x509.X509V3CertificateGenerator;
  import org.bouncycastle.jce.PKCS10CertificationRequest;
  import org.bouncycastle.jce.provider.X509CertificateObject;
  import org.bouncycastle.asn1.DERSet;
@@ -51,7 +90,11 @@ diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus
  import org.bouncycastle.asn1.x509.X509Extensions;
  import org.bouncycastle.asn1.x509.X509Extension;
  import org.bouncycastle.asn1.x509.KeyUsage;
-@@ -150,7 +149,7 @@
+ 
+ /**
+@@ -148,11 +147,11 @@ public class BouncyCastleCertProcessingFactory {
+     public X509Certificate createCertificate(InputStream certRequestInputStream, X509Certificate cert,
+         PrivateKey privateKey, int lifetime, int delegationMode, X509ExtensionSet extSet, String cnValue)
          throws IOException, GeneralSecurityException {
  
          ASN1InputStream derin = new ASN1InputStream(certRequestInputStream);
@@ -60,7 +103,11 @@ diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus
          PKCS10CertificationRequest certReq = new PKCS10CertificationRequest((ASN1Sequence) reqInfo);
  
          boolean rs = certReq.verify();
-@@ -414,11 +413,11 @@
+ 
+         if (!rs) {
+@@ -412,15 +411,15 @@ public class BouncyCastleCertProcessingFactory {
+                 X509Extensions extensions = crt.getExtensions();
+                 if (extensions != null) {
                      X509Extension ext;
  
                      // handle key usage ext
@@ -74,7 +121,11 @@ diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus
                              String err = i18n.getMessage("keyUsageExt");
                              throw new GeneralSecurityException(err);
                          }
-@@ -438,7 +437,7 @@
+ 
+                         DERBitString bits = (DERBitString) BouncyCastleUtil.getExtensionObject(ext);
+@@ -436,11 +435,11 @@ public class BouncyCastleCertProcessingFactory {
+                             bytes[0] ^= KeyUsage.keyCertSign;
+                         }
  
                          bits = new DERBitString(bytes, bits.getPadBits());
  
@@ -83,7 +134,11 @@ diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus
                      }
                  }
  
-@@ -482,7 +481,7 @@
+             } catch (IOException e) {
+                 // but this should not happen
+@@ -480,11 +479,11 @@ public class BouncyCastleCertProcessingFactory {
+         }
+ 
          X509NameHelper issuer = new X509NameHelper(issuerDN);
  
          X509NameHelper subject = new X509NameHelper(issuerDN);
@@ -92,7 +147,11 @@ diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus
  
          certGen.setSubjectDN(subject.getAsName());
          certGen.setIssuerDN(issuer.getAsName());
-@@ -573,7 +572,7 @@
+ 
+         certGen.setSerialNumber(serialNum);
+@@ -571,11 +570,11 @@ public class BouncyCastleCertProcessingFactory {
+     public X509Certificate createCertificate(InputStream certRequestInputStream, X509Certificate cert,
+         PrivateKey privateKey, int lifetime, GSIConstants.CertificateType certType, X509ExtensionSet extSet,
          String cnValue) throws IOException, GeneralSecurityException {
  
          ASN1InputStream derin = new ASN1InputStream(certRequestInputStream);
@@ -101,7 +160,11 @@ diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus
          PKCS10CertificationRequest certReq = new PKCS10CertificationRequest((ASN1Sequence) reqInfo);
  
          boolean rs = certReq.verify();
-@@ -818,11 +817,11 @@
+ 
+         if (!rs) {
+@@ -816,15 +815,15 @@ public class BouncyCastleCertProcessingFactory {
+                 X509Extensions extensions = crt.getExtensions();
+                 if (extensions != null) {
                      X509Extension ext;
  
                      // handle key usage ext
@@ -115,7 +178,11 @@ diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus
                              String err = i18n.getMessage("keyUsageExt");
                              throw new GeneralSecurityException(err);
                          }
-@@ -842,7 +841,7 @@
+ 
+                         DERBitString bits = (DERBitString) BouncyCastleUtil.getExtensionObject(ext);
+@@ -840,11 +839,11 @@ public class BouncyCastleCertProcessingFactory {
+                             bytes[0] ^= KeyUsage.keyCertSign;
+                         }
  
                          bits = new DERBitString(bytes, bits.getPadBits());
  
@@ -124,7 +191,11 @@ diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus
                      }
                  }
  
-@@ -884,7 +883,7 @@
+             } catch (IOException e) {
+                 // but this should not happen
+@@ -882,11 +881,11 @@ public class BouncyCastleCertProcessingFactory {
+         } else {
+         	issuerDN = new X509Name(true,issuerCert.getSubjectX500Principal().getName());
          }
          X509NameHelper issuer = new X509NameHelper(issuerDN);
          X509NameHelper subject = new X509NameHelper(issuerDN);
@@ -133,7 +204,11 @@ diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus
  
          certGen.setSubjectDN(subject.getAsName());
          certGen.setIssuerDN(issuer.getAsName());
-@@ -923,9 +922,9 @@
+ 
+         certGen.setSerialNumber(serialNum);
+@@ -921,13 +920,13 @@ public class BouncyCastleCertProcessingFactory {
+      * @exception GeneralSecurityException
+      *                if certificate failed to load.
       */
      public X509Certificate loadCertificate(InputStream in) throws IOException, GeneralSecurityException {
          ASN1InputStream derin = new ASN1InputStream(in);
@@ -145,10 +220,15 @@ diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus
      }
  
      /**
-diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus/gsi/bc/BouncyCastleOpenSSLKey.java JGlobus-JGlobus-Release-2.1.0/ssl-proxies/src/main/java/org/globus/gsi/bc/BouncyCastleOpenSSLKey.java
---- JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus/gsi/bc/BouncyCastleOpenSSLKey.java	2014-09-26 05:46:02.000000000 +0200
-+++ JGlobus-JGlobus-Release-2.1.0/ssl-proxies/src/main/java/org/globus/gsi/bc/BouncyCastleOpenSSLKey.java	2014-10-01 15:05:09.421521479 +0200
-@@ -28,8 +28,8 @@
+      * Creates a certificate request from the specified subject DN and a key pair. The
+      * <I>"MD5WithRSAEncryption"</I> is used as the signing algorithm of the certificate request.
+diff --git a/ssl-proxies/src/main/java/org/globus/gsi/bc/BouncyCastleOpenSSLKey.java b/ssl-proxies/src/main/java/org/globus/gsi/bc/BouncyCastleOpenSSLKey.java
+index 867291a..cbd98da 100644
+--- a/ssl-proxies/src/main/java/org/globus/gsi/bc/BouncyCastleOpenSSLKey.java
++++ b/ssl-proxies/src/main/java/org/globus/gsi/bc/BouncyCastleOpenSSLKey.java
+@@ -26,12 +26,12 @@ import java.security.KeyFactory;
+ import java.security.PrivateKey;
+ import java.security.Security;
  import java.security.interfaces.RSAPrivateCrtKey;
  import java.security.spec.PKCS8EncodedKeySpec;
  import org.bouncycastle.asn1.ASN1InputStream;
@@ -158,7 +238,11 @@ diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus
  import org.bouncycastle.asn1.DERObjectIdentifier;
  import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
  import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
-@@ -121,12 +121,12 @@
+ import org.bouncycastle.asn1.pkcs.RSAPrivateKeyStructure;
+ import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
+@@ -119,16 +119,16 @@ public class BouncyCastleOpenSSLKey extends OpenSSLKey {
+ 					throw new GeneralSecurityException(
+ 							"Cannot process empty byte stream.");
  				}
  				ByteArrayInputStream bis = new ByteArrayInputStream(data);
  				ASN1InputStream derin = new ASN1InputStream(bis);
@@ -173,7 +257,11 @@ diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus
  				byte[] keyData = BouncyCastleUtil.toByteArray(derkey);
  				// The DER object needs to be mangled to
  				// create a proper ProvateKeyInfo object
-@@ -150,10 +150,10 @@
+ 				PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(keyData);
+ 				KeyFactory kfac = KeyFactory.getInstance("RSA");
+@@ -148,14 +148,14 @@ public class BouncyCastleOpenSSLKey extends OpenSSLKey {
+ 		String format = key.getFormat();
+ 		if (format != null
  				&& (format.equalsIgnoreCase("PKCS#8") || format
  						.equalsIgnoreCase("PKCS8"))) {
  			try {
@@ -186,7 +274,11 @@ diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus
  				return BouncyCastleUtil.toByteArray(derKey);
  			} catch (IOException e) {
  				// that should never happen
-@@ -169,7 +169,7 @@
+ 				logger.warn("This shouldn't have happened.", e);
+ 				return new byte[] {};
+@@ -167,11 +167,11 @@ public class BouncyCastleOpenSSLKey extends OpenSSLKey {
+ 			RSAPrivateKeyStructure st = new RSAPrivateKeyStructure(pKey
+ 					.getModulus(), pKey.getPublicExponent(), pKey
  					.getPrivateExponent(), pKey.getPrimeP(), pKey.getPrimeQ(),
  					pKey.getPrimeExponentP(), pKey.getPrimeExponentQ(), pKey
  							.getCrtCoefficient());
@@ -195,10 +287,15 @@ diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus
  
  			try {
  				return BouncyCastleUtil.toByteArray(ob);
-diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus/gsi/bc/BouncyCastleUtil.java JGlobus-JGlobus-Release-2.1.0/ssl-proxies/src/main/java/org/globus/gsi/bc/BouncyCastleUtil.java
---- JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus/gsi/bc/BouncyCastleUtil.java	2014-09-26 05:46:02.000000000 +0200
-+++ JGlobus-JGlobus-Release-2.1.0/ssl-proxies/src/main/java/org/globus/gsi/bc/BouncyCastleUtil.java	2014-10-01 15:15:20.557670350 +0200
-@@ -30,15 +30,16 @@
+ 			} catch (IOException e) {
+ 				// that should never happen
+diff --git a/ssl-proxies/src/main/java/org/globus/gsi/bc/BouncyCastleUtil.java b/ssl-proxies/src/main/java/org/globus/gsi/bc/BouncyCastleUtil.java
+index 30d9659..ed85d02 100644
+--- a/ssl-proxies/src/main/java/org/globus/gsi/bc/BouncyCastleUtil.java
++++ b/ssl-proxies/src/main/java/org/globus/gsi/bc/BouncyCastleUtil.java
+@@ -28,19 +28,20 @@ import javax.naming.InvalidNameException;
+ import javax.naming.ldap.LdapName;
+ import javax.security.auth.x500.X500Principal;
  
  import org.bouncycastle.asn1.ASN1InputStream;
  import org.bouncycastle.asn1.ASN1OctetString;
@@ -219,7 +316,11 @@ diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus
  import org.bouncycastle.asn1.x509.BasicConstraints;
  import org.bouncycastle.asn1.x509.TBSCertificateStructure;
  import org.bouncycastle.asn1.x509.X509Extension;
-@@ -75,7 +76,7 @@
+ import org.bouncycastle.asn1.x509.X509Extensions;
+ import org.bouncycastle.asn1.x509.X509Name;
+@@ -73,11 +74,11 @@ public class BouncyCastleUtil {
+      *
+      * @param obj DERObject to convert.
       * @return the DER-encoded byte array
       * @exception IOException if conversion fails
       */
@@ -228,7 +329,11 @@ diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus
  	throws IOException {
  	ByteArrayOutputStream bout = new ByteArrayOutputStream();
  	DEROutputStream der = new DEROutputStream(bout);
-@@ -91,7 +92,7 @@
+ 	der.writeObject(obj);
+ 	return bout.toByteArray();
+@@ -89,11 +90,11 @@ public class BouncyCastleUtil {
+      *
+      * @param data the DER-encoded byte array to convert.
       * @return the DERObject.
       * @exception IOException if conversion fails
       */
@@ -237,7 +342,11 @@ diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus
  	throws IOException {
          ByteArrayInputStream inStream = new ByteArrayInputStream(data);
          ASN1InputStream derInputStream = new ASN1InputStream(inStream);
-@@ -107,9 +108,9 @@
+         return derInputStream.readObject();
+     }
+@@ -105,13 +106,13 @@ public class BouncyCastleUtil {
+      *
+      * @param obj the DERObject to replicate.
       * @return a copy of the DERObject.
       * @exception IOException if replication fails
       */
@@ -249,7 +358,11 @@ diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus
      }
  
      /**
-@@ -122,7 +123,7 @@
+      * Extracts the TBS certificate from the given certificate.
+      *
+@@ -120,23 +121,23 @@ public class BouncyCastleUtil {
+      * @exception IOException if extraction fails.
+      * @exception CertificateEncodingException if extraction fails.
       */
      public static TBSCertificateStructure getTBSCertificateStructure(X509Certificate cert)
  	throws CertificateEncodingException, IOException {
@@ -258,7 +371,9 @@ diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus
  	return TBSCertificateStructure.getInstance(obj);
      }
  
-@@ -132,9 +133,9 @@
+     /**
+      * Extracts the value of a certificate extension.
+      *
       * @param ext the certificate extension to extract the value from.
       * @exception IOException if extraction fails.
       */
@@ -270,7 +385,11 @@ diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus
      }
  
      /**
-@@ -294,9 +295,9 @@
+      * Returns certificate type of the given certificate.
+      * Please see {@link #getCertificateType(TBSCertificateStructure,
+@@ -292,28 +293,28 @@ public class BouncyCastleUtil {
+ 	throws CertificateException, IOException {
+ 	X509Extensions extensions = crt.getExtensions();
  	X509Extension ext = null;
  
  	if (extensions != null) {
@@ -282,7 +401,9 @@ diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus
  		if (basicExt.isCA()) {
  		    return GSIConstants.CertificateType.CA;
  		}
-@@ -306,12 +307,12 @@
+ 	    }
+ 	}
+ 
  	GSIConstants.CertificateType type = GSIConstants.CertificateType.EEC;
  
  	// does not handle multiple AVAs
@@ -298,7 +419,11 @@ diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus
  	    if (value.equalsIgnoreCase("proxy")) {
  		type = GSIConstants.CertificateType.GSI_2_PROXY;
  	    } else if (value.equalsIgnoreCase("limited proxy")) {
-@@ -369,7 +370,7 @@
+ 		type = GSIConstants.CertificateType.GSI_2_LIMITED_PROXY;
+ 	    } else if (extensions != null) {
+@@ -367,11 +368,11 @@ public class BouncyCastleUtil {
+ 
+ 	    if (ProxyCertificateUtil.isProxy(type)) {
  		X509NameHelper iss = new X509NameHelper(crt.getIssuer());
  		iss.add((ASN1Set)BouncyCastleUtil.duplicate(entry));
  		X509Name issuer = iss.getAsName();
@@ -307,7 +432,11 @@ diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus
                      String err = i18n.getMessage("proxyDNErr");
  		    throw new CertificateException(err);
  		}
-@@ -403,6 +404,36 @@
+ 	    }
+ 	}
+@@ -401,10 +402,40 @@ public class BouncyCastleUtil {
+ 
+ 	return keyUsage;
      }
  
      /**
@@ -344,7 +473,11 @@ diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus
       * Creates a <code>ProxyCertInfo</code> object from given
       * extension.
       *
-@@ -500,7 +531,7 @@
+      * @param ext the extension.
+      * @return the <code>ProxyCertInfo</code> object.
+@@ -498,11 +529,11 @@ public class BouncyCastleUtil {
+      */
+     public static byte[] getExtensionValue(byte [] certExtValue)
  	throws IOException {
  	ByteArrayInputStream inStream = new ByteArrayInputStream(certExtValue);
  	ASN1InputStream derInputStream = new ASN1InputStream(inStream);
@@ -353,10 +486,15 @@ diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus
  	if (object instanceof ASN1OctetString) {
  	    return ((ASN1OctetString)object).getOctets();
  	} else {
-diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus/gsi/bc/BouncyCastleX509Extension.java JGlobus-JGlobus-Release-2.1.0/ssl-proxies/src/main/java/org/globus/gsi/bc/BouncyCastleX509Extension.java
---- JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus/gsi/bc/BouncyCastleX509Extension.java	2014-09-26 05:46:02.000000000 +0200
-+++ JGlobus-JGlobus-Release-2.1.0/ssl-proxies/src/main/java/org/globus/gsi/bc/BouncyCastleX509Extension.java	2014-10-01 15:05:09.422521489 +0200
-@@ -16,7 +16,7 @@
+ 	    throw new IOException(i18n.getMessage("octectExp"));
+ 	}
+diff --git a/ssl-proxies/src/main/java/org/globus/gsi/bc/BouncyCastleX509Extension.java b/ssl-proxies/src/main/java/org/globus/gsi/bc/BouncyCastleX509Extension.java
+index aaaa3dd..e07743b 100644
+--- a/ssl-proxies/src/main/java/org/globus/gsi/bc/BouncyCastleX509Extension.java
++++ b/ssl-proxies/src/main/java/org/globus/gsi/bc/BouncyCastleX509Extension.java
+@@ -14,11 +14,11 @@
+  */
+ package org.globus.gsi.bc;
  
  import java.io.IOException;
  
@@ -365,7 +503,11 @@ diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus
  
  import org.globus.gsi.X509Extension;
  
-@@ -36,22 +36,22 @@
+ import org.globus.util.I18n;
+ 
+@@ -34,26 +34,26 @@ public class BouncyCastleX509Extension extends X509Extension {
+ 
+     public BouncyCastleX509Extension(String oid) {
  	this(oid, false, null);
      }
  
@@ -392,10 +534,15 @@ diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus
  	} catch (IOException e) {
  	    throw new RuntimeException(i18n.getMessage("byteArrayErr") +
  				       e.getMessage());
-diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus/gsi/bc/X509NameHelper.java JGlobus-JGlobus-Release-2.1.0/ssl-proxies/src/main/java/org/globus/gsi/bc/X509NameHelper.java
---- JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus/gsi/bc/X509NameHelper.java	2014-09-26 05:46:02.000000000 +0200
-+++ JGlobus-JGlobus-Release-2.1.0/ssl-proxies/src/main/java/org/globus/gsi/bc/X509NameHelper.java	2014-10-01 15:05:09.423521499 +0200
-@@ -21,13 +21,11 @@
+ 	}
+     }
+diff --git a/ssl-proxies/src/main/java/org/globus/gsi/bc/X509NameHelper.java b/ssl-proxies/src/main/java/org/globus/gsi/bc/X509NameHelper.java
+index 582d05b..19a84f2 100644
+--- a/ssl-proxies/src/main/java/org/globus/gsi/bc/X509NameHelper.java
++++ b/ssl-proxies/src/main/java/org/globus/gsi/bc/X509NameHelper.java
+@@ -19,17 +19,15 @@ import java.io.IOException;
+ import java.util.Enumeration;
+ 
  import org.bouncycastle.asn1.ASN1EncodableVector;
  import org.bouncycastle.asn1.ASN1Sequence;
  import org.bouncycastle.asn1.ASN1Set;
@@ -410,7 +557,11 @@ diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus
  import org.bouncycastle.asn1.x509.X509Name;
  
  /**
-@@ -47,21 +45,6 @@
+  * A helper class to deal with {@link X509Name X509Name} object.
+  */
+@@ -45,34 +43,19 @@ public class X509NameHelper {
+     public X509NameHelper(ASN1Sequence seq) {
+         this.seq = seq;
      }
  
      /**
@@ -432,7 +583,8 @@ diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus
       * Creates an instance using existing {@link X509Name X509Name}
       * object.
       * This behaves like a copy constructor.
-@@ -70,7 +53,7 @@
+      *
+      * @param name existing <code>X509Name</code>
       */
      public X509NameHelper(X509Name name) {
          try {
@@ -441,7 +593,11 @@ diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus
          } catch (IOException e) {
              throw new RuntimeException(e.getMessage());
          }
-@@ -142,10 +125,10 @@
+     }
+ 
+@@ -140,14 +123,14 @@ public class X509NameHelper {
+     /**
+      * Gets the last name component from the {@link X509Name X509Name} name.
       *
       * @return the last name component. Null if there is none.
       */
@@ -456,7 +612,11 @@ diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus
      }
  
      /**
-@@ -159,7 +142,7 @@
+      * Returns Globus format representation of the name. It handles names with
+      * multiple AVAs.
+@@ -157,11 +140,11 @@ public class X509NameHelper {
+      */
+     public static String toString(X509Name name) {
          if (name == null) {
              return null;
          }
@@ -465,7 +625,11 @@ diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus
      }
  
      private static String toString(ASN1Sequence seq) {
-@@ -176,14 +159,14 @@
+         if (seq == null) {
+             return null;
+@@ -174,18 +157,18 @@ public class X509NameHelper {
+             Enumeration ee = set.getObjects();
+             buf.append('/');
              while (ee.hasMoreElements()) {
                  ASN1Sequence s = (ASN1Sequence)ee.nextElement();
                  DERObjectIdentifier oid = (DERObjectIdentifier)s.getObjectAt(0);
@@ -482,10 +646,15 @@ diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus
                  if (ee.hasMoreElements()) {
                      buf.append('+');
                  }
-diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus/gsi/proxy/ext/ProxyCertInfo.java JGlobus-JGlobus-Release-2.1.0/ssl-proxies/src/main/java/org/globus/gsi/proxy/ext/ProxyCertInfo.java
---- JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus/gsi/proxy/ext/ProxyCertInfo.java	2014-09-26 05:46:02.000000000 +0200
-+++ JGlobus-JGlobus-Release-2.1.0/ssl-proxies/src/main/java/org/globus/gsi/proxy/ext/ProxyCertInfo.java	2014-10-01 15:05:09.423521499 +0200
-@@ -20,11 +20,11 @@
+             }
+         }
+diff --git a/ssl-proxies/src/main/java/org/globus/gsi/proxy/ext/ProxyCertInfo.java b/ssl-proxies/src/main/java/org/globus/gsi/proxy/ext/ProxyCertInfo.java
+index 9ee849e..772cb85 100644
+--- a/ssl-proxies/src/main/java/org/globus/gsi/proxy/ext/ProxyCertInfo.java
++++ b/ssl-proxies/src/main/java/org/globus/gsi/proxy/ext/ProxyCertInfo.java
+@@ -18,25 +18,25 @@ import org.globus.gsi.util.CertificateUtil;
+ 
+ import org.bouncycastle.asn1.DERObjectIdentifier;
  
  import java.io.IOException;
  
@@ -499,7 +668,9 @@ diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus
  import org.bouncycastle.asn1.DERSequence;
  
  /**
-@@ -34,7 +34,7 @@
+  * Represents ProxyCertInfo extension. <BR>
+  * <p/>
+  * <PRE>
   * ProxyCertInfo ::= SEQUENCE { pCPathLenConstraint      INTEGER (0..MAX) OPTIONAL, proxyPolicy ProxyPolicy }
   * </PRE>
   */
@@ -508,7 +679,11 @@ diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus
  
      /** ProxyCertInfo extension OID */
      public static final DERObjectIdentifier OID
-@@ -111,9 +111,9 @@
+     = new DERObjectIdentifier("1.3.6.1.5.5.7.1.14");
+     public static final DERObjectIdentifier OLD_OID
+@@ -109,13 +109,13 @@ public class ProxyCertInfo implements ASN1Encodable {
+         if (obj instanceof ProxyCertInfo) {
+             return (ProxyCertInfo) obj;
          } else if (obj instanceof ASN1Sequence) {
              return new ProxyCertInfo((ASN1Sequence) obj);
          } else if (obj instanceof byte[]) {
@@ -520,7 +695,11 @@ diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus
              } catch (IOException e) {
                  throw new IllegalArgumentException(e.getMessage(), e);
              }
-@@ -129,14 +129,14 @@
+             if (derObj instanceof ASN1Sequence) {
+                 return new ProxyCertInfo((ASN1Sequence) derObj);
+@@ -127,18 +127,18 @@ public class ProxyCertInfo implements ASN1Encodable {
+     /**
+      * Returns the DER-encoded ASN.1 representation of the extension.
       *
       * @return <code>DERObject</code> the encoded representation of the extension.
       */
@@ -537,10 +716,15 @@ diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus
  
          return new DERSequence(vec);
      }
-diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus/gsi/proxy/ext/ProxyPolicy.java JGlobus-JGlobus-Release-2.1.0/ssl-proxies/src/main/java/org/globus/gsi/proxy/ext/ProxyPolicy.java
---- JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus/gsi/proxy/ext/ProxyPolicy.java	2014-09-26 05:46:02.000000000 +0200
-+++ JGlobus-JGlobus-Release-2.1.0/ssl-proxies/src/main/java/org/globus/gsi/proxy/ext/ProxyPolicy.java	2014-10-01 15:05:09.423521499 +0200
-@@ -14,10 +14,10 @@
+ 
+     /**
+diff --git a/ssl-proxies/src/main/java/org/globus/gsi/proxy/ext/ProxyPolicy.java b/ssl-proxies/src/main/java/org/globus/gsi/proxy/ext/ProxyPolicy.java
+index 24a298f..e340c25 100644
+--- a/ssl-proxies/src/main/java/org/globus/gsi/proxy/ext/ProxyPolicy.java
++++ b/ssl-proxies/src/main/java/org/globus/gsi/proxy/ext/ProxyPolicy.java
+@@ -12,24 +12,24 @@
+  *
+  * See the License for the specific language governing permissions and limitations under the License.
   */
  package org.globus.gsi.proxy.ext;
  
@@ -553,7 +737,9 @@ diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus
  import org.bouncycastle.asn1.DERObjectIdentifier;
  import org.bouncycastle.asn1.DEROctetString;
  import org.bouncycastle.asn1.DERSequence;
-@@ -27,7 +27,7 @@
+ import org.bouncycastle.asn1.DERTaggedObject;
+ 
+ /**
   * Represents the policy part of the ProxyCertInfo extension. <BR> <PRE>
   * ProxyPolicy ::= SEQUENCE { policyLanguage    OBJECT IDENTIFIER, policy OCTET STRING OPTIONAL } </PRE>
   */
@@ -562,7 +748,11 @@ diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus
  
      /**
       * Impersonation proxy OID
-@@ -58,7 +58,7 @@
+      */
+     public static final DERObjectIdentifier IMPERSONATION = new DERObjectIdentifier("1.3.6.1.5.5.7.21.1");
+@@ -56,11 +56,11 @@ public class ProxyPolicy implements ASN1Encodable {
+         if (seq.size() < 1) {
+             throw new IllegalArgumentException();
          }
          this.policyLanguage = (DERObjectIdentifier) seq.getObjectAt(0);
          if (seq.size() > 1) {
@@ -571,7 +761,11 @@ diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus
              if (obj instanceof DERTaggedObject) {
                  obj = ((DERTaggedObject) obj).getObject();
              }
-@@ -133,7 +133,7 @@
+             this.policy = (DEROctetString) obj;
+         }
+@@ -131,11 +131,11 @@ public class ProxyPolicy implements ASN1Encodable {
+      * Returns the DER-encoded ASN.1 representation of proxy policy.
+      *
       * @return <code>DERObject</code> the encoded representation of the proxy
       *         policy.
       */
@@ -580,10 +774,15 @@ diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus
  
          ASN1EncodableVector vec = new ASN1EncodableVector();
  
-diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus/gsi/trustmanager/X509ProxyCertPathValidator.java JGlobus-JGlobus-Release-2.1.0/ssl-proxies/src/main/java/org/globus/gsi/trustmanager/X509ProxyCertPathValidator.java
---- JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus/gsi/trustmanager/X509ProxyCertPathValidator.java	2014-09-26 05:46:02.000000000 +0200
-+++ JGlobus-JGlobus-Release-2.1.0/ssl-proxies/src/main/java/org/globus/gsi/trustmanager/X509ProxyCertPathValidator.java	2014-10-01 15:05:09.424521509 +0200
-@@ -500,12 +500,12 @@
+         vec.add(this.policyLanguage);
+ 
+diff --git a/ssl-proxies/src/main/java/org/globus/gsi/trustmanager/X509ProxyCertPathValidator.java b/ssl-proxies/src/main/java/org/globus/gsi/trustmanager/X509ProxyCertPathValidator.java
+index 8f24102..7ed5a08 100644
+--- a/ssl-proxies/src/main/java/org/globus/gsi/trustmanager/X509ProxyCertPathValidator.java
++++ b/ssl-proxies/src/main/java/org/globus/gsi/trustmanager/X509ProxyCertPathValidator.java
+@@ -498,24 +498,24 @@ public class X509ProxyCertPathValidator extends CertPathValidatorSpi {
+         if (extensions != null) {
+             Enumeration e = extensions.oids();
              while (e.hasMoreElements()) {
                  oid = (DERObjectIdentifier) e.nextElement();
                  proxyExtension = extensions.getExtension(oid);
@@ -599,7 +798,7 @@ diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus
                      // Basic Constraint must not be true - 3.8
                      BasicConstraints basicExt =
                              CertificateUtil.getBasicConstraints(proxyExtension);
-@@ -513,7 +513,7 @@
+                     if (basicExt.isCA()) {
                          throw new CertPathValidatorException(
                                  "Proxy violation: Basic Constraint CA is set to true");
                      }
@@ -608,7 +807,11 @@ diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus
                      proxyKeyUsage = proxyExtension;
  
                      checkKeyUsage(issuer, proxyExtension);
-@@ -543,7 +543,7 @@
+                 }
+             }
+@@ -541,11 +541,11 @@ public class X509ProxyCertPathValidator extends CertPathValidatorSpi {
+             throw new CertPathValidatorException("Proxy violation: Key usage is asserted.");
+         }
      }
  
      private void checkExtension(DERObjectIdentifier oid, X509Extension proxyExtension, X509Extension proxyKeyUsage) throws CertPathValidatorException {
@@ -617,10 +820,15 @@ diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus
              // If issuer has it then proxy must have it also
              if (proxyKeyUsage == null) {
                  throw new CertPathValidatorException(
-diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus/gsi/util/CertificateIOUtil.java JGlobus-JGlobus-Release-2.1.0/ssl-proxies/src/main/java/org/globus/gsi/util/CertificateIOUtil.java
---- JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus/gsi/util/CertificateIOUtil.java	2014-09-26 05:46:02.000000000 +0200
-+++ JGlobus-JGlobus-Release-2.1.0/ssl-proxies/src/main/java/org/globus/gsi/util/CertificateIOUtil.java	2014-10-01 15:05:09.424521509 +0200
-@@ -107,7 +107,7 @@
+                         "Proxy violation: Issuer has key usage, but proxy does not");
+             }
+diff --git a/ssl-proxies/src/main/java/org/globus/gsi/util/CertificateIOUtil.java b/ssl-proxies/src/main/java/org/globus/gsi/util/CertificateIOUtil.java
+index c3d4ca7..00ca7d6 100644
+--- a/ssl-proxies/src/main/java/org/globus/gsi/util/CertificateIOUtil.java
++++ b/ssl-proxies/src/main/java/org/globus/gsi/util/CertificateIOUtil.java
+@@ -105,11 +105,11 @@ public final class CertificateIOUtil {
+     }
+ 
      public static byte[] encodePrincipal(X509Name subject) throws IOException {
          ByteArrayOutputStream bout = new ByteArrayOutputStream();
          DEROutputStream der = new DEROutputStream(bout);
@@ -629,10 +837,15 @@ diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus
          return bout.toByteArray();
      }
  
-diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus/gsi/util/CertificateUtil.java JGlobus-JGlobus-Release-2.1.0/ssl-proxies/src/main/java/org/globus/gsi/util/CertificateUtil.java
---- JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus/gsi/util/CertificateUtil.java	2014-09-26 05:46:02.000000000 +0200
-+++ JGlobus-JGlobus-Release-2.1.0/ssl-proxies/src/main/java/org/globus/gsi/util/CertificateUtil.java	2014-10-01 15:05:09.425521519 +0200
-@@ -18,14 +18,12 @@
+     private synchronized static String hash(byte[] data) {
+         init();
+diff --git a/ssl-proxies/src/main/java/org/globus/gsi/util/CertificateUtil.java b/ssl-proxies/src/main/java/org/globus/gsi/util/CertificateUtil.java
+index dda3a17..8cbfd9b 100644
+--- a/ssl-proxies/src/main/java/org/globus/gsi/util/CertificateUtil.java
++++ b/ssl-proxies/src/main/java/org/globus/gsi/util/CertificateUtil.java
+@@ -16,18 +16,16 @@ package org.globus.gsi.util;
+ 
+ import org.apache.commons.logging.Log;
  import org.apache.commons.logging.LogFactory;
  import org.bouncycastle.asn1.ASN1InputStream;
  import org.bouncycastle.asn1.ASN1Object;
@@ -649,7 +862,11 @@ diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus
  import org.bouncycastle.asn1.x509.BasicConstraints;
  import org.bouncycastle.asn1.x509.TBSCertificateStructure;
  import org.bouncycastle.asn1.x509.X509Extension;
-@@ -190,7 +188,7 @@
+ import org.bouncycastle.asn1.x509.X509Extensions;
+ import org.bouncycastle.asn1.x509.X509Name;
+@@ -188,11 +186,11 @@ public final class CertificateUtil {
+         X509Extensions extensions = crt.getExtensions();
+         if (extensions == null) {
              return -1;
          }
          X509Extension proxyExtension =
@@ -658,7 +875,11 @@ diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus
          if (proxyExtension != null) {
              BasicConstraints basicExt =
                      getBasicConstraints(proxyExtension);
-@@ -284,7 +282,7 @@
+             if (basicExt.isCA()) {
+                 BigInteger pathLen = basicExt.getPathLenConstraint();
+@@ -282,11 +280,11 @@ public final class CertificateUtil {
+ 
+         X509Extensions extensions = crt.getExtensions();
          X509Extension ext = null;
  
          if (extensions != null) {
@@ -667,7 +888,11 @@ diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus
              if (ext != null) {
                  BasicConstraints basicExt = getBasicConstraints(ext);
                  if (basicExt.isCA()) {
-@@ -296,11 +294,11 @@
+                     return GSIConstants.CertificateType.CA;
+                 }
+@@ -294,25 +292,25 @@ public final class CertificateUtil {
+         }
+ 
          GSIConstants.CertificateType type = GSIConstants.CertificateType.EEC;
  
          // does not handle multiple AVAs
@@ -681,7 +906,9 @@ diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus
              type = processCN(extensions, type, ava);
          }
  
-@@ -310,7 +308,7 @@
+         return type;
+     }
+ 
      private static GSIConstants.CertificateType processCN(
              X509Extensions extensions, GSIConstants.CertificateType type, ASN1Sequence ava) throws CertificateException {
          X509Extension ext;
@@ -690,7 +917,11 @@ diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus
          GSIConstants.CertificateType certType = type;
          if (value.equalsIgnoreCase("proxy")) {
              certType = GSIConstants.CertificateType.GSI_2_PROXY;
-@@ -405,7 +403,7 @@
+         } else if (value.equalsIgnoreCase("limited proxy")) {
+             certType = GSIConstants.CertificateType.GSI_2_LIMITED_PROXY;
+@@ -403,11 +401,11 @@ public final class CertificateUtil {
+      *
+      * @param data the DER-encoded byte array to convert.
       * @return the DERObject.
       * @throws IOException if conversion fails
       */
@@ -699,7 +930,11 @@ diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus
              throws IOException {
          ByteArrayInputStream inStream = new ByteArrayInputStream(data);
          ASN1InputStream derInputStream = new ASN1InputStream(inStream);
-@@ -424,7 +422,7 @@
+         return derInputStream.readObject();
+     }
+@@ -422,11 +420,11 @@ public final class CertificateUtil {
+      * @throws CertificateEncodingException if extraction fails.
+      */
      public static TBSCertificateStructure getTBSCertificateStructure(
              X509Certificate cert)
              throws CertificateEncodingException, IOException {
@@ -708,7 +943,11 @@ diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus
          return TBSCertificateStructure.getInstance(obj);
      }
  
-@@ -463,9 +461,9 @@
+     public static EnumSet<KeyUsage> getKeyUsage(TBSCertificateStructure crt)
+             throws IOException {
+@@ -461,13 +459,13 @@ public final class CertificateUtil {
+      * Extracts the value of a certificate extension.
+      *
       * @param ext the certificate extension to extract the value from.
       * @throws IOException if extraction fails.
       */
@@ -720,10 +959,15 @@ diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/main/java/org/globus
      }
  
      /**
-diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/test/java/org/globus/gsi/bc/BouncyCastleCertProcessingFactoryTest.java JGlobus-JGlobus-Release-2.1.0/ssl-proxies/src/test/java/org/globus/gsi/bc/BouncyCastleCertProcessingFactoryTest.java
---- JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/test/java/org/globus/gsi/bc/BouncyCastleCertProcessingFactoryTest.java	2014-09-26 05:46:02.000000000 +0200
-+++ JGlobus-JGlobus-Release-2.1.0/ssl-proxies/src/test/java/org/globus/gsi/bc/BouncyCastleCertProcessingFactoryTest.java	2014-10-01 15:06:34.749379995 +0200
-@@ -26,11 +26,6 @@
+      * Converts DN of the form "CN=A, OU=B, O=C" into Globus
+      * format "/CN=A/OU=B/O=C".<BR>
+diff --git a/ssl-proxies/src/test/java/org/globus/gsi/bc/BouncyCastleCertProcessingFactoryTest.java b/ssl-proxies/src/test/java/org/globus/gsi/bc/BouncyCastleCertProcessingFactoryTest.java
+index f3d49b7..98e53c1 100644
+--- a/ssl-proxies/src/test/java/org/globus/gsi/bc/BouncyCastleCertProcessingFactoryTest.java
++++ b/ssl-proxies/src/test/java/org/globus/gsi/bc/BouncyCastleCertProcessingFactoryTest.java
+@@ -24,15 +24,10 @@ import org.globus.gsi.bc.BouncyCastleCertProcessingFactory;
+ import org.globus.gsi.bc.BouncyCastleX509Extension;
+ import org.globus.gsi.proxy.ext.ProxyPolicy;
  import org.globus.gsi.proxy.ext.ProxyCertInfo;
  import org.globus.gsi.proxy.ext.ProxyCertInfoExtension;
  
@@ -735,7 +979,11 @@ diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/test/java/org/globus
  import org.bouncycastle.asn1.x509.BasicConstraints;
  import org.bouncycastle.asn1.x509.X509Extensions;
  
-@@ -94,9 +89,8 @@
+ import junit.framework.TestCase;
+ import junit.framework.TestSuite;
+@@ -92,13 +87,12 @@ public class BouncyCastleCertProcessingFactoryTest extends TestCase {
+ 
+     X509ExtensionSet extSet = new X509ExtensionSet();
      ext = new X509Extension(oid, critical, expectedValue.getBytes());
      extSet.add(ext);
  
@@ -747,10 +995,15 @@ diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/test/java/org/globus
                          false, constraints);
      extSet.add(ext);
  
-diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/test/java/org/globus/gsi/proxy/ext/ProxyCertInfoTest.java JGlobus-JGlobus-Release-2.1.0/ssl-proxies/src/test/java/org/globus/gsi/proxy/ext/ProxyCertInfoTest.java
---- JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/test/java/org/globus/gsi/proxy/ext/ProxyCertInfoTest.java	2014-09-26 05:46:02.000000000 +0200
-+++ JGlobus-JGlobus-Release-2.1.0/ssl-proxies/src/test/java/org/globus/gsi/proxy/ext/ProxyCertInfoTest.java	2014-10-01 15:05:09.426521529 +0200
-@@ -24,7 +24,7 @@
+     ProxyPolicy policy = new ProxyPolicy(policyOid, policyValue.getBytes());
+     ext = new ProxyCertInfoExtension(new ProxyCertInfo(policy));
+diff --git a/ssl-proxies/src/test/java/org/globus/gsi/proxy/ext/ProxyCertInfoTest.java b/ssl-proxies/src/test/java/org/globus/gsi/proxy/ext/ProxyCertInfoTest.java
+index 55e22bc..ff98f15 100644
+--- a/ssl-proxies/src/test/java/org/globus/gsi/proxy/ext/ProxyCertInfoTest.java
++++ b/ssl-proxies/src/test/java/org/globus/gsi/proxy/ext/ProxyCertInfoTest.java
+@@ -22,11 +22,11 @@ import java.io.ByteArrayInputStream;
+ import org.globus.gsi.proxy.ext.ProxyPolicy;
+ import org.globus.gsi.proxy.ext.ProxyCertInfo;
  
  import org.bouncycastle.asn1.DERObjectIdentifier;
  import org.bouncycastle.asn1.DEROutputStream;
@@ -759,7 +1012,11 @@ diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/test/java/org/globus
  import org.bouncycastle.asn1.ASN1Sequence;
  
  import junit.framework.TestCase;
-@@ -63,7 +63,7 @@
+ 
+ public class ProxyCertInfoTest extends TestCase {
+@@ -61,11 +61,11 @@ public class ProxyCertInfoTest extends TestCase {
+ 	dOut.writeObject(info);
+ 
  	ByteArrayInputStream bIn =
  	    new ByteArrayInputStream(bOut.toByteArray());
  	ASN1InputStream dIn = new ASN1InputStream(bIn);
@@ -768,7 +1025,11 @@ diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/test/java/org/globus
  
  	assertTrue(obj instanceof ASN1Sequence);
  
-@@ -112,7 +112,7 @@
+ 	ProxyCertInfo testInfo = new ProxyCertInfo((ASN1Sequence)obj);
+ 
+@@ -110,11 +110,11 @@ public class ProxyCertInfoTest extends TestCase {
+ 	dOut.writeObject(info);
+ 
  	ByteArrayInputStream bIn =
  	    new ByteArrayInputStream(bOut.toByteArray());
  	ASN1InputStream dIn = new ASN1InputStream(bIn);
@@ -777,3 +1038,8 @@ diff -ur JGlobus-JGlobus-Release-2.1.0.orig/ssl-proxies/src/test/java/org/globus
  
  	ProxyCertInfo testInfo = new ProxyCertInfo((ASN1Sequence)obj);
  
+ 
+ 	assertEquals(Integer.MAX_VALUE, testInfo.getPathLenConstraint());
+-- 
+2.4.6
+
