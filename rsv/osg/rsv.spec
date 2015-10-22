@@ -1,10 +1,10 @@
 Name:      rsv
 Summary:   RSV Meta Package
-Version:   3.11.0
+Version:   3.12.0
 %if 0%{?el7}
 %define release_suffix _clipped
 %endif
-Release:   2%{?release_suffix}%{?dist}
+Release:   1%{?release_suffix}%{?dist}
 License:   Apache 2.0
 Group:     Applications/Monitoring
 URL:       https://twiki.grid.iu.edu/bin/view/MonitoringInformation/RSV
@@ -25,7 +25,7 @@ Requires: grid-certificates >= 7
 Requires: voms-clients
 
 # should be in upstream rsv 3.11.1
-Patch0: py24-inline-if.patch
+#Patch0: py24-inline-if.patch
 
 %if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
 %{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
@@ -108,7 +108,7 @@ Requires: /usr/bin/condor_ce_ping
 
 %prep
 %setup -q
-%patch0 -p1
+#%patch0 -p1
 
 
 %install
@@ -249,6 +249,9 @@ fi
 
 
 %changelog
+* Thu Oct 22 2015 Edgar Fajardo <emfajard@ucsd.edu> 3.12.0-1 
+- Added the json consumer
+
 * Wed Oct 21 2015 Carl Edquist <edquist@cs.wisc.edu> - 3.11.0-2
 - fix python sytax for el5 / python 2.4
 
