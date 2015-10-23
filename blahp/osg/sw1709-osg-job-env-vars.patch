@@ -1,0 +1,35 @@
+From 5fd7a17775457018955c22079427751964ec84aa Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Thu, 4 Dec 2014 11:52:36 -0600
+Subject: [PATCH] sw1709-osg-job-env-vars
+
+Source osg job environment files (SOFTWARE-1709)
+---
+ src/scripts/blah_common_submit_functions.sh | 4 ++++
+ 1 file changed, 4 insertions(+)
+ mode change 100644 => 100755 src/scripts/blah_common_submit_functions.sh
+
+diff --git a/src/scripts/blah_common_submit_functions.sh b/src/scripts/blah_common_submit_functions.sh
+old mode 100644
+new mode 100755
+index 9c1e2a5..6dfca6f
+--- a/src/scripts/blah_common_submit_functions.sh
++++ b/src/scripts/blah_common_submit_functions.sh
+@@ -610,10 +610,14 @@ function bls_start_job_wrapper ()
+                   echo ""
+                   echo "# Setting the environment:"
+                   echo "`echo ';'$bls_opt_envir | sed -e 's/;[^=]*;/;/g' -e 's/;[^=]*$//g' | sed -e 's/;\([^=]*\)=\([^;]*\)/;export \1=\"\2\"/g' | awk 'BEGIN { RS = ";" } ; { print $0 }'`"
+           fi
+   fi
++
++  # Source OSG job environment variables if present
++  echo "test -r /var/lib/osg/osg-job-environment.conf       && . /var/lib/osg/osg-job-environment.conf"
++  echo "test -r /var/lib/osg/osg-local-job-environment.conf && . /var/lib/osg/osg-local-job-environment.conf"
+   
+   echo "old_home=\`pwd\`"
+   # Set the temporary home (including cd'ing into it)
+   if [ "x$bls_opt_run_dir" != "x" ] ; then
+     run_dir="$bls_opt_run_dir"
+-- 
+2.0.1
+
