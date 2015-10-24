@@ -248,8 +248,9 @@ fi
 
 %changelog
 * Fri Oct 23 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.16.2.1
-- Support mariadb for rhel7 in install-database script (SOFTWARE-2075)
 - Require "tomcat" for rhel7 (SOFTWARE-2075)
+- Support mariadb for rhel7 in install-database script
+- Shell quoting fixes for install-database script
 
 * Thu May 28 2015 Kevin Retzke - 1.16.2
 - Patched potential vulnerabilities in Gratia service administration interface
