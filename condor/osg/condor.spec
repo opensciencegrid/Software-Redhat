@@ -1,4 +1,4 @@
-%define tarball_version 8.2.9
+%define tarball_version 8.2.10
 
 # optionally define any of these, here or externally
 # % define fedora   16
@@ -1817,6 +1817,9 @@ fi
 %endif
 
 %changelog
+* Mon Oct 26 2015 Edgar Fajardo <emfajard@ucsd.edu> - 8.2.10-1
+- Bump version to 8.2.10 (SOFTWARE-2052)
+
 * Thu Aug 20 2015 John Hover <jhover@bnl.gov> - 8.2.9-1
 - Drop 5059-JAVA_CLASSPATH_DEFAULT.patch, now upstream 
 - Drop 5181-remove-SUBMIT_Iwd.patch, now upstream
