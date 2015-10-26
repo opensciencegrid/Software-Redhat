@@ -1,5 +1,5 @@
 Name:		blahp
-Version:	1.18.14.bosco
+Version:	1.18.15.bosco
 Release:	1%{?dist}
 Summary:	gLite BLAHP daemon
 
@@ -177,6 +177,10 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Mon Oct 26 2015 Edgar Fajardo <emfajard@ucsd.edu> - 1.18.15.bosco-1
+- Built against HTCOndor 8.2.10 SOFTWARE-2052
+- Added error reporting to pbs_submit
+ 
 * Tue Sep 29 2015 Brian Lin <blin@cs.wisc.edu> - 1.18.14.bosco-1
 - Added PBS Pro support (SOFTWARE-1958)
 - Fix for job registry losing track of LSF jobs in its registry (gittrac #5062)
