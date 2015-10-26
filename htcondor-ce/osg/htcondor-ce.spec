@@ -2,7 +2,7 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 1.16
+Version: 1.18
 Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 
@@ -323,6 +323,14 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Mon Oct 26 2015 Edgar Fajardo <emfajard@ucsd.edu> - 1.18-1
+- Fix a bug that prevented HTCondor-CE from starting when UID or extattr mappings were not used
+
+* Fri Oct 23 2015 Edgar Fajardo <emfajard@ucsd.edu> - 1.17-1
+- Allow users to append lines to JOB_ROUTER_DEFAULTS (SOFTWARE-2065)
+- Allow users to add onto accounting group defaults set by the job router (SOFTWARE-2067)
+- Built against condor 8.2.10
+
 * Mon Sep 25 2015 Brian Lin <blin@cs.wisc.edu> - 1.16-1
 - Add network troubleshooting tool (condor_ce_host_network_check)
 - Add ability to disable glideins advertising to the CE
