@@ -1,7 +1,7 @@
 Summary: Tomcat and axis integration classes
 Name: emi-trustmanager-tomcat
 Version: 3.0.0
-Release: 13%{?dist}
+Release: 14%{?dist}
 License: Apache Software License
 Vendor: EMI
 Group: System Environment/Libraries
@@ -38,6 +38,7 @@ Source2: server7.xml.template
 Patch0: configure.patch
 Patch1: build.xml.patch
 Patch2: log4j-trustmanager.patch
+Patch3: Fix-misleading-message-in-configure.sh.patch
 Patch10: 0010-Tomcat-7-ServerSocketFactory-changed-from-abstract-c.patch
 Patch11: 0011-Tomcat-7-Implement-getSSLUtil-in-TMSSLImplementation.patch
 Patch12: 0012-Tomcat-7-getServerSocketFactory-that-takes-an-Abstra.patch
@@ -52,9 +53,10 @@ The classes for integrating the trustmanager with tomcat.
 %prep
  
 
-%setup  
+%setup
 %patch1 -p0
 %patch2 -p1
+%patch3 -p1
 
 %if 0%{?rhel} == 7
 %patch10 -p1
@@ -63,7 +65,7 @@ The classes for integrating the trustmanager with tomcat.
 %patch13 -p1
 %patch14 -p1
 %patch15 -p0
-%patch16 -p0
+%patch16 -p1
 %else
 %patch0 -p0
 %endif
@@ -133,6 +135,11 @@ rm -rf $RPM_BUILD_ROOT
 /var/lib/trustmanager-tomcat/configure.sh
 
 %changelog
+* Tue Oct 27 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.0.0-14
+- Fix a very misleading set of instructions in /var/lib/trustmanager-tomcat/configure.sh
+- Add symlink for bcpkix.jar on EL 7 to fix NoClassDefFoundErrors on classes in org.bouncycastle.openssl
+  (SOFTWARE-2040)
+
 * Tue Sep 15 2015 Brian Bockelman <bbockelm@cse.unl.edu> - 3.0.0-13
 - Avoid NPE when initializing security settings.
 
