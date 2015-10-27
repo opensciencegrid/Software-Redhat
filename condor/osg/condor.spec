@@ -111,7 +111,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.0
+%define condor_base_release 1.1
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -511,7 +511,7 @@ resources exposed by the deltacloud API.
 Summary: HTCondor's classified advertisement language
 Group: Development/Libraries
 Obsoletes: classads <= 1.0.10
-Obsoletes: classads-static <= 1.0.8
+Obsoletes: classads-static <= 1.0.10
 Provides: classads = %version-%release
 
 %description classads
@@ -540,7 +540,7 @@ Summary: Headers for HTCondor's classified advertisement language
 Group: Development/System
 Requires: %name-classads = %version-%release
 Requires: pcre-devel
-Obsoletes: classads-devel <= 1.0.8
+Obsoletes: classads-devel <= 1.0.10
 Provides: classads-devel = %version-%release
 
 %description classads-devel
@@ -721,8 +721,9 @@ export CMAKE_PREFIX_PATH=/usr
 # causes build issues with EL5, don't even bother building the tests.
 
 %if %uw_build
+%define condor_build_id 345812
 %cmake \
-       -DBUILDID:STRING=UW_development \
+       -DBUILDID:STRING=%condor_build_id \
        -DUW_BUILD:BOOL=TRUE \
 %if ! %std_univ
        -DCLIPPED:BOOL=TRUE \
@@ -1817,7 +1818,10 @@ fi
 %endif
 
 %changelog
-* Mon Oct 26 2015 Edgar Fajardo <emfajard@ucsd.edu> - 8.2.10-1
+* Mon Oct 26 2015 Edgar Fajardo <emfajard@ucsd.edu> - 8.2.10-1.1
+- Updated the release to use the correct fedora guidelines
+
+* Mon Oct 26 2015 Edgar Fajardo <emfajard@ucsd.edu> - 8.2.10-1.0
 - Bump version to 8.2.10 (SOFTWARE-2052)
 
 * Thu Aug 20 2015 John Hover <jhover@bnl.gov> - 8.2.9-1
