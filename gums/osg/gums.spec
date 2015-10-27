@@ -146,10 +146,11 @@ Summary: Clients for GUMS
 Requires: %{name} = %{version}-%{release}
 Requires: /usr/share/java/xml-commons-apis.jar
 Requires: %{tomcat}
-Requires: emi-trustmanager-tomcat
 %if 0%{rhel} >= 7
+Requires: emi-trustmanager-tomcat >= 3.0.0-14
 Requires: mariadb-server
 %else
+Requires: emi-trustmanager-tomcat
 Requires: mysql-server
 %endif
 Requires: osg-webapp-common
