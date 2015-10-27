@@ -13,7 +13,7 @@
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.5.1
-Release: 2%{?dist}
+Release: 4%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 URL: https://github.com/opensciencegrid/gums
@@ -49,6 +49,7 @@ BuildRequires: java7-devel
 BuildRequires: jglobus = %{jglobus_version}
 # provides build-classpath
 BuildRequires: jpackage-utils
+BuildRequires: bouncycastle = 1.50
 Requires: java7
 Requires: jpackage-utils
 Requires: jglobus = %{jglobus_version}
@@ -58,6 +59,7 @@ BuildRequires: emi-trustmanager >= 3.0.3-6
 Requires: emi-trustmanager >= 3.0.3-6
 BuildRequires: emi-trustmanager-axis
 Requires: emi-trustmanager-axis
+Requires: bouncycastle = 1.50
 # Standard RPMs from the system
 # "Naive" use of slf4j doesn't appear to work
 #BuildRequires: slf4j
@@ -113,6 +115,9 @@ Patch0: undo-jsp-precompile.patch
 
 Patch1: EL7-Remove-TYPE-InnoDB-from-SQL-templates.patch
 
+Patch2: Use-bouncycastle-1.50.patch
+Patch3: Use-jspc-compiler-for-tomcat7.patch
+
 %description
 %{summary}
 
@@ -162,6 +167,8 @@ Summary: Tomcat service for GUMS
 %endif
 %if 0%{?rhel} >= 7
 %patch1 -p1
+%patch2 -p1
+%patch3 -p1
 %endif
 
 %build
@@ -261,7 +268,7 @@ systemjars=()
 #systemjars+=(ant-1.6.3.jar)
 systemjars+=(antlr-2.7.\*.jar)
 #systemjars+=(axis-{1.4,ant-1.4,jaxrpc-1.4,saaj-1.4}.jar)
-systemjars+=(bcprov-jdk15-\*.jar)
+systemjars+=(bcprov-jdk15\*.jar)
 systemjars+=(commons-{beanutils-1.7.0,cli-1.2,codec-1.3,collections-3.2,digester-1.8,discovery-0.2,httpclient-3.0,lang-2.1,logging-1.1}.jar)
 systemjars+=(emi-trustmanager-3.0.3.jar)
 systemjars+=(jacc-1.0.jar)
@@ -449,6 +456,10 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+* Mon Oct 26 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.1-3.osg
+- Use bouncycastle 1.50 on EL7
+- Use jspc-compiler for tomcat7 on EL7
+
 * Thu Oct 08 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.1-2.osg
 - Fix gums db creation template to avoid syntax error with mariadb (SOFTWARE-2040)
 

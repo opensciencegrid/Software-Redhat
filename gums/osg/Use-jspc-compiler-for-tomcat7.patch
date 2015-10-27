@@ -1,0 +1,50 @@
+From 130a33d001c8a4de7957fbbb1edc971d03a80dcd Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Fri, 9 Oct 2015 11:56:53 -0500
+Subject: [PATCH] Use jspc compiler for tomcat7
+
+EL7 uses tomcat7 so we need to use jspc-compiler-tomcat7 instead of
+jspc-compiler-tomcat6.  The groupId for jspc-compiler-tomcat7 is
+org.jasic.mojo.jspc instead of org.codehaus.mojo.jspc, so I also change
+the groupId for jspc-maven-plugin as well.
+---
+ gums-service/pom.xml | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/gums-service/pom.xml b/gums-service/pom.xml
+index d1e4583..9411f2a 100644
+--- a/gums-service/pom.xml
++++ b/gums-service/pom.xml
+@@ -37,11 +37,11 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
+   </scm>
+   <build>
+     <finalName>gums</finalName>
+     <plugins>
+       <plugin>
+-        <groupId>org.codehaus.mojo.jspc</groupId>
++        <groupId>org.jasig.mojo.jspc</groupId>
+         <artifactId>jspc-maven-plugin</artifactId>
+         <executions>
+           <execution>
+             <goals>
+               <goal>compile</goal>
+@@ -60,13 +60,13 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
+             </includes>
+           </sources>
+         </configuration>
+         <dependencies>
+           <dependency>
+-            <groupId>org.codehaus.mojo.jspc</groupId>
+-            <artifactId>jspc-compiler-tomcat6</artifactId>
+-            <version>2.0-alpha-3</version>
++            <groupId>org.jasig.mojo.jspc</groupId>
++            <artifactId>jspc-compiler-tomcat7</artifactId>
++            <version>2.0.0</version>
+           </dependency>
+         </dependencies>
+       </plugin>
+       <plugin>
+         <groupId>org.apache.maven.plugins</groupId>
+-- 
+2.4.6
+
