@@ -48,6 +48,8 @@ BuildRequires: maven >= 3.0.0
 %define bouncycastle_group bcprov-jdk15on
 BuildRequires: bouncycastle = %{bouncycastle_version}
 Requires: bouncycastle = %{bouncycastle_version}
+BuildRequires: bouncycastle-pkix = %{bouncycastle_version}
+Requires: bouncycastle-pkix = %{bouncycastle_version}
 %endif
 
 BuildRequires: java7-devel
@@ -366,7 +368,7 @@ touch $RPM_BUILD_ROOT%{_javadir}/javamail.jar
 packages=()
 packages+=(ant)
 packages+=(antlr)
-packages+=(bcprov)
+#packages+=(bcprov)
 packages+=(commons-{beanutils,cli,codec,collections,digester,discovery,httpclient,lang,logging})
 packages+=(%{jacc})
 packages+=(jglobus)
@@ -379,6 +381,9 @@ packages+=(trustmanager)
 packages+=(trustmanager-axis)
 packages+=(xalan-j2)
 packages+=(xerces-j2)
+%if 0%{?rhel} >= 7
+packages+=(xml-commons-apis)
+%endif
 for jardir in %{gumslibdir} %{webinfdir}/lib; do
     mkdir -p "$RPM_BUILD_ROOT$jardir"
     build-jar-repository "$RPM_BUILD_ROOT$jardir" "${packages[@]}"
@@ -466,8 +471,8 @@ fi
 
 %changelog
 * Mon Oct 26 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.1-4.osg
-- Use bouncycastle 1.50 from the OS on EL7
-- Use jspc-compiler for tomcat7 on EL7
+- Use bouncycastle 1.50 from the OS on EL7 (SOFTWARE-2040)
+- Use jspc-compiler for tomcat7 on EL7 (SOFTWARE-2040)
 
 * Thu Oct 08 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.1-2.osg
 - Fix gums db creation template to avoid syntax error with mariadb (SOFTWARE-2040)
