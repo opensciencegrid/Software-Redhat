@@ -61,8 +61,15 @@ Requires: jpackage-utils
 Requires: jglobus = %{jglobus_version}
 BuildRequires: voms-api-java
 Requires: voms-api-java
+
+%if 0%{?rhel} >= 7
+BuildRequires: emi-trustmanager >= 3.0.3-9
+Requires: emi-trustmanager >= 3.0.3-9
+%else
 BuildRequires: emi-trustmanager >= 3.0.3-6
 Requires: emi-trustmanager >= 3.0.3-6
+%endif
+
 BuildRequires: emi-trustmanager-axis
 Requires: emi-trustmanager-axis
 
