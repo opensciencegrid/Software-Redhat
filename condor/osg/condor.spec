@@ -1,4 +1,4 @@
-%define tarball_version 8.4.0
+%define tarball_version 8.4.1
 
 # optionally define any of these, here or externally
 # % define fedora   16
@@ -125,7 +125,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.2
+%define condor_base_release 1.1
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -215,11 +215,6 @@ Source123: zlib-1.2.3.tar.gz
 
 Patch1: sw1636-cream_gahp-dlopen.patch
 
-# should make it into upstream 8.4.1
-# https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=5288
-# https://jira.opensciencegrid.org/browse/SOFTWARE-2039
-Patch2: gt5288-NETWORK_HOSTNAME.patch
-
 #% if 0%osg
 Patch8: osg_sysconfig_in_init_script.patch
 #% endif
@@ -242,6 +237,7 @@ BuildRequires: bind-utils
 BuildRequires: m4
 #BuildRequires: autoconf
 BuildRequires: libX11-devel
+BuildRequires: libXScrnSaver-devel
 BuildRequires: /usr/include/curl/curl.h
 BuildRequires: /usr/include/expat.h
 BuildRequires: openldap-devel
@@ -723,7 +719,6 @@ exit 0
 %endif
 
 %patch1 -p1
-%patch2 -p1
 
 %if 0%{?hcc}
 %patch15 -p0
@@ -1851,6 +1846,11 @@ fi
 %endif
 
 %changelog
+* Tue Oct 27 2015 Jeff Dost <jdost@ucsd.edu> - 8.4.1-1.1
+- update to 8.4.1
+- drop gt5288 patch 
+- add BuildRequires: libXScrnSaver-devel
+
 * Fri Oct 02 2015 Carl Edquist <edquist@cs.wisc.edu> - 8.4.0-1.2
 - patch to fix broken NETWORK_HOSTNAME (#5288)
 
