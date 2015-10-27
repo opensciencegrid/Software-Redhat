@@ -44,12 +44,16 @@ BuildRequires: maven >= 3.0.0
 %define mvn %{_bindir}/mvn
 %define commons_codec apache-commons-codec
 %define commons_digester apache-commons-digester
+%define bouncycastle_version 1.50
+%define bouncycastle_group bcprov-jdk15on
+BuildRequires: bouncycastle = %{bouncycastle_version}
+Requires: bouncycastle = %{bouncycastle_version}
 %endif
+
 BuildRequires: java7-devel
 BuildRequires: jglobus = %{jglobus_version}
 # provides build-classpath
 BuildRequires: jpackage-utils
-BuildRequires: bouncycastle = 1.50
 Requires: java7
 Requires: jpackage-utils
 Requires: jglobus = %{jglobus_version}
@@ -59,7 +63,7 @@ BuildRequires: emi-trustmanager >= 3.0.3-6
 Requires: emi-trustmanager >= 3.0.3-6
 BuildRequires: emi-trustmanager-axis
 Requires: emi-trustmanager-axis
-Requires: bouncycastle = 1.50
+
 # Standard RPMs from the system
 # "Naive" use of slf4j doesn't appear to work
 #BuildRequires: slf4j
@@ -180,6 +184,7 @@ mvn_install_file () {
     file=$4
     pomFile=${5-}
 
+    pushd /
     %mvn %mvnopts install:install-file \
         -DgroupId="$groupId" \
         -DartifactId="$artifactId" \
@@ -187,6 +192,7 @@ mvn_install_file () {
         -Dpackaging=jar \
         -Dfile="$file" \
         ${pomFile:+"-DpomFile=$pomFile"}
+    popd
 }
 
 
@@ -211,10 +217,13 @@ mvn_install_file  org.opensaml        xmltooling 1.1.1   %{SOURCE10} %{SOURCE11}
 
 mvn_install_file  org.italiangrid voms-api-java 2.0.8 `build-classpath voms-api-java`
 # Adding system dependencies
-mvn_install_file  org.apache.xerces   xercesImpl      2.10.0                   `build-classpath xerces-j2`
-mvn_install_file  org.apache.xalan    xalan           2.7.1                    `build-classpath xalan-j2`
-mvn_install_file  log4j               log4j           1.2.12                   `build-classpath log4j`
-mvn_install_file  org.opensciencegrid privilege-xacml %privilege_xacml_version `build-classpath privilege-xacml`
+mvn_install_file  org.apache.xerces   xercesImpl          2.10.0                   `build-classpath xerces-j2`
+mvn_install_file  org.apache.xalan    xalan               2.7.1                    `build-classpath xalan-j2`
+mvn_install_file  log4j               log4j               1.2.12                   `build-classpath log4j`
+mvn_install_file  org.opensciencegrid privilege-xacml     %privilege_xacml_version `build-classpath privilege-xacml`
+%if 0%{?rhel} >= 7
+mvn_install_file  org.bouncycastle    %bouncycastle_group %bouncycastle_version    `build-classpath bcprov`
+%endif
 
 # Add jglobus system deps
 mvn_install_file  jglobus gridftp     %{jglobus_version} `build-classpath jglobus/gridftp-%{jglobus_version}`
@@ -456,8 +465,8 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
-* Mon Oct 26 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.1-3.osg
-- Use bouncycastle 1.50 on EL7
+* Mon Oct 26 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.1-4.osg
+- Use bouncycastle 1.50 from the OS on EL7
 - Use jspc-compiler for tomcat7 on EL7
 
 * Thu Oct 08 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.1-2.osg
