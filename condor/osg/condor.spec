@@ -185,6 +185,8 @@ Source5: condor_config.local.dedicated.resource
 Source6: 10-batch_gahp_blahp.config
 Source7: 00-restart_peaceful.config
 
+Source8: htcondor.pp
+
 %if %bundle_uw_externals
 Source101: blahp-1.16.5.1.tar.gz
 Source102: boost_1_49_0.tar.gz
@@ -270,6 +272,7 @@ BuildRequires: expat-devel
 BuildRequires: perl-Archive-Tar
 BuildRequires: perl-XML-Parser
 BuildRequires: python-devel
+BuildRequires: libcurl-devel
 %endif
 
 # Globus GSI build requirements
@@ -719,6 +722,7 @@ exit 0
 %endif
 
 %patch1 -p1
+%patch8 -p1
 
 %if 0%{?hcc}
 %patch15 -p0
@@ -739,11 +743,12 @@ export CMAKE_PREFIX_PATH=/usr
 # causes build issues with EL5, don't even bother building the tests.
 
 %if %uw_build
-%define condor_build_id 341253
+%define condor_build_id 346648
 
 %cmake \
        -DBUILDID:STRING=%condor_build_id \
        -DUW_BUILD:BOOL=TRUE \
+       -DCMAKE_SKIP_RPATH:BOOL=FALSE \
 %if ! %std_univ
        -DCLIPPED:BOOL=TRUE \
 %endif
@@ -983,6 +988,10 @@ mkdir %{buildroot}%{_sysconfdir}/sysconfig/
 install -Dp -m 0644 %{buildroot}/etc/examples/condor.sysconfig %{buildroot}%{_sysconfdir}/sysconfig/condor
 %endif
 
+%if 0%{?rhel} >= 7
+cp %{SOURCE8} %{buildroot}%{_datadir}/condor/
+%endif
+
 # Install perl modules
 install -m 0755 src/condor_scripts/Condor.pm %{buildroot}%{_datadir}/condor/
 install -m 0755 src/condor_scripts/CondorPersonal.pm %{buildroot}%{_datadir}/condor/
@@ -1157,6 +1166,9 @@ rm -rf %{buildroot}
 %_datadir/condor/CondorPersonal.pm
 %_datadir/condor/CondorTest.pm
 %_datadir/condor/CondorUtils.pm
+%if 0%{?rhel} >= 7
+%_datadir/condor/htcondor.pp
+%endif
 %dir %_sysconfdir/condor/config.d/
 %_sysconfdir/condor/condor_ssh_to_job_sshd_config_template
 %if %gsoap || %uw_build
@@ -1760,6 +1772,13 @@ if [ $? = 0 ]; then
    # the number of extraneous SELinux warnings on f17 is very high
 fi
 %endif
+%if 0%{?rhel} >= 7
+test -x /usr/sbin/selinuxenabled && /usr/sbin/selinuxenabled
+if [ $? = 0 ]; then
+   /usr/sbin/setsebool -P condor_domain_can_network_connect 1
+   /usr/sbin/semodule -i /usr/share/condor/htcondor.pp
+fi
+%endif
 if [ $1 -eq 1 ] ; then
     # Initial installation 
     /bin/systemctl daemon-reload >/dev/null 2>&1 || :
@@ -1847,9 +1866,8 @@ fi
 
 %changelog
 * Tue Oct 27 2015 Jeff Dost <jdost@ucsd.edu> - 8.4.1-1.1
-- update to 8.4.1
+- update to 8.4.1 (SOFTWARE-2084)
 - drop gt5288 patch 
-- add BuildRequires: libXScrnSaver-devel
 
 * Fri Oct 02 2015 Carl Edquist <edquist@cs.wisc.edu> - 8.4.0-1.2
 - patch to fix broken NETWORK_HOSTNAME (#5288)
