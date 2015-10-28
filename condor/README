@@ -38,5 +38,6 @@ Expected changes between our condor.spec and upstream's:
  - 'condor_base_release' in ours should get a .n (eg, 1.1 if upstream has 1)
  - PatchN/%patchN lines added for patches we carry
  - %changelog entries for OSG-specific changes
+ - condor_build_id
  - any other tweaks we continue to add, which should be in the %changelog
 
