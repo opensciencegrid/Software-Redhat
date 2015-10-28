@@ -129,7 +129,9 @@ rm -rf $RPM_BUILD_ROOT
 /usr/share/doc/trustmanager-tomcat/html/index-all.html
 %dir /var/lib/trustmanager-tomcat/
 /var/lib/trustmanager-tomcat/server.xml.template
+%if 0%{?rhel} == 7
 /var/lib/trustmanager-tomcat/server7.xml.template
+%endif
 /var/lib/trustmanager-tomcat/log4j-trustmanager.properties
 /var/lib/trustmanager-tomcat/config.properties
 /var/lib/trustmanager-tomcat/configure.sh
