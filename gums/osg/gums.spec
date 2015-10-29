@@ -45,7 +45,6 @@ BuildRequires: maven >= 3.0.0
 %define commons_codec apache-commons-codec
 %define commons_digester apache-commons-digester
 %define bouncycastle_version 1.50
-%define bouncycastle_group bcprov-jdk15on
 BuildRequires: bouncycastle = %{bouncycastle_version}
 Requires: bouncycastle = %{bouncycastle_version}
 BuildRequires: bouncycastle-pkix = %{bouncycastle_version}
@@ -235,7 +234,7 @@ mvn_install_file  org.apache.xalan    xalan               2.7.1                 
 mvn_install_file  log4j               log4j               1.2.12                   `build-classpath log4j`
 mvn_install_file  org.opensciencegrid privilege-xacml     %privilege_xacml_version `build-classpath privilege-xacml`
 %if 0%{?rhel} >= 7
-mvn_install_file  org.bouncycastle    %bouncycastle_group %bouncycastle_version    `build-classpath bcprov`
+mvn_install_file  org.bouncycastle bcprov-jdk15on %{bouncycastle_version} `build-classpath bcprov`
 %endif
 
 # Add jglobus system deps
