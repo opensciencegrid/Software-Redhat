@@ -1,5 +1,5 @@
 Name:      rsv-perfsonar
-Version:   1.1.0
+Version:   1.1.1
 Release:   1%{?dist}
 Summary:   RSV Metrics to monitor pefsonar
 Packager:  OSG-Software
@@ -88,6 +88,9 @@ pip install messaging  --upgrade
 
 
 %changelog
+* Thu Oct 29 2015 <efajardo@physics.ucsd.edu> 1.1.1-1
+- Fixed bug on probes ussing SSL only for metadata and not for data
+
 * Thu Oct 22 2015 <efajardo@physics.ucsd.edu> 1.1.0-1
 - Bumped to version 1.1.0 to go into the release
 - Fixed the https bugs on probes not falling back to it
