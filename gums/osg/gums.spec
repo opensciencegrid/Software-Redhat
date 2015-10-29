@@ -379,7 +379,10 @@ touch $RPM_BUILD_ROOT%{_javadir}/javamail.jar
 packages=()
 packages+=(ant)
 packages+=(antlr)
-#packages+=(bcprov)
+packages+=(bcprov)
+%if 0%{?rhel} >= 7
+packages+=(bcpkix)
+%endif
 packages+=(commons-{beanutils,cli,codec,collections,digester,discovery,httpclient,lang,logging})
 packages+=(%{jacc})
 packages+=(jglobus)
@@ -399,6 +402,10 @@ for jardir in %{gumslibdir} %{webinfdir}/lib; do
     mkdir -p "$RPM_BUILD_ROOT$jardir"
     build-jar-repository "$RPM_BUILD_ROOT$jardir" "${packages[@]}"
 done
+%if 0%{?rhel} >= 7
+mkdir -p "$RPM_BUILD_ROOT%{gumslibdir}/endorsed"
+build-jar-repository "$RPM_BUILD_ROOT%{gumslibdir}/endorsed" xml-commons-apis
+%endif
 
 #Fix log4j mess and replace with standard ones
 rm $RPM_BUILD_ROOT%{webinfdir}/log4j.properties
