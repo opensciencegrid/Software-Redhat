@@ -1,7 +1,7 @@
 Name:      rsv
 Summary:   RSV Meta Package
-Version:   3.12.0
-Release:   2%{?dist}
+Version:   3.12.1
+Release:   1%{?dist}
 License:   Apache 2.0
 Group:     Applications/Monitoring
 URL:       https://twiki.grid.iu.edu/bin/view/MonitoringInformation/RSV
@@ -240,6 +240,9 @@ fi
 
 
 %changelog
+* Fri Oct 29 2015 Edfar Fajardo <emfajard@ucsd.edu> - 3.12.1-1
+- Fixed a bug in the json-consumer
+
 * Mon Oct 26 2015 Carl Edquist <edquist@cs.wisc.edu> - 3.12.0-2
 - Add bestman package requirements back for el7 (SOFTWARE-2089)
 
