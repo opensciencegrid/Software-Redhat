@@ -13,7 +13,7 @@
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.5.1
-Release: 4%{?dist}
+Release: 5%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 URL: https://github.com/opensciencegrid/gums
@@ -487,6 +487,9 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+* Thu Oct 29 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.1-5.osg
+- Fix path issue in client tools on EL7 (SOFTWARE-2040)
+
 * Mon Oct 26 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.1-4.osg
 - Use bouncycastle 1.50 from the OS on EL7 (SOFTWARE-2040)
 - Use jspc-compiler for tomcat7 on EL7 (SOFTWARE-2040)
