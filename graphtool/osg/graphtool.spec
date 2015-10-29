@@ -5,7 +5,7 @@
 
 Name:                   graphtool
 Version:                0.7.0
-Release:                1%{?dist}
+Release:                2%{?dist}
 Summary:                CMS Common Graphing Package.
 
 Group:                  Development/Libraries
@@ -50,6 +50,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+
+* Tue Oct 27 2015 Juan F. Mosquera <jmorales@fnal.gov>
+- Modifications to include :
+- Google Charts support for combo chart and pie chart, legends for the treemap.
+- HEP Cloud plots
+- Main page navigation links update
 
 * Mon Jul 6 2015 Juan F. Mosquera <jmorales@fnal.gov>
 - modifications to include Google Charts and Opportunistic filter
