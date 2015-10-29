@@ -131,6 +131,8 @@ Patch1: EL7-Remove-TYPE-InnoDB-from-SQL-templates.patch
 Patch2: Use-bouncycastle-1.50.patch
 Patch3: Use-jspc-compiler-for-tomcat7.patch
 
+Patch4: gums-client-UsrMove.patch
+
 %description
 %{summary}
 
@@ -176,6 +178,7 @@ Summary: Tomcat service for GUMS
 
 %setup -n %{name}-%{version}
 
+%patch4 -p1
 %if 0%{?rhel} < 6
 %patch0 -p1
 %endif
