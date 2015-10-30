@@ -8,7 +8,7 @@
 Summary: The VOMS Administration service
 Name: voms-admin-server
 Version: 2.7.0
-Release: 1.16%{?dist}
+Release: 1.17%{?dist}
 License: ASL 2.0
 Group: System Environment/Libraries
 
@@ -106,6 +106,7 @@ Patch4: trustmanager-versions.patch
 Patch5: fix-suspended-users.patch
 Patch6: fix-certificate-issuer-check.patch
 Patch7: axistools-version.patch
+Patch8: sign-on-behalf-of.patch
 
 Requires: osg-webapp-common
 
@@ -142,6 +143,8 @@ administration tasks.
 %if 0%{?rhel} >= 7
 %patch7 -p1
 %endif
+
+%patch8 -p1
 
 %define local_maven /tmp/m2/repository
 
@@ -267,6 +270,9 @@ fi
 %{tomcat_endorsed}/xalan-j2-serializer.jar
 
 %changelog
+* Fri Oct 30 2015 Carl Edquist <edquist@cs.wisc.edu> - 2.7.0-1.17
+- Restore 'Sign AUP on behalf of user' feature (SOFTWARE-2091)
+
 * Thu Aug 06 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 2.7.0-1.16.osg
 - Build for el6 and el7; optionally use a bundle of mvn dependencies so we can build in offline mode
 
