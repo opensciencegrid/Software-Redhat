@@ -3,7 +3,7 @@
 
 Name: htcondor-ce
 Version: 1.18
-Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
+Release: 2%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 
 Group: Applications/System
@@ -335,6 +335,9 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Mon Nov 2 2015 Edgar Fajardo <emfajard@ucsd.edu> - 1.18-2
+- Build against condor 8.4.0 (SOFTWARE-2084)
+
 * Tue Oct 27 2015 Jeff Dost <jdost@ucsd.edu> - 1.18-1
 - Fix a bug that prevented HTCondor-CE from starting when UID or extattr mappings were not used
 - Allow users to append lines to JOB_ROUTER_DEFAULTS (SOFTWARE-2065)
