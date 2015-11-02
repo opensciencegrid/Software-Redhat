@@ -1,7 +1,7 @@
 %define name autopyfactory
 %define version 2.4.6
 %define unmangled_version 2.4.6
-%define release 1
+%define release 2
 
 Summary: autopyfactory package
 Name: %{name}
