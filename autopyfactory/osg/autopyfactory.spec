@@ -160,7 +160,10 @@ fi
 %package -n autopyfactory-common
 Summary: autopyfactory common 
 Group: Development/Libraries
-Requires: autopyfactory-plugins-condor
+#Requires: autopyfactory-proxymanager
+Requires: condor
+Requires: python-simplejson
+Requires: python-pycurl
 %description -n autopyfactory-common
 This package contains autopyfactory common
 
@@ -176,6 +179,8 @@ This package contains autopyfactory common
 %package -n autopyfactory-proxymanager
 Summary: autopyfactory proxymanager 
 Group: Development/Libraries
+Requires: voms-clients
+Requires: myproxy
 %description -n autopyfactory-proxymanager
 This package contains autopyfactory proxymanger 
 
@@ -275,8 +280,8 @@ Group: Development/Libraries
 Requires: autopyfactory-common
 Requires: autopyfactory-plugins-remote
 Requires: autopyfactory-proxymanager
-Requires: voms-clients
-Requires: myproxy
+#Requires: voms-clients
+#Requires: myproxy
 %description -n autopyfactory-remote
 meta rpm autopyfactory-remote
 %files -n autopyfactory-remote
@@ -287,8 +292,8 @@ Summary: META RPM for PanDA
 Group: Development/Libraries
 Requires: autopyfactory-common
 Requires: autopyfactory-plugins-panda
-Requires: voms-clients
-Requires: myproxy
+#Requires: voms-clients
+#Requires: myproxy
 %description -n autopyfactory-panda
 meta rpm autopyfactory-panda
 %files -n autopyfactory-panda
@@ -299,7 +304,7 @@ Summary: META RPM for autopyfactory-wms
 Group: Development/Libraries
 Requires: autopyfactory-common
 Requires: autopyfactory-plugins-local
-Requires: voms-clients
+#Requires: voms-clients
 %description -n autopyfactory-wms
 meta rpm autopyfactory-wms
 %files -n autopyfactory-wms
@@ -316,4 +321,3 @@ meta rpm autopyfactory-cloud
 %files -n autopyfactory-cloud
 
 ##############################################
-
