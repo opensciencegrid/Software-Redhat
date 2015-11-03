@@ -16,7 +16,7 @@ if [ "x$BESTMAN_SYSCONF_MODE" = "xserver" ]; then
  BESTMAN2_SERVER_LIB=$BESTMAN2_SERVER_LIB:$(build-classpath axis wsdl4j commons-discovery commons-logging bestman2/axis log4j)
  # GUMS and related deps
  BESTMAN2_SERVER_LIB=$BESTMAN2_SERVER_LIB:$(build-classpath commons-collections joda-time voms-api-java trustmanager trustmanager-axis xalan-j2 jakarta-commons-lang privilege-xacml)
- BESTMAN2_SERVER_LIB=$BESTMAN2_SERVER_LIB:/usr/lib/gums/openws-1.4.1.jar:/usr/lib/gums/opensaml-2.4.1.jar:/usr/lib/gums/xmltooling-1.3.1.jar:/usr/lib/gums/velocity-1.5.jar:/usr/lib/gums/xmlsec-1.4.4.jar
+ BESTMAN2_SERVER_LIB=$BESTMAN2_SERVER_LIB:/usr/lib/privilege-xacml/openws-1.4.1.jar:/usr/lib/privilege-xacml/opensaml-2.4.1.jar:/usr/lib/privilege-xacml/xmltooling-1.3.4.jar:/usr/lib/privilege-xacml/velocity-1.5.jar:/usr/lib/privilege-xacml/xmlsec-1.4.1.jar
  # Jetty JARs
  BESTMAN2_SERVER_LIB=$BESTMAN2_SERVER_LIB:$(build-classpath jetty)
  # jglobus JARs

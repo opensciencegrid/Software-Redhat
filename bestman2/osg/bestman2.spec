@@ -16,7 +16,7 @@
 
 Name:           bestman2
 Version:        2.3.0
-Release:        26%{?dist}
+Release:        27%{?dist}
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -57,10 +57,10 @@ BuildRequires:  java7-devel jpackage-utils wget ant axis jakarta-commons-logging
 BuildRequires: jglobus = %jglobus_version
 BuildRequires: jetty-client jetty-continuation jetty-deploy jetty-http jetty-io jetty-security jetty-server jetty-servlet jetty-util jetty-webapp jetty-xml
 BuildRequires: emi-trustmanager emi-trustmanager-axis
-# GUMS jars
-BuildRequires: /usr/lib/gums/opensaml-2.4.1.jar
-BuildRequires: /usr/lib/gums/openws-1.4.1.jar
-BuildRequires: /usr/lib/gums/xmltooling-1.3.1.jar
+# privilege-xacml jars
+BuildRequires: /usr/lib/privilege-xacml/opensaml-2.4.1.jar
+BuildRequires: /usr/lib/privilege-xacml/openws-1.4.1.jar
+BuildRequires: /usr/lib/privilege-xacml/xmltooling-1.3.4.jar
 
 %description
 BeStMan 2 - Berkeley Storage Manager
@@ -129,12 +129,12 @@ Summary: BeStMan Server SRM Java libraries
 Group: System Environment/Libraries
 Requires: java7-devel jpackage-utils jakarta-commons-lang joda-time emi-trustmanager emi-trustmanager-axis xalan-j2 voms-api-java >= 2.0.8 jakarta-commons-collections privilege-xacml
 Requires: jetty-client jetty-continuation jetty-deploy jetty-http jetty-io jetty-security jetty-server jetty-servlet jetty-util jetty-webapp jetty-xml
-# GUMS jars
-Requires: /usr/lib/gums/opensaml-2.4.1.jar
-Requires: /usr/lib/gums/openws-1.4.1.jar
-Requires: /usr/lib/gums/velocity-1.5.jar
-Requires: /usr/lib/gums/xmlsec-1.4.4.jar
-Requires: /usr/lib/gums/xmltooling-1.3.1.jar
+# privilege-xacml jars
+Requires: /usr/lib/privilege-xacml/opensaml-2.4.1.jar
+Requires: /usr/lib/privilege-xacml/openws-1.4.1.jar
+Requires: /usr/lib/privilege-xacml/velocity-1.5.jar
+Requires: /usr/lib/privilege-xacml/xmlsec-1.4.1.jar
+Requires: /usr/lib/privilege-xacml/xmltooling-1.3.4.jar
 
 %description server-dep-libs
 The BeStMan Server SRM Java libraries
@@ -457,6 +457,10 @@ fi
 
 
 %changelog
+* Tue Nov 03 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 2.3.0-27.osg
+- Use opensaml, openws, velocity, xmlsec, and xmltooling jar files from
+  privilege-xacml instead of gums (SOFTWARE-2041)
+
 * Fri Sep 18 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 2.3.0-26
 - Build with jglobus 2.1.0
 
