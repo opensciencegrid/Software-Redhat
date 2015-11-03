@@ -530,7 +530,7 @@ fi
 * Mon Nov 12 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 2.3.0-5
 - Require voms-api-java instead of vomsjapi
 
-* Wed Nov 08 2012 Neha Sharma <neha@fnal.gov> - 2.3.0-4
+* Thu Nov 08 2012 Neha Sharma <neha@fnal.gov> - 2.3.0-4
 - Updated file 'version' to include latest version and removed the build host line from build.xml
 
 * Tue Nov 06 2012 Neha Sharma <neha@fnal.gov> - 2.3.0-3
@@ -545,7 +545,7 @@ fi
 * Thu Sep 20 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 2.2.1-5
 - Cleanup spec file in preparation of jglobus transition.
 
-* Tue Jul 25 2012 Doug Strain <dstrain@fnal.gov> - 2.2.1-4
+* Wed Jul 25 2012 Doug Strain <dstrain@fnal.gov> - 2.2.1-4
 - Changes to client lib requirement to fix SOFTWARE-716
 
 * Mon Jun 25 2012 Neha Sharma <neha@fnal.gov> - 2.2.1a
@@ -686,7 +686,7 @@ get rid of bestman2 dependency of client and server
 * Sun Jul 10 2011 Doug Strain <dstrain@fnal.gov> 2.1.0.pre4-3
 - Changed RPM to not require certs
 
-* Mon Jul 07 2011 Doug Strain <dstrain@fnal.gov> 2.1.0.pre4
+* Thu Jul 07 2011 Doug Strain <dstrain@fnal.gov> 2.1.0.pre4
 - Updated to bestman2.1.0pre4
 - Changed the locations to be FHS compliant:
 - Moved java jar files to javadir/bestman2
@@ -695,7 +695,7 @@ get rid of bestman2 dependency of client and server
 - Moved bestman2.rc to /etc/bestman2/conf and added to client package
 - Deleted setup directory in favor of combined bestman2.rc/sysconfig
 
-* Mon Jul 01 2011 Doug Strain <dstrain@fnal.gov> 2.1.0.pre2
+* Fri Jul 01 2011 Doug Strain <dstrain@fnal.gov> 2.1.0.pre2
 - Creating Bestman2 spec file based on Hadoop repository
 
 * Mon Jun 13 2011 Doug Strain <dstrain@fnal.gov> 2.0.13.t5-43
