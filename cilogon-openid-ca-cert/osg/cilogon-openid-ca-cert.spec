@@ -1,6 +1,6 @@
 Name:           cilogon-openid-ca-cert
 Version:        1.1
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        OSG Packaging of the CILogon CA Certs, in new OpenSSL 0.9.8/1.0.0 format
 
 Group:          System Environment/Base
@@ -46,7 +46,7 @@ rm -rf $RPM_BUILD_ROOT
 %doc
 
 %changelog
-* Thu Nov 05 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.1-2.osg
+* Thu Nov 05 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.1-3
 - Fix obsoletes for cilogon-ca-certs
 
 * Wed Apr 22 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1.1-2
