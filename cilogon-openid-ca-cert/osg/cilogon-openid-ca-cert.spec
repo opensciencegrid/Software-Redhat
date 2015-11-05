@@ -19,7 +19,7 @@ Obsoletes:      osg-ca-certs-cilogon, osg-ca-certs-cilogon-osg
 # Added the obsolete/provides after the cilogon-osg-ca-cert was moved out
 
 Provides:      cilogon-ca-certs = %{version}-%{release}
-Obsoletes:     cilogon-ca-certs <= 1.1-1
+Obsoletes:     cilogon-ca-certs < 1.1-2
 
 
 %description
@@ -46,6 +46,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc
 
 %changelog
+* Thu Nov 05 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.1-2.osg
+- Fix obsoletes for cilogon-ca-certs
+
 * Wed Apr 22 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1.1-2
 - Changed name to cilogon-ca-certs
 - Added provides/obsoletes for the name change
