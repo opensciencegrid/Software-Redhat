@@ -2,8 +2,8 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 1.18
-Release: 2%{?gitrev:.%{gitrev}git}%{?dist}
+Version: 1.19
+Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 
 Group: Applications/System
@@ -335,6 +335,9 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Fri Nov 06 2015 Brian Lin <blin@cs.wisc.edu> - 1.18-1
+- Fix a bug in setting HTCondor accounting groups for routed jobs (SOFTWARE-2076)
+
 * Mon Nov 2 2015 Edgar Fajardo <emfajard@ucsd.edu> - 1.18-2
 - Build against condor 8.4.0 (SOFTWARE-2084)
 
