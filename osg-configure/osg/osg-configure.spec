@@ -1,6 +1,6 @@
 Summary: Package for configure-osg and associated scripts
 Name: osg-configure
-Version: 1.2.3
+Version: 1.2.4
 Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
@@ -322,6 +322,9 @@ fi
 
 
 %changelog
+* Tue Nov 10 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.2.4-1.osg
+- Do not look up offline ReSS servers (SOFTWARE-2102)
+
 * Wed Oct 21 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.2.3-1.osg
 - Run condor_ce_reconfig after generating the job attribute files, so the
   changes get picked up (SOFTWARE-2058)
