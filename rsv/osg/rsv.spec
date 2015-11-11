@@ -1,7 +1,10 @@
 Name:      rsv
 Summary:   RSV Meta Package
-Version:   3.12.0
-Release:   2%{?dist}
+Version:   3.12.2
+%if 0%{?el7}
+%define release_suffix _clipped
+%endif
+Release:   1%{?release_suffix}%{?dist}
 License:   Apache 2.0
 Group:     Applications/Monitoring
 URL:       https://twiki.grid.iu.edu/bin/view/MonitoringInformation/RSV
@@ -81,7 +84,9 @@ Requires: /usr/bin/globus-job-run
 Requires: /usr/bin/globusrun
 Requires: /usr/bin/globus-url-copy
 Requires: uberftp
+%if ! 0%{?el7}
 Requires: bestman2-client
+%endif
 Requires: gfal2
 Requires: gfal2-util
 Requires: gfal2-plugin-file
@@ -240,8 +245,12 @@ fi
 
 
 %changelog
+* Wed Nov 11 2015 Carl Edquist <edquist@cs.wisc.edu> - 3.12.2-1
+- SOFTWARE-2099 - Allow specifying collector port in xrootd-cache-probe
+- SOFTWARE-2089 - Revert bestman package requirements from el7
+
 * Mon Oct 26 2015 Carl Edquist <edquist@cs.wisc.edu> - 3.12.0-2
-- Add bestman package requirements back for el7 (SOFTWARE-2089)
+- SOFTWARE-2089 - Add bestman package requirements back for el7
 
 * Thu Oct 22 2015 Edgar Fajardo <emfajard@ucsd.edu> 3.12.0-1
 - Added the json consumer
