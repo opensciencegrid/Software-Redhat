@@ -1,6 +1,6 @@
 Name:      rsv
 Summary:   RSV Meta Package
-Version:   3.12.2
+Version:   3.12.3
 %if 0%{?el7}
 %define release_suffix _clipped
 %endif
@@ -245,6 +245,9 @@ fi
 
 
 %changelog
+* Wed Nov 11 2015 Carl Edquist <edquist@cs.wisc.edu> - 3.12.3-1
+- SOFTWARE-2099 - Fix for running xrootd-cache-probe under rsv-control
+
 * Wed Nov 11 2015 Carl Edquist <edquist@cs.wisc.edu> - 3.12.2-1
 - SOFTWARE-2099 - Allow specifying collector port in xrootd-cache-probe
 - SOFTWARE-2089 - Revert bestman package requirements from el7
