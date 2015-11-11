@@ -2,7 +2,7 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 1.19
+Version: 1.20
 Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 
@@ -335,6 +335,11 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Wed Nov 11 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.20-1
+- Enable GSI map caching to decrease the number of GSI callouts (SOFTWARE-2105)
+- Allow authenticated, mapped users to advertise glideins
+- Build against condor 8.4.2 (SOFTWARE-2084)
+
 * Fri Nov 06 2015 Brian Lin <blin@cs.wisc.edu> - 1.19-1
 - Fix a bug in setting HTCondor accounting groups for routed jobs (SOFTWARE-2076)
 
