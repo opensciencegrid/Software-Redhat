@@ -249,6 +249,9 @@ fi
 - SOFTWARE-2099 - Allow specifying collector port in xrootd-cache-probe
 - SOFTWARE-2089 - Revert bestman package requirements from el7
 
+* Fri Oct 29 2015 Edfar Fajardo <emfajard@ucsd.edu> - 3.12.1-1
+- Fixed a bug in the json-consumer
+
 * Mon Oct 26 2015 Carl Edquist <edquist@cs.wisc.edu> - 3.12.0-2
 - SOFTWARE-2089 - Add bestman package requirements back for el7
 
