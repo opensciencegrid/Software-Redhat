@@ -3,7 +3,7 @@
 
 Name: htcondor-ce
 Version: 1.20
-Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
+Release: 2%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 
 Group: Applications/System
@@ -335,6 +335,9 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Thu Nov 12 2015 Brian Lin <blin@cs.wisc.edu> - 1.20-2
+* Rebuild against condor-8.4.0 in case we are not satisfied with 8.4.2
+
 * Wed Nov 11 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.20-1
 - Enable GSI map caching to decrease the number of GSI callouts (SOFTWARE-2105)
 - Allow authenticated, mapped users to advertise glideins
