@@ -1,7 +1,7 @@
 Summary: Security utilities
 Name: emi-trustmanager
 Version: 3.0.3
-Release: 9%{?dist}
+Release: 10%{?dist}
 License: EMI
 Vendor: EMI
 Group: System Environment/Libraries
@@ -47,7 +47,8 @@ Patch23: 0023-IssuingDistributionPoint-constructor-fix-bc1.47.patch
 Patch24: 0024-GeneralNames-constuctor-fix-bc1.47.patch
 Patch25: 0025-DEROctetString-new-exception-bc1.47.patch
 Patch26: 0026-CertificationRequestInfo.getSubject-signature-change.patch
-Patch27: private_key_exception.patch
+Patch27: 0027-DERSet-ASN1Set-and-DERSequence-ASN1Sequence-bc-1.47.patch
+Patch40: private_key_exception.patch
 
 %description
 The java authentication and proxy generation implementation that supports grid proxies.
@@ -80,7 +81,8 @@ The java authentication and proxy generation implementation that supports grid p
 %patch24 -p1
 %patch25 -p1
 %patch26 -p1
-%patch27 -p0
+%patch27 -p1
+%patch40 -p0
 %endif
 
 
@@ -269,6 +271,9 @@ rm -rf $RPM_BUILD_ROOT
 /usr/share/doc/trustmanager/html/index-all.html
 
 %changelog
+* Mon Nov 09 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.0.3-10
+- Fix DERSet/DERSequence errors on RHEL7
+
 * Tue Sep 15 2015 Brian Bockelman <bbockelm@cse.unl.edu> - 3.0.3-9
 - Avoid exception when creating SSL socket on RHEL7.
 
