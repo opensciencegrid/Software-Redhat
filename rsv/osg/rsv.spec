@@ -1,6 +1,6 @@
 Name:      rsv
 Summary:   RSV Meta Package
-Version:   3.12.4
+Version:   3.12.5
 %if 0%{?el7}
 %define release_suffix _clipped
 %endif
@@ -245,6 +245,9 @@ fi
 
 
 %changelog
+* Mon Nov 16 2015 Edgar Fajardo <emfajard@ucsd.edu> - 3.12.5-1
+- Fixed typo with gratia-consumer.log entry in the logrotate missing (SOFTWARE-2110)
+
 * Mon Nov 16 2015 Edgar Fajardo <emfajard@ucsd.edu> - 3.12.4-1
 - Fixed typo with double entries for the json-consumer.log in the logrotate
 
