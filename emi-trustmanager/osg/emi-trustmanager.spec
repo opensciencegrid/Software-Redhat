@@ -24,7 +24,7 @@ Requires: /usr/lib/java-1.7.0
 Requires: /usr/share/java-1.7.0
 BuildRoot: %{_builddir}/%{name}-root
 AutoReqProv: yes
-Source: emi-trustmanager-3.0.3-1.src.tar.gz
+Source: emi-trustmanager-3.0.3-1.src.fixed.tar.gz
 Patch0: incorrect_oid.patch
 Patch1: build.xml.patch
 Patch2: better_log.patch
