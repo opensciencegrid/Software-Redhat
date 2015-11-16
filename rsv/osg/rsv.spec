@@ -1,6 +1,6 @@
 Name:      rsv
 Summary:   RSV Meta Package
-Version:   3.12.3
+Version:   3.12.4
 %if 0%{?el7}
 %define release_suffix _clipped
 %endif
@@ -245,6 +245,9 @@ fi
 
 
 %changelog
+* Mon Nov 16 2015 Edgar Fajardo <emfajard@ucsd.edu> - 3.12.4-1
+- Fixed typo with double entries for the json-consumer.log in the logrotate
+
 * Wed Nov 11 2015 Carl Edquist <edquist@cs.wisc.edu> - 3.12.3-1
 - SOFTWARE-2099 - Fix for running xrootd-cache-probe under rsv-control
 
