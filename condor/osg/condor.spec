@@ -538,9 +538,11 @@ resources exposed by the deltacloud API.
 %package classads
 Summary: HTCondor's classified advertisement language
 Group: Development/Libraries
+%if 0%{?osg} || 0%{?hcc}
 Obsoletes: classads <= 1.0.10
 Obsoletes: classads-static <= 1.0.10
 Provides: classads = %version-%release
+%endif
 
 %description classads
 Classified Advertisements (classads) are the lingua franca of
@@ -568,8 +570,10 @@ Summary: Headers for HTCondor's classified advertisement language
 Group: Development/System
 Requires: %name-classads = %version-%release
 Requires: pcre-devel
+%if 0%{?osg} || 0%{?hcc}
 Obsoletes: classads-devel <= 1.0.10
 Provides: classads-devel = %version-%release
+%endif
 
 %description classads-devel
 Header files for HTCondor's ClassAd Library, a powerful and flexible,
@@ -764,7 +768,7 @@ export CMAKE_PREFIX_PATH=/usr
 # causes build issues with EL5, don't even bother building the tests.
 
 %if %uw_build
-%define condor_build_id 348637
+%define condor_build_id 349384
 
 cmake \
        -DBUILDID:STRING=%condor_build_id \
