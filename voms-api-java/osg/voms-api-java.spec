@@ -7,7 +7,7 @@
 
 Name:		voms-api-java
 Version:	2.0.8
-Release:	1.8%{?dist}
+Release:	1.9%{?dist}
 Summary:	Virtual Organization Membership Service Java API
 
 Group:		Development/Libraries
@@ -41,6 +41,7 @@ Patch21:        0021-Use-getInstance-instead-of-private-constructor-for-G.patch
 Patch22:        0022-X509CertificateObject-constructor-interface-change-b.patch
 Patch23:        0023-AuthorityKeyIdentifier-constructor-interface-change-.patch
 Patch24:        0024-BasicConstraints-constructor-interface-change-bc-1.4.patch
+Patch25:        0025-Use-ASN1Sequence-and-ASN1Set-instead-of-DERSequence-.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:	noarch
 
@@ -134,6 +135,7 @@ Virtual Organization Membership Service (VOMS) Java API Documentation.
 %patch22 -p1
 %patch23 -p1
 %patch24 -p1
+%patch25 -p1
 %else
 sed -e s/bcprov-ext-jdk16/bcprov-jdk16/ -e s/1.45/1.46/ -i pom.xml
 %endif
@@ -198,6 +200,9 @@ if [[ $1 -gt 0 && -e %{_javadir}/%{name}.jar ]]; then
 fi
 
 %changelog
+* Mon Nov 09 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 2.0.8-1.9
+- Fix additional bouncycastle incompatibilities on EL 7
+
 * Fri Oct 02 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 2.0.8-1.8
 - Use mvn_build macro on el7
 

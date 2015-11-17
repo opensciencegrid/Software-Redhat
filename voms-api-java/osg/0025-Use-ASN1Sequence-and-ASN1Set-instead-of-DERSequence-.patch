@@ -1,0 +1,94 @@
+From 9ffe72e0ff091e50876b3423116627ce55cad113 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Mon, 9 Nov 2015 15:08:47 -0600
+Subject: [PATCH] Use ASN1Sequence and ASN1Set instead of DERSequence and
+ DERSet for casts (bc 1.47)
+
+Some methods now give us DLSequence and DLSet objs instead of
+DERSequence and DERSet, so cast to their common parent instead.
+---
+ src/main/java/org/glite/voms/ac/ACCerts.java                  | 2 +-
+ src/main/java/org/glite/voms/ac/AttributeCertificate.java     | 4 ++--
+ src/main/java/org/glite/voms/ac/AttributeCertificateInfo.java | 4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/src/main/java/org/glite/voms/ac/ACCerts.java b/src/main/java/org/glite/voms/ac/ACCerts.java
+index 2b4a196..90224af 100644
+--- a/src/main/java/org/glite/voms/ac/ACCerts.java
++++ b/src/main/java/org/glite/voms/ac/ACCerts.java
+@@ -92,11 +92,11 @@ public class ACCerts implements ASN1Encodable {
+         }
+ 
+         for (Enumeration e = seq.getObjects(); e.hasMoreElements();){
+             Object o = e.nextElement();
+ 
+-            if (o instanceof DERSequence) {
++            if (o instanceof ASN1Sequence) {
+                 byte[] data = null;
+                 try {
+                       Certificate cert = Certificate.getInstance(o);
+                       data = new X509CertificateObject(cert).getEncoded();
+                       l.add((X509Certificate)cf.generateCertificate(new ByteArrayInputStream(data)));
+diff --git a/src/main/java/org/glite/voms/ac/AttributeCertificate.java b/src/main/java/org/glite/voms/ac/AttributeCertificate.java
+index d83aee1..b3b0dcf 100644
+--- a/src/main/java/org/glite/voms/ac/AttributeCertificate.java
++++ b/src/main/java/org/glite/voms/ac/AttributeCertificate.java
+@@ -55,11 +55,11 @@ import org.apache.log4j.Logger;
+ import org.bouncycastle.asn1.ASN1EncodableVector;
+ import org.bouncycastle.asn1.ASN1Sequence;
+ import org.bouncycastle.asn1.ASN1TaggedObject;
+ import org.bouncycastle.asn1.ASN1InputStream;
+ import org.bouncycastle.asn1.DERBitString;
+-import org.bouncycastle.asn1.DERSet;
++import org.bouncycastle.asn1.ASN1Set;
+ import org.bouncycastle.asn1.ASN1Encodable;
+ import org.bouncycastle.asn1.DERGeneralizedTime;
+ import org.bouncycastle.asn1.ASN1Integer;
+ import org.bouncycastle.asn1.ASN1Primitive;
+ import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+@@ -228,11 +228,11 @@ public class AttributeCertificate implements ASN1Encodable {
+ 
+         for (Enumeration e = seq.getObjects(); e.hasMoreElements();) {
+             ASN1Sequence attribute = (ASN1Sequence) e.nextElement();
+ 
+             if (oid.equals(((ASN1ObjectIdentifier) attribute.getObjectAt(0)).getId())) {
+-                DERSet set = (DERSet) attribute.getObjectAt(1);
++                ASN1Set set = (ASN1Set) attribute.getObjectAt(1);
+ 
+                 for (Enumeration s = set.getObjects(); s.hasMoreElements();) {
+                     v.add(s.nextElement());
+                 }
+             }
+diff --git a/src/main/java/org/glite/voms/ac/AttributeCertificateInfo.java b/src/main/java/org/glite/voms/ac/AttributeCertificateInfo.java
+index f55f870..5e93eba 100644
+--- a/src/main/java/org/glite/voms/ac/AttributeCertificateInfo.java
++++ b/src/main/java/org/glite/voms/ac/AttributeCertificateInfo.java
+@@ -44,11 +44,11 @@ import org.bouncycastle.asn1.ASN1EncodableVector;
+ import org.bouncycastle.asn1.ASN1InputStream;
+ import org.bouncycastle.asn1.ASN1OctetString;
+ import org.bouncycastle.asn1.ASN1Sequence;
+ import org.bouncycastle.asn1.ASN1TaggedObject;
+ import org.bouncycastle.asn1.DERBitString;
+-import org.bouncycastle.asn1.DERSet;
++import org.bouncycastle.asn1.ASN1Set;
+ import org.bouncycastle.asn1.ASN1Encodable;
+ import org.bouncycastle.asn1.ASN1EncodableVector;
+ import org.bouncycastle.asn1.DERIA5String;
+ import org.bouncycastle.asn1.ASN1GeneralizedTime;
+ import org.bouncycastle.asn1.ASN1Integer;
+@@ -130,11 +130,11 @@ public class AttributeCertificateInfo implements ASN1Encodable {
+             for (Enumeration e = attributes.getObjects(); e.hasMoreElements();) {
+ 
+                 ASN1Sequence attribute = (ASN1Sequence) e.nextElement();
+ 
+                 if (VOMS_ATTR_OID.equals(((ASN1ObjectIdentifier) attribute.getObjectAt(0)).getId())) {
+-                    DERSet set = (DERSet) attribute.getObjectAt(1);
++                    ASN1Set set = (ASN1Set) attribute.getObjectAt(1);
+ 
+                     for (Enumeration s = set.getObjects(); s.hasMoreElements();) {
+                         IetfAttrSyntax attr = new IetfAttrSyntax((ASN1Sequence)s.nextElement());
+                         String url = ((DERIA5String) GeneralName.getInstance(((ASN1Sequence) attr.getPolicyAuthority()
+                                                                               .toASN1Primitive()).getObjectAt(0))
+-- 
+2.4.6
+
