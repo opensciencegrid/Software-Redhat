@@ -12,12 +12,11 @@ BuildRequires: bouncycastle
 BuildRequires: log4j
 %if 0%{?rhel} >= 7
 BuildRequires: bouncycastle-pkix
-Requires: java-headless >= 1:1.7.0
-%else
+#Requires: java-headless >= 1:1.7.0
+%endif
 BuildRequires: java7-devel
 BuildRequires: jpackage-utils
 Requires: java7
-%endif
 Requires: jpackage-utils
 # ensure these are present, from jpackage-utils or missing-java-1.7.0-dirs
 Requires: /usr/lib/java-1.7.0
@@ -271,7 +270,8 @@ rm -rf $RPM_BUILD_ROOT
 /usr/share/doc/trustmanager/html/index-all.html
 
 %changelog
-* Mon Nov 09 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.0.3-10
+* Tue Nov 17 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.0.3-10
+- Force use of Java7 even on RHEL7 to maintain consistency with our other software (SOFTWARE-2095)
 - Fix DERSet/DERSequence errors on RHEL7
 
 * Tue Sep 15 2015 Brian Bockelman <bbockelm@cse.unl.edu> - 3.0.3-9
