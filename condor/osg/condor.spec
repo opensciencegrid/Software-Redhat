@@ -125,7 +125,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 0.1
+%define condor_base_release 1.1
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -1904,6 +1904,9 @@ fi
 %endif
 
 %changelog
+* Tue Nov 17 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 8.4.2-1.1
+- update to 8.4.2 (SOFTWARE-2084)
+
 * Tue Oct 27 2015 Jeff Dost <jdost@ucsd.edu> - 8.4.1-1.1
 - update to 8.4.1 (SOFTWARE-2084)
 - drop gt5288 patch 
