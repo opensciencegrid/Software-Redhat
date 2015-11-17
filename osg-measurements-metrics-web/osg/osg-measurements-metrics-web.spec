@@ -5,7 +5,7 @@
 
 Name:           osg-measurements-metrics-web
 Version:        1.3
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        OSG Measurements and Metrics web and database
 
 Group:          Applications/System
@@ -80,6 +80,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+
+* Tue Nov 17 2015 Juan F. Mosquera <jmorales@fnal.gov>
+- Security vulnerability fix for dynamic sql functions
 
 * Tue Oct 27 2015 Juan F. Mosquera <jmorales@fnal.gov>
 - Modifications to include :
