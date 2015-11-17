@@ -82,7 +82,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 
 * Tue Nov 17 2015 Juan F. Mosquera <jmorales@fnal.gov>
-- Security vulnerability fix for dynamic sql functions
+- fix for https://ticket.opensciencegrid.org/27365
 
 * Tue Oct 27 2015 Juan F. Mosquera <jmorales@fnal.gov>
 - Modifications to include :
