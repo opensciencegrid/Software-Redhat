@@ -1,7 +1,7 @@
 
 Name:      osg-info-services
 Summary:   OSG Information Services uploader
-Version:   1.0.2
+Version:   1.1.0
 Release:   1%{?dist}
 License:   Apache 2.0
 Group:     Grid
@@ -16,7 +16,7 @@ Source0:   %{name}-%{version}.tar.gz
 
 BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
-Requires: gip
+Requires: gip >= 1.3.11-8
 
 %description
 %{summary}
@@ -48,6 +48,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_sbindir}/%{name}
 
 %changelog
+* Thu Nov 19 2015 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.1.0-1
+- Remove deprecated ReSS support (SOFTWARE-2104)
+  Require gip >= 1.3.11-8 which has the patch to remove ReSS support from gip
+
 * Thu Feb 19 2015 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.0.2-1
 - Bypass http proxy (SOFTWARE-1797)
 
