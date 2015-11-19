@@ -1,12 +1,12 @@
 Summary: Generic Information Provider
 Name: gip
 Version: 1.3.11
-Release: 7%{?dist}
+Release: 8%{?dist}
 License: Apache 2.0
 Group: Applications/Grid
 BuildArch: noarch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
-Requires: globus-proxy-utils 
+Requires: globus-proxy-utils
 Source0: %{name}-%{version}.tgz
 Patch0: 1662-slurm_queue_info.patch
 Patch1: 1752-slurm_path.patch
@@ -15,6 +15,9 @@ Patch3: 1795-htcondor-bdii-1.patch
 Patch4: 1795-htcondor-bdii-2.patch
 Patch5: 1893-cese_bind.patch
 Patch6: 2030-slurm-multiple-queues.patch
+Patch7: 2104-no-ress-support.patch
+
+Conflicts: osg-info-services < 1.1.0
 
 %define tomcat_uid 91
 %define tomcat_gid 91
@@ -45,6 +48,7 @@ then can be sent via external services to information collection servers such as
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
+%patch7 -p1
 
 %install
 rm -rf %{buildroot}
@@ -135,6 +139,11 @@ touch $RPM_BUILD_ROOT/%{_sysconfdir}/%{name}/remove-attributes.conf
 rm -rf %buildroot
 
 %changelog
+* Wed Nov 18 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.3.11-8
+- Remove ReSS support (SOFTWARE-2104)
+  Conflict with osg-info-services < 1.1.0 to avoid error when osg-info-services
+  tries to upload to ReSS
+
 * Wed Sep 23 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.3.11-7
 - Support multiple queues for SLURM (SOFTWARE-2030)
 - Fix name of tomcat directory in EL7
