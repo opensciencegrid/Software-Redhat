@@ -17,6 +17,8 @@ Patch5: 1893-cese_bind.patch
 Patch6: 2030-slurm-multiple-queues.patch
 Patch7: 2104-no-ress-support.patch
 
+Conflicts: osg-info-services < 1.1.0
+
 %define tomcat_uid 91
 %define tomcat_gid 91
 
@@ -139,6 +141,8 @@ rm -rf %buildroot
 %changelog
 * Wed Nov 18 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.3.11-8
 - Remove ReSS support (SOFTWARE-2104)
+  Conflict with osg-info-services < 1.1.0 to avoid error when osg-info-services
+  tries to upload to ReSS
 
 * Wed Sep 23 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.3.11-7
 - Support multiple queues for SLURM (SOFTWARE-2030)
