@@ -4,7 +4,7 @@
 %{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
 %endif
 Name: cctools
-Version: 4.4.0
+Version: 4.4.3
 Release: 1%{?dist}
 Summary: A collection of tools for harnessing large scale distributed systems
 License: GPL 2.0 
@@ -35,6 +35,14 @@ BuildRequires: e2fsprogs-devel
 %description
 The Cooperative Computing Tools are a collection of tools for harnessing large
 scale distributed systems, such as clusters, clouds, and grids.
+
+%if 0%{?rhel} > 5
+%package weaver
+Group: Development/Tools
+Summary: Weaver is a high level interface to Makeflow which allows to describe workflows using python
+%description weaver
+Weaver is a high level interface to Makeflow which allows to describe workflows using python
+%endif
 
 %package doc
 Obsoletes: cctools < 4.0.2-7
@@ -133,7 +141,8 @@ including a report of the resource that was above the limit.
 %build
 cd %{name}-%{version}-source
 ## Initial RPM will only workqueue
-./configure --without-system-resource_monitor_visualizer --without-system-weaver --with-cvmfs-path /usr
+#./configure --without-system-resource_monitor_visualizer --without-system-weaver --with-cvmfs-path /usr
+./configure --without-system-resource_monitor_visualizer --with-cvmfs-path /usr
 make
 
 ## need to have -devel packages in buildrequires.
@@ -188,8 +197,16 @@ mv %{buildroot}/usr/doc %{buildroot}/usr/share/doc/cctools
 rm %{buildroot}/usr/etc/config.mk
 # removing man pages of unbuilt packages..
 rm %{buildroot}/usr/share/man/man1/deltadb*.1.gz
-rm %{buildroot}/usr/share/man/man1/weaver.1.gz
 
+%if 0%{?rhel} > 5
+%files weaver
+%{python_sitelib}/weaver/*
+%{_bindir}/weaver
+%{_docdir}/cctools/weaver_examples/*
+%_mandir/man1/weaver.1.gz
+%else
+rm %{buildroot}/usr/share/man/man1/weaver.1.gz
+%endif
 
 %files doc
 #Added so all the html files since they are cross-referenced they are in only one subpackage
@@ -374,6 +391,9 @@ rm %{buildroot}/usr/share/man/man1/weaver.1.gz
 
 
 %changelog
+* Wed Nov 18 2015 Marty Kandes <mkandes@ucsd.edu> - 4.4.3-1
+- Updated to version 4.4.3
+
 * Wed Apr 22 2015 Jeff Dost <jdost@ucsd.edu> - 4.4.0-1
 - Updated to version 4.4.0, updated xrootd build requirements
 
