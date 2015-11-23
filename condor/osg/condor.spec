@@ -1,8 +1,8 @@
-%define tarball_version 8.5.0
+%define tarball_version 8.5.1
 
 # optionally define any of these, here or externally
 # % define fedora   16
-# % define osg      0
+# %define osg 1
 # % define uw_build 1
 # % define std_univ 1
 
@@ -125,13 +125,15 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.3
+%define condor_base_release 0.348726
+%define condor_base_build_id 348726
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
         %define condor_release %condor_base_release
 %endif
-Release: %condor_release%{?suffix}%{?dist}
+#Release: %condor_release%{?suffix}%{?dist}
+Release: %condor_git_base_release.%{?condor_base_build_id}%{?suffix}%{?dist} 
 
 License: ASL 2.0
 Group: Applications/System
@@ -217,12 +219,6 @@ Source123: zlib-1.2.3.tar.gz
 
 Patch1: sw1636-cream_gahp-dlopen.patch
 
-# should make it into upstream 8.4.1
-# https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=5288
-# https://jira.opensciencegrid.org/browse/SOFTWARE-2039
-# Not needed anymore for 8.5.0
-#Patch2: gt5288-NETWORK_HOSTNAME.patch
-
 #% if 0%osg
 Patch8: osg_sysconfig_in_init_script.patch
 #% endif
@@ -245,6 +241,7 @@ BuildRequires: bind-utils
 BuildRequires: m4
 #BuildRequires: autoconf
 BuildRequires: libX11-devel
+BuildRequires: libXScrnSaver-devel
 BuildRequires: /usr/include/curl/curl.h
 BuildRequires: /usr/include/expat.h
 BuildRequires: openldap-devel
@@ -375,6 +372,10 @@ Requires: blahp >= 1.16.1
 
 %if %gsoap
 Requires: gsoap >= 2.7.12
+%endif
+
+%if %uw_build
+Requires: %name-external-libs%{?_isa} = %version-%release
 %endif
 
 
@@ -748,12 +749,11 @@ export CMAKE_PREFIX_PATH=/usr
 # causes build issues with EL5, don't even bother building the tests.
 
 %if %uw_build
-%define condor_build_id 344547
+%define condor_build_id 348726
 
 %cmake \
        -DBUILDID:STRING=%condor_build_id \
        -DUW_BUILD:BOOL=TRUE \
-       -DCMAKE_SKIP_RPATH:BOOL=FALSE \
 %if ! %std_univ
        -DCLIPPED:BOOL=TRUE \
 %endif
@@ -766,7 +766,22 @@ export CMAKE_PREFIX_PATH=/usr
        -DHAVE_BACKFILL:BOOL=FALSE \
        -DHAVE_BOINC:BOOL=FALSE \
        -DWITH_POSTGRESQL:BOOL=FALSE \
-       -DWANT_LEASE_MANAGER:BOOL=FALSE
+       -DWANT_LEASE_MANAGER:BOOL=FALSE \
+       -DPLATFORM:STRING=${NMI_PLATFORM:-unknown} \
+       -DCMAKE_VERBOSE_MAKEFILE=ON \
+       -DCMAKE_INSTALL_PREFIX:PATH=/usr \
+       -DINCLUDE_INSTALL_DIR:PATH=/usr/include \
+       -DSYSCONF_INSTALL_DIR:PATH=/etc \
+       -DSHARE_INSTALL_PREFIX:PATH=/usr/share \
+%ifarch x86_64
+       -DCMAKE_INSTALL_LIBDIR:PATH=/usr/lib64 \
+       -DLIB_INSTALL_DIR:PATH=/usr/lib64 \
+       -DLIB_SUFFIX=64 \
+%else
+       -DCMAKE_INSTALL_LIBDIR:PATH=/usr/lib \
+       -DLIB_INSTALL_DIR:PATH=/usr/lib \
+%endif
+       -DBUILD_SHARED_LIBS:BOOL=ON
 
 %else
 
@@ -1870,6 +1885,9 @@ fi
 %endif
 
 %changelog
+* Mon Nov 23 2015 Edgar Fajardo <emfajard@ucsd.edu> - 8.5.1-0.1
+- Updated to 8.5.1 build 348726
+
 * Tue Oct 27 2015 Edgar Fajardo  <emfajard@ucsd.edu> - 8.5.0-1.3
 - Fixed the changelog
 - Added some selinux missing pieces from the original upstream spec
