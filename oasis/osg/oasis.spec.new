@@ -275,8 +275,7 @@ Group: Development/Libraries
 %description -n oasis-goc
 This package contains oasis GOC
 
-#%files -n oasis-goc -f INSTALLED_FILES_GOC
-%files -n oasis-goc -f INSTALLED_FILES
+%files -n oasis-goc -f INSTALLED_FILES_GOC
 %defattr(-,root,root)
 
 
@@ -289,7 +288,8 @@ Group: Development/Libraries
 %description -n oasis-server
 This package contains oasis server 
 
-%files -n oasis-server -f INSTALLED_FILES_SERVER
+#%files -n oasis-server -f INSTALLED_FILES_SERVER
+%files -n oasis-server -f INSTALLED_FILES
 %defattr(-,root,root)
 %doc CHANGELOG LICENSE README etc/condor_oasis.conf-example
 
