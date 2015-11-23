@@ -31,7 +31,9 @@ Notes on updating osg/condor.spec:
 If we are using our own version of condor.spec (which is the case if we are
 carying any patches), it is a good idea to compare our version to the version
 in the new upstream srpm.  This way we can catch any updates to the upstream
-condor.spec.
+condor.spec to keep ours in sync.  We want to minimize differences in our
+copy, which means bringing in upstream changes even if they are not relevant
+for OSG.
 
 Expected changes between our condor.spec and upstream's:
  - 'tarball_version' should be the same (if necessary, update it to match)
