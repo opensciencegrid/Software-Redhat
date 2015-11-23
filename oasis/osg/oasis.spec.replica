@@ -34,7 +34,9 @@ python setup.py install --root=$RPM_BUILD_ROOT --record=INSTALLED_FILES
 ### BEGIN TEST ####
 %define pythonsitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; import sys; sys.stdout.write(get_python_lib())")
 
+echo /etc/init.d/oasis-initclean >> INSTALLED_FILES_SERVER
 echo /etc/init.d/oasisd >> INSTALLED_FILES_SERVER
+echo /etc/init.d/oasis-login-initclean >> INSTALLED_FILES_SERVER
 echo /etc/logrotate.d/oasis >> INSTALLED_FILES_SERVER
 echo /etc/oasis/oasis.conf >> INSTALLED_FILES_SERVER
 echo /etc/oasis/probes.conf >> INSTALLED_FILES_SERVER
@@ -146,8 +148,19 @@ echo /usr/share/oasis/cvmfs_rsync >> INSTALLED_FILES_SERVER
 echo /usr/share/oasis/cvmfs_server_hooks.sh >> INSTALLED_FILES_SERVER
 
 
-echo /etc/init.d/oasis-initclean >> INSTALLED_FILES_GOC
-echo /etc/init.d/oasis-login-initclean >> INSTALLED_FILES_GOC
+echo /etc/init.d/oasisreplicad >> INSTALLED_FILES_REPLICA
+echo /etc/init.d/oasis-replica-initclean >> INSTALLED_FILES_REPLICA
+echo /etc/logrotate.d/oasis >> INSTALLED_FILES_REPLICA
+echo /etc/oasis/oasisreplica.conf >> INSTALLED_FILES_REPLICA
+echo /etc/oasis/oasisreplicarepositories.conf >> INSTALLED_FILES_REPLICA
+echo /etc/sysconfig/oasisreplica >> INSTALLED_FILES_REPLICA
+%if  %{?rhel}%{!?rhel:0} > 5
+echo %{pythonsitelib}/oasis-2.0.38-py2.6.egg-info >> INSTALLED_FILES_REPLICA
+%endif
+echo %{pythonsitelib}/oasispackage/oasisreplicaAPI.pyc >> INSTALLED_FILES_REPLICA
+echo %{pythonsitelib}/oasispackage/oasisreplicaAPI.py >> INSTALLED_FILES_REPLICA
+echo %{pythonsitelib}/oasispackage/oasisreplicaAPI.pyo >> INSTALLED_FILES_REPLICA
+
 echo /etc/init.d/oasis-replica-initclean >> INSTALLED_FILES_GOC
 echo /usr/bin/add_osg_repository >> INSTALLED_FILES_GOC
 echo /usr/bin/blank_osg_repository >> INSTALLED_FILES_GOC
@@ -275,13 +288,22 @@ Group: Development/Libraries
 %description -n oasis-goc
 This package contains oasis GOC
 
-#%files -n oasis-goc -f INSTALLED_FILES_GOC
-%files -n oasis-goc -f INSTALLED_FILES
+%files -n oasis-goc -f INSTALLED_FILES_GOC
 %defattr(-,root,root)
 
 
 #################################################################################
 
+%package -n oasis-replica
+Summary: oasis replica
+Group: Development/Libraries
+%description -n oasis-replica
+This package contains oasis replica 
+
+%files -n oasis-replica -f INSTALLED_FILES_REPLICA
+%defattr(-,root,root)
+
+#################################################################################
 
 %package -n oasis-server 
 Summary: oasis server
@@ -293,7 +315,6 @@ This package contains oasis server
 %defattr(-,root,root)
 %doc CHANGELOG LICENSE README etc/condor_oasis.conf-example
 
-#################################################################################
 
 
 # ensure the /var/log/oasis directory has the sticky bit
@@ -548,5 +569,4 @@ This package contains oasis server
 * Mon Nov 03 2014 Jose Caballero <jcaballero@BNL.gov> - 2.0.0-2
 - Bumped to 2.0.0-2
 - fixed bug in rpm script postun
-
 
