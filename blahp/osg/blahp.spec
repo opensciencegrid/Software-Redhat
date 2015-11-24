@@ -1,6 +1,6 @@
 Name:		blahp
 Version:	1.18.15.bosco
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	gLite BLAHP daemon
 
 Group:		System/Libraries
@@ -177,6 +177,9 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Mon Nov 23 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1.18.15.bosco-2
+- Built against HTCondor 8.5.1 SOFTWARE-2077
+
 * Fri Oct 23 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1.18.15.bosco-1
 - Built against HTCOndor 8.5.0 SOFTWARE-2077
 - Added error reporting to pbs_submit
