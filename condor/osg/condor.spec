@@ -2,7 +2,7 @@
 
 # optionally define any of these, here or externally
 # % define fedora   16
-# %define osg 1
+# % define osg      0
 # % define uw_build 1
 # % define std_univ 1
 
@@ -93,11 +93,12 @@
 %define std_univ 0
 %endif
 %endif
+
 %if ( 0%{?osg} && 0%{?rhel} == 7 )
     %define aviary 0
     %define std_univ 0
     %define cream 0
-
+ 
     %define suffix _nocream
 %endif
 
@@ -124,7 +125,7 @@ Version: %{tarball_version}
 %global version_ %(tr . _ <<< %{version})
 
 # Only edit the %condor_base_release to bump the rev number
-%define condor_git_base_release 0.1
+%define condor_git_base_release 0.2
 %define condor_base_release 0.348726
 %define condor_base_build_id 348726
 %if %git_build
@@ -186,8 +187,16 @@ Source5: condor_config.local.dedicated.resource
 
 Source6: 10-batch_gahp_blahp.config
 Source7: 00-restart_peaceful.config
-# Added in 8.5.0
+
 Source8: htcondor.pp
+
+# custom find-requires script for filtering stuff from condor-external-libs
+Source90: find-requires.sh
+
+%if %uw_build
+%define __find_requires %{SOURCE90}
+%define _use_internal_dependency_generator 0
+%endif
 
 %if %bundle_uw_externals
 Source101: blahp-1.16.5.1.tar.gz
@@ -218,7 +227,6 @@ Source123: zlib-1.2.3.tar.gz
 %endif
 
 Patch1: sw1636-cream_gahp-dlopen.patch
-
 #% if 0%osg
 Patch8: osg_sysconfig_in_init_script.patch
 #% endif
@@ -586,6 +594,9 @@ Summary: HTCondor's CREAM Gahp
 Group: Applications/System
 Requires: %name = %version-%release
 Requires: %name-classads = %{version}-%{release}
+%if %uw_build
+Requires: %name-external-libs%{?_isa} = %version-%release
+%endif
 
 %description cream-gahp
 The condor-cream-gahp enables CREAM interoperability for HTCondor.
@@ -614,17 +625,6 @@ Summary: Python bindings for HTCondor.
 Group: Applications/System
 Requires: python >= 2.2
 Requires: %name = %version-%release
-
-%if 0%{?rhel} >= 7
-# auto provides generator does not pick these up for some reason
-    %ifarch x86_64
-Provides: classad.so()(64bit)
-Provides: htcondor.so()(64bit)
-    %else
-Provides: classad.so
-Provides: htcondor.so
-    %endif
-%endif
 
 %description python
 The python bindings allow one to directly invoke the C++ implementations of
@@ -674,6 +674,7 @@ on a single machine at once when memory is the limiting factor.
 Summary: External packages built into HTCondor
 Group: Applications/System
 Requires: %name = %version-%release
+Requires: %name-external-libs%{?_isa} = %version-%release
 
 %description externals
 Includes the external packages built when UW_BUILD is enabled
@@ -681,6 +682,8 @@ Includes the external packages built when UW_BUILD is enabled
 %package external-libs
 Summary: Libraries for external packages built into HTCondor
 Group: Applications/System
+# disable automatic provides generation to prevent conflicts with system libs
+AutoProv: 0
 
 %description external-libs
 Includes the libraries for external packages built when UW_BUILD is enabled
@@ -729,6 +732,9 @@ exit 0
 
 %patch1 -p1
 
+%if 0%{?osg} || 0%{?hcc}
+%patch8 -p1
+%endif
 
 %if 0%{?hcc}
 %patch15 -p0
@@ -751,7 +757,7 @@ export CMAKE_PREFIX_PATH=/usr
 %if %uw_build
 %define condor_build_id 348726
 
-%cmake \
+cmake \
        -DBUILDID:STRING=%condor_build_id \
        -DUW_BUILD:BOOL=TRUE \
 %if ! %std_univ
@@ -780,7 +786,7 @@ export CMAKE_PREFIX_PATH=/usr
 %else
        -DCMAKE_INSTALL_LIBDIR:PATH=/usr/lib \
        -DLIB_INSTALL_DIR:PATH=/usr/lib \
-%endif
+%endif 
        -DBUILD_SHARED_LIBS:BOOL=ON
 
 %else
@@ -1003,7 +1009,9 @@ cp %{SOURCE3} %{buildroot}%{_unitdir}/condor.service
 %else
 # install the lsb init script
 install -Dp -m0755 %{buildroot}/etc/examples/condor.init %{buildroot}%{_initrddir}/condor
+%if 0%{?osg} || 0%{?hcc}
 install -Dp -m 0644 %{SOURCE4} %buildroot/usr/share/osg/sysconfig/condor
+%endif
 mkdir %{buildroot}%{_sysconfdir}/sysconfig/
 install -Dp -m 0644 %{buildroot}/etc/examples/condor.sysconfig %{buildroot}%{_sysconfdir}/sysconfig/condor
 %endif
@@ -1174,7 +1182,9 @@ rm -rf %{buildroot}
 %{_unitdir}/condor.service
 %else
 %_initrddir/condor
+%if 0%{?osg} || 0%{?hcc}
 /usr/share/osg/sysconfig/condor
+%endif
 %config(noreplace) /etc/sysconfig/condor
 %endif
 %dir %_datadir/condor/
@@ -1885,7 +1895,9 @@ fi
 %endif
 
 %changelog
-* Mon Nov 23 2015 Edgar Fajardo <emfajard@ucsd.edu> - 8.5.1-0.1
+* Mon Nov 23 2015 Edgar Fajardo <emfajard@ucsd.edu> - 8.5.1-0.2.348726
+- Made some changes to port all changes from the uw spec file to the osg one
+* Mon Nov 23 2015 Edgar Fajardo <emfajard@ucsd.edu> - 8.5.1-0.1.348726
 - Updated to 8.5.1 build 348726
 
 * Tue Oct 27 2015 Edgar Fajardo  <emfajard@ucsd.edu> - 8.5.0-1.3
