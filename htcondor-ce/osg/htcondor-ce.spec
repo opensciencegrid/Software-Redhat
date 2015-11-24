@@ -2,8 +2,8 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 1.18
-Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
+Version: 1.20
+Release: 3%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 
 Group: Applications/System
@@ -335,13 +335,28 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
-* Mon Oct 26 2015 Edgar Fajardo <emfajard@ucsd.edu> - 1.18-1
-- Fix a bug that prevented HTCondor-CE from starting when UID or extattr mappings were not used
+* Mon Nov 23 2015 Edgar Fajardo <emfajard@ucsd.edu> - 1.20-3
+- Rebuild against condor-8.5.1
 
-* Fri Oct 23 2015 Edgar Fajardo <emfajard@ucsd.edu> - 1.17-1
+* Thu Nov 12 2015 Brian Lin <blin@cs.wisc.edu> - 1.20-2
+- Rebuild against condor-8.4.0 in case we are not satisfied with 8.4.2
+
+* Wed Nov 11 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.20-1
+- Enable GSI map caching to decrease the number of GSI callouts (SOFTWARE-2105)
+- Allow authenticated, mapped users to advertise glideins
+- Build against condor 8.4.2 (SOFTWARE-2084)
+
+* Fri Nov 06 2015 Brian Lin <blin@cs.wisc.edu> - 1.19-1
+- Fix a bug in setting HTCondor accounting groups for routed jobs (SOFTWARE-2076)
+
+* Mon Nov 2 2015 Edgar Fajardo <emfajard@ucsd.edu> - 1.18-2
+- Build against condor 8.4.0 (SOFTWARE-2084)
+
+* Tue Oct 27 2015 Jeff Dost <jdost@ucsd.edu> - 1.18-1
+- Fix a bug that prevented HTCondor-CE from starting when UID or extattr mappings were not used
 - Allow users to append lines to JOB_ROUTER_DEFAULTS (SOFTWARE-2065)
 - Allow users to add onto accounting group defaults set by the job router (SOFTWARE-2067)
-- Built against condor 8.5.0
+- build against condor 8.4.1 (SOFTWARE-2084)
 
 * Mon Sep 25 2015 Brian Lin <blin@cs.wisc.edu> - 1.16-1
 - Add network troubleshooting tool (condor_ce_host_network_check)
