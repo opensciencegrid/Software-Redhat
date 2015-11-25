@@ -125,7 +125,7 @@ Version: %{tarball_version}
 %global version_ %(tr . _ <<< %{version})
 
 # Only edit the %condor_base_release to bump the rev number
-%define condor_git_base_release 0.3
+%define condor_git_base_release 0.4
 %define condor_base_release 0.348726
 %define condor_base_build_id 348726
 %if %git_build
@@ -624,6 +624,17 @@ Summary: Python bindings for HTCondor.
 Group: Applications/System
 Requires: python >= 2.2
 Requires: %name = %version-%release
+
+%if 0%{?rhel} >= 7
+# auto provides generator does not pick these up for some reason
+    %ifarch x86_64
+Provides: classad.so()(64bit)
+Provides: htcondor.so()(64bit)
+    %else
+Provides: classad.so
+Provides: htcondor.so
+    %endif
+%endif
 
 %description python
 The python bindings allow one to directly invoke the C++ implementations of
@@ -1892,7 +1903,10 @@ fi
 %endif
 
 %changelog
-* Tue Nov 24 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 8.4.2-1.2
+* Wed Nov 25 2015 Edgar Fajardo <emfajard@ucsd.edu> - 8.5.1-0.4.348726
+- Added some provides for the condor-python package for el7 
+
+* Tue Nov 24 2015 Mátyás Selmeci <matyas@cs.wisc.edu> - 8.5.1-0.3.348726
 - Drop SOFTWARE-1636 patch (SOFTWARE-2118)
 
 * Mon Nov 23 2015 Edgar Fajardo <emfajard@ucsd.edu> - 8.5.1-0.2.348726
