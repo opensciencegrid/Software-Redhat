@@ -5,7 +5,7 @@
 
 Summary:   Tests an OSG Software installation
 Name:      osg-test
-Version:   1.4.31
+Version:   1.4.32
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -37,6 +37,11 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/osgtest
 
 %changelog
+* Mon Nov 30 2015 Brian Lin <blin@cs.wisc.edu> 1.4.32-1
+- Include the failing command in test output (SOFTWARE-1819)
+- Fail test if gatekeeper service succeeds but the gatekeeper is not running
+- Ignore CRL signature verification failures
+
 * Tue Oct 27 2015 Brian Lin <blin@cs.wisc.edu> 1.4.31-1
 - Fix voms and gfal tests to deal with missing "voms-clients" (SOFTWARE-2085)
 - Add osg-test-log-viewer
