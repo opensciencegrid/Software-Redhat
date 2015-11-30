@@ -1,5 +1,5 @@
 Name:           igtf-ca-certs
-Version:        1.69
+Version:        1.70
 Release:        3%{?dist}
 Summary:        OSG Packaging of the IGTF CA Certs, in new OpenSSL 0.9.8/1.0.0 format. For details what is in the current release, see the distribution site at http://software.grid.iu.edu/pacman/cadist/ and change log at http://software.grid.iu.edu/pacman/cadist/CHANGES.
 
@@ -7,7 +7,7 @@ Group:          System Environment/Base
 License:        Unknown
 URL:            http://software.grid.iu.edu/pacman/cadist/
 
-Source0:        osg-certificates-1.50IGTFNEW.tar.gz
+Source0:        osg-certificates-1.51IGTFNEW.tar.gz
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
@@ -45,6 +45,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc
 
 %changelog
+* Mon Nov 30 2015 Jeny Teheran <jteheran@fnal.gov> 1.70-1
+- CA release corresponding to IGTF 1.70 release.
+
 * Thu Nov 05 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.69-3
 - Remove obsoletes/provides for cilogon-osg-ca-cert, it was broken (SOFTWARE-2097)
 
