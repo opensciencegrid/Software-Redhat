@@ -1,6 +1,6 @@
 Name:           igtf-ca-certs
 Version:        1.70
-Release:        3%{?dist}
+Release:        1%{?dist}
 Summary:        OSG Packaging of the IGTF CA Certs, in new OpenSSL 0.9.8/1.0.0 format. For details what is in the current release, see the distribution site at http://software.grid.iu.edu/pacman/cadist/ and change log at http://software.grid.iu.edu/pacman/cadist/CHANGES.
 
 Group:          System Environment/Base
