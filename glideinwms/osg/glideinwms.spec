@@ -99,9 +99,6 @@ Requires: glideinwms-minimal-condor = %{version}-%{release}
 Requires: glideinwms-libs = %{version}-%{release}
 Requires: glideinwms-glidecondor-tools = %{version}-%{release}
 Requires: glideinwms-common-tools = %{version}-%{release}
-#To be added in 2.6.3+ once probe is finished.
-#Requires: gratia-probe-gwms
-#Requires: vdt-vofrontend-essentials
 Requires(post): /sbin/service
 Requires(post): /usr/sbin/useradd
 Requires(post): /sbin/chkconfig
