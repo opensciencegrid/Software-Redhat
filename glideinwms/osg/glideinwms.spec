@@ -9,22 +9,13 @@ Name:           glideinwms
 # Official Release NVR format
 #%define release 1
 
-%if %{v2_plus}
-%define version 2.7.2
-%define release 1
-%define frontend_xml frontend.xml
-%define factory_xml glideinWMS.xml
-%endif
-
 # ------------------------------------------------------------------------------
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
-%if %{v3_plus}
-%define version 3.2.11.2
-%define release 3
+%define version 3.2.12
+%define release 0.1.rc1
 %define frontend_xml frontend.master.xml
 %define factory_xml glideinWMS.master.xml
-%endif
 
 Version:        %{version}
 Release:        %{release}%{?dist}
@@ -140,6 +131,7 @@ Group:          System Environment/Daemons
 Requires: condor >= 7.8.0
 Requires: glideinwms-minimal-condor = %{version}-%{release}
 Requires: glideinwms-glidecondor-tools = %{version}-%{release}
+Requires: glideinwms-common-tools = %{version}-%{release}
 %description userschedd
 This is a package for a glideinwms submit host.
 
@@ -438,6 +430,12 @@ for file in factory/tools/[!_]*; do
 done
 cp creation/create_condor_tarball $RPM_BUILD_ROOT%{_bindir}
 
+# Install only few frontend tools
+cp frontend/tools/enter_frontend_env $RPM_BUILD_ROOT%{_bindir}/enter_frontend_env
+cp frontend/tools/fetch_glidein_log $RPM_BUILD_ROOT%{_bindir}/fetch_glidein_log
+cp frontend/tools/glidein_off $RPM_BUILD_ROOT%{_bindir}/glidein_off
+cp frontend/tools/remove_requested_glideins $RPM_BUILD_ROOT%{_bindir}/remove_requested_glideins
+
 # Install glidecondor
 install -m 0755 install/glidecondor_addDN $RPM_BUILD_ROOT%{_sbindir}/glidecondor_addDN
 install -m 0755 install/glidecondor_createSecSched $RPM_BUILD_ROOT%{_sbindir}/glidecondor_createSecSched
@@ -452,14 +450,12 @@ install -d $RPM_BUILD_ROOT/%{_sysconfdir}/httpd/conf.d
 install -m 0644 %{SOURCE3} $RPM_BUILD_ROOT/%{_sysconfdir}/httpd/conf.d/gwms-frontend.conf
 install -m 0644 %{SOURCE5} $RPM_BUILD_ROOT/%{_sysconfdir}/httpd/conf.d/gwms-factory.conf
 
-%if %{v3_plus}
 install -d $RPM_BUILD_ROOT%{web_base}/../creation
 install -d $RPM_BUILD_ROOT%{web_base}/../creation/templates
 install -d $RPM_BUILD_ROOT%{factory_web_base}/../creation
 install -d $RPM_BUILD_ROOT%{factory_web_base}/../creation/templates
 install -m 0644 creation/templates/factory_initd_startup_template $RPM_BUILD_ROOT%{factory_web_base}/../creation/templates/
 install -m 0644 creation/templates/frontend_initd_startup_template $RPM_BUILD_ROOT%{web_base}/../creation/templates/
-%endif
 
 %post vofrontend-standalone
 # $1 = 1 - Installation
@@ -652,9 +648,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(-, gfactory, gfactory) %{factory_web_dir}
 %attr(-, gfactory, gfactory) %{factory_web_base}
 
-%if %{v3_plus}
 %attr(-, gfactory, gfactory) %{factory_web_base}/../creation
-%endif
 %attr(-, gfactory, gfactory) %{factory_dir}
 %attr(-, gfactory, gfactory) %dir %{condor_dir}
 %attr(-, root, root) %dir %{_localstatedir}/log/gwms-factory
@@ -675,9 +669,7 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/glideinwms/creation/lib/cgWParams.py
 %{python_sitelib}/glideinwms/creation/lib/cgWParams.pyc
 %{python_sitelib}/glideinwms/creation/lib/cgWParams.pyo
-%if %{v3_plus}
 %{python_sitelib}/glideinwms/creation/templates/factory_initd_startup_template
-%endif
 %{python_sitelib}/glideinwms/factory
 %{_initrddir}/gwms-factory
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/gwms-factory.conf
@@ -690,6 +682,10 @@ rm -rf $RPM_BUILD_ROOT
 %doc LICENSE.txt
 %doc ACKNOWLEDGMENTS.txt
 %doc doc
+%attr(755,root,root) %{_bindir}/glidein_off
+%attr(755,root,root) %{_bindir}/remove_requested_glideins
+%attr(755,root,root) %{_bindir}/fetch_glidein_log
+%attr(755,root,root) %{_bindir}/enter_frontend_env
 %attr(755,root,root) %{_sbindir}/checkFrontend
 %attr(755,root,root) %{_sbindir}/glideinFrontend
 %attr(755,root,root) %{_sbindir}/glideinFrontendElement.py*
@@ -716,17 +712,13 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/glideinwms/creation/lib/cvWParams.py
 %{python_sitelib}/glideinwms/creation/lib/cvWParams.pyc
 %{python_sitelib}/glideinwms/creation/lib/cvWParams.pyo
-%if %{v3_plus}
 %{python_sitelib}/glideinwms/creation/templates/frontend_initd_startup_template
-%endif
 %{_initrddir}/gwms-frontend
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/gwms-frontend.conf
 %attr(-, frontend, frontend) %dir %{_sysconfdir}/gwms-frontend
 %attr(-, frontend, frontend) %config(noreplace) %{_sysconfdir}/gwms-frontend/frontend.xml
 %config(noreplace) %{_sysconfdir}/sysconfig/gwms-frontend
-%if %{v3_plus}
 %attr(-, frontend, frontend) %{web_base}/../creation
-%endif
 
 
 %files factory-condor
@@ -769,6 +761,10 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/condor/certs/condor_mapfile
 
 %changelog
+* Wed Dec 02 2015 Parag Mhashilkar <parag@fnal.gov> - 3.2.12-0.1.rc1
+- Added glideinwms-common-tools as a dependency to glideinwms-userschedd
+- Tools from glideinwms-vofrontend-standalone are now in path (bindir)
+
 * Mon Oct 05 2015 Carl Edquist <edquist@cs.wisc.edu> - 3.2.11.2-2
 - Repartition subpackages to avoid overlapping files (SOFTWARE-2015)
 
