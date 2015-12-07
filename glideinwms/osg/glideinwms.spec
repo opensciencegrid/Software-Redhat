@@ -258,7 +258,7 @@ rm -rf $RPM_BUILD_ROOT
 #Change src_dir in reconfig_Frontend
 sed -i "s/WEB_BASE_DIR=.*/WEB_BASE_DIR=\"\/var\/lib\/gwms-frontend\/web-base\"/" creation/reconfig_frontend
 sed -i "s/STARTUP_DIR=.*/STARTUP_DIR=\"\/var\/lib\/gwms-frontend\/web-base\"/" creation/reconfig_frontend
-sed -i "s/WEB_BASE_DIR=.*/WEB_BASE_DIR=\"\/var\/lib\/gwms-factory\/web-base\"/" creation/reconfig_glidein
+sed -i "s/WEB_BASE_DIR=.*/WEB_BASE_DIR=\"\/var\/lib\/gwms-factory\/web-base\"/" creation/lib/cgWConsts.py
 sed -i "s/STARTUP_DIR =.*/STARTUP_DIR=\"\/var\/lib\/gwms-factory\/web-base\"/" creation/reconfig_glidein
 sed -i "s/STARTUP_DIR =.*/STARTUP_DIR=\"\/var\/lib\/gwms-factory\/web-base\"/" creation/clone_glidein
 
@@ -677,6 +677,13 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/glideinwms/creation/lib/cgWParams.py
 %{python_sitelib}/glideinwms/creation/lib/cgWParams.pyc
 %{python_sitelib}/glideinwms/creation/lib/cgWParams.pyo
+%{python_sitelib}/glideinwms/creation/lib/factoryXmlConfig.py
+%{python_sitelib}/glideinwms/creation/lib/factoryXmlConfig.pyc
+%{python_sitelib}/glideinwms/creation/lib/factoryXmlConfig.pyo
+%{python_sitelib}/glideinwms/creation/lib/factory_defaults.xml
+%{python_sitelib}/glideinwms/creation/lib/xmlConfig.py
+%{python_sitelib}/glideinwms/creation/lib/xmlConfig.pyc
+%{python_sitelib}/glideinwms/creation/lib/xmlConfig.pyo
 %{python_sitelib}/glideinwms/creation/templates/factory_initd_startup_template
 %{python_sitelib}/glideinwms/factory
 %{_initrddir}/gwms-factory
@@ -769,7 +776,7 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/condor/certs/condor_mapfile
 
 %changelog
-* Wed Dec 02 2015 Parag Mhashilkar <parag@fnal.gov> - 3.2.12-0.1.rc1
+* Fri Dec 04 2015 Parag Mhashilkar <parag@fnal.gov> - 3.2.12-0.1.rc1
 - Added glideinwms-common-tools as a dependency to glideinwms-userschedd
 - Tools from glideinwms-vofrontend-standalone are now in path (bindir)
 
