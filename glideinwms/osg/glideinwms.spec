@@ -247,7 +247,7 @@ rm -rf $RPM_BUILD_ROOT
 #Change src_dir in reconfig_Frontend
 sed -i "s/WEB_BASE_DIR=.*/WEB_BASE_DIR=\"\/var\/lib\/gwms-frontend\/web-base\"/" creation/reconfig_frontend
 sed -i "s/STARTUP_DIR=.*/STARTUP_DIR=\"\/var\/lib\/gwms-frontend\/web-base\"/" creation/reconfig_frontend
-sed -i "s/WEB_BASE_DIR=.*/WEB_BASE_DIR=\"\/var\/lib\/gwms-factory\/web-base\"/" creation/reconfig_glidein
+sed -i "s/WEB_BASE_DIR=.*/WEB_BASE_DIR=\"\/var\/lib\/gwms-factory\/web-base\"/" creation/lib/cgWConsts.py
 sed -i "s/STARTUP_DIR =.*/STARTUP_DIR=\"\/var\/lib\/gwms-factory\/web-base\"/" creation/reconfig_glidein
 sed -i "s/STARTUP_DIR =.*/STARTUP_DIR=\"\/var\/lib\/gwms-factory\/web-base\"/" creation/clone_glidein
 
@@ -706,6 +706,13 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/glideinwms/creation/lib/cvWParamDict.py
 %{python_sitelib}/glideinwms/creation/lib/cvWParamDict.pyc
 %{python_sitelib}/glideinwms/creation/lib/cvWParamDict.pyo
+%{python_sitelib}/glideinwms/creation/lib/xmlConfig.py
+%{python_sitelib}/glideinwms/creation/lib/xmlConfig.pyc
+%{python_sitelib}/glideinwms/creation/lib/xmlConfig.pyo
+%{python_sitelib}/glideinwms/creation/lib/factoryXmlConfig.py
+%{python_sitelib}/glideinwms/creation/lib/factoryXmlConfig.pyc
+%{python_sitelib}/glideinwms/creation/lib/factoryXmlConfig.pyo
+%{python_sitelib}/glideinwms/creation/lib/factory_defaults.xml
 %{python_sitelib}/glideinwms/creation/lib/cvWParams.py
 %{python_sitelib}/glideinwms/creation/lib/cvWParams.pyc
 %{python_sitelib}/glideinwms/creation/lib/cvWParams.pyo
