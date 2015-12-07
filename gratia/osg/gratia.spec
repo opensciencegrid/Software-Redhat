@@ -3,7 +3,7 @@ Summary: Gratia OSG accounting system
 Group: Applications/System
 #Version: 1.13.12
 Version: 1.16.2
-Release: 1.1%{?dist}
+Release: 1.2%{?dist}
 License: GPL
 Group: Applications/System
 URL: http://sourceforge.net/projects/gratia/
@@ -14,6 +14,7 @@ Source0: gratia-%{version}.tar.gz
 
 Patch0: tomcat7.patch
 Patch1: mariadb.patch
+Patch2: AccessLogValve.patch
 
 %description
 Gratia OSG accounting system
@@ -73,6 +74,9 @@ BuildRequires: ant
 
 %patch0 -p1
 %patch1 -p1
+%if 0%{?rhel} >= 7
+%patch2 -p1
+%endif
 
 %build
 pushd build-scripts
@@ -247,6 +251,9 @@ fi
 
 
 %changelog
+* Mon Dec 07 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.16.2.2
+- use AccessLogValve instead of FastCommonAccessLogValve (SOFTWARE-2075)
+
 * Fri Oct 23 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.16.2.1
 - Require "tomcat" for rhel7 (SOFTWARE-2075)
 - Support mariadb for rhel7 in install-database script
