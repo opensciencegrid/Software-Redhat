@@ -1,7 +1,6 @@
-
 Name:      condor-cron
-Version:   1.0.9
-Release:   4%{?dist}
+Version:   1.0.10
+Release:   1%{?dist}
 Summary:   A framework to run cron-style jobs within Condor
 
 Group:     Applications/System
@@ -10,7 +9,6 @@ URL:       http://www.cs.wisc.edu/condor
 
 Source0:   %{name}-%{version}.tar.gz
 Source1:   condor-cron.service
-Patch0:    condor_config.patch
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch: noarch
@@ -39,7 +37,6 @@ getent passwd cndrcron >/dev/null || useradd -r -g cndrcron -d /var/lib/condor-c
 
 %prep
 %setup -q
-%patch0 -p1
 
 
 %install
@@ -157,6 +154,11 @@ fi
 
 
 %changelog
+* Mon Dec 07 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0.10-1
+- Fix LIBEXEC path in config file (SOFTWARE-2126)
+- Turn off shared port (SOFTWARE-2126)
+- Remove SOFTWARE-1124 patch (upstream)
+
 * Fri Jul 17 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0.9-4
 - Add systemd .service file (SOFTWARE-1604)
 
