@@ -2,7 +2,7 @@
 
 Name:           gridftp-hdfs
 Version:        0.5.4
-Release:        22%{?dist}
+Release:        23%{?dist}
 Summary:        HDFS DSI plugin for GridFTP
 Group:          System Environment/Daemons
 License:        ASL 2.0
@@ -33,6 +33,8 @@ Patch13: 1495-pthread-mutex.patch
 Patch14: 1495-optimal-concurrency.patch
 Patch15: 2006-gridftp-hdfs-get-checksum.patch
 Patch16: 2011-capture_stderr.patch
+Patch17: 2115-load-limits.patch
+
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires: autoconf
@@ -96,6 +98,7 @@ HDFS DSI plugin for GridFTP
 %patch14 -p1
 %patch15 -p1
 %patch16 -p1
+%patch17 -p1
 
 aclocal
 libtoolize
@@ -193,6 +196,9 @@ fi
 %endif
 
 %changelog
+* Tue Dec 8 2015 Edgar Fajardo <emfajard@ucsd.edu> - 0.5.4-23.osg
+- Update to include the patch (SOFTWARE-2115) to deal with load limits
+
 * Wed Sep 2 2015 Edgar Fajardo <emfajard@ucsd.edu> - 0.5.4-22.osg
 - Update to the patch (SOFTWARE-2011) to correctly deal when replication errors
 
