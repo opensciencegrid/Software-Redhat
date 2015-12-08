@@ -4,8 +4,8 @@
 %endif
 
 Name:           osg-measurements-metrics-web
-Version:        1.3
-Release:        3%{?dist}
+Version:        1.4
+Release:        1%{?dist}
 Summary:        OSG Measurements and Metrics web and database
 
 Group:          Applications/System
@@ -17,7 +17,7 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
 BuildRequires:  python-setuptools
-Requires:       graphtool >= 0.7.0
+Requires:       graphtool >= 0.8.0
 Requires:       MySQL-python
 Requires:       python-sqlite
 Requires:       python-cheetah
@@ -25,7 +25,7 @@ Requires:       /usr/bin/ldapsearch
 Requires:       python-cherrypy >= 3.1.2
 Requires:       python-ZSI
 Requires:       python-setuptools
-Requires:       osg-measurements-metrics-db >= 1.3
+Requires:       osg-measurements-metrics-db >= 1.4
 %if 0%{?el5}
 Requires:       python-simplejson
 %endif
@@ -80,6 +80,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+
+* Tue Dec 8 2015 Juan F. Mosquera <jmorales@fnal.gov>
+- fix for tickets: GRATIAWEB-82, GRATIAWEB-91, GRATIAWEB-92, 
+- GRATIAWEB-93, GRATIAWEB-94, GRATIAWEB-95, GRATIAWEB-96, GRATIAWEB-97, 
+- GRATIAWEB-98, GRATIAWEB-101, GRATIAWEB-102, GRATIAWEB-103, GRATIAWEB-104 
+- and SOFTWARE-1963
 
 * Tue Nov 17 2015 Juan F. Mosquera <jmorales@fnal.gov>
 - fix for https://ticket.opensciencegrid.org/27365
