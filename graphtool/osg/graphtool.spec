@@ -4,8 +4,8 @@
 %endif
 
 Name:                   graphtool
-Version:                0.7.0
-Release:                3%{?dist}
+Version:                0.8.0
+Release:                1%{?dist}
 Summary:                CMS Common Graphing Package.
 
 Group:                  Development/Libraries
@@ -50,6 +50,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+
+* Tue Dec 8 2015 Juan F. Mosquera <jmorales@fnal.gov>
+- fix for tickets: GRATIAWEB-82, GRATIAWEB-91, GRATIAWEB-92, 
+- GRATIAWEB-93, GRATIAWEB-94, GRATIAWEB-95, GRATIAWEB-96, GRATIAWEB-97, 
+- GRATIAWEB-98, GRATIAWEB-101, GRATIAWEB-102, GRATIAWEB-103, GRATIAWEB-104 
+- and SOFTWARE-1963
 
 * Tue Nov 17 2015 Juan F. Mosquera <jmorales@fnal.gov>
 - fix for https://ticket.opensciencegrid.org/27365
