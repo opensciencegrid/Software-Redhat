@@ -1,4 +1,4 @@
-%define tarball_version 8.4.2
+%define tarball_version 8.4.3
 
 # optionally define any of these, here or externally
 # % define fedora   16
@@ -125,7 +125,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.2
+%define condor_base_release 0.1.351630
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -223,6 +223,7 @@ Source122: glibc-2.5-20061008T1257-x86_64-p0.tar.gz
 Source123: zlib-1.2.3.tar.gz
 %endif
 
+
 #% if 0%osg
 Patch8: osg_sysconfig_in_init_script.patch
 #% endif
@@ -277,6 +278,7 @@ BuildRequires: libxml2-devel
 BuildRequires: expat-devel
 BuildRequires: perl-Archive-Tar
 BuildRequires: perl-XML-Parser
+BuildRequires: perl(Digest::MD5)
 BuildRequires: python-devel
 BuildRequires: libcurl-devel
 %endif
@@ -626,7 +628,7 @@ Group: Applications/System
 Requires: python >= 2.2
 Requires: %name = %version-%release
 
-%if 0%{?rhel} >= 7
+%if 0%{?rhel} >= 7 && ! %uw_build
 # auto provides generator does not pick these up for some reason
     %ifarch x86_64
 Provides: classad.so()(64bit)
@@ -764,7 +766,7 @@ export CMAKE_PREFIX_PATH=/usr
 # causes build issues with EL5, don't even bother building the tests.
 
 %if %uw_build
-%define condor_build_id 349384
+%define condor_build_id 351630
 
 cmake \
        -DBUILDID:STRING=%condor_build_id \
