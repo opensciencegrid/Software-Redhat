@@ -93,12 +93,11 @@
 %define std_univ 0
 %endif
 %endif
-%if ( 0%{?osg} && 0%{?rhel} == 7 )
-    %define aviary 0
-    %define std_univ 0
-    %define cream 0
 
-    %define suffix _nocream
+%if 0%{?osg} && 0%{?rhel} == 7
+%define aviary 0
+%define std_univ 0
+%define cream 0
 %endif
 
 %define glexec 1
@@ -131,7 +130,7 @@ Version: %{tarball_version}
 %else
         %define condor_release %condor_base_release
 %endif
-Release: %condor_release%{?suffix}%{?dist}
+Release: %condor_release%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
