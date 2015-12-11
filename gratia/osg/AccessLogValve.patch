@@ -1,0 +1,13 @@
+diff --git a/common/configuration/server.xml.template b/common/configuration/server.xml.template
+index 43508a5..d64f839 100755
+--- a/common/configuration/server.xml.template
++++ b/common/configuration/server.xml.template
+@@ -20,7 +20,7 @@
+                clientAuth="true" sslProtocol="TLS"
+                crlEnabled="true" crlRequired="true"/>
+     <Engine name="Catalina" defaultHost="localhost">
+-        <Valve className="org.apache.catalina.valves.FastCommonAccessLogValve"
++        <Valve className="org.apache.catalina.valves.AccessLogValve"
+                directory="/var/log/gratia-service/access"
+                prefix="access.log."
+                resolveHosts="false"
