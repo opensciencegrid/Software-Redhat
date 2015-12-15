@@ -94,12 +94,10 @@
 %endif
 %endif
 
-%if ( 0%{?osg} && 0%{?rhel} == 7 )
-    %define aviary 0
-    %define std_univ 0
-    %define cream 0
- 
-    %define suffix _nocream
+%if 0%{?osg} && 0%{?rhel} == 7
+%define aviary 0
+%define std_univ 0
+%define cream 0
 %endif
 
 %define glexec 1
@@ -125,16 +123,14 @@ Version: %{tarball_version}
 %global version_ %(tr . _ <<< %{version})
 
 # Only edit the %condor_base_release to bump the rev number
-%define condor_git_base_release 0.4
-%define condor_base_release 0.348726
-%define condor_base_build_id 348726
+%define condor_git_base_release 0.1
+%define condor_base_release 0.4.348726
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
         %define condor_release %condor_base_release
 %endif
-#Release: %condor_release%{?suffix}%{?dist}
-Release: %condor_git_base_release.%{?condor_base_build_id}%{?suffix}%{?dist} 
+Release: %condor_release%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -226,6 +222,7 @@ Source122: glibc-2.5-20061008T1257-x86_64-p0.tar.gz
 Source123: zlib-1.2.3.tar.gz
 %endif
 
+
 #% if 0%osg
 Patch8: osg_sysconfig_in_init_script.patch
 #% endif
@@ -280,6 +277,7 @@ BuildRequires: libxml2-devel
 BuildRequires: expat-devel
 BuildRequires: perl-Archive-Tar
 BuildRequires: perl-XML-Parser
+BuildRequires: perl(Digest::MD5)
 BuildRequires: python-devel
 BuildRequires: libcurl-devel
 %endif
@@ -539,9 +537,11 @@ resources exposed by the deltacloud API.
 %package classads
 Summary: HTCondor's classified advertisement language
 Group: Development/Libraries
+%if 0%{?osg} || 0%{?hcc}
 Obsoletes: classads <= 1.0.10
 Obsoletes: classads-static <= 1.0.10
 Provides: classads = %version-%release
+%endif
 
 %description classads
 Classified Advertisements (classads) are the lingua franca of
@@ -569,8 +569,10 @@ Summary: Headers for HTCondor's classified advertisement language
 Group: Development/System
 Requires: %name-classads = %version-%release
 Requires: pcre-devel
+%if 0%{?osg} || 0%{?hcc}
 Obsoletes: classads-devel <= 1.0.10
 Provides: classads-devel = %version-%release
+%endif
 
 %description classads-devel
 Header files for HTCondor's ClassAd Library, a powerful and flexible,
@@ -625,7 +627,7 @@ Group: Applications/System
 Requires: python >= 2.2
 Requires: %name = %version-%release
 
-%if 0%{?rhel} >= 7
+%if 0%{?rhel} >= 7 && ! %uw_build
 # auto provides generator does not pick these up for some reason
     %ifarch x86_64
 Provides: classad.so()(64bit)
@@ -763,7 +765,7 @@ export CMAKE_PREFIX_PATH=/usr
 # causes build issues with EL5, don't even bother building the tests.
 
 %if %uw_build
-%define condor_build_id 348726
+%define condor_build_id 352064
 
 cmake \
        -DBUILDID:STRING=%condor_build_id \
