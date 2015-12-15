@@ -13,7 +13,7 @@
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.5.1
-Release: 5%{?dist}
+Release: 6%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 URL: https://github.com/opensciencegrid/gums
@@ -279,6 +279,7 @@ ln -s %{_sysconfdir}/%{gumsdirname}/gums.config $RPM_BUILD_ROOT%{webinfdir}/conf
 # it. Get it from the exploded WAR instead.
 install -m 0644 $RPM_BUILD_ROOT%{webinfdir}/lib/slf4j-api-1.5.5.jar $RPM_BUILD_ROOT%{gumslibdir}/
 
+# turn this off for debugging
 %define remove_system_jars 1
 
 %if %remove_system_jars
@@ -397,13 +398,18 @@ packages+=(xerces-j2)
 %if 0%{?rhel} >= 7
 packages+=(xml-commons-apis)
 %endif
+
+# build-jar-repository copies or symlinks jarfiles from standard locations into
+# the given directories; normally it puts [] around the file names it creates.
+# This causes load order to be locale-dependent, so I turn it off with -p.
+# -s forces symlinking.
 for jardir in %{gumslibdir} %{webinfdir}/lib; do
     mkdir -p "$RPM_BUILD_ROOT$jardir"
-    build-jar-repository "$RPM_BUILD_ROOT$jardir" "${packages[@]}"
+    build-jar-repository -s -p "$RPM_BUILD_ROOT$jardir" "${packages[@]}"
 done
 %if 0%{?rhel} >= 7
 mkdir -p "$RPM_BUILD_ROOT%{gumslibdir}/endorsed"
-build-jar-repository "$RPM_BUILD_ROOT%{gumslibdir}/endorsed" xml-commons-apis
+build-jar-repository -s -p "$RPM_BUILD_ROOT%{gumslibdir}/endorsed" xml-commons-apis
 %endif
 
 #Fix log4j mess and replace with standard ones
@@ -487,14 +493,19 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
-* Thu Oct 29 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.1-5.osg
+* Tue Dec 15 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.1-6
+- Remove brackets "[]" from jar file symlinks in %{gumslibdir} and
+  %{webinfdir}/lib to ensure serializer gets loaded before xalan-j2
+  (SOFTWARE-2140)
+
+* Thu Oct 29 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.1-5
 - Fix path issue in client tools on EL7 (SOFTWARE-2040)
 
-* Mon Oct 26 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.1-4.osg
+* Mon Oct 26 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.1-4
 - Use bouncycastle 1.50 from the OS on EL7 (SOFTWARE-2040)
 - Use jspc-compiler for tomcat7 on EL7 (SOFTWARE-2040)
 
-* Thu Oct 08 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.1-2.osg
+* Thu Oct 08 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.1-2
 - Fix gums db creation template to avoid syntax error with mariadb (SOFTWARE-2040)
 
 * Wed Sep 30 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.5.1-1
