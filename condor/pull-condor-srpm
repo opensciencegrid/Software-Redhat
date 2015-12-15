@@ -18,8 +18,10 @@ SRPM=condor-$VERSION-1.src.rpm
 PUBLIC_SRPM=/p/condor/public/binaries/v$SERIES/$VERSION/$SRPM
 UPSTREAM=/p/vdt/public/html/upstream/condor/$VERSION/
 
-mkdir -p $UPSTREAM
-cp $PUBLIC_SRPM $UPSTREAM
+if [[ ! -e $UPSTREAM/$SRPM ]]; then
+  mkdir -p $UPSTREAM
+  cp $PUBLIC_SRPM $UPSTREAM
+fi
 
 echo condor/$VERSION/$SRPM > upstream/developer.srpm.source
 
