@@ -11,7 +11,7 @@
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.5.1
-Release: 3%{?dist}
+Release: 6%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 URL: https://github.com/opensciencegrid/gums
@@ -48,7 +48,13 @@ BuildRequires: maven >= 3.0.0
 %define commons_digester apache-commons-digester
 %define jglobus_version 2.1.0
 %define privilege_xacml_version 2.6.5
+%define bouncycastle_version 1.50
+BuildRequires: bouncycastle = %{bouncycastle_version}
+Requires: bouncycastle = %{bouncycastle_version}
+BuildRequires: bouncycastle-pkix = %{bouncycastle_version}
+Requires: bouncycastle-pkix = %{bouncycastle_version}
 %endif
+
 BuildRequires: java7-devel
 BuildRequires: jglobus = %{jglobus_version}
 # provides build-classpath
@@ -58,10 +64,18 @@ Requires: jpackage-utils
 Requires: jglobus = %{jglobus_version}
 BuildRequires: voms-api-java
 Requires: voms-api-java
+
+%if 0%{?rhel} >= 7
+BuildRequires: emi-trustmanager >= 3.0.3-9
+Requires: emi-trustmanager >= 3.0.3-9
+%else
 BuildRequires: emi-trustmanager >= 3.0.3-6
 Requires: emi-trustmanager >= 3.0.3-6
+%endif
+
 BuildRequires: emi-trustmanager-axis
 Requires: emi-trustmanager-axis
+
 # Standard RPMs from the system
 # "Naive" use of slf4j doesn't appear to work
 #BuildRequires: slf4j
@@ -115,6 +129,13 @@ Source14: velocity-1.5.jar
 # Can't get el5 build working with jsp precompile
 Patch0: undo-jsp-precompile.patch
 
+Patch1: EL7-Remove-TYPE-InnoDB-from-SQL-templates.patch
+
+Patch2: Use-bouncycastle-1.50.patch
+Patch3: Use-jspc-compiler-for-tomcat7.patch
+
+Patch4: gums-client-UsrMove.patch
+
 %description
 %{summary}
 
@@ -137,10 +158,11 @@ Summary: Clients for GUMS
 Requires: %{name} = %{version}-%{release}
 Requires: /usr/share/java/xml-commons-apis.jar
 Requires: %{tomcat}
-Requires: emi-trustmanager-tomcat
 %if 0%{rhel} >= 7
+Requires: emi-trustmanager-tomcat >= 3.0.0-14
 Requires: mariadb-server
 %else
+Requires: emi-trustmanager-tomcat
 Requires: mysql-server
 %endif
 Requires: osg-webapp-common
@@ -159,8 +181,14 @@ Summary: Tomcat service for GUMS
 
 %setup -n %{name}-%{version}
 
+%patch4 -p1
 %if 0%{?rhel} < 6
 %patch0 -p1
+%endif
+%if 0%{?rhel} >= 7
+%patch1 -p1
+%patch2 -p1
+%patch3 -p1
 %endif
 
 %build
@@ -172,6 +200,7 @@ mvn_install_file () {
     file=$4
     pomFile=${5-}
 
+    pushd /
     %mvn %mvnopts install:install-file \
         -DgroupId="$groupId" \
         -DartifactId="$artifactId" \
@@ -179,6 +208,7 @@ mvn_install_file () {
         -Dpackaging=jar \
         -Dfile="$file" \
         ${pomFile:+"-DpomFile=$pomFile"}
+    popd
 }
 
 
@@ -203,10 +233,13 @@ mvn_install_file  org.opensaml        xmltooling 1.1.1   %{SOURCE10} %{SOURCE11}
 
 mvn_install_file  org.italiangrid voms-api-java 2.0.8 `build-classpath voms-api-java`
 # Adding system dependencies
-mvn_install_file  org.apache.xerces   xercesImpl      2.10.0                   `build-classpath xerces-j2`
-mvn_install_file  org.apache.xalan    xalan           2.7.1                    `build-classpath xalan-j2`
-mvn_install_file  log4j               log4j           1.2.12                   `build-classpath log4j`
-mvn_install_file  org.opensciencegrid privilege-xacml %privilege_xacml_version `build-classpath privilege-xacml`
+mvn_install_file  org.apache.xerces   xercesImpl          2.10.0                   `build-classpath xerces-j2`
+mvn_install_file  org.apache.xalan    xalan               2.7.1                    `build-classpath xalan-j2`
+mvn_install_file  log4j               log4j               1.2.12                   `build-classpath log4j`
+mvn_install_file  org.opensciencegrid privilege-xacml     %privilege_xacml_version `build-classpath privilege-xacml`
+%if 0%{?rhel} >= 7
+mvn_install_file  org.bouncycastle bcprov-jdk15on %{bouncycastle_version} `build-classpath bcprov`
+%endif
 
 # Add jglobus system deps
 mvn_install_file  jglobus gridftp     %{jglobus_version} `build-classpath jglobus/gridftp-%{jglobus_version}`
@@ -250,6 +283,7 @@ ln -s %{_sysconfdir}/%{gumsdirname}/gums.config $RPM_BUILD_ROOT%{webinfdir}/conf
 # it. Get it from the exploded WAR instead.
 install -m 0644 $RPM_BUILD_ROOT%{webinfdir}/lib/slf4j-api-1.5.5.jar $RPM_BUILD_ROOT%{gumslibdir}/
 
+# turn this off for debugging
 %define remove_system_jars 1
 
 %if %remove_system_jars
@@ -260,7 +294,7 @@ systemjars=()
 #systemjars+=(ant-1.6.3.jar)
 systemjars+=(antlr-2.7.\*.jar)
 #systemjars+=(axis-{1.4,ant-1.4,jaxrpc-1.4,saaj-1.4}.jar)
-systemjars+=(bcprov-jdk15-\*.jar)
+systemjars+=(bcprov-jdk15\*.jar)
 systemjars+=(commons-{beanutils-1.7.0,cli-1.2,codec-1.3,collections-3.2,digester-1.8,discovery-0.2,httpclient-3.0,lang-2.1,logging-1.1}.jar)
 systemjars+=(emi-trustmanager-3.0.3.jar)
 systemjars+=(jacc-1.0.jar)
@@ -350,6 +384,9 @@ packages=()
 packages+=(ant)
 packages+=(antlr)
 packages+=(bcprov)
+%if 0%{?rhel} >= 7
+packages+=(bcpkix)
+%endif
 packages+=(commons-{beanutils,cli,codec,collections,digester,discovery,httpclient,lang,logging})
 packages+=(%{jacc})
 packages+=(jglobus)
@@ -362,10 +399,22 @@ packages+=(trustmanager)
 packages+=(trustmanager-axis)
 packages+=(xalan-j2)
 packages+=(xerces-j2)
+%if 0%{?rhel} >= 7
+packages+=(xml-commons-apis)
+%endif
+
+# build-jar-repository copies or symlinks jarfiles from standard locations into
+# the given directories; normally it puts [] around the file names it creates.
+# This causes load order to be locale-dependent, so I turn it off with -p.
+# -s forces symlinking.
 for jardir in %{gumslibdir} %{webinfdir}/lib; do
     mkdir -p "$RPM_BUILD_ROOT$jardir"
-    build-jar-repository "$RPM_BUILD_ROOT$jardir" "${packages[@]}"
+    build-jar-repository -s -p "$RPM_BUILD_ROOT$jardir" "${packages[@]}"
 done
+%if 0%{?rhel} >= 7
+mkdir -p "$RPM_BUILD_ROOT%{gumslibdir}/endorsed"
+build-jar-repository -s -p "$RPM_BUILD_ROOT%{gumslibdir}/endorsed" xml-commons-apis
+%endif
 
 #Fix log4j mess and replace with standard ones
 rm $RPM_BUILD_ROOT%{webinfdir}/log4j.properties
@@ -448,10 +497,25 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
-* Wed Oct 21 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.1-3
+* Tue Dec 15 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.1-6
+- Remove brackets "[]" from jar file symlinks in %{gumslibdir} and
+  %{webinfdir}/lib to ensure serializer gets loaded before xalan-j2
+  (SOFTWARE-2140)
+
+* Thu Oct 29 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.1-5.osg33
+- Fix path issue in client tools on EL7 (SOFTWARE-2040)
+
+* Mon Oct 26 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.1-4.osg33
+- Use bouncycastle 1.50 from the OS on EL7 (SOFTWARE-2040)
+- Use jspc-compiler for tomcat7 on EL7 (SOFTWARE-2040)
+
+* Wed Oct 21 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.1-3.osg32
 - Try jglobus-2.1.0 and privilege-xacml 2.6.5 again (SOFTWARE-2036)
 
-* Tue Oct 06 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.5.1-2
+* Thu Oct 08 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.1-2.osg33
+- Fix gums db creation template to avoid syntax error with mariadb (SOFTWARE-2040)
+
+* Tue Oct 06 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.5.1-2.osg32
 - Revert to jglobus 2.0.6 & privilege-xacml 2.6.4 for EL5 (SOFTWARE-2036)
 
 * Wed Sep 30 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.5.1-1

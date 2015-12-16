@@ -1,0 +1,32 @@
+From fdf4f9ceb4f8969853735a8d286b65ccca23b8f2 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Wed, 28 Oct 2015 14:11:54 -0500
+Subject: [PATCH] gums-client-UsrMove
+
+Patch the 'gums' script in gums-client to deal with being in /bin
+instead of /usr/bin, which happens on EL 7 (because /bin is the same as
+/usr/bin).
+---
+ gums-client/src/main/scripts/gums | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/gums-client/src/main/scripts/gums b/gums-client/src/main/scripts/gums
+index ed5b52d..6d4c651 100755
+--- a/gums-client/src/main/scripts/gums
++++ b/gums-client/src/main/scripts/gums
+@@ -126,11 +126,11 @@ if [ -n "$VDT_LOCATION" ] && [ "$VDT_LOCATION/gums" == "$GUMSDIR" ] ; then
+ 	ETC=$VDT_LOCATION/gums/config/
+ 	LIB=$VDT_LOCATION/gums/lib/
+ 	ENDORSED=$LIB/endorsed
+ 
+ # Handle RPM install
+-elif [ "$INVOKE_DIR" == "/usr/bin" ] && [ -d /etc/gums/ ] ; then
++elif ( [ "$INVOKE_DIR" == /usr/bin ] || [ "$INVOKE_DIR" == /bin ] ) && [ -d /etc/gums/ ] ; then
+ 	if [ $DEBUG -eq 1 ] ; then
+ 		echo "[DEBUG] gums: Seems to be an RPM install. Setting paths..." 1>&2
+ 	fi
+ 	BIN=/usr/bin
+ 	ETC=/etc/gums
+-- 
+2.4.6
+

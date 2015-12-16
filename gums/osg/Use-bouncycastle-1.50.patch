@@ -1,0 +1,53 @@
+From b0b4e7c444adec16a90b48fd604c53924d0f6139 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Wed, 28 Oct 2015 10:55:11 -0500
+Subject: [PATCH] Use bouncycastle 1.50
+
+---
+ gums-core/pom.xml | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/gums-core/pom.xml b/gums-core/pom.xml
+index 30710e2..4d4f760 100644
+--- a/gums-core/pom.xml
++++ b/gums-core/pom.xml
+@@ -368,12 +368,12 @@
+             <version>[2.0.8,2.9.9)</version>
+         </dependency>
+ 
+         <dependency>
+             <groupId>org.bouncycastle</groupId>
+-            <artifactId>bcprov-jdk16</artifactId>
+-            <version>1.46</version>
++            <artifactId>bcprov-jdk15on</artifactId>
++            <version>1.50</version>
+         </dependency>
+ 
+         <dependency>
+             <groupId>com.google.guava</groupId>
+             <artifactId>guava</artifactId>
+@@ -421,17 +421,17 @@
+             <groupId>dom4j</groupId>
+             <artifactId>dom4j</artifactId>
+             <version>1.4</version>
+             <scope>runtime</scope>
+         </dependency>
+-        
++
+         <dependency>
+             <groupId>org.bouncycastle</groupId>
+-            <artifactId>bcprov-jdk16</artifactId>
+-            <version>1.46</version>
++            <artifactId>bcprov-jdk15on</artifactId>
++            <version>1.50</version>
+         </dependency>
+-        
++
+ <!--
+         <dependency>
+             <groupId>gums</groupId>
+             <artifactId>activation</artifactId>
+             <version>unknown</version>
+-- 
+2.4.6
+
