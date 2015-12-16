@@ -1,5 +1,5 @@
 Name:      condor-cron
-Version:   1.0.10
+Version:   1.0.11
 Release:   1%{?dist}
 Summary:   A framework to run cron-style jobs within Condor
 
@@ -8,7 +8,6 @@ License:   Apache 2.0
 URL:       http://www.cs.wisc.edu/condor
 
 Source0:   %{name}-%{version}.tar.gz
-Source1:   condor-cron.service
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch: noarch
@@ -70,7 +69,7 @@ install -d $RPM_BUILD_ROOT%{_initrddir}
 install -m 0755 etc/condor.init $RPM_BUILD_ROOT%{_initrddir}/condor-cron
 %if 0%{?rhel} >= 7
 install -d $RPM_BUILD_ROOT%{_unitdir}
-install -m 0644 %{SOURCE1} $RPM_BUILD_ROOT%{_unitdir}/
+install -m 0644 etc/condor-cron.service $RPM_BUILD_ROOT%{_unitdir}/
 %endif
 
 # Make working directories
@@ -154,6 +153,9 @@ fi
 
 
 %changelog
+* Tue Dec 08 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0.11-1
+- Turn off BIND_ALL_INTERFACES (SOFTWARE-2133)
+
 * Mon Dec 07 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0.10-1
 - Fix LIBEXEC path in config file (SOFTWARE-2126)
 - Turn off shared port (SOFTWARE-2126)
