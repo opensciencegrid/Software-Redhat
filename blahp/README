@@ -10,4 +10,5 @@ git archive <version tag> | gzip -9 > blahp-<version>.tar.gz
 
 Example:
 
-git archive v1.18.14.bosco | gzip -9 > blahp-1.18.14.bosco.tar.gz
+git archive v1.18.16.bosco | gzip -9 > blahp-1.18.16.bosco.tar.gz
+
