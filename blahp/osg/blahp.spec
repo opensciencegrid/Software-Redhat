@@ -1,6 +1,6 @@
 Name:		blahp
-Version:	1.18.15.bosco
-Release:	3%{?dist}
+Version:	1.18.16.bosco
+Release:	1%{?dist}
 Summary:	gLite BLAHP daemon
 
 Group:		System/Libraries
@@ -177,6 +177,11 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Thu Dec 16 2015 Brian Lin <blin@cs.wisc.edu> - 1.18.16.bosco-1
+- Allow for disabling limited proxies in glexec
+- Fix bug in pbs_status.py when /tmp/ and /var/tmp were on different filesystems
+- Resync job registry to prevent jobs from being incorrectly marked as completed
+
 * Wed Nov 11 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.18.15.bosco-3
 - Build against condor 8.4.2 (SOFTWARE-2084)
 
