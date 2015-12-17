@@ -1,6 +1,6 @@
 Summary: osg-pki-tools
 Name: osg-pki-tools
-Version: 1.2.13
+Version: 1.2.14
 Release: 1%{?dist}
 Source: OSGPKITools-%{version}.tar.gz
 License: Apache 2.0
@@ -75,6 +75,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Dec 17 2015 Brian Lin <blin@cs.wisc.edu> - 1.2.14-1
+- Accept hostname aliases in cert requests (SOFTWARE-2114)
+- Refactor tests (SOFTWARE-2120)
+
 * Thu Dec 10 2015 Brian Lin <blin@cs.wisc.edu> - 1.2.13-1
 - Certificate requests fail without setting the CSR version (SOFTWARE-1936)
 
