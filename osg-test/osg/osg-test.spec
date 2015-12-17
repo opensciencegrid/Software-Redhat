@@ -5,7 +5,7 @@
 
 Summary:   Tests an OSG Software installation
 Name:      osg-test
-Version:   1.4.32
+Version:   1.4.33
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -37,6 +37,11 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/osgtest
 
 %changelog
+* Thu Dec 17 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.4.33-1
+- Only remove OSG-Test CA certs if osg-test created them (SOFTWARE-2129)
+- Fixes for pbs tests in EL7 (SOFTWARE-2130, SOFTWARE-1996)
+- Handle gratia db schema update in 1.16.3+ (SOFTWARE-1932, SOFTWARE-2075)
+
 * Mon Nov 30 2015 Brian Lin <blin@cs.wisc.edu> 1.4.32-1
 - Include the failing command in test output (SOFTWARE-1819)
 - Fail test if gatekeeper service succeeds but the gatekeeper is not running
