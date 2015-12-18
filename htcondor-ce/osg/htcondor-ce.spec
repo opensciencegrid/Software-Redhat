@@ -2,13 +2,13 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 1.20
-Release: 3%{?gitrev:.%{gitrev}git}%{?dist}
+Version: 2.0.0
+Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 
 Group: Applications/System
 License: Apache 2.0
-URL: http://github.com/bbockelm/condor-ce
+URL: http://github.com/opensciencegrid/htcondor-ce
 
 # _unitdir not defined on el6 build hosts
 %{!?_unitdir: %global _unitdir %{_prefix}/lib/systemd/system}
@@ -51,6 +51,30 @@ Requires: /usr/bin/unshare
 %endif
 
 %description
+%{summary}
+
+%if ! 0%{?osg}
+%package bdii
+Group: Application/Internet
+Summary:  BDII GLUE1.3/2 infoproviders and CE config for non-OSG sites.
+
+Requires: %{name} = %{version}-%{release}, bdii
+
+%description bdii
+%{summary}
+%endif
+
+%package view
+Group: Applications/Internet
+Summary: A Website that will report the current status of the local HTCondor-CE
+
+Requires: %{name} = %{version}-%{release}
+Requires: python-cherrypy
+Requires: python-genshi
+Requires: ganglia-gmond
+Requires: rrdtool-python
+
+%description view
 %{summary}
 
 %package condor
@@ -173,10 +197,21 @@ install -m 0755 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/log/condor-ce
 install -m 1777 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/log/condor-ce/user
 install -m 0755 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lib/condor-ce
 install -m 0755 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lib/condor-ce/spool
+install -m 0755 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lib/condor-ce/spool/ceview
 install -m 0755 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lib/condor-ce/execute
 install -m 0755 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lock/condor-ce
 install -m 1777 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lock/condor-ce/user
 install -m 1777 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lib/gratia/condorce_data
+
+%if 0%{?osg}
+rm -rf $RPM_BUILD_ROOT%{_datadir}/condor-ce/condor_ce_bdii_generate_glue*
+rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/config.d/06-ce-bdii-defaults.conf
+rm -f $RPM_BUILD_ROOT%{_sysconfdir}/condor-ce/config.d/06-ce-bdii.conf
+%else
+mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/lib/bdii/gip/provider
+mv $RPM_BUILD_ROOT%{_datadir}/condor-ce/condor_ce_bdii_generate_glue* \
+   $RPM_BUILD_ROOT%{_localstatedir}/lib/bdii/gip/provider
+%endif
 
 install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d
 
@@ -217,12 +252,16 @@ fi
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-router.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/03-ce-shared-port.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/03-managed-fork.conf
+%config(noreplace) %{_sysconfdir}/condor-ce/metrics.d/00-example-metrics.conf
+%config(noreplace) %{_sysconfdir}/condor-ce/config.d/05-ce-health.conf
+%{_sysconfdir}/condor-ce/metrics.d/00-metrics-defaults.conf
 %config(noreplace) %{_sysconfdir}/sysconfig/condor-ce
 
 %{_datadir}/condor-ce/config.d/01-ce-auth-defaults.conf
 %{_datadir}/condor-ce/config.d/01-ce-info-services-defaults.conf
 %{_datadir}/condor-ce/config.d/01-ce-router-defaults.conf
 %{_datadir}/condor-ce/config.d/03-ce-shared-port-defaults.conf
+%{_datadir}/condor-ce/config.d/05-ce-health-defaults.conf
 %{_datadir}/condor-ce/config.d/03-managed-fork-defaults.conf
 
 %{_datadir}/condor-ce/osg-wrapper
@@ -238,6 +277,38 @@ fi
 %attr(-,condor,condor) %dir %{_localstatedir}/lock/condor-ce
 %attr(1777,condor,condor) %dir %{_localstatedir}/lock/condor-ce/user
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
+
+%if ! 0%{?osg}
+%files bdii
+%attr(0755, ldap, ldap) %{_localstatedir}/lib/bdii/gip/provider/condor_ce_bdii_generate_glue1.py*
+%attr(0755, ldap, ldap) %{_localstatedir}/lib/bdii/gip/provider/condor_ce_bdii_generate_glue2.py*
+
+%{_datadir}/condor-ce/config.d/06-ce-bdii-defaults.conf
+%config(noreplace) %{_sysconfdir}/condor-ce/config.d/06-ce-bdii.conf
+%endif
+
+%files view
+%defattr(-,root,root,-)
+
+# Web package
+%{python_sitelib}/htcondorce/web.py*
+%{python_sitelib}/htcondorce/rrd.py*
+
+%{_datadir}/condor-ce/templates/index.html
+%{_datadir}/condor-ce/templates/vos.html
+%{_datadir}/condor-ce/templates/metrics.html
+%{_datadir}/condor-ce/templates/health.html
+%{_datadir}/condor-ce/templates/header.html
+%{_datadir}/condor-ce/templates/pilots.html
+
+%{_datadir}/condor-ce/config.d/05-ce-view-defaults.conf
+%config(noreplace) %{_sysconfdir}/condor-ce/config.d/05-ce-view.conf
+
+%{_datadir}/condor-ce/condor_ce_view
+%{_datadir}/condor-ce/condor_ce_metric
+%{_datadir}/condor-ce/condor_ce_jobmetrics
+
+%attr(-,condor,condor) %dir %{_localstatedir}/lib/condor-ce/spool/ceview
 
 %files condor
 %defattr(-,root,root,-)
@@ -274,6 +345,7 @@ fi
 %{_datadir}/condor-ce/config.d/01-common-auth-defaults.conf
 %{_datadir}/condor-ce/config.d/01-common-collector-defaults.conf
 %{_datadir}/condor-ce/ce-status.cpf
+%{_datadir}/condor-ce/pilot-status.cpf
 %config(noreplace) %{_sysconfdir}/condor-ce/condor_mapfile
 
 %{_datadir}/condor-ce/condor_ce_env_bootstrap
@@ -301,8 +373,10 @@ fi
 %{_bindir}/condor_ce_trace
 %{_bindir}/condor_ce_ping
 
-%{python_sitelib}/condor_ce_info_query.py*
-%{python_sitelib}/condor_ce_tools.py*
+%dir %{python_sitelib}/htcondorce
+%{python_sitelib}/htcondorce/__init__.py*
+%{python_sitelib}/htcondorce/info_query.py*
+%{python_sitelib}/htcondorce/tools.py*
 
 %files collector
 
@@ -335,6 +409,11 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Thu Dec 17 2015 Brian Lin <blin@cs.wisc.edu> - 2.0.0-1
+- Added a web monitor: htcondor-ce-view
+- Added BDII providers for non-OSG sites
+- Improved formatting for condor_ce_status
+
 * Mon Nov 23 2015 Edgar Fajardo <emfajard@ucsd.edu> - 1.20-3
 - Rebuild against condor-8.5.1
 
@@ -358,7 +437,7 @@ fi
 - Allow users to add onto accounting group defaults set by the job router (SOFTWARE-2067)
 - build against condor 8.4.1 (SOFTWARE-2084)
 
-* Mon Sep 25 2015 Brian Lin <blin@cs.wisc.edu> - 1.16-1
+* Fri Sep 25 2015 Brian Lin <blin@cs.wisc.edu> - 1.16-1
 - Add network troubleshooting tool (condor_ce_host_network_check)
 - Add ability to disable glideins advertising to the CE
 - Add non-DigiCert hostcerts for CERN
