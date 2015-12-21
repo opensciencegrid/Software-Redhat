@@ -2,7 +2,7 @@
 
 Name:           gridftp-hdfs
 Version:        0.5.4
-Release:        23%{?dist}
+Release:        24%{?dist}
 Summary:        HDFS DSI plugin for GridFTP
 Group:          System Environment/Daemons
 License:        ASL 2.0
@@ -34,6 +34,7 @@ Patch14: 1495-optimal-concurrency.patch
 Patch15: 2006-gridftp-hdfs-get-checksum.patch
 Patch16: 2011-capture_stderr.patch
 Patch17: 2115-load-limits.patch
+Patch18: 2107-rmdir-rename.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -99,6 +100,7 @@ HDFS DSI plugin for GridFTP
 %patch15 -p1
 %patch16 -p1
 %patch17 -p1
+%patch18 -p1
 
 aclocal
 libtoolize
@@ -196,6 +198,9 @@ fi
 %endif
 
 %changelog
+* Tue Dec 21 2015  Edgar Fajardo <emfajard@ucsd.edu> - 0.5.4-24.osg
+- Update to include the patch (SOFTWARE-2107) to deal with mkdir and rename
+
 * Tue Dec 8 2015 Edgar Fajardo <emfajard@ucsd.edu> - 0.5.4-23.osg
 - Update to include the patch (SOFTWARE-2115) to deal with load limits
 
