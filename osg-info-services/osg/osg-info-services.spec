@@ -1,7 +1,7 @@
 
 Name:      osg-info-services
 Summary:   OSG Information Services uploader
-Version:   1.1.0
+Version:   1.2.0
 Release:   1%{?dist}
 License:   Apache 2.0
 Group:     Grid
@@ -29,25 +29,28 @@ Requires: gip >= 1.3.11-8
 
 %install
 
-mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d
-install -m 755 osg-info-services.init $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d/%{name}
-
-mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/cron.d
-install -m 644 osg-info-services.cron $RPM_BUILD_ROOT%{_sysconfdir}/cron.d/%{name}
-
-mkdir -p $RPM_BUILD_ROOT%{_sbindir}
-install -m 755 osg-info-services $RPM_BUILD_ROOT%{_sbindir}/%{name}
+make install DESTDIR=$RPM_BUILD_ROOT
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
+# From https://fedoraproject.org/wiki/EPEL:Packaging?rd=Packaging:EPEL#The_.25license_tag
+%{!?_licensedir:%global license %doc}
+
 %defattr(-,root,root,-)
 %config(noreplace) %{_sysconfdir}/cron.d/%{name}
 %{_sysconfdir}/rc.d/init.d/%{name}
 %{_sbindir}/%{name}
+%{_libexecdir}/%{name}/run-with-timeout
+%{_libexecdir}/%{name}/cronjob-wrapper
+%license LICENSE
 
 %changelog
+* Mon Dec 21 2015 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.2.0-1
+- Add timeout (SOFTWARE-1590)
+- Send output on failure (SOFTWARE-1590)
+
 * Thu Nov 19 2015 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.1.0-1
 - Remove deprecated ReSS support (SOFTWARE-2104)
   Require gip >= 1.3.11-8 which has the patch to remove ReSS support from gip
