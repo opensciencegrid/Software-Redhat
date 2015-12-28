@@ -13,7 +13,7 @@ Name:           glideinwms
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
 %define version 3.2.12
-%define release 0.2.rc1
+%define release 0.2.rc3
 %define frontend_xml frontend.master.xml
 %define factory_xml glideinWMS.master.xml
 
@@ -776,6 +776,10 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/condor/certs/condor_mapfile
 
 %changelog
+* Mon Dec 28 2015 Marco Mambelli <marcom@fnal.gov> - 3.2.12-0.2.rc3
+- Fixed glidein counters specially for artitionable slots
+- Cleaned up new factory configuration code
+
 * Mon Dec 07 2015 Marco Mambelli <marcom@fnal.gov> - 3.2.12-0.2.rc2
 - Fixed python 2.4 compatibility
 
