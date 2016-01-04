@@ -1,5 +1,5 @@
 Name:      rsv-perfsonar
-Version:   1.1.1
+Version:   1.1.2
 Release:   1%{?dist}
 Summary:   RSV Metrics to monitor pefsonar
 Packager:  OSG-Software
@@ -69,13 +69,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_initrddir}/simplevisor
 
 %post -p /bin/bash
-# Create the html dir in the correct place
-mkdir /var/www/html/rsv
-chown rsv /var/www/html/rsv
-rm -rf /usr/share/rsv/www
-ln -s /var/www/html/rsv /usr/share/rsv/www
-
-# Create the virtual enviroment for rsv to use python2.7 and installed the requuired libraries
 mkdir /var/rsv/localenv                                                                                                                                    
 source /opt/rh/python27/enable                                                                                                                               
 /opt/rh/python27/root/usr/bin/virtualenv --prompt="(esmondup)" /var/rsv/localenv                                                                            
@@ -88,6 +81,10 @@ pip install messaging  --upgrade
 
 
 %changelog
+* Mon Jan 1 2016 <efajardo@physics.ucsd.edu> 1.1.2-1
+- Improved error handling and warning messages
+- Removed the creation of some symlinks since rsv does that now
+
 * Thu Oct 29 2015 <efajardo@physics.ucsd.edu> 1.1.1-1
 - Fixed bug on probes ussing SSL only for metadata and not for data
 
