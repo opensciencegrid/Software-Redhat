@@ -13,7 +13,7 @@ Name:           glideinwms
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
 %define version 3.2.12
-%define release 0.2.rc3
+%define release 0.3.rc3
 %define frontend_xml frontend.master.xml
 %define factory_xml glideinWMS.master.xml
 
@@ -94,7 +94,20 @@ Requires: condor >= 8.2.3
 Requires: python-rrdtool
 Requires: m2crypto
 Requires: javascriptrrd >= 1.1.0
+
+# osg-client is in OSG 3.2 but not 3.3
 Requires: osg-client
+# former osg-client requirements (minus networking stuff)
+#Requires: globus-common-progs
+#Requires: globus-gram-client-tools
+#Requires: globus-gsi-cert-utils-progs
+#Requires: gsi-openssh-clients
+#Requires: osg-cert-scripts
+#Requires: osg-system-profiler
+#Requires: osg-version
+#Requires: osg-wn-client
+#Requires: vo-client
+
 Requires: glideinwms-minimal-condor = %{version}-%{release}
 Requires: glideinwms-libs = %{version}-%{release}
 Requires: glideinwms-glidecondor-tools = %{version}-%{release}
@@ -127,8 +140,8 @@ Summary:        The VOFrontend glideinWMS submission host
 Group:          System Environment/Daemons
 Requires: condor >= 7.8.0
 Requires: glideinwms-minimal-condor = %{version}-%{release}
-Requires: glideinwms-glidecondor-tools = %{version}-%{release}
 Requires: glideinwms-common-tools = %{version}-%{release}
+Requires: glideinwms-glidecondor-tools = %{version}-%{release}
 %description userschedd
 This is a package for a glideinwms submit host.
 
@@ -666,6 +679,13 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/glideinwms/creation/lib/cgWParams.py
 %{python_sitelib}/glideinwms/creation/lib/cgWParams.pyc
 %{python_sitelib}/glideinwms/creation/lib/cgWParams.pyo
+%{python_sitelib}/glideinwms/creation/lib/factoryXmlConfig.py
+%{python_sitelib}/glideinwms/creation/lib/factoryXmlConfig.pyc
+%{python_sitelib}/glideinwms/creation/lib/factoryXmlConfig.pyo
+%{python_sitelib}/glideinwms/creation/lib/factory_defaults.xml
+%{python_sitelib}/glideinwms/creation/lib/xmlConfig.py
+%{python_sitelib}/glideinwms/creation/lib/xmlConfig.pyc
+%{python_sitelib}/glideinwms/creation/lib/xmlConfig.pyo
 %{python_sitelib}/glideinwms/creation/templates/factory_initd_startup_template
 %{python_sitelib}/glideinwms/factory
 %{_initrddir}/gwms-factory
@@ -706,13 +726,6 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/glideinwms/creation/lib/cvWParamDict.py
 %{python_sitelib}/glideinwms/creation/lib/cvWParamDict.pyc
 %{python_sitelib}/glideinwms/creation/lib/cvWParamDict.pyo
-%{python_sitelib}/glideinwms/creation/lib/xmlConfig.py
-%{python_sitelib}/glideinwms/creation/lib/xmlConfig.pyc
-%{python_sitelib}/glideinwms/creation/lib/xmlConfig.pyo
-%{python_sitelib}/glideinwms/creation/lib/factoryXmlConfig.py
-%{python_sitelib}/glideinwms/creation/lib/factoryXmlConfig.pyc
-%{python_sitelib}/glideinwms/creation/lib/factoryXmlConfig.pyo
-%{python_sitelib}/glideinwms/creation/lib/factory_defaults.xml
 %{python_sitelib}/glideinwms/creation/lib/cvWParams.py
 %{python_sitelib}/glideinwms/creation/lib/cvWParams.pyc
 %{python_sitelib}/glideinwms/creation/lib/cvWParams.pyo
@@ -765,16 +778,20 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/condor/certs/condor_mapfile
 
 %changelog
-* Mon Dec 28 2015 Marco Mambelli <marcom@fnal.gov> - 3.2.12-0.2.rc3
+* Mon Dec 28 2015 Marco Mambelli <marcom@fnal.gov> - 3.2.12-0.3.rc3
 - Fixed glidein counters specially for artitionable slots
 - Cleaned up new factory configuration code
+- Fixed the RPM spec in OSG 3.2 that had wrong file lists
 
 * Mon Dec 07 2015 Marco Mambelli <marcom@fnal.gov> - 3.2.12-0.2.rc2
 - Fixed python 2.4 compatibility
 
-* Wed Dec 02 2015 Parag Mhashilkar <parag@fnal.gov> - 3.2.12-0.1.rc1
+* Fri Dec 04 2015 Parag Mhashilkar <parag@fnal.gov> - 3.2.12-0.1.rc1
 - Added glideinwms-common-tools as a dependency to glideinwms-userschedd
 - Tools from glideinwms-vofrontend-standalone are now in path (bindir)
+
+* Thu Oct 08 2015 Matyas Selmeci <matyas@cs.wisc.edu> - 3.2.11.2-4
+- Don't put collectors behind shared port (needed for HTCondor 8.4.0) (SOFTWARE-2015)
 
 * Mon Oct 05 2015 Carl Edquist <edquist@cs.wisc.edu> - 3.2.11.2-2
 - Repartition subpackages to avoid overlapping files (SOFTWARE-2015)
@@ -798,6 +815,11 @@ rm -rf $RPM_BUILD_ROOT
 * Wed Aug 12 2015 Parag Mhashilkar <parag@fnal.gov> - 3.2.11-0.1.rc1
 - Glideinwms v3.2.11 rc1 release
 - Release Notes: http://www.uscms.org/SoftwareComputing/Grid/WMS/glideinWMS/doc.v3_2_11/history.html
+
+* Thu Jul 16 2015 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.2.10-1.1.osg
+- vofrontend-standalone: Replace osg-client dep with most of osg-client's
+  contents (except the networking stuff), since osg-client has been dropped in
+  OSG 3.3
 
 * Mon Jun 01 2015 Parag Mhashilkar <parag@fnal.gov> - 3.2.10-1
 - Glideinwms v3.2.10 release
