@@ -13,7 +13,7 @@ Name:           glideinwms
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
 %define version 3.2.12
-%define release 0.2.rc3
+%define release 0.4.rc4
 %define frontend_xml frontend.master.xml
 %define factory_xml glideinWMS.master.xml
 
@@ -776,6 +776,10 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/condor/certs/condor_mapfile
 
 %changelog
+* Mon Jan 04 2016 Marco Mambelli <marcom@fnal.gov> - 3.2.12-0.4.rc4
+- Fixed a typo and init script problem in new factory configuration
+- Also the factory collector is not using shared port
+
 * Mon Dec 28 2015 Marco Mambelli <marcom@fnal.gov> - 3.2.12-0.2.rc3
 - Fixed glidein counters specially for artitionable slots
 - Cleaned up new factory configuration code
