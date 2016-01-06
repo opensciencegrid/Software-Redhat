@@ -11,7 +11,7 @@ Name:           glideinwms
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
 %define version 3.3
-%define release 0.5.rc5
+%define release 0.6.rc6
 %define frontend_xml frontend.master.xml
 %define factory_xml glideinWMS.master.xml
 
@@ -777,6 +777,10 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/condor/certs/condor_mapfile
 
 %changelog
+* Wed Jan 06 2016 Parag Mhashilkar <parag@fnal.gov> - 3.3-0.6.rc6
+- Glideinwms v3.3 rc6 release
+- Release Notes: http://www.uscms.org/SoftwareComputing/Grid/WMS/glideinWMS/doc.dev/history.html
+
 * Mon Dec 07 2015 Parag Mhashilkar <parag@fnal.gov> - 3.3-0.5.rc5
 - Glideinwms v3.3 rc5 release
 - Release Notes: http://www.uscms.org/SoftwareComputing/Grid/WMS/glideinWMS/doc.dev/history.html
