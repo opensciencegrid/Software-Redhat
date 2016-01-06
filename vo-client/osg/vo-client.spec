@@ -1,5 +1,5 @@
 Name:           vo-client
-Version:        61
+Version:        62
 Release:        1%{?dist}
 Summary:        Contains vomses file for use with user authentication and edg-mkgridmap.conf file that contains configuration information for edg-mkgridmap.
 
@@ -85,6 +85,11 @@ rm -rf $RPM_BUILD_ROOT
 %attr(0600,tomcat,tomcat) %config(noreplace) %{_sysconfdir}/gums/gums.config.template
 
 %changelog
+* Wed Jan 06 2016 Carl Edquist <edquist@cs.wisc.edu> - 62-1
+- Update to vo-client 62 (SOFTWARE-2154)
+  - Update FNAL VOMS Server DN
+  - Drop LIGO VO
+
 * Fri Aug 07 2015 Carl Edquist <edquist@cs.wisc.edu> - 61-1
 - Update to vo-client 61 (SOFTWARE-1993)
   - Added DUNE VO
