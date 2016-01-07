@@ -8,7 +8,6 @@ License: BSD
 URL: https://github.com/bbockelm/xrootd-lcmaps
 Source0: %{name}.tar.gz
 Patch0: lcmaps-modules-path.patch
-Patch1: cmakeHttpSecXtractor.patch
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
 BuildRequires: xrootd-devel >= 1:4.1.0
