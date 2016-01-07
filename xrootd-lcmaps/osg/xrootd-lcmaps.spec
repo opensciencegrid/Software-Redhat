@@ -1,20 +1,19 @@
-
 Name: xrootd-lcmaps
-Version: 0.0.7
-Release: 11%{?dist}
+Version: 1.0.0
+Release: 1%{?dist}
 Summary: LCMAPS plugin for xrootd
 
 Group: System Environment/Daemons
 License: BSD
 URL: https://github.com/bbockelm/xrootd-lcmaps
-# Generated from:
-# git-archive master | gzip -7 > ~/rpmbuild/SOURCES/xrootd-lcmaps.tar.gz
 Source0: %{name}.tar.gz
 Patch0: lcmaps-modules-path.patch
-Patch1: xrootd-4.1-build.patch
+Patch1: cmakeHttpSecXtractor.patch
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
 BuildRequires: xrootd-devel >= 1:4.1.0
+BuildRequires: xrootd-server-libs >= 1:4.1.0
+BuildRequires: xrootd-server-devel >= 1:4.1.0
 BuildRequires: lcmaps-interface
 BuildRequires: lcmaps
 BuildRequires: cmake
@@ -28,13 +27,20 @@ Requires: lcas-lcmaps-gt4-interface
 %{summary}
 
 %prep
-%setup -q -c -n %{name}-%{version}
+#%setup -q -c -n %{name}-%{version}
+%setup -q -c -n %{name}
+#%setup -q
 %patch0 -p0
-%patch1 -p0
 
 %build
 #cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=RelWithDebInfo .
+%if 0%{?rhel} > 6
+%cmake -DCMAKE_INSTALL_LIBDIR:PATH=/usr/lib64 -DCMAKE_BUILD_TYPE=RelWithDebInfo .
+%else
 %cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo .
+%endif
+
+
 make VERBOSE=1 %{?_smp_mflags}
 
 %install
@@ -57,15 +63,20 @@ getent passwd xrootd >/dev/null || \
 # a shared library.
 %{_libdir}/libXrdLcmaps.so
 %{_libdir}/libXrdLcmaps.so.0
-%{_libdir}/libXrdLcmaps.so.0.0.1
+%{_libdir}/libXrdLcmaps.so.0.0.2
 %defattr(644,root,root,-)
 %config(noreplace) %{_sysconfdir}/xrootd/lcmaps.cfg
 
 %changelog
+* Wed Jan 6 2016 Edgar Fajardo <emfajard@ucsd.edu> 1.0.0-1
+- Update to 1.0.0
+- Support for HTTP Security extractor
+- Removed the patch1 for xrootd4 linking
+
 * Wed Feb 25 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 0.0.7-11.osg
 - Patch to not require xrootd-compat-libs
 
-* Thu Feb 24 2015 Edgar Fajardo <emfajard@ucsd.edu>  0.0.7-10
+* Tue Feb 24 2015 Edgar Fajardo <emfajard@ucsd.edu>  0.0.7-10
 - The xrootd-compat-libs were only needed at built time not required during installation
 
 * Mon Feb 23 2015 Edgar Fajardo <emfajard@ucsd.edu>  0.0.7-9
@@ -94,7 +105,7 @@ getent passwd xrootd >/dev/null || \
 * Mon Nov 19 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 0.0.7-1
 - Fix config parsing issues.
 
-* Mon Nov 12 2012 Brian Bockelman - 0.0.6-1
+* Mon Nov 12 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 0.0.6-1
 - Fix SL6 compilation issues.
 
 * Mon Oct 22 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 0.0.5-1
@@ -123,11 +134,11 @@ getent passwd xrootd >/dev/null || \
 - Add the sample LCMAPS configuration.
 - Updated to the new tarball.  Calls the LCMAPS library directly instead of via helpers.
 
-* Thu Sep 17 2010 Brian Bockelman <bbockelm@cse.unl.edu> 0.0.1-4
+* Fri Sep 17 2010 Brian Bockelman <bbockelm@cse.unl.edu> 0.0.1-4
 - Recompile for new LCMAPS library.
 - Try and fix C++ vs C linker issues.
 - Link in all the required lcmaps libraries.
 
-* Wed Sep 16 2010 Brian Bockelman <bbockelm@cse.unl.edu> 0.0.1-1
+* Thu Sep 16 2010 Brian Bockelman <bbockelm@cse.unl.edu> 0.0.1-1
 - Initial integration of LCMAPS into Xrootd.
 

@@ -2,12 +2,6 @@ Index: configs/lcmaps.cfg
 ===================================================================
 --- configs.orig/lcmaps.cfg	2012-11-19 17:51:01.000000003 -0600
 +++ configs/lcmaps.cfg	2013-02-12 11:55:36.000000003 -0600
-@@ -1,4 +1,4 @@
--path = /usr/lib64/modules
-+path = /usr/lib64/lcmaps
- 
- good = "lcmaps_dummy_good.mod"
- bad  = "lcmaps_dummy_bad.mod"
 @@ -9,7 +9,8 @@
               "-capath /etc/grid-security/certificates"
               "-cert   /etc/grid-security/xrd/xrdcert.pem"
