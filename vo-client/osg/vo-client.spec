@@ -1,6 +1,6 @@
 Name:           vo-client
 Version:        62
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Contains vomses file for use with user authentication and edg-mkgridmap.conf file that contains configuration information for edg-mkgridmap.
 
 Group:          System Environment/Base
@@ -85,6 +85,9 @@ rm -rf $RPM_BUILD_ROOT
 %attr(0600,tomcat,tomcat) %config(noreplace) %{_sysconfdir}/gums/gums.config.template
 
 %changelog
+* Mon Jan 11 2016 Carl Edquist <edquist@cs.wisc.edu> - 62-2
+- Update FNAL VOMS Server CA (SOFTWARE-2154)
+
 * Wed Jan 06 2016 Carl Edquist <edquist@cs.wisc.edu> - 62-1
 - Update to vo-client 62 (SOFTWARE-2154)
   - Update FNAL VOMS Server DN
