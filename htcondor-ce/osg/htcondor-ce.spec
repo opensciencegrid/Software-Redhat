@@ -24,7 +24,7 @@ Patch0: drop_userHome.patch
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-Requires:  condor >= 8.0.0
+Requires:  condor >= 8.3.6
 # This ought to pull in the HTCondor-CE specific version of the blahp
 Requires: blahp
 
