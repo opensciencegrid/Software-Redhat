@@ -1,6 +1,6 @@
 Name:      rsv-perfsonar
 Version:   1.1.2
-Release:   1%{?dist}
+Release:   2%{?dist}
 Summary:   RSV Metrics to monitor pefsonar
 Packager:  OSG-Software
 Group:     Applications/Monitoring
@@ -68,6 +68,20 @@ rm -rf $RPM_BUILD_ROOT
 # for the simplevisor init script
 %{_initrddir}/simplevisor
 
+%pre -p /bin/bash
+# Fix in case the older versions have had the /usr/share/rsv/www as a symlink
+if [ -L /usr/share/rsv/www ]; then
+    echo "/usr/share/rsv/www is a symlinlk fixing it"
+    cp --remove-destination -r `readlink /usr/share/rsv/www` /tmp/rsv-perfsonar-html
+    unlink /usr/share/rsv/www
+    mkdir /usr/share/rsv/www
+    chown rsv /usr/share/rsv/www
+    cp -v --remove-destination /tmp/rsv-perfsonar-html/* /usr/share/rsv/www
+    if [ -d '/var/www/html/rsv/']; then
+        rm -r /var/www/html/rsv/
+    fi
+fi
+
 %post -p /bin/bash
 mkdir /var/rsv/localenv                                                                                                                                    
 source /opt/rh/python27/enable                                                                                                                               
@@ -81,6 +95,9 @@ pip install messaging  --upgrade
 
 
 %changelog
+* Wed Jan 13 2016 <efajardo@physics.ucsd.edu> 1.1.2-2
+- Added the pre script to remove the symlink of /usr/share/rsv/www introduced in older versions
+
 * Mon Jan 1 2016 <efajardo@physics.ucsd.edu> 1.1.2-1
 - Improved error handling and warning messages
 - Removed the creation of some symlinks since rsv does that now
