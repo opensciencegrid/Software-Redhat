@@ -24,7 +24,7 @@ Patch0: drop_userHome.patch
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-Requires:  condor >= 8.3.6
+Requires:  condor >= 8.3.7
 # This ought to pull in the HTCondor-CE specific version of the blahp
 Requires: blahp
 
@@ -464,7 +464,7 @@ fi
 - Ensure that the HTCondor Python bindings are in the PYTHONPATH (SOFTWARE-1927)
 - HTCondor CE should warn if osg-configure has not been run (SOFTWARE-1914)
 - Improvements to condor_ce_run error messages
-- Drop userHome function since it's included in upstream HTCondor 8.3.6
+- Drop userHome function since it's included in upstream HTCondor 8.3.7
 
 * Fri Jun 19 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.13-3
 - Add basic systemd service files for condor-ce and condor-ce-collector (SOFTWARE-1541)
