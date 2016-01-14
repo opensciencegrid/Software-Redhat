@@ -1,13 +1,14 @@
 Name: xrootd-lcmaps
-Version: 1.0.0
-Release: 1%{?dist}
+Version: 1.2.0
+Release: 1.1%{?dist}
 Summary: LCMAPS plugin for xrootd
 
 Group: System Environment/Daemons
 License: BSD
 URL: https://github.com/bbockelm/xrootd-lcmaps
-Source0: %{name}.tar.gz
+Source0: %{name}-%{version}.tar.gz
 Patch0: lcmaps-modules-path.patch
+Patch1: CMakeLists.patch
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
 BuildRequires: xrootd-devel >= 1:4.1.0
@@ -26,19 +27,13 @@ Requires: lcas-lcmaps-gt4-interface
 %{summary}
 
 %prep
-#%setup -q -c -n %{name}-%{version}
-%setup -q -c -n %{name}
-#%setup -q
+%setup -q
+
 %patch0 -p0
+%patch1 -p1
 
 %build
-#cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=RelWithDebInfo .
-%if 0%{?rhel} > 6
-%cmake -DCMAKE_INSTALL_LIBDIR:PATH=/usr/lib64 -DCMAKE_BUILD_TYPE=RelWithDebInfo .
-%else
-%cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo .
-%endif
-
+%cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=RelWithDebInfo .
 
 make VERBOSE=1 %{?_smp_mflags}
 
@@ -67,6 +62,16 @@ getent passwd xrootd >/dev/null || \
 %config(noreplace) %{_sysconfdir}/xrootd/lcmaps.cfg
 
 %changelog
+* Thu Jan 14 2016 Edgar Fajardo <emfajard@ucsd.edu> - 1.2.0-1.1
+- Bumped to 1.2.0
+- Added patch to CMakeLists to build for rhel7
+
+* Thu Jan 14 2016 Brian Bockelman <bbockelm@cse.unl.edu> - 1.2.0-1
+- Have VOMS attributes forward to the xrootd credential.
+
+* Tue Jan 12 2016 Edgar Fajardo <emfajard@ucsd.edu> 1.0.1-1
+- Change to the CMakeList to make rhel7 builds work
+
 * Wed Jan 6 2016 Edgar Fajardo <emfajard@ucsd.edu> 1.0.0-1
 - Update to 1.0.0
 - Support for HTTP Security extractor
