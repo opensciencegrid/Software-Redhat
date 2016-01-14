@@ -15,7 +15,7 @@ index bab690d..7ca3a1a 100755
  
       --aa-cert
 diff --git a/resources/scripts/voms.py b/resources/scripts/voms.py
-index 2f07916..3dfe1e3 100644
+index 2f07916..6b51f99 100644
 --- a/resources/scripts/voms.py
 +++ b/resources/scripts/voms.py
 @@ -371,6 +371,7 @@ class UpgradeVO(ConfigureAction):
@@ -26,7 +26,15 @@ index 2f07916..3dfe1e3 100644
               'AA.CERT' : self.user_options['aa-cert'],
               'AA.KEY' : self.user_options['aa-key'],
               'SAML.MAX_ASSERTION_LIFETIME' : self.user_options['saml-max-assertion-lifetime'],
-@@ -1175,6 +1176,7 @@ class VomsConstants:
+@@ -663,6 +664,7 @@ class InstallVOAction(ConfigureAction):
+              'CA.FILES': self.user_options['ca-files'],
+              'READ_ACCESS' : str(self.user_options.has_key('read-access-for-authenticated-clients')),
+              'VO_AUP_URL': self.user_options['vo-aup-url'],
++             'ADMIN_SKIP_CA_CHECK' : str(self.user_options.has_key('skip-ca-check')),
+              'AA.CERT' : self.user_options['aa-cert'],
+              'AA.KEY' : self.user_options['aa-key'],
+              'SAML.MAX_ASSERTION_LIFETIME' : self.user_options['saml-max-assertion-lifetime'],
+@@ -1175,6 +1177,7 @@ class VomsConstants:
                "read-access-for-authenticated-clients",
                "skip-voms-core",
                "vo-aup-url=",
