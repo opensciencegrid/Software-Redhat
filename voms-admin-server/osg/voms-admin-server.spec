@@ -8,7 +8,7 @@
 Summary: The VOMS Administration service
 Name: voms-admin-server
 Version: 2.7.0
-Release: 1.17%{?dist}
+Release: 1.18%{?dist}
 License: ASL 2.0
 Group: System Environment/Libraries
 
@@ -107,6 +107,7 @@ Patch5: fix-suspended-users.patch
 Patch6: fix-certificate-issuer-check.patch
 Patch7: axistools-version.patch
 Patch8: sign-on-behalf-of.patch
+Patch9: disable-ca-check.patch
 
 Requires: osg-webapp-common
 
@@ -145,6 +146,7 @@ administration tasks.
 %endif
 
 %patch8 -p1
+%patch9 -p1
 
 %define local_maven /tmp/m2/repository
 
@@ -270,6 +272,9 @@ fi
 %{tomcat_endorsed}/xalan-j2-serializer.jar
 
 %changelog
+* Wed Jan 13 2016 Carl Edquist <edquist@cs.wisc.edu> - 2.7.0-1.18
+- Port VOMS-605 option to skip CA check (SOFTWARE-2158)
+
 * Fri Oct 30 2015 Carl Edquist <edquist@cs.wisc.edu> - 2.7.0-1.17
 - Restore 'Sign AUP on behalf of user' feature (SOFTWARE-2091)
 
