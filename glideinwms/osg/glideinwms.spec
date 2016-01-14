@@ -13,7 +13,7 @@ Name:           glideinwms
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
 %define version 3.2.12
-%define release 0.5.rc5
+%define release 1
 %define frontend_xml frontend.master.xml
 %define factory_xml glideinWMS.master.xml
 
@@ -24,7 +24,7 @@ Summary:        The VOFrontend for glideinWMS submission host
 
 Group:          System Environment/Daemons
 License:        Fermitools Software Legal Information (Modified BSD License)
-URL:            http://www.uscms.org/SoftwareComputing/Grid/WMS/glideinWMS/
+URL:            http://glideinwms.fnal.gov/
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
@@ -776,24 +776,10 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/condor/certs/condor_mapfile
 
 %changelog
-* Wed Jan 13 2016 Marco Mambelli <marcom@fnal.gov> - 3.2.12-0.5.rc5
-- Fixed more problems in new factory configuration: reconfig and versioning in tarball
-- Fixed NUM_CPUS that was not set in partitionable slots
-
-* Mon Jan 04 2016 Marco Mambelli <marcom@fnal.gov> - 3.2.12-0.4.rc4
-- Fixed a typo and init script problem in new factory configuration
-- Also the factory collector is not using shared port
-
-* Mon Dec 28 2015 Marco Mambelli <marcom@fnal.gov> - 3.2.12-0.2.rc3
-- Fixed glidein counters specially for artitionable slots
-- Cleaned up new factory configuration code
-
-* Mon Dec 07 2015 Marco Mambelli <marcom@fnal.gov> - 3.2.12-0.2.rc2
-- Fixed python 2.4 compatibility
-
-* Fri Dec 04 2015 Parag Mhashilkar <parag@fnal.gov> - 3.2.12-0.1.rc1
-- Added glideinwms-common-tools as a dependency to glideinwms-userschedd
-- Tools from glideinwms-vofrontend-standalone are now in path (bindir)
+* Thu Jan 14 2016 Marco Mambelli <marcom@fnal.gov> - 3.2.12-1
+- Glideinwms v3.2.12 release (see notes for featires and bug fixes)
+- Release Notes: http://glideinwms.fnal.gov/doc.v3_2_12/history.html
+- Release candidates: 3.2.12-0.1.rc1 to 3.2.12-0.5.rc5
 
 * Thu Oct 08 2015 Matyas Selmeci <matyas@cs.wisc.edu> - 3.2.11.2-4
 - Don't put collectors behind shared port (needed for HTCondor 8.4.0) (SOFTWARE-2015)
