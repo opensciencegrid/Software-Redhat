@@ -1,6 +1,6 @@
 Name: xrootd-lcmaps
 Version: 1.2.0
-Release: 1.1%{?dist}
+Release: 1.2%{?dist}
 Summary: LCMAPS plugin for xrootd
 
 Group: System Environment/Daemons
@@ -17,7 +17,7 @@ BuildRequires: xrootd-server-devel >= 1:4.1.0
 BuildRequires: lcmaps-interface
 BuildRequires: lcmaps
 BuildRequires: cmake
-
+BuildRequires: voms-devel
 
 Requires: xrootd >= 1:4.1.0
 
@@ -62,6 +62,9 @@ getent passwd xrootd >/dev/null || \
 %config(noreplace) %{_sysconfdir}/xrootd/lcmaps.cfg
 
 %changelog
+* Thu Jan 14 2016 Edgar Fajardo <emfajard@ucsd.edu> - 1.2.0-1.2
+- Added the build requires of voms-devel
+
 * Thu Jan 14 2016 Edgar Fajardo <emfajard@ucsd.edu> - 1.2.0-1.1
 - Bumped to 1.2.0
 - Added patch to CMakeLists to build for rhel7
