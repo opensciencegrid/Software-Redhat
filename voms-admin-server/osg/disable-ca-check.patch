@@ -1,0 +1,108 @@
+diff --git a/resources/scripts/voms-admin-configure.py b/resources/scripts/voms-admin-configure.py
+index bab690d..7ca3a1a 100755
+--- a/resources/scripts/voms-admin-configure.py
++++ b/resources/scripts/voms-admin-configure.py
+@@ -353,6 +353,11 @@ def usage():
+                            policy. Usually the URL points to a local or remote, http accessible
+                            text file. If this option is not set a template vo-aup file will
+                            be created in vo runtime configuration directory.
++
++     --admin-skip-ca-check
++
++                           Skips the check on the certificate issuer when authenticating
++                           VOMS Admin clients.
+ VOMS SAML options:
+ 
+      --aa-cert
+diff --git a/resources/scripts/voms.py b/resources/scripts/voms.py
+index 2f07916..3dfe1e3 100644
+--- a/resources/scripts/voms.py
++++ b/resources/scripts/voms.py
+@@ -371,6 +371,7 @@ class UpgradeVO(ConfigureAction):
+              'CA.FILES': self.user_options['ca-files'],
+              'READ_ACCESS' : str(self.user_options.has_key('read-access-for-authenticated-clients')).lower(),
+              'VO_AUP_URL': self.user_options['vo-aup-url'],
++             'ADMIN_SKIP_CA_CHECK' : str(self.user_options.has_key('skip-ca-check')).lower(),
+              'AA.CERT' : self.user_options['aa-cert'],
+              'AA.KEY' : self.user_options['aa-key'],
+              'SAML.MAX_ASSERTION_LIFETIME' : self.user_options['saml-max-assertion-lifetime'],
+@@ -1175,6 +1176,7 @@ class VomsConstants:
+               "read-access-for-authenticated-clients",
+               "skip-voms-core",
+               "vo-aup-url=",
++              "admin-skip-ca-check",
+               "use-skinny-war",
+               "aa-cert=",
+               "aa-key=",
+diff --git a/resources/templates/voms.service.properties.template b/resources/templates/voms.service.properties.template
+index 4cbe599..cf0ee2e 100644
+--- a/resources/templates/voms.service.properties.template
++++ b/resources/templates/voms.service.properties.template
+@@ -117,4 +117,7 @@ voms.pagination.group.max.results.per.page = 50
+ voms.pagination.role.max.results.per.page = 50
+ voms.pagination.attributes.max.results.per.page = 50
+ 
++## Skip CA checks when authenticating clients
++voms.skip_ca_check = @ADMIN_SKIP_CA_CHECK@
++
+ #### Add other options after this line
+diff --git a/src/main/java/org/glite/security/voms/admin/configuration/VOMSConfigurationConstants.java b/src/main/java/org/glite/security/voms/admin/configuration/VOMSConfigurationConstants.java
+index b1a1319..d7fff86 100644
+--- a/src/main/java/org/glite/security/voms/admin/configuration/VOMSConfigurationConstants.java
++++ b/src/main/java/org/glite/security/voms/admin/configuration/VOMSConfigurationConstants.java
+@@ -156,4 +156,9 @@ public interface VOMSConfigurationConstants {
+ 	 */
+ 	public static final String MONITORING_USER_STATS_UPDATE_PERIOD = "voms.monitoring.user_stats_period";
+ 
++	/**
++	 * Whether to skip the checks on certificate issuers when authenticating clients
++	 */
++	public static final String SKIP_CA_CHECK = "voms.skip_ca_check";
++
+ }
+diff --git a/src/main/java/org/glite/security/voms/admin/operations/CurrentAdmin.java b/src/main/java/org/glite/security/voms/admin/operations/CurrentAdmin.java
+index 0f5708b..5cdd23b 100644
+--- a/src/main/java/org/glite/security/voms/admin/operations/CurrentAdmin.java
++++ b/src/main/java/org/glite/security/voms/admin/operations/CurrentAdmin.java
+@@ -26,6 +26,8 @@ import java.util.regex.Pattern;
+ import org.slf4j.Logger;
+ import org.slf4j.LoggerFactory;
+ import org.glite.security.SecurityContext;
++import org.glite.security.voms.admin.configuration.VOMSConfiguration;
++import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
+ import org.glite.security.voms.admin.persistence.dao.VOMSAdminDAO;
+ import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
+ import org.glite.security.voms.admin.persistence.model.ACL;
+@@ -51,14 +53,30 @@ public class CurrentAdmin {
+ 		this.admin = a;
+ 	}
+ 
+-	public static CurrentAdmin instance() {
++	private static VOMSAdmin lookupAdmin() {
+ 
+ 		SecurityContext theContext = SecurityContext.getCurrentContext();
+ 
+ 		String adminDN = theContext.getClientName();
+ 		String caDN = theContext.getIssuerName();
+ 
+-		VOMSAdmin admin = VOMSAdminDAO.instance().getByName(adminDN, caDN);
++		boolean skipCACheck = VOMSConfiguration.instance().getBoolean(
++			VOMSConfigurationConstants.SKIP_CA_CHECK, false);
++
++		VOMSAdmin admin = null;
++
++		if (skipCACheck) {
++			admin = VOMSAdminDAO.instance().getBySubject(adminDN);
++		} else {
++			admin = VOMSAdminDAO.instance().getByName(adminDN, caDN);
++		}
++
++                return admin;
++	}
++
++	public static CurrentAdmin instance() {
++
++		VOMSAdmin admin = lookupAdmin();
+ 
+ 		if (admin == null)
+ 			admin = VOMSAdminDAO.instance().getAnyAuthenticatedUserAdmin();
