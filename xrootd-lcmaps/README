@@ -1,8 +1,6 @@
-
 This package allows Xrootd to callout to GUMS via the LCMAPS client
 
 To get the upstream
                                                                                                                                           
 git clone https://github.com/bbockelm/xrootd-lcmaps.git
-cd xrootd-lcmaps
-git-archive v1.0.0 | gzip -7 > ~/xrootd-lcmaps.tar.gz
+git archive 1.2.1 --format=tar.gz --prefix=xrootd-lcmaps-1.2.1/ -o ~/xrootd-lcmaps-1.2.1.tar.gz -9
