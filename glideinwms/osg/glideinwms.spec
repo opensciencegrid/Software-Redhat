@@ -11,7 +11,7 @@ Name:           glideinwms
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
 %define version 3.3
-%define release 0.6.rc6
+%define release 0.7.rc7
 %define frontend_xml frontend.master.xml
 %define factory_xml glideinWMS.master.xml
 
@@ -22,7 +22,7 @@ Summary:        The VOFrontend for glideinWMS submission host
 
 Group:          System Environment/Daemons
 License:        Fermitools Software Legal Information (Modified BSD License)
-URL:            http://www.uscms.org/SoftwareComputing/Grid/WMS/glideinWMS/
+URL:            http://glideinwms.fnal.gov
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
@@ -777,13 +777,17 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/condor/certs/condor_mapfile
 
 %changelog
+* Fri Jan 15 2016 Parag Mhashilkar <parag@fnal.gov> - 3.3-0.7.rc7
+- Glideinwms v3.3 rc7 release
+- Release Notes: http://glideinwms.fnal.gov/doc.dev/history.html
+
 * Wed Jan 06 2016 Parag Mhashilkar <parag@fnal.gov> - 3.3-0.6.rc6
 - Glideinwms v3.3 rc6 release
-- Release Notes: http://www.uscms.org/SoftwareComputing/Grid/WMS/glideinWMS/doc.dev/history.html
+- Release Notes: http://glideinwms.fnal.gov/doc.dev/history.html
 
 * Mon Dec 07 2015 Parag Mhashilkar <parag@fnal.gov> - 3.3-0.5.rc5
 - Glideinwms v3.3 rc5 release
-- Release Notes: http://www.uscms.org/SoftwareComputing/Grid/WMS/glideinWMS/doc.dev/history.html
+- Release Notes: http://glideinwms.fnal.gov/doc.dev/history.html
 
 * Mon Dec 07 2015 Marco Mambelli <marcom@fnal.gov> - 3.2.12-0.2.rc2
 - Fixed python 2.4 compatibility
@@ -800,39 +804,39 @@ rm -rf $RPM_BUILD_ROOT
 
 * Mon Oct 05 2015 Parag Mhashilkar <parag@fnal.gov> - 3.3-0.4.rc4
 - Glideinwms v3.3 rc4 release
-- Release Notes: http://www.uscms.org/SoftwareComputing/Grid/WMS/glideinWMS/doc.dev/history.html
+- Release Notes: http://glideinwms.fnal.gov/doc.dev/history.html
 
 * Fri Sep 18 2015 Parag Mhashilkar <parag@fnal.gov> - 3.2.11.2-1
 - Glideinwms v3.2.11.2 release
-- Release Notes: http://www.uscms.org/SoftwareComputing/Grid/WMS/glideinWMS/doc.v3_2_11_2/history.html
+- Release Notes: http://glideinwms.fnal.gov/doc.v3_2_11_2/history.html
 
 * Wed Sep 02 2015 Parag Mhashilkar <parag@fnal.gov> - 3.2.11.1-1
 - Glideinwms v3.2.11.1 release
-- Release Notes: http://www.uscms.org/SoftwareComputing/Grid/WMS/glideinWMS/doc.v3_2_11_1/history.html
+- Release Notes: http://glideinwms.fnal.gov/doc.v3_2_11_1/history.html
 
 * Thu Aug 20 2015 Parag Mhashilkar <parag@fnal.gov> - 3.2.11-1
 - Glideinwms v3.2.11 release
-- Release Notes: http://www.uscms.org/SoftwareComputing/Grid/WMS/glideinWMS/doc.v3_2_11/history.html
+- Release Notes: http://glideinwms.fnal.gov/doc.v3_2_11/history.html
 
 * Thu Aug 13 2015 Parag Mhashilkar <parag@fnal.gov> - 3.3-0.3.rc3
 - Glideinwms v3.3 rc3 release
-- Release Notes: http://www.uscms.org/SoftwareComputing/Grid/WMS/glideinWMS/doc.dev/history.html
+- Release Notes: http://glideinwms.fnal.gov/doc.dev/history.html
 
 * Thu Aug 13 2015 Parag Mhashilkar <parag@fnal.gov> - 3.2.11-0.2.rc2
 - Glideinwms v3.2.11 rc2 release
-- Release Notes: http://www.uscms.org/SoftwareComputing/Grid/WMS/glideinWMS/doc.v3_2_11/history.html
+- Release Notes: http://glideinwms.fnal.gov/doc.v3_2_11/history.html
 
 * Wed Aug 12 2015 Parag Mhashilkar <parag@fnal.gov> - 3.3-0.2.rc2
 - Glideinwms v3.3 rc2 release
-- Release Notes: http://www.uscms.org/SoftwareComputing/Grid/WMS/glideinWMS/doc.dev/history.html
+- Release Notes: http://glideinwms.fnal.gov/doc.dev/history.html
 
 * Wed Aug 12 2015 Parag Mhashilkar <parag@fnal.gov> - 3.2.11-0.1.rc1
 - Glideinwms v3.2.11 rc1 release
-- Release Notes: http://www.uscms.org/SoftwareComputing/Grid/WMS/glideinWMS/doc.v3_2_11/history.html
+- Release Notes: http://glideinwms.fnal.gov/doc.v3_2_11/history.html
 
 * Thu Jul 16 2015 Parag Mhashilkar <parag@fnal.gov> - 3.3-0.1.rc1
 - Glideinwms v3.3 rc1 release
-- Release Notes: http://www.uscms.org/SoftwareComputing/Grid/WMS/glideinWMS/doc.dev/history.html
+- Release Notes: http://glideinwms.fnal.gov/doc.dev/history.html
 
 * Thu Jul 16 2015 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.2.10-1.1.osg
 - vofrontend-standalone: Replace osg-client dep with most of osg-client's
@@ -841,11 +845,11 @@ rm -rf $RPM_BUILD_ROOT
 
 * Mon Jun 01 2015 Parag Mhashilkar <parag@fnal.gov> - 3.2.10-1
 - Glideinwms v3.2.10 release
-- Release Notes: http://www.uscms.org/SoftwareComputing/Grid/WMS/glideinWMS/doc.prd/history.html
+- Release Notes: http://glideinwms.fnal.gov/doc.prd/history.html
 
 * Fri May 08 2015 Parag Mhashilkar <parag@fnal.gov> - 3.2.9-1
 - Glideinwms v3.2.9 release
-- Release Notes: http://www.uscms.org/SoftwareComputing/Grid/WMS/glideinWMS/doc.prd/history.html
+- Release Notes: http://glideinwms.fnal.gov/doc.prd/history.html
 
 * Thu May 07 2015 Parag Mhashilkar <parag@fnal.gov> - 3.2.9-0.2.rc2
 - Glideinwms v3.2.9 rc2 release
