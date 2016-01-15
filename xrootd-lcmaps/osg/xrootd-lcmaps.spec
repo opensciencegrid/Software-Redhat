@@ -1,6 +1,6 @@
 Name: xrootd-lcmaps
-Version: 1.2.0
-Release: 1.2%{?dist}
+Version: 1.2.1
+Release: 1%{?dist}
 Summary: LCMAPS plugin for xrootd
 
 Group: System Environment/Daemons
@@ -8,7 +8,6 @@ License: BSD
 URL: https://github.com/bbockelm/xrootd-lcmaps
 Source0: %{name}-%{version}.tar.gz
 Patch0: lcmaps-modules-path.patch
-Patch1: CMakeLists.patch
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
 BuildRequires: xrootd-devel >= 1:4.1.0
@@ -30,7 +29,6 @@ Requires: lcas-lcmaps-gt4-interface
 %setup -q
 
 %patch0 -p0
-%patch1 -p1
 
 %build
 %cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=RelWithDebInfo .
@@ -62,6 +60,9 @@ getent passwd xrootd >/dev/null || \
 %config(noreplace) %{_sysconfdir}/xrootd/lcmaps.cfg
 
 %changelog
+* Fri Jan 15 2016 Edgar Fajardo <emfajard@ucsd.edu> - 1.2.1-1
+- Bug fix
+
 * Thu Jan 14 2016 Edgar Fajardo <emfajard@ucsd.edu> - 1.2.0-1.2
 - Added the build requires of voms-devel
 
