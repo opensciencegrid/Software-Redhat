@@ -3,7 +3,7 @@
 %bcond_without python
 
 # Build -java subpackage (except on EL5)
-%if 0%{?el5} || 0%{?el6}
+%if 0%{?el5} || 0%{?el6} || 0%{?el7}
 %bcond_with java
 %else
 %bcond_without java
@@ -193,6 +193,11 @@ export PTHREAD_LIBS="-lpthread"
 ./autogen.sh
 %endif
 
+%if 0%{?el7}
+# by default the el7 g++ is too strict for these sources
+# use CPPFLAGS instead of CXXFLAGS to avoid overriding what % configure sets
+export CPPFLAGS=-fpermissive
+%endif
 %configure
 
 make %{?_smp_mflags}
