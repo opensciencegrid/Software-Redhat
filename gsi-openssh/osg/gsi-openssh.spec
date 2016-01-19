@@ -34,7 +34,7 @@
 # Whether or not /sbin/nologin exists.
 %global nologin 1
 
-%global gsi_openssh_rel 1
+%global gsi_openssh_rel 4
 %global gsi_openssh_ver 5.7
 
 %ifarch alpha ia64 ppc64 s390x sparc64 x86_64
@@ -57,6 +57,7 @@ URL: http://www.openssh.com/portable.html
 Source0: http://downloads.sourceforge.net/cilogon/gsi_openssh-%{version}-src.tar.gz
 Source1: gsisshd.osg-sysconfig
 Patch0: osg-sysconfig.patch
+Patch20167777: CVE-2016-0777.gsissh-5.7.diff
 
 License: BSD
 Group: Applications/Internet
@@ -106,11 +107,16 @@ BuildRequires: krb5-devel
 %endif
 
 %if %{gsi}
-BuildRequires: globus-gss-assist-devel%{?_isa} >= 8
-BuildRequires: globus-usage-devel%{?_isa} >= 3
-BuildRequires: globus-common-progs%{?_isa} >= 14
-BuildRequires: globus-core%{?_isa} >= 8
-BuildRequires: grid-packaging-tools >= 3.4
+BuildRequires: globus-gss-assist-devel >= 8
+BuildRequires: globus-usage-devel >= 3
+BuildRequires: globus-common-progs >= 14
+BuildRequires: globus-gssapi-gsi-devel
+BuildRequires:  pkgconfig
+%if 0%{?suse_version} > 0
+BuildRequires: libtool
+%else
+BuildRequires: libtool-ltdl-devel
+%endif
 %endif
 
 %if %{libedit}
@@ -196,6 +202,7 @@ This version of OpenSSH has been modified to support GSI authentication.
 %prep
 %setup -q -n gsi_openssh-%{version}-src
 %patch0 -p0
+%patch20167777 -p0 -b .CVE-2016-0777
 
 sed 's/sshd.pid/gsisshd.pid/' -i pathnames.h
 sed 's!$(piddir)/sshd.pid!$(piddir)/gsisshd.pid!' -i Makefile.in
@@ -400,7 +407,16 @@ fi
 %attr(0644,root,root) /usr/share/osg/sysconfig/gsisshd
 
 %changelog
+* Fri Jan 15 2015 Matyas Selmeci <matyas@cs.wisc.edu> - 5.7-4.1
+- Merge OSG changes
+
+* Thu Jan 14 2015 Globus Toolkit <support@globus.org> - 5.7-3
+- CVE-2016-0777
+
 * Thu Nov 14 2013 Carl Edquist <edquist@cs.wisc.edu> - 5.7-1.1
+- Update to 5.7
+
+* Mon Nov 11 2013 Globus Toolkit <support@globus.org> - 5.7-1
 - Update to 5.7
 
 * Tue Apr 09 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 5.6-1.1
