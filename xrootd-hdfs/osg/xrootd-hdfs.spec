@@ -1,7 +1,7 @@
 
 Name: xrootd-hdfs
 Version: 1.8.6
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: HDFS plugin for xrootd
 
 Group: System Environment/Development
@@ -16,6 +16,8 @@ BuildRequires: hadoop-libhdfs >= 2.0.0+545-1.cdh4.1.1
 BuildRequires: java7-devel
 BuildRequires: jpackage-utils
 #BuildRequires: xrootd-compat-libs
+
+Patch0: el7-fixes.patch
 
 Requires: hadoop-client >= 2.0.0+545-1.cdh4.1.1
 #Requires: xrootd-compat-libs
@@ -33,8 +35,12 @@ Group: System Environment/Development
 
 %prep
 %setup -q -c -n %{name}-%{version}
+%patch0 -p1
 
 %build
+# libdir=%{_libdir}
+# libdir=${libdir##*/}
+# % cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_LIBDIR=$libdir .
 %cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo .
 make VERBOSE=1 %{?_smp_mflags}
 
@@ -72,6 +78,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/XrdHdfs.hh
 
 %changelog
+* Tue Jan 19 2016 Carl Edquist <edquist@cs.wisc.edu> - 1.8.6-2
+- EL7 build fixes (SOFTWARE-2162)
+
 * Tue Jan 5 2016 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1.8.6-1
 - Add support for non-world-readable files.
 
