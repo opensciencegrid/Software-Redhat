@@ -1,6 +1,6 @@
 Name:      rsv-perfsonar
 Version:   1.1.2
-Release:   1%{?dist}
+Release:   3%{?dist}
 Summary:   RSV Metrics to monitor pefsonar
 Packager:  OSG-Software
 Group:     Applications/Monitoring
@@ -81,6 +81,12 @@ pip install messaging  --upgrade
 
 
 %changelog
+* Wed Jan 20 2016 <efajardo@physics.ucsd.edu> 1.1.2-3
+- Removed the pre script added in 1.1.2-2 in favor of documentation for a one time fix.
+
+* Wed Jan 13 2016 <efajardo@physics.ucsd.edu> 1.1.2-2
+- Added the pre script to remove the symlink of /usr/share/rsv/www introduced in older versions
+
 * Mon Jan 1 2016 <efajardo@physics.ucsd.edu> 1.1.2-1
 - Improved error handling and warning messages
 - Removed the creation of some symlinks since rsv does that now
