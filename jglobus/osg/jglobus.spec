@@ -2,7 +2,7 @@ Name: jglobus
 Summary: An implementation of Globus for Java
 License: Apache 2.0
 Version: 2.1.0
-Release: 6%{?dist}
+Release: 7%{?dist}
 URL: http://www.globus.org/toolkit/jglobus/
 Group: System Environment/Libraries
 
@@ -62,15 +62,6 @@ Requires: java7
 %endif
 Requires: jpackage-utils
 Requires: log4j
-%if 0%{?rhel} <= 5
-Requires: tomcat5
-%endif
-%if 0%{?rhel} == 6
-Requires: tomcat6
-%endif
-%if 0%{?rhel} >= 7
-Requires: tomcat
-%endif
 Conflicts: cog-jglobus-axis < 1.8.0
 
 %if 0%{?maven_offline}
@@ -186,6 +177,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mavendepmapfragdir}/%{name}
 
 %changelog
+* Thu Jan 21 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 2.1.0-7
+- Remove tomcat requirements (SOFTWARE-2138)
+
 * Wed Oct 21 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 2.1.0-6
 - Patch to build with bouncycastle 1.45 on EL5 (SOFTWARE-2068)
 
