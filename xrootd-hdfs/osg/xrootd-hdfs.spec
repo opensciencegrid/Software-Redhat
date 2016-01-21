@@ -1,26 +1,23 @@
 
 Name: xrootd-hdfs
-Version: 1.8.6
-Release: 2%{?dist}
+Version: 1.8.7
+Release: 1%{?dist}
 Summary: HDFS plugin for xrootd
 
 Group: System Environment/Development
 License: BSD
 URL: https://github.com/bbockelm/xrootd-hdfs
-Source0: %{name}.tar.gz
+# Generated from:
+# git archive --format=tgz --prefix=%{name}-%{version}/ v%{version} > %{name}-%{version}.tar.gz
+Source0: %{name}-%{version}.tar.gz
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
-BuildRequires: xrootd-devel >= 4.1
-BuildRequires: xrootd-server-devel >= 4.1
+BuildRequires: xrootd-devel >= 1:4.1
+BuildRequires: xrootd-server-devel >= 1:4.1
 BuildRequires: cmake
 BuildRequires: hadoop-libhdfs >= 2.0.0+545-1.cdh4.1.1
 BuildRequires: java7-devel
 BuildRequires: jpackage-utils
-#BuildRequires: xrootd-compat-libs
-
-Patch0: el7-fixes.patch
-
 Requires: hadoop-client >= 2.0.0+545-1.cdh4.1.1
-#Requires: xrootd-compat-libs
 Conflicts: xrootd < 3.0.3-1
 
 %package devel
@@ -34,13 +31,9 @@ Group: System Environment/Development
 %{summary}
 
 %prep
-%setup -q -c -n %{name}-%{version}
-%patch0 -p1
+%setup -q
 
 %build
-# libdir=%{_libdir}
-# libdir=${libdir##*/}
-# % cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_LIBDIR=$libdir .
 %cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo .
 make VERBOSE=1 %{?_smp_mflags}
 
@@ -78,7 +71,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/XrdHdfs.hh
 
 %changelog
-* Tue Jan 19 2016 Carl Edquist <edquist@cs.wisc.edu> - 1.8.6-2
+* Wed Jan 20 2016 Carl Edquist <edquist@cs.wisc.edu> - 1.8.7-1
 - EL7 build fixes (SOFTWARE-2162)
 
 * Tue Jan 5 2016 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1.8.6-1
