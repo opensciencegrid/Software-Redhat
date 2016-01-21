@@ -407,10 +407,10 @@ fi
 %attr(0644,root,root) /usr/share/osg/sysconfig/gsisshd
 
 %changelog
-* Fri Jan 15 2015 Matyas Selmeci <matyas@cs.wisc.edu> - 5.7-4.1
+* Fri Jan 15 2016 Matyas Selmeci <matyas@cs.wisc.edu> - 5.7-4.1
 - Merge OSG changes
 
-* Thu Jan 14 2015 Globus Toolkit <support@globus.org> - 5.7-3
+* Thu Jan 14 2016 Globus Toolkit <support@globus.org> - 5.7-3
 - CVE-2016-0777
 
 * Thu Nov 14 2013 Carl Edquist <edquist@cs.wisc.edu> - 5.7-1.1
