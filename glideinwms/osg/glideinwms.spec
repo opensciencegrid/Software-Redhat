@@ -12,8 +12,8 @@ Name:           glideinwms
 # ------------------------------------------------------------------------------
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
-%define version 3.2.12
-%define release 1
+%define version 3.2.12.1
+%define release 0.1.rc1
 %define frontend_xml frontend.master.xml
 %define factory_xml glideinWMS.master.xml
 
@@ -776,6 +776,9 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/condor/certs/condor_mapfile
 
 %changelog
+* Thu Jan 21 2016 Marco Mambelli <marcom@fnal.gov> - 3.2.12.1-0.1
+- Fixed python 2.4 compatibility 
+
 * Thu Jan 14 2016 Marco Mambelli <marcom@fnal.gov> - 3.2.12-1
 - Glideinwms v3.2.12 release (see notes for featires and bug fixes)
 - Release Notes: http://glideinwms.fnal.gov/doc.v3_2_12/history.html
