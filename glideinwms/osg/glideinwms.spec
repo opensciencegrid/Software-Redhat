@@ -12,8 +12,8 @@ Name:           glideinwms
 # ------------------------------------------------------------------------------
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
-%define version 3.2.12
-%define release 1
+%define version 3.2.12.1
+%define release 0.1.rc1
 %define frontend_xml frontend.master.xml
 %define factory_xml glideinWMS.master.xml
 
