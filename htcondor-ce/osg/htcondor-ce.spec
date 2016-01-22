@@ -3,7 +3,7 @@
 
 Name: htcondor-ce
 Version: 2.0.0
-Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
+Release: 2%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 
 Group: Applications/System
@@ -409,6 +409,9 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Fri Jan 22 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.0-2
+- Require condor >= 8.3.7, which provides the userHome ClassAd function
+
 * Thu Dec 17 2015 Brian Lin <blin@cs.wisc.edu> - 2.0.0-1
 - Added a web monitor: htcondor-ce-view
 - Added BDII providers for non-OSG sites
