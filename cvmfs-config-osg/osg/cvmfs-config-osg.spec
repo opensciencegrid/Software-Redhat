@@ -1,7 +1,7 @@
 Summary: CernVM File System OSG Configuration and Public Keys
 Name: cvmfs-config-osg
 Version: 1.2
-Release: 0.1%{?dist}
+Release: 0.2%{?dist}
 %define cvmfsversion 2.2.0-0.108.f0e55b823242fbfbgit
 Source0: https://ecsft.cern.ch/dist/cvmfs/cvmfs-%{cvmfsversion}.tar.gz
 Source1: 60-osg.conf
@@ -76,6 +76,9 @@ done
 %config %{_sysconfdir}/cvmfs/config.d/*
 
 %changelog
+* Fri Jan 22 2016 Dave Dykstra <dwd@fnal.gov> - 1.2-0.2
+- Move to osg-upcoming, and adjust configs a little.
+
 * Fri Jan 15 2016 Dave Dykstra <dwd@fnal.gov> - 1.2-0.1
 - Testing build for cvmfs-2.2.0, including osgstorage.org configs.
 
