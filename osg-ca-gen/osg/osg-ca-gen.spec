@@ -6,7 +6,7 @@
 Summary:   Generate CAs and certificates for testing an OSG installation
 Name:      osg-ca-gen
 Version:   1.0.0
-Release:   1%{?dist}
+Release:   2%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
 Packager:  VDT <vdt-support@opensciencegrid.org>
@@ -15,6 +15,8 @@ AutoReq:   yes
 AutoProv:  yes
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 BuildArch: noarch
+
+Requires: openssl
 
 %description
 Create DigiCert-like CAs and certificates for testing an OSG Software installation
@@ -35,5 +37,8 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/cagen.py*
 
 %changelog
+* Mon Jan 25 2016 Brian Lin <blin@cs.wisc.edu> 1.0.0-2
+- Add openssl requirement
+
 * Mon Jan 25 2016 Brian Lin <blin@cs.wisc.edu> 1.0.0-1
 - Initial release
