@@ -8,7 +8,7 @@
 Summary: The VOMS Administration service
 Name: voms-admin-server
 Version: 2.7.0
-Release: 1.19%{?dist}
+Release: 1.20%{?dist}
 License: ASL 2.0
 Group: System Environment/Libraries
 
@@ -272,6 +272,9 @@ fi
 %{tomcat_endorsed}/xalan-j2-serializer.jar
 
 %changelog
+* Tue Jan 26 2016 Carl Edquist <edquist@cs.wisc.edu> - 2.7.0-1.20
+- Port upstream fix for broken user lookup by subject (SOFTWARE-2158)
+
 * Thu Jan 14 2016 Carl Edquist <edquist@cs.wisc.edu> - 2.7.0-1.19
 - Port VOMS-605 option to skip CA check (SOFTWARE-2158)
 

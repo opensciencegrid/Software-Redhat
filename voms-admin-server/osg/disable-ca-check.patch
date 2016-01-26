@@ -69,7 +69,7 @@ index b1a1319..d7fff86 100644
 +
  }
 diff --git a/src/main/java/org/glite/security/voms/admin/operations/CurrentAdmin.java b/src/main/java/org/glite/security/voms/admin/operations/CurrentAdmin.java
-index 0f5708b..5cdd23b 100644
+index 0f5708b..7070283 100644
 --- a/src/main/java/org/glite/security/voms/admin/operations/CurrentAdmin.java
 +++ b/src/main/java/org/glite/security/voms/admin/operations/CurrentAdmin.java
 @@ -26,6 +26,8 @@ import java.util.regex.Pattern;
@@ -114,3 +114,27 @@ index 0f5708b..5cdd23b 100644
  
  		if (admin == null)
  			admin = VOMSAdminDAO.instance().getAnyAuthenticatedUserAdmin();
+@@ -98,10 +116,21 @@ public class CurrentAdmin {
+ 	}
+ 	public VOMSUser getVoUser() {
+ 
++		String lookupSubject, lookupIssuer;
++
+ 		if (!isAuthorizedAdmin()) {
++			lookupSubject = getRealSubject();
++			lookupIssuer = getRealIssuer();
++		} else {
++			lookupSubject = admin.getDn();
++			lookupIssuer = admin.getCa().getSubjectString();
++		}
++
++		final boolean skipCACheck = VOMSConfiguration.instance().getBoolean(
++			VOMSConfigurationConstants.SKIP_CA_CHECK, false);
+ 
+-			return VOMSUserDAO.instance().getByDNandCA(getRealSubject(),
+-					getRealIssuer());
++		if (skipCACheck) {
++			return VOMSUserDAO.instance().findBySubject(lookupSubject);
+ 		}
+ 
+ 		return VOMSUserDAO.instance()
