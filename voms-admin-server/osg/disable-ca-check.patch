@@ -69,7 +69,7 @@ index b1a1319..d7fff86 100644
 +
  }
 diff --git a/src/main/java/org/glite/security/voms/admin/operations/CurrentAdmin.java b/src/main/java/org/glite/security/voms/admin/operations/CurrentAdmin.java
-index 0f5708b..7070283 100644
+index 0f5708b..c60f576 100644
 --- a/src/main/java/org/glite/security/voms/admin/operations/CurrentAdmin.java
 +++ b/src/main/java/org/glite/security/voms/admin/operations/CurrentAdmin.java
 @@ -26,6 +26,8 @@ import java.util.regex.Pattern;
@@ -114,7 +114,7 @@ index 0f5708b..7070283 100644
  
  		if (admin == null)
  			admin = VOMSAdminDAO.instance().getAnyAuthenticatedUserAdmin();
-@@ -98,10 +116,21 @@ public class CurrentAdmin {
+@@ -98,14 +116,25 @@ public class CurrentAdmin {
  	}
  	public VOMSUser getVoUser() {
  
@@ -138,3 +138,8 @@ index 0f5708b..7070283 100644
  		}
  
  		return VOMSUserDAO.instance()
+-				.getByDNandCA(admin.getDn(), admin.getCa());
++				.findByDNandCA(lookupSubject, lookupIssuer);
+ 	}
+ 
+ 	public void createVoUser() {
