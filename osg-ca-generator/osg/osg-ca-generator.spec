@@ -4,9 +4,9 @@
 %endif
 
 Summary:   Generate CAs and certificates for testing an OSG installation
-Name:      osg-ca-gen
-Version:   1.0.0
-Release:   2%{?dist}
+Name:      osg-ca-generator
+Version:   1.0.1
+Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
 Packager:  VDT <vdt-support@opensciencegrid.org>
@@ -37,6 +37,10 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/cagen.py*
 
 %changelog
+* Wed Jan 27 2016 Brian Lin <blin@cs.wisc.edu> 1.0.1.-1
+- Fix subject alternative name entry for generated certs
+- Remove serial numbered copies of created certs in working dir (SOFTWARE-2174)
+
 * Mon Jan 25 2016 Brian Lin <blin@cs.wisc.edu> 1.0.0-2
 - Add openssl requirement
 
