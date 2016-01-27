@@ -45,7 +45,7 @@ rm -rf $RPM_BUILD_ROOT
 %doc
 
 %changelog
-* Wed Jan 27 2016 Anand Padmanabhan <apadmana@illinois.edu> 1.52-1
+* Wed Jan 27 2016 Anand Padmanabhan <apadmana@illinois.edu> 1.71-1
 - CA release corresponding to IGTF 1.71 release.
 
 * Mon Nov 30 2015 Jeny Teheran <jteheran@fnal.gov> 1.70-1
