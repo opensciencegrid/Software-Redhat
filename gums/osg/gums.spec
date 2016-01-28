@@ -125,11 +125,10 @@ Source14: velocity-1.5.jar
 # Can't get el5 build working with jsp precompile
 Patch0: undo-jsp-precompile.patch
 
+# Mat's EL7 fixes for SOFTWARE-2040; we should get these upstream.
 Patch1: EL7-Remove-TYPE-InnoDB-from-SQL-templates.patch
-
 Patch2: Use-bouncycastle-1.50.patch
 Patch3: Use-jspc-compiler-for-tomcat7.patch
-
 Patch4: gums-client-UsrMove.patch
 
 %description
@@ -177,7 +176,6 @@ Summary: Tomcat service for GUMS
 
 %setup -n %{name}-%{version}
 
-%patch4 -p1
 %if 0%{?rhel} < 6
 %patch0 -p1
 %endif
@@ -186,6 +184,7 @@ Summary: Tomcat service for GUMS
 %patch2 -p1
 %patch3 -p1
 %endif
+%patch4 -p1
 
 %build
 
