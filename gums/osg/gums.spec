@@ -12,8 +12,8 @@
 
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
-Version: 1.5.1
-Release: 6%{?dist}
+Version: 1.5.2
+Release: 1%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 URL: https://github.com/opensciencegrid/gums
@@ -493,6 +493,9 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+* Thu Jan 28 2016 Carl Edquist <edquist@cs.wisc.edu> - 1.5.2-1
+- Update to GUMS 1.5.2 (SOFTWARE-2169)
+
 * Tue Dec 15 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.1-6
 - Remove brackets "[]" from jar file symlinks in %{gumslibdir} and
   %{webinfdir}/lib to ensure serializer gets loaded before xalan-j2
