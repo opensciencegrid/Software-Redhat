@@ -6,6 +6,8 @@
 %define local_maven /tmp/m2-repository
 # Don't want to repack jars
 %define __os_install_post %{nil}
+%define jglobus_version 2.1.0
+%define privilege_xacml_version 2.6.5
 %define mvnopts --batch-mode -Dmaven.repo.local="%{local_maven}"
 
 Name: gums
@@ -26,8 +28,6 @@ BuildRequires: maven2
 %define mvn %{_bindir}/mvn
 %define commons_codec jakarta-commons-codec
 %define commons_digester jakarta-commons-digester
-%define jglobus_version 2.1.0
-%define privilege_xacml_version 2.6.5
 %endif
 
 %if 0%{?rhel} == 6
@@ -36,8 +36,6 @@ BuildRequires: maven22
 %define mvn %{_bindir}/mvn22
 %define commons_codec jakarta-commons-codec
 %define commons_digester jakarta-commons-digester
-%define jglobus_version 2.1.0
-%define privilege_xacml_version 2.6.5
 %endif
 
 %if 0%{?rhel} >= 7
@@ -46,8 +44,6 @@ BuildRequires: maven >= 3.0.0
 %define mvn %{_bindir}/mvn
 %define commons_codec apache-commons-codec
 %define commons_digester apache-commons-digester
-%define jglobus_version 2.1.0
-%define privilege_xacml_version 2.6.5
 %define bouncycastle_version 1.50
 BuildRequires: bouncycastle = %{bouncycastle_version}
 Requires: bouncycastle = %{bouncycastle_version}
