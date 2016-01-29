@@ -1,6 +1,6 @@
 Name:           vo-client
-Version:        62
-Release:        2%{?dist}
+Version:        63
+Release:        1%{?dist}
 Summary:        Contains vomses file for use with user authentication and edg-mkgridmap.conf file that contains configuration information for edg-mkgridmap.
 
 Group:          System Environment/Base
@@ -85,6 +85,12 @@ rm -rf $RPM_BUILD_ROOT
 %attr(0600,tomcat,tomcat) %config(noreplace) %{_sysconfdir}/gums/gums.config.template
 
 %changelog
+* Fri Jan 29 2016 Carl Edquist <edquist@cs.wisc.edu> - 63-1
+- Update to vo-client 63 (SOFTWARE-2186)
+  - Drop UC3 and osgcrossce VOs
+  - Transition OSG VO to CILogon OSG CA
+  - Change DN of VOMS servers for Star, Gluex, MIS, & osgedu VOs
+
 * Mon Jan 11 2016 Carl Edquist <edquist@cs.wisc.edu> - 62-2
 - Update FNAL VOMS Server CA (SOFTWARE-2154)
 
