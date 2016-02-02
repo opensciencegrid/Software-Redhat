@@ -5,7 +5,7 @@
 
 Summary:   Tests an OSG Software installation
 Name:      osg-test
-Version:   1.5.0
+Version:   1.5.1
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -39,6 +39,9 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/osgtest
 
 %changelog
+* Tue Feb 2 2016 Brian Lin <blin@cs.wisc.edu> - 1.5.1-1
+- Fix error due to missing gratia outbox dir
+
 * Tue Feb 2 2016 Brian Lin <blin@cs.wisc.edu> - 1.5.0-1
 - Use the new osg-ca-generator library
 - Add CVMFS and gratia psacct tests back to the nightlies
