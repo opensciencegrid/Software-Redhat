@@ -5,7 +5,7 @@
 
 Summary:   Tests an OSG Software installation
 Name:      osg-test
-Version:   1.4.33
+Version:   1.5.1
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -15,6 +15,8 @@ AutoReq:   yes
 AutoProv:  yes
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 BuildArch: noarch
+
+Requires: osg-ca-generator
 
 %description
 The OSG Test system runs functional integration tests against an OSG Software
@@ -37,6 +39,14 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/osgtest
 
 %changelog
+* Tue Feb 2 2016 Brian Lin <blin@cs.wisc.edu> - 1.5.1-1
+- Fix error due to missing gratia outbox dir
+
+* Tue Feb 2 2016 Brian Lin <blin@cs.wisc.edu> - 1.5.0-1
+- Use the new osg-ca-generator library
+- Add CVMFS and gratia psacct tests back to the nightlies
+- Fix 3.1 -> 3.2 cvmfs cleanup failures (SOFTWARE-2131)
+
 * Thu Dec 17 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.4.33-1
 - Only remove OSG-Test CA certs if osg-test created them (SOFTWARE-2129)
 - Fixes for pbs tests in EL7 (SOFTWARE-2130, SOFTWARE-1996)
