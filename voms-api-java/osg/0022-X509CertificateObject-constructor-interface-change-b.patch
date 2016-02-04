@@ -1,0 +1,46 @@
+From 9a3155c41c17f772934755f752831483cf4ad9b0 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Thu, 1 Oct 2015 10:55:51 -0500
+Subject: [PATCH 22/24] X509CertificateObject constructor interface change (bc
+ 1.47+)
+
+---
+ src/main/java/org/glite/voms/ac/ACCerts.java | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/src/main/java/org/glite/voms/ac/ACCerts.java b/src/main/java/org/glite/voms/ac/ACCerts.java
+index 498ecd2..2b4a196 100644
+--- a/src/main/java/org/glite/voms/ac/ACCerts.java
++++ b/src/main/java/org/glite/voms/ac/ACCerts.java
+@@ -39,10 +39,11 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
+ import org.bouncycastle.asn1.ASN1Sequence;
+ import org.bouncycastle.asn1.ASN1Encodable;
+ import org.bouncycastle.asn1.ASN1EncodableVector;
+ import org.bouncycastle.asn1.ASN1Primitive;
+ import org.bouncycastle.asn1.DERSequence;
++import org.bouncycastle.asn1.x509.Certificate;
+ import org.bouncycastle.asn1.x509.X509CertificateStructure;
+ import org.bouncycastle.jce.provider.X509CertificateObject;
+ 
+ /**
+  * This class represents the ACCerts extension which may be present in the AC.
+@@ -92,14 +93,14 @@ public class ACCerts implements ASN1Encodable {
+ 
+         for (Enumeration e = seq.getObjects(); e.hasMoreElements();){
+             Object o = e.nextElement();
+ 
+             if (o instanceof DERSequence) {
+-                ASN1Sequence s = ASN1Sequence.getInstance(o);
+                 byte[] data = null;
+                 try {
+-                      data = new X509CertificateObject(X509CertificateStructure.getInstance(s)).getEncoded();
++                      Certificate cert = Certificate.getInstance(o);
++                      data = new X509CertificateObject(cert).getEncoded();
+                       l.add((X509Certificate)cf.generateCertificate(new ByteArrayInputStream(data)));
+                 }
+                 catch(Exception ex) {
+                     throw new IllegalArgumentException("Error in encoding ACCerts. " + ex.getMessage());
+                 }
+-- 
+2.4.6
+

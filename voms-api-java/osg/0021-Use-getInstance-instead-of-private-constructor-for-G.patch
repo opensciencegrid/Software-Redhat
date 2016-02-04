@@ -1,0 +1,48 @@
+From 157b67e559f16e129244fbd94a4da94950171b5e Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Thu, 1 Oct 2015 10:34:34 -0500
+Subject: [PATCH 21/24] Use getInstance() instead of private constructor for
+ GeneralNames (bc 1.47+)
+
+---
+ src/main/java/org/glite/voms/ac/AttCertIssuer.java | 2 +-
+ src/main/java/org/glite/voms/ac/V2Form.java        | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/main/java/org/glite/voms/ac/AttCertIssuer.java b/src/main/java/org/glite/voms/ac/AttCertIssuer.java
+index d7de898..c343544 100644
+--- a/src/main/java/org/glite/voms/ac/AttCertIssuer.java
++++ b/src/main/java/org/glite/voms/ac/AttCertIssuer.java
+@@ -60,11 +60,11 @@ public class AttCertIssuer implements ASN1Encodable {
+                 v2Form = new V2Form(ASN1Sequence.getInstance(cObj, /*explicit=*/
+                             false));
+                 version = 2;
+             }
+         } else if (obj instanceof ASN1Sequence) {
+-            v1Form = new GeneralNames((ASN1Sequence) obj);
++            v1Form = GeneralNames.getInstance(obj);
+             version = 1;
+         }
+ 
+         if (version < 0) {
+             throw new IllegalArgumentException("AttCertIssuer: input not a proper CHOICE");
+diff --git a/src/main/java/org/glite/voms/ac/V2Form.java b/src/main/java/org/glite/voms/ac/V2Form.java
+index 5e242e2..a69a91b 100644
+--- a/src/main/java/org/glite/voms/ac/V2Form.java
++++ b/src/main/java/org/glite/voms/ac/V2Form.java
+@@ -55,11 +55,11 @@ public class V2Form implements ASN1Encodable {
+ 
+     public V2Form(ASN1Sequence seq) {
+         int n = 0;
+ 
+         if (seq.getObjectAt(0) instanceof ASN1Sequence) {
+-            issuerName = new GeneralNames((ASN1Sequence) seq.getObjectAt(0));
++            issuerName = GeneralNames.getInstance(seq.getObjectAt(0));
+             n++;
+         }
+ 
+         for (; n < seq.size(); n++) {
+             ASN1TaggedObject tObj = (ASN1TaggedObject) seq.getObjectAt(n);
+-- 
+2.4.6
+

@@ -1,0 +1,59 @@
+From d40cb91b64d232909f76e6c6289941929b2fa94d Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Thu, 24 Sep 2015 15:02:09 -0500
+Subject: [PATCH 16/24] DEREnumerated -> ASN1Enumerated (bc 1.47+)
+
+---
+ src/main/java/org/glite/voms/ac/ObjectDigestInfo.java | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/src/main/java/org/glite/voms/ac/ObjectDigestInfo.java b/src/main/java/org/glite/voms/ac/ObjectDigestInfo.java
+index 81409f8..2966c66 100644
+--- a/src/main/java/org/glite/voms/ac/ObjectDigestInfo.java
++++ b/src/main/java/org/glite/voms/ac/ObjectDigestInfo.java
+@@ -30,26 +30,26 @@ package org.glite.voms.ac;
+ 
+ import org.bouncycastle.asn1.ASN1EncodableVector;
+ import org.bouncycastle.asn1.ASN1Sequence;
+ import org.bouncycastle.asn1.DERBitString;
+ import org.bouncycastle.asn1.ASN1Encodable;
+-import org.bouncycastle.asn1.DEREnumerated;
++import org.bouncycastle.asn1.ASN1Enumerated;
+ import org.bouncycastle.asn1.ASN1Primitive;
+ import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+ import org.bouncycastle.asn1.DERSequence;
+ import org.bouncycastle.asn1.DERTaggedObject;
+ import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
+ 
+ 
+ public class ObjectDigestInfo implements ASN1Encodable {
+-    DEREnumerated digestedObjectType;
++    ASN1Enumerated digestedObjectType;
+     ASN1ObjectIdentifier otherObjectTypeID;
+     AlgorithmIdentifier digestAlgorithm;
+     DERBitString objectDigest;
+ 
+     public ObjectDigestInfo(ASN1Sequence seq) {
+-        digestedObjectType = DEREnumerated.getInstance((DERTaggedObject) seq.getObjectAt(0));
++        digestedObjectType = ASN1Enumerated.getInstance((DERTaggedObject) seq.getObjectAt(0));
+ 
+         int offset = 0;
+ 
+         if (seq.size() == 4) {
+             otherObjectTypeID = ASN1ObjectIdentifier.getInstance(seq.getObjectAt(1));
+@@ -59,11 +59,11 @@ public class ObjectDigestInfo implements ASN1Encodable {
+         digestAlgorithm = AlgorithmIdentifier.getInstance(seq.getObjectAt(1 + offset));
+ 
+         objectDigest = new DERBitString(seq.getObjectAt(2 + offset));
+     }
+ 
+-    public DEREnumerated getDigestedObjectType() {
++    public ASN1Enumerated getDigestedObjectType() {
+         return digestedObjectType;
+     }
+ 
+     public ASN1ObjectIdentifier getOtherObjectTypeID() {
+         return otherObjectTypeID;
+-- 
+2.4.6
+

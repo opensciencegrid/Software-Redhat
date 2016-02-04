@@ -1,0 +1,64 @@
+From 63b0b80408aab9d3d4c6263aa206d5f6ee3e4025 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Wed, 30 Sep 2015 11:12:40 -0500
+Subject: [PATCH 18/24] AttCertValidityPeriod signature change (bc 1.47+)
+
+The AttCertValidityPeriod construction used to be able to take an
+ASN1Sequence containing the beginning and end times.  Now it requires
+two ASN1GeneralizedTime objects instead.
+---
+ .../java/org/glite/voms/ac/AttributeCertificateInfo.java     | 12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
+
+diff --git a/src/main/java/org/glite/voms/ac/AttributeCertificateInfo.java b/src/main/java/org/glite/voms/ac/AttributeCertificateInfo.java
+index f757985..2742614 100644
+--- a/src/main/java/org/glite/voms/ac/AttributeCertificateInfo.java
++++ b/src/main/java/org/glite/voms/ac/AttributeCertificateInfo.java
+@@ -46,12 +46,12 @@ import org.bouncycastle.asn1.ASN1Sequence;
+ import org.bouncycastle.asn1.ASN1TaggedObject;
+ import org.bouncycastle.asn1.DERBitString;
+ import org.bouncycastle.asn1.DERSet;
+ import org.bouncycastle.asn1.ASN1Encodable;
+ import org.bouncycastle.asn1.ASN1EncodableVector;
+-import org.bouncycastle.asn1.DERGeneralizedTime;
+ import org.bouncycastle.asn1.DERIA5String;
++import org.bouncycastle.asn1.ASN1GeneralizedTime;
+ import org.bouncycastle.asn1.ASN1Integer;
+ import org.bouncycastle.asn1.ASN1Primitive;
+ import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+ import org.bouncycastle.asn1.DEROctetString;
+ import org.bouncycastle.asn1.DERSequence;
+@@ -105,26 +105,24 @@ public class AttributeCertificateInfo implements ASN1Encodable {
+         signature = new AlgorithmIdentifier((ASN1Sequence) seq.getObjectAt(3));
+         serialNumber = (ASN1Integer) seq.getObjectAt(4);
+ 
+         // VOMS has encoding problems of attCertValidity (uses PrivateKeyUsagePeriod syntax instead)
+         ASN1Sequence s2 = (ASN1Sequence) seq.getObjectAt(5);
+-        ASN1Sequence s3 = s2;
+ 
++        ASN1GeneralizedTime[] times = new ASN1GeneralizedTime[2];
+         if (s2.getObjectAt(0) instanceof ASN1TaggedObject) {
+             badVomsEncoding = true;
+ 
+             ASN1EncodableVector v = new ASN1EncodableVector();
+ 
+             for (int i = 0; i < 2; i++) {
+                 byte[] bb = ((DEROctetString) ((ASN1TaggedObject) s2.getObjectAt(i)).getObject()).getOctets();
+-                v.add(new DERGeneralizedTime(new String(bb)));
++                times[i] = new ASN1GeneralizedTime(new String(bb));
++                v.add(times[i]);
+             }
+-
+-            s3 = (ASN1Sequence) new DERSequence(v);
+         }
+-
+-        attrCertValidityPeriod = new AttCertValidityPeriod(s3);
++        attrCertValidityPeriod = new AttCertValidityPeriod(times[0], times[1]);
+         attributes = (ASN1Sequence) seq.getObjectAt(6);
+ 
+         // getting FQANs
+ 
+         if (attributes != null && attributes.size() != 0) {
+-- 
+2.4.6
+

@@ -1,0 +1,332 @@
+From c61a8f5c70a4ccd9ee9253cbb20f32f6b36d9c91 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Thu, 24 Sep 2015 15:00:39 -0500
+Subject: [PATCH 14/24] DERObjectIdentifier -> ASN1ObjectIdentifier (bc 1.47+)
+
+---
+ src/main/java/org/glite/voms/PKIUtils.java           |  4 ++--
+ src/main/java/org/glite/voms/PKIVerifier.java        |  4 ++--
+ .../java/org/glite/voms/ac/AttributeCertificate.java |  4 ++--
+ .../org/glite/voms/ac/AttributeCertificateInfo.java  | 10 +++++-----
+ src/main/java/org/glite/voms/ac/IetfAttrSyntax.java  |  4 ++--
+ .../java/org/glite/voms/ac/ObjectDigestInfo.java     |  8 ++++----
+ .../java/org/glite/voms/contact/ProxyPolicy.java     | 20 ++++++++++----------
+ .../org/glite/voms/contact/VOMSProxyBuilder.java     |  4 ++--
+ 8 files changed, 29 insertions(+), 29 deletions(-)
+
+diff --git a/src/main/java/org/glite/voms/PKIUtils.java b/src/main/java/org/glite/voms/PKIUtils.java
+index d24e8d5..a3f8a48 100644
+--- a/src/main/java/org/glite/voms/PKIUtils.java
++++ b/src/main/java/org/glite/voms/PKIUtils.java
+@@ -62,11 +62,11 @@ import org.bouncycastle.asn1.ASN1OctetString;
+ import org.bouncycastle.asn1.ASN1Sequence;
+ import org.bouncycastle.asn1.ASN1TaggedObject;
+ import org.bouncycastle.asn1.DERBitString;
+ import org.bouncycastle.asn1.DERInteger;
+ import org.bouncycastle.asn1.ASN1Primitive;
+-import org.bouncycastle.asn1.DERObjectIdentifier;
++import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+ import org.bouncycastle.asn1.DEROctetString;
+ import org.bouncycastle.asn1.DERTaggedObject;
+ import org.bouncycastle.asn1.x509.AuthorityKeyIdentifier;
+ import org.bouncycastle.asn1.x509.BasicConstraints;
+ import org.bouncycastle.asn1.x509.GeneralName;
+@@ -243,11 +243,11 @@ public class PKIUtils {
+         ListIterator values_iter = values.listIterator();
+         String result = "";
+         String addition = "";
+ 
+         while (oids_iter.hasNext()) {
+-            DERObjectIdentifier oid = (DERObjectIdentifier)oids_iter.next();
++            ASN1ObjectIdentifier oid = (ASN1ObjectIdentifier)oids_iter.next();
+             String value = (String)values_iter.next();
+             if (oid.equals(X509Name.C))
+                 addition = "/C=" + value;
+             else if (oid.equals(X509Name.CN))
+                 addition = "/CN=" + value;
+diff --git a/src/main/java/org/glite/voms/PKIVerifier.java b/src/main/java/org/glite/voms/PKIVerifier.java
+index cfcf0fa..ecdd3e8 100644
+--- a/src/main/java/org/glite/voms/PKIVerifier.java
++++ b/src/main/java/org/glite/voms/PKIVerifier.java
+@@ -52,11 +52,11 @@ import java.util.HashSet;
+ import java.util.Vector;
+ 
+ import javax.security.auth.x500.X500Principal;
+ 
+ import org.apache.log4j.Logger;
+-import org.bouncycastle.asn1.DERObjectIdentifier;
++import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+ import org.bouncycastle.asn1.ASN1Sequence;
+ import org.bouncycastle.asn1.ASN1Primitive;
+ import org.bouncycastle.asn1.ASN1Primitive;
+ import org.bouncycastle.asn1.ASN1InputStream;
+ import org.bouncycastle.asn1.DEROctetString;
+@@ -436,11 +436,11 @@ public class PKIVerifier {
+         X509Extensions exts = aci.getExtensions();
+ 
+         if ( exts != null ) {
+             Enumeration oids = exts.oids();
+             while ( oids.hasMoreElements() ) {
+-                DERObjectIdentifier oid = (DERObjectIdentifier) oids
++                ASN1ObjectIdentifier oid = (ASN1ObjectIdentifier) oids
+                         .nextElement();
+                 X509Extension ext = exts.getExtension( oid );
+                 if ( ext.isCritical() && !handledACOIDs.contains( oid ) ) {
+                     logger.error( "Unknown critical extension discovered: "
+                             + oid.getId() );
+diff --git a/src/main/java/org/glite/voms/ac/AttributeCertificate.java b/src/main/java/org/glite/voms/ac/AttributeCertificate.java
+index 6184e46..9ac8911 100644
+--- a/src/main/java/org/glite/voms/ac/AttributeCertificate.java
++++ b/src/main/java/org/glite/voms/ac/AttributeCertificate.java
+@@ -60,11 +60,11 @@ import org.bouncycastle.asn1.DERBitString;
+ import org.bouncycastle.asn1.DERSet;
+ import org.bouncycastle.asn1.ASN1Encodable;
+ import org.bouncycastle.asn1.DERGeneralizedTime;
+ import org.bouncycastle.asn1.DERInteger;
+ import org.bouncycastle.asn1.ASN1Primitive;
+-import org.bouncycastle.asn1.DERObjectIdentifier;
++import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+ import org.bouncycastle.asn1.DEROutputStream;
+ import org.bouncycastle.asn1.DERSequence;
+ import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
+ import org.bouncycastle.asn1.x509.AttCertValidityPeriod;
+ import org.bouncycastle.asn1.x509.GeneralName;
+@@ -227,11 +227,11 @@ public class AttributeCertificate implements ASN1Encodable {
+         Vector v = new Vector();
+ 
+         for (Enumeration e = seq.getObjects(); e.hasMoreElements();) {
+             ASN1Sequence attribute = (ASN1Sequence) e.nextElement();
+ 
+-            if (oid.equals(((DERObjectIdentifier) attribute.getObjectAt(0)).getId())) {
++            if (oid.equals(((ASN1ObjectIdentifier) attribute.getObjectAt(0)).getId())) {
+                 DERSet set = (DERSet) attribute.getObjectAt(1);
+ 
+                 for (Enumeration s = set.getObjects(); s.hasMoreElements();) {
+                     v.add(s.nextElement());
+                 }
+diff --git a/src/main/java/org/glite/voms/ac/AttributeCertificateInfo.java b/src/main/java/org/glite/voms/ac/AttributeCertificateInfo.java
+index a8fef15..6c57f39 100644
+--- a/src/main/java/org/glite/voms/ac/AttributeCertificateInfo.java
++++ b/src/main/java/org/glite/voms/ac/AttributeCertificateInfo.java
+@@ -50,11 +50,11 @@ import org.bouncycastle.asn1.ASN1Encodable;
+ import org.bouncycastle.asn1.ASN1EncodableVector;
+ import org.bouncycastle.asn1.DERGeneralizedTime;
+ import org.bouncycastle.asn1.DERIA5String;
+ import org.bouncycastle.asn1.DERInteger;
+ import org.bouncycastle.asn1.ASN1Primitive;
+-import org.bouncycastle.asn1.DERObjectIdentifier;
++import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+ import org.bouncycastle.asn1.DEROctetString;
+ import org.bouncycastle.asn1.DERSequence;
+ import org.bouncycastle.asn1.DERTaggedObject;
+ import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
+ import org.bouncycastle.asn1.x509.AttCertValidityPeriod;
+@@ -94,13 +94,13 @@ public class AttributeCertificateInfo implements ASN1Encodable {
+     public static final String AC_FULL_ATTRIBUTES_OID = "1.3.6.1.4.1.8005.100.100.11";
+     public static final String VOMS_EXT_OID  = "1.3.6.1.4.1.8005.100.100.5";
+     public static final String VOMS_ATTR_OID = "1.3.6.1.4.1.8005.100.100.4";
+ 
+     public AttributeCertificateInfo(ASN1Sequence seq) {
+-        DERObjectIdentifier AC_TARGET_OID_DER = new DERObjectIdentifier(AC_TARGET_OID);
+-        DERObjectIdentifier AC_CERTS_OID_DER = new DERObjectIdentifier(AC_CERTS_OID);
+-        DERObjectIdentifier AC_FULL_ATTRIBUTES_OID_DER = new DERObjectIdentifier(AC_FULL_ATTRIBUTES_OID);
++        ASN1ObjectIdentifier AC_TARGET_OID_DER = new ASN1ObjectIdentifier(AC_TARGET_OID);
++        ASN1ObjectIdentifier AC_CERTS_OID_DER = new ASN1ObjectIdentifier(AC_CERTS_OID);
++        ASN1ObjectIdentifier AC_FULL_ATTRIBUTES_OID_DER = new ASN1ObjectIdentifier(AC_FULL_ATTRIBUTES_OID);
+         version = (DERInteger) seq.getObjectAt(0);
+         holder = new Holder((ASN1Sequence) seq.getObjectAt(1));
+         issuer = new AttCertIssuer(seq.getObjectAt(2));
+         signature = new AlgorithmIdentifier((ASN1Sequence) seq.getObjectAt(3));
+         serialNumber = (DERInteger) seq.getObjectAt(4);
+@@ -130,11 +130,11 @@ public class AttributeCertificateInfo implements ASN1Encodable {
+         if (attributes != null && attributes.size() != 0) {
+             for (Enumeration e = attributes.getObjects(); e.hasMoreElements();) {
+ 
+                 ASN1Sequence attribute = (ASN1Sequence) e.nextElement();
+ 
+-                if (VOMS_ATTR_OID.equals(((DERObjectIdentifier) attribute.getObjectAt(0)).getId())) {
++                if (VOMS_ATTR_OID.equals(((ASN1ObjectIdentifier) attribute.getObjectAt(0)).getId())) {
+                     DERSet set = (DERSet) attribute.getObjectAt(1);
+ 
+                     for (Enumeration s = set.getObjects(); s.hasMoreElements();) {
+                         IetfAttrSyntax attr = new IetfAttrSyntax((ASN1Sequence)s.nextElement());
+                         String url = ((DERIA5String) GeneralName.getInstance(((ASN1Sequence) attr.getPolicyAuthority()
+diff --git a/src/main/java/org/glite/voms/ac/IetfAttrSyntax.java b/src/main/java/org/glite/voms/ac/IetfAttrSyntax.java
+index a295b4a..97a9852 100644
+--- a/src/main/java/org/glite/voms/ac/IetfAttrSyntax.java
++++ b/src/main/java/org/glite/voms/ac/IetfAttrSyntax.java
+@@ -38,11 +38,11 @@ import java.util.Vector;
+ import org.bouncycastle.asn1.ASN1Sequence;
+ import org.bouncycastle.asn1.ASN1TaggedObject;
+ import org.bouncycastle.asn1.ASN1Encodable;
+ import org.bouncycastle.asn1.ASN1EncodableVector;
+ import org.bouncycastle.asn1.ASN1Primitive;
+-import org.bouncycastle.asn1.DERObjectIdentifier;
++import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+ import org.bouncycastle.asn1.DEROctetString;
+ import org.bouncycastle.asn1.DERSequence;
+ import org.bouncycastle.asn1.DERTaggedObject;
+ import org.bouncycastle.asn1.DERUniversalString;
+ import org.bouncycastle.asn1.x509.GeneralNames;
+@@ -93,11 +93,11 @@ public class IetfAttrSyntax implements ASN1Encodable {
+ 
+         for (Enumeration e = seq.getObjects(); e.hasMoreElements();) {
+             ASN1Primitive obj = (ASN1Primitive) e.nextElement();
+             int type;
+ 
+-            if (obj instanceof DERObjectIdentifier) {
++            if (obj instanceof ASN1ObjectIdentifier) {
+                 type = VALUE_OID;
+             } else if (obj instanceof DERUniversalString) {
+                 type = VALUE_UTF8;
+             } else if (obj instanceof DEROctetString) {
+                 type = VALUE_OCTETS;
+diff --git a/src/main/java/org/glite/voms/ac/ObjectDigestInfo.java b/src/main/java/org/glite/voms/ac/ObjectDigestInfo.java
+index 2b741f1..81409f8 100644
+--- a/src/main/java/org/glite/voms/ac/ObjectDigestInfo.java
++++ b/src/main/java/org/glite/voms/ac/ObjectDigestInfo.java
+@@ -32,29 +32,29 @@ import org.bouncycastle.asn1.ASN1EncodableVector;
+ import org.bouncycastle.asn1.ASN1Sequence;
+ import org.bouncycastle.asn1.DERBitString;
+ import org.bouncycastle.asn1.ASN1Encodable;
+ import org.bouncycastle.asn1.DEREnumerated;
+ import org.bouncycastle.asn1.ASN1Primitive;
+-import org.bouncycastle.asn1.DERObjectIdentifier;
++import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+ import org.bouncycastle.asn1.DERSequence;
+ import org.bouncycastle.asn1.DERTaggedObject;
+ import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
+ 
+ 
+ public class ObjectDigestInfo implements ASN1Encodable {
+     DEREnumerated digestedObjectType;
+-    DERObjectIdentifier otherObjectTypeID;
++    ASN1ObjectIdentifier otherObjectTypeID;
+     AlgorithmIdentifier digestAlgorithm;
+     DERBitString objectDigest;
+ 
+     public ObjectDigestInfo(ASN1Sequence seq) {
+         digestedObjectType = DEREnumerated.getInstance((DERTaggedObject) seq.getObjectAt(0));
+ 
+         int offset = 0;
+ 
+         if (seq.size() == 4) {
+-            otherObjectTypeID = DERObjectIdentifier.getInstance(seq.getObjectAt(1));
++            otherObjectTypeID = ASN1ObjectIdentifier.getInstance(seq.getObjectAt(1));
+             offset++;
+         }
+ 
+         digestAlgorithm = AlgorithmIdentifier.getInstance(seq.getObjectAt(1 + offset));
+ 
+@@ -63,11 +63,11 @@ public class ObjectDigestInfo implements ASN1Encodable {
+ 
+     public DEREnumerated getDigestedObjectType() {
+         return digestedObjectType;
+     }
+ 
+-    public DERObjectIdentifier getOtherObjectTypeID() {
++    public ASN1ObjectIdentifier getOtherObjectTypeID() {
+         return otherObjectTypeID;
+     }
+ 
+     public AlgorithmIdentifier getDigestAlgorithm() {
+         return digestAlgorithm;
+diff --git a/src/main/java/org/glite/voms/contact/ProxyPolicy.java b/src/main/java/org/glite/voms/contact/ProxyPolicy.java
+index 9d0aa92..24376f8 100644
+--- a/src/main/java/org/glite/voms/contact/ProxyPolicy.java
++++ b/src/main/java/org/glite/voms/contact/ProxyPolicy.java
+@@ -27,39 +27,39 @@ package org.glite.voms.contact;
+ import org.bouncycastle.asn1.ASN1Encodable;
+ import org.bouncycastle.asn1.ASN1EncodableVector;
+ import org.bouncycastle.asn1.ASN1Primitive;
+ import org.bouncycastle.asn1.ASN1Sequence;
+ import org.bouncycastle.asn1.DERSequence;
+-import org.bouncycastle.asn1.DERObjectIdentifier;
++import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+ import org.bouncycastle.asn1.DERTaggedObject;
+ import org.bouncycastle.asn1.DEROctetString;
+ 
+ public class ProxyPolicy implements ASN1Encodable {
+-    private DERObjectIdentifier oid;
++    private ASN1ObjectIdentifier oid;
+     private DEROctetString      policy;
+ 
+-    public static final DERObjectIdentifier IMPERSONATION = new DERObjectIdentifier("1.3.6.1.5.5.7.21.1");
+-    public static final DERObjectIdentifier INDEPENDENT = new DERObjectIdentifier("1.3.6.1.5.5.7.21.2");
+-    public static final DERObjectIdentifier LIMITED = new DERObjectIdentifier("1.3.6.1.4.1.3536.1.1.1.9");
++    public static final ASN1ObjectIdentifier IMPERSONATION = new ASN1ObjectIdentifier("1.3.6.1.5.5.7.21.1");
++    public static final ASN1ObjectIdentifier INDEPENDENT = new ASN1ObjectIdentifier("1.3.6.1.5.5.7.21.2");
++    public static final ASN1ObjectIdentifier LIMITED = new ASN1ObjectIdentifier("1.3.6.1.4.1.3536.1.1.1.9");
+ 
+-    public ProxyPolicy(DERObjectIdentifier oid) {
++    public ProxyPolicy(ASN1ObjectIdentifier oid) {
+         this.oid = oid;
+         this.policy = null;
+     }
+ 
+-    public ProxyPolicy(DERObjectIdentifier oid, String policy) {
++    public ProxyPolicy(ASN1ObjectIdentifier oid, String policy) {
+         this.oid = oid;
+         this.policy = new DEROctetString(policy.getBytes());
+     }
+ 
+     public ProxyPolicy(String oid, String policy) {
+-        this.oid = new DERObjectIdentifier(oid);
++        this.oid = new ASN1ObjectIdentifier(oid);
+         this.policy= new DEROctetString(policy.getBytes());
+     }
+ 
+     public ProxyPolicy(String oid) {
+-        this.oid = new DERObjectIdentifier(oid);
++        this.oid = new ASN1ObjectIdentifier(oid);
+         this.policy= null;
+     }
+ 
+     public ASN1Primitive toASN1Primitive() {
+         ASN1EncodableVector vec = new ASN1EncodableVector();
+@@ -70,11 +70,11 @@ public class ProxyPolicy implements ASN1Encodable {
+ 
+         return new DERSequence(vec);
+     }
+ 
+     public ProxyPolicy(ASN1Sequence seq) {
+-        this.oid = (DERObjectIdentifier)seq.getObjectAt(0);
++        this.oid = (ASN1ObjectIdentifier)seq.getObjectAt(0);
+         if (seq.size() > 1) {
+             ASN1Encodable obj = seq.getObjectAt(1);
+             if (obj instanceof DERTaggedObject) {
+                 obj = ((DERTaggedObject)obj).getObject();
+             }
+diff --git a/src/main/java/org/glite/voms/contact/VOMSProxyBuilder.java b/src/main/java/org/glite/voms/contact/VOMSProxyBuilder.java
+index 4e7c32c..00cb349 100644
+--- a/src/main/java/org/glite/voms/contact/VOMSProxyBuilder.java
++++ b/src/main/java/org/glite/voms/contact/VOMSProxyBuilder.java
+@@ -70,11 +70,11 @@ import org.bouncycastle.asn1.ASN1EncodableVector;
+ import org.bouncycastle.asn1.DERSequence;
+ import org.bouncycastle.asn1.ASN1Sequence;
+ import org.bouncycastle.asn1.ASN1Primitive;
+ import org.bouncycastle.asn1.DERSet;
+ 
+-import org.bouncycastle.asn1.DERObjectIdentifier;
++import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+ import org.bouncycastle.asn1.DERPrintableString;
+ 
+ import org.bouncycastle.asn1.x509.X509Name;
+ import org.bouncycastle.asn1.x509.KeyUsage;
+ 
+@@ -363,11 +363,11 @@ public class VOMSProxyBuilder {
+                         throw new IllegalArgumentException("Invalid proxyType");
+                     }
+                 }
+                 else {
+                     try {
+-                        policy = new ProxyPolicy(new DERObjectIdentifier(policyType));
++                        policy = new ProxyPolicy(new ASN1ObjectIdentifier(policyType));
+                     }
+                     catch (IllegalArgumentException e) {
+                         throw new VOMSException("OID required as policyType");
+                     }
+                 }
+-- 
+2.4.6
+

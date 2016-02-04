@@ -1,0 +1,165 @@
+From 57f08428cde125f27eccd94551d39ef612592d16 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Wed, 30 Sep 2015 14:09:50 -0500
+Subject: [PATCH 20/24] IssuerSerial interface change (bc 1.47+) AND
+ ACTarget.setIssuerSerial() fix
+
+The IssuerSerial constructor no longer accepts an ASN1Sequence as an argument.
+The constructor now takes a GeneralNames and a BigInteger (which were
+generally the contents of the ASN1Sequence we were passing it in the
+first place).
+
+Use the constructor when possible, and for when we can't unpack the data from
+the ASN1Sequence, use the getInstance() factory method.
+
+ALSO, ACTarget.setIssuerSerial(String) was incorrectly attempting to use the
+subject part of the string as both the name and the serial number.  The
+IssuerSerial interface change would not have worked without that fix.
+
+Also, the arguments of the GeneralName constructor were in the wrong order.
+---
+ src/main/java/org/glite/voms/ac/ACTarget.java | 18 ++++++++----------
+ src/main/java/org/glite/voms/ac/Holder.java   |  8 +++-----
+ src/main/java/org/glite/voms/ac/V2Form.java   |  2 +-
+ 3 files changed, 12 insertions(+), 16 deletions(-)
+
+diff --git a/src/main/java/org/glite/voms/ac/ACTarget.java b/src/main/java/org/glite/voms/ac/ACTarget.java
+index 7dd96fe..46a2af8 100644
+--- a/src/main/java/org/glite/voms/ac/ACTarget.java
++++ b/src/main/java/org/glite/voms/ac/ACTarget.java
+@@ -22,19 +22,21 @@
+  * follows.
+  *
+  *********************************************************************/
+ package org.glite.voms.ac;
+ 
++import java.math.BigInteger;
+ import org.bouncycastle.asn1.ASN1Sequence;
+ import org.bouncycastle.asn1.ASN1TaggedObject;
+ import org.bouncycastle.asn1.ASN1Encodable;
+ import org.bouncycastle.asn1.ASN1EncodableVector;
+ import org.bouncycastle.asn1.DERIA5String;
+ import org.bouncycastle.asn1.ASN1Primitive;
+ import org.bouncycastle.asn1.DERSequence;
+ import org.bouncycastle.asn1.DERTaggedObject;
+ import org.bouncycastle.asn1.x509.GeneralName;
++import org.bouncycastle.asn1.x509.GeneralNames;
+ import org.bouncycastle.asn1.x509.IssuerSerial;
+ 
+ class NameConverter {
+     private String      value;
+ 
+@@ -147,11 +149,11 @@ public class ACTarget implements ASN1Encodable {
+      * Sets the name
+      *
+      * @param s the name.
+      */
+     public void setName(String s) {
+-        name = new GeneralName(new DERIA5String(s), 6);
++        name = new GeneralName(6, new DERIA5String(s));
+     }
+ 
+     /**
+      * Sets the group.
+      *
+@@ -165,11 +167,11 @@ public class ACTarget implements ASN1Encodable {
+      * Sets the group
+      *
+      * @param s the group name.
+      */
+     public void setGroup(String s) {
+-        group = new GeneralName(new DERIA5String(s), 6);
++        group = new GeneralName(6, new DERIA5String(s));
+     }
+ 
+     /**
+      * Sets the IssuerSerial
+      *
+@@ -187,17 +189,13 @@ public class ACTarget implements ASN1Encodable {
+      */
+     public void setIssuerSerial(String s) {
+         int ch = s.lastIndexOf(':');
+         if (ch != -1) {
+             String iss = s.substring(0, ch);
+-            GeneralName nm = new GeneralName(new DERIA5String(iss), 6);
+-            ASN1Sequence seq = ASN1Sequence.getInstance(name.toASN1Primitive());
+-
+-            ASN1EncodableVector v = new ASN1EncodableVector();
+-            v.add(nm);
+-            v.add(seq);
+-            cert = new IssuerSerial(new DERSequence(v));
++            BigInteger serial = new BigInteger(s.substring(ch));
++            GeneralName nm = new GeneralName(6, new DERIA5String(iss));
++            cert = new IssuerSerial(new GeneralNames(nm), serial);
+         }
+         else throw new IllegalArgumentException("cannot identify issuer and serial");
+     }
+ 
+     /**
+@@ -236,11 +234,11 @@ public class ACTarget implements ASN1Encodable {
+                     name = null;
+                     break;
+                 case 2:
+                     group = null;
+                     name = null;
+-                    cert = new IssuerSerial((ASN1Sequence)obj.getObject());
++                    cert = IssuerSerial.getInstance(obj.getObject());
+                     break;
+                 default:
+                     throw new IllegalArgumentException("Bad tag in encoding ACTarget");
+                 }
+             }
+diff --git a/src/main/java/org/glite/voms/ac/Holder.java b/src/main/java/org/glite/voms/ac/Holder.java
+index 33ced70..b8270ca 100644
+--- a/src/main/java/org/glite/voms/ac/Holder.java
++++ b/src/main/java/org/glite/voms/ac/Holder.java
+@@ -74,14 +74,12 @@ public class Holder implements ASN1Encodable {
+     public Holder(X509Certificate cert) {
+         this(cert.getIssuerX500Principal(), cert.getSerialNumber());
+     }
+ 
+     public Holder(X500Principal issuer, BigInteger serial) {
+-        ASN1EncodableVector v = new ASN1EncodableVector();
+-        v.add(Util.x500nameToGeneralNames(issuer));
+-        v.add(new ASN1Integer(serial));
+-        baseCertificateID = new IssuerSerial(new DERSequence(v));
++        GeneralNames name = Util.x500nameToGeneralNames(issuer);
++        baseCertificateID = new IssuerSerial(name, serial);
+     }
+ 
+     public Holder(ASN1Sequence seq) {
+         for (Enumeration e = seq.getObjects(); e.hasMoreElements();) {
+             ASN1Primitive obj = (ASN1Primitive) e.nextElement();
+@@ -92,11 +90,11 @@ public class Holder implements ASN1Encodable {
+ 
+             ASN1TaggedObject tObj = (ASN1TaggedObject) obj;
+ 
+             switch (tObj.getTagNo()) {
+             case 0:
+-                baseCertificateID = new IssuerSerial((ASN1Sequence) tObj.getObject());
++                baseCertificateID = IssuerSerial.getInstance(tObj.getObject());
+ 
+                 break;
+ 
+             case 1:
+                 entityName = GeneralNames.getInstance(tObj, false);
+diff --git a/src/main/java/org/glite/voms/ac/V2Form.java b/src/main/java/org/glite/voms/ac/V2Form.java
+index 4c84c6b..5e242e2 100644
+--- a/src/main/java/org/glite/voms/ac/V2Form.java
++++ b/src/main/java/org/glite/voms/ac/V2Form.java
+@@ -64,11 +64,11 @@ public class V2Form implements ASN1Encodable {
+         for (; n < seq.size(); n++) {
+             ASN1TaggedObject tObj = (ASN1TaggedObject) seq.getObjectAt(n);
+ 
+             switch (tObj.getTagNo()) {
+             case 0:
+-                baseCertificateID = new IssuerSerial((ASN1Sequence) tObj.getObject());
++                baseCertificateID = IssuerSerial.getInstance(tObj.getObject());
+ 
+                 break;
+ 
+             case 1:
+                 objectDigestInfo = new ObjectDigestInfo((ASN1Sequence) tObj.getObject());
+-- 
+2.4.6
+
