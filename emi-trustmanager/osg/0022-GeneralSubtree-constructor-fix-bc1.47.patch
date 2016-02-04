@@ -1,0 +1,30 @@
+From f10ddaaa999ab504a1a082a656050b18a37c37b7 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Tue, 25 Nov 2014 21:02:04 -0600
+Subject: [PATCH 22/26] GeneralSubtree constructor fix (bc1.47)
+
+GeneralSubtree previously had a constructor that took an ASN1Sequence as
+an argument; that constructor is now gone, only the constructors that
+require a GeneralName remain. I now create a GeneralName via the
+getInstance() factory method, which the porting guide recommends as
+a replacement for casting the arguments to the proper type.
+---
+ src/org/glite/security/util/proxy/ProxyRestrictionData.java | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/org/glite/security/util/proxy/ProxyRestrictionData.java b/src/org/glite/security/util/proxy/ProxyRestrictionData.java
+index ea9fa08..c28dbe1 100644
+--- a/src/org/glite/security/util/proxy/ProxyRestrictionData.java
++++ b/src/org/glite/security/util/proxy/ProxyRestrictionData.java
+@@ -168,7 +168,7 @@ public class ProxyRestrictionData {
+         Enumeration<ASN1Primitive> subTreeEnum = subSeq.getObjects();
+         while (subTreeEnum.hasMoreElements()) {
+             ASN1Primitive object = subTreeEnum.nextElement();
+-            vector.add(new GeneralSubtree((ASN1Sequence) object));
++            vector.add(new GeneralSubtree(GeneralName.getInstance(object)));
+         }
+     }
+ 
+-- 
+2.0.1
+
