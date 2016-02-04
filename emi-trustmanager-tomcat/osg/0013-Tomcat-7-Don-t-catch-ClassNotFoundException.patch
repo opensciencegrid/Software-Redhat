@@ -1,0 +1,79 @@
+From 5c1915974ff4cbf1b16b908fba5698299a221d3c Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Mon, 10 Aug 2015 10:38:27 -0500
+Subject: [PATCH 13/14] Tomcat 7: Don't catch ClassNotFoundException
+
+Getting multiple compile errors by trying to catch
+ClassNotFoundException in the various methods that just pass things on
+to JSSEImplementation.  Apparently those don't get thrown anymore.
+---
+ .../trustmanager/tomcat/TMSSLImplementation.java   | 26 ++++------------------
+ 1 file changed, 4 insertions(+), 22 deletions(-)
+
+diff --git a/src/org/glite/security/trustmanager/tomcat/TMSSLImplementation.java b/src/org/glite/security/trustmanager/tomcat/TMSSLImplementation.java
+index decea78..1ce2952 100644
+--- a/src/org/glite/security/trustmanager/tomcat/TMSSLImplementation.java
++++ b/src/org/glite/security/trustmanager/tomcat/TMSSLImplementation.java
+@@ -112,19 +112,13 @@ public class TMSSLImplementation extends SSLImplementation {
+      * checking of course.
+      *
+      * @see org.apache.tomcat.util.net.SSLImplementation#getSSLSupport(java.net.Socket)
+      */
+     public SSLSupport getSSLSupport(Socket arg0) {
+-        try {
+-            JSSEImplementation impl = new JSSEImplementation();
++        JSSEImplementation impl = new JSSEImplementation();
+ 
+-            return impl.getSSLSupport(arg0);
+-        } catch (ClassNotFoundException e) {
+-            LOGGER.fatal("Internal server error, JSSEImplementation class creation failed:", e);
+-
+-            return null;
+-        }
++        return impl.getSSLSupport(arg0);
+     }
+ 
+     /*
+      * The method used to get the class that provides the SSL support functions.
+      * Current implementation reuses Tomcat's own JSSE SSLSupport class as we
+@@ -132,11 +126,10 @@ public class TMSSLImplementation extends SSLImplementation {
+      * checking of course.
+      *
+      * @see org.apache.tomcat.util.net.SSLImplementation#getSSLSupport(java.net.ssl.SSLSession)
+      */
+ 	public SSLSupport getSSLSupport(SSLSession arg0) {
+-	    try {
+             JSSEImplementation impl = new JSSEImplementation();
+             // hack to get past tomcat5 missing this method and tomcat6 requiring it.
+             java.lang.reflect.Method method;
+             
+             try {
+@@ -154,23 +147,12 @@ public class TMSSLImplementation extends SSLImplementation {
+ 	            LOGGER.fatal("Internal server error, JSSEImplementation class creation failed:", e);
+ 			} catch (InvocationTargetException e) {
+ 	            LOGGER.fatal("Internal server error, JSSEImplementation class creation failed:", e);
+ 			}
+ 			return null;
+-        } catch (ClassNotFoundException e) {
+-            LOGGER.fatal("Internal server error, JSSEImplementation class creation failed:", e);
+-
+-            return null;
+-        }
+ 	}
+ 
+     public SSLUtil getSSLUtil(AbstractEndpoint endpoint) {
+-        try {
+-            JSSEImplementation impl = new JSSEImplementation();
+-            return impl.getSSLUtil(endpoint);
+-        } catch (ClassNotFoundException e) {
+-            LOGGER.fatal("Internal server error, JSSEImplementation class creation failed:", e);
+-
+-            return null;
+-        }
++        JSSEImplementation impl = new JSSEImplementation();
++        return impl.getSSLUtil(endpoint);
+     }
+ }
+-- 
+2.4.6
+

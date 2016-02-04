@@ -1,0 +1,30 @@
+From bfd8fa79a1dcae2bbf29c967274bf8cb9d40156d Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Fri, 7 Aug 2015 16:06:41 -0500
+Subject: [PATCH 10/14] Tomcat 7: ServerSocketFactory changed from abstract
+ class to interface
+
+---
+ .../glite/security/trustmanager/tomcat/TMSSLServerSocketFactory.java    | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/org/glite/security/trustmanager/tomcat/TMSSLServerSocketFactory.java b/src/org/glite/security/trustmanager/tomcat/TMSSLServerSocketFactory.java
+index fa7a842..2b37140 100644
+--- a/src/org/glite/security/trustmanager/tomcat/TMSSLServerSocketFactory.java
++++ b/src/org/glite/security/trustmanager/tomcat/TMSSLServerSocketFactory.java
+@@ -44,11 +44,11 @@ import javax.net.ssl.SSLSocket;
+  * interface that interfaces the TrustManager SSL implementation with the
+  * Tomcat.
+  *
+  * @author Joni Hahkala
+  */
+-public class TMSSLServerSocketFactory extends ServerSocketFactory {
++public class TMSSLServerSocketFactory implements ServerSocketFactory {
+     /**
+      * The logging facility.
+      */
+     private static final org.apache.commons.logging.Log LOGGER = org.apache.commons.logging.LogFactory.getLog(TMSSLServerSocketFactory.class);
+     /**
+-- 
+2.4.6
+

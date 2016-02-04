@@ -1,7 +1,7 @@
 Summary: Tomcat and axis integration classes
 Name: emi-trustmanager-tomcat
 Version: 3.0.0
-Release: 10%{?dist}
+Release: 14%{?dist}
 License: Apache Software License
 Vendor: EMI
 Group: System Environment/Libraries
@@ -13,8 +13,11 @@ BuildRequires: jpackage-utils
 %if 0%{rhel} <= 5
 BuildRequires: tomcat5
 %endif
-%if 0%{rhel} > 5
+%if 0%{rhel} == 6
 BuildRequires: tomcat6
+%endif
+%if 0%{rhel} == 7
+BuildRequires: tomcat
 %endif
 # ensure these are present, from jpackage-utils or missing-java-1.7.0-dirs
 Requires: /usr/lib/java-1.7.0
@@ -31,9 +34,18 @@ BuildRoot: %{_builddir}/%{name}-root
 AutoReqProv: yes
 Source: emi-trustmanager-tomcat-3.0.0-1.src.tar.gz
 Source1: config.properties
+Source2: server7.xml.template
 Patch0: configure.patch
 Patch1: build.xml.patch
 Patch2: log4j-trustmanager.patch
+Patch3: Fix-misleading-message-in-configure.sh.patch
+Patch10: 0010-Tomcat-7-ServerSocketFactory-changed-from-abstract-c.patch
+Patch11: 0011-Tomcat-7-Implement-getSSLUtil-in-TMSSLImplementation.patch
+Patch12: 0012-Tomcat-7-getServerSocketFactory-that-takes-an-Abstra.patch
+Patch13: 0013-Tomcat-7-Don-t-catch-ClassNotFoundException.patch
+Patch14: 0014-Tomcat-7-Use-AbstractEndpoint.patch
+Patch15: initproxy.patch
+Patch16: configure_tomcat7.patch
 
 %description
 The classes for integrating the trustmanager with tomcat.
@@ -41,10 +53,22 @@ The classes for integrating the trustmanager with tomcat.
 %prep
  
 
-%setup  
-%patch0 -p0
+%setup
 %patch1 -p0
 %patch2 -p1
+%patch3 -p1
+
+%if 0%{?rhel} == 7
+%patch10 -p1
+%patch11 -p1
+%patch12 -p1
+%patch13 -p1
+%patch14 -p1
+%patch15 -p0
+%patch16 -p1
+%else
+%patch0 -p0
+%endif
 
 %build
  
@@ -63,6 +87,9 @@ export JAVA_HOME=/etc/alternatives/java_sdk
  find $RPM_BUILD_ROOT -name '*.pc' -exec sed -i -e "s|$RPM_BUILD_ROOT||g" {} \;
 
 cp %SOURCE1 $RPM_BUILD_ROOT/var/lib/trustmanager-tomcat/config.properties
+%if 0%{?rhel} == 7
+cp %SOURCE2 $RPM_BUILD_ROOT/var/lib/trustmanager-tomcat/server7.xml.template
+%endif
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -102,13 +129,33 @@ rm -rf $RPM_BUILD_ROOT
 /usr/share/doc/trustmanager-tomcat/html/index-all.html
 %dir /var/lib/trustmanager-tomcat/
 /var/lib/trustmanager-tomcat/server.xml.template
+%if 0%{?rhel} == 7
+/var/lib/trustmanager-tomcat/server7.xml.template
+%endif
 /var/lib/trustmanager-tomcat/log4j-trustmanager.properties
 /var/lib/trustmanager-tomcat/config.properties
 /var/lib/trustmanager-tomcat/configure.sh
 
 %changelog
+* Tue Oct 27 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.0.0-14
+- Fix a very misleading set of instructions in /var/lib/trustmanager-tomcat/configure.sh
+- Add symlink for bcpkix.jar on EL 7 to fix NoClassDefFoundErrors on classes in org.bouncycastle.openssl
+  (SOFTWARE-2040)
+
+* Tue Sep 15 2015 Brian Bockelman <bbockelm@cse.unl.edu> - 3.0.0-13
+- Avoid NPE when initializing security settings.
+
+* Wed Aug 12 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.0.0-12
+- Patch to build on el7 (SOFTWARE-1604)
+
+* Fri Aug 07 2015 Mátyás Selmeci (matyas@cs.wisc.edu) - 3.0.0-11
+- Merge el7 changes into 3.3 branch
+
 * Fri Apr 24 2015 Carl Edquist <edquist@cs.wisc.edu> - 3.0.0-10
 - decrease trustmanager log level to WARN (SOFTWARE-1890)
+
+* Tue Dec 02 2014 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.0.0-9
+- Build with 'tomcat' on el7
 
 * Tue May 07 2013 Carl Edquist <edquist@cs.wisc.edu> - 3.0.0-8
 - Require missing java dir names instead of workaround package
