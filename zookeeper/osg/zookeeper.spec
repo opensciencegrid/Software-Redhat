@@ -90,6 +90,7 @@ BuildRequires: maven3
 BuildRequires: java7-devel
 BuildRequires: jpackage-utils
 BuildRequires: /usr/lib/java-1.7.0
+BuildRequires: hostname
 Patch0: mvn304.patch
 
 Requires(pre): coreutils, shadow-utils, /usr/sbin/groupadd, /usr/sbin/useradd
