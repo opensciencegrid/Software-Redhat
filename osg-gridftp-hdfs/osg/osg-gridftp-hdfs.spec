@@ -1,7 +1,7 @@
 Name:      osg-gridftp-hdfs
 Summary:   OSG GridFTP-HDFS meta package
 Version:   3.3
-Release:   2%{?dist}
+Release:   3%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -22,7 +22,9 @@ Requires: fetch-crl3
 Requires: fetch-crl
 %endif
 Requires: gratia-probe-gridftp-transfer
+%if 0%{?rhel} < 7
 Requires: gums-client
+%endif
 
 %if 0%{?rhel} >= 6
 Requires: globus-xio-udt-driver
@@ -56,6 +58,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Tue Feb 09 2016 Carl Edquist <edquist@cs.wisc.edu> - 3.3-3
+- Remove gums-client requirement for EL7 (SOFTWARE-2176)
+
 * Wed Jul 01 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.3-2
 - Require grid-certificates >= 7 (SOFTWARE-1883)
 
