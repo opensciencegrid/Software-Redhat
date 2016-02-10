@@ -266,8 +266,6 @@ Group: Grid
 Summary: Slurm meta-package for the OSG-CE
 Requires: %{name} = %{version}-%{release}
 Requires: %{htcce}-slurm = %{version}-%{release}
-# GRAM:
-Requires: globus-gram-job-manager-slurm
 
 %description slurm
 %{summary}
