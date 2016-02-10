@@ -20,7 +20,7 @@ URL: http://github.com/opensciencegrid/htcondor-ce
 # git archive --prefix=%{name}-%{version}/ %{gitrev} | gzip > %{name}-%{version}-%{gitrev}.tar.gz
 #
 Source0: %{name}-%{version}%{?gitrev:-%{gitrev}}.tar.gz
-Patch0: drop_userHome.patch
+Patch0: drop_classad_fn.patch
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -239,8 +239,6 @@ fi
 %{_bindir}/condor_ce_router_q
 
 %{_datadir}/condor-ce/condor_ce_router_defaults
-
-%{_libdir}/condor/libeval_rsl.so
 
 %{_initrddir}/condor-ce
 
