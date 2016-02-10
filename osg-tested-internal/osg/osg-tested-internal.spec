@@ -18,9 +18,9 @@ Requires: edg-mkgridmap
 Requires: glexec
 Requires: /usr/sbin/condor_master
 Requires: yum-utils
-Requires: cvmfs
+# https://twiki.grid.iu.edu/bin/view/Documentation/Release3/InstallCvmfs
+Requires: osg-oasis
 Requires: osg-configure-tests
-Requires: cvmfs-config
 
 Requires: gratia-probe-psacct
 Requires: gratia-probe-condor
