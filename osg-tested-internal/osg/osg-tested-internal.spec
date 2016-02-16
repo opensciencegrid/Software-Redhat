@@ -1,7 +1,7 @@
 Name:      osg-tested-internal
 Summary:   All OSG packages we test (internal use only)
 Version:   3.3
-Release:   7%{?dist}
+Release:   8%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -91,6 +91,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Feb 16 2016 Brian Lin <blin@cs.wisc.edu> - 3.3-8
+- Replace cvmfs-* requirements with osg-oasis metapackage (SOFTWARE-2190)
+
 * Mon Oct 26 2015 Carl Edquist <edquist@cs.wisc.edu> - 3.3-7
 - Add bestman package requirements back for el7 (SOFTWARE-2089)
 
