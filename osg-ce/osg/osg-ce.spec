@@ -7,7 +7,7 @@ Version:   3.3
 %if 0%{?el7}
 %define release_suffix _clipped
 %endif
-Release:   3%{?release_suffix}%{?dist}
+Release:   4%{?release_suffix}%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -300,6 +300,9 @@ exit 0
 %files slurm
 
 %changelog
+* Tue Feb 16 2016 Brian Lin <blin@cs.wisc.edu> - 3.3-4
+- Drop globus SLURM jobmanager requirement
+
 * Thu Jul 16 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.3-3
 - Drop lfc-client, osg-site-verify, osg-site-web-page deps
 - Replace osg-client dep with its contents (minus networking stuff)
