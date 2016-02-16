@@ -5,7 +5,7 @@
 
 Name:           osg-measurements-metrics-web
 Version:        1.4
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        OSG Measurements and Metrics web and database
 
 Group:          Applications/System
@@ -80,6 +80,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+
+* Mon Feb 15 2015 Juan F. Mosquera <jmorales@fnal.gov>
+- fix for refine filter in HTML pages
 
 * Tue Dec 8 2015 Juan F. Mosquera <jmorales@fnal.gov>
 - fix for tickets: GRATIAWEB-82, GRATIAWEB-91, GRATIAWEB-92, 
