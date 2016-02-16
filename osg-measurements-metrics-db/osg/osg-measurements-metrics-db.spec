@@ -61,7 +61,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 
-* Mon Feb 15 2015 Juan F. Mosquera <jmorales@fnal.gov>
+* Mon Feb 15 2016 Juan F. Mosquera <jmorales@fnal.gov>
 - fix for refine filter in HTML pages
 
 * Tue Dec 8 2015 Juan F. Mosquera <jmorales@fnal.gov>
