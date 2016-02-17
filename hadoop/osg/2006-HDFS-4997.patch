@@ -1,6 +1,8 @@
---- src/hadoop-hdfs-project/hadoop-hdfs/src/main/native/libhdfs/exception.c.orig	2012-10-16 12:36:58.000000000 -0500
-+++ src/hadoop-hdfs-project/hadoop-hdfs/src/main/native/libhdfs/exception.c	2015-08-24 10:04:55.264119834 -0500
-@@ -35,36 +35,55 @@
+diff --git a/src/hadoop-hdfs-project/hadoop-hdfs/src/main/native/libhdfs/exception.c b/src/hadoop-hdfs-project/hadoop-hdfs/src/main/native/libhdfs/exception.c
+index 2095e2c..ac8e56f 100644
+--- a/src/hadoop-hdfs-project/hadoop-hdfs/src/main/native/libhdfs/exception.c
++++ b/src/hadoop-hdfs-project/hadoop-hdfs/src/main/native/libhdfs/exception.c
+@@ -35,36 +35,55 @@ struct ExceptionInfo {
  
  static const struct ExceptionInfo gExceptionInfo[] = {
      {

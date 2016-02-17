@@ -1,6 +1,8 @@
---- src/hadoop-hdfs-project/hadoop-hdfs/src/CMakeLists.txt.orig	2012-11-26 11:46:45.367642095 -0600
-+++ src/hadoop-hdfs-project/hadoop-hdfs/src/CMakeLists.txt	2012-11-26 11:46:50.605501896 -0600
-@@ -92,7 +92,7 @@
+diff --git a/src/hadoop-hdfs-project/hadoop-hdfs/src/CMakeLists.txt b/src/hadoop-hdfs-project/hadoop-hdfs/src/CMakeLists.txt
+index 2239f5d..10fc715 100644
+--- a/src/hadoop-hdfs-project/hadoop-hdfs/src/CMakeLists.txt
++++ b/src/hadoop-hdfs-project/hadoop-hdfs/src/CMakeLists.txt
+@@ -92,7 +92,7 @@ target_link_dual_libraries(hdfs
      ${JAVA_JVM_LIBRARY}
  )
  dual_output_directory(hdfs target/usr/local/lib)
