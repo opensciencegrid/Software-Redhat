@@ -184,9 +184,10 @@ Patch1: javafuse.patch
 Patch2: libhdfs-soversion.patch
 Patch3: libhdfs-soversion-install.patch
 Patch4: fix_chown.patch
-Patch5: 1184-extendable-client.patch
-Patch6: 2006-HDFS-4997.patch
-Patch7: init.d.tmpl.patch
+Patch5: pom.xml.patch
+Patch6: 1184-extendable-client.patch
+Patch7: 2006-HDFS-4997.patch
+Patch8: init.d.tmpl.patch
 
 
 Buildroot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id} -u -n)
@@ -619,12 +620,13 @@ pushd `dirname %{SOURCE29}`
 %endif
 %patch1 -p1
 %patch3 -p1
-%patch7 -p1
+%patch8 -p1
 popd
 %patch2 -p1
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
+%patch7 -p1
 
 %build
 # This assumes that you installed Java JDK 6 and set JAVA_HOME

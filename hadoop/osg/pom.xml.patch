@@ -1,0 +1,21 @@
+diff --git a/src/pom.xml b/src/pom.xml
+index 00ba1e1..919aa50 100644
+--- a/src/pom.xml
++++ b/src/pom.xml
+@@ -108,6 +108,16 @@
+           <groupId>org.apache.maven.plugins</groupId>
+           <artifactId>maven-enforcer-plugin</artifactId>
+           <version>1.0</version>
++          <configuration>
++            <rules>
++              <requireMavenVersion>
++                <version>[3.0.2,)</version>
++              </requireMavenVersion>
++              <requireJavaVersion>
++                <version>1.7</version>
++              </requireJavaVersion>
++            </rules>
++          </configuration>
+         </plugin>
+         <plugin>
+           <groupId>org.apache.maven.plugins</groupId>
