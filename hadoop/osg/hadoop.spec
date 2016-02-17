@@ -1,7 +1,7 @@
-%define hadoop_version 2.0.0+545
-%define hadoop_patched_version 2.0.0-cdh4.1.1
+%define hadoop_version 2.0.0+1612
+%define hadoop_patched_version 2.0.0-cdh4.7.1
 %define hadoop_base_version 2.0.0
-%define hadoop_release 1.cdh4.1.1.p0.22%{?dist}
+%define hadoop_release 1.cdh4.7.1.p0.12.1%{?dist}
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
@@ -178,10 +178,8 @@ Patch1: javafuse.patch
 Patch2: libhdfs-soversion.patch
 Patch3: libhdfs-soversion-install.patch
 Patch4: fix_chown.patch
-Patch5: pom.xml.patch
-Patch6: 1184-extendable-client.patch
-Patch7: HDFS-5341.004.patch
-Patch8: 2006-HDFS-4997.patch
+Patch5: 1184-extendable-client.patch
+Patch6: 2006-HDFS-4997.patch
 
 
 Buildroot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id} -u -n)
@@ -500,12 +498,10 @@ pushd `dirname %{SOURCE25}`
 %patch1 -p1
 %patch3 -p1
 popd
-%patch2 -p0
-%patch4 -p0
-%patch5 -p0
+%patch2 -p1
+%patch4 -p1
+%patch5 -p1
 %patch6 -p1
-%patch7 -p1
-%patch8 -p0
 
 %build
 # This assumes that you installed Java JDK 6 and set JAVA_HOME
@@ -890,6 +886,9 @@ fi
 
 
 %changelog
+* Tue Feb 16 2016 Carl Edquist <edquist@cs.wisc.edu> - 2.0.0+1612-1.cdh4.7.1.p0.12.1
+- Update to hadoop 2.0.0+1612 / cdh4.7.1 (SOFTWARE-2161)
+
 * Sat Jan 16 2016 Carl Edquist <edquist@cs.wisc.edu> - 2.0.0+545-1.cdh4.1.1.p0.22
 - Build for EL7 (SOFTWARE-2162)
 
