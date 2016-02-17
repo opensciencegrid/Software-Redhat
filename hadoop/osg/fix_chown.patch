@@ -1,0 +1,16 @@
+--- ./src/hadoop-hdfs-project/hadoop-hdfs/src/main/native/fuse-dfs/fuse_impls_chown.c.or	2012-12-28 22:18:18.570584778 -0600
++++ ./src/hadoop-hdfs-project/hadoop-hdfs/src/main/native/fuse-dfs/fuse_impls_chown.c	2012-12-28 22:19:32.490531341 -0600
+@@ -61,10 +61,10 @@
+     }
+   }
+ 
+-  ret = fuseConnect(user, fuse_get_context(), &conn);
++  ret = fuseConnectAsThreadUid(&conn);
+   if (ret) {
+-    fprintf(stderr, "fuseConnect: failed to open a libhdfs connection!  "
+-            "error %d.\n", ret);
++    fprintf(stderr, "fuseConnectAsThreadUid: failed to open a libhdfs "
++            "connection!  error %d.\n", ret);
+     ret = -EIO;
+     goto cleanup;
+   }

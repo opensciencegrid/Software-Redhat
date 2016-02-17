@@ -1,0 +1,13 @@
+diff -ru orig/install_hadoop.sh new/install_hadoop.sh
+--- orig/install_hadoop.sh	2012-10-18 16:45:49.000000000 -0500
++++ new/install_hadoop.sh	2012-10-18 16:46:03.000000000 -0500
+@@ -310,6 +310,9 @@
+ CLASSPATH+="\${HADOOP_CONF_DIR:-\${HADOOP_HOME}/etc/hadoop}"
+ 
+ 
++#OSG change: needed to pick up xml defaults
++CLASSPATH="/etc/hadoop/conf:\$CLASSPATH"
++
+ env CLASSPATH="\${CLASSPATH}" \${HADOOP_HOME}/bin/fuse_dfs \$@
+ EOF
+ 
