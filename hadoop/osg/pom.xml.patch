@@ -1,21 +1,41 @@
+diff --git a/src/hadoop-assemblies/pom.xml b/src/hadoop-assemblies/pom.xml
+index c1c81c0..9ea6a05 100644
+--- a/src/hadoop-assemblies/pom.xml
++++ b/src/hadoop-assemblies/pom.xml
+@@ -45,7 +45,7 @@
+               <version>[3.0.0,)</version>
+             </requireMavenVersion>
+             <requireJavaVersion>
+-              <version>1.6</version>
++              <version>1.7</version>
+             </requireJavaVersion>
+           </rules>
+         </configuration>
+diff --git a/src/hadoop-project/pom.xml b/src/hadoop-project/pom.xml
+index ed6bba8..635b591 100644
+--- a/src/hadoop-project/pom.xml
++++ b/src/hadoop-project/pom.xml
+@@ -817,7 +817,7 @@
+               <version>[3.0.0,)</version>
+             </requireMavenVersion>
+             <requireJavaVersion>
+-              <version>1.6</version>
++              <version>1.7</version>
+             </requireJavaVersion>
+           </rules>
+         </configuration>
 diff --git a/src/pom.xml b/src/pom.xml
-index 00ba1e1..919aa50 100644
+index 00ba1e1..9a60c15 100644
 --- a/src/pom.xml
 +++ b/src/pom.xml
-@@ -108,6 +108,16 @@
-           <groupId>org.apache.maven.plugins</groupId>
-           <artifactId>maven-enforcer-plugin</artifactId>
-           <version>1.0</version>
-+          <configuration>
-+            <rules>
-+              <requireMavenVersion>
-+                <version>[3.0.2,)</version>
-+              </requireMavenVersion>
-+              <requireJavaVersion>
-+                <version>1.7</version>
-+              </requireJavaVersion>
-+            </rules>
-+          </configuration>
-         </plugin>
-         <plugin>
-           <groupId>org.apache.maven.plugins</groupId>
+@@ -83,8 +83,8 @@
+   <properties>
+     <distMgmtSnapshotsName>Apache Development Snapshot Repository</distMgmtSnapshotsName>
+     <distMgmtSnapshotsUrl>https://repository.apache.org/content/repositories/snapshots</distMgmtSnapshotsUrl>
+-    <javaVersion>1.6</javaVersion>
+-    <targetJavaVersion>1.6</targetJavaVersion>
++    <javaVersion>1.7</javaVersion>
++    <targetJavaVersion>1.7</targetJavaVersion>
+   </properties>
+ 
+   <modules>
