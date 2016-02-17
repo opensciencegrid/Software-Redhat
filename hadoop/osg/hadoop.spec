@@ -188,6 +188,7 @@ Patch5: pom.xml.patch
 Patch6: 1184-extendable-client.patch
 Patch7: 2006-HDFS-4997.patch
 Patch8: init.d.tmpl.patch
+Patch9: protoc-path.patch
 
 
 Buildroot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id} -u -n)
@@ -621,6 +622,7 @@ pushd `dirname %{SOURCE29}`
 %patch1 -p1
 %patch3 -p1
 %patch8 -p1
+%patch9 -p1
 popd
 %patch2 -p1
 %patch4 -p1
