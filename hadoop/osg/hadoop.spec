@@ -189,6 +189,7 @@ Patch6: 1184-extendable-client.patch
 Patch7: 2006-HDFS-4997.patch
 Patch8: init.d.tmpl.patch
 Patch9: protoc-path.patch
+Patch10: pom.xml-dep-details.patch
 
 
 Buildroot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id} -u -n)
@@ -629,6 +630,7 @@ popd
 %patch5 -p1
 %patch6 -p1
 %patch7 -p1
+%patch10 -p1
 
 %build
 # This assumes that you installed Java JDK 6 and set JAVA_HOME
