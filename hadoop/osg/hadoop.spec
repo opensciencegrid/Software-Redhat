@@ -613,7 +613,7 @@ selinux policy files for the Hadoop fuse hdfs mounts
 
 
 %prep
-%setup -n %{name}-%{hadoop_patched_version}
+%setup -q -n %{name}-%{hadoop_patched_version}
 tar -C `dirname %{SOURCE29}` -xzf %{SOURCE29}
 pushd `dirname %{SOURCE29}`
 %if 0%{?rhel} <= 6
