@@ -1,0 +1,13 @@
+diff --git a/do-component-build b/do-component-build
+index e139aef..af900e6 100755
+--- a/do-component-build
++++ b/do-component-build
+@@ -59,7 +59,7 @@ if [ -z "${MAVEN_ONLY}" ]; then
+ fi
+ 
+ # Build MR1
+-IVY_MIRROR_PROP=${IVY_MIRROR_PROP:-http://repo1.maven.org/maven2/}
++IVY_MIRROR_PROP=${IVY_MIRROR_PROP:-http://repo1.maven.org/maven2}
+ IVY_EXTRA_ARGS="-Dmvnrepo=$IVY_MIRROR_PROP -Drepo.maven.org=$IVY_MIRROR_PROP"
+ # Copy them into the main build directory to be included in the tarball
+ rm -rf hadoop-mapreduce1-project/build

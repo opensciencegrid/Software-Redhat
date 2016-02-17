@@ -190,6 +190,8 @@ Patch7: 2006-HDFS-4997.patch
 Patch8: init.d.tmpl.patch
 Patch9: protoc-path.patch
 Patch10: pom.xml-dep-details.patch
+Patch11: ivy-maven-repo-1.patch
+Patch12: ivy-maven-repo-2.patch
 
 
 Buildroot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id} -u -n)
@@ -624,6 +626,7 @@ pushd `dirname %{SOURCE29}`
 %patch3 -p1
 %patch8 -p1
 %patch9 -p1
+%patch11 -p1
 popd
 %patch2 -p1
 %patch4 -p1
@@ -631,6 +634,7 @@ popd
 %patch6 -p1
 %patch7 -p1
 %patch10 -p1
+%patch12 -p1
 
 %build
 # This assumes that you installed Java JDK 6 and set JAVA_HOME
