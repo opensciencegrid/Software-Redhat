@@ -2,7 +2,7 @@ Name:               gratia-probe
 Summary:            Gratia OSG accounting system probes
 Group:              Applications/System
 Version:            1.14.2
-Release:            6%{?dist}
+Release:            7%{?dist}
 
 License:            GPL
 Group:              Applications/System
@@ -67,6 +67,8 @@ Source23: %{name}-dCache-storagegroup-%{version}.tar.bz2
 Source24:  %{name}-lsf-%{version}.tar.bz2
 
 Patch0: slurm-safe-unsigned.patch
+Patch1: gratia-185-condor_ce.patch
+Patch2: gratia-186-certinfo.patch
 
 ########################################################################
 
@@ -106,6 +108,8 @@ Prefix: /etc
 %setup -q -D -T -a 24
 
 %patch0 -p1
+%patch1 -p1
+%patch2 -p1
 
 %build
 %if 0%{?rhel} == 7 || %_arch != noarch
@@ -1013,6 +1017,10 @@ The dCache storagegroup probe for the Gratia OSG accounting system.
 %endif # noarch
 
 %changelog
+* Wed Feb 17 2016 Carl Edquist <edquist@cs.wisc.edu> - 1.14.2-7
+- fix GridJobId parsing in condor_ce.py (GRATIA-185)
+- eliminate file glob searches from certinfo file lookup (GRATIA-186)
+
 * Thu Jun 11 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.14.2-6
 - slurm probe bugfix for previous patch (goc/25834)
 
@@ -1283,4 +1291,3 @@ Updates to pbs-lsf and gridftp-transfer probe.
 
 * Wed Aug 31 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.08-0.1.pre
 - Reset changelog for pre-release of new packaging
-
