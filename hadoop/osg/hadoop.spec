@@ -38,6 +38,7 @@
 %define lib_hdfs %{lib_hadoop_dirname}/%{name}-hdfs
 %define lib_yarn %{lib_hadoop_dirname}/%{name}-yarn
 %define lib_mapreduce %{lib_hadoop_dirname}/%{name}-mapreduce
+%define lib_mapreduce_mr1 %{lib_hadoop_dirname}/%{name}-0.20-mapreduce
 %define log_hadoop_dirname /var/log
 %define log_hadoop %{log_hadoop_dirname}/%{name}
 %define log_yarn %{log_hadoop_dirname}/%{name}-yarn
@@ -58,14 +59,17 @@
 %define bin_hadoop %{_bindir}
 %define man_hadoop %{_mandir}
 %define doc_hadoop %{_docdir}/%{name}-%{hadoop_version}
+%define doc_hadoop_mr1 %{_docdir}/hadoop-0.20-mapreduce
 %define httpfs_services httpfs
 %define mapreduce_services mapreduce-historyserver
+%define mapreduce_mr1_services 0.20-mapreduce-jobtracker 0.20-mapreduce-tasktracker 0.20-mapreduce-zkfc 0.20-mapreduce-jobtrackerha
 %define hdfs_services hdfs-namenode hdfs-secondarynamenode hdfs-datanode hdfs-zkfc hdfs-journalnode
 %define yarn_services yarn-resourcemanager yarn-nodemanager yarn-proxyserver
-%define hadoop_services %{hdfs_services} %{mapreduce_services} %{yarn_services} %{httpfs_services}
+%define hadoop_services %{hdfs_services} %{mapreduce_services} %{yarn_services} %{httpfs_services} %{mapreduce_mr1_services}
 # Hadoop outputs built binaries into %{hadoop_build}
 %define hadoop_build_path build
 %define static_images_dir src/webapps/static/images
+%define libexecdir /usr/lib
 
 %ifarch i386 i686
 %global hadoop_arch Linux-i386-32
@@ -93,7 +97,6 @@
     %{nil}
 
 %define netcat_package nc
-%define libexecdir %{_libexecdir}
 %define doc_hadoop %{_docdir}/%{name}-%{hadoop_version}
 %define alternatives_cmd alternatives
 %global initd_dir %{_sysconfdir}/rc.d/init.d
@@ -114,7 +117,6 @@
     %{nil}
 
 %define netcat_package netcat-openbsd
-%define libexecdir /usr/lib
 %define doc_hadoop %{_docdir}/%{name}
 %define alternatives_cmd update-alternatives
 %global initd_dir %{_sysconfdir}/rc.d
@@ -122,7 +124,6 @@
 
 %if  0%{?mgaversion}
 %define netcat_package netcat-openbsd
-%define libexecdir /usr/libexec/
 %define doc_hadoop %{_docdir}/%{name}-%{hadoop_version}
 %define alternatives_cmd update-alternatives
 %global initd_dir %{_sysconfdir}/rc.d/init.d
@@ -170,8 +171,13 @@ Source21: yarn.default
 Source22: hadoop-layout.sh
 Source23: hadoop-hdfs-zkfc.svc
 Source24: hadoop-hdfs-journalnode.svc
-Source25: %{name}-bigtop-packaging.tar.gz
-Source26: hadoop-fuse.te
+Source25: hadoop-0.20-mapreduce-jobtracker.svc
+Source26: hadoop-0.20-mapreduce-tasktracker.svc
+Source27: hadoop-0.20-mapreduce-zkfc.svc
+Source28: hadoop-0.20-mapreduce-jobtrackerha.svc
+Source29: %{name}-bigtop-packaging.tar.gz
+Source30: 0.20.default
+Source31: hadoop-fuse.te
 
 Patch0: mvn304.patch
 Patch1: javafuse.patch
@@ -200,8 +206,9 @@ BuildRequires: java7-devel
 BuildRequires: jpackage-utils
 BuildRequires: /usr/lib/java-1.7.0
 
-Requires: coreutils, /usr/sbin/useradd, /usr/sbin/usermod, /sbin/chkconfig, /sbin/service, bigtop-utils, zookeeper >= 3.4.0
+Requires: coreutils, /usr/sbin/useradd, /usr/sbin/usermod, /sbin/chkconfig, /sbin/service, bigtop-utils >= 0.6, zookeeper >= 3.4.0
 Requires: psmisc, %{netcat_package}
+Requires: parquet
 Requires: java7
 Requires: jpackage-utils
 Requires: /usr/lib/java-1.7.0
@@ -210,7 +217,7 @@ Provides: hadoop
 Obsoletes: hadoop-0.20 <= 0.20.2+737
 
 %if  %{?suse_version:1}0
-BuildRequires: libfuse2, libopenssl-devel, gcc-c++, ant, ant-nodeps, ant-trax
+BuildRequires: pkg-config, libfuse2, libopenssl-devel, gcc-c++
 # Required for init scripts
 Requires: sh-utils, insserv
 %endif
@@ -218,13 +225,13 @@ Requires: sh-utils, insserv
 # CentOS 5 does not have any dist macro
 # So I will suppose anything that is not Mageia or a SUSE will be a RHEL/CentOS/Fedora
 %if %{!?suse_version:1}0 && %{!?mgaversion:1}0
-BuildRequires: fuse-libs, libtool, redhat-rpm-config, lzo-devel, openssl-devel
+BuildRequires: pkgconfig, fuse-libs, redhat-rpm-config, lzo-devel, openssl-devel, libtool, snappy-devel
 # Required for init scripts
 Requires: sh-utils, redhat-lsb
 %endif
 
 %if  0%{?mgaversion}
-BuildRequires: libfuse-devel, libfuse2 , libopenssl-devel, gcc-c++, ant, libtool, automake, autoconf, liblzo-devel, zlib-devel
+BuildRequires: pkgconfig, libfuse-devel, libfuse2 , libopenssl-devel, gcc-c++, liblzo-devel, zlib-devel, libtool, automake, autoconf, make
 Requires: chkconfig, xinetd-simple-services, zlib, initscripts
 %endif
 
@@ -253,6 +260,7 @@ located.
 %package hdfs
 Summary: The Hadoop Distributed File System
 Group: System/Daemons
+Requires(pre): %{name} = %{version}-%{release}
 Requires: %{name} = %{version}-%{release}, bigtop-jsvc
 # Workaround for 4.0 to 4.X upgrade (CDH-7856) (upgrades from 4.1 onwards are fine)
 Requires: libhadoop.so.1.0.0%{requires_lib_tag}
@@ -266,6 +274,7 @@ computations.
 %package yarn
 Summary: The Hadoop NextGen MapReduce (YARN)
 Group: System/Daemons
+Requires(pre): %{name} = %{version}-%{release}
 Requires: %{name} = %{version}-%{release}
 # Workaround for 4.0 to 4.X upgrade (CDH-7856) (upgrades from 4.1 onwards are fine)
 Requires: libhadoop.so.1.0.0%{requires_lib_tag}
@@ -288,6 +297,7 @@ the tasks.
 %package mapreduce
 Summary: The Hadoop MapReduce (MRv2)
 Group: System/Daemons
+Requires(pre): %{name} = %{version}-%{release}
 Requires: %{name}-yarn = %{version}-%{release}
 
 %description mapreduce
@@ -295,11 +305,39 @@ Hadoop MapReduce is a programming model and software framework for
 writing applications that rapidly process vast amounts of data
 in parallel on large clusters of hosts.
 
+%package 0.20-mapreduce
+Summary: Hadoop is a software platform for processing vast amounts of data
+Group: System/Daemons
+Requires(pre): %{name} = %{version}-%{release}
+Requires: %{name} = %{version}-%{release}, %{name}-hdfs = %{version}-%{release}
+
+%description 0.20-mapreduce
+Hadoop is a software platform that lets one easily write and
+run applications that process vast amounts of data.
+
+Here's what makes Hadoop especially useful:
+* Scalable: Hadoop can reliably store and process petabytes.
+* Economical: It distributes the data and processing across clusters
+              of commonly available computers. These clusters can number
+              into the thousands of nodes.
+* Efficient: By distributing the data, Hadoop can process it in parallel
+             on the nodes where the data is located. This makes it
+             extremely rapid.
+* Reliable: Hadoop automatically maintains multiple copies of data and
+            automatically redeploys computing tasks based on failures.
+
+Hadoop implements MapReduce, using the Hadoop Distributed File System (HDFS).
+MapReduce divides applications into many small blocks of work. HDFS creates
+multiple replicas of data blocks for reliability, placing them on compute
+nodes around the cluster. MapReduce can then process the data where it is
+located.
 
 %package hdfs-namenode
 Summary: The Hadoop namenode manages the block locations of HDFS files
 Group: System/Daemons
 Requires: %{name}-hdfs = %{version}-%{release}
+# Requires(pre): %{name} = %{version}-%{release}
+# Requires(pre): %{name}-hdfs = %{version}-%{release}
 Obsoletes: hadoop-0.20-namenode <= 0.20.2+737
 
 %description hdfs-namenode
@@ -311,6 +349,8 @@ namenode, which manages the block locations of files on the filesystem.
 Summary: Hadoop Secondary namenode
 Group: System/Daemons
 Requires: %{name}-hdfs = %{version}-%{release}
+# Requires(pre): %{name} = %{version}-%{release}
+# Requires(pre): %{name}-hdfs = %{version}-%{release}
 Obsoletes: hadoop-0.20-secondarynamenode <= 0.20.2+737
 
 %description hdfs-secondarynamenode
@@ -323,6 +363,7 @@ Summary: Hadoop HDFS failover controller
 Group: System/Daemons
 Requires: %{name}-hdfs = %{version}-%{release}
 Requires(pre): %{name} = %{version}-%{release}
+Requires(pre): %{name}-hdfs = %{version}-%{release}
 
 %description hdfs-zkfc
 The Hadoop HDFS failover controller is a ZooKeeper client which also
@@ -346,6 +387,8 @@ separate machines in the cluster.
 Summary: Hadoop Data Node
 Group: System/Daemons
 Requires: %{name}-hdfs = %{version}-%{release}
+# Requires(pre): %{name} = %{version}-%{release}
+# Requires(pre): %{name}-hdfs = %{version}-%{release}
 Obsoletes: hadoop-0.20-datanode <= 0.20.2+737
 
 %description hdfs-datanode
@@ -358,6 +401,7 @@ Summary: HTTPFS for Hadoop
 Group: System/Daemons
 Requires: %{name}-hdfs = %{version}-%{release}, bigtop-tomcat
 Requires(pre): %{name} = %{version}-%{release}
+Requires(pre): %{name}-hdfs = %{version}-%{release}
 
 %description httpfs
 The server providing HTTP REST API support for the complete FileSystem/FileContext
@@ -367,6 +411,8 @@ interface in HDFS.
 Summary: Yarn Resource Manager
 Group: System/Daemons
 Requires: %{name}-yarn = %{version}-%{release}
+Requires(pre): %{name} = %{version}-%{release}
+Requires(pre): %{name}-yarn = %{version}-%{release}
 
 %description yarn-resourcemanager
 The resource manager manages the global assignment of compute resources to applications
@@ -375,6 +421,8 @@ The resource manager manages the global assignment of compute resources to appli
 Summary: Yarn Node Manager
 Group: System/Daemons
 Requires: %{name}-yarn = %{version}-%{release}
+Requires(pre): %{name} = %{version}-%{release}
+Requires(pre): %{name}-yarn = %{version}-%{release}
 
 %description yarn-nodemanager
 The NodeManager is the per-machine framework agent who is responsible for
@@ -386,6 +434,7 @@ reporting the same to the ResourceManager/Scheduler.
 #Group: System/Daemons
 #Requires: %{name}-yarn = %{version}-%{release}
 #Requires(pre): %{name} = %{version}-%{release}
+#Requires(pre): %{name}-yarn = %{version}-%{release}
 
 #%description yarn-proxyserver
 #The web proxy server sits in front of the YARN application master web UI.
@@ -394,9 +443,79 @@ reporting the same to the ResourceManager/Scheduler.
 #Summary: MapReduce History Server
 #Group: System/Daemons
 #Requires: %{name}-mapreduce = %{version}-%{release}
+#Requires: %{name}-hdfs = %{version}-%{release}
+#Requires(pre): %{name} = %{version}-%{release}
+#Requires(pre): %{name}-mapreduce = %{version}-%{release}
 
 #%description mapreduce-historyserver
 #The History server keeps records of the different activities being performed on a Apache Hadoop cluster
+
+%package 0.20-mapreduce-jobtracker
+Summary: Hadoop JobTracker
+Group: System/Daemons
+Requires: %{name}-0.20-mapreduce = %{version}-%{release}
+Conflicts: hadoop-0.20-jobtracker, %{name}-jobtrackerha
+
+%description 0.20-mapreduce-jobtracker
+The jobtracker is a central service which is responsible for managing
+the tasktracker services running on all nodes in a Hadoop Cluster.
+The jobtracker allocates work to the tasktracker nearest to the data
+with an available work slot.
+
+%package 0.20-mapreduce-tasktracker
+Summary: Hadoop Task Tracker
+Group: System/Daemons
+Requires: %{name}-0.20-mapreduce = %{version}-%{release}
+Conflicts: hadoop-0.20-tasktracker
+
+%description 0.20-mapreduce-tasktracker
+The tasktracker has a fixed number of work slots.  The jobtracker
+assigns MapReduce work to the tasktracker that is nearest the data
+with an available work slot.
+
+%package 0.20-conf-pseudo
+Summary: Hadoop installation in pseudo-distributed mode with MRv1
+Group: System/Daemons
+Requires: %{name} = %{version}-%{release}, %{name}-hdfs-namenode = %{version}-%{release}, %{name}-hdfs-datanode = %{version}-%{release}, %{name}-hdfs-secondarynamenode = %{version}-%{release}, %{name}-0.20-mapreduce-tasktracker = %{version}-%{release}, %{name}-0.20-mapreduce-jobtracker = %{version}-%{release}
+Conflicts: hadoop-conf-pseudo
+
+%description 0.20-conf-pseudo
+Installation of this RPM will setup your machine to run in pseudo-distributed mode
+where each Hadoop daemon runs in a separate Java process. You will be getting old
+style daemons (MRv1) for Hadoop jobtracker and Hadoop tasktracker instead of new
+YARN (MRv2) ones.
+
+%package 0.20-mapreduce-jobtrackerha
+Summary: Hadoop JobTracker High Availability
+Group: System/Daemons
+Requires: %{name}-0.20-mapreduce = %{version}-%{release}
+Conflicts: hadoop-0.20-jobtracker, %{name}-0.20-mapreduce-jobtracker
+
+%description 0.20-mapreduce-jobtrackerha
+The Hadoop MapReduce JobTracker High Availability Daemon provides a
+High Availability JobTracker. JobTracker (installed by
+hadoop-0.20-mapreduce-jobtracker) and JobTracker High Availability
+(installed by this package - hadoop-0.20-mapreduce-jobtrackerha)
+can not be installed together on the same machine. Only one of them should
+be installed on a given machine at any given time. When used in coordination
+with Hadoop MapReduce failover controller (installed by
+hadoop-0.20-mapreduce-zkfc), this JobTracker provides automatic failover.
+The jobtracker is a central service which is responsible for managing
+the tasktracker services running on all nodes in a Hadoop Cluster.
+The jobtracker allocates work to the tasktracker nearest to the data
+with an available work slot.
+
+%package 0.20-mapreduce-zkfc
+Summary: Hadoop MapReduce failover controller
+Group: System/Daemons
+Requires: %{name}-0.20-mapreduce-jobtrackerha = %{version}-%{release}, zookeeper >= 3.4.0
+
+%description 0.20-mapreduce-zkfc
+The Hadoop MapReduce failover controller is a Zookeeper client which also
+manages the state of the JobTracker. Any machines running ZKFC also need to
+run High Availability JobTracker (installed by hadoop-0.20-mapreduce-jobtrackerha).
+The ZKFC is responsible for: Health monitoring, Zookeeper
+session management and Zookeeper-based election.
 
 %package client
 Summary: Hadoop client side dependencies
@@ -407,8 +526,10 @@ Requires: %{name}-hdfs = %{version}-%{release}
 #Requires: %{name}-yarn = %{version}-%{release}
 #Requires: %{name}-mapreduce = %{version}-%{release}
 #I have no idea why it requires this, disabling for now
-#Requires: %{name}-0.20-mapreduce >= 0.20.2+1213
-#Requires(pre): %{name}-0.20-mapreduce >= 0.20.2+1213
+#Requires: %{name}-yarn = %{version}-%{release}
+#Requires: %{name}-mapreduce = %{version}-%{release}
+#Requires: %{name}-0.20-mapreduce = %{version}-%{release}
+#Requires(pre): %{name}-0.20-mapreduce = %{version}-%{release}
 
 %description client
 Installation of this package will provide you with all the dependencies for Hadoop clients.
@@ -490,8 +611,8 @@ selinux policy files for the Hadoop fuse hdfs mounts
 
 %prep
 %setup -n %{name}-%{hadoop_patched_version}
-tar -C `dirname %{SOURCE25}` -xzf %{SOURCE25}
-pushd `dirname %{SOURCE25}`
+tar -C `dirname %{SOURCE29}` -xzf %{SOURCE29}
+pushd `dirname %{SOURCE29}`
 %if 0%{?rhel} <= 6
 %patch0 -p1
 %endif
@@ -510,7 +631,7 @@ popd
 
 # Build the selinux policy file
 mkdir SELinux
-cp %{SOURCE26} SELinux/%{name}.te
+cp %{SOURCE31} SELinux/%{name}.te
 pushd SELinux
 for variant in %{selinux_variants}
 do
@@ -544,7 +665,7 @@ bash %{SOURCE2} \
   --httpfs-dir=$RPM_BUILD_ROOT%{lib_httpfs} \
   --system-include-dir=$RPM_BUILD_ROOT%{_includedir} \
   --system-lib-dir=$RPM_BUILD_ROOT%{_libdir} \
-  --system-libexec-dir=$RPM_BUILD_ROOT%{lib_hadoop}/libexec \
+  --system-libexec-dir=$RPM_BUILD_ROOT/%{lib_hadoop}/libexec \
   --hadoop-etc-dir=$RPM_BUILD_ROOT%{etc_hadoop} \
   --httpfs-etc-dir=$RPM_BUILD_ROOT%{etc_httpfs} \
   --prefix=$RPM_BUILD_ROOT \
@@ -574,13 +695,7 @@ echo 'export JSVC_HOME=%{libexecdir}/bigtop-utils' >> $RPM_BUILD_ROOT/etc/defaul
 # Generate the init.d scripts
 for service in %{hadoop_services}
 do
-       init_file=$RPM_BUILD_ROOT/%{initd_dir}/%{name}-${service}
-       # On RedHat, SuSE and Mageia run-level 2 is networkless, hence excluding it
-       env CHKCONFIG="- 85 15"       \
-           INIT_DEFAULT_START=""  \
-           INIT_DEFAULT_STOP="0 1 2 6" \
-         bash $RPM_SOURCE_DIR/init.d.tmpl $RPM_SOURCE_DIR/%{name}-${service}.svc > $init_file
-       chmod 755 $init_file
+       bash %{SOURCE11} $RPM_SOURCE_DIR/%{name}-${service}.svc rpm $RPM_BUILD_ROOT/%{initd_dir}/%{name}-${service}
        cp $RPM_SOURCE_DIR/${service/-*/}.default $RPM_BUILD_ROOT/etc/default/%{name}-${service}
        chmod 644 $RPM_BUILD_ROOT/etc/default/%{name}-${service}
 done
@@ -590,10 +705,14 @@ done
 %__install -m 0644 %{SOURCE8} $RPM_BUILD_ROOT/etc/security/limits.d/hdfs.conf
 %__install -m 0644 %{SOURCE9} $RPM_BUILD_ROOT/etc/security/limits.d/yarn.conf
 %__install -m 0644 %{SOURCE10} $RPM_BUILD_ROOT/etc/security/limits.d/mapreduce.conf
+# MR1 hack
+%__install -m 0644 %{SOURCE10} $RPM_BUILD_ROOT/etc/security/limits.d/mapred.conf
 
 # Install fuse default file
 %__install -d -m 0755 $RPM_BUILD_ROOT/etc/default
 %__cp %{SOURCE4} $RPM_BUILD_ROOT/etc/default/hadoop-fuse
+# FIXME: we need to think how to get rid of the following file
+%__cp %{SOURCE30} $RPM_BUILD_ROOT/etc/default/hadoop-0.20-mapreduce
 
 %ifarch noarch
 %else
@@ -616,15 +735,15 @@ popd
 %__install -d -m 1777 $RPM_BUILD_ROOT/%{state_hdfs}/cache
 %__install -d -m 1777 $RPM_BUILD_ROOT/%{state_mapreduce}/cache
 # /var/log/*
-%__install -d -m 0775 $RPM_BUILD_ROOT/%{log_yarn}
-%__install -d -m 0775 $RPM_BUILD_ROOT/%{log_hdfs}
-%__install -d -m 0775 $RPM_BUILD_ROOT/%{log_mapreduce}
-%__install -d -m 0775 $RPM_BUILD_ROOT/%{log_httpfs}
+%__install -d -m 0755 $RPM_BUILD_ROOT/%{log_yarn}
+%__install -d -m 0755 $RPM_BUILD_ROOT/%{log_hdfs}
+%__install -d -m 0755 $RPM_BUILD_ROOT/%{log_mapreduce}
+%__install -d -m 0755 $RPM_BUILD_ROOT/%{log_httpfs}
 # /var/run/*
-%__install -d -m 0775 $RPM_BUILD_ROOT/%{run_yarn}
-%__install -d -m 0775 $RPM_BUILD_ROOT/%{run_hdfs}
-%__install -d -m 0775 $RPM_BUILD_ROOT/%{run_mapreduce}
-%__install -d -m 0775 $RPM_BUILD_ROOT/%{run_httpfs}
+%__install -d -m 0755 $RPM_BUILD_ROOT/%{run_yarn}
+%__install -d -m 0755 $RPM_BUILD_ROOT/%{run_hdfs}
+%__install -d -m 0755 $RPM_BUILD_ROOT/%{run_mapreduce}
+%__install -d -m 0755 $RPM_BUILD_ROOT/%{run_httpfs}
 
 %pre
 getent group hadoop >/dev/null || groupadd -r hadoop
@@ -661,6 +780,10 @@ getent passwd httpfs >/dev/null || /usr/sbin/useradd --comment "Hadoop HTTPFS" -
 #getent group mapred >/dev/null   || groupadd -r mapred
 #getent passwd mapred >/dev/null || /usr/sbin/useradd --comment "Hadoop MapReduce" --shell /bin/bash -M -r -g mapred -G hadoop --home %{state_mapreduce} mapred
 
+%pre 0.20-mapreduce
+getent group mapred >/dev/null || groupadd -r mapred
+getent passwd mapred >/dev/null || /usr/sbin/useradd --comment "Hadoop MapReduce" --shell /bin/bash -M -r -g mapred -G hadoop --home %{lib_hadoop} mapred
+
 %post
 %{alternatives_cmd} --install %{config_hadoop} %{name}-conf %{etc_hadoop}/conf.empty 10
 
@@ -678,11 +801,6 @@ getent group hadoop >/dev/null && /usr/sbin/usermod -G hadoop hdfs || true
 
 %preun
 if [ "$1" = 0 ]; then
-  # Stop any services that might be running
-  for service in %{hadoop_services}
-  do
-     service hadoop-$service stop 1>/dev/null 2>/dev/null || :
-  done
   %{alternatives_cmd} --remove %{name}-conf %{etc_hadoop}/conf.empty || :
 fi
 
@@ -748,6 +866,8 @@ fi
 %defattr(-,root,root)
 %config(noreplace) %{etc_hadoop}/conf.empty/yarn-env.sh
 %config(noreplace) %{etc_hadoop}/conf.empty/yarn-site.xml
+%config(noreplace) %{etc_hadoop}/conf.empty/capacity-scheduler.xml
+%config(noreplace) %{etc_hadoop}/conf.empty/container-executor.cfg
 %config(noreplace) /etc/security/limits.d/yarn.conf
 %{lib_hadoop}/libexec/yarn-config.sh
 %{lib_yarn}
@@ -755,25 +875,27 @@ fi
 %{bin_hadoop}/yarn
 %attr(0775,yarn,hadoop) %{run_yarn}
 %attr(0775,yarn,hadoop) %{log_yarn}
-%attr(0775,yarn,hadoop) %{state_yarn}
+%attr(0755,yarn,hadoop) %{state_yarn}
 %attr(1777,yarn,hadoop) %{state_yarn}/cache
 
 %files hdfs
 %defattr(-,root,root)
 %config(noreplace) %{etc_hadoop}/conf.empty/hdfs-site.xml
-%config(noreplace) /etc/default/hadoop-fuse
 %config(noreplace) /etc/security/limits.d/hdfs.conf
 %{lib_hdfs}
 %{lib_hadoop}/libexec/hdfs-config.sh
 %{bin_hadoop}/hdfs
-%attr(0775,hdfs,hadoop) %{run_hdfs}
+%attr(0755,hdfs,hadoop) %{run_hdfs}
 %attr(0775,hdfs,hadoop) %{log_hdfs}
-%attr(0775,hdfs,hadoop) %{state_hdfs}
+%attr(0755,hdfs,hadoop) %{state_hdfs}
 %attr(1777,hdfs,hadoop) %{state_hdfs}/cache
+%{lib_hadoop}/libexec/init-hdfs.sh
 
 %files mapreduce
 %defattr(-,root,root)
 %config(noreplace) %{etc_hadoop}/conf.empty/mapred-site.xml
+%config(noreplace) %{etc_hadoop}/conf.empty/mapred-queues.xml.template
+%config(noreplace) %{etc_hadoop}/conf.empty/mapred-site.xml.template
 %config(noreplace) /etc/security/limits.d/mapreduce.conf
 %{lib_mapreduce}
 %{lib_hadoop}/libexec/mapred-config.sh
@@ -793,7 +915,12 @@ fi
 %config(noreplace) %{etc_hadoop}/conf.empty/slaves
 %config(noreplace) %{etc_hadoop}/conf.empty/ssl-client.xml.example
 %config(noreplace) %{etc_hadoop}/conf.empty/ssl-server.xml.example
+%config(noreplace) %{etc_hadoop}/conf.empty/configuration.xsl
+# FIXME: CDH-12105
+# %config(noreplace) %{etc_hadoop}/conf.empty/hadoop-env.sh
+%config(noreplace) %{etc_hadoop}/conf.empty/hadoop-policy.xml
 %config(noreplace) /etc/default/hadoop
+%{etc_hadoop}/conf.dist
 %{lib_hadoop}/*.jar
 %{lib_hadoop}/lib
 %{lib_hadoop}/sbin
@@ -805,9 +932,13 @@ fi
 %{bin_hadoop}/hadoop
 %{man_hadoop}/man1/hadoop.1.*
 
+# Shouldn't the following be moved to hadoop-hdfs?
+%exclude %{lib_hadoop}/bin/fuse_dfs
+
 %files doc
 %defattr(-,root,root)
 %doc %{doc_hadoop}
+%doc %{doc_hadoop_mr1}
 
 %files httpfs
 %defattr(-,root,root)
@@ -844,15 +975,27 @@ fi
 #service_macro yarn-nodemanager
 #service_macro yarn-proxyserver
 #service_macro mapreduce-historyserver
+#service_macro 0.20-mapreduce-jobtracker
+#service_macro 0.20-mapreduce-tasktracker
+#service_macro 0.20-mapreduce-zkfc
+#service_macro 0.20-mapreduce-jobtrackerha
 
 # Pseudo-distributed Hadoop installation
 %post conf-pseudo
 %{alternatives_cmd} --install %{config_hadoop} %{name}-conf %{etc_hadoop}/conf.pseudo 30
 
+# Pseudo-distributed Hadoop installation
+%post 0.20-conf-pseudo
+%{alternatives_cmd} --install %{config_hadoop} %{name}-conf %{etc_hadoop}/conf.pseudo.mr1 30
+
 %preun conf-pseudo
 if [ "$1" = 0 ]; then
         %{alternatives_cmd} --remove %{name}-conf %{etc_hadoop}/conf.pseudo
-        rm -f %{etc_hadoop}/conf
+fi
+
+%preun 0.20-conf-pseudo
+if [ "$1" = 0 ]; then
+        %{alternatives_cmd} --remove %{name}-conf %{etc_hadoop}/conf.pseudo.mr1
 fi
 
 %files conf-pseudo
@@ -877,12 +1020,26 @@ fi
 %attr(0755,root,root) %{lib_hadoop}/bin/fuse_dfs
 %attr(0755,root,root) %{bin_hadoop}/hadoop-fuse-dfs
 
+%files 0.20-conf-pseudo
+%defattr(-,root,root)
+%config(noreplace) %attr(755,root,root) %{etc_hadoop}/conf.pseudo.mr1
+
+%files 0.20-mapreduce
+%defattr(-,root,root)
+%config(noreplace) /etc/security/limits.d/mapred.conf
+# FIXME: we need to think how to get rid of the following file
+%config(noreplace) /etc/default/hadoop-0.20-mapreduce
+%attr(4754,root,mapred) %{lib_mapreduce_mr1}/sbin/%{hadoop_arch}/task-controller
+%{lib_mapreduce_mr1}
+%{bin_hadoop}/hadoop-0.20
+# %{man_hadoop}/man1/%{hadoop_name}.1.gz
+%attr(0775,root,hadoop) /var/run/hadoop-0.20-mapreduce
+%attr(0775,root,hadoop) /var/log/hadoop-0.20-mapreduce
+
 %files hdfs-fuse-selinux
 %defattr(-,root,root,-)
 %doc SELinux/*.??
 %{_datadir}/selinux/*/%{name}.pp
-
-
 
 
 %changelog
