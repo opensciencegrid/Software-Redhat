@@ -208,6 +208,7 @@ BuildRequires: maven3
 %endif
 BuildRequires: protobuf-compiler
 BuildRequires: cmake
+BuildRequires: ant
 BuildRequires: java7-devel
 BuildRequires: jpackage-utils
 BuildRequires: /usr/lib/java-1.7.0
