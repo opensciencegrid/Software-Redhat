@@ -1,7 +1,7 @@
 Name:      osg-tested-internal
 Summary:   All OSG packages we test (internal use only)
 Version:   3.3
-Release:   8%{?dist}
+Release:   9%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -46,9 +46,6 @@ Requires: torque-client
 Requires: torque-scheduler
 Requires: osg-ce-pbs
 
-Requires: osg-se-bestman
-Requires: osg-se-bestman-xrootd
-
 Requires: rsv
 
 Requires: xrootd
@@ -63,6 +60,9 @@ Requires: gratia-service
 #
 ################################################################################
 %if 0%{?rhel} < 7
+# as of 2015-08-21, bestman hasn't been successfully built
+Requires: osg-se-bestman
+Requires: osg-se-bestman-xrootd
 # as of 2015-08-21, gums hasn't been successfully built
 Requires: osg-gums
 # as of 2015-08-21, voms tests fail due to non-trivial issues
@@ -91,6 +91,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Feb 18 2016 Brian Lin <blin@cs.wisc.edu> - 3.3-9
+- Drop bestman package requirements for el7 (SOFTWARE-2089)
+
 * Tue Feb 16 2016 Brian Lin <blin@cs.wisc.edu> - 3.3-8
 - Replace cvmfs-* requirements with osg-oasis metapackage (SOFTWARE-2190)
 
