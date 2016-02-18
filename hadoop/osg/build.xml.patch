@@ -1,0 +1,15 @@
+diff --git a/src/hadoop-mapreduce1-project/build.xml b/src/hadoop-mapreduce1-project/build.xml
+index cde1170..f402d4a 100644
+--- a/src/hadoop-mapreduce1-project/build.xml
++++ b/src/hadoop-mapreduce1-project/build.xml
+@@ -374,8 +374,8 @@
+   </macrodef>
+ 
+   <target name="jvm-check">
+-    <property name="javaVersion" value="1.6"/>
+-    <property name="targetJavaVersion" value="1.6"/>
++    <property name="javaVersion" value="1.7"/>
++    <property name="targetJavaVersion" value="1.7"/>
+ 
+     <property name="requiredJavaVersion" value="xx${javaVersion}"/>
+     <property name="currentJavaVersion" value="xx${java.version}"/>
