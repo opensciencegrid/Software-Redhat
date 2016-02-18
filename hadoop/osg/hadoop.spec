@@ -179,7 +179,8 @@ Source29: %{name}-bigtop-packaging.tar.gz
 Source30: 0.20.default
 Source31: hadoop-fuse.te
 
-Patch0: mvn304.patch
+#Patch0: mvn304.patch
+Patch0: do-component-build.patch
 Patch1: javafuse.patch
 Patch2: libhdfs-soversion.patch
 Patch3: libhdfs-soversion-install.patch
@@ -188,9 +189,9 @@ Patch5: pom.xml.patch
 Patch6: 1184-extendable-client.patch
 Patch7: 2006-HDFS-4997.patch
 Patch8: init.d.tmpl.patch
-Patch9: protoc-path.patch
+#Patch9: protoc-path.patch
 Patch10: pom.xml-dep-details.patch
-Patch11: ivy-maven-repo-1.patch
+#Patch11: ivy-maven-repo-1.patch
 Patch12: ivy-maven-repo-2.patch
 Patch13: build.xml.patch
 
@@ -621,14 +622,14 @@ selinux policy files for the Hadoop fuse hdfs mounts
 %setup -q -n %{name}-%{hadoop_patched_version}
 tar -C `dirname %{SOURCE29}` -xzf %{SOURCE29}
 pushd `dirname %{SOURCE29}`
-%if 0%{?rhel} <= 6
+#% if 0%{?rhel} <= 6
 %patch0 -p1
-%endif
+#% endif
 %patch1 -p1
 %patch3 -p1
 %patch8 -p1
-%patch9 -p1
-%patch11 -p1
+#% patch9 -p1
+#% patch11 -p1
 popd
 %patch2 -p1
 %patch4 -p1
