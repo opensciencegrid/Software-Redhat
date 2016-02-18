@@ -192,6 +192,7 @@ Patch9: pom.xml-dep-details.patch
 Patch10: ivy-maven-repo.patch
 Patch11: build.xml.patch
 Patch12: gridmix.patch
+Patch13: unistd.patch
 
 
 Buildroot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id} -u -n)
@@ -634,6 +635,7 @@ popd
 %patch10 -p1
 %patch11 -p1
 %patch12 -p1
+%patch13 -p1
 
 %build
 # This assumes that you installed Java JDK 6 and set JAVA_HOME
