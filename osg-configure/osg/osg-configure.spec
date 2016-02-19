@@ -1,6 +1,6 @@
 Summary: Package for configure-osg and associated scripts
 Name: osg-configure
-Version: 1.2.5
+Version: 1.2.6
 Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
@@ -8,7 +8,6 @@ Group: Grid
 Prefix: %{_prefix}
 BuildArch: noarch
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
-Vendor: Suchandra Thapa <sthapa@ci.uchicago.edu>
 Url: http://www.opensciencegrid.org
 Provides: configure-osg
 
@@ -322,6 +321,9 @@ fi
 
 
 %changelog
+* Fri Feb 19 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 1.2.6-1
+- Add SGE settings to /etc/blah.config (SOFTWARE-2189)
+
 * Thu Nov 19 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.2.5-1.osg
 - Remove deprecated ReSS support (SOFTWARE-2103)
 
