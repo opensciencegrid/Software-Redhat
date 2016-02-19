@@ -5,7 +5,7 @@
 
 Summary:   Generate CAs and certificates for testing an OSG installation
 Name:      osg-ca-generator
-Version:   1.0.2
+Version:   1.0.3
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -37,6 +37,9 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/cagen.py*
 
 %changelog
+* Fri Feb 19 2016 Brian Lin <blin@cs.wisc.edu> 1.0.3-1
+- Remove print statements from library (SOFTWARE-2204)
+
 * Wed Jan 27 2016 Brian Lin <blin@cs.wisc.edu> 1.0.1-2
 - Fix bug on EL5 where OpenSSL does not create the required folders
 
