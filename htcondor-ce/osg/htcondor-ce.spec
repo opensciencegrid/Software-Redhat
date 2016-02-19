@@ -2,8 +2,8 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 2.0.0
-Release: 2%{?gitrev:.%{gitrev}git}%{?dist}
+Version: 2.0.1
+Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 
 Group: Applications/System
@@ -20,7 +20,6 @@ URL: http://github.com/opensciencegrid/htcondor-ce
 # git archive --prefix=%{name}-%{version}/ %{gitrev} | gzip > %{name}-%{version}-%{gitrev}.tar.gz
 #
 Source0: %{name}-%{version}%{?gitrev:-%{gitrev}}.tar.gz
-Patch0: drop_classad_fn.patch
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -34,6 +33,7 @@ Requires: %{name}-client = %{version}-%{release}
 
 Obsoletes: condor-ce < 0.5.4
 Provides:  condor-ce = %{version}
+Provides:  %{name}-master = %{version}-%{release}
 
 Requires(post): chkconfig
 Requires(preun): chkconfig
@@ -68,7 +68,7 @@ Requires: %{name} = %{version}-%{release}, bdii
 Group: Applications/Internet
 Summary: A Website that will report the current status of the local HTCondor-CE
 
-Requires: %{name} = %{version}-%{release}
+Requires: %{name}-master = %{version}-%{release}
 Requires: python-cherrypy
 Requires: python-genshi
 Requires: ganglia-gmond
@@ -165,6 +165,7 @@ Provides:  condor-ce-client = %{version}
 Group: Applications/System
 Summary: Central HTCondor-CE information services collector
 
+Provides: %{name}-master = %{version}-%{release}
 Requires: %{name}-client = %{version}-%{release}
 Requires: libxml2-python
 Conflicts: %{name}
@@ -174,7 +175,6 @@ Conflicts: %{name}
 
 %prep
 %setup -q
-%patch0 -p1
 
 %build
 %cmake -DHTCONDORCE_VERSION=%{version} -DCMAKE_INSTALL_LIBDIR=%{_libdir} -DPYTHON_SITELIB=%{python_sitelib}
@@ -407,6 +407,10 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Wed Feb 07 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.1-1
+- Fix htcondor-ce-view requirements to allow installation with an htcondor-ce-collector
+- Drop CE ClassAd functions
+
 * Fri Jan 22 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.0-2
 - Require condor >= 8.3.7, which provides the userHome ClassAd function
 
@@ -435,7 +439,7 @@ fi
 - Allow users to add onto accounting group defaults set by the job router (SOFTWARE-2067)
 - build against condor 8.4.1 (SOFTWARE-2084)
 
-* Fri Sep 25 2015 Brian Lin <blin@cs.wisc.edu> - 1.16-1
+* Mon Sep 25 2015 Brian Lin <blin@cs.wisc.edu> - 1.16-1
 - Add network troubleshooting tool (condor_ce_host_network_check)
 - Add ability to disable glideins advertising to the CE
 - Add non-DigiCert hostcerts for CERN
@@ -465,7 +469,7 @@ fi
 - Ensure that the HTCondor Python bindings are in the PYTHONPATH (SOFTWARE-1927)
 - HTCondor CE should warn if osg-configure has not been run (SOFTWARE-1914)
 - Improvements to condor_ce_run error messages
-- Drop userHome function since it's included in upstream HTCondor 8.3.7
+- Drop userHome function since it's included in upstream HTCondor 8.3.6
 
 * Fri Jun 19 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.13-3
 - Add basic systemd service files for condor-ce and condor-ce-collector (SOFTWARE-1541)
