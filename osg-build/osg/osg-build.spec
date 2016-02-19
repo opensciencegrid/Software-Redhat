@@ -2,7 +2,7 @@
 %global _release 1
 
 Name:           osg-build
-Version:        1.6.1
+Version:        1.6.2
 Release:        %{?betatag:0.}%{_release}%{?betatag}%{?dist}
 Summary:        Build tools for the OSG
 
@@ -71,6 +71,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_docdir}/%{name}/sample-osg-build.ini
 
 %changelog
+* Fri Feb 19 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6.2-1
+- Change osg-promote table layout to put build first (SOFTWARE-2116)
+
 * Mon Aug 17 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6.1-1
 - Change promotion aliases testing, prerelease, and contrib to point to 3.3 instead of 3.2
 - Fix unit tests to work with new default dvers
