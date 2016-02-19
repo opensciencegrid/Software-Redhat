@@ -1,8 +1,8 @@
 Name:               gratia-probe
 Summary:            Gratia OSG accounting system probes
 Group:              Applications/System
-Version:            1.14.2
-Release:            7%{?dist}
+Version:            1.15.0
+Release:            1%{?dist}
 
 License:            GPL
 Group:              Applications/System
@@ -43,7 +43,6 @@ ExcludeArch: noarch
 # Source and patch specifications
 Source0:  %{name}-common-%{version}.tar.bz2
 Source1:  %{name}-condor-%{version}.tar.bz2
-Source2:  %{name}-psacct-%{version}.tar.bz2
 Source3:  %{name}-pbs-lsf-%{version}.tar.bz2
 Source5:  %{name}-sge-%{version}.tar.bz2
 Source6:  %{name}-glexec-%{version}.tar.bz2
@@ -66,9 +65,6 @@ Source22: %{name}-enstore-tapedrive-%{version}.tar.bz2
 Source23: %{name}-dCache-storagegroup-%{version}.tar.bz2
 Source24:  %{name}-lsf-%{version}.tar.bz2
 
-Patch0: slurm-safe-unsigned.patch
-Patch1: gratia-185-condor_ce.patch
-Patch2: gratia-186-certinfo.patch
 
 ########################################################################
 
@@ -82,7 +78,6 @@ Prefix: /etc
 %prep
 %setup -q -c
 %setup -q -D -T -a 1
-%setup -q -D -T -a 2
 %if 0%{?rhel} == 7 || %_arch != noarch
 %setup -q -D -T -a 3
 %endif
@@ -107,10 +102,6 @@ Prefix: /etc
 %setup -q -D -T -a 23
 %setup -q -D -T -a 24
 
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
-
 %build
 %if 0%{?rhel} == 7 || %_arch != noarch
 cd pbs-lsf/urCollector-src
@@ -128,7 +119,7 @@ install -d $RPM_BUILD_ROOT/%{_sysconfdir}/gratia
 %if 0%{?rhel} == 7 || %_arch == noarch
   # Obtain files
 
-%define noarch_packs common condor psacct sge glexec metric dCache-transfer dCache-storage gridftp-transfer services hadoop-storage condor-events xrootd-transfer xrootd-storage bdii-status onevm slurm common2 enstore-storage enstore-transfer enstore-tapedrive dCache-storagegroup lsf
+%define noarch_packs common condor sge glexec metric dCache-transfer dCache-storage gridftp-transfer services hadoop-storage condor-events xrootd-transfer xrootd-storage bdii-status onevm slurm common2 enstore-storage enstore-transfer enstore-tapedrive dCache-storagegroup lsf
 
   # PWD is the working directory, used to build
   # $RPM_BUILD_ROOT%{_datadir} are the files to package
@@ -195,11 +186,7 @@ install -d $RPM_BUILD_ROOT/%{_sysconfdir}/gratia
         $PROBE_DIR/ProbeConfig
 
     # Other Probe-specific customizations
-    if [ $probe == "psacct" ]; then
-      sed -i -e 's#@PROBE_SPECIFIC_DATA@#PSACCTFileRepository="/var/lib/gratia/account/" \
-    PSACCTBackupFileRepository="/var/lib/gratia/backup/" \
-    PSACCTExceptionsRepository="/var/log/gratia/exceptions/"#' $PROBE_DIR/ProbeConfig
-    elif [ $probe == "sge" ]; then
+    if [ $probe == "sge" ]; then
       sed -i -e 's#@PROBE_SPECIFIC_DATA@#SGEAccountingFile=""#' $PROBE_DIR/ProbeConfig
     elif [ $probe == "glexec" ]; then
       sed -i -e 's#@PROBE_SPECIFIC_DATA@#gLExecMonitorLog="/var/log/messages"#' $PROBE_DIR/ProbeConfig
@@ -268,10 +255,6 @@ install -d $RPM_BUILD_ROOT/%{_sysconfdir}/gratia
   # Xrootd-transfer init script
   install -m 755 $RPM_BUILD_ROOT%{_datadir}/gratia/xrootd-transfer/gratia-xrootd-transfer.init $RPM_BUILD_ROOT%{_initrddir}/gratia-xrootd-transfer
   rm $RPM_BUILD_ROOT%{_datadir}/gratia/xrootd-transfer/gratia-xrootd-transfer.init
-
-  # psacct init script
-  install -m 755 $RPM_BUILD_ROOT%{_datadir}/gratia/psacct/gratia-psacct $RPM_BUILD_ROOT%{_initrddir}/gratia-psacct
-  rm $RPM_BUILD_ROOT%{_datadir}/gratia/psacct/gratia-psacct
 
   mv $RPM_BUILD_ROOT%{_datadir}/gratia/hadoop-storage/storage.cfg \
      $RPM_BUILD_ROOT%{_sysconfdir}/gratia/hadoop-storage/storage.cfg
@@ -481,35 +464,6 @@ Group: Applications/System
 
 %files gram
 %{perl_vendorlib}/Globus/GRAM/JobManagerGratia.pm
-
-%package psacct
-Summary: A ps-accounting probe
-Group: Applications/System
-Requires: psacct
-Requires: %{name}-common >= 0.12f
-
-%description psacct
-The psacct probe for the Gratia OSG accounting system.
-
-%files psacct
-%defattr(-,root,root,-)
-%doc psacct/README
-%doc %{default_prefix}/gratia/psacct/README
-%dir %{default_prefix}/gratia/psacct
-%{default_prefix}/gratia/psacct/ProbeConfig
-%config %{default_prefix}/gratia/psacct/psacct_probe.cron.sh
-%{default_prefix}/gratia/psacct/PSACCTProbe
-%{python_sitelib}/gratia/psacct
-%config(noreplace) %verify(not md5 size mtime) %{_sysconfdir}/gratia/psacct/ProbeConfig
-%config(noreplace) %{_sysconfdir}/cron.d/gratia-probe-psacct.cron
-%config %{_initrddir}/gratia-psacct
-
-%post psacct
-
-# Configure boot-time activation of accounting.
-/sbin/chkconfig --add gratia-psacct
-
-%customize_probeconfig -d psacct
 
 %package condor
 Summary: A Condor probe
@@ -1017,9 +971,12 @@ The dCache storagegroup probe for the Gratia OSG accounting system.
 %endif # noarch
 
 %changelog
-* Wed Feb 17 2016 Carl Edquist <edquist@cs.wisc.edu> - 1.14.2-7
+* Thu Feb 18 2016 Carl Edquist <edquist@cs.wisc.edu> - 1.15.0-1
+- drop psacct probe (GRATIA-184)
 - fix GridJobId parsing in condor_ce.py (GRATIA-185)
 - eliminate file glob searches from certinfo file lookup (GRATIA-186)
+- in dCache-transfer probe, read from Group file for mapping and get file name
+  from ProbeConfig
 
 * Thu Jun 11 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.14.2-6
 - slurm probe bugfix for previous patch (goc/25834)
