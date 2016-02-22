@@ -1,6 +1,6 @@
 Name:           osg-release
 Version:        3.3
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        OSG Software for Enterprise Linux repository configuration
 
 Group:          System Environment/Base
@@ -64,6 +64,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Feb 22 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.3-5
+- Use koji.chtc.wisc.edu instead of koji-hub.batlab.org for minefield repos
+
+  (SOFTWARE-2220)
 * Thu Jul 30 2015 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.3-4
 - Add goc-itb, goc repos (SOFTWARE-1969)
 
