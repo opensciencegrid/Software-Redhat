@@ -1,7 +1,7 @@
 Name:      osg-tested-internal
 Summary:   All OSG packages we test (internal use only)
 Version:   3.3
-Release:   9%{?dist}
+Release:   10%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -22,7 +22,6 @@ Requires: yum-utils
 Requires: osg-oasis
 Requires: osg-configure-tests
 
-Requires: gratia-probe-psacct
 Requires: gratia-probe-condor
 Requires: gratia-probe-glexec
 Requires: gratia-probe-dcache-storage
@@ -91,6 +90,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Feb 22 2016 Edgar Fajardo <emfajard@ucsd.edu> - 3.3-10
+- Drop the gratia-probe-psacct requirements (SOFTWARE-2213)
+ 
 * Thu Feb 18 2016 Brian Lin <blin@cs.wisc.edu> - 3.3-9
 - Drop bestman package requirements for el7 (SOFTWARE-2089)
 
