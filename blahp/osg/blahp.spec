@@ -1,5 +1,5 @@
 Name:		blahp
-Version:	1.18.16.bosco
+Version:	1.18.17.bosco
 Release:	1%{?dist}
 Summary:	gLite BLAHP daemon
 
@@ -177,6 +177,11 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Mon Feb 22 2016 Brian Lin <blin@cs.wisc.edu> - 1.18.17.bosco-1
+- Re-apply lost SGE script changes (SOFTWARE-2199)
+- Handle LSF suspended states (SOFTWARE-2168)
+- Modify BLAHP to report gratia necessary attributes (SOFTWARE-2019)
+
 * Thu Dec 16 2015 Brian Lin <blin@cs.wisc.edu> - 1.18.16.bosco-1
 - Allow for disabling limited proxies in glexec
 - Fix bug in pbs_status.py when /tmp/ and /var/tmp were on different filesystems
