@@ -178,6 +178,7 @@ Source28: hadoop-0.20-mapreduce-jobtrackerha.svc
 Source29: %{name}-bigtop-packaging.tar.gz
 Source30: 0.20.default
 Source31: hadoop-fuse.te
+Source32: apache-forrest-0.8.tar.gz
 
 Patch0: do-component-build.patch
 Patch1: javafuse.patch
@@ -618,7 +619,7 @@ selinux policy files for the Hadoop fuse hdfs mounts
 
 
 %prep
-%setup -q -n %{name}-%{hadoop_patched_version}
+%setup -q -n %{name}-%{hadoop_patched_version} -a 32
 tar -C `dirname %{SOURCE29}` -xzf %{SOURCE29}
 pushd `dirname %{SOURCE29}`
 %patch0 -p1
@@ -656,6 +657,7 @@ popd
 
 
 export JAVA_HOME=%{java_home}
+export FORREST_HOME=$PWD/apache-forrest-0.8
 env FULL_VERSION=%{hadoop_patched_version} HADOOP_VERSION=%{hadoop_version} HADOOP_ARCH=%{hadoop_arch} bash %{SOURCE1}
 
 
