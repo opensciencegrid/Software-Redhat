@@ -1,5 +1,5 @@
 diff --git a/do-component-build b/do-component-build
-index 21d58bf..7327286 100755
+index 21d58bf..32e9d61 100755
 --- a/do-component-build
 +++ b/do-component-build
 @@ -16,7 +16,8 @@
@@ -48,20 +48,23 @@ index 21d58bf..7327286 100755
  IVY_EXTRA_ARGS="-Dmvnrepo=$IVY_MIRROR_PROP -Drepo.maven.org=$IVY_MIRROR_PROP"
  # Copy them into the main build directory to be included in the tarball
  rm -rf hadoop-mapreduce1-project/build
-@@ -90,11 +91,10 @@ mv hadoop-mapreduce1-project/build/hadoop-${MR1_VERSION} hadoop-mapreduce1-proje
- if [ -n "$DO_MAVEN_DEPLOY" ]; then
- # Change to cloudera/maven directory, and install
- # (and if called from CDH nightly build, deploy) artifacts into Maven repository
--(cd hadoop-mapreduce1-project/cloudera/maven-packaging ; mvn -Dnot.cdh.release.build=false install $DO_MAVEN_DEPLOY)
- fi
+@@ -87,14 +88,8 @@ mkdir -p hadoop-mapreduce1-project/build/hadoop-${MR1_VERSION}/docs/
  
+ mv hadoop-mapreduce1-project/build/hadoop-${MR1_VERSION} hadoop-mapreduce1-project/build/hadoop-mr1
+ 
+-if [ -n "$DO_MAVEN_DEPLOY" ]; then
+-# Change to cloudera/maven directory, and install
+-# (and if called from CDH nightly build, deploy) artifacts into Maven repository
+-(cd hadoop-mapreduce1-project/cloudera/maven-packaging ; mvn -Dnot.cdh.release.build=false install $DO_MAVEN_DEPLOY)
+-fi
+-
  # Create a manifest for the hadoop-0.20-client
 -(cd hadoop-mapreduce1-project/cloudera/maven-packaging/hadoop-client ; mvn assembly:single)
 +(cd hadoop-mapreduce1-project/cloudera/maven-packaging/hadoop-client ; mvn -B assembly:single)
  (cd hadoop-mapreduce1-project/cloudera/maven-packaging/hadoop-client/target/hadoop-client*/client ; ls) > hadoop-mapreduce1-project/build/hadoop-mr1/hadoop-client.list
  
  if [ -z "${MAVEN_ONLY}" ]; then
-@@ -165,6 +165,6 @@ cat > hadoop-mr1-client/pom.xml <<__EOT__
+@@ -165,6 +160,6 @@ cat > hadoop-mr1-client/pom.xml <<__EOT__
    </dependencies>
  </project>
  __EOT__
