@@ -1,7 +1,8 @@
-diff -ru orig/src/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/DFSClient.java new/src/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/DFSClient.java
---- orig/src/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/DFSClient.java	2013-09-19 11:41:37.039376286 -0700
-+++ new/src/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/DFSClient.java	2013-09-19 11:41:37.522376293 -0700
-@@ -504,7 +504,7 @@
+diff --git a/src/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/DFSClient.java b/src/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/DFSClient.java
+index d22dd0d..ea6902a 100644
+--- a/src/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/DFSClient.java
++++ b/src/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/DFSClient.java
+@@ -560,7 +560,7 @@ public class DFSClient implements java.io.Closeable {
      return dfsClientConf.connectToDnViaHostname;
    }
  
@@ -10,34 +11,33 @@ diff -ru orig/src/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoo
      if (!clientRunning) {
        IOException result = new IOException("Filesystem closed");
        throw result;
-@@ -2077,4 +2077,8 @@
-   void disableShortCircuit() {
-     shortCircuitLocalReads = false;
+@@ -2265,4 +2265,8 @@ public class DFSClient implements java.io.Closeable {
+   public boolean useLegacyBlockReaderLocal() {
+     return shouldUseLegacyBlockReaderLocal;
    }
 +  
 +  public FileSystem.Statistics getStats() {
 +    return stats;
 +  }
  }
-diff -ru orig/src/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/DFSInputStream.java new/src/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/DFSInputStream.java
---- orig/src/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/DFSInputStream.java	2013-09-19 11:41:37.186376292 -0700
-+++ new/src/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/DFSInputStream.java	2013-09-19 11:41:37.614376293 -0700
-@@ -62,10 +62,11 @@
- public class DFSInputStream extends FSInputStream implements ByteBufferReadable {
-   private final SocketCache socketCache;
- 
+diff --git a/src/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/DFSInputStream.java b/src/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/DFSInputStream.java
+index a62caa7..742f3d8 100644
+--- a/src/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/DFSInputStream.java
++++ b/src/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/DFSInputStream.java
+@@ -69,9 +69,9 @@ public class DFSInputStream extends FSInputStream implements ByteBufferReadable
+   @VisibleForTesting
+   static boolean tcpReadsDisabledForTesting = false;
+   private final PeerCache peerCache;
 -  private final DFSClient dfsClient;
 -  private boolean closed = false;
+-  private final String src;
 +  protected final DFSClient dfsClient;
 +  protected boolean closed = false;
-+
 +  protected final String src;
- 
--  private final String src;
    private final long prefetchSize;
    private BlockReader blockReader = null;
    private final boolean verifyChecksum;
-@@ -88,6 +89,25 @@
+@@ -163,6 +163,25 @@ public class DFSInputStream extends FSInputStream implements ByteBufferReadable
     * capped at maxBlockAcquireFailures
     */
    private int failures = 0;
@@ -63,7 +63,7 @@ diff -ru orig/src/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoo
    private final int timeWindow;
  
    /* XXX Use of CocurrentHashMap is temp fix. Need to fix 
-@@ -104,7 +124,7 @@
+@@ -179,7 +198,7 @@ public class DFSInputStream extends FSInputStream implements ByteBufferReadable
      deadNodes.put(dnInfo, dnInfo);
    }
    
@@ -72,7 +72,7 @@ diff -ru orig/src/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoo
                   ) throws IOException, UnresolvedLinkException {
      this.dfsClient = dfsClient;
      this.verifyChecksum = verifyChecksum;
-@@ -346,7 +366,7 @@
+@@ -430,7 +449,7 @@ public class DFSInputStream extends FSInputStream implements ByteBufferReadable
     * @return consequent segment of located blocks
     * @throws IOException
     */
@@ -81,7 +81,7 @@ diff -ru orig/src/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoo
                                                          long length) 
                                                        throws IOException {
      // getFileLength(): returns total file length
-@@ -437,6 +457,7 @@
+@@ -521,6 +540,7 @@ public class DFSInputStream extends FSInputStream implements ByteBufferReadable
      
      boolean connectFailedOnce = false;
  
@@ -89,7 +89,7 @@ diff -ru orig/src/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoo
      while (true) {
        //
        // Compute desired block
-@@ -445,7 +466,7 @@
+@@ -529,7 +549,7 @@ public class DFSInputStream extends FSInputStream implements ByteBufferReadable
        assert (target==pos) : "Wrong postion " + pos + " expect " + target;
        long offsetIntoBlock = target - targetBlock.getStartOffset();
  
@@ -98,7 +98,7 @@ diff -ru orig/src/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoo
        chosenNode = retval.info;
        InetSocketAddress targetAddr = retval.addr;
  
-@@ -715,7 +736,7 @@
+@@ -808,7 +828,7 @@ public class DFSInputStream extends FSInputStream implements ByteBufferReadable
      }
    }
        
@@ -107,7 +107,7 @@ diff -ru orig/src/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoo
      throws IOException {
      while (true) {
        DatanodeInfo[] nodes = block.getLocations();
-@@ -730,7 +751,7 @@
+@@ -823,7 +843,7 @@ public class DFSInputStream extends FSInputStream implements ByteBufferReadable
          return new DNAddrPair(chosenNode, targetAddr);
        } catch (IOException ie) {
          String blockInfo = block.getBlock() + " file=" + src;
@@ -116,7 +116,7 @@ diff -ru orig/src/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoo
            throw new BlockMissingException(src, "Could not obtain block: " + blockInfo,
                                            block.getStartOffset());
          }
-@@ -751,22 +772,22 @@
+@@ -844,22 +864,22 @@ public class DFSInputStream extends FSInputStream implements ByteBufferReadable
            // alleviating the request rate from the server. Similarly the 3rd retry
            // will wait 6000ms grace period before retry and the waiting window is
            // expanded to 9000ms. 
@@ -144,7 +144,7 @@ diff -ru orig/src/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoo
        byte[] buf, int offset,
        Map<ExtendedBlock, Set<DatanodeInfo>> corruptedBlockMap)
        throws IOException {
-@@ -776,12 +797,13 @@
+@@ -869,12 +889,13 @@ public class DFSInputStream extends FSInputStream implements ByteBufferReadable
      int refetchToken = 1; // only need to get a new access token once
      int refetchEncryptionKey = 1; // only need to get a new encryption key once
      
@@ -159,7 +159,7 @@ diff -ru orig/src/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoo
        DatanodeInfo chosenNode = retval.info;
        InetSocketAddress targetAddr = retval.addr;
        BlockReader reader = null;
-@@ -1030,7 +1052,7 @@
+@@ -1200,7 +1221,7 @@ public class DFSInputStream extends FSInputStream implements ByteBufferReadable
     * @param corruptedBlockMap, map of corrupted blocks
     * @param dataNodeCount, number of data nodes who contains the block replicas
     */
@@ -168,10 +168,11 @@ diff -ru orig/src/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoo
        Map<ExtendedBlock, Set<DatanodeInfo>> corruptedBlockMap, 
        int dataNodeCount) {
      if (corruptedBlockMap.isEmpty()) {
-diff -ru orig/src/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/DistributedFileSystem.java new/src/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/DistributedFileSystem.java
---- orig/src/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/DistributedFileSystem.java	2013-09-19 11:41:37.420376294 -0700
-+++ new/src/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/DistributedFileSystem.java	2013-09-19 11:41:37.883376296 -0700
-@@ -81,7 +81,7 @@
+diff --git a/src/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/DistributedFileSystem.java b/src/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/DistributedFileSystem.java
+index 23e158d..a02439a 100644
+--- a/src/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/DistributedFileSystem.java
++++ b/src/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/DistributedFileSystem.java
+@@ -85,7 +85,7 @@ public class DistributedFileSystem extends FileSystem {
    private Path workingDir;
    private URI uri;
  
@@ -180,10 +181,11 @@ diff -ru orig/src/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoo
    private boolean verifyChecksum = true;
    
    static{
-diff -ru orig/src/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/server/namenode/NameNode.java new/src/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/server/namenode/NameNode.java
---- orig/src/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/server/namenode/NameNode.java	2013-09-19 11:41:37.322376281 -0700
-+++ new/src/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/server/namenode/NameNode.java	2013-09-19 11:41:37.747376306 -0700
-@@ -325,13 +325,15 @@
+diff --git a/src/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/server/namenode/NameNode.java b/src/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/server/namenode/NameNode.java
+index d476f15..a5f3161 100644
+--- a/src/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/server/namenode/NameNode.java
++++ b/src/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/server/namenode/NameNode.java
+@@ -330,13 +330,15 @@ public class NameNode {
            "Invalid URI for NameNode address (check %s): %s has no authority.",
            FileSystem.FS_DEFAULT_NAME_KEY, filesystemURI.toString()));
      }

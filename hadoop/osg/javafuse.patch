@@ -1,7 +1,8 @@
-diff -ru orig/install_hadoop.sh new/install_hadoop.sh
---- orig/install_hadoop.sh	2012-10-18 16:45:49.000000000 -0500
-+++ new/install_hadoop.sh	2012-10-18 16:46:03.000000000 -0500
-@@ -310,6 +310,9 @@
+diff --git a/install_hadoop.sh b/install_hadoop.sh
+index 5d30c28..f6aaff7 100755
+--- a/install_hadoop.sh
++++ b/install_hadoop.sh
+@@ -328,6 +328,9 @@ done
  CLASSPATH+="\${HADOOP_CONF_DIR:-\${HADOOP_HOME}/etc/hadoop}"
  
  

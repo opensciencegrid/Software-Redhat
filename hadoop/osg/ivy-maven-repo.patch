@@ -1,0 +1,22 @@
+diff --git a/src/hadoop-mapreduce1-project/ivy/ivysettings.xml b/src/hadoop-mapreduce1-project/ivy/ivysettings.xml
+index e8c2fa0..955b5ad 100644
+--- a/src/hadoop-mapreduce1-project/ivy/ivysettings.xml
++++ b/src/hadoop-mapreduce1-project/ivy/ivysettings.xml
+@@ -21,7 +21,7 @@
+   see http://www.jayasoft.org/ivy/doc/configuration
+   -->
+   <!-- you can override this property to use mirrors
+-          http://repo1.maven.org/maven2/
++          http://repo1.maven.org/maven2
+           http://mirrors.dotsrc.org/maven2
+           http://ftp.ggi-project.org/pub/packages/maven2
+           http://mirrors.sunsite.dk/maven2
+@@ -30,7 +30,7 @@
+           http://www.ibiblio.net/pub/packages/maven2
+   -->
+   <property name="repo.maven.org"
+-    value="http://repo1.maven.org/maven2/"
++    value="http://repo1.maven.org/maven2"
+     override="false"/>
+   <property name="snapshot.apache.org"
+     value="http://people.apache.org/repo/m2-snapshot-repository/"
