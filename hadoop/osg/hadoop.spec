@@ -189,7 +189,6 @@ Patch5: pom.xml.patch
 Patch6: 1184-extendable-client.patch
 Patch7: 2006-HDFS-4997.patch
 Patch8: init.d.tmpl.patch
-Patch9: pom.xml-dep-details.patch
 Patch10: ivy-maven-repo.patch
 Patch11: build.xml.patch
 Patch12: gridmix.patch
@@ -632,7 +631,6 @@ popd
 %patch5 -p1
 %patch6 -p1
 %patch7 -p1
-%patch9 -p1
 %patch10 -p1
 %patch11 -p1
 %patch12 -p1
