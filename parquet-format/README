@@ -1,0 +1,6 @@
+parquet-format is a runtime dependency for parquet, which is a runtime
+dependency for hadoop 2.0.0+1612
+
+Upstream srpm obtained from:
+
+  http://archive.cloudera.com/cdh4/redhat/6/x86_64/cdh/4/SRPMS/
