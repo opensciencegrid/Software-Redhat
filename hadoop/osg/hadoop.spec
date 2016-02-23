@@ -1,7 +1,7 @@
 %define hadoop_version 2.0.0+1612
 %define hadoop_patched_version 2.0.0-cdh4.7.1
 %define hadoop_base_version 2.0.0
-%define hadoop_release 1.cdh4.7.1.p0.12.1%{?dist}
+%define hadoop_release 1.cdh4.7.1.p0.12.2%{?dist}
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
@@ -218,7 +218,9 @@ BuildRequires: /usr/lib/java-1.7.0
 
 Requires: coreutils, /usr/sbin/useradd, /usr/sbin/usermod, /sbin/chkconfig, /sbin/service, bigtop-utils >= 0.6, zookeeper >= 3.4.0
 Requires: psmisc, %{netcat_package}
-Requires: parquet
+# Don't require parquet for now, which requires too many things we don't have
+# (see also SOFTWARE-2161)
+# Requires: parquet
 Requires: java7
 Requires: jpackage-utils
 Requires: /usr/lib/java-1.7.0
@@ -1058,6 +1060,9 @@ fi
 
 
 %changelog
+* Tue Feb 23 2016 Carl Edquist <edquist@cs.wisc.edu> - 2.0.0+1612-1.cdh4.7.1.p0.12.2
+- Drop parquet requirement (SOFTWARE-2161)
+
 * Tue Feb 16 2016 Carl Edquist <edquist@cs.wisc.edu> - 2.0.0+1612-1.cdh4.7.1.p0.12.1
 - Update to hadoop 2.0.0+1612 / cdh4.7.1 (SOFTWARE-2161)
 
