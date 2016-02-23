@@ -1,7 +1,7 @@
 
 Name: xrootd-hdfs
 Version: 1.8.7
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: HDFS plugin for xrootd
 
 Group: System Environment/Development
@@ -71,6 +71,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/XrdHdfs.hh
 
 %changelog
+* Mon Feb 22 2016 Carl Edquist <edquist@cs.wisc.edu> - 1.8.7-2
+- Rebuild against hadoop-2.0.0+1612 (SOFTWARE-2161)
+
 * Wed Jan 20 2016 Carl Edquist <edquist@cs.wisc.edu> - 1.8.7-1
 - EL7 build fixes (SOFTWARE-2162)
 
