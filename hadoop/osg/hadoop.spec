@@ -180,20 +180,22 @@ Source30: 0.20.default
 Source31: hadoop-fuse.te
 Source32: apache-forrest-0.8.tar.gz
 
+# patches for %{name}-bigtop-packaging.tar.gz
 Patch0: do-component-build.patch
 Patch1: javafuse.patch
-Patch2: libhdfs-soversion.patch
-Patch3: libhdfs-soversion-install.patch
-Patch4: fix_chown.patch
-Patch5: pom.xml.patch
-Patch6: 1184-extendable-client.patch
-Patch7: 2006-HDFS-4997.patch
-Patch8: init.d.tmpl.patch
-Patch10: ivy-maven-repo.patch
-Patch11: build.xml.patch
-Patch12: gridmix.patch
-Patch13: unistd.patch
+Patch2: libhdfs-soversion-install.patch
+Patch3: init.d.tmpl.patch
 
+# patches for %{name}-%{hadoop_patched_version}.tar.gz
+Patch10: libhdfs-soversion.patch
+Patch11: fix_chown.patch
+Patch12: pom.xml.patch
+Patch13: 1184-extendable-client.patch
+Patch14: 2006-HDFS-4997.patch
+Patch15: ivy-maven-repo.patch
+Patch16: build.xml.patch
+Patch17: gridmix.patch
+Patch18: unistd.patch
 
 Buildroot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id} -u -n)
 BuildRequires: python >= 2.4
@@ -623,18 +625,18 @@ tar -C `dirname %{SOURCE29}` -xzf %{SOURCE29}
 pushd `dirname %{SOURCE29}`
 %patch0 -p1
 %patch1 -p1
-%patch3 -p1
-%patch8 -p1
-popd
 %patch2 -p1
-%patch4 -p1
-%patch5 -p1
-%patch6 -p1
-%patch7 -p1
+%patch3 -p1
+popd
 %patch10 -p1
 %patch11 -p1
 %patch12 -p1
 %patch13 -p1
+%patch14 -p1
+%patch15 -p1
+%patch16 -p1
+%patch17 -p1
+%patch18 -p1
 
 %build
 # This assumes that you installed Java JDK 6 and set JAVA_HOME
