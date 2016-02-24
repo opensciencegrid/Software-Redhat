@@ -5,7 +5,7 @@
 
 Summary:   Tests an OSG Software installation
 Name:      osg-test
-Version:   1.5.1
+Version:   1.5.2
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -39,6 +39,13 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/osgtest
 
 %changelog
+* Wed Feb 24 2016 Brian Lin <blin@cs.wisc.edu> - 1.5.2-1
+- Drop automated tests of Gratia psacct probe (SOFTWARE-2209)
+- Drop extra Gratia logging for failed tests
+- use '-long' instead of deprecated '-verbose' for condor_status (SOFTWARE-2210)
+- Ignore fetch-crl error when it can't get the lastUpdate time
+- Remove htcondor-ce-condor requirement for HTCondor-CE setup tests
+
 * Tue Feb 2 2016 Brian Lin <blin@cs.wisc.edu> - 1.5.1-1
 - Fix error due to missing gratia outbox dir
 
