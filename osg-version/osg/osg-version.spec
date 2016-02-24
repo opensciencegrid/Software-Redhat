@@ -1,6 +1,6 @@
 Name:      osg-version
 Summary:   OSG Version
-Version:   3.3.9
+Version:   3.3.10
 Release:   1%{?dist}
 License:   Apache 2.0
 Group:     Grid
