@@ -1,6 +1,5 @@
-# https://confluence.grid.iu.edu/pages/viewpage.action?title=Installing+an+XRootD+server+for+Stash+Cache&spaceKey=STAS
+# https://twiki.grid.iu.edu/bin/view/Documentation/Release3/InstallStashCache
 
-all.export   /
 xrd.allow host *
 sec.protocol  host
 sec.protbind  * none
@@ -11,14 +10,23 @@ xrootd.trace emsg login stall redirect
 ofs.trace all
 xrd.trace all
 cms.trace all
+pss.trace all
 
-ofs.osslib  libXrdPss.so
-pss.origin  @ORIGINHOST@:1094
+# StashCache caching proxy settings
+
+set cachedir = <admin fill this in>
+all.export  $(cachedir)
+
+ofs.osslib libXrdPss.so
+pss.origin redirector.osgstorage.org+ 1213
 pss.cachelib libXrdFileCache.so
-pss.trace all # Increase debug level
+pss.SetOpt DebugLevel 1
 
-pfc.cachedir  /stash
+pfc.cachedir  $(cachedir)
+
+# These are optional settings, see also documentation
 pfc.nramprefetch 4
 pfc.nramread 4
 pfc.diskusage 0.98 0.99
 
+xrd.protocol http:8000 libXrdHttp.so

@@ -1,7 +1,7 @@
 Name:      stashcache
 Summary:   StashCache metapackages
 Version:   0.6
-Release:   1%{?dist}
+Release:   2%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -93,6 +93,10 @@ rm -rf %{_buildroot}
 %config(noreplace) %{_sysconfdir}/xrootd/xrootd-stashcache-cache-server-itb.cfg
 
 %changelog
+* Thu Feb 25 2016 Marian Zvada <marian.zvada@cern.ch> 0.6-2
+- SOFTWARE-2196: redirector renamed to redirector.osgstorage.org, http export support
+- SOFTWARE-2195: complete revamp of the origin server config using new redirector
+
 * Tue Sep 29 2015 Brian Lin <blin@cs.wisc.edu> 0.6-1
 - Bug fixes to xrootd service management
 
