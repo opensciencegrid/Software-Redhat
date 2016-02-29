@@ -5,7 +5,7 @@
 
 Summary:   Tests an OSG Software installation
 Name:      osg-test
-Version:   1.5.2
+Version:   1.5.3
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -39,6 +39,10 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/osgtest
 
 %changelog
+* Fri Feb 26 2016 Brian Lin <blin@cs.wisc.edu> - 1.5.3-1
+- Drop tarball tests (SOFTWARE-2214)
+- Fix PBS test failures due to EPEL update
+
 * Wed Feb 24 2016 Brian Lin <blin@cs.wisc.edu> - 1.5.2-1
 - Drop automated tests of Gratia psacct probe (SOFTWARE-2209)
 - Drop extra Gratia logging for failed tests
