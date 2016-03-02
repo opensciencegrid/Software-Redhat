@@ -1,7 +1,7 @@
 Summary: Security utilities
 Name: emi-trustmanager
 Version: 3.0.3
-Release: 10%{?dist}
+Release: 11%{?dist}
 License: EMI
 Vendor: EMI
 Group: System Environment/Libraries
@@ -21,6 +21,8 @@ Requires: jpackage-utils
 # ensure these are present, from jpackage-utils or missing-java-1.7.0-dirs
 Requires: /usr/lib/java-1.7.0
 Requires: /usr/share/java-1.7.0
+# Added some of the classess need it SOFTWARE-2233
+Requires: log4j
 BuildRoot: %{_builddir}/%{name}-root
 AutoReqProv: yes
 Source: emi-trustmanager-3.0.3-1.src.fixed.tar.gz
@@ -270,6 +272,9 @@ rm -rf $RPM_BUILD_ROOT
 /usr/share/doc/trustmanager/html/index-all.html
 
 %changelog
+* Wed Mar 2 2016 Edgar Fajardo <efajardo@physics.ucsd.edu> 3.0.3-11
+- Added the runtime requirement of log4j (SOFTWARE-2233)
+
 * Tue Nov 17 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.0.3-10
 - Force use of Java7 even on RHEL7 to maintain consistency with our other software (SOFTWARE-2095)
 - Fix DERSet/DERSequence errors on RHEL7
