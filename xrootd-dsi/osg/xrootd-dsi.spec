@@ -32,7 +32,7 @@ DSI module and POSIX preload libraries for Xrootd
 
 %prep
 %setup -q -n %{name}
-%patch1 -p0
+%patch0 -p1
 
 %build
 
