@@ -1,6 +1,6 @@
 Name:           xrootd-dsi
 Version:        3.0.4
-Release:        16%{?dist}
+Release:        17%{?dist}
 Summary:        xrootd DSI library and POSIX preload
 Group:          System Environment/Daemons
 License:        Stanford (modified BSD with advert clause)
@@ -9,7 +9,7 @@ URL:            http://xrootd.org/
 Source0:        xrootd-dsi.tar.gz
 Source1:        gridftp-xrootd.conf
 Source2:        globus-gridftp-server-plugin.osg-sysconfig
-Patch0:         xrootd-dsi.patch
+Patch0: 	gfalFunctionality.patch
 
 BuildRoot:      %{_tmppath}/%{name}-root
 BuildRequires: globus-common-devel globus-gridftp-server-devel zlib-devel
@@ -32,7 +32,7 @@ DSI module and POSIX preload libraries for Xrootd
 
 %prep
 %setup -q -n %{name}
-%patch0 -p1
+%patch1 -p0
 
 %build
 
@@ -73,6 +73,9 @@ install -m 644 libglobus_gridftp_server_posix.so $RPM_BUILD_ROOT/usr/lib/libglob
 
 
 %changelog
+* Thu Mar 03 2016 Edgar Fajardo <efajardo@physics.ucsd.edu> - 3.0.4-17
+- Added patch for gfal functionality (SOFTWARE-2223)
+
 * Wed Feb 25 2015 Edgar Fajardo <emfajard@ucsd.edu> 3.0.4-16
 - Removed the xrootd-compat-libs not needed.
 
