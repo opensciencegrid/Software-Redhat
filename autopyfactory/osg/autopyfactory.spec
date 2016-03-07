@@ -1,7 +1,7 @@
 %define name autopyfactory
 %define version 2.4.6
 %define unmangled_version 2.4.6
-%define release 4
+%define release 5
 
 Summary: autopyfactory package
 Name: %{name}
@@ -330,5 +330,22 @@ Requires: autopyfactory-proxymanager
 %description -n autopyfactory-cloud
 meta rpm autopyfactory-cloud
 %files -n autopyfactory-cloud
+
+
+%package -n autopyfactory-atlas
+Summary: META RPM for autopyfactory-atlas
+Group: Development/Libraries
+Requires: autopyfactory-common
+Requires: autopyfactory-proxymanager
+Requires: autopyfactory-plugins-scheds
+Requires: autopyfactory-plugins-monitors
+Requires: autopyfactory-plugins-panda
+Requires: autopyfactory-plugins-local
+Requires: autopyfactory-plugins-remote
+Requires: autopyfactory-plugins-cloud
+%description -n autopyfactory-atlas
+meta rpm autopyfactory-atlas
+%files -n autopyfactory-atlas
+
 
 ##############################################
