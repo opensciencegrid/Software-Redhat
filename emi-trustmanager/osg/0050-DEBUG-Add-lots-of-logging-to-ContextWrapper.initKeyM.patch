@@ -1,0 +1,65 @@
+From 616a03287ed4251bc4f6f3753ea7dca2182f9b6c Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Thu, 10 Mar 2016 16:29:57 -0600
+Subject: [PATCH] DEBUG: Add lots of logging to
+ ContextWrapper.initKeyManagers(PasswordFinder)
+
+---
+ src/org/glite/security/trustmanager/ContextWrapper.java | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/src/org/glite/security/trustmanager/ContextWrapper.java b/src/org/glite/security/trustmanager/ContextWrapper.java
+index db7237d..08d2860 100644
+--- a/src/org/glite/security/trustmanager/ContextWrapper.java
++++ b/src/org/glite/security/trustmanager/ContextWrapper.java
+@@ -485,36 +485,47 @@ public class ContextWrapper implements SSLContextWrapper {
+      */
+     public void initKeyManagers(PasswordFinder finder) throws CertificateException, NoSuchAlgorithmException {
+         try {
+             LOGGER.debug("ContextHandler.initKeyManagers");
+ 
++            LOGGER.debug("UpdatingKeyManager updatingKeyManager = new UpdatingKeyManager(config, finder);");
+             UpdatingKeyManager updatingKeyManager = new UpdatingKeyManager(config, finder);
+ 
++            LOGGER.debug("identityKeyManagers = new KeyManager[] { updatingKeyManager };");
+             identityKeyManagers = new KeyManager[] { updatingKeyManager };
+ 
++            LOGGER.debug("String[] aliases = updatingKeyManager.getClientAliases(\"RSA\", null);");
+             String[] aliases = updatingKeyManager.getClientAliases("RSA", null);
+ 
+             if ((aliases == null) || (aliases.length == 0)) {
++                LOGGER.debug("aliases = updatingKeyManager.getServerAliases(\"RSA\", null);");
+                 aliases = updatingKeyManager.getServerAliases("RSA", null);
+             }
+ 
+             if ((aliases == null) || (aliases.length == 0)) {
++                LOGGER.debug("throw new CertificateException(\"No credentials found\");");
+                 throw new CertificateException("No credentials found");
+             }
+ 
++            LOGGER.debug("X509Certificate[] chain = updatingKeyManager.getCertificateChain(aliases[0]);");
+             X509Certificate[] chain = updatingKeyManager.getCertificateChain(aliases[0]);
+ 
++            LOGGER.debug("if (overrideExpirationCheck == false) {");
+             if (overrideExpirationCheck == false) {
++                LOGGER.debug("for (int n = 0; n < chain.length; n++) { [chain.lenth=" + chain.length + "]");
+                 for (int n = 0; n < chain.length; n++) {
+ 
+                     try {
++                        LOGGER.debug("chain[n].checkValidity(); [n=" + n + "]");
+                         chain[n].checkValidity();
+                     } catch (CertificateExpiredException e) {
++                        LOGGER.debug("throw new CertificateExpiredException...");
+                         throw new CertificateExpiredException("Certificate for "
+                                 + DNHandler.getSubject(chain[n]).getRFCDN() + ", cert file was "
+                                 + updatingKeyManager.m_credentialFile + ": " + e.getMessage());
+                     } catch (CertificateNotYetValidException e) {
++                        LOGGER.debug("throw new CertificateNotYetValidException...");
+                         throw new CertificateNotYetValidException("Certificate for "
+                                 + DNHandler.getSubject(chain[n]).getRFCDN() + ", cert file was "
+                                 + updatingKeyManager.m_credentialFile + ": " + e.getMessage());
+                     }
+                 }
+-- 
+2.6.3
+

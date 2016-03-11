@@ -1,0 +1,45 @@
+From ba61d38f6b9e01415c3c73a2f4928550fe21738b Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Tue, 25 Nov 2014 20:49:24 -0600
+Subject: [PATCH 16/26] DERInteger -> ASN1Integer (bc1.47)
+
+---
+ src/org/glite/security/util/proxy/ProxyCertInfoExtension.java | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/src/org/glite/security/util/proxy/ProxyCertInfoExtension.java b/src/org/glite/security/util/proxy/ProxyCertInfoExtension.java
+index eaaed62..3a36009 100644
+--- a/src/org/glite/security/util/proxy/ProxyCertInfoExtension.java
++++ b/src/org/glite/security/util/proxy/ProxyCertInfoExtension.java
+@@ -23,7 +23,7 @@ import org.bouncycastle.asn1.ASN1Object;
+ import org.bouncycastle.asn1.ASN1EncodableVector;
+ import org.bouncycastle.asn1.ASN1Primitive;
+ import org.bouncycastle.asn1.ASN1Sequence;
+-import org.bouncycastle.asn1.DERInteger;
++import org.bouncycastle.asn1.ASN1Integer;
+ import org.bouncycastle.asn1.ASN1Primitive;
+ import org.bouncycastle.asn1.DERSequence;
+ 
+@@ -95,8 +95,8 @@ public class ProxyCertInfoExtension extends ASN1Object {
+     public ProxyCertInfoExtension(ASN1Sequence seq) {
+         int index = 0;
+         if (seq != null && seq.size() > 0) {
+-            if (seq.getObjectAt(0) instanceof DERInteger) {
+-                m_pathLen = ((DERInteger) seq.getObjectAt(0)).getValue().intValue();
++            if (seq.getObjectAt(0) instanceof ASN1Integer) {
++                m_pathLen = ((ASN1Integer) seq.getObjectAt(0)).getValue().intValue();
+                 index = 1;
+             }
+             if (seq.size() <= index) {
+@@ -144,7 +144,7 @@ public class ProxyCertInfoExtension extends ASN1Object {
+     public ASN1Primitive toASN1Primitive() {
+         ASN1EncodableVector v = new ASN1EncodableVector();
+         if (m_pathLen > -1) {
+-            v.add(new DERInteger(m_pathLen));
++            v.add(new ASN1Integer(m_pathLen));
+         }
+         if (m_policy != null) {
+             v.add(m_policy.toASN1Primitive());
+-- 
+2.0.1
+

@@ -1,0 +1,47 @@
+From 1a5536c43d71c10ea2dc558e8beb99e653503889 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Tue, 25 Nov 2014 20:55:17 -0600
+Subject: [PATCH 19/26] PEMReader -> PEMParser (bc1.47)
+
+Not just a simple class rename: the PEMParser constructor does not
+accept a passwordFinder or provider arguments... so I left those out.
+We'll see if that causes a problem later on.
+---
+ src/org/glite/security/util/PrivateKeyReader.java | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/src/org/glite/security/util/PrivateKeyReader.java b/src/org/glite/security/util/PrivateKeyReader.java
+index ee01b88..7292715 100644
+--- a/src/org/glite/security/util/PrivateKeyReader.java
++++ b/src/org/glite/security/util/PrivateKeyReader.java
+@@ -25,8 +25,8 @@ import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
+ import org.bouncycastle.asn1.pkcs.RSAPrivateKeyStructure;
+ 
+ import org.bouncycastle.jce.provider.BouncyCastleProvider;
+-import org.bouncycastle.openssl.PEMReader;
+ import org.bouncycastle.openssl.PasswordFinder;
++import org.bouncycastle.openssl.PEMParser;
+ import org.bouncycastle.util.encoders.Base64;
+ 
+ import java.io.BufferedInputStream;
+@@ -105,14 +105,14 @@ public class PrivateKeyReader {
+             
+             
+ //            TestBase.printInterval("setup");
+-            PEMReader pemReader = new PEMReader(reader, finder, "BC");
++            PEMParser pemParser = new PEMParser(reader);
+ //            TestBase.printInterval("setup reader");
+-            Object o = pemReader.readObject();
++            Object o = pemParser.readObject();
+ //            TestBase.printInterval("read key");
+             
+             // skip possible certificates in the file.
+             while (o instanceof X509Certificate){
+-                o = pemReader.readObject();            	
++                o = pemParser.readObject();
+             }
+             
+             if(o == null){
+-- 
+2.0.1
+
