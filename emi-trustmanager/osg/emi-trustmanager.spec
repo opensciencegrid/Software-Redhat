@@ -1,7 +1,7 @@
 Summary: Security utilities
 Name: emi-trustmanager
 Version: 3.0.3
-Release: 11%{?dist}
+Release: 12%{?dist}
 License: EMI
 Vendor: EMI
 Group: System Environment/Libraries
@@ -50,6 +50,7 @@ Patch25: 0025-DEROctetString-new-exception-bc1.47.patch
 Patch26: 0026-CertificationRequestInfo.getSubject-signature-change.patch
 Patch27: 0027-DERSet-ASN1Set-and-DERSequence-ASN1Sequence-bc-1.47.patch
 Patch40: private_key_exception.patch
+Patch50: 0050-DEBUG-Add-lots-of-logging-to-ContextWrapper.initKeyM.patch
 
 %description
 The java authentication and proxy generation implementation that supports grid proxies.
@@ -84,6 +85,7 @@ The java authentication and proxy generation implementation that supports grid p
 %patch26 -p1
 %patch27 -p1
 %patch40 -p0
+%patch50 -p1
 %endif
 
 
@@ -272,6 +274,9 @@ rm -rf $RPM_BUILD_ROOT
 /usr/share/doc/trustmanager/html/index-all.html
 
 %changelog
+* Thu Mar 10 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 3.0.3-12
+- Add 0050-DEBUG-Add-lots-of-logging-to-ContextWrapper.initKeyM.patch
+
 * Wed Mar 2 2016 Edgar Fajardo <efajardo@physics.ucsd.edu> 3.0.3-11
 - Added the runtime requirement of log4j (SOFTWARE-2233)
 
