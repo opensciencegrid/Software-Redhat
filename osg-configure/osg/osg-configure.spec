@@ -8,7 +8,7 @@ Group: Grid
 Prefix: %{_prefix}
 BuildArch: noarch
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
-Url: http://www.opensciencegrid.org
+Url: https://github.com/opensciencegrid/osg-configure
 Provides: configure-osg
 
 %if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
