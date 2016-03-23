@@ -17,7 +17,7 @@
 
 Name:		xrootd
 Epoch:		1
-Version:	4.2.3
+Version:	4.3.0
 Release:	1%{?dist}
 Summary:	Extended ROOT file server
 
@@ -226,7 +226,8 @@ This package contains a ceph back-end plug-in for xrootd.
 %package python
 Summary:        Python bindings for XRootD
 Group:          Development/Libraries
-Requires:       %{name}-client-libs%{?_isa} = %{epoch}:%{version}-%{release}
+Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
+Requires:	%{name}-client-libs%{?_isa} = %{epoch}:%{version}-%{release}
 
 %description python
 Python bindings for XRootD
@@ -484,7 +485,6 @@ fi
 %{_bindir}/xrdsssadmin
 %{_bindir}/xrootd
 %{_bindir}/xrdpfc_print
-
 %{_mandir}/man8/cmsd.8*
 %{_mandir}/man8/cns_ssi.8*
 %{_mandir}/man8/frm_admin.8*
@@ -517,6 +517,7 @@ fi
 %{_libdir}/libXrdCrypto.so.*
 %{_libdir}/libXrdCryptoLite.so.*
 %{_libdir}/libXrdUtils.so.*
+%{_libdir}/libXrdXml.so.*
 # Plugins
 %{_libdir}/libXrdCksCalczcrc32-4.so
 %{_libdir}/libXrdCryptossl-4.so
@@ -533,11 +534,13 @@ fi
 %{_includedir}/%{name}/XrdOuc
 %{_includedir}/%{name}/XrdSec
 %{_includedir}/%{name}/XrdSys
+%{_includedir}/%{name}/XrdXml
 %{_includedir}/%{name}/XrdVersion.hh
 %{_libdir}/libXrdAppUtils.so
 %{_libdir}/libXrdCrypto.so
 %{_libdir}/libXrdCryptoLite.so
 %{_libdir}/libXrdUtils.so
+%{_libdir}/libXrdXml.so
 
 %files client-libs
 %{_libdir}/libXrdCl.so.*
@@ -564,6 +567,7 @@ fi
 %files server-libs
 %{_libdir}/libXrdServer.so.*
 # Plugins
+%{_libdir}/libXrdBlacklistDecision-4.so
 %{_libdir}/libXrdBwm-4.so
 %{_libdir}/libXrdFileCache-4.so
 %{_libdir}/libXrdHttp-4.so
@@ -623,6 +627,9 @@ fi
 %doc %{_pkgdocdir}
 
 %changelog
+* Tue Mar 23 2016 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1:4.3.0-1
+- Update to 4.3.0 - SOFTWARE-2249
+
 * Fri Sep 11 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1:4.2.3-1
 - Update to 4.2.3
 
