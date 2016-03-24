@@ -1,7 +1,7 @@
 %define hadoop_version 2.0.0+1612
 %define hadoop_patched_version 2.0.0-cdh4.7.1
 %define hadoop_base_version 2.0.0
-%define hadoop_release 1.cdh4.7.1.p0.12.2%{?dist}
+%define hadoop_release 1.cdh4.7.1.p0.12.3%{?dist}
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
@@ -196,6 +196,7 @@ Patch15: ivy-maven-repo.patch
 Patch16: build.xml.patch
 Patch17: gridmix.patch
 Patch18: unistd.patch
+Patch19: HDFS-10193.patch
 
 Buildroot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id} -u -n)
 BuildRequires: python >= 2.4
@@ -639,6 +640,7 @@ popd
 %patch16 -p1
 %patch17 -p1
 %patch18 -p1
+%patch19 -p1
 
 %build
 # This assumes that you installed Java JDK 6 and set JAVA_HOME
@@ -1060,6 +1062,9 @@ fi
 
 
 %changelog
+* Thu Mar 24 2016 Carl Edquist <edquist@cs.wisc.edu> - 2.0.0+1612-1.cdh4.7.1.p0.12.3
+- Fix FUSE client SEGV if LDAP is down (HDFS-10193, SOFTWARE-2253)
+
 * Tue Feb 23 2016 Carl Edquist <edquist@cs.wisc.edu> - 2.0.0+1612-1.cdh4.7.1.p0.12.2
 - Drop parquet requirement (SOFTWARE-2161)
 

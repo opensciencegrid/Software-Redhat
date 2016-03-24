@@ -1,0 +1,16 @@
+diff --git a/src/hadoop-hdfs-project/hadoop-hdfs/src/main/native/fuse-dfs/fuse_connect.c b/src/hadoop-hdfs-project/hadoop-hdfs/src/main/native/fuse-dfs/fuse_connect.c
+index 218c5c9..be609fb 100644
+--- a/src/hadoop-hdfs-project/hadoop-hdfs/src/main/native/fuse-dfs/fuse_connect.c
++++ b/src/hadoop-hdfs-project/hadoop-hdfs/src/main/native/fuse-dfs/fuse_connect.c
+@@ -540,6 +540,11 @@ int fuseConnectAsThreadUid(struct hdfsConn **conn)
+   
+   ctx = fuse_get_context();
+   usrname = getUsername(ctx->uid);
++  if (!usrname) {
++    ERROR("fuseConnectAsThreadUid(): failed to get username for uid %"PRId64
++          "\n", (uint64_t)ctx->uid);
++    return EIO;
++  }
+   ret = fuseConnect(usrname, ctx, conn);
+   free(usrname);
+   return ret;
