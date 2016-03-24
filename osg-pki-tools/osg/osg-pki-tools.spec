@@ -1,6 +1,6 @@
 Summary: osg-pki-tools
 Name: osg-pki-tools
-Version: 1.2.14
+Version: 1.2.15
 Release: 1%{?dist}
 Source: OSGPKITools-%{version}.tar.gz
 License: Apache 2.0
@@ -75,6 +75,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Mar 24 2016 Brian Lin <blin@cs.wisc.edu> - 1.2.15-1
+- Added --csr and --hostname options conflict to osg-cert-request
+
 * Thu Dec 17 2015 Brian Lin <blin@cs.wisc.edu> - 1.2.14-1
 - Accept hostname aliases in cert requests (SOFTWARE-2114)
 - Refactor tests (SOFTWARE-2120)
@@ -111,7 +114,7 @@ rm -rf $RPM_BUILD_ROOT
 - Handle blank lines in hostfile for osg-gridadmin-cert-request (SOFTWARE-1271)
 - Fix bugs in exception handling (SOFTWARE-1201)
 
-* Fri Nov 07 2013 Brian Lin <blin@cs.wisc.edu> - 1.2.4-1
+* Thu Nov 07 2013 Brian Lin <blin@cs.wisc.edu> - 1.2.4-1
 - Handle all IO errors
 
 * Mon Oct 28 2013 Brian Lin <blin@cs.wisc.edu> - 1.2.3-1
