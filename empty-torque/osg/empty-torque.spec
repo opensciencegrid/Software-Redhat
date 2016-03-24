@@ -1,6 +1,6 @@
 Name:           empty-torque
 Version:        2.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        An empty Torque/PBS package
 
 Group:          Applications/System
@@ -34,6 +34,9 @@ believes that Torque has been installed via RPM.
 %doc
 
 %changelog
+* Thu Mar 24 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 2.0-2
+- bump to rebuild
+
 * Wed May 23 2012 Alain Roy <roy@cs.wisc.edu> - 1.0-2
 - Rebuild to update dist tag and build on SL6 
 
