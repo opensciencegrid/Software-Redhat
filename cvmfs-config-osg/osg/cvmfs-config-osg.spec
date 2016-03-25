@@ -1,14 +1,10 @@
 Summary: CernVM File System OSG Configuration and Public Keys
 Name: cvmfs-config-osg
 Version: 1.2
-Release: 2%{?dist}
-%define cvmfsversion 2.2.0
-Source0: https://ecsft.cern.ch/dist/cvmfs/cvmfs-%{cvmfsversion}.tar.gz
+Release: 3%{?dist}
+Source0: opensciencegrid.org.pub
 Source1: 60-osg.conf
-Source2: oasis.opensciencegrid.org.conf
-Source3: osgstorage.org.conf
-Source4: cms.osgstorage.org.conf
-Source5: ligo.osgstorage.org.conf
+Source2: config-osg.opensciencegrid.org.conf
 BuildArch: noarch
 Group: Applications/System
 License: BSD
@@ -32,50 +28,31 @@ Conflicts: cvmfs-server < 2.2.0
 Default configuration parameters and public keys for CernVM-FS, providing access
 to repositories under the cern.ch, egi.eu, and opensciencegrid.org domains
 
-%prep
-%setup -q -n cvmfs-%{cvmfsversion}
-
 %install
-cp `find mount -mindepth 1 \( -name "*.conf" -o -name "*.pub" \)` .
-SOURCE0=cern.ch.pub
-SOURCE1=cern-it1.cern.ch.pub
-SOURCE2=cern-it2.cern.ch.pub
-SOURCE3=cern-it3.cern.ch.pub
-SOURCE5=opensciencegrid.org.pub
-SOURCE6=cern.ch.conf
-SOURCE11=atlas-nightlies.cern.ch.conf
-SOURCE12=cms.cern.ch.conf
-SOURCE13=grid.cern.ch.conf
 rm -rf $RPM_BUILD_ROOT
-for cvmfsdir in keys/cern.ch keys/opensciencegrid.org domain.d default.d config.d; do
+for cvmfsdir in keys/opensciencegrid.org config.d default.d; do
     mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/cvmfs/$cvmfsdir
 done
-for key in ${SOURCE0} ${SOURCE1} ${SOURCE2} ${SOURCE3}; do
-    install -D -m 444 "${key}" $RPM_BUILD_ROOT%{_sysconfdir}/cvmfs/keys/cern.ch
-done
-for key in ${SOURCE5}; do
+for key in %{SOURCE0}; do
     install -D -m 444 "${key}" $RPM_BUILD_ROOT%{_sysconfdir}/cvmfs/keys/opensciencegrid.org
-done
-for domainconf in ${SOURCE6} %{SOURCE3}; do
-    install -D -m 444 "${domainconf}" $RPM_BUILD_ROOT%{_sysconfdir}/cvmfs/domain.d
 done
 for defaultconf in %{SOURCE1}; do
     install -D -m 444 "${defaultconf}" $RPM_BUILD_ROOT%{_sysconfdir}/cvmfs/default.d
 done
-for conf in ${SOURCE11} ${SOURCE12} ${SOURCE13} %{SOURCE2} %{SOURCE4} %{SOURCE5}; do
+for conf in %{SOURCE2}; do
     install -D -m 444 "${conf}" $RPM_BUILD_ROOT%{_sysconfdir}/cvmfs/config.d
 done
 
 %files
-%dir %{_sysconfdir}/cvmfs/keys/cern.ch
 %dir %{_sysconfdir}/cvmfs/keys/opensciencegrid.org
-%{_sysconfdir}/cvmfs/keys/cern.ch/*
 %{_sysconfdir}/cvmfs/keys/opensciencegrid.org/*
-%config %{_sysconfdir}/cvmfs/domain.d/*
 %config %{_sysconfdir}/cvmfs/default.d/*
 %config %{_sysconfdir}/cvmfs/config.d/*
 
 %changelog
+* Fri Mar 25 2016 Dave Dykstra <dwd@fnal.gov> - 1.2-3
+- Switch to using config-osg.opensciencegrid.org config repository.
+
 * Mon Feb  1 2016 Dave Dykstra <dwd@fnal.gov> - 1.2-2
 - Update to official tagged 2.2.0-1 source.
 
