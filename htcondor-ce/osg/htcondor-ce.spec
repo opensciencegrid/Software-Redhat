@@ -1,5 +1,5 @@
 # Have gitrev be the short hash or branch name if doing a prerelease build
-%define gitrev e082d4f
+#define gitrev osg
 
 Name: htcondor-ce
 Version: 2.0.3
@@ -56,7 +56,7 @@ Requires: /usr/bin/unshare
 
 %if ! 0%{?osg}
 %package bdii
-Group: Application/Internet
+Group: Applications/Internet
 Summary:  BDII GLUE1.3/2 infoproviders and CE config for non-OSG sites.
 
 Requires: %{name} = %{version}-%{release}, bdii
@@ -400,8 +400,9 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
-* Fri Mar 25 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.3-1
+* Mon Mar 28 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.3-1
 - Drop arch requirements
+- Accept subject DNs in extattr_table.txt (SOFTWARE-2243)
 
 * Fri Feb 22 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.2-1
 - Drop CE ClassAd functions from JOB_ROUTER_DEFAULTS
