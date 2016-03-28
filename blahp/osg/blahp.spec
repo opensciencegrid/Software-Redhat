@@ -1,5 +1,5 @@
 Name:		blahp
-Version:	1.18.17.bosco
+Version:	1.18.18.bosco
 Release:	1%{?dist}
 Summary:	gLite BLAHP daemon
 
@@ -177,6 +177,9 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Fri Feb 26 2016 Brian Lin <blin@cs.wisc.edu> - 1.18.18.bosco-1
+- Bug fixes for PBS installations without qstat in their PATH
+
 * Mon Feb 22 2016 Brian Lin <blin@cs.wisc.edu> - 1.18.17.bosco-1
 - Re-apply lost SGE script changes (SOFTWARE-2199)
 - Handle LSF suspended states (SOFTWARE-2168)
