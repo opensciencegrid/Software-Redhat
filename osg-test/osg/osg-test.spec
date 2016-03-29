@@ -5,7 +5,7 @@
 
 Summary:   Tests an OSG Software installation
 Name:      osg-test
-Version:   1.5.3
+Version:   1.6.0
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -39,6 +39,11 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/osgtest
 
 %changelog
+* Tue Mar 29 2016 Brian Lin <blin@cs.wisc.edu> - 1.6.0-1
+- Add option that exits osg-test on first failure (SOFTWARE-2229)
+- Create an input file that determines test sequence (SOFTWARE-2228)
+- java.verify_ver does not verify java-1.8.0 (SOFTWARE-2212)
+
 * Fri Feb 26 2016 Brian Lin <blin@cs.wisc.edu> - 1.5.3-1
 - Drop tarball tests (SOFTWARE-2214)
 - Fix PBS test failures due to EPEL update
