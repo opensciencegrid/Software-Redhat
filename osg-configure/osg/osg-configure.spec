@@ -1,6 +1,6 @@
 Summary: Package for configure-osg and associated scripts
 Name: osg-configure
-Version: 1.2.6
+Version: 1.3.0
 Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
@@ -158,6 +158,16 @@ Requires: %name-gateway
 %description slurm
 This package includes the ini file for configuring slurm using configure-osg
 
+%package bosco
+Summary: Configure-osg configuration files for bosco
+Group: Grid
+Provides: configure-osg-bosco
+Requires: %name = %version-%release
+Requires: %name-gateway
+Requires: condor-bosco
+%description bosco
+This package includes the ini file for configuring bosco using configure-osg
+
 %package infoservices
 Summary: Configure-osg configuration files for the osg info services
 Group: Grid
@@ -251,6 +261,11 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root)
 %config(noreplace) %{_sysconfdir}/osg/config.d/20-sge.ini
 
+%files bosco
+%defattr(-,root,root)
+%config(noreplace) %{_sysconfdir}/osg/config.d/20-bosco.ini
+
+
 %files ce
 %defattr(-,root,root)
 %config(noreplace) %{_sysconfdir}/osg/config.d/40-localsettings.ini
@@ -321,6 +336,9 @@ fi
 
 
 %changelog
+* Tue Mar 29 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 1.3.0-1
+- Add Bosco support (SOFTWARE-2188)
+
 * Fri Feb 19 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 1.2.6-1
 - Add SGE settings to /etc/blah.config (SOFTWARE-2189)
 

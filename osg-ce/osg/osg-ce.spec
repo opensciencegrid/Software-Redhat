@@ -7,7 +7,7 @@ Version:   3.3
 %if 0%{?el7}
 %define release_suffix _clipped
 %endif
-Release:   4%{?release_suffix}%{?dist}
+Release:   5%{?release_suffix}%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -147,6 +147,19 @@ Requires: osg-configure-slurm
 %description -n %{basece}-slurm
 %{summary}
 
+%package -n %{basece}-bosco
+Group: Grid
+Summary: Gateway-less BOSCO meta-package for OSG-CE
+
+Requires: %{basece} = %{version}-%{release}
+#Requires: gratia-probe-slurm
+Requires: osg-configure-bosco
+
+%description -n %{basece}-bosco
+%{summary}
+
+
+
 ###############################################################################
 # HTCondor-CE subpackages
 ###############################################################################
@@ -213,6 +226,18 @@ Requires: htcondor-ce-pbs
 %description -n %{htcce}-slurm
 %{summary}
 
+%package -n %{htcce}-bosco
+Group: Grid
+Summary: Bosco meta-package for the HTCondor-CE OSG-CE
+Requires: %{htcce} = %{version}-%{release}
+Requires: %{basece}-bosco = %{version}-%{release}
+Requires: condor-bosco
+
+%description -n %{htcce}-bosco
+%{summary}
+
+
+
 ###############################################################################
 # Main (both HTCondor-CE and GRAM-CE) subpackages
 ###############################################################################
@@ -270,6 +295,17 @@ Requires: %{htcce}-slurm = %{version}-%{release}
 %description slurm
 %{summary}
 
+%package bosco
+Group: Grid
+Summary: Bosco meta-package for the OSG-CE
+Requires: %{name} = %{version}-%{release}
+Requires: %{htcce}-bosco = %{version}-%{release}
+
+%description bosco
+%{summary}
+
+
+
 %build
 exit 0
 
@@ -286,20 +322,26 @@ exit 0
 %files -n %{basece}-lsf
 %files -n %{basece}-sge
 %files -n %{basece}-slurm
+%files -n %{basece}-bosco
 %files -n %{htcce}
 %files -n %{htcce}-condor
 %files -n %{htcce}-pbs
 %files -n %{htcce}-lsf
 %files -n %{htcce}-sge
 %files -n %{htcce}-slurm
+%files -n %{htcce}-bosco
 %files
 %files condor
 %files pbs
 %files lsf
 %files sge
 %files slurm
+%files bosco
 
 %changelog
+* Fri Mar 25 2016 Derek Weitzel <dweitzel@cse.unl.edu> - 3.3-5
+- Adding bosco CE package
+
 * Tue Feb 16 2016 Brian Lin <blin@cs.wisc.edu> - 3.3-4
 - Drop globus SLURM jobmanager requirement
 
