@@ -4,8 +4,8 @@
 %endif
 
 Name:           osg-measurements-metrics-web
-Version:        1.4
-Release:        2%{?dist}
+Version:        1.5
+Release:        1%{?dist}
 Summary:        OSG Measurements and Metrics web and database
 
 Group:          Applications/System
@@ -17,7 +17,7 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
 BuildRequires:  python-setuptools
-Requires:       graphtool >= 0.8.0
+Requires:       graphtool >= 0.8.1
 Requires:       MySQL-python
 Requires:       python-sqlite
 Requires:       python-cheetah
@@ -25,7 +25,7 @@ Requires:       /usr/bin/ldapsearch
 Requires:       python-cherrypy >= 3.1.2
 Requires:       python-ZSI
 Requires:       python-setuptools
-Requires:       osg-measurements-metrics-db >= 1.4
+Requires:       osg-measurements-metrics-db >= 1.5
 %if 0%{?el5}
 Requires:       python-simplejson
 %endif
@@ -80,6 +80,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+
+* Tue Mar 29 2016 Juan F. Mosquera <jmorales@fnal.gov>
+- fix for project accounting plots and inclusion of HTML site 
+- for Google Charts
 
 * Mon Feb 15 2016 Juan F. Mosquera <jmorales@fnal.gov>
 - fix for refine filter in HTML pages
