@@ -1,5 +1,5 @@
 Name:           vo-client
-Version:        64
+Version:        65
 Release:        1%{?dist}
 Summary:        Contains vomses file for use with user authentication and edg-mkgridmap.conf file that contains configuration information for edg-mkgridmap.
 
@@ -85,6 +85,12 @@ rm -rf $RPM_BUILD_ROOT
 %attr(0600,tomcat,tomcat) %config(noreplace) %{_sysconfdir}/gums/gums.config.template
 
 %changelog
+* Thu Mar 31 2016 Carl Edquist <edquist@cs.wisc.edu> - 65-1
+- Update to vo-client 65 (SOFTWARE-2265)
+  - Added SuperCDMS VO
+  - Update HCC & GLOW DNs
+  - Update 11 voms1.fnal.gov DNs
+
 * Mon Feb 22 2016 Carl Edquist <edquist@cs.wisc.edu> - 64-1
 - Update to vo-client 64 (SOFTWARE-2218)
   - New VOMS servers DNs for DOSAR, SBGrid, NYSGRID
