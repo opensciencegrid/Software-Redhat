@@ -1,6 +1,6 @@
 Name:           empty-gridengine
 Version:        1.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        An empty gridengine package
 
 Group:          Applications/System
@@ -32,6 +32,9 @@ so that it believes that Gridengine has been installed via RPM.
 %doc
 
 %changelog
+* Thu Mar 31 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.0-3
+- rebuilt
+
 * Wed May 23 2012 Alain Roy <roy@cs.wisc.edu> - 1.0-2
 - Rebuild to update dist tag and build on SL6
 
