@@ -1,7 +1,7 @@
 Summary: Package for configure-osg and associated scripts
 Name: osg-configure
 Version: 1.3.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
 Group: Grid
@@ -336,6 +336,9 @@ fi
 
 
 %changelog
+* Thu Mar 31 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 1.3.0-2
+- Fix installation of SSH keys in BOSCO support (SOFTWARE-2188)
+
 * Tue Mar 29 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 1.3.0-1
 - Add Bosco support (SOFTWARE-2188)
 
