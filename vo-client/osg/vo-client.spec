@@ -1,6 +1,6 @@
 Name:           vo-client
 Version:        65
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Contains vomses file for use with user authentication and edg-mkgridmap.conf file that contains configuration information for edg-mkgridmap.
 
 Group:          System Environment/Base
@@ -85,6 +85,9 @@ rm -rf $RPM_BUILD_ROOT
 %attr(0600,tomcat,tomcat) %config(noreplace) %{_sysconfdir}/gums/gums.config.template
 
 %changelog
+* Fri Apr 01 2016 Carl Edquist <edquist@cs.wisc.edu> - 65-2
+- Update DN/CA for osg/voms1.opensciencegrid.org (SOFTWARE-2265)
+
 * Thu Mar 31 2016 Carl Edquist <edquist@cs.wisc.edu> - 65-1
 - Update to vo-client 65 (SOFTWARE-2265)
   - Added SuperCDMS VO
