@@ -218,11 +218,9 @@ ant deploy
 
 pushd dist
 #Fix paths in binaries.  Wish I could do this in configure...
-sed -i "s/BESTMAN_SYSCONF=.*/BESTMAN_SYSCONF=\/etc\/sysconfig\/bestman2/" bin/*
-sed -i "s/BESTMAN_SYSCONF=.*/BESTMAN_SYSCONF=\/etc\/sysconfig\/bestman2/" sbin/*
-sed -i "s/BESTMAN_SYSCONF_LIB=.*/BESTMAN_SYSCONF_LIB=\/etc\/sysconfig\/bestman2lib/" bin/*
-sed -i "s/BESTMAN_SYSCONF_LIB=.*/BESTMAN_SYSCONF_LIB=\/etc\/sysconfig\/bestman2lib/" sbin/*
-sed -i "s/\${BESTMAN_SYSCONF}/\/etc\/bestman2\/conf\/bestman2.rc/" sbin/bestman.server
+sed -ri 's|(BESTMAN_SYSCONF)=.*|\1=/etc/sysconfig/bestman2|' bin/* sbin/*
+sed -ri 's|(BESTMAN_SYSCONF_LIB)=.*|\1=/etc/sysconfig/bestman2lib|' bin/* sbin/*
+sed -i  's|\${BESTMAN_SYSCONF}|/etc/bestman2/conf/bestman2.rc|' sbin/bestman.server
 
 popd
 popd
