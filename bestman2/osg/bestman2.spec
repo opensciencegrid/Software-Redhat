@@ -33,7 +33,6 @@ Source2:        bestman2.init
 Source3:        bestman.logrotate
 Source4:        dependent.jars.tar.gz
 Source5:        bestman2.sysconfig
-Source6:        build.xml
 Source7:        build.properties
 Source8:        configure.in
 Source9:        bestman2.rc
