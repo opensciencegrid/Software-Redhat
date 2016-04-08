@@ -15,15 +15,18 @@ Packaged by Neha Sharma <neha@fnal.gov>
 
 The upstream source tarball for Bestman is created by the following procedure:
 
-- cd in to [working_dir]
-- svn checkout https://code.lbl.gov/svn/bestman   # user/pw = anonsvn/anonsvn
-- mv bestman bestman2
-- cd bestman2
-- rm -rf tags 
-- rm -rf bestman2/tags
-- find . -name .svn -print0 | xargs -0 rm -rf
-- cd ../
-- tar -cvzf bestman2.tar.gz bestman2
+  REPO=https://github.com/opensciencegrid/bestman2
+  VER=2.3.0c  # set appropriately
+
+  git clone $REPO
+  cd bestman2
+  git archive --prefix=bestman2-$VER/ --format=tgz v$VER > bestman2-$VER.tar.gz
+
+OR one of:
+
+  wget --content-disposition $REPO/archive/v$VER.tar.gz
+
+  curl -JLO $REPO/archive/v$VER.tar.gz
 
 The tarball that contains the dependencies can be downloaded from
-http://vdt.cs.wisc.edu/upstream/bestman2/2.2.1a/dependent.jars.tar.gz
+http://vdt.cs.wisc.edu/upstream/bestman2/2.3.0/dependent.jars.tar.gz
