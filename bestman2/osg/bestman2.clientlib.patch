@@ -1,0 +1,493 @@
+--- bestman2-orig/bestman2/sources/setup/bestman.in/bestman-diag.in	2012-01-13 14:52:52.000000000 -0600
++++ bestman2/bestman2/sources/setup/bestman.in/bestman-diag.in	2012-04-25 14:45:48.000000000 -0500
+@@ -60,7 +60,8 @@
+ ############################################################################
+ # CLIENT Dependent libs CLASSPATH
+ if [ "x$BESTMAN2_CLIENT_LIB" = "x" ] ; then
+-    BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
++    BESTMAN2_CLIENT_LIB=`source $BESTMAN_SYSCONF && echo $BESTMAN2_CLIENT_LIB`
++    #BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
+ fi
+ ############################################################################
+ # internal configuration options
+diff -ru bestman2-orig/bestman2/sources/setup/bestman.in/srm-copy.in bestman2/bestman2/sources/setup/bestman.in/srm-copy.in
+--- bestman2-orig/bestman2/sources/setup/bestman.in/srm-copy.in	2012-01-13 14:52:52.000000000 -0600
++++ bestman2/bestman2/sources/setup/bestman.in/srm-copy.in	2012-04-25 14:46:17.000000000 -0500
+@@ -60,7 +60,8 @@
+ ############################################################################
+ # SERVER Dependent libs CLASSPATH
+ if [ "x$BESTMAN2_CLIENT_LIB" = "x" ] ; then
+-    BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
++    BESTMAN2_CLIENT_LIB=`source $BESTMAN_SYSCONF && echo $BESTMAN2_CLIENT_LIB`
++    #BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
+ fi
+ ############################################################################
+ # internal configuration options
+diff -ru bestman2-orig/bestman2/sources/setup/bestman.in/srm-copy-status.in bestman2/bestman2/sources/setup/bestman.in/srm-copy-status.in
+--- bestman2-orig/bestman2/sources/setup/bestman.in/srm-copy-status.in	2012-01-13 14:52:52.000000000 -0600
++++ bestman2/bestman2/sources/setup/bestman.in/srm-copy-status.in	2012-04-25 14:46:40.000000000 -0500
+@@ -59,7 +59,8 @@
+ ############################################################################
+ # CLIENT Dependent libs CLASSPATH
+ if [ "x$BESTMAN2_CLIENT_LIB" = "x" ] ; then
+-    BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
++    BESTMAN2_CLIENT_LIB=`source $BESTMAN_SYSCONF && echo $BESTMAN2_CLIENT_LIB`
++    #BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
+ fi
+ ############################################################################
+ # internal configuration options
+diff -ru bestman2-orig/bestman2/sources/setup/bestman.in/srm-dir.in bestman2/bestman2/sources/setup/bestman.in/srm-dir.in
+--- bestman2-orig/bestman2/sources/setup/bestman.in/srm-dir.in	2012-01-13 14:52:52.000000000 -0600
++++ bestman2/bestman2/sources/setup/bestman.in/srm-dir.in	2012-04-25 14:47:03.000000000 -0500
+@@ -60,7 +60,8 @@
+ ############################################################################
+ # CLIENT Dependent libs CLASSPATH
+ if [ "x$BESTMAN2_CLIENT_LIB" = "x" ] ; then
+-    BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
++    BESTMAN2_CLIENT_LIB=`source $BESTMAN_SYSCONF && echo $BESTMAN2_CLIENT_LIB`
++    #BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
+ fi
+ ############################################################################
+ # internal configuration options
+diff -ru bestman2-orig/bestman2/sources/setup/bestman.in/srm-extendfilelifetime.in bestman2/bestman2/sources/setup/bestman.in/srm-extendfilelifetime.in
+--- bestman2-orig/bestman2/sources/setup/bestman.in/srm-extendfilelifetime.in	2012-01-13 14:52:52.000000000 -0600
++++ bestman2/bestman2/sources/setup/bestman.in/srm-extendfilelifetime.in	2012-04-25 14:47:22.000000000 -0500
+@@ -60,7 +60,8 @@
+ ############################################################################
+ # CLIENT Dependent libs CLASSPATH
+ if [ "x$BESTMAN2_CLIENT_LIB" = "x" ] ; then
+-    BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
++    BESTMAN2_CLIENT_LIB=`source $BESTMAN_SYSCONF && echo $BESTMAN2_CLIENT_LIB`
++    #BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
+ fi
+ ############################################################################
+ # internal configuration options
+diff -ru bestman2-orig/bestman2/sources/setup/bestman.in/srm-ls.in bestman2/bestman2/sources/setup/bestman.in/srm-ls.in
+--- bestman2-orig/bestman2/sources/setup/bestman.in/srm-ls.in	2012-01-13 14:52:52.000000000 -0600
++++ bestman2/bestman2/sources/setup/bestman.in/srm-ls.in	2012-04-25 14:49:10.000000000 -0500
+@@ -60,7 +60,8 @@
+ ############################################################################
+ # CLIENT Dependent libs CLASSPATH
+ if [ "x$BESTMAN2_CLIENT_LIB" = "x" ] ; then
+-    BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
++    BESTMAN2_CLIENT_LIB=`source $BESTMAN_SYSCONF && echo $BESTMAN2_CLIENT_LIB`
++    #BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
+ fi
+ ############################################################################
+ # internal configuration options
+diff -ru bestman2-orig/bestman2/sources/setup/bestman.in/srm-ls-status.in bestman2/bestman2/sources/setup/bestman.in/srm-ls-status.in
+--- bestman2-orig/bestman2/sources/setup/bestman.in/srm-ls-status.in	2012-01-13 14:52:52.000000000 -0600
++++ bestman2/bestman2/sources/setup/bestman.in/srm-ls-status.in	2012-04-25 14:49:25.000000000 -0500
+@@ -54,7 +54,8 @@
+ ############################################################################
+ # CLIENT Dependent libs CLASSPATH
+ if [ "x$BESTMAN2_CLIENT_LIB" = "x" ] ; then
+-    BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
++    BESTMAN2_CLIENT_LIB=`source $BESTMAN_SYSCONF && echo $BESTMAN2_CLIENT_LIB`
++    #BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
+ fi
+ ############################################################################
+ # internal configuration options
+diff -ru bestman2-orig/bestman2/sources/setup/bestman.in/srm-mkdir.in bestman2/bestman2/sources/setup/bestman.in/srm-mkdir.in
+--- bestman2-orig/bestman2/sources/setup/bestman.in/srm-mkdir.in	2012-01-13 14:52:52.000000000 -0600
++++ bestman2/bestman2/sources/setup/bestman.in/srm-mkdir.in	2012-04-25 14:49:41.000000000 -0500
+@@ -59,7 +59,8 @@
+ ############################################################################
+ # CLIENT Dependent libs CLASSPATH
+ if [ "x$BESTMAN2_CLIENT_LIB" = "x" ] ; then
+-    BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
++    BESTMAN2_CLIENT_LIB=`source $BESTMAN_SYSCONF && echo $BESTMAN2_CLIENT_LIB`
++    #BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
+ fi
+ ############################################################################
+ # internal configuration options
+diff -ru bestman2-orig/bestman2/sources/setup/bestman.in/srm-mv.in bestman2/bestman2/sources/setup/bestman.in/srm-mv.in
+--- bestman2-orig/bestman2/sources/setup/bestman.in/srm-mv.in	2012-01-13 14:52:52.000000000 -0600
++++ bestman2/bestman2/sources/setup/bestman.in/srm-mv.in	2012-04-25 14:49:56.000000000 -0500
+@@ -54,7 +54,8 @@
+ ############################################################################
+ # CLIENT Dependent libs CLASSPATH
+ if [ "x$BESTMAN2_CLIENT_LIB" = "x" ] ; then
+-    BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
++    BESTMAN2_CLIENT_LIB=`source $BESTMAN_SYSCONF && echo $BESTMAN2_CLIENT_LIB`
++    #BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
+ fi
+ ############################################################################
+ # internal configuration options
+diff -ru bestman2-orig/bestman2/sources/setup/bestman.in/srm-permission-check.in bestman2/bestman2/sources/setup/bestman.in/srm-permission-check.in
+--- bestman2-orig/bestman2/sources/setup/bestman.in/srm-permission-check.in	2012-01-13 14:52:52.000000000 -0600
++++ bestman2/bestman2/sources/setup/bestman.in/srm-permission-check.in	2012-04-25 14:50:12.000000000 -0500
+@@ -54,7 +54,8 @@
+ ############################################################################
+ # CLIENT Dependent libs CLASSPATH
+ if [ "x$BESTMAN2_CLIENT_LIB" = "x" ] ; then
+-    BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
++    BESTMAN2_CLIENT_LIB=`source $BESTMAN_SYSCONF && echo $BESTMAN2_CLIENT_LIB`
++    #BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
+ fi
+ ############################################################################
+ # internal configuration options
+diff -ru bestman2-orig/bestman2/sources/setup/bestman.in/srm-permission-get.in bestman2/bestman2/sources/setup/bestman.in/srm-permission-get.in
+--- bestman2-orig/bestman2/sources/setup/bestman.in/srm-permission-get.in	2012-01-13 14:52:52.000000000 -0600
++++ bestman2/bestman2/sources/setup/bestman.in/srm-permission-get.in	2012-04-25 14:50:26.000000000 -0500
+@@ -54,7 +54,8 @@
+ ############################################################################
+ # CLIENT Dependent libs CLASSPATH
+ if [ "x$BESTMAN2_CLIENT_LIB" = "x" ] ; then
+-    BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
++    BESTMAN2_CLIENT_LIB=`source $BESTMAN_SYSCONF && echo $BESTMAN2_CLIENT_LIB`
++    #BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
+ fi
+ ############################################################################
+ # internal configuration options
+diff -ru bestman2-orig/bestman2/sources/setup/bestman.in/srm-permission-set.in bestman2/bestman2/sources/setup/bestman.in/srm-permission-set.in
+--- bestman2-orig/bestman2/sources/setup/bestman.in/srm-permission-set.in	2012-01-13 14:52:52.000000000 -0600
++++ bestman2/bestman2/sources/setup/bestman.in/srm-permission-set.in	2012-04-25 14:50:42.000000000 -0500
+@@ -54,7 +54,8 @@
+ ############################################################################
+ # CLIENT Dependent libs CLASSPATH
+ if [ "x$BESTMAN2_CLIENT_LIB" = "x" ] ; then
+-    BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
++    BESTMAN2_CLIENT_LIB=`source $BESTMAN_SYSCONF && echo $BESTMAN2_CLIENT_LIB`
++    #BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
+ fi
+ ############################################################################
+ # internal configuration options
+diff -ru bestman2-orig/bestman2/sources/setup/bestman.in/srm-ping.in bestman2/bestman2/sources/setup/bestman.in/srm-ping.in
+--- bestman2-orig/bestman2/sources/setup/bestman.in/srm-ping.in	2012-01-13 14:52:52.000000000 -0600
++++ bestman2/bestman2/sources/setup/bestman.in/srm-ping.in	2012-04-25 14:42:31.000000000 -0500
+@@ -54,7 +54,8 @@
+ ############################################################################
+ # CLIENT Dependent libs CLASSPATH
+ if [ "x$BESTMAN2_CLIENT_LIB" = "x" ] ; then
+-    BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
++    BESTMAN2_CLIENT_LIB=`source $BESTMAN_SYSCONF && echo $BESTMAN2_CLIENT_LIB`
++    #BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
+ fi
+ ############################################################################
+ # internal configuration options
+diff -ru bestman2-orig/bestman2/sources/setup/bestman.in/srm-putdone.in bestman2/bestman2/sources/setup/bestman.in/srm-putdone.in
+--- bestman2-orig/bestman2/sources/setup/bestman.in/srm-putdone.in	2012-01-13 14:52:52.000000000 -0600
++++ bestman2/bestman2/sources/setup/bestman.in/srm-putdone.in	2012-04-25 14:52:52.000000000 -0500
+@@ -54,7 +54,8 @@
+ ############################################################################
+ # CLIENT Dependent libs CLASSPATH
+ if [ "x$BESTMAN2_CLIENT_LIB" = "x" ] ; then
+-    BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
++    BESTMAN2_CLIENT_LIB=`source $BESTMAN_SYSCONF && echo $BESTMAN2_CLIENT_LIB`
++    #BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
+ fi
+ ############################################################################
+ # internal configuration options
+diff -ru bestman2-orig/bestman2/sources/setup/bestman.in/srm-release.in bestman2/bestman2/sources/setup/bestman.in/srm-release.in
+--- bestman2-orig/bestman2/sources/setup/bestman.in/srm-release.in	2012-01-13 14:52:52.000000000 -0600
++++ bestman2/bestman2/sources/setup/bestman.in/srm-release.in	2012-04-25 14:54:47.000000000 -0500
+@@ -54,7 +54,8 @@
+ ############################################################################
+ # CLIENT Dependent libs CLASSPATH
+ if [ "x$BESTMAN2_CLIENT_LIB" = "x" ] ; then
+-    BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
++    BESTMAN2_CLIENT_LIB=`source $BESTMAN_SYSCONF && echo $BESTMAN2_CLIENT_LIB`
++    #BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
+ fi
+ ############################################################################
+ # internal configuration options
+diff -ru bestman2-orig/bestman2/sources/setup/bestman.in/srm-req-abortfiles.in bestman2/bestman2/sources/setup/bestman.in/srm-req-abortfiles.in
+--- bestman2-orig/bestman2/sources/setup/bestman.in/srm-req-abortfiles.in	2012-01-13 14:52:52.000000000 -0600
++++ bestman2/bestman2/sources/setup/bestman.in/srm-req-abortfiles.in	2012-04-25 14:55:06.000000000 -0500
+@@ -54,7 +54,8 @@
+ ############################################################################
+ # CLIENT Dependent libs CLASSPATH
+ if [ "x$BESTMAN2_CLIENT_LIB" = "x" ] ; then
+-    BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
++    BESTMAN2_CLIENT_LIB=`source $BESTMAN_SYSCONF && echo $BESTMAN2_CLIENT_LIB`
++    #BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
+ fi
+ ############################################################################
+ # internal configuration options
+diff -ru bestman2-orig/bestman2/sources/setup/bestman.in/srm-req-abort.in bestman2/bestman2/sources/setup/bestman.in/srm-req-abort.in
+--- bestman2-orig/bestman2/sources/setup/bestman.in/srm-req-abort.in	2012-01-13 14:52:52.000000000 -0600
++++ bestman2/bestman2/sources/setup/bestman.in/srm-req-abort.in	2012-04-25 14:55:23.000000000 -0500
+@@ -54,7 +54,8 @@
+ ############################################################################
+ # CLIENT Dependent libs CLASSPATH
+ if [ "x$BESTMAN2_CLIENT_LIB" = "x" ] ; then
+-    BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
++    BESTMAN2_CLIENT_LIB=`source $BESTMAN_SYSCONF && echo $BESTMAN2_CLIENT_LIB`
++    #BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
+ fi
+ ############################################################################
+ # internal configuration options
+diff -ru bestman2-orig/bestman2/sources/setup/bestman.in/srm-req-resume.in bestman2/bestman2/sources/setup/bestman.in/srm-req-resume.in
+--- bestman2-orig/bestman2/sources/setup/bestman.in/srm-req-resume.in	2012-01-13 14:52:52.000000000 -0600
++++ bestman2/bestman2/sources/setup/bestman.in/srm-req-resume.in	2012-04-25 14:55:41.000000000 -0500
+@@ -54,7 +54,8 @@
+ ############################################################################
+ # CLIENT Dependent libs CLASSPATH
+ if [ "x$BESTMAN2_CLIENT_LIB" = "x" ] ; then
+-    BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
++    BESTMAN2_CLIENT_LIB=`source $BESTMAN_SYSCONF && echo $BESTMAN2_CLIENT_LIB`
++    #BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
+ fi
+ ############################################################################
+ # internal configuration options
+diff -ru bestman2-orig/bestman2/sources/setup/bestman.in/srm-req-summary.in bestman2/bestman2/sources/setup/bestman.in/srm-req-summary.in
+--- bestman2-orig/bestman2/sources/setup/bestman.in/srm-req-summary.in	2012-01-13 14:52:52.000000000 -0600
++++ bestman2/bestman2/sources/setup/bestman.in/srm-req-summary.in	2012-04-25 14:56:27.000000000 -0500
+@@ -54,7 +54,8 @@
+ ############################################################################
+ # CLIENT Dependent libs CLASSPATH
+ if [ "x$BESTMAN2_CLIENT_LIB" = "x" ] ; then
+-    BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
++    BESTMAN2_CLIENT_LIB=`source $BESTMAN_SYSCONF && echo $BESTMAN2_CLIENT_LIB`
++    #BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
+ fi
+ ############################################################################
+ # internal configuration options
+diff -ru bestman2-orig/bestman2/sources/setup/bestman.in/srm-req-suspend.in bestman2/bestman2/sources/setup/bestman.in/srm-req-suspend.in
+--- bestman2-orig/bestman2/sources/setup/bestman.in/srm-req-suspend.in	2012-01-13 14:52:52.000000000 -0600
++++ bestman2/bestman2/sources/setup/bestman.in/srm-req-suspend.in	2012-04-25 14:56:43.000000000 -0500
+@@ -54,7 +54,8 @@
+ ############################################################################
+ # CLIENT Dependent libs CLASSPATH
+ if [ "x$BESTMAN2_CLIENT_LIB" = "x" ] ; then
+-    BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
++    BESTMAN2_CLIENT_LIB=`source $BESTMAN_SYSCONF && echo $BESTMAN2_CLIENT_LIB`
++    #BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
+ fi
+ ############################################################################
+ # internal configuration options
+diff -ru bestman2-orig/bestman2/sources/setup/bestman.in/srm-req-tokens.in bestman2/bestman2/sources/setup/bestman.in/srm-req-tokens.in
+--- bestman2-orig/bestman2/sources/setup/bestman.in/srm-req-tokens.in	2012-01-13 14:52:52.000000000 -0600
++++ bestman2/bestman2/sources/setup/bestman.in/srm-req-tokens.in	2012-04-25 14:56:58.000000000 -0500
+@@ -54,7 +54,8 @@
+ ############################################################################
+ # CLIENT Dependent libs CLASSPATH
+ if [ "x$BESTMAN2_CLIENT_LIB" = "x" ] ; then
+-    BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
++    BESTMAN2_CLIENT_LIB=`source $BESTMAN_SYSCONF && echo $BESTMAN2_CLIENT_LIB`
++    #BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
+ fi
+ ############################################################################
+ # internal configuration options
+diff -ru bestman2-orig/bestman2/sources/setup/bestman.in/srm-request.in bestman2/bestman2/sources/setup/bestman.in/srm-request.in
+--- bestman2-orig/bestman2/sources/setup/bestman.in/srm-request.in	2012-01-13 14:52:52.000000000 -0600
++++ bestman2/bestman2/sources/setup/bestman.in/srm-request.in	2012-04-25 14:57:12.000000000 -0500
+@@ -54,7 +54,8 @@
+ ############################################################################
+ # CLIENT Dependent libs CLASSPATH
+ if [ "x$BESTMAN2_CLIENT_LIB" = "x" ] ; then
+-    BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
++    BESTMAN2_CLIENT_LIB=`source $BESTMAN_SYSCONF && echo $BESTMAN2_CLIENT_LIB`
++    #BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
+ fi
+ ############################################################################
+ # internal configuration options
+diff -ru bestman2-orig/bestman2/sources/setup/bestman.in/srm-rmdir.in bestman2/bestman2/sources/setup/bestman.in/srm-rmdir.in
+--- bestman2-orig/bestman2/sources/setup/bestman.in/srm-rmdir.in	2012-01-13 14:52:52.000000000 -0600
++++ bestman2/bestman2/sources/setup/bestman.in/srm-rmdir.in	2012-04-25 14:57:28.000000000 -0500
+@@ -54,7 +54,8 @@
+ ############################################################################
+ # CLIENT Dependent libs CLASSPATH
+ if [ "x$BESTMAN2_CLIENT_LIB" = "x" ] ; then
+-    BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
++    BESTMAN2_CLIENT_LIB=`source $BESTMAN_SYSCONF && echo $BESTMAN2_CLIENT_LIB`
++    #BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
+ fi
+ ############################################################################
+ # internal configuration options
+diff -ru bestman2-orig/bestman2/sources/setup/bestman.in/srm-rm.in bestman2/bestman2/sources/setup/bestman.in/srm-rm.in
+--- bestman2-orig/bestman2/sources/setup/bestman.in/srm-rm.in	2012-01-13 14:52:52.000000000 -0600
++++ bestman2/bestman2/sources/setup/bestman.in/srm-rm.in	2012-04-25 14:59:10.000000000 -0500
+@@ -60,7 +60,8 @@
+ ############################################################################
+ # CLIENT Dependent libs CLASSPATH
+ if [ "x$BESTMAN2_CLIENT_LIB" = "x" ] ; then
+-    BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
++    BESTMAN2_CLIENT_LIB=`source $BESTMAN_SYSCONF && echo $BESTMAN2_CLIENT_LIB`
++    #BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
+ fi
+ ############################################################################
+ # internal configuration options
+diff -ru bestman2-orig/bestman2/sources/setup/bestman.in/srm-space.in bestman2/bestman2/sources/setup/bestman.in/srm-space.in
+--- bestman2-orig/bestman2/sources/setup/bestman.in/srm-space.in	2012-01-13 14:52:52.000000000 -0600
++++ bestman2/bestman2/sources/setup/bestman.in/srm-space.in	2012-04-25 14:59:25.000000000 -0500
+@@ -54,7 +54,8 @@
+ ############################################################################
+ # CLIENT Dependent libs CLASSPATH
+ if [ "x$BESTMAN2_CLIENT_LIB" = "x" ] ; then
+-    BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
++    BESTMAN2_CLIENT_LIB=`source $BESTMAN_SYSCONF && echo $BESTMAN2_CLIENT_LIB`
++    #BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
+ fi
+ ############################################################################
+ # internal configuration options
+diff -ru bestman2-orig/bestman2/sources/setup/bestman.in/srm-sp-change.in bestman2/bestman2/sources/setup/bestman.in/srm-sp-change.in
+--- bestman2-orig/bestman2/sources/setup/bestman.in/srm-sp-change.in	2012-01-13 14:52:52.000000000 -0600
++++ bestman2/bestman2/sources/setup/bestman.in/srm-sp-change.in	2012-04-25 14:59:44.000000000 -0500
+@@ -54,7 +54,8 @@
+ ############################################################################
+ # CLIENT Dependent libs CLASSPATH
+ if [ "x$BESTMAN2_CLIENT_LIB" = "x" ] ; then
+-    BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
++    BESTMAN2_CLIENT_LIB=`source $BESTMAN_SYSCONF && echo $BESTMAN2_CLIENT_LIB`
++    #BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
+ fi
+ ############################################################################
+ # internal configuration options
+diff -ru bestman2-orig/bestman2/sources/setup/bestman.in/srm-sp-change-status.in bestman2/bestman2/sources/setup/bestman.in/srm-sp-change-status.in
+--- bestman2-orig/bestman2/sources/setup/bestman.in/srm-sp-change-status.in	2012-01-13 14:52:52.000000000 -0600
++++ bestman2/bestman2/sources/setup/bestman.in/srm-sp-change-status.in	2012-04-25 14:59:58.000000000 -0500
+@@ -54,7 +54,8 @@
+ ############################################################################
+ # CLIENT Dependent libs CLASSPATH
+ if [ "x$BESTMAN2_CLIENT_LIB" = "x" ] ; then
+-    BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
++    BESTMAN2_CLIENT_LIB=`source $BESTMAN_SYSCONF && echo $BESTMAN2_CLIENT_LIB`
++    #BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
+ fi
+ ############################################################################
+ # internal configuration options
+diff -ru bestman2-orig/bestman2/sources/setup/bestman.in/srm-sp-info.in bestman2/bestman2/sources/setup/bestman.in/srm-sp-info.in
+--- bestman2-orig/bestman2/sources/setup/bestman.in/srm-sp-info.in	2012-01-13 14:52:52.000000000 -0600
++++ bestman2/bestman2/sources/setup/bestman.in/srm-sp-info.in	2012-04-25 15:00:13.000000000 -0500
+@@ -54,7 +54,8 @@
+ ############################################################################
+ # CLIENT Dependent libs CLASSPATH
+ if [ "x$BESTMAN2_CLIENT_LIB" = "x" ] ; then
+-    BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
++    BESTMAN2_CLIENT_LIB=`source $BESTMAN_SYSCONF && echo $BESTMAN2_CLIENT_LIB`
++    #BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
+ fi
+ ############################################################################
+ # internal configuration options
+diff -ru bestman2-orig/bestman2/sources/setup/bestman.in/srm-sp-purge.in bestman2/bestman2/sources/setup/bestman.in/srm-sp-purge.in
+--- bestman2-orig/bestman2/sources/setup/bestman.in/srm-sp-purge.in	2012-01-13 14:52:52.000000000 -0600
++++ bestman2/bestman2/sources/setup/bestman.in/srm-sp-purge.in	2012-04-25 15:00:27.000000000 -0500
+@@ -54,7 +54,8 @@
+ ############################################################################
+ # CLIENT Dependent libs CLASSPATH
+ if [ "x$BESTMAN2_CLIENT_LIB" = "x" ] ; then
+-    BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
++    BESTMAN2_CLIENT_LIB=`source $BESTMAN_SYSCONF && echo $BESTMAN2_CLIENT_LIB`
++    #BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
+ fi
+ ############################################################################
+ # internal configuration options
+diff -ru bestman2-orig/bestman2/sources/setup/bestman.in/srm-sp-release.in bestman2/bestman2/sources/setup/bestman.in/srm-sp-release.in
+--- bestman2-orig/bestman2/sources/setup/bestman.in/srm-sp-release.in	2012-01-13 14:52:52.000000000 -0600
++++ bestman2/bestman2/sources/setup/bestman.in/srm-sp-release.in	2012-04-25 15:00:40.000000000 -0500
+@@ -54,7 +54,8 @@
+ ############################################################################
+ # CLIENT Dependent libs CLASSPATH
+ if [ "x$BESTMAN2_CLIENT_LIB" = "x" ] ; then
+-    BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
++    BESTMAN2_CLIENT_LIB=`source $BESTMAN_SYSCONF && echo $BESTMAN2_CLIENT_LIB`
++    #BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
+ fi
+ ############################################################################
+ # internal configuration options
+diff -ru bestman2-orig/bestman2/sources/setup/bestman.in/srm-sp-reserve.in bestman2/bestman2/sources/setup/bestman.in/srm-sp-reserve.in
+--- bestman2-orig/bestman2/sources/setup/bestman.in/srm-sp-reserve.in	2012-01-13 14:52:52.000000000 -0600
++++ bestman2/bestman2/sources/setup/bestman.in/srm-sp-reserve.in	2012-04-25 15:01:01.000000000 -0500
+@@ -54,7 +54,8 @@
+ ############################################################################
+ # CLIENT Dependent libs CLASSPATH
+ if [ "x$BESTMAN2_CLIENT_LIB" = "x" ] ; then
+-    BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
++    BESTMAN2_CLIENT_LIB=`source $BESTMAN_SYSCONF && echo $BESTMAN2_CLIENT_LIB`
++    #BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
+ fi
+ ############################################################################
+ # internal configuration options
+diff -ru bestman2-orig/bestman2/sources/setup/bestman.in/srm-sp-reserve-status.in bestman2/bestman2/sources/setup/bestman.in/srm-sp-reserve-status.in
+--- bestman2-orig/bestman2/sources/setup/bestman.in/srm-sp-reserve-status.in	2012-01-13 14:52:52.000000000 -0600
++++ bestman2/bestman2/sources/setup/bestman.in/srm-sp-reserve-status.in	2012-04-25 15:01:16.000000000 -0500
+@@ -54,7 +54,8 @@
+ ############################################################################
+ # CLIENT Dependent libs CLASSPATH
+ if [ "x$BESTMAN2_CLIENT_LIB" = "x" ] ; then
+-    BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
++    BESTMAN2_CLIENT_LIB=`source $BESTMAN_SYSCONF && echo $BESTMAN2_CLIENT_LIB`
++    #BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
+ fi
+ ############################################################################
+ # internal configuration options
+diff -ru bestman2-orig/bestman2/sources/setup/bestman.in/srm-sp-tokens.in bestman2/bestman2/sources/setup/bestman.in/srm-sp-tokens.in
+--- bestman2-orig/bestman2/sources/setup/bestman.in/srm-sp-tokens.in	2012-01-13 14:52:52.000000000 -0600
++++ bestman2/bestman2/sources/setup/bestman.in/srm-sp-tokens.in	2012-04-25 15:01:31.000000000 -0500
+@@ -54,7 +54,8 @@
+ ############################################################################
+ # CLIENT Dependent libs CLASSPATH
+ if [ "x$BESTMAN2_CLIENT_LIB" = "x" ] ; then
+-    BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
++    BESTMAN2_CLIENT_LIB=`source $BESTMAN_SYSCONF && echo $BESTMAN2_CLIENT_LIB`
++    #BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
+ fi
+ ############################################################################
+ # internal configuration options
+diff -ru bestman2-orig/bestman2/sources/setup/bestman.in/srm-sp-update.in bestman2/bestman2/sources/setup/bestman.in/srm-sp-update.in
+--- bestman2-orig/bestman2/sources/setup/bestman.in/srm-sp-update.in	2012-01-13 14:52:52.000000000 -0600
++++ bestman2/bestman2/sources/setup/bestman.in/srm-sp-update.in	2012-04-25 15:01:47.000000000 -0500
+@@ -54,7 +54,8 @@
+ ############################################################################
+ # CLIENT Dependent libs CLASSPATH
+ if [ "x$BESTMAN2_CLIENT_LIB" = "x" ] ; then
+-    BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
++    BESTMAN2_CLIENT_LIB=`source $BESTMAN_SYSCONF && echo $BESTMAN2_CLIENT_LIB`
++    #BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
+ fi
+ ############################################################################
+ # internal configuration options
+diff -ru bestman2-orig/bestman2/sources/setup/bestman.in/srm-sp-update-status.in bestman2/bestman2/sources/setup/bestman.in/srm-sp-update-status.in
+--- bestman2-orig/bestman2/sources/setup/bestman.in/srm-sp-update-status.in	2012-01-13 14:52:52.000000000 -0600
++++ bestman2/bestman2/sources/setup/bestman.in/srm-sp-update-status.in	2012-04-25 15:02:01.000000000 -0500
+@@ -54,7 +54,8 @@
+ ############################################################################
+ # CLIENT Dependent libs CLASSPATH
+ if [ "x$BESTMAN2_CLIENT_LIB" = "x" ] ; then
+-    BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
++    BESTMAN2_CLIENT_LIB=`source $BESTMAN_SYSCONF && echo $BESTMAN2_CLIENT_LIB`
++    #BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
+ fi
+ ############################################################################
+ # internal configuration options
+diff -ru bestman2-orig/bestman2/sources/setup/bestman.in/srm-tester.in bestman2/bestman2/sources/setup/bestman.in/srm-tester.in
+--- bestman2-orig/bestman2/sources/setup/bestman.in/srm-tester.in	2012-01-13 14:52:52.000000000 -0600
++++ bestman2/bestman2/sources/setup/bestman.in/srm-tester.in	2012-04-25 15:02:22.000000000 -0500
+@@ -59,7 +59,8 @@
+ ############################################################################
+ # CLIENT Dependent libs CLASSPATH
+ if [ "x$BESTMAN2_CLIENT_LIB" = "x" ] ; then
+-    BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
++    BESTMAN2_CLIENT_LIB=`source $BESTMAN_SYSCONF && echo $BESTMAN2_CLIENT_LIB`
++    #BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
+ fi
+ ############################################################################
+ # internal configuration options
+diff -ru bestman2-orig/bestman2/sources/setup/bestman.in/srm-transferprotocols.in bestman2/bestman2/sources/setup/bestman.in/srm-transferprotocols.in
+--- bestman2-orig/bestman2/sources/setup/bestman.in/srm-transferprotocols.in	2012-01-13 14:52:52.000000000 -0600
++++ bestman2/bestman2/sources/setup/bestman.in/srm-transferprotocols.in	2012-04-25 15:02:36.000000000 -0500
+@@ -54,7 +54,8 @@
+ ############################################################################
+ # CLIENT Dependent libs CLASSPATH
+ if [ "x$BESTMAN2_CLIENT_LIB" = "x" ] ; then
+-    BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
++    BESTMAN2_CLIENT_LIB=`source $BESTMAN_SYSCONF && echo $BESTMAN2_CLIENT_LIB`
++    #BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
+ fi
+ ############################################################################
+ # internal configuration options
+diff -ru bestman2-orig/bestman2/sources/setup/bestman.in/srm-util.in bestman2/bestman2/sources/setup/bestman.in/srm-util.in
+--- bestman2-orig/bestman2/sources/setup/bestman.in/srm-util.in	2012-01-13 14:52:52.000000000 -0600
++++ bestman2/bestman2/sources/setup/bestman.in/srm-util.in	2012-04-25 15:02:49.000000000 -0500
+@@ -60,7 +60,8 @@
+ ############################################################################
+ # CLIENT Dependent libs CLASSPATH
+ if [ "x$BESTMAN2_CLIENT_LIB" = "x" ] ; then
+-    BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
++    BESTMAN2_CLIENT_LIB=`source $BESTMAN_SYSCONF && echo $BESTMAN2_CLIENT_LIB`
++    #BESTMAN2_CLIENT_LIB=`grep BESTMAN2_CLIENT_LIB $BESTMAN_SYSCONF | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
+ fi
+ ############################################################################
+ # internal configuration options

@@ -1,0 +1,134 @@
+#!/bin/sh
+#
+# chkconfig: - 99 10
+# description: Bestman server
+### BEGIN INIT INFO
+# Provides: bestman
+# Required-Start: 
+# Required-Stop: 
+# Default-Start:
+# Default-Stop: 
+# Description: Bestman SRM server for Grid Storage Elements
+# Short-Description: Bestman server
+### END INIT INFO
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+TMPDIR="/tmp"
+OLDDIR=`pwd`
+wait_for_process() {
+for i in {1..30}
+do
+    status -p "$BESTMAN_PID" 'bestman' > /dev/null
+    STATUS=$?
+    if [ "start" == "$1" ]; then
+     if [ "$STATUS" -eq "0" ]; then
+       RETVAL=0
+       return 0
+     fi
+    fi
+    if [ "stop" == "$1" ]; then
+     if [ "$STATUS" -ne "0" ]; then
+       RETVAL=0
+       return 0
+     fi
+    fi
+    sleep 1
+done
+RETVAL=1
+return 1
+}
+
+
+if [ -e /etc/sysconfig/bestman2 ] ; then
+    . /etc/sysconfig/bestman2
+fi
+
+if [ "x$BESTMAN_LOG" = "x" ]; then
+    BESTMAN_LOG=/var/log/bestman2/bestman2.log
+fi
+
+if [ "x$BESTMAN_PID" = "x" ]; then
+    BESTMAN_PID=/var/run/bestman2.pid
+fi
+
+if [ "x$SRM_OWNER" = "x" ]; then
+    SRM_OWNER=bestman
+fi
+
+BESTMAN_LOCKFILE="/var/lock/subsys/bestman2"
+
+start() {
+        ulimit -n 65536
+        echo -n "Starting bestman2: "
+        touch $BESTMAN_PID
+        chown $SRM_OWNER: $BESTMAN_PID
+	cd $TMPDIR
+	RETVAL=$?
+	if [ $RETVAL -eq 0 ]; then
+		daemon --user $SRM_OWNER "/usr/sbin/bestman.server $BESTMAN_OPTIONS 2>> $BESTMAN_LOG  >> $BESTMAN_LOG"
+         	RETVAL=$?
+         	chown root: $BESTMAN_PID
+         	[ $RETVAL -eq 0 ] && touch $BESTMAN_LOCKFILE
+	 	wait_for_process start
+		cd $OLDDIR
+        else
+        	rm $BESTMAN_PID
+	fi
+	[ $RETVAL -eq 0 ] && echo_success || echo_failure
+        echo
+        return $RETVAL
+}
+
+# A function to stop a program.
+stop() {
+        echo -n "Shutting down bestman2: "
+   	RETVAL=0
+	if [ -f "$BESTMAN_PID" ]; then
+		read PID < "$BESTMAN_PID" 2> /dev/null
+		if [ "$PID" != "" ] && [ "$PID" -gt 0 ]; then
+			if kill -0 "$PID" 2> /dev/null; then
+				kill -INT "$PID" 2>/dev/null
+				RETVAL=$?
+				sleep 2
+				kill -0 "$PID" 2> /dev/null && kill -KILL "$PID"
+			fi
+		fi
+		rm -f "$BESTMAN_PID"
+	fi
+        [ $RETVAL -eq 0 ] && rm -f $BESTMAN_LOCKFILE
+	[ $RETVAL -eq 0 ] && echo_success || echo_failure
+	echo
+	return $RETVAL
+}
+
+
+restart() {
+    stop
+    start
+    return $?
+}
+
+case $1 in 
+'start')
+    start
+    ;;
+'stop')
+    stop
+    ;;
+'status')
+    status bestman2
+    ;;
+'reload' | 'restart')
+    restart
+    ;;
+'condrestart')
+    [ -f /var/lock/subsys/bestman2 ] && restart
+    ;;
+*)
+    echo "usage: $0 {start|stop|status|restart}"
+    ;;
+esac
+
+exit $?
+

@@ -1,0 +1,237 @@
+dnl Process this file with autoconf to produce a configure script.
+AC_INIT(BeStMan, 2.2, srm@lbl.gov)
+
+AC_COPYRIGHT(Copyright 2011 the Regents of the University Of California)
+
+dnl ##########################################################
+dnl # make clean before configure if compiled before
+dnl ##########################################################
+TMP_LOGDATE="`date '+%y%m%d%H%M%S'`"
+if test "$TMP_LOGDATE" ; then
+	echo "LOG DATE: $TMP_LOGDATE"
+else
+    TMP_LOGDATE="setuplog"
+	echo "LOG DATE: $TMP_LOGDATE"
+fi
+
+dnl ##########################################################
+LOGFILE="bestman.$TMP_LOGDATE.log"
+dnl ##########################################################
+
+echo "logfile is ... $LOGFILE"
+cat config.log >> $LOGFILE
+echo " " >> $LOGFILE
+
+
+dnl ##########################################################
+dnl LOGFILE="bestman.`date '+%m%d%y%H%M'`.log"
+dnl LOGFILE="bestman.$TMP_LOGDATE.log"
+dnl ##########################################################
+
+HOST=`/bin/uname -n`
+dnl binary directory
+SETUPD=`pwd 2>&1`
+INSTALLP=`echo $SETUPD | sed 's%/setup%%'`
+
+dnl CLASSPATH to include all dependent libs to build bestman2
+BUILDP="$SETUPD/build.properties"
+
+echo "DEFAULT_PTMP=$INSTALLP"
+dnl binary directory
+dnl AC_PREFIX_DEFAULT([`echo $INSTALLP`/dist])
+if test "x$prefix" = "xNONE"; then
+   if test -f "$BUILDP" ; then
+      AC_MSG_RESULT([build.properties is found])
+      INSTALLPATH=`grep install.root $BUILDP | tr '=' ' ' | awk '$1 !~ /#/' | awk '{printf $2}'`
+      if test "X$INSTALLPATH" = "X" ; then
+          ac_default_prefix="$INSTALLP/dist"
+          AC_MSG_WARN([install.root in build.properties is not found. Assume default binary distribution $INSTALLP/dist])
+      else 
+          ac_default_prefix="$INSTALLPATH"
+          AC_MSG_RESULT([install.root=$INSTALLPATH will be used.])
+      fi
+   else
+      AC_MSG_WARN([build.properties for setup is not found. Assume default binary distribution $INSTALLP/dist])
+      ac_default_prefix="$INSTALLP/dist"
+      BUILDP="NOBUILD"
+   fi
+   prefix=$ac_default_prefix
+   ac_configure_args="$ac_configure_args --prefix $prefix"
+fi
+echo "DEFAULT_PREFIX=$prefix"
+
+dnl ## for bin and sbin files
+SRM_HOME=$prefix
+
+my_MYCONFPATH
+
+OUTPUTFILES="$SRM_HOME/bin/srm-ping:./bestman.in/srm-ping.in \
+$SRM_HOME/bin/srm-copy:./bestman.in/srm-copy.in \
+$SRM_HOME/bin/srm-common.sh:./bestman.in/srm-common.sh.in \
+$SRM_HOME/bin/srm-copy-status:./bestman.in/srm-copy-status.in \
+$SRM_HOME/bin/srm-extendfilelifetime:./bestman.in/srm-extendfilelifetime.in \
+$SRM_HOME/bin/srm-ls:./bestman.in/srm-ls.in \
+$SRM_HOME/bin/srm-ls-status:./bestman.in/srm-ls-status.in \
+$SRM_HOME/bin/srm-mkdir:./bestman.in/srm-mkdir.in \
+$SRM_HOME/bin/srm-mv:./bestman.in/srm-mv.in \
+$SRM_HOME/bin/srm-permission-check:./bestman.in/srm-permission-check.in \
+$SRM_HOME/bin/srm-permission-get:./bestman.in/srm-permission-get.in \
+$SRM_HOME/bin/srm-permission-set:./bestman.in/srm-permission-set.in \
+$SRM_HOME/bin/srm-putdone:./bestman.in/srm-putdone.in \
+$SRM_HOME/bin/srm-release:./bestman.in/srm-release.in \
+$SRM_HOME/bin/srm-req-abort:./bestman.in/srm-req-abort.in \
+$SRM_HOME/bin/srm-req-abortfiles:./bestman.in/srm-req-abortfiles.in \
+$SRM_HOME/bin/srm-req-resume:./bestman.in/srm-req-resume.in \
+$SRM_HOME/bin/srm-req-summary:./bestman.in/srm-req-summary.in \
+$SRM_HOME/bin/srm-req-suspend:./bestman.in/srm-req-suspend.in \
+$SRM_HOME/bin/srm-req-tokens:./bestman.in/srm-req-tokens.in \
+$SRM_HOME/bin/srm-rm:./bestman.in/srm-rm.in \
+$SRM_HOME/bin/srm-rmdir:./bestman.in/srm-rmdir.in \
+$SRM_HOME/bin/srm-sp-change:./bestman.in/srm-sp-change.in \
+$SRM_HOME/bin/srm-sp-change-status:./bestman.in/srm-sp-change-status.in \
+$SRM_HOME/bin/srm-sp-info:./bestman.in/srm-sp-info.in \
+$SRM_HOME/bin/srm-sp-purge:./bestman.in/srm-sp-purge.in \
+$SRM_HOME/bin/srm-sp-release:./bestman.in/srm-sp-release.in \
+$SRM_HOME/bin/srm-sp-reserve:./bestman.in/srm-sp-reserve.in \
+$SRM_HOME/bin/srm-sp-reserve-status:./bestman.in/srm-sp-reserve-status.in \
+$SRM_HOME/bin/srm-sp-tokens:./bestman.in/srm-sp-tokens.in \
+$SRM_HOME/bin/srm-sp-update:./bestman.in/srm-sp-update.in \
+$SRM_HOME/bin/srm-sp-update-status:./bestman.in/srm-sp-update-status.in \
+$SRM_HOME/bin/srm-tester:./bestman.in/srm-tester.in \
+$SRM_HOME/bin/srm-transferprotocols:./bestman.in/srm-transferprotocols.in \
+$SRM_HOME/bin/bestman-diag:./bestman.in/bestman-diag.in \
+$SRM_HOME/conf/WEB-INF/server-config.wsdd:./bestman.in/server-config.wsdd.in \
+$SRM_HOME/conf/WEB-INF/jetty.xml:./bestman.in/jetty.xml.in \
+$SRM_HOME/conf/WEB-INF/web.xml:./bestman.in/web.xml.in \
+$SRM_HOME/conf/srmtester.conf:./bestman.in/srmtester.conf.in \
+$SRM_HOME/conf/bestman-diag.conf.sample:./bestman.in/bestman-diag.conf.sample.in \
+$SRM_HOME/conf/bestman-diag-msg.conf:./bestman.in/bestman-diag-msg.conf.in \
+$SRM_HOME/conf/grid-mapfile.empty:./bestman.in/grid-mapfile.empty.in \
+$SRM_HOME/conf/bestmanclient.conf:./bestman.in/bestmanclient.conf.in \
+$SRM_HOME/sbin/bestman.server:./bestman.in/bestman.server.in \
+$SRM_HOME/sbin/SXXbestman:./bestman.in/SXXbestman.in \
+$SRM_HOME/sbin/SXXbestman.personal:./bestman.in/SXXbestman.personal.in"
+
+dnl $SRM_HOME/bin/srm-util:./bestman.in/srm-util.in \
+dnl $SRM_HOME/bin/srm-request:./bestman.in/srm-request.in \
+dnl $SRM_HOME/bin/srm-dir:./bestman.in/srm-dir.in \
+dnl $SRM_HOME/bin/srm-space:./bestman.in/srm-space.in \
+
+OUTPUTSERVERFILES="$SRM_HOME/sbin/bestman.server:./bestman.in/bestman.server.in \
+$SRM_HOME/conf/WEB-INF/server-config.wsdd:./bestman.in/server-config.wsdd.in \
+$SRM_HOME/conf/WEB-INF/jetty.xml:./bestman.in/jetty.xml.in \
+$SRM_HOME/conf/WEB-INF/web.xml:./bestman.in/web.xml.in \
+$SRM_HOME/conf/grid-mapfile.empty:./bestman.in/grid-mapfile.empty.in \
+$SRM_HOME/conf/mss.init.sample:./bestman.in/mss.init.sample.in \
+$SRM_HOME/sbin/SXXbestman:./bestman.in/SXXbestman.in \
+$SRM_HOME/sbin/SXXbestman.personal:./bestman.in/SXXbestman.personal.in"
+
+OUTPUTCLIENTFILES="$SRM_HOME/bin/srm-ping:./bestman.in/srm-ping.in \
+$SRM_HOME/bin/srm-copy:./bestman.in/srm-copy.in \
+$SRM_HOME/bin/srm-common.sh:./bestman.in/srm-common.sh.in \
+$SRM_HOME/bin/srm-copy-status:./bestman.in/srm-copy-status.in \
+$SRM_HOME/bin/srm-extendfilelifetime:./bestman.in/srm-extendfilelifetime.in \
+$SRM_HOME/bin/srm-ls:./bestman.in/srm-ls.in \
+$SRM_HOME/bin/srm-ls-status:./bestman.in/srm-ls-status.in \
+$SRM_HOME/bin/srm-mkdir:./bestman.in/srm-mkdir.in \
+$SRM_HOME/bin/srm-mv:./bestman.in/srm-mv.in \
+$SRM_HOME/bin/srm-permission-check:./bestman.in/srm-permission-check.in \
+$SRM_HOME/bin/srm-permission-get:./bestman.in/srm-permission-get.in \
+$SRM_HOME/bin/srm-permission-set:./bestman.in/srm-permission-set.in \
+$SRM_HOME/bin/srm-putdone:./bestman.in/srm-putdone.in \
+$SRM_HOME/bin/srm-release:./bestman.in/srm-release.in \
+$SRM_HOME/bin/srm-req-abort:./bestman.in/srm-req-abort.in \
+$SRM_HOME/bin/srm-req-abortfiles:./bestman.in/srm-req-abortfiles.in \
+$SRM_HOME/bin/srm-req-resume:./bestman.in/srm-req-resume.in \
+$SRM_HOME/bin/srm-req-summary:./bestman.in/srm-req-summary.in \
+$SRM_HOME/bin/srm-req-suspend:./bestman.in/srm-req-suspend.in \
+$SRM_HOME/bin/srm-req-tokens:./bestman.in/srm-req-tokens.in \
+$SRM_HOME/bin/srm-rm:./bestman.in/srm-rm.in \
+$SRM_HOME/bin/srm-rmdir:./bestman.in/srm-rmdir.in \
+$SRM_HOME/bin/srm-sp-change:./bestman.in/srm-sp-change.in \
+$SRM_HOME/bin/srm-sp-change-status:./bestman.in/srm-sp-change-status.in \
+$SRM_HOME/bin/srm-sp-info:./bestman.in/srm-sp-info.in \
+$SRM_HOME/bin/srm-sp-purge:./bestman.in/srm-sp-purge.in \
+$SRM_HOME/bin/srm-sp-release:./bestman.in/srm-sp-release.in \
+$SRM_HOME/bin/srm-sp-reserve:./bestman.in/srm-sp-reserve.in \
+$SRM_HOME/bin/srm-sp-reserve-status:./bestman.in/srm-sp-reserve-status.in \
+$SRM_HOME/bin/srm-sp-tokens:./bestman.in/srm-sp-tokens.in \
+$SRM_HOME/bin/srm-sp-update:./bestman.in/srm-sp-update.in \
+$SRM_HOME/bin/srm-sp-update-status:./bestman.in/srm-sp-update-status.in \
+$SRM_HOME/bin/srm-transferprotocols:./bestman.in/srm-transferprotocols.in \
+$SRM_HOME/conf/bestmanclient.conf:./bestman.in/bestmanclient.conf.in" 
+
+dnl $SRM_HOME/bin/srm-util:./bestman.in/srm-util.in" \
+dnl $SRM_HOME/bin/srm-request:./bestman.in/srm-request.in \
+dnl $SRM_HOME/bin/srm-dir:./bestman.in/srm-dir.in \
+dnl $SRM_HOME/bin/srm-space:./bestman.in/srm-space.in \
+
+OUTPUTTESTERFILES="$SRM_HOME/bin/srm-tester:./bestman.in/srm-tester.in \
+$SRM_HOME/conf/srmtester.conf.sample:./bestman.in/srmtester.conf.sample.in \
+$SRM_HOME/conf/srmtester.conf:./bestman.in/srmtester.conf.in"
+
+OUTPUTURLCOPYFILES="$SRM_HOME/bin/g-urlcopy.sh:./bestman.in/g-urlcopy.sh.in"
+
+dnl ## for bestman2.rc
+export EVENTLOG_PATH="/var/log/bestman2"
+my_EVENTLOG_PATH
+export GRIDMAP_PATH="$SRM_HOME/conf/grid-mapfile.empty"
+my_GRIDMAP_PATH
+my_MAX_CONTAINER_THREADS
+my_MIN_CONTAINER_THREADS
+export SRM_SERVICE="gov.lbl.srm.impl.TSRMServiceGateway"
+my_SRM_SERVICE
+my_GUC_GLOBUS_PATH
+my_PROXY_FILE_PATH
+
+dnl ## for bin and sbin files
+AC_SUBST(SRM_HOME)
+AC_SUBST(EVENTLOG_PATH)
+AC_SUBST(GRIDMAP_PATH)
+AC_SUBST(MAX_CONTAINER_THREADS)
+AC_SUBST(MIN_CONTAINER_THREADS)
+AC_SUBST(SRM_SERVICE)
+AC_SUBST(GUC_GLOBUS_PATH)
+AC_SUBST(PROXY_FILE_PATH)
+
+if ! test -d "$SRM_HOME/conf" ; then
+    mkdir $SRM_HOME/conf
+fi
+if ! test -d "$SRM_HOME/etc" ; then
+    mkdir $SRM_HOME/etc
+fi
+if ! test -d "$SRM_HOME/properties" ; then
+    mkdir $SRM_HOME/properties
+fi
+
+echo "installing BeStMan server, client and tester"
+echo "installing BeStMan server, client and tester" >>  $LOGFILE
+if ! test -d "$SRM_HOME/bin" ; then
+	mkdir $SRM_HOME/bin
+fi
+if ! test -d "$SRM_HOME/sbin" ; then
+	mkdir $SRM_HOME/sbin
+fi
+AC_OUTPUT($OUTPUTFILES)
+
+dnl ##########################################################
+dnl # configuration 
+dnl ##########################################################
+
+if test "$GUC_GLOBUS_PATH" ; then
+    AC_OUTPUT($OUTPUTURLCOPYFILES)
+fi
+
+dnl ###########################################################
+dnl ###########################################################
+dnl ###########################################################
+
+chmod 755 $SRM_HOME/bin/srm-* \
+	$SRM_HOME/bin/bestman-diag \
+	$SRM_HOME/sbin/bestman.server \
+	$SRM_HOME/sbin/SXXbestman \
+	$SRM_HOME/sbin/SXXbestman.personal
+if test "$GUC_GLOBUS_PATH" ; then
+	chmod 755 $SRM_HOME/bin/g-urlcopy.sh 
+fi
+
