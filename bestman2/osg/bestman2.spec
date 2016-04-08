@@ -29,7 +29,6 @@ URL:            https://sdm.lbl.gov/bestman/
 %define install_root /etc/%{name}
 
 Source0:        %{name}-%{version}.tar.gz
-#Source1:        bestman2.sh
 Source2:        bestman2.init
 Source3:        bestman.logrotate
 Source4:        dependent.jars.tar.gz
@@ -218,9 +217,6 @@ chmod +x configure
 ant deploy
 
 pushd dist
-#Fix paths in bestman2.rc
-JAVADIR=`echo %{_javadir} |  sed 's/\//\\\\\//g'`
-
 #Fix paths in binaries.  Wish I could do this in configure...
 sed -i "s/BESTMAN_SYSCONF=.*/BESTMAN_SYSCONF=\/etc\/sysconfig\/bestman2/" bin/*
 sed -i "s/BESTMAN_SYSCONF=.*/BESTMAN_SYSCONF=\/etc\/sysconfig\/bestman2/" sbin/*
@@ -228,10 +224,6 @@ sed -i "s/BESTMAN_SYSCONF_LIB=.*/BESTMAN_SYSCONF_LIB=\/etc\/sysconfig\/bestman2l
 sed -i "s/BESTMAN_SYSCONF_LIB=.*/BESTMAN_SYSCONF_LIB=\/etc\/sysconfig\/bestman2lib/" sbin/*
 sed -i "s/\${BESTMAN_SYSCONF}/\/etc\/bestman2\/conf\/bestman2.rc/" sbin/bestman.server
 
-
-BUILDHOSTNAME=`hostname -f`
-# Fix version
-#sed -i "s/Built on .* at/Built on $BUILDHOSTNAME at/" version
 popd
 popd
 
