@@ -1,8 +1,8 @@
-#%%global betatag .beta1
+#global betatag .rc1
 %global _release 1
 
 Name:           osg-build
-Version:        1.6.2
+Version:        1.6.3
 Release:        %{?betatag:0.}%{_release}%{?betatag}%{?dist}
 Summary:        Build tools for the OSG
 
@@ -10,7 +10,7 @@ Group:          System Environment/Tools
 License:        Apache 2.0
 URL:            https://twiki.grid.iu.edu/bin/view/SoftwareTeam/OSGBuildTools
 
-Source0:        %{name}-%{version}%{?betatag}.tar.gz
+Source0:        %{name}-%{version}.tar.gz
 Patch0:         koji-hub-testing.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -37,7 +37,7 @@ See %{url} for details.
 
 
 %prep
-%setup -q -n %{name}-%{version}%{?betatag}
+%setup -q -n %{name}-%{version}
 
 # changes the koji-hub URL to koji-hub-testing.chtc.wisc.edu, for testing only
 # % patch0 -p1
@@ -71,6 +71,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_docdir}/%{name}/sample-osg-build.ini
 
 %changelog
+* Tue Apr 12 2016 Matyas Selmeci <matyas@cs.wisc.edu> 1.6.3-1
+- include CILogon-OSG CA cert in CA bundle created by `osg-koji setup' (SOFTWARE-2273)
+
 * Fri Feb 19 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6.2-1
 - Change osg-promote table layout to put build first (SOFTWARE-2116)
 
