@@ -16,7 +16,7 @@
 
 Name:           bestman2
 Version:        2.3.0
-Release:        27%{?dist}
+Release:        28%{?dist}
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -44,6 +44,7 @@ Source7:        build.properties
 Source8:        configure.in
 Source9:        bestman2.rc
 Source10:       bestman2lib.sysconfig
+Source11:       bestman2lib-el7.sysconfig
 
 Patch0:		upgrade_exception_message.patch
 Patch1:		bestman2-2.2.1-2.2.2.patch
@@ -310,7 +311,11 @@ install -m 0755 %{SOURCE2} $RPM_BUILD_ROOT%{_initrddir}/%{name}
 install -m 0644 %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/%{name}
 install -m 0644 conf/bestman2.rc $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/conf/bestman2.rc
 install -m 0644 %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/%{name}
+%if 0%{?el7}
+install -m 0644 %{SOURCE11} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/%{name}lib
+%else
 install -m 0644 %{SOURCE10} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/%{name}lib
+%endif
 
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/grid-security/vomsdir
 touch $RPM_BUILD_ROOT%{_sysconfdir}/grid-security/vomsdir/vdt-empty.pem
@@ -460,6 +465,9 @@ fi
 
 
 %changelog
+* Tue Mar 15 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 2.3.0-28
+- Add bcpkix to the classpath in el7 (SOFTWARE-2041)
+
 * Tue Nov 03 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 2.3.0-27.osg
 - Use opensaml, openws, velocity, xmlsec, and xmltooling jar files from
   privilege-xacml instead of gums (SOFTWARE-2041)
