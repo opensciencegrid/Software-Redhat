@@ -1,0 +1,147 @@
+From 213145a720d25772a62f6ef7c6c75a4c898dc476 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Thu, 10 Mar 2016 16:29:57 -0600
+Subject: [PATCH] Add debugging to ContextWrapper and UpdatingKeyManager
+
+- Add traces to ContextWrapper.initKeyManagers(PasswordFinder)
+- Add traces to UpdatingKeyManager
+- Log Throwable in ContextWrapper
+---
+ .../glite/security/trustmanager/ContextWrapper.java   | 14 ++++++++++++++
+ .../security/trustmanager/UpdatingKeyManager.java     | 19 +++++++++++++++++++
+ 2 files changed, 33 insertions(+)
+
+diff --git a/src/org/glite/security/trustmanager/ContextWrapper.java b/src/org/glite/security/trustmanager/ContextWrapper.java
+index db7237d..c4fd520 100644
+--- a/src/org/glite/security/trustmanager/ContextWrapper.java
++++ b/src/org/glite/security/trustmanager/ContextWrapper.java
+@@ -485,36 +485,47 @@ public class ContextWrapper implements SSLContextWrapper {
+      */
+     public void initKeyManagers(PasswordFinder finder) throws CertificateException, NoSuchAlgorithmException {
+         try {
+             LOGGER.debug("ContextHandler.initKeyManagers");
+ 
++            LOGGER.trace("UpdatingKeyManager updatingKeyManager = new UpdatingKeyManager(config, finder);");
+             UpdatingKeyManager updatingKeyManager = new UpdatingKeyManager(config, finder);
+ 
++            LOGGER.trace("identityKeyManagers = new KeyManager[] { updatingKeyManager };");
+             identityKeyManagers = new KeyManager[] { updatingKeyManager };
+ 
++            LOGGER.trace("String[] aliases = updatingKeyManager.getClientAliases(\"RSA\", null);");
+             String[] aliases = updatingKeyManager.getClientAliases("RSA", null);
+ 
+             if ((aliases == null) || (aliases.length == 0)) {
++                LOGGER.trace("aliases = updatingKeyManager.getServerAliases(\"RSA\", null);");
+                 aliases = updatingKeyManager.getServerAliases("RSA", null);
+             }
+ 
+             if ((aliases == null) || (aliases.length == 0)) {
++                LOGGER.trace("throw new CertificateException(\"No credentials found\");");
+                 throw new CertificateException("No credentials found");
+             }
+ 
++            LOGGER.trace("X509Certificate[] chain = updatingKeyManager.getCertificateChain(aliases[0]);");
+             X509Certificate[] chain = updatingKeyManager.getCertificateChain(aliases[0]);
+ 
++            LOGGER.trace("if (overrideExpirationCheck == false) {");
+             if (overrideExpirationCheck == false) {
++                LOGGER.trace("for (int n = 0; n < chain.length; n++) { [chain.lenth=" + chain.length + "]");
+                 for (int n = 0; n < chain.length; n++) {
+ 
+                     try {
++                        LOGGER.trace("chain[n].checkValidity(); [n=" + n + "]");
+                         chain[n].checkValidity();
+                     } catch (CertificateExpiredException e) {
++                        LOGGER.trace("throw new CertificateExpiredException...");
+                         throw new CertificateExpiredException("Certificate for "
+                                 + DNHandler.getSubject(chain[n]).getRFCDN() + ", cert file was "
+                                 + updatingKeyManager.m_credentialFile + ": " + e.getMessage());
+                     } catch (CertificateNotYetValidException e) {
++                        LOGGER.trace("throw new CertificateNotYetValidException...");
+                         throw new CertificateNotYetValidException("Certificate for "
+                                 + DNHandler.getSubject(chain[n]).getRFCDN() + ", cert file was "
+                                 + updatingKeyManager.m_credentialFile + ": " + e.getMessage());
+                     }
+                 }
+@@ -523,10 +534,13 @@ public class ContextWrapper implements SSLContextWrapper {
+             LOGGER.fatal("The credentials reading failed:  " + e.getMessage());
+             throw e;
+         } catch (NoSuchAlgorithmException e) {
+             LOGGER.fatal("Internal error: while reading credentials " + e.getMessage(), e);
+             throw e;
++        } catch (Throwable t) {
++            LOGGER.fatal("Something got thrown: " + t.getMessage(), t);
++            throw t;
+         }
+     }
+ 
+     /**
+      * Initializes the key manager, the key manager doesn't know where update from, so it will be not updating by itself.
+diff --git a/src/org/glite/security/trustmanager/UpdatingKeyManager.java b/src/org/glite/security/trustmanager/UpdatingKeyManager.java
+index 1c2ece8..3324589 100644
+--- a/src/org/glite/security/trustmanager/UpdatingKeyManager.java
++++ b/src/org/glite/security/trustmanager/UpdatingKeyManager.java
+@@ -149,10 +149,11 @@ public class UpdatingKeyManager extends X509ExtendedKeyManager {
+      * @throws NoSuchAlgorithmException thrown in case the RSA algorithm or the cert algoritmh is not supported.
+      * @throws CertificateException in case the certificate loading fails.
+      */
+     public UpdatingKeyManager(CaseInsensitiveProperties config, PasswordFinder finder) throws NoSuchAlgorithmException,
+             CertificateException {
++        LOGGER.trace("In UpdatingKeyManager(config, finder)");
+         identityCertFile = config.getProperty(ContextWrapper.CREDENTIALS_CERT_FILE);
+         identityKeyFile = config.getProperty(ContextWrapper.CREDENTIALS_KEY_FILE);
+         identityKeyPasswd = config.getProperty(ContextWrapper.CREDENTIALS_KEY_PASSWD);
+ 
+         identityStoreFile = config.getProperty(ContextWrapper.CREDENTIALS_STORE_FILE);
+@@ -161,30 +162,48 @@ public class UpdatingKeyManager extends X509ExtendedKeyManager {
+         identityStorePasswd = config.getProperty(ContextWrapper.CREDENTIALS_STORE_PASSWD);
+ 
+         proxyFile = config.getProperty(ContextWrapper.CREDENTIALS_PROXY_FILE);
+         proxyIntervalBlob = config.getProperty(ContextWrapper.CREDENTIALS_UPDATE_INTERVAL);
+ 
++        LOGGER.debug("UpdatingKeyManager(config, finder) got properties:");
++        LOGGER.debug("identityCertFile   : " +    identityCertFile   );
++        LOGGER.debug("identityKeyFile    : " +    identityKeyFile    );
++        LOGGER.debug("identityKeyPasswd  : " +    identityKeyPasswd  );
++        LOGGER.debug("identityStoreFile  : " +    identityStoreFile  );
++        LOGGER.debug("identityStoreType  : " +    identityStoreType  );
++        LOGGER.debug("identityStorePasswd: " +    identityStorePasswd);
++        LOGGER.debug("proxyFile          : " +    proxyFile          );
++        //LOGGER.debug("proxyIntervalBlob  : " +    proxyIntervalBlob  );
++
++
+         // Create the key manager factory to extract the server key
+         try {
+             keyManagerFactory = KeyManagerFactory.getInstance("SunX509");
+         } catch (NoSuchAlgorithmException e) {
+             LOGGER.fatal("Internal: X509 key manager initialization failed: " + e.getMessage());
+             throw e;
+         }
+ 
++        LOGGER.trace("passwordFinder = finder;");
+         passwordFinder = finder;
+ 
+         try {
++            LOGGER.trace("loadKeystore();");
+             loadKeystore();
+         } catch (CertificateException e) {
+             LOGGER.fatal("credentials loading failed: " + e.getMessage());
+             throw e;
+         }
+ 
++        LOGGER.trace("if (proxyIntervalBlob != null) {");
+         if (proxyIntervalBlob != null) {
++            LOGGER.trace("intervalSecs = ContextWrapper.getIntervalSecs(proxyIntervalBlob);");
+             intervalSecs = ContextWrapper.getIntervalSecs(proxyIntervalBlob);
++            LOGGER.trace("intervalSecs: " + intervalSecs);
++            LOGGER.trace("startUpdateLoop();");
+             startUpdateLoop();
++            LOGGER.trace("after startUpdateLoop();");
+         }
+     }
+ 
+     /**
+      * Creates a new UpdatingKeyManager object.
+-- 
+2.6.3
+

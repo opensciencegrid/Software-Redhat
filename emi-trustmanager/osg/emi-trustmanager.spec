@@ -1,7 +1,7 @@
 Summary: Security utilities
 Name: emi-trustmanager
 Version: 3.0.3
-Release: 11.DBG.6%{?dist}
+Release: 12%{?dist}
 License: EMI
 Vendor: EMI
 Group: System Environment/Libraries
@@ -51,10 +51,7 @@ Patch26: 0026-CertificationRequestInfo.getSubject-signature-change.patch
 Patch27: 0027-DERSet-ASN1Set-and-DERSequence-ASN1Sequence-bc-1.47.patch
 Patch40: private_key_exception.patch
 
-# Debugging patches
-Patch50: 0050-DEBUG-Add-traces-to-ContextWrapper.initKeyM.patch
-Patch51: 0051-DEBUG-Add-traces-to-UpdatingKeyManager.patch
-Patch52: 0052-DEBUG-log-Throwable-in-ContextWrapper.patch
+Patch50: debug-el7.patch
 
 %description
 The java authentication and proxy generation implementation that supports grid proxies.
@@ -90,10 +87,8 @@ The java authentication and proxy generation implementation that supports grid p
 %patch27 -p1
 %patch40 -p0
 
-# Debugging patches
+# Debugging
 %patch50 -p1
-%patch51 -p1
-%patch52 -p1
 %endif
 
 
@@ -282,8 +277,8 @@ rm -rf $RPM_BUILD_ROOT
 /usr/share/doc/trustmanager/html/index-all.html
 
 %changelog
-* Fri Mar 11 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 3.0.3-11.DBG.*
-- Add debugging patches
+* Thu Apr 14 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 3.0.3-12
+- Add some trace-level debugging for EL7
 
 * Wed Mar 2 2016 Edgar Fajardo <efajardo@physics.ucsd.edu> 3.0.3-11
 - Added the runtime requirement of log4j (SOFTWARE-2233)
