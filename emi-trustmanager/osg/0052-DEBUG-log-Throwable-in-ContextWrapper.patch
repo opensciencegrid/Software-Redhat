@@ -1,0 +1,30 @@
+From 0026a8fbf2b09906fc4d1fbcf98fc629dacd8990 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Mon, 14 Mar 2016 16:07:41 -0500
+Subject: [PATCH] DEBUG: log Throwable in ContextWrapper
+
+---
+ src/org/glite/security/trustmanager/ContextWrapper.java | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/src/org/glite/security/trustmanager/ContextWrapper.java b/src/org/glite/security/trustmanager/ContextWrapper.java
+index 53983eb..c4fd520 100644
+--- a/src/org/glite/security/trustmanager/ContextWrapper.java
++++ b/src/org/glite/security/trustmanager/ContextWrapper.java
+@@ -534,10 +534,13 @@ public class ContextWrapper implements SSLContextWrapper {
+             LOGGER.fatal("The credentials reading failed:  " + e.getMessage());
+             throw e;
+         } catch (NoSuchAlgorithmException e) {
+             LOGGER.fatal("Internal error: while reading credentials " + e.getMessage(), e);
+             throw e;
++        } catch (Throwable t) {
++            LOGGER.fatal("Something got thrown: " + t.getMessage(), t);
++            throw t;
+         }
+     }
+ 
+     /**
+      * Initializes the key manager, the key manager doesn't know where update from, so it will be not updating by itself.
+-- 
+2.6.3
+

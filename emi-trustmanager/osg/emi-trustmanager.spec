@@ -1,7 +1,7 @@
 Summary: Security utilities
 Name: emi-trustmanager
 Version: 3.0.3
-Release: 11.DBG.2%{?dist}
+Release: 11.DBG.6%{?dist}
 License: EMI
 Vendor: EMI
 Group: System Environment/Libraries
@@ -52,8 +52,9 @@ Patch27: 0027-DERSet-ASN1Set-and-DERSequence-ASN1Sequence-bc-1.47.patch
 Patch40: private_key_exception.patch
 
 # Debugging patches
-Patch50: 0050-DEBUG-Add-lots-of-logging-to-ContextWrapper.initKeyM.patch
-Patch51: 0051-DEBUG-Additional-logging-in-UpdatingKeyManager.patch
+Patch50: 0050-DEBUG-Add-traces-to-ContextWrapper.initKeyM.patch
+Patch51: 0051-DEBUG-Add-traces-to-UpdatingKeyManager.patch
+Patch52: 0052-DEBUG-log-Throwable-in-ContextWrapper.patch
 
 %description
 The java authentication and proxy generation implementation that supports grid proxies.
@@ -92,6 +93,7 @@ The java authentication and proxy generation implementation that supports grid p
 # Debugging patches
 %patch50 -p1
 %patch51 -p1
+%patch52 -p1
 %endif
 
 
