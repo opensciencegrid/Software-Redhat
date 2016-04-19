@@ -1,6 +1,6 @@
 Summary:   Profiles your system for debugging
 Name:      osg-system-profiler
-Version:   1.2.0
+Version:   1.3.0
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -10,6 +10,8 @@ AutoReq:   yes
 AutoProv:  yes
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 BuildArch: noarch
+
+Requires: setroubleshoot-server
 
 %description
 The OSG System Profiler runs a series of commands on your system to provide
@@ -46,6 +48,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/%{name}-viewer
 
 %changelog
+* Mon Apr 18 2016 Matyas Selmeci <matyas@cs.wisc.edu> 1.3.0-1
+- Add SELinux audit logs to osg-system-profiler and URL support to
+  osg-system-profiler-viewer (SOFTWARE-2275)
+
 * Thu Jan 22 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.2.0-1
 - Add gratia-pbs-lsf-config-check (SOFTWARE-1674)
 
