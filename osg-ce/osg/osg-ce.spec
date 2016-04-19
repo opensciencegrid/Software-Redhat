@@ -7,7 +7,7 @@ Version:   3.3
 %if 0%{?el7}
 %define release_suffix _clipped
 %endif
-Release:   5%{?release_suffix}%{?dist}
+Release:   6%{?release_suffix}%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -16,21 +16,12 @@ BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
 Requires: %{htcce} = %{version}-%{release}
 
-# GRAM-specific
-Requires: globus-gatekeeper
-Requires: globus-gram-job-manager
-Requires: globus-gram-job-manager-fork
-Requires: globus-gram-job-manager-fork-setup-poll
-Requires: gratia-probe-gram
-Requires(post): globus-gram-job-manager-scripts >= 4
 
 %description
 %{summary}
 
 %post
-# We always want the default jobmanager to be fork (OSG convention), so we
-# force it on both install and upgrade. (GRAM-specific)
-/usr/sbin/globus-gatekeeper-admin -e jobmanager-fork-poll -n jobmanager > /dev/null 2>&1 || :
+
 
 ###############################################################################
 # Base subpackages
@@ -44,7 +35,6 @@ Requires: grid-certificates >= 7
 
 # former osg-client requirements (minus networking stuff)
 Requires: globus-common-progs
-Requires: globus-gram-client-tools
 Requires: globus-gsi-cert-utils-progs
 Requires: gsi-openssh-clients
 Requires: osg-cert-scripts
@@ -247,8 +237,6 @@ Summary: Condor meta-package for the OSG-CE
 
 Requires: %{name} = %{version}-%{release}
 Requires: %{htcce}-condor = %{version}-%{release}
-# GRAM:
-Requires: globus-gram-job-manager-condor
 
 %description condor
 %{summary}
@@ -258,8 +246,6 @@ Group: Grid
 Summary: PBS meta-package for the OSG-CE
 Requires: %{name} = %{version}-%{release}
 Requires: %{htcce}-pbs = %{version}-%{release}
-# GRAM:
-Requires: globus-gram-job-manager-pbs-setup-seg
 
 %description pbs
 %{summary}
@@ -269,8 +255,6 @@ Group: Grid
 Summary: LSF meta-package for the OSG-CE
 Requires: %{name} = %{version}-%{release}
 Requires: %{htcce}-lsf = %{version}-%{release}
-# GRAM:
-Requires: globus-gram-job-manager-lsf-setup-seg
 
 %description lsf
 %{summary}
@@ -280,8 +264,6 @@ Group: Grid
 Summary: SGE meta-package for the OSG-CE
 Requires: %{name} = %{version}-%{release}
 Requires: %{htcce}-sge = %{version}-%{release}
-# GRAM:
-Requires: globus-gram-job-manager-sge-setup-seg
 
 %description sge
 %{summary}
@@ -339,6 +321,9 @@ exit 0
 %files bosco
 
 %changelog
+* Thu Apr 14 2016 Edgar Fajardo <efajardo@physics.ucsd.edu> - 3.3-6
+- Removed the gram components from the subpackages (SOFTWARE-2278)
+
 * Fri Mar 25 2016 Derek Weitzel <dweitzel@cse.unl.edu> - 3.3-5
 - Adding bosco CE package
 
