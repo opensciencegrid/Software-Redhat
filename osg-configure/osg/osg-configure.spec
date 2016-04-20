@@ -1,7 +1,7 @@
 Summary: Package for configure-osg and associated scripts
 Name: osg-configure
-Version: 1.3.0
-Release: 2%{?dist}
+Version: 1.4.0
+Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
 Group: Grid
@@ -336,6 +336,19 @@ fi
 
 
 %changelog
+* Wed Apr 20 2016 Matyas Selmeci <matyas@cs.wisc.edu> 1.4.0-1
+- Relax checks on non-site-controlled hosts (SOFTWARE-2123)
+- Remove umask check and always use 022 for umask (SOFTWARE-2276)
+- Consistenly quote values in blah.config (SOFTWARE-2226)
+- Remove email domain check (SOFTWARE-2271)
+- Set GRIDMAP in HTCondor-CE configuration if using gridmap auth
+  (SOFTWARE-2244)
+- Set authorization method in lcmaps.db (SOFTWARE-1723)
+- Fix GIP tests failing if a CE is not installed (SOFTWARE-2224)
+- Fix RSV probes not being enabled if gram_ce_hosts in UNAVAILABLE
+  (SOFTWARE-2266)
+- Add slurm_cluster to 20-slurm.ini (SOFTWARE-2264)
+
 * Thu Mar 31 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 1.3.0-2
 - Fix installation of SSH keys in BOSCO support (SOFTWARE-2188)
 
