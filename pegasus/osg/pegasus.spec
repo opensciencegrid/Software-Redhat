@@ -1,6 +1,6 @@
 Name:           pegasus
-Version:        4.3.1
-Release:        1.3%{?dist}
+Version:        4.6.1
+Release:        1.1%{?dist}
 Summary:        Workflow management system for HTCondor, grids, and clouds
 Group:          Applications/System
 License:        ASL 2.0
@@ -12,7 +12,7 @@ Source:         pegasus-source-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-root
 
 # Some OSG Software changes below to use Java 7
-BuildRequires:  ant, ant-apache-regexp, java7-devel, gcc, groff, python-devel, gcc-c++, make
+BuildRequires:  ant, ant-apache-regexp, java7-devel, gcc, groff, python-devel, gcc-c++, make, asciidoc, libxslt, fop, python-setuptools, openssl-devel
 Requires:       java7 >= 1:1.7.0, python >= 2.4, condor >= 7.6, graphviz
 
 # Added by OSG Software, so that all builds and binaries work on el5 and el6
@@ -39,14 +39,9 @@ execute the steps in appropriate order.
 %setup -q -n %{sourcedir}
 
 %build
-export CLASSPATH=$(build-classpath ant)
-rm -rf dist
-ant dist
-# we want to use the tarball as that has been stripped of some git files
-(cd dist && rm -rf pegasus-%{version} && tar xzf pegasus-*.tar.gz)
+ant dist-release
 
-# strip executables
-strip dist/pegasus-%{version}/bin/pegasus-invoke
+# strip executables                                                                                                                               
 strip dist/pegasus-%{version}/bin/pegasus-cluster
 strip dist/pegasus-%{version}/bin/pegasus-kickstart
 strip dist/pegasus-%{version}/bin/pegasus-keg
@@ -63,7 +58,7 @@ cp -aR dist/pegasus-%{version}/bin/* %{buildroot}/%{_bindir}/
 cp -aR dist/pegasus-%{version}/lib* %{buildroot}/usr/
 cp -aR dist/pegasus-%{version}/share/* %{buildroot}/%{_datadir}/
 
-# rm unwanted files
+# rm unwanted files                                                                                                                               
 rm -f %{buildroot}/%{_bindir}/keg.condor
 rm -f %{buildroot}/%{_datadir}/%{name}/java/COPYING.*
 rm -f %{buildroot}/%{_datadir}/%{name}/java/EXCEPTIONS.*
@@ -87,6 +82,8 @@ rm -Rf %{buildroot}
 
 
 %changelog
+* Fri Apr 22 2016 Edgar Fajardo <efajardo@physics.ucsd.edu> -4.6.1-1.1
+- Bumped to version 4.6.1 - SOFTWARE-2286
 * Thu Oct 02 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 4.3.1-1.3
 - Remove ant-nodeps buildrequire on EL7
 
