@@ -1,15 +1,21 @@
+# Have gitrev be the short hash or branch name if doing a prerelease build
+#%define gitrev
+
 Name:		blahp
-Version:	1.18.18.bosco
-Release:	1%{?dist}
+Version:	1.18.19.bosco
+Release:	1%{?gitrev:.%{gitrev}}%{?dist}
 Summary:	gLite BLAHP daemon
 
 Group:		System/Libraries
 License:	Apache 2.0
 URL:		https://github.com/osg-bosco/BLAH
 
-# Tarball created with the following command:
-# git archive v1_18_bosco | gzip -8 > ~/rpmbuild/SOURCES/blahp.tar.gz
-Source0:        %{name}-%{version}.tar.gz
+# Generated with:
+# git archive v1_18_bosco | gzip -9 > %{name}-%{version}.tar.gz
+#
+# Pre-release build tarballs should be generated with:
+# git archive %{gitrev} | gzip -9 > %{name}-%{version}-%{gitrev}.tar.gz
+Source0:        %{name}-%{version}%{?gitrev:-%{gitrev}}.tar.gz
 Patch0:         sw1709-osg-job-env-vars.patch
 
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
@@ -177,6 +183,10 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Mon Apr 25 2016 Brian Lin <blin@cs.wisc.edu> - 1.18.19.bosco-1
+- Add SLURM support (SOFTWARE-2256)
+- Fix mem requests (SOFTWARE-2260)
+
 * Fri Feb 26 2016 Brian Lin <blin@cs.wisc.edu> - 1.18.18.bosco-1
 - Bug fixes for PBS installations without qstat in their PATH
 
