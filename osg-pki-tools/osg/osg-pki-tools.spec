@@ -1,10 +1,11 @@
 Summary: osg-pki-tools
 Name: osg-pki-tools
-Version: 1.2.15
+Version: 1.2.16
 Release: 1%{?dist}
 Source: OSGPKITools-%{version}.tar.gz
 License: Apache 2.0
 Group: Grid
+URL: http://github.com/opensciencegrid/osg-pki-tools
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildArch: noarch
 Requires: python
@@ -75,6 +76,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Apr 25 2016 Brian Lin <blin@cs.wisc.edu> - 1.2.16-1
+- Fix timeout option to respect tool runtime (SOFTWARE-2258)
+- Improve PKI tool error message when missing VO request information (SOFTWARE-2292)
+
 * Thu Mar 24 2016 Brian Lin <blin@cs.wisc.edu> - 1.2.15-1
 - Added --csr and --hostname options conflict to osg-cert-request
 
