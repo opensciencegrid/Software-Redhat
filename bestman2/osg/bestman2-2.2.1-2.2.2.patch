@@ -1,0 +1,324 @@
+Index: bestman2/branches/osg-dev/server/src/gov/lbl/srm/gateway/SRMGateway.java
+===================================================================
+--- bestman2/branches/osg-dev/server/src/gov/lbl/srm/gateway/SRMGateway.java	(revision 112)
++++ bestman2/branches/osg-dev/server/src/gov/lbl/srm/gateway/SRMGateway.java	(working copy)
+@@ -92,7 +92,35 @@
+ 	return result;
+     }
+ 	    
++    public TSRMTxfProtocol  getUserPreferredTransferProtocol(TTransferParameters tp) {	 
++	if (tp == null) {
++	    return null;
++	}
+ 
++	ArrayOfString protocolArray = tp.getArrayOfTransferProtocols();
++	if (protocolArray== null) {
++	    // return TSRMTxfProtocol.getDefaultTransferProtocol();
++	    return null;
++	}
++	
++	String[] protocols = protocolArray.getStringArray();
++
++	for (int i=0; i<protocols.length; i++) {
++	    String curr = protocols[i];
++
++	    TSRMTxfProtocol p = TSRMTxfProtocol.getProtocol(curr);
++
++	    if (p != null) {
++		if (p.isEnabled()) {
++		    return p;
++		}
++	    }
++	}
++	
++	return null;    
++    }
++
++
+     public SrmGetTransferProtocolsResponse srmGetTransferProtocols(SrmGetTransferProtocolsRequest req)  
+     {   
+ 	TReturnStatus s = validation("srmGetTransferProtocols()");	
+@@ -145,6 +173,8 @@
+ 	    return result;
+     	}
+ 
++	TSRMTxfProtocol clientProtocol = getUserPreferredTransferProtocol(req.getTransferParameters());
++
+ 	TGetRequestFileStatus[] fileStatusList = new TGetRequestFileStatus[listOfFileReqs.length];
+     		
+ 	for (int i=0; i<listOfFileReqs.length; i++) {	    
+@@ -154,7 +184,7 @@
+ 	    URI src = curr.getSourceSURL();
+ 	    s.setSourceSURL(src);
+ 	    try {
+-		URI txfURL = getXrootdPath(src);	    
++		URI txfURL = getXrootdPath(src, clientProtocol);	    
+ 	
+ 		if (txfURL == null) {
+ 		    s.setStatus(TSRMUtil.createReturnStatus(TStatusCode.SRM_FAILURE, src+" is not a supported url."));
+@@ -341,6 +371,7 @@
+ 	    creds = TSRMService.gGetCredential("srmPut");
+ 	}
+ 	    
++	TSRMTxfProtocol clientProtocol = getUserPreferredTransferProtocol(req.getTransferParameters());
+ 	TSRMLog.debug(SRMGateway.class, null, "authid="+req.getAuthorizationID(), "fasttrack="+fastTrack);
+ 
+ 	for (int i=0; i<listOfFileReqs.length; i++) {	    
+@@ -351,7 +382,7 @@
+ 	    s.setSURL(src);
+ 
+ 	    try {
+-		URI txfURL = getXrootdPath(src, spaceToken);
++		URI txfURL = getXrootdPath(src, spaceToken, clientProtocol);
+ 		if (txfURL != null) {
+ 		    if (fastTrack) {
+ 			s.setTransferURL(txfURL);		
+@@ -858,6 +889,67 @@
+ 	
+     }
+ 
++
++    private URI getXrootdPath(URI input, String token, TSRMTxfProtocol p) {
++	if (token == null) {
++	    return getXrootdPath(input, p);
++	}
++
++	String path = findFilePath(input);
++	if (path == null) {
++	    return null;
++	}      	
++
++	try {
++	    //URI result = new URI(TSRMTxfProtocol.GSIFTP.generateURI(path+"?"+ConfigXrootd._xrootdTokenCompName+"="+token));
++	    if (p == null) {
++		URI result = new URI(TSRMTxfProtocol.getDefaultTransferProtocol().generateURI(path+"?"+ConfigGateway._xrootdTokenCompName+"="+token));
++		return result;
++	    } else {
++		URI result = new URI(p.generateURI(path+"?"+ConfigGateway._xrootdTokenCompName+"="+token));
++		return result;
++	    }
++	} catch (Exception e) {
++	    e.printStackTrace();
++	    return null;
++	}
++    }
++
++    private URI getXrootdPath(URI input) {
++	return getXrootdPath(input, TSRMTxfProtocol.getDefaultTransferProtocol());
++    }
++
++    private URI getXrootdPath(URI input, TSRMTxfProtocol p) {
++	String path = findFilePath(input);
++	if (path == null) {
++	    return null;
++	}
++
++	// validation	
++	////TSupportedURLWithFILE f = new TSupportedURLWithFILE(TSRMUtil.createTSURLInfo(input), path);
++	try {
++	    //URI result = new URI(TSRMTxfProtocol.getDefaultTransferProtocol().generateURI(path));
++	    if (p != null) {
++		URI result = new URI(p.generateURI(path));
++		return result;
++	    } else {
++		URI result = new URI(TSRMTxfProtocol.getDefaultTransferProtocol().generateURI(path));
++		return result;
++	    }
++	} catch (Exception e) {
++	    e.printStackTrace();
++	    return null;
++	}
++    }
++
++
++
++
++
++
++
++    /*
++
+     private URI getXrootdPath(URI input, String token) {
+ 	if (token == null) {
+ 	    return getXrootdPath(input);
+@@ -896,8 +988,8 @@
+ 	    return null;
+ 	}
+     }
++    */
+ 
+-
+     private static String getHostPort(URI info) {
+ 	int port = info.getPort();
+ 	
+Index: bestman2/branches/osg-dev/server/src/gov/lbl/srm/transfer/mss/SRM_FILE.java
+===================================================================
+--- bestman2/branches/osg-dev/server/src/gov/lbl/srm/transfer/mss/SRM_FILE.java	(revision 112)
++++ bestman2/branches/osg-dev/server/src/gov/lbl/srm/transfer/mss/SRM_FILE.java	(working copy)
+@@ -57,8 +57,10 @@
+ //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+ 
+ public void clean() {
+-	fileObj.clean();
+-	fileObj = null;
++	if (fileObj != null) {
++	    fileObj.clean();
++	    fileObj = null;
++	}
+ 	currentProcess = null;
+ }
+ 
+Index: bestman2/branches/osg-dev/server/src/gov/lbl/srm/transfer/mss/SRM_MSSFILE_STATUS.java
+===================================================================
+--- bestman2/branches/osg-dev/server/src/gov/lbl/srm/transfer/mss/SRM_MSSFILE_STATUS.java	(revision 112)
++++ bestman2/branches/osg-dev/server/src/gov/lbl/srm/transfer/mss/SRM_MSSFILE_STATUS.java	(working copy)
+@@ -58,8 +58,10 @@
+ 
+ public void clean() {
+ 	currentProcess = null;
+-	fileObj.clean();
+-	fileObj = null;
++	if (fileObj != null) {
++	    fileObj.clean();
++	    fileObj = null;
++	}
+ }
+ 
+ public SRM_MSSFILE_STATUS () { 
+Index: bestman2/branches/osg-dev/server/src/gov/lbl/srm/server/TUserRequestLs.java
+===================================================================
+--- bestman2/branches/osg-dev/server/src/gov/lbl/srm/server/TUserRequestLs.java	(revision 112)
++++ bestman2/branches/osg-dev/server/src/gov/lbl/srm/server/TUserRequestLs.java	(working copy)
+@@ -40,7 +40,7 @@
+ import java.util.*;
+ //import srm.common.StorageResourceManager.*;
+ import gov.lbl.srm.StorageResourceManager.*;
+-//import EDU.oswego.cs.dl.util.concurrent.Mutex;
++
+ import gov.lbl.srm.util.*;
+ import org.apache.axis.types.*;
+ 
+@@ -51,7 +51,9 @@
+ 
+     TSRMRequestLs _lsReq = null;
+     SrmLsResponse _result = null;
+-    
++    long _timeResultIsSet = 0;
++    static long _gLifeTimeMillisOfFinishedLsReq = 5400000; // 90 minutes
++
+     public TUserRequestLs(TAccount owner, URI[] input, TSRMFileListingOption op, 
+ 			  TFileStorageType ftype, ArrayOfTExtraInfo ssinfo) 
+     {
+@@ -133,6 +135,7 @@
+ 	_result.setReturnStatus(TSRMUtil.createReturnStatus(reqSummary.getStatusCode(), "Ref:"+getID()));	   
+ 	//_result.setReturnStatus(TSRMUtil.createReturnStatus(TStatusCode.SRM_SUCCESS, null));
+ 	TSRMLog.debug(this.getClass(), null, "rid="+getID()+" resultSize="+pathList.size(), "statusCode="+_result.getReturnStatus().getStatusCode());
++	recordTime();
+     }
+ 
+     public void setFailed(String errMsg) {
+@@ -141,12 +144,34 @@
+ 	}
+ 	_result = new SrmLsResponse();
+ 	_result.setReturnStatus(TSRMUtil.createReturnStatus(TStatusCode.SRM_FAILURE, errMsg));
++	recordTime();
+     }
+ 
++    public void recordTime() {
++	_timeResultIsSet = System.currentTimeMillis();
++    }
++	
+     public void cleanMe() {
+ 	getOwner().removeRequest(this);
+ 	_lsReq.cleanMe();
+ 	_lsReq = null;
+     }
++
++    public void cleanUp() { // called periodically to clean up reqs that was never gotten a chance to deliver results
++	if (!isDone()) {
++	    return;
++	}
++
++	if (_lsReq == null) {
++	    return; // already cleaned
++	}
++	
++	long curr = System.currentTimeMillis();
++	
++	if (curr - _timeResultIsSet > _gLifeTimeMillisOfFinishedLsReq) {
++	    TSRMLog.info(this.getClass(), null, "event=exceededLsLifetimeForStatusCall", "lifetimeValue="+_gLifeTimeMillisOfFinishedLsReq+" rid="+getID());
++	    TSRMServer._lsManager.removeWhenFinished(this);
++	}
++    }
+ }
+ 
+Index: bestman2/branches/osg-dev/server/src/gov/lbl/srm/server/TSRMServer.java
+===================================================================
+--- bestman2/branches/osg-dev/server/src/gov/lbl/srm/server/TSRMServer.java	(revision 112)
++++ bestman2/branches/osg-dev/server/src/gov/lbl/srm/server/TSRMServer.java	(working copy)
+@@ -55,7 +55,7 @@
+ public class TSRMServer /*extends GridServiceImpl implements ISRMPortType*/{
+     //private static TSRMLog _log = new TSRMLog();
+ 
+-    public TSRMLsManager _lsManager = new TSRMLsManager();
++    public static TSRMLsManager _lsManager = new TSRMLsManager();
+ 	
+     //public static final TProcessingUnit _gProcessingUnit = new TProcessingUnitPDSF();
+     public static TProcessingUnit _gProcessingUnit = null;
+Index: bestman2/branches/osg-dev/server/src/gov/lbl/srm/server/TSupportedURLWithFILE.java
+===================================================================
+--- bestman2/branches/osg-dev/server/src/gov/lbl/srm/server/TSupportedURLWithFILE.java	(revision 112)
++++ bestman2/branches/osg-dev/server/src/gov/lbl/srm/server/TSupportedURLWithFILE.java	(working copy)
+@@ -1309,11 +1309,14 @@
+ 
+     public boolean exists(File f) {	
+ 	//return f.exists();
+-        if ((_uid==null)&&(f.exists())) {
+-            TSRMLog.warning(this.getClass(), null, "event=sudoNoUidSpecified", "No uid for sudo, using current user");
++	/*if (f.exists()) {
+ 	    return true;
+ 	}
+-	
++	*/
++	if ((_uid == null) && (f.exists())) {
++	    TSRMLog.warning(this.getClass(), null, "event=sudoNoUidSpecified", "No uid for sudo, using current user");
++	    return true;
++	}
+ 	TSRMLog.debug(this.getClass(), null, "event=checkExistsSudoStarts", null);
+ 	String path  = f.getPath();
+ 
+Index: bestman2/branches/osg-dev/server/src/gov/lbl/srm/server/TSRMRequestLs.java
+===================================================================
+--- bestman2/branches/osg-dev/server/src/gov/lbl/srm/server/TSRMRequestLs.java	(revision 112)
++++ bestman2/branches/osg-dev/server/src/gov/lbl/srm/server/TSRMRequestLs.java	(working copy)
+@@ -106,7 +106,7 @@
+ 	if (!isQueued()) {
+ 	    return;
+ 	}
+-
++	
+ 	setStatusInProgress();
+ 
+ 	try {
+Index: bestman2/branches/osg-dev/server/src/gov/lbl/srm/server/TSRMTxfProtocol.java
+===================================================================
+--- bestman2/branches/osg-dev/server/src/gov/lbl/srm/server/TSRMTxfProtocol.java	(revision 112)
++++ bestman2/branches/osg-dev/server/src/gov/lbl/srm/server/TSRMTxfProtocol.java	(working copy)
+@@ -438,12 +438,12 @@
+ 	    return TSRMTxfProtocol.FILE;
+ 	}
+ 	if (_gUserDefinedProtocols != null) {
+-		for (int i=0; i<_gUserDefinedProtocols.length; i++) {
+-			TSRMTxfProtocol p = _gUserDefinedProtocols[i];
+-			if (name.equalsIgnoreCase(p.toString())) {
+-				return p;
+-			}
++	    for (int i=0; i<_gUserDefinedProtocols.length; i++) {
++		TSRMTxfProtocol p = _gUserDefinedProtocols[i];
++		if (name.equalsIgnoreCase(p.toString())) {
++		    return p;
+ 		}
++	    }
+ 	}
+ 	return null;
+     }
