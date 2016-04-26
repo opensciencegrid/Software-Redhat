@@ -2,7 +2,7 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 2.0.4
+Version: 2.0.5
 Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
@@ -243,9 +243,6 @@ fi
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-router.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/03-ce-shared-port.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/03-managed-fork.conf
-%config(noreplace) %{_sysconfdir}/condor-ce/metrics.d/00-example-metrics.conf
-%config(noreplace) %{_sysconfdir}/condor-ce/config.d/05-ce-health.conf
-%{_sysconfdir}/condor-ce/metrics.d/00-metrics-defaults.conf
 %config(noreplace) %{_sysconfdir}/sysconfig/condor-ce
 
 %{_datadir}/condor-ce/config.d/01-ce-auth-defaults.conf
@@ -294,6 +291,10 @@ fi
 
 %{_datadir}/condor-ce/config.d/05-ce-view-defaults.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/05-ce-view.conf
+%config(noreplace) %{_sysconfdir}/condor-ce/metrics.d/00-example-metrics.conf
+%config(noreplace) %{_sysconfdir}/condor-ce/config.d/05-ce-health.conf
+%dir %{_sysconfdir}/condor-ce/metrics.d
+%{_sysconfdir}/condor-ce/metrics.d/00-metrics-defaults.conf
 
 %{_datadir}/condor-ce/condor_ce_view
 %{_datadir}/condor-ce/condor_ce_metric
@@ -400,6 +401,14 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Tue Apr 26 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.5-1
+- HTCondor-CE-CEView update to add Schedd (SOFTWARE-2268)
+- Remove extraneous copies of pbs_status.py (SOFTWARE-2279)
+- Add BR ANESP hostcert (https://ticket.opensciencegrid.org/29196)
+- Unit tests for condor_ce_router_defaults accounting groups
+- Add yum clean commands before Travis-CI tests
+- Fix incorrect paths and empty job attr in the CE View
+
 * Thu Mar 31 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.4-1
 - Bug fix for extraneous parens when using uid_table.txt (SOFTWARE-2243)
 
