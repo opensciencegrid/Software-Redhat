@@ -55,13 +55,16 @@ Patch4:		voms-api-java3.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
-BuildRequires:  java7-devel jpackage-utils wget ant axis jakarta-commons-logging jakarta-commons-discovery wsdl4j jakarta-commons-collections jakarta-commons-lang joda-time velocity xalan-j2 xml-security bouncycastle voms-api-java >= 2.0.8 slf4j log4j autoconf privilege-xacml
+BuildRequires:  java7-devel jpackage-utils wget ant axis jakarta-commons-logging jakarta-commons-discovery wsdl4j jakarta-commons-collections jakarta-commons-lang joda-time velocity xalan-j2 xml-security bouncycastle slf4j log4j autoconf privilege-xacml
 BuildRequires: jglobus = %jglobus_version
 BuildRequires: jetty-client jetty-continuation jetty-deploy jetty-http jetty-io jetty-security jetty-server jetty-servlet jetty-util jetty-webapp jetty-xml
 %if 0%{?el7}
 BuildRequires: canl-java
+BuildRequires: voms-api-java >= 3
 %else
-BuildRequires: emi-trustmanager emi-trustmanager-axis
+BuildRequires: emi-trustmanager
+BuildRequires: emi-trustmanager-axis
+BuildRequires: voms-api-java >= 2.0.8
 %endif
 # privilege-xacml jars
 BuildRequires: /usr/lib/privilege-xacml/opensaml-2.4.1.jar
@@ -95,7 +98,13 @@ Group: System Environment/Libraries
 Requires:  java7 jpackage-utils axis jakarta-commons-logging jakarta-commons-discovery wsdl4j log4j jglobus
 Requires: /usr/share/java/jglobus/axisg.jar
 # The following are needed for srm client tools and probably tester too
-Requires:  joda-time xalan-j2 voms-api-java >= 2.0.8 jakarta-commons-collections
+Requires:  joda-time xalan-j2 jakarta-commons-collections
+%if 0%{?el7}
+Requires: canl-java
+Requires: voms-api-java >= 3
+%else
+Requires: voms-api-java >= 2.0.8
+%endif
 # ensure these are present, from jpackage-utils or missing-java-1.7.0-dirs
 Requires: /usr/lib/java-1.7.0
 Requires: /usr/share/java-1.7.0
@@ -134,11 +143,14 @@ The BeStMan Server SRM Java libraries
 %package server-dep-libs
 Summary: BeStMan Server SRM Java libraries
 Group: System Environment/Libraries
-Requires: java7-devel jpackage-utils jakarta-commons-lang joda-time xalan-j2 voms-api-java >= 2.0.8 jakarta-commons-collections privilege-xacml
+Requires: java7-devel jpackage-utils jakarta-commons-lang joda-time xalan-j2 jakarta-commons-collections privilege-xacml
 %if 0%{?el7}
-BuildRequires: canl-java
+Requires: canl-java
+Requires: voms-api-java >= 3
 %else
-BuildRequires: emi-trustmanager emi-trustmanager-axis
+Requires: emi-trustmanager
+Requires: emi-trustmanager-axis
+Requires: voms-api-java >= 2.0.8
 %endif
 Requires: jetty-client jetty-continuation jetty-deploy jetty-http jetty-io jetty-security jetty-server jetty-servlet jetty-util jetty-webapp jetty-xml
 # bestman2 is not quite ready for Jetty 9 -- some simple source incompatibilities exist still.
