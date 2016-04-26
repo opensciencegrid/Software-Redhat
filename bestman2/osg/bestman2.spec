@@ -322,7 +322,11 @@ install -m 0644 %{SOURCE10} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/%{name}lib
 %endif
 
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/grid-security/vomsdir
+%if 0%{?el7}
+# vdt-empty no longer needed for canl
+%else
 touch $RPM_BUILD_ROOT%{_sysconfdir}/grid-security/vomsdir/vdt-empty.pem
+%endif
 
 mkdir -p $RPM_BUILD_ROOT%{_var}/log/%{name}
 
@@ -425,7 +429,11 @@ fi
 %config(noreplace) %{_sysconfdir}/sysconfig/bestman2lib
 %{_initrddir}/%{name}
 %config(noreplace) %{_sysconfdir}/logrotate.d/%{name}
+%if 0%{?el7}
+# vdt-empty no longer needed.
+%else
 %config(noreplace) %attr(0644,root,root) %{_sysconfdir}/grid-security/vomsdir/vdt-empty.pem
+%endif
 %attr(-,bestman,bestman) %dir %{_var}/log/%{name}
 %attr(-,bestman,bestman) %dir %{_sysconfdir}/grid-security/bestman
 
