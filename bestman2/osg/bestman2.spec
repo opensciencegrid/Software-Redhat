@@ -50,6 +50,7 @@ Patch0:		upgrade_exception_message.patch
 Patch1:		bestman2-2.2.1-2.2.2.patch
 Patch2:		gucpath.patch
 Patch3:		parallelism.patch
+Patch4:		voms-api-java3.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
@@ -199,6 +200,9 @@ cd ..
 %patch1 -p0
 %patch2 -p1
 %patch3 -p1
+%if 0%{?el7}
+%patch4 -p1
+%endif
 
 pushd bestman2/setup-osg/bestman.in
 sed -i "s/@SRM_HOME@/\/etc\/bestman2/" *
