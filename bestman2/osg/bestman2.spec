@@ -58,7 +58,11 @@ BuildArch:      noarch
 BuildRequires:  java7-devel jpackage-utils wget ant axis jakarta-commons-logging jakarta-commons-discovery wsdl4j jakarta-commons-collections jakarta-commons-lang joda-time velocity xalan-j2 xml-security bouncycastle voms-api-java >= 2.0.8 slf4j log4j autoconf privilege-xacml
 BuildRequires: jglobus = %jglobus_version
 BuildRequires: jetty-client jetty-continuation jetty-deploy jetty-http jetty-io jetty-security jetty-server jetty-servlet jetty-util jetty-webapp jetty-xml
+%if 0%{?el7}
+BuildRequires: canl-java
+%else
 BuildRequires: emi-trustmanager emi-trustmanager-axis
+%endif
 # privilege-xacml jars
 BuildRequires: /usr/lib/privilege-xacml/opensaml-2.4.1.jar
 BuildRequires: /usr/lib/privilege-xacml/openws-1.4.1.jar
@@ -130,7 +134,12 @@ The BeStMan Server SRM Java libraries
 %package server-dep-libs
 Summary: BeStMan Server SRM Java libraries
 Group: System Environment/Libraries
-Requires: java7-devel jpackage-utils jakarta-commons-lang joda-time emi-trustmanager emi-trustmanager-axis xalan-j2 voms-api-java >= 2.0.8 jakarta-commons-collections privilege-xacml
+Requires: java7-devel jpackage-utils jakarta-commons-lang joda-time xalan-j2 voms-api-java >= 2.0.8 jakarta-commons-collections privilege-xacml
+%if 0%{?el7}
+BuildRequires: canl-java
+%else
+BuildRequires: emi-trustmanager emi-trustmanager-axis
+%endif
 Requires: jetty-client jetty-continuation jetty-deploy jetty-http jetty-io jetty-security jetty-server jetty-servlet jetty-util jetty-webapp jetty-xml
 # bestman2 is not quite ready for Jetty 9 -- some simple source incompatibilities exist still.
 Requires: jetty-http < 9.0
