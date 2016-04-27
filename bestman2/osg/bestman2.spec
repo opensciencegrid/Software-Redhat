@@ -16,7 +16,7 @@
 
 Name:           bestman2
 Version:        2.3.0
-Release:        28%{?dist}
+Release:        29%{?dist}
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -498,6 +498,9 @@ fi
 
 
 %changelog
+* Wed Apr 27 2016 Carl Edquist <edquist@cs.wisc.edu> - 2.3.0-29
+- Patch el7 to use voms-api-java 3 and canl (SOFTWARE-2041)
+
 * Tue Mar 15 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 2.3.0-28
 - Add bcpkix to the classpath in el7 (SOFTWARE-2041)
 
