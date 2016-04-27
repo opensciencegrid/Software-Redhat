@@ -16,7 +16,7 @@
 
 Name:           bestman2
 Version:        2.3.0
-Release:        28%{?dist}
+Release:        29%{?dist}
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -50,14 +50,22 @@ Patch0:		upgrade_exception_message.patch
 Patch1:		bestman2-2.2.1-2.2.2.patch
 Patch2:		gucpath.patch
 Patch3:		parallelism.patch
+Patch4:		voms-api-java3.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
-BuildRequires:  java7-devel jpackage-utils wget ant axis jakarta-commons-logging jakarta-commons-discovery wsdl4j jakarta-commons-collections jakarta-commons-lang joda-time velocity xalan-j2 xml-security bouncycastle voms-api-java >= 2.0.8 slf4j log4j autoconf privilege-xacml
+BuildRequires:  java7-devel jpackage-utils wget ant axis jakarta-commons-logging jakarta-commons-discovery wsdl4j jakarta-commons-collections jakarta-commons-lang joda-time velocity xalan-j2 xml-security bouncycastle slf4j log4j autoconf privilege-xacml
 BuildRequires: jglobus = %jglobus_version
 BuildRequires: jetty-client jetty-continuation jetty-deploy jetty-http jetty-io jetty-security jetty-server jetty-servlet jetty-util jetty-webapp jetty-xml
-BuildRequires: emi-trustmanager emi-trustmanager-axis
+%if 0%{?el7}
+BuildRequires: canl-java
+BuildRequires: voms-api-java >= 3
+%else
+BuildRequires: emi-trustmanager
+BuildRequires: emi-trustmanager-axis
+BuildRequires: voms-api-java >= 2.0.8
+%endif
 # privilege-xacml jars
 BuildRequires: /usr/lib/privilege-xacml/opensaml-2.4.1.jar
 BuildRequires: /usr/lib/privilege-xacml/openws-1.4.1.jar
@@ -90,7 +98,13 @@ Group: System Environment/Libraries
 Requires:  java7 jpackage-utils axis jakarta-commons-logging jakarta-commons-discovery wsdl4j log4j jglobus
 Requires: /usr/share/java/jglobus/axisg.jar
 # The following are needed for srm client tools and probably tester too
-Requires:  joda-time xalan-j2 voms-api-java >= 2.0.8 jakarta-commons-collections
+Requires:  joda-time xalan-j2 jakarta-commons-collections
+%if 0%{?el7}
+Requires: canl-java
+Requires: voms-api-java >= 3
+%else
+Requires: voms-api-java >= 2.0.8
+%endif
 # ensure these are present, from jpackage-utils or missing-java-1.7.0-dirs
 Requires: /usr/lib/java-1.7.0
 Requires: /usr/share/java-1.7.0
@@ -129,7 +143,15 @@ The BeStMan Server SRM Java libraries
 %package server-dep-libs
 Summary: BeStMan Server SRM Java libraries
 Group: System Environment/Libraries
-Requires: java7-devel jpackage-utils jakarta-commons-lang joda-time emi-trustmanager emi-trustmanager-axis xalan-j2 voms-api-java >= 2.0.8 jakarta-commons-collections privilege-xacml
+Requires: java7-devel jpackage-utils jakarta-commons-lang joda-time xalan-j2 jakarta-commons-collections privilege-xacml
+%if 0%{?el7}
+Requires: canl-java
+Requires: voms-api-java >= 3
+%else
+Requires: emi-trustmanager
+Requires: emi-trustmanager-axis
+Requires: voms-api-java >= 2.0.8
+%endif
 Requires: jetty-client jetty-continuation jetty-deploy jetty-http jetty-io jetty-security jetty-server jetty-servlet jetty-util jetty-webapp jetty-xml
 # bestman2 is not quite ready for Jetty 9 -- some simple source incompatibilities exist still.
 Requires: jetty-http < 9.0
@@ -199,6 +221,9 @@ cd ..
 %patch1 -p0
 %patch2 -p1
 %patch3 -p1
+%if 0%{?el7}
+%patch4 -p1
+%endif
 
 pushd bestman2/setup-osg/bestman.in
 sed -i "s/@SRM_HOME@/\/etc\/bestman2/" *
@@ -318,7 +343,11 @@ install -m 0644 %{SOURCE10} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/%{name}lib
 %endif
 
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/grid-security/vomsdir
+%if 0%{?el7}
+# vdt-empty no longer needed for canl
+%else
 touch $RPM_BUILD_ROOT%{_sysconfdir}/grid-security/vomsdir/vdt-empty.pem
+%endif
 
 mkdir -p $RPM_BUILD_ROOT%{_var}/log/%{name}
 
@@ -421,7 +450,11 @@ fi
 %config(noreplace) %{_sysconfdir}/sysconfig/bestman2lib
 %{_initrddir}/%{name}
 %config(noreplace) %{_sysconfdir}/logrotate.d/%{name}
+%if 0%{?el7}
+# vdt-empty no longer needed.
+%else
 %config(noreplace) %attr(0644,root,root) %{_sysconfdir}/grid-security/vomsdir/vdt-empty.pem
+%endif
 %attr(-,bestman,bestman) %dir %{_var}/log/%{name}
 %attr(-,bestman,bestman) %dir %{_sysconfdir}/grid-security/bestman
 
@@ -465,6 +498,9 @@ fi
 
 
 %changelog
+* Wed Apr 27 2016 Carl Edquist <edquist@cs.wisc.edu> - 2.3.0-29
+- Patch el7 to use voms-api-java 3 and canl (SOFTWARE-2041)
+
 * Tue Mar 15 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 2.3.0-28
 - Add bcpkix to the classpath in el7 (SOFTWARE-2041)
 

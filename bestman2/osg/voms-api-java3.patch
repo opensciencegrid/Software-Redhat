@@ -1,0 +1,193 @@
+diff --git a/bestman2/setup-osg/bestman.in/configure.in b/bestman2/setup-osg/bestman.in/configure.in
+index 5d58f08..415031b 100644
+--- a/bestman2/setup-osg/bestman.in/configure.in
++++ b/bestman2/setup-osg/bestman.in/configure.in
+@@ -828,6 +828,15 @@ my_JAR_VALIDATOR($BUILDP, $MYCLASSPATH, $JCEJDK13, $JCEVERSION, JCENAME, JCEPATH
+ my_JAR_VALIDATOR($BUILDP, $MYCLASSPATH, $LOG4J, $LOG4JVERSION, LOG4JNAME, LOG4JPATH)
+ my_JAR_VALIDATOR($BUILDP, $MYCLASSPATH, $PURETLS, $PTVERSION, PTNAME, PTPATH)
+ 
++dnl voms-api-java 3 related libs
++VOMSAPIJAVA="voms-api-java"
++VAJ3VERSION="3.1.0"
++CANL="canl-java"
++CANLVERSION="2.1.2"
++
++my_JAR_VALIDATOR($BUILDP, $MYCLASSPATH, $VOMSAPIJAVA, $VAJ3VERSION, VAJ3NAME, VAJ3PATH)
++my_JAR_VALIDATOR($BUILDP, $MYCLASSPATH, $CANL, $CANLVERSION, CANLNAME, CANLPATH)
++
+ dnl voms related libs
+ BCPROV="bcprov-jdk15"
+ BPVERSION="1.4.6"
+@@ -910,6 +919,8 @@ echo "puretls.path=$PTPATH"
+ echo "#####################################################" 
+ echo "bcprov-jdk15.path=$BPPATH" 
+ echo "vomsjapi.path=$VJPATH" 
++echo "voms-api-java.path=$VAJ3PATH" 
++echo "canl.path=$CANLPATH" 
+ echo "#####################################################" 
+ echo "jcl-over-slf4j.path=$JSPATH" 
+ echo "je-4.1.10.path=$BDBPATH" 
+@@ -1269,9 +1280,9 @@ echo "#################################################################" >> $SYS
+ echo "#################################################################" >> $SYSCONFPATH 
+ 
+ if test "$CLIENTONLY" = "no" -a "$TESTERONLY" = "no"; then
+-echo "BESTMAN2_SERVER_LIB=.:$AXISPATH:$CDPATH:$CLPATH:$JRPATH:$WJPATH:$XCPATH:$XAPATH:$COMMCPATH:$COMMLPATH:$ESAPIPATH:$JTPATH:$OPENSPATH:$OPENWPATH:$PRPATH:$GLITETPATH:$GLITEUPATH:$VLPATH:$XLPATH:$XSPATH:$XTPATH:$JCPATH:$JNPATH:$JDPATH:$JHPATH:$JIPATH:$JSCPATH:$JSVPATH:$JSLPATH:$JUPATH:$JWPATH:$JXPATH:$CAPATH:$CJPATH:$CUPATH:$CXAPATH:$CX32PATH:$JCEPATH:$LOG4JPATH:$PTPATH:$BPPATH:$VJPATH:$JSPATH:$BDBPATH:$SAPATH:$S4APATH:$S4LPATH:$S4SPATH:$W4PATH" 
+-echo "BESTMAN2_SERVER_LIB=.:$AXISPATH:$CDPATH:$CLPATH:$JRPATH:$WJPATH:$XCPATH:$XAPATH:$COMMCPATH:$COMMLPATH:$ESAPIPATH:$JTPATH:$OPENSPATH:$OPENWPATH:$PRPATH:$GLITETPATH:$GLITEUPATH:$VLPATH:$XLPATH:$XSPATH:$XTPATH:$JCPATH:$JNPATH:$JDPATH:$JHPATH:$JIPATH:$JSCPATH:$JSVPATH:$JSLPATH:$JUPATH:$JWPATH:$JXPATH:$CAPATH:$CJPATH:$CUPATH:$CXAPATH:$CX32PATH:$JCEPATH:$LOG4JPATH:$PTPATH:$BPPATH:$VJPATH:$JSPATH:$BDBPATH:$SAPATH:$S4APATH:$S4LPATH:$S4SPATH:$W4PATH" >> $SYSCONFPATH
+-echo "BESTMAN2_SERVER_LIB=.:$AXISPATH:$CDPATH:$CLPATH:$JRPATH:$WJPATH:$XCPATH:$XAPATH:$COMMCPATH:$COMMLPATH:$ESAPIPATH:$JTPATH:$OPENSPATH:$OPENWPATH:$PRPATH:$GLITETPATH:$GLITEUPATH:$VLPATH:$XLPATH:$XSPATH:$XTPATH:$JCPATH:$JNPATH:$JDPATH:$JHPATH:$JIPATH:$JSCPATH:$JSVPATH:$JSLPATH:$JUPATH:$JWPATH:$JXPATH:$CAPATH:$CJPATH:$CUPATH:$CXAPATH:$CX32PATH:$JCEPATH:$LOG4JPATH:$PTPATH:$BPPATH:$VJPATH:$JSPATH:$BDBPATH:$SAPATH:$S4APATH:$S4LPATH:$S4SPATH:$W4PATH" >> $LOGFILE
++echo "BESTMAN2_SERVER_LIB=.:$AXISPATH:$CDPATH:$CLPATH:$JRPATH:$WJPATH:$XCPATH:$XAPATH:$COMMCPATH:$COMMLPATH:$ESAPIPATH:$JTPATH:$OPENSPATH:$OPENWPATH:$PRPATH:$GLITETPATH:$GLITEUPATH:$VLPATH:$XLPATH:$XSPATH:$XTPATH:$JCPATH:$JNPATH:$JDPATH:$JHPATH:$JIPATH:$JSCPATH:$JSVPATH:$JSLPATH:$JUPATH:$JWPATH:$JXPATH:$CAPATH:$CJPATH:$CUPATH:$CXAPATH:$CX32PATH:$JCEPATH:$LOG4JPATH:$PTPATH:$BPPATH:$VJPATH:$VJ3PATH:$CANLPATH:$JSPATH:$BDBPATH:$SAPATH:$S4APATH:$S4LPATH:$S4SPATH:$W4PATH" 
++echo "BESTMAN2_SERVER_LIB=.:$AXISPATH:$CDPATH:$CLPATH:$JRPATH:$WJPATH:$XCPATH:$XAPATH:$COMMCPATH:$COMMLPATH:$ESAPIPATH:$JTPATH:$OPENSPATH:$OPENWPATH:$PRPATH:$GLITETPATH:$GLITEUPATH:$VLPATH:$XLPATH:$XSPATH:$XTPATH:$JCPATH:$JNPATH:$JDPATH:$JHPATH:$JIPATH:$JSCPATH:$JSVPATH:$JSLPATH:$JUPATH:$JWPATH:$JXPATH:$CAPATH:$CJPATH:$CUPATH:$CXAPATH:$CX32PATH:$JCEPATH:$LOG4JPATH:$PTPATH:$BPPATH:$VJPATH:$VJ3PATH:$CANLPATH:$JSPATH:$BDBPATH:$SAPATH:$S4APATH:$S4LPATH:$S4SPATH:$W4PATH" >> $SYSCONFPATH
++echo "BESTMAN2_SERVER_LIB=.:$AXISPATH:$CDPATH:$CLPATH:$JRPATH:$WJPATH:$XCPATH:$XAPATH:$COMMCPATH:$COMMLPATH:$ESAPIPATH:$JTPATH:$OPENSPATH:$OPENWPATH:$PRPATH:$GLITETPATH:$GLITEUPATH:$VLPATH:$XLPATH:$XSPATH:$XTPATH:$JCPATH:$JNPATH:$JDPATH:$JHPATH:$JIPATH:$JSCPATH:$JSVPATH:$JSLPATH:$JUPATH:$JWPATH:$JXPATH:$CAPATH:$CJPATH:$CUPATH:$CXAPATH:$CX32PATH:$JCEPATH:$LOG4JPATH:$PTPATH:$BPPATH:$VJPATH:$VJ3PATH:$CANLPATH:$JSPATH:$BDBPATH:$SAPATH:$S4APATH:$S4LPATH:$S4SPATH:$W4PATH" >> $LOGFILE
+ echo "" 
+ echo "" >> $SYSCONFPATH
+ echo "BESTMAN2_CLIENT_LIB=.:$AXISPATH:$CDPATH:$CLPATH:$JRPATH:$WJPATH:$XCPATH:$XAPATH:$CAPATH:$CJPATH:$CUPATH:$CXAPATH:$CX32PATH:$JCEPATH:$LOG4JPATH:$PTPATH"
+diff --git a/bestman2/branches/osg-dev/configure.in b/bestman2/branches/osg-dev/configure.in
+index a9e0359..5889a19 100644
+--- a/bestman2/branches/osg-dev/configure.in
++++ b/bestman2/branches/osg-dev/configure.in
+@@ -175,6 +175,15 @@ my_JAR_VALIDATOR($MYCLASSPATH, $JCEJDK13, $JCEVERSION, JCENAME, JCEPATH, JCEDIR)
+ my_JAR_VALIDATOR($MYCLASSPATH, $LOG4J, $LOG4JVERSION, LOG4JNAME, LOG4JPATH, LOG4JDIR)
+ my_JAR_VALIDATOR($MYCLASSPATH, $PURETLS, $PTVERSION, PTNAME, PTPATH, PTDIR)
+ 
++dnl voms-api-java 3 related libs
++VOMSAPIJAVA="voms-api-java"
++VAJ3VERSION="3.1.0"
++CANL="canl-java"
++CANLVERSION="2.1.2"
++
++my_JAR_VALIDATOR($BUILDP, $MYCLASSPATH, $VOMSAPIJAVA, $VAJ3VERSION, VAJ3NAME, VAJ3PATH)
++my_JAR_VALIDATOR($BUILDP, $MYCLASSPATH, $CANL, $CANLVERSION, CANLNAME, CANLPATH)
++
+ dnl voms related libs
+ BCPROV="bcprov-jdk15"
+ BPVERSION="1.4.6"
+@@ -333,6 +342,8 @@ echo "puretls.path=$PTPATH" >> build.properties
+ echo "#####################################################" >> build.properties
+ echo "bcprov-jdk15.path=$BPPATH" >> build.properties
+ echo "vomsjapi.path=$VJPATH" >> build.properties
++echo "voms-api-java.path=$VAJ3PATH" >> build.properties
++echo "canl.path=$CANLPATH" >> build.properties
+ echo "#####################################################" >> build.properties
+ echo "jcl-over-slf4j.path=$JSPATH" >> build.properties
+ echo "je-4.1.10.path=$BDBPATH" >> build.properties
+diff --git a/bestman2/branches/osg-dev/server/build.xml b/bestman2/branches/osg-dev/server/build.xml
+index d5fcd07..0b3adef 100644
+--- a/bestman2/branches/osg-dev/server/build.xml
++++ b/bestman2/branches/osg-dev/server/build.xml
+@@ -89,6 +89,8 @@
+     <fileset file="${log4j.path}"/>
+     <fileset file="${bcprov-jdk15.path}"/>
+     <fileset file="${vomsjapi.path}"/>
++    <fileset file="${voms-api-java.path}"/>
++    <fileset file="${canl.path}"/>
+     <fileset file="${jcl-over-slf4j.path}"/>
+     <fileset file="${je-4.1.10.path}"/>
+     <fileset file="${servlet-api.path}"/>
+diff --git a/bestman2/branches/osg-dev/server/src/gov/lbl/srm/util/GUMSXACMLClient.java b/bestman2/branches/osg-dev/server/src/gov/lbl/srm/util/GUMSXACMLClient.java
+index 185bba1..6f2fb94 100644
+--- a/bestman2/branches/osg-dev/server/src/gov/lbl/srm/util/GUMSXACMLClient.java
++++ b/bestman2/branches/osg-dev/server/src/gov/lbl/srm/util/GUMSXACMLClient.java
+@@ -41,7 +41,11 @@ package gov.lbl.srm.util;
+ import java.util.*;
+ import java.io.*;
+ 
+-import org.glite.voms.VOMSValidator;
++import org.italiangrid.voms.VOMSValidators;
++import org.italiangrid.voms.ac.impl.DefaultVOMSValidator;
++import org.italiangrid.voms.util.CertificateValidatorBuilder;
++
++import eu.emi.security.authn.x509.X509CertChainValidatorExt;
+ 
+ //  import gov.bnl.gums.command.Configuration;
+ //import gov.bnl.gums.admin.*;
+@@ -56,11 +60,11 @@ import java.net.URL;
+ import java.security.cert.X509Certificate;
+ 
+ class ValidatorControl {
+-    org.glite.voms.VOMSValidator _vv = null;
++    org.italiangrid.voms.ac.VOMSACValidator _vv = null;
+     TSRMMutex _vvGuard = new TSRMMutex();
+     
+     public ValidatorControl() {
+-	Class clazz = org.glite.voms.VOMSValidator.class;
++	Class clazz = org.italiangrid.voms.ac.VOMSACValidator.class;
+ 	String result0 =org.theshoemakers.which4j.Which4J.which(clazz);
+ 	System.out.println("which vomsvalidator?"+result0);
+     }
+@@ -73,45 +77,49 @@ class ValidatorControl {
+ 	List result = null;
+ 	try {
+ 	    if (_vv == null) {
+-		//_vv = new org.glite.voms.VOMSValidator(null, null);
+-		org.glite.voms.PKIStore vomsStore = null;
++		//_vv = org.italiangrid.voms.VOMSValidators.newValidator();
++		org.italiangrid.voms.store.impl.DefaultUpdatingVOMSTrustStore vomsStore = null;
+ 		String vomsDir = System.getProperty( "VOMSDIR" );
+-		vomsDir = (vomsDir == null ) ? org.glite.voms.PKIStore.DEFAULT_VOMSDIR : vomsDir;
++		vomsDir = (vomsDir == null ) ? org.italiangrid.voms.store.impl.DefaultUpdatingVOMSTrustStore.DEFAULT_VOMS_DIR : vomsDir;
+ 		TSRMLog.info(ValidatorControl.class, null, "vomsDir="+vomsDir, null);
+ 		
+ 		File theDir = new File(vomsDir);
+ 		if (theDir.exists() && theDir.isDirectory() && theDir.list().length > 0) {
+-		    vomsStore = new org.glite.voms.PKIStore(vomsDir, org.glite.voms.PKIStore.TYPE_VOMSDIR, true);
+-		    vomsStore.rescheduleRefresh(900000);
++		    List<String> vomsDirs = new ArrayList<String>();
++		    vomsDirs.add(vomsDir);
++		    vomsStore = new org.italiangrid.voms.store.impl.DefaultUpdatingVOMSTrustStore(vomsDirs, 900000);
+ 		}
+ 		
+-		org.glite.voms.PKIStore caStore;
+ 		String caDir = System.getProperty( "CADIR" );
+-		caDir = (caDir == null) ? org.glite.voms.PKIStore.DEFAULT_CADIR : caDir;
++		caDir = (caDir == null) ? DefaultVOMSValidator.DEFAULT_TRUST_ANCHORS_DIR : caDir;
+ 		TSRMLog.info(ValidatorControl.class, null, "caDir="+caDir, null);
+-		caStore = new org.glite.voms.PKIStore( caDir, org.glite.voms.PKIStore.TYPE_CADIR, true );
+-		caStore.rescheduleRefresh(900000);
++		// how do we say that we're talking about CA dirs?
+ 		
+-		_vv = new org.glite.voms.VOMSValidator(null, new org.glite.voms.ac.ACValidator(new org.glite.voms.PKIVerifier(vomsStore,caStore)));
++                CertificateValidatorBuilder builder = new CertificateValidatorBuilder();
++                X509CertChainValidatorExt certChainValidator = builder.trustAnchorsDir(caDir).build();
++                        // .storeUpdateListener(storeUpdateListener).lazyAnchorsLoading(true)
++                        // .validationErrorListener(certChainValidationErrorListener).build();
++		_vv = VOMSValidators.newValidator(vomsStore, certChainValidator);
+ 	    }
+-	    _vv.setClientChain(certChain);
+ 	    
+-	    List vc = _vv.parse().getVOMSAttributes();
++	    List vc = _vv.parse(certChain);
+             if ((vc == null) || (vc.size() == 0)) {
+ 		return null;
+             } 
+             int nVomsCerts = vc.size();
+             TSRMLog.debug(ValidatorControl.class, null, "vomsCertSize="+nVomsCerts, null);
+             for (int i=0; i<nVomsCerts; i++) {
+-		org.glite.voms.VOMSAttribute curr = (org.glite.voms.VOMSAttribute)(vc.get(i));
++		org.italiangrid.voms.VOMSAttribute curr = (org.italiangrid.voms.VOMSAttribute)(vc.get(i));
+                  TSRMLog.debug(ValidatorControl.class, null, "listVomsCert-"+i+"th="+curr.toString(), null);
+             }
++            List vomsCerts;
+             if (gov.lbl.srm.server.Config._doValidateVoms) {
+-                _vv=_vv.validate();
++                vomsCerts = _vv.validate(certChain);
++            } else {
++                vomsCerts = _vv.parse(certChain);
+             }
+ 	    TSRMLog.debug(ValidatorControl.class, null, "event=validated", null);
+ 	    
+-            List vomsCerts = _vv.parse().getVOMSAttributes();
+ 	    if ((vomsCerts == null) || (vomsCerts.size() < nVomsCerts)) {
+ 		String detail = "null vomsCerts";
+ 		if (vomsCerts != null) {
+@@ -248,10 +256,10 @@ class VOMSInfo {
+ 	    int total = vomsCerts.size();
+ 	    
+ 	    for (int i=0; i<total; i++) {
+-	    org.glite.voms.VOMSAttribute curr = (org.glite.voms.VOMSAttribute)(vomsCerts.get(i));
++	    org.italiangrid.voms.VOMSAttribute curr = (org.italiangrid.voms.VOMSAttribute)(vomsCerts.get(i));
+ 	    //AttributeCertificate ac = curr.getAC();
+ 	    //TSRMLog.info(GUMSClient.class, "ac issuer="+ac.getIssuer().toString(), null, null);
+-	    result.addAll(curr.getFullyQualifiedAttributes());
++	    result.addAll(curr.getFQANs());
+ 	    }
+ 	    return result;
+ 	} catch (Exception e) {
