@@ -1,0 +1,763 @@
+From d65c84f2d855affd71a3c35f6d5f15201ac79459 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Wed, 27 Apr 2016 13:52:56 -0500
+Subject: [PATCH] Remove voms-api-java requirement
+
+It's only needed for test code that we do not run. Remove that test code
+from the source tree, and remove voms-api-java from the pom.xml
+---
+ pom.xml                                            |   6 -
+ .../authz/xacml/client/XACMLX509Test.java          | 243 -------------
+ .../authz/xacml/common/X509CertUtil.java           | 394 ---------------------
+ src/test/XACMLClientTest.sh                        |   1 -
+ src/test/XACMLX509Test.sh                          |  50 ---
+ 5 files changed, 694 deletions(-)
+ delete mode 100644 src/main/java/org/opensciencegrid/authz/xacml/client/XACMLX509Test.java
+ delete mode 100644 src/main/java/org/opensciencegrid/authz/xacml/common/X509CertUtil.java
+ delete mode 100755 src/test/XACMLX509Test.sh
+
+diff --git a/pom.xml b/pom.xml
+index 348e8cd..ea504a6 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -245,16 +245,10 @@
+ 			<scope>test</scope>
+ 		</dependency>
+ 
+ 		<!--runtime scope--> 
+ 		<dependency>
+-			<groupId>org.italiangrid</groupId>
+-			<artifactId>voms-api-java</artifactId>
+-			<version>2.0.8</version>
+-			<scope>provided</scope>
+-		</dependency>	   
+-		<dependency>
+ 			<groupId>emi</groupId>
+ 			<artifactId>emi-trustmanager</artifactId>
+ 			<version>3.0.3</version>
+ 			<scope>provided</scope>
+ 		</dependency>
+diff --git a/src/main/java/org/opensciencegrid/authz/xacml/client/XACMLX509Test.java b/src/main/java/org/opensciencegrid/authz/xacml/client/XACMLX509Test.java
+deleted file mode 100644
+index 924f24b..0000000
+--- a/src/main/java/org/opensciencegrid/authz/xacml/client/XACMLX509Test.java
++++ /dev/null
+@@ -1,243 +0,0 @@
+-package org.opensciencegrid.authz.xacml.client;
+-
+-import org.apache.commons.logging.Log;
+-import org.apache.commons.logging.LogFactory;
+-import org.glite.voms.VOMSAttribute;
+-import org.globus.gsi.GlobusCredential;
+-import org.globus.gsi.gssapi.GSSConstants;
+-import org.gridforum.jgss.ExtendedGSSContext;
+-import org.ietf.jgss.GSSContext;
+-import org.ietf.jgss.GSSException;
+-import org.opensciencegrid.authz.xacml.common.LocalId;
+-import org.opensciencegrid.authz.xacml.common.X509CertUtil;
+-import org.opensciencegrid.authz.xacml.common.XACMLConstants;
+-
+-import java.security.cert.X509Certificate;
+-import java.text.SimpleDateFormat;
+-import java.util.*;
+-
+-public class XACMLX509Test {
+-
+-    private static Log logger = LogFactory.getLog(XACMLX509Test.class.getName());
+-
+-    public static void main(String[] args) {
+-
+-        GlobusCredential cred = null;
+-        try {
+-            cred = new GlobusCredential(getProxyFile());
+-            System.setProperty("X509_PROXY_FILE", getProxyFile());
+-        } catch (Exception e) {
+-            logger.error("Caught exception in context creation. " + e.getMessage());
+-        }
+-
+-        X509Certificate[] chain = null;
+-        try {
+-            chain = cred.getCertificateChain();
+-        } catch (Exception e) {
+-            logger.error("Could not extract certificate chain from context " + e.getMessage() + "\n" + e.getCause());
+-        }
+-
+-        String X509Subject = null;
+-        try {
+-            X509Subject = X509CertUtil.getSubjectFromX509Chain(chain, false);
+-        } catch (Exception e) {
+-            logger.error("Could not get subjectname from proxy. " + e.getMessage());
+-        }
+-        logger.info("The subject name is " + X509Subject);
+-
+-        Collection<String> fqans = new LinkedHashSet();
+-        fqans.add(null);
+-        try {
+-            fqans.addAll(X509CertUtil.getFQANsFromX509Chain(chain, false));
+-        } catch (Exception e)  {
+-        }
+-
+-        Iterator <String> fqans_itr = fqans.iterator();
+-        while (fqans_itr.hasNext()) {
+-            String fqan = fqans_itr.next();
+-            String username = null;
+-
+-            try {
+-                LocalId id = authorize(X509Subject, fqan, chain);
+-                username = id.getUserName();
+-            } catch (Exception e) {
+-                logger.error("Caught exception in authorization." + e.getMessage());
+-            }
+-
+-            if (fqan==null) fqan = "null";
+-
+-            if(username!=null) {
+-                logger.info("xacml-vo-mapping service returned Username: " + username + " for " + fqan);
+-            } else {
+-                logger.info("xacml-vo-mapping service did not return a username");
+-            }
+-        }
+-
+-    }
+-
+-    public static LocalId authorize(String X509Subject, String fqan, X509Certificate[] chain)
+-            throws Exception {
+-
+-        String CondorCanonicalNameID=null;
+-        String X509SubjectIssuer=null;
+-        String VO=null;
+-        String VOMSSigningSubject=null;
+-        String VOMSSigningIssuer=null;
+-
+-        String CertificateSerialNumber=null; //todo make Integer
+-        String CASerialNumber=null; //todo make Integer
+-        String VOMS_DNS_Port=null;
+-        String CertificatePoliciesOIDs=null;
+-        String CertificateChain=null; //todo make byte[]
+-        String resourceType=null;
+-        String resourceDNSHostName;
+-        String resourceX509ID;
+-        String resourceX509Issuer;
+-        String requestedaction=XACMLConstants.ACTION_ACCESS;
+-        String RSL_string=null;
+-        MapCredentialsClient xacmlClient;
+-        LocalId localId;
+-        String key = X509Subject;
+-
+-        try {
+-            X509SubjectIssuer = X509CertUtil.getSubjectX509Issuer(chain);
+-        } catch (Exception e) {
+-            logger.warn("Could not determine subject-x509-issuer : " + e.getMessage());
+-        }
+-
+-        VOMSAttribute vomsAttr=null;
+-        if (chain !=null && fqan !=null) {
+-            vomsAttr = X509CertUtil.getVOMSAttribute(chain, fqan);
+-        }
+-        if (vomsAttr!=null) {
+-            VO = vomsAttr.getVO();
+-            String X500IssuerName = vomsAttr.getAC().getIssuer().toString();
+-            VOMSSigningSubject = X509CertUtil.toGlobusDN(X500IssuerName);
+-        }
+-
+-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+-        String not_before = sdf.format(X509CertUtil.getLatestNotBefore(chain));
+-        String not_after =  sdf.format(X509CertUtil.getEarliestNotAfter(chain));
+-
+-        try {
+-            resourceX509ID = getResourceX509ID();
+-        }
+-        catch (Exception e) {
+-            logger.error("Exception in finding targetServiceName : " + e);
+-            throw new Exception(e.toString());
+-        }
+-
+-
+-        try {
+-            resourceType = getResourceType();
+-        } catch (Exception e) {
+-            logger.error("Exception in finding resource type : " + e);
+-            throw new Exception(e.toString());
+-        }
+-
+-        try {
+-            resourceDNSHostName = getResourceHostName();
+-        } catch (Exception e) {
+-            logger.error("Exception in finding targetServiceName : " + e);
+-            throw new Exception(e.toString());
+-        }
+-
+-        try {
+-            resourceX509Issuer = getTargetServiceIssuer();
+-        }
+-        catch (Exception e) {
+-            logger.error("Exception in finding targetServiceIssuer : " + e);
+-            throw new Exception(e.toString());
+-        }
+-
+-
+-        logger.info("Requesting mapping for User with DN: " + X509Subject + " and Role " + fqan);
+-
+-        logger.debug("Mapping Service URL configuration: " + getMappingServiceURL());
+-        try {
+-            xacmlClient = new MapCredentialsClient();
+-            xacmlClient.setX509Subject(X509Subject);
+-            xacmlClient.setCondorCanonicalNameID(CondorCanonicalNameID);
+-            xacmlClient.setX509SubjectIssuer(X509SubjectIssuer);
+-            xacmlClient.setVO(VO);
+-            xacmlClient.setVOMSSigningSubject(VOMSSigningSubject);
+-            xacmlClient.setVOMSSigningIssuer(VOMSSigningIssuer);
+-            xacmlClient.setFqan(fqan);
+-            xacmlClient.setCertificateSerialNumber(CertificateSerialNumber); //todo make Integer
+-            xacmlClient.setCertificateChainNotBefore(not_before);
+-            xacmlClient.setCertificateChainNotAfter(not_after);
+-            xacmlClient.setCASerialNumber(CASerialNumber); //todo make Integer
+-            xacmlClient.setVOMS_DNS_Port(VOMS_DNS_Port);
+-            xacmlClient.setCertificatePoliciesOIDs(CertificatePoliciesOIDs);
+-            xacmlClient.setCertificateChain(CertificateChain); //todo make byte[]
+-            xacmlClient.setResourceType(resourceType);
+-            xacmlClient.setResourceDNSHostName(resourceDNSHostName);
+-            xacmlClient.setResourceX509ID(resourceX509ID);
+-            xacmlClient.setResourceX509Issuer(resourceX509Issuer);
+-            xacmlClient.setRequestedaction(requestedaction);
+-            xacmlClient.setRSL_string(RSL_string);
+-        } catch (Exception e) {
+-            logger.error("Exception in XACML mapping client instantiation: " + e);
+-            throw new Exception(e.toString());
+-        }
+-
+-        try {
+-            localId = xacmlClient.mapCredentials(getMappingServiceURL());
+-        }
+-        catch (Exception e ) {
+-            logger.error(" Exception occurred in mapCredentials: " + e);
+-            throw new Exception(e.toString());
+-        }
+-
+-        if (localId == null) {
+-            String denied = "Authorization denied: No XACML mapping retrieved service for DN " + X509Subject + " and role " + fqan;
+-            logger.warn(denied);
+-            throw new Exception(denied);
+-        }
+-
+-        return localId;
+-    }
+-
+-    public static String getProxyFile() throws Exception {
+-        String val = System.getenv("X509_PROXY_FILE");
+-        if (val==null) throw new Exception();
+-        return val;
+-    }
+-
+-    public static String getMappingServiceURL() throws Exception {
+-        String val = System.getenv("AUTHZ_SERVICE_URL");
+-        if (val==null) throw new Exception();
+-        return val;
+-    }
+-
+-    public static String getResourceX509ID() throws Exception {
+-        String val = System.getenv("RESOURCE_X509");
+-        if (val==null) throw new Exception();
+-        return val;
+-    }
+-
+-    public static String getResourceType() throws Exception {
+-        String resource = System.getenv("RESOURCE");
+-        if("CE".equals(resource)) {
+-            return System.getenv(XACMLConstants.RESOURCE_CE);
+-        } else if("WN".equals(resource)) {
+-            return System.getenv(XACMLConstants.RESOURCE_WN);
+-        } else if("SE".equals(resource)) {
+-            return System.getenv(XACMLConstants.RESOURCE_SE);
+-        }
+-
+-        throw new Exception();
+-    }
+-
+-    public static String getResourceHostName() throws Exception {
+-        String val = System.getenv("RESOURCE_DNS_HOST_NAME");
+-        if (val==null) throw new Exception();
+-        return val;
+-    }
+-
+-    public static String getTargetServiceIssuer() throws Exception {
+-        String val = System.getenv("RESOURCE_X509_ISSUER");
+-        if (val==null) throw new Exception();
+-        return val;
+-    }
+-}
+diff --git a/src/main/java/org/opensciencegrid/authz/xacml/common/X509CertUtil.java b/src/main/java/org/opensciencegrid/authz/xacml/common/X509CertUtil.java
+deleted file mode 100644
+index a595218..0000000
+--- a/src/main/java/org/opensciencegrid/authz/xacml/common/X509CertUtil.java
++++ /dev/null
+@@ -1,394 +0,0 @@
+-package org.opensciencegrid.authz.xacml.common;
+-
+-
+-
+-import org.ietf.jgss.GSSContext;
+-import org.ietf.jgss.GSSException;
+-import org.ietf.jgss.GSSCredential;
+-import org.ietf.jgss.GSSManager;
+-import org.globus.gsi.X509Credential;
+-import org.globus.gsi.CredentialException;
+-import org.globus.gsi.TrustedCertificates;
+-import org.globus.gsi.GSIConstants;
+-import org.globus.gsi.bc.BouncyCastleUtil;
+-import org.globus.gsi.gssapi.GlobusGSSCredentialImpl;
+-import org.globus.gsi.gssapi.GSSConstants;
+-import org.globus.gsi.gssapi.auth.NoAuthorization;
+-import org.globus.gsi.gssapi.net.GssSocketFactory;
+-import org.globus.gsi.gssapi.net.GssSocket;
+-import org.gridforum.jgss.ExtendedGSSManager;
+-import org.gridforum.jgss.ExtendedGSSContext;
+-import org.bouncycastle.asn1.x509.TBSCertificateStructure;
+-import org.glite.voms.*;
+-import org.glite.voms.ac.AttributeCertificate;
+-import org.glite.voms.ac.VOMSTrustStore;
+-import org.glite.voms.ac.ACValidator;
+-import org.glite.voms.ac.ACTrustStore;
+-
+-import java.net.Socket;
+-import java.util.*;
+-import java.security.cert.X509Certificate;
+-import java.security.cert.CertificateException;
+-import java.security.cert.CRLException;
+-import java.io.IOException;
+-import java.io.File;
+-
+-/**
+- * X509CertUtil.java
+- * User: tdh
+- * Date: Sep 15, 2008
+- * Time: 5:06:59 PM
+- * To change this template use File | Settings | File Templates.
+- */
+-public class X509CertUtil {
+-
+-    public static String default_service_cert          = "/etc/grid-security/hostcert.pem";
+-    public static String default_service_key           = "/etc/grid-security/hostkey.pem";
+-    public static String default_trusted_cacerts = "/etc/grid-security/certificates";
+-
+-    private static PKIStore caTrustStore=null;
+-    private static VOMSTrustStore vomsTrustStore=null;
+-    private static ACTrustStore acTrustStore=null;
+-    private static VOMSValidator vomsValidator=null;
+-    private static ACValidator acValidator=null;
+-    private static PKIVerifier pkiVerifier=null;
+-
+-    private static int REFRESH_TIME_MS=20000;
+-
+-    public static final String capnull = "/Capability=NULL";
+-    public static final int capnulllen = capnull.length();
+-    public static final String rolenull ="/Role=NULL";
+-    public static final int rolenulllen = rolenull.length();
+-
+-    public static GSSContext getUserContext(String proxy_cert) throws GSSException {
+-       return getUserContext(proxy_cert, default_trusted_cacerts);
+-    }
+-
+-    public static GSSContext getUserContext(String proxy_cert, String service_trusted_certs) throws GSSException {
+-
+-	X509Credential userCredential;
+-	try {
+-            userCredential =new X509Credential(proxy_cert, proxy_cert);
+-        } catch(CredentialException gce) {
+-            throw new GSSException(GSSException.NO_CRED , 0,
+-				   "could not load host globus credentials "+gce.toString());
+-        } catch(IOException ioe) {
+-	    throw new GSSException(GSSException.DEFECTIVE_CREDENTIAL,0,"Could not read cert or key " + ioe.getMessage() + "\n" + ioe.getCause());
+-	}
+-	 
+-        GSSCredential cred = new GlobusGSSCredentialImpl(
+-                userCredential,
+-                GSSCredential.INITIATE_AND_ACCEPT);
+-        TrustedCertificates trusted_certs =
+-                TrustedCertificates.load(service_trusted_certs);
+-        GSSManager manager = ExtendedGSSManager.getInstance();
+-        ExtendedGSSContext context =
+-                (ExtendedGSSContext) manager.createContext(cred);
+-
+-        context.setOption(GSSConstants.GSS_MODE, GSIConstants.MODE_GSI);
+-        context.setOption(GSSConstants.TRUSTED_CERTIFICATES, trusted_certs);
+-
+-        return context;
+-    }
+-
+-    public static Socket getGsiClientSocket(String host, int port, ExtendedGSSContext context) throws Exception {
+-        Socket clientSocket = GssSocketFactory.getDefault().createSocket(host, port, context);
+-        ((GssSocket)clientSocket).setWrapMode(GssSocket.GSI_MODE);
+-        ((GssSocket)clientSocket).setAuthorization(NoAuthorization.getInstance());
+-        return(clientSocket);
+-    }
+-
+-    /**
+-     * Returns the Globus formatted representation of the
+-     * subject DN of the specified DN.
+-     *
+-     * @param dn the DN
+-     * @return the Globus formatted representation of the
+-     *         subject DN.
+-     */
+-    public static String toGlobusID(Vector dn) {
+-
+-        int len = dn.size();
+-        StringBuffer buf = new StringBuffer();
+-        for (int i=0;i<len;i++) {
+-            Vector rdn = (Vector)dn.elementAt(i);
+-            // checks only first ava entry
+-            String [] ava = (String[])rdn.elementAt(0);
+-            buf.append('/').append(ava[0]).append('=').append(ava[1]);
+-        }
+-        return buf.toString();
+-    }
+-
+-    /**
+-     * Converts the certificate dn into globus dn representation:
+-     * 'cn=proxy, o=globus' into '/o=globus/cn=proxy'
+-     *
+-     * @param  certDN regural dn
+-     * @return globus dn representation
+-     */
+-    public static String toGlobusDN(String certDN) {
+-        StringTokenizer tokens = new StringTokenizer(certDN, ",");
+-        StringBuffer buf = new StringBuffer();
+-        String token;
+-
+-        while(tokens.hasMoreTokens()) {
+-            token = tokens.nextToken().trim();
+-            buf.insert(0, token);
+-            buf.insert(0, "/");
+-        }
+-
+-        return buf.toString();
+-    }
+-
+-    public static String getSubjectFromX509Chain(X509Certificate[] chain, boolean omitEmail) throws Exception {
+-        return BouncyCastleUtil.getIdentity(chain);
+-    }
+-
+-    public static X509Certificate getUserCertFromX509Chain(X509Certificate[] chain) throws Exception {
+-        return BouncyCastleUtil.getIdentityCertificate(chain);
+-    }
+-
+-    public static Date getLatestNotBefore(X509Certificate[] chain) throws Exception {
+-        Date not_before=null;
+-        for (int i=0; i<chain.length; i++) {
+-            X509Certificate	testcert = chain[i];
+-            Date test_not_before = testcert.getNotBefore();
+-            if (not_before==null || test_not_before.after(not_before) ) {
+-                not_before = test_not_before;
+-            }
+-
+-            // No need to test certificate chain beyond the user cert
+-            TBSCertificateStructure tbsCert  = BouncyCastleUtil.getTBSCertificateStructure(testcert);
+-            //int certType = BouncyCastleUtil.getCertificateType(tbsCert);
+-	    /* Change from cog-jglobus to jglobus 2.0 use getCertificate passing it the X509Certificate 
+-	       and the getCertificateType is no longer an integer.
+-	    */
+-            int certType = BouncyCastleUtil.getCertificateType(testcert).getCode();
+-            if (!org.globus.gsi.CertUtil.isImpersonationProxy(certType)) {
+-                break;
+-            }
+-        }
+-
+-        if(not_before == null) {
+-            throw new Exception("could not find any not-before time in the certificate chain.");
+-        }
+-
+-        return not_before;
+-    }
+-
+-    public static Date getEarliestNotAfter(X509Certificate[] chain) throws Exception {
+-        Date not_after=null;
+-        for (int i=0; i<chain.length; i++) {
+-            X509Certificate	testcert = chain[i];
+-            Date test_not_after = testcert.getNotAfter();
+-            if (not_after==null || test_not_after.before(not_after) ) {
+-                not_after = test_not_after;
+-            }
+-
+-            // No need to test certificate chain beyond the user cert
+-            TBSCertificateStructure tbsCert  = BouncyCastleUtil.getTBSCertificateStructure(testcert);
+-            //int certType = BouncyCastleUtil.getCertificateType(tbsCert);
+-	    /* Change from cog-jglobus to jglobus 2.0 use getCertificate passing it the X509Certificate
+-               and the getCertificateType is no longer an integer. 
+-	    */
+-            int certType = BouncyCastleUtil.getCertificateType(testcert).getCode();
+-            if (!org.globus.gsi.CertUtil.isImpersonationProxy(certType)) {
+-                break;
+-            }
+-        }
+-
+-        if(not_after == null) {
+-            throw new Exception("could not find any not-after time in the certificate chain.");
+-        }
+-
+-        return not_after;
+-    }
+-
+-    public static String getSubjectX509Issuer(X509Certificate[] chain) throws Exception {
+-       X509Certificate	clientcert = getUserCertFromX509Chain(chain);
+-       return getSubjectX509Issuer(clientcert);
+-    }
+-
+-    public static String getSubjectX509Issuer(X509Certificate cert) throws Exception {
+-       return toGlobusDN(cert.getIssuerDN().toString());
+-    }
+-
+-    public static Collection<String> getFQANsFromContext(ExtendedGSSContext gssContext, boolean validate) throws Exception {
+-        X509Certificate[] chain;
+-        try {
+-            chain = (X509Certificate[]) gssContext.inquireByOid(GSSConstants.X509_CERT_CHAIN);
+-        } catch (GSSException gsse) {
+-            throw new Exception("Could not extract certificate chain from context " + gsse.getMessage() + "\n" + gsse.getCause());
+-        }
+-        return getFQANsFromX509Chain(chain, validate);
+-    }
+-
+-    public static Collection <String> getFQANsFromContext(ExtendedGSSContext gssContext) throws Exception {
+-        X509Certificate[] chain;
+-        try {
+-            chain = (X509Certificate[]) gssContext.inquireByOid(GSSConstants.X509_CERT_CHAIN);
+-        } catch (GSSException gsse) {
+-            throw new Exception("Could not extract certificate chain from context " + gsse.getMessage() + "\n" + gsse.getCause());
+-        }
+-        return getFQANsFromX509Chain(chain, false);
+-    }
+-
+-    public static Collection <String> getValidatedFQANsFromX509Chain(X509Certificate[] chain) throws Exception {
+-        return getFQANsFromX509Chain(chain, true);
+-    }
+-
+-    public static Collection <String> getFQANsFromX509Chain(X509Certificate[] chain) throws Exception {
+-        return getFQANsFromX509Chain(chain, false);
+-    }
+-
+-    public static Collection <String> getFQANsFromX509Chain(X509Certificate[] chain, boolean validate) throws Exception {
+-        Collection <String> fqans=null;
+-        try {
+-            List listOfAttributes = getVOMSAttributes(chain, validate);
+-            fqans = getFQANSfromVOMSAttributes(listOfAttributes);
+-        } catch(Exception ae ) {
+-            throw new Exception(ae.toString());
+-        }
+-
+-        return fqans;
+-    }
+-
+-    /**
+-   *  We want to keep different roles but discard subroles. For example,
+-attribute : /cms/uscms/Role=cmssoft/Capability=NULL
+-attribute : /cms/uscms/Role=NULL/Capability=NULL
+-attribute : /cms/Role=NULL/Capability=NULL
+-attribute : /cms/uscms/Role=cmsprod/Capability=NULL
+-
+-   should yield the roles
+-
+-   /cms/uscms/Role=cmssoft/Capability=NULL
+-   /cms/uscms/Role=cmsprod/Capability=NULL
+-*/
+-
+-    public static LinkedHashSet<String> getFQANSfromVOMSAttributes(List listOfAttributes) {
+-        LinkedHashSet<String> fqans = new LinkedHashSet <String> ();
+-
+-        Iterator i = listOfAttributes.iterator();
+-        while (i.hasNext()) {
+-            VOMSAttribute vomsAttribute = (VOMSAttribute) i.next();
+-            List listOfFqans = vomsAttribute.getFullyQualifiedAttributes();
+-            Iterator j = listOfFqans.iterator();
+-            while (j.hasNext()) {
+-                String attr = (String) j.next();
+-                if(attr.endsWith(capnull))
+-                attr = attr.substring(0, attr.length() - capnulllen);
+-                if(attr.endsWith(rolenull))
+-                attr = attr.substring(0, attr.length() - rolenulllen);
+-                Iterator k = fqans.iterator();
+-                boolean issubrole=false;
+-                while (k.hasNext()) {
+-                  String fqanattr=(String) k.next();
+-                  if (fqanattr.startsWith(attr)) {issubrole=true; break;}
+-                }
+-                if(!issubrole) fqans.add(attr);
+-            }
+-        }
+-
+-        return fqans;
+-    }
+-
+-    public static AttributeCertificate getAttributeCertificate(X509Certificate[] chain, String fqan) throws Exception {
+-        return getVOMSAttribute(chain, fqan).getAC();
+-    }
+-
+-    public static VOMSAttribute getVOMSAttribute(X509Certificate[] chain, String fqan) throws Exception {
+-
+-        if(fqan.endsWith(capnull))
+-                fqan = fqan.substring(0, fqan.length() - capnulllen);
+-        if(fqan.endsWith(rolenull))
+-                fqan = fqan.substring(0, fqan.length() - rolenulllen);
+-
+-        List listOfAttributes = getVOMSAttributes(chain, false);
+-
+-        Iterator i = listOfAttributes.iterator();
+-        while (i.hasNext()) {
+-            VOMSAttribute vomsAttribute = (VOMSAttribute) i.next();
+-            List listOfFqans = vomsAttribute.getFullyQualifiedAttributes();
+-            Iterator j = listOfFqans.iterator();
+-            while (j.hasNext()) {
+-                String attr = (String) j.next();
+-                String attrtmp=attr;
+-                if(attrtmp.endsWith(capnull))
+-                    attrtmp = attrtmp.substring(0, attrtmp.length() - capnulllen);
+-                if(attrtmp.endsWith(rolenull))
+-                    attrtmp = attrtmp.substring(0, attrtmp.length() - rolenulllen);
+-                //Iterator k = fqans.iterator();
+-                //boolean issubrole=false;
+-                //while (k.hasNext()) {
+-                  //String fqanattr=(String) k.next();
+-                  //if (fqanattr.startsWith(attrtmp)) {issubrole=true; break;}
+-                //}
+-                if(attrtmp.equals(fqan)) return vomsAttribute;
+-            }
+-        }
+-
+-        return null;
+-    }
+-
+-    public static synchronized List getVOMSAttributes(X509Certificate[] chain, boolean validate) throws Exception {
+-        try {
+-            VOMSValidator validator = getVOMSValidatorInstance();
+-            validator.setClientChain(chain);
+-            if(validate) {
+-                validator.validate();
+-            } else {
+-                validator.parse();
+-            }
+-            return validator.getVOMSAttributes();
+-        } catch (IOException ioe) {
+-            throw new Exception("Could not read trust stores " + ioe.getMessage() + "\n" + ioe.getCause());
+-        } catch (CertificateException ce) {
+-            throw new Exception("Could not read certificate " + ce.getMessage() + "\n" + ce.getCause());
+-        } catch (CRLException crle) {
+-            throw new Exception("Could not read CRL " + crle.getMessage() + "\n" + crle.getCause());
+-        }
+-    }
+-
+-    public static String parseGroupFromFQAN(String fqan) {
+-        String group=null;
+-        if(fqan!=null) {
+-            group = (new FQAN(fqan)).getGroup();
+-            StringTokenizer st = new StringTokenizer(group, "/");
+-            if (st.hasMoreTokens()) {
+-                group = "/" + st.nextToken();
+-            }
+-        }
+-        return group;
+-    }
+-
+-    public static synchronized VOMSValidator getVOMSValidatorInstance() throws IOException, CertificateException, CRLException {
+-        if(vomsValidator!=null) return vomsValidator;
+-        PKIStore vomsStore=null;
+-        String vomsDir = System.getProperty( "VOMSDIR" );
+-        vomsDir = (vomsDir == null ) ? PKIStore.DEFAULT_VOMSDIR : vomsDir;
+-        File theDir = new File(vomsDir);
+-        if (theDir.exists() && theDir.isDirectory() && theDir.list().length > 0) {
+-            vomsStore = new PKIStore(vomsDir, PKIStore.TYPE_VOMSDIR, true);
+-            vomsStore.rescheduleRefresh(900000);
+-        }
+-
+-        PKIStore caStore;
+-        String caDir = System.getProperty( "CADIR" );
+-        caDir = (caDir == null) ? PKIStore.DEFAULT_CADIR : caDir;
+-        caStore = new PKIStore( caDir, PKIStore.TYPE_CADIR, true );
+-        caStore.rescheduleRefresh(900000);
+-
+-        vomsValidator = new VOMSValidator(null, new ACValidator(new PKIVerifier(vomsStore, caStore)));
+-        return vomsValidator;
+-    }
+-
+-    public static synchronized ACTrustStore getACTrustStoreInstance() throws IOException, CertificateException, CRLException {
+-        if(acTrustStore!=null) return acTrustStore;
+-        acTrustStore = new BasicVOMSTrustStore(PKIStore.DEFAULT_CADIR, 12*3600*1000);
+-        ((BasicVOMSTrustStore)acTrustStore).stopRefresh();
+-        return acTrustStore;
+-    }
+-
+-}
+-
+diff --git a/src/test/XACMLClientTest.sh b/src/test/XACMLClientTest.sh
+index d7f95a0..efbc6a8 100755
+--- a/src/test/XACMLClientTest.sh
++++ b/src/test/XACMLClientTest.sh
+@@ -51,11 +51,10 @@ $bindir:\
+ `build-classpath jakarta-commons-discovery`:\
+ `build-classpath jakarta-commons-lang`:\
+ `build-classpath jglobus`:\
+ `build-classpath trustmanager`:\
+ `build-classpath trustmanager-axis`:\
+-`build-classpath voms-api-java`:\
+ `build-classpath axis`:\
+ `build-classpath axis/jaxrpc.jar`:\
+ `build-classpath wsdl4j` \
+ org.opensciencegrid.authz.xacml.client.XACMLClientTest
+ 
+diff --git a/src/test/XACMLX509Test.sh b/src/test/XACMLX509Test.sh
+deleted file mode 100755
+index 5952446..0000000
+--- a/src/test/XACMLX509Test.sh
++++ /dev/null
+@@ -1,50 +0,0 @@
+-#!/bin/sh
+-bindir=`dirname "$(cd "${0%/*}" 2>/dev/null; echo "$PWD"/"${0##*/}")"`
+-
+-export      AUTHZ_SERVICE_URL="https://gums.fnal.gov:8443/gums/services/GUMSXACMLAuthorizationServicePort" 
+-
+-export      X509_PROXY_FILE=/tmp/x509up_u500
+-	    	    
+-export	    RESOURCE="CE"
+-export	    RESOURCE_DNS_HOST_NAME="cd-97177.fnal.gov"
+-export	    RESOURCE_X509="/DC=org/DC=doegrids/OU=Services/CN=cd-97177.fnal.gov"
+-export	    RESOURCE_X509_ISSUER="/DC=org/DC=DOEGrids/OU=Certificate Authorities/CN=DOEGrids CA 1"
+-	    
+-MAVEN_REPOSITORY=/home/tdh/maven/repository
+-
+-java \
+--DsslKey=/etc/grid-security/hostkey.pem \
+--DsslCertFile=/etc/grid-security/hostcert.pem \
+--DsslCAFiles=/etc/grid-security/certificates/*.0 \
+--classpath \
+-$bindir:\
+-$bindir/../../target/privilege-xacml-2.6.1.jar:\
+-$MAVEN_REPOSITORY/opensaml/opensaml/2.4.1/opensaml-2.4.1.jar:\
+-$MAVEN_REPOSITORY/opensaml/xmltooling/1.3.1/xmltooling-1.3.1.jar:\
+-$MAVEN_REPOSITORY/commons-logging/commons-logging/1.1/commons-logging-1.1.jar:\
+-$MAVEN_REPOSITORY/xml-security/xml-security/1.4.1/xml-security-1.4.1.jar:\
+-$MAVEN_REPOSITORY/sun/sunxacml/1.2/sunxacml-1.2.jar:\
+-$MAVEN_REPOSITORY/log4j/log4j/1.2.16/log4j-1.2.16.jar:\
+-$MAVEN_REPOSITORY/joda-time/joda-time/1.6.1/joda-time-1.6.1.jar:\
+-$MAVEN_REPOSITORY/org/slf4j/slf4j-log4j12/1.6.1/slf4j-log4j12-1.6.1.jar:\
+-$MAVEN_REPOSITORY/org/slf4j/slf4j-api/1.6.1/slf4j-api-1.6.1.jar:\
+-$MAVEN_REPOSITORY/org/apache/velocity/velocity/1.6.4/velocity-1.6.4.jar:\
+-$MAVEN_REPOSITORY/commons-collections/commons-collections/3.2.1/commons-collections-3.2.1.jar:\
+-$MAVEN_REPOSITORY/commons-lang/commons-lang/2.6/commons-lang-2.6.jar:\
+-$MAVEN_REPOSITORY/org/opensaml/openws/1.4.1/openws-1.4.1.jar:\
+-$MAVEN_REPOSITORY/org/bouncycastle/bcprov-jdk15/1.45/bcprov-jdk15-1.45.jar:\
+-$MAVEN_REPOSITORY/commons-discovery/commons-discovery/0.5/commons-discovery-0.5.jar:\
+-$MAVEN_REPOSITORY/globus/cog-jglobus/1.8.0/cog-jglobus-1.8.0.jar:\
+-$MAVEN_REPOSITORY/emi/emi-security-trustmanager/3.0.3/emi-security-trustmanager-3.0.3.jar:\
+-$MAVEN_REPOSITORY/emi/emi-trustmanager-axis/1.0.1/emi-trustmanager-axis-1.0.1.jar:\
+-$MAVEN_REPOSITORY/voms/vomsjapi/2.0.0/vomsjapi-2.0.0.jar:\
+-$MAVEN_REPOSITORY/junit/junit/4.8.1/junit-4.8.1.jar:\
+-$MAVEN_REPOSITORY/commons-cli/commons-cli/1.2/commons-cli-1.2.jar:\
+-$MAVEN_REPOSITORY/axis/axis/1.4/axis-1.4.jar:\
+-$MAVEN_REPOSITORY/axis/axis-wsdl4j/1.5.1/axis-wsdl4j-1.5.1.jar:\
+-$MAVEN_REPOSITORY/javax/servlet/servlet-api/2.5/servlet-api-2.5.jar:\
+-$MAVEN_REPOSITORY/commons-httpclient/commons-httpclient/3.1/commons-httpclient-3.1.jar:\
+-$MAVEN_REPOSITORY/org/apache/xmlbeans/xmlbeans/2.4.0/xmlbeans-2.4.0.jar:\
+-$MAVEN_REPOSITORY/axis/axis/1.4/axis-1.4.jar:\
+-$MAVEN_REPOSITORY/org/apache/axis/axis-jaxrpc/1.4/axis-jaxrpc-1.4.jar \
+-org.opensciencegrid.authz.xacml.client.XACMLX509Test
+-- 
+2.6.3
+
