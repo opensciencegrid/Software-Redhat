@@ -38,6 +38,7 @@ BuildRequires: jglobus >= %jglobus_version
 
 %if 0%{?rhel} < 7
 BuildRequires: maven22
+BuildRequires: voms-api-java
 %define mvn mvn22
 
 %define commons_logging jakarta-commons-logging
@@ -62,6 +63,10 @@ BuildRequires: %commons_codec
 BuildRequires: %commons_discovery
 BuildRequires: %commons_lang
 
+%if 0%{?rhel} < 7
+Requires: voms-api-java
+%endif
+
 Requires: log4j
 Requires: jglobus >= %jglobus_version
 Requires: joda-time
@@ -81,7 +86,9 @@ Requires: java7
 %prep
 %setup -n %{name}-%{version}
 %patch10 -p1
+%if 0%{?rhel} >= 7
 %patch11 -p1
+%endif
 
 %build
 mkdir -p %{local_maven}
@@ -92,6 +99,10 @@ pushd %{local_maven} # don't read project's pom file while we're just installing
 %{mvn} install:install-file -B -DgroupId=emi -DartifactId=emi-trustmanager-axis -Dversion=1.0.1 -Dpackaging=jar -Dfile=`build-classpath trustmanager-axis` -Dmaven.repo.local=%{local_maven}
 #trustmanager
 %{mvn} install:install-file -B -DgroupId=emi -DartifactId=emi-trustmanager -Dversion=3.0.3 -Dpackaging=jar -Dfile=`build-classpath trustmanager` -Dmaven.repo.local=%{local_maven}
+%if 0%{?rhel} < 7
+#voms-api-java
+%{mvn} install:install-file -B -DgroupId=org.italiangrid -DartifactId=voms-api-java -Dversion=2.0.8 -Dpackaging=jar -Dfile=`build-classpath voms-api-java` -Dmaven.repo.local=%{local_maven}
+%endif
 #axis
 %{mvn} install:install-file -B  -DgroupId=axis -DartifactId=axis -Dversion=1.4 -Dpackaging=jar -Dfile=`build-classpath axis/axis.jar` -Dmaven.repo.local=%{local_maven}
 %{mvn} install:install-file -B -DgroupId=org.apache.axis  -DartifactId=axis-jaxrpc -Dversion=1.4 -Dpackaging=jar -Dfile=`build-classpath axis/jaxrpc.jar` -Dmaven.repo.local=%{local_maven}
@@ -123,7 +134,11 @@ install -m 700 src/test/XACMLClientTest.sh %{buildroot}%{_libexecdir}/%{name}/XA
 
 
 install -d -m 755 %{_otherlibs}
+%if 0%{?rhel} >= 7
 build-jar-repository %{_otherlibs} jglobus trustmanager-axis trustmanager wsdl4j %commons_lang %commons_codec %commons_discovery %commons_logging joda-time axis/axis.jar axis/jaxrpc.jar log4j wsdl4j
+%else
+build-jar-repository %{_otherlibs} jglobus trustmanager-axis trustmanager voms-api-java wsdl4j %commons_lang %commons_codec %commons_discovery %commons_logging joda-time axis/axis.jar axis/jaxrpc.jar log4j wsdl4j
+%endif
 install -pm 744 %{local_maven}/org/opensaml/opensaml/2.4.1/opensaml-2.4.1.jar %{_otherlibs}/opensaml-2.4.1.jar
 install -pm 744 %{local_maven}/org/opensaml/xmltooling/*/*.jar  %{_otherlibs}/
 install -pm 744 %{local_maven}/org/apache/santuario/xmlsec/1.4.1/xmlsec-1.4.1.jar %{_otherlibs}/xmlsec-1.4.1.jar
@@ -150,7 +165,7 @@ rm -rf %{local_maven}
 
 %changelog
 * Wed Apr 27 2016 Matyas Selmeci <matyas@cs.wisc.edu> 2.6.5-2
-- Remove voms-api-java requirement (not used in production code) (SOFTWARE-2308)
+- Remove voms-api-java requirement for EL7 (not used in production code) (SOFTWARE-2308)
 
 * Tue Sep 15 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 2.6.5-1.osg
 - Add changes for el7 build
