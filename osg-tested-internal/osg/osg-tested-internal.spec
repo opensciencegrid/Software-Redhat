@@ -1,7 +1,7 @@
 Name:      osg-tested-internal
 Summary:   All OSG packages we test (internal use only)
 Version:   3.3
-Release:   10%{?dist}
+Release:   11%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -53,15 +53,16 @@ Requires: xrootd-client
 Requires: ndt-client
 
 Requires: gratia-service
+
+# Putting bestman back again in the teest in 2016-Apr-28 - SOFTWARE-2089
+Requires: osg-se-bestman
+Requires: osg-se-bestman-xrootd
 ################################################################################
 #
 # Non-RHEL 7
 #
 ################################################################################
 %if 0%{?rhel} < 7
-# as of 2015-08-21, bestman hasn't been successfully built
-Requires: osg-se-bestman
-Requires: osg-se-bestman-xrootd
 # as of 2015-08-21, gums hasn't been successfully built
 Requires: osg-gums
 # as of 2015-08-21, voms tests fail due to non-trivial issues
@@ -90,6 +91,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Apr 28 2016 Edgar Fajardo <emfajard@ucsd.edu> - 3.3-11
+- Put the osg-bestman requirements back for el7 (SOFTWARE-2089)
+
 * Mon Feb 22 2016 Edgar Fajardo <emfajard@ucsd.edu> - 3.3-10
 - Drop the gratia-probe-psacct requirements (SOFTWARE-2213)
  
