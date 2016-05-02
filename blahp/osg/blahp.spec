@@ -1,6 +1,6 @@
 Name:		blahp
 Version:	1.18.18.bosco
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	gLite BLAHP daemon
 
 Group:		System/Libraries
@@ -177,6 +177,9 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Mon May 02 2016 Matyas Selmeci <matyas@cs.wisc.edu> - 1.18.18.bosco-2
+- Built against HTCondor 8.5.4 (SOFTWARE-2307)
+
 * Fri Feb 26 2016 Brian Lin <blin@cs.wisc.edu> - 1.18.18.bosco-1
 - Bug fixes for PBS installations without qstat in their PATH
 
