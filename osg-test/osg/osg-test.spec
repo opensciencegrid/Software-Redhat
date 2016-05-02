@@ -5,7 +5,7 @@
 
 Summary:   Tests an OSG Software installation
 Name:      osg-test
-Version:   1.6.0
+Version:   1.7.0
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -39,6 +39,13 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/osgtest
 
 %changelog
+* Mon May 02 2016 Brian Lin <blin@cs.wisc.edu> - 1.7.0-1
+- osg-test should exit non-zero if tests fail (SOFTWARE-2306)
+- Fix Gratia automated test to run regardless of CE type (SOFTWARE-2293)
+- Add option to osg-test that turns on SELinux (SOFTWARE-2270)
+- Run gfal2 tests before GUMS/HTCondor-CE tests to accommodate inclusion of BeStMan in osg-tested-internal
+- Allow regex in fetch-crl whitelists
+
 * Tue Mar 29 2016 Brian Lin <blin@cs.wisc.edu> - 1.6.0-1
 - Add option that exits osg-test on first failure (SOFTWARE-2229)
 - Create an input file that determines test sequence (SOFTWARE-2228)
