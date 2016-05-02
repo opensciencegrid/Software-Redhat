@@ -3,7 +3,7 @@
 Summary: CernVM File System X509 Authz Helper
 Name: cvmfs-x509-helper
 Version: 0.9
-Release: 0.1.20160429103817.dwd.f2547a0ad01ae49bedbdbcd6c31ff93d864bfa2egit%{?dist}
+Release: 0.2.20160502103658.dwd.4f0a5ab41cb452035d2ed7ecf01a6b237f5cf0e4git%{?dist}
 Source0: https://ecsft.cern.ch/dist/cvmfs/%{name}-%{version}.tar.gz
 Group: Applications/System
 License: BSD
@@ -65,11 +65,12 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root)
 /usr/libexec/cvmfs/authz/cvmfs_x509_helper
+/usr/libexec/cvmfs/authz/cvmfs_x509_validator
 %doc COPYING AUTHORS README ChangeLog
 
 %changelog
-* Fri Apr 29 2016 Dave Dykstra <dwd@fnal.gov> - 0.9-0.1.20160429103817.dwd.f2547a0ad01ae49bedbdbcd6c31ff93d864bfa2egit
-- Build pre-release for OSG
+* Mon May 02 2016 Dave Dykstra <dwd@fnal.gov> - 0.9-0.2.20160502103658.dwd.4f0a5ab41cb452035d2ed7ecf01a6b237f5cf0e4git.osg32.el5.src.rpm
+- Second pre-release
 
 * Fri Apr 22 2016 Jakob Blomer <jblomer@cern.ch> - 0.9-1
 - Initial packaging
