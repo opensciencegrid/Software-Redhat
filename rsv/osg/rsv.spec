@@ -1,6 +1,6 @@
 Name:      rsv
 Summary:   RSV Meta Package
-Version:   3.12.5
+Version:   3.13.0
 %if 0%{?el7}
 %define release_suffix _clipped
 %endif
@@ -23,6 +23,7 @@ Requires: osg-configure
 Requires: osg-configure-rsv
 Requires: grid-certificates >= 7
 Requires: voms-clients
+Requires: vo-client
 
 %if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
 %{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
@@ -64,6 +65,11 @@ Requires(post): chkconfig
 Requires(preun): chkconfig
 # This is for /sbin/service
 Requires(preun): initscripts
+
+# To add support for nordugrid
+%if 0%{?rhel} < 7
+Requires: condor-cream-gahp
+%endif
 
 %description core
 %{summary}
@@ -245,6 +251,9 @@ fi
 
 
 %changelog
+* Tue May 3 2016 Edgar Fajardo <emfajard@ucsd.edu> - 3.13.0-1
+- Added support for cream and nordugrid (SOFTWARE-2318)
+
 * Mon Nov 16 2015 Edgar Fajardo <emfajard@ucsd.edu> - 3.12.5-1
 - Fixed typo with gratia-consumer.log entry in the logrotate missing (SOFTWARE-2110)
 
