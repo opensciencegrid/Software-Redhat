@@ -47,7 +47,7 @@
 Summary: An implementation of the SSH protocol with GSI authentication
 Name: gsi-openssh
 Version: %{gsi_openssh_ver}
-Release: %{gsi_openssh_rel}.1%{?dist}
+Release: %{gsi_openssh_rel}.2%{?dist}
 URL: http://www.openssh.com/portable.html
 #Source0: ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-%{version}.tar.gz
 #Source1: ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-%{version}.tar.gz.asc
@@ -57,6 +57,7 @@ URL: http://www.openssh.com/portable.html
 Source0: http://downloads.sourceforge.net/cilogon/gsi_openssh-%{version}-src.tar.gz
 Source1: gsisshd.osg-sysconfig
 Patch0: osg-sysconfig.patch
+Patch1: Auto-create-server-keys-SOFTWARE-2288.patch
 Patch20167777: CVE-2016-0777.gsissh-5.7.diff
 
 License: BSD
@@ -202,6 +203,7 @@ This version of OpenSSH has been modified to support GSI authentication.
 %prep
 %setup -q -n gsi_openssh-%{version}-src
 %patch0 -p0
+%patch1 -p1
 %patch20167777 -p0 -b .CVE-2016-0777
 
 sed 's/sshd.pid/gsisshd.pid/' -i pathnames.h
@@ -407,6 +409,9 @@ fi
 %attr(0644,root,root) /usr/share/osg/sysconfig/gsisshd
 
 %changelog
+* Tue May 03 2016 Matyas Selmeci <matyas@cs.wisc.edu> - 5.7-4.2
+- Auto-generate server keys in init script (SOFTWARE-2288)
+
 * Fri Jan 15 2016 Matyas Selmeci <matyas@cs.wisc.edu> - 5.7-4.1
 - Merge OSG changes
 
