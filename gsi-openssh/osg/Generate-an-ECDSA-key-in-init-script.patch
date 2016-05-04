@@ -1,0 +1,71 @@
+From 99d533b31d671fc9bc12eb5a1a6332b61495c6bf Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Tue, 3 May 2016 17:31:45 -0500
+Subject: [PATCH] Generate an ECDSA key in init script
+
+---
+ gsisshd.init | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
+
+diff --git a/gsisshd.init b/gsisshd.init
+index 3fbcd4d..a807c7f 100755
+--- a/gsisshd.init
++++ b/gsisshd.init
+@@ -41,10 +41,11 @@ lockfile=/var/lock/subsys/$prog
+ KEYGEN=/usr/bin/gsissh-keygen
+ SSHD=/usr/sbin/gsisshd
+ RSA1_KEY=/etc/gsissh/ssh_host_key
+ RSA_KEY=/etc/gsissh/ssh_host_rsa_key
+ DSA_KEY=/etc/gsissh/ssh_host_dsa_key
++ECDSA_KEY=/etc/gsissh/ssh_host_ecdsa_key
+ PID_FILE=/var/run/gsisshd.pid
+ 
+ runlevel=$(set -- $(runlevel); eval "echo \$$#" )
+ 
+ do_rsa1_keygen() {
+@@ -105,10 +106,30 @@ do_dsa_keygen() {
+ 			exit 1
+ 		fi
+ 	fi
+ }
+ 
++do_ecdsa_keygen() {
++	if [ ! -s $ECDSA_KEY ]; then
++		echo -n $"Generating SSH2 ECDSA host key: "
++		rm -f $ECDSA_KEY
++		if test ! -f $ECDSA_KEY && $KEYGEN -q -t ecdsa -f $ECDSA_KEY -C '' -N '' >&/dev/null; then
++			chmod 600 $ECDSA_KEY
++			chmod 644 $ECDSA_KEY.pub
++			if [ -x /sbin/restorecon ]; then
++			    /sbin/restorecon $ECDSA_KEY.pub
++			fi
++			success $"ECDSA key generation"
++			echo
++		else
++			failure $"ECDSA key generation"
++			echo
++			exit 1
++		fi
++	fi
++}
++
+ do_restart_sanity_check()
+ {
+ 	$SSHD -t
+ 	RETVAL=$?
+ 	if [ $RETVAL -ne  0 ]; then
+@@ -125,10 +146,11 @@ start()
+ 	if [ "x${AUTOCREATE_SERVER_KEYS}" != xNO ]; then
+ 		do_rsa_keygen
+ 		if [ "x${AUTOCREATE_SERVER_KEYS}" != xRSAONLY ]; then
+ 			do_rsa1_keygen
+ 			do_dsa_keygen
++			do_ecdsa_keygen
+ 		fi
+ 	fi
+ 
+ 	echo -n $"Starting $prog: "
+ 	$SSHD $OPTIONS && success || failure
+-- 
+2.6.3
+

@@ -58,6 +58,7 @@ Source0: http://downloads.sourceforge.net/cilogon/gsi_openssh-%{version}-src.tar
 Source1: gsisshd.osg-sysconfig
 Patch0: osg-sysconfig.patch
 Patch1: Auto-create-server-keys-SOFTWARE-2288.patch
+Patch2: Generate-an-ECDSA-key-in-init-script.patch
 Patch20167777: CVE-2016-0777.gsissh-5.7.diff
 
 License: BSD
@@ -204,6 +205,7 @@ This version of OpenSSH has been modified to support GSI authentication.
 %setup -q -n gsi_openssh-%{version}-src
 %patch0 -p0
 %patch1 -p1
+%patch2 -p1
 %patch20167777 -p0 -b .CVE-2016-0777
 
 sed 's/sshd.pid/gsisshd.pid/' -i pathnames.h
@@ -411,6 +413,7 @@ fi
 %changelog
 * Tue May 03 2016 Matyas Selmeci <matyas@cs.wisc.edu> - 5.7-4.2
 - Auto-generate server keys in init script (SOFTWARE-2288)
+- Generate an ECDSA server key as well (SOFTWARE-2288)
 
 * Fri Jan 15 2016 Matyas Selmeci <matyas@cs.wisc.edu> - 5.7-4.1
 - Merge OSG changes
