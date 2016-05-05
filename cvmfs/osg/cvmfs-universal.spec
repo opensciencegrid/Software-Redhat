@@ -22,7 +22,7 @@
 Summary: CernVM File System
 Name: cvmfs
 Version: 2.3.0
-Release: 0.1.194.54977f9ddbf0229fgit%{?dist}
+Release: 0.2.200.9eb7b841fa62c412git%{?dist}
 Source0: https://ecsft.cern.ch/dist/cvmfs/%{name}-%{version}.tar.gz
 %if 0%{?selinux_cvmfs}
 Source1: cvmfs.te
@@ -427,6 +427,8 @@ fi
 %doc COPYING AUTHORS README ChangeLog
 
 %changelog
+* Thu May 05 2016 Dave Dykstra <dwd@fnal.gov> - 2.3.0-0.2.200.9eb7b841fa62c412git
+- Build pre-release 2 for OSG
 * Fri Apr 19 2016 Dave Dykstra <dwd@fnal.gov> - 2.3.0-0.1.194.54977f9ddbf0229fgit
 - Build pre-release for OSG
 * Mon Apr 11 2016 Rene Meusel <rene.meusel@cern.ch> - 2.3.0
