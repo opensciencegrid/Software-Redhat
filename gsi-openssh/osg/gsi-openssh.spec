@@ -47,7 +47,7 @@
 Summary: An implementation of the SSH protocol with GSI authentication
 Name: gsi-openssh
 Version: %{gsi_openssh_ver}
-Release: %{gsi_openssh_rel}.2%{?dist}
+Release: %{gsi_openssh_rel}.3%{?dist}
 URL: http://www.openssh.com/portable.html
 #Source0: ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-%{version}.tar.gz
 #Source1: ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-%{version}.tar.gz.asc
@@ -56,9 +56,11 @@ URL: http://www.openssh.com/portable.html
 # the unpacked source directory.
 Source0: http://downloads.sourceforge.net/cilogon/gsi_openssh-%{version}-src.tar.gz
 Source1: gsisshd.osg-sysconfig
+Source2: etc-sysconfig-gsisshd
 Patch0: osg-sysconfig.patch
 Patch1: Auto-create-server-keys-SOFTWARE-2288.patch
 Patch2: Generate-an-ECDSA-key-in-init-script.patch
+Patch3: Only-create-server-keys-if-explicitly-asked-to.patch
 Patch20167777: CVE-2016-0777.gsissh-5.7.diff
 
 License: BSD
@@ -206,6 +208,7 @@ This version of OpenSSH has been modified to support GSI authentication.
 %patch0 -p0
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 %patch20167777 -p0 -b .CVE-2016-0777
 
 sed 's/sshd.pid/gsisshd.pid/' -i pathnames.h
@@ -305,6 +308,8 @@ install -d $RPM_BUILD_ROOT%{_libexecdir}/gsissh
 install -d $RPM_BUILD_ROOT/usr/share/osg/sysconfig
 install -m644 gsisshd.pam $RPM_BUILD_ROOT%{_sysconfdir}/pam.d/gsisshd
 install -m644 %{SOURCE1} $RPM_BUILD_ROOT/usr/share/osg/sysconfig/gsisshd
+install -d $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig
+install -m644 %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/gsisshd
 
 #rm $RPM_BUILD_ROOT%{_bindir}/gsiscp
 #rm $RPM_BUILD_ROOT%{_bindir}/gsisftp
@@ -409,8 +414,13 @@ fi
 %attr(0755,root,root) /etc/init.d/gsisshd
 %endif
 %attr(0644,root,root) /usr/share/osg/sysconfig/gsisshd
+%attr(0644,root,root) %config(noreplace) %{_sysconfdir}/sysconfig/gsisshd
 
 %changelog
+* Fri May 06 2016 Matyas Selmeci <matyas@cs.wisc.edu> - 5.7-4.3
+- Include default /etc/sysconfig/gsisshd
+- Only create server keys if explicitly requested to (SOFTWARE-2288)
+
 * Tue May 03 2016 Matyas Selmeci <matyas@cs.wisc.edu> - 5.7-4.2
 - Auto-generate server keys in init script (SOFTWARE-2288)
 - Generate an ECDSA server key as well (SOFTWARE-2288)

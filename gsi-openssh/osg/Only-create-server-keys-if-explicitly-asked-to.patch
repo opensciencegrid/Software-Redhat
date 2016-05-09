@@ -1,0 +1,40 @@
+From 32d4921286d8d24732dd150a59e3683a4b6684c7 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Fri, 6 May 2016 11:43:03 -0500
+Subject: [PATCH] Only create server keys if explicitly asked to
+
+---
+ gsisshd.init | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/gsisshd.init b/gsisshd.init
+index a807c7f..39b8b2e 100755
+--- a/gsisshd.init
++++ b/gsisshd.init
+@@ -141,17 +141,17 @@ do_restart_sanity_check()
+ start()
+ {
+ 	[ -x $SSHD ] || exit 5
+ 	[ -f /etc/gsissh/sshd_config ] || exit 6
+ 	# Create keys if necessary
+-	if [ "x${AUTOCREATE_SERVER_KEYS}" != xNO ]; then
++	if [ "x${AUTOCREATE_SERVER_KEYS}" = xRSAONLY ]; then
+ 		do_rsa_keygen
+-		if [ "x${AUTOCREATE_SERVER_KEYS}" != xRSAONLY ]; then
+-			do_rsa1_keygen
+-			do_dsa_keygen
+-			do_ecdsa_keygen
+-		fi
++	elif [ "x${AUTOCREATE_SERVER_KEYS}" = xYES ]; then
++		do_rsa_keygen
++		do_rsa1_keygen
++		do_dsa_keygen
++		do_ecdsa_keygen
+ 	fi
+ 
+ 	echo -n $"Starting $prog: "
+ 	$SSHD $OPTIONS && success || failure
+ 	RETVAL=$?
+-- 
+2.6.3
+
