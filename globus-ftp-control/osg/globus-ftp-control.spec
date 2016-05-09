@@ -12,7 +12,7 @@ URL:		http://www.globus.org/
 Source:		http://www.globus.org/ftppub/gt6/packages/%{_name}-%{version}.tar.gz
 #		README file
 Source8:	GLOBUS-GRIDFTP
-Patch0:         level-out-connection-speeds.patch
+Patch0:         level_out_connection_speedsv3.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	globus-common-devel >= 15
@@ -74,7 +74,7 @@ GridFTP Control Library Documentation Files
 %prep
 %setup -q -n %{_name}-%{version}
 
-%patch0 -p 0
+%patch0 -p 1
 
 %build
 # Reduce overlinking
@@ -134,6 +134,9 @@ rm -rf %{buildroot}
 %{?_licensedir: %license GLOBUS_LICENSE}
 
 %changelog
+* Mon May 09 2016 Edgar Fajardo <emfajard@ucsd.edu> - 6.6.-1.2
+- Changed to the v3 of the level-out-connections patch (SOFTWARE-2277)
+
 * Mon Feb 16 2015 Matyas Selmeci <matyas@cs.wisc.edu> - 6.6-1.1
 - Merge OSG changes
 - Drop ip-logging-bug.patch (fixed upstream)
