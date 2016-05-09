@@ -3,7 +3,7 @@
 Name:		globus-ftp-control
 %global _name %(tr - _ <<< %{name})
 Version:	6.6
-Release:	1.1%{?dist}
+Release:	1.2%{?dist}
 Summary:	Globus Toolkit - GridFTP Control Library
 
 Group:		System Environment/Libraries
@@ -134,7 +134,7 @@ rm -rf %{buildroot}
 %{?_licensedir: %license GLOBUS_LICENSE}
 
 %changelog
-* Mon May 09 2016 Edgar Fajardo <emfajard@ucsd.edu> - 6.6.-1.2
+* Mon May 09 2016 Edgar Fajardo <emfajard@ucsd.edu> - 6.6-1.2
 - Changed to the v3 of the level-out-connections patch (SOFTWARE-2277)
 
 * Mon Feb 16 2015 Matyas Selmeci <matyas@cs.wisc.edu> - 6.6-1.1
