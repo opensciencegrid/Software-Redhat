@@ -1,14 +1,19 @@
-From 99d533b31d671fc9bc12eb5a1a6332b61495c6bf Mon Sep 17 00:00:00 2001
+From b2e04a04753979e44f6c868afd0335077fb605ba Mon Sep 17 00:00:00 2001
 From: Matyas Selmeci <matyas@cs.wisc.edu>
-Date: Tue, 3 May 2016 17:31:45 -0500
-Subject: [PATCH] Generate an ECDSA key in init script
+Date: Tue, 3 May 2016 16:13:58 -0500
+Subject: [PATCH] SOFTWARE-2288 Auto-create server keys
 
+If explicitly asked to via the AUTOCREATE_SERVER_KEYS variable in
+/etc/sysconfig/gsisshd, generate RSA, DSA, and ECDSA SSH host keys in
+the init script.
+
+AUTOCREATE_SERVER_KEYS must be "YES" or "RSAONLY" to generate keys.
 ---
- gsisshd.init | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
+ gsisshd.init | 37 +++++++++++++++++++++++++++++--------
+ 1 file changed, 29 insertions(+), 8 deletions(-)
 
 diff --git a/gsisshd.init b/gsisshd.init
-index 3fbcd4d..a807c7f 100755
+index bdbb94c..39b8b2e 100755
 --- a/gsisshd.init
 +++ b/gsisshd.init
 @@ -41,10 +41,11 @@ lockfile=/var/lock/subsys/$prog
@@ -54,18 +59,33 @@ index 3fbcd4d..a807c7f 100755
  	$SSHD -t
  	RETVAL=$?
  	if [ $RETVAL -ne  0 ]; then
-@@ -125,10 +146,11 @@ start()
- 	if [ "x${AUTOCREATE_SERVER_KEYS}" != xNO ]; then
- 		do_rsa_keygen
- 		if [ "x${AUTOCREATE_SERVER_KEYS}" != xRSAONLY ]; then
- 			do_rsa1_keygen
- 			do_dsa_keygen
-+			do_ecdsa_keygen
- 		fi
- 	fi
+@@ -120,18 +141,18 @@ do_restart_sanity_check()
+ start()
+ {
+ 	[ -x $SSHD ] || exit 5
+ 	[ -f /etc/gsissh/sshd_config ] || exit 6
+ 	# Create keys if necessary
+-	# - Not necessary if running with keyex only
+-	# if [ "x${AUTOCREATE_SERVER_KEYS}" != xNO ]; then
+-	#	do_rsa_keygen
+-	#	if [ "x${AUTOCREATE_SERVER_KEYS}" != xRSAONLY ]; then
+-	#		do_rsa1_keygen
+-	#		do_dsa_keygen
+-	#	fi
+-	# fi
++	if [ "x${AUTOCREATE_SERVER_KEYS}" = xRSAONLY ]; then
++		do_rsa_keygen
++	elif [ "x${AUTOCREATE_SERVER_KEYS}" = xYES ]; then
++		do_rsa_keygen
++		do_rsa1_keygen
++		do_dsa_keygen
++		do_ecdsa_keygen
++	fi
  
  	echo -n $"Starting $prog: "
  	$SSHD $OPTIONS && success || failure
+ 	RETVAL=$?
+ 	[ $RETVAL -eq 0 ] && touch $lockfile
 -- 
 2.6.3
 
