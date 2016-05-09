@@ -4,7 +4,7 @@ Version:   3.13.0
 %if 0%{?el7}
 %define release_suffix _clipped
 %endif
-Release:   1%{?release_suffix}%{?dist}
+Release:   2%{?release_suffix}%{?dist}
 License:   Apache 2.0
 Group:     Applications/Monitoring
 URL:       https://twiki.grid.iu.edu/bin/view/MonitoringInformation/RSV
@@ -251,6 +251,9 @@ fi
 
 
 %changelog
+* Mon May 9 2016 Edgar Fajardo <emfajard@ucsd.edu> - 3.13.0-2
+- Make sure the version is correct in rsv-control
+
 * Tue May 3 2016 Edgar Fajardo <emfajard@ucsd.edu> - 3.13.0-1
 - Added support for cream and nordugrid (SOFTWARE-2318)
 
