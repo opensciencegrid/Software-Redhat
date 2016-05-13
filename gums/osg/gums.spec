@@ -13,7 +13,7 @@
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.5.2
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 URL: https://github.com/opensciencegrid/gums
@@ -131,6 +131,8 @@ Patch2: Use-bouncycastle-1.50.patch
 Patch3: Use-jspc-compiler-for-tomcat7.patch
 Patch4: gums-client-UsrMove.patch
 
+Patch5: voms3.patch
+
 %description
 %{summary}
 
@@ -185,6 +187,9 @@ Summary: Tomcat service for GUMS
 %patch3 -p1
 %endif
 %patch4 -p1
+%if 0%{?rhel} >= 7
+%patch5 -p1
+%endif
 
 %build
 
@@ -226,7 +231,11 @@ mvn_install_file  org.opensaml        xmltooling 1.1.1   %{SOURCE10} %{SOURCE11}
 #mvn_install_file  org.slf4j slf4j-simple 1.5.5 `build-classpath slf4j/simple`
 #mvn_install_file  org.slf4j slf4j-simple 1.6.1 `build-classpath slf4j/simple`
 
+%if 0%{?rhel} >= 7
+mvn_install_file  org.italiangrid voms-api-java 3.1.0 `build-classpath voms-api-java`
+%else
 mvn_install_file  org.italiangrid voms-api-java 2.0.8 `build-classpath voms-api-java`
+%endif
 # Adding system dependencies
 mvn_install_file  org.apache.xerces   xercesImpl          2.10.0                   `build-classpath xerces-j2`
 mvn_install_file  org.apache.xalan    xalan               2.7.1                    `build-classpath xalan-j2`
@@ -492,6 +501,9 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+* Wed May 11 2016 Matyas Selmeci <matyas@cs.wisc.edu> - 1.5.2-2
+- Use voms-api-java 3 on EL7 (SOFTWARE-2040)
+
 * Thu Jan 28 2016 Carl Edquist <edquist@cs.wisc.edu> - 1.5.2-1
 - Update to GUMS 1.5.2 (SOFTWARE-2169)
 
