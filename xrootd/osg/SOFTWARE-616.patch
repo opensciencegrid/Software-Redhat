@@ -1,0 +1,32 @@
+From c786d75c0033f24a882847da1be77232c999e871 Mon Sep 17 00:00:00 2001
+From: efajardo <efajardo@physics.ucsd.edu>
+Date: Tue, 17 May 2016 14:52:13 -0700
+Subject: [PATCH] Stopping the service if already stop should be succesfull now
+
+---
+ packaging/rhel/xrootd.functions | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
+
+diff --git a/packaging/rhel/xrootd.functions b/packaging/rhel/xrootd.functions
+index c0a9ec5..a4639c0 100644
+--- a/packaging/rhel/xrootd.functions
++++ b/packaging/rhel/xrootd.functions
+@@ -139,10 +139,15 @@ function stopDaemon()
+ {
+   echo -n "Shutting down xrootd ($1, $5): "
+   PIDFILE="/var/run/xrootd/$1-$5.pid"
+-  killproc -p $PIDFILE $1
+-  RETVAL=$?
++  if [ -e $PIDFILE ]; then
++    killproc -p $PIDFILE $1
++    RETVAL=$?
++    echo
++    return $RETVAL
++  fi
++  echo -n "$1-$5 not running"
+   echo
+-  return $RETVAL
++  return 0
+ }
+ 
+ #-------------------------------------------------------------------------------

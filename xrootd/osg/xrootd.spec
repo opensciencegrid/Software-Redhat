@@ -18,13 +18,14 @@
 Name:		xrootd
 Epoch:		1
 Version:	4.3.0
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Extended ROOT file server
 
 Group:		System Environment/Daemons
 License:	LGPLv3+
 URL:		http://xrootd.org/
 Source0:	%{name}-%{version}.tar.gz
+Patch0: 	SOFTWARE-616.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	cmake
@@ -246,6 +247,9 @@ This package contains the API documentation of the xrootd libraries.
 %prep
 #%setup -q -n %{name}
 %setup -q -n %{name}-%{version}
+
+%patch0 -p 1
+
 %if %{?fedora}%{!?fedora:0} <= 9 && %{?rhel}%{!?rhel:0} <= 5
 # Older versions of SELinux do not have policy for open
 sed 's/ open / /' -i packaging/common/%{name}.te
@@ -627,6 +631,9 @@ fi
 %doc %{_pkgdocdir}
 
 %changelog
+* Tue May 17 2016 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1:4.3.0-2
+- Added patch to avoid failures when stopping service twice (SOFTWARE-616)
+
 * Tue Mar 23 2016 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1:4.3.0-1
 - Update to 4.3.0 - SOFTWARE-2249
 
