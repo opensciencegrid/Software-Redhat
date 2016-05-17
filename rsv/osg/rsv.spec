@@ -1,10 +1,7 @@
 Name:      rsv
 Summary:   RSV Meta Package
 Version:   3.13.0
-%if 0%{?el7}
-%define release_suffix _clipped
-%endif
-Release:   2%{?release_suffix}%{?dist}
+Release:   3%{?dist}
 License:   Apache 2.0
 Group:     Applications/Monitoring
 URL:       https://twiki.grid.iu.edu/bin/view/MonitoringInformation/RSV
@@ -90,9 +87,7 @@ Requires: /usr/bin/globus-job-run
 Requires: /usr/bin/globusrun
 Requires: /usr/bin/globus-url-copy
 Requires: uberftp
-%if ! 0%{?el7}
 Requires: bestman2-client
-%endif
 Requires: gfal2
 Requires: gfal2-util
 Requires: gfal2-plugin-file
@@ -251,6 +246,9 @@ fi
 
 
 %changelog
+* Tue May 17 2016 Matyas Selmeci <matyas@cs.wisc.edu> - 3.13.0-3
+- Add back bestman-client dependency on EL7 (SOFTWARE-2333)
+
 * Mon May 9 2016 Edgar Fajardo <emfajard@ucsd.edu> - 3.13.0-2
 - Make sure the version is correct in rsv-control
 
@@ -270,7 +268,7 @@ fi
 - SOFTWARE-2099 - Allow specifying collector port in xrootd-cache-probe
 - SOFTWARE-2089 - Revert bestman package requirements from el7
 
-* Fri Oct 29 2015 Edfar Fajardo <emfajard@ucsd.edu> - 3.12.1-1
+* Thu Oct 29 2015 Edfar Fajardo <emfajard@ucsd.edu> - 3.12.1-1
 - Fixed a bug in the json-consumer
 
 * Mon Oct 26 2015 Carl Edquist <edquist@cs.wisc.edu> - 3.12.0-2
@@ -477,7 +475,7 @@ fi
 - rsv-consumers:
     - Removed %ghost from %{_datadir}/rsv/www/index.html since that was incorrect.
 
-* Mon Feb 21 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> rsv-consumers-3.6.9-1
+* Mon Feb 20 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> rsv-consumers-3.6.9-1
 - rsv-consumers:
     - Added a sample index.html page to display before the html-consumer runs.
 
@@ -599,5 +597,5 @@ fi
 * Thu Sep 08 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> rsv-3.4.5-2
 - Added dependencies on osg-configure and osg-configure-rsv
 
-* Thu Jul 20 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.4.0
+* Wed Jul 20 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.4.0
 - Created initial packages
