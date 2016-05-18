@@ -14,9 +14,13 @@
 
 %define jglobus_version 2.1.0
 
+%define _release 1
+%define _alphatag .pre1
+%define _fullrelease 0.%{_release}%{_alphatag}%{?dist}
+
 Name:           bestman2
-Version:        2.3.0c
-Release:        1%{?dist}
+Version:        2.3.1
+Release:        %{_fullrelease}
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -28,7 +32,7 @@ URL:            https://sdm.lbl.gov/bestman/
 
 %define install_root /etc/%{name}
 
-Source0:        %{name}-%{version}.tar.gz
+Source0:        %{name}-%{version}%{_alphatag}.tar.gz
 Source2:        bestman2.init
 Source3:        bestman.logrotate
 Source4:        dependent.jars.tar.gz
@@ -204,7 +208,7 @@ BUILDROOT=$PWD
 
 %setup -T -b 4 -q -n lib
 cd ..
-%setup -T -b 0 -q
+%setup -T -b 0 -q -n %{name}-%{version}%{_alphatag}
 
 %if 0%{?el7}
 %patch1 -p1
@@ -473,6 +477,9 @@ fi
 
 
 %changelog
+* Tue May 17 2016 Carl Edquist <edquist@cs.wisc.edu> - 2.3.1-0.1.pre1
+- Update to 2.3.1.pre1 (SOFTWARE-2332)
+
 * Wed Apr 27 2016 Carl Edquist <edquist@cs.wisc.edu> - 2.3.0-29
 - Patch el7 to use voms-api-java 3 and canl (SOFTWARE-2041)
 
