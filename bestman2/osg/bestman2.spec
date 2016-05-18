@@ -15,8 +15,8 @@
 %define jglobus_version 2.1.0
 
 Name:           bestman2
-Version:        2.3.0
-Release:        29%{?dist}
+Version:        2.3.0c
+Release:        1%{?dist}
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -28,28 +28,17 @@ URL:            https://sdm.lbl.gov/bestman/
 
 %define install_root /etc/%{name}
 
-# NOTE: CHANGE THESE EACH RELEASE
-# To create:
-# cd /tmp
-# svn export -r 91 https://codeforge.lbl.gov/anonscm/bestman bestman2
-# tar czf bestman2.tar.gz bestman2
-Source0:        bestman2.tar.gz
-#Source1:        bestman2.sh
+Source0:        %{name}-%{version}.tar.gz
 Source2:        bestman2.init
 Source3:        bestman.logrotate
 Source4:        dependent.jars.tar.gz
 Source5:        bestman2.sysconfig
-Source6:        build.xml
 Source7:        build.properties
 Source8:        configure.in
 Source9:        bestman2.rc
 Source10:       bestman2lib.sysconfig
 Source11:       bestman2lib-el7.sysconfig
 
-Patch0:		upgrade_exception_message.patch
-Patch1:		bestman2-2.2.1-2.2.2.patch
-Patch2:		gucpath.patch
-Patch3:		parallelism.patch
 Patch4:		voms-api-java3.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -215,35 +204,31 @@ BUILDROOT=$PWD
 
 %setup -T -b 4 -q -n lib
 cd ..
-%setup -T -b 0 -q -n %{name}
+%setup -T -b 0 -q
 
-%patch0 -p1
-%patch1 -p0
-%patch2 -p1
-%patch3 -p1
 %if 0%{?el7}
 %patch4 -p1
 %endif
 
-pushd bestman2/setup-osg/bestman.in
+pushd setup/bestman.in
 sed -i "s/@SRM_HOME@/\/etc\/bestman2/" *
 popd
 
-pushd bestman2/setup-osg/
+pushd setup
 mkdir -p dist/conf
 cp %{SOURCE9} dist/conf
 popd
 
-cp %{SOURCE7} bestman2/branches/osg-dev/
-cp %{SOURCE7} bestman2/setup-osg/
-sed -i "s/install.root=.*/install.root=dist/" bestman2/setup-osg/build.properties
-sed -i "s|@BUILDROOT@|$BUILDROOT|"  bestman2/setup-osg/build.properties bestman2/branches/osg-dev/build.properties
-sed -i "s|@JGLOBUS_VERSION@|%jglobus_version|"  bestman2/setup-osg/build.properties bestman2/branches/osg-dev/build.properties
+cp %{SOURCE7} sources/
+cp %{SOURCE7} setup/
+sed -i "s/install.root=.*/install.root=dist/" setup/build.properties
+sed -i "s|@BUILDROOT@|$PWD|" setup/build.properties sources/build.properties
+sed -i "s|@JGLOBUS_VERSION@|%jglobus_version|" setup/build.properties sources/build.properties
 
-cp %{SOURCE8} bestman2/setup-osg/
+cp %{SOURCE8} setup/
 
 %build
-pushd bestman2/branches/osg-dev
+pushd sources
 
 #sed -i "s/Generating stubs from/Gen stubs \${axis.path}/" wsdl/build.xml
 
@@ -251,7 +236,7 @@ ant build # <- XXX dies here
 ant install
 popd
 
-pushd bestman2/setup-osg
+pushd setup
 cp bestman.in/aclocal.m4 .
 autoconf configure.in > configure
 chmod +x configure
@@ -259,20 +244,11 @@ chmod +x configure
 ant deploy
 
 pushd dist
-#Fix paths in bestman2.rc
-JAVADIR=`echo %{_javadir} |  sed 's/\//\\\\\//g'`
-
 #Fix paths in binaries.  Wish I could do this in configure...
-sed -i "s/BESTMAN_SYSCONF=.*/BESTMAN_SYSCONF=\/etc\/sysconfig\/bestman2/" bin/*
-sed -i "s/BESTMAN_SYSCONF=.*/BESTMAN_SYSCONF=\/etc\/sysconfig\/bestman2/" sbin/*
-sed -i "s/BESTMAN_SYSCONF_LIB=.*/BESTMAN_SYSCONF_LIB=\/etc\/sysconfig\/bestman2lib/" bin/*
-sed -i "s/BESTMAN_SYSCONF_LIB=.*/BESTMAN_SYSCONF_LIB=\/etc\/sysconfig\/bestman2lib/" sbin/*
-sed -i "s/\${BESTMAN_SYSCONF}/\/etc\/bestman2\/conf\/bestman2.rc/" sbin/bestman.server
+sed -ri 's|(BESTMAN_SYSCONF)=.*|\1=/etc/sysconfig/bestman2|' bin/* sbin/*
+sed -ri 's|(BESTMAN_SYSCONF_LIB)=.*|\1=/etc/sysconfig/bestman2lib|' bin/* sbin/*
+sed -i  's|\${BESTMAN_SYSCONF}|/etc/bestman2/conf/bestman2.rc|' sbin/bestman.server
 
-
-BUILDHOSTNAME=`hostname -f`
-# Fix version
-#sed -i "s/Built on .* at/Built on $BUILDHOSTNAME at/" version
 popd
 popd
 
@@ -280,9 +256,8 @@ popd
 %install
 rm -rf $RPM_BUILD_ROOT
 
-cp -R bestman2/sources/dist/* bestman2/setup-osg/dist/
-pushd bestman2
-pushd setup-osg
+cp -R sources/dist/* setup/dist/
+pushd setup
 pushd dist
 ls -R
 mkdir -p $RPM_BUILD_ROOT%{_javadir}
@@ -301,10 +276,10 @@ cp -arp properties $RPM_BUILD_ROOT%{install_root}
 #Install dependent jars (prune this list)
 install -d $RPM_BUILD_ROOT%{_javadir}/%{name}/others
 install -d $RPM_BUILD_ROOT%{_javadir}/%{name}/axis
-cp -arp ../../../../lib/plugin $RPM_BUILD_ROOT%{_javadir}/%{name}
+cp -arp ../../../lib/plugin $RPM_BUILD_ROOT%{_javadir}/%{name}
 
 #Install the non-system jars
-libdir=../../../../lib
+libdir=../../../lib
 jardir=$RPM_BUILD_ROOT%{_javadir}/%{name}
 
 for jar in "slf4j-api-1.6.2.jar" "slf4j-log4j12-1.6.2.jar" "slf4j-simple-1.6.2.jar" "jcl-over-slf4j-1.6.0.jar" "je-4.1.10.jar" "servlet-api-3.0.jar" "which4j.jar"
@@ -388,7 +363,7 @@ fi
 %{install_root}/version
 %doc LICENSE
 %doc COPYRIGHT
-%doc bestman2/sources/README
+%doc sources/README
 
 
 %files client
@@ -433,9 +408,9 @@ fi
 %{install_root}/version
 %doc LICENSE
 %doc COPYRIGHT
-%doc bestman2/sources/CHANGES.SOURCES
-%doc bestman2/setup-osg/CHANGES.SETUP
-%doc bestman2/sources/README
+%doc sources/CHANGES.SOURCES
+%doc setup/CHANGES.SETUP
+%doc sources/README
 
 %files server
 %defattr(-,root,root,-)
@@ -464,9 +439,9 @@ fi
 %files server-libs
 %doc LICENSE
 %doc COPYRIGHT
-%doc bestman2/sources/CHANGES.SOURCES
-%doc bestman2/setup-osg/CHANGES.SETUP
-%doc bestman2/sources/README
+%doc sources/CHANGES.SOURCES
+%doc setup/CHANGES.SETUP
+%doc sources/README
 %{_javadir}/bestman2/bestman2.jar
 %{_javadir}/bestman2/bestman2-aux.jar
 
@@ -510,6 +485,9 @@ fi
 
 * Fri Sep 18 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 2.3.0-26
 - Build with jglobus 2.1.0
+
+* Sat Sep 12 2015 Carl Edquist <edquist@cs.wisc.edu> - 2.3.0c-1
+- new source tarball layout, no functional change (SOFTWARE-2032)
 
 * Mon Jun 08 2015 Carl Edquist <edquist@cs.wisc.edu> - 2.3.0-25
 - only add -p N to GUC command line if parallelism > 1,
