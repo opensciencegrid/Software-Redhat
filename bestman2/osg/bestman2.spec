@@ -39,7 +39,7 @@ Source9:        bestman2.rc
 Source10:       bestman2lib.sysconfig
 Source11:       bestman2lib-el7.sysconfig
 
-Patch4:		voms-api-java3.patch
+Patch1:		voms-api-java3.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
@@ -207,7 +207,7 @@ cd ..
 %setup -T -b 0 -q
 
 %if 0%{?el7}
-%patch4 -p1
+%patch1 -p1
 %endif
 
 pushd setup/bestman.in
