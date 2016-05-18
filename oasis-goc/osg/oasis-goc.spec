@@ -1,6 +1,6 @@
 Summary: OASIS GOC package
 Name: oasis-goc
-Version: 2.1.7
+Version: 2.1.8
 Release: 1%{?dist} 
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
@@ -75,6 +75,11 @@ This package contains files for oasis-login.opensciencegrid.org
 
 
 %changelog
+* Wed May 18 2016 Dave Dykstra <dwd@fnal.gov> - 2.1.8-1
+- Add copy_config_osg command (OO-142)
+- Change /etc/init.d/oasis-initclean to use cvmfs_server mount -a (OO-144)
+- Use cvmfs-server's own cvmfs_rsync in do_oasis_update (OO-143)
+
 * Sun Apr 10 2016 Dave Dykstra <dwd@fnal.gov> - 2.1.7-1
 - Change update_oasis_vos to not copy from nas01 (OO-136)
 
