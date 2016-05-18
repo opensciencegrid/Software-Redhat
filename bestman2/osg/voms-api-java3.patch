@@ -1,7 +1,7 @@
-diff --git a/bestman2/setup-osg/bestman.in/configure.in b/bestman2/setup-osg/bestman.in/configure.in
+diff --git a/setup/bestman.in/configure.in b/setup/bestman.in/configure.in
 index 5d58f08..415031b 100644
---- a/bestman2/setup-osg/bestman.in/configure.in
-+++ b/bestman2/setup-osg/bestman.in/configure.in
+--- a/setup/bestman.in/configure.in
++++ b/setup/bestman.in/configure.in
 @@ -828,6 +828,15 @@ my_JAR_VALIDATOR($BUILDP, $MYCLASSPATH, $JCEJDK13, $JCEVERSION, JCENAME, JCEPATH
  my_JAR_VALIDATOR($BUILDP, $MYCLASSPATH, $LOG4J, $LOG4JVERSION, LOG4JNAME, LOG4JPATH)
  my_JAR_VALIDATOR($BUILDP, $MYCLASSPATH, $PURETLS, $PTVERSION, PTNAME, PTPATH)
@@ -40,10 +40,10 @@ index 5d58f08..415031b 100644
  echo "" 
  echo "" >> $SYSCONFPATH
  echo "BESTMAN2_CLIENT_LIB=.:$AXISPATH:$CDPATH:$CLPATH:$JRPATH:$WJPATH:$XCPATH:$XAPATH:$CAPATH:$CJPATH:$CUPATH:$CXAPATH:$CX32PATH:$JCEPATH:$LOG4JPATH:$PTPATH"
-diff --git a/bestman2/branches/osg-dev/configure.in b/bestman2/branches/osg-dev/configure.in
+diff --git a/sources/configure.in b/sources/configure.in
 index a9e0359..5889a19 100644
---- a/bestman2/branches/osg-dev/configure.in
-+++ b/bestman2/branches/osg-dev/configure.in
+--- a/sources/configure.in
++++ b/sources/configure.in
 @@ -175,6 +175,15 @@ my_JAR_VALIDATOR($MYCLASSPATH, $JCEJDK13, $JCEVERSION, JCENAME, JCEPATH, JCEDIR)
  my_JAR_VALIDATOR($MYCLASSPATH, $LOG4J, $LOG4JVERSION, LOG4JNAME, LOG4JPATH, LOG4JDIR)
  my_JAR_VALIDATOR($MYCLASSPATH, $PURETLS, $PTVERSION, PTNAME, PTPATH, PTDIR)
@@ -69,10 +69,10 @@ index a9e0359..5889a19 100644
  echo "#####################################################" >> build.properties
  echo "jcl-over-slf4j.path=$JSPATH" >> build.properties
  echo "je-4.1.10.path=$BDBPATH" >> build.properties
-diff --git a/bestman2/branches/osg-dev/server/build.xml b/bestman2/branches/osg-dev/server/build.xml
+diff --git a/sources/server/build.xml b/sources/server/build.xml
 index d5fcd07..0b3adef 100644
---- a/bestman2/branches/osg-dev/server/build.xml
-+++ b/bestman2/branches/osg-dev/server/build.xml
+--- a/sources/server/build.xml
++++ b/sources/server/build.xml
 @@ -89,6 +89,8 @@
      <fileset file="${log4j.path}"/>
      <fileset file="${bcprov-jdk15.path}"/>
@@ -82,48 +82,51 @@ index d5fcd07..0b3adef 100644
      <fileset file="${jcl-over-slf4j.path}"/>
      <fileset file="${je-4.1.10.path}"/>
      <fileset file="${servlet-api.path}"/>
-diff --git a/bestman2/branches/osg-dev/server/src/gov/lbl/srm/util/GUMSXACMLClient.java b/bestman2/branches/osg-dev/server/src/gov/lbl/srm/util/GUMSXACMLClient.java
-index 185bba1..6f2fb94 100644
---- a/bestman2/branches/osg-dev/server/src/gov/lbl/srm/util/GUMSXACMLClient.java
-+++ b/bestman2/branches/osg-dev/server/src/gov/lbl/srm/util/GUMSXACMLClient.java
-@@ -41,7 +41,11 @@ package gov.lbl.srm.util;
+diff --git a/sources/server/src/gov/lbl/srm/util/GUMSXACMLClient.java b/sources/server/src/gov/lbl/srm/util/GUMSXACMLClient.java
+index 185bba1..5798953 100644
+--- a/sources/server/src/gov/lbl/srm/util/GUMSXACMLClient.java
++++ b/sources/server/src/gov/lbl/srm/util/GUMSXACMLClient.java
+@@ -41,7 +41,14 @@ package gov.lbl.srm.util;
  import java.util.*;
  import java.io.*;
  
 -import org.glite.voms.VOMSValidator;
++import org.italiangrid.voms.VOMSAttribute;
 +import org.italiangrid.voms.VOMSValidators;
++import org.italiangrid.voms.ac.VOMSACValidator;
 +import org.italiangrid.voms.ac.impl.DefaultVOMSValidator;
++import org.italiangrid.voms.store.impl.DefaultUpdatingVOMSTrustStore;
 +import org.italiangrid.voms.util.CertificateValidatorBuilder;
 +
 +import eu.emi.security.authn.x509.X509CertChainValidatorExt;
  
  //  import gov.bnl.gums.command.Configuration;
  //import gov.bnl.gums.admin.*;
-@@ -56,11 +60,11 @@ import java.net.URL;
+@@ -56,11 +63,11 @@ import java.net.URL;
  import java.security.cert.X509Certificate;
  
  class ValidatorControl {
 -    org.glite.voms.VOMSValidator _vv = null;
-+    org.italiangrid.voms.ac.VOMSACValidator _vv = null;
++    VOMSACValidator _vv = null;
      TSRMMutex _vvGuard = new TSRMMutex();
      
      public ValidatorControl() {
 -	Class clazz = org.glite.voms.VOMSValidator.class;
-+	Class clazz = org.italiangrid.voms.ac.VOMSACValidator.class;
++	Class clazz = VOMSACValidator.class;
  	String result0 =org.theshoemakers.which4j.Which4J.which(clazz);
  	System.out.println("which vomsvalidator?"+result0);
      }
-@@ -73,45 +77,49 @@ class ValidatorControl {
+@@ -73,45 +80,48 @@ class ValidatorControl {
  	List result = null;
  	try {
  	    if (_vv == null) {
 -		//_vv = new org.glite.voms.VOMSValidator(null, null);
 -		org.glite.voms.PKIStore vomsStore = null;
-+		//_vv = org.italiangrid.voms.VOMSValidators.newValidator();
-+		org.italiangrid.voms.store.impl.DefaultUpdatingVOMSTrustStore vomsStore = null;
++		//_vv = VOMSValidators.newValidator();
++		DefaultUpdatingVOMSTrustStore vomsStore = null;
  		String vomsDir = System.getProperty( "VOMSDIR" );
 -		vomsDir = (vomsDir == null ) ? org.glite.voms.PKIStore.DEFAULT_VOMSDIR : vomsDir;
-+		vomsDir = (vomsDir == null ) ? org.italiangrid.voms.store.impl.DefaultUpdatingVOMSTrustStore.DEFAULT_VOMS_DIR : vomsDir;
++		vomsDir = (vomsDir == null ) ? DefaultUpdatingVOMSTrustStore.DEFAULT_VOMS_DIR : vomsDir;
  		TSRMLog.info(ValidatorControl.class, null, "vomsDir="+vomsDir, null);
  		
  		File theDir = new File(vomsDir);
@@ -132,7 +135,7 @@ index 185bba1..6f2fb94 100644
 -		    vomsStore.rescheduleRefresh(900000);
 +		    List<String> vomsDirs = new ArrayList<String>();
 +		    vomsDirs.add(vomsDir);
-+		    vomsStore = new org.italiangrid.voms.store.impl.DefaultUpdatingVOMSTrustStore(vomsDirs, 900000);
++		    vomsStore = new DefaultUpdatingVOMSTrustStore(vomsDirs, 900000);
  		}
  		
 -		org.glite.voms.PKIStore caStore;
@@ -142,7 +145,6 @@ index 185bba1..6f2fb94 100644
  		TSRMLog.info(ValidatorControl.class, null, "caDir="+caDir, null);
 -		caStore = new org.glite.voms.PKIStore( caDir, org.glite.voms.PKIStore.TYPE_CADIR, true );
 -		caStore.rescheduleRefresh(900000);
-+		// how do we say that we're talking about CA dirs?
  		
 -		_vv = new org.glite.voms.VOMSValidator(null, new org.glite.voms.ac.ACValidator(new org.glite.voms.PKIVerifier(vomsStore,caStore)));
 +                CertificateValidatorBuilder builder = new CertificateValidatorBuilder();
@@ -162,7 +164,7 @@ index 185bba1..6f2fb94 100644
              TSRMLog.debug(ValidatorControl.class, null, "vomsCertSize="+nVomsCerts, null);
              for (int i=0; i<nVomsCerts; i++) {
 -		org.glite.voms.VOMSAttribute curr = (org.glite.voms.VOMSAttribute)(vc.get(i));
-+		org.italiangrid.voms.VOMSAttribute curr = (org.italiangrid.voms.VOMSAttribute)(vc.get(i));
++		VOMSAttribute curr = (VOMSAttribute)(vc.get(i));
                   TSRMLog.debug(ValidatorControl.class, null, "listVomsCert-"+i+"th="+curr.toString(), null);
              }
 +            List vomsCerts;
@@ -178,12 +180,12 @@ index 185bba1..6f2fb94 100644
  	    if ((vomsCerts == null) || (vomsCerts.size() < nVomsCerts)) {
  		String detail = "null vomsCerts";
  		if (vomsCerts != null) {
-@@ -248,10 +256,10 @@ class VOMSInfo {
+@@ -248,10 +258,10 @@ class VOMSInfo {
  	    int total = vomsCerts.size();
  	    
  	    for (int i=0; i<total; i++) {
 -	    org.glite.voms.VOMSAttribute curr = (org.glite.voms.VOMSAttribute)(vomsCerts.get(i));
-+	    org.italiangrid.voms.VOMSAttribute curr = (org.italiangrid.voms.VOMSAttribute)(vomsCerts.get(i));
++	    VOMSAttribute curr = (VOMSAttribute)(vomsCerts.get(i));
  	    //AttributeCertificate ac = curr.getAC();
  	    //TSRMLog.info(GUMSClient.class, "ac issuer="+ac.getIssuer().toString(), null, null);
 -	    result.addAll(curr.getFullyQualifiedAttributes());
