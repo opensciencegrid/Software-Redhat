@@ -3,6 +3,7 @@
     rotate 10
     missingok
     copytruncate
+    compress
     notifempty
 }
 
