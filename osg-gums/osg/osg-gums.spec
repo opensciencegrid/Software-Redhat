@@ -1,7 +1,7 @@
 Name:      osg-gums
 Summary:   OSG GUMS
 Version:   3.3
-Release:   2%{?dist}
+Release:   3%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -13,6 +13,8 @@ Requires: osg-system-profiler
 Requires: gums-service
 Requires: gums-client
 Requires: osg-gums-config
+# Added for SOFTWARE-2331
+Requires: vo-client
 %if 0%{?rhel} < 6
 Requires: fetch-crl3
 %else
@@ -31,6 +33,9 @@ rm -rf $RPM_BUILD_ROOT
 %files
 
 %changelog
+* Mon May 23 2016 Edgar Fajardo <emfajard@ucsd.edu> 3.3-3
+- Added requirements of vo-client (SOFTWARE-2331)
+
 * Wed Jul 01 2015 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.3-2
 - Require grid-certificates >= 7 (SOFTWARE-1883)
 
