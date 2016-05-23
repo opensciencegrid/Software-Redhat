@@ -1,0 +1,133 @@
+From fd8f7eb427a7fbea2de071604d209d38d6eb8dae Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Mon, 23 May 2016 11:38:26 -0500
+Subject: [PATCH] Always assume RPM install
+
+Remove code which tries to detect a pacman-based or tarball-based
+install, because the code was easy to confuse, and unnecessary when
+shipping the software as RPMs.
+---
+ gums-client/src/main/scripts/gums | 87 +++------------------------------------
+ 1 file changed, 6 insertions(+), 81 deletions(-)
+
+diff --git a/gums-client/src/main/scripts/gums b/gums-client/src/main/scripts/gums
+index ed5b52d..8334db5 100755
+--- a/gums-client/src/main/scripts/gums
++++ b/gums-client/src/main/scripts/gums
+@@ -21,16 +21,10 @@
+ # Author: John R. Hover <jhover@bnl.gov> 
+ # based on initial gums script by Gabriele Carcassi.
+ # Nagios probe section: Jay Packard <jpackard@bnl.gov> 
+ #
+ 
+-exit_confused () {
+-	echo "[ERROR]: Unable to set directories based on script location. Set DEBUG=1 in script to troubleshoot."
+-	exit 1
+-	
+-}
+-
+ #
+ # Defaults
+ #
+ DEBUG=0
+ MODE="CLIENT"
+@@ -93,90 +87,21 @@ TRUST_OPTS="-Daxis.socketSecureFactory=org.glite.security.trustmanager.axis.AXIS
+ HOST_CERT=${X509_HOST_CERT-/etc/grid-security/hostcert.pem}
+ HOST_KEY=${X509_HOST_KEY-/etc/grid-security/hostkey.pem}
+ USER_CERT=${X509_USER_CERT-$HOME/.globus/usercert.pem}
+ USER_KEY=${X509_USER_KEY-$HOME/.globus/userkey.pem}
+ 
+-#
+-# Distinguish between Maven development tree, Maven assembly tarball, VDT install, or RPM
+-# and adjust paths accordingly. Decisions are based on the actual gums wrapper script invoked. 
+-#
+-#
+-INVOKE=$0
+ PROG=$(basename $0)
+ BINDIR=$(dirname $0)
+-DIRPATH=`dirname $INVOKE`
+-OLDDIR=$PWD
+-cd $DIRPATH
+-INVOKE_DIR=$PWD
+-cd $OLDDIR
+-GUMSDIR=`dirname $INVOKE_DIR`
+-
+-if [ $DEBUG -eq 1 ] ; then 
+-	echo "[DEBUG] gums: Invoke is $INVOKE" 1>&2
+-	echo "[DEBUG] gums: Dirpath is $DIRPATH" 1>&2
+-	echo "[DEBUG] gums: Invoke directory is $INVOKE_DIR" 1>&2
+-	echo "[DEBUG] gums: Gumsdir is $GUMSDIR" 1>&2
+-fi
+-
+-# Handle VDT install
+-if [ -n "$VDT_LOCATION" ] && [ "$VDT_LOCATION/gums" == "$GUMSDIR" ] ; then
+-	if [ $DEBUG -eq 1 ] ; then
+-		echo "[DEBUG] gums: Setting paths using VDT_LOCATION..." 1>&2
+-	fi
+-	BIN=$VDT_LOCATION/gums/scripts/
+-	ETC=$VDT_LOCATION/gums/config/
+-	LIB=$VDT_LOCATION/gums/lib/
+-	ENDORSED=$LIB/endorsed
+ 
+ # Handle RPM install
+-elif [ "$INVOKE_DIR" == "/usr/bin" ] && [ -d /etc/gums/ ] ; then
+-	if [ $DEBUG -eq 1 ] ; then
+-		echo "[DEBUG] gums: Seems to be an RPM install. Setting paths..." 1>&2
+-	fi
+-	BIN=/usr/bin
+-	ETC=/etc/gums
+-	LIB=/usr/lib/gums
+-	ENDORSED=$LIB/endorsed
+-
+-# Handle tarball/ development location	
+-else
+-	if [ $DEBUG -eq 1 ] ; then
+-		echo "[DEBUG] gums: Setting paths by guessing based on script location." 1>&2
+-	fi
+-	
+-	# Handle scripts/bin directory
+-	if [ -d $GUMSDIR/scripts ]; then
+-		BIN=$GUMSDIR/scripts
+-	elif [ -d $GUMSDIR/bin ]; then
+-		BIN=$GUMSDIR/bin
+-	else
+-		exit_confused
+-	fi
+-
+-	# Handle config/etc directory
+-	if [ -d $GUMSDIR/config ]; then
+-		ETC=$GUMSDIR/config
+-	elif [ -d $GUMSDIR/etc ]; then
+-		ETC=$GUMSDIR/etc
+-	else
+-		exit_confused
+-	fi	
+-
+-	# Handle lib, endorsed directories
+-	if [ -d $GUMSDIR/lib ]; then
+-		LIB=$GUMSDIR/lib 
+-	else
+-		exit_confused
+-	fi
+-
+-	if [ -d $LIB/endorsed ]; then
+-		ENDORSED=$LIB/endorsed
+-	else
+-		echo "[ERROR] gums: $GUMSDIR/lib/endorsed not found. You probably need to symlink all target libs there."
+-		exit_confused
+-	fi
++if [ $DEBUG -eq 1 ] ; then
++	echo "[DEBUG] gums: Seems to be an RPM install. Setting paths..." 1>&2
+ fi
++BIN=/usr/bin
++ETC=/etc/gums
++LIB=/usr/lib/gums
++ENDORSED=$LIB/endorsed
+ 
+ 
+ #
+ # Construct GUMS classpath.
+ # Be careful about the ordering in GUMSCP since resources are retrieved in order.
+-- 
+2.6.3
+

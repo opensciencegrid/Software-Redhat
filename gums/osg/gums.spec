@@ -13,7 +13,7 @@
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.5.2
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 URL: https://github.com/opensciencegrid/gums
@@ -129,7 +129,7 @@ Patch0: undo-jsp-precompile.patch
 Patch1: EL7-Remove-TYPE-InnoDB-from-SQL-templates.patch
 Patch2: Use-bouncycastle-1.50.patch
 Patch3: Use-jspc-compiler-for-tomcat7.patch
-Patch4: gums-client-UsrMove.patch
+Patch4: Always-assume-RPM-install.patch
 
 Patch5: voms3.patch
 
@@ -501,6 +501,9 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+* Mon May 23 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.5.2-3
+- Remove brittle code to detect tarball or VDT install
+
 * Wed May 11 2016 Matyas Selmeci <matyas@cs.wisc.edu> - 1.5.2-2
 - Use voms-api-java 3 on EL7 (SOFTWARE-2040)
 
