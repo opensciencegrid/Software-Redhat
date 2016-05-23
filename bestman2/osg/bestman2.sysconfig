@@ -23,6 +23,9 @@ JAVA_HOME=/etc/alternatives/java_sdk
 BESTMAN_LOG=/var/log/bestman2/bestman2.log
 BESTMAN_PID=/var/run/bestman2.pid
 BESTMAN_LOCK=/var/lock/bestman2
+# WARNING: the RPM packaging will change the ownership of the /var/log/bestman2
+# directory back to 'bestman' on upgrades!  If you use a custom SRM_OWNER, you
+# will need to change the back to your configured user after each upgrade.
 SRM_OWNER=bestman
 #
 #
