@@ -234,9 +234,7 @@ cp %{SOURCE8} setup/
 %build
 pushd sources
 
-#sed -i "s/Generating stubs from/Gen stubs \${axis.path}/" wsdl/build.xml
-
-ant build # <- XXX dies here
+ant build
 ant install
 popd
 
