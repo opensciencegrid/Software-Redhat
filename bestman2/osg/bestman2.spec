@@ -14,8 +14,8 @@
 
 %define jglobus_version 2.1.0
 
-%define _release 1
-%define _alphatag .pre1
+%define _release 2
+%define _alphatag .pre2
 %define _fullrelease 0.%{_release}%{_alphatag}%{?dist}
 
 Name:           bestman2
@@ -38,7 +38,6 @@ Source3:        bestman.logrotate
 Source4:        dependent.jars.tar.gz
 Source5:        bestman2.sysconfig
 Source7:        build.properties
-Source8:        configure.in
 Source9:        bestman2.rc
 Source10:       bestman2lib.sysconfig
 Source11:       bestman2lib-el7.sysconfig
@@ -229,8 +228,6 @@ sed -i "s/install.root=.*/install.root=dist/" setup/build.properties
 sed -i "s|@BUILDROOT@|$PWD|" setup/build.properties sources/build.properties
 sed -i "s|@JGLOBUS_VERSION@|%jglobus_version|" setup/build.properties sources/build.properties
 
-cp %{SOURCE8} setup/
-
 %build
 pushd sources
 
@@ -240,18 +237,11 @@ popd
 
 pushd setup
 cp bestman.in/aclocal.m4 .
+cp bestman.in/configure.in .
 autoconf configure.in > configure
 chmod +x configure
 ./configure --with-srm-owner=bestman --with-sysconf-path=./dist/bestman.sysconfig
 ant deploy
-
-pushd dist
-#Fix paths in binaries.  Wish I could do this in configure...
-sed -ri 's|(BESTMAN_SYSCONF)=.*|\1=/etc/sysconfig/bestman2|' bin/* sbin/*
-sed -ri 's|(BESTMAN_SYSCONF_LIB)=.*|\1=/etc/sysconfig/bestman2lib|' bin/* sbin/*
-sed -i  's|\${BESTMAN_SYSCONF}|/etc/bestman2/conf/bestman2.rc|' sbin/bestman.server
-
-popd
 popd
 
 
@@ -267,9 +257,6 @@ mkdir -p $RPM_BUILD_ROOT%{_javadir}/%{name}
 mkdir -p $RPM_BUILD_ROOT%{_sbindir}
 mkdir -p $RPM_BUILD_ROOT%{install_root}
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}
-
-#bestmanclient.conf should be srmclient.conf
-mv conf/bestmanclient.conf conf/srmclient.conf
 
 cp -arp conf $RPM_BUILD_ROOT%{install_root}
 cp -arp lib/* $RPM_BUILD_ROOT%{_javadir}/%{name}/
@@ -475,6 +462,9 @@ fi
 
 
 %changelog
+* Tue May 24 2016 Carl Edquist <edquist@cs.wisc.edu> - 2.3.1-0.2.pre2
+- Update to 2.3.1.pre2 (SOFTWARE-2332)
+
 * Tue May 17 2016 Carl Edquist <edquist@cs.wisc.edu> - 2.3.1-0.1.pre1
 - Update to 2.3.1.pre1 (SOFTWARE-2332)
 
@@ -781,4 +771,3 @@ get rid of bestman2 dependency of client and server
 
 * Tue Jun 8 2010 Michael Thomas <thomas@hep.caltech.edu> 2.0.0-1
 - Initial package of bestman2, based on original bestman spec file
-
