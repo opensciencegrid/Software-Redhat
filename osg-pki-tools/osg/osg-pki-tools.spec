@@ -1,6 +1,6 @@
 Summary: osg-pki-tools
 Name: osg-pki-tools
-Version: 1.2.17
+Version: 1.2.18
 Release: 1%{?dist}
 Source: OSGPKITools-%{version}.tar.gz
 License: Apache 2.0
@@ -76,6 +76,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed May 25 2016 Brian Lin <blin@cs.wisc.edu> - 1.2.18-1
+- Added timeout to osg-user-cert-revoke (SOFTWARE-2322)
+
 * Wed May 04 2016 Brian Lin <blin@cs.wisc.edu> - 1.2.17-1
 - Fix missing import in osg-user-cert-renew
 
