@@ -14,12 +14,12 @@
 
 %define jglobus_version 2.1.0
 
-%define _release 2
-%define _alphatag .pre2
+%define _release 3
+%define _alphatag .pre3
 %define _fullrelease 0.%{_release}%{_alphatag}%{?dist}
 
 Name:           bestman2
-Version:        2.3.1
+Version:        2.3.0.1
 Release:        %{_fullrelease}
 Summary:        SRM server for Grid Storage Elements
 
@@ -462,6 +462,10 @@ fi
 
 
 %changelog
+* Wed May 25 2016 Carl Edquist <edquist@cs.wisc.edu> - 2.3.0.1-0.3.pre3
+- Update to 2.3.0.1.pre3 (SOFTWARE-2332)
+  (New version number will be settled prior to final release)
+
 * Tue May 24 2016 Carl Edquist <edquist@cs.wisc.edu> - 2.3.1-0.2.pre2
 - Update to 2.3.1.pre2 (SOFTWARE-2332)
 
