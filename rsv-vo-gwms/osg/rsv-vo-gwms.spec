@@ -1,5 +1,5 @@
 Name:      rsv-vo-gwms
-Version:   1.0.1
+Version:   1.1.0
 Release:   1%{?dist}
 Summary:   RSV metrics to test CE's from gwms factory
 Packager:  OSG-Software
@@ -12,7 +12,7 @@ Source0:   %{name}-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch: noarch
 
-Requires: rsv
+Requires: rsv >= 3.13
 Requires: condor-python
 
 
@@ -20,8 +20,7 @@ Requires: condor-python
 %{summary}
 
 %prep
-%setup -n trunk
-#%setup -n %{name}
+%setup -n %{name}-%{version}
 #%setup -n %{version}
 
 %install
@@ -36,24 +35,24 @@ rm -rf $RPM_BUILD_ROOT
 %doc README
 %defattr(-,root,root,-)
 %{_libexecdir}/rsv/probes/gfactory-querying-local-probe
+%{_libexecdir}/rsv/probes/dummy-probe
+%{_libexecdir}/rsv/metrics/org.osg.general.dummy-probe
 %{_libexecdir}/rsv/metrics/org.osg.local-gfactory-querying-local
 %config %{_sysconfdir}/rsv/meta/metrics/org.osg.local-gfactory-querying-local.meta
 %config(noreplace) %{_sysconfdir}/rsv/metrics/org.osg.local-gfactory-querying-local.conf
-%config(noreplace) %{_sysconfdir}/logrotate.d/rsv-vo-gwms-metrics
 %attr(-,rsv,rsv)  %{_sysconfdir}/rsv
 %attr(-,rsv,rsv)  %{_sysconfdir}/rsv/metrics
 %attr(755, -, -) %{_libexecdir}/rsv/metrics/org.osg.local-gfactory-querying-local
 %attr(755, -, -) %{_libexecdir}/rsv/probes/gfactory-querying-local-probe
 
 %post -p /bin/bash
-# Create the html dir in the correct place
-mkdir /var/www/html/rsv
-chown rsv /var/www/html/rsv
-rm -rf /usr/share/rsv/www
-ln -s /var/www/html/rsv /usr/share/rsv/www
 
 
 %changelog
+* Thu May 26 2016 <efajado@physics.ucsd.edu> - 1.1.0-1
+- Added the dummy probe to be able to test CREAM and Nordugrid sites
+- Removed the logrotate files since they were not needed
+
 * Fri Mar 13 2015 <efajardo@physics.ucsd.edu> - 1.0.1-1
 - Changed the defaults to query CMS sites
 
