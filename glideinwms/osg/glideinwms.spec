@@ -271,6 +271,7 @@ install -d $RPM_BUILD_ROOT%{_sbindir}
 install -m 0500 frontend/checkFrontend.py $RPM_BUILD_ROOT%{_sbindir}/checkFrontend
 install -m 0500 frontend/glideinFrontendElement.py $RPM_BUILD_ROOT%{_sbindir}/glideinFrontendElement.py
 install -m 0500 frontend/glideinFrontend.py $RPM_BUILD_ROOT%{_sbindir}/glideinFrontend
+install -m 0500 frontend/manageFrontendDowntimes.py $RPM_BUILD_ROOT%{_sbindir}/
 install -m 0500 frontend/stopFrontend.py $RPM_BUILD_ROOT%{_sbindir}/stopFrontend
 install -m 0500 creation/reconfig_frontend $RPM_BUILD_ROOT%{_sbindir}/reconfig_frontend
 
@@ -705,6 +706,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_sbindir}/glideinFrontend
 %attr(755,root,root) %{_sbindir}/glideinFrontendElement.py*
 %attr(755,root,root) %{_sbindir}/reconfig_frontend
+%attr(755,root,root) %{_sbindir}/manageFrontendDowntimes.py
 %attr(755,root,root) %{_sbindir}/stopFrontend
 %attr(-, frontend, frontend) %dir %{_localstatedir}/lib/gwms-frontend
 %attr(-, frontend, frontend) %{web_dir}
