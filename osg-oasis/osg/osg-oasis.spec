@@ -1,11 +1,11 @@
 Summary: OSG metapackage for OASIS and CVMFS
 Name: osg-oasis
 Version: 6
-Release: 4%{?dist}
+Release: 5%{?dist}
 License: ASL 2.0
 Group: Applications/Grid
 BuildArch: noarch
-Requires: cvmfs >= 2.2.1
+Requires: cvmfs >= 2.2.3
 Requires: cvmfs-config-osg >= 1.2-3
 
 %description
@@ -26,6 +26,9 @@ exit 0
 %files
 
 %changelog
+* Thu May 26 2016 Dave Dykstra <dwd@fnal.gov> 6-5
+- Update to cvmfs-2.2.3
+
 * Fri Mar 25 2016 Dave Dykstra <dwd@fnal.gov> 6-4
 - Update to cvmfs-config-osg-1.2-3
 
