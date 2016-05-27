@@ -1,0 +1,31 @@
+commit 4452e83458cc0603eeb2cb9bf447926b5a001052
+Author: edquist <edquist@c85a5f45-a5f3-44fc-b02c-7891c381c519>
+Date:   Thu May 26 22:43:44 2016 +0000
+
+    Remove duplicate servlet-mapping
+    
+    This was probably always a mistake, but breaks the gratia-administration
+    page of gratia service for el7, where tomcat is apparently a bit more
+    strict about that.
+    
+    GRATIA-181 related.
+    
+    git-svn-id: http://svn.code.sf.net/p/gratia/svn/trunk@5733 c85a5f45-a5f3-44fc-b02c-7891c381c519
+
+diff --git a/collector/gratia-administration/net/sf/gratia/administration/web.xml b/collector/gratia-administration/net/sf/gratia/administration/web.xml
+index 244b78e..fbc0f13 100644
+--- a/collector/gratia-administration/net/sf/gratia/administration/web.xml
++++ b/collector/gratia-administration/net/sf/gratia/administration/web.xml
+@@ -264,12 +264,6 @@
+         <url-pattern>/jobusagerecordreplicationtable.html</url-pattern>
+     </servlet-mapping>
+ 
+-
+-    <servlet-mapping>
+-        <servlet-name>jobusagerecordreplicationtable</servlet-name>
+-        <url-pattern>/jobusagerecordreplicationtable.html</url-pattern>
+-    </servlet-mapping>
+-
+     <servlet-mapping>
+         <servlet-name>metricrecordreplicationtable</servlet-name>
+         <url-pattern>/metricrecordreplicationtable.html</url-pattern>

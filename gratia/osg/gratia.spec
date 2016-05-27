@@ -3,7 +3,7 @@ Summary: Gratia OSG accounting system
 Group: Applications/System
 #Version: 1.13.12
 Version: 1.16.2
-Release: 1.2%{?dist}
+Release: 1.3%{?dist}
 License: GPL
 Group: Applications/System
 URL: http://sourceforge.net/projects/gratia/
@@ -15,6 +15,7 @@ Source0: gratia-%{version}.tar.gz
 Patch0: tomcat7.patch
 Patch1: mariadb.patch
 Patch2: AccessLogValve.patch
+Patch3: servlet.patch
 
 %description
 Gratia OSG accounting system
@@ -77,6 +78,7 @@ BuildRequires: ant
 %if 0%{?rhel} >= 7
 %patch2 -p1
 %endif
+%patch3 -p1
 
 %build
 pushd build-scripts
@@ -251,6 +253,9 @@ fi
 
 
 %changelog
+* Fri May 27 2016 Carl Edquist <edquist@cs.wisc.edu> - 1.16.2-1.3
+- fix duplicate servlet error for el7 (SOFTWARE-2345)
+
 * Mon Dec 07 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.16.2-1.2
 - use AccessLogValve instead of FastCommonAccessLogValve (SOFTWARE-2075)
 
