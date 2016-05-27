@@ -14,9 +14,14 @@
 
 %define jglobus_version 2.1.0
 
-%define _release 3
-%define _alphatag .pre3
+%define _release 1
+#define _alphatag .pre3
+%define _alphatag %{nil}
+%if "%{_alphatag}" == ""
+%define _fullrelease %{_release}%{?dist}
+%else
 %define _fullrelease 0.%{_release}%{_alphatag}%{?dist}
+%endif
 
 Name:           bestman2
 Version:        2.3.0.1
@@ -462,15 +467,12 @@ fi
 
 
 %changelog
-* Wed May 25 2016 Carl Edquist <edquist@cs.wisc.edu> - 2.3.0.1-0.3.pre3
-- Update to 2.3.0.1.pre3 (SOFTWARE-2332)
-  (New version number will be settled prior to final release)
-
-* Tue May 24 2016 Carl Edquist <edquist@cs.wisc.edu> - 2.3.1-0.2.pre2
-- Update to 2.3.1.pre2 (SOFTWARE-2332)
-
-* Tue May 17 2016 Carl Edquist <edquist@cs.wisc.edu> - 2.3.1-0.1.pre1
-- Update to 2.3.1.pre1 (SOFTWARE-2332)
+* Thu May 26 2016 Carl Edquist <edquist@cs.wisc.edu> - 2.3.0.1-1
+- Update to 2.3.0.1 (SOFTWARE-2332)
+  - new upstream layout including OSG patches (SOFTWARE-2032)
+  - support sudoCommand=sudo -i (SOFTWARE-1721)
+  - compress rotated bestman2.log (SOFTWARE-2147)
+  - warn in config about changing SRM_OWNER (SOFTWARE-1520)
 
 * Wed Apr 27 2016 Carl Edquist <edquist@cs.wisc.edu> - 2.3.0-29
 - Patch el7 to use voms-api-java 3 and canl (SOFTWARE-2041)
