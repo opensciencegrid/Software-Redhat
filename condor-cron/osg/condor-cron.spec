@@ -1,5 +1,5 @@
 Name:      condor-cron
-Version:   1.0.11
+Version:   1.1.0
 Release:   1%{?dist}
 Summary:   A framework to run cron-style jobs within Condor
 
@@ -153,6 +153,9 @@ fi
 
 
 %changelog
+* Wed Jun 01 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 1.1.0-1
+- Fix sending grid jobs to remote schedds (SOFTWARE-2267)
+
 * Tue Dec 08 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0.11-1
 - Turn off BIND_ALL_INTERFACES (SOFTWARE-2133)
 
