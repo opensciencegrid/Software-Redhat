@@ -1,0 +1,31 @@
+commit 319868cc83b74dac29b1497db5062d23a8555fc6
+Author: John Thiltges <jthiltges2@unl.edu>
+Date:   Wed Jun 1 14:15:04 2016 -0500
+
+    Do not accumulate matches in GlobusPathMatchingResourcePatternResolver
+    
+    Multiple calls to getResources() in GlobusPathMatchingResourcePatternResolver
+    are not expected to accumulate results. Allocate a new
+    pathsMatchingLocationPattern Vector for each call.
+
+diff --git a/ssl-proxies/src/main/java/org/globus/util/GlobusPathMatchingResourcePatternResolver.java b/ssl-proxies/src/main/java/org/globus/util/GlobusPathMatchingResourcePatternResolver.java
+index 6161c7b..d2831f6 100644
+--- a/ssl-proxies/src/main/java/org/globus/util/GlobusPathMatchingResourcePatternResolver.java
++++ b/ssl-proxies/src/main/java/org/globus/util/GlobusPathMatchingResourcePatternResolver.java
+@@ -32,7 +32,7 @@ public class GlobusPathMatchingResourcePatternResolver {
+       */
+     private String mainClassPath = "";
+     //Holds GlobusResource instances of all the paths which matched the locationPattern
+-    private Vector<GlobusResource> pathsMatchingLocationPattern = new Vector<GlobusResource>();
++    private Vector<GlobusResource> pathsMatchingLocationPattern;
+ 
+     public GlobusPathMatchingResourcePatternResolver() {
+     }
+@@ -64,6 +64,7 @@ public class GlobusPathMatchingResourcePatternResolver {
+      * @return An array of GlobusResource containing all resources whose locaiton match the locationPattern
+      */
+     public GlobusResource[] getResources(String locationPattern) {
++        pathsMatchingLocationPattern = new Vector<GlobusResource>();
+         String mainPath = "";
+         if (locationPattern.startsWith("classpath:")) {
+             String pathUntilWildcard = getPathUntilWildcard(locationPattern.replaceFirst("classpath:/", ""), false);

@@ -26,6 +26,10 @@ Patch1: jglobus-bc146-to-145.patch
 # See SOFTWARE-1607
 Patch2: 1607-fix-sl6-certs.patch
 
+# Not yet in an upstream release: https://github.com/jglobus/JGlobus/pull/157
+# See SOFTWARE-2347
+Patch3: 2347-resource-accumulation.patch
+
 BuildArch: noarch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -99,6 +103,7 @@ Source7: %{name}-mvn-deps-el7.tar.gz
 %patch1 -p1
 %endif
 %patch2 -p1
+%patch3 -p1
 
 find -name '*.class' -exec rm -f '{}' \;
 find -name '*.jar' -exec rm -f '{}' \;
@@ -177,6 +182,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mavendepmapfragdir}/%{name}
 
 %changelog
+* Wed Jun 01 2016 Carl Edquist <edquist@cs.wisc.edu> - 2.1.0-8
+- Add patch from John Thiltges to avoid resource accumulation (SOFTWARE-2347)
+
 * Thu Jan 21 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 2.1.0-7
 - Remove tomcat requirements (SOFTWARE-2138)
 
