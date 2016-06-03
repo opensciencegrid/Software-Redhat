@@ -1,7 +1,7 @@
 Summary: Generic Information Provider
 Name: gip
 Version: 1.3.11
-Release: 8%{?dist}
+Release: 9%{?dist}
 License: Apache 2.0
 Group: Applications/Grid
 BuildArch: noarch
@@ -16,6 +16,7 @@ Patch4: 1795-htcondor-bdii-2.patch
 Patch5: 1893-cese_bind.patch
 Patch6: 2030-slurm-multiple-queues.patch
 Patch7: 2104-no-ress-support.patch
+Patch8: 2353-condor_config_val.patch
 
 Conflicts: osg-info-services < 1.1.0
 
@@ -49,6 +50,7 @@ then can be sent via external services to information collection servers such as
 %patch5 -p1
 %patch6 -p1
 %patch7 -p1
+%patch8 -p1
 
 %install
 rm -rf %{buildroot}
@@ -139,6 +141,9 @@ touch $RPM_BUILD_ROOT/%{_sysconfdir}/%{name}/remove-attributes.conf
 rm -rf %buildroot
 
 %changelog
+* Fri Jun 03 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 1.3.11-9
+- Fix inefficiency in querying condor groups (SOFTWARE-2353)
+
 * Wed Nov 18 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.3.11-8
 - Remove ReSS support (SOFTWARE-2104)
   Conflict with osg-info-services < 1.1.0 to avoid error when osg-info-services
