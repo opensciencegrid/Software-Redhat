@@ -2,7 +2,7 @@
 #%define gitrev
 
 Name:		blahp
-Version:	1.18.19.bosco
+Version:	1.18.20.bosco
 Release:	1%{?gitrev:.%{gitrev}}%{?dist}
 Summary:	gLite BLAHP daemon
 
@@ -16,7 +16,6 @@ URL:		https://github.com/osg-bosco/BLAH
 # Pre-release build tarballs should be generated with:
 # git archive %{gitrev} | gzip -9 > %{name}-%{version}-%{gitrev}.tar.gz
 Source0:        %{name}-%{version}%{?gitrev:-%{gitrev}}.tar.gz
-Patch0:         sw1709-osg-job-env-vars.patch
 
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildRequires:  automake
@@ -40,7 +39,6 @@ BuildRequires:  docbook-style-xsl, libxslt
 
 %prep
 %setup -c -n %{name}-%{version}
-%patch0 -p1
 
 %build
 ./bootstrap
@@ -183,6 +181,10 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Fri Jun 03 2016 Brian Lin <blin@cs.wisc.edu> - 1.18.20.bosco-1
+- Add multicore HTCondor support (SOFTWARE-2303)
+- Support dynamic assignment of env variables (SOFTWARE-2221)
+
 * Mon Apr 25 2016 Brian Lin <blin@cs.wisc.edu> - 1.18.19.bosco-1
 - Add SLURM support (SOFTWARE-2256)
 - Fix mem requests (SOFTWARE-2260)
