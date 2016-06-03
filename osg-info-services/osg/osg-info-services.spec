@@ -1,7 +1,7 @@
 
 Name:      osg-info-services
 Summary:   OSG Information Services uploader
-Version:   1.2.1
+Version:   1.2.2
 Release:   1%{?dist}
 License:   Apache 2.0
 Group:     Grid
@@ -50,7 +50,10 @@ rm -rf $RPM_BUILD_ROOT
 %license LICENSE
 
 %changelog
-* Mon Dec 28 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.2.1-1
+* Mon Dec 28 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.2.2-1
+- Change default timeout to 290:10 (SOFTWARE-2349)
+
+* Fri Jun 03 2016 Mátyás Selmeci <matyas@cs.wisc.edu>
 - Have cron job log to a file that gets rotated (SOFTWARE-1590)
 
 * Mon Dec 21 2015 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.2.0-1
