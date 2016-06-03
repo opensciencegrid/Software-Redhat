@@ -5,7 +5,7 @@
 
 Summary:   Tests an OSG Software installation
 Name:      osg-test
-Version:   1.7.0
+Version:   1.8.0
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -16,7 +16,8 @@ AutoProv:  yes
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 BuildArch: noarch
 
-Requires: osg-ca-generator
+# 1.1.0 introduced CILogon-like CA/cert generation
+Requires: osg-ca-generator >= 1.1.0
 
 %description
 The OSG Test system runs functional integration tests against an OSG Software
@@ -39,6 +40,13 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/osgtest
 
 %changelog
+* Fri Jun 03 2016 Brian Lin <blin@cs.wisc.edu> - 1.8.0-1
+- Add option to run with CILogon-like CAs and certs (SOFTWARE-1863)
+- Add ability to set timeouts for individual tests (SOFTWARE-646)
+- Limit the number of yum cleans (SOFTWARE-2335)
+- Fix detection of Tomcat startup (SOFTWARE-2344)
+- RSV tests now run with HTCondor-CE (SOFTWARE-2337)
+
 * Mon May 02 2016 Brian Lin <blin@cs.wisc.edu> - 1.7.0-1
 - osg-test should exit non-zero if tests fail (SOFTWARE-2306)
 - Fix Gratia automated test to run regardless of CE type (SOFTWARE-2293)
