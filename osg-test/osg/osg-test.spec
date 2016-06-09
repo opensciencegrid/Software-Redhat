@@ -5,7 +5,7 @@
 
 Summary:   Tests an OSG Software installation
 Name:      osg-test
-Version:   1.8.0
+Version:   1.8.1
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -40,6 +40,9 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/osgtest
 
 %changelog
+* Thu Jun 09 2016 Brian Lin <blin@cs.wisc.edu> - 1.8.1-1
+- Fix Gratia server.xml.template on EL7 that caused GUMS failures
+
 * Fri Jun 03 2016 Brian Lin <blin@cs.wisc.edu> - 1.8.0-1
 - Add option to run with CILogon-like CAs and certs (SOFTWARE-1863)
 - Add ability to set timeouts for individual tests (SOFTWARE-646)
