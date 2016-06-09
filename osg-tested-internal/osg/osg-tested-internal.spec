@@ -1,7 +1,7 @@
 Name:      osg-tested-internal
 Summary:   All OSG packages we test (internal use only)
 Version:   3.3
-Release:   11%{?dist}
+Release:   12%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -33,6 +33,8 @@ Requires: gratia-probe-sge
 Requires: myproxy
 Requires: myproxy-server
 
+Requires: osg-gums
+
 Requires: htcondor-ce
 Requires: htcondor-ce-client
 Requires: htcondor-ce-condor
@@ -63,8 +65,6 @@ Requires: osg-se-bestman-xrootd
 #
 ################################################################################
 %if 0%{?rhel} < 7
-# as of 2015-08-21, gums hasn't been successfully built
-Requires: osg-gums
 # as of 2015-08-21, voms tests fail due to non-trivial issues
 Requires: osg-voms
 %endif
@@ -91,6 +91,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Jun 09 2016 Brian Lin <blin@cs.wisc.edu> - 3.3-12
+- Re-enable osg-gums for EL7
+
 * Thu Apr 28 2016 Edgar Fajardo <emfajard@ucsd.edu> - 3.3-11
 - Put the osg-bestman requirements back for el7 (SOFTWARE-2089)
 
