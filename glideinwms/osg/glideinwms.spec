@@ -12,8 +12,8 @@ Name:           glideinwms
 # ------------------------------------------------------------------------------
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
-%define version 3.2.14
-%define release 1
+%define version 3.2.14.1
+%define release 0.1.rc1
 %define frontend_xml frontend.master.xml
 %define factory_xml glideinWMS.master.xml
 
@@ -239,8 +239,8 @@ install of wmscollector + wms factory
 %build
 cp %{SOURCE7} .
 chmod 700 chksum.sh
-./chksum.sh v%{version}-%{release}.osg etc/checksum.frontend "CVS config_examples doc .git .gitattributes poolwatcher factory/check* factory/glideFactory* factory/test* factory/manage* factory/stop* factory/tools creation/create_glidein creation/reconfig_glidein creation/info_glidein creation/lib/cgW* creation/web_base/factory*html creation/web_base/collector_setup.sh creation/web_base/condor_platform_select.sh creation/web_base/condor_startup.sh creation/web_base/create_mapfile.sh creation/web_base/gcb_setup.sh creation/web_base/glexec_setup.sh creation/web_base/glidein_startup.sh creation/web_base/job_submit.sh creation/web_base/local_start.sh creation/web_base/setup_x509.sh creation/web_base/update_proxy.py creation/web_base/validate_node.sh chksum.sh etc/checksum* unittests"
-./chksum.sh v%{version}-%{release}.osg etc/checksum.factory "CVS config_examples doc .git .gitattributes poolwatcher frontend/* creation/reconfig_glidein creation/clone_glidein creation/lib/cgW* creation/web_base/factory*html creation/web_base/collector_setup.sh creation/web_base/condor_platform_select.sh creation/web_base/condor_startup.sh creation/web_base/create_mapfile.sh creation/web_base/gcb_setup.sh creation/web_base/glexec_setup.sh creation/web_base/glidein_startup.sh creation/web_base/job_submit.sh creation/web_base/local_start.sh creation/web_base/setup_x509.sh creation/web_base/update_proxy.py creation/web_base/validate_node.sh chksum.sh etc/checksum* unittests"
+./chksum.sh v%{version}-%{release}.osg etc/checksum.frontend "CVS config_examples doc .git .gitattributes poolwatcher factory/check* factory/glideFactory* factory/test* factory/manage* factory/stop* factory/tools creation/create_glidein creation/reconfig_glidein creation/info_glidein creation/lib/cgW* creation/web_base/factory*html creation/web_base/collector_setup.sh creation/web_base/condor_platform_select.sh creation/web_base/condor_startup.sh creation/web_base/create_mapfile.sh creation/web_base/gcb_setup.sh creation/web_base/glexec_setup.sh creation/web_base/glidein_startup.sh creation/web_base/job_submit.sh creation/web_base/local_start.sh creation/web_base/setup_x509.sh creation/web_base/update_proxy.py creation/web_base/validate_node.sh chksum.sh etc/checksum* unittests build"
+./chksum.sh v%{version}-%{release}.osg etc/checksum.factory "CVS config_examples doc .git .gitattributes poolwatcher frontend/* creation/reconfig_glidein creation/clone_glidein creation/lib/cgW* creation/web_base/factory*html creation/web_base/collector_setup.sh creation/web_base/condor_platform_select.sh creation/web_base/condor_startup.sh creation/web_base/create_mapfile.sh creation/web_base/gcb_setup.sh creation/web_base/glexec_setup.sh creation/web_base/glidein_startup.sh creation/web_base/job_submit.sh creation/web_base/local_start.sh creation/web_base/setup_x509.sh creation/web_base/update_proxy.py creation/web_base/validate_node.sh chksum.sh etc/checksum* unittests build"
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -299,6 +299,7 @@ rm -Rf $RPM_BUILD_ROOT%{python_sitelib}/glideinwms/creation/config_examples
 rm -f $RPM_BUILD_ROOT%{python_sitelib}/glideinwms/creation/create_rpm_startup
 rm -f $RPM_BUILD_ROOT%{python_sitelib}/glideinwms/.gitattributes
 rm -Rf $RPM_BUILD_ROOT%{python_sitelib}/glideinwms/unittests
+rm -Rf $RPM_BUILD_ROOT%{python_sitelib}/glideinwms/build
 rm -f $RPM_BUILD_ROOT%{python_sitelib}/glideinwms/chksum.sh
 rm -f $RPM_BUILD_ROOT%{python_sitelib}/glideinwms/LICENSE.txt
 rm -f $RPM_BUILD_ROOT%{python_sitelib}/glideinwms/ACKNOWLEDGMENTS.txt
@@ -778,6 +779,10 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/condor/certs/condor_mapfile
 
 %changelog
+* Tue Jun 14 2016 Parag Mhashilkar <parag@fnal.gov> - 3.2.14.1-0.1.rc1
+- Glideinwms v3.2.14.1 rc1
+- Release Notes: http://glideinwms.fnal.gov/doc.v3_2_14_1/history.html
+
 * Fri Jun 03 2016 Parag Mhashilkar <parag@fnal.gov> - 3.2.14-1
 - Glideinwms v3.2.14
 - Release Notes: http://glideinwms.fnal.gov/doc.v3_2_14/history.html
