@@ -60,14 +60,13 @@ sed -i '/plugins\/queue\/sched/d' COMMON_FILES
 sed -i '/plugins\/queue\/monitor/d' COMMON_FILES
 sed -i '/plugins\/queue\/batchstatus/d' COMMON_FILES
 grep '/plugins/queue/batchstatus/__init__' INSTALLED_FILES >> COMMON_FILES
-grep '/plugins/queue/batchstatus/CondorBatchStatus.*' INSTALLED_FILES >> COMMON_FILES
+grep '/plugins/queue/batchstatus/Condor.*' INSTALLED_FILES >> COMMON_FILES
 sed -i '/plugins\/queue\/wmsstatus/d' COMMON_FILES
 grep '/plugins/queue/wmsstatus/__init__' INSTALLED_FILES >> COMMON_FILES
 sed -i '/plugins\/queue\/batchsubmit/d' COMMON_FILES
 grep '/plugins/queue/batchsubmit/__init__' INSTALLED_FILES >> COMMON_FILES
 sed -i '/\etc\/autopyfactory\/proxy\.conf/d' COMMON_FILES
-sed -i '/external\/panda/d' COMMON_FILES
-
+grep '/external/' INSTALLED_FILES >> COMMON_FILES
 grep '/plugins/factory/' INSTALLED_FILES >> COMMON_FILES
 
 
@@ -91,7 +90,7 @@ sed -i '/plugins\/queue\/monitor\//!d' PLUGINS-MONITOR_FILES
 # ----------------------------------------------------------------------------
 cp INSTALLED_FILES PLUGINS-LOCAL_FILES
 sed -i '/plugins\/queue\/batchsubmit\/.*Local.*/!d' PLUGINS-LOCAL_FILES
-grep "/plugins/queue/wmsstatus/CondorWMSStatusPlugin" INSTALLED_FILES >> PLUGINS-LOCAL_FILES
+grep "/plugins/queue/wmsstatus/Condor" INSTALLED_FILES >> PLUGINS-LOCAL_FILES
 grep "/plugins/queue/batchsubmit/.*Exec.*" INSTALLED_FILES >> PLUGINS-LOCAL_FILES
 
 
