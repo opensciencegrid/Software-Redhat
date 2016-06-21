@@ -66,8 +66,6 @@ grep '/plugins/queue/wmsstatus/__init__' INSTALLED_FILES >> COMMON_FILES
 sed -i '/plugins\/queue\/batchsubmit/d' COMMON_FILES
 grep '/plugins/queue/batchsubmit/__init__' INSTALLED_FILES >> COMMON_FILES
 sed -i '/\etc\/autopyfactory\/proxy\.conf/d' COMMON_FILES
-grep '/external/' INSTALLED_FILES >> COMMON_FILES
-grep '/plugins/factory/' INSTALLED_FILES >> COMMON_FILES
 
 
 # ----------------------------------------------------------------------------
