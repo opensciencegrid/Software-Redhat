@@ -10,6 +10,7 @@ Release: %{release}%{?dist}
 Source0: %{name}-%{unmangled_version}.tar.gz
 License: GPL
 Group: Development/Libraries
+Requires: htcondor
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 Prefix: %{_prefix}
 BuildArch: noarch
@@ -143,7 +144,6 @@ Summary: autopyfactory common
 Group: Development/Libraries
 #Requires: autopyfactory-proxymanager
 Requires: condor
-Requires: htcondor
 Requires: python-simplejson
 Requires: python-pycurl
 %description -n autopyfactory-common
