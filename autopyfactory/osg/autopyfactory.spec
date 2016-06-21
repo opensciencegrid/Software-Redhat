@@ -143,6 +143,7 @@ Summary: autopyfactory common
 Group: Development/Libraries
 #Requires: autopyfactory-proxymanager
 Requires: condor
+Requires: htcondor
 Requires: python-simplejson
 Requires: python-pycurl
 %description -n autopyfactory-common
