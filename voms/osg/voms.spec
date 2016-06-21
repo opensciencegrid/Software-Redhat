@@ -1,10 +1,17 @@
 %{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
 
+%if %{?rhel}%{!?rhel:0} >= 7
+%global use_systemd 1
+%{!?_unitdir: %global _unitdir /usr/lib/systemd/system}
+%else
+%global use_systemd 0
+%endif
+
 %global _hardened_build 1
 
 Name:		voms
 Version:	2.0.12
-Release:	3.1%{?dist}
+Release:	3.2%{?dist}
 Summary:	Virtual Organization Membership Service
 
 Group:		System Environment/Libraries
@@ -13,6 +20,7 @@ URL:		https://wiki.italiangrid.it/VOMS
 Source0:	https://github.com/italiangrid/%{name}/archive/v%{version}.tar.gz
 #		Post-install setup instructions:
 Source1:	%{name}.INSTALL
+Source2:	%{name}@.service
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	openssl-devel
@@ -129,12 +137,17 @@ make install DESTDIR=%{buildroot}
 
 rm %{buildroot}%{_libdir}/*.la
 
+%if %{use_systemd}
+# Remove init script entirely
+rm -f %{buildroot}%{_initrddir}/%{name}
+%else
 # Turn off default enabling of the service
 mkdir -p %{buildroot}%{_initrddir}
 sed -e 's/\(chkconfig: \)\w*/\1-/' \
     -e '/Default-Start/d' \
     -e 's/\(Default-Stop:\s*\).*/\10 1 2 3 4 5 6/' \
     -i %{buildroot}%{_initrddir}/%{name}
+%endif
 
 mkdir -p %{buildroot}%{_sysconfdir}/sysconfig
 echo VOMS_USER=voms > %{buildroot}%{_sysconfdir}/sysconfig/%{name}
@@ -161,6 +174,11 @@ for b in voms-proxy-init voms-proxy-info voms-proxy-destroy; do
   touch %{buildroot}%{_mandir}/man1/${b}.1
 done
 
+%if %{use_systemd}
+mkdir -p %{buildroot}%{_unitdir}
+install -m 644 -p %{SOURCE2} %{buildroot}%{_unitdir}
+%endif
+
 %clean
 rm -rf %{buildroot}
 
@@ -182,18 +200,44 @@ exit 0
 
 %post server
 if [ $1 = 1 ]; then
+    %if %{use_systemd}
+    systemctl daemon-reload >/dev/null 2>&1 || :
+    %else
     /sbin/chkconfig --add %{name}
+    %endif
 fi
 
 %preun server
 if [ $1 = 0 ]; then
+    %if %{use_systemd}
+
+    for INSTANCE in `systemctl | grep %{name}@ | awk '{print $1}'`; do
+        systemctl --no-reload disable $INSTANCE >/dev/null 2>&1 || :
+        systemctl stop $INSTANCE >/dev/null 2>&1 || :
+    done
+
+    %else
+
     /sbin/service %{name} stop >/dev/null 2>&1 || :
     /sbin/chkconfig --del %{name}
+
+    %endif
 fi
 
 %postun server
 if [ $1 -ge 1 ]; then
+    %if %{use_systemd}
+
+    systemctl daemon-reload >/dev/null 2>&1 || :
+    for INSTANCE in `systemctl | grep %{name}@ | awk '{print $1}'`; do
+        systemctl try-restart $INSTANCE >/dev/null 2>&1 || :
+    done
+
+    %else
+
     /sbin/service %{name} condrestart >/dev/null 2>&1 || :
+
+    %endif
 fi
 
 %pre clients-cpp
@@ -294,7 +338,6 @@ fi
 
 %files server
 %{_sbindir}/%{name}
-%{_initrddir}/%{name}
 %config(noreplace) %{_sysconfdir}/sysconfig/%{name}
 %attr(-,voms,voms) %dir %{_sysconfdir}/%{name}
 %dir %{_sysconfdir}/grid-security/%{name}
@@ -308,8 +351,16 @@ fi
 %{_datadir}/%{name}/voms_replica_slave_setup.sh
 %{_mandir}/man8/voms.8*
 %doc README.Fedora
+%if %{use_systemd}
+%{_unitdir}/%{name}@.service
+%else
+%{_initrddir}/%{name}
+%endif
 
 %changelog
+* Wed Jun 08 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.0.12-3.2
+- Replace init script with systemd service file on EL7 (SOFTWARE-2357)
+
 * Fri Oct 16 2015 Carl Edquist <edquist@cs.wisc.edu> - 2.0.12-3.1
 - Fix SQL syntax for mariadb in EL7 (SOFTWARE-1604)
 
