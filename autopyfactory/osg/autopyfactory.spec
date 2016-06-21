@@ -16,6 +16,8 @@ BuildArch: noarch
 Vendor: Jose Caballero <jcaballero@bnl.gov>
 Provides: autopyfactory
 Obsoletes: panda-autopyfactory
+#BuildRequires: condor-all
+BuildRequires: condor-python
 Url: https://twiki.cern.ch/twiki/bin/view/Atlas/PanDA
 
 %description
@@ -140,8 +142,6 @@ rm -rf $RPM_BUILD_ROOT
 Summary: autopyfactory common 
 Group: Development/Libraries
 #Requires: autopyfactory-proxymanager
-Requires: condor-all
-Requires: condor-python
 Requires: python-simplejson
 Requires: python-pycurl
 %description -n autopyfactory-common
