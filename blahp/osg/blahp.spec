@@ -2,7 +2,7 @@
 #%define gitrev
 
 Name:		blahp
-Version:	1.18.20.bosco
+Version:	1.18.21.bosco
 Release:	1%{?gitrev:.%{gitrev}}%{?dist}
 Summary:	gLite BLAHP daemon
 
@@ -181,6 +181,10 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Thu Jun 23 2016 Brian Lin <blin@cs.wisc.edu> - 1.18.21.bosco-1
+- Fix Slurm file leak (SOFTWARE-2367)
+- Package slurm_hold.sh (SOFTWARE-2375)
+
 * Fri Jun 03 2016 Brian Lin <blin@cs.wisc.edu> - 1.18.20.bosco-1
 - Add multicore HTCondor support (SOFTWARE-2303)
 - Support dynamic assignment of env variables (SOFTWARE-2221)
