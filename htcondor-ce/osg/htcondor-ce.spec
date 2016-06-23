@@ -2,7 +2,7 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 2.0.6
+Version: 2.0.7
 Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
@@ -133,6 +133,19 @@ Obsoletes: condor-ce-sge < 0.5.4
 Provides:  condor-ce-sge = %{version}
 
 %description sge
+%{summary}
+
+%package bosco
+Group: Applications/System
+Summary: Default routes for submission to BOSCO
+
+Requires: %{name} = %{version}-%{release}
+Requires: /usr/bin/grid-proxy-init
+Requires: /usr/bin/voms-proxy-init
+
+Provides:  condor-ce-bosco = %{version}
+
+%description bosco
 %{summary}
 
 %package client
@@ -331,6 +344,12 @@ fi
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/02-ce-sge.conf
 %{_datadir}/condor-ce/config.d/02-ce-sge-defaults.conf
 
+%files bosco
+%defattr(-,root,root,-)
+
+%config(noreplace) %{_sysconfdir}/condor-ce/config.d/02-ce-bosco.conf
+%{_datadir}/condor-ce/config.d/02-ce-bosco-defaults.conf
+
 %files client
 
 %dir %{_sysconfdir}/condor-ce
@@ -404,6 +423,9 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Thu Jun 23 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.7-1
+- Add a default route for a BOSCO CE (SOFTWARE-2370)
+
 * Wed May 25 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.6-1
 - Fix condor_ce_trace timeout exit code
 - Print condor_ce_trace exceptions when -debug is specified
