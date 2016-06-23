@@ -1,6 +1,6 @@
 Summary: Package for configure-osg and associated scripts
 Name: osg-configure
-Version: 1.4.0
+Version: 1.4.1
 Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
@@ -336,6 +336,12 @@ fi
 
 
 %changelog
+* Wed Jun 22 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 1.4.1-1
+- Set OSG_CONFIGURED=true for BOSCO HTCondor-CEs (SOFTWARE-2360)
+- Add edit_lcmaps_db option to prevent changes to lcmaps.db (SOFTWARE-2321)
+- Validate gums host (SOFTWARE-2319)
+- Set BOSCO_RMS and BOSCO_ENDPOINT for use in BOSCO job routes (SOFTWARE-2366)
+
 * Wed Apr 20 2016 Matyas Selmeci <matyas@cs.wisc.edu> 1.4.0-1
 - Relax checks on non-site-controlled hosts (SOFTWARE-2123)
 - Remove umask check and always use 022 for umask (SOFTWARE-2276)
