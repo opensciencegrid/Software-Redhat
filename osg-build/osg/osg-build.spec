@@ -2,7 +2,7 @@
 %global _release 1
 
 Name:           osg-build
-Version:        1.6.3
+Version:        1.6.4
 Release:        %{?betatag:0.}%{_release}%{?betatag}%{?dist}
 Summary:        Build tools for the OSG
 
@@ -71,6 +71,10 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_docdir}/%{name}/sample-osg-build.ini
 
 %changelog
+* Mon Jun 27 2016 Carl Edquist <edquist@cs.wisc.edu> - 1.6.4-1
+- Rename koji-hub.batlab.org to koji.chtc.wisc.edu (SOFTWARE-2175)
+- Do not enforce vcs branch checks for scratch builds (SOFTWARE-1876)
+
 * Tue Apr 12 2016 Matyas Selmeci <matyas@cs.wisc.edu> 1.6.3-1
 - include CILogon-OSG CA cert in CA bundle created by `osg-koji setup' (SOFTWARE-2273)
 
