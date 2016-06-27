@@ -7,7 +7,7 @@ Version:   3.3
 %if 0%{?el7}
 %define release_suffix _clipped
 %endif
-Release:   6%{?release_suffix}%{?dist}
+Release:   7%{?release_suffix}%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -222,6 +222,7 @@ Summary: Bosco meta-package for the HTCondor-CE OSG-CE
 Requires: %{htcce} = %{version}-%{release}
 Requires: %{basece}-bosco = %{version}-%{release}
 Requires: condor-bosco
+Requires: htcondor-ce-bosco
 
 %description -n %{htcce}-bosco
 %{summary}
@@ -321,6 +322,9 @@ exit 0
 %files bosco
 
 %changelog
+* Mon Jun 27 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.3-7
+- Require htcondor-ce-bosco in bosco CE subpackages (SOFTWARE-2373)
+
 * Thu Apr 14 2016 Edgar Fajardo <efajardo@physics.ucsd.edu> - 3.3-6
 - Removed the gram components from the subpackages (SOFTWARE-2278)
 
@@ -468,6 +472,6 @@ Added dependency on edg-mkgridmap
 * Thu Jul 28 2011 Brian Bockelman <bbockelm@cse.unl.edu>
 - Updated RPM dependency.
 
-* Wed Jul 21 2011 Tanya Levshina <tlevshin.fnal.gov> 
+* Wed Jul 20 2011 Tanya Levshina <tlevshin.fnal.gov>
 - Created an initial osg-ce RPM.
 
