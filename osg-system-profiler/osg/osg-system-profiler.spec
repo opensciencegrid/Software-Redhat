@@ -1,6 +1,6 @@
 Summary:   Profiles your system for debugging
 Name:      osg-system-profiler
-Version:   1.3.0
+Version:   1.4.0
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -48,6 +48,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/%{name}-viewer
 
 %changelog
+* Mon Jun 27 2016 Carl Edquist <edquist@cs.wisc.edu> - 1.4.0-1
+- Include dump of tomcat server config (SOFTWARE-1099)
+- Create osg-profile.txt in temp dir, do not include old profiles in
+  directory dumps (SOFTWARE-1773)
+
 * Mon Apr 18 2016 Matyas Selmeci <matyas@cs.wisc.edu> 1.3.0-1
 - Add SELinux audit logs to osg-system-profiler and URL support to
   osg-system-profiler-viewer (SOFTWARE-2275)
