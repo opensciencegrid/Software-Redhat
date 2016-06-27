@@ -7,7 +7,7 @@
 Name:		globus-gridftp-server
 %global _name %(tr - _ <<< %{name})
 Version:	7.20
-Release:	1.1%{?dist}
+Release:	1.2%{?dist}
 Summary:	Globus Toolkit - Globus GridFTP Server
 
 Group:		System Environment/Libraries
@@ -24,6 +24,8 @@ Source7:	globus-gridftp-server.logrotate
 #		README file
 Source8:	GLOBUS-GRIDFTP
 Patch1:		gridftp-conf-logging.patch
+Patch2:         adler32.patch
+Patch3:         do_not_destroy_log_handle.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Requires:	globus-xio-gsi-driver%{?_isa} >= 2
@@ -41,6 +43,7 @@ BuildRequires:	globus-gsi-credential-devel >= 6
 BuildRequires:	globus-gsi-sysconfig-devel >= 5
 BuildRequires:	globus-io-devel >= 9
 BuildRequires:	openssl-devel
+BuildRequires:  zlib-devel
 Requires:	globus-xio%{?_isa} >= 5
 Requires:	globus-ftp-control%{?_isa} >= 6
 
@@ -104,10 +107,12 @@ Globus GridFTP Server Development Files
 %prep
 %setup -q -n %{_name}-%{version}
 %patch1 -p1
+%patch2 -p1
+%patch3 -p4
 
 %build
 # Reduce overlinking
-export LDFLAGS="-Wl,--as-needed -Wl,-z,defs %{?__global_ldflags}"
+export LDFLAGS="-Wl,--as-needed -Wl,-z,defs %{?__global_ldflags} -lz"
 
 export GRIDMAP=/etc/grid-security/grid-mapfile
 export GLOBUS_VERSION=6.0
@@ -226,6 +231,10 @@ fi
 %{_libdir}/pkgconfig/%{name}.pc
 
 %changelog
+* Mon Jun 27 2016 Brian Bockelman <bbockelm@cse.unl.edu> - 7.20-1.2.osg
+- Avoid deadlocking when the gridftp server closes its log file. SOFTWARE-2377
+- Add support for adler32 checksums. SOFTWARE-2379
+
 * Mon Feb 16 2015 Matyas Selmeci <matyas@cs.wisc.edu> - 7.20-1.1.osg
 - Merge OSG changes
 
