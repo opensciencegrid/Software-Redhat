@@ -2,9 +2,9 @@
 %define bigtop_utils_version 0.6.0+248 
 %define bigtop_utils_patched_version 0.6.0-cdh4.7.1 
 %define bigtop_utils_base_version 0.6.0 
-%define bigtop_utils_release 1.cdh4.7.1.p0.13%{?dist} 
+%define bigtop_utils_release 1.cdh4.7.1.p0.13.1%{?dist}
 %define cdh_customer_patch p0 
-%define cdh_parcel_custom_version 0.6.0+248-1.cdh4.7.1.p0.13%{?dist}
+%define cdh_parcel_custom_version 0.6.0+248-1.cdh4.7.1.p0.13.1%{?dist}
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
@@ -37,6 +37,8 @@ Source1:    LICENSE
 Source2:    bigtop-utils.default
 Source3:    bigtop-detect-javalibs
 
+Patch0:     bigtop-detect-javahome.patch
+
 Requires:   bash
 
 # "which" command is needed for a lot of projects.
@@ -57,6 +59,7 @@ install -p -m 644 %{SOURCE0} .
 install -p -m 644 %{SOURCE1} .
 install -p -m 644 %{SOURCE2} .
 install -p -m 644 %{SOURCE3} .
+%patch0 -p1
 
 %build
 
@@ -64,9 +67,9 @@ install -p -m 644 %{SOURCE3} .
 %install
 install -d -p -m 755 $RPM_BUILD_ROOT%{lib_dir}/
 install -d -p -m 755 $RPM_BUILD_ROOT/etc/default
-install -p -m 755 %{SOURCE0} $RPM_BUILD_ROOT%{lib_dir}/
-install -p -m 755 %{SOURCE3} $RPM_BUILD_ROOT%{lib_dir}/
-install -p -m 644 %{SOURCE2} $RPM_BUILD_ROOT/etc/default/bigtop-utils
+install -p -m 755 bigtop-detect-javahome $RPM_BUILD_ROOT%{lib_dir}/
+install -p -m 755 bigtop-detect-javalibs $RPM_BUILD_ROOT%{lib_dir}/
+install -p -m 644 bigtop-utils.default   $RPM_BUILD_ROOT/etc/default/bigtop-utils
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -81,4 +84,6 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 
+* Mon Jun 27 2016 Carl Edquist <edquist@cs.wisc.edu> 0.6.0+248-1.cdh4.7.1.p0.13.1
+- prefer /etc/alternatives for JAVA_HOME, then JAVA7 (SOFTWARE-2304)
 
