@@ -4,7 +4,7 @@
 %endif
 
 Name:           osg-measurements-metrics-web
-Version:        1.5
+Version:        1.6
 Release:        1%{?dist}
 Summary:        OSG Measurements and Metrics web and database
 
@@ -17,7 +17,7 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
 BuildRequires:  python-setuptools
-Requires:       graphtool >= 0.8.1
+Requires:       graphtool >= 0.9.0
 Requires:       MySQL-python
 Requires:       python-sqlite
 Requires:       python-cheetah
@@ -25,7 +25,7 @@ Requires:       /usr/bin/ldapsearch
 Requires:       python-cherrypy >= 3.1.2
 Requires:       python-ZSI
 Requires:       python-setuptools
-Requires:       osg-measurements-metrics-db >= 1.5
+Requires:       osg-measurements-metrics-db >= 1.6
 %if 0%{?el5}
 Requires:       python-simplejson
 %endif
@@ -80,6 +80,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+
+* Thu Jun 30 2016 Juan F. Mosquera <jmorales@fnal.gov>
+- Server side plots of html google charts
+- Additionla Google charts functionalities
+- Starts Xvfb service for firefox
 
 * Tue Mar 29 2016 Juan F. Mosquera <jmorales@fnal.gov>
 - fix for project accounting plots and inclusion of HTML site 
