@@ -11,7 +11,7 @@ Name:           glideinwms
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
 %define version 3.3
-%define release 0.9.rc9
+%define release 0.10.rc10
 %define frontend_xml frontend.master.xml
 %define factory_xml glideinWMS.master.xml
 
@@ -22,7 +22,7 @@ Summary:        The VOFrontend for glideinWMS submission host
 
 Group:          System Environment/Daemons
 License:        Fermitools Software Legal Information (Modified BSD License)
-URL:            http://glideinwms.fnal.gov/
+URL:            http://glideinwms.fnal.gov
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
@@ -237,8 +237,8 @@ install of wmscollector + wms factory
 %build
 cp %{SOURCE7} .
 chmod 700 chksum.sh
-./chksum.sh v%{version}-%{release}.osg etc/checksum.frontend "CVS config_examples doc .git .gitattributes poolwatcher factory/check* factory/glideFactory* factory/test* factory/manage* factory/stop* factory/tools creation/create_glidein creation/reconfig_glidein creation/info_glidein creation/lib/cgW* creation/web_base/factory*html creation/web_base/collector_setup.sh creation/web_base/condor_platform_select.sh creation/web_base/condor_startup.sh creation/web_base/create_mapfile.sh creation/web_base/gcb_setup.sh creation/web_base/glexec_setup.sh creation/web_base/glidein_startup.sh creation/web_base/job_submit.sh creation/web_base/local_start.sh creation/web_base/setup_x509.sh creation/web_base/update_proxy.py creation/web_base/validate_node.sh chksum.sh etc/checksum* unittests"
-./chksum.sh v%{version}-%{release}.osg etc/checksum.factory "CVS config_examples doc .git .gitattributes poolwatcher frontend/* creation/reconfig_glidein creation/clone_glidein creation/lib/cgW* creation/web_base/factory*html creation/web_base/collector_setup.sh creation/web_base/condor_platform_select.sh creation/web_base/condor_startup.sh creation/web_base/create_mapfile.sh creation/web_base/gcb_setup.sh creation/web_base/glexec_setup.sh creation/web_base/glidein_startup.sh creation/web_base/job_submit.sh creation/web_base/local_start.sh creation/web_base/setup_x509.sh creation/web_base/update_proxy.py creation/web_base/validate_node.sh chksum.sh etc/checksum* unittests creation/lib/matchPolicy*"
+./chksum.sh v%{version}-%{release}.osg etc/checksum.frontend "CVS config_examples doc .git .gitattributes poolwatcher factory/check* factory/glideFactory* factory/test* factory/manage* factory/stop* factory/tools creation/create_glidein creation/reconfig_glidein creation/info_glidein creation/lib/cgW* creation/web_base/factory*html creation/web_base/collector_setup.sh creation/web_base/condor_platform_select.sh creation/web_base/condor_startup.sh creation/web_base/create_mapfile.sh creation/web_base/gcb_setup.sh creation/web_base/glexec_setup.sh creation/web_base/glidein_startup.sh creation/web_base/job_submit.sh creation/web_base/local_start.sh creation/web_base/setup_x509.sh creation/web_base/update_proxy.py creation/web_base/validate_node.sh chksum.sh etc/checksum* unittests build"
+./chksum.sh v%{version}-%{release}.osg etc/checksum.factory "CVS config_examples doc .git .gitattributes poolwatcher frontend/* creation/reconfig_glidein creation/clone_glidein creation/lib/cgW* creation/web_base/factory*html creation/web_base/collector_setup.sh creation/web_base/condor_platform_select.sh creation/web_base/condor_startup.sh creation/web_base/create_mapfile.sh creation/web_base/gcb_setup.sh creation/web_base/glexec_setup.sh creation/web_base/glidein_startup.sh creation/web_base/job_submit.sh creation/web_base/local_start.sh creation/web_base/setup_x509.sh creation/web_base/update_proxy.py creation/web_base/validate_node.sh chksum.sh etc/checksum* unittests build creation/lib/matchPolicy*"
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -269,6 +269,7 @@ install -d $RPM_BUILD_ROOT%{_sbindir}
 install -m 0500 frontend/checkFrontend.py $RPM_BUILD_ROOT%{_sbindir}/checkFrontend
 install -m 0500 frontend/glideinFrontendElement.py $RPM_BUILD_ROOT%{_sbindir}/glideinFrontendElement.py
 install -m 0500 frontend/glideinFrontend.py $RPM_BUILD_ROOT%{_sbindir}/glideinFrontend
+install -m 0500 frontend/manageFrontendDowntimes.py $RPM_BUILD_ROOT%{_sbindir}/
 install -m 0500 frontend/stopFrontend.py $RPM_BUILD_ROOT%{_sbindir}/stopFrontend
 install -m 0500 creation/reconfig_frontend $RPM_BUILD_ROOT%{_sbindir}/reconfig_frontend
 
@@ -296,6 +297,7 @@ rm -Rf $RPM_BUILD_ROOT%{python_sitelib}/glideinwms/creation/config_examples
 rm -f $RPM_BUILD_ROOT%{python_sitelib}/glideinwms/creation/create_rpm_startup
 rm -f $RPM_BUILD_ROOT%{python_sitelib}/glideinwms/.gitattributes
 rm -Rf $RPM_BUILD_ROOT%{python_sitelib}/glideinwms/unittests
+rm -Rf $RPM_BUILD_ROOT%{python_sitelib}/glideinwms/build
 rm -f $RPM_BUILD_ROOT%{python_sitelib}/glideinwms/chksum.sh
 rm -f $RPM_BUILD_ROOT%{python_sitelib}/glideinwms/LICENSE.txt
 rm -f $RPM_BUILD_ROOT%{python_sitelib}/glideinwms/ACKNOWLEDGMENTS.txt
@@ -703,6 +705,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_sbindir}/glideinFrontend
 %attr(755,root,root) %{_sbindir}/glideinFrontendElement.py*
 %attr(755,root,root) %{_sbindir}/reconfig_frontend
+%attr(755,root,root) %{_sbindir}/manageFrontendDowntimes.py
 %attr(755,root,root) %{_sbindir}/stopFrontend
 %attr(-, frontend, frontend) %dir %{_localstatedir}/lib/gwms-frontend
 %attr(-, frontend, frontend) %{web_dir}
@@ -777,42 +780,40 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/condor/certs/condor_mapfile
 
 %changelog
-* Wed Mar 09 2016 Parag Mhashilkar <parag@fnal.gov> - 3.3-0.9.rc9
-- Glideinwms v3.3 rc9 release
+* Wed Jun 30 2016 Parag Mhashilkar <parag@fnal.gov> - 3.3-0.10.rc10
+- Glideinwms v3.3 release candidates (rc1-rc10)
 - Release Notes: http://glideinwms.fnal.gov/doc.dev/history.html
 
-* Fri Jan 22 2016 Parag Mhashilkar <parag@fnal.gov> - 3.3-0.8.rc8
-- Glideinwms v3.3 rc8 release
-- Release Notes: http://glideinwms.fnal.gov/doc.dev/history.html
+* Fri Jun 17 2016 Parag Mhashilkar <parag@fnal.gov> - 3.2.14.1-1
+- Glideinwms v3.2.14.1
+- Release Notes: http://glideinwms.fnal.gov/doc.v3_2_14_1/history.html
+- Release candidates: 3.2.14.1-0.1.rc1
 
-* Fri Jan 15 2016 Parag Mhashilkar <parag@fnal.gov> - 3.3-0.7.rc7
-- Glideinwms v3.3 rc7 release
-- Release Notes: http://glideinwms.fnal.gov/doc.dev/history.html
+* Fri Jun 03 2016 Parag Mhashilkar <parag@fnal.gov> - 3.2.14-1
+- Glideinwms v3.2.14
+- Release Notes: http://glideinwms.fnal.gov/doc.v3_2_14/history.html
+- Release candidates: 3.2.14-0.1.rc1 to 3.2.14-0.2.rc2
 
-* Wed Jan 06 2016 Parag Mhashilkar <parag@fnal.gov> - 3.3-0.6.rc6
-- Glideinwms v3.3 rc6 release
-- Release Notes: http://glideinwms.fnal.gov/doc.dev/history.html
+* Wed Mar 09 2016 Parag Mhashilkar <parag@fnal.gov> - 3.2.13-1
+- Glideinwms v3.2.13 (see release notes for details)
+- Release Notes: http://glideinwms.fnal.gov/doc.v3_2_13/history.html
+- Release candidates: 3.2.13-0.1.rc1 to 3.2.13-0.2.rc2
 
-* Mon Dec 07 2015 Parag Mhashilkar <parag@fnal.gov> - 3.3-0.5.rc5
-- Glideinwms v3.3 rc5 release
-- Release Notes: http://glideinwms.fnal.gov/doc.dev/history.html
+* Thu Jan 21 2016 Marco Mambelli <marcom@fnal.gov> - 3.2.12.1-1
+- Glideinwms v3.2.12.1 release (see notes for featires and bug fixes)
+- Release Notes: http://glideinwms.fnal.gov/doc.v3_2_12_1/history.html
+- Release candidates: 3.2.12.1-0.1.rc1
 
-* Mon Dec 07 2015 Marco Mambelli <marcom@fnal.gov> - 3.2.12-0.2.rc2
-- Fixed python 2.4 compatibility
-
-* Fri Dec 04 2015 Parag Mhashilkar <parag@fnal.gov> - 3.2.12-0.1.rc1
-- Added glideinwms-common-tools as a dependency to glideinwms-userschedd
-- Tools from glideinwms-vofrontend-standalone are now in path (bindir)
+* Thu Jan 14 2016 Marco Mambelli <marcom@fnal.gov> - 3.2.12-1
+- Glideinwms v3.2.12 release (see notes for featires and bug fixes)
+- Release Notes: http://glideinwms.fnal.gov/doc.v3_2_12/history.html
+- Release candidates: 3.2.12-0.1.rc1 to 3.2.12-0.5.rc5
 
 * Thu Oct 08 2015 Matyas Selmeci <matyas@cs.wisc.edu> - 3.2.11.2-4
 - Don't put collectors behind shared port (needed for HTCondor 8.4.0) (SOFTWARE-2015)
 
 * Mon Oct 05 2015 Carl Edquist <edquist@cs.wisc.edu> - 3.2.11.2-2
 - Repartition subpackages to avoid overlapping files (SOFTWARE-2015)
-
-* Mon Oct 05 2015 Parag Mhashilkar <parag@fnal.gov> - 3.3-0.4.rc4
-- Glideinwms v3.3 rc4 release
-- Release Notes: http://glideinwms.fnal.gov/doc.dev/history.html
 
 * Fri Sep 18 2015 Parag Mhashilkar <parag@fnal.gov> - 3.2.11.2-1
 - Glideinwms v3.2.11.2 release
@@ -826,26 +827,6 @@ rm -rf $RPM_BUILD_ROOT
 - Glideinwms v3.2.11 release
 - Release Notes: http://glideinwms.fnal.gov/doc.v3_2_11/history.html
 
-* Thu Aug 13 2015 Parag Mhashilkar <parag@fnal.gov> - 3.3-0.3.rc3
-- Glideinwms v3.3 rc3 release
-- Release Notes: http://glideinwms.fnal.gov/doc.dev/history.html
-
-* Thu Aug 13 2015 Parag Mhashilkar <parag@fnal.gov> - 3.2.11-0.2.rc2
-- Glideinwms v3.2.11 rc2 release
-- Release Notes: http://glideinwms.fnal.gov/doc.v3_2_11/history.html
-
-* Wed Aug 12 2015 Parag Mhashilkar <parag@fnal.gov> - 3.3-0.2.rc2
-- Glideinwms v3.3 rc2 release
-- Release Notes: http://glideinwms.fnal.gov/doc.dev/history.html
-
-* Wed Aug 12 2015 Parag Mhashilkar <parag@fnal.gov> - 3.2.11-0.1.rc1
-- Glideinwms v3.2.11 rc1 release
-- Release Notes: http://glideinwms.fnal.gov/doc.v3_2_11/history.html
-
-* Thu Jul 16 2015 Parag Mhashilkar <parag@fnal.gov> - 3.3-0.1.rc1
-- Glideinwms v3.3 rc1 release
-- Release Notes: http://glideinwms.fnal.gov/doc.dev/history.html
-
 * Thu Jul 16 2015 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.2.10-1.1.osg
 - vofrontend-standalone: Replace osg-client dep with most of osg-client's
   contents (except the networking stuff), since osg-client has been dropped in
@@ -858,23 +839,13 @@ rm -rf $RPM_BUILD_ROOT
 * Fri May 08 2015 Parag Mhashilkar <parag@fnal.gov> - 3.2.9-1
 - Glideinwms v3.2.9 release
 - Release Notes: http://glideinwms.fnal.gov/doc.prd/history.html
-
-* Thu May 07 2015 Parag Mhashilkar <parag@fnal.gov> - 3.2.9-0.2.rc2
-- Glideinwms v3.2.9 rc2 release
-
-* Fri Apr 24 2015 Parag Mhashilkar <parag@fnal.gov> - 3.2.9-0.1.rc1
-- Glideinwms v3.2.9 rc1 release
+- Release candidates: 3.2.9-0.1.rc1 to 3.2.9-0.2.rc2
 
 * Tue Dec 30 2014 Parag Mhashilkar <parag@fnal.gov> - 3.2.8-1
 - Glideinwms v3.2.8 release
+- Release candidates: 3.2.8-0.1.rc1 to 3.2.8-0.2.rc2
 
-* Mon Dec 29 2014 Parag Mhashilkar <parag@fnal.gov> - 3.2.8-0.2.rc1
-- Fixed install location of 01_gwms_metrics.config to /etc/condor/ganglia.d
-
-* Mon Dec 22 2014 Parag Mhashilkar <parag@fnal.gov> - 3.2.8-0.1.rc1
-- Glideinwms v3.2.8 rc1 release
-
-* Wed Nov 6 2014 Parag Mhashilkar <parag@fnal.gov> - 3.2.7.2-1
+* Thu Nov 6 2014 Parag Mhashilkar <parag@fnal.gov> - 3.2.7.2-1
 - Glideinwms v3.2.7.2 release
 - Sets MASTER.USE_SHARED_PORT in schedd's config to support HTCondor v8.2.3
 
@@ -883,28 +854,13 @@ rm -rf $RPM_BUILD_ROOT
 
 * Tue Oct 14 2014 Parag Mhashilkar <parag@fnal.gov> - 3.2.7-1
 - Glideinwms v3.2.7 release
-
-* Mon Oct 8 2014 Parag Mhashilkar <parag@fnal.gov> - 3.2.7-0.2.rc2
-- Glideinwms v3.2.7 rc2 release
-
-* Mon Oct 6 2014 Parag Mhashilkar <parag@fnal.gov> - 3.2.7-0.1.rc1
-- Glideinwms v3.2.7 rc1 release
-- Disabled secondarsy schedd in the frontend configuration
+- Disabled secondary schedd in the frontend configuration
 - Added python-ldap as dependency to glideinwms-libs and glideinwms-factory
+- Release candidates: 3.2.7-0.1.rc1 to 3.2.7-0.2.rc2
 
 * Fri Jul 25 2014 Parag Mhashilkar <parag@fnal.gov> - 3.2.6-1
 - Glideinwms v3.2.6 release
-
-* Fri Jul 25 2014 Parag Mhashilkar <parag@fnal.gov> - 3.2.6-0.3.rc3
-- Glideinwms v3.2.6 rc3 release
-- Reverted group name in default dir ownership but we now explicitly make gfactory and fronend users part of the gfactory and frontend group respectively
-
-* Fri Jul 18 2014 Parag Mhashilkar <parag@fnal.gov> - 3.2.6-0.2.rc2
-- Glideinwms v3.2.6 rc2 release
-
-* Wed Jul 9 2014 Parag Mhashilkar <parag@fnal.gov> - 3.2.6-0.1.rc1
-- Glideinwms v3.2.6 rc1 release
-- Removed the group name in the default dir ownership for factory and frontend
+- Release candidates: 3.2.6-0.1.rc1 to 3.2.7-0.2.rc3
 
 * Wed Jun 25 2014 Parag Mhashilkar <parag@fnal.gov> - 3.2.5.1-2
 - Added GOC factory info in the factory config template
@@ -914,22 +870,14 @@ rm -rf $RPM_BUILD_ROOT
 
 * Mon May 19 2014 Parag Mhashilkar <parag@fnal.gov> - 3.2.5-1
 - Glideinwms v3.2.5 release
-
-* Tue May 13 2014 Parag Mhashilkar <parag@fnal.gov> - 3.2.5-0.3.rc3
-- Glideinwms v3.2.5 rc3 release
-
-* Mon May 5 2014 Parag Mhashilkar <parag@fnal.gov> - 3.2.5-0.2.rc2
-- Glideinwms v3.2.5 rc2 release
-
-* Fri May 2 2014 Parag Mhashilkar <parag@fnal.gov> - 3.2.5-0.1.rc1
-- Glideinwms v3.2.5 rc1 release
+- Release candidates: 3.2.5-0.1.rc1 to 3.2.5-0.2.rc3
 - Change the default trust_domain in frontend.xml from OSG to grid
 
 * Mon Apr 28 2014 Parag Mhashilkar <parag@fnal.gov> - 3.2.4-3
 - Fix the ownership of startup.log file for frontend in post script
 - Changed the javascriptrrd dependency to be 1.1.0+ for frontend as well
 
-* Mon Apr 16 2014 Parag Mhashilkar <parag@fnal.gov> - 3.2.4-2
+* Wed Apr 16 2014 Parag Mhashilkar <parag@fnal.gov> - 3.2.4-2
 - Changed the javascriptrrd dependency to be 1.1.0+
 
 * Mon Apr 14 2014 Parag Mhashilkar <parag@fnal.gov> - 3.2.4-1
@@ -939,16 +887,11 @@ rm -rf $RPM_BUILD_ROOT
 * Mon Feb 03 2014 Parag Mhashilkar <parag@fnal.gov> - 3.2.3-1
 - Glideinwms v3.2.3 release
 - Final release does not include support for HTCondor CE rsl
-
-* Wed Jan 22 2014 Parag Mhashilkar <parag@fnal.gov> - 3.2.3-0.3.rc3
 - Support for HTCondor CE rsl and improvements to Frontend
-
-* Wed Jan 15 2014 Parag Mhashilkar <parag@fnal.gov> - 3.2.3-0.2.rc2
 - Bug fixes to factory log cleanup
-
-* Tue Dec 17 2013 Parag Mhashilkar <parag@fnal.gov> - 3.2.3-0.1.rc1
 - New features and bug fixes
 - Added clone_glidein tool
+- Release candidates: 3.2.3-0.1.rc1 to 3.2.5-0.2.rc3
 
 * Mon Oct 28 2013 Parag Mhashilkar <parag@fnal.gov> - 3.2.1-0.1.rc2
 - Added gwms-frontend and gwms-factory files in /etc/sysconfig in the respective rpms
@@ -984,7 +927,7 @@ rm -rf $RPM_BUILD_ROOT
 * Wed May 8 2013 Parag Mhashilkar <parag@fnal.gov> - 2.7.1-0.rc1.1
 - Added 11_gwms_secondary_collectors to respective condor rpms and glidecondor_addSecCol to the tools rpm
 
-* Fri Apr 29 2013 Parag Mhashilkar <parag@fnal.gov> - 2.7.0-0.4
+* Mon Apr 29 2013 Parag Mhashilkar <parag@fnal.gov> - 2.7.0-0.4
 - Added missing glideinwms/__init__ to the glideinwms-libs.
 
 * Fri Apr 26 2013 Parag Mhashilkar <parag@fnal.gov> - 2.7.0-0.3
@@ -1011,7 +954,7 @@ rm -rf $RPM_BUILD_ROOT
 * Thu Nov 8 2012 Doug Strain <dstrain@fnal.gov> - 2.6.2-2
 - Improvements recommended by Igor to modularize glideinwms
 
-* Wed Nov 2 2012 Doug Strain <dstrain@fnal.gov> - 2.6.2-1
+* Fri Nov 2 2012 Doug Strain <dstrain@fnal.gov> - 2.6.2-1
 - Glideinwms 2.6.2 Release
 
 * Thu Sep 20 2012 Doug Strain <dstrain@fnal.gov> - 2.6.1-2
@@ -1098,7 +1041,7 @@ rm -rf $RPM_BUILD_ROOT
 * Wed Aug 31 2011 Burt Holzman <burt@fnal.gov> - 2.5.2-2
 - Fixed file location for frontend_support.js
 
-* Wed Aug 13 2011 Burt Holzman <burt@fnal.gov> - 2.5.2-1
+* Sat Aug 13 2011 Burt Holzman <burt@fnal.gov> - 2.5.2-1
 - Update to glideinWMS 2.5.2
 
 * Tue Aug 02 2011 Derek Weitzel <dweitzel@cse.unl.edu> - 2.5.1-13
@@ -1116,18 +1059,18 @@ rm -rf $RPM_BUILD_ROOT
 - Include glideinWMS 2.5.1
 - Made all the directories independent of the frontend name
 
-* Mon Mar 10 2011 Derek Weitzel  2.5.0-11
+* Thu Mar 10 2011 Derek Weitzel  2.5.0-11
 - Changed the frontend.xml to correct the web stage directory
 
-* Mon Mar 10 2011 Derek Weitzel  2.5.0-9
+* Thu Mar 10 2011 Derek Weitzel  2.5.0-9
 - Made the work, stage, monitor, and log directory independent of the frontend name.
 - Frontend name is now generated at install time
 
-* Mon Feb 13 2011 Derek Weitzel  2.5.0-6
+* Sun Feb 13 2011 Derek Weitzel  2.5.0-6
 - Made rpm noarch
 - Replaced python site-packages more auto-detectable
 
-* Mon Feb 09 2011 Derek Weitzel  2.5.0-5
+* Wed Feb 09 2011 Derek Weitzel  2.5.0-5
 - Added the tools to bin directory
 
 * Mon Jan 24 2011 Derek Weitzel  2.5.0-4
