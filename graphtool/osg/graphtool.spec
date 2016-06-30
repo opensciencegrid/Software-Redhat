@@ -4,7 +4,7 @@
 %endif
 
 Name:                   graphtool
-Version:                0.8.1
+Version:                0.9.0
 Release:                1%{?dist}
 Summary:                CMS Common Graphing Package.
 
@@ -24,6 +24,8 @@ Requires:               numpy >= 1.2.1
 Requires:               python-imaging >= 1.1.5
 Requires:               python-setuptools
 Requires:               python-mako
+Requires:               xorg-x11-server-Xvfb >= 1.10.0
+Requires:               firefox >= 45.2.0
 
 %description
 GraphTool is a python graphing tool using the matplotlib library that
@@ -51,6 +53,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+
+* Thu Jun 30 2016 Juan F. Mosquera <jmorales@fnal.gov>
+- Server side plots of html google charts
+- Additionla Google charts functionalities
 
 * Tue Mar 29 2016 Juan F. Mosquera <jmorales@fnal.gov>
 - fix for project accounting plots and inclusion of HTML site 
