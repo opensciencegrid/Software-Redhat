@@ -2,7 +2,7 @@
 
 Name:           gridftp-hdfs
 Version:        0.5.4
-Release:        25%{?dist}
+Release:        25.1%{?dist}
 Summary:        HDFS DSI plugin for GridFTP
 Group:          System Environment/Daemons
 License:        ASL 2.0
@@ -35,6 +35,7 @@ Patch15: 2006-gridftp-hdfs-get-checksum.patch
 Patch16: 2011-capture_stderr.patch
 Patch17: 2115-load-limits.patch
 Patch18: 2107-rmdir-rename.patch
+Patch19: list_empty_directory.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -101,6 +102,7 @@ HDFS DSI plugin for GridFTP
 %patch16 -p1
 %patch17 -p1
 %patch18 -p1
+%patch19 -p1
 
 aclocal
 libtoolize
@@ -198,6 +200,9 @@ fi
 %endif
 
 %changelog
+* Thu Jun 30 2016 Brian Bockelman <bbockelm@cse.unl.edu> - 0.5.4-25.1
+- Fix bug with listing empty directories.
+
 * Mon Feb 22 2016 Carl Edquist <edquist@cs.wisc.edu> - 0.5.4-25.osg
 - Rebuild against hadoop-2.0.0+1612 (SOFTWARE-2161)
 
