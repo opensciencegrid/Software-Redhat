@@ -1,0 +1,7 @@
+AutoPyFactory Tools
+
+upstream source acquired with:
+
+  git clone https://github.com/PanDAWMS/autopyfactory-tools.git
+  cd autopyfactory-tools
+  /usr/bin/python setup.py bdist_rpm
