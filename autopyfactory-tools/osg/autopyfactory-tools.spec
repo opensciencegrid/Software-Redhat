@@ -49,4 +49,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -f INSTALLED_FILES
 %defattr(-,root,root)
+%attr(755,root,root) /usr/sbin/apf-condor-q
+%attr(755,root,root) /usr/sbin/apf-condor-status
+%attr(755,root,root) /usr/sbin/apf-queue-status
+%attr(755,root,root) /usr/sbin/apf-reverse-logstree
+%attr(755,root,root) /usr/sbin/apf-simulate-scheds
 
