@@ -5,7 +5,7 @@
 
 Summary:   Tests an OSG Software installation
 Name:      osg-test
-Version:   1.8.1
+Version:   1.8.2
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -40,6 +40,14 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/osgtest
 
 %changelog
+* Tue Jul 05 2016 Brian Lin <blin@cs.wisc.edu> - 1.8.2-1
+- Add MySQL functions (execute, check_execute, db_dump)
+- Add function to compare RPM versions
+- Add DummyClass that allows using osg-test modules in the Python interpreter
+- Allow comments and blank lines in test_sequence
+- get_package_envra: translate missing epochs to '0' 
+- Set tomcat startup timeout to 20 minutes
+
 * Thu Jun 09 2016 Brian Lin <blin@cs.wisc.edu> - 1.8.1-1
 - Fix Gratia server.xml.template on EL7 that caused GUMS failures
 
