@@ -11,7 +11,7 @@
 
 Name:		voms
 Version:	2.0.12
-Release:	3.2%{?dist}
+Release:	3.3%{?dist}
 Summary:	Virtual Organization Membership Service
 
 Group:		System Environment/Libraries
@@ -34,6 +34,9 @@ BuildRequires:	doxygen
 
 # for el7/mariadb
 Patch0: mariadb-innodb.patch
+
+# for all
+Patch1:         Make-RFC-proxies-by-default-SOFTWARE-2381.patch
 
 %description
 The Virtual Organization Membership Service (VOMS) is an attribute authority
@@ -120,6 +123,8 @@ This package provides the VOMS service.
 %if %{?rhel}%{!?rhel:0} >= 7
 %patch0 -p1
 %endif
+
+%patch1 -p1
 
 ./autogen.sh
 
@@ -358,6 +363,9 @@ fi
 %endif
 
 %changelog
+* Tue Jul 05 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.0.12-3.3
+- Make RFC proxies by default (SOFTWARE-2381)
+
 * Wed Jun 08 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.0.12-3.2
 - Replace init script with systemd service file on EL7 (SOFTWARE-2357)
 
