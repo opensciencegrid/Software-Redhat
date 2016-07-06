@@ -1,0 +1,67 @@
+From eb5704a4ecc0134266bd74b8d2d1f14a72716782 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Wed, 6 Jul 2016 15:01:49 -0500
+Subject: [PATCH] Make RFC 3820 proxies by default (SOFTWARE-2381)
+
+---
+ src/main/java/org/italiangrid/voms/clients/ProxyInitParams.java       | 2 +-
+ src/main/java/org/italiangrid/voms/clients/VomsProxyInit.java         | 4 ++--
+ .../java/org/italiangrid/voms/clients/options/ProxyInitOptions.java   | 2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/src/main/java/org/italiangrid/voms/clients/ProxyInitParams.java b/src/main/java/org/italiangrid/voms/clients/ProxyInitParams.java
+index c2a28b5..c741bae 100644
+--- a/src/main/java/org/italiangrid/voms/clients/ProxyInitParams.java
++++ b/src/main/java/org/italiangrid/voms/clients/ProxyInitParams.java
+@@ -52,11 +52,11 @@ public class ProxyInitParams {
+ 
+   private String policyLanguage;
+ 
+   private int pathLenConstraint = Integer.MAX_VALUE;
+ 
+-  private ProxyType proxyType = ProxyType.LEGACY;
++  private ProxyType proxyType = ProxyType.RFC3820;
+ 
+   private int timeoutInSeconds = DEFAULT_CONNECT_TIMEOUT_IN_SECONDS;
+ 
+   private boolean verifyAC = true;
+ 
+diff --git a/src/main/java/org/italiangrid/voms/clients/VomsProxyInit.java b/src/main/java/org/italiangrid/voms/clients/VomsProxyInit.java
+index b68071c..e2ee4e1 100644
+--- a/src/main/java/org/italiangrid/voms/clients/VomsProxyInit.java
++++ b/src/main/java/org/italiangrid/voms/clients/VomsProxyInit.java
+@@ -169,12 +169,12 @@ public class VomsProxyInit extends AbstractCLI {
+ 
+     if (commandLineHasOption(ProxyInitOptions.FQANS_ORDERING))
+       params
+         .setFqanOrder(fqansSanityChecks(getOptionValues(ProxyInitOptions.FQANS_ORDERING)));
+ 
+-    if (commandLineHasOption(ProxyInitOptions.RFC_PROXY))
+-      params.setProxyType(ProxyType.RFC3820);
++    if (commandLineHasOption(ProxyInitOptions.LEGACY_PROXY))
++      params.setProxyType(ProxyType.LEGACY);
+ 
+     if (commandLineHasOption(ProxyInitOptions.PROXY_VERSION))
+       params
+         .setProxyType(proxyTypeFromVersion(getOptionValue(ProxyInitOptions.PROXY_VERSION)));
+ 
+diff --git a/src/main/java/org/italiangrid/voms/clients/options/ProxyInitOptions.java b/src/main/java/org/italiangrid/voms/clients/options/ProxyInitOptions.java
+index b321e5c..b47b41d 100644
+--- a/src/main/java/org/italiangrid/voms/clients/options/ProxyInitOptions.java
++++ b/src/main/java/org/italiangrid/voms/clients/options/ProxyInitOptions.java
+@@ -26,11 +26,11 @@ public enum ProxyInitOptions implements CLIOption {
+   FAIL_ON_WARN("failonwarn"),
+   FQANS_ORDERING("order"),
+   IGNORE_WARNINGS("ignorewarn"),
+   KEY_SIZE("bits"),
+   KEY_LOCATION("key"),
+-  LEGAGY_PROXY("old"),
++  LEGACY_PROXY("old"),
+   LIMITED_PROXY("limited"),
+   OPTIONS_FILE("conf"),
+   PATHLEN_CONSTRAINT("path_length"),
+   PROXY_LOCATION("out"),
+   PROXY_LIFETIME_IN_HOURS("hours"),
+-- 
+2.6.3
+
