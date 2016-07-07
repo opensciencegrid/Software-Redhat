@@ -1,6 +1,6 @@
 Name:      rsv-perfsonar
-Version:   1.1.2
-Release:   3%{?dist}
+Version:   1.1.3
+Release:   1%{?dist}
 Summary:   RSV Metrics to monitor pefsonar
 Packager:  OSG-Software
 Group:     Applications/Monitoring
@@ -28,13 +28,18 @@ Requires: python-simplejson
 %{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
 %endif
 
+# Cream gahp is in a separate package than condor. As May 2016 not available in rhel7
+%if 0%{?rhel} < 7
+Requires: condor-cream-gahp
+%endif
+
 %description
 %{summary}
 
 %prep
 #%setup -n trunk
 #%setup -n %{name}
-%setup -n %{version}
+%setup -n %{name}-%{version}
 
 %install
 rm -fr $RPM_BUILD_ROOT
@@ -57,7 +62,6 @@ rm -rf $RPM_BUILD_ROOT
 %config %{_sysconfdir}/rsv/meta/metrics/org.osg.local.network-monitoring-local.meta
 %config(noreplace) %{_sysconfdir}/rsv/metrics/org.osg.general.perfsonar-simple.conf
 %config(noreplace) %{_sysconfdir}/rsv/metrics/org.osg.local.network-monitoring-local.conf
-%config(noreplace) %{_sysconfdir}/logrotate.d/rsv-perfsonar-metrics
 %config(noreplace) %{_sysconfdir}/rsv/stompclt/default.conf
 %config(noreplace) %{_sysconfdir}/rsv/stompclt/simplevisor.cfg
 %attr(-,rsv,rsv)  %{_sysconfdir}/rsv
@@ -81,6 +85,10 @@ pip install messaging  --upgrade
 
 
 %changelog
+* Thu Jul 7 2016 <efajardo@physics.ucsd.edu> 1.1.3-1
+- Fixed a bug on the message queue
+- Removed the logrotate file not needed
+
 * Wed Jan 20 2016 <efajardo@physics.ucsd.edu> 1.1.2-3
 - Removed the pre script added in 1.1.2-2 in favor of documentation for a one time fix.
 
