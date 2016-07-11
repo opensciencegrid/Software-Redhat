@@ -9,10 +9,10 @@ Group:          Development/Languages
 License:        MIT and LBNL BSD and ZPLv2.0
 URL:            http://pywebsvcs.sourceforge.net/
 Source0:        http://belnet.dl.sourceforge.net/sourceforge/pywebsvcs/ZSI-%{version}.tar.gz
-Patch0:         Remove-PyXML-dependency.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 BuildRequires:  python-devel python-setuptools
+Requires:       PyXML
 
 %description
 The Zolara SOAP Infrastructure provides libraries for developing web services
@@ -22,7 +22,6 @@ related protocols.
 
 %prep
 %setup -q -n ZSI-%{version}
-%patch0 -p1
 
 # remove cvs internal files and
 # get rid of executable perm due to rpmlint's
@@ -70,8 +69,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Fri Dec 05 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 2.0-6.1
-- Build without PyXML
+* Mon Jul 11 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.0-6.1
+- Only build for EL7
 
 * Sun Jul 26 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.0-6
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_12_Mass_Rebuild
