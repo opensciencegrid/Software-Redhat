@@ -1,0 +1,99 @@
+From 0c15828fdd41f306ed8bef81864423c220c15a5d Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Tue, 12 Jul 2016 10:46:38 -0500
+Subject: [PATCH] gsplugin
+
+---
+ src/glite_gsplugin.c | 45 +++++++++++++++++++++++++++------------------
+ 1 file changed, 27 insertions(+), 18 deletions(-)
+
+diff --git a/src/glite_gsplugin.c b/src/glite_gsplugin.c
+index e5fc0e1..e8feeb7 100644
+--- a/src/glite_gsplugin.c
++++ b/src/glite_gsplugin.c
+@@ -134,26 +134,27 @@ void glite_gsplugin_set_timeout(glite_gsplugin_Context ctx, struct timeval const
+ int
+ glite_gsplugin_set_credential(glite_gsplugin_Context ctx,
+ 			      const char *cert,
+ 			      const char *key)
+ {
+-   edg_wll_GssStatus gss_code;
+-   edg_wll_GssCred cred = NULL;
+-   
+-   int ret;
++	edg_wll_GssStatus gss_code;
++	edg_wll_GssCred cred = NULL;
+ 
+-   ret = edg_wll_gss_acquire_cred_gsi((char *)cert, (char *)key, &cred, &gss_code);
+-   if (ret)
+-	return get_error(ret, &gss_code, "failed to load GSI credentials", &ctx->error_msg);
++	int ret;
+ 
+-   if (ctx->internal_credentials && ctx->cred != NULL)
+-      edg_wll_gss_release_cred(&ctx->cred, NULL);
++	ret = edg_wll_gss_acquire_cred_gsi((char *)cert, (char *)key, &cred, &gss_code);
++	if (ret) {
++		return get_error(ret, &gss_code, "failed to load GSI credentials", &ctx->error_msg);
++	}
+ 
+-   ctx->cred = cred;
+-   ctx->internal_credentials = 1;
++	if (ctx->internal_credentials && ctx->cred != NULL)
++		edg_wll_gss_release_cred(&ctx->cred, NULL);
+ 
+-   return 0;
++	ctx->cred = cred;
++	ctx->internal_credentials = 1;
++
++	return 0;
+ }
+ 
+ void
+ glite_gsplugin_use_credential(glite_gsplugin_Context ctx,
+ 				edg_wll_GssCred cred)
+@@ -234,12 +235,17 @@ glite_gsplugin(struct soap *soap, struct soap_plugin *p, void *arg)
+ 
+ char *glite_gsplugin_errdesc(struct soap *soap)
+ {
+ 	glite_gsplugin_Context	ctx;
+ 
+-	ctx = ((int_plugin_data_t *)soap_lookup_plugin(soap, plugin_id))->ctx;
+-	if ( ctx ) return ctx->error_msg;
++	int_plugin_data_t *plugin_data = (int_plugin_data_t *)soap_lookup_plugin(soap, plugin_id);
++	if ( plugin_data ) {
++		ctx = plugin_data->ctx;
++		if ( ctx ) return ctx->error_msg;
++	} else {
++		return "soap_lookup_plugin() failed";
++	}
+ 
+ 	return NULL;
+ }
+ 
+ 
+@@ -404,15 +410,18 @@ glite_gsplugin_recv(struct soap *soap, char *buf, size_t bufsz)
+ {
+ 	glite_gsplugin_Context	ctx;
+ 	edg_wll_GssStatus		gss_code;
+ 	int						len;
+ 
++	int_plugin_data_t *plugin_data = ((int_plugin_data_t *)soap_lookup_plugin(soap, plugin_id));
++	assert(plugin_data);
++	ctx = plugin_data->ctx;
++	if ( ctx->error_msg ) {
++		free(ctx->error_msg); ctx->error_msg = NULL;
++	}
+ 
+-	ctx = ((int_plugin_data_t *)soap_lookup_plugin(soap, plugin_id))->ctx;
+-	if ( ctx->error_msg ) { free(ctx->error_msg); ctx->error_msg = NULL; }
+-
+-	if ( ctx->connection->context == NULL ) {
++	if ( ctx->connection == NULL || ctx->connection->context == NULL ) {
+ 		soap->errnum = ENOTCONN;
+ 		/* XXX: glite_gsplugin_send() returns SOAP_EOF on errors
+ 		 */
+ 		return 0;
+ 	}
+-- 
+2.6.3
+
