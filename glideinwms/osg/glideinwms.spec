@@ -14,8 +14,8 @@ Name:           glideinwms
 # ------------------------------------------------------------------------------
 %define version 3.2.14.1
 %define release 1
-%define frontend_xml frontend.master.xml
-%define factory_xml glideinWMS.master.xml
+%define frontend_xml frontend.xml
+%define factory_xml glideinWMS.xml
 
 Version:        %{version}
 Release:        %{release}%{?dist}
