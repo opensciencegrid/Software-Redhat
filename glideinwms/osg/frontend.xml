@@ -1,28 +1,32 @@
-<frontend advertise_delay="5" frontend_name="FRONTEND_NAME_CHANGEME" loop_delay="60" advertise_with_multiple="True" advertise_with_tcp="True" frontend_versioning="False" frontend_monitor_index_page="False">
-   <downtimes/>
-   <log_retention max_days="7.0" max_mbytes="100.0" min_days="3.0"/>
+<frontend advertise_delay="5" frontend_name="FRONTEND_NAME_CHANGEME" loop_delay="60" advertise_with_multiple="True" advertise_with_tcp="True" frontend_monitor_index_page="False" frontend_versioning="False">
+   <log_retention>
+      <process_logs>
+         <process_log extension="info" max_days="7.0" max_mbytes="100.0" min_days="3.0" msg_types="INFO"/>
+         <process_log extension="err" max_days="7.0" max_mbytes="100.0" min_days="3.0" msg_types="DEBUG,ERR,WARN,EXCEPTION"/>
+      </process_logs>
+   </log_retention>
    <match match_expr="True">
       <factory query_expr='((stringListMember("<vo>", GLIDEIN_Supported_VOs)))'>
          <match_attrs>
          </match_attrs>
          <collectors>
-            <collector DN="/DC=org/DC=doegrids/OU=Services/CN=gfactory-1.t2.ucsd.edu" comment="Define factory collector globally for simplicity" factory_identity="gfactory@gfactory-1.t2.ucsd.edu" my_identity="<username>@gfactory-1.t2.ucsd.edu" node="gfactory-1.t2.ucsd.edu"/>
+            <collector DN="/DC=com/DC=DigiCert-Grid/O=Open Science Grid/OU=Services/CN=gfactory-1.t2.ucsd.edu" comment="Define factory collector globally for simplicity" factory_identity="gfactory@gfactory-1.t2.ucsd.edu" my_identity="<username>@gfactory-1.t2.ucsd.edu" node="gfactory-1.t2.ucsd.edu"/>
+            <collector DN="/DC=com/DC=DigiCert-Grid/O=Open Science Grid/OU=Services/CN=glidein.grid.iu.edu" comment="Define factory collector globally for simplicity" factory_identity="gfactory@glidein.grid.iu.edu" my_identity="<username>@glidein.grid.iu.edu" node="glidein.grid.iu.edu"/>
          </collectors>
       </factory>
       <job comment="Define job constraint and schedds globally for simplicity" query_expr="(JobUniverse==5)&amp;&amp;(GLIDEIN_Is_Monitor =!= TRUE)&amp;&amp;(JOB_Is_Monitor =!= TRUE)">
          <match_attrs>
          </match_attrs>
          <schedds>
-            <schedd DN="/DC=org/DC=doegrids/OU=Services/CN=FRONTEND_HOSTNAME" fullname="FRONTEND_HOSTNAME"/>
-            <schedd DN="/DC=org/DC=doegrids/OU=Services/CN=FRONTEND_HOSTNAME" fullname="schedd_jobs2@FRONTEND_HOSTNAME"/>
+            <schedd DN="/DC=com/DC=DigiCert-Grid/O=Open Science Grid/OU=Services/CN=FRONTEND_HOSTNAME" fullname="FRONTEND_HOSTNAME"/>
          </schedds>
       </job>
    </match>
    <monitor base_dir="/var/lib/gwms-frontend/web-area/monitor" flot_dir="/usr/share/javascriptrrd/flot" javascriptRRD_dir="/usr/share/javascriptrrd/js" jquery_dir="/usr/share/javascriptrrd/flot"/>
-   <security classad_proxy="/tmp/vo_proxy" proxy_DN="DN of vo_proxy" proxy_selection_plugin="ProxyAll" security_name="The security name, this is used by factory" sym_key="aes_256_cbc">
-      <proxies>
-         <proxy absfname="/tmp/vo_proxy" security_class="frontend"/>
-      </proxies>
+   <security classad_proxy="/tmp/vo_proxy" proxy_DN="DN of proxy owned by user nobody" proxy_selection_plugin="ProxyAll" security_name="The security name, this is used by factory" sym_key="aes_256_cbc">
+      <credentials>
+         <credential absfname="/tmp/vo_proxy" security_class="frontend" trust_domain="grid" type="grid_proxy"/>
+      </credentials>
    </security>
    <stage base_dir="/var/lib/gwms-frontend/web-area/stage" use_symlink="True" web_base_url="http://FRONTEND_HOSTNAME/vofrontend/stage"/>
    <work base_dir="/var/lib/gwms-frontend/vofrontend" base_log_dir="/var/log/gwms-frontend"/>
@@ -39,7 +43,6 @@
             <idle_vms_per_entry curb="5" max="100"/>
             <running_glideins_per_entry max="10000" relative_to_queue="1.15"/>
          </config>
-         <downtimes/>
          <match match_expr="True">
             <factory query_expr="True">
                <match_attrs>
@@ -55,8 +58,8 @@
             </job>
          </match>
          <security>
-            <proxies>
-            </proxies>
+            <credentials>
+            </credentials>
          </security>
          <attrs>
          </attrs>
@@ -65,8 +68,8 @@
       </group>
    </groups>
    <collectors>
-      <collector DN="/DC=org/DC=doegrids/OU=Services/CN=FRONTEND_HOSTNAME" node="FRONTEND_HOSTNAME:9618" secondary="False"/>
-      <collector DN="/DC=org/DC=doegrids/OU=Services/CN=FRONTEND_HOSTNAME" node="FRONTEND_HOSTNAME:9620-9660" secondary="True"/>
+      <collector DN="/DC=com/DC=DigiCert-Grid/O=Open Science Grid/OU=Services/CN=FRONTEND_HOSTNAME" node="FRONTEND_HOSTNAME:9618" secondary="False"/>
+      <collector DN="/DC=com/DC=DigiCert-Grid/O=Open Science Grid/OU=Services/CN=FRONTEND_HOSTNAME" node="FRONTEND_HOSTNAME:9620-9660" secondary="True"/>
    </collectors>
    <files>
    </files>
