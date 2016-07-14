@@ -1,0 +1,146 @@
+diff --git a/gums-core/src/main/java/gov/bnl/gums/account/AccountPoolMapper.java b/gums-core/src/main/java/gov/bnl/gums/account/AccountPoolMapper.java
+index c89e7be..9521468 100644
+--- a/gums-core/src/main/java/gov/bnl/gums/account/AccountPoolMapper.java
++++ b/gums-core/src/main/java/gov/bnl/gums/account/AccountPoolMapper.java
+@@ -13,6 +13,7 @@ import java.util.HashMap;
+ import java.util.Iterator;
+ import java.util.Map;
+ import java.util.TreeMap;
++import java.util.Comparator;
+ 
+ import org.apache.log4j.Logger;
+ 
+@@ -97,68 +98,77 @@ public class AccountPoolMapper extends AccountMapper {
+         return getDB().retrieveAccountInfo();
+     }
+ 
+-    /**
+-     * @return String representation of how many accounts are assigned in database for each root account
+-     */
+-    public String getAssignments() {
++	// Comparator class to sort 700-799,7000-7999, instead of purely ascii order
++	class LenComp implements Comparator<String> {
++		@Override
++		public int compare(String a, String b) {
++			int lcomp = a.length() - b.length();
++			return lcomp != 0 ? lcomp : a.compareTo(b);
++		}
++	}
++
++	/**
++	 * @return String representation of how many accounts are assigned in database for each root account
++	 */
++	public String getAssignments() {
+ 		if (getDB().needsCacheRefresh()) {
+ 			log.trace("Refreshing assignments string for account pool mapper "+getName());
+-			
+-	    	String retStr = new String();
+ 
+-	    	Map accountReverseMap = getDB().retrieveReverseAccountMap();
+-	    	TreeMap accountRoots = new TreeMap();
+-	    	Iterator it = accountReverseMap.keySet().iterator();
+-	    	while (it.hasNext()) {
+-	    		String account = (String)it.next();
+-	    		String accountRoot = getRoot(account);
+-	    		String accountNumber = getNumber(account);
+-	    		Object[] stats = (Object[])accountRoots.get(accountRoot);
+-	    		if (stats==null) {
+-	    			stats = new Object[3];
+-	    			stats[0] = new Integer(0); // total
+-	   				stats[1] = new Integer(0); // assigned
+-	   				stats[2] = new ArrayList(); // number list
+-	    		}
+-    			stats[0] = new Integer(((Integer)stats[0]).intValue() + 1); // total
+-    			if (!accountReverseMap.get(account).equals(""))
+-    				stats[1] = new Integer(((Integer)stats[1]).intValue() + 1); // assigned
+-   				((ArrayList)stats[2]).add(accountNumber); // number list
+-	    		accountRoots.put(accountRoot, stats);
+-	    	}
+-	    	it = accountRoots.keySet().iterator();
+-	    	while (it.hasNext()) {
+-	    		String accountRoot = (String)it.next();
+-	    		retStr += accountRoot;
+-	    		List numbers = (ArrayList)((Object[])accountRoots.get(accountRoot))[2];
+-	    		Collections.sort(numbers);
+-	    		Iterator numIt = numbers.iterator();
+-	    		String lastNumber = null;
+-	    		while(numIt.hasNext()) {
+-	    			String number = (String)numIt.next();
+-	    			if(lastNumber==null)
+-    					retStr += number;
+-	    			else if(greaterThanOne(lastNumber, number))
+-    					retStr += "-" + lastNumber + "," + number;
+-	    			else if(!numIt.hasNext())
+-	    				retStr += "-" + number;
+-	    			lastNumber = number;
+-	    		}
+-	    		retStr += "(" + 
+-	    			((Object[])accountRoots.get(accountRoot))[1] + "/" + 
+-	    			((Object[])accountRoots.get(accountRoot))[0] + ")";
+-	    		if (it.hasNext())
+-	    			retStr += ", ";
+-	    	}
+-	    	getDB().setCacheRefreshed();
+-	    	assignments.put(getDB().getMap(), retStr);
+-	    	return retStr;
+-    	}
++			String retStr = new String();
++
++			Map accountReverseMap = getDB().retrieveReverseAccountMap();
++			TreeMap accountRoots = new TreeMap();
++			Iterator it = accountReverseMap.keySet().iterator();
++			while (it.hasNext()) {
++				String account = (String)it.next();
++				String accountRoot = getRoot(account);
++				String accountNumber = getNumber(account);
++				Object[] stats = (Object[])accountRoots.get(accountRoot);
++				if (stats==null) {
++					stats = new Object[3];
++					stats[0] = new Integer(0); // total
++					stats[1] = new Integer(0); // assigned
++					stats[2] = new ArrayList(); // number list
++				}
++				stats[0] = new Integer(((Integer)stats[0]).intValue() + 1); // total
++				if (!accountReverseMap.get(account).equals(""))
++					stats[1] = new Integer(((Integer)stats[1]).intValue() + 1); // assigned
++				((ArrayList)stats[2]).add(accountNumber); // number list
++				accountRoots.put(accountRoot, stats);
++			}
++			it = accountRoots.keySet().iterator();
++			while (it.hasNext()) {
++				String accountRoot = (String)it.next();
++				retStr += accountRoot;
++				List numbers = (ArrayList)((Object[])accountRoots.get(accountRoot))[2];
++				Collections.sort(numbers, new LenComp());
++				Iterator numIt = numbers.iterator();
++				String lastNumber = null;
++				while(numIt.hasNext()) {
++					String number = (String)numIt.next();
++					if(lastNumber==null)
++						retStr += number;
++					else if(greaterThanOne(lastNumber, number))
++						retStr += "-" + lastNumber + "," + number;
++					else if(!numIt.hasNext())
++						retStr += "-" + number;
++					lastNumber = number;
++				}
++				retStr += "(" +
++					((Object[])accountRoots.get(accountRoot))[1] + "/" +
++					((Object[])accountRoots.get(accountRoot))[0] + ")";
++				if (it.hasNext())
++					retStr += ", ";
++			}
++			getDB().setCacheRefreshed();
++			assignments.put(getDB().getMap(), retStr);
++			return retStr;
++		}
+ 		else {
+ 			return (String)assignments.get(getDB().getMap());
+ 		}
+-    }
+- 
++	}
++
+     public String getPersistenceFactory() {
+        return persistenceFactory;
+     }
