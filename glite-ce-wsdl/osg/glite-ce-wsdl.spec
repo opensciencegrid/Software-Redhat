@@ -1,15 +1,14 @@
 Summary: WS definitions for the CREAM service
 Name: glite-ce-wsdl
-Version: 1.14.0
-%global upstream_release 4
-Release: %{upstream_release}.1%{?dist}
+Version: 1.15.1
+Release: 1.1%{?dist}
 License: Apache Software License
 URL: http://glite.cern.ch/
 Group: Development/Libraries
 BuildArch: noarch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 AutoReqProv: yes
-Source: %{name}-%{version}-%{upstream_release}.sl5.tar.gz
+Source: %{name}.tar.gz
 
 
 %description
@@ -23,13 +22,9 @@ WS definitions for the CREAM service
 
 %install
 rm -rf %{buildroot}
-mkdir -p %{buildroot}
-%{!?extbuilddir:%define extbuilddir "--"}
-if test "x%{extbuilddir}" == "x--" ; then
-  ./project/install.sh %{buildroot}/usr 
-else
-  cp -R %{extbuilddir}/* %{buildroot}
-fi
+mkdir -p %{buildroot}/usr/share/wsdl/cream-ce/es/
+cp interface/CREAM/*.wsdl interface/CREAM/*.xsd %{buildroot}/usr/share/wsdl/cream-ce
+cp interface/ES/*.wsdl interface/ES/*.xsd %{buildroot}/usr/share/wsdl/cream-ce/es
 
 
 %clean
@@ -46,11 +41,12 @@ rm -rf %{buildroot}
 /usr/share/wsdl/cream-ce/es/*.xsd
 
 
+
+
 %changelog
-* Thu Jun 07 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.14.0-4.1.osg
+* Mon Jul 11 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.15.1-1.1.osg
 - Add dist tag
 
-* Wed May 16 2012 CREAM group <cream-support@lists.infn.it> - 1.14.0-4.sl5
-- Major bugs fixed
-
+* Fri Aug 31 2012 CREAM group <cream-support@lists.infn.it> - 1.15.1-1.sl6
+- New major release
 
