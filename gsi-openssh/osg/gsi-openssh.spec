@@ -5,11 +5,6 @@
 %global WITH_SELINUX 1
 %endif
 
-# OpenSSH privilege separation requires a user & group ID
-# Will let the system choose the UID/GID for the gsisshd user/group; see later
-#%global sshd_uid    74
-#%global sshd_gid    74
-
 # Build position-independent executables (requires toolchain support)?
 %global pie 0
 
@@ -34,32 +29,58 @@
 # Whether or not /sbin/nologin exists.
 %global nologin 1
 
-%global gsi_openssh_rel 4
-%global gsi_openssh_ver 5.7
-
-%ifarch alpha ia64 ppc64 s390x sparc64 x86_64
-%global flavor gcc64
-%else
-%global flavor gcc32
-%endif
-
+%global gsi_openssh_rel 1
+%global gsi_openssh_ver 7.1p2f
 
 Summary: An implementation of the SSH protocol with GSI authentication
 Name: gsi-openssh
 Version: %{gsi_openssh_ver}
-Release: %{gsi_openssh_rel}.3%{?dist}
+Release: %{gsi_openssh_rel}.1%{?dist}
 URL: http://www.openssh.com/portable.html
-#Source0: ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-%{version}.tar.gz
-#Source1: ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-%{version}.tar.gz.asc
-# This package differs from the upstream OpenSSH tarball in that
-# the ACSS cipher is removed by running openssh-nukeacss.sh in
-# the unpacked source directory.
-Source0: http://downloads.sourceforge.net/cilogon/gsi_openssh-%{version}-src.tar.gz
-Source1: gsisshd.osg-sysconfig
-Source2: etc-sysconfig-gsisshd
-Patch0: osg-sysconfig.patch
-Patch1: SOFTWARE-2288-Auto-create-server-keys.patch
-Patch20167777: CVE-2016-0777.gsissh-5.7.diff
+Source0: http://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-7.1p2.tar.gz
+#Source2: gsisshd.pam
+#Source3: gsisshd.init
+#
+#Patch0: http://sourceforge.net/projects/hpnssh/files/HPN-SSH%2014v10%207.1p2/openssh-7_1_P2-hpn-14.10.diff
+Patch0: https://github.com/globus/gsi-openssh/releases/download/%{version}/openssh-7_1_P2-hpn-14.10.diff
+##Patch0 is the HPN-SSH patch to Portable OpenSSH and is constructed as follows if the patch isn't readily available at the above link.
+## git clone git@github.com:rapier1/openssh-portable.git
+## cd openssh-portable
+## git remote add portable https://github.com/openssh/openssh-portable.git
+## git fetch portable
+## git merge-base hpn-7_1_P2 V_7_1_P2 > common_ancestor
+## git diff `cat common_ancestor` hpn-7_1_P2 > openssh-7_1_P2-hpn-14.10.diff
+
+##Patch1 is the iSSHD patch to HPN-SSH and is constructed as follows:
+## git clone git@github.com:set-element/openssh-hpn-isshd.git
+## cd openssh-hpn-isshd
+## git remote add hpn https://github.com/rapier1/openssh-portable.git
+## git fetch hpn
+## git merge-base v3.19.1 hpn-7_1_P2 > common_ancestor
+## git diff `cat common_ancestor` v3.19.1 > hpn-isshd.v3.19.1.patch
+Patch1: https://github.com/globus/gsi-openssh/releases/download/%{version}/hpn-isshd.v3.19.1.patch
+##Patch2 is the GSI patch to be applied on top of the iSSHD patch and is constructed as follows:
+## tar xvf openssh-7.1p2.tar.gz
+## cd openssh-7.1p2
+## patch -p1 --no-backup-if-mismatch < openssh-7_1_P2-hpn-14.10.diff
+## patch -p1 --no-backup-if-mismatch < hpn-isshd.v3.19.1.patch
+## grep "^commit " ChangeLog | tail -1 | cut -d' ' -f2 > ../changelog_last_commit
+## cd ..
+## git clone https://github.com/globus/gsi-openssh.git
+## cd gsi-openssh
+## git checkout tags/7.1p2f
+## git log `cat ../changelog_last_commit`^... > ChangeLog
+## make -f Makefile.in MANFMT="/usr/bin/nroff -mandoc" SHELL=$SHELL distprep
+## rm -fr .git
+## cd ..
+## diff -Naur openssh-7.1p2 gsi-openssh > hpn_isshd-gsi.7.1p2f.patch
+Patch2: https://github.com/globus/gsi-openssh/releases/download/%{version}/hpn_isshd-gsi.%{version}.patch
+
+# OSG additions
+Source10: gsisshd.osg-sysconfig
+Source11: etc-sysconfig-gsisshd
+Source12: etc-initd-gsisshd
+
 
 License: BSD
 Group: Applications/Internet
@@ -202,17 +223,17 @@ securely connect to your SSH server.
 This version of OpenSSH has been modified to support GSI authentication.
 
 %prep
-%setup -q -n gsi_openssh-%{version}-src
-%patch0 -p0
-%patch1 -p1
-%patch20167777 -p0 -b .CVE-2016-0777
+%setup -q -n openssh-7.1p2
+%patch0 -p1
+%patch1 -p1 -F 2
+%patch2 -p1
 
+%build
 sed 's/sshd.pid/gsisshd.pid/' -i pathnames.h
 sed 's!$(piddir)/sshd.pid!$(piddir)/gsisshd.pid!' -i Makefile.in
 
 autoreconf
 
-%build
 CFLAGS="$RPM_OPT_FLAGS"; export CFLAGS
 LIBS="-lcrypto"; export LIBS
 %if %{pie}
@@ -225,23 +246,6 @@ export CFLAGS
 SAVE_LDFLAGS="$LDFLAGS"
 LDFLAGS="$LDFLAGS -pie -z relro -z now"; export LDFLAGS
 %endif
-%if %{kerberos5}
-if test -r /etc/profile.d/krb5-devel.sh ; then
-	source /etc/profile.d/krb5-devel.sh
-fi
-krb5_prefix=`krb5-config --prefix`
-if test "$krb5_prefix" != "%{_prefix}" ; then
-	CPPFLAGS="$CPPFLAGS -I${krb5_prefix}/include -I${krb5_prefix}/include/gssapi"; export CPPFLAGS
-	CFLAGS="$CFLAGS -I${krb5_prefix}/include -I${krb5_prefix}/include/gssapi"
-	LDFLAGS="$LDFLAGS -L${krb5_prefix}/%{_lib}"; export LDFLAGS
-else
-	krb5_prefix=
-	CPPFLAGS="-I%{_includedir}/gssapi"; export CPPFLAGS
-	CFLAGS="$CFLAGS -I%{_includedir}/gssapi"
-fi
-%endif
-
-LOOK_FOR_FC_GLOBUS_INCLUDE="yes"; export LOOK_FOR_FC_GLOBUS_INCLUDE
 
 %configure \
 	--sysconfdir=%{_sysconfdir}/gsissh \
@@ -252,11 +256,12 @@ LOOK_FOR_FC_GLOBUS_INCLUDE="yes"; export LOOK_FOR_FC_GLOBUS_INCLUDE
 	--with-superuser-path=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin \
 	--with-privsep-path=%{_var}/empty/gsisshd \
 	--with-privsep-user=gsisshd \
-	--enable-vendor-patchlevel="FC-%{version}-%{release}" \
+	--enable-vendor-patchlevel="GT6-%{version}-%{release}" \
 	--disable-strip \
 	--without-zlib-version-check \
 	--with-ssl-engine \
 	--with-authorized-keys-command \
+	--with-nerscmod \
 %if %{nss}
 	--with-nss \
 %endif
@@ -271,7 +276,6 @@ LOOK_FOR_FC_GLOBUS_INCLUDE="yes"; export LOOK_FOR_FC_GLOBUS_INCLUDE
 %endif
 %if %{gsi}
 	--with-gsi=/usr \
-	--with-globus-flavor=%{flavor} \
 %else
 	--without-gsi \
 %endif
@@ -293,46 +297,20 @@ make install sysconfdir=%{_sysconfdir}/gsissh \
      bindir=%{_bindir} DESTDIR=$RPM_BUILD_ROOT
 
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/pam.d/
-%if 0%{?suse_version} == 0
 install -d $RPM_BUILD_ROOT%{_initrddir}
-install -m755 gsisshd.init $RPM_BUILD_ROOT%{_initrddir}/gsisshd
-%else
-install -d $RPM_BUILD_ROOT/etc/init.d
-install -m755 gsisshd.init $RPM_BUILD_ROOT/etc/init.d/gsisshd
-%endif
 install -d $RPM_BUILD_ROOT%{_libexecdir}/gsissh
-install -d $RPM_BUILD_ROOT/usr/share/osg/sysconfig
-install -m644 gsisshd.pam $RPM_BUILD_ROOT%{_sysconfdir}/pam.d/gsisshd
-install -m644 %{SOURCE1} $RPM_BUILD_ROOT/usr/share/osg/sysconfig/gsisshd
-install -d $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig
-install -m644 %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/gsisshd
+install -m644 $RPM_BUILD_DIR/openssh-7.1p2/contrib/redhat/gsisshd.pam $RPM_BUILD_ROOT%{_sysconfdir}/pam.d/gsisshd
+# OSG: Use our own init script
+install -m755 %{SOURCE12} $RPM_BUILD_ROOT%{_initrddir}/gsisshd
 
-#rm $RPM_BUILD_ROOT%{_bindir}/gsiscp
-#rm $RPM_BUILD_ROOT%{_bindir}/gsisftp
-#rm $RPM_BUILD_ROOT%{_bindir}/gsissh
-rm $RPM_BUILD_ROOT%{_bindir}/ssh-add
-rm $RPM_BUILD_ROOT%{_bindir}/ssh-agent
-rm $RPM_BUILD_ROOT%{_bindir}/ssh-keyscan
-#rm $RPM_BUILD_ROOT%{_sysconfdir}/gsissh/ldap.conf
-#rm $RPM_BUILD_ROOT%{_libexecdir}/gsissh/ssh-ldap-helper
+rm $RPM_BUILD_ROOT%{_bindir}/gsissh-add
+rm $RPM_BUILD_ROOT%{_bindir}/gsissh-agent
+rm $RPM_BUILD_ROOT%{_bindir}/gsissh-keyscan
 rm $RPM_BUILD_ROOT%{_libexecdir}/gsissh/ssh-pkcs11-helper
-rm $RPM_BUILD_ROOT%{_mandir}/man1/ssh-add.1*
-rm $RPM_BUILD_ROOT%{_mandir}/man1/ssh-agent.1*
-rm $RPM_BUILD_ROOT%{_mandir}/man1/ssh-keyscan.1*
-#rm $RPM_BUILD_ROOT%{_mandir}/man1/gsiscp.1*
-#rm $RPM_BUILD_ROOT%{_mandir}/man1/gsisftp.1*
-#rm $RPM_BUILD_ROOT%{_mandir}/man1/gsissh.1*
-#rm $RPM_BUILD_ROOT%{_mandir}/man5/ssh-ldap.conf.5*
-#rm $RPM_BUILD_ROOT%{_mandir}/man8/ssh-ldap-helper.8*
-rm $RPM_BUILD_ROOT%{_mandir}/man8/ssh-pkcs11-helper.8*
-
-for f in $RPM_BUILD_ROOT%{_bindir}/* \
-	 $RPM_BUILD_ROOT%{_sbindir}/* \
-	 $RPM_BUILD_ROOT%{_mandir}/man*/* ; do
-    mv $f `dirname $f`/gsi`basename $f`
-done
-ln -sf gsissh $RPM_BUILD_ROOT%{_bindir}/gsislogin
-ln -sf gsissh.1 $RPM_BUILD_ROOT%{_mandir}/man1/gsislogin.1
+rm $RPM_BUILD_ROOT%{_mandir}/man1/gsissh-add.1*
+rm $RPM_BUILD_ROOT%{_mandir}/man1/gsissh-agent.1*
+rm $RPM_BUILD_ROOT%{_mandir}/man1/gsissh-keyscan.1*
+rm $RPM_BUILD_ROOT%{_mandir}/man8/gsissh-pkcs11-helper.8*
 
 perl -pi -e "s|$RPM_BUILD_ROOT||g" $RPM_BUILD_ROOT%{_mandir}/man*/*
 
@@ -340,6 +318,13 @@ rm -f README.nss.nss-keys
 %if ! %{nss}
 rm -f README.nss
 %endif
+
+# OSG: Add sysconfig files
+install -d $RPM_BUILD_ROOT/usr/share/osg/sysconfig
+install -m644 %{SOURCE10} $RPM_BUILD_ROOT/usr/share/osg/sysconfig/gsisshd
+install -d $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig
+install -m644 %{SOURCE11} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/gsisshd
+
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -404,15 +389,27 @@ fi
 %attr(0644,root,root) %{_mandir}/man8/gsisftp-server.8*
 %attr(0600,root,root) %config(noreplace) %{_sysconfdir}/gsissh/sshd_config
 %attr(0644,root,root) %config(noreplace) %{_sysconfdir}/pam.d/gsisshd
-%if 0%{?suse_version} == 0
 %attr(0755,root,root) %{_initrddir}/gsisshd
-%else
-%attr(0755,root,root) /etc/init.d/gsisshd
-%endif
 %attr(0644,root,root) /usr/share/osg/sysconfig/gsisshd
 %attr(0644,root,root) %config(noreplace) %{_sysconfdir}/sysconfig/gsisshd
 
 %changelog
+* Thu Jul 14 2016 Matyas Selmeci <matyas@cs.wisc.edu> - 7.1p2f-1.1
+- Merge OSG changes (SOFTWARE-2390)
+- Use OSG init script
+- Don't autocreate/destroy host key symlinks
+- Move non-%%patch/non-%%setup commands out of %%prep
+
+* Tue Jun  7 2016 Globus Toolkit <support@globus.org> - 7.1p2f-1
+- Fix to use sshd_config from installed location for installations from the
+  source and binary tarballs.
+- DisableUsageStats now defaults to Yes in code (already defaults to Yes in the
+  supplied sshd_config). Also moved the DisableUsageStats directive to be ahead
+  of the Match directives in sshd_config.
+
+* Thu May 12 2016 Globus Toolkit <support@globus.org> - 7.1p2e-1
+- default iSSHD auditing to disabled
+
 * Mon May 09 2016 Matyas Selmeci <matyas@cs.wisc.edu> - 5.7-4.3
 - Include default /etc/sysconfig/gsisshd
 - AUTOCREATE_SERVER_KEYS must be YES or RSAONLY to generate keys (SOFTWARE-2288)
@@ -421,29 +418,28 @@ fi
 - Auto-generate server keys in init script (SOFTWARE-2288)
 - Generate an ECDSA server key as well (SOFTWARE-2288)
 
-* Fri Jan 15 2016 Matyas Selmeci <matyas@cs.wisc.edu> - 5.7-4.1
-- Merge OSG changes
+* Mon Apr 25 2016 Globus Toolkit <support@globus.org> - 7.1p2c-2
+- Change source URL
+- Create symlinks only to system-standard ssh host keys that are present
 
-* Thu Jan 14 2016 Globus Toolkit <support@globus.org> - 5.7-3
-- CVE-2016-0777
+* Fri Mar 11 2016 Globus Toolkit <support@globus.org> - 7.1p2c-1
+- Fixes for Globus Toolkit builds: Skip probing for specific globus funcs
+- Fixes for building kerberos/mechglue without GSI.
 
-* Thu Nov 14 2013 Carl Edquist <edquist@cs.wisc.edu> - 5.7-1.1
-- Update to 5.7
+* Fri Mar  4 2016 Globus Toolkit <support@globus.org> - 7.1p2-1b
+- Update to 7.1p2b
+
+* Tue Feb  9 2016 Globus Toolkit <support@globus.org> - 7.1p2-1a
+- Update to 7.1p2a
 
 * Mon Nov 11 2013 Globus Toolkit <support@globus.org> - 5.7-1
 - Update to 5.7
-
-* Tue Apr 09 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 5.6-1.1
-- Merge OSG changes
 
 * Tue Apr 02 2013 Globus Toolkit <support@globus.org> - 5.6-1
 - Update to 5.6
 
 * Mon Mar 11 2013 Joseph Bester <bester@mcs.anl.gov> - 5.5-2
 - Update dependencies
-
-* Wed Feb 20 2013 Dave Dykstra <dwd@fnal.gov> - 5.4-5
-- Move sysconfig file to /usr/share/osg/sysconfig/gsisshd
 
 * Tue Jun 26 2012 Joseph Bester <bester@mcs.anl.gov> - 5.5-1
 - Update to the 5.5 release
