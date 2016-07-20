@@ -1,7 +1,7 @@
 Name:      rsv
 Summary:   RSV Meta Package
-Version:   3.13.0
-Release:   3%{?dist}
+Version:   3.13.1
+Release:   1%{?dist}
 License:   Apache 2.0
 Group:     Applications/Monitoring
 URL:       https://twiki.grid.iu.edu/bin/view/MonitoringInformation/RSV
@@ -246,6 +246,9 @@ fi
 
 
 %changelog
+* Wed Jul 20 2016 Carl Edquist <edquist@cs.wisc.edu> - 3.13.1-1
+- Handle corrupt pickle file in html-consumer (SOFTWARE-2394)
+
 * Tue May 17 2016 Matyas Selmeci <matyas@cs.wisc.edu> - 3.13.0-3
 - Add back bestman-client dependency on EL7 (SOFTWARE-2333)
 
