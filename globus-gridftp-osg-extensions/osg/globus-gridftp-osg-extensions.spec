@@ -34,7 +34,7 @@ make install DESTDIR=%{buildroot}
 
 
 %files
-%doc
+%doc README.md LICENSE
 %{_libdir}/libglobus_gridftp_server_osg.so*
 
 %changelog
@@ -43,6 +43,4 @@ make install DESTDIR=%{buildroot}
 
 * Tue Jul 19 2016 Brian Bockelman <bbockelm@cse.unl.edu> - 0.2-1
 - Initial packaging of extensions.
-
-
 
