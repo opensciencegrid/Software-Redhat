@@ -1,0 +1,7 @@
+OSG extensions DSI for GridFTP
+
+See https://jira.opensciencegrid.org/browse/SOFTWARE-2397 for background.
+
+upstream source tarball obtained from:
+https://github.com/bbockelm/globus-gridftp-osg-extensions/archive/v0.3.tar.gz
+
