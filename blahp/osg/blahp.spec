@@ -1,9 +1,10 @@
 # Have gitrev be the short hash or branch name if doing a prerelease build
-#%define gitrev
+%define gitrev 42e738e
 
 Name:		blahp
-Version:	1.18.21.bosco
+Version:	1.18.22.bosco
 Release:	1%{?gitrev:.%{gitrev}}%{?dist}
+#Release:        1%{?dist} 
 Summary:	gLite BLAHP daemon
 
 Group:		System/Libraries
@@ -181,6 +182,9 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Wed Jul 20 2016 Edgar Fajardo <emfajard@ucsd.edu> - 1.18.22.bosco-1
+- Merge HTCondor Ticket-5722. Cache output of slurm-status. (SOFTWARE-2399)
+
 * Thu Jun 23 2016 Brian Lin <blin@cs.wisc.edu> - 1.18.21.bosco-1
 - Fix Slurm file leak (SOFTWARE-2367)
 - Package slurm_hold.sh (SOFTWARE-2375)
