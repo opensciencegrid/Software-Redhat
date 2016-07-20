@@ -17,6 +17,9 @@ BuildRequires:  globus-gssapi-gsi-devel
 BuildRequires:  cmake
 BuildRequires:  voms-devel
 
+Conflicts: gridftp-hdfs < 0.5.4-25.2
+Conflicts: xrootd-dsi < 3.0.4-18
+
 %description
 %{summary}
 
