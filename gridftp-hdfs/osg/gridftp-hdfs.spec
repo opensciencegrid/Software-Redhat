@@ -197,6 +197,7 @@ fi
 %config(noreplace) %{_sysconfdir}/%{name}/replica-map.conf
 %config(noreplace) %{_sysconfdir}/sysconfig/%{name}
 %config(noreplace) %{_sysconfdir}/gridftp.d/%{name}.conf
+%config(noreplace) %{_sysconfdir}/gridftp.d/%{name}.osg-extensions.conf
 /usr/share/osg/sysconfig/globus-gridftp-server-plugin
 %else
 %config(noreplace) %{_sysconfdir}/sysconfig/gridftp.conf.d/%{name}
