@@ -1,10 +1,10 @@
 # Have gitrev be the short hash or branch name if doing a prerelease build
-%define gitrev 42e738e
+#%define gitrev 42e738e
 
 Name:		blahp
 Version:	1.18.22.bosco
-Release:	1%{?gitrev:.%{gitrev}}%{?dist}
-#Release:        1%{?dist} 
+#Release:	1%{?gitrev:.%{gitrev}}%{?dist}
+Release:        2%{?dist} 
 Summary:	gLite BLAHP daemon
 
 Group:		System/Libraries
@@ -16,7 +16,8 @@ URL:		https://github.com/osg-bosco/BLAH
 #
 # Pre-release build tarballs should be generated with:
 # git archive %{gitrev} | gzip -9 > %{name}-%{version}-%{gitrev}.tar.gz
-Source0:        %{name}-%{version}%{?gitrev:-%{gitrev}}.tar.gz
+#Source0:        %{name}-%{version}%{?gitrev:-%{gitrev}}.tar.gz
+Source0:        %{name}-%{version}.tar.gz
 
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildRequires:  automake
@@ -182,6 +183,9 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Thu Jul 21 2016 Edgar Fajardo <emfajard@ucsd.edu> - 1.18.22.bosco-2
+- The code was taken from the osg-bosco instead of Edgar's fork.
+
 * Wed Jul 20 2016 Edgar Fajardo <emfajard@ucsd.edu> - 1.18.22.bosco-1
 - Merge HTCondor Ticket-5722. Cache output of slurm-status. (SOFTWARE-2399)
 
