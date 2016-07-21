@@ -64,6 +64,7 @@ install -m 644 libglobus_gridftp_server_posix.so $RPM_BUILD_ROOT/usr/lib/libglob
 
 %files
 /etc/xrootd-dsi/gridftp-xrootd.conf
+/etc/xrootd-dsi/gridftp-xrootd.osg-extensions.conf
 /usr/share/osg/sysconfig/globus-gridftp-server-plugin
 
 %ifarch x86_64
