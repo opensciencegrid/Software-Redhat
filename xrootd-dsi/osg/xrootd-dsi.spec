@@ -1,6 +1,6 @@
 Name:           xrootd-dsi
 Version:        3.0.4
-Release:        18%{?dist}
+Release:        19%{?dist}
 Summary:        xrootd DSI library and POSIX preload
 Group:          System Environment/Daemons
 License:        Stanford (modified BSD with advert clause)
@@ -9,6 +9,7 @@ URL:            http://xrootd.org/
 Source0:        xrootd-dsi.tar.gz
 Source1:        gridftp-xrootd.conf
 Source2:        globus-gridftp-server-plugin.osg-sysconfig
+Source3:        gridftp-xrootd.osg-extensions.conf
 Patch0: 	gfalFunctionality.patch
 
 BuildRoot:      %{_tmppath}/%{name}-root
@@ -47,6 +48,7 @@ make
 
 mkdir -p $RPM_BUILD_ROOT/etc/xrootd-dsi
 install -m 644 %{SOURCE1} $RPM_BUILD_ROOT/etc/xrootd-dsi
+install -m 644 %{SOURCE3} $RPM_BUILD_ROOT/etc/xrootd-dsi
 mkdir -p $RPM_BUILD_ROOT/usr/share/osg/sysconfig
 install -m 644 %{SOURCE2} $RPM_BUILD_ROOT/usr/share/osg/sysconfig/globus-gridftp-server-plugin
 
@@ -74,6 +76,9 @@ install -m 644 libglobus_gridftp_server_posix.so $RPM_BUILD_ROOT/usr/lib/libglob
 
 
 %changelog
+* Thu Jul 21 2016 Carl Edquist <edquist@cs.wisc.edu> - 3.0.4-19
+Config file fixes for globus-gridftp-osg-extensions (SOFTWARE-2397)
+
 * Wed Jul 20 2016 Carl Edquist <edquist@cs.wisc.edu> - 3.0.4-18
 - Use globus-gridftp-osg-extensions (SOFTWARE-2397)
 
