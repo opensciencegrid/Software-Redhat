@@ -2,7 +2,7 @@
 
 Name:           gridftp-hdfs
 Version:        0.5.4
-Release:        25.2%{?dist}
+Release:        25.3%{?dist}
 Summary:        HDFS DSI plugin for GridFTP
 Group:          System Environment/Daemons
 License:        ASL 2.0
@@ -10,6 +10,7 @@ URL:            http://twiki.grid.iu.edu/bin/view/Storage/HadoopInstallation
 Source0:        %{name}-%{version}.tar.gz
 Source1: globus-gridftp-server-plugin.osg-sysconfig
 Source2: %{name}.conf
+Source3: %{name}.osg-extensions.conf
 %if 0%{?osg} > 0
 Patch0: osg-sysconfig.patch
 %endif
@@ -60,6 +61,7 @@ Requires: hadoop-client >= 2.0.0+545
 Requires: globus-gridftp-server-progs >= 6.38-1.3
 %if 0%{?osg} > 0
 Requires: xinetd
+Requires: globus-gridftp-osg-extensions
 %endif
 Requires: java >= 1:1.7.0
 Requires: jpackage-utils
@@ -74,7 +76,6 @@ Requires(postun): initscripts
 %if 0%{?osg} > 0
 Requires(postun): xinetd
 %endif
-Requires: globus-gridftp-osg-extensions
 
 %description
 HDFS DSI plugin for GridFTP
@@ -141,6 +142,7 @@ rm $RPM_BUILD_ROOT%{_sysconfdir}/gridftp-hdfs/gridftp.conf
 mkdir -p $RPM_BUILD_ROOT/usr/share/osg/sysconfig
 install -m 644 -p %{SOURCE1} $RPM_BUILD_ROOT/usr/share/osg/sysconfig/globus-gridftp-server-plugin
 install -m 644 %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/gridftp.d
+install -m 644 %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/gridftp.d
 %else
 rm $RPM_BUILD_ROOT%{_sysconfdir}/gridftp-hdfs/gridftp-debug.conf
 rm $RPM_BUILD_ROOT%{_sysconfdir}/gridftp-hdfs/gridftp-inetd.conf
@@ -201,6 +203,9 @@ fi
 %endif
 
 %changelog
+* Thu Jul 21 2016 Carl Edquist <edquist@cs.wisc.edu> - 0.5.4-25.3
+- Config file fixes for globus-gridftp-osg-extensions (SOFTWARE-2397)
+
 * Wed Jul 20 2016 Carl Edquist <edquist@cs.wisc.edu> - 0.5.4-25.2
 - Use globus-gridftp-osg-extensions (SOFTWARE-2397)
 
