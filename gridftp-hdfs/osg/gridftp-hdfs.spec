@@ -2,7 +2,7 @@
 
 Name:           gridftp-hdfs
 Version:        0.5.4
-Release:        25.1%{?dist}
+Release:        25.2%{?dist}
 Summary:        HDFS DSI plugin for GridFTP
 Group:          System Environment/Daemons
 License:        ASL 2.0
@@ -74,6 +74,7 @@ Requires(postun): initscripts
 %if 0%{?osg} > 0
 Requires(postun): xinetd
 %endif
+Requires: globus-gridftp-osg-extensions
 
 %description
 HDFS DSI plugin for GridFTP
@@ -200,6 +201,9 @@ fi
 %endif
 
 %changelog
+* Wed Jul 20 2016 Carl Edquist <edquist@cs.wisc.edu> - 0.5.4-25.2
+- Use globus-gridftp-osg-extensions (SOFTWARE-2397)
+
 * Thu Jun 30 2016 Brian Bockelman <bbockelm@cse.unl.edu> - 0.5.4-25.1
 - Fix bug with listing empty directories.
 
