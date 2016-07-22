@@ -1,0 +1,44 @@
+Upstream source RPM obtained from UW AFS:
+
+  /p/condor/public/binaries/v$SERIES/$VERSION/condor-$VERSION-1.src.rpm
+
+  (for VERSION=X.Y.Z and SERIES=X.Y)
+
+For example:
+
+  /p/condor/public/binaries/v8.2/8.2.5/condor-8.2.5-1.src.rpm
+
+
+Instructions for updating upstream source:
+
+  VERSION=8.2.5
+  SERIES=${VERSION%.*}
+  SRPM=condor-$VERSION-1.src.rpm
+  PUBLIC_SRPM=/p/condor/public/binaries/v$SERIES/$VERSION/$SRPM
+  UPSTREAM=/p/vdt/public/html/upstream/condor/$VERSION/
+
+  mkdir -p $UPSTREAM
+  cp $PUBLIC_SRPM $UPSTREAM
+
+  echo condor/$VERSION/$SRPM > upstream/developer.srpm.source
+
+
+You can also do this by running: ./pull-condor-srpm 8.2.5
+
+
+Notes on updating osg/condor.spec:
+
+If we are using our own version of condor.spec (which is the case if we are
+carying any patches), it is a good idea to compare our version to the version
+in the new upstream srpm.  This way we can catch any updates to the upstream
+condor.spec to keep ours in sync.  We want to minimize differences in our
+copy, which means bringing in upstream changes even if they are not relevant
+for OSG.
+
+Expected changes between our condor.spec and upstream's:
+ - 'tarball_version' should be the same (if necessary, update it to match)
+ - 'condor_base_release' in ours should get a .n (eg, 1.1 if upstream has 1)
+ - PatchN/%patchN lines added for patches we carry
+ - %changelog entries for OSG-specific changes
+ - any other tweaks we continue to add, which should be in the %changelog
+
