@@ -13,3 +13,8 @@ git clone https://github.com/bbockelm/xrootd-hdfs.git
 cd xrootd-hdfs
 git archive v1.8.6 | gzip -7 > xrootd-hdfs.tar.gz
 
+Or just do:
+
+git clone https://github.com/bbockelm/xrootd-hdfs.git
+cd xrootd-hdfs
+git archive v1.8.8 --format=tar.gz --prefix=xrootd-hdfs-1.8.8/ -o ~/xrootd-hdfs-1.8.8.tar.gz -9
