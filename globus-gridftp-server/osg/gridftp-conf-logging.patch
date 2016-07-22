@@ -6,6 +6,6 @@ diff -ur globus_gridftp_server-6.14-orig/gridftp.conf.default.in globus_gridftp_
  # port
  port 2811
 -
-+log_level ERROR,WARN,INFO
++log_level ERROR,WARN,INFO,TRANSFER
 +log_single /var/log/gridftp-auth.log
 +log_transfer /var/log/gridftp.log

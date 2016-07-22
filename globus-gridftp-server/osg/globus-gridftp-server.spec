@@ -7,7 +7,7 @@
 Name:		globus-gridftp-server
 %global _name %(tr - _ <<< %{name})
 Version:	7.20
-Release:	1.2%{?dist}
+Release:	1.3%{?dist}
 Summary:	Globus Toolkit - Globus GridFTP Server
 
 Group:		System Environment/Libraries
@@ -231,6 +231,9 @@ fi
 %{_libdir}/pkgconfig/%{name}.pc
 
 %changelog
+* Fri Jul 22 2016 Carl Edquist <edquist@cs.wisc.edu> - 7.20-1.3.osg
+- Add TRANSFER to log_level (SOFTWARE-2397)
+
 * Mon Jun 27 2016 Brian Bockelman <bbockelm@cse.unl.edu> - 7.20-1.2.osg
 - Avoid deadlocking when the gridftp server closes its log file. SOFTWARE-2377
 - Add support for adler32 checksums. SOFTWARE-2379
