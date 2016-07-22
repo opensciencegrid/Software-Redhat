@@ -1,11 +1,10 @@
 Summary: C/C++ libraries for the client of the CREAM service
 Name: glite-ce-cream-client-api-c
 Version: 1.15.4
-Release: 2.1%{?dist}
+Release: 2.2%{?dist}
 License: Apache Software License
 URL: http://glite.cern.ch/
 Group: System Environment/Libraries
-BuildArch: %{_arch}
 BuildRequires: cmake, chrpath
 BuildRequires: glite-ce-wsdl >= 1.15.1
 #BuildRequires: emi-pkgconfig-compat
@@ -95,6 +94,9 @@ The package contains development files for the client of the CREAM service
 
 
 %changelog
+* Fri Jul 22 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.15.4-2.2
+- Remove BuildArch line so it doesn't confuse Koji (SOFTWARE-2389)
+
 * Mon Jul 11 2016 Matyas Selmeci <matyas@cs.wisc.edu> - 1.15.4-2.1
 - Build for OSG; add versioned dependencies; use condor-classads library
 - Patch to build for EL7
