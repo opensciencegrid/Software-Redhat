@@ -1,5 +1,5 @@
 Name:           vo-client
-Version:        66
+Version:        67
 Release:        1%{?dist}
 Summary:        Contains vomses file for use with user authentication and edg-mkgridmap.conf file that contains configuration information for edg-mkgridmap.
 
@@ -85,6 +85,9 @@ rm -rf $RPM_BUILD_ROOT
 %attr(0600,tomcat,tomcat) %config(noreplace) %{_sysconfdir}/gums/gums.config.template
 
 %changelog
+* Mon Jul 25 2016 Carl Edquist <edquist@cs.wisc.edu> - 67-1
+- Corrected edg-mkgridmap.config for ILC (SOFTWARE-2402)
+
 * Wed May 04 2016 Carl Edquist <edquist@cs.wisc.edu> - 66-1
 - Update to vo-client 66 (SOFTWARE-2316)
   - LZ, DREAM, CIGI, SURAGRID Update to CILogon
