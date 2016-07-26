@@ -2,9 +2,9 @@
 #%define gitrev 42e738e
 
 Name:		blahp
-Version:	1.18.22.bosco
+Version:	1.18.23.bosco
 #Release:	1%{?gitrev:.%{gitrev}}%{?dist}
-Release:        2%{?dist} 
+Release:        1%{?dist} 
 Summary:	gLite BLAHP daemon
 
 Group:		System/Libraries
@@ -183,6 +183,9 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Tue Jul 26 2016 Edgar Fajardo <emfajard@ucsd.edu> - 1.18.23.bosco-1
+- Fixed a bug in HTConodor Ticket-5804. (SOFTWARE-2404)
+
 * Thu Jul 21 2016 Edgar Fajardo <emfajard@ucsd.edu> - 1.18.22.bosco-2
 - The code was taken from the osg-bosco instead of Edgar's fork.
 
