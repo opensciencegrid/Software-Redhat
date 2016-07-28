@@ -1,6 +1,6 @@
 Summary: Package for configure-osg and associated scripts
 Name: osg-configure
-Version: 1.4.1
+Version: 1.4.2
 Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
@@ -336,6 +336,10 @@ fi
 
 
 %changelog
+* Thu Jul 28 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 1.4.2-1
+- Fix unit test TestMisc.testValidSettings() to use a gums_host that
+  always resolves (SOFTWARE-2406)
+
 * Wed Jun 22 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 1.4.1-1
 - Set OSG_CONFIGURED=true for BOSCO HTCondor-CEs (SOFTWARE-2360)
 - Add edit_lcmaps_db option to prevent changes to lcmaps.db (SOFTWARE-2321)
