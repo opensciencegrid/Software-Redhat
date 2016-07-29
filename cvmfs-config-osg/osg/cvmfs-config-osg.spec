@@ -25,8 +25,7 @@ Conflicts: cvmfs < 2.2.0
 Conflicts: cvmfs-server < 2.2.0
 
 %description
-Default configuration parameters and public keys for CernVM-FS, providing access
-to repositories under the cern.ch, egi.eu, and opensciencegrid.org domains
+Default configuration parameters and public keys for CernVM-FS
 
 %install
 rm -rf $RPM_BUILD_ROOT
