@@ -4,7 +4,7 @@
 Name:		blahp
 Version:	1.18.23.bosco
 #Release:	1%{?gitrev:.%{gitrev}}%{?dist}
-Release:        1%{?dist} 
+Release:	1%{?dist}
 Summary:	gLite BLAHP daemon
 
 Group:		System/Libraries
@@ -200,6 +200,9 @@ fi
 - Add multicore HTCondor support (SOFTWARE-2303)
 - Support dynamic assignment of env variables (SOFTWARE-2221)
 
+* Mon May 02 2016 Matyas Selmeci <matyas@cs.wisc.edu> - 1.18.19.bosco-2
+- Built against HTCondor 8.5.4 (SOFTWARE-2307)
+
 * Mon Apr 25 2016 Brian Lin <blin@cs.wisc.edu> - 1.18.19.bosco-1
 - Add SLURM support (SOFTWARE-2256)
 - Fix mem requests (SOFTWARE-2260)
@@ -217,6 +220,9 @@ fi
 - Fix bug in pbs_status.py when /tmp/ and /var/tmp were on different filesystems
 - Resync job registry to prevent jobs from being incorrectly marked as completed
 
+* Mon Nov 23 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1.18.15.bosco-2
+- Built against HTCondor 8.5.1 SOFTWARE-2077
+
 * Wed Nov 11 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.18.15.bosco-3
 - Build against condor 8.4.2 (SOFTWARE-2084)
 
@@ -225,6 +231,10 @@ fi
 
 * Tue Oct 27 2015 Jeff Dost <jdost@ucsd.edu> - 1.18.15.bosco-1
 - Build against HTCondor 8.4.1 (SOFTWARE-2084)
+- Added error reporting to pbs_submit
+
+* Fri Oct 23 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1.18.15.bosco-1
+- Built against HTCOndor 8.5.0 SOFTWARE-2077
 - Added error reporting to pbs_submit
 
 * Tue Sep 29 2015 Brian Lin <blin@cs.wisc.edu> - 1.18.14.bosco-1
