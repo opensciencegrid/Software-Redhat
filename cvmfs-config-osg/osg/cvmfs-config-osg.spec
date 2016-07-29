@@ -1,7 +1,7 @@
 Summary: CernVM File System OSG Configuration and Public Keys
 Name: cvmfs-config-osg
 Version: 1.2
-Release: 3%{?dist}
+Release: 5%{?dist}
 Source0: opensciencegrid.org.pub
 Source1: 60-osg.conf
 Source2: config-osg.opensciencegrid.org.conf
@@ -49,6 +49,12 @@ done
 %config %{_sysconfdir}/cvmfs/config.d/*
 
 %changelog
+* Wed Jun 29 2016 Dave Dykstra <dwd@fnal.gov> - 1.2-5
+- Fix copy/paste error
+
+* Wed Jun 29 2016 Dave Dykstra <dwd@fnal.gov> - 1.2-4
+- Add CVMFS_FALLBACK_PROXY.
+
 * Fri Mar 25 2016 Dave Dykstra <dwd@fnal.gov> - 1.2-3
 - Switch to using config-osg.opensciencegrid.org config repository.
 
