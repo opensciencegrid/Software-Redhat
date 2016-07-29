@@ -22,7 +22,7 @@
 Summary: CernVM File System
 Name: cvmfs
 Version: 2.3.0
-Release: 1%{?dist}
+Release: 1.1%{?dist}
 Source0: https://ecsft.cern.ch/dist/cvmfs/%{name}-%{version}.tar.gz
 %if 0%{?selinux_cvmfs}
 Source1: cvmfs.te
@@ -130,6 +130,7 @@ Requires: openssl
 %description devel
 CernVM-FS static client library for pure user-space use
 
+%if 0
 %package server
 Summary: CernVM-FS server tools
 Group: Application/System
@@ -171,6 +172,7 @@ Group: Application/System
 Requires: cvmfs-server = %{version}
 %description unittests
 CernVM-FS unit tests binary.  This RPM is not required except for testing.
+%endif
 
 %prep
 %setup -q
@@ -201,7 +203,7 @@ export CXXFLAGS="$CXXFLAGS -O0"
 %if 0%{?suse_version}
 cmake -DCMAKE_INSTALL_LIBDIR:PATH=%{_lib} -DBUILD_SERVER=yes -DBUILD_SERVER_DEBUG=yes -DBUILD_LIBCVMFS=yes -DBUILD_UNITTESTS=yes -DINSTALL_UNITTESTS=yes -DCMAKE_INSTALL_PREFIX:PATH=/usr .
 %else
-%cmake -DCMAKE_INSTALL_LIBDIR:PATH=%{_lib} -DBUILD_SERVER=yes -DBUILD_SERVER_DEBUG=yes -DBUILD_LIBCVMFS=yes -DBUILD_UNITTESTS=yes -DINSTALL_UNITTESTS=yes .
+%cmake -DCMAKE_INSTALL_LIBDIR:PATH=%{_lib} -DBUILD_SERVER=no -DBUILD_SERVER_DEBUG=no -DBUILD_LIBCVMFS=yes -DBUILD_UNITTESTS=no -DINSTALL_UNITTESTS=no .
 %endif
 
 make %{?_smp_mflags}
@@ -219,6 +221,7 @@ popd
 
 %if 0%{?el4}
 %else
+%if 0
 %pretrans server
 [ -d "/var/spool/cvmfs"  ]          || exit 0
 [ -d "/etc/cvmfs/repositories.d/" ] || exit 0
@@ -236,6 +239,7 @@ for repo in /var/spool/cvmfs/*; do
 done
 
 exit 0
+%endif
 %endif
 
 %pre
@@ -393,6 +397,7 @@ fi
 %{_includedir}/libcvmfs.h
 %doc COPYING AUTHORS README ChangeLog
 
+%if 0
 %files server
 %defattr(-,root,root)
 %{_bindir}/cvmfs_swissknife
@@ -420,8 +425,11 @@ fi
 %defattr(-,root,root)
 %{_bindir}/cvmfs_unittests
 %doc COPYING AUTHORS README ChangeLog
+%endif
 
 %changelog
+* Fri Jul 29 2016 Dave Dykstra <dwd@fnal.gov> - 2.3.0-1.1
+- Change to not build cvmfs-server or cvmfs-unittests
 * Tue May 03 2016 Jakob Blomer <jblomer@cern.ch> - 2.3.0
 - No optimiziation on EL5/i686 to prevent faulty atomics
 * Fri Apr 29 2016 Jakob Blomer <jblomer@cern.ch> - 2.3.0
