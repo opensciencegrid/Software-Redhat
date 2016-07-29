@@ -1,9 +1,10 @@
 # Have gitrev be the short hash or branch name if doing a prerelease build
-#%define gitrev
+#%define gitrev 42e738e
 
 Name:		blahp
-Version:	1.18.21.bosco
-Release:	1%{?gitrev:.%{gitrev}}%{?dist}
+Version:	1.18.23.bosco
+#Release:	1%{?gitrev:.%{gitrev}}%{?dist}
+Release:	1%{?dist}
 Summary:	gLite BLAHP daemon
 
 Group:		System/Libraries
@@ -15,7 +16,8 @@ URL:		https://github.com/osg-bosco/BLAH
 #
 # Pre-release build tarballs should be generated with:
 # git archive %{gitrev} | gzip -9 > %{name}-%{version}-%{gitrev}.tar.gz
-Source0:        %{name}-%{version}%{?gitrev:-%{gitrev}}.tar.gz
+#Source0:        %{name}-%{version}%{?gitrev:-%{gitrev}}.tar.gz
+Source0:        %{name}-%{version}.tar.gz
 
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildRequires:  automake
@@ -181,6 +183,15 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Tue Jul 26 2016 Edgar Fajardo <emfajard@ucsd.edu> - 1.18.23.bosco-1
+- Fixed a bug in HTConodor Ticket-5804. (SOFTWARE-2404)
+
+* Thu Jul 21 2016 Edgar Fajardo <emfajard@ucsd.edu> - 1.18.22.bosco-2
+- The code was taken from the osg-bosco instead of Edgar's fork.
+
+* Wed Jul 20 2016 Edgar Fajardo <emfajard@ucsd.edu> - 1.18.22.bosco-1
+- Merge HTCondor Ticket-5722. Cache output of slurm-status. (SOFTWARE-2399)
+
 * Thu Jun 23 2016 Brian Lin <blin@cs.wisc.edu> - 1.18.21.bosco-1
 - Fix Slurm file leak (SOFTWARE-2367)
 - Package slurm_hold.sh (SOFTWARE-2375)
@@ -211,6 +222,16 @@ fi
 
 * Mon Nov 23 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1.18.15.bosco-2
 - Built against HTCondor 8.5.1 SOFTWARE-2077
+
+* Wed Nov 11 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.18.15.bosco-3
+- Build against condor 8.4.2 (SOFTWARE-2084)
+
+* Mon Nov 2 2015 Edgar Fajardo <emfajard@ucsd.edu> - 1.18.15.bosco-2
+- Build aginst condor 8.4.0 (SOFTWARE-2084)
+
+* Tue Oct 27 2015 Jeff Dost <jdost@ucsd.edu> - 1.18.15.bosco-1
+- Build against HTCondor 8.4.1 (SOFTWARE-2084)
+- Added error reporting to pbs_submit
 
 * Fri Oct 23 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1.18.15.bosco-1
 - Built against HTCOndor 8.5.0 SOFTWARE-2077
