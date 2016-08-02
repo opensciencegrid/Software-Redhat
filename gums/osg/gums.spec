@@ -13,7 +13,7 @@
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.5.2
-Release: 4%{?dist}
+Release: 5%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 URL: https://github.com/opensciencegrid/gums
@@ -132,8 +132,10 @@ Patch3: Use-jspc-compiler-for-tomcat7.patch
 Patch4: Always-assume-RPM-install.patch
 
 Patch5: voms3.patch
+Patch6: sw-2414-voms3-threadlocal-VOMSACValidator.patch
 
-Patch6: sw-2392-pool-assignments.patch
+Patch7: sw-2392-pool-assignments.patch
+
 
 %description
 %{summary}
@@ -191,9 +193,10 @@ Summary: Tomcat service for GUMS
 %patch4 -p1
 %if 0%{?rhel} >= 7
 %patch5 -p1
+%patch6 -p1
 %endif
 
-%patch6 -p1
+%patch7 -p1
 
 %build
 
@@ -505,6 +508,9 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+* Tue Aug 02 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.5.2-5
+- Make VOMSACValidator objects thread-local to fix scaling issue (SOFTWARE-2414)
+
 * Thu Jul 14 2016 Carl Edquist <edquist@cs.wisc.edu> - 1.5.2-4
 - Fix display of pool assignments (SOFTWARE-2392)
 
