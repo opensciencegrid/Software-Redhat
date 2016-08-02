@@ -5,7 +5,7 @@
 
 Summary:   Tests an OSG Software installation
 Name:      osg-test
-Version:   1.8.2
+Version:   1.8.3
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -40,6 +40,12 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/osgtest
 
 %changelog
+* Tue Aug 02 2016 Brian Lin <blin@cs.wisc.edu> - 1.8.3-1
+- Add VOMS library to set up test VOMS server without voms-admin
+- Add tests for GSI-OpenSSH
+- Update edg-mkgridmap tests to only require voms-admin
+- Speed up Tomcat startup
+
 * Tue Jul 05 2016 Brian Lin <blin@cs.wisc.edu> - 1.8.2-1
 - Add MySQL functions (execute, check_execute, db_dump)
 - Add function to compare RPM versions
