@@ -4,10 +4,7 @@
 Name:      osg-ce
 Summary:   OSG Compute Element
 Version:   3.3
-%if 0%{?el7}
-%define release_suffix _clipped
-%endif
-Release:   7%{?release_suffix}%{?dist}
+Release:   8%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -46,9 +43,7 @@ Requires: vo-client
 Requires: osg-info-services
 Requires: osg-vo-map
 Requires: gip
-%if ! 0%{?el7}
 Requires: gums-client
-%endif
 Requires: edg-mkgridmap
 Requires: gratia-probe-gridftp-transfer
 Requires: osg-cleanup
@@ -322,6 +317,9 @@ exit 0
 %files bosco
 
 %changelog
+* Wed Aug 03 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.3.8
+- Add gums-client back to EL7 (SOFTWARE-2418); clipped version no longer needed
+
 * Mon Jun 27 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.3-7
 - Require htcondor-ce-bosco in bosco CE subpackages (SOFTWARE-2373)
 
