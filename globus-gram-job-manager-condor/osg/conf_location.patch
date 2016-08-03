@@ -1,0 +1,13 @@
+Index: condor.pm
+===================================================================
+--- condor.pm.orig	2011-09-06 17:29:46.000000000 -0500
++++ condor.pm	2011-09-06 17:30:11.000000000 -0500
+@@ -71,7 +71,7 @@
+     my $description = $self->{JobDescription};
+     my $stdout = $description->stdout();
+     my $stderr = $description->stderr();
+-    my $globus_condor_conf = "$Globus::Core::Paths::sysconfdir/globus-condor.conf";
++    my $globus_condor_conf = "$Globus::Core::Paths::sysconfdir/globus/globus-condor.conf";
+ 
+     if (-r $globus_condor_conf)
+     {   

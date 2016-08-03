@@ -1,0 +1,77 @@
+Index: condor.pm
+===================================================================
+--- condor.pm.orig	2015-02-11 13:41:57.000000000 -0600
++++ condor.pm	2015-02-11 13:48:14.949329592 -0600
+@@ -522,10 +522,17 @@
+             print SCRIPT_FILE "\n";
+         }
+     }
+     # End NFS Lite Mode
+ 
++    $rc = print SCRIPT_FILE "+GratiaJobOrigin=\"GRAM\"\n";
++    if (!$rc)
++    {
++        return $self->respond_with_failure_extension(
++            "print: $script_filename: $!",
++            Globus::GRAM::Error::TEMP_SCRIPT_FILE_FAILED());
++    }
+     $rc = print SCRIPT_FILE "#Extra attributes specified by client\n";
+     if (!$rc)
+     {
+         return $self->respond_with_failure_extension(
+             "print: $script_filename: $!",
+@@ -893,19 +900,21 @@
+         return { JOB_STATE => Globus::GRAM::JobState::DONE };
+     }
+ 
+     if($num_abort > 0)
+     {
++        $self->log_to_gratia();
+         return Globus::GRAM::Error::SYSTEM_CANCELLED();
+     }
+     elsif($num_done == $description->count())
+     {
+         $self->nfssync( $description->stdout(), 0 )
+             if $description->stdout() ne '';
+         $self->nfssync( $description->stderr(), 0 )
+             if $description->stderr() ne '';
+ 
++        $self->log_to_gratia();
+         $state = Globus::GRAM::JobState::DONE;
+     }
+     elsif($num_run == 0)
+     {
+         $state = Globus::GRAM::JobState::PENDING;
+@@ -958,6 +967,32 @@
+ 
+     $self->respond({GT3_FAILURE_MESSAGE => $msg });
+     return $rc;
+ }
+ 
++# Patched by the VDT
++sub log_to_gratia
++{
++    my $self = shift;
++    my $log_filename = $self->{condor_logfile};
++    my $log_dir = "/var/lib/gratia/data/";
++
++    if ( -d $log_dir ) {
++      # For now assume that the existence of the directory means that
++      # accounting is enabled.
++      if ( -r $log_filename ) {
++         $self->log("Logging for accounting purpose the file $log_filename into $log_dir");
++         @args = ("cp", "$log_filename" , "$log_dir" );
++         system(@args) == 0 or $self->log("Error: system @args failed: $?");
++      } else {
++         if ( ! -e $log_filename ) {
++            $self->log("Logging for accounting purpose failed: $log_filename does not exist");
++         } else {
++            $self->log("Logging for accounting purpose failed: can not read the file $log_filename");
++         }
++         return 0; # should return a proper Globus failure code.
++      }
++    }
++    return 1; # Should return a proper Globus success code
++}
++
+ 1;

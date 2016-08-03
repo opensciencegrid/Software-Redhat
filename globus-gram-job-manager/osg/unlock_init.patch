@@ -1,0 +1,28 @@
+Index: globus_gram_job_manager.c
+===================================================================
+--- globus_gram_job_manager.c.orig	2015-02-11 14:13:56.832587933 -0600
++++ globus_gram_job_manager.c	2015-02-11 14:14:02.942659890 -0600
+@@ -3042,10 +3042,11 @@ globus_l_gram_restart_job(
+         rc = GLOBUS_GRAM_PROTOCOL_ERROR_MALLOC_FAILED;
+ 
+         goto malloc_restart_rsl_failed;
+     }
+ 
++    GlobusGramJobManagerUnlock(manager);
+     rc = globus_gram_job_manager_request_init(
+             request,
+             manager,
+             restart_rsl,
+             GSS_C_NO_CREDENTIAL,
+@@ -3054,10 +3055,11 @@ globus_l_gram_restart_job(
+             NULL,
+             GLOBUS_TRUE,
+             NULL,
+             NULL,
+             NULL);
++    GlobusGramJobManagerLock(manager);
+     free(restart_rsl);
+ malloc_restart_rsl_failed:
+     return rc;
+ }
+ /* globus_l_gram_restart_job() */

@@ -1,0 +1,194 @@
+Index: condor.pm
+===================================================================
+--- condor.pm.orig	2015-02-11 13:51:38.874751244 -0600
++++ condor.pm	2015-02-11 13:51:47.745856664 -0600
+@@ -35,11 +35,11 @@
+ 
+ package Globus::GRAM::JobManager::condor;
+ 
+ @ISA = qw(Globus::GRAM::JobManager);
+ 
+-my ($condor_submit, $condor_rm, $condor_config, $isNFSLite);
++my ($condor_submit, $condor_rm, $condor_config, $isNFSLite, $isManagedFork);
+ 
+ BEGIN
+ {
+     my $config = new Globus::Core::Config(
+             '${sysconfdir}/globus/globus-condor.conf');
+@@ -57,10 +57,11 @@
+     {
+         $ENV{CONDOR_CONFIG} = $condor_config;
+     }
+ 
+     $isNFSLite = 0;
++    $isManagedFork = 0;
+ }
+ 
+ sub new
+ {
+     my $proto = shift;
+@@ -87,10 +88,16 @@
+             }
+             close(FH);
+         }
+     }
+ 
++    if ($description->servicetag() =~ m/^fork\./ ||
++         $description->servicetag() =~ m/^managedfork\./ )
++    {
++        $isManagedFork = 1;
++    }
++
+     if (! exists($self->{condor_logfile}))
+     {
+         if(! exists($ENV{GLOBUS_SPOOL_DIR}))
+         {
+             $log_dir = $self->job_dir(); 
+@@ -144,18 +151,11 @@
+     my $pid;
+     my $status;
+     my ($condor_submit_out, $condor_submit_err);
+     my $rc;
+     my $scratch_isset = 0; # Flag if the SCRATCH_DIRECTORY environment variable is set indicating likely GRAM job
+-
+-    # Reject jobs that want streaming, if so configured
+-    if ( $description->streamingrequested() &&
+-	 $description->streamingdisabled() ) {
+-
+-	$self->log("Streaming is not allowed.");
+-	return Globus::GRAM::Error::OPENING_STDOUT;
+-    }
++    my $is_grid_monitor = 0;
+ 
+     if($description->jobtype() eq 'single' ||
+        $description->jobtype() eq 'multiple')
+     {
+ 	$universe = 'vanilla';
+@@ -175,10 +175,14 @@
+     }
+     else
+     {
+ 	return Globus::GRAM::Error::JOBTYPE_NOT_SUPPORTED();
+     }
++    if ($isManagedFork)
++    {
++        $universe = 'local';
++    }
+ 
+     # Validate some RSL parameters
+     if(!defined($description->directory()))
+     {
+         return Globus::GRAM::Error::RSL_DIRECTORY;
+@@ -217,10 +221,36 @@
+ 	{
+ 	    return Globus::GRAM::Error::EXECUTABLE_PERMISSIONS();
+ 	}
+     }
+ 
++    # Check if this is the Condor-G grid monitor
++    if ($isManagedFork)
++    {
++        my $exec = $description->executable();
++        my $file_out = `/usr/bin/file $exec`;
++        if ( $file_out =~ /script/ || $file_out =~ /text/ ||
++	     $file_out =~ m|/usr/bin/env| ) {
++	    open( EXEC, "<$exec" ) or
++ 	        return Globus::GRAM::Error::EXECUTABLE_PERMISSIONS();
++	    while( <EXEC> ) {
++	        if ( /Sends results from the grid_manager_monitor_agent back to a/ ) {
++		    $is_grid_monitor = 1;
++	        }
++ 	    }
++	    close( EXEC );
++        }
++    }
++
++    # Reject jobs that want streaming, if so configured
++    if ( $description->streamingrequested() &&
++         $description->streamingdisabled() && !$is_grid_monitor ) {
++
++        $self->log("Streaming is not allowed.");
++        return Globus::GRAM::Error::OPENING_STDOUT;
++    }
++
+     @environment = $description->environment();
+ 
+     foreach my $tuple ($description->environment())
+     {
+         if(!ref($tuple) || scalar(@$tuple) != 2)
+@@ -266,10 +296,17 @@
+             push(@environment,["MY_INITIAL_DIR",$description->directory()] );
+         }
+     }       
+     # NFS Lite End
+ 
++    if ($isManagedFork)
++    {
++        append_path_array(\@environment, 'LD_LIBRARY_PATH', $ENV{LD_LIBRARY_PATH});
++        append_path_array(\@environment, 'PERL5LIB', $ENV{PERL5LIB});
++        append_path_array(\@environment, 'PATH', $ENV{PATH});
++    }
++
+     $environment_string = join(';',
+                                map {$_->[0] . "=" . $_->[1]} @environment);
+ 
+     @arguments = $description->arguments();
+     foreach (@arguments)
+@@ -408,10 +445,16 @@
+     if($description->min_memory() ne '')
+     {
+         push(@requirements, " Memory >= " . $description->min_memory());
+     }
+ 
++    if ($isManagedFork)
++    {
++        $requirements = ("True");
++    }
++
++
+     if (scalar(@requirements) > 0)
+     {
+         $rc = print SCRIPT_FILE "Requirements = ", join(" && ", @requirements) ."\n";
+     }
+     if (!$rc)
+@@ -492,10 +535,20 @@
+     {
+         return $self->respond_with_failure_extension(
+             "print: $script_filename: $!",
+             Globus::GRAM::Error::TEMP_SCRIPT_FILE_FAILED());
+     }
++    if ( $is_grid_monitor ) {
++	$rc = print SCRIPT_FILE "+GridMonitorJob = True\n";
++        if (!$rc)
++        {
++            return $self->respond_with_failure_extension(
++                "print: $script_filename: $!",
++                Globus::GRAM::Error::TEMP_SCRIPT_FILE_FAILED());
++        }
++    }
++
+     # NFS Lite mode
+     if ($isNFSLite && !$isManagedFork) {
+         print SCRIPT_FILE "should_transfer_files = YES\n";
+         print SCRIPT_FILE "when_to_transfer_output = ON_EXIT\n";
+         print SCRIPT_FILE "transfer_output = true\n";
+@@ -993,6 +1046,19 @@
+       }
+     }
+     return 1; # Should return a proper Globus success code
+ }
+ 
++# Append to a path if it exists, create it if it does not
++sub append_path_array {
++    my ($arr_ref, $var, $path) = @_;
++
++    foreach my $val (@$arr_ref) {
++        if($val->[0] eq "$var") {
++            $val->[1] .= ":$path";
++            return;
++        }
++    }
++    push @$arr_ref, [$var, $path];
++}
++
+ 1;

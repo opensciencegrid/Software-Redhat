@@ -1,0 +1,22 @@
+Index: globus_gram_job_manager_request.c
+===================================================================
+--- globus_gram_job_manager_request.c.orig	2015-02-11 14:13:56.790587439 -0600
++++ globus_gram_job_manager_request.c	2015-02-11 14:14:25.613926919 -0600
+@@ -2161,10 +2161,17 @@ globus_l_gram_restart(
+     {
+         /* Something is handling this request already. We'll check if it is
+          * this process. If so, we'll merge the RSLs (as if we had done a
+          * stdio update.
+          */
++        if (old_job_request == NULL) {
++            /* If we got here through globus_gram_job_manager_request_load_all,
++             * the old job request may be NULL.  Hence, we always bail.
++             */
++            rc = GLOBUS_GRAM_PROTOCOL_ERROR_OLD_JM_ALIVE;
++            goto state_file_read_failed;
++        }
+         rc = globus_gram_job_manager_add_reference(
+                 request->manager,
+                 request->job_contact_path,
+                 "restart",
+                 old_job_request);
