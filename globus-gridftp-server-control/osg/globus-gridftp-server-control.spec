@@ -25,6 +25,8 @@ BuildRequires:	globus-gssapi-gsi-devel >= 10
 BuildRequires:	globus-gsi-openssl-error-devel >= 2
 BuildRequires:	globus-gssapi-error-devel >= 4
 
+Patch1:		ipv6-load-balancing.patch
+
 %package devel
 Summary:	Globus Toolkit - Globus GridFTP Server Library Development Files
 Group:		Development/Libraries
@@ -58,6 +60,7 @@ Globus GridFTP Server Library Development Files
 
 %prep
 %setup -q -n %{_name}-%{version}
+%patch1 -p1
 
 %build
 # Reduce overlinking
@@ -102,6 +105,9 @@ rm -rf %{buildroot}
 %{_libdir}/pkgconfig/%{name}.pc
 
 %changelog
+* Thu Aug 04 2016 Carl Edquist <edquist@cs.wisc.edu> - 3.6-2
+- Fix load-balancing for IPv6 addresses (SOFTWARE-2413)
+
 * Fri Sep 12 2014 Mattias Ellert <mattias.ellert@fysast.uu.se> - 3.6-1
 - Update to Globus Toolkit 6.0
 - Drop GPT build system and GPT packaging metadata

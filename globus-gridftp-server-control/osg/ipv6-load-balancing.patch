@@ -1,0 +1,13 @@
+diff --git a/globus_gridftp_server_control_commands.c b/globus_gridftp_server_control_commands.c
+index 13d3836..4eea94b 100644
+--- a/globus_gridftp_server_control_commands.c
++++ b/globus_gridftp_server_control_commands.c
+@@ -2032,7 +2032,7 @@ globus_l_gsc_cmd_pasv_cb(
+                 goto err;
+             }
+             
+-            if(0)
++            if(1)
+             {
+                 msg = globus_common_create_string(
+                     "%d Entering Passive Mode (|%d|%s|%d|)\r\n",
