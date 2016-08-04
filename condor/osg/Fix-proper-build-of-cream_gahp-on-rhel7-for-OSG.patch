@@ -1,0 +1,34 @@
+From bb7cde32bd173e5d8fd0198def27ed52dea07db9 Mon Sep 17 00:00:00 2001
+From: Jaime Frey <jfrey@cs.wisc.edu>
+Date: Wed, 3 Aug 2016 10:58:53 -0500
+Subject: [PATCH] Fix proper build of cream_gahp on rhel7 for OSG.
+
+---
+ externals/bundles/cream/1.15.4/CMakeLists.txt | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/externals/bundles/cream/1.15.4/CMakeLists.txt b/externals/bundles/cream/1.15.4/CMakeLists.txt
+index 3a3a875..c051724 100644
+--- a/externals/bundles/cream/1.15.4/CMakeLists.txt
++++ b/externals/bundles/cream/1.15.4/CMakeLists.txt
+@@ -250,11 +250,16 @@ if ( WITH_CREAM )
+ 
+ 		condor_post_external( cream include OFF )
+ 
+ 	else( NOT PROPER )
+ 
+-		if ( ${SYSTEM_NAME} MATCHES "rhel6" OR ${SYSTEM_NAME} MATCHES "centos6" OR ${SYSTEM_NAME} MATCHES "sl6")
++		# REDHAT_RELEASE is undefined on EL6. On the other hand,
++		# SYSTEM_NAME is merely "rhel" on EL7, so that can't be used
++		# either.
++		if ( REDHAT_RELEASE MATCHES "Linux release 7" )
++			find_multiple("glite_ce_cream_client_soap;glite_ce_cream_client_util;glite_security_gsoap_plugin_2816_cxx;glite_security_gss;gsoapssl++;globus_gssapi_gsi;globus_common;log4cpp;gridsite;boost_thread;boost_regex" CREAM_FOUND )
++		elseif ( SYSTEM_NAME MATCHES "rhel6|centos6|sl6" )
+ 			find_multiple("glite_ce_cream_client_soap;glite_ce_cream_client_util;glite_security_gsoap_plugin_2716_cxx;glite_security_gss;log4cpp;gridsite;boost_thread;boost_regex" CREAM_FOUND )
+ 		else()
+ 			find_multiple("glite_ce_cream_client_soap;glite_ce_cream_client_util;glite_security_gsoap_plugin_2713_cxx;glite_security_gss;log4cpp;gridsite;boost_thread;boost_regex" CREAM_FOUND )
+ 		endif()
+ 
+-- 
+2.6.3
+
