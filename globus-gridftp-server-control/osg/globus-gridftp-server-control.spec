@@ -3,7 +3,7 @@
 Name:		globus-gridftp-server-control
 %global _name %(tr - _ <<< %{name})
 Version:	3.6
-Release:	1%{?dist}
+Release:	1.1%{?dist}
 Summary:	Globus Toolkit - Globus GridFTP Server Library
 
 Group:		System Environment/Libraries
@@ -105,7 +105,7 @@ rm -rf %{buildroot}
 %{_libdir}/pkgconfig/%{name}.pc
 
 %changelog
-* Thu Aug 04 2016 Carl Edquist <edquist@cs.wisc.edu> - 3.6-2
+* Thu Aug 04 2016 Carl Edquist <edquist@cs.wisc.edu> - 3.6-1.1
 - Fix load-balancing for IPv6 addresses (SOFTWARE-2413)
 
 * Fri Sep 12 2014 Mattias Ellert <mattias.ellert@fysast.uu.se> - 3.6-1
