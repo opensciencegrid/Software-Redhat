@@ -1,7 +1,7 @@
 Summary: Package for configure-osg and associated scripts
 Name: osg-configure
 Version: 1.4.2
-Release: 1%{?dist}
+Release: 2%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
 Group: Grid
@@ -10,6 +10,7 @@ BuildArch: noarch
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 Url: https://github.com/opensciencegrid/osg-configure
 Provides: configure-osg
+Requires: condor-python
 
 %if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
 %{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
@@ -336,6 +337,9 @@ fi
 
 
 %changelog
+* Thu Aug 04 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 1.4.2-2
+- Require condor-python (SOFTWARE-2420)
+
 * Thu Jul 28 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 1.4.2-1
 - Fix unit test TestMisc.testValidSettings() to use a gums_host that
   always resolves (SOFTWARE-2406)
