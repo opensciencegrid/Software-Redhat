@@ -2,7 +2,7 @@
 %global _release 1
 
 Name:           osg-build
-Version:        1.6.4
+Version:        1.7.0
 Release:        %{?betatag:0.}%{_release}%{?betatag}%{?dist}
 Summary:        Build tools for the OSG
 
@@ -21,6 +21,8 @@ Requires:       openssl
 Requires:       quilt
 Requires:       koji
 Requires:       rpmlint
+Requires:       subversion
+Requires:       git
 
 Obsoletes:      vdt-build <= 0.0.17
 Provides:       vdt-build = %{version}
@@ -70,6 +72,14 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_docdir}/%{name}/sample-osg-build.ini
 
 %changelog
+* Mon Aug 08 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.7.0-1
+- Add three-way diff support to osg-import-srpm
+- Make osg-build log messages look nicer by replacing the
+  'LOGLEVEL:osg-build:' prefix with a plain ' >> '
+- Remove broken test_mock_auto_cfg
+- Tweak language in osg-import-srpm when creating .source files
+- Add subversion and git as requirements
+
 * Mon Jun 27 2016 Carl Edquist <edquist@cs.wisc.edu> - 1.6.4-1
 - Rename koji-hub.batlab.org to koji.chtc.wisc.edu (SOFTWARE-2175)
 - Do not enforce vcs branch checks for scratch builds (SOFTWARE-1876)
