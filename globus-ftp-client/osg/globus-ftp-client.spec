@@ -2,14 +2,15 @@
 
 Name:		globus-ftp-client
 %global _name %(tr - _ <<< %{name})
-Version:	8.19
-Release:	1.2%{?dist}
+Version:	8.29
+Release:	1.1%{?dist}
+
 Summary:	Globus Toolkit - GridFTP Client Library
 
 Group:		System Environment/Libraries
 License:	ASL 2.0
-URL:		http://www.globus.org/
-Source:		http://www.globus.org/ftppub/gt6/packages/%{_name}-%{version}.tar.gz
+URL:		http://toolkit.globus.org/
+Source:		http://toolkit.globus.org/ftppub/gt6/packages/%{_name}-%{version}.tar.gz
 #		README file
 Source8:	GLOBUS-GRIDFTP
 Patch0:         1853-ssh-bin.patch
@@ -146,14 +147,60 @@ rm -rf %{buildroot}
 %{?_licensedir: %license GLOBUS_LICENSE}
 
 %changelog
+* Mon Aug 08 2016 Matyas Selmeci <matyas@cs.wisc.edu> - 8.29-1.1
+- Merge OSG changes (SOFTWARE-2197)
+
+* Fri May 06 2016 Mattias Ellert <mattias.ellert@fysast.uu.se> - 8.29-1
+- GT6 update: Don't overwrite LDFLAGS - Fix for regression in 8.28
+
+* Mon May 02 2016 Mattias Ellert <mattias.ellert@fysast.uu.se> - 8.28-1
+- GT6 update
+
+* Wed Feb 03 2016 Fedora Release Engineering <releng@fedoraproject.org> - 8.27-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
+
+* Wed Jan 13 2016 Mattias Ellert <mattias.ellert@fysast.uu.se> - 8.27-2
+- Extra rebuild for EPEL 7 ppc64le
+
+* Wed Nov 25 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 8.27-1
+- GT6 update
+  - Prevent endless loop when auto-retrying failed pasv on other server (8.27)
+  - Disable mandatory IPv6 in tests (8.26)
+
+* Tue Oct 27 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 8.25-1
+- GT6 update (upstream's release of the fix for GT-604)
+- Drop patch globus-ftp-client-ipv6.patch (fixed upstream)
+
+* Sun Oct 25 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 8.23-2
+- Fix for GT-604: fix ipv6 negotiation when source does not pre-connect
+  (backported from upstream git)
+
+* Mon Jul 27 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 8.23-1
+- GT6 update (Fix crash in error handling)
+
+* Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 8.22-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
+
+* Fri May 29 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 8.22-1
+- GT6 update (test improvements)
+
+* Fri Mar 27 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 8.21-1
+- GT6 update (undefined configure macro in gridftp-ssh)
+
 * Wed Mar 25 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 8.19-1.2.osg
 - Fix @SSH_BIN@ in gridftp-ssh script (SOFTWARE-1853)
 
 * Fri Mar 13 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 8.19-1.1.osg
 - Disable checks because they hang
 
+* Fri Mar 06 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 8.20-1
+- GT6 update (upstream's release of previous fix)
+
+* Thu Mar 05 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 8.19-2
+- Improved fix for GGUS 109089/109576 (from upstream git)
+
 * Tue Feb 17 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 8.19-1
-- GT6 update (GGUS 105158 and 109576)
+- GT6 update (GGUS 105158 and 109089/109576)
 
 * Fri Jan 23 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 8.17-2
 - Implement updated license packaging guidelines
