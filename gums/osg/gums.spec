@@ -13,7 +13,7 @@
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.5.2
-Release: 5%{?dist}
+Release: 6%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 URL: https://github.com/opensciencegrid/gums
@@ -133,8 +133,8 @@ Patch4: Always-assume-RPM-install.patch
 
 Patch5: voms3.patch
 Patch6: sw-2414-voms3-threadlocal-VOMSACValidator.patch
-
 Patch7: sw-2392-pool-assignments.patch
+Patch8: sw-2380-json-user-vo-map.patch
 
 
 %description
@@ -197,6 +197,7 @@ Summary: Tomcat service for GUMS
 %endif
 
 %patch7 -p1
+%patch8 -p1
 
 %build
 
@@ -508,6 +509,9 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+* Mon Aug 08 2016 Carl Edquist <edquist@cs.wisc.edu> - 1.5.2-6
+- Add JSON interface for generateOsgUserVoMap (SOFTWARE-2380)
+
 * Tue Aug 02 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.5.2-5
 - Make VOMSACValidator objects thread-local to fix scaling issue (SOFTWARE-2414)
 

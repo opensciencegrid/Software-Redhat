@@ -1,0 +1,61 @@
+commit 4061eb6197d73af134aa1e1a2d0d01b5808e5bce
+Author: Carl Edquist <edquist@cs.wisc.edu>
+Date:   Fri Aug 5 14:55:34 2016 -0500
+
+    add JSON interface for generateOsgUserVoMap (SOFTWARE-2380)
+
+diff --git a/gums-service/src/main/java/org/opensciencegrid/gums/service/JSONMapper.java b/gums-service/src/main/java/org/opensciencegrid/gums/service/JSONMapper.java
+index 216d98e..a00efa4 100644
+--- a/gums-service/src/main/java/org/opensciencegrid/gums/service/JSONMapper.java
++++ b/gums-service/src/main/java/org/opensciencegrid/gums/service/JSONMapper.java
+@@ -62,6 +62,10 @@ public class JSONMapper extends HttpServlet {
+         {
+             errorResponse(response, response.SC_NOT_FOUND, "REST API not specified; known JSON APIs are /gums/json/mapGridIdentity, /gums/json/manualMapper, /gums/json/userGroup, /gums/json/poolMapper, and /gums/json/version");
+         }
++        else if (path_info.equals("/generateOsgUserVoMap"))
++        {
++            doGenerateOsgUserVoMap(request, response);
++        }
+         else if (path_info.equals("/mapGridIdentity"))
+         {
+             doMap(request, response);
+@@ -105,6 +109,39 @@ public class JSONMapper extends HttpServlet {
+     }
+ 
+ 
++    private void doGenerateOsgUserVoMap(HttpServletRequest request,
++                          HttpServletResponse response)
++        throws ServletException, IOException
++    {
++        String hostname = request.getParameter("hostname");
++        if (hostname == null)
++        {
++            errorResponse(response, response.SC_BAD_REQUEST, "Missing required input parameter 'hostname'");
++            return;
++        }
++
++        String map = null;
++        try
++        {
++            map = gums.generateOsgUserVoMap(hostname);
++        }
++        catch (Exception e)
++        {
++            errorResponse(response, response.SC_INTERNAL_SERVER_ERROR, "Error generating osg user VO map: " + e.getMessage());
++        }
++
++        Writer out = response.getWriter();
++        JsonGenerator gen = Json.createGenerator(out);
++        gen.writeStartObject()
++            .write("result", (map != null) ? "OK" : "FAILED");
++        if (map != null)
++        {
++            gen.write("map", map);
++        }
++        gen.writeEnd();
++        gen.close();
++    }
++
+     private void doUserGroup(HttpServletRequest request,
+                           HttpServletResponse response)
+         throws ServletException, IOException
