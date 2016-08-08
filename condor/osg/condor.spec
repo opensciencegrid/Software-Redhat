@@ -130,7 +130,7 @@ Version: %{tarball_version}
 %else
         %define condor_release %condor_base_release
 %endif
-Release: %condor_release.1%{?dist}
+Release: %condor_release.2%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -223,10 +223,10 @@ Source123: zlib-1.2.3.tar.gz
 %endif
 
 
-
+Patch1: 0001-Fix-linux-distro-detection-for-rhel7-and-fedora.-582.patch
+Patch2: 0002-Fix-proper-build-of-cream_gahp-on-rhel7.patch
 #% if 0%osg
 Patch8: osg_sysconfig_in_init_script.patch
-Patch9: Fix-proper-build-of-cream_gahp-on-rhel7-for-OSG.patch
 #% endif
 
 # HCC patches
@@ -748,10 +748,11 @@ exit 0
 %setup -q -n %{name}-%{tarball_version}
 %endif
 
+%patch1 -p1
+%patch2 -p1
 
 %if 0%{?osg} || 0%{?hcc}
 %patch8 -p1
-%patch9 -p1
 %endif
 
 
@@ -1913,6 +1914,9 @@ fi
 %endif
 
 %changelog
+* Mon Aug 8 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 8.4.8-1.2.osg
+- Fix cream-gahp build for EL7
+
 * Thu Aug 4 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 8.4.8-1.1.osg
 - Re-enabled cream-gahp for OSG EL7 (SOFTWARE-2389)
 
