@@ -1,5 +1,5 @@
 Name:      rsv-gwms-tester
-Version:   1.0.1
+Version:   1.0.3
 Release:   1%{?dist}
 Summary:   RSV metrics to test sites with a schedd connected to a glidein pool
 Packager:  OSG-Software
@@ -31,12 +31,13 @@ make install DESTDIR=$RPM_BUILD_ROOT
 rm -rf $RPM_BUILD_ROOT
 
 %files
-%doc README.md
+%doc README
 %defattr(-,root,root,-)
 %{_libexecdir}/rsv/probes/gfactory-site-query-local-probe
 %{_libexecdir}/rsv/probes/dummy-vanilla-probe
 %{_libexecdir}/rsv/metrics/org.osg.general.dummy-vanilla-probe
 %{_libexecdir}/rsv/metrics/org.osg.local-gfactory-site-querying-local
+%config %{_sysconfdir}/condor-cron/config.d/*
 %config %{_sysconfdir}/rsv/meta/metrics/org.osg.local-gfactory-site-querying-local.meta
 %config(noreplace) %{_sysconfdir}/rsv/metrics/org.osg.local-gfactory-site-querying-local.conf
 %attr(-,rsv,rsv)  %{_sysconfdir}/rsv
@@ -48,5 +49,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Aug 08 2016 <efajado@physics.ucsd.edu> - 1.0.3-1
+- Updated Makefile to include condor-cron configs
+
+* Mon Aug 08 2016 <efajado@physics.ucsd.edu> - 1.0.2-1
+- Updated the README for configuration instrucctions
+- Added condor-cron config templates from the glideinwms schedd configs
+
 * Mon Aug 01 2016 <efajado@physics.ucsd.edu> - 1.0.1-1
 - First version of the probe
