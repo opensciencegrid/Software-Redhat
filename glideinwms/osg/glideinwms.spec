@@ -13,7 +13,7 @@ Name:           glideinwms
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
 %define version 3.2.15
-%define release 0.1.rc1
+%define release 0.2.rc2
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
 
@@ -808,6 +808,10 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/condor/certs/condor_mapfile
 
 %changelog
+* Sun Aug 07 2016 Parag Mhashilkar <parag@fnal.gov> - 3.2.15-0.2.rc2
+- Glideinwms v3.2.15 rc2
+- Release Notes: http://glideinwms.fnal.gov/doc.v3_2_15/history.html
+
 * Wed Aug 03 2016 Parag Mhashilkar <parag@fnal.gov> - 3.2.15-0.1.rc1
 - Glideinwms v3.2.15 rc1
 - Release Notes: http://glideinwms.fnal.gov/doc.v3_2_15/history.html
