@@ -6,7 +6,6 @@ Version:        1.6.4
 Release:        %{?betatag:0.}%{_release}%{?betatag}%{?dist}
 Summary:        Build tools for the OSG
 
-Group:          System Environment/Tools
 License:        Apache 2.0
 URL:            https://twiki.grid.iu.edu/bin/view/SoftwareTeam/OSGBuildTools
 
@@ -193,7 +192,7 @@ rm -rf $RPM_BUILD_ROOT
 - Add git support (contributed by Brian Bockelman)
 
 * Fri Aug 09 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.2.6-1
-- Add %osg macro
+- Add %%osg macro
 - Shorten arguments to rpmbuild
 
 * Fri Feb 15 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.2.5-1
