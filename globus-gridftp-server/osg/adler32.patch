@@ -1,8 +1,10 @@
-diff --git a/modules/file/globus_gridftp_server_file.c.orig b/modules/file/globus_gridftp_server_file.c
-index 67313c1..80613e5 100644
---- a/modules/file/globus_gridftp_server_file.c.orig
-+++ b/modules/file/globus_gridftp_server_file.c
-@@ -19,6 +19,7 @@
+Index: globus_gridftp_server-10.4/modules/file/globus_gridftp_server_file.c
+===================================================================
+--- globus_gridftp_server-10.4.orig/modules/file/globus_gridftp_server_file.c	2016-08-10 15:31:50.752818277 -0500
++++ globus_gridftp_server-10.4/modules/file/globus_gridftp_server_file.c	2016-08-10 15:51:58.472135252 -0500
+@@ -17,10 +17,11 @@
+ #include "globus_common.h"
+ #include "globus_gridftp_server.h"
  #include "globus_xio.h"
  #include "globus_xio_file_driver.h"
  #include <openssl/md5.h>
@@ -10,7 +12,11 @@ index 67313c1..80613e5 100644
  #include "version.h"
  
  #include <utime.h>
-@@ -96,6 +97,9 @@ typedef void
+ #ifndef TARGET_ARCH_WIN32
+ #include <grp.h>
+@@ -94,10 +95,13 @@ typedef void
+ (*globus_l_gfs_file_cksm_cb_t)(
+     globus_result_t                     result,
      char *                              cksm,
      void *                              user_arg);
  
@@ -20,7 +26,11 @@ index 67313c1..80613e5 100644
  typedef struct globus_l_gfs_file_cksm_monitor_s
  {
      globus_gfs_operation_t              op;
-@@ -111,8 +115,11 @@ typedef struct globus_l_gfs_file_cksm_monitor_s
+     globus_off_t                        offset;
+     globus_off_t                        length;
+@@ -109,12 +113,15 @@ typedef struct globus_l_gfs_file_cksm_mo
+     
+     globus_callback_handle_t            marker_handle;
      int                                 marker_freq;
      globus_bool_t                       send_marker;
      globus_off_t                        total_bytes;
@@ -33,19 +43,27 @@ index 67313c1..80613e5 100644
      globus_byte_t                       buffer[1];
  } globus_l_gfs_file_cksm_monitor_t;
  
-@@ -1695,9 +1702,11 @@ globus_l_gfs_file_cksm_read_cb(
+ typedef struct 
+ {
+@@ -1713,13 +1720,15 @@ globus_l_gfs_file_cksm_read_cb(
+     globus_xio_data_descriptor_t        data_desc,
+     void *                              user_arg)
  {
      globus_l_gfs_file_cksm_monitor_t *  monitor;
      globus_bool_t                       eof = GLOBUS_FALSE;
 +    char *                              cksmptr;
      char *                              md5ptr;
      unsigned char                       md[MD5_DIGEST_LENGTH];
-     char                                md5sum[MD5_DIGEST_LENGTH * 2 + 1];
+     char                                md5sum[MD5_DIGEST_LENGTH * 2 + 1] = {0};
 +    char                                adler32_human[2*sizeof(uint32_t)+1];
      int                                 i;    
      GlobusGFSName(globus_l_gfs_file_cksm_read_cb);
      GlobusGFSFileDebugEnter();
-@@ -1728,8 +1737,15 @@ globus_l_gfs_file_cksm_read_cb(
+     
+     monitor = (globus_l_gfs_file_cksm_monitor_t *) user_arg;
+@@ -1746,12 +1755,19 @@ globus_l_gfs_file_cksm_read_cb(
+         {
+             eof = GLOBUS_TRUE;
          }
      }
      monitor->total_bytes += nbytes;
@@ -63,7 +81,11 @@ index 67313c1..80613e5 100644
  
      if(!eof)
      {
-@@ -1771,32 +1787,46 @@ globus_l_gfs_file_cksm_read_cb(
+         if(monitor->send_marker)
+         {
+@@ -1789,35 +1805,51 @@ globus_l_gfs_file_cksm_read_cb(
+                 NULL,
+                 NULL);
              monitor->marker_handle = GLOBUS_NULL_HANDLE;
          }
          
@@ -77,6 +99,10 @@ index 67313c1..80613e5 100644
 -            
 -        md5ptr = md5sum;
 -        for(i = 0; i < MD5_DIGEST_LENGTH; i++)
+-        {
+-           sprintf(md5ptr, "%02x", md[i]);
+-           md5ptr++;
+-           md5ptr++;
 +
 +        if((monitor->cksum_type & POSIX_CKSM_TYPE_MD5) == POSIX_CKSM_TYPE_MD5) {
 +            MD5_Final(md, &monitor->mdctx);
@@ -87,13 +113,11 @@ index 67313c1..80613e5 100644
 +                md5ptr++;
 +                md5ptr++;
 +            }
-+            md5ptr = '\0'; cksmptr = md5sum;
++            md5ptr = '\0';
++            cksmptr = md5sum;
 +        }
 +        if((monitor->cksum_type & POSIX_CKSM_TYPE_ADLER32) == POSIX_CKSM_TYPE_ADLER32)
-         {
--           sprintf(md5ptr, "%02x", md[i]);
--           md5ptr++;
--           md5ptr++;
++        {
 +            unsigned char * adler32_char = (unsigned char*)&monitor->adler32ctx;
 +            char * adler32_ptr = adler32_human;
 +            for (i = 0; i < sizeof(uint32_t); i++) {
@@ -104,10 +128,8 @@ index 67313c1..80613e5 100644
 +            adler32_ptr = '\0';
 +            cksmptr = adler32_human;
          }
--        md5ptr = '\0';
--            
+ 
 +
-+    
          if(monitor->internal_cb)
          {
              monitor->internal_cb(
@@ -122,7 +144,11 @@ index 67313c1..80613e5 100644
          }   
          
          globus_free(monitor);
-@@ -1899,7 +1929,8 @@ globus_l_gfs_file_open_cksm_cb(
+             
+     }        
+@@ -1916,11 +1948,12 @@ globus_l_gfs_file_open_cksm_cb(
+                 "globus_xio_handle_cntl", result);
+             goto error_seek;
          }
      }
      
@@ -132,7 +158,11 @@ index 67313c1..80613e5 100644
      
      result = globus_xio_register_read(
          handle,
-@@ -1964,7 +1995,13 @@ globus_l_gfs_file_cksm(
+         monitor->buffer,
+         monitor->count,
+@@ -1981,11 +2014,17 @@ globus_l_gfs_file_cksm(
+     if(offset < 0)
+     {
          result = GlobusGFSErrorGeneric("Invalid offset.");
          goto param_error;
      }
@@ -147,7 +177,11 @@ index 67313c1..80613e5 100644
      result = globus_xio_attr_init(&attr);
      if(result != GLOBUS_SUCCESS)
      {
-@@ -2044,6 +2081,16 @@ globus_l_gfs_file_cksm(
+         result = GlobusGFSErrorWrapFailed("globus_xio_attr_init", result);
+         goto error_attr;
+@@ -2061,10 +2100,20 @@ globus_l_gfs_file_cksm(
+     monitor->length = length;
+     monitor->block_size = block_size;
      monitor->internal_cb = internal_cb;
      monitor->internal_cb_arg = internal_cb_arg;
  
@@ -164,7 +198,11 @@ index 67313c1..80613e5 100644
      result = globus_xio_register_open(
          file_handle,
          pathname,
-@@ -2077,6 +2124,7 @@ error_cntl:
+         attr,
+         globus_l_gfs_file_open_cksm_cb,
+@@ -2094,10 +2143,11 @@ error_push:
+ error_stack:
+ error_cntl:    
      globus_xio_attr_destroy(attr);
      
  error_attr:
@@ -172,3 +210,5 @@ index 67313c1..80613e5 100644
  param_error:
      GlobusGFSFileDebugExitWithError();
      return result;
+ }     
+ 

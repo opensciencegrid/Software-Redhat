@@ -6,34 +6,42 @@
 
 Name:		globus-gridftp-server
 %global _name %(tr - _ <<< %{name})
-Version:	7.20
-Release:	1.3%{?dist}
+Version:	10.4
+Release:	1.1%{?dist}
 Summary:	Globus Toolkit - Globus GridFTP Server
 
 Group:		System Environment/Libraries
 License:	ASL 2.0
-URL:		http://www.globus.org/
-Source:		http://www.globus.org/ftppub/gt6/packages/%{_name}-%{version}.tar.gz
+URL:		http://toolkit.globus.org/
+Source:		http://toolkit.globus.org/ftppub/gt6/packages/%{_name}-%{version}.tar.gz
 Source1:	%{name}
 Source2:	globus-gridftp-sshftp
 Source3:	globus-gridftp-password.8
-Source4:	globus-gridftp-server-setup-chroot.8
 Source5:	globus-gridftp-server.sysconfig
 Source6:	globus-gridftp-server.osg-sysconfig
 Source7:	globus-gridftp-server.logrotate
 #		README file
 Source8:	GLOBUS-GRIDFTP
+#		Fix globus-gridftp-server-setup-chroot for kfreebsd and hurd
+Patch0:		globus-gridftp-server-unames.patch
 Patch1:		gridftp-conf-logging.patch
 Patch2:         adler32.patch
 Patch3:         do_not_destroy_log_handle.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Requires:	globus-xio-gsi-driver%{?_isa} >= 2
-BuildRequires:	globus-common-devel >= 15
+%if %{?fedora}%{!?fedora:0} >= 20 || %{?rhel}%{!?rhel:0} >= 6
+Requires:	globus-xio-udt-driver%{?_isa} >= 1
+%endif
+Requires:	globus-common%{?_isa} >= 16
+Requires:	globus-xio%{?_isa} >= 5
+Requires:	globus-gridftp-server-control%{?_isa} >= 4
+Requires:	globus-ftp-control%{?_isa} >= 6
+BuildRequires:	globus-common-devel >= 16
 BuildRequires:	globus-xio-devel >= 5
 BuildRequires:	globus-xio-gsi-driver-devel >= 2
 BuildRequires:	globus-gfork-devel >= 3
-BuildRequires:	globus-gridftp-server-control-devel >= 2
+BuildRequires:	globus-gridftp-server-control-devel >= 4
 BuildRequires:	globus-ftp-control-devel >= 6
 BuildRequires:	globus-authz-devel >= 2
 BuildRequires:	globus-usage-devel >= 3
@@ -43,9 +51,11 @@ BuildRequires:	globus-gsi-credential-devel >= 6
 BuildRequires:	globus-gsi-sysconfig-devel >= 5
 BuildRequires:	globus-io-devel >= 9
 BuildRequires:	openssl-devel
+# zlib-devel required for OSG adler32 patch
 BuildRequires:  zlib-devel
-Requires:	globus-xio%{?_isa} >= 5
-Requires:	globus-ftp-control%{?_isa} >= 6
+#		Additional requirements for make check
+BuildRequires:	openssl
+BuildRequires:	fakeroot
 
 %package progs
 Summary:	Globus Toolkit - Globus GridFTP Server Programs
@@ -62,11 +72,11 @@ Conflicts:	xrootd-dsi%{?_isa} < 3.0.4-9
 Summary:	Globus Toolkit - Globus GridFTP Server Development Files
 Group:		Development/Libraries
 Requires:	%{name}%{?_isa} = %{version}-%{release}
-Requires:	globus-common-devel%{?_isa} >= 15
+Requires:	globus-common-devel%{?_isa} >= 16
 Requires:	globus-xio-devel%{?_isa} >= 5
 Requires:	globus-xio-gsi-driver-devel%{?_isa} >= 2
 Requires:	globus-gfork-devel%{?_isa} >= 3
-Requires:	globus-gridftp-server-control-devel%{?_isa} >= 2
+Requires:	globus-gridftp-server-control-devel%{?_isa} >= 4
 Requires:	globus-ftp-control-devel%{?_isa} >= 6
 Requires:	globus-authz-devel%{?_isa} >= 2
 Requires:	globus-usage-devel%{?_isa} >= 3
@@ -106,6 +116,7 @@ Globus GridFTP Server Development Files
 
 %prep
 %setup -q -n %{_name}-%{version}
+%patch0 -p1
 %patch1 -p1
 %patch2 -p1
 %patch3 -p4
@@ -154,7 +165,7 @@ mkdir -p %{buildroot}%{_initddir}
 install -p %{SOURCE1} %{SOURCE2} %{buildroot}%{_initddir}
 
 # Install additional man pages
-install -m 644 -p %{SOURCE3} %{SOURCE4} %{buildroot}%{_mandir}/man8
+install -m 644 -p %{SOURCE3} %{buildroot}%{_mandir}/man8
 
 # Install README file
 install -m 644 -p %{SOURCE8} %{buildroot}%{_pkgdocdir}/README
@@ -170,6 +181,9 @@ install -m 0644 %{SOURCE7} $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/%{name}.log
 
 # Remove license file from pkgdocdir if licensedir is used
 %{?_licensedir: rm %{buildroot}%{_pkgdocdir}/GLOBUS_LICENSE}
+
+%check
+make %{_smp_mflags} check VERBOSE=1
 
 %clean
 rm -rf %{buildroot}
@@ -231,12 +245,94 @@ fi
 %{_libdir}/pkgconfig/%{name}.pc
 
 %changelog
+* Wed Aug 10 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 10.4-1.1.osg
+- Merge OSG changes
+
 * Fri Jul 22 2016 Carl Edquist <edquist@cs.wisc.edu> - 7.20-1.3.osg
 - Add TRANSFER to log_level (SOFTWARE-2397)
 
 * Mon Jun 27 2016 Brian Bockelman <bbockelm@cse.unl.edu> - 7.20-1.2.osg
 - Avoid deadlocking when the gridftp server closes its log file. SOFTWARE-2377
 - Add support for adler32 checksums. SOFTWARE-2379
+
+* Thu May 19 2016 Mattias Ellert <mattias.ellert@fysast.uu.se> - 10.4-1
+- GT6 update
+  - Fix broken remote_node auth without sharing (10.4)
+  - Fix configuration for ipc_interface (10.3)
+  - Fix remote_node connection failing when ipc_subject isn't used (10.3)
+
+* Fri May 06 2016 Mattias Ellert <mattias.ellert@fysast.uu.se> - 10.2-1
+- GT6 update
+  - Spelling (10.2)
+  - Don't overwrite LDFLAGS (10.1) - Fix for regressions in 9.8 ans 9.9
+  - Updates for https support (10.0)
+
+* Mon May 02 2016 Mattias Ellert <mattias.ellert@fysast.uu.se> - 9.9-1
+- GT6 update
+  - Fix crash when storattr is used without modify (9.7)
+  - Add SITE WHOAMI command to return currently authenticated user (9.6)
+  - Update manpage for -encrypt-data (9.5)
+
+* Wed Feb 03 2016 Fedora Release Engineering <releng@fedoraproject.org> - 9.4-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
+
+* Wed Jan 13 2016 Mattias Ellert <mattias.ellert@fysast.uu.se> - 9.4-1
+- GT6 update (fix mem error when sharing)
+
+* Tue Nov 24 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 9.3-1
+- GT6 update
+  - Add configuration to require encrypted data channels (9.3)
+  - More robust cmp function (9.2)
+
+* Fri Nov 06 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 9.1-1
+- GT6 update
+  - fix for thread race crash between sequential transfers
+  - fix for partial stat punting when passed a single entry
+  - fix for double free on transfer failure race
+
+* Tue Oct 27 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 9.0-2
+- Missing ? in _isa macro
+
+* Tue Oct 27 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 9.0-1
+- GT6 update (add SITE STORATTR command and associated DSI api)
+
+* Fri Oct 23 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 8.9-1
+- GT6 update (Home directory fixes)
+
+* Wed Aug 26 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 8.7-1
+- GT6 update (Improvements to globus-gridftp-server-setup-chroot)
+- Man page for globus-gridftp-server-setup-chroot now provided by
+  upstream, remove the one from the source rpm
+- Add build requires on openssl and fakeroot needed for new tests
+
+* Thu Aug 06 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 8.1-1
+- GT6 update (GT-622: GridFTP server crash with sharing group permissions)
+- Enable checks
+
+* Mon Jul 27 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 8.0-1
+- GT6 update
+- Add update_bytes api that sets byte counters and range markers separately
+
+* Sat Jun 20 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 7.26-1
+- GT6 update (man pages updates)
+
+* Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 7.25-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
+
+* Wed Apr 08 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 7.25-1
+- GT6 update (Fix order of drivers when using netmgr)
+
+* Sat Mar 28 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 7.24-1
+- GT6 update
+- Fix netmanager crash (7.24)
+- Allow netmanager calls when taskid isn't set (7.24)
+- Fix threads commandline arg processing (7.23)
+- Prevent parse error on pre-init envs from raising assertion (7.23)
+- Restrict sharing based on username or group membership (7.21)
+- Don't enable udt without threads (7.21)
+- Environrment and threading config not loaded from config dir (7.21)
+- Ignore config.d files with a '.' in name (7.21)
+- Always install udt driver (7.21) - F20+, EPEL6+
 
 * Mon Feb 16 2015 Matyas Selmeci <matyas@cs.wisc.edu> - 7.20-1.1.osg
 - Merge OSG changes
