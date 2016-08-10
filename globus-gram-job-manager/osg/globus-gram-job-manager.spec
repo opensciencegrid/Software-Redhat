@@ -2,14 +2,14 @@
 
 Name:		globus-gram-job-manager
 %global _name %(tr - _ <<< %{name})
-Version:	14.25
-Release:	1.2%{?dist}
+Version:	14.27
+Release:	3.1%{?dist}
 Summary:	Globus Toolkit - GRAM Jobmanager
 
 Group:		Applications/Internet
 License:	ASL 2.0
-URL:		http://www.globus.org/
-Source:		http://www.globus.org/ftppub/gt6/packages/%{_name}-%{version}.tar.gz
+URL:		http://toolkit.globus.org/
+Source:		http://toolkit.globus.org/ftppub/gt6/packages/%{_name}-%{version}.tar.gz
 Source1:        globus-gram-job-manager-logging
 Source2:        job-manager.rvf
 #		README file
@@ -23,8 +23,9 @@ Patch20:        fix-job-home-dir.patch
 Patch22:        fix-job-lock-location.patch
 Patch26:        allow-manager-restart.patch
 Patch27:        recompute-stdio-on-restart.patch
-Patch28:        active-state.patch
 
+#		https://github.com/globus/globus-toolkit/pull/29
+Patch0:		%{name}-socket-buffer-size.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Requires:	globus-xio-popen-driver%{?_isa} >= 2
@@ -68,6 +69,7 @@ BuildRequires:	globus-proxy-utils >= 5
 BuildRequires:	globus-gsi-cert-utils-progs
 BuildRequires:	globus-gram-job-manager-fork-setup-poll
 BuildRequires:	openssl
+BuildRequires:	perl(Test)
 BuildRequires:	perl(Test::More)
 
 %description
@@ -81,6 +83,7 @@ GRAM Jobmanager
 
 %prep
 %setup -q -n %{_name}-%{version}
+%patch0 -p1
 
 %patch9 -p0
 %patch11 -p0
@@ -88,7 +91,6 @@ GRAM Jobmanager
 %patch20 -p0
 %patch22 -p0
 %patch26 -p0
-%patch28 -p4
 
 # This one is difficult.  Stdio stageout is not atomic - on restart,
 # you need to either assume in-progress transfers "always fail" or
@@ -107,7 +109,7 @@ export GLOBUS_VERSION=6.0
 	   --docdir=%{_pkgdocdir}
 
 # Reduce overlinking
-sed 's!CC -shared !CC \${wl}--as-needed -shared !g' -i libtool
+sed 's!CC \(.*-shared\) !CC \\\${wl}--as-needed \1 !' -i libtool
 
 make %{?_smp_mflags}
 
@@ -124,6 +126,11 @@ install -m 644 -p %{SOURCE8} %{buildroot}%{_pkgdocdir}/README
 # Add user-editable RVF file
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/globus/gram
 install -m 0644 %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/globus/gram/job-manager.rvf
+# Remove license file from pkgdocdir if licensedir is used
+%{?_licensedir: rm %{buildroot}%{_pkgdocdir}/GLOBUS_LICENSE}
+
+%check
+GLOBUS_HOSTNAME=localhost make %{?_smp_mflags} check VERBOSE=1
 
 %clean
 rm -rf %{buildroot}
@@ -150,6 +157,7 @@ fi
 %{_sbindir}/globus-job-manager-lock-test
 %{_sbindir}/globus-rvf-check
 %{_sbindir}/globus-rvf-edit
+# This is a loadable module (plugin)
 %{_libdir}/libglobus_seg_job_manager.so
 %dir %{_datadir}/globus
 %dir %{_datadir}/globus/%{_name}
@@ -167,15 +175,39 @@ fi
 %doc %{_mandir}/man8/globus-rvf-check.8*
 %doc %{_mandir}/man8/globus-rvf-edit.8*
 %dir %{_pkgdocdir}
-%doc %{_pkgdocdir}/GLOBUS_LICENSE
 %doc %{_pkgdocdir}/README
+%{!?_licensedir: %doc %{_pkgdocdir}/GLOBUS_LICENSE}
+%{?_licensedir: %license GLOBUS_LICENSE}
 
 %changelog
+* Wed Aug 10 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 14.27-3.1
+- Merge OSG changes
+- Drop active-state.patch (in upstream)
+
+* Wed Feb 10 2016 Mattias Ellert <mattias.ellert@fysast.uu.se> - 14.27-3
+- Add missing perl(Test) BuildRequires (used to be part of main perl package)
+
+* Wed Feb 03 2016 Fedora Release Engineering <releng@fedoraproject.org> - 14.27-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
+
+* Mon Aug 03 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 14.27-1
+- GT6 update: GT-619: Uninitialized data in job manager cause crash
+
+* Sat Jun 20 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 14.26-1
+- GT6 update (fix state info for running jobs, man pages updates)
+
+* Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 14.25-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
+
 * Wed May 13 2015 Brian Lin <blin@cs.wisc.edu> - 14.25-1.2.osg
 - Fix SEG not recognizing job state changes (SOFTWARE-1922)
 
 * Wed Feb 11 2015 Matyas Selmeci <matyas@cs.wisc.edu> - 14.25-1.1.osg
 - Merge OSG changes
+
+* Fri Jan 23 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 14.25-2
+- Implement updated license packaging guidelines
+- Set GLOBUS_HOSTNAME during make check and enable tests on EPEL5 and EPEL6
 
 * Thu Nov 13 2014 Mattias Ellert <mattias.ellert@fysast.uu.se> - 14.25-1
 - GT6 update
@@ -202,7 +234,7 @@ fi
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
 
 * Sat May 24 2014 Brent Baude <baude@us.ibm.com> - 13.53-3
-- Replaced ppc64 with power64 macro 
+- Replace arch def of ppc64 with power64 macro for ppc64le enablement
 
 * Thu Mar 13 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 13.53-1.3.osg
 - Add fix for SOFTWARE-1418 / GT-520 (crashing issue with state files that
