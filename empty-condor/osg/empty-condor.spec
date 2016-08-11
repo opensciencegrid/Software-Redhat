@@ -1,6 +1,6 @@
 Name:           empty-condor
 Version:        1.1
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        An empty Condor package
 
 Group:          Applications/System
@@ -11,6 +11,7 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 # This fulfills depenendencies for most OSG packages that depend on Condor
 Provides:       condor
+Provides:       condor-python
 Conflicts:      /usr/sbin/condor_master
 
 # These fulfill dependencies for glexec, specifically lcmaps-plugins-glexec-tracking
@@ -46,6 +47,9 @@ believes that Condor has been installed via RPM.
 %doc
 
 %changelog
+* Thu Aug 04 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.1-6
+- Provide condor-python (SOFTWARE-2423)
+
 * Thu Mar 31 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.1-5
 - rebuilt
 
