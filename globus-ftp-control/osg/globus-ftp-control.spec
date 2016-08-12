@@ -2,19 +2,27 @@
 
 Name:		globus-ftp-control
 %global _name %(tr - _ <<< %{name})
-Version:	6.6
-Release:	1.2%{?dist}
+Version:	7.1
+Release:	1.1%{?dist}
 Summary:	Globus Toolkit - GridFTP Control Library
 
 Group:		System Environment/Libraries
 License:	ASL 2.0
-URL:		http://www.globus.org/
-Source:		http://www.globus.org/ftppub/gt6/packages/%{_name}-%{version}.tar.gz
+URL:		http://toolkit.globus.org/
+Source:		http://toolkit.globus.org/ftppub/gt6/packages/%{_name}-%{version}.tar.gz
 #		README file
 Source8:	GLOBUS-GRIDFTP
-Patch0:         level_out_connection_speedsv3.patch
+#Patch0:         level_out_connection_speedsv3.patch
+#Patch1:         level_out_connection_speedsv3_new.patch
+Patch1: 0001-level1.patch
+Patch2: 0002-level2.patch
+Patch3: 0003-level3.patch
+Patch4: 0004-level4.patch
+Patch5: 0005-level5.patch
+
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
+Requires:	globus-io%{?_isa} >= 11
 BuildRequires:	globus-common-devel >= 15
 BuildRequires:	globus-gss-assist-devel >= 8
 BuildRequires:	globus-gssapi-gsi-devel >= 9
@@ -24,7 +32,6 @@ BuildRequires:	globus-gssapi-error-devel >= 4
 BuildRequires:	doxygen
 #		Additional requirements for make check
 BuildRequires:	openssl
-Requires:	globus-io%{?_isa} >= 11
 
 %package devel
 Summary:	Globus Toolkit - GridFTP Control Library Development Files
@@ -74,7 +81,12 @@ GridFTP Control Library Documentation Files
 %prep
 %setup -q -n %{_name}-%{version}
 
-%patch0 -p 1
+#patch0 -p 1
+%patch1 -p1
+%patch2 -p1
+%patch3 -p1
+#patch4 -p1
+%patch5 -p1
 
 %build
 # Reduce overlinking
@@ -134,8 +146,30 @@ rm -rf %{buildroot}
 %{?_licensedir: %license GLOBUS_LICENSE}
 
 %changelog
+* Mon Aug 08 2016 Matyas Selmeci <matyas@cs.wisc.edu> - 7.1-1.1
+- Merge OSG changes (SOFTWARE-2197)
+- Update level_out_connection_speedsv3.patch and split it into 2 patches
+
+* Fri Jul 15 2016 Mattias Ellert <mattias.ellert@physics.uu.se> - 7.1-1
+- GT6 update (Add forced ordering option)
+
 * Mon May 09 2016 Edgar Fajardo <emfajard@ucsd.edu> - 6.6-1.2
 - Changed to the v3 of the level-out-connections patch (SOFTWARE-2277)
+
+* Mon May 02 2016 Mattias Ellert <mattias.ellert@fysast.uu.se> - 6.10-1
+- GT6 update
+
+* Wed Feb 03 2016 Fedora Release Engineering <releng@fedoraproject.org> - 6.8-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
+
+* Tue Oct 27 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 6.8-1
+- GT6 update (GT-594: enable keepalives)
+
+* Mon Jul 27 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 6.7-1
+- GT6 update (Fix old-style function definitions, Fix variable scope)
+
+* Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 6.6-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
 
 * Mon Feb 16 2015 Matyas Selmeci <matyas@cs.wisc.edu> - 6.6-1.1
 - Merge OSG changes

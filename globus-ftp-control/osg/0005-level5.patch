@@ -1,0 +1,30 @@
+From 5f570b4d7b0418402ba5699e37b752b1aa419e51 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Fri, 12 Aug 2016 14:22:07 -0500
+Subject: [PATCH 5/5] level5
+
+---
+ globus_ftp_control_data.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/globus_ftp_control_data.c b/globus_ftp_control_data.c
+index 6728a40..e9f2d9e 100644
+--- a/globus_ftp_control_data.c
++++ b/globus_ftp_control_data.c
+@@ -7283,10 +7283,13 @@ globus_l_ftp_control_stripes_create(
+         stripe->free_cache_list = GLOBUS_NULL;
+ 
+         stripe->listening = GLOBUS_FALSE;
+         globus_fifo_init(&stripe->command_q);
+ 
++        stripe->largest_entry = 1024*1024;
++        stripe->est_block_size = 1024*1024*1024;
++        stripe->largest_connection_count = 0;
+         stripe->total_connection_count = 0;
+         stripe->eods_received = 0;
+         stripe->eof_sent = GLOBUS_FALSE;
+         stripe->eof = GLOBUS_FALSE;
+         stripe->eod_count = -1;
+-- 
+2.6.3
+
