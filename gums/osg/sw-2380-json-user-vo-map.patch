@@ -1,17 +1,114 @@
-commit 4061eb6197d73af134aa1e1a2d0d01b5808e5bce
-Author: Carl Edquist <edquist@cs.wisc.edu>
-Date:   Fri Aug 5 14:55:34 2016 -0500
-
-    add JSON interface for generateOsgUserVoMap (SOFTWARE-2380)
-
+diff --git a/gums-core/src/main/java/gov/bnl/gums/CoreLogic.java b/gums-core/src/main/java/gov/bnl/gums/CoreLogic.java
+index 95e4003..8911876 100644
+--- a/gums-core/src/main/java/gov/bnl/gums/CoreLogic.java
++++ b/gums-core/src/main/java/gov/bnl/gums/CoreLogic.java
+@@ -44,6 +44,54 @@ public class CoreLogic {
+      * @param hostname
+      * @return
+      */
++    public Map getOsgUserVoMap(String hostname) throws Exception {
++        Configuration conf = gums.getConfiguration();
++        Map<String, Collection<String> > osgMap = new TreeMap<String, Collection<String> >();
++        HostToGroupMapping host2GroupMapper = hostToGroupMapping(conf, hostname);
++
++        if (host2GroupMapper == null) {
++            String message = "Cannot generate osg user VO map for host '" + hostname + "' - it is not defined in any host to group mapping.";
++            gumsAdminLog.warn(message);
++            throw new RuntimeException(message);
++        }
++
++        List<String> groupToAccountMappings = host2GroupMapper.getGroupToAccountMappings();
++
++        // Loop through group to account mappings
++        for (String mappingName : groupToAccountMappings) {
++            GroupToAccountMapping gMap = (GroupToAccountMapping) conf.getGroupToAccountMapping( mappingName );
++            String voName = gMap.getAccountingVo();
++            String voSubgroup = gMap.getAccountingVoSubgroup();
++            if (voSubgroup.equals("") || voName.equals(""))
++                continue;
++            List<String> userGroups = gMap.getUserGroups();
++            List<String> accountMappers = gMap.getAccountMappers();
++            Set<String> userNames = new TreeSet<String>();
++            for (String groupName : userGroups) {
++                UserGroup userGroup = (UserGroup) conf.getUserGroup( groupName );
++                List<GridUser> members = userGroup.getMemberList();
++                members = new ArrayList<GridUser>(members);
++                for (GridUser user : members) {
++                    if (gums.isUserBanned(user))
++                        continue;
++                    for (String mapperName : accountMappers) {
++                        AccountMapper accountMapper = (AccountMapper) conf.getAccountMapper( mapperName );
++                        AccountInfo account = accountMapper.mapUser(user, false);
++                        if (account != null && account.getUser() != null)
++                            userNames.add(account.getUser());
++                    }
++                }
++            }
++            osgMap.put(voSubgroup, userNames);
++        }
++
++        return osgMap;
++    }
++
++    /**
++     * @param hostname
++     * @return
++     */
+     public String generateOsgUserVoMap(String hostname) throws Exception {
+         Configuration conf = gums.getConfiguration();
+         StringBuffer osgMapBuffer = new StringBuffer("");
+diff --git a/gums-core/src/main/java/gov/bnl/gums/admin/GUMSAPIImpl.java b/gums-core/src/main/java/gov/bnl/gums/admin/GUMSAPIImpl.java
+index 46f47f6..f9942dc 100644
+--- a/gums-core/src/main/java/gov/bnl/gums/admin/GUMSAPIImpl.java
++++ b/gums-core/src/main/java/gov/bnl/gums/admin/GUMSAPIImpl.java
+@@ -231,6 +231,27 @@ public class GUMSAPIImpl implements GUMSAPI {
+ 		}
+ 	}
+ 
++	public Map getOsgUserVoMap(String hostname) {
++		try {
++			if (hasReadAllAccess(currentUser(), hostname)) {
++				Map map = gums().getCoreLogic().getOsgUserVoMap(hostname);
++				if (gumsAdminLog.isDebugEnabled())
++					gumsAdminLog.debug(logUserAccess() + "Generated osg vo-user map object for host '" + hostname + "': " + map);
++				else
++					gumsAdminLog.info(logUserAccess() + "Generated osg vo-user map object for host '" + hostname + "'");
++				return map;
++			} else {
++				String message = logUserAccess() + "Unauthorized access to getOsgUserVoMap for host '"+hostname+"'";
++				gumsAdminLog.warn(message);
++				siteAdminLog.warn(message);
++				throw new AuthorizationDeniedException();
++			}
++		} catch (Exception e) {
++			log.error("Unhandled exception.", e);
++			throw new RuntimeException(e.getMessage(), e);
++		}
++	}
++
+ 	public String generateOsgUserVoMap(String hostname) {
+ 		try {
+ 			if (hasReadAllAccess(currentUser(), hostname)) {
 diff --git a/gums-service/src/main/java/org/opensciencegrid/gums/service/JSONMapper.java b/gums-service/src/main/java/org/opensciencegrid/gums/service/JSONMapper.java
-index 216d98e..a00efa4 100644
+index 216d98e..510ed74 100644
 --- a/gums-service/src/main/java/org/opensciencegrid/gums/service/JSONMapper.java
 +++ b/gums-service/src/main/java/org/opensciencegrid/gums/service/JSONMapper.java
-@@ -62,6 +62,10 @@ public class JSONMapper extends HttpServlet {
+@@ -2,6 +2,7 @@ package org.opensciencegrid.gums.service;
+ 
+ import java.io.IOException;
+ import java.io.Writer;
++import java.util.Collection;
+ import java.util.List;
+ import java.util.Map;
+ import javax.servlet.ServletException;
+@@ -62,6 +63,14 @@ public class JSONMapper extends HttpServlet {
          {
              errorResponse(response, response.SC_NOT_FOUND, "REST API not specified; known JSON APIs are /gums/json/mapGridIdentity, /gums/json/manualMapper, /gums/json/userGroup, /gums/json/poolMapper, and /gums/json/version");
          }
++        else if (path_info.equals("/getOsgUserVoMap"))
++        {
++            doGetOsgUserVoMap(request, response);
++        }
 +        else if (path_info.equals("/generateOsgUserVoMap"))
 +        {
 +            doGenerateOsgUserVoMap(request, response);
@@ -19,10 +116,57 @@ index 216d98e..a00efa4 100644
          else if (path_info.equals("/mapGridIdentity"))
          {
              doMap(request, response);
-@@ -105,6 +109,39 @@ public class JSONMapper extends HttpServlet {
+@@ -105,6 +114,86 @@ public class JSONMapper extends HttpServlet {
      }
  
  
++    private void doGetOsgUserVoMap(HttpServletRequest request,
++                          HttpServletResponse response)
++        throws ServletException, IOException
++    {
++        String hostname = request.getParameter("hostname");
++        if (hostname == null)
++        {
++            errorResponse(response, response.SC_BAD_REQUEST, "Missing required input parameter 'hostname'");
++            return;
++        }
++
++        Map<String, Collection<String> > map = null;
++        try
++        {
++            map = gums.getOsgUserVoMap(hostname);
++        }
++        catch (Exception e)
++        {
++            errorResponse(response, response.SC_INTERNAL_SERVER_ERROR, "Error getting osg user VO map: " + e.getMessage());
++        }
++
++        Writer out = response.getWriter();
++        // see: http://docs.oracle.com/javaee/7/api/javax/json/stream/JsonGenerator.html
++        JsonGenerator gen = Json.createGenerator(out);
++        gen.writeStartObject()
++            .write("result", (map != null) ? "OK" : "FAILED");
++        if (map != null)
++        {
++            gen.writeStartObject("map");
++
++            for (Map.Entry<String, Collection<String> > entry : map.entrySet())
++            {
++                String vo = entry.getKey();
++                gen.writeStartArray(vo);
++                Collection<String> users = entry.getValue();
++                for (String user : users) {
++                    gen.write(user);
++                }
++                gen.writeEnd();
++            }
++
++            gen.writeEnd();
++        }
++        gen.writeEnd();
++        gen.close();
++    }
++
 +    private void doGenerateOsgUserVoMap(HttpServletRequest request,
 +                          HttpServletResponse response)
 +        throws ServletException, IOException
