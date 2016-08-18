@@ -13,7 +13,7 @@
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.5.2
-Release: 7%{?dist}
+Release: 8%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 URL: https://github.com/opensciencegrid/gums
@@ -509,6 +509,9 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+* Thu Aug 18 2016 Carl Edquist <edquist@cs.wisc.edu> - 1.5.2-8
+- Fix for getOsgUserVoMap (SOFTWARE-2380)
+
 * Wed Aug 17 2016 Carl Edquist <edquist@cs.wisc.edu> - 1.5.2-7
 - Add JSON interface for getOsgUserVoMap (SOFTWARE-2380)
 

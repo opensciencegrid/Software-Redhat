@@ -1,14 +1,14 @@
 diff --git a/gums-core/src/main/java/gov/bnl/gums/CoreLogic.java b/gums-core/src/main/java/gov/bnl/gums/CoreLogic.java
-index 95e4003..8911876 100644
+index 95e4003..471af56 100644
 --- a/gums-core/src/main/java/gov/bnl/gums/CoreLogic.java
 +++ b/gums-core/src/main/java/gov/bnl/gums/CoreLogic.java
-@@ -44,6 +44,54 @@ public class CoreLogic {
+@@ -44,6 +44,57 @@ public class CoreLogic {
       * @param hostname
       * @return
       */
 +    public Map getOsgUserVoMap(String hostname) throws Exception {
 +        Configuration conf = gums.getConfiguration();
-+        Map<String, Collection<String> > osgMap = new TreeMap<String, Collection<String> >();
++        Map<String, Set<String> > osgMap = new TreeMap<String, Set<String> >();
 +        HostToGroupMapping host2GroupMapper = hostToGroupMapping(conf, hostname);
 +
 +        if (host2GroupMapper == null) {
@@ -28,7 +28,11 @@ index 95e4003..8911876 100644
 +                continue;
 +            List<String> userGroups = gMap.getUserGroups();
 +            List<String> accountMappers = gMap.getAccountMappers();
-+            Set<String> userNames = new TreeSet<String>();
++            Set<String> userNames = osgMap.get(voSubgroup);
++            if (userNames == null) {
++                userNames = new TreeSet<String>();
++                osgMap.put(voSubgroup, userNames);
++            }
 +            for (String groupName : userGroups) {
 +                UserGroup userGroup = (UserGroup) conf.getUserGroup( groupName );
 +                List<GridUser> members = userGroup.getMemberList();
@@ -44,7 +48,6 @@ index 95e4003..8911876 100644
 +                    }
 +                }
 +            }
-+            osgMap.put(voSubgroup, userNames);
 +        }
 +
 +        return osgMap;
@@ -90,17 +93,17 @@ index 46f47f6..f9942dc 100644
  		try {
  			if (hasReadAllAccess(currentUser(), hostname)) {
 diff --git a/gums-service/src/main/java/org/opensciencegrid/gums/service/JSONMapper.java b/gums-service/src/main/java/org/opensciencegrid/gums/service/JSONMapper.java
-index 216d98e..510ed74 100644
+index 216d98e..2ed9c41 100644
 --- a/gums-service/src/main/java/org/opensciencegrid/gums/service/JSONMapper.java
 +++ b/gums-service/src/main/java/org/opensciencegrid/gums/service/JSONMapper.java
-@@ -2,6 +2,7 @@ package org.opensciencegrid.gums.service;
- 
- import java.io.IOException;
+@@ -4,6 +4,7 @@ import java.io.IOException;
  import java.io.Writer;
-+import java.util.Collection;
  import java.util.List;
  import java.util.Map;
++import java.util.Set;
  import javax.servlet.ServletException;
+ import javax.servlet.http.HttpServlet;
+ import javax.servlet.http.HttpServletRequest;
 @@ -62,6 +63,14 @@ public class JSONMapper extends HttpServlet {
          {
              errorResponse(response, response.SC_NOT_FOUND, "REST API not specified; known JSON APIs are /gums/json/mapGridIdentity, /gums/json/manualMapper, /gums/json/userGroup, /gums/json/poolMapper, and /gums/json/version");
@@ -131,7 +134,7 @@ index 216d98e..510ed74 100644
 +            return;
 +        }
 +
-+        Map<String, Collection<String> > map = null;
++        Map<String, Set<String> > map = null;
 +        try
 +        {
 +            map = gums.getOsgUserVoMap(hostname);
@@ -150,11 +153,11 @@ index 216d98e..510ed74 100644
 +        {
 +            gen.writeStartObject("map");
 +
-+            for (Map.Entry<String, Collection<String> > entry : map.entrySet())
++            for (Map.Entry<String, Set<String> > entry : map.entrySet())
 +            {
 +                String vo = entry.getKey();
 +                gen.writeStartArray(vo);
-+                Collection<String> users = entry.getValue();
++                Set<String> users = entry.getValue();
 +                for (String user : users) {
 +                    gen.write(user);
 +                }
