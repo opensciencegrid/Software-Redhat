@@ -1,18 +1,18 @@
 diff --git a/gums-core/src/main/java/gov/bnl/gums/CoreLogic.java b/gums-core/src/main/java/gov/bnl/gums/CoreLogic.java
-index 95e4003..471af56 100644
+index 95e4003..f80f5c1 100644
 --- a/gums-core/src/main/java/gov/bnl/gums/CoreLogic.java
 +++ b/gums-core/src/main/java/gov/bnl/gums/CoreLogic.java
 @@ -44,6 +44,57 @@ public class CoreLogic {
       * @param hostname
       * @return
       */
-+    public Map getOsgUserVoMap(String hostname) throws Exception {
++    public Map getOsgVoUserMap(String hostname) throws Exception {
 +        Configuration conf = gums.getConfiguration();
 +        Map<String, Set<String> > osgMap = new TreeMap<String, Set<String> >();
 +        HostToGroupMapping host2GroupMapper = hostToGroupMapping(conf, hostname);
 +
 +        if (host2GroupMapper == null) {
-+            String message = "Cannot generate osg user VO map for host '" + hostname + "' - it is not defined in any host to group mapping.";
++            String message = "Cannot generate osg VO user map for host '" + hostname + "' - it is not defined in any host to group mapping.";
 +            gumsAdminLog.warn(message);
 +            throw new RuntimeException(message);
 +        }
@@ -61,24 +61,24 @@ index 95e4003..471af56 100644
          Configuration conf = gums.getConfiguration();
          StringBuffer osgMapBuffer = new StringBuffer("");
 diff --git a/gums-core/src/main/java/gov/bnl/gums/admin/GUMSAPIImpl.java b/gums-core/src/main/java/gov/bnl/gums/admin/GUMSAPIImpl.java
-index 46f47f6..f9942dc 100644
+index 46f47f6..59adf3b 100644
 --- a/gums-core/src/main/java/gov/bnl/gums/admin/GUMSAPIImpl.java
 +++ b/gums-core/src/main/java/gov/bnl/gums/admin/GUMSAPIImpl.java
 @@ -231,6 +231,27 @@ public class GUMSAPIImpl implements GUMSAPI {
  		}
  	}
  
-+	public Map getOsgUserVoMap(String hostname) {
++	public Map getOsgVoUserMap(String hostname) {
 +		try {
 +			if (hasReadAllAccess(currentUser(), hostname)) {
-+				Map map = gums().getCoreLogic().getOsgUserVoMap(hostname);
++				Map map = gums().getCoreLogic().getOsgVoUserMap(hostname);
 +				if (gumsAdminLog.isDebugEnabled())
 +					gumsAdminLog.debug(logUserAccess() + "Generated osg vo-user map object for host '" + hostname + "': " + map);
 +				else
 +					gumsAdminLog.info(logUserAccess() + "Generated osg vo-user map object for host '" + hostname + "'");
 +				return map;
 +			} else {
-+				String message = logUserAccess() + "Unauthorized access to getOsgUserVoMap for host '"+hostname+"'";
++				String message = logUserAccess() + "Unauthorized access to getOsgVoUserMap for host '"+hostname+"'";
 +				gumsAdminLog.warn(message);
 +				siteAdminLog.warn(message);
 +				throw new AuthorizationDeniedException();
@@ -93,7 +93,7 @@ index 46f47f6..f9942dc 100644
  		try {
  			if (hasReadAllAccess(currentUser(), hostname)) {
 diff --git a/gums-service/src/main/java/org/opensciencegrid/gums/service/JSONMapper.java b/gums-service/src/main/java/org/opensciencegrid/gums/service/JSONMapper.java
-index 216d98e..2ed9c41 100644
+index 216d98e..c4e1c1c 100644
 --- a/gums-service/src/main/java/org/opensciencegrid/gums/service/JSONMapper.java
 +++ b/gums-service/src/main/java/org/opensciencegrid/gums/service/JSONMapper.java
 @@ -4,6 +4,7 @@ import java.io.IOException;
@@ -108,7 +108,7 @@ index 216d98e..2ed9c41 100644
          {
              errorResponse(response, response.SC_NOT_FOUND, "REST API not specified; known JSON APIs are /gums/json/mapGridIdentity, /gums/json/manualMapper, /gums/json/userGroup, /gums/json/poolMapper, and /gums/json/version");
          }
-+        else if (path_info.equals("/getOsgUserVoMap"))
++        else if (path_info.equals("/getOsgVoUserMap"))
 +        {
 +            doGetOsgUserVoMap(request, response);
 +        }
@@ -137,11 +137,11 @@ index 216d98e..2ed9c41 100644
 +        Map<String, Set<String> > map = null;
 +        try
 +        {
-+            map = gums.getOsgUserVoMap(hostname);
++            map = gums.getOsgVoUserMap(hostname);
 +        }
 +        catch (Exception e)
 +        {
-+            errorResponse(response, response.SC_INTERNAL_SERVER_ERROR, "Error getting osg user VO map: " + e.getMessage());
++            errorResponse(response, response.SC_INTERNAL_SERVER_ERROR, "Error getting osg VO user map: " + e.getMessage());
 +        }
 +
 +        Writer out = response.getWriter();
