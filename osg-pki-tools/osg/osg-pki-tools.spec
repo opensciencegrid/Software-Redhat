@@ -1,6 +1,6 @@
 Summary: osg-pki-tools
 Name: osg-pki-tools
-Version: 1.2.18
+Version: 1.2.19
 Release: 1%{?dist}
 Source: OSGPKITools-%{version}.tar.gz
 License: Apache 2.0
@@ -76,6 +76,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Aug 22 2016 Brian Lin <blin@cs.wisc.edu> - 1.2.19-1
+- Fix formatting of CSRs (SOFTWARE-2132)
+- Reword 'bad VO info' error from osg-*cert-request (SOFTWARE-2405)
+
 * Wed May 25 2016 Brian Lin <blin@cs.wisc.edu> - 1.2.18-1
 - Added timeout to osg-user-cert-revoke (SOFTWARE-2322)
 
@@ -192,4 +196,3 @@ rm -rf $RPM_BUILD_ROOT
 
 * Thu Sep 13 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0-1
 - Initial packaging
-
