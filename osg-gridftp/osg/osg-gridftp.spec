@@ -19,17 +19,11 @@ Requires: globus-gridftp-server-progs
 Requires: vo-client
 Requires: grid-certificates >= 7
 Requires: gratia-probe-gridftp-transfer >= 1.17.0-1
-%if 0%{?rhel} < 6
-Requires: fetch-crl3
-%else
 Requires: fetch-crl
-%endif
 #This is probably not needed
 #Requires: edg-mkgridmap
 
-%if 0%{?rhel} >= 6
 Requires: globus-xio-udt-driver
-%endif
 
 %ifarch %{ix86}
 Requires: liblcas_lcmaps_gt4_mapping.so.0
@@ -47,24 +41,21 @@ gums support through lcmaps plugin and vo-client.
 %build
 
 %install
-%if 0%{?rhel} >= 6
 mkdir -p %{buildroot}%{_sysconfdir}/gridftp.d
 install -m 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/gridftp.d/
-%endif
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
-%if 0%{?rhel} >= 6
 %defattr(-,root,root,-)
 %config(noreplace) %{_sysconfdir}/gridftp.d/udt-%{name}.conf
-%endif
 
 
 %changelog
 * Thu Aug 25 2016 Carl Edquist <edquist@cs.wisc.edu> - 3.3-3
 - drop gums-client dependency (SOFTWARE-2398)
+- remove rhel5-specific macros (OSG-3.2 EOL)
 
 * Wed Jul 01 2015 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.3-2
 - Require grid-certificates >= 7 (SOFTWARE-1883)
