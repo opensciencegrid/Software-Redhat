@@ -1,10 +1,7 @@
 Name:      osg-gridftp
 Summary:   Standalone OSG GridFTP w/lcmaps gums client
 Version:   3.3
-%if 0%{?el7}
-%define release_suffix _clipped
-%endif
-Release:   3%{?release_suffix}%{?dist}
+Release:   3%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
