@@ -4,7 +4,7 @@ Version:   3.3
 %if 0%{?el7}
 %define release_suffix _clipped
 %endif
-Release:   2%{?release_suffix}%{?dist}
+Release:   3%{?release_suffix}%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -18,10 +18,7 @@ Requires: osg-system-profiler
 Requires: globus-gridftp-server-progs
 Requires: vo-client
 Requires: grid-certificates >= 7
-Requires: gratia-probe-gridftp-transfer
-%if ! 0%{?el7}
-Requires: gums-client
-%endif
+Requires: gratia-probe-gridftp-transfer >= 1.17.0-1
 %if 0%{?rhel} < 6
 Requires: fetch-crl3
 %else
@@ -66,6 +63,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Aug 25 2016 Carl Edquist <edquist@cs.wisc.edu> - 3.3-3
+- drop gums-client dependency (SOFTWARE-2398)
+
 * Wed Jul 01 2015 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.3-2
 - Require grid-certificates >= 7 (SOFTWARE-1883)
 
