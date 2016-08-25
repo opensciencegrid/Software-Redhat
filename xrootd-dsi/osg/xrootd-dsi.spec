@@ -80,6 +80,10 @@ install -m 644 libglobus_gridftp_server_posix.so $RPM_BUILD_ROOT/usr/lib/libglob
 
 
 %changelog
+* Tue Aug 23 2016 Brian Lin <blin@cs.wisc.edu> - 3.0.4-21
+- Add empty /etc/sysconfig/xrootd-dsi config file
+- Add descriptive header to globus-gridftp-server-plugin
+
 * Fri Jul 22 2016 Carl Edquist <edquist@cs.wisc.edu> - 3.0.4-20
 - Add TRANSFER to log_level (SOFTWARE-2397)
 
