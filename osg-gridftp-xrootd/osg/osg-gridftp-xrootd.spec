@@ -1,7 +1,7 @@
 Name:           osg-gridftp-xrootd
 Summary:        OSG GridFTP XRootd Storage Element package
 Version:        3.3
-Release:        2%{?dist}
+Release:        3%{?dist}
 License:        GPL
 Group:          System Environment/Daemons
 URL:            https://twiki.grid.iu.edu/twiki/bin/view/Storage/WebHome
@@ -21,7 +21,6 @@ Requires: globus-gridftp-server-progs
 Requires: vo-client
 Requires: grid-certificates >= 7
 Requires: gratia-probe-gridftp-transfer
-Requires: gums-client
 %ifarch %{ix86}
 Requires: liblcas_lcmaps_gt4_mapping.so.0
 %else
@@ -31,7 +30,7 @@ Requires: liblcas_lcmaps_gt4_mapping.so.0()(64bit)
 #Xrootd stuff
 Requires: xrootd-dsi
 Requires: xrootd-fuse >= 1:4.1.0
-Requires: gratia-probe-xrootd-transfer
+Requires: gratia-probe-xrootd-transfer >= 1.17.0-1
 Requires: gratia-probe-xrootd-storage
 
 
@@ -48,6 +47,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Aug 25 2016 Carl Edquist <edquist@cs.wisc.edu> - 3.3-3
+- drop gums-client dependency (SOFTWARE-2398)
+
 * Wed Jul 01 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.3-2
 - Require grid-certificates >= 7 (SOFTWARE-1883)
 
