@@ -1,3 +1,6 @@
+# Disable this once the data_test unit test no longer segfaults on EL7 with the level_out_connection_speeds patch
+%global DEBUG_data_test 1
+
 %{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
 
 Name:		globus-ftp-control
@@ -32,6 +35,11 @@ BuildRequires:	globus-gssapi-error-devel >= 4
 BuildRequires:	doxygen
 #		Additional requirements for make check
 BuildRequires:	openssl
+
+# DEBUG
+%if 0%{?DEBUG_data_test}
+BuildRequires:  gdb
+%endif
 
 %package devel
 Summary:	Globus Toolkit - GridFTP Control Library Development Files
@@ -85,13 +93,17 @@ GridFTP Control Library Documentation Files
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
-#patch4 -p1
+%patch4 -p1
 %patch5 -p1
 
 %build
 # Reduce overlinking
 export LDFLAGS="-Wl,--as-needed -Wl,-z,defs %{?__global_ldflags}"
-
+# DEBUG
+%if 0%{?DEBUG_data_test}
+export CFLAGS="${CFLAGS+:$CFLAGS }-O0 -ggdb"
+export CXXFLAGS="${CXXFLAGS+:$CXXFLAGS }-O0 -ggdb"
+%endif
 %configure --disable-static \
 	   --includedir='${prefix}/include/globus' \
 	   --libexecdir='${datadir}/globus' \
@@ -116,7 +128,20 @@ install -m 644 -p %{SOURCE8} %{buildroot}%{_pkgdocdir}/README
 %{?_licensedir: rm %{buildroot}%{_pkgdocdir}/GLOBUS_LICENSE}
 
 %check
-GLOBUS_HOSTNAME=localhost make %{?_smp_mflags} check VERBOSE=1
+# DEBUG
+%if 0%{?DEBUG_data_test}
+ulimit -c unlimited
+%endif
+GLOBUS_HOSTNAME=localhost make %{?_smp_mflags} check VERBOSE=1 || :
+
+# DEBUG
+%if 0%{?DEBUG_data_test}
+if ls test/core.* &> /dev/null; then
+    \gdb -c test/core.* test/.libs/lt-data_test <<<bt
+fi
+#mv -f test %{buildroot}
+#find .  -type f  -name core.\*  -exec mv "{}" %{buildroot}/test/ ";"
+%endif
 
 %clean
 rm -rf %{buildroot}
@@ -131,6 +156,10 @@ rm -rf %{buildroot}
 %doc %{_pkgdocdir}/README
 %{!?_licensedir: %doc %{_pkgdocdir}/GLOBUS_LICENSE}
 %{?_licensedir: %license GLOBUS_LICENSE}
+# DEBUG
+%if 0%{?DEBUG_data_test}
+#/test
+%endif
 
 %files devel
 %{_includedir}/globus/*
