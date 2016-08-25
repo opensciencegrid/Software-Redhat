@@ -11,11 +11,7 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Requires: osg-version
 Requires: osg-system-profiler
 Requires: edg-mkgridmap
-%if 0%{?rhel} < 6
-Requires: fetch-crl3
-%else
 Requires: fetch-crl
-%endif
 # From osg-gridftp meta package
 Requires: globus-gridftp-server-progs
 Requires: vo-client
@@ -49,6 +45,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Thu Aug 25 2016 Carl Edquist <edquist@cs.wisc.edu> - 3.3-3
 - drop gums-client dependency (SOFTWARE-2398)
+- remove rhel5-specific macros (OSG-3.2 EOL)
 
 * Wed Jul 01 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.3-2
 - Require grid-certificates >= 7 (SOFTWARE-1883)
