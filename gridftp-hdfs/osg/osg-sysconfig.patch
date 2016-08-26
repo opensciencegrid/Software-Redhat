@@ -1,0 +1,72 @@
+diff -ur gridftp-hdfs-0.5.4-orig/conf/gridftp-hdfs-environment gridftp-hdfs-0.5.4/conf/gridftp-hdfs-environment
+--- gridftp-hdfs-0.5.4-orig/conf/gridftp-hdfs-environment	2011-10-15 12:32:43.000000000 -0500
++++ gridftp-hdfs-0.5.4/conf/gridftp-hdfs-environment	2013-02-19 21:26:57.611913586 -0600
+@@ -67,26 +67,6 @@
+ 
+ unset IFS
+ 
+-# Configurations for the authz
+-# Only applies to the root user due to ownership issues
+-if [ $UID -eq 0 ]; then
+-  # Set defaults if they're not already available
+-  # LCAS configuration
+-  export LCAS_LOG_LEVEL=${LCAS_LOG_LEVEL:=0}
+-  export LCAS_DEBUG_LEVEL=${LCAS_DEBUG_LEVEL:=0}
+-  export LCAS_DB_FILE=${LCAS_DB_FILE:=/etc/lcas/lcas.db}
+-  export LCAS_DIR=${LCAS_DIR:=/etc/lcas}
+-  export LCAS_MOD_HOME=${LCAS_MOD_HOME:=/usr/lib64/modules}
+- 
+-  # LCMAPS configuration
+-  export LCMAPS_LOG_LEVEL=${LCMAPS_LOG_LEVEL:=0}
+-  export LCMAPS_DEBUG_LEVEL=${LCMAPS_DEBUG_LEVEL:=0}
+-  export LCMAPS_DB_FILE=${LCMAPS_DB_FILE:=/etc/lcmaps.db}
+-  export LCMAPS_DIR=${LCMAPS_DIR:=/etc/lcmaps}
+-  export LCMAPS_MOD_HOME=${LCMAPS_MOD_HOME:=/usr/lib64/modules}
+-  export LCMAPS_POLICY_NAME=${LCMAPS_POLICY_NAME:=globus_gridftp_mapping}
+-fi
+-
+ # New gridftp.conf override in GT 5.2
+ #export GRIDFTP_CONF=/etc/gridftp-hdfs/gridftp.conf
+ export conf=/etc/gridftp-hdfs/gridftp.conf
+diff -ur gridftp-hdfs-0.5.4-orig/scripts/gridftp-hdfs-standalone.in gridftp-hdfs-0.5.4/scripts/gridftp-hdfs-standalone.in
+--- gridftp-hdfs-0.5.4-orig/scripts/gridftp-hdfs-standalone.in	2011-10-15 12:36:03.000000000 -0500
++++ gridftp-hdfs-0.5.4/scripts/gridftp-hdfs-standalone.in	2013-02-19 21:27:59.419371836 -0600
+@@ -1,16 +1,6 @@
+ #!/bin/sh                                                            
+ 
+-if [ -e @datadir_resolved@/gridftp-hdfs/gridftp-hdfs-environment ] ; then
+-    . @datadir_resolved@/gridftp-hdfs/gridftp-hdfs-environment
+-fi
+-
+-if [ -e @sysconfdir_resolved@/gridftp-hdfs/gridftp-hdfs-local.conf ] ; then
+-    . @sysconfdir_resolved@/gridftp-hdfs/gridftp-hdfs-local.conf
+-fi
+-
+-if [ -e @sysconfdir_resolved@/sysconfig/gridftp-hdfs ] ; then
+-    . @sysconfdir_resolved@/sysconfig/gridftp-hdfs
+-fi
++. /usr/share/osg/sysconfig/globus-gridftp-server
+ 
+ export CLASSPATH=$CLASSPATH
+                                                                       
+diff -ur gridftp-hdfs-0.5.4-orig/scripts/xinetd/gridftp-hdfs-inetd.in gridftp-hdfs-0.5.4/scripts/xinetd/gridftp-hdfs-inetd.in
+--- gridftp-hdfs-0.5.4-orig/scripts/xinetd/gridftp-hdfs-inetd.in	2011-10-15 12:35:08.000000000 -0500
++++ gridftp-hdfs-0.5.4/scripts/xinetd/gridftp-hdfs-inetd.in	2013-02-19 21:26:57.612907677 -0600
+@@ -1,16 +1,6 @@
+ #!/bin/sh
+ 
+-if [ -e @datadir_resolved@/gridftp-hdfs/gridftp-hdfs-environment ] ; then
+-    . @datadir_resolved@/gridftp-hdfs/gridftp-hdfs-environment
+-fi
+-
+-if [ -e @sysconfdir_resolved@/gridftp-hdfs/gridftp-hdfs-local.conf ] ; then
+-    . @sysconfdir_resolved@/gridftp-hdfs/gridftp-hdfs-local.conf
+-fi
+-
+-if [ -e @sysconfdir_resolved@/sysconfig/gridftp-hdfs ] ; then
+-    . @sysconfdir_resolved@/sysconfig/gridftp-hdfs
+-fi
++. /usr/share/osg/sysconfig/globus-gridftp-server
+ 
+ exec /usr/sbin/globus-gridftp-server -c @sysconfdir_resolved@/gridftp-hdfs/gridftp-inetd.conf -dsi hdfs
+ 

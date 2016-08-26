@@ -1,0 +1,108 @@
+Index: gridftp-hdfs-0.5.4/src/gridftp_hdfs.c
+===================================================================
+--- gridftp-hdfs-0.5.4.orig/src/gridftp_hdfs.c
++++ gridftp-hdfs-0.5.4/src/gridftp_hdfs.c
+@@ -378,14 +378,16 @@ hdfs_command(
+         PathName++;
+     }
+ 
+-    GlobusGFSErrorSystemError("command", ENOSYS);
++    errno = ENOSYS;
++    hdfs_handle->pathname = PathName;
++    SystemError(hdfs_handle, "command", result);
+     switch (cmd_info->command) {
+     case GLOBUS_GFS_CMD_MKD:
+ {
+         errno = 0;
+         if (hdfsCreateDirectory(hdfs_handle->fs, PathName) == -1) {
+             if (errno) {
+-                result = GlobusGFSErrorSystemError("mkdir", errno);
++	        SystemError(hdfs_handle, "mkdir", result);
+             } else {
+                 GenericError(hdfs_handle, "Unable to create directory (reason unknown)", result);
+             }
+@@ -395,13 +397,34 @@ hdfs_command(
+ }
+         break;
+     case GLOBUS_GFS_CMD_RMD:
+-        break;
++{
++        int numEntries = 0;
++        errno = 0;
++        hdfsFileInfo *info = hdfsListDirectory(hdfs_handle->fs, PathName, &numEntries);
++        if (numEntries) { // NOTE: above call sets info to NULL in case of empty directory.
++	  errno = ENOTEMPTY;
++	  SystemError(hdfs_handle, "rmdir", result);
++        }
++        if (info) {
++	  hdfsFreeFileInfo(info, numEntries);
++	  info = NULL;
++        } else if (errno != ENOENT) {
++	  if (errno) {
++	    SystemError(hdfs_handle, "rmdir", result);
++	  } else {
++	    GenericError(hdfs_handle, "Unable to delete directory (reason unknown)", result);
++	  }
++	  break;
++        }
++        if (numEntries) {break;}
++}
++      // Not done - fall through
+     case GLOBUS_GFS_CMD_DELE:
+ {
+         errno = 0;
+         if (hdfsDelete(hdfs_handle->fs, PathName, 0) == -1) {
+             if (errno) {
+-                result = GlobusGFSErrorSystemError("unlink", errno);
++	        SystemError(hdfs_handle, "unlink", result);
+             } else {
+                 GenericError(hdfs_handle, "Unable to delete file (reason unknown)", result);
+             }
+@@ -411,6 +434,35 @@ hdfs_command(
+ }
+         break;
+     case GLOBUS_GFS_CMD_RNTO:
++{
++        const char * FromPathName=cmd_info->from_pathname;
++        while (FromPathName[0] == '/' && FromPathName[1] == '/')
++	  {
++            FromPathName++;
++	  }
++        if (strncmp(FromPathName, hdfs_handle->mount_point, hdfs_handle->mount_point_len)==0) {
++	  FromPathName += hdfs_handle->mount_point_len;
++        }
++        while (FromPathName[0] == '/' && FromPathName[1] == '/')
++	  {
++            FromPathName++;
++	  }
++
++        errno = 0;
++        if (hdfsRename(hdfs_handle->fs, FromPathName, PathName)) {
++	  if (errno) {
++	    char * rename_msg = (char *)globus_malloc(1024);
++	    snprintf(rename_msg, 1024, "rename from %s", FromPathName);
++	    rename_msg[1023] = '\0';
++	    SystemError(hdfs_handle, rename_msg, result);
++	    globus_free(rename_msg);
++	  } else {
++	    GenericError(hdfs_handle, "Unable to rename file (reason unknown)", result);
++	  }
++        } else {
++	  result = GLOBUS_SUCCESS;
++        }
++}
+         break;
+     case GLOBUS_GFS_CMD_RNFR:
+         break;
+Index: gridftp-hdfs-0.5.4/src/gridftp_hdfs_error.h
+===================================================================
+--- gridftp-hdfs-0.5.4.orig/src/gridftp_hdfs_error.h
++++ gridftp-hdfs-0.5.4/src/gridftp_hdfs_error.h
+@@ -8,6 +8,7 @@
+     char * path = hdfs_handle ? hdfs_handle->pathname : NULL; \
+     char * host = hdfs_handle ? hdfs_handle->local_host : NULL; \
+     snprintf(formatted_msg, MESSAGE_BUFFER_SIZE, "%s (host=%s, user=%s, path=%s)", msg, host, user, path); \
++    formatted_msg[MESSAGE_BUFFER_SIZE-1] = '\0'; \
+     globus_gfs_log_message(GLOBUS_GFS_LOG_ERR, "%s\n", formatted_msg);
+     
+ 
