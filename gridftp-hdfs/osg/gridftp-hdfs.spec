@@ -49,9 +49,10 @@ BuildRequires: java-devel >= 1:1.7.0
 BuildRequires: jpackage-utils
 
 BuildRequires: hadoop-libhdfs
-BuildRequires: globus-gridftp-server-devel
-# globus-ftp-control 7.1 required for ordered data patch
-BuildRequires: globus-ftp-control-devel >= 7.1
+# 11.0 added forced ordering option, required for ordered data patch
+BuildRequires: globus-gridftp-server-devel >= 11.0
+# globus-ftp-control 7.2 required for ordered data patch
+BuildRequires: globus-ftp-control-devel >= 7.2
 BuildRequires: globus-common-devel
 
 BuildRequires: chrpath
@@ -61,9 +62,10 @@ Requires: hadoop-client >= 2.0.0+545
 # ^ was getting "No FileSystem for scheme: hdfs" without this
 # 6.14-2 added OSG plugin-style sysconfig instead of gridftp.conf.d
 # 6.38-1.3 added /etc/gridftp.d
-Requires: globus-gridftp-server-progs >= 6.38-1.3
-# globus-ftp-control 7.1 required for ordered data patch
-Requires: globus-ftp-control >= 7.1
+# 11.0 added forced ordering option, required for ordered data patch
+Requires: globus-gridftp-server-progs >= 11.0
+# globus-ftp-control 7.2 required for ordered data patch
+Requires: globus-ftp-control >= 7.2
 %if 0%{?osg} > 0
 Requires: xinetd
 Requires: globus-gridftp-osg-extensions
@@ -211,7 +213,8 @@ fi
 
 %changelog
 * Fri Aug 26 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 0.5.4-25.4
-- Add ordered data patch (SOFTWARE-2436); require globus-ftp-control >= 7.1
+- Add ordered data patch (SOFTWARE-2436)
+    require globus-ftp-control >= 7.2 and globus-gridftp-server >= 11.0
 
 * Thu Jul 21 2016 Carl Edquist <edquist@cs.wisc.edu> - 0.5.4-25.3
 - Config file fixes for globus-gridftp-osg-extensions (SOFTWARE-2397)
