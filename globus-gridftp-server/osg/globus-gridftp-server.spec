@@ -6,7 +6,7 @@
 
 Name:		globus-gridftp-server
 %global _name %(tr - _ <<< %{name})
-Version:	10.4
+Version:	11.1
 Release:	1.1%{?dist}
 Summary:	Globus Toolkit - Globus GridFTP Server
 
@@ -26,7 +26,6 @@ Source8:	GLOBUS-GRIDFTP
 Patch0:		globus-gridftp-server-unames.patch
 Patch1:		gridftp-conf-logging.patch
 Patch2:         adler32.patch
-Patch3:         do_not_destroy_log_handle.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Requires:	globus-xio-gsi-driver%{?_isa} >= 2
@@ -36,13 +35,13 @@ Requires:	globus-xio-udt-driver%{?_isa} >= 1
 Requires:	globus-common%{?_isa} >= 16
 Requires:	globus-xio%{?_isa} >= 5
 Requires:	globus-gridftp-server-control%{?_isa} >= 4
-Requires:	globus-ftp-control%{?_isa} >= 6
+Requires:	globus-ftp-control%{?_isa} >= 7
 BuildRequires:	globus-common-devel >= 16
 BuildRequires:	globus-xio-devel >= 5
 BuildRequires:	globus-xio-gsi-driver-devel >= 2
 BuildRequires:	globus-gfork-devel >= 3
 BuildRequires:	globus-gridftp-server-control-devel >= 4
-BuildRequires:	globus-ftp-control-devel >= 6
+BuildRequires:	globus-ftp-control-devel >= 7
 BuildRequires:	globus-authz-devel >= 2
 BuildRequires:	globus-usage-devel >= 3
 BuildRequires:	globus-gssapi-gsi-devel >= 10
@@ -53,6 +52,7 @@ BuildRequires:	globus-io-devel >= 9
 BuildRequires:	openssl-devel
 # zlib-devel required for OSG adler32 patch
 BuildRequires:  zlib-devel
+BuildRequires:	perl-generators
 #		Additional requirements for make check
 BuildRequires:	openssl
 BuildRequires:	fakeroot
@@ -77,7 +77,7 @@ Requires:	globus-xio-devel%{?_isa} >= 5
 Requires:	globus-xio-gsi-driver-devel%{?_isa} >= 2
 Requires:	globus-gfork-devel%{?_isa} >= 3
 Requires:	globus-gridftp-server-control-devel%{?_isa} >= 4
-Requires:	globus-ftp-control-devel%{?_isa} >= 6
+Requires:	globus-ftp-control-devel%{?_isa} >= 7
 Requires:	globus-authz-devel%{?_isa} >= 2
 Requires:	globus-usage-devel%{?_isa} >= 3
 Requires:	globus-gssapi-gsi-devel%{?_isa} >= 10
@@ -119,7 +119,6 @@ Globus GridFTP Server Development Files
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
-%patch3 -p4
 
 %build
 # Reduce overlinking
@@ -245,8 +244,20 @@ fi
 %{_libdir}/pkgconfig/%{name}.pc
 
 %changelog
+* Fri Aug 26 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 11.1-1.1.osg
+- Merge OSG changes
+- Drop do_not_destroy_log_handle.patch (in upstream)
+
 * Wed Aug 10 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 10.4-1.1.osg
 - Merge OSG changes
+
+* Wed Jul 27 2016 Mattias Ellert <mattias.ellert@physics.uu.se> - 11.1-1
+- GT6 update
+  - Fix forced order issues with restart (11.1)
+  - Add forced ordering option (11.0)
+  - Add Globus task id to transfer log (10.6)
+  - Don't errantly kill a transfer due to timeout while client is still
+    connected (10.5)
 
 * Fri Jul 22 2016 Carl Edquist <edquist@cs.wisc.edu> - 7.20-1.3.osg
 - Add TRANSFER to log_level (SOFTWARE-2397)
