@@ -1,12 +1,9 @@
-# Disable this once the data_test unit test no longer segfaults on EL7 with the level_out_connection_speeds patch
-%global DEBUG_data_test 1
-
 %{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
 
 Name:		globus-ftp-control
 %global _name %(tr - _ <<< %{name})
 Version:	7.1
-Release:	1.1%{?dist}
+Release:	1.2%{?dist}
 Summary:	Globus Toolkit - GridFTP Control Library
 
 Group:		System Environment/Libraries
@@ -15,13 +12,6 @@ URL:		http://toolkit.globus.org/
 Source:		http://toolkit.globus.org/ftppub/gt6/packages/%{_name}-%{version}.tar.gz
 #		README file
 Source8:	GLOBUS-GRIDFTP
-#Patch0:         level_out_connection_speedsv3.patch
-#Patch1:         level_out_connection_speedsv3_new.patch
-Patch1: 0001-level1.patch
-Patch2: 0002-level2.patch
-Patch3: 0003-level3.patch
-Patch4: 0004-level4.patch
-Patch5: 0005-level5.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -36,10 +26,6 @@ BuildRequires:	doxygen
 #		Additional requirements for make check
 BuildRequires:	openssl
 
-# DEBUG
-%if 0%{?DEBUG_data_test}
-BuildRequires:  gdb
-%endif
 
 %package devel
 Summary:	Globus Toolkit - GridFTP Control Library Development Files
@@ -89,21 +75,9 @@ GridFTP Control Library Documentation Files
 %prep
 %setup -q -n %{_name}-%{version}
 
-#patch0 -p 1
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
-
 %build
 # Reduce overlinking
 export LDFLAGS="-Wl,--as-needed -Wl,-z,defs %{?__global_ldflags}"
-# DEBUG
-%if 0%{?DEBUG_data_test}
-export CFLAGS="${CFLAGS+:$CFLAGS }-O0 -ggdb"
-export CXXFLAGS="${CXXFLAGS+:$CXXFLAGS }-O0 -ggdb"
-%endif
 %configure --disable-static \
 	   --includedir='${prefix}/include/globus' \
 	   --libexecdir='${datadir}/globus' \
@@ -128,20 +102,9 @@ install -m 644 -p %{SOURCE8} %{buildroot}%{_pkgdocdir}/README
 %{?_licensedir: rm %{buildroot}%{_pkgdocdir}/GLOBUS_LICENSE}
 
 %check
-# DEBUG
-%if 0%{?DEBUG_data_test}
-ulimit -c unlimited
-%endif
-GLOBUS_HOSTNAME=localhost make %{?_smp_mflags} check VERBOSE=1 || :
 
-# DEBUG
-%if 0%{?DEBUG_data_test}
-if ls test/core.* &> /dev/null; then
-    \gdb -c test/core.* test/.libs/lt-data_test <<<bt
-fi
-#mv -f test %{buildroot}
-#find .  -type f  -name core.\*  -exec mv "{}" %{buildroot}/test/ ";"
-%endif
+GLOBUS_HOSTNAME=localhost make %{?_smp_mflags} check VERBOSE=1
+
 
 %clean
 rm -rf %{buildroot}
@@ -156,10 +119,6 @@ rm -rf %{buildroot}
 %doc %{_pkgdocdir}/README
 %{!?_licensedir: %doc %{_pkgdocdir}/GLOBUS_LICENSE}
 %{?_licensedir: %license GLOBUS_LICENSE}
-# DEBUG
-%if 0%{?DEBUG_data_test}
-#/test
-%endif
 
 %files devel
 %{_includedir}/globus/*
@@ -175,6 +134,9 @@ rm -rf %{buildroot}
 %{?_licensedir: %license GLOBUS_LICENSE}
 
 %changelog
+* Fri Aug 26 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 7.1-1.2
+- Drop level_out_connection_speedsv3.patch as per SOFTWARE-2435
+
 * Mon Aug 08 2016 Matyas Selmeci <matyas@cs.wisc.edu> - 7.1-1.1
 - Merge OSG changes (SOFTWARE-2197)
 - Update level_out_connection_speedsv3.patch and split it into 2 patches
