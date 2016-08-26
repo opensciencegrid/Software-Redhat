@@ -1,10 +1,11 @@
 # Have gitrev be the short hash or branch name if doing a prerelease build
-#%define gitrev 42e738e
+#define gitrev
+%define bl_sysconfdir %{_sysconfdir}/%{name}
+%define bl_libexecdir %{_libexecdir}/%{name}
 
 Name:		blahp
-Version:	1.18.23.bosco
-#Release:	1%{?gitrev:.%{gitrev}}%{?dist}
-Release:	1%{?dist}
+Version:	1.18.24.bosco
+Release:	1%{?gitrev:.%{gitrev}}%{?dist}
 Summary:	gLite BLAHP daemon
 
 Group:		System/Libraries
@@ -16,8 +17,7 @@ URL:		https://github.com/osg-bosco/BLAH
 #
 # Pre-release build tarballs should be generated with:
 # git archive %{gitrev} | gzip -9 > %{name}-%{version}-%{gitrev}.tar.gz
-#Source0:        %{name}-%{version}%{?gitrev:-%{gitrev}}.tar.gz
-Source0:        %{name}-%{version}.tar.gz
+Source0:        %{name}-%{version}%{?gitrev:-%{gitrev}}.tar.gz
 
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildRequires:  automake
@@ -66,8 +66,8 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/*.a
 # Move all the blahp scripts into /usr/libexec/blahp
 mkdir blahp
 mv $RPM_BUILD_ROOT%{_libexecdir}/* blahp
-install -m 0755 -d -p $RPM_BUILD_ROOT%{_libexecdir}/blahp/
-mv blahp/* $RPM_BUILD_ROOT%{_libexecdir}/blahp/
+install -m 0755 -d -p $RPM_BUILD_ROOT%{bl_libexecdir}/
+mv blahp/* $RPM_BUILD_ROOT%{bl_libexecdir}/
 
 # Correct the config file location
 install -m 0755 -d -p $RPM_BUILD_ROOT%{_sysconfdir}
@@ -75,17 +75,15 @@ mv $RPM_BUILD_ROOT%{_sysconfdir}/blah.config.template $RPM_BUILD_ROOT%{_sysconfd
 mv $RPM_BUILD_ROOT%{_sysconfdir}/blparser.conf.template $RPM_BUILD_ROOT%{_sysconfdir}/blparser.conf
 echo "blah_libexec_directory=/usr/libexec/blahp" >> $RPM_BUILD_ROOT%{_sysconfdir}/blah.config
 
-install -m 0755 -d -p $RPM_BUILD_ROOT%{_sysconfdir}/%{name}
-mv $RPM_BUILD_ROOT%{_libexecdir}/blahp/sge_local_submit_attributes.sh $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/
-chmod 0644 $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/sge_local_submit_attributes.sh
-ln -s %{_sysconfdir}/%{name}/sge_local_submit_attributes.sh    $RPM_BUILD_ROOT%{_libexecdir}/blahp/sge_local_submit_attributes.sh
+# Insert appropriate templates for LSF, SGE, Slurm, and HTCondor; admins will need to change these
+install -m 0755 -d -p $RPM_BUILD_ROOT%{bl_sysconfdir}
 
+for batch_system in sge slurm; do
+    mv $RPM_BUILD_ROOT%{bl_libexecdir}/${batch_system}_local_submit_attributes.sh $RPM_BUILD_ROOT%{bl_sysconfdir}/
+done
 
-# Insert appropriate templates for LSF and HTCondor; admins will need to change these
-for i in lsf condor; do
-  ln -s %{_sysconfdir}/%{name}/${i}_local_submit_attributes.sh    $RPM_BUILD_ROOT%{_libexecdir}/blahp/${i}_local_submit_attributes.sh
-
-cat > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/${i}_local_submit_attributes.sh << EOF
+for batch_system in lsf condor; do
+cat > $RPM_BUILD_ROOT%{bl_sysconfdir}/${batch_system}_local_submit_attributes.sh << EOF
 #/bin/sh
 
 # This file is sourced by blahp before submitting the job to ${i}
@@ -116,9 +114,7 @@ EOF
 done
 
 # A more appropriate template for PBS; actually does something
-ln -s %{_sysconfdir}/%{name}/pbs_local_submit_attributes.sh    $RPM_BUILD_ROOT%{_libexecdir}/blahp/pbs_local_submit_attributes.sh
-
-cat > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/pbs_local_submit_attributes.sh << EOF
+cat > $RPM_BUILD_ROOT%{bl_sysconfdir}/pbs_local_submit_attributes.sh << EOF
 #/bin/sh
 
 # This file is sourced by blahp before submitting the job to PBS
@@ -149,9 +145,13 @@ fi
 
 EOF
 
-mv $RPM_BUILD_ROOT%{_docdir}/glite-ce-blahp-@PVER@ $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
+# Create local_submit_attributes.sh symlinks in /etc/blahp
+for batch_system in pbs sge slurm lsf condor; do
+    ln -s %{bl_sysconfdir}/${batch_system}_local_submit_attributes.sh \
+       $RPM_BUILD_ROOT%{bl_libexecdir}/${batch_system}_local_submit_attributes.sh
+done
 
-chmod 644 $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/sge_local_submit_attributes.sh
+mv $RPM_BUILD_ROOT%{_docdir}/glite-ce-blahp-@PVER@ $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -178,11 +178,18 @@ fi
 %config(noreplace) %{_sysconfdir}/blparser.conf
 %config(noreplace) %{_sysconfdir}/blah.config
 %dir %{_sysconfdir}/%{name}
-%config(noreplace) %{_sysconfdir}/%{name}/*.sh
+%config(noreplace) %{bl_sysconfdir}/*.sh
 %{_mandir}/man1/*
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Fri Aug 26 2016 Brian Lin <blin@cs.wisc.edu> - 1.18.24.bosco-1
+- Fixed slurm multicore requests in slurm_submit.sh
+- Added slurm_submit_attributes.sh
+- Enabled multicore support to PBS Pro (SOFTWARE-2326)
+- Allow users to set the SGE parallel environment policy (SOFTWARE-2334)
+- Fixed issues with qstat() (SOFTWARE-2358)
+
 * Tue Jul 26 2016 Edgar Fajardo <emfajard@ucsd.edu> - 1.18.23.bosco-1
 - Fixed a bug in HTConodor Ticket-5804. (SOFTWARE-2404)
 
