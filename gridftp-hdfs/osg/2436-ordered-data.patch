@@ -1,0 +1,30 @@
+From bf473bf8a1e6227060b11aa22936155ccfa5496d Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Fri, 26 Aug 2016 14:05:02 -0500
+Subject: [PATCH] 2436-ordered-data
+
+---
+ src/gridftp_hdfs.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/src/gridftp_hdfs.c b/src/gridftp_hdfs.c
+index 10c0cbe..d14ba89 100644
+--- a/src/gridftp_hdfs.c
++++ b/src/gridftp_hdfs.c
+@@ -62,11 +62,12 @@ hdfs_destroy(
+ /*
+  *  Interface definitions for HDFS
+  */
+ static globus_gfs_storage_iface_t       globus_l_gfs_hdfs_dsi_iface = 
+ {
+-    GLOBUS_GFS_DSI_DESCRIPTOR_BLOCKING | GLOBUS_GFS_DSI_DESCRIPTOR_SENDER,
++    GLOBUS_GFS_DSI_DESCRIPTOR_BLOCKING | GLOBUS_GFS_DSI_DESCRIPTOR_SENDER |
++        GLOBUS_GFS_DSI_DESCRIPTOR_REQUIRES_ORDERED_DATA,
+     hdfs_start,
+     hdfs_destroy,
+     NULL, /* list */
+     hdfs_send,
+     hdfs_recv,
+-- 
+2.6.3
+
