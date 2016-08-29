@@ -3,7 +3,7 @@
 Name:		globus-gridftp-server-control
 %global _name %(tr - _ <<< %{name})
 Version:	4.1
-Release:	1.1%{?dist}
+Release:	1.2%{?dist}
 Summary:	Globus Toolkit - Globus GridFTP Server Library
 
 Group:		System Environment/Libraries
@@ -109,6 +109,9 @@ rm -rf %{buildroot}
 %{_libdir}/pkgconfig/%{name}.pc
 
 %changelog
+* Mon Aug 29 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 4.1-1.2
+- bump to rebuild
+
 * Wed Aug 10 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 4.1-1.1
 - Merge OSG changes
 
