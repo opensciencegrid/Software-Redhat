@@ -1,6 +1,6 @@
 Summary: Mapping interface between Globus Toolkit and LCAS/LCMAPS
 Name: lcas-lcmaps-gt4-interface
-Version: 0.2.6
+Version: 0.3.1
 Release: 1.1%{?dist}
 Vendor: Nikhef
 License: ASL 2.0
@@ -65,16 +65,20 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)
-%doc doc/README AUTHORS LICENSE 
+%doc AUTHORS LICENSE 
 %{_libdir}/liblcas_lcmaps_gt4_mapping.so
 %{_libdir}/liblcas_lcmaps_gt4_mapping.so.0
 %{_libdir}/liblcas_lcmaps_gt4_mapping.so.0.0.0
-%{_sbindir}/gt4-interface-install.sh
+%{_sbindir}/gt4-interface-install
 %{_datadir}/man/man8/lcas_lcmaps_gt_interface.8.gz
 %{_datadir}/man/man8/lcas_lcmaps_gt4_interface.8.gz
+%{_datadir}/man/man8/gt4-interface-install.8.gz
 %config(noreplace) %{_sysconfdir}/grid-security/gsi-authz.conf
 
 %changelog
+* Mon Aug 29 2016 Edgar Fajardo <efajardo@physics.ucsd.edu> 0.3.1-1.1.osg
+- import 0.3.1 to OSG
+
 * Wed Feb 20 2013 Dave Dykstra <dwd@fnal.gov> 0.2.6-1.1.osg
 - import 0.2.6 to OSG
 
