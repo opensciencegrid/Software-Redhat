@@ -1,19 +1,30 @@
-Index: init/globus-gatekeeper-lsb.in
-===================================================================
---- init/globus-gatekeeper-lsb.in.orig	2015-02-18 14:00:07.647092088 -0600
-+++ init/globus-gatekeeper-lsb.in	2015-02-18 14:02:09.872559320 -0600
-@@ -93,13 +93,18 @@ start()
+From b84e17852db82d2fc45bf4eee11832e5eacc24e5 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Wed, 10 Aug 2016 11:49:49 -0500
+Subject: [PATCH] GT-489-openssl-1.0.1-fix
+
+---
+ init/globus-gatekeeper-lsb.in   | 8 +++++++-
+ init/globus-gatekeeper-nolsb.in | 8 +++++++-
+ 2 files changed, 14 insertions(+), 2 deletions(-)
+
+diff --git a/init/globus-gatekeeper-lsb.in b/init/globus-gatekeeper-lsb.in
+index e213802..40e8894 100644
+--- a/init/globus-gatekeeper-lsb.in
++++ b/init/globus-gatekeeper-lsb.in
+@@ -85,13 +85,19 @@ start()
          kflag="-k"
      else
          kflag=""
      fi
  
-+    unset openssl_is_1_0_1_or_higher
-+    if openssl version | grep -q "OpenSSL [1-9]\.[0-9]\.[1-9]"; then
++    if openssl version | grep -q 'OpenSSL 0'  ||  openssl version | grep -q 'OpenSSL 1\.0\.0'; then
++        unset openssl_is_1_0_1_or_higher
++    else
 +        openssl_is_1_0_1_or_higher=1
 +    fi
 +
-     start_daemon ${lsb_ok:+-p "${GLOBUS_GATEKEEPER_PIDFILE}"} \
+     start_daemon -p "${GLOBUS_GATEKEEPER_PIDFILE}" \
          ${GLOBUS_GATEKEEPER_NICE_LEVEL:+-n "${GLOBUS_GATEKEEPER_NICE_LEVEL}"} \
 -        "$prog" \
 +        "$prog" ${openssl_is_1_0_1_or_higher:+-launch_method fork_and_proxy} \
@@ -22,18 +33,19 @@ Index: init/globus-gatekeeper-lsb.in
          ${GLOBUS_GATEKEEPER_PORT:+-p ${GLOBUS_GATEKEEPER_PORT}} \
          ${GLOBUS_GATEKEEPER_LOG:+-l "${GLOBUS_GATEKEEPER_LOG}"} \
          ${GLOBUS_GATEKEEPER_GRID_SERVICES:+-grid_services "${GLOBUS_GATEKEEPER_GRID_SERVICES}"} \
-Index: init/globus-gatekeeper-nolsb.in
-===================================================================
---- init/globus-gatekeeper-nolsb.in.orig	2015-02-18 14:01:55.000000000 -0600
-+++ init/globus-gatekeeper-nolsb.in	2015-02-18 14:03:03.810206842 -0600
-@@ -99,12 +99,17 @@ start()
+diff --git a/init/globus-gatekeeper-nolsb.in b/init/globus-gatekeeper-nolsb.in
+index cd5f092..d0fc80d 100644
+--- a/init/globus-gatekeeper-nolsb.in
++++ b/init/globus-gatekeeper-nolsb.in
+@@ -99,12 +99,18 @@ start()
          kflag="-k"
      else
          kflag=""
      fi
  
-+    unset openssl_is_1_0_1_or_higher
-+    if openssl version | grep -q "OpenSSL [1-9]\.[0-9]\.[1-9]"; then
++    if openssl version | grep -q 'OpenSSL 0'  ||  openssl version | grep -q 'OpenSSL 1\.0\.0'; then
++        unset openssl_is_1_0_1_or_higher
++    else
 +        openssl_is_1_0_1_or_higher=1
 +    fi
 +
@@ -45,3 +57,6 @@ Index: init/globus-gatekeeper-nolsb.in
          ${GLOBUS_GATEKEEPER_PORT:+-p ${GLOBUS_GATEKEEPER_PORT}} \
          ${GLOBUS_GATEKEEPER_LOG:+-l "${GLOBUS_GATEKEEPER_LOG}"} \
          ${GLOBUS_GATEKEEPER_GRID_SERVICES:+-grid_services "${GLOBUS_GATEKEEPER_GRID_SERVICES}"} \
+-- 
+2.6.3
+

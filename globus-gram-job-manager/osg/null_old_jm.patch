@@ -1,8 +1,8 @@
 Index: globus_gram_job_manager_request.c
 ===================================================================
---- globus_gram_job_manager_request.c.orig	2015-02-11 14:13:56.790587439 -0600
-+++ globus_gram_job_manager_request.c	2015-02-11 14:14:25.613926919 -0600
-@@ -2161,10 +2161,17 @@ globus_l_gram_restart(
+--- globus_gram_job_manager_request.c.orig	2016-08-10 13:31:43.092607995 -0500
++++ globus_gram_job_manager_request.c	2016-08-10 13:32:13.035991227 -0500
+@@ -2163,10 +2163,17 @@ globus_l_gram_restart(
      {
          /* Something is handling this request already. We'll check if it is
           * this process. If so, we'll merge the RSLs (as if we had done a

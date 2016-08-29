@@ -2,14 +2,14 @@
 
 Name:		globus-gridftp-server-control
 %global _name %(tr - _ <<< %{name})
-Version:	3.6
+Version:	4.1
 Release:	1.1%{?dist}
 Summary:	Globus Toolkit - Globus GridFTP Server Library
 
 Group:		System Environment/Libraries
 License:	ASL 2.0
-URL:		http://www.globus.org/
-Source:		http://www.globus.org/ftppub/gt6/packages/%{_name}-%{version}.tar.gz
+URL:		http://toolkit.globus.org/
+Source:		http://toolkit.globus.org/ftppub/gt6/packages/%{_name}-%{version}.tar.gz
 #		README file
 Source8:	GLOBUS-GRIDFTP
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -72,7 +72,7 @@ export LDFLAGS="-Wl,--as-needed -Wl,-z,defs %{?__global_ldflags}"
 	   --docdir=%{_pkgdocdir}
 
 # Reduce overlinking
-sed 's!CC -shared !CC \${wl}--as-needed -shared !g' -i libtool
+sed 's!CC \(.*-shared\) !CC \\\${wl}--as-needed \1 !' -i libtool
 
 make %{?_smp_mflags}
 
@@ -86,6 +86,9 @@ rm %{buildroot}%{_libdir}/*.la
 # Install README file
 install -m 644 -p %{SOURCE8} %{buildroot}%{_pkgdocdir}/README
 
+# Remove license file from pkgdocdir if licensedir is used
+%{?_licensedir: rm %{buildroot}%{_pkgdocdir}/GLOBUS_LICENSE}
+
 %clean
 rm -rf %{buildroot}
 
@@ -96,8 +99,9 @@ rm -rf %{buildroot}
 %files
 %{_libdir}/libglobus_gridftp_server_control.so.*
 %dir %{_pkgdocdir}
-%doc %{_pkgdocdir}/GLOBUS_LICENSE
 %doc %{_pkgdocdir}/README
+%{!?_licensedir: %doc %{_pkgdocdir}/GLOBUS_LICENSE}
+%{?_licensedir: %license GLOBUS_LICENSE}
 
 %files devel
 %{_includedir}/globus/*
@@ -105,8 +109,29 @@ rm -rf %{buildroot}
 %{_libdir}/pkgconfig/%{name}.pc
 
 %changelog
+* Wed Aug 10 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 4.1-1.1
+- Merge OSG changes
+
 * Thu Aug 04 2016 Carl Edquist <edquist@cs.wisc.edu> - 3.6-1.1
 - Fix load-balancing for IPv6 addresses (SOFTWARE-2413)
+
+* Fri May 06 2016 Mattias Ellert <mattias.ellert@fysast.uu.se> - 4.1-1
+- GT6 update: Spelling
+
+* Wed Feb 03 2016 Fedora Release Engineering <releng@fedoraproject.org> - 4.0-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
+
+* Tue Nov 24 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 4.0-1
+- GT6 update (Add correct behavior for data auth error code)
+
+* Sun Jul 12 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 3.7-1
+- GT6 update (Remove dead code)
+
+* Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.6-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
+
+* Fri Jan 23 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 3.6-2
+- Implement updated license packaging guidelines
 
 * Fri Sep 12 2014 Mattias Ellert <mattias.ellert@fysast.uu.se> - 3.6-1
 - Update to Globus Toolkit 6.0

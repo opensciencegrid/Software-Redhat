@@ -2,18 +2,18 @@
 
 Name:		globus-xio
 %global _name %(tr - _ <<< %{name})
-Version:	5.7
+Version:	5.12
 Release:	1.1%{?dist}
 Summary:	Globus Toolkit - Globus XIO Framework
 
 Group:		System Environment/Libraries
 License:	ASL 2.0
-URL:		http://www.globus.org/
-Source:		http://www.globus.org/ftppub/gt6/packages/%{_name}-%{version}.tar.gz
+URL:		http://toolkit.globus.org/
+Source:		http://toolkit.globus.org/ftppub/gt6/packages/%{_name}-%{version}.tar.gz
 #		README file
 Source8:	GLOBUS-XIO
 
-Patch0:          timeout_close.patch
+Patch0:         timeout_close.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -126,6 +126,37 @@ rm -rf %{buildroot}
 %{?_licensedir: %license GLOBUS_LICENSE}
 
 %changelog
+* Thu Aug 25 2016 Edgar Fajardo <emfajard@ucsd.edu> - 5.12-1.1.osg
+- Merged OSG changes update for SOFTWARE-2197
+
+* Mon May 02 2016 Mattias Ellert <mattias.ellert@fysast.uu.se> - 5.12-1
+- GT6 update
+
+* Wed Feb 03 2016 Fedora Release Engineering <releng@fedoraproject.org> - 5.11-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
+
+* Tue Nov 24 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 5.11-1
+- GT6 update (Fix failures connecting to IPv4 mapped addresses on
+  systems that disable dual stack sockets by default)
+
+* Fri Nov 06 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 5.10-1
+- GT6 update
+  - Clarify documentation for timeouts
+  - Remove NET+OS fragments
+
+* Sun Jul 12 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 5.9-1
+- GT6 update
+  - Allow const string option names
+  - Fix miscount of string length in GLOBUS_XIO_GET_STRING_OPTIONS
+  - Fix some error handling bugs
+  - Remove some unused variables
+
+* Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 5.8-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
+
+* Wed Apr 08 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 5.8-1
+- GT6 update (Check push result in globus_xio_driver_list_to_stack_attr)
+
 * Thu Mar 12 2015 Matyas Selmeci <matyas@cs.wisc.edu> - 5.7-1.1.osg
 - Merge OSG changes
 - Disable %%check section because it randomly fails
