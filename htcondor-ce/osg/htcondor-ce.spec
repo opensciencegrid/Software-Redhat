@@ -2,7 +2,7 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 2.0.7
+Version: 2.0.8
 Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
@@ -198,6 +198,9 @@ make install DESTDIR=$RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT/%{_unitdir}
 install -m 0644 config/condor-ce.service $RPM_BUILD_ROOT/%{_unitdir}/condor-ce.service
 install -m 0644 config/condor-ce-collector.service $RPM_BUILD_ROOT/%{_unitdir}/condor-ce-collector.service
+rm $RPM_BUILD_ROOT%{_initrddir}/condor-ce{,-collector}
+%else
+rm $RPM_BUILD_ROOT%{_sysconfdir}/tmpfiles.d/condor-ce{,-collector}.conf
 %endif
 
 # Directories necessary for HTCondor-CE files
@@ -228,7 +231,11 @@ install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d
 rm -rf $RPM_BUILD_ROOT
 
 %post
+%if %{?rhel} >= 7
+systemctl enable condor-ce
+%else
 /sbin/chkconfig --add condor-ce
+%endif
 
 %preun
 if [ $1 = 0 ]; then
@@ -249,10 +256,11 @@ fi
 
 %{_datadir}/condor-ce/condor_ce_router_defaults
 
-%{_initrddir}/condor-ce
-
 %if %{?rhel} >= 7
 %{_unitdir}/condor-ce.service
+%{_sysconfdir}/tmpfiles.d/condor-ce.conf
+%else
+%{_initrddir}/condor-ce
 %endif
 
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-auth.conf
@@ -395,12 +403,14 @@ fi
 %files collector
 
 %{_bindir}/condor_ce_config_generator
-%{_initrddir}/condor-ce-collector
 %{_datadir}/condor-ce/config.d/01-ce-collector-defaults.conf
 %{_datadir}/condor-ce/config.d/01-ce-auth-defaults.conf
 
 %if %{?rhel} >= 7
 %{_unitdir}/condor-ce-collector.service
+%{_sysconfdir}/tmpfiles.d/condor-ce-collector.conf
+%else
+%{_initrddir}/condor-ce-collector
 %endif
 
 %config(noreplace) %{_sysconfdir}/sysconfig/condor-ce-collector
@@ -423,6 +433,13 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Mon Aug 29 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.8-1
+- Remove the HTCondor-CE init script on EL7 (SOFTWARE-2419)
+- Fix OnExitHold to be set to expressions rather than their evaluated forms
+- Force 'condor_ce_q -allusers' until QUEUE_SUPER_USER is fixed to be able to use CERTIFICATE_MAPFILE in 8.5.6
+- Allow mapping of Terana eScience hostcerts
+- Ensure lockdir and rundir exist with correct permissions on startup
+
 * Thu Jun 23 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.7-1
 - Add a default route for a BOSCO CE (SOFTWARE-2370)
 
