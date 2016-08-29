@@ -1,26 +1,24 @@
 Summary: Mapping interface between Globus Toolkit and LCAS/LCMAPS
 Name: lcas-lcmaps-gt4-interface
 Version: 0.3.1
-Release: 1.1%{?dist}
-Vendor: Nikhef
+Release: 1.2%{?dist}
 License: ASL 2.0
-Group: Applications/System
+Group: System Environment/Libraries
 URL: http://wiki.nikhef.nl/grid/Site_Access_Control
 Source0: http://software.nikhef.nl/security/%{name}/%{name}-%{version}.tar.gz
 Source1: gsi-authz.conf.in
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
+#BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
+BuildRequires: lcmaps-interface
+BuildRequires: openssl-devel
 BuildRequires: globus-core
 BuildRequires: globus-common-devel
 BuildRequires: globus-gridmap-callout-error-devel
-BuildRequires: globus-gsi-callback-devel
+#BuildRequires: globus-gsi-callback-devel
 BuildRequires: globus-gsi-credential-devel
 BuildRequires: globus-gsi-proxy-core-devel
 BuildRequires: globus-gssapi-error-devel
 BuildRequires: globus-gssapi-gsi-devel
 BuildRequires: globus-gss-assist-devel
-BuildRequires: lcmaps-interface
-BuildRequires: openssl-devel
-
 # explicit require as this is dlopen'd
 %ifarch %{ix86}
 Requires: liblcmaps.so.0
@@ -28,7 +26,10 @@ Requires: liblcmaps.so.0
 Requires: liblcmaps.so.0()(64bit)
 %endif
 
-# OSG doesn't use lcas anymore
+# BuildRoot is still required for EPEL5                                                            
+BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
+
+# OSG doesn't use lcas anymore                                                                                   
 Obsoletes: lcas
 Obsoletes: lcas-plugins-basic
 
@@ -44,6 +45,18 @@ pool accounts and VOMS attribute based decisions and mappings.
 %build
 
 %configure --disable-static --enable-lcas=no
+
+# The following two lines were suggested by                                                        
+# https://fedoraproject.org/wiki/Packaging/Guidelines to prevent any                               
+# RPATHs creeping in.                                                                              
+# https://fedoraproject.org/wiki/Common_Rpmlint_issues#unused-direct-shlib-dependency              
+# to prevent unnecessary linking                                                                   
+%define fixlibtool() sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool\
+sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool\
+sed -i -e 's! -shared ! -Wl,--as-needed\\0!g' libtool
+
+%fixlibtool
+
 make %{?_smp_mflags}
 
 %install
@@ -51,6 +64,9 @@ rm -rf $RPM_BUILD_ROOT
 
 make DESTDIR=$RPM_BUILD_ROOT install
 find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
+
+# clean up installed documentation files                                                           
+rm -rf ${RPM_BUILD_ROOT}%{_docdir}
 
 # Install the mapping by default
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/grid-security
@@ -65,19 +81,40 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)
-%doc AUTHORS LICENSE 
+%doc AUTHORS LICENSE NEWS BUGS
 %{_libdir}/liblcas_lcmaps_gt4_mapping.so
 %{_libdir}/liblcas_lcmaps_gt4_mapping.so.0
 %{_libdir}/liblcas_lcmaps_gt4_mapping.so.0.0.0
 %{_sbindir}/gt4-interface-install
-%{_datadir}/man/man8/lcas_lcmaps_gt_interface.8.gz
-%{_datadir}/man/man8/lcas_lcmaps_gt4_interface.8.gz
-%{_datadir}/man/man8/gt4-interface-install.8.gz
+%{_datadir}/man/man8/lcas_lcmaps_gt_interface.8*
+%{_datadir}/man/man8/lcas_lcmaps_gt4_interface.8*
+%{_datadir}/man/man8/gt4-interface-install.8*
 %config(noreplace) %{_sysconfdir}/grid-security/gsi-authz.conf
 
 %changelog
+* Mon Aug 29 2016 Edgar Fajardo <efajardo@physics.ucsd.edu> 0.3.1-1.2.osg
+- Made the spec file closer to the upstream
+- Inlcuded NEWS and BUGS in doc
+
 * Mon Aug 29 2016 Edgar Fajardo <efajardo@physics.ucsd.edu> 0.3.1-1.1.osg
-- import 0.3.1 to OSG
+- Updated to 0.3.1 to OSG
+
+* Wed Feb 11 2015 Mischa Salle <msalle@nikhef.nl> 0.3.1-1
+- remove README file which is now a manpage
+- rename gt4-interface-install script
+- add gt4-interface-install man page
+- remove globus-core and globus-gsi-callback-devel build dependencies
+- update builddep on lcmaps-devel instead of -interface
+- prevent unnecessary linking
+- specify BuildRoot (and clean section) for EPEL5
+- remove defattr
+- cleanup docdir
+- adding BUGS and NEWS files
+- updated version
+
+* Tue Feb 26 2013 Mischa Salle <msalle@nikhef.nl> 0.3.0-1
+- add _isa to requirement
+- updated version
 
 * Wed Feb 20 2013 Dave Dykstra <dwd@fnal.gov> 0.2.6-1.1.osg
 - import 0.2.6 to OSG
