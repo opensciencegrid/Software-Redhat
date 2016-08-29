@@ -95,7 +95,7 @@
 %if 0%{?osg} && 0%{?rhel} == 7
 %define aviary 0
 %define std_univ 0
-%define cream 0
+%define cream 1
 %endif
 
 %define glexec 1
@@ -128,7 +128,7 @@ Version: %{tarball_version}
 %else
         %define condor_release %condor_base_release
 %endif
-Release: %condor_release%{?dist}
+Release: %condor_release.1%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -218,6 +218,8 @@ Source123: zlib-1.2.3.tar.gz
 %endif
 
 
+Patch1: 0001-Fix-linux-distro-detection-for-rhel7-and-fedora.-582.patch
+Patch2: 0002-Fix-proper-build-of-cream_gahp-on-rhel7.patch
 #% if 0%osg
 Patch8: osg_sysconfig_in_init_script.patch
 #% endif
@@ -325,7 +327,11 @@ Requires: libcgroup >= 0.37
 %endif
 
 %if %cream && ! %uw_build
+%if 0%{?osg}
+BuildRequires: glite-ce-cream-client-devel >= 1.15.4
+%else
 BuildRequires: glite-ce-cream-client-devel
+%endif
 BuildRequires: glite-lbjp-common-gsoap-plugin-devel
 BuildRequires: glite-ce-cream-utils
 BuildRequires: log4cpp-devel
@@ -721,6 +727,9 @@ exit 0
 # For release tarballs
 %setup -q -n %{name}-%{tarball_version}
 %endif
+
+%patch1 -p1
+%patch2 -p1
 
 %if 0%{?osg} || 0%{?hcc}
 %patch8 -p1
@@ -1884,6 +1893,15 @@ fi
 %endif
 
 %changelog
+* Mon Aug 29 2016 Carl Edquist <edquist@cs.wisc.edu> - 8.5.6-1.1.osg
+- Merge OSG changes from 8.4.8 to upcoming (SOFTWARE-2389)
+
+* Mon Aug 8 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 8.4.8-1.2.osg
+- Fix cream-gahp build for EL7
+
+* Thu Aug 4 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 8.4.8-1.1.osg
+- Re-enabled cream-gahp for OSG EL7 (SOFTWARE-2389)
+
 * Tue Jul 05 2016 Tim Theisen <tim@cs.wisc.edu> - 8.4.8-1
 - Fixed a memory leak triggered by the python htcondor.Schedd().query() call
 - Fixed a bug that could cause Bosco file transfers to fail
