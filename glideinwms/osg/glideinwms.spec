@@ -11,7 +11,7 @@ Name:           glideinwms
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
 %define version 3.3
-%define release 0.11.rc11
+%define release 1
 %define frontend_xml frontend.master.xml
 %define factory_xml glideinWMS.master.xml
 
@@ -809,7 +809,7 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/condor/certs/condor_mapfile
 
 %changelog
-* Fri Aug 19 2016 Parag Mhashilkar <parag@fnal.gov> - 3.3-0.11.rc11
+* Tue Aug 30 2016 Parag Mhashilkar <parag@fnal.gov> - 3.3-1
 - Glideinwms v3.3 release candidates (rc1-rc11)
 - Release Notes: http://glideinwms.fnal.gov/doc.dev/history.html
 
