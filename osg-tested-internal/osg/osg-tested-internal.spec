@@ -1,7 +1,7 @@
 Name:      osg-tested-internal
 Summary:   All OSG packages we test (internal use only)
 Version:   3.3
-Release:   12%{?dist}
+Release:   13%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -82,6 +82,24 @@ Requires: mariadb-server
 %{summary}
 
 
+%package gram
+Summary:   All OSG packages we test (internal use only) + GRAM
+Requires: %{name}
+Requires: globus-gatekeeper
+Requires: globus-gram-client-tools
+Requires: globus-gram-job-manager
+Requires: globus-gram-job-manager-fork
+Requires: globus-gram-job-manager-fork-setup-poll
+Requires: gratia-probe-gram
+Requires: globus-gram-job-manager-scripts
+Requires: globus-gram-job-manager-condor
+Requires: globus-gram-job-manager-pbs-setup-seg
+
+
+%description gram
+%{summary}
+
+
 %install
 
 %clean
@@ -89,8 +107,12 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 
+%files gram
 
 %changelog
+* Tue Aug 30 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.3-13
+- Add gram subpackage (SOFTWARE-2441)
+
 * Thu Jun 09 2016 Brian Lin <blin@cs.wisc.edu> - 3.3-12
 - Re-enable osg-gums for EL7
 
