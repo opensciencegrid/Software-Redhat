@@ -60,6 +60,7 @@ trusted CA certificates and Certificate Revocation Lists (CRLs).
 Summary:        Manage X.509 Public Key Infrastructure (PKI) security credentials
 Group:          System Environment/Libraries
 Requires:       globus-proxy-utils
+Requires:       globus-gssapi-gsi%{?_isa} >= 12
 Obsoletes:      %{name} < 5.1-3
 
 %description libs
