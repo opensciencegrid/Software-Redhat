@@ -1,0 +1,81 @@
+From: Jim Basney <jbasney@illinois.edu>
+Date: Tue, 30 Aug 2016 19:22:21 -0500
+Subject: [PATCH] update debug/error msgs for accepted_peer_names type change:
+ now that accepted_peer_names[] contains gss_name_t objects rather than
+ strings, we can't just print them directly.
+
+---
+ myproxy/source/gsi_socket.c | 17 ++++++++++++++---
+ myproxy/source/myproxy.c    |  8 +++-----
+ 2 files changed, 17 insertions(+), 8 deletions(-)
+
+diff --git a/myproxy/source/gsi_socket.c b/myproxy/source/gsi_socket.c
+index fa8b3a9..1b5565a 100644
+--- a/myproxy/source/gsi_socket.c
++++ b/myproxy/source/gsi_socket.c
+@@ -631,7 +631,7 @@ GSI_SOCKET_authentication_init(GSI_SOCKET *self, gss_name_t accepted_peer_names[
+     gss_name_t			server_gss_name = GSS_C_NO_NAME;
+     OM_uint32			req_flags = 0, ret_flags = 0;
+     int				return_value = GSI_SOCKET_ERROR;
+-    gss_buffer_desc		gss_buffer = { 0 }, tmp_gss_buffer = { 0 };
++    gss_buffer_desc		gss_buffer = { 0 };
+     gss_name_t			target_name = GSS_C_NO_NAME;
+     gss_OID			target_name_type = GSS_C_NO_OID;
+     int				i, rc=0, sock;
+@@ -754,6 +754,8 @@ GSI_SOCKET_authentication_init(GSI_SOCKET *self, gss_name_t accepted_peer_names[
+     /* We told gss_assist_init_sec_context() not to check the server
+        name so we can check it manually here. */
+     for (i=0; accepted_peer_names[i] != GSS_C_NO_NAME; i++) {
++	gss_buffer_desc	apn_gss_buffer = { 0 };
++
+ 	self->major_status = gss_compare_name(&self->minor_status,
+ 					      server_gss_name,
+ 					      accepted_peer_names[i], &rc);
+@@ -781,14 +783,23 @@ GSI_SOCKET_authentication_init(GSI_SOCKET *self, gss_name_t accepted_peer_names[
+ 	    goto error;
+ 	}
+ 
++	self->major_status = gss_display_name(&self->minor_status,
++					      accepted_peer_names[i],
++					      &apn_gss_buffer, NULL);
++	if (self->major_status != GSS_S_COMPLETE) {
++	  GSI_SOCKET_set_error_string(self, "gss_display_name() failed");
++	  goto error;
++	}
++
+ 	if (rc) {
+ 	    myproxy_debug("server name matches \"%s\"",
+-                      accepted_peer_names[i]);
++			  apn_gss_buffer.value);
+ 	    break;
+ 	} else {
+ 	    myproxy_debug("server name does not match \"%s\"",
+-                      accepted_peer_names[i]);
++			  apn_gss_buffer.value);
+ 	}
++	gss_release_buffer(&self->minor_status, &apn_gss_buffer);
+     }
+     if (!rc) {		/* no match with acceptable target names */
+ 	GSI_SOCKET_set_error_string(self, "authenticated peer name does not match");
+diff --git a/myproxy/source/myproxy.c b/myproxy/source/myproxy.c
+index c7db13c..31876e4 100644
+--- a/myproxy/source/myproxy.c
++++ b/myproxy/source/myproxy.c
+@@ -941,14 +941,12 @@ myproxy_authenticate_init(myproxy_socket_attrs_t *attrs,
+ 			     "and try again.\n",
+ 			     peer_name, server_dn, peer_name);
+        } else {
+-	   verror_put_string("Server authorization failed.  Server identity\n"
+-			     "(%s)\ndoes not match expected identities\n"
+-			     "%s or %s.\n"
++	   verror_put_string("Server authorization failed.  Server identity "
++			     "does not match expected identity.\n"
+ 			     "If the server identity is acceptable, "
+ 			     "set\nMYPROXY_SERVER_DN=\"%s\"\n"
+ 			     "and try again.\n",
+-			     peer_name, accepted_peer_names[0],
+-			     accepted_peer_names[1], peer_name);
++			     peer_name);
+        }
+        goto error;
+    } else if (rval == GSI_SOCKET_ERROR) {

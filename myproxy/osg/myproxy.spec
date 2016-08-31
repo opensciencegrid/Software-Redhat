@@ -14,18 +14,21 @@
 
 Name:           myproxy
 Version:        6.1.18
-Release:        1%{?dist}
+Release:        1.1%{?dist}
 Summary:        Manage X.509 Public Key Infrastructure (PKI) security credentials
 
 Group:          Applications/Internet
 License:        NCSA and BSD and ASL 2.0
 URL:            http://grid.ncsa.illinois.edu/myproxy/
 Source0:        http://toolkit.globus.org/ftppub/gt6/packages/%{name}-%{version}.tar.gz
+# globus/globus-toolkit PR #70 from Jim Basney: fixes debug/error messages due
+# to an API change in globus-gssapi-gsi-12.0
+Patch0:         pr70-error-msgs.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  globus-common-devel >= 15
 BuildRequires:  globus-usage-devel >= 3
-BuildRequires:  globus-gssapi-gsi-devel >= 9
+BuildRequires:  globus-gssapi-gsi-devel >= 12
 BuildRequires:  globus-gss-assist-devel >= 8
 BuildRequires:  globus-gsi-sysconfig-devel >= 5
 BuildRequires:  globus-gsi-cert-utils-devel >= 8
@@ -75,7 +78,7 @@ Group:          Development/Libraries
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
 Requires:       globus-common-devel%{?_isa} >= 14
 Requires:       globus-usage-devel%{?_isa} >= 3
-Requires:       globus-gssapi-gsi-devel%{?_isa} >= 9
+Requires:       globus-gssapi-gsi-devel%{?_isa} >= 12
 Requires:       globus-gss-assist-devel%{?_isa} >= 8
 Requires:       globus-gsi-sysconfig-devel%{?_isa} >= 5
 Requires:       globus-gsi-cert-utils-devel%{?_isa} >= 8
@@ -175,6 +178,7 @@ Package %{name}-doc contains the MyProxy documentation.
 
 %prep
 %setup -q
+%patch0 -p3
 
 %build
 # Reduce overlinking
@@ -394,6 +398,10 @@ fi
 %{?_licensedir: %license LICENSE*}
 
 %changelog
+* Wed Aug 31 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 6.1.18-1.1
+- Patch to fix debug/error messages for accepted_peer_names (PR #70)
+    require globus-gssapi-gsi >= 12 due to the API change that caused this
+
 * Fri May 06 2016 Mattias Ellert <mattias.ellert@fysast.uu.se> - 6.1.18-1
 - Update to 6.1.18 (spelling)
 
