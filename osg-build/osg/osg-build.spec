@@ -2,7 +2,7 @@
 %global _release 1
 
 Name:           osg-build
-Version:        1.7.0
+Version:        1.7.1
 Release:        %{?betatag:0.}%{_release}%{?betatag}%{?dist}
 Summary:        Build tools for the OSG
 
@@ -72,6 +72,11 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_docdir}/%{name}/sample-osg-build.ini
 
 %changelog
+* Thu Sep 01 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.7.1-1
+- Don't print "Implicitly building for el..." message unless in verbose mode
+- Add update action (--update or -U) to osg-import-srpm
+- Some internal cleanup
+
 * Mon Aug 08 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.7.0-1
 - Add three-way diff support to osg-import-srpm
 - Make osg-build log messages look nicer by replacing the
