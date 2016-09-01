@@ -1,5 +1,5 @@
 Name:      rsv-gwms-tester
-Version:   1.0.3
+Version:   1.1.1
 Release:   1%{?dist}
 Summary:   RSV metrics to test sites with a schedd connected to a glidein pool
 Packager:  OSG-Software
@@ -14,7 +14,7 @@ BuildArch: noarch
 
 Requires: rsv >= 3.13
 Requires: condor-python
-
+Requires: glideinwms-userschedd
 
 %description
 %{summary}
@@ -49,6 +49,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Sep 01 2016 <efajado@physics.ucsd.edu> - 1.1.1-1
+- Modified the condor-cron config to use the LOCAL_CONFIG_DIR of condor
+- Added glideinwms-userschedd to the requirements
+
 * Mon Aug 08 2016 <efajado@physics.ucsd.edu> - 1.0.3-1
 - Updated Makefile to include condor-cron configs
 
