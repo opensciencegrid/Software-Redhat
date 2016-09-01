@@ -7,7 +7,7 @@
 Name:		globus-gridftp-server
 %global _name %(tr - _ <<< %{name})
 Version:	10.4
-Release:	1.1%{?dist}
+Release:	1.2%{?dist}
 Summary:	Globus Toolkit - Globus GridFTP Server
 
 Group:		System Environment/Libraries
@@ -27,6 +27,7 @@ Patch0:		globus-gridftp-server-unames.patch
 Patch1:		gridftp-conf-logging.patch
 Patch2:         adler32.patch
 Patch3:         do_not_destroy_log_handle.patch
+Patch4:         Do-not-ignore-config.d-files-with-a-.-in-the-name.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Requires:	globus-xio-gsi-driver%{?_isa} >= 2
@@ -120,6 +121,7 @@ Globus GridFTP Server Development Files
 %patch1 -p1
 %patch2 -p1
 %patch3 -p4
+%patch4 -p1
 
 %build
 # Reduce overlinking
@@ -245,6 +247,9 @@ fi
 %{_libdir}/pkgconfig/%{name}.pc
 
 %changelog
+* Thu Sep 01 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 10.4-1.2.osg
+- Do not ignore config.d files with a '.' in the name (SOFTWARE-2197)
+
 * Wed Aug 10 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 10.4-1.1.osg
 - Merge OSG changes
 

@@ -1,0 +1,49 @@
+From 537fbcb46c43c9820c31eac9ae159d0a5274b800 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Thu, 1 Sep 2016 09:33:09 -0500
+Subject: [PATCH] Do not ignore config.d files with a '.' in the name
+
+Partially reverts commit 65716bf
+---
+ globus_i_gfs_config.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/globus_i_gfs_config.c b/globus_i_gfs_config.c
+index 684aaa7..d5a3236 100644
+--- a/globus_i_gfs_config.c
++++ b/globus_i_gfs_config.c
+@@ -486,12 +486,11 @@ static const globus_l_gfs_config_option_t option_list[] =
+      "Path to main configuration file that should be loaded.  Otherwise will attempt "
+      "to load $GLOBUS_LOCATION/etc/gridftp.conf and /etc/grid-security/gridftp.conf.", NULL, NULL,GLOBUS_FALSE, NULL},
+  {"config_dir", "config_dir", NULL, "C", NULL, GLOBUS_L_GFS_CONFIG_STRING, 0, NULL,
+      "Path to directory holding configuration files that should be loaded. Files "
+      "will be loaded in alphabetical order, and in the event of duplicate parameters "
+-     "the last loaded file will take precedence.  Files with a '.' in the name "
+-     "(file.bak, file.rpmsave, etc.) will be ignored.  Note that the main "
++     "the last loaded file will take precedence.  Note that the main "
+      "configuration file, if one exists, will always be loaded last.", NULL, NULL,GLOBUS_FALSE, NULL},
+  {"config_base_path", "config_base_path", NULL, "config-base-path", NULL, GLOBUS_L_GFS_CONFIG_STRING, 0, NULL,
+      "Base path to use when config and log path options are not full paths. "
+      "By default this is the current directory when the process is started.", NULL, NULL,GLOBUS_FALSE, NULL},
+  {"debug", "debug", NULL, "debug", NULL, GLOBUS_L_GFS_CONFIG_BOOL, GLOBUS_FALSE, NULL,
+@@ -1124,13 +1123,14 @@ globus_l_gfs_config_load_config_dir(
+     {
+         for(i = 0; i < count && result == GLOBUS_SUCCESS; i++)
+         {
+             char *                      full_path;
+             
+-            /* skip any file with a '.': hidden, . or ..
+-             and files like .rpm*, .deb*, .bak*, etc */
+-            if(strchr(entries[i]->d_name, '.') != NULL)
++            /* skip hidden and . or ..
++             and files possibly created by updates .rpmsave or .rpmnew */
++            if(*entries[i]->d_name == '.' ||
++                strstr(entries[i]->d_name, ".rpm") != NULL)
+             {
+                 free(entries[i]);
+                 continue;
+             }
+             
+-- 
+2.6.3
+

@@ -1,0 +1,36 @@
+commit b3658736b0aeffc408c2d937047dca42720704a9
+Author: Brian Bockelman <bbockelm@cse.unl.edu>
+Date:   Mon Jun 27 10:15:48 2016 -0500
+
+    Do not destroy global logging handle.
+    
+    The destruction of the global logging handle in the gridftp server
+    is not thread-safe.  When in threaded mode the logging handle can be
+    used it is closed.  Since there is no concurrency management of the
+    global pointer (either atomics or mutexes), we cannot set it to null.
+    
+    Felt that a layer of global mutexes isn't the right approach and
+    didn't see too many other examples of atomics in Globus - hence,
+    just leak the resource.
+
+diff --git a/gridftp/server/src/globus_i_gfs_log.c b/gridftp/server/src/globus_i_gfs_log.c
+index 9e24433..89c2786 100644
+--- a/gridftp/server/src/globus_i_gfs_log.c
++++ b/gridftp/server/src/globus_i_gfs_log.c
+@@ -562,7 +562,15 @@ globus_i_gfs_log_close(void)
+     if(globus_l_gfs_log_handle != NULL)
+     {
+         globus_logging_flush(globus_l_gfs_log_handle);
+-        globus_logging_destroy(globus_l_gfs_log_handle);
++        // NOTE: We do not destroy this handle.  At log-close time,
++        // there may be several other threads that try to subsequently
++        // log:
++        // - Watchdog callback for data / control channels (race condition)
++        // - DSI code during shutdown or threads.
++        // If they try to grab the destroyed mutex, they may deadlock.
++        // Since access to the pointer is not threadsafe, we cannot simply
++        // set it to NULL.
++        //globus_logging_destroy(globus_l_gfs_log_handle);
+     }
+     if(globus_l_gfs_log_file != stderr && globus_l_gfs_log_file != NULL)
+     {
