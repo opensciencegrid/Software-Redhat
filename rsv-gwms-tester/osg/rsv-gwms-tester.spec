@@ -1,5 +1,5 @@
 Name:      rsv-gwms-tester
-Version:   1.1.1
+Version:   1.1.2
 Release:   1%{?dist}
 Summary:   RSV metrics to test sites with a schedd connected to a glidein pool
 Packager:  OSG-Software
@@ -49,6 +49,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Sep 02 2016 <efajado@physics.ucsd.edu> - 1.1.2-1
+- Included some conments on the config file org.osg.local-gfactory-site-querying-local.conf
+
 * Thu Sep 01 2016 <efajado@physics.ucsd.edu> - 1.1.1-1
 - Modified the condor-cron config to use the LOCAL_CONFIG_DIR of condor
 - Added glideinwms-userschedd to the requirements
