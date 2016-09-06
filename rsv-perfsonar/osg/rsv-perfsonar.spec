@@ -1,5 +1,5 @@
 Name:      rsv-perfsonar
-Version:   1.1.3
+Version:   1.1.4
 Release:   1%{?dist}
 Summary:   RSV Metrics to monitor pefsonar
 Packager:  OSG-Software
@@ -85,6 +85,9 @@ pip install messaging  --upgrade
 
 
 %changelog
+* Tue Sep 06 2016 <efajardo@physics.ucsd.edu> 1.1.4-1
+- Fixed a bug in which the maxStartTime of a probe was hardcoded to 24 hours.
+
 * Thu Jul 7 2016 <efajardo@physics.ucsd.edu> 1.1.3-1
 - Fixed a bug on the message queue
 - Removed the logrotate file not needed
