@@ -251,14 +251,14 @@ rm -rf $RPM_BUILD_ROOT
 - Updated to vo-client v42. Fixed LSST GUMS template and added COUPP sub-vo.
 
 * Tue Apr 24 2012 Alain Roy <roy@cs.wisc.edu> - 41-3
-- Adjusted VOMS server URLs for default GUMS config to work with latest GUMS. 
+- Adjusted VOMS server URLs for default GUMS config to work with latest GUMS.
 
 * Mon Apr 23 2012 Alain Roy <roy@cs.wisc.edu> - 41-2
 - Fixed LSST URL
 
-* Wed Mar 18 2012 Alain Roy <roy@cs.wisc.edu> - 41-1
-- Updated to match GOC's new v41 release. 
-- Added lsst 
+* Wed Apr 18 2012 Alain Roy <roy@cs.wisc.edu> - 41-1
+- Updated to match GOC's new v41 release.
+- Added lsst
 - Updated VOMS hostname for Alice
 
 * Wed Mar 14 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 40-4
