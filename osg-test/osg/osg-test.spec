@@ -5,7 +5,7 @@
 
 Summary:   Tests an OSG Software installation
 Name:      osg-test
-Version:   1.8.3
+Version:   1.8.4
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -40,6 +40,13 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/osgtest
 
 %changelog
+* Tue Sep 06 2016 Brian Lin <blin@cs.wisc.edu> - 1.8.4-1
+- Improve tomcat7 startup time in VMU tests (SOFTWARE-2383)
+- Simplify Gratia GridFTP probe/remove gums-host-cron (SOFTWARE-2398)
+- Use hostname for MyProxy tests
+- Add nightly option
+- Add functions to wait for file generation and condor daemon readiness
+
 * Tue Aug 02 2016 Brian Lin <blin@cs.wisc.edu> - 1.8.3-1
 - Add VOMS library to set up test VOMS server without voms-admin
 - Add tests for GSI-OpenSSH
