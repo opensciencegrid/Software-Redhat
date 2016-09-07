@@ -1,1 +1,3 @@
+# Tarball created via:
+# git archive --prefix=vo-client-68/ release-68-3 | gzip -9 > vo-client-68-osg.tar.gz
 vo-client/68/vo-client-68-osg.tar.gz

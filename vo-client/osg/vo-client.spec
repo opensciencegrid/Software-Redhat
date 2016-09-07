@@ -53,7 +53,7 @@ rm -rf $RPM_BUILD_ROOT
 tar -xz -C $RPM_BUILD_DIR --strip-components=1 -f %{SOURCE0}
 install -d $RPM_BUILD_ROOT/%{_sysconfdir}
 mv $RPM_BUILD_DIR/vomses $RPM_BUILD_ROOT/%{_sysconfdir}/
-mv $RPM_BUILD_DIR/edg-mkgridmap.conf $RPM_BUILD_ROOT/%{_sysconfdir}/
+mv $RPM_BUILD_DIR/edg-mkgridmap.config $RPM_BUILD_ROOT/%{_sysconfdir}/edg-mkgridmap.conf
 
 chmod 644 $RPM_BUILD_ROOT/%{_sysconfdir}/vomses $RPM_BUILD_ROOT/%{_sysconfdir}/edg-mkgridmap.conf
 
@@ -63,7 +63,7 @@ find $RPM_BUILD_ROOT/%{_sysconfdir}/grid-security/vomsdir -type f -exec chmod 64
 find $RPM_BUILD_ROOT/%{_sysconfdir}/grid-security/vomsdir -type d -exec chmod 755 {} \;
 
 mkdir -p $RPM_BUILD_ROOT/%{_sysconfdir}/gums/
-mv $RPM_BUILD_DIR/gums.config.template $RPM_BUILD_ROOT/%{_sysconfdir}/gums/gums.config.template
+mv $RPM_BUILD_DIR/gums.template $RPM_BUILD_ROOT/%{_sysconfdir}/gums/gums.config.template
 chmod 600 $RPM_BUILD_ROOT/%{_sysconfdir}/gums/gums.config.template
 
 
