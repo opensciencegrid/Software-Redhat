@@ -1,5 +1,5 @@
 Name:           vo-client
-Version:        67
+Version:        68
 Release:        1%{?dist}
 Summary:        Contains vomses file for use with user authentication and edg-mkgridmap.conf file that contains configuration information for edg-mkgridmap.
 
@@ -85,6 +85,10 @@ rm -rf $RPM_BUILD_ROOT
 %attr(0600,tomcat,tomcat) %config(noreplace) %{_sysconfdir}/gums/gums.config.template
 
 %changelog
+* Wed Sep 07 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 68-1
+- Update to vo-client 68 (SOFTWARE-2445)
+  - Added project8
+
 * Mon Jul 25 2016 Carl Edquist <edquist@cs.wisc.edu> - 67-1
 - Corrected edg-mkgridmap.config for ILC (SOFTWARE-2402)
 
