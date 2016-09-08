@@ -1,0 +1,13 @@
+Index: koji/ssl/SSLCommon.py
+===================================================================
+--- koji/ssl/SSLCommon.py.orig	2012-10-31 18:26:15.000000003 -0500
++++ koji/ssl/SSLCommon.py	2012-10-31 18:26:51.000000003 -0500
+@@ -58,7 +58,7 @@
+ 
+     ctx = SSL.Context(SSL.SSLv3_METHOD)   # SSLv3 only
+     ctx.set_passwd_cb(passwd_callback, None)
+-    ctx.use_certificate_file(key_and_cert)
++    ctx.use_certificate_chain_file(key_and_cert)
+     retries_left = 2
+     while True:
+         try:

@@ -1,0 +1,24 @@
+Index: koji/ssl/SSLCommon.py
+===================================================================
+--- koji/ssl/SSLCommon.py.orig	2012-06-13 14:08:18.000000003 -0500
++++ koji/ssl/SSLCommon.py	2012-06-13 14:29:07.000000003 -0500
+@@ -59,7 +59,18 @@
+     ctx = SSL.Context(SSL.SSLv3_METHOD)   # SSLv3 only
+     ctx.set_passwd_cb(passwd_callback, None)
+     ctx.use_certificate_file(key_and_cert)
+-    ctx.use_privatekey_file(key_and_cert)
++    retries_left = 2
++    while True:
++        try:
++            ctx.use_privatekey_file(key_and_cert)
++            break
++        except SSL.Error, err:
++            if retries_left > 0 and err[0][0][2] == 'bad decrypt':
++                print "Could not decrypt private key. Incorrect passphrase?"
++                globals()['cached_passwd'] = None
++                retries_left -= 1
++            else:
++                raise err
+     ctx.load_client_ca(ca_cert)
+     ctx.load_verify_locations(peer_ca_cert)
+     verify = SSL.VERIFY_PEER | SSL.VERIFY_FAIL_IF_NO_PEER_CERT

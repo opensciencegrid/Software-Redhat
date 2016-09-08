@@ -1,0 +1,13 @@
+Index: koji-1.6.0/builder/kojid
+===================================================================
+--- koji-1.6.0.orig/builder/kojid	2015-01-30 11:27:16.000000000 -0600
++++ koji-1.6.0/builder/kojid	2015-01-30 11:28:35.272569615 -0600
+@@ -2586,7 +2586,7 @@
+ 
+     def create_local_repo(self, rinfo, arch, pkglist, groupdata, oldrepo):
+         koji.ensuredir(self.outdir)
+-        cmd = ['/usr/bin/createrepo', '-vd', '-o', self.outdir, '-u', self.options.pkgurl]
++        cmd = ['/usr/bin/createrepo', '-vd', '-s', 'sha', '-o', self.outdir, '-u', self.options.pkgurl]
+         if pkglist is not None:
+             cmd.extend(['-i', pkglist])
+         if os.path.isfile(groupdata):
