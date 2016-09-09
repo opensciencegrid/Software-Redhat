@@ -4,7 +4,7 @@
 %define bl_libexecdir %{_libexecdir}/%{name}
 
 Name:		blahp
-Version:	1.18.24.bosco
+Version:	1.18.25.bosco
 Release:	1%{?gitrev:.%{gitrev}}%{?dist}
 Summary:	gLite BLAHP daemon
 
@@ -183,6 +183,9 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Fri Sep 09 2016 Brian Lin <blin@cs.wisc.edu> - 1.18.25.bosco-1
+- Fix qstart parsing errors that caused blank caches
+
 * Fri Aug 26 2016 Brian Lin <blin@cs.wisc.edu> - 1.18.24.bosco-1
 - Fixed slurm multicore requests in slurm_submit.sh
 - Added slurm_submit_attributes.sh
