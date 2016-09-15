@@ -1,5 +1,5 @@
 Name:      condor-cron
-Version:   1.1.0
+Version:   1.1.1
 Release:   1%{?dist}
 Summary:   A framework to run cron-style jobs within Condor
 
@@ -20,8 +20,9 @@ Requires(preun): chkconfig
 # This is for /sbin/service
 Requires(preun): initscripts
 
-# _unitdir not defined on el6 build hosts
+# _unitdir, _tmpfilesdir not defined on el6 build hosts
 %{!?_unitdir: %global _unitdir %{_prefix}/lib/systemd/system}
+%{!?_tmpfilesdir: %global _tmpfilesdir %{_prefix}/lib/tmpfiles.d}
 
 
 %description
@@ -52,6 +53,10 @@ install -m 0755 wrappers/condor_cron_rm $RPM_BUILD_ROOT%{_bindir}/
 install -m 0755 wrappers/condor_cron_submit $RPM_BUILD_ROOT%{_bindir}/
 install -m 0755 wrappers/condor_cron_version $RPM_BUILD_ROOT%{_bindir}/
 install -m 0755 wrappers/condor_cron_config_val $RPM_BUILD_ROOT%{_bindir}/
+mkdir -p $RPM_BUILD_ROOT%{_sbindir}/
+install -m 0755 wrappers/condor_cron_master $RPM_BUILD_ROOT%{_sbindir}/
+install -m 0755 wrappers/condor_cron_off $RPM_BUILD_ROOT%{_sbindir}/
+install -m 0755 wrappers/condor_cron_restart $RPM_BUILD_ROOT%{_sbindir}/
 
 # Copy config into place
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/condor-cron
@@ -64,12 +69,16 @@ chmod 0644 $RPM_BUILD_ROOT%{_sysconfdir}/condor-cron/config.d/condor_ids
 install -d $RPM_BUILD_ROOT%{_libexecdir}/condor-cron
 install -m 0755 libexec/condor-cron.sh $RPM_BUILD_ROOT%{_libexecdir}/condor-cron/
 
+%if 0%{?rhel} >= 7
+# Copy systemd files into place
+install -d $RPM_BUILD_ROOT%{_unitdir}
+install -m 0644 etc/condor-cron.service $RPM_BUILD_ROOT%{_unitdir}/
+install -d $RPM_BUILD_ROOT%{_tmpfilesdir}
+install -m 0644 etc/condor-cron-tmpfiles.conf $RPM_BUILD_ROOT%{_tmpfilesdir}/condor-cron.conf
+%else
 # Copy init script into place
 install -d $RPM_BUILD_ROOT%{_initrddir}
 install -m 0755 etc/condor.init $RPM_BUILD_ROOT%{_initrddir}/condor-cron
-%if 0%{?rhel} >= 7
-install -d $RPM_BUILD_ROOT%{_unitdir}
-install -m 0644 etc/condor-cron.service $RPM_BUILD_ROOT%{_unitdir}/
 %endif
 
 # Make working directories
@@ -95,17 +104,22 @@ rm -rf $RPM_BUILD_ROOT
 
 %{_bindir}/condor_cron_history
 %{_bindir}/condor_cron_hold
+%{_sbindir}/condor_cron_master
+%{_sbindir}/condor_cron_off
 %{_bindir}/condor_cron_q
 %{_bindir}/condor_cron_qedit
 %{_bindir}/condor_cron_release
 %{_bindir}/condor_cron_rm
+%{_sbindir}/condor_cron_restart
 %{_bindir}/condor_cron_submit
 %{_bindir}/condor_cron_version
 %{_bindir}/condor_cron_config_val
 
-%{_initrddir}/condor-cron
 %if 0%{?rhel} >= 7
 %{_unitdir}/condor-cron.service
+%{_tmpfilesdir}/condor-cron.conf
+%else
+%{_initrddir}/condor-cron
 %endif
 
 %config %{_sysconfdir}/condor-cron/condor_config
@@ -153,6 +167,12 @@ fi
 
 
 %changelog
+* Thu Sep 15 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 1.1.1-1
+- Add commands condor_cron_master, condor_cron_off, and condor_cron_restart (SOFTWARE-2439)
+- Add tmpfiles.d config (SOFTWARE-2439)
+- Remove init script from EL7 (SOFTWARE-2439)
+- Ensure lockdir and rundir exist with correct permissions on startup (PR #4)
+
 * Wed Jun 01 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 1.1.0-1
 - Fix sending grid jobs to remote schedds (SOFTWARE-2267)
 
