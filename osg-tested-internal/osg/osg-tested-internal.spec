@@ -1,7 +1,7 @@
 Name:      osg-tested-internal
 Summary:   All OSG packages we test (internal use only)
 Version:   3.3
-Release:   13%{?dist}
+Release:   14%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -56,18 +56,11 @@ Requires: ndt-client
 
 Requires: gratia-service
 
+Requires: osg-voms
+
 # Putting bestman back again in the teest in 2016-Apr-28 - SOFTWARE-2089
 Requires: osg-se-bestman
 Requires: osg-se-bestman-xrootd
-################################################################################
-#
-# Non-RHEL 7
-#
-################################################################################
-%if 0%{?rhel} < 7
-# as of 2015-08-21, voms tests fail due to non-trivial issues
-Requires: osg-voms
-%endif
 
 %if 0%{?rhel} == 5
 Requires: globus-gram-job-manager-pbs-setup-poll
@@ -110,6 +103,9 @@ rm -rf $RPM_BUILD_ROOT
 %files gram
 
 %changelog
+* Mon Sep 19 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.3-14
+- Re-enable osg-voms for EL7 (SOFTWARE-2418)
+
 * Tue Aug 30 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.3-13
 - Add gram subpackage (SOFTWARE-2441)
 
