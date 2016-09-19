@@ -1,7 +1,7 @@
 Name:      osg-tested-internal
 Summary:   All OSG packages we test (internal use only)
 Version:   3.3
-Release:   14%{?dist}
+Release:   15%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -103,8 +103,8 @@ rm -rf $RPM_BUILD_ROOT
 %files gram
 
 %changelog
-* Mon Sep 19 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.3-14
-- Re-enable osg-voms for EL7 (SOFTWARE-2418)
+* Mon Sep 19 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.3-15
+- Re-enable osg-voms for EL7 (SOFTWARE-2461)
 
 * Tue Aug 30 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.3-13
 - Add gram subpackage (SOFTWARE-2441)
