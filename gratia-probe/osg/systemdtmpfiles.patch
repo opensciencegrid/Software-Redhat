@@ -1,0 +1,6 @@
+Index: gratia-probe-1.17.0/common/tmpfiles.d/gratia.conf
+===================================================================
+--- /dev/null
++++ gratia-probe-1.17.0/common/tmpfiles.d/gratia.conf
+@@ -0,0 +1 @@
++d       /var/lock/gratia             0755    root  root  -       -
