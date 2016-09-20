@@ -1,6 +1,6 @@
 Name:      condor-cron
 Version:   1.1.1
-Release:   1%{?dist}
+Release:   2%{?dist}
 Summary:   A framework to run cron-style jobs within Condor
 
 Group:     Applications/System
@@ -15,10 +15,17 @@ BuildArch: noarch
 Requires:  condor
 Requires:  which
 
+%if 0%{?rhel} >= 7
+%define systemd 1
+Requires(post): systemd
+Requires(preun): systemd
+%else
+%define systemd 0
 Requires(post): chkconfig
 Requires(preun): chkconfig
 # This is for /sbin/service
 Requires(preun): initscripts
+%endif
 
 # _unitdir, _tmpfilesdir not defined on el6 build hosts
 %{!?_unitdir: %global _unitdir %{_prefix}/lib/systemd/system}
@@ -69,7 +76,7 @@ chmod 0644 $RPM_BUILD_ROOT%{_sysconfdir}/condor-cron/config.d/condor_ids
 install -d $RPM_BUILD_ROOT%{_libexecdir}/condor-cron
 install -m 0755 libexec/condor-cron.sh $RPM_BUILD_ROOT%{_libexecdir}/condor-cron/
 
-%if 0%{?rhel} >= 7
+%if %systemd
 # Copy systemd files into place
 install -d $RPM_BUILD_ROOT%{_unitdir}
 install -m 0644 etc/condor-cron.service $RPM_BUILD_ROOT%{_unitdir}/
@@ -115,7 +122,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/condor_cron_version
 %{_bindir}/condor_cron_config_val
 
-%if 0%{?rhel} >= 7
+%if %systemd
 %{_unitdir}/condor-cron.service
 %{_tmpfilesdir}/condor-cron.conf
 %else
@@ -140,7 +147,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %post
+%if %systemd
+systemctl enable condor-cron
+%else
 /sbin/chkconfig --add condor-cron
+%endif
+
 /sbin/ldconfig
 
 # Need to put the uid/gid of cndrcron into the config file as CONDOR_IDS
@@ -152,14 +164,23 @@ echo "CONDOR_IDS = $CC_UID.$CC_GID" >> /etc/condor-cron/config.d/condor_ids
 
 %preun
 if [ $1 = 0 ]; then
+%if %systemd
+  systemctl stop condor-cron >/dev/null 2>&1 || :
+  systemctl disable condor-cron >/dev/null 2>&1 || :
+%else
   /sbin/service condor-cron stop >/dev/null 2>&1 || :
   /sbin/chkconfig --del condor-cron
+%endif
 fi
 
 
 %postun
 if [ "$1" -ge "1" ]; then
+%if %systemd
+  systemctl restart condor-cron >/dev/null 2>&1 || :
+%else
   /sbin/service condor-cron condrestart >/dev/null 2>&1 || :
+%endif
 fi
 /sbin/ldconfig
 
@@ -167,6 +188,9 @@ fi
 
 
 %changelog
+* Tue Sep 20 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 1.1.1-2
+- On EL7, use systemd commands in the scriptlets (SOFTWARE-2439)
+
 * Thu Sep 15 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 1.1.1-1
 - Add commands condor_cron_master, condor_cron_off, and condor_cron_restart (SOFTWARE-2439)
 - Add tmpfiles.d config (SOFTWARE-2439)
