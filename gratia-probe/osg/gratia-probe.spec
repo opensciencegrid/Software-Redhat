@@ -2,7 +2,7 @@ Name:               gratia-probe
 Summary:            Gratia OSG accounting system probes
 Group:              Applications/System
 Version:            1.17.0
-Release:            2.1%{?dist}
+Release:            2.2%{?dist}
 
 License:            GPL
 Group:              Applications/System
@@ -67,6 +67,10 @@ Source24:  %{name}-lsf-%{version}.tar.bz2
 # Patch for system.d tmpfiles
 Patch0: systemdtmpfiles.patch
 
+# handle next slurm version
+# https://jira.opensciencegrid.org/browse/SOFTWARE-2171
+Patch1: slurm-tres_alloc.patch
+
 ########################################################################
 
 # Build settings.
@@ -107,6 +111,7 @@ Prefix: /etc
 %setup -q -D -T -a 24
 
 %patch0 -p1
+%patch1 -p1
 
 %build
 %if 0%{?rhel} == 7 || %_arch != noarch
@@ -1022,6 +1027,9 @@ The dCache storagegroup probe for the Gratia OSG accounting system.
 %endif # noarch
 
 %changelog
+* Wed Sep 21 2016 Carl Edquist <edquist@cs.wisc.edu> - 1.17.0-2.2
+- Add patch from Derek W to handle next slurm version (SOFTWARE-2171)
+
 * Mon Sep 19 2016 Edgar Fajardo <emfajard@ucsd.edu> - 1.17.0-2.1
 - Added tmpfiles.d configuration (SOFTWARE-2454)
 
