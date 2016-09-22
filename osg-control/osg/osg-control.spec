@@ -1,5 +1,5 @@
 Name: osg-control
-Version: 1.0.2
+Version: 1.1.0
 Release: 1%{?dist}
 Summary: Wrapper for managing osg-configure services
 Group: Grid
@@ -32,7 +32,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_sbindir}/osg-control
 
 %changelog
-* Thu Sep 22 2016 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0.2-1
+* Thu Sep 22 2016 Matyas Selmeci <matyas@cs.wisc.edu> - 1.1.0-1
 - Add systemd support (SOFTWARE-2428)
 
 * Thu Oct 23 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.0.1-1
