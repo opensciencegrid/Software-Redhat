@@ -2,7 +2,7 @@ Name:               gratia-probe
 Summary:            Gratia OSG accounting system probes
 Group:              Applications/System
 Version:            1.17.0
-Release:            2.2%{?dist}
+Release:            2.3%{?dist}
 
 License:            GPL
 Group:              Applications/System
@@ -71,6 +71,10 @@ Patch0: systemdtmpfiles.patch
 # https://jira.opensciencegrid.org/browse/SOFTWARE-2171
 Patch1: slurm-tres_alloc.patch
 
+# provide default in code for CondorCEHistoryFolder
+# https://jira.opensciencegrid.org/browse/SOFTWARE-2463
+Patch2: default-CondorCEHistoryFolder.patch
+
 ########################################################################
 
 # Build settings.
@@ -112,6 +116,7 @@ Prefix: /etc
 
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %build
 %if 0%{?rhel} == 7 || %_arch != noarch
@@ -1027,6 +1032,9 @@ The dCache storagegroup probe for the Gratia OSG accounting system.
 %endif # noarch
 
 %changelog
+* Fri Sep 23 2016 Carl Edquist <edquist@cs.wisc.edu> - 1.17.0-2.3
+- Provide default for CondorCEHistoryFolder in code (SOFTWARE-2463)
+
 * Wed Sep 21 2016 Carl Edquist <edquist@cs.wisc.edu> - 1.17.0-2.2
 - Add patch from Derek W to handle next slurm version (SOFTWARE-2171)
 
