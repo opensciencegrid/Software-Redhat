@@ -52,9 +52,9 @@
 
 # These options are only here to force there to be these on the build.
 # If they are not set they will still be compiled if the packages exist.
-%slurm_without_opt mysql
+%slurm_with_opt mysql
 %slurm_without_opt blcr
-%slurm_without_opt openssl
+%slurm_with_opt openssl
 
 # Build with munge by default on all platforms (disable using --without munge)
 %slurm_with_opt munge
@@ -88,7 +88,7 @@
 
 Name:    slurm
 Version: 15.08.9
-Release: 1%{?dist}
+Release: 1.1%{?dist}
 
 Summary: Slurm Workload Manager
 
@@ -1129,5 +1129,8 @@ fi
 
 
 %changelog
+* Mon Sep 26 2016 Carl Edquist <edquist@cs.wisc.edu> - 15.08.9-1.1
+- Enable mysql and openssl build flags by default
+
 * Wed Jun 26 2013 Morris Jette <jette@schedmd.com> 14.03.0-0pre1
 Various cosmetic fixes for rpmlint errors
