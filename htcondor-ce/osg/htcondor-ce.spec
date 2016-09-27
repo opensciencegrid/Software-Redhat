@@ -3,7 +3,7 @@
 
 Name: htcondor-ce
 Version: 2.0.9
-Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
+Release: 2%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
 
@@ -243,7 +243,7 @@ rm -rf $RPM_BUILD_ROOT
 %define remove_service() (/bin/systemctl stop %1 > /dev/null 2>&1 || :; \
                           /bin/systemctl disable %1 > /dev/null 2>&1 || :)
 %define restart_service() (/bin/systemctl daemon-reload >/dev/null 2>&1 || :; \
-                                       /bin/systemctl restart %1 >/dev/null 2>&1 || :)
+                                       /bin/systemctl condrestart %1 >/dev/null 2>&1 || :)
 %else
 %define add_service() (/sbin/chkconfig --add %1 || :)
 %define remove_service() (/sbin/service %1 stop >/dev/null 2>&1 || :; \
@@ -469,6 +469,9 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Tue Sep 27 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.9-1
+- Fix upgrades so that services are condrestarted instead of a regular restart
+
 * Mon Sep 26 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.9-1
 - Install tmpfile config to /usr/lib (SOFTWARE-2444)
 - Change 'null' to 'undefined' in the JOB_ROUTER_DEFAULTS (SOFTWARE-2440)
