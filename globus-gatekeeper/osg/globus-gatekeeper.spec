@@ -7,7 +7,7 @@
 Name:		globus-gatekeeper
 %global _name %(tr - _ <<< %{name})
 Version:	10.10
-Release:	1.1%{?dist}
+Release:	1.2%{?dist}
 Summary:	Globus Toolkit - Globus Gatekeeper
 
 Group:		Applications/Internet
@@ -21,6 +21,7 @@ Source11:       globus-gatekeeper.osg-sysconfig
 Patch3:         init.patch
 Patch6:         GT-489-openssl-1.0.1-fix.patch
 Patch7:         1250-init-priorities.patch
+Patch8:         2467-init-systemd.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Requires(post):		chkconfig
@@ -48,6 +49,7 @@ Globus Gatekeeper
 %patch3 -p0
 %patch6 -p1
 %patch7 -p0
+%patch8 -p1
 
 %build
 # Reduce overlinking
@@ -121,6 +123,9 @@ fi
 /usr/share/osg/sysconfig/%{name}
 
 %changelog
+* Thu Sep 29 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 10.10-1.2
+- Source /etc/init.d/functions in init script (SOFTWARE-2467)
+
 * Wed Aug 10 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 10.10-1.1
 - Merge OSG changes
 
