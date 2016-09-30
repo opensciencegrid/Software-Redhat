@@ -5,7 +5,7 @@
 
 Summary:   Tests an OSG Software installation
 Name:      osg-test
-Version:   1.8.4
+Version:   1.9.0
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -40,6 +40,13 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/osgtest
 
 %changelog
+* Fri Sep 30 2016 Brian Lin <blin@cs.wisc.edu> - 1.9.0-1
+- Add systemd support to `services` library and move all setup/teardown tests to use them (except [GridFTP](https://jira.opensciencegrid.org/browse/SOFTWARE-2470))
+- Ensure that PBS jobs cannot match to the Condor backend when simultaneously running
+- Verify that the PBS blahp cache is populated
+- Restart the CE if it's already running to acccommodate bad packaging in htcondor-ce-2.0.8-2
+
+
 * Tue Sep 06 2016 Brian Lin <blin@cs.wisc.edu> - 1.8.4-1
 - Improve tomcat7 startup time in VMU tests (SOFTWARE-2383)
 - Simplify Gratia GridFTP probe/remove gums-host-cron (SOFTWARE-2398)
