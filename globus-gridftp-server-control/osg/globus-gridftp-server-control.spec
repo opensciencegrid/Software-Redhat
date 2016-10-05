@@ -3,7 +3,7 @@
 Name:		globus-gridftp-server-control
 %global _name %(tr - _ <<< %{name})
 Version:	4.1
-Release:	1.2%{?dist}
+Release:	1.3%{?dist}
 Summary:	Globus Toolkit - Globus GridFTP Server Library
 
 Group:		System Environment/Libraries
@@ -26,6 +26,7 @@ BuildRequires:	globus-gsi-openssl-error-devel >= 2
 BuildRequires:	globus-gssapi-error-devel >= 4
 
 Patch1:		ipv6-load-balancing.patch
+Patch2:         tcp-rst-stuck.patch
 
 %package devel
 Summary:	Globus Toolkit - Globus GridFTP Server Library Development Files
@@ -61,6 +62,7 @@ Globus GridFTP Server Library Development Files
 %prep
 %setup -q -n %{_name}-%{version}
 %patch1 -p1
+%patch2 -p1
 
 %build
 # Reduce overlinking
@@ -109,6 +111,9 @@ rm -rf %{buildroot}
 %{_libdir}/pkgconfig/%{name}.pc
 
 %changelog
+* Wed Oct 05 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 4.1-1.3
+- Add tcp-rst-stuck.patch
+
 * Mon Aug 29 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 4.1-1.2
 - bump to rebuild
 
