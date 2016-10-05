@@ -1,6 +1,6 @@
 Name:           vo-client
-Version:        68
-Release:        2%{?dist}
+Version:        69
+Release:        1%{?dist}
 Summary:        Contains vomses file for use with user authentication and edg-mkgridmap.conf file that contains configuration information for edg-mkgridmap.
 
 Group:          System Environment/Base
@@ -85,6 +85,12 @@ rm -rf $RPM_BUILD_ROOT
 %attr(0600,tomcat,tomcat) %config(noreplace) %{_sysconfdir}/gums/gums.config.template
 
 %changelog
+* Wed Oct 05 2016 Carl Edquist <edquist@cs.wisc.edu> - 69-1
+- Update to vo-client 69 (SOFTWARE-2473)
+  - Removed LBNE
+  - Removed CDF INFN
+  - Added MINICLEAN
+
 * Wed Sep 07 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 68-2
 - Update to vo-client 68 (SOFTWARE-2445)
   - Added project8
