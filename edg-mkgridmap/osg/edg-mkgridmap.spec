@@ -1,6 +1,6 @@
 Name:           edg-mkgridmap
-Version:        4.0.3
-Release:        2%{?dist}
+Version:        4.0.4
+Release:        1%{?dist}
 Summary:        A tool to build the grid map-file from VO servers
 Group:          system environment/base
 License:        Apache 2.0
@@ -89,6 +89,9 @@ fi
 %dir %{_var}/lib/osg
 
 %changelog
+* Thu Oct 6 2016 Edgar Fajardo <efajardo@physics.ucsd.edu> - 4.0.4-1
+- Bumped to version 4.04 (SOFTWARE-2474)
+
 * Wed Sep 2 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> - 4.0.3-2
 - Added the perl-LWP-Protocol-https package for the requirements for el7
 
