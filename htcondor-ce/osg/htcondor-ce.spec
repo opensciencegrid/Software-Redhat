@@ -2,8 +2,8 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 2.0.9
-Release: 4%{?gitrev:.%{gitrev}git}%{?dist}
+Version: 2.0.10
+Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
 
@@ -27,6 +27,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 # Requires a bug fix in config conditionals
 # https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=5914
+# TODO Replace Conflicts with "Requires: condor >= 8.6.0" in OSG 3.4 
 Requires:  condor >= 8.4.9
 Conflicts: condor = 8.5.0
 Conflicts: condor = 8.5.1
@@ -35,6 +36,7 @@ Conflicts: condor = 8.5.3
 Conflicts: condor = 8.5.4
 Conflicts: condor = 8.5.5
 Conflicts: condor = 8.5.6
+
 # This ought to pull in the HTCondor-CE specific version of the blahp
 Requires: blahp
 
@@ -470,6 +472,9 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Tue Oct 11 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.10-1
+- Fix CE View so that it handles new DaemonCore options in Condor 8.5.7
+
 * Tue Sep 27 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.9-4
 - Add conflicts statements so we pseudo-require an condor 8.5.x >= 8.5.7
 
