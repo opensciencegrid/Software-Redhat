@@ -2,7 +2,7 @@ Name:               gratia-probe
 Summary:            Gratia OSG accounting system probes
 Group:              Applications/System
 Version:            1.17.0
-Release:            2.3%{?dist}
+Release:            2.4%{?dist}
 
 License:            GPL
 Group:              Applications/System
@@ -75,6 +75,10 @@ Patch1: slurm-tres_alloc.patch
 # https://jira.opensciencegrid.org/browse/SOFTWARE-2463
 Patch2: default-CondorCEHistoryFolder.patch
 
+# support whole-node jobs in pbs (for Hyak_CE)
+# https://jira.opensciencegrid.org/browse/SOFTWARE-2484
+Patch3: pbs-allprocs.patch
+
 ########################################################################
 
 # Build settings.
@@ -117,6 +121,7 @@ Prefix: /etc
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 %build
 %if 0%{?rhel} == 7 || %_arch != noarch
@@ -1032,6 +1037,9 @@ The dCache storagegroup probe for the Gratia OSG accounting system.
 %endif # noarch
 
 %changelog
+* Thu Oct 13 2016 Carl Edquist <edquist@cs.wisc.edu> - 1.17.0-2.4
+- Count all allocated CPUs for whole-node PBS jobs (SOFTWARE-2484)
+
 * Fri Sep 23 2016 Carl Edquist <edquist@cs.wisc.edu> - 1.17.0-2.3
 - Provide default for CondorCEHistoryFolder in code (SOFTWARE-2463)
 
