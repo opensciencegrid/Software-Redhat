@@ -2,7 +2,7 @@ Name:               gratia-probe
 Summary:            Gratia OSG accounting system probes
 Group:              Applications/System
 Version:            1.17.0
-Release:            2.4%{?dist}
+Release:            2.5%{?dist}
 
 License:            GPL
 Group:              Applications/System
@@ -1037,6 +1037,9 @@ The dCache storagegroup probe for the Gratia OSG accounting system.
 %endif # noarch
 
 %changelog
+* Fri Oct 14 2016 Carl Edquist <edquist@cs.wisc.edu> - 1.17.0-2.5
+- Fix patch for el6 (SOFTWARE-2484)
+
 * Thu Oct 13 2016 Carl Edquist <edquist@cs.wisc.edu> - 1.17.0-2.4
 - Count all allocated CPUs for whole-node PBS jobs (SOFTWARE-2484)
 
