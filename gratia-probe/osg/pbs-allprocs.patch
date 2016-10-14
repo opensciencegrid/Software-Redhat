@@ -1,3 +1,11 @@
+commit 36261245bba281a0c725ac881fd3c34376e06e96
+Author: Carl Edquist <edquist@cs.wisc.edu>
+Date:   Wed Oct 12 19:02:48 2016 -0500
+
+    use exec_host to determine cpus if ALLPROCS flag is present
+    
+    https://jira.opensciencegrid.org/browse/SOFTWARE-2484
+
 diff --git a/pbs-lsf/urCollector-src/urCollector.pl b/pbs-lsf/urCollector-src/urCollector.pl
 index c1cccc2..e3e8b2b 100755
 --- a/pbs-lsf/urCollector-src/urCollector.pl

@@ -121,7 +121,9 @@ Prefix: /etc
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%if %_arch != noarch
 %patch3 -p1
+%endif
 
 %build
 %if 0%{?rhel} == 7 || %_arch != noarch
@@ -1038,7 +1040,7 @@ The dCache storagegroup probe for the Gratia OSG accounting system.
 
 %changelog
 * Fri Oct 14 2016 Carl Edquist <edquist@cs.wisc.edu> - 1.17.0-2.5
-- Fix patch for el6 (SOFTWARE-2484)
+- Only apply PBS patch for arch builds (SOFTWARE-2484)
 
 * Thu Oct 13 2016 Carl Edquist <edquist@cs.wisc.edu> - 1.17.0-2.4
 - Count all allocated CPUs for whole-node PBS jobs (SOFTWARE-2484)
