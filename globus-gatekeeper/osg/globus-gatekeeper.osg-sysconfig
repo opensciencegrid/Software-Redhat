@@ -11,6 +11,9 @@ export LLGT_LIFT_PRIVILEGED_PROTECTION=1
 #  4: also info, 5: maximum debug
 export LCMAPS_DEBUG_LEVEL=2
 
+# Disable SSLv3
+export GLOBUS_GSSAPI_FORCE_TLS=true
+
 # Logging location
 GLOBUS_GATEKEEPER_LOG="@localstatedir@/log/globus-gatekeeper.log"
 

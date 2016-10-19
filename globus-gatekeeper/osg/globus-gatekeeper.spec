@@ -7,7 +7,7 @@
 Name:		globus-gatekeeper
 %global _name %(tr - _ <<< %{name})
 Version:	10.10
-Release:	1.2%{?dist}
+Release:	1.3%{?dist}
 Summary:	Globus Toolkit - Globus Gatekeeper
 
 Group:		Applications/Internet
@@ -123,6 +123,9 @@ fi
 /usr/share/osg/sysconfig/%{name}
 
 %changelog
+* Wed Oct 19 2016 Matyas Selmeci <matyas@cs.wisc.edu> 10.10-1.3
+- Disable SSLv3 (SOFTWARE-2471)
+
 * Thu Sep 29 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 10.10-1.2
 - Source /etc/init.d/functions in init script (SOFTWARE-2467)
 
