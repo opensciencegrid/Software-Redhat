@@ -7,7 +7,7 @@
 Name:		globus-gridftp-server
 %global _name %(tr - _ <<< %{name})
 Version:	10.4
-Release:	1.2%{?dist}
+Release:	1.3%{?dist}
 Summary:	Globus Toolkit - Globus GridFTP Server
 
 Group:		System Environment/Libraries
@@ -247,6 +247,9 @@ fi
 %{_libdir}/pkgconfig/%{name}.pc
 
 %changelog
+* Wed Oct 19 2016 Brian Lin <blin@cs.wisc.edu> - 10.4-1.3.osg
+- Fix exit code when determining service status (SOFTWARE-2470)
+
 * Thu Sep 01 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 10.4-1.2.osg
 - Do not ignore config.d files with a '.' in the name (SOFTWARE-2197)
 
