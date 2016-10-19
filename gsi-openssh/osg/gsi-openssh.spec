@@ -35,7 +35,7 @@
 Summary: An implementation of the SSH protocol with GSI authentication
 Name: gsi-openssh
 Version: %{gsi_openssh_ver}
-Release: %{gsi_openssh_rel}.1%{?dist}
+Release: %{gsi_openssh_rel}.2%{?dist}
 URL: http://www.openssh.com/portable.html
 Source0: http://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-7.1p2.tar.gz
 #Source2: gsisshd.pam
@@ -394,6 +394,9 @@ fi
 %attr(0644,root,root) %config(noreplace) %{_sysconfdir}/sysconfig/gsisshd
 
 %changelog
+* Wed Oct 19 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 7.1p2f-1.2
+- Disable SSLv3 (SOFTWARE-2471)
+
 * Thu Jul 14 2016 Matyas Selmeci <matyas@cs.wisc.edu> - 7.1p2f-1.1
 - Merge OSG changes (SOFTWARE-2390)
 - Use OSG init script
