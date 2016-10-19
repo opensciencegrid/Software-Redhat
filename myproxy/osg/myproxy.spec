@@ -14,7 +14,7 @@
 
 Name:           myproxy
 Version:        6.1.18
-Release:        1.1%{?dist}
+Release:        1.2%{?dist}
 Summary:        Manage X.509 Public Key Infrastructure (PKI) security credentials
 
 Group:          Applications/Internet
@@ -23,6 +23,7 @@ URL:            http://grid.ncsa.illinois.edu/myproxy/
 Source0:        http://toolkit.globus.org/ftppub/gt6/packages/%{name}-%{version}.tar.gz
 # globus/globus-toolkit PR #70 from Jim Basney: fixes debug/error messages due
 # to an API change in globus-gssapi-gsi-12.0
+Source1:        force_tls.conf
 Patch0:         pr70-error-msgs.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -261,6 +262,10 @@ rm %{buildroot}%{_datadir}/%{name}/myproxy-server.conf
 # Remove myproxy-server-setup rhbz#671561
 rm %{buildroot}%{_sbindir}/myproxy-server-setup
 
+# Add file disabling SSLv3
+mkdir -p %{buildroot}%{_sysconfdir}/myproxy.d
+install -p -m 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/myproxy.d/force_tls.conf
+
 %clean
 rm -rf %{buildroot}
 
@@ -373,6 +378,7 @@ fi
 %{_mandir}/man8/myproxy-server.8*
 %{_mandir}/man5/myproxy-server.config.5*
 %doc README.Fedora
+%config(noreplace) %{_sysconfdir}/myproxy.d/force_tls.conf
 
 %files admin
 %{_sbindir}/myproxy-admin-addservice
@@ -399,6 +405,9 @@ fi
 %{?_licensedir: %license LICENSE*}
 
 %changelog
+* Wed Oct 19 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 6.1.18-1.2
+- Disable SSLv3 (SOFTWARE-2471)
+
 * Wed Aug 31 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 6.1.18-1.1
 - Patch to fix debug/error messages for accepted_peer_names (PR #70)
     require globus-gssapi-gsi >= 12 due to the API change that caused this
