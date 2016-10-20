@@ -4,7 +4,7 @@
 %define bl_libexecdir %{_libexecdir}/%{name}
 
 Name:		blahp
-Version:	1.18.26.bosco
+Version:	1.18.27.bosco
 Release:	1%{?gitrev:.%{gitrev}}%{?dist}
 Summary:	gLite BLAHP daemon
 
@@ -184,7 +184,10 @@ fi
 
 %changelog
 * Fri Sep 23 2016 Brian Lin <blin@cs.wisc.edu> - 1.18.26.bosco-1
--Refactor scontrol calls to use subprocess (SOFTWARE-2450)
+- Fix segfault when using glexec and disabling limited proxies (SOFTWARE-2475)
+
+* Fri Sep 23 2016 Brian Lin <blin@cs.wisc.edu> - 1.18.26.bosco-1
+- Refactor scontrol calls to use subprocess (SOFTWARE-2450)
 
 * Fri Sep 09 2016 Brian Lin <blin@cs.wisc.edu> - 1.18.25.bosco-1
 - Fix qstart parsing errors that caused blank caches
