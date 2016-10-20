@@ -14,7 +14,7 @@
 
 Name:           myproxy
 Version:        6.1.18
-Release:        1.2%{?dist}
+Release:        1.3%{?dist}
 Summary:        Manage X.509 Public Key Infrastructure (PKI) security credentials
 
 Group:          Applications/Internet
@@ -23,8 +23,11 @@ URL:            http://grid.ncsa.illinois.edu/myproxy/
 Source0:        http://toolkit.globus.org/ftppub/gt6/packages/%{name}-%{version}.tar.gz
 # globus/globus-toolkit PR #70 from Jim Basney: fixes debug/error messages due
 # to an API change in globus-gssapi-gsi-12.0
-Source1:        force_tls.conf
+Source1:        00-osg-environment
+Source2:        myproxy-server-start
 Patch0:         pr70-error-msgs.patch
+Patch1:         Skip-.rpmsave-and-.rpmnew-files-in-etc-myproxy.d.patch
+Patch2:         EL7-Use-myproxy-server-start-script.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  globus-common-devel >= 15
@@ -181,6 +184,8 @@ Package %{name}-doc contains the MyProxy documentation.
 %prep
 %setup -q
 %patch0 -p3
+%patch1 -p1
+%patch2 -p1
 
 %build
 # Reduce overlinking
@@ -237,17 +242,21 @@ mkdir -p %{buildroot}%{_sysconfdir}
 mv %{buildroot}%{_datadir}/%{name}/myproxy-server.config \
    %{buildroot}%{_sysconfdir}
 
-%if %{with_sysv}
-mkdir -p %{buildroot}%{_initddir}
+# Always install myproxy.sysconfig (SOFTWARE-2471)
 mkdir -p %{buildroot}%{_sysconfdir}/sysconfig
-install -p -m 755 myproxy.init %{buildroot}%{_initddir}/myproxy-server
 install -p -m 644 myproxy.sysconfig \
    %{buildroot}%{_sysconfdir}/sysconfig/myproxy-server
+%if %{with_sysv}
+mkdir -p %{buildroot}%{_initddir}
+install -p -m 755 myproxy.init %{buildroot}%{_initddir}/myproxy-server
 %else
 mkdir -p %{buildroot}%{_unitdir}
 mkdir -p %{buildroot}%{_tmpfilesdir}
 install -p -m 644 systemd/myproxy-server.service %{buildroot}%{_unitdir}
 install -p -m 644 systemd/myproxy-server.conf %{buildroot}%{_tmpfilesdir}
+# Startup script used on EL7 to source sysconfig files (SOFTWARE-2471)
+mkdir -p %{buildroot}%{_libexecdir}
+install -p -m 755 %{SOURCE2} %{buildroot}%{_libexecdir}/myproxy-server-start
 %endif
 
 mkdir -p %{buildroot}%{_localstatedir}/lib/myproxy
@@ -262,9 +271,10 @@ rm %{buildroot}%{_datadir}/%{name}/myproxy-server.conf
 # Remove myproxy-server-setup rhbz#671561
 rm %{buildroot}%{_sbindir}/myproxy-server-setup
 
-# Add file disabling SSLv3
+# Add file disabling SSLv3 (SOFTWARE-2471)
 mkdir -p %{buildroot}%{_sysconfdir}/myproxy.d
-install -p -m 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/myproxy.d/force_tls.conf
+install -p -m 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/myproxy.d/00-osg-environment
+
 
 %clean
 rm -rf %{buildroot}
@@ -362,12 +372,15 @@ fi
 
 %files server
 %{_sbindir}/myproxy-server
+# Always install myproxy.sysconfig (SOFTWARE-2471)
+%config(noreplace) %{_sysconfdir}/sysconfig/myproxy-server
 %if %{?with_sysv}
 %{_initddir}/myproxy-server
-%config(noreplace) %{_sysconfdir}/sysconfig/myproxy-server
 %else
 %{_unitdir}/myproxy-server.service
 %{_tmpfilesdir}/myproxy-server.conf
+# Startup script used on EL7 to source sysconfig files (SOFTWARE-2471)
+%{_libexecdir}/myproxy-server-start
 %endif
 %config(noreplace) %{_sysconfdir}/myproxy-server.config
 # myproxy-server wants exactly 700 permission on its data
@@ -378,7 +391,7 @@ fi
 %{_mandir}/man8/myproxy-server.8*
 %{_mandir}/man5/myproxy-server.config.5*
 %doc README.Fedora
-%config(noreplace) %{_sysconfdir}/myproxy.d/force_tls.conf
+%{_sysconfdir}/myproxy.d/00-osg-environment
 
 %files admin
 %{_sbindir}/myproxy-admin-addservice
@@ -405,6 +418,10 @@ fi
 %{?_licensedir: %license LICENSE*}
 
 %changelog
+* Thu Oct 20 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 6.1.18-1.3
+- Skip .rpmsave and .rpmnew files in /etc/myproxy.d
+- Source sysconfig files on EL7 (SOFTWARE-2471)
+
 * Wed Oct 19 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 6.1.18-1.2
 - Disable SSLv3 (SOFTWARE-2471)
 

@@ -1,0 +1,6 @@
+# OSG environment file - do not edit
+# You may override settings in this file by creating additional files in
+# /etc/myproxy.d.
+
+# Disable SSLv3
+export GLOBUS_GSSAPI_FORCE_TLS=true
