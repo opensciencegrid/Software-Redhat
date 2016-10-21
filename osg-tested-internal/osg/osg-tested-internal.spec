@@ -1,7 +1,7 @@
 Name:      osg-tested-internal
 Summary:   All OSG packages we test (internal use only)
 Version:   3.3
-Release:   15%{?dist}
+Release:   16%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -38,6 +38,7 @@ Requires: osg-gums
 Requires: htcondor-ce
 Requires: htcondor-ce-client
 Requires: htcondor-ce-condor
+Requires: htcondor-ce-view
 
 Requires: osg-ce-condor
 
@@ -103,6 +104,9 @@ rm -rf $RPM_BUILD_ROOT
 %files gram
 
 %changelog
+* Fri Oct 2 2016 Brian Lin <blin@cs.wisc.edu> - 3.3-16
+- Add htcondor-ce-view (SOFTWARE-2493)
+
 * Mon Sep 19 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.3-15
 - Re-enable osg-voms for EL7 (SOFTWARE-2461)
 
