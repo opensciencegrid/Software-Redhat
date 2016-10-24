@@ -1,6 +1,6 @@
 Summary: osg-pki-tools
 Name: osg-pki-tools
-Version: 1.2.19
+Version: 1.2.20
 Release: 1%{?dist}
 Source: OSGPKITools-%{version}.tar.gz
 License: Apache 2.0
@@ -76,6 +76,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Oct 24 2016 Brian Lin <blin@cs.wisc.edu> - 1.2.20-1
+- Generate SHA2 CSRs (SOFTWARE-2136)
+
 * Mon Aug 22 2016 Brian Lin <blin@cs.wisc.edu> - 1.2.19-1
 - Fix formatting of CSRs (SOFTWARE-2132)
 - Reword 'bad VO info' error from osg-*cert-request (SOFTWARE-2405)
