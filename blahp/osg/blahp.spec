@@ -4,7 +4,7 @@
 %define bl_libexecdir %{_libexecdir}/%{name}
 
 Name:		blahp
-Version:	1.18.27.bosco
+Version:	1.18.28.bosco
 Release:	1%{?gitrev:.%{gitrev}}%{?dist}
 Summary:	gLite BLAHP daemon
 
@@ -183,7 +183,12 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
-* Fri Sep 23 2016 Brian Lin <blin@cs.wisc.edu> - 1.18.26.bosco-1
+* Thu Oct 27 2016 Brian Lin <blin@cs.wisc.edu> - 1.18.28.bosco-1
+- Fixed incompatibility between blahp_results_cache and torque-4.2.9
+  that caused jobs to be held when performing status updates on
+  HTCondor-CE (SOFTWARE-2516)
+
+* Thu Oct 20 2016 Brian Lin <blin@cs.wisc.edu> - 1.18.27.bosco-1
 - Fix segfault when using glexec and disabling limited proxies (SOFTWARE-2475)
 
 * Fri Sep 23 2016 Brian Lin <blin@cs.wisc.edu> - 1.18.26.bosco-1
