@@ -1,7 +1,7 @@
 Summary: Package for configure-osg and associated scripts
 Name: osg-configure
-Version: 1.4.2
-Release: 2%{?dist}
+Version: 1.5.0
+Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
 Group: Grid
@@ -337,6 +337,9 @@ fi
 
 
 %changelog
+* Fri Oct 28 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.0-1
+- Add "Resource Entry" as alias for "Subcluster" in 30-gip.ini
+
 * Thu Aug 04 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 1.4.2-2
 - Require condor-python (SOFTWARE-2420)
 
