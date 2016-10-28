@@ -338,7 +338,7 @@ fi
 
 %changelog
 * Fri Oct 28 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.0-1
-- Add "Resource Entry" as alias for "Subcluster" in 30-gip.ini
+- Add "Resource Entry" as alias for "Subcluster" in 30-gip.ini (SOFTWARE-2478)
 
 * Thu Aug 04 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 1.4.2-2
 - Require condor-python (SOFTWARE-2420)
