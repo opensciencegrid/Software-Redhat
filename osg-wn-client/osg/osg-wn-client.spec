@@ -60,6 +60,8 @@ Requires: mkgltempdir
 %{summary}
 
 %install
+### TODO Remove this block in OSG 3.4 (SOFTWARE-1977)
+#
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/osg/wn-client/
 cat > $RPM_BUILD_ROOT%{_sysconfdir}/osg/wn-client/setup.sh << EOF
 #!/bin/sh
@@ -67,11 +69,14 @@ cat > $RPM_BUILD_ROOT%{_sysconfdir}/osg/wn-client/setup.sh << EOF
 
 EOF
 
+
 cat > $RPM_BUILD_ROOT%{_sysconfdir}/osg/wn-client/setup.csh << EOF
 #!/bin/csh
 # This file is no longer necessary and will be removed in OSG 3.4.
 
 EOF
+#
+### End block to remove in OSG 3.4
 
 mkdir -p $RPM_BUILD_ROOT%{_prefix}/etc/
 cat > $RPM_BUILD_ROOT%{_prefix}/etc/globus-user-env.sh << EOF
