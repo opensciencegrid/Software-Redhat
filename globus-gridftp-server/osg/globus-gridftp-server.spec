@@ -1,13 +1,19 @@
 %global _hardened_build 1
 
 %{!?_initddir: %global _initddir %{_initrddir}}
-
+%{!?_unitdir:  %global _unitdir /usr/lib/systemd/system}
 %{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
+
+%if 0%{?rhel} >= 7
+%global systemd 1
+%else
+%global systemd 0
+%endif
 
 Name:		globus-gridftp-server
 %global _name %(tr - _ <<< %{name})
 Version:	10.4
-Release:	1.4%{?dist}
+Release:	1.5%{?dist}
 Summary:	Globus Toolkit - Globus GridFTP Server
 
 Group:		System Environment/Libraries
@@ -22,6 +28,13 @@ Source6:	globus-gridftp-server.osg-sysconfig
 Source7:	globus-gridftp-server.logrotate
 #		README file
 Source8:	GLOBUS-GRIDFTP
+# SystemD service files and start/stop/reconfigure scripts
+Source10:       %{name}.service
+Source11:       %{name}-start
+Source12:       globus-gridftp-sshftp.service
+Source13:       globus-gridftp-sshftp-reconfigure
+Source14:       globus-gridftp-sshftp-start
+Source15:       globus-gridftp-sshftp-stop
 #		Fix globus-gridftp-server-setup-chroot for kfreebsd and hurd
 Patch0:		globus-gridftp-server-unames.patch
 Patch1:		gridftp-conf-logging.patch
@@ -62,10 +75,16 @@ BuildRequires:	fakeroot
 Summary:	Globus Toolkit - Globus GridFTP Server Programs
 Group:		Applications/Internet
 Requires:	%{name}%{?_isa} = %{version}-%{release}
+%if %systemd
+Requires(post):		systemd
+Requires(preun):	systemd
+Requires(postun):	systemd
+%else
 Requires(post):		chkconfig
 Requires(preun):	chkconfig
 Requires(preun):	initscripts
 Requires(postun):	initscripts
+%endif
 Conflicts:	gridftp-hdfs%{?_isa} < 0.5.4-6
 Conflicts:	xrootd-dsi%{?_isa} < 3.0.4-9
 
@@ -162,9 +181,17 @@ sed '/^env /d' -i %{buildroot}%{_sysconfdir}/xinetd.d/gridftp
 # Remove start-up scripts
 rm -rf %{buildroot}%{_sysconfdir}/init.d
 
+%if %systemd
+# Install systemd unit files and helper scripts
+mkdir -p %{buildroot}%{_unitdir}
+install -p -m 0644 %{SOURCE10} %{SOURCE12} %{buildroot}%{_unitdir}
+mkdir -p %{buildroot}%{_libexecdir}
+install -p -m 0755 %{SOURCE11} %{SOURCE13} %{SOURCE14} %{SOURCE15} %{buildroot}%{_libexecdir}
+%else
 # Install start-up scripts
 mkdir -p %{buildroot}%{_initddir}
 install -p %{SOURCE1} %{SOURCE2} %{buildroot}%{_initddir}
+%endif
 
 # Install additional man pages
 install -m 644 -p %{SOURCE3} %{buildroot}%{_mandir}/man8
@@ -190,28 +217,42 @@ make %{_smp_mflags} check VERBOSE=1
 %clean
 rm -rf %{buildroot}
 
-%post -p /sbin/ldconfig
-
-%postun -p /sbin/ldconfig
-
 %post progs
+/sbin/ldconfig
 if [ $1 -eq 1 ]; then
+%if %systemd
+    systemctl daemon-reload &> /dev/null || :
+%else
     /sbin/chkconfig --add %{name}
     /sbin/chkconfig --add globus-gridftp-sshftp
+%endif
 fi
 
 %preun progs
 if [ $1 -eq 0 ]; then
+%if %systemd
+    systemctl stop %{name} &> /dev/null || :
+    systemctl stop globus-gridftp-sshftp &> /dev/null || :
+    systemctl disable %{name} &> /dev/null || :
+    systemctl disable globus-gridftp-sshftp &> /dev/null || :
+%else
     /sbin/chkconfig --del %{name}
     /sbin/chkconfig --del globus-gridftp-sshftp
     /sbin/service globus-gridftp-server stop
     /sbin/service globus-gridftp-sshftp stop
+%endif
 fi
 
 %postun progs
+/sbin/ldconfig
 if [ $1 -ge 1 ]; then
+%if %systemd
+    systemctl condrestart %{name} &> /dev/null || :
+    systemctl condrestart globus-gridftp-sshftp &> /dev/null || :
+%else
     /sbin/service %{name} condrestart > /dev/null 2>&1 || :
     /sbin/service globus-gridftp-sshftp condrestart > /dev/null 2>&1 || :
+%endif
 fi
 
 %files
@@ -235,8 +276,17 @@ fi
 %config(noreplace) %{_sysconfdir}/gridftp.gfork
 %config(noreplace) %{_sysconfdir}/xinetd.d/gridftp
 /usr/share/osg/sysconfig/%{name}
+%if %systemd
+%{_unitdir}/%{name}.service
+%{_unitdir}/globus-gridftp-sshftp.service
+%{_libexecdir}/%{name}-start
+%{_libexecdir}/globus-gridftp-sshftp-reconfigure
+%{_libexecdir}/globus-gridftp-sshftp-start
+%{_libexecdir}/globus-gridftp-sshftp-stop
+%else
 %{_initddir}/%{name}
 %{_initddir}/globus-gridftp-sshftp
+%endif
 %doc %{_mandir}/man8/globus-gridftp-password.8*
 %doc %{_mandir}/man8/globus-gridftp-server.8*
 %doc %{_mandir}/man8/globus-gridftp-server-setup-chroot.8*
@@ -247,6 +297,9 @@ fi
 %{_libdir}/pkgconfig/%{name}.pc
 
 %changelog
+* Fri Oct 28 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 10.4-1.5.osg
+- Use systemd service files on EL7 (SOFTWARE-2497)
+
 * Wed Oct 19 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 10.4-1.4.osg
 - Disable SSLv3 (SOFTWARE-2471)
 
