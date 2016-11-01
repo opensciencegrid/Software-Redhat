@@ -5,7 +5,7 @@
 
 Summary:   Tests an OSG Software installation
 Name:      osg-test
-Version:   1.9.0
+Version:   1.9.1
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -40,11 +40,21 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/osgtest
 
 %changelog
+* Tue Nov 01 2016 Brian Lin <blin@cs.wisc.edu> - 1.9.1-1
+- Add check_start and check_stop functions to verify that services have started
+  and stopped, respectively.
+- Add convenience functions for retrieving condor configuration values
+- Add HTCondor-CE View tests (SOFTWARE-2479)
+- Increase service timeout checks to 10s from 5s
+
 * Fri Sep 30 2016 Brian Lin <blin@cs.wisc.edu> - 1.9.0-1
-- Add systemd support to `services` library and move all setup/teardown tests to use them (except [GridFTP](https://jira.opensciencegrid.org/browse/SOFTWARE-2470))
-- Ensure that PBS jobs cannot match to the Condor backend when simultaneously running
+- Add systemd support to services library and move all setup/teardown tests to
+  use them GridFTP
+- Ensure that PBS jobs cannot match to the Condor backend when simultaneously
+  running
 - Verify that the PBS blahp cache is populated
-- Restart the CE if it's already running to acccommodate bad packaging in htcondor-ce-2.0.8-2
+- Restart the CE if it's already running to acccommodate bad packaging in
+  htcondor-ce-2.0.8-2
 
 
 * Tue Sep 06 2016 Brian Lin <blin@cs.wisc.edu> - 1.8.4-1
