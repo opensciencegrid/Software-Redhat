@@ -2,7 +2,7 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 2.0.11
+Version: 2.1.0
 Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
@@ -343,6 +343,7 @@ fi
 
 # Web package
 %{python_sitelib}/htcondorce/web.py*
+%{python_sitelib}/htcondorce/web_utils.py*
 %{python_sitelib}/htcondorce/rrd.py*
 
 %{_datadir}/condor-ce/templates/index.html
@@ -472,6 +473,9 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Wed Nov 02 2016 Brian Lin <blin@cs.wisc.edu> - 2.1.0-1
+- Overhaul of queue generation in the CE View to support AGIS JSON (SOFTWARE-2525)
+
 * Mon Oct 24 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.11-1
 - Accept all DaemonCore options in htcondor-ce-view (SOFTWARE-2481)
 - Fix incorrect comment in htcondor-ce-pbs template config (SOFTWARE-2476)
