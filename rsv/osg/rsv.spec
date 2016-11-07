@@ -1,12 +1,21 @@
+%{!?_unitdir:  %global _unitdir /usr/lib/systemd/system}
+
+%if 0%{?rhel} >= 7
+%global systemd 1
+%else
+%global systemd 0
+%endif
+
 Name:      rsv
 Summary:   RSV Meta Package
-Version:   3.13.1
-Release:   1%{?dist}
+Version:   3.14.0
+Release:   0.1.pre1%{?dist}
 License:   Apache 2.0
 Group:     Applications/Monitoring
 URL:       https://twiki.grid.iu.edu/bin/view/MonitoringInformation/RSV
 
-Source0:   %{name}-%{version}.tar.gz
+#Source0:   %{name}-%{version}.tar.gz
+Source0:   %{name}-%{version}.pre1.tar.gz
 
 BuildArch: noarch
 
@@ -21,6 +30,10 @@ Requires: osg-configure-rsv
 Requires: grid-certificates >= 7
 Requires: voms-clients
 Requires: vo-client
+%if %systemd
+BuildRequires: /usr/bin/systemctl
+%endif
+
 
 %if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
 %{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
@@ -58,10 +71,16 @@ Requires: globus-common-progs
 # We use shar files for globus-job-run
 Requires: sharutils
 
+%if %systemd
+Requires(post):		systemd
+Requires(preun):	systemd
+Requires(postun):	systemd
+%else
 Requires(post): chkconfig
 Requires(preun): chkconfig
 # This is for /sbin/service
 Requires(preun): initscripts
+%endif
 
 # To add support for nordugrid
 %if 0%{?rhel} < 7
@@ -160,18 +179,31 @@ fi
 
 
 %post core
-/sbin/chkconfig --add rsv
+%if %systemd
+    systemctl daemon-reload &> /dev/null || :
+%else
+    /sbin/chkconfig --add rsv
+%endif
 /sbin/ldconfig
 
 %preun core
 if [ $1 = 0 ]; then
+%if %systemd
+  systemctl stop rsv &> /dev/null || :
+  systemctl disable rsv &> /dev/null || :
+%else
   /sbin/service rsv stop >/dev/null 2>&1 || :
   /sbin/chkconfig --del rsv
+%endif
 fi
 
 %postun core
 if [ "$1" -ge "1" ]; then
+%if %systemd
+  systemctl condrestart rsv &> /dev/null || :
+%else
   /sbin/service rsv restart >/dev/null 2>&1 || :
+%endif
 fi
 /sbin/ldconfig
 
@@ -210,7 +242,11 @@ fi
 %{_bindir}/rsv-control
 %{_libexecdir}/rsv/misc/
 
+%if %systemd
+%{_unitdir}/rsv.service
+%else
 %{_initrddir}/rsv
+%endif
 
 %config(noreplace) %{_sysconfdir}/rsv/consumers.conf
 %config(noreplace) %{_sysconfdir}/rsv/rsv.conf
@@ -246,6 +282,9 @@ fi
 
 
 %changelog
+* Fri Nov 04 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.14.0-0.1.pre1
+- Add systemd service file (SOFTWARE-2498)
+
 * Wed Jul 20 2016 Carl Edquist <edquist@cs.wisc.edu> - 3.13.1-1
 - Handle corrupt pickle file in html-consumer (SOFTWARE-2394)
 
