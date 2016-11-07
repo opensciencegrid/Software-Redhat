@@ -1,6 +1,6 @@
 Summary: Package for configure-osg and associated scripts
 Name: osg-configure
-Version: 1.5.0
+Version: 1.5.1
 Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
@@ -337,6 +337,9 @@ fi
 
 
 %changelog
+* Mon Nov 07 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.1-1
+- Bugfix for 1.5.0 release (SOFTWARE-2478)
+
 * Fri Oct 28 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.0-1
 - Add "Resource Entry" as alias for "Subcluster" in 30-gip.ini (SOFTWARE-2478)
 
