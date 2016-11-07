@@ -9,13 +9,12 @@
 Name:      rsv
 Summary:   RSV Meta Package
 Version:   3.14.0
-Release:   0.1.pre1%{?dist}
+Release:   1%{?dist}
 License:   Apache 2.0
 Group:     Applications/Monitoring
 URL:       https://twiki.grid.iu.edu/bin/view/MonitoringInformation/RSV
 
-#Source0:   %{name}-%{version}.tar.gz
-Source0:   %{name}-%{version}.pre1.tar.gz
+Source0:   %{name}-%{version}.tar.gz
 
 BuildArch: noarch
 
@@ -282,7 +281,7 @@ fi
 
 
 %changelog
-* Fri Nov 04 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.14.0-0.1.pre1
+* Mon Nov 07 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.14.0-1
 - Add systemd service file (SOFTWARE-2498)
 
 * Wed Jul 20 2016 Carl Edquist <edquist@cs.wisc.edu> - 3.13.1-1
