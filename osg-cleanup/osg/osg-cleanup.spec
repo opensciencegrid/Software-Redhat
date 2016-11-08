@@ -1,6 +1,13 @@
+%{!?_unitdir:  %global _unitdir /usr/lib/systemd/system}
+
+%if 0%{?rhel} >= 7
+%global systemd 1
+%else
+%global systemd 0
+%endif
 
 Name:      osg-cleanup
-Version:   1.7.2
+Version:   1.8.0
 Release:   1%{?dist}
 Summary:   OSG cleanup scripts
 
@@ -12,14 +19,20 @@ Source0:   %{name}-%{version}.tar.gz
 
 Requires: logrotate
 Requires: tmpwatch
-
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildArch: noarch
-
+%if %systemd
+BuildRequires: /usr/bin/systemctl
+Requires(post): systemd
+Requires(preun): systemd
+%else
 Requires(post): chkconfig
 Requires(preun): chkconfig
 # This is for /sbin/service
 Requires(preun): initscripts
+%endif
+
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+BuildArch: noarch
+
 
 %description
 %{summary}
@@ -30,31 +43,7 @@ Requires(preun): initscripts
 
 
 %install
-rm -fr $RPM_BUILD_ROOT
-
-# Install executables
-install -d $RPM_BUILD_ROOT%{_sbindir}/
-install -d $RPM_BUILD_ROOT%{_libexecdir}/
-install -d -m 0700 $RPM_BUILD_ROOT%{_libexecdir}/osg-cleanup/
-install -m 0700 sbin/osg-cleanup $RPM_BUILD_ROOT%{_sbindir}/
-install -m 0700 libexec/clean-globus-tmp $RPM_BUILD_ROOT%{_libexecdir}/osg-cleanup/
-install -m 0700 libexec/clean-user-dirs $RPM_BUILD_ROOT%{_libexecdir}/osg-cleanup/
-install -m 0700 libexec/clean-globus-seg $RPM_BUILD_ROOT%{_libexecdir}/osg-cleanup/
-
-# Install configuration
-install -d $RPM_BUILD_ROOT%{_sysconfdir}/osg/
-install -m 0600 etc/osg-cleanup.conf $RPM_BUILD_ROOT%{_sysconfdir}/osg/
-
-# Install cron job
-install -d $RPM_BUILD_ROOT/%{_sysconfdir}/rc.d/init.d/
-install -d $RPM_BUILD_ROOT/%{_sysconfdir}/cron.d/
-install -m 755 init.d/osg-cleanup-cron $RPM_BUILD_ROOT/%{_sysconfdir}/rc.d/init.d/
-install -m 644 cron.d/osg-cleanup $RPM_BUILD_ROOT/%{_sysconfdir}/cron.d/
-
-# Log dir and rotation
-install -d $RPM_BUILD_ROOT%{_localstatedir}/log/osg
-install -d $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d
-install -m 0644 logrotate/osg-cleanup.logrotate $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/osg-cleanup
+make install DESTDIR=$RPM_BUILD_ROOT
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -66,8 +55,16 @@ rm -rf $RPM_BUILD_ROOT
 %{_sbindir}/osg-cleanup
 %attr(700,root,root) %{_libexecdir}/osg-cleanup
 
+# init script available with systemd too (used to provide consistent behavior
+# for users)
 %{_sysconfdir}/rc.d/init.d/osg-cleanup-cron
+
+%if %systemd
+%{_unitdir}/osg-cleanup.service
+%{_unitdir}/osg-cleanup.timer
+%else
 %{_sysconfdir}/cron.d/osg-cleanup
+%endif
 
 %config(noreplace) %{_sysconfdir}/osg/osg-cleanup.conf
 %config(noreplace) %{_sysconfdir}/logrotate.d/osg-cleanup
@@ -75,12 +72,20 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_localstatedir}/log/osg
 
 %post
-/sbin/chkconfig --add osg-cleanup-cron
+%if %systemd
+    systemctl daemon-reload &> /dev/null || :
+%else
+    /sbin/chkconfig --add osg-cleanup-cron
+%endif
 
 %preun
 if [ $1 -eq 0 ] ; then
+%if %systemd
+    systemctl disable osg-cleanup.timer
+%else
     /sbin/service osg-cleanup-cron stop >/dev/null 2>&1
     /sbin/chkconfig --del osg-cleanup-cron
+%endif
 fi
 
 %postun
@@ -90,6 +95,9 @@ fi
 
 
 %changelog
+* Mon Nov 07 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 1.8.0-1
+- Add systemd service and timer files (SOFTWARE-2499)
+
 * Mon Mar 24 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.7.2-1
 - Fix references to undefined sub "log_msg" (SOFTWARE-1434)
 
