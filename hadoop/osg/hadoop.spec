@@ -1,7 +1,7 @@
 %define hadoop_version 2.0.0+1612
 %define hadoop_patched_version 2.0.0-cdh4.7.1
 %define hadoop_base_version 2.0.0
-%define hadoop_release 1.cdh4.7.1.p0.12.4%{?dist}
+%define hadoop_release 1.cdh4.7.1.p0.12.5%{?dist}
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
@@ -1089,7 +1089,10 @@ fi
 
 
 %changelog
-* Mon Nov 07 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.0+1612-1.cdh4.7.1.p0.12.3
+* Mon Nov 07 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.0+1612-1.cdh4.7.1.p0.12.5
+- Fix owner of /var/run/hadoop-yarn/ in systemd-tmpfiles configuration
+
+* Mon Nov 07 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.0+1612-1.cdh4.7.1.p0.12.4
 - Add systemd-tmpfiles configuration (SOFTWARE-2508)
 
 * Thu Mar 24 2016 Carl Edquist <edquist@cs.wisc.edu> - 2.0.0+1612-1.cdh4.7.1.p0.12.3
