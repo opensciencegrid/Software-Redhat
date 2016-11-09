@@ -1,7 +1,7 @@
 %define hadoop_version 2.0.0+1612
 %define hadoop_patched_version 2.0.0-cdh4.7.1
 %define hadoop_base_version 2.0.0
-%define hadoop_release 1.cdh4.7.1.p0.12.3%{?dist}
+%define hadoop_release 1.cdh4.7.1.p0.12.4%{?dist}
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
@@ -83,6 +83,9 @@
 # CentOS 5 does not have any dist macro
 # So I will suppose anything that is not Mageia or a SUSE will be a RHEL/CentOS/Fedora
 %if %{!?suse_version:1}0 && %{!?mgaversion:1}0
+
+# _tmpfilesdir not defined on el6 build hosts
+%{!?_tmpfilesdir: %global _tmpfilesdir %{_prefix}/lib/tmpfiles.d}
 
 # FIXME: brp-repack-jars uses unzip to expand jar files
 # Unfortunately aspectjtools-1.6.5.jar pulled by ivy contains some files and directories without any read permission
@@ -179,6 +182,10 @@ Source29: %{name}-bigtop-packaging.tar.gz
 Source30: 0.20.default
 Source31: hadoop-fuse.te
 Source32: apache-forrest-0.8.tar.gz
+Source33: hadoop-0.20-mapreduce.tmpfiles.conf
+Source34: hadoop-hdfs.tmpfiles.conf
+Source35: hadoop-mapreduce.tmpfiles.conf
+Source36: hadoop-yarn.tmpfiles.conf
 
 # patches for %{name}-bigtop-packaging.tar.gz
 Patch0: do-component-build.patch
@@ -764,6 +771,15 @@ popd
 %__install -d -m 0755 $RPM_BUILD_ROOT/%{run_mapreduce}
 %__install -d -m 0755 $RPM_BUILD_ROOT/%{run_httpfs}
 
+
+%if 0%{?rhel} >= 7
+%__install -d -m 0755 $RPM_BUILD_ROOT%_tmpfilesdir
+%__install -m 0644 %{SOURCE33} $RPM_BUILD_ROOT%_tmpfilesdir/hadoop-0.20-mapreduce.conf
+%__install -m 0644 %{SOURCE34} $RPM_BUILD_ROOT%_tmpfilesdir/hadoop-hdfs.conf
+%__install -m 0644 %{SOURCE35} $RPM_BUILD_ROOT%_tmpfilesdir/hadoop-mapreduce.conf
+%__install -m 0644 %{SOURCE36} $RPM_BUILD_ROOT%_tmpfilesdir/hadoop-yarn.conf
+%endif
+
 %pre
 getent group hadoop >/dev/null || groupadd -r hadoop
  alternatives --remove hadoop-default /usr/bin/hadoop-0.20 || true
@@ -896,6 +912,9 @@ fi
 %attr(0775,yarn,hadoop) %{log_yarn}
 %attr(0755,yarn,hadoop) %{state_yarn}
 %attr(1777,yarn,hadoop) %{state_yarn}/cache
+%if 0%{?rhel} >= 7
+%{_tmpfilesdir}/hadoop-yarn.conf
+%endif
 
 %files hdfs
 %defattr(-,root,root)
@@ -909,6 +928,9 @@ fi
 %attr(0755,hdfs,hadoop) %{state_hdfs}
 %attr(1777,hdfs,hadoop) %{state_hdfs}/cache
 %{lib_hadoop}/libexec/init-hdfs.sh
+%if 0%{?rhel} >= 7
+%{_tmpfilesdir}/hadoop-hdfs.conf
+%endif
 
 %files mapreduce
 %defattr(-,root,root)
@@ -923,7 +945,9 @@ fi
 %attr(0775,mapred,hadoop) %{log_mapreduce}
 %attr(0775,mapred,hadoop) %{state_mapreduce}
 %attr(1777,mapred,hadoop) %{state_mapreduce}/cache
-
+%if 0%{?rhel} >= 7
+%{_tmpfilesdir}/hadoop-mapreduce.conf
+%endif
 
 %files
 %defattr(-,root,root)
@@ -1054,6 +1078,9 @@ fi
 # %{man_hadoop}/man1/%{hadoop_name}.1.gz
 %attr(0775,root,hadoop) /var/run/hadoop-0.20-mapreduce
 %attr(0775,root,hadoop) /var/log/hadoop-0.20-mapreduce
+%if 0%{?rhel} >= 7
+%{_tmpfilesdir}/hadoop-0.20-mapreduce.conf
+%endif
 
 %files hdfs-fuse-selinux
 %defattr(-,root,root,-)
@@ -1062,6 +1089,9 @@ fi
 
 
 %changelog
+* Mon Nov 07 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.0+1612-1.cdh4.7.1.p0.12.3
+- Add systemd-tmpfiles configuration (SOFTWARE-2508)
+
 * Thu Mar 24 2016 Carl Edquist <edquist@cs.wisc.edu> - 2.0.0+1612-1.cdh4.7.1.p0.12.3
 - Fix FUSE client SEGV if LDAP is down (HDFS-10193, SOFTWARE-2253)
 
