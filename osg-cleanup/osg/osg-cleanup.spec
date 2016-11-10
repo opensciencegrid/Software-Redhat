@@ -7,7 +7,7 @@
 %endif
 
 Name:      osg-cleanup
-Version:   1.8.0
+Version:   1.8.1
 Release:   1%{?dist}
 Summary:   OSG cleanup scripts
 
@@ -95,6 +95,9 @@ fi
 
 
 %changelog
+* Thu Nov 10 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 1.8.1-1
+- Fix systemd timer file to persist across reboots (SOFTWARE-2499)
+
 * Mon Nov 07 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 1.8.0-1
 - Add systemd service and timer files (SOFTWARE-2499)
 
