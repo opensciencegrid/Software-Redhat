@@ -1,6 +1,6 @@
 Summary: Package for configure-osg and associated scripts
 Name: osg-configure
-Version: 1.5.1
+Version: 1.5.2
 Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
@@ -337,6 +337,9 @@ fi
 
 
 %changelog
+* Thu Nov 10 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.2-1
+- Bugfix for 1.5.1 release (SOFTWARE-2478)
+
 * Mon Nov 07 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.1-1
 - Bugfix for 1.5.0 release (SOFTWARE-2478)
 
