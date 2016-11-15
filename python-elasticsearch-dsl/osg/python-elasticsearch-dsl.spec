@@ -3,7 +3,7 @@
 
 Name:           python-%{pypi_name}
 Version:        2.0.0
-Release:        1%{?dist}
+Release:        1.1%{?dist}
 Summary:        Python client for Elasticsearch
 
 License:        ASL 
@@ -13,10 +13,18 @@ BuildArch:      noarch
  
 BuildRequires:  python2-devel
 BuildRequires:  python-setuptools
-BuildRequires:  python-mock
-BuildRequires:  pytest
-BuildRequires:  python2-pytest-cov
+#BuildRequires:  python-mock
+#BuildRequires:  pytest
+#BuildRequires:  python2-pytest-cov
 BuildRequires:  pytz
+
+%{!?__python2: %global __python2 /usr/bin/python2}
+%{!?python2_sitelib: %global python2_sitelib %(%{__python2} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
+%{!?python2_sitearch: %global python2_sitearch %(%{__python2} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
+%{!?py2_build: %global py2_build %{expand: CFLAGS="%{optflags}" %{__python2} setup.py %{?py_setup_args} build --executable="%{__python2} -s"}}
+%{!?py2_install: %global py2_install %{expand: CFLAGS="%{optflags}" %{__python2} setup.py %{?py_setup_args} install -O1 --skip-build --root %{buildroot}}}
+
+%{!?autosetup: %global autosetup %setup -q}
 
 %description
 Python client for Elasticsearch
@@ -57,5 +65,8 @@ rm -rf %{pypi_name}.egg-info
 %{python2_sitelib}/elasticsearch_dsl-%{version}-py?.?.egg-info
 
 %changelog
+* Tue Nov 15 2016 Carl Edquist <edquist@cs.wisc.edu> - 2.0.0-1.1
+- Fixes to build on el6/koji
+
 * Tue Jun 28 2016 Cloud User - 2.0.0-1
 - Initial package.
