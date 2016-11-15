@@ -3,7 +3,7 @@
 
 Name:           python-elasticsearch
 Version:        2.3.0
-Release:        3%{?dist}
+Release:        3.1%{?dist}
 Summary:        Client for Elasticsearch
 
 License:        ASL 2.0
@@ -21,6 +21,14 @@ BuildRequires:  python3-devel
 BuildRequires:  python3-setuptools
 # optional thrift not supported on Python 3
 %endif
+
+%{!?__python2: %global __python2 /usr/bin/python2}
+%{!?python2_sitelib: %global python2_sitelib %(%{__python2} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
+%{!?python2_sitearch: %global python2_sitearch %(%{__python2} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
+%{!?py2_build: %global py2_build %{expand: CFLAGS="%{optflags}" %{__python2} setup.py %{?py_setup_args} build --executable="%{__python2} -s"}}
+%{!?py2_install: %global py2_install %{expand: CFLAGS="%{optflags}" %{__python2} setup.py %{?py_setup_args} install -O1 --skip-build --root %{buildroot}}}
+
+%{!?autosetup: %global autosetup %setup -q}
 
 %description
 Low level client for Elasticsearch. It's goal is to provide common ground
@@ -77,7 +85,7 @@ rm -fr %{tarball_name}.egg-info
 %{python2_sitelib}/%{tarball_name}
 %{python2_sitelib}/%{tarball_name}-%{version}-py2.?.egg-info
 %doc README
-%license LICENSE
+%doc LICENSE
 
 %if %{with python3}
 %files -n python3-elasticsearch
@@ -88,7 +96,10 @@ rm -fr %{tarball_name}.egg-info
 %endif
 
 %changelog
-* Wed Jun 25 2016 Orion Poplawski <orion@cora.nwra.com> - 2.3.0-2
+* Tue Nov 15 2016 Carl Edquist <edquist@cs.wisc.edu> - 2.3.0-3.1
+- Fixes to build in el6+el7/koji
+
+* Sat Jun 25 2016 Orion Poplawski <orion@cora.nwra.com> - 2.3.0-2
 - Drop %%py3dir and use new macros
 
 * Wed Jun 08 2016 Piotr Popieluch <piotr1212@gmail.com> - 2.3.0-1
