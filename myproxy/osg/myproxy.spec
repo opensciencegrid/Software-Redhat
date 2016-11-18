@@ -14,7 +14,7 @@
 
 Name:           myproxy
 Version:        6.1.18
-Release:        1.3%{?dist}
+Release:        1.4%{?dist}
 Summary:        Manage X.509 Public Key Infrastructure (PKI) security credentials
 
 Group:          Applications/Internet
@@ -420,6 +420,9 @@ fi
 %{?_licensedir: %license LICENSE*}
 
 %changelog
+* Fri Nov 18 2016 Tim Cartwright <cat@cs.wisc.edu> - 6.1.18-1.4
+- Declare ownership of /var/run/myproxy-server, managed by systemd tmpfiles
+
 * Thu Oct 20 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 6.1.18-1.3
 - Skip .rpmsave and .rpmnew files in /etc/myproxy.d
 - Source sysconfig files on EL7 (SOFTWARE-2471)
