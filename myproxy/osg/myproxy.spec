@@ -381,6 +381,8 @@ fi
 %{_tmpfilesdir}/myproxy-server.conf
 # Startup script used on EL7 to source sysconfig files (SOFTWARE-2471)
 %{_libexecdir}/myproxy-server-start
+# Own the runtime directory, which is managed by tmpfiles
+%ghost %{_localstatedir}/run/myproxy-server
 %endif
 %config(noreplace) %{_sysconfdir}/myproxy-server.config
 # myproxy-server wants exactly 700 permission on its data
