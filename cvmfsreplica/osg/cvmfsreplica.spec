@@ -21,6 +21,24 @@ Url: https://github.com/jose-caballero/cvmfsreplica
 %description
 This package contains cvmfsreplica
 
+
+%if 0%{?rhel} >= 7 || 0%{?centos} == 7
+%define systemd 1
+Requires(post): systemd
+Requires(preun): systemd
+%else
+%define systemd 0
+Requires(post): chkconfig
+Requires(preun): chkconfig
+# This is for /sbin/service
+Requires(preun): initscripts
+%endif
+
+# _unitdir, _tmpfilesdir not defined on el6 build hosts
+%{!?_unitdir: %global _unitdir %{_prefix}/lib/systemd/system}
+%{!?_tmpfilesdir: %global _tmpfilesdir %{_prefix}/lib/tmpfiles.d}
+
+
 %prep
 %setup -n %{name}-%{unmangled_version}
 
@@ -43,14 +61,28 @@ sed -i '/\/etc\/sysconfig\/cvmfsreplica/ s/^/%config(noreplace) /'  INSTALLED_FI
 # NOTE: this may be a temporary solution
 #
 ###################################################################
-%if 0%{?redhat} == 7 || 0%{?centos} == 7
-install -m 0644 etc/cvmfsreplica.service /usr/lib/systemd/system/
-ln -s /usr/lib/systemd/system/cvmfsreplica.service /etc/systemd/system/multi-user.target.wants/cvmfsreplica.service
+#%if 0%{?redhat} == 7 || 0%{?centos} == 7
+#install -m 0644 etc/cvmfsreplica.service /usr/lib/systemd/system/
+#ln -s /usr/lib/systemd/system/cvmfsreplica.service /etc/systemd/system/multi-user.target.wants/cvmfsreplica.service
+#install -m 0755 etc/cvmfsreplica.start /usr/bin/cvmfsreplica.start
+#install -m 0755 etc/cvmfsreplica.stop /usr/bin/cvmfsreplica.stop
+#%else
+#install -m 0644 etc/cvmfsreplica /etc/init.d/
+#%endif
+
+
+%if %systemd
+# Copy systemd files into place
+install -d $RPM_BUILD_ROOT%{_unitdir}
+install -m 0644 etc/cvmfsreplica.service $RPM_BUILD_ROOT%{_unitdir}/
 install -m 0755 etc/cvmfsreplica.start /usr/bin/cvmfsreplica.start
 install -m 0755 etc/cvmfsreplica.stop /usr/bin/cvmfsreplica.stop
 %else
-install -m 0644 etc/cvmfsreplica /etc/init.d/
+# Copy init script into place
+install -d $RPM_BUILD_ROOT%{_initrddir}
+install -m 0755 etc/cvmfsreplica $RPM_BUILD_ROOT%{_initrddir}/cvmfsreplica
 %endif
+
 ###################################################################
 
 
@@ -65,3 +97,18 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -f INSTALLED_FILES
 %defattr(-,root,root)
+
+%if %systemd
+%{_unitdir}/cvmfsreplica.service
+%else
+%{_initrddir}/cvmfsreplica
+%endif
+
+
+%post
+%if %systemd
+systemctl enable cvmfsreplica
+%else
+/sbin/chkconfig --add cvmfsreplica
+%endif
+
