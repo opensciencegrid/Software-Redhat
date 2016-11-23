@@ -1,7 +1,7 @@
 %define name cvmfsreplica
-%define version 0.9.2
-%define unmangled_version 0.9.2
-%define release 1
+%define version 0.9.3
+%define unmangled_version 0.9.3
+%define release 2
 
 Summary: cvmfsreplica package
 Name: %{name}
@@ -33,6 +33,29 @@ python setup.py install -O1 --root=$RPM_BUILD_ROOT --record=INSTALLED_FILES
 sed -i '/\/etc\/cvmfsreplica\/.*\.conf/ s/^/%config(noreplace) /'  INSTALLED_FILES
 sed -i '/\/etc\/logrotate\.d\/cvmfsreplica/ s/^/%config(noreplace) /'  INSTALLED_FILES
 sed -i '/\/etc\/sysconfig\/cvmfsreplica/ s/^/%config(noreplace) /'  INSTALLED_FILES
+
+###################################################################
+# to deal with the init scripts depending on the platform
+#
+# for this to work, the setup.py file can not include them
+# in rpm_data_files
+#
+# NOTE: this may be a temporary solution
+#
+###################################################################
+%if 0%{?redhat} == 7 || 0%{?centos} == 7
+install -m 0644 etc/cvmfsreplica.service /usr/lib/systemd/system/
+ln -s /usr/lib/systemd/system/cvmfsreplica.service /etc/systemd/system/multi-user.target.wants/cvmfsreplica.service
+install -m 0755 etc/cvmfsreplica.start /usr/bin/cvmfsreplica.start
+install -m 0755 etc/cvmfsreplica.stop /usr/bin/cvmfsreplica.stop
+%else
+install -m 0644 etc/cvmfsreplica /etc/init.d/
+%endif
+###################################################################
+
+
+
+
 
 mkdir -pm0755 $RPM_BUILD_ROOT%{_var}/log/cvmfsreplica
 
