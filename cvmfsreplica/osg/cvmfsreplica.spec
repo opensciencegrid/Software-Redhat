@@ -100,11 +100,11 @@ rm -rf $RPM_BUILD_ROOT
 
 %if %systemd
 %{_unitdir}/cvmfsreplica.service
+%{_bindir}/cvmfsreplica.start
+%{_bindir}/cvmfsreplica.stop
 %else
 %{_initrddir}/cvmfsreplica
 %endif
-%{_bindir}/cvmfsreplica.start
-%{_bindir}/cvmfsreplica.stop
 
 
 
