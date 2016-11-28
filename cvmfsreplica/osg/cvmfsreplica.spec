@@ -75,8 +75,9 @@ sed -i '/\/etc\/sysconfig\/cvmfsreplica/ s/^/%config(noreplace) /'  INSTALLED_FI
 # Copy systemd files into place
 install -d $RPM_BUILD_ROOT%{_unitdir}
 install -m 0644 etc/cvmfsreplica.service $RPM_BUILD_ROOT%{_unitdir}/
-install -m 0755 etc/cvmfsreplica.start $RPM_BUILD_ROOT%{_bindir}/cvmfsreplica.start
-install -m 0755 etc/cvmfsreplica.stop $RPM_BUILD_ROOT%{_bindir}/cvmfsreplica.stop
+mkdir -p $RPM_BUILD_ROOT%{_sbindir}/
+install -m 0755 etc/cvmfsreplica.start $RPM_BUILD_ROOT%{_sbindir}/cvmfsreplica.start
+install -m 0755 etc/cvmfsreplica.stop $RPM_BUILD_ROOT%{_sbindir}/cvmfsreplica.stop
 %else
 # Copy init script into place
 install -d $RPM_BUILD_ROOT%{_initrddir}
@@ -100,8 +101,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %if %systemd
 %{_unitdir}/cvmfsreplica.service
-%{_bindir}/cvmfsreplica.start
-%{_bindir}/cvmfsreplica.stop
+%{_sbindir}/cvmfsreplica.start
+%{_sbindir}/cvmfsreplica.stop
 %else
 %{_initrddir}/cvmfsreplica
 %endif
