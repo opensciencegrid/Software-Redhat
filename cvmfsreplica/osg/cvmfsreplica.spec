@@ -1,7 +1,7 @@
 %define name cvmfsreplica
 %define version 0.9.3
 %define unmangled_version 0.9.3
-%define release 2
+%define release 3
 
 Summary: cvmfsreplica package
 Name: %{name}
