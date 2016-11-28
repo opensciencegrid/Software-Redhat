@@ -1,6 +1,6 @@
 Summary: Package for configure-osg and associated scripts
 Name: osg-configure
-Version: 1.5.2
+Version: 1.5.3
 Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
@@ -337,6 +337,9 @@ fi
 
 
 %changelog
+* Mon Nov 28 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.3-1
+- Quote settings written to Gratia probe configs (SOFTWARE-2311)
+
 * Thu Nov 10 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.2-1
 - Bugfix for 1.5.1 release (SOFTWARE-2478)
 
