@@ -1,6 +1,6 @@
 Summary: OASIS GOC package
 Name: oasis-goc
-Version: 2.1.9
+Version: 2.1.10
 Release: 1%{?dist} 
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
@@ -57,11 +57,21 @@ This package contains files for oasis-replica.opensciencegrid.org
 
 %files replica
 /etc/cron.d/cvmfs
+/etc/squid/oasiscustomize.sh
 /etc/httpd/conf.d/cvmfs.conf
 /etc/iptables.d/60-local-cvmfs
 /etc/logrotate.d/cvmfs
+/etc/sysconfig/frontier-squid
 /var/www/html/robots.txt
 %defattr(-,root,root)
+
+%post replica
+# redirect customize.sh to oasiscustomize.sh; we can't directly install
+#  customize.sh because that's made by the frontier-squid package.
+(
+echo "#!/bin/bash"
+echo ". /etc/squid/oasiscustomize.sh"
+) >/etc/squid/customize.sh
 
 
 %package login
@@ -77,6 +87,10 @@ This package contains files for oasis-login.opensciencegrid.org
 
 
 %changelog
+* Wed Dec 01 2016 Dave Dykstra <dwd@fnal.gov> - 2.1.10-1
+- Move /etc/sysconfig/frontier-squid and /etc/squid/customize.sh into
+  oasis-goc-replica
+
 * Wed May 18 2016 Dave Dykstra <dwd@fnal.gov> - 2.1.9-1
 - Move /etc/cron.d/cvmfs into oasis-goc-replica and /etc/cron.d/oasis into
   oasis-goc-zero.
