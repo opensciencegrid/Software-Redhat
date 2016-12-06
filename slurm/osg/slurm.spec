@@ -88,7 +88,7 @@
 
 Name:    slurm
 Version: 15.08.9
-Release: 1.1%{?dist}
+Release: 1.2%{?dist}
 
 Summary: Slurm Workload Manager
 
@@ -312,6 +312,7 @@ database changes to slurmctld daemons on each cluster
 Summary: Slurm SQL support
 Group: System Environment/Base
 %description sql
+Requires: mysql-server
 Slurm SQL support. Contains interfaces to MySQL.
 
 %package plugins
@@ -458,6 +459,10 @@ Gives the ability for Slurm to use Berkeley Lab Checkpoint/Restart
 rm -rf "$RPM_BUILD_ROOT"
 DESTDIR="$RPM_BUILD_ROOT" %__make install
 DESTDIR="$RPM_BUILD_ROOT" %__make install-contrib
+
+# Directories necessary for slurm files
+install -m 0755 -d -p $RPM_BUILD_ROOT%_var/log/slurm
+install -m 0755 -d -p $RPM_BUILD_ROOT%_var/spool/slurmd
 
 %ifos aix5.3
    mv ${RPM_BUILD_ROOT}%{_bindir}/srun ${RPM_BUILD_ROOT}%{_sbindir}
@@ -801,6 +806,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man8/slurmd.*
 %{_mandir}/man8/slurmstepd*
 %{_mandir}/man8/spank*
+%attr(-,slurm,slurm) %dir %_var/log/slurm
+%attr(-,slurm,slurm) %dir %_var/spool/slurmd
 %dir %{_sysconfdir}
 %dir %{_libdir}/slurm/src
 %dir /etc/ld.so.conf.d
@@ -1062,16 +1069,11 @@ rm -rf $RPM_BUILD_ROOT
 #############################################################################
 
 %pre
-#if [ -x /etc/init.d/slurm ]; then
-#    if /etc/init.d/slurm status | grep -q running; then
-#        /etc/init.d/slurm stop
-#    fi
-#fi
-#if [ -x /etc/init.d/slurmdbd ]; then
-#    if /etc/init.d/slurmdbd status | grep -q running; then
-#        /etc/init.d/slurmdbd stop
-#    fi
-#fi
+getent group slurm >/dev/null || groupadd -r slurm
+getent passwd slurm >/dev/null || \
+  useradd -r -g slurm -d %_var/lib/slurm -s /sbin/nologin \
+    -c "Owner of slurm daemons" slurm
+exit 0
 
 %post
 if [ -x /sbin/ldconfig ]; then
@@ -1129,6 +1131,9 @@ fi
 
 
 %changelog
+* Tue Nov 29 2016 Brian Lin <blin@cs.wisc.edu> - 15.08.9-1.2
+- Create slurm user and directories in /var
+
 * Mon Sep 26 2016 Carl Edquist <edquist@cs.wisc.edu> - 15.08.9-1.1
 - Enable mysql and openssl build flags by default
 
