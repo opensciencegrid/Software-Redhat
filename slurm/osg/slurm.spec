@@ -88,7 +88,7 @@
 
 Name:    slurm
 Version: 15.08.9
-Release: 1.2%{?dist}
+Release: 1.3%{?dist}
 
 Summary: Slurm Workload Manager
 
@@ -241,6 +241,22 @@ scheduling and accounting modules
 %define _perlman3dir %{_prefix}%{_perlman3}
 %define _perlarchlibdir %{_prefix}%{_perlarchlib}
 %define _php_extdir %(php-config --extension-dir 2>/dev/null || echo %{_libdir}/php5)
+
+# _unitdir,_tmpfilesdir not defined on el6 build hosts
+%{!?_unitdir: %global _unitdir %{_prefix}/lib/systemd/system}
+%{!?_tmpfilesdir: %global _tmpfilesdir %{_prefix}/lib/tmpfiles.d}
+
+%if 0%{?rhel} >= 7
+Requires(post): systemd
+Requires(preun): systemd
+%define systemd 1
+%else
+Requires(post): chkconfig
+Requires(preun): chkconfig
+# This is for /sbin/service
+Requires(preun): initscripts
+%define systemd 0
+%endif
 
 %package perlapi
 Summary: Perl API to Slurm
@@ -467,18 +483,17 @@ install -m 0755 -d -p $RPM_BUILD_ROOT%_var/spool/slurmd
 %ifos aix5.3
    mv ${RPM_BUILD_ROOT}%{_bindir}/srun ${RPM_BUILD_ROOT}%{_sbindir}
 %else
-   if [ -d /etc/init.d ]; then
-      install -D -m755 etc/init.d.slurm    $RPM_BUILD_ROOT/etc/init.d/slurm
-      install -D -m755 etc/init.d.slurmdbd $RPM_BUILD_ROOT/etc/init.d/slurmdbd
-      mkdir -p "$RPM_BUILD_ROOT/usr/sbin"
-      ln -s ../../etc/init.d/slurm    $RPM_BUILD_ROOT/usr/sbin/rcslurm
-      ln -s ../../etc/init.d/slurmdbd $RPM_BUILD_ROOT/usr/sbin/rcslurmdbd
-   fi
-   if [ -d /usr/lib/systemd/system ]; then
-      install -D -m644 etc/slurmctld.service $RPM_BUILD_ROOT/usr/lib/systemd/system/slurmctld.service
-      install -D -m644 etc/slurmd.service    $RPM_BUILD_ROOT/usr/lib/systemd/system/slurmd.service
-      install -D -m644 etc/slurmdbd.service  $RPM_BUILD_ROOT/usr/lib/systemd/system/slurmdbd.service
-   fi
+%if ! %systemd
+install -D -m755 etc/init.d.slurm    $RPM_BUILD_ROOT/etc/init.d/slurm
+install -D -m755 etc/init.d.slurmdbd $RPM_BUILD_ROOT/etc/init.d/slurmdbd
+mkdir -p "$RPM_BUILD_ROOT/usr/sbin"
+ln -s ../../etc/init.d/slurm    $RPM_BUILD_ROOT/usr/sbin/rcslurm
+ln -s ../../etc/init.d/slurmdbd $RPM_BUILD_ROOT/usr/sbin/rcslurmdbd
+%else
+install -D -m644 etc/slurmctld.service $RPM_BUILD_ROOT/%_unitdir/slurmctld.service
+install -D -m644 etc/slurmd.service    $RPM_BUILD_ROOT/%_unitdir/slurmd.service
+install -D -m644 etc/slurmdbd.service  $RPM_BUILD_ROOT/%_unitdir/slurmdbd.service
+%endif   
 %endif
 
 # Do not package Slurm's version of libpmi on Cray systems.
@@ -614,10 +629,10 @@ test -f $RPM_BUILD_ROOT/etc/init.d/slurm			&&
   echo /etc/init.d/slurm				>> $LIST
 test -f $RPM_BUILD_ROOT/usr/sbin/rcslurm			&&
   echo /usr/sbin/rcslurm				>> $LIST
-test -f $RPM_BUILD_ROOT/usr/lib/systemd/system/slurmctld.service	&&
-  echo /usr/lib/systemd/system/slurmctld.service		>> $LIST
-test -f $RPM_BUILD_ROOT/usr/lib/systemd/system/slurmd.service	&&
-  echo /usr/lib/systemd/system/slurmd.service		>> $LIST
+test -f $RPM_BUILD_ROOT/%_unitdir/slurmctld.service	&&
+  echo %_unitdir/slurmctld.service		>> $LIST
+test -f $RPM_BUILD_ROOT/%_unitdir/slurmd.service	&&
+  echo %_unitdir/slurmd.service		>> $LIST
 test -f $RPM_BUILD_ROOT/%{_bindir}/netloc_to_topology		&&
   echo %{_bindir}/netloc_to_topology			>> $LIST
 
@@ -691,8 +706,8 @@ test -f $RPM_BUILD_ROOT/etc/init.d/slurmdbd			&&
   echo /etc/init.d/slurmdbd				>> $LIST
 test -f $RPM_BUILD_ROOT/usr/sbin/rcslurmdbd			&&
   echo /usr/sbin/rcslurmdbd				>> $LIST
-test -f $RPM_BUILD_ROOT/usr/lib/systemd/system/slurmdbd.service	&&
-  echo /usr/lib/systemd/system/slurmdbd.service		>> $LIST
+test -f $RPM_BUILD_ROOT/%_unitdir/slurmdbd.service	&&
+  echo %_unitdir/slurmdbd.service		>> $LIST
 
 LIST=./sql.files
 touch $LIST
@@ -1075,13 +1090,24 @@ getent passwd slurm >/dev/null || \
     -c "Owner of slurm daemons" slurm
 exit 0
 
+# Grabbed from htcondor-ce.spec
+%if %systemd
+%define add_service() (/bin/systemctl daemon-reload >/dev/null 2>&1 || :)
+%define remove_service() (/bin/systemctl stop %1 > /dev/null 2>&1 || :; \
+                          /bin/systemctl disable %1 > /dev/null 2>&1 || :)
+%define restart_service() (/bin/systemctl condrestart %1 >/dev/null 2>&1 || :)
+%else
+%define add_service() (/sbin/chkconfig --add %1 || :)
+%define remove_service() (/sbin/service %1 stop >/dev/null 2>&1 || :; \
+                                       /sbin/chkconfig --del %1 || :)
+%define restart_service() (/sbin/service %1 condrestart >/dev/null 2>&1 || :)
+%endif
+
 %post
 if [ -x /sbin/ldconfig ]; then
     /sbin/ldconfig %{_libdir}
-    if [ $1 = 1 ]; then
-	[ -x /sbin/chkconfig ] && /sbin/chkconfig --add slurm
-    fi
 fi
+%add_service slurm
 
 %if %{slurm_with bluegene}
 %post bluegene
@@ -1090,29 +1116,22 @@ if [ -x /sbin/ldconfig ]; then
 fi
 %endif
 
+%post slurmdbd
+%add_service slurmdbd
+
 %preun
 if [ "$1" -eq 0 ]; then
-    if [ -x /etc/init.d/slurm ]; then
-	[ -x /sbin/chkconfig ] && /sbin/chkconfig --del slurm
-	if /etc/init.d/slurm status | grep -q running; then
-	    /etc/init.d/slurm stop
-	fi
-    fi
+    %remove_service slurm
 fi
 
 %preun slurmdbd
 if [ "$1" -eq 0 ]; then
-    if [ -x /etc/init.d/slurmdbd ]; then
-	[ -x /sbin/chkconfig ] && /sbin/chkconfig --del slurmdbd
-	if /etc/init.d/slurmdbd status | grep -q running; then
-	    /etc/init.d/slurmdbd stop
-	fi
-    fi
+    %remove_service slurmdbd
 fi
 
 %postun
-if [ "$1" -gt 1 ]; then
-    /etc/init.d/slurm condrestart
+if [ "$1" -ge 1 ]; then
+    %restart_service slurm
 elif [ "$1" -eq 0 ]; then
     if [ -x /sbin/ldconfig ]; then
 	/sbin/ldconfig %{_libdir}
@@ -1123,14 +1142,17 @@ fi
 %endif
 
 %postun slurmdbd
-if [ "$1" -gt 1 ]; then
-    /etc/init.d/slurmdbd condrestart
+if [ "$1" -ge 1 ]; then
+    %restart_service slurmdbd
 fi
 
 #############################################################################
 
 
 %changelog
+* Tue Nov 29 2016 Brian Lin <blin@cs.wisc.edu> - 15.08.9-1.3
+- Add EL7 systemd support
+
 * Tue Nov 29 2016 Brian Lin <blin@cs.wisc.edu> - 15.08.9-1.2
 - Create slurm user and directories in /var
 
