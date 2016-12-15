@@ -2,7 +2,7 @@ Name:               gratia-probe
 Summary:            Gratia OSG accounting system probes
 Group:              Applications/System
 Version:            1.17.0
-Release:            2.6%{?dist}
+Release:            2.7%{?dist}
 
 License:            GPL
 Group:              Applications/System
@@ -79,9 +79,13 @@ Patch2: default-CondorCEHistoryFolder.patch
 # https://jira.opensciencegrid.org/browse/SOFTWARE-2484
 Patch3: pbs-allprocs.patch
 
-# supress locally run payload jobs (for CHTC)
+# suppress locally run payload jobs (for CHTC)
 # https://jira.opensciencegrid.org/browse/SOFTWARE-2532
 Patch4: sw2532_suppress_local_payloads.patch
+
+# Populate Gratia record 'Host Description' for local jobs
+# https://jira.opensciencegrid.org/browse/SOFTWARE-2551
+Patch5: sw2551_set_host_desc.patch
 
 ########################################################################
 
@@ -129,6 +133,7 @@ Prefix: /etc
 %patch3 -p1
 %endif
 %patch4 -p1
+%patch5 -p1
 
 %build
 %if 0%{?rhel} == 7 || %_arch != noarch
@@ -1044,6 +1049,9 @@ The dCache storagegroup probe for the Gratia OSG accounting system.
 %endif # noarch
 
 %changelog
+* Thu Dec 15 2016 Brian Lin <blin@cs.wisc.edu> - 1.17.0-2.7
+- Populate Gratia record Host Description for local jobs (SOFTWARE-2551)
+
 * Tue Nov 15 2016 Brian Lin <blin@cs.wisc.edu> - 1.17.0-2.6
 - Suppress locally run payload job records (SOFTWARE-2532)
 

@@ -1,0 +1,80 @@
+From 7cfcf61bb1ee2a4a5947cf369f95a4cf4576273d Mon Sep 17 00:00:00 2001
+From: Brian Lin <brianhlin@gmail.com>
+Date: Wed, 30 Nov 2016 16:56:25 -0600
+Subject: [PATCH] Set the host description to the ProbeConfig SiteName for
+ local jobs
+
+In the case where a VO needs to account for locally run
+jobs (i.e. SuppressGridLocalRecords="0"), we need to set the host
+description to an OIM-registered name. In our documentation we tell
+our users to set the SiteName in their ProbeConfig to the Resource
+Name for their submit host so we use that.
+---
+ condor/99_gratia-gwms.conf | 27 ++++++++++++++++-----------
+ condor/condor_meter        |  9 ++++++---
+ 2 files changed, 22 insertions(+), 14 deletions(-)
+
+diff --git a/condor/99_gratia-gwms.conf b/condor/99_gratia-gwms.conf
+index 3fb9afa..ab7aaa2 100644
+--- a/condor/99_gratia-gwms.conf
++++ b/condor/99_gratia-gwms.conf
+@@ -1,18 +1,23 @@
+ #
+-# This file specifies the classads that need to be included in each job for
+-# proper accounting of GlideinWMS jobs.  If you experience any problems with
+-# JOBGLIDEIN_ResourceName, or the gratia probe, please email
+-# osg-software@opensciencegrid.org
++# This file specifies the classads that need to be included in each
++# job for proper accounting of GlideinWMS jobs.  If you experience any
++# problems with JOBGLIDEIN_ResourceName, or the gratia probe, please
++# email osg-software@opensciencegrid.org
+ #
+ 
+-# The JOBGLIDEIN_ResourceName is a macro to extract where the job ran.  It is
+-# a priority list of attributes in the startd's classad:
+-# 1 - GLIDEIN_ResourceName - Using in the OSG's GlideinWMS Factories
+-# 2 - GLIDEIN_Site - Used for all GlideinWMS instances to uniquely identify a site
+-# If neither are defined, it means that the job ran locally and these records can
+-# be suppressed by setting 'SuppressGridLocalRecords="1"' in the ProbeConfig.
++# The JOBGLIDEIN_ResourceName is a macro to extract where the job
++# ran. When a job matches to a slot, the expression gets evaluated and
++# its value is placed in MATCH_EXPR_JOBGLIDEIN_ResourceName. The order
++# of evaluation for the startd attributes is as follows:
++# 1 - GLIDEIN_ResourceName - Used in the OSG's GlideinWMS Factories
++# 2 - GLIDEIN_Site - Used for all GlideinWMS instances to uniquely
++#     identify a site
++# If neither are defined, it means that the job ran locally and these
++# records can be suppressed by setting 'SuppressGridLocalRecords="1"'
++# in the ProbeConfig.
+ JOBGLIDEIN_ResourceName="$$([IfThenElse(IsUndefined(TARGET.GLIDEIN_ResourceName), IfThenElse(IsUndefined(TARGET.GLIDEIN_Site), \"Local Job\", TARGET.GLIDEIN_Site), TARGET.GLIDEIN_ResourceName)])"
+ 
+-# Add the JOBGLIDEIN_ResourceName to every job that is submitted from this host
++# Add the JOBGLIDEIN_ResourceName to every job that is submitted from
++# this host
+ SUBMIT_EXPRS = $(SUBMIT_EXPRS) JOBGLIDEIN_ResourceName   
+ 
+diff --git a/condor/condor_meter b/condor/condor_meter
+index 27144ca..8591eb4 100755
+--- a/condor/condor_meter
++++ b/condor/condor_meter
+@@ -551,11 +551,14 @@ def determine_host_description(classad):
+ 
+     If there's no special host description, this returns None.
+     """
+-    if 'MATCH_EXP_JOBGLIDEIN_ResourceName' not in classad:
++    try:
++        if classad['MATCH_EXP_JOBGLIDEIN_ResourceName'] == 'Local Job':
++            host_descr = GratiaCore.Config.get_SiteName()
++        else:
++            host_descr = classad['MATCH_EXP_JOBGLIDEIN_ResourceName']
++    except KeyError:
+         return None
+ 
+-    host_descr = classad['MATCH_EXP_JOBGLIDEIN_ResourceName']
+-
+     # Check first for SE-based matching.
+     if ('DESIRED_SEs' not in classad) or ('MATCH_GLIDEIN_SEs' not in classad):
+         return host_descr
+-- 
+2.5.5
+
