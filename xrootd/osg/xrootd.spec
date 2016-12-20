@@ -16,7 +16,7 @@
 Name:		xrootd
 Epoch:		1
 Version:	4.5.0
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Extended ROOT file server
 
 Group:		System Environment/Daemons
@@ -616,8 +616,16 @@ fi
 %doc %{_pkgdocdir}
 
 %changelog
-* Fri Dec 15 2016 Edgar Fajardo <emfajard@ucsd.edu> - 1:4.6.0-1
+* Tue Dec 20 2016 Edgar Fajardo <emfajard@ucsd.edu> - 1:4.5.0-2
+- Updated Changelog SOFTWARE-2549
+
+* Fri Dec 15 2016 Edgar Fajardo <emfajard@ucsd.edu> - 1:4.5.0-1
 - Update to 4.5.0 SOFTWARE-2549
+- Allow specifying a different timeout for null cached entries
+- Implement request signing
+- Add ZIP extracting capability to xrdcp
+- Include the release number in client Login request cgi.
+- Add support for spaces in file names for mv operation.
 
 * Fri Jul 29 2016 Mattias Ellert <mattias.ellert@physics.uu.se> - 1:4.4.0-1
 - Update to version 4.4.0
