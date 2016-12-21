@@ -1,5 +1,7 @@
 %{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
 
+%global _hardened_build 1
+
 %if %{?rhel}%{!?rhel:0} >= 7
 %global use_systemd 1
 %{!?_unitdir: %global _unitdir /usr/lib/systemd/system}
@@ -7,11 +9,9 @@
 %global use_systemd 0
 %endif
 
-%global _hardened_build 1
-
 Name:		voms
-Version:	2.0.12
-Release:	3.3%{?dist}
+Version:	2.0.14
+Release:	1.1%{?dist}
 Summary:	Virtual Organization Membership Service
 
 Group:		System Environment/Libraries
@@ -20,6 +20,7 @@ URL:		https://wiki.italiangrid.it/VOMS
 Source0:	https://github.com/italiangrid/%{name}/archive/v%{version}.tar.gz
 #		Post-install setup instructions:
 Source1:	%{name}.INSTALL
+#		systemd unit file:
 Source2:	%{name}@.service
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -31,6 +32,9 @@ BuildRequires:	pkgconfig
 BuildRequires:	libxslt
 BuildRequires:	docbook-style-xsl
 BuildRequires:	doxygen
+%if %{use_systemd}
+BuildRequires:	systemd-units
+%endif
 
 # for el7/mariadb
 Patch0: mariadb-innodb.patch
@@ -102,10 +106,16 @@ Group:		Applications/Internet
 Requires:	%{name}%{?_isa} = %{version}-%{release}
 
 Requires(pre):		shadow-utils
+%if %{use_systemd}
+Requires(post):		systemd-units
+Requires(preun):	systemd-units
+Requires(postun):	systemd-units
+%else
 Requires(post):		chkconfig
 Requires(preun):	chkconfig
 Requires(preun):	initscripts
 Requires(postun):	initscripts
+%endif
 
 %description server
 The Virtual Organization Membership Service (VOMS) is an attribute authority
@@ -128,7 +138,7 @@ This package provides the VOMS service.
 
 ./autogen.sh
 
-install -m 644 %{SOURCE1} README.Fedora
+install -m 644 -p %{SOURCE1} README.Fedora
 
 %build
 %configure --disable-static --enable-docs --disable-parser-gen
@@ -143,19 +153,17 @@ make install DESTDIR=%{buildroot}
 rm %{buildroot}%{_libdir}/*.la
 
 %if %{use_systemd}
-# Remove init script entirely
-rm -f %{buildroot}%{_initrddir}/%{name}
+mkdir -p %{buildroot}%{_unitdir}
+install -m 644 -p %SOURCE2 %{buildroot}%{_unitdir}
+rm %{buildroot}%{_initrddir}/%{name}
+rm %{buildroot}%{_sysconfdir}/sysconfig/%{name}
 %else
 # Turn off default enabling of the service
-mkdir -p %{buildroot}%{_initrddir}
 sed -e 's/\(chkconfig: \)\w*/\1-/' \
     -e '/Default-Start/d' \
     -e 's/\(Default-Stop:\s*\).*/\10 1 2 3 4 5 6/' \
     -i %{buildroot}%{_initrddir}/%{name}
 %endif
-
-mkdir -p %{buildroot}%{_sysconfdir}/sysconfig
-echo VOMS_USER=voms > %{buildroot}%{_sysconfdir}/sysconfig/%{name}
 
 mkdir -p %{buildroot}%{_pkgdocdir}
 install -m 644 -p AUTHORS README.md %{buildroot}%{_pkgdocdir}
@@ -179,11 +187,6 @@ for b in voms-proxy-init voms-proxy-info voms-proxy-destroy; do
   touch %{buildroot}%{_mandir}/man1/${b}.1
 done
 
-%if %{use_systemd}
-mkdir -p %{buildroot}%{_unitdir}
-install -m 644 -p %{SOURCE2} %{buildroot}%{_unitdir}
-%endif
-
 %clean
 rm -rf %{buildroot}
 
@@ -201,49 +204,55 @@ fi
 getent group %{name} >/dev/null || groupadd -r %{name}
 getent passwd %{name} >/dev/null || useradd -r -g %{name} \
     -d %{_sysconfdir}/%{name} -s /sbin/nologin -c "VOMS Server Account" %{name}
-exit 0
+
+%if %{use_systemd}
+# Remove old init config when systemd is used
+/sbin/service voms stop >/dev/null 2>&1 || :
+/sbin/chkconfig --del voms >/dev/null 2>&1 || :
+%endif
+
+%if %{use_systemd}
+
+%post server
+if [ $1 -eq 1 ] ; then
+    systemctl daemon-reload >/dev/null 2>&1 || :
+fi
+
+%preun server
+if [ $1 -eq 0 ] ; then
+    for INSTANCE in `systemctl | grep %{name}@ | awk '{print $1;}'`; do
+	systemctl --no-reload disable $INSTANCE > /dev/null 2>&1 || :
+	systemctl stop $INSTANCE > /dev/null 2>&1 || :
+    done
+fi
+
+%postun server
+if [ $1 -ge 1 ] ; then
+    systemctl daemon-reload >/dev/null 2>&1 || :
+    for INSTANCE in `systemctl | grep %{name}@ | awk '{print $1;}'`; do
+	systemctl try-restart $INSTANCE >/dev/null 2>&1 || :
+    done
+fi
+
+%else
 
 %post server
 if [ $1 = 1 ]; then
-    %if %{use_systemd}
-    systemctl daemon-reload >/dev/null 2>&1 || :
-    %else
     /sbin/chkconfig --add %{name}
-    %endif
 fi
 
 %preun server
 if [ $1 = 0 ]; then
-    %if %{use_systemd}
-
-    for INSTANCE in `systemctl | grep %{name}@ | awk '{print $1}'`; do
-        systemctl --no-reload disable $INSTANCE >/dev/null 2>&1 || :
-        systemctl stop $INSTANCE >/dev/null 2>&1 || :
-    done
-
-    %else
-
     /sbin/service %{name} stop >/dev/null 2>&1 || :
     /sbin/chkconfig --del %{name}
-
-    %endif
 fi
 
 %postun server
 if [ $1 -ge 1 ]; then
-    %if %{use_systemd}
-
-    systemctl daemon-reload >/dev/null 2>&1 || :
-    for INSTANCE in `systemctl | grep %{name}@ | awk '{print $1}'`; do
-        systemctl try-restart $INSTANCE >/dev/null 2>&1 || :
-    done
-
-    %else
-
     /sbin/service %{name} condrestart >/dev/null 2>&1 || :
-
-    %endif
 fi
+
+%endif
 
 %pre clients-cpp
 if [ $1 -gt 1 ]; then
@@ -329,6 +338,7 @@ fi
 %{_bindir}/voms-proxy-init2
 %{_bindir}/voms-proxy-fake
 %{_bindir}/voms-proxy-list
+%{_bindir}/voms-verify
 %ghost %{_bindir}/voms-proxy-destroy
 %ghost %{_bindir}/voms-proxy-info
 %ghost %{_bindir}/voms-proxy-init
@@ -343,7 +353,12 @@ fi
 
 %files server
 %{_sbindir}/%{name}
+%if %{use_systemd}
+%{_unitdir}/%{name}@.service
+%else
+%{_initrddir}/%{name}
 %config(noreplace) %{_sysconfdir}/sysconfig/%{name}
+%endif
 %attr(-,voms,voms) %dir %{_sysconfdir}/%{name}
 %dir %{_sysconfdir}/grid-security/%{name}
 %attr(-,voms,voms) %dir %{_localstatedir}/log/%{name}
@@ -356,21 +371,49 @@ fi
 %{_datadir}/%{name}/voms_replica_slave_setup.sh
 %{_mandir}/man8/voms.8*
 %doc README.Fedora
-%if %{use_systemd}
-%{_unitdir}/%{name}@.service
-%else
-%{_initrddir}/%{name}
-%endif
 
 %changelog
+* Wed Dec 21 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.0.14-1.1
+- Merge OSG changes (SOFTWARE-2557)
+
+* Sun Sep 11 2016 Mattias Ellert <mattias.ellert@physics.uu.se> - 2.0.14-1
+- Update to version 2.0.14
+
+* Sun Aug 14 2016 Mattias Ellert <mattias.ellert@physics.uu.se> - 2.0.13-3
+- Convert to systemd unit file (Fedora 25+)
+
 * Tue Jul 05 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.0.12-3.3
 - Make RFC proxies by default (SOFTWARE-2381)
 
 * Wed Jun 08 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.0.12-3.2
 - Replace init script with systemd service file on EL7 (SOFTWARE-2357)
 
+* Tue Apr 19 2016 Mattias Ellert <mattias.ellert@fysast.uu.se> - 2.0.13-2
+- Rebuild for gsoap 2.8.30 (Fedora 25)
+
+* Sat Feb 20 2016 Mattias Ellert <mattias.ellert@fysast.uu.se> - 2.0.13-1
+- Update to version 2.0.13
+- Drop patches: voms-nossl3.patch, voms-tls1.patch, voms-gcc6.patch,
+  voms-paren.patch, voms-comment-in-comment.patch and voms-doxygen.patch
+
+* Fri Feb 05 2016 Fedora Release Engineering <releng@fedoraproject.org> - 2.0.12-8
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
+
+* Wed Jan 20 2016 Mattias Ellert <mattias.ellert@fysast.uu.se> - 2.0.12-7
+- Disable SSLv3
+- Fix compilation with gcc 6
+
 * Fri Oct 16 2015 Carl Edquist <edquist@cs.wisc.edu> - 2.0.12-3.1
 - Fix SQL syntax for mariadb in EL7 (SOFTWARE-1604)
+
+* Fri Jun 19 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.0.12-6
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
+
+* Mon Jun 15 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 2.0.12-5
+- Rebuild for gsoap 2.8.22 (Fedora 23)
+
+* Sat May 02 2015 Kalev Lember <kalevlember@gmail.com> - 2.0.12-4
+- Rebuilt for GCC 5 C++11 ABI change
 
 * Wed Mar 18 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 2.0.12-3
 - Rename client package and make voms-clients a virtual provides
