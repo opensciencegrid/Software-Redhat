@@ -4,7 +4,7 @@
 Name:      osg-ce
 Summary:   OSG Compute Element
 Version:   3.3
-Release:   8%{?dist}
+Release:   9%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -137,7 +137,7 @@ Group: Grid
 Summary: Gateway-less BOSCO meta-package for OSG-CE
 
 Requires: %{basece} = %{version}-%{release}
-#Requires: gratia-probe-slurm
+Requires: gratia-probe-htcondor-ce
 Requires: osg-configure-bosco
 
 %description -n %{basece}-bosco
@@ -317,6 +317,9 @@ exit 0
 %files bosco
 
 %changelog
+* Wed Aug 03 2016 Derek Weitzel <dweitzel@cse.unl.edu> - 3.3.9
+- Add gratia-probe-htcondor-ce to requirements for osg-ce-bosco (SOFTWARE-2543)
+
 * Wed Aug 03 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.3.8
 - Add gums-client back to EL7 (SOFTWARE-2418); clipped version no longer needed
 
