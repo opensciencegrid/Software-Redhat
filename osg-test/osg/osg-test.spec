@@ -5,11 +5,11 @@
 
 Summary:   Tests an OSG Software installation
 Name:      osg-test
-Version:   1.9.1
+Version:   1.10.0
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
-Packager:  VDT <vdt-support@opensciencegrid.org>
+Packager:  OSG Software <osg-software@opensciencegrid.org>
 Source0:   %{name}-%{version}.tar.gz
 AutoReq:   yes
 AutoProv:  yes
@@ -22,6 +22,14 @@ Requires: osg-ca-generator >= 1.1.0
 %description
 The OSG Test system runs functional integration tests against an OSG Software
 installation.
+
+%package log-viewer
+Summary:   Views the output of %{name}
+Group:     Applications/Grid
+Requires:  tkinter
+
+%description log-viewer
+A GUI for viewing the output of %{name} in a structured manner.
 
 %prep
 %setup -q
@@ -39,7 +47,18 @@ rm -rf $RPM_BUILD_ROOT
 %{_sbindir}/%{name}
 %{python_sitelib}/osgtest
 
+%files log-viewer
+%defattr(-,root,root)
+%{_sbindir}/%{name}-log-viewer
+
 %changelog
+* Wed Dec 21 2016 Brian Lin <blin@cs.wisc.edu> - 1.10.0-1
+- Add HTCondor-CE + Slurm tests (SOFTWARE-2541)
+- Configure Tomcat to log to catalina.log (SOFTWARE-2547)
+- Add core.get_stat() function for use with core.monitor_file()
+- Fix GridFTP server startup
+- Package osg-test-log-viewer
+
 * Tue Nov 01 2016 Brian Lin <blin@cs.wisc.edu> - 1.9.1-1
 - Add check_start and check_stop functions to verify that services have started
   and stopped, respectively.
