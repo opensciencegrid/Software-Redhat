@@ -11,7 +11,7 @@
 
 Name:		voms
 Version:	2.0.14
-Release:	1.1%{?dist}
+Release:	1.2%{?dist}
 Summary:	Virtual Organization Membership Service
 
 Group:		System Environment/Libraries
@@ -373,6 +373,9 @@ fi
 %doc README.Fedora
 
 %changelog
+* Thu Dec 22 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.0.14-1.2
+- Use upstream .service file
+
 * Wed Dec 21 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.0.14-1.1
 - Merge OSG changes (SOFTWARE-2557)
 
