@@ -2,7 +2,7 @@
 
 Name:           gridftp-hdfs
 Version:        0.5.4
-Release:        25.4%{?dist}
+Release:        25.5%{?dist}
 Summary:        HDFS DSI plugin for GridFTP
 Group:          System Environment/Daemons
 License:        ASL 2.0
@@ -210,7 +210,10 @@ fi
 %endif
 
 %changelog
-* Wed Dec 21 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 0.5.4-25.4
+* Thu Dec 22 2016 Carl Edquist <edquist@cs.wisc.edu> - 0.5.4-25.5
+- Bump to rebuild against globus-gridftp-server 11.8 (SOFTWARE-2436)
+
+* Fri Aug 26 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 0.5.4-25.4
 - Add patch to enable ordered data (SOFTWARE-2436)
   - Adds dependency on globus-ftp-control >= 7.7
   - Adds build dependency on globus-gridftp-server >= 11
