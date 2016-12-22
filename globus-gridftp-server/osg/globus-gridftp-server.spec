@@ -303,6 +303,9 @@ fi
 %{_libdir}/pkgconfig/%{name}.pc
 
 %changelog
+* Thu Dec 22 2016 Carl Edquist <edquist@cs.wisc.edu> - 11.8-1.1.osg
+- Merge OSG changes (SOFTWARE-2436 related)
+
 * Fri Nov 04 2016 Mattias Ellert <mattias.ellert@physics.uu.se> - 11.8-1
 - GT6 update: Updated man pages, add adler32 checksum support
 
