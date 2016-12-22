@@ -1,6 +1,7 @@
-diff -ur globus_gridftp_server-6.14-orig/gridftp.conf.default.in globus_gridftp_server-6.14/gridftp.conf.default.in
---- globus_gridftp_server-6.14-orig/gridftp.conf.default.in	2011-08-31 21:12:07.000000000 -0500
-+++ globus_gridftp_server-6.14/gridftp.conf.default.in	2013-02-20 13:00:42.805655000 -0600
+diff --git a/gridftp.conf.default.in b/gridftp.conf.default.in
+index 46be8f7..fa884f1 100644
+--- a/gridftp.conf.default.in
++++ b/gridftp.conf.default.in
 @@ -8,4 +8,6 @@
  
  # port
