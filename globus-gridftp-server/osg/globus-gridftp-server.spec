@@ -40,9 +40,7 @@ Source15:       globus-gridftp-sshftp-stop
 #		Fix globus-gridftp-server-setup-chroot for kfreebsd and hurd
 Patch0:		globus-gridftp-server-unames.patch
 Patch1:		gridftp-conf-logging.patch
-Patch2:         adler32.patch
-Patch3:         do_not_destroy_log_handle.patch
-Patch4:         Do-not-ignore-config.d-files-with-a-.-in-the-name.patch
+Patch2:         Do-not-ignore-config.d-files-with-a-.-in-the-name.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Requires:	globus-xio-gsi-driver%{?_isa} >= 2
@@ -145,8 +143,6 @@ Globus GridFTP Server Development Files
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
-%patch3 -p4
-%patch4 -p1
 
 %build
 # Reduce overlinking
