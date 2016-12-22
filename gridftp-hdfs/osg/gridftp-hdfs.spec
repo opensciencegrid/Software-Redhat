@@ -2,7 +2,7 @@
 
 Name:           gridftp-hdfs
 Version:        0.5.4
-Release:        25.3%{?dist}
+Release:        25.4%{?dist}
 Summary:        HDFS DSI plugin for GridFTP
 Group:          System Environment/Daemons
 License:        ASL 2.0
@@ -37,6 +37,7 @@ Patch16: 2011-capture_stderr.patch
 Patch17: 2115-load-limits.patch
 Patch18: 2107-rmdir-rename.patch
 Patch19: list_empty_directory.patch
+Patch20: 2436-enable-ordered-data.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -48,7 +49,8 @@ BuildRequires: java-devel >= 1:1.7.0
 BuildRequires: jpackage-utils
 
 BuildRequires: hadoop-libhdfs
-BuildRequires: globus-gridftp-server-devel
+# globus-gridftp-server-devel-11 needed for 2436-enable-ordered-data.patch
+BuildRequires: globus-gridftp-server-devel >= 11
 BuildRequires: globus-common-devel
 
 BuildRequires: chrpath
@@ -65,6 +67,9 @@ Requires: globus-gridftp-osg-extensions
 %endif
 Requires: java >= 1:1.7.0
 Requires: jpackage-utils
+# for ordered data support (SOFTWARE-2436):
+BuildRequires: globus-ftp-control-devel >= 7.7
+Requires: globus-ftp-control >= 7.7
 
 Requires(pre): shadow-utils
 Requires(preun): initscripts
@@ -105,6 +110,7 @@ HDFS DSI plugin for GridFTP
 %patch17 -p1
 %patch18 -p1
 %patch19 -p1
+%patch20 -p1
 
 aclocal
 libtoolize
@@ -204,6 +210,11 @@ fi
 %endif
 
 %changelog
+* Wed Dec 21 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 0.5.4-25.4
+- Add patch to enable ordered data (SOFTWARE-2436)
+  - Adds dependency on globus-ftp-control >= 7.7
+  - Adds build dependency on globus-gridftp-server >= 11
+
 * Thu Jul 21 2016 Carl Edquist <edquist@cs.wisc.edu> - 0.5.4-25.3
 - Config file fixes for globus-gridftp-osg-extensions (SOFTWARE-2397)
 
