@@ -4,7 +4,7 @@
 Name:      osg-ce
 Summary:   OSG Compute Element
 Version:   3.3
-Release:   9%{?dist}
+Release:   10%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -43,7 +43,11 @@ Requires: vo-client
 Requires: osg-info-services
 Requires: osg-vo-map
 Requires: gip
+
+%if 0%{?rhel} < 7
 Requires: gums-client
+%endif
+
 Requires: edg-mkgridmap
 Requires: gratia-probe-gridftp-transfer
 Requires: osg-cleanup
@@ -317,6 +321,9 @@ exit 0
 %files bosco
 
 %changelog
+* Fri Dec 23 2016 Derek Weitzel <dweitzel@cse.unl.edu> - 3.3-10
+- Conditionally turn of gums-client dependency for rhel7
+
 * Wed Aug 03 2016 Derek Weitzel <dweitzel@cse.unl.edu> - 3.3.9
 - Add gratia-probe-htcondor-ce to requirements for osg-ce-bosco (SOFTWARE-2543)
 
