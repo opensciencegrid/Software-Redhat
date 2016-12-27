@@ -1,6 +1,6 @@
 Summary: Package for configure-osg and associated scripts
 Name: osg-configure
-Version: 1.5.3
+Version: 1.5.4
 Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
@@ -337,6 +337,9 @@ fi
 
 
 %changelog
+* Tue Dec 27 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.4-1
+- Don't require attributes in Resource Entry sections that aren't used in AGIS or the CE collector (SOFTWARE-2554)
+
 * Mon Nov 28 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.3-1
 - Quote settings written to Gratia probe configs (SOFTWARE-2311)
 
