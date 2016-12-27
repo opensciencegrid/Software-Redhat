@@ -1,7 +1,7 @@
 Summary: OASIS GOC package
 Name: oasis-goc
 Version: 2.1.13
-Release: 1%{?dist} 
+Release: 2%{?dist} 
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
 Group: Development/Libraries
@@ -31,7 +31,7 @@ find var|cpio -pdv $RPM_BUILD_ROOT
 rm -rf $RPM_BUILD_ROOT
 
 %files
-/usr/bin
+/usr/bin/*
 /usr/share/oasis
 
 %package zero
@@ -88,6 +88,10 @@ This package contains files for oasis-login.opensciencegrid.org
 
 
 %changelog
+* Tue Dec 27 2016 Dave Dykstra <dwd@fnal.gov> - 2.1.13-2
+- Replace %files /usr/bin with /usr/bin/* because el7 yum install complained
+  about a conflict with another package.
+
 * Mon Dec 05 2016 Dave Dykstra <dwd@fnal.gov> - 2.1.13-1
 - Instead of changing the cron to add a key only on oasis-replica-itb,
   change add_osg_repository to add the key on both oasis-replica-itb and
