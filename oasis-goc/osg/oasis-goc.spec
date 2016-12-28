@@ -1,6 +1,6 @@
 Summary: OASIS GOC package
 Name: oasis-goc
-Version: 2.1.13
+Version: 2.1.16
 Release: 1%{?dist} 
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
@@ -31,7 +31,7 @@ find var|cpio -pdv $RPM_BUILD_ROOT
 rm -rf $RPM_BUILD_ROOT
 
 %files
-/usr/bin
+/usr/bin/*
 /usr/share/oasis
 
 %package zero
@@ -88,6 +88,30 @@ This package contains files for oasis-login.opensciencegrid.org
 
 
 %changelog
+* Wed Dec 28 2016 Dave Dykstra <dwd@fnal.gov> - 2.1.16-1
+- Add new script recover_oasis_rollback, to run after rolling back to
+  a previously installed oasis or oasis-itb VM.
+
+* Wed Dec 28 2016 Dave Dykstra <dwd@fnal.gov> - 2.1.15-1
+- Change resign_osg_whitelist to support el7.  The openssl sha1 command
+  had an extra "(stdin)= " in the output on el7.  resign_osg_whitelist
+  was originally based on cvmfs_server's create_whitelist() function
+  which is now using "cvmfs_swissknife hash" and allowing for more
+  than one hash algorithm, so now resign_osg_whitelist does as well.
+
+* Tue Dec 27 2016 Dave Dykstra <dwd@fnal.gov> - 2.1.14-1
+- Add a '+' before the 'FollowSymLinks' option in the apache config files,
+  because apache 2.4 in el7 requires that if there are any "-" options
+  then any options being added have to have "+".  All of the current
+  option settings chosen are default for httpd versions 2.3.11 and later,
+  but leave them for now in case somebody tries running with an earlier
+  version.
+- Re-enable garbage collection cron.
+
+* Tue Dec 27 2016 Dave Dykstra <dwd@fnal.gov> - 2.1.13-2
+- Replace %files /usr/bin with /usr/bin/* because el7 yum install complained
+  about a conflict with another package.
+
 * Mon Dec 05 2016 Dave Dykstra <dwd@fnal.gov> - 2.1.13-1
 - Instead of changing the cron to add a key only on oasis-replica-itb,
   change add_osg_repository to add the key on both oasis-replica-itb and
