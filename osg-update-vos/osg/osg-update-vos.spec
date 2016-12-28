@@ -1,5 +1,5 @@
 Name:           osg-update-vos
-Version:        1.0
+Version:        1.1
 Release:        1%{?dist}
 Summary:        VO data updater for OSG
 
@@ -33,5 +33,8 @@ rm -rf %{buildroot}
 %doc %{_defaultdocdir}/%{name}-%{version}/README*
 
 %changelog
+* Wed Dec 28 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.1
+- Use --location argument to specify destination; use /etc or $OSG_LOCATION/etc if not specified
+
 * Tue Dec 20 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.0
 - Created
