@@ -1,6 +1,6 @@
 Name:           osg-update-vos
 Version:        1.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        VO data updater for OSG
 
 Group:          System Environment/Tools
@@ -29,12 +29,15 @@ rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root,-)
-%{_bindir}/%{name}
+%{_sbindir}/%{name}
 %doc %{_defaultdocdir}/%{name}-%{version}/README*
 
 %changelog
-* Wed Dec 28 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.1
+* Wed Dec 28 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.1-2
+- Move script to /usr/sbin
+
+* Wed Dec 28 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.1-1
 - Use --location argument to specify destination; use /etc or $OSG_LOCATION/etc if not specified
 
-* Tue Dec 20 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.0
+* Tue Dec 20 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.0-1
 - Created
