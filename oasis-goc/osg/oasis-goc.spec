@@ -1,7 +1,7 @@
 Summary: OASIS GOC package
 Name: oasis-goc
-Version: 2.1.13
-Release: 2%{?dist} 
+Version: 2.1.14
+Release: 1%{?dist} 
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
 Group: Development/Libraries
@@ -88,6 +88,15 @@ This package contains files for oasis-login.opensciencegrid.org
 
 
 %changelog
+* Tue Dec 27 2016 Dave Dykstra <dwd@fnal.gov> - 2.1.14-1
+- Add a '+' before the 'FollowSymLinks' option in the apache config files,
+  because apache 2.4 in el7 requires that if there are any "-" options
+  then any options being added have to have "+".  All of the current
+  option settings chosen are default for httpd versions 2.3.11 and later,
+  but leave them for now in case somebody tries running with an earlier
+  version.
+- Re-enable garbage collection cron.
+
 * Tue Dec 27 2016 Dave Dykstra <dwd@fnal.gov> - 2.1.13-2
 - Replace %files /usr/bin with /usr/bin/* because el7 yum install complained
   about a conflict with another package.
