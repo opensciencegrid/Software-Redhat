@@ -1,6 +1,6 @@
 Name:           osg-update-vos
-Version:        1.1
-Release:        2%{?dist}
+Version:        1.2
+Release:        1%{?dist}
 Summary:        VO data updater for OSG
 
 Group:          System Environment/Tools
@@ -15,6 +15,14 @@ Requires:       yum-utils
 
 %description
 %{summary}
+
+%package -n osg-update-data
+Requires: %{name}
+Requires: osg-ca-scripts
+Summary: Data updater for OSG
+
+%description -n osg-update-data
+Data updater for OSG
 
 
 %prep
@@ -32,12 +40,18 @@ rm -rf %{buildroot}
 %{_sbindir}/%{name}
 %doc %{_defaultdocdir}/%{name}-%{version}/README*
 
+%files -n osg-update-data
+%{_sbindir}/osg-update-data
+
 %changelog
+* Thu Dec 29 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.2-1
+- Add osg-update-data subpackage (SOFTWARE-2528)
+
 * Wed Dec 28 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.1-2
-- Move script to /usr/sbin
+- Move script to /usr/sbin (SOFTWARE-2527)
 
 * Wed Dec 28 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.1-1
-- Use --location argument to specify destination; use /etc or $OSG_LOCATION/etc if not specified
+- Use --location argument to specify destination; use /etc or $OSG_LOCATION/etc if not specified (SOFTWARE-2527)
 
 * Tue Dec 20 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.0-1
-- Created
+- Created (SOFTWARE-2527)
