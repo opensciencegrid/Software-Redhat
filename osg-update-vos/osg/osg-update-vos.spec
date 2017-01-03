@@ -1,5 +1,5 @@
 Name:           osg-update-vos
-Version:        1.2
+Version:        1.2.1
 Release:        1%{?dist}
 Summary:        VO data updater for OSG
 
@@ -44,6 +44,9 @@ rm -rf %{buildroot}
 %{_sbindir}/osg-update-data
 
 %changelog
+* Tue Jan 03 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.2.1-1
+- osg-update-data: update VOs before CAs and CRLs (SOFTWARE-2528)
+
 * Thu Dec 29 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.2-1
 - Add osg-update-data subpackage (SOFTWARE-2528)
 
