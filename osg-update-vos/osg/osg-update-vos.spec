@@ -1,5 +1,5 @@
 Name:           osg-update-vos
-Version:        1.2.1
+Version:        1.3.0
 Release:        1%{?dist}
 Summary:        VO data updater for OSG
 
@@ -12,6 +12,7 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
 Requires:       yum-utils
+Requires:       osg-release
 
 %description
 %{summary}
@@ -44,6 +45,10 @@ rm -rf %{buildroot}
 %{_sbindir}/osg-update-data
 
 %changelog
+* Fri Jan 06 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.3.0-1
+- Add osg-release requirement
+- Allow taking osg repo definition from osg-release installed in a tarball client (SOFTWARE-2527)
+
 * Tue Jan 03 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.2.1-1
 - osg-update-data: update VOs before CAs and CRLs (SOFTWARE-2528)
 
