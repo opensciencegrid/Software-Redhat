@@ -1,4 +1,4 @@
-From c39db68f18126c8650a0f8b0c51a44206a31a80b Mon Sep 17 00:00:00 2001
+From 069c5629142ae59ec6b1b06f8d406f52d47682d4 Mon Sep 17 00:00:00 2001
 From: Matyas Selmeci <matyas@cs.wisc.edu>
 Date: Thu, 8 Sep 2016 11:16:36 -0500
 Subject: [PATCH] koji_passwd_retry
@@ -9,10 +9,10 @@ Allow retrying passphrase for private key.
  1 file changed, 12 insertions(+), 1 deletion(-)
 
 diff --git a/koji/ssl/SSLCommon.py b/koji/ssl/SSLCommon.py
-index 364788e..316ff6d 100644
+index 254a9c5..1fc23b3 100644
 --- a/koji/ssl/SSLCommon.py
 +++ b/koji/ssl/SSLCommon.py
-@@ -93,11 +93,22 @@ def CreateSSLContext(certs):
+@@ -57,11 +57,22 @@ def CreateSSLContext(certs):
              raise StandardError, "%s does not exist or is not readable" % f
  
      ctx = SSL.Context(SSL.SSLv23_METHOD)   # Use best possible TLS Method

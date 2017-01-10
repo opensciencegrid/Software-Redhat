@@ -1,4 +1,4 @@
-From 8298d63c6256d09a2d23bdab9fd1109236fcc7ec Mon Sep 17 00:00:00 2001
+From da3dc7e9b7ba17d8448a00eacab9adfc6a75b444 Mon Sep 17 00:00:00 2001
 From: Matyas Selmeci <matyas@cs.wisc.edu>
 Date: Thu, 8 Sep 2016 11:12:23 -0500
 Subject: [PATCH] kojid_scmbuild_check_spec_after_running_sourcecmd
@@ -10,10 +10,10 @@ source_cmd to fetch it (for VCS builds).
  1 file changed, 13 insertions(+), 8 deletions(-)
 
 diff --git a/builder/kojid b/builder/kojid
-index 3c37a54..e819843 100755
+index 6cc50e0..f8bb0dd 100755
 --- a/builder/kojid
 +++ b/builder/kojid
-@@ -478,17 +478,11 @@ class BuildRoot(object):
+@@ -474,17 +474,11 @@ class BuildRoot(object):
          else:
              logfile = 'root.log'
          msg = '; see %s for more information' % logfile
@@ -32,7 +32,7 @@ index 3c37a54..e819843 100755
              # the SCM can be retrieved
              chroot_sourcedir = sourcedir[len(self.rootdir()):]
              args = ['--no-clean', '--unpriv', '--cwd', chroot_sourcedir, '--chroot']
-@@ -496,10 +490,19 @@ class BuildRoot(object):
+@@ -492,10 +486,19 @@ class BuildRoot(object):
              rv = self.mock(args)
              if rv:
                  self.expire()
@@ -52,7 +52,7 @@ index 3c37a54..e819843 100755
  
          rv = self.mock(args)
  
-@@ -4267,10 +4270,12 @@ class BuildSRPMFromSCMTask(BaseBuildTask):
+@@ -4313,10 +4316,12 @@ class BuildSRPMFromSCMTask(BaseBuildTask):
          self.chownTree(scmdir, uid, gid)
  
          # Hook for patching spec file in place
@@ -65,7 +65,7 @@ index 3c37a54..e819843 100755
          if not spec_files and self.options.support_rpm_source_layout:
              # also check SPECS dir
              spec_files = glob.glob("%s/SPECS/*.spec" % sourcedir)
-@@ -4283,11 +4288,11 @@ class BuildSRPMFromSCMTask(BaseBuildTask):
+@@ -4329,11 +4334,11 @@ class BuildSRPMFromSCMTask(BaseBuildTask):
          # Run spec file sanity checks.  Any failures will throw a BuildError
          self.spec_sanity_checks(spec_file)
  

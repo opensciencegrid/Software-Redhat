@@ -1,4 +1,4 @@
-From f4605434eae74335389bcfb88f557a59efb1c218 Mon Sep 17 00:00:00 2001
+From 48d6ff535e9ce0a9e65c69ba7641ee2b9a6496d2 Mon Sep 17 00:00:00 2001
 From: Matyas Selmeci <matyas@cs.wisc.edu>
 Date: Thu, 8 Sep 2016 11:18:34 -0500
 Subject: [PATCH] koji_proxy_cert
@@ -8,10 +8,10 @@ Subject: [PATCH] koji_proxy_cert
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/koji/ssl/SSLCommon.py b/koji/ssl/SSLCommon.py
-index 316ff6d..a71eeab 100644
+index 1fc23b3..cf346fc 100644
 --- a/koji/ssl/SSLCommon.py
 +++ b/koji/ssl/SSLCommon.py
-@@ -92,11 +92,11 @@ def CreateSSLContext(certs):
+@@ -56,11 +56,11 @@ def CreateSSLContext(certs):
          if f and not os.access(f, os.R_OK):
              raise StandardError, "%s does not exist or is not readable" % f
  

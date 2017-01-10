@@ -1,4 +1,4 @@
-From 853ed7add711ca0d9f04ad921813f1ef79099529 Mon Sep 17 00:00:00 2001
+From 6fea0c75db98b3057f50e11b47884d00aba11ce9 Mon Sep 17 00:00:00 2001
 From: Matyas Selmeci <matyas@cs.wisc.edu>
 Date: Thu, 8 Sep 2016 11:27:47 -0500
 Subject: [PATCH] createrepo_sha1
@@ -9,10 +9,10 @@ Request SHA1 hash in createrepo, for RHEL5 compatibility.
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/builder/kojid b/builder/kojid
-index e819843..377fe9c 100755
+index f8bb0dd..9a7084a 100755
 --- a/builder/kojid
 +++ b/builder/kojid
-@@ -4709,11 +4709,11 @@ class CreaterepoTask(BaseTaskHandler):
+@@ -4756,11 +4756,11 @@ class CreaterepoTask(BaseTaskHandler):
          koji.ensuredir(self.outdir)
          if self.options.use_createrepo_c:
              cmd = ['/usr/bin/createrepo_c']

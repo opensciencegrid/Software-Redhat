@@ -1,4 +1,4 @@
-From 1614f4cbfb3e23d02dd1dc701119ad054b3ddf70 Mon Sep 17 00:00:00 2001
+From e909c49068e87d046fbb8738507ebcd0c2dc876a Mon Sep 17 00:00:00 2001
 From: Matyas Selmeci <matyas@cs.wisc.edu>
 Date: Thu, 8 Sep 2016 11:21:10 -0500
 Subject: [PATCH] kojicli_setup_dns
@@ -9,10 +9,10 @@ Request that DNS be set up in the mock config requested by the koji cli.
  1 file changed, 1 insertion(+)
 
 diff --git a/cli/koji b/cli/koji
-index e94bd2f..9af7b90 100755
+index 0c06317..ddb2102 100755
 --- a/cli/koji
 +++ b/cli/koji
-@@ -1288,10 +1288,11 @@ def anon_handle_mock_config(options, session, args):
+@@ -1373,10 +1373,11 @@ def anon_handle_mock_config(options, session, args):
              options.name = args[0]
          else:
              parser.error(_("Name already specified via option"))
