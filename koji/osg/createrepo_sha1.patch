@@ -1,13 +1,30 @@
-Index: koji-1.6.0/builder/kojid
-===================================================================
---- koji-1.6.0.orig/builder/kojid	2015-01-30 11:27:16.000000000 -0600
-+++ koji-1.6.0/builder/kojid	2015-01-30 11:28:35.272569615 -0600
-@@ -2586,7 +2586,7 @@
- 
-     def create_local_repo(self, rinfo, arch, pkglist, groupdata, oldrepo):
+From 853ed7add711ca0d9f04ad921813f1ef79099529 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Thu, 8 Sep 2016 11:27:47 -0500
+Subject: [PATCH] createrepo_sha1
+
+Request SHA1 hash in createrepo, for RHEL5 compatibility.
+---
+ builder/kojid | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/builder/kojid b/builder/kojid
+index e819843..377fe9c 100755
+--- a/builder/kojid
++++ b/builder/kojid
+@@ -4709,11 +4709,11 @@ class CreaterepoTask(BaseTaskHandler):
          koji.ensuredir(self.outdir)
--        cmd = ['/usr/bin/createrepo', '-vd', '-o', self.outdir, '-u', self.options.pkgurl]
-+        cmd = ['/usr/bin/createrepo', '-vd', '-s', 'sha', '-o', self.outdir, '-u', self.options.pkgurl]
+         if self.options.use_createrepo_c:
+             cmd = ['/usr/bin/createrepo_c']
+         else:
+             cmd = ['/usr/bin/createrepo']
+-        cmd.extend(['-vd', '-o', self.outdir])
++        cmd.extend(['-vd', '-s', 'sha', '-o', self.outdir])
          if pkglist is not None:
              cmd.extend(['-i', pkglist])
          if os.path.isfile(groupdata):
+             cmd.extend(['-g', groupdata])
+         #attempt to recycle repodata from last repo
+-- 
+2.6.3
+

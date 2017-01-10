@@ -1,12 +1,29 @@
-Index: cli/koji
-===================================================================
---- cli/koji.orig	2013-05-22 19:46:23.000000002 -0500
-+++ cli/koji	2013-05-22 19:47:29.000000002 -0500
-@@ -1172,6 +1172,7 @@
-     else:
-         parser.error(_("Please specify one of: --tag, --task, --buildroot"))
-         assert False
+From 1614f4cbfb3e23d02dd1dc701119ad054b3ddf70 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Thu, 8 Sep 2016 11:21:10 -0500
+Subject: [PATCH] kojicli_setup_dns
+
+Request that DNS be set up in the mock config requested by the koji cli.
+---
+ cli/koji | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/cli/koji b/cli/koji
+index e94bd2f..9af7b90 100755
+--- a/cli/koji
++++ b/cli/koji
+@@ -1288,10 +1288,11 @@ def anon_handle_mock_config(options, session, args):
+             options.name = args[0]
+         else:
+             parser.error(_("Name already specified via option"))
+     arch = None
+     opts = {}
 +    opts['use_host_resolv'] = True # for OSG
-     output = koji.genMockConfig(name, arch, **opts)
-     if options.ofile:
-         fo = file(options.ofile, 'w')
+     for k in ('topdir', 'topurl', 'distribution', 'mockdir', 'yum_proxy'):
+         if hasattr(options, k):
+             opts[k] = getattr(options, k)
+     if options.buildroot:
+         try:
+-- 
+2.6.3
+
