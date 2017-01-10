@@ -9,25 +9,23 @@
 
 Name: koji
 Version: 1.10.1
-Release: 8.1%{?dist}
+Release: 10.1%{?dist}
 License: LGPLv2 and GPLv2+
 # koji.ssl libs (from plague) are GPLv2+
 Summary: Build system tools
 Group: Applications/System
 URL: https://pagure.io/fork/ausil/koji/branch/fedora-infra
 Patch0: fedora-config.patch
-Patch1: koji_passwd_cache.patch
-Patch2: kojid_setup_dns.patch
-Patch3: kojid_scmbuild_check_spec_after_running_sourcecmd.patch
-Patch4: koji_passwd_retry.patch
-Patch5: koji_proxy_cert.patch
-Patch6: kojicli_setup_dns.patch
-Patch9: createrepo_sha1.patch
+Patch1: 0001-enable-dns-to-work-in-runroot-buildroots.patch
+Patch101: koji_passwd_cache.patch
+Patch102: kojid_setup_dns.patch
+Patch103: kojid_scmbuild_check_spec_after_running_sourcecmd.patch
+Patch104: koji_passwd_retry.patch
+Patch105: koji_proxy_cert.patch
+Patch106: kojicli_setup_dns.patch
+Patch109: createrepo_sha1.patch
 
 Source: koji-%{version}.tar.bz2
-Source1: README.epel
-
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch: noarch
 Requires: python-krbV >= 1.0.13
 Requires: rpm-python
@@ -35,6 +33,7 @@ Requires: pyOpenSSL
 Requires: python-urlgrabber
 Requires: yum
 BuildRequires: python
+BuildRequires: python-sphinx
 %if %{use_systemd}
 BuildRequires: systemd
 BuildRequires: pkgconfig
@@ -95,6 +94,7 @@ Requires: /usr/bin/cvs
 Requires: /usr/bin/svn
 Requires: /usr/bin/git
 Requires: python-cheetah
+Requires: squashfs-tools
 %if 0%{?rhel} == 5
 Requires: createrepo >= 0.4.11-2
 Requires: python-hashlib
@@ -125,11 +125,8 @@ Requires(preun): /sbin/service
 %endif
 Requires: libvirt-python
 Requires: libxml2-python
-%if 0%{?fedora}
-#Red Hat only ships on x86_64
 Requires: /usr/bin/virt-clone
 Requires: qemu-img
-%endif
 
 %description vm
 koji-vm contains a supplemental build daemon that executes certain tasks in a
@@ -167,17 +164,15 @@ koji-web is a web UI to the Koji system.
 
 %prep
 %setup -q
-cp %{SOURCE1} README.epel
 %patch0 -p1 -b orig
 %patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
-%patch6 -p1
-%if 0%{?rhel} > 5
-%patch9 -p1
-%endif
+%patch101 -p1
+%patch102 -p1
+%patch103 -p1
+%patch104 -p1
+%patch105 -p1
+%patch106 -p1
+%patch109 -p1
 
 %build
 
@@ -254,8 +249,9 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/sysconfig/kojid
 %endif
 %dir %{_sysconfdir}/kojid
+%dir %{_sysconfdir}/kojid/plugins
 %config(noreplace) %{_sysconfdir}/kojid/kojid.conf
-%config(noreplace) %{_sysconfdir}/kojid/runroot.conf
+%config(noreplace) %{_sysconfdir}/kojid/plugins/runroot.conf
 %attr(-,kojibuilder,kojibuilder) %{_sysconfdir}/mock/koji
 
 %pre builder
@@ -286,7 +282,6 @@ fi
 
 %files vm
 %defattr(-,root,root)
-%doc README.epel
 %{_sbindir}/kojivmd
 #dir %{_datadir}/kojivmd
 %{_datadir}/kojivmd/kojikamid
@@ -345,8 +340,15 @@ fi
 %endif
 
 %changelog
-* Thu Sep 08 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.10.1-8.1
+* Thu Oct 04 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.10.1-10.1
 - Merge OSG changes
+
+* Thu May 26 2016 Dennis Gilmore <dennis@ausil.us> - 1.10.1-10
+- add patch to enable dns in runroot chroots
+
+* Tue May 24 2016 Dennis Gilmore <dennis@ausil.us> - 1.10.1-9
+- update to git master upstream, add lmc cosmetic fixes
+- add patch to disable login in koji-web
 
 * Fri Apr 08 2016 Dennis Gilmore <dennis@ausil.us> - 1.10.1-8
 - do not remove the - for project on livemedia
@@ -460,13 +462,7 @@ fi
 - Add Brian Bockelman's patch to allow using proxy certs
 
 * Sat Sep 01 2012 Dennis Gilmore <dennis@ausil.us> - 1.7.0-7
-- add the patch that we had previously had hotapplied in fedora infra
-
-* Sat Sep 01 2012 Dennis Gilmore <dennis@ausil.us> - 1.7.0-6
-- remove even trying to make devices i the chroots
-
-* Sat Sep 01 2012 Dennis Gilmore <dennis@ausil.us> - 1.7.0-5
-- add patch to check for /dev/loopX before making them
+- add patch to mount all of /dev on appliances and lives
 
 * Fri Aug 31 2012 Dennis Gilmore <dennis@ausil.us> - 1.7.0-4
 - add patch to only make /dev/urandom if it doesnt exist
@@ -485,6 +481,9 @@ fi
 - update to 1.7.0 many bugfixes and improvements
 - now uses mod_wsgi 
 
+* Fri Jan 13 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.6.0-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_17_Mass_Rebuild
+
 * Fri Oct 28 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.6.0-4
 - add patch to check for spec file only after running source_cmd in a build from an scm
 
@@ -494,9 +493,8 @@ fi
 * Mon Aug 08 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.6.0-2
 - Cache passwords to decrypt SSL key in memory.
 
-* Mon Jan 03 2011 Dennis Gilmore <dennis@ausil.us> - 1.6.0-1.1
-- drop Requires on qemu-img on epel for koji-vm
-- add readme note on epel
+* Mon Feb 07 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.6.0-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
 
 * Fri Dec 17 2010 Dennis Gilmore <dennis@ausil.us> - 1.6.0-1
 - update to 1.6.0
