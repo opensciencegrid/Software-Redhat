@@ -8,15 +8,14 @@
 %endif
 
 Name: koji
-Version: 1.10.1
-Release: 10.1%{?dist}
+Version: 1.11.0
+Release: 1.1%{?dist}
 License: LGPLv2 and GPLv2+
 # koji.ssl libs (from plague) are GPLv2+
 Summary: Build system tools
 Group: Applications/System
 URL: https://pagure.io/fork/ausil/koji/branch/fedora-infra
 Patch0: fedora-config.patch
-Patch1: 0001-enable-dns-to-work-in-runroot-buildroots.patch
 Patch101: koji_passwd_cache.patch
 Patch102: kojid_setup_dns.patch
 Patch103: kojid_scmbuild_check_spec_after_running_sourcecmd.patch
@@ -26,17 +25,25 @@ Patch106: kojicli_setup_dns.patch
 Patch109: createrepo_sha1.patch
 
 Source: koji-%{version}.tar.bz2
+Source1: README.epel
+
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch: noarch
 Requires: python-krbV >= 1.0.13
 Requires: rpm-python
 Requires: pyOpenSSL
+Requires: python-requests
+Requires: python-requests-kerberos
 Requires: python-urlgrabber
-Requires: yum
+Requires: python-dateutil
 BuildRequires: python
 BuildRequires: python-sphinx
 %if %{use_systemd}
 BuildRequires: systemd
 BuildRequires: pkgconfig
+%endif
+%if 0%{?fedora} || 0%{?rhel} >= 7
+Requires: python-libcomps
 %endif
 
 %description
@@ -51,6 +58,9 @@ License: LGPLv2 and GPLv2
 Requires: httpd
 Requires: mod_wsgi
 Requires: postgresql-python
+%if 0%{?rhel} == 5
+Requires: python-simplejson
+%endif
 Requires: %{name} = %{version}-%{release}
 
 %description hub
@@ -63,6 +73,9 @@ License: LGPLv2
 Requires: %{name} = %{version}-%{release}
 Requires: %{name}-hub = %{version}-%{release}
 Requires: python-qpid >= 0.7
+%if 0%{?rhel} >= 6
+Requires: python-qpid-proton
+%endif
 %if 0%{?rhel} == 5
 Requires: python-ssl
 %endif
@@ -78,8 +91,8 @@ License: LGPLv2 and GPLv2+
 #mergerepos (from createrepo) is GPLv2+
 Requires: %{name} = %{version}-%{release}
 Requires: mock >= 0.9.14
-Requires: python2-multilib
 Requires(pre): /usr/sbin/useradd
+Requires: squashfs-tools
 %if %{use_systemd}
 Requires(post): systemd
 Requires(preun): systemd
@@ -94,13 +107,12 @@ Requires: /usr/bin/cvs
 Requires: /usr/bin/svn
 Requires: /usr/bin/git
 Requires: python-cheetah
-Requires: squashfs-tools
 %if 0%{?rhel} == 5
 Requires: createrepo >= 0.4.11-2
 Requires: python-hashlib
 Requires: python-createrepo
 %endif
-%if 0%{?fedora} >= 9 || 0%{?rhel} >= 5
+%if 0%{?fedora} >= 9 || 0%{?rhel} > 5
 Requires: createrepo >= 0.9.2
 %endif
 
@@ -125,8 +137,11 @@ Requires(preun): /sbin/service
 %endif
 Requires: libvirt-python
 Requires: libxml2-python
+%if 0%{?fedora}
+#Red Hat only ships on x86_64
 Requires: /usr/bin/virt-clone
 Requires: qemu-img
+%endif
 
 %description vm
 koji-vm contains a supplemental build daemon that executes certain tasks in a
@@ -164,8 +179,8 @@ koji-web is a web UI to the Koji system.
 
 %prep
 %setup -q
+cp %{SOURCE1} README.epel
 %patch0 -p1 -b orig
-%patch1 -p1
 %patch101 -p1
 %patch102 -p1
 %patch103 -p1
@@ -282,6 +297,7 @@ fi
 
 %files vm
 %defattr(-,root,root)
+%doc README.epel
 %{_sbindir}/kojivmd
 #dir %{_datadir}/kojivmd
 %{_datadir}/kojivmd/kojikamid
@@ -340,8 +356,27 @@ fi
 %endif
 
 %changelog
+* Tue Jan 03 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.11.0-1.1
+- Merge OSG changes
+
+* Fri Dec 09 2016 Dennis Gilmore <dennis@ausil.us> - 1.11.0-1
+- update to 1.11.0
+- setup fedora config for kerberos and flag day
+
 * Thu Oct 04 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.10.1-10.1
 - Merge OSG changes
+    - Drop koji_no_sslv3.patch
+    - Drop pkgorigins_filename.patch
+    - Update other OSG patches
+
+* Wed Sep 28 2016 Adam Miller <maxamillion@fedoraproject.org> - 1.10.1-13
+- Patch new-chroot functionality into runroot plugin
+
+* Tue Aug 23 2016 Dennis Gilmore <dennis@ausil.us> - 1.10.1-12
+- add patch to disable bind mounting into image tasks chroots
+
+* Tue Jul 19 2016 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.10.1-11
+- https://fedoraproject.org/wiki/Changes/Automatic_Provides_for_Python_RPM_Packages
 
 * Thu May 26 2016 Dennis Gilmore <dennis@ausil.us> - 1.10.1-10
 - add patch to enable dns in runroot chroots
@@ -462,7 +497,13 @@ fi
 - Add Brian Bockelman's patch to allow using proxy certs
 
 * Sat Sep 01 2012 Dennis Gilmore <dennis@ausil.us> - 1.7.0-7
-- add patch to mount all of /dev on appliances and lives
+- add the patch that we had previously had hotapplied in fedora infra
+
+* Sat Sep 01 2012 Dennis Gilmore <dennis@ausil.us> - 1.7.0-6
+- remove even trying to make devices i the chroots
+
+* Sat Sep 01 2012 Dennis Gilmore <dennis@ausil.us> - 1.7.0-5
+- add patch to check for /dev/loopX before making them
 
 * Fri Aug 31 2012 Dennis Gilmore <dennis@ausil.us> - 1.7.0-4
 - add patch to only make /dev/urandom if it doesnt exist
@@ -479,10 +520,7 @@ fi
 
 * Fri Jun 01 2012 Dennis Gilmore <dennis@ausil.us> - 1.7.0-1
 - update to 1.7.0 many bugfixes and improvements
-- now uses mod_wsgi 
-
-* Fri Jan 13 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.6.0-3
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_17_Mass_Rebuild
+- now uses mod_wsgi
 
 * Fri Oct 28 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.6.0-4
 - add patch to check for spec file only after running source_cmd in a build from an scm
@@ -493,8 +531,9 @@ fi
 * Mon Aug 08 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.6.0-2
 - Cache passwords to decrypt SSL key in memory.
 
-* Mon Feb 07 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.6.0-2
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
+* Mon Jan 03 2011 Dennis Gilmore <dennis@ausil.us> - 1.6.0-1.1
+- drop Requires on qemu-img on epel for koji-vm
+- add readme note on epel
 
 * Fri Dec 17 2010 Dennis Gilmore <dennis@ausil.us> - 1.6.0-1
 - update to 1.6.0

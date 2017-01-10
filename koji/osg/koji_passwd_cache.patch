@@ -8,16 +8,16 @@ Cache passwords to decrypt SSL key in memory.
  koji/ssl/SSLCommon.py | 20 ++++++++++++++++++++
  1 file changed, 20 insertions(+)
 
-diff --git a/koji/ssl/SSLCommon.py b/koji/ssl/SSLCommon.py
-index 345d4ea..364788e 100644
---- a/koji/ssl/SSLCommon.py
-+++ b/koji/ssl/SSLCommon.py
-@@ -18,18 +18,37 @@ import os, sys
+Index: koji-1.11.0/koji/ssl/SSLCommon.py
+===================================================================
+--- koji-1.11.0.orig/koji/ssl/SSLCommon.py	2016-12-08 22:22:14.000000003 -0600
++++ koji-1.11.0/koji/ssl/SSLCommon.py	2017-01-03 14:44:52.000000003 -0600
+@@ -17,27 +17,49 @@
+ import os, sys
  from OpenSSL import SSL
  import SSLConnection
  import httplib
  import socket
- import SocketServer
 +import getpass
  
  def our_verify(connection, x509, errNum, errDepth, preverifyOK):
@@ -26,6 +26,7 @@ index 345d4ea..364788e 100644
      # preverifyOK should tell us whether or not the client's certificate
      # correctly authenticates against the CA chain
      return preverifyOK
+ 
  
 +cached_passwd = None
 +def passwd_callback(max_length, ask_twice, userdata):
@@ -45,12 +46,11 @@ index 345d4ea..364788e 100644
 +
 +    globals()['cached_passwd'] = typed_pass
 +    return typed_pass
- 
- def is_cert_error(e):
-     """Determine if an OpenSSL error is due to a bad cert"""
- 
-     if not isinstance(e, SSL.Error):
-@@ -72,10 +91,11 @@ def CreateSSLContext(certs):
++
++
+ def CreateSSLContext(certs):
+     key_and_cert = certs['key_and_cert']
+     peer_ca_cert = certs['peer_ca_cert']
      for f in key_and_cert, peer_ca_cert:
          if f and not os.access(f, os.R_OK):
              raise StandardError, "%s does not exist or is not readable" % f
@@ -62,6 +62,3 @@ index 345d4ea..364788e 100644
      ctx.load_verify_locations(peer_ca_cert)
      verify = SSL.VERIFY_PEER | SSL.VERIFY_FAIL_IF_NO_PEER_CERT
      ctx.set_verify(verify, our_verify)
--- 
-2.6.3
-
