@@ -48,7 +48,7 @@ rm -rf $RPM_BUILD_ROOT
 %doc
 
 %changelog
-* Tue Dec 13 2016 Zalak Shah <zsshah@iu.edu> 1.59-1
+* Tue Jan 11 2017 Zalak Shah <zsshah@iu.edu> 1.59-1
 - CA release corresponding to IGTF 1.79 release.
 
 * Thu Oct 13 2016 Anand Padmanabhan <apadmana@illinois.edu> 1.58-1
