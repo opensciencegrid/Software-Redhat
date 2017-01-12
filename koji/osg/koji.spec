@@ -9,7 +9,7 @@
 
 Name: koji
 Version: 1.11.0
-Release: 1.3%{?dist}
+Release: 1.4%{?dist}
 License: LGPLv2 and GPLv2+
 # koji.ssl libs (from plague) are GPLv2+
 Summary: Build system tools
@@ -360,7 +360,7 @@ fi
 %endif
 
 %changelog
-* Thu Jan 12 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.11.0-1.3
+* Thu Jan 12 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.11.0-1.4
 - Add db-upgrade-1.10-to-1.11.patch to fix a failing constraint in DB upgrade
   script from 1.10 to 1.11
 
