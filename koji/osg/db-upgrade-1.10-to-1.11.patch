@@ -1,0 +1,42 @@
+From 51c701f1dd39600ef6fda1e4bc8ad2e661b0be7b Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Thu, 12 Jan 2017 09:59:46 -0600
+Subject: [PATCH] db-upgrade-1.10-to-1.11
+
+Fix 1.10 to 1.11 DB upgrade script
+
+The DB upgrade script errors out when modifying the `buildroot` table
+due to the following reason:
+- a new constraint is added to make sure container_type and
+  container_arch are either both NULL or neither NULL
+- the container_type column is new in 1.11, so when the migration script
+  adds it, all the values are NULL
+- the container_arch column is a renaming of the arch column, where arch
+  (for us) is either "i386" or "x86_64", never NULL
+These cause the constraint to immediately fail.
+
+Fix by setting container_type to 'chroot' (which is the container type
+the koji code adds for mock builds) where container_arch is non-NULL.
+---
+ docs/schema-upgrade-1.10-1.11.sql | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/docs/schema-upgrade-1.10-1.11.sql b/docs/schema-upgrade-1.10-1.11.sql
+index 6e0fa9e..1e58db7 100644
+--- a/docs/schema-upgrade-1.10-1.11.sql
++++ b/docs/schema-upgrade-1.10-1.11.sql
+@@ -95,10 +95,11 @@ ALTER TABLE buildroot DROP COLUMN dirtyness;
+ SELECT statement_timestamp(), 'Altering buildroot table (adding columns)' as msg;
+ ALTER TABLE buildroot ADD COLUMN br_type INTEGER NOT NULL DEFAULT 0;
+ ALTER TABLE buildroot ADD COLUMN cg_id INTEGER REFERENCES content_generator (id);
+ ALTER TABLE buildroot ADD COLUMN cg_version TEXT;
+ ALTER TABLE buildroot ADD COLUMN container_type TEXT;
++UPDATE buildroot SET container_type='chroot' WHERE container_arch IS NOT NULL and container_type IS NULL;
+ ALTER TABLE buildroot ADD COLUMN host_os TEXT;
+ ALTER TABLE buildroot ADD COLUMN host_arch TEXT;
+ ALTER TABLE buildroot ADD COLUMN extra TEXT;
+ 
+ SELECT statement_timestamp(), 'Altering buildroot table (altering columns)' as msg;
+-- 
+2.6.3
+

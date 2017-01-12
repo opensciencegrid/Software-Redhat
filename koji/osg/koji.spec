@@ -9,7 +9,7 @@
 
 Name: koji
 Version: 1.11.0
-Release: 1.2%{?dist}
+Release: 1.3%{?dist}
 License: LGPLv2 and GPLv2+
 # koji.ssl libs (from plague) are GPLv2+
 Summary: Build system tools
@@ -24,6 +24,7 @@ Patch105: koji_proxy_cert.patch
 Patch106: kojicli_setup_dns.patch
 Patch109: createrepo_sha1.patch
 Patch110: kojiweb_getfile_nontext_fix.patch
+Patch111: db-upgrade-1.10-to-1.11.patch
 
 Source: koji-%{version}.tar.bz2
 Source1: README.epel
@@ -190,6 +191,7 @@ cp %{SOURCE1} README.epel
 %patch106 -p1
 %patch109 -p1
 %patch110 -p1
+%patch111 -p1
 
 %build
 
@@ -358,6 +360,10 @@ fi
 %endif
 
 %changelog
+* Thu Jan 12 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.11.0-1.3
+- Add db-upgrade-1.10-to-1.11.patch to fix a failing constraint in DB upgrade
+  script from 1.10 to 1.11
+
 * Wed Jan 11 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.11.0-1.2
 - Add kojiweb_getfile_nontext_fix.patch to fix an error with 'getfile' kojiweb
   URLs
