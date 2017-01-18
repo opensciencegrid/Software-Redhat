@@ -1,19 +1,8 @@
-From c83d65f95338d33d2b6cb6390645269b82f51276 Mon Sep 17 00:00:00 2001
-From: Matyas Selmeci <matyas@cs.wisc.edu>
-Date: Thu, 8 Sep 2016 11:28:33 -0500
-Subject: [PATCH] kojid_setup_dns
-
----
- builder/kojid | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/builder/kojid b/builder/kojid
-index 446ab2e..6cc50e0 100755
---- a/builder/kojid
-+++ b/builder/kojid
-@@ -1117,11 +1117,12 @@ class BuildArchTask(BaseBuildTask):
-         #    raise koji.BuildError, "the distribution tag is not set in the original srpm"
- 
+Index: builder/kojid
+===================================================================
+--- builder/kojid.orig	2010-12-16 15:13:17.000000000 -0600
++++ builder/kojid	2011-10-11 14:17:03.000000000 -0500
+@@ -976,7 +976,8 @@
          self.updateWeight(name)
  
          rootopts = {
@@ -23,8 +12,3 @@ index 446ab2e..6cc50e0 100755
              }
          br_arch = self.find_arch(arch, self.session.host.getHost(), self.session.getBuildConfig(root, event=event_id))
          broot = BuildRoot(self.session, self.options, root, br_arch, self.id, **rootopts)
-         broot.workdir = self.workdir
- 
--- 
-2.6.3
-

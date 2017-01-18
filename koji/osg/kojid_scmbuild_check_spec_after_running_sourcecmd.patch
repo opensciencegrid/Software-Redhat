@@ -1,83 +1,52 @@
-From da3dc7e9b7ba17d8448a00eacab9adfc6a75b444 Mon Sep 17 00:00:00 2001
-From: Matyas Selmeci <matyas@cs.wisc.edu>
-Date: Thu, 8 Sep 2016 11:12:23 -0500
-Subject: [PATCH] kojid_scmbuild_check_spec_after_running_sourcecmd
-
-Check that the spec file is present and valid _after_ using the
-source_cmd to fetch it (for VCS builds).
----
- builder/kojid | 21 +++++++++++++--------
- 1 file changed, 13 insertions(+), 8 deletions(-)
-
-diff --git a/builder/kojid b/builder/kojid
-index 6cc50e0..f8bb0dd 100755
---- a/builder/kojid
-+++ b/builder/kojid
-@@ -474,17 +474,11 @@ class BuildRoot(object):
-         else:
-             logfile = 'root.log'
+Index: builder/kojid
+===================================================================
+--- builder/kojid.orig	2011-10-28 20:48:18.000000000 -0500
++++ builder/kojid	2011-10-28 21:00:46.846410302 -0500
+@@ -382,8 +382,7 @@
          msg = '; see %s for more information' % logfile
          return parseStatus(rv, 'mock') + msg
  
 -    def build_srpm(self, specfile, sourcedir, source_cmd):
 -        self.session.host.setBuildRootState(self.id,'BUILDING')
--        alt_sources_dir = "%s/SOURCES" % sourcedir
--        if self.options.support_rpm_source_layout and os.path.isdir(alt_sources_dir):
--            sources_dir = alt_sources_dir
--        else:
--            sources_dir = sourcedir
 +    def scm_call_source_cmd(self, sourcedir, source_cmd):
          if source_cmd:
              # call the command defined by source_cmd in the chroot so any required files not stored in
              # the SCM can be retrieved
-             chroot_sourcedir = sourcedir[len(self.rootdir()):]
-             args = ['--no-clean', '--unpriv', '--cwd', chroot_sourcedir, '--chroot']
-@@ -492,10 +486,19 @@ class BuildRoot(object):
-             rv = self.mock(args)
-             if rv:
+@@ -395,6 +394,10 @@
                  self.expire()
                  raise koji.BuildError, "error retrieving sources, %s" % self._mockResult(rv)
  
-+    def build_srpm(self, specfile, sourcedir, source_cmd):
-+        self.session.host.setBuildRootState(self.id,'BUILDING')
-+        alt_sources_dir = "%s/SOURCES" % sourcedir
-+        if self.options.support_rpm_source_layout and os.path.isdir(alt_sources_dir):
-+            sources_dir = alt_sources_dir
-+        else:
-+            sources_dir = sourcedir
-+        self.scm_call_source_cmd(sourcedir, source_cmd)
 +
-         args = ['--no-clean', '--buildsrpm', '--spec', specfile, '--sources', sources_dir,
-                 '--target', 'noarch']
++
++    def build_srpm(self, specfile, sourcedir):
++        self.session.host.setBuildRootState(self.id,'BUILDING')
+         args = ['--no-clean', '--buildsrpm', '--spec', specfile, '--sources', sourcedir]
  
          rv = self.mock(args)
+@@ -1515,7 +1518,7 @@
  
-@@ -4313,10 +4316,12 @@ class BuildSRPMFromSCMTask(BaseBuildTask):
-         self.chownTree(scmdir, uid, gid)
+         #build srpm
+         self.logger.debug("Running srpm build")
+-        buildroot.build_srpm(specfile, specdir, None)
++        buildroot.build_srpm(specfile, specdir)
  
-         # Hook for patching spec file in place
-         self.patch_scm_source(sourcedir, logfile, opts)
+         srpms = glob.glob('%s/*.src.rpm' % buildroot.resultdir())
+         if len(srpms) == 0:
+@@ -2150,6 +2153,8 @@
+             for filename in filenames:
+                 os.chown(os.path.join(dirpath, filename), uid, gid)
  
 +        # Run the source_cmd
 +        broot.scm_call_source_cmd(sourcedir, scm.source_cmd)
          # Find and verify that there is only one spec file.
          spec_files = glob.glob("%s/*.spec" % sourcedir)
-         if not spec_files and self.options.support_rpm_source_layout:
-             # also check SPECS dir
-             spec_files = glob.glob("%s/SPECS/*.spec" % sourcedir)
-@@ -4329,11 +4334,11 @@ class BuildSRPMFromSCMTask(BaseBuildTask):
-         # Run spec file sanity checks.  Any failures will throw a BuildError
-         self.spec_sanity_checks(spec_file)
+         if len(spec_files) == 0:
+@@ -2163,7 +2168,7 @@
  
          #build srpm
          self.logger.debug("Running srpm build")
 -        broot.build_srpm(spec_file, sourcedir, scm.source_cmd)
-+        broot.build_srpm(spec_file, sourcedir, None)
++        broot.build_srpm(spec_file, sourcedir)
  
          srpms = glob.glob('%s/*.src.rpm' % broot.resultdir())
          if len(srpms) == 0:
-             raise koji.BuildError, "No srpms found in %s" % sourcedir
-         elif len(srpms) > 1:
--- 
-2.6.3
-

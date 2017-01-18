@@ -1,32 +1,16 @@
-From 3fdb6eb589b543a9a3c6c384c813017f630d08b5 Mon Sep 17 00:00:00 2001
-From: Matyas Selmeci <matyas@cs.wisc.edu>
-Date: Thu, 8 Sep 2016 10:55:53 -0500
-Subject: [PATCH] koji_passwd_cache
-
-Cache passwords to decrypt SSL key in memory.
----
- koji/ssl/SSLCommon.py | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
-
-Index: koji-1.11.0/koji/ssl/SSLCommon.py
-===================================================================
---- koji-1.11.0.orig/koji/ssl/SSLCommon.py	2016-12-08 22:22:14.000000003 -0600
-+++ koji-1.11.0/koji/ssl/SSLCommon.py	2017-01-03 14:44:52.000000003 -0600
-@@ -17,27 +17,49 @@
- import os, sys
- from OpenSSL import SSL
- import SSLConnection
+--- koji/ssl/SSLCommon.py	2011-08-08 12:09:28.000000000 -0500
++++ koji/ssl/SSLCommon.py	2011-08-08 12:11:30.000000000 -0500
+@@ -20,6 +20,7 @@
  import httplib
  import socket
+ import SocketServer
 +import getpass
  
  def our_verify(connection, x509, errNum, errDepth, preverifyOK):
      # print "Verify: errNum = %s, errDepth = %s, preverifyOK = %s" % (errNum, errDepth, preverifyOK)
- 
-     # preverifyOK should tell us whether or not the client's certificate
+@@ -28,6 +29,24 @@
      # correctly authenticates against the CA chain
      return preverifyOK
- 
  
 +cached_passwd = None
 +def passwd_callback(max_length, ask_twice, userdata):
@@ -46,19 +30,14 @@ Index: koji-1.11.0/koji/ssl/SSLCommon.py
 +
 +    globals()['cached_passwd'] = typed_pass
 +    return typed_pass
-+
-+
+ 
  def CreateSSLContext(certs):
      key_and_cert = certs['key_and_cert']
-     peer_ca_cert = certs['peer_ca_cert']
-     for f in key_and_cert, peer_ca_cert:
-         if f and not os.access(f, os.R_OK):
+@@ -38,6 +57,7 @@
              raise StandardError, "%s does not exist or is not readable" % f
  
-     ctx = SSL.Context(SSL.SSLv23_METHOD)   # Use best possible TLS Method
+     ctx = SSL.Context(SSL.SSLv3_METHOD)   # SSLv3 only
 +    ctx.set_passwd_cb(passwd_callback, None)
      ctx.use_certificate_file(key_and_cert)
      ctx.use_privatekey_file(key_and_cert)
-     ctx.load_verify_locations(peer_ca_cert)
-     verify = SSL.VERIFY_PEER | SSL.VERIFY_FAIL_IF_NO_PEER_CERT
-     ctx.set_verify(verify, our_verify)
+     ctx.load_client_ca(ca_cert)

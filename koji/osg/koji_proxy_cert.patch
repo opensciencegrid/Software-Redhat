@@ -1,29 +1,13 @@
-From 48d6ff535e9ce0a9e65c69ba7641ee2b9a6496d2 Mon Sep 17 00:00:00 2001
-From: Matyas Selmeci <matyas@cs.wisc.edu>
-Date: Thu, 8 Sep 2016 11:18:34 -0500
-Subject: [PATCH] koji_proxy_cert
-
----
- koji/ssl/SSLCommon.py | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/koji/ssl/SSLCommon.py b/koji/ssl/SSLCommon.py
-index 1fc23b3..cf346fc 100644
---- a/koji/ssl/SSLCommon.py
-+++ b/koji/ssl/SSLCommon.py
-@@ -56,11 +56,11 @@ def CreateSSLContext(certs):
-         if f and not os.access(f, os.R_OK):
-             raise StandardError, "%s does not exist or is not readable" % f
+Index: koji/ssl/SSLCommon.py
+===================================================================
+--- koji/ssl/SSLCommon.py.orig	2012-10-31 18:26:15.000000003 -0500
++++ koji/ssl/SSLCommon.py	2012-10-31 18:26:51.000000003 -0500
+@@ -58,7 +58,7 @@
  
-     ctx = SSL.Context(SSL.SSLv23_METHOD)   # Use best possible TLS Method
+     ctx = SSL.Context(SSL.SSLv3_METHOD)   # SSLv3 only
      ctx.set_passwd_cb(passwd_callback, None)
 -    ctx.use_certificate_file(key_and_cert)
 +    ctx.use_certificate_chain_file(key_and_cert)
      retries_left = 2
      while True:
          try:
-             ctx.use_privatekey_file(key_and_cert)
-             break
--- 
-2.6.3
-

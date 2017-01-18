@@ -1,52 +1,32 @@
 %{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
 
-%if 0%{?fedora} >= 23 || 0%{?rhel} >= 7
-%global use_systemd 1
-%else
-%global use_systemd 0
-%global install_opt TYPE=sysv
-%endif
-
 Name: koji
-Version: 1.11.0
-Release: 1.4%{?dist}
+Version: 1.6.0
+Release: 10%{?dist}
 License: LGPLv2 and GPLv2+
 # koji.ssl libs (from plague) are GPLv2+
 Summary: Build system tools
 Group: Applications/System
-URL: https://pagure.io/fork/ausil/koji/branch/fedora-infra
+URL: http://fedorahosted.org/koji
 Patch0: fedora-config.patch
-Patch101: koji_passwd_cache.patch
-Patch102: kojid_setup_dns.patch
-Patch103: kojid_scmbuild_check_spec_after_running_sourcecmd.patch
-Patch104: koji_passwd_retry.patch
-Patch105: koji_proxy_cert.patch
-Patch106: kojicli_setup_dns.patch
-Patch109: createrepo_sha1.patch
-Patch110: kojiweb_getfile_nontext_fix.patch
-Patch111: db-upgrade-1.10-to-1.11.patch
+Patch1: koji_passwd_cache.patch
+Patch2: kojid_setup_dns.patch
+Patch3: kojid_scmbuild_check_spec_after_running_sourcecmd.patch
+Patch4: koji_passwd_retry.patch
+Patch5: koji_proxy_cert.patch
+Patch6: kojicli_setup_dns.patch
+Patch7: koji_no_sslv3.patch
+Patch8: pkgorigins_filename.patch
+Patch9: createrepo_sha1.patch
 
-Source: koji-%{version}.tar.bz2
-Source1: README.epel
-
+Source: https://fedorahosted.org/releases/k/o/koji/%{name}-%{version}.tar.bz2
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch: noarch
 Requires: python-krbV >= 1.0.13
 Requires: rpm-python
 Requires: pyOpenSSL
-Requires: python-requests
-Requires: python-requests-kerberos
 Requires: python-urlgrabber
-Requires: python-dateutil
 BuildRequires: python
-BuildRequires: python-sphinx
-%if %{use_systemd}
-BuildRequires: systemd
-BuildRequires: pkgconfig
-%endif
-%if 0%{?fedora} || 0%{?rhel} >= 7
-Requires: python-libcomps
-%endif
 
 %description
 Koji is a system for building and tracking RPMS.  The base package
@@ -58,11 +38,8 @@ Group: Applications/Internet
 License: LGPLv2 and GPLv2
 # rpmdiff lib (from rpmlint) is GPLv2 (only)
 Requires: httpd
-Requires: mod_wsgi
+Requires: mod_python
 Requires: postgresql-python
-%if 0%{?rhel} == 5
-Requires: python-simplejson
-%endif
 Requires: %{name} = %{version}-%{release}
 
 %description hub
@@ -71,17 +48,8 @@ koji-hub is the XMLRPC interface to the koji database
 %package hub-plugins
 Summary: Koji hub plugins
 Group: Applications/Internet
-License: LGPLv2
 Requires: %{name} = %{version}-%{release}
 Requires: %{name}-hub = %{version}-%{release}
-Requires: python-qpid >= 0.7
-%if 0%{?rhel} >= 6
-Requires: python-qpid-proton
-%endif
-%if 0%{?rhel} == 5
-Requires: python-ssl
-%endif
-Requires: cpio
 
 %description hub-plugins
 Plugins to the koji XMLRPC interface
@@ -93,29 +61,26 @@ License: LGPLv2 and GPLv2+
 #mergerepos (from createrepo) is GPLv2+
 Requires: %{name} = %{version}-%{release}
 Requires: mock >= 0.9.14
-Requires(pre): /usr/sbin/useradd
-Requires: squashfs-tools
-%if %{use_systemd}
-Requires(post): systemd
-Requires(preun): systemd
-Requires(postun): systemd
-%else
 Requires(post): /sbin/chkconfig
 Requires(post): /sbin/service
 Requires(preun): /sbin/chkconfig
 Requires(preun): /sbin/service
-%endif
+Requires(pre): /usr/sbin/useradd
 Requires: /usr/bin/cvs
 Requires: /usr/bin/svn
 Requires: /usr/bin/git
+Requires: rpm-build
+Requires: redhat-rpm-config
+Requires: pykickstart                                                                               
+Requires: pycdio
 Requires: python-cheetah
-%if 0%{?rhel} == 5
-Requires: createrepo >= 0.4.11-2
-Requires: python-hashlib
-Requires: python-createrepo
+%if 0%{?fedora} || 0%{?rhel} > 5
+Requires: createrepo >= 0.9.6
 %endif
-%if 0%{?fedora} >= 9 || 0%{?rhel} > 5
-Requires: createrepo >= 0.9.2
+%if 0%{?rhel} == 5
+Requires: python-createrepo >= 0.9.6
+Requires: python-hashlib
+Requires: createrepo
 %endif
 
 %description builder
@@ -127,23 +92,14 @@ Summary: Koji virtual machine management daemon
 Group: Applications/System
 License: LGPLv2
 Requires: %{name} = %{version}-%{release}
-%if %{use_systemd}
-Requires(post): systemd
-Requires(preun): systemd
-Requires(postun): systemd
-%else
 Requires(post): /sbin/chkconfig
 Requires(post): /sbin/service
 Requires(preun): /sbin/chkconfig
 Requires(preun): /sbin/service
-%endif
 Requires: libvirt-python
 Requires: libxml2-python
-%if 0%{?fedora}
-#Red Hat only ships on x86_64
-Requires: /usr/bin/virt-clone
+Requires: python-virtinst
 Requires: qemu-img
-%endif
 
 %description vm
 koji-vm contains a supplemental build daemon that executes certain tasks in a
@@ -152,14 +108,8 @@ virtual machine. This package is not required for most installations.
 %package utils
 Summary: Koji Utilities
 Group: Applications/Internet
-License: LGPLv2
 Requires: postgresql-python
 Requires: %{name} = %{version}-%{release}
-%if %{use_systemd}
-Requires(post): systemd
-Requires(preun): systemd
-Requires(postun): systemd
-%endif
 
 %description utils
 Utilities for the Koji system
@@ -167,9 +117,8 @@ Utilities for the Koji system
 %package web
 Summary: Koji Web UI
 Group: Applications/Internet
-License: LGPLv2
 Requires: httpd
-Requires: mod_wsgi
+Requires: mod_python
 Requires: mod_auth_kerb
 Requires: postgresql-python
 Requires: python-cheetah
@@ -181,23 +130,24 @@ koji-web is a web UI to the Koji system.
 
 %prep
 %setup -q
-cp %{SOURCE1} README.epel
-%patch0 -p1 -b orig
-%patch101 -p1
-%patch102 -p1
-%patch103 -p1
-%patch104 -p1
-%patch105 -p1
-%patch106 -p1
-%patch109 -p1
-%patch110 -p1
-%patch111 -p1
+%patch0 -p1 -b .orig
+%patch1 -p0
+%patch2 -p0
+%patch3 -p0
+%patch4 -p0
+%patch5 -p0
+%patch6 -p0
+%patch7 -p1
+%patch8 -p1
+%if 0%{?rhel} > 5
+%patch9 -p1
+%endif
 
 %build
 
 %install
 rm -rf $RPM_BUILD_ROOT
-make DESTDIR=$RPM_BUILD_ROOT %{?install_opt} install
+make DESTDIR=$RPM_BUILD_ROOT install
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -207,125 +157,73 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/*
 %{python_sitelib}/%{name}
 %config(noreplace) %{_sysconfdir}/koji.conf
-%dir %{_sysconfdir}/koji.conf.d
 %doc docs Authors COPYING LGPL
 
 %files hub
 %defattr(-,root,root)
 %{_datadir}/koji-hub
-%dir %{_libexecdir}/koji-hub
-%{_libexecdir}/koji-hub/rpmdiff
+%{_libexecdir}/koji-hub/
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/kojihub.conf
-%dir %{_sysconfdir}/koji-hub
 %config(noreplace) %{_sysconfdir}/koji-hub/hub.conf
-%dir %{_sysconfdir}/koji-hub/hub.conf.d
 
 %files hub-plugins
 %defattr(-,root,root)
 %dir %{_prefix}/lib/koji-hub-plugins
 %{_prefix}/lib/koji-hub-plugins/*.py*
-%dir %{_sysconfdir}/koji-hub/plugins
-%{_sysconfdir}/koji-hub/plugins/*.conf
+%dir %{_sysconfdir}/koji-hub/plugins/
+%config(noreplace) %{_sysconfdir}/koji-hub/plugins/messagebus.conf
+%config(noreplace) %{_sysconfdir}/koji-hub/plugins/rpm2maven.conf
 
 %files utils
 %defattr(-,root,root)
 %{_sbindir}/kojira
-%if %{use_systemd}
-%{_unitdir}/kojira.service
-%else
+%{_sbindir}/koji-gc
+%{_sbindir}/koji-shadow
 %{_initrddir}/kojira
 %config(noreplace) %{_sysconfdir}/sysconfig/kojira
-%endif
 %dir %{_sysconfdir}/kojira
 %config(noreplace) %{_sysconfdir}/kojira/kojira.conf
-%{_sbindir}/koji-gc
 %dir %{_sysconfdir}/koji-gc
 %config(noreplace) %{_sysconfdir}/koji-gc/koji-gc.conf
-%{_sbindir}/koji-shadow
-%dir %{_sysconfdir}/koji-shadow
 %config(noreplace) %{_sysconfdir}/koji-shadow/koji-shadow.conf
 
 %files web
 %defattr(-,root,root)
 %{_datadir}/koji-web
-%dir %{_sysconfdir}/kojiweb
-%config(noreplace) %{_sysconfdir}/kojiweb/web.conf
-%config(noreplace) %{_sysconfdir}/httpd/conf.d/kojiweb.conf
-%dir %{_sysconfdir}/kojiweb/web.conf.d
+%{_sysconfdir}/kojiweb
+%config(noreplace) /etc/httpd/conf.d/kojiweb.conf
 
 %files builder
 %defattr(-,root,root)
 %{_sbindir}/kojid
-%dir %{_libexecdir}/kojid
-%{_libexecdir}/kojid/mergerepos
-%defattr(-,root,root)
-%dir %{_prefix}/lib/koji-builder-plugins
-%{_prefix}/lib/koji-builder-plugins/*.py*
-%if %{use_systemd}
-%{_unitdir}/kojid.service
-%else
 %{_initrddir}/kojid
+%{_libexecdir}/kojid/
 %config(noreplace) %{_sysconfdir}/sysconfig/kojid
-%endif
 %dir %{_sysconfdir}/kojid
-%dir %{_sysconfdir}/kojid/plugins
 %config(noreplace) %{_sysconfdir}/kojid/kojid.conf
-%config(noreplace) %{_sysconfdir}/kojid/plugins/runroot.conf
-%attr(-,kojibuilder,kojibuilder) %{_sysconfdir}/mock/koji
+%attr(-,kojibuilder,kojibuilder) /etc/mock/koji
 
 %pre builder
 /usr/sbin/useradd -r -s /bin/bash -G mock -d /builddir -M kojibuilder 2>/dev/null ||:
 
-%if %{use_systemd}
-
-%post builder
-%systemd_post kojid.service
-
-%preun builder
-%systemd_preun kojid.service
-
-%postun builder
-%systemd_postun kojid.service
-
-%else
-
 %post builder
 /sbin/chkconfig --add kojid
+/sbin/service kojid condrestart &> /dev/null || :
 
 %preun builder
 if [ $1 = 0 ]; then
   /sbin/service kojid stop &> /dev/null
   /sbin/chkconfig --del kojid
 fi
-%endif
 
 %files vm
 %defattr(-,root,root)
-%doc README.epel
 %{_sbindir}/kojivmd
-#dir %{_datadir}/kojivmd
-%{_datadir}/kojivmd/kojikamid
-%if %{use_systemd}
-%{_unitdir}/kojivmd.service
-%else
+%{_datadir}/kojivmd
 %{_initrddir}/kojivmd
 %config(noreplace) %{_sysconfdir}/sysconfig/kojivmd
-%endif
 %dir %{_sysconfdir}/kojivmd
 %config(noreplace) %{_sysconfdir}/kojivmd/kojivmd.conf
-
-%if %{use_systemd}
-
-%post vm
-%systemd_post kojivmd.service
-
-%preun vm
-%systemd_preun kojivmd.service
-
-%postun vm
-%systemd_postun kojivmd.service
-
-%else
 
 %post vm
 /sbin/chkconfig --add kojivmd
@@ -335,20 +233,7 @@ if [ $1 = 0 ]; then
   /sbin/service kojivmd stop &> /dev/null
   /sbin/chkconfig --del kojivmd
 fi
-%endif
 
-%if %{use_systemd}
-
-%post utils
-%systemd_post kojira.service
-
-%preun utils
-%systemd_preun kojira.service
-
-%postun utils
-%systemd_postun kojira.service
-
-%else
 %post utils
 /sbin/chkconfig --add kojira
 /sbin/service kojira condrestart &> /dev/null || :
@@ -357,92 +242,8 @@ if [ $1 = 0 ]; then
   /sbin/service kojira stop &> /dev/null || :
   /sbin/chkconfig --del kojira
 fi
-%endif
 
 %changelog
-* Thu Jan 12 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.11.0-1.4
-- Add db-upgrade-1.10-to-1.11.patch to fix a failing constraint in DB upgrade
-  script from 1.10 to 1.11
-
-* Wed Jan 11 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.11.0-1.2
-- Add kojiweb_getfile_nontext_fix.patch to fix an error with 'getfile' kojiweb
-  URLs
-
-* Tue Jan 03 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.11.0-1.1
-- Merge OSG changes
-
-* Fri Dec 09 2016 Dennis Gilmore <dennis@ausil.us> - 1.11.0-1
-- update to 1.11.0
-- setup fedora config for kerberos and flag day
-
-* Thu Oct 04 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.10.1-10.1
-- Merge OSG changes
-    - Drop koji_no_sslv3.patch
-    - Drop pkgorigins_filename.patch
-    - Update other OSG patches
-
-* Wed Sep 28 2016 Adam Miller <maxamillion@fedoraproject.org> - 1.10.1-13
-- Patch new-chroot functionality into runroot plugin
-
-* Tue Aug 23 2016 Dennis Gilmore <dennis@ausil.us> - 1.10.1-12
-- add patch to disable bind mounting into image tasks chroots
-
-* Tue Jul 19 2016 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.10.1-11
-- https://fedoraproject.org/wiki/Changes/Automatic_Provides_for_Python_RPM_Packages
-
-* Thu May 26 2016 Dennis Gilmore <dennis@ausil.us> - 1.10.1-10
-- add patch to enable dns in runroot chroots
-
-* Tue May 24 2016 Dennis Gilmore <dennis@ausil.us> - 1.10.1-9
-- update to git master upstream, add lmc cosmetic fixes
-- add patch to disable login in koji-web
-
-* Fri Apr 08 2016 Dennis Gilmore <dennis@ausil.us> - 1.10.1-8
-- do not remove the - for project on livemedia
-- fix the sending of messages on image completion
-
-* Thu Apr 07 2016 Dennis Gilmore <dennis@ausil.us> - 1.10.1-7
-- --product had to be --project
-- add missing Requires for koji-builder on python2-multilib
-
-* Wed Apr 06 2016 Dennis Gilmore <dennis@ausil.us> - 1.10.1-6
-- add --product to livemedia-creator calls rhbz#1315110
-
-* Wed Apr 06 2016 Dennis Gilmore <dennis@ausil.us> - 1.10.1-5
-- enable dns in runroots
-- add koji signed repo support
-- Run plugin callbacks when image builds finish
-
-* Thu Mar 03 2016 Dennis Gilmore <dennis@ausil.us> - 1.10.1-4
-- add a patch to install the runroot builder plugin in the correct place
-
-* Tue Mar 01 2016 Dennis Gilmore <dennis@ausil.us> - 1.10.1-3
-- update to git e8201aac8294e6125a73504886b0800041b58868
-- https://pagure.io/fork/ausil/koji/branch/fedora-infra
-
-* Thu Feb 04 2016 Fedora Release Engineering <releng@fedoraproject.org> - 1.10.1-2
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
-
-* Tue Nov 17 2015 Dennis Gilmore <dennis@ausil.us> - 1.10.1-1
-- update to 1.10.1
-- Requires yum in the cli rhbz#1230888
-
-* Thu Sep 24 2015 Kalev Lember <klember@redhat.com> - 1.10.0-2
-- Backport two patches to fix ClientSession SSL errors
-
-* Thu Jul 16 2015 Dennis Gilmore <dennis@ausil.us> - 1.10.0=1
-- update to 1.10.0 release
-
-* Mon Jul 06 2015 Dennis Gilmore <dennis@ausil.us> - 1.9.0-13.20150607gitf426fdb
-- update the git snapshot to latest head
-- enable systemd units for f23 up
-
-* Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.9.0-12.20150423git52a0188
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
-
-* Thu Apr 23 2015 Dennis Gilmore <dennis@ausil.us> - 1.9.0-11.20150423git52a0188
-- update to latest git
-
 * Fri Jan 30 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6.0-10
 - Patch kojid to request sha1 when running createrepo, for el5 compatibility
   (SOFTWARE-1442)
@@ -451,88 +252,17 @@ fi
 - Bring in upstream fix to parse repomd.xml for pkgorigins filename,
   required for el6 koji upgrade (SOFTWARE-1442)
 
-* Tue Jan 27 2015 Dennis Gilmore <dennis@ausil.us> - 1.9.0-10.gitcd45e886
-- update to git tarball
-
-* Thu Dec 11 2014 Dennis Gilmore <dennis@ausil.us> - 1.9.0-9
-- add upstream patch switching to TLS1 from sslv3
-
 * Thu Oct 16 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.6.0-8
 - Add patch to allow using TLSv1 instead of SSLv3 (SOFTWARE-1637)
-
-* Tue Sep 30 2014 Dennis Gilmore <dennis@ausil.us> - 1.9.0-8
-- don't exclude koji-vm from ppc and ppc64
-
-* Fri Sep 26 2014 Till Maas <opensource@till.name> - 1.9.0-7
-- Use https for kojipkgs
-- Update URL
-
-* Mon Aug 04 2014 Dennis Gilmore <dennis@ausil.us> - 1.9.0-6
-- add patch to fix kickstart parsing
-
-* Mon Aug 04 2014 Dennis Gilmore <dennis@ausil.us> - 1.9.0-5
-- add upstream patches for better docker support
-
-* Tue Jul 29 2014 Dennis Gilmore <dennis@ausil.us> - 1.9.0-4
-- add upstream patch to compress docker images
-
-* Thu Jun 12 2014 Dennis Gilmore <dennis@ausil.us> - 1.9.0-3
-- add patch to move builder workdir to /var/tmp
-- add support for making raw.xz images
-
-* Sun Jun 08 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.9.0-2
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
-
-* Mon Mar 24 2014 Dennis Gilmore <dennis@ausil.us> - 1.9.0-1
-- update to upstream 1.9.0
-
-* Wed Jul 31 2013 Dennis Gilmore <dennis@ausil.us> - 1.8.0-2
-- update from git snapshot
 
 * Wed May 22 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.6.0-7
 - Add use_host_resolv to opts in koji cli so koji --mock-config makes configs with DNS set up
 
-* Mon Apr 01 2013 Dennis Gilmore <dennis@ausil.us> - 1.8.0-1
-- update to upstream 1.8.0
-
-* Thu Feb 14 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.7.1-3
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
-
-* Sun Jan 20 2013 Dennis Gilmore <dennis@ausil.us> - 1.7.1-2
-- revert "avoid baseurl option in createrepo" patch
-- fix integer overflow issue in checkUpload handler
-
-* Wed Nov 21 2012 Dennis Gilmore <dennis@ausil.us> - 1.7.1-1
-- update to upstream 1.7.1 release
-
 * Wed Oct 31 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.6.0-6
 - Add Brian Bockelman's patch to allow using proxy certs
 
-* Sat Sep 01 2012 Dennis Gilmore <dennis@ausil.us> - 1.7.0-7
-- add the patch that we had previously had hotapplied in fedora infra
-
-* Sat Sep 01 2012 Dennis Gilmore <dennis@ausil.us> - 1.7.0-6
-- remove even trying to make devices i the chroots
-
-* Sat Sep 01 2012 Dennis Gilmore <dennis@ausil.us> - 1.7.0-5
-- add patch to check for /dev/loopX before making them
-
-* Fri Aug 31 2012 Dennis Gilmore <dennis@ausil.us> - 1.7.0-4
-- add patch to only make /dev/urandom if it doesnt exist
-- add upstream patch for taginfo fixes with older servers
-
-* Thu Jul 19 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.7.0-3
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
-
 * Wed Jun 13 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.6.0-5
 - Allow user to retry entering SSL key password
-
-* Tue Jun 05 2012 Dennis Gilmore <dennis@ausil.us> - 1.7.0-2
-- use topurl not pkgurl in the fedora config
-
-* Fri Jun 01 2012 Dennis Gilmore <dennis@ausil.us> - 1.7.0-1
-- update to 1.7.0 many bugfixes and improvements
-- now uses mod_wsgi
 
 * Fri Oct 28 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.6.0-4
 - add patch to check for spec file only after running source_cmd in a build from an scm
@@ -542,10 +272,6 @@ fi
 
 * Mon Aug 08 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.6.0-2
 - Cache passwords to decrypt SSL key in memory.
-
-* Mon Jan 03 2011 Dennis Gilmore <dennis@ausil.us> - 1.6.0-1.1
-- drop Requires on qemu-img on epel for koji-vm
-- add readme note on epel
 
 * Fri Dec 17 2010 Dennis Gilmore <dennis@ausil.us> - 1.6.0-1
 - update to 1.6.0

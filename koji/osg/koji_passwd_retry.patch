@@ -1,21 +1,9 @@
-From 069c5629142ae59ec6b1b06f8d406f52d47682d4 Mon Sep 17 00:00:00 2001
-From: Matyas Selmeci <matyas@cs.wisc.edu>
-Date: Thu, 8 Sep 2016 11:16:36 -0500
-Subject: [PATCH] koji_passwd_retry
-
-Allow retrying passphrase for private key.
----
- koji/ssl/SSLCommon.py | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
-
-diff --git a/koji/ssl/SSLCommon.py b/koji/ssl/SSLCommon.py
-index 254a9c5..1fc23b3 100644
---- a/koji/ssl/SSLCommon.py
-+++ b/koji/ssl/SSLCommon.py
-@@ -57,11 +57,22 @@ def CreateSSLContext(certs):
-             raise StandardError, "%s does not exist or is not readable" % f
- 
-     ctx = SSL.Context(SSL.SSLv23_METHOD)   # Use best possible TLS Method
+Index: koji/ssl/SSLCommon.py
+===================================================================
+--- koji/ssl/SSLCommon.py.orig	2012-06-13 14:08:18.000000003 -0500
++++ koji/ssl/SSLCommon.py	2012-06-13 14:29:07.000000003 -0500
+@@ -59,7 +59,18 @@
+     ctx = SSL.Context(SSL.SSLv3_METHOD)   # SSLv3 only
      ctx.set_passwd_cb(passwd_callback, None)
      ctx.use_certificate_file(key_and_cert)
 -    ctx.use_privatekey_file(key_and_cert)
@@ -31,11 +19,6 @@ index 254a9c5..1fc23b3 100644
 +                retries_left -= 1
 +            else:
 +                raise err
+     ctx.load_client_ca(ca_cert)
      ctx.load_verify_locations(peer_ca_cert)
      verify = SSL.VERIFY_PEER | SSL.VERIFY_FAIL_IF_NO_PEER_CERT
-     ctx.set_verify(verify, our_verify)
-     ctx.set_verify_depth(10)
-     ctx.set_options(SSL.OP_NO_SSLv3 | SSL.OP_NO_SSLv2) # disable SSLv2 and SSLv3
--- 
-2.6.3
-
