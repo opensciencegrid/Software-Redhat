@@ -1,0 +1,36 @@
+From 4d3c1708d75aac14db1ae6bedda7787c6261d613 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Wed, 11 Jan 2017 15:09:50 -0600
+Subject: [PATCH] kojiweb_getfile_nontext_fix
+
+Fix kojiweb error using getfile to download non-text files
+
+URLs like
+http://koji-hub-testing.chtc.wisc.edu/koji/getfile?taskID=228280&name=osg-build-1.7.1-1.osg33.el6.noarch.rpm
+fail with a 500 Internal Server Error when `name` refers to an RPM or
+other binary file. (Those URLs do still work for log files). The error
+given is "TypeError: append() takes exactly one argument (2 given)"
+---
+ www/kojiweb/index.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/www/kojiweb/index.py b/www/kojiweb/index.py
+index 0ac8902..a88a571 100644
+--- a/www/kojiweb/index.py
++++ b/www/kojiweb/index.py
+@@ -735,11 +735,11 @@ def getfile(environ, taskID, name, offset=None, size=None):
+         if name.endswith('.log') or name.endswith('.ks'):
+             ctype = 'text/plain'
+         else:
+             ctype = 'application/octet-stream'
+     if ctype != 'text/plain':
+-        environ['koji.headers'].append('Content-Disposition', 'attachment; filename=%s' % name)
++        environ['koji.headers'].append(['Content-Disposition', 'attachment; filename=%s' % name])
+     environ['koji.headers'].append(['Content-Type', ctype])
+ 
+     file_size = int(file_info['st_size'])
+     if offset is None:
+         offset = 0
+-- 
+2.6.3
+
