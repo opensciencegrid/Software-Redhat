@@ -1,5 +1,5 @@
 Name:           vo-client
-Version:        69
+Version:        70
 Release:        1%{?dist}
 Summary:        Contains vomses file for use with user authentication and edg-mkgridmap.conf file that contains configuration information for edg-mkgridmap.
 
@@ -85,6 +85,10 @@ rm -rf $RPM_BUILD_ROOT
 %attr(0600,tomcat,tomcat) %config(noreplace) %{_sysconfdir}/gums/gums.config.template
 
 %changelog
+* Wed Jan 18 2017 Carl Edquist <edquist@cs.wisc.edu> - 70-1
+- Update to vo-client 70 (SOFTWARE-2567)
+  - Remove MCDRD VO
+
 * Wed Oct 05 2016 Carl Edquist <edquist@cs.wisc.edu> - 69-1
 - Update to vo-client 69 (SOFTWARE-2473)
   - Removed LBNE
