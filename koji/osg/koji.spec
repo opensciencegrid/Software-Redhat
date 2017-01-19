@@ -9,7 +9,7 @@
 
 Name: koji
 Version: 1.11.0
-Release: 1.4%{?dist}
+Release: 1.5%{?dist}
 License: LGPLv2 and GPLv2+
 # koji.ssl libs (from plague) are GPLv2+
 Summary: Build system tools
@@ -34,7 +34,7 @@ BuildArch: noarch
 Requires: python-krbV >= 1.0.13
 Requires: rpm-python
 Requires: pyOpenSSL
-Requires: python-requests
+Requires: python-requests >= 2.6.0
 Requires: python-requests-kerberos
 Requires: python-urlgrabber
 Requires: python-dateutil
@@ -360,6 +360,9 @@ fi
 %endif
 
 %changelog
+* Thu Jan 19 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.11.0-1.5
+- Require python-requests-2.6.0 (fixes "call 8 (rawUpload) failed: syntax error: line 1, column 49" error in kojid)
+
 * Thu Jan 12 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.11.0-1.4
 - Add db-upgrade-1.10-to-1.11.patch to fix a failing constraint in DB upgrade
   script from 1.10 to 1.11
