@@ -1,5 +1,5 @@
 Name:      rsv-perfsonar
-Version:   1.1.4
+Version:   1.2.1
 Release:   1%{?dist}
 Summary:   RSV Metrics to monitor pefsonar
 Packager:  OSG-Software
@@ -26,11 +26,6 @@ Requires(preun): initscripts
 Requires: python-simplejson
 %{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
 %{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
-%endif
-
-# Cream gahp is in a separate package than condor. As May 2016 not available in rhel7
-%if 0%{?rhel} < 7
-Requires: condor-cream-gahp
 %endif
 
 %description
@@ -85,6 +80,10 @@ pip install messaging  --upgrade
 
 
 %changelog
+* Mon Jan 23 2017 <efajardo@physics.ucsd.edu> 1.2.1-1
+- Added the option to select which event-types go into the mq
+- Added knob for controlling the max size of the events that go into the mq
+
 * Tue Sep 06 2016 <efajardo@physics.ucsd.edu> 1.1.4-1
 - Fixed a bug in which the maxStartTime of a probe was hardcoded to 24 hours.
 
