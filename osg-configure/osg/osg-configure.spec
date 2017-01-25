@@ -1,6 +1,6 @@
 Summary: Package for configure-osg and associated scripts
 Name: osg-configure
-Version: 1.5.4
+Version: 1.6.0
 Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
@@ -337,6 +337,13 @@ fi
 
 
 %changelog
+* Tue Jan 24 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6.0-1
+- Improve Resource Entry section (SOFTWARE-2562)
+-  require 'queue'
+-  add template in comments
+-  add cpucount and maxmemory attributes
+-  add subclusters and vo_tag attributes
+
 * Tue Dec 27 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.4-1
 - Don't require attributes in Resource Entry sections that aren't used in AGIS or the CE collector (SOFTWARE-2554)
 
