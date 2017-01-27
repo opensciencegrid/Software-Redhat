@@ -25,12 +25,15 @@
 Summary: CernVM File System
 Name: cvmfs
 Version: 2.3.2
-Release: 1%{?dist}
+Release: 1.1%{?dist}
 Source0: https://ecsft.cern.ch/dist/cvmfs/%{name}-%{version}.tar.gz
 %if 0%{?selinux_cvmfs}
 Source1: cvmfs.te
 Source2: cvmfs.fc
 %endif
+Patch0: CVM-1108.patch
+Patch1: CVM-1153.patch
+Patch2: CVM-1165.patch
 Group: Applications/System
 License: BSD
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -177,6 +180,9 @@ CernVM-FS unit tests binary.  This RPM is not required except for testing.
 
 %prep
 %setup -q
+%patch0 -p1
+%patch1 -p1
+%patch2 -p1
 
 %if 0%{?selinux_cvmfs}
 mkdir SELinux
@@ -428,6 +434,8 @@ fi
 %doc COPYING AUTHORS README ChangeLog
 
 %changelog
+* Fri Jan 27 2017 Dave Dykstra <dwd@fnal.gov> - 2.3.2-1.1.osg33
+- Add a few important 2.3.3 patches a little early
 * Mon Aug 22 2016 Jakob Blomer <jblomer@cern.ch> - 2.3.1
 - Reset cvmfs_swissknife capability if overlayfs is used
 * Wed Aug 10 2016 Dave Dykstra <dwd@fnal.gov> - 2.3.1
