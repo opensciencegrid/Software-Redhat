@@ -1,6 +1,6 @@
 Summary: Package for configure-osg and associated scripts
 Name: osg-configure
-Version: 1.6.0
+Version: 1.6.1
 Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
@@ -337,6 +337,9 @@ fi
 
 
 %changelog
+* Mon Jan 30 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6.1-1
+- Fix osg-configure -v for Resource Entry sections (SOFTWARE-2562)
+
 * Tue Jan 24 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6.0-1
 - Improve Resource Entry section (SOFTWARE-2562)
 -  require 'queue'
