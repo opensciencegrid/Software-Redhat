@@ -5,7 +5,7 @@
 
 Summary:   Tests an OSG Software installation
 Name:      osg-test
-Version:   1.10.0
+Version:   1.10.1
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -52,6 +52,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_sbindir}/%{name}-log-viewer
 
 %changelog
+* Mon Jan 30 2017 Brian Lin <blin@cs.wisc.edu> - 1.10.1-1
+- Maintain order of package list specified by param files
+- Limit condor_{ce_,}run tests to 10 minutes
+- Use the default CVMFS cache location to avoid SELinux failures
+
 * Wed Dec 21 2016 Brian Lin <blin@cs.wisc.edu> - 1.10.0-1
 - Add HTCondor-CE + Slurm tests (SOFTWARE-2541)
 - Configure Tomcat to log to catalina.log (SOFTWARE-2547)
