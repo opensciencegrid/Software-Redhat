@@ -2,7 +2,7 @@
 %global _release 1
 
 Name:           osg-build
-Version:        1.7.1
+Version:        1.8.0
 Release:        %{?betatag:0.}%{_release}%{?betatag}%{?dist}
 Summary:        Build tools for the OSG
 
@@ -19,7 +19,7 @@ Requires:       mock >= 1.0.0
 Requires:       rpm-build
 Requires:       openssl
 Requires:       quilt
-Requires:       koji
+Requires:       koji >= 1.7.0
 Requires:       rpmlint
 Requires:       subversion
 Requires:       git
@@ -66,12 +66,18 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/osgbuild/test/*.py*
 %{_datadir}/%{name}/osg-koji-site.conf
 %{_datadir}/%{name}/osg-koji-home.conf
-%{_datadir}/%{name}/mock-auto.cfg.in
 %{_datadir}/%{name}/promoter.ini
 %{_datadir}/%{name}/rpmlint.cfg
 %doc %{_docdir}/%{name}/sample-osg-build.ini
 
 %changelog
+* Wed Feb 01 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.8.0
+- Use koji 1.11 on CSL systems and update template config to koji 1.7+ version
+  (adds dependency on koji >= 1.7) (SOFTWARE-2566)
+- Remove broken --mock-config=AUTO (autogenerating a mock config from a template)
+- Fix KeyError on non-RHEL-like systems (e.g. Fedora)
+- Improve explanatory text in osg-koji setup (SOFTWARE-2455)
+
 * Thu Sep 01 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.7.1-1
 - Don't print "Implicitly building for el..." message unless in verbose mode
 - Add update action (--update or -U) to osg-import-srpm
