@@ -1,6 +1,6 @@
 Name:           igtf-ca-certs
 Version:        1.79
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        OSG Packaging of the IGTF CA Certs, in new OpenSSL 0.9.8/1.0.0 format. For details what is in the current release, see the distribution site at http://software.grid.iu.edu/pacman/cadist/ and change log at http://software.grid.iu.edu/pacman/cadist/CHANGES.
 
 Group:          System Environment/Base
@@ -35,6 +35,10 @@ mkdir -p $RPM_BUILD_ROOT/etc/grid-security/certificates
 chmod 0644 *
 mv * $RPM_BUILD_ROOT/etc/grid-security/certificates/
 
+%check
+cd $RPM_BUILD_ROOT/etc/grid-security/certificates
+md5sum -c cacerts_md5sum.txt
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -45,6 +49,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc
 
 %changelog
+* Tue Feb 07 2017 Edgar Fajardo <emfajard@ucsd.edu> 1.79-2
+- Added check for md5 checksums of the certificates (SOFTWARE-2590)
+
 * Mon Jan 11 2017 Zalak Shah <zsshah@iu.edu> 1.79-1
 - CA release corresponding to IGTF 1.79 release.
 
