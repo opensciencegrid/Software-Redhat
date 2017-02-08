@@ -26,6 +26,18 @@ Instructions for updating upstream source:
 You can also do this by running: ./pull-condor-srpm 8.2.5
 
 
+Notes on pre-release builds:
+
+There are no special instructions for pre-release builds, but the
+pull-condor-srpm script can be used to copy in an srpm from an arbitrary
+path, eg:
+
+  ./pull-condor-srpm /p/condor/public/html/htcondor/yum/testing/rhel7/condor-8.6.0-0.393516.el7.src.rpm
+
+which will copy the srpm to the upstream area and update the
+upstream/developer.srpm.source link.
+
+
 Notes on updating osg/condor.spec:
 
 If we are using our own version of condor.spec (which is the case if we are
@@ -40,5 +52,6 @@ Expected changes between our condor.spec and upstream's:
  - 'condor_base_release' in ours should get a .n (eg, 1.1 if upstream has 1)
  - PatchN/%patchN lines added for patches we carry
  - %changelog entries for OSG-specific changes
+ - condor_build_id
  - any other tweaks we continue to add, which should be in the %changelog
 
