@@ -15,8 +15,8 @@
 
 Name:		xrootd
 Epoch:		1
-Version:	4.5.0
-Release:	2%{?dist}
+Version:	4.6.0
+Release:	1%{?dist}
 Summary:	Extended ROOT file server
 
 Group:		System Environment/Daemons
@@ -546,6 +546,7 @@ fi
 %config(noreplace) %{_sysconfdir}/%{name}/client.plugins.d/client-plugin.conf.example
 
 %files client-devel
+%{_bindir}/xrdgsitest
 %{_includedir}/%{name}/XrdCl
 %{_includedir}/%{name}/XrdClient
 %{_includedir}/%{name}/XrdPosix
@@ -553,6 +554,7 @@ fi
 %{_libdir}/libXrdClient.so
 %{_libdir}/libXrdFfs.so
 %{_libdir}/libXrdPosix.so
+%{_mandir}/man1/xrdgsitest.1*
 
 %files server-libs
 %{_libdir}/libXrdServer.so.*
@@ -616,6 +618,11 @@ fi
 %doc %{_pkgdocdir}
 
 %changelog
+* Thu Feb 9 2017 Edgar Fajardo <emfajard@ucsd.edu> - 1:4.6.0-1
+- Update to 4.6.0 SOFTWARE-2597
+- File caching proxy V2
+- Add non-blocking sends to avoid slow links
+
 * Tue Dec 20 2016 Edgar Fajardo <emfajard@ucsd.edu> - 1:4.5.0-2
 - Updated Changelog SOFTWARE-2549
 
