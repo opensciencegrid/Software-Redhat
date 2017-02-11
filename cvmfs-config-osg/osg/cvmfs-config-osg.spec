@@ -1,7 +1,7 @@
 Summary: CernVM File System OSG Configuration and Public Keys
 Name: cvmfs-config-osg
-Version: 1.2
-Release: 5%{?dist}
+Version: 1.3
+Release: 1%{?dist}
 Source0: opensciencegrid.org.pub
 Source1: 60-osg.conf
 Source2: config-osg.opensciencegrid.org.conf
@@ -21,8 +21,8 @@ Provides: oasis-config = 9
 
 Conflicts: cvmfs-config-default
 
-Conflicts: cvmfs < 2.2.0
-Conflicts: cvmfs-server < 2.2.0
+Conflicts: cvmfs < 2.3.3
+Conflicts: cvmfs-server < 2.3.3
 
 %description
 Default configuration parameters and public keys for CernVM-FS
@@ -49,6 +49,10 @@ done
 %config %{_sysconfdir}/cvmfs/config.d/*
 
 %changelog
+* Sat Feb 11 2017 Dave Dykstra <dwd@fnal.gov> - 1.3-1
+- Add CVMFS_CONFIG_REPO_REQUIRED=yes.  Change Conflicts on cvmfs to be less
+  than version 2.3.3 because the option was added then.
+
 * Wed Jun 29 2016 Dave Dykstra <dwd@fnal.gov> - 1.2-5
 - Fix copy/paste error
 
