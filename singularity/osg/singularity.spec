@@ -3,7 +3,7 @@
 
 Summary: Application and environment virtualization
 Name: singularity
-Version: 2.2
+Version: 2.2.1
 Release: 1%{?dist}
 # https://spdx.org/licenses/BSD-3-Clause-LBNL.html
 License: BSD-3-Clause-LBNL
@@ -78,6 +78,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Feb 14 2017 Derek Weitzel <dweitzel@cse.unl.edu> - 2.2.1-1
+- Packaging bug release version of Singularity 2.2.1
+
 * Thu Nov 10 2016 Derek Weitzel <dweitzel@cse.unl.edu> - 2.2-1
 - First packaging of Singularity 2.2 for OSG
 
