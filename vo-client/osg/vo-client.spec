@@ -1,5 +1,5 @@
 Name:           vo-client
-Version:        70
+Version:        71
 Release:        1%{?dist}
 Summary:        Contains vomses file for use with user authentication and edg-mkgridmap.conf file that contains configuration information for edg-mkgridmap.
 
@@ -85,6 +85,10 @@ rm -rf $RPM_BUILD_ROOT
 %attr(0600,tomcat,tomcat) %config(noreplace) %{_sysconfdir}/gums/gums.config.template
 
 %changelog
+* Fri Feb 17 2017 Carl Edquist <edquist@cs.wisc.edu> - 71-1
+- Update to vo-client 71 (SOFTWARE-2612)
+  - Remove CDF
+
 * Wed Jan 18 2017 Carl Edquist <edquist@cs.wisc.edu> - 70-1
 - Update to vo-client 70 (SOFTWARE-2567)
   - Remove MCDRD VO
