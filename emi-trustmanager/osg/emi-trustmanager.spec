@@ -1,7 +1,7 @@
 Summary: Security utilities
 Name: emi-trustmanager
 Version: 3.0.3
-Release: 11%{?dist}
+Release: 12%{?dist}
 License: EMI
 Vendor: EMI
 Group: System Environment/Libraries
