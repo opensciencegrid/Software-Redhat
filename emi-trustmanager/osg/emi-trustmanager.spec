@@ -31,6 +31,9 @@ Patch1: build.xml.patch
 Patch2: better_log.patch
 Patch3: X509Name_cast.patch
 
+# https://jira.opensciencegrid.org/browse/SOFTWARE-2523
+Patch4: ssl_protocol_default.patch
+
 Patch10: 0010-ASN1Object-ASN1Primitive-bc1.47.patch
 Patch11: 0011-ASN1Encodable-ASN1Object-bc1.47.patch
 Patch12: 0012-DEREncodable-ASN1Encodable-bc1.47.patch
@@ -62,6 +65,7 @@ The java authentication and proxy generation implementation that supports grid p
 %patch1 -p0
 %patch2 -p0
 %patch3 -p0
+%patch4 -p0
 
 %if 0%{?rhel} >= 7
 # bouncycastle patches
@@ -272,6 +276,9 @@ rm -rf $RPM_BUILD_ROOT
 /usr/share/doc/trustmanager/html/index-all.html
 
 %changelog
+* Mon Feb 20 2017 Carl Edquist <edquist@cs.wisc.edu> - 3.0.3-12
+- Add patch for SSL_PROTOCOL_DEFAULT to use TLSv1.{1,2} (SOFTWARE-2523)
+
 * Wed Mar 2 2016 Edgar Fajardo <efajardo@physics.ucsd.edu> 3.0.3-11
 - Added the runtime requirement of log4j (SOFTWARE-2233)
 
