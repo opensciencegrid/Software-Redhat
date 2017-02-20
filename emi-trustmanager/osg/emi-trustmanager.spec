@@ -65,7 +65,7 @@ The java authentication and proxy generation implementation that supports grid p
 %patch1 -p0
 %patch2 -p0
 %patch3 -p0
-%patch4 -p0
+%patch4 -p1
 
 %if 0%{?rhel} >= 7
 # bouncycastle patches
