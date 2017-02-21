@@ -1,7 +1,7 @@
 Summary: Security utilities
 Name: emi-trustmanager
 Version: 3.0.3
-Release: 13%{?dist}
+Release: 14%{?dist}
 License: EMI
 Vendor: EMI
 Group: System Environment/Libraries
@@ -276,6 +276,9 @@ rm -rf $RPM_BUILD_ROOT
 /usr/share/doc/trustmanager/html/index-all.html
 
 %changelog
+* Tue Feb 21 2017 Carl Edquist <edquist@cs.wisc.edu> - 3.0.3-14
+- use SSL_PROTOCOL_DEFAULT = TLSv1.2 (SOFTWARE-2523)
+
 * Mon Feb 20 2017 Carl Edquist <edquist@cs.wisc.edu> - 3.0.3-13
 - Add patch for SSL_PROTOCOL_DEFAULT to use TLSv1.{1,2} (SOFTWARE-2523)
 

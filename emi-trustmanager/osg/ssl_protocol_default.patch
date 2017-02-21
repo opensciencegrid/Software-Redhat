@@ -1,11 +1,11 @@
-commit da79806714bf716b1bae9808f9dadf2f8ed3c482
+commit 9a3eb04c011a324ec3e0e235d596d0a44d50a14c
 Author: Carl Edquist <edquist@cs.wisc.edu>
-Date:   Mon Feb 20 15:23:01 2017 -0600
+Date:   Tue Feb 21 17:28:51 2017 -0600
 
-    update SSL_PROTOCOL_DEFAULT to TLSv1.2,TLSv1.1,TLSv1 (SOFTWARE-2523)
+    SSL_PROTOCOL_DEFAULT = TLSv1 -> TLSv1.2 (SOFTWARE-2523)
 
 diff --git a/src/org/glite/security/trustmanager/ContextWrapper.java b/src/org/glite/security/trustmanager/ContextWrapper.java
-index db7237d..7bb1349 100644
+index db7237d..e5be5b9 100644
 --- a/src/org/glite/security/trustmanager/ContextWrapper.java
 +++ b/src/org/glite/security/trustmanager/ContextWrapper.java
 @@ -160,8 +160,8 @@ public class ContextWrapper implements SSLContextWrapper {
@@ -15,7 +15,7 @@ index db7237d..7bb1349 100644
 -    /** SSL protocol default: TLSv1. */
 -    public static final String SSL_PROTOCOL_DEFAULT = "TLSv1";
 +    /** SSL protocol default: TLSv1.2,TLSv1.1,TLSv1. */
-+    public static final String SSL_PROTOCOL_DEFAULT = "TLSv1.2,TLSv1.1,TLSv1";
++    public static final String SSL_PROTOCOL_DEFAULT = "TLSv1.2";
  
      /** CRL support enabled default: true. */
      public static final String CRL_ENABLED_DEFAULT = "true";
