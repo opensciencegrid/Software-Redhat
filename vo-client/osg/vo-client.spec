@@ -1,6 +1,6 @@
 Name:           vo-client
 Version:        71
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Contains vomses file for use with user authentication and edg-mkgridmap.conf file that contains configuration information for edg-mkgridmap.
 
 Group:          System Environment/Base
@@ -85,9 +85,12 @@ rm -rf $RPM_BUILD_ROOT
 %attr(0600,tomcat,tomcat) %config(noreplace) %{_sysconfdir}/gums/gums.config.template
 
 %changelog
+* Mon Feb 20 2017 Carl Edquist <edquist@cs.wisc.edu> - 71-2
+- Remove dependent objects for cdf, cdf1 voms servers (SOFTWARE-2612)
+
 * Fri Feb 17 2017 Carl Edquist <edquist@cs.wisc.edu> - 71-1
 - Update to vo-client 71 (SOFTWARE-2612)
-  - Remove CDF
+  - Remove cdf, cdf1 voms servers
 
 * Wed Jan 18 2017 Carl Edquist <edquist@cs.wisc.edu> - 70-1
 - Update to vo-client 70 (SOFTWARE-2567)
