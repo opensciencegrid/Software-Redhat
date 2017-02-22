@@ -11,7 +11,7 @@
 
 Name:		voms
 Version:	2.0.14
-Release:	1.2%{?dist}
+Release:	1.3%{?dist}
 Summary:	Virtual Organization Membership Service
 
 Group:		System Environment/Libraries
@@ -41,6 +41,7 @@ Patch0: mariadb-innodb.patch
 
 # for all
 Patch1:         Make-RFC-proxies-by-default-SOFTWARE-2381.patch
+Patch2:         Validate-top-level-group-of-VOMS-attribute.patch
 
 %description
 The Virtual Organization Membership Service (VOMS) is an attribute authority
@@ -135,6 +136,7 @@ This package provides the VOMS service.
 %endif
 
 %patch1 -p1
+%patch2 -p1
 
 ./autogen.sh
 
@@ -373,6 +375,9 @@ fi
 %doc README.Fedora
 
 %changelog
+* Mon Feb 20 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.0.14-1.3
+- Add Validate-top-level-group-of-VOMS-attribute.patch (SOFTWARE-2593)
+
 * Thu Dec 22 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.0.14-1.2
 - Use upstream .service file
 
