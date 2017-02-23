@@ -5,7 +5,7 @@
 
 Name:		blahp
 Version:	1.18.28.bosco
-Release:	3%{?gitrev:.%{gitrev}}%{?dist}
+Release:	4%{?gitrev:.%{gitrev}}%{?dist}
 Summary:	gLite BLAHP daemon
 
 Group:		System/Libraries
@@ -183,11 +183,14 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
-* Sun Jan 29 2017 Brian Lin <blin@cs.wisc.edu> - 1.18.28.bosco-3
-- Rebuild against condor-8.6.0
+* Thu Jan 26 2017 Brian Lin <blin@cs.wisc.edu> - 1.18.28.bosco-4
+- Build against condor-8.7.0
+
+* Thu Jan 26 2017 Brian Lin <blin@cs.wisc.edu> - 1.18.28.bosco-3
+- Build against condor-8.4.11
 
 * Mon Dec 19 2016 Brian Lin <blin@cs.wisc.edu> - 1.18.28.bosco-2
-- Rebuild against condor-8.5.8
+- Build against condor-8.4.10
 
 * Thu Oct 27 2016 Brian Lin <blin@cs.wisc.edu> - 1.18.28.bosco-1
 - Fixed incompatibility between blahp_results_cache and torque-4.2.9
