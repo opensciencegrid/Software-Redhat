@@ -1,6 +1,6 @@
 Name:           vo-client
 Version:        71
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Contains vomses file for use with user authentication and edg-mkgridmap.conf file that contains configuration information for edg-mkgridmap.
 
 Group:          System Environment/Base
@@ -32,6 +32,14 @@ Provides:       osg-edg-mkgridmap-config = %{version}-%{release}
 %{summary}
 
 
+%package lcmaps-voms
+Summary:        Provides a voms-mapfile-default file, mapping VOMS FQANs to Unix users suitable for use by the LCMAPS VOMS plugin
+Group:          system environment/base
+
+%description lcmaps-voms
+%{summary}
+
+
 %package -n osg-gums-config
 Summary:        a file that contains a template configuration for the gums service
 Group:          system environment/base
@@ -52,10 +60,12 @@ configuration file.
 rm -rf $RPM_BUILD_ROOT
 tar -xz -C $RPM_BUILD_DIR --strip-components=1 -f %{SOURCE0}
 install -d $RPM_BUILD_ROOT/%{_sysconfdir}
+install -d $RPM_BUILD_ROOT/%{_datadir}/osg/
 mv $RPM_BUILD_DIR/vomses $RPM_BUILD_ROOT/%{_sysconfdir}/
 mv $RPM_BUILD_DIR/edg-mkgridmap.conf $RPM_BUILD_ROOT/%{_sysconfdir}/
+mv $RPM_BUILD_DIR/voms-mapfile-default $RPM_BUILD_ROOT/%{_datadir}/osg/
 
-chmod 644 $RPM_BUILD_ROOT/%{_sysconfdir}/vomses $RPM_BUILD_ROOT/%{_sysconfdir}/edg-mkgridmap.conf
+chmod 644 $RPM_BUILD_ROOT/%{_sysconfdir}/vomses $RPM_BUILD_ROOT/%{_sysconfdir}/edg-mkgridmap.conf $RPM_BUILD_ROOT/%{_datadir}/osg/voms-mapfile-default
 
 install -d $RPM_BUILD_ROOT/%{_sysconfdir}/grid-security/
 mv $RPM_BUILD_DIR/vomsdir $RPM_BUILD_ROOT/%{_sysconfdir}/grid-security/
@@ -65,7 +75,6 @@ find $RPM_BUILD_ROOT/%{_sysconfdir}/grid-security/vomsdir -type d -exec chmod 75
 mkdir -p $RPM_BUILD_ROOT/%{_sysconfdir}/gums/
 mv $RPM_BUILD_DIR/gums.config.template $RPM_BUILD_ROOT/%{_sysconfdir}/gums/gums.config.template
 chmod 600 $RPM_BUILD_ROOT/%{_sysconfdir}/gums/gums.config.template
-
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -80,11 +89,19 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %config(noreplace) %{_sysconfdir}/edg-mkgridmap.conf
 
+%files lcmaps-voms
+%defattr(-,root,root,-)
+%{_datadir}/osg/voms-mapfile-default
+
 %files -n osg-gums-config
 %defattr(-,root,root,-)
 %attr(0600,tomcat,tomcat) %config(noreplace) %{_sysconfdir}/gums/gums.config.template
 
 %changelog
+* Thu Feb 23 2017 Carl Edquist <edquist@cs.wisc.edu> - 71-3
+- Include vo-client-lcmaps-voms sub-package with voms-mapfile-default
+  for use by the LCMAPS VOMS plugin (SOFTWARE-2609, SOFTWARE-2563)
+
 * Mon Feb 20 2017 Carl Edquist <edquist@cs.wisc.edu> - 71-2
 - Remove dependent objects for cdf, cdf1 voms servers (SOFTWARE-2612)
 
