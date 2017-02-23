@@ -658,12 +658,16 @@ popd
 
 # Build the selinux policy file
 mkdir SELinux
-cp %{SOURCE31} SELinux/%{name}.te
+# The module is named hadoop-fuse so the .te file has to be named
+# hadoop-fuse.te or else checkmodule will complain.
+#
+# We rename the resulting .pp file later.
+cp %{SOURCE31} SELinux/%{name}-fuse.te
 pushd SELinux
 for variant in %{selinux_variants}
 do
     make NAME=${variant} -f %{_datadir}/selinux/devel/Makefile
-    mv %{name}.pp %{name}.pp.${variant}
+    mv %{name}-fuse.pp %{name}.pp.${variant}
     make NAME=${variant} -f %{_datadir}/selinux/devel/Makefile clean
 done
 popd
@@ -1093,6 +1097,7 @@ fi
 %changelog
 * Tue Feb 21 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.0.0+1612-1.cdh4.7.1.p0.12.6
 - Add 2588-out-of-quota-msg.patch to fix error message when diskspace quota is exceeded (SOFTWARE-2588)
+- Fix SELinux build error on EL7 due to excessive pickiness about .te file names
 
 * Mon Nov 07 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.0+1612-1.cdh4.7.1.p0.12.5
 - Fix owner of /var/run/hadoop-yarn/ in systemd-tmpfiles configuration
