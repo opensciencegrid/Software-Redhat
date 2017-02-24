@@ -1,7 +1,7 @@
 Summary: Proxy verification plugin for LCMAPS
 Name: lcmaps-plugins-verify-proxy
 Version: 1.5.9
-Release: 1%{?dist}
+Release: 1.1%{?dist}
 License: ASL 2.0
 Group: System Environment/Libraries
 URL: http://wiki.nikhef.nl/grid/Site_Access_Control
@@ -44,6 +44,10 @@ rm -rf $RPM_BUILD_ROOT
 make DESTDIR=$RPM_BUILD_ROOT install
 find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
 
+# Hack to let us use two copies of this plugin
+cp $RPM_BUILD_ROOT%{_libdir}/lcmaps/lcmaps_verify_proxy.mod \
+   $RPM_BUILD_ROOT%{_libdir}/lcmaps/lcmaps_verify_proxy2.mod
+
 # clean up installed documentation files
 rm -rf ${RPM_BUILD_ROOT}%{_docdir}
 
@@ -54,11 +58,16 @@ rm -rf $RPM_BUILD_ROOT
 %doc AUTHORS LICENSE NEWS BUGS README
 %{_bindir}/verify-proxy-tool
 %{_libdir}/lcmaps/lcmaps_verify_proxy.mod
+%{_libdir}/lcmaps/lcmaps_verify_proxy2.mod
 %{_libdir}/lcmaps/liblcmaps_verify_proxy.so
 %{_mandir}/man1/verify-proxy-tool.1*
 %{_mandir}/man8/lcmaps_verify_proxy.mod.8*
 
 %changelog
+* Fri Feb 24 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.9-1.1
+- Add hack to let us use two copies of lcmaps_verify_proxy in the
+  lcmaps.db (SOFTWARE-2602)
+
 * Mon May 30 2016 Mischa Salle <msalle@nikhef.nl> 1.5.9-1
 - updated version
 
