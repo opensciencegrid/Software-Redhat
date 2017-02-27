@@ -4,8 +4,8 @@
 %define bl_libexecdir %{_libexecdir}/%{name}
 
 Name:		blahp
-Version:	1.18.28.bosco
-Release:	3%{?gitrev:.%{gitrev}}%{?dist}
+Version:	1.18.29.bosco
+Release:	1%{?gitrev:.%{gitrev}}%{?dist}
 Summary:	gLite BLAHP daemon
 
 Group:		System/Libraries
@@ -183,6 +183,11 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Thu Feb 23 2017 Brian Lin <blin@cs.wisc.edu> - 1.18.29.bosco-1
+- Blahp python scripts should ignore optional '-w' argument (SOFTWARE-2603)
+- Fail gracefully when encountering unexpected sacct output (SOFTWARE-2604)
+- Some #SBATCH commands are being ignored (SOFTWARE-2605)
+
 * Thu Jan 26 2017 Brian Lin <blin@cs.wisc.edu> - 1.18.28.bosco-3
 - Build against condor-8.4.11
 
