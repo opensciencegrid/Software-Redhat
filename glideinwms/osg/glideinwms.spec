@@ -13,7 +13,7 @@
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
 %define version 3.2.18
-%define release 0.1.rc1
+%define release 1
 
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
@@ -814,8 +814,8 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/condor/certs/condor_mapfile
 
 %changelog
-* Fri Feb 17 2017 Marco Mambelli <marcom@fnal.gov> - 3.2.18-0.1.rc1
-- Glideinwms v3.2.18.rc1
+* Mar Feb 28 2017 Marco Mambelli <marcom@fnal.gov> - 3.2.18-1
+- Glideinwms v3.2.18
 - Release Notes: http://glideinwms.fnal.gov/doc.v3_2_18/history.html
 - Release candidates: 3.2.18-0.1.rc1
 
