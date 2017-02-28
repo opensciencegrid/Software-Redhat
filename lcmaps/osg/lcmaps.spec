@@ -317,6 +317,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Apr 30 2015 Matyas Selmeci <matyas@cs.wisc.edu> 1.6.6-1.1.osg33
+- [build for osg 3.3 found on this date  -matyas 02/23/17]
+
+* Tue Mar 24 2015 Dave Dykstra <dwd@fnal.gov> 1.6.6-1.1.osg32
+- [build for osg 3.2 found on this date  -matyas 02/23/17]
+
 * Wed Feb 18 2015 Mischa Salle <msalle@nikhef.nl> 1.6.6-1
 - updated version
 - update globus dependencies
