@@ -18,12 +18,13 @@
 Summary: Grid (X.509) and VOMS credentials to local account mapping service
 Name: lcmaps
 Version: 1.6.6
-Release: 1.1%{?dist}
+Release: 1.2%{?dist}
 License: ASL 2.0
 Group: System Environment/Libraries
 URL: http://wiki.nikhef.nl/grid/LCMAPS
 Source0: http://software.nikhef.nl/security/lcmaps/lcmaps-%{version}.tar.gz
 Source1: lcmaps.db
+Source2: ban-mapfile
 Patch0: defaultnovomscheck.patch
 # BuildRoot is still required for EPEL5
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
@@ -205,6 +206,10 @@ find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
 mkdir -p ${RPM_BUILD_ROOT}%{_sysconfdir}
 cp %{SOURCE1} $RPM_BUILD_ROOT/%{_sysconfdir}
 
+# install ban-mapfile
+mkdir -p ${RPM_BUILD_ROOT}%{_sysconfdir}/grid-security
+cp %{SOURCE2} $RPM_BUILD_ROOT/%{_sysconfdir}/grid-security
+
 # create empty plugin directory
 mkdir -p ${RPM_BUILD_ROOT}%{_libdir}/lcmaps
 
@@ -225,6 +230,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %config(noreplace) %{_sysconfdir}/lcmaps.db
+%config(noreplace) %{_sysconfdir}/grid-security/ban-mapfile
 # The libraries are meant to be dlopened by client applications,
 # so the .so symlinks are here and not in devel.
 %{_libdir}/liblcmaps.so
@@ -317,6 +323,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Feb 23 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6.6-1.2.osg
+- Add ban-mapfile (SOFTWARE-2602)
+
 * Thu Apr 30 2015 Matyas Selmeci <matyas@cs.wisc.edu> 1.6.6-1.1.osg33
 - [build for osg 3.3 found on this date  -matyas 02/23/17]
 
