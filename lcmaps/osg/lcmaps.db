@@ -71,9 +71,22 @@ gumsclient = "lcmaps_gums_client.mod"
 
 gridmapfile = "lcmaps_localaccount.mod"
               "-gridmap /etc/grid-security/grid-mapfile"
+banfile = "lcmaps_ban_dn.mod"
+          "-banmapfile /etc/grid-security/ban-mapfile"
+banvomsfile = "lcmaps_ban_fqan.mod"
+              "-banmapfile /etc/grid-security/ban-voms-mapfile"
+vomsmapfile = "lcmaps_voms_localaccount.mod"
+              "-gridmap /etc/grid-security/voms-mapfile"
+defaultmapfile = "lcmaps_voms_localaccount2.mod"
+                 "-gridmap /usr/share/osg/voms-mapfile-default"
 
 verifyproxy = "lcmaps_verify_proxy.mod"
           "--allow-limited-proxy"
+          " -certdir /etc/grid-security/certificates"
+
+verifyproxynokey = "lcmaps_verify_proxy2.mod"
+          "--allow-limited-proxy"
+          "--discard_private_key_absence"
           " -certdir /etc/grid-security/certificates"
 
 # lcmaps policies require at least two modules, so these are here to
@@ -119,6 +132,14 @@ gumsclient -> good | bad
 
 ## Policy 2: grid-mapfile
 #gridmapfile -> good | bad
+
+## Policy 3: voms-mapfiles with banfiles, proxy verification and grid-mapfile
+#verifyproxynokey -> banfile
+#banfile -> banvomsfile | bad
+#banvomsfile -> gridmapfile | bad
+#gridmapfile -> good | vomsmapfile
+#vomsmapfile -> good | defaultmapfile
+#defaultmapfile -> good | bad
 
 
 #

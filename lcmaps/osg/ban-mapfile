@@ -1,7 +1,6 @@
-# This file is for VOs to be banned from this site
+# This file is for users to be banned from this site
 # Add shell-style (i.e. fnmatch(3)) patterns, in quotes, one per line, based on
-# proxy FQANs.
+# user cert DNs.
 #
-# Examples:
-# "/fermilab/*"
-# "/cms/Role=cmsuser/*"
+# Example:
+# "/DC=com/DC=DigiCert-Grid/O=Open Science Grid/OU=People/CN=Bad User"

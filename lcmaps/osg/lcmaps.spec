@@ -25,6 +25,7 @@ URL: http://wiki.nikhef.nl/grid/LCMAPS
 Source0: http://software.nikhef.nl/security/lcmaps/lcmaps-%{version}.tar.gz
 Source1: lcmaps.db
 Source2: ban-mapfile
+Source3: ban-voms-mapfile
 Patch0: defaultnovomscheck.patch
 # BuildRoot is still required for EPEL5
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
@@ -39,7 +40,8 @@ BuildRequires: flex, bison
 # these should be in a metapackage instead of here
 Requires: lcmaps-plugins-gums-client
 Requires: lcmaps-plugins-basic
-Requires: lcmaps-plugins-verify-proxy
+Requires: lcmaps-plugins-verify-proxy >= 1.5.9-1.1
+Requires: lcmaps-plugins-voms >= 1.7.1-1.1
 
 # these two conflicts are because older versions of these packages depend
 #  on lcmaps.db policy osg_default which has been removed
@@ -206,9 +208,10 @@ find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
 mkdir -p ${RPM_BUILD_ROOT}%{_sysconfdir}
 cp %{SOURCE1} $RPM_BUILD_ROOT/%{_sysconfdir}
 
-# install ban-mapfile
+# install ban-mapfile and ban-voms-mapfile
 mkdir -p ${RPM_BUILD_ROOT}%{_sysconfdir}/grid-security
-cp %{SOURCE2} $RPM_BUILD_ROOT/%{_sysconfdir}/grid-security
+cp %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/grid-security
+cp %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/grid-security
 
 # create empty plugin directory
 mkdir -p ${RPM_BUILD_ROOT}%{_libdir}/lcmaps
@@ -231,6 +234,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %config(noreplace) %{_sysconfdir}/lcmaps.db
 %config(noreplace) %{_sysconfdir}/grid-security/ban-mapfile
+%config(noreplace) %{_sysconfdir}/grid-security/ban-voms-mapfile
 # The libraries are meant to be dlopened by client applications,
 # so the .so symlinks are here and not in devel.
 %{_libdir}/liblcmaps.so
@@ -324,7 +328,12 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 * Thu Feb 23 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6.6-1.2.osg
-- Add ban-mapfile (SOFTWARE-2602)
+- Add ban-mapfile, ban-voms-mapfile and updated lcmaps.db with a new
+  authorize_only policy that uses the ban files, voms mapfiles, and a
+  modified verify_proxy.  This adds new requirements on:
+  - lcmaps-plugins-voms >= 1.7.1-1.1
+  - lcmaps-plugins-verify-proxy >= 1.5.9-1.1
+  (SOFTWARE-2602)
 
 * Thu Apr 30 2015 Matyas Selmeci <matyas@cs.wisc.edu> 1.6.6-1.1.osg33
 - [build for osg 3.3 found on this date  -matyas 02/23/17]
