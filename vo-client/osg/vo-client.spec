@@ -1,6 +1,6 @@
 Name:           vo-client
 Version:        71
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Contains vomses file for use with user authentication and edg-mkgridmap.conf file that contains configuration information for edg-mkgridmap.
 
 Group:          System Environment/Base
@@ -98,6 +98,9 @@ rm -rf $RPM_BUILD_ROOT
 %attr(0600,tomcat,tomcat) %config(noreplace) %{_sysconfdir}/gums/gums.config.template
 
 %changelog
+* Wed Mar 01 2017 Carl Edquist <edquist@cs.wisc.edu> - 71-4
+- Keep FNAL (non-INFN.IT) CDF voms servers (SOFTWARE-2612)
+
 * Thu Feb 23 2017 Carl Edquist <edquist@cs.wisc.edu> - 71-3
 - Include vo-client-lcmaps-voms sub-package with voms-mapfile-default
   for use by the LCMAPS VOMS plugin (SOFTWARE-2609, SOFTWARE-2563)
