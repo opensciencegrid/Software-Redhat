@@ -26,6 +26,7 @@ Source0: http://software.nikhef.nl/security/lcmaps/lcmaps-%{version}.tar.gz
 Source1: lcmaps.db
 Source2: ban-mapfile
 Source3: ban-voms-mapfile
+# TODO OSG 3.4: remove defaultnovomscheck.patch (SOFTWARE-2634)
 Patch0: defaultnovomscheck.patch
 # BuildRoot is still required for EPEL5
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
