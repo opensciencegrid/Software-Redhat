@@ -29,7 +29,7 @@
 Name:           glideinwms
 Version:        %{version}
 Release:        %{release}%{?dist}
-Summary:        The VOFrontend for glideinWMS submission host
+Summary:        The glidein Workload Management System (glideinWMS)
 Group:          System Environment/Daemons
 License:        Fermitools Software Legal Information (Modified BSD License)
 URL:            http://glideinwms.fnal.gov
@@ -37,7 +37,7 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
 
-Source:	        glideinwms.tar.gz
+Source:         glideinwms.tar.gz
 Source1:        creation/templates/frontend_startup
 Source2:        %{frontend_xml}
 Source3:        gwms-frontend.conf.httpd
@@ -49,7 +49,6 @@ Source8:        gwms-frontend.sysconfig
 Source9:        gwms-factory.sysconfig
 Source11:       creation/templates/frontend_startup_sl7
 Source12:       creation/templates/factory_startup_sl7
-
 
 %description
 This is a package for the glidein workload management system.
@@ -67,13 +66,12 @@ Requires: glideinwms-userschedd = %{version}-%{release}
 Requires: glideinwms-usercollector = %{version}-%{release}
 Obsoletes:      glideinwms-vofrontend-condor < 2.6.2-2
 %description vofrontend
-The purpose of the glideinWMS is to provide a simple way 
-to access the Grid Cloud and HPC resources. GlideinWMS is a Glidein 
-Based WMS (Workload Management System) that works on top of 
-Condor. For those familiar with the Condor system, it is used 
-for scheduling and job control. 
-This package is for a one-node vofrontend install
-(userschedd,submit,vofrontend).
+The purpose of the glideinWMS is to provide a simple way to
+access the Grid, Cloud and HPC resources. GlideinWMS is a Glidein Based
+WMS (Workload Management System) that works on top of Condor.
+For those familiar with the Condor system, it is used for
+scheduling and job control. This package is for a one-node
+vofrontend install (userschedd, submit, vofrontend).
 
 
 %package vofrontend-standalone
