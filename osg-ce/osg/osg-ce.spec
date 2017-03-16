@@ -4,7 +4,7 @@
 Name:      osg-ce
 Summary:   OSG Compute Element
 Version:   3.3
-Release:   10%{?dist}
+Release:   11%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -210,7 +210,7 @@ Group: Grid
 Summary: SLURM meta-package for the HTCondor-CE OSG-CE
 Requires: %{htcce} = %{version}-%{release}
 Requires: %{basece}-slurm = %{version}-%{release}
-Requires: htcondor-ce-pbs
+Requires: htcondor-ce-slurm
 
 %description -n %{htcce}-slurm
 %{summary}
@@ -321,6 +321,9 @@ exit 0
 %files bosco
 
 %changelog
+* Fri Mar 02 2017 Brian Lin <blin@cs.wisc.edu> - 3.3-11
+- Require htcondor-ce-slurm for osg-htcondor-ce-slurm
+
 * Fri Dec 23 2016 Derek Weitzel <dweitzel@cse.unl.edu> - 3.3-10
 - Conditionally turn of gums-client dependency for rhel7
 
