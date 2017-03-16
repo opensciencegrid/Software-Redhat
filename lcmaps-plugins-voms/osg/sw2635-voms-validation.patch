@@ -1,0 +1,37 @@
+From 1c2c38ac72c6e79249d72b931f7a33779f00b148 Mon Sep 17 00:00:00 2001
+From: Brian Bockelman <bbockelm@cse.unl.edu>
+Date: Thu, 16 Mar 2017 17:05:43 -0500
+Subject: [PATCH] sw2635-voms-validation
+
+Fail if VOMS attribute validation is disabled in LCMAPS. This is
+necessary for security, since this plugin does not do validation itself.
+---
+ src/voms/lcmaps_voms_localaccount.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/src/voms/lcmaps_voms_localaccount.c b/src/voms/lcmaps_voms_localaccount.c
+index c588802..0cddefe 100644
+--- a/src/voms/lcmaps_voms_localaccount.c
++++ b/src/voms/lcmaps_voms_localaccount.c
+@@ -552,10 +552,18 @@ static int plugin_run_or_verify(int argc, lcmaps_argument_t *argv,
+         lcmaps_log(LOG_ERR, PLUGIN_PREFIX"-plugin_run_or_verify(): "
+ 		"attempt to run plugin in invalid mode: %d\n", lcmaps_mode);
+         goto fail_plugin;
+     }
+ 
++    /* The security of this plugin depends on the fact that the VOMS attributes
++     * are valid.  Fail the plugin if VOMS verification has been disabled */
++    if (!lcmaps_is_set_to_verify_voms_attributes()) {
++        lcmaps_log(LOG_ERR, "%s: VOMS plugin requested but VOMS validation "
++            "is not enabled.  This is an insecure combination; failing plugin\n");
++        goto fail_plugin;
++    }
++
+     /* Try to get FQANs from LCMAPS values: */
+     /* First try to obtain FQANs from the credential data (i.e. stored by other
+      * plugins */
+     fqan_list = getCredentialData(LCMAPS_VO_CRED_STRING, &nfqan);
+     if (nfqan>0) {
+-- 
+2.6.3
+
