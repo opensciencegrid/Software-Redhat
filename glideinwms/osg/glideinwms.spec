@@ -15,8 +15,8 @@
 %define version 3.3.1
 %define release 1
 
-%define frontend_xml frontend.master.xml
-%define factory_xml glideinWMS.master.xml
+%define frontend_xml frontend.xml
+%define factory_xml glideinWMS.xml
 %define web_dir %{_localstatedir}/lib/gwms-frontend/web-area
 %define web_base %{_localstatedir}/lib/gwms-frontend/web-base
 %define frontend_dir %{_localstatedir}/lib/gwms-frontend/vofrontend
