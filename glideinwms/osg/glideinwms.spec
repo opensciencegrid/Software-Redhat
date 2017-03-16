@@ -12,8 +12,8 @@
 # ------------------------------------------------------------------------------
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
-%define version 3.3.1
-%define release 1
+%define version 3.3.2
+%define release 0.1.rc1
 
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
@@ -814,13 +814,9 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/condor/certs/condor_mapfile
 
 %changelog
-* Tue Oct 25 2016 Parag Mhashilkar <parag@fnal.gov> - 3.3.1-1
-- Glideinwms v3.3.1
-- Release Notes: http://glideinwms.fnal.gov/doc.dev/history.html
-
-* Tue Aug 30 2016 Parag Mhashilkar <parag@fnal.gov> - 3.3-1
-- Glideinwms v3.3 release candidates (rc1-rc11)
-- Release Notes: http://glideinwms.fnal.gov/doc.dev/history.html
+* Thu Mar 16 2017 Parag Mhashilkar <parag@fnal.gov> - 3.3.2-0.1.rc1
+- Glideinwms v3.3.2 rc1
+- Release Notes: http://glideinwms.fnal.gov/doc.v3_3_2/history.html
 
 * Tue Feb 28 2017 Marco Mambelli <marcom@fnal.gov> - 3.2.18-1
 - Glideinwms v3.2.18
@@ -832,10 +828,18 @@ rm -rf $RPM_BUILD_ROOT
 - Release Notes: http://glideinwms.fnal.gov/doc.v3_2_17/history.html
 - Release candidates: 3.2.17-0.1.rc1 to 3.2.17-0.3.rc3
 
+* Tue Oct 25 2016 Parag Mhashilkar <parag@fnal.gov> - 3.3.1-1
+- Glideinwms v3.3.1
+- Release Notes: http://glideinwms.fnal.gov/doc.dev/history.html
+
 * Fri Oct 21 2016 Parag Mhashilkar <parag@fnal.gov> - 3.2.16-1
 - Glideinwms v3.2.16
 - Release Notes: http://glideinwms.fnal.gov/doc.v3_2_16/history.html
 - Release candidates: 3.2.16-0.1.rc1 to 3.2.16-0.2.rc2
+
+* Tue Aug 30 2016 Parag Mhashilkar <parag@fnal.gov> - 3.3-1
+- Glideinwms v3.3 release candidates (rc1-rc11)
+- Release Notes: http://glideinwms.fnal.gov/doc.dev/history.html
 
 * Wed Aug 17 2016 Parag Mhashilkar <parag@fnal.gov> - 3.2.15-1
 - Glideinwms v3.2.15
