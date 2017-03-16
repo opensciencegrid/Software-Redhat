@@ -5,7 +5,7 @@
 
 Name:		blahp
 Version:	1.18.29.bosco
-Release:	2%{?gitrev:.%{gitrev}}%{?dist}
+Release:	3%{?gitrev:.%{gitrev}}%{?dist}
 Summary:	gLite BLAHP daemon
 
 Group:		System/Libraries
@@ -183,8 +183,8 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
-* Fri Mar 2 2017 Edgar Fajardo <emfajard@ucsd.edu> - 1.18.29.bosco-2
-- Rebuild against condor-8.6.1 SOFTWARE-2564
+* Thu Mar 16 2017 Brian Lin <blin@cs.wisc.edu> - 1.18.29.bosco-2
+- Rebuild against condor-8.7.1
 
 * Thu Mar 1 2017 Brian Lin <blin@cs.wisc.edu> - 1.18.29.bosco-1
 - Blahp python scripts should ignore optional '-w' argument (SOFTWARE-2603)
