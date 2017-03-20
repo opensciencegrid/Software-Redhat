@@ -18,7 +18,7 @@
 Summary: Grid (X.509) and VOMS credentials to local account mapping service
 Name: lcmaps
 Version: 1.6.6
-Release: 1.2%{?dist}
+Release: 1.3%{?dist}
 License: ASL 2.0
 Group: System Environment/Libraries
 URL: http://wiki.nikhef.nl/grid/LCMAPS
@@ -26,8 +26,6 @@ Source0: http://software.nikhef.nl/security/lcmaps/lcmaps-%{version}.tar.gz
 Source1: lcmaps.db
 Source2: ban-mapfile
 Source3: ban-voms-mapfile
-# TODO OSG 3.4: remove defaultnovomscheck.patch (SOFTWARE-2634)
-Patch0: defaultnovomscheck.patch
 # BuildRoot is still required for EPEL5
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildRequires: globus-common-devel
@@ -162,7 +160,6 @@ without the GSI protocol.
 
 %prep
 %setup -q
-%patch0 -p0
 
 %build
 
@@ -328,6 +325,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Mar 20 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6.6-1.3.osgup
+- Remove defaultnovomscheck.patch (SOFTWARE-2634)
+
 * Thu Feb 23 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6.6-1.2.osg
 - Add ban-mapfile, ban-voms-mapfile and updated lcmaps.db with a new
   authorize_only policy that uses the ban files, voms mapfiles, and a
