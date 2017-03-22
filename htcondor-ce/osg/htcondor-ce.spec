@@ -2,7 +2,7 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 2.1.4
+Version: 2.1.5
 Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
@@ -152,6 +152,20 @@ Obsoletes: condor-ce-sge < 0.5.4
 Provides:  condor-ce-sge = %{version}
 
 %description sge
+%{summary}
+
+%package slurm
+Group: Applications/System
+Summary: Default routes for submission to Slurm
+
+Requires: %{name} = %{version}-%{release}
+Requires: /usr/bin/grid-proxy-init
+Requires: /usr/bin/voms-proxy-init
+
+Obsoletes: condor-ce-slurm < 0.5.4
+Provides:  condor-ce-slurm = %{version}
+
+%description slurm
 %{summary}
 
 %package bosco
@@ -392,6 +406,12 @@ fi
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/02-ce-sge.conf
 %{_datadir}/condor-ce/config.d/02-ce-sge-defaults.conf
 
+%files slurm
+%defattr(-,root,root,-)
+
+%config(noreplace) %{_sysconfdir}/condor-ce/config.d/02-ce-slurm.conf
+%{_datadir}/condor-ce/config.d/02-ce-slurm-defaults.conf
+
 %files bosco
 %defattr(-,root,root,-)
 
@@ -474,6 +494,10 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Wed Mar 22 2017 Brian Lin <blin@cs.wisc.edu> - 2.1.5-1
+- Do not disable LCMAPS VOMS attribute checking (SOFTWARE-2633)
+- Package htcondor-ce-slurm (SOFTWARE-2631)
+
 * Fri Feb 24 2017 Brian Lin <blin@cs.wisc.edu> - 2.1.4-1
 - Fix RequestCpus expression (SOFTWARE-2598)
 
