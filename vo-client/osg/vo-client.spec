@@ -98,8 +98,13 @@ rm -rf $RPM_BUILD_ROOT
 %attr(0600,tomcat,tomcat) %config(noreplace) %{_sysconfdir}/gums/gums.config.template
 
 %changelog
+* Wed Mar 22 2017 Carl Edquist <edquist@cs.wisc.edu> - 72-2
+- Update changelog for 72-1 build (SOFTWARE-2643)
+
 * Mon Mar 20 2017 Carl Edquist <edquist@cs.wisc.edu> - 72-1
-- Remove NYSGRID VO (SOFTWARE-2643)
+- Update to vo-client 72 (SOFTWARE-2643)
+  - Remove NYSGRID, CSIU, & OSGEDU VOs
+  - Add voms.grid.iu.edu voms server for OSG VO
 
 * Wed Mar 01 2017 Carl Edquist <edquist@cs.wisc.edu> - 71-4
 - Keep FNAL (non-INFN.IT) CDF voms servers (SOFTWARE-2612)
