@@ -1,5 +1,5 @@
 Name:           pegasus
-Version:        4.6.1
+Version:        4.7.4
 Release:        1.1%{?dist}
 Summary:        Workflow management system for HTCondor, grids, and clouds
 Group:          Applications/System
@@ -13,6 +13,9 @@ BuildRoot:      %{_tmppath}/%{name}-root
 
 # Some OSG Software changes below to use Java 7
 BuildRequires:  ant, ant-apache-regexp, java7-devel, gcc, groff, python-devel, gcc-c++, make, asciidoc, libxslt, fop, python-setuptools, openssl-devel
+# Added since 4.7.4
+BuildRequires: R-devel
+
 Requires:       java7 >= 1:1.7.0, python >= 2.4, condor >= 7.6, graphviz
 
 # Added by OSG Software, so that all builds and binaries work on el5 and el6
@@ -23,6 +26,10 @@ BuildRequires:  jpackage-utils, /usr/share/java-1.7.0
 Requires:       jpackage-utils, /usr/lib/java-1.7.0, /usr/share/java-1.7.0
 
 %define sourcedir %{name}-source-%{version}
+
+# Patch added for javadoc error in el7
+# https://github.com/pegasus-isi/pegasus/commit/5e9b3bab3b3246657511f3e18babe91f6f71ca13
+Patch0: el7javadocutf8.patch
 
 %description
 The Pegasus project encompasses a set of technologies that
@@ -37,6 +44,7 @@ execute the steps in appropriate order.
 
 %prep
 %setup -q -n %{sourcedir}
+%patch0 -p1
 
 %build
 ant dist-release
@@ -82,6 +90,11 @@ rm -Rf %{buildroot}
 
 
 %changelog
+* Mon Mar 21 2017 Edgar Fajardo <efajardo@physics.ucsd.edu> -4.7.4-1.1
+- Bumped to version 4.7.4 - SOFTWARE-2626
+- Added R-devel to the build requires
+- Added patch for javadoc error in el7
+
 * Fri Apr 22 2016 Edgar Fajardo <efajardo@physics.ucsd.edu> -4.6.1-1.1
 - Bumped to version 4.6.1 - SOFTWARE-2286
 * Thu Oct 02 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 4.3.1-1.3
