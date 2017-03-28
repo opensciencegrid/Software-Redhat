@@ -1,0 +1,70 @@
+commit 3686905c6b1f9fbb3a0a97820ee0c855b1df2709
+Author: Carl Edquist <edquist@cs.wisc.edu>
+Date:   Fri Oct 30 17:10:37 2015 -0500
+
+    Restore 'Sign AUP on behalf of user' feature based on feedback from Andrea
+    
+    As of 2.7.0, this was only getting shown if there were no acceptance
+    records are in the db for the user.
+    
+    https://ticket.opensciencegrid.org/26679
+    https://jira.opensciencegrid.org/browse/SOFTWARE-2091
+
+diff --git a/src/main/webapp/WEB-INF/p/user/aupStatus.jsp b/src/main/webapp/WEB-INF/p/user/aupStatus.jsp
+index a32784f..4801e4f 100644
+--- a/src/main/webapp/WEB-INF/p/user/aupStatus.jsp
++++ b/src/main/webapp/WEB-INF/p/user/aupStatus.jsp
+@@ -31,27 +31,6 @@
+   <s:if test="aupAcceptanceRecords.empty">
+     
+     No acceptance records found for the currently active AUP version. 
+-    <s:if test="#request.registrationEnabled"> 
+-
+-      <s:if test="#attr.canSuspend">
+-        <div style="text-align: right;">
+-          <s:form
+-            action="create-acceptance-record"
+-            onsubmit="ajaxSubmit(this,'aup-history-content'); return false;"
+-            theme="simple"
+-            cssStyle="display: inline">
+-
+-            <s:token />
+-
+-            <s:hidden
+-              name="userId"
+-              value="%{model.id}" />
+-
+-            <s:submit value="%{'Sign AUP on behalf of user'}" />
+-          </s:form>
+-        </div>
+-      </s:if>
+-    </s:if>
+   </s:if>
+   <s:else>
+     
+@@ -99,6 +78,25 @@
+         
+         <div style="text-align: right;">
+         
++        <s:if test="#attr.canSuspend">
++          <div style="text-align: right;">
++            <s:form
++              action="create-acceptance-record"
++              onsubmit="ajaxSubmit(this,'aup-history-content'); return false;"
++              theme="simple"
++              cssStyle="display: inline">
++
++              <s:token />
++
++              <s:hidden
++                name="userId"
++                value="%{model.id}" />
++
++              <s:submit value="%{'Sign AUP on behalf of user'}" />
++            </s:form>
++          </div>
++        </s:if>
++
+         <s:if test="#attr.canSuspend 
+           and (not model.hasInvalidAUPAcceptanceRecordForAUP(#attr.defaultAUP)) 
+           and (not model.hasPendingSignAUPTasks())">
