@@ -40,9 +40,7 @@ Requires: osg-version
 Requires: osg-wn-client
 Requires: vo-client
 
-Requires: osg-info-services
 Requires: osg-vo-map
-Requires: gip
 
 %if 0%{?rhel} < 7
 Requires: gums-client
@@ -50,7 +48,6 @@ Requires: gums-client
 
 Requires: edg-mkgridmap
 Requires: gratia-probe-gridftp-transfer
-Requires: osg-cleanup
 Requires: osg-configure >= 1.0.57
 Requires: osg-configure-ce
 Requires: osg-configure-gip
@@ -321,6 +318,9 @@ exit 0
 %files bosco
 
 %changelog
+* Tue Mar 28 2017 Edgar Fajardo <efajardo@physics.ucsd.edu> - 3.3-11
+- Removed the requirements of gip, osg-info-services and osg-cleanup (SOFTWARE-2585)
+
 * Fri Mar 02 2017 Brian Lin <blin@cs.wisc.edu> - 3.3-11
 - Require htcondor-ce-slurm for osg-htcondor-ce-slurm
 
