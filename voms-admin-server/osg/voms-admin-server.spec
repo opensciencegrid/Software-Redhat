@@ -8,7 +8,7 @@
 Summary: The VOMS Administration service
 Name: voms-admin-server
 Version: 2.7.0
-Release: 1.21%{?dist}
+Release: 1.22%{?dist}
 License: ASL 2.0
 Group: System Environment/Libraries
 
@@ -108,6 +108,7 @@ Patch6: fix-certificate-issuer-check.patch
 Patch7: axistools-version.patch
 Patch8: sign-on-behalf-of.patch
 Patch9: disable-ca-check.patch
+Patch10: SOFTWARE-2652.newstruts.patch
 
 Requires: osg-webapp-common
 
@@ -272,6 +273,10 @@ fi
 %{tomcat_endorsed}/xalan-j2-serializer.jar
 
 %changelog
+* Tue Mar 28 2017 Carl Edquist <edquist@cs.wisc.edu> - 2.7.0-1.22
+- Port upstream changes to update to struts 2.3.32 and
+  hibernate 4.2.8.Final (SOFTWARE-2652)
+
 * Tue Jan 26 2016 Carl Edquist <edquist@cs.wisc.edu> - 2.7.0-1.21
 - Port VOMS-678 fix for broken user lookup by subject (SOFTWARE-2158)
 
