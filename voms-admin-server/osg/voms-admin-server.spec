@@ -148,6 +148,7 @@ administration tasks.
 
 %patch8 -p1
 %patch9 -p1
+%patch10 -p1
 
 %define local_maven /tmp/m2/repository
 
