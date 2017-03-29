@@ -8,7 +8,7 @@
 Summary: The VOMS Administration service
 Name: voms-admin-server
 Version: 2.7.0
-Release: 1.22%{?dist}
+Release: 1.22.git.1.e8f86df%{?dist}
 License: ASL 2.0
 Group: System Environment/Libraries
 

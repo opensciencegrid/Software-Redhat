@@ -1,20 +1,22 @@
 diff --git a/pom.xml b/pom.xml
-index 8ebeada..127bbff 100644
+index 8ebeada..f06bacf 100644
 --- a/pom.xml
 +++ b/pom.xml
-@@ -20,9 +20,8 @@
+@@ -20,10 +20,9 @@
          <build.settings>src/config/emi-build-settings.xml</build.settings>
  		
  		<!-- Dependencies versions -->
 -		<struts.version>2.2.1</struts.version>
 -		<hibernate.version>3.2.6.ga</hibernate.version>
 -		<hibernate-annotations.version>3.3.1.GA</hibernate-annotations.version>
+-		<c3p0.version>0.9.1</c3p0.version>
 +		<struts.version>2.3.32</struts.version>
 +		<hibernate.version>4.2.8.Final</hibernate.version>
- 		<c3p0.version>0.9.1</c3p0.version>
++		<c3p0.version>0.9.5.2</c3p0.version>
  		<axis.version>1.2.1</axis.version>
  		<bouncycastle.version>1.45</bouncycastle.version>
-@@ -329,17 +328,11 @@
+ 		<trustmanager.version>3.0.3</trustmanager.version>
+@@ -329,18 +328,18 @@
  
  		<dependency>
  			<groupId>org.hibernate</groupId>
@@ -24,15 +26,20 @@ index 8ebeada..127bbff 100644
  		</dependency>
  
  		<dependency>
--			<groupId>org.hibernate</groupId>
+ 			<groupId>org.hibernate</groupId>
 -			<artifactId>hibernate-annotations</artifactId>
 -			<version>${hibernate-annotations.version}</version>
--		</dependency>
++			<artifactId>hibernate-c3p0</artifactId>
++			<version>${hibernate.version}</version>
+ 		</dependency>
 -		 
--		<dependency>
- 			<groupId>c3p0</groupId>
++
+ 		<dependency>
+-			<groupId>c3p0</groupId>
++			<groupId>com.mchange</groupId>
  			<artifactId>c3p0</artifactId>
  			<version>${c3p0.version}</version>
+ 			<scope>runtime</scope>
 diff --git a/src/main/java/org/glite/security/voms/admin/apiv2/VOMSUserJSON.java b/src/main/java/org/glite/security/voms/admin/apiv2/VOMSUserJSON.java
 index 3b4fa24..27c2c9a 100644
 --- a/src/main/java/org/glite/security/voms/admin/apiv2/VOMSUserJSON.java
@@ -1251,6 +1258,66 @@ index 05aee81..d7cbaa0 100644
      for (int lastIndex = uri.lastIndexOf('/'); lastIndex > (-1); lastIndex = uri.lastIndexOf('/', lastIndex-1)) {
        ActionMapper actionMapper = actionMappers.get(uri.substring(0,lastIndex));
        if (actionMapper != null) {
+diff --git a/src/main/resources/model/ACL.hbm.xml b/src/main/resources/model/ACL.hbm.xml
+index 43934c0..679aca3 100644
+--- a/src/main/resources/model/ACL.hbm.xml
++++ b/src/main/resources/model/ACL.hbm.xml
+@@ -29,9 +29,7 @@
+ 	<class name="org.glite.security.voms.admin.persistence.model.ACL" table="acl2">	
+ 		
+ 		<id name="id" column="acl_id" type="long">
+-			<generator class="native">
+-				<param name="sequence">VOMS_ACL_SEQ</param>
+-			</generator>
++			<generator class="native"/>
+ 		</id>
+ 	
+ 		<natural-id>
+diff --git a/src/main/resources/model/AUP.hbm.xml b/src/main/resources/model/AUP.hbm.xml
+index 467ce4d..b2a61aa 100644
+--- a/src/main/resources/model/AUP.hbm.xml
++++ b/src/main/resources/model/AUP.hbm.xml
+@@ -29,9 +29,7 @@
+ 	<class name="org.glite.security.voms.admin.persistence.model.AUP" table="aup">	
+ 		
+ 		<id name="id" type="long">
+-			<generator class="native">
+-				<param name="sequence">VOMS_AUP_SEQ</param>
+-			</generator>
++			<generator class="native"/>
+ 		</id>
+ 	
+ 		<property name="name" 
+diff --git a/src/main/resources/model/AUPAcceptanceRecord.hbm.xml b/src/main/resources/model/AUPAcceptanceRecord.hbm.xml
+index 2a547b0..8b6a095 100644
+--- a/src/main/resources/model/AUPAcceptanceRecord.hbm.xml
++++ b/src/main/resources/model/AUPAcceptanceRecord.hbm.xml
+@@ -29,9 +29,7 @@
+ 	<class name="org.glite.security.voms.admin.persistence.model.AUPAcceptanceRecord" table="aup_acc_record">	
+ 		
+ 		<id name="id" type="long">
+-			<generator class="native">
+-				<param name="sequence">VOMS_AUP_ACC_REC_SEQ</param>
+-			</generator>
++			<generator class="native"/>
+ 		</id>
+ 	
+         <natural-id>
+diff --git a/src/main/resources/model/AUPVersion.hbm.xml b/src/main/resources/model/AUPVersion.hbm.xml
+index ecd6691..fe237fa 100644
+--- a/src/main/resources/model/AUPVersion.hbm.xml
++++ b/src/main/resources/model/AUPVersion.hbm.xml
+@@ -29,9 +29,7 @@
+ 	<class name="org.glite.security.voms.admin.persistence.model.AUPVersion" table="aup_version">	
+ 		
+ 		<id name="id" type="long">
+-			<generator class="native">
+-				<param name="sequence">VOMS_AUP_VER_SEQ</param>
+-			</generator>
++			<generator class="native"/>
+ 		</id>
+ 	
+         <natural-id>
 diff --git a/src/main/resources/struts.xml b/src/main/resources/struts.xml
 index bfb7c24..5989a51 100644
 --- a/src/main/resources/struts.xml
