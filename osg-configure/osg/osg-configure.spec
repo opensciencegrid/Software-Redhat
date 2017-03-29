@@ -1,6 +1,6 @@
 Summary: Package for configure-osg and associated scripts
 Name: osg-configure
-Version: 1.6.1
+Version: 1.6.2
 Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
@@ -337,6 +337,9 @@ fi
 
 
 %changelog
+* Wed Mar 29 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6.2-1
+- Fix info-services unit tests (SOFTWARE-2655)
+
 * Mon Jan 30 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6.1-1
 - Fix osg-configure -v for Resource Entry sections (SOFTWARE-2562)
 
