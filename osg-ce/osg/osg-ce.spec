@@ -4,7 +4,7 @@
 Name:      osg-ce
 Summary:   OSG Compute Element
 Version:   3.3
-Release:   11%{?dist}
+Release:   12%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -318,7 +318,7 @@ exit 0
 %files bosco
 
 %changelog
-* Tue Mar 28 2017 Edgar Fajardo <efajardo@physics.ucsd.edu> - 3.3-11
+* Tue Mar 28 2017 Edgar Fajardo <efajardo@physics.ucsd.edu> - 3.3-12
 - Removed the requirements of gip, osg-info-services and osg-cleanup (SOFTWARE-2585)
 
 * Fri Mar 02 2017 Brian Lin <blin@cs.wisc.edu> - 3.3-11
