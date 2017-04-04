@@ -2,7 +2,7 @@
 %global _release 1
 
 Name:           osg-build
-Version:        1.8.0
+Version:        1.8.1
 Release:        %{?betatag:0.}%{_release}%{?betatag}%{?dist}
 Summary:        Build tools for the OSG
 
@@ -71,6 +71,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_docdir}/%{name}/sample-osg-build.ini
 
 %changelog
+* Tue Apr 04 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.8.1
+- Set 'use_old_ssl=True' in template user config to work around SOFTWARE-2616
+
 * Wed Feb 01 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.8.0
 - Use koji 1.11 on CSL systems and update template config to koji 1.7+ version
   (adds dependency on koji >= 1.7) (SOFTWARE-2566)
