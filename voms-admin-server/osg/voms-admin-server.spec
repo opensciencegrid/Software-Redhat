@@ -8,7 +8,7 @@
 Summary: The VOMS Administration service
 Name: voms-admin-server
 Version: 2.7.0
-Release: 1.22.git.1.e8f86df%{?dist}
+Release: 1.23.git.1.e8f86df%{?dist}
 License: ASL 2.0
 Group: System Environment/Libraries
 
@@ -41,6 +41,7 @@ Requires: java7-devel
 Requires: emi-trustmanager
 Requires: emi-trustmanager-tomcat
 Requires: bouncycastle >= 1.39
+Requires: javamail
 
 %if 0%{?rhel} <= 5
 Requires: tomcat5
@@ -237,6 +238,7 @@ ln -s /usr/share/java/eclipse-ecj.jar $RPM_BUILD_ROOT%{tomcat_lib}/voms-admin-ec
 mkdir -p $RPM_BUILD_ROOT%{tomcat_endorsed}/
 ln -s /usr/share/java/xalan-j2.jar $RPM_BUILD_ROOT%{tomcat_endorsed}/
 ln -s /usr/share/java/xalan-j2-serializer.jar $RPM_BUILD_ROOT%{tomcat_endorsed}/
+ln -s /etc/alternatives/javamail $RPM_BUILD_ROOT%{tomcat_endorsed}/javamail.jar
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -272,8 +274,14 @@ fi
 %{tomcat_lib}/voms-admin-eclipse-ecj.jar
 %{tomcat_endorsed}/xalan-j2.jar
 %{tomcat_endorsed}/xalan-j2-serializer.jar
+%{tomcat_endorsed}/javamail.jar
 
 %changelog
+* Wed Apr 05 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.7.0-1.23
+- Add javamail dependency and symlink it to the tomcat endorsed dir so
+  voms-admin can find it. This fixes a NoClassDefFoundError when looking for
+  javax.mail.Authenticator (SOFTWARE-2652)
+
 * Tue Mar 28 2017 Carl Edquist <edquist@cs.wisc.edu> - 2.7.0-1.22
 - Port upstream changes to update to struts 2.3.32 and
   hibernate 4.2.8.Final (SOFTWARE-2652)
