@@ -5,15 +5,14 @@
 
 Summary:   Fetch sources from upstream (internal use)
 Name:      fetch-sources
-Version:   0.0.1
-Release:   3%{?dist}
+Version:   1.0.0
+Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
 Source0:   %{name}
-AutoReq:   yes
-AutoProv:  yes
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 BuildArch: noarch
+
+Requires: osg-build
 
 %description
 Fetches sources from upstream directory
@@ -35,7 +34,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/%{name}
 
 %changelog
-* Fri Jul 11 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 0.0.1-3
+* Wed Apr 05 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.0.0-1
+- Rewrite based on fetch_sources.py from osg-build (SOFTWARE-2642)
+
+* Fri Jul 11 2014 Mátyás Selmeci <matyas@cs.wisc.edu> - 0.0.1-3
 - Bump to rebuild
 
 * Mon Feb 13 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 0.0.1-2
