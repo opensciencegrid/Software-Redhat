@@ -3,7 +3,7 @@
 
 Name:           python-%{pypi_name}
 Version:        2.0.0
-Release:        1.1%{?dist}
+Release:        1.2%{?dist}
 Summary:        Python client for Elasticsearch
 
 License:        ASL 
@@ -40,6 +40,7 @@ Requires:       python-six
 Requires:       python-dateutil
 Requires:       python-elasticsearch >= 2.0.0
 Requires:       python-elasticsearch < 3.0.0
+Provides:       python-%{pypi_name} = %{version}-%{release}
 %description -n python2-%{pypi_name}
 Python client for Elasticsearch
 
@@ -65,6 +66,9 @@ rm -rf %{pypi_name}.egg-info
 %{python2_sitelib}/elasticsearch_dsl-%{version}-py?.?.egg-info
 
 %changelog
+* Thu Apr 06 2017 Carl Edquist <edquist@cs.wisc.edu> - 2.0.0-1.2
+- Provides python-elasticsearch-dsl (GRACC-18)
+
 * Tue Nov 15 2016 Carl Edquist <edquist@cs.wisc.edu> - 2.0.0-1.1
 - Fixes to build on el6/koji
 
