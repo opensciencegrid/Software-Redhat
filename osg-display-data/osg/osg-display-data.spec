@@ -1,5 +1,5 @@
 Name: osg-display-data
-Version: 1.0.9
+Version: 1.1.0
 Release: 1%{?dist}
 Summary: Scripts and tools to generate the OSG Display's data.
 Source: %{name}-%{version}.tar.gz
@@ -8,7 +8,8 @@ Group: Development/Libraries
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildArch: noarch
 Vendor: Brian Bockelman <bbockelm@cse.unl.edu>
-Requires: MySQL-python
+Requires: python-elasticsearch
+Requires: python-elasticsearch-dsl
 Requires: python-imaging
 Requires: python-matplotlib >= 0.99
 Requires: msttcorefonts
@@ -17,7 +18,7 @@ Provides: OSG_Display_Data = %{version}-%{release}
 Obsoletes: OSG_Display_Data < 1.0.4-1
 
 %description
-UNKNOWN
+Scripts and tools to generate the OSG Display's data.
 
 %prep
 %setup
@@ -41,6 +42,10 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) /etc/osg_display/osg_display.condor.cron
 
 %changelog
+* Wed Apr 05 2017 Carl Edquist <edquist@cs.wisc.edu> - 1.1.0-1
+- Retrieve data from GRACC instead of Gratia DB (GRACC-18)
+- Now EL7-only due to python-elasticsearch* deps
+
 * Tue Feb 18 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.0.9-1
 - Don't discard most recent complete month (SOFTWARE-1400)
 
