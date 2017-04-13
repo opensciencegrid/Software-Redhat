@@ -1,7 +1,7 @@
 Name:      osg-wn-client
 Summary:   OSG Worker-Node Client
 Version:   3.3
-Release:   6%{?dist}
+Release:   7%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -43,6 +43,9 @@ Requires: gfal2-plugin-xrootd
 # the previous OSG version of CGSI-gSOAP (1.3.4.2) did not provide the symbol
 # cgsi_plugin_set_credentials, needed at runtime for gfal2-plugin-srm
 Requires: CGSI-gSOAP >= 1.3.6
+
+# Added per request on SOFTWARE-2657
+Requires: gsi-openssh-clients
 
 %description
 %{summary}
@@ -101,6 +104,9 @@ rm -rf $RPM_BUILD_ROOT
 %files glexec
 
 %changelog
+* Thu Apr 13 2017 Edgar Fajrdo <emfajard@ucsd.edu> 3.3-7
+- Added gsi-openssh-clients (SOFTWARE-2657)
+
 * Mon Oct 31 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 3.3-6
 - Deprecate /etc/osg/wn-client/setup.sh and setup.csh (SOFTWARE-1977)
 
