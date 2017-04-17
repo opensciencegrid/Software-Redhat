@@ -13,7 +13,7 @@
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
 %define version 3.3.2
-%define release 1
+%define release 2
 
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
@@ -715,7 +715,7 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/gwms-factory.conf
 %attr(-, gfactory, gfactory) %dir %{_sysconfdir}/gwms-factory
-%attr(-, gfactory, gfactory) %config(noreplace) %{_sysconfdir}/gwms-factory/glideinWMS.xml
+%attr(-, gfactory, gfactory) %config(noreplace) %verify(not md5 size mtime) %{_sysconfdir}/gwms-factory/glideinWMS.xml
 %config(noreplace) %{_sysconfdir}/sysconfig/gwms-factory
 
 %files vofrontend-standalone
@@ -767,7 +767,7 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/gwms-frontend.conf
 %attr(-, frontend, frontend) %dir %{_sysconfdir}/gwms-frontend
-%attr(-, frontend, frontend) %config(noreplace) %{_sysconfdir}/gwms-frontend/frontend.xml
+%attr(-, frontend, frontend) %config(noreplace) %verify(not md5 size mtime) %{_sysconfdir}/gwms-frontend/frontend.xml
 %config(noreplace) %{_sysconfdir}/sysconfig/gwms-frontend
 %attr(-, frontend, frontend) %{web_base}/../creation
 
@@ -812,6 +812,9 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/condor/certs/condor_mapfile
 
 %changelog
+* Mon Apr 17 2017 Edgar Fajardo <emfajard@ucsd.edu> - 3.3.2-2
+- Added the verify special option to glideinwms.xml and frontend.xml (SOFTWARE-2659)
+
 * Fri Mar 24 2017 Marco Mambelli <marcom@fnal.gov> - 3.3.2-1
 - Glideinwms v3.3.2
 - Release Notes: http://glideinwms.fnal.gov/doc.v3_3_2/history.html
