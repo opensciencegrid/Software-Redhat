@@ -13,16 +13,19 @@
 %global use_libc_semaphore 0
 %endif
 
+%define _alphatag rc2
+%define _release 1
+
 Name:		xrootd
 Epoch:		1
-Version:	4.6.0
-Release:	1%{?dist}
+Version:	4.6.1
+Release:	0.%{_release}.%{_alphatag}%{?dist}
 Summary:	Extended ROOT file server
 
 Group:		System Environment/Daemons
 License:	LGPLv3+
 URL:		http://xrootd.org/
-Source0:	%{name}-%{version}.tar.gz
+Source0:	%{name}-%{version}-%{_alphatag}.tar.gz
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 
@@ -243,7 +246,7 @@ BuildArch:	noarch
 This package contains the API documentation of the xrootd libraries.
 
 %prep
-%setup -q
+%setup -n %{name}-%{version}-%{_alphatag}
 
 %if %{?fedora}%{!?fedora:0} <= 9 && %{?rhel}%{!?rhel:0} <= 5
 # Older versions of SELinux do not have policy for open
@@ -618,6 +621,9 @@ fi
 %doc %{_pkgdocdir}
 
 %changelog
+* Fri Apr 21 2017 Marian Zvada <marian.zvada@cern.ch> - 1:4.6.1-0.1.rc2
+- Update to 4.6.1.rc2 SOFTWARE-2669
+
 * Thu Feb 9 2017 Edgar Fajardo <emfajard@ucsd.edu> - 1:4.6.0-1
 - Update to 4.6.0 SOFTWARE-2597
 - File caching proxy V2
