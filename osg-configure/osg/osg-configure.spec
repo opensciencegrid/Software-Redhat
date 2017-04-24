@@ -1,6 +1,6 @@
-Summary: Package for configure-osg and associated scripts
+Summary: Package for OSG-Configure and associated scripts
 Name: osg-configure
-Version: 1.6.2
+Version: 1.7.0
 Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
@@ -20,96 +20,97 @@ Requires: condor-python
 %{summary}
 
 %package rsv
-Summary: Configure-osg configuration files for rsv
+Summary: OSG configuration file for RSV
 Group: Grid
 Provides: configure-osg-rsv
 Requires: %name = %version-%release
 Requires: %name-gateway
 %description rsv
-This package includes the ini file for configuring rsv using configure-osg
+This package includes the ini file for configuring RSV using osg-configure
 
 %package gratia
-Summary: Configure-osg configuration files for gratia
+Summary: OSG configuration file for gratia
 Group: Grid
 Provides: configure-osg-gratia
 Requires: %name = %version-%release
 %description gratia
-This package includes the ini file for configuring gratia using configure-osg
+This package includes the ini file for configuring gratia using osg-configure
 
 %package gip
-Summary: Configure-osg configuration files for gip
+Summary: OSG configuration file for gip
 Group: Grid
 Provides: configure-osg-gip
 Requires: %name = %version-%release
 %description gip
-This package includes the ini file for configuring gip using configure-osg
+This package includes the ini file for configuring gip using osg-configure
 
 %package lsf
-Summary: Configure-osg configuration files for lsf
+Summary: OSG configuration file for lsf
 Group: Grid
 Provides: configure-osg-lsf
 Requires: %name = %version-%release
 Requires: %name-gateway
 %description lsf
-This package includes the ini file for configuring lsf using configure-osg
+This package includes the ini file for configuring lsf using osg-configure
 
 %package pbs
-Summary: Configure-osg configuration files for pbs
+Summary: OSG configuration file for pbs
 Group: Grid
 Provides: configure-osg-pbs
 Requires: %name = %version-%release
 Requires: %name-gateway
 %description pbs
-This package includes the ini file for configuring pbs using configure-osg
+This package includes the ini file for configuring pbs using osg-configure
 
 %package condor
-Summary: Configure-osg configuration files for condor
+Summary: OSG configuration file for condor
 Group: Grid
 Provides: configure-osg-condor
 Requires: %name = %version-%release
 Requires: %name-gateway
 %description condor
-This package includes the ini file for configuring condor using configure-osg
+This package includes the ini file for configuring condor using osg-configure
 
 %package sge
-Summary: Configure-osg configuration files for sge
+Summary: OSG configuration file for sge
 Group: Grid
 Provides: configure-osg-sge
 Requires: %name = %version-%release
 Requires: %name-gateway
 %description sge
-This package includes the ini file for configuring sge using configure-osg
+This package includes the ini file for configuring sge using osg-configure
 
 %package monalisa
-Summary: Configure-osg configuration files for monalisa
+Summary: Transitional dummy package for OSG 3.2
 Group: Grid
 Provides: configure-osg-monalisa
 %description monalisa
-This is an empty package created as a workaround to upgrade issues.
+This is an empty package created as a workaround for 3.1->3.2 upgrade issues.
 It may safely be removed.
 
 %package ce
-Summary: Configure-osg configuration files for CE
+Summary: OSG configuration file for CE
 Group: Grid
 Provides: configure-osg-ce
 Requires: %name = %version-%release
 Requires: %name-gateway
 %description ce
 This package includes the ini files for configuring a basic CE using 
-configure-osg.  One of the packages for the job manager configuration also 
+osg-configure.  One of the packages for the job manager configuration also 
 needs to be installed for the CE configuration.
 
 %package misc
-Summary: Configure-osg configuration files for misc software
+Summary: OSG configuration file for misc software
 Group: Grid
 Provides: configure-osg-misc
 Requires: %name = %version-%release
+Requires: lcmaps-db-templates
 %description misc
 This package includes the ini files for various osg software including
-certificates setup and glexec
+certificates setup, lcmaps, and glexec
 
 %package squid
-Summary: Configure-osg configuration files for squid
+Summary: OSG configuration file for squid
 Group: Grid
 Provides: configure-osg-squid
 Requires: %name = %version-%release
@@ -117,7 +118,7 @@ Requires: %name = %version-%release
 This package includes the ini files for configuring an OSG system to use squid
 
 %package managedfork
-Summary: Configure-osg configuration files for managedfork
+Summary: OSG configuration file for managedfork
 Group: Grid
 Provides: configure-osg-managedfork
 Requires: %name = %version-%release
@@ -127,7 +128,7 @@ This package includes the ini files for configuring an OSG CE to use
 managedfork
 
 %package network
-Summary: Configure-osg configuration files for network configuration
+Summary: OSG configuration file for Globus network configuration
 Group: Grid
 Provides: configure-osg-network
 Requires: %name = %version-%release
@@ -136,7 +137,7 @@ This package includes the ini files for configuring network related information
 such as firewall ports that globus should use
 
 %package tests
-Summary: Configure-osg configuration unit tests and configuration for unit testing
+Summary: OSG-Configure unit tests and configuration for unit testing
 Group: Grid
 Provides: configure-osg-tests
 Requires: %name = %version-%release
@@ -145,41 +146,41 @@ This package includes the ini files and files for unit tests that osg-configure
 uses to verify functionality
 
 %package slurm
-Summary: Configure-osg configuration files for slurm
+Summary: OSG configuration file for slurm
 Group: Grid
 Provides: configure-osg-slurm
 Requires: %name = %version-%release
 Requires: %name-gateway
 %description slurm
-This package includes the ini file for configuring slurm using configure-osg
+This package includes the ini file for configuring slurm using osg-configure
 
 %package bosco
-Summary: Configure-osg configuration files for bosco
+Summary: OSG configuration file for bosco
 Group: Grid
 Provides: configure-osg-bosco
 Requires: %name = %version-%release
 Requires: %name-gateway
 Requires: condor-bosco
 %description bosco
-This package includes the ini file for configuring bosco using configure-osg
+This package includes the ini file for configuring bosco using osg-configure
 
 %package infoservices
-Summary: Configure-osg configuration files for the osg info services
+Summary: OSG configuration file for the osg info services
 Group: Grid
 Provides: configure-osg-infoservices
 Requires: %name = %version-%release
 Requires: %name-gip
 %description infoservices
-This package includes the ini file for configuring the osg info services using configure-osg
+This package includes the ini file for configuring the osg info services using osg-configure
 
 %package gateway
-Summary: Configure-osg configuration files for job gateways (globus-gatekeeper / htcondor-ce)
+Summary: OSG configuration file for job gateways (globus-gatekeeper / htcondor-ce)
 Group: Grid
 Provides: configure-osg-gateway
 Requires: %name = %version-%release
 %description gateway
 This package includes the ini file for configuring the job gateways
-(globus-gatekeeper or htcondor-ce) using configure-osg
+(globus-gatekeeper or htcondor-ce) using osg-configure
 
 %package cemon
 Summary: Transitional dummy package for OSG 3.2
@@ -331,6 +332,12 @@ fi
 
 
 %changelog
+* Mon Apr 24 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 1.7.0-1
+- Drop GIP/OSG-Info-Services support (SOFTWARE-2644)
+- Make absence of user-vo-map file non-fatal (SOFTWARE-2696)
+- Create /etc/lcmaps.db from template and add voms-mapfile support (SOFTWARE-2601)
+  (adds dependency on lcmaps-db-templates (SOFTWARE-2692)
+
 * Wed Mar 29 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6.2-1
 - Fix info-services unit tests (SOFTWARE-2655)
 
