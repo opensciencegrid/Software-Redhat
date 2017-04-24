@@ -13,8 +13,8 @@
 %global use_libc_semaphore 0
 %endif
 
-%define _alphatag rc2
-%define _release 1
+%define _alphatag rc3
+%define _release 2
 
 Name:		xrootd
 Epoch:		1
@@ -27,7 +27,6 @@ License:	LGPLv3+
 URL:		http://xrootd.org/
 Source0:	%{name}-%{version}-%{_alphatag}.tar.gz
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-
 
 
 BuildRequires:	cmake
@@ -574,6 +573,7 @@ fi
 %files server-devel
 %{_includedir}/%{name}/XrdAcc
 %{_includedir}/%{name}/XrdCms
+%{_includedir}/%{name}/XrdFileCache
 %{_includedir}/%{name}/XrdOss
 %{_includedir}/%{name}/XrdSfs
 %{_includedir}/%{name}/XrdXrootd
@@ -621,6 +621,9 @@ fi
 %doc %{_pkgdocdir}
 
 %changelog
+* Fri Apr 24 2017 Marian Zvada <marian.zvada@cern.ch> - 1:4.6.1-0.2.rc3
+- Bumped to rc3; Update to 4.6.1.rc2 SOFTWARE-2669
+
 * Fri Apr 21 2017 Marian Zvada <marian.zvada@cern.ch> - 1:4.6.1-0.1.rc2
 - Update to 4.6.1.rc2 SOFTWARE-2669
 
