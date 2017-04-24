@@ -18,7 +18,7 @@
 Summary: Grid (X.509) and VOMS credentials to local account mapping service
 Name: lcmaps
 Version: 1.6.6
-Release: 1.2%{?dist}
+Release: 1.3%{?dist}
 License: ASL 2.0
 Group: System Environment/Libraries
 URL: http://wiki.nikhef.nl/grid/LCMAPS
@@ -26,6 +26,13 @@ Source0: http://software.nikhef.nl/security/lcmaps/lcmaps-%{version}.tar.gz
 Source1: lcmaps.db
 Source2: ban-mapfile
 Source3: ban-voms-mapfile
+Source4: lcmaps.db.gridmap
+Source5: lcmaps.db.gums
+Source6: lcmaps.db.vomsmap
+# TODO OSG 3.4: remove .glexec files
+Source7: lcmaps.db.gridmap.glexec
+Source8: lcmaps.db.gums.glexec
+
 # TODO OSG 3.4: remove defaultnovomscheck.patch (SOFTWARE-2634)
 Patch0: defaultnovomscheck.patch
 # BuildRoot is still required for EPEL5
@@ -160,6 +167,15 @@ This package contains the development libraries to build
 without the GSI protocol.
 
 
+%package db-templates
+Summary: lcmaps.db templates
+
+%description db-templates
+Template files for various auth methods for lcmaps.db.
+
+
+
+
 %prep
 %setup -q
 %patch0 -p0
@@ -219,6 +235,10 @@ mkdir -p ${RPM_BUILD_ROOT}%{_libdir}/lcmaps
 
 # clean up installed files
 rm -rf ${RPM_BUILD_ROOT}%{_docdir}
+
+# install templates
+mkdir -p ${RPM_BUILD_ROOT}%{_datadir}/lcmaps/templates
+cp %{SOURCE4} %{SOURCE5} %{SOURCE6} %{SOURCE7} %{SOURCE8}  ${RPM_BUILD_ROOT}%{_datadir}/lcmaps/templates/
 
 # Retain the clean section for EPEL5
 %clean
@@ -326,8 +346,19 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/lcmaps-without-gsi.pc
 %doc LICENSE
 
+%files db-templates
+%{_datadir}/lcmaps/templates/lcmaps.db.gridmap
+%{_datadir}/lcmaps/templates/lcmaps.db.gums
+%{_datadir}/lcmaps/templates/lcmaps.db.vomsmap
+%{_datadir}/lcmaps/templates/lcmaps.db.gridmap.glexec
+%{_datadir}/lcmaps/templates/lcmaps.db.gums.glexec
+
 
 %changelog
+* Thu Apr 20 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6.6-1.3.osg
+- Add template lcmaps.db files under /usr/share/lcmaps/templates
+  (SOFTWARE-2692)
+
 * Thu Feb 23 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6.6-1.2.osg
 - Add ban-mapfile, ban-voms-mapfile and updated lcmaps.db with a new
   authorize_only policy that uses the ban files, voms mapfiles, and a
