@@ -1,0 +1,25 @@
+##############################################################################
+#
+# lcmaps.db (GUMS-based authorization without glExec)
+#
+##############################################################################
+
+
+gumsclient = "lcmaps_gums_client.mod"
+             "-resourcetype ce"
+             "-actiontype execute-now"
+             "-capath /etc/grid-security/certificates"
+             "-cert   /etc/grid-security/hostcert.pem"
+             "-key    /etc/grid-security/hostkey.pem"
+             "--cert-owner root"
+             "--endpoint https://@GUMSHOST@:8443/gums/services/GUMSXACMLAuthorizationServicePort"
+# Uncomment this to set a different expected host certificate name for server
+#            "--override-expected-hostname overridegumsname.yourdomain"
+
+good        = "lcmaps_dummy_good.mod"
+bad         = "lcmaps_dummy_bad.mod"
+
+
+authorize_only:
+gumsclient -> good | bad
+
