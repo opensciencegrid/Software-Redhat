@@ -18,7 +18,7 @@
 Summary: Grid (X.509) and VOMS credentials to local account mapping service
 Name: lcmaps
 Version: 1.6.6
-Release: 1.3%{?dist}
+Release: 1.4%{?dist}
 License: ASL 2.0
 Group: System Environment/Libraries
 URL: http://wiki.nikhef.nl/grid/LCMAPS
@@ -29,9 +29,6 @@ Source3: ban-voms-mapfile
 Source4: lcmaps.db.gridmap
 Source5: lcmaps.db.gums
 Source6: lcmaps.db.vomsmap
-# TODO OSG 3.4: remove .glexec files
-Source7: lcmaps.db.gridmap.glexec
-Source8: lcmaps.db.gums.glexec
 # BuildRoot is still required for EPEL5
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildRequires: globus-common-devel
@@ -234,7 +231,7 @@ rm -rf ${RPM_BUILD_ROOT}%{_docdir}
 
 # install templates
 mkdir -p ${RPM_BUILD_ROOT}%{_datadir}/lcmaps/templates
-cp %{SOURCE4} %{SOURCE5} %{SOURCE6} %{SOURCE7} %{SOURCE8}  ${RPM_BUILD_ROOT}%{_datadir}/lcmaps/templates/
+cp %{SOURCE4} %{SOURCE5} %{SOURCE6} ${RPM_BUILD_ROOT}%{_datadir}/lcmaps/templates/
 
 # Retain the clean section for EPEL5
 %clean
@@ -346,12 +343,13 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/lcmaps/templates/lcmaps.db.gridmap
 %{_datadir}/lcmaps/templates/lcmaps.db.gums
 %{_datadir}/lcmaps/templates/lcmaps.db.vomsmap
-%{_datadir}/lcmaps/templates/lcmaps.db.gridmap.glexec
-%{_datadir}/lcmaps/templates/lcmaps.db.gums.glexec
 
 
 %changelog
-* Thu Apr 20 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6.6-1.3.osg
+* Mon Apr 24 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6.6-1.4.osgup
+- Drop glexec templates (SOFTWARE-2692)
+
+* Thu Apr 20 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6.6-1.3.osg33
 - Add template lcmaps.db files under /usr/share/lcmaps/templates
   (SOFTWARE-2692)
 
