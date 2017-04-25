@@ -4,7 +4,7 @@
 # appropriate osg-*-development tag
 # This will require koji admin permissions.
 %define osg_version 3.4
-%define dver   6
+%define dver   7
 
 %define osgver %(tr -d . <<< %{osg_version})
 %define dist .osg%{osgver}.el%{dver}
