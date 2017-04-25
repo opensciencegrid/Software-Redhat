@@ -1,8 +1,8 @@
-#global betatag .rc1
+%global betatag .pre
 %global _release 1
 
 Name:           osg-build
-Version:        1.8.1
+Version:        1.8.90
 Release:        %{?betatag:0.}%{_release}%{?betatag}%{?dist}
 Summary:        Build tools for the OSG
 
@@ -12,29 +12,70 @@ URL:            https://twiki.grid.iu.edu/bin/view/SoftwareTeam/OSGBuildTools
 Source0:        %{name}-%{version}.tar.gz
 Patch0:         koji-hub-testing.patch
 
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
-Requires:       mock >= 1.0.0
-Requires:       rpm-build
-Requires:       openssl
-Requires:       quilt
-Requires:       koji >= 1.7.0
-Requires:       rpmlint
-Requires:       subversion
-Requires:       git
+Requires:       %{name}-base
+Requires:       %{name}-mock
+Requires:       %{name}-koji
+
 
 Obsoletes:      vdt-build <= 0.0.17
 Provides:       vdt-build = %{version}
 
-%if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
-%{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
-%{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
-%endif
-
 %description
 %{summary}
 See %{url} for details.
+
+
+%package base
+Requires:       git
+Requires:       rpm-build
+Requires:       quilt
+Requires:       rpmlint
+Requires:       subversion
+Requires:       wget
+Requires:       python >= 2.6
+Summary:        OSG-Build base package, not containing mock or koji modules or koji-based tools
+
+%description base
+%{summary}
+Installing this package makes osg-build and osg-import-srpm
+available. osg-build can do rpmbuilds and run the lint and quilt
+tasks. osg-build-mock is required to use the mock task, and
+osg-build-koji is required to use the koji task.
+
+
+%package mock
+Requires:       %{name}-base
+Requires:       mock >= 1.0.0
+Summary:        OSG-Build Mock plugin, allows builds with mock
+
+%description mock
+%{summary}
+
+
+%package koji
+Requires:       %{name}-base
+Requires:       openssl
+Requires:       koji >= 1.7.0
+Summary:        OSG-Build Koji plugin and Koji-based tools
+
+%description koji
+%{summary}
+Installing this package enables the 'koji' task in osg-build and adds
+the following tools:
+- koji-blame
+- koji-tag-diff
+- osg-koji
+- osg-promote
+
+
+%package tests
+Requires:       %{name}
+Summary:        OSG-Build tests
+
+%description tests
+%{summary}
 
 
 %prep
@@ -44,33 +85,66 @@ See %{url} for details.
 # % patch0 -p1
 
 %install
-rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
-%defattr(-,root,root,-)
-%{_bindir}/%{name}
-%{_bindir}/koji-blame
-%{_bindir}/koji-tag-diff
+
+%files tests
 %{_bindir}/osg-build-test
-%{_bindir}/osg-import-srpm
-%{_bindir}/osg-koji
-%{_bindir}/osg-promote
-%{_bindir}/vdt-build
-%dir %{python_sitelib}/osgbuild
-%{python_sitelib}/osgbuild/*.py*
 %dir %{python_sitelib}/osgbuild/test
 %{python_sitelib}/osgbuild/test/*.py*
-%{_datadir}/%{name}/osg-koji-site.conf
-%{_datadir}/%{name}/osg-koji-home.conf
-%{_datadir}/%{name}/promoter.ini
+
+%files base
+%{_bindir}/%{name}
+%{_bindir}/osg-import-srpm
+%{_bindir}/vdt-build
+%dir %{python_sitelib}/osgbuild
+%{python_sitelib}/osgbuild/__init__.py*
+%{python_sitelib}/osgbuild/constants.py*
+%{python_sitelib}/osgbuild/error.py*
+%{python_sitelib}/osgbuild/fetch_sources.py*
+%{python_sitelib}/osgbuild/git.py*
+%{python_sitelib}/osgbuild/importer.py*
+%{python_sitelib}/osgbuild/main.py*
+%{python_sitelib}/osgbuild/srpm.py*
+%{python_sitelib}/osgbuild/svn.py*
+%{python_sitelib}/osgbuild/utils.py*
 %{_datadir}/%{name}/rpmlint.cfg
 %doc %{_docdir}/%{name}/sample-osg-build.ini
 
+%files mock
+%{python_sitelib}/osgbuild/mock.py*
+
+%files koji
+%{_bindir}/koji-blame
+%{_bindir}/koji-tag-diff
+%{_bindir}/osg-koji
+%{_bindir}/osg-promote
+%{python_sitelib}/osgbuild/clientcert.py*
+%{python_sitelib}/osgbuild/kojiinter.py*
+%{python_sitelib}/osgbuild/namedtuple.py*
+%{python_sitelib}/osgbuild/promoter.py*
+%{_datadir}/%{name}/osg-koji-site.conf
+%{_datadir}/%{name}/osg-koji-home.conf
+%{_datadir}/%{name}/promoter.ini
+
+
 %changelog
+* Tue Apr 25 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.8.90-0.1
+(prerelease)
+- Make koji and mock optional modules that can be shipped as separate
+  subpackages and will be loaded if necessary. (SOFTWARE-2671)
+- Improve `osg-build --help` text to be more consistent and show default
+  values for options. (SOFTWARE-2558)
+- Drop Python 2.4 compatibility
+- Add support for OSG 3.4 (SOFTWARE-2693)
+- Add new .source file syntax to fetch sources directly from Git repos
+  (SOFTWARE-2689)
+- Drop EL 5 packaging
+
 * Tue Apr 04 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.8.1
 - Set 'use_old_ssl=True' in template user config to work around SOFTWARE-2616
 
