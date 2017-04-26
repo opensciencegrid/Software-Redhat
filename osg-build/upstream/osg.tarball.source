@@ -1,0 +1,4 @@
+# To generate the tarball, clone https://github.com/opensciencegrid/osg-build
+# and run 'make dist'. Run 'make afsdist' to automatically place it into the
+# upstream directory on AFS.
+osg-build/1.8.90/osg-build-1.8.90.tar.gz
