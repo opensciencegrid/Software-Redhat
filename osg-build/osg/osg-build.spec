@@ -125,7 +125,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/osg-promote
 %{python_sitelib}/osgbuild/clientcert.py*
 %{python_sitelib}/osgbuild/kojiinter.py*
-%{python_sitelib}/osgbuild/namedtuple.py*
 %{python_sitelib}/osgbuild/promoter.py*
 %{_datadir}/%{name}/osg-koji-site.conf
 %{_datadir}/%{name}/osg-koji-home.conf
