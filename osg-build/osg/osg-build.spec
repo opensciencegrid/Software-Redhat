@@ -2,7 +2,7 @@
 %global _release 1
 
 Name:           osg-build
-Version:        1.8.90
+Version:        1.8.92
 Release:        %{?betatag:0.}%{_release}%{?betatag}%{?dist}
 Summary:        Build tools for the OSG
 
@@ -132,7 +132,7 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Tue Apr 25 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.8.90-0.1
+* Wed Apr 26 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.8.92-0.1
 (prerelease)
 - Make koji and mock optional modules that can be shipped as separate
   subpackages and will be loaded if necessary. (SOFTWARE-2671)
