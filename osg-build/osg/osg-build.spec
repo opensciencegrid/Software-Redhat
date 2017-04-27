@@ -1,8 +1,8 @@
-%global betatag .pre
+#global betatag .pre
 %global _release 1
 
 Name:           osg-build
-Version:        1.8.92
+Version:        1.9.0
 Release:        %{?betatag:0.}%{_release}%{?betatag}%{?dist}
 Summary:        Build tools for the OSG
 
@@ -132,8 +132,7 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Wed Apr 26 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.8.92-0.1
-(prerelease)
+* Thu Apr 27 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.9.0-1
 - Make koji and mock optional modules that can be shipped as separate
   subpackages and will be loaded if necessary. (SOFTWARE-2671)
 - Improve `osg-build --help` text to be more consistent and show default
@@ -144,10 +143,10 @@ rm -rf $RPM_BUILD_ROOT
   (SOFTWARE-2689)
 - Drop EL 5 packaging
 
-* Tue Apr 04 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.8.1
+* Tue Apr 04 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.8.1-1
 - Set 'use_old_ssl=True' in template user config to work around SOFTWARE-2616
 
-* Wed Feb 01 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.8.0
+* Wed Feb 01 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.8.0-1
 - Use koji 1.11 on CSL systems and update template config to koji 1.7+ version
   (adds dependency on koji >= 1.7) (SOFTWARE-2566)
 - Remove broken --mock-config=AUTO (autogenerating a mock config from a template)
