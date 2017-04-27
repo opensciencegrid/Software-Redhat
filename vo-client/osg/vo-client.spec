@@ -1,6 +1,6 @@
 Name:           vo-client
-Version:        72
-Release:        2%{?dist}
+Version:        73
+Release:        1%{?dist}
 Summary:        Contains vomses file for use with user authentication and edg-mkgridmap.conf file that contains configuration information for edg-mkgridmap.
 
 Group:          System Environment/Base
@@ -98,6 +98,18 @@ rm -rf $RPM_BUILD_ROOT
 %attr(0600,tomcat,tomcat) %config(noreplace) %{_sysconfdir}/gums/gums.config.template
 
 %changelog
+* Wed Apr 26 2017 Carl Edquist <edquist@cs.wisc.edu> - 73-1
+- Update to vo-client 73 (SOFTWARE-2710)
+  - Update edg-mkgridmap CDF entry to match vomses #13
+  - Remove LIGO server from GUMS template #14
+  - Remove unused CDF glidecaf settings #15
+    - https://ticket.opensciencegrid.org/33395
+  - drop /production role for des vomsUserGroup #17 (SOFTWARE-2350)
+  - Update default CMS mappings #18 (SOFTWARE-2691)
+    - https://ticket.opensciencegrid.org/33396#1491658593
+  - Update default Fermilab / FIFE mappings #19 (SOFTWARE-2690)
+    - https://ticket.opensciencegrid.org/33395#1491839472
+
 * Wed Mar 22 2017 Carl Edquist <edquist@cs.wisc.edu> - 72-2
 - Update changelog for 72-1 build (SOFTWARE-2643)
 
