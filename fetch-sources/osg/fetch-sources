@@ -1,96 +1,14 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
-from glob import glob
-import fnmatch as fnmatch_
-from fnmatch import fnmatch
-import re
-import os
-import shutil
-import subprocess
-import sys
-import urllib2
+from sys import argv
 
-cache_prefix = 'http://vdt.cs.wisc.edu/upstream'
-
-def process_dot_source(sfilename, destdir):
-    """Read a .source file, fetch any files mentioned in it from the
-    cache.
-
-    """
-    global cache_prefix
-
-    if not os.path.isdir(destdir):
-        os.makedirs(destdir)
-    downloaded = []
-    try:
-        sfile = open(sfilename, 'r')
-        for lineno, line in enumerate(sfile):
-            line = line.strip()
-            if line.startswith('#'): continue
-            if line == '': continue
-            basename = os.path.basename(line)
-            if line.startswith('/'):
-                uri = "file://" + line
-            elif not re.match(r'/|\w+://', line): # relative path
-                uri = os.path.join(cache_prefix, line)
-            else:
-                uri = line
-
-            print 'Retrieving ' + uri
-            handle = urllib2.urlopen(uri)
-            filename = os.path.join(destdir, basename)
-            desthandle = open(filename, 'w')
-            desthandle.write(handle.read())
-            downloaded.append(filename)
-    finally:
-        sfile.close()
-
-    return downloaded
-
-def fetch(package_dir):
-    destdir = os.getcwd()
-    abs_package_dir = os.path.abspath(package_dir)
-    upstream_dir = os.path.join(abs_package_dir, 'upstream')
-    osg_dir = os.path.join(abs_package_dir, 'osg')
-
-    print "Fetching files to %s" % destdir
-
-    # Process upstream/*.source files
-    print "Processing files from %s" % upstream_dir
-    dot_sources = glob(os.path.join(upstream_dir, '*.source'))
-    downloaded = []
-    for s in dot_sources:
-        print 'Processing .source file ' + s
-        downloaded += [
-            os.path.abspath(x)
-            for x in process_dot_source(s, destdir)]
-
-    # Process downloaded SRPMs
-    srpms = fnmatch_.filter(downloaded, '*.src.rpm')
-    for s in srpms:
-        print "Unpacking SRPM " + s
-        subprocess.call("rpm2cpio %s | cpio -id" % re.escape(s), shell=True)
-        os.unlink(s)
-
-    # Process other files in upstream
-    other_sources = [x for x in glob(os.path.join(upstream_dir, '*'))
-                     if not fnmatch(x, '*.source')]
-    for s in other_sources:
-        print 'Copying other source ' + s
-        shutil.copy(s, destdir)
-
-    # Override downloaded files with what's in osg/
-    if os.path.isdir(osg_dir):
-        for f in glob(os.path.join(osg_dir, '*')):
-            print 'Copying osg file ' + f
-            shutil.copy(f, destdir)
-
-
-
+from osgbuild.main import guess_pkg_dir
+from osgbuild.fetch_sources import fetch
 
 try:
-    package_dir = sys.argv[1]
+    fetch_dir = argv[1]
 except IndexError:
-    package_dir = '.'
-fetch(package_dir)
+    fetch_dir = '.'
+
+fetch(guess_pkg_dir(fetch_dir))
 

@@ -1,19 +1,13 @@
-%if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
-%{!?python_sitelib: %global python_sitelib %(%{__python} -c 'from distutils.sysconfig import get_python_lib; print get_python_lib()')}
-%{!?python_sitearch: %global python_sitearch %(%{__python} -c 'from distutils.sysconfig import get_python_lib; print get_python_lib(1)')}
-%endif
-
 Summary:   Fetch sources from upstream (internal use)
 Name:      fetch-sources
-Version:   0.0.1
-Release:   3%{?dist}
+Version:   1.0.0
+Release:   2%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
 Source0:   %{name}
-AutoReq:   yes
-AutoProv:  yes
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 BuildArch: noarch
+
+Requires: osg-build-base >= 1.8.92
 
 %description
 Fetches sources from upstream directory
@@ -35,7 +29,13 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/%{name}
 
 %changelog
-* Fri Jul 11 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 0.0.1-3
+* Wed Apr 26 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.0.0-2
+- Require osg-build instead of osg-build-base so we don't bring in mock (SOFTWARE-2642)
+
+* Wed Apr 05 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.0.0-1
+- Rewrite based on fetch_sources.py from osg-build (SOFTWARE-2642)
+
+* Fri Jul 11 2014 Mátyás Selmeci <matyas@cs.wisc.edu> - 0.0.1-3
 - Bump to rebuild
 
 * Mon Feb 13 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 0.0.1-2
