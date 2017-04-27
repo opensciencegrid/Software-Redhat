@@ -14,9 +14,9 @@ Patch0:         koji-hub-testing.patch
 
 BuildArch:      noarch
 
-Requires:       %{name}-base
-Requires:       %{name}-mock
-Requires:       %{name}-koji
+Requires:       %{name}-base = %{version}
+Requires:       %{name}-mock = %{version}
+Requires:       %{name}-koji = %{version}
 
 
 Obsoletes:      vdt-build <= 0.0.17
@@ -46,7 +46,7 @@ osg-build-koji is required to use the koji task.
 
 
 %package mock
-Requires:       %{name}-base
+Requires:       %{name}-base = %{version}
 Requires:       mock >= 1.0.0
 Summary:        OSG-Build Mock plugin, allows builds with mock
 
@@ -55,7 +55,7 @@ Summary:        OSG-Build Mock plugin, allows builds with mock
 
 
 %package koji
-Requires:       %{name}-base
+Requires:       %{name}-base = %{version}
 Requires:       openssl
 Requires:       koji >= 1.7.0
 Summary:        OSG-Build Koji plugin and Koji-based tools
@@ -71,7 +71,7 @@ the following tools:
 
 
 %package tests
-Requires:       %{name}
+Requires:       %{name} = %{version}
 Summary:        OSG-Build tests
 
 %description tests
@@ -132,6 +132,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Apr 27 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.9.0-2
+- Add version requirements to the subpackages
+
 * Thu Apr 27 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.9.0-1
 - Make koji and mock optional modules that can be shipped as separate
   subpackages and will be loaded if necessary. (SOFTWARE-2671)
