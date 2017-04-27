@@ -1,14 +1,29 @@
 #!/usr/bin/env python
 
-from sys import argv
+import logging
+import sys
 
-from osgbuild.main import guess_pkg_dir
-from osgbuild.fetch_sources import fetch
+log = logging.getLogger('osgbuild')
+log.setLevel(logging.DEBUG)
+log_consolehandler = logging.StreamHandler()
+log_consolehandler.setLevel(logging.DEBUG)
+log_formatter = logging.Formatter(" >> %(message)s")
+log_consolehandler.setFormatter(log_formatter)
+log.addHandler(log_consolehandler)
+
+log.info("""\
+Built against:
+@OSGBUILDVERSION@
+""".strip())
+
+sys.path.insert(0, '/usr/share/fetch-sources')
+
+from osgbuild import fetch_sources
 
 try:
-    fetch_dir = argv[1]
+    fetch_dir = sys.argv[1]
 except IndexError:
     fetch_dir = '.'
 
-fetch(guess_pkg_dir(fetch_dir))
+fetch_sources.fetch(fetch_dir)
 
