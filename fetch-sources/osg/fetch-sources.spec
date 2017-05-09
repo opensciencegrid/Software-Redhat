@@ -1,12 +1,14 @@
 Summary:   Fetch sources from upstream (internal use)
 Name:      fetch-sources
 Version:   1.1.0
-Release:   1%{?dist}
+Release:   2%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
 Source0:   %{name}
 BuildArch: noarch
 BuildRequires: osg-build-base >= 1.8.92
+Requires: git
+Requires: subversion
 
 %description
 Fetches sources from upstream directory
@@ -35,6 +37,10 @@ rm -rf $RPM_BUILD_ROOT
 /usr/share/fetch-sources
 
 %changelog
+* Tue May 09 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.1.0-2
+- Require git and subversion so that they're available in the buildSRPMFromSCM task
+  (technically, subversion is already in there thanks to the Koji group, but better safe than sorry)
+
 * Thu Apr 27 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.1.0-1
 - Bundle osg-build libraries so we aren't sensitive to new versions of osg-build in the development repos (SOFTWARE-2711)
 - Improve logging
