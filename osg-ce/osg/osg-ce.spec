@@ -36,7 +36,6 @@ Requires: gsi-openssh-clients
 Requires: osg-cert-scripts
 Requires: osg-system-profiler
 Requires: osg-version
-Requires: osg-wn-client
 Requires: vo-client
 
 Requires: osg-vo-map
