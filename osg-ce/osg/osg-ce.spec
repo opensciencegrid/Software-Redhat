@@ -37,11 +37,6 @@ Requires: vo-client
 
 Requires: osg-vo-map
 
-%if 0%{?rhel} < 7
-Requires: gums-client
-%endif
-
-Requires: edg-mkgridmap
 Requires: osg-configure >= 1.0.57
 Requires: osg-configure-ce
 Requires: osg-configure-gip
