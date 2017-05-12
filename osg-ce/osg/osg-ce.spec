@@ -26,7 +26,6 @@ Requires: %{htcce} = %{version}-%{release}
 %package -n %{basece}
 Group: Grid
 Summary: Meta-package of gateway-independent components of the OSG CE
-Requires: globus-gridftp-server-progs
 Requires: osg-version
 Requires: grid-certificates >= 7
 
@@ -47,7 +46,6 @@ Requires: gums-client
 %endif
 
 Requires: edg-mkgridmap
-Requires: gratia-probe-gridftp-transfer
 Requires: osg-configure >= 1.0.57
 Requires: osg-configure-ce
 Requires: osg-configure-gip
