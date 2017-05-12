@@ -41,9 +41,7 @@ Requires: osg-configure >= 1.0.57
 Requires: osg-configure-ce
 Requires: osg-configure-gip
 Requires: osg-configure-gratia
-Requires: osg-configure-managedfork
 Requires: osg-configure-misc
-Requires: osg-configure-network
 Requires: osg-configure-squid
 Requires: frontier-squid
 
