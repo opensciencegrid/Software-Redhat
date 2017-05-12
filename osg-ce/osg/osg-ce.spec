@@ -29,10 +29,7 @@ Summary: Meta-package of gateway-independent components of the OSG CE
 Requires: osg-version
 Requires: grid-certificates >= 7
 
-# former osg-client requirements (minus networking stuff)
-Requires: globus-common-progs
-Requires: globus-gsi-cert-utils-progs
-Requires: gsi-openssh-clients
+Requires: fetch-crl
 Requires: osg-cert-scripts
 Requires: osg-system-profiler
 Requires: osg-version
