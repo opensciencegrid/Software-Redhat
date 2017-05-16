@@ -3,7 +3,7 @@
 Name:		globus-xio
 %global _name %(tr - _ <<< %{name})
 Version:	5.12
-Release:	1.1%{?dist}
+Release:	1.2%{?dist}
 Summary:	Globus Toolkit - Globus XIO Framework
 
 Group:		System Environment/Libraries
@@ -12,8 +12,6 @@ URL:		http://toolkit.globus.org/
 Source:		http://toolkit.globus.org/ftppub/gt6/packages/%{_name}-%{version}.tar.gz
 #		README file
 Source8:	GLOBUS-XIO
-
-Patch0:         timeout_close.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -64,8 +62,6 @@ Globus XIO Framework Documentation Files
 
 %prep
 %setup -q -n %{_name}-%{version}
-
-%patch0 -p0
 
 %build
 # Reduce overlinking
@@ -126,6 +122,9 @@ rm -rf %{buildroot}
 %{?_licensedir: %license GLOBUS_LICENSE}
 
 %changelog
+* Wed May 17 2017 Brian Lin <blin@cs.wisc.edu> - 5.12-1.2.osg
+- Drop timeout_close.patch in globus.xio (SOFTWARE-2530)
+
 * Thu Aug 25 2016 Edgar Fajardo <emfajard@ucsd.edu> - 5.12-1.1.osg
 - Merged OSG changes update for SOFTWARE-2197
 
