@@ -1,5 +1,5 @@
 Name:           osg-update-vos
-Version:        1.3.0
+Version:        1.4.0
 Release:        1%{?dist}
 Summary:        VO data updater for OSG
 
@@ -45,6 +45,9 @@ rm -rf %{buildroot}
 %{_sbindir}/osg-update-data
 
 %changelog
+* Tue May 16 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.4.0-1
+- osg-update-vos: clean cache before downloading data (SOFTWARE-2731)
+
 * Fri Jan 06 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.3.0-1
 - Add osg-release requirement
 - Allow taking osg repo definition from osg-release installed in a tarball client (SOFTWARE-2527)
