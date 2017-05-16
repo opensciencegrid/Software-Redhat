@@ -1,5 +1,5 @@
 Name: osg-display-data
-Version: 1.1.0
+Version: 1.1.1
 Release: 1%{?dist}
 Summary: Scripts and tools to generate the OSG Display's data.
 Source: %{name}-%{version}.tar.gz
@@ -42,6 +42,9 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) /etc/osg_display/osg_display.condor.cron
 
 %changelog
+* Tue May 16 2017 Carl Edquist <edquist@cs.wisc.edu> - 1.1.1-1
+- Fix logging warning (SOFTWARE-2728)
+
 * Wed Apr 05 2017 Carl Edquist <edquist@cs.wisc.edu> - 1.1.0-1
 - Retrieve data from GRACC instead of Gratia DB (GRACC-18)
 - Now EL7-only due to python-elasticsearch* deps
