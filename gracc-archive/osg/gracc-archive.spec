@@ -1,5 +1,5 @@
 Name:           gracc-archive
-Version:        1.2.0
+Version:        1.2.1
 Release:        1%{?dist}
 Summary:        GRACC Archive
 
@@ -17,6 +17,8 @@ BuildRequires:  epel-rpm-macros
 BuildRequires:  systemd
 Requires:       python2-pika
 Requires:       python-toml
+Requires:       python-setuptools
+Requires:       python-urllib3
 Requires(pre):  shadow-utils
 
 %description
