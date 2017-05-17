@@ -1,0 +1,12 @@
+diff --git a/gridftp.conf.default.in b/gridftp.conf.default.in
+index 46be8f7..fa884f1 100644
+--- a/gridftp.conf.default.in
++++ b/gridftp.conf.default.in
+@@ -8,4 +8,6 @@
+ 
+ # port
+ port 2811
+-
++log_level ERROR,WARN,INFO,TRANSFER
++log_single /var/log/gridftp-auth.log
++log_transfer /var/log/gridftp.log

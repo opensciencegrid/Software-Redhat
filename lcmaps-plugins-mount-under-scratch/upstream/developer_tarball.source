@@ -1,0 +1,8 @@
+# git clone https://github.com/lcmaps-plugins/lcmaps-plugins-mount-under-scratch.git
+# cd lcmaps-plugins-mount-under-scratch
+# ./bootstrap
+# ./configure
+# make dist
+# cp lcmaps-plugins-mount-under-scratch-0.0.4.tar.gz ../
+# cd .. ; rm -rf lcmaps-plugins-mount-under-scratch
+lcmaps-plugins-mount-under-scratch/0.0.4/lcmaps-plugins-mount-under-scratch-0.0.4.tar.gz

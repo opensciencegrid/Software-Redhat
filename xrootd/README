@@ -1,0 +1,18 @@
+Source RPM obtained from:
+
+http://download.fedoraproject.org/pub/epel/6/SRPMS/
+
+If a passthrough is done.
+
+If not then Tarball obtained from:
+
+http://xrootd.org/dload.html
+
+And try to keep the spec as close to the one on epel. In case of doubts of packaging check:
+
+https://github.com/xrootd/xrootd/blob/master/packaging/rhel/xrootd.spec.in
+
+
+
+
+

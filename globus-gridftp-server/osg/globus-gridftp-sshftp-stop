@@ -1,0 +1,34 @@
+#!/bin/bash
+
+# source function library
+. /etc/init.d/functions
+
+sbindir=/usr/sbin
+sysconfdir=/etc
+
+rc=0
+defaultconf=${sysconfdir}/gridftp-sshftp
+enabledconf=/etc/grid-security/sshftp
+
+# OSG addition: source our sysconfig file
+. /usr/share/osg/sysconfig/globus-gridftp-server
+
+echo -n "Disabling sshftp access to globus-gridftp-server: "
+
+if [ -L $enabledconf ]; then
+  rm $enabledconf
+  rc=$?
+elif [ -f $enabledconf ]; then
+  mv $enabledconf ${enabledconf}.save
+  rc=$?
+fi
+
+if [ $rc -eq 0 ]; then
+    echo '[  OK  ]'
+else
+    echo '[FAILED]'
+fi
+
+
+echo
+exit $rc

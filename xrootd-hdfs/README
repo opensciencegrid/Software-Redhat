@@ -1,0 +1,20 @@
+A HDFS plugin for Xrootd.
+
+This package is maintained by CMS.  The spec file is included upstream;
+any changes you make here should also be placed in upstream Github:
+
+https://github.com/bbockelm/xrootd-hdfs
+
+Spec file obtained from spec/xrootd-hdfs.spec inside the repo.
+
+To get the upstream:
+
+git clone https://github.com/bbockelm/xrootd-hdfs.git
+cd xrootd-hdfs
+git archive v1.8.6 | gzip -7 > xrootd-hdfs.tar.gz
+
+Or just do:
+
+git clone https://github.com/bbockelm/xrootd-hdfs.git
+cd xrootd-hdfs
+git archive v1.8.8 --format=tar.gz --prefix=xrootd-hdfs-1.8.8/ -o ~/xrootd-hdfs-1.8.8.tar.gz -9

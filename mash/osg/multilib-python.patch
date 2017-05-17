@@ -1,0 +1,14 @@
+Index: mash-0.5.22/mash/multilib.py
+===================================================================
+--- mash-0.5.22.orig/mash/multilib.py	2011-06-27 11:15:05.000000000 -0500
++++ mash-0.5.22/mash/multilib.py	2011-10-28 20:41:58.755451867 -0500
+@@ -94,6 +94,9 @@
+             # libraries in standard dirs
+             if dirname in libdirs and fnmatch(filename, '*.so.*'):
+                 return True
++            # OSG addition: python libraries
++            if fnmatch(dirname, '/usr/lib*/python*/site-packages') and (fnmatch(filename, '*.so') or fnmatch(filename, '*.so.*')):
++                return True
+             # dri
+             if dirname in [ '/usr/lib/dri', '/usr/lib64/dri' ]:
+                 return True

@@ -1,0 +1,31 @@
+##############################################################################
+#
+# lcmaps.db (voms-mapfile and grid-mapfile authorization with banning)
+#
+##############################################################################
+
+gridmapfile = "lcmaps_localaccount.mod"
+              "-gridmap /etc/grid-security/grid-mapfile"
+banfile = "lcmaps_ban_dn.mod"
+          "-banmapfile /etc/grid-security/ban-mapfile"
+banvomsfile = "lcmaps_ban_fqan.mod"
+              "-banmapfile /etc/grid-security/ban-voms-mapfile"
+vomsmapfile = "lcmaps_voms_localaccount.mod"
+              "-gridmap /etc/grid-security/voms-mapfile"
+defaultmapfile = "lcmaps_voms_localaccount2.mod"
+                 "-gridmap /usr/share/osg/voms-mapfile-default"
+verifyproxynokey = "lcmaps_verify_proxy2.mod"
+                   "--allow-limited-proxy"
+                   "--discard_private_key_absence"
+                   " -certdir /etc/grid-security/certificates"
+good        = "lcmaps_dummy_good.mod"
+bad         = "lcmaps_dummy_bad.mod"
+
+authorize_only:
+
+verifyproxynokey -> banfile
+banfile -> banvomsfile | bad
+banvomsfile -> gridmapfile | bad
+gridmapfile -> good | vomsmapfile
+vomsmapfile -> good | defaultmapfile
+defaultmapfile -> good | bad

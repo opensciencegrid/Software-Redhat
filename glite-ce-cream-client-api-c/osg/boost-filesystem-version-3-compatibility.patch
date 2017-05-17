@@ -1,0 +1,54 @@
+From 108f550a504ea01e54fd9c1b208a8a2260bc5218 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Wed, 13 Jul 2016 15:18:26 -0500
+Subject: [PATCH] boost::filesystem version 3 compatibility
+
+---
+ src/AbsCreamProxy.cpp        | 4 ++--
+ src/ConfigurationManager.cpp | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/src/AbsCreamProxy.cpp b/src/AbsCreamProxy.cpp
+index 98fa801..ae91bb6 100644
+--- a/src/AbsCreamProxy.cpp
++++ b/src/AbsCreamProxy.cpp
+@@ -169,17 +169,17 @@ void AbsCreamProxy::makeSoap( void ) throw(soap_ex&, soap_runtime_ex&, auth_ex&)
+ 	 */
+ 	throw auth_ex("gsplugin initialization failed");
+       }
+       
+       
+-      if(!boost::filesystem::exists( boost::filesystem::path(m_certfile, boost::filesystem::native ) ) ) {
++      if(!boost::filesystem::exists( boost::filesystem::path(m_certfile) ) ) {
+ 	glite_gsplugin_free_context( m_ctx );
+ 	m_ctx = NULL;
+ 	throw auth_ex("Missing certificate file [" + m_certfile + "]");
+       }
+ 	  
+-      if(!boost::filesystem::exists( boost::filesystem::path(m_keyfile, boost::filesystem::native ) ) ) {
++      if(!boost::filesystem::exists( boost::filesystem::path(m_keyfile) ) ) {
+ 	glite_gsplugin_free_context( m_ctx );
+ 	m_ctx = NULL;
+ 	throw auth_ex("Missing key file [" + m_keyfile + "]");
+       }
+       
+diff --git a/src/ConfigurationManager.cpp b/src/ConfigurationManager.cpp
+index c4bec2e..e278b88 100644
+--- a/src/ConfigurationManager.cpp
++++ b/src/ConfigurationManager.cpp
+@@ -148,11 +148,11 @@ void util::ConfigurationManager::load(const char* filename)
+ //       int saveerr = errno;
+ //       if(saveerr == ENOENT) return;
+ 
+ //       else throw util::file_ex(strerror(saveerr));
+ //     }
+-  if(!boost::filesystem::exists( boost::filesystem::path(filename, boost::filesystem::native) ))
++  if(!boost::filesystem::exists( boost::filesystem::path(filename) ))
+     throw util::file_ex( string("file")+ filename + " doest not exist");
+   
+   ifstream input( filename );
+   if(!input)
+     throw util::file_ex( string("file")+ filename + " cannot be read");
+-- 
+2.6.3
+

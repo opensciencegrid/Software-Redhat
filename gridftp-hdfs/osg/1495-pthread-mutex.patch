@@ -1,0 +1,13 @@
+diff -ur gridftp-hdfs-0.5.4.orig/src/gridftp_hdfs_send.c gridftp-hdfs-0.5.4/src/gridftp_hdfs_send.c
+--- gridftp-hdfs-0.5.4.orig/src/gridftp_hdfs_send.c	2012-06-15 07:57:50.000000000 -0500
++++ gridftp-hdfs-0.5.4/src/gridftp_hdfs_send.c	2014-06-19 13:55:22.760210044 -0500
+@@ -313,7 +313,9 @@
+     remaining_read = read_length;
+     cur_offset = offset;
+     while (remaining_read != 0) {
++       globus_mutex_lock(hdfs_handle->mutex);
+        nbytes = hdfsPread(hdfs_handle->fs, hdfs_handle->fd, cur_offset, cur_buffer_pos, remaining_read);
++       globus_mutex_unlock(hdfs_handle->mutex);
+        if (nbytes == 0) {    /* eof */
+            // No error
+            globus_gfs_log_message(GLOBUS_GFS_LOG_DUMP, "hdfs_perform_read_cb EOF.\n");

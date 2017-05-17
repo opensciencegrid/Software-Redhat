@@ -1,0 +1,36 @@
+From 700aded94b430b9109e81e5d7bed67659cea9277 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Wed, 5 Oct 2016 16:31:23 -0500
+Subject: [PATCH] tcp-rst-stuck
+
+ From: John Thiltges <jthiltges2@unl.edu>
+ Date: Mon, 3 Oct 2016 09:35:09 -0500
+ Subject: [PATCH] Terminate the connection if server fails to write the 220 banner
+
+If the client opens a connection and immediately closes it before the server
+can write the "220 ... ready." banner, the server process gets gets stuck in
+globus_cond_wait() in globus_gridftp_server.c.
+---
+ globus_gridftp_server_control.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/globus_gridftp_server_control.c b/globus_gridftp_server_control.c
+index 76afe2f..99232bb 100644
+--- a/globus_gridftp_server_control.c
++++ b/globus_gridftp_server_control.c
+@@ -1333,11 +1333,11 @@ globus_l_gsc_220_write_cb(
+     return;
+ 
+ err:
+ 
+     globus_xio_attr_init(&close_attr);
+-    globus_l_gsc_server_ref_check(server_handle);
++    globus_l_gsc_terminate(server_handle);
+     globus_mutex_unlock(&server_handle->mutex);
+ 
+     GlobusGridFTPServerDebugInternalExitWithError();
+ }
+ 
+-- 
+2.6.3
+

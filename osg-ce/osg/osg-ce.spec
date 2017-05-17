@@ -305,6 +305,12 @@ exit 0
 %files bosco
 
 %changelog
+* Fri May 1 2017 Brian Lin <blin@cs.wisc.edu> - 3.4-1
+- Drop GridFTP (SOFTWARE-2633)
+- Drop client tools (SOFTWARE-2650)
+- Drop GUMS and edg-mkgridmap (SOFTWARE-2482, SOFTWARE-2600)
+- Drop GRAM-related osg-configure modules (SOFTWARE-2705)
+
 * Tue Mar 28 2017 Edgar Fajardo <efajardo@physics.ucsd.edu> - 3.3-12
 - Removed the requirements of gip, osg-info-services and osg-cleanup (SOFTWARE-2585)
 
