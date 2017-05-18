@@ -8,7 +8,7 @@
 Summary: The VOMS Administration service
 Name: voms-admin-server
 Version: 2.7.0
-Release: 1.21%{?dist}
+Release: 1.22%{?dist}
 License: ASL 2.0
 Group: System Environment/Libraries
 
@@ -99,15 +99,37 @@ Source7:     voms-admin-server-mvn-deps-el7.tar.gz
 %endif
 
 
-Patch1: directory-defaults.patch
-Patch2: maven-resources-disable.patch
-Patch3: cern-mirror-disable.patch
-Patch4: trustmanager-versions.patch
-Patch5: fix-suspended-users.patch
-Patch6: fix-certificate-issuer-check.patch
-Patch7: axistools-version.patch
-Patch8: sign-on-behalf-of.patch
-Patch9: disable-ca-check.patch
+Patch1: 0001-directory-defaults.patch
+Patch2: 0002-maven-resources-disable.patch
+Patch3: 0003-cern-mirror-disable.patch
+Patch4: 0004-trustmanager-versions.patch
+Patch5: 0005-fix-suspended-users.patch
+Patch6: 0006-fix-certificate-issuer-check.patch
+Patch7: 0007-axistools-version.patch
+Patch8: 0008-sign-on-behalf-of.patch
+Patch9: 0009-disable-ca-check.patch
+Patch10: 0010-bump-struts-version-to-2.3.32-SOFTWARE-2652.patch
+Patch11: 0011-Fix-RegexFieldValidator-for-Struts-2.3.32.patch
+Patch12: 0012-getUri-is-now-in-RequestUtils-SOFTWARE-2652.patch
+Patch13: 0013-hibernate-version-4.2.8-drop-hibernate-annotations-S.patch
+Patch14: 0014-port-non-whitespace-changes-to-struts.xml-from-88f50.patch
+Patch15: 0015-excludeParams-changes-to-struts.xml-from-023f48442-S.patch
+Patch16: 0016-enable.DynamicMethodInvocation-true-SOFTWARE-2652.patch
+Patch17: 0017-RoleActionSupport.java-changes-from-03e6041f-SOFTWAR.patch
+Patch18: 0018-Port-changes-from-01064e71f-SOFTWARE-2652.patch
+Patch19: 0019-try-to-work-around-unreported-exception-build-error-.patch
+Patch20: 0020-pull-in-.hbm.xml-changes-from-03e6041ff-SOFTWARE-265.patch
+Patch21: 0021-bump-c3p0-version-to-0.9.5.2-per-01064e71f-03e6041ff.patch
+Patch22: 0022-Use-legacy-naming-strategy.patch
+Patch23: 0023-Fix-Hibernate-and-Struts-DTD-namespaces.patch
+Patch24: 0024-Add-attribute-annotations-from-9467dda.patch
+Patch25: 0025-Drop-PrefixBasedActionMapper-and-pull-some-changes-f.patch
+Patch26: 0026-Id-JoinColumn-PrimaryKeyJoinColumn.patch
+Patch27: 0027-Assign-CreateAction-to-user-creation-form.patch
+Patch28: 0028-Accept-action-param-with-dashes.patch
+Patch29: 0029-Re-enable-bulk-suspend-and-membership-extension.patch
+Patch30: 0030-Fix-DB-deployment-issues-with-admin-table.patch
+Patch31: 0031-Avoid-duplicate-javassist-jars-from-c4d06fe7.patch
 
 Requires: osg-webapp-common
 
@@ -147,6 +169,28 @@ administration tasks.
 
 %patch8 -p1
 %patch9 -p1
+%patch10 -p1
+%patch11 -p1
+%patch12 -p1
+%patch13 -p1
+%patch14 -p1
+%patch15 -p1
+%patch16 -p1
+%patch17 -p1
+%patch18 -p1
+%patch19 -p1
+%patch20 -p1
+%patch21 -p1
+%patch22 -p1
+%patch23 -p1
+%patch24 -p1
+%patch25 -p1
+%patch26 -p1
+%patch27 -p1
+%patch28 -p1
+%patch29 -p1
+%patch30 -p1
+%patch31 -p1
 
 %define local_maven /tmp/m2/repository
 
@@ -272,6 +316,9 @@ fi
 %{tomcat_endorsed}/xalan-j2-serializer.jar
 
 %changelog
+* Thu May 18 2017 Brian Lin <blin@cs.wisc.edu> - 2.7.0-1.22
+- Release voms-admin-server-2.7.0-1.22+ (SOFTWARE-2652)
+
 * Tue Jan 26 2016 Carl Edquist <edquist@cs.wisc.edu> - 2.7.0-1.21
 - Port VOMS-678 fix for broken user lookup by subject (SOFTWARE-2158)
 

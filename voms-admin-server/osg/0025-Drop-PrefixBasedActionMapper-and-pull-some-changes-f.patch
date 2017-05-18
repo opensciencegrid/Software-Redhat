@@ -1,0 +1,200 @@
+From faec10dbb3f02e26e5aba240a3c3f57a5845faa5 Mon Sep 17 00:00:00 2001
+From: Brian Lin <brianhlin@gmail.com>
+Date: Thu, 6 Apr 2017 12:00:23 -0500
+Subject: [PATCH 25/31] Drop PrefixBasedActionMapper and pull some changes from
+ 03e6041
+
+- Enable Struts action param to support multiple submit buttons:
+https://struts.apache.org/docs/s2-018.html
+- Pull in action configuration from 03e6041
+- Keep dynamic method invocation enabled
+---
+ .../admin/view/mapper/PrefixBasedActionMapper.java | 143 ---------------------
+ src/main/resources/struts.xml                      |  11 +-
+ 2 files changed, 5 insertions(+), 149 deletions(-)
+ delete mode 100644 src/main/java/org/glite/security/voms/admin/view/mapper/PrefixBasedActionMapper.java
+
+diff --git a/src/main/java/org/glite/security/voms/admin/view/mapper/PrefixBasedActionMapper.java b/src/main/java/org/glite/security/voms/admin/view/mapper/PrefixBasedActionMapper.java
+deleted file mode 100644
+index d7cbaa0..0000000
+--- a/src/main/java/org/glite/security/voms/admin/view/mapper/PrefixBasedActionMapper.java
++++ /dev/null
+@@ -1,143 +0,0 @@
+-package org.glite.security.voms.admin.view.mapper;
+-
+-import com.opensymphony.xwork2.config.ConfigurationManager;
+-import com.opensymphony.xwork2.inject.Container;
+-import com.opensymphony.xwork2.inject.Inject;
+-import org.apache.commons.logging.Log;
+-import org.apache.commons.logging.LogFactory;
+-import org.apache.struts2.RequestUtils;
+-import org.apache.struts2.StrutsConstants;
+-import org.apache.struts2.dispatcher.mapper.ActionMapper;
+-import org.apache.struts2.dispatcher.mapper.ActionMapping;
+-import org.apache.struts2.dispatcher.mapper.DefaultActionMapper;
+-
+-import javax.servlet.http.HttpServletRequest;
+-import java.util.Arrays;
+-import java.util.HashMap;
+-import java.util.Map;
+-
+-/**
+- * <!-- START SNIPPET: description -->
+- * 
+- * A prefix based action mapper that is capable of delegating to other {@link ActionMapper}s based on the request's prefix
+- *
+- * It is configured through struts.xml
+- *
+- * For example, with the following entries in struts.properties
+- *
+- * <pre>
+- * &lt;constant name="struts.mapper.class" value="org.apache.struts2.dispatcher.mapper.PrefixBasedActionMapper"/&gt;
+- * &lt;constant name="struts.mapper.prefixMapping" value="/communities:pseudoRestful,/communityTags:pseudoRestful,/events:pseudoRestful,/mediaList:pseudoRestful,/users:pseudoRestful,/community:struts,/communityTag:struts,/event:struts,/media:struts,/user:struts,:struts"/&gt;
+- * </pre>
+- * <p/>
+- * When {@link PrefixBasedActionMapper#getMapping(HttpServletRequest, ConfigurationManager)} or
+- * {@link PrefixBasedActionMapper#getUriFromActionMapping(ActionMapping)} is invoked,
+- * {@link PrefixBasedActionMapper} will check each possible prefix (url prefix terminating just before a /) to find the most specific ActionMapper that returns a mapping when asked to map the request.  If none are found, null is returned for both
+- * {@link PrefixBasedActionMapper#getMapping(HttpServletRequest, ConfigurationManager)} and
+- * {@link PrefixBasedActionMapper#getUriFromActionMapping(ActionMapping)} methods.
+- * <p/>
+- *
+- * <!-- END SNIPPET: description -->
+- *
+- * @see ActionMapper
+- * @see ActionMapping
+- *
+- */
+-public class PrefixBasedActionMapper extends DefaultActionMapper implements ActionMapper {
+-  protected transient final Log log = LogFactory.getLog(getClass());
+-  protected Container container;
+-  protected Map<String,ActionMapper> actionMappers = new HashMap<String,ActionMapper>();
+-
+-  @Inject
+-  public void setContainer(Container container) {
+-    this.container = container;
+-  }
+-
+-  @Inject(StrutsConstants.PREFIX_BASED_MAPPER_CONFIGURATION)
+-  public void setPrefixBasedActionMappers(String list) {
+-    if (list != null) {
+-      String[] mappers = list.split(",");
+-      for (String mapper : mappers) {
+-        String[] thisMapper = mapper.split(":");
+-        if ((thisMapper != null) && (thisMapper.length == 2)) {
+-          String mapperPrefix = thisMapper[0].trim();
+-          String mapperName = thisMapper[1].trim();
+-          Object obj = container.getInstance(ActionMapper.class, mapperName);
+-          if (obj != null) {
+-            actionMappers.put(mapperPrefix, (ActionMapper) obj);
+-          } else if (log.isDebugEnabled()) {
+-            log.debug("invalid PrefixBasedActionMapper config entry: " + mapper);
+-          }
+-        }
+-      }
+-    }
+-  }
+-
+-
+-  @SuppressWarnings("unchecked")
+-  public ActionMapping getMapping(HttpServletRequest request, ConfigurationManager configManager) {
+-    String uri = RequestUtils.getUri(request);
+-    for (int lastIndex = uri.lastIndexOf('/'); lastIndex > (-1); lastIndex = uri.lastIndexOf('/', lastIndex-1)) {
+-      ActionMapper actionMapper = actionMappers.get(uri.substring(0,lastIndex));
+-      if (actionMapper != null) {
+-        ActionMapping actionMapping = actionMapper.getMapping(request, configManager);
+-        if (log.isDebugEnabled()) {
+-          log.debug("Using ActionMapper "+actionMapper);
+-        }
+-        if (actionMapping != null) {
+-          if (log.isDebugEnabled()) {
+-            if (actionMapping.getParams() != null) {
+-              log.debug("ActionMapper found mapping. Parameters: "+actionMapping.getParams());
+-              for (Map.Entry<String,Object> mappingParameterEntry : ((Map<String,Object>)(actionMapping.getParams())).entrySet()) {
+-                Object paramValue = mappingParameterEntry.getValue();
+-                if (paramValue == null) {
+-                  log.debug(mappingParameterEntry.getKey()+" : null!");
+-                } else if (paramValue instanceof String[]) {
+-                  log.debug(mappingParameterEntry.getKey()+" : (String[]) "+Arrays.toString((String[])paramValue));
+-                } else if (paramValue instanceof String) {
+-                  log.debug(mappingParameterEntry.getKey()+" : (String) "+(String)paramValue);
+-                } else {
+-                  log.debug(mappingParameterEntry.getKey()+" : (Object) "+(paramValue.toString()));
+-                }
+-              }
+-            }
+-          }
+-          return actionMapping;
+-        } else if (log.isDebugEnabled()) {
+-          log.debug("ActionMapper "+actionMapper+" failed to return an ActionMapping");
+-        }
+-      }
+-    }
+-    if (log.isDebugEnabled()) {
+-      log.debug("no ActionMapper found");
+-    }
+-    return null;
+-  }
+-
+-  public String getUriFromActionMapping(ActionMapping mapping) {
+-    String namespace = mapping.getNamespace();
+-    
+-    // Handle null namespace gracefully
+-    if (namespace == null)
+-    	namespace = "";
+-    
+-    for (int lastIndex = namespace.length(); lastIndex > (-1); lastIndex = namespace.lastIndexOf('/', lastIndex-1)) {
+-      ActionMapper actionMapper = actionMappers.get(namespace.substring(0,lastIndex));
+-      if (actionMapper != null) {
+-        String uri = actionMapper.getUriFromActionMapping(mapping);
+-        if (log.isDebugEnabled()) {
+-          log.debug("Using ActionMapper "+actionMapper);
+-        }
+-        if (uri != null) {
+-          return uri;
+-        } else if (log.isDebugEnabled()) {
+-          log.debug("ActionMapper "+actionMapper+" failed to return an ActionMapping (null)");
+-        }
+-      }
+-    }
+-    if (log.isDebugEnabled()) {
+-      log.debug("ActionMapper failed to return a uri");
+-    }
+-    return null;
+-  }
+-}
+diff --git a/src/main/resources/struts.xml b/src/main/resources/struts.xml
+index 9668ccc..ac59e5a 100644
+--- a/src/main/resources/struts.xml
++++ b/src/main/resources/struts.xml
+@@ -26,16 +26,15 @@
+ <struts>
+ 
+         <constant name="struts.enable.DynamicMethodInvocation" value="true"/>
+-	 
+-	<constant name="struts.mapper.class" value="org.apache.struts2.dispatcher.mapper.PrefixBasedActionMapper"/>
+-	<constant name="struts.mapper.prefixMapping" value="/apiv2:struts,/shared:struts,/rest:rest,/acl:struts,/admin:struts,/ajax:struts,/attribute:struts,/aup:struts,/configuration:struts,/group:struts,/home:struts,/register:struts,/role:struts,/search:struts,/sibling:struts,/user:struts,:struts"/>
+-	
+-	<constant name="struts.devMode" value="false" />
++        <constant name="struts.action.excludePattern" value="/services,/services/.*,/,/index.jsp" />
++
+ 	<constant name="struts.configuration.xml.reload" value="false" />
+ 	<constant name="struts.ui.theme" value="css_xhtml" />
+ 	<constant name="struts.convention.classes.reload" value="true" />
+ 	
++        <constant name="struts.convention.default.parent.package" value="base" />
+ 	<constant name="struts.convention.package.locators.basePackage" value="org.glite.security.voms.admin.view.actions"/>
++
+ 	<constant name="struts.convention.result.path" value="/WEB-INF/p"/>
+ 	
+ 	<package name="base" extends="json-default">
+@@ -280,4 +279,4 @@
+           <result name="authzException">ajaxException</result>
+         </global-results>
+     </package>
+-</struts>
+\ No newline at end of file
++</struts>
+-- 
+2.9.4
+

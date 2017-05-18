@@ -1,0 +1,623 @@
+From 96aec6d501b6fa62580d173dd1fbcbb62c5bea2d Mon Sep 17 00:00:00 2001
+From: Carl Edquist <edquist@cs.wisc.edu>
+Date: Mon, 27 Mar 2017 15:29:40 -0500
+Subject: [PATCH 18/31] Port changes from 01064e71f (SOFTWARE-2652)
+
+- Drop StringEnumUserType.java
+- Port OrgDBSessionFactory.java changes
+- Port RequesterInfo.java changes
+- Port SchemaDeployer.java changes
+- GetDatabaseMetadataWork.java
+- Drop X500PrincipalType.java
+- Port PermissionType.java
+---
+ .../orgdb/database/OrgDBSessionFactory.java        |  10 +-
+ .../voms/admin/persistence/PermissionType.java     |   9 +-
+ .../voms/admin/persistence/StringEnumUserType.java | 115 ---------------
+ .../voms/admin/persistence/X500PrincipalType.java  | 162 ---------------------
+ .../deployer/GetDatabaseMetadataWork.java          |  25 ++++
+ .../admin/persistence/deployer/SchemaDeployer.java |  59 +++-----
+ .../persistence/deployer/UpgradeDatabaseWork.java  |  45 ++++++
+ .../persistence/model/request/RequesterInfo.java   |   6 +-
+ 8 files changed, 105 insertions(+), 326 deletions(-)
+ delete mode 100644 src/main/java/org/glite/security/voms/admin/persistence/StringEnumUserType.java
+ delete mode 100644 src/main/java/org/glite/security/voms/admin/persistence/X500PrincipalType.java
+ create mode 100644 src/main/java/org/glite/security/voms/admin/persistence/deployer/GetDatabaseMetadataWork.java
+ create mode 100644 src/main/java/org/glite/security/voms/admin/persistence/deployer/UpgradeDatabaseWork.java
+
+diff --git a/src/main/java/org/glite/security/voms/admin/integration/orgdb/database/OrgDBSessionFactory.java b/src/main/java/org/glite/security/voms/admin/integration/orgdb/database/OrgDBSessionFactory.java
+index bb35937..3dcd927 100644
+--- a/src/main/java/org/glite/security/voms/admin/integration/orgdb/database/OrgDBSessionFactory.java
++++ b/src/main/java/org/glite/security/voms/admin/integration/orgdb/database/OrgDBSessionFactory.java
+@@ -30,8 +30,8 @@ import org.glite.security.voms.admin.integration.orgdb.model.Participation;
+ import org.glite.security.voms.admin.integration.orgdb.model.VOMSOrgDBPerson;
+ import org.hibernate.HibernateException;
+ import org.hibernate.SessionFactory;
+-import org.hibernate.cfg.AnnotationConfiguration;
+-import org.hibernate.context.ThreadLocalSessionContext;
++import org.hibernate.cfg.Configuration;
++import org.hibernate.context.internal.ThreadLocalSessionContext;
+ import org.slf4j.Logger;
+ import org.slf4j.LoggerFactory;
+ 
+@@ -42,9 +42,9 @@ public class OrgDBSessionFactory {
+ 	private static volatile SessionFactory orgDbSessionFactory;
+ 	
+ 	
+-	public static AnnotationConfiguration buildConfiguration(Properties orgDbHibernateProperties){
++	public static Configuration buildConfiguration(Properties orgDbHibernateProperties){
+ 		
+-		AnnotationConfiguration cfg = new AnnotationConfiguration()
++		Configuration cfg = new Configuration()
+ 			.addAnnotatedClass(Country.class)
+ 			.addAnnotatedClass(Experiment.class)
+ 			.addAnnotatedClass(Institute.class)
+@@ -72,7 +72,7 @@ public class OrgDBSessionFactory {
+ 		
+ 		try{
+ 			
+-			AnnotationConfiguration cfg = buildConfiguration(orgbHibernateProperties);
++			Configuration cfg = buildConfiguration(orgbHibernateProperties);
+ 			
+ 			orgDbSessionFactory = cfg.configure().buildSessionFactory();
+ 		
+diff --git a/src/main/java/org/glite/security/voms/admin/persistence/PermissionType.java b/src/main/java/org/glite/security/voms/admin/persistence/PermissionType.java
+index 254de50..b5212d9 100644
+--- a/src/main/java/org/glite/security/voms/admin/persistence/PermissionType.java
++++ b/src/main/java/org/glite/security/voms/admin/persistence/PermissionType.java
+@@ -29,6 +29,7 @@ import org.slf4j.Logger;
+ import org.slf4j.LoggerFactory;
+ import org.glite.security.voms.admin.operations.VOMSPermission;
+ import org.hibernate.HibernateException;
++import org.hibernate.engine.spi.SessionImplementor;
+ import org.hibernate.usertype.UserType;
+ 
+ public class PermissionType implements UserType {
+@@ -71,7 +72,9 @@ public class PermissionType implements UserType {
+ 
+ 	}
+ 
+-	public Object nullSafeGet(ResultSet rs, String[] names, Object owner)
++	@Override
++	public Object nullSafeGet(ResultSet rs, String[] names,
++			SessionImplementor session, Object owner)
+ 			throws HibernateException, SQLException {
+ 
+ 		int bits = rs.getInt(names[0]);
+@@ -83,7 +86,9 @@ public class PermissionType implements UserType {
+ 
+ 	}
+ 
+-	public void nullSafeSet(PreparedStatement st, Object value, int index)
++	@Override
++	public void nullSafeSet(PreparedStatement st, Object value, int index,
++			SessionImplementor session)
+ 			throws HibernateException, SQLException {
+ 
+ 		if (value == null)
+diff --git a/src/main/java/org/glite/security/voms/admin/persistence/StringEnumUserType.java b/src/main/java/org/glite/security/voms/admin/persistence/StringEnumUserType.java
+deleted file mode 100644
+index 11a1e7e..0000000
+--- a/src/main/java/org/glite/security/voms/admin/persistence/StringEnumUserType.java
++++ /dev/null
+@@ -1,115 +0,0 @@
+-/**
+- * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
+- * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+- *
+- * Licensed under the Apache License, Version 2.0 (the "License");
+- * you may not use this file except in compliance with the License.
+- * You may obtain a copy of the License at
+- *
+- *     http://www.apache.org/licenses/LICENSE-2.0
+- *
+- * Unless required by applicable law or agreed to in writing, software
+- * distributed under the License is distributed on an "AS IS" BASIS,
+- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+- * See the License for the specific language governing permissions and
+- * limitations under the License.
+- *
+- * Authors:
+- * 	Andrea Ceccanti (INFN)
+- */
+-package org.glite.security.voms.admin.persistence;
+-
+-import java.io.Serializable;
+-import java.sql.PreparedStatement;
+-import java.sql.ResultSet;
+-import java.sql.SQLException;
+-import java.util.Properties;
+-
+-import org.hibernate.Hibernate;
+-import org.hibernate.HibernateException;
+-import org.hibernate.usertype.EnhancedUserType;
+-import org.hibernate.usertype.ParameterizedType;
+-import org.hibernate.util.ReflectHelper;
+-
+-/**
+- * A generic UserType that handles String-based JDK 5.0 Enums.
+- * 
+- * @author Gavin King
+- */
+-public class StringEnumUserType implements EnhancedUserType, ParameterizedType {
+-
+-	private Class<Enum> enumClass;
+-
+-	public void setParameterValues(Properties parameters) {
+-		String enumClassName = parameters.getProperty("enumClassname");
+-		try {
+-			enumClass = ReflectHelper.classForName(enumClassName);
+-		} catch (ClassNotFoundException cnfe) {
+-			throw new HibernateException("Enum class not found", cnfe);
+-		}
+-	}
+-
+-	public Class returnedClass() {
+-		return enumClass;
+-	}
+-
+-	public int[] sqlTypes() {
+-		return new int[] { Hibernate.STRING.sqlType() };
+-	}
+-
+-	public boolean isMutable() {
+-		return false;
+-	}
+-
+-	public Object deepCopy(Object value) {
+-		return value;
+-	}
+-
+-	public Serializable disassemble(Object value) {
+-		return (Enum) value;
+-	}
+-
+-	public Object replace(Object original, Object target, Object owner) {
+-		return original;
+-	}
+-
+-	public Object assemble(Serializable cached, Object owner) {
+-		return cached;
+-	}
+-
+-	public boolean equals(Object x, Object y) {
+-		return x == y;
+-	}
+-
+-	public int hashCode(Object x) {
+-		return x.hashCode();
+-	}
+-
+-	public Object fromXMLString(String xmlValue) {
+-		return Enum.valueOf(enumClass, xmlValue);
+-	}
+-
+-	public String objectToSQLString(Object value) {
+-		return '\'' + ((Enum) value).name() + '\'';
+-	}
+-
+-	public String toXMLString(Object value) {
+-		return ((Enum) value).name();
+-	}
+-
+-	public Object nullSafeGet(ResultSet rs, String[] names, Object owner)
+-			throws SQLException {
+-		String name = rs.getString(names[0]);
+-		return rs.wasNull() ? null : Enum.valueOf(enumClass, name);
+-	}
+-
+-	public void nullSafeSet(PreparedStatement st, Object value, int index)
+-			throws SQLException {
+-		if (value == null) {
+-			st.setNull(index, Hibernate.STRING.sqlType());
+-		} else {
+-			st.setString(index, ((Enum) value).name());
+-		}
+-	}
+-
+-}
+diff --git a/src/main/java/org/glite/security/voms/admin/persistence/X500PrincipalType.java b/src/main/java/org/glite/security/voms/admin/persistence/X500PrincipalType.java
+deleted file mode 100644
+index 4482393..0000000
+--- a/src/main/java/org/glite/security/voms/admin/persistence/X500PrincipalType.java
++++ /dev/null
+@@ -1,162 +0,0 @@
+-/**
+- * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
+- * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+- *
+- * Licensed under the Apache License, Version 2.0 (the "License");
+- * you may not use this file except in compliance with the License.
+- * You may obtain a copy of the License at
+- *
+- *     http://www.apache.org/licenses/LICENSE-2.0
+- *
+- * Unless required by applicable law or agreed to in writing, software
+- * distributed under the License is distributed on an "AS IS" BASIS,
+- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+- * See the License for the specific language governing permissions and
+- * limitations under the License.
+- *
+- * Authors:
+- * 	Andrea Ceccanti (INFN)
+- */
+-package org.glite.security.voms.admin.persistence;
+-
+-import java.io.ByteArrayInputStream;
+-import java.io.IOException;
+-import java.io.InputStream;
+-import java.io.Serializable;
+-import java.sql.PreparedStatement;
+-import java.sql.ResultSet;
+-import java.sql.SQLException;
+-import java.sql.Types;
+-
+-import javax.security.auth.x500.X500Principal;
+-
+-import org.slf4j.Logger;
+-import org.slf4j.LoggerFactory;
+-import org.hibernate.HibernateException;
+-import org.hibernate.usertype.UserType;
+-
+-public class X500PrincipalType implements UserType {
+-	private static final Logger log = LoggerFactory.getLogger(X500PrincipalType.class);
+-
+-	private static final int[] SQL_TYPES = { Types.BLOB };
+-
+-	private static final int BUF_SIZE = 2048;
+-
+-	public X500PrincipalType() {
+-
+-		super();
+-
+-	}
+-
+-	public boolean equals(Object x, Object y) throws HibernateException {
+-
+-		if (x == y)
+-			return true;
+-
+-		if (x == null || y == null)
+-			return false;
+-
+-		return x.equals(y);
+-
+-	}
+-
+-	public int hashCode(Object x) throws HibernateException {
+-
+-		return x.hashCode();
+-	}
+-
+-	public boolean isMutable() {
+-		return true;
+-	}
+-
+-	private X500Principal readPrincipal(InputStream is) {
+-
+-		try {
+-
+-			byte[] buf = new byte[BUF_SIZE];
+-
+-			int readBytes = is.read(buf);
+-
+-			byte[] val = new byte[readBytes];
+-
+-			System.arraycopy(buf, 0, val, 0, readBytes);
+-
+-			return new X500Principal(val);
+-
+-		} catch (IOException e) {
+-			log.error("Error deserializing principal DER representation!");
+-			return null;
+-
+-		}
+-
+-	}
+-
+-	public Object nullSafeGet(ResultSet rs, String[] names, Object owner)
+-			throws HibernateException, SQLException {
+-
+-		InputStream is = rs.getBinaryStream(names[0]);
+-
+-		if (rs.wasNull())
+-			return null;
+-
+-		return readPrincipal(is);
+-	}
+-
+-	public void nullSafeSet(PreparedStatement statement, Object value, int index)
+-			throws HibernateException, SQLException {
+-
+-		if (value == null) {
+-
+-			statement.setNull(index, Types.BLOB);
+-
+-		} else {
+-
+-			X500Principal p = (X500Principal) value;
+-			ByteArrayInputStream bas = new ByteArrayInputStream(p.getEncoded());
+-			statement.setBinaryStream(index, bas, p.getEncoded().length);
+-
+-		}
+-
+-	}
+-
+-	public Class returnedClass() {
+-
+-		return X500Principal.class;
+-
+-	}
+-
+-	public int[] sqlTypes() {
+-
+-		return SQL_TYPES;
+-	}
+-
+-	public Object deepCopy(Object value) throws HibernateException {
+-
+-		if (value == null)
+-			return null;
+-
+-		X500Principal p = (X500Principal) value;
+-		X500Principal clone = new X500Principal(p.getEncoded());
+-
+-		return clone;
+-
+-	}
+-
+-	public Object assemble(Serializable cached, Object owner)
+-			throws HibernateException {
+-
+-		return deepCopy(cached);
+-	}
+-
+-	public Object replace(Object original, Object target, Object owner)
+-			throws HibernateException {
+-
+-		return deepCopy(original);
+-	}
+-
+-	public Serializable disassemble(Object value) throws HibernateException {
+-
+-		return (Serializable) deepCopy(value);
+-	}
+-
+-}
+diff --git a/src/main/java/org/glite/security/voms/admin/persistence/deployer/GetDatabaseMetadataWork.java b/src/main/java/org/glite/security/voms/admin/persistence/deployer/GetDatabaseMetadataWork.java
+new file mode 100644
+index 0000000..e28c163
+--- /dev/null
++++ b/src/main/java/org/glite/security/voms/admin/persistence/deployer/GetDatabaseMetadataWork.java
+@@ -0,0 +1,25 @@
++package org.glite.security.voms.admin.persistence.deployer;
++
++import java.sql.Connection;
++import java.sql.DatabaseMetaData;
++import java.sql.SQLException;
++
++import org.hibernate.jdbc.Work;
++
++public class GetDatabaseMetadataWork implements Work {
++
++  DatabaseMetaData metadata;
++
++  @Override
++  public void execute(Connection connection) throws SQLException {
++
++    metadata = connection.getMetaData();
++
++  }
++
++  public DatabaseMetaData getMetadata() {
++
++    return metadata;
++  }
++
++}
+diff --git a/src/main/java/org/glite/security/voms/admin/persistence/deployer/SchemaDeployer.java b/src/main/java/org/glite/security/voms/admin/persistence/deployer/SchemaDeployer.java
+index e204fba..def82be 100644
+--- a/src/main/java/org/glite/security/voms/admin/persistence/deployer/SchemaDeployer.java
++++ b/src/main/java/org/glite/security/voms/admin/persistence/deployer/SchemaDeployer.java
+@@ -237,6 +237,16 @@ public class SchemaDeployer {
+ 
+ 	}
+ 
++	private DatabaseMetaData getDatabaseMetadata(Session s) {
++
++		GetDatabaseMetadataWork w = new GetDatabaseMetadataWork();
++
++		s.doWork(w);
++
++		return w.getMetadata();
++
++	}
++
+ 	private boolean isOracleBackend() {
+ 
+ 		Session s = HibernateFactory.getSession();
+@@ -247,7 +257,7 @@ public class SchemaDeployer {
+ 
+ 		try {
+ 
+-			dbMetadata = s.connection().getMetaData();
++			dbMetadata = getDatabaseMetadata(s);
+ 			dbProductName = dbMetadata.getDatabaseProductName();
+ 
+ 		} catch (HibernateException e) {
+@@ -363,22 +373,15 @@ public class SchemaDeployer {
+ 
+ 		try {
+ 
+-			dbMetadata = s.connection().getMetaData();
++			dbMetadata = getDatabaseMetadata(s);
+ 
+-		} catch (HibernateException e) {
++		} catch (Throwable e) {
+ 
+ 			log.error(
+ 					"Hibernate error accessing database metadata from Hibernate connection!",
+ 					e);
+ 			System.exit(-1);
+ 
+-		} catch (SQLException e) {
+-
+-			log.error(
+-					"SQL error while accessing database metadata from Hibernate connection!",
+-					e);
+-			System.exit(-1);
+-
+ 		}
+ 
+ 		ResultSet tableNames = getTableNamesMatchingPattern(dbMetadata, "%");
+@@ -594,33 +597,11 @@ public class SchemaDeployer {
+ 
+ 			HibernateFactory.beginTransaction();
+ 
+-			List<String> upgradeScript = loadUpgradeScript();
+-
+-			ArrayList<Exception> exceptions = new ArrayList<Exception>();
+-
+-			log.info("Upgrading voms 2.5 database...");
+-
+-			Statement statement = HibernateFactory.getSession().connection()
+-					.createStatement();
+-
+-			for (String command : upgradeScript) {
+-				try {
++			UpgradeDatabaseWork upgradeWork = new UpgradeDatabaseWork(
++				loadUpgradeScript());
+ 
+-					log.info(command);
+-					statement.executeUpdate(command);
++			HibernateFactory.getSession().doWork(upgradeWork);
+ 
+-				} catch (SQLException e) {
+-					log.error("Error while executing: " + command);
+-					exceptions.add(e);
+-				}
+-
+-			}
+-
+-			if (!exceptions.isEmpty()) {
+-				log.error("Error upgrading voms 2.5 database!");
+-				printExceptions(exceptions);
+-				System.exit(2);
+-			}
+ 
+ 			dropUnusedTables_2_0_x();
+ 			fixCaTable();
+@@ -1126,7 +1107,7 @@ public class SchemaDeployer {
+ 
+ 		try {
+ 
+-			md = HibernateFactory.getSession().connection().getMetaData();
++			md = getDatabaseMetadata(HibernateFactory.getSession());
+ 
+ 		} catch (Throwable t) {
+ 			log.error("Error accessing database metadata!", t);
+@@ -1280,8 +1261,7 @@ public class SchemaDeployer {
+ 	private String getColumnType(String tableName, String columnName)
+ 			throws HibernateException, SQLException {
+ 
+-		DatabaseMetaData md = HibernateFactory.getSession().connection()
+-				.getMetaData();
++		DatabaseMetaData md = getDatabaseMetadata(HibernateFactory.getSession());
+ 
+ 		ResultSet columnData = md.getColumns("%", "%", tableName, columnName);
+ 
+@@ -1324,8 +1304,7 @@ public class SchemaDeployer {
+ 
+ 	private List<String> getForeignKeyContraintNamesOnColumn(String tableName,
+ 			String columnName) throws SQLException {
+-		DatabaseMetaData md = HibernateFactory.getSession().connection()
+-				.getMetaData();
++		DatabaseMetaData md = getDatabaseMetadata(HibernateFactory.getSession());
+ 
+ 		ResultSet rs = md.getImportedKeys(null, null, tableName);
+ 		ArrayList<String> res = new ArrayList<String>();
+diff --git a/src/main/java/org/glite/security/voms/admin/persistence/deployer/UpgradeDatabaseWork.java b/src/main/java/org/glite/security/voms/admin/persistence/deployer/UpgradeDatabaseWork.java
+new file mode 100644
+index 0000000..f1df45e
+--- /dev/null
++++ b/src/main/java/org/glite/security/voms/admin/persistence/deployer/UpgradeDatabaseWork.java
+@@ -0,0 +1,45 @@
++package org.glite.security.voms.admin.persistence.deployer;
++
++import java.sql.Connection;
++import java.sql.SQLException;
++import java.sql.Statement;
++import java.util.List;
++
++import org.hibernate.jdbc.Work;
++import org.slf4j.Logger;
++import org.slf4j.LoggerFactory;
++
++
++public class UpgradeDatabaseWork implements Work {
++
++  private static final Logger LOG = LoggerFactory.getLogger(UpgradeDatabaseWork.class);
++  
++  final List<String> sqlCommands;
++  
++  public UpgradeDatabaseWork(List<String> sqlCommands) {
++    this.sqlCommands = sqlCommands;
++  }
++
++  @Override
++  public void execute(Connection connection) throws SQLException {
++    
++    Statement statement = connection.createStatement();
++    
++    try{
++      
++      for (String command: sqlCommands){
++        
++        LOG.info(command);
++        
++        statement.executeUpdate(command);
++      
++      }
++      
++    }catch(Throwable e){
++      LOG.error("Error executing upgrade database work: "+e.getMessage(), e);
++      throw e;
++    }
++
++  }
++
++}
+diff --git a/src/main/java/org/glite/security/voms/admin/persistence/model/request/RequesterInfo.java b/src/main/java/org/glite/security/voms/admin/persistence/model/request/RequesterInfo.java
+index 2f07281..71b4628 100644
+--- a/src/main/java/org/glite/security/voms/admin/persistence/model/request/RequesterInfo.java
++++ b/src/main/java/org/glite/security/voms/admin/persistence/model/request/RequesterInfo.java
+@@ -27,12 +27,14 @@ import java.util.List;
+ import java.util.Map;
+ 
+ import javax.persistence.Column;
++import javax.persistence.ElementCollection;
+ import javax.persistence.Entity;
+ import javax.persistence.GeneratedValue;
+ import javax.persistence.GenerationType;
+ import javax.persistence.Id;
+ import javax.persistence.JoinColumn;
+ import javax.persistence.JoinTable;
++import javax.persistence.MapKeyColumn;
+ import javax.persistence.SequenceGenerator;
+ import javax.persistence.Table;
+ 
+@@ -75,9 +77,9 @@ public class RequesterInfo implements Serializable {
+ 	@Column(nullable = false)
+ 	String emailAddress;
+ 
+-	@org.hibernate.annotations.CollectionOfElements
++	@ElementCollection
+ 	@JoinTable(name = "requester_personal_info", joinColumns = @JoinColumn(name = "requester_id"))
+-	@org.hibernate.annotations.MapKey(columns = @Column(name = "pi_key"))
++	@MapKeyColumn(name="pi_key")
+ 	@Column(name = "pi_value")
+ 	Map<String, String> personalInformation = new HashMap<String, String>();
+ 
+-- 
+2.9.4
+

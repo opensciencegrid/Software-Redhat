@@ -1,0 +1,35 @@
+From 236a858ef17613ad61c9b9edb9ed69402df841e4 Mon Sep 17 00:00:00 2001
+From: Carl Edquist <edquist@cs.wisc.edu>
+Date: Fri, 24 Mar 2017 12:42:39 -0500
+Subject: [PATCH 15/31] excludeParams changes to struts.xml from 023f48442
+ (SOFTWARE-2652)
+
+---
+ src/main/resources/struts.xml | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/main/resources/struts.xml b/src/main/resources/struts.xml
+index 7b97cb8..0673ea0 100644
+--- a/src/main/resources/struts.xml
++++ b/src/main/resources/struts.xml
+@@ -79,7 +79,7 @@
+                 <interceptor-ref name="alias"/>
+                 <interceptor-ref name="i18n"/>
+                 <interceptor-ref name="params">
+-                    <param name="excludeParams">dojo\..*,^struts\..*</param>
++                    <param name="excludeParams">dojo\..*,^struts\..*,token</param>
+                 </interceptor-ref>
+                 
+                 <interceptor-ref name="checkbox"/>
+@@ -95,7 +95,7 @@
+                 <interceptor-ref name="actionMappingParams"/>
+                 
+                 <interceptor-ref name="params">
+-                    <param name="excludeParams">dojo\..*,^struts\..*</param>
++                    <param name="excludeParams">dojo\..*,^struts\..*,token</param>
+                 </interceptor-ref>
+                 
+                 
+-- 
+2.9.4
+

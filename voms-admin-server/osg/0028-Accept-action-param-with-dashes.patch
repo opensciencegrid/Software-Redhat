@@ -1,0 +1,39 @@
+From a50aae2f4318a9bf19c43d8b5684dfc5efe68c7e Mon Sep 17 00:00:00 2001
+From: Brian Lin <brianhlin@gmail.com>
+Date: Wed, 19 Apr 2017 13:02:53 -0500
+Subject: [PATCH 28/31] Accept action param with dashes
+
+The default struts config disallows param names made up of words
+separated by dashes, which we can't avoid because of the use of the
+conventions plugin.
+
+It's not clear to me exactly why bulk-suspend and bulk-delete aren't
+affected by this; it probably has to do with the extra dialog forms
+that pop up when clicking those buttons.
+---
+ src/main/resources/struts.xml | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/src/main/resources/struts.xml b/src/main/resources/struts.xml
+index ac59e5a..20f0dfa 100644
+--- a/src/main/resources/struts.xml
++++ b/src/main/resources/struts.xml
+@@ -79,6 +79,7 @@
+                 <interceptor-ref name="alias"/>
+                 <interceptor-ref name="i18n"/>
+                 <interceptor-ref name="params">
++                    <param name="acceptParamNames">(action:)?\w+((\.\w+)|(\-\w+)|(\[\d+\])|(\(\d+\))|(\['(\w|[\u4e00-\u9fa5])+'\])|(\('(\w|[\u4e00-\u9fa5])+'\)))*</param>
+                     <param name="excludeParams">dojo\..*,^struts\..*,token</param>
+                 </interceptor-ref>
+                 
+@@ -183,6 +184,7 @@
+                 <interceptor-ref name="actionMappingParams"/>
+                 
+                 <interceptor-ref name="params">
++                    <param name="acceptParamNames">(action:)?\w+((\.\w+)|(\-\w+)|(\[\d+\])|(\(\d+\))|(\['(\w|[\u4e00-\u9fa5])+'\])|(\('(\w|[\u4e00-\u9fa5])+'\)))*</param>
+                     <param name="excludeParams">dojo\..*,^struts\..*</param>
+                 </interceptor-ref>
+                 
+-- 
+2.9.4
+

@@ -1,0 +1,41 @@
+From 681d2a6454e14f8ce6d15d4c123e12b4277d5f21 Mon Sep 17 00:00:00 2001
+From: Carl Edquist <edquist@cs.wisc.edu>
+Date: Wed, 29 Mar 2017 15:14:03 -0500
+Subject: [PATCH 21/31] bump c3p0 version to 0.9.5.2, per 01064e71f, 03e6041ff
+ (SOFTWARE-2652)
+
+---
+ pom.xml | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/pom.xml b/pom.xml
+index 127bbff..f06bacf 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -22,7 +22,7 @@
+ 		<!-- Dependencies versions -->
+ 		<struts.version>2.3.32</struts.version>
+ 		<hibernate.version>4.2.8.Final</hibernate.version>
+-		<c3p0.version>0.9.1</c3p0.version>
++		<c3p0.version>0.9.5.2</c3p0.version>
+ 		<axis.version>1.2.1</axis.version>
+ 		<bouncycastle.version>1.45</bouncycastle.version>
+ 		<trustmanager.version>3.0.3</trustmanager.version>
+@@ -333,7 +333,13 @@
+ 		</dependency>
+ 
+ 		<dependency>
+-			<groupId>c3p0</groupId>
++			<groupId>org.hibernate</groupId>
++			<artifactId>hibernate-c3p0</artifactId>
++			<version>${hibernate.version}</version>
++		</dependency>
++
++		<dependency>
++			<groupId>com.mchange</groupId>
+ 			<artifactId>c3p0</artifactId>
+ 			<version>${c3p0.version}</version>
+ 			<scope>runtime</scope>
+-- 
+2.9.4
+

@@ -1,0 +1,46 @@
+From 4913651c1c9b67fa4fdc5fe75fb31a6bfae7160f Mon Sep 17 00:00:00 2001
+From: Carl Edquist <edquist@cs.wisc.edu>
+Date: Thu, 23 Mar 2017 15:54:26 -0500
+Subject: [PATCH 13/31] hibernate version 4.2.8, drop hibernate-annotations
+ (SOFTWARE-2652)
+
+---
+ pom.xml | 11 ++---------
+ 1 file changed, 2 insertions(+), 9 deletions(-)
+
+diff --git a/pom.xml b/pom.xml
+index 2a57358..127bbff 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -21,8 +21,7 @@
+ 		
+ 		<!-- Dependencies versions -->
+ 		<struts.version>2.3.32</struts.version>
+-		<hibernate.version>3.2.6.ga</hibernate.version>
+-		<hibernate-annotations.version>3.3.1.GA</hibernate-annotations.version>
++		<hibernate.version>4.2.8.Final</hibernate.version>
+ 		<c3p0.version>0.9.1</c3p0.version>
+ 		<axis.version>1.2.1</axis.version>
+ 		<bouncycastle.version>1.45</bouncycastle.version>
+@@ -329,17 +328,11 @@
+ 
+ 		<dependency>
+ 			<groupId>org.hibernate</groupId>
+-			<artifactId>hibernate</artifactId>
++			<artifactId>hibernate-core</artifactId>
+ 			<version>${hibernate.version}</version>
+ 		</dependency>
+ 
+ 		<dependency>
+-			<groupId>org.hibernate</groupId>
+-			<artifactId>hibernate-annotations</artifactId>
+-			<version>${hibernate-annotations.version}</version>
+-		</dependency>
+-		 
+-		<dependency>
+ 			<groupId>c3p0</groupId>
+ 			<artifactId>c3p0</artifactId>
+ 			<version>${c3p0.version}</version>
+-- 
+2.9.4
+

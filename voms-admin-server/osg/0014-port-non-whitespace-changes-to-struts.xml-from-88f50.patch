@@ -1,0 +1,40 @@
+From bcf0c63e24f449e2554d0d39e67ea99ca3aa6628 Mon Sep 17 00:00:00 2001
+From: Carl Edquist <edquist@cs.wisc.edu>
+Date: Thu, 23 Mar 2017 18:34:08 -0500
+Subject: [PATCH 14/31] port non-whitespace changes to struts.xml from
+ 88f505a54 (SOFTWARE-2652)
+
+---
+ src/main/resources/struts.xml | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/src/main/resources/struts.xml b/src/main/resources/struts.xml
+index bfb7c24..7b97cb8 100644
+--- a/src/main/resources/struts.xml
++++ b/src/main/resources/struts.xml
+@@ -22,11 +22,11 @@
+ -->
+ <!DOCTYPE struts PUBLIC
+     "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+-    "http://struts.apache.org/dtds/struts-2.0.dtd">
++    "http://struts.apache.org/dtds/struts-2.3.dtd">
+ <struts>
+ 
+ 	 
+-	<constant name="struts.mapper.class" value="org.glite.security.voms.admin.view.mapper.PrefixBasedActionMapper"/>
++	<constant name="struts.mapper.class" value="org.apache.struts2.dispatcher.mapper.PrefixBasedActionMapper"/>
+ 	<constant name="struts.mapper.prefixMapping" value="/apiv2:struts,/shared:struts,/rest:rest,/acl:struts,/admin:struts,/ajax:struts,/attribute:struts,/aup:struts,/configuration:struts,/group:struts,/home:struts,/register:struts,/role:struts,/search:struts,/sibling:struts,/user:struts,:struts"/>
+ 	
+ 	<constant name="struts.devMode" value="false" />
+@@ -37,7 +37,7 @@
+ 	<constant name="struts.convention.package.locators.basePackage" value="org.glite.security.voms.admin.view.actions"/>
+ 	<constant name="struts.convention.result.path" value="/WEB-INF/p"/>
+ 	
+-	<package name="base" extends="struts-default">
++	<package name="base" extends="json-default">
+ 	
+ 		<result-types>
+ 			<result-type name="tiles"
+-- 
+2.9.4
+

@@ -1,0 +1,69 @@
+From 45544b0ae33126deaf782e605e69de49d206461d Mon Sep 17 00:00:00 2001
+From: Brian Lin <brianhlin@gmail.com>
+Date: Mon, 17 Apr 2017 16:16:09 -0500
+Subject: [PATCH 26/31] Id + JoinColumn ~= PrimaryKeyJoinColumn
+
+http://stackoverflow.com/questions/3417097/jpa-difference-between-joincolumn-and-primarykeyjoincolumn
+
+Try to force the u_id column name
+
+Force the column name to "u_id", take 2
+
+Force the column to 'u_id', take 3
+
+Force "a_id" column name
+
+Specify joincolumn name
+---
+ .../security/voms/admin/persistence/model/VOMSBaseAttribute.java      | 3 +--
+ .../security/voms/admin/persistence/model/VOMSUserAttribute.java      | 4 ++--
+ 2 files changed, 3 insertions(+), 4 deletions(-)
+
+diff --git a/src/main/java/org/glite/security/voms/admin/persistence/model/VOMSBaseAttribute.java b/src/main/java/org/glite/security/voms/admin/persistence/model/VOMSBaseAttribute.java
+index 36aae0d..8154ad3 100644
+--- a/src/main/java/org/glite/security/voms/admin/persistence/model/VOMSBaseAttribute.java
++++ b/src/main/java/org/glite/security/voms/admin/persistence/model/VOMSBaseAttribute.java
+@@ -26,7 +26,6 @@ import javax.persistence.Id;
+ import javax.persistence.JoinColumn;
+ import javax.persistence.ManyToOne;
+ import javax.persistence.MappedSuperclass;
+-import javax.persistence.PrimaryKeyJoinColumn;
+ import javax.persistence.Transient;
+ 
+ import org.glite.security.voms.service.attributes.AttributeClass;
+@@ -38,7 +37,7 @@ public abstract class VOMSBaseAttribute implements VomsAttributeValue,
+ 
+ 	@Id
+ 	@ManyToOne
+-	@PrimaryKeyJoinColumn(name="a_id")
++	@JoinColumn(name="a_id")
+ 	VOMSAttributeDescription attributeDescription;
+ 
+ 	@Column(name="a_value")
+diff --git a/src/main/java/org/glite/security/voms/admin/persistence/model/VOMSUserAttribute.java b/src/main/java/org/glite/security/voms/admin/persistence/model/VOMSUserAttribute.java
+index 6d70480..d144726 100644
+--- a/src/main/java/org/glite/security/voms/admin/persistence/model/VOMSUserAttribute.java
++++ b/src/main/java/org/glite/security/voms/admin/persistence/model/VOMSUserAttribute.java
+@@ -21,8 +21,8 @@ package org.glite.security.voms.admin.persistence.model;
+ 
+ import javax.persistence.Entity;
+ import javax.persistence.Id;
++import javax.persistence.JoinColumn;
+ import javax.persistence.ManyToOne;
+-import javax.persistence.PrimaryKeyJoinColumn;
+ import javax.persistence.Table;
+ 
+ @Entity
+@@ -35,8 +35,8 @@ public class VOMSUserAttribute extends VOMSBaseAttribute {
+ 	private static final long serialVersionUID = 1L;
+ 
+ 	@Id
+-	@PrimaryKeyJoinColumn
+ 	@ManyToOne(targetEntity=VOMSUser.class)
++	@JoinColumn(name="u_id")
+ 	public VOMSUser user;
+ 
+ 	public VOMSUser getUser() {
+-- 
+2.9.4
+

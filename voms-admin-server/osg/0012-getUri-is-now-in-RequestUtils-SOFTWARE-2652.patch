@@ -1,0 +1,33 @@
+From 58f7b831d313145113e4d011d54ceb8a72290ee4 Mon Sep 17 00:00:00 2001
+From: Carl Edquist <edquist@cs.wisc.edu>
+Date: Wed, 22 Mar 2017 15:45:59 -0500
+Subject: [PATCH 12/31] getUri is now in RequestUtils (SOFTWARE-2652)
+
+---
+ .../glite/security/voms/admin/view/mapper/PrefixBasedActionMapper.java | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/src/main/java/org/glite/security/voms/admin/view/mapper/PrefixBasedActionMapper.java b/src/main/java/org/glite/security/voms/admin/view/mapper/PrefixBasedActionMapper.java
+index 05aee81..d7cbaa0 100644
+--- a/src/main/java/org/glite/security/voms/admin/view/mapper/PrefixBasedActionMapper.java
++++ b/src/main/java/org/glite/security/voms/admin/view/mapper/PrefixBasedActionMapper.java
+@@ -5,6 +5,7 @@ import com.opensymphony.xwork2.inject.Container;
+ import com.opensymphony.xwork2.inject.Inject;
+ import org.apache.commons.logging.Log;
+ import org.apache.commons.logging.LogFactory;
++import org.apache.struts2.RequestUtils;
+ import org.apache.struts2.StrutsConstants;
+ import org.apache.struts2.dispatcher.mapper.ActionMapper;
+ import org.apache.struts2.dispatcher.mapper.ActionMapping;
+@@ -75,7 +76,7 @@ public class PrefixBasedActionMapper extends DefaultActionMapper implements Acti
+ 
+   @SuppressWarnings("unchecked")
+   public ActionMapping getMapping(HttpServletRequest request, ConfigurationManager configManager) {
+-    String uri = getUri(request);
++    String uri = RequestUtils.getUri(request);
+     for (int lastIndex = uri.lastIndexOf('/'); lastIndex > (-1); lastIndex = uri.lastIndexOf('/', lastIndex-1)) {
+       ActionMapper actionMapper = actionMappers.get(uri.substring(0,lastIndex));
+       if (actionMapper != null) {
+-- 
+2.9.4
+
