@@ -1,6 +1,6 @@
 Name: xrootd-lcmaps
 Version: 1.2.1
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: LCMAPS plugin for xrootd
 
 Group: System Environment/Daemons
@@ -31,6 +31,7 @@ Requires: lcas-lcmaps-gt4-interface
 %patch0 -p0
 
 %build
+find . -type f | sort | xargs md5sum
 %cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=RelWithDebInfo .
 
 make VERBOSE=1 %{?_smp_mflags}
@@ -60,6 +61,9 @@ getent passwd xrootd >/dev/null || \
 %config(noreplace) %{_sysconfdir}/xrootd/lcmaps.cfg
 
 %changelog
+* Thu May 18 2016 Brian Lin <emfajard@ucsd.edu> - 1.2.1-2
+- Debugging build failures
+
 * Fri Jan 15 2016 Edgar Fajardo <emfajard@ucsd.edu> - 1.2.1-1
 - Bug fix
 
