@@ -1,5 +1,5 @@
 Name:      rsv-perfsonar
-Version:   1.2.1
+Version:   1.4.1
 Release:   1%{?dist}
 Summary:   RSV Metrics to monitor pefsonar
 Packager:  OSG-Software
@@ -47,16 +47,12 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %doc README
 %defattr(-,root,root,-)
-%{_libexecdir}/rsv/probes/perfsonar-simple-local-probe
-%{_libexecdir}/rsv/probes/network-monitoring-local-probe
-%{_libexecdir}/rsv/probes/worker-scripts/esmond*
-%{_libexecdir}/rsv/metrics/org.osg.general.perfsonar-simple
-%{_libexecdir}/rsv/metrics/org.osg.local.network-monitoring-local
+%{_libexecdir}/rsv/probes/*
+%{_libexecdir}/rsv/probes/worker-scripts/*
+%{_libexecdir}/rsv/metrics/*
 %config %{_sysconfdir}/condor-cron/config.d/50-rsv-perfsonar.config
-%config %{_sysconfdir}/rsv/meta/metrics/org.osg.general.perfsonar-simple.meta
-%config %{_sysconfdir}/rsv/meta/metrics/org.osg.local.network-monitoring-local.meta
-%config(noreplace) %{_sysconfdir}/rsv/metrics/org.osg.general.perfsonar-simple.conf
-%config(noreplace) %{_sysconfdir}/rsv/metrics/org.osg.local.network-monitoring-local.conf
+%config %{_sysconfdir}/rsv/meta/metrics/*
+%config(noreplace) %{_sysconfdir}/rsv/metrics/*
 %config(noreplace) %{_sysconfdir}/rsv/stompclt/default.conf
 %config(noreplace) %{_sysconfdir}/rsv/stompclt/simplevisor.cfg
 %attr(-,rsv,rsv)  %{_sysconfdir}/rsv
@@ -80,6 +76,15 @@ pip install messaging  --upgrade
 
 
 %changelog
+* Thu May 18 2017 <efajardo@physics.ucsd.edu> 1.4.1-1
+- Added the ability to upload to the RabbitMQ
+- Some bug fixes
+
+* Tue May 16 2017 <efajardo@physics.ucsd.edu> 1.3.1-1
+- Separated the probes into two. One that uploades to esmond and another one that uploads to cern MQ
+- Added the granularity option to the MQ
+- Some bug fixes and code cleanning.
+
 * Mon Jan 23 2017 <efajardo@physics.ucsd.edu> 1.2.1-1
 - Added the option to select which event-types go into the mq
 - Added knob for controlling the max size of the events that go into the mq
