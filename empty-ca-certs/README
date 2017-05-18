@@ -1,0 +1,26 @@
+We have several packages that depend on "grid-certificates", and we
+have several RPMs that provide "grid-certificates", so that people
+have their choice in how to install them. As of today (12-Sep-2011),
+these choices are:
+
+  igtf-ca-certs
+  igft-ca-certs-compat
+  osg-ca-certs
+  osg-ca-certs-compat
+  osg-ca-scripts
+
+That's good for people that want to install the CA certificates in a
+normal way, but several sites have made it clear  that they would
+like to install the CA certificates on their own. They'll probably
+install them in NFS, then make a symlnk from
+/etc/grid-security/certifictes to that location. 
+
+To make this possibility clear and explicit, we have this package,
+empty-ca-certs.  It's an empty RPM (it provides no files), but it claims
+to provide "grid-certificates". This will satisfy the RPM dependencies
+yet let sites manage the CA certificates on their own. 
+
+Note that this package used to be called "no-ca-certs", but that meant
+that sometimes yum would choose it instead of osg-ca-certs (because
+yum has a crazy dependency resolution algorithm that includes length
+of name), so we've renamed this to be empty-ca-certs.
