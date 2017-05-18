@@ -1,5 +1,5 @@
 Name:      rsv-perfsonar
-Version:   1.3.1
+Version:   1.4.1
 Release:   1%{?dist}
 Summary:   RSV Metrics to monitor pefsonar
 Packager:  OSG-Software
@@ -76,6 +76,10 @@ pip install messaging  --upgrade
 
 
 %changelog
+* Thu May 18 2017 <efajardo@physics.ucsd.edu> 1.4.1-1
+- Added the ability to upload to the RabbitMQ
+- Some bug fixes
+
 * Tue May 16 2017 <efajardo@physics.ucsd.edu> 1.3.1-1
 - Separated the probes into two. One that uploades to esmond and another one that uploads to cern MQ
 - Added the granularity option to the MQ
