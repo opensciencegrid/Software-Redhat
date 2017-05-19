@@ -1,6 +1,6 @@
 Name:      rsv-perfsonar
 Version:   1.4.1
-Release:   1%{?dist}
+Release:   2%{?dist}
 Summary:   RSV Metrics to monitor pefsonar
 Packager:  OSG-Software
 Group:     Applications/Monitoring
@@ -72,10 +72,13 @@ pip install esmond-client --upgrade
 pip install requesocks --upgrade
 pip install dirq --upgrade
 pip install messaging  --upgrade                                                                                                                            
-
+pip install pika
 
 
 %changelog
+* Fri May 19 2017 <efajardo@physics.ucsd.edu> 1.4.1-2
+- Added the pika pip install 
+
 * Thu May 18 2017 <efajardo@physics.ucsd.edu> 1.4.1-1
 - Added the ability to upload to the RabbitMQ
 - Some bug fixes
