@@ -18,7 +18,7 @@
 Summary: Grid (X.509) and VOMS credentials to local account mapping service
 Name: lcmaps
 Version: 1.6.6
-Release: 1.4%{?dist}
+Release: 1.5%{?dist}
 License: ASL 2.0
 Group: System Environment/Libraries
 URL: http://wiki.nikhef.nl/grid/LCMAPS
@@ -44,11 +44,6 @@ Requires: lcmaps-plugins-gums-client
 Requires: lcmaps-plugins-basic
 Requires: lcmaps-plugins-verify-proxy >= 1.5.9-1.1
 Requires: lcmaps-plugins-voms >= 1.7.1-1.1
-
-# these two conflicts are because older versions of these packages depend
-#  on lcmaps.db policy osg_default which has been removed
-Conflicts: globus-gatekeeper < 9.6-1.9
-Conflicts: globus-gridftp-server-progs < 6.14-3
 
 %description
 The Local Centre MAPping Service (LCMAPS) is a security middleware
@@ -346,6 +341,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri May 19 2017 Brian Lin <blin@cs.wisc.edu> 1.6.6-1.5
+- Drop GRAM conflicts (SOFTWARE-2681)
+
 * Mon Apr 24 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6.6-1.4.osgup
 - Drop glexec templates (SOFTWARE-2692)
 
