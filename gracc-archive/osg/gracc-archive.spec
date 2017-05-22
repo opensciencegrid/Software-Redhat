@@ -1,5 +1,5 @@
 Name:           gracc-archive
-Version:        1.2.4
+Version:        1.3.0
 Release:        1%{?dist}
 Summary:        GRACC Archive
 
@@ -69,6 +69,10 @@ install -d -m 0755 $RPM_BUILD_ROOT/%{_sharedstatedir}/graccarchive/output
 
 
 %changelog
+* Mon May 22 2017 Derek Weitzel <dweitzel@cse.unl.edu> - 1.3.0-1
+- Fix memory leak caused by python tarfile implementation
+- Implement proper flushes of the gzip stream
+
 * Wed May 17 2017 Derek Weitzel <dweitzel@cse.unl.edu> - 1.2.2-1
 - Capture and retry when a connection fails
 
