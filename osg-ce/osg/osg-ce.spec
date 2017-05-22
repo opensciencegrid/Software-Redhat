@@ -4,7 +4,7 @@
 Name:      osg-ce
 Summary:   OSG Compute Element
 Version:   3.3
-Release:   12%{?dist}
+Release:   13%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -41,6 +41,7 @@ Requires: osg-wn-client
 Requires: vo-client
 
 Requires: osg-vo-map
+Requires: vo-client-lcmaps-voms
 
 %if 0%{?rhel} < 7
 Requires: gums-client
@@ -318,6 +319,9 @@ exit 0
 %files bosco
 
 %changelog
+* Mon May 22 2017 Brian Lin <blin@cs.wisc.edu> - 3.3-13
+- Add OSG VOMS mapfile to osg-ce (SOFTWARE-2702)
+
 * Tue Mar 28 2017 Edgar Fajardo <efajardo@physics.ucsd.edu> - 3.3-12
 - Removed the requirements of gip, osg-info-services and osg-cleanup (SOFTWARE-2585)
 
