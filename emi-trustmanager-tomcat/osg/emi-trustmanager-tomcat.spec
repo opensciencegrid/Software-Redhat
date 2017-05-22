@@ -1,7 +1,7 @@
 Summary: Tomcat and axis integration classes
 Name: emi-trustmanager-tomcat
 Version: 3.0.0
-Release: 14%{?dist}
+Release: 15%{?dist}
 License: Apache Software License
 Vendor: EMI
 Group: System Environment/Libraries
@@ -39,6 +39,7 @@ Patch0: configure.patch
 Patch1: build.xml.patch
 Patch2: log4j-trustmanager.patch
 Patch3: Fix-misleading-message-in-configure.sh.patch
+Patch4: jsp_implementation.patch 
 Patch10: 0010-Tomcat-7-ServerSocketFactory-changed-from-abstract-c.patch
 Patch11: 0011-Tomcat-7-Implement-getSSLUtil-in-TMSSLImplementation.patch
 Patch12: 0012-Tomcat-7-getServerSocketFactory-that-takes-an-Abstra.patch
@@ -57,6 +58,7 @@ The classes for integrating the trustmanager with tomcat.
 %patch1 -p0
 %patch2 -p1
 %patch3 -p1
+%patch4 -p0
 
 %if 0%{?rhel} == 7
 %patch10 -p1
@@ -137,6 +139,9 @@ rm -rf $RPM_BUILD_ROOT
 /var/lib/trustmanager-tomcat/configure.sh
 
 %changelog
+* Mon May 22 2017 Brian Lin <blin@cs.wisc.edu> 3.0.0-15
+- Enable JSP implementation for tomcat webapps (SOFTWARE-2732)
+
 * Tue Oct 27 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.0.0-14
 - Fix a very misleading set of instructions in /var/lib/trustmanager-tomcat/configure.sh
 - Add symlink for bcpkix.jar on EL 7 to fix NoClassDefFoundErrors on classes in org.bouncycastle.openssl
