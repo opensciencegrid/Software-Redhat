@@ -1,0 +1,10 @@
+--- config/server.xml.template	2017-05-22 16:37:29.783847383 -0500
++++ config/server.xml.template.new	2017-05-22 16:37:52.437430602 -0500
+@@ -15,6 +15,7 @@
+  the License.
+ -->
+ <Server port="8005" shutdown="SHUTDOWN">
++  <Listener className="org.apache.catalina.core.JasperListener"/>
+   <Service name="Catalina">
+ 
+     <Connector port="@PORT@" SSLEnabled="true"
