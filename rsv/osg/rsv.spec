@@ -9,7 +9,7 @@
 Name:      rsv
 Summary:   RSV Meta Package
 Version:   3.14.0
-Release:   1%{?dist}
+Release:   2%{?dist}
 License:   Apache 2.0
 Group:     Applications/Monitoring
 URL:       https://twiki.grid.iu.edu/bin/view/MonitoringInformation/RSV
@@ -101,11 +101,8 @@ Provides: perl(RSVMetric)
 Requires:  perl(Date::Manip)
 
 Requires: /usr/bin/grid-proxy-info
-Requires: /usr/bin/globus-job-run
-Requires: /usr/bin/globusrun
 Requires: /usr/bin/globus-url-copy
 Requires: uberftp
-Requires: bestman2-client
 Requires: gfal2
 Requires: gfal2-util
 Requires: gfal2-plugin-file
@@ -134,6 +131,22 @@ done
 
 mkdir -p $(dirname %buildroot%rsv_conf_backup)
 touch %buildroot%rsv_conf_backup
+
+# remove these for OSG 3.4; eventually they will be removed from upstream
+rm %buildroot%{_libexecdir}/rsv/probes/gram-authentication-probe
+rm %buildroot%{_libexecdir}/rsv/probes/srm-ping-probe
+rm %buildroot%{_libexecdir}/rsv/probes/srmclient-probe
+rm %buildroot%{_libexecdir}/rsv/probes/srmtester-probe
+
+rm %buildroot%{_libexecdir}/rsv/metrics/org.osg.srm.srmclient-*
+rm %buildroot%{_libexecdir}/rsv/metrics/org.osg.srm.srmtester-*
+rm %buildroot%{_libexecdir}/rsv/metrics/org.osg.srm.srmping
+rm %buildroot%{_libexecdir}/rsv/metrics/org.osg.globus.gram-authentication
+
+rm %buildroot%{_sysconfdir}/rsv/{,meta/}metrics/org.osg.srm.srmclient-*
+rm %buildroot%{_sysconfdir}/rsv/{,meta/}metrics/org.osg.srm.srmtester-*
+rm %buildroot%{_sysconfdir}/rsv/{,meta/}metrics/org.osg.srm.srmping
+rm %buildroot%{_sysconfdir}/rsv/{,meta/}metrics/org.osg.globus.gram-authentication
 
 
 %clean
@@ -281,6 +294,9 @@ fi
 
 
 %changelog
+* Tue May 23 2017 Carl Edquist <edquist@cs.wisc.edu> - 3.14.0-2
+- Drop bestman2 and globus run deps & metrics (SOFTWARE-2733)
+
 * Mon Nov 07 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.14.0-1
 - Add systemd service file (SOFTWARE-2498)
 
