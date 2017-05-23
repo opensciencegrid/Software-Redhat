@@ -4,7 +4,7 @@
 Name:      osg-ce
 Summary:   OSG Compute Element
 Version:   3.4
-Release:   1%{?dist}
+Release:   2%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -30,12 +30,12 @@ Requires: osg-version
 Requires: grid-certificates >= 7
 
 Requires: fetch-crl
-Requires: osg-cert-scripts
 Requires: osg-system-profiler
 Requires: osg-version
 Requires: vo-client
 
 Requires: osg-vo-map
+Requires: vo-client-lcmaps-voms
 
 Requires: osg-configure >= 1.0.57
 Requires: osg-configure-ce
@@ -305,6 +305,10 @@ exit 0
 %files bosco
 
 %changelog
+* Mon May 22 2017 Brian Lin <blin@cs.wisc.edu> - 3.4-2
+- Add OSG VOMS mapfile to osg-ce (SOFTWARE-2702)
+- Drop osg-cert-scripts DOE grids interface
+
 * Fri May 1 2017 Brian Lin <blin@cs.wisc.edu> - 3.4-1
 - Drop GridFTP (SOFTWARE-2633)
 - Drop client tools (SOFTWARE-2650)
