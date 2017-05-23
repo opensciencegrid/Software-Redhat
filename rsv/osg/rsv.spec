@@ -143,10 +143,15 @@ rm %buildroot%{_libexecdir}/rsv/metrics/org.osg.srm.srmtester-*
 rm %buildroot%{_libexecdir}/rsv/metrics/org.osg.srm.srmping
 rm %buildroot%{_libexecdir}/rsv/metrics/org.osg.globus.gram-authentication
 
-rm %buildroot%{_sysconfdir}/rsv/{,meta/}metrics/org.osg.srm.srmclient-*
-rm %buildroot%{_sysconfdir}/rsv/{,meta/}metrics/org.osg.srm.srmtester-*
-rm %buildroot%{_sysconfdir}/rsv/{,meta/}metrics/org.osg.srm.srmping
-rm %buildroot%{_sysconfdir}/rsv/{,meta/}metrics/org.osg.globus.gram-authentication
+rm %buildroot%{_sysconfdir}/rsv/metrics/org.osg.srm.srmclient-*.conf
+rm %buildroot%{_sysconfdir}/rsv/metrics/org.osg.srm.srmtester-*.conf
+rm %buildroot%{_sysconfdir}/rsv/metrics/org.osg.srm.srmping.conf
+rm %buildroot%{_sysconfdir}/rsv/metrics/org.osg.globus.gram-authentication.conf
+
+rm %buildroot%{_sysconfdir}/rsv/meta/metrics/org.osg.srm.srmclient-*.meta
+rm %buildroot%{_sysconfdir}/rsv/meta/metrics/org.osg.srm.srmtester-*.meta
+rm %buildroot%{_sysconfdir}/rsv/meta/metrics/org.osg.srm.srmping.meta
+rm %buildroot%{_sysconfdir}/rsv/meta/metrics/org.osg.globus.gram-authentication.meta
 
 
 %clean
