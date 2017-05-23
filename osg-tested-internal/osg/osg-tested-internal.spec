@@ -1,7 +1,7 @@
 Name:      osg-tested-internal
 Summary:   All OSG packages we test (internal use only)
-Version:   3.3
-Release:   17%{?dist}
+Version:   3.4
+Release:   1%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -14,8 +14,6 @@ BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 # Common
 #
 ################################################################################
-Requires: edg-mkgridmap
-Requires: glexec
 Requires: /usr/sbin/condor_master
 Requires: yum-utils
 # https://twiki.grid.iu.edu/bin/view/Documentation/Release3/InstallCvmfs
@@ -23,7 +21,6 @@ Requires: osg-oasis
 Requires: osg-configure-tests
 
 Requires: gratia-probe-condor
-Requires: gratia-probe-glexec
 Requires: gratia-probe-dcache-storage
 Requires: gratia-probe-gridftp-transfer
 Requires: gratia-probe-pbs-lsf
@@ -31,8 +28,6 @@ Requires: gratia-probe-sge
 
 Requires: myproxy
 Requires: myproxy-server
-
-Requires: osg-gums
 
 Requires: htcondor-ce
 Requires: htcondor-ce-client
@@ -52,46 +47,18 @@ Requires: rsv
 Requires: xrootd
 Requires: xrootd-client
 
-Requires: ndt-client
-
-Requires: gratia-service
-
-Requires: osg-voms
-
-# Putting bestman back again in the teest in 2016-Apr-28 - SOFTWARE-2089
-Requires: osg-se-bestman
-Requires: osg-se-bestman-xrootd
-
-%if 0%{?rhel} == 5
-Requires: globus-gram-job-manager-pbs-setup-poll
-%endif
+Requires: voms-server
+Requires: voms-clients-cpp
 
 %if 0%{?rhel} == 7
 # osg-tested-internal packages in el7 don't currently pull in mysql/mariadb
 Requires: mariadb-server
+%else
+Requires: mysql-server
 %endif
 
 %description
 %{summary}
-
-
-%package gram
-Summary:   All OSG packages we test (internal use only) + GRAM
-Requires: %{name}
-Requires: globus-gatekeeper
-Requires: globus-gram-client-tools
-Requires: globus-gram-job-manager
-Requires: globus-gram-job-manager-fork
-Requires: globus-gram-job-manager-fork-setup-poll
-Requires: gratia-probe-gram
-Requires: globus-gram-job-manager-scripts
-Requires: globus-gram-job-manager-condor
-Requires: globus-gram-job-manager-pbs-setup-seg
-
-
-%description gram
-%{summary}
-
 
 %install
 
@@ -100,9 +67,11 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 
-%files gram
-
 %changelog
+* Tue May 23 2017 Brian Lin <blin@cs.wisc.edu> - 3.4-1
+- Drop requirements for packages no longer in 3.4 (SOFTWARE-2734)
+- Explicitly require mysql-server for VOMS
+
 * Wed Apr 5 2017 Brian Lin <blin@cs.wisc.edu> - 3.3-17
 - Drop gratia-probe-bdii-status since BDII is no longer available in the OSG
 
