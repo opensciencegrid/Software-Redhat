@@ -18,7 +18,7 @@
 Summary: Grid (X.509) and VOMS credentials to local account mapping service
 Name: lcmaps
 Version: 1.6.6
-Release: 1.5%{?dist}
+Release: 1.6%{?dist}
 License: ASL 2.0
 Group: System Environment/Libraries
 URL: http://wiki.nikhef.nl/grid/LCMAPS
@@ -40,7 +40,6 @@ BuildRequires: voms-devel
 BuildRequires: flex, bison
 
 # these should be in a metapackage instead of here
-Requires: lcmaps-plugins-gums-client
 Requires: lcmaps-plugins-basic
 Requires: lcmaps-plugins-verify-proxy >= 1.5.9-1.1
 Requires: lcmaps-plugins-voms >= 1.7.1-1.1
@@ -341,6 +340,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue May 23 2017 Brian Lin <blin@cs.wisc.edu> 1.6.6-1.6
+- Drop LCMAPS GUMS client plugins dependency (SOFTWARE-2681)
+
 * Fri May 19 2017 Brian Lin <blin@cs.wisc.edu> 1.6.6-1.5
 - Drop GRAM conflicts (SOFTWARE-2681)
 
