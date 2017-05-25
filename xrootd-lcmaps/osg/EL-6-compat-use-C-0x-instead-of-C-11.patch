@@ -1,0 +1,235 @@
+From 804d7d7eea30a37648585888262f8489726de131 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Wed, 24 May 2017 21:31:23 -0500
+Subject: [PATCH] EL 6 compat - use C++0x instead of C++11
+
+* remove use of nullptr
+---
+ CMakeLists.txt       |  2 +-
+ src/GlobusSupport.cc | 32 ++++++++++++++++----------------
+ src/XrdLcmapsKey.cc  | 18 +++++++++---------
+ 3 files changed, 26 insertions(+), 26 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 709cd50..e1f17fc 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -14,11 +14,11 @@ endif()
+ 
+ if( CMAKE_COMPILER_IS_GNUCC )
+   set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -Wall -Werror -DLCMAPS_GSI_MODE=1" )
+ endif()
+ 
+-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
++set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++0x")
+ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g")
+ 
+ include (FindPkgConfig)
+ pkg_check_modules(GLOBUS REQUIRED globus-gsi-credential globus-gsi-cert-utils globus-common globus-gsi-sysconfig globus-gsi-callback)
+ set (INCLUDE_DIRECTORIES ${INCLUDE_DIRECTORIES} ${GLOBUS_INCLUDE_DIRS})
+diff --git a/src/GlobusSupport.cc b/src/GlobusSupport.cc
+index 5605df6..b807210 100644
+--- a/src/GlobusSupport.cc
++++ b/src/GlobusSupport.cc
+@@ -17,11 +17,11 @@
+ 
+ #include "GlobusError.hh"
+ 
+ std::mutex initializer_mutex;
+ bool g_globus_initialized = false;
+-char *g_cert_dir = nullptr;
++char *g_cert_dir = 0;
+ 
+ 
+ inline uint64_t monotonic_time() {
+   struct timespec tp;
+ #ifdef CLOCK_MONOTONIC_COARSE
+@@ -102,11 +102,11 @@ bool globus_deactivate() {
+   globus_module_deactivate(GLOBUS_GSI_CALLBACK_MODULE);
+   globus_module_deactivate(GLOBUS_GSI_CREDENTIAL_MODULE);
+   globus_module_deactivate(GLOBUS_GSI_CERT_UTILS_MODULE);
+ 
+   free(g_cert_dir);
+-  g_cert_dir = nullptr;
++  g_cert_dir = 0;
+ 
+   g_globus_initialized = false;
+   return true;
+ }
+ 
+@@ -141,24 +141,24 @@ class VerifyCtx {
+     }
+   }
+ 
+   void acquire(X509_STORE * cert_store) {m_cert_store = cert_store;}
+ 
+-  void release() {m_cert_store = nullptr;}
++  void release() {m_cert_store = 0;}
+ 
+   globus_result_t operator() (globus_gsi_cred_handle_t cred_handle)
+   {
+     static const char * _function_name_ = "VerifyCtx::operator()";
+ 
+     globus_result_t result = GLOBUS_SUCCESS;
+ 
+-    X509 *cert = nullptr;
++    X509 *cert = 0;
+     if (GLOBUS_SUCCESS != (result = globus_gsi_cred_get_cert(cred_handle, &cert))) {
+       return result;
+     }
+ 
+-    STACK_OF(X509) *cert_chain = nullptr;
++    STACK_OF(X509) *cert_chain = 0;
+     if (GLOBUS_SUCCESS != (result = globus_gsi_cred_get_cert_chain(cred_handle, &cert_chain))) {
+       return result;
+     }
+ 
+     X509_STORE_CTX_init(m_store_context, m_cert_store, cert, cert_chain);
+@@ -196,13 +196,13 @@ class VerifyCtx {
+                 result,
+                 local_result);
+     }
+ 
+     // Remove the reference to the cert_chain so we can safely free it.
+-    X509_STORE_CTX_set_chain(m_store_context, nullptr);
++    X509_STORE_CTX_set_chain(m_store_context, 0);
+     sk_X509_pop_free(cert_chain, X509_free);
+-    X509_STORE_CTX_set_cert(m_store_context, nullptr);
++    X509_STORE_CTX_set_cert(m_store_context, 0);
+     X509_free(cert);
+ 
+     // _cleanup resets the state of the context but doesn't free the
+     // dynamically allocated structures.
+     X509_STORE_CTX_cleanup(m_store_context);
+@@ -225,13 +225,13 @@ public:
+     }
+   }
+ 
+ private:
+   int m_callback_data_index;
+-  globus_gsi_callback_data_t  m_callback_data = nullptr;
+-  X509_STORE_CTX             *m_store_context = nullptr;
+-  X509_STORE                 *m_cert_store = nullptr;
++  globus_gsi_callback_data_t  m_callback_data;
++  X509_STORE_CTX             *m_store_context;
++  X509_STORE                 *m_cert_store;
+ };
+ 
+ 
+ class CertStore;
+ 
+@@ -350,11 +350,11 @@ public:
+   }
+ 
+ private:
+   uint64_t m_expire_time;
+   std::mutex m_mutex;
+-  X509_STORE *m_cert_store = nullptr;
++  X509_STORE *m_cert_store;
+   static const unsigned m_store_size = 63;
+   static const unsigned m_expiry_secs = 600;
+   static std::array<std::unique_ptr<CertStore>, m_store_size> m_store;
+   static thread_local std::unique_ptr<VerifyCtx> m_ctx;
+ };
+@@ -385,13 +385,13 @@ Verify::operator() (globus_gsi_cred_handle_t cred_handle)
+ }
+ 
+ 
+ struct authz_state
+ {
+-  globus_gsi_cred_handle_t m_cred = nullptr;
+-  char *m_subject = nullptr;
+-  BIO *m_bio = nullptr;
++  globus_gsi_cred_handle_t m_cred;
++  char *m_subject;
++  BIO *m_bio;
+ 
+   ~authz_state() {
+     if (m_cred) {globus_gsi_cred_handle_destroy(m_cred);}
+     if (m_subject) {OPENSSL_free(m_subject);}
+     if (m_bio) {BIO_free(m_bio);}
+@@ -469,12 +469,12 @@ bool globus_verify(X509* cert, STACK_OF(X509*) chain, char** dn)
+ }
+ 
+ 
+ bool globus_get_cert_and_chain(const char * creds, size_t credslen, X509 **cert, STACK_OF(X509) **chain)
+ {
+-  if (cert) {*cert = nullptr;}
+-  if (chain) {*chain = nullptr;}
++  if (cert) {*cert = 0;}
++  if (chain) {*chain = 0;}
+ 
+   authz_state state;
+ 
+   globus_result_t result = globus_gsi_cred_handle_init(&state.m_cred, NULL);
+   if (GLOBUS_SUCCESS != result) {
+diff --git a/src/XrdLcmapsKey.cc b/src/XrdLcmapsKey.cc
+index d8a6c4b..ed50253 100644
+--- a/src/XrdLcmapsKey.cc
++++ b/src/XrdLcmapsKey.cc
+@@ -21,17 +21,17 @@ GetKey(X509 *cert, STACK_OF(X509) *chain, XrdSecEntity &ent)
+     std::stringstream key;
+     std::stringstream grps;
+     bool found_grp = false;
+ 
+     // This plugin overrides any prior group information.
+-    free(ent.vorg); ent.vorg = nullptr;
+-    free(ent.role); ent.role = nullptr;
+-    free(ent.grps); ent.grps = nullptr;
+-    free(ent.endorsements); ent.endorsements = nullptr;
++    free(ent.vorg); ent.vorg = 0;
++    free(ent.role); ent.role = 0;
++    free(ent.grps); ent.grps = 0;
++    free(ent.endorsements); ent.endorsements = 0;
+ 
+     // Start with the DN
+-    char *dn = nullptr;
++    char *dn = 0;
+     if (!globus_verify(cert, chain, &dn)) {
+         std::cerr << "Globus chain verification failure.\n";
+         return "";
+     }
+ 
+@@ -53,17 +53,17 @@ GetKey(X509 *cert, STACK_OF(X509) *chain, XrdSecEntity &ent)
+         return key.str();
+     }
+ 
+     bool found_fqan = false;
+     std::stringstream endorsements;
+-    for (int idx = 0; voms_ptr->data[idx] != nullptr; idx++)
++    for (int idx = 0; voms_ptr->data[idx] != 0; idx++)
+     {
+         struct voms *it = voms_ptr->data[idx];
+         if (!it->voname) {continue;}
+         if (!ent.vorg) {ent.vorg = strdup(it->voname);}
+         key << it->voname << ":";
+-        for (int idx2 = 0; it->std[idx2] != nullptr; idx2++)
++        for (int idx2 = 0; it->std[idx2] != 0; idx2++)
+         {
+             struct data *it2 = it->std[idx2];
+             if (!it2->group) {continue;}
+             if (found_grp) {grps << " ";}
+             else {found_grp = true;}
+@@ -71,17 +71,17 @@ GetKey(X509 *cert, STACK_OF(X509) *chain, XrdSecEntity &ent)
+             key << it2->group;
+             // Log the role, provided it is present and not the word "NULL".
+             if ((it2->role) && strcmp(it2->role, "NULL"))
+             {
+                 key << "/Role=" << it2->role;
+-                if (ent.role == nullptr) {
++                if (ent.role == 0) {
+                     ent.role = strdup(it2->role);
+                 }
+             }
+             key << ",";
+         }
+-        for (int idx2 = 0; it->fqan[idx2] != nullptr; idx2++)
++        for (int idx2 = 0; it->fqan[idx2] != 0; idx2++)
+         {
+             if (found_fqan) {endorsements << ",";}
+             else {found_fqan = true;}
+             endorsements << it->fqan[idx2];
+         }
+-- 
+2.6.3
+

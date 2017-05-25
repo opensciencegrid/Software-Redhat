@@ -10,6 +10,7 @@ URL: https://github.com/bbockelm/xrootd-lcmaps
 # Generated from:
 # git archive v%{version} --prefix=xrootd-lcmaps-%{version}/ | gzip -7 > ~/rpmbuild/SOURCES/xrootd-lcmaps-%{version}.tar.gz
 Source0: %{name}-%{version}.tar.gz
+Patch0: EL-6-compat-use-C-0x-instead-of-C-11.patch
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildRequires: xrootd-server-libs >= 1:4.1.0
 BuildRequires: xrootd-server-devel >= 1:4.1.0
@@ -32,6 +33,9 @@ Requires: xrootd-server >= 1:4.6.1
 
 %prep
 %setup -q
+%if 0%{?el6}
+%patch0 -p1
+%endif
 
 %build
 #cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=RelWithDebInfo .
