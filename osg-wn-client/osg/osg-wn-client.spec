@@ -1,21 +1,13 @@
 Name:      osg-wn-client
 Summary:   OSG Worker-Node Client
-Version:   3.3
-Release:   8%{?dist}
+Version:   3.4
+Release:   1%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
 BuildArch: noarch
 
 BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
-
-# Java included because users expect it to be available
-%if ! 0%{?el7}
-Requires: jpackage-utils
-Requires: java7-devel
-%else
-Requires: java-devel >= 1:1.7.0
-%endif
 
 Requires: /usr/bin/xrdcp
 Requires: /usr/bin/curl
@@ -70,6 +62,10 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_prefix}/etc/globus-user-env.sh
 
 %changelog
+* Thu May 25 2017 Edgar Fajardo <emfajard@ucsd.edu> 3.4-1
+- Droping java dependencies  (SOFTWARE-2676)
+- Bumping version number 
+
 * Tue May 23 2017 Edgar Fajardo <emfajard@ucsd.edu> 3.3-8
 - Drop the setup.sh script no longer necessary in 3.4 (SOFTWARE-2676)
 - Drop the glexec subpackages since glexec is dropped in 3.4
