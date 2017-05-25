@@ -1,6 +1,6 @@
 Name:      osg-ca-scripts
-Version:   1.1.5
-Release:   2%{?dist}
+Version:   1.1.6
+Release:   1%{?dist}
 Summary:   CA Certificate helper scripts
 
 Group:     System Environment/Base
@@ -82,6 +82,11 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr(0755,root,root) %{_localstatedir}/lib/osg-ca-certs
 
 %changelog
+* Thu Jun 26 2017 Brian Lin <blin@cs.wisc.edu> 1.1.6-1
+- Change software.grid.iu.edu to repo.grid.iu.edu in osg-ca-scripts (SOFTWARE-2666)
+- Remove unsupported compat links for old OpenSSL hashes
+- Added `ITB` options back to help text
+
 * Wed Jul 01 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.1.5-2
 - Provide grid-certificates = 7
 
