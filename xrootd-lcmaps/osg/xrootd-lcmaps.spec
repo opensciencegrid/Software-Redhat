@@ -1,16 +1,16 @@
+
 Name: xrootd-lcmaps
-Version: 1.2.1
+Version: 1.3.2
 Release: 2%{?dist}
 Summary: LCMAPS plugin for xrootd
 
 Group: System Environment/Daemons
 License: BSD
 URL: https://github.com/bbockelm/xrootd-lcmaps
+# Generated from:
+# git archive v%{version} --prefix=xrootd-lcmaps-%{version}/ | gzip -7 > ~/rpmbuild/SOURCES/xrootd-lcmaps-%{version}.tar.gz
 Source0: %{name}-%{version}.tar.gz
-Patch0: lcmaps-modules-path.patch
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
-
-BuildRequires: xrootd-devel >= 1:4.1.0
 BuildRequires: xrootd-server-libs >= 1:4.1.0
 BuildRequires: xrootd-server-devel >= 1:4.1.0
 BuildRequires: lcmaps-interface
@@ -18,9 +18,14 @@ BuildRequires: lcmaps
 BuildRequires: cmake
 BuildRequires: voms-devel
 
-Requires: xrootd >= 1:4.1.0
+# For Globus-based chain verification
+BuildRequires: globus-gsi-credential-devel
+BuildRequires: globus-gsi-cert-utils-devel
+BuildRequires: globus-common-devel
+BuildRequires: globus-gsi-sysconfig-devel
+BuildRequires: globus-gsi-callback-devel
 
-Requires: lcas-lcmaps-gt4-interface
+Requires: xrootd-server >= 1:4.6.1
 
 %description
 %{summary}
@@ -28,12 +33,9 @@ Requires: lcas-lcmaps-gt4-interface
 %prep
 %setup -q
 
-%patch0 -p0
-
 %build
-find . -type f | sort | xargs md5sum
-%cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=RelWithDebInfo .
-
+#cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=RelWithDebInfo .
+%cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo .
 make VERBOSE=1 %{?_smp_mflags}
 
 %install
@@ -43,13 +45,6 @@ make install DESTDIR=$RPM_BUILD_ROOT
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%pre
-getent group xrootd >/dev/null || groupadd -r xrootd
-getent passwd xrootd >/dev/null || \
-       useradd -r -g xrootd -c "XRootD runtime user" \
-       -s /sbin/nologin -d /etc/xrootd xrootd
-
-
 %files
 %defattr(-,root,root,-)
 # We keep the .so here (and not in a -devel subpackage) because it is actually
@@ -57,67 +52,37 @@ getent passwd xrootd >/dev/null || \
 %{_libdir}/libXrdLcmaps.so
 %{_libdir}/libXrdLcmaps.so.0
 %{_libdir}/libXrdLcmaps.so.0.0.2
-%defattr(644,root,root,-)
 %config(noreplace) %{_sysconfdir}/xrootd/lcmaps.cfg
 
 %changelog
-* Thu May 18 2016 Brian Lin <emfajard@ucsd.edu> - 1.2.1-2
-- Debugging build failures
+* Thu May 24 2017 Marian Zvada <marian.zvada@cern.ch> - 1.3.2-2
+- Fix bugleaks and memory warnings for 4.6.1
+- STAS-18
 
-* Fri Jan 15 2016 Edgar Fajardo <emfajard@ucsd.edu> - 1.2.1-1
-- Bug fix
+* Thu Mar 30 2017 Brian Bockelman <bbockelm@cse.unl.edu> - 1.3.2-1
+- Only perform verification in Globus, not raw OpenSSL.
 
-* Thu Jan 14 2016 Edgar Fajardo <emfajard@ucsd.edu> - 1.2.0-1.2
-- Added the build requires of voms-devel
+* Mon Feb 20 2017 Brian Bockelman <bbockelm@cse.unl.edu> - 1.3.1-1
+- Fix population of the role security entity
+- Fix various memory leaks.
 
-* Thu Jan 14 2016 Edgar Fajardo <emfajard@ucsd.edu> - 1.2.0-1.1
-- Bumped to 1.2.0
-- Added patch to CMakeLists to build for rhel7
+* Sun Dec 11 2016 Brian Bockelman <bbockelm@cse.unl.edu> - 1.3.0-1
+- Change X509 verification to be based on Globus libraries
 
 * Thu Jan 14 2016 Brian Bockelman <bbockelm@cse.unl.edu> - 1.2.0-1
 - Have VOMS attributes forward to the xrootd credential.
 
-* Tue Jan 12 2016 Edgar Fajardo <emfajard@ucsd.edu> 1.0.1-1
-- Change to the CMakeList to make rhel7 builds work
+* Mon Jan 11 2016 Brian Bockelman <bbockelm@cse.unl.edu> - 1.1.0-1
+- Add caching support to HTTP.
 
-* Wed Jan 6 2016 Edgar Fajardo <emfajard@ucsd.edu> 1.0.0-1
-- Update to 1.0.0
-- Support for HTTP Security extractor
-- Removed the patch1 for xrootd4 linking
-
-* Wed Feb 25 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 0.0.7-11.osg
-- Patch to not require xrootd-compat-libs
-
-* Tue Feb 24 2015 Edgar Fajardo <emfajard@ucsd.edu>  0.0.7-10
-- The xrootd-compat-libs were only needed at built time not required during installation
-
-* Mon Feb 23 2015 Edgar Fajardo <emfajard@ucsd.edu>  0.0.7-9
-- Require xrootd-compat-libs for upgrade to xrootd4.1
-
-* Fri Dec 05 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 0.0.7-8
-- Require xrootd on EL7
-
-* Mon Jul 14 2014 Edgar Fajardo <efajardo@physics.ucsd.edu> 0.0.7-7
-- Updated to require xrootd4.
-
-* Thu Apr 18 2013 Matyas Selmeci <matyas@cs.wisc.edu> 0.0.7-5
-- Explicitly Require and BuildRequire xrootd 3.3.1
-
-* Wed Apr 03 2013 Matyas Selmeci <matyas@cs.wisc.edu> 0.0.7-4
-- Fix lcmaps modules path in lcmaps.cfg
-- Add lcas-lcmaps-gt4-interface as a dependency
-- Rebuild with xrootd 3.3.1; adjust dependencies to match
-
-* Tue Feb 12 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 0.0.7-3
-- Bump to rebuild against xrootd-3.3.0-rc3
-
-* Tue Nov 20 2012 Doug Strain <dstrain@fnal.gov> - 0.0.7-2
-- Fix permissions of lcmaps.cfg
+* Mon Jan 04 2016 Brian Bockelman <bbockelm@cse.unl.edu> - 1.0.0-1
+- Add support for a HTTP security extractor.
+- Mark as 1.0 release.
 
 * Mon Nov 19 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 0.0.7-1
 - Fix config parsing issues.
 
-* Mon Nov 12 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 0.0.6-1
+* Mon Nov 12 2012 Brian Bockelman - 0.0.6-1
 - Fix SL6 compilation issues.
 
 * Mon Oct 22 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 0.0.5-1
