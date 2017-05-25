@@ -1,5 +1,5 @@
 Name:           gracc-archive
-Version:        1.3.1
+Version:        1.4.0
 Release:        1%{?dist}
 Summary:        GRACC Archive
 
@@ -69,6 +69,11 @@ install -d -m 0755 $RPM_BUILD_ROOT/%{_sharedstatedir}/graccarchive/output
 
 
 %changelog
+* Tue May 23 2017 Derek Weitzel <dweitzel@cse.unl.edu> - 1.4.0-1
+- Run daemon in single thread
+- Properly flush gzfile every 10 seconds
+- ACK rabbitmq messages
+
 * Tue May 23 2017 Derek Weitzel <dweitzel@cse.unl.edu> - 1.3.1-1
 - Capture disconnections on initial connection creations
 
