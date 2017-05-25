@@ -1,6 +1,6 @@
 Name:      rsv-perfsonar
-Version:   1.4.1
-Release:   2%{?dist}
+Version:   1.4.2
+Release:   1%{?dist}
 Summary:   RSV Metrics to monitor pefsonar
 Packager:  OSG-Software
 Group:     Applications/Monitoring
@@ -76,6 +76,9 @@ pip install pika
 
 
 %changelog
+* Thu May 25 2017 <efajardo@physics.ucsd.edu> 1.4.2-1
+- Fixed a bug that may disable all probes when only running one of them
+
 * Fri May 19 2017 <efajardo@physics.ucsd.edu> 1.4.1-2
 - Added the pika pip install 
 
