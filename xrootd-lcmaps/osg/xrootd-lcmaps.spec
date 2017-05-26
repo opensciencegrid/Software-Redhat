@@ -1,7 +1,7 @@
 
 Name: xrootd-lcmaps
-Version: 1.3.2
-Release: 2%{?dist}
+Version: 1.3.3
+Release: 1%{?dist}
 Summary: LCMAPS plugin for xrootd
 
 Group: System Environment/Daemons
@@ -59,6 +59,9 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/xrootd/lcmaps.cfg
 
 %changelog
+* Fri May 26 2017 Marian Zvada <marian.zvada@cern.ch> - 1.3.3-1
+- new release tagged; added Lock CertStore patch
+
 * Thu May 24 2017 Marian Zvada <marian.zvada@cern.ch> - 1.3.2-2
 - Fix bugleaks and memory warnings for 4.6.1
 - STAS-18
