@@ -1,7 +1,7 @@
 Name:      osg-tested-internal
 Summary:   All OSG packages we test (internal use only)
 Version:   3.4
-Release:   1%{?dist}
+Release:   2%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -49,6 +49,7 @@ Requires: xrootd-client
 
 Requires: voms-server
 Requires: voms-clients-cpp
+Requires: voms-mysql-plugin
 
 %if 0%{?rhel} == 7
 # osg-tested-internal packages in el7 don't currently pull in mysql/mariadb
@@ -68,6 +69,9 @@ rm -rf $RPM_BUILD_ROOT
 %files
 
 %changelog
+* Thu May 26 2017 Brian Lin <blin@cs.wisc.edu> - 3.4-2
+- Add voms-mysql-plugin back for voms-proxy-init testing
+
 * Tue May 23 2017 Brian Lin <blin@cs.wisc.edu> - 3.4-1
 - Drop requirements for packages no longer in 3.4 (SOFTWARE-2734)
 - Explicitly require mysql-server for VOMS
