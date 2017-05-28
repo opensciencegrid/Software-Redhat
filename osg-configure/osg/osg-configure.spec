@@ -1,6 +1,6 @@
 Summary: Package for OSG-Configure and associated scripts
 Name: osg-configure
-Version: 1.7.0
+Version: 1.8.0
 Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
@@ -332,6 +332,11 @@ fi
 
 
 %changelog
+* Sun May 28 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 1.8.0-1
+- Reject empty allowed_vos (SOFTWARE-2703)
+- Turn missing OSG_APP into a warning instead of an error (SOFTWARE-2674)
+- Get default allowed_vos from voms-mapfiles/banfiles if using vomsmap auth (SOFTWARE-2670)
+
 * Mon Apr 24 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 1.7.0-1
 - Drop GIP/OSG-Info-Services support (SOFTWARE-2644)
 - Make absence of user-vo-map file non-fatal (SOFTWARE-2696)
