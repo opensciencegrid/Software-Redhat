@@ -94,6 +94,20 @@ Requires: %name = %version-%release
 %description squid
 This package includes the ini files for configuring an OSG system to use squid
 
+%package managedfork
+Summary: Transitional dummy package for OSG 3.4
+Group: Grid
+%description managedfork
+This is an empty package created as a workaround for 3.3->3.4 upgrade issues.
+It may safely be removed.
+
+%package network
+Summary: Transitional dummy package for OSG 3.4
+Group: Grid
+%description network
+This is an empty package created as a workaround for 3.3->3.4 upgrade issues.
+It may safely be removed.
+
 %package tests
 Summary: OSG-Configure unit tests and configuration for unit testing
 Group: Grid
@@ -231,6 +245,11 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root)
 %config(noreplace) %{_sysconfdir}/osg/config.d/10-gateway.ini
 
+%files managedfork
+#blank
+
+%files network
+#blank
 
 
 
@@ -239,10 +258,10 @@ rm -rf $RPM_BUILD_ROOT
 - Drop osg-cleanup support (SOFTWARE-2695)
 - Drop glexec support (SOFTWARE-2697)
 - Drop warning if RSV is not installed (SOFTWARE-2748)
-- Drop managedfork and network config (SOFTWARE-2705)
+- Drop managedfork and network config and add transitional dummy packages (SOFTWARE-2705)
 - Deprecate GUMS support (SOFTWARE-2737)
 - Drop GRAM support (SOFTWARE-2726)
-- Drop 'configure-osg' aliases and transitional dummy packages (SOFTWARE-2699)
+- Drop 'configure-osg' aliases and transitional dummy packages for monalisa and cemon (SOFTWARE-2699)
 
 * Sun May 28 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 1.8.0-1
 - Reject empty allowed_vos (SOFTWARE-2703)
