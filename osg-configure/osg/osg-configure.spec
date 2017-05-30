@@ -1,7 +1,7 @@
 Summary: Package for OSG-Configure and associated scripts
 Name: osg-configure
 Version: 2.0.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
 Group: Grid
@@ -254,6 +254,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue May 30 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 2.0.0-2
+- bump to rebuild
+
 * Tue May 30 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 2.0.0-1
 - Drop osg-cleanup support (SOFTWARE-2695)
 - Drop glexec support (SOFTWARE-2697)
