@@ -1,6 +1,6 @@
 Name:		globus-gridftp-osg-extensions
 Version:	0.3
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	OSG extensions for the Globus GridFTP server
 
 Group:		Development/Libraries
@@ -16,9 +16,6 @@ BuildRequires:  globus-gridftp-server-devel
 BuildRequires:  globus-gssapi-gsi-devel
 BuildRequires:  cmake
 BuildRequires:  voms-devel
-
-Conflicts: gridftp-hdfs < 0.5.4-25.2
-Conflicts: xrootd-dsi < 3.0.4-18
 
 %description
 %{summary}
@@ -41,6 +38,9 @@ make install DESTDIR=%{buildroot}
 %{_libdir}/libglobus_gridftp_server_osg.so*
 
 %changelog
+* Tue May 30 2017 Carl Edquist <edquist@cs.wisc.edu> - 0.3-2
+- Drop Conflicts for OSG 3.4 (SOFTWARE-2679)
+
 * Wed Jul 20 2016 Brian Bockelman <bbockelm@cse.unl.edu> - 0.3-1
 - Log VOMS information.
 
