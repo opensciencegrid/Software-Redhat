@@ -1,6 +1,6 @@
 Summary: osg-pki-tools
 Name: osg-pki-tools
-Version: 1.2.21
+Version: 1.2.20
 Release: 1%{?dist}
 Source: OSGPKITools-%{version}.tar.gz
 License: Apache 2.0
@@ -76,9 +76,6 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Thu Feb 16 2017 Brian Lin <blin@cs.wisc.edu> - 1.2.21-1
-- Drop PKI tool quota verification (SOFTWARE-2472)
-
 * Mon Oct 24 2016 Brian Lin <blin@cs.wisc.edu> - 1.2.20-1
 - Generate SHA2 CSRs (SOFTWARE-2136)
 
