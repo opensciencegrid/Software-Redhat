@@ -1,7 +1,7 @@
 %define name autopyfactory
-%define version 2.4.9
-%define unmangled_version 2.4.9
-%define release 1
+%define version 2.4.6
+%define unmangled_version 2.4.6
+%define release 4
 
 Summary: autopyfactory package
 Name: %{name}
@@ -16,8 +16,6 @@ BuildArch: noarch
 Vendor: Jose Caballero <jcaballero@bnl.gov>
 Provides: autopyfactory
 Obsoletes: panda-autopyfactory
-#BuildRequires: condor-all
-BuildRequires: condor-python
 Url: https://twiki.cern.ch/twiki/bin/view/Atlas/PanDA
 
 %description
@@ -58,16 +56,17 @@ sed -i '/\/etc\/sysconfig\/proxymanager/ s/^/%config(noreplace) /'  INSTALLED_FI
 # ----------------------------------------------------------------------------
 cp INSTALLED_FILES COMMON_FILES
 sed -i '/proxymanager/d' COMMON_FILES
-sed -i '/plugins\/queue\/sched/d' COMMON_FILES
-sed -i '/plugins\/queue\/monitor/d' COMMON_FILES
-sed -i '/plugins\/queue\/batchstatus/d' COMMON_FILES
-grep '/plugins/queue/batchstatus/__init__' INSTALLED_FILES >> COMMON_FILES
-grep '/plugins/queue/batchstatus/Condor.*' INSTALLED_FILES >> COMMON_FILES
-sed -i '/plugins\/queue\/wmsstatus/d' COMMON_FILES
-grep '/plugins/queue/wmsstatus/__init__' INSTALLED_FILES >> COMMON_FILES
-sed -i '/plugins\/queue\/batchsubmit/d' COMMON_FILES
-grep '/plugins/queue/batchsubmit/__init__' INSTALLED_FILES >> COMMON_FILES
+sed -i '/plugins\/sched/d' COMMON_FILES
+sed -i '/plugins\/monitor/d' COMMON_FILES
+sed -i '/plugins\/batchstatus/d' COMMON_FILES
+grep '/plugins/batchstatus/__init__' INSTALLED_FILES >> COMMON_FILES
+grep '/plugins/batchstatus/CondorBatchStatus.*' INSTALLED_FILES >> COMMON_FILES
+sed -i '/plugins\/wmsstatus/d' COMMON_FILES
+grep '/plugins/wmsstatus/__init__' INSTALLED_FILES >> COMMON_FILES
+sed -i '/plugins\/batchsubmit/d' COMMON_FILES
+grep '/plugins/batchsubmit/__init__' INSTALLED_FILES >> COMMON_FILES
 sed -i '/\etc\/autopyfactory\/proxy\.conf/d' COMMON_FILES
+sed -i '/external\/panda/d' COMMON_FILES
 
 
 # ----------------------------------------------------------------------------
@@ -82,46 +81,46 @@ grep '/etc/autopyfactory/proxy\.conf' INSTALLED_FILES >> PROXYMANAGER_FILES
 #       Files for autopyfactory-plugins-monitor subpackage
 # ----------------------------------------------------------------------------
 cp INSTALLED_FILES PLUGINS-MONITOR_FILES
-sed -i '/plugins\/queue\/monitor\//!d' PLUGINS-MONITOR_FILES
+sed -i '/plugins\/monitor\//!d' PLUGINS-MONITOR_FILES
 
 
 # ----------------------------------------------------------------------------
 #       Files for autopyfactory-plugins-local subpackage
 # ----------------------------------------------------------------------------
 cp INSTALLED_FILES PLUGINS-LOCAL_FILES
-sed -i '/plugins\/queue\/batchsubmit\/.*Local.*/!d' PLUGINS-LOCAL_FILES
-grep "/plugins/queue/wmsstatus/Condor" INSTALLED_FILES >> PLUGINS-LOCAL_FILES
-grep "/plugins/queue/batchsubmit/.*Exec.*" INSTALLED_FILES >> PLUGINS-LOCAL_FILES
+sed -i '/plugins\/batchsubmit\/.*Local.*/!d' PLUGINS-LOCAL_FILES
+grep "/plugins/wmsstatus/CondorWMSStatusPlugin" INSTALLED_FILES >> PLUGINS-LOCAL_FILES
+grep "/plugins/batchsubmit/.*Exec.*" INSTALLED_FILES >> PLUGINS-LOCAL_FILES
 
 
 # ----------------------------------------------------------------------------
 #       Files for autopyfactory-plugins-remote subpackage
 # ----------------------------------------------------------------------------
 cp INSTALLED_FILES PLUGINS-REMOTE_FILES
-sed -i '/plugins\/queue\/batchsubmit\/.*Condor.*/!d' PLUGINS-REMOTE_FILES
-sed -i '/plugins\/queue\/batchsubmit\/.*EC2.*/d' PLUGINS-REMOTE_FILES
-sed -i '/plugins\/queue\/batchsubmit\/.*Local.*/d' PLUGINS-REMOTE_FILES
+sed -i '/plugins\/batchsubmit\/.*Condor.*/!d' PLUGINS-REMOTE_FILES
+sed -i '/plugins\/batchsubmit\/.*EC2.*/d' PLUGINS-REMOTE_FILES
+sed -i '/plugins\/batchsubmit\/.*Local.*/d' PLUGINS-REMOTE_FILES
 
 
 # ----------------------------------------------------------------------------
 #       Files for autopyfactory-plugins-cloud subpackage
 # ----------------------------------------------------------------------------
 cp INSTALLED_FILES PLUGINS-CLOUD_FILES
-sed -i '/plugins\/queue\/.*\/.*EC2.*/!d' PLUGINS-CLOUD_FILES
+sed -i '/plugins\/.*\/.*EC2.*/!d' PLUGINS-CLOUD_FILES
 
 
 # ----------------------------------------------------------------------------
 #       Files for autopyfactory-plugins-scheds subpackage
 # ----------------------------------------------------------------------------
 cp INSTALLED_FILES PLUGINS-SCHEDS_FILES
-sed -i '/plugins\/queue\/sched\//!d' PLUGINS-SCHEDS_FILES
+sed -i '/plugins\/sched\//!d' PLUGINS-SCHEDS_FILES
 
 
 # ----------------------------------------------------------------------------
 #       Files for autopyfactory-plugins-panda subpackage
 # ----------------------------------------------------------------------------
 cp INSTALLED_FILES PLUGINS-PANDA_FILES
-sed -i '/plugins\/queue\/wmsstatus\/.*Panda.*/!d' PLUGINS-PANDA_FILES
+sed -i '/plugins\/wmsstatus\/.*Panda.*/!d' PLUGINS-PANDA_FILES
 grep '/external/panda/' INSTALLED_FILES >> PLUGINS-PANDA_FILES
 
 
@@ -142,6 +141,7 @@ rm -rf $RPM_BUILD_ROOT
 Summary: autopyfactory common 
 Group: Development/Libraries
 #Requires: autopyfactory-proxymanager
+Requires: condor
 Requires: python-simplejson
 Requires: python-pycurl
 %description -n autopyfactory-common
@@ -331,22 +331,4 @@ Requires: autopyfactory-proxymanager
 meta rpm autopyfactory-cloud
 %files -n autopyfactory-cloud
 
-
-%package -n autopyfactory-atlas
-Summary: META RPM for autopyfactory-atlas
-Group: Development/Libraries
-Requires: autopyfactory-common
-Requires: autopyfactory-proxymanager
-Requires: autopyfactory-plugins-scheds
-Requires: autopyfactory-plugins-monitors
-Requires: autopyfactory-plugins-panda
-Requires: autopyfactory-plugins-local
-Requires: autopyfactory-plugins-remote
-Requires: autopyfactory-plugins-cloud
-%description -n autopyfactory-atlas
-meta rpm autopyfactory-atlas
-%files -n autopyfactory-atlas
-
-
 ##############################################
-
