@@ -1,0 +1,30 @@
+From 787137b543b20dd3abc6fd1429d1404c8d4cda8e Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Thu, 8 Oct 2015 15:32:38 -0500
+Subject: [PATCH] No collectors behind shared port
+
+Putting secondary collectors behind shared port breaks in Condor 8.4.0.
+We could turn off shared port just for the secondary collectors, but for
+now it's simplest just to turn it off for all collectors.
+---
+ install/templates/01_gwms_collectors.config | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/install/templates/01_gwms_collectors.config b/install/templates/01_gwms_collectors.config
+index 76e0f31..531059b 100644
+--- a/install/templates/01_gwms_collectors.config
++++ b/install/templates/01_gwms_collectors.config
+@@ -45,5 +45,10 @@ NEGOTIATOR_CONSIDER_PREEMPTION = False
+ #   if your secondary collector are on separate hosts or if you run HTCondor
+ #   older than 8.2 (or 8.1.5), you must use the host name, e.g.:
+ #   CONDOR_VIEW_HOST = $(COLLECTOR_HOST)  
+ CONDOR_VIEW_HOST = localhost
+ 
++# Having secondary collectors behind shared port breaks things in
++# HTCondor 8.4.0; simplest to not put any of the collectors behind shared
++# port.
++COLLECTOR_USES_SHARED_PORT = False
++
+-- 
+2.4.6
+
