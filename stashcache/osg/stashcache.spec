@@ -1,14 +1,12 @@
 Name:      stashcache
 Summary:   StashCache metapackages
-Version:   0.6
-Release:   2%{?dist}
+Version:   0.7
+Release:   1%{?dist}
 License:   Apache 2.0
 Group:     Grid
-URL:       http://www.opensciencegrid.org
+URL:       https://opensciencegrid.github.io/StashCache/
 BuildArch: noarch
 Source0:   %{name}-%{version}.tar.gz
-Source1:   xrootd-stashcache-origin-server.cfg.in
-Source2:   xrootd-stashcache-cache-server.cfg.in
 
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
@@ -17,8 +15,8 @@ BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 %{!?python_sitearch: %define python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
 %endif
 
-%define originhost_prod stash.opensciencegrid.org
-%define originhost_itb  stash-itb.opensciencegrid.org
+%define redirector_prod redirector.opensciencegrid.org
+%define redirector_itb redirector-itb.opensciencegrid.org
 
 %description
 %{summary}
@@ -27,9 +25,9 @@ BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 Group: Grid
 Summary: Scripts and configuration for StashCache management
 
-Requires: xrootd-server >= 1:4.1.0
-Requires: xrootd-python >= 1:4.2.0
-Requires: condor-python >= 8.3.5
+Requires: xrootd-server >= 1:4.6.1
+Requires: xrootd-python >= 1:4.6.1
+Requires: condor-python >= 8.4.11
 Requires: grid-certificates >= 7
 %if 0%{?rhel} < 6
 Requires: fetch-crl3
@@ -44,7 +42,7 @@ Requires: fetch-crl
 Group: Grid
 Summary: Metapackage for the origin server
 
-Requires: xrootd-server >= 1:4.1.0
+Requires: xrootd-server >= 1:4.6.1
 Requires: %{name}-daemon
 
 %description origin-server
@@ -54,7 +52,8 @@ Requires: %{name}-daemon
 Group: Grid
 Summary: Metapackage for a cache server
 
-Requires: xrootd-server >= 1:4.1.0
+Requires: xrootd-server >= 1:4.6.1
+Requires: xrootd-lcmaps >= 1:1.3.3
 Requires: %{name}-daemon
 
 %description cache-server
@@ -66,12 +65,12 @@ Requires: %{name}-daemon
 %install
 mkdir -p %{buildroot}%{_sysconfdir}/xrootd
 make install DESTDIR=%{buildroot}
-for src in "%{SOURCE1}" "%{SOURCE2}"; do
+for src in "./configs/xrootd-stashcache-origin-server.cfg.in" "./configs/xrootd-stashcache-cache-server.cfg.in"; do
     dst=$(basename "$src" .cfg.in)
     sed -i -e "s#@LIBDIR@#%{_libdir}#" "$src"
-    sed -e "s#@ORIGINHOST@#%{originhost_prod}#" \
+    sed -e "s#@REDIRECTOR@#%{redirector_prod}#" \
         "$src" > "%{buildroot}%{_sysconfdir}/xrootd/${dst}.cfg"
-    sed -e "s#@ORIGINHOST@#%{originhost_itb}#" \
+    sed -e "s#@REDIRECTOR@#%{redirector_itb}#" \
         "$src" > "%{buildroot}%{_sysconfdir}/xrootd/${dst}-itb.cfg"
 done
 
@@ -93,6 +92,9 @@ rm -rf %{_buildroot}
 %config(noreplace) %{_sysconfdir}/xrootd/xrootd-stashcache-cache-server-itb.cfg
 
 %changelog
+* Wed May 31 2017 Marian Zvada <marian.zvada@cern.ch> 0.7-1
+- SOFTWARE-2295: restructure under opensciencegrid/StashCache-Daemon.git 
+
 * Thu Feb 25 2016 Marian Zvada <marian.zvada@cern.ch> 0.6-2
 - SOFTWARE-2196: redirector renamed to redirector.osgstorage.org, http export support
 - SOFTWARE-2195: complete revamp of the origin server config using new redirector

@@ -1,3 +1,5 @@
-Source tarball created out of https://vdt.cs.wisc.edu/svn/software/stashcache-daemon/tags/0.3 on a UW CSL machine:
-
-make upstream
+To get the upstream
+                                                                                                                                          
+git clone https://github.com/opensciencegrid/StashCache-Daemon.git
+cd StashCache-Daemon
+git archive v0.7 --prefix=stashcache-0.7/ | gzip -7 > ~/stashcache-0.7.tar.gz
