@@ -1,7 +1,7 @@
 Name:      stashcache
 Summary:   StashCache metapackages
 Version:   0.7
-Release:   1%{?dist}
+Release:   2%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       https://opensciencegrid.github.io/StashCache/
@@ -29,11 +29,7 @@ Requires: xrootd-server >= 1:4.6.1
 Requires: xrootd-python >= 1:4.6.1
 Requires: condor-python >= 8.4.11
 Requires: grid-certificates >= 7
-%if 0%{?rhel} < 6
-Requires: fetch-crl3
-%else
 Requires: fetch-crl
-%endif
 
 %description daemon
 %{summary}
@@ -53,7 +49,7 @@ Group: Grid
 Summary: Metapackage for a cache server
 
 Requires: xrootd-server >= 1:4.6.1
-Requires: xrootd-lcmaps >= 1:1.3.3
+Requires: xrootd-lcmaps >= 1.3.3
 Requires: %{name}-daemon
 
 %description cache-server
@@ -61,6 +57,10 @@ Requires: %{name}-daemon
 
 %prep
 %setup -q
+%if 0%{?el6}
+echo "*** This version does not build on EL 6 ***"
+exit 1
+%endif
 
 %install
 mkdir -p %{buildroot}%{_sysconfdir}/xrootd
@@ -92,6 +92,10 @@ rm -rf %{_buildroot}
 %config(noreplace) %{_sysconfdir}/xrootd/xrootd-stashcache-cache-server-itb.cfg
 
 %changelog
+* Thu Jun 1 2017 Marian Zvada <marian.zvada@cern.ch> 0.7-2
+- added stanza so that we don't build StashCache for EL6
+- no epoch of xrootd-lcmaps-1.3.3 for cache-server requirement
+
 * Wed May 31 2017 Marian Zvada <marian.zvada@cern.ch> 0.7-1
 - SOFTWARE-2295: restructure under opensciencegrid/StashCache-Daemon.git 
 
