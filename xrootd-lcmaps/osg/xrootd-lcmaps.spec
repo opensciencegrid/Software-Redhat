@@ -1,7 +1,7 @@
 
 Name: xrootd-lcmaps
 Version: 1.3.3
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: LCMAPS plugin for xrootd
 
 Group: System Environment/Daemons
@@ -10,7 +10,6 @@ URL: https://github.com/bbockelm/xrootd-lcmaps
 # Generated from:
 # git archive v%{version} --prefix=xrootd-lcmaps-%{version}/ | gzip -7 > ~/rpmbuild/SOURCES/xrootd-lcmaps-%{version}.tar.gz
 Source0: %{name}-%{version}.tar.gz
-Patch0: EL-6-compat-use-C-0x-instead-of-C-11.patch
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildRequires: xrootd-server-libs >= 1:4.1.0
 BuildRequires: xrootd-server-devel >= 1:4.1.0
@@ -32,10 +31,13 @@ Requires: xrootd-server >= 1:4.6.1
 %{summary}
 
 %prep
-%setup -q
+
 %if 0%{?el6}
-%patch0 -p1
+echo "*** This version does not build on EL 6 ***"
+exit 1
 %endif
+
+%setup -q
 
 %build
 #cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=RelWithDebInfo .
@@ -59,6 +61,9 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/xrootd/lcmaps.cfg
 
 %changelog
+* Wed May 31 2017 Carl Edquist <edquist@cs.wisc.edu> - 1.3.3-3
+- Don't build 1.3.3 for EL6 (SOFTWARE-2738)
+
 * Wed May 31 2017 Carl Edquist <edquist@cs.wisc.edu> - 1.3.3-2
 - Update patch to apply against 1.3.3 sources (SOFTWARE-2738)
 
