@@ -217,7 +217,7 @@ Source123: zlib-1.2.3.tar.gz
 %endif
 
 # https://jira.opensciencegrid.org/browse/SOFTWARE-2716 (#6295)
-Patch0: gt6295-enable-collector-plugins.patch
+Patch1: gt6295-enable-collector-plugins.patch
 
 #% if 0%osg
 Patch8: osg_sysconfig_in_init_script.patch
