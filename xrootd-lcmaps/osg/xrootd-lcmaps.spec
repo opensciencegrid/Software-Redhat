@@ -1,7 +1,7 @@
 
 Name: xrootd-lcmaps
 Version: 1.3.3
-Release: 1%{?dist}
+Release: 3%{?dist}
 Summary: LCMAPS plugin for xrootd
 
 Group: System Environment/Daemons
@@ -31,6 +31,12 @@ Requires: xrootd-server >= 1:4.6.1
 %{summary}
 
 %prep
+
+%if 0%{?el6}
+echo "*** This version does not build on EL 6 ***"
+exit 1
+%endif
+
 %setup -q
 
 %build
@@ -55,6 +61,12 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/xrootd/lcmaps.cfg
 
 %changelog
+* Wed May 31 2017 Carl Edquist <edquist@cs.wisc.edu> - 1.3.3-3
+- Don't build 1.3.3 for EL6 (SOFTWARE-2738)
+
+* Wed May 31 2017 Carl Edquist <edquist@cs.wisc.edu> - 1.3.3-2
+- Update patch to apply against 1.3.3 sources (SOFTWARE-2738)
+
 * Fri May 26 2017 Marian Zvada <marian.zvada@cern.ch> - 1.3.3-1
 - new release tagged; added Lock CertStore patch
 
