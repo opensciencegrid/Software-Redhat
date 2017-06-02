@@ -1,8 +1,9 @@
 Summary: Package for OSG-Configure and associated scripts
 Name: osg-configure
 Version: 2.0.0
-Release: 2%{?dist}
+Release: 3%{?dist}
 Source0: %{name}-%{version}.tar.gz
+Patch0: fix-host-port-test.patch
 License: Apache 2.0
 Group: Grid
 Prefix: %{_prefix}
@@ -152,6 +153,7 @@ This package includes the ini file for configuring the job gateway
 
 %prep
 %setup
+%patch0 -p1
 
 %build
 %{__python} setup.py build
@@ -254,6 +256,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Jun 02 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 2.0.0-3
+- Add fix-host-port-test.patch
+
 * Tue May 30 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 2.0.0-2
 - bump to rebuild
 
