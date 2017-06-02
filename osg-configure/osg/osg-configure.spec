@@ -1,8 +1,9 @@
 Summary: Package for OSG-Configure and associated scripts
 Name: osg-configure
 Version: 1.8.1
-Release: 1%{?dist}
+Release: 2%{?dist}
 Source0: %{name}-%{version}.tar.gz
+Patch0: fix-host-port-test.patch
 License: Apache 2.0
 Group: Grid
 Prefix: %{_prefix}
@@ -194,6 +195,7 @@ It may safely be removed once the upgrade is finished.
 
 %prep
 %setup
+%patch0 -p1
 
 %build
 %{__python} setup.py build
@@ -332,6 +334,9 @@ fi
 
 
 %changelog
+* Fri Jun 02 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 1.8.1-2
+- Add fix-host-port-test.patch
+
 * Sun May 28 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 1.8.1-1
 - Give a warning, not an error, on missing allowed_vos
 
