@@ -1,5 +1,5 @@
 Name:           gracc-request
-Version:        3.6.0
+Version:        3.7.0
 Release:        1%{?dist}
 Summary:        GRACC Listener for Raw and Summary Records
 
@@ -72,6 +72,9 @@ install -m 0744 config/graccreq.service $RPM_BUILD_ROOT/%{_unitdir}/
 
 
 %changelog
+* Fri Jun 02 2017 Derek Weitzel <dweitzel@cse.unl.edu> 3.7.0-1
+- Set ProjectName to VOName if N/A
+
 * Tue May 16 2017 Derek Weitzel <dweitzel@cse.unl.edu> 3.6.0-1
 - Fix bug in Field of Science calculation
 
