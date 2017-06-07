@@ -1,8 +1,8 @@
 #global betatag .pre
-%global _release 2
+%global _release 1
 
 Name:           osg-build
-Version:        1.9.0
+Version:        1.10.0
 Release:        %{?betatag:0.}%{_release}%{?betatag}%{?dist}
 Summary:        Build tools for the OSG
 
@@ -18,9 +18,6 @@ Requires:       %{name}-base = %{version}
 Requires:       %{name}-mock = %{version}
 Requires:       %{name}-koji = %{version}
 
-
-Obsoletes:      vdt-build <= 0.0.17
-Provides:       vdt-build = %{version}
 
 %description
 %{summary}
@@ -100,7 +97,6 @@ rm -rf $RPM_BUILD_ROOT
 %files base
 %{_bindir}/%{name}
 %{_bindir}/osg-import-srpm
-%{_bindir}/vdt-build
 %dir %{python_sitelib}/osgbuild
 %{python_sitelib}/osgbuild/__init__.py*
 %{python_sitelib}/osgbuild/constants.py*
@@ -113,7 +109,6 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/osgbuild/svn.py*
 %{python_sitelib}/osgbuild/utils.py*
 %{_datadir}/%{name}/rpmlint.cfg
-%doc %{_docdir}/%{name}/sample-osg-build.ini
 
 %files mock
 %{python_sitelib}/osgbuild/mock.py*
@@ -132,6 +127,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Jun 07 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.10.0-1
+- Drop vdt-build (SOFTWARE-2709)
+- Drop osg-build.ini (SOFTWARE-2708)
+
 * Thu Apr 27 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.9.0-2
 - Add version requirements to the subpackages
 
