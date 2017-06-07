@@ -1,7 +1,7 @@
 Name:           osg-ca-certs
-Version:        1.62
+Version:        1.63
 Release:        1%{?dist}
-Summary:        OSG Packaging of the IGTF CA Certs and OSG-specific CAs, in the new OpenSSL 0.9.8/1.0.0 format.  The OSG CA Distribution contains:  1) IGTF Distribution of Authority Root Certificates (CAs accredited by the International Grid Trust Federation). Details of CAs in the OSG distribution can be found on twiki at https://twiki.grid.iu.edu/bin/view/Documentation/CaDistribution. For additional details what is in the current release, see the distribution site at http://software.grid.iu.edu/pacman/cadist/ and change log at http://software.grid.iu.edu/pacman/cadist/CHANGES. 
+Summary:        OSG Packaging of the IGTF CA Certs and OSG-specific CAs, in the new OpenSSL 0.9.8/1.0.0 format.  The OSG CA Distribution contains:  1) IGTF Distribution of Authority Root Certificates (CAs accredited by the International Grid Trust Federation). Details of CAs in the OSG distribution can be found on twiki at https://twiki.grid.iu.edu/bin/view/Documentation/CaDistribution. For additional details what is in the current release, see the distribution site at http://repo.grid.iu.edu/pacman/cadist/ and change log at http://repo.grid.iu.edu/pacman/cadist/CHANGES. 
 
 
 Group:          System Environment/Base
@@ -10,7 +10,7 @@ URL:            http://repo.grid.iu.edu/pacman/cadist/
 
 # Note: currently, one needs a valid client certificate to access the source tarball
 # https://osg-svn.rtinfo.indiana.edu/cadist/release/osg-certificates-1.20NEW.tar.gz
-Source0:        osg-certificates-1.62NEW.tar.gz
+Source0:        osg-certificates-1.63NEW.tar.gz
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
@@ -18,7 +18,6 @@ BuildArch:      noarch
 Provides:       grid-certificates = 7
 
 Conflicts:      osg-ca-scripts
-Conflicts:      cilogon-ca-certs < 1.0-5
 
 Obsoletes:      vdt-ca-certs
 Obsoletes:      osg-ca-certs-experimental
@@ -52,6 +51,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc
 
 %changelog
+* Wed Jun 7 2017 Zalak Shah <zsshah@iu.edu> 1.63-1
+- CA release corresponding to IGTF 1.83 release.
+
 * Mon Apr 3 2017 Zalak Shah <zsshah@iu.edu> 1.62-1
 - CA release corresponding to IGTF 1.82 release.
 
