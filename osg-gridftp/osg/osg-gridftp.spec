@@ -1,7 +1,7 @@
 Name:      osg-gridftp
 Summary:   Standalone OSG GridFTP w/lcmaps gums client
 Version:   3.3
-Release:   4%{?dist}
+Release:   5%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -18,6 +18,7 @@ Requires: vo-client-lcmaps-voms
 Requires: grid-certificates >= 7
 Requires: gratia-probe-gridftp-transfer >= 1.17.0-1
 Requires: fetch-crl
+Requires: osg-configure-misc
 #This is probably not needed
 #Requires: edg-mkgridmap
 
@@ -51,6 +52,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Jun 08 2017 Edgar Fajardo <emfajard@ucsd.edu> - 3.3-5
+- Add osg-configure-misg to dependencies (SOFTWARE-2758)
+
 * Mon Jun 05 2017 Brian Lin <blin@cs.wisc.edu> - 3.3-4
 - Add vo-client-lcmaps-voms deps to osg-gridftp (SOFTWARE-2760)
 
