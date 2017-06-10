@@ -1,5 +1,5 @@
 Name:           vo-client
-Version:        73
+Version:        74
 Release:        1%{?dist}
 Summary:        Contains vomses file for use with user authentication and edg-mkgridmap.conf file that contains configuration information for edg-mkgridmap.
 
@@ -98,6 +98,14 @@ rm -rf $RPM_BUILD_ROOT
 %attr(0600,tomcat,tomcat) %config(noreplace) %{_sysconfdir}/gums/gums.config.template
 
 %changelog
+* Fri Jun 09 2017 Carl Edquist <edquist@cs.wisc.edu> - 74-1
+- Update to vo-client 74 (SOFTWARE-2765)
+  - Fix the edg-mkgridmap entries for project8 and miniclean (SOFTWARE-2727)
+  - Add new VOMS entry for CIGI (SOFTWARE-2712)
+    - https://ticket.opensciencegrid.org/33374
+  - Add LIGO entry to GUMS template (SOFTWARE-2762)
+  - Fix vo-client ATLAS mappings (SOFTWARE-2753)
+
 * Wed Apr 26 2017 Carl Edquist <edquist@cs.wisc.edu> - 73-1
 - Update to vo-client 73 (SOFTWARE-2710)
   - Update edg-mkgridmap CDF entry to match vomses #13
