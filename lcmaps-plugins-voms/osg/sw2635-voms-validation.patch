@@ -23,7 +23,7 @@ index c588802..0cddefe 100644
 +     * are valid.  Fail the plugin if VOMS verification has been disabled */
 +    if (!lcmaps_is_set_to_verify_voms_attributes()) {
 +        lcmaps_log(LOG_ERR, "%s: VOMS plugin requested but VOMS validation "
-+            "is not enabled.  This is an insecure combination; failing plugin\n");
++            "is not enabled.  This is an insecure combination; failing plugin\n", logstr);
 +        goto fail_plugin;
 +    }
 +
