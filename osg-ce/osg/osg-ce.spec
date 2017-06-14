@@ -3,8 +3,8 @@
 
 Name:      osg-ce
 Summary:   OSG Compute Element
-Version:   3.3
-Release:   13%{?dist}
+Version:   3.4
+Release:   2%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -26,36 +26,22 @@ Requires: %{htcce} = %{version}-%{release}
 %package -n %{basece}
 Group: Grid
 Summary: Meta-package of gateway-independent components of the OSG CE
-Requires: globus-gridftp-server-progs
 Requires: osg-version
 Requires: grid-certificates >= 7
 
-# former osg-client requirements (minus networking stuff)
-Requires: globus-common-progs
-Requires: globus-gsi-cert-utils-progs
-Requires: gsi-openssh-clients
-Requires: osg-cert-scripts
+Requires: fetch-crl
 Requires: osg-system-profiler
 Requires: osg-version
-Requires: osg-wn-client
 Requires: vo-client
 
 Requires: osg-vo-map
 Requires: vo-client-lcmaps-voms
 
-%if 0%{?rhel} < 7
-Requires: gums-client
-%endif
-
-Requires: edg-mkgridmap
-Requires: gratia-probe-gridftp-transfer
 Requires: osg-configure >= 1.0.57
 Requires: osg-configure-ce
 Requires: osg-configure-gip
 Requires: osg-configure-gratia
-Requires: osg-configure-managedfork
 Requires: osg-configure-misc
-Requires: osg-configure-network
 Requires: osg-configure-squid
 Requires: frontier-squid
 
@@ -319,8 +305,15 @@ exit 0
 %files bosco
 
 %changelog
-* Mon May 22 2017 Brian Lin <blin@cs.wisc.edu> - 3.3-13
+* Mon May 22 2017 Brian Lin <blin@cs.wisc.edu> - 3.4-2
 - Add OSG VOMS mapfile to osg-ce (SOFTWARE-2702)
+- Drop osg-cert-scripts DOE grids interface
+
+* Fri May 1 2017 Brian Lin <blin@cs.wisc.edu> - 3.4-1
+- Drop GridFTP (SOFTWARE-2633)
+- Drop client tools (SOFTWARE-2650)
+- Drop GUMS and edg-mkgridmap (SOFTWARE-2482, SOFTWARE-2600)
+- Drop GRAM-related osg-configure modules (SOFTWARE-2705)
 
 * Tue Mar 28 2017 Edgar Fajardo <efajardo@physics.ucsd.edu> - 3.3-12
 - Removed the requirements of gip, osg-info-services and osg-cleanup (SOFTWARE-2585)

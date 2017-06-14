@@ -1,21 +1,13 @@
 Name:      osg-wn-client
 Summary:   OSG Worker-Node Client
-Version:   3.3
-Release:   7%{?dist}
+Version:   3.4
+Release:   1%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
 BuildArch: noarch
 
 BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
-
-# Java included because users expect it to be available
-%if ! 0%{?el7}
-Requires: jpackage-utils
-Requires: java7-devel
-%else
-Requires: java-devel >= 1:1.7.0
-%endif
 
 Requires: /usr/bin/xrdcp
 Requires: /usr/bin/curl
@@ -50,36 +42,7 @@ Requires: gsi-openssh-clients
 %description
 %{summary}
 
-%package glexec
-Summary: OSG Worker-Node client meta-package for glexec
-Group: Grid
-Requires: %{name} = %{version}-%{release}
-Requires: glexec
-Requires: glexec-wrapper-scripts
-Requires: gratia-probe-glexec
-Requires: mkgltempdir
-
-%description glexec
-%{summary}
-
 %install
-### TODO Remove this block in OSG 3.4 (SOFTWARE-1977)
-#
-mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/osg/wn-client/
-cat > $RPM_BUILD_ROOT%{_sysconfdir}/osg/wn-client/setup.sh << EOF
-#!/bin/sh
-# This file is no longer necessary and will be removed in OSG 3.4.
-
-EOF
-
-
-cat > $RPM_BUILD_ROOT%{_sysconfdir}/osg/wn-client/setup.csh << EOF
-#!/bin/csh
-# This file is no longer necessary and will be removed in OSG 3.4.
-
-EOF
-#
-### End block to remove in OSG 3.4
 
 mkdir -p $RPM_BUILD_ROOT%{_prefix}/etc/
 cat > $RPM_BUILD_ROOT%{_prefix}/etc/globus-user-env.sh << EOF
@@ -96,14 +59,17 @@ EOF
 rm -rf $RPM_BUILD_ROOT
 
 %files
-%dir %{_sysconfdir}/osg/wn-client
-%config(noreplace) %{_sysconfdir}/osg/wn-client/setup.sh
-%config(noreplace) %{_sysconfdir}/osg/wn-client/setup.csh
 %config(noreplace) %{_prefix}/etc/globus-user-env.sh
 
-%files glexec
-
 %changelog
+* Thu May 25 2017 Edgar Fajardo <emfajard@ucsd.edu> 3.4-1
+- Droping java dependencies  (SOFTWARE-2676)
+- Bumping version number 
+
+* Tue May 23 2017 Edgar Fajardo <emfajard@ucsd.edu> 3.3-8
+- Drop the setup.sh script no longer necessary in 3.4 (SOFTWARE-2676)
+- Drop the glexec subpackages since glexec is dropped in 3.4
+
 * Thu Apr 13 2017 Edgar Fajrdo <emfajard@ucsd.edu> 3.3-7
 - Added gsi-openssh-clients (SOFTWARE-2657)
 

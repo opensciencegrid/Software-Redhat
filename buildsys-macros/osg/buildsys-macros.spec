@@ -3,7 +3,7 @@
 # "osg-koji import" the resulting rpm and osg-koji tag-pkg the build into the
 # appropriate osg-*-development tag
 # This will require koji admin permissions.
-%define osg_version 3.3
+%define osg_version 3.4
 %define dver   7
 
 %define osgver %(tr -d . <<< %{osg_version})
@@ -12,7 +12,7 @@
 Name:		buildsys-macros
 Summary:	Macros for the OSG Buildsystem
 Version:        7
-Release:	5%{dist}
+Release:	6%{dist}
 License:	GPL
 Group:		Development/Buildsystem
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -58,6 +58,9 @@ rm -rf $RPM_BUILD_ROOT
 /etc/rpm/macros.checkbuild
 
 %changelog
+* Tue Apr 25 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 7-6
+- Bump to rebuild for OSG 3.4 (SOFTWARE-2622)
+
 * Wed Apr 29 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 7-5
 - Bump to rebuild for OSG 3.3
 

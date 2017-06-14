@@ -1,7 +1,7 @@
 Summary: Package for OSG-Configure and associated scripts
 Name: osg-configure
-Version: 1.8.1
-Release: 2%{?dist}
+Version: 2.0.0
+Release: 3%{?dist}
 Source0: %{name}-%{version}.tar.gz
 Patch0: fix-host-port-test.patch
 License: Apache 2.0
@@ -9,12 +9,7 @@ Group: Grid
 Prefix: %{_prefix}
 BuildArch: noarch
 Url: https://github.com/opensciencegrid/osg-configure
-Provides: configure-osg
 Requires: condor-python
-
-
-%define gateway_ini %_sysconfdir/osg/config.d/10-gateway.ini
-%define gateway_ini_backup /var/lib/misc/10-gateway.ini-backup
 
 
 %description
@@ -23,7 +18,6 @@ Requires: condor-python
 %package rsv
 Summary: OSG configuration file for RSV
 Group: Grid
-Provides: configure-osg-rsv
 Requires: %name = %version-%release
 Requires: %name-gateway
 %description rsv
@@ -32,7 +26,6 @@ This package includes the ini file for configuring RSV using osg-configure
 %package gratia
 Summary: OSG configuration file for gratia
 Group: Grid
-Provides: configure-osg-gratia
 Requires: %name = %version-%release
 %description gratia
 This package includes the ini file for configuring gratia using osg-configure
@@ -40,7 +33,6 @@ This package includes the ini file for configuring gratia using osg-configure
 %package gip
 Summary: OSG configuration file for gip
 Group: Grid
-Provides: configure-osg-gip
 Requires: %name = %version-%release
 %description gip
 This package includes the ini file for configuring gip using osg-configure
@@ -48,7 +40,6 @@ This package includes the ini file for configuring gip using osg-configure
 %package lsf
 Summary: OSG configuration file for lsf
 Group: Grid
-Provides: configure-osg-lsf
 Requires: %name = %version-%release
 Requires: %name-gateway
 %description lsf
@@ -57,7 +48,6 @@ This package includes the ini file for configuring lsf using osg-configure
 %package pbs
 Summary: OSG configuration file for pbs
 Group: Grid
-Provides: configure-osg-pbs
 Requires: %name = %version-%release
 Requires: %name-gateway
 %description pbs
@@ -66,7 +56,6 @@ This package includes the ini file for configuring pbs using osg-configure
 %package condor
 Summary: OSG configuration file for condor
 Group: Grid
-Provides: configure-osg-condor
 Requires: %name = %version-%release
 Requires: %name-gateway
 %description condor
@@ -75,72 +64,54 @@ This package includes the ini file for configuring condor using osg-configure
 %package sge
 Summary: OSG configuration file for sge
 Group: Grid
-Provides: configure-osg-sge
 Requires: %name = %version-%release
 Requires: %name-gateway
 %description sge
 This package includes the ini file for configuring sge using osg-configure
 
-%package monalisa
-Summary: Transitional dummy package for OSG 3.2
-Group: Grid
-Provides: configure-osg-monalisa
-%description monalisa
-This is an empty package created as a workaround for 3.1->3.2 upgrade issues.
-It may safely be removed.
-
 %package ce
 Summary: OSG configuration file for CE
 Group: Grid
-Provides: configure-osg-ce
 Requires: %name = %version-%release
 Requires: %name-gateway
 %description ce
-This package includes the ini files for configuring a basic CE using 
-osg-configure.  One of the packages for the job manager configuration also 
+This package includes the ini files for configuring a basic CE using
+osg-configure.  One of the packages for the job manager configuration also
 needs to be installed for the CE configuration.
 
 %package misc
 Summary: OSG configuration file for misc software
 Group: Grid
-Provides: configure-osg-misc
 Requires: %name = %version-%release
 Requires: lcmaps-db-templates
 %description misc
 This package includes the ini files for various osg software including
-certificates setup, lcmaps, and glexec
+certificates setup, and auth.
 
 %package squid
 Summary: OSG configuration file for squid
 Group: Grid
-Provides: configure-osg-squid
 Requires: %name = %version-%release
 %description squid
 This package includes the ini files for configuring an OSG system to use squid
 
 %package managedfork
-Summary: OSG configuration file for managedfork
+Summary: Transitional dummy package for OSG 3.4
 Group: Grid
-Provides: configure-osg-managedfork
-Requires: %name = %version-%release
-Requires: %name-gateway
 %description managedfork
-This package includes the ini files for configuring an OSG CE to use
-managedfork
+This is an empty package created as a workaround for 3.3->3.4 upgrade issues.
+It may safely be removed.
 
 %package network
-Summary: OSG configuration file for Globus network configuration
+Summary: Transitional dummy package for OSG 3.4
 Group: Grid
-Provides: configure-osg-network
-Requires: %name = %version-%release
 %description network
-This package includes the ini files for configuring network related information
-such as firewall ports that globus should use
+This is an empty package created as a workaround for 3.3->3.4 upgrade issues.
+It may safely be removed.
 
 %package tests
 Summary: OSG-Configure unit tests and configuration for unit testing
 Group: Grid
-Provides: configure-osg-tests
 Requires: %name = %version-%release
 %description tests
 This package includes the ini files and files for unit tests that osg-configure
@@ -149,7 +120,6 @@ uses to verify functionality
 %package slurm
 Summary: OSG configuration file for slurm
 Group: Grid
-Provides: configure-osg-slurm
 Requires: %name = %version-%release
 Requires: %name-gateway
 %description slurm
@@ -158,7 +128,6 @@ This package includes the ini file for configuring slurm using osg-configure
 %package bosco
 Summary: OSG configuration file for bosco
 Group: Grid
-Provides: configure-osg-bosco
 Requires: %name = %version-%release
 Requires: %name-gateway
 Requires: condor-bosco
@@ -168,29 +137,18 @@ This package includes the ini file for configuring bosco using osg-configure
 %package infoservices
 Summary: OSG configuration file for the osg info services
 Group: Grid
-Provides: configure-osg-infoservices
 Requires: %name = %version-%release
 Requires: %name-gip
 %description infoservices
 This package includes the ini file for configuring the osg info services using osg-configure
 
 %package gateway
-Summary: OSG configuration file for job gateways (globus-gatekeeper / htcondor-ce)
+Summary: OSG configuration file for job gateway (htcondor-ce)
 Group: Grid
-Provides: configure-osg-gateway
 Requires: %name = %version-%release
 %description gateway
-This package includes the ini file for configuring the job gateways
-(globus-gatekeeper or htcondor-ce) using osg-configure
-
-%package cemon
-Summary: Transitional dummy package for OSG 3.2
-Group: Grid
-Provides: configure-osg-cemon
-Requires: %name
-%description cemon
-This is an empty package created as a workaround to OSG 3.1->3.2 upgrade issues.
-It may safely be removed once the upgrade is finished.
+This package includes the ini file for configuring the job gateway
+(htcondor-ce) using osg-configure
 
 
 %prep
@@ -211,12 +169,6 @@ mkdir -p $RPM_BUILD_ROOT/var/lib/osg
 touch $RPM_BUILD_ROOT/var/lib/osg/osg-attributes.conf
 touch $RPM_BUILD_ROOT/var/lib/osg/osg-local-job-environment.conf
 touch $RPM_BUILD_ROOT/var/lib/osg/osg-job-environment.conf
-touch $RPM_BUILD_ROOT/var/lib/osg/globus-firewall
-mkdir -p $RPM_BUILD_ROOT/etc/profile.d/
-touch $RPM_BUILD_ROOT/etc/profile.d/osg.sh
-touch $RPM_BUILD_ROOT/etc/profile.d/osg.csh
-mkdir -p $(dirname $RPM_BUILD_ROOT/%gateway_ini_backup)
-touch $RPM_BUILD_ROOT/%gateway_ini_backup
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -279,20 +231,6 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root)
 %config(noreplace) %{_sysconfdir}/osg/config.d/01-squid.ini
 
-%files monalisa
-# This section intentionally left blank
-
-%files managedfork
-%defattr(-,root,root)
-%config(noreplace) %{_sysconfdir}/osg/config.d/15-managedfork.ini
-
-%files network
-%defattr(-,root,root)
-%config(noreplace) %{_sysconfdir}/osg/config.d/40-network.ini
-%ghost /var/lib/osg/globus-firewall
-%ghost %{_sysconfdir}/profile.d/osg.sh
-%ghost %{_sysconfdir}/profile.d/osg.csh
-
 %files infoservices
 %defattr(-,root,root)
 %config(noreplace) %{_sysconfdir}/osg/config.d/30-infoservices.ini
@@ -308,40 +246,30 @@ rm -rf $RPM_BUILD_ROOT
 %files gateway
 %defattr(-,root,root)
 %config(noreplace) %{_sysconfdir}/osg/config.d/10-gateway.ini
-%ghost %gateway_ini_backup
 
-%files cemon
-# This section intentionally left blank
+%files managedfork
+#blank
 
-
-# 1.0.62-1 and up use HTCondor-CE as the default gateway, but we don't want to
-# change it for users upgrading from old versions so backup and restore
-# 10-gateway.ini when upgrading from an old version.
-
-# The backup file has a fixed name because it needs to be the same in both the
-# pre scriptlet and the triggerun scriptlet.
-%pre gateway
-if [ $1 -gt 1 ]; then # upgrading
-    %__rm -f  %gateway_ini_backup  ||  :
-    %__cp -fp  %gateway_ini  %gateway_ini_backup  ||  :
-fi
-
-%triggerun gateway -- %name-gateway < 1.0.62-1
-if [ $1 -gt 0 ]; then # upgrading, not uninstalling
-    %__mv -f  %gateway_ini_backup  %gateway_ini  ||  :
-fi
+%files network
+#blank
 
 
 
 %changelog
-* Fri Jun 02 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 1.8.1-2
+* Fri Jun 02 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 2.0.0-3
 - Add fix-host-port-test.patch
 
-* Sun May 28 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 1.8.1-1
-- Give a warning, not an error, on missing allowed_vos
+* Tue May 30 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 2.0.0-2
+- bump to rebuild
 
-* Sun May 28 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 1.8.0-2
-- bump to rebuild with fixed tarball
+* Tue May 30 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 2.0.0-1
+- Drop osg-cleanup support (SOFTWARE-2695)
+- Drop glexec support (SOFTWARE-2697)
+- Drop warning if RSV is not installed (SOFTWARE-2748)
+- Drop managedfork and network config and add transitional dummy packages (SOFTWARE-2705)
+- Deprecate GUMS support (SOFTWARE-2737)
+- Drop GRAM support (SOFTWARE-2726)
+- Drop 'configure-osg' aliases and transitional dummy packages for monalisa and cemon (SOFTWARE-2699)
 
 * Sun May 28 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 1.8.0-1
 - Reject empty allowed_vos (SOFTWARE-2703)

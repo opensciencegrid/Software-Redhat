@@ -13,7 +13,7 @@
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
 %define version 3.2.19
-%define release 1
+%define release 2
 
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
@@ -86,7 +86,6 @@ Requires: globus-common-progs
 Requires: globus-gram-client-tools
 Requires: globus-gsi-cert-utils-progs
 Requires: gsi-openssh-clients
-Requires: osg-cert-scripts
 Requires: osg-system-profiler
 Requires: osg-version
 Requires: osg-wn-client
@@ -814,6 +813,9 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/condor/certs/condor_mapfile
 
 %changelog
+* Thu Jun 01 2017 Marco Mambelli <marcom@fnal.gov> - 3.2.19-2
+- Removed obsolete osg-cert-scripts dependency
+
 * Tue May 30 2017 Marco Mambelli <marcom@fnal.gov> - 3.2.19-1
 - Glideinwms v3.2.19
 - Release Notes: http://glideinwms.fnal.gov/doc.v3_2_19/history.html

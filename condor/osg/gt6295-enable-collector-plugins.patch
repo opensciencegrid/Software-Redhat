@@ -1,0 +1,116 @@
+commit 6e3f513f4c90a9d7689f8e6a6cac500962140012
+Author: Tim Theisen <tim@cs.wisc.edu>
+Date:   Thu Jun 1 13:44:08 2017 -0500
+
+    (#6295) Enable collector plugins in default build
+
+diff --git a/src/condor_collector.V6/collector.cpp b/src/condor_collector.V6/collector.cpp
+index de39134..596dffb 100644
+--- a/src/condor_collector.V6/collector.cpp
++++ b/src/condor_collector.V6/collector.cpp
+@@ -46,11 +46,9 @@
+ 
+ #include "collector.h"
+ 
+-#if defined(WANT_CONTRIB) && defined(WITH_MANAGEMENT)
+-#if defined(HAVE_DLOPEN) || defined(WIN32)
++#if defined(HAVE_DLOPEN)
+ #include "CollectorPlugin.h"
+ #endif
+-#endif
+ 
+ #include "ccb_server.h"
+ 
+@@ -725,11 +723,9 @@ int CollectorDaemon::receive_invalidation(Service* /*s*/,
+     /* let the off-line plug-in invalidate the given ad */
+     offline_plugin_.invalidate ( command, cad );
+ 
+-#if defined(WANT_CONTRIB) && defined(WITH_MANAGEMENT)
+-#if defined(HAVE_DLOPEN) || defined(WIN32)
++#if defined(HAVE_DLOPEN)
+ 	CollectorPluginManager::Invalidate(command, cad);
+ #endif
+-#endif
+ 
+ 	if (viewCollectorTypes) {
+ 		forward_classad_to_view_collector(command,
+@@ -791,11 +787,9 @@ int CollectorDaemon::receive_update(Service* /*s*/, int command, Stream* sock)
+ 	/* let the off-line plug-in have at it */
+ 	offline_plugin_.update ( command, *cad );
+ 
+-#if defined(WANT_CONTRIB) && defined(WITH_MANAGEMENT)
+-#if defined(HAVE_DLOPEN) || defined(WIN32)
++#if defined(HAVE_DLOPEN)
+ 	CollectorPluginManager::Update(command, *cad);
+ #endif
+-#endif
+ 
+ 	if (viewCollectorTypes) {
+ 		forward_classad_to_view_collector(command,
+@@ -924,11 +918,9 @@ int CollectorDaemon::receive_update_expect_ack( Service* /*s*/,
+ 	if(cad)
+     offline_plugin_.update ( command, *cad );
+ 
+-#if defined(WANT_CONTRIB) && defined(WITH_MANAGEMENT)
+-#if defined(HAVE_DLOPEN) || defined(WIN32)
++#if defined(HAVE_DLOPEN)
+     CollectorPluginManager::Update ( command, *cad );
+ #endif
+-#endif
+ 
+ 	if (viewCollectorTypes) {
+ 		forward_classad_to_view_collector(command,
+diff --git a/src/condor_collector.V6/collector_main.cpp b/src/condor_collector.V6/collector_main.cpp
+index 186da5f..d708daf 100644
+--- a/src/condor_collector.V6/collector_main.cpp
++++ b/src/condor_collector.V6/collector_main.cpp
+@@ -22,11 +22,9 @@
+ #include "view_server.h"
+ #include "subsystem_info.h"
+ 
+-#if defined(WANT_CONTRIB) && defined(WITH_MANAGEMENT)
+ #if defined(HAVE_DLOPEN)
+ #include "CollectorPlugin.h"
+ #endif
+-#endif
+ 
+ //-------------------------------------------------------------
+ 
+@@ -54,13 +52,11 @@ void main_init(int argc, char *argv[])
+ 	Daemon=new ViewServer();
+ 	Daemon->Init();
+ 
+-#if defined(WANT_CONTRIB) && defined(WITH_MANAGEMENT)
+ #if defined(HAVE_DLOPEN)
+ 	CollectorPluginManager::Load();
+ 
+ 	CollectorPluginManager::Initialize();
+ #endif
+-#endif
+ }
+ 
+ //-------------------------------------------------------------
+@@ -75,11 +71,9 @@ void main_config()
+ void main_shutdown_fast()
+ {
+ 	Daemon->Exit();
+-#if defined(WANT_CONTRIB) && defined(WITH_MANAGEMENT)
+ #if defined(HAVE_DLOPEN)
+ 	CollectorPluginManager::Shutdown();
+ #endif
+-#endif
+ 	DC_Exit(0);
+ }
+ 
+@@ -88,11 +82,9 @@ void main_shutdown_fast()
+ void main_shutdown_graceful()
+ {
+ 	Daemon->Shutdown();
+-#if defined(WANT_CONTRIB) && defined(WITH_MANAGEMENT)
+ #if defined(HAVE_DLOPEN)
+ 	CollectorPluginManager::Shutdown();
+ #endif
+-#endif
+ 	DC_Exit(0);
+ }
+ 
