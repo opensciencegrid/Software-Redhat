@@ -1,0 +1,11 @@
+#!/bin/sh
+[ -r /usr/share/osg/sysconfig/globus-gridftp-server ] && \
+    . /usr/share/osg/sysconfig/globus-gridftp-server
+[ -r /etc/sysconfig/globus-gridftp-server ] && \
+    . /etc/sysconfig/globus-gridftp-server
+
+exec /usr/sbin/globus-gridftp-server \
+    -c /etc/gridftp.conf \
+    -C /etc/gridftp.d \
+    -pidfile /var/run/globus-gridftp-server.pid
+

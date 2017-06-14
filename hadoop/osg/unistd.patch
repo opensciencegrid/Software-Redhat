@@ -1,0 +1,12 @@
+diff --git a/src/hadoop-mapreduce1-project/src/c++/pipes/impl/HadoopPipes.cc b/src/hadoop-mapreduce1-project/src/c++/pipes/impl/HadoopPipes.cc
+index 964b025..cc775af 100644
+--- a/src/hadoop-mapreduce1-project/src/c++/pipes/impl/HadoopPipes.cc
++++ b/src/hadoop-mapreduce1-project/src/c++/pipes/impl/HadoopPipes.cc
+@@ -32,6 +32,7 @@
+ #include <strings.h>
+ #include <sys/socket.h>
+ #include <pthread.h>
++#include <unistd.h>
+ #include <iostream>
+ #include <fstream>
+ 

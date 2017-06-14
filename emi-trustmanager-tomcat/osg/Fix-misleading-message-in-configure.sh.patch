@@ -1,0 +1,29 @@
+From d4dcdd75a2f57b7099640a33c4f6e96d6119cb0a Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Tue, 27 Oct 2015 16:38:13 -0500
+Subject: [PATCH] Fix misleading message in configure.sh
+
+---
+ config/configure.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/config/configure.sh b/config/configure.sh
+index d3f5b68..9b28e99 100755
+--- a/config/configure.sh
++++ b/config/configure.sh
+@@ -311,11 +311,11 @@ fi
+ 
+ if [ $TOMCAT_VERSION == "6" ]; then
+     condLinkFile commons-logging.jar /usr/share/java ${SERVER_LIB} $FORCE
+ fi
+ 
+-$SILENT_ECHO "Info: you can clean up using the following commands"
++$SILENT_ECHO "Info: you can undo changes using the following commands"
+ $SILENT_ECHO "      mv -f $OLDSERVERXML $SERVERXML"
+ $SILENT_ECHO "      rm -f ${SERVER_LIB}/bcprov*.jar"
+ $SILENT_ECHO "      rm -f ${SERVER_LIB}/log4j*.jar"
+ $SILENT_ECHO "      rm -f ${SERVER_LIB}/trustmanager-*.jar"
+ $SILENT_ECHO "      rm -f $TCCONFIG_DIR/$log4j"
+-- 
+2.4.6
+

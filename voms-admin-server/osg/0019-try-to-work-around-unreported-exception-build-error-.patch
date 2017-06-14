@@ -1,0 +1,34 @@
+From 8baf390a2c3f8556b62112a130725cb3d5501210 Mon Sep 17 00:00:00 2001
+From: Carl Edquist <edquist@cs.wisc.edu>
+Date: Tue, 28 Mar 2017 14:45:00 -0500
+Subject: [PATCH 19/31] try to work around 'unreported exception' build error
+ (SOFTWARE-2652)
+
+Suggested by Matyas.
+---
+ .../voms/admin/persistence/deployer/UpgradeDatabaseWork.java     | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/src/main/java/org/glite/security/voms/admin/persistence/deployer/UpgradeDatabaseWork.java b/src/main/java/org/glite/security/voms/admin/persistence/deployer/UpgradeDatabaseWork.java
+index f1df45e..325324c 100644
+--- a/src/main/java/org/glite/security/voms/admin/persistence/deployer/UpgradeDatabaseWork.java
++++ b/src/main/java/org/glite/security/voms/admin/persistence/deployer/UpgradeDatabaseWork.java
+@@ -35,9 +35,12 @@ public class UpgradeDatabaseWork implements Work {
+       
+       }
+       
+-    }catch(Throwable e){
+-      LOG.error("Error executing upgrade database work: "+e.getMessage(), e);
+-      throw e;
++    } catch(SQLException e) {
++        LOG.error("Error executing upgrade database work: "+e.getMessage(), e);
++        throw e;
++    } catch(Throwable e) {
++        LOG.error("Unexpected error executing upgrade database work: "+e.getMessage(), e);
++        throw new RuntimeException(e);
+     }
+ 
+   }
+-- 
+2.9.4
+

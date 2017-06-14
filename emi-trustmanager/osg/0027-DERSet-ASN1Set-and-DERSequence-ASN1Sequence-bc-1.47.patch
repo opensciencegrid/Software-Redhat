@@ -1,0 +1,137 @@
+From 13530062547e0da67cb1bf6b7504b1d00cd435a1 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Mon, 9 Nov 2015 14:40:58 -0600
+Subject: [PATCH] DERSet -> ASN1Set and DERSequence -> ASN1Sequence (bc 1.47)
+
+DLSequence and DLSet are new classes that have been split off from
+DERSequence and DERSet, and cause errors when expecting one and getting
+the other.  Use ASN1Sequence and ASN1Set (their common parents) for
+casts instead.
+---
+ src/org/glite/security/util/proxy/ProxyCertInfoExtension.java  |  2 +-
+ .../glite/security/util/proxy/ProxyCertificateGenerator.java   |  7 ++++---
+ src/org/glite/security/util/proxy/ProxyRestrictionData.java    | 10 +++++-----
+ 3 files changed, 10 insertions(+), 9 deletions(-)
+
+diff --git a/src/org/glite/security/util/proxy/ProxyCertInfoExtension.java b/src/org/glite/security/util/proxy/ProxyCertInfoExtension.java
+index f5fb856..884d84f 100644
+--- a/src/org/glite/security/util/proxy/ProxyCertInfoExtension.java
++++ b/src/org/glite/security/util/proxy/ProxyCertInfoExtension.java
+@@ -101,11 +101,11 @@ public class ProxyCertInfoExtension extends ASN1Object {
+             }
+             if (seq.size() <= index) {
+                 throw new IllegalArgumentException(
+                         "ProxyCertInfoExtension parser error, expected policy, but it was not found");
+             }
+-            if (seq.getObjectAt(index) instanceof DERSequence) {
++            if (seq.getObjectAt(index) instanceof ASN1Sequence) {
+                 m_policy = new ProxyPolicy((ASN1Sequence) seq.getObjectAt(index));
+             } else {
+                 throw new IllegalArgumentException(
+                         "ProxyCertInfoExtension parser error, expected policy sequence, but got: "
+                                 + seq.getObjectAt(index).getClass());
+diff --git a/src/org/glite/security/util/proxy/ProxyCertificateGenerator.java b/src/org/glite/security/util/proxy/ProxyCertificateGenerator.java
+index 3441844..8f6ff80 100644
+--- a/src/org/glite/security/util/proxy/ProxyCertificateGenerator.java
++++ b/src/org/glite/security/util/proxy/ProxyCertificateGenerator.java
+@@ -43,10 +43,11 @@ import org.apache.log4j.Logger;
+ import org.bouncycastle.asn1.ASN1EncodableVector;
+ import org.bouncycastle.asn1.ASN1Sequence;
+ import org.bouncycastle.asn1.ASN1Encodable;
+ import org.bouncycastle.asn1.ASN1Primitive;
+ import org.bouncycastle.asn1.ASN1ObjectIdentifier;
++import org.bouncycastle.asn1.ASN1Set;
+ import org.bouncycastle.asn1.DEROctetString;
+ import org.bouncycastle.asn1.DERPrintableString;
+ import org.bouncycastle.asn1.DERSequence;
+ import org.bouncycastle.asn1.DERSet;
+ import org.bouncycastle.asn1.x509.KeyUsage;
+@@ -415,11 +416,11 @@ public class ProxyCertificateGenerator {
+         }
+ 
+         subjectVector.add(new DERSet(new DERSequence(newCnPart)));
+ 
+         // transform the vector into a new X509Name
+-        DERSequence subjDerSeq = new DERSequence(subjectVector);
++        ASN1Sequence subjDerSeq = new DERSequence(subjectVector);
+         X509Name proxySubject = new X509Name(subjDerSeq);
+ 
+         LOGGER.debug("SubjectDN :" + proxySubject);
+ 
+         return proxySubject;
+@@ -434,12 +435,12 @@ public class ProxyCertificateGenerator {
+      */
+     private String guessCN(X509Name basename, boolean addLimited) {
+         String newCN;
+         ASN1Sequence subjectSequence = (ASN1Sequence) basename.toASN1Primitive();
+         int rdns = subjectSequence.size();
+-        DERSet rdn = (DERSet) subjectSequence.getObjectAt(rdns - 1);
+-        DERSequence rdnSequence = (DERSequence) rdn.getObjectAt(0);
++        ASN1Set rdn = (ASN1Set) subjectSequence.getObjectAt(rdns - 1);
++        ASN1Sequence rdnSequence = (ASN1Sequence) rdn.getObjectAt(0);
+         ASN1ObjectIdentifier oid = (ASN1ObjectIdentifier) rdnSequence.getObjectAt(0);
+         if (oid.equals(X509Name.CN)) {
+             String cn = rdnSequence.getObjectAt(1).toString();
+             if (cn.equals("proxy")) { // old style unlimited proxy
+                 if (addLimited) { // new proxy will be limited
+diff --git a/src/org/glite/security/util/proxy/ProxyRestrictionData.java b/src/org/glite/security/util/proxy/ProxyRestrictionData.java
+index c28dbe1..76c1709 100644
+--- a/src/org/glite/security/util/proxy/ProxyRestrictionData.java
++++ b/src/org/glite/security/util/proxy/ProxyRestrictionData.java
+@@ -102,14 +102,14 @@ public class ProxyRestrictionData {
+         case 0:
+             return;
+         case 1:
+             DERTaggedObject taggedSequence = (DERTaggedObject) nameSpaceRestrictionsSeq.getObjectAt(0);
+             if (taggedSequence.getTagNo() == 0) {
+-                copyCondSequenceToVector((DERSequence) taggedSequence.getObject(), m_permittedGeneralSubtrees);
++                copyCondSequenceToVector((ASN1Sequence) taggedSequence.getObject(), m_permittedGeneralSubtrees);
+             } else {
+                 if (taggedSequence.getTagNo() == 1) {
+-                    copyCondSequenceToVector((DERSequence) taggedSequence.getObject(), m_excludedGeneralSubtrees);
++                    copyCondSequenceToVector((ASN1Sequence) taggedSequence.getObject(), m_excludedGeneralSubtrees);
+                 } else {
+                     LOGGER.error("Illegal tag number in the proxy restriction NameConstraints data structure: "
+                             + taggedSequence.getTagNo() + ", should have been 0 or 1");
+                     throw new IllegalArgumentException(
+                             "Illegal tag number in the proxy restriction NameConstraints data structure: "
+@@ -118,21 +118,21 @@ public class ProxyRestrictionData {
+             }
+             break;
+         case 2:
+             taggedSequence = (DERTaggedObject) nameSpaceRestrictionsSeq.getObjectAt(0);
+             if (taggedSequence.getTagNo() == 0) {
+-                copyCondSequenceToVector((DERSequence) taggedSequence.getObject(), m_permittedGeneralSubtrees);
++                copyCondSequenceToVector((ASN1Sequence) taggedSequence.getObject(), m_permittedGeneralSubtrees);
+             } else {
+                 LOGGER.error("Illegal tag number in the proxy restriction NameConstraints data structure: "
+                         + taggedSequence.getTagNo() + ", should have been 0");
+                 throw new IllegalArgumentException(
+                         "Illegal tag number in the proxy restriction NameConstraints data structure: "
+                                 + taggedSequence.getTagNo() + ", should have been 0");
+             }
+             taggedSequence = (DERTaggedObject) nameSpaceRestrictionsSeq.getObjectAt(1);
+             if (taggedSequence.getTagNo() == 1) {
+-                copyCondSequenceToVector((DERSequence) taggedSequence.getObject(), m_excludedGeneralSubtrees);
++                copyCondSequenceToVector((ASN1Sequence) taggedSequence.getObject(), m_excludedGeneralSubtrees);
+             } else {
+                 LOGGER.error("Illegal tag number in the proxy restriction NameConstraints data structure: "
+                         + taggedSequence.getTagNo() + ", should have been 1");
+                 throw new IllegalArgumentException(
+                         "Illegal tag number in the proxy restriction NameConstraints data structure: "
+@@ -162,11 +162,11 @@ public class ProxyRestrictionData {
+      * internal data structures from access.
+      * 
+      * @param subSeq the subsequence to copy.
+      * @param vector The target to copy the parsed GeneralSubtree objects.
+      */
+-    private static void copyCondSequenceToVector(DERSequence subSeq, Vector<GeneralSubtree> vector) {
++    private static void copyCondSequenceToVector(ASN1Sequence subSeq, Vector<GeneralSubtree> vector) {
+         Enumeration<ASN1Primitive> subTreeEnum = subSeq.getObjects();
+         while (subTreeEnum.hasMoreElements()) {
+             ASN1Primitive object = subTreeEnum.nextElement();
+             vector.add(new GeneralSubtree(GeneralName.getInstance(object)));
+         }
+-- 
+2.4.6
+

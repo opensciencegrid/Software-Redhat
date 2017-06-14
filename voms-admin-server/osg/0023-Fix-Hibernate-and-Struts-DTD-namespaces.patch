@@ -1,0 +1,489 @@
+From 6b9048d3d808afc68a17f2094738bca2255dcf36 Mon Sep 17 00:00:00 2001
+From: Brian Lin <brianhlin@gmail.com>
+Date: Mon, 3 Apr 2017 14:34:38 -0500
+Subject: [PATCH 23/31] Fix Hibernate and Struts DTD namespaces
+
+---
+ src/main/resources/hibernate.cfg.xml                      | 2 +-
+ src/main/resources/model/ACL.hbm.xml                      | 4 ++--
+ src/main/resources/model/AUP.hbm.xml                      | 4 ++--
+ src/main/resources/model/AUPAcceptanceRecord.hbm.xml      | 4 ++--
+ src/main/resources/model/AUPVersion.hbm.xml               | 4 ++--
+ src/main/resources/model/Certificate.hbm.xml              | 2 +-
+ src/main/resources/model/History.hbm.xml                  | 4 ++--
+ src/main/resources/model/Tag.hbm.xml                      | 4 ++--
+ src/main/resources/model/TagMapping.hbm.xml               | 2 +-
+ src/main/resources/model/VOMSAdmin.hbm.xml                | 4 ++--
+ src/main/resources/model/VOMSAttributeDescription.hbm.xml | 4 ++--
+ src/main/resources/model/VOMSCA.hbm.xml                   | 4 ++--
+ src/main/resources/model/VOMSCapability.hbm.xml           | 4 ++--
+ src/main/resources/model/VOMSDBVersion.hbm.xml            | 4 ++--
+ src/main/resources/model/VOMSGroup.hbm.xml                | 2 +-
+ src/main/resources/model/VOMSGroupAttribute.hbm.xml       | 4 ++--
+ src/main/resources/model/VOMSMapping.hbm.xml              | 2 +-
+ src/main/resources/model/VOMSRole.hbm.xml                 | 2 +-
+ src/main/resources/model/VOMSRoleAttribute.hbm.xml        | 4 ++--
+ src/main/resources/model/VOMSSeqNumber.hbm.xml            | 4 ++--
+ src/main/resources/model/VOMSUser.hbm.xml                 | 2 +-
+ src/main/resources/model/VOMSUserAttribute.hbm.xml        | 4 ++--
+ src/main/resources/model/VOMembershipRequest.hbm.xml      | 2 +-
+ src/main/resources/struts.xml                             | 2 +-
+ src/main/resources/test/hibernate.cfg.xml                 | 4 ++--
+ src/main/webapp/WEB-INF/web.xml                           | 4 ++--
+ 26 files changed, 43 insertions(+), 43 deletions(-)
+
+diff --git a/src/main/resources/hibernate.cfg.xml b/src/main/resources/hibernate.cfg.xml
+index d453af1..ef71ae8 100644
+--- a/src/main/resources/hibernate.cfg.xml
++++ b/src/main/resources/hibernate.cfg.xml
+@@ -22,7 +22,7 @@
+ -->
+ <!DOCTYPE hibernate-configuration PUBLIC
+ "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+-"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
++"http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+ <hibernate-configuration>
+     <session-factory>
+     
+diff --git a/src/main/resources/model/ACL.hbm.xml b/src/main/resources/model/ACL.hbm.xml
+index 679aca3..c6c7dfd 100644
+--- a/src/main/resources/model/ACL.hbm.xml
++++ b/src/main/resources/model/ACL.hbm.xml
+@@ -23,7 +23,7 @@
+ 
+ <!DOCTYPE hibernate-mapping PUBLIC
+     "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+-    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
++    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+ 
+ <hibernate-mapping>
+ 	<class name="org.glite.security.voms.admin.persistence.model.ACL" table="acl2">	
+@@ -45,4 +45,4 @@
+ 		</map>
+ 	</class>
+ 
+-</hibernate-mapping>
+\ No newline at end of file
++</hibernate-mapping>
+diff --git a/src/main/resources/model/AUP.hbm.xml b/src/main/resources/model/AUP.hbm.xml
+index b2a61aa..600042c 100644
+--- a/src/main/resources/model/AUP.hbm.xml
++++ b/src/main/resources/model/AUP.hbm.xml
+@@ -23,7 +23,7 @@
+ 
+ <!DOCTYPE hibernate-mapping PUBLIC
+     "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+-    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
++    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+ 
+ <hibernate-mapping>
+ 	<class name="org.glite.security.voms.admin.persistence.model.AUP" table="aup">	
+@@ -61,4 +61,4 @@
+ 		
+ 	</class>
+ 
+-</hibernate-mapping>
+\ No newline at end of file
++</hibernate-mapping>
+diff --git a/src/main/resources/model/AUPAcceptanceRecord.hbm.xml b/src/main/resources/model/AUPAcceptanceRecord.hbm.xml
+index 8b6a095..f1a7b24 100644
+--- a/src/main/resources/model/AUPAcceptanceRecord.hbm.xml
++++ b/src/main/resources/model/AUPAcceptanceRecord.hbm.xml
+@@ -23,7 +23,7 @@
+ 
+ <!DOCTYPE hibernate-mapping PUBLIC
+     "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+-    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
++    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+ 
+ <hibernate-mapping>
+ 	<class name="org.glite.security.voms.admin.persistence.model.AUPAcceptanceRecord" table="aup_acc_record">	
+@@ -62,4 +62,4 @@
+ 		
+ 	</class>
+ 
+-</hibernate-mapping>
+\ No newline at end of file
++</hibernate-mapping>
+diff --git a/src/main/resources/model/AUPVersion.hbm.xml b/src/main/resources/model/AUPVersion.hbm.xml
+index fe237fa..0450082 100644
+--- a/src/main/resources/model/AUPVersion.hbm.xml
++++ b/src/main/resources/model/AUPVersion.hbm.xml
+@@ -23,7 +23,7 @@
+ 
+ <!DOCTYPE hibernate-mapping PUBLIC
+     "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+-    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
++    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+ 
+ <hibernate-mapping>
+ 	<class name="org.glite.security.voms.admin.persistence.model.AUPVersion" table="aup_version">	
+@@ -77,4 +77,4 @@
+ 		
+ 	</class>
+ 
+-</hibernate-mapping>
+\ No newline at end of file
++</hibernate-mapping>
+diff --git a/src/main/resources/model/Certificate.hbm.xml b/src/main/resources/model/Certificate.hbm.xml
+index c80679c..771a0ae 100644
+--- a/src/main/resources/model/Certificate.hbm.xml
++++ b/src/main/resources/model/Certificate.hbm.xml
+@@ -23,7 +23,7 @@
+ 
+ <!DOCTYPE hibernate-mapping PUBLIC
+     "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+-    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
++    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+ 
+ <hibernate-mapping>
+ 	<class name="org.glite.security.voms.admin.persistence.model.Certificate" table="certificate">	
+diff --git a/src/main/resources/model/History.hbm.xml b/src/main/resources/model/History.hbm.xml
+index 7b6394f..82f0952 100644
+--- a/src/main/resources/model/History.hbm.xml
++++ b/src/main/resources/model/History.hbm.xml
+@@ -23,7 +23,7 @@
+ 
+ <!DOCTYPE hibernate-mapping PUBLIC
+     "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+-    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
++    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+ <hibernate-mapping>
+ 	<class name="org.glite.security.voms.admin.persistence.model.History" table="history">
+ 		<id name="pkID" type="long" column="h_id">
+@@ -43,4 +43,4 @@
+ 		
+ 	</class>
+ 
+-</hibernate-mapping>
+\ No newline at end of file
++</hibernate-mapping>
+diff --git a/src/main/resources/model/Tag.hbm.xml b/src/main/resources/model/Tag.hbm.xml
+index c937254..a3ee83e 100644
+--- a/src/main/resources/model/Tag.hbm.xml
++++ b/src/main/resources/model/Tag.hbm.xml
+@@ -23,7 +23,7 @@
+ 
+ <!DOCTYPE hibernate-mapping PUBLIC
+     "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+-    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
++    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+ 
+ <hibernate-mapping>
+ 
+@@ -60,4 +60,4 @@
+       	
+ 	</class>
+ 
+-</hibernate-mapping>
+\ No newline at end of file
++</hibernate-mapping>
+diff --git a/src/main/resources/model/TagMapping.hbm.xml b/src/main/resources/model/TagMapping.hbm.xml
+index f1563c4..85d4b50 100644
+--- a/src/main/resources/model/TagMapping.hbm.xml
++++ b/src/main/resources/model/TagMapping.hbm.xml
+@@ -23,7 +23,7 @@
+ 
+ <!DOCTYPE hibernate-mapping PUBLIC
+     "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+-    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
++    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+ 
+ <hibernate-mapping>
+ 	<class name="org.glite.security.voms.admin.persistence.model.TagMapping" table="tag_mapping">
+diff --git a/src/main/resources/model/VOMSAdmin.hbm.xml b/src/main/resources/model/VOMSAdmin.hbm.xml
+index a6b9908..c85b0b1 100644
+--- a/src/main/resources/model/VOMSAdmin.hbm.xml
++++ b/src/main/resources/model/VOMSAdmin.hbm.xml
+@@ -23,7 +23,7 @@
+ 
+ <!DOCTYPE hibernate-mapping PUBLIC
+     "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+-    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
++    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+     
+ <hibernate-mapping>
+ 	<class name="org.glite.security.voms.admin.persistence.model.VOMSAdmin" table="admins">
+@@ -50,4 +50,4 @@
+         </set>
+         
+ 	</class>
+-</hibernate-mapping>
+\ No newline at end of file
++</hibernate-mapping>
+diff --git a/src/main/resources/model/VOMSAttributeDescription.hbm.xml b/src/main/resources/model/VOMSAttributeDescription.hbm.xml
+index f9772ce..ba98ac1 100644
+--- a/src/main/resources/model/VOMSAttributeDescription.hbm.xml
++++ b/src/main/resources/model/VOMSAttributeDescription.hbm.xml
+@@ -23,7 +23,7 @@
+ 
+ <!DOCTYPE hibernate-mapping PUBLIC
+     "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+-    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
++    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+ 
+ <hibernate-mapping>
+ 	<class name="org.glite.security.voms.admin.persistence.model.VOMSAttributeDescription" table="attributes">
+@@ -41,4 +41,4 @@
+ 			<column name="a_uniq" default="0"/>
+ 		</property>			
+ 	</class>
+-</hibernate-mapping>
+\ No newline at end of file
++</hibernate-mapping>
+diff --git a/src/main/resources/model/VOMSCA.hbm.xml b/src/main/resources/model/VOMSCA.hbm.xml
+index 50da3ea..27b5c17 100644
+--- a/src/main/resources/model/VOMSCA.hbm.xml
++++ b/src/main/resources/model/VOMSCA.hbm.xml
+@@ -23,7 +23,7 @@
+ 
+ <!DOCTYPE hibernate-mapping PUBLIC
+     "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+-    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
++    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+     
+     <hibernate-mapping>
+     	
+@@ -53,4 +53,4 @@
+     			
+     		</class>
+     
+-    </hibernate-mapping>
+\ No newline at end of file
++    </hibernate-mapping>
+diff --git a/src/main/resources/model/VOMSCapability.hbm.xml b/src/main/resources/model/VOMSCapability.hbm.xml
+index 814ce73..f5086b9 100644
+--- a/src/main/resources/model/VOMSCapability.hbm.xml
++++ b/src/main/resources/model/VOMSCapability.hbm.xml
+@@ -23,7 +23,7 @@
+ 
+ <!DOCTYPE hibernate-mapping PUBLIC
+     "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+-    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
++    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+ <hibernate-mapping>
+ 	<class name="org.glite.security.voms.admin.persistence.model.VOMSCapability" table="capabilities">
+ 		<id name="id" column="cid" type="long">
+@@ -31,4 +31,4 @@
+ 		</id>
+ 		<property name="capability" type="string" not-null="true"/>
+ 	</class>
+-</hibernate-mapping>
+\ No newline at end of file
++</hibernate-mapping>
+diff --git a/src/main/resources/model/VOMSDBVersion.hbm.xml b/src/main/resources/model/VOMSDBVersion.hbm.xml
+index 3c7ce3d..dd46e85 100644
+--- a/src/main/resources/model/VOMSDBVersion.hbm.xml
++++ b/src/main/resources/model/VOMSDBVersion.hbm.xml
+@@ -23,7 +23,7 @@
+ 
+ <!DOCTYPE hibernate-mapping PUBLIC
+     "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+-    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
++    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+     
+     <hibernate-mapping>
+     	
+@@ -34,4 +34,4 @@
+     			
+     		</class>
+     
+-    </hibernate-mapping>
+\ No newline at end of file
++    </hibernate-mapping>
+diff --git a/src/main/resources/model/VOMSGroup.hbm.xml b/src/main/resources/model/VOMSGroup.hbm.xml
+index d27eccc..f2a566a 100644
+--- a/src/main/resources/model/VOMSGroup.hbm.xml
++++ b/src/main/resources/model/VOMSGroup.hbm.xml
+@@ -23,7 +23,7 @@
+ 
+ <!DOCTYPE hibernate-mapping PUBLIC
+     "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+-    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
++    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+ 
+ <hibernate-mapping>
+ 	<class name="org.glite.security.voms.admin.persistence.model.VOMSGroup" table="groups">
+diff --git a/src/main/resources/model/VOMSGroupAttribute.hbm.xml b/src/main/resources/model/VOMSGroupAttribute.hbm.xml
+index 1b50adf..385a99a 100644
+--- a/src/main/resources/model/VOMSGroupAttribute.hbm.xml
++++ b/src/main/resources/model/VOMSGroupAttribute.hbm.xml
+@@ -23,7 +23,7 @@
+ 
+ <!DOCTYPE hibernate-mapping PUBLIC
+     "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+-    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
++    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+ 
+ <hibernate-mapping>
+ 	<class name="org.glite.security.voms.admin.persistence.model.VOMSGroupAttribute" table="group_attrs">
+@@ -44,4 +44,4 @@
+ 		<property name="value"  column="a_value" type="string"/>
+ 		
+ 	</class>
+-</hibernate-mapping>
+\ No newline at end of file
++</hibernate-mapping>
+diff --git a/src/main/resources/model/VOMSMapping.hbm.xml b/src/main/resources/model/VOMSMapping.hbm.xml
+index 409b89b..333c854 100644
+--- a/src/main/resources/model/VOMSMapping.hbm.xml
++++ b/src/main/resources/model/VOMSMapping.hbm.xml
+@@ -23,7 +23,7 @@
+ 
+ <!DOCTYPE hibernate-mapping PUBLIC
+     "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+-    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
++    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+ 
+ <hibernate-mapping>
+ 	<class name="org.glite.security.voms.admin.persistence.model.VOMSMapping" table="m">
+diff --git a/src/main/resources/model/VOMSRole.hbm.xml b/src/main/resources/model/VOMSRole.hbm.xml
+index 4a11d1c..38ad337 100644
+--- a/src/main/resources/model/VOMSRole.hbm.xml
++++ b/src/main/resources/model/VOMSRole.hbm.xml
+@@ -23,7 +23,7 @@
+ 
+ <!DOCTYPE hibernate-mapping PUBLIC
+     "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+-    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
++    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+ 
+ <hibernate-mapping>
+ 	<class name="org.glite.security.voms.admin.persistence.model.VOMSRole" table="roles">
+diff --git a/src/main/resources/model/VOMSRoleAttribute.hbm.xml b/src/main/resources/model/VOMSRoleAttribute.hbm.xml
+index cd41d17..e803406 100644
+--- a/src/main/resources/model/VOMSRoleAttribute.hbm.xml
++++ b/src/main/resources/model/VOMSRoleAttribute.hbm.xml
+@@ -23,7 +23,7 @@
+ 
+ <!DOCTYPE hibernate-mapping PUBLIC
+     "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+-    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
++    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+ 
+ <hibernate-mapping>
+ 	<class name="org.glite.security.voms.admin.persistence.model.VOMSRoleAttribute" table="role_attrs">
+@@ -49,4 +49,4 @@
+ 		<property name="value"  column="a_value" type="string"/>
+ 		
+ 	</class>
+-</hibernate-mapping>
+\ No newline at end of file
++</hibernate-mapping>
+diff --git a/src/main/resources/model/VOMSSeqNumber.hbm.xml b/src/main/resources/model/VOMSSeqNumber.hbm.xml
+index 35a7e68..4d90990 100644
+--- a/src/main/resources/model/VOMSSeqNumber.hbm.xml
++++ b/src/main/resources/model/VOMSSeqNumber.hbm.xml
+@@ -23,7 +23,7 @@
+ 
+ <!DOCTYPE hibernate-mapping PUBLIC
+     "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+-    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
++    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+     
+     <hibernate-mapping>
+     	
+@@ -33,4 +33,4 @@
+     			
+     		</class>
+     
+-    </hibernate-mapping>
+\ No newline at end of file
++    </hibernate-mapping>
+diff --git a/src/main/resources/model/VOMSUser.hbm.xml b/src/main/resources/model/VOMSUser.hbm.xml
+index e66be26..d1a259a 100644
+--- a/src/main/resources/model/VOMSUser.hbm.xml
++++ b/src/main/resources/model/VOMSUser.hbm.xml
+@@ -23,7 +23,7 @@
+ 
+ <!DOCTYPE hibernate-mapping PUBLIC
+     "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+-    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
++    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+ 
+ <hibernate-mapping>
+ 	<class name="org.glite.security.voms.admin.persistence.model.VOMSUser" table="usr">
+diff --git a/src/main/resources/model/VOMSUserAttribute.hbm.xml b/src/main/resources/model/VOMSUserAttribute.hbm.xml
+index b0fcee3..da3309a 100644
+--- a/src/main/resources/model/VOMSUserAttribute.hbm.xml
++++ b/src/main/resources/model/VOMSUserAttribute.hbm.xml
+@@ -23,7 +23,7 @@
+ 
+ <!DOCTYPE hibernate-mapping PUBLIC
+     "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+-    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
++    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+ 
+ <hibernate-mapping>
+ 	<class name="org.glite.security.voms.admin.persistence.model.VOMSUserAttribute" table="usr_attrs">
+@@ -44,4 +44,4 @@
+ 		<property name="value"  column="a_value" type="string" />
+ 		
+ 	</class>
+-</hibernate-mapping>
+\ No newline at end of file
++</hibernate-mapping>
+diff --git a/src/main/resources/model/VOMembershipRequest.hbm.xml b/src/main/resources/model/VOMembershipRequest.hbm.xml
+index 69b7793..cf986c7 100644
+--- a/src/main/resources/model/VOMembershipRequest.hbm.xml
++++ b/src/main/resources/model/VOMembershipRequest.hbm.xml
+@@ -23,7 +23,7 @@
+ 
+ <!DOCTYPE hibernate-mapping PUBLIC
+     "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+-    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
++    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+ 
+ <hibernate-mapping>
+ 	<class name="org.glite.security.voms.admin.persistence.model.VOMembershipRequest" table="memb_req">
+diff --git a/src/main/resources/struts.xml b/src/main/resources/struts.xml
+index 5989a51..9668ccc 100644
+--- a/src/main/resources/struts.xml
++++ b/src/main/resources/struts.xml
+@@ -21,7 +21,7 @@
+ 
+ -->
+ <!DOCTYPE struts PUBLIC
+-    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
++    "-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+     "http://struts.apache.org/dtds/struts-2.3.dtd">
+ <struts>
+ 
+diff --git a/src/main/resources/test/hibernate.cfg.xml b/src/main/resources/test/hibernate.cfg.xml
+index f81e8d3..96af7c8 100644
+--- a/src/main/resources/test/hibernate.cfg.xml
++++ b/src/main/resources/test/hibernate.cfg.xml
+@@ -22,7 +22,7 @@
+ 
+ <!DOCTYPE hibernate-configuration PUBLIC
+ "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+-"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
++"http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+ <hibernate-configuration>
+     <session-factory>
+         
+@@ -34,4 +34,4 @@
+         <mapping class="org.glite.security.voms.admin.integration.orgdb.model.VOMSOrgDBPerson"/>
+         
+     </session-factory>
+-</hibernate-configuration>
+\ No newline at end of file
++</hibernate-configuration>
+diff --git a/src/main/webapp/WEB-INF/web.xml b/src/main/webapp/WEB-INF/web.xml
+index 5a10ab1..91b832a 100644
+--- a/src/main/webapp/WEB-INF/web.xml
++++ b/src/main/webapp/WEB-INF/web.xml
+@@ -22,8 +22,8 @@
+ -->
+ <web-app xmlns="http://java.sun.com/xml/ns/j2ee"
+ 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+-	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
+-	version="2.4">
++	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
++	version="3.0">
+ 
+ 	<display-name>VOMS-ADMIN 2.5</display-name>
+     
+-- 
+2.9.4
+

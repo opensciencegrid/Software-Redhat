@@ -1,6 +1,6 @@
 Name:      osg-version
 Summary:   OSG Version
-Version:   3.3.0
+Version:   3.3.25
 Release:   1%{?dist}
 License:   Apache 2.0
 Group:     Grid
@@ -34,6 +34,81 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/osg-version
 
 %changelog
+* Mon Jun 05 2017 Tim Theisen <tim@cs.wisc.edu> 3.3.25-1
+- Updated to 3.3.25-1
+
+* Wed Apr 26 2017 Tim Theisen <tim@cs.wisc.edu> 3.3.24-1
+- Updated to 3.3.24-1
+
+* Tue Apr 03 2017 Brian Lin <blin@cs.wisc.edu> 3.3.23-1
+- Updated to 3.3.23-1
+
+* Tue Mar 07 2017 Tim Theisen <tim@cs.wisc.edu> 3.3.22-1
+- Updated to 3.3.22-1
+
+* Wed Feb 08 2017 Suchandra Thapa <sthapa@ci.uchicago.edu> 3.3.21-1
+- Updated to 3.3.21-1
+
+* Thu Jan 05 2017 Brian Lin <blin@cs.wisc.edu> 3.3.20-1
+- Updated to 3.3.20-1
+
+* Tue Dec 06 2016 Tim Theisen <tim@cs.wisc.edu> 3.3.19-1
+- Updated to 3.3.19-1
+
+* Mon Oct 31 2016 Suchandra Thapa <sthapa@ci.uchicago.edu> 3.3.18-1
+- Updated to 3.3.18-1
+
+* Mon Oct 03 2016 Brian Lin <tim@cs.wisc.edu> 3.3.17-1
+- Updated to 3.3.17-1
+
+* Thu Sep 01 2016 Tim Theisen <tim@cs.wisc.edu> 3.3.16-1
+- Updated to 3.3.16-1
+
+* Fri Aug 05 2016 Suchandra Thapa <sthapa@ci.uchicago.edu> 3.3.15-1
+- Updated to 3.3.15-1
+
+* Fri Jul 08 2016 Brian Lin <blin@cs.wisc.edu> 3.3.14-1
+- Updated to 3.3.14-1
+
+* Tue Jun 07 2016 Tim Theisen <tim@cs.wisc.edu> 3.3.13-1
+- Updated to 3.3.13-1
+
+* Thu May 05 2016 Tim Theisen <tim@cs.wisc.edu> 3.3.12-1
+- Updated to 3.3.12-1
+
+* Tue Apr 05 2016 Tim Theisen <tim@cs.wisc.edu> 3.3.11-1
+- Updated to 3.3.11-1
+
+* Wed Feb 24 2016 Tim Theisen <tim@cs.wisc.edu> 3.3.10-1
+- Updated to 3.3.10-1
+
+* Wed Feb 03 2016 Suchandra Thapa <sthapa@ci.uchicago.edu> - 3.3.9-1
+- Updated to 3.3.9-1
+
+* Wed Jan 06 2016 Brian Lin <blin@cs.wisc.edu> 3.3.8-1
+- Updated to 3.3.8-1
+
+* Thu Dec 10 2015 Tim Theisen <tim@cs.wisc.edu> 3.3.7-1
+- Updated to 3.3.7-1
+
+* Wed Dec 01 2015 Tim Theisen <tim@cs.wisc.edu> 3.3.6-1
+- Updated to 3.3.6-1
+
+* Wed Nov 17 2015 Suchandra Thapa <sthapa@ci.uchicago.edu> 3.3.5-1
+- Updated to 3.3.5-1
+
+* Wed Nov 04 2015 Brian Lin <blin@cs.wisc.edu> 3.3.4-1
+- Updated to 3.3.4-1
+
+* Fri Oct 30 2015 Tim Theisen <tim@cs.wisc.edu> 3.3.3-1
+- Updated to 3.3.3-1
+
+* Fri Oct 09 2015 Suchandra Thapa <sthapa@ci.uchicago.edu> 3.3.2-1
+- Updated to 3.3.2-1
+
+* Wed Sep 02 2015 Tim Theisen <tim@cs.wisc.edu> 3.3.1-1
+- Updated to 3.3.1-1
+
 * Wed Jun 10 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.3.0-1
 - Updated to 3.3.0-1
 

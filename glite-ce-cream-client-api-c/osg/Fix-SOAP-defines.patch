@@ -1,0 +1,235 @@
+From 6e9128ee27114fb996ab93da8dc31323a9cadc0d Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Wed, 13 Jul 2016 15:15:35 -0500
+Subject: [PATCH] Fix SOAP #defines
+
+---
+ CMakeLists.txt              |  3 ---
+ src/CMakeLists.txt          |  3 ---
+ src/CreamProxy_Info.cpp     | 23 -----------------------
+ src/CreamProxy_Register.cpp | 28 ++++++++--------------------
+ src/CreamProxy_Status.cpp   | 20 --------------------
+ src/ResultWrapper.cpp       | 18 ------------------
+ 6 files changed, 8 insertions(+), 87 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 9e67e5a..21fcc85 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -37,12 +37,9 @@ add_custom_target(rpm
+                               -e 's|@PKGRELEASE@|${PKGREL}|g' 
+                               project/${PKGNAME}.spec.in > ${CMAKE_CURRENT_BINARY_DIR}/rpmbuild/SPECS/${PKGNAME}.spec
+                   COMMAND rpmbuild -ba --define '_topdir ${CMAKE_CURRENT_BINARY_DIR}/rpmbuild'
+                           ${CMAKE_CURRENT_BINARY_DIR}/rpmbuild/SPECS/${PKGNAME}.spec
+                   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+-if(DEFINED SL6) 
+-  add_definitions( -DSL6 )
+-endif(DEFINED SL6)
+ 
+ 
+ add_subdirectory(src)
+ add_subdirectory(interface)
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index dac2960..6d3d842 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -56,13 +56,10 @@ find_package( Boost COMPONENTS date_time filesystem regex thread)
+ execute_process(COMMAND soapcpp2 -v
+                 ERROR_VARIABLE GSOAP_DISCLAIMER)
+ execute_process(COMMAND echo ${GSOAP_DISCLAIMER}
+                 COMMAND grep -Eo [0-9]+\\.[0-9]+\\.[0-9]+
+                 OUTPUT_VARIABLE GSOAP_FULL_VERSION)
+-if( GSOAP_FULL_VERSION VERSION_EQUAL "2.7.16" )
+-    add_definitions( -DSL6 )
+-endif( GSOAP_FULL_VERSION VERSION_EQUAL "2.7.16" )
+ 
+ # workaround for deb7
+ #add_definitions( -D_GLIBCXX__PTHREADS )
+ 
+ add_definitions( -pipe -DWANT_NAMESPACES -DWANT_CLASSAD_NAMESPACE
+diff --git a/src/CreamProxy_Info.cpp b/src/CreamProxy_Info.cpp
+index 480fbf4..1f90e5e 100644
+--- a/src/CreamProxy_Info.cpp
++++ b/src/CreamProxy_Info.cpp
+@@ -26,12 +26,10 @@ END LICENSE */
+ #include "glite/ce/cream-client-api-c/JobInfoWrapper.h"
+ 
+ using namespace glite::ce::cream_client_api::soap_proxy;
+ using namespace std;
+ 
+-#ifdef SL6
+-
+ #define UNION_JOBINFORESULT_JOBINFO 			SOAP_UNION__CREAMTYPES__union_JobInfoResult_jobInfo   
+ #define JOBINFO						jobInfo
+ #define UNION_JOBINFORESULT_JOBUNKNOWN			SOAP_UNION__CREAMTYPES__union_JobInfoResult_JobUnknownFault
+ #define JOBUNKNOWN_FAULT        			JobUnknownFault
+ #define UNION_JOBINFORESULT_JOBSTATUSINVALID 		SOAP_UNION__CREAMTYPES__union_JobInfoResult_JobStatusInvalidFault   
+@@ -43,31 +41,10 @@ using namespace std;
+ #define UNION_JOBINFORESULT_LEASEIDMISMATCH 		SOAP_UNION__CREAMTYPES__union_JobInfoResult_LeaseIdMismatchFault   
+ #define LEASEIDMISMATCH_FAULT 				LeaseIdMismatchFault
+ #define UNION_JOBINFORESULT_GENERIC 			SOAP_UNION__CREAMTYPES__union_JobInfoResult_GenericFault    
+ #define GENERIC_FAULT    				GenericFault
+ 
+-#else
+-
+-#define UNION_JOBINFORESULT_JOBINFO 			SOAP_UNION__CREAMTYPES__union_JobInfoResult_jobInfo   
+-#define JOBINFO						jobInfo
+-#define UNION_JOBINFORESULT_JOBUNKNOWN			SOAP_UNION__CREAMTYPES__union_JobInfoResult_CREAMTYPES__JobUnknownFault 
+-#define JOBUNKNOWN_FAULT        			CREAMTYPES__JobUnknownFault
+-#define UNION_JOBINFORESULT_JOBSTATUSINVALID 		SOAP_UNION__CREAMTYPES__union_JobInfoResult_CREAMTYPES__JobStatusInvalidFault   
+-#define JOBSTATUSINVALID_FAULT        			CREAMTYPES__JobStatusInvalidFault
+-#define UNION_JOBINFORESULT_DELEGATIONIDMISMATCH	SOAP_UNION__CREAMTYPES__union_JobInfoResult_CREAMTYPES__DelegationIdMismatchFault       
+-#define DELEGATIONIDMISMATCH_FAULT        		CREAMTYPES__DelegationIdMismatchFault
+-#define UNION_JOBINFORESULT_DATEMISMATCH		SOAP_UNION__CREAMTYPES__union_JobInfoResult_CREAMTYPES__DateMismatchFault       
+-#define DATEMISMATCH_FAULT				CREAMTYPES__DateMismatchFault
+-#define UNION_JOBINFORESULT_LEASEIDMISMATCH 		SOAP_UNION__CREAMTYPES__union_JobInfoResult_CREAMTYPES__LeaseIdMismatchFault    
+-#define LEASEIDMISMATCH_FAULT 				CREAMTYPES__LeaseIdMismatchFault
+-#define UNION_JOBINFORESULT_GENERIC 			SOAP_UNION__CREAMTYPES__union_JobInfoResult_CREAMTYPES__GenericFault    
+-#define GENERIC_FAULT        				CREAMTYPES__GenericFault
+-
+-    		
+-
+-#endif
+-
+ //____________________________________________________________________________
+ void processorInfoResult::operator()( const CREAMTYPES__JobInfoResult* jr ) 
+ {
+   if(!jr){
+     throw InternalException("processorInfoResult::operator() - Pointer CREAMTYPES__JobInfoResult is NULL! Probable de-serialization error");
+diff --git a/src/CreamProxy_Register.cpp b/src/CreamProxy_Register.cpp
+index cd36fef..8765e5a 100644
+--- a/src/CreamProxy_Register.cpp
++++ b/src/CreamProxy_Register.cpp
+@@ -32,31 +32,19 @@ END LICENSE */
+ #include <iostream>
+ 
+ using namespace std;
+ using namespace glite::ce::cream_client_api::soap_proxy;
+ 
+-#ifdef SL6
+-  #define UNION_JOBREGISTERRESULT_DELEGATIONPROXY 	SOAP_UNION__CREAMTYPES__union_JobRegisterResult_DelegationProxyFault
+-  #define UNION_JOBREGISTERRESULT_DELEGATIONIDMISMATCH  SOAP_UNION__CREAMTYPES__union_JobRegisterResult_DelegationIdMismatchFault
+-  #define UNION_JOBREGISTERRESULT_LEASEIDMISMATCH	SOAP_UNION__CREAMTYPES__union_JobRegisterResult_LeaseIdMismatchFault
+-  #define UNION_JOBREGISTERRESULT_GENERIC		SOAP_UNION__CREAMTYPES__union_JobRegisterResult_GenericFault
++#define UNION_JOBREGISTERRESULT_DELEGATIONPROXY 	SOAP_UNION__CREAMTYPES__union_JobRegisterResult_DelegationProxyFault
++#define UNION_JOBREGISTERRESULT_DELEGATIONIDMISMATCH  SOAP_UNION__CREAMTYPES__union_JobRegisterResult_DelegationIdMismatchFault
++#define UNION_JOBREGISTERRESULT_LEASEIDMISMATCH	SOAP_UNION__CREAMTYPES__union_JobRegisterResult_LeaseIdMismatchFault
++#define UNION_JOBREGISTERRESULT_GENERIC		SOAP_UNION__CREAMTYPES__union_JobRegisterResult_GenericFault
+ 
+-  #define DELEGATIONIDMISMATCH_FAULT			DelegationProxyFault
+-  #define LEASEIDMISMATCH_FAULT				LeaseIdMismatchFault
+-  #define DELEGATIONPROXY_FAULT				DelegationProxyFault
+-  #define GENERIC_FAULT					GenericFault
+-#else
+-  #define UNION_JOBREGISTERRESULT_DELEGATIONPROXY       SOAP_UNION__CREAMTYPES__union_JobRegisterResult_CREAMTYPES__DelegationProxyFault
+-  #define UNION_JOBREGISTERRESULT_DELEGATIONIDMISMATCH  SOAP_UNION__CREAMTYPES__union_JobRegisterResult_CREAMTYPES__DelegationIdMismatchFault
+-  #define UNION_JOBREGISTERRESULT_LEASEIDMISMATCH       SOAP_UNION__CREAMTYPES__union_JobRegisterResult_CREAMTYPES__LeaseIdMismatchFault
+-  #define UNION_JOBREGISTERRESULT_GENERIC               SOAP_UNION__CREAMTYPES__union_JobRegisterResult_CREAMTYPES__GenericFault
+-
+-  #define DELEGATIONIDMISMATCH_FAULT			CREAMTYPES__DelegationProxyFault
+-  #define LEASEIDMISMATCH_FAULT				CREAMTYPES__LeaseIdMismatchFault
+-  #define DELEGATIONPROXY_FAULT				CREAMTYPES__DelegationProxyFault
+-  #define GENERIC_FAULT					CREAMTYPES__GenericFault
+-#endif
++#define DELEGATIONIDMISMATCH_FAULT			DelegationProxyFault
++#define LEASEIDMISMATCH_FAULT				LeaseIdMismatchFault
++#define DELEGATIONPROXY_FAULT				DelegationProxyFault
++#define GENERIC_FAULT					GenericFault
+ 
+ //__________________________________________________________________________________
+ void processorRegisterResult::operator()( const CREAMTYPES__JobRegisterResult* jr ) 
+ {
+   if(!jr) 
+diff --git a/src/CreamProxy_Status.cpp b/src/CreamProxy_Status.cpp
+index b441873..3575f36 100644
+--- a/src/CreamProxy_Status.cpp
++++ b/src/CreamProxy_Status.cpp
+@@ -29,12 +29,10 @@ END LICENSE */
+ #include <boost/tuple/tuple.hpp>
+ 
+ using namespace glite::ce::cream_client_api::soap_proxy;
+ using namespace std;
+ 
+-#ifdef SL6
+-
+ #define UNION_JOBSTATUSRESULT_JOBSTSATUS		SOAP_UNION__CREAMTYPES__union_JobStatusResult_jobStatus
+ #define JOBSTATUS			 		jobStatus
+ #define UNION_JOBSTATUSRESULT_JOBUNKNOWN		SOAP_UNION__CREAMTYPES__union_JobStatusResult_JobUnknownFault
+ #define JOBUNKNOWN_FAULT				JobUnknownFault
+ #define UNION_JOBSTATUSRESULT_JOBSTATUSINVALID		SOAP_UNION__CREAMTYPES__union_JobStatusResult_JobStatusInvalidFault
+@@ -46,28 +44,10 @@ using namespace std;
+ #define UNION_JOBSTATUSRESULT_LEASEIDMISMATCH		SOAP_UNION__CREAMTYPES__union_JobStatusResult_LeaseIdMismatchFault  
+ #define LEASEIDMISMATCH_FAULT				LeaseIdMismatchFault
+ #define UNION_JOBSTATUSRESULT_GENERIC			SOAP_UNION__CREAMTYPES__union_JobStatusResult_GenericFault  
+ #define GENERIC_FAULT					GenericFault
+ 
+-#else
+-
+-#define UNION_JOBSTATUSRESULT_JOBSTSATUS		SOAP_UNION__CREAMTYPES__union_JobStatusResult_jobStatus
+-#define JOBSTATUS			 		jobStatus
+-#define UNION_JOBSTATUSRESULT_JOBUNKNOWN		SOAP_UNION__CREAMTYPES__union_JobStatusResult_CREAMTYPES__JobUnknownFault       
+-#define JOBUNKNOWN_FAULT				CREAMTYPES__JobUnknownFault
+-#define UNION_JOBSTATUSRESULT_JOBSTATUSINVALID		SOAP_UNION__CREAMTYPES__union_JobStatusResult_CREAMTYPES__JobStatusInvalidFault 
+-#define JOBSTATUSINVALID_FAULT				CREAMTYPES__JobStatusInvalidFault
+-#define UNION_JOBSTATUSRESULT_DELEGATIONIDMISMATCH	SOAP_UNION__CREAMTYPES__union_JobStatusResult_CREAMTYPES__DelegationIdMismatchFault     
+-#define DELEGATIONIDMISMATCH_FAULT        		CREAMTYPES__DelegationIdMismatchFault
+-#define UNION_JOBSTATUSRESULT_DATEMISMATCH		SOAP_UNION__CREAMTYPES__union_JobStatusResult_CREAMTYPES__DateMismatchFault     
+-#define DATEMISMATCH_FAULT				CREAMTYPES__DateMismatchFault
+-#define UNION_JOBSTATUSRESULT_LEASEIDMISMATCH		SOAP_UNION__CREAMTYPES__union_JobStatusResult_CREAMTYPES__LeaseIdMismatchFault  
+-#define LEASEIDMISMATCH_FAULT				CREAMTYPES__LeaseIdMismatchFault
+-#define UNION_JOBSTATUSRESULT_GENERIC			SOAP_UNION__CREAMTYPES__union_JobStatusResult_CREAMTYPES__GenericFault  
+-#define GENERIC_FAULT					CREAMTYPES__GenericFault
+-
+-#endif
+ 
+ 
+ //__________________________________________________________________________________
+ void processorStatusResult::operator()( const CREAMTYPES__JobStatusResult* jr ) 
+ {
+diff --git a/src/ResultWrapper.cpp b/src/ResultWrapper.cpp
+index 4047cbb..67d087a 100644
+--- a/src/ResultWrapper.cpp
++++ b/src/ResultWrapper.cpp
+@@ -20,12 +20,10 @@ END LICENSE */
+ 
+ #include <glite/ce/cream-client-api-c/ResultWrapper.h>
+ 
+ using namespace glite::ce::cream_client_api::soap_proxy;
+ 
+-#ifdef SL6
+-
+ #define UNION_RESULT_JOBUNKNOWN 		SOAP_UNION__CREAMTYPES__union_Result_JobUnknownFault     
+ #define JOBUNKNOWN_FAULT       			JobUnknownFault
+ #define UNION_RESULT_JOBSTATUSINVALID 		SOAP_UNION__CREAMTYPES__union_Result_JobStatusInvalidFault
+ #define JOBSTATUSINVALID_FAULT       		JobStatusInvalidFault
+ #define UNION_RESULT_DELEGATIONIDMISMATCH 	SOAP_UNION__CREAMTYPES__union_Result_DelegationIdMismatchFault    
+@@ -35,26 +33,10 @@ using namespace glite::ce::cream_client_api::soap_proxy;
+ #define UNION_RESULT_LEASEIDMISMATCH 		SOAP_UNION__CREAMTYPES__union_Result_LeaseIdMismatchFault
+ #define LEASEIDMISMATCH_FAULT		        LeaseIdMismatchFault
+ #define UNION_RESULT_GENERIC 			SOAP_UNION__CREAMTYPES__union_Result_GenericFault 
+ #define GENERIC_FAULT      			GenericFault
+ 
+-#else
+-
+-#define UNION_RESULT_JOBUNKNOWN 		SOAP_UNION__CREAMTYPES__union_Result_CREAMTYPES__JobUnknownFault        
+-#define JOBUNKNOWN_FAULT       			CREAMTYPES__JobUnknownFault
+-#define UNION_RESULT_JOBSTATUSINVALID 		SOAP_UNION__CREAMTYPES__union_Result_CREAMTYPES__JobStatusInvalidFault  
+-#define JOBSTATUSINVALID_FAULT       		CREAMTYPES__JobStatusInvalidFault
+-#define UNION_RESULT_DELEGATIONIDMISMATCH 	SOAP_UNION__CREAMTYPES__union_Result_CREAMTYPES__DelegationIdMismatchFault      
+-#define DELEGATIONIDMISMATCH_FAULT       	CREAMTYPES__DelegationIdMismatchFault
+-#define UNION_RESULT_DATEMISMATCH 		SOAP_UNION__CREAMTYPES__union_Result_CREAMTYPES__DateMismatchFault      
+-#define DATEMISMATCH_FAULT      		CREAMTYPES__DateMismatchFault
+-#define UNION_RESULT_LEASEIDMISMATCH 		SOAP_UNION__CREAMTYPES__union_Result_CREAMTYPES__LeaseIdMismatchFault   
+-#define LEASEIDMISMATCH_FAULT		        CREAMTYPES__LeaseIdMismatchFault
+-#define UNION_RESULT_GENERIC 			SOAP_UNION__CREAMTYPES__union_Result_CREAMTYPES__GenericFault   
+-#define GENERIC_FAULT      			CREAMTYPES__GenericFault
+-
+-#endif
+ 
+ //______________________________________________________________________________
+ void ResultWrapper::set(const std::vector<CREAMTYPES__Result * >& results) throw() 
+ {
+   std::vector<CREAMTYPES__Result * >::const_iterator it;
+-- 
+2.6.3
+

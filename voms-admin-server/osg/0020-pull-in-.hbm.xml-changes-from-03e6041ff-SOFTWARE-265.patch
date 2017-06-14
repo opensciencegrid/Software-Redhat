@@ -1,0 +1,76 @@
+From b2f6d070d50a6590105ca547d882794fa37f2bed Mon Sep 17 00:00:00 2001
+From: Carl Edquist <edquist@cs.wisc.edu>
+Date: Wed, 29 Mar 2017 12:47:05 -0500
+Subject: [PATCH 20/31] pull in *.hbm.xml changes from 03e6041ff
+ (SOFTWARE-2652)
+
+---
+ src/main/resources/model/ACL.hbm.xml                 | 4 +---
+ src/main/resources/model/AUP.hbm.xml                 | 4 +---
+ src/main/resources/model/AUPAcceptanceRecord.hbm.xml | 4 +---
+ src/main/resources/model/AUPVersion.hbm.xml          | 4 +---
+ 4 files changed, 4 insertions(+), 12 deletions(-)
+
+diff --git a/src/main/resources/model/ACL.hbm.xml b/src/main/resources/model/ACL.hbm.xml
+index 43934c0..679aca3 100644
+--- a/src/main/resources/model/ACL.hbm.xml
++++ b/src/main/resources/model/ACL.hbm.xml
+@@ -29,9 +29,7 @@
+ 	<class name="org.glite.security.voms.admin.persistence.model.ACL" table="acl2">	
+ 		
+ 		<id name="id" column="acl_id" type="long">
+-			<generator class="native">
+-				<param name="sequence">VOMS_ACL_SEQ</param>
+-			</generator>
++			<generator class="native"/>
+ 		</id>
+ 	
+ 		<natural-id>
+diff --git a/src/main/resources/model/AUP.hbm.xml b/src/main/resources/model/AUP.hbm.xml
+index 467ce4d..b2a61aa 100644
+--- a/src/main/resources/model/AUP.hbm.xml
++++ b/src/main/resources/model/AUP.hbm.xml
+@@ -29,9 +29,7 @@
+ 	<class name="org.glite.security.voms.admin.persistence.model.AUP" table="aup">	
+ 		
+ 		<id name="id" type="long">
+-			<generator class="native">
+-				<param name="sequence">VOMS_AUP_SEQ</param>
+-			</generator>
++			<generator class="native"/>
+ 		</id>
+ 	
+ 		<property name="name" 
+diff --git a/src/main/resources/model/AUPAcceptanceRecord.hbm.xml b/src/main/resources/model/AUPAcceptanceRecord.hbm.xml
+index 2a547b0..8b6a095 100644
+--- a/src/main/resources/model/AUPAcceptanceRecord.hbm.xml
++++ b/src/main/resources/model/AUPAcceptanceRecord.hbm.xml
+@@ -29,9 +29,7 @@
+ 	<class name="org.glite.security.voms.admin.persistence.model.AUPAcceptanceRecord" table="aup_acc_record">	
+ 		
+ 		<id name="id" type="long">
+-			<generator class="native">
+-				<param name="sequence">VOMS_AUP_ACC_REC_SEQ</param>
+-			</generator>
++			<generator class="native"/>
+ 		</id>
+ 	
+         <natural-id>
+diff --git a/src/main/resources/model/AUPVersion.hbm.xml b/src/main/resources/model/AUPVersion.hbm.xml
+index ecd6691..fe237fa 100644
+--- a/src/main/resources/model/AUPVersion.hbm.xml
++++ b/src/main/resources/model/AUPVersion.hbm.xml
+@@ -29,9 +29,7 @@
+ 	<class name="org.glite.security.voms.admin.persistence.model.AUPVersion" table="aup_version">	
+ 		
+ 		<id name="id" type="long">
+-			<generator class="native">
+-				<param name="sequence">VOMS_AUP_VER_SEQ</param>
+-			</generator>
++			<generator class="native"/>
+ 		</id>
+ 	
+         <natural-id>
+-- 
+2.9.4
+

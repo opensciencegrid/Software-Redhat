@@ -1,7 +1,7 @@
 Name:      osg-tested-internal
 Summary:   All OSG packages we test (internal use only)
 Version:   3.3
-Release:   1%{?dist}
+Release:   16%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -18,11 +18,10 @@ Requires: edg-mkgridmap
 Requires: glexec
 Requires: /usr/sbin/condor_master
 Requires: yum-utils
-Requires: cvmfs
+# https://twiki.grid.iu.edu/bin/view/Documentation/Release3/InstallCvmfs
+Requires: osg-oasis
 Requires: osg-configure-tests
-Requires: cvmfs-config
 
-Requires: gratia-probe-psacct
 Requires: gratia-probe-condor
 Requires: gratia-probe-glexec
 Requires: gratia-probe-dcache-storage
@@ -34,55 +33,64 @@ Requires: gratia-probe-sge
 Requires: myproxy
 Requires: myproxy-server
 
+Requires: osg-gums
+
 Requires: htcondor-ce
 Requires: htcondor-ce-client
 Requires: htcondor-ce-condor
+Requires: htcondor-ce-view
 
 Requires: osg-ce-condor
-Requires: rsv
-################################################################################
-#
-# Non-RHEL 7
-#
-################################################################################
-%if 0%{?rhel} < 7
-Requires: osg-se-bestman
-Requires: osg-se-bestman-xrootd
-Requires: osg-gums
-Requires: osg-voms
+
 Requires: torque-server
 Requires: torque-mom
 Requires: torque-client
 Requires: torque-scheduler
 Requires: osg-ce-pbs
+
+Requires: rsv
+
 Requires: xrootd
 Requires: xrootd-client
+
 Requires: ndt-client
 
 Requires: gratia-service
+
+Requires: osg-voms
+
+# Putting bestman back again in the teest in 2016-Apr-28 - SOFTWARE-2089
+Requires: osg-se-bestman
+Requires: osg-se-bestman-xrootd
+
+%if 0%{?rhel} == 5
+Requires: globus-gram-job-manager-pbs-setup-poll
 %endif
 
-################################################################################
-#
-# RHEL 7
-#
-################################################################################
 %if 0%{?rhel} == 7
-Requires: osg-wn-client-glexec
-Requires: condor
-Requires: globus-gatekeeper
-Requires: globus-common-progs
-Requires: globus-gram-client-tools
-Requires: globus-gram-job-manager-fork-setup-poll
-Requires: globus-gram-job-manager-condor
-Requires: globus-gridftp-server
-Requires: globus-gridftp-server-control
-Requires: globus-gridftp-server-progs
-Requires: lcas-lcmaps-gt4-interface
+# osg-tested-internal packages in el7 don't currently pull in mysql/mariadb
+Requires: mariadb-server
 %endif
-
 
 %description
+%{summary}
+
+
+%package gram
+Summary:   All OSG packages we test (internal use only) + GRAM
+Requires: %{name}
+Requires: globus-gatekeeper
+Requires: globus-gram-client-tools
+Requires: globus-gram-job-manager
+Requires: globus-gram-job-manager-fork
+Requires: globus-gram-job-manager-fork-setup-poll
+Requires: gratia-probe-gram
+Requires: globus-gram-job-manager-scripts
+Requires: globus-gram-job-manager-condor
+Requires: globus-gram-job-manager-pbs-setup-seg
+
+
+%description gram
 %{summary}
 
 
@@ -93,8 +101,55 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 
+%files gram
 
 %changelog
+* Fri Oct 2 2016 Brian Lin <blin@cs.wisc.edu> - 3.3-16
+- Add htcondor-ce-view (SOFTWARE-2493)
+
+* Mon Sep 19 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.3-15
+- Re-enable osg-voms for EL7 (SOFTWARE-2461)
+
+* Tue Aug 30 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.3-13
+- Add gram subpackage (SOFTWARE-2441)
+
+* Thu Jun 09 2016 Brian Lin <blin@cs.wisc.edu> - 3.3-12
+- Re-enable osg-gums for EL7
+
+* Thu Apr 28 2016 Edgar Fajardo <emfajard@ucsd.edu> - 3.3-11
+- Put the osg-bestman requirements back for el7 (SOFTWARE-2089)
+
+* Mon Feb 22 2016 Edgar Fajardo <emfajard@ucsd.edu> - 3.3-10
+- Drop the gratia-probe-psacct requirements (SOFTWARE-2213)
+ 
+* Thu Feb 18 2016 Brian Lin <blin@cs.wisc.edu> - 3.3-9
+- Drop bestman package requirements for el7 (SOFTWARE-2089)
+
+* Tue Feb 16 2016 Brian Lin <blin@cs.wisc.edu> - 3.3-8
+- Replace cvmfs-* requirements with osg-oasis metapackage (SOFTWARE-2190)
+
+* Mon Oct 26 2015 Carl Edquist <edquist@cs.wisc.edu> - 3.3-7
+- Add bestman package requirements back for el7 (SOFTWARE-2089)
+
+* Mon Oct 19 2015 Carl Edquist <edquist@cs.wisc.edu> - 3.3-6
+- Add mariadb-server requirement for el7 (SOFTWARE-1996)
+
+* Tue Sep 15 2015 Brian Lin <blin@cs.wisc.edu> 3.3-5
+- Fix pbs-setup-poll package name
+
+* Fri Sep 11 2015 Brian Lin <blin@cs.wisc.edu> 3.3-4
+- Install globus-grid-job-manager-pbs-setup-poll for EL5 (SOFTWARE-1929)
+
+* Fri Aug 21 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.3-3
+- Actually include torque
+
+* Fri Aug 21 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.3-2
+- Install more el7 packages now that we have more:
+  - torque and osg-ce-pbs
+  - xrootd and xrootd-client
+  - ndt-client
+- Remove the %%if 0%%{?rhel} == 7 section: all packages within it are now brought in by the common packages
+
 * Wed Apr 29 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.3-1
 - Rebuild for OSG 3.3
 

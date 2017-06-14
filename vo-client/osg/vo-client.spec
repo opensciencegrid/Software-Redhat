@@ -1,5 +1,5 @@
 Name:           vo-client
-Version:        60
+Version:        74
 Release:        1%{?dist}
 Summary:        Contains vomses file for use with user authentication and edg-mkgridmap.conf file that contains configuration information for edg-mkgridmap.
 
@@ -32,6 +32,14 @@ Provides:       osg-edg-mkgridmap-config = %{version}-%{release}
 %{summary}
 
 
+%package lcmaps-voms
+Summary:        Provides a voms-mapfile-default file, mapping VOMS FQANs to Unix users suitable for use by the LCMAPS VOMS plugin
+Group:          system environment/base
+
+%description lcmaps-voms
+%{summary}
+
+
 %package -n osg-gums-config
 Summary:        a file that contains a template configuration for the gums service
 Group:          system environment/base
@@ -52,10 +60,12 @@ configuration file.
 rm -rf $RPM_BUILD_ROOT
 tar -xz -C $RPM_BUILD_DIR --strip-components=1 -f %{SOURCE0}
 install -d $RPM_BUILD_ROOT/%{_sysconfdir}
+install -d $RPM_BUILD_ROOT/%{_datadir}/osg/
 mv $RPM_BUILD_DIR/vomses $RPM_BUILD_ROOT/%{_sysconfdir}/
 mv $RPM_BUILD_DIR/edg-mkgridmap.conf $RPM_BUILD_ROOT/%{_sysconfdir}/
+mv $RPM_BUILD_DIR/voms-mapfile-default $RPM_BUILD_ROOT/%{_datadir}/osg/
 
-chmod 644 $RPM_BUILD_ROOT/%{_sysconfdir}/vomses $RPM_BUILD_ROOT/%{_sysconfdir}/edg-mkgridmap.conf
+chmod 644 $RPM_BUILD_ROOT/%{_sysconfdir}/vomses $RPM_BUILD_ROOT/%{_sysconfdir}/edg-mkgridmap.conf $RPM_BUILD_ROOT/%{_datadir}/osg/voms-mapfile-default
 
 install -d $RPM_BUILD_ROOT/%{_sysconfdir}/grid-security/
 mv $RPM_BUILD_DIR/vomsdir $RPM_BUILD_ROOT/%{_sysconfdir}/grid-security/
@@ -65,7 +75,6 @@ find $RPM_BUILD_ROOT/%{_sysconfdir}/grid-security/vomsdir -type d -exec chmod 75
 mkdir -p $RPM_BUILD_ROOT/%{_sysconfdir}/gums/
 mv $RPM_BUILD_DIR/gums.config.template $RPM_BUILD_ROOT/%{_sysconfdir}/gums/gums.config.template
 chmod 600 $RPM_BUILD_ROOT/%{_sysconfdir}/gums/gums.config.template
-
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -80,11 +89,112 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %config(noreplace) %{_sysconfdir}/edg-mkgridmap.conf
 
+%files lcmaps-voms
+%defattr(-,root,root,-)
+%{_datadir}/osg/voms-mapfile-default
+
 %files -n osg-gums-config
 %defattr(-,root,root,-)
 %attr(0600,tomcat,tomcat) %config(noreplace) %{_sysconfdir}/gums/gums.config.template
 
 %changelog
+* Fri Jun 09 2017 Carl Edquist <edquist@cs.wisc.edu> - 74-1
+- Update to vo-client 74 (SOFTWARE-2765)
+  - Fix the edg-mkgridmap entries for project8 and miniclean (SOFTWARE-2727)
+  - Add new VOMS entry for CIGI (SOFTWARE-2712)
+    - https://ticket.opensciencegrid.org/33374
+  - Add LIGO entry to GUMS template (SOFTWARE-2762)
+  - Fix vo-client ATLAS mappings (SOFTWARE-2753)
+
+* Wed Apr 26 2017 Carl Edquist <edquist@cs.wisc.edu> - 73-1
+- Update to vo-client 73 (SOFTWARE-2710)
+  - Update edg-mkgridmap CDF entry to match vomses #13
+  - Remove LIGO server from GUMS template #14
+  - Remove unused CDF glidecaf settings #15
+    - https://ticket.opensciencegrid.org/33395
+  - drop /production role for des vomsUserGroup #17 (SOFTWARE-2350)
+  - Update default CMS mappings #18 (SOFTWARE-2691)
+    - https://ticket.opensciencegrid.org/33396#1491658593
+  - Update default Fermilab / FIFE mappings #19 (SOFTWARE-2690)
+    - https://ticket.opensciencegrid.org/33395#1491839472
+
+* Wed Mar 22 2017 Carl Edquist <edquist@cs.wisc.edu> - 72-2
+- Update changelog for 72-1 build (SOFTWARE-2643)
+
+* Mon Mar 20 2017 Carl Edquist <edquist@cs.wisc.edu> - 72-1
+- Update to vo-client 72 (SOFTWARE-2643)
+  - Remove NYSGRID, CSIU, & OSGEDU VOs
+  - Add voms.grid.iu.edu voms server for OSG VO
+
+* Wed Mar 01 2017 Carl Edquist <edquist@cs.wisc.edu> - 71-4
+- Keep FNAL (non-INFN.IT) CDF voms servers (SOFTWARE-2612)
+
+* Thu Feb 23 2017 Carl Edquist <edquist@cs.wisc.edu> - 71-3
+- Include vo-client-lcmaps-voms sub-package with voms-mapfile-default
+  for use by the LCMAPS VOMS plugin (SOFTWARE-2609, SOFTWARE-2563)
+
+* Mon Feb 20 2017 Carl Edquist <edquist@cs.wisc.edu> - 71-2
+- Remove dependent objects for cdf, cdf1 voms servers (SOFTWARE-2612)
+
+* Fri Feb 17 2017 Carl Edquist <edquist@cs.wisc.edu> - 71-1
+- Update to vo-client 71 (SOFTWARE-2612)
+  - Remove cdf, cdf1 voms servers
+
+* Wed Jan 18 2017 Carl Edquist <edquist@cs.wisc.edu> - 70-1
+- Update to vo-client 70 (SOFTWARE-2567)
+  - Remove MCDRD VO
+
+* Wed Oct 05 2016 Carl Edquist <edquist@cs.wisc.edu> - 69-1
+- Update to vo-client 69 (SOFTWARE-2473)
+  - Removed LBNE
+  - Removed CDF INFN
+  - Added MINICLEAN
+
+* Wed Sep 07 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 68-2
+- Update to vo-client 68 (SOFTWARE-2445)
+  - Added project8
+
+* Mon Jul 25 2016 Carl Edquist <edquist@cs.wisc.edu> - 67-1
+- Corrected edg-mkgridmap.config for ILC (SOFTWARE-2402)
+
+* Wed May 04 2016 Carl Edquist <edquist@cs.wisc.edu> - 66-1
+- Update to vo-client 66 (SOFTWARE-2316)
+  - LZ, DREAM, CIGI, SURAGRID Update to CILogon
+  - OSG IU VOMS Removal
+  - COMPBIOGRID Removal
+  - NEES VO Removal
+
+* Fri Apr 01 2016 Carl Edquist <edquist@cs.wisc.edu> - 65-2
+- Update DN/CA for osg/voms1.opensciencegrid.org (SOFTWARE-2265)
+
+* Thu Mar 31 2016 Carl Edquist <edquist@cs.wisc.edu> - 65-1
+- Update to vo-client 65 (SOFTWARE-2265)
+  - Added SuperCDMS VO
+  - Update HCC & GLOW DNs
+  - Update 11 voms1.fnal.gov DNs
+
+* Mon Feb 22 2016 Carl Edquist <edquist@cs.wisc.edu> - 64-1
+- Update to vo-client 64 (SOFTWARE-2218)
+  - New VOMS servers DNs for DOSAR, SBGrid, NYSGRID
+
+* Fri Jan 29 2016 Carl Edquist <edquist@cs.wisc.edu> - 63-1
+- Update to vo-client 63 (SOFTWARE-2186)
+  - Drop UC3 and osgcrossce VOs
+  - Transition OSG VO to CILogon OSG CA
+  - Change DN of VOMS servers for Star, Gluex, MIS, & osgedu VOs
+
+* Mon Jan 11 2016 Carl Edquist <edquist@cs.wisc.edu> - 62-2
+- Update FNAL VOMS Server CA (SOFTWARE-2154)
+
+* Wed Jan 06 2016 Carl Edquist <edquist@cs.wisc.edu> - 62-1
+- Update to vo-client 62 (SOFTWARE-2154)
+  - Update FNAL VOMS Server DN
+  - Drop LIGO VO
+
+* Fri Aug 07 2015 Carl Edquist <edquist@cs.wisc.edu> - 61-1
+- Update to vo-client 61 (SOFTWARE-1993)
+  - Added DUNE VO
+
 * Tue Jul 07 2015 Carl Edquist <edquist@cs.wisc.edu> - 60-1
 - Update to vo-client 60 (SOFTWARE-1967)
   - Added LZ VO
@@ -206,14 +316,14 @@ rm -rf $RPM_BUILD_ROOT
 - Updated to vo-client v42. Fixed LSST GUMS template and added COUPP sub-vo.
 
 * Tue Apr 24 2012 Alain Roy <roy@cs.wisc.edu> - 41-3
-- Adjusted VOMS server URLs for default GUMS config to work with latest GUMS. 
+- Adjusted VOMS server URLs for default GUMS config to work with latest GUMS.
 
 * Mon Apr 23 2012 Alain Roy <roy@cs.wisc.edu> - 41-2
 - Fixed LSST URL
 
-* Wed Mar 18 2012 Alain Roy <roy@cs.wisc.edu> - 41-1
-- Updated to match GOC's new v41 release. 
-- Added lsst 
+* Wed Apr 18 2012 Alain Roy <roy@cs.wisc.edu> - 41-1
+- Updated to match GOC's new v41 release.
+- Added lsst
 - Updated VOMS hostname for Alice
 
 * Wed Mar 14 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 40-4

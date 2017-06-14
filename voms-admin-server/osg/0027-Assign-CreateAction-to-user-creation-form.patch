@@ -1,0 +1,33 @@
+From 96c16dbb1904a07ae31df9b80974d7dacb0c66c2 Mon Sep 17 00:00:00 2001
+From: Brian Lin <brianhlin@gmail.com>
+Date: Tue, 18 Apr 2017 13:49:45 -0500
+Subject: [PATCH 27/31] Assign CreateAction to user creation form
+
+https://issues.apache.org/jira/browse/WW-4663
+---
+ src/main/webapp/WEB-INF/p/user/create.jsp | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/main/webapp/WEB-INF/p/user/create.jsp b/src/main/webapp/WEB-INF/p/user/create.jsp
+index 870b89e..0ee0581 100644
+--- a/src/main/webapp/WEB-INF/p/user/create.jsp
++++ b/src/main/webapp/WEB-INF/p/user/create.jsp
+@@ -23,7 +23,7 @@
+ <h1>Create a new user:</h1>
+ 
+ <p>All the fields below are required.</p>
+-<s:form validate="true">
++<s:form validate="true" action="create">
+ 		<s:token/>
+ 		
+ 		<s:textfield name="theName" label="Given name" size="40"
+@@ -49,4 +49,4 @@
+   		<s:select name="caSubject" list="#request.trustedCas" listKey="subjectString" listValue="subjectString" label="CA" />
+   		
+ 		<s:submit value="%{'Create user'}" disabled="false" />
+-</s:form>
+\ No newline at end of file
++</s:form>
+-- 
+2.9.4
+

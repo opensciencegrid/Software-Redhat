@@ -1,16 +1,16 @@
 Name:           osg-ca-certs
-Version:        1.46
-Release:        2%{?dist}
-Summary:        OSG Packaging of the IGTF CA Certs and OSG-specific CAs, in the new OpenSSL 0.9.8/1.0.0 format.  The OSG CA Distribution contains:  1) IGTF Distribution of Authority Root Certificates (CAs accredited by the International Grid Trust Federation). Details of CAs in the OSG distribution can be found on twiki at https://twiki.grid.iu.edu/bin/view/Documentation/CaDistribution. For additional details what is in the current release, see the distribution site at http://software.grid.iu.edu/pacman/cadist/ and change log at http://software.grid.iu.edu/pacman/cadist/CHANGES. 
+Version:        1.63
+Release:        1%{?dist}
+Summary:        OSG Packaging of the IGTF CA Certs and OSG-specific CAs, in the new OpenSSL 0.9.8/1.0.0 format.  The OSG CA Distribution contains:  1) IGTF Distribution of Authority Root Certificates (CAs accredited by the International Grid Trust Federation). Details of CAs in the OSG distribution can be found on twiki at https://twiki.grid.iu.edu/bin/view/Documentation/CaDistribution. For additional details what is in the current release, see the distribution site at http://repo.grid.iu.edu/pacman/cadist/ and change log at http://repo.grid.iu.edu/pacman/cadist/CHANGES. 
 
 
 Group:          System Environment/Base
 License:        Unknown
-URL:            http://software.grid.iu.edu/pacman/cadist/
+URL:            http://repo.grid.iu.edu/pacman/cadist/
 
 # Note: currently, one needs a valid client certificate to access the source tarball
 # https://osg-svn.rtinfo.indiana.edu/cadist/release/osg-certificates-1.20NEW.tar.gz
-Source0:        osg-certificates-1.46NEW.tar.gz
+Source0:        osg-certificates-1.63NEW.tar.gz
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
@@ -18,7 +18,6 @@ BuildArch:      noarch
 Provides:       grid-certificates = 7
 
 Conflicts:      osg-ca-scripts
-Conflicts:      cilogon-ca-certs < 1.0-5
 
 Obsoletes:      vdt-ca-certs
 Obsoletes:      osg-ca-certs-experimental
@@ -38,6 +37,10 @@ mkdir -p $RPM_BUILD_ROOT/etc/grid-security/certificates
 chmod 0644 * 
 mv * $RPM_BUILD_ROOT/etc/grid-security/certificates/
 
+%check
+cd $RPM_BUILD_ROOT/etc/grid-security/certificates
+md5sum -c cacerts_md5sum.txt
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -48,7 +51,67 @@ rm -rf $RPM_BUILD_ROOT
 %doc
 
 %changelog
-* Wed Jul 01 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.46-2
+* Wed Jun 7 2017 Zalak Shah <zsshah@iu.edu> 1.63-1
+- CA release corresponding to IGTF 1.83 release.
+
+* Mon Apr 3 2017 Zalak Shah <zsshah@iu.edu> 1.62-1
+- CA release corresponding to IGTF 1.82 release.
+
+* Mon Feb 27 2017 Zalak Shah <zsshah@iu.edu> 1.61-1
+- CA release corresponding to IGTF 1.81 release.
+
+* Fri Feb 10 2017 Zalak Shah <zsshah@iu.edu> 1.60-1
+- CA release corresponding to IGTF 1.80 release.
+
+* Tue Feb 7 2017 Edgar Fajardo <emfajard@ucsd.edu> 1.58-2
+- Added the check for the md5sums of the certificates (SOFTWARE-2590)
+
+* Tue Jan 11 2017 Zalak Shah <zsshah@iu.edu> 1.59-1
+- CA release corresponding to IGTF 1.79 release.
+
+* Thu Oct 13 2016 Anand Padmanabhan <apadmana@illinois.edu> 1.58-1
+- CA release corresponding to IGTF 1.78 release.
+
+* Mon Aug 1 2016 Anand Padmanabhan <apadmana@illinois.edu> 1.57-1
+- CA release corresponding to IGTF 1.76 release.
+
+* Tue Jul 5 2016 Anand Padmanabhan <apadmana@illinois.edu> 1.56-1
+- CA release corresponding to IGTF 1.75 release.
+
+* Thu May 19 2016 Anand Padmanabhan <apadmana@illinois.edu> 1.55-1
+- CA release corresponding to IGTF 1.74 release.
+
+* Thu Mar 31 2016 Anand Padmanabhan <apadmana@illinois.edu> 1.54-1
+- CA release corresponding to IGTF 1.73 release.
+
+* Tue Mar 1 2016 Anand Padmanabhan <apadmana@illinois.edu> 1.53-1
+- CA release corresponding to IGTF 1.72 release.
+
+* Wed Jan 27 2016 Anand Padmanabhan <apadmana@illinois.edu> 1.52-1
+- CA release corresponding to IGTF 1.71 release.
+
+* Mon Nov 30 2015 Jeny Teheran <jteheran@fnal.gov> 1.51-1
+- CA release corresponding to IGTF 1.70 release.
+
+* Thu Nov 05 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.50-3
+- Remove obsoletes/provides for cilogon-osg-ca-cert, it was broken (SOFTWARE-2097)
+
+* Thu Nov 05 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.50-2
+- Add obsoletes/provides for cilogon-osg-ca-cert (SOFTWARE-2097)
+
+* Mon Oct 26 2015 Jeny Teheran <jteheran@fnal.gov> - 1.50-1
+- CA release corresponding to IGTF 1.69 release.
+
+* Tue Oct 6 2015 Anand Padmanabhan <apadmana@uiuc.edu> - 1.49-1
+- CA release corresponding to IGTF 1.68 release.
+
+* Thu Sep 3 2015 Anand Padmanabhan <apadmana@uiuc.edu> - 1.48-1
+- CA release corresponding to IGTF 1.67 release.
+
+* Wed Jul 8 2015 Jeny Teheran <jteheran@fnal.gov> - 1.47-1
+- CA release corresponding to IGTF 1.65 release.
+
+* Wed Jul 1 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.46-2
 - Obsolete osg-ca-certs-compat (SOFTWARE-1883)
 
 * Mon Jun 1 2015 Kevin M. Hill <kevinh@fnal.gov> - 1.46-1

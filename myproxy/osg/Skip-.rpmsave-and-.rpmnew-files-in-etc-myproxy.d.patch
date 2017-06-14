@@ -1,0 +1,31 @@
+From 7a2f84a41b1b7fb8dadda86508d95d2edacdfa36 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Thu, 20 Oct 2016 14:09:38 -0500
+Subject: [PATCH] Skip .rpmsave and .rpmnew files in /etc/myproxy.d
+
+---
+ myproxy.sysconfig | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/myproxy.sysconfig b/myproxy.sysconfig
+index 4205987..7666831 100644
+--- a/myproxy.sysconfig
++++ b/myproxy.sysconfig
+@@ -6,9 +6,14 @@
+ ## X509_USER_CERT=/etc/grid-security/myproxy/hostcert.pem
+ ## X509_USER_KEY=/etc/grid-security/myproxy/hostkey.pem
+ 
+ 
+ for myproxy_conf in "/etc/myproxy.d"/*; do
++    # skip .rpmsave and .rpmnew files
++    if [ "X${myproxy_conf%.rpmsave}" != "X${myproxy_conf}" ] || \
++       [ "X${myproxy_conf%.rpmnew}" != "X${myproxy_conf}" ]; then
++        continue
++    fi
+     if [ -r "$myproxy_conf" ]; then
+         . "$myproxy_conf"
+     fi
+ done
+-- 
+2.6.3
+

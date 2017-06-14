@@ -2,16 +2,18 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 1.14
-Release: 3%{?gitrev:.%{gitrev}git}%{?dist}
+Version: 2.2.0
+Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
+BuildArch: noarch
 
 Group: Applications/System
 License: Apache 2.0
-URL: http://github.com/bbockelm/condor-ce
+URL: http://github.com/opensciencegrid/htcondor-ce
 
-# _unitdir not defined on el6 build hosts
+# _unitdir,_tmpfilesdir not defined on el6 build hosts
 %{!?_unitdir: %global _unitdir %{_prefix}/lib/systemd/system}
+%{!?_tmpfilesdir: %global _tmpfilesdir %{_prefix}/lib/tmpfiles.d}
 
 # Generated with:
 # git archive --prefix=%{name}-%{version}/ v%{version} | gzip > %{name}-%{version}.tar.gz
@@ -20,17 +22,26 @@ URL: http://github.com/bbockelm/condor-ce
 # git archive --prefix=%{name}-%{version}/ %{gitrev} | gzip > %{name}-%{version}-%{gitrev}.tar.gz
 #
 Source0: %{name}-%{version}%{?gitrev:-%{gitrev}}.tar.gz
-Source1: condor-ce.service
-Source2: condor-ce-collector.service
-Patch0: init-script-lsb-lines.patch
-Patch1: sw1910_run_without_r.patch
-Patch2: drop_userHome.patch
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-Requires:  condor >= 8.0.0
+# Requires a bug fix in config conditionals
+# https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=5914
+# TODO Replace Conflicts with "Requires: condor >= 8.6.0" in OSG 3.4
+Requires:  condor >= 8.4.9
+Conflicts: condor = 8.5.0
+Conflicts: condor = 8.5.1
+Conflicts: condor = 8.5.2
+Conflicts: condor = 8.5.3
+Conflicts: condor = 8.5.4
+Conflicts: condor = 8.5.5
+Conflicts: condor = 8.5.6
+
 # This ought to pull in the HTCondor-CE specific version of the blahp
 Requires: blahp
+
+# Init script doesn't function without `which` (which is no longer part of RHEL7 base).
+Requires: which
 
 # Require the htcondor-ce-client subpackage.  The client provides necessary
 # configuration defaults and scripts for the CE itself.
@@ -38,11 +49,19 @@ Requires: %{name}-client = %{version}-%{release}
 
 Obsoletes: condor-ce < 0.5.4
 Provides:  condor-ce = %{version}
+Provides:  %{name}-master = %{version}-%{release}
 
+%if 0%{?rhel} >= 7
+Requires(post): systemd
+Requires(preun): systemd
+%define systemd 1
+%else
 Requires(post): chkconfig
 Requires(preun): chkconfig
 # This is for /sbin/service
 Requires(preun): initscripts
+%define systemd 0
+%endif
 
 # On RHEL6 and later, we use this utility to setup a custom hostname.
 %if 0%{?rhel} >= 6
@@ -55,6 +74,30 @@ Requires: /usr/bin/unshare
 %endif
 
 %description
+%{summary}
+
+%if ! 0%{?osg}
+%package bdii
+Group: Applications/Internet
+Summary:  BDII GLUE1.3/2 infoproviders and CE config for non-OSG sites.
+
+Requires: %{name} = %{version}-%{release}, bdii
+
+%description bdii
+%{summary}
+%endif
+
+%package view
+Group: Applications/Internet
+Summary: A Website that will report the current status of the local HTCondor-CE
+
+Requires: %{name}-master = %{version}-%{release}
+Requires: python-cherrypy
+Requires: python-genshi
+Requires: ganglia-gmond
+Requires: rrdtool-python
+
+%description view
 %{summary}
 
 %package condor
@@ -111,13 +154,37 @@ Provides:  condor-ce-sge = %{version}
 %description sge
 %{summary}
 
+%package slurm
+Group: Applications/System
+Summary: Default routes for submission to Slurm
+
+Requires: %{name} = %{version}-%{release}
+Requires: /usr/bin/grid-proxy-init
+Requires: /usr/bin/voms-proxy-init
+
+Obsoletes: condor-ce-slurm < 0.5.4
+Provides:  condor-ce-slurm = %{version}
+
+%description slurm
+%{summary}
+
+%package bosco
+Group: Applications/System
+Summary: Default routes for submission to BOSCO
+
+Requires: %{name} = %{version}-%{release}
+Requires: /usr/bin/grid-proxy-init
+Requires: /usr/bin/voms-proxy-init
+
+Provides:  condor-ce-bosco = %{version}
+
+%description bosco
+%{summary}
+
 %package client
 Group: Applications/System
 Summary: Client-side tools for submission to HTCondor-CE
 
-BuildRequires: boost-devel
-BuildRequires: globus-rsl-devel
-BuildRequires: condor-classads-devel
 BuildRequires: cmake
 
 # Note the strange requirements (base package is not required!
@@ -127,13 +194,7 @@ Requires: /usr/bin/grid-proxy-init
 Requires: /usr/bin/voms-proxy-init
 Requires: grid-certificates >= 7
 
-# Require the appropriate version of the python library.  This
-# is rather awkward, but better syntax isn't available until RHEL6
-%ifarch x86_64
-Requires: htcondor.so()(64bit)
-%else
-Requires: htcondor.so()
-%endif
+Requires: condor-python
 
 Obsoletes: condor-ce-client < 0.5.4
 Provides:  condor-ce-client = %{version}
@@ -145,6 +206,7 @@ Provides:  condor-ce-client = %{version}
 Group: Applications/System
 Summary: Central HTCondor-CE information services collector
 
+Provides: %{name}-master = %{version}-%{release}
 Requires: %{name}-client = %{version}-%{release}
 Requires: libxml2-python
 Conflicts: %{name}
@@ -154,9 +216,6 @@ Conflicts: %{name}
 
 %prep
 %setup -q
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
 
 %build
 %cmake -DHTCONDORCE_VERSION=%{version} -DCMAKE_INSTALL_LIBDIR=%{_libdir} -DPYTHON_SITELIB=%{python_sitelib}
@@ -167,10 +226,11 @@ rm -rf $RPM_BUILD_ROOT
 
 make install DESTDIR=$RPM_BUILD_ROOT
 
-%if %{?rhel} >= 7
-mkdir -p $RPM_BUILD_ROOT/%{_unitdir}
-install -m 0644 %{SOURCE1} $RPM_BUILD_ROOT/%{_unitdir}/condor-ce.service
-install -m 0644 %{SOURCE2} $RPM_BUILD_ROOT/%{_unitdir}/condor-ce-collector.service
+%if %systemd
+rm $RPM_BUILD_ROOT%{_initrddir}/condor-ce{,-collector}
+%else
+rm $RPM_BUILD_ROOT%{_unitdir}/condor-ce{,-collector}.service
+rm $RPM_BUILD_ROOT%{_tmpfilesdir}/condor-ce{,-collector}.conf
 %endif
 
 # Directories necessary for HTCondor-CE files
@@ -179,28 +239,63 @@ install -m 0755 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/log/condor-ce
 install -m 1777 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/log/condor-ce/user
 install -m 0755 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lib/condor-ce
 install -m 0755 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lib/condor-ce/spool
+install -m 0755 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lib/condor-ce/spool/ceview
 install -m 0755 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lib/condor-ce/execute
 install -m 0755 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lock/condor-ce
 install -m 1777 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lock/condor-ce/user
 install -m 1777 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lib/gratia/condorce_data
+
+%if 0%{?osg}
+rm -rf $RPM_BUILD_ROOT%{_datadir}/condor-ce/condor_ce_bdii_generate_glue*
+rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/config.d/06-ce-bdii-defaults.conf
+rm -f $RPM_BUILD_ROOT%{_sysconfdir}/condor-ce/config.d/06-ce-bdii.conf
+%else
+mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/lib/bdii/gip/provider
+mv $RPM_BUILD_ROOT%{_datadir}/condor-ce/condor_ce_bdii_generate_glue* \
+   $RPM_BUILD_ROOT%{_localstatedir}/lib/bdii/gip/provider
+%endif
 
 install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
+%if %systemd
+%define add_service() (/bin/systemctl daemon-reload >/dev/null 2>&1 || :)
+%define remove_service() (/bin/systemctl stop %1 > /dev/null 2>&1 || :; \
+                          /bin/systemctl disable %1 > /dev/null 2>&1 || :)
+%define restart_service() (/bin/systemctl condrestart %1 >/dev/null 2>&1 || :)
+%else
+%define add_service() (/sbin/chkconfig --add %1 || :)
+%define remove_service() (/sbin/service %1 stop >/dev/null 2>&1 || :; \
+                                       /sbin/chkconfig --del %1 || :)
+%define restart_service() (/sbin/service %1 condrestart >/dev/null 2>&1 || :)
+%endif
+
 %post
-/sbin/chkconfig --add condor-ce
+%add_service condor-ce
+
+%post collector
+%add_service condor-ce-collector
 
 %preun
-if [ $1 = 0 ]; then
-  /sbin/service condor-ce stop >/dev/null 2>&1 || :
-  /sbin/chkconfig --del condor-ce
+if [ $1 -eq 0 ]; then
+    %remove_service condor-ce
+fi
+
+%preun collector
+if [ $1 -eq 0 ]; then
+    %remove_service condor-ce-collector
 fi
 
 %postun
-if [ "$1" -ge "1" ]; then
-  /sbin/service condor-ce condrestart >/dev/null 2>&1 || :
+if [ $1 -ge 1 ]; then
+    %restart_service condor-ce
+fi
+
+%postun collector
+if [ $1 -ge 1 ]; then
+    %restart_service condor-ce-collector
 fi
 
 %files
@@ -210,13 +305,13 @@ fi
 %{_bindir}/condor_ce_router_q
 
 %{_datadir}/condor-ce/condor_ce_router_defaults
+%{_datadir}/condor-ce/gratia_cleanup.py*
 
-%{_libdir}/condor/libeval_rsl.so
-
-%{_initrddir}/condor-ce
-
-%if %{?rhel} >= 7
+%if %systemd
 %{_unitdir}/condor-ce.service
+%{_tmpfilesdir}/condor-ce.conf
+%else
+%{_initrddir}/condor-ce
 %endif
 
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-auth.conf
@@ -230,8 +325,12 @@ fi
 %{_datadir}/condor-ce/config.d/01-ce-router-defaults.conf
 %{_datadir}/condor-ce/config.d/03-ce-shared-port-defaults.conf
 %{_datadir}/condor-ce/config.d/03-managed-fork-defaults.conf
+%{_datadir}/condor-ce/config.d/03-gratia-cleanup.conf
+%{_datadir}/condor-ce/config.d/05-ce-health-defaults.conf
 
 %{_datadir}/condor-ce/osg-wrapper
+
+%{_bindir}/condor_ce_host_network_check
 
 %attr(-,condor,condor) %dir %{_localstatedir}/run/condor-ce
 %attr(-,condor,condor) %dir %{_localstatedir}/log/condor-ce
@@ -242,6 +341,43 @@ fi
 %attr(-,condor,condor) %dir %{_localstatedir}/lock/condor-ce
 %attr(1777,condor,condor) %dir %{_localstatedir}/lock/condor-ce/user
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
+
+%if ! 0%{?osg}
+%files bdii
+%attr(0755, ldap, ldap) %{_localstatedir}/lib/bdii/gip/provider/condor_ce_bdii_generate_glue1.py*
+%attr(0755, ldap, ldap) %{_localstatedir}/lib/bdii/gip/provider/condor_ce_bdii_generate_glue2.py*
+
+%{_datadir}/condor-ce/config.d/06-ce-bdii-defaults.conf
+%config(noreplace) %{_sysconfdir}/condor-ce/config.d/06-ce-bdii.conf
+%endif
+
+%files view
+%defattr(-,root,root,-)
+
+# Web package
+%{python_sitelib}/htcondorce/web.py*
+%{python_sitelib}/htcondorce/web_utils.py*
+%{python_sitelib}/htcondorce/rrd.py*
+
+%{_datadir}/condor-ce/templates/index.html
+%{_datadir}/condor-ce/templates/vos.html
+%{_datadir}/condor-ce/templates/metrics.html
+%{_datadir}/condor-ce/templates/health.html
+%{_datadir}/condor-ce/templates/header.html
+%{_datadir}/condor-ce/templates/pilots.html
+
+%{_datadir}/condor-ce/config.d/05-ce-view-defaults.conf
+%config(noreplace) %{_sysconfdir}/condor-ce/config.d/05-ce-view.conf
+%config(noreplace) %{_sysconfdir}/condor-ce/metrics.d/00-example-metrics.conf
+%config(noreplace) %{_sysconfdir}/condor-ce/config.d/05-ce-health.conf
+%dir %{_sysconfdir}/condor-ce/metrics.d
+%{_sysconfdir}/condor-ce/metrics.d/00-metrics-defaults.conf
+
+%{_datadir}/condor-ce/condor_ce_view
+%{_datadir}/condor-ce/condor_ce_metric
+%{_datadir}/condor-ce/condor_ce_jobmetrics
+
+%attr(-,condor,condor) %dir %{_localstatedir}/lib/condor-ce/spool/ceview
 
 %files condor
 %defattr(-,root,root,-)
@@ -269,6 +405,18 @@ fi
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/02-ce-sge.conf
 %{_datadir}/condor-ce/config.d/02-ce-sge-defaults.conf
 
+%files slurm
+%defattr(-,root,root,-)
+
+%config(noreplace) %{_sysconfdir}/condor-ce/config.d/02-ce-slurm.conf
+%{_datadir}/condor-ce/config.d/02-ce-slurm-defaults.conf
+
+%files bosco
+%defattr(-,root,root,-)
+
+%config(noreplace) %{_sysconfdir}/condor-ce/config.d/02-ce-bosco.conf
+%{_datadir}/condor-ce/config.d/02-ce-bosco-defaults.conf
+
 %files client
 
 %dir %{_sysconfdir}/condor-ce
@@ -278,12 +426,14 @@ fi
 %{_datadir}/condor-ce/config.d/01-common-auth-defaults.conf
 %{_datadir}/condor-ce/config.d/01-common-collector-defaults.conf
 %{_datadir}/condor-ce/ce-status.cpf
+%{_datadir}/condor-ce/pilot-status.cpf
 %config(noreplace) %{_sysconfdir}/condor-ce/condor_mapfile
 
 %{_datadir}/condor-ce/condor_ce_env_bootstrap
 %{_datadir}/condor-ce/condor_ce_client_env_bootstrap
 %{_datadir}/condor-ce/condor_ce_startup
 %{_datadir}/condor-ce/condor_ce_startup_internal
+%{_datadir}/condor-ce/verify_ce_config.py*
 
 %{_bindir}/condor_ce_config_val
 %{_bindir}/condor_ce_hold
@@ -305,18 +455,22 @@ fi
 %{_bindir}/condor_ce_trace
 %{_bindir}/condor_ce_ping
 
-%{python_sitelib}/condor_ce_info_query.py*
-%{python_sitelib}/condor_ce_tools.py*
+%dir %{python_sitelib}/htcondorce
+%{python_sitelib}/htcondorce/__init__.py*
+%{python_sitelib}/htcondorce/info_query.py*
+%{python_sitelib}/htcondorce/tools.py*
 
 %files collector
 
 %{_bindir}/condor_ce_config_generator
-%{_initrddir}/condor-ce-collector
 %{_datadir}/condor-ce/config.d/01-ce-collector-defaults.conf
 %{_datadir}/condor-ce/config.d/01-ce-auth-defaults.conf
 
-%if %{?rhel} >= 7
+%if %systemd
 %{_unitdir}/condor-ce-collector.service
+%{_tmpfilesdir}/condor-ce-collector.conf
+%else
+%{_initrddir}/condor-ce-collector
 %endif
 
 %config(noreplace) %{_sysconfdir}/sysconfig/condor-ce-collector
@@ -339,6 +493,144 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Thu May 25 2017 Brian Lin <blin@cs.wisc.edu> - 2.2.0-1
+- Add ability to request whole node jobs (SOFTWARE-2715)
+- Fix bugs to pass GLUE2 Validator
+
+* Wed Mar 22 2017 Brian Lin <blin@cs.wisc.edu> - 2.1.5-1
+- Do not disable LCMAPS VOMS attribute checking (SOFTWARE-2633)
+- Package htcondor-ce-slurm (SOFTWARE-2631)
+
+* Fri Feb 24 2017 Brian Lin <blin@cs.wisc.edu> - 2.1.4-1
+- Fix RequestCpus expression (SOFTWARE-2598)
+
+* Wed Feb 22 2017 Derek Weitzel <dweitzel@cse.unl.edu> - 2.1.3-1
+- Add JSON attributes for AGIS (SOFTWARE-2591)
+- Respect RequestCpus of incoming jobs (SOFTWARE-2598)
+- Fix set_attr check in condor_ce_startup (SOFTWARE-2581)
+
+* Tue Dec 24 2016 Brian Lin <blin@cs.wisc.edu> - 2.1.2-1
+- condor_ce_info_status: safely handle bad data (SOFTWARE-2185)
+- Added Russian Data Intensive Grid certs to condor_mapfile (GOC#31952)
+
+* Wed Nov 23 2016 Brian Lin <blin@cs.wisc.edu> - 2.1.1-1
+- Fix hold message for jobs that are not picked up by the job router
+  (SOFTWARE-2539)
+- Remove TotalSubmitProcs attribute in routed jobs for correct
+  condor_q job counts for HTCondor 8.5.x+
+
+* Wed Nov 02 2016 Brian Lin <blin@cs.wisc.edu> - 2.1.0-1
+- Overhaul of queue generation in the CE View to support AGIS JSON
+  (SOFTWARE-2525)
+
+* Mon Oct 24 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.11-1
+- Accept all DaemonCore options in htcondor-ce-view (SOFTWARE-2481)
+- Fix incorrect comment in htcondor-ce-pbs template config (SOFTWARE-2476)
+
+* Tue Oct 11 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.10-1
+- Fix CE View so that it handles new DaemonCore options in Condor 8.5.7
+
+* Tue Sep 27 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.9-4
+- Add conflicts statements so we pseudo-require an condor 8.5.x >= 8.5.7
+
+* Tue Sep 27 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.9-3
+- Always reload daemons after package installation
+- Drop daemon-reload in postun that is handled in post
+
+* Tue Sep 27 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.9-2
+- Fix upgrades so that services are condrestarted instead of a regular restart
+
+* Mon Sep 26 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.9-1
+- Install tmpfile config to /usr/lib (SOFTWARE-2444)
+- Change 'null' to 'undefined' in the JOB_ROUTER_DEFAULTS (SOFTWARE-2440)
+- HTCondor-CE should detect and refuse to start with invalid configs (SOFTWARE-1856)
+- Handle unbounded HTCondor-CE accounting dir (SOFTWARE-2090)
+
+* Wed Aug 29 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.8-2
+- Fix EL7 cleanup on uninstall
+
+* Mon Aug 29 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.8-1
+- Remove the HTCondor-CE init script on EL7 (SOFTWARE-2419)
+- Fix OnExitHold to be set to expressions rather than their evaluated forms
+- Force 'condor_ce_q -allusers' until QUEUE_SUPER_USER is fixed to be able to use CERTIFICATE_MAPFILE in 8.5.6
+- Allow mapping of Terana eScience hostcerts
+- Ensure lockdir and rundir exist with correct permissions on startup
+
+* Thu Jun 23 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.7-1
+- Add a default route for a BOSCO CE (SOFTWARE-2370)
+
+* Wed May 25 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.6-1
+- Fix condor_ce_trace timeout exit code
+- Print condor_ce_trace exceptions when -debug is specified
+- Accept submit attribute format, '+AttributeName', in condor_ce_trace
+
+* Tue Apr 26 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.5-1
+- HTCondor-CE-CEView update to add Schedd (SOFTWARE-2268)
+- Remove extraneous copies of pbs_status.py (SOFTWARE-2279)
+- Add BR ANESP hostcert (https://ticket.opensciencegrid.org/29196)
+- Unit tests for condor_ce_router_defaults accounting groups
+- Add yum clean commands before Travis-CI tests
+- Fix incorrect paths and empty job attr in the CE View
+
+* Thu Mar 31 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.4-1
+- Bug fix for extraneous parens when using uid_table.txt (SOFTWARE-2243)
+
+* Mon Mar 28 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.3-1
+- Drop arch requirements
+- Accept subject DNs in extattr_table.txt (SOFTWARE-2243)
+
+* Fri Feb 22 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.2-1
+- Drop CE ClassAd functions from JOB_ROUTER_DEFAULTS
+
+* Wed Feb 07 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.1-1
+- Fix htcondor-ce-view requirements to allow installation with an htcondor-ce-collector
+- Drop CE ClassAd functions
+
+* Fri Jan 22 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.0-2
+- Require condor >= 8.3.7, which provides the userHome ClassAd function
+
+* Tue Dec 15 2015 Brian Lin <blin@cs.wisc.edu> - 2.0.0-1
+- Added a web monitor: htcondor-ce-view
+- Added BDII providers for non-OSG sites
+- Improved formatting for condor_ce_status
+
+* Thu Nov 12 2015 Brian Lin <blin@cs.wisc.edu> - 1.20-2
+- Rebuild against condor-8.4.0 in case we are not satisfied with 8.4.2
+
+* Wed Nov 11 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.20-1
+- Enable GSI map caching to decrease the number of GSI callouts (SOFTWARE-2105)
+- Allow authenticated, mapped users to advertise glideins
+- Build against condor 8.4.2 (SOFTWARE-2084)
+
+* Fri Nov 06 2015 Brian Lin <blin@cs.wisc.edu> - 1.19-1
+- Fix a bug in setting HTCondor accounting groups for routed jobs (SOFTWARE-2076)
+
+* Mon Nov 2 2015 Edgar Fajardo <emfajard@ucsd.edu> - 1.18-2
+- Build against condor 8.4.0 (SOFTWARE-2084)
+
+* Tue Oct 27 2015 Jeff Dost <jdost@ucsd.edu> - 1.18-1
+- Fix a bug that prevented HTCondor-CE from starting when UID or extattr mappings were not used
+- Allow users to append lines to JOB_ROUTER_DEFAULTS (SOFTWARE-2065)
+- Allow users to add onto accounting group defaults set by the job router (SOFTWARE-2067)
+- build against condor 8.4.1 (SOFTWARE-2084)
+
+* Mon Sep 25 2015 Brian Lin <blin@cs.wisc.edu> - 1.16-1
+- Add network troubleshooting tool (condor_ce_host_network_check)
+- Add ability to disable glideins advertising to the CE
+- Add non-DigiCert hostcerts for CERN
+- Improvements to 'condor_ce_run' error messages
+
+* Mon Aug 31 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.15-2
+- bump release to rebuild against condor 8.3.8 (SOFTWARE-1995)
+
+* Fri Aug 21 2015 Brian Lin <blin@cs.wisc.edu> 1.15-1
+- Add 'default_remote_cerequirements' attribute to the JOB_ROUTER_DEFAULTS
+- Verify the first route in JOB_ROUTER_ENTRIES in the init script
+- htcondor-ce-collecotr now uses /etc/sysconfig/condor-ce-collector for additional configuration
+
+* Mon Jul 20 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.14-4
+- bump to rebuild
+
 * Wed Jul 01 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.14-3
 - Require grid-certificates >= 7 (SOFTWARE-1883)
 
@@ -388,7 +680,7 @@ fi
 * Tue Jan 06 2015 Brian Lin <blin@cs.wisc.edu> - 1.9-2
 - Fix HTCondor jobs routing incorrectly in 8.3.x
 
-* Fri Dec 18 2014 Brian Lin <blin@cs.wisc.edu> - 1.9-1
+* Thu Dec 18 2014 Brian Lin <blin@cs.wisc.edu> - 1.9-1
 - Add auth file to the collector RPM.
 - Updates and fixes to condor_ce_info_status and condor_ce_trace
 - Fixes to default security settings

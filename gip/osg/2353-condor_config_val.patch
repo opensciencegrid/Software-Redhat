@@ -1,0 +1,57 @@
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Subject: [PATCH] Fix inefficiency in making calls to condor_config_val (SOFTWARE-2353)
+
+condor_config_val gets called multiple times inside a loop.  These calls
+could be collapsed into a single call. This will avoid slowdown with a
+large number of groups.
+
+---
+ gip/lib/python/condor_common.py | 24 ++++++++++++++++++------
+ 1 file changed, 18 insertions(+), 6 deletions(-)
+
+diff --git a/gip/lib/python/condor_common.py b/gip/lib/python/condor_common.py
+index 6c376af..fe67e8e 100644
+--- a/gip/lib/python/condor_common.py
++++ b/gip/lib/python/condor_common.py
+@@ -25,9 +25,8 @@ from gip_common import voList, cp_getBoolean, getLogger, cp_get, voList, \
+ from gip_testing import runCommand
+ 
+ condor_version = "condor_version"
++condor_config_val = "condor_config_val %(daemon)s %(attributes)s"
+ condor_group = "condor_config_val %(daemon)s GROUP_NAMES"
+-condor_quota = "condor_config_val %(daemon)s GROUP_QUOTA_%(group)s"
+-condor_prio = "condor_config_val %(daemon)s GROUP_PRIO_FACTOR_%(group)s"
+ condor_status = "condor_status -xml -constraint '%(constraint)s'"
+ condor_status_submitter = "condor_status -submitter -xml -constraint '%(constraint)s'"
+ condor_job_status = "condor_q -xml -constraint '%(constraint)s'"
+@@ -281,11 +280,24 @@ def getGroupInfo(vo_map, cp): #pylint: disable-msg=C0103,W0613
+     retval = {}
+     if (not (grouplist[0].startswith('Not defined'))) and \
+             (len(grouplist[0]) > 0):
++
++        query_attributes = []
++
++        for group in grouplist:
++            query_attributes.append('GROUP_QUOTA_' + group)
++            query_attributes.append('GROUP_PRIO_FACTOR_' + group)
++
++        config_val_output = condorCommand(condor_config_val, cp,
++                {'daemon': configDaemon, 'attributes': ' '.join(query_attributes)})
++
+         for group in grouplist:
+-            quota = condorCommand(condor_quota, cp, \
+-                {'group': group, 'daemon': configDaemon}).read().strip()
+-            prio = condorCommand(condor_prio, cp, \
+-                {'group': group, 'daemon': configDaemon}).read().strip()
++            quota = config_val_output.readline()
++            prio = config_val_output.readline()
++            if not quota or not prio: # only happens at EOF
++                break
++
++            quota = quota.strip()
++            prio = prio.strip()
+             vos = guessVO(cp, group)
+             if not vos:
+                 continue
+-- 
+tg: (a1defc7..) tg/condor_config_val-fix (depends on: master)

@@ -1,0 +1,43 @@
+From 9fb88d0d35088918fd92763ef2b50ed2d666d509 Mon Sep 17 00:00:00 2001
+From: Brian Lin <brianhlin@gmail.com>
+Date: Thu, 11 May 2017 17:15:31 -0500
+Subject: [PATCH 31/31] Avoid duplicate javassist jars from c4d06fe7
+
+---
+ pom.xml | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
+
+diff --git a/pom.xml b/pom.xml
+index f06bacf..acc13ae 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -458,6 +458,12 @@
+ 			<groupId>org.apache.struts</groupId>
+ 			<artifactId>struts2-core</artifactId>
+ 			<version>${struts.version}</version>
++                        <exclusions>
++                          <exclusion>
++                            <groupId>javassist</groupId>
++                            <artifactId>javassist</artifactId>
++                          </exclusion>
++                        </exclusions>
+ 		</dependency>
+ 		<dependency>
+ 			<groupId>org.apache.struts</groupId>
+@@ -485,13 +491,6 @@
+ 			<version>${struts.version}</version>
+ 		</dependency>
+ 		
+-		 
+-		<dependency>
+-			<groupId>javassist</groupId>
+-			<artifactId>javassist</artifactId>
+-			<version>3.8.0.GA</version>
+-		</dependency>
+-		
+ 		<!-- OpenSAML dependencies -->
+ 		<dependency>
+ 			<groupId>org.opensaml</groupId>
+-- 
+2.9.4
+

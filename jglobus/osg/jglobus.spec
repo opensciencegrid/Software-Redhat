@@ -1,95 +1,215 @@
 Name: jglobus
 Summary: An implementation of Globus for Java
 License: Apache 2.0
-Version: 2.0.6
-Release: 4%{?dist}
+Version: 2.1.0
+Release: 8%{?dist}
 URL: http://www.globus.org/toolkit/jglobus/
 Group: System Environment/Libraries
 
+# If set, the maven build is done in offline mode and a tarball of the maven
+# dependencies (basically the local repository tarred up) is used.
+%define maven_offline 0
+
 # git clone git://github.com/jglobus/JGlobus.git JGlobus
 # cd JGlobus
-# git-archive master | gzip -9 > ~/rpmbuild/SOURCES/JGlobus.tar.gz
+# git-archive JGlobus-Release-2.1.0 | gzip -9 > JGlobus-Release-2.1.0.tar.gz
 
-Source0: JGlobus.tar.gz
+Source0: JGlobus-Release-2.1.0.tar.gz
 
-Patch0: crl-updates.patch
-Patch1: pom.xml.patch
+# jglobus-bc146 patch obtained from EPEL version of jglobus 2.1.0
+Patch0:  jglobus-bc146.patch
+
+# EL5 has bouncycastle 1.45, not 1.46
+Patch1: jglobus-bc146-to-145.patch
+
+# Posted to JGlobus github as a fix for key format issues.
+# See SOFTWARE-1607
 Patch2: 1607-fix-sl6-certs.patch
 
+# Not yet in an upstream release: https://github.com/jglobus/JGlobus/pull/157
+# See SOFTWARE-2347
+Patch3: 2347-resource-accumulation.patch
+
 BuildArch: noarch
-BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires: java7-devel
-BuildRequires: jpackage-utils
 BuildRequires: /usr/share/java-1.7.0
-BuildRequires: maven22
-BuildRequires: bouncycastle
 
+%if %{?rhel} < 7
+
+BuildRequires:  maven22
+BuildRequires:  jpackage-utils
+BuildRequires:  java7-devel
+%define mvn mvn22
+
+%else
+
+BuildRequires:  maven >= 3.0
+%define mvn mvn
+
+%endif
+
+%define local_maven /tmp/m2/%{name}/repository
+#global mvnopts --batch-mode --fail-fast -Dmaven.repo.local="%{local_maven}"
+%global mvnopts --batch-mode -Dmaven.repo.local="%{local_maven}"
+
+%if 0%{?maven_offline}
+%global mvnopts %mvnopts --offline
+%else
+%global mvnopts %mvnopts
+%endif
+
+%if 0%{?rhel} >= 7
+Requires: java-headless >= 1:1.7.0
+%else
 Requires: java7
+%endif
 Requires: jpackage-utils
-Requires: bouncycastle
 Requires: log4j
 Conflicts: cog-jglobus-axis < 1.8.0
 
-Requires(post): jpackage-utils
-Requires(postun): jpackage-utils
+%if 0%{?maven_offline}
+
+Source5: %{name}-mvn-deps-el5.tar.gz
+Source6: %{name}-mvn-deps-el6.tar.gz
+Source7: %{name}-mvn-deps-el7.tar.gz
+
+    %if 0%{?el5}
+        %define mvn_deps_tarball %{SOURCE5}
+    %endif
+
+    %if 0%{?el6}
+        %define mvn_deps_tarball %{SOURCE6}
+    %endif
+
+    %if 0%{?el7}
+        %define mvn_deps_tarball %{SOURCE7}
+    %endif
+
+%endif
+
+
 
 %description
 %{summary}
 
 %prep
 %setup -q -c -n JGlobus
-#%patch0 -p1
-%patch1 -p0
+
+%if 0%{?rhel} < 7
+%patch0 -p1
+%endif
+%if 0%{?rhel} <= 5
+%patch1 -p1
+%endif
 %patch2 -p1
+%patch3 -p1
 
 find -name '*.class' -exec rm -f '{}' \;
 find -name '*.jar' -exec rm -f '{}' \;
 
+
 %build
 
-export MAVEN_REPO_LOCAL=$(pwd)/.m2/repository
-mkdir -p $MAVEN_REPO_LOCAL
-%define mvn %{_bindir}/mvn22
 
-# Force jglobus to build against the local bcprov
-%{mvn} install:install-file -B -DgroupId=org.bouncycastle -DartifactId=bcprov-jdk16 -Dversion=1.45 -Dpackaging=jar -Dfile=`build-classpath bcprov` -Dmaven.repo.local=$MAVEN_REPO_LOCAL
+# If we're using maven in offline mode, then copy our maven dependencies from
+# the tarball(s) we have into the local mvn repo
+%if 0%{?maven_offline}
 
-%{mvn} \
-  -B \
-  -e \
-  -DskipTests \
-  -Dmaven.repo.local=$MAVEN_REPO_LOCAL \
-  install javadoc:javadoc
+    rm -rf "%{local_maven}"
+    tar -xzf "%{mvn_deps_tarball}"
+
+    (
+        cd repository
+        mkdir -p "%{local_maven}"
+        mv -f * "%{local_maven}/"
+    )
+    rm -rf repository
+
+%endif
+
+
+%mvn %mvnopts \
+    -DskipTests \
+    install
+
+%mvn %mvnopts \
+    -DskipTests \
+    install javadoc:javadoc
 
 %install
-rm -rf $RPM_BUILD_ROOT
-
 install -d -m 755 $RPM_BUILD_ROOT%{_javadir}/%{name}
 
-install -m 755 ssl-proxies/target/ssl-proxies-%{version}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}/ssl-proxies-%{version}.jar
-install -m 755 gridftp/target/gridftp-%{version}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}/gridftp-%{version}.jar
-install -m 755 gss/target/gss-%{version}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}/gss-%{version}.jar
-install -m 755 jsse/target/jsse-%{version}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}/jsse-%{version}.jar
-install -m 755 io/target/io-%{version}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}/io-%{version}.jar
+install -d -m 755 $RPM_BUILD_ROOT%{_mavenpomdir}
+install -pm 644 pom.xml $RPM_BUILD_ROOT%{_mavenpomdir}/JPP-%{name}.pom
 
-install -d -m 755 $RPM_BUILD_ROOT/usr/share/maven2/poms
-install -pm 644 pom.xml $RPM_BUILD_ROOT/usr/share/maven2/poms/JPP-%{name}.pom
+installjar () {
+    module=$1
+    pomfile=JPP.jglobus-$module.pom
+    jarfile=%name/$module.jar
 
-%add_to_maven_depmap org.jglobus jglobus-all %{version} JPP gss-%{version}.jar
-%add_to_maven_depmap org.jglobus jglobus-all %{version} JPP jsse-%{version}.jar
-%add_to_maven_depmap org.jglobus jglobus-all %{version} JPP gridftp-%{version}.jar
-%add_to_maven_depmap org.jglobus jglobus-all %{version} JPP ssl-proxies-%{version}.jar
+    install  -m 755  "$module/target/$module-%version.jar"  "$RPM_BUILD_ROOT%_javadir/%name/$module-%version.jar"
+    install -pm 644  "pom.xml"                              "$RPM_BUILD_ROOT%_mavenpomdir/$pomfile"
+    ln -s            "$module-%version.jar"                 "$RPM_BUILD_ROOT%_javadir/$jarfile"
+
+%if 0%{rhel} >= 6
+    %add_maven_depmap  -a "org.jglobus:$module"  "$pomfile"  "$jarfile"
+%else
+    %add_to_maven_depmap  org.jglobus  jglobus-all  "%{version}"  JPP  "$module-%{version}.jar"
+%endif
+}
+
+# Inexplicably, the axis sub-module produces a JAR named 'axisg'
+# This messes up the installjar macro; seems to be better to rename
+# the build directory than to try and rename the actual product.
+mv axis axisg
+
+for  module  in  gridftp gss io jsse ssl-proxies axisg
+do
+    installjar $module
+done
+
+
+
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
 %{_javadir}/*
-/usr/share/maven2/poms/JPP-%{name}.pom
-%{_mavendepmapfragdir}/jglobus
+%{_mavenpomdir}/JPP-%{name}.pom
+%{_mavenpomdir}/JPP.%{name}-*.pom
+%{_mavendepmapfragdir}/%{name}
 
 %changelog
+* Wed Jun 01 2016 Carl Edquist <edquist@cs.wisc.edu> - 2.1.0-8
+- Add patch from John Thiltges to avoid resource accumulation (SOFTWARE-2347)
+
+* Thu Jan 21 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 2.1.0-7
+- Remove tomcat requirements (SOFTWARE-2138)
+
+* Wed Oct 21 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 2.1.0-6
+- Patch to build with bouncycastle 1.45 on EL5 (SOFTWARE-2068)
+
+* Thu Oct 01 2015 Brian Bockelman <bbockelm@cse.unl.edu> - 2.1.0-5
+- Add back patch from SOFTWARE-1607 for OpenSSL 1.0 keys.
+
+* Thu Oct 01 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 2.1.0-4
+- Add patch to EL5 and EL6 builds to fix bouncycastle API compatibility (SOFTWARE-2036)
+- Had to disable offline mode for builds to work
+
+* Wed Sep 16 2015 Brian Bockelman <bbockelm@cse.unl.edu> - 2.1.0-3
+- Package axisg sub-module (replaces cog-jglobus-axis).
+
+* Tue Sep 15 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 2.1.0-2.osg
+- Build on EL7 and EL6; use a bundle of mvn dependencies so we can build in offline mode
+
+* Fri Nov 07 2014 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.1.0-1
+- Update to 2.1.0 for EL7 (SOFTWARE-1541)
+- Remove crl-updates.patch (upstream)
+- Remove pom.xml.patch (unnecessary)
+- Remove 1607-fix-sl6-certs.patch (does not apply)
+
 * Mon Sep 22 2014 Carl Edquist <edquist@cs.wisc.edu> - 2.0.6-4
 - Patch to work around SL6-generated certificate issue (SOFTWARE-1607)
 
@@ -106,7 +226,7 @@ rm -rf $RPM_BUILD_ROOT
 * Tue Jul 09 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.5-3.1
 - Merge changes into JDK 7 rebuild
 
-* Mon May  8 2013 Brian Bockelman <bbockelm@cse.unl.edu> - 2.0.5-3
+* Wed May  8 2013 Brian Bockelman <bbockelm@cse.unl.edu> - 2.0.5-3
 - Update fix for JGlobus #80 to upstream version.
 
 * Mon Apr 22 2013 Brian Bockelman <bbockelm@cse.unl.edu> - 2.0.5-2

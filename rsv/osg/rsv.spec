@@ -1,10 +1,15 @@
+%{!?_unitdir:  %global _unitdir /usr/lib/systemd/system}
+
+%if 0%{?rhel} >= 7
+%global systemd 1
+%else
+%global systemd 0
+%endif
+
 Name:      rsv
 Summary:   RSV Meta Package
-Version:   3.10.1
-%if 0%{?el7}
-%define release_suffix _clipped
-%endif
-Release:   2%{?release_suffix}%{?dist}
+Version:   3.14.0
+Release:   1%{?dist}
 License:   Apache 2.0
 Group:     Applications/Monitoring
 URL:       https://twiki.grid.iu.edu/bin/view/MonitoringInformation/RSV
@@ -23,6 +28,11 @@ Requires: osg-configure
 Requires: osg-configure-rsv
 Requires: grid-certificates >= 7
 Requires: voms-clients
+Requires: vo-client
+%if %systemd
+BuildRequires: /usr/bin/systemctl
+%endif
+
 
 %if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
 %{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
@@ -60,10 +70,21 @@ Requires: globus-common-progs
 # We use shar files for globus-job-run
 Requires: sharutils
 
+%if %systemd
+Requires(post):		systemd
+Requires(preun):	systemd
+Requires(postun):	systemd
+%else
 Requires(post): chkconfig
 Requires(preun): chkconfig
 # This is for /sbin/service
 Requires(preun): initscripts
+%endif
+
+# To add support for nordugrid
+%if 0%{?rhel} < 7
+Requires: condor-cream-gahp
+%endif
 
 %description core
 %{summary}
@@ -84,9 +105,7 @@ Requires: /usr/bin/globus-job-run
 Requires: /usr/bin/globusrun
 Requires: /usr/bin/globus-url-copy
 Requires: uberftp
-%if ! 0%{?el7}
 Requires: bestman2-client
-%endif
 Requires: gfal2
 Requires: gfal2-util
 Requires: gfal2-plugin-file
@@ -159,18 +178,31 @@ fi
 
 
 %post core
-/sbin/chkconfig --add rsv
+%if %systemd
+    systemctl daemon-reload &> /dev/null || :
+%else
+    /sbin/chkconfig --add rsv
+%endif
 /sbin/ldconfig
 
 %preun core
 if [ $1 = 0 ]; then
+%if %systemd
+  systemctl stop rsv &> /dev/null || :
+  systemctl disable rsv &> /dev/null || :
+%else
   /sbin/service rsv stop >/dev/null 2>&1 || :
   /sbin/chkconfig --del rsv
+%endif
 fi
 
 %postun core
 if [ "$1" -ge "1" ]; then
+%if %systemd
+  systemctl condrestart rsv &> /dev/null || :
+%else
   /sbin/service rsv restart >/dev/null 2>&1 || :
+%endif
 fi
 /sbin/ldconfig
 
@@ -209,7 +241,11 @@ fi
 %{_bindir}/rsv-control
 %{_libexecdir}/rsv/misc/
 
+%if %systemd
+%{_unitdir}/rsv.service
+%else
 %{_initrddir}/rsv
+%endif
 
 %config(noreplace) %{_sysconfdir}/rsv/consumers.conf
 %config(noreplace) %{_sysconfdir}/rsv/rsv.conf
@@ -245,6 +281,65 @@ fi
 
 
 %changelog
+* Mon Nov 07 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.14.0-1
+- Add systemd service file (SOFTWARE-2498)
+
+* Wed Jul 20 2016 Carl Edquist <edquist@cs.wisc.edu> - 3.13.1-1
+- Handle corrupt pickle file in html-consumer (SOFTWARE-2394)
+
+* Tue May 17 2016 Matyas Selmeci <matyas@cs.wisc.edu> - 3.13.0-3
+- Add back bestman-client dependency on EL7 (SOFTWARE-2333)
+
+* Mon May 9 2016 Edgar Fajardo <emfajard@ucsd.edu> - 3.13.0-2
+- Make sure the version is correct in rsv-control
+
+* Tue May 3 2016 Edgar Fajardo <emfajard@ucsd.edu> - 3.13.0-1
+- Added support for cream and nordugrid (SOFTWARE-2318)
+
+* Mon Nov 16 2015 Edgar Fajardo <emfajard@ucsd.edu> - 3.12.5-1
+- Fixed typo with gratia-consumer.log entry in the logrotate missing (SOFTWARE-2110)
+
+* Mon Nov 16 2015 Edgar Fajardo <emfajard@ucsd.edu> - 3.12.4-1
+- Fixed typo with double entries for the json-consumer.log in the logrotate
+
+* Wed Nov 11 2015 Carl Edquist <edquist@cs.wisc.edu> - 3.12.3-1
+- SOFTWARE-2099 - Fix for running xrootd-cache-probe under rsv-control
+
+* Wed Nov 11 2015 Carl Edquist <edquist@cs.wisc.edu> - 3.12.2-1
+- SOFTWARE-2099 - Allow specifying collector port in xrootd-cache-probe
+- SOFTWARE-2089 - Revert bestman package requirements from el7
+
+* Thu Oct 29 2015 Edfar Fajardo <emfajard@ucsd.edu> - 3.12.1-1
+- Fixed a bug in the json-consumer
+
+* Mon Oct 26 2015 Carl Edquist <edquist@cs.wisc.edu> - 3.12.0-2
+- SOFTWARE-2089 - Add bestman package requirements back for el7
+
+* Thu Oct 22 2015 Edgar Fajardo <emfajard@ucsd.edu> 3.12.0-1
+- Added the json consumer
+
+* Wed Oct 21 2015 Carl Edquist <edquist@cs.wisc.edu> - 3.11.0-2
+- fix python sytax for el5 / python 2.4
+
+* Wed Oct 21 2015 Carl Edquist <edquist@cs.wisc.edu> - 3.11.0-1
+- SOFTWARE-1947 - new xrootd stash cache probe
+
+* Fri Sep 18 2015 Carl Edquist <edquist@cs.wisc.edu> - 3.10.4-1
+- SOFTWARE-2043 - Accommodate nfs delays in srmcp-srm-probe
+
+* Thu Aug 20 2015 Carl Edquist <edquist@cs.wisc.edu> - 3.10.3-1
+- SOFTWARE-1987 - Drop DAEMON privs requirement for htcondor-ce-auth probe
+- SOFTWARE-1995 - rsv-control fixes for condor 8.3.7
+
+* Thu Aug 20 2015 Carl Edquist <edquist@cs.wisc.edu> - 3.10.2-4
+- don't rely on condor_cron_q text output (SOFTWARE-1995)
+
+* Thu Aug 20 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.10.2-3
+- Fix ValueError in rsv-control
+
+* Thu Jul 23 2015 Carl Edquist <edquist@cs.wisc.edu> - 3.10.2-1
+- SOFTWARE-1962 - Add verbose option for srmcp-srm-probe
+
 * Wed Jul 01 2015 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.10.1-2
 - Require grid-certificates >= 7 (SOFTWARE-1883)
 
@@ -421,7 +516,7 @@ fi
 - rsv-consumers:
     - Removed %ghost from %{_datadir}/rsv/www/index.html since that was incorrect.
 
-* Mon Feb 21 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> rsv-consumers-3.6.9-1
+* Mon Feb 20 2012 Scot Kronenfeld <kronenfe@cs.wisc.edu> rsv-consumers-3.6.9-1
 - rsv-consumers:
     - Added a sample index.html page to display before the html-consumer runs.
 
@@ -543,5 +638,5 @@ fi
 * Thu Sep 08 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> rsv-3.4.5-2
 - Added dependencies on osg-configure and osg-configure-rsv
 
-* Thu Jul 20 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.4.0
+* Wed Jul 20 2011 Scot Kronenfeld <kronenfe@cs.wisc.edu> 3.4.0
 - Created initial packages

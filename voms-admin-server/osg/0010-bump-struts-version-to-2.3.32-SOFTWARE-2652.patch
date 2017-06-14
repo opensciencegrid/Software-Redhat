@@ -1,0 +1,25 @@
+From 5a5a9605ed398c905342bbff6fd03c401aa56450 Mon Sep 17 00:00:00 2001
+From: Carl Edquist <edquist@cs.wisc.edu>
+Date: Fri, 24 Mar 2017 11:54:38 -0500
+Subject: [PATCH 10/31] bump struts version to 2.3.32 (SOFTWARE-2652)
+
+---
+ pom.xml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/pom.xml b/pom.xml
+index 8ebeada..2a57358 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -20,7 +20,7 @@
+         <build.settings>src/config/emi-build-settings.xml</build.settings>
+ 		
+ 		<!-- Dependencies versions -->
+-		<struts.version>2.2.1</struts.version>
++		<struts.version>2.3.32</struts.version>
+ 		<hibernate.version>3.2.6.ga</hibernate.version>
+ 		<hibernate-annotations.version>3.3.1.GA</hibernate-annotations.version>
+ 		<c3p0.version>0.9.1</c3p0.version>
+-- 
+2.9.4
+

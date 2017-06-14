@@ -1,0 +1,12 @@
+Index: pegasus-source-4.7.4/build.xml
+===================================================================
+--- pegasus-source-4.7.4.orig/build.xml
++++ pegasus-source-4.7.4/build.xml
+@@ -237,6 +237,7 @@ pegasus.build.git.hash=${pegasus.build.g
+              Version="true"
+              Private="true"
+              Windowtitle="PEGASUS"
++	     Encoding="UTF-8"
+              classpathref="build.classpath">
+       <packageset dir="src">
+         <include name="edu/isi/pegasus/planner/dax/**"/>

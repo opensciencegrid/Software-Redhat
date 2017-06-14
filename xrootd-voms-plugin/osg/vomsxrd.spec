@@ -3,8 +3,8 @@
 #-------------------------------------------------------------------------------
 Name:      xrootd-voms-plugin
 Epoch:     1
-Version:   0.2.0
-Release:   1.6%{?dist}
+Version:   0.4.0
+Release:   1%{?dist}
 Summary:   VOMS attribute extractor plug-in for XRootD
 Group:     System Environment/Libraries
 License:   BSD
@@ -14,15 +14,12 @@ Prefix:    /usr
 # git clone git://github.com/gganis/voms.git vomsxrd
 # cd vomsxrd
 # ./packaging/maketar.sh --prefix vomsxrd --output ~/rpmbuild/SOURCES/vomsxrd.tar.gz
-Source0:   vomsxrd.tar.gz
-Patch0:    xrootd-4.1-build.patch
+Source0:   vomsxrd-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-root
 
 BuildRequires: cmake >= 2.6
 BuildRequires: voms >= 2.0.6
 BuildRequires: voms-devel >= 2.0.6
-#BuildRequires: xrootd4-libs 
-#BuildRequires: xrootd4-devel
 BuildRequires: xrootd-libs >= 1:4.1.0
 BuildRequires: xrootd-devel >= 1:4.1.0
 
@@ -47,11 +44,10 @@ Headers for using the VOMS attribute extractor plug-in
 # Build instructions
 #-------------------------------------------------------------------------------
 %prep
-%setup -c -n vomsxrd
-%patch0 -p0
+%setup -c -n vomsxrd-%{version}
 
 %build
-cd vomsxrd
+cd vomsxrd-%{version}
 mkdir build
 cd build
 
@@ -63,7 +59,7 @@ make VERBOSE=1 %{?_smp_mflags}
 # Installation
 #-------------------------------------------------------------------------------
 %install
-cd vomsxrd
+cd vomsxrd-%{version}
 cd build
 rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
@@ -87,7 +83,7 @@ rm -rf $RPM_BUILD_ROOT
 #-------------------------------------------------------------------------------
 %files
 %defattr(-,root,root,-)
-%{_libdir}/libXrdSecgsiVOMS.so*
+%{_libdir}/libXrdSecgsiVOMS-4.so*
 %doc %{_mandir}/man1/libXrdSecgsiVOMS.1.gz
 
 %files devel
@@ -98,6 +94,9 @@ rm -rf $RPM_BUILD_ROOT
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Mon Jun 20 2016 Edgar Fajardo <emfajard@ucsd.edu> -1:0.4.0-1
+- Updated to v0.4.0 SOFTWARE-2363
+
 * Wed Feb 25 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1:0.2.0-1.6.osg
 - Patch to not require xrootd-compat-libs
 

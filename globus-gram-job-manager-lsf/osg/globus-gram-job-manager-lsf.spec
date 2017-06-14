@@ -3,7 +3,7 @@
 Name:		globus-gram-job-manager-lsf
 %global _name %(tr - _ <<< %{name})
 Version:	2.6
-Release:	1.2%{?dist}
+Release:	2.1%{?dist}
 Summary:	Globus Toolkit - LSF Job Manager Support
 
 Group:		Applications/Internet
@@ -108,7 +108,7 @@ export MPIRUN=no
 	   --with-globus-state-dir=%{_localstatedir}/log/globus
 
 # Reduce overlinking
-sed 's!CC -shared !CC \${wl}--as-needed -shared !g' -i libtool
+sed 's!CC \(.*-shared\) !CC \\\${wl}--as-needed \1 !' -i libtool
 
 make %{?_smp_mflags}
 
@@ -128,6 +128,9 @@ rm %{buildroot}/etc/grid-services/jobmanager-lsf
 
 # Install README file
 install -m 644 -p %{SOURCE8} %{buildroot}%{_pkgdocdir}/README
+
+# Remove license file from pkgdocdir if licensedir is used
+%{?_licensedir: rm %{buildroot}%{_pkgdocdir}/GLOBUS_LICENSE}
 
 %clean
 rm -rf %{buildroot}
@@ -186,23 +189,31 @@ fi
 %config(noreplace) %{_sysconfdir}/globus/globus-lsf.conf
 %config(noreplace) %{_sysconfdir}/globus/gram/lsf.rvf
 %dir %{_pkgdocdir}
-%doc %{_pkgdocdir}/GLOBUS_LICENSE
 %doc %{_pkgdocdir}/README
+%{!?_licensedir: %doc %{_pkgdocdir}/GLOBUS_LICENSE}
+%{?_licensedir: %license GLOBUS_LICENSE}
 
 %files setup-poll
 %config(noreplace) %{_sysconfdir}/grid-services/available/jobmanager-lsf-poll
 
 %files setup-seg
+# This is a loadable module (plugin)
 %{_libdir}/libglobus_seg_lsf.so
 %config(noreplace) %{_sysconfdir}/grid-services/available/jobmanager-lsf-seg
 %config(noreplace) %{_sysconfdir}/globus/scheduler-event-generator/available/lsf
 
 %changelog
-* Wed Mar 11 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 2.6-1.2.osg
+* Wed Aug 10 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.6-2.1.osg
+- Merge OSG changes
+
+* Wed Mar 11 2015 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.6-1.2.osg
 - Add MCORE patch (SOFTWARE-1836)
 
 * Wed Feb 11 2015 Matyas Selmeci <matyas@cs.wisc.edu> - 2.6-1.1.osg
 - Merge OSG changes
+
+* Fri Jan 23 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 2.6-2
+- Implement updated license packaging guidelines
 
 * Mon Oct 27 2014 Mattias Ellert <mattias.ellert@fysast.uu.se> - 2.6-1
 - GT6 update

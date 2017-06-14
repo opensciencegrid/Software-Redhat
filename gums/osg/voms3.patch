@@ -1,0 +1,196 @@
+From d9a299ab782fb768cc0ff3ea6f252542fc2ed2ae Mon Sep 17 00:00:00 2001
+From: Brian Bockelman <bbockelm@cse.unl.edu>
+Date: Tue, 26 Apr 2016 20:55:42 -0500
+Subject: [PATCH] Switch to VOMS3 interfaces for certificate validation.
+
+---
+ gums-client/src/main/config/log4j.properties       |  2 +-
+ gums-core/pom.xml                                  |  2 +-
+ .../main/java/gov/bnl/gums/admin/CertCache.java    | 37 +++++++++++-----------
+ .../java/gov/bnl/gums/command/AbstractCommand.java |  8 -----
+ .../java/gov/bnl/gums/userGroup/VOMSUserGroup.java |  7 ----
+ .../java/gov/bnl/gums/configuration/Derby.java     |  2 +-
+ 6 files changed, 21 insertions(+), 37 deletions(-)
+
+Index: gums-1.5.2/gums-client/src/main/config/log4j.properties
+===================================================================
+--- gums-1.5.2.orig/gums-client/src/main/config/log4j.properties	2016-05-11 15:01:46.206562946 -0500
++++ gums-1.5.2/gums-client/src/main/config/log4j.properties	2016-05-11 15:02:31.584135727 -0500
+@@ -1,10 +1,10 @@
+ log4j.rootLogger=INFO
+ log4j.logger.gov.bnl.gums=INFO, devFile
+ # following line is needed to silence error
+ log4j.logger.org.apache.axis=FATAL, devFile 
+-log4j.logger.org.glite.security=WARN, egeeFile
++log4j.logger.eu.emi.security=WARN, egeeFile
+ log4j.logger.org.opensciencegrid=INFO, privLogFile
+ 
+ log4j.appender.stderr=org.apache.log4j.ConsoleAppender
+ log4j.appender.stderr.target=System.err
+ log4j.appender.stderr.layout=org.apache.log4j.PatternLayout
+Index: gums-1.5.2/gums-core/pom.xml
+===================================================================
+--- gums-1.5.2.orig/gums-core/pom.xml	2016-05-11 15:01:46.206562946 -0500
++++ gums-1.5.2/gums-core/pom.xml	2016-05-11 15:02:31.584135727 -0500
+@@ -363,11 +363,11 @@
+         </dependency>
+ 
+         <dependency>
+             <groupId>org.italiangrid</groupId>
+             <artifactId>voms-api-java</artifactId>
+-            <version>[2.0.8,2.9.9)</version>
++            <version>[3.0.1,3.1.0)</version>
+         </dependency>
+ 
+         <dependency>
+             <groupId>org.bouncycastle</groupId>
+             <artifactId>bcprov-jdk15on</artifactId>
+Index: gums-1.5.2/gums-core/src/main/java/gov/bnl/gums/admin/CertCache.java
+===================================================================
+--- gums-1.5.2.orig/gums-core/src/main/java/gov/bnl/gums/admin/CertCache.java	2016-05-11 15:01:46.206562946 -0500
++++ gums-1.5.2/gums-core/src/main/java/gov/bnl/gums/admin/CertCache.java	2016-05-11 15:02:31.584135727 -0500
+@@ -15,14 +15,16 @@ import java.security.cert.X509Certificat
+ import javax.servlet.Filter;
+ import javax.servlet.ServletContext;
+ import javax.servlet.http.HttpServletRequest;
+ import javax.servlet.http.HttpSession;
+ 
+-import org.glite.security.util.CertUtil;
+-import org.glite.voms.VOMSValidator;
+-import org.glite.voms.VOMSAttribute;
+-import org.glite.voms.FQAN;
++import eu.emi.security.authn.x509.proxy.ProxyUtils;
++import org.italiangrid.voms.VOMSAttribute;
++import org.italiangrid.voms.VOMSValidators;
++import org.italiangrid.voms.ac.VOMSACValidator;
++import org.italiangrid.voms.ac.impl.DefaultVOMSValidator;
++import org.italiangrid.voms.util.CertificateValidatorBuilder;
+ 
+ import org.apache.log4j.Logger;
+ 
+ /**
+  * Implements the javax.servlet.Filter class and stores a user certificate
+@@ -34,12 +36,12 @@ public class CertCache implements Filter
+ 	static private ServletContext context;
+ 	// If you add a new variable here, make sure to add it to
+ 	// the reset method.
+ 	static private ThreadLocal certificate = new ThreadLocal();
+ 	static private ThreadLocal certificateChain = new ThreadLocal();
+-	static private ThreadLocal dn = new ThreadLocal();
+-	static private ThreadLocal fqan = new ThreadLocal();
++	static private ThreadLocal<String> dn = new ThreadLocal();
++	static private ThreadLocal<String> fqan = new ThreadLocal();
+ 
+ 	/**
+ 	 * Get the directory path for the configuration files
+ 	 * 
+ 	 * @return configuration directory as String
+@@ -91,36 +93,33 @@ public class CertCache implements Filter
+ 
+ 	/**
+ 	 * Return the FQAN associated with the current client
+ 	 */
+ 	static public String getUserFQAN() {
+-		return (String) fqan.get();
++		return fqan.get();
+ 	}
+ 
+ 	/**
+ 	 * Set the certificate chain of the currently connected client
+ 	 * @param cert
+ 	 */
+ 	static public void setUserCertificateChain(X509Certificate[] chain) {
+ 		certificateChain.set(chain);
+-		int i = CertUtil.findClientCert(chain);
+-		X509Certificate cert = null;
+-		if (i < 0) {
++		X509Certificate cert = ProxyUtils.getEndUserCertificate(chain);
++		if (cert == null) {
+ 			log.warn("No client certificate found in the supplied certificate chain");
+ 		} else {
+-			cert = chain[i];
+ 			certificate.set(cert);
+ 		}
+-		Vector voms_list = VOMSValidator.parse(chain);
+-		if ((voms_list != null) && (voms_list.size() > 0)) {
+-			VOMSAttribute attribute = (VOMSAttribute)voms_list.get(0);
+-			if (attribute != null) {
+-				List fqans = attribute.getListOfFQAN();
+-				if ((fqans != null) && (fqans.size() > 0)) {
+-					fqan.set(((FQAN)(fqans.get(0))).getFQAN());
+-				}
++		VOMSACValidator validator = VOMSValidators.newValidator();
++		List<VOMSAttribute> attrs = validator.validate(chain);
++		for (VOMSAttribute attr : attrs) {
++			for (String fqan_str : attr.getFQANs()) {
++				fqan.set(fqan_str);
++				break;
+ 			}
++			break;
+ 		}
+ 		if (cert != null) {
+ 			dn.set(CertToolkit.getUserDN(getUserCertificate()));
+ 		}
+ 	}
+Index: gums-1.5.2/gums-core/src/main/java/gov/bnl/gums/command/AbstractCommand.java
+===================================================================
+--- gums-1.5.2.orig/gums-core/src/main/java/gov/bnl/gums/command/AbstractCommand.java	2016-05-11 15:01:46.206562946 -0500
++++ gums-1.5.2/gums-core/src/main/java/gov/bnl/gums/command/AbstractCommand.java	2016-05-11 15:02:31.584135727 -0500
+@@ -28,18 +28,10 @@ import org.glite.security.util.Directory
+  * @author Gabriele Carcassi, Jay Packard
+  */
+ public abstract class AbstractCommand {
+ 	static protected AbstractCommand command;
+ 
+-	/*static {
+-		String vomsdir;
+-		Logger.getLogger(org.glite.security.trustmanager.CRLFileTrustManager.class.getName()).setLevel(Level.ERROR);
+-		Logger.getLogger("org.glite.security.trustmanager.axis.AXISSocketFactory").setLevel(Level.OFF);
+-		Logger.getLogger("org.glite.security.util.DirectoryList").setLevel(Level.OFF);
+-		VOMSValidator.setTrustStore(new BasicVOMSTrustStore(System.getProperty("sslCAFiles"), 12*3600*1000));
+-	}*/
+-	
+     static public void main(String[] args) {
+         command.execute(args);
+     }
+     
+ 	private Logger log = Logger.getLogger(AbstractCommand.class);
+Index: gums-1.5.2/gums-core/src/main/java/gov/bnl/gums/userGroup/VOMSUserGroup.java
+===================================================================
+--- gums-1.5.2.orig/gums-core/src/main/java/gov/bnl/gums/userGroup/VOMSUserGroup.java	2016-05-11 15:01:46.206562946 -0500
++++ gums-1.5.2/gums-core/src/main/java/gov/bnl/gums/userGroup/VOMSUserGroup.java	2016-05-11 15:02:31.584135727 -0500
+@@ -37,17 +37,10 @@ import org.glite.voms.generated.*;
+ public class VOMSUserGroup extends UserGroup {
+ 	static private final boolean defaultAcceptProxyWithoutFQAN = true;
+ 	static private final String defaultMatchFQAN = "ignore";
+ 	static private String[] matchFQANTypes = {"exact","vorole","role","vogroup","vo","ignore"};
+ 	
+-	/*static {
+-       Logger.getLogger(org.glite.security.trustmanager.CRLFileTrustManager.class.getName()).setLevel(Level.ERROR);
+-       Logger.getLogger("org.glite.security.trustmanager.axis.AXISSocketFactory").setLevel(Level.OFF);
+-       Logger.getLogger("org.glite.security.util.DirectoryList").setLevel(Level.OFF);
+-       VOMSValidator.setTrustStore(new BasicVOMSTrustStore("/etc/grid-security/certificates", 12*3600*1000));
+-	}*/
+-	
+     static public String getTypeStatic() {
+ 		return "voms";
+ 	}
+     
+     static public List getMatchFQANTypes() {
+Index: gums-1.5.2/gums-core/src/test/java/gov/bnl/gums/configuration/Derby.java
+===================================================================
+--- gums-1.5.2.orig/gums-core/src/test/java/gov/bnl/gums/configuration/Derby.java	2016-05-11 15:01:46.206562946 -0500
++++ gums-1.5.2/gums-core/src/test/java/gov/bnl/gums/configuration/Derby.java	2016-05-11 15:02:31.584135727 -0500
+@@ -4,11 +4,11 @@
+  */
+ 
+ package gov.bnl.gums.configuration;
+ 
+ import java.sql.*;
+-import org.apache.log4j.*;
++import org.apache.log4j.Logger;
+ 
+ public class Derby {
+ 
+ 	static Logger logger = Logger.getLogger("gov.bnl.gov.configuration.Derby");
+ 

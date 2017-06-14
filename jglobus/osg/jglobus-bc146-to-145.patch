@@ -1,0 +1,78 @@
+From 4caa7adaedbdb9df5390f1ce60d75e5bf6182507 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Wed, 21 Oct 2015 10:25:12 -0500
+Subject: [PATCH] jglobus-bc146-to-145.patch
+
+---
+ pom.xml                                                            | 2 +-
+ ssl-proxies/pom.xml                                                | 1 +
+ ssl-proxies/src/main/java/org/globus/gsi/util/CertificateUtil.java | 5 ++++-
+ 3 files changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/pom.xml b/pom.xml
+index 844c548..7c9d3e8 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -147,11 +147,11 @@
+ 				<scope>compile</scope>
+ 			</dependency>
+ 			<dependency>
+ 				<groupId>org.bouncycastle</groupId>
+ 				<artifactId>bcprov-jdk16</artifactId>
+-				<version>1.46</version>
++				<version>1.45</version>
+ 			</dependency>
+ 			<dependency>
+ 				<groupId>commons-io</groupId>
+ 				<artifactId>commons-io</artifactId>
+ 				<version>1.4</version>
+diff --git a/ssl-proxies/pom.xml b/ssl-proxies/pom.xml
+index 28cd567..d6fd8d5 100644
+--- a/ssl-proxies/pom.xml
++++ b/ssl-proxies/pom.xml
+@@ -40,10 +40,11 @@
+ 			<scope>compile</scope>
+ 		</dependency>
+ 		<dependency>
+ 			<groupId>org.bouncycastle</groupId>
+ 			<artifactId>bcprov-jdk16</artifactId>
++			<version>1.45</version>
+ 		</dependency>
+ 		<dependency>
+ 			<groupId>commons-io</groupId>
+ 			<artifactId>commons-io</artifactId>
+ 		</dependency>
+diff --git a/ssl-proxies/src/main/java/org/globus/gsi/util/CertificateUtil.java b/ssl-proxies/src/main/java/org/globus/gsi/util/CertificateUtil.java
+index 8cbfd9b..25724b1 100644
+--- a/ssl-proxies/src/main/java/org/globus/gsi/util/CertificateUtil.java
++++ b/ssl-proxies/src/main/java/org/globus/gsi/util/CertificateUtil.java
+@@ -78,10 +78,13 @@ public final class CertificateUtil {
+ 
+     private static final Map<String, String> KEYWORD_MAP = new HashMap<String, String>();
+ 
+     private static final Map<String, String> OID_MAP = new HashMap<String, String>();
+ 
++    // from BC 1.46:
++    public static final DERObjectIdentifier X509Extension_keyUsage = new DERObjectIdentifier("2.5.29.15");
++
+ 
+     static {
+         // Taken from BouncyCastle 2.46
+         KEYWORD_MAP.put("SN", SERIALNUMBER.oid);
+         KEYWORD_MAP.put("E", EmailAddress.oid);
+@@ -431,11 +434,11 @@ public final class CertificateUtil {
+         X509Extensions extensions = crt.getExtensions();
+         if (extensions == null) {
+             return null;
+         }
+         X509Extension extension =
+-                extensions.getExtension(X509Extension.keyUsage);
++                extensions.getExtension(X509Extension_keyUsage);
+         return (extension != null) ? getKeyUsage(extension) : null;
+     }
+ 
+     /**
+      * Gets a boolean array representing bits of the KeyUsage extension.
+-- 
+2.4.6
+

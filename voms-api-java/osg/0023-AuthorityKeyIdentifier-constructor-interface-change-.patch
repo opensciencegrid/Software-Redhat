@@ -1,0 +1,30 @@
+From fddccb13c49adcae3c5c1105e3e81c2ceeff0e22 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Thu, 1 Oct 2015 11:05:16 -0500
+Subject: [PATCH 23/24] AuthorityKeyIdentifier constructor interface change (bc
+ 1.47+)
+
+---
+ src/main/java/org/glite/voms/PKIUtils.java | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/main/java/org/glite/voms/PKIUtils.java b/src/main/java/org/glite/voms/PKIUtils.java
+index 0105979..f45287a 100644
+--- a/src/main/java/org/glite/voms/PKIUtils.java
++++ b/src/main/java/org/glite/voms/PKIUtils.java
+@@ -622,11 +622,11 @@ public class PKIUtils {
+                 }
+                 catch (Exception e) {
+                     throw new IllegalArgumentException("While extracting Authority Key Identifier " + e.getMessage(), e);
+                 }
+                 
+-                return new AuthorityKeyIdentifier(ASN1Sequence.getInstance(dobj));
++                return AuthorityKeyIdentifier.getInstance(dobj);
+             }
+         }
+         return null;
+     }
+ 
+-- 
+2.4.6
+

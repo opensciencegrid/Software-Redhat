@@ -1,0 +1,29 @@
+diff --git a/bigtop-detect-javahome b/bigtop-detect-javahome
+index 232f6cd..93808bb 100644
+--- a/bigtop-detect-javahome
++++ b/bigtop-detect-javahome
+@@ -52,16 +52,21 @@ MISCJAVA_HOME_CANDIDATES='\
+     /usr/lib/jvm/java-openjdk \
+     /usr/lib/jvm/jre-openjdk'
+ 
++ALTERNATIVES_JAVA_HOME_CANDIDATES='\
++    /etc/alternatives/java_sdk \
++    /etc/alternatives/jre'
++
+ case $BIGTOP_JAVA_MAJOR in
+   6) JAVA_HOME_CANDIDATES="$JAVA6_HOME_CANDIDATES"
+      ;;
+   7) JAVA_HOME_CANDIDATES="$JAVA7_HOME_CANDIDATES $OPENJAVA7_HOME_CANDIDATES"
+      ;;
+-  *) JAVA_HOME_CANDIDATES="$JAVA6_HOME_CANDIDATES     \
++  *) JAVA_HOME_CANDIDATES="$ALTERNATIVES_JAVA_HOME_CANDIDATES \
++                           $OPENJAVA7_HOME_CANDIDATES \
+                            $JAVA7_HOME_CANDIDATES     \
+                            $MISCJAVA_HOME_CANDIDATES  \
+-                           $OPENJAVA7_HOME_CANDIDATES \
+-                           $OPENJAVA6_HOME_CANDIDATES"
++                           $OPENJAVA6_HOME_CANDIDATES \
++                           $JAVA6_HOME_CANDIDATES"
+      ;;
+ esac
+ 

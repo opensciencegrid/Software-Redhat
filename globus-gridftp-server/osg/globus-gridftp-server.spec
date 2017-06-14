@@ -1,38 +1,62 @@
 %global _hardened_build 1
 
 %{!?_initddir: %global _initddir %{_initrddir}}
-
+%{!?_unitdir:  %global _unitdir /usr/lib/systemd/system}
 %{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
+
+%if 0%{?rhel} >= 7
+%global systemd 1
+%else
+%global systemd 0
+%endif
 
 Name:		globus-gridftp-server
 %global _name %(tr - _ <<< %{name})
-Version:	7.20
+Version:	11.8
 Release:	1.1%{?dist}
 Summary:	Globus Toolkit - Globus GridFTP Server
 
 Group:		System Environment/Libraries
 License:	ASL 2.0
-URL:		http://www.globus.org/
-Source:		http://www.globus.org/ftppub/gt6/packages/%{_name}-%{version}.tar.gz
-Source1:	%{name}
-Source2:	globus-gridftp-sshftp
-Source3:	globus-gridftp-password.8
-Source4:	globus-gridftp-server-setup-chroot.8
-Source5:	globus-gridftp-server.sysconfig
-Source6:	globus-gridftp-server.osg-sysconfig
-Source7:	globus-gridftp-server.logrotate
+URL:		http://toolkit.globus.org/
+Source:		http://toolkit.globus.org/ftppub/gt6/packages/%{_name}-%{version}.tar.gz
+Source1:	%{name}.service
+Source2:	globus-gridftp-sshftp.service
+Source3:	%{name}
+Source4:	globus-gridftp-sshftp
+Source5:	globus-gridftp-password.8
+Source6:	globus-gridftp-server.sysconfig
+Source7:	globus-gridftp-server.osg-sysconfig
+Source8:	globus-gridftp-server.logrotate
 #		README file
-Source8:	GLOBUS-GRIDFTP
+Source9:	GLOBUS-GRIDFTP
+# SystemD service files and start/stop/reconfigure scripts
+Source10:       %{name}.service
+Source11:       %{name}-start
+Source12:       globus-gridftp-sshftp.service
+Source13:       globus-gridftp-sshftp-reconfigure
+Source14:       globus-gridftp-sshftp-start
+Source15:       globus-gridftp-sshftp-stop
+#		Fix globus-gridftp-server-setup-chroot for kfreebsd and hurd
+Patch0:		globus-gridftp-server-unames.patch
 Patch1:		gridftp-conf-logging.patch
+Patch2:         Do-not-ignore-config.d-files-with-a-.-in-the-name.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Requires:	globus-xio-gsi-driver%{?_isa} >= 2
-BuildRequires:	globus-common-devel >= 15
+%if %{?fedora}%{!?fedora:0} >= 20 || %{?rhel}%{!?rhel:0} >= 6
+Requires:	globus-xio-udt-driver%{?_isa} >= 1
+%endif
+Requires:	globus-common%{?_isa} >= 16
+Requires:	globus-xio%{?_isa} >= 5
+Requires:	globus-gridftp-server-control%{?_isa} >= 4
+Requires:	globus-ftp-control%{?_isa} >= 7
+BuildRequires:	globus-common-devel >= 16
 BuildRequires:	globus-xio-devel >= 5
 BuildRequires:	globus-xio-gsi-driver-devel >= 2
 BuildRequires:	globus-gfork-devel >= 3
-BuildRequires:	globus-gridftp-server-control-devel >= 2
-BuildRequires:	globus-ftp-control-devel >= 6
+BuildRequires:	globus-gridftp-server-control-devel >= 4
+BuildRequires:	globus-ftp-control-devel >= 7
 BuildRequires:	globus-authz-devel >= 2
 BuildRequires:	globus-usage-devel >= 3
 BuildRequires:	globus-gssapi-gsi-devel >= 10
@@ -41,17 +65,30 @@ BuildRequires:	globus-gsi-credential-devel >= 6
 BuildRequires:	globus-gsi-sysconfig-devel >= 5
 BuildRequires:	globus-io-devel >= 9
 BuildRequires:	openssl-devel
-Requires:	globus-xio%{?_isa} >= 5
-Requires:	globus-ftp-control%{?_isa} >= 6
+# zlib-devel required for OSG adler32 patch
+BuildRequires:  zlib-devel
+BuildRequires:	perl-generators
+%if %systemd
+BuildRequires:	systemd-units
+%endif
+#		Additional requirements for make check
+BuildRequires:	openssl
+BuildRequires:	fakeroot
 
 %package progs
 Summary:	Globus Toolkit - Globus GridFTP Server Programs
 Group:		Applications/Internet
 Requires:	%{name}%{?_isa} = %{version}-%{release}
+%if %systemd
+Requires(post):		systemd-units
+Requires(preun):	systemd-units
+Requires(postun):	systemd-units
+%else
 Requires(post):		chkconfig
 Requires(preun):	chkconfig
 Requires(preun):	initscripts
 Requires(postun):	initscripts
+%endif
 Conflicts:	gridftp-hdfs%{?_isa} < 0.5.4-6
 Conflicts:	xrootd-dsi%{?_isa} < 3.0.4-9
 
@@ -59,12 +96,12 @@ Conflicts:	xrootd-dsi%{?_isa} < 3.0.4-9
 Summary:	Globus Toolkit - Globus GridFTP Server Development Files
 Group:		Development/Libraries
 Requires:	%{name}%{?_isa} = %{version}-%{release}
-Requires:	globus-common-devel%{?_isa} >= 15
+Requires:	globus-common-devel%{?_isa} >= 16
 Requires:	globus-xio-devel%{?_isa} >= 5
 Requires:	globus-xio-gsi-driver-devel%{?_isa} >= 2
 Requires:	globus-gfork-devel%{?_isa} >= 3
-Requires:	globus-gridftp-server-control-devel%{?_isa} >= 2
-Requires:	globus-ftp-control-devel%{?_isa} >= 6
+Requires:	globus-gridftp-server-control-devel%{?_isa} >= 4
+Requires:	globus-ftp-control-devel%{?_isa} >= 7
 Requires:	globus-authz-devel%{?_isa} >= 2
 Requires:	globus-usage-devel%{?_isa} >= 3
 Requires:	globus-gssapi-gsi-devel%{?_isa} >= 10
@@ -103,11 +140,13 @@ Globus GridFTP Server Development Files
 
 %prep
 %setup -q -n %{_name}-%{version}
+%patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %build
 # Reduce overlinking
-export LDFLAGS="-Wl,--as-needed -Wl,-z,defs %{?__global_ldflags}"
+export LDFLAGS="-Wl,--as-needed -Wl,-z,defs %{?__global_ldflags} -lz"
 
 export GRIDMAP=/etc/grid-security/grid-mapfile
 export GLOBUS_VERSION=6.0
@@ -144,27 +183,38 @@ sed '/^env /d' -i %{buildroot}%{_sysconfdir}/xinetd.d/gridftp
 # Remove start-up scripts
 rm -rf %{buildroot}%{_sysconfdir}/init.d
 
+%if %systemd
+# Install systemd unit files and helper scripts
+mkdir -p %{buildroot}%{_unitdir}
+install -p -m 0644 %{SOURCE10} %{SOURCE12} %{buildroot}%{_unitdir}
+mkdir -p %{buildroot}%{_libexecdir}
+install -p -m 0755 %{SOURCE11} %{SOURCE13} %{SOURCE14} %{SOURCE15} %{buildroot}%{_libexecdir}
+%else
 # Install start-up scripts
 mkdir -p %{buildroot}%{_initddir}
-install -p %{SOURCE1} %{SOURCE2} %{buildroot}%{_initddir}
+install -p %{SOURCE3} %{SOURCE4} %{buildroot}%{_initddir}
+%endif
 
 # Install additional man pages
-install -m 644 -p %{SOURCE3} %{SOURCE4} %{buildroot}%{_mandir}/man8
+install -m 644 -p %{SOURCE5} %{buildroot}%{_mandir}/man8
 
 # Install README file
-install -m 644 -p %{SOURCE8} %{buildroot}%{_pkgdocdir}/README
+install -m 644 -p %{SOURCE9} %{buildroot}%{_pkgdocdir}/README
 
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig
-install -m 0644 %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/%{name}
+install -m 0644 %{SOURCE6} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/%{name}
 
 mkdir -p $RPM_BUILD_ROOT/usr/share/osg/sysconfig
-install -m 0644 %{SOURCE6} $RPM_BUILD_ROOT/usr/share/osg/sysconfig/%{name}
+install -m 0644 %{SOURCE7} $RPM_BUILD_ROOT/usr/share/osg/sysconfig/%{name}
 
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d
-install -m 0644 %{SOURCE7} $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/%{name}.logrotate
+install -m 0644 %{SOURCE8} $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/%{name}.logrotate
 
 # Remove license file from pkgdocdir if licensedir is used
 %{?_licensedir: rm %{buildroot}%{_pkgdocdir}/GLOBUS_LICENSE}
+
+%check
+make %{_smp_mflags} check VERBOSE=1
 
 %clean
 rm -rf %{buildroot}
@@ -174,23 +224,41 @@ rm -rf %{buildroot}
 %postun -p /sbin/ldconfig
 
 %post progs
+/sbin/ldconfig
 if [ $1 -eq 1 ]; then
+%if %systemd
+    systemctl daemon-reload &> /dev/null || :
+%else
     /sbin/chkconfig --add %{name}
     /sbin/chkconfig --add globus-gridftp-sshftp
+%endif
 fi
 
 %preun progs
 if [ $1 -eq 0 ]; then
+%if %systemd
+    systemctl stop %{name} &> /dev/null || :
+    systemctl stop globus-gridftp-sshftp &> /dev/null || :
+    systemctl disable %{name} &> /dev/null || :
+    systemctl disable globus-gridftp-sshftp &> /dev/null || :
+%else
     /sbin/chkconfig --del %{name}
     /sbin/chkconfig --del globus-gridftp-sshftp
     /sbin/service globus-gridftp-server stop
     /sbin/service globus-gridftp-sshftp stop
+%endif
 fi
 
 %postun progs
+/sbin/ldconfig
 if [ $1 -ge 1 ]; then
+%if %systemd
+    systemctl condrestart %{name} &> /dev/null || :
+    systemctl condrestart globus-gridftp-sshftp &> /dev/null || :
+%else
     /sbin/service %{name} condrestart > /dev/null 2>&1 || :
     /sbin/service globus-gridftp-sshftp condrestart > /dev/null 2>&1 || :
+%endif
 fi
 
 %files
@@ -214,8 +282,17 @@ fi
 %config(noreplace) %{_sysconfdir}/gridftp.gfork
 %config(noreplace) %{_sysconfdir}/xinetd.d/gridftp
 /usr/share/osg/sysconfig/%{name}
+%if %systemd
+%{_unitdir}/%{name}.service
+%{_unitdir}/globus-gridftp-sshftp.service
+%{_libexecdir}/%{name}-start
+%{_libexecdir}/globus-gridftp-sshftp-reconfigure
+%{_libexecdir}/globus-gridftp-sshftp-start
+%{_libexecdir}/globus-gridftp-sshftp-stop
+%else
 %{_initddir}/%{name}
 %{_initddir}/globus-gridftp-sshftp
+%endif
 %doc %{_mandir}/man8/globus-gridftp-password.8*
 %doc %{_mandir}/man8/globus-gridftp-server.8*
 %doc %{_mandir}/man8/globus-gridftp-server-setup-chroot.8*
@@ -226,6 +303,133 @@ fi
 %{_libdir}/pkgconfig/%{name}.pc
 
 %changelog
+* Thu Dec 22 2016 Carl Edquist <edquist@cs.wisc.edu> - 11.8-1.1.osg
+- Merge OSG changes (SOFTWARE-2436 related)
+
+* Fri Nov 04 2016 Mattias Ellert <mattias.ellert@physics.uu.se> - 11.8-1
+- GT6 update: Updated man pages, add adler32 checksum support
+
+* Fri Oct 28 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 10.4-1.5.osg
+- Use systemd service files on EL7 (SOFTWARE-2497)
+
+* Wed Oct 19 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 10.4-1.4.osg
+- Disable SSLv3 (SOFTWARE-2471)
+
+* Wed Oct 19 2016 Brian Lin <blin@cs.wisc.edu> - 10.4-1.3.osg
+- Fix exit code when determining service status (SOFTWARE-2470)
+
+* Thu Oct 13 2016 Mattias Ellert <mattias.ellert@physics.uu.se> - 11.3-3
+- Rebuild for openssl 1.1.0 (Fedora 26)
+
+* Mon Sep 05 2016 Mattias Ellert <mattias.ellert@physics.uu.se> - 11.3-2
+- Fix broken pre scriptlet
+
+* Thu Sep 01 2016 Mattias Ellert <mattias.ellert@physics.uu.se> - 11.3-1
+- GT6 update: Updates for OpenSSL 1.1.0
+
+* Thu Sep 01 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 10.4-1.2.osg
+- Do not ignore config.d files with a '.' in the name (SOFTWARE-2197)
+
+* Sun Aug 14 2016 Mattias Ellert <mattias.ellert@physics.uu.se> - 11.1-2
+- Convert to systemd unit files (Fedora 25+)
+
+* Wed Aug 10 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 10.4-1.1.osg
+- Merge OSG changes
+
+* Wed Jul 27 2016 Mattias Ellert <mattias.ellert@physics.uu.se> - 11.1-1
+- GT6 update
+  - Fix forced order issues with restart (11.1)
+  - Add forced ordering option (11.0)
+  - Add Globus task id to transfer log (10.6)
+  - Don't errantly kill a transfer due to timeout while client is still
+    connected (10.5)
+
+* Fri Jul 22 2016 Carl Edquist <edquist@cs.wisc.edu> - 7.20-1.3.osg
+- Add TRANSFER to log_level (SOFTWARE-2397)
+
+* Mon Jun 27 2016 Brian Bockelman <bbockelm@cse.unl.edu> - 7.20-1.2.osg
+- Avoid deadlocking when the gridftp server closes its log file. SOFTWARE-2377
+- Add support for adler32 checksums. SOFTWARE-2379
+
+* Thu May 19 2016 Mattias Ellert <mattias.ellert@fysast.uu.se> - 10.4-1
+- GT6 update
+  - Fix broken remote_node auth without sharing (10.4)
+  - Fix configuration for ipc_interface (10.3)
+  - Fix remote_node connection failing when ipc_subject isn't used (10.3)
+
+* Fri May 06 2016 Mattias Ellert <mattias.ellert@fysast.uu.se> - 10.2-1
+- GT6 update
+  - Spelling (10.2)
+  - Don't overwrite LDFLAGS (10.1) - Fix for regressions in 9.8 ans 9.9
+  - Updates for https support (10.0)
+
+* Mon May 02 2016 Mattias Ellert <mattias.ellert@fysast.uu.se> - 9.9-1
+- GT6 update
+  - Fix crash when storattr is used without modify (9.7)
+  - Add SITE WHOAMI command to return currently authenticated user (9.6)
+  - Update manpage for -encrypt-data (9.5)
+
+* Wed Feb 03 2016 Fedora Release Engineering <releng@fedoraproject.org> - 9.4-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
+
+* Wed Jan 13 2016 Mattias Ellert <mattias.ellert@fysast.uu.se> - 9.4-1
+- GT6 update (fix mem error when sharing)
+
+* Tue Nov 24 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 9.3-1
+- GT6 update
+  - Add configuration to require encrypted data channels (9.3)
+  - More robust cmp function (9.2)
+
+* Fri Nov 06 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 9.1-1
+- GT6 update
+  - fix for thread race crash between sequential transfers
+  - fix for partial stat punting when passed a single entry
+  - fix for double free on transfer failure race
+
+* Tue Oct 27 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 9.0-2
+- Missing ? in _isa macro
+
+* Tue Oct 27 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 9.0-1
+- GT6 update (add SITE STORATTR command and associated DSI api)
+
+* Fri Oct 23 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 8.9-1
+- GT6 update (Home directory fixes)
+
+* Wed Aug 26 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 8.7-1
+- GT6 update (Improvements to globus-gridftp-server-setup-chroot)
+- Man page for globus-gridftp-server-setup-chroot now provided by
+  upstream, remove the one from the source rpm
+- Add build requires on openssl and fakeroot needed for new tests
+
+* Thu Aug 06 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 8.1-1
+- GT6 update (GT-622: GridFTP server crash with sharing group permissions)
+- Enable checks
+
+* Mon Jul 27 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 8.0-1
+- GT6 update
+- Add update_bytes api that sets byte counters and range markers separately
+
+* Sat Jun 20 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 7.26-1
+- GT6 update (man pages updates)
+
+* Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 7.25-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
+
+* Wed Apr 08 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 7.25-1
+- GT6 update (Fix order of drivers when using netmgr)
+
+* Sat Mar 28 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 7.24-1
+- GT6 update
+- Fix netmanager crash (7.24)
+- Allow netmanager calls when taskid isn't set (7.24)
+- Fix threads commandline arg processing (7.23)
+- Prevent parse error on pre-init envs from raising assertion (7.23)
+- Restrict sharing based on username or group membership (7.21)
+- Don't enable udt without threads (7.21)
+- Environrment and threading config not loaded from config dir (7.21)
+- Ignore config.d files with a '.' in name (7.21)
+- Always install udt driver (7.21) - F20+, EPEL6+
+
 * Mon Feb 16 2015 Matyas Selmeci <matyas@cs.wisc.edu> - 7.20-1.1.osg
 - Merge OSG changes
 

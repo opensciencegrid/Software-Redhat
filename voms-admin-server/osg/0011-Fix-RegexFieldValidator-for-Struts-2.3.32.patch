@@ -1,0 +1,618 @@
+From eb24b42d74d45657088d1bfa651bf4a274a417bc Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Wed, 22 Mar 2017 13:52:27 -0500
+Subject: [PATCH 11/31] Fix RegexFieldValidator for Struts 2.3.32
+
+The parameters for the @RegexFieldValidator annotation have changed
+sometime between Struts 2.2.1 and 2.3.32: `expression` has been renamed
+to `regex`.
+
+SOFTWARE-2652
+---
+ .../org/glite/security/voms/admin/apiv2/VOMSUserJSON.java  | 12 ++++++------
+ .../glite/security/voms/admin/view/actions/SearchData.java |  2 +-
+ .../voms/admin/view/actions/apiv2/CreateGroupAction.java   |  4 ++--
+ .../voms/admin/view/actions/apiv2/CreateUserAction.java    |  4 ++--
+ .../voms/admin/view/actions/apiv2/SuspendUserAction.java   |  2 +-
+ .../admin/view/actions/attribute/AttributeActions.java     |  4 ++--
+ .../voms/admin/view/actions/aup/AUPVersionActions.java     |  2 +-
+ .../voms/admin/view/actions/aup/AddVersionAction.java      |  2 +-
+ .../view/actions/aup/ChangeReacceptancePeriodAction.java   |  2 +-
+ .../voms/admin/view/actions/aup/EditVersionAction.java     |  2 +-
+ .../security/voms/admin/view/actions/aup/SignAction.java   |  2 +-
+ .../voms/admin/view/actions/group/AttributeActions.java    |  2 +-
+ .../voms/admin/view/actions/group/CreateAction.java        |  4 ++--
+ .../admin/view/actions/register/SubmitRequestAction.java   | 12 ++++++------
+ .../view/actions/register/orgdb/SubmitRequestAction.java   |  6 +++---
+ .../voms/admin/view/actions/role/AttributeActions.java     |  2 +-
+ .../voms/admin/view/actions/role/CreateAction.java         |  2 +-
+ .../voms/admin/view/actions/user/AttributeActions.java     |  2 +-
+ .../voms/admin/view/actions/user/BulkSuspendAction.java    |  2 +-
+ .../voms/admin/view/actions/user/CreateAction.java         | 14 +++++++-------
+ .../admin/view/actions/user/RequestCertificateAction.java  |  4 ++--
+ .../view/actions/user/RequestMembershipRemovalAction.java  |  2 +-
+ .../view/actions/user/SavePersonalInformationAction.java   | 12 ++++++------
+ .../voms/admin/view/actions/user/SuspendAction.java        |  2 +-
+ .../admin/view/actions/user/SuspendCertificateAction.java  |  2 +-
+ 25 files changed, 53 insertions(+), 53 deletions(-)
+
+diff --git a/src/main/java/org/glite/security/voms/admin/apiv2/VOMSUserJSON.java b/src/main/java/org/glite/security/voms/admin/apiv2/VOMSUserJSON.java
+index 3b4fa24..27c2c9a 100644
+--- a/src/main/java/org/glite/security/voms/admin/apiv2/VOMSUserJSON.java
++++ b/src/main/java/org/glite/security/voms/admin/apiv2/VOMSUserJSON.java
+@@ -71,7 +71,7 @@ public class VOMSUserJSON {
+ 	}
+ 
+ 	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please provide a name for the user.")
+-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The name field contains illegal characters!", expression = "^[^<>&=;]*$")
++	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The name field contains illegal characters!", regex = "^[^<>&=;]*$")
+ 	public String getName() {
+ 		return name;
+ 	}
+@@ -81,7 +81,7 @@ public class VOMSUserJSON {
+ 	}
+ 
+ 	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please provide a family name for the user.")
+-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The family name contains illegal characters!", expression = "^[^<>&=;]*$")
++	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The family name contains illegal characters!", regex = "^[^<>&=;]*$")
+ 	public String getSurname() {
+ 		return surname;
+ 	}
+@@ -91,7 +91,7 @@ public class VOMSUserJSON {
+ 	}
+ 
+ 	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please provide an institution for the user.")
+-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The institution contains illegal characters!", expression = "^[^<>&=;]*$")
++	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The institution contains illegal characters!", regex = "^[^<>&=;]*$")
+ 	public String getInstitution() {
+ 		return institution;
+ 	}
+@@ -101,7 +101,7 @@ public class VOMSUserJSON {
+ 	}
+ 
+ 	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please provide an address for the user.")
+-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The address contains illegal characters!", expression = "^[^<>&=;]*$")
++	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The address contains illegal characters!", regex = "^[^<>&=;]*$")
+ 	public String getAddress() {
+ 		return address;
+ 	}
+@@ -111,7 +111,7 @@ public class VOMSUserJSON {
+ 	}
+ 
+ 	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please provide a phone number for the user.")
+-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The phone number contains illegal characters!", expression = "^[^<>&=;]*$")
++	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The phone number contains illegal characters!", regex = "^[^<>&=;]*$")
+ 	public String getPhoneNumber() {
+ 		return phoneNumber;
+ 	}
+@@ -122,7 +122,7 @@ public class VOMSUserJSON {
+ 
+ 	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please provide an email address for the user.")
+ 	@EmailValidator(type = ValidatorType.FIELD, message = "Please enter a valid email address.")
+-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The email address contains illegal characters!", expression = "^[^<>&=;]*$")
++	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The email address contains illegal characters!", regex = "^[^<>&=;]*$")
+ 	public String getEmailAddress() {
+ 		return emailAddress;
+ 	}
+diff --git a/src/main/java/org/glite/security/voms/admin/view/actions/SearchData.java b/src/main/java/org/glite/security/voms/admin/view/actions/SearchData.java
+index 44d2bca..06da7e5 100644
+--- a/src/main/java/org/glite/security/voms/admin/view/actions/SearchData.java
++++ b/src/main/java/org/glite/security/voms/admin/view/actions/SearchData.java
+@@ -39,7 +39,7 @@ public class SearchData {
+ 		// TODO Auto-generated constructor stub
+ 	}
+ 
+-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "the search text field contains illegal characters!", expression = "^[^<>&=;]*$")
++	@RegexFieldValidator(type = ValidatorType.FIELD, message = "the search text field contains illegal characters!", regex = "^[^<>&=;]*$")
+ 	public String getText() {
+ 		return text;
+ 	}
+diff --git a/src/main/java/org/glite/security/voms/admin/view/actions/apiv2/CreateGroupAction.java b/src/main/java/org/glite/security/voms/admin/view/actions/apiv2/CreateGroupAction.java
+index eb0388e..9890d4a 100644
+--- a/src/main/java/org/glite/security/voms/admin/view/actions/apiv2/CreateGroupAction.java
++++ b/src/main/java/org/glite/security/voms/admin/view/actions/apiv2/CreateGroupAction.java
+@@ -44,7 +44,7 @@ public class CreateGroupAction extends BaseAction{
+ 	
+ 	@JSON(serialize=false)
+ 	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please provide a name for the group.")
+-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The group name field contains illegal characters!", expression = "^[^<>&=;]*$")
++	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The group name field contains illegal characters!", regex = "^[^<>&=;]*$")
+ 	public String getGroupName() {
+ 		return groupName;
+ 	}
+@@ -54,7 +54,7 @@ public class CreateGroupAction extends BaseAction{
+ 	
+ 	@JSON(serialize=false)
+ 	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please provide a description for the group.")
+-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The group description field contains illegal characters!", expression = "^[^<>&=;]*$")
++	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The group description field contains illegal characters!", regex = "^[^<>&=;]*$")
+ 	public String getGroupDescription() {
+ 		return groupDescription;
+ 	}
+diff --git a/src/main/java/org/glite/security/voms/admin/view/actions/apiv2/CreateUserAction.java b/src/main/java/org/glite/security/voms/admin/view/actions/apiv2/CreateUserAction.java
+index c0d0d26..5ddec1a 100644
+--- a/src/main/java/org/glite/security/voms/admin/view/actions/apiv2/CreateUserAction.java
++++ b/src/main/java/org/glite/security/voms/admin/view/actions/apiv2/CreateUserAction.java
+@@ -61,7 +61,7 @@ public class CreateUserAction  extends BaseAction implements ValidationAware{
+ 	}
+ 
+ 	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please provide a certificate subject for the user.")
+-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The certificate subject contains illegal characters!", expression = "^[^<>&;]*$")
++	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The certificate subject contains illegal characters!", regex = "^[^<>&;]*$")
+ 	@JSON(serialize=false)
+ 	public String getCertificateSubject() {
+ 		return certificateSubject;
+@@ -72,7 +72,7 @@ public class CreateUserAction  extends BaseAction implements ValidationAware{
+ 	}
+ 
+ 	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please provide a CA subject for the user.")
+-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The CA certificate subject contains illegal characters!", expression = "^[^<>&;]*$")
++	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The CA certificate subject contains illegal characters!", regex = "^[^<>&;]*$")
+ 	@JSON(serialize=false)
+ 	public String getCaSubject() {
+ 		return caSubject;
+diff --git a/src/main/java/org/glite/security/voms/admin/view/actions/apiv2/SuspendUserAction.java b/src/main/java/org/glite/security/voms/admin/view/actions/apiv2/SuspendUserAction.java
+index 43e4361..6aee9ba 100644
+--- a/src/main/java/org/glite/security/voms/admin/view/actions/apiv2/SuspendUserAction.java
++++ b/src/main/java/org/glite/security/voms/admin/view/actions/apiv2/SuspendUserAction.java
+@@ -40,7 +40,7 @@ public class SuspendUserAction extends RestUserAction{
+ 
+ 
+ 	@RequiredStringValidator(type=ValidatorType.FIELD, message="Please provide a reason for the suspension.")
+-	@RegexFieldValidator(type=ValidatorType.FIELD, message = "The reason contains illegal characters!", expression = "^[^<>&;]*$")
++	@RegexFieldValidator(type=ValidatorType.FIELD, message = "The reason contains illegal characters!", regex = "^[^<>&;]*$")
+ 	public String getSuspensionReason() {
+ 		return suspensionReason;
+ 	}
+diff --git a/src/main/java/org/glite/security/voms/admin/view/actions/attribute/AttributeActions.java b/src/main/java/org/glite/security/voms/admin/view/actions/attribute/AttributeActions.java
+index 5cf8a78..1087bf3 100644
+--- a/src/main/java/org/glite/security/voms/admin/view/actions/attribute/AttributeActions.java
++++ b/src/main/java/org/glite/security/voms/admin/view/actions/attribute/AttributeActions.java
+@@ -93,7 +93,7 @@ public class AttributeActions extends BaseAction {
+ 	}
+ 
+ 	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Attribute name is required.")
+-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The attribute name field contains illegal characters!", expression = "^[^<>&=;]*$")
++	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The attribute name field contains illegal characters!", regex = "^[^<>&=;]*$")
+ 	public String getAttributeName() {
+ 		return attributeName;
+ 	}
+@@ -102,7 +102,7 @@ public class AttributeActions extends BaseAction {
+ 		this.attributeName = attributeName;
+ 	}
+ 
+-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The attribute description field contains illegal characters!", expression = "^[^<>&=;]*$")
++	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The attribute description field contains illegal characters!", regex = "^[^<>&=;]*$")
+ 	public String getAttributeDescription() {
+ 		return attributeDescription;
+ 	}
+diff --git a/src/main/java/org/glite/security/voms/admin/view/actions/aup/AUPVersionActions.java b/src/main/java/org/glite/security/voms/admin/view/actions/aup/AUPVersionActions.java
+index d16117e..a6f7255 100644
+--- a/src/main/java/org/glite/security/voms/admin/view/actions/aup/AUPVersionActions.java
++++ b/src/main/java/org/glite/security/voms/admin/view/actions/aup/AUPVersionActions.java
+@@ -59,7 +59,7 @@ public abstract class AUPVersionActions extends BaseAction implements
+ 	}
+ 
+ 	@RequiredStringValidator(type = ValidatorType.FIELD, message = "The version string is required")
+-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The version field contains illegal characters!", expression = "^[^<>&=;]*$")
++	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The version field contains illegal characters!", regex = "^[^<>&=;]*$")
+ 	public String getVersion() {
+ 		return version;
+ 	}
+diff --git a/src/main/java/org/glite/security/voms/admin/view/actions/aup/AddVersionAction.java b/src/main/java/org/glite/security/voms/admin/view/actions/aup/AddVersionAction.java
+index 2fe91cf..eb178fd 100644
+--- a/src/main/java/org/glite/security/voms/admin/view/actions/aup/AddVersionAction.java
++++ b/src/main/java/org/glite/security/voms/admin/view/actions/aup/AddVersionAction.java
+@@ -69,7 +69,7 @@ public class AddVersionAction extends AUPVersionActions {
+ 	}
+ 
+ 	@RequiredStringValidator(type = ValidatorType.FIELD, message = "The url field is required!")
+-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The version field contains illegal characters!", expression = "^[^<>&=;]*$")
++	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The version field contains illegal characters!", regex = "^[^<>&=;]*$")
+ 	public String getUrl() {
+ 		return url;
+ 	}
+diff --git a/src/main/java/org/glite/security/voms/admin/view/actions/aup/ChangeReacceptancePeriodAction.java b/src/main/java/org/glite/security/voms/admin/view/actions/aup/ChangeReacceptancePeriodAction.java
+index 1f749b3..1b816e7 100644
+--- a/src/main/java/org/glite/security/voms/admin/view/actions/aup/ChangeReacceptancePeriodAction.java
++++ b/src/main/java/org/glite/security/voms/admin/view/actions/aup/ChangeReacceptancePeriodAction.java
+@@ -73,7 +73,7 @@ public class ChangeReacceptancePeriodAction extends BaseAction implements
+ 	}
+ 
+ 	@RequiredFieldValidator(type = ValidatorType.FIELD, message = "The period (in days) is required.")
+-	@RegexFieldValidator(type = ValidatorType.FIELD, expression = "[0-9]+", message = "Please specify a positive integer number.")
++	@RegexFieldValidator(type = ValidatorType.FIELD, regex = "[0-9]+", message = "Please specify a positive integer number.")
+ 	@IntRangeFieldValidator(type = ValidatorType.FIELD, min = "1", max = "730", message = "The input is out of the acceptable range (1 < x < 730)")
+ 	public int getPeriod() {
+ 		return period;
+diff --git a/src/main/java/org/glite/security/voms/admin/view/actions/aup/EditVersionAction.java b/src/main/java/org/glite/security/voms/admin/view/actions/aup/EditVersionAction.java
+index a27edb2..66edfed 100644
+--- a/src/main/java/org/glite/security/voms/admin/view/actions/aup/EditVersionAction.java
++++ b/src/main/java/org/glite/security/voms/admin/view/actions/aup/EditVersionAction.java
+@@ -87,7 +87,7 @@ public class EditVersionAction extends AUPVersionActions {
+     }
+  
+     @RequiredStringValidator(type = ValidatorType.FIELD, message = "The url field is required!")
+-    @RegexFieldValidator(type = ValidatorType.FIELD, message = "The version field contains illegal characters!", expression = "^[^<>&=;]*$")
++    @RegexFieldValidator(type = ValidatorType.FIELD, message = "The version field contains illegal characters!", regex = "^[^<>&=;]*$")
+     public String getUrl() {
+ 	return url;
+     }
+diff --git a/src/main/java/org/glite/security/voms/admin/view/actions/aup/SignAction.java b/src/main/java/org/glite/security/voms/admin/view/actions/aup/SignAction.java
+index 03e32cc..99cd492 100644
+--- a/src/main/java/org/glite/security/voms/admin/view/actions/aup/SignAction.java
++++ b/src/main/java/org/glite/security/voms/admin/view/actions/aup/SignAction.java
+@@ -101,7 +101,7 @@ public class SignAction extends BaseAction implements ModelDriven<AUP>,
+ 	}
+ 
+ 	@RequiredFieldValidator(type = ValidatorType.FIELD, message = "You must sign the AUP.")
+-	@RegexFieldValidator(type = ValidatorType.FIELD, expression = "^true$", message = "You must accept the terms of the AUP to proceed")
++	@RegexFieldValidator(type = ValidatorType.FIELD, regex = "^true$", message = "You must accept the terms of the AUP to proceed")
+ 	public String getAupAccepted() {
+ 		return aupAccepted;
+ 	}
+diff --git a/src/main/java/org/glite/security/voms/admin/view/actions/group/AttributeActions.java b/src/main/java/org/glite/security/voms/admin/view/actions/group/AttributeActions.java
+index d8ac95c..6cf8cac 100644
+--- a/src/main/java/org/glite/security/voms/admin/view/actions/group/AttributeActions.java
++++ b/src/main/java/org/glite/security/voms/admin/view/actions/group/AttributeActions.java
+@@ -61,7 +61,7 @@ public class AttributeActions extends GroupActionSupport {
+ 		this.attributeName = attributeName;
+ 	}
+ 
+-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "This field contains illegal characters!", expression = "^[^<>&=;]*$")
++	@RegexFieldValidator(type = ValidatorType.FIELD, message = "This field contains illegal characters!", regex = "^[^<>&=;]*$")
+ 	public String getAttributeValue() {
+ 		return attributeValue;
+ 	}
+diff --git a/src/main/java/org/glite/security/voms/admin/view/actions/group/CreateAction.java b/src/main/java/org/glite/security/voms/admin/view/actions/group/CreateAction.java
+index 8416a20..6deace0 100644
+--- a/src/main/java/org/glite/security/voms/admin/view/actions/group/CreateAction.java
++++ b/src/main/java/org/glite/security/voms/admin/view/actions/group/CreateAction.java
+@@ -116,7 +116,7 @@ public class CreateAction extends GroupActionSupport {
+ 	}
+ 
+ 	@RequiredStringValidator(type = ValidatorType.FIELD, message = "A name for the group is required!")
+-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The group name field contains illegal characters!", expression = "^[^<>&=;]*$")
++	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The group name field contains illegal characters!", regex = "^[^<>&=;]*$")
+ 	public String getGroupName() {
+ 		return groupName;
+ 	}
+@@ -133,7 +133,7 @@ public class CreateAction extends GroupActionSupport {
+ 		this.parentGroupName = parentGroupName;
+ 	}
+ 
+-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The description field contains illegal characters!", expression = "^[^<>&=;]*$")
++	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The description field contains illegal characters!", regex = "^[^<>&=;]*$")
+ 	@StringLengthFieldValidator(type = ValidatorType.FIELD, maxLength="255", message="The description field size is limited to 255 characters.")
+ 	public String getDescription() {
+ 		return description;
+diff --git a/src/main/java/org/glite/security/voms/admin/view/actions/register/SubmitRequestAction.java b/src/main/java/org/glite/security/voms/admin/view/actions/register/SubmitRequestAction.java
+index f9476ab..4c326c7 100644
+--- a/src/main/java/org/glite/security/voms/admin/view/actions/register/SubmitRequestAction.java
++++ b/src/main/java/org/glite/security/voms/admin/view/actions/register/SubmitRequestAction.java
+@@ -141,7 +141,7 @@ public class SubmitRequestAction extends RegisterActionSupport {
+ 	}
+ 
+ 	@RequiredStringValidator(type=ValidatorType.FIELD, message = "Please enter your name.")
+-	@RegexFieldValidator(type=ValidatorType.FIELD, expression="^[^<>&=;]*$", message="You entered invalid characters.")
++	@RegexFieldValidator(type=ValidatorType.FIELD, regex="^[^<>&=;]*$", message="You entered invalid characters.")
+ 	public String getName() {
+ 		return name;
+ 	}
+@@ -151,7 +151,7 @@ public class SubmitRequestAction extends RegisterActionSupport {
+ 	}
+ 
+ 	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please enter your surname.")
+-	@RegexFieldValidator(type=ValidatorType.FIELD, expression="^[^<>&=;]*$", message="You entered invalid characters.")
++	@RegexFieldValidator(type=ValidatorType.FIELD, regex="^[^<>&=;]*$", message="You entered invalid characters.")
+ 	public String getSurname() {
+ 		return surname;
+ 	}
+@@ -161,7 +161,7 @@ public class SubmitRequestAction extends RegisterActionSupport {
+ 	}
+ 
+ 	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please enter your institution.")
+-	@RegexFieldValidator(type=ValidatorType.FIELD, expression="^[^<>&=;]*$", message="You entered invalid characters.")
++	@RegexFieldValidator(type=ValidatorType.FIELD, regex="^[^<>&=;]*$", message="You entered invalid characters.")
+ 	public String getInstitution() {
+ 		return institution;
+ 	}
+@@ -171,7 +171,7 @@ public class SubmitRequestAction extends RegisterActionSupport {
+ 	}
+ 
+ 	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please enter your address.")
+-	@RegexFieldValidator(type=ValidatorType.FIELD, expression="^[^<>&=;]*$", message="You entered invalid characters.")
++	@RegexFieldValidator(type=ValidatorType.FIELD, regex="^[^<>&=;]*$", message="You entered invalid characters.")
+ 	public String getAddress() {
+ 		return address;
+ 	}
+@@ -181,7 +181,7 @@ public class SubmitRequestAction extends RegisterActionSupport {
+ 	}
+ 
+ 	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please enter your phone number.")
+-	@RegexFieldValidator(type=ValidatorType.FIELD, expression="^[^<>&=;]*$", message="You entered invalid characters.")
++	@RegexFieldValidator(type=ValidatorType.FIELD, regex="^[^<>&=;]*$", message="You entered invalid characters.")
+ 	public String getPhoneNumber() {
+ 		return phoneNumber;
+ 	}
+@@ -191,7 +191,7 @@ public class SubmitRequestAction extends RegisterActionSupport {
+ 	}
+ 
+ 	@RequiredFieldValidator(type = ValidatorType.FIELD, message = "You must sign the AUP.")
+-	@RegexFieldValidator(type = ValidatorType.FIELD, expression = "^true$", message = "You must accept the terms of the AUP to proceed")
++	@RegexFieldValidator(type = ValidatorType.FIELD, regex = "^true$", message = "You must accept the terms of the AUP to proceed")
+ 	public String getAupAccepted() {
+ 		return aupAccepted;
+ 	}
+diff --git a/src/main/java/org/glite/security/voms/admin/view/actions/register/orgdb/SubmitRequestAction.java b/src/main/java/org/glite/security/voms/admin/view/actions/register/orgdb/SubmitRequestAction.java
+index 680a9e9..30ad0b7 100644
+--- a/src/main/java/org/glite/security/voms/admin/view/actions/register/orgdb/SubmitRequestAction.java
++++ b/src/main/java/org/glite/security/voms/admin/view/actions/register/orgdb/SubmitRequestAction.java
+@@ -196,7 +196,7 @@ public class SubmitRequestAction extends
+ 	 * @return the address
+ 	 */
+ 	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please enter your address.")
+-	@RegexFieldValidator(type=ValidatorType.FIELD, expression="^[^<>&=;]*$", message="You entered invalid characters.")
++	@RegexFieldValidator(type=ValidatorType.FIELD, regex="^[^<>&=;]*$", message="You entered invalid characters.")
+ 	public String getAddress() {
+ 		return address;
+ 	}
+@@ -214,7 +214,7 @@ public class SubmitRequestAction extends
+ 	 * @return the phoneNumber
+ 	 */
+ 	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please enter your phoneNumber.")
+-	@RegexFieldValidator(type=ValidatorType.FIELD, expression="^[^<>&=;]*$", message="You entered invalid characters.")
++	@RegexFieldValidator(type=ValidatorType.FIELD, regex="^[^<>&=;]*$", message="You entered invalid characters.")
+ 	public String getPhoneNumber() {
+ 		return phoneNumber;
+ 	}
+@@ -250,7 +250,7 @@ public class SubmitRequestAction extends
+ 	 * @return the aupAccepted
+ 	 */
+ 	@RequiredFieldValidator(type = ValidatorType.FIELD, message = "You must sign the AUP.")
+-	@RegexFieldValidator(type = ValidatorType.FIELD, expression = "^true$", message = "You must accept the terms of the AUP to proceed")
++	@RegexFieldValidator(type = ValidatorType.FIELD, regex = "^true$", message = "You must accept the terms of the AUP to proceed")
+ 	public String getAupAccepted() {
+ 		return aupAccepted;
+ 	}
+diff --git a/src/main/java/org/glite/security/voms/admin/view/actions/role/AttributeActions.java b/src/main/java/org/glite/security/voms/admin/view/actions/role/AttributeActions.java
+index e54492c..88303f8 100644
+--- a/src/main/java/org/glite/security/voms/admin/view/actions/role/AttributeActions.java
++++ b/src/main/java/org/glite/security/voms/admin/view/actions/role/AttributeActions.java
+@@ -63,7 +63,7 @@ public class AttributeActions extends RoleActionSupport {
+ 		this.attributeName = attributeName;
+ 	}
+ 
+-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "This field contains illegal characters!", expression = "^[^<>&=;]*$")
++	@RegexFieldValidator(type = ValidatorType.FIELD, message = "This field contains illegal characters!", regex = "^[^<>&=;]*$")
+ 	public String getAttributeValue() {
+ 		return attributeValue;
+ 	}
+diff --git a/src/main/java/org/glite/security/voms/admin/view/actions/role/CreateAction.java b/src/main/java/org/glite/security/voms/admin/view/actions/role/CreateAction.java
+index 18d26b4..56b7fe4 100644
+--- a/src/main/java/org/glite/security/voms/admin/view/actions/role/CreateAction.java
++++ b/src/main/java/org/glite/security/voms/admin/view/actions/role/CreateAction.java
+@@ -71,7 +71,7 @@ public class CreateAction extends RoleActionSupport {
+ 	}
+ 
+ 	@RequiredStringValidator(type = ValidatorType.FIELD, message = "A name for the role is required!")
+-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The role name field contains illegal characters!", expression = "^[\\w.-]+$")
++	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The role name field contains illegal characters!", regex = "^[\\w.-]+$")
+ 	public String getRoleName() {
+ 		return roleName;
+ 	}
+diff --git a/src/main/java/org/glite/security/voms/admin/view/actions/user/AttributeActions.java b/src/main/java/org/glite/security/voms/admin/view/actions/user/AttributeActions.java
+index 94dd1e9..118611a 100644
+--- a/src/main/java/org/glite/security/voms/admin/view/actions/user/AttributeActions.java
++++ b/src/main/java/org/glite/security/voms/admin/view/actions/user/AttributeActions.java
+@@ -74,7 +74,7 @@ public class AttributeActions extends UserActionSupport {
+ 	}
+ 
+ 	@StringLengthFieldValidator(type = ValidatorType.FIELD, message="The value for this attribute is too long", maxLength="255")
+-	// @RegexFieldValidator(type = ValidatorType.FIELD, message = "This field contains illegal characters!", expression = "^[^<>&=;]*$")
++	// @RegexFieldValidator(type = ValidatorType.FIELD, message = "This field contains illegal characters!", regex = "^[^<>&=;]*$")
+ 	public String getAttributeValue() {
+ 		return attributeValue;
+ 	}
+diff --git a/src/main/java/org/glite/security/voms/admin/view/actions/user/BulkSuspendAction.java b/src/main/java/org/glite/security/voms/admin/view/actions/user/BulkSuspendAction.java
+index 24f1dd3..6764245 100644
+--- a/src/main/java/org/glite/security/voms/admin/view/actions/user/BulkSuspendAction.java
++++ b/src/main/java/org/glite/security/voms/admin/view/actions/user/BulkSuspendAction.java
+@@ -54,7 +54,7 @@ public class BulkSuspendAction extends UserBulkActionSupport {
+ 	String suspensionReason;
+ 	
+ 
+-	@RegexFieldValidator(type=ValidatorType.FIELD, expression="^[^<>&=;]*$", message="You entered invalid characters in the suspension reason field!")
++	@RegexFieldValidator(type=ValidatorType.FIELD, regex="^[^<>&=;]*$", message="You entered invalid characters in the suspension reason field!")
+ 	public String getSuspensionReason() {
+ 		return suspensionReason;
+ 	}
+diff --git a/src/main/java/org/glite/security/voms/admin/view/actions/user/CreateAction.java b/src/main/java/org/glite/security/voms/admin/view/actions/user/CreateAction.java
+index c07029a..ceab382 100644
+--- a/src/main/java/org/glite/security/voms/admin/view/actions/user/CreateAction.java
++++ b/src/main/java/org/glite/security/voms/admin/view/actions/user/CreateAction.java
+@@ -83,7 +83,7 @@ public class CreateAction extends UserActionSupport{
+ 		return SUCCESS;
+ 	}
+ 
+-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The name field contains illegal characters!", expression = "^[^<>&=;]*$")
++	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The name field contains illegal characters!", regex = "^[^<>&=;]*$")
+ 	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please enter a name for the user.")
+ 	public String getTheName() {
+ 		return theName;
+@@ -95,7 +95,7 @@ public class CreateAction extends UserActionSupport{
+ 	}
+ 
+ 	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please enter a family name for the user.")
+-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The surname field contains illegal characters!", expression = "^[^<>&=;]*$")
++	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The surname field contains illegal characters!", regex = "^[^<>&=;]*$")
+ 	public String getTheSurname() {
+ 		return theSurname;
+ 	}
+@@ -106,7 +106,7 @@ public class CreateAction extends UserActionSupport{
+ 	}
+ 
+ 	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please enter an institution for the user.")
+-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The institution field contains illegal characters!", expression = "^[^<>&=;]*$")
++	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The institution field contains illegal characters!", regex = "^[^<>&=;]*$")
+ 	public String getTheInstitution() {
+ 		return theInstitution;
+ 	}
+@@ -117,7 +117,7 @@ public class CreateAction extends UserActionSupport{
+ 	}
+ 
+ 	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please enter an address for the user.")
+-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The address field contains illegal characters!", expression = "^[^<>&=;]*$")
++	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The address field contains illegal characters!", regex = "^[^<>&=;]*$")
+ 	public String getTheAddress() {
+ 		return theAddress;
+ 	}
+@@ -128,7 +128,7 @@ public class CreateAction extends UserActionSupport{
+ 	}
+ 
+ 	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please enter a phoneNumber for the user.")
+-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The phoneNumber field contains illegal characters!", expression = "^[^<>&=;]*$")
++	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The phoneNumber field contains illegal characters!", regex = "^[^<>&=;]*$")
+ 	public String getThePhoneNumber() {
+ 		return thePhoneNumber;
+ 	}
+@@ -141,7 +141,7 @@ public class CreateAction extends UserActionSupport{
+ 
+ 	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please enter an email address for the user.")
+ 	@EmailValidator(type = ValidatorType.FIELD, message = "Please enter a valid email address.")
+-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The email field name contains illegal characters!", expression = "^[^<>&=;]*$")
++	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The email field name contains illegal characters!", regex = "^[^<>&=;]*$")
+ 	public String getTheEmailAddress() {
+ 		return theEmailAddress;
+ 	}
+@@ -152,7 +152,7 @@ public class CreateAction extends UserActionSupport{
+ 	}
+ 
+ 	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please enter a certificate subject for the user.")
+-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The subject field name contains illegal characters!", expression = "^[^<>&;]*$")
++	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The subject field name contains illegal characters!", regex = "^[^<>&;]*$")
+ 	public String getSubject() {	
+ 		return subject;
+ 	}
+diff --git a/src/main/java/org/glite/security/voms/admin/view/actions/user/RequestCertificateAction.java b/src/main/java/org/glite/security/voms/admin/view/actions/user/RequestCertificateAction.java
+index fc03c9e..4ac9018 100644
+--- a/src/main/java/org/glite/security/voms/admin/view/actions/user/RequestCertificateAction.java
++++ b/src/main/java/org/glite/security/voms/admin/view/actions/user/RequestCertificateAction.java
+@@ -129,7 +129,7 @@ public class RequestCertificateAction extends UserActionSupport {
+ 		this.certificateFile = certificateFile;
+ 	}
+ 	
+-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The subject field name contains illegal characters!", expression = "^[^<>&;]*$")
++	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The subject field name contains illegal characters!", regex = "^[^<>&;]*$")
+ 	public String getSubject() {
+ 		return subject;
+ 	}
+@@ -138,7 +138,7 @@ public class RequestCertificateAction extends UserActionSupport {
+ 		this.subject = subject;
+ 	}
+ 	
+-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The subject field name contains illegal characters!", expression = "^[^<>&;]*$")
++	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The subject field name contains illegal characters!", regex = "^[^<>&;]*$")
+ 	public String getCaSubject() {
+ 		return caSubject;
+ 	}
+diff --git a/src/main/java/org/glite/security/voms/admin/view/actions/user/RequestMembershipRemovalAction.java b/src/main/java/org/glite/security/voms/admin/view/actions/user/RequestMembershipRemovalAction.java
+index b128b1c..055a993 100644
+--- a/src/main/java/org/glite/security/voms/admin/view/actions/user/RequestMembershipRemovalAction.java
++++ b/src/main/java/org/glite/security/voms/admin/view/actions/user/RequestMembershipRemovalAction.java
+@@ -86,7 +86,7 @@ public class RequestMembershipRemovalAction extends UserActionSupport {
+ 		return SUCCESS;
+ 	}
+ 
+-	@RegexFieldValidator(type=ValidatorType.FIELD, expression="^[^<>&=;]*$", message="You entered invalid characters in the reason field!")
++	@RegexFieldValidator(type=ValidatorType.FIELD, regex="^[^<>&=;]*$", message="You entered invalid characters in the reason field!")
+ 	@RequiredStringValidator(type=ValidatorType.FIELD, message = "Please enter a reason.")
+ 	public String getReason() {
+ 		return reason;
+diff --git a/src/main/java/org/glite/security/voms/admin/view/actions/user/SavePersonalInformationAction.java b/src/main/java/org/glite/security/voms/admin/view/actions/user/SavePersonalInformationAction.java
+index 15e6520..04900de 100644
+--- a/src/main/java/org/glite/security/voms/admin/view/actions/user/SavePersonalInformationAction.java
++++ b/src/main/java/org/glite/security/voms/admin/view/actions/user/SavePersonalInformationAction.java
+@@ -81,7 +81,7 @@ public class SavePersonalInformationAction extends UserActionSupport {
+ 	}
+ 
+ 
+-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The name field contains illegal characters!", expression = "^[^<>&=;]*$")
++	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The name field contains illegal characters!", regex = "^[^<>&=;]*$")
+ 	public String getTheName() {
+ 		return theName;
+ 	}
+@@ -91,7 +91,7 @@ public class SavePersonalInformationAction extends UserActionSupport {
+ 		this.theName = theName;
+ 	}
+ 
+-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The surname field contains illegal characters!", expression = "^[^<>&=;]*$")
++	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The surname field contains illegal characters!", regex = "^[^<>&=;]*$")
+ 	public String getTheSurname() {
+ 		return theSurname;
+ 	}
+@@ -101,7 +101,7 @@ public class SavePersonalInformationAction extends UserActionSupport {
+ 		this.theSurname = theSurname;
+ 	}
+ 
+-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The institution field contains illegal characters!", expression = "^[^<>&=;]*$")
++	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The institution field contains illegal characters!", regex = "^[^<>&=;]*$")
+ 	public String getTheInstitution() {
+ 		return theInstitution;
+ 	}
+@@ -111,7 +111,7 @@ public class SavePersonalInformationAction extends UserActionSupport {
+ 		this.theInstitution = theInstitution;
+ 	}
+ 
+-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The address field contains illegal characters!", expression = "^[^<>&=;]*$")
++	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The address field contains illegal characters!", regex = "^[^<>&=;]*$")
+ 	public String getTheAddress() {
+ 		return theAddress;
+ 	}
+@@ -121,7 +121,7 @@ public class SavePersonalInformationAction extends UserActionSupport {
+ 		this.theAddress = theAddress;
+ 	}
+ 
+-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The phoneNumber field contains illegal characters!", expression = "^[^<>&=;]*$")
++	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The phoneNumber field contains illegal characters!", regex = "^[^<>&=;]*$")
+ 	public String getThePhoneNumber() {
+ 		return thePhoneNumber;
+ 	}
+@@ -134,7 +134,7 @@ public class SavePersonalInformationAction extends UserActionSupport {
+ 
+ 	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please enter an email address.")
+ 	@EmailValidator(type = ValidatorType.FIELD, message = "Please enter a valid email address.")
+-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The email field name contains illegal characters!", expression = "^[^<>&=;]*$")
++	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The email field name contains illegal characters!", regex = "^[^<>&=;]*$")
+ 	public String getTheEmailAddress() {
+ 		return theEmailAddress;
+ 	}
+diff --git a/src/main/java/org/glite/security/voms/admin/view/actions/user/SuspendAction.java b/src/main/java/org/glite/security/voms/admin/view/actions/user/SuspendAction.java
+index 47b49d8..9ff61d2 100644
+--- a/src/main/java/org/glite/security/voms/admin/view/actions/user/SuspendAction.java
++++ b/src/main/java/org/glite/security/voms/admin/view/actions/user/SuspendAction.java
+@@ -61,7 +61,7 @@ public class SuspendAction extends UserActionSupport {
+ 	}
+ 
+ 
+-	@RegexFieldValidator(type=ValidatorType.FIELD, expression="^[^<>&=;]*$", message="You entered invalid characters in the suspension reason field!")
++	@RegexFieldValidator(type=ValidatorType.FIELD, regex="^[^<>&=;]*$", message="You entered invalid characters in the suspension reason field!")
+ 	public String getSuspensionReason() {
+ 		return suspensionReason;
+ 	}
+diff --git a/src/main/java/org/glite/security/voms/admin/view/actions/user/SuspendCertificateAction.java b/src/main/java/org/glite/security/voms/admin/view/actions/user/SuspendCertificateAction.java
+index 8f7c8d7..1cf1c88 100644
+--- a/src/main/java/org/glite/security/voms/admin/view/actions/user/SuspendCertificateAction.java
++++ b/src/main/java/org/glite/security/voms/admin/view/actions/user/SuspendCertificateAction.java
+@@ -66,7 +66,7 @@ public class SuspendCertificateAction extends CertificateActionSupport {
+ 	}
+ 
+ 	
+-	@RegexFieldValidator(type=ValidatorType.FIELD, expression="^[^<>&=;]*$", message="You entered invalid characters in the suspension reason field!")
++	@RegexFieldValidator(type=ValidatorType.FIELD, regex="^[^<>&=;]*$", message="You entered invalid characters in the suspension reason field!")
+ 	public String getSuspensionReason() {
+ 		return suspensionReason;
+ 	}
+-- 
+2.9.4
+

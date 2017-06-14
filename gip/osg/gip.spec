@@ -1,12 +1,12 @@
 Summary: Generic Information Provider
 Name: gip
 Version: 1.3.11
-Release: 6%{?dist}
+Release: 9%{?dist}
 License: Apache 2.0
 Group: Applications/Grid
 BuildArch: noarch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
-Requires: globus-proxy-utils 
+Requires: globus-proxy-utils
 Source0: %{name}-%{version}.tgz
 Patch0: 1662-slurm_queue_info.patch
 Patch1: 1752-slurm_path.patch
@@ -14,13 +14,22 @@ Patch2: 1754-htcondor-bdii.patch
 Patch3: 1795-htcondor-bdii-1.patch
 Patch4: 1795-htcondor-bdii-2.patch
 Patch5: 1893-cese_bind.patch
+Patch6: 2030-slurm-multiple-queues.patch
+Patch7: 2104-no-ress-support.patch
+Patch8: 2353-condor_config_val.patch
+
+Conflicts: osg-info-services < 1.1.0
 
 %define tomcat_uid 91
 %define tomcat_gid 91
 
-%if 0%{?rhel} >= 6
+%if 0%{?rhel} >= 7
+%define tomcat tomcat
+%endif
+%if 0%{?rhel} == 6
 %define tomcat tomcat6
-%else
+%endif
+%if 0%{?rhel} <= 5
 %define tomcat tomcat5
 %endif
 
@@ -39,6 +48,9 @@ then can be sent via external services to information collection servers such as
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
+%patch6 -p1
+%patch7 -p1
+%patch8 -p1
 
 %install
 rm -rf %{buildroot}
@@ -129,6 +141,18 @@ touch $RPM_BUILD_ROOT/%{_sysconfdir}/%{name}/remove-attributes.conf
 rm -rf %buildroot
 
 %changelog
+* Fri Jun 03 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 1.3.11-9
+- Fix inefficiency in querying condor groups (SOFTWARE-2353)
+
+* Wed Nov 18 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.3.11-8
+- Remove ReSS support (SOFTWARE-2104)
+  Conflict with osg-info-services < 1.1.0 to avoid error when osg-info-services
+  tries to upload to ReSS
+
+* Wed Sep 23 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.3.11-7
+- Support multiple queues for SLURM (SOFTWARE-2030)
+- Fix name of tomcat directory in EL7
+
 * Thu Apr 23 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.3.11-6
 - Fix GlueCEUniqueID fields in HTCondor CE reporting (SOFTWARE-1893)
 

@@ -1,0 +1,15 @@
+Based on
+https://github.com/globus/globus-toolkit/commit/785f7d5370c4a8aba9d0f0e9427c8c0997925032
+---
+--- a/src/gridftp_hdfs.c
++++ b/src/gridftp_hdfs.c
+@@ -56,7 +56,8 @@ hdfs_destroy(
+  */
+ static globus_gfs_storage_iface_t       globus_l_gfs_hdfs_dsi_iface = 
+ {
+-    GLOBUS_GFS_DSI_DESCRIPTOR_BLOCKING | GLOBUS_GFS_DSI_DESCRIPTOR_SENDER,
++    GLOBUS_GFS_DSI_DESCRIPTOR_BLOCKING | GLOBUS_GFS_DSI_DESCRIPTOR_SENDER |
++        GLOBUS_GFS_DSI_DESCRIPTOR_REQUIRES_ORDERED_DATA,
+     hdfs_start,
+     hdfs_destroy,
+     NULL, /* list */

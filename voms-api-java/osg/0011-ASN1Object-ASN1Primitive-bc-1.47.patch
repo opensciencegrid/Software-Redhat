@@ -1,0 +1,29 @@
+From ca98fef6df995bf61c4b6b7af0e8b3480a18941e Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Thu, 24 Sep 2015 14:56:01 -0500
+Subject: [PATCH 11/24] ASN1Object -> ASN1Primitive (bc 1.47+)
+
+---
+ src/main/java/org/glite/voms/PKIVerifier.java | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/main/java/org/glite/voms/PKIVerifier.java b/src/main/java/org/glite/voms/PKIVerifier.java
+index 7316f1b..84eb5f7 100644
+--- a/src/main/java/org/glite/voms/PKIVerifier.java
++++ b/src/main/java/org/glite/voms/PKIVerifier.java
+@@ -54,11 +54,11 @@ import java.util.Vector;
+ import javax.security.auth.x500.X500Principal;
+ 
+ import org.apache.log4j.Logger;
+ import org.bouncycastle.asn1.DERObjectIdentifier;
+ import org.bouncycastle.asn1.ASN1Sequence;
+-import org.bouncycastle.asn1.ASN1Object;
++import org.bouncycastle.asn1.ASN1Primitive;
+ import org.bouncycastle.asn1.DERObject;
+ import org.bouncycastle.asn1.ASN1InputStream;
+ import org.bouncycastle.asn1.DEROctetString;
+ import org.bouncycastle.asn1.x509.X509Extension;
+ import org.bouncycastle.asn1.x509.X509Extensions;
+-- 
+2.4.6
+

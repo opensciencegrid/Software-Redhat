@@ -1,5 +1,6 @@
-
-This package is a pass-through of the emi-trustmanager found here:
+Original emi-trustmanager found here:
 
 http://emisoft.web.cern.ch/emisoft/dist/EMI/1/sl5/SRPMS/base/repoview/emi-trustmanager.html
 
+EL7 build has lots of changes because EL7 bouncycastle is not API-compatible
+with earlier versions.

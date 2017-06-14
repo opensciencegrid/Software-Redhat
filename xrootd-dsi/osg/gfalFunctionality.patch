@@ -1,0 +1,47 @@
+Index: xrootd-dsi/globus_gridftp_server_posix.c
+===================================================================
+--- xrootd-dsi-orig/globus_gridftp_server_posix.c
++++ xrootd-dsi/globus_gridftp_server_posix.c
+@@ -19,6 +19,8 @@
+ 
+    2009-03-16: Wei Yang  yangw@slac.stanford.edu
+       *  add Adler32 checksum. (need -lz when linking the .so)
++   2016-02-22: Wei Yang  yangw@slac.stanford.edu
++      *  in globus_l_gfs_posix_command(), include errno in the return.  
+ 
+  */
+ 
+@@ -614,15 +616,15 @@ globus_l_gfs_posix_command(
+     {
+       case GLOBUS_GFS_CMD_MKD:
+         (mkdir(PathName, 0777) == 0) || 
+-            (rc = GlobusGFSErrorGeneric("mkdir() fail"));
++	    (rc = GlobusGFSErrorSystemError("mkdir", errno)); 
+         break;
+       case GLOBUS_GFS_CMD_RMD:
+         (rmdir(PathName) == 0) || 
+-            (rc = GlobusGFSErrorGeneric("rmdir() fail"));
+-        break;
++	    (rc = GlobusGFSErrorSystemError("rmdir", errno)); 
++	break;
+       case GLOBUS_GFS_CMD_DELE:
+         (unlink(PathName) == 0) ||
+-            (rc = GlobusGFSErrorGeneric("unlink() fail"));
++	    (rc = GlobusGFSErrorSystemError("unlink", errno));
+         break;
+       case GLOBUS_GFS_CMD_SITE_RDEL:
+ /*
+@@ -633,11 +635,11 @@ globus_l_gfs_posix_command(
+         break;
+       case GLOBUS_GFS_CMD_RNTO:
+         (rename(cmd_info->rnfr_pathname, PathName) == 0) || 
+-            (rc = GlobusGFSErrorGeneric("rename() fail"));
++	    (rc = GlobusGFSErrorSystemError("rename", errno));
+         break;
+       case GLOBUS_GFS_CMD_SITE_CHMOD:
+         (chmod(PathName, cmd_info->chmod_mode) == 0) ||
+-            (rc = GlobusGFSErrorGeneric("chmod() fail"));
++	    (rc = GlobusGFSErrorSystemError("chmod", errno)); 
+         break;
+       case GLOBUS_GFS_CMD_CKSM:
+         if (!strcmp(cmd_info->cksm_alg, "adler32") || 

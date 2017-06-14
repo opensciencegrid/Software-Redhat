@@ -1,78 +1,203 @@
-#%%global betatag .beta1
-%global _release 2
+#global betatag .pre
+%global _release 1
 
 Name:           osg-build
-Version:        1.5.0
+Version:        1.10.0
 Release:        %{?betatag:0.}%{_release}%{?betatag}%{?dist}
 Summary:        Build tools for the OSG
 
-Group:          System Environment/Tools
 License:        Apache 2.0
 URL:            https://twiki.grid.iu.edu/bin/view/SoftwareTeam/OSGBuildTools
 
-Source0:        %{name}-%{version}%{?betatag}.tar.gz
+Source0:        %{name}-%{version}.tar.gz
 Patch0:         koji-hub-testing.patch
-Patch1:         Add-upcoming-prerelease-route.patch
 
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
-Requires:       mock >= 1.0.0
-Requires:       rpm-build
-Requires:       openssl
-Requires:       quilt
-Requires:       koji
-Requires:       rpmlint
+Requires:       %{name}-base = %{version}
+Requires:       %{name}-mock = %{version}
+Requires:       %{name}-koji = %{version}
 
-Obsoletes:      vdt-build <= 0.0.17
-Provides:       vdt-build = %{version}
-
-%if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
-%{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
-%{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
-%endif
 
 %description
 %{summary}
 See %{url} for details.
 
 
+%package base
+Requires:       git
+Requires:       rpm-build
+Requires:       quilt
+Requires:       rpmlint
+Requires:       subversion
+Requires:       wget
+Requires:       python >= 2.6
+Summary:        OSG-Build base package, not containing mock or koji modules or koji-based tools
+
+%description base
+%{summary}
+Installing this package makes osg-build and osg-import-srpm
+available. osg-build can do rpmbuilds and run the lint and quilt
+tasks. osg-build-mock is required to use the mock task, and
+osg-build-koji is required to use the koji task.
+
+
+%package mock
+Requires:       %{name}-base = %{version}
+Requires:       mock >= 1.0.0
+Summary:        OSG-Build Mock plugin, allows builds with mock
+
+%description mock
+%{summary}
+
+
+%package koji
+Requires:       %{name}-base = %{version}
+Requires:       openssl
+Requires:       koji >= 1.7.0
+Summary:        OSG-Build Koji plugin and Koji-based tools
+
+%description koji
+%{summary}
+Installing this package enables the 'koji' task in osg-build and adds
+the following tools:
+- koji-blame
+- koji-tag-diff
+- osg-koji
+- osg-promote
+
+
+%package tests
+Requires:       %{name} = %{version}
+Summary:        OSG-Build tests
+
+%description tests
+%{summary}
+
+
 %prep
-%setup -q -n %{name}-%{version}%{?betatag}
+%setup -q -n %{name}-%{version}
 
 # changes the koji-hub URL to koji-hub-testing.chtc.wisc.edu, for testing only
 # % patch0 -p1
 
-%patch1 -p1
-
 %install
-rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
-%defattr(-,root,root,-)
-%{_bindir}/%{name}
-%{_bindir}/koji-blame
-%{_bindir}/koji-tag-diff
+
+%files tests
 %{_bindir}/osg-build-test
-%{_bindir}/osg-import-srpm
-%{_bindir}/osg-koji
-%{_bindir}/osg-promote
-%{_bindir}/vdt-build
-%dir %{python_sitelib}/osgbuild
-%{python_sitelib}/osgbuild/*.py*
 %dir %{python_sitelib}/osgbuild/test
 %{python_sitelib}/osgbuild/test/*.py*
+
+%files base
+%{_bindir}/%{name}
+%{_bindir}/osg-import-srpm
+%dir %{python_sitelib}/osgbuild
+%{python_sitelib}/osgbuild/__init__.py*
+%{python_sitelib}/osgbuild/constants.py*
+%{python_sitelib}/osgbuild/error.py*
+%{python_sitelib}/osgbuild/fetch_sources.py*
+%{python_sitelib}/osgbuild/git.py*
+%{python_sitelib}/osgbuild/importer.py*
+%{python_sitelib}/osgbuild/main.py*
+%{python_sitelib}/osgbuild/srpm.py*
+%{python_sitelib}/osgbuild/svn.py*
+%{python_sitelib}/osgbuild/utils.py*
+%{_datadir}/%{name}/rpmlint.cfg
+
+%files mock
+%{python_sitelib}/osgbuild/mock.py*
+
+%files koji
+%{_bindir}/koji-blame
+%{_bindir}/koji-tag-diff
+%{_bindir}/osg-koji
+%{_bindir}/osg-promote
+%{python_sitelib}/osgbuild/clientcert.py*
+%{python_sitelib}/osgbuild/kojiinter.py*
+%{python_sitelib}/osgbuild/promoter.py*
 %{_datadir}/%{name}/osg-koji-site.conf
 %{_datadir}/%{name}/osg-koji-home.conf
-%{_datadir}/%{name}/mock-auto.cfg.in
-%{_datadir}/%{name}/rpmlint.cfg
-%doc %{_docdir}/%{name}/sample-osg-build.ini
+%{_datadir}/%{name}/promoter.ini
+
 
 %changelog
+* Wed Jun 07 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.10.0-1
+- Drop vdt-build (SOFTWARE-2709)
+- Drop osg-build.ini (SOFTWARE-2708)
+
+* Thu Apr 27 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.9.0-2
+- Add version requirements to the subpackages
+
+* Thu Apr 27 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.9.0-1
+- Make koji and mock optional modules that can be shipped as separate
+  subpackages and will be loaded if necessary. (SOFTWARE-2671)
+- Improve `osg-build --help` text to be more consistent and show default
+  values for options. (SOFTWARE-2558)
+- Drop Python 2.4 compatibility
+- Add support for OSG 3.4 (SOFTWARE-2693)
+- Add new .source file syntax to fetch sources directly from Git repos
+  (SOFTWARE-2689)
+- Drop EL 5 packaging
+
+* Tue Apr 04 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.8.1-1
+- Set 'use_old_ssl=True' in template user config to work around SOFTWARE-2616
+
+* Wed Feb 01 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.8.0-1
+- Use koji 1.11 on CSL systems and update template config to koji 1.7+ version
+  (adds dependency on koji >= 1.7) (SOFTWARE-2566)
+- Remove broken --mock-config=AUTO (autogenerating a mock config from a template)
+- Fix KeyError on non-RHEL-like systems (e.g. Fedora)
+- Improve explanatory text in osg-koji setup (SOFTWARE-2455)
+
+* Thu Sep 01 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.7.1-1
+- Don't print "Implicitly building for el..." message unless in verbose mode
+- Add update action (--update or -U) to osg-import-srpm
+- Some internal cleanup
+
+* Mon Aug 08 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.7.0-1
+- Add three-way diff support to osg-import-srpm
+- Make osg-build log messages look nicer by replacing the
+  'LOGLEVEL:osg-build:' prefix with a plain ' >> '
+- Remove broken test_mock_auto_cfg
+- Tweak language in osg-import-srpm when creating .source files
+- Add subversion and git as requirements
+
+* Mon Jun 27 2016 Carl Edquist <edquist@cs.wisc.edu> - 1.6.4-1
+- Rename koji-hub.batlab.org to koji.chtc.wisc.edu (SOFTWARE-2175)
+- Do not enforce vcs branch checks for scratch builds (SOFTWARE-1876)
+
+* Tue Apr 12 2016 Matyas Selmeci <matyas@cs.wisc.edu> 1.6.3-1
+- include CILogon-OSG CA cert in CA bundle created by `osg-koji setup' (SOFTWARE-2273)
+
+* Fri Feb 19 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6.2-1
+- Change osg-promote table layout to put build first (SOFTWARE-2116)
+
+* Mon Aug 17 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6.1-1
+- Change promotion aliases testing, prerelease, and contrib to point to 3.3 instead of 3.2
+- Fix unit tests to work with new default dvers
+- Drop upstreamed patches
+
+* Wed Aug 12 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6.0-3
+- Change default dvers for building out of trunk to be el6 and el7 (instead of el5 and el6)
+
+* Tue Aug 04 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6.0-2
+- Change default dvers for upcoming* promotion routes to be el6 and el7 (instead of el5 and el6)
+
+* Thu Jul 30 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6.0-1
+- Add promotion routes for goc repos (SOFTWARE-1969)
+- Read promotion route definitions from an ini file instead of guessing from available Koji tags
+- Fix promotion problems for repos with different supported dvers (SOFTWARE-1988)
+- Fix promotion route for contrib to go from development instead of testing
+
+* Wed Jul 08 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.0-3
+- Fix ambiguity with 'upcoming' promotion route
+
 * Tue Jul 07 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.0-2
 - Allow promotion to upcoming-prerelease for osg-promote
 
@@ -165,7 +290,7 @@ rm -rf $RPM_BUILD_ROOT
 - Add git support (contributed by Brian Bockelman)
 
 * Fri Aug 09 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.2.6-1
-- Add %osg macro
+- Add %%osg macro
 - Shorten arguments to rpmbuild
 
 * Fri Feb 15 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.2.5-1

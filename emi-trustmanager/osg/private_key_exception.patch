@@ -1,0 +1,24 @@
+--- src/org/glite/security/trustmanager/UpdatingKeyManager.java.orig	2015-09-15 13:15:02.347797545 -0500
++++ src/org/glite/security/trustmanager/UpdatingKeyManager.java	2015-09-15 13:15:19.326056827 -0500
+@@ -318,7 +318,7 @@
+             }
+         } catch (Exception e) {
+             LOGGER.debug("Identity reading failed: " + e.getMessage());
+-            throw new CertificateException(e.getMessage());
++            throw new CertificateException(e);
+         } finally {
+             if (istream != null) {
+                 try {
+--- src/org/glite/security/util/PrivateKeyReader.java.orig	2015-09-15 13:23:38.400977532 -0500
++++ src/org/glite/security/util/PrivateKeyReader.java	2015-09-15 13:27:02.988789511 -0500
+@@ -136,6 +136,10 @@
+             if(o instanceof KeyPair){
+             	KeyPair pair = (KeyPair) o;
+             	privateKey = pair.getPrivate();
++            } else if (o instanceof org.bouncycastle.openssl.PEMKeyPair) {
++                org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter converter = new org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter();
++                KeyPair pair = converter.getKeyPair((org.bouncycastle.openssl.PEMKeyPair)o);
++                privateKey = pair.getPrivate();
+             } else {
+             	// new method returns just private key
+             	if(o instanceof PrivateKey){

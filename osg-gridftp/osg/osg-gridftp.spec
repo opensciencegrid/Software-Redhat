@@ -1,10 +1,7 @@
 Name:      osg-gridftp
 Summary:   Standalone OSG GridFTP w/lcmaps gums client
 Version:   3.3
-%if 0%{?el7}
-%define release_suffix _clipped
-%endif
-Release:   2%{?release_suffix}%{?dist}
+Release:   5%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -17,22 +14,15 @@ Requires: osg-version
 Requires: osg-system-profiler
 Requires: globus-gridftp-server-progs
 Requires: vo-client
+Requires: vo-client-lcmaps-voms
 Requires: grid-certificates >= 7
-Requires: gratia-probe-gridftp-transfer
-%if ! 0%{?el7}
-Requires: gums-client
-%endif
-%if 0%{?rhel} < 6
-Requires: fetch-crl3
-%else
+Requires: gratia-probe-gridftp-transfer >= 1.17.0-1
 Requires: fetch-crl
-%endif
+Requires: osg-configure-misc
 #This is probably not needed
 #Requires: edg-mkgridmap
 
-%if 0%{?rhel} >= 6
 Requires: globus-xio-udt-driver
-%endif
 
 %ifarch %{ix86}
 Requires: liblcas_lcmaps_gt4_mapping.so.0
@@ -50,22 +40,28 @@ gums support through lcmaps plugin and vo-client.
 %build
 
 %install
-%if 0%{?rhel} >= 6
 mkdir -p %{buildroot}%{_sysconfdir}/gridftp.d
 install -m 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/gridftp.d/
-%endif
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
-%if 0%{?rhel} >= 6
 %defattr(-,root,root,-)
 %config(noreplace) %{_sysconfdir}/gridftp.d/udt-%{name}.conf
-%endif
 
 
 %changelog
+* Thu Jun 08 2017 Edgar Fajardo <emfajard@ucsd.edu> - 3.3-5
+- Add osg-configure-misg to dependencies (SOFTWARE-2758)
+
+* Mon Jun 05 2017 Brian Lin <blin@cs.wisc.edu> - 3.3-4
+- Add vo-client-lcmaps-voms deps to osg-gridftp (SOFTWARE-2760)
+
+* Thu Aug 25 2016 Carl Edquist <edquist@cs.wisc.edu> - 3.3-3
+- drop gums-client dependency (SOFTWARE-2398)
+- remove rhel5-specific macros (OSG-3.2 EOL)
+
 * Wed Jul 01 2015 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.3-2
 - Require grid-certificates >= 7 (SOFTWARE-1883)
 

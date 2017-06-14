@@ -1,0 +1,51 @@
+From 955ec355665edd3ae3018aeb0c5172c839b0b2f9 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Mon, 10 Aug 2015 10:01:16 -0500
+Subject: [PATCH 12/14] Tomcat 7: getServerSocketFactory that takes an
+ AbstractEndpoint
+
+TMSSLImplementation changed in Tomcat 7 to take an AbstractEndpoint<?> argument
+and pass it on to the SSLServerSocketFactory it creates.
+---
+ src/org/glite/security/trustmanager/tomcat/TMSSLImplementation.java   | 4 ++++
+ .../glite/security/trustmanager/tomcat/TMSSLServerSocketFactory.java  | 1 +
+ 2 files changed, 5 insertions(+)
+
+diff --git a/src/org/glite/security/trustmanager/tomcat/TMSSLImplementation.java b/src/org/glite/security/trustmanager/tomcat/TMSSLImplementation.java
+index b968951..decea78 100644
+--- a/src/org/glite/security/trustmanager/tomcat/TMSSLImplementation.java
++++ b/src/org/glite/security/trustmanager/tomcat/TMSSLImplementation.java
+@@ -99,10 +99,14 @@ public class TMSSLImplementation extends SSLImplementation {
+      */
+     public ServerSocketFactory getServerSocketFactory() {
+         return new TMSSLServerSocketFactory();
+     }
+ 
++    public ServerSocketFactory getServerSocketFactory(AbstractEndpoint endpoint) {
++        return new TMSSLServerSocketFactory();
++    }
++
+     /*
+      * The method used to get the class that provides the SSL support functions.
+      * Current implementation reuses Tomcat's own JSSE SSLSupport class as we
+      * use JSSE internally too (with modifications to the certificate path
+      * checking of course.
+diff --git a/src/org/glite/security/trustmanager/tomcat/TMSSLServerSocketFactory.java b/src/org/glite/security/trustmanager/tomcat/TMSSLServerSocketFactory.java
+index 2b37140..fc844bc 100644
+--- a/src/org/glite/security/trustmanager/tomcat/TMSSLServerSocketFactory.java
++++ b/src/org/glite/security/trustmanager/tomcat/TMSSLServerSocketFactory.java
+@@ -15,10 +15,11 @@
+  * the License.
+  */
+ 
+ package org.glite.security.trustmanager.tomcat;
+ 
++import org.apache.tomcat.util.net.AbstractEndpoint;
+ import org.apache.tomcat.util.net.ServerSocketFactory;
+ 
+ import org.glite.security.trustmanager.ContextWrapper;
+ 
+ import java.io.IOException;
+-- 
+2.4.6
+

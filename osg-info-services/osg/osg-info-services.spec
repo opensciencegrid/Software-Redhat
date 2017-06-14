@@ -1,7 +1,7 @@
 
 Name:      osg-info-services
 Summary:   OSG Information Services uploader
-Version:   1.0.2
+Version:   1.2.2
 Release:   1%{?dist}
 License:   Apache 2.0
 Group:     Grid
@@ -16,7 +16,9 @@ Source0:   %{name}-%{version}.tar.gz
 
 BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
-Requires: gip
+Requires: gip >= 1.3.11-8
+Requires: /usr/bin/getopt
+Requires: logrotate
 
 %description
 %{summary}
@@ -29,25 +31,39 @@ Requires: gip
 
 %install
 
-mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d
-install -m 755 osg-info-services.init $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d/%{name}
-
-mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/cron.d
-install -m 644 osg-info-services.cron $RPM_BUILD_ROOT%{_sysconfdir}/cron.d/%{name}
-
-mkdir -p $RPM_BUILD_ROOT%{_sbindir}
-install -m 755 osg-info-services $RPM_BUILD_ROOT%{_sbindir}/%{name}
+make install DESTDIR=$RPM_BUILD_ROOT
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
+# From https://fedoraproject.org/wiki/EPEL:Packaging?rd=Packaging:EPEL#The_.25license_tag
+%{!?_licensedir:%global license %doc}
+
 %defattr(-,root,root,-)
 %config(noreplace) %{_sysconfdir}/cron.d/%{name}
+%config(noreplace) %{_sysconfdir}/logrotate.d/%{name}
 %{_sysconfdir}/rc.d/init.d/%{name}
 %{_sbindir}/%{name}
+%{_libexecdir}/%{name}/run-with-timeout
+%{_libexecdir}/%{name}/cronjob-wrapper
+%license LICENSE
 
 %changelog
+* Fri Jun 03 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.2.2-1
+- Change default timeout to 290:10 (SOFTWARE-2349)
+
+* Mon Dec 28 2015 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.2.1-1
+- Have cron job log to a file that gets rotated (SOFTWARE-1590)
+
+* Mon Dec 21 2015 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.2.0-1
+- Add timeout (SOFTWARE-1590)
+- Send output on failure (SOFTWARE-1590)
+
+* Thu Nov 19 2015 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.1.0-1
+- Remove deprecated ReSS support (SOFTWARE-2104)
+  Require gip >= 1.3.11-8 which has the patch to remove ReSS support from gip
+
 * Thu Feb 19 2015 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.0.2-1
 - Bypass http proxy (SOFTWARE-1797)
 

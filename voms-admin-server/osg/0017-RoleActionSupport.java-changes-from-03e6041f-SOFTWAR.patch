@@ -1,0 +1,38 @@
+From e979d03feb00a75dfd1e3666432f74dc99f018d7 Mon Sep 17 00:00:00 2001
+From: Carl Edquist <edquist@cs.wisc.edu>
+Date: Mon, 27 Mar 2017 15:12:43 -0500
+Subject: [PATCH 17/31] RoleActionSupport.java changes from 03e6041f
+ (SOFTWARE-2652)
+
+No idea if we want this...
+---
+ .../security/voms/admin/view/actions/role/RoleActionSupport.java     | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/src/main/java/org/glite/security/voms/admin/view/actions/role/RoleActionSupport.java b/src/main/java/org/glite/security/voms/admin/view/actions/role/RoleActionSupport.java
+index d03d66a..0123f46 100644
+--- a/src/main/java/org/glite/security/voms/admin/view/actions/role/RoleActionSupport.java
++++ b/src/main/java/org/glite/security/voms/admin/view/actions/role/RoleActionSupport.java
+@@ -27,6 +27,7 @@ import org.glite.security.voms.admin.persistence.model.VOMSAttributeDescription;
+ import org.glite.security.voms.admin.persistence.model.VOMSGroup;
+ import org.glite.security.voms.admin.persistence.model.VOMSRole;
+ import org.glite.security.voms.admin.view.actions.BaseAction;
++import org.hibernate.Hibernate;
+ 
+ import com.opensymphony.xwork2.ModelDriven;
+ import com.opensymphony.xwork2.Preparable;
+@@ -54,8 +55,10 @@ public class RoleActionSupport extends BaseAction implements
+ 
+ 		if (getModel() == null) {
+ 
+-			if (roleId != -1)
++			if (roleId != -1){
+ 				role = roleById(roleId);
++				Hibernate.initialize(role.getAttributes());
++			}
+ 		}
+ 
+ 		attributeClasses = (List<VOMSAttributeDescription>) VOMSAttributeDAO
+-- 
+2.9.4
+

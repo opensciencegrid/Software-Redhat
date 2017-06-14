@@ -1,0 +1,10 @@
+The upstream for this is github: jglobus/JGlobus.
+EPEL also has this package, but there are two reasons we have our own spec file:
+
+1) EPEL has separate spec files for EL 6 vs EL 7, and we'd like to avoid that
+2) EPEL splits up jglobus into multiple packages, and there isn't really a
+   clean upgrade path we can offer to users
+
+We do take one patch from EPEL: jglobus-bc146.patch, which fixes the code to
+work with bouncycastle 1.46 (the upstream code was written against the new
+bouncycastle 1.47+ API).

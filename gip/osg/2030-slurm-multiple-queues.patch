@@ -1,0 +1,77 @@
+From ce564e00e0ead9a1791bad4c057cdd8328468e83 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Wed, 23 Sep 2015 15:18:01 -0500
+Subject: [PATCH] Support multiple SLURM queues (SOFTWARE-2030)
+
+---
+ gip/lib/python/slurm_common.py | 37 +++++++++++++++++++------------------
+ 1 file changed, 19 insertions(+), 18 deletions(-)
+
+diff --git a/gip/lib/python/slurm_common.py b/gip/lib/python/slurm_common.py
+index 4058288..aaa22cc 100644
+--- a/gip/lib/python/slurm_common.py
++++ b/gip/lib/python/slurm_common.py
+@@ -15,12 +15,12 @@ from gip_testing import runCommand
+ 
+ log = getLogger("GIP.SLURM")
+ 
+ # TODO: replace with slurm equivalents
+ batch_system_info_cmd = "sinfo -V"
+-jobs_cmd = 'squeue -h -o "%i %u %T %P"'
+-queue_info_cmd = 'sinfo -h -o "%R %a %C %l"'
++jobs_cmd = 'squeue -a -h -o "%i %u %T %P"'
++queue_info_cmd = 'sinfo -a -h -o "%R %a %C %l"'
+ #queue_info_cmd = "qstat -Q -f %(slurmHost)s"
+ #jobs_cmd = "qstat"
+ #slurmnodes_cmd = "slurmnodes -a"
+ 
+ def slurmOutputFilter(fp):
+@@ -143,28 +143,29 @@ def getQueueInfo(cp):
+         queue_data['wait'] = 0
+         queue_data['total'] = 0
+ 
+         queueInfo[queue_name] = queue_data
+ 
+-    for orig_line in slurmCommand(jobs_cmd, cp):
+-        try:
+-            job, user, status, queue_name = orig_line.split()
+-        except (KeyboardInterrupt, SystemExit):
+-            raise
+-        except:
+-            continue
++    for queue in queueInfo.iterkeys():
++        for orig_line in slurmCommand(jobs_cmd + " -p %s" % queue, cp):
++            try:
++                job, user, status, queue_name = orig_line.split()
++            except (KeyboardInterrupt, SystemExit):
++                raise
++            except:
++                continue
+ 
+-        queue_data = queueInfo[queue_name]
+-        queue_data['running'] = queue_data.get('running', 0)
+-        queue_data['wait'] = queue_data.get('wait', 0)
+-        queue_data['total'] = queue_data.get('total', 0)
++            queue_data = queueInfo[queue]
++            queue_data['running'] = queue_data.get('running', 0)
++            queue_data['wait'] = queue_data.get('wait', 0)
++            queue_data['total'] = queue_data.get('total', 0)
+ 
+-        if status == "RUNNING" or status == "COMPLETING":
+-            queue_data["running"] += 1
+-        if status == "PENDING" or status == "CONFIGURING":
+-            queue_data["wait"] += 1
+-        queue_data["total"] += 1
++            if status == "RUNNING" or status == "COMPLETING":
++                queue_data["running"] += 1
++            if status == "PENDING" or status == "CONFIGURING":
++                queue_data["wait"] += 1
++            queue_data["total"] += 1
+ 
+     return queueInfo
+ 
+ def slurmTimeToMinutes(slurm_time):
+     # Convert SLURM time to seconds
+-- 
+2.4.6
+

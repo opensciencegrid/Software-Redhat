@@ -1,10 +1,11 @@
 Summary: osg-pki-tools
 Name: osg-pki-tools
-Version: 1.2.12
+Version: 1.2.21
 Release: 1%{?dist}
 Source: OSGPKITools-%{version}.tar.gz
 License: Apache 2.0
 Group: Grid
+URL: http://github.com/opensciencegrid/osg-pki-tools
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildArch: noarch
 Requires: python
@@ -75,6 +76,36 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Feb 16 2017 Brian Lin <blin@cs.wisc.edu> - 1.2.21-1
+- Drop PKI tool quota verification (SOFTWARE-2472)
+
+* Mon Oct 24 2016 Brian Lin <blin@cs.wisc.edu> - 1.2.20-1
+- Generate SHA2 CSRs (SOFTWARE-2136)
+
+* Mon Aug 22 2016 Brian Lin <blin@cs.wisc.edu> - 1.2.19-1
+- Fix formatting of CSRs (SOFTWARE-2132)
+- Reword 'bad VO info' error from osg-*cert-request (SOFTWARE-2405)
+
+* Wed May 25 2016 Brian Lin <blin@cs.wisc.edu> - 1.2.18-1
+- Added timeout to osg-user-cert-revoke (SOFTWARE-2322)
+
+* Wed May 04 2016 Brian Lin <blin@cs.wisc.edu> - 1.2.17-1
+- Fix missing import in osg-user-cert-renew
+
+* Mon Apr 25 2016 Brian Lin <blin@cs.wisc.edu> - 1.2.16-1
+- Fix timeout option to respect tool runtime (SOFTWARE-2258)
+- Improve PKI tool error message when missing VO request information (SOFTWARE-2292)
+
+* Thu Mar 24 2016 Brian Lin <blin@cs.wisc.edu> - 1.2.15-1
+- Added --csr and --hostname options conflict to osg-cert-request
+
+* Thu Dec 17 2015 Brian Lin <blin@cs.wisc.edu> - 1.2.14-1
+- Accept hostname aliases in cert requests (SOFTWARE-2114)
+- Refactor tests (SOFTWARE-2120)
+
+* Thu Dec 10 2015 Brian Lin <blin@cs.wisc.edu> - 1.2.13-1
+- Certificate requests fail without setting the CSR version (SOFTWARE-1936)
+
 * Tue Mar 31 2015 Brian Lin <blin@cs.wisc.edu> - 1.2.12-1
 - Fix to osg-user-cert-renew using old SSL protocols
 - Check write permissions of output dir before renewing certs
@@ -104,7 +135,7 @@ rm -rf $RPM_BUILD_ROOT
 - Handle blank lines in hostfile for osg-gridadmin-cert-request (SOFTWARE-1271)
 - Fix bugs in exception handling (SOFTWARE-1201)
 
-* Fri Nov 07 2013 Brian Lin <blin@cs.wisc.edu> - 1.2.4-1
+* Thu Nov 07 2013 Brian Lin <blin@cs.wisc.edu> - 1.2.4-1
 - Handle all IO errors
 
 * Mon Oct 28 2013 Brian Lin <blin@cs.wisc.edu> - 1.2.3-1
@@ -171,4 +202,3 @@ rm -rf $RPM_BUILD_ROOT
 
 * Thu Sep 13 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.0-1
 - Initial packaging
-

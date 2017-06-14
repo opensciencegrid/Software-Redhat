@@ -1,0 +1,56 @@
+From 240a8405c35119f73131295370c4a3220f6da14f Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Thu, 29 Sep 2016 11:13:30 -0500
+Subject: [PATCH] 2467-init-systemd
+
+Source /etc/init.d/functions in the init script so that systemd's SysV
+compatibility layer can take over and keep track of the service.
+(SOFTWARE-2467)
+---
+ init/globus-gatekeeper-lsb.in   | 2 ++
+ init/globus-gatekeeper-nolsb.in | 2 ++
+ 2 files changed, 4 insertions(+)
+ mode change 100644 => 100755 init/globus-gatekeeper-lsb.in
+ mode change 100644 => 100755 init/globus-gatekeeper-nolsb.in
+
+diff --git a/init/globus-gatekeeper-lsb.in b/init/globus-gatekeeper-lsb.in
+old mode 100644
+new mode 100755
+index a5d6280..dfd0513
+--- a/init/globus-gatekeeper-lsb.in
++++ b/init/globus-gatekeeper-lsb.in
+@@ -30,10 +30,12 @@
+ # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ # See the License for the specific language governing permissions and
+ # limitations under the License.
+ #
+ 
++. /etc/init.d/functions
++
+ prefix="${GLOBUS_LOCATION-@prefix@}"
+ exec_prefix="@exec_prefix@"
+ sbindir="@sbindir@"
+ bindir="@bindir@"
+ libdir="@libdir@"
+diff --git a/init/globus-gatekeeper-nolsb.in b/init/globus-gatekeeper-nolsb.in
+old mode 100644
+new mode 100755
+index 81477df..e9f7496
+--- a/init/globus-gatekeeper-nolsb.in
++++ b/init/globus-gatekeeper-nolsb.in
+@@ -30,10 +30,12 @@
+ # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ # See the License for the specific language governing permissions and
+ # limitations under the License.
+ #
+ 
++. /etc/init.d/functions
++
+ prefix="${GLOBUS_LOCATION-@prefix@}"
+ exec_prefix="@exec_prefix@"
+ sbindir="@sbindir@"
+ bindir="@bindir@"
+ libdir="@libdir@"
+-- 
+2.6.3
+

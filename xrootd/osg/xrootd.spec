@@ -1,24 +1,22 @@
-#Defining python macros
-%if 0%{?rhel} && 0%{?rhel} <= 6
-%{!?__python2: %global __python2 /usr/bin/python2}
-%{!?python2_sitelib: %global python2_sitelib %(%{__python2} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
-%{!?python2_sitearch: %global python2_sitearch %(%{__python2} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
-%endif
-
-
-
 %{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
+%{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
 
-%if %{?fedora}%{!?fedora:0} >= 19 || %{?rhel}%{!?rhel:0} >= 7
+%if %{?fedora}%{!?fedora:0} >= 21 || %{?rhel}%{!?rhel:0} >= 7
 %global use_systemd 1
 %else
 %global use_systemd 0
 %endif
 
+%if %{?fedora}%{!?fedora:0} >= 22 || %{?rhel}%{!?rhel:0} >= 8
+%global use_libc_semaphore 1
+%else
+%global use_libc_semaphore 0
+%endif
+
 Name:		xrootd
 Epoch:		1
-Version:	4.2.1
-Release:	2%{?dist}
+Version:	4.6.1
+Release:	1%{?dist}
 Summary:	Extended ROOT file server
 
 Group:		System Environment/Daemons
@@ -27,41 +25,35 @@ URL:		http://xrootd.org/
 Source0:	%{name}-%{version}.tar.gz
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
+
 BuildRequires:	cmake
 BuildRequires:	krb5-devel
-BuildRequires:	libevent-devel
 BuildRequires:	libxml2-devel
 BuildRequires:	ncurses-devel
 BuildRequires:	openssl-devel
+BuildRequires:	perl-generators
 BuildRequires:	readline-devel
 BuildRequires:	zlib-devel
 BuildRequires:	fuse-devel
 BuildRequires:	doxygen
 BuildRequires:	graphviz
-%if "%{?rhel}" == "5"
+%if %{?rhel}%{!?rhel:0} == 5
 BuildRequires:	graphviz-gd
 %endif
 BuildRequires:	selinux-policy-devel
 %if %{use_systemd}
 BuildRequires:	systemd
 %endif
-BuildRequires: python2-devel
-
+BuildRequires:	python-devel
 %if %{?fedora}%{!?fedora:0} >= 14 || %{?rhel}%{!?rhel:0} >= 7
-BuildRequires: python-sphinx
+BuildRequires:	python-sphinx
 %endif
 %if %{?rhel}%{!?rhel:0} == 6
-BuildRequires: python-sphinx10
+BuildRequires:	python-sphinx10
 %endif
-
-
-#
-# Patch XRootD 4.2.1 to fix file cache hangs
-# Bug report https://github.com/xrootd/xrootd/issues/239
-# fix https://github.com/xrootd/xrootd/commit/923a6a3cb14eddcd11618d4f2fdd7229b15e2390
-Patch0: fixfilecachehangs.patch
-
-
+%if %{?fedora}%{!?fedora:0} >= 22
+BuildRequires:	libradosstriper1-devel
+%endif
 
 Requires:	%{name}-server%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-selinux = %{epoch}:%{version}-%{release}
@@ -222,23 +214,22 @@ tool.
 
 %if %{?fedora}%{!?fedora:0} >= 22
 %package ceph
-Summary: Ceph back-end plug-in for xrootd
-Group:	      Development/Tools
-Requires:     %{name}-server%{?_isa} = %{epoch}:%{version}-%{release}
+Summary:	Ceph back-end plug-in for xrootd
+Group:		Development/Tools
+Requires:	%{name}-server%{?_isa} = %{epoch}:%{version}-%{release}
 
 %description ceph
 This package contains a ceph back-end plug-in for xrootd.
 %endif
-#-------------------------------------------------------------------------------                                                                             
-# python                                                                                                                                                     
-#-------------------------------------------------------------------------------                                                                             
+
 %package python
-Summary:        Python bindings for XRootD
-Group:          Development/Libraries
-Requires:       %{name}-client-libs%{?_isa} = %{epoch}:%{version}-%{release}
+Summary:	Python bindings for xrootd
+Group:		Development/Libraries
+Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
+Requires:	%{name}-client-libs%{?_isa} = %{epoch}:%{version}-%{release}
 
 %description python
-Python bindings for XRootD
+This package contains Python bindings for xrootd.
 
 %package doc
 Summary:	Developer documentation for the xrootd libraries
@@ -250,29 +241,21 @@ BuildArch:	noarch
 %description doc
 This package contains the API documentation of the xrootd libraries.
 
-
 %prep
 %setup -q
-%patch0 -p1
 
 %if %{?fedora}%{!?fedora:0} <= 9 && %{?rhel}%{!?rhel:0} <= 5
 # Older versions of SELinux do not have policy for open
 sed 's/ open / /' -i packaging/common/%{name}.te
 %endif
 
-# Rename documentation file to get the includes right
-mv bindings/python/examples/copy_example.py bindings/python/examples/copy.py
-
-# Create missing documentation file
-touch bindings/python/README.rst
-
 %build
 mkdir build
 
 pushd build
-%cmake ..                                                                                                                                                   
-make %{?_smp_mflags}                                                                                                                                        
-popd 
+%cmake -DUSE_LIBC_SEMAPHORE:BOOL=%{use_libc_semaphore} ..
+make %{?_smp_mflags}
+popd
 
 pushd packaging/common
 make -f /usr/share/selinux/devel/Makefile
@@ -292,17 +275,12 @@ make html
 popd
 %endif
 
-
-
 %install
 rm -rf %{buildroot}
 
 pushd build
 make install DESTDIR=%{buildroot}
 popd
-
-# configuration stuff                                                                                                                                        
-rm -rf %{buildroot}%{_sysconfdir}/xrootd/*
 
 # Service start-up scripts / unit files
 %if %{use_systemd}
@@ -350,8 +328,7 @@ sed 's!/usr/bin/env perl!/usr/bin/perl!' -i \
 rm %{buildroot}%{_libdir}/libXrdCephPosix.so
 %endif
 
-chmod 755 %{buildroot}%{python2_sitearch}/pyxrootd/client.so
-
+chmod 755 %{buildroot}%{python_sitearch}/pyxrootd/client.so
 
 mkdir -p %{buildroot}%{_localstatedir}/log/%{name}
 mkdir -p %{buildroot}%{_localstatedir}/spool/%{name}
@@ -372,20 +349,16 @@ cp -pr doxydoc/html %{buildroot}%{_pkgdocdir}
 cp -pr bindings/python/docs/build/html %{buildroot}%{_pkgdocdir}/python
 %endif
 
-
 %clean
 rm -rf %{buildroot}
 
 %post libs -p /sbin/ldconfig
-
 %postun libs -p /sbin/ldconfig
 
 %post client-libs -p /sbin/ldconfig
-
 %postun client-libs -p /sbin/ldconfig
 
 %post server-libs -p /sbin/ldconfig
-
 %postun server-libs -p /sbin/ldconfig
 
 %if %{?fedora}%{!?fedora:0} >= 22
@@ -408,10 +381,10 @@ getent passwd %{name} >/dev/null || useradd -r -g %{name} -s /sbin/nologin \
 /sbin/service cmsd stop >/dev/null 2>&1 || :
 /sbin/service frm_purged stop >/dev/null 2>&1 || :
 /sbin/service frm_xfrd stop >/dev/null 2>&1 || :
-/sbin/chkconfig --del xrootd 2>&1 || :
-/sbin/chkconfig --del cmsd 2>&1 || :
-/sbin/chkconfig --del frm_purged 2>&1 || :
-/sbin/chkconfig --del frm_xfrd 2>&1 || :
+/sbin/chkconfig --del xrootd >/dev/null 2>&1 || :
+/sbin/chkconfig --del cmsd >/dev/null 2>&1 || :
+/sbin/chkconfig --del frm_purged >/dev/null 2>&1 || :
+/sbin/chkconfig --del frm_xfrd >/dev/null 2>&1 || :
 %endif
 
 %if %{use_systemd}
@@ -496,11 +469,11 @@ fi
 %{_bindir}/wait41
 %{_bindir}/XrdCnsd
 %{_bindir}/xrdmapc
+%{_bindir}/xrdpfc_print
+%{_bindir}/xrdacctest
 %{_bindir}/xrdpwdadmin
 %{_bindir}/xrdsssadmin
 %{_bindir}/xrootd
-%{_bindir}/xrdpfc_print
-
 %{_mandir}/man8/cmsd.8*
 %{_mandir}/man8/cns_ssi.8*
 %{_mandir}/man8/frm_admin.8*
@@ -509,10 +482,10 @@ fi
 %{_mandir}/man8/frm_xfrd.8*
 %{_mandir}/man8/mpxstats.8*
 %{_mandir}/man8/XrdCnsd.8*
+%{_mandir}/man8/xrdpfc_print.8*
 %{_mandir}/man8/xrdpwdadmin.8*
 %{_mandir}/man8/xrdsssadmin.8*
 %{_mandir}/man8/xrootd.8*
-%{_mandir}/man8/xrdpfc_print.8*
 %{_datadir}/%{name}
 %if %{use_systemd}
 %{_unitdir}/*
@@ -533,6 +506,7 @@ fi
 %{_libdir}/libXrdCrypto.so.*
 %{_libdir}/libXrdCryptoLite.so.*
 %{_libdir}/libXrdUtils.so.*
+%{_libdir}/libXrdXml.so.*
 # Plugins
 %{_libdir}/libXrdCksCalczcrc32-4.so
 %{_libdir}/libXrdCryptossl-4.so
@@ -549,11 +523,13 @@ fi
 %{_includedir}/%{name}/XrdOuc
 %{_includedir}/%{name}/XrdSec
 %{_includedir}/%{name}/XrdSys
+%{_includedir}/%{name}/XrdXml
 %{_includedir}/%{name}/XrdVersion.hh
 %{_libdir}/libXrdAppUtils.so
 %{_libdir}/libXrdCrypto.so
 %{_libdir}/libXrdCryptoLite.so
 %{_libdir}/libXrdUtils.so
+%{_libdir}/libXrdXml.so
 
 %files client-libs
 %{_libdir}/libXrdCl.so.*
@@ -569,6 +545,7 @@ fi
 %config(noreplace) %{_sysconfdir}/%{name}/client.plugins.d/client-plugin.conf.example
 
 %files client-devel
+%{_bindir}/xrdgsitest
 %{_includedir}/%{name}/XrdCl
 %{_includedir}/%{name}/XrdClient
 %{_includedir}/%{name}/XrdPosix
@@ -576,21 +553,24 @@ fi
 %{_libdir}/libXrdClient.so
 %{_libdir}/libXrdFfs.so
 %{_libdir}/libXrdPosix.so
+%{_mandir}/man1/xrdgsitest.1*
 
 %files server-libs
 %{_libdir}/libXrdServer.so.*
 # Plugins
+%{_libdir}/libXrdBlacklistDecision-4.so
 %{_libdir}/libXrdBwm-4.so
 %{_libdir}/libXrdFileCache-4.so
 %{_libdir}/libXrdHttp-4.so
 %{_libdir}/libXrdOssSIgpfsT-4.so
 %{_libdir}/libXrdPss-4.so
-%{_libdir}/libXrdXrootd-4.so
 %{_libdir}/libXrdThrottle-4.so
+%{_libdir}/libXrdXrootd-4.so
 
 %files server-devel
 %{_includedir}/%{name}/XrdAcc
 %{_includedir}/%{name}/XrdCms
+%{_includedir}/%{name}/XrdFileCache
 %{_includedir}/%{name}/XrdOss
 %{_includedir}/%{name}/XrdSfs
 %{_includedir}/%{name}/XrdXrootd
@@ -631,27 +611,95 @@ fi
 %{_libdir}/libXrdCephPosix.so.*
 %endif
 
-
 %files python
-%{python2_sitearch}/*
+%{python_sitearch}/*
 
 %files doc
 %doc %{_pkgdocdir}
 
 %changelog
-* Mon Jun 22 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> -1:4.2.1-2
-- Added patch to fix file cache hangs
+* Fri May 12 2017 Marian Zvada <marian.zvada@cern.ch> - 1:4.6.1-1
+- Update to 4.6.1 SOFTWARE-2669
+- includes rc3
 
-* Mon Jun 1 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> -1:4.2.1-1
-- Updated to 4.2.1
-- Included ceph subpackage
+* Fri Apr 24 2017 Marian Zvada <marian.zvada@cern.ch> - 1:4.6.1-0.2.rc3
+- Bumped to rc3; Update to 4.6.1.rc2 SOFTWARE-2669
 
-* Wed May 27 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> -1:4.2.0-2
-- Fixed the dist tag been twice in the release field
+* Fri Apr 21 2017 Marian Zvada <marian.zvada@cern.ch> - 1:4.6.1-0.1.rc2
+- Update to 4.6.1.rc2 SOFTWARE-2669
 
-* Tue May 26 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> -1:4.2.0-1
-- Update to 4.2.0
-- Added some macros for the python bindings
+* Thu Feb 9 2017 Edgar Fajardo <emfajard@ucsd.edu> - 1:4.6.0-1
+- Update to 4.6.0 SOFTWARE-2597
+- File caching proxy V2
+- Add non-blocking sends to avoid slow links
+
+* Tue Dec 20 2016 Edgar Fajardo <emfajard@ucsd.edu> - 1:4.5.0-2
+- Updated Changelog SOFTWARE-2549
+
+* Fri Dec 15 2016 Edgar Fajardo <emfajard@ucsd.edu> - 1:4.5.0-1
+- Update to 4.5.0 SOFTWARE-2549
+- Allow specifying a different timeout for null cached entries
+- Implement request signing
+- Add ZIP extracting capability to xrdcp
+- Include the release number in client Login request cgi.
+- Add support for spaces in file names for mv operation.
+
+* Fri Jul 29 2016 Mattias Ellert <mattias.ellert@physics.uu.se> - 1:4.4.0-1
+- Update to version 4.4.0
+- Drop patch xrootd-deprecated.patch
+
+* Tue Jul 19 2016 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:4.3.0-4
+- https://fedoraproject.org/wiki/Changes/Automatic_Provides_for_Python_RPM_Packages
+
+* Thu Apr 21 2016 Mattias Ellert <mattias.ellert@fysast.uu.se> - 1:4.3.0-3
+- Backport upstream's fix for the deprecation of readdir_r
+
+* Sat Feb 27 2016 Mattias Ellert <mattias.ellert@fysast.uu.se> - 1:4.3.0-2
+- Workaround deprecation of readdir_r in glibc 2.24
+
+* Fri Feb 26 2016 Mattias Ellert <mattias.ellert@fysast.uu.se> - 1:4.3.0-1
+- Update to version 4.3.0
+- Drop patches accected upstream or that were previously backported:
+  xrootd-selinux.patch, xrootd-pth-cancel.patch, xrootd-link.patch,
+  xrootd-c++11.patch, xrootd-doxygen.patch, xrootd-autoptr.patch,
+  xrootd-indent.patch, xrootd-throw-dtor.patch and xrootd-sockaddr.patch
+
+* Wed Feb 17 2016 Mattias Ellert <mattias.ellert@fysast.uu.se> - 1:4.2.3-6
+- Fix strict aliasing issues with struct sockaddr
+
+* Fri Feb 12 2016 Mattias Ellert <mattias.ellert@fysast.uu.se> - 1:4.2.3-5
+- Use upstream's patch for the pthread segfault
+- Backport fixes for gcc 6 from upstream
+
+* Fri Feb 05 2016 Fedora Release Engineering <releng@fedoraproject.org> - 1:4.2.3-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
+
+* Wed Dec 23 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 1:4.2.3-3
+- Fix for c++11 usage in ceph (backport from upstream git)
+- Doxygen fixes
+
+* Wed Dec 23 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 1:4.2.3-2
+- Fix segfault due to pthread clean-up functions
+
+* Tue Sep 08 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 1:4.2.3-1
+- Update to version 4.2.3
+
+* Fri Jul 31 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 1:4.2.2-1
+- Update to version 4.2.2
+- Drop patch xrootd-narrowing.patch (accepted upstream)
+
+* Fri Jun 19 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:4.2.1-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
+
+* Tue Jun 02 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 1:4.2.1-2
+- Fix narrowing conversion error on ppc64 (EPEL 7)
+
+* Tue Jun 02 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 1:4.2.1-1
+- Update to version 4.2.1
+- New subpackages ceph (F22+) and python
+
+* Fri Apr 17 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 1:4.1.1-2
+- Rebuilt for gcc C++ ABI change
 
 * Mon Dec 08 2014 Mattias Ellert <mattias.ellert@fysast.uu.se> - 1:4.1.1-1
 - Update to version 4.1.1

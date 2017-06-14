@@ -2,7 +2,7 @@
 
 Name:           gridftp-hdfs
 Version:        0.5.4
-Release:        19%{?dist}
+Release:        25.5%{?dist}
 Summary:        HDFS DSI plugin for GridFTP
 Group:          System Environment/Daemons
 License:        ASL 2.0
@@ -10,6 +10,7 @@ URL:            http://twiki.grid.iu.edu/bin/view/Storage/HadoopInstallation
 Source0:        %{name}-%{version}.tar.gz
 Source1: globus-gridftp-server-plugin.osg-sysconfig
 Source2: %{name}.conf
+Source3: %{name}.osg-extensions.conf
 %if 0%{?osg} > 0
 Patch0: osg-sysconfig.patch
 %endif
@@ -31,6 +32,13 @@ Patch11: 1410-java-environment.patch
 Patch12: 1412-gridftp_d.patch
 Patch13: 1495-pthread-mutex.patch
 Patch14: 1495-optimal-concurrency.patch
+Patch15: 2006-gridftp-hdfs-get-checksum.patch
+Patch16: 2011-capture_stderr.patch
+Patch17: 2115-load-limits.patch
+Patch18: 2107-rmdir-rename.patch
+Patch19: list_empty_directory.patch
+Patch20: 2436-enable-ordered-data.patch
+
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires: autoconf
@@ -41,7 +49,8 @@ BuildRequires: java-devel >= 1:1.7.0
 BuildRequires: jpackage-utils
 
 BuildRequires: hadoop-libhdfs
-BuildRequires: globus-gridftp-server-devel
+# globus-gridftp-server-devel-11 needed for 2436-enable-ordered-data.patch
+BuildRequires: globus-gridftp-server-devel >= 11
 BuildRequires: globus-common-devel
 
 BuildRequires: chrpath
@@ -54,9 +63,13 @@ Requires: hadoop-client >= 2.0.0+545
 Requires: globus-gridftp-server-progs >= 6.38-1.3
 %if 0%{?osg} > 0
 Requires: xinetd
+Requires: globus-gridftp-osg-extensions
 %endif
 Requires: java >= 1:1.7.0
 Requires: jpackage-utils
+# for ordered data support (SOFTWARE-2436):
+BuildRequires: globus-ftp-control-devel >= 7.7
+Requires: globus-ftp-control >= 7.7
 
 Requires(pre): shadow-utils
 Requires(preun): initscripts
@@ -92,6 +105,12 @@ HDFS DSI plugin for GridFTP
 %patch12 -p1
 %patch13 -p1
 %patch14 -p1
+%patch15 -p1
+%patch16 -p1
+%patch17 -p1
+%patch18 -p1
+%patch19 -p1
+%patch20 -p1
 
 aclocal
 libtoolize
@@ -129,6 +148,7 @@ rm $RPM_BUILD_ROOT%{_sysconfdir}/gridftp-hdfs/gridftp.conf
 mkdir -p $RPM_BUILD_ROOT/usr/share/osg/sysconfig
 install -m 644 -p %{SOURCE1} $RPM_BUILD_ROOT/usr/share/osg/sysconfig/globus-gridftp-server-plugin
 install -m 644 %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/gridftp.d
+install -m 644 %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/gridftp.d
 %else
 rm $RPM_BUILD_ROOT%{_sysconfdir}/gridftp-hdfs/gridftp-debug.conf
 rm $RPM_BUILD_ROOT%{_sysconfdir}/gridftp-hdfs/gridftp-inetd.conf
@@ -183,12 +203,48 @@ fi
 %config(noreplace) %{_sysconfdir}/%{name}/replica-map.conf
 %config(noreplace) %{_sysconfdir}/sysconfig/%{name}
 %config(noreplace) %{_sysconfdir}/gridftp.d/%{name}.conf
+%config(noreplace) %{_sysconfdir}/gridftp.d/%{name}.osg-extensions.conf
 /usr/share/osg/sysconfig/globus-gridftp-server-plugin
 %else
 %config(noreplace) %{_sysconfdir}/sysconfig/gridftp.conf.d/%{name}
 %endif
 
 %changelog
+* Thu Dec 22 2016 Carl Edquist <edquist@cs.wisc.edu> - 0.5.4-25.5
+- Bump to rebuild against globus-gridftp-server 11.8 (SOFTWARE-2436)
+
+* Fri Aug 26 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 0.5.4-25.4
+- Add patch to enable ordered data (SOFTWARE-2436)
+  - Adds dependency on globus-ftp-control >= 7.7
+  - Adds build dependency on globus-gridftp-server >= 11
+
+* Thu Jul 21 2016 Carl Edquist <edquist@cs.wisc.edu> - 0.5.4-25.3
+- Config file fixes for globus-gridftp-osg-extensions (SOFTWARE-2397)
+
+* Wed Jul 20 2016 Carl Edquist <edquist@cs.wisc.edu> - 0.5.4-25.2
+- Use globus-gridftp-osg-extensions (SOFTWARE-2397)
+
+* Thu Jun 30 2016 Brian Bockelman <bbockelm@cse.unl.edu> - 0.5.4-25.1
+- Fix bug with listing empty directories.
+
+* Mon Feb 22 2016 Carl Edquist <edquist@cs.wisc.edu> - 0.5.4-25.osg
+- Rebuild against hadoop-2.0.0+1612 (SOFTWARE-2161)
+
+* Tue Dec 21 2015  Edgar Fajardo <emfajard@ucsd.edu> - 0.5.4-24.osg
+- Update to include the patch (SOFTWARE-2107) to deal with mkdir and rename
+
+* Tue Dec 8 2015 Edgar Fajardo <emfajard@ucsd.edu> - 0.5.4-23.osg
+- Update to include the patch (SOFTWARE-2115) to deal with load limits
+
+* Wed Sep 2 2015 Edgar Fajardo <emfajard@ucsd.edu> - 0.5.4-22.osg
+- Update to the patch (SOFTWARE-2011) to correctly deal when replication errors
+
+* Mon Aug 31 2015 Edgar Fajardo <emfajard@ucsd.edu> - 0.5.4-21.osg
+- Applied patch to capture stderr to the gridftp-auth log (SOFTWARE-2011)
+ 
+* Mon Aug 24 2015 Edgar Fajardo <emfajard@ucsd.edu> - 0.5.4-20.osg
+- Changed checksum names (adler32, md5, etc) to be case-insensitive (SOFTWARE-2006)
+
 * Tue Sep 30 2014 Carl Edquist <edquist@cs.wisc.edu> - 0.5.4-19.osg
 - Limit concurrency to 1 for no-parallelism transfers (SOFTWARE-1495)
 

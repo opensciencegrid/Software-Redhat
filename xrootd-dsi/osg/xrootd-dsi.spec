@@ -1,6 +1,6 @@
 Name:           xrootd-dsi
 Version:        3.0.4
-Release:        16%{?dist}
+Release:        22%{?dist}
 Summary:        xrootd DSI library and POSIX preload
 Group:          System Environment/Daemons
 License:        Stanford (modified BSD with advert clause)
@@ -9,7 +9,8 @@ URL:            http://xrootd.org/
 Source0:        xrootd-dsi.tar.gz
 Source1:        gridftp-xrootd.conf
 Source2:        globus-gridftp-server-plugin.osg-sysconfig
-Patch0:         xrootd-dsi.patch
+Source3:        gridftp-xrootd.osg-extensions.conf
+Patch0:         gfalFunctionality.patch
 
 BuildRoot:      %{_tmppath}/%{name}-root
 BuildRequires: globus-common-devel globus-gridftp-server-devel zlib-devel
@@ -23,6 +24,7 @@ Requires: xrootd-libs >= 1:4.0.0
 #Requires: xrootd-compat-libs
 #%endif
 Requires: globus-gridftp-server-progs >= 6.14-2
+Requires: globus-gridftp-osg-extensions
 #Hold off on these for now
 #vdt-compat globus-base-data-server
 Conflicts: gridftp-hdfs
@@ -46,8 +48,11 @@ make
 
 mkdir -p $RPM_BUILD_ROOT/etc/xrootd-dsi
 install -m 644 %{SOURCE1} $RPM_BUILD_ROOT/etc/xrootd-dsi
+install -m 644 %{SOURCE3} $RPM_BUILD_ROOT/etc/xrootd-dsi
 mkdir -p $RPM_BUILD_ROOT/usr/share/osg/sysconfig
 install -m 644 %{SOURCE2} $RPM_BUILD_ROOT/usr/share/osg/sysconfig/globus-gridftp-server-plugin
+mkdir -p $RPM_BUILD_ROOT/%{_sysconfdir}/sysconfig
+touch $RPM_BUILD_ROOT/%{_sysconfdir}/sysconfig/xrootd-dsi
 
 %ifarch x86_64
 mkdir -p $RPM_BUILD_ROOT/usr/lib64
@@ -60,8 +65,10 @@ install -m 644 libglobus_gridftp_server_posix.so $RPM_BUILD_ROOT/usr/lib/libglob
 %endif
 
 %files
-/etc/xrootd-dsi/gridftp-xrootd.conf
-/usr/share/osg/sysconfig/globus-gridftp-server-plugin
+%config(noreplace) %{_sysconfdir}/sysconfig/xrootd-dsi
+%{_sysconfdir}/xrootd-dsi/gridftp-xrootd.conf
+%{_sysconfdir}/xrootd-dsi/gridftp-xrootd.osg-extensions.conf
+%{_datarootdir}/osg/sysconfig/globus-gridftp-server-plugin
 
 %ifarch x86_64
 /usr/lib64/libglobus_gridftp_server_posix.so
@@ -73,6 +80,25 @@ install -m 644 libglobus_gridftp_server_posix.so $RPM_BUILD_ROOT/usr/lib/libglob
 
 
 %changelog
+* Thu Aug 25 2016 Brian Lin <blin@cs.wisc.edu> - 3.0.4-22
+- Update changelog entries
+
+* Tue Aug 23 2016 Brian Lin <blin@cs.wisc.edu> - 3.0.4-21
+- Add empty /etc/sysconfig/xrootd-dsi config file
+- Add descriptive header to globus-gridftp-server-plugin
+
+* Fri Jul 22 2016 Carl Edquist <edquist@cs.wisc.edu> - 3.0.4-20
+- Add TRANSFER to log_level (SOFTWARE-2397)
+
+* Thu Jul 21 2016 Carl Edquist <edquist@cs.wisc.edu> - 3.0.4-19
+- Config file fixes for globus-gridftp-osg-extensions (SOFTWARE-2397)
+
+* Wed Jul 20 2016 Carl Edquist <edquist@cs.wisc.edu> - 3.0.4-18
+- Use globus-gridftp-osg-extensions (SOFTWARE-2397)
+
+* Thu Mar 03 2016 Edgar Fajardo <efajardo@physics.ucsd.edu> - 3.0.4-17
+- Added patch for gfal functionality (SOFTWARE-2223)
+
 * Wed Feb 25 2015 Edgar Fajardo <emfajard@ucsd.edu> 3.0.4-16
 - Removed the xrootd-compat-libs not needed.
 

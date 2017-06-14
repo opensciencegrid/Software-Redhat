@@ -1,11 +1,76 @@
---- src/pom.xml.orig	2012-10-16 12:37:00.000000000 -0500
-+++ src/pom.xml	2013-04-05 10:30:10.967881188 -0500
-@@ -112,7 +112,7 @@
-                 <version>[3.0.2,)</version>
-               </requireMavenVersion>
-               <requireJavaVersion>
--                <version>1.6</version>
-+                <version>1.7</version>
-               </requireJavaVersion>
-             </rules>
-           </configuration>
+diff --git a/src/hadoop-assemblies/pom.xml b/src/hadoop-assemblies/pom.xml
+index c1c81c0..9ea6a05 100644
+--- a/src/hadoop-assemblies/pom.xml
++++ b/src/hadoop-assemblies/pom.xml
+@@ -45,7 +45,7 @@
+               <version>[3.0.0,)</version>
+             </requireMavenVersion>
+             <requireJavaVersion>
+-              <version>1.6</version>
++              <version>1.7</version>
+             </requireJavaVersion>
+           </rules>
+         </configuration>
+diff --git a/src/hadoop-common-project/hadoop-auth/pom.xml b/src/hadoop-common-project/hadoop-auth/pom.xml
+index 0c5eba6..4ab5d4c 100644
+--- a/src/hadoop-common-project/hadoop-auth/pom.xml
++++ b/src/hadoop-common-project/hadoop-auth/pom.xml
+@@ -183,6 +183,7 @@
+             <executions>
+               <execution>
+                 <configuration>
++                  <dependencyDetailsEnabled>false</dependencyDetailsEnabled>
+                   <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
+                 </configuration>
+                 <phase>package</phase>
+diff --git a/src/hadoop-hdfs-project/hadoop-hdfs-httpfs/pom.xml b/src/hadoop-hdfs-project/hadoop-hdfs-httpfs/pom.xml
+index dd9a7f2..698116e 100644
+--- a/src/hadoop-hdfs-project/hadoop-hdfs-httpfs/pom.xml
++++ b/src/hadoop-hdfs-project/hadoop-hdfs-httpfs/pom.xml
+@@ -343,6 +343,7 @@
+         <executions>
+           <execution>
+             <configuration>
++              <dependencyDetailsEnabled>false</dependencyDetailsEnabled>
+               <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
+             </configuration>
+             <goals>
+diff --git a/src/hadoop-project/pom.xml b/src/hadoop-project/pom.xml
+index ed6bba8..2b642f5 100644
+--- a/src/hadoop-project/pom.xml
++++ b/src/hadoop-project/pom.xml
+@@ -763,6 +763,10 @@
+           <groupId>org.apache.maven.plugins</groupId>
+           <artifactId>maven-project-info-reports-plugin</artifactId>
+           <version>2.4</version>
++          <configuration>
++            <dependencyDetailsEnabled>false</dependencyDetailsEnabled>
++            <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
++          </configuration>
+         </plugin>
+         <plugin>
+           <groupId>org.apache.maven.plugins</groupId>
+@@ -817,7 +821,7 @@
+               <version>[3.0.0,)</version>
+             </requireMavenVersion>
+             <requireJavaVersion>
+-              <version>1.6</version>
++              <version>1.7</version>
+             </requireJavaVersion>
+           </rules>
+         </configuration>
+diff --git a/src/pom.xml b/src/pom.xml
+index 00ba1e1..9a60c15 100644
+--- a/src/pom.xml
++++ b/src/pom.xml
+@@ -83,8 +83,8 @@
+   <properties>
+     <distMgmtSnapshotsName>Apache Development Snapshot Repository</distMgmtSnapshotsName>
+     <distMgmtSnapshotsUrl>https://repository.apache.org/content/repositories/snapshots</distMgmtSnapshotsUrl>
+-    <javaVersion>1.6</javaVersion>
+-    <targetJavaVersion>1.6</targetJavaVersion>
++    <javaVersion>1.7</javaVersion>
++    <targetJavaVersion>1.7</targetJavaVersion>
+   </properties>
+ 
+   <modules>

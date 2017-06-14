@@ -3,7 +3,7 @@
 Name:		globus-gram-job-manager-fork
 %global _name %(tr - _ <<< %{name})
 Version:	2.4
-Release:	1.1%{?dist}
+Release:	2.1%{?dist}
 Summary:	Globus Toolkit - Fork Job Manager Support
 
 Group:		Applications/Internet
@@ -103,7 +103,7 @@ export MPIRUN=no
 	   --with-globus-state-dir=%{_localstatedir}/log/globus
 
 # Reduce overlinking
-sed 's!CC -shared !CC \${wl}--as-needed -shared !g' -i libtool
+sed 's!CC \(.*-shared\) !CC \\\${wl}--as-needed \1 !' -i libtool
 
 make %{?_smp_mflags}
 
@@ -119,6 +119,9 @@ rm %{buildroot}/etc/grid-services/jobmanager-fork
 
 # Install README file
 install -m 644 -p %{SOURCE8} %{buildroot}%{_pkgdocdir}/README
+
+# Remove license file from pkgdocdir if licensedir is used
+%{?_licensedir: rm %{buildroot}%{_pkgdocdir}/GLOBUS_LICENSE}
 
 %clean
 rm -rf %{buildroot}
@@ -177,13 +180,15 @@ fi
 %dir %{_sysconfdir}/globus
 %config(noreplace) %{_sysconfdir}/globus/globus-fork.conf
 %dir %{_pkgdocdir}
-%doc %{_pkgdocdir}/GLOBUS_LICENSE
 %doc %{_pkgdocdir}/README
+%{!?_licensedir: %doc %{_pkgdocdir}/GLOBUS_LICENSE}
+%{?_licensedir: %license GLOBUS_LICENSE}
 
 %files setup-poll
 %config(noreplace) %{_sysconfdir}/grid-services/available/jobmanager-fork-poll
 
 %files setup-seg
+# This is a loadable module (plugin)
 %{_libdir}/libglobus_seg_fork.so
 %{_sbindir}/globus-fork-starter
 %doc %{_mandir}/man8/globus-fork-starter.8*
@@ -191,8 +196,14 @@ fi
 %config(noreplace) %{_sysconfdir}/globus/scheduler-event-generator/available/fork
 
 %changelog
+* Wed Aug 10 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.4-2.1.osg
+- Merge OSG changes
+
 * Fri Feb 6 2015 Matyas Selmeci <matyas@cs.wisc.edu> 2.4-1.1.osg
 - Merge OSG changes
+
+* Fri Jan 23 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 2.4-2
+- Implement updated license packaging guidelines
 
 * Fri Sep 12 2014 Mattias Ellert <mattias.ellert@fysast.uu.se> - 2.4-1
 - Update to Globus Toolkit 6.0

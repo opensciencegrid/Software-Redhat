@@ -1,0 +1,7 @@
+# git clone https://github.com/lcmaps-plugins/lcmaps-plugins-process-tracking.git
+# ./bootstrap
+# ./configure
+# make dist
+# cp lcmaps-plugins-process-tracking-0.3.tar.gz ../
+# cd .. ; rm -rf lcmaps-plugins-process-tracking
+lcmaps-plugins-process-tracking/0.3/lcmaps-plugins-process-tracking-0.3.tar.gz

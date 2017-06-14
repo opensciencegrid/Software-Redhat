@@ -1,7 +1,7 @@
 Name:           osg-se-hadoop
 Summary:        OSG Hadoop Storage Element package for RPM distribution
 Version:        3.3
-Release:        2%{?dist}
+Release:        3%{?dist}
 License:        GPL
 Group:          System Environment/Daemons
 URL:            https://twiki.grid.iu.edu/twiki/bin/view/Storage/WebHome
@@ -79,7 +79,9 @@ Requires: fetch-crl
 Requires: osg-gridftp-hdfs >= 3.0.0-7
 Requires: globus-gridftp-server-progs
 Requires: gratia-probe-gridftp-transfer
+%if 0%{?rhel} < 7
 Requires: gums-client
+%endif
 Requires: vo-client
 %ifarch %{ix86}
 Requires: liblcas_lcmaps_gt4_mapping.so.0
@@ -144,6 +146,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/hadoop/conf.osg/
 
 %changelog
+* Tue Feb 09 2016 Carl Edquist <edquist@cs.wisc.edu> - 3.3-3
+- Remove gums-client requirement for EL7 (SOFTWARE-2176)
+
 * Wed Jul 01 2015 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.3-2
 - Require grid-certificates >= 7 (SOFTWARE-1883)
 

@@ -1,7 +1,7 @@
 Name:      osg-gridftp-hdfs
 Summary:   OSG GridFTP-HDFS meta package
 Version:   3.3
-Release:   2%{?dist}
+Release:   4%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -16,17 +16,9 @@ Requires: osg-system-profiler
 Requires: gridftp-hdfs >= 0.5.4-16
 Requires: vo-client
 Requires: grid-certificates >= 7
-%if 0%{?rhel} < 6
-Requires: fetch-crl3
-%else
 Requires: fetch-crl
-%endif
-Requires: gratia-probe-gridftp-transfer
-Requires: gums-client
-
-%if 0%{?rhel} >= 6
+Requires: gratia-probe-gridftp-transfer >= 1.17.0-1
 Requires: globus-xio-udt-driver
-%endif
 
 %ifarch %{ix86}
 Requires: liblcas_lcmaps_gt4_mapping.so.0
@@ -41,21 +33,24 @@ HDFS and GUMS support.
 %build
 
 %install
-%if 0%{?rhel} >= 6
 mkdir -p %{buildroot}%{_sysconfdir}/gridftp.d
 install -m 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/gridftp.d/
-%endif
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
-%if 0%{?rhel} >= 6
 %defattr(-,root,root,-)
 %config(noreplace) %{_sysconfdir}/gridftp.d/udt-%{name}.conf
-%endif
 
 %changelog
+* Thu Aug 25 2016 Carl Edquist <edquist@cs.wisc.edu> - 3.3-4
+- drop gums-client dependency (SOFTWARE-2398)
+- remove rhel5-specific macros (OSG-3.2 EOL)
+
+* Tue Feb 09 2016 Carl Edquist <edquist@cs.wisc.edu> - 3.3-3
+- Remove gums-client requirement for EL7 (SOFTWARE-2176)
+
 * Wed Jul 01 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.3-2
 - Require grid-certificates >= 7 (SOFTWARE-1883)
 

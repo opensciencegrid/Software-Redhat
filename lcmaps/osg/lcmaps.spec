@@ -18,12 +18,22 @@
 Summary: Grid (X.509) and VOMS credentials to local account mapping service
 Name: lcmaps
 Version: 1.6.6
-Release: 1.1%{?dist}
+Release: 1.3%{?dist}
 License: ASL 2.0
 Group: System Environment/Libraries
 URL: http://wiki.nikhef.nl/grid/LCMAPS
 Source0: http://software.nikhef.nl/security/lcmaps/lcmaps-%{version}.tar.gz
 Source1: lcmaps.db
+Source2: ban-mapfile
+Source3: ban-voms-mapfile
+Source4: lcmaps.db.gridmap
+Source5: lcmaps.db.gums
+Source6: lcmaps.db.vomsmap
+# TODO OSG 3.4: remove .glexec files
+Source7: lcmaps.db.gridmap.glexec
+Source8: lcmaps.db.gums.glexec
+
+# TODO OSG 3.4: remove defaultnovomscheck.patch (SOFTWARE-2634)
 Patch0: defaultnovomscheck.patch
 # BuildRoot is still required for EPEL5
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
@@ -38,7 +48,8 @@ BuildRequires: flex, bison
 # these should be in a metapackage instead of here
 Requires: lcmaps-plugins-gums-client
 Requires: lcmaps-plugins-basic
-Requires: lcmaps-plugins-verify-proxy
+Requires: lcmaps-plugins-verify-proxy >= 1.5.9-1.1
+Requires: lcmaps-plugins-voms >= 1.7.1-1.1
 
 # these two conflicts are because older versions of these packages depend
 #  on lcmaps.db policy osg_default which has been removed
@@ -156,6 +167,15 @@ This package contains the development libraries to build
 without the GSI protocol.
 
 
+%package db-templates
+Summary: lcmaps.db templates
+
+%description db-templates
+Template files for various auth methods for lcmaps.db.
+
+
+
+
 %prep
 %setup -q
 %patch0 -p0
@@ -205,11 +225,20 @@ find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
 mkdir -p ${RPM_BUILD_ROOT}%{_sysconfdir}
 cp %{SOURCE1} $RPM_BUILD_ROOT/%{_sysconfdir}
 
+# install ban-mapfile and ban-voms-mapfile
+mkdir -p ${RPM_BUILD_ROOT}%{_sysconfdir}/grid-security
+cp %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/grid-security
+cp %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/grid-security
+
 # create empty plugin directory
 mkdir -p ${RPM_BUILD_ROOT}%{_libdir}/lcmaps
 
 # clean up installed files
 rm -rf ${RPM_BUILD_ROOT}%{_docdir}
+
+# install templates
+mkdir -p ${RPM_BUILD_ROOT}%{_datadir}/lcmaps/templates
+cp %{SOURCE4} %{SOURCE5} %{SOURCE6} %{SOURCE7} %{SOURCE8}  ${RPM_BUILD_ROOT}%{_datadir}/lcmaps/templates/
 
 # Retain the clean section for EPEL5
 %clean
@@ -225,6 +254,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %config(noreplace) %{_sysconfdir}/lcmaps.db
+%config(noreplace) %{_sysconfdir}/grid-security/ban-mapfile
+%config(noreplace) %{_sysconfdir}/grid-security/ban-voms-mapfile
 # The libraries are meant to be dlopened by client applications,
 # so the .so symlinks are here and not in devel.
 %{_libdir}/liblcmaps.so
@@ -315,8 +346,33 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/lcmaps-without-gsi.pc
 %doc LICENSE
 
+%files db-templates
+%{_datadir}/lcmaps/templates/lcmaps.db.gridmap
+%{_datadir}/lcmaps/templates/lcmaps.db.gums
+%{_datadir}/lcmaps/templates/lcmaps.db.vomsmap
+%{_datadir}/lcmaps/templates/lcmaps.db.gridmap.glexec
+%{_datadir}/lcmaps/templates/lcmaps.db.gums.glexec
+
 
 %changelog
+* Thu Apr 20 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6.6-1.3.osg
+- Add template lcmaps.db files under /usr/share/lcmaps/templates
+  (SOFTWARE-2692)
+
+* Thu Feb 23 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6.6-1.2.osg
+- Add ban-mapfile, ban-voms-mapfile and updated lcmaps.db with a new
+  authorize_only policy that uses the ban files, voms mapfiles, and a
+  modified verify_proxy.  This adds new requirements on:
+  - lcmaps-plugins-voms >= 1.7.1-1.1
+  - lcmaps-plugins-verify-proxy >= 1.5.9-1.1
+  (SOFTWARE-2602)
+
+* Thu Apr 30 2015 Matyas Selmeci <matyas@cs.wisc.edu> 1.6.6-1.1.osg33
+- [build for osg 3.3 found on this date  -matyas 02/23/17]
+
+* Tue Mar 24 2015 Dave Dykstra <dwd@fnal.gov> 1.6.6-1.1.osg32
+- [build for osg 3.2 found on this date  -matyas 02/23/17]
+
 * Wed Feb 18 2015 Mischa Salle <msalle@nikhef.nl> 1.6.6-1
 - updated version
 - update globus dependencies

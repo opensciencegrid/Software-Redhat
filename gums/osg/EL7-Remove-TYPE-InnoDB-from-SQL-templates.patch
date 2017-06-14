@@ -1,0 +1,97 @@
+From 5f32aaed5cd95377d59d3aac4fc6b37219ad033e Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Thu, 8 Oct 2015 15:40:54 -0500
+Subject: [PATCH] EL7: Remove TYPE=InnoDB from SQL templates
+
+It causes a syntax error in MariaDB.  MariaDB uses a fork of InnoDB as
+its storage backend by default already.
+---
+ gums-core/src/main/sql/setupDatabase.mysql              | 6 +++---
+ gums-service/src/main/resources/sql/setupDatabase.mysql | 6 +++---
+ 2 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/gums-core/src/main/sql/setupDatabase.mysql b/gums-core/src/main/sql/setupDatabase.mysql
+index 09f2a2a..2d0862b 100644
+--- a/gums-core/src/main/sql/setupDatabase.mysql
++++ b/gums-core/src/main/sql/setupDatabase.mysql
+@@ -12,33 +12,33 @@ CREATE TABLE `USERS` (
+  `ID` INTEGER AUTO_INCREMENT PRIMARY KEY,
+  `GROUP_NAME` VARCHAR(255) NOT NULL,
+  `DN` varchar(255) NOT NULL,
+  `FQAN` varchar(255) default NULL,
+  `EMAIL` varchar(255) default NULL 
+-) TYPE=InnoDB;
++);
+ 
+ CREATE INDEX complete ON USERS (GROUP_NAME(10), DN(70), FQAN(30));
+ 
+ CREATE TABLE `MAPPING` (
+  `ID` INTEGER AUTO_INCREMENT PRIMARY KEY,
+  `LASTUSE` TIMESTAMP,
+  `RECYCLE` BOOL,
+  `MAP` VARCHAR(255) NOT NULL,
+  `DN` varchar(255) default NULL,
+  `ACCOUNT` varchar(255) default NULL
+-) TYPE=InnoDB;
++);
+ 
+ CREATE UNIQUE INDEX complete ON MAPPING (MAP(10), DN(70));
+ 
+ CREATE TABLE `CONFIG` (
+  `ID` INTEGER AUTO_INCREMENT PRIMARY KEY,
+  `XML` MEDIUMTEXT NOT NULL,
+  `TIMESTAMP` DATETIME NOT NULL,
+  `CURRENT` BOOL NOT NULL,
+  `NAME` varchar(255),
+  `AUTOGEN` BOOL NOT NULL DEFAULT 0
+-) TYPE=InnoDB;
++);
+ 
+ CREATE INDEX complete ON CONFIG (CURRENT, TIMESTAMP);
+ 
+ USE mysql;
+ 
+diff --git a/gums-service/src/main/resources/sql/setupDatabase.mysql b/gums-service/src/main/resources/sql/setupDatabase.mysql
+index 3383bef..802bd0b 100644
+--- a/gums-service/src/main/resources/sql/setupDatabase.mysql
++++ b/gums-service/src/main/resources/sql/setupDatabase.mysql
+@@ -12,33 +12,33 @@ CREATE TABLE `USERS` (
+  `ID` INTEGER AUTO_INCREMENT PRIMARY KEY,
+  `GROUP_NAME` VARCHAR(255) NOT NULL,
+  `DN` varchar(255) NOT NULL,
+  `FQAN` varchar(255) default NULL,
+  `EMAIL` varchar(255) default NULL 
+-) TYPE=InnoDB;
++);
+ 
+ CREATE INDEX complete ON USERS (GROUP_NAME(10), DN(70), FQAN(30));
+ 
+ CREATE TABLE `MAPPING` (
+  `ID` INTEGER AUTO_INCREMENT PRIMARY KEY,
+  `LASTUSE` TIMESTAMP,
+  `RECYCLE` BOOL,
+  `MAP` VARCHAR(255) NOT NULL,
+  `DN` varchar(255) default NULL,
+  `ACCOUNT` varchar(255) default NULL
+-) TYPE=InnoDB;
++);
+ 
+ CREATE INDEX complete ON MAPPING (MAP(10), DN(70));
+ 
+ CREATE TABLE `CONFIG` (
+  `ID` INTEGER AUTO_INCREMENT PRIMARY KEY,
+  `XML` MEDIUMTEXT NOT NULL,
+  `TIMESTAMP` DATETIME NOT NULL,
+  `CURRENT` BOOL NOT NULL,
+  `NAME` varchar(255),
+  `AUTOGEN` BOOL NOT NULL DEFAULT 0
+-) TYPE=InnoDB;
++);
+ 
+ CREATE INDEX complete ON CONFIG (CURRENT, TIMESTAMP);
+ 
+ USE mysql;
+ 
+-- 
+2.4.6
+

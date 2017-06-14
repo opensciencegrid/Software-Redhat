@@ -1,6 +1,6 @@
 Name: osg-vo-map
 Summary: OSG utilities for creating VO map files
-Version: 0.0.1
+Version: 0.0.2
 License: Apache 2.0
 Release: 1%{?dist}
 Group: Grid
@@ -37,7 +37,10 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_docdir}/%{name}/README
 
 %changelog
+* Mon Nov 14 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 0.0.2-1
+- Fix month in log timestamps (SOFTWARE-2520)
+
 * Fri Jul  1 2011 Suchandra Thapa <sthapa@ci.uchicago.edu> 0.0.1-1
-- Created an initial osg-vo-map RPM for 
+- Created an initial osg-vo-map RPM for
 
 # vim:ft=spec

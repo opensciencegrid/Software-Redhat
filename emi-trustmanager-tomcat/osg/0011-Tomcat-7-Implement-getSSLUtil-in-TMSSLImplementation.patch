@@ -1,0 +1,52 @@
+From 9cc39a8db5f8870d6c7be071a91ea1b61a8dde13 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Fri, 7 Aug 2015 16:28:48 -0500
+Subject: [PATCH 11/14] Tomcat 7: Implement getSSLUtil() in TMSSLImplementation
+
+TMSSLImplementation implements the abstract class SSLImplementation which in
+Tomcat 7 has a new method called getSSLUtil().  This needs to be implemented to
+avoid an error.  This patch implements the method by passing it on to
+JSSEImplementation.getSSLUtil() - this was copied from what TMSSLImplementation
+did for getSSLSupport().
+---
+ .../security/trustmanager/tomcat/TMSSLImplementation.java   | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+
+diff --git a/src/org/glite/security/trustmanager/tomcat/TMSSLImplementation.java b/src/org/glite/security/trustmanager/tomcat/TMSSLImplementation.java
+index c202b8b..b968951 100644
+--- a/src/org/glite/security/trustmanager/tomcat/TMSSLImplementation.java
++++ b/src/org/glite/security/trustmanager/tomcat/TMSSLImplementation.java
+@@ -19,10 +19,12 @@ package org.glite.security.trustmanager.tomcat;
+ 
+ import org.apache.tomcat.util.net.SSLImplementation;
+ import org.apache.tomcat.util.net.SSLSupport;
+ import org.apache.tomcat.util.net.ServerSocketFactory;
+ import org.apache.tomcat.util.net.jsse.JSSEImplementation;
++import org.apache.tomcat.util.net.AbstractEndpoint;
++import org.apache.tomcat.util.net.SSLUtil;
+ 
+ import java.io.InputStream;
+ import java.lang.reflect.InvocationTargetException;
+ import java.net.Socket;
+ import java.util.Properties;
+@@ -154,6 +156,17 @@ public class TMSSLImplementation extends SSLImplementation {
+             LOGGER.fatal("Internal server error, JSSEImplementation class creation failed:", e);
+ 
+             return null;
+         }
+ 	}
++
++    public SSLUtil getSSLUtil(AbstractEndpoint endpoint) {
++        try {
++            JSSEImplementation impl = new JSSEImplementation();
++            return impl.getSSLUtil(endpoint);
++        } catch (ClassNotFoundException e) {
++            LOGGER.fatal("Internal server error, JSSEImplementation class creation failed:", e);
++
++            return null;
++        }
++    }
+ }
+-- 
+2.4.6
+

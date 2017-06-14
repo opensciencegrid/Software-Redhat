@@ -1,0 +1,14 @@
+--- hadoop-2.0.0-cdh4.7.1/src/hadoop-hdfs-project/hadoop-hdfs/src/main/native/libhdfs/exception.c.orig  2017-02-02 18:57:38.121975949 -0600
++++ hadoop-2.0.0-cdh4.7.1/src/hadoop-hdfs-project/hadoop-hdfs/src/main/native/libhdfs/exception.c       2017-02-02 18:57:26.860623929 -0600
+@@ -80,6 +80,11 @@
+         .excErrno = EDQUOT,
+     },
+     {
++        .name = "org.apache.hadoop.hdfs.protocol.DSQuotaExceededException",
++        .noPrintFlag = 0,
++        .excErrno = EDQUOT,
++    },
++    {
+         .name = "org.apache.hadoop.hdfs.server.namenode.LeaseExpiredException",
+         .noPrintFlag = 0,
+         .excErrno = ESTALE,

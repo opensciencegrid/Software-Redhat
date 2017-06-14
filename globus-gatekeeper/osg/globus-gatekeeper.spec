@@ -6,8 +6,8 @@
 
 Name:		globus-gatekeeper
 %global _name %(tr - _ <<< %{name})
-Version:	10.9
-Release:	1.2%{?dist}
+Version:	10.10
+Release:	1.3%{?dist}
 Summary:	Globus Toolkit - Globus Gatekeeper
 
 Group:		Applications/Internet
@@ -21,6 +21,7 @@ Source11:       globus-gatekeeper.osg-sysconfig
 Patch3:         init.patch
 Patch6:         GT-489-openssl-1.0.1-fix.patch
 Patch7:         1250-init-priorities.patch
+Patch8:         2467-init-systemd.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Requires(post):		chkconfig
@@ -46,8 +47,9 @@ Globus Gatekeeper
 %setup -q -n %{_name}-%{version}
 
 %patch3 -p0
-%patch6 -p0
+%patch6 -p1
 %patch7 -p0
+%patch8 -p1
 
 %build
 # Reduce overlinking
@@ -61,7 +63,7 @@ export LDFLAGS="-Wl,--as-needed -Wl,-z,defs %{?__global_ldflags}"
 	   --with-lockfile-path='${localstatedir}/lock/subsys/%{name}'
 
 # Reduce overlinking
-sed 's!CC -shared !CC \${wl}--as-needed -shared !g' -i libtool
+sed 's!CC \(.*-shared\) !CC \\\${wl}--as-needed \1 !' -i libtool
 
 make %{?_smp_mflags}
 
@@ -74,6 +76,9 @@ install -m 644 -p %{SOURCE2} %{buildroot}%{_pkgdocdir}/README.Fedora
 
 # Install README file
 install -m 644 -p %{SOURCE8} %{buildroot}%{_pkgdocdir}/README
+
+# Remove license file from pkgdocdir if licensedir is used
+%{?_licensedir: rm %{buildroot}%{_pkgdocdir}/GLOBUS_LICENSE}
 
 mkdir -p %{buildroot}/etc/grid-services
 mkdir -p %{buildroot}/etc/grid-services/available
@@ -110,19 +115,34 @@ fi
 %doc %{_mandir}/man8/globus-gatekeeper.8*
 %doc %{_mandir}/man8/globus-k5.8*
 %dir %{_pkgdocdir}
-%doc %{_pkgdocdir}/GLOBUS_LICENSE
 %doc %{_pkgdocdir}/README
+%{!?_licensedir: %doc %{_pkgdocdir}/GLOBUS_LICENSE}
+%{?_licensedir: %license GLOBUS_LICENSE}
 %doc %{_pkgdocdir}/README.Fedora
 %config(noreplace) %{_sysconfdir}/sysconfig/%{name}
 /usr/share/osg/sysconfig/%{name}
 
-
 %changelog
+* Wed Oct 19 2016 Matyas Selmeci <matyas@cs.wisc.edu> 10.10-1.3
+- Disable SSLv3 (SOFTWARE-2471)
+
+* Thu Sep 29 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 10.10-1.2
+- Source /etc/init.d/functions in init script (SOFTWARE-2467)
+
+* Wed Aug 10 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 10.10-1.1
+- Merge OSG changes
+
+* Wed Apr 08 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 10.10-1
+- GT6 update
+
 * Wed Feb 18 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 10.9-1.2
 - Update OSG init script patches to apply to the nolsb init script as well
 
 * Tue Feb 10 2015 Matyas Selmeci <matyas@cs.wisc.edu> - 10.9-1.1.osg
 - Merge OSG changes
+
+* Fri Jan 23 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 10.9-2
+- Implement updated license packaging guidelines
 
 * Thu Nov 13 2014 Mattias Ellert <mattias.ellert@fysast.uu.se> - 10.9-1
 - GT6 update
@@ -162,7 +182,7 @@ fi
 * Mon Dec 16 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 9.15-1.3.osg
 - Bump and rebuild with OpenSSL 1.0.0
 
-* Thu Dec 11 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 9.15-1.2.osg
+* Wed Dec 11 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 9.15-1.2.osg
 - Add fork_and_proxy workaround patch for GT-489 (OpenSSL 1.0.1 compatibility issue)
 
 * Mon Dec 09 2013 Matyas Selmeci <matyas@cs.wisc.edu> 9.15-1.1.osg
@@ -190,7 +210,7 @@ fi
 - Add aarch64 to the list of 64 bit platforms
 - Don't use AM_CONFIG_HEADER (automake 1.13)
 
-* Thu Feb 22 2013 Dave Dykstra <dwd@fnal.gov> - 9.6-1.9.osg
+* Fri Feb 22 2013 Dave Dykstra <dwd@fnal.gov> - 9.6-1.9.osg
 - Change to using LCMAPS_POLICY_NAME=authorize_only so globus does the
   user id switch, since globus can do it and globus-gatekeeper was the
   last package having lcmaps do the user id switch
@@ -236,7 +256,7 @@ fi
 * Thu Feb 02 2012 Mattias Ellert <mattias.ellert@fysast.uu.se> - 9.6-3
 - Fix start-up script
 
-* Mon Jan 20 2012 Alain Roy <roy@cs.wisc.edu> - 9.6-1.3.osg
+* Fri Jan 20 2012 Alain Roy <roy@cs.wisc.edu> - 9.6-1.3.osg
 - Updated sysconfig file to source firewall information if it exists.
 
 * Wed Jan 18 2012 Mattias Ellert <mattias.ellert@fysast.uu.se> - 9.6-2
@@ -273,7 +293,7 @@ fi
   Leave LCAS_MOD_HOME alone for now, but LCAS will be removed in a future
   release.
 
-* Wed Dec 9 2011 Alain Roy <roy@cs.wisc.edu> - 8.1-7
+* Fri Dec 9 2011 Alain Roy <roy@cs.wisc.edu> - 8.1-7
 - Improved init script to provide better error messages.
 
 * Wed Dec 7 2011 Alain Roy <roy@cs.wisc.edu> - 8.1-6

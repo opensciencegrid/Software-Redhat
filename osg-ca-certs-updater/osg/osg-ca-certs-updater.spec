@@ -1,6 +1,5 @@
-
 Name:           osg-ca-certs-updater
-Version:        1.0
+Version:        1.4
 Release:        1%{?dist}
 Summary:        Automatic CA certs updates for OSG
 
@@ -56,6 +55,19 @@ fi
 %doc %{_defaultdocdir}/%{name}-%{version}/README*
 
 %changelog
+* Thu Jan 28 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.4-1
+- Remove osg-release requirement; ignore missing compat packages; only try to
+  update packages that are installed (SOFTWARE-2146)
+
+* Thu Oct 22 2015 Brian Lin <blin@cs.wisc.edu> - 1.3-1
+- Bug fix for verifying osg-release version
+
+* Thu Oct 22 2015 Brian Lin <blin@cs.wisc.edu> - 1.2-1
+- Verify OSG version with osg-release instead of osg-version
+
+* Thu Oct 22 2015 Brian Lin <blin@cs.wisc.edu> - 1.1-1
+- Fix updates on OSG 3.3 due to missing compat packages (SOFTWARE-2076)
+
 * Wed Nov 12 2014 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.0-1
 - Add --enablerepo option (SOFTWARE-1663)
 

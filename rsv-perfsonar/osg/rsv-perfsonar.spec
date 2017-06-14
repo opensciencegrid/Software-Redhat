@@ -1,5 +1,5 @@
 Name:      rsv-perfsonar
-Version:   1.0.19
+Version:   1.4.2
 Release:   1%{?dist}
 Summary:   RSV Metrics to monitor pefsonar
 Packager:  OSG-Software
@@ -13,11 +13,14 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch: noarch
 
 Requires: rsv
-#The perfsonar probe libraries need it. Getting it from I2 repo for now
-Requires: esmond >= 1.0-14
-#This requirments to publish data to the CERN message brokers
+# Still needs esmond rpm to bring the python 2.7
+Requires: esmond
+#This requirements to publish data to the CERN message brokers
 Requires: stompclt
 Requires: python-simplevisor
+# This is for /sbin/service                                                                                                                                  
+Requires(preun): initscripts
+
 
 %if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
 Requires: python-simplejson
@@ -29,9 +32,9 @@ Requires: python-simplejson
 %{summary}
 
 %prep
-%setup -n trunk
+#%setup -n trunk
 #%setup -n %{name}
-#%setup -n %{version}
+%setup -n %{name}-%{version}
 
 %install
 rm -fr $RPM_BUILD_ROOT
@@ -44,43 +47,103 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %doc README
 %defattr(-,root,root,-)
-%{_libexecdir}/rsv/probes/perfsonar-simple-local-probe
-%{_libexecdir}/rsv/probes/network-monitoring-local-probe
-%{_libexecdir}/rsv/probes/worker-scripts/esmond*
-%{_libexecdir}/rsv/metrics/org.osg.general.perfsonar-simple
-%{_libexecdir}/rsv/metrics/org.osg.local.network-monitoring-local
+%{_libexecdir}/rsv/probes/*
+%{_libexecdir}/rsv/probes/worker-scripts/*
+%{_libexecdir}/rsv/metrics/*
 %config %{_sysconfdir}/condor-cron/config.d/50-rsv-perfsonar.config
-%config %{_sysconfdir}/rsv/meta/metrics/org.osg.general.perfsonar-simple.meta
-%config %{_sysconfdir}/rsv/meta/metrics/org.osg.local.network-monitoring-local.meta
-%config(noreplace) %{_sysconfdir}/rsv/metrics/org.osg.general.perfsonar-simple.conf
-%config(noreplace) %{_sysconfdir}/rsv/metrics/org.osg.local.network-monitoring-local.conf
-%config(noreplace) %{_sysconfdir}/logrotate.d/rsv-perfsonar-metrics
+%config %{_sysconfdir}/rsv/meta/metrics/*
+%config(noreplace) %{_sysconfdir}/rsv/metrics/*
 %config(noreplace) %{_sysconfdir}/rsv/stompclt/default.conf
 %config(noreplace) %{_sysconfdir}/rsv/stompclt/simplevisor.cfg
 %attr(-,rsv,rsv)  %{_sysconfdir}/rsv
 %attr(-,rsv,rsv)  %{_localstatedir}/run/rsv-perfsonar/
+# For the virtual enviroment of the python2.7 for the probes
+%attr(-,rsv,rsv)  %{_localstatedir}/rsv/
+%attr(-,rsv,rsv)  %{_localstatedir}/rsv/localenv
+# for the simplevisor init script
+%{_initrddir}/simplevisor
 
 %post -p /bin/bash
-# Change the permissions for the perfsonar probes to work
-# Not a big deal since they never really use the log.
-chown rsv /var/log/esmond/django.log
-chmod a+w /var/log/esmond/django.log
-chown rsv /var/log/esmond/esmond.log
-chmod a+w /var/log/esmond/esmond.log
-# Create the html dir in the correct place
-mkdir /var/www/html/rsv
-chown rsv /var/www/html/rsv
-rm -rf /usr/share/rsv/www
-ln -s /var/www/html/rsv /usr/share/rsv/www
-# Instaling the reqesocks library
-scl enable python27 - << \EOF
-/opt/esmond/bin/pip install requesocks
-#This ones are need for publish data to CERN message queue
-/opt/esmond/bin/pip install dirq
-/opt/esmond/bin/pip install messaging
-EOF 
+mkdir /var/rsv/localenv                                                                                                                                    
+source /opt/rh/python27/enable                                                                                                                               
+/opt/rh/python27/root/usr/bin/virtualenv --prompt="(esmondup)" /var/rsv/localenv                                                                            
+. /var/rsv/localenv/bin/activate
+pip install esmond-client --upgrade                                                                                                                          
+pip install requesocks --upgrade
+pip install dirq --upgrade
+pip install messaging  --upgrade                                                                                                                            
+pip install pika
+
 
 %changelog
+* Thu May 25 2017 <efajardo@physics.ucsd.edu> 1.4.2-1
+- Fixed a bug that may disable all probes when only running one of them
+
+* Fri May 19 2017 <efajardo@physics.ucsd.edu> 1.4.1-2
+- Added the pika pip install 
+
+* Thu May 18 2017 <efajardo@physics.ucsd.edu> 1.4.1-1
+- Added the ability to upload to the RabbitMQ
+- Some bug fixes
+
+* Tue May 16 2017 <efajardo@physics.ucsd.edu> 1.3.1-1
+- Separated the probes into two. One that uploades to esmond and another one that uploads to cern MQ
+- Added the granularity option to the MQ
+- Some bug fixes and code cleanning.
+
+* Mon Jan 23 2017 <efajardo@physics.ucsd.edu> 1.2.1-1
+- Added the option to select which event-types go into the mq
+- Added knob for controlling the max size of the events that go into the mq
+
+* Tue Sep 06 2016 <efajardo@physics.ucsd.edu> 1.1.4-1
+- Fixed a bug in which the maxStartTime of a probe was hardcoded to 24 hours.
+
+* Thu Jul 7 2016 <efajardo@physics.ucsd.edu> 1.1.3-1
+- Fixed a bug on the message queue
+- Removed the logrotate file not needed
+
+* Wed Jan 20 2016 <efajardo@physics.ucsd.edu> 1.1.2-3
+- Removed the pre script added in 1.1.2-2 in favor of documentation for a one time fix.
+
+* Wed Jan 13 2016 <efajardo@physics.ucsd.edu> 1.1.2-2
+- Added the pre script to remove the symlink of /usr/share/rsv/www introduced in older versions
+
+* Mon Jan 1 2016 <efajardo@physics.ucsd.edu> 1.1.2-1
+- Improved error handling and warning messages
+- Removed the creation of some symlinks since rsv does that now
+
+* Thu Oct 29 2015 <efajardo@physics.ucsd.edu> 1.1.1-1
+- Fixed bug on probes ussing SSL only for metadata and not for data
+
+* Thu Oct 22 2015 <efajardo@physics.ucsd.edu> 1.1.0-1
+- Bumped to version 1.1.0 to go into the release
+- Fixed the https bugs on probes not falling back to it
+ 
+* Mon Oct 12 2015 <efajardo@physics.ucsd.edu> 1.0.26-1
+- Fixed bug when the tmp directory knob was not being used
+
+* Mon Oct 5 2015 <efajardo@physics.ucsd.edu> 1.0.25-1
+- Changed the bulk posts to only posts at most 100 datapoints per event type at a time
+
+* Fri Sep 18 2015  <efajardo@physics.ucsd.edu> 1.0.24-1
+- Made the directory to write each metadata key to be configurable
+- Added the initScript for the simplevisor
+
+* Mon Sep 14 2015 <efajardo@physics.ucsd.edu> 1.0.23-1
+- Each probes writes a dictionary for each meatadata key with the last timestamp of a succesfull run
+
+* Tue Aug 25 2015  <efajardo@physics.ucsd.edu> 1.0.22-1
+- All probes use the same python enviroment for efficiency
+
+* Tue Aug 25 2015  <efajardo@physics.ucsd.edu> 1.0.21-1
+- Removed changing the permission of the logs of esmond
+- No longer using esmond rpm but esmond-client via pip
+- Removed the pip installation for the message queue
+ 
+* Tue Aug 4 2015 <efajardo@physics.ucsd.edu> 1.0.20-1
+- Removed the sleep option since no longer needed
+- Added error handling for import problems with esmond
+
 * Mon Jul 6 2015 <efajardo@physics.ucsd.edu> 1.0.19-1
 - Fixed bug when directory queue is not present
 

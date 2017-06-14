@@ -1,0 +1,151 @@
+From a0af7c881a31733204740b4326d6c08978a50988 Mon Sep 17 00:00:00 2001
+From: Brian Lin <brianhlin@gmail.com>
+Date: Tue, 4 Apr 2017 13:49:10 -0500
+Subject: [PATCH 24/31] Add attribute annotations from 9467dda
+
+---
+ .../persistence/model/VOMSAttributeDescription.java     | 17 +++++++++++++++++
+ .../voms/admin/persistence/model/VOMSBaseAttribute.java | 16 ++++++++++++++++
+ .../voms/admin/persistence/model/VOMSUserAttribute.java | 12 ++++++++++++
+ src/main/resources/hibernate.cfg.xml                    |  7 ++++---
+ 4 files changed, 49 insertions(+), 3 deletions(-)
+
+diff --git a/src/main/java/org/glite/security/voms/admin/persistence/model/VOMSAttributeDescription.java b/src/main/java/org/glite/security/voms/admin/persistence/model/VOMSAttributeDescription.java
+index dd9bf79..a10fe23 100644
+--- a/src/main/java/org/glite/security/voms/admin/persistence/model/VOMSAttributeDescription.java
++++ b/src/main/java/org/glite/security/voms/admin/persistence/model/VOMSAttributeDescription.java
+@@ -21,8 +21,18 @@ package org.glite.security.voms.admin.persistence.model;
+ 
+ import java.io.Serializable;
+ 
++import javax.persistence.Column;
++import javax.persistence.Entity;
++import javax.persistence.GeneratedValue;
++import javax.persistence.GenerationType;
++import javax.persistence.Id;
++import javax.persistence.SequenceGenerator;
++import javax.persistence.Table;
++
+ import org.glite.security.voms.service.attributes.AttributeClass;
+ 
++@Entity
++@Table(name="attributes")
+ public class VOMSAttributeDescription implements Serializable {
+ 
+ 	/**
+@@ -30,12 +40,19 @@ public class VOMSAttributeDescription implements Serializable {
+      */
+ 	private static final long serialVersionUID = 1L;
+ 
++	@Id
++	@Column(name = "a_id")
++	@GeneratedValue(strategy = GenerationType.AUTO, generator="VOMS_ATTR_DESC_SEQ")
++	@SequenceGenerator(name="VOMS_ATTR_DESC_SEQ", sequenceName="VOMS_ATTR_DESC_SEQ")
+ 	Long id;
+ 
++	@Column(name="a_name", nullable=false, unique=true)
+ 	String name;
+ 
++	@Column(name="a_desc", columnDefinition="text")
+ 	String description;
+ 
++	@Column(name="a_uniq", nullable=false)
+ 	Boolean unique = new Boolean(false);
+ 
+ 	public Long getId() {
+diff --git a/src/main/java/org/glite/security/voms/admin/persistence/model/VOMSBaseAttribute.java b/src/main/java/org/glite/security/voms/admin/persistence/model/VOMSBaseAttribute.java
+index 8e72605..36aae0d 100644
+--- a/src/main/java/org/glite/security/voms/admin/persistence/model/VOMSBaseAttribute.java
++++ b/src/main/java/org/glite/security/voms/admin/persistence/model/VOMSBaseAttribute.java
+@@ -21,14 +21,30 @@ package org.glite.security.voms.admin.persistence.model;
+ 
+ import java.io.Serializable;
+ 
++import javax.persistence.Column;
++import javax.persistence.Id;
++import javax.persistence.JoinColumn;
++import javax.persistence.ManyToOne;
++import javax.persistence.MappedSuperclass;
++import javax.persistence.PrimaryKeyJoinColumn;
++import javax.persistence.Transient;
++
+ import org.glite.security.voms.service.attributes.AttributeClass;
+ import org.glite.security.voms.service.attributes.AttributeValue;
+ 
++@MappedSuperclass
+ public abstract class VOMSBaseAttribute implements VomsAttributeValue,
+ 		Serializable {
+ 
++	@Id
++	@ManyToOne
++	@PrimaryKeyJoinColumn(name="a_id")
+ 	VOMSAttributeDescription attributeDescription;
++
++	@Column(name="a_value")
+ 	String value;
++
++	@Transient
+ 	String context;
+ 
+ 	public AttributeValue asAttributeValue() {
+diff --git a/src/main/java/org/glite/security/voms/admin/persistence/model/VOMSUserAttribute.java b/src/main/java/org/glite/security/voms/admin/persistence/model/VOMSUserAttribute.java
+index b1560e8..6d70480 100644
+--- a/src/main/java/org/glite/security/voms/admin/persistence/model/VOMSUserAttribute.java
++++ b/src/main/java/org/glite/security/voms/admin/persistence/model/VOMSUserAttribute.java
+@@ -19,12 +19,24 @@
+  */
+ package org.glite.security.voms.admin.persistence.model;
+ 
++import javax.persistence.Entity;
++import javax.persistence.Id;
++import javax.persistence.ManyToOne;
++import javax.persistence.PrimaryKeyJoinColumn;
++import javax.persistence.Table;
++
++@Entity
++@Table(name="usr_attrs")
+ public class VOMSUserAttribute extends VOMSBaseAttribute {
+ 
+ 	/**
+      * 
+      */
+ 	private static final long serialVersionUID = 1L;
++
++	@Id
++	@PrimaryKeyJoinColumn
++	@ManyToOne(targetEntity=VOMSUser.class)
+ 	public VOMSUser user;
+ 
+ 	public VOMSUser getUser() {
+diff --git a/src/main/resources/hibernate.cfg.xml b/src/main/resources/hibernate.cfg.xml
+index ef71ae8..05429f6 100644
+--- a/src/main/resources/hibernate.cfg.xml
++++ b/src/main/resources/hibernate.cfg.xml
+@@ -43,12 +43,10 @@
+         <mapping resource="model/VOMSAdmin.hbm.xml" />
+         <mapping resource="model/VOMSCA.hbm.xml" />
+         
+-        <mapping resource="model/VOMSUserAttribute.hbm.xml" />
+         <mapping resource="model/VOMSGroup.hbm.xml" />
+         <mapping resource="model/VOMSGroupAttribute.hbm.xml" />
+         <mapping resource="model/VOMSRole.hbm.xml" />
+         <mapping resource="model/VOMSRoleAttribute.hbm.xml" />
+-        <mapping resource="model/VOMSAttributeDescription.hbm.xml" />
+         <mapping resource="model/VOMSCapability.hbm.xml" />
+         <mapping resource="model/VOMSMapping.hbm.xml" />
+         <mapping resource="model/ACL.hbm.xml" />
+@@ -61,7 +59,10 @@
+         <mapping resource="model/TagMapping.hbm.xml"/>
+         
+         <!--  NEW MAPPINGS -->
+-        
++
++        <mapping class="org.glite.security.voms.admin.persistence.model.VOMSAttributeDescription"/>
++        <mapping class="org.glite.security.voms.admin.persistence.model.VOMSUserAttribute"/>
++
+         <!--  VOMS USER & CERTIFICATE -->
+         <mapping class="org.glite.security.voms.admin.persistence.model.VOMSUser"/>
+         <mapping class="org.glite.security.voms.admin.persistence.model.Certificate"/>
+-- 
+2.9.4
+

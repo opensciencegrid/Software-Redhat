@@ -4,10 +4,7 @@
 Name:      osg-ce
 Summary:   OSG Compute Element
 Version:   3.3
-%if 0%{?el7}
-%define release_suffix _clipped
-%endif
-Release:   2%{?release_suffix}%{?dist}
+Release:   13%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -16,21 +13,12 @@ BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
 Requires: %{htcce} = %{version}-%{release}
 
-# GRAM-specific
-Requires: globus-gatekeeper
-Requires: globus-gram-job-manager
-Requires: globus-gram-job-manager-fork
-Requires: globus-gram-job-manager-fork-setup-poll
-Requires: gratia-probe-gram
-Requires(post): globus-gram-job-manager-scripts >= 4
 
 %description
 %{summary}
 
 %post
-# We always want the default jobmanager to be fork (OSG convention), so we
-# force it on both install and upgrade. (GRAM-specific)
-/usr/sbin/globus-gatekeeper-admin -e jobmanager-fork-poll -n jobmanager > /dev/null 2>&1 || :
+
 
 ###############################################################################
 # Base subpackages
@@ -41,21 +29,26 @@ Summary: Meta-package of gateway-independent components of the OSG CE
 Requires: globus-gridftp-server-progs
 Requires: osg-version
 Requires: grid-certificates >= 7
-Requires: osg-client
-Requires: lfc-client
-Requires: osg-info-services
-Requires: osg-vo-map
+
+# former osg-client requirements (minus networking stuff)
+Requires: globus-common-progs
+Requires: globus-gsi-cert-utils-progs
+Requires: gsi-openssh-clients
+Requires: osg-cert-scripts
+Requires: osg-system-profiler
+Requires: osg-version
+Requires: osg-wn-client
 Requires: vo-client
-Requires: osg-site-web-page
-Requires: gip
-%if ! 0%{?el7}
+
+Requires: osg-vo-map
+Requires: vo-client-lcmaps-voms
+
+%if 0%{?rhel} < 7
 Requires: gums-client
 %endif
+
 Requires: edg-mkgridmap
 Requires: gratia-probe-gridftp-transfer
-Requires: osg-site-verify
-Requires: osg-system-profiler
-Requires: osg-cleanup
 Requires: osg-configure >= 1.0.57
 Requires: osg-configure-ce
 Requires: osg-configure-gip
@@ -141,6 +134,19 @@ Requires: osg-configure-slurm
 %description -n %{basece}-slurm
 %{summary}
 
+%package -n %{basece}-bosco
+Group: Grid
+Summary: Gateway-less BOSCO meta-package for OSG-CE
+
+Requires: %{basece} = %{version}-%{release}
+Requires: gratia-probe-htcondor-ce
+Requires: osg-configure-bosco
+
+%description -n %{basece}-bosco
+%{summary}
+
+
+
 ###############################################################################
 # HTCondor-CE subpackages
 ###############################################################################
@@ -202,10 +208,23 @@ Group: Grid
 Summary: SLURM meta-package for the HTCondor-CE OSG-CE
 Requires: %{htcce} = %{version}-%{release}
 Requires: %{basece}-slurm = %{version}-%{release}
-Requires: htcondor-ce-pbs
+Requires: htcondor-ce-slurm
 
 %description -n %{htcce}-slurm
 %{summary}
+
+%package -n %{htcce}-bosco
+Group: Grid
+Summary: Bosco meta-package for the HTCondor-CE OSG-CE
+Requires: %{htcce} = %{version}-%{release}
+Requires: %{basece}-bosco = %{version}-%{release}
+Requires: condor-bosco
+Requires: htcondor-ce-bosco
+
+%description -n %{htcce}-bosco
+%{summary}
+
+
 
 ###############################################################################
 # Main (both HTCondor-CE and GRAM-CE) subpackages
@@ -216,8 +235,6 @@ Summary: Condor meta-package for the OSG-CE
 
 Requires: %{name} = %{version}-%{release}
 Requires: %{htcce}-condor = %{version}-%{release}
-# GRAM:
-Requires: globus-gram-job-manager-condor
 
 %description condor
 %{summary}
@@ -227,8 +244,6 @@ Group: Grid
 Summary: PBS meta-package for the OSG-CE
 Requires: %{name} = %{version}-%{release}
 Requires: %{htcce}-pbs = %{version}-%{release}
-# GRAM:
-Requires: globus-gram-job-manager-pbs-setup-seg
 
 %description pbs
 %{summary}
@@ -238,8 +253,6 @@ Group: Grid
 Summary: LSF meta-package for the OSG-CE
 Requires: %{name} = %{version}-%{release}
 Requires: %{htcce}-lsf = %{version}-%{release}
-# GRAM:
-Requires: globus-gram-job-manager-lsf-setup-seg
 
 %description lsf
 %{summary}
@@ -249,8 +262,6 @@ Group: Grid
 Summary: SGE meta-package for the OSG-CE
 Requires: %{name} = %{version}-%{release}
 Requires: %{htcce}-sge = %{version}-%{release}
-# GRAM:
-Requires: globus-gram-job-manager-sge-setup-seg
 
 %description sge
 %{summary}
@@ -260,11 +271,20 @@ Group: Grid
 Summary: Slurm meta-package for the OSG-CE
 Requires: %{name} = %{version}-%{release}
 Requires: %{htcce}-slurm = %{version}-%{release}
-# GRAM:
-Requires: globus-gram-job-manager-slurm
 
 %description slurm
 %{summary}
+
+%package bosco
+Group: Grid
+Summary: Bosco meta-package for the OSG-CE
+Requires: %{name} = %{version}-%{release}
+Requires: %{htcce}-bosco = %{version}-%{release}
+
+%description bosco
+%{summary}
+
+
 
 %build
 exit 0
@@ -282,20 +302,57 @@ exit 0
 %files -n %{basece}-lsf
 %files -n %{basece}-sge
 %files -n %{basece}-slurm
+%files -n %{basece}-bosco
 %files -n %{htcce}
 %files -n %{htcce}-condor
 %files -n %{htcce}-pbs
 %files -n %{htcce}-lsf
 %files -n %{htcce}-sge
 %files -n %{htcce}-slurm
+%files -n %{htcce}-bosco
 %files
 %files condor
 %files pbs
 %files lsf
 %files sge
 %files slurm
+%files bosco
 
 %changelog
+* Mon May 22 2017 Brian Lin <blin@cs.wisc.edu> - 3.3-13
+- Add OSG VOMS mapfile to osg-ce (SOFTWARE-2702)
+
+* Tue Mar 28 2017 Edgar Fajardo <efajardo@physics.ucsd.edu> - 3.3-12
+- Removed the requirements of gip, osg-info-services and osg-cleanup (SOFTWARE-2585)
+
+* Fri Mar 02 2017 Brian Lin <blin@cs.wisc.edu> - 3.3-11
+- Require htcondor-ce-slurm for osg-htcondor-ce-slurm
+
+* Fri Dec 23 2016 Derek Weitzel <dweitzel@cse.unl.edu> - 3.3-10
+- Conditionally turn of gums-client dependency for rhel7
+
+* Wed Aug 03 2016 Derek Weitzel <dweitzel@cse.unl.edu> - 3.3.9
+- Add gratia-probe-htcondor-ce to requirements for osg-ce-bosco (SOFTWARE-2543)
+
+* Wed Aug 03 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.3.8
+- Add gums-client back to EL7 (SOFTWARE-2418); clipped version no longer needed
+
+* Mon Jun 27 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.3-7
+- Require htcondor-ce-bosco in bosco CE subpackages (SOFTWARE-2373)
+
+* Thu Apr 14 2016 Edgar Fajardo <efajardo@physics.ucsd.edu> - 3.3-6
+- Removed the gram components from the subpackages (SOFTWARE-2278)
+
+* Fri Mar 25 2016 Derek Weitzel <dweitzel@cse.unl.edu> - 3.3-5
+- Adding bosco CE package
+
+* Tue Feb 16 2016 Brian Lin <blin@cs.wisc.edu> - 3.3-4
+- Drop globus SLURM jobmanager requirement
+
+* Thu Jul 16 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.3-3
+- Drop lfc-client, osg-site-verify, osg-site-web-page deps
+- Replace osg-client dep with its contents (minus networking stuff)
+
 * Wed Jul 01 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.3-2
 - Require grid-certificates >= 7 (SOFTWARE-1883)
 
@@ -430,6 +487,6 @@ Added dependency on edg-mkgridmap
 * Thu Jul 28 2011 Brian Bockelman <bbockelm@cse.unl.edu>
 - Updated RPM dependency.
 
-* Wed Jul 21 2011 Tanya Levshina <tlevshin.fnal.gov> 
+* Wed Jul 20 2011 Tanya Levshina <tlevshin.fnal.gov>
 - Created an initial osg-ce RPM.
 

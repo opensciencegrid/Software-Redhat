@@ -3,7 +3,7 @@
 Name:		globus-gram-job-manager-condor
 %global _name %(tr - _ <<< %{name})
 Version:	2.5
-Release:	1.1%{?dist}
+Release:	2.1%{?dist}
 Summary:	Globus Toolkit - Condor Job Manager Support
 
 Group:		Applications/Internet
@@ -92,6 +92,9 @@ touch $RPM_BUILD_ROOT%{_sysconfdir}/osg/extattr_table.txt
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/globus/gram/
 install -m 644 %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/globus/gram/condor.rvf
 
+# Remove license file from pkgdocdir if licensedir is used
+%{?_licensedir: rm %{buildroot}%{_pkgdocdir}/GLOBUS_LICENSE}
+
 %clean
 rm -rf %{buildroot}
 
@@ -122,7 +125,6 @@ fi
 %config(noreplace) %{_sysconfdir}/globus/globus-condor.conf
 %config(noreplace) %{_sysconfdir}/grid-services/available/jobmanager-condor
 %dir %{_pkgdocdir}
-%doc %{_pkgdocdir}/GLOBUS_LICENSE
 %doc %{_pkgdocdir}/README
 %config(noreplace) %{_sysconfdir}/grid-services/available/jobmanager-condor
 %config(noreplace) %{_sysconfdir}/osg/extattr_table.txt
@@ -130,10 +132,18 @@ fi
 %{perl_vendorlib}/Globus/GRAM/JobManager/condor_accounting_groups.pm
 %config(noreplace) %{_sysconfdir}/globus/gram/condor.rvf 
 %{_datadir}/globus/globus_gram_job_manager/condor.rvf
+%{!?_licensedir: %doc %{_pkgdocdir}/GLOBUS_LICENSE}
+%{?_licensedir: %license GLOBUS_LICENSE}
 
 %changelog
+* Wed Aug 10 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.5-2.1.osg
+- Merge OSG changes
+
 * Wed Feb 11 2015 Matyas Selmeci <matyas@cs.wisc.edu> - 2.5-1.1.osg
 - Merge OSG changes
+
+* Fri Jan 23 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 2.5-2
+- Implement updated license packaging guidelines
 
 * Mon Oct 27 2014 Mattias Ellert <mattias.ellert@fysast.uu.se> - 2.5-1
 - GT6 update
@@ -241,4 +251,3 @@ so site customizations would be preserved on upgrade.
 
 * Wed Aug 17 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 0.0-3.osg
 - Port all OSG patches to GT52.
-

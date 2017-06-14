@@ -12,9 +12,20 @@
 %{nil}
 %endif
 
+%define jglobus_version 2.1.0
+
+%define _release 1
+#define _alphatag .pre3
+%define _alphatag %{nil}
+%if "%{_alphatag}" == ""
+%define _fullrelease %{_release}%{?dist}
+%else
+%define _fullrelease 0.%{_release}%{_alphatag}%{?dist}
+%endif
+
 Name:           bestman2
-Version:        2.3.0
-Release:        25%{?dist}
+Version:        2.3.0.1
+Release:        %{_fullrelease}
 Summary:        SRM server for Grid Storage Elements
 
 Group:          System Environment/Daemons
@@ -26,40 +37,36 @@ URL:            https://sdm.lbl.gov/bestman/
 
 %define install_root /etc/%{name}
 
-# NOTE: CHANGE THESE EACH RELEASE
-# To create:
-# cd /tmp
-# svn export -r 91 https://codeforge.lbl.gov/anonscm/bestman bestman2
-# tar czf bestman2.tar.gz bestman2
-Source0:        bestman2.tar.gz
-#Source1:        bestman2.sh
+Source0:        %{name}-%{version}%{_alphatag}.tar.gz
 Source2:        bestman2.init
 Source3:        bestman.logrotate
 Source4:        dependent.jars.tar.gz
 Source5:        bestman2.sysconfig
-Source6:        build.xml
 Source7:        build.properties
-Source8:        configure.in
 Source9:        bestman2.rc
 Source10:       bestman2lib.sysconfig
+Source11:       bestman2lib-el7.sysconfig
 
-Patch0:		upgrade_exception_message.patch
-Patch1:		bestman2-2.2.1-2.2.2.patch
-Patch2:		gucpath.patch
-Patch3:		parallelism.patch
+Patch1:		voms-api-java3.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
-BuildRequires:  java7-devel jpackage-utils wget ant axis jakarta-commons-logging jakarta-commons-discovery wsdl4j jakarta-commons-collections jakarta-commons-lang joda-time velocity xalan-j2 xml-security bouncycastle voms-api-java >= 2.0.8 slf4j log4j cog-jglobus-axis autoconf privilege-xacml
-# v NOTE: Must edit the jglobus-*.path lines in build.properties every time jglobus gets a new version!
-BuildRequires: jglobus = 2.0.6
+BuildRequires:  java7-devel jpackage-utils wget ant axis jakarta-commons-logging jakarta-commons-discovery wsdl4j jakarta-commons-collections jakarta-commons-lang joda-time velocity xalan-j2 xml-security bouncycastle slf4j log4j autoconf privilege-xacml
+BuildRequires: jglobus = %jglobus_version
 BuildRequires: jetty-client jetty-continuation jetty-deploy jetty-http jetty-io jetty-security jetty-server jetty-servlet jetty-util jetty-webapp jetty-xml
-BuildRequires: emi-trustmanager emi-trustmanager-axis
-# GUMS jars
-BuildRequires: /usr/lib/gums/opensaml-2.4.1.jar
-BuildRequires: /usr/lib/gums/openws-1.4.1.jar
-BuildRequires: /usr/lib/gums/xmltooling-1.3.1.jar
+%if 0%{?el7}
+BuildRequires: canl-java
+BuildRequires: voms-api-java >= 3
+%else
+BuildRequires: emi-trustmanager
+BuildRequires: emi-trustmanager-axis
+BuildRequires: voms-api-java >= 2.0.8
+%endif
+# privilege-xacml jars
+BuildRequires: /usr/lib/privilege-xacml/opensaml-2.4.1.jar
+BuildRequires: /usr/lib/privilege-xacml/openws-1.4.1.jar
+BuildRequires: /usr/lib/privilege-xacml/xmltooling-1.3.4.jar
 
 %description
 BeStMan 2 - Berkeley Storage Manager
@@ -85,9 +92,16 @@ through Lawrence Berkeley National Laboratory.  See LICENSE file for details.
 %package common-libs
 Summary: Common files BeStMan SRM server client and tester
 Group: System Environment/Libraries
-Requires:  java7 jpackage-utils axis jakarta-commons-logging jakarta-commons-discovery wsdl4j log4j jglobus cog-jglobus-axis >= 1.8.0-2
+Requires:  java7 jpackage-utils axis jakarta-commons-logging jakarta-commons-discovery wsdl4j log4j jglobus
+Requires: /usr/share/java/jglobus/axisg.jar
 # The following are needed for srm client tools and probably tester too
-Requires:  joda-time xalan-j2 voms-api-java >= 2.0.8 jakarta-commons-collections
+Requires:  joda-time xalan-j2 jakarta-commons-collections
+%if 0%{?el7}
+Requires: canl-java
+Requires: voms-api-java >= 3
+%else
+Requires: voms-api-java >= 2.0.8
+%endif
 # ensure these are present, from jpackage-utils or missing-java-1.7.0-dirs
 Requires: /usr/lib/java-1.7.0
 Requires: /usr/share/java-1.7.0
@@ -126,14 +140,24 @@ The BeStMan Server SRM Java libraries
 %package server-dep-libs
 Summary: BeStMan Server SRM Java libraries
 Group: System Environment/Libraries
-Requires: java7-devel jpackage-utils jakarta-commons-lang joda-time emi-trustmanager emi-trustmanager-axis xalan-j2 voms-api-java >= 2.0.8 jakarta-commons-collections privilege-xacml
+Requires: java7-devel jpackage-utils jakarta-commons-lang joda-time xalan-j2 jakarta-commons-collections privilege-xacml
+%if 0%{?el7}
+Requires: canl-java
+Requires: voms-api-java >= 3
+%else
+Requires: emi-trustmanager
+Requires: emi-trustmanager-axis
+Requires: voms-api-java >= 2.0.8
+%endif
 Requires: jetty-client jetty-continuation jetty-deploy jetty-http jetty-io jetty-security jetty-server jetty-servlet jetty-util jetty-webapp jetty-xml
-# GUMS jars
-Requires: /usr/lib/gums/opensaml-2.4.1.jar
-Requires: /usr/lib/gums/openws-1.4.1.jar
-Requires: /usr/lib/gums/velocity-1.5.jar
-Requires: /usr/lib/gums/xmlsec-1.4.4.jar
-Requires: /usr/lib/gums/xmltooling-1.3.1.jar
+# bestman2 is not quite ready for Jetty 9 -- some simple source incompatibilities exist still.
+Requires: jetty-http < 9.0
+# privilege-xacml jars
+Requires: /usr/lib/privilege-xacml/opensaml-2.4.1.jar
+Requires: /usr/lib/privilege-xacml/openws-1.4.1.jar
+Requires: /usr/lib/privilege-xacml/velocity-1.5.jar
+Requires: /usr/lib/privilege-xacml/xmlsec-1.4.1.jar
+Requires: /usr/lib/privilege-xacml/xmltooling-1.3.4.jar
 
 %description server-dep-libs
 The BeStMan Server SRM Java libraries
@@ -188,70 +212,49 @@ BUILDROOT=$PWD
 
 %setup -T -b 4 -q -n lib
 cd ..
-%setup -T -b 0 -q -n %{name}
+%setup -T -b 0 -q -n %{name}-%{version}%{_alphatag}
 
-%patch0 -p1
-%patch1 -p0
-%patch2 -p1
-%patch3 -p1
+%if 0%{?el7}
+%patch1 -p1
+%endif
 
-pushd bestman2/setup-osg/bestman.in
+pushd setup/bestman.in
 sed -i "s/@SRM_HOME@/\/etc\/bestman2/" *
 popd
 
-pushd bestman2/setup-osg/
+pushd setup
 mkdir -p dist/conf
 cp %{SOURCE9} dist/conf
 popd
 
-cp %{SOURCE7} bestman2/branches/osg-dev/
-cp %{SOURCE7} bestman2/setup-osg/
-sed -i "s/install.root=.*/install.root=dist/" bestman2/setup-osg/build.properties
-sed -i "s|@BUILDROOT@|$BUILDROOT|"  bestman2/setup-osg/build.properties bestman2/branches/osg-dev/build.properties
-
-cp %{SOURCE8} bestman2/setup-osg/
+cp %{SOURCE7} sources/
+cp %{SOURCE7} setup/
+sed -i "s/install.root=.*/install.root=dist/" setup/build.properties
+sed -i "s|@BUILDROOT@|$PWD|" setup/build.properties sources/build.properties
+sed -i "s|@JGLOBUS_VERSION@|%jglobus_version|" setup/build.properties sources/build.properties
 
 %build
-pushd bestman2/branches/osg-dev
+pushd sources
 
-#sed -i "s/Generating stubs from/Gen stubs \${axis.path}/" wsdl/build.xml
-
-ant build # <- XXX dies here
+ant build
 ant install
 popd
 
-pushd bestman2/setup-osg
+pushd setup
 cp bestman.in/aclocal.m4 .
+cp bestman.in/configure.in .
 autoconf configure.in > configure
 chmod +x configure
 ./configure --with-srm-owner=bestman --with-sysconf-path=./dist/bestman.sysconfig
 ant deploy
-
-pushd dist
-#Fix paths in bestman2.rc
-JAVADIR=`echo %{_javadir} |  sed 's/\//\\\\\//g'`
-
-#Fix paths in binaries.  Wish I could do this in configure...
-sed -i "s/BESTMAN_SYSCONF=.*/BESTMAN_SYSCONF=\/etc\/sysconfig\/bestman2/" bin/*
-sed -i "s/BESTMAN_SYSCONF=.*/BESTMAN_SYSCONF=\/etc\/sysconfig\/bestman2/" sbin/*
-sed -i "s/BESTMAN_SYSCONF_LIB=.*/BESTMAN_SYSCONF_LIB=\/etc\/sysconfig\/bestman2lib/" bin/*
-sed -i "s/BESTMAN_SYSCONF_LIB=.*/BESTMAN_SYSCONF_LIB=\/etc\/sysconfig\/bestman2lib/" sbin/*
-sed -i "s/\${BESTMAN_SYSCONF}/\/etc\/bestman2\/conf\/bestman2.rc/" sbin/bestman.server
-
-
-BUILDHOSTNAME=`hostname -f`
-# Fix version
-#sed -i "s/Built on .* at/Built on $BUILDHOSTNAME at/" version
-popd
 popd
 
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
-cp -R bestman2/sources/dist/* bestman2/setup-osg/dist/
-pushd bestman2
-pushd setup-osg
+cp -R sources/dist/* setup/dist/
+pushd setup
 pushd dist
 ls -R
 mkdir -p $RPM_BUILD_ROOT%{_javadir}
@@ -260,9 +263,6 @@ mkdir -p $RPM_BUILD_ROOT%{_sbindir}
 mkdir -p $RPM_BUILD_ROOT%{install_root}
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}
 
-#bestmanclient.conf should be srmclient.conf
-mv conf/bestmanclient.conf conf/srmclient.conf
-
 cp -arp conf $RPM_BUILD_ROOT%{install_root}
 cp -arp lib/* $RPM_BUILD_ROOT%{_javadir}/%{name}/
 cp -arp properties $RPM_BUILD_ROOT%{install_root}
@@ -270,10 +270,10 @@ cp -arp properties $RPM_BUILD_ROOT%{install_root}
 #Install dependent jars (prune this list)
 install -d $RPM_BUILD_ROOT%{_javadir}/%{name}/others
 install -d $RPM_BUILD_ROOT%{_javadir}/%{name}/axis
-cp -arp ../../../../lib/plugin $RPM_BUILD_ROOT%{_javadir}/%{name}
+cp -arp ../../../lib/plugin $RPM_BUILD_ROOT%{_javadir}/%{name}
 
 #Install the non-system jars
-libdir=../../../../lib
+libdir=../../../lib
 jardir=$RPM_BUILD_ROOT%{_javadir}/%{name}
 
 for jar in "slf4j-api-1.6.2.jar" "slf4j-log4j12-1.6.2.jar" "slf4j-simple-1.6.2.jar" "jcl-over-slf4j-1.6.0.jar" "je-4.1.10.jar" "servlet-api-3.0.jar" "which4j.jar"
@@ -305,10 +305,18 @@ install -m 0755 %{SOURCE2} $RPM_BUILD_ROOT%{_initrddir}/%{name}
 install -m 0644 %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/%{name}
 install -m 0644 conf/bestman2.rc $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/conf/bestman2.rc
 install -m 0644 %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/%{name}
+%if 0%{?el7}
+install -m 0644 %{SOURCE11} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/%{name}lib
+%else
 install -m 0644 %{SOURCE10} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/%{name}lib
+%endif
 
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/grid-security/vomsdir
+%if 0%{?el7}
+# vdt-empty no longer needed for canl
+%else
 touch $RPM_BUILD_ROOT%{_sysconfdir}/grid-security/vomsdir/vdt-empty.pem
+%endif
 
 mkdir -p $RPM_BUILD_ROOT%{_var}/log/%{name}
 
@@ -349,7 +357,7 @@ fi
 %{install_root}/version
 %doc LICENSE
 %doc COPYRIGHT
-%doc bestman2/sources/README
+%doc sources/README
 
 
 %files client
@@ -394,9 +402,9 @@ fi
 %{install_root}/version
 %doc LICENSE
 %doc COPYRIGHT
-%doc bestman2/sources/CHANGES.SOURCES
-%doc bestman2/setup-osg/CHANGES.SETUP
-%doc bestman2/sources/README
+%doc sources/CHANGES.SOURCES
+%doc setup/CHANGES.SETUP
+%doc sources/README
 
 %files server
 %defattr(-,root,root,-)
@@ -411,7 +419,11 @@ fi
 %config(noreplace) %{_sysconfdir}/sysconfig/bestman2lib
 %{_initrddir}/%{name}
 %config(noreplace) %{_sysconfdir}/logrotate.d/%{name}
+%if 0%{?el7}
+# vdt-empty no longer needed.
+%else
 %config(noreplace) %attr(0644,root,root) %{_sysconfdir}/grid-security/vomsdir/vdt-empty.pem
+%endif
 %attr(-,bestman,bestman) %dir %{_var}/log/%{name}
 %attr(-,bestman,bestman) %dir %{_sysconfdir}/grid-security/bestman
 
@@ -421,9 +433,9 @@ fi
 %files server-libs
 %doc LICENSE
 %doc COPYRIGHT
-%doc bestman2/sources/CHANGES.SOURCES
-%doc bestman2/setup-osg/CHANGES.SETUP
-%doc bestman2/sources/README
+%doc sources/CHANGES.SOURCES
+%doc setup/CHANGES.SETUP
+%doc sources/README
 %{_javadir}/bestman2/bestman2.jar
 %{_javadir}/bestman2/bestman2-aux.jar
 
@@ -455,6 +467,29 @@ fi
 
 
 %changelog
+* Thu May 26 2016 Carl Edquist <edquist@cs.wisc.edu> - 2.3.0.1-1
+- Update to 2.3.0.1 (SOFTWARE-2332)
+  - new upstream layout including OSG patches (SOFTWARE-2032)
+  - support sudoCommand=sudo -i (SOFTWARE-1721)
+  - compress rotated bestman2.log (SOFTWARE-2147)
+  - warn in config about changing SRM_OWNER (SOFTWARE-1520)
+
+* Wed Apr 27 2016 Carl Edquist <edquist@cs.wisc.edu> - 2.3.0-29
+- Patch el7 to use voms-api-java 3 and canl (SOFTWARE-2041)
+
+* Tue Mar 15 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 2.3.0-28
+- Add bcpkix to the classpath in el7 (SOFTWARE-2041)
+
+* Tue Nov 03 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 2.3.0-27.osg
+- Use opensaml, openws, velocity, xmlsec, and xmltooling jar files from
+  privilege-xacml instead of gums (SOFTWARE-2041)
+
+* Fri Sep 18 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 2.3.0-26
+- Build with jglobus 2.1.0
+
+* Sat Sep 12 2015 Carl Edquist <edquist@cs.wisc.edu> - 2.3.0c-1
+- new source tarball layout, no functional change (SOFTWARE-2032)
+
 * Mon Jun 08 2015 Carl Edquist <edquist@cs.wisc.edu> - 2.3.0-25
 - only add -p N to GUC command line if parallelism > 1,
   remove previous Parallelism=0 default (SOFTWARE-1889)
@@ -525,7 +560,7 @@ fi
 * Mon Nov 12 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 2.3.0-5
 - Require voms-api-java instead of vomsjapi
 
-* Wed Nov 08 2012 Neha Sharma <neha@fnal.gov> - 2.3.0-4
+* Thu Nov 08 2012 Neha Sharma <neha@fnal.gov> - 2.3.0-4
 - Updated file 'version' to include latest version and removed the build host line from build.xml
 
 * Tue Nov 06 2012 Neha Sharma <neha@fnal.gov> - 2.3.0-3
@@ -540,7 +575,7 @@ fi
 * Thu Sep 20 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 2.2.1-5
 - Cleanup spec file in preparation of jglobus transition.
 
-* Tue Jul 25 2012 Doug Strain <dstrain@fnal.gov> - 2.2.1-4
+* Wed Jul 25 2012 Doug Strain <dstrain@fnal.gov> - 2.2.1-4
 - Changes to client lib requirement to fix SOFTWARE-716
 
 * Mon Jun 25 2012 Neha Sharma <neha@fnal.gov> - 2.2.1a
@@ -681,7 +716,7 @@ get rid of bestman2 dependency of client and server
 * Sun Jul 10 2011 Doug Strain <dstrain@fnal.gov> 2.1.0.pre4-3
 - Changed RPM to not require certs
 
-* Mon Jul 07 2011 Doug Strain <dstrain@fnal.gov> 2.1.0.pre4
+* Thu Jul 07 2011 Doug Strain <dstrain@fnal.gov> 2.1.0.pre4
 - Updated to bestman2.1.0pre4
 - Changed the locations to be FHS compliant:
 - Moved java jar files to javadir/bestman2
@@ -690,7 +725,7 @@ get rid of bestman2 dependency of client and server
 - Moved bestman2.rc to /etc/bestman2/conf and added to client package
 - Deleted setup directory in favor of combined bestman2.rc/sysconfig
 
-* Mon Jul 01 2011 Doug Strain <dstrain@fnal.gov> 2.1.0.pre2
+* Fri Jul 01 2011 Doug Strain <dstrain@fnal.gov> 2.1.0.pre2
 - Creating Bestman2 spec file based on Hadoop repository
 
 * Mon Jun 13 2011 Doug Strain <dstrain@fnal.gov> 2.0.13.t5-43
@@ -742,4 +777,3 @@ get rid of bestman2 dependency of client and server
 
 * Tue Jun 8 2010 Michael Thomas <thomas@hep.caltech.edu> 2.0.0-1
 - Initial package of bestman2, based on original bestman spec file
-

@@ -6,8 +6,8 @@
 
 Name:		globus-scheduler-event-generator
 %global _name %(tr - _ <<< %{name})
-Version:	5.10
-Release:	2.1%{?dist}
+Version:	5.11
+Release:	1.1%{?dist}
 Summary:	Globus Toolkit - Scheduler Event Generator
 
 Group:		System Environment/Libraries
@@ -186,6 +186,12 @@ fi
 %{?_licensedir: %license GLOBUS_LICENSE}
 
 %changelog
+* Thu Aug 25 2016 Edgar Fajardo <emfajard@ucsd.edu> - 5.11-1.1.osg
+- Merge OSG changes; SOFTWARE-2197
+
+* Wed Apr 08 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 5.11-1
+- GT6 update
+
 * Thu Feb 19 2015 Matyas Selmeci <matyas@cs.wisc.edu> - 5.10-2.1.osg
 - Merge OSG changes; remove workaround for log file reading hang
 
@@ -225,9 +231,6 @@ fi
 
 * Tue May 20 2014 Brent Baude <baude@us.ibm.com> - 4.7-9
 - Replace arch def of ppc64 with power64 macro for ppc64le enablement
-
-* Fri Jan 10 2014 Matyas Selmeci <matyas@cs.wisc.edu> 4.7-6.1.osg
-- Fix init script chkconfig priorities to run after netfs and autofs (SOFTWARE-1250)
 
 * Thu Jan 09 2014 Mattias Ellert <mattias.ellert@fysast.uu.se> - 4.7-8
 - Fix logfile location

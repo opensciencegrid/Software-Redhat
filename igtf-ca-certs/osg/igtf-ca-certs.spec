@@ -1,13 +1,13 @@
 Name:           igtf-ca-certs
-Version:        1.64
-Release:        3%{?dist}
-Summary:        OSG Packaging of the IGTF CA Certs, in new OpenSSL 0.9.8/1.0.0 format. For details what is in the current release, see the distribution site at http://software.grid.iu.edu/pacman/cadist/ and change log at http://software.grid.iu.edu/pacman/cadist/CHANGES.
+Version:        1.83
+Release:        1%{?dist}
+Summary:        OSG Packaging of the IGTF CA Certs, in new OpenSSL 0.9.8/1.0.0 format. For details what is in the current release, see the distribution site at http://repo.grid.iu.edu/pacman/cadist/ and change log at http://repo.grid.iu.edu/pacman/cadist/CHANGES.
 
 Group:          System Environment/Base
 License:        Unknown
-URL:            http://software.grid.iu.edu/pacman/cadist/
+URL:            http://repo.grid.iu.edu/pacman/cadist/
 
-Source0:        osg-certificates-1.46IGTFNEW.tar.gz
+Source0:        osg-certificates-1.63IGTFNEW.tar.gz
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
@@ -15,7 +15,6 @@ BuildArch:      noarch
 Provides:       grid-certificates = 7
 
 Conflicts:      osg-ca-scripts
-Conflicts:      cilogon-ca-certs < 1.0-5
 
 Obsoletes:      vdt-ca-certs
 Obsoletes:      igtf-ca-certs-experimental
@@ -35,6 +34,10 @@ mkdir -p $RPM_BUILD_ROOT/etc/grid-security/certificates
 chmod 0644 *
 mv * $RPM_BUILD_ROOT/etc/grid-security/certificates/
 
+%check
+cd $RPM_BUILD_ROOT/etc/grid-security/certificates
+md5sum -c cacerts_md5sum.txt
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -45,7 +48,67 @@ rm -rf $RPM_BUILD_ROOT
 %doc
 
 %changelog
-* Wed Jul 01 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.64-3
+* Wed Jun 7 2017 Zalak Shah <zsshah@iu.edu> 1.83-1
+- CA release corresponding to IGTF 1.83 release.
+
+* Mon Apr 3 2017 Zalak Shah <zsshah@iu.edu> 1.82-1
+- CA release corresponding to IGTF 1.82 release.
+
+* Mon Feb 27 2017 Zalak Shah <zsshah@iu.edu> 1.81-1
+- CA release corresponding to IGTF 1.81 release.
+
+* Fri Feb 10 2017 Zalak Shah <zsshah@iu.edu> 1.80-1
+- CA release corresponding to IGTF 1.80 release.
+
+* Tue Feb 07 2017 Edgar Fajardo <emfajard@ucsd.edu> 1.79-2
+- Added check for md5 checksums of the certificates (SOFTWARE-2590)
+
+* Mon Jan 11 2017 Zalak Shah <zsshah@iu.edu> 1.79-1
+- CA release corresponding to IGTF 1.79 release.
+
+* Thu Oct 13 2016 Anand Padmanabhan <apadmana@illinois.edu> 1.78-1
+- CA release corresponding to IGTF 1.78 release.
+
+* Mon Aug 1 2016 Anand Padmanabhan <apadmana@illinois.edu> 1.76-1
+- CA release corresponding to IGTF 1.76 release.
+
+* Tue Jul 5 2016 Anand Padmanabhan <apadmana@illinois.edu> 1.75-1
+- CA release corresponding to IGTF 1.75 release.
+
+* Thu May 19 2016 Anand Padmanabhan <apadmana@illinois.edu> 1.74-1
+- CA release corresponding to IGTF 1.74 release.
+
+* Thu Mar 31 2016 Anand Padmanabhan <apadmana@illinois.edu> 1.73-1
+- CA release corresponding to IGTF 1.73 release.
+
+* Tue Mar 1 2016 Anand Padmanabhan <apadmana@illinois.edu> 1.72-1
+- CA release corresponding to IGTF 1.72 release.
+
+* Wed Jan 27 2016 Anand Padmanabhan <apadmana@illinois.edu> 1.71-1
+- CA release corresponding to IGTF 1.71 release.
+
+* Mon Nov 30 2015 Jeny Teheran <jteheran@fnal.gov> 1.70-1
+- CA release corresponding to IGTF 1.70 release.
+
+* Thu Nov 05 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.69-3
+- Remove obsoletes/provides for cilogon-osg-ca-cert, it was broken (SOFTWARE-2097)
+
+* Thu Nov 05 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.69-2
+- Add obsoletes/provides for cilogon-osg-ca-cert (SOFTWARE-2097)
+
+* Mon Oct 26 2015 Jeny Teheran <jteheran@fnal.gov> 1.69-1
+- CA release corresponding to IGTF 1.69 release.
+
+* Tue Oct 6 2015 Anand Padmanabhan <apadmana@uiuc.edu> - 1.68-1
+- CA release corresponding to IGTF 1.68 release.
+
+* Thu Sep 3 2015 Anand Padmanabhan <apadmana@uiuc.edu> - 1.67-1
+- CA release corresponding to IGTF 1.67 release.
+
+* Wed Jul 08 2015 Jeny Teheran <jteheran@fnal.gov> 1.65-1
+- CA release corresponding to IGTF 1.65 release
+
+* Thu Jul 02 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.64-2
 - Provide grid-certificates = 7
 
 * Wed Jul 01 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.64-2

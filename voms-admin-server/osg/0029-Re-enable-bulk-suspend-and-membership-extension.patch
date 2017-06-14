@@ -1,0 +1,24 @@
+From 32d91f63ae3a7cb811f9205a03432ea1307b968e Mon Sep 17 00:00:00 2001
+From: Brian Lin <brianhlin@gmail.com>
+Date: Wed, 19 Apr 2017 16:15:46 -0500
+Subject: [PATCH 29/31] Re-enable bulk suspend and membership extension
+
+---
+ src/main/resources/struts.xml | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/main/resources/struts.xml b/src/main/resources/struts.xml
+index 20f0dfa..8003f48 100644
+--- a/src/main/resources/struts.xml
++++ b/src/main/resources/struts.xml
+@@ -27,6 +27,7 @@
+ 
+         <constant name="struts.enable.DynamicMethodInvocation" value="true"/>
+         <constant name="struts.action.excludePattern" value="/services,/services/.*,/,/index.jsp" />
++        <constant name="struts.mapper.action.prefix.enabled" value="true"/>
+ 
+ 	<constant name="struts.configuration.xml.reload" value="false" />
+ 	<constant name="struts.ui.theme" value="css_xhtml" />
+-- 
+2.9.4
+

@@ -1,21 +1,16 @@
-Summary: Package for configure-osg and associated scripts
+Summary: Package for OSG-Configure and associated scripts
 Name: osg-configure
-Version: 1.1.0
-Release: 1%{?dist}
+Version: 1.8.1
+Release: 2%{?dist}
 Source0: %{name}-%{version}.tar.gz
+Patch0: fix-host-port-test.patch
 License: Apache 2.0
 Group: Grid
 Prefix: %{_prefix}
 BuildArch: noarch
-BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
-Vendor: Suchandra Thapa <sthapa@ci.uchicago.edu>
-Url: http://www.opensciencegrid.org
+Url: https://github.com/opensciencegrid/osg-configure
 Provides: configure-osg
-
-%if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
-%{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
-%{!?python_sitearch: %define python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
-%endif
+Requires: condor-python
 
 
 %define gateway_ini %_sysconfdir/osg/config.d/10-gateway.ini
@@ -26,96 +21,97 @@ Provides: configure-osg
 %{summary}
 
 %package rsv
-Summary: Configure-osg configuration files for rsv
+Summary: OSG configuration file for RSV
 Group: Grid
 Provides: configure-osg-rsv
 Requires: %name = %version-%release
 Requires: %name-gateway
 %description rsv
-This package includes the ini file for configuring rsv using configure-osg
+This package includes the ini file for configuring RSV using osg-configure
 
 %package gratia
-Summary: Configure-osg configuration files for gratia
+Summary: OSG configuration file for gratia
 Group: Grid
 Provides: configure-osg-gratia
 Requires: %name = %version-%release
 %description gratia
-This package includes the ini file for configuring gratia using configure-osg
+This package includes the ini file for configuring gratia using osg-configure
 
 %package gip
-Summary: Configure-osg configuration files for gip
+Summary: OSG configuration file for gip
 Group: Grid
 Provides: configure-osg-gip
 Requires: %name = %version-%release
 %description gip
-This package includes the ini file for configuring gip using configure-osg
+This package includes the ini file for configuring gip using osg-configure
 
 %package lsf
-Summary: Configure-osg configuration files for lsf
+Summary: OSG configuration file for lsf
 Group: Grid
 Provides: configure-osg-lsf
 Requires: %name = %version-%release
 Requires: %name-gateway
 %description lsf
-This package includes the ini file for configuring lsf using configure-osg
+This package includes the ini file for configuring lsf using osg-configure
 
 %package pbs
-Summary: Configure-osg configuration files for pbs
+Summary: OSG configuration file for pbs
 Group: Grid
 Provides: configure-osg-pbs
 Requires: %name = %version-%release
 Requires: %name-gateway
 %description pbs
-This package includes the ini file for configuring pbs using configure-osg
+This package includes the ini file for configuring pbs using osg-configure
 
 %package condor
-Summary: Configure-osg configuration files for condor
+Summary: OSG configuration file for condor
 Group: Grid
 Provides: configure-osg-condor
 Requires: %name = %version-%release
 Requires: %name-gateway
 %description condor
-This package includes the ini file for configuring condor using configure-osg
+This package includes the ini file for configuring condor using osg-configure
 
 %package sge
-Summary: Configure-osg configuration files for sge
+Summary: OSG configuration file for sge
 Group: Grid
 Provides: configure-osg-sge
 Requires: %name = %version-%release
 Requires: %name-gateway
 %description sge
-This package includes the ini file for configuring sge using configure-osg
+This package includes the ini file for configuring sge using osg-configure
 
 %package monalisa
-Summary: Configure-osg configuration files for monalisa
+Summary: Transitional dummy package for OSG 3.2
 Group: Grid
 Provides: configure-osg-monalisa
 %description monalisa
-This is an empty package created as a workaround to upgrade issues.
+This is an empty package created as a workaround for 3.1->3.2 upgrade issues.
 It may safely be removed.
 
 %package ce
-Summary: Configure-osg configuration files for CE
+Summary: OSG configuration file for CE
 Group: Grid
 Provides: configure-osg-ce
 Requires: %name = %version-%release
 Requires: %name-gateway
 %description ce
 This package includes the ini files for configuring a basic CE using 
-configure-osg.  One of the packages for the job manager configuration also 
+osg-configure.  One of the packages for the job manager configuration also 
 needs to be installed for the CE configuration.
 
 %package misc
-Summary: Configure-osg configuration files for misc software
+Summary: OSG configuration file for misc software
 Group: Grid
 Provides: configure-osg-misc
 Requires: %name = %version-%release
+Requires: lcmaps-db-templates
 %description misc
 This package includes the ini files for various osg software including
-certificates setup and glexec
+certificates setup, lcmaps, and glexec
 
 %package squid
-Summary: Configure-osg configuration files for squid
+Summary: OSG configuration file for squid
 Group: Grid
 Provides: configure-osg-squid
 Requires: %name = %version-%release
@@ -123,7 +119,7 @@ Requires: %name = %version-%release
 This package includes the ini files for configuring an OSG system to use squid
 
 %package managedfork
-Summary: Configure-osg configuration files for managedfork
+Summary: OSG configuration file for managedfork
 Group: Grid
 Provides: configure-osg-managedfork
 Requires: %name = %version-%release
@@ -133,7 +129,7 @@ This package includes the ini files for configuring an OSG CE to use
 managedfork
 
 %package network
-Summary: Configure-osg configuration files for network configuration
+Summary: OSG configuration file for Globus network configuration
 Group: Grid
 Provides: configure-osg-network
 Requires: %name = %version-%release
@@ -142,7 +138,7 @@ This package includes the ini files for configuring network related information
 such as firewall ports that globus should use
 
 %package tests
-Summary: Configure-osg configuration unit tests and configuration for unit testing
+Summary: OSG-Configure unit tests and configuration for unit testing
 Group: Grid
 Provides: configure-osg-tests
 Requires: %name = %version-%release
@@ -151,31 +147,41 @@ This package includes the ini files and files for unit tests that osg-configure
 uses to verify functionality
 
 %package slurm
-Summary: Configure-osg configuration files for slurm
+Summary: OSG configuration file for slurm
 Group: Grid
 Provides: configure-osg-slurm
 Requires: %name = %version-%release
 Requires: %name-gateway
 %description slurm
-This package includes the ini file for configuring slurm using configure-osg
+This package includes the ini file for configuring slurm using osg-configure
+
+%package bosco
+Summary: OSG configuration file for bosco
+Group: Grid
+Provides: configure-osg-bosco
+Requires: %name = %version-%release
+Requires: %name-gateway
+Requires: condor-bosco
+%description bosco
+This package includes the ini file for configuring bosco using osg-configure
 
 %package infoservices
-Summary: Configure-osg configuration files for the osg info services
+Summary: OSG configuration file for the osg info services
 Group: Grid
 Provides: configure-osg-infoservices
 Requires: %name = %version-%release
 Requires: %name-gip
 %description infoservices
-This package includes the ini file for configuring the osg info services using configure-osg
+This package includes the ini file for configuring the osg info services using osg-configure
 
 %package gateway
-Summary: Configure-osg configuration files for job gateways (globus-gatekeeper / htcondor-ce)
+Summary: OSG configuration file for job gateways (globus-gatekeeper / htcondor-ce)
 Group: Grid
 Provides: configure-osg-gateway
 Requires: %name = %version-%release
 %description gateway
 This package includes the ini file for configuring the job gateways
-(globus-gatekeeper or htcondor-ce) using configure-osg
+(globus-gatekeeper or htcondor-ce) using osg-configure
 
 %package cemon
 Summary: Transitional dummy package for OSG 3.2
@@ -189,6 +195,7 @@ It may safely be removed once the upgrade is finished.
 
 %prep
 %setup
+%patch0 -p1
 
 %build
 %{__python} setup.py build
@@ -251,6 +258,11 @@ rm -rf $RPM_BUILD_ROOT
 %files sge
 %defattr(-,root,root)
 %config(noreplace) %{_sysconfdir}/osg/config.d/20-sge.ini
+
+%files bosco
+%defattr(-,root,root)
+%config(noreplace) %{_sysconfdir}/osg/config.d/20-bosco.ini
+
 
 %files ce
 %defattr(-,root,root)
@@ -322,6 +334,112 @@ fi
 
 
 %changelog
+* Fri Jun 02 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 1.8.1-2
+- Add fix-host-port-test.patch
+
+* Sun May 28 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 1.8.1-1
+- Give a warning, not an error, on missing allowed_vos
+
+* Sun May 28 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 1.8.0-2
+- bump to rebuild with fixed tarball
+
+* Sun May 28 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 1.8.0-1
+- Reject empty allowed_vos (SOFTWARE-2703)
+- Turn missing OSG_APP into a warning instead of an error (SOFTWARE-2674)
+- Get default allowed_vos from voms-mapfiles/banfiles if using vomsmap auth (SOFTWARE-2670)
+
+* Mon Apr 24 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 1.7.0-1
+- Drop GIP/OSG-Info-Services support (SOFTWARE-2644)
+- Make absence of user-vo-map file non-fatal (SOFTWARE-2696)
+- Create /etc/lcmaps.db from template and add voms-mapfile support (SOFTWARE-2601)
+  (adds dependency on lcmaps-db-templates (SOFTWARE-2692)
+
+* Wed Mar 29 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6.2-1
+- Fix info-services unit tests (SOFTWARE-2655)
+
+* Mon Jan 30 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6.1-1
+- Fix osg-configure -v for Resource Entry sections (SOFTWARE-2562)
+
+* Tue Jan 24 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6.0-1
+- Improve Resource Entry section (SOFTWARE-2562)
+-  require 'queue'
+-  add template in comments
+-  add cpucount and maxmemory attributes
+-  add subclusters and vo_tag attributes
+
+* Tue Dec 27 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.4-1
+- Don't require attributes in Resource Entry sections that aren't used in AGIS or the CE collector (SOFTWARE-2554)
+
+* Mon Nov 28 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.3-1
+- Quote settings written to Gratia probe configs (SOFTWARE-2311)
+
+* Thu Nov 10 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.2-1
+- Bugfix for 1.5.1 release (SOFTWARE-2478)
+
+* Mon Nov 07 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.1-1
+- Bugfix for 1.5.0 release (SOFTWARE-2478)
+
+* Fri Oct 28 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 1.5.0-1
+- Add "Resource Entry" as alias for "Subcluster" in 30-gip.ini (SOFTWARE-2478)
+
+* Thu Aug 04 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 1.4.2-2
+- Require condor-python (SOFTWARE-2420)
+
+* Thu Jul 28 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 1.4.2-1
+- Fix unit test TestMisc.testValidSettings() to use a gums_host that
+  always resolves (SOFTWARE-2406)
+
+* Wed Jun 22 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 1.4.1-1
+- Set OSG_CONFIGURED=true for BOSCO HTCondor-CEs (SOFTWARE-2360)
+- Add edit_lcmaps_db option to prevent changes to lcmaps.db (SOFTWARE-2321)
+- Validate gums host (SOFTWARE-2319)
+- Set BOSCO_RMS and BOSCO_ENDPOINT for use in BOSCO job routes (SOFTWARE-2366)
+
+* Wed Apr 20 2016 Matyas Selmeci <matyas@cs.wisc.edu> 1.4.0-1
+- Relax checks on non-site-controlled hosts (SOFTWARE-2123)
+- Remove umask check and always use 022 for umask (SOFTWARE-2276)
+- Consistenly quote values in blah.config (SOFTWARE-2226)
+- Remove email domain check (SOFTWARE-2271)
+- Set GRIDMAP in HTCondor-CE configuration if using gridmap auth
+  (SOFTWARE-2244)
+- Set authorization method in lcmaps.db (SOFTWARE-1723)
+- Fix GIP tests failing if a CE is not installed (SOFTWARE-2224)
+- Fix RSV probes not being enabled if gram_ce_hosts in UNAVAILABLE
+  (SOFTWARE-2266)
+- Add slurm_cluster to 20-slurm.ini (SOFTWARE-2264)
+
+* Thu Mar 31 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 1.3.0-2
+- Fix installation of SSH keys in BOSCO support (SOFTWARE-2188)
+
+* Tue Mar 29 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 1.3.0-1
+- Add Bosco support (SOFTWARE-2188)
+
+* Fri Feb 19 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 1.2.6-1
+- Add SGE settings to /etc/blah.config (SOFTWARE-2189)
+
+* Thu Nov 19 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.2.5-1.osg
+- Remove deprecated ReSS support (SOFTWARE-2103)
+
+* Tue Nov 10 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.2.4-1.osg
+- Do not look up offline ReSS servers (SOFTWARE-2102)
+
+* Wed Oct 21 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.2.3-1.osg
+- Run condor_ce_reconfig after generating the job attribute files, so the
+  changes get picked up (SOFTWARE-2058)
+
+* Fri Sep 25 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.2.2-1.osg
+- Fix DeprecationWarning in resource catalog code (SOFTWARE-2031)
+
+* Thu Sep 10 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.2.1-1.osg
+- Fix wrong permissions in created files (SOFTWARE-2022)
+
+* Mon Aug 24 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.2.0-2.osg
+- Support IPv6 addresses in config files (SOFTWARE-1952)
+- Add default for AllowedVOs for CE Collector (SOFTWARE-1895)
+
+* Mon Jul 27 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.1.1-1.osg
+- Fix spurious 'None' values in the job environment (SOFTWARE-1968)
+
 * Tue Jun 23 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.1.0-1.osg
 - Switch to Semantic Versioning
 - Support Zabbix consumers in RSV (SOFTWARE-1923)

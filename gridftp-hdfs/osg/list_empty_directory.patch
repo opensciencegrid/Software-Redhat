@@ -1,0 +1,68 @@
+diff --git a/src/gridftp_hdfs_stat.c b/src/gridftp_hdfs_stat.c
+index e3b454d..97d8c38 100644
+--- a/src/gridftp_hdfs_stat.c
++++ b/src/gridftp_hdfs_stat.c
+@@ -101,11 +101,13 @@ hdfs_stat(
+     else
+     {
+         int i;
+-    
++
++        stat_count = -1; // Workaround for HDFS-8407: hdfsListDirectory doesn't set errno=0 on success.
++        errno = 0;
+         hdfsFileInfo * dir = hdfsListDirectory(hdfs_handle->fs, PathName, &stat_count);
+         if(dir == NULL)
+         {
+-            if (errno == 0)
++            if (!stat_count) // On success, stat_count is updated.
+             { // Empty directory case
+                 stat_array = (globus_gfs_stat_t *) globus_malloc(sizeof(globus_gfs_stat_t));
+                 if(!stat_array)
+--- gridftp-hdfs-0.5.4/src/gridftp_hdfs.c.orig	2016-06-30 13:06:54.457215750 -0500
++++ gridftp-hdfs-0.5.4/src/gridftp_hdfs.c	2016-06-30 13:14:26.325429215 -0500
+@@ -398,27 +398,29 @@
+         break;
+     case GLOBUS_GFS_CMD_RMD:
+ {
+-        int numEntries = 0;
++        int numEntries = -1;
+         errno = 0;
+         hdfsFileInfo *info = hdfsListDirectory(hdfs_handle->fs, PathName, &numEntries);
+-        if (numEntries) { // NOTE: above call sets info to NULL in case of empty directory.
+-	  errno = ENOTEMPTY;
+-	  SystemError(hdfs_handle, "rmdir", result);
+-        }
+         if (info) {
+-	  hdfsFreeFileInfo(info, numEntries);
+-	  info = NULL;
+-        } else if (errno != ENOENT) {
+-	  if (errno) {
+-	    SystemError(hdfs_handle, "rmdir", result);
+-	  } else {
+-	    GenericError(hdfs_handle, "Unable to delete directory (reason unknown)", result);
+-	  }
+-	  break;
++            hdfsFreeFileInfo(info, numEntries);
++            info = NULL;
++            errno = 0;
++        }
++        if (numEntries > 0) { // NOTE: above call sets info to NULL in case of empty directory.
++            errno = ENOTEMPTY;
++            SystemError(hdfs_handle, "rmdir", result);
++            break;
++        }
++        if ((numEntries < 0) && (errno != ENOENT)) {
++            if (errno) {
++                SystemError(hdfs_handle, "rmdir", result);
++            } else { // Logic error in libhdfs: didn't set numEntries or errno.
++                GenericError(hdfs_handle, "Unable to delete directory (reason unknown)", result);
++            }
++            break;
+         }
+-        if (numEntries) {break;}
+ }
+-      // Not done - fall through
++        // Only case remaining is empty directory.  OK to delete; not done - fall through
+     case GLOBUS_GFS_CMD_DELE:
+ {
+         errno = 0;

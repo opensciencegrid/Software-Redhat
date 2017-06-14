@@ -1,16 +1,23 @@
+# Have gitrev be the short hash or branch name if doing a prerelease build
+#define gitrev
+%define bl_sysconfdir %{_sysconfdir}/%{name}
+%define bl_libexecdir %{_libexecdir}/%{name}
+
 Name:		blahp
-Version:	1.18.13.bosco
-Release:	2%{?dist}
+Version:	1.18.29.bosco
+Release:	1%{?gitrev:.%{gitrev}}%{?dist}
 Summary:	gLite BLAHP daemon
 
 Group:		System/Libraries
 License:	Apache 2.0
 URL:		https://github.com/osg-bosco/BLAH
 
-# Tarball created with the following command:
-# git archive v1_18_bosco | gzip -8 > ~/rpmbuild/SOURCES/blahp.tar.gz
-Source0:        blahp.tar.gz
-Patch0:         sw1709-osg-job-env-vars.patch
+# Generated with:
+# git archive v1_18_bosco | gzip -9 > %{name}-%{version}.tar.gz
+#
+# Pre-release build tarballs should be generated with:
+# git archive %{gitrev} | gzip -9 > %{name}-%{version}-%{gitrev}.tar.gz
+Source0:        %{name}-%{version}%{?gitrev:-%{gitrev}}.tar.gz
 
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildRequires:  automake
@@ -34,7 +41,6 @@ BuildRequires:  docbook-style-xsl, libxslt
 
 %prep
 %setup -c -n %{name}-%{version}
-%patch0 -p1
 
 %build
 ./bootstrap
@@ -60,8 +66,8 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/*.a
 # Move all the blahp scripts into /usr/libexec/blahp
 mkdir blahp
 mv $RPM_BUILD_ROOT%{_libexecdir}/* blahp
-install -m 0755 -d -p $RPM_BUILD_ROOT%{_libexecdir}/blahp/
-mv blahp/* $RPM_BUILD_ROOT%{_libexecdir}/blahp/
+install -m 0755 -d -p $RPM_BUILD_ROOT%{bl_libexecdir}/
+mv blahp/* $RPM_BUILD_ROOT%{bl_libexecdir}/
 
 # Correct the config file location
 install -m 0755 -d -p $RPM_BUILD_ROOT%{_sysconfdir}
@@ -69,17 +75,15 @@ mv $RPM_BUILD_ROOT%{_sysconfdir}/blah.config.template $RPM_BUILD_ROOT%{_sysconfd
 mv $RPM_BUILD_ROOT%{_sysconfdir}/blparser.conf.template $RPM_BUILD_ROOT%{_sysconfdir}/blparser.conf
 echo "blah_libexec_directory=/usr/libexec/blahp" >> $RPM_BUILD_ROOT%{_sysconfdir}/blah.config
 
-install -m 0755 -d -p $RPM_BUILD_ROOT%{_sysconfdir}/%{name}
-mv $RPM_BUILD_ROOT%{_libexecdir}/blahp/sge_local_submit_attributes.sh $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/
-chmod 0644 $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/sge_local_submit_attributes.sh
-ln -s %{_sysconfdir}/%{name}/sge_local_submit_attributes.sh    $RPM_BUILD_ROOT%{_libexecdir}/blahp/sge_local_submit_attributes.sh
+# Insert appropriate templates for LSF, SGE, Slurm, and HTCondor; admins will need to change these
+install -m 0755 -d -p $RPM_BUILD_ROOT%{bl_sysconfdir}
 
+for batch_system in sge slurm; do
+    mv $RPM_BUILD_ROOT%{bl_libexecdir}/${batch_system}_local_submit_attributes.sh $RPM_BUILD_ROOT%{bl_sysconfdir}/
+done
 
-# Insert appropriate templates for LSF and HTCondor; admins will need to change these
-for i in lsf condor; do
-  ln -s %{_sysconfdir}/%{name}/${i}_local_submit_attributes.sh    $RPM_BUILD_ROOT%{_libexecdir}/blahp/${i}_local_submit_attributes.sh
-
-cat > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/${i}_local_submit_attributes.sh << EOF
+for batch_system in lsf condor; do
+cat > $RPM_BUILD_ROOT%{bl_sysconfdir}/${batch_system}_local_submit_attributes.sh << EOF
 #/bin/sh
 
 # This file is sourced by blahp before submitting the job to ${i}
@@ -110,9 +114,7 @@ EOF
 done
 
 # A more appropriate template for PBS; actually does something
-ln -s %{_sysconfdir}/%{name}/pbs_local_submit_attributes.sh    $RPM_BUILD_ROOT%{_libexecdir}/blahp/pbs_local_submit_attributes.sh
-
-cat > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/pbs_local_submit_attributes.sh << EOF
+cat > $RPM_BUILD_ROOT%{bl_sysconfdir}/pbs_local_submit_attributes.sh << EOF
 #/bin/sh
 
 # This file is sourced by blahp before submitting the job to PBS
@@ -143,9 +145,13 @@ fi
 
 EOF
 
-mv $RPM_BUILD_ROOT%{_docdir}/glite-ce-blahp-@PVER@ $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
+# Create local_submit_attributes.sh symlinks in /etc/blahp
+for batch_system in pbs sge slurm lsf condor; do
+    ln -s %{bl_sysconfdir}/${batch_system}_local_submit_attributes.sh \
+       $RPM_BUILD_ROOT%{bl_libexecdir}/${batch_system}_local_submit_attributes.sh
+done
 
-chmod 644 $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/sge_local_submit_attributes.sh
+mv $RPM_BUILD_ROOT%{_docdir}/glite-ce-blahp-@PVER@ $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -172,18 +178,116 @@ fi
 %config(noreplace) %{_sysconfdir}/blparser.conf
 %config(noreplace) %{_sysconfdir}/blah.config
 %dir %{_sysconfdir}/%{name}
-%config(noreplace) %{_sysconfdir}/%{name}/*.sh
+%config(noreplace) %{bl_sysconfdir}/*.sh
 %{_mandir}/man1/*
 %{_initrddir}/glite-ce-*
 
 %changelog
-* Mon Jun 25 2015 Brian Lin <blin@cs.wisc.edu> - 1.18.13.bosco-2
+* Thu Feb 23 2017 Brian Lin <blin@cs.wisc.edu> - 1.18.29.bosco-1
+- Blahp python scripts should ignore optional '-w' argument (SOFTWARE-2603)
+- Fail gracefully when encountering unexpected sacct output (SOFTWARE-2604)
+- Some #SBATCH commands are being ignored (SOFTWARE-2605)
+
+* Thu Jan 26 2017 Brian Lin <blin@cs.wisc.edu> - 1.18.28.bosco-3
+- Build against condor-8.4.11
+
+* Mon Dec 19 2016 Brian Lin <blin@cs.wisc.edu> - 1.18.28.bosco-2
+- Build against condor-8.4.10
+
+* Thu Oct 27 2016 Brian Lin <blin@cs.wisc.edu> - 1.18.28.bosco-1
+- Fixed incompatibility between blahp_results_cache and torque-4.2.9
+  that caused jobs to be held when performing status updates on
+  HTCondor-CE (SOFTWARE-2516)
+
+* Thu Oct 20 2016 Brian Lin <blin@cs.wisc.edu> - 1.18.27.bosco-1
+- Fix segfault when using glexec and disabling limited proxies (SOFTWARE-2475)
+
+* Fri Sep 23 2016 Brian Lin <blin@cs.wisc.edu> - 1.18.26.bosco-1
+- Refactor scontrol calls to use subprocess (SOFTWARE-2450)
+
+* Fri Sep 09 2016 Brian Lin <blin@cs.wisc.edu> - 1.18.25.bosco-1
+- Fix qstart parsing errors that caused blank caches
+
+* Fri Aug 26 2016 Brian Lin <blin@cs.wisc.edu> - 1.18.24.bosco-1
+- Fixed slurm multicore requests in slurm_submit.sh
+- Added slurm_submit_attributes.sh
+- Enabled multicore support to PBS Pro (SOFTWARE-2326)
+- Allow users to set the SGE parallel environment policy (SOFTWARE-2334)
+- Fixed issues with qstat() (SOFTWARE-2358)
+
+* Tue Jul 26 2016 Edgar Fajardo <emfajard@ucsd.edu> - 1.18.23.bosco-1
+- Fixed a bug in HTConodor Ticket-5804. (SOFTWARE-2404)
+
+* Thu Jul 21 2016 Edgar Fajardo <emfajard@ucsd.edu> - 1.18.22.bosco-2
+- The code was taken from the osg-bosco instead of Edgar's fork.
+
+* Wed Jul 20 2016 Edgar Fajardo <emfajard@ucsd.edu> - 1.18.22.bosco-1
+- Merge HTCondor Ticket-5722. Cache output of slurm-status. (SOFTWARE-2399)
+
+* Thu Jun 23 2016 Brian Lin <blin@cs.wisc.edu> - 1.18.21.bosco-1
+- Fix Slurm file leak (SOFTWARE-2367)
+- Package slurm_hold.sh (SOFTWARE-2375)
+
+* Fri Jun 03 2016 Brian Lin <blin@cs.wisc.edu> - 1.18.20.bosco-1
+- Add multicore HTCondor support (SOFTWARE-2303)
+- Support dynamic assignment of env variables (SOFTWARE-2221)
+
+* Mon May 02 2016 Matyas Selmeci <matyas@cs.wisc.edu> - 1.18.19.bosco-2
+- Built against HTCondor 8.5.4 (SOFTWARE-2307)
+
+* Mon Apr 25 2016 Brian Lin <blin@cs.wisc.edu> - 1.18.19.bosco-1
+- Add SLURM support (SOFTWARE-2256)
+- Fix mem requests (SOFTWARE-2260)
+
+* Fri Feb 26 2016 Brian Lin <blin@cs.wisc.edu> - 1.18.18.bosco-1
+- Bug fixes for PBS installations without qstat in their PATH
+
+* Mon Feb 22 2016 Brian Lin <blin@cs.wisc.edu> - 1.18.17.bosco-1
+- Re-apply lost SGE script changes (SOFTWARE-2199)
+- Handle LSF suspended states (SOFTWARE-2168)
+- Modify BLAHP to report gratia necessary attributes (SOFTWARE-2019)
+
+* Thu Dec 16 2015 Brian Lin <blin@cs.wisc.edu> - 1.18.16.bosco-1
+- Allow for disabling limited proxies in glexec
+- Fix bug in pbs_status.py when /tmp/ and /var/tmp were on different filesystems
+- Resync job registry to prevent jobs from being incorrectly marked as completed
+
+* Mon Nov 23 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1.18.15.bosco-2
+- Built against HTCondor 8.5.1 SOFTWARE-2077
+
+* Wed Nov 11 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.18.15.bosco-3
+- Build against condor 8.4.2 (SOFTWARE-2084)
+
+* Mon Nov 2 2015 Edgar Fajardo <emfajard@ucsd.edu> - 1.18.15.bosco-2
+- Build aginst condor 8.4.0 (SOFTWARE-2084)
+
+* Tue Oct 27 2015 Jeff Dost <jdost@ucsd.edu> - 1.18.15.bosco-1
+- Build against HTCondor 8.4.1 (SOFTWARE-2084)
+- Added error reporting to pbs_submit
+
+* Fri Oct 23 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1.18.15.bosco-1
+- Built against HTCOndor 8.5.0 SOFTWARE-2077
+- Added error reporting to pbs_submit
+
+* Tue Sep 29 2015 Brian Lin <blin@cs.wisc.edu> - 1.18.14.bosco-1
+- Added PBS Pro support (SOFTWARE-1958)
+- Fix for job registry losing track of LSF jobs in its registry (gittrac #5062)
+- Added 'blah_disable_limited_proxies' to disable creation of limited proxies
+- Reduce 'blah_max_threaded_commands' to 50 (SOFTWARE-1980)
+
+* Mon Aug 31 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.18.13.bosco-4
+- Rebuild against HTCondor 8.3.8 (SOFTWARE-1995)
+
+* Mon Jul 20 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.18.13.bosco-3
+- bump to rebuild
+
+* Thu Jun 25 2015 Brian Lin <blin@cs.wisc.edu> - 1.18.13.bosco-2
 - Rebuild against HTCondor 8.3.6
 
-* Mon May 28 2015 Brian Lin <blin@cs.wisc.edu> - 1.18.13.bosco-1
+* Thu May 28 2015 Brian Lin <blin@cs.wisc.edu> - 1.18.13.bosco-1
 - Fixes to PBS and HTCondor submission
 
-* Mon Apr 28 2015 Brian Lin <blin@cs.wisc.edu> - 1.18.12.bosco-2
+* Tue Apr 28 2015 Brian Lin <blin@cs.wisc.edu> - 1.18.12.bosco-2
 - Rebuild against HTCondor 8.3.5
 
 * Mon Mar 30 2015 Brian Lin <blin@cs.wisc.edu> - 1.18.12.bosco-1

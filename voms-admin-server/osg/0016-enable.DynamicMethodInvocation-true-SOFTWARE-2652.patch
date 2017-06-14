@@ -1,0 +1,25 @@
+From 0253beb37d4de3f987a7d6b16e691d86596929b2 Mon Sep 17 00:00:00 2001
+From: Carl Edquist <edquist@cs.wisc.edu>
+Date: Fri, 24 Mar 2017 12:43:36 -0500
+Subject: [PATCH 16/31] enable.DynamicMethodInvocation = true (SOFTWARE-2652)
+
+change to struts.xml from 023f48442
+---
+ src/main/resources/struts.xml | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/main/resources/struts.xml b/src/main/resources/struts.xml
+index 0673ea0..5989a51 100644
+--- a/src/main/resources/struts.xml
++++ b/src/main/resources/struts.xml
+@@ -25,6 +25,7 @@
+     "http://struts.apache.org/dtds/struts-2.3.dtd">
+ <struts>
+ 
++        <constant name="struts.enable.DynamicMethodInvocation" value="true"/>
+ 	 
+ 	<constant name="struts.mapper.class" value="org.apache.struts2.dispatcher.mapper.PrefixBasedActionMapper"/>
+ 	<constant name="struts.mapper.prefixMapping" value="/apiv2:struts,/shared:struts,/rest:rest,/acl:struts,/admin:struts,/ajax:struts,/attribute:struts,/aup:struts,/configuration:struts,/group:struts,/home:struts,/register:struts,/role:struts,/search:struts,/sibling:struts,/user:struts,:struts"/>
+-- 
+2.9.4
+

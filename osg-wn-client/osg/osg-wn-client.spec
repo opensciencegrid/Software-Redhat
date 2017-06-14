@@ -1,7 +1,7 @@
 Name:      osg-wn-client
 Summary:   OSG Worker-Node Client
 Version:   3.3
-Release:   5%{?dist}
+Release:   7%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -44,6 +44,9 @@ Requires: gfal2-plugin-xrootd
 # cgsi_plugin_set_credentials, needed at runtime for gfal2-plugin-srm
 Requires: CGSI-gSOAP >= 1.3.6
 
+# Added per request on SOFTWARE-2657
+Requires: gsi-openssh-clients
+
 %description
 %{summary}
 
@@ -60,22 +63,23 @@ Requires: mkgltempdir
 %{summary}
 
 %install
+### TODO Remove this block in OSG 3.4 (SOFTWARE-1977)
+#
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/osg/wn-client/
 cat > $RPM_BUILD_ROOT%{_sysconfdir}/osg/wn-client/setup.sh << EOF
 #!/bin/sh
-
-# You no longer need to source \$OSG_GRID/setup.sh
-# However, this file has been left for backward compatibility purposes.
+# This file is no longer necessary and will be removed in OSG 3.4.
 
 EOF
+
 
 cat > $RPM_BUILD_ROOT%{_sysconfdir}/osg/wn-client/setup.csh << EOF
 #!/bin/csh
-
-# You no longer need to source \$OSG_GRID/setup.csh
-# However, this file has been left for backward compatibility purposes.
+# This file is no longer necessary and will be removed in OSG 3.4.
 
 EOF
+#
+### End block to remove in OSG 3.4
 
 mkdir -p $RPM_BUILD_ROOT%{_prefix}/etc/
 cat > $RPM_BUILD_ROOT%{_prefix}/etc/globus-user-env.sh << EOF
@@ -100,6 +104,12 @@ rm -rf $RPM_BUILD_ROOT
 %files glexec
 
 %changelog
+* Thu Apr 13 2017 Edgar Fajrdo <emfajard@ucsd.edu> 3.3-7
+- Added gsi-openssh-clients (SOFTWARE-2657)
+
+* Mon Oct 31 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 3.3-6
+- Deprecate /etc/osg/wn-client/setup.sh and setup.csh (SOFTWARE-1977)
+
 * Wed Jul 01 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.3-5
 - Require grid-certificates >= 7 (SOFTWARE-1883)
 

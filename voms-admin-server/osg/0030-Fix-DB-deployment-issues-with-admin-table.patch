@@ -1,0 +1,55 @@
+From 3dd792ab2a6f0586a3096c1aee8d7e9aa53ffcd4 Mon Sep 17 00:00:00 2001
+From: Brian Lin <brianhlin@gmail.com>
+Date: Thu, 11 May 2017 13:42:21 -0500
+Subject: [PATCH 30/31] Fix DB deployment issues with admin table
+
+---
+ resources/scripts/voms.py                  |  4 ++--
+ src/main/resources/model/VOMSAdmin.hbm.xml | 10 ++++++----
+ 2 files changed, 8 insertions(+), 6 deletions(-)
+
+diff --git a/resources/scripts/voms.py b/resources/scripts/voms.py
+index 6b51f99..24809f1 100644
+--- a/resources/scripts/voms.py
++++ b/resources/scripts/voms.py
+@@ -1127,7 +1127,7 @@ class VomsConstants:
+     oracle_dialect = "org.hibernate.dialect.Oracle9Dialect"
+     
+     mysql_driver_class = "org.gjt.mm.mysql.Driver"
+-    mysql_dialect = "org.hibernate.dialect.MySQLInnoDBDialect"
++    mysql_dialect = "org.hibernate.dialect.MySQL5InnoDBDialect"
+     
+     long_options=["help",
+               "version",
+@@ -1203,4 +1203,4 @@ class VomsConstants:
+     
+         
+ 
+-        
+\ No newline at end of file
++
+diff --git a/src/main/resources/model/VOMSAdmin.hbm.xml b/src/main/resources/model/VOMSAdmin.hbm.xml
+index c85b0b1..3661e64 100644
+--- a/src/main/resources/model/VOMSAdmin.hbm.xml
++++ b/src/main/resources/model/VOMSAdmin.hbm.xml
+@@ -33,11 +33,13 @@
+ 				<param name="sequence">VOMS_ADMIN_SEQ</param>
+ 			</generator>
+ 		</id>
+-		
+-		<property name="dn" type="string" column="dn" not-null="true" unique-key="true"/>
++
++                <natural-id>
++		  <property name="dn" type="string" column="dn" not-null="true"/>
++		  <many-to-one name="ca" column="ca" class="org.glite.security.voms.admin.persistence.model.VOMSCA" not-null="true"/>
++                </natural-id>
++
+ 		<property name="emailAddress" type="string" column="email_address"/>
+-		
+-		<many-to-one name="ca" column="ca" class="org.glite.security.voms.admin.persistence.model.VOMSCA" not-null="true" unique-key="true"/>
+     
+         <set name="tagMappings" inverse="true" cascade="all-delete-orphan">
+           <key column="admin_id" on-delete="cascade"/>
+-- 
+2.9.4
+

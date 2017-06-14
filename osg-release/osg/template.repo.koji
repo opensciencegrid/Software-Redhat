@@ -1,6 +1,6 @@
 [{YUMREPO}]
 name=OSG Software for Enterprise Linux {EL} {TITLE} $basearch
-baseurl=http://koji-hub.batlab.org/mnt/koji/repos/osg-{SERIES}-el{EL}-{REPO}/latest/$basearch/
+baseurl=http://koji.chtc.wisc.edu/mnt/koji/repos/osg-{SERIES}-el{EL}-{REPO}/latest/$basearch/
 failovermethod=priority
 priority=98
 enabled=0

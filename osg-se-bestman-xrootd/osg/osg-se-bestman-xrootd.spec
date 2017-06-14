@@ -1,7 +1,10 @@
 Name:           osg-se-bestman-xrootd
 Summary:        OSG BeStMan XRootd Storage Element package
 Version:        3.3
-Release:        2%{?dist}
+%if 0%{?el7}
+%define release_suffix _clipped
+%endif
+Release:        3%{?release_suffix}%{?dist}
 License:        GPL
 Group:          System Environment/Daemons
 URL:            https://twiki.grid.iu.edu/twiki/bin/view/Storage/WebHome
@@ -24,7 +27,9 @@ Requires: globus-gridftp-server-progs
 Requires: vo-client
 Requires: grid-certificates >= 7
 Requires: gratia-probe-gridftp-transfer
+%if ! 0%{?el7}
 Requires: gums-client
+%endif
 %ifarch %{ix86}
 Requires: liblcas_lcmaps_gt4_mapping.so.0
 %else
@@ -51,6 +56,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Nov 02 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 3.3-3
+- Omit gums-clients for EL 7
+
 * Wed Jul 01 2015 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.3-2
 - Require grid-certificates >= 7 (SOFTWARE-1883)
 

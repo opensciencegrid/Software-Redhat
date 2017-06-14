@@ -1,0 +1,52 @@
+[bbockelm@hcc-briantest gridftp_hdfs]$ git show 987c661af7401fa641659aa928bee249f20c645b
+commit 987c661af7401fa641659aa928bee249f20c645b
+Author: Brian Bockelman <bbockelm@cse.unl.edu>
+Date:   Mon Aug 24 09:06:58 2015 -0500
+
+    Make checksum name comparison non-case-sensitive.
+    Improve error message when checksum type is not found.
+
+diff --git a/src/gridftp_hdfs_cksm.c b/src/gridftp_hdfs_cksm.c
+index 972cc5e..6e9cb47 100644
+--- a/src/gridftp_hdfs_cksm.c
++++ b/src/gridftp_hdfs_cksm.c
+@@ -308,7 +308,7 @@ globus_result_t hdfs_get_checksum(hdfs_handle_t *hdfs_handle, const char * pathn
+             GenericError(hdfs_handle, "Checksum value not specified", rc);
+             break;
+         }
+-        if (strcmp(cksm, requested_cksm) == 0) {
++        if (strcasecmp(cksm, requested_cksm) == 0) {
+             *cksm_value = strdup(val);
+             break;
+         }
+@@ -323,7 +323,9 @@ globus_result_t hdfs_get_checksum(hdfs_handle_t *hdfs_handle, const char * pathn
+         }
+         ptr += 1;
+         if (*ptr == '\0') {
+-            GenericError(hdfs_handle, "Unexpected null", rc);
++            char * err_str = globus_common_create_string("Requested checksum type %s not found.", requested_cksm);
++            GenericError(hdfs_handle, err_str, rc);
++            globus_free(err_str);
+             break;
+         }
+     }
+[bbockelm@hcc-briantest gridftp_hdfs]$ git show 162de27748026704b704256a3b60125b3b032f84
+commit 162de27748026704b704256a3b60125b3b032f84
+Author: Brian Bockelman <bbockelm@cse.unl.edu>
+Date:   Mon Aug 24 10:31:46 2015 -0500
+
+    Strip mount point when verifying checksum.
+
+diff --git a/src/gridftp_hdfs.c b/src/gridftp_hdfs.c
+index 3e46f66..8800b94 100644
+--- a/src/gridftp_hdfs.c
++++ b/src/gridftp_hdfs.c
+@@ -281,7 +281,7 @@ hdfs_command(
+             break;
+         }
+         char * value = NULL;
+-        if ((result = hdfs_get_checksum(hdfs_handle, cmd_info->pathname, cmd_info->cksm_alg, &value)) != GLOBUS_SUCCESS) {
++        if ((result = hdfs_get_checksum(hdfs_handle, PathName, cmd_info->cksm_alg, &value)) != GLOBUS_SUCCESS) {
+             break;
+         }
+         if (value == NULL) {

@@ -1,26 +1,22 @@
-
 Name: xrootd-hdfs
-Version: 1.8.4
-Release: 4%{?dist}
+Version: 1.8.8
+Release: 1%{?dist}
 Summary: HDFS plugin for xrootd
 
 Group: System Environment/Development
 License: BSD
 URL: https://github.com/bbockelm/xrootd-hdfs
 # Generated from:
-# git-archive master | gzip -7 > ~/rpmbuild/SOURCES/xrootd-hdfs.tar.gz
-Source0: %{name}.tar.gz
+# git archive --format=tgz --prefix=%{name}-%{version}/ v%{version} > %{name}-%{version}.tar.gz
+Source0: %{name}-%{version}.tar.gz
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
-BuildRequires: xrootd-devel >= 4.1
-BuildRequires: xrootd-server-devel >= 4.1
+BuildRequires: xrootd-devel >= 1:4.1
+BuildRequires: xrootd-server-devel >= 1:4.1
 BuildRequires: cmake
 BuildRequires: hadoop-libhdfs >= 2.0.0+545-1.cdh4.1.1
 BuildRequires: java7-devel
 BuildRequires: jpackage-utils
-#BuildRequires: xrootd-compat-libs
-
 Requires: hadoop-client >= 2.0.0+545-1.cdh4.1.1
-#Requires: xrootd-compat-libs
 Conflicts: xrootd < 3.0.3-1
 
 %package devel
@@ -34,7 +30,7 @@ Group: System Environment/Development
 %{summary}
 
 %prep
-%setup -q -c -n %{name}-%{version}
+%setup -q
 
 %build
 %cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo .
@@ -74,6 +70,22 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/XrdHdfs.hh
 
 %changelog
+* Thu Jul 21 2016 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1.8.8-1
+- Use native libraries (SOFTWARE-2387)
+- Built from Brian's git repo 
+
+* Thu Jul 21 2016 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1.8.8-0.1
+- Use native libraries (SOFTWARE-2387)
+
+* Mon Feb 22 2016 Carl Edquist <edquist@cs.wisc.edu> - 1.8.7-2
+- Rebuild against hadoop-2.0.0+1612 (SOFTWARE-2161)
+
+* Wed Jan 20 2016 Carl Edquist <edquist@cs.wisc.edu> - 1.8.7-1
+- EL7 build fixes (SOFTWARE-2162)
+
+* Tue Jan 5 2016 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1.8.6-1
+- Add support for non-world-readable files.
+
 * Tue Feb 24 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1.8.4-4
 - Remove xrootd-compat-libs not necessary 
 - Removed xrootd4 requirements

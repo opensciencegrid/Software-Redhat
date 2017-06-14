@@ -1,0 +1,121 @@
+From a1defc71ed71fe32cf8b9f7a486ab563a8ee0856 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Wed, 18 Nov 2015 13:44:22 -0600
+Subject: [PATCH] Remove ReSS support (SOFTWARE-2104)
+
+---
+ gip/lib/python/gip_osg.py | 32 ++------------------------------
+ 1 file changed, 2 insertions(+), 30 deletions(-)
+
+diff --git a/gip/lib/python/gip_osg.py b/gip/lib/python/gip_osg.py
+index f937ef0..493c331 100644
+--- a/gip/lib/python/gip_osg.py
++++ b/gip/lib/python/gip_osg.py
+@@ -25,16 +25,12 @@ dcache_sec = 'dcache'
+ lsf_sec = 'LSF'
+ cream_sec = 'CREAM'
+ slurm_sec = 'SLURM'
+ gateway_sec = 'Gateway'
+ 
+-default_osg_ress_servers = \
+-    "https://osg-ress-1.fnal.gov:8443/ig/services/CEInfoCollector[OLD_CLASSAD]"
+ default_osg_bdii_servers = \
+     "http://is1.grid.iu.edu:14001[RAW], http://is2.grid.iu.edu:14001[RAW]"
+-default_itb_ress_servers = \
+-    "https://osg-ress-4.fnal.gov:8443/ig/services/CEInfoCollector[OLD_CLASSAD]"
+ # We have a way to distinguish ITB from OSG sites so they don't need to go
+ # to a separate server (SOFTWARE-1406):
+ default_itb_bdii_servers = default_osg_bdii_servers
+ 
+ def cp_getInt(cp, section, option, default):
+@@ -349,11 +345,10 @@ def configOsg(cp):
+     __write_config(gip_sec, "dynamic_dcache", se, "dynamic_dcache")
+     __write_config(gip_sec, "srm", se, "srm_present")
+     __write_config(gip_sec, "advertise_gums", site, "advertise_gums")
+     __write_config(gip_sec, "other_ces", cluster, "other_ces")
+     __write_config(gip_sec, "bdii_endpoints", "gip", "bdii_endpoints")
+-    __write_config(gip_sec, "ress_endpoints", "gip", "ress_endpoints")
+ 
+     cluster_name = cp_get(cp2, gip_sec, "cluster_name", "")
+     if len(cluster_name) > 0:
+         __write_config(gip_sec, "cluster_name", cluster, "name")
+         cp2.set(gip_sec, "simple_cluster", "False")
+@@ -663,12 +658,12 @@ def configSEs(cp, cp2):
+ info_re = re.compile("(https?)://([a-zA-Z0-9\-.]+):([0-9]+)(.*)\[(.*)\]")
+ def config_info(ocp, gcp):
+     """
+     Configure the information services.  Right now, this means that we look at
+     and configure the CEMon or Info Services section from config.ini to
+-    determine the BDII and ReSS endpoints.  We then save this to the [GIP]
+-    configuration section in the bdii_endpoints and ress_endpoints attributes.
++    determine the BDII endpoints.  We then save this to the [GIP]
++    configuration section in the bdii_endpoints attribute.
+ 
+     If all else fails, we default to the OSG servers
+     """
+ 
+     log.debug("Starting to configure information service endpoints")
+@@ -680,11 +675,10 @@ def config_info(ocp, gcp):
+         override = gcp.getboolean("gip", "override")
+     except:
+         override = False
+ 
+ 
+-    ress_endpoints = []
+     bdii_endpoints = []
+ 
+     # In OSG 3.1, the osg config section is [Cemon]; in 3.2 it's [Info Services]
+     # since we are replacing CEMon with OSG-Info-Services.
+     info_section = "Cemon"
+@@ -706,29 +700,15 @@ def config_info(ocp, gcp):
+         if not name_str:
+             name_str = default
+         return parse_endpoints(name_str)
+ 
+     # These are the default endpoints
+-    osg_ress_servers = get_endpoints(ocp, "osg-ress-servers",
+-                                     default_osg_ress_servers)
+     osg_bdii_servers = get_endpoints(ocp, "osg-bdii-servers",
+                                      default_osg_bdii_servers)
+-    itb_ress_servers = get_endpoints(ocp, "itb-ress-servers",
+-                                     default_itb_ress_servers)
+     itb_bdii_servers = get_endpoints(ocp, "itb-bdii-servers",
+                                      default_itb_bdii_servers)
+ 
+-    # See if the admins set something by hand; if not, go to the correct
+-    # endpoint depending on the grid.
+-    ress_servers = cp_get(ocp, info_section, "ress_servers", "UNAVAILABLE")
+-    ress_servers = parse_endpoints(ress_servers)
+-    if not ress_servers:
+-        if is_osg:
+-            ress_servers = osg_ress_servers
+-        else:
+-            ress_servers = itb_ress_servers
+-
+     bdii_servers = cp_get(ocp, info_section, "bdii_servers", "UNAVAILABLE")
+     bdii_servers = parse_endpoints(bdii_servers)
+     if not bdii_servers:
+         if is_osg:
+             bdii_servers = osg_bdii_servers
+@@ -745,18 +725,10 @@ def config_info(ocp, gcp):
+         log.info("Configured BDII endpoints: %s." % ", ".join(bdii_servers))
+     else:
+         log.info("Previously configured BDII endpoints: %s." % \
+             ", ".join(gip_bdii_servers))
+ 
+-    gip_ress_servers = cp_get(gcp, "gip", "ress_endpoints", None)
+-    if (ress_servers and override) or (ress_servers and not gip_ress_servers):
+-        gcp.set("gip", "ress_endpoints", ", ".join(ress_servers))
+-        log.info("Configured ReSS endpoints: %s." % ", ".join(ress_servers))
+-    else:
+-        log.info("Previously configured ReSS endpoints: %s." % \
+-            ", ".join(gip_ress_servers))
+-
+ def getSiteName(cp):
+     siteName = cp_get(cp, site_sec, "resource_group", "UNKNOWN")
+     if siteName == "UNKNOWN":
+         siteName = cp_get(cp, site_sec, "site_name", "UNKNOWN")
+     if siteName == "UNKNOWN":
+-- 
+2.6.3
+

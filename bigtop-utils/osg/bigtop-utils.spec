@@ -1,7 +1,10 @@
-%define bigtop_utils_version 0.4+300
-%define bigtop_utils_patched_version 0.4-cdh4.0.1
-%define bigtop_utils_base_version 0.4
-%define bigtop_utils_release 1.cdh4.0.1.p0.3%{?dist}
+ 
+%define bigtop_utils_version 0.6.0+248 
+%define bigtop_utils_patched_version 0.6.0-cdh4.7.1 
+%define bigtop_utils_base_version 0.6.0 
+%define bigtop_utils_release 1.cdh4.7.1.p0.13.1%{?dist}
+%define cdh_customer_patch p0 
+%define cdh_parcel_custom_version 0.6.0+248-1.cdh4.7.1.p0.13.1%{?dist}
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
@@ -17,27 +20,34 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# See BIGTOP-383
-%if  %{?suse_version:1}0
-%define _libexecdir /usr/lib/bigtop-utils/
-%endif
+%define lib_dir /usr/lib/bigtop-utils
 
 Name: bigtop-utils
 Version: %{bigtop_utils_version}
 Release: %{bigtop_utils_release}
-Summary:	Collection of useful tools for Bigtop
+Summary: Collection of useful tools for Bigtop
 
-Group:		Applications/Engineering
-License:	APL2
-URL:		http://incubator.apache.org/bigtop/
-Source0:	bigtop-detect-javahome
-Source1:	LICENSE
+Group:      Applications/Engineering
+License:    APL2
+URL:        http://bigtop.apache.org/
+BuildRoot:  %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
+BuildArch:  noarch
+Source0:    bigtop-detect-javahome
+Source1:    LICENSE
 Source2:    bigtop-utils.default
-Patch0:     detect-javahome-jdk1.7.patch
+Source3:    bigtop-detect-javalibs
 
-BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
+Patch0:     bigtop-detect-javahome.patch
 
-BuildArch: noarch
+Requires:   bash
+
+# "which" command is needed for a lot of projects.
+# It is part of the package "util-linux" on suse and "which" everywhere else
+%if  %{?suse_version:1}0
+Requires:  util-linux
+%else
+Requires:       which
+%endif
 
 %description
 This includes a collection of useful tools and files for Bigtop
@@ -48,16 +58,18 @@ This includes a collection of useful tools and files for Bigtop
 install -p -m 644 %{SOURCE0} .
 install -p -m 644 %{SOURCE1} .
 install -p -m 644 %{SOURCE2} .
+install -p -m 644 %{SOURCE3} .
 %patch0 -p1
 
 %build
 
 
 %install
-install -d -p -m 755 $RPM_BUILD_ROOT%{_libexecdir}/
+install -d -p -m 755 $RPM_BUILD_ROOT%{lib_dir}/
 install -d -p -m 755 $RPM_BUILD_ROOT/etc/default
-install -p -m 755 bigtop-detect-javahome $RPM_BUILD_ROOT%{_libexecdir}/
-install -p -m 644 bigtop-utils.default $RPM_BUILD_ROOT/etc/default/bigtop-utils
+install -p -m 755 bigtop-detect-javahome $RPM_BUILD_ROOT%{lib_dir}/
+install -p -m 755 bigtop-detect-javalibs $RPM_BUILD_ROOT%{lib_dir}/
+install -p -m 644 bigtop-utils.default   $RPM_BUILD_ROOT/etc/default/bigtop-utils
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -68,13 +80,10 @@ rm -rf $RPM_BUILD_ROOT
 %doc LICENSE
 %config(noreplace) /etc/default/bigtop-utils
 
-%{_libexecdir}/bigtop-detect-javahome
+%{lib_dir}
 
 %changelog
-* Fri Jul 12 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 0.4+300-1.cdh4.0.1.p0.3
-- Fix spec file so patches script ends up in RPM
 
-* Tue May 28 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 0.4+300-1.cdh4.0.1.p0.2
-- Patch for bigtop-detect-javahome to detect OpenJDK 7
-
+* Mon Jun 27 2016 Carl Edquist <edquist@cs.wisc.edu> 0.6.0+248-1.cdh4.7.1.p0.13.1
+- prefer /etc/alternatives for JAVA_HOME, then JAVA7 (SOFTWARE-2304)
 

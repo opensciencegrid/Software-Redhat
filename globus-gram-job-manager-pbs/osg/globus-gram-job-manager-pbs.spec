@@ -8,8 +8,8 @@
 
 Name:		globus-gram-job-manager-pbs
 %global _name %(tr - _ <<< %{name})
-Version:	2.4
-Release:	2.1%{?dist}
+Version:	2.5
+Release:	1.1%{?dist}
 Summary:	Globus Toolkit - PBS Job Manager Support
 
 Group:		Applications/Internet
@@ -144,7 +144,6 @@ install -m 644 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/globus/gram/pbs.rvf
 # Remove license file from pkgdocdir if licensedir is used
 %{?_licensedir: rm %{buildroot}%{_pkgdocdir}/GLOBUS_LICENSE}
 
-
 %clean
 rm -rf %{buildroot}
 
@@ -217,8 +216,17 @@ fi
 %config(noreplace) %{_sysconfdir}/globus/scheduler-event-generator/available/pbs
 
 %changelog
-* Wed Feb 11 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 2.4-2.1.osg
+* Tue Feb 09 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.5-1.1
 - Merge OSG changes
+
+* Thu Jan 21 2016 Mattias Ellert <mattias.ellert@fysast.uu.se> - 2.5-1
+- GT6 update (Fix issue parsing torque v5.1.2 logs in SEG)
+
+* Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.4-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
+
+* Wed Jun 03 2015 Jitka Plesnikova <jplesnik@redhat.com> - 2.4-3
+- Perl 5.22 rebuild
 
 * Fri Jan 23 2015 Mattias Ellert <mattias.ellert@fysast.uu.se> - 2.4-2
 - Implement updated license packaging guidelines
@@ -241,7 +249,7 @@ fi
 - Fix error in SOFTWARE-1162 patch if jobid started with 0
 
 * Mon May 26 2014 Brent Baude <baude@us.ibm.com> - 1.6-8
-- Changing ppc64 arch to power64 macro
+- Replace arch def of ppc64 with power64 macro for ppc64le enablement
 
 * Thu Jan 09 2014 Mattias Ellert <mattias.ellert@fysast.uu.se> - 1.6-7
 - Fix logfile location
