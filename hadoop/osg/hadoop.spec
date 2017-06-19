@@ -1,7 +1,7 @@
 %define hadoop_version 2.0.0+1612
 %define hadoop_patched_version 2.0.0-cdh4.7.1
 %define hadoop_base_version 2.0.0
-%define hadoop_release 1.cdh4.7.1.p0.12.6%{?dist}
+%define hadoop_release 1.cdh4.7.1.p0.12.7%{?dist}
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
@@ -205,6 +205,8 @@ Patch17: gridmix.patch
 Patch18: unistd.patch
 Patch19: HDFS-10193.patch
 Patch20: 2588-out-of-quota-msg.patch
+# Patch from HDFS-4882 with supporting changes to INode and INodeFile classes
+Patch21: HDFS-4882.patch
 
 Buildroot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id} -u -n)
 BuildRequires: python >= 2.4
@@ -650,6 +652,7 @@ popd
 %patch18 -p1
 %patch19 -p1
 %patch20 -p1
+%patch21 -p0
 
 %build
 # This assumes that you installed Java JDK 6 and set JAVA_HOME
@@ -1095,6 +1098,9 @@ fi
 
 
 %changelog
+* Fri Jun 16 2017 Brian Lin <blin@cs.wisc.edu> - 2.0.0+1612-1.cdh4.7.1.p0.12.7
+- Add HDFS-4882.patch to fix a NameNode infinite loop (SOFTWARE-2775)
+
 * Tue Feb 21 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.0.0+1612-1.cdh4.7.1.p0.12.6
 - Add 2588-out-of-quota-msg.patch to fix error message when diskspace quota is exceeded (SOFTWARE-2588)
 - Fix SELinux build error on EL7 due to excessive pickiness about .te file names
