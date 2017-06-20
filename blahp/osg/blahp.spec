@@ -5,7 +5,7 @@
 
 Name:		blahp
 Version:	1.18.29.bosco
-Release:	3%{?gitrev:.%{gitrev}}%{?dist}
+Release:	4%{?gitrev:.%{gitrev}}%{?dist}
 Summary:	gLite BLAHP daemon
 
 Group:		System/Libraries
@@ -183,6 +183,9 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Tue Jun 20 2017 Carl Edquist <edquist@cs.wisc.edu> - 1.18.29.bosco-4
+- Rebuild against condor-8.7.2
+
 * Thu Mar 16 2017 Brian Lin <blin@cs.wisc.edu> - 1.18.29.bosco-2
 - Rebuild against condor-8.7.1
 
