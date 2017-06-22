@@ -5,7 +5,7 @@
     . /etc/sysconfig/globus-gridftp-server
 
 exec /usr/sbin/globus-gridftp-server \
-    -c /etc/gridftp.conf \
+    -c $conf \
     -C /etc/gridftp.d \
     -pidfile /var/run/globus-gridftp-server.pid
 
