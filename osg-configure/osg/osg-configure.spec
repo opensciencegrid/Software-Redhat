@@ -186,9 +186,7 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/osg_configure/configure_modules/legacysettings.py*
 %{python_sitelib}/osg_configure/configure_modules/localsettings.py*
 %{python_sitelib}/osg_configure/configure_modules/lsf.py*
-%{python_sitelib}/osg_configure/configure_modules/managedfork.py*
 %{python_sitelib}/osg_configure/configure_modules/misc.py*
-%{python_sitelib}/osg_configure/configure_modules/network.py*
 %{python_sitelib}/osg_configure/configure_modules/pbs.py*
 %{python_sitelib}/osg_configure/configure_modules/rsv.py*
 %{python_sitelib}/osg_configure/configure_modules/sge.py*
