@@ -1,7 +1,7 @@
 Summary: Package for OSG-Configure and associated scripts
 Name: osg-configure
 Version: 1.8.1
-Release: 2%{?dist}
+Release: 3%{?dist}
 Source0: %{name}-%{version}.tar.gz
 Patch0: fix-host-port-test.patch
 License: Apache 2.0
@@ -10,7 +10,6 @@ Prefix: %{_prefix}
 BuildArch: noarch
 Url: https://github.com/opensciencegrid/osg-configure
 Provides: configure-osg
-Requires: condor-python
 
 
 %define gateway_ini %_sysconfdir/osg/config.d/10-gateway.ini
@@ -171,6 +170,7 @@ Group: Grid
 Provides: configure-osg-infoservices
 Requires: %name = %version-%release
 Requires: %name-gip
+Requires: condor-python
 %description infoservices
 This package includes the ini file for configuring the osg info services using osg-configure
 
@@ -223,7 +223,34 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root)
-%{python_sitelib}/*
+%{python_sitelib}/osg_configure-%{version}-*.egg-info
+%{python_sitelib}/osg_configure/__init__.py*
+%{python_sitelib}/osg_configure/configure_modules/__init__.py*
+%{python_sitelib}/osg_configure/configure_modules/bosco.py*
+%{python_sitelib}/osg_configure/configure_modules/condor.py*
+%{python_sitelib}/osg_configure/configure_modules/gateway.py*
+%{python_sitelib}/osg_configure/configure_modules/gratia.py*
+%{python_sitelib}/osg_configure/configure_modules/installlocations.py*
+%{python_sitelib}/osg_configure/configure_modules/legacysettings.py*
+%{python_sitelib}/osg_configure/configure_modules/localsettings.py*
+%{python_sitelib}/osg_configure/configure_modules/lsf.py*
+%{python_sitelib}/osg_configure/configure_modules/managedfork.py*
+%{python_sitelib}/osg_configure/configure_modules/misc.py*
+%{python_sitelib}/osg_configure/configure_modules/network.py*
+%{python_sitelib}/osg_configure/configure_modules/pbs.py*
+%{python_sitelib}/osg_configure/configure_modules/rsv.py*
+%{python_sitelib}/osg_configure/configure_modules/sge.py*
+%{python_sitelib}/osg_configure/configure_modules/siteattributes.py*
+%{python_sitelib}/osg_configure/configure_modules/slurm.py*
+%{python_sitelib}/osg_configure/configure_modules/squid.py*
+%{python_sitelib}/osg_configure/configure_modules/storage.py*
+%{python_sitelib}/osg_configure/modules/__init__.py*
+%{python_sitelib}/osg_configure/modules/baseconfiguration.py*
+%{python_sitelib}/osg_configure/modules/configfile.py*
+%{python_sitelib}/osg_configure/modules/exceptions.py*
+%{python_sitelib}/osg_configure/modules/jobmanagerconfiguration.py*
+%{python_sitelib}/osg_configure/modules/utilities.py*
+%{python_sitelib}/osg_configure/modules/validation.py*
 /usr/sbin/*
 %ghost /var/log/osg/osg-configure.log
 %ghost /var/lib/osg/osg-attributes.conf
@@ -296,6 +323,10 @@ rm -rf $RPM_BUILD_ROOT
 %files infoservices
 %defattr(-,root,root)
 %config(noreplace) %{_sysconfdir}/osg/config.d/30-infoservices.ini
+%{python_sitelib}/osg_configure/configure_modules/infoservices.py*
+%{python_sitelib}/osg_configure/modules/resourcecatalog.py*
+%{python_sitelib}/osg_configure/modules/reversevomap.py*
+%{python_sitelib}/osg_configure/modules/subcluster.py*
 
 %files tests
 %defattr(-,root,root)
@@ -334,6 +365,9 @@ fi
 
 
 %changelog
+* Thu Jun 22 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 1.8.1-3
+- Only bring in condor-python with osg-configure-infoservices (SOFTWARE-2757)
+
 * Fri Jun 02 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 1.8.1-2
 - Add fix-host-port-test.patch
 
