@@ -1,6 +1,7 @@
 Name:           gridftp-dsi-posix
+Epoch:          1
 Version:        1.4
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        DSI library and POSIX preload
 Group:          System Environment/Daemons
 License:        Stanford (modified BSD with advert clause)
@@ -15,7 +16,9 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-root
 BuildRequires:  globus-common-devel globus-gridftp-server-devel zlib-devel
 
 Obsoletes: xrootd-dsi < 3.0.5
-Provides: xrootd-dsi
+Obsoletes: xrootd-dsi%{_isa} < 3.0.5
+Provides: xrootd-dsi = %{epoch}:%{version}
+Provides: xrootd-dsi%{_isa} = %{epoch}:%{version}
 
 Requires: xrootd-client >= 1:4.0.0
 Requires: xrootd-libs >= 1:4.0.0
@@ -60,6 +63,10 @@ install -m 644 libglobus_gridftp_server_posix.so $RPM_BUILD_ROOT%{_libdir}
 %{_libdir}/libglobus_gridftp_server_posix.so
 
 %changelog
+* Thu Jun 22 2017 Brian Lin <blin@cs.wisc.edu> - 1:1.4-2
+- Added architecture-specific provides for xrootd-dsi
+- Refer to gridftp-dsi-posix paths in globus-gridftp-server-plugin
+
 * Wed Jun 21 2017 Brian Lin <blin@cs.wisc.edu> - 1.4-1
 - Add support to GLOBUS_GFS_CMD_SITE_RDEL
 - Add GRIDFTP_APPEND_XROOTD_CGI hook (environment variable) to support Xrootd space token.
