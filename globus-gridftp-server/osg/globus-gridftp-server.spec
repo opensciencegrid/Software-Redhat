@@ -13,7 +13,7 @@
 Name:		globus-gridftp-server
 %global _name %(tr - _ <<< %{name})
 Version:	11.8
-Release:	1.1%{?dist}
+Release:	1.2%{?dist}
 Summary:	Globus Toolkit - Globus GridFTP Server
 
 Group:		System Environment/Libraries
@@ -303,6 +303,9 @@ fi
 %{_libdir}/pkgconfig/%{name}.pc
 
 %changelog
+* Fri Jun 23 2017 Brian Lin <blin@cs.wisc.edu> - 11.8-1.2.osg
+- Use the correct configuration file when using plugins (SOFTWARE-2645)
+
 * Thu Dec 22 2016 Carl Edquist <edquist@cs.wisc.edu> - 11.8-1.1.osg
 - Merge OSG changes (SOFTWARE-2436 related)
 

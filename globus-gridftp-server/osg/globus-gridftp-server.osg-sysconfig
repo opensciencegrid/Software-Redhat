@@ -12,6 +12,9 @@ export LLGT_LIFT_PRIVILEGED_PROTECTION=1
 #  4: also info, 5: maximum debug
 export LCMAPS_DEBUG_LEVEL=2
 
+# Allow plugins to override the config location (SOFTWARE-2645)
+export conf=/etc/gridftp.conf
+
 # Disable SSLv3
 export GLOBUS_GSSAPI_FORCE_TLS=true
 
@@ -25,7 +28,7 @@ if [ -e /etc/sysconfig/globus-gridftp-server ]; then
     . /etc/sysconfig/globus-gridftp-server
 fi
 
-# Source gridftp plugin environment (e.g. gridftp-hdfs or xrootd-dsi), if any
+# Source gridftp plugin environment (e.g. gridftp-hdfs or gridftp-dsi-posix), if any
 if [ -e /usr/share/osg/sysconfig/globus-gridftp-server-plugin ]; then
     .  /usr/share/osg/sysconfig/globus-gridftp-server-plugin
 fi
