@@ -4,8 +4,8 @@
 %define bl_libexecdir %{_libexecdir}/%{name}
 
 Name:		blahp
-Version:	1.18.29.bosco
-Release:	3%{?gitrev:.%{gitrev}}%{?dist}
+Version:	1.18.30.bosco
+Release:	1%{?gitrev:.%{gitrev}}%{?dist}
 Summary:	gLite BLAHP daemon
 
 Group:		System/Libraries
@@ -183,6 +183,9 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Thu Mar 16 2017 Brian Lin <blin@cs.wisc.edu> - 1.18.30.bosco-1
+- Fix multicore request for SLURM batch systems (SOFTWARE-2774)
+
 * Thu Mar 16 2017 Brian Lin <blin@cs.wisc.edu> - 1.18.29.bosco-2
 - Rebuild against condor-8.7.1
 
