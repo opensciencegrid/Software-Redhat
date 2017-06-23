@@ -4,7 +4,7 @@
 %define bl_libexecdir %{_libexecdir}/%{name}
 
 Name:		blahp
-Version:	1.18.29.bosco
+Version:	1.18.30.bosco
 Release:	1%{?gitrev:.%{gitrev}}%{?dist}
 Summary:	gLite BLAHP daemon
 
@@ -183,6 +183,9 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Thu Mar 16 2017 Brian Lin <blin@cs.wisc.edu> - 1.18.30.bosco-1
+- Fix multicore request for SLURM batch systems (SOFTWARE-2774)
+
 * Thu Feb 23 2017 Brian Lin <blin@cs.wisc.edu> - 1.18.29.bosco-1
 - Blahp python scripts should ignore optional '-w' argument (SOFTWARE-2603)
 - Fail gracefully when encountering unexpected sacct output (SOFTWARE-2604)
