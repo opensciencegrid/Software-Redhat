@@ -1,6 +1,6 @@
 Name:      condor-cron
-Version:   1.1.1
-Release:   2%{?dist}
+Version:   1.1.2
+Release:   1%{?dist}
 Summary:   A framework to run cron-style jobs within Condor
 
 Group:     Applications/System
@@ -188,6 +188,9 @@ fi
 
 
 %changelog
+* Fri Jun 23 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 1.1.2-1
+- Don't send email on service restart (SOFTWARE-2766)
+
 * Tue Sep 20 2016 Mátyás Selmeci <matyas@cs.wisc.edu> 1.1.1-2
 - On EL7, use systemd commands in the scriptlets (SOFTWARE-2439)
 
