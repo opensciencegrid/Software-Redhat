@@ -8,7 +8,7 @@
 
 Name:      rsv
 Summary:   RSV Meta Package
-Version:   3.14.0
+Version:   3.14.1
 Release:   1%{?dist}
 License:   Apache 2.0
 Group:     Applications/Monitoring
@@ -281,6 +281,9 @@ fi
 
 
 %changelog
+* Mon Jun 26 2017 Carl Edquist <edquist@cs.wisc.edu> - 3.14.1-1
+- Fix parsing of condor_cron_q output (SOFTWARE-2782)
+
 * Mon Nov 07 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.14.0-1
 - Add systemd service file (SOFTWARE-2498)
 
