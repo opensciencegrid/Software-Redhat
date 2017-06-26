@@ -33,7 +33,7 @@
 
 Summary: Application and environment virtualization
 Name: singularity
-Version: 2.3
+Version: 2.3.1
 Release: %{_rel}%{?dist}
 # https://spdx.org/licenses/BSD-3-Clause-LBNL.html
 License: BSD-3-Clause-LBNL
@@ -122,7 +122,6 @@ rm -rf $RPM_BUILD_ROOT
 #SUID programs
 %attr(4755, root, root) %{_libexecdir}/singularity/bin/action-suid
 %attr(4755, root, root) %{_libexecdir}/singularity/bin/create-suid
-%attr(4755, root, root) %{_libexecdir}/singularity/bin/copy-suid
 %attr(4755, root, root) %{_libexecdir}/singularity/bin/expand-suid
 %attr(4755, root, root) %{_libexecdir}/singularity/bin/export-suid
 %attr(4755, root, root) %{_libexecdir}/singularity/bin/import-suid
@@ -166,6 +165,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Mon Jun 26 2017 Dave Dykstra <dwd@fbak,giv> - 2.3.1-0.1
+- Update to upstream's singularity-2.3.1-0.1 singularity.spec
+
 * Thu Jun  1 2017 Dave Dykstra <dwd@fbak,giv> - 2.3-0.1
 - Update to upstream's singularity-2.3-0.1 singularity.spec
 
