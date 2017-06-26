@@ -8,7 +8,7 @@
 
 Name:      rsv
 Summary:   RSV Meta Package
-Version:   3.14.0
+Version:   3.14.1
 Release:   2%{?dist}
 License:   Apache 2.0
 Group:     Applications/Monitoring
@@ -299,6 +299,9 @@ fi
 
 
 %changelog
+* Mon Jun 26 2017 Carl Edquist <edquist@cs.wisc.edu> - 3.14.1-1
+- Fix parsing of condor_cron_q output (SOFTWARE-2782)
+
 * Tue May 23 2017 Carl Edquist <edquist@cs.wisc.edu> - 3.14.0-2
 - Drop bestman2 and globus run deps & metrics (SOFTWARE-2733)
 
