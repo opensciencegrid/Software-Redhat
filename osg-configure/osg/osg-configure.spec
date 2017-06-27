@@ -1,9 +1,8 @@
 Summary: Package for OSG-Configure and associated scripts
 Name: osg-configure
-Version: 2.0.0
-Release: 4%{?dist}
+Version: 2.1.0
+Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
-Patch0: fix-host-port-test.patch
 License: Apache 2.0
 Group: Grid
 Prefix: %{_prefix}
@@ -153,7 +152,6 @@ This package includes the ini file for configuring the job gateway
 
 %prep
 %setup
-%patch0 -p1
 
 %build
 %{__python} setup.py build
@@ -198,6 +196,7 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/osg_configure/modules/baseconfiguration.py*
 %{python_sitelib}/osg_configure/modules/configfile.py*
 %{python_sitelib}/osg_configure/modules/exceptions.py*
+%{python_sitelib}/osg_configure/modules/gums_supported_vos.py*
 %{python_sitelib}/osg_configure/modules/jobmanagerconfiguration.py*
 %{python_sitelib}/osg_configure/modules/utilities.py*
 %{python_sitelib}/osg_configure/modules/validation.py*
@@ -285,6 +284,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Jun 27 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 2.1.0-1
+- Use GUMS JSON interface (SOFTWARE-2482)
+- Drop fix-host-port-test.patch (upstream)
+
 * Thu Jun 22 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 2.0.0-4
 - Only bring in condor-python with osg-configure-infoservices (SOFTWARE-2757)
 
