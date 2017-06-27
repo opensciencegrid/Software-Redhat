@@ -1,7 +1,7 @@
 Summary: Package for OSG-Configure and associated scripts
 Name: osg-configure
 Version: 2.1.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
 Group: Grid
@@ -284,7 +284,7 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Tue Jun 27 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 2.1.0-1
+* Tue Jun 27 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 2.1.0-2
 - Use GUMS JSON interface (SOFTWARE-2482)
 - Drop fix-host-port-test.patch (upstream)
 
