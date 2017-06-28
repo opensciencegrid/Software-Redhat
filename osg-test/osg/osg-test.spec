@@ -5,7 +5,7 @@
 
 Summary:   Tests an OSG Software installation
 Name:      osg-test
-Version:   1.10.1
+Version:   1.11.0
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -52,6 +52,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_sbindir}/%{name}-log-viewer
 
 %changelog
+* Wed Jun 30 2017 Brian Lin <blin@cs.wisc.edu> - 1.11.0-1
+- Use the LCMAPS VOMS plugin as the default authentication method
+- Drop BDII, osg-info-services, lcg-utils, and lfc_multilib tests
+
 * Mon Jan 30 2017 Brian Lin <blin@cs.wisc.edu> - 1.10.1-1
 - Maintain order of package list specified by param files
 - Limit condor_{ce_,}run tests to 10 minutes
