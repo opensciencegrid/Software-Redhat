@@ -2,7 +2,7 @@
 %global _release 1
 
 Name:           osg-build
-Version:        1.10.0
+Version:        1.10.1
 Release:        %{?betatag:0.}%{_release}%{?betatag}%{?dist}
 Summary:        Build tools for the OSG
 
@@ -127,6 +127,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Jun 29 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.10.1-1
+- Change goc-* promotion routes to use osg 3.4
+- Change default promotion routes to use osg 3.4
+- Drop el5 promotion route for hcc (SOFTWARE-2730)
+- Display friendlier error messages in osg-promote
+
 * Wed Jun 07 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.10.0-1
 - Drop vdt-build (SOFTWARE-2709)
 - Drop osg-build.ini (SOFTWARE-2708)
