@@ -2,7 +2,7 @@ Name: jglobus
 Summary: An implementation of Globus for Java
 License: Apache 2.0
 Version: 2.1.0
-Release: 8%{?dist}
+Release: 9%{?dist}
 URL: http://www.globus.org/toolkit/jglobus/
 Group: System Environment/Libraries
 
@@ -16,11 +16,12 @@ Group: System Environment/Libraries
 
 Source0: JGlobus-Release-2.1.0.tar.gz
 
-# jglobus-bc146 patch obtained from EPEL version of jglobus 2.1.0
-Patch0:  jglobus-bc146.patch
+# Slightly modified patch at the end of https://github.com/jglobus/JGlobus/issues/160
+# SOFTWARE-2807
+Patch0: sw2807-accept-key-usage.patch
 
-# EL5 has bouncycastle 1.45, not 1.46
-Patch1: jglobus-bc146-to-145.patch
+# jglobus-bc146 patch obtained from EPEL version of jglobus 2.1.0
+Patch1:  jglobus-bc146.patch
 
 # Posted to JGlobus github as a fix for key format issues.
 # See SOFTWARE-1607
@@ -96,10 +97,8 @@ Source7: %{name}-mvn-deps-el7.tar.gz
 %prep
 %setup -q -c -n JGlobus
 
-%if 0%{?rhel} < 7
 %patch0 -p1
-%endif
-%if 0%{?rhel} <= 5
+%if 0%{?rhel} < 7
 %patch1 -p1
 %endif
 %patch2 -p1
@@ -182,6 +181,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mavendepmapfragdir}/%{name}
 
 %changelog
+* Thu Jul 06 2017 Brian lin <blin@cs.wisc.edu> - 2.1.0-9
+- Add patch to allow proxies with key usage (SOFTWARE-2807)
+
 * Wed Jun 01 2016 Carl Edquist <edquist@cs.wisc.edu> - 2.1.0-8
 - Add patch from John Thiltges to avoid resource accumulation (SOFTWARE-2347)
 

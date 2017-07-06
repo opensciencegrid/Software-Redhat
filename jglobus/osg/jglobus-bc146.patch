@@ -805,13 +805,14 @@ index 8f24102..7ed5a08 100644
 -                } else if (oid.equals(X509Extension.keyUsage)) {
 +                } else if (oid.equals(X509Extensions.KeyUsage)) {
                      proxyKeyUsage = proxyExtension;
- 
-                     checkKeyUsage(issuer, proxyExtension);
                  }
              }
-@@ -541,11 +541,11 @@ public class X509ProxyCertPathValidator extends CertPathValidatorSpi {
-             throw new CertPathValidatorException("Proxy violation: Key usage is asserted.");
          }
+ 
+@@ -530,13 +530,13 @@ public class X509ProxyCertPathValidator extends CertPathValidatorSpi {
+             }
+         }
+ 
      }
  
      private void checkExtension(DERObjectIdentifier oid, X509Extension proxyExtension, X509Extension proxyKeyUsage) throws CertPathValidatorException {
@@ -822,6 +823,7 @@ index 8f24102..7ed5a08 100644
                  throw new CertPathValidatorException(
                          "Proxy violation: Issuer has key usage, but proxy does not");
              }
+             // If issuer has it as critical so does the proxy
 diff --git a/ssl-proxies/src/main/java/org/globus/gsi/util/CertificateIOUtil.java b/ssl-proxies/src/main/java/org/globus/gsi/util/CertificateIOUtil.java
 index c3d4ca7..00ca7d6 100644
 --- a/ssl-proxies/src/main/java/org/globus/gsi/util/CertificateIOUtil.java
