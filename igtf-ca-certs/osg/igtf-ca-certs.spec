@@ -1,5 +1,5 @@
 Name:           igtf-ca-certs
-Version:        1.83
+Version:        1.84
 Release:        1%{?dist}
 Summary:        OSG Packaging of the IGTF CA Certs, in new OpenSSL 0.9.8/1.0.0 format. For details what is in the current release, see the distribution site at http://repo.grid.iu.edu/pacman/cadist/ and change log at http://repo.grid.iu.edu/pacman/cadist/CHANGES.
 
@@ -7,7 +7,7 @@ Group:          System Environment/Base
 License:        Unknown
 URL:            http://repo.grid.iu.edu/pacman/cadist/
 
-Source0:        osg-certificates-1.63IGTFNEW.tar.gz
+Source0:        osg-certificates-1.64IGTFNEW.tar.gz
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
@@ -48,6 +48,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc
 
 %changelog
+* Thu Jul 6 2017 Zalak Shah <zsshah@iu.edu> 1.84-1
+- CA release corresponding to IGTF 1.84 release.
+
 * Wed Jun 7 2017 Zalak Shah <zsshah@iu.edu> 1.83-1
 - CA release corresponding to IGTF 1.83 release.
 
