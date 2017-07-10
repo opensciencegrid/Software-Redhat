@@ -1,6 +1,6 @@
 Name: xrootd-hdfs
 Version: 1.8.8
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: HDFS plugin for xrootd
 
 Group: System Environment/Development
@@ -17,7 +17,6 @@ BuildRequires: hadoop-libhdfs >= 2.0.0+545-1.cdh4.1.1
 BuildRequires: java7-devel
 BuildRequires: jpackage-utils
 Requires: hadoop-client >= 2.0.0+545-1.cdh4.1.1
-Conflicts: xrootd < 3.0.3-1
 
 %package devel
 Summary: Development headers for Xrootd HDFS plugin
@@ -70,6 +69,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/XrdHdfs.hh
 
 %changelog
+* Mon Jul 10 2017 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1.8.8-2
+- Remove the xrootd 3 conflicts (SOFTARE-2682)
+
 * Thu Jul 21 2016 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1.8.8-1
 - Use native libraries (SOFTWARE-2387)
 - Built from Brian's git repo 
