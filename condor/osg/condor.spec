@@ -1,4 +1,4 @@
-%define tarball_version 8.4.11
+%define tarball_version 8.4.12
 
 # optionally define any of these, here or externally
 # % define fedora   16
@@ -768,7 +768,7 @@ export CMAKE_PREFIX_PATH=/usr
 # causes build issues with EL5, don't even bother building the tests.
 
 %if %uw_build
-%define condor_build_id 394757
+%define condor_build_id 409562
 
 cmake \
        -DBUILDID:STRING=%condor_build_id \
@@ -1909,6 +1909,10 @@ fi
 %endif
 
 %changelog
+* Mon Jul 10 2017 Edgar Fajardo <emfajard@ucsd.edu> - 8.4.12-1.1
+- Can configure the condor_startd to compute free disk space once
+- New knob for paid support customer (SOFTWARE-2813)
+
 * Wed Feb 22 2017 Brian Lin <blin@cs.wisc.edu> - 8.4.11-1.1
 - HTCondor Job Router crashes if a submit requirement or job transform fails (SOFTWARE-2615)
 
