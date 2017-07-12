@@ -1,7 +1,7 @@
 Summary: Package for OSG-Configure and associated scripts
 Name: osg-configure
 Version: 1.9.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
 Group: Grid
@@ -202,6 +202,7 @@ It may safely be removed once the upgrade is finished.
 make install DESTDIR=$RPM_BUILD_ROOT
 
 mkdir -p $RPM_BUILD_ROOT/etc/condor-ce/config.d
+echo 'OSG_CONFIGURE_PRESENT=true' > $RPM_BUILD_ROOT/etc/condor-ce/config.d/50-osg-configure-present.conf  # SOFTWARE-2805
 touch $RPM_BUILD_ROOT/etc/condor-ce/config.d/50-osg-configure.conf
 mkdir -p $RPM_BUILD_ROOT/var/log/osg/
 touch $RPM_BUILD_ROOT/var/log/osg/osg-configure.log
@@ -339,6 +340,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root)
 %config(noreplace) %{_sysconfdir}/osg/config.d/10-gateway.ini
 %ghost %gateway_ini_backup
+%config(noreplace) %{_sysconfdir}/condor-ce/config.d/50-osg-configure-present.conf
 
 %files cemon
 # This section intentionally left blank
@@ -364,6 +366,9 @@ fi
 
 
 %changelog
+* Tue Jul 11 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 1.9.0-2
+- Add OSG_CONFIGURE_PRESENT sentinel (SOFTWARE-2805)
+
 * Tue Jun 27 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 1.9.0-1
 - Use GUMS JSON interface (SOFTWARE-2482)
 - Drop fix-host-port-test.patch (upstream)
