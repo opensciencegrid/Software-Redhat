@@ -1,7 +1,7 @@
 Summary: Package for OSG-Configure and associated scripts
 Name: osg-configure
 Version: 2.1.0
-Release: 2%{?dist}
+Release: 3%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
 Group: Grid
@@ -160,6 +160,7 @@ This package includes the ini file for configuring the job gateway
 make install DESTDIR=$RPM_BUILD_ROOT
 
 mkdir -p $RPM_BUILD_ROOT/etc/condor-ce/config.d
+echo 'OSG_CONFIGURE_PRESENT=true' > $RPM_BUILD_ROOT/etc/condor-ce/config.d/50-osg-configure-present.conf  # SOFTWARE-2805
 touch $RPM_BUILD_ROOT/etc/condor-ce/config.d/50-osg-configure.conf
 mkdir -p $RPM_BUILD_ROOT/var/log/osg/
 touch $RPM_BUILD_ROOT/var/log/osg/osg-configure.log
@@ -274,6 +275,7 @@ rm -rf $RPM_BUILD_ROOT
 %files gateway
 %defattr(-,root,root)
 %config(noreplace) %{_sysconfdir}/osg/config.d/10-gateway.ini
+%config(noreplace) %{_sysconfdir}/condor-ce/config.d/50-osg-configure-present.conf
 
 %files managedfork
 #blank
@@ -284,6 +286,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Jul 11 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 2.1.0-3
+- Add OSG_CONFIGURE_PRESENT sentinel (SOFTWARE-2805)
+
 * Tue Jun 27 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 2.1.0-2
 - Use GUMS JSON interface (SOFTWARE-2482)
 - Drop fix-host-port-test.patch (upstream)
