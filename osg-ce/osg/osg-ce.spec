@@ -1,31 +1,17 @@
 %global htcce osg-htcondor-ce
 %global basece osg-base-ce
+%global osgce osg-ce
 
 Name:      osg-ce
 Summary:   OSG Compute Element
 Version:   3.4
-Release:   2%{?dist}
+Release:   3%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
 
 BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
-Requires: %{htcce} = %{version}-%{release}
-
-
-%description
-%{summary}
-
-%post
-
-
-###############################################################################
-# Base subpackages
-###############################################################################
-%package -n %{basece}
-Group: Grid
-Summary: Meta-package of gateway-independent components of the OSG CE
 Requires: osg-version
 Requires: grid-certificates >= 7
 
@@ -47,7 +33,6 @@ Requires: frontier-squid
 
 # New in 3.2:
 Requires: osg-configure-infoservices
-
 # The following is required for the RSV Gratia probes to work.
 Requires: perl(Date::Manip)
 
@@ -58,218 +43,131 @@ Requires: liblcas_lcmaps_gt4_mapping.so.0
 Requires: liblcas_lcmaps_gt4_mapping.so.0()(64bit)
 %endif
 
-%description -n %{basece}
-%{summary}
-
-
-%package -n %{basece}-condor
-Group: Grid
-Summary: Gateway-less Condor meta-package for OSG-CE
-
-Requires: %{basece} = %{version}-%{release}
-Requires: gratia-probe-condor
-Requires: osg-configure-condor
-
-%description -n %{basece}-condor
-%{summary}
-
-
-%package -n %{basece}-pbs
-Group: Grid
-Summary: Gateway-less PBS meta-package for OSG-CE
-
-Requires: %{basece} = %{version}-%{release}
-Requires: gratia-probe-pbs-lsf
-Requires: osg-configure-pbs
-
-%description -n %{basece}-pbs
-%{summary}
-
-
-%package -n %{basece}-lsf
-Group: Grid
-Summary: Gateway-less LSF meta-package for OSG-CE
-
-Requires: %{basece} = %{version}-%{release}
-Requires: gratia-probe-pbs-lsf
-Requires: osg-configure-lsf
-
-%description -n %{basece}-lsf
-%{summary}
-
-
-%package -n %{basece}-sge
-Group: Grid
-Summary: Gateway-less SGE meta-package for OSG-CE
-
-Requires: %{basece} = %{version}-%{release}
-Requires: gratia-probe-sge
-Requires: osg-configure-sge
-
-%description -n %{basece}-sge
-%{summary}
-
-%package -n %{basece}-slurm
-Group: Grid
-Summary: Gateway-less SLURM meta-package for OSG-CE
-
-Requires: %{basece} = %{version}-%{release}
-Requires: gratia-probe-slurm
-Requires: osg-configure-slurm
-
-%description -n %{basece}-slurm
-%{summary}
-
-%package -n %{basece}-bosco
-Group: Grid
-Summary: Gateway-less BOSCO meta-package for OSG-CE
-
-Requires: %{basece} = %{version}-%{release}
-Requires: gratia-probe-htcondor-ce
-Requires: osg-configure-bosco
-
-%description -n %{basece}-bosco
-%{summary}
-
-
-
-###############################################################################
-# HTCondor-CE subpackages
-###############################################################################
-%package -n %{htcce}
-Group: Grid
-Summary: OSG Compute Element (HTCondor-CE-only)
-
-Requires: %{basece} = %{version}-%{release}
+# Added provides version for 3.4 (SOFTWARE-2768) can probably be removed in 3.5
+Obsoletes: %{basece} < 3.4-3
+Provides: %{basece} = %{version}-%{release}
+Obsoletes: %{htcce} < 3.4-3
+Provides: %{htcce} = %{version}-%{release}
 Requires: htcondor-ce
 
-%description -n %{htcce}
+
+%description
 %{summary}
 
+%post
 
-%package -n %{htcce}-condor
-Group: Grid
-Summary: Condor meta-package for the HTCondor-CE OSG-CE
-
-Requires: %{htcce} = %{version}-%{release}
-Requires: %{basece}-condor = %{version}-%{release}
-Requires: htcondor-ce-condor
-
-%description -n %{htcce}-condor
-%{summary}
-
-
-%package -n %{htcce}-pbs
-Group: Grid
-Summary: PBS meta-package for the HTCondor-CE OSG-CE
-Requires: %{htcce} = %{version}-%{release}
-Requires: %{basece}-pbs = %{version}-%{release}
-Requires: htcondor-ce-pbs
-
-%description -n %{htcce}-pbs
-%{summary}
-
-%package -n %{htcce}-lsf
-Group: Grid
-Summary: LSF meta-package for the HTCondor-CE OSG-CE
-Requires: %{htcce} = %{version}-%{release}
-Requires: %{basece}-lsf = %{version}-%{release}
-Requires: htcondor-ce-lsf
-
-%description -n %{htcce}-lsf
-%{summary}
-
-%package -n %{htcce}-sge
-Group: Grid
-Summary: SGE meta-package for the HTCondor-CE OSG-CE
-Requires: %{htcce} = %{version}-%{release}
-Requires: %{basece}-sge = %{version}-%{release}
-Requires: htcondor-ce-sge
-
-%description -n %{htcce}-sge
-%{summary}
-
-%package -n %{htcce}-slurm
-Group: Grid
-Summary: SLURM meta-package for the HTCondor-CE OSG-CE
-Requires: %{htcce} = %{version}-%{release}
-Requires: %{basece}-slurm = %{version}-%{release}
-Requires: htcondor-ce-slurm
-
-%description -n %{htcce}-slurm
-%{summary}
-
-%package -n %{htcce}-bosco
-Group: Grid
-Summary: Bosco meta-package for the HTCondor-CE OSG-CE
-Requires: %{htcce} = %{version}-%{release}
-Requires: %{basece}-bosco = %{version}-%{release}
-Requires: condor-bosco
-Requires: htcondor-ce-bosco
-
-%description -n %{htcce}-bosco
-%{summary}
-
-
-
-###############################################################################
-# Main (both HTCondor-CE and GRAM-CE) subpackages
-###############################################################################
 %package condor
 Group: Grid
 Summary: Condor meta-package for the OSG-CE
 
-Requires: %{name} = %{version}-%{release}
-Requires: %{htcce}-condor = %{version}-%{release}
+Requires: %{osgce} = %{version}-%{release}
+Requires: gratia-probe-condor
+Requires: osg-configure-condor
+
+# Added provides version for 3.4 (SOFTWARE-2768)                                                                                                            
+Obsoletes: %{basece}-condor < 3.4-3
+Provides: %{basece}-condor = %{version}-%{release}
+Obsoletes: %{htcce}-condor < 3.4-3
+Provides: %{htcce}-condor = %{version}-%{release}
+Requires: htcondor-ce-condor
+
+
 
 %description condor
 %{summary}
 
+
 %package pbs
 Group: Grid
 Summary: PBS meta-package for the OSG-CE
-Requires: %{name} = %{version}-%{release}
-Requires: %{htcce}-pbs = %{version}-%{release}
+
+Requires: %{osgce} = %{version}-%{release}
+Requires: gratia-probe-pbs-lsf
+Requires: osg-configure-pbs
+
+# Added provides version for 3.4 (SOFTWARE-2768)                                                                        
+Obsoletes: %{basece}-pbs < 3.4-3
+Provides: %{basece}-pbs = %{version}-%{release}
+Obsoletes: %{htcce}-pbs < 3.4-3
+Provides: %{htcce}-pbs = %{version}-%{release}
+Requires: htcondor-ce-pbs
 
 %description pbs
 %{summary}
 
+
 %package lsf
 Group: Grid
 Summary: LSF meta-package for the OSG-CE
-Requires: %{name} = %{version}-%{release}
-Requires: %{htcce}-lsf = %{version}-%{release}
+
+Requires: %{osgce} = %{version}-%{release}
+Requires: gratia-probe-pbs-lsf
+Requires: osg-configure-lsf
+
+# Added provides version for 3.4 (SOFTWARE-2768)                                                                                                            
+Obsoletes: %{basece}-lsf < 3.4-3
+Provides: %{basece}-lsf = %{version}-%{release}
+Obsoletes: %{htcce}-lsf < 3.4-3
+Provides: %{htcce}-lsf = %{version}-%{release}
+Requires: htcondor-ce-lsf
 
 %description lsf
 %{summary}
 
+
 %package sge
 Group: Grid
 Summary: SGE meta-package for the OSG-CE
-Requires: %{name} = %{version}-%{release}
-Requires: %{htcce}-sge = %{version}-%{release}
+
+Requires: %{osgce} = %{version}-%{release}
+Requires: gratia-probe-sge
+Requires: osg-configure-sge
+
+# Added provides version for 3.4 (SOFTWARE-2768)                                                                                                             
+Obsoletes: %{basece}-sge < 3.4-3
+Provides: %{basece}-sge = %{version}-%{release}
+Obsoletes: %{htcce}-sge < 3.4-3
+Provides: %{htcce}-sge = %{version}-%{release}
+Requires: htcondor-ce-sge
 
 %description sge
 %{summary}
 
 %package slurm
 Group: Grid
-Summary: Slurm meta-package for the OSG-CE
-Requires: %{name} = %{version}-%{release}
-Requires: %{htcce}-slurm = %{version}-%{release}
+Summary: SLURM meta-package for the OSG-CE
+
+Requires: %{osgce} = %{version}-%{release}
+Requires: gratia-probe-slurm
+Requires: osg-configure-slurm
+
+# Added provides version for 3.4 (SOFTWARE-2768)                                                                                                            
+Obsoletes: %{basece}-slurm < 3.4-3
+Provides: %{basece}-slurm = %{version}-%{release}
+Obsoletes: %{htcce}-slurm < 3.4-3
+Provides: %{htcce}-slurm = %{version}-%{release}
+Requires: htcondor-ce-slurm
 
 %description slurm
 %{summary}
 
 %package bosco
 Group: Grid
-Summary: Bosco meta-package for the OSG-CE
-Requires: %{name} = %{version}-%{release}
-Requires: %{htcce}-bosco = %{version}-%{release}
+Summary: Bosco meta-package for the HTCondor-CE OSG-CE
+
+Requires: %{osgce} = %{version}-%{release}
+Requires: gratia-probe-htcondor-ce
+Requires: osg-configure-bosco
+
+# Added provides version for 3.4 (SOFTWARE-2768)                                                                                                            
+Obsoletes: %{basece}-bosco < 3.4-3
+Provides: %{basece}-bosco = %{version}-%{release}
+Obsoletes: %{htcce}-bosco < 3.4-3
+Provides: %{htcce}-bosco = %{version}-%{release}
+Requires: htcondor-ce-bosco
 
 %description bosco
 %{summary}
-
 
 
 %build
@@ -281,21 +179,6 @@ exit 0
 %clean
 exit 0
 
-
-%files -n %{basece}
-%files -n %{basece}-condor
-%files -n %{basece}-pbs
-%files -n %{basece}-lsf
-%files -n %{basece}-sge
-%files -n %{basece}-slurm
-%files -n %{basece}-bosco
-%files -n %{htcce}
-%files -n %{htcce}-condor
-%files -n %{htcce}-pbs
-%files -n %{htcce}-lsf
-%files -n %{htcce}-sge
-%files -n %{htcce}-slurm
-%files -n %{htcce}-bosco
 %files
 %files condor
 %files pbs
@@ -305,6 +188,10 @@ exit 0
 %files bosco
 
 %changelog
+* Tue Jul 11 2017 Edgar Fajardo <emfajard@ucsd.edu> - 3.4-3
+- Merged osg-base-ce and osg-htcondor-ce into only one subpackages (SOFTWARE-2768)
+- Remove the osg-base-ce package
+
 * Mon May 22 2017 Brian Lin <blin@cs.wisc.edu> - 3.4-2
 - Add OSG VOMS mapfile to osg-ce (SOFTWARE-2702)
 - Drop osg-cert-scripts DOE grids interface
