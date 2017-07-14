@@ -1,7 +1,7 @@
 Name:      osg-tested-internal
 Summary:   All OSG packages we test (internal use only)
 Version:   3.3
-Release:   17%{?dist}
+Release:   18%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -30,7 +30,8 @@ Requires: gratia-probe-bdii-status
 Requires: gratia-probe-pbs-lsf
 Requires: gratia-probe-sge
 
-Requires: gsi-openssh 
+Requires: gsi-openssh-clients
+Requires: gsi-openssh-server
 
 Requires: myproxy
 Requires: myproxy-server
@@ -106,6 +107,9 @@ rm -rf $RPM_BUILD_ROOT
 %files gram
 
 %changelog
+* Fri Jul 14 2017 Edgar Fajardo <emfajard@ucsd.edu> - 3.3-18
+- Corrected the names of the gsi-ssh packages
+
 * Fri Jul 14 2017 Edgar Fajardo <emfajard@ucsd.edu> - 3.3-17
 - Add gsi-openssh (SOFTWARE-2810)
 
