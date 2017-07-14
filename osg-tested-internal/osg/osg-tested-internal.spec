@@ -26,6 +26,8 @@ Requires: gratia-probe-gridftp-transfer
 Requires: gratia-probe-pbs-lsf
 Requires: gratia-probe-sge
 
+Requires: gsi-openssh
+
 Requires: myproxy
 Requires: myproxy-server
 
@@ -35,6 +37,8 @@ Requires: htcondor-ce-condor
 Requires: htcondor-ce-view
 
 Requires: osg-ce-condor
+
+Requires: osg-gridftp
 
 Requires: torque-server
 Requires: torque-mom
@@ -50,6 +54,9 @@ Requires: xrootd-client
 Requires: voms-server
 Requires: voms-clients-cpp
 Requires: voms-mysql-plugin
+
+
+
 
 %if 0%{?rhel} == 7
 # osg-tested-internal packages in el7 don't currently pull in mysql/mariadb
@@ -69,6 +76,10 @@ rm -rf $RPM_BUILD_ROOT
 %files
 
 %changelog
+* Fri Jul 14 2017 Edgar Fajardo <emfajard@ucsd.edu> - 3.4-3
+- Add gsi-openssh (SOFTWARE-2810)
+- Add osg-gridftp (SOFTWARE-2829)
+
 * Thu May 26 2017 Brian Lin <blin@cs.wisc.edu> - 3.4-2
 - Add voms-mysql-plugin back for voms-proxy-init testing
 
