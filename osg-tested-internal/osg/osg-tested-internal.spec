@@ -1,7 +1,7 @@
 Name:      osg-tested-internal
 Summary:   All OSG packages we test (internal use only)
 Version:   3.4
-Release:   3%{?dist}
+Release:   4%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -26,7 +26,8 @@ Requires: gratia-probe-gridftp-transfer
 Requires: gratia-probe-pbs-lsf
 Requires: gratia-probe-sge
 
-Requires: gsi-openssh
+Requires: gsi-openssh-server
+Requires: gsi-openssh-clients
 
 Requires: myproxy
 Requires: myproxy-server
@@ -76,6 +77,9 @@ rm -rf $RPM_BUILD_ROOT
 %files
 
 %changelog
+* Fri Jul 14 2017 Edgar Fajardo <emfajard@ucsd.edu> - 3.4-4
+- Added the correct name of the gsi-openssh packages
+
 * Fri Jul 14 2017 Edgar Fajardo <emfajard@ucsd.edu> - 3.4-3
 - Add gsi-openssh (SOFTWARE-2810)
 - Add osg-gridftp (SOFTWARE-2829)
