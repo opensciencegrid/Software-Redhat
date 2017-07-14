@@ -1,7 +1,7 @@
 Name:      osg-tested-internal
 Summary:   All OSG packages we test (internal use only)
 Version:   3.3
-Release:   16%{?dist}
+Release:   17%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -29,6 +29,8 @@ Requires: gratia-probe-gridftp-transfer
 Requires: gratia-probe-bdii-status
 Requires: gratia-probe-pbs-lsf
 Requires: gratia-probe-sge
+
+Requires: gsi-openssh 
 
 Requires: myproxy
 Requires: myproxy-server
@@ -104,6 +106,9 @@ rm -rf $RPM_BUILD_ROOT
 %files gram
 
 %changelog
+* Fri Jul 14 2017 Edgar Fajardo <emfajard@ucsd.edu> - 3.3-17
+- Add gsi-openssh (SOFTWARE-2810)
+
 * Fri Oct 2 2016 Brian Lin <blin@cs.wisc.edu> - 3.3-16
 - Add htcondor-ce-view (SOFTWARE-2493)
 
