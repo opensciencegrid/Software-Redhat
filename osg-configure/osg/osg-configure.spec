@@ -1,7 +1,7 @@
 Summary: Package for OSG-Configure and associated scripts
 Name: osg-configure
-Version: 1.9.0
-Release: 2%{?dist}
+Version: 1.9.1
+Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
 Group: Grid
@@ -366,6 +366,12 @@ fi
 
 
 %changelog
+* Wed Jul 19 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 1.9.1-1
+- Fix logging in ensure_valid_user_vo_file (SOFTWARE-2819)
+- Configure GUMS before running gums-host-cron (SOFTWARE-2792)
+- Fix missing warnings in -v (SOFTWARE-2772)
+- Make exception usage consistent (SOFTWARE-2700)
+
 * Tue Jul 11 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 1.9.0-2
 - Add OSG_CONFIGURE_PRESENT sentinel (SOFTWARE-2805)
 
