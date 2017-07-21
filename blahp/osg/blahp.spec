@@ -4,7 +4,7 @@
 %define bl_libexecdir %{_libexecdir}/%{name}
 
 Name:		blahp
-Version:	1.18.30.bosco
+Version:	1.18.31.bosco
 Release:	1%{?gitrev:.%{gitrev}}%{?dist}
 Summary:	gLite BLAHP daemon
 
@@ -183,6 +183,9 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Tue Jul 11 2017 Brian Lin <blin@cs.wisc.edu> - 1.18.31.bosco-1
+- Add blahp configuration to differentiate PBS flavors (SOFTWARE-2628)
+
 * Thu Mar 16 2017 Brian Lin <blin@cs.wisc.edu> - 1.18.30.bosco-1
 - Fix multicore request for SLURM batch systems (SOFTWARE-2774)
 
