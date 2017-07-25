@@ -4,7 +4,7 @@
 %define bl_libexecdir %{_libexecdir}/%{name}
 
 Name:		blahp
-Version:	1.18.31.bosco
+Version:	1.18.32.bosco
 Release:	1%{?gitrev:.%{gitrev}}%{?dist}
 Summary:	gLite BLAHP daemon
 
@@ -183,6 +183,10 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Tue Jul 25 2017 Brian Lin <blin@cs.wisc.edu> - 1.18.32.bosco-1
+- Fix bug that broke shell parsing of `*_binpath` config values
+- Set default bin paths to `/usr/bin` to remove the overhead of `which` for each PBS, LSF, and SGE call.
+
 * Tue Jul 11 2017 Brian Lin <blin@cs.wisc.edu> - 1.18.31.bosco-1
 - Add blahp configuration to differentiate PBS flavors (SOFTWARE-2628)
 
