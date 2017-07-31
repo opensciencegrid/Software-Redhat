@@ -1,0 +1,29 @@
+From 045f6e7ab1f2c280424750d837f366ee7147f24b Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Mon, 31 Jul 2017 16:52:37 -0500
+Subject: [PATCH] sw2848-enable-voms-attributes-verification
+
+Always verify VOMS attributes (SOFTWARE-2848)
+---
+ src/XrdLcmaps.cc | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/XrdLcmaps.cc b/src/XrdLcmaps.cc
+index 2dfc0bc..20e9e38 100644
+--- a/src/XrdLcmaps.cc
++++ b/src/XrdLcmaps.cc
+@@ -77,10 +77,11 @@ int XrdSecgsiAuthzFun(XrdSecEntity &entity)
+    int    npgid = 0, nsgid = 0;
+ 
+    // To manage const cast issues
+    char * policy_name_copy = strdup(policy_name);
+ 
++   lcmaps_enable_voms_attributes_verification();
+    int rc = lcmaps_run_with_pem_and_return_account(
+         NULL,
+         pem_string_copy,
+         -1, // Map counter
+         NULL,
+-- 
+2.6.3
+

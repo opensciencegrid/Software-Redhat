@@ -1,7 +1,7 @@
 
 Name: xrootd-lcmaps
 Version: 1.3.3
-Release: 3%{?dist}
+Release: 4%{?dist}
 Summary: LCMAPS plugin for xrootd
 
 Group: System Environment/Daemons
@@ -10,6 +10,7 @@ URL: https://github.com/bbockelm/xrootd-lcmaps
 # Generated from:
 # git archive v%{version} --prefix=xrootd-lcmaps-%{version}/ | gzip -7 > ~/rpmbuild/SOURCES/xrootd-lcmaps-%{version}.tar.gz
 Source0: %{name}-%{version}.tar.gz
+Patch0: sw2848-enable-voms-attributes-verification.patch
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildRequires: xrootd-server-libs >= 1:4.1.0
 BuildRequires: xrootd-server-devel >= 1:4.1.0
@@ -33,6 +34,7 @@ Requires: xrootd-server >= 1:4.6.1
 %prep
 
 %setup -q
+%patch0 -p1
 
 %build
 
@@ -62,6 +64,9 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/xrootd/lcmaps.cfg
 
 %changelog
+* Mon Jul 31 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.3.3-4
+- Always enable VOMS attributes verification (SOFTWARE-2848)
+
 * Wed May 31 2017 Carl Edquist <edquist@cs.wisc.edu> - 1.3.3-3
 - Don't build 1.3.3 for EL6 (SOFTWARE-2738)
 
