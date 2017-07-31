@@ -32,14 +32,15 @@ Requires: xrootd-server >= 1:4.6.1
 
 %prep
 
+%setup -q
+
+%build
+
 %if 0%{?el6}
 echo "*** This version does not build on EL 6 ***"
 exit 1
 %endif
 
-%setup -q
-
-%build
 #cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=RelWithDebInfo .
 %cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo .
 make VERBOSE=1 %{?_smp_mflags}
