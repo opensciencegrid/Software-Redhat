@@ -5,7 +5,7 @@
 
 Summary:   Tests an OSG Software installation
 Name:      osg-test
-Version:   1.11.0
+Version:   1.11.1
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -52,6 +52,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_sbindir}/%{name}-log-viewer
 
 %changelog
+* Wed Aug 02 2017 Brian Lin <blin@cs.wisc.edu> - 1.11.1-1
+- Added SELinux policy for GSI OpenSSH
+- Added gfal2 tests against GridFTP
+- Run Travis-CI tests out of OSG 3.4 
+
 * Wed Jun 30 2017 Brian Lin <blin@cs.wisc.edu> - 1.11.0-1
 - Use the LCMAPS VOMS plugin as the default authentication method
 - Drop BDII, osg-info-services, lcg-utils, and lfc_multilib tests
