@@ -1,5 +1,5 @@
 Name: xrootd-hdfs
-Version: 1.8.8
+Version: 1.9.2
 Release: 1%{?dist}
 Summary: HDFS plugin for xrootd
 
@@ -10,14 +10,14 @@ URL: https://github.com/bbockelm/xrootd-hdfs
 # git archive --format=tgz --prefix=%{name}-%{version}/ v%{version} > %{name}-%{version}.tar.gz
 Source0: %{name}-%{version}.tar.gz
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
-BuildRequires: xrootd-devel >= 1:4.1
-BuildRequires: xrootd-server-devel >= 1:4.1
+BuildRequires: xrootd-devel >= 1:4.6
+BuildRequires: xrootd-server-devel >= 1:4.6
 BuildRequires: cmake
 BuildRequires: hadoop-libhdfs >= 2.0.0+545-1.cdh4.1.1
 BuildRequires: java7-devel
 BuildRequires: jpackage-utils
 Requires: hadoop-client >= 2.0.0+545-1.cdh4.1.1
-Conflicts: xrootd < 3.0.3-1
+Conflicts: xrootd < 4.6.0-1
 
 %package devel
 Summary: Development headers for Xrootd HDFS plugin
@@ -70,9 +70,23 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/XrdHdfs.hh
 
 %changelog
+* Wed Aug 02 2017 Marian Zvada <marian.zvada@cern.ch> - 1.9.2-1
+- Fixes a minor bug for reporting error codes when listing directories fails
+- Previously, it was possible for the error state to leak between calls to libhdfs
+
+* Sat Mar 25 2017 Brian Bockelman <bbockelm@cse.unl.edu> - 1.9.1-1
+- Fix for listing empty directories.
+
+* Fri Mar 24 2017 Brian Bockelman <bbockelm@cse.unl.edu> - 1.9.0-1
+- Implement xrootd's autostat protocol.
+- Implement per-user connection caching.
+
+* Mon Feb 27 2017 Brian Bockelman <bbockelm@cse.unl.edu> - 1.8.8-2
+- Fix empty directory listing.
+
 * Thu Jul 21 2016 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1.8.8-1
 - Use native libraries (SOFTWARE-2387)
-- Built from Brian's git repo 
+- Built from Brian's git repo
 
 * Thu Jul 21 2016 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1.8.8-0.1
 - Use native libraries (SOFTWARE-2387)
@@ -86,8 +100,11 @@ rm -rf $RPM_BUILD_ROOT
 * Tue Jan 5 2016 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1.8.6-1
 - Add support for non-world-readable files.
 
+-* Thu Sep 25 2014 Brian Bockelman <bbockelm@cse.unl.edu> - 1.8.5-1
+-- Add support for writes.
+
 * Tue Feb 24 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1.8.4-4
-- Remove xrootd-compat-libs not necessary 
+- Remove xrootd-compat-libs not necessary
 - Removed xrootd4 requirements
 
 * Tue Feb 24 2015 Edgar Fajardo <efajardo@physics.ucsd.edu> - 1.8.4-3
