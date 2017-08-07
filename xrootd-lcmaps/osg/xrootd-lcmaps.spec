@@ -1,7 +1,7 @@
 
 Name: xrootd-lcmaps
-Version: 1.3.3
-Release: 4%{?dist}
+Version: 1.3.4
+Release: 1%{?dist}
 Summary: LCMAPS plugin for xrootd
 
 Group: System Environment/Daemons
@@ -64,6 +64,9 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/xrootd/lcmaps.cfg
 
 %changelog
+* Mon Aug 07 2017 Marian Zvada <marian.zvada@cern.ch> - 1.3.4-1
+- includes cleanup of various OpesnSSL-related bugs from 1.3.4 github tag
+
 * Mon Jul 31 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.3.3-4
 - Always enable VOMS attributes verification (SOFTWARE-2848)
 
