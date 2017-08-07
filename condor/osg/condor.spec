@@ -123,7 +123,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.1
+%define condor_base_release 2.1
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -768,7 +768,7 @@ export CMAKE_PREFIX_PATH=/usr
 # causes build issues with EL5, don't even bother building the tests.
 
 %if %uw_build
-%define condor_build_id 409562
+%define condor_build_id 412174
 
 cmake \
        -DBUILDID:STRING=%condor_build_id \
@@ -1816,12 +1816,6 @@ if [ $? = 0 ]; then
    /usr/sbin/semodule -i /usr/share/condor/htcondor.pp
    /usr/sbin/setsebool -P condor_domain_can_network_connect 1
    /usr/sbin/setsebool -P daemons_enable_cluster_mode 1
-   /usr/sbin/semanage permissive -a condor_collector_t
-   /usr/sbin/semanage permissive -a condor_master_t
-   /usr/sbin/semanage permissive -a condor_negotiator_t
-   /usr/sbin/semanage permissive -a condor_procd_t
-   /usr/sbin/semanage permissive -a condor_schedd_t
-   /usr/sbin/semanage permissive -a condor_startd_t
 fi
 %endif
 if [ $1 -eq 1 ] ; then
@@ -1909,6 +1903,9 @@ fi
 %endif
 
 %changelog
+* Mon Aug 07 2017 Tim Theisen <tim@cs.wisc.edu> - 8.4.12-2.1
+- Update SELinux profile for Red Hat 7.4
+
 * Mon Jul 10 2017 Edgar Fajardo <emfajard@ucsd.edu> - 8.4.12-1.1
 - Can configure the condor_startd to compute free disk space once
 - New knob for paid support customer (SOFTWARE-2813)
