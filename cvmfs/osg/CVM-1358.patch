@@ -1,0 +1,11 @@
+--- cvmfs/server/cvmfs_server_resign.sh.O	2017-08-07 15:20:53.738014334 -0500
++++ cvmfs/server/cvmfs_server_resign.sh	2017-08-07 15:21:13.667899681 -0500
+@@ -69,7 +69,7 @@
+     if [ -z "$whitelist_path" ]; then
+       # sanity checks
+       is_stratum0 $name  || { echo "Repository $name is not a stratum 0 repository"; retcode=1; continue; }
+-      health_check $name || { echo "Repository $name is not healthy"; retcode=1; continue; }
++      [ $sign_published -eq 1 ] || health_check $name || { echo "Repository $name is not healthy"; retcode=1; continue; }
+ 
+       # get repository information
+       load_repo_config $name
