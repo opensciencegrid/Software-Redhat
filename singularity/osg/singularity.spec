@@ -21,7 +21,7 @@
 # 
 
 
-%{!?_rel:%{expand:%%global _rel 0.1}}
+%{!?_rel:%{expand:%%global _rel 0.2}}
 
 # This allows us to pick up the default value from the configure
 %define with_slurm no
@@ -49,6 +49,8 @@ BuildRoot: %{?_tmppath}%{!?_tmppath:/var/tmp}/%{name}-%{version}-%{release}-root
 BuildRequires: /usr/include/slurm/spank.h
 %endif
 
+Requires: %name-runtime
+
 %description
 Singularity provides functionality to make portable
 containers that can be used across host environments.
@@ -73,6 +75,15 @@ don't have to be aware of the singularity executable) and doesn't
 require a setuid binary.
 %endif
 
+%package runtime
+Summary: Support for running Singularity containers
+# For debugging in containers.                                                                                                                                                                   
+Requires: strace ncurses-base
+Group: System Environment/Base
+
+%description runtime
+This package contains support for running containers created by %name,
+e.g. "singularity exec ...".
 
 %prep
 %setup
@@ -97,35 +108,30 @@ fi
 %{__make} install DESTDIR=$RPM_BUILD_ROOT %{?mflags_install}
 rm -f $RPM_BUILD_ROOT/%{_libdir}/singularity/lib*.la
 
+%post runtime -p /sbin/ldconfig
+%postun runtime -p /sbin/ldconfig
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-
 %files
-%defattr(-, root, root)
 %doc examples AUTHORS.md CONTRIBUTING.md COPYRIGHT.md INSTALL.md LICENSE-LBNL.md LICENSE.md README.md
-%attr(0755, root, root) %dir %{_sysconfdir}/singularity
-%attr(0644, root, root) %config(noreplace) %{_sysconfdir}/singularity/*
-%dir %{_localstatedir}/singularity
-%dir %{_localstatedir}/singularity/mnt
-%dir %{_localstatedir}/singularity/mnt/session
-%dir %{_localstatedir}/singularity/mnt/container
-%dir %{_localstatedir}/singularity/mnt/overlay
 
-%{_bindir}/singularity
-%{_bindir}/run-singularity
-%{_mandir}/man1/*
+%{_libexecdir}/singularity/cli/bootstrap.*
+%{_libexecdir}/singularity/cli/copy.*
+%{_libexecdir}/singularity/cli/create.*
+%{_libexecdir}/singularity/cli/expand.*
+%{_libexecdir}/singularity/cli/export.*
+%{_libexecdir}/singularity/cli/import.*
+%{_libexecdir}/singularity/cli/inspect.*
+%{_libexecdir}/singularity/cli/pull.*
+%{_libexecdir}/singularity/cli/action_argparser.*
+%{_libexecdir}/singularity/cli/selftest.exec
+%{_libexecdir}/singularity/helpers
+%{_libexecdir}/singularity/image-handler.sh
+%{_libexecdir}/singularity/python
+
 %{_libdir}/singularity/lib*.so.*
-%{_sysconfdir}/bash_completion.d/singularity
-
-#SUID programs
-%attr(4755, root, root) %{_libexecdir}/singularity/bin/action-suid
-%attr(4755, root, root) %{_libexecdir}/singularity/bin/create-suid
-%attr(4755, root, root) %{_libexecdir}/singularity/bin/expand-suid
-%attr(4755, root, root) %{_libexecdir}/singularity/bin/export-suid
-%attr(4755, root, root) %{_libexecdir}/singularity/bin/import-suid
-%attr(4755, root, root) %{_libexecdir}/singularity/bin/mount-suid
 
 # Binaries
 %{_libexecdir}/singularity/bin/action
@@ -139,15 +145,34 @@ rm -rf $RPM_BUILD_ROOT
 %{_libexecdir}/singularity/bin/import
 %{_libexecdir}/singularity/bin/mount
 
-# Scripts
-%{_libexecdir}/singularity/functions
-%{_libexecdir}/singularity/image-handler.sh
-
 # Directories
 %{_libexecdir}/singularity/bootstrap-scripts
-%{_libexecdir}/singularity/cli
-%{_libexecdir}/singularity/python
-%{_libexecdir}/singularity/helpers
+
+#SUID programs
+%attr(4755, root, root) %{_libexecdir}/singularity/bin/action-suid
+%attr(4755, root, root) %{_libexecdir}/singularity/bin/create-suid
+%attr(4755, root, root) %{_libexecdir}/singularity/bin/expand-suid
+%attr(4755, root, root) %{_libexecdir}/singularity/bin/export-suid
+%attr(4755, root, root) %{_libexecdir}/singularity/bin/import-suid
+%attr(4755, root, root) %{_libexecdir}/singularity/bin/mount-suid
+
+%files runtime
+%dir %{_libexecdir}/singularity
+%{_libexecdir}/singularity/functions
+%{_bindir}/singularity
+%{_bindir}/run-singularity
+%{_libexecdir}/singularity/cli/exec.*
+%{_libexecdir}/singularity/cli/run.*
+%{_libexecdir}/singularity/cli/mount.*
+%{_libexecdir}/singularity/cli/shell.*
+%{_libexecdir}/singularity/cli/singularity.help
+%{_libexecdir}/singularity/cli/test.*
+%dir %{_sysconfdir}/singularity
+%config(noreplace) %{_sysconfdir}/singularity/*
+%{_mandir}/man1/singularity.1*
+%dir %{_sysconfdir}/bash_completion.d
+%{_sysconfdir}/bash_completion.d/singularity
+
 
 
 
@@ -165,6 +190,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Mon Aug 14 2017 Edgar Fajardo <emfajard@ucsd.edu> 2.3.1-0.2
+- Split the package bit into the runtime and main (SOFTWARE-2755)
+
 * Mon Jun 26 2017 Dave Dykstra <dwd@fbak,giv> - 2.3.1-0.1
 - Update to upstream's singularity-2.3.1-0.1 singularity.spec
 
