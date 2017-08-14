@@ -21,7 +21,7 @@
 # 
 
 
-%{!?_rel:%{expand:%%global _rel 0.3}}
+%{!?_rel:%{expand:%%global _rel 0.4}}
 
 # This allows us to pick up the default value from the configure
 %define with_slurm no
@@ -49,7 +49,7 @@ BuildRoot: %{?_tmppath}%{!?_tmppath:/var/tmp}/%{name}-%{version}-%{release}-root
 BuildRequires: /usr/include/slurm/spank.h
 %endif
 
-Requires: %name-runtime-%{version}
+Requires: %name-runtime = %{version}-%{release}
 
 %description
 Singularity provides functionality to make portable
@@ -201,6 +201,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Mon Aug 14 2017 Edgar Fajardo <emfajard@ucsd.edu> 2.3.1-0.4
+- Fixed a problem with the requirement of singularity-runtime
+
 * Mon Aug 14 2017 Edgar Fajardo <emfajard@ucsd.edu> 2.3.1-0.3
 - Added correct requirements and missing files
 
