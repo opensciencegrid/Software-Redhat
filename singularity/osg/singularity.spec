@@ -21,7 +21,7 @@
 # 
 
 
-%{!?_rel:%{expand:%%global _rel 0.2}}
+%{!?_rel:%{expand:%%global _rel 0.3}}
 
 # This allows us to pick up the default value from the configure
 %define with_slurm no
@@ -49,7 +49,7 @@ BuildRoot: %{?_tmppath}%{!?_tmppath:/var/tmp}/%{name}-%{version}-%{release}-root
 BuildRequires: /usr/include/slurm/spank.h
 %endif
 
-Requires: %name-runtime
+Requires: %name-runtime-%{version}
 
 %description
 Singularity provides functionality to make portable
@@ -116,6 +116,17 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %doc examples AUTHORS.md CONTRIBUTING.md COPYRIGHT.md INSTALL.md LICENSE-LBNL.md LICENSE.md README.md
+%attr(0755, root, root) %dir %{_sysconfdir}/singularity
+%attr(0644, root, root) %config(noreplace) %{_sysconfdir}/singularity/*
+%dir %{_localstatedir}/singularity
+%dir %{_localstatedir}/singularity/mnt
+%dir %{_localstatedir}/singularity/mnt/session
+%dir %{_localstatedir}/singularity/mnt/container
+%dir %{_localstatedir}/singularity/mnt/overlay
+
+%{_bindir}/singularity
+%{_bindir}/run-singularity
+%{_libdir}/singularity/lib*.so.*
 
 %{_libexecdir}/singularity/cli/bootstrap.*
 %{_libexecdir}/singularity/cli/copy.*
@@ -131,7 +142,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libexecdir}/singularity/image-handler.sh
 %{_libexecdir}/singularity/python
 
-%{_libdir}/singularity/lib*.so.*
+
 
 # Binaries
 %{_libexecdir}/singularity/bin/action
@@ -190,6 +201,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Mon Aug 14 2017 Edgar Fajardo <emfajard@ucsd.edu> 2.3.1-0.3
+- Added correct requirements and missing files
+
 * Mon Aug 14 2017 Edgar Fajardo <emfajard@ucsd.edu> 2.3.1-0.2
 - Split the package bit into the runtime and main (SOFTWARE-2755)
 
