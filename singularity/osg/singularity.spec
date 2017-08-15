@@ -21,7 +21,7 @@
 # 
 
 
-%{!?_rel:%{expand:%%global _rel 0.5}}
+%{!?_rel:%{expand:%%global _rel 0.6}}
 
 # This allows us to pick up the default value from the configure
 %define with_slurm no
@@ -144,7 +144,6 @@ rm -rf $RPM_BUILD_ROOT
 
 
 # Binaries
-%{_libexecdir}/singularity/bin/action
 %{_libexecdir}/singularity/bin/bootstrap
 %{_libexecdir}/singularity/bin/copy
 %{_libexecdir}/singularity/bin/cleanupd
@@ -178,6 +177,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libexecdir}/singularity/cli/shell.*
 %{_libexecdir}/singularity/cli/singularity.help
 %{_libexecdir}/singularity/cli/test.*
+%{_libexecdir}/singularity/bin/action
 %dir %{_sysconfdir}/singularity
 %config(noreplace) %{_sysconfdir}/singularity/*
 %{_mandir}/man1/singularity.1*
@@ -201,6 +201,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Tue Aug 15 2017 Edgar Fajardo <emfajard@ucsd.edu> 2.3.1-0.6
+- Moved the action binary to the runtime subpackage
+
 * Tue Aug 15 2017 Edgar Fajardo <emfajard@ucsd.edu> 2.3.1-0.5
 - Moved the action arg parser to the runtime subpackage
 
