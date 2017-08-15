@@ -21,7 +21,7 @@
 # 
 
 
-%{!?_rel:%{expand:%%global _rel 0.4}}
+%{!?_rel:%{expand:%%global _rel 0.5}}
 
 # This allows us to pick up the default value from the configure
 %define with_slurm no
@@ -136,7 +136,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_libexecdir}/singularity/cli/import.*
 %{_libexecdir}/singularity/cli/inspect.*
 %{_libexecdir}/singularity/cli/pull.*
-%{_libexecdir}/singularity/cli/action_argparser.*
 %{_libexecdir}/singularity/cli/selftest.exec
 %{_libexecdir}/singularity/helpers
 %{_libexecdir}/singularity/image-handler.sh
@@ -172,6 +171,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libexecdir}/singularity/functions
 %{_bindir}/singularity
 %{_bindir}/run-singularity
+%{_libexecdir}/singularity/cli/action_argparser.*
 %{_libexecdir}/singularity/cli/exec.*
 %{_libexecdir}/singularity/cli/run.*
 %{_libexecdir}/singularity/cli/mount.*
@@ -201,6 +201,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Tue Aug 15 2017 Edgar Fajardo <emfajard@ucsd.edu> 2.3.1-0.5
+- Moved the action arg parser to the runtime subpackage
+
 * Mon Aug 14 2017 Edgar Fajardo <emfajard@ucsd.edu> 2.3.1-0.4
 - Fixed a problem with the requirement of singularity-runtime
 
