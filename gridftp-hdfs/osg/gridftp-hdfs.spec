@@ -1,42 +1,29 @@
 %define osg 1
+# Have gitrev be the short hash or branch name if doing a prerelease build
+%define gitrev bf21fc2
+
+#
 
 Name:           gridftp-hdfs
-Version:        0.5.4
-Release:        25.5%{?dist}
+Version:        0.5.5
+Release:        0.1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary:        HDFS DSI plugin for GridFTP
 Group:          System Environment/Daemons
 License:        ASL 2.0
-URL:            http://twiki.grid.iu.edu/bin/view/Storage/HadoopInstallation
-Source0:        %{name}-%{version}.tar.gz
+URL:            https://github.com/opensciencegrid/gridftp_hdfs
+# To create:
+#   Release:
+#     git archive --prefix=%{name}-%{version}/ v%{version} | gzip -n > %{name}-%{version}.tar.gz
+#   Prerelease:
+#     git archive --prefix=%{name}-%{version}/ %{gitrev} | gzip -n > %{name}-%{version}-%{gitrev}.tar.gz
+Source0:        %{name}-%{version}%{?gitrev:-%{gitrev}}.tar.gz
+
 Source1: globus-gridftp-server-plugin.osg-sysconfig
 Source2: %{name}.conf
 Source3: %{name}.osg-extensions.conf
 %if 0%{?osg} > 0
 Patch0: osg-sysconfig.patch
 %endif
-Patch1: hadoop200.patch
-Patch2: gridftp-hdfs-link.patch
-# OSG: we do not want this patch; it changes the format of the sysconfig file
-# such that it will no longer be a valid shell script.
-#Patch3: gridftp-hdfs-config.patch
-Patch4: gridftp-hdfs-rpath.patch
-Patch5: gridftp-hdfs-read_t.patch
-Patch6: gridftp-hdfs-readsize.patch
-# OSG: don't want this patch either -- was getting weird 'No such file or
-# directory' errors with it in
-#Patch7: gridftp-hdfs-classpath.patch
-Patch8: gridftp-hdfs-automake-modernize.patch
-Patch9: gridftp-hdfs-libjvm.patch
-Patch10: gridftp-hdfs-uninitialized-result.patch
-Patch11: 1410-java-environment.patch
-Patch12: 1412-gridftp_d.patch
-Patch13: 1495-pthread-mutex.patch
-Patch14: 1495-optimal-concurrency.patch
-Patch15: 2006-gridftp-hdfs-get-checksum.patch
-Patch16: 2011-capture_stderr.patch
-Patch17: 2115-load-limits.patch
-Patch18: 2107-rmdir-rename.patch
-Patch19: list_empty_directory.patch
 Patch20: 2436-enable-ordered-data.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -91,25 +78,6 @@ HDFS DSI plugin for GridFTP
 %if 0%{?osg} > 0
 %patch0 -p1
 %endif
-%patch1 -p1
-%patch2 -p1
-##patch3 -p1
-%patch4 -p1
-%patch5 -p1
-%patch6 -p1
-##patch7 -p1
-%patch8 -p1
-%patch9 -p1
-%patch10 -p1
-%patch11 -p1
-%patch12 -p1
-%patch13 -p1
-%patch14 -p1
-%patch15 -p1
-%patch16 -p1
-%patch17 -p1
-%patch18 -p1
-%patch19 -p1
 %patch20 -p1
 
 aclocal
@@ -210,6 +178,10 @@ fi
 %endif
 
 %changelog
+* Wed Aug 16 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 0.5.5-0.1
+- Update to latest version from github (SOFTWARE-2856)
+- Remove upstreamed patches
+
 * Thu Dec 22 2016 Carl Edquist <edquist@cs.wisc.edu> - 0.5.4-25.5
 - Bump to rebuild against globus-gridftp-server 11.8 (SOFTWARE-2436)
 
