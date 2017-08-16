@@ -80,12 +80,12 @@ HDFS DSI plugin for GridFTP
 %endif
 %patch20 -p1
 
+%build
+
 aclocal
 libtoolize
 automake --foreign -a
 autoconf
-
-%build
 
 %configure --with-java=/etc/alternatives/java_sdk
 
