@@ -1,6 +1,6 @@
 Summary: Package for OSG-Configure and associated scripts
 Name: osg-configure
-Version: 1.9.1
+Version: 1.10.0
 Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
@@ -117,14 +117,12 @@ Requires: %name = %version-%release
 This package includes the ini files for configuring an OSG system to use squid
 
 %package managedfork
-Summary: OSG configuration file for managedfork
+Summary: Transitional dummy package
 Group: Grid
 Provides: configure-osg-managedfork
-Requires: %name = %version-%release
-Requires: %name-gateway
 %description managedfork
-This package includes the ini files for configuring an OSG CE to use
-managedfork
+This is an empty package created as a workaround for upgrade issues.
+It may safely be removed.
 
 %package network
 Summary: OSG configuration file for Globus network configuration
@@ -233,7 +231,6 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/osg_configure/configure_modules/legacysettings.py*
 %{python_sitelib}/osg_configure/configure_modules/localsettings.py*
 %{python_sitelib}/osg_configure/configure_modules/lsf.py*
-%{python_sitelib}/osg_configure/configure_modules/managedfork.py*
 %{python_sitelib}/osg_configure/configure_modules/misc.py*
 %{python_sitelib}/osg_configure/configure_modules/network.py*
 %{python_sitelib}/osg_configure/configure_modules/pbs.py*
@@ -310,8 +307,7 @@ rm -rf $RPM_BUILD_ROOT
 # This section intentionally left blank
 
 %files managedfork
-%defattr(-,root,root)
-%config(noreplace) %{_sysconfdir}/osg/config.d/15-managedfork.ini
+# This section intentionally left blank
 
 %files network
 %defattr(-,root,root)
@@ -346,26 +342,14 @@ rm -rf $RPM_BUILD_ROOT
 # This section intentionally left blank
 
 
-# 1.0.62-1 and up use HTCondor-CE as the default gateway, but we don't want to
-# change it for users upgrading from old versions so backup and restore
-# 10-gateway.ini when upgrading from an old version.
-
-# The backup file has a fixed name because it needs to be the same in both the
-# pre scriptlet and the triggerun scriptlet.
-%pre gateway
-if [ $1 -gt 1 ]; then # upgrading
-    %__rm -f  %gateway_ini_backup  ||  :
-    %__cp -fp  %gateway_ini  %gateway_ini_backup  ||  :
-fi
-
-%triggerun gateway -- %name-gateway < 1.0.62-1
-if [ $1 -gt 0 ]; then # upgrading, not uninstalling
-    %__mv -f  %gateway_ini_backup  %gateway_ini  ||  :
-fi
-
-
 
 %changelog
+* Wed Aug 16 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 1.10.0-1
+- Improve logging code (SOFTWARE-2744)
+- Drop GRAM support and remove GRAM code (SOFTWARE-2821, SOFTWARE-2822)
+- Drop managedfork and add transitional dummy package (SOFTWARE-2821)
+- Remove unused test configs (SOFTWARE-2849)
+
 * Wed Jul 19 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 1.9.1-1
 - Fix logging in ensure_valid_user_vo_file (SOFTWARE-2819)
 - Configure GUMS before running gums-host-cron (SOFTWARE-2792)
