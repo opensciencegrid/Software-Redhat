@@ -1,6 +1,6 @@
 Summary: Package for OSG-Configure and associated scripts
 Name: osg-configure
-Version: 2.1.1
+Version: 2.2.0
 Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
@@ -286,6 +286,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Aug 16 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 2.2.0-1
+- Improve logging code (SOFTWARE-2744)
+- Remove GRAM code (SOFTWARE-2822)
+
 * Wed Jul 19 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 2.1.1-1
 - Fix logging in ensure_valid_user_vo_file (SOFTWARE-2819)
 - Configure GUMS before running gums-host-cron (SOFTWARE-2792)
