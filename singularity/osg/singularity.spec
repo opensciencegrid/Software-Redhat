@@ -21,7 +21,7 @@
 # 
 
 
-%{!?_rel:%{expand:%%global _rel 0.6}}
+%{!?_rel:%{expand:%%global _rel 0.1}}
 
 # This allows us to pick up the default value from the configure
 %define with_slurm no
@@ -34,7 +34,7 @@
 Summary: Application and environment virtualization
 Name: singularity
 Version: 2.3.1
-Release: %{_rel}%{?dist}
+Release: %{_rel}.1%{?dist}
 # https://spdx.org/licenses/BSD-3-Clause-LBNL.html
 License: BSD-3-Clause-LBNL
 Group: System Environment/Base
@@ -66,7 +66,7 @@ Development files for Singularity
 %package slurm
 Summary: Singularity plugin for SLURM
 Group: System Environment/Libraries
-Requires: singularity = %{version}-%{release}
+Requires: %{name}-runtime = %{version}-%{release}
 
 %description slurm
 The Singularity plugin for SLURM allows jobs to be started within
@@ -201,22 +201,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
-* Tue Aug 15 2017 Edgar Fajardo <emfajard@ucsd.edu> 2.3.1-0.6
-- Moved the action binary to the runtime subpackage
-
-* Tue Aug 15 2017 Edgar Fajardo <emfajard@ucsd.edu> 2.3.1-0.5
-- Moved the action arg parser to the runtime subpackage
-
-* Mon Aug 14 2017 Edgar Fajardo <emfajard@ucsd.edu> 2.3.1-0.4
-- Fixed a problem with the requirement of singularity-runtime
-
-* Mon Aug 14 2017 Edgar Fajardo <emfajard@ucsd.edu> 2.3.1-0.3
-- Added correct requirements and missing files
-
-* Mon Aug 14 2017 Edgar Fajardo <emfajard@ucsd.edu> 2.3.1-0.2
+* Tue Aug 2 2017 Edgar Fajardo <emfajard@ucsd.edu> 2.3.1-0.1.1
 - Split the package bit into the runtime and main (SOFTWARE-2755)
-
-* Mon Jun 26 2017 Dave Dykstra <dwd@fbak,giv> - 2.3.1-0.1
 - Update to upstream's singularity-2.3.1-0.1 singularity.spec
 
 * Thu Jun  1 2017 Dave Dykstra <dwd@fbak,giv> - 2.3-0.1
