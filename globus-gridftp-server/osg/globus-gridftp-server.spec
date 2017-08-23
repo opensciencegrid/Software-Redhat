@@ -12,14 +12,13 @@
 
 Name:		globus-gridftp-server
 %global _name %(tr - _ <<< %{name})
-Version:	11.8
-Release:	1.3%{?dist}
+Version:	12.2
+Release:	1.1%{?dist}
 Summary:	Globus Toolkit - Globus GridFTP Server
 
-Group:		System Environment/Libraries
 License:	ASL 2.0
 URL:		http://toolkit.globus.org/
-Source:		http://toolkit.globus.org/ftppub/gt6/packages/%{_name}-%{version}.tar.gz
+Source:		https://downloads.globus.org/toolkit/gt6/packages/%{_name}-%{version}.tar.gz
 Source1:	%{name}.service
 Source2:	globus-gridftp-sshftp.service
 Source3:	%{name}
@@ -39,23 +38,26 @@ Source14:       globus-gridftp-sshftp-start
 Source15:       globus-gridftp-sshftp-stop
 #		Fix globus-gridftp-server-setup-chroot for kfreebsd and hurd
 Patch0:		globus-gridftp-server-unames.patch
-Patch1:		gridftp-conf-logging.patch
-Patch2:         Do-not-ignore-config.d-files-with-a-.-in-the-name.patch
-BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+#		Add an optional IPv6 address to EPSV response
+#		https://github.com/globus/globus-toolkit/pull/97
+Patch1:		%{name}-epsv-ip.patch
+#		Get command string
+#		https://github.com/globus/globus-toolkit/pull/98
+Patch2:		%{name}-cmd-string.patch
+Patch101:       gridftp-conf-logging.patch
+Patch102:       Do-not-ignore-config.d-files-with-a-.-in-the-name.patch
 
 Requires:	globus-xio-gsi-driver%{?_isa} >= 2
-%if %{?fedora}%{!?fedora:0} >= 20 || %{?rhel}%{!?rhel:0} >= 6
 Requires:	globus-xio-udt-driver%{?_isa} >= 1
-%endif
-Requires:	globus-common%{?_isa} >= 16
+Requires:	globus-common%{?_isa} >= 17
 Requires:	globus-xio%{?_isa} >= 5
-Requires:	globus-gridftp-server-control%{?_isa} >= 4
+Requires:	globus-gridftp-server-control%{?_isa} >= 5.0-3
 Requires:	globus-ftp-control%{?_isa} >= 7
-BuildRequires:	globus-common-devel >= 16
+BuildRequires:	globus-common-devel >= 17
 BuildRequires:	globus-xio-devel >= 5
 BuildRequires:	globus-xio-gsi-driver-devel >= 2
 BuildRequires:	globus-gfork-devel >= 3
-BuildRequires:	globus-gridftp-server-control-devel >= 4
+BuildRequires:	globus-gridftp-server-control-devel >= 5.0-3
 BuildRequires:	globus-ftp-control-devel >= 7
 BuildRequires:	globus-authz-devel >= 2
 BuildRequires:	globus-usage-devel >= 3
@@ -65,8 +67,7 @@ BuildRequires:	globus-gsi-credential-devel >= 6
 BuildRequires:	globus-gsi-sysconfig-devel >= 5
 BuildRequires:	globus-io-devel >= 9
 BuildRequires:	openssl-devel
-# zlib-devel required for OSG adler32 patch
-BuildRequires:  zlib-devel
+BuildRequires:	zlib-devel
 BuildRequires:	perl-generators
 %if %systemd
 BuildRequires:	systemd-units
@@ -77,7 +78,6 @@ BuildRequires:	fakeroot
 
 %package progs
 Summary:	Globus Toolkit - Globus GridFTP Server Programs
-Group:		Applications/Internet
 Requires:	%{name}%{?_isa} = %{version}-%{release}
 %if %systemd
 Requires(post):		systemd-units
@@ -92,22 +92,7 @@ Requires(postun):	initscripts
 
 %package devel
 Summary:	Globus Toolkit - Globus GridFTP Server Development Files
-Group:		Development/Libraries
 Requires:	%{name}%{?_isa} = %{version}-%{release}
-Requires:	globus-common-devel%{?_isa} >= 16
-Requires:	globus-xio-devel%{?_isa} >= 5
-Requires:	globus-xio-gsi-driver-devel%{?_isa} >= 2
-Requires:	globus-gfork-devel%{?_isa} >= 3
-Requires:	globus-gridftp-server-control-devel%{?_isa} >= 4
-Requires:	globus-ftp-control-devel%{?_isa} >= 7
-Requires:	globus-authz-devel%{?_isa} >= 2
-Requires:	globus-usage-devel%{?_isa} >= 3
-Requires:	globus-gssapi-gsi-devel%{?_isa} >= 10
-Requires:	globus-gss-assist-devel%{?_isa} >= 9
-Requires:	globus-gsi-credential-devel%{?_isa} >= 6
-Requires:	globus-gsi-sysconfig-devel%{?_isa} >= 5
-Requires:	globus-io-devel%{?_isa} >= 9
-Requires:	openssl-devel%{?_isa}
 
 %description
 The Globus Toolkit is an open source software toolkit used for building Grid
@@ -141,6 +126,8 @@ Globus GridFTP Server Development Files
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch101 -p1
+%patch102 -p1
 
 %build
 # Reduce overlinking
@@ -159,7 +146,6 @@ sed 's!CC \(.*-shared\) !CC \\\${wl}--as-needed \1 !' -i libtool
 make %{?_smp_mflags}
 
 %install
-rm -rf %{buildroot}
 make install DESTDIR=%{buildroot}
 
 # Remove libtool archives (.la files)
@@ -213,9 +199,6 @@ install -m 0644 %{SOURCE8} $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/%{name}.log
 
 %check
 make %{_smp_mflags} check VERBOSE=1
-
-%clean
-rm -rf %{buildroot}
 
 %post -p /sbin/ldconfig
 
@@ -301,11 +284,38 @@ fi
 %{_libdir}/pkgconfig/%{name}.pc
 
 %changelog
+* Tue Aug 22 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 12.2-1.1.osg
+- Merge OSG changes
+
+* Thu Jun 22 2017 Mattias Ellert <mattias.ellert@physics.uu.se> - 12.2-1
+- GT6 update:
+  - New error message format (12.0)
+  - Configuration database (12.0)
+  - Better delay for end of session ref check (12.1)
+  - Fix tests when getgroups() does not return effective gid (12.2)
+
 * Thu Jun 22 2017 Brian Lin <blin@cs.wisc.edu> - 11.8-1.3.osg
 - Use the correct configuration file when using plugins (SOFTWARE-2645)
 
 * Wed Jun 21 2017 Brian Lin <blin@cs.wisc.edu> - 11.8-1.2.osg
 - Drop conflicts that are no longer necessary for OSG 3.3/3.4 (SOFTWARE-2713 related)
+
+* Mon Apr 24 2017 Mattias Ellert <mattias.ellert@physics.uu.se> - 11.8-4
+- Add patches from DPM developers:
+  - Add an optional IPv6 address to EPSV response
+  - Get command string
+
+* Mon Mar 27 2017 Mattias Ellert <mattias.ellert@physics.uu.se> - 11.8-3
+- EPEL 5 End-Of-Life specfile clean-up
+  - Remove Group and BuildRoot tags
+  - Remove _pkgdocdir and _initddir macro definitions
+  - Drop redundant Requires corresponding to autogenerated pkgconfig Requires
+  - Don't clear the buildroot in the install section
+  - Remove the clean section
+  - Drop the globus-gridftp-server-openssl098.patch
+
+* Fri Feb 10 2017 Fedora Release Engineering <releng@fedoraproject.org> - 11.8-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
 
 * Thu Dec 22 2016 Carl Edquist <edquist@cs.wisc.edu> - 11.8-1.1.osg
 - Merge OSG changes (SOFTWARE-2436 related)
