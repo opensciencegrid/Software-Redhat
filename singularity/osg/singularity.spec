@@ -34,7 +34,7 @@
 Summary: Application and environment virtualization
 Name: singularity
 Version: 2.3.1
-Release: %{_rel}.2%{?dist}
+Release: %{_rel}.3%{?dist}
 # https://spdx.org/licenses/BSD-3-Clause-LBNL.html
 License: BSD-3-Clause-LBNL
 Group: System Environment/Base
@@ -150,7 +150,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_libexecdir}/singularity/bootstrap-scripts
 
 #SUID programs
-%attr(4755, root, root) %{_libexecdir}/singularity/bin/action-suid
 %attr(4755, root, root) %{_libexecdir}/singularity/bin/create-suid
 %attr(4755, root, root) %{_libexecdir}/singularity/bin/expand-suid
 %attr(4755, root, root) %{_libexecdir}/singularity/bin/export-suid
@@ -183,6 +182,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/bash_completion.d/singularity
 
 
+#SUID programs
+%attr(4755, root, root) %{_libexecdir}/singularity/bin/action-suid
+
 
 %files devel
 %defattr(-, root, root)
@@ -198,7 +200,7 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
-* Tue Aug 2 2017 Edgar Fajardo <emfajard@ucsd.edu> 2.3.1-0.1.2
+* Tue Aug 2 2017 Edgar Fajardo <emfajard@ucsd.edu> 2.3.1-0.1.3
 - Split the package bit into the runtime and main (SOFTWARE-2755)
 - Update to upstream's singularity-2.3.1-0.1 singularity.spec
 
