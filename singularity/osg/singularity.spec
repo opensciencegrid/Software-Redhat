@@ -34,7 +34,7 @@
 Summary: Application and environment virtualization
 Name: singularity
 Version: 2.3.1
-Release: %{_rel}.1%{?dist}
+Release: %{_rel}.2%{?dist}
 # https://spdx.org/licenses/BSD-3-Clause-LBNL.html
 License: BSD-3-Clause-LBNL
 Group: System Environment/Base
@@ -118,15 +118,7 @@ rm -rf $RPM_BUILD_ROOT
 %doc examples AUTHORS.md CONTRIBUTING.md COPYRIGHT.md INSTALL.md LICENSE-LBNL.md LICENSE.md README.md
 %attr(0755, root, root) %dir %{_sysconfdir}/singularity
 %attr(0644, root, root) %config(noreplace) %{_sysconfdir}/singularity/*
-%dir %{_localstatedir}/singularity
-%dir %{_localstatedir}/singularity/mnt
-%dir %{_localstatedir}/singularity/mnt/session
-%dir %{_localstatedir}/singularity/mnt/container
-%dir %{_localstatedir}/singularity/mnt/overlay
 
-%{_bindir}/singularity
-%{_bindir}/run-singularity
-%{_libdir}/singularity/lib*.so.*
 
 %{_libexecdir}/singularity/cli/bootstrap.*
 %{_libexecdir}/singularity/cli/copy.*
@@ -170,6 +162,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_libexecdir}/singularity/functions
 %{_bindir}/singularity
 %{_bindir}/run-singularity
+%dir %{_localstatedir}/singularity
+%dir %{_localstatedir}/singularity/mnt
+%dir %{_localstatedir}/singularity/mnt/session
+%dir %{_localstatedir}/singularity/mnt/container
+%dir %{_localstatedir}/singularity/mnt/overlay
 %{_libexecdir}/singularity/cli/action_argparser.*
 %{_libexecdir}/singularity/cli/exec.*
 %{_libexecdir}/singularity/cli/run.*
@@ -178,12 +175,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_libexecdir}/singularity/cli/singularity.help
 %{_libexecdir}/singularity/cli/test.*
 %{_libexecdir}/singularity/bin/action
+%{_libdir}/singularity/lib*.so.*
 %dir %{_sysconfdir}/singularity
 %config(noreplace) %{_sysconfdir}/singularity/*
 %{_mandir}/man1/singularity.1*
 %dir %{_sysconfdir}/bash_completion.d
 %{_sysconfdir}/bash_completion.d/singularity
-
 
 
 
@@ -201,7 +198,7 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
-* Tue Aug 2 2017 Edgar Fajardo <emfajard@ucsd.edu> 2.3.1-0.1.1
+* Tue Aug 2 2017 Edgar Fajardo <emfajard@ucsd.edu> 2.3.1-0.1.2
 - Split the package bit into the runtime and main (SOFTWARE-2755)
 - Update to upstream's singularity-2.3.1-0.1 singularity.spec
 
