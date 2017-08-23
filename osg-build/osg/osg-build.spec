@@ -1,5 +1,5 @@
 #global betatag .pre
-%global _release 1
+%global _release 2
 
 Name:           osg-build
 Version:        1.10.1
@@ -32,6 +32,7 @@ Requires:       rpmlint
 Requires:       subversion
 Requires:       wget
 Requires:       python >= 2.6
+Requires:       epel-rpm-macros
 Summary:        OSG-Build base package, not containing mock or koji modules or koji-based tools
 
 %description base
@@ -127,6 +128,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Aug 23 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.10.1-2
+- Add epel-rpm-macros dependency (SOFTWARE-2868)
+
 * Thu Jun 29 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.10.1-1
 - Change goc-* promotion routes to use osg 3.4
 - Change default promotion routes to use osg 3.4
