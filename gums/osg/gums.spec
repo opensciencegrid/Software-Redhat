@@ -13,7 +13,7 @@
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.5.2
-Release: 9%{?dist}
+Release: 10%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 URL: https://github.com/opensciencegrid/gums
@@ -503,12 +503,23 @@ fi
 # clear out cached jsp pages on install/update
 rm -f %{_usr}/share/%{tomcat}/work/Catalina/localhost/gums/org/apache/jsp/*
 
+%if 0%{?rhel} >= 7
+semanage permissive -a tomcat_t
+%endif
+
 %postun service
 if [ $1 -eq 0 ]; then
     %{_sbindir}/update-alternatives --remove javamail %{gumslibdir}/mail-1.4.1.jar
 fi
 
+%if 0%{?rhel} >= 7
+semanage permissive -d tomcat_t
+%endif
+
 %changelog
+* Fri Aug 25 2017 Carl Edquist <edquist@cs.wisc.edu> - 1.5.2-10
+- Have selinux allow tomcat to access the mysql port (SOFTWARE-2862)
+
 * Thu Aug 18 2016 Carl Edquist <edquist@cs.wisc.edu> - 1.5.2-9
 - Rename getOsgUserVoMap -> getOsgVoUserMap (SOFTWARE-2380)
 
