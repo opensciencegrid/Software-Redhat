@@ -15,7 +15,7 @@
 
 Name:		xrootd
 Epoch:		1
-Version:	4.6.1
+Version:	4.7.0
 Release:	1%{?dist}
 Summary:	Extended ROOT file server
 
@@ -24,7 +24,6 @@ License:	LGPLv3+
 URL:		http://xrootd.org/
 Source0:	%{name}-%{version}.tar.gz
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-
 
 BuildRequires:	cmake
 BuildRequires:	krb5-devel
@@ -289,6 +288,9 @@ install -m 644 packaging/common/xrootd@.service %{buildroot}%{_unitdir}
 install -m 644 packaging/common/cmsd@.service %{buildroot}%{_unitdir}
 install -m 644 packaging/common/frm_xfrd@.service %{buildroot}%{_unitdir}
 install -m 644 packaging/common/frm_purged@.service %{buildroot}%{_unitdir}
+install -m 644 packaging/common/xrdhttp@.socket %{buildroot}%{_unitdir}
+install -m 644 packaging/common/xrootd@.socket %{buildroot}%{_unitdir}
+
 %else
 mkdir -p %{buildroot}%{_initrddir}
 mkdir -p %{buildroot}%{_sysconfdir}/sysconfig
@@ -296,6 +298,7 @@ install -p packaging/rhel/xrootd.init %{buildroot}%{_initrddir}/xrootd
 install -p packaging/rhel/cmsd.init %{buildroot}%{_initrddir}/cmsd
 install -p packaging/rhel/frm_purged.init %{buildroot}%{_initrddir}/frm_purged
 install -p packaging/rhel/frm_xfrd.init %{buildroot}%{_initrddir}/frm_xfrd
+
 sed s/%{name}.functions/%{name}-functions/ -i %{buildroot}%{_initrddir}/*
 install -m 644 -p packaging/rhel/%{name}.functions \
     %{buildroot}%{_initrddir}/%{name}-functions
@@ -309,6 +312,13 @@ install -m 644 -p packaging/common/%{name}-clustered.cfg \
     %{buildroot}%{_sysconfdir}/%{name}/%{name}-clustered.cfg
 install -m 644 -p packaging/common/%{name}-standalone.cfg \
     %{buildroot}%{_sysconfdir}/%{name}/%{name}-standalone.cfg
+install -m 644 packaging/common/%{name}-filecache-clustered.cfg \
+    %{buildroot}%{_sysconfdir}/%{name}/%{name}-filecache-clustered.cfg
+install -m 644 packaging/common/%{name}-filecache-standalone.cfg \
+    %{buildroot}%{_sysconfdir}/%{name}/%{name}-filecache-standalone.cfg
+%if %{use_systemd}
+install -m 644 packaging/common/%{name}-http.cfg %{buildroot}%{_sysconfdir}/%{name}/%{name}-http.cfg
+%endif
 
 # Client config
 mkdir -p %{buildroot}%{_sysconfdir}/%{name}/client.plugins.d
@@ -331,6 +341,7 @@ rm %{buildroot}%{_libdir}/libXrdCephPosix.so
 chmod 755 %{buildroot}%{python_sitearch}/pyxrootd/client.so
 
 mkdir -p %{buildroot}%{_localstatedir}/log/%{name}
+mkdir -p %{buildroot}%{_localstatedir}/run/%{name}
 mkdir -p %{buildroot}%{_localstatedir}/spool/%{name}
 
 mkdir %{buildroot}%{_sysconfdir}/logrotate.d
@@ -368,8 +379,9 @@ rm -rf %{buildroot}
 
 %pre server
 getent group %{name} >/dev/null || groupadd -r %{name}
-getent passwd %{name} >/dev/null || useradd -r -g %{name} -s /sbin/nologin \
-  -d %{_localstatedir}/spool/%{name} -c "XRootD runtime user" %{name}
+getent passwd %{name} >/dev/null || \
+	useradd -r -g %{name} -c "XRootD runtime user" \
+	-s /sbin/nologin -d %{_localstatedir}/spool/%{name} %{name}
 
 # Remove obsolete service
 /sbin/service olbd stop >/dev/null 2>&1 || :
@@ -496,9 +508,11 @@ fi
 %config(noreplace) %{_sysconfdir}/logrotate.d/%{name}
 %attr(-,xrootd,xrootd) %config(noreplace) %{_sysconfdir}/%{name}/*.cfg
 %attr(-,xrootd,xrootd) %{_localstatedir}/log/%{name}
+%attr(-,xrootd,xrootd) %{_localstatedir}/run/%{name}
 %attr(-,xrootd,xrootd) %{_localstatedir}/spool/%{name}
 
 %files selinux
+%defattr(-,root,root)
 %{_datadir}/selinux/packages/%{name}/%{name}.pp
 
 %files libs
@@ -508,9 +522,10 @@ fi
 %{_libdir}/libXrdUtils.so.*
 %{_libdir}/libXrdXml.so.*
 # Plugins
-%{_libdir}/libXrdCksCalczcrc32-4.so
+%{_libdir}/libXrdCks*-4.so
 %{_libdir}/libXrdCryptossl-4.so
 %{_libdir}/libXrdSec*-4.so
+%{_libdir}/libXrdClProxyPlugin-4.so
 %doc COPYING* LICENSE
 
 %files devel
@@ -525,6 +540,7 @@ fi
 %{_includedir}/%{name}/XrdSys
 %{_includedir}/%{name}/XrdXml
 %{_includedir}/%{name}/XrdVersion.hh
+%{_includedir}/%{name}/XrdXml/XrdXmlReader.hh
 %{_libdir}/libXrdAppUtils.so
 %{_libdir}/libXrdCrypto.so
 %{_libdir}/libXrdCryptoLite.so
@@ -566,6 +582,11 @@ fi
 %{_libdir}/libXrdPss-4.so
 %{_libdir}/libXrdThrottle-4.so
 %{_libdir}/libXrdXrootd-4.so
+%{_libdir}/libXrdN2No2p-4.so
+%{_libdir}/libXrdSsi-4.so
+%{_libdir}/libXrdSsiLib.so.*
+%{_libdir}/libXrdSsiLog-4.so
+%{_libdir}/libXrdSsiShMap.so.*
 
 %files server-devel
 %{_includedir}/%{name}/XrdAcc
@@ -579,6 +600,8 @@ fi
 
 %files private-devel
 %{_includedir}/%{name}/private
+%{_libdir}/libXrdSsiLib.so
+%{_libdir}/libXrdSsiShMap.so
 
 %files client
 %{_bindir}/xprep
@@ -618,6 +641,9 @@ fi
 %doc %{_pkgdocdir}
 
 %changelog
+* Tue Aug 20 2017 Marian Zvada <marian.zvada@cern.ch> - 1:4.7.0-1
+- Update to 4.7.0 SOFTWARE-2874
+
 * Fri May 12 2017 Marian Zvada <marian.zvada@cern.ch> - 1:4.6.1-1
 - Update to 4.6.1 SOFTWARE-2669
 - includes rc3
