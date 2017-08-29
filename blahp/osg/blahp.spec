@@ -4,7 +4,7 @@
 %define bl_libexecdir %{_libexecdir}/%{name}
 
 Name:		blahp
-Version:	1.18.32.bosco
+Version:	1.18.33.bosco
 Release:	1%{?gitrev:.%{gitrev}}%{?dist}
 Summary:	gLite BLAHP daemon
 
@@ -183,6 +183,11 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Tue Aug 29 2017 Brian Lin <blin@cs.wisc.edu> - 1.18.33.bosco-1
+- Fix bug that caused jobs submitted to PBS batch systems to be held
+  with "Error parsing classad or job not found" (SOFTWARE-2875)
+- Fix parsing of time fields for slurm jobs (SOFTWARE-2871)
+
 * Tue Jul 25 2017 Brian Lin <blin@cs.wisc.edu> - 1.18.32.bosco-1
 - Fix bug that broke shell parsing of `*_binpath` config values
 - Set default bin paths to `/usr/bin` to remove the overhead of `which` for each PBS, LSF, and SGE call.
