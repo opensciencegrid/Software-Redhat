@@ -1,6 +1,12 @@
 %{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
 %{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
 
+# i386 is not enough for xrootd (https://github.com/xrootd/xrootd/issues/573#issuecomment-326032699)
+# the important bit is the '-march=i686' (as opposed to '-march=i386')
+%ifarch i386
+%global optflags %__global_cflags -m32 -march=i686 -mtune=atom -fasynchronous-unwind-tables
+%endif
+
 %if %{?fedora}%{!?fedora:0} >= 21 || %{?rhel}%{!?rhel:0} >= 7
 %global use_systemd 1
 %else
