@@ -183,10 +183,7 @@ server development.
 %package private-devel
 Summary:	Legacy xrootd headers
 Group:		Development/Libraries
-Requires:	%{name}-libs = %{epoch}:%{version}-%{release}
-%if %{?fedora}%{!?fedora:0} >= 10 || %{?rhel}%{!?rhel:0} >= 6
-BuildArch:	noarch
-%endif
+Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
 
 %description private-devel
 This package contains some private xrootd headers. The use of these
