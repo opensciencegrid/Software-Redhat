@@ -1,12 +1,12 @@
 %define osg 1
 # Have gitrev be the short hash or branch name if doing a prerelease build
-%define gitrev bf21fc2
+%define gitrev 64c6830
 
 #
 
 Name:           gridftp-hdfs
 Version:        0.5.5
-Release:        0.1%{?gitrev:.%{gitrev}git}%{?dist}
+Release:        0.2%{?gitrev:.%{gitrev}git}%{?dist}
 Summary:        HDFS DSI plugin for GridFTP
 Group:          System Environment/Daemons
 License:        ASL 2.0
@@ -18,14 +18,6 @@ URL:            https://github.com/opensciencegrid/gridftp_hdfs
 #     git archive --prefix=%{name}-%{version}/ %{gitrev} | gzip -n > %{name}-%{version}-%{gitrev}.tar.gz
 Source0:        %{name}-%{version}%{?gitrev:-%{gitrev}}.tar.gz
 
-Source1: globus-gridftp-server-plugin.osg-sysconfig
-Source2: %{name}.conf
-Source3: %{name}.osg-extensions.conf
-%if 0%{?osg} > 0
-Patch0: osg-sysconfig.patch
-%endif
-Patch20: 2436-enable-ordered-data.patch
-
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires: autoconf
@@ -36,7 +28,6 @@ BuildRequires: java-devel >= 1:1.7.0
 BuildRequires: jpackage-utils
 
 BuildRequires: hadoop-libhdfs
-# globus-gridftp-server-devel-11 needed for 2436-enable-ordered-data.patch
 BuildRequires: globus-gridftp-server-devel >= 11
 BuildRequires: globus-common-devel
 
@@ -75,10 +66,6 @@ HDFS DSI plugin for GridFTP
 %prep
 
 %setup -q
-%if 0%{?osg} > 0
-%patch0 -p1
-%endif
-%patch20 -p1
 
 %build
 
@@ -114,9 +101,6 @@ mv $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/gridftp.conf.d/%{name} $RPM_BUILD_ROO
 rmdir $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/gridftp.conf.d
 rm $RPM_BUILD_ROOT%{_sysconfdir}/gridftp-hdfs/gridftp.conf
 mkdir -p $RPM_BUILD_ROOT/usr/share/osg/sysconfig
-install -m 644 -p %{SOURCE1} $RPM_BUILD_ROOT/usr/share/osg/sysconfig/globus-gridftp-server-plugin
-install -m 644 %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/gridftp.d
-install -m 644 %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/gridftp.d
 %else
 rm $RPM_BUILD_ROOT%{_sysconfdir}/gridftp-hdfs/gridftp-debug.conf
 rm $RPM_BUILD_ROOT%{_sysconfdir}/gridftp-hdfs/gridftp-inetd.conf
@@ -178,6 +162,9 @@ fi
 %endif
 
 %changelog
+* Thu Aug 17 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 0.5.5-0.2
+- Remove upstreamed patches and files
+
 * Wed Aug 16 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 0.5.5-0.1
 - Update to latest version from github (SOFTWARE-2856)
 - Remove upstreamed patches
