@@ -1,12 +1,12 @@
 %define osg 1
 # Have gitrev be the short hash or branch name if doing a prerelease build
-%define gitrev 64c6830
+#define gitrev 64c6830
 
 #
 
 Name:           gridftp-hdfs
-Version:        0.5.5
-Release:        0.2%{?gitrev:.%{gitrev}git}%{?dist}
+Version:        1.0
+Release:        1.1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary:        HDFS DSI plugin for GridFTP
 Group:          System Environment/Daemons
 License:        ASL 2.0
@@ -17,8 +17,6 @@ URL:            https://github.com/opensciencegrid/gridftp_hdfs
 #   Prerelease:
 #     git archive --prefix=%{name}-%{version}/ %{gitrev} | gzip -n > %{name}-%{version}-%{gitrev}.tar.gz
 Source0:        %{name}-%{version}%{?gitrev:-%{gitrev}}.tar.gz
-
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires: autoconf
 BuildRequires: automake
@@ -162,6 +160,9 @@ fi
 %endif
 
 %changelog
+* Thu Aug 31 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.0-1.1
+- Update to 1.0 (SOFTWARE-2856)
+
 * Thu Aug 17 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 0.5.5-0.2
 - Remove upstreamed patches and files
 
