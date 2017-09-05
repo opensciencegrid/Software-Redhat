@@ -34,7 +34,7 @@
 Summary: Application and environment virtualization
 Name: singularity
 Version: 2.3.1
-Release: %{_rel}.3%{?dist}
+Release: %{_rel}.4%{?dist}
 # https://spdx.org/licenses/BSD-3-Clause-LBNL.html
 License: BSD-3-Clause-LBNL
 Group: System Environment/Base
@@ -43,6 +43,10 @@ Source: %{name}-%{version}.tar.gz
 ExclusiveOS: linux
 BuildRoot: %{?_tmppath}%{!?_tmppath:/var/tmp}/%{name}-%{version}-%{release}-root
 
+# for el6 SOFTWARE-2755
+# https://jira.opensciencegrid.org/browse/SOFTWARE-2755?focusedCommentId=346082&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-346082                          
+Patch0: sw-2755-el6-overlay.patch
+
 %if %slurm
 # NOTE: doing a direct file dependency because experience has shown there are a few
 # site-local RPMs that have random pieces missing.
@@ -50,6 +54,7 @@ BuildRequires: /usr/include/slurm/spank.h
 %endif
 
 Requires: %name-runtime = %{version}-%{release}
+
 
 %description
 Singularity provides functionality to make portable
@@ -88,6 +93,10 @@ e.g. "singularity exec ...".
 %prep
 %setup
 
+## Added for patch0 
+%if %{?rhel}%{!?rhel:0} <= 6
+%patch0 -p1
+%endif
 
 %build
 if [ ! -f configure ]; then
@@ -200,6 +209,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Tue Sep 5 2017 Edgar Fajardo <emfajard@ucsd.edu> 2.3.1-0.1.4
+- Added pathc for singualrity on el6.
+
 * Tue Aug 2 2017 Edgar Fajardo <emfajard@ucsd.edu> 2.3.1-0.1.3
 - Split the package bit into the runtime and main (SOFTWARE-2755)
 - Update to upstream's singularity-2.3.1-0.1 singularity.spec
