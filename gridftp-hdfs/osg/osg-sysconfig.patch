@@ -1,0 +1,84 @@
+From b76255b5bbf9fab91d21d5d6d88054259e60c5e4 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Tue, 5 Sep 2017 15:06:01 -0500
+Subject: [PATCH] Use OSG sysconfig file, with support for HDFS 2.0
+
+---
+ conf/gridftp-hdfs-environment | 27 +++++++++++++++++++++++----
+ 1 file changed, 23 insertions(+), 4 deletions(-)
+
+diff --git a/conf/gridftp-hdfs-environment b/conf/gridftp-hdfs-environment
+index 2d36d50..39cab28 100644
+--- a/conf/gridftp-hdfs-environment
++++ b/conf/gridftp-hdfs-environment
+@@ -2,18 +2,31 @@
+ # This file is designed to be sourced in bash to configure the 
+ # basic Hadoop environment.
+ 
+ HADOOP_CONF_DIR=/etc/hadoop-0.20/conf
+ HADOOP_HOME=/usr/lib/hadoop-0.20
++HADOOP_HDFS_HOME=$HADOOP_HOME
++HADOOP_COMMON_HOME=$HADOOP_HOME
++export GRIDFTP_HDFS_REPLICAS=2
+ 
+-source $HADOOP_CONF_DIR/hadoop-env.sh
++#update for hadoop 2.0.0
++if [ -d "/etc/hadoop/conf" ]; then
++    HADOOP_CONF_DIR=/etc/hadoop/conf
++fi
++if [ -d "/usr/lib/hadoop" ]; then
++    HADOOP_HOME=/usr/lib/hadoop
++fi
++
++if [ -e "$HADOOP_CONF_DIR/hadoop-env.sh" ]; then
++    source $HADOOP_CONF_DIR/hadoop-env.sh
++fi
+ 
+ if [ "x$JAVA_HOME" = "x" ]; then
+ JAVA_HOME=/usr/lib/jvm/java
+ fi
+ # Often, libjvm gets hidden off the path.
+-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$JAVA_HOME/jre/lib/i386:$JAVA_HOME/jre/lib/i386/server:$JAVA_HOME/jre/lib/amd64:$JAVA_HOME/jre/lib/amd64/server
++export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$JAVA_HOME/jre/lib/i386:$JAVA_HOME/jre/lib/i386/server:$JAVA_HOME/jre/lib/amd64:$JAVA_HOME/jre/lib/amd64/server:/usr/lib/hadoop/lib/native
+ 
+ # The following is the CLASSPATH building logic from the hadoop script:
+ # CLASSPATH initially contains $HADOOP_CONF_DIR
+ CLASSPATH="${HADOOP_CONF_DIR}"
+ CLASSPATH=${CLASSPATH}:$JAVA_HOME/lib/tools.jar
+@@ -37,14 +50,20 @@ IFS=
+ 
+ # for releases, add core hadoop jar & webapps to CLASSPATH
+ if [ -d "$HADOOP_HOME/webapps" ]; then
+   CLASSPATH=${CLASSPATH}:$HADOOP_HOME
+ fi
+-for f in $HADOOP_HOME/hadoop-*-core.jar; do
++for f in $HADOOP_HOME/hadoop-*.jar; do
+   CLASSPATH=${CLASSPATH}:$f;
+ done
+ 
++if [ -d "$HADOOP_HOME/client" ]; then
++for f in $HADOOP_HOME/client/*.jar; do
++  CLASSPATH=${CLASSPATH}:$f;
++done
++fi
++
+ # add libs to CLASSPATH
+ for f in $HADOOP_HOME/lib/*.jar; do
+   CLASSPATH=${CLASSPATH}:$f;
+ done
+ 
+@@ -67,10 +86,10 @@ export CLASSPATH=$CLASSPATH
+ 
+ unset IFS
+ 
+ # New gridftp.conf override in GT 5.2
+ #export GRIDFTP_CONF=/etc/gridftp-hdfs/gridftp.conf
+-export conf=/etc/gridftp-hdfs/gridftp.conf
++#export conf=/etc/gridftp-hdfs/gridftp.conf
+ 
+ # Allow non-java-based signal handling
+ export LD_PRELOAD=libjsig.so
+ 
+-- 
+2.6.3
+
