@@ -216,7 +216,7 @@ rm -rf $RPM_BUILD_ROOT
 - Split the package bit into the runtime and main (SOFTWARE-2755)
 - Update to upstream's singularity-2.3.1-0.1 singularity.spec
 
-* Thu Jun  1 2017 Dave Dykstra <dwd@fbak,giv> - 2.3-0.1
+* Thu Jun  1 2017 Dave Dykstra <dwd@fnal.gov> - 2.3-0.1
 - Update to upstream's singularity-2.3-0.1 singularity.spec
 
 * Tue Feb 14 2017 Derek Weitzel <dweitzel@cse.unl.edu> - 2.2.1-1
