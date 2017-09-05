@@ -8,7 +8,7 @@
 
 Name:      rsv
 Summary:   RSV Meta Package
-Version:   3.14.2
+Version:   3.15.0
 Release:   1%{?dist}
 License:   Apache 2.0
 Group:     Applications/Monitoring
@@ -299,6 +299,9 @@ fi
 
 
 %changelog
+* Tue Sep 05 2017 Carl Edquist <edquist@cs.wisc.edu> - 3.15.0-1
+- Drop vo-supported-probe (SOFTWARE-2763)
+
 * Tue Jun 27 2017 Carl Edquist <edquist@cs.wisc.edu> - 3.14.2-1
 - Fix parsing of condor_cron_q output, again (SOFTWARE-2782)
 
