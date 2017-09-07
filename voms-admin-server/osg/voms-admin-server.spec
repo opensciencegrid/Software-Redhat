@@ -8,7 +8,7 @@
 Summary: The VOMS Administration service
 Name: voms-admin-server
 Version: 2.7.0
-Release: 1.22%{?dist}
+Release: 1.23%{?dist}
 License: ASL 2.0
 Group: System Environment/Libraries
 
@@ -130,6 +130,7 @@ Patch28: 0028-Accept-action-param-with-dashes.patch
 Patch29: 0029-Re-enable-bulk-suspend-and-membership-extension.patch
 Patch30: 0030-Fix-DB-deployment-issues-with-admin-table.patch
 Patch31: 0031-Avoid-duplicate-javassist-jars-from-c4d06fe7.patch
+Patch32: 0032-bump-struts-version-to-2.3.34.patch
 
 Requires: osg-webapp-common
 
@@ -191,6 +192,7 @@ administration tasks.
 %patch29 -p1
 %patch30 -p1
 %patch31 -p1
+%patch32 -p1
 
 %define local_maven /tmp/m2/repository
 
@@ -316,6 +318,9 @@ fi
 %{tomcat_endorsed}/xalan-j2-serializer.jar
 
 %changelog
+* Wed Sep 06 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.7.0-1.23
+- Add 0032-bump-struts-version-to-2.3.34.patch
+
 * Thu May 18 2017 Brian Lin <blin@cs.wisc.edu> - 2.7.0-1.22
 - Release voms-admin-server-2.7.0-1.22+ (SOFTWARE-2652)
 

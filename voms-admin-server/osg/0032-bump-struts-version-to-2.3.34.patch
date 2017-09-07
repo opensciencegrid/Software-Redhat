@@ -1,0 +1,29 @@
+From 582d7bdac070c162acb3e223cd0e8699aeb35430 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Wed, 6 Sep 2017 15:04:10 -0500
+Subject: [PATCH] bump struts version to 2.3.34
+
+---
+ pom.xml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/pom.xml b/pom.xml
+index dfcf515..eb4a2dc 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -18,11 +18,11 @@
+ 
+         <tomcat.version>5</tomcat.version>
+         <build.settings>src/config/emi-build-settings.xml</build.settings>
+ 		
+ 		<!-- Dependencies versions -->
+-		<struts.version>2.3.32</struts.version>
++		<struts.version>2.3.34</struts.version>
+ 		<hibernate.version>4.2.8.Final</hibernate.version>
+ 		<c3p0.version>0.9.5.2</c3p0.version>
+ 		<axis.version>1.2.1</axis.version>
+ 		<bouncycastle.version>1.45</bouncycastle.version>
+ 		<trustmanager.version>3.0.3</trustmanager.version>
+-- 
+2.6.3
+
