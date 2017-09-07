@@ -5,7 +5,7 @@
 
 Summary:   Tests an OSG Software installation
 Name:      osg-test
-Version:   1.11.1
+Version:   1.11.2
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -52,6 +52,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_sbindir}/%{name}-log-viewer
 
 %changelog
+* Thu Sep 07 2017 Brian Lin <blin@cs.wisc.edu> - 1.11.2-1
+- Limit status checks before starting services (SOFTWARE-2846)
+- Drop 'VO-supported' RSV probe (SOFTWARE-2882)
+
 * Wed Aug 02 2017 Brian Lin <blin@cs.wisc.edu> - 1.11.1-1
 - Added SELinux policy for GSI OpenSSH
 - Added gfal2 tests against GridFTP
