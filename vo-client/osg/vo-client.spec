@@ -1,5 +1,5 @@
 Name:           vo-client
-Version:        74
+Version:        75
 Release:        1%{?dist}
 Summary:        Contains vomses file for use with user authentication and edg-mkgridmap.conf file that contains configuration information for edg-mkgridmap.
 
@@ -98,6 +98,10 @@ rm -rf $RPM_BUILD_ROOT
 %attr(0600,tomcat,tomcat) %config(noreplace) %{_sysconfdir}/gums/gums.config.template
 
 %changelog
+* Fri Sep 08 2017 Carl Edquist <edquist@cs.wisc.edu> - 75-1
+- Update to vo-client 75
+  - Add CMS wildcard to default map file (SOFTWARE-2852)
+
 * Fri Jun 09 2017 Carl Edquist <edquist@cs.wisc.edu> - 74-1
 - Update to vo-client 74 (SOFTWARE-2765)
   - Fix the edg-mkgridmap entries for project8 and miniclean (SOFTWARE-2727)
