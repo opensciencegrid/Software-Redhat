@@ -1,6 +1,6 @@
 Name:           osg-release
 Version:        3.3
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        OSG Software for Enterprise Linux repository configuration
 
 Group:          System Environment/Base
@@ -17,6 +17,7 @@ Source1:        repoinfo.txt
 Source2:        template.repo.standard
 Source3:        template.repo.basic
 Source4:        template.repo.koji
+Source5:        template.repo.direct
 
 Source40:       RPM-GPG-KEY-OSG
 
@@ -64,6 +65,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Sep 13 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.3-6
+- Generate goc repos as 'direct' (no mirror) (SOFTWARE-2890)
+
 * Mon Feb 22 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.3-5
 - Use koji.chtc.wisc.edu instead of koji-hub.batlab.org for minefield repos
 
