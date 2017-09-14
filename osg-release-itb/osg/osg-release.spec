@@ -1,6 +1,6 @@
 Name:           osg-release-itb
 Version:        3.4
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        OSG Software for Enterprise Linux repository configuration
 
 Group:          System Environment/Base
@@ -17,6 +17,7 @@ Source1:        repoinfo.txt
 Source2:        template.repo.standard
 Source3:        template.repo.basic
 Source4:        template.repo.koji
+Source5:        template.repo.direct
 
 Source40:       RPM-GPG-KEY-OSG
 
@@ -64,6 +65,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Sep 13 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.4-2
+- Generate goc repos as 'direct' (no mirror) (SOFTWARE-2890)
+
 * Wed May 10 2017 Brian Lin <blin@cs.wisc.edu> - 3.4-1
 - Release OSG 3.4
 
