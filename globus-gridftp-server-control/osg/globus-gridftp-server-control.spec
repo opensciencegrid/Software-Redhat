@@ -2,7 +2,7 @@
 
 Name:		globus-gridftp-server-control
 %global _name %(tr - _ <<< %{name})
-Version:	5.1
+Version:	5.2
 Release:	1.1%{?dist}
 Summary:	Globus Toolkit - Globus GridFTP Server Library
 
@@ -102,9 +102,21 @@ install -m 644 -p %{SOURCE8} %{buildroot}%{_pkgdocdir}/README
 %{_libdir}/pkgconfig/%{name}.pc
 
 %changelog
+* Fri Sep 15 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.2-1.1.osg
+- Update to 5.2 and merge OSG changes (SOFTWARE-2895)
+
 * Tue Aug 22 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.1-1.1.osg
 - Merge OSG changes
   - Drop ipv6-load-balancing.patch
+
+* Fri Aug 18 2017 Mattias Ellert <mattias.ellert@physics.uu.se> - 5.2-1
+- GT6 update: Allow 400 responses to stat failures
+
+* Wed Aug 02 2017 Fedora Release Engineering <releng@fedoraproject.org> - 5.1-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Binutils_Mass_Rebuild
+
+* Mon Jul 31 2017 Florian Weimer <fweimer@redhat.com> - 5.1-2
+- Rebuild with binutils fix for ppc64le (#1475636)
 
 * Fri Jul 28 2017 Mattias Ellert <mattias.ellert@physics.uu.se> - 5.1-1
 - GT6 update: Fix mem error on empty mlsc responses
