@@ -1,6 +1,6 @@
 Name:      osg-ca-scripts
 Version:   1.1.7
-Release:   1%{?dist}
+Release:   2%{?dist}
 Summary:   CA Certificate helper scripts
 
 Group:     System Environment/Base
@@ -14,6 +14,7 @@ BuildArch: noarch
 
 Requires: /usr/bin/openssl
 Requires: logrotate
+Requires: wget
 
 Provides: grid-certificates = 7
 Conflicts: osg-ca-certs
@@ -82,6 +83,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr(0755,root,root) %{_localstatedir}/lib/osg-ca-certs
 
 %changelog
+* Mon Sep 18 2017 Brian Lin <blin@cs.wisc.edu> 1.1.7-2
+- Add 'wget' requirement
+
 * Tue Aug 08 2017 Brian Lin <blin@cs.wisc.edu> 1.1.7-1
 - Use HTTPS for CA download (SOFTWARE-2834)
 
