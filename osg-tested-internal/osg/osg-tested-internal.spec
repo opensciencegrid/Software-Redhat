@@ -1,7 +1,7 @@
 Name:      osg-tested-internal
 Summary:   All OSG packages we test (internal use only)
 Version:   3.4
-Release:   4%{?dist}
+Release:   5%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -49,6 +49,8 @@ Requires: osg-ce-pbs
 
 Requires: rsv
 
+Requires: singularity-runtime
+
 Requires: xrootd
 Requires: xrootd-client
 
@@ -77,6 +79,9 @@ rm -rf $RPM_BUILD_ROOT
 %files
 
 %changelog
+* Tue Sep 19 2017 Edgar Fajardo <emfajard@ucsd.edu> - 3.4-5
+- Added singularity-runtime to the requirements (SOFTWARE-2894)
+
 * Fri Jul 14 2017 Edgar Fajardo <emfajard@ucsd.edu> - 3.4-4
 - Added the correct name of the gsi-openssh packages
 
