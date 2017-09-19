@@ -1,5 +1,24 @@
 [Unit]
 Description = OSG services
-Requires = condor-ce condor-cron.service edg-mkgridmap.service fetch-crl-boot.service fetch-crl-cron.service globus-gridftp-server.service gratia-probes-cron.service gums-client-cron.service rsv.service
-After = condor-ce condor-cron.service edg-mkgridmap.service fetch-crl-boot.service fetch-crl-cron.service globus-gridftp-server.service gratia-probes-cron.service gums-client-cron.service rsv.service
+Wants = condor.service \
+        condor-ce.service \
+        condor-cron.service \
+        edg-mkgridmap.service \
+        fetch-crl-boot.service \
+        fetch-crl-cron.service \
+        globus-gridftp-server.service \
+        gratia-probes-cron.service \
+        gums-client-cron.service \
+        rsv.service
+
+After = condor.service \
+        condor-ce.service \
+        condor-cron.service \
+        edg-mkgridmap.service \
+        fetch-crl-boot.service \
+        fetch-crl-cron.service \
+        globus-gridftp-server.service \
+        gratia-probes-cron.service \
+        gums-client-cron.service \
+        rsv.service
 
