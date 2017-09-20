@@ -33,8 +33,8 @@
 
 Summary: Application and environment virtualization
 Name: singularity
-Version: 2.3.1
-Release: %{_rel}.4%{?dist}
+Version: 2.3.2
+Release: %{_rel}.1%{?dist}
 # https://spdx.org/licenses/BSD-3-Clause-LBNL.html
 License: BSD-3-Clause-LBNL
 Group: System Environment/Base
@@ -209,6 +209,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Wed Sep 20 2017 Brian Lin <blin@cs.wisc.edu> 2.3.2-0.1.1
+- Bump version to 2.3.2
+
 * Tue Sep 5 2017 Edgar Fajardo <emfajard@ucsd.edu> 2.3.1-0.1.4
 - Added pathc for singualrity on el6.
 
