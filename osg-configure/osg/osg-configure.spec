@@ -1,6 +1,6 @@
 Summary: Package for OSG-Configure and associated scripts
 Name: osg-configure
-Version: 1.10.0
+Version: 1.10.1
 Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
@@ -344,6 +344,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Sep 22 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 1.10.1-1
+- Don't use condor_config_val -expand (SOFTWARE-2902)
+- Handle missing fetch_crl (SOFTWARE-2891)
+
 * Wed Aug 16 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 1.10.0-1
 - Improve logging code (SOFTWARE-2744)
 - Drop GRAM support and remove GRAM code (SOFTWARE-2821, SOFTWARE-2822)
