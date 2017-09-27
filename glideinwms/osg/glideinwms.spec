@@ -13,7 +13,7 @@
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
 %define version 3.3.2
-%define release 2
+%define release 3
 
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
@@ -78,15 +78,10 @@ vofrontend install (userschedd, submit, vofrontend).
 Summary:        The VOFrontend for glideinWMS submission host
 Group:          System Environment/Daemons
 Requires: httpd
-Requires: condor >= 8.2.3
+Requires: condor >= 8.4.0
 Requires: python-rrdtool
 Requires: m2crypto
 Requires: javascriptrrd >= 1.1.0
-Requires: globus-common-progs
-Requires: globus-gram-client-tools
-Requires: globus-gsi-cert-utils-progs
-Requires: gsi-openssh-clients
-Requires: osg-cert-scripts
 Requires: osg-system-profiler
 Requires: osg-version
 Requires: osg-wn-client
@@ -110,7 +105,7 @@ This package is for a standalone vofrontend install
 %package usercollector
 Summary:        The VOFrontend glideinWMS collector host
 Group:          System Environment/Daemons
-Requires: condor >= 8.2.3
+Requires: condor >= 8.4.0
 Requires: glideinwms-minimal-condor = %{version}-%{release}
 Requires: glideinwms-glidecondor-tools = %{version}-%{release}
 %description usercollector
@@ -121,7 +116,7 @@ It can be installed independently.
 %package userschedd
 Summary:        The VOFrontend glideinWMS submission host
 Group:          System Environment/Daemons
-Requires: condor >= 8.2.3
+Requires: condor >= 8.4.0
 Requires: glideinwms-minimal-condor = %{version}-%{release}
 Requires: glideinwms-common-tools = %{version}-%{release}
 Requires: glideinwms-glidecondor-tools = %{version}-%{release}
@@ -183,7 +178,7 @@ Requires: glideinwms-factory-condor = %{version}-%{release}
 Requires: glideinwms-libs = %{version}-%{release}
 Requires: glideinwms-glidecondor-tools = %{version}-%{release}
 Requires: glideinwms-common-tools = %{version}-%{release}
-Requires: condor >= 8.2.3
+Requires: condor >= 8.4.0
 Requires: fetch-crl
 Requires: python-rrdtool
 Requires: python-ldap
@@ -812,6 +807,10 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/condor/certs/condor_mapfile
 
 %changelog
+* Wed Sep 27 2017 Parag Mhashilkar <parag@fnal.gov> - 3.3.2-3
+- Rebuild rpms removing globus dependcies
+- Updated HTCondor dependency from v8.2.3 to v8.4
+
 * Mon Apr 17 2017 Edgar Fajardo <emfajard@ucsd.edu> - 3.3.2-2
 - Added the verify special option to glideinwms.xml and frontend.xml (SOFTWARE-2659)
 
