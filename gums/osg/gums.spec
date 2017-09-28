@@ -13,7 +13,7 @@
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.5.2
-Release: 10%{?dist}
+Release: 11%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 URL: https://github.com/opensciencegrid/gums
