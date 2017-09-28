@@ -135,6 +135,7 @@ Patch5: voms3.patch
 Patch6: sw-2414-voms3-threadlocal-VOMSACValidator.patch
 Patch7: sw-2392-pool-assignments.patch
 Patch8: sw-2380-json-user-vo-map.patch
+Patch9: sw-2672-drop-software-grid-iu-refs.patch
 
 
 %description
@@ -198,6 +199,7 @@ Summary: Tomcat service for GUMS
 
 %patch7 -p1
 %patch8 -p1
+%patch9 -p1
 
 %build
 
@@ -517,6 +519,9 @@ semanage permissive -d tomcat_t
 %endif
 
 %changelog
+* Thu Sep 28 2017 Carl Edquist <edquist@cs.wisc.edu> - 1.5.2-11
+- Drop remaining references to software.grid.iu.edu (SOFTWARE-2672)
+
 * Fri Aug 25 2017 Carl Edquist <edquist@cs.wisc.edu> - 1.5.2-10
 - Have selinux allow tomcat to access the mysql port (SOFTWARE-2862)
 

@@ -1,0 +1,64 @@
+commit 3c1208a726fd94dbf92153dc5149c68212c709b3
+Author: Carl Edquist <edquist@cs.wisc.edu>
+Date:   Thu Sep 28 12:31:04 2017 -0500
+
+    drop all references to software.grid.iu.edu (SOFTWARE-2672)
+
+diff --git a/gums-core/src/main/scripts/gums-create-config b/gums-core/src/main/scripts/gums-create-config
+index f000ea9..cabfeb2 100644
+--- a/gums-core/src/main/scripts/gums-create-config
++++ b/gums-core/src/main/scripts/gums-create-config
+@@ -93,9 +93,7 @@ done
+ 
+ if [ "$OSGTEMPLATE" -eq 1 ]
+ then
+-    echo Downloading OSG GUMS template...
+-    wget --no-verbose --output-document=/tmp/gums.template http://software.grid.iu.edu/pacman/tarballs/vo-version/gums.template
+-    TEMPLATE="/tmp/gums.template"
++    TEMPLATE=/etc/gums/gums.config.template
+ fi
+ 
+ parseConfig() {
+diff --git a/gums-service/src/main/resources/scripts/gums-create-config b/gums-service/src/main/resources/scripts/gums-create-config
+index 365541c..047f657 100755
+--- a/gums-service/src/main/resources/scripts/gums-create-config
++++ b/gums-service/src/main/resources/scripts/gums-create-config
+@@ -89,9 +89,7 @@ done
+ 
+ if [ "$OSGTEMPLATE" -eq 1 ]
+ then
+-    echo Downloading OSG GUMS template...
+-    wget --no-verbose --output-document=/tmp/gums.template http://software.grid.iu.edu/pacman/tarballs/vo-version/gums.template
+-    TEMPLATE="/tmp/gums.template"
++    TEMPLATE=/etc/gums/gums.config.template
+ fi
+ 
+ parseConfig() {
+diff --git a/gums-service/src/main/webapp/mergeConfiguration.jsp b/gums-service/src/main/webapp/mergeConfiguration.jsp
+index 4c9b2ca..d164b77 100644
+--- a/gums-service/src/main/webapp/mergeConfiguration.jsp
++++ b/gums-service/src/main/webapp/mergeConfiguration.jsp
+@@ -138,7 +138,7 @@ else {
+                 i.e.
+             </td>
+             <td nowrap>
+-                http://software.grid.iu.edu/pacman/tarballs/vo-version/gums.template
++                file:///etc/gums/gums.config.template
+             </td>
+         </tr>
+ 
+diff --git a/gums-site/src/site/resources/gums-create-config b/gums-site/src/site/resources/gums-create-config
+index 8e4a0cb..3196c31 100644
+--- a/gums-site/src/site/resources/gums-create-config
++++ b/gums-site/src/site/resources/gums-create-config
+@@ -96,9 +96,7 @@ done
+ 
+ if [ "$OSGTEMPLATE" -eq 1 ]
+ then
+-	echo Downloading OSG GUMS template...
+-	wget --no-verbose --output-document=/tmp/gums.template http://software.grid.iu.edu/pacman/tarballs/vo-version/gums.template
+-	TEMPLATE="/tmp/gums.template"
++	TEMPLATE=/etc/gums/gums.config.template
+ fi
+ 
+ parseConfig() {
