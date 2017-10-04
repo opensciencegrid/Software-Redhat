@@ -1,8 +1,8 @@
 #global betatag .pre
-%global _release 2
+%global _release 1
 
 Name:           osg-build
-Version:        1.10.1
+Version:        1.10.2
 Release:        %{?betatag:0.}%{_release}%{?betatag}%{?dist}
 Summary:        Build tools for the OSG
 
@@ -128,6 +128,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Oct 04 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.10.2-1
+- Fix logging (SOFTWARE-2745)
+- Fix quilt subcommand to work with multiple packages (SOFTWARE-2739)
+
 * Wed Aug 23 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.10.1-2
 - Add epel-rpm-macros dependency (SOFTWARE-2868)
 
