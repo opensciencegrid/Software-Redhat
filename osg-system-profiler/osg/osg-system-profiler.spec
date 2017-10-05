@@ -1,14 +1,10 @@
 Summary:   Profiles your system for debugging
 Name:      osg-system-profiler
-Version:   1.4.0
+Version:   1.4.1
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
-Packager:  VDT <vdt-support@opensciencegrid.org>
 Source0:   %{name}-%{version}.tar.gz
-AutoReq:   yes
-AutoProv:  yes
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 BuildArch: noarch
 
 Requires: setroubleshoot-server
@@ -48,6 +44,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/%{name}-viewer
 
 %changelog
+* Thu Oct 05 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.4.1-1
+- Drop osg-version check (SOFTWARE-2916)
+- Update instructions for getting help (SOFTWARE-2908)
+- Don't include logs for deprecated software (SOFTWARE-2905)
+
 * Mon Jun 27 2016 Carl Edquist <edquist@cs.wisc.edu> - 1.4.0-1
 - Include dump of tomcat server config (SOFTWARE-1099)
 - Create osg-profile.txt in temp dir, do not include old profiles in
