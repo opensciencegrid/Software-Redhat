@@ -2,7 +2,7 @@
 
 Name:		globus-gridftp-server-control
 %global _name %(tr - _ <<< %{name})
-Version:	5.2
+Version:	6.0
 Release:	1.1%{?dist}
 Summary:	Globus Toolkit - Globus GridFTP Server Library
 
@@ -102,8 +102,11 @@ install -m 644 -p %{SOURCE8} %{buildroot}%{_pkgdocdir}/README
 %{_libdir}/pkgconfig/%{name}.pc
 
 %changelog
-* Fri Sep 15 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.2-1.1.osg
-- Update to 5.2 and merge OSG changes (SOFTWARE-2895)
+* Wed Oct 11 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 6.0-1.1.osg
+- Update to 6.0 and merge OSG changes (SOFTWARE-2912)
+
+* Sat Sep 09 2017 Mattias Ellert <mattias.ellert@physics.uu.se> - 6.0-1
+- GT6 update: Add support for control channel over TLS
 
 * Tue Aug 22 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.1-1.1.osg
 - Merge OSG changes
