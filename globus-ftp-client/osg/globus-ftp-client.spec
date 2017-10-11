@@ -3,7 +3,7 @@
 Name:		globus-ftp-client
 %global _name %(tr - _ <<< %{name})
 Version:	8.36
-Release:	1.1%{?dist}
+Release:	1.2%{?dist}
 Summary:	Globus Toolkit - GridFTP Client Library
 
 License:	ASL 2.0
@@ -11,7 +11,6 @@ URL:		http://toolkit.globus.org/
 Source:		https://downloads.globus.org/toolkit/gt6/packages/%{_name}-%{version}.tar.gz
 #		README file
 Source8:	GLOBUS-GRIDFTP
-Patch0:         1853-ssh-bin.patch
 
 Requires:	globus-xio-popen-driver%{?_isa} >= 2
 BuildRequires:	globus-common-devel >= 15
@@ -67,7 +66,6 @@ GridFTP Client Library Documentation Files
 
 %prep
 %setup -q -n %{_name}-%{version}
-%patch0 -p1
 
 %build
 # Reduce overlinking
@@ -97,6 +95,10 @@ install -m 644 -p %{SOURCE8} %{buildroot}%{_pkgdocdir}/README
 %{?_licensedir: rm %{buildroot}%{_pkgdocdir}/GLOBUS_LICENSE}
 
 %check
+if grep -q @SSH_BIN@ %{buildroot}%{_datadir}/globus/gridftp-ssh; then
+    echo @SSH_BIN@ unexpanded
+    exit 1
+fi
 exit 0
 ##GLOBUS_HOSTNAME=localhost make %{?_smp_mflags} check VERBOSE=1
 
@@ -127,6 +129,9 @@ exit 0
 %{?_licensedir: %license GLOBUS_LICENSE}
 
 %changelog
+* Wed Oct 11 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 8.36-1.2
+- Drop 1853-ssh-bin.patch -- autoconf takes care of it (SOFTWARE-2935)
+
 * Tue Aug 22 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 8.36-1.1
 - Merge OSG changes (SOFTWARE-2861)
 
