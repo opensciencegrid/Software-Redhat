@@ -1,13 +1,14 @@
 Summary: VOMS plugins for the LCMAPS authorization framework
 Name: lcmaps-plugins-voms
 Version: 1.7.1
-Release: 1.4%{?dist}
+Release: 1.5%{?dist}
 License: ASL 2.0
 Group: System Environment/Libraries
 URL: http://wiki.nikhef.nl/grid/Site_Access_Control
 Source0: http://software.nikhef.nl/security/%{name}/%{name}-%{version}.tar.gz
 Patch0: sw2635-voms-validation.patch
 Patch1: sw2771-first-fqan.patch
+Patch2: sw2932-first-fqan-manpage.patch
 BuildRequires: lcmaps-devel
 Requires: lcmaps%{?_isa} >= 1.5.0-1
 # BuildRoot is still required for EPEL5
@@ -25,6 +26,7 @@ This package contains the VOMS plugins.
 %setup -q
 %patch0 -p1
 %patch1 -p0
+%patch2 -p1
 
 %build
 
@@ -81,6 +83,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man8/lcmaps_voms_poolgroup.mod.8*
 
 %changelog
+* Wed Oct 11 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.7.1-1.5
+- Document the options to toggle between considering the first VOMS FQAN or
+  considering all of them. (SOFTWARE-2932)
+
 * Tue Jun 13 2017 Brian Bockelman <bbockelm@cse.unl.edu> - 1.7.1-1.4
 - Avoid uninitialized-use bug SOFTWARE-2771.
 
