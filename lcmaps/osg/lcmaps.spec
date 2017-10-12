@@ -18,7 +18,7 @@
 Summary: Grid (X.509) and VOMS credentials to local account mapping service
 Name: lcmaps
 Version: 1.6.6
-Release: 1.3%{?dist}
+Release: 1.7%{?dist}
 License: ASL 2.0
 Group: System Environment/Libraries
 URL: http://wiki.nikhef.nl/grid/LCMAPS
@@ -355,7 +355,13 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Thu Apr 20 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6.6-1.3.osg
+* Thu Oct 12 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6.6-1.7.osg33
+- Add comments about -all-fqans to lcmaps.db templates (SOFTWARE-2932)
+
+# Releases 1.4 through 1.6 were skipped in OSG 3.3 because their
+# changes are for OSG 3.4 only
+
+* Thu Apr 20 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6.6-1.3.osg33
 - Add template lcmaps.db files under /usr/share/lcmaps/templates
   (SOFTWARE-2692)
 
