@@ -13,7 +13,7 @@
 Name:		globus-gridftp-server
 %global _name %(tr - _ <<< %{name})
 Version:	12.2
-Release:	1.1%{?dist}
+Release:	1.2%{?dist}
 Summary:	Globus Toolkit - Globus GridFTP Server
 
 License:	ASL 2.0
@@ -36,6 +36,9 @@ Source12:       globus-gridftp-sshftp.service
 Source13:       globus-gridftp-sshftp-reconfigure
 Source14:       globus-gridftp-sshftp-start
 Source15:       globus-gridftp-sshftp-stop
+#               Add IPv6 enabled by default                                                                                                          
+#               SOFTWARE-2920
+Source16:       ipv6.conf
 #		Fix globus-gridftp-server-setup-chroot for kfreebsd and hurd
 Patch0:		globus-gridftp-server-unames.patch
 #		Add an optional IPv6 address to EPSV response
@@ -44,6 +47,7 @@ Patch1:		%{name}-epsv-ip.patch
 #		Get command string
 #		https://github.com/globus/globus-toolkit/pull/98
 Patch2:		%{name}-cmd-string.patch
+
 Patch101:       gridftp-conf-logging.patch
 Patch102:       Do-not-ignore-config.d-files-with-a-.-in-the-name.patch
 
@@ -126,6 +130,7 @@ Globus GridFTP Server Development Files
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+
 %patch101 -p1
 %patch102 -p1
 
@@ -160,6 +165,7 @@ mv %{buildroot}%{_sysconfdir}/gridftp.gfork.default \
    %{buildroot}%{_sysconfdir}/gridftp.gfork
 mkdir -p %{buildroot}%{_sysconfdir}/gridftp.d
 
+
 # No need for environment in conf files
 sed '/ env /d' -i %{buildroot}%{_sysconfdir}/gridftp.gfork
 sed '/^env /d' -i %{buildroot}%{_sysconfdir}/xinetd.d/gridftp
@@ -193,6 +199,8 @@ install -m 0644 %{SOURCE7} $RPM_BUILD_ROOT/usr/share/osg/sysconfig/%{name}
 
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d
 install -m 0644 %{SOURCE8} $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/%{name}.logrotate
+
+install -m 0644 %{SOURCE16} $RPM_BUILD_ROOT%{_sysconfdir}/gridftp.d/ipv6.conf
 
 # Remove license file from pkgdocdir if licensedir is used
 %{?_licensedir: rm %{buildroot}%{_pkgdocdir}/GLOBUS_LICENSE}
@@ -260,6 +268,7 @@ fi
 %config(noreplace) %{_sysconfdir}/logrotate.d/%{name}.logrotate
 %config(noreplace) %{_sysconfdir}/sysconfig/%{name}
 %config(noreplace) %{_sysconfdir}/gridftp.conf
+%config(noreplace) %{_sysconfdir}/gridftp.d/ipv6.conf
 %config(noreplace) %{_sysconfdir}/gridftp.gfork
 %config(noreplace) %{_sysconfdir}/xinetd.d/gridftp
 /usr/share/osg/sysconfig/%{name}
@@ -284,6 +293,9 @@ fi
 %{_libdir}/pkgconfig/%{name}.pc
 
 %changelog
+* Mon Oct 16 2017 Edgar Fajardo <emfajard@ucsd.edu> 12.2-1.2.osg
+- Added IPv6 enabled by default
+
 * Tue Aug 22 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 12.2-1.1.osg
 - Merge OSG changes
 
