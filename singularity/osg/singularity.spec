@@ -21,20 +21,12 @@
 # 
 
 
-%{!?_rel:%{expand:%%global _rel 0.1}}
-
-# This allows us to pick up the default value from the configure
-%define with_slurm no
-%if "%{with_slurm}" == "yes"
-%define slurm 1
-%else
-%define slurm 0
-%endif
+%{!?_rel:%{expand:%%global _rel 1}}
 
 Summary: Application and environment virtualization
 Name: singularity
-Version: 2.3.2
-Release: %{_rel}.1%{?dist}
+Version: 2.4
+Release: %{_rel}%{?dist}
 # https://spdx.org/licenses/BSD-3-Clause-LBNL.html
 License: BSD-3-Clause-LBNL
 Group: System Environment/Base
@@ -42,19 +34,9 @@ URL: http://singularity.lbl.gov/
 Source: %{name}-%{version}.tar.gz
 ExclusiveOS: linux
 BuildRoot: %{?_tmppath}%{!?_tmppath:/var/tmp}/%{name}-%{version}-%{release}-root
+Requires: squashfs-tools
 
-# for el6 SOFTWARE-2755
-# https://jira.opensciencegrid.org/browse/SOFTWARE-2755?focusedCommentId=346082&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-346082                          
-Patch0: sw-2755-el6-overlay.patch
-
-%if %slurm
-# NOTE: doing a direct file dependency because experience has shown there are a few
-# site-local RPMs that have random pieces missing.
-BuildRequires: /usr/include/slurm/spank.h
-%endif
-
-Requires: %name-runtime = %{version}-%{release}
-
+Requires: %{name}-runtime = %{version}-%{release}
 
 %description
 Singularity provides functionality to make portable
@@ -67,49 +49,24 @@ Group: System Environment/Development
 %description devel
 Development files for Singularity
 
-%if %slurm
-%package slurm
-Summary: Singularity plugin for SLURM
-Group: System Environment/Libraries
-Requires: %{name}-runtime = %{version}-%{release}
-
-%description slurm
-The Singularity plugin for SLURM allows jobs to be started within
-a container.  This provides a simpler interface to the user (they
-don't have to be aware of the singularity executable) and doesn't
-require a setuid binary.
-%endif
-
 %package runtime
 Summary: Support for running Singularity containers
-# For debugging in containers.                                                                                                                                                                   
-Requires: strace ncurses-base
 Group: System Environment/Base
 
 %description runtime
-This package contains support for running containers created by %name,
-e.g. "singularity exec ...".
+This package contains support for running containers created
+by the %{name} package.
 
 %prep
 %setup
 
-## Added for patch0 
-%if %{?rhel}%{!?rhel:0} <= 6
-%patch0 -p1
-%endif
 
 %build
 if [ ! -f configure ]; then
   ./autogen.sh
 fi
 
-%configure \
-%if %slurm
-  --with-slurm
-%else
-  --without-slurm
-%endif
-
+%configure
 %{__make} %{?mflags}
 
 
@@ -124,76 +81,68 @@ rm -f $RPM_BUILD_ROOT/%{_libdir}/singularity/lib*.la
 rm -rf $RPM_BUILD_ROOT
 
 %files
-%doc examples AUTHORS.md CONTRIBUTING.md COPYRIGHT.md INSTALL.md LICENSE-LBNL.md LICENSE.md README.md
+%doc examples CONTRIBUTORS.md CONTRIBUTING.md COPYRIGHT.md INSTALL.md LICENSE-LBNL.md LICENSE.md README.md
 %attr(0755, root, root) %dir %{_sysconfdir}/singularity
 %attr(0644, root, root) %config(noreplace) %{_sysconfdir}/singularity/*
 
-
+%{_libexecdir}/singularity/cli/apps.*
 %{_libexecdir}/singularity/cli/bootstrap.*
-%{_libexecdir}/singularity/cli/copy.*
+%{_libexecdir}/singularity/cli/build.*
+%{_libexecdir}/singularity/cli/check.*
 %{_libexecdir}/singularity/cli/create.*
-%{_libexecdir}/singularity/cli/expand.*
-%{_libexecdir}/singularity/cli/export.*
-%{_libexecdir}/singularity/cli/import.*
+%{_libexecdir}/singularity/cli/image.*
 %{_libexecdir}/singularity/cli/inspect.*
+%{_libexecdir}/singularity/cli/mount.*
 %{_libexecdir}/singularity/cli/pull.*
-%{_libexecdir}/singularity/cli/selftest.exec
+%{_libexecdir}/singularity/cli/selftest.*
+%{_libexecdir}/singularity/handlers
 %{_libexecdir}/singularity/helpers
 %{_libexecdir}/singularity/image-handler.sh
 %{_libexecdir}/singularity/python
 
-
-
 # Binaries
-%{_libexecdir}/singularity/bin/bootstrap
-%{_libexecdir}/singularity/bin/copy
+%{_libexecdir}/singularity/bin/builddef
 %{_libexecdir}/singularity/bin/cleanupd
-%{_libexecdir}/singularity/bin/create
-%{_libexecdir}/singularity/bin/expand
-%{_libexecdir}/singularity/bin/export
 %{_libexecdir}/singularity/bin/get-section
-%{_libexecdir}/singularity/bin/import
 %{_libexecdir}/singularity/bin/mount
+%{_libexecdir}/singularity/bin/image-type
+%{_libexecdir}/singularity/bin/prepheader
 
 # Directories
 %{_libexecdir}/singularity/bootstrap-scripts
 
 #SUID programs
-%attr(4755, root, root) %{_libexecdir}/singularity/bin/create-suid
-%attr(4755, root, root) %{_libexecdir}/singularity/bin/expand-suid
-%attr(4755, root, root) %{_libexecdir}/singularity/bin/export-suid
-%attr(4755, root, root) %{_libexecdir}/singularity/bin/import-suid
 %attr(4755, root, root) %{_libexecdir}/singularity/bin/mount-suid
 
 %files runtime
 %dir %{_libexecdir}/singularity
-%{_libexecdir}/singularity/functions
-%{_bindir}/singularity
-%{_bindir}/run-singularity
 %dir %{_localstatedir}/singularity
 %dir %{_localstatedir}/singularity/mnt
 %dir %{_localstatedir}/singularity/mnt/session
 %dir %{_localstatedir}/singularity/mnt/container
 %dir %{_localstatedir}/singularity/mnt/overlay
+%{_bindir}/singularity
+%{_bindir}/run-singularity
+%{_libdir}/singularity/lib*.so.*
 %{_libexecdir}/singularity/cli/action_argparser.*
 %{_libexecdir}/singularity/cli/exec.*
+%{_libexecdir}/singularity/cli/help.*
+%{_libexecdir}/singularity/cli/instance.*
 %{_libexecdir}/singularity/cli/run.*
-%{_libexecdir}/singularity/cli/mount.*
 %{_libexecdir}/singularity/cli/shell.*
-%{_libexecdir}/singularity/cli/singularity.help
 %{_libexecdir}/singularity/cli/test.*
 %{_libexecdir}/singularity/bin/action
-%{_libdir}/singularity/lib*.so.*
+%{_libexecdir}/singularity/bin/start
+%{_libexecdir}/singularity/functions
 %dir %{_sysconfdir}/singularity
 %config(noreplace) %{_sysconfdir}/singularity/*
 %{_mandir}/man1/singularity.1*
 %dir %{_sysconfdir}/bash_completion.d
 %{_sysconfdir}/bash_completion.d/singularity
 
-
 #SUID programs
 %attr(4755, root, root) %{_libexecdir}/singularity/bin/action-suid
-
+%attr(4755, root, root) %{_libexecdir}/singularity/bin/start-suid
 
 %files devel
 %defattr(-, root, root)
@@ -202,29 +151,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/singularity/*.h
 
 
-%if %slurm
-%files slurm
-%defattr(-, root, root)
-%{_libdir}/slurm/singularity.so
-%endif
-
 %changelog
-* Wed Sep 20 2017 Brian Lin <blin@cs.wisc.edu> 2.3.2-0.1.1
-- Bump version to 2.3.2
-
-* Tue Sep 5 2017 Edgar Fajardo <emfajard@ucsd.edu> 2.3.1-0.1.4
-- Added pathc for singualrity on el6.
-
-* Tue Aug 2 2017 Edgar Fajardo <emfajard@ucsd.edu> 2.3.1-0.1.3
-- Split the package bit into the runtime and main (SOFTWARE-2755)
-- Update to upstream's singularity-2.3.1-0.1 singularity.spec
-
-* Thu Jun  1 2017 Dave Dykstra <dwd@fnal.gov> - 2.3-0.1
-- Update to upstream's singularity-2.3-0.1 singularity.spec
-
-* Tue Feb 14 2017 Derek Weitzel <dweitzel@cse.unl.edu> - 2.2.1-1
-- Packaging bug release version of Singularity 2.2.1
-
-* Thu Nov 10 2016 Derek Weitzel <dweitzel@cse.unl.edu> - 2.2-1
-- First packaging of Singularity 2.2 for OSG
-
+* Thu Oct 12 2017 Dave Dykstra <dwd@fnal.gov> - 2.4
+- Package for OSG.  No changes other than this log entry.
