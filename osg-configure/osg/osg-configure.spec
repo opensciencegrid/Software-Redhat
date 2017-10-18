@@ -1,6 +1,6 @@
 Summary: Package for OSG-Configure and associated scripts
 Name: osg-configure
-Version: 1.10.1
+Version: 1.10.2
 Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
@@ -103,7 +103,7 @@ Summary: OSG configuration file for misc software
 Group: Grid
 Provides: configure-osg-misc
 Requires: %name = %version-%release
-Requires: lcmaps-db-templates
+Requires: lcmaps-db-templates >= 1.6.6-1.8
 %description misc
 This package includes the ini files for various osg software including
 certificates setup, lcmaps, and glexec
@@ -344,6 +344,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Oct 17 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 1.10.2-1
+- Add option to evaluate all FQANs with vomsmap auth (SOFTWARE-2932)
+
 * Fri Sep 22 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 1.10.1-1
 - Don't use condor_config_val -expand (SOFTWARE-2902)
 - Handle missing fetch_crl (SOFTWARE-2891)
