@@ -1,0 +1,127 @@
+From cc44f9cc5145beb84b2f8a15afb7c686bc815c0f Mon Sep 17 00:00:00 2001
+From: Georgios Bitzes <georgios.bitzes@cern.ch>
+Date: Fri, 20 Oct 2017 11:11:46 +0200
+Subject: [PATCH 1/2] [XrdCl] Fix error checking when setting sec.uid, sec.gid
+
+Previously, I was calling setfsuid(-1) to check if the
+previous call had succeeded, since this syscall will
+always return the current fsuid, whether the syscall
+itself succeeded or not. There's no way to check
+other than calling setfsuid again, since there's no
+getfsuid.
+
+The expectation was that setfsuid(-1) will always fail
+and not affect the fsuid, effectively acting as getfsuid,
+but it appears that on SLC6 it succeeds, setting the
+fsuid to.. 4294967295. On Fedora 26 it fails as expected,
+I have no idea why there's a difference.
+
+Instead, let's use setfsuid(pFsUid) again, just to
+check if the previous call succeeded.
+---
+ src/XrdCl/XrdClUtils.hh | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/XrdCl/XrdClUtils.hh b/src/XrdCl/XrdClUtils.hh
+index 9c152c1..c06bf2f 100644
+--- a/src/XrdCl/XrdClUtils.hh
++++ b/src/XrdCl/XrdClUtils.hh
+@@ -255,7 +255,7 @@ namespace XrdCl
+         if(pFsUid >= 0) {
+           pPrevFsUid = setfsuid(pFsUid);
+ 
+-          if(setfsuid(-1) != pFsUid) {
++          if(setfsuid(pFsUid) != pFsUid) {
+             pOk = false;
+             return;
+           }
+@@ -267,7 +267,7 @@ namespace XrdCl
+         if(pFsGid >= 0) {
+           pPrevFsGid = setfsgid(pFsGid);
+ 
+-          if(setfsgid(-1) != pFsGid) {
++          if(setfsgid(pFsGid) != pFsGid) {
+             pOk = false;
+             return;
+           }
+-- 
+1.8.3.1
+
+
+From 0639de03fc957a5a4aa29b327c0f3801de09207d Mon Sep 17 00:00:00 2001
+From: Georgios Bitzes <georgios.bitzes@cern.ch>
+Date: Mon, 23 Oct 2017 15:57:35 +0200
+Subject: [PATCH 2/2] [XrdCl] Stop ignoring return values of setfsuid, setfsgid
+
+---
+ src/XrdCl/XrdClUtils.hh           | 15 ++++++++++++---
+ src/XrdCl/XrdClXRootDTransport.cc |  2 +-
+ 2 files changed, 13 insertions(+), 4 deletions(-)
+
+diff --git a/src/XrdCl/XrdClUtils.hh b/src/XrdCl/XrdClUtils.hh
+index c06bf2f..2ae8c01 100644
+--- a/src/XrdCl/XrdClUtils.hh
++++ b/src/XrdCl/XrdClUtils.hh
+@@ -26,6 +26,8 @@
+ #include "XrdCl/XrdClURL.hh"
+ #include "XrdCl/XrdClXRootDResponses.hh"
+ #include "XrdCl/XrdClPropertyList.hh"
++#include "XrdCl/XrdClDefaultEnv.hh"
++#include "XrdCl/XrdClConstants.hh"
+ #include "XrdNet/XrdNetUtils.hh"
+ 
+ #include <sys/time.h>
+@@ -243,7 +245,8 @@ namespace XrdCl
+       //------------------------------------------------------------------------
+       //! Constructor
+       //------------------------------------------------------------------------
+-      ScopedFsUidSetter(uid_t fsuid, gid_t fsgid) : pFsUid(fsuid), pFsGid(fsgid)
++      ScopedFsUidSetter(uid_t fsuid, gid_t fsgid, const std::string &streamName)
++      : pFsUid(fsuid), pFsGid(fsgid), pStreamName(streamName)
+       {
+         pOk = true;
+         pPrevFsUid = -1;
+@@ -278,12 +281,16 @@ namespace XrdCl
+       //! Destructor
+       //------------------------------------------------------------------------
+       ~ScopedFsUidSetter() {
++        Log *log = DefaultEnv::GetLog();
++
+         if(pPrevFsUid >= 0) {
+-          setfsuid(pPrevFsUid);
++          int retcode = setfsuid(pPrevFsUid);
++          log->Dump(XRootDTransportMsg, "[%s] Restored fsuid from %d to %d", pStreamName.c_str(), retcode, pPrevFsUid);
+         }
+ 
+         if(pPrevFsGid >= 0) {
+-          setfsgid(pPrevFsGid);
++          int retcode = setfsgid(pPrevFsGid);
++          log->Dump(XRootDTransportMsg, "[%s] Restored fsgid from %d to %d", pStreamName.c_str(), retcode, pPrevFsGid);
+         }
+       }
+ 
+@@ -295,6 +302,8 @@ namespace XrdCl
+       int pFsUid;
+       int pFsGid;
+ 
++      const std::string &pStreamName;
++
+       int pPrevFsUid;
+       int pPrevFsGid;
+ 
+diff --git a/src/XrdCl/XrdClXRootDTransport.cc b/src/XrdCl/XrdClXRootDTransport.cc
+index 7f43711..6798a2c 100644
+--- a/src/XrdCl/XrdClXRootDTransport.cc
++++ b/src/XrdCl/XrdClXRootDTransport.cc
+@@ -1836,7 +1836,7 @@ namespace XrdCl
+     if(secgidc) secgid = atoi(secgidc);
+ 
+ #ifdef __linux__
+-    ScopedFsUidSetter uidSetter(secuid, secgid);
++    ScopedFsUidSetter uidSetter(secuid, secgid, hsData->streamName);
+     if(!uidSetter.IsOk()) {
+       log->Error( XRootDTransportMsg, "[%s] Error while setting (fsuid, fsgid) to (%d, %d)",
+                   hsData->streamName.c_str(), secuid, secgid );
+-- 
+1.8.3.1
+
