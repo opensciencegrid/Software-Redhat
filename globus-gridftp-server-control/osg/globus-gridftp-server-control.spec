@@ -3,7 +3,7 @@
 Name:		globus-gridftp-server-control
 %global _name %(tr - _ <<< %{name})
 Version:	6.0
-Release:	1.1%{?dist}
+Release:	2.1%{?dist}
 Summary:	Globus Toolkit - Globus GridFTP Server Library
 
 License:	ASL 2.0
@@ -102,8 +102,11 @@ install -m 644 -p %{SOURCE8} %{buildroot}%{_pkgdocdir}/README
 %{_libdir}/pkgconfig/%{name}.pc
 
 %changelog
-* Wed Oct 11 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 6.0-1.1.osg
-- Update to 6.0 and merge OSG changes (SOFTWARE-2912)
+* Wed Oct 25 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 6.0-2.1.osg
+- Merge OSG changes (SOFTWARE-2945)
+
+* Fri Oct 20 2017 Mattias Ellert <mattias.ellert@physics.uu.se> - 6.0-2
+- Fix for IPv4 mapped addresses
 
 * Sat Sep 09 2017 Mattias Ellert <mattias.ellert@physics.uu.se> - 6.0-1
 - GT6 update: Add support for control channel over TLS
