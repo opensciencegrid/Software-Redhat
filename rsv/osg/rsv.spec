@@ -8,7 +8,7 @@
 
 Name:      rsv
 Summary:   RSV Meta Package
-Version:   3.15.0
+Version:   3.16.0
 Release:   1%{?dist}
 License:   Apache 2.0
 Group:     Applications/Monitoring
@@ -281,6 +281,12 @@ fi
 
 
 %changelog
+* Wed Oct 25 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.16.0-1
+- Drop atlas.xrootd probes (SOFTWARE-1974)
+- Fix URLs in crl-freshness-probe (SOFTWARE-2926)
+- Dummy out org.osg.general.osg-version RSV probe (SOFTWARE-2910)
+- Remove vo-supported-probe (SOFTWARE-2763)
+
 * Tue Sep 05 2017 Carl Edquist <edquist@cs.wisc.edu> - 3.15.0-1
 - Drop vo-supported-probe (SOFTWARE-2763)
 
