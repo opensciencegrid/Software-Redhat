@@ -2,7 +2,7 @@
 #define gitrev
 
 Name:           gridftp-hdfs
-Version:        1.0
+Version:        1.1
 Release:        1.1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary:        HDFS DSI plugin for GridFTP
 Group:          System Environment/Daemons
@@ -103,6 +103,13 @@ fi
 %{_datarootdir}/osg/sysconfig/globus-gridftp-server-plugin
 
 %changelog
+* Thu Oct 26 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.1-1.1
+- Merge OSG changes (osg-sysconfig.patch)
+
+* Thu Oct 26 2017 Brian Bockelman <bbockelm@cse.unl.edu> - 1.1-1
+- Add support for CVMFS-style block checksums.
+- Minor deadlock fixes contributed by JasonAlt.
+
 * Tue Sep 05 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.0-1.1
 - Add osg-sysconfig.patch
 
