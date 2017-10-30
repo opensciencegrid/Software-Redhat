@@ -1,5 +1,5 @@
 Name:           vo-client
-Version:        75
+Version:        76
 Release:        1%{?dist}
 Summary:        Contains vomses file for use with user authentication and edg-mkgridmap.conf file that contains configuration information for edg-mkgridmap.
 
@@ -98,6 +98,11 @@ rm -rf $RPM_BUILD_ROOT
 %attr(0600,tomcat,tomcat) %config(noreplace) %{_sysconfdir}/gums/gums.config.template
 
 %changelog
+* Mon Oct 30 2017 Carl Edquist <edquist@cs.wisc.edu> - 76-1
+- Update to vo-client 76
+  - Drop redundant geant4-lcgadmin objects (SOFTWARE-2921)
+  - Additional snoplus voms servers (SOFTWARE-2965)
+
 * Fri Sep 08 2017 Carl Edquist <edquist@cs.wisc.edu> - 75-1
 - Update to vo-client 75
   - Add CMS wildcard to default map file (SOFTWARE-2852)
