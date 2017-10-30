@@ -21,6 +21,10 @@
 # that would make newer RPM debuginfo generation scripts happy.
 %undefine _missing_build_ids_terminate_build
 
+%define hadoop_base_version 2.7.3
+%define hadoop_version 2.7.3
+%define hadoop_release 1.1%{?dist}
+
 %define hadoop_name hadoop
 %define etc_hadoop /etc/%{name}
 %define etc_yarn /etc/yarn
