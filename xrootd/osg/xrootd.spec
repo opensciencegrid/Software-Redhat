@@ -13,7 +13,7 @@
 %global use_libc_semaphore 0
 %endif
 
-%define _alphatag rc2
+%define _alphatag rc3
 %define _release 1
 
 Name:		xrootd
@@ -27,8 +27,6 @@ License:	LGPLv3+
 URL:		http://xrootd.org/
 Source0:        %{name}-%{version}-%{_alphatag}.tar.gz
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-
-Patch0:		xrdcl-setfs.patch
 
 
 BuildRequires:	cmake
@@ -248,7 +246,6 @@ This package contains the API documentation of the xrootd libraries.
 
 %prep
 %setup -n %{name}-%{version}-%{_alphatag}
-%patch0 -p1
 
 %if %{?fedora}%{!?fedora:0} <= 9 && %{?rhel}%{!?rhel:0} <= 5
 # Older versions of SELinux do not have policy for open
@@ -648,6 +645,9 @@ fi
 %doc %{_pkgdocdir}
 
 %changelog
+* Mon Oct 30 2017 Marian Zvada <marian.zvada@cern.ch> - 1:4.7.1-0.1.rc3
+- Update to 4.7.1.rc3 SOFTWARE-2933
+
 * Mon Oct 23 2017 Marian Zvada <marian.zvada@cern.ch> - 1:4.7.1-0.1.rc2
 - patch for ignore -Wunused-result included
 - Update to 4.7.1.rc2 SOFTWARE-2933
