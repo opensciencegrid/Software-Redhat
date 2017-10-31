@@ -13,7 +13,7 @@
 Name: gums
 Summary: Grid User Management System.  Authz for grid sites
 Version: 1.5.2
-Release: 11%{?dist}
+Release: 12%{?dist}
 License: Unknown
 Group: System Environment/Daemons
 URL: https://github.com/opensciencegrid/gums
@@ -512,13 +512,16 @@ semanage permissive -a tomcat_t
 %postun service
 if [ $1 -eq 0 ]; then
     %{_sbindir}/update-alternatives --remove javamail %{gumslibdir}/mail-1.4.1.jar
+
+    %if 0%{?rhel} >= 7
+    semanage permissive -d tomcat_t
+    %endif
 fi
 
-%if 0%{?rhel} >= 7
-semanage permissive -d tomcat_t
-%endif
-
 %changelog
+* Tue Oct 31 2017 Carl Edquist <edquist@cs.wisc.edu> - 1.5.2-12
+- Fix selinux tomcat/mysql handling for upgrades (SOFTWARE-2672)
+
 * Thu Sep 28 2017 Carl Edquist <edquist@cs.wisc.edu> - 1.5.2-11
 - Drop remaining references to software.grid.iu.edu (SOFTWARE-2672)
 
