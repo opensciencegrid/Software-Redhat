@@ -1,6 +1,6 @@
 Summary: osg-pki-tools
 Name: osg-pki-tools
-Version: 1.2.21
+Version: 2.0.0
 Release: 1%{?dist}
 Source: OSGPKITools-%{version}.tar.gz
 License: Apache 2.0
@@ -10,9 +10,8 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildArch: noarch
 Requires: python
 Requires: m2crypto
-Requires: python-simplejson
-%if 0%{?rhel} < 6
-Requires: python-ssl
+%if 0%{?rhel} < 7
+Requires: python-argparse
 %endif
 
 %if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
@@ -22,17 +21,6 @@ Requires: python-ssl
 
 %description
 %{summary}
-
-%package tests
-Summary: tests for osg-pki-tools
-Requires: %{name} = %{version}
-# Requires: python-scripttest
-# ^ Leaving this behind for future reference. 'scripttest' is not available
-# as an RPM package, and must be installed via pip or easy_install
-Group: Grid
-
-%description tests
-tests for osg-pki-tools
 
 %prep
 %setup -n OSGPKITools-%{version}
@@ -53,7 +41,7 @@ install -m 755 -t %{buildroot}%{_bindir}    \
     osgpkitools/osg-user-cert-revoke
 install -d %{buildroot}%{_sysconfdir}/osg
 install -m 644 osgpkitools/pki-clients.ini %{buildroot}%{_sysconfdir}/osg
-mv -f %{buildroot}%{python_sitelib}/tests %{buildroot}%{python_sitelib}/osgpkitools/tests
+rm -r %{buildroot}%{python_sitelib}/tests
 install -d %{buildroot}%{_defaultdocdir}/%{name}-%{version}
 install -m 644 -t %{buildroot}%{_defaultdocdir}/%{name}-%{version} CHANGELOG.txt LICENSE.txt README.txt
 
@@ -69,15 +57,12 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/osg/pki-clients.ini
 %{_defaultdocdir}/%{name}-%{version}/*
 
-%files tests
-%defattr(-,root,root)
-%dir %{python_sitelib}/osgpkitools/tests
-%{python_sitelib}/osgpkitools/tests/*
-
 
 %changelog
-* Thu Feb 16 2017 Brian Lin <blin@cs.wisc.edu> - 1.2.21-1
-- Drop PKI tool quota verification (SOFTWARE-2472)
+* Tue Oct 31 2017 Brian Lin <blin@cs.wisc.edu> - 2.0.0-1
+- osg-cert-request defaults to authenticated requests (SOFTWARE-2898)
+- Certificate request quota verification is now performed server-side (SOFTWARE-2472)
+- Remove 'tests' package since the tests are not ready for public consumption
 
 * Mon Oct 24 2016 Brian Lin <blin@cs.wisc.edu> - 1.2.20-1
 - Generate SHA2 CSRs (SOFTWARE-2136)
