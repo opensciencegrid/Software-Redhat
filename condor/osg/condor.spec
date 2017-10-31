@@ -220,6 +220,7 @@ Source123: zlib-1.2.3.tar.gz
 %endif
 
 Patch0: sw2615_jr_crash.patch
+Patch1: voms-bug.patch
 #% if 0%osg
 Patch8: osg_sysconfig_in_init_script.patch
 #% endif
@@ -745,6 +746,7 @@ exit 0
 %endif
 
 %patch0 -p1
+%patch1 -p1
 %if 0%{?osg} || 0%{?hcc}
 %patch8 -p1
 %endif
@@ -1903,6 +1905,9 @@ fi
 %endif
 
 %changelog
+* Tue Oct 31 2017 Carl Edquist <edquist@cs.wisc.edu> - 8.4.12-2.2
+- Fix issue validating VOMS proxies (SOFTWARE-2977)
+
 * Mon Aug 07 2017 Tim Theisen <tim@cs.wisc.edu> - 8.4.12-2.1
 - Update SELinux profile for Red Hat 7.4
 
