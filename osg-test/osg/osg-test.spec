@@ -5,7 +5,7 @@
 
 Summary:   Tests an OSG Software installation
 Name:      osg-test
-Version:   1.11.2
+Version:   2.0.0
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -52,6 +52,15 @@ rm -rf $RPM_BUILD_ROOT
 %{_sbindir}/%{name}-log-viewer
 
 %changelog
+* Wed Nov 01 2017 Brian Lin <blin@cs.wisc.edu> - 2.0.0-1
+- Drop GRAM, RHEL5, OSG < 3.3, and dCache storage probe tests
+  (SOFTWARE-2592, SOFTWARE-2913, SOFTWARE-2955)
+- Add GridFTP-HDFS, XRootD-HDFS, and singularity tests (SOFTWARE-2639,
+  SOFTWARE-2884)
+- Fix tomcat startup issues in tests d.t. lack of entropy
+  (SOFTWARE-2880)
+- Fix GSISSH 3.3 EL7 test failures (SOFTWARE-2837)
+
 * Thu Sep 07 2017 Brian Lin <blin@cs.wisc.edu> - 1.11.2-1
 - Limit status checks before starting services (SOFTWARE-2846)
 - Drop 'VO-supported' RSV probe (SOFTWARE-2882)
