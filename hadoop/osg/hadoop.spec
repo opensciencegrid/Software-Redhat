@@ -201,6 +201,34 @@ Source37: hadoop-kms-server.svc
 Source38: kms.default
 Source39: kms-tomcat-deployment.sh
 Source40: filter-provides.sh
+
+Source100: apache-forrest-0.8.tar.gz
+
+Source101: hadoop-0.20-mapreduce.tmpfiles.conf
+Source102: hadoop-hdfs.tmpfiles.conf
+Source103: hadoop-mapreduce.tmpfiles.conf
+Source104: hadoop-yarn.tmpfiles.conf
+
+# patches for %{name}-bigtop-packaging.tar.gz
+Patch0: do-component-build.patch
+Patch1: javafuse.patch
+Patch2: libhdfs-soversion-install.patch
+Patch3: init.d.tmpl.patch
+Patch4: install_hadoop.patch
+
+# patches for %{name}-%{hadoop_patched_version}.tar.gz
+Patch10: libhdfs-soversion.patch
+##Patch11: fix_chown.patch  # upstream
+#Patch12: pom.xml.patch
+#Patch13: 1184-extendable-client.patch
+#Patch14: 2006-HDFS-4997.patch
+#Patch15: ivy-maven-repo.patch
+#Patch16: build.xml.patch
+#Patch17: gridmix.patch
+#Patch18: unistd.patch
+#Patch19: HDFS-10193.patch
+#Patch20: 2588-out-of-quota-msg.patch
+
 Buildroot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id} -u -n)
 BuildRequires: python >= 2.4
 BuildRequires: git
@@ -652,8 +680,26 @@ These projects (enumerated below) allow HDFS to be mounted (on most flavors of U
 
 
 %prep
-%setup -q -n %{name}-%{hadoop_patched_version}
+%setup -q -n %{name}-%{hadoop_patched_version} -a 100
 tar -C `dirname %{SOURCE29}` -xzf %{SOURCE29}
+pushd `dirname %{SOURCE29}`
+%patch0 -p1
+%patch1 -p1
+%patch2 -p1
+# % patch3 -p1
+%patch4 -p1
+popd
+%patch10 -p1
+# % patch11 -p1
+# %%patch12 -p1
+# %%patch13 -p1
+# %%patch14 -p1
+# %%patch15 -p1
+# %%patch16 -p1
+# %%patch17 -p1
+# %%patch18 -p1
+# %%patch19 -p1
+# %%patch20 -p1
 
 %build
 export COMPONENT_HASH=520d8b072e666e9f21d645ca6a5219fc37535a52
@@ -662,6 +708,7 @@ export COMPONENT_HASH=520d8b072e666e9f21d645ca6a5219fc37535a52
 # This assumes that you installed Forrest and set FORREST_HOME
 
 export JAVA_HOME=%{java_home}
+export FORREST_HOME=$PWD/apache-forrest-0.8
 env FULL_VERSION=%{hadoop_patched_version} HADOOP_VERSION=%{hadoop_version} HADOOP_ARCH=%{hadoop_arch} bash %{SOURCE1}
 
 %clean
@@ -753,6 +800,14 @@ done
 %__install -d -m 0755 $RPM_BUILD_ROOT/%{run_mapreduce}
 %__install -d -m 0755 $RPM_BUILD_ROOT/%{run_httpfs}
 %__install -d -m 0755 $RPM_BUILD_ROOT/%{run_kms}
+
+%if 0%{?rhel} >= 7
+%__install -d -m 0755 $RPM_BUILD_ROOT%_tmpfilesdir
+%__install -m 0644 %{SOURCE101} $RPM_BUILD_ROOT%_tmpfilesdir/hadoop-0.20-mapreduce.conf
+%__install -m 0644 %{SOURCE102} $RPM_BUILD_ROOT%_tmpfilesdir/hadoop-hdfs.conf
+%__install -m 0644 %{SOURCE103} $RPM_BUILD_ROOT%_tmpfilesdir/hadoop-mapreduce.conf
+%__install -m 0644 %{SOURCE104} $RPM_BUILD_ROOT%_tmpfilesdir/hadoop-yarn.conf
+%endif
 
 %pre
 getent group hadoop >/dev/null || groupadd -r hadoop
