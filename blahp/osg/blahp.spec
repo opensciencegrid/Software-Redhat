@@ -4,7 +4,7 @@
 %define bl_libexecdir %{_libexecdir}/%{name}
 
 Name:		blahp
-Version:	1.18.33.bosco
+Version:	1.18.34.bosco
 Release:	1%{?gitrev:.%{gitrev}}%{?dist}
 Summary:	gLite BLAHP daemon
 
@@ -183,6 +183,10 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Tue Oct 31 2017 Brian Lin <blin@cs.wisc.edu> - 1.18.34.bosco-1
+- Fix memory usage parsing for SLURM and PBS (SOFTWARE-2929)
+- Fix UnicodeDecodeError when reading blah.config (SOFTWARE-2953)
+
 * Tue Aug 29 2017 Brian Lin <blin@cs.wisc.edu> - 1.18.33.bosco-1
 - Fix bug that caused jobs submitted to PBS batch systems to be held
   with "Error parsing classad or job not found" (SOFTWARE-2875)
