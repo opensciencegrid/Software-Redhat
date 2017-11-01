@@ -650,22 +650,6 @@ Requires: fuse-libs
 %description hdfs-fuse
 These projects (enumerated below) allow HDFS to be mounted (on most flavors of Unix) as a standard file system using
 
-%define selinux_variants mls strict targeted
-%global selinux_policyver %(%{__sed} -e 's,.*selinux-policy-\\([^/]*\\)/.*,\\1,' /usr/share/selinux/devel/policyhelp || echo 0.0.0)
-
-%package hdfs-fuse-selinux
-Summary: SELinux policy files for fuse mount
-Group:          System Environment/Daemons
-BuildRequires:  checkpolicy selinux-policy-devel hardlink selinux-policy-targeted
-Requires: %{name} = %{version}-%{release}
-Requires:       selinux-policy >= %{selinux_policyver}
-Requires(post):         /usr/sbin/semodule /usr/sbin/semanage /sbin/fixfiles
-Requires(preun):        /sbin/service /usr/sbin/semodule /usr/sbin/semanage /sbin/fixfiles
-Requires(postun):       /usr/sbin/semodule
-Obsoletes: hadoop-0.20-fuse-selinux <= 0.20.2+737
-
-%description hdfs-fuse-selinux
-selinux policy files for the Hadoop fuse hdfs mounts
 
 %prep
 %setup -q -n %{name}-%{hadoop_patched_version}
@@ -676,23 +660,6 @@ export COMPONENT_HASH=520d8b072e666e9f21d645ca6a5219fc37535a52
 # This assumes that you installed Java JDK 6 and set JAVA_HOME
 # This assumes that you installed Java JDK 5 and set JAVA5_HOME
 # This assumes that you installed Forrest and set FORREST_HOME
-
-# Build the selinux policy file
-mkdir SELinux
-# The module is named hadoop-fuse so the .te file has to be named
-# hadoop-fuse.te or else checkmodule will complain.
-#
-# We rename the resulting .pp file later.
-cp %{SOURCE31} SELinux/%{name}-fuse.te
-pushd SELinux
-for variant in %{selinux_variants}
-do
-    make NAME=${variant} -f %{_datadir}/selinux/devel/Makefile
-    mv %{name}-fuse.pp %{name}.pp.${variant}
-    make NAME=${variant} -f %{_datadir}/selinux/devel/Makefile clean
-done
-popd
-
 
 export JAVA_HOME=%{java_home}
 env FULL_VERSION=%{hadoop_patched_version} HADOOP_VERSION=%{hadoop_version} HADOOP_ARCH=%{hadoop_arch} bash %{SOURCE1}
@@ -769,22 +736,6 @@ done
 %__cp %{SOURCE4} $RPM_BUILD_ROOT/etc/default/hadoop-fuse
 # FIXME: we need to think how to get rid of the following file
 %__cp %{SOURCE30} $RPM_BUILD_ROOT/etc/default/hadoop-0.20-mapreduce
-
-%ifarch noarch
-%else
-
-# Install selinux policies
-pushd SELinux
-for variant in %{selinux_variants}
-do
-    install -d $RPM_BUILD_ROOT%{_datadir}/selinux/${variant}
-    install -p -m 644 %{name}.pp.${variant} \
-           $RPM_BUILD_ROOT%{_datadir}/selinux/${variant}/%{name}.pp
-done
-popd
-# Hardlink identical policy module packages together
-/usr/sbin/hardlink -cv $RPM_BUILD_ROOT%{_datadir}/selinux
-%endif
 
 # /var/lib/*/cache
 %__install -d -m 1777 $RPM_BUILD_ROOT/%{state_yarn}/cache
@@ -934,30 +885,6 @@ if [ $1 -eq 0 ]; then
     done
 fi
 
-
-%post hdfs-fuse-selinux
-# Install SELinux policy modules
-for selinuxvariant in %{selinux_variants}
-do
-  /usr/sbin/semodule -s ${selinuxvariant} -i \
-    %{_datadir}/selinux/${selinuxvariant}/%{name}.pp &> /dev/null || :
-done
-
-%preun hdfs-fuse-selinux
-if [ "$1" -lt "1" ] ; then
-    for variant in %{selinux_variants} ; do
-        /usr/sbin/semodule -s ${variant} -r %{name} &> /dev/null || :
-    done
-fi
-
-%postun hdfs-fuse-selinux
-if [ "$1" -ge "1" ] ; then
-    # Replace the module if it is already loaded. semodule -u also
-    # checks the module version
-    for variant in %{selinux_variants} ; do
-        /usr/sbin/semodule -u %{_datadir}/selinux/${variant}/%{name}.pp || :
-    done
-fi
 
 %postun kms-server
 if [ $1 -ge 1 ]; then
@@ -1176,11 +1103,6 @@ fi
 %if 0%{?rhel} >= 7
 %{_tmpfilesdir}/hadoop-0.20-mapreduce.conf
 %endif
-
-%files hdfs-fuse-selinux
-%defattr(-,root,root,-)
-%doc SELinux/*.??
-%{_datadir}/selinux/*/%{name}.pp
 
 %changelog
 * Thu Sep 28 2017 Carl Edquist <edquist@cs.wisc.edu> - 2.6.0+cdh5.12.1+2540-1.cdh5.12.1.p0.3.1
