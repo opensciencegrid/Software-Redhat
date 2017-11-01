@@ -2,7 +2,7 @@
 %global pypi_name scitokens
 
 Name:           python-%{pypi_name}
-Version:        0.3.0
+Version:        0.3.1
 Release:        1%{?dist}
 Summary:        SciToken reference implementation library
 
@@ -59,6 +59,9 @@ ln -s %{_bindir}/scitokens-admin-create-token-%{python2_version} %{buildroot}/%{
 %{python2_sitelib}/%{pypi_name}-%{version}-py?.?.egg-info
 
 %changelog
+* Wed Nov 01 2017 Derek Weitzel <dweitzel@cse.unl.edu> - 0.3.1-1
+- Fix packaging to include internal util module
+
 * Wed Nov 01 2017 Derek Weitzel <dweitzel@cse.unl.edu> - 0.3.0-1
 - Initial package.
 
