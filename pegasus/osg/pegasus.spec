@@ -1,6 +1,6 @@
 Name:           pegasus
 Version:        4.7.4
-Release:        1.1%{?dist}
+Release:        1.2%{?dist}
 Summary:        Workflow management system for HTCondor, grids, and clouds
 Group:          Applications/System
 License:        ASL 2.0
@@ -12,11 +12,11 @@ Source:         pegasus-source-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-root
 
 # Some OSG Software changes below to use Java 7
-BuildRequires:  ant, ant-apache-regexp, java7-devel, gcc, groff, python-devel, gcc-c++, make, asciidoc, libxslt, fop, python-setuptools, openssl-devel
+BuildRequires:  ant, ant-apache-regexp, java-devel = 1:1.7.0, gcc, groff, python-devel, gcc-c++, make, asciidoc, libxslt, fop, python-setuptools, openssl-devel
 # Added since 4.7.4
 BuildRequires: R-devel
 
-Requires:       java7 >= 1:1.7.0, python >= 2.4, condor >= 7.6, graphviz
+Requires:       java = 1:1.7.0, python >= 2.4, condor >= 7.6, graphviz
 
 # Added by OSG Software, so that all builds and binaries work on el5 and el6
 %if 0%{?rhel} < 7
@@ -90,12 +90,15 @@ rm -Rf %{buildroot}
 
 
 %changelog
-* Mon Mar 21 2017 Edgar Fajardo <efajardo@physics.ucsd.edu> -4.7.4-1.1
+* Thu Nov 02 2017 Carl Edquist <edquist@cs.wisc.edu> 4.7.4-1.2
+- Rename java7 dependencies (SOFTWARE-2991)
+
+* Mon Mar 21 2017 Edgar Fajardo <efajardo@physics.ucsd.edu> 4.7.4-1.1
 - Bumped to version 4.7.4 - SOFTWARE-2626
 - Added R-devel to the build requires
 - Added patch for javadoc error in el7
 
-* Fri Apr 22 2016 Edgar Fajardo <efajardo@physics.ucsd.edu> -4.6.1-1.1
+* Fri Apr 22 2016 Edgar Fajardo <efajardo@physics.ucsd.edu> 4.6.1-1.1
 - Bumped to version 4.6.1 - SOFTWARE-2286
 * Thu Oct 02 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 4.3.1-1.3
 - Remove ant-nodeps buildrequire on EL7
