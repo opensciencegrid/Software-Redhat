@@ -26,7 +26,7 @@
 Summary: Application and environment virtualization
 Name: singularity
 Version: 2.4
-Release: %{_rel}%{?dist}
+Release: %{_rel}.1%{?dist}
 # https://spdx.org/licenses/BSD-3-Clause-LBNL.html
 License: BSD-3-Clause-LBNL
 Group: System Environment/Base
@@ -121,6 +121,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_localstatedir}/singularity/mnt/session
 %dir %{_localstatedir}/singularity/mnt/container
 %dir %{_localstatedir}/singularity/mnt/overlay
+# This next line is a fix from 
+#  https://github.com/singularityware/singularity/pull/1093
+%dir %{_localstatedir}/singularity/mnt/final
 %{_bindir}/singularity
 %{_bindir}/run-singularity
 %{_libdir}/singularity/lib*.so.*
@@ -152,5 +155,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Nov 11 2017 Dave Dykstra <dwd@fnal.gov> - 2.4-1.1
+- Make sure that /var/singularity/mnt/final is created, to prevent
+  failures if a system administrator sets 'allow setuid = no' before
+  anybody runs singularity.
+    https://github.com/singularityware/singularity/pull/1093
+
 * Thu Oct 12 2017 Dave Dykstra <dwd@fnal.gov> - 2.4
 - Package for OSG.  No changes other than this log entry.
