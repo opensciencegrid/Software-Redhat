@@ -24,7 +24,7 @@ usage records, and sends those to RabbitMQ or another AMQP 0.9.1 broker.
 %define debug_package ${nil}
 
 %prep
-%autosetup -n %{name}
+%setup
 
 %build
 # setup local GOPATH vith source and vendored dependencies
