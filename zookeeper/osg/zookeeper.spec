@@ -8,7 +8,7 @@
 %define zookeeper_version 3.4.3+15
 %define zookeeper_patched_version 3.4.3-cdh4.0.1
 %define zookeeper_base_version 3.4.3
-%define zookeeper_release 1.cdh4.0.1.p0.4%{?dist}
+%define zookeeper_release 1.cdh4.0.1.p0.5%{?dist}
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
@@ -104,7 +104,7 @@ BuildRequires: maven >= 3
 %else
 BuildRequires: maven3
 %endif
-BuildRequires: java7-devel
+BuildRequires: java-devel = 1:1.7.0
 BuildRequires: jpackage-utils
 BuildRequires: /usr/lib/java-1.7.0
 BuildRequires: /bin/hostname
@@ -114,7 +114,7 @@ Requires(pre): coreutils, shadow-utils, /usr/sbin/groupadd, /usr/sbin/useradd
 Requires(post): %{alternatives_dep}
 Requires(preun): %{alternatives_dep}
 Requires: bigtop-utils
-Requires: java7
+Requires: java = 1:1.7.0
 Requires: jpackage-utils
 Requires: /usr/lib/java-1.7.0
 Conflicts: hadoop-zookeeper
@@ -257,6 +257,9 @@ fi
 %attr(0755, %{name}, %{name}) %{run_zookeeper}
 
 %changelog
+* Thu Nov 02 2017 Carl Edquist <edquist@cs.wisc.edu> - 3.4.3+15-1.cdh4.0.1.p0.5
+- Rename java7 dependencies (SOFTWARE-2991)
+
 * Fri Dec 23 2016 Tim Cartwright <cat@cs.wisc.edu> 3.4.3+15-1.cdh4.0.1.p0.4
 - EL 7: Add tmpfiles configuration to manage /run/zookeeper (SOFTWARE-2511)
 - Own the (/var)?/run directory that the pre scriptlet makes (SOFTWARE-2511)
