@@ -5,8 +5,9 @@ Summary:        Gratia-compatible collector for grid accounting records
 License:        MIT
 
 URL:            https://gracc.opensciencegrid.org
-Source:         %{name}.tar.gz
+Source:         %{name}-%{version}.tar.gz
 
+BuildRequires:  golang
 BuildRequires:  systemd-units
 Requires(pre): shadow-utils
 
