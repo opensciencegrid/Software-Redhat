@@ -1,6 +1,6 @@
 Name: xrootd-hdfs
 Version: 1.9.2
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: HDFS plugin for xrootd
 
 Group: System Environment/Development
@@ -14,7 +14,7 @@ BuildRequires: xrootd-devel >= 1:4.6
 BuildRequires: xrootd-server-devel >= 1:4.6
 BuildRequires: cmake
 BuildRequires: hadoop-libhdfs >= 2.0.0+545-1.cdh4.1.1
-BuildRequires: java7-devel
+BuildRequires: java-devel = 1:1.7.0
 BuildRequires: jpackage-utils
 Requires: hadoop-client >= 2.0.0+545-1.cdh4.1.1
 Conflicts: xrootd < 4.6.0-1
@@ -70,6 +70,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/XrdHdfs.hh
 
 %changelog
+* Thu Nov 02 2017 Carl Edquist <edquist@cs.wisc.edu> - 1.9.2-2
+- Rename java7 dependencies (SOFTWARE-2991)
+- Rebuild against hadoop 2.6.0+ (SOFTWARE-2906)
+
 * Wed Aug 02 2017 Marian Zvada <marian.zvada@cern.ch> - 1.9.2-1
 - Fixes a minor bug for reporting error codes when listing directories fails
 - Previously, it was possible for the error state to leak between calls to libhdfs
