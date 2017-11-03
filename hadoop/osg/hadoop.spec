@@ -1,7 +1,7 @@
 %define hadoop_version 2.6.0+cdh5.12.1+2540 
 %define hadoop_patched_version 2.6.0-cdh5.12.1 
 %define hadoop_base_version 2.6.0 
-%define osg_patchlevel 2
+%define osg_patchlevel 3
 %define hadoop_release 1.cdh5.12.1.p0.3.%{osg_patchlevel}%{?dist} 
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
@@ -214,7 +214,6 @@ Patch0: do-component-build.patch
 Patch1: javafuse.patch
 Patch2: libhdfs-soversion-install.patch
 Patch3: init.d.tmpl.patch
-Patch4: install_hadoop.patch
 
 # patches for %{name}-%{hadoop_patched_version}.tar.gz
 Patch10: libhdfs-soversion.patch
@@ -684,7 +683,6 @@ pushd `dirname %{SOURCE29}`
 %patch1 -p1
 %patch2 -p1
 # % patch3 -p1
-%patch4 -p1
 popd
 %patch10 -p1
 %patch11 -p1
