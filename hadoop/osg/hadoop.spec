@@ -1,7 +1,7 @@
 %define hadoop_version 2.6.0+cdh5.12.1+2540 
 %define hadoop_patched_version 2.6.0-cdh5.12.1 
 %define hadoop_base_version 2.6.0 
-%define osg_patchlevel 1
+%define osg_patchlevel 2
 %define hadoop_release 1.cdh5.12.1.p0.3.%{osg_patchlevel}%{?dist} 
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
@@ -218,16 +218,13 @@ Patch4: install_hadoop.patch
 
 # patches for %{name}-%{hadoop_patched_version}.tar.gz
 Patch10: libhdfs-soversion.patch
-##Patch11: fix_chown.patch  # upstream
-#Patch12: pom.xml.patch
-#Patch13: 1184-extendable-client.patch
-#Patch14: 2006-HDFS-4997.patch
-#Patch15: ivy-maven-repo.patch
-#Patch16: build.xml.patch
-#Patch17: gridmix.patch
-#Patch18: unistd.patch
-#Patch19: HDFS-10193.patch
-#Patch20: 2588-out-of-quota-msg.patch
+Patch11: pom.xml.patch
+Patch12: 1184-extendable-client.patch
+Patch13: HDFS-10193.patch
+Patch14: 2588-out-of-quota-msg.patch
+
+# not needed anymore?
+Patch15: ivy-maven-repo.patch
 
 Buildroot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id} -u -n)
 BuildRequires: python >= 2.4
@@ -690,16 +687,11 @@ pushd `dirname %{SOURCE29}`
 %patch4 -p1
 popd
 %patch10 -p1
-# % patch11 -p1
-# %%patch12 -p1
-# %%patch13 -p1
-# %%patch14 -p1
-# %%patch15 -p1
-# %%patch16 -p1
-# %%patch17 -p1
-# %%patch18 -p1
-# %%patch19 -p1
-# %%patch20 -p1
+%patch11 -p1
+%patch12 -p1
+%patch13 -p1
+%patch14 -p1
+%patch15 -p1
 
 %build
 export COMPONENT_HASH=520d8b072e666e9f21d645ca6a5219fc37535a52
