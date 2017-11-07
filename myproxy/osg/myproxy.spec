@@ -20,8 +20,6 @@ Summary:        Manage X.509 Public Key Infrastructure (PKI) security credential
 License:        NCSA and BSD and ASL 2.0
 URL:            http://grid.ncsa.illinois.edu/myproxy/
 Source0:        https://downloads.globus.org/toolkit/gt6/packages/%{name}-%{version}.tar.gz
-# globus/globus-toolkit PR #70 from Jim Basney: fixes debug/error messages due
-# to an API change in globus-gssapi-gsi-12.0
 Source1:        00-osg-environment
 Source2:        myproxy-server-start
 Patch1:         Skip-.rpmsave-and-.rpmnew-files-in-etc-myproxy.d.patch
