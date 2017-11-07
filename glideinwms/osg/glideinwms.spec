@@ -13,7 +13,7 @@
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
 %define version 3.2.20
-%define release 0.2.rc2
+%define release 0.3.rc3
 
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
@@ -82,10 +82,6 @@ Requires: condor >= 8.4.0
 Requires: python-rrdtool
 Requires: m2crypto
 Requires: javascriptrrd >= 1.1.0
-Requires: globus-common-progs
-Requires: globus-gram-client-tools
-Requires: globus-gsi-cert-utils-progs
-Requires: gsi-openssh-clients
 Requires: osg-system-profiler
 Requires: osg-version
 Requires: osg-wn-client
@@ -364,6 +360,7 @@ install -m 644 creation/web_base/frontendRRDGroupMatrix.html $RPM_BUILD_ROOT%{we
 install -m 644 creation/web_base/frontendStatus.html $RPM_BUILD_ROOT%{web_dir}/monitor/frontendStatus.html
 install -m 644 creation/web_base/frontend/index.html $RPM_BUILD_ROOT%{web_dir}/monitor/
 install -m 644 creation/web_base/factory/index.html $RPM_BUILD_ROOT%{factory_web_dir}/monitor/
+install -m 644 creation/web_base/factoryFrontendMonitorLink.html $RPM_BUILD_ROOT%{factory_web_dir}/monitor/
 cp -arp creation/web_base/factory/images $RPM_BUILD_ROOT%{factory_web_dir}/monitor/
 cp -arp creation/web_base/frontend/images $RPM_BUILD_ROOT%{web_dir}/monitor/
 
@@ -814,10 +811,10 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/condor/certs/condor_mapfile
 
 %changelog
-* Mon Aug 28 2017 Marco Mambelli <marcom@fnal.gov> - 3.2.20-0.1.rc1
+* Mon Nov 7 2017 Marco Mambelli <marcom@fnal.gov> - 3.2.20-0.3.rc3
 - Glideinwms v3.2.20
 - Release Notes: http://glideinwms.fnal.gov/doc.v3_2_20/history.html
-- Release candidates: 3.2.20-0.1.rc1
+- Release candidates: 3.2.20-0.3.rc3
 
 * Thu Jun 01 2017 Marco Mambelli <marcom@fnal.gov> - 3.2.19-2
 - Removed obsolete osg-cert-scripts dependency
