@@ -81,7 +81,7 @@ Requires: grid-certificates >= 7
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch: noarch
 AutoReqProv: yes
-Source0:  %{name}-%{version}.tar.gz
+Source0:  %{name}-%{version}-fixcrlf.tar.gz
 
 %if 0%{?maven_offline}
 

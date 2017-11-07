@@ -1,0 +1,7 @@
+voms-admin-server/2.7.0/voms-admin-server-2.7.0-fixcrlf.tar.gz
+# to create: extract the EMI SRPM and the tarball inside
+# run dos2unix on:
+#   resources/templates/siblings/web.xml
+#   src/main/webapp/META-INF/MANIFEST.MF
+#   src/main/webapp/WEB-INF/web.xml
+# and tar up the results
