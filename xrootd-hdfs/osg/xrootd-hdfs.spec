@@ -1,6 +1,6 @@
 Name: xrootd-hdfs
 Version: 1.9.2
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: HDFS plugin for xrootd
 
 Group: System Environment/Development
@@ -70,7 +70,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/XrdHdfs.hh
 
 %changelog
-* Thu Nov 02 2017 Carl Edquist <edquist@cs.wisc.edu> - 1.9.2-2
+* Tue Nov 07 2017 Carl Edquist <edquist@cs.wisc.edu> - 1.9.2-3
 - Rename java7 dependencies (SOFTWARE-2991)
 - Rebuild against hadoop 2.6.0+ (SOFTWARE-2906)
 
@@ -230,4 +230,3 @@ rm -rf $RPM_BUILD_ROOT
 
 * Tue Aug 24 2010 Brian Bockelman <bbockelm@cse.unl.edu> 1.4.0-1
 - Break xrootd-hdfs off into its own standalone RPM.
-
