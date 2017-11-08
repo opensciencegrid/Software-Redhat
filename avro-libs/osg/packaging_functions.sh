@@ -1,14 +1,15 @@
-if [ -z $PACK_ENG_COMMON ] ; then
-    echo "Variable PACK_ENG_COMMON undefined - this needs to point to the directory ec2_build/bin/pack-eng-common in the cdh4 branch of cdh" >&2 
-    exit 1
-fi
-if [ ! -d $PACK_ENG_COMMON ] ; then
-    echo "Directory '$PACK_ENG_COMMON' missing" >&2 
-fi
+#if [ -z $PACK_ENG_COMMON ] ; then
+#    echo "Variable PACK_ENG_COMMON undefined - this needs to point to the directory ec2_build/bin/pack-eng-common in the cdh4 branch of cdh" >&2 
+#    exit 1
+#fi
+#if [ ! -d $PACK_ENG_COMMON ] ; then
+#    echo "Directory '$PACK_ENG_COMMON' missing" >&2 
+#fi
 
 for file in common.sh ; do
-[ -f $PACK_ENG_COMMON/$file ]  || exit 1
+if [ -f $PACK_ENG_COMMON/$file ]; then
     . $PACK_ENG_COMMON/$file
+fi
 done
 
 # Looks up which subdirectory of /usr/lib or ${PARCELS_ROOT}/CDH/lib a JAR is owned by
@@ -138,6 +139,8 @@ function strip_versions() {
     fi
     echo "${modified}"
 }
+
+function print_linkinfo() { :; }
 
 # Creates versionless symlinks to JARs in the same directory (e.g. /usr/lib/zookeeper/zookeeper.jar -> /usr/lib/zookeeper/zookeeper-3.4.5-cdh5.0.0-SNAPSHOT.jar)
 # internal_versionless_symlinks <JAR files to link>
