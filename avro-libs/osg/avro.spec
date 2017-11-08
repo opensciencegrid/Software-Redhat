@@ -2,9 +2,10 @@
 %define avro_version 1.7.6+cdh5.13.0+135 
 %define avro_patched_version 1.7.6-cdh5.13.0 
 %define avro_base_version 1.7.6 
-%define avro_release 1.cdh5.13.0.p0.34%{?dist} 
+%define osg_patchlevel 1
+%define avro_release 1.cdh5.13.0.p0.34.%{osg_patchlevel}%{?dist} 
 %define cdh_customer_patch p0 
-%define cdh_parcel_custom_version 1.7.6+cdh5.13.0+135-1.cdh5.13.0.p0.34%{?dist}
+%define cdh_parcel_custom_version 1.7.6+cdh5.13.0+135-1.cdh5.13.0.p0.34.%{osg_patchlevel}%{?dist}
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
@@ -100,3 +101,8 @@ env FULL_VERSION=%{avro_patched_version} bash $RPM_SOURCE_DIR/install_avro.sh \
 %files -n avro-doc
 %defattr(-,root,root,755)
 /usr/share/doc/avro-doc-*
+
+%changelog
+* Wed Nov 08 2017 Carl Edquist <edquist@cs.wisc.edu> - 1.7.6+cdh5.13.0+135-1.cdh5.13.0.p0.34.1
+- fixes to build in osg koji (SOFTWARE-2906)
+
