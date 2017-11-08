@@ -39,6 +39,8 @@ Source1: do-component-build
 Source2: install_avro.sh
 Source3: packaging_functions.sh
 
+Source100: apache-forrest-0.8.tar.gz
+
 BuildRequires: ant
 %if 0%{?rhel} >= 7
 BuildRequires: maven >= 3.0.0
@@ -70,10 +72,11 @@ Group: Development/Tools
  JavaDocs for Avro libraries
 
 %prep
-%setup -n avro-%{avro_patched_version}
+%setup -n avro-%{avro_patched_version} -a 100
 
 %build
 export COMPONENT_HASH=9c690abfc6a6710bdf63e5c2c1179d91fd56a9a5
+export FORREST_HOME=$PWD/apache-forrest-0.8
 env FULL_VERSION=%{avro_patched_version} bash $RPM_SOURCE_DIR/do-component-build
 
 %install
