@@ -39,6 +39,13 @@ Source1: do-component-build
 Source2: install_avro.sh
 Source3: packaging_functions.sh
 
+BuildRequires: ant
+%if 0%{?rhel} >= 7
+BuildRequires: maven >= 3.0.0
+%else
+BuildRequires: maven3
+%endif
+
 %description
  Avro provides rich data structures, a compact & fast binary data format, a
  container file to store persistent data, remote procedure calls (RPC), and a
