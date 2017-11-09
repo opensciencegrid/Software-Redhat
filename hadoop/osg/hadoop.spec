@@ -1,7 +1,7 @@
 %define hadoop_version 2.6.0+cdh5.12.1+2540 
 %define hadoop_patched_version 2.6.0-cdh5.12.1 
 %define hadoop_base_version 2.6.0 
-%define osg_patchlevel 3
+%define osg_patchlevel 4
 %define hadoop_release 1.cdh5.12.1.p0.3.%{osg_patchlevel}%{?dist} 
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
@@ -240,7 +240,7 @@ BuildRequires: maven3
 BuildRequires: protobuf-compiler
 BuildRequires: cmake
 BuildRequires: ant
-BuildRequires: java7-devel
+BuildRequires: java-devel = 1:1.7.0
 BuildRequires: jpackage-utils
 BuildRequires: /usr/lib/java-1.7.0
 
@@ -250,7 +250,7 @@ Requires: avro-libs
 # Don't require parquet for now, which requires too many things we don't have
 # (see also SOFTWARE-2161)
 # Requires: parquet
-Requires: java7
+Requires: java = 1:1.7.0
 Requires: jpackage-utils
 Requires: /usr/lib/java-1.7.0
 Conflicts: hadoop-0.20
@@ -1150,7 +1150,7 @@ fi
 %endif
 
 %changelog
-* Thu Sep 28 2017 Carl Edquist <edquist@cs.wisc.edu> - 2.6.0+cdh5.12.1+2540-1.cdh5.12.1.p0.3.1
+* Thu Nov 09 2017 Carl Edquist <edquist@cs.wisc.edu> - 2.6.0+cdh5.12.1+2540-1.cdh5.12.1.p0.3.4
 - Update to hadoop 2.6.0+2540 from cloudera / cdh5 (SOFTWARE-2906)
 
 * Tue Feb 21 2017 Matyas Selmeci <matyas@cs.wisc.edu> - 2.0.0+1612-1.cdh4.7.1.p0.12.6
