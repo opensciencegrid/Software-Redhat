@@ -3,7 +3,7 @@
 
 Name:           gridftp-hdfs
 Version:        1.1
-Release:        1.1%{?gitrev:.%{gitrev}git}%{?dist}
+Release:        1.2%{?gitrev:.%{gitrev}git}%{?dist}
 Summary:        HDFS DSI plugin for GridFTP
 Group:          System Environment/Daemons
 License:        ASL 2.0
@@ -23,7 +23,7 @@ BuildRequires: cmake
 BuildRequires: java-devel >= 1:1.7.0
 BuildRequires: jpackage-utils
 
-BuildRequires: hadoop-libhdfs
+BuildRequires: hadoop-libhdfs-devel
 # globus-gridftp-server-devel-11 needed for 2436-enable-ordered-data.patch
 BuildRequires: globus-gridftp-server-devel >= 11
 BuildRequires: globus-common-devel
@@ -103,6 +103,9 @@ fi
 %{_datarootdir}/osg/sysconfig/globus-gridftp-server-plugin
 
 %changelog
+* Thu Nov 09 2017 Carl Edquist <edquist@cs.wisc.edu> - 1.1-1.2
+- Update hadoop build requirement (SOFTWARE-2983)
+
 * Thu Oct 26 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.1-1.1
 - Merge OSG changes (osg-sysconfig.patch)
 
