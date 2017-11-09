@@ -1,6 +1,6 @@
 Name: xrootd-hdfs
 Version: 1.9.2
-Release: 3%{?dist}
+Release: 4%{?dist}
 Summary: HDFS plugin for xrootd
 
 Group: System Environment/Development
@@ -13,7 +13,7 @@ BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildRequires: xrootd-devel >= 1:4.6
 BuildRequires: xrootd-server-devel >= 1:4.6
 BuildRequires: cmake
-BuildRequires: hadoop-libhdfs >= 2.0.0+545-1.cdh4.1.1
+BuildRequires: hadoop-libhdfs-devel >= 2.0.0+545-1.cdh4.1.1
 BuildRequires: java-devel = 1:1.7.0
 BuildRequires: jpackage-utils
 Requires: hadoop-client >= 2.0.0+545-1.cdh4.1.1
@@ -70,6 +70,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/XrdHdfs.hh
 
 %changelog
+* Thu Nov 09 2017 Carl Edquist <edquist@cs.wisc.edu> - 1.9.2-4
+- Update hadoop build requirement (SOFTWARE-2982)
+
 * Tue Nov 07 2017 Carl Edquist <edquist@cs.wisc.edu> - 1.9.2-3
 - Rename java7 dependencies (SOFTWARE-2991)
 - Rebuild against hadoop 2.6.0+ (SOFTWARE-2906)
