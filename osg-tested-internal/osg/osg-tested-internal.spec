@@ -1,7 +1,7 @@
 Name:      osg-tested-internal
 Summary:   All OSG packages we test (internal use only)
 Version:   3.3
-Release:   18%{?dist}
+Release:   19%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -26,7 +26,6 @@ Requires: gratia-probe-condor
 Requires: gratia-probe-glexec
 Requires: gratia-probe-dcache-storage
 Requires: gratia-probe-gridftp-transfer
-Requires: gratia-probe-bdii-status
 Requires: gratia-probe-pbs-lsf
 Requires: gratia-probe-sge
 
@@ -107,6 +106,9 @@ rm -rf $RPM_BUILD_ROOT
 %files gram
 
 %changelog
+* Thu Nov 09 2017 Carl Edquist <edquist@cs.wisc.edu> - 3.3-19
+- Drop gratia-probe-bdii-status (SOFTWARE-2660)
+
 * Fri Jul 14 2017 Edgar Fajardo <emfajard@ucsd.edu> - 3.3-18
 - Corrected the names of the gsi-ssh packages
 
