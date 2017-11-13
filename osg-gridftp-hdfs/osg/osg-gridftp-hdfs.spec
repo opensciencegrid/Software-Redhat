@@ -1,7 +1,7 @@
 Name:      osg-gridftp-hdfs
 Summary:   OSG GridFTP-HDFS meta package
-Version:   3.3
-Release:   4%{?dist}
+Version:   3.4
+Release:   1%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -44,6 +44,9 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/gridftp.d/udt-%{name}.conf
 
 %changelog
+* Mon Nov 13 2017 Carl Edquist <edquist@cs.wisc.edu> - 3.4-1
+- bump version for osg 3.4 (SOFTWARE-2983)
+
 * Thu Aug 25 2016 Carl Edquist <edquist@cs.wisc.edu> - 3.3-4
 - drop gums-client dependency (SOFTWARE-2398)
 - remove rhel5-specific macros (OSG-3.2 EOL)
