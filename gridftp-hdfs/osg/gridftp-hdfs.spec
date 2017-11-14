@@ -106,11 +106,11 @@ fi
 * Tue Nov 14 2017 Carl Edquist <edquist@cs.wisc.edu> - 1.1.1-1.1
 - Merge OSG changes for version 1.1.1 (SOFTWARE-2999, SOFTWARE-2983)
 
-* Tue Nov 07 2017 Brian Bockelman <bbockelm@cse.unl.edu> - 1.1.1-1
-- Fix potential crash when requesting new checksum types.
-
 * Thu Nov 09 2017 Carl Edquist <edquist@cs.wisc.edu> - 1.1-1.2
 - Update hadoop build requirement (SOFTWARE-2983)
+
+* Tue Nov 07 2017 Brian Bockelman <bbockelm@cse.unl.edu> - 1.1.1-1
+- Fix potential crash when requesting new checksum types.
 
 * Thu Oct 26 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.1-1.1
 - Merge OSG changes (osg-sysconfig.patch)
