@@ -1,7 +1,7 @@
 Name:      osg-wn-client
 Summary:   OSG Worker-Node Client
 Version:   3.3
-Release:   7%{?dist}
+Release:   8%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -35,6 +35,7 @@ Requires: globus-xio-udt-driver
 
 Requires: gfal2
 Requires: gfal2-util
+Requires: gfal2-plugin-http
 Requires: gfal2-plugin-file
 Requires: gfal2-plugin-srm
 Requires: gfal2-plugin-gridftp
@@ -104,6 +105,9 @@ rm -rf $RPM_BUILD_ROOT
 %files glexec
 
 %changelog
+* Tue Nov 14 2017 Edgar Fajardo <emfajard@ucsd.edu> 3.3-8
+- Added gfal2-plugin-http (SOFTWARE-2191)
+
 * Thu Apr 13 2017 Edgar Fajrdo <emfajard@ucsd.edu> 3.3-7
 - Added gsi-openssh-clients (SOFTWARE-2657)
 
