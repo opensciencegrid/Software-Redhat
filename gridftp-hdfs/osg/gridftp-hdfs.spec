@@ -14,7 +14,6 @@ URL:            https://github.com/opensciencegrid/gridftp_hdfs
 #   Prerelease:
 #     git archive --prefix=%{name}-%{version}/ %{gitrev} | gzip -n > %{name}-%{version}-%{gitrev}.tar.gz
 Source0:        %{name}-%{version}%{?gitrev:-%{gitrev}}.tar.gz
-Patch0:        osg-sysconfig.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -53,7 +52,6 @@ HDFS DSI plugin for GridFTP
 %prep
 
 %setup -q
-%patch0 -p1
 
 %build
 
