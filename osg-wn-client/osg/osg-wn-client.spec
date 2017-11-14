@@ -1,7 +1,7 @@
 Name:      osg-wn-client
 Summary:   OSG Worker-Node Client
 Version:   3.4
-Release:   1%{?dist}
+Release:   2%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -27,10 +27,12 @@ Requires: globus-xio-udt-driver
 
 Requires: gfal2
 Requires: gfal2-util
+Requires: gfal2-plugin-htttp
 Requires: gfal2-plugin-file
 Requires: gfal2-plugin-srm
 Requires: gfal2-plugin-gridftp
 Requires: gfal2-plugin-xrootd
+
 
 # the previous OSG version of CGSI-gSOAP (1.3.4.2) did not provide the symbol
 # cgsi_plugin_set_credentials, needed at runtime for gfal2-plugin-srm
@@ -62,6 +64,9 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_prefix}/etc/globus-user-env.sh
 
 %changelog
+*Tue Nov 14 2017 Edgar Fajardo <emfajard@ucsd.edu> 3.4-2
+- Adding gfal2-http (SOFTWARE-2191)
+
 * Thu May 25 2017 Edgar Fajardo <emfajard@ucsd.edu> 3.4-1
 - Droping java dependencies  (SOFTWARE-2676)
 - Bumping version number 
