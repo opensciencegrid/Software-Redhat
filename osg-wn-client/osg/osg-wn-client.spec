@@ -1,7 +1,7 @@
 Name:      osg-wn-client
 Summary:   OSG Worker-Node Client
 Version:   3.4
-Release:   2%{?dist}
+Release:   3%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -64,7 +64,7 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_prefix}/etc/globus-user-env.sh
 
 %changelog
-*Tue Nov 14 2017 Edgar Fajardo <emfajard@ucsd.edu> 3.4-2
+*Tue Nov 14 2017 Edgar Fajardo <emfajard@ucsd.edu> 3.4-3
 - Adding gfal2-http (SOFTWARE-2191)
 
 * Thu May 25 2017 Edgar Fajardo <emfajard@ucsd.edu> 3.4-1
