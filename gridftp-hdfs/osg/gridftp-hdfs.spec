@@ -2,7 +2,7 @@
 #define gitrev
 
 Name:           gridftp-hdfs
-Version:        1.1
+Version:        1.1.1
 Release:        1.1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary:        HDFS DSI plugin for GridFTP
 Group:          System Environment/Daemons
@@ -14,7 +14,6 @@ URL:            https://github.com/opensciencegrid/gridftp_hdfs
 #   Prerelease:
 #     git archive --prefix=%{name}-%{version}/ %{gitrev} | gzip -n > %{name}-%{version}-%{gitrev}.tar.gz
 Source0:        %{name}-%{version}%{?gitrev:-%{gitrev}}.tar.gz
-Patch0:        osg-sysconfig.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -53,7 +52,6 @@ HDFS DSI plugin for GridFTP
 %prep
 
 %setup -q
-%patch0 -p1
 
 %build
 
@@ -103,6 +101,15 @@ fi
 %{_datarootdir}/osg/sysconfig/globus-gridftp-server-plugin
 
 %changelog
+* Tue Nov 14 2017 Carl Edquist <edquist@cs.wisc.edu> - 1.1.1-1.1
+- Merge OSG changes for version 1.1.1 (SOFTWARE-2999, SOFTWARE-2983)
+
+* Thu Nov 09 2017 Carl Edquist <edquist@cs.wisc.edu> - 1.1-1.2
+- Update hadoop build requirement (SOFTWARE-2983)
+
+* Tue Nov 07 2017 Brian Bockelman <bbockelm@cse.unl.edu> - 1.1.1-1
+- Fix potential crash when requesting new checksum types.
+
 * Thu Oct 26 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.1-1.1
 - Merge OSG changes (osg-sysconfig.patch)
 
