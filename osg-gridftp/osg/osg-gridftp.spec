@@ -19,6 +19,7 @@ Requires: grid-certificates >= 7
 Requires: gratia-probe-gridftp-transfer >= 1.17.0-1
 Requires: fetch-crl
 Requires: osg-configure-misc
+Requires: osg-configure-gratia
 #This is probably not needed
 #Requires: edg-mkgridmap
 
