@@ -27,7 +27,7 @@ Requires: globus-xio-udt-driver
 
 Requires: gfal2
 Requires: gfal2-util
-Requires: gfal2-plugin-htttp
+Requires: gfal2-plugin-http
 Requires: gfal2-plugin-file
 Requires: gfal2-plugin-srm
 Requires: gfal2-plugin-gridftp
