@@ -14,7 +14,7 @@ Requires: grid-certificates >= 7
 Source0:        %{name}-%{version}-osg.tar.gz
 
 # See
-# https://www.opensciencegrid.org/bin/view/SoftwareTeam/CreateVOClient
+# https://opensciencegrid.github.io/technology/software/create-vo-client/
 # for instructions
 
 
