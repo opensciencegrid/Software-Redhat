@@ -1,6 +1,6 @@
 Name:      osg-ca-scripts
-Version:   1.1.7
-Release:   2%{?dist}
+Version:   1.1.8
+Release:   1%{?dist}
 Summary:   CA Certificate helper scripts
 
 Group:     System Environment/Base
@@ -83,6 +83,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr(0755,root,root) %{_localstatedir}/lib/osg-ca-certs
 
 %changelog
+* Mon Nov 20 2017 Brian Lin <blin@cs.wisc.edu> 1.1.8-1
+- Allow tarballs to be updated by different users in AFS (SOFTWARE-2589)
+
 * Mon Sep 18 2017 Brian Lin <blin@cs.wisc.edu> 1.1.7-2
 - Add 'wget' requirement
 
