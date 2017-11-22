@@ -1,7 +1,7 @@
 Name:           osg-se-hadoop
 Summary:        OSG Hadoop Storage Element package for RPM distribution
-Version:        3.3
-Release:        3%{?dist}
+Version:        3.4
+Release:        1%{?dist}
 License:        GPL
 Group:          System Environment/Daemons
 URL:            https://twiki.grid.iu.edu/twiki/bin/view/Storage/WebHome
@@ -146,6 +146,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/hadoop/conf.osg/
 
 %changelog
+* Wed Nov 22 2017 Suchandra Thapa <sthapa@ci.uchicago.edu> - 3.4-1
+- Update for OSG 3.4 release
+
 * Tue Feb 09 2016 Carl Edquist <edquist@cs.wisc.edu> - 3.3-3
 - Remove gums-client requirement for EL7 (SOFTWARE-2176)
 
