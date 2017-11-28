@@ -1,6 +1,6 @@
 Summary: osg-pki-tools
 Name: osg-pki-tools
-Version: 2.0.0
+Version: 2.1.0
 Release: 1%{?dist}
 Source: OSGPKITools-%{version}.tar.gz
 License: Apache 2.0
@@ -59,6 +59,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Nov 28 2017 Brian Lin <blin@cs.wisc.edu> - 2.1.0-1
+- Attempt HTTPS connections before falling back to HTTP (SOFTWARE-3034)
+- Restore original key names if writing new keys fails (SOFTWARE-3000)
+- Fixup osg-cert-request help message (SOFTWARE-3001)
+- Replace goc@opensciencegrid.org with updated address (SOFTWARE-3013)
+
 * Tue Oct 31 2017 Brian Lin <blin@cs.wisc.edu> - 2.0.0-1
 - osg-cert-request defaults to authenticated requests (SOFTWARE-2898)
 - Certificate request quota verification is now performed server-side (SOFTWARE-2472)
