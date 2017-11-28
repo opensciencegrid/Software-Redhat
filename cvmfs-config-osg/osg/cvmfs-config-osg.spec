@@ -1,13 +1,13 @@
 Summary: CernVM File System OSG Configuration and Public Keys
 Name: cvmfs-config-osg
 Version: 2.0
-Release: 2%{?dist}
-Source0: opensciencegrid.org.pub
-Source1: 60-osg.conf
-Source2: config-osg.opensciencegrid.org.conf
+Release: 3%{?dist}
+# download with:
+# $ curl -L -o cvmfs-config-osg-%{version}.tar.gz \
+#   https://github.com/opensciencegrid/cvmfs-config-osg/archive/v%{version}.tar.gz
+Source0: %{name}-%{version}.tar.gz
 BuildArch: noarch
 Group: Applications/System
-URL: https://github.com/opensciencegrid/cvmfs-config-osg
 License: BSD
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -22,23 +22,18 @@ Provides: oasis-config = 9
 
 Conflicts: cvmfs-config-default
 
+Conflicts: cvmfs < 2.3.3
+Conflicts: cvmfs-server < 2.3.3
+
+%prep
+%setup 
+
 %description
 Default configuration parameters and public keys for CernVM-FS
 
 %install
 rm -rf $RPM_BUILD_ROOT
-for cvmfsdir in keys/opensciencegrid.org config.d default.d; do
-    mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/cvmfs/$cvmfsdir
-done
-for key in %{SOURCE0}; do
-    install -D -m 444 "${key}" $RPM_BUILD_ROOT%{_sysconfdir}/cvmfs/keys/opensciencegrid.org
-done
-for defaultconf in %{SOURCE1}; do
-    install -D -m 444 "${defaultconf}" $RPM_BUILD_ROOT%{_sysconfdir}/cvmfs/default.d
-done
-for conf in %{SOURCE2}; do
-    install -D -m 444 "${conf}" $RPM_BUILD_ROOT%{_sysconfdir}/cvmfs/config.d
-done
+make install-redhat DESTDIR=$RPM_BUILD_ROOT
 
 %files
 %dir %{_sysconfdir}/cvmfs/keys/opensciencegrid.org
@@ -47,8 +42,11 @@ done
 %config %{_sysconfdir}/cvmfs/config.d/*
 
 %changelog
-* Fri May 19 2017 Brian Lin <blin@cs.wisc.edu> - 2.0-2
-- Drop conflicts (SOFTWARE-2678)
+* Tue Feb 28 2017 Dave Dykstra <dwd@fnal.gov> - 2.0-3
+- Use common install Makefile between debian and redhat
+
+* Fri Feb 24 2017 Dave Dykstra <dwd@fnal.gov> - 2.0-2
+- Convert to store source on github.
 
 * Wed Feb 15 2017 Dave Dykstra <dwd@fnal.gov> - 2.0-1
 - Increase the version number further to make sure it is higher than
