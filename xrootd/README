@@ -1,18 +1,22 @@
 Source RPM obtained from:
-
 http://download.fedoraproject.org/pub/epel/6/SRPMS/
 
 If a passthrough is done.
 
 If not then Tarball obtained from:
-
 http://xrootd.org/dload.html
 
 And try to keep the spec as close to the one on epel. In case of doubts of packaging check:
-
 https://github.com/xrootd/xrootd/blob/master/packaging/rhel/xrootd.spec.in
 
+To get the upstream:
 
+git clone https://github.com/xrootd/xrootd.git
+cd xrootd
+git archive v4.8.0-rc1 | gzip -7 > xrootd-4.8.8-rc1.tar.gz
 
+Or just do:
 
-
+git clone https://github.com/xrootd/xrootd.git
+cd xrootd 
+git archive v4.8.0-rc1 --format=tar.gz --prefix=xrootd-4.8.0-rc1/ -o ~/xrootd-4.8.0-rc1.tar.gz -9

@@ -19,16 +19,16 @@
 %global use_libc_semaphore 0
 %endif
 
-#define _alphatag rc3
+%define _alphatag rc1
 %define _release 1
 
 # e.g. '-rc3' or blank
-%define _alphasuffix %{?_alphatag:-%{alphatag}}
+%define _alphasuffix %{?_alphatag:-%{_alphatag}}
 
 Name:		xrootd
 Epoch:		1
-Version:	4.7.1
-Release:        %{?_alphatag:0.}%{_release}%{?_alphatag:.%{alphatag}}%{?dist}
+Version:	4.8.0
+Release:        %{?_alphatag:0.}%{_release}%{?_alphatag:.%{_alphatag}}%{?dist}
 Summary:	Extended ROOT file server
 
 Group:		System Environment/Daemons
@@ -56,20 +56,24 @@ BuildRequires:	selinux-policy-devel
 %if %{use_systemd}
 BuildRequires:	systemd
 %endif
-BuildRequires:	python-devel
-%if %{?fedora}%{!?fedora:0} >= 14 || %{?rhel}%{!?rhel:0} >= 7
-BuildRequires:	python-sphinx
+BuildRequires:	python2-devel
+%if %{?fedora}%{!?fedora:0} >= 13
+BuildRequires:  python3-devel
+%else
+BuildRequires:  python34-devel
 %endif
-%if %{?rhel}%{!?rhel:0} == 6
-BuildRequires:	python-sphinx10
-%endif
-%if %{?fedora}%{!?fedora:0} >= 22
-BuildRequires:	libradosstriper1-devel
+
+%if %{?_with_ceph:1}%{!?_with_ceph:0}
+    %if %{?_with_ceph11:1}%{!?_with_ceph11:0}
+BuildRequires: librados-devel >= 11.0
+BuildRequires: libradosstriper-devel >= 11.0
+    %else
+BuildRequires: ceph-devel >= 0.87
+    %endif
 %endif
 
 Requires:	%{name}-server%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-selinux = %{epoch}:%{version}-%{release}
-Obsoletes:	%{name} < 1:4.0.0
 
 %description
 The Extended root file server consists of a file server called xrootd
@@ -231,14 +235,37 @@ Requires:	%{name}-server%{?_isa} = %{epoch}:%{version}-%{release}
 This package contains a ceph back-end plug-in for xrootd.
 %endif
 
-%package python
-Summary:	Python bindings for xrootd
-Group:		Development/Libraries
-Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
-Requires:	%{name}-client-libs%{?_isa} = %{epoch}:%{version}-%{release}
+#-------------------------------------------------------------------------------
+# python2
+#-------------------------------------------------------------------------------
+%package -n python2-%{name}
+Summary:       Python 2 bindings for XRootD
+Group:         Development/Libraries
+%if %{?fedora}%{!?fedora:0} >= 13
+%{?python_provide:%python_provide python2-%{name}}
+%else
+Provides:      python-%{name}
+%endif
+Provides:      %{name}-python = %{epoch}:%{version}-%{release}
+Obsoletes:     %{name}-python < 1:4.7.1-1
+Requires:      %{name}-client-libs%{?_isa} = %{epoch}:%{version}-%{release}
 
-%description python
-This package contains Python bindings for xrootd.
+%description -n python2-xrootd
+Python 2 bindings for XRootD
+
+#-------------------------------------------------------------------------------
+# python3
+#-------------------------------------------------------------------------------
+%package -n python3-%{name}
+Summary:       Python 3 bindings for XRootD
+Group:         Development/Libraries
+%if %{?fedora}%{!?fedora:0} >= 13
+%{?python_provide:%python_provide python3-%{name}}
+%endif
+Requires:      %{name}-client-libs%{?_isa} = %{epoch}:%{version}-%{release}
+
+%description -n python3-xrootd
+Python 3 bindings for XRootD
 
 %package doc
 Summary:	Developer documentation for the xrootd libraries
@@ -272,23 +299,17 @@ popd
 
 doxygen Doxyfile
 
-%if %{?fedora}%{!?fedora:0} >= 14 || %{?rhel}%{!?rhel:0} >= 6
-export PYTHONPATH=$(cd build/bindings/python/build/lib.* ; pwd)
-export LD_LIBRARY_PATH=${PWD}/build/src/XrdCl:${PWD}/build/src
-pushd bindings/python/docs
-%if %{?rhel}%{!?rhel:0} == 6
-make html SPHINXBUILD=sphinx-1.0-build
-%else
-make html
-%endif
+# build python3 bindings
+pushd build/bindings/python
+%py3_build
 popd
-%endif
 
 %install
 rm -rf %{buildroot}
 
 pushd build
 make install DESTDIR=%{buildroot}
+cat PYTHON_INSTALLED | sed -e "s|%{buildroot}||g" > PYTHON_INSTALLED_FILES
 popd
 
 # Service start-up scripts / unit files
@@ -362,13 +383,14 @@ mkdir -p %{buildroot}%{_datadir}/selinux/packages/%{name}
 install -m 644 -p packaging/common/%{name}.pp \
     %{buildroot}%{_datadir}/selinux/packages/%{name}
 
+# install python3 bindings
+pushd build/bindings/python
+%py3_install
+popd
+
 # Documentation
 mkdir -p %{buildroot}%{_pkgdocdir}
 cp -pr doxydoc/html %{buildroot}%{_pkgdocdir}
-
-%if %{?fedora}%{!?fedora:0} >= 14 || %{?rhel}%{!?rhel:0} >= 6
-cp -pr bindings/python/docs/build/html %{buildroot}%{_pkgdocdir}/python
-%endif
 
 %clean
 rm -rf %{buildroot}
@@ -548,7 +570,6 @@ fi
 %{_includedir}/%{name}/XrdOuc
 %{_includedir}/%{name}/XrdSec
 %{_includedir}/%{name}/XrdSys
-%{_includedir}/%{name}/XrdXml
 %{_includedir}/%{name}/XrdVersion.hh
 %{_includedir}/%{name}/XrdXml/XrdXmlReader.hh
 %{_libdir}/libXrdAppUtils.so
@@ -644,13 +665,22 @@ fi
 %{_libdir}/libXrdCephPosix.so.*
 %endif
 
-%files python
-%{python_sitearch}/*
+%files -n python2-%{name} -f build/PYTHON_INSTALLED_FILES
+%defattr(-,root,root,-)
+%{python2_sitearch}/*
+
+%files -n python3-%{name}
+%defattr(-,root,root,-)
+%{python3_sitearch}/*
 
 %files doc
 %doc %{_pkgdocdir}
 
 %changelog
+* Fri Dec 01 2017 Marian Zvada <marian.zvada@cern.ch> - 1:4.8.0-0.1.rc1
+- Update to 4.8.0-rc1 (SOFTWARE-3033)
+- Add python3 sub-package; Rename python sub-package
+
 * Wed Nov 01 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1:4.7.1-1
 - Update to 4.7.1 (SOFTWARE-2933)
 
