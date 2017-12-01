@@ -4,7 +4,7 @@
 %define bl_libexecdir %{_libexecdir}/%{name}
 
 Name:		blahp
-Version:	1.18.34.bosco
+Version:	1.18.35.bosco
 Release:	1%{?gitrev:.%{gitrev}}%{?dist}
 Summary:	gLite BLAHP daemon
 
@@ -183,6 +183,9 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Fri Dec 1 2017 Brian Lin <blin@cs.wisc.edu> - 1.18.35.bosco-1
+- Fix segfault when submitting jobs with limited proxies
+
 * Tue Oct 31 2017 Brian Lin <blin@cs.wisc.edu> - 1.18.34.bosco-1
 - Fix memory usage parsing for SLURM and PBS (SOFTWARE-2929)
 - Fix UnicodeDecodeError when reading blah.config (SOFTWARE-2953)
