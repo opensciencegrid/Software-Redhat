@@ -1,5 +1,5 @@
 Name:           vo-client
-Version:        76
+Version:        77
 Release:        1%{?dist}
 Summary:        Contains vomses file for use with user authentication and edg-mkgridmap.conf file that contains configuration information for edg-mkgridmap.
 
@@ -98,6 +98,10 @@ rm -rf $RPM_BUILD_ROOT
 %attr(0600,tomcat,tomcat) %config(noreplace) %{_sysconfdir}/gums/gums.config.template
 
 %changelog
+* Mon Dec 04 2017 Carl Edquist <edquist@cs.wisc.edu> - 77-1
+- Update to vo-client 77
+  - Remove voms1.egee.cesnet.cz (auger) VOMS server (SOFTWARE-3042)
+
 * Mon Oct 30 2017 Carl Edquist <edquist@cs.wisc.edu> - 76-1
 - Update to vo-client 76
   - Drop redundant geant4-lcgadmin objects (SOFTWARE-2921)
