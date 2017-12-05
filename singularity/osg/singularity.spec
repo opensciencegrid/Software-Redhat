@@ -25,7 +25,7 @@
 
 Summary: Application and environment virtualization
 Name: singularity
-Version: 2.4.1
+Version: 2.4.2
 Release: %{_rel}%{?dist}
 # https://spdx.org/licenses/BSD-3-Clause-LBNL.html
 License: BSD-3-Clause-LBNL
@@ -158,6 +158,5 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Wed Nov 22 2017 Dave Dykstra <dwd@fnal.gov> - 2.4.1
+* Tue Dec 05 2017 Dave Dykstra <dwd@fnal.gov> - 2.4.2
 - Package for OSG.  No changes other than this log entry.
-
