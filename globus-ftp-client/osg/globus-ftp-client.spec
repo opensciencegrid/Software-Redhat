@@ -99,8 +99,7 @@ if grep -q @SSH_BIN@ %{buildroot}%{_datadir}/globus/gridftp-ssh; then
     echo @SSH_BIN@ unexpanded
     exit 1
 fi
-exit 0
-##GLOBUS_HOSTNAME=localhost make %{?_smp_mflags} check VERBOSE=1
+GLOBUS_HOSTNAME=localhost make %{?_smp_mflags} check VERBOSE=1
 
 %post -p /sbin/ldconfig
 
