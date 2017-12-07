@@ -1,6 +1,6 @@
 Summary: osg-pki-tools
 Name: osg-pki-tools
-Version: 2.1.0
+Version: 2.1.1
 Release: 1%{?dist}
 Source: OSGPKITools-%{version}.tar.gz
 License: Apache 2.0
@@ -59,6 +59,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Dec 07 2017 Brian Lin <blin@cs.wisc.edu> - 2.1.1-1
+- Catch exceptions when network unreachable (SOFTWARE-3047)
+- Handle unreachable network in HTTP fallback logic (SOFTWARE-3034)
+
 * Tue Nov 28 2017 Brian Lin <blin@cs.wisc.edu> - 2.1.0-1
 - Attempt HTTPS connections before falling back to HTTP (SOFTWARE-3034)
 - Restore original key names if writing new keys fails (SOFTWARE-3000)
