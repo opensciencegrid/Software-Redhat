@@ -1,5 +1,5 @@
 Name:      osg-ca-scripts
-Version:   1.1.8
+Version:   1.2.1
 Release:   1%{?dist}
 Summary:   CA Certificate helper scripts
 
@@ -83,6 +83,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr(0755,root,root) %{_localstatedir}/lib/osg-ca-certs
 
 %changelog
+* Fri Dec 08 2017 Edgar Fajardo <efajardo@physics.ucsd.edu> 1.2.1-1
+- Allow sha256 checksums for the tarball (SOFTWARE-3006)
+
 * Mon Nov 20 2017 Brian Lin <blin@cs.wisc.edu> 1.1.8-1
 - Allow tarballs to be updated by different users in AFS (SOFTWARE-2589)
 
