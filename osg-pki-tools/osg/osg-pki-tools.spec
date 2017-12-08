@@ -14,11 +14,6 @@ Requires: m2crypto
 Requires: python-argparse
 %endif
 
-%if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
-%{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
-%{!?python_sitearch: %define python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
-%endif
-
 %description
 %{summary}
 
@@ -44,9 +39,6 @@ install -m 644 osgpkitools/pki-clients.ini %{buildroot}%{_sysconfdir}/osg
 rm -r %{buildroot}%{python_sitelib}/tests
 install -d %{buildroot}%{_defaultdocdir}/%{name}-%{version}
 install -m 644 -t %{buildroot}%{_defaultdocdir}/%{name}-%{version} CHANGELOG.txt LICENSE.txt README.txt
-
-%clean
-rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root)
