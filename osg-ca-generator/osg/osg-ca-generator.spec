@@ -5,7 +5,7 @@
 
 Summary:   Generate CAs and certificates for testing an OSG installation
 Name:      osg-ca-generator
-Version:   1.2.0
+Version:   1.3.0
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -37,6 +37,12 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/cagen.py*
 
 %changelog
+* Fri Dec 08 2017 Brian Lin <blin@cs.wisc.edu> 1.3.0-1
+- Add ability to create VO lsc and vomses entry (SOFTWARE-2976)
+- Create backups when writing files (SOFTWARE-2352)
+- Drop DigiCert CA infrastracture mimicry
+- Store CA private key in openssl folder
+
 * Thu Aug 25 2016 Brian Lin <blin@cs.wisc.edu> 1.2.0-1
 - Add ability to generate user certificate via CLI. Host certs no longer automatically generated (SOFTWARE-2417).
 
