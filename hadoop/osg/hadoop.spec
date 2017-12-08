@@ -1,7 +1,7 @@
 %define hadoop_version 2.6.0+cdh5.12.1+2540 
 %define hadoop_patched_version 2.6.0-cdh5.12.1 
 %define hadoop_base_version 2.6.0 
-%define osg_patchlevel 4
+%define osg_patchlevel 5
 %define hadoop_release 1.cdh5.12.1.p0.3.%{osg_patchlevel}%{?dist} 
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
@@ -659,7 +659,7 @@ Requires: %{name} = %{version}-%{release}
 Requires: %{name}-libhdfs = %{version}-%{release}
 Requires: %{name}-client = %{version}-%{release}
 Requires: fuse
-Requires: java7-devel
+Requires: java-devel = 1:1.7.0
 Obsoletes: hadoop-0.20-osg <= 0.20.2+737
 Obsoletes: hadoop-0.20-fuse <= 0.20.2+737
 AutoReq: no
@@ -1150,6 +1150,9 @@ fi
 %endif
 
 %changelog
+* Fri Dec 08 2017 Carl Edquist <edquist@cs.wisc.edu> - 2.6.0+cdh5.12.1+2540-1.cdh5.12.1.p0.3.5
+- Rename java7-devel requirement for hdfs-fuse (SOFTWARE-2991)
+
 * Thu Nov 09 2017 Carl Edquist <edquist@cs.wisc.edu> - 2.6.0+cdh5.12.1+2540-1.cdh5.12.1.p0.3.4
 - Update to hadoop 2.6.0+2540 from cloudera / cdh5 (SOFTWARE-2906)
 
