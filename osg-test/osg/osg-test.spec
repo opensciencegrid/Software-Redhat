@@ -5,7 +5,7 @@
 
 Summary:   Tests an OSG Software installation
 Name:      osg-test
-Version:   2.0.0
+Version:   2.0.1
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -52,6 +52,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_sbindir}/%{name}-log-viewer
 
 %changelog
+* Fri Dec 08 2017 Brian Lin <blin@cs.wisc.edu> 1.3.0-1
+- Grab slurm from development repos instead of contrib (SOFTWARE-2994)
+- Fix cagen.py calls for osg-ca-generator-1.3.0
+
 * Wed Nov 01 2017 Brian Lin <blin@cs.wisc.edu> - 2.0.0-1
 - Drop GRAM, RHEL5, OSG < 3.3, and dCache storage probe tests
   (SOFTWARE-2592, SOFTWARE-2913, SOFTWARE-2955)
