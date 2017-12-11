@@ -1,6 +1,6 @@
 Summary: osg-pki-tools
 Name: osg-pki-tools
-Version: 2.1.1
+Version: 2.1.2
 Release: 1%{?dist}
 Source: OSGPKITools-%{version}.tar.gz
 License: Apache 2.0
@@ -12,11 +12,6 @@ Requires: python
 Requires: m2crypto
 %if 0%{?rhel} < 7
 Requires: python-argparse
-%endif
-
-%if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
-%{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
-%{!?python_sitearch: %define python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
 %endif
 
 %description
@@ -45,9 +40,6 @@ rm -r %{buildroot}%{python_sitelib}/tests
 install -d %{buildroot}%{_defaultdocdir}/%{name}-%{version}
 install -m 644 -t %{buildroot}%{_defaultdocdir}/%{name}-%{version} CHANGELOG.txt LICENSE.txt README.txt
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
 %files
 %defattr(-,root,root)
 %dir %{python_sitelib}/osgpkitools
@@ -59,6 +51,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Dec 08 2017 Brian Lin <blin@cs.wisc.edu> - 2.1.2-1
+- Fix bug that prevented requesting service certificates (SOFTWARE-3051)
+- Handle HTTPS failed responses when the HTTPS connection succeeds and
+  the HTTP connection fails (SOFTWARE-3034)
+
 * Thu Dec 07 2017 Brian Lin <blin@cs.wisc.edu> - 2.1.1-1
 - Catch exceptions when network unreachable (SOFTWARE-3047)
 - Handle unreachable network in HTTP fallback logic (SOFTWARE-3034)
