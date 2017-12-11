@@ -1,5 +1,5 @@
 Name:      osg-ca-scripts
-Version:   1.2.1
+Version:   1.2.2
 Release:   1%{?dist}
 Summary:   CA Certificate helper scripts
 
@@ -83,6 +83,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr(0755,root,root) %{_localstatedir}/lib/osg-ca-certs
 
 %changelog
+* Mon Dec 11 2017 Edgar Fajardo <efajardo@physics.ucsd.edu> 1.2.2-1
+- Correct version number in the Makefile
+
 * Fri Dec 08 2017 Edgar Fajardo <efajardo@physics.ucsd.edu> 1.2.1-1
 - Allow sha256 checksums for the tarball (SOFTWARE-3006)
 
