@@ -1,6 +1,6 @@
 Summary:   Profiles your system for debugging
 Name:      osg-system-profiler
-Version:   1.4.1
+Version:   1.4.2
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -44,6 +44,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/%{name}-viewer
 
 %changelog
+* Mon Dec 11 2017 Suchandra Thapa <sthapa@ci.uchicago.edu> - 1.4.2-1
+- Update email address given to user (SOFTWARE-3016)
+
 * Thu Oct 05 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.4.1-1
 - Drop osg-version check (SOFTWARE-2916)
 - Update instructions for getting help (SOFTWARE-2908)
