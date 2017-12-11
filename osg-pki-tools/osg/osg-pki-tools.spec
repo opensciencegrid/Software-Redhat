@@ -1,6 +1,6 @@
 Summary: osg-pki-tools
 Name: osg-pki-tools
-Version: 2.1.1
+Version: 2.1.2
 Release: 1%{?dist}
 Source: OSGPKITools-%{version}.tar.gz
 License: Apache 2.0
@@ -51,6 +51,11 @@ install -m 644 -t %{buildroot}%{_defaultdocdir}/%{name}-%{version} CHANGELOG.txt
 
 
 %changelog
+* Fri Dec 08 2017 Brian Lin <blin@cs.wisc.edu> - 2.1.2-1
+- Fix bug that prevented requesting service certificates (SOFTWARE-3051)
+- Handle HTTPS failed responses when the HTTPS connection succeeds and
+  the HTTP connection fails (SOFTWARE-3034)
+
 * Thu Dec 07 2017 Brian Lin <blin@cs.wisc.edu> - 2.1.1-1
 - Catch exceptions when network unreachable (SOFTWARE-3047)
 - Handle unreachable network in HTTP fallback logic (SOFTWARE-3034)
