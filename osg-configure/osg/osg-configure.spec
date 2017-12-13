@@ -1,13 +1,16 @@
 Summary: Package for OSG-Configure and associated scripts
 Name: osg-configure
 Version: 2.2.2
-Release: 1%{?dist}
+Release: 2%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
 Group: Grid
 Prefix: %{_prefix}
 BuildArch: noarch
 Url: https://github.com/opensciencegrid/osg-configure
+
+Obsoletes: %{name}-managedfork < 2.2.2-2
+Obsoletes: %{name}-network < 2.2.2-2
 
 
 %description
@@ -92,20 +95,6 @@ Group: Grid
 Requires: %name = %version-%release
 %description squid
 This package includes the ini files for configuring an OSG system to use squid
-
-%package managedfork
-Summary: Transitional dummy package for OSG 3.4
-Group: Grid
-%description managedfork
-This is an empty package created as a workaround for 3.3->3.4 upgrade issues.
-It may safely be removed.
-
-%package network
-Summary: Transitional dummy package for OSG 3.4
-Group: Grid
-%description network
-This is an empty package created as a workaround for 3.3->3.4 upgrade issues.
-It may safely be removed.
 
 %package tests
 Summary: OSG-Configure unit tests and configuration for unit testing
@@ -277,15 +266,12 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/osg/config.d/10-gateway.ini
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/50-osg-configure-present.conf
 
-%files managedfork
-#blank
-
-%files network
-#blank
-
 
 
 %changelog
+* Fri Nov 10 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 2.2.2-2
+- Replace dummy packages with obsoletes (SOFTWARE-3020)
+
 * Tue Oct 17 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 2.2.2-1
 - Add option to evaluate all FQANs with vomsmap auth (SOFTWARE-2932)
 - Tweak comments in 10-misc.ini (SOFTWARE-2941)
