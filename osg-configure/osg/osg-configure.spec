@@ -16,6 +16,13 @@ Obsoletes: %{name}-network < 2.2.2-2
 %description
 %{summary}
 
+%package siteinfo
+Summary: OSG configuration file for site information
+Group: Grid
+Requires: %name = %version-%release
+%description siteinfo
+This package includes the ini file for configuring site information using osg-configure
+
 %package rsv
 Summary: OSG configuration file for RSV
 Group: Grid
@@ -28,6 +35,7 @@ This package includes the ini file for configuring RSV using osg-configure
 Summary: OSG configuration file for gratia
 Group: Grid
 Requires: %name = %version-%release
+Requires: %name-siteinfo
 %description gratia
 This package includes the ini file for configuring gratia using osg-configure
 
@@ -75,6 +83,7 @@ Summary: OSG configuration file for CE
 Group: Grid
 Requires: %name = %version-%release
 Requires: %name-gateway
+Requires: %name-siteinfo
 %description ce
 This package includes the ini files for configuring a basic CE using
 osg-configure.  One of the packages for the job manager configuration also
@@ -218,10 +227,11 @@ touch $RPM_BUILD_ROOT/var/lib/osg/osg-job-environment.conf
 %files bosco
 %config(noreplace) %{_sysconfdir}/osg/config.d/20-bosco.ini
 
+%files siteinfo
+%config(noreplace) %{_sysconfdir}/osg/config.d/40-siteinfo.ini
 
 %files ce
 %config(noreplace) %{_sysconfdir}/osg/config.d/40-localsettings.ini
-%config(noreplace) %{_sysconfdir}/osg/config.d/40-siteinfo.ini
 %config(noreplace) %{_sysconfdir}/osg/config.d/10-storage.ini
 %config(noreplace) %{_sysconfdir}/osg/grid3-locations.txt
 
@@ -254,6 +264,7 @@ touch $RPM_BUILD_ROOT/var/lib/osg/osg-job-environment.conf
 * Fri Nov 10 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 2.2.2-2
 - Replace dummy packages with obsoletes (SOFTWARE-3020)
 - Drop el5-isms (SOFTWARE-3050)
+- Put site info config into a separate module so osg-configure-gratia can require it (SOFTWARE-3018)
 
 * Tue Oct 17 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 2.2.2-1
 - Add option to evaluate all FQANs with vomsmap auth (SOFTWARE-2932)
