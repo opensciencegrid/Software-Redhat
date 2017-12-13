@@ -158,11 +158,8 @@ touch $RPM_BUILD_ROOT/var/lib/osg/osg-attributes.conf
 touch $RPM_BUILD_ROOT/var/lib/osg/osg-local-job-environment.conf
 touch $RPM_BUILD_ROOT/var/lib/osg/osg-job-environment.conf
 
-%clean
-rm -rf $RPM_BUILD_ROOT
 
 %files
-%defattr(-,root,root)
 %{python_sitelib}/osg_configure-%{version}-*.egg-info
 %{python_sitelib}/osg_configure/__init__.py*
 %{python_sitelib}/osg_configure/configure_modules/__init__.py*
@@ -198,55 +195,43 @@ rm -rf $RPM_BUILD_ROOT
 %ghost /etc/condor-ce/config.d/50-osg-configure.conf
 
 %files rsv
-%defattr(-,root,root)
 %config(noreplace) %{_sysconfdir}/osg/config.d/30-rsv.ini
 
 %files gratia
-%defattr(-,root,root)
 %config(noreplace) %{_sysconfdir}/osg/config.d/30-gratia.ini
 
 %files gip
-%defattr(-,root,root)
 %config(noreplace) %{_sysconfdir}/osg/config.d/30-gip.ini
 
 %files lsf
-%defattr(-,root,root)
 %config(noreplace) %{_sysconfdir}/osg/config.d/20-lsf.ini
 
 %files pbs
-%defattr(-,root,root)
 %config(noreplace) %{_sysconfdir}/osg/config.d/20-pbs.ini
 
 %files condor
-%defattr(-,root,root)
 %config(noreplace) %{_sysconfdir}/osg/config.d/20-condor.ini
 
 %files sge
-%defattr(-,root,root)
 %config(noreplace) %{_sysconfdir}/osg/config.d/20-sge.ini
 
 %files bosco
-%defattr(-,root,root)
 %config(noreplace) %{_sysconfdir}/osg/config.d/20-bosco.ini
 
 
 %files ce
-%defattr(-,root,root)
 %config(noreplace) %{_sysconfdir}/osg/config.d/40-localsettings.ini
 %config(noreplace) %{_sysconfdir}/osg/config.d/40-siteinfo.ini
 %config(noreplace) %{_sysconfdir}/osg/config.d/10-storage.ini
 %config(noreplace) %{_sysconfdir}/osg/grid3-locations.txt
 
 %files misc
-%defattr(-,root,root)
 %config(noreplace) %{_sysconfdir}/osg/config.d/10-misc.ini
 
 %files squid
-%defattr(-,root,root)
 %config(noreplace) %{_sysconfdir}/osg/config.d/01-squid.ini
 
 %files infoservices
-%defattr(-,root,root)
 %config(noreplace) %{_sysconfdir}/osg/config.d/30-infoservices.ini
 %{python_sitelib}/osg_configure/configure_modules/infoservices.py*
 %{python_sitelib}/osg_configure/modules/resourcecatalog.py*
@@ -254,15 +239,12 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/osg_configure/modules/subcluster.py*
 
 %files tests
-%defattr(-,root,root)
 /usr/share/osg-configure/*
 
 %files slurm
-%defattr(-,root,root)
 %config(noreplace) %{_sysconfdir}/osg/config.d/20-slurm.ini
 
 %files gateway
-%defattr(-,root,root)
 %config(noreplace) %{_sysconfdir}/osg/config.d/10-gateway.ini
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/50-osg-configure-present.conf
 
@@ -271,6 +253,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Fri Nov 10 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 2.2.2-2
 - Replace dummy packages with obsoletes (SOFTWARE-3020)
+- Drop el5-isms (SOFTWARE-3050)
 
 * Tue Oct 17 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 2.2.2-1
 - Add option to evaluate all FQANs with vomsmap auth (SOFTWARE-2932)
