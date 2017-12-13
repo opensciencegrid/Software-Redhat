@@ -1,7 +1,7 @@
 Summary: Package for OSG-Configure and associated scripts
 Name: osg-configure
-Version: 1.10.2
-Release: 2%{?dist}
+Version: 1.10.3
+Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
 Group: Grid
@@ -306,10 +306,11 @@ touch $RPM_BUILD_ROOT/%gateway_ini_backup
 
 
 %changelog
-* Fri Nov 10 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 1.10.2-2
+* Tue Dec 12 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 1.10.3-1
 - Replace dummy packages with obsoletes (SOFTWARE-3020)
 - Drop el5-isms (SOFTWARE-3050)
 - Put site info config into a separate module so osg-configure-gratia can require it (SOFTWARE-3018)
+- Remove remaining TWiki references (SOFTWARE-3036)
 
 * Tue Oct 17 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 1.10.2-1
 - Add option to evaluate all FQANs with vomsmap auth (SOFTWARE-2932)
