@@ -4,7 +4,7 @@
 Name:      osg-ce
 Summary:   OSG Compute Element
 Version:   3.3
-Release:   13%{?dist}
+Release:   14%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -53,7 +53,6 @@ Requires: osg-configure >= 1.0.57
 Requires: osg-configure-ce
 Requires: osg-configure-gip
 Requires: osg-configure-gratia
-Requires: osg-configure-managedfork
 Requires: osg-configure-misc
 Requires: osg-configure-network
 Requires: osg-configure-squid
@@ -319,6 +318,9 @@ exit 0
 %files bosco
 
 %changelog
+* Wed Dec 13 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.3-14
+- Drop osg-configure-managedfork requirement (SOFTWARE-3071)
+
 * Mon May 22 2017 Brian Lin <blin@cs.wisc.edu> - 3.3-13
 - Add OSG VOMS mapfile to osg-ce (SOFTWARE-2702)
 
