@@ -13,7 +13,7 @@
 %global use_libc_semaphore 0
 %endif
 
-%define _alphatag rc1
+#define _alphatag rc1
 %define _release 1
 
 # e.g. '-rc3' or blank
@@ -43,9 +43,6 @@ BuildRequires:	zlib-devel
 BuildRequires:	fuse-devel
 BuildRequires:	doxygen
 BuildRequires:	graphviz
-%if %{?rhel}%{!?rhel:0} == 5
-BuildRequires:	graphviz-gd
-%endif
 BuildRequires:	selinux-policy-devel
 %if %{use_systemd}
 BuildRequires:	systemd
@@ -244,7 +241,7 @@ Group:         Development/Libraries
 Provides:      python-%{name}
 %endif
 Provides:      %{name}-python = %{epoch}:%{version}-%{release}
-Obsoletes:     %{name}-python < 1:4.7.1-1
+Obsoletes:     %{name}-python < 1:4.8.0-1
 Requires:      %{name}-client-libs%{?_isa} = %{epoch}:%{version}-%{release}
 
 %description -n python2-xrootd
@@ -390,7 +387,6 @@ mkdir -p %{buildroot}%{_pkgdocdir}
 cp -pr doxydoc/html %{buildroot}%{_pkgdocdir}
 
 %clean
-rm -rf %{buildroot}
 
 %post libs -p /sbin/ldconfig
 %postun libs -p /sbin/ldconfig
@@ -674,6 +670,10 @@ fi
 %doc %{_pkgdocdir}
 
 %changelog
+* Thu Dec 14 2017 Marian Zvada <marian.zvada@cern.ch> - 1:4.8.0-1
+- Update to 4.8.0 (SOFTWARE-3033)
+- clean up EL5-specific conditional according to SOFTWARE-3050
+
 * Fri Dec 01 2017 Marian Zvada <marian.zvada@cern.ch> - 1:4.8.0-0.1.rc1
 - Update to 4.8.0-rc1 (SOFTWARE-3033)
 - Add python3 sub-package; Rename python sub-package
