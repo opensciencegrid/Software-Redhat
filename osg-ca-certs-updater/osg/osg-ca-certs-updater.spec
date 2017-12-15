@@ -1,5 +1,5 @@
 Name:           osg-ca-certs-updater
-Version:        1.5
+Version:        1.6
 Release:        1%{?dist}
 Summary:        Automatic CA certs updates for OSG
 
@@ -44,8 +44,9 @@ fi
 %doc %{_defaultdocdir}/%{name}-%{version}/README*
 
 %changelog
-* Fri Dec 15 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.5-1
-- Replace references to OSG Twiki with links to current docs (SOFTWARE-3015)
+* Fri Dec 15 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.6-1
+- Replace references to OSG Twiki with links to current docs (SOFTWARE-3083)
+- Replace help email (SOFTWARE-3015)
 
 * Thu Jan 28 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.4-1
 - Remove osg-release requirement; ignore missing compat packages; only try to
