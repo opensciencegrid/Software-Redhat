@@ -1,5 +1,5 @@
 Name:           osg-ca-certs-updater
-Version:        1.4
+Version:        1.5
 Release:        1%{?dist}
 Summary:        Automatic CA certs updates for OSG
 
@@ -8,15 +8,9 @@ License:        Apache 2.0
 
 Source0:        %{name}-%{version}.tar.gz
 
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
 Requires:       /usr/bin/repoquery
-
-%if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
-%{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
-%{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
-%endif
 
 %description
 %{summary}
@@ -26,14 +20,10 @@ Requires:       /usr/bin/repoquery
 %setup -q
 
 %install
-rm -rf %{buildroot}
 make install DESTDIR=%{buildroot}
 mkdir -p %{buildroot}/%{_localstatedir}/{lock/subsys,lib}
 touch %{buildroot}/%{_localstatedir}/lock/subsys/%{name}-cron
 touch %{buildroot}/%{_localstatedir}/lib/%{name}-lastrun
-
-%clean
-rm -rf %{buildroot}
 
 %post
 /sbin/chkconfig --add %{name}-cron
@@ -45,7 +35,6 @@ if [ $1 -eq 0 ]; then
 fi
 
 %files
-%defattr(-,root,root,-)
 %{_sbindir}/%{name}
 %{_initrddir}/%{name}-cron
 %config(noreplace) %{_sysconfdir}/cron.d/%{name}
@@ -55,6 +44,9 @@ fi
 %doc %{_defaultdocdir}/%{name}-%{version}/README*
 
 %changelog
+* Fri Dec 15 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.5-1
+- Replace references to OSG Twiki with links to current docs (SOFTWARE-3015)
+
 * Thu Jan 28 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.4-1
 - Remove osg-release requirement; ignore missing compat packages; only try to
   update packages that are installed (SOFTWARE-2146)
