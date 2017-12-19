@@ -1,5 +1,5 @@
 Name:           gracc-archive
-Version:        1.4.1
+Version:        1.5.0
 Release:        1%{?dist}
 Summary:        GRACC Archive
 
@@ -69,6 +69,9 @@ install -d -m 0755 $RPM_BUILD_ROOT/%{_sharedstatedir}/graccarchive/output
 
 
 %changelog
+* Tue Dec 19 2017 Derek Weitzel <dweitzel@cse.unl.edu> - 1.5.0-1
+- Use select connection for better performance
+
 * Wed May 31 2017 Derek Weitzel <dweitzel@cse.unl.edu> - 1.4.1-1
 - Fix bug in timer causing it to be destroyed
 
