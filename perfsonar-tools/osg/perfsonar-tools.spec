@@ -32,6 +32,7 @@ The basic command-line measurement tools used by perfSONAR for on-demand tests.
 %changelog
 * Fri Jan 5 2018 efajardo@physics.ucsd.edu - 4.0.1-1.3
 - Releasing just the personar-tools subpackage on osg (SOFTWARE-2686)
+- Removede from deps paris-traceroute and pscheduler-core
 
 * Mon Jul 14 2015 andy@es.net
 - common bundle
