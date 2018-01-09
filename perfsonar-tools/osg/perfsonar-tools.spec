@@ -4,24 +4,21 @@
 Version:        4.0.1
 Name:           perfsonar-tools
 Summary:        perfSONAR active measurement tools
-Release:        %{relnum}.1%{?dist}
+Release:        %{relnum}.3%{?dist}
 License:        Distributable, see LICENSE
 Group:          Applications/Communications
 URL:            http://www.perfsonar.net/
 BuildArch:      noarch
 
-Requires:       perfsonar-common
-Requires:       bwctl-client    >= 1.6.0
-Requires:       bwctl-server    >= 1.6.0
-Requires:       pscheduler-core
-Requires:       owamp-client    >= 3.5.0
-Requires:       owamp-server    >= 3.5.0
+Requires:       bwctl-client    
+Requires:       bwctl-server   
+Requires:       owamp-client   
+Requires:       owamp-server    
 Requires:       nuttcp
 Requires:       iperf
 Requires:       iperf3
 Requires:       traceroute
 Requires:       iputils
-Requires:       paris-traceroute
 Requires:       ntp
 Obsoletes:      perfSONAR-Bundles-Tools
 Provides:       perfSONAR-Bundles-Tools
@@ -33,7 +30,7 @@ The basic command-line measurement tools used by perfSONAR for on-demand tests.
 %defattr(0644,perfsonar,perfsonar,0755)
 
 %changelog
-* Fri Jan 5 2018 efajardo@physics.ucsd.edu
+* Fri Jan 5 2018 efajardo@physics.ucsd.edu - 4.0.1-1.3
 - Releasing just the personar-tools subpackage on osg (SOFTWARE-2686)
 
 * Mon Jul 14 2015 andy@es.net
