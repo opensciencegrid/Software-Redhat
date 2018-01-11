@@ -5,19 +5,17 @@
 Name:      osg-ce
 Summary:   OSG Compute Element
 Version:   3.4
-Release:   3%{?dist}
+Release:   4%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
 
 BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
-Requires: osg-version
 Requires: grid-certificates >= 7
 
 Requires: fetch-crl
 Requires: osg-system-profiler
-Requires: osg-version
 Requires: vo-client
 
 Requires: osg-vo-map
@@ -188,6 +186,9 @@ exit 0
 %files bosco
 
 %changelog
+* Mon Jan 8 2018 Edgar Fajardo <emfajard@ucsd.edu> - 3.4-4
+- Removing osg-version requirements (SOFTWARE-2917)
+
 * Tue Jul 11 2017 Edgar Fajardo <emfajard@ucsd.edu> - 3.4-3
 - Merged osg-base-ce and osg-htcondor-ce into only one subpackages (SOFTWARE-2768)
 - Remove the osg-base-ce package
