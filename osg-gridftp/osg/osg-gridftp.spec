@@ -1,7 +1,7 @@
 Name:      osg-gridftp
 Summary:   Standalone OSG GridFTP w/lcmaps gums client
 Version:   3.4
-Release:   4%{?dist}
+Release:   5%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -10,7 +10,6 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
 
 Source1: udt-%{name}.conf
 
-Requires: osg-version
 Requires: osg-system-profiler
 Requires: globus-gridftp-server-progs
 Requires: vo-client
@@ -50,6 +49,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Jan 08 2018 Edgar Fajardo <emfajard@ucsd.edu> - 3.4-5
+- Remove osg-version from dependencies (SOFTWARE-2917)
+
 * Wed Nov 15 2017 Suchandra Thapa <sthapa@ci.uchicago.edu> - 3.4-4
 - Add osg-configure-gratia to dependencies (SOFTWARE-3019)
 
