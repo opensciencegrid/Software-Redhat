@@ -83,7 +83,6 @@ Requires: python-rrdtool
 Requires: m2crypto
 Requires: javascriptrrd >= 1.1.0
 Requires: osg-system-profiler
-Requires: osg-version
 Requires: osg-wn-client
 Requires: vo-client
 Requires: glideinwms-minimal-condor = %{version}-%{release}
