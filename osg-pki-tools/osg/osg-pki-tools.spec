@@ -1,6 +1,6 @@
 Summary: osg-pki-tools
 Name: osg-pki-tools
-Version: 2.1.2
+Version: 2.1.3
 Release: 1%{?dist}
 Source: OSGPKITools-%{version}.tar.gz
 License: Apache 2.0
@@ -51,6 +51,9 @@ install -m 644 -t %{buildroot}%{_defaultdocdir}/%{name}-%{version} CHANGELOG.txt
 
 
 %changelog
+* Fri Jan 12 2018 Brian Lin <blin@cs.wisc.edu> - 2.1.3-1
+- Fix osg-user-cert-renew when called without cert and key options (SOFTWARE-3061)
+
 * Fri Dec 08 2017 Brian Lin <blin@cs.wisc.edu> - 2.1.2-1
 - Fix bug that prevented requesting service certificates (SOFTWARE-3051)
 - Handle HTTPS failed responses when the HTTPS connection succeeds and
