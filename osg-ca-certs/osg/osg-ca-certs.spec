@@ -1,12 +1,12 @@
 Name:           osg-ca-certs
 Version:        1.69
-Release:        1%{?dist}
-Summary:        OSG Packaging of the IGTF CA Certs and OSG-specific CAs, in the new OpenSSL 0.9.8/1.0.0 format.  The OSG CA Distribution contains:  1) IGTF Distribution of Authority Root Certificates (CAs accredited by the International Grid Trust Federation). Details of CAs in the OSG distribution can be found on twiki at https://twiki.grid.iu.edu/bin/view/Documentation/CaDistribution. For additional details what is in the current release, see the distribution site at http://repo.grid.iu.edu/pacman/cadist/ and change log at http://repo.grid.iu.edu/pacman/cadist/CHANGES. 
+Release:        2%{?dist}
+Summary:        OSG Packaging of the IGTF CA Certs and OSG-specific CAs, in the OpenSSL 1.0.* format. 
 
 
 Group:          System Environment/Base
 License:        Unknown
-URL:            http://repo.grid.iu.edu/pacman/cadist/
+URL:            http://repo.opensciencegrid.org/pacman/cadist/
 
 # Note: currently, one needs a valid client certificate to access the source tarball
 # https://osg-svn.rtinfo.indiana.edu/cadist/release/osg-certificates-1.20NEW.tar.gz
@@ -24,7 +24,7 @@ Obsoletes:      osg-ca-certs-experimental
 Obsoletes:      osg-ca-certs-compat <= 1:1.37
 
 %description
-%{summary}
+For additional details what is in the current release, see the distribution site at http://repo.opensciencegrid.org/pacman/cadist/ and change log at http://repo.opensciencegrid.org/pacman/cadist/CHANGES.
 
 %prep
 %setup -q -n certificates
@@ -51,6 +51,11 @@ rm -rf $RPM_BUILD_ROOT
 %doc
 
 %changelog
+* Tue Jan 16 2018 Zalak Shah <zsshah@iu.edu> 1.69-2
+- CA release corresponding to IGTF 1.89 release.
+- Updated summary and description for osg-ca-certs (SOFTWARE-3097)
+- Replaced repo.grid.iu.edu -> repo.opensciencegrid.org (SOFTWARE-3097)
+
 * Wed Jan 10 2018 Zalak Shah <zsshah@iu.edu> 1.69-1
 - CA release corresponding to IGTF 1.89 release.
 
