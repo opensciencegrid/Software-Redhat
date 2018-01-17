@@ -12,13 +12,11 @@ Version:   3.16.0
 Release:   2%{?dist}
 License:   Apache 2.0
 Group:     Applications/Monitoring
-URL:       https://twiki.grid.iu.edu/bin/view/MonitoringInformation/RSV
+URL:       https://github.com/opensciencegrid/rsv
 
 Source0:   %{name}-%{version}.tar.gz
 
 BuildArch: noarch
-
-BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
 Requires: condor-cron
 Requires: rsv-consumers
@@ -33,11 +31,6 @@ Requires: vo-client
 BuildRequires: /usr/bin/systemctl
 %endif
 
-
-%if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
-%{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
-%{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
-%endif
 
 %define rsv_conf %_sysconfdir/rsv/rsv.conf
 %define rsv_conf_backup /var/lib/misc/rsv.conf-backup
@@ -122,7 +115,6 @@ Requires: /usr/bin/condor_ce_ping
 
 
 %install
-rm -rf $RPM_BUILD_ROOT
 for subpackage in rsv-core rsv-consumers rsv-metrics; do
     make -C $subpackage install DESTDIR=$RPM_BUILD_ROOT
 done
@@ -152,8 +144,6 @@ rm %buildroot%{_sysconfdir}/rsv/meta/metrics/org.osg.srm.srmping.meta
 rm %buildroot%{_sysconfdir}/rsv/meta/metrics/org.osg.globus.gram-authentication.meta
 
 
-%clean
-rm -rf $RPM_BUILD_ROOT
 
 
 # Adding -m to the useradd command doesn't make the directory so force it
