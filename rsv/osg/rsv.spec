@@ -9,7 +9,7 @@
 Name:      rsv
 Summary:   RSV Meta Package
 Version:   3.16.0
-Release:   1%{?dist}
+Release:   2%{?dist}
 License:   Apache 2.0
 Group:     Applications/Monitoring
 URL:       https://twiki.grid.iu.edu/bin/view/MonitoringInformation/RSV
@@ -82,9 +82,7 @@ Requires(preun): initscripts
 %endif
 
 # To add support for nordugrid
-%if 0%{?rhel} < 7
 Requires: condor-cream-gahp
-%endif
 
 %description core
 %{summary}
@@ -299,6 +297,9 @@ fi
 
 
 %changelog
+* Wed Nov 01 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.16.0-2
+- Add support for cream and nordugrid on EL7
+
 * Wed Oct 25 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.16.0-1
 - Drop atlas.xrootd probes (SOFTWARE-1974)
 - Fix URLs in crl-freshness-probe (SOFTWARE-2926)
