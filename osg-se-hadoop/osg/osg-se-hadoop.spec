@@ -1,7 +1,7 @@
 Name:           osg-se-hadoop
 Summary:        OSG Hadoop Storage Element package for RPM distribution
 Version:        3.4
-Release:        1%{?dist}
+Release:        2%{?dist}
 License:        GPL
 Group:          System Environment/Daemons
 URL:            https://twiki.grid.iu.edu/twiki/bin/view/Storage/WebHome
@@ -14,7 +14,6 @@ Requires: %{name}-secondarynamenode = %{version}-%{release}
 Requires: %{name}-datanode = %{version}-%{release}
 Requires: %{name}-client = %{version}-%{release}
 Requires: %{name}-gridftp = %{version}-%{release}
-Requires: %{name}-srm = %{version}-%{release}
 
 %description
 This is a meta-package for Hadoop Storage Element. By default, it will
@@ -93,28 +92,6 @@ This is a Globus GridFTP frontend for a Hadoop Storage Element.
 
 
 
-%package srm
-Summary: Datanode meta-package for Hadoop
-Group: System Environment/Libraries
-Requires: grid-certificates >= 7
-Requires: osg-version
-Requires: osg-system-profiler
-Requires: edg-mkgridmap
-%if 0%{?rhel} < 6
-Requires: fetch-crl3
-%else
-Requires: fetch-crl
-%endif
-Requires: bestman2-server
-Requires: bestman2-client
-Requires: bestman2-tester
-Requires: vo-client
-Requires: hadoop-hdfs-fuse
-%description srm
-This is a BeStMan SRM frontend for a Hadoop cluster.
-
-
-
 %install
 
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/hadoop/conf.osg
@@ -142,10 +119,10 @@ rm -rf $RPM_BUILD_ROOT
 %files gridftp
 %{_sysconfdir}/hadoop/conf.osg/
 
-%files srm
-%{_sysconfdir}/hadoop/conf.osg/
-
 %changelog
+* Wed Jan 17 2018 Carl Edquist <edquist@cs.wisc.edu> - 3.4-2
+- Drop srm metapackage - bestman2 is gone in OSG 3.4 (SOFTWARE-2985)
+
 * Wed Nov 22 2017 Suchandra Thapa <sthapa@ci.uchicago.edu> - 3.4-1
 - Update for OSG 3.4 release
 
