@@ -1,7 +1,7 @@
 %define hadoop_version 2.6.0+cdh5.12.1+2540 
 %define hadoop_patched_version 2.6.0-cdh5.12.1 
 %define hadoop_base_version 2.6.0 
-%define osg_patchlevel 5
+%define osg_patchlevel 6
 %define hadoop_release 1.cdh5.12.1.p0.3.%{osg_patchlevel}%{?dist} 
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
@@ -637,6 +637,7 @@ Documentation for Hadoop
 Summary: Hadoop Filesystem Library
 Group: Development/Libraries
 Requires: %{name}-hdfs = %{version}-%{release}
+Requires: java-devel = 1:1.7.0
 Obsoletes: hadoop-0.20-libhdfs <= 0.20.2+737
 # TODO: reconcile libjvm
 AutoReq: no
@@ -1150,6 +1151,9 @@ fi
 %endif
 
 %changelog
+* Tue Jan 16 2018 Carl Edquist <edquist@cs.wisc.edu> - 2.6.0+cdh5.12.1+2540-1.cdh5.12.1.p0.3.6
+- Add java-devel requirement to libhdfs (SOFTWARE-2983)
+
 * Fri Dec 08 2017 Carl Edquist <edquist@cs.wisc.edu> - 2.6.0+cdh5.12.1+2540-1.cdh5.12.1.p0.3.5
 - Rename java7-devel requirement for hdfs-fuse (SOFTWARE-2991)
 
