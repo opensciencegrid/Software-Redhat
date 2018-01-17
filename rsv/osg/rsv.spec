@@ -8,8 +8,8 @@
 
 Name:      rsv
 Summary:   RSV Meta Package
-Version:   3.16.0
-Release:   2%{?dist}
+Version:   3.17.0
+Release:   1%{?dist}
 License:   Apache 2.0
 Group:     Applications/Monitoring
 URL:       https://github.com/opensciencegrid/rsv
@@ -263,8 +263,12 @@ fi
 
 
 %changelog
+* Wed Jan 17 2018 Carl Edquist <edquist@cs.wisc.edu> - 3.17.0-1
+- Verify certificates via sha256 (SOFTWARE-3060)
+- Update gratia-config-probe to contact GRACC collector (SOFTWARE-2722)
+
 * Wed Nov 01 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.16.0-2
-- Add support for cream and nordugrid on EL7
+- Add support for cream and nordugrid on EL7 (SOFTWARE-2987)
 - Move condor-cron requirement to rsv-core (SOFTWARE-3010)
 - Remove config hack for upgrading from rsv pre-3.7.20
 
