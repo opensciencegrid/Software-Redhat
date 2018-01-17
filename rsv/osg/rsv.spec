@@ -31,9 +31,6 @@ BuildRequires: /usr/bin/systemctl
 %endif
 
 
-%define rsv_conf %_sysconfdir/rsv/rsv.conf
-%define rsv_conf_backup /var/lib/misc/rsv.conf-backup
-
 %description
 %{summary}
 
@@ -119,9 +116,6 @@ for subpackage in rsv-core rsv-consumers rsv-metrics; do
     make -C $subpackage install DESTDIR=$RPM_BUILD_ROOT
 done
 
-mkdir -p $(dirname %buildroot%rsv_conf_backup)
-touch %buildroot%rsv_conf_backup
-
 # remove these for OSG 3.4; eventually they will be removed from upstream
 rm %buildroot%{_libexecdir}/rsv/probes/gram-authentication-probe
 rm %buildroot%{_libexecdir}/rsv/probes/srm-ping-probe
@@ -158,24 +152,8 @@ rm %buildroot%{_sysconfdir}/rsv/meta/metrics/org.osg.globus.gram-authentication.
 %make_rsv_user_group
 
 
-# 3.7.20-2 and up use HTCondor-CE as the default gateway, but we don't want to
-# change it for users upgrading from old versions so backup and restore
-# rsv.conf when upgrading from an old version.
-
-# The backup file has a fixed name because it needs to be the same in both the
-# pre scriptlet and the triggerun scriptlet
 %pre core
 %make_rsv_user_group
-
-if [ $1 -gt 1 ]; then # upgrading
-    %__rm -f  %rsv_conf_backup  ||  :
-    %__cp -fp  %rsv_conf  %rsv_conf_backup  ||  :
-fi
-
-%triggerun core -- %name-core < 3.7.20-2
-if [ $1 -gt 0 ]; then # upgrading, not uninstalling
-    %__mv -f  %rsv_conf_backup  %rsv_conf  ||  :
-fi
 
 
 %pre metrics
@@ -260,8 +238,6 @@ fi
 
 %{_mandir}/man1/rsv-control.1*
 
-%ghost %rsv_conf_backup
-
 
 %files metrics
 %defattr(-,root,root,-)
@@ -290,6 +266,7 @@ fi
 * Wed Nov 01 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.16.0-2
 - Add support for cream and nordugrid on EL7
 - Move condor-cron requirement to rsv-core (SOFTWARE-3010)
+- Remove config hack for upgrading from rsv pre-3.7.20
 
 * Wed Oct 25 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.16.0-1
 - Drop atlas.xrootd probes (SOFTWARE-1974)
