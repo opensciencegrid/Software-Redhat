@@ -18,7 +18,6 @@ Source0:   %{name}-%{version}.tar.gz
 
 BuildArch: noarch
 
-Requires: condor-cron
 Requires: rsv-consumers
 Requires: rsv-core
 Requires: rsv-metrics
@@ -54,6 +53,7 @@ Summary: RSV Core Infrastructure
 Group:     Applications/Monitoring
 Requires: /usr/bin/grid-proxy-info
 Requires: /usr/bin/globus-job-run
+Requires: condor-cron
 
 # We require globus-common-progs to work around a missing dependency 
 # in the globus-gram-client-tools RPM (which provides globus-job-run)
@@ -289,6 +289,7 @@ fi
 %changelog
 * Wed Nov 01 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.16.0-2
 - Add support for cream and nordugrid on EL7
+- Move condor-cron requirement to rsv-core (SOFTWARE-3010)
 
 * Wed Oct 25 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.16.0-1
 - Drop atlas.xrootd probes (SOFTWARE-1974)
