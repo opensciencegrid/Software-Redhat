@@ -1,7 +1,7 @@
 Name:           osg-se-hadoop
 Summary:        OSG Hadoop Storage Element package for RPM distribution
 Version:        3.4
-Release:        2%{?dist}
+Release:        3%{?dist}
 License:        GPL
 Group:          System Environment/Daemons
 URL:            https://twiki.grid.iu.edu/twiki/bin/view/Storage/WebHome
@@ -14,6 +14,7 @@ Requires: %{name}-secondarynamenode = %{version}-%{release}
 Requires: %{name}-datanode = %{version}-%{release}
 Requires: %{name}-client = %{version}-%{release}
 Requires: %{name}-gridftp = %{version}-%{release}
+Obsoletes: %{name}-srm < %{version}
 
 %description
 This is a meta-package for Hadoop Storage Element. By default, it will
@@ -120,8 +121,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/hadoop/conf.osg/
 
 %changelog
-* Wed Jan 17 2018 Carl Edquist <edquist@cs.wisc.edu> - 3.4-2
-- Drop srm metapackage - bestman2 is gone in OSG 3.4 (SOFTWARE-2985)
+* Wed Jan 17 2018 Carl Edquist <edquist@cs.wisc.edu> - 3.4-3
+- Drop & obsolete srm metapackage - bestman2 is gone in OSG 3.4 (SOFTWARE-2985)
 
 * Wed Nov 22 2017 Suchandra Thapa <sthapa@ci.uchicago.edu> - 3.4-1
 - Update for OSG 3.4 release
