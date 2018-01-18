@@ -1,6 +1,6 @@
 Name:           pegasus
 Version:        4.8.1
-Release:        1.1%{?dist}
+Release:        1.2%{?dist}
 Summary:        Workflow management system for HTCondor, grids, and clouds
 Group:          Applications/System
 License:        ASL 2.0
@@ -11,8 +11,11 @@ Source:         pegasus-%{version}.tar.gz
 
 BuildRoot:      %{_tmppath}/%{name}-root
 
-BuildRequires:  python-setuptools, openssl-devel, pyOpenSSL ant, ant-nodeps, ant-apache-regexp, java-devel = 1:1.7.0, gcc, groff, python-devel, gcc-c++, make, jpackage-utils, /usr/share/java-1.7.0, asciidoc, libxslt, fop
+BuildRequires:  python-setuptools, openssl-devel, pyOpenSSL ant, ant-apache-regexp, java-devel = 1:1.7.0, gcc, groff, python-devel, gcc-c++, make, jpackage-utils, /usr/share/java-1.7.0, asciidoc, libxslt, fop
 BuildRequires: R-devel
+%if 0%{?rhel} < 7
+BuildRequires:  ant-nodeps
+%endif
 Requires:       java, python >= 2.6, condor >= 8.4, graphviz, pyOpenSSL
 
 %define sourcedir %{name}-%{version}
@@ -75,8 +78,8 @@ rm -Rf %{buildroot}
 
 
 %changelog
-* Thu Jan 18 2018 Carl Edquist <edquist@cs.wisc.edu> - 4.8.1-1.1
-- Add back R-devel requirement (SOFTWARE-3103)
+* Thu Jan 18 2018 Carl Edquist <edquist@cs.wisc.edu> - 4.8.1-1.2
+- Merge osg changes (SOFTWARE-3103)
 
 * Tue Jan 16 2018 Pegasus Development Team <pegasus-support@isi.edu> 4.8.1
 - 4.8.1 automatic build
