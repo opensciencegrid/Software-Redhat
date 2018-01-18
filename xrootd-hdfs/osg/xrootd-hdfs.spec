@@ -1,6 +1,6 @@
 Name: xrootd-hdfs
 Version: 1.9.2
-Release: 4%{?dist}
+Release: 5%{?dist}
 Summary: HDFS plugin for xrootd
 
 Group: System Environment/Development
@@ -17,7 +17,6 @@ BuildRequires: hadoop-libhdfs-devel >= 2.0.0+545-1.cdh4.1.1
 BuildRequires: java-devel = 1:1.7.0
 BuildRequires: jpackage-utils
 Requires: hadoop-client >= 2.0.0+545-1.cdh4.1.1
-Conflicts: xrootd < 4.6.0-1
 
 %package devel
 Summary: Development headers for Xrootd HDFS plugin
@@ -70,6 +69,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/XrdHdfs.hh
 
 %changelog
+* Thu Jan 18 2018 Carl Edquist <edquist@cs.wisc.edu> - 1.9.2-5
+- Drop version conflict for xrootd (SOFTWARE-2682)
+
 * Thu Nov 09 2017 Carl Edquist <edquist@cs.wisc.edu> - 1.9.2-4
 - Update hadoop build requirement (SOFTWARE-2982)
 
