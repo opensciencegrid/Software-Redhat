@@ -244,6 +244,7 @@ creation/create_rpm_startup . frontend_initd_startup_template_sl7 factory_initd_
 
 # install the executables
 install -d $RPM_BUILD_ROOT%{_sbindir}
+install -d $RPM_BUILD_ROOT%{_libexecdir}
 # Find all the executables in the frontend directory
 install -m 0500 frontend/checkFrontend.py $RPM_BUILD_ROOT%{_sbindir}/checkFrontend
 install -m 0500 frontend/glideinFrontendElement.py $RPM_BUILD_ROOT%{_sbindir}/glideinFrontendElement.py
@@ -314,11 +315,12 @@ install -m 0755 %{SOURCE11} $RPM_BUILD_ROOT/%{_sbindir}/gwms-frontend
 install -m 0755 %{SOURCE12} $RPM_BUILD_ROOT/%{_sbindir}/gwms-factory
 %else
 # Install the init.d
-install -d  $RPM_BUILD_ROOT/%{_initrddir}
-install -m 0755 %{SOURCE1} $RPM_BUILD_ROOT/%{_initrddir}/gwms-frontend
-install -m 0755 %{SOURCE6} $RPM_BUILD_ROOT/%{_initrddir}/gwms-factory
-install -m 0755 creation/templates/gwms-renew-proxies.init $RPM_BUILD_ROOT/%{_initrddir}/gwms-renew-proxies
-install -m 0755 creation/templates/gwms-renew-proxies.cron $RPM_BUILD_ROOT/%{_sysconfdir}cron.d/gwms-renew-proxies
+install -d $RPM_BUILD_ROOT%{_initrddir}
+install -d $RPM_BUILD_ROOT%{_sysconfdir}/cron.d
+install -m 0755 %{SOURCE1} $RPM_BUILD_ROOT%{_initrddir}/gwms-frontend
+install -m 0755 %{SOURCE6} $RPM_BUILD_ROOT%{_initrddir}/gwms-factory
+install -m 0755 creation/templates/gwms-renew-proxies.init $RPM_BUILD_ROOT%{_initrddir}/gwms-renew-proxies
+install -m 0755 creation/templates/gwms-renew-proxies.cron $RPM_BUILD_ROOT%{_sysconfdir}/cron.d/gwms-renew-proxies
 %endif
 
 # Install the web directory
@@ -378,7 +380,7 @@ install -d $RPM_BUILD_ROOT/%{_sysconfdir}/sysconfig
 install -d $RPM_BUILD_ROOT/%{_sysconfdir}/gwms-frontend
 install -d $RPM_BUILD_ROOT/%{_sysconfdir}/gwms-frontend/plugin.d
 install -m 0644 %{SOURCE2} $RPM_BUILD_ROOT/%{_sysconfdir}/gwms-frontend/frontend.xml
-install -m 0644 config/proxies.ini $RPM_BUILD_ROOT/%{_sysconfdir}/gwms-frontend/proxies.ini
+# MM tmp remove - install -m 0644 config/proxies.ini $RPM_BUILD_ROOT/%{_sysconfdir}/gwms-frontend/proxies.ini
 install -m 0644 %{SOURCE8} $RPM_BUILD_ROOT/%{_sysconfdir}/sysconfig/gwms-frontend
 
 # Install the factory config dir
@@ -782,7 +784,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(-, frontend, frontend) %dir %{_sysconfdir}/gwms-frontend
 %attr(-, frontend, frontend) %dir %{_sysconfdir}/gwms-frontend/plugin.d
 %attr(-, frontend, frontend) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/gwms-frontend/frontend.xml
-%attr(-, frontend, frontend) %config(noreplace) %{_sysconfdir}/gwms-frontend/proxies.ini
+# MM tmp remove -  %attr(-, frontend, frontend) %config(noreplace) %{_sysconfdir}/gwms-frontend/proxies.ini
 %config(noreplace) %{_sysconfdir}/sysconfig/gwms-frontend
 %attr(-, frontend, frontend) %{web_base}/../creation
 
