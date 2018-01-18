@@ -1,6 +1,6 @@
 Name:           pegasus
 Version:        4.8.1
-Release:        1%{?dist}
+Release:        1.1%{?dist}
 Summary:        Workflow management system for HTCondor, grids, and clouds
 Group:          Applications/System
 License:        ASL 2.0
@@ -12,6 +12,7 @@ Source:         pegasus-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-root
 
 BuildRequires:  python-setuptools, openssl-devel, pyOpenSSL ant, ant-nodeps, ant-apache-regexp, java-devel = 1:1.7.0, gcc, groff, python-devel, gcc-c++, make, jpackage-utils, /usr/share/java-1.7.0, asciidoc, libxslt, fop
+BuildRequires: R-devel
 Requires:       java, python >= 2.6, condor >= 8.4, graphviz, pyOpenSSL
 
 %define sourcedir %{name}-%{version}
@@ -74,11 +75,76 @@ rm -Rf %{buildroot}
 
 
 %changelog
+* Thu Jan 18 2018 Carl Edquist <edquist@cs.wisc.edu> - 4.8.1-1.1
+- Add back R-devel requirement (SOFTWARE-3103)
+
 * Tue Jan 16 2018 Pegasus Development Team <pegasus-support@isi.edu> 4.8.1
 - 4.8.1 automatic build
 
-%changelog
+* Thu Nov 02 2017 Carl Edquist <edquist@cs.wisc.edu> 4.7.4-1.2
+- Rename java7 dependencies (SOFTWARE-2991)
+
+* Mon Mar 21 2017 Edgar Fajardo <efajardo@physics.ucsd.edu> 4.7.4-1.1
+- Bumped to version 4.7.4 - SOFTWARE-2626
+- Added R-devel to the build requires
+- Added patch for javadoc error in el7
+
+* Fri Apr 22 2016 Edgar Fajardo <efajardo@physics.ucsd.edu> 4.6.1-1.1
+- Bumped to version 4.6.1 - SOFTWARE-2286
+* Thu Oct 02 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 4.3.1-1.3
+- Remove ant-nodeps buildrequire on EL7
+
 * Mon Dec 02 2013 Pegasus Development Team <pegasus-support@isi.edu> 4.3.2cvs
 - Relaxed the "java" requirements in order for the package to work on plan
   CentOS machines
 
+* Wed Nov 27 2013 Tim Cartwright <cat@cs.wisc.edu> 4.3.1-1.2
+- Rebuild with unified spec file across OSG 3.1 and 3.2
+- Tweaked arrangement of requires lines to ease comparisons against original
+
+* Tue Nov 26 2013 Edgar Fajardo <efajardo@cern.ch> 4.3.1-1.1
+- Used the new upstream source rpm 4.3.1 that includes the patch so the code is compatible with python2.4
+- Changed the Requires and BuildRequires section so it enforces Java 7
+- Added the CLASSPATH hack to the build section
+
+* Mon Nov 25 2013 Pegasus Development Team <pegasus-support@isi.edu> 4.3.1
+- 4.3.1 automatic build
+
+* Wed Nov 20 2013 Edgar Fajardo <efajardo@cern.ch> 4.3.0-2.1
+- Changed the Requires and BuildRequires section so it enforces Java 7
+- Added the CLASSPATH hack to the build section
+- Added the patch0 so the code is compatible with python2.4
+
+* Wed Oct 23 2013 Mats Rynge <rynge@isi.edu> 4.3.0
+- 4.3.0 release
+
+* Tue May 07 2013 Carl Edquist <edquist@cs.wisc.edu> - 4.2.0-1.2
+- Require missing java dir names instead of workaround package
+
+* Tue Apr 09 2013 Brian Lin <blin@cs.wisc.edu> 4.2.0-1.1
+- Change dependencies to use and build against java7
+
+* Wed Mar 13 2013 Mats Rynge <rynge@isi.edu> 4.2.1cvs
+- 4.2.1cvs release
+
+* Fri Jan 11 2013 Mats Rynge <rynge@isi.edu> 4.2.0
+- 4.2.0 release
+
+* Tue Feb 7 2012 Mats Rynge <rynge@isi.edu> 4.1.0
+- 4.1.0 release
+
+* Tue Feb 7 2012 Mats Rynge <rynge@isi.edu> 4.0.0cvs-1
+- Preparing for 4.0.0
+- Added graphviz-gd as dep
+
+* Mon Aug 29 2011 Mats Rynge <rynge@isi.edu> 3.2.0cvs-1
+- Moved to 3.2.0cvs which is FHS compliant
+
+* Fri Jul 22 2011 Doug Strain <dstrain@fnal.gov> 3.0.3-2
+- Fixing common.pm
+- Adding g++ to dependencies
+
+* Wed Jul 20 2011 Doug Strain <dstrain@fnal.gov> 3.0.3-1
+- Initial creation of spec file
+- Installs into /usr/share/pegasus-3.0.3
+- Binaries into /usr/bin
