@@ -8,7 +8,6 @@ Source2: config-osg.opensciencegrid.org.conf
 BuildArch: noarch
 Group: Applications/System
 License: BSD
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Provides: cvmfs-config = %{version}-%{release}
 Obsoletes: cvmfs-keys < 1.6
@@ -29,7 +28,6 @@ Default configuration parameters and public keys for CernVM-FS, providing access
 to repositories under the cern.ch, egi.eu, and opensciencegrid.org domains
 
 %install
-rm -rf $RPM_BUILD_ROOT
 for cvmfsdir in keys/opensciencegrid.org config.d default.d; do
     mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/cvmfs/$cvmfsdir
 done

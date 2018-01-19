@@ -81,7 +81,6 @@ export FORREST_HOME=$PWD/apache-forrest-0.8
 env FULL_VERSION=%{avro_patched_version} bash $RPM_SOURCE_DIR/do-component-build
 
 %install
-%__rm -rf $RPM_BUILD_ROOT
 env FULL_VERSION=%{avro_patched_version} bash $RPM_SOURCE_DIR/install_avro.sh \
           --build-dir=./ \
           --prefix=$RPM_BUILD_ROOT \

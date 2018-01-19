@@ -19,7 +19,6 @@ URL:		https://github.com/osg-bosco/BLAH
 # git archive %{gitrev} | gzip -9 > %{name}-%{version}-%{gitrev}.tar.gz
 Source0:        %{name}-%{version}%{?gitrev:-%{gitrev}}.tar.gz
 
-BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildRequires:  automake
 BuildRequires:  autoconf
 BuildRequires:  libtool
@@ -57,7 +56,6 @@ unset LDFLAGS
 make %{?_smp_mflags}
 
 %install
-rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
 
 rm -f $RPM_BUILD_ROOT%{_libdir}/*.la
@@ -152,9 +150,6 @@ for batch_system in pbs sge slurm lsf condor; do
 done
 
 mv $RPM_BUILD_ROOT%{_docdir}/glite-ce-blahp-@PVER@ $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
-
-%clean
-rm -rf $RPM_BUILD_ROOT
 
 %post
 

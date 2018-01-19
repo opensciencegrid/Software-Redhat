@@ -6,7 +6,6 @@ License:        GPL
 Group:          System Environment/Daemons
 URL:            https://twiki.grid.iu.edu/twiki/bin/view/Storage/WebHome
 
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Source0: hdfs-site.xml
 Source1: core-site.xml
 Requires: %{name}-namenode = %{version}-%{release}
@@ -70,11 +69,7 @@ Requires: hadoop-hdfs-fuse
 Requires: osg-version
 Requires: osg-system-profiler
 Requires: edg-mkgridmap
-%if 0%{?rhel} < 6
-Requires: fetch-crl3
-%else
 Requires: fetch-crl
-%endif
 # 3.0.0-6 pulls in gridftp-hdfs that uses /etc/gridftp.d
 Requires: osg-gridftp-hdfs >= 3.0.0-7
 Requires: globus-gridftp-server-progs
@@ -98,9 +93,6 @@ This is a Globus GridFTP frontend for a Hadoop Storage Element.
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/hadoop/conf.osg
 install -m 0644 %{SOURCE0} $RPM_BUILD_ROOT%{_sysconfdir}/hadoop/conf.osg/
 install -m 0644 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/hadoop/conf.osg/
-
-%clean
-rm -rf $RPM_BUILD_ROOT
 
 %files
 %{_sysconfdir}/hadoop/conf.osg/

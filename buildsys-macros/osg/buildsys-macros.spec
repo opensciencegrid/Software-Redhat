@@ -6,7 +6,6 @@ Version:        7
 Release:	5.osgup.el7
 License:	GPL
 Group:		Development/Buildsystem
-BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 Requires:	rpmdevtools
 
@@ -18,7 +17,6 @@ Macros for the OSG Buildsystem
 %build
 
 %install
-rm -rf $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT/etc/rpm/
 DVER=%{dver}
 OSGVER=%{osgver}
@@ -36,11 +34,7 @@ if [[ $DVER -eq 5 ]]; then
 fi
 
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
 %files
-%defattr(-,root,root)
 %if %{dver} == 5
 /etc/rpm/macros.digest
 %endif

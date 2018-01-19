@@ -15,7 +15,6 @@ URL:            https://github.com/opensciencegrid/gridftp_hdfs
 #     git archive --prefix=%{name}-%{version}/ %{gitrev} | gzip -n > %{name}-%{version}-%{gitrev}.tar.gz
 Source0:        %{name}-%{version}%{?gitrev:-%{gitrev}}.tar.gz
 
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires: cmake
 
@@ -60,12 +59,8 @@ HDFS DSI plugin for GridFTP
 make %{?_smp_mflags}
 
 %install
-rm -rf $RPM_BUILD_ROOT
 
 make DESTDIR=$RPM_BUILD_ROOT install
-
-%clean
-rm -rf $RPM_BUILD_ROOT
 
 %post
 /sbin/ldconfig

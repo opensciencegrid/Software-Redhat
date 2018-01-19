@@ -33,7 +33,6 @@ Summary:        The glidein Workload Management System (glideinWMS)
 Group:          System Environment/Daemons
 License:        Fermitools Software Legal Information (Modified BSD License)
 URL:            http://glideinwms.fnal.gov
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
 
@@ -218,17 +217,9 @@ chmod 700 chksum.sh
 ./chksum.sh v%{version}-%{release}.osg etc/checksum.factory "CVS config_examples doc .git .gitattributes poolwatcher frontend/* creation/reconfig_glidein creation/clone_glidein creation/lib/cgW* creation/web_base/factory*html creation/web_base/collector_setup.sh creation/web_base/condor_platform_select.sh creation/web_base/condor_startup.sh creation/web_base/create_mapfile.sh creation/web_base/gcb_setup.sh creation/web_base/glexec_setup.sh creation/web_base/glidein_startup.sh creation/web_base/job_submit.sh creation/web_base/local_start.sh creation/web_base/setup_x509.sh creation/web_base/update_proxy.py creation/web_base/validate_node.sh chksum.sh etc/checksum* unittests build creation/lib/matchPolicy*"
 
 %install
-rm -rf $RPM_BUILD_ROOT
 
 # Set the Python version
 %define py_ver %(python -c "import sys; v=sys.version_info[:2]; print '%d.%d'%v")
-
-# From http://fedoraproject.org/wiki/Packaging:Python
-# Define python_sitelib
-%if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
-%{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
-%{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
-%endif
 
 #Change src_dir in reconfig_Frontend
 sed -i "s/WEB_BASE_DIR=.*/WEB_BASE_DIR=\"\/var\/lib\/gwms-frontend\/web-base\"/" creation/reconfig_frontend
@@ -570,9 +561,6 @@ fi
 /sbin/service condor condrestart > /dev/null 2>&1 || true
 
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
 %files vofrontend
 
 %files common-tools
@@ -649,20 +637,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_sbindir}/glideFactoryEntry.py
 %attr(755,root,root) %{_sbindir}/glideFactoryEntryGroup.py
 
-%if %{?rhel}%{!?rhel:0} == 5
-%attr(755,root,root) %{_sbindir}/checkFactory.pyc
-%attr(755,root,root) %{_sbindir}/checkFactory.pyo
-%attr(755,root,root) %{_sbindir}/glideFactory.pyc
-%attr(755,root,root) %{_sbindir}/glideFactory.pyo
-%attr(755,root,root) %{_sbindir}/glideFactoryEntry.pyc
-%attr(755,root,root) %{_sbindir}/glideFactoryEntry.pyo
-%attr(755,root,root) %{_sbindir}/glideFactoryEntryGroup.pyc
-%attr(755,root,root) %{_sbindir}/glideFactoryEntryGroup.pyo
-%attr(755,root,root) %{_sbindir}/manageFactoryDowntimes.pyc
-%attr(755,root,root) %{_sbindir}/manageFactoryDowntimes.pyo
-%attr(755,root,root) %{_sbindir}/stopFactory.pyc
-%attr(755,root,root) %{_sbindir}/stopFactory.pyo
-%endif
 %attr(755,root,root) %{_sbindir}/info_glidein
 %attr(755,root,root) %{_sbindir}/manageFactoryDowntimes.py
 %attr(755,root,root) %{_sbindir}/reconfig_glidein

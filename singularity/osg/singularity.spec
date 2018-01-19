@@ -33,7 +33,6 @@ Group: System Environment/Base
 URL: http://singularity.lbl.gov/
 Source: %{name}-%{version}.tar.gz
 ExclusiveOS: linux
-BuildRoot: %{?_tmppath}%{!?_tmppath:/var/tmp}/%{name}-%{version}-%{release}-root
 Requires: squashfs-tools
 
 Requires: %{name}-runtime = %{version}-%{release}
@@ -76,9 +75,6 @@ rm -f $RPM_BUILD_ROOT/%{_libdir}/singularity/lib*.la
 
 %post runtime -p /sbin/ldconfig
 %postun runtime -p /sbin/ldconfig
-
-%clean
-rm -rf $RPM_BUILD_ROOT
 
 %files
 %doc examples CONTRIBUTORS.md CONTRIBUTING.md COPYRIGHT.md INSTALL.md LICENSE-LBNL.md LICENSE.md README.md

@@ -6,7 +6,6 @@ License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
 
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
 
 Source1: udt-%{name}.conf
 
@@ -35,9 +34,6 @@ HDFS and GUMS support.
 %install
 mkdir -p %{buildroot}%{_sysconfdir}/gridftp.d
 install -m 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/gridftp.d/
-
-%clean
-rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)

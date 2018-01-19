@@ -45,7 +45,6 @@ Summary: Collection of useful tools for Bigtop
 Group:      Applications/Engineering
 License:    ASL 2.0
 URL:        http://bigtop.apache.org/
-BuildRoot:  %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildArch:  noarch
 Source0:    bigtop-detect-javahome
 Source1:    LICENSE
@@ -97,10 +96,6 @@ install -p -m 755 %{SOURCE3} $RPM_BUILD_ROOT%{lib_dir}/
 install -p -m 755 %{SOURCE4} $RPM_BUILD_ROOT%{lib_dir}/
 install -p -m 755 %{SOURCE5} $RPM_BUILD_ROOT%{lib_dir}/
 install -p -m 644 %{SOURCE2} $RPM_BUILD_ROOT/etc/default/bigtop-utils
-
-%clean
-rm -rf $RPM_BUILD_ROOT
-
 
 %files
 %defattr(-,root,root,-)

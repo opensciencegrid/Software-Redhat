@@ -9,7 +9,6 @@ URL: https://github.com/bbockelm/xrootd-hdfs
 # Generated from:
 # git archive --format=tgz --prefix=%{name}-%{version}/ v%{version} > %{name}-%{version}.tar.gz
 Source0: %{name}-%{version}.tar.gz
-BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildRequires: xrootd-devel >= 1:4.6
 BuildRequires: xrootd-server-devel >= 1:4.6
 BuildRequires: cmake
@@ -36,7 +35,6 @@ Group: System Environment/Development
 make VERBOSE=1 %{?_smp_mflags}
 
 %install
-rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
 
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/xrootd
@@ -52,9 +50,6 @@ rm $RPM_BUILD_ROOT%{_bindir}/xrootd_hdfs_envcheck
 # Notice that I don't call ldconfig in post/postun.  This is because libXrdHdfs
 # is really a loadable module, not a shared lib: it's not linked to all the xrootd
 # libs necessary to load it outside xrootd.
-
-%clean
-rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)

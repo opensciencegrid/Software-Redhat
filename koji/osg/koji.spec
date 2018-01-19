@@ -29,7 +29,6 @@ Patch111: db-upgrade-1.10-to-1.11.patch
 Source: koji-%{version}.tar.bz2
 Source1: README.epel
 
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch: noarch
 Requires: python-krbV >= 1.0.13
 Requires: rpm-python
@@ -60,9 +59,6 @@ License: LGPLv2 and GPLv2
 Requires: httpd
 Requires: mod_wsgi
 Requires: postgresql-python
-%if 0%{?rhel} == 5
-Requires: python-simplejson
-%endif
 Requires: %{name} = %{version}-%{release}
 
 %description hub
@@ -75,12 +71,7 @@ License: LGPLv2
 Requires: %{name} = %{version}-%{release}
 Requires: %{name}-hub = %{version}-%{release}
 Requires: python-qpid >= 0.7
-%if 0%{?rhel} >= 6
 Requires: python-qpid-proton
-%endif
-%if 0%{?rhel} == 5
-Requires: python-ssl
-%endif
 Requires: cpio
 
 %description hub-plugins
@@ -109,14 +100,7 @@ Requires: /usr/bin/cvs
 Requires: /usr/bin/svn
 Requires: /usr/bin/git
 Requires: python-cheetah
-%if 0%{?rhel} == 5
-Requires: createrepo >= 0.4.11-2
-Requires: python-hashlib
-Requires: python-createrepo
-%endif
-%if 0%{?fedora} >= 9 || 0%{?rhel} > 5
 Requires: createrepo >= 0.9.2
-%endif
 
 %description builder
 koji-builder is the daemon that runs on build machines and executes
@@ -196,14 +180,9 @@ cp %{SOURCE1} README.epel
 %build
 
 %install
-rm -rf $RPM_BUILD_ROOT
 make DESTDIR=$RPM_BUILD_ROOT %{?install_opt} install
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
 %files
-%defattr(-,root,root)
 %{_bindir}/*
 %{python_sitelib}/%{name}
 %config(noreplace) %{_sysconfdir}/koji.conf
@@ -211,7 +190,6 @@ rm -rf $RPM_BUILD_ROOT
 %doc docs Authors COPYING LGPL
 
 %files hub
-%defattr(-,root,root)
 %{_datadir}/koji-hub
 %dir %{_libexecdir}/koji-hub
 %{_libexecdir}/koji-hub/rpmdiff
@@ -221,14 +199,12 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_sysconfdir}/koji-hub/hub.conf.d
 
 %files hub-plugins
-%defattr(-,root,root)
 %dir %{_prefix}/lib/koji-hub-plugins
 %{_prefix}/lib/koji-hub-plugins/*.py*
 %dir %{_sysconfdir}/koji-hub/plugins
 %{_sysconfdir}/koji-hub/plugins/*.conf
 
 %files utils
-%defattr(-,root,root)
 %{_sbindir}/kojira
 %if %{use_systemd}
 %{_unitdir}/kojira.service
@@ -246,7 +222,6 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/koji-shadow/koji-shadow.conf
 
 %files web
-%defattr(-,root,root)
 %{_datadir}/koji-web
 %dir %{_sysconfdir}/kojiweb
 %config(noreplace) %{_sysconfdir}/kojiweb/web.conf
@@ -254,11 +229,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_sysconfdir}/kojiweb/web.conf.d
 
 %files builder
-%defattr(-,root,root)
 %{_sbindir}/kojid
 %dir %{_libexecdir}/kojid
 %{_libexecdir}/kojid/mergerepos
-%defattr(-,root,root)
 %dir %{_prefix}/lib/koji-builder-plugins
 %{_prefix}/lib/koji-builder-plugins/*.py*
 %if %{use_systemd}
@@ -300,7 +273,6 @@ fi
 %endif
 
 %files vm
-%defattr(-,root,root)
 %doc README.epel
 %{_sbindir}/kojivmd
 #dir %{_datadir}/kojivmd
