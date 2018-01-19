@@ -7,7 +7,6 @@ Group:          Applications/System
 License:        Unknown
 URL:            http://vdt.cs.wisc.edu
 
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 # This fulfills depenendencies for most OSG packages that depend on Condor
 # Versioned provides is needed to deal with conflicts causes in htcondor-ce

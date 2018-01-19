@@ -26,7 +26,6 @@ Summary:        The VOFrontend for glideinWMS submission host
 Group:          System Environment/Daemons
 License:        Fermitools Software Legal Information (Modified BSD License)
 URL:            http://www.uscms.org/SoftwareComputing/Grid/WMS/glideinWMS/doc.v2/manual/
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
 %define web_dir %{_localstatedir}/lib/gwms-frontend/web-area

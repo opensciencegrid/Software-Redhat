@@ -8,7 +8,6 @@ License:        Apache 2.0
 
 Source0:        %{name}-%{version}.tar.gz
 
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
 Requires:       yum-utils

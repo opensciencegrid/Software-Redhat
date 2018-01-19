@@ -17,7 +17,6 @@ Source0: %{name}-%{version}.tar.gz
 BuildRequires: boost-devel
 BuildRequires: lcmaps-interface
 
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %description
 This plugin creates temporary directories for the payload process,

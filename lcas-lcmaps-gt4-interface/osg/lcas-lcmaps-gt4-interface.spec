@@ -7,7 +7,6 @@ Group: System Environment/Libraries
 URL: http://wiki.nikhef.nl/grid/Site_Access_Control
 Source0: http://software.nikhef.nl/security/%{name}/%{name}-%{version}.tar.gz
 Source1: gsi-authz.conf.in
-#BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildRequires: lcmaps-interface
 BuildRequires: openssl-devel
 BuildRequires: globus-core
@@ -25,9 +24,6 @@ Requires: liblcmaps.so.0
 %else
 Requires: liblcmaps.so.0()(64bit)
 %endif
-
-# BuildRoot is still required for EPEL5                                                            
-BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
 # OSG doesn't use lcas anymore                                                                                   
 Obsoletes: lcas

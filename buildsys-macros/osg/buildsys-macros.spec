@@ -15,7 +15,6 @@ Version:        7
 Release:	6%{dist}
 License:	GPL
 Group:		Development/Buildsystem
-BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 Requires:	rpmdevtools
 

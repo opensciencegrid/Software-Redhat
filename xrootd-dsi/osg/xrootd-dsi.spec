@@ -12,7 +12,6 @@ Source2:        globus-gridftp-server-plugin.osg-sysconfig
 Source3:        gridftp-xrootd.osg-extensions.conf
 Patch0:         gfalFunctionality.patch
 
-BuildRoot:      %{_tmppath}/%{name}-root
 BuildRequires: globus-common-devel globus-gridftp-server-devel zlib-devel
 #BuildRequires: xrootd-compat-libs
 #%if %?rhel < 7

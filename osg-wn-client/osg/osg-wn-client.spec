@@ -7,7 +7,6 @@ Group:     Grid
 URL:       http://www.opensciencegrid.org
 BuildArch: noarch
 
-BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
 Requires: /usr/bin/xrdcp
 Requires: /usr/bin/curl

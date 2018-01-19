@@ -12,7 +12,6 @@ Source1:        gridftp-xrootd.conf
 Source2:        globus-gridftp-server-plugin.osg-sysconfig
 Source3:        gridftp-xrootd.osg-extensions.conf
 
-BuildRoot:      %{_tmppath}/%{name}-%{version}-root
 BuildRequires:  globus-common-devel globus-gridftp-server-devel zlib-devel
 
 Obsoletes: xrootd-dsi < 3.0.5

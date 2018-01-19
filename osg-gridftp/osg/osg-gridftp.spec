@@ -6,7 +6,6 @@ License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
 
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
 
 Source1: udt-%{name}.conf
 

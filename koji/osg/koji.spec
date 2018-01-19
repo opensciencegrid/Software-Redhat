@@ -30,7 +30,6 @@ Patch112: Fix-type-in-add-group-pkg.patch
 Source: koji-%{version}.tar.bz2
 Source1: README.epel
 
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch: noarch
 Requires: python-krbV >= 1.0.13
 Requires: rpm-python

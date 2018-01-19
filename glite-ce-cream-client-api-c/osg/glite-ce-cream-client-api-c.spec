@@ -12,7 +12,6 @@ BuildRequires: gsoap-devel
 BuildRequires: gridsite-devel >= 2.2.5, libxml2-devel, boost-devel
 BuildRequires: voms-devel, condor-classads-devel >= 8.0.4
 BuildRequires: glite-lbjp-common-gsoap-plugin-devel >= 3.2.12, log4cpp-devel
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 AutoReqProv: yes
 Source: %{name}.tar.gz
 Patch0: Fix-CMakeLists.txt-to-work-with-condor-classads.patch

@@ -9,7 +9,6 @@ Group: System Environment/Libraries
 BuildRequires: cmake, docbook-style-xsl, libxslt
 Obsoletes: lcg-info-dynamic-software
 Provides: lcg-info-dynamic-software
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 AutoReqProv: yes
 Source: %{name}.tar.gz
 

@@ -45,7 +45,6 @@ Summary: Collection of useful tools for Bigtop
 Group:      Applications/Engineering
 License:    ASL 2.0
 URL:        http://bigtop.apache.org/
-BuildRoot:  %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildArch:  noarch
 Source0:    bigtop-detect-javahome
 Source1:    LICENSE

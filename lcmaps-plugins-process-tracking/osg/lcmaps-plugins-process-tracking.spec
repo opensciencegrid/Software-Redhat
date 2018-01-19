@@ -14,7 +14,6 @@ Source0: %{name}-%{version}.tar.gz
 
 BuildRequires: lcmaps-interface
 
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %description
 This plugin utilizes the Kernel proc connector interface to 

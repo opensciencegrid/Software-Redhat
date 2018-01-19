@@ -15,7 +15,6 @@ Prefix:    /usr
 # cd vomsxrd
 # ./packaging/maketar.sh --prefix vomsxrd --output ~/rpmbuild/SOURCES/vomsxrd.tar.gz
 Source0:   vomsxrd-%{version}.tar.gz
-BuildRoot: %{_tmppath}/%{name}-root
 
 BuildRequires: cmake >= 2.6
 BuildRequires: voms >= 2.0.6

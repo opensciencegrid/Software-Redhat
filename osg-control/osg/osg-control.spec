@@ -6,7 +6,6 @@ Group: Grid
 License: Apache 2.0
 URL: https://vdt.cs.wisc.edu/svn/software/osg-control/
 Source: %{name}-%{version}.tar.gz
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildArch: noarch
 Requires: python
 Requires: osg-configure

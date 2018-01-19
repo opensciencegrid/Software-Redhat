@@ -83,7 +83,6 @@ Source12: etc-initd-gsisshd
 
 License: BSD
 Group: Applications/Internet
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 %if %{nologin}
 Requires: /sbin/nologin
 %endif

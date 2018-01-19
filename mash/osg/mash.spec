@@ -10,7 +10,6 @@ URL:            http://fedorahosted.org/releases/m/a/mash/
 Source0:        http://fedorahosted.org/releases/m/a/mash/%{name}-%{version}.tar.gz
 Patch0:         multilib-python.patch
 Patch1:         multilib-lcmaps.patch
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Requires:       yum, createrepo, koji
 Conflicts:	pungi < 1.0.0
 BuildRequires:  python-devel

@@ -5,7 +5,6 @@ Summary:        I2 Utility Library
 License:        distributable, see LICENSE
 Group:          Development/Libraries
 Source0:        I2util-%{version}.tar.gz
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %description
 I2 Utility library. Currently contains:

@@ -11,8 +11,6 @@ Patch1: sw2771-first-fqan.patch
 Patch2: sw2932-first-fqan-manpage.patch
 BuildRequires: lcmaps-devel
 Requires: lcmaps%{?_isa} >= 1.5.0-1
-# BuildRoot is still required for EPEL5
-BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
 %description
 The Local Centre MAPping Service (LCMAPS) is a security middleware

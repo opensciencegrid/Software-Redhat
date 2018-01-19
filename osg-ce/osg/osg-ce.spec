@@ -10,7 +10,6 @@ License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
 
-BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
 Requires: grid-certificates >= 7
 

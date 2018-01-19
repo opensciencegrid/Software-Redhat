@@ -8,7 +8,6 @@ URL: http://www3.nd.edu/~ccl/
 Group: System Environment/Daemons
 
 Source0: %{name}-%{version}-source.tar.gz
-BuildRoot:  %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: cvmfs-devel fuse-devel
 BuildRequires: xrootd-devel >= 1:4.1.0
 BuildRequires: openssl-devel

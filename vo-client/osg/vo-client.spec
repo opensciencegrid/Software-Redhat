@@ -6,7 +6,6 @@ Summary:        Contains vomses file for use with user authentication and edg-mk
 Group:          System Environment/Base
 License:        Apache 2.0
 URL:            http://www.opensciencegrid.org/osg/
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
 Requires: grid-certificates >= 7

@@ -8,7 +8,6 @@ License:        ASL 2.0
 URL:            http://glite.cern.ch
 Vendor:         EMI
 Source:         http://scientific.zcu.cz/emi/emi.lbjp-common.gsoap-plugin/%{name}-%{version}.tar.gz
-BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
 BuildRequires:  c-ares-devel
 BuildRequires:  cppunit-devel

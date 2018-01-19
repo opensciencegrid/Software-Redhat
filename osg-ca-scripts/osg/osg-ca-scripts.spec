@@ -9,7 +9,6 @@ URL:       http://vdt.cs.wisc.edu/releases/2.0.0/certificate_authorities.html
 
 Source0:   %{name}-%{version}.tar.gz
 
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch: noarch
 
 Requires: /usr/bin/openssl

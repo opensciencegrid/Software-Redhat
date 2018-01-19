@@ -29,7 +29,6 @@ Group:		System Environment/Daemons
 License:	LGPLv3+
 URL:		http://xrootd.org/
 Source0:        %{name}-%{version}%{?_alphasuffix}.tar.gz
-BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 
 BuildRequires:	cmake

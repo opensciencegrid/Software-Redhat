@@ -6,7 +6,6 @@ Source: OSGPKITools-%{version}.tar.gz
 License: Apache 2.0
 Group: Grid
 URL: http://github.com/opensciencegrid/osg-pki-tools
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildArch: noarch
 Requires: python
 Requires: m2crypto

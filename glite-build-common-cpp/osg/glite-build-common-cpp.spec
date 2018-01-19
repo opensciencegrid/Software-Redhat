@@ -12,7 +12,6 @@ Source0:        org.glite.build.common-cpp.tar.gz
 # Path0 fixes the globus build macros to use the Fedora/EPEL flavour-less libraries
 Patch0:         fedora_globus_macros.patch
 BuildArch:	noarch
-BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 Requires:	globus-common-progs
 
 %description

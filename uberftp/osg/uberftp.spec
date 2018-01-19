@@ -17,7 +17,6 @@ Source0:        https://github.com/JasonAlt/UberFTP/archive/%{commit}/UberFTP-%{
 # https://github.com/JasonAlt/UberFTP/pull/6
 Patch0:         uberftp-32bit-pkg-config.patch
 Patch1:         disconnected_server.patch
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  globus-gssapi-gsi-devel
 

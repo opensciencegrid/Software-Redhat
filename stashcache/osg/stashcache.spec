@@ -8,7 +8,6 @@ URL:       https://opensciencegrid.github.io/StashCache/
 BuildArch: noarch
 Source0:   %{name}-%{version}.tar.gz
 
-BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
 %define redirector_prod redirector.osgstorage.org
 %define redirector_itb redirector-itb.osgstorage.org

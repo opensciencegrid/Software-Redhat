@@ -6,7 +6,6 @@ License:        GPL
 Group:          System Environment/Daemons
 URL:            https://twiki.grid.iu.edu/twiki/bin/view/Storage/WebHome
 
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Source0: hdfs-site.xml
 Source1: core-site.xml
 Requires: %{name}-namenode = %{version}-%{release}

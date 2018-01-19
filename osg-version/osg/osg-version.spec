@@ -13,7 +13,6 @@ BuildArch: noarch
 
 Source0:   osg-version
 
-BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
 %description
 %{summary}

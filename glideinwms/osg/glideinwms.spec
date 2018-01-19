@@ -33,7 +33,6 @@ Summary:    The glidein Workload Management System (glideinWMS)
 Group:      System Environment/Daemons
 License:    Fermitools Software Legal Information (Modified BSD License)
 URL:        http://glideinwms.fnal.gov
-BuildRoot:  %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:  noarch
 
 

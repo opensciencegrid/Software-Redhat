@@ -6,7 +6,6 @@ License: Apache Software License
 URL: http://glite.cern.ch/
 Group: Development/Libraries
 BuildArch: noarch
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 AutoReqProv: yes
 Source: %{name}.tar.gz
 

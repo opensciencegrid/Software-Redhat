@@ -9,7 +9,6 @@ URL:            http://repo.opensciencegrid.org/pacman/cadist/
 
 Source0:        osg-certificates-1.69IGTFNEW.tar.gz
 
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
 Provides:       grid-certificates = 7

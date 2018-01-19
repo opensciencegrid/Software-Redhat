@@ -9,7 +9,6 @@ Source0: %{name}-%{version}.tar.gz
 BuildArch: noarch
 Group: Applications/System
 License: BSD
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Provides: cvmfs-config = %{version}-%{release}
 Obsoletes: cvmfs-keys < 1.6

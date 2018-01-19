@@ -22,7 +22,6 @@ Source0:	https://github.com/italiangrid/%{name}/archive/v%{version}.tar.gz
 Source1:	%{name}.INSTALL
 #		systemd unit file:
 Source2:	%{name}@.service
-BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	openssl-devel
 BuildRequires:	expat-devel

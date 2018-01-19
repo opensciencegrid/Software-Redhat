@@ -12,7 +12,6 @@ URL:            http://repo.opensciencegrid.org/pacman/cadist/
 # https://osg-svn.rtinfo.indiana.edu/cadist/release/osg-certificates-1.20NEW.tar.gz
 Source0:        osg-certificates-1.69NEW.tar.gz
 
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
 Provides:       grid-certificates = 7
