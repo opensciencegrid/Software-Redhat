@@ -91,11 +91,6 @@ Provides: %{name}-openssl-interface = %{version}-%{release}
 Obsoletes: %{name}-openssl-interface < 1.6.1-4
 Provides: %{name}-interface = %{version}-%{release}
 Obsoletes: %{name}-interface < 1.4.31-1
-# the pkgconfig requirement is only necessary for EPEL5 and below;
-# it's automatic for Fedora and EPEL6.
-%if %{?rhel}%{!?rhel:6} <= 5
-Requires: pkgconfig
-%endif
 
 %description devel
 The Local Centre MAPping Service (LCMAPS) is a security middleware
@@ -117,11 +112,6 @@ Group: Development/Libraries
 Summary: LCMAPS plug-in API header files
 Provides: %{name}-basic-interface = %{version}-%{release}
 Obsoletes: %{name}-basic-interface < 1.6.1-4
-# the pkgconfig requirement is only necessary for EPEL5 and below;
-# it's automatic for Fedora and EPEL6.
-%if %{?rhel}%{!?rhel:6} <= 5
-Requires: pkgconfig
-%endif
 
 %description common-devel
 The Local Centre MAPping Service (LCMAPS) is a security middleware
@@ -138,11 +128,6 @@ Group: Development/Libraries
 Summary: LCMAPS development libraries
 Requires: %{name}-without-gsi%{?_isa} = %{version}-%{release}
 Requires: %{name}-common-devel%{?_isa} = %{version}-%{release}
-# the pkgconfig requirement is only necessary for EPEL5 and below;
-# it's automatic for Fedora and EPEL6.
-%if %{?rhel}%{!?rhel:6} <= 5
-Requires: pkgconfig
-%endif
 
 %description without-gsi-devel
 The Local Centre MAPping Service (LCMAPS) is a security middleware
