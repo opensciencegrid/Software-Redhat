@@ -1,21 +1,15 @@
 
 %{?suse_version:%define dist .suse%suse_version}
-%if 0%{?el6} || 0%{?el7} || 0%{?fedora}
 %define selinux_cvmfs 1
 %define selinux_variants mls strict targeted
-%endif
 %if 0%{?dist:1}
 %else
   %define redhat_major %(cat /etc/issue | head -n1 | tr -cd [0-9] | head -c1)
-  %if 0%{?redhat_major} == 4
-    %define el4 1
-    %define dist .el4
-  %endif
 %endif
 
 %define __strip /bin/true
 %define debug_package %{nil}
-%if 0%{?el6} || 0%{?el5} || 0%{?el4}
+%if 0%{?el6}
 %define __os_install_post %{nil}
 %endif
 
@@ -31,22 +25,10 @@ Source2: cvmfs.fc
 Group: Applications/System
 License: BSD
 
-%if 0%{?el5}
-BuildRequires: buildsys-macros
-%endif
-%if 0%{?el5} || 0%{?el4}
-BuildRequires: e2fsprogs-devel
-%else
 BuildRequires: libuuid-devel
-%endif
-%if 0%{?el4}
-BuildRequires: gcc4
-BuildRequires: gcc4-c++
-%else
 BuildRequires: gcc
 BuildRequires: gcc-c++
 BuildRequires: valgrind-devel
-%endif
 BuildRequires: cmake
 BuildRequires: fuse-devel
 BuildRequires: libattr-devel
@@ -86,20 +68,15 @@ Requires: fuse-libs
 Requires: glibc-common
 Requires: which
 Requires: shadow-utils
-  %if 0%{?el5} || 0%{?el4}
-Requires: SysVinit
-Requires: e2fsprogs
-  %else
-    %if 0%{?fedora}
+  %if 0%{?fedora}
 Requires: procps-ng
-    %else
+  %else
 Requires: sysvinit-tools
-    %endif
-    %if 0%{?el6}
+  %endif
+  %if 0%{?el6}
 Requires: util-linux-ng
-    %else
+  %else
 Requires: util-linux
-    %endif
   %endif
 %endif
 Requires: cvmfs-config
@@ -186,17 +163,6 @@ cp %{SOURCE1} %{SOURCE2} SELinux
 %ifarch i386 i686
 export CXXFLAGS="`echo %{optflags}|sed 's/march=i386/march=i686/'`"
 export CFLAGS="`echo %{optflags}|sed 's/march=i386/march=i686/'`"
-%if 0%{?el5}
-export CFLAGS="$CFLAGS -O0"
-export CXXFLAGS="$CXXFLAGS -O0"
-%endif
-%endif
-
-%if 0%{?el4}
-export CC=gcc4
-export CXX=g++4
-export CFLAGS="$CFLAGS -O0"
-export CXXFLAGS="$CXXFLAGS -O0"
 %endif
 
 %if 0%{?suse_version}
@@ -218,8 +184,6 @@ done
 popd
 %endif
 
-%if 0%{?el4}
-%else
 %if 0
 %pretrans server
 [ -d "/var/spool/cvmfs"  ]          || exit 0
@@ -238,7 +202,6 @@ for repo in /var/spool/cvmfs/*; do
 done
 
 exit 0
-%endif
 %endif
 
 %pre
