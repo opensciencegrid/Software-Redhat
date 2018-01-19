@@ -41,6 +41,13 @@ Source1: do-component-build
 Source2: install_tomcat.sh
 Requires: bigtop-utils >= 0.7
 
+BuildRequires: ant
+%if 0%{?rhel} >= 7
+BuildRequires: maven >= 3.0.0
+%else
+BuildRequires: maven3
+%endif
+
 %description 
 Apache Tomcat is an open source software implementation of the
 Java Servlet and JavaServer Pages technologies.
