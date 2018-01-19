@@ -42,11 +42,13 @@ Provides:       /usr/sbin/condor_procd
 Provides:       /usr/sbin/gidd_alloc
 Provides:       /usr/sbin/procd_ctl
 
-# This fulfills dependencies for htcondor-ce-client
+# For htcondor-ce-client (htcondor.so) and blahp (libclassad.so.8)
 %ifarch x86_64
 Provides: htcondor.so()(64bit)
+Provides: libclassad.so.8()(64bit)
 %else
 Provides: htcondor.so()
+Provides: libclassad.so.8()
 %endif
 
 %description
@@ -70,6 +72,7 @@ believes that Condor has been installed via RPM.
 * Fri Jan 19 2018 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.1-9
 - Bump provides versions to 99 to allow versioned requires to work without
   having to update the versions
+- Provide libclassad.so.8() for blahp for htcondor-ce
 
 * Tue Oct 25 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.1-8
 - Provide all other condor subpackages (SOFTWARE-2507)
