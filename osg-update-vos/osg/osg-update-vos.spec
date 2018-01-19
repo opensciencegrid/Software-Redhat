@@ -29,7 +29,6 @@ Data updater for OSG
 %setup -q
 
 %install
-rm -rf %{buildroot}
 make install DESTDIR=%{buildroot}
 
 %files

@@ -278,7 +278,6 @@ make SSH_PROGRAM=%{_bindir}/gsissh \
      top_builddir="$PWD"
 
 %install
-rm -rf $RPM_BUILD_ROOT
 mkdir -p -m755 $RPM_BUILD_ROOT%{_sysconfdir}/gsissh
 mkdir -p -m755 $RPM_BUILD_ROOT%{_libexecdir}/gsissh
 mkdir -p -m755 $RPM_BUILD_ROOT%{_var}/empty/gsisshd

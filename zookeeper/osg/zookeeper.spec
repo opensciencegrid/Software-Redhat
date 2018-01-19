@@ -172,7 +172,6 @@ cp %{SOURCE1} .
 env FULL_VERSION=%{zookeeper_patched_version} bash do-component-build
 
 %install
-%__rm -rf $RPM_BUILD_ROOT
 cp $RPM_SOURCE_DIR/zookeeper.1 $RPM_SOURCE_DIR/zoo.cfg .
 sh %{SOURCE2} \
           --build-dir=build/%{name}-%{zookeeper_patched_version} \

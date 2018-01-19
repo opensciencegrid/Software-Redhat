@@ -287,7 +287,6 @@ pushd build/bindings/python
 popd
 
 %install
-rm -rf %{buildroot}
 
 pushd build
 make install DESTDIR=%{buildroot}

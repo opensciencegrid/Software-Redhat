@@ -147,7 +147,6 @@ make
 
 
 %install
-rm -rf %{buildroot}
 cd %{name}-%{version}-source
 mkdir -p %{buildroot}/usr/lib64
 make CCTOOLS_INSTALL_DIR=%{buildroot}/usr install

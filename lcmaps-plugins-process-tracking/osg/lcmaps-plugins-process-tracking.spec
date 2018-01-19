@@ -28,7 +28,6 @@ track the processes spawned by glexec.
 make %{?_smp_mflags}
 
 %install
-rm -rf $RPM_BUILD_ROOT
 
 make DESTDIR=$RPM_BUILD_ROOT install
 rm $RPM_BUILD_ROOT/%{_libdir}/lcmaps/liblcmaps_process_tracking.la

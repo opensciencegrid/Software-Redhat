@@ -182,7 +182,6 @@ cp %{SOURCE1} README.epel
 %build
 
 %install
-rm -rf $RPM_BUILD_ROOT
 make DESTDIR=$RPM_BUILD_ROOT %{?install_opt} install
 
 %files

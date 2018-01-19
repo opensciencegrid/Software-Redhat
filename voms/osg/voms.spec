@@ -145,7 +145,6 @@ install -m 644 -p %{SOURCE1} README.Fedora
 make %{?_smp_mflags}
 
 %install
-rm -rf %{buildroot}
 
 make install DESTDIR=%{buildroot}
 

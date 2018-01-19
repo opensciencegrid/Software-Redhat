@@ -42,7 +42,6 @@ strip dist/pegasus-%{version}/bin/pegasus-kickstart
 strip dist/pegasus-%{version}/bin/pegasus-keg
 
 %install
-rm -Rf %{buildroot}
 
 mkdir -p %{buildroot}/%{_sysconfdir}/%{name}
 mkdir -p %{buildroot}/%{_bindir}

@@ -31,7 +31,6 @@ giving it a unique /tmp and /var/tmp
 make %{?_smp_mflags}
 
 %install
-rm -rf $RPM_BUILD_ROOT
 
 make DESTDIR=$RPM_BUILD_ROOT install
 rm $RPM_BUILD_ROOT%{_libdir}/lcmaps/liblcmaps_mount_under_scratch.la

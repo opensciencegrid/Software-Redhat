@@ -31,7 +31,6 @@ Conflicts: cvmfs-server < 2.3.3
 Default configuration parameters and public keys for CernVM-FS
 
 %install
-rm -rf $RPM_BUILD_ROOT
 make install-redhat DESTDIR=$RPM_BUILD_ROOT
 
 %files

@@ -178,7 +178,6 @@ make %{?_smp_mflags}
 cd ..
 
 %install
-rm -rf $RPM_BUILD_ROOT
 
 # install the without-gsi version
 cd build-without-gsi

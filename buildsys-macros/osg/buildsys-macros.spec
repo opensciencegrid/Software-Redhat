@@ -26,7 +26,6 @@ Macros for the OSG Buildsystem
 %build
 
 %install
-rm -rf $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT/etc/rpm/
 DVER=%{dver}
 OSGVER=%{osgver}

@@ -46,7 +46,6 @@ getent passwd cndrcron >/dev/null || useradd -r -g cndrcron -d /var/lib/condor-c
 
 
 %install
-rm -fr $RPM_BUILD_ROOT
 
 # Copy wrappers into place
 mkdir -p $RPM_BUILD_ROOT%{_bindir}/

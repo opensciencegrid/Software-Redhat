@@ -39,7 +39,6 @@ sed -i -e 's! -shared ! -Wl,--as-needed\\0!g' libtool
 make %{?_smp_mflags}
 
 %install
-rm -rf $RPM_BUILD_ROOT
 
 make DESTDIR=$RPM_BUILD_ROOT install
 find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'

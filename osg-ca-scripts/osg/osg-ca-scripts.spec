@@ -28,7 +28,6 @@ Conflicts: igtf-ca-certs-experimental
 %setup -q
 
 %install
-rm -fr $RPM_BUILD_ROOT
 
 # Install executables
 install -d $RPM_BUILD_ROOT%{_bindir}/

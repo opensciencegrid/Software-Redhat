@@ -27,7 +27,6 @@ A GUI for viewing the output of %{name} in a structured manner.
 %setup -q
 
 %install
-rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
 
 %files

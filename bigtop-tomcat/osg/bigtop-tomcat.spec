@@ -60,7 +60,6 @@ export COMPONENT_HASH=c5f90582119ab994c6e6711f5578370ca6cef0b7
 env FULL_VERSION=%{bigtop_tomcat_patched_version} bash %{SOURCE1}
 
 %install
-%__rm -rf $RPM_BUILD_ROOT
 bash %{SOURCE2} \
     --build-dir=build/bigtop-tomcat-%{bigtop_tomcat_patched_version} \
     --doc-dir=%{doc_tomcat} \

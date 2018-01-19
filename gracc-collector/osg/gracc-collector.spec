@@ -37,7 +37,6 @@ make %{?_smp_mflags}
 
 
 %install
-rm -rf $RPM_BUILD_ROOT
 mkdir -p %{buildroot}%{_bindir}/
 cp -p gracc-collector %{buildroot}%{_bindir}/
 mkdir -p %{buildroot}%{_unitdir}/

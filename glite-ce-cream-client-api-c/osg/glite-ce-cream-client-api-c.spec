@@ -43,7 +43,6 @@ cmake -DCMAKE_INSTALL_PREFIX:string=%{buildroot} %{_builddir}/%{name}-%{version}
 make
 
 %install
-rm -rf %{buildroot}
 mkdir -p %{buildroot}
 make install
 sed 's|%{buildroot}||g;s|lib\s*$|lib64|g' %{buildroot}%{_libdir}/pkgconfig/cream-client-api-soap.pc > %{buildroot}%{_libdir}/pkgconfig/cream-client-api-soap.pc.new

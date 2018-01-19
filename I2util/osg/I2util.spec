@@ -26,7 +26,6 @@ that is distributed with the "volsh" code from UCAR.
 %configure
 
 %install
-rm -rf $RPM_BUILD_ROOT
 %makeinstall
 
 %files

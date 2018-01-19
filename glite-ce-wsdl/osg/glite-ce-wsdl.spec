@@ -20,7 +20,6 @@ WS definitions for the CREAM service
 %build
 
 %install
-rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/wsdl/cream-ce/es/
 cp interface/CREAM/*.wsdl interface/CREAM/*.xsd %{buildroot}/usr/share/wsdl/cream-ce
 cp interface/ES/*.wsdl interface/ES/*.xsd %{buildroot}/usr/share/wsdl/cream-ce/es

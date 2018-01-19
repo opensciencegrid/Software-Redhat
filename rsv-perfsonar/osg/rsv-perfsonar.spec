@@ -30,7 +30,6 @@ Requires(preun): initscripts
 %setup -n %{name}-%{version}
 
 %install
-rm -fr $RPM_BUILD_ROOT
 
 make install DESTDIR=$RPM_BUILD_ROOT
 

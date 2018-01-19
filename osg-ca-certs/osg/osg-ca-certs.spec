@@ -31,7 +31,6 @@ For additional details what is in the current release, see the distribution site
 %build
 
 %install
-rm -rf $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT/etc/grid-security/certificates
 chmod 0644 * 
 mv * $RPM_BUILD_ROOT/etc/grid-security/certificates/

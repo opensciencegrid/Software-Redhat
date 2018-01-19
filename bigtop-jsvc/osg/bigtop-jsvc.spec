@@ -51,7 +51,6 @@ jsvc executes classfile that implements a Daemon interface.
 bash %{SOURCE1}
 
 %install
-%__rm -rf $RPM_BUILD_ROOT
 sh %{SOURCE2} \
           --build-dir=.                         \
           --bin-dir=$RPM_BUILD_ROOT/%{bin_jsvc} \

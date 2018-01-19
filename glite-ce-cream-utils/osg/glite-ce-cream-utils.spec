@@ -26,7 +26,6 @@ cmake -DCMAKE_INSTALL_PREFIX:string=%{buildroot} %{_builddir}/%{name}-%{version}
 make
 
 %install
-rm -rf %{buildroot}
 mkdir -p %{buildroot}
 make install
 ln -sf /usr/libexec/glite-ce-glue1-applicationsoftware-env %{buildroot}/usr/libexec/lcg-info-dynamic-software

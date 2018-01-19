@@ -60,7 +60,6 @@ make VERBOSE=1 %{?_smp_mflags}
 %install
 cd vomsxrd-%{version}
 cd build
-rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
 cd ..
 

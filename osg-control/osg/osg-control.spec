@@ -19,7 +19,6 @@ manage the system services listed with "osg-configure --enabled-services"
 %setup -q
 
 %install
-rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{_sbindir}
 install -m 0755 osg-control $RPM_BUILD_ROOT%{_sbindir}
 

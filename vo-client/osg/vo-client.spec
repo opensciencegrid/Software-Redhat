@@ -56,7 +56,6 @@ configuration file.
 
 
 %install
-rm -rf $RPM_BUILD_ROOT
 tar -xz -C $RPM_BUILD_DIR --strip-components=1 -f %{SOURCE0}
 install -d $RPM_BUILD_ROOT/%{_sysconfdir}
 install -d $RPM_BUILD_ROOT/%{_datadir}/osg/
