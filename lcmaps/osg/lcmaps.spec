@@ -29,8 +29,6 @@ Source3: ban-voms-mapfile
 Source4: lcmaps.db.gridmap
 Source5: lcmaps.db.gums
 Source6: lcmaps.db.vomsmap
-# BuildRoot is still required for EPEL5
-BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildRequires: globus-common-devel
 BuildRequires: globus-gssapi-gsi-devel
 BuildRequires: globus-gss-assist-devel

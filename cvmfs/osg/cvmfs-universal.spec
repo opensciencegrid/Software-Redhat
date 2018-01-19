@@ -30,7 +30,6 @@ Source2: cvmfs.fc
 %endif
 Group: Applications/System
 License: BSD
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 %if 0%{?el5}
 BuildRequires: buildsys-macros
