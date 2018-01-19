@@ -55,9 +55,6 @@ cat > $RPM_BUILD_ROOT%{_prefix}/etc/globus-user-env.sh << EOF
 
 EOF
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
 %files
 %config(noreplace) %{_prefix}/etc/globus-user-env.sh
 

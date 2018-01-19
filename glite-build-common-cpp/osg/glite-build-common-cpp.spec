@@ -28,9 +28,6 @@ Common m4 macros used for the C++ autotools builds in gLite
 mkdir -p $RPM_BUILD_ROOT%{_datadir}/%{name}/m4
 install -m 0644 m4/*.m4 $RPM_BUILD_ROOT%{_datadir}/%{name}/m4/
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
 %files
 %defattr(-,root,root,-)
 %{_datadir}/%{name}/m4/*.m4

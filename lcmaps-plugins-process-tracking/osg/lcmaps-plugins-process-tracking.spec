@@ -35,9 +35,6 @@ rm $RPM_BUILD_ROOT/%{_libdir}/lcmaps/liblcmaps_process_tracking.la
 rm $RPM_BUILD_ROOT/%{_libdir}/lcmaps/liblcmaps_process_tracking.a
 mv $RPM_BUILD_ROOT%{_libdir}/lcmaps/liblcmaps_process_tracking.so $RPM_BUILD_ROOT%{_libdir}/lcmaps/lcmaps_process_tracking.mod
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
 %files
 %defattr(-,root,root,-)
 %{_libdir}/lcmaps/lcmaps_process_tracking.mod

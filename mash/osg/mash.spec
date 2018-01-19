@@ -34,9 +34,6 @@ rm -rf $RPM_BUILD_ROOT
 
 mv $RPM_BUILD_ROOT/%{_bindir}/mash.py $RPM_BUILD_ROOT/%{_bindir}/mash
 mkdir -p $RPM_BUILD_ROOT/var/cache/mash
-%clean
-rm -rf $RPM_BUILD_ROOT
-
 %files
 %defattr(-,root,root,-)
 %doc AUTHORS ChangeLog COPYING README TODO

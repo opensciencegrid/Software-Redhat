@@ -29,9 +29,6 @@ that is distributed with the "volsh" code from UCAR.
 rm -rf $RPM_BUILD_ROOT
 %makeinstall
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
 %files
 %defattr(-,root,root,-)
 #%doc Changes LICENSE README

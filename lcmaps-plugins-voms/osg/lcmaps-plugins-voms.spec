@@ -55,9 +55,6 @@ cp $RPM_BUILD_ROOT/%{_libdir}/lcmaps/lcmaps_voms_localaccount.mod \
 # clean up installed documentation files
 rm -rf ${RPM_BUILD_ROOT}%{_docdir}
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
 %files
 %doc AUTHORS LICENSE NEWS BUGS
 %{_libdir}/lcmaps/lcmaps_voms.mod

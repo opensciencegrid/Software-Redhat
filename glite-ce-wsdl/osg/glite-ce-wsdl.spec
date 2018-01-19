@@ -26,9 +26,6 @@ cp interface/CREAM/*.wsdl interface/CREAM/*.xsd %{buildroot}/usr/share/wsdl/crea
 cp interface/ES/*.wsdl interface/ES/*.xsd %{buildroot}/usr/share/wsdl/cream-ce/es
 
 
-%clean
-rm -rf %{buildroot}
-
 %files
 %defattr(-,root,root)
 %dir /usr/share/wsdl/

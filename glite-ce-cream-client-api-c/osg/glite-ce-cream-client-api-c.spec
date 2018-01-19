@@ -52,9 +52,6 @@ sed 's|%{buildroot}||g;s|lib\s*$|lib64|g' %{buildroot}%{_libdir}/pkgconfig/cream
 mv %{buildroot}%{_libdir}/pkgconfig/cream-client-api-util.pc.new %{buildroot}%{_libdir}/pkgconfig/cream-client-api-util.pc
 
 
-%clean
-rm -rf %{buildroot}
- 
 %post -p /sbin/ldconfig
 
 %postun -p /sbin/ldconfig

@@ -15,7 +15,6 @@ from the standard repos (OS + EPEL + OSG), without actually having to
 install slurm.  In particular, this is for gratia-probe-slurm.
   
 %install
-%clean
 %files
 %changelog
 * Thu Jun 18 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.0-1

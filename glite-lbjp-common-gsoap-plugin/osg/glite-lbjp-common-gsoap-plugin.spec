@@ -69,10 +69,6 @@ rm -f %{buildroot}%{_libdir}/*.la
 find %{buildroot} -name '*' -print | xargs -I {} -i bash -c "chrpath -d {} > /dev/null 2>&1" || echo 'Stripped RPATH'
 
 
-%clean
-rm -rf %{buildroot}
-
-
 %post -p /sbin/ldconfig
 
 

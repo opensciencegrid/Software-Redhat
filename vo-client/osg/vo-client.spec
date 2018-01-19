@@ -75,10 +75,6 @@ mkdir -p $RPM_BUILD_ROOT/%{_sysconfdir}/gums/
 mv $RPM_BUILD_DIR/gums.config.template $RPM_BUILD_ROOT/%{_sysconfdir}/gums/gums.config.template
 chmod 600 $RPM_BUILD_ROOT/%{_sysconfdir}/gums/gums.config.template
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
-
 %files
 %defattr(-,root,root,-)
 %config(noreplace) %{_sysconfdir}/vomses

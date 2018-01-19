@@ -32,9 +32,6 @@ Data updater for OSG
 rm -rf %{buildroot}
 make install DESTDIR=%{buildroot}
 
-%clean
-rm -rf %{buildroot}
-
 %files
 %defattr(-,root,root,-)
 %{_sbindir}/%{name}

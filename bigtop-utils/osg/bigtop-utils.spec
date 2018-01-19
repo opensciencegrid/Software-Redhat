@@ -97,10 +97,6 @@ install -p -m 755 %{SOURCE4} $RPM_BUILD_ROOT%{lib_dir}/
 install -p -m 755 %{SOURCE5} $RPM_BUILD_ROOT%{lib_dir}/
 install -p -m 644 %{SOURCE2} $RPM_BUILD_ROOT/etc/default/bigtop-utils
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
-
 %files
 %defattr(-,root,root,-)
 %doc LICENSE

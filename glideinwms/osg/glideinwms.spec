@@ -579,9 +579,6 @@ fi
 /sbin/service condor condrestart > /dev/null 2>&1 || true
 
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
 %files vofrontend
 
 %files common-tools

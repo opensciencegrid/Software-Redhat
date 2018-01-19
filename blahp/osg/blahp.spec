@@ -152,9 +152,6 @@ done
 
 mv $RPM_BUILD_ROOT%{_docdir}/glite-ce-blahp-@PVER@ $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
 %post
 
 if [ $1 -eq 1 ] ; then

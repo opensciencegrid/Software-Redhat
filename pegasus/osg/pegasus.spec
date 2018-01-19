@@ -60,11 +60,6 @@ rm -f %{buildroot}/%{_datadir}/%{name}/java/EXCEPTIONS.*
 rm -f %{buildroot}/%{_datadir}/%{name}/java/LICENSE.*
 rm -f %{buildroot}/%{_datadir}/%{name}/java/NOTICE.*
 
-%clean
-ant clean
-rm -Rf %{buildroot}
-
-
 %files
 %defattr(-,root,root,-)
 %config(noreplace) %{_sysconfdir}/%{name}/

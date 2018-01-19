@@ -33,9 +33,6 @@ with underlying xrootd storage element using fuse/dsi module.
 
 %install
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
 %files
 
 

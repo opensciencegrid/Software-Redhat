@@ -101,10 +101,6 @@ touch $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/condor-cron
 touch $RPM_BUILD_ROOT%{_sysconfdir}/condor-cron/config.d/condor_location
 
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
-
 %files
 %defattr(-,root,root,-)
 

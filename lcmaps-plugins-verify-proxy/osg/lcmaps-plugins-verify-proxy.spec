@@ -51,9 +51,6 @@ cp $RPM_BUILD_ROOT%{_libdir}/lcmaps/lcmaps_verify_proxy.mod \
 # clean up installed documentation files
 rm -rf ${RPM_BUILD_ROOT}%{_docdir}
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
 %files
 %doc AUTHORS LICENSE NEWS BUGS README
 %{_bindir}/verify-proxy-tool

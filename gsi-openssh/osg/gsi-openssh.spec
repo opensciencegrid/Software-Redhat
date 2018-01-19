@@ -321,9 +321,6 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig
 install -m644 %{SOURCE11} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/gsisshd
 
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
 %pre server
 getent group gsisshd >/dev/null || groupadd -r gsisshd || :
 %if %{nologin}

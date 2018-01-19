@@ -374,8 +374,6 @@ popd
 mkdir -p %{buildroot}%{_pkgdocdir}
 cp -pr doxydoc/html %{buildroot}%{_pkgdocdir}
 
-%clean
-
 %post libs -p /sbin/ldconfig
 %postun libs -p /sbin/ldconfig
 

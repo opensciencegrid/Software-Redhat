@@ -69,9 +69,6 @@ ensures that the requirements of osg-java7-devel-compat can always be met.
 
 %install
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
 %files
 %files -n osg-java7-devel-compat
 %files -n osg-java7-compat-openjdk

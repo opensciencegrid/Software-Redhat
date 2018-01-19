@@ -72,9 +72,6 @@ Requires: mysql-server
 
 %install
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
 %files
 
 %changelog

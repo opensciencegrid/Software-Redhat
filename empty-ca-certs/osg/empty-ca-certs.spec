@@ -32,8 +32,6 @@ a shared filesystem.
 
 %install
 
-%clean
-
 %files
 
 %doc

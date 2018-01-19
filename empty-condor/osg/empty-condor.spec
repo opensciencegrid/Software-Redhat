@@ -63,8 +63,6 @@ believes that Condor has been installed via RPM.
 
 %install
 
-%clean
-
 %files
 
 %doc

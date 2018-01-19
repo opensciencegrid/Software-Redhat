@@ -126,13 +126,6 @@ grep '/external/panda/' INSTALLED_FILES >> PLUGINS-PANDA_FILES
 mkdir -pm0755 $RPM_BUILD_ROOT%{_var}/log/autopyfactory
 
 ##############################################
-#   CLEAN
-##############################################
-
-%clean
-rm -rf $RPM_BUILD_ROOT
-
-##############################################
 #   SUB PACKAGE AUTOPYFACTORY-COMMON
 ##############################################
 

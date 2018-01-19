@@ -30,9 +30,6 @@ A GUI for viewing the output of %{name} in a structured manner.
 rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
 %files
 %defattr(-,root,root)
 %{_bindir}/%{name}

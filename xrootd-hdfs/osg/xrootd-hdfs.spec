@@ -53,9 +53,6 @@ rm $RPM_BUILD_ROOT%{_bindir}/xrootd_hdfs_envcheck
 # is really a loadable module, not a shared lib: it's not linked to all the xrootd
 # libs necessary to load it outside xrootd.
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
 %files
 %defattr(-,root,root,-)
 %{_libdir}/libXrdHdfs.so

@@ -48,9 +48,6 @@ make VERBOSE=1 %{?_smp_mflags}
 rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
 %files
 %defattr(-,root,root,-)
 # We keep the .so here (and not in a -devel subpackage) because it is actually

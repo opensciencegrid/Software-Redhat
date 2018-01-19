@@ -112,9 +112,6 @@ mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/hadoop/conf.osg
 install -m 0644 %{SOURCE0} $RPM_BUILD_ROOT%{_sysconfdir}/hadoop/conf.osg/
 install -m 0644 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/hadoop/conf.osg/
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
 %files
 %{_sysconfdir}/hadoop/conf.osg/
 

@@ -185,9 +185,6 @@ cp %{SOURCE1} README.epel
 rm -rf $RPM_BUILD_ROOT
 make DESTDIR=$RPM_BUILD_ROOT %{?install_opt} install
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
 %files
 %defattr(-,root,root)
 %{_bindir}/*

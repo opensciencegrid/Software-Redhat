@@ -81,9 +81,6 @@ rm -f $RPM_BUILD_ROOT/%{_libdir}/singularity/lib*.la
 %post runtime -p /sbin/ldconfig
 %postun runtime -p /sbin/ldconfig
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
 %files
 %doc examples CONTRIBUTORS.md CONTRIBUTING.md COPYRIGHT.md INSTALL.md LICENSE-LBNL.md LICENSE.md README.md
 %attr(0755, root, root) %dir %{_sysconfdir}/singularity

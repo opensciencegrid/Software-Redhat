@@ -61,10 +61,6 @@ install -m 0644 logrotate/osg-ca-scripts.logrotate $RPM_BUILD_ROOT%{_sysconfdir}
 install -d $RPM_BUILD_ROOT%{_localstatedir}/lib/osg
 install -d $RPM_BUILD_ROOT%{_localstatedir}/lib/osg-ca-certs
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
-
 %files
 %defattr(-,root,root,-)
 

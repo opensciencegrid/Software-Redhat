@@ -24,8 +24,6 @@ so that it believes that Gridengine has been installed via RPM.
 
 %install
 
-%clean
-
 %files
 
 %doc

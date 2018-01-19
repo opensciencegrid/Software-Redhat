@@ -25,9 +25,6 @@ chmod 644 $RPM_BUILD_ROOT%{_sysconfdir}/osg-version
 mkdir -p $RPM_BUILD_ROOT%{_bindir}
 install -pm 755 %{SOURCE0}  $RPM_BUILD_ROOT%{_bindir}/
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
 %files
 %{_sysconfdir}/osg-version
 %{_bindir}/osg-version

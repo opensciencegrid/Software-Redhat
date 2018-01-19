@@ -242,9 +242,6 @@ mv $RPM_BUILD_ROOT%{_datadir}/condor-ce/condor_ce_bdii_generate_glue* \
 
 install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
 %if %systemd
 %define add_service() (/bin/systemctl daemon-reload >/dev/null 2>&1 || :)
 %define remove_service() (/bin/systemctl stop %1 > /dev/null 2>&1 || :; \

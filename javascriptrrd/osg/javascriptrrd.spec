@@ -40,9 +40,6 @@ install -m 755 -d $RPM_BUILD_ROOT/%{_defaultdocdir}/javascriptrrd/flot
 install -m 644 flot/*.txt $RPM_BUILD_ROOT/%{_defaultdocdir}/javascriptrrd/flot
 
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
 %files
 %defattr(-,nobody,nobody,-)
 %{_defaultdocdir}/javascriptrrd/*

@@ -32,9 +32,6 @@ make DESTDIR=$RPM_BUILD_ROOT install
 %{_sbindir}/llrun
 %{_datadir}/man/man1/llrun.1*
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
 %changelog
 * Mon Apr 16 2012 Dave Dykstra <dwd@fnal.gov> 0.1.3-1.3.osg
 - Add lcmaps dependency

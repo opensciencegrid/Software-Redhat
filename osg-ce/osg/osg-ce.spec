@@ -173,9 +173,6 @@ exit 0
 %install
 exit 0
 
-%clean
-exit 0
-
 %files
 %files condor
 %files pbs

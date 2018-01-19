@@ -47,9 +47,6 @@ jsvc executes classfile that implements a Daemon interface.
 %prep
 %setup -n commons-daemon-%{bigtop_jsvc_base_version}-src
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
 %build
 bash %{SOURCE1}
 

@@ -26,8 +26,6 @@ believes that Torque has been installed via RPM.
 
 %install
 
-%clean
-
 %files
 
 %doc

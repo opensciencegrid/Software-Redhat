@@ -85,9 +85,6 @@ Summary:        OSG-Build tests
 %install
 make install DESTDIR=$RPM_BUILD_ROOT
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
 %files
 
 %files tests

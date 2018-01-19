@@ -443,9 +443,6 @@ if [ "$1" = "0" ]; then
     rm -f %{factory_dir}/monitor
 fi
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
 %files vofrontend
    
 %files factory

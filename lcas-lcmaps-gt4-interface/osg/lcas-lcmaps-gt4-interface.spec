@@ -68,9 +68,6 @@ rm -rf ${RPM_BUILD_ROOT}%{_docdir}
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/grid-security
 sed -e "s#@LIBDIR@#%{_libdir}#" %{SOURCE1} > $RPM_BUILD_ROOT%{_sysconfdir}/grid-security/gsi-authz.conf
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
 %post -p /sbin/ldconfig
 
 %postun -p /sbin/ldconfig

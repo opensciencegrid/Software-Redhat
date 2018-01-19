@@ -37,9 +37,6 @@ mv * $RPM_BUILD_ROOT/etc/grid-security/certificates/
 cd $RPM_BUILD_ROOT/etc/grid-security/certificates
 md5sum -c cacerts_md5sum.txt
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
 %files
 %defattr(0644,root,root,-)
 %dir %attr(0755,root,root) /etc/grid-security/certificates

@@ -32,9 +32,6 @@ make install
 ln -sf /usr/libexec/glite-ce-glue1-applicationsoftware-env %{buildroot}/usr/libexec/lcg-info-dynamic-software
 
 
-%clean
-rm -rf %{buildroot}
-
 %files
 %defattr(-,root,root)
 %dir /etc/glite-ce-glue2/

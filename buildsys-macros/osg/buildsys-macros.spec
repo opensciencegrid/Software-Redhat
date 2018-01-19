@@ -45,9 +45,6 @@ if [[ $DVER -eq 5 ]]; then
 fi
 
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
 %files
 %defattr(-,root,root)
 %if %{dver} == 5

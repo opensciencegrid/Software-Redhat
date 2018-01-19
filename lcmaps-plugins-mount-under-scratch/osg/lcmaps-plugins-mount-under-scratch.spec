@@ -39,9 +39,6 @@ rm $RPM_BUILD_ROOT%{_libdir}/lcmaps/liblcmaps_mount_under_scratch.a
 mv $RPM_BUILD_ROOT%{_libdir}/lcmaps/liblcmaps_mount_under_scratch.so \
    $RPM_BUILD_ROOT%{_libdir}/lcmaps/lcmaps_mount_under_scratch.mod
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
 %files
 %defattr(-,root,root,-)
 %{_libdir}/lcmaps/lcmaps_mount_under_scratch.mod
