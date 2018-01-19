@@ -1,9 +1,5 @@
 # Do we want SELinux & Audit
-%if "%{?rhel}" == "4"
-%global WITH_SELINUX 0
-%else
 %global WITH_SELINUX 1
-%endif
 
 # Build position-independent executables (requires toolchain support)?
 %global pie 0
