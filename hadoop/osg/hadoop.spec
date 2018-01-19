@@ -702,9 +702,6 @@ export JAVA_HOME=%{java_home}
 export FORREST_HOME=$PWD/apache-forrest-0.8
 env FULL_VERSION=%{hadoop_patched_version} HADOOP_VERSION=%{hadoop_version} HADOOP_ARCH=%{hadoop_arch} bash %{SOURCE1}
 
-%clean
-%__rm -rf $RPM_BUILD_ROOT
-
 #########################
 #### INSTALL SECTION ####
 #########################

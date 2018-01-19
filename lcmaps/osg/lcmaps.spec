@@ -232,10 +232,6 @@ rm -rf ${RPM_BUILD_ROOT}%{_docdir}
 mkdir -p ${RPM_BUILD_ROOT}%{_datadir}/lcmaps/templates
 cp %{SOURCE4} %{SOURCE5} %{SOURCE6} ${RPM_BUILD_ROOT}%{_datadir}/lcmaps/templates/
 
-# Retain the clean section for EPEL5
-%clean
-rm -rf $RPM_BUILD_ROOT
-
 %post -p /sbin/ldconfig
 
 %postun -p /sbin/ldconfig

@@ -313,9 +313,6 @@ popd
 /usr/sbin/hardlink -cv $RPM_BUILD_ROOT%{_datadir}/selinux
 %endif
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
 %post
 %if 0%{?selinux_cvmfs}
 # Install SELinux policy modules
