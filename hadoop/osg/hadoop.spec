@@ -706,8 +706,6 @@ env FULL_VERSION=%{hadoop_patched_version} HADOOP_VERSION=%{hadoop_version} HADO
 #### INSTALL SECTION ####
 #########################
 %install
-%__rm -rf $RPM_BUILD_ROOT
-
 %__install -d -m 0755 $RPM_BUILD_ROOT/%{lib_hadoop}
 
 bash %{SOURCE2} \

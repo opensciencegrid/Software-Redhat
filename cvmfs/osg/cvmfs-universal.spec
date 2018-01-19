@@ -273,7 +273,6 @@ fi
 
 %install
 export DONT_STRIP=1
-rm -rf $RPM_BUILD_ROOT
 
 make DESTDIR=$RPM_BUILD_ROOT install
 mkdir -p $RPM_BUILD_ROOT/var/lib/cvmfs
