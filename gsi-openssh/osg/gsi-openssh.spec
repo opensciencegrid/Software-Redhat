@@ -364,7 +364,6 @@ then
 fi
 
 %files
-%defattr(-,root,root)
 %doc CREDITS ChangeLog INSTALL LICENCE LICENSE.globus_usage OVERVIEW PROTOCOL* README README.platform README.privsep README.tun README.dns TODO ChangeLog.gssapi HPN-README
 %attr(0755,root,root) %dir %{_sysconfdir}/gsissh
 %attr(0600,root,root) %config(noreplace) %{_sysconfdir}/gsissh/moduli
@@ -379,7 +378,6 @@ fi
 %attr(0644,root,root) %{_mandir}/man8/gsissh-keysign.8*
 
 %files clients
-%defattr(-,root,root)
 %attr(0755,root,root) %{_bindir}/gsissh
 %attr(0644,root,root) %{_mandir}/man1/gsissh.1*
 %attr(0755,root,root) %{_bindir}/gsiscp
@@ -390,7 +388,6 @@ fi
 %attr(0644,root,root) %{_mandir}/man1/gsisftp.1*
 
 %files server
-%defattr(-,root,root)
 %if 0%{?suse_version} > 0
 %dir %attr(0711,root,root) %{_var}/empty
 %endif

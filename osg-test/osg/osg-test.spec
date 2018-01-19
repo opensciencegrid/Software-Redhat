@@ -32,13 +32,11 @@ A GUI for viewing the output of %{name} in a structured manner.
 make install DESTDIR=$RPM_BUILD_ROOT
 
 %files
-%defattr(-,root,root)
 %{_datadir}/osg-test
 %{_sbindir}/%{name}
 %{python_sitelib}/osgtest
 
 %files log-viewer
-%defattr(-,root,root)
 %{_sbindir}/%{name}-log-viewer
 
 %changelog

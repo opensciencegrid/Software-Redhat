@@ -59,7 +59,6 @@ sh %{SOURCE2} \
           --prefix=$RPM_BUILD_ROOT
 
 %files
-%defattr(-,root,root)
 %{bin_jsvc}
 %doc %{doc_jsvc}
 

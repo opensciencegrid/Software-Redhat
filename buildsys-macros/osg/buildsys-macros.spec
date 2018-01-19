@@ -45,7 +45,6 @@ fi
 
 
 %files
-%defattr(-,root,root)
 %if %{dver} == 5
 /etc/rpm/macros.digest
 %endif

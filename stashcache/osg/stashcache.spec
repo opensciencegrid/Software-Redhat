@@ -69,7 +69,6 @@ for src in "./configs/xrootd-stashcache-origin-server.cfg.in" "./configs/xrootd-
 done
 
 %files daemon
-%defattr(-,root,root)
 %{_sbindir}/stashcache
 %{_sysconfdir}/condor/config.d/01-stashcache.conf
 %{python_sitelib}/xrootd_cache_stats.py*

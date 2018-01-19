@@ -32,7 +32,6 @@ ln -sf /usr/libexec/glite-ce-glue1-applicationsoftware-env %{buildroot}/usr/libe
 
 
 %files
-%defattr(-,root,root)
 %dir /etc/glite-ce-glue2/
 %config(noreplace) /etc/glite-ce-glue2/glite-ce-glue2.conf.template
 %dir /etc/glite-ce-dbtool

@@ -30,13 +30,11 @@ A GUI for viewing the output of %{name} in a structured manner.
 make install DESTDIR=$RPM_BUILD_ROOT
 
 %files
-%defattr(-,root,root)
 %{_bindir}/%{name}
 %{_bindir}/osg-installed-versions
 %{_libexecdir}/%{name}/gratia-pbs-lsf-config-check
 
 %files viewer
-%defattr(-,root,root)
 %{_bindir}/%{name}-viewer
 
 %changelog

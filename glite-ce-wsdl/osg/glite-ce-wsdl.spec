@@ -26,7 +26,6 @@ cp interface/ES/*.wsdl interface/ES/*.xsd %{buildroot}/usr/share/wsdl/cream-ce/e
 
 
 %files
-%defattr(-,root,root)
 %dir /usr/share/wsdl/
 %dir /usr/share/wsdl/cream-ce/
 %dir /usr/share/wsdl/cream-ce/es

@@ -75,13 +75,11 @@ find %{buildroot} -name '*' -print | xargs -I {} -i bash -c "chrpath -d {} > /de
 
 
 %files
-%defattr(-,root,root)
 %doc ChangeLog LICENSE
 %{_libdir}/libglite_security_gsoap_plugin_*.so.9
 %{_libdir}/libglite_security_gsoap_plugin_*.so.9.*
 
 %files devel
-%defattr(-,root,root)
 %doc examples
 %{_includedir}/glite/security/glite_gscompat.h
 %{_includedir}/glite/security/glite_gsplugin.h

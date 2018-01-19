@@ -185,7 +185,6 @@ cp %{SOURCE1} README.epel
 make DESTDIR=$RPM_BUILD_ROOT %{?install_opt} install
 
 %files
-%defattr(-,root,root)
 %{_bindir}/*
 %{python_sitelib}/%{name}
 %config(noreplace) %{_sysconfdir}/koji.conf
@@ -193,7 +192,6 @@ make DESTDIR=$RPM_BUILD_ROOT %{?install_opt} install
 %doc docs Authors COPYING LGPL
 
 %files hub
-%defattr(-,root,root)
 %{_datadir}/koji-hub
 %dir %{_libexecdir}/koji-hub
 %{_libexecdir}/koji-hub/rpmdiff
@@ -203,14 +201,12 @@ make DESTDIR=$RPM_BUILD_ROOT %{?install_opt} install
 %dir %{_sysconfdir}/koji-hub/hub.conf.d
 
 %files hub-plugins
-%defattr(-,root,root)
 %dir %{_prefix}/lib/koji-hub-plugins
 %{_prefix}/lib/koji-hub-plugins/*.py*
 %dir %{_sysconfdir}/koji-hub/plugins
 %{_sysconfdir}/koji-hub/plugins/*.conf
 
 %files utils
-%defattr(-,root,root)
 %{_sbindir}/kojira
 %if %{use_systemd}
 %{_unitdir}/kojira.service
@@ -228,7 +224,6 @@ make DESTDIR=$RPM_BUILD_ROOT %{?install_opt} install
 %config(noreplace) %{_sysconfdir}/koji-shadow/koji-shadow.conf
 
 %files web
-%defattr(-,root,root)
 %{_datadir}/koji-web
 %dir %{_sysconfdir}/kojiweb
 %config(noreplace) %{_sysconfdir}/kojiweb/web.conf
@@ -236,11 +231,9 @@ make DESTDIR=$RPM_BUILD_ROOT %{?install_opt} install
 %dir %{_sysconfdir}/kojiweb/web.conf.d
 
 %files builder
-%defattr(-,root,root)
 %{_sbindir}/kojid
 %dir %{_libexecdir}/kojid
 %{_libexecdir}/kojid/mergerepos
-%defattr(-,root,root)
 %dir %{_prefix}/lib/koji-builder-plugins
 %{_prefix}/lib/koji-builder-plugins/*.py*
 %if %{use_systemd}
@@ -282,7 +275,6 @@ fi
 %endif
 
 %files vm
-%defattr(-,root,root)
 %doc README.epel
 %{_sbindir}/kojivmd
 #dir %{_datadir}/kojivmd

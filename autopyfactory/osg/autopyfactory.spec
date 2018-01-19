@@ -170,7 +170,6 @@ fi
 #---------------------------------------------
 
 %files -n autopyfactory-common -f COMMON_FILES
-%defattr(-,root,root)
 %doc README    
 
 
@@ -201,7 +200,6 @@ Group: Development/Libraries
 This package contains autopyfactory plugins panda 
 
 %files -n autopyfactory-plugins-panda -f PLUGINS-PANDA_FILES
-%defattr(-,root,root)
 
 
 ##############################################
@@ -215,7 +213,6 @@ Group: Development/Libraries
 This package contains autopyfactory plugins local 
 
 %files -n autopyfactory-plugins-local -f PLUGINS-LOCAL_FILES
-%defattr(-,root,root)
 
 
 ##############################################
@@ -229,7 +226,6 @@ Group: Development/Libraries
 This package contains autopyfactory plugins remote 
 
 %files -n autopyfactory-plugins-remote -f PLUGINS-REMOTE_FILES
-%defattr(-,root,root)
 
 
 ##############################################
@@ -243,7 +239,6 @@ Group: Development/Libraries
 This package contains autopyfactory plugins cloud 
 
 %files -n autopyfactory-plugins-cloud -f PLUGINS-CLOUD_FILES
-%defattr(-,root,root)
 
 
 ##############################################
@@ -257,7 +252,6 @@ Group: Development/Libraries
 This package contains autopyfactory plugins scheds
 
 %files -n autopyfactory-plugins-scheds -f PLUGINS-SCHEDS_FILES
-%defattr(-,root,root)
 
 ##############################################
 #   SUB PACKAGE AUTOPYFACTORY-PLUGINS-MONITOR
@@ -270,7 +264,6 @@ Group: Development/Libraries
 This package contains autopyfactory plugins monitor
 
 %files -n autopyfactory-plugins-monitor -f PLUGINS-MONITOR_FILES
-%defattr(-,root,root)
 
 
 ##############################################

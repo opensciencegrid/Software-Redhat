@@ -66,7 +66,6 @@ bash %{SOURCE2} \
     --prefix=$RPM_BUILD_ROOT
 
 %files 
-%defattr(-,root,root)
 %attr(0755,root,root) %{lib_tomcat}
 %doc %{doc_tomcat}
 

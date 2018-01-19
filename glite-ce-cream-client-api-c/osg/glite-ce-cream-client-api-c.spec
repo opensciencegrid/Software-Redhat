@@ -57,7 +57,6 @@ mv %{buildroot}%{_libdir}/pkgconfig/cream-client-api-util.pc.new %{buildroot}%{_
 
 
 %files
-%defattr(-,root,root)
 %{_libdir}/libglite_ce_cream_client_*.so.0
 %{_libdir}/libglite_ce_cream_client_*.so.0.0.0
 
@@ -76,7 +75,6 @@ Requires: voms-devel, gridsite-devel >= 2.2.5, libxml2-devel
 The package contains development files for the client of the CREAM service
 
 %files -n glite-ce-cream-client-devel
-%defattr(-,root,root)
 %dir /usr/include/glite/
 %dir /usr/include/glite/ce/
 %dir /usr/include/glite/ce/cream-client-api-c/

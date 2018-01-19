@@ -522,7 +522,6 @@ fi
 %attr(-,xrootd,xrootd) %{_localstatedir}/spool/%{name}
 
 %files selinux
-%defattr(-,root,root)
 %{_datadir}/selinux/packages/%{name}/%{name}.pp
 
 %files libs

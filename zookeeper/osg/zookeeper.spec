@@ -236,7 +236,6 @@ fi
 #### FILES SECTION ####
 #######################
 %files
-%defattr(-,root,root)
 %config(noreplace) %{etc_zookeeper}/conf.dist
 %{lib_zookeeper}
 %{bin_zookeeper}/zookeeper-server

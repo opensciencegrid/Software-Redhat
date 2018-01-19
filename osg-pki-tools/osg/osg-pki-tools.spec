@@ -40,7 +40,6 @@ install -d %{buildroot}%{_defaultdocdir}/%{name}-%{version}
 install -m 644 -t %{buildroot}%{_defaultdocdir}/%{name}-%{version} CHANGELOG.txt LICENSE.txt README.txt
 
 %files
-%defattr(-,root,root)
 %dir %{python_sitelib}/osgpkitools
 %{python_sitelib}/osgpkitools/*.py*
 /usr/bin/*

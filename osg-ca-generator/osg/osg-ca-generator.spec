@@ -22,7 +22,6 @@ Create DigiCert-like CAs and certificates for testing an OSG Software installati
 make install DESTDIR=$RPM_BUILD_ROOT
 
 %files
-%defattr(-,root,root)
 %{_sbindir}/%{name}
 %{python_sitelib}/cagen.py*
 
