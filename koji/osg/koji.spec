@@ -61,9 +61,6 @@ License: LGPLv2 and GPLv2
 Requires: httpd
 Requires: mod_wsgi
 Requires: postgresql-python
-%if 0%{?rhel} == 5
-Requires: python-simplejson
-%endif
 Requires: %{name} = %{version}-%{release}
 
 %description hub
@@ -76,12 +73,7 @@ License: LGPLv2
 Requires: %{name} = %{version}-%{release}
 Requires: %{name}-hub = %{version}-%{release}
 Requires: python-qpid >= 0.7
-%if 0%{?rhel} >= 6
 Requires: python-qpid-proton
-%endif
-%if 0%{?rhel} == 5
-Requires: python-ssl
-%endif
 Requires: cpio
 
 %description hub-plugins
@@ -110,14 +102,7 @@ Requires: /usr/bin/cvs
 Requires: /usr/bin/svn
 Requires: /usr/bin/git
 Requires: python-cheetah
-%if 0%{?rhel} == 5
-Requires: createrepo >= 0.4.11-2
-Requires: python-hashlib
-Requires: python-createrepo
-%endif
-%if 0%{?fedora} >= 9 || 0%{?rhel} > 5
 Requires: createrepo >= 0.9.2
-%endif
 
 %description builder
 koji-builder is the daemon that runs on build machines and executes

@@ -70,11 +70,7 @@ Requires: hadoop-hdfs-fuse
 Requires: osg-version
 Requires: osg-system-profiler
 Requires: edg-mkgridmap
-%if 0%{?rhel} < 6
-Requires: fetch-crl3
-%else
 Requires: fetch-crl
-%endif
 # 3.0.0-6 pulls in gridftp-hdfs that uses /etc/gridftp.d
 Requires: osg-gridftp-hdfs >= 3.0.0-7
 Requires: globus-gridftp-server-progs
@@ -100,11 +96,7 @@ Requires: grid-certificates >= 7
 Requires: osg-version
 Requires: osg-system-profiler
 Requires: edg-mkgridmap
-%if 0%{?rhel} < 6
-Requires: fetch-crl3
-%else
 Requires: fetch-crl
-%endif
 Requires: bestman2-server
 Requires: bestman2-client
 Requires: bestman2-tester

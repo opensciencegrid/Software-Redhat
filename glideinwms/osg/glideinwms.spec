@@ -224,13 +224,6 @@ rm -rf $RPM_BUILD_ROOT
 # Set the Python version
 %define py_ver %(python -c "import sys; v=sys.version_info[:2]; print '%d.%d'%v")
 
-# From http://fedoraproject.org/wiki/Packaging:Python
-# Define python_sitelib
-%if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
-%{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
-%{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
-%endif
-
 #Change src_dir in reconfig_Frontend
 sed -i "s/WEB_BASE_DIR=.*/WEB_BASE_DIR=\"\/var\/lib\/gwms-frontend\/web-base\"/" creation/reconfig_frontend
 sed -i "s/STARTUP_DIR=.*/STARTUP_DIR=\"\/var\/lib\/gwms-frontend\/web-base\"/" creation/reconfig_frontend
@@ -666,20 +659,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_sbindir}/glideFactoryEntry.py
 %attr(755,root,root) %{_sbindir}/glideFactoryEntryGroup.py
 
-%if %{?rhel}%{!?rhel:0} == 5
-%attr(755,root,root) %{_sbindir}/checkFactory.pyc
-%attr(755,root,root) %{_sbindir}/checkFactory.pyo
-%attr(755,root,root) %{_sbindir}/glideFactory.pyc
-%attr(755,root,root) %{_sbindir}/glideFactory.pyo
-%attr(755,root,root) %{_sbindir}/glideFactoryEntry.pyc
-%attr(755,root,root) %{_sbindir}/glideFactoryEntry.pyo
-%attr(755,root,root) %{_sbindir}/glideFactoryEntryGroup.pyc
-%attr(755,root,root) %{_sbindir}/glideFactoryEntryGroup.pyo
-%attr(755,root,root) %{_sbindir}/manageFactoryDowntimes.pyc
-%attr(755,root,root) %{_sbindir}/manageFactoryDowntimes.pyo
-%attr(755,root,root) %{_sbindir}/stopFactory.pyc
-%attr(755,root,root) %{_sbindir}/stopFactory.pyo
-%endif
 %attr(755,root,root) %{_sbindir}/info_glidein
 %attr(755,root,root) %{_sbindir}/manageFactoryDowntimes.py
 %attr(755,root,root) %{_sbindir}/reconfig_glidein

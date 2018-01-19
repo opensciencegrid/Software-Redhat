@@ -31,9 +31,7 @@ The package contains C/C++ libraries for the client of the CREAM service
 %setup -c -q
 %patch0 -p1
 %patch1 -p1
-%if 0%{?rhel} >= 6
 %patch2 -p1
-%endif
 %if 0%{?rhel} >= 7
 %patch3 -p1
 %endif

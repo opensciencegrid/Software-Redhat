@@ -1,8 +1,4 @@
 ## Gotta define where python stuff is on EL5
-%if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
-%{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
-%{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
-%endif
 Name: cctools
 Version: 4.4.3
 Release: 1%{?dist}
@@ -19,30 +15,22 @@ BuildRequires: openssl-devel
 BuildRequires: zlib-devel
 BuildRequires: python-devel >= 2.4
 BuildRequires: swig
-%if 0%{?rhel} > 5
 BuildRequires: perl-ExtUtils-Embed
-%endif
 #Addded so documentation is built 
 BuildRequires: m4 doxygen 
 BuildRequires: /usr/bin/nroff
-%if 0%{?rhel} > 5
 BuildRequires: libuuid-devel
-%else
-BuildRequires: e2fsprogs-devel
-%endif
 
 
 %description
 The Cooperative Computing Tools are a collection of tools for harnessing large
 scale distributed systems, such as clusters, clouds, and grids.
 
-%if 0%{?rhel} > 5
 %package weaver
 Group: Development/Tools
 Summary: Weaver is a high level interface to Makeflow which allows to describe workflows using python
 %description weaver
 Weaver is a high level interface to Makeflow which allows to describe workflows using python
-%endif
 
 %package doc
 Obsoletes: cctools < 4.0.2-7
@@ -198,15 +186,11 @@ rm %{buildroot}/usr/etc/config.mk
 # removing man pages of unbuilt packages..
 rm %{buildroot}/usr/share/man/man1/deltadb*.1.gz
 
-%if 0%{?rhel} > 5
 %files weaver
 %{python_sitelib}/weaver/*
 %{_bindir}/weaver
 %{_docdir}/cctools/weaver_examples/*
 %_mandir/man1/weaver.1.gz
-%else
-rm %{buildroot}/usr/share/man/man1/weaver.1.gz
-%endif
 
 %files doc
 #Added so all the html files since they are cross-referenced they are in only one subpackage

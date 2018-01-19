@@ -108,9 +108,7 @@ xrootd-selinux package.
 %package selinux
 Summary:	SELinux policy module for the xrootd server
 Group:		System Environment/Daemons
-%if %{?fedora}%{!?fedora:0} >= 10 || %{?rhel}%{!?rhel:0} >= 6
 BuildArch:	noarch
-%endif
 Requires:	selinux-policy
 Requires(post):		policycoreutils
 Requires(postun):	policycoreutils
@@ -186,9 +184,7 @@ server development.
 Summary:	Legacy xrootd headers
 Group:		Development/Libraries
 Requires:	%{name}-libs = %{epoch}:%{version}-%{release}
-%if %{?fedora}%{!?fedora:0} >= 10 || %{?rhel}%{!?rhel:0} >= 6
 BuildArch:	noarch
-%endif
 
 %description private-devel
 This package contains some private xrootd headers. The use of these
@@ -264,20 +260,13 @@ Python 3 bindings for XRootD
 %package doc
 Summary:	Developer documentation for the xrootd libraries
 Group:		Documentation
-%if %{?fedora}%{!?fedora:0} >= 10 || %{?rhel}%{!?rhel:0} >= 6
 BuildArch:	noarch
-%endif
 
 %description doc
 This package contains the API documentation of the xrootd libraries.
 
 %prep
 %setup -n %{name}-%{version}%{?_alphasuffix}
-
-%if %{?fedora}%{!?fedora:0} <= 9 && %{?rhel}%{!?rhel:0} <= 5
-# Older versions of SELinux do not have policy for open
-sed 's/ open / /' -i packaging/common/%{name}.te
-%endif
 
 %build
 mkdir build

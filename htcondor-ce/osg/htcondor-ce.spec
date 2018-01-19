@@ -54,15 +54,8 @@ Requires(preun): initscripts
 %define systemd 0
 %endif
 
-# On RHEL6 and later, we use this utility to setup a custom hostname.
-%if 0%{?rhel} >= 6
+# we use this utility to setup a custom hostname.
 Requires: /usr/bin/unshare
-%endif
-
-%if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
-%{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
-%{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
-%endif
 
 %description
 %{summary}

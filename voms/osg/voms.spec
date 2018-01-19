@@ -73,9 +73,7 @@ This package provides header files for programming with the VOMS libraries.
 %package doc
 Summary:	Virtual Organization Membership Service Documentation
 Group:		Documentation
-%if %{?fedora}%{!?fedora:0} >= 10 || %{?rhel}%{!?rhel:0} >= 6
 BuildArch:	noarch
-%endif
 
 %description doc
 Documentation for the Virtual Organization Membership Service.

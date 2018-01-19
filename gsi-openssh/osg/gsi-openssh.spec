@@ -16,11 +16,7 @@
 %global gsi 1
 
 # Do we want libedit support
-%if "%{?rhel}" == "4" || "%{?rhel}" == "5"
-%global libedit 0
-%else
 %global libedit 1
-%endif
 
 # Do we want NSS tokens support
 #NSS support is broken from 5.4p1
@@ -118,20 +114,8 @@ BuildRequires: pam-devel
 BuildRequires: tcpd-devel
 BuildRequires: libopenssl-devel
 %else
-%if "%{?rhel}" == "5"
-BuildRequires: tcp_wrappers
-BuildRequires: openssl101e-devel
-BuildRequires:  pkgconfig
-
-BuildConflicts: openssl-devel
-%else
-%if "%{?rhel}" == "4"
-BuildRequires: openssl-devel
-%else
 BuildRequires: tcp_wrappers-devel
 BuildRequires: openssl-devel >= 0.9.8j
-%endif
-%endif
 %endif
 
 %if %{kerberos5}
@@ -194,15 +178,7 @@ Requires(pre):  shadow
 Requires(post): aaa_base
 %endif
 Requires(pre): /usr/sbin/useradd
-%if 0%{?rhel} == 05
-Requires: pam >= 0.99.6-2
-%else
-%if 0%{?rhel} == 04
-Requires: pam >= 0.77
-%else
 Requires: pam >= 1.0.1-3
-%endif
-%endif
 
 %description
 SSH (Secure SHell) is a program for logging into and executing
@@ -247,17 +223,8 @@ sed 's!$(piddir)/sshd.pid!$(piddir)/gsisshd.pid!' -i Makefile.in
 
 autoreconf
 
-%if %{?rhel}%{!?rhel:0} == 5
-export CFLAGS="$RPM_OPT_FLAGS"
-export OPENSSL_CFLAGS="$(pkg-config openssl101e --cflags)";
-export OPENSSL_LIBS="$(pkg-config openssl101e --libs)";
-sed -e 's/0\.22/0\.21/' < configure  > configure.new
-mv configure.new configure
-chmod a+x configure
-%else
 CFLAGS="$RPM_OPT_FLAGS"; export CFLAGS
 LIBS="-lcrypto"; export LIBS
-%endif
 %if %{pie}
 %ifarch s390 s390x sparc sparcv9 sparc64
 CFLAGS="$CFLAGS -fPIC"
