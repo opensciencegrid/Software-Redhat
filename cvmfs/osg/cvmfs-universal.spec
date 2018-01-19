@@ -361,7 +361,6 @@ fi
 %endif
 
 %files
-%defattr(-,root,root)
 %{_bindir}/cvmfs2
 %{_libdir}/libcvmfs_fuse.so
 %{_libdir}/libcvmfs_fuse.so.%{version}
@@ -392,14 +391,12 @@ fi
 %doc COPYING AUTHORS README ChangeLog
 
 %files devel
-%defattr(-,root,root)
 %{_libdir}/libcvmfs.a
 %{_includedir}/libcvmfs.h
 %doc COPYING AUTHORS README ChangeLog
 
 %if 0
 %files server
-%defattr(-,root,root)
 %{_bindir}/cvmfs_swissknife
 %{_bindir}/cvmfs_swissknife_debug
 %{_bindir}/cvmfs_suid_helper
@@ -422,7 +419,6 @@ fi
 %doc COPYING AUTHORS README ChangeLog
 
 %files unittests
-%defattr(-,root,root)
 %{_bindir}/cvmfs_unittests
 %doc COPYING AUTHORS README ChangeLog
 %endif

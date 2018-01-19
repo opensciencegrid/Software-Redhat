@@ -939,7 +939,6 @@ fi
 
 
 %files yarn
-%defattr(-,root,root)
 %config(noreplace) %{etc_hadoop}/conf.empty/yarn-env.sh
 %config(noreplace) %{etc_hadoop}/conf.empty/yarn-site.xml
 %config(noreplace) %{etc_hadoop}/conf.empty/capacity-scheduler.xml
@@ -958,7 +957,6 @@ fi
 %endif
 
 %files hdfs
-%defattr(-,root,root)
 %config(noreplace) %{etc_hadoop}/conf.empty/hdfs-site.xml
 %config(noreplace) %{etc_hadoop}/conf.impala
 %config(noreplace) /etc/security/limits.d/hdfs.conf
@@ -975,7 +973,6 @@ fi
 %endif
 
 %files mapreduce
-%defattr(-,root,root)
 %config(noreplace) %{etc_hadoop}/conf.empty/mapred-site.xml
 %config(noreplace) %{etc_hadoop}/conf.empty/mapred-queues.xml.template
 %config(noreplace) %{etc_hadoop}/conf.empty/mapred-site.xml.template
@@ -992,7 +989,6 @@ fi
 %endif
 
 %files
-%defattr(-,root,root)
 %config(noreplace) %{etc_hadoop}/conf.empty/core-site.xml
 %config(noreplace) %{etc_hadoop}/conf.empty/hadoop-metrics.properties
 %config(noreplace) %{etc_hadoop}/conf.empty/hadoop-metrics2.properties
@@ -1028,7 +1024,6 @@ fi
 %exclude %{lib_hadoop}/bin/fuse_dfs
 
 %files kms
-%defattr(-,root,root)
 %config(noreplace) %{etc_kms}
 %config(noreplace) /etc/default/%{name}-kms
 %{lib_hadoop}/libexec/kms-config.sh
@@ -1041,12 +1036,10 @@ fi
 %{initd_dir}/%{name}-kms-server
 
 %files doc
-%defattr(-,root,root)
 %doc %{doc_hadoop}
 %doc %{doc_hadoop_mr1}
 
 %files httpfs
-%defattr(-,root,root)
 %config(noreplace) %{etc_httpfs}
 %config(noreplace) /etc/default/%{name}-httpfs
 %{lib_hadoop}/libexec/httpfs-config.sh
@@ -1061,7 +1054,6 @@ fi
 # Service file management RPMs
 %define service_macro() \
 %files %1 \
-%defattr(-,root,root) \
 %{initd_dir}/%{name}-%1 \
 %config(noreplace) /etc/default/%{name}-%1 \
 %post %1 \
@@ -1108,16 +1100,13 @@ if [ "$1" = 0 ]; then
 fi
 
 %files conf-pseudo
-%defattr(-,root,root)
 %config(noreplace) %attr(755,root,root) %{etc_hadoop}/conf.pseudo
 
 %files client
-%defattr(-,root,root)
 %{lib_hadoop}/client
 %{lib_hadoop}/client-0.20
 
 %files libhdfs
-%defattr(-,root,root)
 %{_libdir}/libhdfs*
 
 %files libhdfs-devel
@@ -1125,17 +1114,14 @@ fi
 #%doc %{_docdir}/libhdfs-%{hadoop_version}
 
 %files hdfs-fuse
-%defattr(-,root,root)
 %attr(0644,root,root) %config(noreplace) /etc/default/hadoop-fuse
 %attr(0755,root,root) %{lib_hadoop}/bin/fuse_dfs
 %attr(0755,root,root) %{bin_hadoop}/hadoop-fuse-dfs
 
 %files 0.20-conf-pseudo
-%defattr(-,root,root)
 %config(noreplace) %attr(755,root,root) %{etc_hadoop}/conf.pseudo.mr1
 
 %files 0.20-mapreduce
-%defattr(-,root,root)
 %config(noreplace) %{etc_hadoop}/conf.empty/fair-scheduler.xml
 %config(noreplace) /etc/security/limits.d/mapred.conf
 # FIXME: we need to think how to get rid of the following file
