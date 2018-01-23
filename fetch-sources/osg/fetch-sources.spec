@@ -1,13 +1,13 @@
 Summary:   Fetch sources from upstream (internal use)
 Name:      fetch-sources
-Version:   1.1.0
-Release:   2%{?dist}
+Version:   1.2.0
+Release:   1%{?dist}
 License:   Apache License, 2.0
-Group:     Applications/Grid
 Source0:   %{name}
 BuildArch: noarch
-BuildRequires: osg-build-base >= 1.8.92
+BuildRequires: osg-build-base >= 1.10.90
 Requires: git
+Requires: python-six
 Requires: subversion
 
 %description
@@ -37,6 +37,11 @@ rm -rf $RPM_BUILD_ROOT
 /usr/share/fetch-sources
 
 %changelog
+* Tue Jan 23 2018 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.2.0-1
+- Rebuild based on osg-build 1.10.90 prerelease, with support for taking
+  specfiles from git repos (SOFTWARE-2962)
+- Add python-six dependency
+
 * Tue May 09 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.1.0-2
 - Require git and subversion so that they're available in the buildSRPMFromSCM task
   (technically, subversion is already in there thanks to the Koji group, but better safe than sorry)
