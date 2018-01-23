@@ -125,6 +125,9 @@ make install DESTDIR=$RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Dec 08 2017 Mátyás Selmeci <matyas@cs.wisc.edu>
+- Drop el5-isms (SOFTWARE-3050)
+
 * Wed Oct 04 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.10.2-1
 - Fix logging (SOFTWARE-2745)
 - Fix quilt subcommand to work with multiple packages (SOFTWARE-2739)
