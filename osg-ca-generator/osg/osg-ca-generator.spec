@@ -1,6 +1,6 @@
 Summary:   Generate CAs and certificates for testing an OSG installation
 Name:      osg-ca-generator
-Version:   1.3.1
+Version:   1.3.2
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Group:     Applications/Grid
@@ -26,6 +26,9 @@ make install DESTDIR=$RPM_BUILD_ROOT
 %{python_sitelib}/cagen.py*
 
 %changelog
+* Tue Jan 23 2018 Brian Lin <blin@cs.wisc.edu> 1.3.2-1
+- Use hostname for the fake VOMS URI
+
 * Tue Jan 16 2018 Brian Lin <blin@cs.wisc.edu> 1.3.1-1
 - Fix formatting of /etc/vomses (SOFTWARE-2976)
 
