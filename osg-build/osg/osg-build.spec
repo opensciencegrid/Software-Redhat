@@ -32,6 +32,7 @@ Requires:       subversion
 Requires:       wget
 Requires:       python >= 2.6
 Requires:       epel-rpm-macros
+Requires:       python-six
 Summary:        OSG-Build base package, not containing mock or koji modules or koji-based tools
 
 %description base
@@ -80,6 +81,8 @@ Summary:        OSG-Build tests
 
 %install
 make install DESTDIR=$RPM_BUILD_ROOT
+rm -f $RPM_BUILD_ROOT/%{python_sitelib}/osgbuild/six.py*
+# ^ don't bundle "six" in the RPM; it's a dependency instead
 
 %files
 
@@ -126,6 +129,7 @@ make install DESTDIR=$RPM_BUILD_ROOT
   Relnotes at https://github.com/opensciencegrid/osg-build/releases/tag/v1.10.90
 - Drop el5-isms (SOFTWARE-3050)
 - Drop koji-hub-testing.patch (no longer applies anyway)
+- Add python-six dependency
 
 * Wed Oct 04 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.10.2-1
 - Fix logging (SOFTWARE-2745)
