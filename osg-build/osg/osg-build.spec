@@ -1,13 +1,13 @@
-#global betatag .pre
+%global betatag .pre
 %global _release 1
 
 Name:           osg-build
-Version:        1.10.2
+Version:        1.10.90
 Release:        %{?betatag:0.}%{_release}%{?betatag}%{?dist}
 Summary:        Build tools for the OSG
 
 License:        Apache 2.0
-URL:            https://twiki.grid.iu.edu/bin/view/SoftwareTeam/OSGBuildTools
+URL:            https://github.com/opensciencegrid/osg-build
 
 Source0:        %{name}-%{version}.tar.gz
 
@@ -121,8 +121,11 @@ make install DESTDIR=$RPM_BUILD_ROOT
 
 
 %changelog
-* Fri Dec 08 2017 Mátyás Selmeci <matyas@cs.wisc.edu>
+* Tue Jan 23 2018 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.10.90-0.1
+- New prerelease 1.10.90 (SOFTWARE-3107)
+  Relnotes at https://github.com/opensciencegrid/osg-build/releases/tag/v1.10.90
 - Drop el5-isms (SOFTWARE-3050)
+- Drop koji-hub-testing.patch (no longer applies anyway)
 
 * Wed Oct 04 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.10.2-1
 - Fix logging (SOFTWARE-2745)
