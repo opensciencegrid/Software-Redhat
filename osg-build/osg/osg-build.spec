@@ -10,7 +10,6 @@ License:        Apache 2.0
 URL:            https://twiki.grid.iu.edu/bin/view/SoftwareTeam/OSGBuildTools
 
 Source0:        %{name}-%{version}.tar.gz
-Patch0:         koji-hub-testing.patch
 
 BuildArch:      noarch
 
@@ -78,9 +77,6 @@ Summary:        OSG-Build tests
 
 %prep
 %setup -q -n %{name}-%{version}
-
-# changes the koji-hub URL to koji-hub-testing.chtc.wisc.edu, for testing only
-# % patch0 -p1
 
 %install
 make install DESTDIR=$RPM_BUILD_ROOT
