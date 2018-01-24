@@ -1,11 +1,11 @@
 Summary:   Fetch sources from upstream (internal use)
 Name:      fetch-sources
 Version:   1.2.1
-Release:   2%{?dist}
+Release:   3%{?dist}
 License:   Apache License, 2.0
 Source0:   %{name}
 BuildArch: noarch
-BuildRequires: osg-build-base >= 1.11.1
+BuildRequires: osg-build-base >= 1.11.2
 Requires: git
 Requires: python-six
 Requires: subversion
@@ -37,6 +37,9 @@ rm -rf $RPM_BUILD_ROOT
 /usr/share/fetch-sources
 
 %changelog
+* Wed Jan 24 2018 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.2.1-3
+- Rebuild against osg-build 1.11.2
+
 * Tue Jan 23 2018 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.2.1-2
 - Rebuild against osg-build 1.11.1
 
