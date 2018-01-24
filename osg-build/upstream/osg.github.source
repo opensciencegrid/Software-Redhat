@@ -1,1 +1,1 @@
-type=git url=https://github.com/opensciencegrid/osg-build.git name=osg-build tag=v1.11.0 hash=9606259d08a5a8d9bb5c132db670ee3d45ebc02d
+type=git url=https://github.com/opensciencegrid/osg-build.git name=osg-build tag=v1.11.1 hash=56cb299802f68c75dd3fc691d7ddfe79313e0172
