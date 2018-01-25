@@ -250,9 +250,8 @@ Requires: avro-libs
 # Don't require parquet for now, which requires too many things we don't have
 # (see also SOFTWARE-2161)
 # Requires: parquet
-Requires: java = 1:1.7.0
+Requires: java >= 1:1.7.0
 Requires: jpackage-utils
-Requires: /usr/lib/java-1.7.0
 Conflicts: hadoop-0.20
 Provides: hadoop
 Obsoletes: hadoop-0.20 <= 0.20.2+737
@@ -637,7 +636,7 @@ Documentation for Hadoop
 Summary: Hadoop Filesystem Library
 Group: Development/Libraries
 Requires: %{name}-hdfs = %{version}-%{release}
-Requires: java-devel = 1:1.7.0
+Requires: java-devel >= 1:1.7.0
 Obsoletes: hadoop-0.20-libhdfs <= 0.20.2+737
 # TODO: reconcile libjvm
 AutoReq: no
@@ -660,7 +659,7 @@ Requires: %{name} = %{version}-%{release}
 Requires: %{name}-libhdfs = %{version}-%{release}
 Requires: %{name}-client = %{version}-%{release}
 Requires: fuse
-Requires: java-devel = 1:1.7.0
+Requires: java-devel >= 1:1.7.0
 Obsoletes: hadoop-0.20-osg <= 0.20.2+737
 Obsoletes: hadoop-0.20-fuse <= 0.20.2+737
 AutoReq: no
