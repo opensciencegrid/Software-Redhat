@@ -114,9 +114,8 @@ Requires(pre): coreutils, shadow-utils, /usr/sbin/groupadd, /usr/sbin/useradd
 Requires(post): %{alternatives_dep}
 Requires(preun): %{alternatives_dep}
 Requires: bigtop-utils
-Requires: java = 1:1.7.0
+Requires: java >= 1:1.7.0
 Requires: jpackage-utils
-Requires: /usr/lib/java-1.7.0
 Conflicts: hadoop-zookeeper
 
 %description 
