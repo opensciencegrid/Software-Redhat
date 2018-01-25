@@ -8,7 +8,7 @@
 %define zookeeper_version 3.4.3+15
 %define zookeeper_patched_version 3.4.3-cdh4.0.1
 %define zookeeper_base_version 3.4.3
-%define zookeeper_release 1.cdh4.0.1.p0.5%{?dist}
+%define zookeeper_release 1.cdh4.0.1.p0.6%{?dist}
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
@@ -254,6 +254,9 @@ fi
 %attr(0755, %{name}, %{name}) %{run_zookeeper}
 
 %changelog
+* Thu Jan 25 2018 Carl Edquist <edquist@cs.wisc.edu> - 3.4.3+15-1.cdh4.0.1.p0.6
+- Allow Java >= 1.7 (SOFTWARE-2993, SOFTWARE-2981)
+
 * Thu Nov 02 2017 Carl Edquist <edquist@cs.wisc.edu> - 3.4.3+15-1.cdh4.0.1.p0.5
 - Rename java7 dependencies (SOFTWARE-2991)
 
