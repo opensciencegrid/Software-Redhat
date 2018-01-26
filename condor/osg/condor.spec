@@ -128,7 +128,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1
+%define condor_base_release 1.1
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -223,6 +223,8 @@ Source122: glibc-2.5-20061008T1257-x86_64-p0.tar.gz
 Source123: zlib-1.2.3.tar.gz
 %endif
 
+# #6521 #6475 SOFTWARE-3085
+Patch1: SOFTWARE-3085.fix-preen-segv.patch
 
 #% if 0%osg
 Patch8: osg_sysconfig_in_init_script.patch
@@ -735,6 +737,8 @@ exit 0
 # For release tarballs
 %setup -q -n %{name}-%{tarball_version}
 %endif
+
+%patch1 -p1
 
 %if 0%{?osg} || 0%{?hcc}
 %patch8 -p1
@@ -1915,6 +1919,9 @@ fi
 %endif
 
 %changelog
+* Fri Jan 26 2018 Carl Edquist <edquist@cs.wisc.edu> - 8.6.9-1.1
+- Add patch for upstream preen fix (SOFTWARE-3085)
+
 * Thu Jan 04 2018 Tim Theisen <tim@cs.wisc.edu> - 8.6.9-1
 - Fixed a bug where some Accounting Groups could get too much surplus quota
 - Fixed a Python binding bug where some queries could corrupt memory
