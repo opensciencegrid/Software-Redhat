@@ -223,8 +223,8 @@ Source122: glibc-2.5-20061008T1257-x86_64-p0.tar.gz
 Source123: zlib-1.2.3.tar.gz
 %endif
 
-# #6521 #6475 SOFTWARE-3085
-Patch1: SOFTWARE-3085.fix-preen-segv.patch
+# #6521 SOFTWARE-3086
+Patch1: SOFTWARE-3086.fix-preen-segv.patch
 
 #% if 0%osg
 Patch8: osg_sysconfig_in_init_script.patch

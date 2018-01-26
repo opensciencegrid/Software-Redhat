@@ -1,14 +1,14 @@
-commit 9b8bc33dd64ed78bac9a6ce8ee22aa8a4cdb3a2d
+commit 20aeaf61427961de5880e712868d4f89117d0401
 Author: Mark Coatsworth <coatsworth@cs.wisc.edu>
-Date:   Wed Jan 24 15:16:21 2018 -0600
+Date:   Wed Jan 24 12:05:44 2018 -0600
 
-    Fixed preen segfault + overzealous deletions in 8.7.6 (#6521) (#6475)
+    Fixed segfault + core dump bug in preen stable (#6521)
 
 diff --git a/src/condor_tools/preen.cpp b/src/condor_tools/preen.cpp
-index 135c05f..6da3c00 100644
+index 06dcd5f..8ba7514 100644
 --- a/src/condor_tools/preen.cpp
 +++ b/src/condor_tools/preen.cpp
-@@ -430,12 +430,6 @@ check_spool_dir()
+@@ -417,19 +417,14 @@ check_spool_dir()
  			continue;
  		}
  
@@ -18,10 +18,19 @@ index 135c05f..6da3c00 100644
 -				continue;
 -			}
 -		}
+-
  			// If none of the previous checks succeeded, we can try a couple
  			// other checks which require an active connection to the schedd. 
  			// Establish a connection (if not already connected). If this fails
-@@ -461,6 +455,13 @@ check_spool_dir()
+ 			// for any reason, abort and don't delete any files.
+ 		if ( !qmgr ) {
+ 			if ( !( qmgr = ConnectQ (0,0,false) ) ) {
++				dprintf( D_ALWAYS, "Unable to connect to job queue, not "
++						"cleaning spool directory.\n" );
+ 				return;
+ 			}
+ 			last_connection_time = _condor_debug_get_time_double();
+@@ -449,6 +444,13 @@ check_spool_dir()
  			continue;
  		}
  
@@ -35,12 +44,3 @@ index 135c05f..6da3c00 100644
  			// We think it's bad.  For now, just append it to a
  			// StringList, instead of actually deleting it.  This way,
  			// if DisconnectQ() fails, we can abort and not actually
-@@ -692,7 +693,7 @@ proc_exists( int cluster, int proc )
- 		return false;
- 	}
- 
--	return false;
-+	return true;
- }
- 
- /*
