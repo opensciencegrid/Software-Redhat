@@ -1920,7 +1920,7 @@ fi
 
 %changelog
 * Fri Jan 26 2018 Carl Edquist <edquist@cs.wisc.edu> - 8.6.9-1.1
-- Add patch for upstream preen fix (SOFTWARE-3085)
+- Add patch for upstream preen fix (SOFTWARE-3086)
 
 * Thu Jan 04 2018 Tim Theisen <tim@cs.wisc.edu> - 8.6.9-1
 - Fixed a bug where some Accounting Groups could get too much surplus quota
