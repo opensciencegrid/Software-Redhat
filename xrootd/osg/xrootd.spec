@@ -21,7 +21,7 @@
 
 Name:		xrootd
 Epoch:		1
-Version:	4.8.0
+Version:	4.8.1
 Release:        %{?_alphatag:0.}%{_release}%{?_alphatag:.%{_alphatag}}%{?dist}
 Summary:	Extended ROOT file server
 
@@ -183,7 +183,6 @@ server development.
 Summary:	Legacy xrootd headers
 Group:		Development/Libraries
 Requires:	%{name}-libs = %{epoch}:%{version}-%{release}
-BuildArch:	noarch
 
 %description private-devel
 This package contains some private xrootd headers. The use of these
@@ -268,11 +267,18 @@ This package contains the API documentation of the xrootd libraries.
 %setup -n %{name}-%{version}%{?_alphasuffix}
 
 %build
+# Koji build machines at Wisc are unhappy when doing osg3.3 --el6 build
+# https://github.com/xrootd/xrootd/issues/573
+%ifarch i386                                                                                                                       
+%global optflags %__global_cflags -m32 -march=i686 -mtune=atom -fasynchronous-unwind-tables                                        
+%endif
+
 mkdir build
 
 pushd build
 %cmake -DUSE_LIBC_SEMAPHORE:BOOL=%{use_libc_semaphore} ..
 make %{?_smp_mflags}
+#make -j1
 popd
 
 pushd packaging/common
@@ -303,6 +309,10 @@ install -m 644 packaging/common/frm_purged@.service %{buildroot}%{_unitdir}
 install -m 644 packaging/common/xrdhttp@.socket %{buildroot}%{_unitdir}
 install -m 644 packaging/common/xrootd@.socket %{buildroot}%{_unitdir}
 
+# tmpfiles.d
+mkdir -p %{buildroot}%{_tmpfilesdir}
+install -m 0644 packaging/rhel/xrootd.tmpfiles %{buildroot}%{_tmpfilesdir}/%{name}.conf
+
 %else
 mkdir -p %{buildroot}%{_initrddir}
 mkdir -p %{buildroot}%{_sysconfdir}/sysconfig
@@ -310,6 +320,7 @@ install -p packaging/rhel/xrootd.init %{buildroot}%{_initrddir}/xrootd
 install -p packaging/rhel/cmsd.init %{buildroot}%{_initrddir}/cmsd
 install -p packaging/rhel/frm_purged.init %{buildroot}%{_initrddir}/frm_purged
 install -p packaging/rhel/frm_xfrd.init %{buildroot}%{_initrddir}/frm_xfrd
+install -p packaging/rhel/xrootd.functions %{buildroot}%{_initrddir}/xrootd.functions
 
 sed s/%{name}.functions/%{name}-functions/ -i %{buildroot}%{_initrddir}/*
 install -m 644 -p packaging/rhel/%{name}.functions \
@@ -511,6 +522,7 @@ fi
 %{_datadir}/%{name}
 %if %{use_systemd}
 %{_unitdir}/*
+%{_tmpfilesdir}/%{name}.conf
 %else
 %{_initrddir}/*
 %config(noreplace) %{_sysconfdir}/sysconfig/%{name}
@@ -654,6 +666,10 @@ fi
 %doc %{_pkgdocdir}
 
 %changelog
+* Thu Feb 01 2018 Marian Zvada <marian.zvada@cern.ch> - 1:4.8.1-1
+- Update to 4.8.1 (SOFTWARE-3104)
+- tmpfile creation fix for RHEL7 (SOFTWARE-3114)
+
 * Thu Dec 14 2017 Marian Zvada <marian.zvada@cern.ch> - 1:4.8.0-1
 - Update to 4.8.0 (SOFTWARE-3033)
 - clean up EL5-specific conditional according to SOFTWARE-3050
