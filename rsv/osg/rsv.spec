@@ -263,9 +263,10 @@ fi
 
 
 %changelog
-* Wed Jan 17 2018 Carl Edquist <edquist@cs.wisc.edu> - 3.17.0-1
+* Wed Feb 07 2018 Carl Edquist <edquist@cs.wisc.edu> - 3.17.0-1
 - Verify certificates via sha256 (SOFTWARE-3060)
 - Update gratia-config-probe to contact GRACC collector (SOFTWARE-2722)
+- Remove pipes from java-version-probe output (SOFTWARE-3113)
 
 * Wed Nov 01 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.16.0-2
 - Add support for cream and nordugrid on EL7 (SOFTWARE-2987)
