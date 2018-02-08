@@ -1,5 +1,5 @@
 Name: osg-display-data
-Version: 1.1.2
+Version: 1.1.3
 Release: 1%{?dist}
 Summary: Scripts and tools to generate the OSG Display's data.
 Source: %{name}-%{version}.tar.gz
@@ -42,7 +42,7 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) /etc/osg_display/osg_display.condor.cron
 
 %changelog
-* Thu Feb 08 2018 Carl Edquist <edquist@cs.wisc.edu> - 1.1.2-1
+* Thu Feb 08 2018 Carl Edquist <edquist@cs.wisc.edu> - 1.1.3-1
 - Handle time windows with empty data sets (SOFTWARE-3117)
 
 * Tue May 16 2017 Carl Edquist <edquist@cs.wisc.edu> - 1.1.1-1
