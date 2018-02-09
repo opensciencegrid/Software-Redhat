@@ -1,7 +1,7 @@
 [{YUMREPO}]
 name=OSG Software for Enterprise Linux {EL} {TITLE} $basearch
-#baseurl=http://repo-itb.grid.iu.edu/osg/{SERIES}/el{EL}/{REPO}/$basearch
-mirrorlist=http://repo-itb.grid.iu.edu/mirror/osg/{SERIES}/el{EL}/{REPO}/$basearch
+#baseurl=https://repo-itb.grid.iu.edu/osg/{SERIES}/el{EL}/{REPO}/$basearch
+mirrorlist=https://repo-itb.grid.iu.edu/mirror/osg/{SERIES}/el{EL}/{REPO}/$basearch
 failovermethod=priority
 priority=98
 enabled=0
