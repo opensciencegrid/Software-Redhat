@@ -1,11 +1,11 @@
 Name:           osg-release
 Version:        3.4
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        OSG Software for Enterprise Linux repository configuration
 
 Group:          System Environment/Base
 License:        GPL
-URL:            http://vdt.cs.wisc.edu/repos
+URL:            https://repo.opensciencegrid.org/
 
 # This is a OSG Software maintained package which is specific to
 # our distribution.  Thus the source is only available from
@@ -60,6 +60,9 @@ sed -i -e 's/gpgcheck=1/gpgcheck=0/' $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d/*
 
 
 %changelog
+* Fri Feb 08 2018 Brian Lin <blin@cs.wisc.edu> - 3.4-3
+- Change references from repo.grid.iu.edu to repo.opensciencegrid.org
+
 * Wed Sep 13 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.4-2
 - Generate goc repos as 'direct' (no mirror) (SOFTWARE-2890)
 
