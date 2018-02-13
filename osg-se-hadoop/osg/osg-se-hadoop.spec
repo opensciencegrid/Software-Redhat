@@ -26,7 +26,6 @@ Summary: Namenode meta-package for Hadoop
 Group: System Environment/Libraries
 Requires: hadoop-hdfs-namenode
 Requires: gratia-probe-hadoop-storage
-Requires: osg-version
 Requires: osg-system-profiler
 %description namenode
 This is the Hadoop namenode that stores directory and file system information
@@ -37,7 +36,6 @@ Summary: Secondary Namenode meta-package for Hadoop
 Group: System Environment/Libraries
 Requires: hadoop-hdfs-secondarynamenode
 Requires: gratia-probe-hadoop-storage
-Requires: osg-version
 Requires: osg-system-profiler
 %description secondarynamenode
 This is the Hadoop secondary namenode that stores directory and file system
@@ -47,7 +45,6 @@ information for a Hadoop Storage Element.
 Summary: Datanode meta-package for Hadoop
 Group: System Environment/Libraries
 Requires: hadoop-hdfs-datanode
-Requires: osg-version
 Requires: osg-system-profiler
 %description datanode
 This is the Hadoop datanode that stores file data for a Hadoop Storage Element.
@@ -56,7 +53,6 @@ This is the Hadoop datanode that stores file data for a Hadoop Storage Element.
 Summary: Client meta-package for Hadoop
 Group: System Environment/Libraries
 Requires: hadoop-hdfs-fuse
-Requires: osg-version
 Requires: osg-system-profiler
 %description client
 This is the Hadoop client that has client binaries and fuse mount.
@@ -66,7 +62,6 @@ Summary: Gridftp meta-package for Hadoop
 Group: System Environment/Libraries
 Requires: %{name}-client = %{version}-%{release}
 Requires: hadoop-hdfs-fuse
-Requires: osg-version
 Requires: osg-system-profiler
 Requires: edg-mkgridmap
 Requires: fetch-crl
@@ -92,7 +87,6 @@ This is a Globus GridFTP frontend for a Hadoop Storage Element.
 Summary: Datanode meta-package for Hadoop
 Group: System Environment/Libraries
 Requires: grid-certificates >= 7
-Requires: osg-version
 Requires: osg-system-profiler
 Requires: edg-mkgridmap
 Requires: fetch-crl
