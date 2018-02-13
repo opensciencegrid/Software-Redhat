@@ -9,7 +9,6 @@ URL:       http://www.opensciencegrid.org
 
 Source1: udt-%{name}.conf
 
-Requires: osg-version
 Requires: osg-system-profiler
 # 0.5.4-13 uses /etc/gridftp.d config dir
 Requires: gridftp-hdfs >= 0.5.4-16
