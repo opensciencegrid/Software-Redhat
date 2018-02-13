@@ -1,7 +1,7 @@
 Name:           osg-se-hadoop
 Summary:        OSG Hadoop Storage Element package for RPM distribution
 Version:        3.4
-Release:        1%{?dist}
+Release:        2%{?dist}
 License:        GPL
 Group:          System Environment/Daemons
 URL:            https://twiki.grid.iu.edu/twiki/bin/view/Storage/WebHome
@@ -128,6 +128,9 @@ install -m 0644 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/hadoop/conf.osg/
 %{_sysconfdir}/hadoop/conf.osg/
 
 %changelog
+* Tue Feb 13 2018 Suchandra Thapa <sthapa@ci.uchicago.edu> - 3.4-2
+- Remove osg-version requirement (SOFTWARE-3116)
+
 * Wed Nov 22 2017 Suchandra Thapa <sthapa@ci.uchicago.edu> - 3.4-1
 - Update for OSG 3.4 release
 
