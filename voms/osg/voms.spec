@@ -135,11 +135,11 @@ This package provides the VOMS service.
 %patch1 -p1
 %patch2 -p1
 
-./autogen.sh
-
 install -m 644 -p %{SOURCE1} README.Fedora
 
 %build
+./autogen.sh
+
 %configure --disable-static --enable-docs --disable-parser-gen
 
 make %{?_smp_mflags}
