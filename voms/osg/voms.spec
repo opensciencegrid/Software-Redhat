@@ -11,7 +11,7 @@
 
 Name:		voms
 Version:	2.0.14
-Release:	1.3%{?dist}
+Release:	1.4%{?dist}
 Summary:	Virtual Organization Membership Service
 
 Group:		System Environment/Libraries
@@ -41,6 +41,8 @@ Patch0: mariadb-innodb.patch
 # for all
 Patch1:         Make-RFC-proxies-by-default-SOFTWARE-2381.patch
 Patch2:         Validate-top-level-group-of-VOMS-attribute.patch
+Patch100:       voms-proxy-direct-1.patch
+Patch101:       voms-proxy-direct-2.patch
 
 %description
 The Virtual Organization Membership Service (VOMS) is an attribute authority
@@ -134,6 +136,8 @@ This package provides the VOMS service.
 
 %patch1 -p1
 %patch2 -p1
+%patch100 -p1
+%patch101 -p1
 
 install -m 644 -p %{SOURCE1} README.Fedora
 
@@ -332,6 +336,7 @@ fi
 %{_bindir}/voms-proxy-info2
 %{_bindir}/voms-proxy-init2
 %{_bindir}/voms-proxy-fake
+%{_bindir}/voms-proxy-direct
 %{_bindir}/voms-proxy-list
 %{_bindir}/voms-verify
 %ghost %{_bindir}/voms-proxy-destroy
@@ -341,6 +346,7 @@ fi
 %{_mandir}/man1/voms-proxy-info2.1*
 %{_mandir}/man1/voms-proxy-init2.1*
 %{_mandir}/man1/voms-proxy-fake.1*
+%{_mandir}/man1/voms-proxy-direct.1*
 %{_mandir}/man1/voms-proxy-list.1*
 %ghost %{_mandir}/man1/voms-proxy-destroy.1*
 %ghost %{_mandir}/man1/voms-proxy-info.1*
@@ -368,6 +374,9 @@ fi
 %doc README.Fedora
 
 %changelog
+* Tue Feb 13 2018 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.0.14-1.4
+- Add voms-proxy-direct (SOFTWARE-3123)
+
 * Mon Feb 20 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.0.14-1.3
 - Add Validate-top-level-group-of-VOMS-attribute.patch (SOFTWARE-2593)
 
