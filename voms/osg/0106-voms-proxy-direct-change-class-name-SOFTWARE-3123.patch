@@ -1,0 +1,268 @@
+From 429e2913114dd99f7797f9a5797fc52e15e609a8 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Wed, 14 Feb 2018 15:47:11 -0600
+Subject: [PATCH 106/108] voms-proxy-direct: change class name (SOFTWARE-3123)
+
+---
+ src/utils/vomsdirect.cc | 34 +++++++++++++++++-----------------
+ src/utils/vomsdirect.h  | 10 +++++-----
+ 2 files changed, 22 insertions(+), 22 deletions(-)
+
+diff --git a/src/utils/vomsdirect.cc b/src/utils/vomsdirect.cc
+index 6c9d894..a747d34 100644
+--- a/src/utils/vomsdirect.cc
++++ b/src/utils/vomsdirect.cc
+@@ -158,20 +158,20 @@ int main(int argc, char** argv)
+   if (setrlimit(RLIMIT_CORE, &newlimit) != 0)
+     exit(1);
+ 
+   if (AC_Init()) {
+     InitProxyCertInfoExtension(1);
+-    Fake v(argc, argv);
++    Direct v(argc, argv);
+     v.Run();
+ 
+     return 0;
+   }
+   return 1;
+ }
+ 
+ extern int yydebug;
+-Fake::Fake(int argc, char ** argv) :   confile(conf_file_name),
++Direct::Direct(int argc, char ** argv) :   confile(conf_file_name),
+                                        cacertfile(NULL), certdir(NULL),
+                                        certfile(NULL), keyfile(NULL),
+                                        outfile(NULL),
+                                        separate(""), uri(""),bits(-1),
+                                        hours(12), limit_proxy(false),
+@@ -434,11 +434,11 @@ Fake::Fake(int argc, char ** argv) :   confile(conf_file_name),
+     CleanAll();
+     exit(3);
+   }
+ }
+ 
+-void Fake::CleanAll()
++void Direct::CleanAll()
+ {
+   free(cacertfile);
+   free(certdir);
+   free(outfile);
+   free(certfile);
+@@ -451,16 +451,16 @@ void Fake::CleanAll()
+   ucert = NULL;
+   upkey = NULL;
+   cert_chain = NULL;
+ }
+ 
+-Fake::~Fake()
++Direct::~Direct()
+ {
+   CleanAll();
+ }
+ 
+-bool Fake::Run()
++bool Direct::Run()
+ {
+   /* set output file and environment */
+ 
+   char * oldenv = getenv("X509_USER_PROXY");
+ 
+@@ -562,11 +562,11 @@ static int parse_ga_value(char *ga, char **id, char **value, char **qual)
+   }
+ 
+   return 1;
+ }
+ 
+-bool Fake::CreateProxy(std::string data, AC ** aclist, int version)
++bool Direct::CreateProxy(std::string data, AC ** aclist, int version)
+ {
+   struct VOMSProxyArguments *args = VOMS_MakeProxyArguments();
+   int ret = -1;
+ 
+   if (args) {
+@@ -653,11 +653,11 @@ bool Fake::CreateProxy(std::string data, AC ** aclist, int version)
+   }
+ 
+   return ret == -1;
+ }
+ 
+-bool Fake::WriteSeparate()
++bool Direct::WriteSeparate()
+ {
+   if (aclist) {
+     BIO * out = BIO_new(BIO_s_file());
+     BIO_write_filename(out, (char *)separate.c_str());
+ 
+@@ -678,11 +678,11 @@ bool Fake::WriteSeparate()
+   }
+ 
+   return true;
+ }
+ 
+-void Fake::Test()
++void Direct::Test()
+ {
+   ASN1_UTCTIME * asn1_time = ASN1_UTCTIME_new();
+   X509_gmtime_adj(asn1_time, 0);
+   time_t time_now = ASN1_UTCTIME_mktime(asn1_time);
+   ASN1_UTCTIME_free(asn1_time);
+@@ -707,11 +707,11 @@ void Fake::Test()
+ 
+   Print(INFO) << "Your proxy is valid until "
+               << asctime(localtime(&time_after_proxy)) << std::endl << std::flush;
+ }
+ 
+-bool Fake::MakeACs(VOLIST *volist)
++bool Direct::MakeACs(VOLIST *volist)
+ {
+   AC **actmplist = NULL;
+   AC *ac = NULL;
+   int res = 0;
+   BIO *hcrt = BIO_new(BIO_s_file()),
+@@ -820,11 +820,11 @@ bool Fake::MakeACs(VOLIST *volist)
+   }
+ 
+   return true;
+ }
+ 
+-bool Fake::pcdInit() {
++bool Direct::pcdInit() {
+ 
+   int status = false;
+ 
+   ERR_load_prxyerr_strings(0);
+   SSLeay_add_ssl_algorithms();
+@@ -860,28 +860,28 @@ bool Fake::pcdInit() {
+     CleanAll();
+   return status;
+ 
+ }
+ 
+-void Fake::Error()
++void Direct::Error()
+ {
+   std::string output = OpenSSLError(debug);
+ 
+   if (debug)
+     Print(DEBUG) << output;
+   else
+     Print(ERROR) << output;
+ }
+ 
+ 
+-void Fake::exitError(const char *string)
++void Direct::exitError(const char *string)
+ {
+   Print(ERROR) << string << std::endl;
+   exit(1);
+ }
+ 
+-bool Fake::VerifyOptions()
++bool Direct::VerifyOptions()
+ {
+   if (debug) {
+     quiet = false;
+     yydebug = 1;
+   }
+@@ -992,11 +992,11 @@ struct nullstream: std::ostream {
+   nullstream(): std::ios(&m_sbuf), std::ostream(&m_sbuf) {}
+ };
+ 
+ nullstream voidstream;
+ 
+-std::ostream& Fake::Print(message_type type)
++std::ostream& Direct::Print(message_type type)
+ {
+   if (type == FORCED)
+     return std::cout;
+ 
+   if (type == ERROR)
+@@ -1068,11 +1068,11 @@ static long mystrtol(char *number, long int limit)
+     return -1;
+ 
+   return value;
+ }
+ 
+-STACK_OF(X509_EXTENSION) *Fake::create_and_add_extension(const std::string &string, STACK_OF(X509_EXTENSION) *exts)
++STACK_OF(X509_EXTENSION) *Direct::create_and_add_extension(const std::string &string, STACK_OF(X509_EXTENSION) *exts)
+ {
+   bool alloced = false;
+   X509_EXTENSION *ext = NULL;
+ 
+   if (!exts) {
+@@ -1122,11 +1122,11 @@ static std::string::size_type get_minimum(std::string::size_type s1,
+     minimum = s3;
+ 
+   return minimum;
+ }
+ 
+-X509_EXTENSION *Fake::create_extension(const std::string &string)
++X509_EXTENSION *Direct::create_extension(const std::string &string)
+ {
+   std::string::size_type colon_position = string.find_first_of(':');
+   std::string::size_type slash_position = string.find_first_of('/');
+   std::string::size_type gate_position = string.find_first_of('~');
+   std::string::size_type file_position = string.find_first_of('+');
+@@ -1209,11 +1209,11 @@ static std::string hextostring(const std::string &data)
+   delete[] newdata;
+ 
+   return value;
+ }
+ 
+-void Fake::PrintProxyCreationError(int error, void *additional)
++void Direct::PrintProxyCreationError(int error, void *additional)
+ {
+   char *msg = ProxyCreationError(error, additional);
+ 
+   if (msg) {
+     if (PROXY_ERROR_IS_WARNING(error))
+diff --git a/src/utils/vomsdirect.h b/src/utils/vomsdirect.h
+index 515c87a..f0dde73 100644
+--- a/src/utils/vomsdirect.h
++++ b/src/utils/vomsdirect.h
+@@ -21,12 +21,12 @@
+  * Parts of this code may be based upon or even include verbatim pieces,
+  * originally written by other people, in which case the original header
+  * follows.
+  *
+  *********************************************************************/
+-#ifndef VOMS_UTILS_VOMSFAKE_H
+-#define VOMS_UTILS_VOMSFAKE_H
++#ifndef VOMS_UTILS_VOMSDIRECT_H
++#define VOMS_UTILS_VOMSDIRECT_H
+ 
+ #include "config.h"
+ 
+ #include <string>
+ #include <vector>
+@@ -40,11 +40,11 @@ extern "C" {
+ #include "fakeparsertypes.h"
+ }
+ 
+ enum message_type {FORCED, INFO, WARN, ERROR, DEBUG};
+ 
+-class Fake {
++class Direct {
+ 
+  private:
+ 
+   std::string        program;
+ 
+@@ -109,12 +109,12 @@ class Fake {
+   bool newformat;
+   std::string newsubject;
+   std::string newissuer;
+  public:
+ 
+-  Fake(int argc, char** argv);
+-  ~Fake();
++  Direct(int argc, char** argv);
++  ~Direct();
+   bool Run();
+   std::vector<std::string> galist;
+  private:
+ 
+   bool CreateProxy(std::string filedata, AC ** aclist, int version);
+-- 
+2.6.3
+

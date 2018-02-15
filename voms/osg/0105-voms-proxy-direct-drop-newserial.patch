@@ -1,0 +1,122 @@
+From d19a66dbf9f25c0562f10e9d130c1b4efe75983e Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Wed, 14 Feb 2018 15:06:20 -0600
+Subject: [PATCH 105/105] voms-proxy-direct: drop -newserial
+
+---
+ doc/voms-proxy-direct.xml |  7 -------
+ src/utils/vomsdirect.cc   | 17 +----------------
+ 2 files changed, 1 insertion(+), 23 deletions(-)
+
+diff --git a/doc/voms-proxy-direct.xml b/doc/voms-proxy-direct.xml
+index 96beb21..1eb6eb8 100644
+--- a/doc/voms-proxy-direct.xml
++++ b/doc/voms-proxy-direct.xml
+@@ -129,17 +129,10 @@ The string that will be included in the AC as the granted FQAN.</para>
+ 
+ <para><option>-newformat</option></para>
+ <para>This forces the server to generate ACs in the new (correct) format.  This is meant
+ as a compatibility feature to ease migration while the servers upgrade to the new version.</para>
+ 
+-<para><option>-newserial</option> <replaceable>newserial</replaceable></para>
+-<para>The created proxy will have
+-  the <emphasis remap='I'>newserial</emphasis> as its serial number.
+-  The new serial number will have to be specified as an hex
+-  representation.  Any length is possible.  If this option is not
+-  specified, voms-proxy-direct will choose the serial number.</para>
+-
+ <para><option>-nscert</option> <replaceable>bit,...,bit</replaceable></para>
+ <para>The created proxy will have the specified bits in the Netscape
+   Certificate Extension.  Acceptable values
+   for <emphasis remap='I'>bit</emphasis> are: client, server, email,
+   objsign, sslCA, emailCA, objCA.  The default value is not to have
+diff --git a/src/utils/vomsdirect.cc b/src/utils/vomsdirect.cc
+index ef3d79f..6c9d894 100644
+--- a/src/utils/vomsdirect.cc
++++ b/src/utils/vomsdirect.cc
+@@ -185,12 +185,11 @@ Fake::Fake(int argc, char ** argv) :   confile(conf_file_name),
+                                        ucert(NULL), upkey(NULL), cert_chain(NULL),
+                                        aclist(NULL), voID(""),
+                                        hostcert(""), hostkey(""),
+                                        newformat(false),
+                                        rfc(false),
+-                                       keyusage(""), netscape(""), exkusage(""),
+-                                       newserial("")
++                                       keyusage(""), netscape(""), exkusage("")
+ {
+ 
+   bool progversion = false;
+   std::string crtdir;
+   std::string crtfile;
+@@ -252,13 +251,10 @@ Fake::Fake(int argc, char ** argv) :   confile(conf_file_name),
+     "    -extkeyusage <bit<,bit<..>>>   Specifies the bits to put in the extended key usage\n"\
+     "                                   field.  Allowed values: serverAuth,clientAuth,\n"\
+     "                                   codeSigning,emailProtection,timeStamping,msCodeInd,\n"\
+     "                                   msCodeCom,msCTLSign,msSGC,msEFS,nsSGC,deltaCRL\n"\
+     "                                   CRLReason,invalidityDate,SXNetID,OCSPSigning.\n"\
+-    "    -newserial <num>               Specifies the serial number of the generated proxy\n"\
+-    "                                   in hex notation.  Any length is possible.\n"\
+-    "                                   Default: let voms-proxy-direct choose.\n"\
+     "    -extension <OID</crit><value>> Add Extension with the specified OID and with the specified value\n"\
+     "    -acextension <OID</crit><value>> Add Extension to the AC with the specified OID and with the specified value\n"\
+     "    -ga <id>=<value> [(context)]   Set a GA with name 'id', value 'value' and optional context.\n"\
+     "\n";
+ 
+@@ -304,11 +300,10 @@ Fake::Fake(int argc, char ** argv) :   confile(conf_file_name),
+     {"newformat",       1, (int *)&newformat,   OPT_BOOL},
+     {"voinfo",          1, (int *)&voinfo,      OPT_STRING},
+     {"keyusage",        1, (int *)&keyusage,    OPT_STRING},
+     {"nscert",          1, (int *)&netscape,    OPT_STRING},
+     {"extkeyusage",     1, (int *)&exkusage,    OPT_STRING},
+-    {"newserial",       1, (int *)&newserial,   OPT_STRING},
+     {"extension",       1, (int *)&extensions,  OPT_MULTI},
+     {"acextension",     1, (int *)&acextensions,OPT_MULTI},
+     {"ga",              1, (int *)&galist,      OPT_MULTI},
+ #ifdef CLASS_ADD
+     {"classadd",        1, (int *)class_add_buf,OPT_STRING},
+@@ -607,13 +602,10 @@ bool Fake::CreateProxy(std::string data, AC ** aclist, int version)
+       args->netscape      = strdup(netscape.c_str());
+ 
+     if (!exkusage.empty())
+       args->exkusage      = strdup(exkusage.c_str());
+ 
+-    if (!newserial.empty())
+-      args->newserial = strdup(newserial.c_str());
+-
+     args->selfsigned = 0;
+ 
+     /* Read through extensions */
+     std::vector<std::string>::const_iterator end = extensions.end();
+     for (std::vector<std::string>::const_iterator i = extensions.begin();
+@@ -629,11 +621,10 @@ bool Fake::CreateProxy(std::string data, AC ** aclist, int version)
+     PrintProxyCreationError(warn, additional);
+ 
+     free(args->voID);
+     free(args->proxyfilename);
+     free(args->filename);
+-    free(args->newserial);
+     free(args->policyfile);
+     free(args->policylang);
+     free(args->keyusage);
+     free(args->netscape);
+     free(args->exkusage);
+@@ -989,16 +980,10 @@ bool Fake::VerifyOptions()
+       if (vo->vomslife < 0)
+         exitError("Error: Duration of AC must be positive.");
+     }
+   }
+ 
+-  /* newserial option */
+-  if (!newserial.empty())
+-    for (unsigned int i = 0; i < newserial.length(); i++)
+-      if (!isxdigit(newserial[i]))
+-        exitError("Error: Serial number should be an hexadecimal string.");
+-
+   return true;
+ }
+ 
+ struct nullstream: std::ostream {
+   struct nullbuf: std::streambuf {
+-- 
+2.6.3
+

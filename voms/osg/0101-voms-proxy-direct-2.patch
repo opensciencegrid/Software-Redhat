@@ -1,15 +1,15 @@
-From 58848757556482d330ddf9d74b5f6e3b3261e875 Mon Sep 17 00:00:00 2001
+From c77591fd0cd9025688271a1c51616cf4ba4656c2 Mon Sep 17 00:00:00 2001
 From: Matyas Selmeci <matyas@cs.wisc.edu>
 Date: Tue, 13 Feb 2018 20:53:47 -0600
-Subject: [PATCH] voms-proxy-direct-2
+Subject: [PATCH 101/105] voms-proxy-direct-2
 
 Modify voms-proxy-fake-based files to create and build voms-proxy-direct and docs
 ---
  doc/Makefile.am           | 12 ++++++++----
  doc/voms-proxy-direct.xml | 27 ++++++++++++++++-----------
  src/utils/Makefile.am     | 15 +++++++++++++++
- src/utils/vomsdirect.cc   | 18 +++++++++---------
- 4 files changed, 48 insertions(+), 24 deletions(-)
+ src/utils/vomsdirect.cc   | 20 ++++++++++----------
+ 4 files changed, 49 insertions(+), 25 deletions(-)
 
 diff --git a/doc/Makefile.am b/doc/Makefile.am
 index 9f29c3a..120f046 100644
@@ -64,7 +64,7 @@ index 9f29c3a..120f046 100644
  if !BUILD_SERVER
  if !BUILD_CLIENTS
 diff --git a/doc/voms-proxy-direct.xml b/doc/voms-proxy-direct.xml
-index d6e51a3..8b22910 100644
+index 4479c11..3f22127 100644
 --- a/doc/voms-proxy-direct.xml
 +++ b/doc/voms-proxy-direct.xml
 @@ -5,33 +5,38 @@
@@ -120,7 +120,7 @@ index d6e51a3..8b22910 100644
  Location of new proxy cert</para>
  
 -<para><option>-voms</option> <replaceable>voms[:command]</replaceable>
--Specifies the fake VOMS server that will appear in the attribute certificate.  
+-Specifies the fake VOMS server that will appear in the attribute certificate.
 -command is ignored and is present for compatibility with voms-proxy-init.</para>
 +<para><option>-voms</option> <replaceable>voms</replaceable>
 +Specifies the VO name that will appear in the certificate's attributes.
@@ -144,7 +144,7 @@ index d6e51a3..8b22910 100644
  The created AC will have its validity start in the past, as specified
  by <emphasis remap='I'>timespec</emphasis>.</para>
 diff --git a/src/utils/Makefile.am b/src/utils/Makefile.am
-index 5c6ff51..d46b0bb 100644
+index 5c6ff51..d68b8b9 100644
 --- a/src/utils/Makefile.am
 +++ b/src/utils/Makefile.am
 @@ -1,9 +1,10 @@
@@ -165,7 +165,7 @@ index 5c6ff51..d46b0bb 100644
  	lex.yy.c 
  
 +voms_proxy_direct_SOURCES = \
-+	vomsfake.h \
++	vomsdirect.h \
 +	vomsdirect.cc \
 +	vomsparser.c \
 +	lex.yy.c
@@ -197,9 +197,22 @@ index 5c6ff51..d46b0bb 100644
  	-I$(top_srcdir)/src/sslutils \
  	$(NO_GLOBUS_FLAGS)
 diff --git a/src/utils/vomsdirect.cc b/src/utils/vomsdirect.cc
-index b98f56b..30873f4 100644
+index 87cce48..b89b819 100644
 --- a/src/utils/vomsdirect.cc
 +++ b/src/utils/vomsdirect.cc
+@@ -71,11 +71,11 @@ extern int yyparse();
+ extern FILE *yyin;
+ }
+ 
+ #include <voms_api.h>
+ 
+-#include "vomsfake.h"
++#include "vomsdirect.h"
+ #include "ccwrite.h"
+ 
+ extern "C" {
+ 
+ #include "myproxycertinfo.h"
 @@ -93,11 +93,11 @@ static int parse_ga_value(char *ga, char **id, char **value, char **qual);
  
  extern int AC_Init();
@@ -234,7 +247,7 @@ index b98f56b..30873f4 100644
 +    "    -path-length <l>               Allow a chain of at most l proxies to be generated from this one.\n" \
      "    -globus                        Globus version.\n" \
      "    -proxyver <n>                  Version of proxy certificate.\n" \
--    "    -rfc                           Create RFC-conforming proxies (synonim of --proxyver 4)\n"             
+-    "    -rfc                           Create RFC-conforming proxies (synonim of --proxyver 4)\n"
 +    "    -rfc                           Create RFC-conforming proxies (synonym of --proxyver 4)\n"
      "    -noregen                       Doesn't regenerate a new proxy for the connection.\n" \
 -    "    -separate <file>               Saves the informations returned by the server on file <file>.\n" \
@@ -262,5 +275,5 @@ index b98f56b..30873f4 100644
      "    -ga <id>=<value> [(context)]   Set a GA with name 'id', value 'value' and optional context.\n"\
      "\n";
 -- 
-2.14.3
+2.6.3
 

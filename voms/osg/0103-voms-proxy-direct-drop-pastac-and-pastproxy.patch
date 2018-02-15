@@ -1,0 +1,172 @@
+From da63f248d701258322b28b51a9704588219b85c0 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Wed, 14 Feb 2018 14:32:33 -0600
+Subject: [PATCH 103/105] voms-proxy-direct: drop -pastac and -pastproxy
+
+---
+ doc/voms-proxy-direct.xml | 19 -------------------
+ src/utils/vomsdirect.cc   | 27 ++++-----------------------
+ 2 files changed, 4 insertions(+), 42 deletions(-)
+
+diff --git a/doc/voms-proxy-direct.xml b/doc/voms-proxy-direct.xml
+index 8df6e16..f05a5f6 100644
+--- a/doc/voms-proxy-direct.xml
++++ b/doc/voms-proxy-direct.xml
+@@ -136,29 +136,10 @@ as a compatibility feature to ease migration while the servers upgrade to the ne
+   the <emphasis remap='I'>newserial</emphasis> as its serial number.
+   The new serial number will have to be specified as an hex
+   representation.  Any length is possible.  If this option is not
+   specified, voms-proxy-direct will choose the serial number.</para>
+ 
+-<para><option>-pastac</option> <replaceable>timespec</replaceable></para>
+-<para>
+-The created AC will have its validity start in the past, as specified
+-by <emphasis remap='I'>timespec</emphasis>.</para>
+-
+-<para>The format
+-of <emphasis remap='I'>timespec</emphasis> is one
+-of: <emphasis remap='I'>seconds</emphasis>, <emphasis remap='I'>hours:minutes</emphasis>,
+-<emphasis remap='I'>hours:minutes:seconds</emphasis></para>
+-
+-<para><option>-pastproxy</option> <replaceable>timespec</replaceable></para>
+-<para>The created proxy will have its validity start in the past as
+-  specified by <emphasis remap='I'>timespec</emphasis></para>
+-
+-<para>The format
+-of <emphasis remap='I'>timespec</emphasis> is one
+-of: <emphasis remap='I'>seconds</emphasis>, <emphasis remap='I'>hours:minutes</emphasis>,
+-<emphasis remap='I'>hours:minutes:seconds</emphasis></para>
+-
+ <para><option>-nscert</option> <replaceable>bit,...,bit</replaceable></para>
+ <para>The created proxy will have the specified bits in the Netscape
+   Certificate Extension.  Acceptable values
+   for <emphasis remap='I'>bit</emphasis> are: client, server, email,
+   objsign, sslCA, emailCA, objCA.  The default value is not to have
+diff --git a/src/utils/vomsdirect.cc b/src/utils/vomsdirect.cc
+index 64c78c6..1575c9f 100644
+--- a/src/utils/vomsdirect.cc
++++ b/src/utils/vomsdirect.cc
+@@ -184,11 +184,11 @@ Fake::Fake(int argc, char ** argv) :   confile(conf_file_name),
+ #endif
+                                        ucert(NULL), upkey(NULL), cert_chain(NULL),
+                                        aclist(NULL), voID(""),
+                                        hostcert(""), hostkey(""),
+                                        newformat(false),
+-                                       rfc(false), pastac("0"), pastproxy("0"),
++                                       rfc(false),
+                                        keyusage(""), netscape(""), exkusage(""),
+                                        newserial(""), selfsigned(false)
+ {
+ 
+   bool progversion = false;
+@@ -240,14 +240,10 @@ Fake::Fake(int argc, char ** argv) :   confile(conf_file_name),
+     "    -separate <file>               Saves the information returned by the server into file <file>.\n" \
+     "    -hostcert <file>               Host certificate used for signing the attributes.\n" \
+     "    -hostkey <file>                Host private key used for signing the attributes.\n" \
+     "    -fqan <string>                 String to include in the AC as the granted FQAN.\n" \
+     "    -newformat                     Creates ACs according to the new format.\n" \
+-    "    -pastac <seconds>\n"
+-    "    -pastac <hour:minutes>         Start the validity of the AC in the past,\n"\
+-    "    -pastproxy <seconds>\n"
+-    "    -pastproxy <hour:minutes>      Start the validity of the proxy in the past,\n"\
+     "    -keyusage <bit<,bit<..>>>      Specifies the bits to put in the keyusage field.\n"\
+     "                                   Allowed values: digitalSignature,nonRepudiation,\n"\
+     "                                   keyEncipherment,dataEncipherment,keyAgreement,\n"\
+     "                                   keyCertSign,cRLSign,encipherOnly,decipherOnly.\n"\
+     "    -nscert <bit<,bit<..>>>        Specifies the bits to put in the Netscape Certificate\n"\
+@@ -306,12 +302,10 @@ Fake::Fake(int argc, char ** argv) :   confile(conf_file_name),
+     {"hostcert",        1, (int *)&hostcert,    OPT_STRING},
+     {"hostkey",         1, (int *)&hostkey,     OPT_STRING},
+     {"fqan",            1, (int *)&fqans,       OPT_MULTI},
+     {"newformat",       1, (int *)&newformat,   OPT_BOOL},
+     {"voinfo",          1, (int *)&voinfo,      OPT_STRING},
+-    {"pastac",          1, (int *)&pastac,      OPT_STRING},
+-    {"pastproxy",       1, (int *)&pastproxy,   OPT_STRING},
+     {"keyusage",        1, (int *)&keyusage,    OPT_STRING},
+     {"nscert",          1, (int *)&netscape,    OPT_STRING},
+     {"extkeyusage",     1, (int *)&exkusage,    OPT_STRING},
+     {"newserial",       1, (int *)&newserial,   OPT_STRING},
+     {"extension",       1, (int *)&extensions,  OPT_MULTI},
+@@ -380,11 +374,11 @@ Fake::Fake(int argc, char ** argv) :   confile(conf_file_name),
+     voelem->hostcert = (char*)hostcert.c_str();
+     voelem->hostkey = (char*)hostkey.c_str();
+     voelem->uri = (char*)uri.c_str();
+     voelem->voname = strdup(voms.c_str());
+     voelem->vomslife = vomslife;
+-    voelem->pastac = strdup(pastac.c_str());
++    voelem->pastac = NULL;
+ 
+     voelem->fqans = (char **)malloc(sizeof(char*)*(fqans.size()+1));
+     for (unsigned int i  = 0; i < fqans.size(); i++)
+       voelem->fqans[i] = (char*)strdup((fqans[i].c_str()));
+     voelem->fqans[fqans.size()] = NULL;
+@@ -604,26 +598,21 @@ bool Fake::CreateProxy(std::string data, AC ** aclist, int version)
+     args->hours         = hours;
+     args->minutes       = 0;
+     args->limited       = limit_proxy;
+     args->voID          = strdup(voID.c_str());
+     args->callback      = (int (*)())kpcallback;
+-    args->pastproxy     = time_to_sec(pastproxy);
++    args->pastproxy     = NULL;
+ 
+     if (!keyusage.empty())
+       args->keyusage      = strdup(keyusage.c_str());
+ 
+     if (!netscape.empty())
+       args->netscape      = strdup(netscape.c_str());
+ 
+     if (!exkusage.empty())
+       args->exkusage      = strdup(exkusage.c_str());
+ 
+-    if (args->pastproxy == -1) {
+-      Print(ERROR) << "Minutes and seconds should be < 59 and >= 0" << std::endl;
+-      exit(1);
+-    }
+-
+     if (!newserial.empty())
+       args->newserial = strdup(newserial.c_str());
+ 
+     args->selfsigned = (selfsigned ? 1 : 0);
+ 
+@@ -766,37 +755,29 @@ bool Fake::MakeACs(VOLIST *volist)
+ 
+           // The following two lines allow the creation of an AC
+           // without any FQAN.
+           char *vector[1] = {NULL };
+           char **fqanlist = vo->fqans ? vo->fqans : vector;
+-          int seconds = vo->pastac ? time_to_sec(vo->pastac) : 0;
+-
+-          if (seconds == -1) {
+-            Print(ERROR) << "Minutes and seconds for VO: " << vo->voname <<
+-              " should be < 59 and >= 0" << std::endl;
+-            exit(1);
+-          }
+ 
+           /* Now do extensions */
+           STACK_OF(X509_EXTENSION) *exts = NULL;
+ 
+           for (int i = 0; i < vo->extsize; i++)
+             exts = create_and_add_extension(std::string(vo->extensions[i]), exts);
+ 
+           if (ac)
+             res = writeac(hcert, NULL, holder, hkey, (BIGNUM *)(BN_value_one()), fqanlist,
+                           vo->targets, attributes, &ac, vo->voname, vo->uri, vo->vomslife * 3600, !newformat,
+-                          seconds, exts);
++                          0, exts);
+ 
+           if (vo->fqans)
+             listfree(vo->fqans, (freefn)free);
+           if (attributes)
+             listfree(attributes, (freefn)free);
+ 
+           sk_X509_EXTENSION_pop_free(exts, X509_EXTENSION_free);
+           free(vo->voname);
+-          free(vo->pastac);
+ 
+         }
+       }
+       else {
+         if (hcertres <= 0) {
+-- 
+2.6.3
+
