@@ -1,6 +1,6 @@
 Name:           vo-client
 Version:        77
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Contains vomses file for use with user authentication and edg-mkgridmap.conf file that contains configuration information for edg-mkgridmap.
 
 Group:          System Environment/Base
@@ -34,6 +34,7 @@ Provides:       osg-edg-mkgridmap-config = %{version}-%{release}
 %package lcmaps-voms
 Summary:        Provides a voms-mapfile-default file, mapping VOMS FQANs to Unix users suitable for use by the LCMAPS VOMS plugin
 Group:          system environment/base
+Requires:       %{name} = %{version}-%{release}
 
 %description lcmaps-voms
 %{summary}
@@ -92,6 +93,9 @@ chmod 600 $RPM_BUILD_ROOT/%{_sysconfdir}/gums/gums.config.template
 %attr(0600,tomcat,tomcat) %config(noreplace) %{_sysconfdir}/gums/gums.config.template
 
 %changelog
+* Fri Feb 16 2018 Carl Edquist <edquist@cs.wisc.edu> - 77-2
+- Add dependency for lcmaps-voms on the main vo-client package (SOFTWARE-3137)
+
 * Mon Dec 04 2017 Carl Edquist <edquist@cs.wisc.edu> - 77-1
 - Update to vo-client 77
   - Remove voms1.egee.cesnet.cz (auger) VOMS server (SOFTWARE-3042)
