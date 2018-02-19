@@ -4,7 +4,7 @@ Version:        3.4
 Release:        2%{?dist}
 License:        GPL
 Group:          System Environment/Daemons
-URL:            https://twiki.grid.iu.edu/twiki/bin/view/Storage/WebHome
+URL:            https://opensciencegrid.github.io/docs/data/xrootd-overview/
 
 # from VDT
 Requires: osg-system-profiler
@@ -14,11 +14,7 @@ Requires: globus-gridftp-server-progs
 Requires: vo-client
 Requires: grid-certificates >= 7
 Requires: gratia-probe-gridftp-transfer
-%ifarch %{ix86}
-Requires: liblcas_lcmaps_gt4_mapping.so.0
-%else
 Requires: liblcas_lcmaps_gt4_mapping.so.0()(64bit)
-%endif
 
 #Xrootd stuff
 Requires: xrootd-dsi
@@ -28,8 +24,8 @@ Requires: gratia-probe-xrootd-storage
 
 
 %description
-This is a meta-package for the BeStMan (Berkeley Storage Manager)
-with underlying xrootd storage element using fuse/dsi module.
+This is a meta-package for GridFTP with the underlying XRootD storage element
+using the FUSE/DSI module.
 
 %install
 
