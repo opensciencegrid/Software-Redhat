@@ -20,14 +20,14 @@
 %endif
 
 #define _alphatag rc1
-%define _release 1
+%define _release 2
 
 # e.g. '-rc3' or blank
 %define _alphasuffix %{?_alphatag:-%{_alphatag}}
 
 Name:		xrootd
 Epoch:		1
-Version:	4.8.1
+Version:	4.8.0
 Release:        %{?_alphatag:0.}%{_release}%{?_alphatag:.%{_alphatag}}%{?dist}
 Summary:	Extended ROOT file server
 
@@ -686,6 +686,9 @@ fi
 %doc %{_pkgdocdir}
 
 %changelog
+* Tue Feb 20 2018 Marian Zvada <marian.zvada@cern.ch> - 1:4.8.0-2
+- backport fix to OSG33 for tmpfile creation according to SOFTWARE-3114
+
 * Thu Feb 01 2018 Marian Zvada <marian.zvada@cern.ch> - 1:4.8.1-1
 - Update to 4.8.1 (SOFTWARE-3104)
 - tmpfile creation fix for RHEL7 (SOFTWARE-3114)
