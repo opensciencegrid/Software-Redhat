@@ -1,5 +1,5 @@
 Name:      rsv-perfsonar
-Version:   1.5.1
+Version:   1.6.2
 Release:   1%{?dist}
 Summary:   RSV Metrics to monitor pefsonar
 Packager:  OSG-Software
@@ -76,6 +76,10 @@ pip install pika
 
 
 %changelog
+* Tue Feb 20 2018 <efajardo@physics.ucsd.edu> 1.6.2-1
+- Fix on gathering the data no more than MaxStart
+- Added metadata tags to the RabbitMq messages
+
 * Tue Dec 5 2017 <efajardo@physics.ucsd.edu> 1.5.1-1
 - Improvements for the RabbitMQ probe
 - Fixes some bugs on detecting message size
