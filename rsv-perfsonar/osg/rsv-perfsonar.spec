@@ -1,5 +1,5 @@
 Name:      rsv-perfsonar
-Version:   1.4.2
+Version:   1.6.2
 Release:   1%{?dist}
 Summary:   RSV Metrics to monitor pefsonar
 Packager:  OSG-Software
@@ -9,6 +9,7 @@ URL:       https://twiki.grid.iu.edu/bin/view/MonitoringInformation/RSV
 
 Source0:   %{name}-%{version}.tar.gz
 
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch: noarch
 
 Requires: rsv
@@ -21,6 +22,12 @@ Requires: python-simplevisor
 Requires(preun): initscripts
 
 
+%if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
+Requires: python-simplejson
+%{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
+%{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
+%endif
+
 %description
 %{summary}
 
@@ -30,8 +37,12 @@ Requires(preun): initscripts
 %setup -n %{name}-%{version}
 
 %install
+rm -fr $RPM_BUILD_ROOT
 
 make install DESTDIR=$RPM_BUILD_ROOT
+
+%clean
+rm -rf $RPM_BUILD_ROOT
 
 %files
 %doc README
@@ -65,6 +76,15 @@ pip install pika
 
 
 %changelog
+* Tue Feb 20 2018 <efajardo@physics.ucsd.edu> 1.6.2-1
+- Fix on gathering the data no more than MaxStart
+- Added metadata tags to the RabbitMq messages
+
+* Tue Dec 5 2017 <efajardo@physics.ucsd.edu> 1.5.1-1
+- Improvements for the RabbitMQ probe
+- Fixes some bugs on detecting message size
+- Gather data in one hour chunks from perfsonar hosts
+
 * Thu May 25 2017 <efajardo@physics.ucsd.edu> 1.4.2-1
 - Fixed a bug that may disable all probes when only running one of them
 
