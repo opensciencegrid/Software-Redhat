@@ -1,4 +1,5 @@
 # 
+# Copyright (c) 2017-2018, SyLabs, Inc. All rights reserved.
 # Copyright (c) 2017, SingularityWare, LLC. All rights reserved.
 #
 # Copyright (c) 2015-2017, Gregory M. Kurtzer. All rights reserved.
@@ -25,7 +26,7 @@
 
 Summary: Application and environment virtualization
 Name: singularity
-Version: 2.4.2
+Version: 2.4.3
 Release: %{_rel}%{?dist}
 # https://spdx.org/licenses/BSD-3-Clause-LBNL.html
 License: BSD-3-Clause-LBNL
@@ -34,6 +35,7 @@ URL: http://singularity.lbl.gov/
 Source: %{name}-%{version}.tar.gz
 ExclusiveOS: linux
 BuildRequires: python
+BuildRequires: libarchive-devel
 %if "%{_target_vendor}" == "suse"
 Requires: squashfs
 %else
@@ -96,9 +98,7 @@ rm -f $RPM_BUILD_ROOT/%{_libdir}/singularity/lib*.la
 %{_libexecdir}/singularity/cli/mount.*
 %{_libexecdir}/singularity/cli/pull.*
 %{_libexecdir}/singularity/cli/selftest.*
-%{_libexecdir}/singularity/handlers
 %{_libexecdir}/singularity/helpers
-%{_libexecdir}/singularity/image-handler.sh
 %{_libexecdir}/singularity/python
 
 # Binaries
@@ -108,6 +108,7 @@ rm -f $RPM_BUILD_ROOT/%{_libdir}/singularity/lib*.la
 %{_libexecdir}/singularity/bin/mount
 %{_libexecdir}/singularity/bin/image-type
 %{_libexecdir}/singularity/bin/prepheader
+%{_libexecdir}/singularity/bin/docker-extract
 
 # Directories
 %{_libexecdir}/singularity/bootstrap-scripts
@@ -135,7 +136,10 @@ rm -f $RPM_BUILD_ROOT/%{_libdir}/singularity/lib*.la
 %{_libexecdir}/singularity/cli/test.*
 %{_libexecdir}/singularity/bin/action
 %{_libexecdir}/singularity/bin/start
+%{_libexecdir}/singularity/bin/docker-extract
 %{_libexecdir}/singularity/functions
+%{_libexecdir}/singularity/handlers
+%{_libexecdir}/singularity/image-handler.sh
 %dir %{_sysconfdir}/singularity
 %config(noreplace) %{_sysconfdir}/singularity/*
 %{_mandir}/man1/singularity.1*
@@ -154,5 +158,32 @@ rm -f $RPM_BUILD_ROOT/%{_libdir}/singularity/lib*.la
 
 
 %changelog
+* Tue Mar 06 2018 Dave Dykstra <dwd@fnal.gov> - 2.4.3
+- Package for OSG.  No changes other than this log entry.
+- Restore log entries from previous releases
+
 * Tue Dec 05 2017 Dave Dykstra <dwd@fnal.gov> - 2.4.2
 - Package for OSG.  No changes other than this log entry.
+
+* Wed Nov 22 2017 Dave Dykstra <dwd@fnal.gov> - 2.4.1
+ - Package for OSG.  No changes other than this log entry.
+
+* Thu Oct 12 2017 Dave Dykstra <dwd@fnal.gov> - 2.4
+ - Package for OSG.  No changes other than this log entry.
+
+* Tue Sep 5 2017 Edgar Fajardo <emfajard@ucsd.edu> 2.3.1-0.1.4
+- Added pathc for singularity on el6.
+
+* Tue Aug 2 2017 Edgar Fajardo <emfajard@ucsd.edu> 2.3.1-0.1.3
+- Split the package bit into the runtime and main (SOFTWARE-2755)
+- Update to upstream's singularity-2.3.1-0.1 singularity.spec
+
+* Thu Jun  1 2017 Dave Dykstra <dwd@fnal.gov> - 2.3-0.1
+- Update to upstream's singularity-2.3-0.1 singularity.spec
+
+* Tue Feb 14 2017 Derek Weitzel <dweitzel@cse.unl.edu> - 2.2.1-1
+- Packaging bug release version of Singularity 2.2.1
+
+* Thu Nov 10 2016 Derek Weitzel <dweitzel@cse.unl.edu> - 2.2-1
+- First packaging of Singularity 2.2 for OSG
+
