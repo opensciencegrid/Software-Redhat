@@ -1,7 +1,7 @@
 Name:           osg-se-hadoop
 Summary:        OSG Hadoop Storage Element package for RPM distribution
 Version:        3.4
-Release:        3%{?dist}
+Release:        4%{?dist}
 License:        GPL
 Group:          System Environment/Daemons
 URL:            https://twiki.grid.iu.edu/twiki/bin/view/Storage/WebHome
@@ -13,7 +13,6 @@ Requires: %{name}-secondarynamenode = %{version}-%{release}
 Requires: %{name}-datanode = %{version}-%{release}
 Requires: %{name}-client = %{version}-%{release}
 Requires: %{name}-gridftp = %{version}-%{release}
-Obsoletes: %{name}-srm < %{version}
 
 %description
 This is a meta-package for Hadoop Storage Element. By default, it will
@@ -26,7 +25,6 @@ Summary: Namenode meta-package for Hadoop
 Group: System Environment/Libraries
 Requires: hadoop-hdfs-namenode
 Requires: gratia-probe-hadoop-storage
-Requires: osg-version
 Requires: osg-system-profiler
 %description namenode
 This is the Hadoop namenode that stores directory and file system information
@@ -37,7 +35,6 @@ Summary: Secondary Namenode meta-package for Hadoop
 Group: System Environment/Libraries
 Requires: hadoop-hdfs-secondarynamenode
 Requires: gratia-probe-hadoop-storage
-Requires: osg-version
 Requires: osg-system-profiler
 %description secondarynamenode
 This is the Hadoop secondary namenode that stores directory and file system
@@ -47,7 +44,6 @@ information for a Hadoop Storage Element.
 Summary: Datanode meta-package for Hadoop
 Group: System Environment/Libraries
 Requires: hadoop-hdfs-datanode
-Requires: osg-version
 Requires: osg-system-profiler
 %description datanode
 This is the Hadoop datanode that stores file data for a Hadoop Storage Element.
@@ -56,7 +52,6 @@ This is the Hadoop datanode that stores file data for a Hadoop Storage Element.
 Summary: Client meta-package for Hadoop
 Group: System Environment/Libraries
 Requires: hadoop-hdfs-fuse
-Requires: osg-version
 Requires: osg-system-profiler
 %description client
 This is the Hadoop client that has client binaries and fuse mount.
@@ -66,7 +61,6 @@ Summary: Gridftp meta-package for Hadoop
 Group: System Environment/Libraries
 Requires: %{name}-client = %{version}-%{release}
 Requires: hadoop-hdfs-fuse
-Requires: osg-version
 Requires: osg-system-profiler
 Requires: edg-mkgridmap
 Requires: fetch-crl
@@ -74,9 +68,6 @@ Requires: fetch-crl
 Requires: osg-gridftp-hdfs >= 3.0.0-7
 Requires: globus-gridftp-server-progs
 Requires: gratia-probe-gridftp-transfer
-%if 0%{?rhel} < 7
-Requires: gums-client
-%endif
 Requires: vo-client
 %ifarch %{ix86}
 Requires: liblcas_lcmaps_gt4_mapping.so.0
@@ -113,6 +104,10 @@ install -m 0644 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/hadoop/conf.osg/
 %{_sysconfdir}/hadoop/conf.osg/
 
 %changelog
+* Tue Mar 6 2018 Suchandra Thapa <sthapa@ci.uchicago.edu> - 3.4-4
+- Remove srm and gums references (SOFTWARE-3138)
+- Remove osg-version requirement (SOFTWARE-3116)
+
 * Wed Jan 17 2018 Carl Edquist <edquist@cs.wisc.edu> - 3.4-3
 - Drop & obsolete srm metapackage - bestman2 is gone in OSG 3.4 (SOFTWARE-2985)
 
