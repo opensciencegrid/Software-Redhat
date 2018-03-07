@@ -1,7 +1,7 @@
 Name:      osg-gridftp
 Summary:   Standalone OSG GridFTP with LCMAPS VOMS support
 Version:   3.4
-Release:   6%{?dist}
+Release:   7%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -38,6 +38,7 @@ Summary: OSG GridFTP XRootD Storage Element package
 Requires: %{name} = %{version}-%{release}
 Requires: xrootd-dsi
 Requires: xrootd-fuse >= 1:4.1.0
+Requires: gratia-probe-xrootd-transfer >= 1.17.0-1
 Requires: gratia-probe-xrootd-storage
 
 %description xrootd
@@ -59,6 +60,10 @@ install -m 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/gridftp.d/
 
 
 %changelog
+* Wed Mar 07 2018 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.4-7
+- Add mistakenly dropped gratia-probe-xrootd-transfer requirement to
+  osg-gridftp-xrootd (SOFTWARE-3141)
+
 * Mon Feb 19 2018 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.4-6
 - Combine packaging with osg-gridftp-xrootd (SOFTWARE-3141)
 
