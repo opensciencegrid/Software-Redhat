@@ -26,7 +26,7 @@
 
 Summary: Application and environment virtualization
 Name: singularity
-Version: 2.4.3
+Version: 2.4.4
 Release: %{_rel}%{?dist}
 # https://spdx.org/licenses/BSD-3-Clause-LBNL.html
 License: BSD-3-Clause-LBNL
@@ -34,8 +34,8 @@ Group: System Environment/Base
 URL: http://singularity.lbl.gov/
 Source: %{name}-%{version}.tar.gz
 ExclusiveOS: linux
+BuildRoot: %{?_tmppath}%{!?_tmppath:/var/tmp}/%{name}-%{version}-%{release}-root
 BuildRequires: python
-BuildRequires: libarchive-devel
 %if "%{_target_vendor}" == "suse"
 Requires: squashfs
 %else
@@ -83,6 +83,9 @@ rm -f $RPM_BUILD_ROOT/%{_libdir}/singularity/lib*.la
 %post runtime -p /sbin/ldconfig
 %postun runtime -p /sbin/ldconfig
 
+%clean
+rm -rf $RPM_BUILD_ROOT
+
 %files
 %doc examples CONTRIBUTORS.md CONTRIBUTING.md COPYRIGHT.md INSTALL.md LICENSE-LBNL.md LICENSE.md README.md
 %attr(0755, root, root) %dir %{_sysconfdir}/singularity
@@ -108,7 +111,6 @@ rm -f $RPM_BUILD_ROOT/%{_libdir}/singularity/lib*.la
 %{_libexecdir}/singularity/bin/mount
 %{_libexecdir}/singularity/bin/image-type
 %{_libexecdir}/singularity/bin/prepheader
-%{_libexecdir}/singularity/bin/docker-extract
 
 # Directories
 %{_libexecdir}/singularity/bootstrap-scripts
@@ -136,7 +138,6 @@ rm -f $RPM_BUILD_ROOT/%{_libdir}/singularity/lib*.la
 %{_libexecdir}/singularity/cli/test.*
 %{_libexecdir}/singularity/bin/action
 %{_libexecdir}/singularity/bin/start
-%{_libexecdir}/singularity/bin/docker-extract
 %{_libexecdir}/singularity/functions
 %{_libexecdir}/singularity/handlers
 %{_libexecdir}/singularity/image-handler.sh
@@ -158,6 +159,9 @@ rm -f $RPM_BUILD_ROOT/%{_libdir}/singularity/lib*.la
 
 
 %changelog
+* Wed Mar 07 2018 Dave Dykstra <dwd@fnal.gov> - 2.4.4
+- Package upstream release for OSG.  No changes beside adding the changelog.
+
 * Tue Mar 06 2018 Dave Dykstra <dwd@fnal.gov> - 2.4.3
 - Package for OSG.  No changes other than this log entry.
 - Restore log entries from previous releases
