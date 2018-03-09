@@ -5,16 +5,8 @@ any changes you make here should also be placed in upstream Github:
 
 https://github.com/bbockelm/xrootd-hdfs
 
-Spec file obtained from spec/xrootd-hdfs.spec inside the repo.
+Built using the new git based builts.
 
-To get the upstream:
+https://opensciencegrid.github.io/technology/software/rpm-development-guide/#git-repos-osg-build-1112
 
-git clone https://github.com/bbockelm/xrootd-hdfs.git
-cd xrootd-hdfs
-git archive v1.9.2 | gzip -7 > xrootd-hdfs.tar.gz
-
-Or just do:
-
-git clone https://github.com/bbockelm/xrootd-hdfs.git
-cd xrootd-hdfs
-git archive v1.9.2 --format=tar.gz --prefix=xrootd-hdfs-1.9.2/ -o ~/xrootd-hdfs-1.9.2.tar.gz -9
+All the relevant information is in the upstreatm/.source file
