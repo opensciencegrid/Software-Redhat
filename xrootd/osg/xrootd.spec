@@ -13,8 +13,7 @@
 %global use_libc_semaphore 0
 %endif
 
-#define _alphatag rc1
-%define _alphatag dad8206
+%define _alphatag rc1
 %define _release 1
 
 # e.g. '-rc3' or blank
@@ -30,7 +29,7 @@ Group:		System Environment/Daemons
 License:	LGPLv3+
 URL:		http://xrootd.org/
 Source0:        %{name}-%{version}%{?_alphasuffix}.tar.gz
-
+Patch0:         001-simple-http-reads.patch
 
 BuildRequires:	cmake
 BuildRequires:	krb5-devel
@@ -266,6 +265,8 @@ This package contains the API documentation of the xrootd libraries.
 
 %prep
 %setup -n %{name}-%{version}%{?_alphasuffix}
+
+%patch0 -p1
 
 %build
 # Koji build machines at Wisc are unhappy when doing osg3.3 --el6 build
@@ -667,8 +668,13 @@ fi
 %doc %{_pkgdocdir}
 
 %changelog
-* Tue Feb 06 2018 Marian Zvada <marian.zvada@cern.ch> - 1:4.8.2-0.1.dad8206
-- Update to 4.8.2.dad8206 (SOFTWARE-3128)
+* Fri Mar 09 2018 Marian Zvada <marian.zvada@cern.ch> - 1:4.8.2-0.1.rc1
+- using patch requested by BrianB along rc1 candidate
+- https://github.com/xrootd/xrootd/pull/664
+- SOFTWARE-3173
+
+* Fri Feb 16 2018 Marian Zvada <marian.zvada@cern.ch> - 1:4.8.0-2
+- backport fix to OSG33 for tmpfile creation according to SOFTWARE-3114
 
 * Thu Feb 01 2018 Marian Zvada <marian.zvada@cern.ch> - 1:4.8.1-1
 - Update to 4.8.1 (SOFTWARE-3104)
