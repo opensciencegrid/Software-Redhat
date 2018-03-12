@@ -5,7 +5,7 @@ Summary: The Frontier distribution of the Squid proxy caching server
 Name: frontier-squid%{?squidsuffix}
 Version: 3.5.27
 %define release4source 3
-%define releasenum 1%{?dist}
+%define releasenum 1.1%{?dist}
 Release: %{?release4source}.%{?releasenum}
 Epoch: 11
 License: GPL
@@ -328,6 +328,7 @@ find %{cachedirsquid} %{logdirsquid} %{rundirsquid} %{etcdirsquid} \
 # set user and group in tmpfiles.d configuration, 4th and 5th column
 sed -i "s,\([^ ]* *[^ ]* *[^ ]* *\)[^ ]* *[^ ]*,\1${FRONTIER_USER} ${FRONTIER_GROUP}," %{tmpfilesconfdir}/%{name}.conf
 
+/sbin/restorecon -R %{cachedirsquid}
 /sbin/chkconfig --add %{name}
 
 if $STARTSERVICE; then
@@ -366,6 +367,9 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+* Mon Mar 12 2018 Carl Edquist <edquist@cs.wisc.edu> - 3.5.27-3.1.1
+- Fix selinux perms for /var/cache/squid (SOFTWARE-3174)
+
 * Wed Jan 24 2018 Dave Dykstra <dwd@fnal.gov> 3.5.27-3.1
 - Upgrade to 3.5.27-3 tarball with the following release notes:
  - Add configuration options to always honor "Pragma: no-cache" from a
