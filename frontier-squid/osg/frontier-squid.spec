@@ -5,7 +5,7 @@ Summary: The Frontier distribution of the Squid proxy caching server
 Name: frontier-squid%{?squidsuffix}
 Version: 2.7.STABLE9
 %define release4source 27
-%define releasenum 1%{?dist}
+%define releasenum 1.1%{?dist}
 Release: %{?release4source}.%{?releasenum}
 Epoch: 11
 License: GPL
@@ -406,6 +406,7 @@ find %{cachedirsquid} %{logdirsquid} %{rundirsquid} %{etcdirsquid} \
 # set user and group in tmpfiles.d configuration, 4th and 5th column
 sed -i "s,\([^ ]* *[^ ]* *[^ ]* *\)[^ ]* *[^ ]*,\1${FRONTIER_USER} ${FRONTIER_GROUP}," %{tmpfilesconfdir}/%{name}.conf
 
+/sbin/restorecon -R %{cachedirsquid}
 /sbin/chkconfig --add %{name}
 
 if $STARTSERVICE; then
@@ -445,6 +446,9 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+* Tue Mar 13 2018 Carl Edquist <edquist@cs.wisc.edu> - 2.7.STABLE9-27.1.1
+- Fix selinux perms for /var/cache/squid (SOFTWARE-3174)
+
 * Tue Aug 30 2016 Dave Dykstra <dwd@fnal.gov> 2.7.STABLE9-27.1
 - Upgrade to frontier-squid-2.7.STABLE9-27 tarball which has the
   following release notes:
