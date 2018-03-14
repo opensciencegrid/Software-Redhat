@@ -1,51 +1,35 @@
-%define dver %{?rhel}%{?!rhel:5}
+%define dver %{?rhel}%{?!rhel:6}
 Name:		buildsys-macros
 Summary:	Macros for the HTCondor team's usage of the OSG Koji instance
-Version:        7
-Release:	8.uw.el%{dver}
+Version:        7.condor
+Release:	9.el%{dver}
 License:	GPL
 Group:		Development/Buildsystem
-BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 Requires:	rpmdevtools
 
 %description
 %{summary}
 
-%prep
-
-%build
-
 %install
 rm -rf $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT/etc/rpm/
 DVER=%{dver}
 printf %s%b "%" "rhel $DVER\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.disttag
-printf %s%b "%" "dist .uw.el$DVER\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.disttag
+printf %s%b "%" "dist .el$DVER\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.disttag
 printf %s%b "%" "el$DVER 1\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.disttag
 printf %s%b "%" "uw_build 1\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.disttag
 printf %s%b "%" "__arch_install_post /usr/lib/rpm/check-buildroot\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.checkbuild
-if [[ $DVER -eq 5 ]]; then
-    printf %s%b "%" "_source_filedigest_algorithm 1\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.digest
-    printf %s%b "%" "_binary_filedigest_algorithm 1\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.digest
-    printf %s%b "%" "_binary_payload w9.gzdio\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.digest
-    printf %s%b "%" "_source_payload w9.gzdio\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.digest
-    printf %s%b "%" "_default_patch_fuzz 2\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.digest
-fi
 
-
-%clean
-rm -rf $RPM_BUILD_ROOT
 
 %files
-%defattr(-,root,root)
-%if %{dver} == 5
-/etc/rpm/macros.digest
-%endif
 /etc/rpm/macros.disttag
 /etc/rpm/macros.checkbuild
 
 %changelog
+* Wed Mar 14 2018 Mátyás Selmeci <matyas@cs.wisc.edu> 7.condor-9
+- Drop .uw from dist tag
+
 * Thu Mar 20 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 7-8.uw
 - Add .uw to the dist tag
 
