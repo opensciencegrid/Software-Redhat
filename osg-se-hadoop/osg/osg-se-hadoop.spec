@@ -1,7 +1,7 @@
 Name:           osg-se-hadoop
 Summary:        OSG Hadoop Storage Element package for RPM distribution
 Version:        3.4
-Release:        4%{?dist}
+Release:        5%{?dist}
 License:        GPL
 Group:          System Environment/Daemons
 URL:            https://twiki.grid.iu.edu/twiki/bin/view/Storage/WebHome
@@ -62,13 +62,14 @@ Group: System Environment/Libraries
 Requires: %{name}-client = %{version}-%{release}
 Requires: hadoop-hdfs-fuse
 Requires: osg-system-profiler
-Requires: edg-mkgridmap
 Requires: fetch-crl
 # 3.0.0-6 pulls in gridftp-hdfs that uses /etc/gridftp.d
 Requires: osg-gridftp-hdfs >= 3.0.0-7
 Requires: globus-gridftp-server-progs
 Requires: gratia-probe-gridftp-transfer
 Requires: vo-client
+Requires: vo-client-lcmaps-voms
+Requires: osg-configure-misc
 %ifarch %{ix86}
 Requires: liblcas_lcmaps_gt4_mapping.so.0
 %else
@@ -104,6 +105,10 @@ install -m 0644 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/hadoop/conf.osg/
 %{_sysconfdir}/hadoop/conf.osg/
 
 %changelog
+* Wed Mar 14 2018 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.4-5
+- Remove edg-mkgridmap requirement; add osg-configure-misc and
+  vo-client-lcmaps-voms (SOFTWARE-3138)
+
 * Tue Mar 6 2018 Suchandra Thapa <sthapa@ci.uchicago.edu> - 3.4-4
 - Remove srm and gums references (SOFTWARE-3138)
 - Remove osg-version requirement (SOFTWARE-3116)
