@@ -1,6 +1,6 @@
 Summary:   Fetch sources from upstream (internal use)
 Name:      fetch-sources
-Version:   1.12.0
+Version:   1.12.2
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Source0:   %{name}
@@ -37,8 +37,8 @@ rm -rf $RPM_BUILD_ROOT
 /usr/share/fetch-sources
 
 %changelog
-* Wed Mar 14 2018 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.12.0-1
-- Rebuild against osg-build 1.12.0 (SOFTWARE-3172)
+* Wed Mar 14 2018 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.12.2-1
+- Rebuild against osg-build 1.12.2 (SOFTWARE-3172)
 - Change version to match version of osg-build it's built against
 
 * Wed Jan 24 2018 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.2.1-3
