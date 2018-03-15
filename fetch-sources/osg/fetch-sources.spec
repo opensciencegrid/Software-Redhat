@@ -28,11 +28,7 @@ install -m 755 %{SOURCE0} $RPM_BUILD_ROOT/%{_bindir}/%{name}
 osgbuild_version=$(osg-build --version)
 sed -i -e "s|@OSGBUILDVERSION@|${osgbuild_version}|" $RPM_BUILD_ROOT/%{_bindir}/%{name}
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
 %files
-%defattr(-,root,root)
 %{_bindir}/%{name}
 /usr/share/fetch-sources
 
