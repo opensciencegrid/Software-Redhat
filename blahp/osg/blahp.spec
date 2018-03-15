@@ -4,7 +4,7 @@
 %define bl_libexecdir %{_libexecdir}/%{name}
 
 Name:		blahp
-Version:	1.18.35.bosco
+Version:	1.18.36.bosco
 Release:	1%{?gitrev:.%{gitrev}}%{?dist}
 Summary:	gLite BLAHP daemon
 
@@ -178,6 +178,10 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Thu Mar 15 2018 Brian Lin <blin@cs.wisc.edu> - 1.18.36.bosco-1
+- Verify input file existence before submission (SOFTWARE-3154)
+- Save debugging dirs if job submission fails (SOFTWARE-2827)
+
 * Fri Dec 1 2017 Brian Lin <blin@cs.wisc.edu> - 1.18.35.bosco-1
 - Fix segfault when submitting jobs with limited proxies
 
