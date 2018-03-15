@@ -1,1 +1,1 @@
-type=git url=https://github.com/edquist/mash-scripts.git name=osg-repo-scripts tag=v1.0 hash=4839563720d22fcbe766541185638bdf563f4723
+type=git url=https://github.com/opensciencegrid/mash-scripts.git name=osg-repo-scripts tag=v1.0-2 hash=68f3b13f71815b27bf48ce0cf29dde5914dbc131
