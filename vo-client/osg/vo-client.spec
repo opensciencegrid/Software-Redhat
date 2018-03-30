@@ -1,5 +1,5 @@
 Name:           vo-client
-Version:        77
+Version:        78
 Release:        2%{?dist}
 Summary:        Contains vomses file for use with user authentication and edg-mkgridmap.conf file that contains configuration information for edg-mkgridmap.
 
@@ -93,6 +93,11 @@ chmod 600 $RPM_BUILD_ROOT/%{_sysconfdir}/gums/gums.config.template
 %attr(0600,tomcat,tomcat) %config(noreplace) %{_sysconfdir}/gums/gums.config.template
 
 %changelog
+* Fri Mar 30 2018 Carl Edquist <edquist@cs.wisc.edu> - 78-1
+- Add manual mapfile generator script
+- Handle matchFQAN=vorole in voms-mapfile generator (SOFTWARE-3183)
+- Atlas VO updates (SOFTWARE-3183)
+
 * Fri Feb 16 2018 Carl Edquist <edquist@cs.wisc.edu> - 77-2
 - Add dependency for lcmaps-voms on the main vo-client package (SOFTWARE-3137)
 
