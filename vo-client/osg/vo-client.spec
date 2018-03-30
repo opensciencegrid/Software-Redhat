@@ -1,12 +1,11 @@
 Name:           vo-client
-Version:        77
-Release:        1%{?dist}
+Version:        78
+Release:        2%{?dist}
 Summary:        Contains vomses file for use with user authentication and edg-mkgridmap.conf file that contains configuration information for edg-mkgridmap.
 
 Group:          System Environment/Base
 License:        Apache 2.0
 URL:            http://www.opensciencegrid.org/osg/
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
 Requires: grid-certificates >= 7
@@ -35,6 +34,7 @@ Provides:       osg-edg-mkgridmap-config = %{version}-%{release}
 %package lcmaps-voms
 Summary:        Provides a voms-mapfile-default file, mapping VOMS FQANs to Unix users suitable for use by the LCMAPS VOMS plugin
 Group:          system environment/base
+Requires:       %{name} = %{version}-%{release}
 
 %description lcmaps-voms
 %{summary}
@@ -57,7 +57,6 @@ configuration file.
 
 
 %install
-rm -rf $RPM_BUILD_ROOT
 tar -xz -C $RPM_BUILD_DIR --strip-components=1 -f %{SOURCE0}
 install -d $RPM_BUILD_ROOT/%{_sysconfdir}
 install -d $RPM_BUILD_ROOT/%{_datadir}/osg/
@@ -75,10 +74,6 @@ find $RPM_BUILD_ROOT/%{_sysconfdir}/grid-security/vomsdir -type d -exec chmod 75
 mkdir -p $RPM_BUILD_ROOT/%{_sysconfdir}/gums/
 mv $RPM_BUILD_DIR/gums.config.template $RPM_BUILD_ROOT/%{_sysconfdir}/gums/gums.config.template
 chmod 600 $RPM_BUILD_ROOT/%{_sysconfdir}/gums/gums.config.template
-
-%clean
-rm -rf $RPM_BUILD_ROOT
-
 
 %files
 %defattr(-,root,root,-)
@@ -98,6 +93,14 @@ rm -rf $RPM_BUILD_ROOT
 %attr(0600,tomcat,tomcat) %config(noreplace) %{_sysconfdir}/gums/gums.config.template
 
 %changelog
+* Fri Mar 30 2018 Carl Edquist <edquist@cs.wisc.edu> - 78-1
+- Add manual mapfile generator script
+- Handle matchFQAN=vorole in voms-mapfile generator (SOFTWARE-3183)
+- Atlas VO updates (SOFTWARE-3183)
+
+* Fri Feb 16 2018 Carl Edquist <edquist@cs.wisc.edu> - 77-2
+- Add dependency for lcmaps-voms on the main vo-client package (SOFTWARE-3137)
+
 * Mon Dec 04 2017 Carl Edquist <edquist@cs.wisc.edu> - 77-1
 - Update to vo-client 77
   - Remove voms1.egee.cesnet.cz (auger) VOMS server (SOFTWARE-3042)
