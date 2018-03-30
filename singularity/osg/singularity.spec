@@ -23,16 +23,18 @@
 
 
 %{!?_rel:%{expand:%%global _rel 1}}
+%global osgrel .1
 
 Summary: Application and environment virtualization
 Name: singularity
 Version: 2.4.5
-Release: %{_rel}%{?dist}
+Release: %{_rel}%{?osgrel}%{?dist}
 # https://spdx.org/licenses/BSD-3-Clause-LBNL.html
 License: BSD-3-Clause-LBNL
 Group: System Environment/Base
 URL: http://singularity.lbl.gov/
 Source: %{name}-%{version}.tar.gz
+Patch0: pr1424-nestedbinds.patch
 ExclusiveOS: linux
 BuildRoot: %{?_tmppath}%{!?_tmppath:/var/tmp}/%{name}-%{version}-%{release}-root
 BuildRequires: python
@@ -65,6 +67,7 @@ by the %{name} package.
 
 %prep
 %setup
+%patch0 -p1
 
 
 %build
@@ -159,6 +162,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Mar 30 2018 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.4.5-1.1
+- Apply patch from PR #1424
+
 * Tue Mar 20 2018 Dave Dykstra <dwd@fnal.gov> - 2.4.5
 - Package upstream release for OSG.  No changes beside this log entry.
 
