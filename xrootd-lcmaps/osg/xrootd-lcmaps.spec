@@ -1,6 +1,6 @@
 Name: xrootd-lcmaps
 Version: 1.2.1
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: LCMAPS plugin for xrootd
 
 Group: System Environment/Daemons
@@ -8,6 +8,7 @@ License: BSD
 URL: https://github.com/bbockelm/xrootd-lcmaps
 Source0: %{name}-%{version}.tar.gz
 Patch0: lcmaps-modules-path.patch
+Patch1: SOFTWARE-3188.leaks.patch
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
 BuildRequires: xrootd-devel >= 1:4.1.0
@@ -29,6 +30,7 @@ Requires: lcas-lcmaps-gt4-interface
 %setup -q
 
 %patch0 -p0
+%patch1 -p1
 
 %build
 find . -type f | sort | xargs md5sum
@@ -61,6 +63,9 @@ getent passwd xrootd >/dev/null || \
 %config(noreplace) %{_sysconfdir}/xrootd/lcmaps.cfg
 
 %changelog
+* Mon Apr 02 2018 Carl Edquist <edquist@cs.wisc.edu> - 1.2.1-3
+- Port upstream fixes for leaks causing crashes (SOFTWARE-3188)
+
 * Thu May 18 2016 Brian Lin <emfajard@ucsd.edu> - 1.2.1-2
 - Debugging build failures
 

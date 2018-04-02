@@ -1,0 +1,99 @@
+commit 56ed4ef747b3cc33e377c98a3c443dfb569556ee
+Author: Carl Edquist <edquist@cs.wisc.edu>
+Date:   Mon Apr 2 14:31:52 2018 -0500
+
+    port 9924dd8 fixes to v1.2.1 (SOFTWARE-3188)
+
+diff --git a/configs/lcmaps.cfg b/configs/lcmaps.cfg
+index 71a6635..6aae100 100644
+--- a/configs/lcmaps.cfg
++++ b/configs/lcmaps.cfg
+@@ -23,13 +23,22 @@ verifyproxy -> scasclient
+ scasclient -> good | bad
+ 
+ # This should compatible with the following xrootd.cfg security line:
+-# sec.protocol /usr/lib64 gsi -certdir:/etc/grid-security/certificates -cert:/etc/grid-security/xrd/xrdcert.pem -key:/etc/grid-security/xrd/xrdkey.pem -crl:3 -authzfun:libXrdLcmaps.so --gmapopt:2 --gmapto:0
++# sec.protocol /usr/lib64 gsi \
++#   -certdir:/etc/grid-security/certificates \
++#   -cert:/etc/grid-security/xrd/xrdcert.pem \
++#   -key:/etc/grid-security/xrd/xrdkey.pem \
++#   -crl:1 \
++#   -authzfun:libXrdLcmaps.so \
++#   -authzto:600 \
++#   --gmapopt:10 --gmapto:0
+ #
+ # This defaults to using /etc/xrootd/lcmaps.cfg
+ #
+ # If you want increased log verbosity, try adding the following to the sec.protocol line:
+ # -authzfunparms:--loglevel,5
+ #
++# By default, this should log directly to xrootd.log
++#
+ # To change verbosity and use a non-default file, you can use:
+ #
+ # -authzfunparms:--lcmapscfg,/etc/xrootd/lcmaps.cfg,--loglevel,5
+diff --git a/src/XrdHttpLcmaps.cc b/src/XrdHttpLcmaps.cc
+index b713fe8..69b6506 100644
+--- a/src/XrdHttpLcmaps.cc
++++ b/src/XrdHttpLcmaps.cc
+@@ -197,12 +197,15 @@ class XrdHttpLcmaps : public XrdHttpSecXtractor
+ {
+ public:
+ 
++    virtual ~XrdHttpLcmaps() {}
+ 
+     virtual int GetSecData(XrdLink *, XrdSecEntity &entity, SSL *ssl)
+     {
+         static const char err_pfx[] = "ERROR in AuthzFun: ";
+         static const char inf_pfx[] = "INFO in AuthzFun: ";
+ 
++        //PRINT(inf_pfx << "Running security information extractor");
++
+         // Per OpenSSL docs, the ref count of peer_chain is not incremented.
+         // Hence, we do not free this later.
+         STACK_OF(X509) * peer_chain = SSL_get_peer_cert_chain(ssl);
+@@ -212,10 +215,20 @@ public:
+ 
+         // No remote client?  Add nothing to the entity, but do not
+         // fail.
+-        if (!peer_certificate) {return 0;}
++        if (!peer_certificate)
++        {
++            return 0;
++        }
++        // This one is a more difficult call.  We should have disabled session reuse.
+         if (!peer_chain)
+         {
++            PRINT(inf_pfx << "No available peer certificate chain.");
+             X509_free(peer_certificate);
++            if (SSL_session_reused(ssl))
++            {
++                PRINT(inf_pfx << "SSL session was unexpectedly reused.");
++                return -1;
++            }
+             return 0;
+         }
+ 
+@@ -300,6 +313,7 @@ public:
+         // in reused sessions.  We should build a session cache, but we just
+         // disable sessions for now.
+         SSL_CTX_set_session_cache_mode(sslctx, SSL_SESS_CACHE_OFF);
++        SSL_CTX_set_options(sslctx, SSL_OP_NO_TICKET);
+ 
+         // Utilize VOMS's peer certificate verification function (which
+         // supports old-style proxies).
+diff --git a/src/XrdLcmaps.cc b/src/XrdLcmaps.cc
+index 5f42b19..3303ec0 100644
+--- a/src/XrdLcmaps.cc
++++ b/src/XrdLcmaps.cc
+@@ -163,7 +163,9 @@ int XrdSecgsiAuthzKey(XrdSecEntity &entity, char **key)
+      s += "::";
+      s += entity.endorsements;
+    }
+-   *key = strdup(s.c_str());
++   *key = new char[s.length()+1];
++   memcpy(*key, s.c_str(), s.length());
++   (*key)[s.length()] = '\0';
+    PRINT(inf_pfx << "Returning '" << s << "' of length " << s.length() << " as key.");
+    return s.length() + 1;
+ 
