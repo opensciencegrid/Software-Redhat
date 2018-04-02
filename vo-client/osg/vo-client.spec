@@ -1,6 +1,6 @@
 Name:           vo-client
 Version:        78
-Release:        2%{?dist}
+Release:        1%{?dist}
 Summary:        Contains vomses file for use with user authentication and edg-mkgridmap.conf file that contains configuration information for edg-mkgridmap.
 
 Group:          System Environment/Base
