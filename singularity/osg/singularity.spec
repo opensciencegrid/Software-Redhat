@@ -23,7 +23,7 @@
 
 
 %{!?_rel:%{expand:%%global _rel 1}}
-%global osgrel .1
+%global osgrel .2
 
 Summary: Application and environment virtualization
 Name: singularity
@@ -34,7 +34,8 @@ License: BSD-3-Clause-LBNL
 Group: System Environment/Base
 URL: http://singularity.lbl.gov/
 Source: %{name}-%{version}.tar.gz
-Patch0: pr1424-nestedbinds.patch
+# wget -qO- https://github.com/singularityware/singularity/pull/1436.patch | sed 's/exist$/exists/' >pr1436.patch
+Patch0: pr1436-checkmounted.patch
 ExclusiveOS: linux
 BuildRoot: %{?_tmppath}%{!?_tmppath:/var/tmp}/%{name}-%{version}-%{release}-root
 BuildRequires: python
@@ -162,6 +163,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Apr 03 2018 Dave Dykstra <dwd@fnal.gov> - 2.4.5-1.2
+- Apply patch from simpler PR #1436 instead
+
 * Fri Mar 30 2018 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.4.5-1.1
 - Apply patch from PR #1424
 

@@ -1,0 +1,240 @@
+From 371897226fb0120805818e1c9188c50f6baba7ae Mon Sep 17 00:00:00 2001
+From: Gregory Kurtzer <gmkurtzer@gmail.com>
+Date: Tue, 3 Apr 2018 10:05:45 -0700
+Subject: [PATCH 1/8] Fix check_mounted() so it checks parent directories
+
+---
+ src/util/mount.c | 32 +++++++++++++++++++++++---------
+ 1 file changed, 23 insertions(+), 9 deletions(-)
+
+diff --git a/src/util/mount.c b/src/util/mount.c
+index 9ab9aec16..1d7ef3a0a 100644
+--- a/src/util/mount.c
++++ b/src/util/mount.c
+@@ -23,6 +23,7 @@
+ #include <unistd.h>
+ #include <stdlib.h>
+ #include <limits.h>
++#include <libgen.h>
+ 
+ #include "config.h"
+ #include "util/file.h"
+@@ -79,10 +80,15 @@ int check_mounted(char *mountpoint) {
+         mountpoint[mountpoint_len-1] = '\0';
+     }
+ 
+-    real_mountpoint = realpath(mountpoint, NULL); // Flawfinder: ignore
+-    if ( real_mountpoint == NULL ) {
+-        // mountpoint doesn't exists
+-        return(retval);
++    if ( is_link(mountpoint) == 0 ) {
++        real_mountpoint = realpath(mountpoint, NULL); // Flawfinder: ignore
++        if ( real_mountpoint == NULL ) {
++            // mountpoint doesn't exists
++           singularity_message(DEBUG, "returning, real_mountpoint == NULL\n");
++            return(retval);
++        }
++    } else {
++        real_mountpoint = strdup(mountpoint);
+     }
+ 
+     singularity_message(DEBUG, "Iterating through /proc/mounts\n");
+@@ -90,13 +96,20 @@ int check_mounted(char *mountpoint) {
+         (void) strtok(strdup(line), " ");
+         char *mount = strtok(NULL, " ");
+ 
+-        // Check to see if mountpoint is already mounted
+-        if ( strcmp(joinpath(rootfs_dir, real_mountpoint), mount) == 0 ) {
+-            singularity_message(DEBUG, "Mountpoint is already mounted: %s\n", mountpoint);
+-            retval = 1;
+-            break;
++	char *test_mountpoint = strdup(real_mountpoint);
++
++        while ( strcmp(test_mountpoint, "/") != 0 ) {
++            // Check to see if mountpoint is already mounted
++            if ( strcmp(joinpath(rootfs_dir, test_mountpoint), mount) == 0 ) {
++                singularity_message(DEBUG, "Mountpoint is already mounted: %s\n", test_mountpoint);
++                retval = 1;
++                goto DONE;
++            }
++            test_mountpoint = dirname(test_mountpoint);
+         }
+ 
++        free(test_mountpoint);
++
+         // Check to see if path is in container root
+         if ( strncmp(rootfs_dir, mount, strlength(rootfs_dir, 1024)) != 0 ) {
+             continue;
+@@ -108,6 +121,7 @@ int check_mounted(char *mountpoint) {
+         }
+     }
+ 
++    DONE:
+     fclose(mounts);
+     free(line);
+     free(real_mountpoint);
+
+From c68b4f9c8a91bc93ef2318c7ca1adf7a121a2aab Mon Sep 17 00:00:00 2001
+From: Gregory Kurtzer <gmkurtzer@gmail.com>
+Date: Tue, 3 Apr 2018 10:08:06 -0700
+Subject: [PATCH 2/8] Fix leaky test_mountpoint
+
+---
+ src/util/mount.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/util/mount.c b/src/util/mount.c
+index 1d7ef3a0a..623ba3d85 100644
+--- a/src/util/mount.c
++++ b/src/util/mount.c
+@@ -103,6 +103,7 @@ int check_mounted(char *mountpoint) {
+             if ( strcmp(joinpath(rootfs_dir, test_mountpoint), mount) == 0 ) {
+                 singularity_message(DEBUG, "Mountpoint is already mounted: %s\n", test_mountpoint);
+                 retval = 1;
++                free(test_mountpoint);
+                 goto DONE;
+             }
+             test_mountpoint = dirname(test_mountpoint);
+
+From e044cb7ed15b11406a485a98d5440ba1cc4382a4 Mon Sep 17 00:00:00 2001
+From: Gregory Kurtzer <gmkurtzer@gmail.com>
+Date: Tue, 3 Apr 2018 12:04:03 -0700
+Subject: [PATCH 3/8] Not sure how this got missed, fixing build warnings
+
+---
+ src/util/file.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/util/file.h b/src/util/file.h
+index d1629bbd4..badc0142f 100644
+--- a/src/util/file.h
++++ b/src/util/file.h
+@@ -39,6 +39,7 @@ int is_suid(char *path);
+ int is_owner(char *path, uid_t uid);
+ int is_blk(char *path);
+ int is_chr(char *path);
++int is_sock(char *path);
+ int s_mkpath(char *dir, mode_t mode);
+ int s_rmdir(char *dir);
+ int copy_file(char * source, char * dest);
+
+From 4cc73d0ad98b78eeb1e9e29742b2328990f26e36 Mon Sep 17 00:00:00 2001
+From: Gregory Kurtzer <gmkurtzer@gmail.com>
+Date: Tue, 3 Apr 2018 12:04:27 -0700
+Subject: [PATCH 4/8] Added debug message
+
+---
+ src/util/mount.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/src/util/mount.c b/src/util/mount.c
+index 623ba3d85..a166cbea9 100644
+--- a/src/util/mount.c
++++ b/src/util/mount.c
+@@ -69,6 +69,8 @@ int check_mounted(char *mountpoint) {
+     unsigned int mountpoint_len = strlength(mountpoint, PATH_MAX);
+     char *real_mountpoint;
+ 
++    singularity_message(DEBUG, "Checking if currently mounted: %s\n", mountpoint);
++
+     singularity_message(DEBUG, "Opening /proc/mounts\n");
+     if ( ( mounts = fopen("/proc/mounts", "r") ) == NULL ) { // Flawfinder: ignore
+         singularity_message(ERROR, "Could not open /proc/mounts: %s\n", strerror(errno));
+
+From e611b7b96dd6e9ef17325cd4d17e672a5cca5467 Mon Sep 17 00:00:00 2001
+From: Gregory Kurtzer <gmkurtzer@gmail.com>
+Date: Tue, 3 Apr 2018 12:04:47 -0700
+Subject: [PATCH 5/8] Scratch wasn't checking for mounted file systems
+
+---
+ src/lib/runtime/mounts/scratch/scratch.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/src/lib/runtime/mounts/scratch/scratch.c b/src/lib/runtime/mounts/scratch/scratch.c
+index 212049253..ab80396f5 100644
+--- a/src/lib/runtime/mounts/scratch/scratch.c
++++ b/src/lib/runtime/mounts/scratch/scratch.c
+@@ -92,6 +92,12 @@ int _singularity_runtime_mount_scratch(void) {
+         char *full_sourcedir_path = joinpath(sourcedir_path, basename(strdup(current)));
+         char *full_destdir_path = joinpath(container_dir, current);
+ 
++        singularity_message(DEBUG, "Checking if bind point is already mounted: %s\n", current);
++        if ( check_mounted(current) >= 0 ) {
++            singularity_message(ERROR, "Not mounting requested scratch directory (already mounted in container): %s\n", current);
++            ABORT(255);
++        }
++
+         if ( s_mkpath(full_sourcedir_path, 0750) < 0 ) {
+              singularity_message(ERROR, "Could not create scratch working directory %s: %s\n", full_sourcedir_path, strerror(errno));
+              ABORT(255);
+
+From 823947aa94fd4391905bd02b87464485be9d3e77 Mon Sep 17 00:00:00 2001
+From: Gregory Kurtzer <gmkurtzer@gmail.com>
+Date: Tue, 3 Apr 2018 12:05:06 -0700
+Subject: [PATCH 6/8] Exit/abort on error of user binds on existing binds
+
+---
+ src/lib/runtime/mounts/userbinds/userbinds.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/lib/runtime/mounts/userbinds/userbinds.c b/src/lib/runtime/mounts/userbinds/userbinds.c
+index e6fea3055..bcf440262 100644
+--- a/src/lib/runtime/mounts/userbinds/userbinds.c
++++ b/src/lib/runtime/mounts/userbinds/userbinds.c
+@@ -96,8 +96,8 @@ int _singularity_runtime_mount_userbinds(void) {
+ 
+             singularity_message(DEBUG, "Checking if bind point is already mounted: %s\n", dest);
+             if ( check_mounted(dest) >= 0 ) {
+-                singularity_message(WARNING, "Not mounting requested bind point (already mounted in container): %s\n", dest);
+-                continue;
++                singularity_message(ERROR, "Not mounting requested bind point (already mounted in container): %s\n", dest);
++                ABORT(255);
+             }
+ 
+             if ( ( is_file(source) == 0 ) && ( is_file(joinpath(container_dir, dest)) < 0 ) ) {
+
+From 4e66dd5b67571531c78bd05731ba5ab82c3fcfc3 Mon Sep 17 00:00:00 2001
+From: Gregory Kurtzer <gmkurtzer@gmail.com>
+Date: Tue, 3 Apr 2018 12:07:43 -0700
+Subject: [PATCH 7/8] Removing trailing 's' (thanks @DrDaveD!)
+
+---
+ src/util/mount.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/util/mount.c b/src/util/mount.c
+index a166cbea9..5eed29d61 100644
+--- a/src/util/mount.c
++++ b/src/util/mount.c
+@@ -85,7 +85,7 @@ int check_mounted(char *mountpoint) {
+     if ( is_link(mountpoint) == 0 ) {
+         real_mountpoint = realpath(mountpoint, NULL); // Flawfinder: ignore
+         if ( real_mountpoint == NULL ) {
+-            // mountpoint doesn't exists
++            // mountpoint doesn't exists
+            singularity_message(DEBUG, "returning, real_mountpoint == NULL\n");
+             return(retval);
+         }
+
+From e3673005aaea089f404b47ebd6e38373ec47988f Mon Sep 17 00:00:00 2001
+From: Gregory Kurtzer <gmkurtzer@gmail.com>
+Date: Tue, 3 Apr 2018 12:17:22 -0700
+Subject: [PATCH 8/8] Dang tabs....
+
+---
+ src/util/mount.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/util/mount.c b/src/util/mount.c
+index 5eed29d61..6385b96d7 100644
+--- a/src/util/mount.c
++++ b/src/util/mount.c
+@@ -98,7 +98,7 @@ int check_mounted(char *mountpoint) {
+         (void) strtok(strdup(line), " ");
+         char *mount = strtok(NULL, " ");
+ 
+-	char *test_mountpoint = strdup(real_mountpoint);
++        char *test_mountpoint = strdup(real_mountpoint);
+ 
+         while ( strcmp(test_mountpoint, "/") != 0 ) {
+             // Check to see if mountpoint is already mounted
