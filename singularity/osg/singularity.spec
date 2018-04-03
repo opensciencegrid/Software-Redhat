@@ -34,7 +34,7 @@ License: BSD-3-Clause-LBNL
 Group: System Environment/Base
 URL: http://singularity.lbl.gov/
 Source: %{name}-%{version}.tar.gz
-# wget -qO- https://github.com/singularityware/singularity/pull/1436.patch | sed 's/exist$/exists/' >pr1436.patch
+# wget -qO- https://github.com/singularityware/singularity/pull/1436.patch | sed 's/exist$/exists/' >pr1436-checkmounted.patch
 Patch0: pr1436-checkmounted.patch
 ExclusiveOS: linux
 BuildRoot: %{?_tmppath}%{!?_tmppath:/var/tmp}/%{name}-%{version}-%{release}-root
