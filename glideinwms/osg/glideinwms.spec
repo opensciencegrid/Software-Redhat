@@ -12,8 +12,8 @@
 # ------------------------------------------------------------------------------
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
-%define version 3.2.21
-%define release 2
+%define version 3.2.22
+%define release 0.1.rc1
 
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
@@ -830,6 +830,11 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/condor/certs/condor_mapfile
 
 %changelog
+* Tue Apr 3 2018 Marco Mambelli <marcom@fnal.gov> - 3.2.22-0.1
+- Glideinwms v3.2.22
+- Release Notes: http://glideinwms.fnal.gov/doc.v3_2_22/history.html
+- Release candidates: 3.2.22-0.1.rc1
+ 
 * Tue Feb 27 2018 Marco Mambelli <marcom@fnal.gov> - 3.2.21-2
 - Fixed a problem with proxy outo-renewal, see [19147]
 
