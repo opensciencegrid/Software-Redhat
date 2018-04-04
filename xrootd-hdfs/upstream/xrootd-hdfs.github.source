@@ -1,1 +1,1 @@
-type=git url=git@github.com:opensciencegrid/xrootd-hdfs.git name=xrootd-hdfs tag=v2.0.1 hash=c6d8ce04149f7ff20b7366cf100600cc5d357bfd
+type=git url=https://github.com/opensciencegrid/xrootd-hdfs.git name=xrootd-hdfs tag=v2.0.2 hash=c16749846971536793e617699e8b0305c18c3079
