@@ -1,3 +1,12 @@
+# Instructions:
+#
+# After this is built and tested, tag it into dist-$el-build (where $el is el6
+# or el7 or whatever other el is in use).  Then _untag it_ from the development
+# repos you built it into and wait for kojira to regenerate all the build
+# repos.  The untag step is important to prevent a stale fetch-sources in a
+# development tag from overriding a newer fetch-sources in the dist-$el-build
+# tag.
+
 Summary:   Fetch sources from upstream (internal use)
 Name:      fetch-sources
 Version:   1.12.2
