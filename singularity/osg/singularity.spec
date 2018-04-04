@@ -23,7 +23,7 @@
 
 
 %{!?_rel:%{expand:%%global _rel 1}}
-%global osgrel .2
+%global osgrel .3
 
 Summary: Application and environment virtualization
 Name: singularity
@@ -163,6 +163,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Apr 04 2018 Dave Dykstra <dwd@fnal.gov> - 2.4.5-1.3
+- Rebuild with final PR #1436
+
 * Tue Apr 03 2018 Dave Dykstra <dwd@fnal.gov> - 2.4.5-1.2
 - Apply patch from simpler PR #1436 instead
 
