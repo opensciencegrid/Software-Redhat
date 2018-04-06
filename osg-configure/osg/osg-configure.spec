@@ -1,6 +1,6 @@
 Summary: Package for OSG-Configure and associated scripts
 Name: osg-configure
-Version: 2.2.3
+Version: 2.2.4
 Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
@@ -184,7 +184,7 @@ touch $RPM_BUILD_ROOT/var/lib/osg/osg-job-environment.conf
 %{python_sitelib}/osg_configure/configure_modules/pbs.py*
 %{python_sitelib}/osg_configure/configure_modules/rsv.py*
 %{python_sitelib}/osg_configure/configure_modules/sge.py*
-%{python_sitelib}/osg_configure/configure_modules/siteattributes.py*
+%{python_sitelib}/osg_configure/configure_modules/siteinformation.py*
 %{python_sitelib}/osg_configure/configure_modules/slurm.py*
 %{python_sitelib}/osg_configure/configure_modules/squid.py*
 %{python_sitelib}/osg_configure/configure_modules/storage.py*
@@ -261,6 +261,16 @@ touch $RPM_BUILD_ROOT/var/lib/osg/osg-job-environment.conf
 
 
 %changelog
+* Fri Apr 06 2018 Mátyás Selmeci <matyas@cs.wisc.edu> 2.2.4-1
+- Improve comment for app_dir in 10-storage.ini (SOFTWARE-3150)
+- Handle exception caused by parse error (SOFTWARE-2310)
+- Don't require CE site information for non-CEs (SOFTWARE-3094)
+- Warn on long-deprecated "site information/site_name" attribute (SOFTWARE-3093)
+- Remove functions used for condor-python < 8.4 (SOFTWARE-3126)
+- Don't make /etc/condor-ce/config.d/50-osg-configure.conf without condor-ce (SOFTWARE-3160)
+- Validate environment variables in 40-localsettings.ini (SOFTWARE-3131)
+- Rename siteattributes.py to siteinformation.py
+
 * Tue Dec 12 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 2.2.3-1
 - Replace dummy packages with obsoletes (SOFTWARE-3020)
 - Drop el5-isms (SOFTWARE-3050)
