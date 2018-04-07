@@ -23,19 +23,16 @@
 
 
 %{!?_rel:%{expand:%%global _rel 1}}
-%global osgrel .3
 
 Summary: Application and environment virtualization
 Name: singularity
-Version: 2.4.5
-Release: %{_rel}%{?osgrel}%{?dist}
+Version: 2.4.6
+Release: %{_rel}%{?dist}
 # https://spdx.org/licenses/BSD-3-Clause-LBNL.html
 License: BSD-3-Clause-LBNL
 Group: System Environment/Base
 URL: http://singularity.lbl.gov/
 Source: %{name}-%{version}.tar.gz
-# wget -qO- https://github.com/singularityware/singularity/pull/1436.patch | sed 's/exist$/exists/' >pr1436-checkmounted.patch
-Patch0: pr1436-checkmounted.patch
 ExclusiveOS: linux
 BuildRoot: %{?_tmppath}%{!?_tmppath:/var/tmp}/%{name}-%{version}-%{release}-root
 BuildRequires: python
@@ -68,7 +65,6 @@ by the %{name} package.
 
 %prep
 %setup
-%patch0 -p1
 
 
 %build
@@ -163,6 +159,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Apr 07 2018 Dave Dykstra <dwd@fnal.gov> - 2.4.6-1
+- Package upstream release for OSG.  No changes beside this log entry.
+
 * Wed Apr 04 2018 Dave Dykstra <dwd@fnal.gov> - 2.4.5-1.3
 - Rebuild with final PR #1436
 
