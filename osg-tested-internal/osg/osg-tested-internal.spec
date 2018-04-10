@@ -65,10 +65,6 @@ Requires: osg-voms
 Requires: osg-se-bestman
 Requires: osg-se-bestman-xrootd
 
-%if 0%{?rhel} == 5
-Requires: globus-gram-job-manager-pbs-setup-poll
-%endif
-
 %if 0%{?rhel} == 7
 # osg-tested-internal packages in el7 don't currently pull in mysql/mariadb
 Requires: mariadb-server
