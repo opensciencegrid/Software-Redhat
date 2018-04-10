@@ -9,7 +9,7 @@
 Name:      rsv
 Summary:   RSV Meta Package
 Version:   3.16.0
-Release:   1%{?dist}
+Release:   2%{?dist}
 License:   Apache 2.0
 Group:     Applications/Monitoring
 URL:       https://twiki.grid.iu.edu/bin/view/MonitoringInformation/RSV
@@ -27,7 +27,7 @@ Requires: rsv-metrics
 Requires: osg-configure
 Requires: osg-configure-rsv
 Requires: grid-certificates >= 7
-Requires: voms-clients
+Requires: voms-clients-cpp
 Requires: vo-client
 %if %systemd
 BuildRequires: /usr/bin/systemctl
@@ -281,6 +281,9 @@ fi
 
 
 %changelog
+* Tue Apr 10 2018 Carl Edquist <edquist@cs.wisc.edu> - 3.16.0-2
+- Change voms-clients requirement to voms-clients-cpp (SOFTWARE-3201)
+
 * Wed Oct 25 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.16.0-1
 - Drop atlas.xrootd probes (SOFTWARE-1974)
 - Fix URLs in crl-freshness-probe (SOFTWARE-2926)
