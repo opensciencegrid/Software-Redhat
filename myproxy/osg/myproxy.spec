@@ -14,7 +14,7 @@
 
 Name:           myproxy
 Version:        6.1.28
-Release:        1.1%{?dist}
+Release:        1.2%{?dist}
 Summary:        Manage X.509 Public Key Infrastructure (PKI) security credentials
 
 License:        NCSA and BSD and ASL 2.0
@@ -44,7 +44,7 @@ BuildRequires:  voms-devel >= 1.9.12.1
 %if %{?with_checks}
 BuildRequires:  globus-proxy-utils
 BuildRequires:  globus-gsi-cert-utils-progs
-BuildRequires:  voms-clients
+BuildRequires:  voms-clients-cpp
 %endif
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
 Obsoletes:      %{name}-client < 5.1-3
@@ -134,7 +134,7 @@ Package %{name}-admin contains the MyProxy server admin commands.
 
 %package voms
 Summary:        Manage X.509 Public Key Infrastructure (PKI) security credentials
-Requires:       voms-clients
+Requires:       voms-clients-cpp
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
 Obsoletes:      %{name}-libs < 6.1.6
 
@@ -396,6 +396,9 @@ fi
 %{?_licensedir: %license LICENSE*}
 
 %changelog
+* Tue Apr 10 2018 Carl Edquist <edquist@cs.wisc.edu> - 6.1.28-1.2.osg
+- Change voms-clients requirement to voms-clients-cpp (SOFTWARE-3201)
+
 * Tue Aug 22 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 6.1.28-1.1.osg
 - Merge OSG changes
   - drop pr70-error-msgs.patch (upstream)
