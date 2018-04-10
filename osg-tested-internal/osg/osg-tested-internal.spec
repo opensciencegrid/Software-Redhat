@@ -35,7 +35,11 @@ Requires: gsi-openssh-server
 Requires: myproxy
 Requires: myproxy-server
 
+%if 0%{?rhel} < 7
+# GUMS has issues with latest EL7 version of bouncycastle
+# https://jira.opensciencegrid.org/browse/SOFTWARE-3201
 Requires: osg-gums
+%endif
 
 Requires: htcondor-ce
 Requires: htcondor-ce-client
@@ -102,6 +106,9 @@ rm -rf $RPM_BUILD_ROOT
 %files gram
 
 %changelog
+* Tue Apr 10 2018 Carl Edquist <edquist@cs.wisc.edu> - 3.3-20
+- Drop osg-gums for el7 (SOFTWARE-3201)
+
 * Thu Nov 09 2017 Carl Edquist <edquist@cs.wisc.edu> - 3.3-19
 - Drop gratia-probe-bdii-status (SOFTWARE-2660)
 
