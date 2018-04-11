@@ -3,7 +3,7 @@
 
 Name: htcondor-ce
 Version: 2.2.4
-Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
+Release: 2%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
 
@@ -118,7 +118,7 @@ Summary: Default routes for submission to PBS
 
 Requires: %{name} = %{version}-%{release}
 Requires: /usr/bin/grid-proxy-init
-Requires: /usr/bin/voms-proxy-init
+Requires: voms-clients-cpp
 
 Obsoletes: condor-ce-pbs < 0.5.4
 Provides:  condor-ce-pbs = %{version}
@@ -132,7 +132,7 @@ Summary: Default routes for submission to LSF
 
 Requires: %{name} = %{version}-%{release}
 Requires: /usr/bin/grid-proxy-init
-Requires: /usr/bin/voms-proxy-init
+Requires: voms-clients-cpp
 
 Obsoletes: condor-ce-lsf < 0.5.4
 Provides:  condor-ce-lsf = %{version}
@@ -146,7 +146,7 @@ Summary: Default routes for submission to SGE
 
 Requires: %{name} = %{version}-%{release}
 Requires: /usr/bin/grid-proxy-init
-Requires: /usr/bin/voms-proxy-init
+Requires: voms-clients-cpp
 
 Obsoletes: condor-ce-sge < 0.5.4
 Provides:  condor-ce-sge = %{version}
@@ -160,7 +160,7 @@ Summary: Default routes for submission to Slurm
 
 Requires: %{name} = %{version}-%{release}
 Requires: /usr/bin/grid-proxy-init
-Requires: /usr/bin/voms-proxy-init
+Requires: voms-clients-cpp
 
 Obsoletes: condor-ce-slurm < 0.5.4
 Provides:  condor-ce-slurm = %{version}
@@ -174,7 +174,7 @@ Summary: Default routes for submission to BOSCO
 
 Requires: %{name} = %{version}-%{release}
 Requires: /usr/bin/grid-proxy-init
-Requires: /usr/bin/voms-proxy-init
+Requires: voms-clients-cpp
 
 Provides:  condor-ce-bosco = %{version}
 
@@ -191,7 +191,7 @@ BuildRequires: cmake
 # Point is to be able to submit jobs without installing the server.
 Requires: condor
 Requires: /usr/bin/grid-proxy-init
-Requires: /usr/bin/voms-proxy-init
+Requires: voms-clients-cpp
 Requires: grid-certificates >= 7
 
 Requires: condor-python
