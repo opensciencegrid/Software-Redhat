@@ -12,7 +12,7 @@
 # ------------------------------------------------------------------------------
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
-%define version 3.2.22
+%define version 3.2.22.1
 %define release 1
 
 %define frontend_xml frontend.xml
