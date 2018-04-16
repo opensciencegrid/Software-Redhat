@@ -1,5 +1,5 @@
 Name: osg-display-data
-Version: 1.1.3
+Version: 1.1.4
 Release: 1%{?dist}
 Summary: Scripts and tools to generate the OSG Display's data.
 Source: %{name}-%{version}.tar.gz
@@ -42,6 +42,9 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) /etc/osg_display/osg_display.condor.cron
 
 %changelog
+* Mon Apr 16 2018 Carl Edquist <edquist@cs.wisc.edu> - 1.1.4-1
+- Fix domain name grid.iu.edu -> opensciencegrid.org (SOFTWARE-3214)
+
 * Thu Feb 08 2018 Carl Edquist <edquist@cs.wisc.edu> - 1.1.3-1
 - Handle time windows with empty data sets (SOFTWARE-3117)
 
