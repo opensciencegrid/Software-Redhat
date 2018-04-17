@@ -13,8 +13,8 @@
 %global use_libc_semaphore 0
 %endif
 
-%define _alphatag e341f47
-%define _release 2
+#define _alphatag e341f47
+%define _release 1
 
 # e.g. '-rc3' or blank
 %define _alphasuffix %{?_alphatag:-%{_alphatag}}
@@ -665,8 +665,8 @@ fi
 %doc %{_pkgdocdir}
 
 %changelog
-* Fri Apr 06 2018 Marian Zvada <marian.zvada@cern.ch> - 1:4.8.2-0.2.e341f47
-- special request from Derek create build from current master, EL7 OSG3.4
+* Tue Apr 17 2018 Marian Zvada <marian.zvada@cern.ch> - 1:4.8.2-1
+- update to 4.8.2; SOFTWARE-3173
 
 * Tue Mar 20 2018 Marian Zvada <marian.zvada@cern.ch> - 1:4.8.2-0.1.rc3
 - update to RC3, includes patch from previous build
