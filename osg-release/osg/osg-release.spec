@@ -54,9 +54,6 @@ mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d
 install -m 644 *.repo $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d
 sed -i -e 's/gpgcheck=1/gpgcheck=0/' $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d/*-minefield.repo
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
 %files
 %defattr(-,root,root,-)
 %config(noreplace) /etc/yum.repos.d/*
