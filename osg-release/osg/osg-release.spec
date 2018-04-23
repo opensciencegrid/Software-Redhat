@@ -41,7 +41,6 @@ exit 0
 
 
 %install
-rm -rf $RPM_BUILD_ROOT
 
 #GPG Key
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/pki/rpm-gpg
