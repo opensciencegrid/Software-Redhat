@@ -60,6 +60,9 @@ sed -i -e 's/gpgcheck=1/gpgcheck=0/' $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d/*
 
 
 %changelog
+* Wed Mar 07 2018 Brian Lin <blin@cs.wisc.edu> - 3.4-4
+- Revert HTTP -> HTTPS testing for Koji repositories due to certificate verification failures
+
 * Fri Feb 08 2018 Brian Lin <blin@cs.wisc.edu> - 3.4-3
 - Change references from repo.grid.iu.edu to repo.opensciencegrid.org
 
