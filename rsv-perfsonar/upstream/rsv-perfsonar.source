@@ -1,1 +1,1 @@
-rsv-perfsonar/1.6.2/rsv-perfsonar-1.6.2.tar.gz
+type=git url=https://github.com/opensciencegrid/rsv-perfsonar.git name=rsv-perfsonar tag=1.7.3 hash=40df78bf02027875d1d30a0de808adcd33082291
