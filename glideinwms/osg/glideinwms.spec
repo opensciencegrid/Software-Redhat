@@ -13,7 +13,7 @@
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
 %define version 3.2.22.2
-%define release 1
+%define release 2
 
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
@@ -49,6 +49,8 @@ Source8:        gwms-frontend.sysconfig
 Source9:        gwms-factory.sysconfig
 Source11:       creation/templates/frontend_startup_sl7
 Source12:       creation/templates/factory_startup_sl7
+
+Patch0:         sw3163_proxy_ownership.patch
 
 %description
 This is a package for the glidein workload management system.
@@ -208,7 +210,7 @@ install of wmscollector + wms factory
 %prep
 %setup -q -n glideinwms
 # Apply the patches here if any
-#%patch -P 0 -p1
+%patch0 -p1
 
 
 %build
@@ -321,7 +323,7 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}/cron.d
 install -m 0755 %{SOURCE1} $RPM_BUILD_ROOT%{_initrddir}/gwms-frontend
 install -m 0755 %{SOURCE6} $RPM_BUILD_ROOT%{_initrddir}/gwms-factory
 install -m 0755 creation/templates/gwms-renew-proxies.init $RPM_BUILD_ROOT%{_initrddir}/gwms-renew-proxies
-install -m 0755 creation/templates/gwms-renew-proxies.cron $RPM_BUILD_ROOT%{_sysconfdir}/cron.d/gwms-renew-proxies
+install -m 0644 creation/templates/gwms-renew-proxies.cron $RPM_BUILD_ROOT%{_sysconfdir}/cron.d/gwms-renew-proxies
 %endif
 
 # Install the web directory
@@ -773,13 +775,13 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/glideinwms/creation/reconfig_frontend
 %if %{?rhel}%{!?rhel:0} == 7
 %{_sbindir}/gwms-frontend
-%{systemddir}/gwms-frontend.service
-%{systemddir}/gwms-renew-proxies.service
-%{systemddir}/gwms-renew-proxies.timer
+%attr(0644, root, root) %{systemddir}/gwms-frontend.service
+%attr(0644, root, root) %{systemddir}/gwms-renew-proxies.service
+%attr(0644, root, root) %{systemddir}/gwms-renew-proxies.timer
 %else
 %{_initrddir}/gwms-frontend
 %{_initrddir}/gwms-renew-proxies
-%{_sysconfdir}/cron.d/gwms-renew-proxies
+%attr(0644, root, root) %{_sysconfdir}/cron.d/gwms-renew-proxies
 %endif
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/gwms-frontend.conf
 %attr(-, frontend, frontend) %dir %{_sysconfdir}/gwms-frontend
@@ -830,6 +832,10 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/condor/certs/condor_mapfile
 
 %changelog
+* Wed Apr 25 2018 Brian Lin <blin@cs.wisc.edu> - 3.2.22.2-2
+- Fix automatically renewed proxy ownership
+- Set the proper permissions and owners for service, timer, and cron files
+
 * Tue Apr 17 2018 Marco Mambelli <marcom@fnal.gov> - 3.2.22.2-1
 - Glideinwms v3.2.22.2
 - Release Notes: http://glideinwms.fnal.gov/doc.v3_2_22_2/history.html
