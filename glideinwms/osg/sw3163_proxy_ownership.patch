@@ -1,13 +1,17 @@
 --- a/frontend/gwms_renew_proxies.py
 +++ b/frontend/gwms_renew_proxies.py
-@@ -27,7 +27,6 @@ class Proxy(object):
+@@ -27,9 +27,10 @@ class Proxy(object):
          self.cert = cert
          self.key = key
          self.tmp_output_fd = tempfile.NamedTemporaryFile(dir=os.path.dirname(output), delete=False)
 -        os.chown(self.tmp_output_fd.name, uid, gid)
          self.output = output
          self.lifetime = lifetime
++        self.uid = uid
++        self.gid = gid
  
+     def _voms_proxy_info(self, *opts):
+         """Run voms-proxy-info. Returns stdout, stderr, and return code of voms-proxy-info
 @@ -43,6 +42,7 @@ class Proxy(object):
          self.tmp_output_fd.flush()
          os.fsync(self.tmp_output_fd)

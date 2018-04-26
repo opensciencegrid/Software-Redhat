@@ -13,7 +13,7 @@
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
 %define version 3.2.22.2
-%define release 2
+%define release 3
 
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
@@ -832,6 +832,9 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/condor/certs/condor_mapfile
 
 %changelog
+* Thu Apr 26 2018 Brian Lin <blin@cs.wisc.edu> - 3.2.22.2-3
+- Fix bug in proxy ownership code
+
 * Wed Apr 25 2018 Brian Lin <blin@cs.wisc.edu> - 3.2.22.2-2
 - Fix automatically renewed proxy ownership
 - Set the proper permissions and owners for service, timer, and cron files
