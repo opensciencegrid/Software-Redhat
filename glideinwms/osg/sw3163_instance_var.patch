@@ -1,0 +1,14 @@
+--- a/frontend/gwms_renew_proxies.py
++++ b/frontend/gwms_renew_proxies.py
+@@ -29,6 +29,8 @@ class Proxy(object):
+         self.tmp_output_fd = tempfile.NamedTemporaryFile(dir=os.path.dirname(output), delete=False)
+         self.output = output
+         self.lifetime = lifetime
++        self.uid = uid
++        self.gid = gid
+ 
+     def _voms_proxy_info(self, *opts):
+         """Run voms-proxy-info. Returns stdout, stderr, and return code of voms-proxy-info
+-- 
+2.14.3
+

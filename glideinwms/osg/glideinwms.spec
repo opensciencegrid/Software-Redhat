@@ -13,7 +13,7 @@
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
 %define version 3.3.3
-%define release 1
+%define release 2
 
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
@@ -49,6 +49,8 @@ Source8:        gwms-frontend.sysconfig
 Source9:        gwms-factory.sysconfig
 Source11:       creation/templates/frontend_startup_sl7
 Source12:       creation/templates/factory_startup_sl7
+
+Patch0:         sw3163_instance_var.patch
 
 %description
 This is a package for the glidein workload management system.
@@ -208,7 +210,7 @@ install of wmscollector + wms factory
 %prep
 %setup -q -n glideinwms
 # Apply the patches here if any
-#%patch -P 0 -p1
+%patch0 -p1
 
 
 %build
@@ -832,6 +834,9 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/condor/certs/condor_mapfile
 
 %changelog
+* Thu Apr 25 2018 Brian Lin <blin@cs.wisc.edu> - 3.3.3-2
+-Fix bug in proxy ownership code
+
 * Wed Apr 25 2018 Marco Mambelli <marcom@fnal.gov> - 3.3.3-1
 - Glideinwms v3.3.3
 - Release Notes: http://glideinwms.fnal.gov/doc.v3_3_3/history.html
