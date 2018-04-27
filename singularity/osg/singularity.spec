@@ -26,7 +26,7 @@
 
 Summary: Application and environment virtualization
 Name: singularity
-Version: 2.4.6
+Version: 2.5.0
 Release: %{_rel}%{?dist}
 # https://spdx.org/licenses/BSD-3-Clause-LBNL.html
 License: BSD-3-Clause-LBNL
@@ -36,6 +36,7 @@ Source: %{name}-%{version}.tar.gz
 ExclusiveOS: linux
 BuildRoot: %{?_tmppath}%{!?_tmppath:/var/tmp}/%{name}-%{version}-%{release}-root
 BuildRequires: python
+BuildRequires: libarchive-devel
 %if "%{_target_vendor}" == "suse"
 Requires: squashfs
 %else
@@ -111,6 +112,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libexecdir}/singularity/bin/mount
 %{_libexecdir}/singularity/bin/image-type
 %{_libexecdir}/singularity/bin/prepheader
+%{_libexecdir}/singularity/bin/docker-extract
 
 # Directories
 %{_libexecdir}/singularity/bootstrap-scripts
@@ -138,6 +140,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libexecdir}/singularity/cli/test.*
 %{_libexecdir}/singularity/bin/action
 %{_libexecdir}/singularity/bin/start
+%{_libexecdir}/singularity/bin/docker-extract
 %{_libexecdir}/singularity/functions
 %{_libexecdir}/singularity/handlers
 %{_libexecdir}/singularity/image-handler.sh
@@ -159,6 +162,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Apr 27 2018 Dave Dykstra <dwd@fnal.gov> - 2.5.0-1
+- Package upstream release for OSG.  No changes beside this log entry.
+
 * Sat Apr 07 2018 Dave Dykstra <dwd@fnal.gov> - 2.4.6-1
 - Package upstream release for OSG.  No changes beside this log entry.
 
