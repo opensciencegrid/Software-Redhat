@@ -22,7 +22,7 @@
 # 
 
 
-%{!?_rel:%{expand:%%global _rel 1}}
+%{!?_rel:%{expand:%%global _rel 1.1}}
 
 Summary: Application and environment virtualization
 Name: singularity
@@ -33,6 +33,8 @@ License: BSD-3-Clause-LBNL
 Group: System Environment/Base
 URL: http://singularity.lbl.gov/
 Source: %{name}-%{version}.tar.gz
+# https://patch-diff.githubusercontent.com/raw/singularityware/singularity/pull/1491.patch
+Patch0: 1491.patch
 ExclusiveOS: linux
 BuildRoot: %{?_tmppath}%{!?_tmppath:/var/tmp}/%{name}-%{version}-%{release}-root
 BuildRequires: python
@@ -66,6 +68,7 @@ by the %{name} package.
 
 %prep
 %setup
+%patch0 -p1
 
 
 %build
@@ -162,6 +165,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Apr 28 2018 Dave Dykstra <dwd@fnal.gov> - 2.5.0-1.1
+- Add PR #1491
+
 * Fri Apr 27 2018 Dave Dykstra <dwd@fnal.gov> - 2.5.0-1
 - Package upstream release for OSG.  No changes beside this log entry.
 
