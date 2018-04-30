@@ -1,6 +1,6 @@
 Summary: Package for OSG-Configure and associated scripts
 Name: osg-configure
-Version: 2.2.4
+Version: 2.3.0
 Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
@@ -152,7 +152,7 @@ This package includes the ini file for configuring the job gateway
 %setup
 
 %build
-%{__python} setup.py build
+%{__python2} setup.py build
 
 %install
 make install DESTDIR=$RPM_BUILD_ROOT
@@ -169,33 +169,33 @@ touch $RPM_BUILD_ROOT/var/lib/osg/osg-job-environment.conf
 
 
 %files
-%{python_sitelib}/osg_configure-%{version}-*.egg-info
-%{python_sitelib}/osg_configure/__init__.py*
-%{python_sitelib}/osg_configure/configure_modules/__init__.py*
-%{python_sitelib}/osg_configure/configure_modules/bosco.py*
-%{python_sitelib}/osg_configure/configure_modules/condor.py*
-%{python_sitelib}/osg_configure/configure_modules/gateway.py*
-%{python_sitelib}/osg_configure/configure_modules/gratia.py*
-%{python_sitelib}/osg_configure/configure_modules/installlocations.py*
-%{python_sitelib}/osg_configure/configure_modules/legacysettings.py*
-%{python_sitelib}/osg_configure/configure_modules/localsettings.py*
-%{python_sitelib}/osg_configure/configure_modules/lsf.py*
-%{python_sitelib}/osg_configure/configure_modules/misc.py*
-%{python_sitelib}/osg_configure/configure_modules/pbs.py*
-%{python_sitelib}/osg_configure/configure_modules/rsv.py*
-%{python_sitelib}/osg_configure/configure_modules/sge.py*
-%{python_sitelib}/osg_configure/configure_modules/siteinformation.py*
-%{python_sitelib}/osg_configure/configure_modules/slurm.py*
-%{python_sitelib}/osg_configure/configure_modules/squid.py*
-%{python_sitelib}/osg_configure/configure_modules/storage.py*
-%{python_sitelib}/osg_configure/modules/__init__.py*
-%{python_sitelib}/osg_configure/modules/baseconfiguration.py*
-%{python_sitelib}/osg_configure/modules/configfile.py*
-%{python_sitelib}/osg_configure/modules/exceptions.py*
-%{python_sitelib}/osg_configure/modules/gums_supported_vos.py*
-%{python_sitelib}/osg_configure/modules/jobmanagerconfiguration.py*
-%{python_sitelib}/osg_configure/modules/utilities.py*
-%{python_sitelib}/osg_configure/modules/validation.py*
+%{python2_sitelib}/osg_configure-%{version}-*.egg-info
+%{python2_sitelib}/osg_configure/__init__.py*
+%{python2_sitelib}/osg_configure/configure_modules/__init__.py*
+%{python2_sitelib}/osg_configure/configure_modules/bosco.py*
+%{python2_sitelib}/osg_configure/configure_modules/condor.py*
+%{python2_sitelib}/osg_configure/configure_modules/gateway.py*
+%{python2_sitelib}/osg_configure/configure_modules/gratia.py*
+%{python2_sitelib}/osg_configure/configure_modules/installlocations.py*
+%{python2_sitelib}/osg_configure/configure_modules/legacysettings.py*
+%{python2_sitelib}/osg_configure/configure_modules/localsettings.py*
+%{python2_sitelib}/osg_configure/configure_modules/lsf.py*
+%{python2_sitelib}/osg_configure/configure_modules/misc.py*
+%{python2_sitelib}/osg_configure/configure_modules/pbs.py*
+%{python2_sitelib}/osg_configure/configure_modules/rsv.py*
+%{python2_sitelib}/osg_configure/configure_modules/sge.py*
+%{python2_sitelib}/osg_configure/configure_modules/siteinformation.py*
+%{python2_sitelib}/osg_configure/configure_modules/slurm.py*
+%{python2_sitelib}/osg_configure/configure_modules/squid.py*
+%{python2_sitelib}/osg_configure/configure_modules/storage.py*
+%{python2_sitelib}/osg_configure/modules/__init__.py*
+%{python2_sitelib}/osg_configure/modules/baseconfiguration.py*
+%{python2_sitelib}/osg_configure/modules/configfile.py*
+%{python2_sitelib}/osg_configure/modules/exceptions.py*
+%{python2_sitelib}/osg_configure/modules/gums_supported_vos.py*
+%{python2_sitelib}/osg_configure/modules/jobmanagerconfiguration.py*
+%{python2_sitelib}/osg_configure/modules/utilities.py*
+%{python2_sitelib}/osg_configure/modules/validation.py*
 /usr/sbin/*
 %ghost /var/log/osg/osg-configure.log
 %ghost /var/lib/osg/osg-attributes.conf
@@ -243,10 +243,10 @@ touch $RPM_BUILD_ROOT/var/lib/osg/osg-job-environment.conf
 
 %files infoservices
 %config(noreplace) %{_sysconfdir}/osg/config.d/30-infoservices.ini
-%{python_sitelib}/osg_configure/configure_modules/infoservices.py*
-%{python_sitelib}/osg_configure/modules/resourcecatalog.py*
-%{python_sitelib}/osg_configure/modules/reversevomap.py*
-%{python_sitelib}/osg_configure/modules/subcluster.py*
+%{python2_sitelib}/osg_configure/configure_modules/infoservices.py*
+%{python2_sitelib}/osg_configure/modules/resourcecatalog.py*
+%{python2_sitelib}/osg_configure/modules/reversevomap.py*
+%{python2_sitelib}/osg_configure/modules/subcluster.py*
 
 %files tests
 /usr/share/osg-configure/*
@@ -261,6 +261,9 @@ touch $RPM_BUILD_ROOT/var/lib/osg/osg-job-environment.conf
 
 
 %changelog
+* Thu Apr 26 2018 Mátyás Selmeci <matyas@cs.wisc.edu> 2.3.0-1
+- Drop configuration for RSV gratia-consumer (SOFTWARE-3218)
+
 * Fri Apr 06 2018 Mátyás Selmeci <matyas@cs.wisc.edu> 2.2.4-1
 - Improve comment for app_dir in 10-storage.ini (SOFTWARE-3150)
 - Handle exception caused by parse error (SOFTWARE-2310)
