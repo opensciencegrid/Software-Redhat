@@ -13,7 +13,7 @@
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
 %define version 3.3.3
-%define release 2
+%define release 3
 
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
@@ -834,8 +834,11 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/condor/certs/condor_mapfile
 
 %changelog
-* Thu Apr 25 2018 Brian Lin <blin@cs.wisc.edu> - 3.3.3-2
--Fix bug in proxy ownership code
+* Mon Apr 30 2018 Brian Lin <blin@cs.wisc.edu> - 3.3.3-3
+- Fix proxy renewal cron format
+
+* Thu Apr 26 2018 Brian Lin <blin@cs.wisc.edu> - 3.3.3-2
+- Fix bug in proxy ownership code
 
 * Wed Apr 25 2018 Marco Mambelli <marcom@fnal.gov> - 3.3.3-1
 - Glideinwms v3.3.3
