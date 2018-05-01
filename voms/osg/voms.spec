@@ -41,16 +41,7 @@ Patch0: mariadb-innodb.patch
 # for all
 Patch1:         Make-RFC-proxies-by-default-SOFTWARE-2381.patch
 Patch2:         Validate-top-level-group-of-VOMS-attribute.patch
-Patch100:       0100-voms-proxy-direct-1.patch
-Patch101:       0101-voms-proxy-direct-2.patch
-Patch102:       0102-voms-proxy-direct-drop-newsubject-and-newissuer.patch
-Patch103:       0103-voms-proxy-direct-drop-pastac-and-pastproxy.patch
-Patch104:       0104-voms-proxy-direct-drop-selfsigned.patch
-Patch105:       0105-voms-proxy-direct-drop-newserial.patch
-Patch106:       0106-voms-proxy-direct-change-class-name-SOFTWARE-3123.patch
-Patch107:       0107-voms-proxy-direct-drop-newsubject-etc.-from-header-S.patch
-Patch108:       0108-voms-proxy-direct-fix-doc-formatting.patch
-Patch109:       0109-voms-proxy-direct-drop-globus-and-make-rfc-proxies-t.patch
+Patch3:         sw3123-voms-proxy-direct.patch
 
 %description
 The Virtual Organization Membership Service (VOMS) is an attribute authority
@@ -144,16 +135,7 @@ This package provides the VOMS service.
 
 %patch1 -p1
 %patch2 -p1
-%patch100 -p1
-%patch101 -p1
-%patch102 -p1
-%patch103 -p1
-%patch104 -p1
-%patch105 -p1
-%patch106 -p1
-%patch107 -p1
-%patch108 -p1
-%patch109 -p1
+%patch3 -p1
 
 install -m 644 -p %{SOURCE1} README.Fedora
 

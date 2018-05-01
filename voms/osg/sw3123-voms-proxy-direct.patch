@@ -1,24 +1,70 @@
-From 986957fd1c3c11362fcc4983841ef3fe5c52a5c7 Mon Sep 17 00:00:00 2001
+From 8713210b56a4dda249782d2ab6a10b236a764ceb Mon Sep 17 00:00:00 2001
 From: Matyas Selmeci <matyas@cs.wisc.edu>
-Date: Wed, 14 Feb 2018 15:33:57 -0600
-Subject: [PATCH 100/105] voms-proxy-direct-1
+Date: Tue, 3 Apr 2018 17:50:15 -0500
+Subject: [PATCH] 3123-voms-proxy-direct
 
-Copy voms-proxy-fake files to make voms-proxy-direct source and manpage
+Create a `voms-proxy-direct` tool based on `voms-proxy-fake` that is suitable
+for our use case of having VO frontends locally create proxies for their
+own pilots.
+
+(SOFTWARE-3123)
 ---
- doc/voms-proxy-direct.xml |  281 ++++++++++
- src/utils/vomsdirect.cc   | 1300 +++++++++++++++++++++++++++++++++++++++++++++
- src/utils/vomsdirect.h    |  161 ++++++
- 3 files changed, 1742 insertions(+)
+ doc/Makefile.am           |   12 +-
+ doc/voms-proxy-direct.xml |  241 +++++++++
+ src/utils/Makefile.am     |   15 +
+ src/utils/vomsdirect.cc   | 1205 +++++++++++++++++++++++++++++++++++++++++++++
+ src/utils/vomsdirect.h    |  152 ++++++
+ 5 files changed, 1621 insertions(+), 4 deletions(-)
  create mode 100644 doc/voms-proxy-direct.xml
  create mode 100644 src/utils/vomsdirect.cc
  create mode 100644 src/utils/vomsdirect.h
 
+diff --git a/doc/Makefile.am b/doc/Makefile.am
+index 9f29c3a..120f046 100644
+--- a/doc/Makefile.am
++++ b/doc/Makefile.am
+@@ -5,11 +5,13 @@ SGML = $(srcdir)/voms-proxy-init.xml \
+        $(srcdir)/voms.xml \
+        $(srcdir)/voms-proxy-info.xml \
+        $(srcdir)/voms-proxy-destroy.xml \
+-       $(srcdir)/voms-proxy-fake.xml
++       $(srcdir)/voms-proxy-fake.xml \
++       $(srcdir)/voms-proxy-direct.xml
+ 
+ SGML_DIST = voms-proxy-init.xml voms.xml voms-proxy-info.xml \
+             voms-proxy-destroy.xml \
+-            voms-proxy-fake.xml voms-proxy-list.xml
++            voms-proxy-fake.xml voms-proxy-list.xml \
++            voms-proxy-direct.xml
+ 
+ LATEX_DIST  = software.tex capi.tex c++api.tex AC-RFC.tex
+ 
+@@ -23,7 +25,8 @@ man_MANS = \
+ 	voms-proxy-info.1 \
+ 	voms-proxy-destroy.1 \
+ 	voms-proxy-fake.1 \
+-	voms-proxy-list.1
++	voms-proxy-list.1 \
++	voms-proxy-direct.1
+ endif
+ endif
+ 
+@@ -41,7 +44,8 @@ man_MANS = \
+ 	voms-proxy-info.1 \
+ 	voms-proxy-destroy.1 \
+ 	voms-proxy-fake.1 \
+-	voms-proxy-list.1
++	voms-proxy-list.1 \
++	voms-proxy-direct.1
+ endif
+ endif
+ 
 diff --git a/doc/voms-proxy-direct.xml b/doc/voms-proxy-direct.xml
 new file mode 100644
-index 0000000..4479c11
+index 0000000..905dc84
 --- /dev/null
 +++ b/doc/voms-proxy-direct.xml
-@@ -0,0 +1,281 @@
+@@ -0,0 +1,241 @@
 +<?xml version="1.0" encoding="UTF-8"?>
 +<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook V4.1//EN"
 +          "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
@@ -28,29 +74,34 @@ index 0000000..4479c11
 +<!ENTITY links    SYSTEM "links.sgml">
 +]>
 +
-+<refentry id='vomsproxyfake1'>
++<refentry id='vomsproxydirect1'>
 +<refmeta>
-+<refentrytitle>voms-proxy-fake</refentrytitle>
++<refentrytitle>voms-proxy-direct</refentrytitle>
 +<manvolnum>1</manvolnum>
 +<refmiscinfo class='source'>VOMS Client</refmiscinfo>
 +</refmeta>
 +
 +<refnamediv id='name'>
-+<refname>voms-proxy-fake</refname>
-+<refpurpose>create a proxy with VOMS extensions</refpurpose>
++<refname>voms-proxy-direct</refname>
++<refpurpose>create and sign a proxy with VOMS extensions</refpurpose>
 +</refnamediv>
 +
 +<refsynopsisdiv id='synopsis'>
 +<cmdsynopsis>
-+<command>voms-proxy-fake</command>
++<command>voms-proxy-direct</command>
 +<arg choice='opt'><arg choice='plain'>options</arg></arg>
 +</cmdsynopsis>
 +</refsynopsisdiv>
 +
 +<refsect1 id='description'><title>Description</title>
 +
-+<para>The voms-proxy-fake generates a proxy containing arbitrary attributes
-+without contacting the VOMS server.</para>
++<para>voms-proxy-direct generates a proxy containing arbitrary attributes,
++signed directly with a VO's cert and key instead of contacting a VOMS
++server.</para>
++
++<para>The intent for this is to allow VOs to sign proxies for their pilots
++without requiring them to also run a VOMS server and manage user
++membership.</para>
 +
 +</refsect1>
 +
@@ -80,39 +131,39 @@ index 0000000..4479c11
 +<para><option>-limited</option>
 +Creates a limited proxy.</para>
 +
-+<para><option>-hours</option> <replaceable>H</replaceable>
++<para><option>-hours</option><replaceable>  H</replaceable>
 +Proxy is valid for <emphasis remap='I'>H</emphasis> hours (default:12).</para>
 +
-+<para><option>-vomslife</option> <replaceable>H</replaceable>
++<para><option>-vomslife</option><replaceable>  H</replaceable>
 +Tries to get an AC with information valid for <emphasis remap='I'>H</emphasis> hours. The
 +default is "as long as the proxy certificate". The special value <literal>0</literal> means
 +as long as the server will allow.</para>
 +
-+<para><option>-bits</option> <replaceable>B</replaceable>
++<para><option>-bits</option><replaceable>  B</replaceable>
 +Number of bits in key {0|512|1024|2048|4096}.  0 is a special value
 +which means: same number of bits as in the issuing certificate.</para>
 +
-+<para><option>-cert</option> <replaceable>certfile</replaceable>
++<para><option>-cert</option><replaceable>  certfile</replaceable>
 +Non-standard location of user certificate</para>
 +
-+<para><option>-key</option> <replaceable>keyfile</replaceable>
++<para><option>-key</option><replaceable>  keyfile</replaceable>
 +Non-standard location of user key</para>
 +
-+<para><option>-certdir</option> <replaceable>certdir</replaceable>
++<para><option>-certdir</option><replaceable>  certdir</replaceable>
 +Location of trusted certificates dir</para>
 +
-+<para><option>-out</option> <replaceable>proxyfile</replaceable>
++<para><option>-out</option><replaceable>  proxyfile</replaceable>
 +Location of new proxy cert</para>
 +
-+<para><option>-voms</option> <replaceable>voms[:command]</replaceable>
-+Specifies the fake VOMS server that will appear in the attribute certificate.
-+command is ignored and is present for compatibility with voms-proxy-init.</para>
++<para><option>-voms</option><replaceable>  voms</replaceable>
++Specifies the VO name that will appear in the certificate's attributes.
++</para>
 +
-+<para><option>-include</option> <replaceable>file</replaceable>
++<para><option>-include</option><replaceable>  file</replaceable>
 +Includes <emphasis remap='I'>file</emphasis> in the certificate (in a non
 +critical extension)</para>
 +
-+<para><option>-conf</option> <replaceable>file</replaceable>
++<para><option>-conf</option><replaceable>  file</replaceable>
 +Read options from <emphasis remap='I'>file</emphasis>.</para>
 +
 +<para><option>-policy</option>
@@ -124,75 +175,34 @@ index 0000000..4479c11
 +<para><option>-path-length</option>
 +Maximum depth of proxy certfificate that can be signed from this.</para>
 +
-+<para><option>-globus</option> <replaceable>version</replaceable>
-+Underlying Globus version.</para>
-+
 +<para><option>-proxyver</option>
-+Version of the proxy certificate to create. May be 2 or 3.
-+Default value is decided upon underlying globus version.</para>
++Version of the proxy certificate to create. May be 2, 3, or 4.
++Default value is 4 (RFC).</para>
 +
-+<para><option>-separate</option> <replaceable>file</replaceable>
++<para><option>-separate</option><replaceable>  file</replaceable>
 +Saves the voms credential on file <emphasis remap='I'>file</emphasis>.</para>
 +
-+<para><option>-hostcert</option> <replaceable>file</replaceable>
++<para><option>-hostcert</option><replaceable>  file</replaceable>
 +The cert that will be used to sign the AC.</para>
 +
-+<para><option>-hostkey</option> <replaceable>file</replaceable>
++<para><option>-hostkey</option><replaceable>  file</replaceable>
 +The key thet will be used to sign the AC.</para>
 +
-+<para><option>-fqan</option> <replaceable>file</replaceable>
++<para><option>-fqan</option><replaceable>  file</replaceable>
 +The string that will be included in the AC as the granted FQAN.</para>
 +
 +<para><option>-newformat</option></para>
 +<para>This forces the server to generate ACs in the new (correct) format.  This is meant
 +as a compatibility feature to ease migration while the servers upgrade to the new version.</para>
 +
-+<para><option>-newsubject</option> <replaceable>newdn</replaceable></para>
-+<para>The created proxy will have <emphasis remap='I'>newdn</emphasis> as
-+subject rather  than what is would normally have depending on the
-+specific version of proxy created. Non-printable characters may be specified
-+via the '\XX' encoding, where XX are two hexadecimal characters.</para>
-+
-+<para><option>-newissuer</option> <replaceable>newdn</replaceable></para>
-+<para>The created proxy will have <emphasis remap='I'>newdn</emphasis> as
-+issuer rather  than what is would normally have depending on the
-+specific version of proxy created. Non-printable characters may be specified
-+via the '\XX' encoding, where XX are two hexadecimal characters.</para>
-+
-+<para><option>-newserial</option> <replaceable>newserial</replaceable></para>
-+<para>The created proxy will have
-+  the <emphasis remap='I'>newserial</emphasis> as its serial number.
-+  The new serial number will have to be specified as an hex
-+  representation.  Any length is possible.  If this option is not
-+  specified, voms-proxy-fake will choose the serial number.</para>
-+
-+<para><option>-pastac</option> <replaceable>timespec</replaceable></para>
-+<para>
-+The created AC will have its validity start in the past, as specified
-+by <emphasis remap='I'>timespec</emphasis>.</para>
-+
-+<para>The format
-+of <emphasis remap='I'>timespec</emphasis> is one
-+of: <emphasis remap='I'>seconds</emphasis>, <emphasis remap='I'>hours:minutes</emphasis>,
-+<emphasis remap='I'>hours:minutes:seconds</emphasis></para>
-+
-+<para><option>-pastproxy</option> <replaceable>timespec</replaceable></para>
-+<para>The created proxy will have its validity start in the past as
-+  specified by <emphasis remap='I'>timespec</emphasis></para>
-+
-+<para>The format
-+of <emphasis remap='I'>timespec</emphasis> is one
-+of: <emphasis remap='I'>seconds</emphasis>, <emphasis remap='I'>hours:minutes</emphasis>,
-+<emphasis remap='I'>hours:minutes:seconds</emphasis></para>
-+
-+<para><option>-nscert</option> <replaceable>bit,...,bit</replaceable></para>
++<para><option>-nscert</option><replaceable>  bit,...,bit</replaceable></para>
 +<para>The created proxy will have the specified bits in the Netscape
 +  Certificate Extension.  Acceptable values
 +  for <emphasis remap='I'>bit</emphasis> are: client, server, email,
 +  objsign, sslCA, emailCA, objCA.  The default value is not to have
 +  this extension.</para>
 +
-+<para><option>-extkeyusage</option> <replaceable>bit,...,bit</replaceable></para>
++<para><option>-extkeyusage</option><replaceable>  bit,...,bit</replaceable></para>
 +<para>The created proxy will have the specified bits in the Extended
 +  Key Usage Extension. Acceptable values
 +  for <emphasis remap='I'>bit</emphasis> are: serverAuth, clientAuth,
@@ -200,7 +210,7 @@ index 0000000..4479c11
 +  msCTLSign, msSGC, msEFS, nsSGC, deltaCRL.  The default value is not
 +  to have this extensions.</para>
 +
-+<para><option>-keyusage</option> <replaceable>bit,...,bit</replaceable></para>
++<para><option>-keyusage</option><replaceable>  bit,...,bit</replaceable></para>
 +<para>The created proxy will have the specified bits in the Key Usage
 +  Extensions. Acceptable values for <emphasis remap='I'>bit</emphasis>
 +  are: digitalSignature, nonRepudiation, keyEncipherment,
@@ -209,11 +219,7 @@ index 0000000..4479c11
 +  issuer certificate while removing the keyCertSign and nonRepudiation
 +  bits if present.</para>
 +
-+<para><option>-selfsigned</option></para>
-+<para>The created certificate will be a self-signed certificate and
-+  have a CA=true bit in the Basic constraints Exception.</para>
-+
-+<para><option>-extension</option> <replaceable>oid[/criticality]value</replaceable></para>
++<para><option>-extension</option><replaceable>  oid[/criticality]value</replaceable></para>
 +<para>This option allows to specified additional extensions to be put
 +  in the created certificate.</para>
 +<para><emphasis remap='I'>oid</emphasis> is the Object Identifier of
@@ -238,7 +244,7 @@ index 0000000..4479c11
 +  that <emphasis remap='I'>content</emphasis> is the name of a file
 +  which will contain the actual data.</para>
 +
-+<para><option>-acextension</option> <replaceable>oid[/criticality]value</replaceable></para>
++<para><option>-acextension</option><replaceable>  oid[/criticality]value</replaceable></para>
 +<para>This option allows to specified additional extensions to be put
 +  in the created attribute certificate.</para>
 +<para><emphasis remap='I'>oid</emphasis> is the Object Identifier of
@@ -262,11 +268,11 @@ index 0000000..4479c11
 +  of the string. '+' means that <emphasis remap='I'>content</emphasis>
 +  is the name of a file which will contain the actual data.</para>
 +
-+<para><option>-ga</option> <replaceable>id</replaceable> = <replaceable>value</replaceable> <replaceable>[(qualifier)]</replaceable></para>
++<para><option>-ga</option><replaceable>  id</replaceable> =<replaceable>  value</replaceable><replaceable>  [(qualifier)]</replaceable></para>
 +
 +<para>This option adds the generic attribute specified to the AC generated.  Please note that spaces before and after the  '=' char are swallowed in the command line.</para>
 +
-+<para><option>-voinfo</option> <replaceable>file</replaceable></para>
++<para><option>-voinfo</option><replaceable>  file</replaceable></para>
 +
 +<para>
 +The file <emphasis remap='I'>file</emphasis> contains informations for
@@ -300,12 +306,54 @@ index 0000000..4479c11
 +&license;
 +
 +</refentry>
+diff --git a/src/utils/Makefile.am b/src/utils/Makefile.am
+index 5c6ff51..d68b8b9 100644
+--- a/src/utils/Makefile.am
++++ b/src/utils/Makefile.am
+@@ -2,6 +2,7 @@ if BUILD_CLIENTS
+ bin_PROGRAMS = \
+ 	voms-proxy-info \
+ 	voms-proxy-destroy \
++	voms-proxy-direct \
+ 	voms-proxy-fake \
+ 	voms-verify
+ 
+@@ -41,8 +42,16 @@ voms_proxy_fake_SOURCES = \
+ 	vomsparser.c \
+ 	lex.yy.c 
+ 
++voms_proxy_direct_SOURCES = \
++	vomsdirect.h \
++	vomsdirect.cc \
++	vomsparser.c \
++	lex.yy.c
++
+ EXTRA_DIST = vomsfake.y vomsparser.l vomsparser.h fakeparsertypes.h
+ 
++vomsdirect.$(OBJEXT): vomsparser.h
++
+ vomsfake.$(OBJEXT): vomsparser.h
+ 
+ vomsparser.$(OBJEXT): vomsparser.h
+@@ -62,6 +71,12 @@ voms_proxy_fake_LDADD = \
+ 	$(top_builddir)/src/sslutils/libssl_utils_nog.la \
+ 	$(OPENSSL_LIBS)
+ 
++voms_proxy_direct_LDADD = \
++	$(top_builddir)/src/api/ccapi/libvomsapi.la  \
++	$(top_builddir)/src/replib/librep.la \
++	$(top_builddir)/src/sslutils/libssl_utils_nog.la \
++	$(OPENSSL_LIBS)
++
+ AM_CPPFLAGS = \
+ 	-I$(top_srcdir)/src/api/ccapi \
+ 	-I$(top_srcdir)/src/include \
 diff --git a/src/utils/vomsdirect.cc b/src/utils/vomsdirect.cc
 new file mode 100644
-index 0000000..87cce48
+index 0000000..1034aa0
 --- /dev/null
 +++ b/src/utils/vomsdirect.cc
-@@ -0,0 +1,1300 @@
+@@ -0,0 +1,1205 @@
 +/*********************************************************************
 + *
 + * Authors: Vincenzo Ciaschini - Vincenzo.Ciaschini@cnaf.infn.it
@@ -381,7 +429,7 @@ index 0000000..87cce48
 +
 +#include <voms_api.h>
 +
-+#include "vomsfake.h"
++#include "vomsdirect.h"
 +#include "ccwrite.h"
 +
 +extern "C" {
@@ -403,7 +451,7 @@ index 0000000..87cce48
 +
 +#include "init.h"
 +
-+const std::string SUBPACKAGE      = "voms-proxy-fake";
++const std::string SUBPACKAGE      = "voms-proxy-direct";
 +
 +/* FIXME: should take locations from /etc/sysconfig/voms */
 +const std::string location = (getenv("VOMS_LOCATION") ? getenv("VOMS_LOCATION") : "");
@@ -468,7 +516,7 @@ index 0000000..87cce48
 +
 +  if (AC_Init()) {
 +    InitProxyCertInfoExtension(1);
-+    Fake v(argc, argv);
++    Direct v(argc, argv);
 +    v.Run();
 +
 +    return 0;
@@ -477,7 +525,7 @@ index 0000000..87cce48
 +}
 +
 +extern int yydebug;
-+Fake::Fake(int argc, char ** argv) :   confile(conf_file_name),
++Direct::Direct(int argc, char ** argv) :   confile(conf_file_name),
 +                                       cacertfile(NULL), certdir(NULL),
 +                                       certfile(NULL), keyfile(NULL),
 +                                       outfile(NULL),
@@ -485,7 +533,7 @@ index 0000000..87cce48
 +                                       hours(12), limit_proxy(false),
 +                                       vomslife(-1), proxyver(0),
 +                                       pathlength(1), verify(false),
-+                                       noregen(false), version(0),
++                                       noregen(false),
 +#ifdef CLASS_ADD
 +                                       class_add_buf(NULL),
 +                                       class_add_buf_len(0),
@@ -493,11 +541,9 @@ index 0000000..87cce48
 +                                       ucert(NULL), upkey(NULL), cert_chain(NULL),
 +                                       aclist(NULL), voID(""),
 +                                       hostcert(""), hostkey(""),
-+                                       newformat(false), newsubject(""),
-+                                       newissuer(""),
-+                                       rfc(false), pastac("0"), pastproxy("0"),
-+                                       keyusage(""), netscape(""), exkusage(""),
-+                                       newserial(""), selfsigned(false)
++                                       newformat(false),
++                                       rfc(false),
++                                       keyusage(""), netscape(""), exkusage("")
 +{
 +
 +  bool progversion = false;
@@ -532,8 +578,8 @@ index 0000000..87cce48
 +    "    -key      <keyfile>            Non-standard location of user key\n" \
 +    "    -certdir  <certdir>            Non-standard location of trusted cert dir\n" \
 +    "    -out      <proxyfile>          Non-standard location of new proxy cert\n" \
-+    "    -voms <voms>                   Specify voms server. :command is optional.\n" \
-+    "    -uri <uri>                     Specifies the <hostname>:<port> of the fake server.\n" \
++    "    -voms <voms>                   Specify VO name to embed in the proxy.\n" \
++    "    -uri <uri>                     Specifies the <hostname>:<port> of the VOMS server to embed in the proxy.\n" \
 +    "    -target <hostname>             Targets the AC against a specific hostname.\n" \
 +    "    -vomslife <H>                  Try to get a VOMS pseudocert valid for H hours.\n" \
 +    "    -voinfo <file>                 Gets AC information from <file>\n" \
@@ -541,22 +587,15 @@ index 0000000..87cce48
 +    "    -conf <file>                   Read options from <file>.\n" \
 +    "    -policy <policyfile>           File containing policy to store in the ProxyCertInfo extension.\n" \
 +    "    -pl, -policy-language <oid>    OID string for the policy language.\n" \
-+    "    -path-length <l>               Allow a chain of at most l proxies to be generated from this ones.\n" \
-+    "    -globus                        Globus version.\n" \
-+    "    -proxyver <n>                  Version of proxy certificate.\n" \
-+    "    -rfc                           Create RFC-conforming proxies (synonim of --proxyver 4)\n"
++    "    -path-length <l>               Allow a chain of at most l proxies to be generated from this one.\n" \
++    "    -proxyver <n>                  Version of proxy certificate. Default 4 (RFC)\n" \
++    "    -rfc                           Create RFC-conforming proxies (synonym of --proxyver 4)\n"
 +    "    -noregen                       Doesn't regenerate a new proxy for the connection.\n" \
-+    "    -separate <file>               Saves the informations returned by the server on file <file>.\n" \
-+    "    -hostcert <file>               Fake host certificate.\n" \
-+    "    -hostkey <file>                Fake host private key.\n" \
++    "    -separate <file>               Saves the information returned by the server into file <file>.\n" \
++    "    -hostcert <file>               Host certificate used for signing the attributes.\n" \
++    "    -hostkey <file>                Host private key used for signing the attributes.\n" \
 +    "    -fqan <string>                 String to include in the AC as the granted FQAN.\n" \
 +    "    -newformat                     Creates ACs according to the new format.\n" \
-+    "    -newsubject <string>           Subject of the new certificate.\n" \
-+    "    -newissuer <string>            Issuer of the new certificate.\n"\
-+    "    -pastac <seconds>\n"
-+    "    -pastac <hour:minutes>         Start the validity of the AC in the past,\n"\
-+    "    -pastproxy <seconds>\n"
-+    "    -pastproxy <hour:minutes>      Start the validity of the proxy in the past,\n"\
 +    "    -keyusage <bit<,bit<..>>>      Specifies the bits to put in the keyusage field.\n"\
 +    "                                   Allowed values: digitalSignature,nonRepudiation,\n"\
 +    "                                   keyEncipherment,dataEncipherment,keyAgreement,\n"\
@@ -569,12 +608,8 @@ index 0000000..87cce48
 +    "                                   codeSigning,emailProtection,timeStamping,msCodeInd,\n"\
 +    "                                   msCodeCom,msCTLSign,msSGC,msEFS,nsSGC,deltaCRL\n"\
 +    "                                   CRLReason,invalidityDate,SXNetID,OCSPSigning.\n"\
-+    "    -newserial <num>               Specifies the serial number of the generated proxy\n"\
-+    "                                   in hex notation.  Any length is possible.\n"\
-+    "                                   Default: let voms-proxy-fake choose.\n"\
 +    "    -extension <OID</crit><value>> Add Extension with the specified OID and with the specified value\n"\
 +    "    -acextension <OID</crit><value>> Add Extension to the AC with the specified OID and with the specified value\n"\
-+    "    -selfsigned                    Create a self-signed certificate.\n"\
 +    "    -ga <id>=<value> [(context)]   Set a GA with name 'id', value 'value' and optional context.\n"\
 +    "\n";
 +
@@ -605,7 +640,6 @@ index 0000000..87cce48
 +    {"conf",            1, NULL,                OPT_CONFIG},
 +    {"voms",            1, (int *)&voms,        OPT_STRING},
 +    {"target",          1, (int *)&targets,     OPT_MULTI},
-+    {"globus",          1,        &version,     OPT_NUM},
 +    {"proxyver",        1,        &proxyver,    OPT_NUM},
 +    {"rfc",             0, (int *)&rfc,         OPT_BOOL},
 +    {"policy",          1, (int *)&policyfile,  OPT_STRING},
@@ -618,18 +652,12 @@ index 0000000..87cce48
 +    {"hostkey",         1, (int *)&hostkey,     OPT_STRING},
 +    {"fqan",            1, (int *)&fqans,       OPT_MULTI},
 +    {"newformat",       1, (int *)&newformat,   OPT_BOOL},
-+    {"newsubject",      1, (int *)&newsubject,  OPT_STRING},
-+    {"newissuer",       1, (int *)&newissuer,   OPT_STRING},
 +    {"voinfo",          1, (int *)&voinfo,      OPT_STRING},
-+    {"pastac",          1, (int *)&pastac,      OPT_STRING},
-+    {"pastproxy",       1, (int *)&pastproxy,   OPT_STRING},
 +    {"keyusage",        1, (int *)&keyusage,    OPT_STRING},
 +    {"nscert",          1, (int *)&netscape,    OPT_STRING},
 +    {"extkeyusage",     1, (int *)&exkusage,    OPT_STRING},
-+    {"newserial",       1, (int *)&newserial,   OPT_STRING},
 +    {"extension",       1, (int *)&extensions,  OPT_MULTI},
 +    {"acextension",     1, (int *)&acextensions,OPT_MULTI},
-+    {"selfsigned",      0, (int *)&selfsigned,  OPT_BOOL},
 +    {"ga",              1, (int *)&galist,      OPT_MULTI},
 +#ifdef CLASS_ADD
 +    {"classadd",        1, (int *)class_add_buf,OPT_STRING},
@@ -695,7 +723,7 @@ index 0000000..87cce48
 +    voelem->uri = (char*)uri.c_str();
 +    voelem->voname = strdup(voms.c_str());
 +    voelem->vomslife = vomslife;
-+    voelem->pastac = strdup(pastac.c_str());
++    voelem->pastac = NULL;
 +
 +    voelem->fqans = (char **)malloc(sizeof(char*)*(fqans.size()+1));
 +    for (unsigned int i  = 0; i < fqans.size(); i++)
@@ -762,7 +790,7 @@ index 0000000..87cce48
 +  }
 +}
 +
-+void Fake::CleanAll()
++void Direct::CleanAll()
 +{
 +  free(cacertfile);
 +  free(certdir);
@@ -779,12 +807,12 @@ index 0000000..87cce48
 +  cert_chain = NULL;
 +}
 +
-+Fake::~Fake()
++Direct::~Direct()
 +{
 +  CleanAll();
 +}
 +
-+bool Fake::Run()
++bool Direct::Run()
 +{
 +  /* set output file and environment */
 +
@@ -890,7 +918,7 @@ index 0000000..87cce48
 +  return 1;
 +}
 +
-+bool Fake::CreateProxy(std::string data, AC ** aclist, int version)
++bool Direct::CreateProxy(std::string data, AC ** aclist, int version)
 +{
 +  struct VOMSProxyArguments *args = VOMS_MakeProxyArguments();
 +  int ret = -1;
@@ -904,13 +932,6 @@ index 0000000..87cce48
 +    if (!data.empty()) {
 +      args->data          = (char*)data.data();
 +      args->datalen       = data.length();
-+    }
-+    if (!newsubject.empty()) {
-+      args->newsubject       = strdup(newsubject.c_str());
-+      args->newsubjectlen    = strlen(args->newsubject);
-+    }
-+    if (!newissuer.empty()) {
-+      args->newissuer        = strdup(newissuer.c_str());
 +    }
 +    args->cert          = ucert;
 +    args->chain         = cert_chain;
@@ -926,7 +947,7 @@ index 0000000..87cce48
 +    args->limited       = limit_proxy;
 +    args->voID          = strdup(voID.c_str());
 +    args->callback      = (int (*)())kpcallback;
-+    args->pastproxy     = time_to_sec(pastproxy);
++    args->pastproxy     = NULL;
 +
 +    if (!keyusage.empty())
 +      args->keyusage      = strdup(keyusage.c_str());
@@ -937,15 +958,7 @@ index 0000000..87cce48
 +    if (!exkusage.empty())
 +      args->exkusage      = strdup(exkusage.c_str());
 +
-+    if (args->pastproxy == -1) {
-+      Print(ERROR) << "Minutes and seconds should be < 59 and >= 0" << std::endl;
-+      exit(1);
-+    }
-+
-+    if (!newserial.empty())
-+      args->newserial = strdup(newserial.c_str());
-+
-+    args->selfsigned = (selfsigned ? 1 : 0);
++    args->selfsigned = 0;
 +
 +    /* Read through extensions */
 +    std::vector<std::string>::const_iterator end = extensions.end();
@@ -964,9 +977,6 @@ index 0000000..87cce48
 +    free(args->voID);
 +    free(args->proxyfilename);
 +    free(args->filename);
-+    free(args->newsubject);
-+    free(args->newissuer);
-+    free(args->newserial);
 +    free(args->policyfile);
 +    free(args->policylang);
 +    free(args->keyusage);
@@ -999,7 +1009,7 @@ index 0000000..87cce48
 +  return ret == -1;
 +}
 +
-+bool Fake::WriteSeparate()
++bool Direct::WriteSeparate()
 +{
 +  if (aclist) {
 +    BIO * out = BIO_new(BIO_s_file());
@@ -1024,38 +1034,36 @@ index 0000000..87cce48
 +  return true;
 +}
 +
-+void Fake::Test()
++void Direct::Test()
 +{
-+  if (!selfsigned) {
-+    ASN1_UTCTIME * asn1_time = ASN1_UTCTIME_new();
-+    X509_gmtime_adj(asn1_time, 0);
-+    time_t time_now = ASN1_UTCTIME_mktime(asn1_time);
-+    ASN1_UTCTIME_free(asn1_time);
-+    time_t time_after = ASN1_UTCTIME_mktime(X509_get_notAfter(ucert));
-+    time_t time_diff = time_after - time_now ;
++  ASN1_UTCTIME * asn1_time = ASN1_UTCTIME_new();
++  X509_gmtime_adj(asn1_time, 0);
++  time_t time_now = ASN1_UTCTIME_mktime(asn1_time);
++  ASN1_UTCTIME_free(asn1_time);
++  time_t time_after = ASN1_UTCTIME_mktime(X509_get_notAfter(ucert));
++  time_t time_diff = time_after - time_now ;
 +
-+    if (time_diff < 0)
-+      Print(INFO) << std::endl << "Error: your certificate expired "
-+                  << asctime(localtime(&time_after)) << std::endl << std::flush;
-+    else if (hours && time_diff < hours*60*60)
-+      Print(INFO) << "Warning: your certificate and proxy will expire "
-+                  << asctime(localtime(&time_after))
-+                  << "which is within the requested lifetime of the proxy"
-+                  << std::endl << std::flush;
++  if (time_diff < 0)
++    Print(INFO) << std::endl << "Error: your certificate expired "
++                << asctime(localtime(&time_after)) << std::endl << std::flush;
++  else if (hours && time_diff < hours*60*60)
++    Print(INFO) << "Warning: your certificate and proxy will expire "
++                << asctime(localtime(&time_after))
++                << "which is within the requested lifetime of the proxy"
++                << std::endl << std::flush;
 +
-+    time_t time_after_proxy;
++  time_t time_after_proxy;
 +
-+    if (hours)
-+      time_after_proxy = time_now + hours*60*60;
-+    else
-+      time_after_proxy = time_after;
++  if (hours)
++    time_after_proxy = time_now + hours*60*60;
++  else
++    time_after_proxy = time_after;
 +
-+    Print(INFO) << "Your proxy is valid until "
-+                << asctime(localtime(&time_after_proxy)) << std::endl << std::flush;
-+  }
++  Print(INFO) << "Your proxy is valid until "
++              << asctime(localtime(&time_after_proxy)) << std::endl << std::flush;
 +}
 +
-+bool Fake::MakeACs(VOLIST *volist)
++bool Direct::MakeACs(VOLIST *volist)
 +{
 +  AC **actmplist = NULL;
 +  AC *ac = NULL;
@@ -1090,13 +1098,6 @@ index 0000000..87cce48
 +          // without any FQAN.
 +          char *vector[1] = {NULL };
 +          char **fqanlist = vo->fqans ? vo->fqans : vector;
-+          int seconds = vo->pastac ? time_to_sec(vo->pastac) : 0;
-+
-+          if (seconds == -1) {
-+            Print(ERROR) << "Minutes and seconds for VO: " << vo->voname <<
-+              " should be < 59 and >= 0" << std::endl;
-+            exit(1);
-+          }
 +
 +          /* Now do extensions */
 +          STACK_OF(X509_EXTENSION) *exts = NULL;
@@ -1107,7 +1108,7 @@ index 0000000..87cce48
 +          if (ac)
 +            res = writeac(hcert, NULL, holder, hkey, (BIGNUM *)(BN_value_one()), fqanlist,
 +                          vo->targets, attributes, &ac, vo->voname, vo->uri, vo->vomslife * 3600, !newformat,
-+                          seconds, exts);
++                          0, exts);
 +
 +          if (vo->fqans)
 +            listfree(vo->fqans, (freefn)free);
@@ -1116,7 +1117,6 @@ index 0000000..87cce48
 +
 +          sk_X509_EXTENSION_pop_free(exts, X509_EXTENSION_free);
 +          free(vo->voname);
-+          free(vo->pastac);
 +
 +        }
 +      }
@@ -1176,7 +1176,7 @@ index 0000000..87cce48
 +  return true;
 +}
 +
-+bool Fake::pcdInit() {
++bool Direct::pcdInit() {
 +
 +  int status = false;
 +
@@ -1201,11 +1201,8 @@ index 0000000..87cce48
 +
 +  Print(DEBUG) << "Output to " << outfile << std::endl << std::flush;
 +
-+  /* No need to load certificates if we are creating a self-signed cert. */
-+  if (!selfsigned) {
-+    if (!load_credentials(certfile, keyfile, &ucert, &cert_chain, &upkey, pw_cb))
-+      goto err;
-+  }
++  if (!load_credentials(certfile, keyfile, &ucert, &cert_chain, &upkey, pw_cb))
++    goto err;
 +
 +  status = true;
 +
@@ -1219,7 +1216,7 @@ index 0000000..87cce48
 +
 +}
 +
-+void Fake::Error()
++void Direct::Error()
 +{
 +  std::string output = OpenSSLError(debug);
 +
@@ -1230,13 +1227,13 @@ index 0000000..87cce48
 +}
 +
 +
-+void Fake::exitError(const char *string)
++void Direct::exitError(const char *string)
 +{
 +  Print(ERROR) << string << std::endl;
 +  exit(1);
 +}
 +
-+bool Fake::VerifyOptions()
++bool Direct::VerifyOptions()
 +{
 +  if (debug) {
 +    quiet = false;
@@ -1251,79 +1248,41 @@ index 0000000..87cce48
 +      exitError("Error: You must specify an host key!");
 +  }
 +
-+  /* set globus version */
++  if (rfc && proxyver != 0)
++    exitError("Used both -rfc and --proxyver!\nChoose one or the other.");
 +
-+  version = globus(version);
-+  if (version == 0) {
-+    version = 22;
-+    Print(DEBUG) << "Unable to discover Globus version: trying for 2.2" << std::endl;
++  if (rfc)
++    proxyver = 4;
++
++  /* set proxy version */
++
++  if (proxyver!=2 && proxyver!=3 && proxyver!=4 && proxyver!=0)
++    exitError("Error: proxyver must be 2 or 3 or 4");
++  else if (proxyver==0) {
++    Print(DEBUG) << "Unspecified proxy version, settling on version 4 (RFC)" << std::endl;
++    proxyver = 4;
 +  }
-+  else
-+    Print(DEBUG) << "Detected Globus version: " << version << std::endl;
 +
-+  if (!selfsigned) {
-+    /* proxyversion is only significant if this is not a selfsigned certificate */
-+    if (rfc && proxyver != 0)
-+      exitError("Used both -rfc and --proxyver!\nChoose one or the other.");
++  /* PCI extension option */
 +
-+    if (rfc)
-+      proxyver = 4;
-+
-+    /* set proxy version */
-+
-+    if (proxyver!=2 && proxyver!=3 && proxyver!=4 && proxyver!=0)
-+      exitError("Error: proxyver must be 2 or 3 or 4");
-+    else if (proxyver==0) {
-+      Print(DEBUG) << "Unspecified proxy version, settling on version: ";
-+
-+      if (version<30)
-+        proxyver = 2;
-+      else if (version<40)
-+        proxyver = 3;
-+      else
-+        proxyver = 4;
-+
-+      Print(DEBUG) << proxyver << std::endl;
-+    }
-+
-+    /* PCI extension option */
-+
-+    if (proxyver>3) {
-+      if (!policylang.empty())
-+        if (policyfile.empty())
-+          exitError("Error: if you specify a policy language you also need to specify a policy file");
-+    }
-+
-+    if (proxyver>3) {
-+      Print(DEBUG) << "PCI extension info: " << std::endl << " Path length: " << pathlength << std::endl;
-+
-+      if (policylang.empty())
-+        Print(DEBUG) << " Policy language not specified." << std::endl;
-+      else
-+        Print(DEBUG) << " Policy language: " << policylang << std::endl;
-+
++  if (proxyver>3) {
++    if (!policylang.empty())
 +      if (policyfile.empty())
-+        Print(DEBUG) << " Policy file not specified." << std::endl;
-+      else
-+        Print(DEBUG) << " Policy file: " << policyfile << std::endl;
-+    }
++        exitError("Error: if you specify a policy language you also need to specify a policy file");
 +  }
-+  else {
-+    /* selfsigned is specified */
-+    if (proxyver != 0 || noregen || rfc || !policyfile.empty() || !policylang.empty())
-+      exitError("Error: --proxyver, --rfc, --policyfile, --policylang, --noregen are only significant when --selfsigned is not specified.");
 +
-+    if (newsubject.empty() && newissuer.empty())
-+      exitError("Error: At least one of --newsubject and --newissuer must be specified for --selfsigned.");
++  if (proxyver>3) {
++    Print(DEBUG) << "PCI extension info: " << std::endl << " Path length: " << pathlength << std::endl;
 +
-+    if (newsubject.empty())
-+      newsubject = newissuer;
++    if (policylang.empty())
++      Print(DEBUG) << " Policy language not specified." << std::endl;
++    else
++      Print(DEBUG) << " Policy language: " << policylang << std::endl;
 +
-+    if (newissuer.empty())
-+      newissuer = newsubject;
-+
-+    if (newissuer != newsubject)
-+      exitError("Error: --newsubject and --newissuer should be the same for self-signed certificates.");
++    if (policyfile.empty())
++      Print(DEBUG) << " Policy file not specified." << std::endl;
++    else
++      Print(DEBUG) << " Policy file: " << policyfile << std::endl;
 +  }
 +
 +  /* controls that number of bits for the key is appropiate */
@@ -1359,12 +1318,6 @@ index 0000000..87cce48
 +    }
 +  }
 +
-+  /* newserial option */
-+  if (!newserial.empty())
-+    for (unsigned int i = 0; i < newserial.length(); i++)
-+      if (!isxdigit(newserial[i]))
-+        exitError("Error: Serial number should be an hexadecimal string.");
-+
 +  return true;
 +}
 +
@@ -1377,7 +1330,7 @@ index 0000000..87cce48
 +
 +nullstream voidstream;
 +
-+std::ostream& Fake::Print(message_type type)
++std::ostream& Direct::Print(message_type type)
 +{
 +  if (type == FORCED)
 +    return std::cout;
@@ -1453,7 +1406,7 @@ index 0000000..87cce48
 +  return value;
 +}
 +
-+STACK_OF(X509_EXTENSION) *Fake::create_and_add_extension(const std::string &string, STACK_OF(X509_EXTENSION) *exts)
++STACK_OF(X509_EXTENSION) *Direct::create_and_add_extension(const std::string &string, STACK_OF(X509_EXTENSION) *exts)
 +{
 +  bool alloced = false;
 +  X509_EXTENSION *ext = NULL;
@@ -1507,7 +1460,7 @@ index 0000000..87cce48
 +  return minimum;
 +}
 +
-+X509_EXTENSION *Fake::create_extension(const std::string &string)
++X509_EXTENSION *Direct::create_extension(const std::string &string)
 +{
 +  std::string::size_type colon_position = string.find_first_of(':');
 +  std::string::size_type slash_position = string.find_first_of('/');
@@ -1594,7 +1547,7 @@ index 0000000..87cce48
 +  return value;
 +}
 +
-+void Fake::PrintProxyCreationError(int error, void *additional)
++void Direct::PrintProxyCreationError(int error, void *additional)
 +{
 +  char *msg = ProxyCreationError(error, additional);
 +
@@ -1608,10 +1561,10 @@ index 0000000..87cce48
 +}
 diff --git a/src/utils/vomsdirect.h b/src/utils/vomsdirect.h
 new file mode 100644
-index 0000000..515c87a
+index 0000000..032b99d
 --- /dev/null
 +++ b/src/utils/vomsdirect.h
-@@ -0,0 +1,161 @@
+@@ -0,0 +1,152 @@
 +/*********************************************************************
 + *
 + * Authors: Vincenzo Ciaschini - Vincenzo.Ciaschini@cnaf.infn.it
@@ -1637,8 +1590,8 @@ index 0000000..515c87a
 + * follows.
 + *
 + *********************************************************************/
-+#ifndef VOMS_UTILS_VOMSFAKE_H
-+#define VOMS_UTILS_VOMSFAKE_H
++#ifndef VOMS_UTILS_VOMSDIRECT_H
++#define VOMS_UTILS_VOMSDIRECT_H
 +
 +#include "config.h"
 +
@@ -1656,7 +1609,7 @@ index 0000000..515c87a
 +
 +enum message_type {FORCED, INFO, WARN, ERROR, DEBUG};
 +
-+class Fake {
++class Direct {
 +
 + private:
 +
@@ -1694,9 +1647,6 @@ index 0000000..515c87a
 +  // doesn't regenerate proxy, use old
 +  bool               noregen;
 +
-+  // globus version
-+  int                version;
-+
 +  std::string        voms;
 +  std::string        targetlist;
 +  std::vector<std::string> fqans;
@@ -1721,12 +1671,10 @@ index 0000000..515c87a
 +  std::string hostcert, hostkey;
 +
 +  bool newformat;
-+  std::string newsubject;
-+  std::string newissuer;
 + public:
 +
-+  Fake(int argc, char** argv);
-+  ~Fake();
++  Direct(int argc, char** argv);
++  ~Direct();
 +  bool Run();
 +  std::vector<std::string> galist;
 + private:
@@ -1759,16 +1707,12 @@ index 0000000..515c87a
 +  STACK_OF(X509_EXTENSION) *create_and_add_extension(const std::string &string, STACK_OF(X509_EXTENSION) *exts);
 +
 +  bool rfc;
-+  std::string pastac;
-+  std::string pastproxy;
 +  std::string keyusage;
 +  std::string netscape;
 +  std::string exkusage;
-+  std::string newserial;
 +
 +  std::vector<std::string> extensions;
 +  std::vector<std::string> acextensions;
-+  bool selfsigned;
 +  void PrintProxyCreationError(int error, void *additional);
 +};
 +
