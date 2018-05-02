@@ -1,6 +1,6 @@
 Name:           osg-release
 Version:        3.4
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        OSG Software for Enterprise Linux repository configuration
 
 Group:          System Environment/Base
@@ -60,6 +60,9 @@ sed -i -e 's/gpgcheck=1/gpgcheck=0/' $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d/*
 
 
 %changelog
+* Wed May 02 2018 Carl Edquist <edquist@cs.wisc.edu> - 3.4-5
+- Drop consider_as_osg from *.repo files (SOFTWARE-3204)
+
 * Wed Mar 07 2018 Brian Lin <blin@cs.wisc.edu> - 3.4-4
 - Revert HTTP -> HTTPS testing for Koji repositories due to certificate verification failures
 
