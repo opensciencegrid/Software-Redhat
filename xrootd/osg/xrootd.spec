@@ -21,7 +21,7 @@
 
 Name:		xrootd
 Epoch:		1
-Version:	4.8.2
+Version:	4.8.3
 Release:        %{?_alphatag:0.}%{_release}%{?_alphatag:.%{_alphatag}}%{?dist}
 Summary:	Extended ROOT file server
 
@@ -665,6 +665,9 @@ fi
 %doc %{_pkgdocdir}
 
 %changelog
+* Thu May 03 2018 Marian Zvada <marian.zvada@cern.ch> - 1:4.8.3-1
+- update to 4.8.3; SOFTWARE-3242
+
 * Tue Apr 17 2018 Marian Zvada <marian.zvada@cern.ch> - 1:4.8.2-1
 - update to 4.8.2; SOFTWARE-3173
 
