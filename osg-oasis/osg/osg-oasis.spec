@@ -8,8 +8,8 @@ BuildArch: noarch
 # Note: cannot require an exact release number (after a dash) unless 
 #   including the dist as well, e.g. -2%{?dist}
 Requires: cvmfs = 2.5.0
-Requires: cvmfs-config-osg = 1.2
-Requires: cvmfs-x509-helper = 0.9
+Requires: cvmfs-config-osg = 2.0
+Requires: cvmfs-x509-helper = 1.0
 
 %description
 %{summary}
