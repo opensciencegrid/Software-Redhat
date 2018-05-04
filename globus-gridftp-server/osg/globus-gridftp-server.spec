@@ -13,7 +13,7 @@
 Name:		globus-gridftp-server
 %global _name %(tr - _ <<< %{name})
 Version:	12.2
-Release:	1.2%{?dist}
+Release:	1.3%{?dist}
 Summary:	Globus Toolkit - Globus GridFTP Server
 
 License:	ASL 2.0
@@ -39,6 +39,9 @@ Source15:       globus-gridftp-sshftp-stop
 #               Add IPv6 enabled by default                                                                                                          
 #               SOFTWARE-2920
 Source16:       ipv6.conf
+#               Increase transfer timeout
+#               SOFTWARE-3241
+Source17:       timeout.conf
 #		Fix globus-gridftp-server-setup-chroot for kfreebsd and hurd
 Patch0:		globus-gridftp-server-unames.patch
 #		Add an optional IPv6 address to EPSV response
@@ -200,7 +203,7 @@ install -m 0644 %{SOURCE7} $RPM_BUILD_ROOT/usr/share/osg/sysconfig/%{name}
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d
 install -m 0644 %{SOURCE8} $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/%{name}.logrotate
 
-install -m 0644 %{SOURCE16} $RPM_BUILD_ROOT%{_sysconfdir}/gridftp.d/ipv6.conf
+install -m 0644 %{SOURCE16} %{SOURCE17} $RPM_BUILD_ROOT%{_sysconfdir}/gridftp.d/
 
 # Remove license file from pkgdocdir if licensedir is used
 %{?_licensedir: rm %{buildroot}%{_pkgdocdir}/GLOBUS_LICENSE}
@@ -269,6 +272,7 @@ fi
 %config(noreplace) %{_sysconfdir}/sysconfig/%{name}
 %config(noreplace) %{_sysconfdir}/gridftp.conf
 %config(noreplace) %{_sysconfdir}/gridftp.d/ipv6.conf
+%config(noreplace) %{_sysconfdir}/gridftp.d/timeout.conf
 %config(noreplace) %{_sysconfdir}/gridftp.gfork
 %config(noreplace) %{_sysconfdir}/xinetd.d/gridftp
 /usr/share/osg/sysconfig/%{name}
@@ -293,7 +297,10 @@ fi
 %{_libdir}/pkgconfig/%{name}.pc
 
 %changelog
-* Mon Oct 16 2017 Edgar Fajardo <emfajard@ucsd.edu> 12.2-1.2.osg
+* Fri May 04 2018 Mátyás Selmeci <matyas@cs.wisc.edu> - 12.2-1.3.osg
+- Increase transfer timeout to 2 hours (SOFTWARE-3241)
+
+* Mon Oct 16 2017 Edgar Fajardo <emfajard@ucsd.edu> - 12.2-1.2.osg
 - Added IPv6 enabled by default
 
 * Tue Aug 22 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 12.2-1.1.osg
