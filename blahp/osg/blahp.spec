@@ -5,7 +5,7 @@
 
 Name:		blahp
 Version:	1.18.36.bosco
-Release:	1%{?gitrev:.%{gitrev}}%{?dist}
+Release:	2%{?gitrev:.%{gitrev}}%{?dist}
 Summary:	gLite BLAHP daemon
 
 Group:		System/Libraries
@@ -178,6 +178,9 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Mon May 07 2018 Carl Edquist <edquist@cs.wisc.edu> - 1.18.36.bosco-2
+- Rebuild against condor 8.7.8 (SOFTWARE-3250)
+
 * Thu Mar 15 2018 Brian Lin <blin@cs.wisc.edu> - 1.18.36.bosco-1
 - Verify input file existence before submission (SOFTWARE-3154)
 - Save debugging dirs if job submission fails (SOFTWARE-2827)
