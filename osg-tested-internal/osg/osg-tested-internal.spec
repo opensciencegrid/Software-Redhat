@@ -1,7 +1,7 @@
 Name:      osg-tested-internal
 Summary:   All OSG packages we test (internal use only)
 Version:   3.4
-Release:   5%{?dist}
+Release:   6%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -52,6 +52,7 @@ Requires: singularity-runtime
 
 Requires: xrootd
 Requires: xrootd-client
+Requires: xrootd-lcmaps
 
 Requires: voms-server
 Requires: voms-clients-cpp
@@ -75,6 +76,9 @@ Requires: mysql-server
 %files
 
 %changelog
+* Wed May 23 2018 Brian Lin <blin@cs.wisc.edu> - 3.4-6
+- Add xrootd-lcmaps (SOFTWARE-3264)
+
 * Tue Sep 19 2017 Edgar Fajardo <emfajard@ucsd.edu> - 3.4-5
 - Added singularity-runtime to the requirements (SOFTWARE-2894)
 
