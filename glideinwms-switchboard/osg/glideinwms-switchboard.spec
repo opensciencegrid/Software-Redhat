@@ -10,7 +10,6 @@ Group:      System Environment/Libraries
 License:    Fermitools Software Legal Information (Modified BSD License)
 URL:        http://glideinwms.fnal.gov
 BuildArch:  x86_64
-Requires:   condor >= 8.7.2
 Source:     glideinwms-switchboard.tar.gz
 
 %description
@@ -26,22 +25,17 @@ Clean out of client log and proxy files use it as well.
 make %{BINARY_FILE}
 
 %install
-
-mkdir -p "%{buildroot}/usr/sbin"
-if [ ! -e /usr/sbin/%{BINARY_FILE} ]; then
-   cp %{BINARY_FILE} "%{buildroot}/usr/sbin/"
+mkdir -p "%{buildroot}%{_sbindir}"
+if [ ! -e %{buildroot}%{_sbindir}/%{BINARY_FILE} ]; then
+   cp %{BINARY_FILE} "%{buildroot}%{_sbindir}/"
 fi
-
-#Set the correct permissions to the file
-chmod 6755 %{buildroot}/usr/sbin/%{BINARY_FILE}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
-/usr/sbin/%{BINARY_FILE}
-
-%config(noreplace) /usr/sbin/condor_root_switchboard
+%{_sbindir}/%{BINARY_FILE}
+%attr(6755, root, root) %{_sbindir}/%{BINARY_FILE}
 
 %changelog
 * Wed May 16 2018 Lorena Lobato Pardavila <llobato@fnal.gov> - 1.0.0
