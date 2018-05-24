@@ -1,4 +1,4 @@
-%define version v1_0_0
+%define version 1.0.0
 %define release 1
 %define BINARY_FILE condor_root_switchboard
 
@@ -10,7 +10,7 @@ Group:      System Environment/Libraries
 License:    Fermitools Software Legal Information (Modified BSD License)
 URL:        http://glideinwms.fnal.gov
 BuildArch:  x86_64
-Source:     glideinwms-switchboard.tar.gz
+Source:     glideinwms-switchboard-v1_0_0.tar.gz
 
 %description
 This is a package to prevent permissions problems when privilege separation is
