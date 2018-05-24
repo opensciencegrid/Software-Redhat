@@ -1,4 +1,4 @@
-%define version 1.0.0
+%define version v1_0_0
 %define release 1
 %define BINARY_FILE condor_root_switchboard
 
@@ -38,5 +38,5 @@ rm -rf $RPM_BUILD_ROOT
 %attr(6755, root, root) %{_sbindir}/%{BINARY_FILE}
 
 %changelog
-* Wed May 16 2018 Lorena Lobato Pardavila <llobato@fnal.gov> - 1.0.0
+* Wed May 16 2018 Lorena Lobato Pardavila <llobato@fnal.gov> - v1_0_0
 - Initial build.
