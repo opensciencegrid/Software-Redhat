@@ -1,5 +1,5 @@
 %define version 1.0.0
-%define release 1
+%define release 2
 %define BINARY_FILE condor_root_switchboard
 
 Name:       glideinwms-switchboard
@@ -9,7 +9,6 @@ Summary:    This package is used in all Factories to prevent permissions problem
 Group:      System Environment/Libraries
 License:    Fermitools Software Legal Information (Modified BSD License)
 URL:        http://glideinwms.fnal.gov
-BuildArch:  x86_64
 Source:     glideinwms-switchboard-v1_0_0.tar.gz
 
 %description
