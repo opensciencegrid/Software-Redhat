@@ -1,2 +1,0 @@
-This code was provided by Zach K. Miller to help us to replace the functionalities from condor_root_switchboard (HTCondor plans not to support it anymore and removed the switchboard from 8.7.2)
-We  are re-packaging it for use with GlidienWMS.
