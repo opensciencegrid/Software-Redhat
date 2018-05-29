@@ -22,7 +22,7 @@
 # 
 
 
-%{!?_rel:%{expand:%%global _rel 1}}
+%{!?_rel:%{expand:%%global _rel 2}}
 
 Summary: Application and environment virtualization
 Name: singularity
@@ -45,6 +45,9 @@ Requires: squashfs-tools
 
 Requires: %{name}-runtime = %{version}-%{release}
 
+Patch0: 1525.patch
+Patch1: 1532.patch
+
 %description
 Singularity provides functionality to make portable
 containers that can be used across host environments.
@@ -65,7 +68,8 @@ This package contains support for running containers created
 by the %{name} package.
 
 %prep
-%setup
+%setup -q
+%patch0 -p1
 
 
 %build
@@ -162,6 +166,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue May 29 2018 Edgar Fajardo <emfajard@ucsd.edu> 2.5.1-2
+- Add PR #1525 patch SOFTWARE-3230
+
 * Thu May 03 2018 Dave Dykstra <dwd@fnal.gov> - 2.5.1-1
 - Package upstream release for OSG
 - Remove PR #1491 patch
@@ -206,7 +213,7 @@ rm -rf $RPM_BUILD_ROOT
 * Tue Sep 5 2017 Edgar Fajardo <emfajard@ucsd.edu> 2.3.1-0.1.4
 - Added pathc for singularity on el6.
 
-* Tue Aug 2 2017 Edgar Fajardo <emfajard@ucsd.edu> 2.3.1-0.1.3
+* Wed Aug 2 2017 Edgar Fajardo <emfajard@ucsd.edu> 2.3.1-0.1.3
 - Split the package bit into the runtime and main (SOFTWARE-2755)
 - Update to upstream's singularity-2.3.1-0.1 singularity.spec
 
