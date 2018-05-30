@@ -46,7 +46,6 @@ Requires: squashfs-tools
 Requires: %{name}-runtime = %{version}-%{release}
 
 Patch0: 1525.patch
-Patch1: 1532.patch
 
 %description
 Singularity provides functionality to make portable
