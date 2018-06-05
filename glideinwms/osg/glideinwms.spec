@@ -12,8 +12,8 @@
 # ------------------------------------------------------------------------------
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
-%define version 3.3.3
-%define release 3
+%define version 3.4
+%define release 1
 
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
@@ -49,8 +49,6 @@ Source8:        gwms-frontend.sysconfig
 Source9:        gwms-factory.sysconfig
 Source11:       creation/templates/frontend_startup_sl7
 Source12:       creation/templates/factory_startup_sl7
-
-Patch0:         sw3163_instance_var.patch
 
 %description
 This is a package for the glidein workload management system.
@@ -210,7 +208,7 @@ install of wmscollector + wms factory
 %prep
 %setup -q -n glideinwms
 # Apply the patches here if any
-%patch0 -p1
+#%patch -P 0 -p1
 
 
 %build
@@ -834,11 +832,20 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/condor/certs/condor_mapfile
 
 %changelog
-* Mon Apr 30 2018 Brian Lin <blin@cs.wisc.edu> - 3.3.3-3
+* Tue Jun 5 2018 Marco Mambelli <marcom@fnal.gov> - 3.4-1
+- Glideinwms v3.4
+- Release Notes: http://glideinwms.fnal.gov/doc.v3_4/history.html
+- Release candidates: 3.4-0.1.rc1
+
+* Mon Apr 30 2018 Brian Lin <blin@cs.wisc.edu> - 3.2.22.2-4
 - Fix proxy renewal cron format
 
-* Thu Apr 26 2018 Brian Lin <blin@cs.wisc.edu> - 3.3.3-2
+* Thu Apr 26 2018 Brian Lin <blin@cs.wisc.edu> - 3.2.22.2-3
 - Fix bug in proxy ownership code
+
+* Wed Apr 25 2018 Brian Lin <blin@cs.wisc.edu> - 3.2.22.2-2
+- Fix automatically renewed proxy ownership
+- Set the proper permissions and owners for service, timer, and cron files
 
 * Wed Apr 25 2018 Marco Mambelli <marcom@fnal.gov> - 3.3.3-1
 - Glideinwms v3.3.3
