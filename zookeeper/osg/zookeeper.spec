@@ -116,6 +116,7 @@ BuildRequires: java-devel = 1:1.7.0
 BuildRequires: jpackage-utils
 BuildRequires: /usr/lib/java-1.7.0
 BuildRequires: /bin/hostname
+BuildRequires: libtool
 
 %description 
 ZooKeeper is a centralized service for maintaining configuration information, 
