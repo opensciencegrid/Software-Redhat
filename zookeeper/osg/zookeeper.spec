@@ -5,10 +5,10 @@
 %global use_systemd 0
 %endif
 
-%define zookeeper_version 3.4.3+15
-%define zookeeper_patched_version 3.4.3-cdh4.0.1
-%define zookeeper_base_version 3.4.3
-%define zookeeper_release 1.cdh4.0.1.p0.6%{?dist}
+%define zookeeper_version 3.4.5+cdh5.14.2+142
+%define zookeeper_patched_version 3.4.5-cdh5.14.2
+%define zookeeper_base_version 3.4.5 
+%define zookeeper_release 1.cdh5.14.2.p0.11.1%{?dist}
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
@@ -38,23 +38,19 @@
 %define svc_zookeeper %{name}-server
 %define man_dir %{_mandir}
 
+# Disabling the following scripts from running:
+# symbol stripping - not relevant here.
+# jar repacking - to save time.
+# byte-compiling python code - not relevant here.
+# brp-compress - not relevant here.
+#              - This compresses man and info pages under
+#                 ./usr/man/man* ./usr/man/*/man* ./usr/info \
+#                 ./usr/share/man/man* ./usr/share/man/*/man* ./usr/share/info \
+#                 ./usr/kerberos/man ./usr/X11R6/man/man* ./usr/lib/perl5/man/man* \
+#                 ./usr/share/doc/*/man/man* ./usr/lib/*/man/man*
+%define __os_install_post %{nil}
+
 %if  %{?suse_version:1}0
-
-# Only tested on openSUSE 11.4. le'ts update it for previous release when confirmed
-%if 0%{suse_version} > 1130
-%define suse_check \# Define an empty suse_check for compatibility with older sles
-%endif
-
-# SLES is more strict anc check all symlinks point to valid path
-# But we do point to a hadoop jar which is not there at build time
-# (but would be at install time).
-# Since our package build system does not handle dependencies,
-# these symlink checks are deactivated
-%define __os_install_post \
-    %{suse_check} ; \
-    /usr/lib/rpm/brp-compress ; \
-    %{nil}
-
 
 %define doc_zookeeper %{_docdir}/%{name}
 %define alternatives_cmd update-alternatives
@@ -83,7 +79,7 @@ Summary: A high-performance coordination service for distributed applications.
 URL: http://zookeeper.apache.org/
 Group: Development/Libraries
 Buildroot: %{_topdir}/INSTALL/%{name}-%{version}
-License: APL2
+License: ASL 2.0
 Source0: %{name}-%{zookeeper_patched_version}.tar.gz
 Source1: do-component-build
 Source2: install_zookeeper.sh
@@ -91,12 +87,24 @@ Source3: zookeeper-server.sh
 Source4: zookeeper-server.sh.suse
 Source5: zookeeper.1
 Source6: zoo.cfg
+Source7: zookeeper.default
+Source8: packaging_functions.sh
 
 # EL 7: tmpfiles.d configuration for the /run directory
-Source7: %{name}-tmpfiles.conf
+Source9: %{name}-tmpfiles.conf
 
-BuildArch: noarch
-BuildRequires: ant, autoconf, automake
+BuildRequires: ant, autoconf, automake, cppunit-devel
+%if %{?suse_version:1}0
+Requires(pre): coreutils, pwdutils, /usr/sbin/groupadd, /usr/sbin/useradd
+%else
+Requires(pre): coreutils, shadow-utils, /usr/sbin/groupadd, /usr/sbin/useradd
+%endif
+Requires(post): %{alternatives_dep}
+Requires(preun): %{alternatives_dep}
+Requires: bigtop-utils >= 0.7
+Requires: java >= 1:1.7.0
+Requires: jpackage-utils
+Conflicts: hadoop-zookeeper
 
 #ADDED BY OSG
 %if 0%{?rhel} > 6
@@ -109,14 +117,6 @@ BuildRequires: jpackage-utils
 BuildRequires: /usr/lib/java-1.7.0
 BuildRequires: /bin/hostname
 Patch0: mvn304.patch
-
-Requires(pre): coreutils, shadow-utils, /usr/sbin/groupadd, /usr/sbin/useradd
-Requires(post): %{alternatives_dep}
-Requires(preun): %{alternatives_dep}
-Requires: bigtop-utils
-Requires: java >= 1:1.7.0
-Requires: jpackage-utils
-Conflicts: hadoop-zookeeper
 
 %description 
 ZooKeeper is a centralized service for maintaining configuration information, 
@@ -131,11 +131,10 @@ difficult to manage. Even when done correctly, different implementations of thes
 %package server
 Summary: The Hadoop Zookeeper server
 Group: System/Daemons
-Provides: %{svc_zookeeper}
 Requires: %{name} = %{version}-%{release}
+Requires(pre): %{name} = %{version}-%{release}
 Requires(post): %{chkconfig_dep}
 Requires(preun): %{service_dep}, %{chkconfig_dep}
-BuildArch: noarch
 
 %if  %{?suse_version:1}0
 # Required for init scripts
@@ -151,12 +150,19 @@ Requires: initscripts
 # So I will suppose anything that is not Mageia or a SUSE will be a RHEL/CentOS/Fedora
 %if %{!?suse_version:1}0 && %{!?mgaversion:1}0
 # Required for init scripts
-Requires: redhat-lsb
+Requires: /lib/lsb/init-functions
 %endif
 
 
 %description server
 This package starts the zookeeper server on startup
+
+%package native
+Summary: C bindings for ZooKeeper clients
+Group: Development/Libraries
+
+%description native
+Provides native libraries and development headers for C / C++ ZooKeeper clients. Consists of both single-threaded and multi-threaded implementations.
 
 %prep
 %setup -n %{name}-%{zookeeper_patched_version}
@@ -168,15 +174,18 @@ cp %{SOURCE1} .
 %endif
 
 %build
+export COMPONENT_HASH=8ba42f50f49cedf21dde09fccd232c5b2bae6a9b
 env FULL_VERSION=%{zookeeper_patched_version} bash do-component-build
 
 %install
-cp $RPM_SOURCE_DIR/zookeeper.1 $RPM_SOURCE_DIR/zoo.cfg .
-sh %{SOURCE2} \
+cp $RPM_SOURCE_DIR/zookeeper.1 $RPM_SOURCE_DIR/zoo.cfg $RPM_SOURCE_DIR/zookeeper.default .
+env FULL_VERSION=%{zookeeper_patched_version} bash %{SOURCE2} \
           --build-dir=build/%{name}-%{zookeeper_patched_version} \
           --doc-dir=%{doc_zookeeper} \
-          --prefix=$RPM_BUILD_ROOT
-
+          --prefix=$RPM_BUILD_ROOT \
+          --system-include-dir=%{_includedir} \
+          --system-lib-dir=%{_libdir} \
+          --source-dir=$RPM_SOURCE_DIR
 
 %if  %{?suse_version:1}0
 orig_init_file=%{SOURCE4}
@@ -200,14 +209,14 @@ mkdir -p %{buildroot}%{run_zookeeper}
 
 %pre
 getent group zookeeper >/dev/null || groupadd -r zookeeper
-getent passwd zookeeper > /dev/null || useradd -c "ZooKeeper" -s /sbin/nologin -g zookeeper -r -d %{run_zookeeper} zookeeper 2> /dev/null || :
+getent passwd zookeeper > /dev/null || useradd -c "ZooKeeper" -s /sbin/nologin -g zookeeper -r -d %{vlb_zookeeper} zookeeper 2> /dev/null || :
 
 %__install -d -o zookeeper -g zookeeper -m 0755 %{log_zookeeper}
+%__install -d -o zookeeper -g zookeeper -m 0755 %{vlb_zookeeper}
 
 # Manage configuration symlink
 %post
 %{alternatives_cmd} --install %{etc_zookeeper}/conf %{name}-conf %{etc_zookeeper}/conf.dist 30
-%__install -d -o zookeeper -g zookeeper -m 0755 %{vlb_zookeeper}
 
 %preun
 if [ "$1" = 0 ]; then
@@ -236,6 +245,7 @@ fi
 #######################
 %files
 %config(noreplace) %{etc_zookeeper}/conf.dist
+%config(noreplace) /etc/default/zookeeper
 %{lib_zookeeper}
 %{bin_zookeeper}/zookeeper-server
 %{bin_zookeeper}/zookeeper-server-initialize
@@ -253,7 +263,18 @@ fi
 %dir %{run_zookeeper}
 %attr(0755, %{name}, %{name}) %{run_zookeeper}
 
+%files native
+%defattr(-,root,root)
+%{lib_zookeeper}-native
+%{bin_zookeeper}/cli_*
+%{bin_zookeeper}/load_gen*
+%{_includedir}/zookeeper
+%{_libdir}/*
+
 %changelog
+* Thu Jun 07 2018 Carl Edquist <edquist@cs.wisc.edu> - 3.4.5+cdh5.14.2+142-1.cdh5.14.2.p0.11.1
+- Update to zookeeper 3.4.5 from CDH5 (SOFTWARE-3280)
+
 * Thu Jan 25 2018 Carl Edquist <edquist@cs.wisc.edu> - 3.4.3+15-1.cdh4.0.1.p0.6
 - Allow Java >= 1.7 (SOFTWARE-2993, SOFTWARE-2981)
 
