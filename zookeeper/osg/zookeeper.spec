@@ -89,6 +89,7 @@ Source5: zookeeper.1
 Source6: zoo.cfg
 Source7: zookeeper.default
 Source8: packaging_functions.sh
+Patch0: packaging_functions.patch
 
 # EL 7: tmpfiles.d configuration for the /run directory
 Source9: %{name}-tmpfiles.conf
@@ -166,6 +167,7 @@ Provides native libraries and development headers for C / C++ ZooKeeper clients.
 
 %prep
 %setup -n %{name}-%{zookeeper_patched_version}
+patch %{SOURCE8} %{PATCH0}
 
 %build
 %if 0%{?rhel} < 7
