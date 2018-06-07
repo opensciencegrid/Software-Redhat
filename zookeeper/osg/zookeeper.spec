@@ -116,7 +116,6 @@ BuildRequires: java-devel = 1:1.7.0
 BuildRequires: jpackage-utils
 BuildRequires: /usr/lib/java-1.7.0
 BuildRequires: /bin/hostname
-Patch0: mvn304.patch
 
 %description 
 ZooKeeper is a centralized service for maintaining configuration information, 
@@ -167,15 +166,13 @@ Provides native libraries and development headers for C / C++ ZooKeeper clients.
 %prep
 %setup -n %{name}-%{zookeeper_patched_version}
 
-#Changes needed to do-component-build
-cp %{SOURCE1} .
-%if 0%{?rhel} < 7
-%patch0 -p0
-%endif
-
 %build
+%if 0%{?rhel} < 7
+# use this mvn in do-component-build (Source1)
+export PATH=/usr/share/apache-maven-3.0.4/bin:$PATH
+%endif
 export COMPONENT_HASH=8ba42f50f49cedf21dde09fccd232c5b2bae6a9b
-env FULL_VERSION=%{zookeeper_patched_version} bash do-component-build
+env FULL_VERSION=%{zookeeper_patched_version} bash %{SOURCE1}
 
 %install
 cp $RPM_SOURCE_DIR/zookeeper.1 $RPM_SOURCE_DIR/zoo.cfg $RPM_SOURCE_DIR/zookeeper.default .
