@@ -4,7 +4,7 @@
 %define bl_libexecdir %{_libexecdir}/%{name}
 
 Name:		blahp
-Version:	1.18.36.bosco
+Version:	1.18.37.bosco
 Release:	1%{?gitrev:.%{gitrev}}%{?dist}
 Summary:	gLite BLAHP daemon
 
@@ -178,6 +178,9 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Wed Jun 13 2018 Carl Edquist <edquist@cs.wisc.edu> - 1.18.37.bosco-1
+- Disable command substitution in shell word expansion (SOFTWARE-3288)
+
 * Thu Mar 15 2018 Brian Lin <blin@cs.wisc.edu> - 1.18.36.bosco-1
 - Verify input file existence before submission (SOFTWARE-3154)
 - Save debugging dirs if job submission fails (SOFTWARE-2827)
