@@ -53,19 +53,27 @@ Source:		%{slurm_source_dir}.tar.bz2
 # Build with PAM by default on linux
 %bcond_without pam
 
-# Build with mysql-devel or maria-devel since the build fails without the mysql
-# libs
 %bcond_without mysql
-
 
 Requires: munge
 
+# disable systemd stuff on el6 based machines
+%if "%{?dist}" == "el6"
+%bcond_with systemd_support
+%{echo:"el6 with systemd_support"}    
+%else
+%bcond_without systemd_support
+%endif
+
+
+%if %{with systemd_supportl}
 %{?systemd_requires}
 BuildRequires: systemd
 BuildRequires: munge-devel munge-libs
 BuildRequires: python
 BuildRequires: readline-devel
 Obsoletes: slurm-lua slurm-munge slurm-plugins
+%endif
 
 # fake systemd support when building rpms on other platforms
 %{!?_unitdir: %global _unitdir /lib/systemd/systemd}
@@ -328,9 +336,14 @@ rm -rf %{buildroot}
 make install DESTDIR=%{buildroot}
 make install-contrib DESTDIR=%{buildroot}
 
-install -D -m644 etc/slurmctld.service %{buildroot}/%{_unitdir}/slurmctld.service
-install -D -m644 etc/slurmd.service    %{buildroot}/%{_unitdir}/slurmd.service
-install -D -m644 etc/slurmdbd.service  %{buildroot}/%{_unitdir}/slurmdbd.service
+%if %{with systemd_supportl}
+    install -D -m644 etc/slurmctld.service %{buildroot}/%{_unitdir}/slurmctld.service
+    install -D -m644 etc/slurmd.service    %{buildroot}/%{_unitdir}/slurmd.service
+    install -D -m644 etc/slurmdbd.service  %{buildroot}/%{_unitdir}/slurmdbd.service
+%else
+    install -D -m755 etc/init.d.slurm %{buildroot}/%{_sysconfdir}/init.d/slurm
+    install -D -m755 etc/init.d.slurmdbd %{buildroot}/%{_sysconfdir}/init.d/slurmdbd
+%endif
 
 # Do not package Slurm's version of libpmi on Cray systems in the usual location.
 # Cray's version of libpmi should be used. Move it elsewhere if the site still
@@ -385,8 +398,12 @@ rm -f %{buildroot}/%{_mandir}/man5/bluegene*
 rm -f %{buildroot}/%{_sbindir}/sfree
 rm -f %{buildroot}/%{_sbindir}/slurm_epilog
 rm -f %{buildroot}/%{_sbindir}/slurm_prolog
+
+%if %{without systemd_support}
 rm -f %{buildroot}/%{_sysconfdir}/init.d/slurm
 rm -f %{buildroot}/%{_sysconfdir}/init.d/slurmdbd
+%endif
+
 rm -f %{buildroot}/%{_perldir}/auto/Slurm/.packlist
 rm -f %{buildroot}/%{_perldir}/auto/Slurm/Slurm.bs
 rm -f %{buildroot}/%{_perlarchlibdir}/perllocal.pod
@@ -535,21 +552,31 @@ rm -rf %{buildroot}
 %files slurmctld
 %defattr(-,root,root)
 %{_sbindir}/slurmctld
-%{_unitdir}/slurmctld.service
+%if %{with systemd_supportl}
+  %{_unitdir}/slurmctld.service
+%endif
 #############################################################################
 
 %files slurmd
 %defattr(-,root,root)
 %{_sbindir}/slurmd
 %{_sbindir}/slurmstepd
-%{_unitdir}/slurmd.service
+%if %{with systemd_supportl}
+  %{_unitdir}/slurmd.service
+%else
+  %{_sysconfdir}/init.d/slurm
+%endif
 #############################################################################
 
 %files slurmdbd
 %defattr(-,root,root)
 %{_sbindir}/slurmdbd
 %{_libdir}/slurm/accounting_storage_mysql.so
-%{_unitdir}/slurmdbd.service
+%if %{with systemd_supportl}
+  %{_unitdir}/slurmdbd.service
+%else
+  %{_sysconfdir}/init.d/slurmdbd
+%endif
 #############################################################################
 
 %files libpmi
@@ -604,7 +631,9 @@ rm -rf %{buildroot}
 %if %{with cray}
 %files slurmsmwd
 %{_sbindir}/slurmsmwd
-%{_unitdir}/slurmsmwd.service
+%if %{with systemd_supportl}
+  %{_unitdir}/slurmsmwd.service
+%endif
 %endif
 #############################################################################
 
@@ -618,6 +647,7 @@ rm -rf %{buildroot}
 %postun
 /sbin/ldconfig
 
+%if %{with systemd_supportl}
 %post slurmctld
 %systemd_post slurmctld.service
 %preun slurmctld
@@ -638,3 +668,4 @@ rm -rf %{buildroot}
 %systemd_preun slurmdbd.service
 %postun slurmdbd
 %systemd_postun_with_restart slurmdbd.service
+%endif
