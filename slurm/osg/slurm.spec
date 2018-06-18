@@ -9,11 +9,11 @@ License:	GPLv2+
 URL:		https://slurm.schedmd.com/
 
 # when the rel number is one, the directory name does not include it
-%if "%{rel}" == "1"
+#%if "%{rel}" == "1"
 %global slurm_source_dir %{name}-%{version}
-%else
-%global slurm_source_dir %{name}-%{version}-%{rel}
-%endif
+#%else
+#%global slurm_source_dir %{name}-%{version}-%{rel}
+#%endif
 
 Source:		%{slurm_source_dir}.tar.bz2
 
