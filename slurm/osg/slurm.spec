@@ -8,12 +8,18 @@ Group:		System Environment/Base
 License:	GPLv2+
 URL:		https://slurm.schedmd.com/
 
+# hack to allow rel number to be different than 1 
+# without having the source file names change
+# change back if updating tarball
+%global rel     1
+
+
 # when the rel number is one, the directory name does not include it
-#%if "%{rel}" == "1"
+%if "%{rel}" == "1"
 %global slurm_source_dir %{name}-%{version}
-#%else
-#%global slurm_source_dir %{name}-%{version}-%{rel}
-#%endif
+%else
+%global slurm_source_dir %{name}-%{version}-%{rel}
+%endif
 
 Source:		%{slurm_source_dir}.tar.bz2
 
