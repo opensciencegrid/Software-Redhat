@@ -1,6 +1,6 @@
 Name:		slurm
 Version:	17.11.7
-%global rel	1
+%global rel	2
 Release:	%{rel}%{?dist}
 Summary:	Slurm Workload Manager
 
@@ -299,6 +299,7 @@ notifies slurm about failed nodes.
 
 #############################################################################
 
+
 %prep
 # when the rel number is one, the tarball filename does not include it
 %setup -n %{slurm_source_dir}
@@ -341,8 +342,8 @@ make install-contrib DESTDIR=%{buildroot}
     install -D -m644 etc/slurmd.service    %{buildroot}/%{_unitdir}/slurmd.service
     install -D -m644 etc/slurmdbd.service  %{buildroot}/%{_unitdir}/slurmdbd.service
 %else
-    install -D -m755 etc/init.d.slurm %{buildroot}/%{_sysconfdir}/init.d/slurm
-    install -D -m755 etc/init.d.slurmdbd %{buildroot}/%{_sysconfdir}/init.d/slurmdbd
+    install -D -m755 etc/init.d.slurm %{buildroot}/etc/rc.d/init.d/slurm
+    install -D -m755 etc/init.d.slurmdbd %{buildroot}/etc/rc.d/init.d/slurmdbd
 %endif
 
 # Do not package Slurm's version of libpmi on Cray systems in the usual location.
@@ -400,8 +401,8 @@ rm -f %{buildroot}/%{_sbindir}/slurm_epilog
 rm -f %{buildroot}/%{_sbindir}/slurm_prolog
 
 %if %{without systemd_support}
-rm -f %{buildroot}/%{_sysconfdir}/init.d/slurm
-rm -f %{buildroot}/%{_sysconfdir}/init.d/slurmdbd
+rm -f %{buildroot}/etc/rc.d/init.d/slurm
+rm -f %{buildroot}/etc/rc.d/init.d/slurmdbd
 %endif
 
 rm -f %{buildroot}/%{_perldir}/auto/Slurm/.packlist
@@ -564,7 +565,7 @@ rm -rf %{buildroot}
 %if %{with systemd_supportl}
   %{_unitdir}/slurmd.service
 %else
-  %{_sysconfdir}/init.d/slurm
+  /etc/rc.d/init.d/slurm
 %endif
 #############################################################################
 
@@ -575,7 +576,7 @@ rm -rf %{buildroot}
 %if %{with systemd_supportl}
   %{_unitdir}/slurmdbd.service
 %else
-  %{_sysconfdir}/init.d/slurmdbd
+  /etc/rc.d/init.d/slurmdbd
 %endif
 #############################################################################
 
