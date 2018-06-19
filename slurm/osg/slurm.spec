@@ -64,7 +64,7 @@ Requires: munge
 %else
 %bcond_without systemd_support
 %endif
-
+%{echo:  %{?dist} }
 
 %if %{with systemd_support}
 %{?systemd_requires}
