@@ -1,6 +1,6 @@
 Name:		slurm
 Version:	17.11.7
-%global rel	3
+%global rel	4
 Release:	%{rel}%{?dist}
 Summary:	Slurm Workload Manager
 
@@ -67,7 +67,7 @@ Requires: munge
 %endif
 
 
-%if %{with systemd_supportl}
+%if %{with systemd_support}
 %{?systemd_requires}
 BuildRequires: systemd
 BuildRequires: munge-devel munge-libs
@@ -338,7 +338,7 @@ rm -rf %{buildroot}
 make install DESTDIR=%{buildroot}
 make install-contrib DESTDIR=%{buildroot}
 
-%if %{with systemd_supportl}
+%if %{with systemd_support}
     install -D -m644 etc/slurmctld.service %{buildroot}/%{_unitdir}/slurmctld.service
     install -D -m644 etc/slurmd.service    %{buildroot}/%{_unitdir}/slurmd.service
     install -D -m644 etc/slurmdbd.service  %{buildroot}/%{_unitdir}/slurmdbd.service
@@ -560,7 +560,7 @@ rm -rf %{buildroot}
 %files slurmctld
 %defattr(-,root,root)
 %{_sbindir}/slurmctld
-%if %{with systemd_supportl}
+%if %{with systemd_support}
   %{_unitdir}/slurmctld.service
 %endif
 #############################################################################
@@ -569,7 +569,7 @@ rm -rf %{buildroot}
 %defattr(-,root,root)
 %{_sbindir}/slurmd
 %{_sbindir}/slurmstepd
-%if %{with systemd_supportl}
+%if %{with systemd_support}
   %{_unitdir}/slurmd.service
 %else
   /etc/rc.d/init.d/slurm
@@ -580,7 +580,7 @@ rm -rf %{buildroot}
 %defattr(-,root,root)
 %{_sbindir}/slurmdbd
 %{_libdir}/slurm/accounting_storage_mysql.so
-%if %{with systemd_supportl}
+%if %{with systemd_support}
   %{_unitdir}/slurmdbd.service
 %else
   /etc/rc.d/init.d/slurmdbd
@@ -639,7 +639,7 @@ rm -rf %{buildroot}
 %if %{with cray}
 %files slurmsmwd
 %{_sbindir}/slurmsmwd
-%if %{with systemd_supportl}
+%if %{with systemd_support}
   %{_unitdir}/slurmsmwd.service
 %endif
 %endif
@@ -655,7 +655,7 @@ rm -rf %{buildroot}
 %postun
 /sbin/ldconfig
 
-%if %{with systemd_supportl}
+%if %{with systemd_support}
 %post slurmctld
 %systemd_post slurmctld.service
 %preun slurmctld
