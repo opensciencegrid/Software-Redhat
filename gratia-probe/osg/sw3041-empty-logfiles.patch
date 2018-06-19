@@ -1,0 +1,47 @@
+commit 9b3af69a17299747cdb2906ef1615f2ec9b80164
+Author: Carl Edquist <edquist@cs.wisc.edu>
+Date:   Tue Jun 19 18:25:59 2018 -0500
+
+    attempt to update last mod time for empty log files (SOFTWARE-3041)
+    
+    "empty" as in we didn't process any log events from it and we weren't
+    otherwise planning to skip it (because it was the most recent).
+    
+    This is true for a log with size 0, or if (for example) it contains only
+    empty lines.
+
+diff --git a/pbs-lsf/urCollector-src/urCollector.pl b/pbs-lsf/urCollector-src/urCollector.pl
+index a444f3e..9928dea 100755
+--- a/pbs-lsf/urCollector-src/urCollector.pl
++++ b/pbs-lsf/urCollector-src/urCollector.pl
+@@ -375,7 +375,7 @@ sub processLrmsLogs {
+          print "".localtime().": Processing LRMS log file: $thisLogFile; last modified: $logFMod{$thisLogFile}\n";
+          
+          &processLrmsLogFile($thisLogFile, $newestFile,
+-         $_[0], $_[1], $_[2], $_[3]);
++         $_[0], $_[1], $_[2], $_[3], $logFMod{$thisLogFile});
+          $newestFile = 0;
+          # Call Gratia processing internally now to avoid leaving huge numbers of files unprocessed
+          system("/usr/share/gratia/pbs-lsf/pbs-lsf_meter.pl 2>&1");
+@@ -399,6 +399,7 @@ sub processLrmsLogFile {
+    my $startTimestamp = $_[3];
+    # my $lastJob = $_[4];
+    # my $lastTimestamp = $_[5];
++   my $logfileTimestamp = $_[6];
+    
+    # for each job to process: check the CE accounting log dir (ordered by
+    # modification date) for the right log file +/- 1 (according to last
+@@ -562,6 +563,13 @@ sub processLrmsLogFile {
+       
+    }  # while (<LRMSLOGFILE>) ...
+    
++   # if the log file was empty, update the last timestamp to match the file's mtime
++   if (!$firstJobId && !$skipFile) {
++      if ($logfileTimestamp < $_[5]) {  # ie, < $lrmsEventTimestamp
++         $_[5] = $logfileTimestamp;
++         print "".localtime().": No log events processed for '$filename', updating last timestamp to match its modified time: $logfileTimestamp\n";
++      }
++   }
+    close (LRMSLOGFILE);
+ }
+ 

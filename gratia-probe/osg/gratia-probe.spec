@@ -2,7 +2,7 @@ Name:               gratia-probe
 Summary:            Gratia OSG accounting system probes
 Group:              Applications/System
 Version:            1.20.2
-Release:            1%{?dist}
+Release:            2%{?dist}
 
 License:            GPL
 Group:              Applications/System
@@ -63,6 +63,8 @@ Source22: %{name}-enstore-tapedrive-%{version}.tar.bz2
 Source23: %{name}-dCache-storagegroup-%{version}.tar.bz2
 Source24:  %{name}-lsf-%{version}.tar.bz2
 
+# https://opensciencegrid.atlassian.net/browse/SOFTWARE-3041
+Patch0: sw3041-empty-logfiles.patch
 
 ########################################################################
 
@@ -100,6 +102,7 @@ Prefix: /etc
 %setup -q -D -T -a 22
 %setup -q -D -T -a 23
 %setup -q -D -T -a 24
+%patch0 -p1
 
 %build
 %if 0%{?rhel} == 7 || %_arch != noarch
@@ -959,6 +962,9 @@ The dCache storagegroup probe for the Gratia OSG accounting system.
 %endif # noarch
 
 %changelog
+* Tue Jun 19 2018 Carl Edquist <edquist@cs.wisc.edu> - 1.20.2-2
+- Update pbs/lsf timestamp for empty logfiles (SOFTWARE-3041)
+
 * Tue Jun 05 2018 Carl Edquist <edquist@cs.wisc.edu> - 1.20.2-1
 - Remove TWiki links from README files (SOFTWARE-3211)
 
