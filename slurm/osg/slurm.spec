@@ -1,6 +1,6 @@
 Name:		slurm
 Version:	17.11.7
-%global rel	2
+%global rel	3
 Release:	%{rel}%{?dist}
 Summary:	Slurm Workload Manager
 
@@ -8,12 +8,7 @@ Group:		System Environment/Base
 License:	GPLv2+
 URL:		https://slurm.schedmd.com/
 
-# hack to allow rel number to be different than 1 
-# without having the source file names change
-# change back if updating tarball
 %global rel     1
-
-
 # when the rel number is one, the directory name does not include it
 %if "%{rel}" == "1"
 %global slurm_source_dir %{name}-%{version}
@@ -360,6 +355,7 @@ make install-contrib DESTDIR=%{buildroot}
    mv %{buildroot}/%{_libdir}/libpmi* %{buildroot}/%{_libdir}/slurmpmi
    install -D -m644 contribs/cray/plugstack.conf.template %{buildroot}/%{_sysconfdir}/plugstack.conf.template
    install -D -m644 contribs/cray/slurm.conf.template %{buildroot}/%{_sysconfdir}/slurm.conf.template
+   install -D -m644 contribs/cray/slurm.conf.template %{buildroot}/%{_sysconfdir}/slurm.conf
    mkdir -p %{buildroot}/opt/modulefiles/slurm
    test -f contribs/cray/opt_modulefiles_slurm &&
       install -D -m644 contribs/cray/opt_modulefiles_slurm %{buildroot}/opt/modulefiles/slurm/%{version}-%{rel}
@@ -382,8 +378,10 @@ install -D -m644 etc/layouts.d.power.conf.example %{buildroot}/%{_sysconfdir}/la
 install -D -m644 etc/layouts.d.power_cpufreq.conf.example %{buildroot}/%{_sysconfdir}/layouts.d/power_cpufreq.conf.example
 install -D -m644 etc/layouts.d.unit.conf.example %{buildroot}/%{_sysconfdir}/layouts.d/unit.conf.example
 install -D -m644 etc/slurm.conf.example %{buildroot}/%{_sysconfdir}/slurm.conf.example
+install -D -m644 etc/slurm.conf.example %{buildroot}/%{_sysconfdir}/slurm.conf
 install -D -m755 etc/slurm.epilog.clean %{buildroot}/%{_sysconfdir}/slurm.epilog.clean
 install -D -m644 etc/slurmdbd.conf.example %{buildroot}/%{_sysconfdir}/slurmdbd.conf.example
+install -D -m644 etc/slurmdbd.conf.example %{buildroot}/%{_sysconfdir}/slurmdbd.conf
 install -D -m755 contribs/sjstat %{buildroot}/%{_bindir}/sjstat
 
 # Delete unpackaged files:
@@ -521,6 +519,7 @@ rm -rf %{buildroot}
 %if %{with cray}
 %config %{_sysconfdir}/plugstack.conf.template
 %config %{_sysconfdir}/slurm.conf.template
+%config %{_sysconfdir}/slurm.conf
 %endif
 %config %{_sysconfdir}/cgroup.conf.example
 %config %{_sysconfdir}/cgroup_allowed_devices_file.conf.example
@@ -528,8 +527,10 @@ rm -rf %{buildroot}
 %config %{_sysconfdir}/layouts.d/power_cpufreq.conf.example
 %config %{_sysconfdir}/layouts.d/unit.conf.example
 %config %{_sysconfdir}/slurm.conf.example
+%config %{_sysconfdir}/slurm.conf
 %config %{_sysconfdir}/slurm.epilog.clean
 %config %{_sysconfdir}/slurmdbd.conf.example
+%config %{_sysconfdir}/slurmdbd.conf
 #############################################################################
 
 %files devel
