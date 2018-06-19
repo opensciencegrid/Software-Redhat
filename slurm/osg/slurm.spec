@@ -1,6 +1,6 @@
 Name:		slurm
 Version:	17.11.7
-%global rel	4
+%global rel	5
 Release:	%{rel}%{?dist}
 Summary:	Slurm Workload Manager
 
@@ -59,9 +59,8 @@ Source:		%{slurm_source_dir}.tar.bz2
 Requires: munge
 
 # disable systemd stuff on el6 based machines
-%if "%{?dist}" == "el6"
+%if "%{?dist}" == ".el6"
 %bcond_with systemd_support
-%{echo:"el6 with systemd_support"}    
 %else
 %bcond_without systemd_support
 %endif
@@ -404,7 +403,7 @@ rm -f %{buildroot}/%{_sbindir}/sfree
 rm -f %{buildroot}/%{_sbindir}/slurm_epilog
 rm -f %{buildroot}/%{_sbindir}/slurm_prolog
 
-%if %{without systemd_support}
+%if %{with systemd_support}
 rm -f %{buildroot}/etc/rc.d/init.d/slurm
 rm -f %{buildroot}/etc/rc.d/init.d/slurmdbd
 %endif
