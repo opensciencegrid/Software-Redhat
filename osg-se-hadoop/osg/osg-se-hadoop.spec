@@ -60,14 +60,8 @@ This is the Hadoop client that has client binaries and fuse mount.
 Summary: Gridftp meta-package for Hadoop
 Group: System Environment/Libraries
 Requires: %{name}-client = %{version}-%{release}
-Requires: hadoop-hdfs-fuse
-Requires: osg-system-profiler
-Requires: fetch-crl
 # 3.0.0-6 pulls in gridftp-hdfs that uses /etc/gridftp.d
 Requires: osg-gridftp-hdfs >= 3.0.0-7
-Requires: globus-gridftp-server-progs
-Requires: gratia-probe-gridftp-transfer
-Requires: vo-client
 %ifarch %{ix86}
 Requires: liblcas_lcmaps_gt4_mapping.so.0
 %else
