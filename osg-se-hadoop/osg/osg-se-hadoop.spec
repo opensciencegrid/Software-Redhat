@@ -68,8 +68,6 @@ Requires: osg-gridftp-hdfs >= 3.0.0-7
 Requires: globus-gridftp-server-progs
 Requires: gratia-probe-gridftp-transfer
 Requires: vo-client
-Requires: vo-client-lcmaps-voms
-Requires: osg-configure-misc
 %ifarch %{ix86}
 Requires: liblcas_lcmaps_gt4_mapping.so.0
 %else

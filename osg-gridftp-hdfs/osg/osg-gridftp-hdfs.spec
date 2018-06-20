@@ -13,6 +13,8 @@ Requires: osg-system-profiler
 # 0.5.4-13 uses /etc/gridftp.d config dir
 Requires: gridftp-hdfs >= 0.5.4-16
 Requires: vo-client
+Requires: vo-client-lcmaps-voms
+Requires: osg-configure-misc
 Requires: grid-certificates >= 7
 Requires: fetch-crl
 Requires: gratia-probe-gridftp-transfer >= 1.17.0-1
