@@ -2,7 +2,7 @@ Name:               gratia-probe
 Summary:            Gratia OSG accounting system probes
 Group:              Applications/System
 Version:            1.20.2
-Release:            2%{?dist}
+Release:            3%{?dist}
 
 License:            GPL
 Group:              Applications/System
@@ -83,6 +83,7 @@ Prefix: /etc
 %setup -q -D -T -a 1
 %if 0%{?rhel} == 7 || %_arch != noarch
 %setup -q -D -T -a 3
+%patch0 -p1
 %endif
 %setup -q -D -T -a 5
 %setup -q -D -T -a 7
@@ -102,7 +103,6 @@ Prefix: /etc
 %setup -q -D -T -a 22
 %setup -q -D -T -a 23
 %setup -q -D -T -a 24
-%patch0 -p1
 
 %build
 %if 0%{?rhel} == 7 || %_arch != noarch
@@ -962,6 +962,9 @@ The dCache storagegroup probe for the Gratia OSG accounting system.
 %endif # noarch
 
 %changelog
+* Wed Jun 20 2018 Carl Edquist <edquist@cs.wisc.edu> - 1.20.2-3
+- Fix EL6 build for noarch packages (SOFTWARE-3041)
+
 * Tue Jun 19 2018 Carl Edquist <edquist@cs.wisc.edu> - 1.20.2-2
 - Update pbs/lsf timestamp for empty logfiles (SOFTWARE-3041)
 
