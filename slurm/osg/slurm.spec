@@ -59,12 +59,11 @@ Source:		%{slurm_source_dir}.tar.bz2
 Requires: munge
 
 # disable systemd stuff on el6 based machines
-%if "%{?dist}" == ".el6"
+%if 0%{?el6:1}
 %bcond_with systemd_support
 %else
 %bcond_without systemd_support
 %endif
-%{echo:  %{?dist} }
 
 %if %{with systemd_support}
 %{?systemd_requires}
@@ -526,10 +525,8 @@ rm -rf %{buildroot}
 %config %{_sysconfdir}/layouts.d/power_cpufreq.conf.example
 %config %{_sysconfdir}/layouts.d/unit.conf.example
 %config %{_sysconfdir}/slurm.conf.example
-%config %{_sysconfdir}/slurm.conf
 %config %{_sysconfdir}/slurm.epilog.clean
 %config %{_sysconfdir}/slurmdbd.conf.example
-%config %{_sysconfdir}/slurmdbd.conf
 #############################################################################
 
 %files devel
@@ -568,6 +565,7 @@ rm -rf %{buildroot}
 %defattr(-,root,root)
 %{_sbindir}/slurmd
 %{_sbindir}/slurmstepd
+%config %{_sysconfdir}/slurm.conf
 %if %{with systemd_support}
   %{_unitdir}/slurmd.service
 %else
@@ -579,6 +577,7 @@ rm -rf %{buildroot}
 %defattr(-,root,root)
 %{_sbindir}/slurmdbd
 %{_libdir}/slurm/accounting_storage_mysql.so
+%config %{_sysconfdir}/slurmdbd.conf
 %if %{with systemd_support}
   %{_unitdir}/slurmdbd.service
 %else
