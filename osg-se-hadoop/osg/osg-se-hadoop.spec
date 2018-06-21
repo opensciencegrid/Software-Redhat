@@ -1,7 +1,7 @@
 Name:           osg-se-hadoop
 Summary:        OSG Hadoop Storage Element package for RPM distribution
 Version:        3.4
-Release:        5%{?dist}
+Release:        6%{?dist}
 License:        GPL
 Group:          System Environment/Daemons
 URL:            https://twiki.grid.iu.edu/twiki/bin/view/Storage/WebHome
@@ -97,6 +97,10 @@ install -m 0644 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/hadoop/conf.osg/
 %{_sysconfdir}/hadoop/conf.osg/
 
 %changelog
+* Thu Jun 21 2018 Carl Edquist <edquist@cs.wisc.edu> - 3.4-6
+- Move lcmaps-voms & osg-configure deps to osg-gridftp-hdfs (SOFTWARE-3177)
+- Drop redundant deps from osg-se-hadoop-gridftp (SOFTWARE-3177)
+
 * Wed Mar 14 2018 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.4-5
 - Remove edg-mkgridmap requirement; add osg-configure-misc and
   vo-client-lcmaps-voms (SOFTWARE-3138)
