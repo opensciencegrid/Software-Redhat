@@ -1,7 +1,7 @@
 Name:      osg-gridftp-hdfs
 Summary:   OSG GridFTP-HDFS meta package
 Version:   3.4
-Release:   2%{?dist}
+Release:   3%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -41,6 +41,9 @@ install -m 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/gridftp.d/
 %config(noreplace) %{_sysconfdir}/gridftp.d/udt-%{name}.conf
 
 %changelog
+* Thu Jun 21 2018 Carl Edquist <edquist@cs.wisc.edu> - 3.4-3
+- move lcmaps-voms & osg-configure deps to osg-gridftp-hdfs (SOFTWARE-3177)
+
 * Wed Mar 7 2018 Suchandra Thapa <sthapa@ci.uchicago.edu> - 3.4-2
 - Remove osg-version requirement (SOFTWARE-3116)
 
