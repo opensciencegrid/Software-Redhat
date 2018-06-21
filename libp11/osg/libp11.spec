@@ -3,14 +3,14 @@
 # Source0:        https://github.com/OpenSC/libp11/releases/download/%{name}-%{version}/%{name}-%{version}.tar.gz
 
 Version:	0.4.6
-Release: 1.1%{?dist}
+Release: 1.2%{?dist}
 %if 0%{?fedora}
 %define enginesdir %{_libdir}/engines-1.1
 %else
 %define enginesdir %{_libdir}/openssl/engines
 %endif
 
-Name:           libp11
+Name:           openssl-pkcs11
 Summary:        Library for using PKCS#11 modules
 
 Group:          System Environment/Libraries
@@ -19,7 +19,7 @@ URL:            https://github.com/OpenSC/libp11
 Source0:        %{name}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-Provides:       openssl-pkcs11
+Obsoletes:      libp11
 
 BuildRequires:	autoconf automake libtool
 BuildRequires:  doxygen graphviz
@@ -96,8 +96,8 @@ make install DESTDIR=$RPM_BUILD_ROOT
 
 # Use %%doc to install documentation in a standard location
 mkdir __docdir
-mv $RPM_BUILD_ROOT%{_datadir}/doc/%{name}/api/ __docdir/
-rm -rf $RPM_BUILD_ROOT%{_datadir}/doc/%{name}/
+mv $RPM_BUILD_ROOT%{_datadir}/doc/libp11/api/ __docdir/
+rm -rf $RPM_BUILD_ROOT%{_datadir}/doc/libp11
 
 # Remove libtool .la files
 rm -f $RPM_BUILD_ROOT%{_libdir}/*.la
@@ -133,6 +133,10 @@ make check %{?_smp_mflags}
 %{enginesdir}/*.so
 
 %changelog
+* Thu Jun 21 2018 Dave Dykstra <dwd@fnal.gov> - 0.4.6-1.2.osg
+- Adding Provides didn't help. Attempting to change the primary name
+  to openssl-pkcs11 and adding Obsoletes: libp11.
+
 * Thu Jun 21 2018 Dave Dykstra <dwd@fnal.gov> - 0.4.6-1.1.osg
 - Add Provides: openssl-pkcs11 to prevent getting overriden by newer
   package by that name in epel (OO-229).
