@@ -1,4 +1,4 @@
 This version is built entirely for OASIS purpose in the osg-development because 
 the latest libp11 package from EPEL does not work properly on the oasis & oasis-itb machines.
-Source rpm has been dowloaded and tar exctracted to the OSG SOFTWARE upstream directory at Wisconsin.
-Check osg/ and upstream/ folder for furhter reference or see OO-220.
+Source rpm has been dowloaded and tar extracted to the OSG SOFTWARE upstream directory at Wisconsin.
+Check osg/ and upstream/ folder for further reference or see OO-220.

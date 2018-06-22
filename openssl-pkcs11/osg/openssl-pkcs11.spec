@@ -1,16 +1,18 @@
 # This is modified spec for the OSG packaging purposes and OASIS requirement
 # URL:            https://github.com/OpenSC/libp11
-# Source0:        https://github.com/OpenSC/libp11/releases/download/%{name}-%{version}/%{name}-%{version}.tar.gz
+# Source0:        https://github.com/OpenSC/libp11/releases/download/libp11-%{version}/libp11-%{version}.tar.gz
+# Then the tarball is recreated by hand by unpacking it and renaming the
+#  directory from libp11-%{version} to openssl-pkcs11-%{version}
 
 Version:	0.4.6
-Release: 1%{?dist}
+Release: 1.2%{?dist}
 %if 0%{?fedora}
 %define enginesdir %{_libdir}/engines-1.1
 %else
 %define enginesdir %{_libdir}/openssl/engines
 %endif
 
-Name:           libp11
+Name:           openssl-pkcs11
 Summary:        Library for using PKCS#11 modules
 
 Group:          System Environment/Libraries
@@ -18,6 +20,9 @@ License:        LGPLv2+
 URL:            https://github.com/OpenSC/libp11
 Source0:        %{name}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+
+Obsoletes:      libp11
+Provides:       libp11
 
 BuildRequires:	autoconf automake libtool
 BuildRequires:  doxygen graphviz
@@ -94,8 +99,8 @@ make install DESTDIR=$RPM_BUILD_ROOT
 
 # Use %%doc to install documentation in a standard location
 mkdir __docdir
-mv $RPM_BUILD_ROOT%{_datadir}/doc/%{name}/api/ __docdir/
-rm -rf $RPM_BUILD_ROOT%{_datadir}/doc/%{name}/
+mv $RPM_BUILD_ROOT%{_datadir}/doc/libp11/api/ __docdir/
+rm -rf $RPM_BUILD_ROOT%{_datadir}/doc/libp11
 
 # Remove libtool .la files
 rm -f $RPM_BUILD_ROOT%{_libdir}/*.la
@@ -131,6 +136,14 @@ make check %{?_smp_mflags}
 %{enginesdir}/*.so
 
 %changelog
+* Thu Jun 21 2018 Dave Dykstra <dwd@fnal.gov> - 0.4.6-1.2.osg
+- Adding Provides: openssl-pkcs11 didn't help. Changing the primary
+  name to openssl-pkcs11 and adding Obsoletes and Provides: libp11.
+
+* Thu Jun 21 2018 Dave Dykstra <dwd@fnal.gov> - 0.4.6-1.1.osg
+- Add Provides: openssl-pkcs11 to prevent getting overriden by newer
+  package by that name in epel (OO-229).
+
 * Tue Apr 24 2018 Marian Zvada <marian.zvada@cern.ch> - 0.4.6-1
 - Recompile in osg-development repo
 - OO-220
