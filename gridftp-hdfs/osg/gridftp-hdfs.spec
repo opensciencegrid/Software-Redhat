@@ -3,7 +3,7 @@
 
 Name:           gridftp-hdfs
 Version:        1.1.1
-Release:        1.1%{?gitrev:.%{gitrev}git}%{?dist}
+Release:        1.2%{?gitrev:.%{gitrev}git}%{?dist}
 Summary:        HDFS DSI plugin for GridFTP
 Group:          System Environment/Daemons
 License:        ASL 2.0
@@ -96,6 +96,9 @@ fi
 %{_datarootdir}/osg/sysconfig/globus-gridftp-server-plugin
 
 %changelog
+* Thu Jun 21 2018 Carl Edquist <edquist@cs.wisc.edu> - 1.1.1-1.2
+- Rebuild against hadoop 2.6.0+cdh5 (SOFTWARE-3181)
+
 * Tue Nov 14 2017 Carl Edquist <edquist@cs.wisc.edu> - 1.1.1-1.1
 - Merge OSG changes for version 1.1.1 (SOFTWARE-2999, SOFTWARE-2983)
 
