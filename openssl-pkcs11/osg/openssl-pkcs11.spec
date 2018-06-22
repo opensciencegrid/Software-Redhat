@@ -153,3 +153,4 @@ make check %{?_smp_mflags}
 
 * Fri Oct 14 2016 Nikos Mavrogiannopoulos <nmav@redhat.com> - 0.4.2-1
 - Initial version of the package
+
