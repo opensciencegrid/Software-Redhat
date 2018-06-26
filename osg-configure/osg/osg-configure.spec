@@ -1,6 +1,6 @@
 Summary: Package for OSG-Configure and associated scripts
 Name: osg-configure
-Version: 2.3.0
+Version: 2.3.1
 Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
@@ -196,6 +196,7 @@ touch $RPM_BUILD_ROOT/var/lib/osg/osg-job-environment.conf
 %{python2_sitelib}/osg_configure/modules/jobmanagerconfiguration.py*
 %{python2_sitelib}/osg_configure/modules/utilities.py*
 %{python2_sitelib}/osg_configure/modules/validation.py*
+%{python2_sitelib}/osg_configure/version.py*
 /usr/sbin/*
 %ghost /var/log/osg/osg-configure.log
 %ghost /var/lib/osg/osg-attributes.conf
@@ -261,6 +262,10 @@ touch $RPM_BUILD_ROOT/var/lib/osg/osg-job-environment.conf
 
 
 %changelog
+* Mon Jun 25 2018 Mátyás Selmeci <matyas@cs.wisc.edu> 2.3.1-1
+- Replace info about GOC/OIM in 40-siteinfo.ini comments (SOFTWARE-3297)
+- More thoroughly disable WN proxy renewal in BLAHP config (SOFTWARE-3161)
+
 * Thu Apr 26 2018 Mátyás Selmeci <matyas@cs.wisc.edu> 2.3.0-1
 - Drop configuration for RSV gratia-consumer (SOFTWARE-3218)
 
