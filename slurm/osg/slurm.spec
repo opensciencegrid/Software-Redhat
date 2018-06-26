@@ -1,6 +1,6 @@
 Name:		slurm
 Version:	17.11.7
-%global rel	5
+%global rel	6
 Release:	%{rel}%{?dist}
 Summary:	Slurm Workload Manager
 
@@ -68,11 +68,11 @@ Requires: munge
 %if %{with systemd_support}
 %{?systemd_requires}
 BuildRequires: systemd
+%endif
 BuildRequires: munge-devel munge-libs
 BuildRequires: python
 BuildRequires: readline-devel
 Obsoletes: slurm-lua slurm-munge slurm-plugins
-%endif
 
 # fake systemd support when building rpms on other platforms
 %{!?_unitdir: %global _unitdir /lib/systemd/systemd}
@@ -382,6 +382,10 @@ install -D -m644 etc/slurmdbd.conf.example %{buildroot}/%{_sysconfdir}/slurmdbd.
 install -D -m644 etc/slurmdbd.conf.example %{buildroot}/%{_sysconfdir}/slurmdbd.conf
 install -D -m755 contribs/sjstat %{buildroot}/%{_bindir}/sjstat
 
+# Directories necessary for slurm files
+install -m 0755 -d -p  %{buildroot}/%_var/log/slurm
+install -m 0755 -d -p  %{buildroot}/%_var/spool/slurmd
+
 # Delete unpackaged files:
 find %{buildroot} -name '*.a' -exec rm {} \;
 find %{buildroot} -name '*.la' -exec rm {} \;
@@ -509,6 +513,8 @@ rm -rf %{buildroot}
 %if %{with cray}
 %dir /opt/modulefiles/slurm
 %endif
+%attr(-,slurm,slurm) %dir %_var/log/slurm
+%attr(-,slurm,slurm) %dir %_var/spool/slurmd
 #############################################################################
 
 %files -f example.configs example-configs
@@ -644,6 +650,11 @@ rm -rf %{buildroot}
 #############################################################################
 
 %pre
+getent group slurm >/dev/null || groupadd -r slurm
+getent passwd slurm >/dev/null || \
+  useradd -r -g slurm -d %_var/lib/slurm -s /sbin/nologin \
+      -c "Owner of slurm daemons" slurm
+      exit 0
 
 %post
 /sbin/ldconfig
