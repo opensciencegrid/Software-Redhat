@@ -22,11 +22,11 @@
 # 
 
 
-%{!?_rel:%{expand:%%global _rel 2}}
+%{!?_rel:%{expand:%%global _rel 1}}
 
 Summary: Application and environment virtualization
 Name: singularity
-Version: 2.5.1
+Version: 2.5.1.99
 Release: %{_rel}%{?dist}
 # https://spdx.org/licenses/BSD-3-Clause-LBNL.html
 License: BSD-3-Clause-LBNL
@@ -44,8 +44,6 @@ Requires: squashfs-tools
 %endif
 
 Requires: %{name}-runtime = %{version}-%{release}
-
-Patch0: 1525.patch
 
 %description
 Singularity provides functionality to make portable
@@ -67,8 +65,7 @@ This package contains support for running containers created
 by the %{name} package.
 
 %prep
-%setup -q
-%patch0 -p1
+%setup
 
 
 %build
@@ -165,6 +162,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Jun 26 2018 Dave Dykstra <dwd@fnal.gov> 2.5.1.99-1
+- Test build of 2.5.2-rc1
+
+* Thu Jun 14 2018 Dave Dykstra <dwd@fnal.gov> 2.5.1-3.underlay
+- Scratch build with development-2.x branch and the underlay PR #1638
+
 * Tue May 29 2018 Edgar Fajardo <emfajard@ucsd.edu> 2.5.1-2
 - Add PR #1525 patch SOFTWARE-3230
 
