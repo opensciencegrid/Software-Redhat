@@ -1,1 +1,2 @@
-type=git url=https://github.com/opensciencegrid/rsv.git name=rsv tag=v3.19.5 hash=b4368449e9c6b8830366d20324ffde043c69becf
+type=github repo=opensciencegrid/rsv tag=v3.19.6 hash=167cd988413bcbcd30a62ea6f18989e5549b6e6f
+#type=github repo=matyasselmeci/rsv tag=master hash=0 tarball=rsv-3.19.6.tar.gz
