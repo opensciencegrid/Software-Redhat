@@ -1,5 +1,5 @@
 Name:           osg-ca-certs
-Version:        1.73
+Version:        1.74
 Release:        1%{?dist}
 Summary:        OSG Packaging of the IGTF CA Certs and OSG-specific CAs, in the OpenSSL 1.0.* format. 
 
@@ -10,7 +10,7 @@ URL:            http://repo.opensciencegrid.org/pacman/cadist/
 
 # Note: currently, one needs a valid client certificate to access the source tarball
 # https://osg-svn.rtinfo.indiana.edu/cadist/release/osg-certificates-1.20NEW.tar.gz
-Source0:        osg-certificates-1.73NEW.tar.gz
+Source0:        osg-certificates-1.74NEW.tar.gz
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
@@ -51,6 +51,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc
 
 %changelog
+* Thu Jun 28 2018 Zalak Shah <zsshah@iu.edu> 1.74-1
+- CA release corresponding to IGTF 1.92 release.
+
 * Tue May 15 2018 Zalak Shah <zsshah@iu.edu> 1.73-1
 - CA release corresponding to IGTF 1.91 release.
 
