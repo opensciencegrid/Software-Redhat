@@ -26,7 +26,7 @@
 
 Summary: Application and environment virtualization
 Name: singularity
-Version: 2.5.1.999
+Version: 2.5.2
 Release: %{_rel}%{?dist}
 # https://spdx.org/licenses/BSD-3-Clause-LBNL.html
 License: BSD-3-Clause-LBNL
@@ -162,6 +162,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Jul 03 2018 Dave Dykstra <dwd@fnal.gov> 2.5.2-1
+- Update to upstream 2.5.2
+
 * Fri Jun 29 2018 Dave Dykstra <dwd@fnal.gov> 2.5.1.999-1
 - Test build of 2.5.2-rc2
 
