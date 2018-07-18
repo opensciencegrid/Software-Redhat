@@ -3,7 +3,7 @@
 
 Name:           python-%{pypi_name}
 Version:        1.2.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        SciToken reference implementation library
 
 License:        Apache 2.0
@@ -48,7 +48,11 @@ rm -rf %{pypi_name}.egg-info
 %{python2_sitelib}/%{pypi_name}-%{version}-py?.?.egg-info
 
 %changelog
+* Wed Jul 18 2018 Derek Weitzel <dweitzel@cse.unl.edu> - 1.2.0-2
+- Bump release with changelog for 1.2.0-1
+
 * Tue Jul 10 2018 Derek Weitzel <dweitzel@cse.unl.edu> - 1.2.0-1
+- Merge in the "scope" change accidently mentioned in 1.1.0
 
 * Fri Jul 6 2018 Derek Weitzel <dweitzel@cse.unl.edu> - 1.1.0-1
 - Add support for updated RFC for "scope"
