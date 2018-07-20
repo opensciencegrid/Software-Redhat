@@ -1,5 +1,5 @@
 Name:           vo-client
-Version:        79
+Version:        80
 Release:        1%{?dist}
 Summary:        Contains vomses file for use with user authentication and edg-mkgridmap.conf file that contains configuration information for edg-mkgridmap.
 
@@ -39,6 +39,14 @@ Requires:       %{name} = %{version}-%{release}
 %description lcmaps-voms
 %{summary}
 
+%package dcache
+Summary:        Provides a grid-vorolemap file for use by dCache, similar to voms-mapfile-default
+Group:          system environment/base
+Requires:       %{name} = %{version}-%{release}
+
+%description dcache
+%{summary}
+
 
 %package -n osg-gums-config
 Summary:        a file that contains a template configuration for the gums service
@@ -63,8 +71,12 @@ install -d $RPM_BUILD_ROOT/%{_datadir}/osg/
 mv $RPM_BUILD_DIR/vomses $RPM_BUILD_ROOT/%{_sysconfdir}/
 mv $RPM_BUILD_DIR/edg-mkgridmap.conf $RPM_BUILD_ROOT/%{_sysconfdir}/
 mv $RPM_BUILD_DIR/voms-mapfile-default $RPM_BUILD_ROOT/%{_datadir}/osg/
+mv $RPM_BUILD_DIR/grid-vorolemap $RPM_BUILD_ROOT/%{_datadir}/osg/
 
-chmod 644 $RPM_BUILD_ROOT/%{_sysconfdir}/vomses $RPM_BUILD_ROOT/%{_sysconfdir}/edg-mkgridmap.conf $RPM_BUILD_ROOT/%{_datadir}/osg/voms-mapfile-default
+chmod 644 $RPM_BUILD_ROOT/%{_sysconfdir}/vomses
+chmod 644 $RPM_BUILD_ROOT/%{_sysconfdir}/edg-mkgridmap.conf
+chmod 644 $RPM_BUILD_ROOT/%{_datadir}/osg/voms-mapfile-default
+chmod 644 $RPM_BUILD_ROOT/%{_datadir}/osg/grid-vorolemap
 
 install -d $RPM_BUILD_ROOT/%{_sysconfdir}/grid-security/
 mv $RPM_BUILD_DIR/vomsdir $RPM_BUILD_ROOT/%{_sysconfdir}/grid-security/
@@ -88,11 +100,18 @@ chmod 600 $RPM_BUILD_ROOT/%{_sysconfdir}/gums/gums.config.template
 %defattr(-,root,root,-)
 %{_datadir}/osg/voms-mapfile-default
 
+%files dcache
+%defattr(-,root,root,-)
+%{_datadir}/osg/grid-vorolemap
+
 %files -n osg-gums-config
 %defattr(-,root,root,-)
 %attr(0600,tomcat,tomcat) %config(noreplace) %{_sysconfdir}/gums/gums.config.template
 
 %changelog
+* Thu Jul 19 2018 Carl Edquist <edquist@cs.wisc.edu> - 80-1
+- Add dcache subpackage with /usr/share/osg/grid-vorolemap (SOFTWARE-3222)
+
 * Fri May 04 2018 Carl Edquist <edquist@cs.wisc.edu> - 79-1
 - Add new InCommon VOMS cert for OSG (SOFTWARE-3248)
 
