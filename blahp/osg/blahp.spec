@@ -178,6 +178,9 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Sun Jul 29 2018 Edgar Fajardo <emfajard@ucsd.edu> 1.18.38.bosco-1
+- Rebuild against condor 8.7.9 (SOFTWARE-3356)
+
 * Wed Jun 13 2018 Carl Edquist <edquist@cs.wisc.edu> - 1.18.37.bosco-1
 - Disable command substitution in shell word expansion (SOFTWARE-3288)
 
