@@ -1,7 +1,7 @@
 Summary: OSG metapackage for OASIS and CVMFS
 Name: osg-oasis
 Version: 9
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: ASL 2.0
 Group: Applications/Grid
 BuildArch: noarch
@@ -9,7 +9,7 @@ BuildArch: noarch
 #   including the dist as well, e.g. -2%{?dist}
 Requires: cvmfs = 2.5.0
 Requires: cvmfs-config-osg = 2.0
-Requires: cvmfs-x509-helper = 1.0
+Requires: cvmfs-x509-helper = 1.1
 
 %description
 %{summary}
@@ -26,6 +26,9 @@ exit 0
 %files
 
 %changelog
+* Thu Aug 09 2018 Carl Edquist <edquist@cs.wisc.edu> - 9-3
+- Update cvmfs-x509-helper version requirement (SOFTWARE-3376)
+
 * Thu May 03 2018 Dave Dykstra <dwd@fnal.gov> 9-2
 - Fix accidental changes to the other version numbers
 
