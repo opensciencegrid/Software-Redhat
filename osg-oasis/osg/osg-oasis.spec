@@ -133,4 +133,3 @@ exit 0
 * Wed Jul 24 2013 Dave Dykstra <dwd@fnal.gov> 1-1
 - Initial version
 
-# vim:ft=spec
