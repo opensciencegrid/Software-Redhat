@@ -67,12 +67,11 @@ make install DESTDIR=$RPM_BUILD_ROOT
 - includes cleanup of various OpesnSSL-related bugs from 1.3.4 github tag
 - no need patch from SW-2848 for OSG3.4 build
 
-* Fri Jul 28 2017 Brian Bockelman <bbockelm@cse.unl.edu> - 1.3.4-1
-- Cleanup various OpenSSL-related bugs.
-
-
 * Mon Jul 31 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.3.3-4
 - Always enable VOMS attributes verification (SOFTWARE-2848)
+
+* Fri Jul 28 2017 Brian Bockelman <bbockelm@cse.unl.edu> - 1.3.4-1
+- Cleanup various OpenSSL-related bugs.
 
 * Wed May 31 2017 Carl Edquist <edquist@cs.wisc.edu> - 1.3.3-3
 - Don't build 1.3.3 for EL6 (SOFTWARE-2738)
@@ -83,12 +82,12 @@ make install DESTDIR=$RPM_BUILD_ROOT
 * Fri May 26 2017 Marian Zvada <marian.zvada@cern.ch> - 1.3.3-1
 - new release tagged; added Lock CertStore patch
 
-* Thu May 25 2017 Marian Zvada <marian.zvada@cern.ch> - 1.3.2-2
-- Fix bugleaks and memory warnings for 4.6.1
-- STAS-18
-
 * Fri May 26 2017 Brian Bockelman <bbockelm@cse.unl.edu> - 1.3.3-1
 - Avoid segfault triggered by a reload without the mutex.
+
+* Wed May 24 2017 Marian Zvada <marian.zvada@cern.ch> - 1.3.2-2
+- Fix bugleaks and memory warnings for 4.6.1
+- STAS-18
 
 * Thu Mar 30 2017 Brian Bockelman <bbockelm@cse.unl.edu> - 1.3.2-1
 - Only perform verification in Globus, not raw OpenSSL.
