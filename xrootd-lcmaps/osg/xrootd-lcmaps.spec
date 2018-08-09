@@ -1,12 +1,12 @@
 
 Name: xrootd-lcmaps
-Version: 1.3.4
+Version: 1.4.0
 Release: 1%{?dist}
 Summary: LCMAPS plugin for xrootd
 
 Group: System Environment/Daemons
 License: BSD
-URL: https://github.com/bbockelm/xrootd-lcmaps
+URL: https://github.com/opensciencegrid/xrootd-lcmaps
 # Generated from:
 # git archive v%{version} --prefix=xrootd-lcmaps-%{version}/ | gzip -7 > ~/rpmbuild/SOURCES/xrootd-lcmaps-%{version}.tar.gz
 Source0: %{name}-%{version}.tar.gz
@@ -57,9 +57,19 @@ make install DESTDIR=$RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/xrootd/lcmaps.cfg
 
 %changelog
+* Tue Jan 02 2018 Brian Bockelman <bbockelm@cse.unl.edu> - 1.4.0-1
+- Allow authentication to continue even when authz fails.
+
+* Tue Aug 29 2017 Brian Bockelman <bbockelm@cse.unl.edu> - 1.3.5-1
+- Fix ability to specify an alternate policy name.
+
 * Mon Aug 07 2017 Marian Zvada <marian.zvada@cern.ch> - 1.3.4-1
 - includes cleanup of various OpesnSSL-related bugs from 1.3.4 github tag
 - no need patch from SW-2848 for OSG3.4 build
+
+* Fri Jul 28 2017 Brian Bockelman <bbockelm@cse.unl.edu> - 1.3.4-1
+- Cleanup various OpenSSL-related bugs.
+
 
 * Mon Jul 31 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.3.3-4
 - Always enable VOMS attributes verification (SOFTWARE-2848)
@@ -73,9 +83,12 @@ make install DESTDIR=$RPM_BUILD_ROOT
 * Fri May 26 2017 Marian Zvada <marian.zvada@cern.ch> - 1.3.3-1
 - new release tagged; added Lock CertStore patch
 
-* Thu May 24 2017 Marian Zvada <marian.zvada@cern.ch> - 1.3.2-2
+* Thu May 25 2017 Marian Zvada <marian.zvada@cern.ch> - 1.3.2-2
 - Fix bugleaks and memory warnings for 4.6.1
 - STAS-18
+
+* Fri May 26 2017 Brian Bockelman <bbockelm@cse.unl.edu> - 1.3.3-1
+- Avoid segfault triggered by a reload without the mutex.
 
 * Thu Mar 30 2017 Brian Bockelman <bbockelm@cse.unl.edu> - 1.3.2-1
 - Only perform verification in Globus, not raw OpenSSL.
