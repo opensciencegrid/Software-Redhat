@@ -1,5 +1,5 @@
 Name:           gracc-collector
-Version:        1.1.7
+Version:        1.1.8
 Release:        1%{?dist}
 Summary:        Gratia-compatible collector for grid accounting records
 License:        MIT
@@ -67,6 +67,9 @@ getent passwd gracc >/dev/null || \
 exit 0
 
 %changelog
+* Tue Aug 15 2018 Marian Zvada  <marian.zvada@cern.ch> - 1.1.8-1
+- Base off of osg-3.4; SOFTWARE-2995
+
 * Thu Nov 02 2017 Derek Weitzel <dweitzel@cse.unl.edu> - 1.1.7-1
 - Add persistence to the gracc-collector
 
