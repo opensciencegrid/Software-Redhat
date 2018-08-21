@@ -1,5 +1,5 @@
 Name:           vo-client
-Version:        80
+Version:        81
 Release:        1%{?dist}
 Summary:        Contains vomses file for use with user authentication and edg-mkgridmap.conf file that contains configuration information for edg-mkgridmap.
 
@@ -109,6 +109,9 @@ chmod 600 $RPM_BUILD_ROOT/%{_sysconfdir}/gums/gums.config.template
 %attr(0600,tomcat,tomcat) %config(noreplace) %{_sysconfdir}/gums/gums.config.template
 
 %changelog
+* Tue Aug 21 2018 Carl Edquist <edquist@cs.wisc.edu> - 81-1
+- Drop '/*' and '/Capability=...' for grid-vorolemap (SOFTWARE-3222)
+
 * Thu Jul 19 2018 Carl Edquist <edquist@cs.wisc.edu> - 80-1
 - Add dcache subpackage with /usr/share/osg/grid-vorolemap (SOFTWARE-3222)
 
