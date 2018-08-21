@@ -28,12 +28,11 @@
 
 Name:           glideinwms
 Version:        %{version}
-Release:        %{release}%{?dist}
+Release:        %{release}.1%{?dist}
 Summary:        The glidein Workload Management System (glideinWMS)
 Group:          System Environment/Daemons
 License:        Fermitools Software Legal Information (Modified BSD License)
 URL:            http://glideinwms.fnal.gov
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
 
@@ -593,7 +592,6 @@ rm -rf $RPM_BUILD_ROOT
 %files vofrontend
 
 %files common-tools
-%defattr(-,root,root,-)
 %attr(755,root,root) %{_bindir}/glidein_cat
 %attr(755,root,root) %{_bindir}/glidein_gdb
 %attr(755,root,root) %{_bindir}/glidein_interactive
@@ -832,6 +830,9 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/condor/certs/condor_mapfile
 
 %changelog
+* Tue Aug 21 2018 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.4-1.1
+- Bump to rebuild
+
 * Tue Jun 5 2018 Marco Mambelli <marcom@fnal.gov> - 3.4-1
 - Glideinwms v3.4
 - Release Notes: http://glideinwms.fnal.gov/doc.v3_4/history.html
