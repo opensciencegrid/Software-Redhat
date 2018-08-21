@@ -102,7 +102,7 @@ chmod 600 $RPM_BUILD_ROOT/%{_sysconfdir}/gums/gums.config.template
 
 %files dcache
 %defattr(-,root,root,-)
-%{_datadir}/osg/grid-vorolemap
+%config(noreplace) %{_datadir}/osg/grid-vorolemap
 
 %files -n osg-gums-config
 %defattr(-,root,root,-)
