@@ -1,2 +1,2 @@
-type=github repo=scitokens/x509-scitokens-issuer tag=v0.5.2 hash=68b688dbec3dd73be6732df5ea64e608a7d715c9
+type=github repo=scitokens/x509-scitokens-issuer tag=v0.5.3 hash=60e3112be4939959644e8ca098fab9f5b3eb3e6a
 #type=github repo=matyasselmeci/rsv tag=master hash=0 tarball=rsv-3.19.7.tar.gz
