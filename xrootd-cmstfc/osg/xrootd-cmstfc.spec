@@ -1,6 +1,6 @@
 Name: xrootd-cmstfc
-Version: 1.5.1
-Release: 11%{?dist}
+Version: 1.5.2
+Release: 1%{?dist}
 Summary: CMS TFC plugin for xrootd
 
 Group: System Environment/Daemons
@@ -38,7 +38,7 @@ Group: System Environment/Development
 %{summary}
 
 %prep
-%setup -q -c -n %{name}-%{version}
+%setup -q -c -n %{name}
 
 %build
 
@@ -62,7 +62,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/XrdCmsTfc.hh
 
 %changelog
-* Thu Aug 08 2017 Brian Lin <blin@cs.wisc.edu> 1.5.1-11%{?dist}
+* Wed Sep 05 2018 Edgar Fajardo <emfajard@ucsd.edu> 1.5.2-1
+- Small change to reduce the logging verbosity of this plugin for the DPM team.
+
+* Tue Aug 08 2017 Brian Lin <blin@cs.wisc.edu> 1.5.1-11%{?dist}
 - Build libraries into the appropriate shared lib arch path
 
 * Mon Feb 23 2015 Edgar Fajardo <emfajard@ucsd.edu> 1.5.1-10%{?dist}
