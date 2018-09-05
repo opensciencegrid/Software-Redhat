@@ -38,15 +38,16 @@ Group: System Environment/Development
 %{summary}
 
 %prep
-%setup -q -c -n %{name}
+%setup -q -c -n %{name}-%{version}
 
 %build
-
+cd %{name}-%{version}
 %cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_LIBDIR=%{_lib} .
 make VERBOSE=1 %{?_smp_mflags}
 
 %install
 rm -rf $RPM_BUILD_ROOT
+cd %{name}-%{version}
 make install DESTDIR=$RPM_BUILD_ROOT
 
 %clean
