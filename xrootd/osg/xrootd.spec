@@ -14,7 +14,7 @@
 %endif
 
 #define _alphatag e341f47
-%define _release 1
+%define _release 2
 
 # e.g. '-rc3' or blank
 %define _alphasuffix %{?_alphatag:-%{_alphatag}}
@@ -29,6 +29,7 @@ Group:		System Environment/Daemons
 License:	LGPLv3+
 URL:		http://xrootd.org/
 Source0:        %{name}-%{version}%{?_alphasuffix}.tar.gz
+Patch0:         SW3412.patch  
 
 BuildRequires:	cmake
 BuildRequires:	krb5-devel
@@ -45,7 +46,7 @@ BuildRequires:	selinux-policy-devel
 %if %{use_systemd}
 BuildRequires:	systemd
 %endif
-BuildRequires:	python2-devel
+BuildRequires:	python-devel
 %if %{?fedora}%{!?fedora:0} >= 13
 BuildRequires:  python3-devel
 %else
@@ -264,6 +265,7 @@ This package contains the API documentation of the xrootd libraries.
 
 %prep
 %setup -n %{name}-%{version}%{?_alphasuffix}
+%patch0 -p1
 
 %build
 # Koji build machines at Wisc are unhappy when doing osg3.3 --el6 build
@@ -665,7 +667,10 @@ fi
 %doc %{_pkgdocdir}
 
 %changelog
-* Thu Jul 06 2018 Marian Zvada <marian.zvada@cern.ch> - 1:4.8.4-1
+* Wed Sep 05 2018 Suchandra Thapa <ssthapa@uchicago.edu> - 1:4.8.4-2
+- HTTP related patches (SW-3412)
+
+* Fri Jul 06 2018 Marian Zvada <marian.zvada@cern.ch> - 1:4.8.4-1
 - update to 4.8.4; SOFTWARE-3319
 
 * Thu May 03 2018 Marian Zvada <marian.zvada@cern.ch> - 1:4.8.3-1

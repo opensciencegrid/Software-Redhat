@@ -20,3 +20,28 @@ Or just do:
 git clone https://github.com/xrootd/xrootd.git
 cd xrootd 
 git archive v4.8.0-rc1 --format=tar.gz --prefix=xrootd-4.8.0-rc1/ -o ~/xrootd-4.8.0-rc1.tar.gz -9
+
+
+To build a tarball with patches adapt the following (adding patches to xrootd
+4.8.4)
+
+cd xrootd
+git checkout v4.8.4
+git checkout -b software3412
+
+cherry pick and apply patches from PR811
+git cherry-pick a807fb291cc39ef573d8014953372fe1ae7ef9f7
+git cherry-pick 355e207c3d2bf9f0523d159dd37dbc229c81ba57
+
+generate and save patch file:
+
+git diff -u v4.8.4 > ~/src/osg/trunk/xrootd/osg/SW3412.patch
+
+Alter spec to include patch
+
+Patch0: SW3412.patch
+
+Add following to %prep in spec file
+
+%patch -p0 
+
