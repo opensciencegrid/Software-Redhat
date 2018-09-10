@@ -12,8 +12,8 @@
 
 Name:		globus-gridftp-server
 %global _name %(tr - _ <<< %{name})
-Version:	12.2
-Release:	1.3%{?dist}
+Version:	12.9
+Release:	1.1%{?dist}
 Summary:	Globus Toolkit - Globus GridFTP Server
 
 License:	ASL 2.0
@@ -50,9 +50,11 @@ Patch1:		%{name}-epsv-ip.patch
 #		Get command string
 #		https://github.com/globus/globus-toolkit/pull/98
 Patch2:		%{name}-cmd-string.patch
+#		Ignore backup & packaging files in config.d
+#		https://github.com/globus/globus-toolkit/pull/118
+Patch3:		%{name}-config.patch
 
 Patch101:       gridftp-conf-logging.patch
-Patch102:       Do-not-ignore-config.d-files-with-a-.-in-the-name.patch
 
 Requires:	globus-xio-gsi-driver%{?_isa} >= 2
 Requires:	globus-xio-udt-driver%{?_isa} >= 1
@@ -60,6 +62,7 @@ Requires:	globus-common%{?_isa} >= 17
 Requires:	globus-xio%{?_isa} >= 5
 Requires:	globus-gridftp-server-control%{?_isa} >= 5.0-3
 Requires:	globus-ftp-control%{?_isa} >= 7
+BuildRequires:	gcc
 BuildRequires:	globus-common-devel >= 17
 BuildRequires:	globus-xio-devel >= 5
 BuildRequires:	globus-xio-gsi-driver-devel >= 2
@@ -133,15 +136,15 @@ Globus GridFTP Server Development Files
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 %patch101 -p1
-%patch102 -p1
 
 %build
 # Reduce overlinking
 export LDFLAGS="-Wl,--as-needed -Wl,-z,defs %{?__global_ldflags} -lz"
 
-export GRIDMAP=/etc/grid-security/grid-mapfile
+export GRIDMAP=%{_sysconfdir}/grid-security/grid-mapfile
 export GLOBUS_VERSION=6.0
 %configure --disable-static \
 	   --includedir='${prefix}/include/globus' \
@@ -297,14 +300,54 @@ fi
 %{_libdir}/pkgconfig/%{name}.pc
 
 %changelog
+* Mon Sep 10 2018 Mátyás Selmeci <matyas@cs.wisc.edu> - 12.9-1.1.osg
+- Merge OSG changes (SOFTWARE-3397)
+  Drop Do-not-ignore-config.d-files-with-a-.-in-the-name.patch (upstream)
+
+* Thu Aug 16 2018 Mattias Ellert <mattias.ellert@physics.uu.se> - 12.9-1
+- GT6 update: Fix initscript status return codes
+
+* Sat Jul 21 2018 Mattias Ellert <mattias.ellert@physics.uu.se> - 12.8-1
+- GT6 update: Fix daemon config parsing not catching env vars
+
+* Sun Jul 15 2018 Mattias Ellert <mattias.ellert@physics.uu.se> - 12.7-1
+- GT6 update:
+  - Force IPC encryption if server configuration requires
+  - Fix old IPC bug making it hard to diagnose racy connection failures
+
+* Fri Jul 13 2018 Fedora Release Engineering <releng@fedoraproject.org> - 12.6-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_29_Mass_Rebuild
+
+* Sun Jun 17 2018 Mattias Ellert <mattias.ellert@physics.uu.se> - 12.6-1
+- GT6 update: win: fix path restrictions on /
+
 * Fri May 04 2018 Mátyás Selmeci <matyas@cs.wisc.edu> - 12.2-1.3.osg
 - Increase transfer timeout to 2 hours (SOFTWARE-3241)
+
+* Sat Apr 07 2018 Mattias Ellert <mattias.ellert@physics.uu.se> - 12.5-1
+- GT6 update: win32 fix
+
+* Wed Feb 07 2018 Fedora Release Engineering <releng@fedoraproject.org> - 12.4-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
+
+* Wed Nov 08 2017 Mattias Ellert <mattias.ellert@physics.uu.se> - 12.4-1
+- GT6 update
+- Ignore backup & packaging files in config.d
 
 * Mon Oct 16 2017 Edgar Fajardo <emfajard@ucsd.edu> - 12.2-1.2.osg
 - Added IPv6 enabled by default
 
+* Tue Sep 26 2017 Mattias Ellert <mattias.ellert@physics.uu.se> - 12.3-1
+- GT6 update
+
 * Tue Aug 22 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 12.2-1.1.osg
 - Merge OSG changes
+
+* Wed Aug 02 2017 Fedora Release Engineering <releng@fedoraproject.org> - 12.2-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Binutils_Mass_Rebuild
+
+* Wed Jul 26 2017 Fedora Release Engineering <releng@fedoraproject.org> - 12.2-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Mass_Rebuild
 
 * Thu Jun 22 2017 Mattias Ellert <mattias.ellert@physics.uu.se> - 12.2-1
 - GT6 update:
