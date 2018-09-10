@@ -28,11 +28,12 @@
 
 Name:           glideinwms
 Version:        %{version}
-Release:        %{release}.1%{?dist}
+Release:        %{release}%{?dist}
 Summary:        The glidein Workload Management System (glideinWMS)
 Group:          System Environment/Daemons
 License:        Fermitools Software Legal Information (Modified BSD License)
 URL:            http://glideinwms.fnal.gov
+BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
 
@@ -278,7 +279,7 @@ rm -f $RPM_BUILD_ROOT%{python_sitelib}/glideinwms/creation/create_rpm_startup
 rm -f $RPM_BUILD_ROOT%{python_sitelib}/glideinwms/.gitattributes
 rm -Rf $RPM_BUILD_ROOT%{python_sitelib}/glideinwms/unittests
 rm -f $RPM_BUILD_ROOT%{python_sitelib}/glideinwms/chksum.sh
-rm -f $RPM_BUILD_ROOT%{python_sitelib}/glideinwms/LICENSE.txt
+rm -f $RPM_BUILD_ROOT%{python_sitelib}/glideinwms/LICENSE
 rm -f $RPM_BUILD_ROOT%{python_sitelib}/glideinwms/ACKNOWLEDGMENTS.txt
 
 # Following files are Put in other places. Remove them from python_sitelib
@@ -592,6 +593,7 @@ rm -rf $RPM_BUILD_ROOT
 %files vofrontend
 
 %files common-tools
+%defattr(-,root,root,-)
 %attr(755,root,root) %{_bindir}/glidein_cat
 %attr(755,root,root) %{_bindir}/glidein_gdb
 %attr(755,root,root) %{_bindir}/glidein_interactive
@@ -626,7 +628,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files factory
 %defattr(-,gfactory,gfactory,-)
-%doc LICENSE.txt
+%doc LICENSE
 %doc ACKNOWLEDGMENTS.txt
 %doc doc
 %attr(755,root,root) %{_bindir}/analyze_entries
@@ -731,7 +733,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files vofrontend-standalone
 %defattr(-,frontend,frontend,-)
-%doc LICENSE.txt
+%doc LICENSE
 %doc ACKNOWLEDGMENTS.txt
 %doc doc
 %attr(755,root,root) %{_bindir}/glidein_off
