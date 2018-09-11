@@ -843,4 +843,19 @@ index da9d00ace33..ec4b965ca23 100644
 +  filesize = 0;
    depth = 0;
    sendcontinue = false;
+
+
+
+diff --git a/src/XrdHttp/XrdHttpProtocol.cc b/src/XrdHttp/XrdHttpProtocol.cc
+index 193d88ba0a9..77c975a368b 100644
+--- a/src/XrdHttp/XrdHttpProtocol.cc
++++ b/src/XrdHttp/XrdHttpProtocol.cc
+@@ -692,6 +692,7 @@ int XrdHttpProtocol::Process(XrdLink *lp) // We ignore the argument here
+ 
+     if (!CurrentReq.headerok) {
+       TRACEI(REQ, " rc:" << rc << "Header not yet complete.");
++      CurrentReq.reqstate--;
+       // Waiting for more data
+       return 1;
+     }
  

@@ -14,7 +14,7 @@
 %endif
 
 #define _alphatag e341f47
-%define _release 2
+%define _release 3
 
 # e.g. '-rc3' or blank
 %define _alphasuffix %{?_alphatag:-%{_alphatag}}
@@ -667,6 +667,9 @@ fi
 %doc %{_pkgdocdir}
 
 %changelog
+* Tue Sep 11 2018 Suchandra Thapa <ssthapa@uchicago.edu> - 1:4.8.4-3
+- Add additional commit from BrianB
+
 * Wed Sep 05 2018 Suchandra Thapa <ssthapa@uchicago.edu> - 1:4.8.4-2
 - HTTP related patches (SW-3412)
 
