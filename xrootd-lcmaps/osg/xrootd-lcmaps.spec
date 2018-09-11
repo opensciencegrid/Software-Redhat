@@ -1,6 +1,6 @@
 
 Name: xrootd-lcmaps
-Version: 1.4.0
+Version: 1.4.1
 Release: 1%{?dist}
 Summary: LCMAPS plugin for xrootd
 
@@ -57,6 +57,10 @@ make install DESTDIR=$RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/xrootd/lcmaps.cfg
 
 %changelog
+* Mon Sep 10 2018 Carl Edquist <edquist@cs.wisc.edu> - 1.4.1-1
+- Use single mutex for LCMAPS calls from XrdLcmaps and XrdHttpLcmaps (#16)
+- Drop OWNER_EXECUTE for lcmaps.cfg (#17)
+
 * Tue Jan 02 2018 Brian Bockelman <bbockelm@cse.unl.edu> - 1.4.0-1
 - Allow authentication to continue even when authz fails.
 
