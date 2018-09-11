@@ -1,6 +1,6 @@
 Name: xrootd-hdfs
-Version: 2.0.2
-Release: 1.1%{?dist}
+Version: 2.1.3
+Release: 1%{?dist}
 Summary: HDFS plugin for xrootd
 
 Group: System Environment/Development
@@ -15,6 +15,8 @@ BuildRequires: cmake
 BuildRequires: /usr/include/hdfs.h
 BuildRequires: java-devel = 1:1.7.0
 BuildRequires: jpackage-utils
+BuildRequires: openssl-devel
+BuildRequires: zlib-devel
 Requires: hadoop-client >= 2.0.0+545-1.cdh4.1.1
 
 %package devel
@@ -65,6 +67,16 @@ rm $RPM_BUILD_ROOT%{_bindir}/xrootd_hdfs_envcheck
 %{_includedir}/XrdHdfs.hh
 
 %changelog
+* Tue Sep 11 2018 Brian Bockelman <bbockelm@cse.unl.edu> - 2.1.3-1
+- Implement missing LFN2PFN methods, fixing checksum calculations when name
+  translation is used.
+
+* Wed Jul 25 2018 Brian Bockelman <bbockelm@cse.unl.edu> - 2.1.1-1
+- Add missing build deps.
+
+* Wed Jul 25 2018 Brian Bockelman <bbockelm@cse.unl.edu> - 2.1.0-1
+- Add support for doing checksums on write.
+
 * Thu Jun 21 2018 Carl Edquist <edquist@cs.wisc.edu> - 2.0.2-1.1
 - Rebuild against hadoop 2.6.0+cdh5 (SOFTWARE-3181)
 
