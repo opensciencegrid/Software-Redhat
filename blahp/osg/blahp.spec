@@ -4,8 +4,8 @@
 %define bl_libexecdir %{_libexecdir}/%{name}
 
 Name:		blahp
-Version:	1.18.37.bosco
-Release:	2%{?gitrev:.%{gitrev}}%{?dist}
+Version:	1.18.38.bosco
+Release:	1%{?gitrev:.%{gitrev}}%{?dist}
 Summary:	gLite BLAHP daemon
 
 Group:		System/Libraries
@@ -178,6 +178,9 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Fri Sep 14 2018 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.18.38.bosco-1
+- Disable blahp proxy renewal/limited proxies in the default config (SOFTWARE-3409)
+
 * Sun Jul 29 2018 Edgar Fajardo <emfajard@ucsd.edu> 1.18.37.bosco-2
 - Rebuild against condor 8.7.9 (SOFTWARE-3356)
 
