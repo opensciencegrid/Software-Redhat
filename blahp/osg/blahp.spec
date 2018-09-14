@@ -4,7 +4,7 @@
 %define bl_libexecdir %{_libexecdir}/%{name}
 
 Name:		blahp
-Version:	1.18.37.bosco
+Version:	1.18.38.bosco
 Release:	1%{?gitrev:.%{gitrev}}%{?dist}
 Summary:	gLite BLAHP daemon
 
@@ -178,6 +178,9 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Fri Sep 14 2018 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.18.38.bosco-1
+- Disable blahp proxy renewal/limited proxies in the default config (SOFTWARE-3409)
+
 * Wed Jun 13 2018 Carl Edquist <edquist@cs.wisc.edu> - 1.18.37.bosco-1
 - Disable command substitution in shell word expansion (SOFTWARE-3288)
 
