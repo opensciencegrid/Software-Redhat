@@ -1,7 +1,7 @@
 %define name autopyfactory
 %define version 2.4.9
 %define unmangled_version 2.4.9
-%define release 1
+%define release 2
 
 Summary: autopyfactory package
 Name: %{name}
@@ -10,7 +10,6 @@ Release: %{release}%{?dist}
 Source0: %{name}-%{unmangled_version}.tar.gz
 License: GPL
 Group: Development/Libraries
-Prefix: %{_prefix}
 BuildArch: noarch
 Vendor: Jose Caballero <jcaballero@bnl.gov>
 Provides: autopyfactory
