@@ -1,17 +1,15 @@
 Name:      xrootd-rucioN2N-for-Xcache
 Version:   1.1
-Release:   0%{?dist}
+Release:   1%{?dist}
 Summary:   Xrootd Name-to-Name plugin for Disk Caching Proxy (Xcache) to utilize RUCIO metalink
 Group:     System Environment/Libraries
 License:   BSD 
 Vendor:    Stanford University/SLAC
 URL:       https://github.com/wyang007/rucioN2N-for-Xcache
 
-%define _rpmfilename %%{ARCH}/%%{NAME}-%%{VERSION}-%%{RELEASE}.%%{ARCH}.rpm
 
 Source0:   rucioN2N-for-Xcache-%{version}.tar.gz
 BuildArch: x86_64
-BuildRoot:  %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: xrootd-devel xrootd-server-devel xrootd-client-devel libcurl-devel openssl-devel
 
 Requires: xrootd >= 4.8.1 xrootd-client libcurl openssl
@@ -23,7 +21,6 @@ rucioN2N-for-Xcache is a xrootd plugin module that will identify multiple copies
 #%setup -q -c -D -T %{name} 
 %setup -q -c %{name} 
 %build
-rm -rf %{buildroot}
 pwd
 ls
 cd rucioN2N-for-Xcache-%{version}
@@ -37,15 +34,16 @@ make
 mkdir -p %{buildroot}/usr/lib64
 cp rucioN2N-for-Xcache-%{version}/XrdName2NameDCP4RUCIO.so %{buildroot}/usr/lib64/XrdName2NameDCP4RUCIO.so
 
-%clean
-rm -rf %{buildroot}
 
 %files
-%defattr(-,root,root)
 /usr/lib64/XrdName2NameDCP4RUCIO.so
 
 %post -p /sbin/ldconfig
 
 %changelog 
+* Fri Sep 21 2018 Edgar Fajardo <emfajard@ucsd.edu> v1.1-1
+- Releasing for SOFTWARE-3383
+- Removed some noise from the spec only needed for rhel5
+
 * Tue Oct 3 2017 Wei Yang <yangw.slac.stanford.edu> v1.0, require xrootd 4.7, generate -4.so
 - Tue Oct 3 2017 initial version
