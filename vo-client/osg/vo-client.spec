@@ -1,5 +1,5 @@
 Name:           vo-client
-Version:        83
+Version:        84
 Release:        1%{?dist}
 Summary:        Contains vomses file for use with user authentication and edg-mkgridmap.conf file that contains configuration information for edg-mkgridmap.
 
@@ -109,6 +109,9 @@ chmod 600 $RPM_BUILD_ROOT/%{_sysconfdir}/gums/gums.config.template
 %attr(0600,tomcat,tomcat) %config(noreplace) %{_sysconfdir}/gums/gums.config.template
 
 %changelog
+* Mon Oct 01 2018 Carl Edquist <edquist@cs.wisc.edu> - 84-1
+- Add dteam VO (SOFTWARE-3426)
+
 * Mon Sep 10 2018 Carl Edquist <edquist@cs.wisc.edu> - 83-1
 - Update LSC and vomses entries for SuperCDMS and LSST (SOFTWARE-3402)
 
