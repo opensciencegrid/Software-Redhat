@@ -16,7 +16,7 @@ Requires: fetch-crl
 Requires: condor
 
 Source0: 80-osg-flocking.conf
-Source1: ProbeConfig 
+Source1: ProbeConfig
 
 %description
 %{summary}
@@ -30,12 +30,12 @@ rm -fr $RPM_BUILD_ROOT
 
 # Install condor configuration
 install -d $RPM_BUILD_ROOT/%{_sysconfdir}/condor/config.d
-install -m 644 %{SOURCE0} %{SOURCE1} $RPM_BUILD_ROOT/%{_sysconfdir}/condor/config.d
+install -m 644 %{SOURCE0} $RPM_BUILD_ROOT/%{_sysconfdir}/condor/config.d
 
 
 # Install gratia configuration
 install -d $RPM_BUILD_ROOT/%{_sysconfdir}/gratia/condor/
-install -m 644 %{SOURCE0} %{SOURCE1} $RPM_BUILD_ROOT/%{_sysconfdir}/gratia/condor
+install -m 644 %{SOURCE1} $RPM_BUILD_ROOT/%{_sysconfdir}/gratia/condor/ProbeConfig-flocking
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -44,7 +44,8 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root,-)
 
-%config(noreplace) %{_sysconfdir}/condor/config.d/99_osg_flock.conf
+%config(noreplace) %{_sysconfdir}/condor/config.d/80-osg-flocking.conf
+%config(noreplace) %{_sysconfdir}/gratia/condor/ProbeConfig-flocking
 
 
 %changelog
