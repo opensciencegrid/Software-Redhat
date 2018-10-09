@@ -13,15 +13,15 @@
 %global use_libc_semaphore 0
 %endif
 
-#define _alphatag e341f47
-%define _release 3
+# e.g. 'rc3' or blank
+%define _alphatag rc2 
+%define _release 1
 
-# e.g. '-rc3' or blank
 %define _alphasuffix %{?_alphatag:-%{_alphatag}}
 
 Name:		xrootd
 Epoch:		1
-Version:	4.8.4
+Version:	4.8.5
 Release:        %{?_alphatag:0.}%{_release}%{?_alphatag:.%{_alphatag}}%{?dist}
 Summary:	Extended ROOT file server
 
@@ -29,7 +29,6 @@ Group:		System Environment/Daemons
 License:	LGPLv3+
 URL:		http://xrootd.org/
 Source0:        %{name}-%{version}%{?_alphasuffix}.tar.gz
-Patch0:         SW3412.patch  
 
 BuildRequires:	cmake
 BuildRequires:	krb5-devel
@@ -265,7 +264,6 @@ This package contains the API documentation of the xrootd libraries.
 
 %prep
 %setup -n %{name}-%{version}%{?_alphasuffix}
-%patch0 -p1
 
 %build
 # Koji build machines at Wisc are unhappy when doing osg3.3 --el6 build
@@ -667,6 +665,9 @@ fi
 %doc %{_pkgdocdir}
 
 %changelog
+* Mon Oct 08 2018 Marian Zvada <marian.zvada@cern.ch> - 1:4.8.5-0.1.rc2
+- update to 4.8.5-rc2; SOFTWARE-3435
+
 * Tue Sep 11 2018 Suchandra Thapa <ssthapa@uchicago.edu> - 1:4.8.4-3
 - Add additional commit from BrianB
 
