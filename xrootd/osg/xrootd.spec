@@ -14,7 +14,7 @@
 %endif
 
 # e.g. 'rc3' or blank
-%define _alphatag rc2 
+%define _alphatag rc3 
 %define _release 1
 
 %define _alphasuffix %{?_alphatag:-%{_alphatag}}
@@ -665,6 +665,9 @@ fi
 %doc %{_pkgdocdir}
 
 %changelog
+* Mon Oct 10 2018 Marian Zvada <marian.zvada@cern.ch> - 1:4.8.5-0.1.rc3
+- update to 4.8.5-rc3; SOFTWARE-3435
+
 * Mon Oct 08 2018 Marian Zvada <marian.zvada@cern.ch> - 1:4.8.5-0.1.rc2
 - update to 4.8.5-rc2; SOFTWARE-3435
 
