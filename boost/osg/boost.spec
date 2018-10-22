@@ -89,7 +89,7 @@ BuildRequires: bzip2-devel
 BuildRequires: zlib-devel
 BuildRequires: python-devel
 %if %{with python3}
-BuildRequires: python34-devel
+BuildRequires: python3-devel
 %endif
 BuildRequires: libicu-devel
 %if %{with quadmath}
