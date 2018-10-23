@@ -1,5 +1,5 @@
 Name: xrootd-scitokens
-Version: 0.4.0
+Version: 0.6.0
 Release: 1%{?dist}
 Summary: SciTokens authentication plugin for XRootD
 License: Apache 2.0
@@ -15,7 +15,7 @@ BuildRequires: boost-devel
 BuildRequires: python-devel
 BuildRequires: xrootd-server-devel
 
-Requires: python2-scitokens
+Requires: python2-scitokens >= 1.2.1
 #Requires: boost-python
 
 %description
@@ -54,6 +54,14 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 
 %changelog
+* Tue Oct 23 2018 Derek Weitzel <dweitzel@cse.unl.edu> - 0.6.0-1
+- Add support for audiences and multiple audience support
+
+* Thu Mar 08 2018 Brian Bockelman <bbockelm@cse.unl.edu> - 0.5.0-1
+- Add support for multiple base paths of an issuer.
+- Add concept of restricting authorized paths within an issuer's namespace.
+- Fix potential segfault when a user environment isnt available.
+
 * Tue Feb 06 2018 Derek Weitzel <dweitzel@cse.unl.edu> - 0.4.0-1
 - Update to v0.4.0
 
