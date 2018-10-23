@@ -3,7 +3,7 @@
 
 Name:           python-%{pypi_name}
 Version:        1.2.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        SciToken reference implementation library
 
 License:        Apache 2.0
@@ -21,7 +21,7 @@ SciToken reference implementation library
 Summary:        %{summary}
 Provides:       python-%{pypi_name}
  
-Requires:       python-jwt
+Requires:       python-jwt >= 1.6.1
 Requires:       python2-cryptography
 Requires:       python-setuptools
 %description -n python2-%{pypi_name}
@@ -48,6 +48,9 @@ rm -rf %{pypi_name}.egg-info
 %{python2_sitelib}/%{pypi_name}-%{version}-py?.?.egg-info
 
 %changelog
+* Tue Oct 23 2018 Derek Weitzel <dweitzel@cse.unl.edu> - 1.2.1-2
+- Add python-jwt requirement
+
 * Sun Oct 21 2018 Derek Weitzel <dweitzel@cse.unl.edu> - 1.2.1-1
 - Support multiple audiences in verifier
 
