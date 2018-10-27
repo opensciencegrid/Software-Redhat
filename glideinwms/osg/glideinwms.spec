@@ -12,8 +12,8 @@
 # ------------------------------------------------------------------------------
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
-%define version 3.4.1
-%define release 2
+%define version 3.4.2
+%define release 1
 
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
@@ -779,6 +779,9 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/glideinwms/creation/lib/matchPolicy.py
 %{python_sitelib}/glideinwms/creation/lib/matchPolicy.pyc
 %{python_sitelib}/glideinwms/creation/lib/matchPolicy.pyo
+%{python_sitelib}/glideinwms/creation/lib/check_config_frontend.py
+%{python_sitelib}/glideinwms/creation/lib/check_config_frontend.pyc
+%{python_sitelib}/glideinwms/creation/lib/check_config_frontend.pyo
 %{python_sitelib}/glideinwms/creation/templates/frontend_initd_startup_template
 %{python_sitelib}/glideinwms/creation/reconfig_frontend
 %if 0%{?rhel} >= 7
@@ -840,6 +843,9 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/condor/certs/condor_mapfile
 
 %changelog
+* Fri Oct 26 2018  Marco Mambelli <marcom@fnal.gov> - 3.4.1.1-1
+- Controlling that Frontend is not using options incompatible w/ linked Factories
+
 * Wed Oct 24 2018 Brian Lin <blin@cs.wisc.edu> - 3.4.1-2
 - Use systemctl for loading/unloading on EL7
 
