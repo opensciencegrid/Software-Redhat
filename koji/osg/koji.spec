@@ -7,7 +7,7 @@
 
 Name: koji
 Version: 1.11.0
-Release: 1.6%{?dist}
+Release: 1.7%{?dist}
 License: LGPLv2 and GPLv2+
 # koji.ssl libs (from plague) are GPLv2+
 Summary: Build system tools
@@ -23,6 +23,7 @@ Patch106: kojicli_setup_dns.patch
 Patch110: kojiweb_getfile_nontext_fix.patch
 Patch111: db-upgrade-1.10-to-1.11.patch
 Patch112: Fix-type-in-add-group-pkg.patch
+Patch113: kojira-accept-sleeptime-option.patch
 
 Source: koji-%{version}.tar.bz2
 Source1: README.epel
@@ -174,6 +175,7 @@ cp %{SOURCE1} README.epel
 %patch110 -p1
 %patch111 -p1
 %patch112 -p1
+%patch113 -p1
 
 %build
 
@@ -330,6 +332,9 @@ fi
 %endif
 
 %changelog
+* Tue Oct 30 2018 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.11.0-1.7
+- Add kojira-accept-sleeptime-option.patch
+
 * Fri Dec 22 2017 Mátyás Selmeci <matyas@cs.wisc.edu>
 - Drop el5-isms (SOFTWARE-3050)
 - Drop createrepo_sha1.patch -- was only required for el5
