@@ -1,5 +1,3 @@
-%{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
-
 %if 0%{?fedora} >= 23 || 0%{?rhel} >= 7
 %global use_systemd 1
 %else
@@ -334,6 +332,9 @@ fi
 %endif
 
 %changelog
+* Fri Dec 08 2017 Mátyás Selmeci <matyas@cs.wisc.edu>
+- Drop el5-isms (SOFTWARE-3050)
+
 * Wed Aug 23 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.11.0-1.6
 - Fix `koji add-group-pkg` to set the correct type (SOFTWARE-2870)
 
