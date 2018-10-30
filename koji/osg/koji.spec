@@ -20,7 +20,6 @@ Patch103: kojid_scmbuild_check_spec_after_running_sourcecmd.patch
 Patch104: koji_passwd_retry.patch
 Patch105: koji_proxy_cert.patch
 Patch106: kojicli_setup_dns.patch
-Patch109: createrepo_sha1.patch
 Patch110: kojiweb_getfile_nontext_fix.patch
 Patch111: db-upgrade-1.10-to-1.11.patch
 Patch112: Fix-type-in-add-group-pkg.patch
@@ -172,7 +171,6 @@ cp %{SOURCE1} README.epel
 %patch104 -p1
 %patch105 -p1
 %patch106 -p1
-%patch109 -p1
 %patch110 -p1
 %patch111 -p1
 %patch112 -p1
@@ -332,8 +330,9 @@ fi
 %endif
 
 %changelog
-* Fri Dec 08 2017 Mátyás Selmeci <matyas@cs.wisc.edu>
+* Fri Dec 22 2017 Mátyás Selmeci <matyas@cs.wisc.edu>
 - Drop el5-isms (SOFTWARE-3050)
+- Drop createrepo_sha1.patch -- was only required for el5
 
 * Wed Aug 23 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.11.0-1.6
 - Fix `koji add-group-pkg` to set the correct type (SOFTWARE-2870)
