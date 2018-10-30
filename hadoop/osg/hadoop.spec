@@ -240,7 +240,9 @@ BuildRequires: maven3
 BuildRequires: protobuf-compiler
 BuildRequires: cmake
 BuildRequires: ant
+%if 0%{?rhel} == 6
 BuildRequires: ant-trax
+%endif
 BuildRequires: java-devel = 1:1.7.0
 BuildRequires: jpackage-utils
 BuildRequires: /usr/lib/java-1.7.0
