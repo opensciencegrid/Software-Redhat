@@ -2,7 +2,7 @@
 %define avro_version 1.7.6+cdh5.13.0+135 
 %define avro_patched_version 1.7.6-cdh5.13.0 
 %define avro_base_version 1.7.6 
-%define osg_patchlevel 1
+%define osg_patchlevel 2
 %define avro_release 1.cdh5.13.0.p0.34.%{osg_patchlevel}%{?dist} 
 %define cdh_customer_patch p0 
 %define cdh_parcel_custom_version 1.7.6+cdh5.13.0+135-1.cdh5.13.0.p0.34.%{osg_patchlevel}%{?dist}
@@ -102,6 +102,9 @@ env FULL_VERSION=%{avro_patched_version} bash $RPM_SOURCE_DIR/install_avro.sh \
 /usr/share/doc/avro-doc-*
 
 %changelog
+* Wed Oct 31 2018 Carl Edquist <edquist@cs.wisc.edu> - 1.7.6+cdh5.13.0+135-1.cdh5.13.0.p0.34.2
+- add custom mvn to PATH for el6 build (SOFTWARE-3423)
+
 * Wed Nov 08 2017 Carl Edquist <edquist@cs.wisc.edu> - 1.7.6+cdh5.13.0+135-1.cdh5.13.0.p0.34.1
 - fixes to build in osg koji (SOFTWARE-2906)
 
