@@ -17,6 +17,8 @@
 set -ex
 
 if [ -z "$GIT_REPO" ]; then
+    export PATH=$PATH:/usr/share/apache-maven-3.0.4/bin
+
     if [ -z "${DO_MAVEN_DEPLOY}" ]; then
         MAVEN_INST_DEPLOY=install
     else
