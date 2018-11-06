@@ -1,13 +1,13 @@
 Name:           igtf-ca-certs
 Version:        1.94
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        OSG Packaging of the IGTF CA Certs, in new OpenSSL 1.0.* format. 
 
 Group:          System Environment/Base
 License:        Unknown
 URL:            http://repo.opensciencegrid.org/pacman/cadist/
 
-Source0:        osg-certificates-1.76IGTFNEW.tar.gz
+Source0:        osg-certificates-1.77IGTFNEW.tar.gz
 
 BuildArch:      noarch
 
@@ -33,9 +33,10 @@ chmod 0644 *
 mv * $RPM_BUILD_ROOT/etc/grid-security/certificates/
 
 #[10/30/18] commenting out to remove MD5 sum
-#%check
-#cd $RPM_BUILD_ROOT/etc/grid-security/certificates
-#md5sum -c cacerts_md5sum.txt
+#[11/06/18] uncommenting the following code to include MD5 checksum again 
+%check
+cd $RPM_BUILD_ROOT/etc/grid-security/certificates
+md5sum -c cacerts_md5sum.txt
 
 %files
 %defattr(0644,root,root,-)
@@ -44,6 +45,10 @@ mv * $RPM_BUILD_ROOT/etc/grid-security/certificates/
 %doc
 
 %changelog
+* Tue Nov 06 2018 Zalak Shah <zsshah@iu.edu> 1.94-2
+- CA release corresponding to IGTF 1.94 release.
+- Included MD5 checksum again
+
 * Tue Oct 30 2018 Zalak Shah <zsshah@iu.edu> 1.94-1
 - CA release corresponding to IGTF 1.94 release.
 
