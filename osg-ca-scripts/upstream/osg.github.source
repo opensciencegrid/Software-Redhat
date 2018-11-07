@@ -1,1 +1,1 @@
-type=git url=https://github.com/opensciencegrid/osg-ca-scripts.git tag=v1.2.3 hash=bacb2d16dc74bb2c0e2ed8b95173930db251b217
+type=github repo=opensciencegrid/osg-ca-scripts tag=v1.2.4 hash=c6b3041a0d3474f8b92b5bdd18c43f125e1252e1
