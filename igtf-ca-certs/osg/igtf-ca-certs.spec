@@ -1,13 +1,13 @@
 Name:           igtf-ca-certs
 Version:        1.94
-Release:        2%{?dist}
-Summary:        OSG Packaging of the IGTF CA Certs, in new OpenSSL 1.0.* format. 
+Release:        3%{?dist}
+Summary:        OSG Packaging of the IGTF CA Certs, in the OpenSSL 1.0.* format. 
 
 Group:          System Environment/Base
 License:        Unknown
 URL:            http://repo.opensciencegrid.org/pacman/cadist/
 
-Source0:        osg-certificates-1.77IGTFNEW.tar.gz
+Source0:        osg-certificates-1.76IGTFNEW_2.tar.gz
 
 BuildArch:      noarch
 
@@ -20,7 +20,7 @@ Obsoletes:      igtf-ca-certs-experimental
 Obsoletes:      igtf-ca-certs-compat <= 1.55
 
 %description
-For details what is in the current release, see the distribution site at http://repo.opensciencegrid.org/pacman/cadist/ and change log at http://repo.opensciencegrid.org/pacman/cadist/CHANGES.
+For details about the current certificate release, see https://repo.opensciencegrid.org/cadist/ and change log at https://repo.opensciencegrid.org/cadist/CHANGES.
 
 %prep
 %setup -q -n certificates
@@ -37,6 +37,7 @@ mv * $RPM_BUILD_ROOT/etc/grid-security/certificates/
 %check
 cd $RPM_BUILD_ROOT/etc/grid-security/certificates
 md5sum -c cacerts_md5sum.txt
+sha256sum -c cacerts_sha256sum.txt
 
 %files
 %defattr(0644,root,root,-)
@@ -45,6 +46,11 @@ md5sum -c cacerts_md5sum.txt
 %doc
 
 %changelog
+* Tue Nov 06 2018 Zalak Shah <zsshah@iu.edu> 1.94-3
+- Fix version number in changelog and HTML
+- Verify SHA2 checksums
+- Update the package summary and description
+
 * Tue Nov 06 2018 Zalak Shah <zsshah@iu.edu> 1.94-2
 - CA release corresponding to IGTF 1.94 release.
 - Included MD5 checksum again
