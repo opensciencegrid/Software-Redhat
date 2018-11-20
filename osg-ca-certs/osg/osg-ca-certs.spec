@@ -23,7 +23,7 @@ Obsoletes:      osg-ca-certs-experimental
 Obsoletes:      osg-ca-certs-compat <= 1:1.37
 
 %description
-For additional details what is in the current release, see the distribution site at http://repo.opensciencegrid.org/pacman/cadist/ and change log at http://repo.opensciencegrid.org/pacman/cadist/CHANGES.
+For details about the current certificate release, see https://repo.opensciencegrid.org/cadist/ and change log at https://repo.opensciencegrid.org/cadist/CHANGES.
 
 %prep
 %setup -q -n certificates
