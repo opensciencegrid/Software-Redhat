@@ -1,7 +1,7 @@
 Name:      osg-wn-client
 Summary:   OSG Worker-Node Client
 Version:   3.4
-Release:   4%{?dist}
+Release:   5%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       http://www.opensciencegrid.org
@@ -22,6 +22,7 @@ Requires: osg-system-profiler
 Requires: vo-client
 Requires: globus-gass-copy-progs
 Requires: globus-xio-udt-driver
+Requires: stashcache-client
 
 Requires: gfal2
 Requires: gfal2-util
@@ -59,6 +60,9 @@ EOF
 %config(noreplace) %{_prefix}/etc/globus-user-env.sh
 
 %changelog
+* Wed Dec 12 2018 Mátyás Selmeci <matyas@cs.wisc.edu> 3.4-5
+- Add stashcache-client (SOFTWARE-3472)
+
 * Mon Jan 8 2018 Edgar Fajardo <emfajard@ucsd.edu> 3.4-4
 - Dropping osg-version requirements (SOFTWARE-2917)
 
