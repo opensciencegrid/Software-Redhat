@@ -1,5 +1,5 @@
 Name:           vo-client
-Version:        84
+Version:        85
 Release:        1%{?dist}
 Summary:        Contains vomses file for use with user authentication and edg-mkgridmap.conf file that contains configuration information for edg-mkgridmap.
 
@@ -109,6 +109,10 @@ chmod 600 $RPM_BUILD_ROOT/%{_sysconfdir}/gums/gums.config.template
 %attr(0600,tomcat,tomcat) %config(noreplace) %{_sysconfdir}/gums/gums.config.template
 
 %changelog
+* Mon Dec 17 2018 Carl Edquist <edquist@cs.wisc.edu> - 85-1
+- Update INFN CA DN
+- Add backup VOMS server for enmr.eu and glast.org (SOFTWARE-3513)
+
 * Mon Oct 01 2018 Carl Edquist <edquist@cs.wisc.edu> - 84-1
 - Add dteam VO (SOFTWARE-3426)
 
