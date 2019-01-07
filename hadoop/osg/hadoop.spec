@@ -1,7 +1,7 @@
 %define hadoop_version 2.6.0+cdh5.12.1+2540 
 %define hadoop_patched_version 2.6.0-cdh5.12.1 
 %define hadoop_base_version 2.6.0 
-%define osg_patchlevel 7
+%define osg_patchlevel 8
 %define hadoop_release 1.cdh5.12.1.p0.3.%{osg_patchlevel}%{?dist} 
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
@@ -240,6 +240,9 @@ BuildRequires: maven3
 BuildRequires: protobuf-compiler
 BuildRequires: cmake
 BuildRequires: ant
+%if 0%{?rhel} == 6
+BuildRequires: ant-trax
+%endif
 BuildRequires: java-devel = 1:1.7.0
 BuildRequires: jpackage-utils
 BuildRequires: /usr/lib/java-1.7.0
@@ -1131,6 +1134,9 @@ fi
 %endif
 
 %changelog
+* Tue Oct 30 2018 Carl Edquist <edquist@cs.wisc.edu> - 2.6.0+cdh5.12.1+2540-1.cdh5.12.1.p0.3.8
+- Add BuildRequires ant-trax for EL6 build (SOFTWARE-3423)
+
 * Thu Jan 25 2018 Carl Edquist <edquist@cs.wisc.edu> - 2.6.0+cdh5.12.1+2540-1.cdh5.12.1.p0.3.7
 - Allow Java >= 1.7 (SOFTWARE-2993, SOFTWARE-2978)
 
