@@ -1,5 +1,5 @@
 Name:           osg-ca-certs
-Version:        1.77
+Version:        1.78
 Release:        1%{?dist}
 Summary:        OSG Packaging of the IGTF CA Certs and OSG-specific CAs, in the OpenSSL 1.0.* format. 
 
@@ -10,7 +10,7 @@ URL:            http://repo.opensciencegrid.org/pacman/cadist/
 
 # Note: currently, one needs a valid client certificate to access the source tarball
 # https://osg-svn.rtinfo.indiana.edu/cadist/release/osg-certificates-1.20NEW.tar.gz
-Source0:        osg-certificates-1.77NEW.tar.gz
+Source0:        osg-certificates-1.78NEW.tar.gz
 
 BuildArch:      noarch
 
@@ -23,7 +23,7 @@ Obsoletes:      osg-ca-certs-experimental
 Obsoletes:      osg-ca-certs-compat <= 1:1.37
 
 %description
-For details about the current certificate release, see https://repo.opensciencegrid.org/cadist/ and change log at https://repo.opensciencegrid.org/cadist/CHANGES.
+For additional details what is in the current release, see the distribution site at http://repo.opensciencegrid.org/pacman/cadist/ and change log at http://repo.opensciencegrid.org/pacman/cadist/CHANGES.
 
 %prep
 %setup -q -n certificates
@@ -40,7 +40,6 @@ mv * $RPM_BUILD_ROOT/etc/grid-security/certificates/
 %check
 cd $RPM_BUILD_ROOT/etc/grid-security/certificates
 md5sum -c cacerts_md5sum.txt
-sha256sum -c cacerts_sha256sum.txt
 
 %files
 %defattr(0644,root,root,-)
@@ -49,12 +48,12 @@ sha256sum -c cacerts_sha256sum.txt
 %doc
 
 %changelog
-* Wed Nov 21 2018 Brian Lin <blin@cs.wisc.edu> 1.77-1
-- Rebuild off of the 1.77 tarball and update the packaging version and release accordingly
+* Tue Jan 8 2019 Zalak Shah <zsshah@iu.edu> 1.78-1
+- CA release corresponding to IGTF 1.95 release.
 
-* Tue Nov 20 2018 Brian Lin <blin@cs.wisc.edu> 1.76-3
-- Fix version number in changelog and HTML
-- Verify SHA2 checksums
+* Fri Nov 16 2018 Zalak Shah <zsshah@iu.edu> 1.76-3
+- CA release corresponding to IGTF 1.94 release.
+- Renamed 1.77NEW to 1.76NEW_2 and 1.77IGTFNEW to 1.76IGTFNEW_2
 
 * Tue Nov 06 2018 Zalak Shah <zsshah@iu.edu> 1.76-2
 - CA release corresponding to IGTF 1.94 release.
