@@ -1,1 +1,1 @@
-type=git url=https://github.com/opensciencegrid/xcache.git tag=v1.0.0-rc1 hash=086723cc24327f21ce517e2269ee6cbe4ba00461
+type=github repo=opensciencegrid/xcache tag=v1.0.0 hash=819c1d9880c307a75985f48f0bc9a8f14ed911b0
