@@ -34,7 +34,7 @@
 Summary: An implementation of the SSH protocol with GSI authentication
 Name: gsi-openssh
 Version: %{openssh_ver}
-Release: %{openssh_rel}%{?dist}
+Release: %{openssh_rel}.1%{?dist}
 Provides: gsissh = %{version}-%{release}
 Obsoletes: gsissh < 5.8p2-2
 URL: http://www.openssh.com/portable.html
@@ -47,6 +47,7 @@ Source11: gsisshd.service
 Source12: gsisshd-keygen.service
 Source13: gsisshd-keygen
 Source99: README.sshd-and-gsisshd
+Source100: gsisshd.osg-sysconfig
 
 #?
 Patch100: openssh-7.4p1-coverity.patch
@@ -512,6 +513,9 @@ ln -sf gsissh.1 $RPM_BUILD_ROOT%{_mandir}/man1/gsislogin.1
 
 perl -pi -e "s|$RPM_BUILD_ROOT||g" $RPM_BUILD_ROOT%{_mandir}/man*/*
 
+install -d -m755 $RPM_BUILD_ROOT/usr/share/osg/sysconfig
+install -m644 %{SOURCE100} $RPM_BUILD_ROOT/usr/share/osg/sysconfig/gsisshd
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -578,8 +582,12 @@ getent passwd sshd >/dev/null || \
 %attr(0644,root,root) %{_unitdir}/gsisshd@.service
 %attr(0644,root,root) %{_unitdir}/gsisshd.socket
 %attr(0644,root,root) %{_unitdir}/gsisshd-keygen.service
+%attr(0644,root,root) /usr/share/osg/sysconfig/gsisshd
 
 %changelog
+* Wed Jan 09 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 7.4p1-2.1
+- Add OSG changes
+
 * Tue Apr 10 2018 Mattias Ellert <mattias.ellert@physics.uu.se> - 7.4p1-2
 - Based on openssh-7.4p1-16.el7
 

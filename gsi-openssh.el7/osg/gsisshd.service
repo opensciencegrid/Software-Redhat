@@ -6,6 +6,7 @@ Wants=gsisshd-keygen.service
 
 [Service]
 Type=notify
+EnvironmentFile=-/usr/share/osg/sysconfig/gsisshd
 EnvironmentFile=-/etc/sysconfig/gsisshd
 ExecStart=/usr/sbin/gsisshd -D $OPTIONS
 ExecReload=/bin/kill -HUP $MAINPID

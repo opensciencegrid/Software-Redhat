@@ -5,7 +5,7 @@
 # line. Accepted key types are: DSA RSA ECDSA ED25519.
 # The default is "RSA ECDSA ED25519"
 
-# AUTOCREATE_SERVER_KEYS=""
+AUTOCREATE_SERVER_KEYS=""
 # AUTOCREATE_SERVER_KEYS="RSA ECDSA ED25519"
 
 # Do not change this option unless you have hardware random
