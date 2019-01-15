@@ -34,7 +34,7 @@
 Summary: An implementation of the SSH protocol with GSI authentication
 Name: gsi-openssh
 Version: %{openssh_ver}
-Release: %{openssh_rel}.1%{?dist}
+Release: %{openssh_rel}.2%{?dist}
 Provides: gsissh = %{version}-%{release}
 Obsoletes: gsissh < 5.8p2-2
 URL: http://www.openssh.com/portable.html
@@ -530,6 +530,11 @@ getent passwd sshd >/dev/null || \
 
 %post server
 %systemd_post gsisshd.service gsisshd.socket
+%if %{WITH_SELINUX}
+if [ $1 -gt 1 ]; then
+    restorecon -vR /etc/gsissh
+fi
+%endif
 
 %preun server
 %systemd_preun gsisshd.service gsisshd.socket
@@ -585,6 +590,9 @@ getent passwd sshd >/dev/null || \
 %attr(0644,root,root) /usr/share/osg/sysconfig/gsisshd
 
 %changelog
+* Tue Jan 15 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 7.4p1-2.2
+- Run restorecon after upgrade
+
 * Wed Jan 09 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 7.4p1-2.1
 - Add OSG changes
 
