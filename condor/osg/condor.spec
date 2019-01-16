@@ -113,7 +113,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.1
+%define condor_base_release 1.2
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -212,6 +212,10 @@ Source123: zlib-1.2.3.tar.gz
 # https://htcondor-wiki.cs.wisc.edu/index.cgi/chngview?cn=55841
 # https://opensciencegrid.atlassian.net/browse/SOFTWARE-3503
 Patch1: schedd-memleak.patch
+
+# https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=6856
+# https://opensciencegrid.atlassian.net/browse/SOFTWARE-3533
+Patch2: job-router-no-ATTR_USER.patch
 
 #% if 0%osg
 Patch8: osg_sysconfig_in_init_script.patch
@@ -726,6 +730,7 @@ exit 0
 %endif
 
 %patch1 -p1
+%patch2 -p1
 
 %if 0%{?osg} || 0%{?hcc}
 %patch8 -p1
@@ -1908,6 +1913,9 @@ fi
 %endif
 
 %changelog
+* Wed Jan 16 2019 Carl Edquist <edquist@cs.wisc.edu> - 8.6.13-1.2
+- Pull upstream fix for job router setting user attr (#6856, SOFTWARE-3533)
+
 * Thu Dec 06 2018 Carl Edquist <edquist@cs.wisc.edu> - 8.6.13-1.1
 - Pull upstream fix for schedd memleak (#6837, SOFTWARE-3503)
 
