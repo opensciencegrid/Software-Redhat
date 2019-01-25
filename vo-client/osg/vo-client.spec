@@ -1,7 +1,7 @@
 Name:           vo-client
 Version:        85
 Release:        1%{?dist}
-Summary:        Contains vomses file for use with user authentication and edg-mkgridmap.conf file that contains configuration information for edg-mkgridmap.
+Summary:        Contains vomses file for use with user authentication
 
 Group:          System Environment/Base
 License:        Apache 2.0
@@ -19,17 +19,6 @@ Source0:        %{name}-%{version}-osg.tar.gz
 
 %description
 %{summary}
-
-%package edgmkgridmap
-Summary:	edg-mkgridmap.conf file that contains configuration information for edg-mkgridmap
-Group:          system environment/base
-Provides:       vo-client-edgmkgridmap = %{version}-%{release}
-Provides:       osg-edg-mkgridmap-config = %{version}-%{release}
-#Requires:       %{name} = %{version}-%{release}
-
-%description edgmkgridmap
-%{summary}
-
 
 %package lcmaps-voms
 Summary:        Provides a voms-mapfile-default file, mapping VOMS FQANs to Unix users suitable for use by the LCMAPS VOMS plugin
@@ -69,12 +58,10 @@ tar -xz -C $RPM_BUILD_DIR --strip-components=1 -f %{SOURCE0}
 install -d $RPM_BUILD_ROOT/%{_sysconfdir}
 install -d $RPM_BUILD_ROOT/%{_datadir}/osg/
 mv $RPM_BUILD_DIR/vomses $RPM_BUILD_ROOT/%{_sysconfdir}/
-mv $RPM_BUILD_DIR/edg-mkgridmap.conf $RPM_BUILD_ROOT/%{_sysconfdir}/
 mv $RPM_BUILD_DIR/voms-mapfile-default $RPM_BUILD_ROOT/%{_datadir}/osg/
 mv $RPM_BUILD_DIR/grid-vorolemap $RPM_BUILD_ROOT/%{_datadir}/osg/
 
 chmod 644 $RPM_BUILD_ROOT/%{_sysconfdir}/vomses
-chmod 644 $RPM_BUILD_ROOT/%{_sysconfdir}/edg-mkgridmap.conf
 chmod 644 $RPM_BUILD_ROOT/%{_datadir}/osg/voms-mapfile-default
 chmod 644 $RPM_BUILD_ROOT/%{_datadir}/osg/grid-vorolemap
 
@@ -91,10 +78,6 @@ chmod 600 $RPM_BUILD_ROOT/%{_sysconfdir}/gums/gums.config.template
 %defattr(-,root,root,-)
 %config(noreplace) %{_sysconfdir}/vomses
 %config(noreplace) %{_sysconfdir}/grid-security/vomsdir
-
-%files edgmkgridmap
-%defattr(-,root,root,-)
-%config(noreplace) %{_sysconfdir}/edg-mkgridmap.conf
 
 %files lcmaps-voms
 %defattr(-,root,root,-)
