@@ -37,17 +37,6 @@ Requires:       %{name} = %{version}-%{release}
 %{summary}
 
 
-%package -n osg-gums-config
-Summary:        a file that contains a template configuration for the gums service
-Group:          system environment/base
-Requires:       gums-service
-
-%description -n osg-gums-config
-%{summary}
-Running /usr/bin/gums-create-config on the template
-(in %{_sysconfdir}/gums/gums.config.template) will create a usable
-configuration file.
-
 %prep
 
 %build
@@ -70,10 +59,6 @@ mv $RPM_BUILD_DIR/vomsdir $RPM_BUILD_ROOT/%{_sysconfdir}/grid-security/
 find $RPM_BUILD_ROOT/%{_sysconfdir}/grid-security/vomsdir -type f -exec chmod 644 {} \;
 find $RPM_BUILD_ROOT/%{_sysconfdir}/grid-security/vomsdir -type d -exec chmod 755 {} \;
 
-mkdir -p $RPM_BUILD_ROOT/%{_sysconfdir}/gums/
-mv $RPM_BUILD_DIR/gums.config.template $RPM_BUILD_ROOT/%{_sysconfdir}/gums/gums.config.template
-chmod 600 $RPM_BUILD_ROOT/%{_sysconfdir}/gums/gums.config.template
-
 %files
 %defattr(-,root,root,-)
 %config(noreplace) %{_sysconfdir}/vomses
@@ -86,10 +71,6 @@ chmod 600 $RPM_BUILD_ROOT/%{_sysconfdir}/gums/gums.config.template
 %files dcache
 %defattr(-,root,root,-)
 %config(noreplace) %{_datadir}/osg/grid-vorolemap
-
-%files -n osg-gums-config
-%defattr(-,root,root,-)
-%attr(0600,tomcat,tomcat) %config(noreplace) %{_sysconfdir}/gums/gums.config.template
 
 %changelog
 * Mon Dec 17 2018 Carl Edquist <edquist@cs.wisc.edu> - 85-1
