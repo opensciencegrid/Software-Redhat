@@ -13,7 +13,7 @@
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
 %define version 3.4.3
-%define release 0.2.rc2
+%define release 1
 
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
@@ -843,9 +843,10 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/condor/certs/condor_mapfile
 
 %changelog
-* Tue Jan 22 2019  Marco Mambelli <marcom@fnal.gov> - 3.4.3-0.2.rc2
+* Fri Jan 25 2019  Marco Mambelli <marcom@fnal.gov> - 3.4.3-1
 - GlideinWMS v3.4.3
 - Release Notes: http://glideinwms.fnal.gov/doc.v3_4_3/history.html
+- Release candidates: 3.4.3-0.1.rc1 to 3.4.3-0.2.rc2
 
 * Fri Oct 26 2018  Marco Mambelli <marcom@fnal.gov> - 3.4.2-1
 - Controlling that Frontend is not using options incompatible w/ linked Factories
