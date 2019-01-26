@@ -73,6 +73,9 @@ find $RPM_BUILD_ROOT/%{_sysconfdir}/grid-security/vomsdir -type d -exec chmod 75
 %config(noreplace) %{_datadir}/osg/grid-vorolemap
 
 %changelog
+* Fri Jan 25 2019 Carl Edquist <edquist@cs.wisc.edu> - 85-2
+- Drop osg-gums-config and edgmkgridmap subpackages (SOFTWARE-3542)
+
 * Mon Dec 17 2018 Carl Edquist <edquist@cs.wisc.edu> - 85-1
 - Update INFN CA DN
 - Add backup VOMS server for enmr.eu and glast.org (SOFTWARE-3513)
