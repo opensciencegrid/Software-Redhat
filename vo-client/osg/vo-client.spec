@@ -38,24 +38,24 @@ Requires:       %{name} = %{version}-%{release}
 
 
 %prep
+%setup
 
 %build
 
 
 %install
-tar -xz -C $RPM_BUILD_DIR --strip-components=1 -f %{SOURCE0}
 install -d $RPM_BUILD_ROOT/%{_sysconfdir}
 install -d $RPM_BUILD_ROOT/%{_datadir}/osg/
-mv $RPM_BUILD_DIR/vomses $RPM_BUILD_ROOT/%{_sysconfdir}/
-mv $RPM_BUILD_DIR/voms-mapfile-default $RPM_BUILD_ROOT/%{_datadir}/osg/
-mv $RPM_BUILD_DIR/grid-vorolemap $RPM_BUILD_ROOT/%{_datadir}/osg/
+mv vomses $RPM_BUILD_ROOT/%{_sysconfdir}/
+mv voms-mapfile-default $RPM_BUILD_ROOT/%{_datadir}/osg/
+mv grid-vorolemap $RPM_BUILD_ROOT/%{_datadir}/osg/
 
 chmod 644 $RPM_BUILD_ROOT/%{_sysconfdir}/vomses
 chmod 644 $RPM_BUILD_ROOT/%{_datadir}/osg/voms-mapfile-default
 chmod 644 $RPM_BUILD_ROOT/%{_datadir}/osg/grid-vorolemap
 
 install -d $RPM_BUILD_ROOT/%{_sysconfdir}/grid-security/
-mv $RPM_BUILD_DIR/vomsdir $RPM_BUILD_ROOT/%{_sysconfdir}/grid-security/
+mv vomsdir $RPM_BUILD_ROOT/%{_sysconfdir}/grid-security/
 find $RPM_BUILD_ROOT/%{_sysconfdir}/grid-security/vomsdir -type f -exec chmod 644 {} \;
 find $RPM_BUILD_ROOT/%{_sysconfdir}/grid-security/vomsdir -type d -exec chmod 755 {} \;
 
