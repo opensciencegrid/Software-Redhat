@@ -10,7 +10,7 @@ BuildArch:      noarch
 
 Requires: grid-certificates >= 7
 
-Source0:        %{name}-%{version}-osg.tar.gz
+Source0:        %{name}-%{version}.tar.gz
 
 # See
 # https://opensciencegrid.github.io/technology/software/create-vo-client/
@@ -41,7 +41,8 @@ Requires:       %{name} = %{version}-%{release}
 %setup
 
 %build
-
+./bin/gen-voms-mapfile > voms-mapfile-default
+./bin/gen-grid-vorolemap voms-mapfile-default > grid-vorolemap
 
 %install
 install -d $RPM_BUILD_ROOT/%{_sysconfdir}
@@ -75,6 +76,7 @@ find $RPM_BUILD_ROOT/%{_sysconfdir}/grid-security/vomsdir -type d -exec chmod 75
 %changelog
 * Fri Jan 25 2019 Carl Edquist <edquist@cs.wisc.edu> - 85-2
 - Drop osg-gums-config and edgmkgridmap subpackages (SOFTWARE-3542)
+- Clean up build process
 
 * Mon Dec 17 2018 Carl Edquist <edquist@cs.wisc.edu> - 85-1
 - Update INFN CA DN
