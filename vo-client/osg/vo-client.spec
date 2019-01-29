@@ -1,6 +1,6 @@
 Name:           vo-client
 Version:        85
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Contains vomses file for use with user authentication
 
 Group:          System Environment/Base
@@ -41,8 +41,7 @@ Requires:       %{name} = %{version}-%{release}
 %setup
 
 %build
-./bin/gen-voms-mapfile > voms-mapfile-default
-./bin/gen-grid-vorolemap voms-mapfile-default > grid-vorolemap
+make
 
 %install
 install -d $RPM_BUILD_ROOT/%{_sysconfdir}
