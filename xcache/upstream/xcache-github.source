@@ -1,2 +1,1 @@
-type=github repo=matyasselmeci/xcache tag=wip/v1.0.1 tarball=xcache-1.0.1.tar.gz hash=6571c44f5ac58fae60de0efa7e95b1821f19b01c
-#type=github repo=matyasselmeci/xcache tag=pr/moreconfigreorg tarball=xcache-1.0.0.tar.gz hash=b87b7bafd0f506d1dfee0ba5275f148dd249d58a
+type=github repo=opensciencegrid/xcache tag=v1.0.1 hash=6571c44f5ac58fae60de0efa7e95b1821f19b01c
