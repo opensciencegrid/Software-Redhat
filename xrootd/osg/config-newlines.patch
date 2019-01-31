@@ -1,0 +1,61 @@
+commit 2857b90d8a24bcd4f8e94cabebf4f610259eee99
+Author: Carl Edquist <edquist@cs.wisc.edu>
+Date:   Thu Jan 31 14:07:43 2019 -0600
+
+    add missing newlines to end of cfg files (SOFTWARE-3485)
+
+diff --git a/packaging/common/xrootd-clustered.cfg b/packaging/common/xrootd-clustered.cfg
+index baffe806..e001c41c 100644
+--- a/packaging/common/xrootd-clustered.cfg
++++ b/packaging/common/xrootd-clustered.cfg
+@@ -56,4 +56,4 @@ all.pidpath /var/run/xrootd
+ # For example /etc/xrootd/config.d/10-mygrid.cfg and 
+ # /etc/xrootd/config.d/98-mysite-specifics.cfg
+ #
+-continue /etc/xrootd/config.d/
+\ No newline at end of file
++continue /etc/xrootd/config.d/
+diff --git a/packaging/common/xrootd-filecache-clustered.cfg b/packaging/common/xrootd-filecache-clustered.cfg
+index 4ff5a3ad..e99485ed 100644
+--- a/packaging/common/xrootd-filecache-clustered.cfg
++++ b/packaging/common/xrootd-filecache-clustered.cfg
+@@ -92,4 +92,4 @@ fi
+ # For example /etc/xrootd/config.d/10-mygrid.cfg and                                                                                                                       
+ # /etc/xrootd/config.d/98-mysite-specifics.cfg                                                                                                                             
+ #                                                                                                                                                                           
+-continue /etc/xrootd/config.d/
+\ No newline at end of file
++continue /etc/xrootd/config.d/
+diff --git a/packaging/common/xrootd-filecache-standalone.cfg b/packaging/common/xrootd-filecache-standalone.cfg
+index d2a87ffd..b2c4862f 100644
+--- a/packaging/common/xrootd-filecache-standalone.cfg
++++ b/packaging/common/xrootd-filecache-standalone.cfg
+@@ -39,4 +39,4 @@ pfc.ram 16g
+ # For example /etc/xrootd/config.d/10-mygrid.cfg and                                                                                                                        
+ # /etc/xrootd/config.d/98-mysite-specifics.cfg                                                                                                                              
+ #                                                                                                                                                                            
+-continue /etc/xrootd/config.d/
+\ No newline at end of file
++continue /etc/xrootd/config.d/
+diff --git a/packaging/common/xrootd-http.cfg b/packaging/common/xrootd-http.cfg
+index d883f901..b3bf813a 100644
+--- a/packaging/common/xrootd-http.cfg
++++ b/packaging/common/xrootd-http.cfg
+@@ -38,4 +38,4 @@ xrd.protocol XrdHttp:80 /usr/lib64/libXrdHttp-4.so
+ # For example /etc/xrootd/config.d/10-mygrid.cfg and                                                                                                                        
+ # /etc/xrootd/config.d/98-mysite-specifics.cfg                                                                                                                             
+ #                                                                                                                                                                           
+-continue /etc/xrootd/config.d/
+\ No newline at end of file
++continue /etc/xrootd/config.d/
+diff --git a/packaging/common/xrootd-standalone.cfg b/packaging/common/xrootd-standalone.cfg
+index 33d10936..0dd6637c 100644
+--- a/packaging/common/xrootd-standalone.cfg
++++ b/packaging/common/xrootd-standalone.cfg
+@@ -28,4 +28,4 @@ all.pidpath /var/run/xrootd
+ # For example /etc/xrootd/config.d/10-mygrid.cfg and                                                                                                                         
+ # /etc/xrootd/config.d/98-mysite-specifics.cfg                                                                                                                               
+ #                                                                                                                                                                            
+-continue /etc/xrootd/config.d/
+\ No newline at end of file
++continue /etc/xrootd/config.d/

@@ -44,7 +44,7 @@
 Name:      xrootd
 Epoch:     1
 Version:   4.9.0
-Release:   0.rc4%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:   0.rc4.1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -54,6 +54,8 @@ URL:       http://xrootd.org/
 # cd xrootd
 # git-archive master | gzip -9 > ~/rpmbuild/SOURCES/xrootd.tgz
 Source0:   xrootd.tar.gz
+
+Patch0: config-newlines.patch
 
 %if %{?_with_compat:1}%{!?_with_compat:0}
 Source1:   xrootd-3.3.6.tar.gz
@@ -396,6 +398,10 @@ This package contains compatibility binaries for xrootd 3 servers.
 #-------------------------------------------------------------------------------
 %prep
 %setup -c -n xrootd
+
+pushd xrootd
+%patch0 -p1
+popd
 
 %if %{?_with_compat:1}%{!?_with_compat:0}
 %setup -T -D -n %{name} -a 1
@@ -936,6 +942,9 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Thu Jan 31 2019 Carl Edquist <edquist@cs.wisc.edu> - 1:4.9.0-0.rc4.1
+- Patch config files with final newlines (SOFTWARE-3485)
+
 * Tue Jan 08 2019 Edgar Fajardo <emfajard@ucsd.edu>
 - Create config dir /etc/xrootd/config.d
 
