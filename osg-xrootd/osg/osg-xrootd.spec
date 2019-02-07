@@ -1,7 +1,7 @@
 Summary: OSG config files for XRootD
 Name: osg-xrootd
 Version: 3.4
-Release: 0.1%{?dist}
+Release: 0.2%{?dist}
 License: ASL 2.0
 Group: Applications/Grid
 BuildArch: noarch
@@ -23,13 +23,13 @@ install -m 755         -d $RPM_BUILD_ROOT/etc/xrootd/config.d
 install -m 644 %{SOURCE1} $RPM_BUILD_ROOT/etc/xrootd/config.d
 install -m 644 %{SOURCE2} $RPM_BUILD_ROOT/etc/xrootd/config.d
 install -m 644 %{SOURCE3} $RPM_BUILD_ROOT/etc/xrootd/config.d
-install -m 644 %{SOURCE4} $RPM_BUILD_ROOT/etc/xrootd/config.d
+install -m 644 %{SOURCE4} $RPM_BUILD_ROOT/etc/xrootd
 
 %files
 %config(noreplace) /etc/xrootd/config.d/40-osg-http.cfg
 %config(noreplace) /etc/xrootd/config.d/40-osg-monitoring.cfg
 %config(noreplace) /etc/xrootd/config.d/40-osg-paths.cfg
-%config(noreplace) /etc/xrootd/config.d/xcache-robots.txt
+%config(noreplace) /etc/xrootd/xcache-robots.txt
 
 %changelog
 * Wed Feb 06 2019 Carl Edquist <edquist@cs.wisc.edu> - 3.4-0.1
