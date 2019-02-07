@@ -9,7 +9,7 @@ BuildArch: noarch
 Source1: 40-osg-http.cfg
 Source2: 40-osg-monitoring.cfg
 Source3: 40-osg-paths.cfg
-Source4: xcache-robots.txt
+Source4: ban-robots.txt
 
 %description
 %{summary}
@@ -29,7 +29,7 @@ install -m 644 %{SOURCE4} $RPM_BUILD_ROOT/etc/xrootd
 %config(noreplace) /etc/xrootd/config.d/40-osg-http.cfg
 %config(noreplace) /etc/xrootd/config.d/40-osg-monitoring.cfg
 %config(noreplace) /etc/xrootd/config.d/40-osg-paths.cfg
-%config(noreplace) /etc/xrootd/xcache-robots.txt
+%config(noreplace) /etc/xrootd/ban-robots.txt
 
 %changelog
 * Wed Feb 06 2019 Carl Edquist <edquist@cs.wisc.edu> - 3.4-0.1
