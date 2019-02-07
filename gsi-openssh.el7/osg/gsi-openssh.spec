@@ -34,7 +34,7 @@
 Summary: An implementation of the SSH protocol with GSI authentication
 Name: gsi-openssh
 Version: %{openssh_ver}
-Release: %{openssh_rel}.1%{?dist}
+Release: %{openssh_rel}.3%{?dist}
 Provides: gsissh = %{version}-%{release}
 Obsoletes: gsissh < 5.8p2-2
 URL: http://www.openssh.com/portable.html
@@ -529,6 +529,7 @@ getent passwd sshd >/dev/null || \
   -s /sbin/nologin -r -d /var/empty/sshd sshd 2> /dev/null || :
 
 %post server
+systemctl daemon-reload >/dev/null 2>&1 || :
 %systemd_post gsisshd.service gsisshd.socket
 
 %preun server
@@ -585,6 +586,9 @@ getent passwd sshd >/dev/null || \
 %attr(0644,root,root) /usr/share/osg/sysconfig/gsisshd
 
 %changelog
+* Wed Feb 06 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 7.4p1-2.3
+- systemctl daemon-reload in post scriptlet to fix failure when upgrading from an init-based version
+
 * Wed Jan 09 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 7.4p1-2.1
 - Add OSG changes
 
