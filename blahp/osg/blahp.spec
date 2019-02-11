@@ -4,7 +4,7 @@
 %define bl_libexecdir %{_libexecdir}/%{name}
 
 Name:		blahp
-Version:	1.18.38.bosco
+Version:	1.18.39.bosco
 Release:	1%{?gitrev:.%{gitrev}}%{?dist}
 Summary:	gLite BLAHP daemon
 
@@ -12,9 +12,6 @@ Group:		System/Libraries
 License:	Apache 2.0
 URL:		https://github.com/osg-bosco/BLAH
 
-# Generated with:
-# git archive v1_18_bosco | gzip -9 > %{name}-%{version}.tar.gz
-#
 # Pre-release build tarballs should be generated with:
 # git archive %{gitrev} | gzip -9 > %{name}-%{version}-%{gitrev}.tar.gz
 Source0:        %{name}-%{version}%{?gitrev:-%{gitrev}}.tar.gz
@@ -39,7 +36,7 @@ BuildRequires:  docbook-style-xsl, libxslt
 %{summary}
 
 %prep
-%setup -c -n %{name}-%{version}
+%setup
 
 %build
 ./bootstrap
@@ -178,6 +175,9 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Mon Feb 11 2019 Carl Edquist <edquist@cs.wisc.edu> - 1.18.39.bosco-1
+- Propagate signals to payload jobs (SOFTWARE-3554)
+
 * Fri Sep 14 2018 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.18.38.bosco-1
 - Disable blahp proxy renewal/limited proxies in the default config (SOFTWARE-3409)
 

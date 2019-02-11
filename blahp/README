@@ -1,12 +1,8 @@
 We are using the following fork - 
 
-https://github.com/osg-bosco/BLAH
+https://github.com/opensciencegrid/BLAH
 
-Particularly the v1_18_bosco branch and we're building the tarball with:
+Particularly the v1_18_bosco branch, and tags of the form v1.18.39.bosco
 
-git archive <version tag> | gzip -9 > blahp-<version>.tar.gz
-
-Example:
-
-git archive v1.18.18.bosco | gzip -9 > blahp-1.18.18.bosco.tar.gz
+The "official" upstream still lives at https://github.com/prelz/BLAH
 
