@@ -1,2 +1,1 @@
-type=git url=https://github.com/opensciencegrid/osg-test.git tag=v2.3.0 hash=c46e4e4aef08618dc28ecf68ead4a88b766aaa78
-
+type=git url=https://github.com/opensciencegrid/osg-test.git tag=v2.3.1 hash=8899b640e13b7a31c901d40be03871e2a54bceab
