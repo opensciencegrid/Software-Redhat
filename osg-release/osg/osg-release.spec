@@ -1,6 +1,6 @@
 Name:           osg-release
 Version:        3.4
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        OSG Software for Enterprise Linux repository configuration
 
 Group:          System Environment/Base
@@ -60,6 +60,9 @@ sed -i -e 's/gpgcheck=1/gpgcheck=0/' $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d/*
 
 
 %changelog
+* Mon Feb 11 2019 Carl Edquist <edquist@cs.wisc.edu> - 3.4-6
+- Add rolling release repo (SOFTWARE-3465)
+
 * Wed May 02 2018 Carl Edquist <edquist@cs.wisc.edu> - 3.4-5
 - Drop consider_as_osg from *.repo files (SOFTWARE-3204)
 

@@ -1,6 +1,7 @@
 #YUMREPO                  SERIES    REPO         TEMPLATE  TITLE
 
 osg                       3.4       release      standard
+osg-rolling               3.4       rolling      standard  Rolling_Release
 osg-development           3.4       development  standard  Development
 osg-testing               3.4       testing      standard  Testing
 osg-contrib               3.4       contrib      standard  Contributed
