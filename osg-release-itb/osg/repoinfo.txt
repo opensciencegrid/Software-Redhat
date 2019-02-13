@@ -10,6 +10,7 @@ osg-minefield             3.4       development  koji      Build_Repository
 osg-prerelease            3.4       prerelease   koji      Prerelease_Repository_for_Internal_Use
 
 osg-upcoming              upcoming  release      standard  Upcoming
+osg-upcoming-rolling      upcoming  rolling      standard  Upcoming_Rolling_Release
 osg-upcoming-development  upcoming  development  standard  Upcoming_Development
 osg-upcoming-testing      upcoming  testing      standard  Upcoming_Testing
 osg-upcoming-minefield    upcoming  development  koji      Upcoming_Build_Repository

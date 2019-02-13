@@ -1,6 +1,6 @@
 Name:           osg-release-itb
 Version:        3.4
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        OSG Software for Enterprise Linux repository configuration
 
 Group:          System Environment/Base
@@ -60,6 +60,9 @@ sed -i -e 's/gpgcheck=1/gpgcheck=0/' $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d/*
 
 
 %changelog
+* Wed Feb 13 2019 Carl Edquist <edquist@cs.wisc.edu> - 3.4-7
+- Add rolling release for upcoming (SOFTWARE-3465)
+
 * Mon Feb 11 2019 Carl Edquist <edquist@cs.wisc.edu> - 3.4-6
 - Add rolling release repo (SOFTWARE-3465)
 
