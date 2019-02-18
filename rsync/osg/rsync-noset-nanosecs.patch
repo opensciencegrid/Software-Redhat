@@ -1,0 +1,102 @@
+From 0f8e9e2d8638e47d646a6baba694b303ac84e695 Mon Sep 17 00:00:00 2001
+From: Wayne Davison <wayned@samba.org>
+Date: Mon, 15 Jan 2018 10:52:15 -0800
+Subject: [PATCH 1/1] Don't force nanoseconds if a file wasn't transferred or
+ checksummed.
+
+---
+ backup.c    | 2 +-
+ generator.c | 5 ++++-
+ rsync.c     | 6 +++---
+ rsync.h     | 1 +
+ 4 files changed, 9 insertions(+), 5 deletions(-)
+
+diff --git a/backup.c b/backup.c
+index bc565329..5f40b39a 100644
+--- a/backup.c
++++ b/backup.c
+@@ -336,7 +336,7 @@ int make_backup(const char *fname, BOOL prefer_rename)
+ 
+ 	save_preserve_xattrs = preserve_xattrs;
+ 	preserve_xattrs = 0;
+-	set_file_attrs(buf, file, NULL, fname, 0);
++	set_file_attrs(buf, file, NULL, fname, ATTRS_SET_NANO);
+ 	preserve_xattrs = save_preserve_xattrs;
+ 
+ 	unmake_file(file);
+diff --git a/generator.c b/generator.c
+index 4b0a60e4..a112da6e 100644
+--- a/generator.c
++++ b/generator.c
+@@ -99,6 +99,7 @@ extern struct file_list *cur_flist, *first_flist, *dir_flist;
+ extern filter_rule_list filter_list, daemon_filter_list;
+ 
+ int maybe_ATTRS_REPORT = 0;
++int maybe_ATTRS_SET_NANO = 0;
+ 
+ static dev_t dev_zero;
+ static int deldelay_size = 0, deldelay_cnt = 0;
+@@ -1214,6 +1215,8 @@ static void recv_generator(char *fname, struct file_struct *file, int ndx,
+ 		return;
+ 	}
+ 
++	maybe_ATTRS_SET_NANO = always_checksum ? ATTRS_SET_NANO : 0;
++
+ 	if (skip_dir) {
+ 		if (is_below(file, skip_dir)) {
+ 			if (is_dir)
+@@ -1762,7 +1765,7 @@ static void recv_generator(char *fname, struct file_struct *file, int ndx,
+ 			do_unlink(partialptr);
+ 			handle_partial_dir(partialptr, PDIR_DELETE);
+ 		}
+-		set_file_attrs(fname, file, &sx, NULL, maybe_ATTRS_REPORT);
++		set_file_attrs(fname, file, &sx, NULL, maybe_ATTRS_REPORT | maybe_ATTRS_SET_NANO);
+ 		if (itemizing)
+ 			itemize(fnamecmp, file, ndx, statret, &sx, 0, 0, NULL);
+ #ifdef SUPPORT_HARD_LINKS
+diff --git a/rsync.c b/rsync.c
+index ae036a6b..a0b948dc 100644
+--- a/rsync.c
++++ b/rsync.c
+@@ -556,7 +556,7 @@ int set_file_attrs(const char *fname, struct file_struct *file, stat_x *sxp,
+ 	if (!(flags & ATTRS_SKIP_MTIME)
+ 	 && (sxp->st.st_mtime != file->modtime
+ #ifdef ST_MTIME_NSEC
+-	  || (NSEC_BUMP(file) && (uint32)sxp->st.ST_MTIME_NSEC != F_MOD_NSEC(file))
++	  || (flags & ATTRS_SET_NANO && NSEC_BUMP(file) && (uint32)sxp->st.ST_MTIME_NSEC != F_MOD_NSEC(file))
+ #endif
+ 	  )) {
+ 		int ret = set_modtime(fname, file->modtime, F_MOD_NSEC(file), sxp->st.st_mode);
+@@ -672,7 +672,7 @@ int finish_transfer(const char *fname, const char *fnametmp,
+ 
+ 	/* Change permissions before putting the file into place. */
+ 	set_file_attrs(fnametmp, file, NULL, fnamecmp,
+-		       ok_to_set_time ? 0 : ATTRS_SKIP_MTIME);
++		       ok_to_set_time ? ATTRS_SET_NANO : ATTRS_SKIP_MTIME);
+ 
+ 	/* move tmp file over real file */
+ 	if (DEBUG_GTE(RECV, 1))
+@@ -697,7 +697,7 @@ int finish_transfer(const char *fname, const char *fnametmp,
+ 
+   do_set_file_attrs:
+ 	set_file_attrs(fnametmp, file, NULL, fnamecmp,
+-		       ok_to_set_time ? 0 : ATTRS_SKIP_MTIME);
++		       ok_to_set_time ? ATTRS_SET_NANO : ATTRS_SKIP_MTIME);
+ 
+ 	if (temp_copy_name) {
+ 		if (do_rename(fnametmp, fname) < 0) {
+diff --git a/rsync.h b/rsync.h
+index 6c732db3..53fff2d6 100644
+--- a/rsync.h
++++ b/rsync.h
+@@ -165,6 +165,7 @@
+ 
+ #define ATTRS_REPORT		(1<<0)
+ #define ATTRS_SKIP_MTIME	(1<<1)
++#define ATTRS_SET_NANO		(1<<2)
+ 
+ #define FULL_FLUSH	1
+ #define NORMAL_FLUSH	0
+-- 
+2.17.1
+
