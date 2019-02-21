@@ -6,14 +6,12 @@
 %endif
 
 Name: koji
-Version: 1.11.0
-Release: 1.7%{?dist}
+Version: 1.11.1
+Release: 1%{?dist}
 License: LGPLv2 and GPLv2+
 # koji.ssl libs (from plague) are GPLv2+
 Summary: Build system tools
-Group: Applications/System
-URL: https://pagure.io/fork/ausil/koji/branch/fedora-infra
-Patch0: fedora-config.patch
+URL: https://pagure.io/koji/releases
 Patch101: koji_passwd_cache.patch
 Patch102: kojid_setup_dns.patch
 Patch103: kojid_scmbuild_check_spec_after_running_sourcecmd.patch
@@ -26,7 +24,6 @@ Patch112: Fix-type-in-add-group-pkg.patch
 Patch113: kojira-accept-sleeptime-option.patch
 
 Source: koji-%{version}.tar.bz2
-Source1: README.epel
 
 BuildArch: noarch
 Requires: python-krbV >= 1.0.13
@@ -164,8 +161,6 @@ koji-web is a web UI to the Koji system.
 
 %prep
 %setup -q
-cp %{SOURCE1} README.epel
-%patch0 -p1 -b orig
 %patch101 -p1
 %patch102 -p1
 %patch103 -p1
@@ -273,7 +268,6 @@ fi
 %endif
 
 %files vm
-%doc README.epel
 %{_sbindir}/kojivmd
 #dir %{_datadir}/kojivmd
 %{_datadir}/kojivmd/kojikamid
@@ -332,6 +326,10 @@ fi
 %endif
 
 %changelog
+* Thu Feb 21 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.11.1-1.osg
+- Update to 1.11.1 (SOFTWARE-3595)
+- Build from developer tarball
+
 * Tue Oct 30 2018 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.11.0-1.7
 - Add kojira-accept-sleeptime-option.patch
 
