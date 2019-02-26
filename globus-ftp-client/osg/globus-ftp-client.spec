@@ -2,17 +2,16 @@
 
 Name:		globus-ftp-client
 %global _name %(tr - _ <<< %{name})
-Version:	8.36
-Release:	1.2%{?dist}
-Summary:	Globus Toolkit - GridFTP Client Library
+Version:	9.1
+Release:	2.1%{?dist}
+Summary:	Grid Community Toolkit - GridFTP Client Library
 
 License:	ASL 2.0
-URL:		http://toolkit.globus.org/
-Source:		https://downloads.globus.org/toolkit/gt6/packages/%{_name}-%{version}.tar.gz
-#		README file
-Source8:	GLOBUS-GRIDFTP
+URL:		https://github.com/gridcf/gct/
+Source:		https://repo.gridcf.org/gct6/sources/%{_name}-%{version}.tar.gz
+Source8:	README
 
-Requires:	globus-xio-popen-driver%{?_isa} >= 2
+BuildRequires:	gcc
 BuildRequires:	globus-common-devel >= 15
 BuildRequires:	globus-ftp-control-devel >= 4
 BuildRequires:	globus-gsi-callback-devel >= 4
@@ -29,37 +28,42 @@ BuildRequires:	globus-gridftp-server-progs >= 7
 BuildRequires:	openssl
 BuildRequires:	perl(Test::More)
 
+Requires:	globus-xio-popen-driver%{?_isa} >= 2
+
 %package devel
-Summary:	Globus Toolkit - GridFTP Client Library Development Files
+Summary:	Grid Community Toolkit - GridFTP Client Library Development Files
 Requires:	%{name}%{?_isa} = %{version}-%{release}
 
 %package doc
-Summary:	Globus Toolkit - GridFTP Client Library Documentation Files
+Summary:	Grid Community Toolkit - GridFTP Client Library Documentation Files
 BuildArch:	noarch
 
 %description
-The Globus Toolkit is an open source software toolkit used for building Grid
-systems and applications. It is being developed by the Globus Alliance and
-many others all over the world. A growing number of projects and companies are
-using the Globus Toolkit to unlock the potential of grids for their cause.
+The Grid Community Toolkit (GCT) is an open source software toolkit used for
+building grid systems and applications. It is a fork of the Globus Toolkit
+originally created by the Globus Alliance. It is supported by the Grid
+Community Forum (GridCF) that provides community-based support for core
+software packages in grid computing.
 
 The %{name} package contains:
 GridFTP Client Library
 
 %description devel
-The Globus Toolkit is an open source software toolkit used for building Grid
-systems and applications. It is being developed by the Globus Alliance and
-many others all over the world. A growing number of projects and companies are
-using the Globus Toolkit to unlock the potential of grids for their cause.
+The Grid Community Toolkit (GCT) is an open source software toolkit used for
+building grid systems and applications. It is a fork of the Globus Toolkit
+originally created by the Globus Alliance. It is supported by the Grid
+Community Forum (GridCF) that provides community-based support for core
+software packages in grid computing.
 
 The %{name}-devel package contains:
 GridFTP Client Library Development Files
 
 %description doc
-The Globus Toolkit is an open source software toolkit used for building Grid
-systems and applications. It is being developed by the Globus Alliance and
-many others all over the world. A growing number of projects and companies are
-using the Globus Toolkit to unlock the potential of grids for their cause.
+The Grid Community Toolkit (GCT) is an open source software toolkit used for
+building grid systems and applications. It is a fork of the Globus Toolkit
+originally created by the Globus Alliance. It is supported by the Grid
+Community Forum (GridCF) that provides community-based support for core
+software packages in grid computing.
 
 The %{name}-doc package contains:
 GridFTP Client Library Documentation Files
@@ -71,10 +75,10 @@ GridFTP Client Library Documentation Files
 # Reduce overlinking
 export LDFLAGS="-Wl,--as-needed -Wl,-z,defs %{?__global_ldflags}"
 
-export GLOBUS_VERSION=6.0
+export GLOBUS_VERSION=6.2
 %configure --disable-static \
-	   --includedir='${prefix}/include/globus' \
-	   --libexecdir='${datadir}/globus' \
+	   --includedir=%{_includedir}/globus \
+	   --libexecdir=%{_datadir}/globus \
 	   --docdir=%{_pkgdocdir}
 
 # Reduce overlinking
@@ -101,9 +105,7 @@ if grep -q @SSH_BIN@ %{buildroot}%{_datadir}/globus/gridftp-ssh; then
 fi
 GLOBUS_HOSTNAME=localhost make %{?_smp_mflags} check VERBOSE=1
 
-%post -p /sbin/ldconfig
-
-%postun -p /sbin/ldconfig
+%ldconfig_scriptlets
 
 %files
 %{_libdir}/libglobus_ftp_client.so.*
@@ -128,11 +130,31 @@ GLOBUS_HOSTNAME=localhost make %{?_smp_mflags} check VERBOSE=1
 %{?_licensedir: %license GLOBUS_LICENSE}
 
 %changelog
-* Wed Oct 11 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 8.36-1.2
-- Drop 1853-ssh-bin.patch -- autoconf takes care of it (SOFTWARE-2935)
+* Tue Feb 26 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 9.1-2.1
+- Merge OSG changes (SOFTWARE-3586)
 
-* Tue Aug 22 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 8.36-1.1
-- Merge OSG changes (SOFTWARE-2861)
+* Fri Nov 16 2018 Mattias Ellert <mattias.ellert@physics.uu.se> - 9.1-2
+- Bump GCT release version to 6.2
+
+* Thu Sep 13 2018 Mattias Ellert <mattias.ellert@physics.uu.se> - 9.1-1
+- Switch upstream to Grid Community Toolkit
+- First Grid Community Toolkit release (9.0)
+- Use 2048 bit RSA key for tests (9.1)
+
+* Sat Sep 01 2018 Mattias Ellert <mattias.ellert@physics.uu.se> - 8.37-1
+- GT6 update: Use 2048 bit keys to support openssl 1.1.1
+
+* Fri Jul 13 2018 Fedora Release Engineering <releng@fedoraproject.org> - 8.36-5
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_29_Mass_Rebuild
+
+* Wed Feb 07 2018 Fedora Release Engineering <releng@fedoraproject.org> - 8.36-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
+
+* Wed Aug 02 2017 Fedora Release Engineering <releng@fedoraproject.org> - 8.36-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Binutils_Mass_Rebuild
+
+* Wed Jul 26 2017 Fedora Release Engineering <releng@fedoraproject.org> - 8.36-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Mass_Rebuild
 
 * Tue Jul 04 2017 Mattias Ellert <mattias.ellert@physics.uu.se> - 8.36-1
 - GT6 update: Replace deprecated perl POSIX::tmpnam with File::Temp::tmpnam
