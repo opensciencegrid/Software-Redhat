@@ -1,7 +1,7 @@
 Name:           cctools
 Summary:        Cooperative Computing Tools
 Version:        7.0.9
-Release:        1%{?dist}
+Release:        2%{?dist}
 Group:          Applications/System
 License:        GPLv2
 URL:            http://ccl.cse.nd.edu/software/
@@ -119,3 +119,45 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/perl*
 %attr(0755,root,root) %{_libdir}/*.so
 %attr(0755,root,root) %{_libdir}/lib64/*.so
+
+
+%changelog
+* Tue Feb 26 2019 Carl Edquist <edquist@cs.wisc.edu> - 7.0.9-2
+- Update to 7.0.9, add Provides/Obsoletes for upgrades (SOFTWARE-3599)
+
+* Wed Nov 18 2015 Marty Kandes <mkandes@ucsd.edu> - 4.4.3-1
+- Updated to version 4.4.3
+
+* Wed Apr 22 2015 Jeff Dost <jdost@ucsd.edu> - 4.4.0-1
+- Updated to version 4.4.0, updated xrootd build requirements
+
+* Fri Dec 05 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 4.1.3-3
+- Fix build failure on EL7
+
+* Wed Aug 13 2014 Carl Edquist <edquist@cs.wisc.edu> - 4.1.3-2
+- Rebuild against xrootd4-devel
+
+* Mon Apr 21 2014 Edgar Fajardo <efajardo@physics.ucsd.edu> - 4.1.3-1
+- Updated to version 4.1.3
+
+* Mon Jan 06 2014 Edgar Fajardo  <efajardo@cern.ch> - 4.0.2-7
+- Addded the obsoletes part to the doc subpackage so a clean upgrade is done in cases users had older versions
+
+* Fri Dec 13 2013 Edgar Fajardo <efajardo@cern.ch> - 4.0.2-6
+- Created the doc package to include all html docummentation aswell as the api documentation
+
+* Tue Dec 10 2013 Edgar Fajardo <efajardo@cern.ch> - 4.0.2-4
+- Added m4, doxygen and nroff so documentation is built.
+
+* Tue Oct 15 2013 Brian Lin <blin@cs.wisc.edu> - 4.0.2-3
+- Introduced to the OSG Software Stack
+
+* Thu Oct 10 2013 Lincoln Bryant <lincolnb@hep.uchicago.edu> - 4.0.2-2
+- B. Tovar patched segfault in Makeflow when using Condor submit
+- Moved Perl from site_perl to vendor_perl
+
+* Wed Sep 18 2013 Lincoln Bryant <lincolnb@hep.uchicago.edu> - 4.0.2-1
+- Rebased to 4.0.2
+
+* Mon Aug 19 2013 Lincoln Bryant <lincolnb@hep.uchicago.edu> - 4.0.1-1
+- Added CVMFS and FUSE support.
