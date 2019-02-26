@@ -4,70 +4,49 @@
 %{!?_unitdir:  %global _unitdir /usr/lib/systemd/system}
 %{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
 
-%if 0%{?rhel} >= 7
-%global systemd 1
+%if %{?rhel}%{!?rhel:0} >= 7
+%global use_systemd 1
 %else
-%global systemd 0
+%global use_systemd 0
 %endif
 
 Name:		globus-gridftp-server
 %global _name %(tr - _ <<< %{name})
-Version:	12.9
+Version:	13.9
 Release:	1.1%{?dist}
-Summary:	Globus Toolkit - Globus GridFTP Server
+Summary:	Grid Community Toolkit - Globus GridFTP Server
 
 License:	ASL 2.0
-URL:		http://toolkit.globus.org/
-Source:		https://downloads.globus.org/toolkit/gt6/packages/%{_name}-%{version}.tar.gz
+URL:		https://github.com/gridcf/gct/
+Source:		https://repo.gridcf.org/gct6/sources/%{_name}-%{version}.tar.gz
 Source1:	%{name}.service
 Source2:	globus-gridftp-sshftp.service
 Source3:	%{name}
 Source4:	globus-gridftp-sshftp
-Source5:	globus-gridftp-password.8
 Source6:	globus-gridftp-server.sysconfig
 Source7:	globus-gridftp-server.osg-sysconfig
-Source8:	globus-gridftp-server.logrotate
-#		README file
-Source9:	GLOBUS-GRIDFTP
-# SystemD service files and start/stop/reconfigure scripts
-Source10:       %{name}.service
+Source8:	README
+Source9:	globus-gridftp-server.logrotate
+# SystemD helpers
 Source11:       %{name}-start
-Source12:       globus-gridftp-sshftp.service
 Source13:       globus-gridftp-sshftp-reconfigure
 Source14:       globus-gridftp-sshftp-start
 Source15:       globus-gridftp-sshftp-stop
-#               Add IPv6 enabled by default                                                                                                          
+#               Add IPv6 enabled by default
 #               SOFTWARE-2920
 Source16:       ipv6.conf
 #               Increase transfer timeout
 #               SOFTWARE-3241
 Source17:       timeout.conf
-#		Fix globus-gridftp-server-setup-chroot for kfreebsd and hurd
-Patch0:		globus-gridftp-server-unames.patch
-#		Add an optional IPv6 address to EPSV response
-#		https://github.com/globus/globus-toolkit/pull/97
-Patch1:		%{name}-epsv-ip.patch
-#		Get command string
-#		https://github.com/globus/globus-toolkit/pull/98
-Patch2:		%{name}-cmd-string.patch
-#		Ignore backup & packaging files in config.d
-#		https://github.com/globus/globus-toolkit/pull/118
-Patch3:		%{name}-config.patch
 
 Patch101:       gridftp-conf-logging.patch
 
-Requires:	globus-xio-gsi-driver%{?_isa} >= 2
-Requires:	globus-xio-udt-driver%{?_isa} >= 1
-Requires:	globus-common%{?_isa} >= 17
-Requires:	globus-xio%{?_isa} >= 5
-Requires:	globus-gridftp-server-control%{?_isa} >= 5.0-3
-Requires:	globus-ftp-control%{?_isa} >= 7
 BuildRequires:	gcc
 BuildRequires:	globus-common-devel >= 17
 BuildRequires:	globus-xio-devel >= 5
 BuildRequires:	globus-xio-gsi-driver-devel >= 2
 BuildRequires:	globus-gfork-devel >= 3
-BuildRequires:	globus-gridftp-server-control-devel >= 5.0-3
+BuildRequires:	globus-gridftp-server-control-devel >= 7
 BuildRequires:	globus-ftp-control-devel >= 7
 BuildRequires:	globus-authz-devel >= 2
 BuildRequires:	globus-usage-devel >= 3
@@ -79,20 +58,25 @@ BuildRequires:	globus-io-devel >= 9
 BuildRequires:	openssl-devel
 BuildRequires:	zlib-devel
 BuildRequires:	perl-generators
-%if %systemd
-BuildRequires:	systemd-units
+%if %{use_systemd}
+BuildRequires:	systemd
 %endif
 #		Additional requirements for make check
 BuildRequires:	openssl
 BuildRequires:	fakeroot
 
+Requires:	globus-xio-gsi-driver%{?_isa} >= 2
+Requires:	globus-xio-udt-driver%{?_isa} >= 1
+Requires:	globus-common%{?_isa} >= 17
+Requires:	globus-xio%{?_isa} >= 5
+Requires:	globus-gridftp-server-control%{?_isa} >= 7
+Requires:	globus-ftp-control%{?_isa} >= 7
+
 %package progs
-Summary:	Globus Toolkit - Globus GridFTP Server Programs
+Summary:	Grid Community Toolkit - Globus GridFTP Server Programs
 Requires:	%{name}%{?_isa} = %{version}-%{release}
-%if %systemd
-Requires(post):		systemd-units
-Requires(preun):	systemd-units
-Requires(postun):	systemd-units
+%if %{use_systemd}
+%{?systemd_requires}
 %else
 Requires(post):		chkconfig
 Requires(preun):	chkconfig
@@ -101,54 +85,54 @@ Requires(postun):	initscripts
 %endif
 
 %package devel
-Summary:	Globus Toolkit - Globus GridFTP Server Development Files
+Summary:	Grid Community Toolkit - Globus GridFTP Server Development Files
 Requires:	%{name}%{?_isa} = %{version}-%{release}
 
 %description
-The Globus Toolkit is an open source software toolkit used for building Grid
-systems and applications. It is being developed by the Globus Alliance and
-many others all over the world. A growing number of projects and companies are
-using the Globus Toolkit to unlock the potential of grids for their cause.
+The Grid Community Toolkit (GCT) is an open source software toolkit used for
+building grid systems and applications. It is a fork of the Globus Toolkit
+originally created by the Globus Alliance. It is supported by the Grid
+Community Forum (GridCF) that provides community-based support for core
+software packages in grid computing.
 
 The %{name} package contains:
 Globus GridFTP Server
 
 %description progs
-The Globus Toolkit is an open source software toolkit used for building Grid
-systems and applications. It is being developed by the Globus Alliance and
-many others all over the world. A growing number of projects and companies are
-using the Globus Toolkit to unlock the potential of grids for their cause.
+The Grid Community Toolkit (GCT) is an open source software toolkit used for
+building grid systems and applications. It is a fork of the Globus Toolkit
+originally created by the Globus Alliance. It is supported by the Grid
+Community Forum (GridCF) that provides community-based support for core
+software packages in grid computing.
 
 The %{name}-progs package contains:
 Globus GridFTP Server Programs
 
 %description devel
-The Globus Toolkit is an open source software toolkit used for building Grid
-systems and applications. It is being developed by the Globus Alliance and
-many others all over the world. A growing number of projects and companies are
-using the Globus Toolkit to unlock the potential of grids for their cause.
+The Grid Community Toolkit (GCT) is an open source software toolkit used for
+building grid systems and applications. It is a fork of the Globus Toolkit
+originally created by the Globus Alliance. It is supported by the Grid
+Community Forum (GridCF) that provides community-based support for core
+software packages in grid computing.
 
 The %{name}-devel package contains:
 Globus GridFTP Server Development Files
 
 %prep
 %setup -q -n %{_name}-%{version}
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
 
 %patch101 -p1
 
 %build
 # Reduce overlinking
-export LDFLAGS="-Wl,--as-needed -Wl,-z,defs %{?__global_ldflags} -lz"
+#export LDFLAGS="-Wl,--as-needed -Wl,-z,defs %{?__global_ldflags} -lz"
+export LDFLAGS="-Wl,--as-needed -Wl,-z,defs %{?__global_ldflags}"
 
 export GRIDMAP=%{_sysconfdir}/grid-security/grid-mapfile
-export GLOBUS_VERSION=6.0
+export GLOBUS_VERSION=6.2
 %configure --disable-static \
-	   --includedir='${prefix}/include/globus' \
-	   --libexecdir='${datadir}/globus' \
+	   --includedir=%{_includedir}/globus \
+	   --libexecdir=%{_datadir}/globus \
 	   --docdir=%{_pkgdocdir}
 
 # Reduce overlinking
@@ -179,23 +163,19 @@ sed '/^env /d' -i %{buildroot}%{_sysconfdir}/xinetd.d/gridftp
 # Remove start-up scripts
 rm -rf %{buildroot}%{_sysconfdir}/init.d
 
-%if %systemd
-# Install systemd unit files and helper scripts
+# Install start-up scripts
+%if %{use_systemd}
 mkdir -p %{buildroot}%{_unitdir}
-install -p -m 0644 %{SOURCE10} %{SOURCE12} %{buildroot}%{_unitdir}
+install -m 644 -p %{SOURCE1} %{SOURCE2} %{buildroot}%{_unitdir}
 mkdir -p %{buildroot}%{_libexecdir}
 install -p -m 0755 %{SOURCE11} %{SOURCE13} %{SOURCE14} %{SOURCE15} %{buildroot}%{_libexecdir}
 %else
-# Install start-up scripts
 mkdir -p %{buildroot}%{_initddir}
 install -p %{SOURCE3} %{SOURCE4} %{buildroot}%{_initddir}
 %endif
 
-# Install additional man pages
-install -m 644 -p %{SOURCE5} %{buildroot}%{_mandir}/man8
-
 # Install README file
-install -m 644 -p %{SOURCE9} %{buildroot}%{_pkgdocdir}/README
+install -m 644 -p %{SOURCE8} %{buildroot}%{_pkgdocdir}/README
 
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig
 install -m 0644 %{SOURCE6} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/%{name}
@@ -204,7 +184,7 @@ mkdir -p $RPM_BUILD_ROOT/usr/share/osg/sysconfig
 install -m 0644 %{SOURCE7} $RPM_BUILD_ROOT/usr/share/osg/sysconfig/%{name}
 
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d
-install -m 0644 %{SOURCE8} $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/%{name}.logrotate
+install -m 0644 %{SOURCE9} $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/%{name}.logrotate
 
 install -m 0644 %{SOURCE16} %{SOURCE17} $RPM_BUILD_ROOT%{_sysconfdir}/gridftp.d/
 
@@ -212,49 +192,49 @@ install -m 0644 %{SOURCE16} %{SOURCE17} $RPM_BUILD_ROOT%{_sysconfdir}/gridftp.d/
 %{?_licensedir: rm %{buildroot}%{_pkgdocdir}/GLOBUS_LICENSE}
 
 %check
-make %{_smp_mflags} check VERBOSE=1
+make %{?_smp_mflags} check VERBOSE=1
 
-%post -p /sbin/ldconfig
+%ldconfig_scriptlets
 
-%postun -p /sbin/ldconfig
+%if %{use_systemd}
+
+%pre progs
+# Remove old init config when systemd is used
+/sbin/chkconfig --del %{name} > /dev/null 2>&1 || :
+/sbin/chkconfig --del globus-gridftp-sshftp > /dev/null 2>&1 || :
 
 %post progs
-/sbin/ldconfig
-if [ $1 -eq 1 ]; then
-%if %systemd
-    systemctl daemon-reload &> /dev/null || :
+%systemd_post %{name}.service globus-gridftp-sshftp.service
+
+%preun progs
+%systemd_preun %{name}.service globus-gridftp-sshftp.service
+
+%postun progs
+%systemd_postun_with_restart %{name}.service globus-gridftp-sshftp.service
+
 %else
+
+%post progs
+if [ $1 -eq 1 ]; then
     /sbin/chkconfig --add %{name}
     /sbin/chkconfig --add globus-gridftp-sshftp
-%endif
 fi
 
 %preun progs
 if [ $1 -eq 0 ]; then
-%if %systemd
-    systemctl stop %{name} &> /dev/null || :
-    systemctl stop globus-gridftp-sshftp &> /dev/null || :
-    systemctl disable %{name} &> /dev/null || :
-    systemctl disable globus-gridftp-sshftp &> /dev/null || :
-%else
+    /sbin/service %{name} stop > /dev/null 2>&1 || :
+    /sbin/service globus-gridftp-sshftp stop > /dev/null 2>&1 || :
     /sbin/chkconfig --del %{name}
     /sbin/chkconfig --del globus-gridftp-sshftp
-    /sbin/service globus-gridftp-server stop
-    /sbin/service globus-gridftp-sshftp stop
-%endif
 fi
 
 %postun progs
-/sbin/ldconfig
 if [ $1 -ge 1 ]; then
-%if %systemd
-    systemctl condrestart %{name} &> /dev/null || :
-    systemctl condrestart globus-gridftp-sshftp &> /dev/null || :
-%else
     /sbin/service %{name} condrestart > /dev/null 2>&1 || :
     /sbin/service globus-gridftp-sshftp condrestart > /dev/null 2>&1 || :
-%endif
 fi
+
+%endif
 
 %files
 %{_libdir}/libglobus_gridftp_server.so.*
@@ -279,7 +259,7 @@ fi
 %config(noreplace) %{_sysconfdir}/gridftp.gfork
 %config(noreplace) %{_sysconfdir}/xinetd.d/gridftp
 /usr/share/osg/sysconfig/%{name}
-%if %systemd
+%if %{use_systemd}
 %{_unitdir}/%{name}.service
 %{_unitdir}/globus-gridftp-sshftp.service
 %{_libexecdir}/%{name}-start
@@ -300,9 +280,39 @@ fi
 %{_libdir}/pkgconfig/%{name}.pc
 
 %changelog
-* Mon Sep 10 2018 Mátyás Selmeci <matyas@cs.wisc.edu> - 12.9-1.1.osg
-- Merge OSG changes (SOFTWARE-3397)
-  Drop Do-not-ignore-config.d-files-with-a-.-in-the-name.patch (upstream)
+* Tue Feb 26 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 13.9-1.1.osg
+- Merge OSG changes (SOFTWARE-3586)
+
+* Fri Nov 16 2018 Mattias Ellert <mattias.ellert@physics.uu.se> - 13.9-1
+- Fix data_node restrict path
+- Bump GCT release version to 6.2
+
+* Thu Sep 13 2018 Mattias Ellert <mattias.ellert@physics.uu.se> - 13.8-1
+- Switch upstream to Grid Community Toolkit
+- Grid Community Toolkit merged a number of outstanding pull requests (13.0)
+  - Add option to send IPv6 address in EPSV response
+  - Add function to get the command string
+  - Be more selective in what config files we skip
+  - Add unames for GNU/Hurd and kfreebsd to chroot setup script
+- Merge GT6 update 12.5 into GCT (13.1)
+- First Grid Community Toolkit release (13.2)
+  - Disable usage statistics reporting by default
+  - Add man page for globus-gridftp-password - contribution from IGE
+- Use 2048 bit RSA key for tests (13.3)
+- Merge GT6 update 12.6 into GCT (13.4)
+- Merge GT6 update 12.7 into GCT (13.5)
+- Merge GT6 update 12.8 into GCT (13.6)
+- Merge GT6 update 12.9 into GCT (13.7)
+- Merge GT6 update 12.12 into GCT (13.8)
+- Drop patches globus-gridftp-server-unames.patch, -epsv-ip.patch,
+  -cmd-string.patch and -config.patch (accepted upstream)
+- Drop the man page for globus-gridftp-password from the source package
+  (accepted upstream)
+
+* Sat Sep 01 2018 Mattias Ellert <mattias.ellert@physics.uu.se> - 12.12-1
+- GT6 update:
+  - Use 2048 bit keys to support openssl 1.1.1 (12.10)
+  - Log remote http connection address for legacy s3 transfers (12.11/12.12)
 
 * Thu Aug 16 2018 Mattias Ellert <mattias.ellert@physics.uu.se> - 12.9-1
 - GT6 update: Fix initscript status return codes
