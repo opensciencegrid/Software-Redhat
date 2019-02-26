@@ -36,6 +36,29 @@ BuildRequires:  freetype
 Requires(post): info
 Requires(preun): info
 
+# cctools 4.4.3 was split into sub-packages; allow for upgrades
+Provides:       %{name}-chirp            = %{version}-%{release}
+Provides:       %{name}-doc              = %{version}-%{release}
+Provides:       %{name}-dttools          = %{version}-%{release}
+Provides:       %{name}-makeflow         = %{version}-%{release}
+Provides:       %{name}-parrot           = %{version}-%{release}
+Provides:       %{name}-resource_monitor = %{version}-%{release}
+Provides:       %{name}-sand             = %{version}-%{release}
+Provides:       %{name}-wavefront        = %{version}-%{release}
+Provides:       %{name}-weaver           = %{version}-%{release}
+Provides:       %{name}-work_queue       = %{version}-%{release}
+
+Obsoletes:      %{name}-chirp            < 7.0.9
+Obsoletes:      %{name}-doc              < 7.0.9
+Obsoletes:      %{name}-dttools          < 7.0.9
+Obsoletes:      %{name}-makeflow         < 7.0.9
+Obsoletes:      %{name}-parrot           < 7.0.9
+Obsoletes:      %{name}-resource_monitor < 7.0.9
+Obsoletes:      %{name}-sand             < 7.0.9
+Obsoletes:      %{name}-wavefront        < 7.0.9
+Obsoletes:      %{name}-weaver           < 7.0.9
+Obsoletes:      %{name}-work_queue       < 7.0.9
+
 %description
 The Cooperative Computing Tools (%{name}) contains Parrot,
 Chirp, Makeflow, Work Queue, SAND, and other software.
