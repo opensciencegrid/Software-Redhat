@@ -1,6 +1,6 @@
 Name: xrootd-cmstfc
 Version: 1.5.2
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: CMS TFC plugin for xrootd
 
 Group: System Environment/Daemons
@@ -63,6 +63,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/XrdCmsTfc.hh
 
 %changelog
+* Wed Feb 27 2019 Carl Edquist <edquist@cs.wisc.edu> - 1.5.2-2
+- Rebuild against xrootd 4.9.0 (SOFTWARE-3485)
+
 * Wed Sep 05 2018 Edgar Fajardo <emfajard@ucsd.edu> 1.5.2-1
 - Small change to reduce the logging verbosity of this plugin for the DPM team.
 
