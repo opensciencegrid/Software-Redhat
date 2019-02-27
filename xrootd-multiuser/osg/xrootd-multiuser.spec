@@ -1,7 +1,7 @@
 
 Name: xrootd-multiuser
 Version: 0.4.2
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: Multiuser filesystem writing plugin for xrootd
 
 Group: System Environment/Daemons
@@ -54,6 +54,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_unitdir}/xrootd-privileged@.service
 
 %changelog
+* Wed Feb 27 2019 Carl Edquist <edquist@cs.wisc.edu> - 0.4.2-2
+- Rebuild against xrootd 4.9.0 (SOFTWARE-3485)
+
 * Wed Aug 08 2018 Brian Bockelman <bbockelm@cse.unl.edu> - 0.4.2-1
 - Fix chaining of sendfile requests.
 - Fix potentially misleading error message.
