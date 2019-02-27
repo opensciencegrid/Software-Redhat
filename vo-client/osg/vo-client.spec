@@ -1,6 +1,6 @@
 Name:           vo-client
-Version:        85
-Release:        2%{?dist}
+Version:        86
+Release:        1%{?dist}
 Summary:        Contains vomses file for use with user authentication
 
 Group:          System Environment/Base
@@ -73,6 +73,10 @@ find $RPM_BUILD_ROOT/%{_sysconfdir}/grid-security/vomsdir -type d -exec chmod 75
 %config(noreplace) %{_datadir}/osg/grid-vorolemap
 
 %changelog
+* Wed Feb 27 2019 Brian Lin <blin@cs.wisc.edu> - 86-1
+- Retire the CIGI VO (SOFTWARE-3598)
+- Add backup lz VOMS Admin Server (SOFTWARE-3604)
+
 * Fri Jan 25 2019 Carl Edquist <edquist@cs.wisc.edu> - 85-2
 - Drop osg-gums-config and edgmkgridmap subpackages (SOFTWARE-3542)
 - Clean up build process
