@@ -1,7 +1,7 @@
 
 Name: xrootd-macaroons
 Version: 0.3.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: Macaroons support for XRootD
 
 Group: System Environment/Daemons
@@ -41,6 +41,9 @@ BuildRequires: json-c-devel
 %{_libdir}/libXrdMacaroons-4.so
 
 %changelog
+* Wed Feb 27 2019 Carl Edquist <edquist@cs.wisc.edu> - 0.3.0-2
+- Rebuild against xrootd 4.9.0 (SOFTWARE-3485)
+
 * Mon Jul 09 2018 Brian Bockelman <bbockelm@cse.unl.edu> - 0.3.0-1
 - Add the concept of a max duration.
 - Check the location matches the current location.
