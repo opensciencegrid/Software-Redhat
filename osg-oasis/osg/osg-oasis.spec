@@ -26,7 +26,7 @@ exit 0
 %files
 
 %changelog
-* Tue Mar 12 2018 Dave Dykstra <dwd@fnal.gov> 12-1
+* Tue Mar 12 2019 Dave Dykstra <dwd@fnal.gov> 12-1
 - Update to require cvmfs-2.6.0
 
 * Tue Nov 27 2018 Dave Dykstra <dwd@fnal.gov> 11-1
