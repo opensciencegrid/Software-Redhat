@@ -7,7 +7,7 @@
 
 Name: koji
 Version: 1.11.1
-Release: 1%{?dist}
+Release: 1.1%{?dist}
 License: LGPLv2 and GPLv2+
 # koji.ssl libs (from plague) are GPLv2+
 Summary: Build system tools
@@ -39,7 +39,7 @@ BuildRequires: python-sphinx
 BuildRequires: systemd
 BuildRequires: pkgconfig
 %endif
-%if 0%{?fedora} || 0%{?rhel} >= 7
+%if ! 0%{?osg} && (0%{?fedora} || 0%{?rhel} >= 7)
 Requires: python-libcomps
 %endif
 
@@ -326,6 +326,9 @@ fi
 %endif
 
 %changelog
+* Thu Mar 14 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.11.1-1.1.osg
+- Drop python-libcomps requirement
+
 * Thu Feb 21 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.11.1-1.osg
 - Update to 1.11.1 (SOFTWARE-3595)
 - Build from developer tarball
