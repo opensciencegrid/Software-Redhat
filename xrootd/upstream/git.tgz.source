@@ -1,0 +1,3 @@
+xrootd/4.9.0-1.2.git.2ffdb88/xrootd.tar.gz sha1sum=10bdd7342f0a1ead8a989945c6b9b86c6f41a26c
+# git archive --prefix=xrootd/ 2ffdb88 | gzip -9n > xrootd.tar.gz
+
