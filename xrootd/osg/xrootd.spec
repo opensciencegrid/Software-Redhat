@@ -43,8 +43,8 @@
 #-------------------------------------------------------------------------------
 Name:      xrootd
 Epoch:     1
-Version:   4.9.0
-Release:   1.2.git.2ffdb88%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Version:   4.9.1
+Release:   0.1.rc1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -936,6 +936,9 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Mon Mar 25 2019 Mátyás Selmeci <matyas@cs.wisc.edu>
+- Update to 4.9.1-rc1 (SOFTWARE-3481)
+
 * Tue Jan 08 2019 Edgar Fajardo <emfajard@ucsd.edu>
 - Create config dir /etc/xrootd/config.d
 
