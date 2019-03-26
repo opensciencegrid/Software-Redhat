@@ -1,5 +1,5 @@
 Name:           vo-client
-Version:        86
+Version:        87
 Release:        1%{?dist}
 Summary:        Contains vomses file for use with user authentication
 
@@ -73,6 +73,12 @@ find $RPM_BUILD_ROOT/%{_sysconfdir}/grid-security/vomsdir -type d -exec chmod 75
 %config(noreplace) %{_datadir}/osg/grid-vorolemap
 
 %changelog
+* Tue Mar 26 2019 Carl Edquist <edquist@cs.wisc.edu> - 87-1
+- Add new hcc cert (SOFTWARE-3608)
+- Retire unused VOs: dzero, SBGrid, suragrid & dream (SOFTWARE-3617)
+- Update voms.hep.wisc.edu lz VO certificate (SOFTWARE-3635)
+- Update FNAL voms2 VO configuration (SOFTWARE-3633)
+
 * Wed Feb 27 2019 Brian Lin <blin@cs.wisc.edu> - 86-1
 - Retire the CIGI VO (SOFTWARE-3598)
 - Add backup lz VOMS Admin Server (SOFTWARE-3604)
