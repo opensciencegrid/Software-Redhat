@@ -44,7 +44,7 @@
 Name:      xrootd
 Epoch:     1
 Version:   4.9.1
-Release:   0.1.rc1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:   0.2.rc2%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -936,6 +936,9 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Tue Mar 26 2019 Mátyás Selmeci <matyas@cs.wisc.edu>
+- Update to 4.9.1-rc2 (SOFTWARE-3481)
+
 * Mon Mar 25 2019 Mátyás Selmeci <matyas@cs.wisc.edu>
 - Update to 4.9.1-rc1 (SOFTWARE-3481)
 
