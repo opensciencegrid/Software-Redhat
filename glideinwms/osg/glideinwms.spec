@@ -13,7 +13,7 @@
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
 %define version 3.4.4
-%define release 0.3.rc3
+%define release 0.4.rc4
 
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
@@ -843,7 +843,7 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/condor/certs/condor_mapfile
 
 %changelog
-* Thu Mar 19 2019  Marco Mambelli <marcom@fnal.gov> - 3.4.4-0.2.rc2
+* Thu Mar 28 2019  Marco Mambelli <marcom@fnal.gov> - 3.4.4-0.4.rc4
 - GlideinWMS v3.4.4
 - Release Notes: http://glideinwms.fnal.gov/doc.v3_4_4/history.html
 - Release candidates: 3.4.4-0.1.rc1 
