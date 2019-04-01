@@ -1,7 +1,7 @@
 Name:           cctools
 Summary:        Cooperative Computing Tools
-Version:        7.0.9
-Release:        2%{?dist}
+Version:        7.0.11
+Release:        1%{?dist}
 Group:          Applications/System
 License:        GPLv2
 URL:            http://ccl.cse.nd.edu/software/
@@ -122,6 +122,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Apr 01 2019 Carl Edquist <edquist@cs.wisc.edu> - 7.0.11-1
+- Update to 7.0.11 (SOFTWARE-3626)
+
 * Tue Feb 26 2019 Carl Edquist <edquist@cs.wisc.edu> - 7.0.9-2
 - Update to 7.0.9, add Provides/Obsoletes for upgrades (SOFTWARE-3599)
 
