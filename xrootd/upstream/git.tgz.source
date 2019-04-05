@@ -1,3 +1,0 @@
-xrootd/4.9.1-rc3/xrootd.tar.gz sha1sum=49aeade821afafb798c21817f992daa5dddf07ef
-# git archive --prefix=xrootd/ v4.9.1-rc3 | gzip -9n > xrootd.tar.gz
-
