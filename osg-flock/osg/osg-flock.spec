@@ -1,5 +1,5 @@
 Name:      osg-flock
-Version:   1.0
+Version:   1.1
 Release:   1%{?dist}
 Summary:   OSG configurations for a flocking host
 
@@ -49,6 +49,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Apr 10 2019 Brian Lin <blin@cs.wisc.edu> 1.1-1
+- Add new OSG flock host certificate DN (SOFTWARE-3603)
+
 * Fri Sep 07 2018 Suchandra Thapa <ssthapa@uchicago.edu> 1.0-1
 - Initial meta package based in part on osg-condor-flock rpms
 
