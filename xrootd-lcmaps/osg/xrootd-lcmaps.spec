@@ -1,7 +1,7 @@
 
 Name: xrootd-lcmaps
 Version: 1.7.0
-Release: 1%{?dist}
+Release: 1.1%{?dist}
 Summary: LCMAPS plugin for xrootd
 
 Group: System Environment/Daemons
@@ -67,6 +67,9 @@ make install DESTDIR=$RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/xrootd/lcmaps.cfg
 
 %changelog
+* Wed Apr 10 2019 Carl Edquist <edquist@cs.wisc.edu> - 1.7.0-1.1
+- Rebuild against xrootd 4.9.1 (SOFTWARE-3485)
+
 * Tue Feb 05 2019 Brian Bockelman <brian.bockelman@cern.ch> - 1.7.0-1
 - Add key=value config syntax.
 - Prior config syntax no longer requires a minimum of three arguments.
