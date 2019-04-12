@@ -67,7 +67,7 @@ rm $RPM_BUILD_ROOT%{_bindir}/xrootd_hdfs_envcheck
 %{_includedir}/XrdHdfs.hh
 
 %changelog
-* Wed Apr 10 2019 Carl Edquist <edquist@cs.wisc.edu> - 2.1.4-1
+* Wed Apr 10 2019 Carl Edquist <edquist@cs.wisc.edu> - 2.1.3-3
 - Rebuild against xrootd 4.9.1 (SOFTWARE-3485)
 
 * Wed Feb 27 2019 Carl Edquist <edquist@cs.wisc.edu> - 2.1.3-2
