@@ -1,5 +1,5 @@
 Name:           vo-client
-Version:        87
+Version:        88
 Release:        1%{?dist}
 Summary:        Contains vomses file for use with user authentication
 
@@ -73,6 +73,11 @@ find $RPM_BUILD_ROOT/%{_sysconfdir}/grid-security/vomsdir -type d -exec chmod 75
 %config(noreplace) %{_datadir}/osg/grid-vorolemap
 
 %changelog
+* Mon Apr 15 2019 Carl Edquist <edquist@cs.wisc.edu> - 88-1
+- Update DNs for OSG (SOFTWARE-3647)
+- Add gluex.phys.uconn.edu VOMS server (SOFTWARE-3656)
+- Update cert for voms1.fnal.gov (SOFTWARE-3634)
+
 * Tue Mar 26 2019 Carl Edquist <edquist@cs.wisc.edu> - 87-1
 - Add new hcc cert (SOFTWARE-3608)
 - Retire unused VOs: dzero, SBGrid, suragrid & dream (SOFTWARE-3617)
