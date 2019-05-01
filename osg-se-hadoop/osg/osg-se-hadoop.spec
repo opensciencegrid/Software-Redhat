@@ -1,7 +1,7 @@
 Name:           osg-se-hadoop
 Summary:        OSG Hadoop Storage Element package for RPM distribution
 Version:        3.4
-Release:        7%{?dist}
+Release:        8%{?dist}
 License:        GPL
 Group:          System Environment/Daemons
 URL:            https://twiki.grid.iu.edu/twiki/bin/view/Storage/WebHome
@@ -97,11 +97,13 @@ install -m 0644 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/hadoop/conf.osg/
 %files client
 %{_sysconfdir}/hadoop/conf.osg/
 
+%if 0%{?rhel} >= 7
 %files gridftp
 %{_sysconfdir}/hadoop/conf.osg/
+%endif
 
 %changelog
-* Tue Apr 30 2019 Carl Edquist <edquist@cs.wisc.edu> - 3.4-7
+* Tue Apr 30 2019 Carl Edquist <edquist@cs.wisc.edu> - 3.4-8
 - Drop gridftp sub-package for EL6 (SOFTWARE-3673)
 
 * Thu Jun 21 2018 Carl Edquist <edquist@cs.wisc.edu> - 3.4-6
