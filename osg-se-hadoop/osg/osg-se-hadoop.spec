@@ -1,7 +1,7 @@
 Name:           osg-se-hadoop
 Summary:        OSG Hadoop Storage Element package for RPM distribution
 Version:        3.4
-Release:        6%{?dist}
+Release:        8%{?dist}
 License:        GPL
 Group:          System Environment/Daemons
 URL:            https://twiki.grid.iu.edu/twiki/bin/view/Storage/WebHome
@@ -12,7 +12,9 @@ Requires: %{name}-namenode = %{version}-%{release}
 Requires: %{name}-secondarynamenode = %{version}-%{release}
 Requires: %{name}-datanode = %{version}-%{release}
 Requires: %{name}-client = %{version}-%{release}
+%if 0%{?rhel} >= 7
 Requires: %{name}-gridftp = %{version}-%{release}
+%endif
 
 %description
 This is a meta-package for Hadoop Storage Element. By default, it will
@@ -56,6 +58,7 @@ Requires: osg-system-profiler
 %description client
 This is the Hadoop client that has client binaries and fuse mount.
 
+%if 0%{?rhel} >= 7
 %package gridftp
 Summary: Gridftp meta-package for Hadoop
 Group: System Environment/Libraries
@@ -69,6 +72,7 @@ Requires: liblcas_lcmaps_gt4_mapping.so.0()(64bit)
 %endif
 %description gridftp
 This is a Globus GridFTP frontend for a Hadoop Storage Element.
+%endif
 
 
 
@@ -93,10 +97,15 @@ install -m 0644 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/hadoop/conf.osg/
 %files client
 %{_sysconfdir}/hadoop/conf.osg/
 
+%if 0%{?rhel} >= 7
 %files gridftp
 %{_sysconfdir}/hadoop/conf.osg/
+%endif
 
 %changelog
+* Tue Apr 30 2019 Carl Edquist <edquist@cs.wisc.edu> - 3.4-8
+- Drop gridftp sub-package for EL6 (SOFTWARE-3673)
+
 * Thu Jun 21 2018 Carl Edquist <edquist@cs.wisc.edu> - 3.4-6
 - Move lcmaps-voms & osg-configure deps to osg-gridftp-hdfs (SOFTWARE-3177)
 - Drop redundant deps from osg-se-hadoop-gridftp (SOFTWARE-3177)
