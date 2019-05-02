@@ -17,6 +17,12 @@ BuildRequires: openssl-devel
 BuildRequires: libcurl-devel
 BuildRequires: libuuid-devel
 
+# Needed for C++11
+%if 0%{?el6}
+BuildRequires: devtoolset-2-toolchain
+BuildRequires: scl-utils
+%endif
+
 %description
 %{summary}
 
@@ -32,14 +38,16 @@ Requires: %{name}-%{version}
 %setup -q
 
 %build
-%if 0{?el6}
-echo "*** This does not build on EL 6 ***"
-exit 1
+%if 0%{?el6}
+scl enable devtoolset-2 '
 %endif
 mkdir build
 cd build
 %cmake ..
 make
+%if 0%{?el6}
+'
+%endif
 
 %install
 pushd build
