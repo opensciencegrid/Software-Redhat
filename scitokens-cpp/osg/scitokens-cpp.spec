@@ -32,6 +32,10 @@ Requires: %{name}-%{version}
 %setup -q
 
 %build
+%if 0{?el6}
+echo "*** This does not build on EL 6 ***"
+exit 1
+%endif
 mkdir build
 cd build
 %cmake ..
