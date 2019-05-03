@@ -1,6 +1,6 @@
 Name: scitokens-cpp
 Version: 0.3.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: C++ Implementation of the SciTokens Library
 License: Apache 2.0
 URL: https://github.com/scitokens/scitokens-cpp
@@ -29,7 +29,7 @@ BuildRequires: scl-utils
 %package devel
 Summary: Header files for the scitokens-cpp public interfaces.
 
-Requires: %{name}-%{version}
+Requires: %{name} = %{version}
 
 %description devel
 %{summary}
@@ -71,6 +71,9 @@ popd
 %defattr(-,root,root,-)
 
 %changelog
+* Fri May 03 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 0.3.0-2
+- Fix requirements
+
 * Thu May 02 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 0.3.0-1
 - Update to v0.3.0
 - Add dependencies on libcurl-devel, libuuid-devel
