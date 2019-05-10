@@ -1,5 +1,5 @@
 Name:           vo-client
-Version:        90
+Version:        91
 Release:        1%{?dist}
 Summary:        Contains vomses file for use with user authentication
 
@@ -73,6 +73,9 @@ find $RPM_BUILD_ROOT/%{_sysconfdir}/grid-security/vomsdir -type d -exec chmod 75
 %config(noreplace) %{_datadir}/osg/grid-vorolemap
 
 %changelog
+* Fri May 10 2019 Carl Edquist <edquist@cs.wisc.edu> - 91-1
+- Update STAR VO certificate (SOFTWARE-3692)
+
 * Thu May 02 2019 Carl Edquist <edquist@cs.wisc.edu> - 90-1
 - Add voms.cnaf.infn.it virgo VOMS server (SOFTWARE-3683)
 
