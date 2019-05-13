@@ -1,0 +1,27 @@
+From 9baf649db2603e623703df7e9e317196949c814f Mon Sep 17 00:00:00 2001
+From: Derek Weitzel <djw8605@gmail.com>
+Date: Fri, 10 May 2019 11:48:38 -0500
+Subject: [PATCH] Force aud test in the validator
+
+If an audience is set for the validator, force a test of the
+aud parameter, even if it's not in the token
+---
+ src/scitokens_internal.h | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/src/scitokens_internal.h b/src/scitokens_internal.h
+index e8e1aa0..4840c9a 100644
+--- a/src/scitokens_internal.h
++++ b/src/scitokens_internal.h
+@@ -369,6 +369,11 @@ class Enforcer {
+         m_validator.add_claim_validator("aud", &Enforcer::aud_validator, this);
+         m_validator.add_claim_validator("scope", &Enforcer::scope_validator, this);
+         std::vector<std::string> critical_claims = {"scope"};
++
++        // If any audiences are in the given to us, then force the validator to check it.
++        if (!m_audiences.empty()) {
++            critical_claims.push_back("aud");
++        }
+         m_validator.add_critical_claims(critical_claims);
+     }
+ 

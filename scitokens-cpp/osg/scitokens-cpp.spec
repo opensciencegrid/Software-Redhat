@@ -1,6 +1,6 @@
 Name: scitokens-cpp
 Version: 0.3.0
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: C++ Implementation of the SciTokens Library
 License: Apache 2.0
 URL: https://github.com/scitokens/scitokens-cpp
@@ -9,6 +9,8 @@ URL: https://github.com/scitokens/scitokens-cpp
 # git_archive_all.py --prefix=scitokens-cpp-0.3.0/ --force-submodules -9 scitokens-cpp-0.3.0.tar.gz
 # Where git_archive_all.py is from https://github.com/Kentzo/git-archive-all.git
 Source0: %{name}-%{version}.tar.gz
+
+Patch0: Force-aud-test-in-the-validator.patch
 
 BuildRequires: gcc-c++
 BuildRequires: cmake
@@ -36,6 +38,7 @@ Requires: %{name} = %{version}
 
 %prep
 %setup -q
+%patch0 -p1
 
 %build
 %if 0%{?el6}
@@ -71,6 +74,10 @@ popd
 %defattr(-,root,root,-)
 
 %changelog
+* Mon May 13 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 0.3.0-3
+- Add Force-aud-test-in-the-validator.patch from
+  https://github.com/scitokens/scitokens-cpp/pull/8
+
 * Fri May 03 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 0.3.0-2
 - Fix requirements
 
