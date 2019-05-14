@@ -1,6 +1,6 @@
 Name:           osg-release
 Version:        3.4
-Release:        7%{?dist}
+Release:        8%{?dist}
 Summary:        OSG Software for Enterprise Linux repository configuration
 
 Group:          System Environment/Base
@@ -60,6 +60,9 @@ sed -i -e 's/gpgcheck=1/gpgcheck=0/' $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d/*
 
 
 %changelog
+* Tue May 14 2019 Carl Edquist <edquist@cs.wisc.edu> - 3.4-8
+- Use https for koji repos (SOFTWARE-3653)
+
 * Wed Feb 13 2019 Carl Edquist <edquist@cs.wisc.edu> - 3.4-7
 - Add rolling release for upcoming (SOFTWARE-3465)
 
