@@ -113,7 +113,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.2
+%define condor_base_release 1.3
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -612,6 +612,9 @@ Summary: Python bindings for HTCondor.
 Group: Applications/System
 Requires: python >= 2.2
 Requires: %name = %version-%release
+# https://opensciencegrid.atlassian.net/browse/SOFTWARE-3680
+Provides: python-condor = %{version}-%{release}
+Provides: python2-condor = %{version}-%{release}
 
 %if 0%{?rhel} >= 7 && ! %uw_build
 # auto provides generator does not pick these up for some reason
@@ -1913,6 +1916,9 @@ fi
 %endif
 
 %changelog
+* Tue May 14 2019 Carl Edquist <edquist@cs.wisc.edu> - 8.6.13-1.3
+- Have condor-python provide python-condor (SOFTWARE-3680)
+
 * Wed Jan 16 2019 Carl Edquist <edquist@cs.wisc.edu> - 8.6.13-1.2
 - Pull upstream fix for job router setting user attr (#6856, SOFTWARE-3533)
 
