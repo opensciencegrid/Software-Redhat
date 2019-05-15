@@ -4,7 +4,7 @@
 Name:      xrootd-voms-plugin
 Epoch:     1
 Version:   0.6.0
-Release:   1%{?dist}
+Release:   2%{?dist}
 Summary:   VOMS attribute extractor plug-in for XRootD
 Group:     System Environment/Libraries
 License:   BSD
@@ -25,6 +25,9 @@ BuildRequires: xrootd-devel >= 1:4.9.1
 
 Requires: voms >= 2.0.6
 Requires: xrootd-libs >= 1:4.9.1
+
+Provides: vomsxrd = %{version}-%{release}
+Obsoletes: vomsxrd <= 1:0.6.0
 
 %description
 The VOMS attribute extractor plug-in for XRootD
@@ -89,6 +92,9 @@ cd ..
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Wed May 15 2019 Carl Edquist <edquist@cs.wisc.edu> - 1:0.6.0-2
+- Add Provides/Obsoletes for vomsxrd (SOFTWARE-3679)
+
 * Tue Apr 30 2019 Carl Edquist <edquist@cs.wisc.edu> - 1:0.6.0-1
 - Update to v0.6.0 (SOFTWARE-3679)
 
