@@ -4,7 +4,7 @@
 %define bl_libexecdir %{_libexecdir}/%{name}
 
 Name:		blahp
-Version:	1.18.40.bosco
+Version:	1.18.41.bosco
 Release:	1%{?gitrev:.%{gitrev}}%{?dist}
 Summary:	gLite BLAHP daemon
 
@@ -175,6 +175,9 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Wed May 15 2019 Carl Edquist <edquist@cs.wisc.edu> - 1.18.41.bosco-1
+- Fix double-escaping in new condor env format (SOFTWARE-3589)
+
 * Fri May 10 2019 Carl Edquist <edquist@cs.wisc.edu> - 1.18.40.bosco-1
 - Update PBS Pro qstat options for completed jobs (SOFTWARE-3675)
 - Apply patches from condor blahp (SOFTWARE-3587)
