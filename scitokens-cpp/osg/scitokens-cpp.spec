@@ -41,15 +41,18 @@ Requires: %{name} = %{version}
 %patch0 -p1
 
 %build
+do_build () {
+    set -x
+    mkdir build
+    cd build
+    %cmake ..
+    make
+}
+export -f do_build
 %if 0%{?el6}
-scl enable devtoolset-2 '
-%endif
-mkdir build
-cd build
-%cmake ..
-make
-%if 0%{?el6}
-'
+scl enable devtoolset-2 do_build
+%else
+do_build
 %endif
 
 %install
