@@ -42,7 +42,7 @@ Requires: %{name} = %{version}
 
 %build
 do_build () {
-    set -x
+    set -ex
     mkdir build
     cd build
     %cmake ..
