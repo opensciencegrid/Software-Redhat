@@ -113,7 +113,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.3
+%define condor_base_release 1.4
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -1918,6 +1918,9 @@ fi
 %endif
 
 %changelog
+* Thu May 16 2019 Carl Edquist <edquist@cs.wisc.edu> - 8.6.13-1.4
+- Rename condor-python -> python2-condor, as done upstream (SOFTWARE-3680)
+
 * Tue May 14 2019 Carl Edquist <edquist@cs.wisc.edu> - 8.6.13-1.3
 - Have condor-python provide python-condor (SOFTWARE-3680)
 
