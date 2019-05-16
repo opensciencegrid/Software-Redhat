@@ -612,9 +612,6 @@ Summary: Python bindings for HTCondor.
 Group: Applications/System
 Requires: python >= 2.2
 Requires: %name = %version-%release
-# https://opensciencegrid.atlassian.net/browse/SOFTWARE-3680
-Provides: python-condor = %{version}-%{release}
-Provides: python2-condor = %{version}-%{release}
 
 %if 0%{?rhel} >= 7 && ! %uw_build
 # auto provides generator does not pick these up for some reason
