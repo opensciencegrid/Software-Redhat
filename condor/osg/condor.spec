@@ -607,11 +607,16 @@ host as the DedicatedScheduler.
 
 
 #######################
-%package python
+%package -n python2-condor
 Summary: Python bindings for HTCondor.
 Group: Applications/System
 Requires: python >= 2.2
 Requires: %name = %version-%release
+%{?python_provide:%python_provide python2-condor}
+# Remove before F30
+Provides: %{name}-python = %{version}-%{release}
+Provides: %{name}-python%{?_isa} = %{version}-%{release}
+Obsoletes: %{name}-python < %{version}-%{release}
 
 %if 0%{?rhel} >= 7 && ! %uw_build
 # auto provides generator does not pick these up for some reason
@@ -624,7 +629,7 @@ Provides: htcondor.so
     %endif
 %endif
 
-%description python
+%description -n python2-condor
 The python bindings allow one to directly invoke the C++ implementations of
 the ClassAd library and HTCondor from python
 
@@ -700,7 +705,7 @@ Requires: %name-classads = %version-%release
 %if %cream
 Requires: %name-cream-gahp = %version-%release
 %endif
-Requires: %name-python = %version-%release
+Requires: python2-condor = %version-%release
 Requires: %name-bosco = %version-%release
 %if %std_univ
 Requires: %name-std-universe = %version-%release
@@ -1663,7 +1668,7 @@ rm -rf %{buildroot}
 %config(noreplace) %_sysconfdir/condor/config.d/20dedicated_scheduler_condor.config
 %endif
 
-%files python
+%files -n python2-condor
 %defattr(-,root,root,-)
 %_libdir/libpyclassad*.so
 %_libexecdir/condor/libclassad_python_user.so
