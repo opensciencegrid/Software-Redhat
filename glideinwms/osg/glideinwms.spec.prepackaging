@@ -503,9 +503,6 @@ fi
 %{python_sitelib}/condorLogParser.pyo
 %{python_sitelib}/condorManager.py
 %{python_sitelib}/condorMonitor.py
-%{python_sitelib}/condorPrivsep.py
-%{python_sitelib}/condorPrivsep.pyc
-%{python_sitelib}/condorPrivsep.pyo
 %{python_sitelib}/condorSecurity.py
 %{python_sitelib}/condorSecurity.pyc
 %{python_sitelib}/condorSecurity.pyo
@@ -675,9 +672,6 @@ fi
 %{python_sitelib}/condorMonitor.py
 %{python_sitelib}/condorMonitor.pyc
 %{python_sitelib}/condorMonitor.pyo
-%{python_sitelib}/condorPrivsep.py
-%{python_sitelib}/condorPrivsep.pyc
-%{python_sitelib}/condorPrivsep.pyo
 %{python_sitelib}/condorSecurity.py
 %{python_sitelib}/condorSecurity.pyc
 %{python_sitelib}/condorSecurity.pyo
