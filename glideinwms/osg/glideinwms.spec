@@ -181,6 +181,7 @@ Requires: glideinwms-common-tools = %{version}-%{release}
 Requires: condor >= 8.4.0
 Requires: fetch-crl
 Requires: python-rrdtool
+Requires: python-argparse
 Requires: python-ldap
 Requires: m2crypto
 Requires: javascriptrrd >= 1.1.0
@@ -693,14 +694,14 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_sbindir}/reconfig_glidein
 %attr(755,root,root) %{_sbindir}/clone_glidein
 %attr(-, root, root) %dir %{_localstatedir}/lib/gwms-factory
-%attr(-, root, root) %{_localstatedir}/lib/gwms-factory/client-proxies
+%attr(-, gfactory, gfactory) %{_localstatedir}/lib/gwms-factory/client-proxies
 %attr(-, gfactory, gfactory) %{factory_web_dir}
 %attr(-, gfactory, gfactory) %{factory_web_base}
 %attr(-, gfactory, gfactory) %{factory_web_base}/../creation
 %attr(-, gfactory, gfactory) %{factory_dir}
 %attr(-, gfactory, gfactory) %dir %{condor_dir}
-%attr(-, root, root) %dir %{_localstatedir}/log/gwms-factory
-%attr(-, root, root) %dir %{_localstatedir}/log/gwms-factory/client
+%attr(-, gfactory, gfactory) %dir %{_localstatedir}/log/gwms-factory
+%attr(-, gfactory, gfactory) %dir %{_localstatedir}/log/gwms-factory/client
 %attr(-, gfactory, gfactory) %{_localstatedir}/log/gwms-factory/server
 %{python_sitelib}/glideinwms/creation/lib/cgWConsts.py
 %{python_sitelib}/glideinwms/creation/lib/cgWConsts.pyc
