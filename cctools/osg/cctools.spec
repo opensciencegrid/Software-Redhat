@@ -1,6 +1,6 @@
 Name:           cctools
 Summary:        Cooperative Computing Tools
-Version:        7.0.11
+Version:        7.0.13
 Release:        1%{?dist}
 Group:          Applications/System
 License:        GPLv2
@@ -122,6 +122,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed May 22 2019 Carl Edquist <edquist@cs.wisc.edu> - 7.0.13-1
+- Update to 7.0.13 (SOFTWARE-3710)
+
 * Mon Apr 01 2019 Carl Edquist <edquist@cs.wisc.edu> - 7.0.11-1
 - Update to 7.0.11 (SOFTWARE-3626)
 
