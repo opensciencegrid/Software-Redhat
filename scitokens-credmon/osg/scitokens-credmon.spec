@@ -3,7 +3,7 @@
 
 Name:           %{pypi_name}
 Version:        0.3
-Release:        2%{?dist}
+Release:        0.1%{?dist}
 Summary:        SciTokens credential monitor for use with HTCondor
 
 License:        MIT
