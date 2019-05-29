@@ -1,6 +1,6 @@
 Name: scitokens-cpp
 Version: 0.3.0
-Release: 3%{?dist}
+Release: 4%{?dist}
 Summary: C++ Implementation of the SciTokens Library
 License: Apache 2.0
 URL: https://github.com/scitokens/scitokens-cpp
@@ -11,6 +11,7 @@ URL: https://github.com/scitokens/scitokens-cpp
 Source0: %{name}-%{version}.tar.gz
 
 Patch0: Force-aud-test-in-the-validator.patch
+Patch1: Use-double-layer-of-const-for-deserialize.patch
 
 BuildRequires: gcc-c++
 BuildRequires: cmake
@@ -39,6 +40,7 @@ Requires: %{name} = %{version}
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
 
 %build
 do_build () {
@@ -77,6 +79,10 @@ popd
 %defattr(-,root,root,-)
 
 %changelog
+* Wed May 29 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 0.3.0-4
+- Use double layer of const for deserialize
+  (patch from https://github.com/scitokens/scitokens-cpp/commit/ac0b2f0679488fa91c14ed781268efbcdb69ed3c)
+
 * Mon May 13 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 0.3.0-3
 - Add Force-aud-test-in-the-validator.patch from
   https://github.com/scitokens/scitokens-cpp/pull/8

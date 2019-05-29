@@ -1,0 +1,39 @@
+From ac0b2f0679488fa91c14ed781268efbcdb69ed3c Mon Sep 17 00:00:00 2001
+From: Derek Weitzel <djw8605@gmail.com>
+Date: Tue, 14 May 2019 09:39:13 -0500
+Subject: [PATCH] Use double layer of const for deserialize
+
+Using const char** does not allow implicit conversion from char**.
+It has to be protected at both level of de-reference, so:
+char const* const*
+---
+ src/scitokens.cpp | 2 +-
+ src/scitokens.h   | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/scitokens.cpp b/src/scitokens.cpp
+index f2e7b34..ca6c1ae 100644
+--- a/src/scitokens.cpp
++++ b/src/scitokens.cpp
+@@ -129,7 +129,7 @@ int scitoken_serialize(const SciToken token, char **value, char **err_msg) {
+     return 0;
+ }
+ 
+-int scitoken_deserialize(const char *value, SciToken *token, const char **allowed_issuers, char **err_msg) {
++int scitoken_deserialize(const char *value, SciToken *token, char const* const* allowed_issuers, char **err_msg) {
+     if (value == nullptr) {
+         if (err_msg) {*err_msg = strdup("Token may not be NULL");}
+         return -1;
+diff --git a/src/scitokens.h b/src/scitokens.h
+index 4bda7a8..7b76acb 100644
+--- a/src/scitokens.h
++++ b/src/scitokens.h
+@@ -38,7 +38,7 @@ void scitoken_set_lifetime(SciToken token, int lifetime);
+ 
+ int scitoken_serialize(const SciToken token, char **value, char **err_msg);
+ 
+-int scitoken_deserialize(const char *value, SciToken *token, const char **allowed_issuers, char **err_msg);
++int scitoken_deserialize(const char *value, SciToken *token, char const* const* allowed_issuers, char **err_msg);
+ 
+ Validator validator_create();
+ 
