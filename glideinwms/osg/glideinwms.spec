@@ -13,7 +13,7 @@
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
 %define version 3.5
-%define release 0.0.1.testswitchboard
+%define release 0.0.2
 
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
@@ -50,6 +50,7 @@ Source9:        gwms-factory.sysconfig
 Source11:       creation/templates/frontend_startup_sl7
 Source12:       creation/templates/factory_startup_sl7
 
+Patch101:	sw3689.proxy-renewal-bugfix.patch
 %description
 This is a package for the glidein workload management system.
 GlideinWMS provides a simple way to access the Grid, Cloud and HPC
@@ -210,7 +211,7 @@ install of wmscollector + wms factory
 %setup -q -n glideinwms
 # Apply the patches here if any
 #%patch -P 0 -p1
-
+%patch101 -p1
 
 %build
 cp %{SOURCE7} .
@@ -843,6 +844,9 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/condor/certs/condor_mapfile
 
 %changelog
+* Tue Jun 4 2019 Diego Davila <didavila@ucsd.edu> - 3.4.5-2
+- patch (sw3689.proxy-renewal-bugfix.patch) to fix bug on proxy renewal
+
 * Fri Apr 19 2019  Marco Mambelli <marcom@fnal.gov> - 3.4.5-1
 - GlideinWMS v3.4.5
 - Release Notes: http://glideinwms.fnal.gov/doc.v3_4_5/history.html
