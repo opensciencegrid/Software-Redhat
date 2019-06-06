@@ -317,6 +317,7 @@ install -m 0644 install/templates/02_gwms_schedds.config $RPM_BUILD_ROOT%{_sysco
 install -m 0644 install/templates/03_gwms_local.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/03_gwms_factory_local.config
 install -m 0644 install/templates/03_gwms_local.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
 install -m 0644 install/templates/condor_mapfile $RPM_BUILD_ROOT%{_sysconfdir}/condor/certs/
+install -m 0644 install/templates/privsep_config $RPM_BUILD_ROOT%{_sysconfdir}/condor/
 
 sed -i "s/^COLLECTOR_NAME = .*$/COLLECTOR_NAME = wmscollector_service/" $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/01_gwms_factory_collectors.config
 sed -i "s/^DAEMON_LIST.*=.*$//" $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/01_gwms_factory_collectors.config
@@ -503,6 +504,9 @@ fi
 %{python_sitelib}/condorLogParser.pyo
 %{python_sitelib}/condorManager.py
 %{python_sitelib}/condorMonitor.py
+%{python_sitelib}/condorPrivsep.py
+%{python_sitelib}/condorPrivsep.pyc
+%{python_sitelib}/condorPrivsep.pyo
 %{python_sitelib}/condorSecurity.py
 %{python_sitelib}/condorSecurity.pyc
 %{python_sitelib}/condorSecurity.pyo
@@ -672,6 +676,9 @@ fi
 %{python_sitelib}/condorMonitor.py
 %{python_sitelib}/condorMonitor.pyc
 %{python_sitelib}/condorMonitor.pyo
+%{python_sitelib}/condorPrivsep.py
+%{python_sitelib}/condorPrivsep.pyc
+%{python_sitelib}/condorPrivsep.pyo
 %{python_sitelib}/condorSecurity.py
 %{python_sitelib}/condorSecurity.pyc
 %{python_sitelib}/condorSecurity.pyo
@@ -795,6 +802,7 @@ fi
 %config(noreplace) %{_sysconfdir}/condor/config.d/01_gwms_factory_collectors.config
 %config(noreplace) %{_sysconfdir}/condor/config.d/02_gwms_factory_schedds.config
 %config(noreplace) %{_sysconfdir}/condor/config.d/03_gwms_factory_local.config
+%config(noreplace) %{_sysconfdir}/condor/privsep_config
 %config(noreplace) %{_sysconfdir}/condor/certs/condor_mapfile
 %attr(-, condor, condor) %{_localstatedir}/lib/condor/schedd_glideins2
 %attr(-, condor, condor) %{_localstatedir}/lib/condor/schedd_glideins3
