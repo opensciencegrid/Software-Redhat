@@ -1,1 +1,1 @@
-cvmfs-x509-helper/1.1/cvmfs-x509-helper-1.1-1.el7.centos.src.rpm sha1sum=2a6b24ee9817bdb3636498ce7dd7c241643f5497
+type=github repo=cvmfs-contrib/cvmfs-x509-helper tag=2.0 hash=5dbaefe2a9a4522994045d57ca335ede430523ed
