@@ -1,6 +1,6 @@
 Name:           glite-lbjp-common-gsoap-plugin
 Version:        3.2.12
-Release:        1.1%{?dist}
+Release:        7%{?dist}
 Summary:        Plugin for gSoap to use glite-security-gss as the communication layer
 
 Group:          System Environment/Libraries
@@ -89,6 +89,9 @@ find %{buildroot} -name '*' -print | xargs -I {} -i bash -c "chrpath -d {} > /de
 
 
 %changelog
+* Tue Jul 09 2019 Diego Davila <didavila@ucsd.edu> - 3.2.12-7.osg
+- Update to version 3.2.12-7 (SOFTWARE-3184)
+
 * Tue Jul 12 2016 Matyas Selmeci <matyas@cs.wisc.edu> - 3.2.12-1.1.osg
 - Merge OSG changes
 - Add version dependencies on glite-lbjp-common-gss-devel
