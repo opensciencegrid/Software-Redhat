@@ -1,6 +1,6 @@
 Summary: Package for OSG-Configure and associated scripts
 Name: osg-configure
-Version: 2.3.1
+Version: 2.4.0
 Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
@@ -262,6 +262,13 @@ touch $RPM_BUILD_ROOT/var/lib/osg/osg-job-environment.conf
 
 
 %changelog
+* Wed Jul 10 2019 Mátyás Selmeci <matyas@cs.wisc.edu> 2.4.0-1
+- Stop checking sponsor field in site information (SOFTWARE-3722)
+- Don't change batch system from slurm to pbs (SOFTWARE-3717)
+- Add option to configure blahp for PBS Pro (SOFTWARE-3674)
+- Stop osg-configure when a bad attribute is found (SOFTWARE-3581)
+- Own a section of the SSH config for bosco (SOFTWARE-3630)
+
 * Mon Jun 25 2018 Mátyás Selmeci <matyas@cs.wisc.edu> 2.3.1-1
 - Replace info about GOC/OIM in 40-siteinfo.ini comments (SOFTWARE-3297)
 - More thoroughly disable WN proxy renewal in BLAHP config (SOFTWARE-3161)
