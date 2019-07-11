@@ -13,7 +13,7 @@
 %{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
 
 Name:           myproxy
-Version:        6.2.3
+Version:        6.2.4
 Release:        1.1%{?dist}
 Summary:        Manage X.509 Public Key Infrastructure (PKI) security credentials
 
@@ -28,8 +28,7 @@ Patch2:         EL7-Use-myproxy-server-start-script.patch
 
 BuildRequires:  gcc
 BuildRequires:  globus-common-devel >= 15
-BuildRequires:  globus-usage-devel >= 3
-BuildRequires:  globus-gssapi-gsi-devel >= 12
+BuildRequires:  globus-gssapi-gsi-devel >= 9
 BuildRequires:  globus-gss-assist-devel >= 8
 BuildRequires:  globus-gsi-sysconfig-devel >= 5
 BuildRequires:  globus-gsi-cert-utils-devel >= 8
@@ -384,8 +383,14 @@ fi
 %{?_licensedir: %license LICENSE*}
 
 %changelog
-* Tue Feb 26 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 6.2.3-1.1.osg
-- Merge OSG changes (SOFTWARE-3586)
+* Thu Jul 11 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 6.2.4-1.1.osg
+- Merge OSG changes
+
+* Wed Feb 27 2019 Mattias Ellert <mattias.ellert@physics.uu.se> - 6.2.4-1
+- Remove usage statistics collection support
+
+* Fri Feb 01 2019 Fedora Release Engineering <releng@fedoraproject.org> - 6.2.3-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
 
 * Thu Sep 13 2018 Mattias Ellert <mattias.ellert@physics.uu.se> - 6.2.3-1
 - Switch upstream to Grid Community Toolkit
