@@ -20,7 +20,6 @@ Summary:        Manage X.509 Public Key Infrastructure (PKI) security credential
 License:        NCSA and BSD and ASL 2.0
 URL:            http://grid.ncsa.illinois.edu/myproxy/
 Source:         https://repo.gridcf.org/gct6/sources/%{name}-%{version}.tar.gz
-Source1:        00-osg-environment
 Source2:        myproxy-server-start
 Source8:        README
 Patch1:         Skip-.rpmsave-and-.rpmnew-files-in-etc-myproxy.d.patch
@@ -250,9 +249,7 @@ install -m 644 -p %{SOURCE8} %{buildroot}%{_pkgdocdir}/README
 # Remove myproxy-server-setup rhbz#671561
 rm %{buildroot}%{_sbindir}/myproxy-server-setup
 
-# Add file disabling SSLv3 (SOFTWARE-2471)
 mkdir -p %{buildroot}%{_sysconfdir}/myproxy.d
-install -p -m 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/myproxy.d/00-osg-environment
 
 
 %check
@@ -355,7 +352,7 @@ fi
 %{_mandir}/man8/myproxy-server.8*
 %{_mandir}/man5/myproxy-server.config.5*
 %doc README.Fedora
-%{_sysconfdir}/myproxy.d/00-osg-environment
+%dir %{_sysconfdir}/myproxy.d
 
 %files admin
 %{_sbindir}/myproxy-admin-addservice
@@ -385,6 +382,7 @@ fi
 %changelog
 * Thu Jul 11 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 6.2.4-1.1.osg
 - Merge OSG changes
+- Drop 00-osg-environment (unnecessary)
 
 * Wed Feb 27 2019 Mattias Ellert <mattias.ellert@physics.uu.se> - 6.2.4-1
 - Remove usage statistics collection support
