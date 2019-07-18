@@ -1,7 +1,7 @@
 
 Name: xrootd-multiuser
 Version: 0.4.2
-Release: 3%{?dist}
+Release: 4%{?dist}
 Summary: Multiuser filesystem writing plugin for xrootd
 
 Group: System Environment/Daemons
@@ -11,8 +11,8 @@ URL: https://github.com/bbockelm/xrootd-multiuser
 # git archive v%{version} --prefix=xrootd-multiuser-%{version}/ | gzip -7 > ~/rpmbuild/SOURCES/xrootd-multiuser-%{version}.tar.gz
 Source0: %{name}-%{version}.tar.gz
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
-BuildRequires: xrootd-server-libs >= 1:4.9.1
-BuildRequires: xrootd-server-devel >= 1:4.9.1
+BuildRequires: xrootd-server-libs >= 1:4.10.0
+BuildRequires: xrootd-server-devel >= 1:4.10.0
 BuildRequires: cmake
 BuildRequires: gcc-c++
 BuildRequires: libcap-devel
@@ -20,7 +20,7 @@ BuildRequires: libcap-devel
 # For %{_unitdir} macro
 BuildRequires: systemd
 
-Requires: xrootd-server >= 1:4.9.1
+Requires: xrootd-server >= 1:4.10.0
 
 %description
 %{summary}
@@ -54,6 +54,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_unitdir}/xrootd-privileged@.service
 
 %changelog
+* Thu Jul 18 2019 Carl Edquist,ccedquist <edquist@cs.wisc.edu> - 0.4.2-4
+- Rebuild against xrootd 4.10.0 and update versioned dependency (SOFTWARE-3697)
+
 * Wed Apr 10 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 0.4.2-3
 - Rebuild against xrootd 4.9.1 and add versioned dependency (SOFTWARE-3485)
 
