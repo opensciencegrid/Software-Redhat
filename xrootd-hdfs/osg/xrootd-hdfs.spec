@@ -1,6 +1,6 @@
 Name: xrootd-hdfs
 Version: 2.1.4
-Release: 1%{?dist}
+Release: 1.1%{?dist}
 Summary: HDFS plugin for xrootd
 
 Group: System Environment/Development
@@ -67,6 +67,9 @@ rm $RPM_BUILD_ROOT%{_bindir}/xrootd_hdfs_envcheck
 %{_includedir}/XrdHdfs.hh
 
 %changelog
+* Thu Jul 18 2019 Carl Edquist <edquist@cs.wisc.edu> - 2.1.4-1.1
+- Rebuild against xrootd 4.10.0 (SOFTWARE-3697)
+
 * Tue Feb 05 2019 Brian Bockelman <brian.bockelman@cern.ch> - 2.1.4-1
 - Recompute checksum on parse failure.
 - Force flush before close to hew closer to open-to-close semantics.
