@@ -1,7 +1,7 @@
 
 Name: xrootd-status-probe
 Version: 0.0.3
-Release: 13%{?dist}
+Release: 14%{?dist}
 Summary: Probes to check the health of an Xrootd server
 
 Group: System/Monitoring
@@ -38,6 +38,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_defaultdocdir}/xrootd-status-probe/README
 
 %changelog
+* Thu Jul 18 2019 Carl Edquist <edquist@cs.wisc.edu> - 0.0.3-14
+- Rebuild against xrootd 4.10.0 (SOFTWARE-3697)
+
 * Wed Apr 24 2019 Carl Edquist <edquist@cs.wisc.edu> - 0.0.3-13
 - Rebuild against xrootd 4.9.1 (SOFTWARE-3678)
 
