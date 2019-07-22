@@ -42,7 +42,6 @@ Version: %{bigtop_utils_version}
 Release: %{bigtop_utils_release}
 Summary: Collection of useful tools for Bigtop
 
-Group:      Applications/Engineering
 License:    ASL 2.0
 URL:        http://bigtop.apache.org/
 BuildArch:  noarch

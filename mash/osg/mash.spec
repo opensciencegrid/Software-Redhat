@@ -4,7 +4,6 @@ Name:           mash
 Version:        0.5.22
 Release:        3%{?dist}
 Summary:        Koji buildsystem to yum repository converter
-Group:          Development/Tools
 License:        GPLv2
 URL:            http://fedorahosted.org/releases/m/a/mash/
 Source0:        http://fedorahosted.org/releases/m/a/mash/%{name}-%{version}.tar.gz

@@ -3,7 +3,6 @@ Summary:        OSG GridFTP XRootd Storage Element package
 Version:        3.4
 Release:        2%{?dist}
 License:        GPL
-Group:          System Environment/Daemons
 URL:            https://opensciencegrid.github.io/docs/data/xrootd-overview/
 
 # from VDT

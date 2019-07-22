@@ -9,7 +9,6 @@ Version: %{version}
 Release: %{release}%{?dist}
 Source0: %{name}-%{unmangled_version}.tar.gz
 License: GPL
-Group: Development/Libraries
 BuildArch: noarch
 Vendor: Jose Caballero <jcaballero@bnl.gov>
 Provides: autopyfactory
@@ -131,7 +130,6 @@ mkdir -pm0755 $RPM_BUILD_ROOT%{_var}/log/autopyfactory
 
 %package -n autopyfactory-common
 Summary: autopyfactory common 
-Group: Development/Libraries
 #Requires: autopyfactory-proxymanager
 Requires: python-simplejson
 Requires: python-pycurl
@@ -178,7 +176,6 @@ fi
 
 %package -n autopyfactory-proxymanager
 Summary: autopyfactory proxymanager 
-Group: Development/Libraries
 Requires: voms-clients
 Requires: myproxy
 Requires: autopyfactory-common
@@ -194,7 +191,6 @@ This package contains autopyfactory proxymanger
 
 %package -n autopyfactory-plugins-panda
 Summary: autopyfactory plugins panda 
-Group: Development/Libraries
 %description -n autopyfactory-plugins-panda
 This package contains autopyfactory plugins panda 
 
@@ -207,7 +203,6 @@ This package contains autopyfactory plugins panda
 
 %package -n autopyfactory-plugins-local
 Summary: autopyfactory plugins local 
-Group: Development/Libraries
 %description -n autopyfactory-plugins-local
 This package contains autopyfactory plugins local 
 
@@ -220,7 +215,6 @@ This package contains autopyfactory plugins local
 
 %package -n autopyfactory-plugins-remote
 Summary: autopyfactory plugins remote 
-Group: Development/Libraries
 %description -n autopyfactory-plugins-remote
 This package contains autopyfactory plugins remote 
 
@@ -233,7 +227,6 @@ This package contains autopyfactory plugins remote
 
 %package -n autopyfactory-plugins-cloud
 Summary: autopyfactory plugins cloud 
-Group: Development/Libraries
 %description -n autopyfactory-plugins-cloud
 This package contains autopyfactory plugins cloud 
 
@@ -246,7 +239,6 @@ This package contains autopyfactory plugins cloud
 
 %package -n autopyfactory-plugins-scheds
 Summary: autopyfactory plugins scheds
-Group: Development/Libraries
 %description -n autopyfactory-plugins-scheds
 This package contains autopyfactory plugins scheds
 
@@ -258,7 +250,6 @@ This package contains autopyfactory plugins scheds
 
 %package -n autopyfactory-plugins-monitor
 Summary: autopyfactory plugins monitor
-Group: Development/Libraries
 %description -n autopyfactory-plugins-monitor
 This package contains autopyfactory plugins monitor
 
@@ -271,7 +262,6 @@ This package contains autopyfactory plugins monitor
 
 %package -n autopyfactory-remote
 Summary: META RPM for more standard scenario
-Group: Development/Libraries
 Requires: autopyfactory-common
 Requires: autopyfactory-plugins-remote
 Requires: autopyfactory-proxymanager
@@ -284,7 +274,6 @@ meta rpm autopyfactory-remote
 
 %package -n autopyfactory-panda
 Summary: META RPM for PanDA
-Group: Development/Libraries
 Requires: autopyfactory-common
 Requires: autopyfactory-plugins-panda
 #Requires: voms-clients
@@ -296,7 +285,6 @@ meta rpm autopyfactory-panda
 
 %package -n autopyfactory-wms
 Summary: META RPM for autopyfactory-wms 
-Group: Development/Libraries
 Requires: autopyfactory-common
 Requires: autopyfactory-plugins-local
 #Requires: voms-clients
@@ -307,7 +295,6 @@ meta rpm autopyfactory-wms
 
 %package -n autopyfactory-cloud
 Summary: META RPM for autopyfactory-cloud
-Group: Development/Libraries
 Requires: autopyfactory-common
 Requires: autopyfactory-plugins-cloud
 Requires: autopyfactory-proxymanager
@@ -318,7 +305,6 @@ meta rpm autopyfactory-cloud
 
 %package -n autopyfactory-atlas
 Summary: META RPM for autopyfactory-atlas
-Group: Development/Libraries
 Requires: autopyfactory-common
 Requires: autopyfactory-proxymanager
 Requires: autopyfactory-plugins-scheds

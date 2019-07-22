@@ -7,7 +7,6 @@ Summary:   OSG Compute Element
 Version:   3.4
 Release:   4%{?dist}
 License:   Apache 2.0
-Group:     Grid
 URL:       http://www.opensciencegrid.org
 
 
@@ -54,7 +53,6 @@ Requires: htcondor-ce
 %post
 
 %package condor
-Group: Grid
 Summary: Condor meta-package for the OSG-CE
 
 Requires: %{osgce} = %{version}-%{release}
@@ -75,7 +73,6 @@ Requires: htcondor-ce-condor
 
 
 %package pbs
-Group: Grid
 Summary: PBS meta-package for the OSG-CE
 
 Requires: %{osgce} = %{version}-%{release}
@@ -94,7 +91,6 @@ Requires: htcondor-ce-pbs
 
 
 %package lsf
-Group: Grid
 Summary: LSF meta-package for the OSG-CE
 
 Requires: %{osgce} = %{version}-%{release}
@@ -113,7 +109,6 @@ Requires: htcondor-ce-lsf
 
 
 %package sge
-Group: Grid
 Summary: SGE meta-package for the OSG-CE
 
 Requires: %{osgce} = %{version}-%{release}
@@ -131,7 +126,6 @@ Requires: htcondor-ce-sge
 %{summary}
 
 %package slurm
-Group: Grid
 Summary: SLURM meta-package for the OSG-CE
 
 Requires: %{osgce} = %{version}-%{release}
@@ -149,7 +143,6 @@ Requires: htcondor-ce-slurm
 %{summary}
 
 %package bosco
-Group: Grid
 Summary: Bosco meta-package for the HTCondor-CE OSG-CE
 
 Requires: %{osgce} = %{version}-%{release}

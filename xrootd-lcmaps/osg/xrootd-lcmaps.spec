@@ -4,7 +4,6 @@ Version: 1.7.0
 Release: 1.2%{?dist}
 Summary: LCMAPS plugin for xrootd
 
-Group: System Environment/Daemons
 License: BSD
 URL: https://github.com/opensciencegrid/xrootd-lcmaps
 # Generated from:

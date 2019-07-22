@@ -196,7 +196,6 @@ Patch960: openssh-7.5p1-sftp-empty-files.patch
 Patch98: openssh-7.4p1-gsissh.patch
 
 License: BSD
-Group: Applications/Internet
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Requires: /sbin/nologin
 
@@ -241,7 +240,6 @@ BuildRequires: xauth
 Summary: SSH client applications with GSI authentication
 Provides: gsissh-clients = %{version}-%{release}
 Obsoletes: gsissh-clients < 5.8p2-2
-Group: Applications/Internet
 Requires: %{name} = %{version}-%{release}
 Requires: fipscheck-lib%{_isa} >= 1.3.0
 
@@ -249,7 +247,6 @@ Requires: fipscheck-lib%{_isa} >= 1.3.0
 Summary: SSH server daemon with GSI authentication
 Provides: gsissh-server = %{version}-%{release}
 Obsoletes: gsissh-server < 5.8p2-2
-Group: System Environment/Daemons
 Requires: %{name} = %{version}-%{release}
 Requires(pre): /usr/sbin/useradd
 Requires: pam >= 1.0.1-3

@@ -3,7 +3,6 @@ Version: 2.1.4
 Release: 1.1%{?dist}
 Summary: HDFS plugin for xrootd
 
-Group: System Environment/Development
 License: BSD
 URL: https://github.com/bbockelm/xrootd-hdfs
 # Generated from:
@@ -21,7 +20,6 @@ Requires: hadoop-client >= 2.0.0+545-1.cdh4.1.1
 
 %package devel
 Summary: Development headers for Xrootd HDFS plugin
-Group: System Environment/Development
 
 %description
 %{summary}

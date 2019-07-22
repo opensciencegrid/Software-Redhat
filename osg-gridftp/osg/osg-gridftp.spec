@@ -3,7 +3,6 @@ Summary:   Standalone OSG GridFTP with LCMAPS VOMS support
 Version:   3.4
 Release:   7%{?dist}
 License:   Apache 2.0
-Group:     Grid
 URL:       http://www.opensciencegrid.org
 
 

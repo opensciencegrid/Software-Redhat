@@ -9,7 +9,6 @@ Version:        2.8
 Release:        2.1%{?dist}
 Summary:        GridFTP-enabled ftp client
 
-Group:          Applications/Internet
 
 License:        NCSA
 URL:            https://github.com/JasonAlt/UberFTP

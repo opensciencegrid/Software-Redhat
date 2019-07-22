@@ -3,7 +3,6 @@ Version:   1.1.2
 Release:   1%{?dist}
 Summary:   RSV metrics to test sites with a schedd connected to a glidein pool
 Packager:  OSG-Software
-Group:     Applications/Monitoring
 License:   Apache 2.0
 URL:       https://twiki.grid.iu.edu/bin/view/MonitoringInformation/RSV
 

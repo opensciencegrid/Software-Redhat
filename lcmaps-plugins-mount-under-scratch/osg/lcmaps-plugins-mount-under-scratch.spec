@@ -3,7 +3,6 @@ Name: lcmaps-plugins-mount-under-scratch
 Version: 0.0.4
 Release: 1%{?dist}
 License: Public Domain
-Group: System Environment/Libraries
 
 # git clone https://github.com/lcmaps-plugins/lcmaps-plugins-mount-under-scratch.git
 # cd lcmaps-plugins-mount-under-scratch

@@ -4,7 +4,6 @@ Version: 1.1.1
 Release: 1%{?dist}
 Summary: A package to render RRD databases in javascript using Flot
 
-Group: Amusements/Graphics
 License: MIT
 # To make source tar ball (Be sure to get version with flot):
 # mv javascriptrrd-1.1.0-with-flot-0.7.7-tooltip-0.4.4.tgz javascriptrrd-1.1.0.tar.gz

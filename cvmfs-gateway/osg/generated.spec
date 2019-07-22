@@ -14,7 +14,6 @@ Release: 1.1%{?dist}
 License: BSD-3-Clause
 
 # What group this RPM would typically reside in
-Group: Applications/System
 
 # Who packaged this RPM
 Packager: Radu Popescu <radu.popescu@cern.ch>

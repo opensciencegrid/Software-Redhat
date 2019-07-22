@@ -3,7 +3,6 @@ Name: osg-xrootd
 Version: 3.4
 Release: 0.2%{?dist}
 License: ASL 2.0
-Group: Applications/Grid
 BuildArch: noarch
 
 Source1: 40-osg-http.cfg

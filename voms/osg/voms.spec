@@ -14,7 +14,6 @@ Version:	2.0.14
 Release:	1.4%{?dist}
 Summary:	Virtual Organization Membership Service
 
-Group:		System Environment/Libraries
 License:	ASL 2.0
 URL:		https://wiki.italiangrid.it/VOMS
 Source0:	https://github.com/italiangrid/%{name}/archive/v%{version}.tar.gz
@@ -56,7 +55,6 @@ will bind to.
 
 %package devel
 Summary:	Virtual Organization Membership Service Development Files
-Group:		Development/Libraries
 Requires:	%{name}%{?_isa} = %{version}-%{release}
 Requires:	openssl-devel%{?_isa}
 
@@ -72,7 +70,6 @@ This package provides header files for programming with the VOMS libraries.
 
 %package doc
 Summary:	Virtual Organization Membership Service Documentation
-Group:		Documentation
 BuildArch:	noarch
 
 %description doc
@@ -80,7 +77,6 @@ Documentation for the Virtual Organization Membership Service.
 
 %package clients-cpp
 Summary:	Virtual Organization Membership Service Clients
-Group:		Applications/Internet
 Requires:	%{name}%{?_isa} = %{version}-%{release}
 Provides:	voms-clients = %{version}-%{release}
 Obsoletes:	voms-clients < 2.0.12-3
@@ -101,7 +97,6 @@ services.
 
 %package server
 Summary:	Virtual Organization Membership Service Server
-Group:		Applications/Internet
 Requires:	%{name}%{?_isa} = %{version}-%{release}
 
 Requires(pre):		shadow-utils

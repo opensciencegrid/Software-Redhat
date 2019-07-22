@@ -3,7 +3,6 @@ Version:        1.0
 Release:        2%{?dist}
 Summary:        An empty grid CA cert package
 
-Group:          System Environment/Base
 License:        Unknown
 URL:            http://vdt.cs.wisc.edu
 

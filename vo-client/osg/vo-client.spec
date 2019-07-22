@@ -3,7 +3,6 @@ Version:        93
 Release:        1%{?dist}
 Summary:        Contains vomses file for use with user authentication
 
-Group:          System Environment/Base
 License:        Apache 2.0
 URL:            http://www.opensciencegrid.org/osg/
 BuildArch:      noarch
@@ -22,7 +21,6 @@ Source0:        %{name}-%{version}.tar.gz
 
 %package lcmaps-voms
 Summary:        Provides a voms-mapfile-default file, mapping VOMS FQANs to Unix users suitable for use by the LCMAPS VOMS plugin
-Group:          system environment/base
 Requires:       %{name} = %{version}-%{release}
 
 %description lcmaps-voms
@@ -30,7 +28,6 @@ Requires:       %{name} = %{version}-%{release}
 
 %package dcache
 Summary:        Provides a grid-vorolemap file for use by dCache, similar to voms-mapfile-default
-Group:          system environment/base
 Requires:       %{name} = %{version}-%{release}
 
 %description dcache

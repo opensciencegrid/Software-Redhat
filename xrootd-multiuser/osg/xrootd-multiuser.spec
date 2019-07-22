@@ -4,7 +4,6 @@ Version: 0.4.2
 Release: 4%{?dist}
 Summary: Multiuser filesystem writing plugin for xrootd
 
-Group: System Environment/Daemons
 License: BSD
 URL: https://github.com/bbockelm/xrootd-multiuser
 # Generated from:

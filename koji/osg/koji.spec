@@ -49,7 +49,6 @@ contains shared libraries and the command-line interface.
 
 %package hub
 Summary: Koji XMLRPC interface
-Group: Applications/Internet
 License: LGPLv2 and GPLv2
 # rpmdiff lib (from rpmlint) is GPLv2 (only)
 Requires: httpd
@@ -62,7 +61,6 @@ koji-hub is the XMLRPC interface to the koji database
 
 %package hub-plugins
 Summary: Koji hub plugins
-Group: Applications/Internet
 License: LGPLv2
 Requires: %{name} = %{version}-%{release}
 Requires: %{name}-hub = %{version}-%{release}
@@ -75,7 +73,6 @@ Plugins to the koji XMLRPC interface
 
 %package builder
 Summary: Koji RPM builder daemon
-Group: Applications/System
 License: LGPLv2 and GPLv2+
 #mergerepos (from createrepo) is GPLv2+
 Requires: %{name} = %{version}-%{release}
@@ -104,7 +101,6 @@ tasks that come through the Koji system.
 
 %package vm
 Summary: Koji virtual machine management daemon
-Group: Applications/System
 License: LGPLv2
 Requires: %{name} = %{version}-%{release}
 %if %{use_systemd}
@@ -131,7 +127,6 @@ virtual machine. This package is not required for most installations.
 
 %package utils
 Summary: Koji Utilities
-Group: Applications/Internet
 License: LGPLv2
 Requires: postgresql-python
 Requires: %{name} = %{version}-%{release}
@@ -146,7 +141,6 @@ Utilities for the Koji system
 
 %package web
 Summary: Koji Web UI
-Group: Applications/Internet
 License: LGPLv2
 Requires: httpd
 Requires: mod_wsgi

@@ -3,7 +3,6 @@ Name: lcmaps-plugins-process-tracking
 Version: 0.3
 Release: 1%{?dist}
 License: Public Domain
-Group: System Environment/Libraries
 # The tarball was created from Subversion using the following commands:
 # svn co svn://t2.unl.edu/brian/lcmaps-plugin-process-tracking
 # cd lcmaps-plugin-process-tracking

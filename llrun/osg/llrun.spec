@@ -4,7 +4,6 @@ Version: 0.1.3
 Release: 1.3%{?dist}
 Vendor: Nikhef
 License: ASL 2.0
-Group: Applications/System
 URL: http://www.nikhef.nl/pub/projects/grid/gridwiki/index.php/Site_Access_Control
 Source0: http://software.nikhef.nl/security/%{name}/%{name}-%{version}.tar.gz
 Requires: lcmaps

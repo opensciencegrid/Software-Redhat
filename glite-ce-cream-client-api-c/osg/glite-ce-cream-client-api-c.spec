@@ -4,7 +4,6 @@ Version: 1.15.4
 Release: 2.4%{?dist}
 License: Apache Software License
 URL: http://glite.cern.ch/
-Group: System Environment/Libraries
 BuildRequires: cmake, chrpath
 BuildRequires: glite-ce-wsdl >= 1.15.1
 #BuildRequires: emi-pkgconfig-compat
@@ -64,7 +63,6 @@ mv %{buildroot}%{_libdir}/pkgconfig/cream-client-api-util.pc.new %{buildroot}%{_
 
 %package -n glite-ce-cream-client-devel
 Summary: Development files for the client of the CREAM service
-Group: System Environment/Libraries
 Requires: %{name}%{?_isa} = %{version}-%{release}
 Requires: glite-jobid-api-cpp-devel, glite-jobid-api-c-devel,
 Requires: glite-lbjp-common-gsoap-plugin-devel >= 3.2.12

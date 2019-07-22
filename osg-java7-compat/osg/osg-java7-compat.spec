@@ -3,7 +3,6 @@ Version:	1.0
 Release:	1%{?dist}
 Summary:	Requires java >= 1:1.7.0 and provides java7
 BuildArch:	noarch
-Group:		Development/Tools
 License:	ASL 2.0
 Requires:	java >= 1:1.7.0
 Provides:	java7 = 1:1.7.0
@@ -17,7 +16,6 @@ but not java7.
 
 %package -n osg-java7-devel-compat
 Summary:	Requires java-devel >= 1:1.7.0 and provides java7-devel
-Group:		Development/Tools
 Requires:	java-devel >= 1:1.7.0
 Provides:	java7-devel = 1:1.7.0
 
@@ -30,7 +28,6 @@ java-devel = 1:1.7.0 but not java7-devel.
 
 %package -n osg-java7-compat-openjdk
 Summary:	Requires java-1.7.0-openjdk and provides java = 1:1.7.0
-Group:		Development/Tools
 Requires:	java-1.7.0-openjdk
 Provides:	java = 1:1.7.0
 
@@ -49,7 +46,6 @@ requirements of osg-java7-compat can always be met.
 
 %package -n osg-java7-devel-compat-openjdk
 Summary:	Requires java-1.7.0-openjdk-devel and provides java-devel = 1:1.7.0
-Group:		Development/Tools
 Requires:	java-1.7.0-openjdk-devel
 Provides:	java-devel = 1:1.7.0
 

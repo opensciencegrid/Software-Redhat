@@ -32,7 +32,6 @@ Version: %{bigtop_tomcat_version}
 Release: %{bigtop_tomcat_release}
 Summary: Apache Tomcat
 URL: http://tomcat.apache.org/
-Group: Development/Libraries
 BuildArch: noarch
 Buildroot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 License: ASL 2.0

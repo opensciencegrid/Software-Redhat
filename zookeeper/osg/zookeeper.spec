@@ -77,7 +77,6 @@ Version: %{zookeeper_version}
 Release: %{zookeeper_release}
 Summary: A high-performance coordination service for distributed applications.
 URL: http://zookeeper.apache.org/
-Group: Development/Libraries
 Buildroot: %{_topdir}/INSTALL/%{name}-%{version}
 License: ASL 2.0
 Source0: %{name}-%{zookeeper_patched_version}.tar.gz
@@ -131,7 +130,6 @@ difficult to manage. Even when done correctly, different implementations of thes
 
 %package server
 Summary: The Hadoop Zookeeper server
-Group: System/Daemons
 Requires: %{name} = %{version}-%{release}
 Requires(pre): %{name} = %{version}-%{release}
 Requires(post): %{chkconfig_dep}
@@ -160,7 +158,6 @@ This package starts the zookeeper server on startup
 
 %package native
 Summary: C bindings for ZooKeeper clients
-Group: Development/Libraries
 
 %description native
 Provides native libraries and development headers for C / C++ ZooKeeper clients. Consists of both single-threaded and multi-threaded implementations.

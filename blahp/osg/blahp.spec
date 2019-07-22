@@ -8,7 +8,6 @@ Version:	1.18.41.bosco
 Release:	1%{?gitrev:.%{gitrev}}%{?dist}
 Summary:	gLite BLAHP daemon
 
-Group:		System/Libraries
 License:	Apache 2.0
 URL:		https://github.com/osg-bosco/BLAH
 

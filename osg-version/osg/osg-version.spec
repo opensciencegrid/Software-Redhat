@@ -3,7 +3,6 @@ Summary:   OSG Version
 Version:   3.4.31
 Release:   1%{?dist}
 License:   Apache 2.0
-Group:     Grid
 URL:       http://www.opensciencegrid.org
 BuildArch: noarch
 

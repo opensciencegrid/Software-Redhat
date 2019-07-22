@@ -5,7 +5,6 @@ Name:           gridftp-hdfs
 Version:        1.1.1
 Release:        1.2%{?gitrev:.%{gitrev}git}%{?dist}
 Summary:        HDFS DSI plugin for GridFTP
-Group:          System Environment/Daemons
 License:        ASL 2.0
 URL:            https://github.com/opensciencegrid/gridftp_hdfs
 # To create:

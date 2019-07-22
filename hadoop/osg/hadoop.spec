@@ -159,7 +159,6 @@ Release: %{hadoop_release}
 Summary: Hadoop is a software platform for processing vast amounts of data
 License: ASL 2.0
 URL: http://hadoop.apache.org/core/
-Group: Development/Libraries
 Source0: %{name}-%{hadoop_patched_version}.tar.gz
 Source1: do-component-build
 Source2: install_%{name}.sh
@@ -309,7 +308,6 @@ located.
 
 %package hdfs
 Summary: The Hadoop Distributed File System
-Group: System/Daemons
 Requires(pre): %{name} = %{version}-%{release}
 Requires: %{name} = %{version}-%{release}, bigtop-jsvc
 # Workaround for 4.0 to 4.X upgrade (CDH-7856) (upgrades from 4.1 onwards are fine)
@@ -323,7 +321,6 @@ computations.
 
 %package yarn
 Summary: The Hadoop NextGen MapReduce (YARN)
-Group: System/Daemons
 Requires(pre): %{name} = %{version}-%{release}
 Requires: %{name} = %{version}-%{release}
 # Workaround for 4.0 to 4.X upgrade (CDH-7856) (upgrades from 4.1 onwards are fine)
@@ -347,7 +344,6 @@ the tasks.
 
 %package mapreduce
 Summary: The Hadoop MapReduce (MRv2)
-Group: System/Daemons
 Requires(pre): %{name} = %{version}-%{release}
 Requires: %{name}-yarn = %{version}-%{release}, %{name} = %{version}-%{release}
 Requires: avro-libs, zookeeper
@@ -359,7 +355,6 @@ in parallel on large clusters of hosts.
 
 %package 0.20-mapreduce
 Summary: Hadoop is a software platform for processing vast amounts of data
-Group: System/Daemons
 Requires(pre): %{name} = %{version}-%{release}
 Requires: %{name} = %{version}-%{release}, %{name}-hdfs = %{version}-%{release}
 Requires: avro-libs, zookeeper
@@ -387,7 +382,6 @@ located.
 
 %package hdfs-namenode
 Summary: The Hadoop namenode manages the block locations of HDFS files
-Group: System/Daemons
 Requires: %{name}-hdfs = %{version}-%{release}
 # Requires(pre): %{name} = %{version}-%{release}
 # Requires(pre): %{name}-hdfs = %{version}-%{release}
@@ -400,7 +394,6 @@ namenode, which manages the block locations of files on the filesystem.
 
 %package hdfs-secondarynamenode
 Summary: Hadoop Secondary namenode
-Group: System/Daemons
 Requires: %{name}-hdfs = %{version}-%{release}
 # Requires(pre): %{name} = %{version}-%{release}
 # Requires(pre): %{name}-hdfs = %{version}-%{release}
@@ -413,7 +406,6 @@ do not incur unnecessary downtime.
 
 %package hdfs-zkfc
 Summary: Hadoop HDFS failover controller
-Group: System/Daemons
 Requires: %{name}-hdfs = %{version}-%{release}
 Requires(pre): %{name} = %{version}-%{release}
 Requires(pre): %{name}-hdfs = %{version}-%{release}
@@ -427,7 +419,6 @@ election.
 
 %package hdfs-journalnode
 Summary: Hadoop HDFS JournalNode
-Group: System/Daemons
 Requires: %{name}-hdfs = %{version}-%{release}
 Requires(pre): %{name} = %{version}-%{release}
 
@@ -438,7 +429,6 @@ separate machines in the cluster.
 
 %package hdfs-datanode
 Summary: Hadoop Data Node
-Group: System/Daemons
 Requires: %{name}-hdfs = %{version}-%{release}
 # Requires(pre): %{name} = %{version}-%{release}
 # Requires(pre): %{name}-hdfs = %{version}-%{release}
@@ -451,7 +441,6 @@ blocks of data over the network to Hadoop Distributed Filesystem
 
 %package kms
 Summary: KMS for Hadoop
-Group: Development/Libraries
 Requires: %{name}-client = %{version}-%{release}, bigtop-tomcat
 
 %description kms
@@ -459,7 +448,6 @@ Hadoop KMS is a cryptographic Key Management Server based on Hadoop KeyProvider 
 
 %package kms-server
 Summary: KMS for Hadoop
-Group: System/Daemons
 Requires: %{name}-kms = %{version}-%{release}
 
 %description kms-server
@@ -468,7 +456,6 @@ Bundles KMS init scripts.
 
 %package hdfs-nfs3
 Summary: Hadoop HDFS NFS v3 gateway service
-Group: System/Daemons
 Requires: %{name}-hdfs = %{version}-%{release}, portmap
 Requires(pre): %{name} = %{version}-%{release}
 Requires(pre): %{name}-hdfs = %{version}-%{release}
@@ -478,7 +465,6 @@ Hadoop HDFS NFS v3 gateway service
 
 %package httpfs
 Summary: HTTPFS for Hadoop
-Group: System/Daemons
 Requires: %{name}-hdfs = %{version}-%{release}, bigtop-tomcat
 Requires: avro-libs, zookeeper
 Requires(pre): %{name} = %{version}-%{release}
@@ -490,7 +476,6 @@ interface in HDFS.
 
 %package yarn-resourcemanager
 Summary: Yarn Resource Manager
-Group: System/Daemons
 Requires: %{name}-yarn = %{version}-%{release}
 Requires(pre): %{name} = %{version}-%{release}
 Requires(pre): %{name}-yarn = %{version}-%{release}
@@ -500,7 +485,6 @@ The resource manager manages the global assignment of compute resources to appli
 
 %package yarn-nodemanager
 Summary: Yarn Node Manager
-Group: System/Daemons
 Requires: %{name}-yarn = %{version}-%{release}
 Requires(pre): %{name} = %{version}-%{release}
 Requires(pre): %{name}-yarn = %{version}-%{release}
@@ -533,7 +517,6 @@ reporting the same to the ResourceManager/Scheduler.
 
 %package 0.20-mapreduce-jobtracker
 Summary: Hadoop JobTracker
-Group: System/Daemons
 Requires: %{name}-0.20-mapreduce = %{version}-%{release}
 Conflicts: hadoop-0.20-jobtracker, %{name}-jobtrackerha
 
@@ -545,7 +528,6 @@ with an available work slot.
 
 %package 0.20-mapreduce-tasktracker
 Summary: Hadoop Task Tracker
-Group: System/Daemons
 Requires: %{name}-0.20-mapreduce = %{version}-%{release}
 Conflicts: hadoop-0.20-tasktracker
 
@@ -556,7 +538,6 @@ with an available work slot.
 
 %package 0.20-conf-pseudo
 Summary: Hadoop installation in pseudo-distributed mode with MRv1
-Group: System/Daemons
 Requires: %{name} = %{version}-%{release}, %{name}-hdfs-namenode = %{version}-%{release}, %{name}-hdfs-datanode = %{version}-%{release}, %{name}-hdfs-secondarynamenode = %{version}-%{release}, %{name}-0.20-mapreduce-tasktracker = %{version}-%{release}, %{name}-0.20-mapreduce-jobtracker = %{version}-%{release}
 Conflicts: hadoop-conf-pseudo
 
@@ -568,7 +549,6 @@ YARN (MRv2) ones.
 
 %package 0.20-mapreduce-jobtrackerha
 Summary: Hadoop JobTracker High Availability
-Group: System/Daemons
 Requires: %{name}-0.20-mapreduce = %{version}-%{release}
 Conflicts: hadoop-0.20-jobtracker, %{name}-0.20-mapreduce-jobtracker
 
@@ -588,7 +568,6 @@ with an available work slot.
 
 %package 0.20-mapreduce-zkfc
 Summary: Hadoop MapReduce failover controller
-Group: System/Daemons
 Requires: %{name}-0.20-mapreduce-jobtrackerha = %{version}-%{release}, zookeeper >= 3.4.0
 
 %description 0.20-mapreduce-zkfc
@@ -600,7 +579,6 @@ session management and Zookeeper-based election.
 
 %package client
 Summary: Hadoop client side dependencies
-Group: System/Daemons
 Requires: %{name} = %{version}-%{release}
 Requires: %{name}-hdfs = %{version}-%{release}
 #disabling mapreduce in the client, we don't need it
@@ -615,7 +593,6 @@ Installation of this package will provide you with all the dependencies for Hado
 
 %package conf-pseudo
 Summary: Hadoop installation in pseudo-distributed mode
-Group: System/Daemons
 Requires: %{name} = %{version}-%{release}
 Requires: %{name}-hdfs-namenode = %{version}-%{release}
 Requires: %{name}-hdfs-datanode = %{version}-%{release}
@@ -630,14 +607,12 @@ where each Hadoop daemon runs in a separate Java process.
 
 %package doc
 Summary: Hadoop Documentation
-Group: Documentation
 Obsoletes: %{name}-docs
 %description doc
 Documentation for Hadoop
 
 %package libhdfs
 Summary: Hadoop Filesystem Library
-Group: Development/Libraries
 Requires: %{name}-hdfs = %{version}-%{release}
 Requires: java-devel >= 1:1.7.0
 Obsoletes: hadoop-0.20-libhdfs <= 0.20.2+737
@@ -649,7 +624,6 @@ Hadoop Filesystem Library
 
 %package libhdfs-devel
 Summary: Development support for libhdfs
-Group: Development/Libraries
 Requires: hadoop = %{version}-%{release}, hadoop-libhdfs = %{version}-%{release}
 
 %description libhdfs-devel
@@ -657,7 +631,6 @@ Includes examples and header files for accessing HDFS from C
 
 %package hdfs-fuse
 Summary: Mountable HDFS
-Group: Development/Libraries
 Requires: %{name} = %{version}-%{release}
 Requires: %{name}-libhdfs = %{version}-%{release}
 Requires: %{name}-client = %{version}-%{release}

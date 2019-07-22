@@ -3,7 +3,6 @@ Summary: OSG utilities for creating VO map files
 Version: 0.0.2
 License: Apache 2.0
 Release: 1%{?dist}
-Group: Grid
 URL: http://www.opensciencegrid.org
 BuildArch: noarch
 Source0: %{name}-%{version}.tar.gz

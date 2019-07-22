@@ -2,7 +2,6 @@ Name: osg-control
 Version: 1.1.0
 Release: 1%{?dist}
 Summary: Wrapper for managing osg-configure services
-Group: Grid
 License: Apache 2.0
 URL: https://vdt.cs.wisc.edu/svn/software/osg-control/
 Source: %{name}-%{version}.tar.gz

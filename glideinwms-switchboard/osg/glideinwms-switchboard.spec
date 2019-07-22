@@ -6,7 +6,6 @@ Name:       glideinwms-switchboard
 Version:    %{version}
 Release:    %{release}%{?dist}
 Summary:    This package is used in all Factories to prevent permissions problems
-Group:      System Environment/Libraries
 License:    Fermitools Software Legal Information (Modified BSD License)
 URL:        http://glideinwms.fnal.gov
 Source:     glideinwms-switchboard-v1_0_0.tar.gz

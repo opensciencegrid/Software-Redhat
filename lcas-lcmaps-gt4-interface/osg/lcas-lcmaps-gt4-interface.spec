@@ -3,7 +3,6 @@ Name: lcas-lcmaps-gt4-interface
 Version: 0.3.1
 Release: 1.2%{?dist}
 License: ASL 2.0
-Group: System Environment/Libraries
 URL: http://wiki.nikhef.nl/grid/Site_Access_Control
 Source0: http://software.nikhef.nl/security/%{name}/%{name}-%{version}.tar.gz
 Source1: gsi-authz.conf.in

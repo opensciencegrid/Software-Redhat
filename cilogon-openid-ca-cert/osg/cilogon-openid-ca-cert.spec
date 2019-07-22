@@ -3,7 +3,6 @@ Version:        1.1
 Release:        4%{?dist}
 Summary:        OSG Packaging of the CILogon CA Certs, in new OpenSSL 0.9.8/1.0.0 format
 
-Group:          System Environment/Base
 License:        Unknown
 URL:            http://ca.cilogon.org/downloads
 

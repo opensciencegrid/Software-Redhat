@@ -3,7 +3,6 @@ Version:	3.3.0.2
 Release:	1%{?dist}
 Summary:	gLite build macros
 
-Group:		Development/Libraries/C and C++
 License:	Apache 2.0
 URL:		http://glite.cvs.cern.ch/cgi-bin/glite.cgi/org.glite.build.common-cpp/
 # Retrieved on May 28, 2012

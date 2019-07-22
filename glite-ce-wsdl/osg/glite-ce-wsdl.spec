@@ -4,7 +4,6 @@ Version: 1.15.1
 Release: 1.1%{?dist}
 License: Apache Software License
 URL: http://glite.cern.ch/
-Group: Development/Libraries
 BuildArch: noarch
 AutoReqProv: yes
 Source: %{name}.tar.gz

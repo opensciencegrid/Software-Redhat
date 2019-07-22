@@ -3,7 +3,6 @@ Summary:   OSG Worker-Node Client
 Version:   3.4
 Release:   5%{?dist}
 License:   Apache 2.0
-Group:     Grid
 URL:       http://www.opensciencegrid.org
 BuildArch: noarch
 

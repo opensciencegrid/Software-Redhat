@@ -3,7 +3,6 @@ Epoch:          1
 Version:        1.4
 Release:        2%{?dist}
 Summary:        DSI library and POSIX preload
-Group:          System Environment/Daemons
 License:        Stanford (modified BSD with advert clause)
 URL:            https://github.com/wyang007/gridftp_dsi_posix
 

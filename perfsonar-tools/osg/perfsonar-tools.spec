@@ -6,7 +6,6 @@ Name:           perfsonar-tools
 Summary:        perfSONAR active measurement tools
 Release:        %{relnum}.3%{?dist}
 License:        Distributable, see LICENSE
-Group:          Applications/Communications
 URL:            http://www.perfsonar.net/
 BuildArch:      noarch
 

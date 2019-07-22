@@ -3,7 +3,6 @@ Name:      osg-system-profiler
 Version:   1.4.2
 Release:   1%{?dist}
 License:   Apache License, 2.0
-Group:     Applications/Grid
 Source0:   %{name}-%{version}.tar.gz
 BuildArch: noarch
 
@@ -17,7 +16,6 @@ you will ask for the output of the profiler.
 
 %package viewer
 Summary:   Views the output of %{name}
-Group:     Applications/Grid
 Requires:  tkinter
 
 %description viewer

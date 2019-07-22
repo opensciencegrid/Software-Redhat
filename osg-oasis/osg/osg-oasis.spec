@@ -3,7 +3,6 @@ Name: osg-oasis
 Version: 13
 Release: 1%{?dist}
 License: ASL 2.0
-Group: Applications/Grid
 BuildArch: noarch
 # Note: cannot require an exact release number (after a dash) unless 
 #   including the dist as well, e.g. -2%{?dist}

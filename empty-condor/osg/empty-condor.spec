@@ -3,7 +3,6 @@ Version:        1.1
 Release:        9%{?dist}
 Summary:        An empty Condor package
 
-Group:          Applications/System
 License:        Unknown
 URL:            http://vdt.cs.wisc.edu
 

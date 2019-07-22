@@ -2,7 +2,6 @@ Name:           cctools
 Summary:        Cooperative Computing Tools
 Version:        7.0.14
 Release:        1%{?dist}
-Group:          Applications/System
 License:        GPLv2
 URL:            http://ccl.cse.nd.edu/software/
 Source0:        http://ccl.cse.nd.edu/software/files/cctools-%{version}-source.tar.gz
@@ -65,7 +64,6 @@ Chirp, Makeflow, Work Queue, SAND, and other software.
 
 %package devel
 Summary: CCTools package development libraries
-Group: Applications/System
 
 %description devel
 The CCTools package static libraries and header files

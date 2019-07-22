@@ -4,7 +4,6 @@ Version: 2.4.0
 Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
-Group: Grid
 Prefix: %{_prefix}
 BuildArch: noarch
 Url: https://github.com/opensciencegrid/osg-configure
@@ -18,14 +17,12 @@ Obsoletes: %{name}-network < 2.2.2-2
 
 %package siteinfo
 Summary: OSG configuration file for site information
-Group: Grid
 Requires: %name = %version-%release
 %description siteinfo
 This package includes the ini file for configuring site information using osg-configure
 
 %package rsv
 Summary: OSG configuration file for RSV
-Group: Grid
 Requires: %name = %version-%release
 Requires: %name-gateway
 %description rsv
@@ -33,7 +30,6 @@ This package includes the ini file for configuring RSV using osg-configure
 
 %package gratia
 Summary: OSG configuration file for gratia
-Group: Grid
 Requires: %name = %version-%release
 Requires: %name-siteinfo
 %description gratia
@@ -41,14 +37,12 @@ This package includes the ini file for configuring gratia using osg-configure
 
 %package gip
 Summary: OSG configuration file for gip
-Group: Grid
 Requires: %name = %version-%release
 %description gip
 This package includes the ini file for configuring gip using osg-configure
 
 %package lsf
 Summary: OSG configuration file for lsf
-Group: Grid
 Requires: %name = %version-%release
 Requires: %name-gateway
 %description lsf
@@ -56,7 +50,6 @@ This package includes the ini file for configuring lsf using osg-configure
 
 %package pbs
 Summary: OSG configuration file for pbs
-Group: Grid
 Requires: %name = %version-%release
 Requires: %name-gateway
 %description pbs
@@ -64,7 +57,6 @@ This package includes the ini file for configuring pbs using osg-configure
 
 %package condor
 Summary: OSG configuration file for condor
-Group: Grid
 Requires: %name = %version-%release
 Requires: %name-gateway
 %description condor
@@ -72,7 +64,6 @@ This package includes the ini file for configuring condor using osg-configure
 
 %package sge
 Summary: OSG configuration file for sge
-Group: Grid
 Requires: %name = %version-%release
 Requires: %name-gateway
 %description sge
@@ -80,7 +71,6 @@ This package includes the ini file for configuring sge using osg-configure
 
 %package ce
 Summary: OSG configuration file for CE
-Group: Grid
 Requires: %name = %version-%release
 Requires: %name-gateway
 Requires: %name-siteinfo
@@ -91,7 +81,6 @@ needs to be installed for the CE configuration.
 
 %package misc
 Summary: OSG configuration file for misc software
-Group: Grid
 Requires: %name = %version-%release
 Requires: lcmaps-db-templates >= 1.6.6-1.8
 %description misc
@@ -100,14 +89,12 @@ certificates setup, and auth.
 
 %package squid
 Summary: OSG configuration file for squid
-Group: Grid
 Requires: %name = %version-%release
 %description squid
 This package includes the ini files for configuring an OSG system to use squid
 
 %package tests
 Summary: OSG-Configure unit tests and configuration for unit testing
-Group: Grid
 Requires: %name = %version-%release
 %description tests
 This package includes the ini files and files for unit tests that osg-configure
@@ -115,7 +102,6 @@ uses to verify functionality
 
 %package slurm
 Summary: OSG configuration file for slurm
-Group: Grid
 Requires: %name = %version-%release
 Requires: %name-gateway
 %description slurm
@@ -123,7 +109,6 @@ This package includes the ini file for configuring slurm using osg-configure
 
 %package bosco
 Summary: OSG configuration file for bosco
-Group: Grid
 Requires: %name = %version-%release
 Requires: %name-gateway
 Requires: condor-bosco
@@ -132,7 +117,6 @@ This package includes the ini file for configuring bosco using osg-configure
 
 %package infoservices
 Summary: OSG configuration file for the osg info services
-Group: Grid
 Requires: %name = %version-%release
 Requires: %name-gip
 Requires: condor-python
@@ -141,7 +125,6 @@ This package includes the ini file for configuring the osg info services using o
 
 %package gateway
 Summary: OSG configuration file for job gateway (htcondor-ce)
-Group: Grid
 Requires: %name = %version-%release
 %description gateway
 This package includes the ini file for configuring the job gateway

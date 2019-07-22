@@ -78,7 +78,6 @@ Source12: etc-initd-gsisshd
 
 
 License: BSD
-Group: Applications/Internet
 %if %{nologin}
 Requires: /sbin/nologin
 %endif
@@ -159,11 +158,9 @@ BuildRequires: xauth
 %package clients
 Summary: SSH client applications with GSI authentication
 Requires: %{name} = %{version}-%{release}
-Group: Applications/Internet
 
 %package server
 Summary: SSH server daemon with GSI authentication
-Group: System Environment/Daemons
 Requires: %{name} = %{version}-%{release}
 %if 0%{?suse_version} == 0
 Requires(post): chkconfig >= 0.9, /sbin/service

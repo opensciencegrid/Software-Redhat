@@ -3,7 +3,6 @@ Summary:        OSG Hadoop Storage Element package for RPM distribution
 Version:        3.4
 Release:        8%{?dist}
 License:        GPL
-Group:          System Environment/Daemons
 URL:            https://twiki.grid.iu.edu/twiki/bin/view/Storage/WebHome
 
 Source0: hdfs-site.xml
@@ -24,7 +23,6 @@ see the subpackages namenode, datanode, gridftp, etc.
 
 %package namenode
 Summary: Namenode meta-package for Hadoop
-Group: System Environment/Libraries
 Requires: hadoop-hdfs-namenode
 Requires: gratia-probe-hadoop-storage
 Requires: osg-system-profiler
@@ -34,7 +32,6 @@ for a Hadoop Storage Element.
 
 %package secondarynamenode
 Summary: Secondary Namenode meta-package for Hadoop
-Group: System Environment/Libraries
 Requires: hadoop-hdfs-secondarynamenode
 Requires: gratia-probe-hadoop-storage
 Requires: osg-system-profiler
@@ -44,7 +41,6 @@ information for a Hadoop Storage Element.
 
 %package datanode
 Summary: Datanode meta-package for Hadoop
-Group: System Environment/Libraries
 Requires: hadoop-hdfs-datanode
 Requires: osg-system-profiler
 %description datanode
@@ -52,7 +48,6 @@ This is the Hadoop datanode that stores file data for a Hadoop Storage Element.
 
 %package client
 Summary: Client meta-package for Hadoop
-Group: System Environment/Libraries
 Requires: hadoop-hdfs-fuse
 Requires: osg-system-profiler
 %description client
@@ -61,7 +56,6 @@ This is the Hadoop client that has client binaries and fuse mount.
 %if 0%{?rhel} >= 7
 %package gridftp
 Summary: Gridftp meta-package for Hadoop
-Group: System Environment/Libraries
 Requires: %{name}-client = %{version}-%{release}
 # 3.0.0-6 pulls in gridftp-hdfs that uses /etc/gridftp.d
 Requires: osg-gridftp-hdfs >= 3.0.0-7

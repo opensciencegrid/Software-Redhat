@@ -3,7 +3,6 @@ Version:        2.0
 Release:        2%{?dist}
 Summary:        An empty Torque/PBS package
 
-Group:          Applications/System
 License:        Unknown
 URL:            http://vdt.cs.wisc.edu
 

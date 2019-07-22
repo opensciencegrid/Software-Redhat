@@ -3,7 +3,6 @@ Version:        3.4
 Release:        8%{?dist}
 Summary:        OSG Software for Enterprise Linux repository configuration
 
-Group:          System Environment/Base
 License:        GPL
 URL:            https://repo.opensciencegrid.org/
 

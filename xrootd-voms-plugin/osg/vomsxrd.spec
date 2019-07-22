@@ -6,7 +6,6 @@ Epoch:     1
 Version:   0.6.0
 Release:   2%{?dist}
 Summary:   VOMS attribute extractor plug-in for XRootD
-Group:     System Environment/Libraries
 License:   BSD
 URL:       http://gganis.github.io/vomsxrd/
 Prefix:    /usr
@@ -37,7 +36,6 @@ The VOMS attribute extractor plug-in for XRootD
 #-------------------------------------------------------------------------------
 %package devel
 Summary: Headers for using the VOMS attribute extractor plug-in
-Group:   System Environment/Libraries
 Requires: %{name} = %{epoch}:%{version}-%{release}
 %description devel
 Headers for using the VOMS attribute extractor plug-in

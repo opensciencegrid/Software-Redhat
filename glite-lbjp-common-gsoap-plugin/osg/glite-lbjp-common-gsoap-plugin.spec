@@ -3,7 +3,6 @@ Version:        3.2.12
 Release:        7%{?dist}
 Summary:        Plugin for gSoap to use glite-security-gss as the communication layer
 
-Group:          System Environment/Libraries
 License:        ASL 2.0
 URL:            http://glite.cern.ch
 Vendor:         EMI
@@ -36,7 +35,6 @@ glite-security-gss.
 
 %package        devel
 Summary:        Development files for gLite gsoap-plugin
-Group:          Development/Libraries
 Requires:       %{name}%{?_isa} = %{version}-%{release}
 Requires:       glite-lbjp-common-gss-devel%{?_isa} >= 3.2.16
 Provides:       glite-security-gsoap-plugin%{?_isa} = %{version}-%{release}

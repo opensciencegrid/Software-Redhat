@@ -20,7 +20,6 @@ Name: lcmaps
 Version: 1.6.6
 Release: 1.9%{?dist}
 License: ASL 2.0
-Group: System Environment/Libraries
 URL: http://wiki.nikhef.nl/grid/LCMAPS
 Source0: http://software.nikhef.nl/security/lcmaps/lcmaps-%{version}.tar.gz
 Source1: lcmaps.db
@@ -56,7 +55,6 @@ see the lcmaps-interface package.
 
 
 %package without-gsi
-Group: System Environment/Libraries
 Summary: Grid mapping service without GSI
 
 %description without-gsi
@@ -74,7 +72,6 @@ This version is built without support for the GSI protocol.
 
 
 %package devel
-Group: Development/Libraries
 Summary: LCMAPS plug-in API header files
 Requires: %{name}%{?_isa} = %{version}-%{release}
 Requires: %{name}-common-devel%{?_isa} = %{version}-%{release}
@@ -103,7 +100,6 @@ against the LCMAPS library.
 
 
 %package common-devel
-Group: Development/Libraries
 Summary: LCMAPS plug-in API header files
 Provides: %{name}-basic-interface = %{version}-%{release}
 Obsoletes: %{name}-basic-interface < 1.6.1-4
@@ -119,7 +115,6 @@ for client applications.
 
 
 %package without-gsi-devel
-Group: Development/Libraries
 Summary: LCMAPS development libraries
 Requires: %{name}-without-gsi%{?_isa} = %{version}-%{release}
 Requires: %{name}-common-devel%{?_isa} = %{version}-%{release}

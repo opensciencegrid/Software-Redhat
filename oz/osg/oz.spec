@@ -3,7 +3,6 @@ Name: oz
 Version: 0.16.0
 Release: 1%{?dist}
 License: LGPLv2
-Group: Development/Libraries
 URL: http://github.com/clalancette/oz
 Source0: http://github.com/clalancette/%{name}/archive/%{name}-%{version}.tar.gz
 BuildArch: noarch

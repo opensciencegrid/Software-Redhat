@@ -5,7 +5,6 @@ Release: 1.1%{?dist}%{!?dist:.el5}
 License: Apache Software License
 Vendor: EMI
 URL: http://glite.cern.ch/
-Group: System Environment/Libraries
 BuildRequires: cmake, docbook-style-xsl, libxslt
 Obsoletes: lcg-info-dynamic-software
 Provides: lcg-info-dynamic-software

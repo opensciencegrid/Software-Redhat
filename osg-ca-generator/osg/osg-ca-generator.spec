@@ -3,7 +3,6 @@ Name:      osg-ca-generator
 Version:   1.3.2
 Release:   1%{?dist}
 License:   Apache License, 2.0
-Group:     Applications/Grid
 Packager:  VDT <vdt-support@opensciencegrid.org>
 Source0:   %{name}-%{version}.tar.gz
 AutoReq:   yes

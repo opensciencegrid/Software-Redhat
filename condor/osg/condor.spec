@@ -122,7 +122,6 @@ Version: %{tarball_version}
 Release: %condor_release%{?dist}
 
 License: ASL 2.0
-Group: Applications/System
 URL: http://www.cs.wisc.edu/condor/
 
 # This allows developers to test the RPM with a non-release, git tarball
@@ -416,7 +415,6 @@ completion.
 #######################
 %package procd
 Summary: HTCondor Process tracking Daemon
-Group: Applications/System
 
 %description procd
 A daemon for tracking child processes started by a parent.
@@ -426,7 +424,6 @@ Part of HTCondor, but able to be stand-alone
 %if %qmf
 %package qmf
 Summary: HTCondor QMF components
-Group: Applications/System
 Requires: %name = %version-%release
 #Requires: qmf >= %{qmf_version}
 Requires: python-qmf >= 0.7.946106
@@ -441,7 +438,6 @@ Components to connect HTCondor to the QMF management bus.
 %if %aviary
 %package aviary-common
 Summary: HTCondor Aviary development components
-Group: Applications/System
 Requires: %name = %version-%release
 Requires: python-suds >= 0.4.1
 
@@ -450,7 +446,6 @@ Components to develop against simplified WS interface to HTCondor.
 
 %package aviary
 Summary: HTCondor Aviary components
-Group: Applications/System
 Requires: %name = %version-%release
 Requires: %name-classads = %{version}-%{release}
 Requires: condor-aviary-common = %{version}-%{release}
@@ -460,7 +455,6 @@ Components to provide simplified WS interface to HTCondor.
 
 %package aviary-hadoop-common
 Summary: HTCondor Aviary Hadoop development components
-Group: Applications/System
 Requires: %name = %version-%release
 Requires: python-suds >= 0.4.1
 Requires: condor-aviary-common = %{version}-%{release}
@@ -470,7 +464,6 @@ Components to develop against simplified WS interface to HTCondor.
 
 %package aviary-hadoop
 Summary: HTCondor Aviary Hadoop components
-Group: Applications/System
 Requires: %name = %version-%release
 Requires: condor-aviary = %{version}-%{release}
 Requires: condor-aviary-hadoop-common = %{version}-%{release}
@@ -483,7 +476,6 @@ Aviary Hadoop plugin and components.
 %if %plumage
 %package plumage
 Summary: HTCondor Plumage components
-Group: Applications/System
 Requires: %name = %version-%release
 Requires: condor-classads = %{version}-%{release}
 Requires: mongodb >= 1.6.4
@@ -497,7 +489,6 @@ Components to provide a NoSQL operational data store for HTCondor.
 #######################
 %package kbdd
 Summary: HTCondor Keyboard Daemon
-Group: Applications/System
 Requires: %name = %version-%release
 Requires: %name-classads = %{version}-%{release}
 
@@ -509,7 +500,6 @@ determine console idle time.
 #######################
 %package vm-gahp
 Summary: HTCondor's VM Gahp
-Group: Applications/System
 Requires: %name = %version-%release
 Requires: libvirt
 Requires: %name-classads = %{version}-%{release}
@@ -522,7 +512,6 @@ HTCondor's Startd.
 #######################
 %package classads
 Summary: HTCondor's classified advertisement language
-Group: Development/Libraries
 %if 0%{?osg} || 0%{?hcc}
 Obsoletes: classads <= 1.0.10
 Obsoletes: classads-static <= 1.0.10
@@ -552,7 +541,6 @@ compatibility of jobs and workstations where they may be run.
 #######################
 %package classads-devel
 Summary: Headers for HTCondor's classified advertisement language
-Group: Development/System
 Requires: %name-classads = %version-%release
 Requires: pcre-devel
 %if 0%{?osg} || 0%{?hcc}
@@ -567,7 +555,6 @@ semi-structured representation of data.
 #######################
 %package test
 Summary: HTCondor Self Tests
-Group: Applications/System
 Requires: %name = %version-%release
 Requires: %name-classads = %{version}-%{release}
 
@@ -578,7 +565,6 @@ A collection of tests to verify that HTCondor is operating properly.
 %if %cream
 %package cream-gahp
 Summary: HTCondor's CREAM Gahp
-Group: Applications/System
 Requires: %name = %version-%release
 Requires: %name-classads = %{version}-%{release}
 %if %uw_build
@@ -594,7 +580,6 @@ The condor-cream-gahp enables CREAM interoperability for HTCondor.
 %if %parallel_setup
 %package parallel-setup
 Summary: Configure HTCondor for Parallel Universe jobs
-Group: Applications/System
 Requires: %name = %version-%release
 
 %description parallel-setup
@@ -609,7 +594,6 @@ host as the DedicatedScheduler.
 #######################
 %package -n python2-condor
 Summary: Python bindings for HTCondor.
-Group: Applications/System
 Requires: python >= 2.2
 Requires: %name = %version-%release
 %{?python_provide:%python_provide python2-condor}
@@ -638,7 +622,6 @@ the ClassAd library and HTCondor from python
 %package bosco
 Summary: BOSCO, a HTCondor overlay system for managing jobs at remote clusters
 Url: https://osg-bosco.github.io/docs/
-Group: Applications/System
 Requires: python >= 2.2
 Requires: %name = %version-%release
 Requires: rsync
@@ -656,7 +639,6 @@ multiple clusters.
 %if %std_univ
 %package std-universe
 Summary: Enable standard universe jobs for HTCondor
-Group: Applications/System
 Requires: %name = %version-%release
 
 %description std-universe
@@ -666,7 +648,6 @@ Includes all the files necessary to support running standard universe jobs.
 %if %uw_build
 %package static-shadow
 Summary: Statically linked condow_shadow and condor_master binaries
-Group: Applications/System
 
 %description static-shadow
 Provides condor_shadow_s and condor_master_s, which have all the globus
@@ -676,7 +657,6 @@ on a single machine at once when memory is the limiting factor.
 
 %package externals
 Summary: External packages built into HTCondor
-Group: Applications/System
 Requires: %name = %version-%release
 Requires: %name-external-libs%{?_isa} = %version-%release
 
@@ -685,7 +665,6 @@ Includes the external packages built when UW_BUILD is enabled
 
 %package external-libs
 Summary: Libraries for external packages built into HTCondor
-Group: Applications/System
 # disable automatic provides generation to prevent conflicts with system libs
 AutoProv: 0
 
@@ -696,7 +675,6 @@ Includes the libraries for external packages built when UW_BUILD is enabled
 
 %package all
 Summary: All condor packages in a typical installation
-Group: Applications/System
 Requires: %name = %version-%release
 Requires: %name-procd = %version-%release
 Requires: %name-kbdd = %version-%release

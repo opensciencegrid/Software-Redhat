@@ -3,7 +3,6 @@ Version:   1.1
 Release:   1%{?dist}
 Summary:   OSG configurations for a flocking host
 
-Group:     applications/grid
 License:   Apache 2.0
 URL:       https://support.opensciencegrid.org/support/solutions/articles/12000030368-submit-node-flocking-to-osg#gratia-probe-configuration
 

@@ -3,7 +3,6 @@ Version:	0.4
 Release:	1%{?dist}
 Summary:	OSG extensions for the Globus GridFTP server
 
-Group:		Development/Libraries
 License:	ASL 2.0
 URL:		https://github.com/bbockelm/globus-gridftp-osg-extensions
 # Generated from:

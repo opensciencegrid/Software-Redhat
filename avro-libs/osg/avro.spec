@@ -31,7 +31,6 @@ Version: %{avro_version}
 Release: %{avro_release}
 Summary: A data serialization system
 URL: http://avro.apache.org
-Group: Development/Libraries
 BuildArch: noarch
 Buildroot: %(mktemp -ud %{_tmppath}/avro-%{version}-%{release}-XXXXXX)
 License: ASL 2.0
@@ -59,7 +58,6 @@ BuildRequires: maven3
 
 %package -n avro-tools
 Summary: Command-line utilities to work with Avro files
-Group: Development/Tools
 Requires: %{name} = %{version}-%{release}, bigtop-utils >= 0.7
 
 %description -n avro-tools
@@ -67,7 +65,6 @@ Requires: %{name} = %{version}-%{release}, bigtop-utils >= 0.7
 
 %package -n avro-doc
 Summary: JavaDocs for Avro libraries
-Group: Development/Tools
 
 %description -n avro-doc
  JavaDocs for Avro libraries

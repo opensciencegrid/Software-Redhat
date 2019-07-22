@@ -3,7 +3,6 @@ Name: lcmaps-plugins-voms
 Version: 1.7.1
 Release: 1.6%{?dist}
 License: ASL 2.0
-Group: System Environment/Libraries
 URL: http://wiki.nikhef.nl/grid/Site_Access_Control
 Source0: http://software.nikhef.nl/security/%{name}/%{name}-%{version}.tar.gz
 Patch0: sw3255-voms-validation.patch

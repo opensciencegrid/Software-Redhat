@@ -3,7 +3,6 @@ Version:        1.4.0
 Release:        1%{?dist}
 Summary:        VO data updater for OSG
 
-Group:          System Environment/Tools
 License:        Apache 2.0
 
 Source0:        %{name}-%{version}.tar.gz

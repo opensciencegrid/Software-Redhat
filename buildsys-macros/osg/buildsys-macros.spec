@@ -14,7 +14,6 @@ Summary:	Macros for the OSG Buildsystem
 Version:        7
 Release:	6%{dist}
 License:	GPL
-Group:		Development/Buildsystem
 BuildArch:      noarch
 Requires:	rpmdevtools
 
