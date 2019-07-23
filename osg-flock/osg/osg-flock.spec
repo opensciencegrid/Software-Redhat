@@ -6,7 +6,6 @@ Summary:   OSG configurations for a flocking host
 License:   Apache 2.0
 URL:       https://support.opensciencegrid.org/support/solutions/articles/12000030368-submit-node-flocking-to-osg#gratia-probe-configuration
 
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch: noarch
 
 Requires: osg-ca-certs

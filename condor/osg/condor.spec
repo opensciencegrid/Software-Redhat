@@ -224,7 +224,6 @@ Patch8: osg_sysconfig_in_init_script.patch
 # See gt3158
 Patch15: wso2-axis2.patch
 
-BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
 BuildRequires: cmake
 BuildRequires: %_bindir/flex

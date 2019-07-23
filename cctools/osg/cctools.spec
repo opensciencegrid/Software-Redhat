@@ -5,7 +5,6 @@ Release:        1%{?dist}
 License:        GPLv2
 URL:            http://ccl.cse.nd.edu/software/
 Source0:        http://ccl.cse.nd.edu/software/files/cctools-%{version}-source.tar.gz
-BuildRoot:       %{_topdir}/BUILDROOT/
 
 BuildRequires:  gcc
 BuildRequires:  gcc-c++

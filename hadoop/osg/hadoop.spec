@@ -224,7 +224,6 @@ Patch14: 2588-out-of-quota-msg.patch
 # not needed anymore?
 Patch15: ivy-maven-repo.patch
 
-Buildroot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id} -u -n)
 BuildRequires: python >= 2.4
 BuildRequires: git
 BuildRequires: fuse-devel

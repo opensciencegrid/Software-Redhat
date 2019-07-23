@@ -33,7 +33,6 @@ Release: %{bigtop_tomcat_release}
 Summary: Apache Tomcat
 URL: http://tomcat.apache.org/
 BuildArch: noarch
-Buildroot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 License: ASL 2.0
 Source0: bigtop-tomcat-%{bigtop_tomcat_patched_version}.tar.gz
 Source1: do-component-build

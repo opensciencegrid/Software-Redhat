@@ -22,7 +22,6 @@ Packager: Radu Popescu <radu.popescu@cern.ch>
 Buildarch: x86_64
 
 # You generally should not need to mess with this setting
-Buildroot: %{_tmppath}/%{name}
 
 # Change this extension to change the compression level in your RPM
 #  tar / tar.gz / tar.bz2

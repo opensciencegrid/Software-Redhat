@@ -196,7 +196,6 @@ Patch960: openssh-7.5p1-sftp-empty-files.patch
 Patch98: openssh-7.4p1-gsissh.patch
 
 License: BSD
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Requires: /sbin/nologin
 
 %if %{ldap}

@@ -8,7 +8,6 @@ Source0: http://software.nikhef.nl/security/%{name}/%{name}-%{version}.tar.gz
 BuildRequires: lcmaps-devel, openssl-devel
 Requires: lcmaps%{?_isa} >= 1.5.0-1
 # BuildRoot is still required for EPEL5
-BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
 %description
 The Local Centre MAPping Service (LCMAPS) is a security middleware

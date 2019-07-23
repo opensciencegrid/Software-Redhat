@@ -8,7 +8,6 @@ URL:            http://ca.cilogon.org/downloads
 
 Source0:        cilogon-openid-ca-certificates-%{version}.tar.gz
 
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
 Conflicts:      osg-ca-scripts
