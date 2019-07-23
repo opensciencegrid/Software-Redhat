@@ -77,7 +77,6 @@ Version: %{zookeeper_version}
 Release: %{zookeeper_release}
 Summary: A high-performance coordination service for distributed applications.
 URL: http://zookeeper.apache.org/
-Buildroot: %{_topdir}/INSTALL/%{name}-%{version}
 License: ASL 2.0
 Source0: %{name}-%{zookeeper_patched_version}.tar.gz
 Source1: do-component-build
