@@ -30,7 +30,6 @@ Version: %{bigtop_jsvc_version}
 Release: %{bigtop_jsvc_release}
 Summary: Application to launch java daemon
 URL: http://commons.apache.org/daemon/
-Buildroot: %{_topdir}/INSTALL/%{name}-%{version}
 License: ASL 2.0
 Source0: commons-daemon-%{bigtop_jsvc_base_version}.tar.gz
 Source1: do-component-build
