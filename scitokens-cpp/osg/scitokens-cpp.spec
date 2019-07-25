@@ -74,7 +74,7 @@ popd
 %defattr(-,root,root,-)
 
 %changelog
-* Thu Jul 25 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 0.3.2-1.1.osg
+* Thu Jul 25 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 0.3.2-1.osg
 - Merge OSG changes
 - Use a newer, still supported version of devtoolset
 
