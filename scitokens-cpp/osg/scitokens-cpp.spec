@@ -1,17 +1,14 @@
 Name: scitokens-cpp
-Version: 0.3.0
-Release: 4%{?dist}
+Version: 0.3.2
+Release: 1%{?dist}
 Summary: C++ Implementation of the SciTokens Library
 License: Apache 2.0
 URL: https://github.com/scitokens/scitokens-cpp
 
 # Generated from:
-# git_archive_all.py --prefix=scitokens-cpp-0.3.0/ --force-submodules -9 scitokens-cpp-0.3.0.tar.gz
+# git_archive_all.py --prefix=scitokens-cpp-0.3.2/ --force-submodules -9 scitokens-cpp-0.3.2.tar.gz
 # Where git_archive_all.py is from https://github.com/Kentzo/git-archive-all.git
 Source0: %{name}-%{version}.tar.gz
-
-Patch0: Force-aud-test-in-the-validator.patch
-Patch1: Use-double-layer-of-const-for-deserialize.patch
 
 BuildRequires: gcc-c++
 BuildRequires: cmake
@@ -39,8 +36,6 @@ Requires: %{name} = %{version}
 
 %prep
 %setup -q
-%patch0 -p1
-%patch1 -p1
 
 %build
 do_build () {
@@ -79,6 +74,16 @@ popd
 %defattr(-,root,root,-)
 
 %changelog
+* Thu Jul 25 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 0.3.2-1.1.osg
+- Merge OSG changes
+
+* Thu Jul 25 2019 Derek Weitzel <dweitzel@unl.edu> - 0.3.2-1
+- Update RPM to v0.3.2 of the packaging.
+- Fix downloading public key bug #12
+
+* Thu Jun 20 2019 Brian Bockelman <brian.bockelman@cern.ch> - 0.3.1-1
+- Update RPM to v0.3.1 of the packaging.
+
 * Wed May 29 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 0.3.0-4
 - Use double layer of const for deserialize
   (patch from https://github.com/scitokens/scitokens-cpp/commit/ac0b2f0679488fa91c14ed781268efbcdb69ed3c)
