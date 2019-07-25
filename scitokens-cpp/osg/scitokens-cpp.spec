@@ -19,7 +19,7 @@ BuildRequires: libuuid-devel
 
 # Needed for C++11
 %if 0%{?el6}
-BuildRequires: devtoolset-2-toolchain
+BuildRequires: devtoolset-8-toolchain
 BuildRequires: scl-utils
 %endif
 
@@ -47,7 +47,7 @@ do_build () {
 }
 export -f do_build
 %if 0%{?el6}
-scl enable devtoolset-2 do_build
+scl enable devtoolset-8 do_build
 %else
 do_build
 %endif
@@ -76,6 +76,7 @@ popd
 %changelog
 * Thu Jul 25 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 0.3.2-1.1.osg
 - Merge OSG changes
+- Use a newer, still supported version of devtoolset
 
 * Thu Jul 25 2019 Derek Weitzel <dweitzel@unl.edu> - 0.3.2-1
 - Update RPM to v0.3.2 of the packaging.
