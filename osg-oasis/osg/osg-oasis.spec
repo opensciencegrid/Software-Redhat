@@ -1,14 +1,14 @@
 Summary: OSG metapackage for OASIS and CVMFS
 Name: osg-oasis
 Version: 14
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: ASL 2.0
 BuildArch: noarch
 # Note: cannot require an exact release number (after a dash) unless 
 #   including the dist as well, e.g. -2%{?dist}
 Requires: cvmfs = 2.6.0
 Requires: cvmfs-config-osg = 2.0
-Requires: cvmfs-x509-helper >= 3.0
+Requires: cvmfs-x509-helper >= 2.0-3%{?dist}
 
 %description
 %{summary}
@@ -25,8 +25,8 @@ exit 0
 %files
 
 %changelog
-* Tue Jul 30 2019 Edgar Fajardo <emfajard@ucsd.edu> 14-2
-- Changing version requirements to more or eqal (SOFTWARE-3384)
+* Tue Jul 30 2019 Edgar Fajardo <emfajard@ucsd.edu> 14-3
+- Changing version requirements to more or equal (SOFTWARE-3384)
 
 * Tue Jul 30 2019 Edgar Fajardo <emfajard@ucsd.edu> 14-1
 - Removing version requirements for other packages (SOFTWARE-3384)
