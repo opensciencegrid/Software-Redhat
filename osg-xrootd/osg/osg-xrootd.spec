@@ -5,9 +5,9 @@ Release: 0.2%{?dist}
 License: ASL 2.0
 BuildArch: noarch
 
-Source1: 40-osg-http.cfg
-Source2: 40-osg-monitoring.cfg
-Source3: 40-osg-paths.cfg
+Source1: 50-osg-http.cfg
+Source2: 50-osg-monitoring.cfg
+Source3: 50-osg-paths.cfg
 Source4: ban-robots.txt
 
 %description
@@ -25,9 +25,9 @@ install -m 644 %{SOURCE3} $RPM_BUILD_ROOT/etc/xrootd/config.d
 install -m 644 %{SOURCE4} $RPM_BUILD_ROOT/etc/xrootd
 
 %files
-%config(noreplace) /etc/xrootd/config.d/40-osg-http.cfg
-%config(noreplace) /etc/xrootd/config.d/40-osg-monitoring.cfg
-%config(noreplace) /etc/xrootd/config.d/40-osg-paths.cfg
+%config(noreplace) /etc/xrootd/config.d/50-osg-http.cfg
+%config(noreplace) /etc/xrootd/config.d/50-osg-monitoring.cfg
+%config(noreplace) /etc/xrootd/config.d/50-osg-paths.cfg
 %config(noreplace) /etc/xrootd/ban-robots.txt
 
 %changelog
