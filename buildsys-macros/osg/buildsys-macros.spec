@@ -12,7 +12,7 @@
 Name:		buildsys-macros
 Summary:	Macros for the OSG Buildsystem
 Version:        7
-Release:	6%{dist}
+Release:	7%{dist}
 License:	GPL
 BuildArch:      noarch
 Requires:	rpmdevtools
@@ -48,6 +48,9 @@ fi
 /etc/rpm/macros.checkbuild
 
 %changelog
+* Wed Jul 31 2019 Carl Edquist <edquist@cs.wisc.edu> - 7-7
+- Bump to rebuild for OSG 3.5 (SOFTWARE-3761)
+
 * Tue Apr 25 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 7-6
 - Bump to rebuild for OSG 3.4 (SOFTWARE-2622)
 
