@@ -62,6 +62,10 @@
 %define cream 1
 %endif
 
+%if 0%{?osg}
+%define cream 0
+%endif
+
 %if 0%{?hcc}
 %define blahp 0
 %define cream 0
@@ -119,7 +123,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1
+%define condor_base_release 1.1
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
