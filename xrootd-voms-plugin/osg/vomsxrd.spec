@@ -1,10 +1,10 @@
 #-------------------------------------------------------------------------------
 # Package definitions
 #-------------------------------------------------------------------------------
-Name:      xrootd-voms-plugin
+Name:      vomsxrd
 Epoch:     1
 Version:   0.6.0
-Release:   2%{?dist}
+Release:   3%{?dist}
 Summary:   VOMS attribute extractor plug-in for XRootD
 License:   BSD
 URL:       http://gganis.github.io/vomsxrd/
@@ -25,8 +25,9 @@ BuildRequires: xrootd-devel >= 1:4.9.1
 Requires: voms >= 2.0.6
 Requires: xrootd-libs >= 1:4.9.1
 
-Provides: vomsxrd = %{version}-%{release}
-Obsoletes: vomsxrd <= 1:0.6.0
+
+Provides: xrootd-voms-plugin = %{version}-%{release}
+Obsoletes: xrootd-voms-plugin < 1:0.6.0-3
 
 %description
 The VOMS attribute extractor plug-in for XRootD
@@ -90,6 +91,9 @@ cd ..
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Thu Aug 1 2019 Edgar Fajardo <emfajard@ucsd.edu> - 1:0.6.0-3
+- Change the name to vomsxrd (SOFTWARE-3702)
+
 * Wed May 15 2019 Carl Edquist <edquist@cs.wisc.edu> - 1:0.6.0-2
 - Add Provides/Obsoletes for vomsxrd (SOFTWARE-3679)
 
