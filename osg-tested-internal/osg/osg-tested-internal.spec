@@ -1,7 +1,7 @@
 Name:      osg-tested-internal
 Summary:   All OSG packages we test (internal use only)
-Version:   3.4
-Release:   7%{?dist}
+Version:   3.5
+Release:   1%{?dist}
 License:   Apache 2.0
 URL:       http://www.opensciencegrid.org
 
@@ -45,8 +45,6 @@ Requires: torque-client
 Requires: torque-scheduler
 Requires: osg-ce-pbs
 
-Requires: rsv
-
 Requires: singularity
 
 Requires: xrootd
@@ -75,6 +73,9 @@ Requires: mysql-server
 %files
 
 %changelog
+* Fri Aug 02 2019 Carl Edquist <edquist@cs.wisc.edu> - 3.5-1
+- Drop rsv for OSG 3.5 (SOFTWARE-3761)
+
 * Tue Jan 22 2019 Carl Edquist <edquist@cs.wisc.edu> - 3.4-7
 - Rename singularity-runtime requirement to singularity (SOFTWARE-3532)
 
