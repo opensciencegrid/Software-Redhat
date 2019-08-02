@@ -1,7 +1,7 @@
 Name:      osg-gridftp
 Summary:   Standalone OSG GridFTP with LCMAPS VOMS support
-Version:   3.4
-Release:   7%{?dist}
+Version:   3.5
+Release:   1%{?dist}
 License:   Apache 2.0
 URL:       http://www.opensciencegrid.org
 
@@ -59,6 +59,9 @@ install -m 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/gridftp.d/
 
 
 %changelog
+* Fri Aug 02 2019 Carl Edquist <edquist@cs.wisc.edu> - 3.5-1
+- Bump version to 3.5 (SOFTWARE-3761)
+
 * Wed Mar 07 2018 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.4-7
 - Add mistakenly dropped gratia-probe-xrootd-transfer requirement to
   osg-gridftp-xrootd (SOFTWARE-3141)

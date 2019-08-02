@@ -1,7 +1,7 @@
 Name:           osg-gridftp-xrootd
 Summary:        OSG GridFTP XRootd Storage Element package
-Version:        3.4
-Release:        2%{?dist}
+Version:        3.5
+Release:        1%{?dist}
 License:        GPL
 URL:            https://opensciencegrid.github.io/docs/data/xrootd-overview/
 
@@ -32,6 +32,9 @@ using the FUSE/DSI module.
 
 
 %changelog
+* Fri Aug 02 2019 Carl Edquist <edquist@cs.wisc.edu> - 3.5-1
+- Bump version to 3.5 (SOFTWARE-3761)
+
 * Mon Jan 08 2018 Edgar Fajardo <emfajard@ucsd.edu> 3.4-2
 - Drop the osg-version requirements (SOFTWARE-2917)
 

@@ -1,7 +1,7 @@
 Name:      osg-wn-client
 Summary:   OSG Worker-Node Client
-Version:   3.4
-Release:   5%{?dist}
+Version:   3.5
+Release:   1%{?dist}
 License:   Apache 2.0
 URL:       http://www.opensciencegrid.org
 BuildArch: noarch
@@ -59,6 +59,9 @@ EOF
 %config(noreplace) %{_prefix}/etc/globus-user-env.sh
 
 %changelog
+* Fri Aug 02 2019 Carl Edquist <edquist@cs.wisc.edu> - 3.5-1
+- Bump version to 3.5 (SOFTWARE-3761)
+
 * Wed Dec 12 2018 Mátyás Selmeci <matyas@cs.wisc.edu> 3.4-5
 - Add stashcache-client (SOFTWARE-3472)
 
