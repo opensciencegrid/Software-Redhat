@@ -1,0 +1,18 @@
+Please, keep this SVN repo in sync with upstream at: 
+https://github.com/opensciencegrid/cvmfs-config-osg
+
+Spec file obtained from packaging/redhat/cvmfs-config-osg.spec inside the repo. Check for changes of .spec between redhat/trunk/cvmfs-config-osg/osg and github.  
+
+To get the upstream:
+
+git clone https://github.com/opensciencegrid/cvmfs-config-osg.git
+cd cvmfs-config-osg
+git archive v2.0-3 | gzip -7 > cvmfs-config-osg.tar.gz
+
+Or just do:
+
+git clone https://github.com/opensciencegrid/cvmfs-config-osg.git
+cd cvmfs-config-osg
+git archive v2.0-3 --format=tar.gz --prefix=cvmfs-config-osg-2.0/ -o ~/cvmfs-config-osg-2.0.tar.gz -9
+
+Note, if there is release bump for specific version like above (v2.0-3) set in --prefix only version number for the output tar file

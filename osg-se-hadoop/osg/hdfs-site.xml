@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+
+<!-- Put site-specific property overrides in this file. -->
+
+<configuration>
+<property>
+  <name>dfs.block.size</name>
+  <value>134217728</value>
+</property>
+<property>
+  <name>dfs.replication</name>
+  <value>2</value>
+</property>
+<property>
+  <name>dfs.replication.max</name>
+  <value>2</value>
+</property>
+<property>
+  <name>dfs.replication.min</name>
+  <value>2</value>
+</property>
+<property>
+  <name>dfs.datanode.du.reserved</name>
+  <value>100000000</value>
+</property>
+<property>
+  <name>dfs.balance.bandwidthPerSec</name>
+  <value>2000000000</value>
+</property>
+<property>
+  <name>dfs.data.dir</name>
+  <value>/data/hadoop</value>
+</property>
+<property>
+  <name>dfs.datanode.handler.count</name>
+  <value>20</value>
+</property>
+<property>
+  <name>dfs.hosts.exclude</name>
+  <value>/etc/hosts_exclude</value>
+</property>
+<property>
+  <name>dfs.namenode.handler.count</name>
+  <value>40</value>
+</property>
+<property>
+  <name>dfs.namenode.logging.level</name>
+  <value>all</value>
+</property>
+<property>
+  <name>fs.checkpoint.dir</name>
+  <value>/data/checkpoint</value>
+</property>
+<property>
+  <name>dfs.http.address</name>
+  <value>NAMENODE:50070</value>
+  <description>
+    The address and the base port where the dfs namenode web ui will listen on.
+    If the port is 0 then the server will start on a free port.
+  </description>
+</property>
+
+<property>
+  <name>fs.checkpoint.period</name>
+  <value>86400</value>
+  <description>The number of seconds between two periodic checkpoints.
+  </description>
+</property>
+<property>
+  <name>dfs.permissions.supergroup</name>
+  <value>root</value>
+</property>
+</configuration>

@@ -1,0 +1,2 @@
+GridFTP-HDFS is a plugin for GridFTP that allows it to directly use an HDFS
+file system as a backend.
