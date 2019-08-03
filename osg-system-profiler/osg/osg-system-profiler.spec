@@ -1,6 +1,6 @@
 Summary:   Profiles your system for debugging
 Name:      osg-system-profiler
-Version:   1.4.2
+Version:   1.4.3
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Source0:   %{name}-%{version}.tar.gz
@@ -36,6 +36,13 @@ make install DESTDIR=$RPM_BUILD_ROOT
 %{_bindir}/%{name}-viewer
 
 %changelog
+* Fri Aug 02 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.4.3-1
+- Drop unused files:
+    - httpcert.pem
+    - tomcat config
+    - edg-mkgridmap.log
+    - bestman2 logs
+
 * Mon Dec 11 2017 Suchandra Thapa <sthapa@ci.uchicago.edu> - 1.4.2-1
 - Update email address given to user (SOFTWARE-3016)
 
