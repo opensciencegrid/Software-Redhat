@@ -16,6 +16,6 @@ osg-upcoming-testing      upcoming  testing      standard  Upcoming_Testing
 osg-upcoming-minefield    upcoming  development  koji      Upcoming_Build_Repository
 osg-upcoming-prerelease   upcoming  prerelease   koji      Upcoming_Prerelease_Repository_for_Internal_Use
 
-goc-itb                   goc       itb          direct    GOC_ITB
-goc                       goc       production   direct    GOC_Production
+devops-itb                devops    itb          direct    Developer_and_Operations_ITB
+devops                    devops    production   direct    Developer_and_Operations_Production
 
