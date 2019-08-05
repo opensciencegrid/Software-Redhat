@@ -1,6 +1,6 @@
 Name:           osg-release-itb
 Version:        3.5
-Release:        8%{?dist}
+Release:        2%{?dist}
 Summary:        OSG Software for Enterprise Linux repository configuration
 
 License:        GPL
