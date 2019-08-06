@@ -1,6 +1,6 @@
 Name:      xrootd-rucioN2N-for-Xcache
-Version:   1.1
-Release:   4%{?dist}
+Version:   1.2
+Release:   0%{?dist}
 Summary:   Xrootd Name-to-Name plugin for Disk Caching Proxy (Xcache) to utilize RUCIO metalink
 Group:     System Environment/Libraries
 License:   BSD 
@@ -12,7 +12,7 @@ Source0:   rucioN2N-for-Xcache-%{version}.tar.gz
 BuildArch: x86_64
 BuildRequires: xrootd-devel xrootd-server-devel xrootd-client-devel libcurl-devel openssl-devel
 
-Requires: xrootd >= 4.8.1 xrootd-client libcurl openssl
+Requires: xrootd >= 4.10.0-1 xrootd-client libcurl openssl
 
 %description
 rucioN2N-for-Xcache is a xrootd plugin module that will identify multiple copies of a distributed file based on ATLAS RUCIO data management system. Please refers to project's twiki in github (https://github.com/wyang007/rucioN2N-for-Xcache) for more info.
@@ -41,6 +41,9 @@ cp rucioN2N-for-Xcache-%{version}/XrdName2NameDCP4RUCIO.so %{buildroot}/usr/lib6
 %post -p /sbin/ldconfig
 
 %changelog 
+* Mon Aug 5 2019 Edgar Fajardo <emfajard@ucsd.edu> - v1.2-0
+- Bumping version 1.2 (SOFTWARE-3784)
+
 * Thu Jul 18 2019 Carl Edquist <edquist@cs.wisc.edu> - v1.1-4
 - Rebuild against xrootd 4.10.0 (SOFTWARE-3697)
 
