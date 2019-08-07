@@ -104,7 +104,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.1
+%define condor_base_release 1.2
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -203,6 +203,7 @@ Source123: zlib-1.2.3.tar.gz
 #% if 0%osg
 Patch8: osg_sysconfig_in_init_script.patch
 #% endif
+Patch9: scitokens.patch
 
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
@@ -714,7 +715,9 @@ exit 0
 
 %if 0%{?osg} || 0%{?hcc}
 %patch8 -p1
+%patch9 -p1
 %endif
+
 
 # fix errant execute permissions
 find src -perm /a+x -type f -name "*.[Cch]" -exec chmod a-x {} \;
@@ -773,6 +776,7 @@ cmake \
 %else
 
 %cmake -DBUILD_TESTING:BOOL=FALSE \
+       -DWITH_SCITOKENS:BOOL=TRUE \
 %if %std_univ
        -DCLIPPED:BOOL=FALSE \
 %endif
@@ -1795,6 +1799,9 @@ fi
 %endif
 
 %changelog
+* Wed Aug 07 2019 Diego Davila <didavila@ucsd.edu> - 8.9.2-1.2
+- Adding Patch9 scitokens.patch
+
 * Tue Aug 06 2019 Diego Davila <didavila@ucsd.edu> - 8.9.2-1.1
 - Disabling building with CREAM
 - Adding support for Scitokens
