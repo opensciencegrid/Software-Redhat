@@ -12,8 +12,8 @@
 # ------------------------------------------------------------------------------
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
-%define version 3.4.5
-%define release 2
+%define version 3.4.6
+%define release 0.1.rc1
 
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
@@ -831,6 +831,11 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/condor/certs/condor_mapfile
 
 %changelog
+* Wed Aug 7 2019 Lorena Lobato <llobato@fnal.gov> - 3.4.6-0.1.rc1
+- GlideinWMS v3.4.6-0.1.rc1
+- Release Notes: http://glideinwms.fnal.gov/doc.v3_4_6_rc1/history.html
+- Release candidates: 3.4.6-0.1.rc1
+
 * Tue Jun 4 2019 Diego Davila <didavila@ucsd.edu> - 3.4.5-2
 - patch (sw3689.proxy-renewal-bugfix.patch) to fix bug on proxy renewal
 
