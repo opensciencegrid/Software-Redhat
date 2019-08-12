@@ -12,8 +12,8 @@
 # ------------------------------------------------------------------------------
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
-%define version 3.4.5
-%define release 2
+%define version 3.5
+%define release 1
 
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
@@ -30,8 +30,10 @@ Name:           glideinwms
 Version:        %{version}
 Release:        %{release}%{?dist}
 Summary:        The glidein Workload Management System (glideinWMS)
+Group:          System Environment/Daemons
 License:        Fermitools Software Legal Information (Modified BSD License)
 URL:            http://glideinwms.fnal.gov
+BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
 
@@ -48,7 +50,6 @@ Source9:        gwms-factory.sysconfig
 Source11:       creation/templates/frontend_startup_sl7
 Source12:       creation/templates/factory_startup_sl7
 
-Patch101:	sw3689.proxy-renewal-bugfix.patch
 %description
 This is a package for the glidein workload management system.
 GlideinWMS provides a simple way to access the Grid, Cloud and HPC
@@ -57,6 +58,7 @@ resources through a dynamic condor pool of grid-submitted resources.
 
 %package vofrontend
 Summary:        The VOFrontend for glideinWMS submission host
+Group:          System Environment/Daemons
 Provides:       GlideinWMSFrontend = %{version}-%{release}
 Obsoletes:      GlideinWMSFrontend < 2.5.1-11
 Requires: glideinwms-vofrontend-standalone = %{version}-%{release}
@@ -74,6 +76,7 @@ vofrontend install (userschedd, submit, vofrontend).
 
 %package vofrontend-standalone
 Summary:        The VOFrontend for glideinWMS submission host
+Group:          System Environment/Daemons
 Requires: httpd
 Requires: condor >= 8.4.0
 Requires: python-rrdtool
@@ -100,6 +103,7 @@ This package is for a standalone vofrontend install
 
 %package usercollector
 Summary:        The VOFrontend glideinWMS collector host
+Group:          System Environment/Daemons
 Requires: condor >= 8.4.0
 Requires: ganglia
 Requires: glideinwms-minimal-condor = %{version}-%{release}
@@ -111,6 +115,7 @@ It can be installed independently.
 
 %package userschedd
 Summary:        The VOFrontend glideinWMS submission host
+Group:          System Environment/Daemons
 Requires: condor >= 8.4.0
 Requires: glideinwms-minimal-condor = %{version}-%{release}
 Requires: glideinwms-common-tools = %{version}-%{release}
@@ -121,6 +126,7 @@ This is a package for a glideinwms submit host.
 
 %package libs
 Summary:        The glideinWMS common libraries.
+Group:          System Environment/Daemons
 Requires: condor-python
 Requires: python-rrdtool
 Requires: python-ldap
@@ -131,6 +137,7 @@ This package provides common libraries used by glideinwms.
 
 %package glidecondor-tools
 Summary:        Condor tools useful with the glideinWMS.
+Group:          System Environment/Daemons
 Requires: glideinwms-libs = %{version}-%{release}
 %description glidecondor-tools
 This package provides common libraries used by glideinwms.
@@ -138,6 +145,7 @@ This package provides common libraries used by glideinwms.
 
 %package minimal-condor
 Summary:        The VOFrontend minimal condor config
+Group:          System Environment/Daemons
 Provides:       gwms-condor-config
 Requires: glideinwms-condor-common-config = %{version}-%{release}
 %description minimal-condor
@@ -147,6 +155,7 @@ needed for VOFrontend.
 
 %package condor-common-config
 Summary:        Shared condor config files
+Group:          System Environment/Daemons
 %description condor-common-config
 This contains condor config files shared between alternate
 condor config setups (minimal-condor and factory-condor).
@@ -154,6 +163,7 @@ condor config setups (minimal-condor and factory-condor).
 
 %package common-tools
 Summary:        Shared tools
+Group:          System Environment/Daemons
 %description common-tools
 This contains tools common to both the glideinwms factory and vofrontend
 standalone packages.
@@ -161,6 +171,7 @@ standalone packages.
 
 %package factory
 Summary:        The Factory for glideinWMS
+Group:          System Environment/Daemons
 Provides:       GlideinWMSFactory = %{version}-%{release}
 Requires: httpd
 Requires: glideinwms-factory-condor = %{version}-%{release}
@@ -170,6 +181,7 @@ Requires: glideinwms-common-tools = %{version}-%{release}
 Requires: condor >= 8.4.0
 Requires: fetch-crl
 Requires: python-rrdtool
+Requires: python-argparse
 Requires: python-ldap
 Requires: m2crypto
 Requires: javascriptrrd >= 1.1.0
@@ -186,6 +198,7 @@ for scheduling and job control.
 
 %package factory-condor
 Summary:        The GWMS Factory condor config
+Group:          System Environment/Daemons
 Provides:       gwms-factory-config
 Requires: glideinwms-condor-common-config = %{version}-%{release}
 %description factory-condor
@@ -197,7 +210,7 @@ install of wmscollector + wms factory
 %setup -q -n glideinwms
 # Apply the patches here if any
 #%patch -P 0 -p1
-%patch101 -p1
+
 
 %build
 cp %{SOURCE7} .
@@ -399,7 +412,6 @@ install -m 0644 install/templates/11_gwms_secondary_collectors.config $RPM_BUILD
 install -m 0644 install/templates/90_gwms_dns.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
 install -m 0644 install/templates/01_gwms_metrics.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/ganglia.d/
 install -m 0644 install/templates/condor_mapfile $RPM_BUILD_ROOT%{_sysconfdir}/condor/certs/
-install -m 0644 install/templates/privsep_config $RPM_BUILD_ROOT%{_sysconfdir}/condor/
 
 # Install condor schedd dirs
 # This should be consistent with 02_gwms_factory_schedds.config and 02_gwms_schedds.config
@@ -654,6 +666,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/extract_EC2_Address
 %attr(755,root,root) %{_bindir}/find_StartdLogs
 %attr(755,root,root) %{_bindir}/find_logs
+%attr(755,root,root) %{_bindir}/fact_chown
 %attr(755,root,root) %{_bindir}/gwms-logcat.sh
 %attr(755,root,root) %{_bindir}/manual_glidein_submit
 %attr(755,root,root) %{_sbindir}/checkFactory.py
@@ -681,14 +694,14 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_sbindir}/reconfig_glidein
 %attr(755,root,root) %{_sbindir}/clone_glidein
 %attr(-, root, root) %dir %{_localstatedir}/lib/gwms-factory
-%attr(-, root, root) %{_localstatedir}/lib/gwms-factory/client-proxies
+%attr(-, gfactory, gfactory) %{_localstatedir}/lib/gwms-factory/client-proxies
 %attr(-, gfactory, gfactory) %{factory_web_dir}
 %attr(-, gfactory, gfactory) %{factory_web_base}
 %attr(-, gfactory, gfactory) %{factory_web_base}/../creation
 %attr(-, gfactory, gfactory) %{factory_dir}
 %attr(-, gfactory, gfactory) %dir %{condor_dir}
-%attr(-, root, root) %dir %{_localstatedir}/log/gwms-factory
-%attr(-, root, root) %dir %{_localstatedir}/log/gwms-factory/client
+%attr(-, gfactory, gfactory) %dir %{_localstatedir}/log/gwms-factory
+%attr(-, gfactory, gfactory) %dir %{_localstatedir}/log/gwms-factory/client
 %attr(-, gfactory, gfactory) %{_localstatedir}/log/gwms-factory/server
 %{python_sitelib}/glideinwms/creation/lib/cgWConsts.py
 %{python_sitelib}/glideinwms/creation/lib/cgWConsts.pyc
@@ -795,7 +808,6 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/condor/config.d/00_gwms_factory_general.config
 %config(noreplace) %{_sysconfdir}/condor/config.d/01_gwms_factory_collectors.config
 %config(noreplace) %{_sysconfdir}/condor/config.d/02_gwms_factory_schedds.config
-%config(noreplace) %{_sysconfdir}/condor/privsep_config
 %attr(-, condor, condor) %{_localstatedir}/lib/condor/schedd_glideins2
 %attr(-, condor, condor) %{_localstatedir}/lib/condor/schedd_glideins3
 %attr(-, condor, condor) %{_localstatedir}/lib/condor/schedd_glideins4
@@ -831,8 +843,10 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/condor/certs/condor_mapfile
 
 %changelog
-* Tue Jun 4 2019 Diego Davila <didavila@ucsd.edu> - 3.4.5-2
-- patch (sw3689.proxy-renewal-bugfix.patch) to fix bug on proxy renewal
+* Fri Jun 7 2019 Marco Mambelli <marcom@fnal.gov> - 3.5
+- GlideinWMS v3.5
+- Release Notes: http://glideinwms.fnal.gov/doc.v3_5/history.html
+- Release candidates: 3.5-0.1.rc1 to 3.5-0.1.rc2
 
 * Fri Apr 19 2019  Marco Mambelli <marcom@fnal.gov> - 3.4.5-1
 - GlideinWMS v3.4.5
