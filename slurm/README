@@ -1,0 +1,7 @@
+Because there do not seem to be any public yum repos with slurm, we have to
+build it from source every time we want to install it (for, say, testing
+gratia-probe-slurm).  Let's make the rpms available in contrib for now.
+
+Upstream tarball obtained from:
+http://www.schedmd.com/download/total/slurm-15.08.9.tar.bz2
+
