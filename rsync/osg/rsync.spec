@@ -8,7 +8,7 @@
 Summary: A program for synchronizing files over a network
 Name: rsync
 Version: 3.1.2
-Release: 4.1%{?prerelease}%{?dist}
+Release: 6.1%{?prerelease}%{?dist}
 Group: Applications/Internet
 URL: http://rsync.samba.org/
 
@@ -30,7 +30,8 @@ Patch0: rsync-3.0.10-lose-track.patch
 Patch1: rsync-man.patch
 Patch3: rsync-3.0.6-iconv-logging.patch
 Patch4: rsync-3.1.2-zlib.patch
-Patch5: rsync-noset-nanosecs.patch
+Patch5: rsync-3.1.2-remove-symlinks.patch
+Patch6: rsync-noset-nanosecs.patch
 
 %description
 Rsync uses a reliable algorithm to bring remote and host files into
@@ -63,7 +64,8 @@ patch -p1 -i patches/copy-devices.diff
 %patch1 -p1 -b .man
 %patch3 -p1 -b .iconv-logging
 %patch4 -p1 -b .zlib
-%patch5 -p1
+%patch5 -p1 -b .symlinks
+%patch6 -p1
 
 %build
 rm -fr autom4te.cache
@@ -115,6 +117,19 @@ rm -rf $RPM_BUILD_ROOT
 %systemd_postun_with_restart rsyncd.service
 
 %changelog
+* Mon Aug 12 2019 Dave Dykstra <dwd@fnal.gov> - 3.1.2-6.1
+- Add patch to resolve https://bugzilla.redhat.com/show_bug.cgi?id=1672779
+  (OO-272)
+
+* Wed Mar 27 2019 Michal Ruprich <mruprich@redhat.com> - 3.1.2-6.el7_6.1
+- Resolves: #1693108 - remove-source-files fails with symlinks
+
+* Mon Aug 20 2018 Michal Ruprich <mruprich@redhat.com> - 3.1.2-6
+- Related: #1615799 - reverting changes made in RHEL-7.6
+
+* Mon Aug 20 2018 Michal Ruprich <mruprich@redhat.com> - 3.1.2-5
+- Resolves: #1615799 - Rsync built-in testsuite fails with selinux enabled
+
 * Wed Oct 18 2017 Michal Ruprich - 3.1.2-4
 - Related: #1432899 - removing dependencies on perl
 - using the bundled zlib.h(#1491582)
