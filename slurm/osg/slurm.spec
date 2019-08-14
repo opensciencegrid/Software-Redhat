@@ -44,7 +44,7 @@ Source:		%{slurm_source_dir}.tar.bz2
 # These options are only here to force there to be these on the build.
 # If they are not set they will still be compiled if the packages exist.
 %bcond_with hwloc
-%bcond_with mysql
+%bcond_without mysql
 %bcond_with hdf5
 %bcond_with lua
 %bcond_with numa
