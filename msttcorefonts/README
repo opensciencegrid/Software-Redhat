@@ -1,0 +1,13 @@
+msttcorefonts is a collection of free (gratis) microsoft corefonts,
+subject to MS EULA.  The package is used by osg-display-data.
+
+The original project for this rpm package was
+http://corefonts.sourceforge.net/, which provides only a spec file, which
+at build time would download the freely-redistributable .exe files for the
+fonts, then extract and bundle the .ttf files.
+
+That's fine if the binary rpms are never redistributed, but in order to
+better satisfy the EULA we'll bundle the original .exe files and EULA also.
+
+https://github.com/edquist/msttcorefonts
+
