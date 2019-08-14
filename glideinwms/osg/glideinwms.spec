@@ -13,7 +13,7 @@
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
 %define version 3.4.6
-%define release 0.1.rc1
+%define release 1
 
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
@@ -33,6 +33,7 @@ Summary:        The glidein Workload Management System (glideinWMS)
 Group:          System Environment/Daemons
 License:        Fermitools Software Legal Information (Modified BSD License)
 URL:            http://glideinwms.fnal.gov
+BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
 
@@ -208,6 +209,7 @@ install of wmscollector + wms factory
 %setup -q -n glideinwms
 # Apply the patches here if any
 #%patch -P 0 -p1
+
 
 %build
 cp %{SOURCE7} .
@@ -841,9 +843,9 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/condor/certs/condor_mapfile
 
 %changelog
-* Thu Aug 8 2019 Lorena Lobato <llobato@fnal.gov> - 3.4.6-0.1.rc1
-- GlideinWMS v3.4.6-0.1.rc1
-- Release Notes: http://glideinwms.fnal.gov/doc.v3_4_6_rc1/history.html
+* Wed Aug 14 2019 Marco Mambelli <marcom@fnal.gov> - 3.4.6-1
+- GlideinWMS v3.4.6
+- Release Notes: http://glideinwms.fnal.gov/doc.v3_4_6/history.html
 - Release candidates: 3.4.6-0.1.rc1
 
 * Tue Jun 4 2019 Diego Davila <didavila@ucsd.edu> - 3.4.5-2
