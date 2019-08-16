@@ -1,6 +1,6 @@
 Summary: Package for OSG-Configure and associated scripts
 Name: osg-configure
-Version: 2.4.0
+Version: 2.4.1
 Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
@@ -245,6 +245,9 @@ touch $RPM_BUILD_ROOT/var/lib/osg/osg-job-environment.conf
 
 
 %changelog
+* Fri Aug 16 2019 Mátyás Selmeci <matyas@cs.wisc.edu> 2.4.1-1
+- Fix using the wrong remote user in ssh configs for bosco
+
 * Wed Jul 10 2019 Mátyás Selmeci <matyas@cs.wisc.edu> 2.4.0-1
 - Stop checking sponsor field in site information (SOFTWARE-3722)
 - Don't change batch system from slurm to pbs (SOFTWARE-3717)
