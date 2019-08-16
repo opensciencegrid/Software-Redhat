@@ -1,7 +1,7 @@
 Name:      osg-gridftp
 Summary:   Standalone OSG GridFTP with LCMAPS VOMS support
 Version:   3.5
-Release:   2%{?dist}
+Release:   3%{?dist}
 License:   Apache 2.0
 URL:       http://www.opensciencegrid.org
 
@@ -44,6 +44,15 @@ Requires: gratia-probe-xrootd-storage
 This is a meta-package for GridFTP with the underlying XRootD storage element
 using the FUSE/DSI module.
 
+%package hdfs
+Summary: OSG GridFTP HDFS Storage Element package
+
+Requires: %{name} = %{version}-%{release}
+Requires: gridftp-hdfs >= 0.5.4-16
+
+%description hdfs
+This is a meta package for a standalone GridFTP server with 
+HDFS and GUMS support.
 
 %build
 
@@ -57,8 +66,13 @@ install -m 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/gridftp.d/
 %files xrootd
 # This section intentionally left blank
 
+%files hdfs
+# This section intentionally left blank
 
 %changelog
+* Fri Aug 16 2019 Brian Lin <blin@cs.wisc.edu> - 3.5-3
+- Add HDFS sub-package
+
 * Mon Aug 12 2019 Carl Edquist <edquist@cs.wisc.edu> - 3.5-2
 - Bump version to 3.5 (SOFTWARE-3761)
 
