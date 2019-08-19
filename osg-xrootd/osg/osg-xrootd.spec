@@ -64,7 +64,7 @@ install -m 644 %{SOURCE7} $RPM_BUILD_ROOT/etc/xrootd/config.d
 %config(noreplace) /etc/xrootd/90-osg-standalone-paths.cfg
 
 %changelog
-* Thu Jul 25 2019 Brian Lin <blin@cs.wisc.edu> - 3.4-1
+* Mon Aug 19 2019 Brian Lin <blin@cs.wisc.edu> - 3.4-1
 - Add packaging for OSG XRootD standalone installations
 - Unify Stash Origin HTTP/S and XRootD ports (SOFTWARE-3558)
 
