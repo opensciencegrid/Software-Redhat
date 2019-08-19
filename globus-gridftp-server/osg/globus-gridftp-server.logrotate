@@ -1,0 +1,8 @@
+/var/log/gridftp*.log {
+    daily
+    rotate 10
+    missingok
+    notifempty
+    copytruncate
+}
+

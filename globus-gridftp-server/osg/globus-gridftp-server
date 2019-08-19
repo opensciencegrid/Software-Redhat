@@ -1,0 +1,158 @@
+#!/bin/bash
+#
+# globus-gridftp-server - Globus GridFTP Server
+# OSG change: run after netfs/autofs
+# chkconfig: - 30 70
+# description: The Globus GridFTP server is a process which implements the \
+#              GridFTP protocol for secure, high-performance file transfer.
+#
+### BEGIN INIT INFO
+# Provides:          globus-gridftp-server
+# Required-Start:    $remote_fs $syslog $network
+# Required-Stop:     $remote_fs $syslog
+# Default-Stop:      0 1 2 3 4 5 6
+# Short-Description: Globus GridFTP Server
+# Description:       The Globus GridFTP server is a process which implements
+#                    the GridFTP protocol for secure, high-performance file
+#                    transfer.
+### END INIT INFO
+
+# source function library
+. /etc/init.d/functions
+
+sbindir=/usr/sbin
+sysconfdir=/etc
+
+rc=0
+conf=${sysconfdir}/gridftp.conf
+confdir=${sysconfdir}/gridftp.d
+pidfile=/var/run/globus-gridftp-server.pid
+lockfile=/var/lock/subsys/globus-gridftp-server
+gridftpd=${sbindir}/globus-gridftp-server
+
+# OSG addition: source osg sysconfig file
+. /usr/share/osg/sysconfig/globus-gridftp-server
+
+start() {
+	echo -n "Starting globus-gridftp-server: "
+	rc=0
+	if [ ! -f $conf ]; then
+		touch $conf
+	fi
+
+	if [ -f "$pidfile" ]; then
+		read pid < "$pidfile"
+
+		if ! kill -0 $pid; then
+			rm "$pidfile"
+		fi
+	fi
+
+	if [ ! -d $confdir ]; then
+		mkdir $confdir;
+	fi
+
+	if [ ! -f "$pidfile" ]; then
+		$gridftpd -S -c $conf -C $confdir -pidfile "${pidfile}"
+		rc=$?
+	fi
+
+	[ $rc -eq 0 ] && success || failure
+	[ $rc -eq 0 ] && touch ${lockfile}
+
+	echo
+	return $rc
+}
+
+stop() {
+	echo -n "Stopping globus-gridftp-server: "
+	if [ -f "$pidfile" ]; then
+		read pid < "$pidfile" 2> /dev/null
+
+		if [ "$pid" != "" -a "$pid" -gt 0 ]; then
+			if kill -0 "$pid" 2> /dev/null; then
+				kill -INT "$pid" 2>/dev/null
+				rc=$?
+				sleep 2
+				kill -0 "$pid" 2> /dev/null && kill -KILL "$pid"
+			fi
+		fi
+
+		rm -f "$pidfile"
+	fi
+
+	[ $rc -eq 0 ] && success || failure
+	[ $rc -eq 0 ] && rm ${lockfile}
+
+	echo
+	return $rc
+}
+
+restart() {
+	stop
+	start
+}
+
+reload() {
+	echo -n "Reloading GridFTP configuration: "
+	read pid < "$pidfile" 2> /dev/null
+
+	if [ "$pid" != "" -a "$pid" -gt 0 ]; then
+		kill -HUP "$pid" 2>/dev/null
+		rc=$?
+	fi
+
+	[ $rc -eq 0 ] && success || failure
+
+	return $rc
+}
+
+status() {
+	if [ -f $pidfile ]; then
+		read pid < "$pidfile" 2> /dev/null
+
+		if [ "$pid" != "" -a "$pid" -gt 0 ]; then
+			if kill -0 "$pid" 2> /dev/null; then
+				echo "GridFTP server is running (pid=$pid)"
+				rc=0
+			else
+				echo "Stale PID file $pidfile"
+				rc=1
+			fi
+		else
+			echo "Invalid PID file $pidfile"
+			rc=4
+		fi
+	else
+		echo "GridFTP server is not running"
+		rc=3
+	fi
+
+        return $rc
+}
+
+case "$1" in
+    start)
+	start
+	;;
+    stop)
+	stop
+	;;
+    status)
+	status
+	;;
+    restart | force-reload)
+	restart
+	;;
+    condrestart | try-restart)
+	[ -e ${lockfile} ] && restart
+	;;
+    reload)
+	reload
+	;;
+    *)
+	echo "Usage: $0 {start|stop|status|restart|force-reload|condrestart|try-restart|reload}"
+	exit 1
+	;;
+esac
+exit $?
