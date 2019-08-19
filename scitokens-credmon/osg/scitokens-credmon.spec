@@ -3,7 +3,7 @@
 
 Name:           %{pypi_name}
 Version:        0.3
-Release:        0.1%{?dist}
+Release:        0.2%{?dist}
 Summary:        SciTokens credential monitor for use with HTCondor
 
 License:        MIT
@@ -24,7 +24,7 @@ A HTCondor credentials monitor specific for OAuth2 and SciTokens workflows.
 Summary:        SciTokens credential monitor for use with HTCondor
 %{?python_provide:%python_provide python2-%{pypi_name}}
  
-Requires:       python2-condor
+Requires:       python2-condor >= 8.8.1
 Requires:       python2-requests-oauthlib
 Requires:       python-six
 Requires:       python-flask
