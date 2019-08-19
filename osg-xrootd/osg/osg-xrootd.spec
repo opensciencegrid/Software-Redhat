@@ -43,8 +43,8 @@ Requires: xrootd-lcmaps
 %build
 
 %install
-install -m 644 %{SOURCE1} $RPM_BUILD_ROOT/etc/xrootd
 install -m 755         -d $RPM_BUILD_ROOT/etc/xrootd/config.d
+install -m 644 %{SOURCE1} $RPM_BUILD_ROOT/etc/xrootd
 install -m 644 %{SOURCE2} $RPM_BUILD_ROOT/etc/xrootd/config.d
 install -m 644 %{SOURCE3} $RPM_BUILD_ROOT/etc/xrootd/config.d
 install -m 644 %{SOURCE4} $RPM_BUILD_ROOT/etc/xrootd/config.d
@@ -53,15 +53,15 @@ install -m 644 %{SOURCE6} $RPM_BUILD_ROOT/etc/xrootd/config.d
 install -m 644 %{SOURCE7} $RPM_BUILD_ROOT/etc/xrootd/config.d
 
 %files
-%config(noreplace) /etc/xrootd/10-osg-common-site-local.cfg
+%config(noreplace) /etc/xrootd/config.d/10-common-site-local.cfg
 %config /etc/xrootd/config.d/50-osg-http.cfg
 %config /etc/xrootd/config.d/50-osg-monitoring.cfg
 %config /etc/xrootd/config.d/50-osg-paths.cfg
 %config /etc/xrootd/ban-robots.txt
 
 %files standalone
-%config /etc/xrootd/40-osg-standalone.cfg
-%config(noreplace) /etc/xrootd/90-osg-standalone-paths.cfg
+%config /etc/xrootd/config.d/40-osg-standalone.cfg
+%config(noreplace) /etc/xrootd/config.d/90-osg-standalone-paths.cfg
 
 %changelog
 * Mon Aug 19 2019 Brian Lin <blin@cs.wisc.edu> - 3.4-1
