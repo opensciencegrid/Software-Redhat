@@ -1,7 +1,7 @@
 Summary: OSG configuration files for XRootD
 Name: osg-xrootd
 Version: 3.4
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: ASL 2.0
 BuildArch: noarch
 
@@ -30,7 +30,7 @@ Summary: OSG configuration files for XRootD standalone installations
 Requires: %{name} = %{version}-%release
 
 # For LCMAPS VOMS authentication
-Requires: osg-configure
+Requires: osg-configure-misc
 Requires: vo-client-lcmaps-voms
 Requires: xrootd-lcmaps
 
@@ -63,6 +63,9 @@ install -m 644 %{SOURCE7} $RPM_BUILD_ROOT/etc/xrootd/config.d
 %config(noreplace) /etc/xrootd/config.d/90-osg-standalone-paths.cfg
 
 %changelog
+* Wed Aug 21 2019 Brian Lin <blin@cs.wisc.edu> - 3.4-4
+- Require osg-configure-misc, not all of osg-configure
+
 * Wed Aug 21 2019 Brian Lin <blin@cs.wisc.edu> - 3.4-3
 - Restore osg-configure requirement for standalone installations
   since they'll be using /etc/lcmaps.db instead of the LCMAPS configuration
