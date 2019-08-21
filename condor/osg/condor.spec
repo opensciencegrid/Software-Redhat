@@ -123,7 +123,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.2
+%define condor_base_release 1.3
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -406,6 +406,7 @@ Requires(post): selinux-policy-targeted >= 3.13.1-102
 #Provides: group(condor) = 43
 
 Obsoletes: condor-static < 7.2.0
+Obsoletes: condor-cream-gahp
 
 %description
 HTCondor is a specialized workload management system for
@@ -2055,6 +2056,9 @@ fi
 %endif
 
 %changelog
+* Wed Aug 21 2019 Diego Davila <didavila@ucsd.edu> - 8.8.4-3
+- Adding Obsoletes for condor-cream-gahp (SOFTWARE-3780)
+
 * Tue Jul 09 2019 Tim Theisen <tim@cs.wisc.edu> - 8.8.4-1
 - Python 3 bindings - see version history for details (requires EPEL on EL7)
 - Can configure DAGMan to dramatically reduce memory usage on some DAGs
