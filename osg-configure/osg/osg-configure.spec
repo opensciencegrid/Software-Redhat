@@ -1,10 +1,9 @@
-Summary: Package for OSG-Configure and associated scripts
+Summary: Configuration tool for the OSG Software Stack
 Name: osg-configure
-Version: 2.4.0
-Release: 1%{?dist}
+Version: 2.99.0
+Release: 0.4%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
-Prefix: %{_prefix}
 BuildArch: noarch
 Url: https://github.com/opensciencegrid/osg-configure
 
@@ -132,7 +131,7 @@ This package includes the ini file for configuring the job gateway
 
 
 %prep
-%setup
+%setup -q
 
 %build
 %{__python2} setup.py build
@@ -159,8 +158,6 @@ touch $RPM_BUILD_ROOT/var/lib/osg/osg-job-environment.conf
 %{python2_sitelib}/osg_configure/configure_modules/condor.py*
 %{python2_sitelib}/osg_configure/configure_modules/gateway.py*
 %{python2_sitelib}/osg_configure/configure_modules/gratia.py*
-%{python2_sitelib}/osg_configure/configure_modules/installlocations.py*
-%{python2_sitelib}/osg_configure/configure_modules/legacysettings.py*
 %{python2_sitelib}/osg_configure/configure_modules/localsettings.py*
 %{python2_sitelib}/osg_configure/configure_modules/lsf.py*
 %{python2_sitelib}/osg_configure/configure_modules/misc.py*
@@ -175,7 +172,6 @@ touch $RPM_BUILD_ROOT/var/lib/osg/osg-job-environment.conf
 %{python2_sitelib}/osg_configure/modules/baseconfiguration.py*
 %{python2_sitelib}/osg_configure/modules/configfile.py*
 %{python2_sitelib}/osg_configure/modules/exceptions.py*
-%{python2_sitelib}/osg_configure/modules/gums_supported_vos.py*
 %{python2_sitelib}/osg_configure/modules/jobmanagerconfiguration.py*
 %{python2_sitelib}/osg_configure/modules/utilities.py*
 %{python2_sitelib}/osg_configure/modules/validation.py*
@@ -245,6 +241,9 @@ touch $RPM_BUILD_ROOT/var/lib/osg/osg-job-environment.conf
 
 
 %changelog
+* Wed Aug 21 2019 Mátyás Selmeci <matyas@cs.wisc.edu> 2.99.0-0.4
+- Prerelease for 3.0.0 (SOFTWARE-3789)
+
 * Wed Jul 10 2019 Mátyás Selmeci <matyas@cs.wisc.edu> 2.4.0-1
 - Stop checking sponsor field in site information (SOFTWARE-3722)
 - Don't change batch system from slurm to pbs (SOFTWARE-3717)
