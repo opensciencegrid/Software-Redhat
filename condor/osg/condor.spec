@@ -104,7 +104,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.3
+%define condor_base_release 1.4
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -374,6 +374,7 @@ Requires(post): selinux-policy-targeted >= 3.13.1-102
 #Provides: group(condor) = 43
 
 Obsoletes: condor-static < 7.2.0
+Obsoletes: condor-cream-gahp < 8.9.2
 
 %description
 HTCondor is a specialized workload management system for
@@ -1801,6 +1802,9 @@ fi
 %endif
 
 %changelog
+* Tue Aug 27 2019 Brian Lin <blin@cs.wisc.edu> - 8.9.2-1.4
+- Obsolete condor-cream-gahp < 8.9.2 to fix upgrades from versions built with CREAM support
+
 * Mon Aug 12 2019 Diego Davila <didavila@ucsd.edu> - 8.9.2-1.3
 - Adding a second patch for scitokens Patch10 scitokens2.patch (SOFTWARE-3780)
 
