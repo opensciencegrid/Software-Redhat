@@ -2080,8 +2080,10 @@ fi
 %endif
 
 %changelog
-* Tue Aug 27 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 8.4.4-1.4
-- Add DAEMON_LIST and FS/Password auth configuration (SOFTWARE-3795)
+* Wed Aug 28 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 8.4.4-1.6
+- Add DAEMON_LIST and FS/Password auth configuration;
+  autogenerate pool password on install (SOFTWARE-3795)
+- Add version to the Obsoletes for condor-cream-gahp
 
 * Wed Aug 21 2019 Diego Davila <didavila@ucsd.edu> - 8.8.4-1.3
 - Adding Obsoletes for condor-cream-gahp (SOFTWARE-3780)
