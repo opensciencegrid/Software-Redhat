@@ -123,7 +123,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.5
+%define condor_base_release 1.6
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -184,8 +184,8 @@ Source7: 00-restart_peaceful.config
 
 Source8: htcondor.pp
 
-Source9: 00-pool_password.config
-Source10: 00-single_node.config
+Source9: 00-osg_default_security.config
+Source10: 00-osg_default_daemons.config
 Source11: create_pool_password
 
 # custom find-requires script for filtering stuff from condor-external-libs
@@ -1290,8 +1290,8 @@ populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/ugahp.jar
 %if 0%{?osg}
 # Pool password config and single node config, SOFTWARE-3795
 install -d -m 0755 %{buildroot}%{_sysconfdir}/condor/passwords.d
-install -p -m 0644 %{SOURCE9} %{buildroot}%{_sysconfdir}/condor/config.d/00-pool_password.config
-install -p -m 0644 %{SOURCE10} %{buildroot}%{_sysconfdir}/condor/config.d/00-single_node.config
+install -p -m 0644 %{SOURCE9} %{buildroot}%{_sysconfdir}/condor/config.d/00-osg_default_security.config
+install -p -m 0644 %{SOURCE10} %{buildroot}%{_sysconfdir}/condor/config.d/00-osg_default_daemons.config
 install -p -m 0755 %{SOURCE11} %{buildroot}%{_libexecdir}/condor/create_pool_password
 %endif
 
@@ -1383,8 +1383,8 @@ install -p -m 0755 %{SOURCE11} %{buildroot}%{_libexecdir}/condor/create_pool_pas
 %config(noreplace) %{_sysconfdir}/condor/config.d/00-restart_peaceful.config
 %endif
 %if 0%{?osg}
-%config(noreplace,missingok) %{_sysconfdir}/condor/config.d/00-pool_password.config
-%config(noreplace,missingok) %{_sysconfdir}/condor/config.d/00-single_node.config
+%config(noreplace) %{_sysconfdir}/condor/config.d/00-osg_default_security.config
+%config(noreplace) %{_sysconfdir}/condor/config.d/00-osg_default_daemons.config
 %dir %{_sysconfdir}/condor/passwords.d
 %endif
 %_libexecdir/condor/condor_limits_wrapper.sh
