@@ -1,7 +1,7 @@
 Summary: Configuration tool for the OSG Software Stack
 Name: osg-configure
-Version: 2.99.0
-Release: 0.4%{?dist}
+Version: 3.0.0
+Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
 BuildArch: noarch
@@ -241,6 +241,9 @@ touch $RPM_BUILD_ROOT/var/lib/osg/osg-job-environment.conf
 
 
 %changelog
+* Wed Aug 28 2019 Mátyás Selmeci <matyas@cs.wisc.edu> 3.0.0-1
+- New version 3.0.0 (SOFTWARE-3789)
+
 * Wed Aug 21 2019 Mátyás Selmeci <matyas@cs.wisc.edu> 2.99.0-0.4
 - Prerelease for 3.0.0 (SOFTWARE-3789)
 
