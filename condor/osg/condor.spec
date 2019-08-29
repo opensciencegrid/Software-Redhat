@@ -123,7 +123,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.7
+%define condor_base_release 1.8
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -2080,7 +2080,7 @@ fi
 %endif
 
 %changelog
-* Thu Aug 29 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 8.4.4-1.7
+* Thu Aug 29 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 8.4.4-1.8
 - Add DAEMON_LIST and FS/Password auth configuration;
   autogenerate pool password on install (SOFTWARE-3795)
 - Add version to the Obsoletes for condor-cream-gahp
