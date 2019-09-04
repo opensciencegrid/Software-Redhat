@@ -971,9 +971,9 @@ cmake \
 
 %if %uw_build || %std_univ
 # build externals first to avoid dependency issues
-make externals
+make %{?_smp_mflags} externals
 %endif
-make
+make %{?_smp_mflags}
 
 %install
 # installation happens into a temporary location, this function is
