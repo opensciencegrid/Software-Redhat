@@ -1,6 +1,0 @@
-OSG singularity is built from EPEL src rpms.  Download from the EPEL
-koji, for example
-
-    wget https://kojipkgs.fedoraproject.org/packages/singularity/2.6.0/1.1.el6/src/singularity-2.6.0-1.1.el6.src.rpm
-
-where 2.6.0 is the version and 1.1 is the release.

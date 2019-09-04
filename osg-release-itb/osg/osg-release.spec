@@ -1,6 +1,6 @@
 Name:           osg-release-itb
-Version:        3.4
-Release:        7%{?dist}
+Version:        3.5
+Release:        2%{?dist}
 Summary:        OSG Software for Enterprise Linux repository configuration
 
 License:        GPL
@@ -59,6 +59,12 @@ sed -i -e 's/gpgcheck=1/gpgcheck=0/' $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d/*
 
 
 %changelog
+* Mon Aug 05 2019 Carl Edquist <edquist@cs.wisc.edu> - 3.5-2
+- Rename goc repos -> devops (SOFTWARE-3291)
+
+* Fri Aug 02 2019 Carl Edquist <edquist@cs.wisc.edu> - 3.5-1
+- New OSG 3.5 repos (SOFTWARE-3761)
+
 * Wed Feb 13 2019 Carl Edquist <edquist@cs.wisc.edu> - 3.4-7
 - Add rolling release for upcoming (SOFTWARE-3465)
 

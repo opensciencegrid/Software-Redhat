@@ -1,6 +1,0 @@
-Source RPMS obtained from:
-
-http://software.internet2.edu/rpms/el6/SRPMS/
-
-The perfsonar SRPM is modifiend and only the perfsonar-tools subpackage is included here.
-

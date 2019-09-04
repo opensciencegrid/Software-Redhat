@@ -4,8 +4,8 @@
 
 Name:      osg-ce
 Summary:   OSG Compute Element
-Version:   3.4
-Release:   4%{?dist}
+Version:   3.5
+Release:   1%{?dist}
 License:   Apache 2.0
 URL:       http://www.opensciencegrid.org
 
@@ -16,7 +16,6 @@ Requires: fetch-crl
 Requires: osg-system-profiler
 Requires: vo-client
 
-Requires: osg-vo-map
 Requires: vo-client-lcmaps-voms
 
 Requires: osg-configure >= 1.0.57
@@ -175,6 +174,9 @@ exit 0
 %files bosco
 
 %changelog
+* Fri Aug 02 2019 Carl Edquist <edquist@cs.wisc.edu> - 3.5-1
+- Removing osg-vo-map requirement for OSG 3.5 (SOFTWARE-3761)
+
 * Mon Jan 8 2018 Edgar Fajardo <emfajard@ucsd.edu> - 3.4-4
 - Removing osg-version requirements (SOFTWARE-2917)
 

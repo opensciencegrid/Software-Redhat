@@ -1,14 +1,13 @@
 Summary: Mapping interface between Globus Toolkit and LCAS/LCMAPS
 Name: lcas-lcmaps-gt4-interface
 Version: 0.3.1
-Release: 1.2%{?dist}
+Release: 1.3%{?dist}
 License: ASL 2.0
 URL: http://wiki.nikhef.nl/grid/Site_Access_Control
 Source0: http://software.nikhef.nl/security/%{name}/%{name}-%{version}.tar.gz
 Source1: gsi-authz.conf.in
 BuildRequires: lcmaps-interface
 BuildRequires: openssl-devel
-BuildRequires: globus-core
 BuildRequires: globus-common-devel
 BuildRequires: globus-gridmap-callout-error-devel
 #BuildRequires: globus-gsi-callback-devel
@@ -83,6 +82,9 @@ sed -e "s#@LIBDIR@#%{_libdir}#" %{SOURCE1} > $RPM_BUILD_ROOT%{_sysconfdir}/grid-
 %config(noreplace) %{_sysconfdir}/grid-security/gsi-authz.conf
 
 %changelog
+* Fri Aug 02 2019 Carl Edquist <edquist@cs.wisc.edu> - 0.3.1-1.3
+- Drop old globus-core requirement
+
 * Mon Aug 29 2016 Edgar Fajardo <efajardo@physics.ucsd.edu> 0.3.1-1.2.osg
 - Made the spec file closer to the upstream
 - Inlcuded NEWS and BUGS in doc

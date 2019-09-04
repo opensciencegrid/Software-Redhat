@@ -1,5 +1,0 @@
-To get the upstream
-                                                                                                                                          
-git clone https://github.com/opensciencegrid/StashCache-Daemon.git
-cd StashCache-Daemon
-git archive v0.8 --prefix=stashcache-0.8/ | gzip -7 > ~/stashcache-0.8.tar.gz

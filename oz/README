@@ -1,5 +1,0 @@
-Spec file and tarball generated using the following commands:
-
-$ git clone git@github.com:clalancette/oz.git
-$ git checkout v0.16.0
-$ python setup.py sdist

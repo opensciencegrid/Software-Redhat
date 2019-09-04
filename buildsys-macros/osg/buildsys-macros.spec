@@ -3,7 +3,7 @@
 # "osg-koji import" the resulting rpm and osg-koji tag-pkg the build into the
 # appropriate osg-*-development tag
 # This will require koji admin permissions.
-%define osg_version 3.4
+%define osg_version 3.5
 %define dver   7
 
 %define osgver %(tr -d . <<< %{osg_version})
@@ -12,7 +12,7 @@
 Name:		buildsys-macros
 Summary:	Macros for the OSG Buildsystem
 Version:        7
-Release:	6%{dist}
+Release:	7%{dist}
 License:	GPL
 BuildArch:      noarch
 Requires:	rpmdevtools
@@ -34,23 +34,16 @@ printf %s%b "%" "dist $DIST\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.disttag
 printf %s%b "%" "el$DVER 1\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.disttag
 printf %s%b "%" "osg 1\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.disttag
 printf %s%b "%" "__arch_install_post /usr/lib/rpm/check-buildroot\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.checkbuild
-if [[ $DVER -eq 5 ]]; then
-    printf %s%b "%" "_source_filedigest_algorithm 1\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.digest
-    printf %s%b "%" "_binary_filedigest_algorithm 1\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.digest
-    printf %s%b "%" "_binary_payload w9.gzdio\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.digest
-    printf %s%b "%" "_source_payload w9.gzdio\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.digest
-    printf %s%b "%" "_default_patch_fuzz 2\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.digest
-fi
 
 
 %files
-%if %{dver} == 5
-/etc/rpm/macros.digest
-%endif
 /etc/rpm/macros.disttag
 /etc/rpm/macros.checkbuild
 
 %changelog
+* Wed Jul 31 2019 Carl Edquist <edquist@cs.wisc.edu> - 7-7
+- Bump to rebuild for OSG 3.5 (SOFTWARE-3761)
+
 * Tue Apr 25 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 7-6
 - Bump to rebuild for OSG 3.4 (SOFTWARE-2622)
 

@@ -1,4 +1,0 @@
-Pass-through from EPEL
-
-Note that we also put it into the "goc" repos because of
-<https://jira.opensciencegrid.org/browse/OO-196>.

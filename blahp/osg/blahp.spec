@@ -5,7 +5,7 @@
 
 Name:		blahp
 Version:	1.18.41.bosco
-Release:	2%{?gitrev:.%{gitrev}}%{?dist}
+Release:	1%{?gitrev:.%{gitrev}}%{?dist}
 Summary:	gLite BLAHP daemon
 
 License:	Apache 2.0
@@ -174,9 +174,6 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
-* Thu Aug 29 2019 Brian Lin <blin@cs.wisc.edu> - 1.18.41.bosco-2
-- Rebuild against HTCondor 8.8.4
-
 * Wed May 15 2019 Carl Edquist <edquist@cs.wisc.edu> - 1.18.41.bosco-1
 - Fix double-escaping in new condor env format (SOFTWARE-3589)
 

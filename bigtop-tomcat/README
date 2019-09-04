@@ -1,6 +1,0 @@
-bigtop-tomcat - needed for hadoop-kms and hadoop-httpfs
-
-Obtained from Cloudera:
-
-http://archive.cloudera.com/cdh5/redhat/7/x86_64/cdh/5/SRPMS/bigtop-tomcat-0.7.0+cdh5.13.0+0-1.cdh5.13.0.p0.34.src.rpm
-

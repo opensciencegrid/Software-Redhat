@@ -1,2 +1,0 @@
-type=github repo=opensciencegrid/rsv tag=v3.19.8 hash=466fb3032e31213cf49bd5e7c4e7141e50a0978a
-#type=github repo=matyasselmeci/rsv tag=master hash=0 tarball=rsv-3.19.7.tar.gz

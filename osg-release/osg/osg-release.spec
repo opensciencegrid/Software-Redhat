@@ -1,6 +1,6 @@
 Name:           osg-release
-Version:        3.4
-Release:        8%{?dist}
+Version:        3.5
+Release:        2%{?dist}
 Summary:        OSG Software for Enterprise Linux repository configuration
 
 License:        GPL
@@ -59,6 +59,12 @@ sed -i -e 's/gpgcheck=1/gpgcheck=0/' $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d/*
 
 
 %changelog
+* Mon Aug 05 2019 Carl Edquist <edquist@cs.wisc.edu> - 3.5-2
+- Rename goc repos -> devops (SOFTWARE-3291)
+
+* Fri Aug 02 2019 Carl Edquist <edquist@cs.wisc.edu> - 3.5-1
+- New OSG 3.5 repos (SOFTWARE-3761)
+
 * Tue May 14 2019 Carl Edquist <edquist@cs.wisc.edu> - 3.4-8
 - Use https for koji repos (SOFTWARE-3653)
 

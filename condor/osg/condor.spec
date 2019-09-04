@@ -62,6 +62,10 @@
 %define cream 1
 %endif
 
+%if 0%{?osg}
+%define cream 0
+%endif
+
 %if 0%{?hcc}
 %define blahp 0
 %define cream 0
@@ -180,7 +184,9 @@ Source7: 00-restart_peaceful.config
 
 Source8: htcondor.pp
 
-Source9: 00-osg_default_daemons.config
+Source9: 00-osg_default_security.config
+Source10: 00-osg_default_daemons.config
+Source11: create_pool_password
 
 # custom find-requires script for filtering stuff from condor-external-libs
 Source90: find-requires.sh
@@ -404,6 +410,7 @@ Requires(post): selinux-policy-targeted >= 3.13.1-102
 #Provides: group(condor) = 43
 
 Obsoletes: condor-static < 7.2.0
+Obsoletes: condor-cream-gahp < 8.8.4
 
 %description
 HTCondor is a specialized workload management system for
@@ -1288,8 +1295,11 @@ populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/ugahp.jar
 
 
 %if 0%{?osg}
-# Single node config, SOFTWARE-3794
-install -p -m 0644 %{SOURCE9} %{buildroot}%{_sysconfdir}/condor/config.d/00-osg_default_daemons.config
+# Pool password config and single node config, SOFTWARE-3795
+install -d -m 0755 %{buildroot}%{_sysconfdir}/condor/passwords.d
+install -p -m 0644 %{SOURCE9} %{buildroot}%{_sysconfdir}/condor/config.d/00-osg_default_security.config
+install -p -m 0644 %{SOURCE10} %{buildroot}%{_sysconfdir}/condor/config.d/00-osg_default_daemons.config
+install -p -m 0755 %{SOURCE11} %{buildroot}%{_libexecdir}/condor/create_pool_password
 %endif
 
 
@@ -1381,7 +1391,9 @@ install -p -m 0644 %{SOURCE9} %{buildroot}%{_sysconfdir}/condor/config.d/00-osg_
 %config(noreplace) %{_sysconfdir}/condor/config.d/00-restart_peaceful.config
 %endif
 %if 0%{?osg}
+%config(noreplace) %{_sysconfdir}/condor/config.d/00-osg_default_security.config
 %config(noreplace) %{_sysconfdir}/condor/config.d/00-osg_default_daemons.config
+%dir %{_sysconfdir}/condor/passwords.d
 %endif
 %_libexecdir/condor/condor_limits_wrapper.sh
 %_libexecdir/condor/condor_rooster
@@ -1403,6 +1415,9 @@ install -p -m 0644 %{SOURCE9} %{buildroot}%{_sysconfdir}/condor/config.d/00-osg_
 %_libexecdir/condor/condor_gangliad
 %_libexecdir/condor/panda-plugin.so
 %_libexecdir/condor/pandad
+%if 0%{?osg}
+%_libexecdir/condor/create_pool_password
+%endif
 %_mandir/man1/condor_advertise.1.gz
 %_mandir/man1/condor_annex.1.gz
 %_mandir/man1/condor_check_userlogs.1.gz
@@ -1986,6 +2001,13 @@ if [ $1 -eq 1 ] ; then
     /bin/systemctl daemon-reload >/dev/null 2>&1 || :
 fi
 
+%if 0%{?osg}
+if [ ! -e /etc/condor/passwords.d/POOL ]; then
+    %_libexecdir/condor/create_pool_password >/dev/null 2>&1 || :
+fi
+%endif
+
+
 %preun
 if [ $1 -eq 0 ] ; then
     # Package removal, not upgrade
@@ -2066,8 +2088,13 @@ fi
 %endif
 
 %changelog
-* Thu Aug 29 2019 Brian Lin <blin@cs.wisc.edu> - 8.4.4-1.1
-- Set DAEMON_LIST and CONDOR_HOST (SOFTWARE-3794)
+* Thu Aug 29 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 8.4.4-1.8
+- Add DAEMON_LIST and FS/Password auth configuration;
+  autogenerate pool password on install (SOFTWARE-3795)
+- Add version to the Obsoletes for condor-cream-gahp
+
+* Wed Aug 21 2019 Diego Davila <didavila@ucsd.edu> - 8.8.4-1.3
+- Adding Obsoletes for condor-cream-gahp (SOFTWARE-3780)
 
 * Tue Jul 09 2019 Tim Theisen <tim@cs.wisc.edu> - 8.8.4-1
 - Python 3 bindings - see version history for details (requires EPEL on EL7)
