@@ -1,4 +1,4 @@
-%define tarball_version 8.8.4
+%define tarball_version 8.8.5
 
 # optionally define any of these, here or externally
 # % define fedora   16
@@ -123,7 +123,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.8
+%define condor_base_release 0.479699
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -783,9 +783,13 @@ on a non-EC2 image.
 
 %preun annex-ec2
 %if %systemd
-/bin/systemctl disable condor-annex-ec2
+if [ $1 == 0 ]; then
+    /bin/systemctl disable condor-annex-ec2
+fi
 %else
-/sbin/chkconfig --del condor-annex-ec2 > /dev/null 2>&1 || :
+if [ $1 == 0 ]; then
+    /sbin/chkconfig --del condor-annex-ec2 > /dev/null 2>&1 || :
+fi
 %endif
 
 %package all
@@ -851,11 +855,12 @@ export CMAKE_PREFIX_PATH=/usr
 # causes build issues with EL5, don't even bother building the tests.
 
 %if %uw_build
-%define condor_build_id 474941
+%define condor_build_id 479699
 
 cmake \
        -DBUILDID:STRING=%condor_build_id \
        -DPACKAGEID:STRING=%{version}-%{condor_release} \
+       -DNO_PHONE_HOME:BOOL=TRUE \
        -DUW_BUILD:BOOL=TRUE \
        -DCONDOR_RPMBUILD:BOOL=TRUE \
 %if ! %std_univ
@@ -908,6 +913,7 @@ cmake \
        -D_VERBOSE:BOOL=TRUE \
 %endif
        -DPACKAGEID:STRING=%{version}-%{condor_release} \
+       -DNO_PHONE_HOME:BOOL=TRUE \
        -DHAVE_BACKFILL:BOOL=FALSE \
        -DHAVE_BOINC:BOOL=FALSE \
        -DHAVE_KBDD:BOOL=TRUE \
@@ -965,10 +971,9 @@ cmake \
 
 %if %uw_build || %std_univ
 # build externals first to avoid dependency issues
-make %{?_smp_mflags} externals
+make externals
 %endif
-make %{?_smp_mflags}
-
+make
 
 %install
 # installation happens into a temporary location, this function is
@@ -986,7 +991,6 @@ make install DESTDIR=%{buildroot}
 # The install target puts etc/ under usr/, let's fix that.
 mv %{buildroot}/usr/etc %{buildroot}/%{_sysconfdir}
 
-populate %_sysconfdir/condor %{buildroot}/%{_usr}/lib/condor_ssh_to_job_sshd_config_template
 
 # Things in /usr/lib really belong in /usr/share/condor
 populate %{_datadir}/condor %{buildroot}/%{_usr}/lib/*
@@ -994,6 +998,9 @@ populate %{_datadir}/condor %{buildroot}/%{_usr}/lib/*
 populate %{_libdir}/ %{buildroot}/%{_datadir}/condor/libclassad.so*
 rm -f %{buildroot}/%{_datadir}/condor/libclassad.a
 mv %{buildroot}%{_datadir}/condor/lib*.so %{buildroot}%{_libdir}/
+populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/condor_ssh_to_job_sshd_config_template
+# Drop in a symbolic link for backward compatability
+ln -s %{_libdir}/condor/condor_ssh_to_job_sshd_config_template %{buildroot}/%_sysconfdir/condor/condor_ssh_to_job_sshd_config_template
 
 # Only trigger on 32-bit RHEL6
 if [ -d %{buildroot}%{_datadir}/condor/python2.6 ]; then
@@ -1309,7 +1316,7 @@ install -p -m 0755 %{SOURCE11} %{buildroot}%{_libexecdir}/condor/create_pool_pas
 %defattr(-,root,root,-)
 %doc LICENSE-2.0.txt NOTICE.txt examples
 %dir %_sysconfdir/condor/
-%config(noreplace) %_sysconfdir/condor/condor_config
+%config %_sysconfdir/condor/condor_config
 %if %systemd
 %{_tmpfilesdir}/%{name}.conf
 %{_unitdir}/condor.service
@@ -1338,6 +1345,7 @@ install -p -m 0755 %{SOURCE11} %{buildroot}%{_libexecdir}/condor/create_pool_pas
 %_datadir/condor/htcondor.pp
 %endif
 %dir %_sysconfdir/condor/config.d/
+%_libdir/condor/condor_ssh_to_job_sshd_config_template
 %_sysconfdir/condor/condor_ssh_to_job_sshd_config_template
 %_sysconfdir/bash_completion.d/condor
 %_libdir/libchirp_client.so
