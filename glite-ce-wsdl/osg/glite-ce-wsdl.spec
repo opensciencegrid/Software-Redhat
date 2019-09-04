@@ -4,9 +4,7 @@ Version: 1.15.1
 Release: 1.1%{?dist}
 License: Apache Software License
 URL: http://glite.cern.ch/
-Group: Development/Libraries
 BuildArch: noarch
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 AutoReqProv: yes
 Source: %{name}.tar.gz
 
@@ -21,17 +19,12 @@ WS definitions for the CREAM service
 %build
 
 %install
-rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/wsdl/cream-ce/es/
 cp interface/CREAM/*.wsdl interface/CREAM/*.xsd %{buildroot}/usr/share/wsdl/cream-ce
 cp interface/ES/*.wsdl interface/ES/*.xsd %{buildroot}/usr/share/wsdl/cream-ce/es
 
 
-%clean
-rm -rf %{buildroot}
-
 %files
-%defattr(-,root,root)
 %dir /usr/share/wsdl/
 %dir /usr/share/wsdl/cream-ce/
 %dir /usr/share/wsdl/cream-ce/es

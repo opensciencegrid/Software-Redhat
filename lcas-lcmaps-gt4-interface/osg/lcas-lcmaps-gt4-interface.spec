@@ -3,11 +3,9 @@ Name: lcas-lcmaps-gt4-interface
 Version: 0.3.1
 Release: 1.2%{?dist}
 License: ASL 2.0
-Group: System Environment/Libraries
 URL: http://wiki.nikhef.nl/grid/Site_Access_Control
 Source0: http://software.nikhef.nl/security/%{name}/%{name}-%{version}.tar.gz
 Source1: gsi-authz.conf.in
-#BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildRequires: lcmaps-interface
 BuildRequires: openssl-devel
 BuildRequires: globus-core
@@ -25,9 +23,6 @@ Requires: liblcmaps.so.0
 %else
 Requires: liblcmaps.so.0()(64bit)
 %endif
-
-# BuildRoot is still required for EPEL5                                                            
-BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
 # OSG doesn't use lcas anymore                                                                                   
 Obsoletes: lcas
@@ -60,7 +55,6 @@ sed -i -e 's! -shared ! -Wl,--as-needed\\0!g' libtool
 make %{?_smp_mflags}
 
 %install
-rm -rf $RPM_BUILD_ROOT
 
 make DESTDIR=$RPM_BUILD_ROOT install
 find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
@@ -71,9 +65,6 @@ rm -rf ${RPM_BUILD_ROOT}%{_docdir}
 # Install the mapping by default
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/grid-security
 sed -e "s#@LIBDIR@#%{_libdir}#" %{SOURCE1} > $RPM_BUILD_ROOT%{_sysconfdir}/grid-security/gsi-authz.conf
-
-%clean
-rm -rf $RPM_BUILD_ROOT
 
 %post -p /sbin/ldconfig
 

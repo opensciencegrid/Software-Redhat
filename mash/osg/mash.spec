@@ -4,13 +4,11 @@ Name:           mash
 Version:        0.5.22
 Release:        3%{?dist}
 Summary:        Koji buildsystem to yum repository converter
-Group:          Development/Tools
 License:        GPLv2
 URL:            http://fedorahosted.org/releases/m/a/mash/
 Source0:        http://fedorahosted.org/releases/m/a/mash/%{name}-%{version}.tar.gz
 Patch0:         multilib-python.patch
 Patch1:         multilib-lcmaps.patch
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Requires:       yum, createrepo, koji
 Conflicts:	pungi < 1.0.0
 BuildRequires:  python-devel
@@ -30,14 +28,10 @@ any multlib RPMs that are necessary.
 %{__python} setup.py build
 
 %install
-rm -rf $RPM_BUILD_ROOT
 %{__python} setup.py install -O1 --skip-build --root $RPM_BUILD_ROOT
 
 mv $RPM_BUILD_ROOT/%{_bindir}/mash.py $RPM_BUILD_ROOT/%{_bindir}/mash
 mkdir -p $RPM_BUILD_ROOT/var/cache/mash
-%clean
-rm -rf $RPM_BUILD_ROOT
-
 %files
 %defattr(-,root,root,-)
 %doc AUTHORS ChangeLog COPYING README TODO

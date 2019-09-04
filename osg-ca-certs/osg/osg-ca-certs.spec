@@ -1,18 +1,16 @@
 Name:           osg-ca-certs
-Version:        1.63
+Version:        1.83
 Release:        1%{?dist}
-Summary:        OSG Packaging of the IGTF CA Certs and OSG-specific CAs, in the new OpenSSL 0.9.8/1.0.0 format.  The OSG CA Distribution contains:  1) IGTF Distribution of Authority Root Certificates (CAs accredited by the International Grid Trust Federation). Details of CAs in the OSG distribution can be found on twiki at https://twiki.grid.iu.edu/bin/view/Documentation/CaDistribution. For additional details what is in the current release, see the distribution site at http://repo.grid.iu.edu/pacman/cadist/ and change log at http://repo.grid.iu.edu/pacman/cadist/CHANGES. 
+Summary:        OSG Packaging of the IGTF CA Certs and OSG-specific CAs, in the OpenSSL 1.0.* format. 
 
 
-Group:          System Environment/Base
 License:        Unknown
-URL:            http://repo.grid.iu.edu/pacman/cadist/
+URL:            http://repo.opensciencegrid.org/pacman/cadist/
 
 # Note: currently, one needs a valid client certificate to access the source tarball
 # https://osg-svn.rtinfo.indiana.edu/cadist/release/osg-certificates-1.20NEW.tar.gz
-Source0:        osg-certificates-1.63NEW.tar.gz
+Source0:        osg-certificates-1.83NEW.tar.gz
 
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
 Provides:       grid-certificates = 7
@@ -24,7 +22,7 @@ Obsoletes:      osg-ca-certs-experimental
 Obsoletes:      osg-ca-certs-compat <= 1:1.37
 
 %description
-%{summary}
+For additional details what is in the current release, see the distribution site at http://repo.opensciencegrid.org/pacman/cadist/ and change log at http://repo.opensciencegrid.org/pacman/cadist/CHANGES.
 
 %prep
 %setup -q -n certificates
@@ -32,17 +30,15 @@ Obsoletes:      osg-ca-certs-compat <= 1:1.37
 %build
 
 %install
-rm -rf $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT/etc/grid-security/certificates
 chmod 0644 * 
 mv * $RPM_BUILD_ROOT/etc/grid-security/certificates/
 
+#[10/30/2018] commenting out to remove MD5 sum
+#[11/06/18] uncommenting the following code to include MD5 checksum again
 %check
 cd $RPM_BUILD_ROOT/etc/grid-security/certificates
 md5sum -c cacerts_md5sum.txt
-
-%clean
-rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(0644,root,root,-)
@@ -51,6 +47,78 @@ rm -rf $RPM_BUILD_ROOT
 %doc
 
 %changelog
+* Mon Jun 24 2019 Zalak Shah <zsshah@iu.edu> 1.83-1
+- CA release corresponding to IGTF 1.101 release.
+
+* Tue May 28 2019 Zalak Shah <zsshah@iu.edu> 1.82-1
+- CA release corresponding to IGTF 1.99 release.
+
+* Mon Apr 29 2019 Zalak Shah <zsshah@iu.edu> 1.81-1
+- CA release corresponding to IGTF 1.98 release.
+
+* Tue Mar 26 2019 Zalak Shah <zsshah@iu.edu> 1.80-1
+- CA release corresponding to IGTF 1.97 release.
+
+* Wed Feb 27 2019 Zalak Shah <zsshah@iu.edu> 1.79-1
+- CA release corresponding to IGTF 1.96 release.
+
+* Tue Jan 8 2019 Zalak Shah <zsshah@iu.edu> 1.78-1
+- CA release corresponding to IGTF 1.95 release.
+
+* Fri Nov 16 2018 Zalak Shah <zsshah@iu.edu> 1.76-3
+- CA release corresponding to IGTF 1.94 release.
+- Renamed 1.77NEW to 1.76NEW_2 and 1.77IGTFNEW to 1.76IGTFNEW_2
+
+* Tue Nov 06 2018 Zalak Shah <zsshah@iu.edu> 1.76-2
+- CA release corresponding to IGTF 1.94 release.
+- Included MD5 checksum again for certs
+
+* Tue Oct 30 2018 Zalak Shah <zsshah@iu.edu> 1.76-1
+- CA release corresponding to IGTF 1.94 release.
+
+* Mon Sep 24 2018 Zalak Shah <zsshah@iu.edu> 1.75-1
+- CA release corresponding to IGTF 1.93 release.
+
+* Thu Jun 28 2018 Zalak Shah <zsshah@iu.edu> 1.74-1
+- CA release corresponding to IGTF 1.92 release.
+
+* Tue May 15 2018 Zalak Shah <zsshah@iu.edu> 1.73-1
+- CA release corresponding to IGTF 1.91 release.
+
+* Mon May 7 2018 Zalak Shah <zsshah@iu.edu> 1.72-1
+- CA release corresponding to IGTF 1.90 release.
+- Added root and intermediate certificates for Lets Encrypt CA (SOFTWARE-3249)
+
+* Sun May 6 2018 Zalak Shah <zsshah@iu.edu> 1.71-1
+- CA release corresponding to IGTF 1.90 release.
+- Added LetsEncrypt CA (SOFTWARE-3249)
+
+* Tue Mar 27 2018 Zalak Shah <zsshah@iu.edu> 1.70-1
+- CA release corresponding to IGTF 1.90 release.
+
+* Tue Jan 16 2018 Zalak Shah <zsshah@iu.edu> 1.69-2
+- CA release corresponding to IGTF 1.89 release.
+- Updated summary and description for osg-ca-certs (SOFTWARE-3097)
+- Replaced repo.grid.iu.edu -> repo.opensciencegrid.org (SOFTWARE-3097)
+
+* Wed Jan 10 2018 Zalak Shah <zsshah@iu.edu> 1.69-1
+- CA release corresponding to IGTF 1.89 release.
+
+* Mon Nov 27 2017 Zalak Shah <zsshah@iu.edu> 1.68-1
+- CA release corresponding to IGTF 1.88 release.
+
+* Mon Oct 30 2017 Zalak Shah <zsshah@iu.edu> 1.67-1
+- CA release corresponding to IGTF 1.87 release.
+
+* Mon Oct 9 2017 Zalak Shah <zsshah@iu.edu> 1.66-1
+- CA release corresponding to IGTF 1.86 release.
+
+* Wed Aug 2 2017 Zalak Shah <zsshah@iu.edu> 1.65-1
+- CA release corresponding to IGTF 1.85 release.
+
+* Thu Jul 6 2017 Zalak Shah <zsshah@iu.edu> 1.64-1
+- CA release corresponding to IGTF 1.84 release.
+
 * Wed Jun 7 2017 Zalak Shah <zsshah@iu.edu> 1.63-1
 - CA release corresponding to IGTF 1.83 release.
 

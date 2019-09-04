@@ -1,14 +1,11 @@
 Name:           osg-gridftp-xrootd
 Summary:        OSG GridFTP XRootd Storage Element package
 Version:        3.4
-Release:        1%{?dist}
+Release:        2%{?dist}
 License:        GPL
-Group:          System Environment/Daemons
-URL:            https://twiki.grid.iu.edu/twiki/bin/view/Storage/WebHome
+URL:            https://opensciencegrid.github.io/docs/data/xrootd-overview/
 
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 # from VDT
-Requires: osg-version
 Requires: osg-system-profiler
 Requires: fetch-crl
 # From osg-gridftp meta package
@@ -16,11 +13,7 @@ Requires: globus-gridftp-server-progs
 Requires: vo-client
 Requires: grid-certificates >= 7
 Requires: gratia-probe-gridftp-transfer
-%ifarch %{ix86}
-Requires: liblcas_lcmaps_gt4_mapping.so.0
-%else
 Requires: liblcas_lcmaps_gt4_mapping.so.0()(64bit)
-%endif
 
 #Xrootd stuff
 Requires: xrootd-dsi
@@ -30,18 +23,18 @@ Requires: gratia-probe-xrootd-storage
 
 
 %description
-This is a meta-package for the BeStMan (Berkeley Storage Manager)
-with underlying xrootd storage element using fuse/dsi module.
+This is a meta-package for GridFTP with the underlying XRootD storage element
+using the FUSE/DSI module.
 
 %install
-
-%clean
-rm -rf $RPM_BUILD_ROOT
 
 %files
 
 
 %changelog
+* Mon Jan 08 2018 Edgar Fajardo <emfajard@ucsd.edu> 3.4-2
+- Drop the osg-version requirements (SOFTWARE-2917)
+
 * Tue May 23 2017 Brian Lin <blin@cs.wisc.edu> 3.4-1
 - Rebuild for OSG 3.4
 

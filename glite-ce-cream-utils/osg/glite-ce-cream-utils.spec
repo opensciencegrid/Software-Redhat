@@ -5,11 +5,9 @@ Release: 1.1%{?dist}%{!?dist:.el5}
 License: Apache Software License
 Vendor: EMI
 URL: http://glite.cern.ch/
-Group: System Environment/Libraries
 BuildRequires: cmake, docbook-style-xsl, libxslt
 Obsoletes: lcg-info-dynamic-software
 Provides: lcg-info-dynamic-software
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 AutoReqProv: yes
 Source: %{name}.tar.gz
 
@@ -27,17 +25,12 @@ cmake -DCMAKE_INSTALL_PREFIX:string=%{buildroot} %{_builddir}/%{name}-%{version}
 make
 
 %install
-rm -rf %{buildroot}
 mkdir -p %{buildroot}
 make install
 ln -sf /usr/libexec/glite-ce-glue1-applicationsoftware-env %{buildroot}/usr/libexec/lcg-info-dynamic-software
 
 
-%clean
-rm -rf %{buildroot}
-
 %files
-%defattr(-,root,root)
 %dir /etc/glite-ce-glue2/
 %config(noreplace) /etc/glite-ce-glue2/glite-ce-glue2.conf.template
 %dir /etc/glite-ce-dbtool

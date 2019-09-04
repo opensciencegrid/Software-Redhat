@@ -13,26 +13,21 @@
 %{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
 
 Name:           myproxy
-Version:        6.1.18
-Release:        1.4%{?dist}
+Version:        6.2.4
+Release:        1.1%{?dist}
 Summary:        Manage X.509 Public Key Infrastructure (PKI) security credentials
 
-Group:          Applications/Internet
 License:        NCSA and BSD and ASL 2.0
 URL:            http://grid.ncsa.illinois.edu/myproxy/
-Source0:        http://toolkit.globus.org/ftppub/gt6/packages/%{name}-%{version}.tar.gz
-# globus/globus-toolkit PR #70 from Jim Basney: fixes debug/error messages due
-# to an API change in globus-gssapi-gsi-12.0
-Source1:        00-osg-environment
+Source:         https://repo.gridcf.org/gct6/sources/%{name}-%{version}.tar.gz
 Source2:        myproxy-server-start
-Patch0:         pr70-error-msgs.patch
+Source8:        README
 Patch1:         Skip-.rpmsave-and-.rpmnew-files-in-etc-myproxy.d.patch
 Patch2:         EL7-Use-myproxy-server-start-script.patch
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
+BuildRequires:  gcc
 BuildRequires:  globus-common-devel >= 15
-BuildRequires:  globus-usage-devel >= 3
-BuildRequires:  globus-gssapi-gsi-devel >= 12
+BuildRequires:  globus-gssapi-gsi-devel >= 9
 BuildRequires:  globus-gss-assist-devel >= 8
 BuildRequires:  globus-gsi-sysconfig-devel >= 5
 BuildRequires:  globus-gsi-cert-utils-devel >= 8
@@ -40,17 +35,23 @@ BuildRequires:  globus-gsi-proxy-core-devel >= 6
 BuildRequires:  globus-gsi-credential-devel >= 5
 BuildRequires:  globus-gsi-callback-devel >= 4
 BuildRequires:  cyrus-sasl-devel
+BuildRequires:  krb5-devel
 BuildRequires:  openldap-devel >= 2.3
 BuildRequires:  pam-devel
+BuildRequires:  perl-generators
 BuildRequires:  voms-devel >= 1.9.12.1
+%if ! %{with_sysv}
+BuildRequires:  systemd
+%endif
 %if %{?with_checks}
 BuildRequires:  globus-proxy-utils
 BuildRequires:  globus-gsi-cert-utils-progs
 BuildRequires:  voms-clients
 %endif
+
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
-Obsoletes:      %{name}-client < 5.1-3
 Provides:       %{name}-client = %{version}-%{release}
+Obsoletes:      %{name}-client < 5.1-3
 
 %description
 MyProxy is open source software for managing X.509 Public Key Infrastructure
@@ -62,7 +63,6 @@ trusted CA certificates and Certificate Revocation Lists (CRLs).
 
 %package libs
 Summary:        Manage X.509 Public Key Infrastructure (PKI) security credentials
-Group:          System Environment/Libraries
 Requires:       globus-proxy-utils
 Requires:       globus-gssapi-gsi%{?_isa} >= 12
 Obsoletes:      %{name} < 5.1-3
@@ -79,17 +79,7 @@ Package %{name}-libs contains runtime libs for MyProxy.
 
 %package devel
 Summary:        Develop X.509 Public Key Infrastructure (PKI) security credentials
-Group:          Development/Libraries
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
-Requires:       globus-common-devel%{?_isa} >= 14
-Requires:       globus-usage-devel%{?_isa} >= 3
-Requires:       globus-gssapi-gsi-devel%{?_isa} >= 12
-Requires:       globus-gss-assist-devel%{?_isa} >= 8
-Requires:       globus-gsi-sysconfig-devel%{?_isa} >= 5
-Requires:       globus-gsi-cert-utils-devel%{?_isa} >= 8
-Requires:       globus-gsi-proxy-core-devel%{?_isa} >= 6
-Requires:       globus-gsi-credential-devel%{?_isa} >= 5
-Requires:       globus-gsi-callback-devel%{?_isa} >= 4
 
 %description devel
 MyProxy is open source software for managing X.509 Public Key Infrastructure
@@ -103,8 +93,8 @@ Package %{name}-devel contains development files for MyProxy.
 
 %package server
 Summary:        Server for X.509 Public Key Infrastructure (PKI) security credentials
-Group:          System Environment/Daemons
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
+
 Requires(pre):    shadow-utils
 %if %{?with_sysv}
 Requires(post):   chkconfig
@@ -112,9 +102,7 @@ Requires(preun):  chkconfig
 Requires(preun):  initscripts
 Requires(postun): initscripts
 %else
-Requires(post):   systemd
-Requires(preun):  systemd
-Requires(postun): systemd
+%{?systemd_requires}
 %endif
 
 %description server
@@ -131,7 +119,6 @@ Package %{name}-server contains the MyProxy server.
 # Create a separate admin clients package since they are not needed for normal
 # operation and pull in a load of perl dependencies.
 Summary:        Server for X.509 Public Key Infrastructure (PKI) security credentials
-Group:          Applications/Internet
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
 Requires:       %{name} = %{version}-%{release}
 Requires:       %{name}-server = %{version}-%{release}
@@ -149,10 +136,9 @@ Package %{name}-admin contains the MyProxy server admin commands.
 
 %package voms
 Summary:        Manage X.509 Public Key Infrastructure (PKI) security credentials
-Group:          System Environment/Libraries
-Requires:       voms-clients
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
 Obsoletes:      %{name}-libs < 6.1.6
+Requires:       voms-clients
 
 %description voms
 MyProxy is open source software for managing X.509 Public Key Infrastructure
@@ -166,10 +152,7 @@ Package %{name}-voms contains runtime libs for MyProxy to use VOMS.
 
 %package doc
 Summary:        Documentation for X.509 Public Key Infrastructure (PKI) security credentials
-Group:          Documentation
-%if %{?fedora}%{!?fedora:0} >= 10 || %{?rhel}%{!?rhel:0} >= 6
 BuildArch:      noarch
-%endif
 
 %description doc
 MyProxy is open source software for managing X.509 Public Key Infrastructure
@@ -183,7 +166,6 @@ Package %{name}-doc contains the MyProxy documentation.
 
 %prep
 %setup -q
-%patch0 -p3
 %patch1 -p1
 %patch2 -p1
 
@@ -192,9 +174,7 @@ Package %{name}-doc contains the MyProxy documentation.
 export LDFLAGS="-Wl,--as-needed -Wl,-z,defs %{?__global_ldflags}"
 
 %configure --disable-static \
-           --includedir='${prefix}/include/globus' \
-           --libexecdir='${datadir}/globus' \
-           --docdir=%{_pkgdocdir} \
+           --includedir=%{_includedir}/globus \
            --with-openldap=%{_prefix} \
            --with-voms=%{_prefix} \
            --with-kerberos5=%{_prefix} \
@@ -206,13 +186,12 @@ sed 's!CC \(.*-shared\) !CC \\\${wl}--as-needed \1 !' -i libtool
 make %{?_smp_mflags}
 
 %install
-rm -rf %{buildroot}
 make install DESTDIR=%{buildroot}
 
 # Remove libtool archives (.la files)
 rm %{buildroot}%{_libdir}/*.la
 
-# Put documentation in Fedora defaults.
+# Put documentation in Fedora defaults
 mkdir -p %{buildroot}%{_pkgdocdir}/extras
 for FILE in login.html myproxy-accepted-credentials-mapapp \
             myproxy-cert-checker myproxy-certificate-mapapp \
@@ -227,17 +206,17 @@ for FILE in LICENSE LICENSE.* PROTOCOL README VERSION ; do
    mv %{buildroot}%{_datadir}/%{name}/$FILE %{buildroot}%{_pkgdocdir}
 done
 
-# Remove license file from pkgdocdir if licensedir is used
+# Remove license files from pkgdocdir if licensedir is used
 %{?_licensedir: rm %{buildroot}%{_pkgdocdir}/LICENSE*}
 
-# Remove irrelavent example configuration files.
+# Remove irrelavent example configuration files
 for FILE in etc.inetd.conf.modifications etc.init.d.myproxy.nonroot \
-            etc.services.modifications etc.xinetd.myproxy \
-            etc.init.d.myproxy INSTALL ; do
+            etc.services.modifications etc.xinetd.myproxy etc.init.d.myproxy \
+            myproxy-server.service myproxy-server.conf INSTALL ; do
    rm %{buildroot}%{_datadir}/%{name}/$FILE
 done
 
-# Move example configuration file into place.
+# Move example configuration file into place
 mkdir -p %{buildroot}%{_sysconfdir}
 mv %{buildroot}%{_datadir}/%{name}/myproxy-server.config \
    %{buildroot}%{_sysconfdir}
@@ -261,37 +240,29 @@ install -p -m 755 %{SOURCE2} %{buildroot}%{_libexecdir}/myproxy-server-start
 
 mkdir -p %{buildroot}%{_localstatedir}/lib/myproxy
 
-# Create a directory to hold myproxy owned host certificates.
+# Create a directory to hold myproxy owned host certificates
 mkdir -p %{buildroot}%{_sysconfdir}/grid-security/myproxy
 
-# Delete systemd files installed in the wrong place (right place above)
-rm %{buildroot}%{_datadir}/%{name}/myproxy-server.service
-rm %{buildroot}%{_datadir}/%{name}/myproxy-server.conf
+# Install README file
+install -m 644 -p %{SOURCE8} %{buildroot}%{_pkgdocdir}/README
 
 # Remove myproxy-server-setup rhbz#671561
 rm %{buildroot}%{_sbindir}/myproxy-server-setup
 
-# Add file disabling SSLv3 (SOFTWARE-2471)
 mkdir -p %{buildroot}%{_sysconfdir}/myproxy.d
-install -p -m 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/myproxy.d/00-osg-environment
 
-
-%clean
-rm -rf %{buildroot}
 
 %check
 %if %{?with_checks}
 make %{?_smp_mflags} check VERBOSE=1
 %endif
 
-%post libs -p /sbin/ldconfig
-
-%postun libs -p /sbin/ldconfig
+%ldconfig_scriptlets libs
 
 %pre server
 # uid:gid 178:178 now reserved for myproxy. rhbz#733671
-getent group myproxy >/dev/null || groupadd -g 178 -r myproxy
-getent passwd myproxy >/dev/null || \
+getent group myproxy > /dev/null || groupadd -g 178 -r myproxy
+getent passwd myproxy > /dev/null || \
 useradd -u 178 -r -g myproxy -d %{_localstatedir}/lib/myproxy \
     -s /sbin/nologin -c "User to run the MyProxy service" myproxy
 exit 0
@@ -301,14 +272,14 @@ exit 0
 /sbin/chkconfig --add myproxy-server
 %else
 %post server
-systemd-tmpfiles --create myproxy-server.conf >/dev/null 2>&1 || :
+systemd-tmpfiles --create myproxy-server.conf > /dev/null 2>&1 || :
 %systemd_post myproxy-server.service
 %endif
 
 %if %{?with_sysv}
 %preun server
 if [ $1 -eq 0 ] ; then
-    /sbin/service myproxy-server stop >/dev/null 2>&1 || :
+    /sbin/service myproxy-server stop > /dev/null 2>&1 || :
     /sbin/chkconfig --del myproxy-server
 fi
 %else
@@ -319,7 +290,7 @@ fi
 %if %{?with_sysv}
 %postun server
 if [ $1 -ge 1 ] ; then
-    /sbin/service myproxy-server condrestart >/dev/null 2>&1 || :
+    /sbin/service myproxy-server condrestart > /dev/null 2>&1 || :
 fi
 %else
 %postun server
@@ -355,18 +326,7 @@ fi
 %{?_licensedir: %license LICENSE*}
 
 %files devel
-%{_includedir}/globus/myproxy.h
-%{_includedir}/globus/myproxy_authorization.h
-%{_includedir}/globus/myproxy_constants.h
-%{_includedir}/globus/myproxy_creds.h
-%{_includedir}/globus/myproxy_delegation.h
-%{_includedir}/globus/myproxy_log.h
-%{_includedir}/globus/myproxy_protocol.h
-%{_includedir}/globus/myproxy_read_pass.h
-%{_includedir}/globus/myproxy_sasl_client.h
-%{_includedir}/globus/myproxy_sasl_server.h
-%{_includedir}/globus/myproxy_server.h
-%{_includedir}/globus/verror.h
+%{_includedir}/globus/*
 %{_libdir}/libmyproxy.so
 %{_libdir}/pkgconfig/myproxy.pc
 
@@ -388,12 +348,11 @@ fi
 # myproxy-server wants exactly 700 permission on its data
 # which is just fine.
 %attr(0700,myproxy,myproxy) %dir %{_localstatedir}/lib/myproxy
-%dir %{_sysconfdir}/grid-security
 %dir %{_sysconfdir}/grid-security/myproxy
 %{_mandir}/man8/myproxy-server.8*
 %{_mandir}/man5/myproxy-server.config.5*
 %doc README.Fedora
-%{_sysconfdir}/myproxy.d/00-osg-environment
+%dir %{_sysconfdir}/myproxy.d
 
 %files admin
 %{_sbindir}/myproxy-admin-addservice
@@ -415,22 +374,91 @@ fi
 %{_libdir}/libmyproxy_voms.so
 
 %files doc
+%dir %{_pkgdocdir}
 %doc %{_pkgdocdir}/extras
 %{!?_licensedir: %doc %{_pkgdocdir}/LICENSE*}
 %{?_licensedir: %license LICENSE*}
 
 %changelog
-* Fri Nov 18 2016 Tim Cartwright <cat@cs.wisc.edu> - 6.1.18-1.4
+* Thu Jul 11 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 6.2.4-1.1.osg
+- Merge OSG changes
+- Drop 00-osg-environment (unnecessary)
+
+* Wed Feb 27 2019 Mattias Ellert <mattias.ellert@physics.uu.se> - 6.2.4-1
+- Remove usage statistics collection support
+
+* Fri Feb 01 2019 Fedora Release Engineering <releng@fedoraproject.org> - 6.2.3-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
+
+* Thu Sep 13 2018 Mattias Ellert <mattias.ellert@physics.uu.se> - 6.2.3-1
+- Switch upstream to Grid Community Toolkit
+- First Grid Community Toolkit release (6.2.0)
+  - Disable usage statistics reporting by default
+  - Fix option parsing bug
+- Merge GT6 update 6.1.29 into GCT (6.2.1)
+- Use 2048 bit CA key for myproxy tests (6.2.2)
+- Merge GT6 update 6.1.30 into GCT (6.2.3)
+
+* Sat Sep 01 2018 Mattias Ellert <mattias.ellert@physics.uu.se> - 6.1.31-1
+- GT6 update: Use 2048 bit keys to support openssl 1.1.1
+- Drop patch myproxy-2048-bits.patch (accepted upstream)
+
+* Sun Aug 26 2018 Mattias Ellert <mattias.ellert@physics.uu.se> - 6.1.30-3
+- Use 2048 bit CA key for myproxy tests
+
+* Fri Jul 13 2018 Fedora Release Engineering <releng@fedoraproject.org> - 6.1.30-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_29_Mass_Rebuild
+
+* Thu Jun 28 2018 Mattias Ellert <mattias.ellert@physics.uu.se> - 6.1.30-1
+- Update to 6.1.30: Remove macro overquoting
+
+* Thu May 03 2018 Mattias Ellert <mattias.ellert@physics.uu.se> - 6.1.29-1
+- Update to 6.1.29: Fix -Werror=format-security errors
+
+* Thu Feb 08 2018 Fedora Release Engineering <releng@fedoraproject.org> - 6.1.28-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
+
+* Thu Aug 03 2017 Fedora Release Engineering <releng@fedoraproject.org> - 6.1.28-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Binutils_Mass_Rebuild
+
+* Wed Jul 26 2017 Fedora Release Engineering <releng@fedoraproject.org> - 6.1.28-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Mass_Rebuild
+
+* Sat Jun 24 2017 Mattias Ellert <mattias.ellert@physics.uu.se> - 6.1.28-1
+- Update to 6.1.28
+  - Fix error check (6.1.26)
+  - Remove legacy SSLv3 support (6.1.27)
+
+* Mon Mar 27 2017 Mattias Ellert <mattias.ellert@physics.uu.se> - 6.1.25-3
+- EPEL 5 End-Of-Life specfile clean-up
+  - Remove Group and BuildRoot tags
+  - Remove _pkgdocdir and _initddir macro definitions
+  - Drop redundant Requires corresponding to autogenerated pkgconfig Requires
+  - Don't clear the buildroot in the install section
+  - Remove the clean section
+  - Drop the myproxy-openssl098.patch
+
+* Fri Feb 10 2017 Fedora Release Engineering <releng@fedoraproject.org> - 6.1.25-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
+
+* Wed Jan 11 2017 Mattias Ellert <mattias.ellert@physics.uu.se> - 6.1.25-1
+- Update to 6.1.25 (Fixes for OpenSSL 1.1.0)
+
+* Fri Nov 18 2016 Tim Cartwright <cat@cs.wisc.edu> - 6.1.18-1.4.osg
 - Declare ownership of /var/run/myproxy-server, managed by systemd tmpfiles
 
-* Thu Oct 20 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 6.1.18-1.3
+* Thu Oct 20 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 6.1.18-1.3.osg
 - Skip .rpmsave and .rpmnew files in /etc/myproxy.d
 - Source sysconfig files on EL7 (SOFTWARE-2471)
 
-* Wed Oct 19 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 6.1.18-1.2
+* Wed Oct 19 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 6.1.18-1.2.osg
 - Disable SSLv3 (SOFTWARE-2471)
 
-* Wed Aug 31 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 6.1.18-1.1
+* Fri Sep 02 2016 Mattias Ellert <mattias.ellert@physics.uu.se> - 6.1.19-1
+- Update to 6.1.19 (update myproxy debug/error msgs for accepted_peer_names
+  type change)
+
+* Wed Aug 31 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 6.1.18-1.1.osg
 - Patch to fix debug/error messages for accepted_peer_names (PR #70)
     require globus-gssapi-gsi >= 12 due to the API change that caused this
 

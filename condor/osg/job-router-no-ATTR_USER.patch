@@ -1,0 +1,24 @@
+commit 5644330491899e42aba23175f6261ac0c79eb3ca
+Author: Jaime Frey <jfrey@cs.wisc.edu>
+Date:   Wed Jan 16 14:54:05 2019 -0600
+
+    Job Router shouldn't set User attribute in routed job. #6856
+    
+    When the Job Router is routing between two schedds, they may have
+    different values for UID_DOMAIN, meaning that the User attribute will be
+    different. The target schedd will set User using its UID_DOMAIN setting.
+
+diff --git a/src/condor_job_router/VanillaToGrid.cpp b/src/condor_job_router/VanillaToGrid.cpp
+index e2d666e065..3494382b44 100644
+--- a/src/condor_job_router/VanillaToGrid.cpp
++++ b/src/condor_job_router/VanillaToGrid.cpp
+@@ -72,7 +72,8 @@ bool VanillaToGrid::vanillaToGrid(classad::ClassAd * ad, int target_universe, co
+ 	ad->Delete("CondorVersion");  // TODO: Find #define
+ 	ad->Delete(ATTR_CORE_SIZE);
+ 	ad->Delete(ATTR_GLOBAL_JOB_ID); // Store in different ATTR here?
+-	//ad->Delete(ATTR_OWNER); // How does schedd filter? 
++	//ad->Delete(ATTR_OWNER); // How does schedd filter?
++	ad->Delete(ATTR_USER); // Schedd will set this with the proper UID_DOMAIN
+ 	ad->Delete(ATTR_Q_DATE);
+ 	ad->Delete(ATTR_JOB_REMOTE_WALL_CLOCK);
+ 	ad->Delete(ATTR_SERVER_TIME);

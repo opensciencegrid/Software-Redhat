@@ -3,11 +3,9 @@ Version:        1.0
 Release:        3%{?dist}
 Summary:        An empty gridengine package
 
-Group:          Applications/System
 License:        Unknown
 URL:            http://vdt.cs.wisc.edu
 
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
 Provides:       gridengine
@@ -24,8 +22,6 @@ so that it believes that Gridengine has been installed via RPM.
 %build
 
 %install
-
-%clean
 
 %files
 

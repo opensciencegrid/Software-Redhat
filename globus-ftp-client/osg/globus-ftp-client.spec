@@ -2,21 +2,16 @@
 
 Name:		globus-ftp-client
 %global _name %(tr - _ <<< %{name})
-Version:	8.29
-Release:	1.1%{?dist}
+Version:	9.1
+Release:	2.1%{?dist}
+Summary:	Grid Community Toolkit - GridFTP Client Library
 
-Summary:	Globus Toolkit - GridFTP Client Library
-
-Group:		System Environment/Libraries
 License:	ASL 2.0
-URL:		http://toolkit.globus.org/
-Source:		http://toolkit.globus.org/ftppub/gt6/packages/%{_name}-%{version}.tar.gz
-#		README file
-Source8:	GLOBUS-GRIDFTP
-Patch0:         1853-ssh-bin.patch
-BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+URL:		https://github.com/gridcf/gct/
+Source:		https://repo.gridcf.org/gct6/sources/%{_name}-%{version}.tar.gz
+Source8:	README
 
-Requires:	globus-xio-popen-driver%{?_isa} >= 2
+BuildRequires:	gcc
 BuildRequires:	globus-common-devel >= 15
 BuildRequires:	globus-ftp-control-devel >= 4
 BuildRequires:	globus-gsi-callback-devel >= 4
@@ -33,66 +28,57 @@ BuildRequires:	globus-gridftp-server-progs >= 7
 BuildRequires:	openssl
 BuildRequires:	perl(Test::More)
 
+Requires:	globus-xio-popen-driver%{?_isa} >= 2
+
 %package devel
-Summary:	Globus Toolkit - GridFTP Client Library Development Files
-Group:		Development/Libraries
+Summary:	Grid Community Toolkit - GridFTP Client Library Development Files
 Requires:	%{name}%{?_isa} = %{version}-%{release}
-Requires:	globus-common-devel%{?_isa} >= 15
-Requires:	globus-ftp-control-devel%{?_isa} >= 4
-Requires:	globus-gsi-callback-devel%{?_isa} >= 4
-Requires:	globus-gsi-credential-devel%{?_isa} >= 5
-Requires:	globus-gsi-sysconfig-devel%{?_isa} >= 5
-Requires:	globus-gssapi-gsi-devel%{?_isa} >= 10
-Requires:	globus-xio-devel%{?_isa} >= 3
-Requires:	globus-xio-popen-driver-devel%{?_isa} >= 2
-Requires:	openssl-devel%{?_isa}
 
 %package doc
-Summary:	Globus Toolkit - GridFTP Client Library Documentation Files
-Group:		Documentation
-%if %{?fedora}%{!?fedora:0} >= 10 || %{?rhel}%{!?rhel:0} >= 6
+Summary:	Grid Community Toolkit - GridFTP Client Library Documentation Files
 BuildArch:	noarch
-%endif
 
 %description
-The Globus Toolkit is an open source software toolkit used for building Grid
-systems and applications. It is being developed by the Globus Alliance and
-many others all over the world. A growing number of projects and companies are
-using the Globus Toolkit to unlock the potential of grids for their cause.
+The Grid Community Toolkit (GCT) is an open source software toolkit used for
+building grid systems and applications. It is a fork of the Globus Toolkit
+originally created by the Globus Alliance. It is supported by the Grid
+Community Forum (GridCF) that provides community-based support for core
+software packages in grid computing.
 
 The %{name} package contains:
 GridFTP Client Library
 
 %description devel
-The Globus Toolkit is an open source software toolkit used for building Grid
-systems and applications. It is being developed by the Globus Alliance and
-many others all over the world. A growing number of projects and companies are
-using the Globus Toolkit to unlock the potential of grids for their cause.
+The Grid Community Toolkit (GCT) is an open source software toolkit used for
+building grid systems and applications. It is a fork of the Globus Toolkit
+originally created by the Globus Alliance. It is supported by the Grid
+Community Forum (GridCF) that provides community-based support for core
+software packages in grid computing.
 
 The %{name}-devel package contains:
 GridFTP Client Library Development Files
 
 %description doc
-The Globus Toolkit is an open source software toolkit used for building Grid
-systems and applications. It is being developed by the Globus Alliance and
-many others all over the world. A growing number of projects and companies are
-using the Globus Toolkit to unlock the potential of grids for their cause.
+The Grid Community Toolkit (GCT) is an open source software toolkit used for
+building grid systems and applications. It is a fork of the Globus Toolkit
+originally created by the Globus Alliance. It is supported by the Grid
+Community Forum (GridCF) that provides community-based support for core
+software packages in grid computing.
 
 The %{name}-doc package contains:
 GridFTP Client Library Documentation Files
 
 %prep
 %setup -q -n %{_name}-%{version}
-%patch0 -p1
 
 %build
 # Reduce overlinking
 export LDFLAGS="-Wl,--as-needed -Wl,-z,defs %{?__global_ldflags}"
 
-export GLOBUS_VERSION=6.0
+export GLOBUS_VERSION=6.2
 %configure --disable-static \
-	   --includedir='${prefix}/include/globus' \
-	   --libexecdir='${datadir}/globus' \
+	   --includedir=%{_includedir}/globus \
+	   --libexecdir=%{_datadir}/globus \
 	   --docdir=%{_pkgdocdir}
 
 # Reduce overlinking
@@ -101,7 +87,6 @@ sed 's!CC \(.*-shared\) !CC \\\${wl}--as-needed \1 !' -i libtool
 make %{?_smp_mflags}
 
 %install
-rm -rf %{buildroot}
 make install DESTDIR=%{buildroot}
 
 # Remove libtool archives (.la files)
@@ -114,15 +99,13 @@ install -m 644 -p %{SOURCE8} %{buildroot}%{_pkgdocdir}/README
 %{?_licensedir: rm %{buildroot}%{_pkgdocdir}/GLOBUS_LICENSE}
 
 %check
-exit 0
-##GLOBUS_HOSTNAME=localhost make %{?_smp_mflags} check VERBOSE=1
+if grep -q @SSH_BIN@ %{buildroot}%{_datadir}/globus/gridftp-ssh; then
+    echo @SSH_BIN@ unexpanded
+    exit 1
+fi
+GLOBUS_HOSTNAME=localhost make %{?_smp_mflags} check VERBOSE=1
 
-%clean
-rm -rf %{buildroot}
-
-%post -p /sbin/ldconfig
-
-%postun -p /sbin/ldconfig
+%ldconfig_scriptlets
 
 %files
 %{_libdir}/libglobus_ftp_client.so.*
@@ -147,6 +130,67 @@ rm -rf %{buildroot}
 %{?_licensedir: %license GLOBUS_LICENSE}
 
 %changelog
+* Tue Feb 26 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 9.1-2.1
+- Merge OSG changes (SOFTWARE-3586)
+
+* Fri Nov 16 2018 Mattias Ellert <mattias.ellert@physics.uu.se> - 9.1-2
+- Bump GCT release version to 6.2
+
+* Thu Sep 13 2018 Mattias Ellert <mattias.ellert@physics.uu.se> - 9.1-1
+- Switch upstream to Grid Community Toolkit
+- First Grid Community Toolkit release (9.0)
+- Use 2048 bit RSA key for tests (9.1)
+
+* Sat Sep 01 2018 Mattias Ellert <mattias.ellert@physics.uu.se> - 8.37-1
+- GT6 update: Use 2048 bit keys to support openssl 1.1.1
+
+* Fri Jul 13 2018 Fedora Release Engineering <releng@fedoraproject.org> - 8.36-5
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_29_Mass_Rebuild
+
+* Wed Feb 07 2018 Fedora Release Engineering <releng@fedoraproject.org> - 8.36-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
+
+* Wed Aug 02 2017 Fedora Release Engineering <releng@fedoraproject.org> - 8.36-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Binutils_Mass_Rebuild
+
+* Wed Jul 26 2017 Fedora Release Engineering <releng@fedoraproject.org> - 8.36-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Mass_Rebuild
+
+* Tue Jul 04 2017 Mattias Ellert <mattias.ellert@physics.uu.se> - 8.36-1
+- GT6 update: Replace deprecated perl POSIX::tmpnam with File::Temp::tmpnam
+- Drop patch globus-ftp-client-perl-posix.patch (accepted upstream)
+
+* Sun Jun 25 2017 Mattias Ellert <mattias.ellert@physics.uu.se> - 8.35-2
+- Adapt to Perl 5.26 - POSIX::tmpnam() no longer available
+
+* Thu Jun 22 2017 Mattias Ellert <mattias.ellert@physics.uu.se> - 8.35-1
+- GT6 update: Remove some redundant tests to reduce test time
+
+* Mon Mar 27 2017 Mattias Ellert <mattias.ellert@physics.uu.se> - 8.34-2
+- EPEL 5 End-Of-Life specfile clean-up
+  - Remove Group and BuildRoot tags
+  - Remove _pkgdocdir macro definition
+  - Drop redundant Requires corresponding to autogenerated pkgconfig Requires
+  - Don't clear the buildroot in the install section
+  - Remove the clean section
+  - Drop the globus-ftp-client-openssl098.patch
+
+* Fri Mar 17 2017 Mattias Ellert <mattias.ellert@physics.uu.se> - 8.34-1
+- GT6 update: Add FTP_TEST_RESTART_AFTER_RANGE=n to force restarts after n
+  range markers for restart points 22 and 24 (RETR_RESPONSE and STOR_RESPONSE)
+
+* Fri Feb 10 2017 Fedora Release Engineering <releng@fedoraproject.org> - 8.33-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
+
+* Fri Nov 04 2016 Mattias Ellert <mattias.ellert@physics.uu.se> - 8.33-1
+- GT6 update
+
+* Thu Oct 13 2016 Mattias Ellert <mattias.ellert@physics.uu.se> - 8.32-2
+- Rebuild for openssl 1.1.0 (Fedora 26)
+
+* Thu Sep 01 2016 Mattias Ellert <mattias.ellert@physics.uu.se> - 8.32-1
+- GT6 update: Updates for OpenSSL 1.1.0
+
 * Mon Aug 08 2016 Matyas Selmeci <matyas@cs.wisc.edu> - 8.29-1.1
 - Merge OSG changes (SOFTWARE-2197)
 

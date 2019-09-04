@@ -1,12 +1,11 @@
 #-------------------------------------------------------------------------------
 # Package definitions
 #-------------------------------------------------------------------------------
-Name:      xrootd-voms-plugin
+Name:      vomsxrd
 Epoch:     1
-Version:   0.4.0
-Release:   1%{?dist}
+Version:   0.6.0
+Release:   3%{?dist}
 Summary:   VOMS attribute extractor plug-in for XRootD
-Group:     System Environment/Libraries
 License:   BSD
 URL:       http://gganis.github.io/vomsxrd/
 Prefix:    /usr
@@ -15,17 +14,20 @@ Prefix:    /usr
 # cd vomsxrd
 # ./packaging/maketar.sh --prefix vomsxrd --output ~/rpmbuild/SOURCES/vomsxrd.tar.gz
 Source0:   vomsxrd-%{version}.tar.gz
-BuildRoot: %{_tmppath}/%{name}-root
 
 BuildRequires: cmake >= 2.6
 BuildRequires: voms >= 2.0.6
 BuildRequires: voms-devel >= 2.0.6
-BuildRequires: xrootd-libs >= 1:4.1.0
-BuildRequires: xrootd-devel >= 1:4.1.0
+BuildRequires: xrootd-libs >= 1:4.9.1
+BuildRequires: xrootd-devel >= 1:4.9.1
 
 
 Requires: voms >= 2.0.6
-Requires: xrootd-libs >= 1:4.1.0
+Requires: xrootd-libs >= 1:4.9.1
+
+
+Provides: xrootd-voms-plugin = %{version}-%{release}
+Obsoletes: xrootd-voms-plugin < 1:0.6.0-3
 
 %description
 The VOMS attribute extractor plug-in for XRootD
@@ -35,7 +37,6 @@ The VOMS attribute extractor plug-in for XRootD
 #-------------------------------------------------------------------------------
 %package devel
 Summary: Headers for using the VOMS attribute extractor plug-in
-Group:   System Environment/Libraries
 Requires: %{name} = %{epoch}:%{version}-%{release}
 %description devel
 Headers for using the VOMS attribute extractor plug-in
@@ -61,12 +62,8 @@ make VERBOSE=1 %{?_smp_mflags}
 %install
 cd vomsxrd-%{version}
 cd build
-rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
 cd ..
-
-%clean
-rm -rf $RPM_BUILD_ROOT
 
 #-------------------------------------------------------------------------------
 # Post actions
@@ -94,6 +91,21 @@ rm -rf $RPM_BUILD_ROOT
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Thu Aug 1 2019 Edgar Fajardo <emfajard@ucsd.edu> - 1:0.6.0-3
+- Change the name to vomsxrd (SOFTWARE-3702)
+
+* Wed May 15 2019 Carl Edquist <edquist@cs.wisc.edu> - 1:0.6.0-2
+- Add Provides/Obsoletes for vomsxrd (SOFTWARE-3679)
+
+* Tue Apr 30 2019 Carl Edquist <edquist@cs.wisc.edu> - 1:0.6.0-1
+- Update to v0.6.0 (SOFTWARE-3679)
+
+* Wed Apr 10 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 1:0.4.0-3
+- Rebuild against xrootd 4.9.1 (SOFTWARE-3485)
+
+* Wed Feb 27 2019 Carl Edquist <edquist@cs.wisc.edu> - 1:0.4.0-2
+- Rebuild against xrootd 4.9.0 (SOFTWARE-3485)
+
 * Mon Jun 20 2016 Edgar Fajardo <emfajard@ucsd.edu> -1:0.4.0-1
 - Updated to v0.4.0 SOFTWARE-2363
 

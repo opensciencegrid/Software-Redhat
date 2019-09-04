@@ -1,5 +1,3 @@
-%{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
-
 %if 0%{?fedora} >= 23 || 0%{?rhel} >= 7
 %global use_systemd 1
 %else
@@ -8,28 +6,25 @@
 %endif
 
 Name: koji
-Version: 1.11.0
-Release: 1.5%{?dist}
+Version: 1.11.1
+Release: 1.1%{?dist}
 License: LGPLv2 and GPLv2+
 # koji.ssl libs (from plague) are GPLv2+
 Summary: Build system tools
-Group: Applications/System
-URL: https://pagure.io/fork/ausil/koji/branch/fedora-infra
-Patch0: fedora-config.patch
+URL: https://pagure.io/koji/releases
 Patch101: koji_passwd_cache.patch
 Patch102: kojid_setup_dns.patch
 Patch103: kojid_scmbuild_check_spec_after_running_sourcecmd.patch
 Patch104: koji_passwd_retry.patch
 Patch105: koji_proxy_cert.patch
 Patch106: kojicli_setup_dns.patch
-Patch109: createrepo_sha1.patch
 Patch110: kojiweb_getfile_nontext_fix.patch
 Patch111: db-upgrade-1.10-to-1.11.patch
+Patch112: Fix-type-in-add-group-pkg.patch
+Patch113: kojira-accept-sleeptime-option.patch
 
 Source: koji-%{version}.tar.bz2
-Source1: README.epel
 
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch: noarch
 Requires: python-krbV >= 1.0.13
 Requires: rpm-python
@@ -44,7 +39,7 @@ BuildRequires: python-sphinx
 BuildRequires: systemd
 BuildRequires: pkgconfig
 %endif
-%if 0%{?fedora} || 0%{?rhel} >= 7
+%if ! 0%{?osg} && (0%{?fedora} || 0%{?rhel} >= 7)
 Requires: python-libcomps
 %endif
 
@@ -54,15 +49,11 @@ contains shared libraries and the command-line interface.
 
 %package hub
 Summary: Koji XMLRPC interface
-Group: Applications/Internet
 License: LGPLv2 and GPLv2
 # rpmdiff lib (from rpmlint) is GPLv2 (only)
 Requires: httpd
 Requires: mod_wsgi
 Requires: postgresql-python
-%if 0%{?rhel} == 5
-Requires: python-simplejson
-%endif
 Requires: %{name} = %{version}-%{release}
 
 %description hub
@@ -70,17 +61,11 @@ koji-hub is the XMLRPC interface to the koji database
 
 %package hub-plugins
 Summary: Koji hub plugins
-Group: Applications/Internet
 License: LGPLv2
 Requires: %{name} = %{version}-%{release}
 Requires: %{name}-hub = %{version}-%{release}
 Requires: python-qpid >= 0.7
-%if 0%{?rhel} >= 6
 Requires: python-qpid-proton
-%endif
-%if 0%{?rhel} == 5
-Requires: python-ssl
-%endif
 Requires: cpio
 
 %description hub-plugins
@@ -88,7 +73,6 @@ Plugins to the koji XMLRPC interface
 
 %package builder
 Summary: Koji RPM builder daemon
-Group: Applications/System
 License: LGPLv2 and GPLv2+
 #mergerepos (from createrepo) is GPLv2+
 Requires: %{name} = %{version}-%{release}
@@ -109,14 +93,7 @@ Requires: /usr/bin/cvs
 Requires: /usr/bin/svn
 Requires: /usr/bin/git
 Requires: python-cheetah
-%if 0%{?rhel} == 5
-Requires: createrepo >= 0.4.11-2
-Requires: python-hashlib
-Requires: python-createrepo
-%endif
-%if 0%{?fedora} >= 9 || 0%{?rhel} > 5
 Requires: createrepo >= 0.9.2
-%endif
 
 %description builder
 koji-builder is the daemon that runs on build machines and executes
@@ -124,7 +101,6 @@ tasks that come through the Koji system.
 
 %package vm
 Summary: Koji virtual machine management daemon
-Group: Applications/System
 License: LGPLv2
 Requires: %{name} = %{version}-%{release}
 %if %{use_systemd}
@@ -151,7 +127,6 @@ virtual machine. This package is not required for most installations.
 
 %package utils
 Summary: Koji Utilities
-Group: Applications/Internet
 License: LGPLv2
 Requires: postgresql-python
 Requires: %{name} = %{version}-%{release}
@@ -166,7 +141,6 @@ Utilities for the Koji system
 
 %package web
 Summary: Koji Web UI
-Group: Applications/Internet
 License: LGPLv2
 Requires: httpd
 Requires: mod_wsgi
@@ -181,29 +155,23 @@ koji-web is a web UI to the Koji system.
 
 %prep
 %setup -q
-cp %{SOURCE1} README.epel
-%patch0 -p1 -b orig
 %patch101 -p1
 %patch102 -p1
 %patch103 -p1
 %patch104 -p1
 %patch105 -p1
 %patch106 -p1
-%patch109 -p1
 %patch110 -p1
 %patch111 -p1
+%patch112 -p1
+%patch113 -p1
 
 %build
 
 %install
-rm -rf $RPM_BUILD_ROOT
 make DESTDIR=$RPM_BUILD_ROOT %{?install_opt} install
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
 %files
-%defattr(-,root,root)
 %{_bindir}/*
 %{python_sitelib}/%{name}
 %config(noreplace) %{_sysconfdir}/koji.conf
@@ -211,7 +179,6 @@ rm -rf $RPM_BUILD_ROOT
 %doc docs Authors COPYING LGPL
 
 %files hub
-%defattr(-,root,root)
 %{_datadir}/koji-hub
 %dir %{_libexecdir}/koji-hub
 %{_libexecdir}/koji-hub/rpmdiff
@@ -221,14 +188,12 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_sysconfdir}/koji-hub/hub.conf.d
 
 %files hub-plugins
-%defattr(-,root,root)
 %dir %{_prefix}/lib/koji-hub-plugins
 %{_prefix}/lib/koji-hub-plugins/*.py*
 %dir %{_sysconfdir}/koji-hub/plugins
 %{_sysconfdir}/koji-hub/plugins/*.conf
 
 %files utils
-%defattr(-,root,root)
 %{_sbindir}/kojira
 %if %{use_systemd}
 %{_unitdir}/kojira.service
@@ -246,7 +211,6 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/koji-shadow/koji-shadow.conf
 
 %files web
-%defattr(-,root,root)
 %{_datadir}/koji-web
 %dir %{_sysconfdir}/kojiweb
 %config(noreplace) %{_sysconfdir}/kojiweb/web.conf
@@ -254,11 +218,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_sysconfdir}/kojiweb/web.conf.d
 
 %files builder
-%defattr(-,root,root)
 %{_sbindir}/kojid
 %dir %{_libexecdir}/kojid
 %{_libexecdir}/kojid/mergerepos
-%defattr(-,root,root)
 %dir %{_prefix}/lib/koji-builder-plugins
 %{_prefix}/lib/koji-builder-plugins/*.py*
 %if %{use_systemd}
@@ -300,8 +262,6 @@ fi
 %endif
 
 %files vm
-%defattr(-,root,root)
-%doc README.epel
 %{_sbindir}/kojivmd
 #dir %{_datadir}/kojivmd
 %{_datadir}/kojivmd/kojikamid
@@ -360,6 +320,23 @@ fi
 %endif
 
 %changelog
+* Thu Mar 14 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.11.1-1.1.osg
+- Drop python-libcomps requirement
+
+* Thu Feb 21 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.11.1-1.osg
+- Update to 1.11.1 (SOFTWARE-3595)
+- Build from developer tarball
+
+* Tue Oct 30 2018 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.11.0-1.7
+- Add kojira-accept-sleeptime-option.patch
+
+* Fri Dec 22 2017 Mátyás Selmeci <matyas@cs.wisc.edu>
+- Drop el5-isms (SOFTWARE-3050)
+- Drop createrepo_sha1.patch -- was only required for el5
+
+* Wed Aug 23 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.11.0-1.6
+- Fix `koji add-group-pkg` to set the correct type (SOFTWARE-2870)
+
 * Thu Jan 19 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.11.0-1.5
 - Require python-requests-2.6.0 (fixes "call 8 (rawUpload) failed: syntax error: line 1, column 49" error in kojid)
 

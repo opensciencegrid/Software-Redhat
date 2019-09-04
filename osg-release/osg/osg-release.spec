@@ -1,11 +1,10 @@
 Name:           osg-release
 Version:        3.4
-Release:        1%{?dist}
+Release:        8%{?dist}
 Summary:        OSG Software for Enterprise Linux repository configuration
 
-Group:          System Environment/Base
 License:        GPL
-URL:            http://vdt.cs.wisc.edu/repos
+URL:            https://repo.opensciencegrid.org/
 
 # This is a OSG Software maintained package which is specific to
 # our distribution.  Thus the source is only available from
@@ -17,10 +16,10 @@ Source1:        repoinfo.txt
 Source2:        template.repo.standard
 Source3:        template.repo.basic
 Source4:        template.repo.koji
+Source5:        template.repo.direct
 
 Source40:       RPM-GPG-KEY-OSG
 
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildArch:      noarch
 
@@ -41,7 +40,6 @@ exit 0
 
 
 %install
-rm -rf $RPM_BUILD_ROOT
 
 #GPG Key
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/pki/rpm-gpg
@@ -54,9 +52,6 @@ mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d
 install -m 644 *.repo $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d
 sed -i -e 's/gpgcheck=1/gpgcheck=0/' $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d/*-minefield.repo
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
 %files
 %defattr(-,root,root,-)
 %config(noreplace) /etc/yum.repos.d/*
@@ -64,6 +59,27 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue May 14 2019 Carl Edquist <edquist@cs.wisc.edu> - 3.4-8
+- Use https for koji repos (SOFTWARE-3653)
+
+* Wed Feb 13 2019 Carl Edquist <edquist@cs.wisc.edu> - 3.4-7
+- Add rolling release for upcoming (SOFTWARE-3465)
+
+* Mon Feb 11 2019 Carl Edquist <edquist@cs.wisc.edu> - 3.4-6
+- Add rolling release repo (SOFTWARE-3465)
+
+* Wed May 02 2018 Carl Edquist <edquist@cs.wisc.edu> - 3.4-5
+- Drop consider_as_osg from *.repo files (SOFTWARE-3204)
+
+* Wed Mar 07 2018 Brian Lin <blin@cs.wisc.edu> - 3.4-4
+- Revert HTTP -> HTTPS testing for Koji repositories due to certificate verification failures
+
+* Fri Feb 08 2018 Brian Lin <blin@cs.wisc.edu> - 3.4-3
+- Change references from repo.grid.iu.edu to repo.opensciencegrid.org
+
+* Wed Sep 13 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.4-2
+- Generate goc repos as 'direct' (no mirror) (SOFTWARE-2890)
+
 * Wed May 10 2017 Brian Lin <blin@cs.wisc.edu> - 3.4-1
 - Release OSG 3.4
 

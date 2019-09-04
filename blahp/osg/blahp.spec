@@ -4,22 +4,17 @@
 %define bl_libexecdir %{_libexecdir}/%{name}
 
 Name:		blahp
-Version:	1.18.29.bosco
-Release:	3%{?gitrev:.%{gitrev}}%{?dist}
+Version:	1.18.41.bosco
+Release:	2%{?gitrev:.%{gitrev}}%{?dist}
 Summary:	gLite BLAHP daemon
 
-Group:		System/Libraries
 License:	Apache 2.0
 URL:		https://github.com/osg-bosco/BLAH
 
-# Generated with:
-# git archive v1_18_bosco | gzip -9 > %{name}-%{version}.tar.gz
-#
 # Pre-release build tarballs should be generated with:
 # git archive %{gitrev} | gzip -9 > %{name}-%{version}-%{gitrev}.tar.gz
 Source0:        %{name}-%{version}%{?gitrev:-%{gitrev}}.tar.gz
 
-BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildRequires:  automake
 BuildRequires:  autoconf
 BuildRequires:  libtool
@@ -40,7 +35,7 @@ BuildRequires:  docbook-style-xsl, libxslt
 %{summary}
 
 %prep
-%setup -c -n %{name}-%{version}
+%setup
 
 %build
 ./bootstrap
@@ -57,7 +52,6 @@ unset LDFLAGS
 make %{?_smp_mflags}
 
 %install
-rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
 
 rm -f $RPM_BUILD_ROOT%{_libdir}/*.la
@@ -153,9 +147,6 @@ done
 
 mv $RPM_BUILD_ROOT%{_docdir}/glite-ce-blahp-@PVER@ $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
 %post
 
 if [ $1 -eq 1 ] ; then
@@ -183,6 +174,53 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Thu Aug 29 2019 Brian Lin <blin@cs.wisc.edu> - 1.18.41.bosco-2
+- Rebuild against HTCondor 8.8.4
+
+* Wed May 15 2019 Carl Edquist <edquist@cs.wisc.edu> - 1.18.41.bosco-1
+- Fix double-escaping in new condor env format (SOFTWARE-3589)
+
+* Fri May 10 2019 Carl Edquist <edquist@cs.wisc.edu> - 1.18.40.bosco-1
+- Update PBS Pro qstat options for completed jobs (SOFTWARE-3675)
+- Apply patches from condor blahp (SOFTWARE-3587)
+- Use the original proxy if blahp proxy delegation is disabled (SOFTWARE-3661)
+- Use new condor env format (SOFTWARE-3589)
+
+* Mon Feb 11 2019 Carl Edquist <edquist@cs.wisc.edu> - 1.18.39.bosco-1
+- Propagate signals to payload jobs (SOFTWARE-3554)
+
+* Fri Sep 14 2018 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.18.38.bosco-1
+- Disable blahp proxy renewal/limited proxies in the default config (SOFTWARE-3409)
+
+* Wed Jun 13 2018 Carl Edquist <edquist@cs.wisc.edu> - 1.18.37.bosco-1
+- Disable command substitution in shell word expansion (SOFTWARE-3288)
+
+* Thu Mar 15 2018 Brian Lin <blin@cs.wisc.edu> - 1.18.36.bosco-1
+- Verify input file existence before submission (SOFTWARE-3154)
+- Save debugging dirs if job submission fails (SOFTWARE-2827)
+
+* Fri Dec 1 2017 Brian Lin <blin@cs.wisc.edu> - 1.18.35.bosco-1
+- Fix segfault when submitting jobs with limited proxies
+
+* Tue Oct 31 2017 Brian Lin <blin@cs.wisc.edu> - 1.18.34.bosco-1
+- Fix memory usage parsing for SLURM and PBS (SOFTWARE-2929)
+- Fix UnicodeDecodeError when reading blah.config (SOFTWARE-2953)
+
+* Tue Aug 29 2017 Brian Lin <blin@cs.wisc.edu> - 1.18.33.bosco-1
+- Fix bug that caused jobs submitted to PBS batch systems to be held
+  with "Error parsing classad or job not found" (SOFTWARE-2875)
+- Fix parsing of time fields for slurm jobs (SOFTWARE-2871)
+
+* Tue Jul 25 2017 Brian Lin <blin@cs.wisc.edu> - 1.18.32.bosco-1
+- Fix bug that broke shell parsing of `*_binpath` config values
+- Set default bin paths to `/usr/bin` to remove the overhead of `which` for each PBS, LSF, and SGE call.
+
+* Tue Jul 11 2017 Brian Lin <blin@cs.wisc.edu> - 1.18.31.bosco-1
+- Add blahp configuration to differentiate PBS flavors (SOFTWARE-2628)
+
+* Thu Mar 16 2017 Brian Lin <blin@cs.wisc.edu> - 1.18.30.bosco-1
+- Fix multicore request for SLURM batch systems (SOFTWARE-2774)
+
 * Thu Mar 16 2017 Brian Lin <blin@cs.wisc.edu> - 1.18.29.bosco-2
 - Rebuild against condor-8.7.1
 

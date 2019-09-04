@@ -5,4 +5,4 @@
 # make dist
 # cp lcmaps-plugins-mount-under-scratch-0.0.4.tar.gz ../
 # cd .. ; rm -rf lcmaps-plugins-mount-under-scratch
-lcmaps-plugins-mount-under-scratch/0.0.4/lcmaps-plugins-mount-under-scratch-0.0.4.tar.gz
+lcmaps-plugins-mount-under-scratch/0.0.4/lcmaps-plugins-mount-under-scratch-0.0.4.tar.gz sha1sum=94a4948bf3a456db2c2b2dca75929bcce2653f19

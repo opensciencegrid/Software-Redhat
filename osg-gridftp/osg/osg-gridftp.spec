@@ -1,16 +1,13 @@
 Name:      osg-gridftp
-Summary:   Standalone OSG GridFTP w/lcmaps gums client
+Summary:   Standalone OSG GridFTP with LCMAPS VOMS support
 Version:   3.4
-Release:   3%{?dist}
+Release:   7%{?dist}
 License:   Apache 2.0
-Group:     Grid
 URL:       http://www.opensciencegrid.org
 
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
 
 Source1: udt-%{name}.conf
 
-Requires: osg-version
 Requires: osg-system-profiler
 Requires: globus-gridftp-server-progs
 Requires: vo-client
@@ -19,20 +16,34 @@ Requires: grid-certificates >= 7
 Requires: gratia-probe-gridftp-transfer >= 1.17.0-1
 Requires: fetch-crl
 Requires: osg-configure-misc
+Requires: osg-configure-gratia
 Requires: globus-xio-udt-driver
 
-%ifarch %{ix86}
-Requires: liblcas_lcmaps_gt4_mapping.so.0
-%else
 Requires: liblcas_lcmaps_gt4_mapping.so.0()(64bit)
-%endif
 
 # This should also pull in lcas, lcmaps, and various plugins
 # (basic, proxy verify, posix, etc)
 
 %description
-This is a meta package for a standalone GridFTP server with 
-gums support through lcmaps plugin and vo-client.
+This is a meta package for a standalone GridFTP server with
+support for the LCMAPS VOMS authentication method.
+
+
+
+
+%package xrootd
+Summary: OSG GridFTP XRootD Storage Element package
+
+Requires: %{name} = %{version}-%{release}
+Requires: xrootd-dsi
+Requires: xrootd-fuse >= 1:4.1.0
+Requires: gratia-probe-xrootd-transfer >= 1.17.0-1
+Requires: gratia-probe-xrootd-storage
+
+%description xrootd
+This is a meta-package for GridFTP with the underlying XRootD storage element
+using the FUSE/DSI module.
+
 
 %build
 
@@ -40,15 +51,27 @@ gums support through lcmaps plugin and vo-client.
 mkdir -p %{buildroot}%{_sysconfdir}/gridftp.d
 install -m 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/gridftp.d/
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
 %files
-%defattr(-,root,root,-)
 %config(noreplace) %{_sysconfdir}/gridftp.d/udt-%{name}.conf
+
+%files xrootd
+# This section intentionally left blank
 
 
 %changelog
+* Wed Mar 07 2018 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.4-7
+- Add mistakenly dropped gratia-probe-xrootd-transfer requirement to
+  osg-gridftp-xrootd (SOFTWARE-3141)
+
+* Mon Feb 19 2018 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.4-6
+- Combine packaging with osg-gridftp-xrootd (SOFTWARE-3141)
+
+* Mon Jan 08 2018 Edgar Fajardo <emfajard@ucsd.edu> - 3.4-5
+- Remove osg-version from dependencies (SOFTWARE-2917)
+
+* Wed Nov 15 2017 Suchandra Thapa <sthapa@ci.uchicago.edu> - 3.4-4
+- Add osg-configure-gratia to dependencies (SOFTWARE-3019)
+
 * Mon Jun 12 2017 Edgar Fajardo <emfajard@ucsd.edu> - 3.4-3
 - Add osg-configure-misc to dependencies (SOFTWARE-2758)
 

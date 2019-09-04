@@ -3,7 +3,6 @@ Name: lcmaps-plugins-process-tracking
 Version: 0.3
 Release: 1%{?dist}
 License: Public Domain
-Group: System Environment/Libraries
 # The tarball was created from Subversion using the following commands:
 # svn co svn://t2.unl.edu/brian/lcmaps-plugin-process-tracking
 # cd lcmaps-plugin-process-tracking
@@ -14,7 +13,6 @@ Source0: %{name}-%{version}.tar.gz
 
 BuildRequires: lcmaps-interface
 
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %description
 This plugin utilizes the Kernel proc connector interface to 
@@ -29,15 +27,11 @@ track the processes spawned by glexec.
 make %{?_smp_mflags}
 
 %install
-rm -rf $RPM_BUILD_ROOT
 
 make DESTDIR=$RPM_BUILD_ROOT install
 rm $RPM_BUILD_ROOT/%{_libdir}/lcmaps/liblcmaps_process_tracking.la
 rm $RPM_BUILD_ROOT/%{_libdir}/lcmaps/liblcmaps_process_tracking.a
 mv $RPM_BUILD_ROOT%{_libdir}/lcmaps/liblcmaps_process_tracking.so $RPM_BUILD_ROOT%{_libdir}/lcmaps/lcmaps_process_tracking.mod
-
-%clean
-rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)

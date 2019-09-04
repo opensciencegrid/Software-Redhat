@@ -3,7 +3,6 @@ Version:	3.3.0.2
 Release:	1%{?dist}
 Summary:	gLite build macros
 
-Group:		Development/Libraries/C and C++
 License:	Apache 2.0
 URL:		http://glite.cvs.cern.ch/cgi-bin/glite.cgi/org.glite.build.common-cpp/
 # Retrieved on May 28, 2012
@@ -12,7 +11,6 @@ Source0:        org.glite.build.common-cpp.tar.gz
 # Path0 fixes the globus build macros to use the Fedora/EPEL flavour-less libraries
 Patch0:         fedora_globus_macros.patch
 BuildArch:	noarch
-BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 Requires:	globus-common-progs
 
 %description
@@ -28,9 +26,6 @@ Common m4 macros used for the C++ autotools builds in gLite
 
 mkdir -p $RPM_BUILD_ROOT%{_datadir}/%{name}/m4
 install -m 0644 m4/*.m4 $RPM_BUILD_ROOT%{_datadir}/%{name}/m4/
-
-%clean
-rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)

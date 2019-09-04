@@ -11,10 +11,9 @@
 
 Name:		voms
 Version:	2.0.14
-Release:	1.3%{?dist}
+Release:	1.4%{?dist}
 Summary:	Virtual Organization Membership Service
 
-Group:		System Environment/Libraries
 License:	ASL 2.0
 URL:		https://wiki.italiangrid.it/VOMS
 Source0:	https://github.com/italiangrid/%{name}/archive/v%{version}.tar.gz
@@ -22,7 +21,6 @@ Source0:	https://github.com/italiangrid/%{name}/archive/v%{version}.tar.gz
 Source1:	%{name}.INSTALL
 #		systemd unit file:
 Source2:	%{name}@.service
-BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	openssl-devel
 BuildRequires:	expat-devel
@@ -42,6 +40,7 @@ Patch0: mariadb-innodb.patch
 # for all
 Patch1:         Make-RFC-proxies-by-default-SOFTWARE-2381.patch
 Patch2:         Validate-top-level-group-of-VOMS-attribute.patch
+Patch3:         sw3123-voms-proxy-direct.patch
 
 %description
 The Virtual Organization Membership Service (VOMS) is an attribute authority
@@ -56,7 +55,6 @@ will bind to.
 
 %package devel
 Summary:	Virtual Organization Membership Service Development Files
-Group:		Development/Libraries
 Requires:	%{name}%{?_isa} = %{version}-%{release}
 Requires:	openssl-devel%{?_isa}
 
@@ -72,17 +70,13 @@ This package provides header files for programming with the VOMS libraries.
 
 %package doc
 Summary:	Virtual Organization Membership Service Documentation
-Group:		Documentation
-%if %{?fedora}%{!?fedora:0} >= 10 || %{?rhel}%{!?rhel:0} >= 6
 BuildArch:	noarch
-%endif
 
 %description doc
 Documentation for the Virtual Organization Membership Service.
 
 %package clients-cpp
 Summary:	Virtual Organization Membership Service Clients
-Group:		Applications/Internet
 Requires:	%{name}%{?_isa} = %{version}-%{release}
 Provides:	voms-clients = %{version}-%{release}
 Obsoletes:	voms-clients < 2.0.12-3
@@ -103,7 +97,6 @@ services.
 
 %package server
 Summary:	Virtual Organization Membership Service Server
-Group:		Applications/Internet
 Requires:	%{name}%{?_isa} = %{version}-%{release}
 
 Requires(pre):		shadow-utils
@@ -137,18 +130,18 @@ This package provides the VOMS service.
 
 %patch1 -p1
 %patch2 -p1
-
-./autogen.sh
+%patch3 -p1
 
 install -m 644 -p %{SOURCE1} README.Fedora
 
 %build
+./autogen.sh
+
 %configure --disable-static --enable-docs --disable-parser-gen
 
 make %{?_smp_mflags}
 
 %install
-rm -rf %{buildroot}
 
 make install DESTDIR=%{buildroot}
 
@@ -188,9 +181,6 @@ for b in voms-proxy-init voms-proxy-info voms-proxy-destroy; do
   mv %{buildroot}%{_mandir}/man1/${b}.1 %{buildroot}%{_mandir}/man1/${b}2.1
   touch %{buildroot}%{_mandir}/man1/${b}.1
 done
-
-%clean
-rm -rf %{buildroot}
 
 %post -p /sbin/ldconfig
 
@@ -339,6 +329,7 @@ fi
 %{_bindir}/voms-proxy-info2
 %{_bindir}/voms-proxy-init2
 %{_bindir}/voms-proxy-fake
+%{_bindir}/voms-proxy-direct
 %{_bindir}/voms-proxy-list
 %{_bindir}/voms-verify
 %ghost %{_bindir}/voms-proxy-destroy
@@ -348,6 +339,7 @@ fi
 %{_mandir}/man1/voms-proxy-info2.1*
 %{_mandir}/man1/voms-proxy-init2.1*
 %{_mandir}/man1/voms-proxy-fake.1*
+%{_mandir}/man1/voms-proxy-direct.1*
 %{_mandir}/man1/voms-proxy-list.1*
 %ghost %{_mandir}/man1/voms-proxy-destroy.1*
 %ghost %{_mandir}/man1/voms-proxy-info.1*
@@ -375,6 +367,9 @@ fi
 %doc README.Fedora
 
 %changelog
+* Tue Feb 13 2018 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.0.14-1.4
+- Add voms-proxy-direct (SOFTWARE-3123)
+
 * Mon Feb 20 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.0.14-1.3
 - Add Validate-top-level-group-of-VOMS-attribute.patch (SOFTWARE-2593)
 

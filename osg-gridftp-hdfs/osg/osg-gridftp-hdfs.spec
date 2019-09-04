@@ -1,20 +1,19 @@
 Name:      osg-gridftp-hdfs
 Summary:   OSG GridFTP-HDFS meta package
-Version:   3.3
-Release:   4%{?dist}
+Version:   3.4
+Release:   3%{?dist}
 License:   Apache 2.0
-Group:     Grid
 URL:       http://www.opensciencegrid.org
 
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
 
 Source1: udt-%{name}.conf
 
-Requires: osg-version
 Requires: osg-system-profiler
 # 0.5.4-13 uses /etc/gridftp.d config dir
 Requires: gridftp-hdfs >= 0.5.4-16
 Requires: vo-client
+Requires: vo-client-lcmaps-voms
+Requires: osg-configure-misc
 Requires: grid-certificates >= 7
 Requires: fetch-crl
 Requires: gratia-probe-gridftp-transfer >= 1.17.0-1
@@ -36,14 +35,20 @@ HDFS and GUMS support.
 mkdir -p %{buildroot}%{_sysconfdir}/gridftp.d
 install -m 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/gridftp.d/
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
 %files
 %defattr(-,root,root,-)
 %config(noreplace) %{_sysconfdir}/gridftp.d/udt-%{name}.conf
 
 %changelog
+* Thu Jun 21 2018 Carl Edquist <edquist@cs.wisc.edu> - 3.4-3
+- move lcmaps-voms & osg-configure deps to osg-gridftp-hdfs (SOFTWARE-3177)
+
+* Wed Mar 7 2018 Suchandra Thapa <sthapa@ci.uchicago.edu> - 3.4-2
+- Remove osg-version requirement (SOFTWARE-3116)
+
+* Mon Nov 13 2017 Carl Edquist <edquist@cs.wisc.edu> - 3.4-1
+- bump version for osg 3.4 (SOFTWARE-2983)
+
 * Thu Aug 25 2016 Carl Edquist <edquist@cs.wisc.edu> - 3.3-4
 - drop gums-client dependency (SOFTWARE-2398)
 - remove rhel5-specific macros (OSG-3.2 EOL)

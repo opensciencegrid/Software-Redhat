@@ -3,13 +3,11 @@ Version:   1.1.2
 Release:   1%{?dist}
 Summary:   RSV metrics to test sites with a schedd connected to a glidein pool
 Packager:  OSG-Software
-Group:     Applications/Monitoring
 License:   Apache 2.0
 URL:       https://twiki.grid.iu.edu/bin/view/MonitoringInformation/RSV
 
 Source0:   v%{version}.tar.gz
 
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch: noarch
 
 Requires: rsv >= 3.13
@@ -23,12 +21,8 @@ Requires: glideinwms-userschedd
 %setup -n %{name}-%{version}
 
 %install
-rm -fr $RPM_BUILD_ROOT
 
 make install DESTDIR=$RPM_BUILD_ROOT
-
-%clean
-rm -rf $RPM_BUILD_ROOT
 
 %files
 %doc README

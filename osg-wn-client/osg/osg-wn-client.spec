@@ -1,13 +1,11 @@
 Name:      osg-wn-client
 Summary:   OSG Worker-Node Client
 Version:   3.4
-Release:   1%{?dist}
+Release:   5%{?dist}
 License:   Apache 2.0
-Group:     Grid
 URL:       http://www.opensciencegrid.org
 BuildArch: noarch
 
-BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
 Requires: /usr/bin/xrdcp
 Requires: /usr/bin/curl
@@ -21,16 +19,18 @@ Requires: grid-certificates >= 7
 Requires: fetch-crl
 Requires: osg-system-profiler
 Requires: vo-client
-Requires: osg-version
 Requires: globus-gass-copy-progs
 Requires: globus-xio-udt-driver
+Requires: stashcache-client
 
 Requires: gfal2
 Requires: gfal2-util
+Requires: gfal2-plugin-http
 Requires: gfal2-plugin-file
 Requires: gfal2-plugin-srm
 Requires: gfal2-plugin-gridftp
 Requires: gfal2-plugin-xrootd
+
 
 # the previous OSG version of CGSI-gSOAP (1.3.4.2) did not provide the symbol
 # cgsi_plugin_set_credentials, needed at runtime for gfal2-plugin-srm
@@ -55,13 +55,19 @@ cat > $RPM_BUILD_ROOT%{_prefix}/etc/globus-user-env.sh << EOF
 
 EOF
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
 %files
 %config(noreplace) %{_prefix}/etc/globus-user-env.sh
 
 %changelog
+* Wed Dec 12 2018 Mátyás Selmeci <matyas@cs.wisc.edu> 3.4-5
+- Add stashcache-client (SOFTWARE-3472)
+
+* Mon Jan 8 2018 Edgar Fajardo <emfajard@ucsd.edu> 3.4-4
+- Dropping osg-version requirements (SOFTWARE-2917)
+
+* Tue Nov 14 2017 Edgar Fajardo <emfajard@ucsd.edu> 3.4-3
+- Adding gfal2-http (SOFTWARE-2191)
+
 * Thu May 25 2017 Edgar Fajardo <emfajard@ucsd.edu> 3.4-1
 - Droping java dependencies  (SOFTWARE-2676)
 - Bumping version number 

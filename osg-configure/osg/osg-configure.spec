@@ -1,23 +1,28 @@
 Summary: Package for OSG-Configure and associated scripts
 Name: osg-configure
-Version: 2.0.0
-Release: 3%{?dist}
+Version: 2.4.1
+Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
-Patch0: fix-host-port-test.patch
 License: Apache 2.0
-Group: Grid
 Prefix: %{_prefix}
 BuildArch: noarch
 Url: https://github.com/opensciencegrid/osg-configure
-Requires: condor-python
+
+Obsoletes: %{name}-managedfork < 2.2.2-2
+Obsoletes: %{name}-network < 2.2.2-2
 
 
 %description
 %{summary}
 
+%package siteinfo
+Summary: OSG configuration file for site information
+Requires: %name = %version-%release
+%description siteinfo
+This package includes the ini file for configuring site information using osg-configure
+
 %package rsv
 Summary: OSG configuration file for RSV
-Group: Grid
 Requires: %name = %version-%release
 Requires: %name-gateway
 %description rsv
@@ -25,21 +30,19 @@ This package includes the ini file for configuring RSV using osg-configure
 
 %package gratia
 Summary: OSG configuration file for gratia
-Group: Grid
 Requires: %name = %version-%release
+Requires: %name-siteinfo
 %description gratia
 This package includes the ini file for configuring gratia using osg-configure
 
 %package gip
 Summary: OSG configuration file for gip
-Group: Grid
 Requires: %name = %version-%release
 %description gip
 This package includes the ini file for configuring gip using osg-configure
 
 %package lsf
 Summary: OSG configuration file for lsf
-Group: Grid
 Requires: %name = %version-%release
 Requires: %name-gateway
 %description lsf
@@ -47,7 +50,6 @@ This package includes the ini file for configuring lsf using osg-configure
 
 %package pbs
 Summary: OSG configuration file for pbs
-Group: Grid
 Requires: %name = %version-%release
 Requires: %name-gateway
 %description pbs
@@ -55,7 +57,6 @@ This package includes the ini file for configuring pbs using osg-configure
 
 %package condor
 Summary: OSG configuration file for condor
-Group: Grid
 Requires: %name = %version-%release
 Requires: %name-gateway
 %description condor
@@ -63,7 +64,6 @@ This package includes the ini file for configuring condor using osg-configure
 
 %package sge
 Summary: OSG configuration file for sge
-Group: Grid
 Requires: %name = %version-%release
 Requires: %name-gateway
 %description sge
@@ -71,9 +71,9 @@ This package includes the ini file for configuring sge using osg-configure
 
 %package ce
 Summary: OSG configuration file for CE
-Group: Grid
 Requires: %name = %version-%release
 Requires: %name-gateway
+Requires: %name-siteinfo
 %description ce
 This package includes the ini files for configuring a basic CE using
 osg-configure.  One of the packages for the job manager configuration also
@@ -81,37 +81,20 @@ needs to be installed for the CE configuration.
 
 %package misc
 Summary: OSG configuration file for misc software
-Group: Grid
 Requires: %name = %version-%release
-Requires: lcmaps-db-templates
+Requires: lcmaps-db-templates >= 1.6.6-1.8
 %description misc
 This package includes the ini files for various osg software including
 certificates setup, and auth.
 
 %package squid
 Summary: OSG configuration file for squid
-Group: Grid
 Requires: %name = %version-%release
 %description squid
 This package includes the ini files for configuring an OSG system to use squid
 
-%package managedfork
-Summary: Transitional dummy package for OSG 3.4
-Group: Grid
-%description managedfork
-This is an empty package created as a workaround for 3.3->3.4 upgrade issues.
-It may safely be removed.
-
-%package network
-Summary: Transitional dummy package for OSG 3.4
-Group: Grid
-%description network
-This is an empty package created as a workaround for 3.3->3.4 upgrade issues.
-It may safely be removed.
-
 %package tests
 Summary: OSG-Configure unit tests and configuration for unit testing
-Group: Grid
 Requires: %name = %version-%release
 %description tests
 This package includes the ini files and files for unit tests that osg-configure
@@ -119,7 +102,6 @@ uses to verify functionality
 
 %package slurm
 Summary: OSG configuration file for slurm
-Group: Grid
 Requires: %name = %version-%release
 Requires: %name-gateway
 %description slurm
@@ -127,7 +109,6 @@ This package includes the ini file for configuring slurm using osg-configure
 
 %package bosco
 Summary: OSG configuration file for bosco
-Group: Grid
 Requires: %name = %version-%release
 Requires: %name-gateway
 Requires: condor-bosco
@@ -136,15 +117,14 @@ This package includes the ini file for configuring bosco using osg-configure
 
 %package infoservices
 Summary: OSG configuration file for the osg info services
-Group: Grid
 Requires: %name = %version-%release
 Requires: %name-gip
+Requires: condor-python
 %description infoservices
 This package includes the ini file for configuring the osg info services using osg-configure
 
 %package gateway
 Summary: OSG configuration file for job gateway (htcondor-ce)
-Group: Grid
 Requires: %name = %version-%release
 %description gateway
 This package includes the ini file for configuring the job gateway
@@ -153,15 +133,15 @@ This package includes the ini file for configuring the job gateway
 
 %prep
 %setup
-%patch0 -p1
 
 %build
-%{__python} setup.py build
+%{__python2} setup.py build
 
 %install
 make install DESTDIR=$RPM_BUILD_ROOT
 
 mkdir -p $RPM_BUILD_ROOT/etc/condor-ce/config.d
+echo 'OSG_CONFIGURE_PRESENT=true' > $RPM_BUILD_ROOT/etc/condor-ce/config.d/50-osg-configure-present.conf  # SOFTWARE-2805
 touch $RPM_BUILD_ROOT/etc/condor-ce/config.d/50-osg-configure.conf
 mkdir -p $RPM_BUILD_ROOT/var/log/osg/
 touch $RPM_BUILD_ROOT/var/log/osg/osg-configure.log
@@ -170,12 +150,36 @@ touch $RPM_BUILD_ROOT/var/lib/osg/osg-attributes.conf
 touch $RPM_BUILD_ROOT/var/lib/osg/osg-local-job-environment.conf
 touch $RPM_BUILD_ROOT/var/lib/osg/osg-job-environment.conf
 
-%clean
-rm -rf $RPM_BUILD_ROOT
 
 %files
-%defattr(-,root,root)
-%{python_sitelib}/*
+%{python2_sitelib}/osg_configure-%{version}-*.egg-info
+%{python2_sitelib}/osg_configure/__init__.py*
+%{python2_sitelib}/osg_configure/configure_modules/__init__.py*
+%{python2_sitelib}/osg_configure/configure_modules/bosco.py*
+%{python2_sitelib}/osg_configure/configure_modules/condor.py*
+%{python2_sitelib}/osg_configure/configure_modules/gateway.py*
+%{python2_sitelib}/osg_configure/configure_modules/gratia.py*
+%{python2_sitelib}/osg_configure/configure_modules/installlocations.py*
+%{python2_sitelib}/osg_configure/configure_modules/legacysettings.py*
+%{python2_sitelib}/osg_configure/configure_modules/localsettings.py*
+%{python2_sitelib}/osg_configure/configure_modules/lsf.py*
+%{python2_sitelib}/osg_configure/configure_modules/misc.py*
+%{python2_sitelib}/osg_configure/configure_modules/pbs.py*
+%{python2_sitelib}/osg_configure/configure_modules/rsv.py*
+%{python2_sitelib}/osg_configure/configure_modules/sge.py*
+%{python2_sitelib}/osg_configure/configure_modules/siteinformation.py*
+%{python2_sitelib}/osg_configure/configure_modules/slurm.py*
+%{python2_sitelib}/osg_configure/configure_modules/squid.py*
+%{python2_sitelib}/osg_configure/configure_modules/storage.py*
+%{python2_sitelib}/osg_configure/modules/__init__.py*
+%{python2_sitelib}/osg_configure/modules/baseconfiguration.py*
+%{python2_sitelib}/osg_configure/modules/configfile.py*
+%{python2_sitelib}/osg_configure/modules/exceptions.py*
+%{python2_sitelib}/osg_configure/modules/gums_supported_vos.py*
+%{python2_sitelib}/osg_configure/modules/jobmanagerconfiguration.py*
+%{python2_sitelib}/osg_configure/modules/utilities.py*
+%{python2_sitelib}/osg_configure/modules/validation.py*
+%{python2_sitelib}/osg_configure/version.py*
 /usr/sbin/*
 %ghost /var/log/osg/osg-configure.log
 %ghost /var/lib/osg/osg-attributes.conf
@@ -184,78 +188,125 @@ rm -rf $RPM_BUILD_ROOT
 %ghost /etc/condor-ce/config.d/50-osg-configure.conf
 
 %files rsv
-%defattr(-,root,root)
 %config(noreplace) %{_sysconfdir}/osg/config.d/30-rsv.ini
 
 %files gratia
-%defattr(-,root,root)
 %config(noreplace) %{_sysconfdir}/osg/config.d/30-gratia.ini
 
 %files gip
-%defattr(-,root,root)
 %config(noreplace) %{_sysconfdir}/osg/config.d/30-gip.ini
 
 %files lsf
-%defattr(-,root,root)
 %config(noreplace) %{_sysconfdir}/osg/config.d/20-lsf.ini
 
 %files pbs
-%defattr(-,root,root)
 %config(noreplace) %{_sysconfdir}/osg/config.d/20-pbs.ini
 
 %files condor
-%defattr(-,root,root)
 %config(noreplace) %{_sysconfdir}/osg/config.d/20-condor.ini
 
 %files sge
-%defattr(-,root,root)
 %config(noreplace) %{_sysconfdir}/osg/config.d/20-sge.ini
 
 %files bosco
-%defattr(-,root,root)
 %config(noreplace) %{_sysconfdir}/osg/config.d/20-bosco.ini
 
+%files siteinfo
+%config(noreplace) %{_sysconfdir}/osg/config.d/40-siteinfo.ini
 
 %files ce
-%defattr(-,root,root)
 %config(noreplace) %{_sysconfdir}/osg/config.d/40-localsettings.ini
-%config(noreplace) %{_sysconfdir}/osg/config.d/40-siteinfo.ini
 %config(noreplace) %{_sysconfdir}/osg/config.d/10-storage.ini
 %config(noreplace) %{_sysconfdir}/osg/grid3-locations.txt
 
 %files misc
-%defattr(-,root,root)
 %config(noreplace) %{_sysconfdir}/osg/config.d/10-misc.ini
 
 %files squid
-%defattr(-,root,root)
 %config(noreplace) %{_sysconfdir}/osg/config.d/01-squid.ini
 
 %files infoservices
-%defattr(-,root,root)
 %config(noreplace) %{_sysconfdir}/osg/config.d/30-infoservices.ini
+%{python2_sitelib}/osg_configure/configure_modules/infoservices.py*
+%{python2_sitelib}/osg_configure/modules/resourcecatalog.py*
+%{python2_sitelib}/osg_configure/modules/reversevomap.py*
+%{python2_sitelib}/osg_configure/modules/subcluster.py*
 
 %files tests
-%defattr(-,root,root)
 /usr/share/osg-configure/*
 
 %files slurm
-%defattr(-,root,root)
 %config(noreplace) %{_sysconfdir}/osg/config.d/20-slurm.ini
 
 %files gateway
-%defattr(-,root,root)
 %config(noreplace) %{_sysconfdir}/osg/config.d/10-gateway.ini
-
-%files managedfork
-#blank
-
-%files network
-#blank
+%config(noreplace) %{_sysconfdir}/condor-ce/config.d/50-osg-configure-present.conf
 
 
 
 %changelog
+* Fri Aug 16 2019 Mátyás Selmeci <matyas@cs.wisc.edu> 2.4.1-1
+- Fix using the wrong remote user in ssh configs for bosco
+
+* Wed Jul 10 2019 Mátyás Selmeci <matyas@cs.wisc.edu> 2.4.0-1
+- Stop checking sponsor field in site information (SOFTWARE-3722)
+- Don't change batch system from slurm to pbs (SOFTWARE-3717)
+- Add option to configure blahp for PBS Pro (SOFTWARE-3674)
+- Stop osg-configure when a bad attribute is found (SOFTWARE-3581)
+- Own a section of the SSH config for bosco (SOFTWARE-3630)
+
+* Mon Jun 25 2018 Mátyás Selmeci <matyas@cs.wisc.edu> 2.3.1-1
+- Replace info about GOC/OIM in 40-siteinfo.ini comments (SOFTWARE-3297)
+- More thoroughly disable WN proxy renewal in BLAHP config (SOFTWARE-3161)
+
+* Thu Apr 26 2018 Mátyás Selmeci <matyas@cs.wisc.edu> 2.3.0-1
+- Drop configuration for RSV gratia-consumer (SOFTWARE-3218)
+
+* Fri Apr 06 2018 Mátyás Selmeci <matyas@cs.wisc.edu> 2.2.4-1
+- Improve comment for app_dir in 10-storage.ini (SOFTWARE-3150)
+- Handle exception caused by parse error (SOFTWARE-2310)
+- Don't require CE site information for non-CEs (SOFTWARE-3094)
+- Warn on long-deprecated "site information/site_name" attribute (SOFTWARE-3093)
+- Remove functions used for condor-python < 8.4 (SOFTWARE-3126)
+- Don't make /etc/condor-ce/config.d/50-osg-configure.conf without condor-ce (SOFTWARE-3160)
+- Validate environment variables in 40-localsettings.ini (SOFTWARE-3131)
+- Rename siteattributes.py to siteinformation.py
+
+* Tue Dec 12 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 2.2.3-1
+- Replace dummy packages with obsoletes (SOFTWARE-3020)
+- Drop el5-isms (SOFTWARE-3050)
+- Put site info config into a separate module so osg-configure-gratia can require it (SOFTWARE-3018)
+- Remove remaining TWiki references (SOFTWARE-3036)
+
+* Tue Oct 17 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 2.2.2-1
+- Add option to evaluate all FQANs with vomsmap auth (SOFTWARE-2932)
+- Tweak comments in 10-misc.ini (SOFTWARE-2941)
+
+* Fri Sep 22 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 2.2.1-1
+- Don't use condor_config_val -expand (SOFTWARE-2902)
+- Handle missing fetch_crl (SOFTWARE-2891)
+
+* Wed Aug 16 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 2.2.0-1
+- Improve logging code (SOFTWARE-2744)
+- Remove GRAM code (SOFTWARE-2822)
+
+* Wed Jul 19 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 2.1.1-1
+- Fix logging in ensure_valid_user_vo_file (SOFTWARE-2819)
+- Configure GUMS before running gums-host-cron (SOFTWARE-2792)
+- Fix missing warnings in -v (SOFTWARE-2772)
+- Remove unused test configs (SOFTWARE-2701)
+- Make exception usage consistent (SOFTWARE-2700)
+
+* Tue Jul 11 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 2.1.0-3
+- Add OSG_CONFIGURE_PRESENT sentinel (SOFTWARE-2805)
+
+* Tue Jun 27 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 2.1.0-2
+- Use GUMS JSON interface (SOFTWARE-2482)
+- Drop fix-host-port-test.patch (upstream)
+
+* Thu Jun 22 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 2.0.0-4
+- Only bring in condor-python with osg-configure-infoservices (SOFTWARE-2757)
+
 * Fri Jun 02 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 2.0.0-3
 - Add fix-host-port-test.patch
 

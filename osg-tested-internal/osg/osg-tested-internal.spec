@@ -1,12 +1,10 @@
 Name:      osg-tested-internal
 Summary:   All OSG packages we test (internal use only)
 Version:   3.4
-Release:   2%{?dist}
+Release:   7%{?dist}
 License:   Apache 2.0
-Group:     Grid
 URL:       http://www.opensciencegrid.org
 
-BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
 
 ################################################################################
@@ -26,6 +24,9 @@ Requires: gratia-probe-gridftp-transfer
 Requires: gratia-probe-pbs-lsf
 Requires: gratia-probe-sge
 
+Requires: gsi-openssh-server
+Requires: gsi-openssh-clients
+
 Requires: myproxy
 Requires: myproxy-server
 
@@ -36,6 +37,8 @@ Requires: htcondor-ce-view
 
 Requires: osg-ce-condor
 
+Requires: osg-gridftp
+
 Requires: torque-server
 Requires: torque-mom
 Requires: torque-client
@@ -44,12 +47,18 @@ Requires: osg-ce-pbs
 
 Requires: rsv
 
+Requires: singularity
+
 Requires: xrootd
 Requires: xrootd-client
+Requires: xrootd-lcmaps
 
 Requires: voms-server
 Requires: voms-clients-cpp
 Requires: voms-mysql-plugin
+
+
+
 
 %if 0%{?rhel} == 7
 # osg-tested-internal packages in el7 don't currently pull in mysql/mariadb
@@ -63,12 +72,25 @@ Requires: mysql-server
 
 %install
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
 %files
 
 %changelog
+* Tue Jan 22 2019 Carl Edquist <edquist@cs.wisc.edu> - 3.4-7
+- Rename singularity-runtime requirement to singularity (SOFTWARE-3532)
+
+* Wed May 23 2018 Brian Lin <blin@cs.wisc.edu> - 3.4-6
+- Add xrootd-lcmaps (SOFTWARE-3264)
+
+* Tue Sep 19 2017 Edgar Fajardo <emfajard@ucsd.edu> - 3.4-5
+- Added singularity-runtime to the requirements (SOFTWARE-2894)
+
+* Fri Jul 14 2017 Edgar Fajardo <emfajard@ucsd.edu> - 3.4-4
+- Added the correct name of the gsi-openssh packages
+
+* Fri Jul 14 2017 Edgar Fajardo <emfajard@ucsd.edu> - 3.4-3
+- Add gsi-openssh (SOFTWARE-2810)
+- Add osg-gridftp (SOFTWARE-2829)
+
 * Thu May 26 2017 Brian Lin <blin@cs.wisc.edu> - 3.4-2
 - Add voms-mysql-plugin back for voms-proxy-init testing
 

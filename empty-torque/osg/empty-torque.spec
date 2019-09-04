@@ -3,11 +3,9 @@ Version:        2.0
 Release:        2%{?dist}
 Summary:        An empty Torque/PBS package
 
-Group:          Applications/System
 License:        Unknown
 URL:            http://vdt.cs.wisc.edu
 
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
 Provides:       torque
@@ -26,8 +24,6 @@ believes that Torque has been installed via RPM.
 %build
 
 %install
-
-%clean
 
 %files
 

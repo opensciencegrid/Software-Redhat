@@ -1,19 +1,12 @@
-%if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
-%{!?python_sitelib: %global python_sitelib %(%{__python} -c 'from distutils.sysconfig import get_python_lib; print get_python_lib()')}
-%{!?python_sitearch: %global python_sitearch %(%{__python} -c 'from distutils.sysconfig import get_python_lib; print get_python_lib(1)')}
-%endif
-
 Summary:   Generate CAs and certificates for testing an OSG installation
 Name:      osg-ca-generator
-Version:   1.2.0
+Version:   1.3.2
 Release:   1%{?dist}
 License:   Apache License, 2.0
-Group:     Applications/Grid
 Packager:  VDT <vdt-support@opensciencegrid.org>
 Source0:   %{name}-%{version}.tar.gz
 AutoReq:   yes
 AutoProv:  yes
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 BuildArch: noarch
 
 Requires: openssl
@@ -25,18 +18,25 @@ Create DigiCert-like CAs and certificates for testing an OSG Software installati
 %setup -q
 
 %install
-rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
 %files
-%defattr(-,root,root)
 %{_sbindir}/%{name}
 %{python_sitelib}/cagen.py*
 
 %changelog
+* Tue Jan 23 2018 Brian Lin <blin@cs.wisc.edu> 1.3.2-1
+- Use hostname for the fake VOMS URI
+
+* Tue Jan 16 2018 Brian Lin <blin@cs.wisc.edu> 1.3.1-1
+- Fix formatting of /etc/vomses (SOFTWARE-2976)
+
+* Fri Dec 08 2017 Brian Lin <blin@cs.wisc.edu> 1.3.0-1
+- Add ability to create VO lsc and vomses entry (SOFTWARE-2976)
+- Create backups when writing files (SOFTWARE-2352)
+- Drop DigiCert CA infrastracture mimicry
+- Store CA private key in openssl folder
+
 * Thu Aug 25 2016 Brian Lin <blin@cs.wisc.edu> 1.2.0-1
 - Add ability to generate user certificate via CLI. Host certs no longer automatically generated (SOFTWARE-2417).
 

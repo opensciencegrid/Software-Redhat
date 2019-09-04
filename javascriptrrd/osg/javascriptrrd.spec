@@ -4,13 +4,11 @@ Version: 1.1.1
 Release: 1%{?dist}
 Summary: A package to render RRD databases in javascript using Flot
 
-Group: Amusements/Graphics
 License: MIT
 # To make source tar ball (Be sure to get version with flot):
 # mv javascriptrrd-1.1.0-with-flot-0.7.7-tooltip-0.4.4.tgz javascriptrrd-1.1.0.tar.gz
 Source0: %{name}-%{version}.tgz
 BuildArch: noarch
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 %description
 javascriptRRD is a javascript library for reading Round Robin Database (RRD) archives (produced by rrdtool) using AJAX-like techniques. The library also provides graphing classes leveraging the Flot library.
@@ -40,9 +38,6 @@ install -m 644 flot/*.js $RPM_BUILD_ROOT/%{_datadir}/javascriptrrd/flot
 install -m 755 -d $RPM_BUILD_ROOT/%{_defaultdocdir}/javascriptrrd/flot
 install -m 644 flot/*.txt $RPM_BUILD_ROOT/%{_defaultdocdir}/javascriptrrd/flot
 
-
-%clean
-rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,nobody,nobody,-)

@@ -31,5 +31,7 @@ if [[ ! -e $UPSTREAM/$SRPM ]]; then
   cp $PUBLIC_SRPM $UPSTREAM
 fi
 
-echo condor/$VERSION/$SRPM > upstream/developer.srpm.source
+sha1=$(sha1sum $UPSTREAM/$SRPM | awk '{print $1}')
+
+echo condor/$VERSION/$SRPM sha1sum=$sha1 > upstream/developer.srpm.source
 

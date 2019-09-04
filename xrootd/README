@@ -1,18 +1,2 @@
 Source RPM obtained from:
-
-http://download.fedoraproject.org/pub/epel/6/SRPMS/
-
-If a passthrough is done.
-
-If not then Tarball obtained from:
-
-http://xrootd.org/dload.html
-
-And try to keep the spec as close to the one on epel. In case of doubts of packaging check:
-
-https://github.com/xrootd/xrootd/blob/master/packaging/rhel/xrootd.spec.in
-
-
-
-
-
+http://xrootd.web.cern.ch/xrootd/sw/releases/4.10.0-rc3/rpms/source/xrootd-4.10.0-0.rc3.el7.src.rpm

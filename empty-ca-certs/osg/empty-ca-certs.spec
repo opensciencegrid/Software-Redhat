@@ -3,11 +3,9 @@ Version:        1.0
 Release:        2%{?dist}
 Summary:        An empty grid CA cert package
 
-Group:          System Environment/Base
 License:        Unknown
 URL:            http://vdt.cs.wisc.edu
 
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
 Provides:       grid-certificates = 7
@@ -32,8 +30,6 @@ a shared filesystem.
 %build
 
 %install
-
-%clean
 
 %files
 

@@ -1,9 +1,5 @@
 # Do we want SELinux & Audit
-%if "%{?rhel}" == "4"
-%global WITH_SELINUX 0
-%else
 %global WITH_SELINUX 1
-%endif
 
 # Build position-independent executables (requires toolchain support)?
 %global pie 0
@@ -16,11 +12,7 @@
 %global gsi 1
 
 # Do we want libedit support
-%if "%{?rhel}" == "4" || "%{?rhel}" == "5"
-%global libedit 0
-%else
 %global libedit 1
-%endif
 
 # Do we want NSS tokens support
 #NSS support is broken from 5.4p1
@@ -30,50 +22,53 @@
 %global nologin 1
 
 %global gsi_openssh_rel 1
-%global gsi_openssh_ver 7.1p2f
+%global openssh_ver     7.3p1
+%global gsi_openssh_ver %{openssh_ver}c
 
 Summary: An implementation of the SSH protocol with GSI authentication
 Name: gsi-openssh
 Version: %{gsi_openssh_ver}
-Release: %{gsi_openssh_rel}.2%{?dist}
+Release: %{gsi_openssh_rel}.1%{?dist}
 URL: http://www.openssh.com/portable.html
-Source0: http://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-7.1p2.tar.gz
+Source0: http://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-%{openssh_ver}.tar.gz
 #Source2: gsisshd.pam
 #Source3: gsisshd.init
 #
-#Patch0: http://sourceforge.net/projects/hpnssh/files/HPN-SSH%2014v10%207.1p2/openssh-7_1_P2-hpn-14.10.diff
-Patch0: https://github.com/globus/gsi-openssh/releases/download/%{version}/openssh-7_1_P2-hpn-14.10.diff
+#Patch0: HPN patch (openssh-7_3_P1-hpn-14.12.patch):
+Patch0: https://github.com/globus/gsi-openssh/releases/download/%{version}/openssh-7_3_P1-hpn-14.12.patch
 ##Patch0 is the HPN-SSH patch to Portable OpenSSH and is constructed as follows if the patch isn't readily available at the above link.
 ## git clone git@github.com:rapier1/openssh-portable.git
 ## cd openssh-portable
 ## git remote add portable https://github.com/openssh/openssh-portable.git
 ## git fetch portable
-## git merge-base hpn-7_1_P2 V_7_1_P2 > common_ancestor
-## git diff `cat common_ancestor` hpn-7_1_P2 > openssh-7_1_P2-hpn-14.10.diff
+## git merge-base hpn-7_3_P1 V_7_3_P1 > common_ancestor
+## git diff `cat common_ancestor` hpn-7_3_P1 > ../openssh-7_3_P1-hpn-14.12.patch
+
 
 ##Patch1 is the iSSHD patch to HPN-SSH and is constructed as follows:
+Patch1: https://github.com/globus/gsi-openssh/releases/download/%{version}/hpn-14.12-isshd.v3.19.1.patch
 ## git clone git@github.com:set-element/openssh-hpn-isshd.git
 ## cd openssh-hpn-isshd
 ## git remote add hpn https://github.com/rapier1/openssh-portable.git
 ## git fetch hpn
-## git merge-base v3.19.1 hpn-7_1_P2 > common_ancestor
-## git diff `cat common_ancestor` v3.19.1 > hpn-isshd.v3.19.1.patch
-Patch1: https://github.com/globus/gsi-openssh/releases/download/%{version}/hpn-isshd.v3.19.1.patch
+## git merge-base 45285b04324c35bf4ba3e1ea400866627bd64527 hpn-7_3_P1 > common_ancestor
+## git diff `cat common_ancestor` 45285b04324c35bf4ba3e1ea400866627bd64527 > ../hpn-14.12-isshd.v3.19.1.patch
+
 ##Patch2 is the GSI patch to be applied on top of the iSSHD patch and is constructed as follows:
-## tar xvf openssh-7.1p2.tar.gz
-## cd openssh-7.1p2
-## patch -p1 --no-backup-if-mismatch < openssh-7_1_P2-hpn-14.10.diff
-## patch -p1 --no-backup-if-mismatch < hpn-isshd.v3.19.1.patch
+## tar xvf openssh-7.3p1.tar.gz
+## cd openssh-7.3p1
+## patch -p1 --no-backup-if-mismatch < ../openssh-7_3_P1-hpn-14.12.patch
+## patch -p1 --no-backup-if-mismatch < ../hpn-14.12-isshd.v3.19.1.patch
 ## grep "^commit " ChangeLog | tail -1 | cut -d' ' -f2 > ../changelog_last_commit
 ## cd ..
 ## git clone https://github.com/globus/gsi-openssh.git
 ## cd gsi-openssh
-## git checkout tags/7.1p2f
+## git checkout tags/7.3p1c
 ## git log `cat ../changelog_last_commit`^... > ChangeLog
 ## make -f Makefile.in MANFMT="/usr/bin/nroff -mandoc" SHELL=$SHELL distprep
 ## rm -fr .git
 ## cd ..
-## diff -Naur openssh-7.1p2 gsi-openssh > hpn_isshd-gsi.7.1p2f.patch
+## diff -Naur openssh-7.3p1 gsi-openssh > hpn_isshd-gsi.7.3p1c.patch
 Patch2: https://github.com/globus/gsi-openssh/releases/download/%{version}/hpn_isshd-gsi.%{version}.patch
 
 # OSG additions
@@ -83,8 +78,6 @@ Source12: etc-initd-gsisshd
 
 
 License: BSD
-Group: Applications/Internet
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 %if %{nologin}
 Requires: /sbin/nologin
 %endif
@@ -92,7 +85,10 @@ Requires: /sbin/nologin
 %if 0%{?suse_version} == 0
 Requires: initscripts >= 5.20
 %else
-Requires: sysconfig
+Requires:       sysconfig
+Requires:       insserv
+Requires(post): %insserv_prereq  %fillup_prereq
+BuildRequires:  insserv
 %endif
 
 %if 0%{?suse_version} > 0
@@ -112,17 +108,8 @@ BuildRequires: pam-devel
 BuildRequires: tcpd-devel
 BuildRequires: libopenssl-devel
 %else
-%if "%{?rhel}" == "5"
-BuildRequires: tcp_wrappers
-BuildRequires: openssl-devel >= 0.9.8e
-%else
-%if "%{?rhel}" == "4"
-BuildRequires: openssl-devel
-%else
 BuildRequires: tcp_wrappers-devel
 BuildRequires: openssl-devel >= 0.9.8j
-%endif
-%endif
 %endif
 
 %if %{kerberos5}
@@ -133,8 +120,9 @@ BuildRequires: krb5-devel
 BuildRequires: globus-gss-assist-devel >= 8
 BuildRequires: globus-usage-devel >= 3
 BuildRequires: globus-common-progs >= 14
-BuildRequires: globus-gssapi-gsi-devel
+BuildRequires: globus-gssapi-gsi-devel >= 12.12
 BuildRequires:  pkgconfig
+Requires: globus-gssapi-gsi >= 12.12
 %if 0%{?suse_version} > 0
 BuildRequires: libtool
 %else
@@ -170,27 +158,19 @@ BuildRequires: xauth
 %package clients
 Summary: SSH client applications with GSI authentication
 Requires: %{name} = %{version}-%{release}
-Group: Applications/Internet
 
 %package server
 Summary: SSH server daemon with GSI authentication
-Group: System Environment/Daemons
 Requires: %{name} = %{version}-%{release}
 %if 0%{?suse_version} == 0
 Requires(post): chkconfig >= 0.9, /sbin/service
 %else
+BuildRequires:  shadow
+Requires(pre):  shadow
 Requires(post): aaa_base
 %endif
 Requires(pre): /usr/sbin/useradd
-%if 0%{?rhel} == 05
-Requires: pam >= 0.99.6-2
-%else
-%if 0%{?rhel} == 04
-Requires: pam >= 0.77
-%else
 Requires: pam >= 1.0.1-3
-%endif
-%endif
 
 %description
 SSH (Secure SHell) is a program for logging into and executing
@@ -223,11 +203,12 @@ securely connect to your SSH server.
 This version of OpenSSH has been modified to support GSI authentication.
 
 %prep
-%setup -q -n openssh-7.1p2
+%setup -q -n openssh-%{openssh_ver}
 %patch0 -p1
 %patch1 -p1 -F 2
 %patch2 -p1
 
+# OSG: seds and autoreconf should not be run in the %%prep step, run them in %%build instead
 %build
 sed 's/sshd.pid/gsisshd.pid/' -i pathnames.h
 sed 's!$(piddir)/sshd.pid!$(piddir)/gsisshd.pid!' -i Makefile.in
@@ -286,22 +267,28 @@ LDFLAGS="$LDFLAGS -pie -z relro -z now"; export LDFLAGS
 %endif
 
 make SSH_PROGRAM=%{_bindir}/gsissh \
-     ASKPASS_PROGRAM=%{_libexecdir}/openssh/ssh-askpass
+     ASKPASS_PROGRAM=%{_libexecdir}/openssh/ssh-askpass \
+     top_builddir="$PWD"
 
 %install
-rm -rf $RPM_BUILD_ROOT
 mkdir -p -m755 $RPM_BUILD_ROOT%{_sysconfdir}/gsissh
 mkdir -p -m755 $RPM_BUILD_ROOT%{_libexecdir}/gsissh
 mkdir -p -m755 $RPM_BUILD_ROOT%{_var}/empty/gsisshd
 make install sysconfdir=%{_sysconfdir}/gsissh \
-     bindir=%{_bindir} DESTDIR=$RPM_BUILD_ROOT
+     bindir=%{_bindir} DESTDIR=$RPM_BUILD_ROOT \
+     top_builddir="$PWD"
 
-install -d $RPM_BUILD_ROOT%{_sysconfdir}/pam.d/
-install -d $RPM_BUILD_ROOT%{_initrddir}
-install -d $RPM_BUILD_ROOT%{_libexecdir}/gsissh
-install -m644 $RPM_BUILD_DIR/openssh-7.1p2/contrib/redhat/gsisshd.pam $RPM_BUILD_ROOT%{_sysconfdir}/pam.d/gsisshd
+install -d $RPM_BUILD_ROOT/etc/pam.d/
+%if 0%{?suse_version} == 0
+install -d $RPM_BUILD_ROOT/etc/rc.d/init.d
 # OSG: Use our own init script
-install -m755 %{SOURCE12} $RPM_BUILD_ROOT%{_initrddir}/gsisshd
+install -m755 %{SOURCE12} $RPM_BUILD_ROOT/etc/rc.d/init.d/gsisshd
+%else
+install -d $RPM_BUILD_ROOT/etc/init.d
+install -m755 $RPM_BUILD_DIR/openssh-%{openssh_ver}/contrib/redhat/gsisshd.init $RPM_BUILD_ROOT/etc/init.d/gsi-openssh-server
+%endif
+install -d $RPM_BUILD_ROOT%{_libexecdir}/gsissh
+install -m644 $RPM_BUILD_DIR/openssh-%{openssh_ver}/contrib/redhat/gsisshd.pam $RPM_BUILD_ROOT/etc/pam.d/gsisshd
 
 rm $RPM_BUILD_ROOT%{_bindir}/gsissh-add
 rm $RPM_BUILD_ROOT%{_bindir}/gsissh-agent
@@ -326,9 +313,6 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig
 install -m644 %{SOURCE11} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/gsisshd
 
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
 %pre server
 getent group gsisshd >/dev/null || groupadd -r gsisshd || :
 %if %{nologin}
@@ -341,45 +325,65 @@ getent passwd gsisshd >/dev/null || \
   -s /dev/null -r -d /var/empty/gsisshd gsisshd 2> /dev/null || :
 %endif
 
+%if %{?suse_version}%{!?suse_version:0} >= 1315
+%post
+chmod 4755 %{_libexecdir}/gsissh/ssh-keysign
+%endif
+
 %post server
+%if %{?suse_version}%{!?suse_version:0} >= 1315
+%fillup_and_insserv gsi-openssh-server
+%else
 /sbin/chkconfig --add gsisshd
+%endif
 
 %postun server
+%if %{?suse_version}%{!?suse_version:0} >= 1315
+%restart_on_update service
+%insserv_cleanup
+%else
 /sbin/service gsisshd condrestart > /dev/null 2>&1 || :
+%endif
 
 %preun server
 if [ "$1" = 0 ]
 then
+%if %{?suse_version}%{!?suse_version:0} >= 1315
+%stop_on_removal service
+%else
 	/sbin/service gsisshd stop > /dev/null 2>&1 || :
 	/sbin/chkconfig --del gsisshd
+%endif
 fi
 
 %files
-%defattr(-,root,root)
 %doc CREDITS ChangeLog INSTALL LICENCE LICENSE.globus_usage OVERVIEW PROTOCOL* README README.platform README.privsep README.tun README.dns TODO ChangeLog.gssapi HPN-README
 %attr(0755,root,root) %dir %{_sysconfdir}/gsissh
 %attr(0600,root,root) %config(noreplace) %{_sysconfdir}/gsissh/moduli
 %attr(0755,root,root) %{_bindir}/gsissh-keygen
 %attr(0644,root,root) %{_mandir}/man1/gsissh-keygen.1*
 %attr(0755,root,root) %dir %{_libexecdir}/gsissh
+%if %{?suse_version}%{!?suse_version:0} >= 1315
+%attr(0755,root,root) %{_libexecdir}/gsissh/ssh-keysign
+%else
 %attr(4755,root,root) %{_libexecdir}/gsissh/ssh-keysign
+%endif
 %attr(0644,root,root) %{_mandir}/man8/gsissh-keysign.8*
 
 %files clients
-%defattr(-,root,root)
 %attr(0755,root,root) %{_bindir}/gsissh
 %attr(0644,root,root) %{_mandir}/man1/gsissh.1*
 %attr(0755,root,root) %{_bindir}/gsiscp
 %attr(0644,root,root) %{_mandir}/man1/gsiscp.1*
 %attr(0644,root,root) %config(noreplace) %{_sysconfdir}/gsissh/ssh_config
-%attr(0755,root,root) %{_bindir}/gsislogin
-%attr(0644,root,root) %{_mandir}/man1/gsislogin.1*
 %attr(0644,root,root) %{_mandir}/man5/gsissh_config.5*
 %attr(0755,root,root) %{_bindir}/gsisftp
 %attr(0644,root,root) %{_mandir}/man1/gsisftp.1*
 
 %files server
-%defattr(-,root,root)
+%if 0%{?suse_version} > 0
+%dir %attr(0711,root,root) %{_var}/empty
+%endif
 %dir %attr(0711,root,root) %{_var}/empty/gsisshd
 %attr(0755,root,root) %{_sbindir}/gsisshd
 %attr(0755,root,root) %{_libexecdir}/gsissh/sftp-server
@@ -388,14 +392,38 @@ fi
 %attr(0644,root,root) %{_mandir}/man8/gsisshd.8*
 %attr(0644,root,root) %{_mandir}/man8/gsisftp-server.8*
 %attr(0600,root,root) %config(noreplace) %{_sysconfdir}/gsissh/sshd_config
-%attr(0644,root,root) %config(noreplace) %{_sysconfdir}/pam.d/gsisshd
-%attr(0755,root,root) %{_initrddir}/gsisshd
+%attr(0644,root,root) %config(noreplace) /etc/pam.d/gsisshd
+%if 0%{?suse_version} == 0
+%attr(0755,root,root) /etc/rc.d/init.d/gsisshd
+# OSG: add global and local sysconfig files
 %attr(0644,root,root) /usr/share/osg/sysconfig/gsisshd
-%attr(0644,root,root) %config(noreplace) %{_sysconfdir}/sysconfig/gsisshd
+%attr(0644,root,root) %config(noreplace) /etc/sysconfig/gsisshd
+%else
+%attr(0755,root,root) /etc/init.d/gsi-openssh-server
+%endif
 
 %changelog
+* Fri Jun 30 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 7.3p1c-1.1
+- Merge OSG changes (SOFTWARE-2779)
+
+* Mon Apr 17 2017 Globus Toolkit <support@globus.org> - 7.3p1c-1
+- Update to GSI-OpenSSH 7.3p1c
+
+* Mon Apr  3 2017 Globus Toolkit <support@globus.org> - 7.3p1b-1
+- Update to GSI-OpenSSH 7.3p1b
+
+* Fri Mar 24 2017 Globus Toolkit <support@globus.org> - 7.3p1a-1
+- Update to GSI-OpenSSH 7.3p1a
+
+* Tue Dec 13 2016 Globus Toolkit <support@globus.org> - 7.1p2g-2
+- Only create /var/empty for SLES
+
 * Wed Oct 19 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 7.1p2f-1.2
 - Disable SSLv3 (SOFTWARE-2471)
+
+* Tue Aug 30 2016 Globus Toolkit <support@globus.org> - 7.1p2f-4
+- Updates for SLES 12
+- Updates for el.5 with openssl101e
 
 * Thu Jul 14 2016 Matyas Selmeci <matyas@cs.wisc.edu> - 7.1p2f-1.1
 - Merge OSG changes (SOFTWARE-2390)

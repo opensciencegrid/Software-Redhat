@@ -1,10 +1,9 @@
 Summary: C/C++ libraries for the client of the CREAM service
 Name: glite-ce-cream-client-api-c
 Version: 1.15.4
-Release: 2.3%{?dist}
+Release: 2.5%{?dist}
 License: Apache Software License
 URL: http://glite.cern.ch/
-Group: System Environment/Libraries
 BuildRequires: cmake, chrpath
 BuildRequires: glite-ce-wsdl >= 1.15.1
 #BuildRequires: emi-pkgconfig-compat
@@ -12,7 +11,6 @@ BuildRequires: gsoap-devel
 BuildRequires: gridsite-devel >= 2.2.5, libxml2-devel, boost-devel
 BuildRequires: voms-devel, condor-classads-devel >= 8.0.4
 BuildRequires: glite-lbjp-common-gsoap-plugin-devel >= 3.2.12, log4cpp-devel
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 AutoReqProv: yes
 Source: %{name}.tar.gz
 Patch0: Fix-CMakeLists.txt-to-work-with-condor-classads.patch
@@ -31,9 +29,7 @@ The package contains C/C++ libraries for the client of the CREAM service
 %setup -c -q
 %patch0 -p1
 %patch1 -p1
-%if 0%{?rhel} >= 6
 %patch2 -p1
-%endif
 %if 0%{?rhel} >= 7
 %patch3 -p1
 %endif
@@ -46,7 +42,6 @@ cmake -DCMAKE_INSTALL_PREFIX:string=%{buildroot} %{_builddir}/%{name}-%{version}
 make
 
 %install
-rm -rf %{buildroot}
 mkdir -p %{buildroot}
 make install
 sed 's|%{buildroot}||g;s|lib\s*$|lib64|g' %{buildroot}%{_libdir}/pkgconfig/cream-client-api-soap.pc > %{buildroot}%{_libdir}/pkgconfig/cream-client-api-soap.pc.new
@@ -55,16 +50,12 @@ sed 's|%{buildroot}||g;s|lib\s*$|lib64|g' %{buildroot}%{_libdir}/pkgconfig/cream
 mv %{buildroot}%{_libdir}/pkgconfig/cream-client-api-util.pc.new %{buildroot}%{_libdir}/pkgconfig/cream-client-api-util.pc
 
 
-%clean
-rm -rf %{buildroot}
- 
 %post -p /sbin/ldconfig
 
 %postun -p /sbin/ldconfig
 
 
 %files
-%defattr(-,root,root)
 %{_libdir}/libglite_ce_cream_client_*.so.0
 %{_libdir}/libglite_ce_cream_client_*.so.0.0.0
 
@@ -72,7 +63,6 @@ rm -rf %{buildroot}
 
 %package -n glite-ce-cream-client-devel
 Summary: Development files for the client of the CREAM service
-Group: System Environment/Libraries
 Requires: %{name}%{?_isa} = %{version}-%{release}
 Requires: glite-jobid-api-cpp-devel, glite-jobid-api-c-devel,
 Requires: glite-lbjp-common-gsoap-plugin-devel >= 3.2.12
@@ -83,7 +73,6 @@ Requires: voms-devel, gridsite-devel >= 2.2.5, libxml2-devel
 The package contains development files for the client of the CREAM service
 
 %files -n glite-ce-cream-client-devel
-%defattr(-,root,root)
 %dir /usr/include/glite/
 %dir /usr/include/glite/ce/
 %dir /usr/include/glite/ce/cream-client-api-c/
@@ -94,6 +83,12 @@ The package contains development files for the client of the CREAM service
 
 
 %changelog
+* Thu Aug 29 2019 Brian Lin <blin@cs.wisc.edu> - 1.15.4-2.5
+- Build against HTCondor 8.8.4
+
+* Tue Oct 31 2017 Edgar Fajardo <emfajard@ucsd.edu> - 1.15.4-2.4
+- Build against HTCondor 8.6.8
+
 * Thu Mar 1 2017 Brian Lin <blin@cs.wisc.edu> - 1.15.4-2.3
 - Build against HTCondor 8.6.1
 

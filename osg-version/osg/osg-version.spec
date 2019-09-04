@@ -1,9 +1,8 @@
 Name:      osg-version
 Summary:   OSG Version
-Version:   3.4.0
+Version:   3.4.34
 Release:   1%{?dist}
 License:   Apache 2.0
-Group:     Grid
 URL:       http://www.opensciencegrid.org
 BuildArch: noarch
 
@@ -13,7 +12,6 @@ BuildArch: noarch
 
 Source0:   osg-version
 
-BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
 %description
 %{summary}
@@ -26,14 +24,113 @@ chmod 644 $RPM_BUILD_ROOT%{_sysconfdir}/osg-version
 mkdir -p $RPM_BUILD_ROOT%{_bindir}
 install -pm 755 %{SOURCE0}  $RPM_BUILD_ROOT%{_bindir}/
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
 %files
 %{_sysconfdir}/osg-version
 %{_bindir}/osg-version
 
 %changelog
+* Tue Aug 27 2019 Tim Theisen <tim@cs.wisc.edu> 3.4.34-1
+- Updated to 3.4.34-1
+
+* Thu Aug 01 2019 Tim Theisen <tim@cs.wisc.edu> 3.4.33-1
+- Updated to 3.4.33-1
+
+* Thu Jul 25 2019 Tim Theisen <tim@cs.wisc.edu> 3.4.32-1
+- Updated to 3.4.32-1
+
+* Wed Jun 12 2019 Tim Theisen <tim@cs.wisc.edu> 3.4.31-1
+- Updated to 3.4.31-1
+
+* Thu May 16 2019 Tim Theisen <tim@cs.wisc.edu> 3.4.30-1
+- Updated to 3.4.30-1
+
+* Thu May 02 2019 Tim Theisen <tim@cs.wisc.edu> 3.4.29-1
+- Updated to 3.4.29-1
+
+* Wed Apr 24 2019 Tim Theisen <tim@cs.wisc.edu> 3.4.28-1
+- Updated to 3.4.28-1
+
+* Thu Apr 11 2019 Tim Theisen <tim@cs.wisc.edu> 3.4.27-1
+- Updated to 3.4.27-1
+
+* Wed Mar 13 2019 Tim Theisen <tim@cs.wisc.edu> 3.4.26-1
+- Updated to 3.4.26-1
+
+* Wed Mar 06 2019 Tim Theisen <tim@cs.wisc.edu> 3.4.25-1
+- Updated to 3.4.25-1
+
+* Wed Feb 20 2019 Carl Edquist <edquist@cs.wisc.edu> - 3.4.24-1
+- Updated to 3.4.24-1
+
+* Tue Jan 15 2019 Tim Theisen <tim@cs.wisc.edu> 3.4.23-1
+- Updated to 3.4.23-1
+
+* Wed Dec 19 2018 Tim Theisen <tim@cs.wisc.edu> 3.4.22-1
+- Updated to 3.4.22-1
+
+* Wed Dec 12 2018 Tim Theisen <tim@cs.wisc.edu> 3.4.21-1
+- Updated to 3.4.21-1
+
+* Wed Oct 31 2018 Tim Theisen <tim@cs.wisc.edu> 3.4.20-1
+- Updated to 3.4.20-1
+
+* Wed Oct 24 2018 Tim Theisen <tim@cs.wisc.edu> 3.4.19-1
+- Updated to 3.4.19-1
+
+* Wed Sep 26 2018 Tim Theisen <tim@cs.wisc.edu> 3.4.18-1
+- Updated to 3.4.18-1
+
+* Thu Aug 16 2018 Tim Theisen <tim@cs.wisc.edu> 3.4.17-1
+- Updated to 3.4.17-1
+
+* Tue Jul 31 2018 Tim Theisen <tim@cs.wisc.edu> 3.4.16-1
+- Updated to 3.4.16-1
+
+* Thu Jul 05 2018 Tim Theisen <tim@cs.wisc.edu> 3.4.15-1
+- Updated to 3.4.15-1
+
+* Fri Jun 29 2018 Tim Theisen <tim@cs.wisc.edu> 3.4.14-1
+- Updated to 3.4.14-1
+
+* Thu Jun 07 2018 Carl Edquist <edquist@cs.wisc.edu> - 3.4.13-1
+- Updated to 3.4.13-1
+
+* Wed May 09 2018 Tim Theisen <tim@cs.wisc.edu> 3.4.12-1
+- Updated to 3.4.12-1
+
+* Mon Apr 30 2018 Tim Theisen <tim@cs.wisc.edu> 3.4.11-1
+- Updated to 3.4.11-1
+
+* Fri Apr 13 2018 Tim Theisen <tim@cs.wisc.edu> 3.4.10-1
+- Updated to 3.4.10-1
+
+* Wed Mar 07 2018 Tim Theisen <tim@cs.wisc.edu> 3.4.9-1
+- Updated to 3.4.9-1
+
+* Tue Feb 06 2018 Brian Lin <blin@cs.wisc.edu> 3.4.8-1
+- Updated to 3.4.8-1
+
+* Mon Jan 29 2018 Tim Theisen <tim@cs.wisc.edu> 3.4.7-1
+- Updated to 3.4.7-1
+
+* Mon Dec 18 2017 Tim Theisen <tim@cs.wisc.edu> 3.4.6-1
+- Updated to 3.4.6-1
+
+* Thu Nov 09 2017 Tim Theisen <tim@cs.wisc.edu> 3.4.5-1
+- Updated to 3.4.5-1
+
+* Thu Oct 05 2017 Tim Theisen <tim@cs.wisc.edu> 3.4.4-1
+- Updated to 3.4.4-1
+
+* Wed Sep 06 2017 Suchandra Thapa <sthapa@ci.uchicago.edu> 3.4.3-1
+- Updated to 3.4.3-1
+
+* Wed Jul 05 2017 Suchandra Thapa <sthapa@ci.uchicago.edu> 3.4.2-1
+- Updated to 3.4.2-1
+
+* Wed Jul 05 2017 Tim Theisen <tim@cs.wisc.edu> 3.4.1-1
+- Updated to 3.4.1-1
+
 * Thu May 25 2017 Brian Lin <blin@cs.wisc.edu> 3.4.0-1
 - Updated to 3.4.0-1
 

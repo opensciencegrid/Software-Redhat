@@ -1,103 +1,153 @@
 Name:           vo-client
-Version:        74
+Version:        94
 Release:        1%{?dist}
-Summary:        Contains vomses file for use with user authentication and edg-mkgridmap.conf file that contains configuration information for edg-mkgridmap.
+Summary:        Contains vomses file for use with user authentication
 
-Group:          System Environment/Base
 License:        Apache 2.0
 URL:            http://www.opensciencegrid.org/osg/
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
 Requires: grid-certificates >= 7
 
-Source0:        %{name}-%{version}-osg.tar.gz
+Source0:        %{name}-%{version}.tar.gz
 
 # See
-# https://www.opensciencegrid.org/bin/view/SoftwareTeam/CreateVOClient
+# https://opensciencegrid.github.io/technology/software/create-vo-client/
 # for instructions
 
 
 %description
 %{summary}
 
-%package edgmkgridmap
-Summary:	edg-mkgridmap.conf file that contains configuration information for edg-mkgridmap
-Group:          system environment/base
-Provides:       vo-client-edgmkgridmap = %{version}-%{release}
-Provides:       osg-edg-mkgridmap-config = %{version}-%{release}
-#Requires:       %{name} = %{version}-%{release}
-
-%description edgmkgridmap
-%{summary}
-
-
 %package lcmaps-voms
 Summary:        Provides a voms-mapfile-default file, mapping VOMS FQANs to Unix users suitable for use by the LCMAPS VOMS plugin
-Group:          system environment/base
+Requires:       %{name} = %{version}-%{release}
 
 %description lcmaps-voms
 %{summary}
 
+%package dcache
+Summary:        Provides a grid-vorolemap file for use by dCache, similar to voms-mapfile-default
+Requires:       %{name} = %{version}-%{release}
 
-%package -n osg-gums-config
-Summary:        a file that contains a template configuration for the gums service
-Group:          system environment/base
-Requires:       gums-service
-
-%description -n osg-gums-config
+%description dcache
 %{summary}
-Running /usr/bin/gums-create-config on the template
-(in %{_sysconfdir}/gums/gums.config.template) will create a usable
-configuration file.
+
 
 %prep
+%setup
 
 %build
-
+make
 
 %install
-rm -rf $RPM_BUILD_ROOT
-tar -xz -C $RPM_BUILD_DIR --strip-components=1 -f %{SOURCE0}
 install -d $RPM_BUILD_ROOT/%{_sysconfdir}
 install -d $RPM_BUILD_ROOT/%{_datadir}/osg/
-mv $RPM_BUILD_DIR/vomses $RPM_BUILD_ROOT/%{_sysconfdir}/
-mv $RPM_BUILD_DIR/edg-mkgridmap.conf $RPM_BUILD_ROOT/%{_sysconfdir}/
-mv $RPM_BUILD_DIR/voms-mapfile-default $RPM_BUILD_ROOT/%{_datadir}/osg/
+mv vomses $RPM_BUILD_ROOT/%{_sysconfdir}/
+mv voms-mapfile-default $RPM_BUILD_ROOT/%{_datadir}/osg/
+mv grid-vorolemap $RPM_BUILD_ROOT/%{_datadir}/osg/
 
-chmod 644 $RPM_BUILD_ROOT/%{_sysconfdir}/vomses $RPM_BUILD_ROOT/%{_sysconfdir}/edg-mkgridmap.conf $RPM_BUILD_ROOT/%{_datadir}/osg/voms-mapfile-default
+chmod 644 $RPM_BUILD_ROOT/%{_sysconfdir}/vomses
+chmod 644 $RPM_BUILD_ROOT/%{_datadir}/osg/voms-mapfile-default
+chmod 644 $RPM_BUILD_ROOT/%{_datadir}/osg/grid-vorolemap
 
 install -d $RPM_BUILD_ROOT/%{_sysconfdir}/grid-security/
-mv $RPM_BUILD_DIR/vomsdir $RPM_BUILD_ROOT/%{_sysconfdir}/grid-security/
+mv vomsdir $RPM_BUILD_ROOT/%{_sysconfdir}/grid-security/
 find $RPM_BUILD_ROOT/%{_sysconfdir}/grid-security/vomsdir -type f -exec chmod 644 {} \;
 find $RPM_BUILD_ROOT/%{_sysconfdir}/grid-security/vomsdir -type d -exec chmod 755 {} \;
-
-mkdir -p $RPM_BUILD_ROOT/%{_sysconfdir}/gums/
-mv $RPM_BUILD_DIR/gums.config.template $RPM_BUILD_ROOT/%{_sysconfdir}/gums/gums.config.template
-chmod 600 $RPM_BUILD_ROOT/%{_sysconfdir}/gums/gums.config.template
-
-%clean
-rm -rf $RPM_BUILD_ROOT
-
 
 %files
 %defattr(-,root,root,-)
 %config(noreplace) %{_sysconfdir}/vomses
 %config(noreplace) %{_sysconfdir}/grid-security/vomsdir
 
-%files edgmkgridmap
-%defattr(-,root,root,-)
-%config(noreplace) %{_sysconfdir}/edg-mkgridmap.conf
-
 %files lcmaps-voms
 %defattr(-,root,root,-)
 %{_datadir}/osg/voms-mapfile-default
 
-%files -n osg-gums-config
+%files dcache
 %defattr(-,root,root,-)
-%attr(0600,tomcat,tomcat) %config(noreplace) %{_sysconfdir}/gums/gums.config.template
+%config(noreplace) %{_datadir}/osg/grid-vorolemap
 
 %changelog
+* Tue Jul 23 2019 Diego Davila <didavila@ucsd.edu> - 94-1
+- Updating DN for lsst and supercdms (SOFTWARE-3770)
+
+* Tue Jun 04 2019 Diego Davila <didavila@ucsd.edu> - 93-1
+- Add sphenix vo (SOFTWARE-3718)
+
+* Tue May 28 2019 Carl Edquist <edquist@cs.wisc.edu> - 92-1
+- Add back nanohub VO (SOFTWARE-3706)
+
+* Fri May 10 2019 Carl Edquist <edquist@cs.wisc.edu> - 91-1
+- Update STAR VO certificate (SOFTWARE-3692)
+
+* Thu May 02 2019 Carl Edquist <edquist@cs.wisc.edu> - 90-1
+- Add voms.cnaf.infn.it virgo VOMS server (SOFTWARE-3683)
+
+* Wed Apr 24 2019 Carl Edquist <edquist@cs.wisc.edu> - 89-1
+- Add voms.chtc.wisc.edu GLOW voms server (SOFTWARE-3658)
+- Retire SBGrid VO (SOFTWARE-3652)
+
+* Mon Apr 15 2019 Carl Edquist <edquist@cs.wisc.edu> - 88-1
+- Update DNs for OSG (SOFTWARE-3647)
+- Add gluex.phys.uconn.edu VOMS server (SOFTWARE-3656)
+- Update cert for voms1.fnal.gov (SOFTWARE-3634)
+
+* Tue Mar 26 2019 Carl Edquist <edquist@cs.wisc.edu> - 87-1
+- Add new hcc cert (SOFTWARE-3608)
+- Retire unused VOs: dzero, SBGrid, suragrid & dream (SOFTWARE-3617)
+- Update voms.hep.wisc.edu lz VO certificate (SOFTWARE-3635)
+- Update FNAL voms2 VO configuration (SOFTWARE-3633)
+
+* Wed Feb 27 2019 Brian Lin <blin@cs.wisc.edu> - 86-1
+- Retire the CIGI VO (SOFTWARE-3598)
+- Add backup lz VOMS Admin Server (SOFTWARE-3604)
+
+* Fri Jan 25 2019 Carl Edquist <edquist@cs.wisc.edu> - 85-2
+- Drop osg-gums-config and edgmkgridmap subpackages (SOFTWARE-3542)
+- Clean up build process
+
+* Mon Dec 17 2018 Carl Edquist <edquist@cs.wisc.edu> - 85-1
+- Update INFN CA DN
+- Add backup VOMS server for enmr.eu and glast.org (SOFTWARE-3513)
+
+* Mon Oct 01 2018 Carl Edquist <edquist@cs.wisc.edu> - 84-1
+- Add dteam VO (SOFTWARE-3426)
+
+* Mon Sep 10 2018 Carl Edquist <edquist@cs.wisc.edu> - 83-1
+- Update LSC and vomses entries for SuperCDMS and LSST (SOFTWARE-3402)
+
+* Tue Aug 21 2018 Carl Edquist <edquist@cs.wisc.edu> - 81-1
+- Drop '/*' and '/Capability=...' for grid-vorolemap (SOFTWARE-3222)
+
+* Thu Jul 19 2018 Carl Edquist <edquist@cs.wisc.edu> - 80-1
+- Add dcache subpackage with /usr/share/osg/grid-vorolemap (SOFTWARE-3222)
+
+* Fri May 04 2018 Carl Edquist <edquist@cs.wisc.edu> - 79-1
+- Add new InCommon VOMS cert for OSG (SOFTWARE-3248)
+
+* Fri Mar 30 2018 Carl Edquist <edquist@cs.wisc.edu> - 78-1
+- Add manual mapfile generator script
+- Handle matchFQAN=vorole in voms-mapfile generator (SOFTWARE-3183)
+- Atlas VO updates (SOFTWARE-3183)
+
+* Fri Feb 16 2018 Carl Edquist <edquist@cs.wisc.edu> - 77-2
+- Add dependency for lcmaps-voms on the main vo-client package (SOFTWARE-3137)
+
+* Mon Dec 04 2017 Carl Edquist <edquist@cs.wisc.edu> - 77-1
+- Update to vo-client 77
+  - Remove voms1.egee.cesnet.cz (auger) VOMS server (SOFTWARE-3042)
+
+* Mon Oct 30 2017 Carl Edquist <edquist@cs.wisc.edu> - 76-1
+- Update to vo-client 76
+  - Drop redundant geant4-lcgadmin objects (SOFTWARE-2921)
+  - Additional snoplus voms servers (SOFTWARE-2965)
+
+* Fri Sep 08 2017 Carl Edquist <edquist@cs.wisc.edu> - 75-1
+- Update to vo-client 75
+  - Add CMS wildcard to default map file (SOFTWARE-2852)
+
 * Fri Jun 09 2017 Carl Edquist <edquist@cs.wisc.edu> - 74-1
 - Update to vo-client 74 (SOFTWARE-2765)
   - Fix the edg-mkgridmap entries for project8 and miniclean (SOFTWARE-2727)

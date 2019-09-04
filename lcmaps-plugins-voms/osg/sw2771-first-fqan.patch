@@ -86,10 +86,10 @@ Index: src/voms/lcmaps_voms_localaccount.c
      return LCMAPS_MOD_SUCCESS;
  
  fail_init_module:
-@@ -542,7 +579,9 @@
-     struct passwd       *user_info   = NULL;
+@@ -543,7 +579,9 @@
      int                 cnt_sec_gid  = 0;
      gid_t *             sec_gid      = NULL;
+     int                 voms_verification = 1;
 +    char *              last_vo      = NULL;
  
 +

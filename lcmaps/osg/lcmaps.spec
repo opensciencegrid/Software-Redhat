@@ -18,9 +18,8 @@
 Summary: Grid (X.509) and VOMS credentials to local account mapping service
 Name: lcmaps
 Version: 1.6.6
-Release: 1.6%{?dist}
+Release: 1.9%{?dist}
 License: ASL 2.0
-Group: System Environment/Libraries
 URL: http://wiki.nikhef.nl/grid/LCMAPS
 Source0: http://software.nikhef.nl/security/lcmaps/lcmaps-%{version}.tar.gz
 Source1: lcmaps.db
@@ -29,8 +28,7 @@ Source3: ban-voms-mapfile
 Source4: lcmaps.db.gridmap
 Source5: lcmaps.db.gums
 Source6: lcmaps.db.vomsmap
-# BuildRoot is still required for EPEL5
-BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
+Source7: lcmaps.db.vomsmap.allfqans
 BuildRequires: globus-common-devel
 BuildRequires: globus-gssapi-gsi-devel
 BuildRequires: globus-gss-assist-devel
@@ -57,7 +55,6 @@ see the lcmaps-interface package.
 
 
 %package without-gsi
-Group: System Environment/Libraries
 Summary: Grid mapping service without GSI
 
 %description without-gsi
@@ -75,7 +72,6 @@ This version is built without support for the GSI protocol.
 
 
 %package devel
-Group: Development/Libraries
 Summary: LCMAPS plug-in API header files
 Requires: %{name}%{?_isa} = %{version}-%{release}
 Requires: %{name}-common-devel%{?_isa} = %{version}-%{release}
@@ -87,11 +83,6 @@ Provides: %{name}-openssl-interface = %{version}-%{release}
 Obsoletes: %{name}-openssl-interface < 1.6.1-4
 Provides: %{name}-interface = %{version}-%{release}
 Obsoletes: %{name}-interface < 1.4.31-1
-# the pkgconfig requirement is only necessary for EPEL5 and below;
-# it's automatic for Fedora and EPEL6.
-%if %{?rhel}%{!?rhel:6} <= 5
-Requires: pkgconfig
-%endif
 
 %description devel
 The Local Centre MAPping Service (LCMAPS) is a security middleware
@@ -109,15 +100,9 @@ against the LCMAPS library.
 
 
 %package common-devel
-Group: Development/Libraries
 Summary: LCMAPS plug-in API header files
 Provides: %{name}-basic-interface = %{version}-%{release}
 Obsoletes: %{name}-basic-interface < 1.6.1-4
-# the pkgconfig requirement is only necessary for EPEL5 and below;
-# it's automatic for Fedora and EPEL6.
-%if %{?rhel}%{!?rhel:6} <= 5
-Requires: pkgconfig
-%endif
 
 %description common-devel
 The Local Centre MAPping Service (LCMAPS) is a security middleware
@@ -130,15 +115,9 @@ for client applications.
 
 
 %package without-gsi-devel
-Group: Development/Libraries
 Summary: LCMAPS development libraries
 Requires: %{name}-without-gsi%{?_isa} = %{version}-%{release}
 Requires: %{name}-common-devel%{?_isa} = %{version}-%{release}
-# the pkgconfig requirement is only necessary for EPEL5 and below;
-# it's automatic for Fedora and EPEL6.
-%if %{?rhel}%{!?rhel:6} <= 5
-Requires: pkgconfig
-%endif
 
 %description without-gsi-devel
 The Local Centre MAPping Service (LCMAPS) is a security middleware
@@ -194,7 +173,6 @@ make %{?_smp_mflags}
 cd ..
 
 %install
-rm -rf $RPM_BUILD_ROOT
 
 # install the without-gsi version
 cd build-without-gsi
@@ -225,11 +203,8 @@ rm -rf ${RPM_BUILD_ROOT}%{_docdir}
 
 # install templates
 mkdir -p ${RPM_BUILD_ROOT}%{_datadir}/lcmaps/templates
-cp %{SOURCE4} %{SOURCE5} %{SOURCE6} ${RPM_BUILD_ROOT}%{_datadir}/lcmaps/templates/
+cp %{SOURCE4} %{SOURCE5} %{SOURCE6} %{SOURCE7} ${RPM_BUILD_ROOT}%{_datadir}/lcmaps/templates/
 
-# Retain the clean section for EPEL5
-%clean
-rm -rf $RPM_BUILD_ROOT
 
 %post -p /sbin/ldconfig
 
@@ -337,9 +312,19 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/lcmaps/templates/lcmaps.db.gridmap
 %{_datadir}/lcmaps/templates/lcmaps.db.gums
 %{_datadir}/lcmaps/templates/lcmaps.db.vomsmap
+%{_datadir}/lcmaps/templates/lcmaps.db.vomsmap.allfqans
 
 
 %changelog
+* Thu Dec 07 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6.6-1.9
+- Drop EL5 support
+
+* Tue Oct 17 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6.6-1.8
+- Add vomsmap template with -all-fqans (SOFTWARE-2932)
+
+* Thu Oct 12 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6.6-1.7
+- Add comments about -all-fqans to lcmaps.db templates (SOFTWARE-2932)
+
 * Tue May 23 2017 Brian Lin <blin@cs.wisc.edu> 1.6.6-1.6
 - Drop LCMAPS GUMS client plugins dependency (SOFTWARE-2681)
 

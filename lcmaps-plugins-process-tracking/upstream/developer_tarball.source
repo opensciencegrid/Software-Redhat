@@ -4,4 +4,4 @@
 # make dist
 # cp lcmaps-plugins-process-tracking-0.3.tar.gz ../
 # cd .. ; rm -rf lcmaps-plugins-process-tracking
-lcmaps-plugins-process-tracking/0.3/lcmaps-plugins-process-tracking-0.3.tar.gz
+lcmaps-plugins-process-tracking/0.3/lcmaps-plugins-process-tracking-0.3.tar.gz sha1sum=48382d52065c36f054fa255d819d941c2771198d

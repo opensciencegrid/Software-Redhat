@@ -1,40 +1,37 @@
 Name:           empty-condor
 Version:        1.1
-Release:        8%{?dist}
+Release:        9%{?dist}
 Summary:        An empty Condor package
 
-Group:          Applications/System
 License:        Unknown
 URL:            http://vdt.cs.wisc.edu
 
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 # This fulfills depenendencies for most OSG packages that depend on Condor
-# Versioned provides is needed to deal with conflicts causes in htcondor-ce
-# (SOFTWARE-2495).
-Provides:       condor = 8.4.9
-Provides:       condor-all = 8.4.9
-Provides:       condor-aviary = 8.4.9
-Provides:       condor-aviary-common = 8.4.9
-Provides:       condor-aviary-hadoop = 8.4.9
-Provides:       condor-aviary-hadoop-common = 8.4.9
-Provides:       condor-bosco = 8.4.9
-Provides:       condor-classads = 8.4.9
-Provides:       condor-classads-devel = 8.4.9
-Provides:       condor-cream-gahp = 8.4.9
-Provides:       condor-deltacloud-gahp = 8.4.9
-Provides:       condor-external-libs = 8.4.9
-Provides:       condor-externals = 8.4.9
-Provides:       condor-kbdd = 8.4.9
-Provides:       condor-parallel-setup = 8.4.9
-Provides:       condor-plumage = 8.4.9
-Provides:       condor-procd = 8.4.9
-Provides:       condor-python = 8.4.9
-Provides:       condor-qmf = 8.4.9
-Provides:       condor-static-shadow = 8.4.9
-Provides:       condor-std-universe = 8.4.9
-Provides:       condor-test = 8.4.9
-Provides:       condor-vm-gahp = 8.4.9
+# Versioned provides are needed for versioned dependencies, e.g. in htcondor-ce.
+Provides:       condor = 99
+Provides:       condor-all = 99
+Provides:       condor-aviary = 99
+Provides:       condor-aviary-common = 99
+Provides:       condor-aviary-hadoop = 99
+Provides:       condor-aviary-hadoop-common = 99
+Provides:       condor-bosco = 99
+Provides:       condor-classads = 99
+Provides:       condor-classads-devel = 99
+Provides:       condor-cream-gahp = 99
+Provides:       condor-deltacloud-gahp = 99
+Provides:       condor-external-libs = 99
+Provides:       condor-externals = 99
+Provides:       condor-kbdd = 99
+Provides:       condor-parallel-setup = 99
+Provides:       condor-plumage = 99
+Provides:       condor-procd = 99
+Provides:       condor-python = 99
+Provides:       condor-qmf = 99
+Provides:       condor-static-shadow = 99
+Provides:       condor-std-universe = 99
+Provides:       condor-test = 99
+Provides:       condor-vm-gahp = 99
 
 Conflicts:      /usr/sbin/condor_master
 
@@ -44,11 +41,13 @@ Provides:       /usr/sbin/condor_procd
 Provides:       /usr/sbin/gidd_alloc
 Provides:       /usr/sbin/procd_ctl
 
-# This fulfills dependencies for htcondor-ce-client
+# For htcondor-ce-client (htcondor.so) and blahp (libclassad.so.8)
 %ifarch x86_64
 Provides: htcondor.so()(64bit)
+Provides: libclassad.so.8()(64bit)
 %else
 Provides: htcondor.so()
+Provides: libclassad.so.8()
 %endif
 
 %description
@@ -64,13 +63,16 @@ believes that Condor has been installed via RPM.
 
 %install
 
-%clean
-
 %files
 
 %doc
 
 %changelog
+* Fri Jan 19 2018 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.1-9
+- Bump provides versions to 99 to allow versioned requires to work without
+  having to update the versions
+- Provide libclassad.so.8() for blahp for htcondor-ce
+
 * Tue Oct 25 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.1-8
 - Provide all other condor subpackages (SOFTWARE-2507)
 

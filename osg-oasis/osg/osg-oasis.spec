@@ -1,13 +1,14 @@
 Summary: OSG metapackage for OASIS and CVMFS
 Name: osg-oasis
-Version: 7
-Release: 9%{?dist}
+Version: 15
+Release: 2%{?dist}
 License: ASL 2.0
-Group: Applications/Grid
 BuildArch: noarch
-Requires: cvmfs >= 2.3.5
-Requires: cvmfs-config-osg >= 2.0-1
-Requires: cvmfs-x509-helper >= 0.9
+# Note: cannot require an exact release number (after a dash) unless 
+#   including the dist as well, e.g. -2%{?dist}
+Requires: cvmfs = 2.6.2
+Requires: cvmfs-config-osg = 2.4
+Requires: cvmfs-x509-helper >= 2.0-3%{?dist}
 
 %description
 %{summary}
@@ -21,12 +22,58 @@ exit 0
 %install
 exit 0
 
-%clean
-exit 0
-
 %files
 
 %changelog
+* Tue Aug 13 2019 Dave Dykstra <dwd@fnal.gov> 15-2
+- Update to cvmfs-2.6.2
+
+* Wed Aug 07 2019 Dave Dykstra <dwd@fnal.gov> 15-1
+- Update to cvmfs-2.6.1 and cvmfs-config-osg-2.4
+
+* Tue Jul 30 2019 Edgar Fajardo <emfajard@ucsd.edu> 14-3
+- Changing version requirement on cvmfs-x509-helper to more or equal
+  (SOFTWARE-3384)
+
+* Tue Jul 30 2019 Edgar Fajardo <emfajard@ucsd.edu> 14-1
+- Removing version requirements for other packages (SOFTWARE-3384)
+
+* Thu Jun 20 2019 Diego Davila <didavila@ucsd.edu> 13-1
+- Update to require cvmfs-x509-helper-2.0 (SOFTWARE-3736)
+
+* Tue Mar 12 2019 Dave Dykstra <dwd@fnal.gov> 12-1
+- Update to require cvmfs-2.6.0
+
+* Tue Nov 27 2018 Dave Dykstra <dwd@fnal.gov> 11-1
+- Update to require cvmfs-2.5.2
+
+* Thu Aug 09 2018 Carl Edquist <edquist@cs.wisc.edu> - 9-3
+- Update cvmfs-x509-helper version requirement (SOFTWARE-3376)
+
+* Thu May 03 2018 Dave Dykstra <dwd@fnal.gov> 9-2
+- Fix accidental changes to the other version numbers
+
+* Thu May 03 2018 Dave Dykstra <dwd@fnal.gov> 9-1
+- Update to cvmfs-2.4.5
+
+* Tue Dec 19 2017 Dave Dykstra <dwd@fnal.gov> 8-5
+- Update to cvmfs-2.4.4 and make the cvmfs-config-osg version not
+  include the release part.
+
+* Tue Dec 19 2017 Dave Dykstra <dwd@fnal.gov> 8-4
+- Update to cvmfs-x509-helper to version 1.0.  (This version also for
+  testing.)
+
+* Tue Dec 19 2017 Dave Dykstra <dwd@fnal.gov> 8-3
+- Switch to using '=' versions instead of >= versions.  (This version
+  is for experimenting, not expected to be released).
+
+* Fri Oct 20 2017 Dave Dykstra <dwd@fnal.gov> 8-2
+- Update to cvmfs-2.4.2
+
+* Wed Sep  9 2017 Dave Dykstra <dwd@fnal.gov> 8-1
+- Update to cvmfs-2.4.1
+
 * Thu Mar 23 2017 Brian Lin <blin@fnal.gov> 7-9
 - Update to cvmfs-2.3.5
 
@@ -107,4 +154,3 @@ exit 0
 * Wed Jul 24 2013 Dave Dykstra <dwd@fnal.gov> 1-1
 - Initial version
 
-# vim:ft=spec
