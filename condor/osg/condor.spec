@@ -123,7 +123,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 0.479699
+%define condor_base_release 1.1
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -225,6 +225,7 @@ Source123: zlib-1.2.3.tar.gz
 
 #% if 0%osg
 Patch8: osg_sysconfig_in_init_script.patch
+Patch16: bosco_https.patch
 #% endif
 
 # HCC patches
@@ -834,6 +835,7 @@ exit 0
 
 %if 0%{?osg} || 0%{?hcc}
 %patch8 -p1
+%patch16 -p1
 %endif
 
 %if 0%{?hcc}
@@ -2088,6 +2090,9 @@ fi
 %endif
 
 %changelog
+* Fri Sep 06 2019 Diego Davila <didavila@ucsd.edu> - 8.5.5-1.1
+-Add patch bosco_https (SOFTWARE-3809)
+	
 * Thu Aug 29 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 8.4.4-1.8
 - Add DAEMON_LIST and FS/Password auth configuration;
   autogenerate pool password on install (SOFTWARE-3795)

@@ -1,0 +1,40 @@
+diff --git a/src/condor_contrib/bosco/bosco_findplatform b/src/condor_contrib/bosco/bosco_findplatform
+index e9e6264..cfb72f0 100755
+--- a/src/condor_contrib/bosco/bosco_findplatform
++++ b/src/condor_contrib/bosco/bosco_findplatform
+@@ -23,14 +23,14 @@ SUPPORTED_PLATFORMS = [ RH6, RH7, OSX, DEB8, DEB9, UBUNTU14, UBUNTU16, UBUNTU18
+ 
+ # download URLs for the different platforms
+ URL_DICT={
+-  DEB8: "ftp://ftp.cs.wisc.edu/condor/bosco/1.2/bosco-1.2-x86_64_Debian8.tar.gz",
+-  DEB9: "ftp://ftp.cs.wisc.edu/condor/bosco/1.2/bosco-1.2-x86_64_Debian9.tar.gz",
+-  OSX: "ftp://ftp.cs.wisc.edu/condor/bosco/1.2/bosco-1.2-x86_64_MacOSX.tar.gz",
+-  RH6: "ftp://ftp.cs.wisc.edu/condor/bosco/1.2/bosco-1.2-x86_64_RedHat6.tar.gz",
+-  RH7: "ftp://ftp.cs.wisc.edu/condor/bosco/1.2/bosco-1.2-x86_64_RedHat7.tar.gz",
+-  UBUNTU14: "ftp://ftp.cs.wisc.edu/condor/bosco/1.2/bosco-1.2-x86_64_Ubuntu14.tar.gz",
+-  UBUNTU16: "ftp://ftp.cs.wisc.edu/condor/bosco/1.2/bosco-1.2-x86_64_Ubuntu16.tar.gz",
+-  UBUNTU18: "ftp://ftp.cs.wisc.edu/condor/bosco/1.2/bosco-1.2-x86_64_Ubuntu18.tar.gz",
++  DEB8: "https://research.cs.wisc.edu/htcondor/bosco/1.2/bosco-1.2-x86_64_Debian8.tar.gz",
++  DEB9: "https://research.cs.wisc.edu/htcondor/bosco/1.2/bosco-1.2-x86_64_Debian9.tar.gz",
++  OSX: "https://research.cs.wisc.edu/htcondor/bosco/1.2/bosco-1.2-x86_64_MacOSX.tar.gz",
++  RH6: "https://research.cs.wisc.edu/htcondor/bosco/1.2/bosco-1.2-x86_64_RedHat6.tar.gz",
++  RH7: "https://research.cs.wisc.edu/htcondor/bosco/1.2/bosco-1.2-x86_64_RedHat7.tar.gz",
++  UBUNTU14: "https://research.cs.wisc.edu/htcondor/bosco/1.2/bosco-1.2-x86_64_Ubuntu14.tar.gz",
++  UBUNTU16: "https://research.cs.wisc.edu/htcondor/bosco/1.2/bosco-1.2-x86_64_Ubuntu16.tar.gz",
++  UBUNTU18: "https://research.cs.wisc.edu/htcondor/bosco/1.2/bosco-1.2-x86_64_Ubuntu18.tar.gz",
+ }
+ 
+ BIT32="32bit"
+diff --git a/src/condor_contrib/bosco/bosco_quickstart b/src/condor_contrib/bosco/bosco_quickstart
+index f8563d6..87e6838 100755
+--- a/src/condor_contrib/bosco/bosco_quickstart
++++ b/src/condor_contrib/bosco/bosco_quickstart
+@@ -3,7 +3,7 @@
+ 
+ # Download URL
+ #INSTALLER_URL=ftp://ftp.cs.wisc.edu/condor/bosco/latest/boscoinstaller
+-INSTALLER_URL=ftp://ftp.cs.wisc.edu/condor/bosco/1.2/boscoinstaller
++INSTALLER_URL=https://research.cs.wisc.edu/htcondor/bosco/1.2/boscoinstaller
+ 
+ # Change this to download a patch for bosco_cluster
+ #PATCH_B_CLUSTER_URL=https://twiki.grid.iu.edu/twiki/bin/viewfile/CampusGrids/BoscoQuickStart_draft/bosco_cluster
