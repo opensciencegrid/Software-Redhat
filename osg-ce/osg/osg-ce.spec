@@ -175,7 +175,7 @@ install -m 644 %{SOURCE0} $RPM_BUILD_ROOT/%{_datadir}/condor-ce/config.d
 %changelog
 * Fri Sep 06 2019 Brian Lin <blin@cs.wisc.edu> - 3.5-2
 - Add Blahp location configuration (SOFTWARE-3813)
-- Remove deprecated requirements and 32-bit requirements
+- Remove deprecated and 32-bit requirements
 
 * Fri Aug 02 2019 Carl Edquist <edquist@cs.wisc.edu> - 3.5-1
 - Removing osg-vo-map requirement for OSG 3.5 (SOFTWARE-3761)
