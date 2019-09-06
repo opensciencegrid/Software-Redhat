@@ -5,7 +5,7 @@
 Name:      osg-ce
 Summary:   OSG Compute Element
 Version:   3.5
-Release:   1%{?dist}
+Release:   2%{?dist}
 License:   Apache 2.0
 URL:       http://www.opensciencegrid.org
 
@@ -27,17 +27,10 @@ Requires: osg-configure-misc
 Requires: osg-configure-squid
 Requires: frontier-squid
 
-# New in 3.2:
 Requires: osg-configure-infoservices
-# The following is required for the RSV Gratia probes to work.
-Requires: perl(Date::Manip)
 
-# For the CE authz
-%ifarch %{ix86}
-Requires: liblcas_lcmaps_gt4_mapping.so.0
-%else
+# Require the Globus-LCMAPS plugin for authZ
 Requires: liblcas_lcmaps_gt4_mapping.so.0()(64bit)
-%endif
 
 # Added provides version for 3.4 (SOFTWARE-2768) can probably be removed in 3.5
 Obsoletes: %{basece} < 3.4-3
@@ -180,6 +173,10 @@ install -m 644 %{SOURCE0} $RPM_BUILD_ROOT/%{_datadir}/condor-ce/config.d
 %files bosco
 
 %changelog
+* Fri Sep 06 2019 Brian Lin <blin@cs.wisc.edu> - 3.5-2
+- Add Blahp location configuration (SOFTWARE-3813)
+- Remove deprecated requirements and 32-bit requirements
+
 * Fri Aug 02 2019 Carl Edquist <edquist@cs.wisc.edu> - 3.5-1
 - Removing osg-vo-map requirement for OSG 3.5 (SOFTWARE-3761)
 
