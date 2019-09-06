@@ -9,6 +9,7 @@ Release:   1%{?dist}
 License:   Apache 2.0
 URL:       http://www.opensciencegrid.org
 
+Source0: 01-blahp-location.conf
 
 Requires: grid-certificates >= 7
 
@@ -163,9 +164,14 @@ Requires: htcondor-ce-bosco
 exit 0
 
 %install
-exit 0
+install -m 755         -d $RPM_BUILD_ROOT/%{_datadir}/condor-ce/config.d
+install -m 644 %{SOURCE0} $RPM_BUILD_ROOT/%{_datadir}/condor-ce/config.d
 
 %files
+# TODO: Drop the OSG-blahp config when the OSG and HTCondor blahps are merged
+# https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=5102,86
+%{_datadir}/condor-ce/config.d/01-blahp-location.conf
+
 %files condor
 %files pbs
 %files lsf
