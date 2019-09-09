@@ -142,6 +142,8 @@ Summary: Bosco meta-package for the HTCondor-CE OSG-CE
 Requires: %{osgce} = %{version}-%{release}
 Requires: gratia-probe-htcondor-ce
 Requires: osg-configure-bosco
+# Added for config management of Hosted CEs (SOFTWARE-3814)
+Requires: ansible
 
 # Added provides version for 3.4 (SOFTWARE-2768)                                                                                                            
 Obsoletes: %{basece}-bosco < 3.4-3
