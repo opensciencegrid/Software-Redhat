@@ -10,6 +10,7 @@ License:   Apache 2.0
 URL:       http://www.opensciencegrid.org
 
 Source0: 01-blahp-location.conf
+Source1: 03-gratia-cleanup.conf
 
 Requires: grid-certificates >= 7
 
@@ -159,11 +160,13 @@ exit 0
 %install
 install -m 755         -d $RPM_BUILD_ROOT/%{_datadir}/condor-ce/config.d
 install -m 644 %{SOURCE0} $RPM_BUILD_ROOT/%{_datadir}/condor-ce/config.d
+install -m 644 %{SOURCE1} $RPM_BUILD_ROOT/%{_datadir}/condor-ce/config.d
 
 %files
 # TODO: Drop the OSG-blahp config when the OSG and HTCondor blahps are merged
 # https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=5102,86
 %{_datadir}/condor-ce/config.d/01-blahp-location.conf
+%{_datadir}/condor-ce/config.d/03-gratia-cleanup.conf
 
 %files condor
 %files pbs
