@@ -144,6 +144,9 @@ Requires: gratia-probe-htcondor-ce
 Requires: osg-configure-bosco
 # Added for config management of Hosted CEs (SOFTWARE-3814)
 Requires: ansible
+# Added for scripts to manage remote WN tarball, CA, and CRL
+# installations (SOFTWARE-3582)
+Requires: hosted-ce-tools
 
 # Added provides version for 3.4 (SOFTWARE-2768)                                                                                                            
 Obsoletes: %{basece}-bosco < 3.4-3
@@ -179,8 +182,11 @@ install -m 644 %{SOURCE1} $RPM_BUILD_ROOT/%{_datadir}/condor-ce/config.d
 
 %changelog
 * Fri Sep 06 2019 Brian Lin <blin@cs.wisc.edu> - 3.5-2
-- Add Blahp location configuration (SOFTWARE-3813)
+- Add Blahp location and Gratia cleanup configuration (SOFTWARE-3813)
 - Remove deprecated and 32-bit requirements
+- Add Ansible requirement (SOFTWARE-3813)
+- Add tools that automatically update WN tarball, CAs, and CRLs on the
+remote head node (SOFTWARE-3582)
 
 * Fri Aug 02 2019 Carl Edquist <edquist@cs.wisc.edu> - 3.5-1
 - Removing osg-vo-map requirement for OSG 3.5 (SOFTWARE-3761)
