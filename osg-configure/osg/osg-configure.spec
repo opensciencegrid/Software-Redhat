@@ -1,6 +1,6 @@
 Summary: Package for OSG-Configure and associated scripts
 Name: osg-configure
-Version: 2.4.1
+Version: 2.5.0
 Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
@@ -245,6 +245,9 @@ touch $RPM_BUILD_ROOT/var/lib/osg/osg-job-environment.conf
 
 
 %changelog
+* Mon Sep 16 2019 Mátyás Selmeci <matyas@cs.wisc.edu> 2.5.0-1
+- Add support for bosco_cluster overrides (SOFTWARE-3818)
+
 * Fri Aug 16 2019 Mátyás Selmeci <matyas@cs.wisc.edu> 2.4.1-1
 - Fix using the wrong remote user in ssh configs for bosco
 
