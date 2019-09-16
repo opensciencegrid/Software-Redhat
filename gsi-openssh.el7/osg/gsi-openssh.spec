@@ -29,7 +29,7 @@
 %global ldap 1
 
 %global openssh_ver 7.4p1
-%global openssh_rel 2
+%global openssh_rel 4
 
 Summary: An implementation of the SSH protocol with GSI authentication
 Name: gsi-openssh
@@ -218,7 +218,6 @@ BuildRequires: krb5-devel
 BuildRequires: globus-gss-assist-devel >= 8
 BuildRequires: globus-gssapi-gsi-devel >= 12.12
 BuildRequires: globus-common-devel >= 14
-BuildRequires: globus-usage-devel >= 3
 %endif
 
 %if %{libedit}
@@ -537,7 +536,7 @@ systemctl daemon-reload >/dev/null 2>&1 || :
 %files
 %defattr(-,root,root)
 %{!?_licensedir:%global license %%doc}
-%license LICENCE LICENSE.globus_usage
+%license LICENCE
 %doc CREDITS ChangeLog INSTALL OVERVIEW PROTOCOL* README README.platform README.privsep README.tun README.dns README.sshd-and-gsisshd TODO
 %attr(0755,root,root) %dir %{_sysconfdir}/gsissh
 %attr(0600,root,root) %config(noreplace) %{_sysconfdir}/gsissh/moduli
@@ -582,6 +581,15 @@ systemctl daemon-reload >/dev/null 2>&1 || :
 %attr(0644,root,root) /usr/share/osg/sysconfig/gsisshd
 
 %changelog
+* Mon Sep 16 2019 Carl Edquist <edquist@cs.wisc.edu> - 7.4p1-4.1
+- Merge OSG changes (SOFTWARE-3828)
+
+* Tue May 28 2019 Mattias Ellert <mattias.ellert@physics.uu.se> - 7.4p1-4
+- Change GSSAPITrustDNS default to no
+
+* Wed Feb 27 2019 Mattias Ellert <mattias.ellert@physics.uu.se> - 7.4p1-3
+- Remove usage statistics collection support
+
 * Wed Feb 06 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 7.4p1-2.3
 - systemctl daemon-reload in post scriptlet to fix failure when upgrading from an init-based version
 
@@ -591,7 +599,7 @@ systemctl daemon-reload >/dev/null 2>&1 || :
 * Tue Apr 10 2018 Mattias Ellert <mattias.ellert@physics.uu.se> - 7.4p1-2
 - Based on openssh-7.4p1-16.el7
 
-* Sun Nov 12 2017 Mattias Ellert <nattias.ellert@physics.uu.se> - 7.4p1-1
+* Sun Nov 12 2017 Mattias Ellert <mattias.ellert@physics.uu.se> - 7.4p1-1
 - Based on openssh-7.4p1-13.el7_4
 
 * Mon Jul 31 2017 Mattias Ellert <mattias.ellert@physics.uu.se> - 6.6.1p1-8
