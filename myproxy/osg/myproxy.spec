@@ -13,7 +13,7 @@
 %{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
 
 Name:           myproxy
-Version:        6.2.4
+Version:        6.2.6
 Release:        1.1%{?dist}
 Summary:        Manage X.509 Public Key Infrastructure (PKI) security credentials
 
@@ -46,6 +46,7 @@ BuildRequires:  systemd
 %if %{?with_checks}
 BuildRequires:  globus-proxy-utils
 BuildRequires:  globus-gsi-cert-utils-progs
+BuildRequires:  openssl
 BuildRequires:  voms-clients
 %endif
 
@@ -191,7 +192,7 @@ make install DESTDIR=%{buildroot}
 # Remove libtool archives (.la files)
 rm %{buildroot}%{_libdir}/*.la
 
-# Put documentation in Fedora defaults
+# Put documentation in Fedora default location
 mkdir -p %{buildroot}%{_pkgdocdir}/extras
 for FILE in login.html myproxy-accepted-credentials-mapapp \
             myproxy-cert-checker myproxy-certificate-mapapp \
@@ -202,17 +203,17 @@ for FILE in login.html myproxy-accepted-credentials-mapapp \
 done
 
 mkdir -p %{buildroot}%{_pkgdocdir}
-for FILE in LICENSE LICENSE.* PROTOCOL README VERSION ; do
+for FILE in LICENSE LICENSE.* PROTOCOL README.sasl REPOSITORY VERSION ; do
    mv %{buildroot}%{_datadir}/%{name}/$FILE %{buildroot}%{_pkgdocdir}
 done
 
 # Remove license files from pkgdocdir if licensedir is used
 %{?_licensedir: rm %{buildroot}%{_pkgdocdir}/LICENSE*}
 
-# Remove irrelavent example configuration files
+# Remove irrelevant example configuration files
 for FILE in etc.inetd.conf.modifications etc.init.d.myproxy.nonroot \
             etc.services.modifications etc.xinetd.myproxy etc.init.d.myproxy \
-            myproxy-server.service myproxy-server.conf INSTALL ; do
+            myproxy-server.service myproxy-server.conf ; do
    rm %{buildroot}%{_datadir}/%{name}/$FILE
 done
 
@@ -310,6 +311,7 @@ fi
 %{_mandir}/man1/myproxy-change-pass-phrase.1*
 %{_mandir}/man1/myproxy-destroy.1*
 %{_mandir}/man1/myproxy-get-delegation.1*
+%{_mandir}/man1/myproxy-get-trustroots.1*
 %{_mandir}/man1/myproxy-info.1*
 %{_mandir}/man1/myproxy-init.1*
 %{_mandir}/man1/myproxy-logon.1*
@@ -321,6 +323,8 @@ fi
 %dir %{_pkgdocdir}
 %doc %{_pkgdocdir}/PROTOCOL
 %doc %{_pkgdocdir}/README
+%doc %{_pkgdocdir}/README.sasl
+%doc %{_pkgdocdir}/REPOSITORY
 %doc %{_pkgdocdir}/VERSION
 %{!?_licensedir: %doc %{_pkgdocdir}/LICENSE*}
 %{?_licensedir: %license LICENSE*}
@@ -380,6 +384,17 @@ fi
 %{?_licensedir: %license LICENSE*}
 
 %changelog
+* Tue Sep 17 2019 Carl Edquist <edquist@cs.wisc.edu> - 6.2.6-1.1
+- Merge OSG changes (SOFTWARE-3828)
+
+* Fri Aug 30 2019 Mattias Ellert <mattias.ellert@physics.uu.se> - 6.2.6-1
+- Clean up old GPT references (6.2.5)
+- Install myproxy-get-trustroots man page (6.2.5)
+- Remove LICENSE.globus file - usage statistics collection (6.2.6)
+
+* Thu Jul 25 2019 Fedora Release Engineering <releng@fedoraproject.org> - 6.2.4-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
+
 * Thu Jul 11 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 6.2.4-1.1.osg
 - Merge OSG changes
 - Drop 00-osg-environment (unnecessary)
