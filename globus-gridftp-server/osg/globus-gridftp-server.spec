@@ -12,7 +12,7 @@
 
 Name:		globus-gridftp-server
 %global _name %(tr - _ <<< %{name})
-Version:	13.9
+Version:	13.11
 Release:	1.1%{?dist}
 Summary:	Grid Community Toolkit - Globus GridFTP Server
 
@@ -49,7 +49,6 @@ BuildRequires:	globus-gfork-devel >= 3
 BuildRequires:	globus-gridftp-server-control-devel >= 7
 BuildRequires:	globus-ftp-control-devel >= 7
 BuildRequires:	globus-authz-devel >= 2
-BuildRequires:	globus-usage-devel >= 3
 BuildRequires:	globus-gssapi-gsi-devel >= 10
 BuildRequires:	globus-gss-assist-devel >= 9
 BuildRequires:	globus-gsi-credential-devel >= 6
@@ -280,8 +279,18 @@ fi
 %{_libdir}/pkgconfig/%{name}.pc
 
 %changelog
+* Mon Sep 16 2019 Carl Edquist <edquist@cs.wisc.edu> - 13.11-1.1
+- Merge OSG changes (SOFTWARE-3828)
+
 * Tue Feb 26 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 13.9-1.1.osg
 - Merge OSG changes (SOFTWARE-3586)
+
+* Tue Feb 26 2019 Mattias Ellert <mattias.ellert@physics.uu.se> - 13.11-1
+- Improvements for filesystems that encounter listing timeouts (13.10)
+- Remove usage statistics collection support (13.11)
+
+* Thu Jan 31 2019 Fedora Release Engineering <releng@fedoraproject.org> - 13.9-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
 
 * Fri Nov 16 2018 Mattias Ellert <mattias.ellert@physics.uu.se> - 13.9-1
 - Fix data_node restrict path
