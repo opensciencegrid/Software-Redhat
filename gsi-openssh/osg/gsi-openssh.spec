@@ -28,7 +28,7 @@
 Summary: An implementation of the SSH protocol with GSI authentication
 Name: gsi-openssh
 Version: %{gsi_openssh_ver}
-Release: %{gsi_openssh_rel}.1%{?dist}
+Release: %{gsi_openssh_rel}.2%{?dist}
 URL: http://www.openssh.com/portable.html
 Source0: http://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-%{openssh_ver}.tar.gz
 #Source2: gsisshd.pam
@@ -75,6 +75,7 @@ Patch2: https://github.com/globus/gsi-openssh/releases/download/%{version}/hpn_i
 Source10: gsisshd.osg-sysconfig
 Source11: etc-sysconfig-gsisshd
 Source12: etc-initd-gsisshd
+Patch99: drop-globus-usage.patch
 
 
 License: BSD
@@ -118,7 +119,6 @@ BuildRequires: krb5-devel
 
 %if %{gsi}
 BuildRequires: globus-gss-assist-devel >= 8
-BuildRequires: globus-usage-devel >= 3
 BuildRequires: globus-common-progs >= 14
 BuildRequires: globus-gssapi-gsi-devel >= 12.12
 BuildRequires:  pkgconfig
@@ -207,6 +207,8 @@ This version of OpenSSH has been modified to support GSI authentication.
 %patch0 -p1
 %patch1 -p1 -F 2
 %patch2 -p1
+
+%patch99 -p1
 
 # OSG: seds and autoreconf should not be run in the %%prep step, run them in %%build instead
 %build
@@ -357,7 +359,7 @@ then
 fi
 
 %files
-%doc CREDITS ChangeLog INSTALL LICENCE LICENSE.globus_usage OVERVIEW PROTOCOL* README README.platform README.privsep README.tun README.dns TODO ChangeLog.gssapi HPN-README
+%doc CREDITS ChangeLog INSTALL LICENCE OVERVIEW PROTOCOL* README README.platform README.privsep README.tun README.dns TODO ChangeLog.gssapi HPN-README
 %attr(0755,root,root) %dir %{_sysconfdir}/gsissh
 %attr(0600,root,root) %config(noreplace) %{_sysconfdir}/gsissh/moduli
 %attr(0755,root,root) %{_bindir}/gsissh-keygen
@@ -403,8 +405,27 @@ fi
 %endif
 
 %changelog
+* Tue Sep 17 2019 Carl Edquist <edquist@cs.wisc.edu> - 7.3p1c-1.2
+- Merge upstream changes to remove globus usage (SOFTWARE-3828)
+
+* Wed Feb 27 2019 Mattias Ellert <mattias.ellert@physics.uu.se> - 7.4p1-3
+- Remove usage statistics collection support
+
+* Tue Apr 10 2018 Mattias Ellert <mattias.ellert@physics.uu.se> - 7.4p1-2
+- Based on openssh-7.4p1-16.el7
+
+* Sun Nov 12 2017 Mattias Ellert <mattias.ellert@physics.uu.se> - 7.4p1-1
+- Based on openssh-7.4p1-13.el7_4
+
+* Mon Jul 31 2017 Mattias Ellert <mattias.ellert@physics.uu.se> - 6.6.1p1-8
+- Based on openssh-6.6.1p1-35.el7_3
+- Update GSI patch with more openssl 1.1.0 fixes from Globus
+
 * Fri Jun 30 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 7.3p1c-1.1
 - Merge OSG changes (SOFTWARE-2779)
+
+* Fri Feb 24 2017 Mattias Ellert <mattias.ellert@physics.uu.se> - 6.6.1p1-7
+- Based on openssh-6.6.1p1-33.el7_3
 
 * Mon Apr 17 2017 Globus Toolkit <support@globus.org> - 7.3p1c-1
 - Update to GSI-OpenSSH 7.3p1c

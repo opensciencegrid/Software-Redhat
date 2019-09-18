@@ -1,0 +1,990 @@
+commit a1dd7a186114ad702fde14c12653f773d2ce17a8
+Author: Carl Edquist <edquist@cs.wisc.edu>
+Date:   Tue Sep 17 17:13:27 2019 -0500
+
+    patchlevel3 updates
+    
+    Conflicts:
+          auth.c
+          auth2-gss.c
+          autom4te.cache/output.0
+          autom4te.cache/requests
+          autom4te.cache/traces.0
+          configure
+          configure.ac
+          servconf.c
+          servconf.h
+          ssh-globus-usage.c
+          ssh-globus-usage.h
+          ssh-gss.h
+          sshd.c
+          sshd_config
+          sshd_config.5
+    
+    Note: configure has not been updated
+
+diff --git a/LICENSE.globus_usage b/LICENSE.globus_usage
+deleted file mode 100644
+index 63074cf..0000000
+--- a/LICENSE.globus_usage
++++ /dev/null
+@@ -1,18 +0,0 @@
+-/*
+- * Portions of the Usage Metrics suport code are derived from the
+- * Globus project's GridFTP subject to the following license.
+- *
+- * Copyright 2010 University of Chicago
+- *
+- * Licensed under the Apache License, Version 2.0 (the "License");
+- * you may not use this file except in compliance with the License.
+- * You may obtain a copy of the License at
+- *
+- * http://www.apache.org/licenses/LICENSE-2.0
+- *
+- * Unless required by applicable law or agreed to in writing, software
+- * distributed under the License is distributed on an "AS IS" BASIS,
+- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+- * See the License for the specific language governing permissions and
+- * limitations under the License.
+- */
+diff --git a/Makefile.in b/Makefile.in
+index d8c5975..17baa76 100644
+--- a/Makefile.in
++++ b/Makefile.in
+@@ -112,7 +112,6 @@ SSHDOBJS=sshd.o auth-rhosts.o auth-passwd.o auth-rsa.o auth-rh-rsa.o \
+ 	auth2-gss.o gss-serv.o gss-serv-krb5.o \
+ 	loginrec.o auth-pam.o auth-shadow.o auth-sia.o md5crypt.o \
+ 	sftp-server.o sftp-common.o \
+-	ssh-globus-usage.o \
+ 	sandbox-null.o sandbox-rlimit.o sandbox-systrace.o sandbox-darwin.o \
+ 	sandbox-seccomp-filter.o sandbox-capsicum.o sandbox-pledge.o modp_burl.o nersc.o \
+ 	sandbox-solaris.o
+diff --git a/auth-pam.c b/auth-pam.c
+index 12ab885..cf4ad0f 100644
+--- a/auth-pam.c
++++ b/auth-pam.c
+@@ -400,7 +400,7 @@ import_environments(Buffer *b)
+ 		/* Errors are not fatal here */
+ 		if ((err = pam_putenv(sshpam_handle, env)) != PAM_SUCCESS) {
+ 			error("PAM: pam_putenv: %s",
+-			    pam_strerror(sshpam_handle, sshpam_err));
++			    pam_strerror(sshpam_handle, err));
+ 		}
+ #endif
+ 	}
+diff --git a/auth.c b/auth.c
+index a66c6fa..f8af4f4 100644
+--- a/auth.c
++++ b/auth.c
+@@ -77,9 +77,6 @@
+ #include "ssherr.h"
+ #include "compat.h"
+ 
+-#include "version.h"
+-#include "ssh-globus-usage.h"
+-
+ /* import */
+ extern ServerOptions options;
+ extern int use_privsep;
+@@ -355,23 +352,6 @@ auth_log(Authctxt *authctxt, int authenticated, int partial,
+ 	if (authenticated == 0 && !authctxt->postponed)
+ 		audit_event(audit_classify_auth(method));
+ #endif
+-	if (authenticated) {
+-		char *userdn = NULL;
+-		char *mech_name = NULL;
+-#ifdef GSSAPI
+-		ssh_gssapi_get_client_info(&userdn, &mech_name);
+-#endif
+-		debug("REPORTING (%s) (%s) (%s) (%s) (%s) (%s) (%s)",
+-			 SSH_RELEASE, SSLeay_version(SSLEAY_VERSION),
+-			 method, mech_name?mech_name:"NULL", ssh_remote_ipaddr(ssh),
+-			 (authctxt->user && authctxt->user[0])?
+-				authctxt->user : "unknown",
+-			userdn?userdn:"NULL");
+-		ssh_globus_send_usage_metrics(SSH_RELEASE,
+-					SSLeay_version(SSLEAY_VERSION),
+-					method, mech_name, ssh_remote_ipaddr(ssh),
+-					authctxt->user, userdn);
+-	}
+ }
+ 
+ 
+diff --git a/auth2-gss.c b/auth2-gss.c
+index ca2cf22..a0a65c0 100644
+--- a/auth2-gss.c
++++ b/auth2-gss.c
+@@ -305,7 +305,7 @@ static int
+ input_gssapi_exchange_complete(int type, u_int32_t plen, void *ctxt)
+ {
+ 	Authctxt *authctxt = ctxt;
+-	int authenticated;
++	int authenticated = 0;
+ 
+ 	if (authctxt == NULL || (authctxt->methoddata == NULL && !use_privsep))
+ 		fatal("No authentication or GSSAPI context");
+@@ -323,8 +323,6 @@ input_gssapi_exchange_complete(int type, u_int32_t plen, void *ctxt)
+ 	if (authctxt->valid && authctxt->user && authctxt->user[0]) {
+ 	    authenticated = PRIVSEP(ssh_gssapi_userok(authctxt->user,
+                                        authctxt->pw, 0 /* !gssapi-keyex */));
+-	} else {
+-	    authenticated = 0;
+ 	}
+ 
+ 	authctxt->postponed = 0;
+@@ -362,16 +360,15 @@ input_gssapi_mic(int type, u_int32_t plen, void *ctxt)
+ 
+     gssapi_set_username(authctxt);
+ 
+-	if (!GSS_ERROR(PRIVSEP(ssh_gssapi_checkmic(gssctxt, &gssbuf, &mic))))
++	if (!GSS_ERROR(PRIVSEP(ssh_gssapi_checkmic(gssctxt, &gssbuf, &mic)))) {
+ 	    if (authctxt->valid && authctxt->user && authctxt->user[0]) {
+             authenticated =
+                 PRIVSEP(ssh_gssapi_userok(authctxt->user, authctxt->pw,
+                                               0 /* !gssapi-keyex */));
+-	    } else {
+-            authenticated = 0;
+ 	    }
+-	else
++	} else {
+ 		logit("GSSAPI MIC check failed");
++	}
+ 
+ 	buffer_free(&b);
+ 	free(mic.value);
+diff --git a/config.h.in b/config.h.in
+index ded3604..bd368f9 100644
+--- a/config.h.in
++++ b/config.h.in
+@@ -604,12 +604,6 @@
+ /* Have globus_gss_assist_map_and_authorize */
+ #undef HAVE_GLOBUS_GSS_ASSIST_MAP_AND_AUTHORIZE
+ 
+-/* Have Globus Usage */
+-#undef HAVE_GLOBUS_USAGE
+-
+-/* Have Globus Usage send_array */
+-#undef HAVE_GLOBUS_USAGE_SEND_ARRAY
+-
+ /* Define to 1 if you have the <glob.h> header file. */
+ #undef HAVE_GLOB_H
+ 
+diff --git a/configure.ac b/configure.ac
+index 0adc00d..75ca7c3 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -85,7 +85,7 @@ if test "x$gsi_path" != "xno" ; then
+ 
+ 
+ 	# include explicit openssl dependency to get consistent LIBS
+-	PKG_CHECK_MODULES([GLOBUS_PKG], [globus-gss-assist >= 2, globus-gssapi-gsi, globus-usage >= 1, globus-common])
++	PKG_CHECK_MODULES([GLOBUS_PKG], [globus-gss-assist >= 2, globus-gssapi-gsi, globus-common])
+ 	PKG_CHECK_MODULES([OPENSSL], [openssl])
+ 
+         CFLAGS="$CFLAGS $OPENSSL_CFLAGS"
+@@ -96,9 +96,6 @@ if test "x$gsi_path" != "xno" ; then
+ 	LD="\$(LIBTOOL) --mode=link $CC"
+         AC_DEFINE([HAVE_GLOBUS_GSS_ASSIST_MAP_AND_AUTHORIZE], [1],
+ 		[Have globus_gss_assist_map_and_authorize])
+-        AC_DEFINE([HAVE_GLOBUS_USAGE], [1], [Have Globus Usage])
+-        AC_DEFINE([HAVE_GLOBUS_USAGE_SEND_ARRAY], [1],
+-                        [Have Globus Usage send_array])
+ 
+ 	AC_DEFINE(HAVE_GSSAPI_H)
+ 	AC_SUBST(program_prefix, "gsi")
+diff --git a/gss-serv.c b/gss-serv.c
+index ca963b3..2162b01 100644
+--- a/gss-serv.c
++++ b/gss-serv.c
+@@ -726,13 +726,4 @@ ssh_gssapi_update_creds(ssh_gssapi_ccache *store) {
+ 	return ok;
+ }
+ 
+-/* added for Globus usage */
+-void
+-ssh_gssapi_get_client_info(char **userdn, char **mech) {
+-	*userdn = gssapi_client.displayname.value;
+-
+-	if (gssapi_client.mech)
+-		*mech = gssapi_client.mech->name;
+-}
+-
+ #endif
+diff --git a/servconf.c b/servconf.c
+index 1d0e4bd..b807ce7 100644
+--- a/servconf.c
++++ b/servconf.c
+@@ -171,8 +171,6 @@ initialize_server_options(ServerOptions *options)
+ 	options->chroot_directory = NULL;
+ 	options->authorized_keys_command = NULL;
+ 	options->authorized_keys_command_user = NULL;
+-	options->disable_usage_stats = 1;
+-	options->usage_stats_targets = NULL;
+ 	options->revoked_keys_file = NULL;
+ 	options->trusted_user_ca_keys = NULL;
+ 	options->authorized_principals_file = NULL;
+@@ -519,7 +517,6 @@ typedef enum {
+ 	sGssKeyEx, sGssStoreRekey,
+ 	sMatch, sPermitOpen, sForceCommand, sChrootDirectory,
+ 	sUsePrivilegeSeparation, sAllowAgentForwarding,
+-	sDisUsageStats, sUsageStatsTarg,
+ 	sHostCertificate,
+ 	sRevokedKeys, sTrustedUserCAKeys, sAuthorizedPrincipalsFile,
+ 	sAuthorizedPrincipalsCommand, sAuthorizedPrincipalsCommandUser,
+@@ -679,8 +676,8 @@ static struct {
+ 	{ "permitopen", sPermitOpen, SSHCFG_ALL },
+ 	{ "forcecommand", sForceCommand, SSHCFG_ALL },
+ 	{ "chrootdirectory", sChrootDirectory, SSHCFG_ALL },
+-	{ "disableusagestats", sDisUsageStats, SSHCFG_GLOBAL},
+-	{ "usagestatstargets", sUsageStatsTarg, SSHCFG_GLOBAL},
++	{ "disableusagestats", sUnsupported, SSHCFG_GLOBAL},
++	{ "usagestatstargets", sUnsupported, SSHCFG_GLOBAL},
+ 	{ "hostcertificate", sHostCertificate, SSHCFG_GLOBAL },
+ 	{ "revokedkeys", sRevokedKeys, SSHCFG_ALL },
+ 	{ "trustedusercakeys", sTrustedUserCAKeys, SSHCFG_ALL },
+@@ -1908,39 +1905,6 @@ process_server_config_line(ServerOptions *options, char *line,
+ 			*charptr = xstrdup(arg);
+ 		break;
+ 
+-	case sDisUsageStats:
+-		charptr = &options->chroot_directory;
+-
+-		arg = strdelim(&cp);
+-		if (!arg || *arg == '\0')
+-			fatal("%s line %d: missing value.",
+-			    filename, linenum);
+-		if (!strcasecmp(arg, "true") ||
+-		    !strcasecmp(arg, "enabled") ||
+-		    !strcasecmp(arg, "yes") ||
+-		    !strcasecmp(arg, "on") ||
+-		    !strcasecmp(arg, "1"))
+-			options->disable_usage_stats = 1;
+-		else if (!strcasecmp(arg, "false") ||
+-			 !strcasecmp(arg, "disabled") ||
+-			 !strcasecmp(arg, "no") ||
+-			 !strcasecmp(arg, "off") ||
+-			 !strcasecmp(arg, "0"))
+-			options->disable_usage_stats = 0;
+-		else
+-			fatal("Incorrect value for disable_usage_stats");
+-		break;
+-
+-	case sUsageStatsTarg:
+-		charptr = &options->chroot_directory;
+-
+-		arg = strdelim(&cp);
+-		if (!arg || *arg == '\0')
+-			fatal("%s line %d: missing value.",
+-			    filename, linenum);
+-		options->usage_stats_targets = xstrdup(arg);
+-		break;
+-
+ 	case sTrustedUserCAKeys:
+ 		charptr = &options->trusted_user_ca_keys;
+ 		goto parse_filename;
+diff --git a/servconf.h b/servconf.h
+index 7bbf17f..a4dcfc9 100644
+--- a/servconf.h
++++ b/servconf.h
+@@ -197,10 +197,6 @@ typedef struct {
+ 	int	num_permitted_opens;
+ 
+ 	char   *chroot_directory;
+-
+-	int    disable_usage_stats;
+-	char   *usage_stats_targets;
+-
+ 	char   *revoked_keys_file;
+ 	char   *trusted_user_ca_keys;
+ 	char   *authorized_keys_command;
+diff --git a/ssh-globus-usage.c b/ssh-globus-usage.c
+deleted file mode 100644
+index 667d8bf..0000000
+--- a/ssh-globus-usage.c
++++ /dev/null
+@@ -1,396 +0,0 @@
+-/*
+- * Copyright 2009 The Board of Trustees of the University
+- * of Illinois.  See the LICENSE file for detailed license information.
+- *
+- * Portions, specifically log_usage_stats(), ssh_usage_stats_init(),
+- * ssh_usage_stats_close(), ssh_usage_ent_s, ssh_usage_tag_e and
+- * TAG #defines were based on those from Usage Metrics portions of:
+- * gridftp/server/source/globus_i_gfs_log.c
+- *
+- * Copyright 1999-2006 University of Chicago
+- *
+- * Licensed under the Apache License, Version 2.0 (the "License");
+- * you may not use this file except in compliance with the License.
+- * You may obtain a copy of the License at
+- *
+- * http://www.apache.org/licenses/LICENSE-2.0
+- *
+- * Unless required by applicable law or agreed to in writing, software
+- * distributed under the License is distributed on an "AS IS" BASIS,
+- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+- * See the License for the specific language governing permissions and
+- * limitations under the License.
+- */
+-
+-#include "includes.h"
+-
+-#ifdef HAVE_GLOBUS_USAGE
+-
+-#include <stdarg.h>
+-#include <unistd.h> 
+-
+-#include "log.h"
+-#include "ssh-globus-usage.h"
+-
+-static globus_list_t *usage_handle_list = NULL;
+-
+-#define SSH_GLOBUS_USAGE_ID 12
+-#define SSH_GLOBUS_USAGE_VER 0
+-
+-#define SSH_GLOBUS_DEFAULT_TAGLIST "VvMm"
+-#define SSH_GLOBUS_ALL_TAGLIST     "VvMmIuU"
+-#define SSH_GLOBUS_TAGCOUNT 25
+-
+-typedef enum ssh_usage_tag_e
+-{
+-    SSH_GLOBUS_USAGE_SSH_VER        = 'V',
+-    SSH_GLOBUS_USAGE_SSL_VER        = 'v',
+-    SSH_GLOBUS_USAGE_METHOD         = 'M',
+-    SSH_GLOBUS_USAGE_MECHANISM      = 'm',
+-    SSH_GLOBUS_USAGE_CLIENTIP       = 'I',
+-    SSH_GLOBUS_USAGE_USERNAME       = 'u',
+-    SSH_GLOBUS_USAGE_USERDN         = 'U'
+-    /* !! ADD to ALL_TAGLIST above and to globus_usage_stats_send()
+-          invocation below when adding here */
+-} ssh_usage_tag_t;
+-
+-typedef struct ssh_usage_ent_s
+-{
+-    globus_usage_stats_handle_t         handle;
+-    char *                              target;
+-    char *                              taglist;
+-} ssh_usage_ent_t;
+-
+-
+-globus_result_t
+-ssh_usage_stats_init(int disable_usage_stats, char *usage_stats_targets)
+-{
+-    globus_result_t                     result;
+-    char *                              target_str = NULL;
+-    char *                              ptr = ptr;
+-    char *                              target = NULL;
+-    char *                              entry = NULL;
+-    globus_list_t *                     list = NULL;
+-    ssh_usage_ent_t *               usage_ent = NULL;
+-
+-    if (disable_usage_stats || !usage_stats_targets)
+-	return GLOBUS_SUCCESS;
+-
+-    result = globus_module_activate(GLOBUS_USAGE_MODULE);
+-    if (result != GLOBUS_SUCCESS)
+-    {
+-        error("ERROR: couldn't activate USAGE STATS module");
+-        return result;
+-    }
+-
+-    target_str = strdup(usage_stats_targets);
+-    if (target_str == NULL)
+-    {
+-        error("ERROR: strdup failure for target_str");
+-        goto error;
+-    }
+-    debug("Processing usage_stats_target (%s)\n", target_str);
+-
+-    if(target_str && (strchr(target_str, ',') || strchr(target_str, '!')))
+-    {
+-        target = target_str;
+-
+-        do {
+-            usage_ent = (ssh_usage_ent_t *) malloc(sizeof(ssh_usage_ent_t));
+-            if (usage_ent == NULL)
+-            {
+-                error("ERROR: couldn't allocate for ssh_usage_ent_t");
+-                goto error;
+-            }
+-
+-            if ((ptr = strchr(target, ',')) != NULL)
+-                *ptr = '\0';
+-
+-            entry = strdup(target);
+-            if (entry == NULL)
+-            {
+-                error("ERROR: strdup failure for target");
+-                goto error;
+-            }
+-
+-            if (ptr)
+-                target = ptr + 1;
+-            else
+-                target = NULL;
+-
+-            if((ptr = strchr(entry, '!')) != NULL)
+-            {
+-                *ptr = '\0';
+-                usage_ent->taglist = strdup(ptr + 1);
+-                if (usage_ent->taglist == NULL)
+-                {
+-                    error("ERROR: strdup failure for taglist");
+-                    goto error;
+-                }
+-                if(strlen(usage_ent->taglist) > SSH_GLOBUS_TAGCOUNT)
+-                {
+-                    usage_ent->taglist[SSH_GLOBUS_TAGCOUNT + 1] = '\0';
+-                }
+-            }
+-            else
+-            {
+-                usage_ent->taglist = strdup(SSH_GLOBUS_DEFAULT_TAGLIST);
+-                if (usage_ent->taglist == NULL)
+-                {
+-                    error("ERROR: couldn't allocate for taglist");
+-                    goto error;
+-                }
+-            }
+-            
+-            if(strcasecmp(usage_ent->taglist, "default") == 0)
+-            {
+-                free(usage_ent->taglist);
+-                usage_ent->taglist = strdup(SSH_GLOBUS_DEFAULT_TAGLIST);
+-                if (usage_ent->taglist == NULL)
+-                {
+-                    error("ERROR: couldn't allocate for taglist");
+-                    goto error;
+-                }
+-            }                
+-            else if(strcasecmp(usage_ent->taglist, "all") == 0)
+-            {
+-                free(usage_ent->taglist);
+-                usage_ent->taglist = strdup(SSH_GLOBUS_ALL_TAGLIST);
+-                if (usage_ent->taglist == NULL)
+-                {
+-                    error("ERROR: couldn't allocate for taglist");
+-                    goto error;
+-                }
+-            }
+-            
+-            usage_ent->target = entry;
+-
+-            globus_list_insert(&usage_handle_list, usage_ent);
+-        }
+-        while(target != NULL);
+-
+-        free(target_str);
+-    }
+-    else
+-    {
+-        usage_ent = (ssh_usage_ent_t *) malloc(sizeof(ssh_usage_ent_t));
+-        if (usage_ent == NULL)
+-        {
+-             error("ERROR: couldn't allocate for usage_ent");
+-             goto error;
+-        }
+-
+-        usage_ent->target = target_str;
+-        usage_ent->taglist = strdup(SSH_GLOBUS_DEFAULT_TAGLIST);
+-        if (usage_ent->taglist == NULL)
+-        {
+-             error("ERROR: couldn't allocate for taglist");
+-             goto error;
+-        }
+-
+-        globus_list_insert(&usage_handle_list, usage_ent);
+-    }
+-
+-    result = GLOBUS_SUCCESS;
+-    for(list = usage_handle_list;
+-        !globus_list_empty(list);
+-        list = globus_list_rest(list))
+-    {
+-        usage_ent = (ssh_usage_ent_t *) globus_list_first(list);
+-
+-        usage_ent->handle = NULL;
+-        if (globus_usage_stats_handle_init(
+-            &usage_ent->handle,
+-            SSH_GLOBUS_USAGE_ID,
+-            SSH_GLOBUS_USAGE_VER,
+-            usage_ent->target) != GLOBUS_SUCCESS)
+-        {
+-            error("USAGE-STATS: Error initializing (%s) (%s)",
+-                     usage_ent->target?:"NULL",
+-                     usage_ent->taglist?:"NULL");
+-            result = GLOBUS_FAILURE;
+-        } else
+-            debug("USAGE-STATS: Initialized (%s) (%s)", usage_ent->target?:"NULL",
+-                     usage_ent->taglist?:"NULL");
+-
+-    }
+-
+-    return result;
+-
+-error:
+-    if (target_str)
+-    {
+-        free(target_str); 
+-        target_str = NULL;
+-    }
+-    if (entry)
+-    {
+-        free(target_str); 
+-        target_str = NULL;
+-    }
+-    return GLOBUS_FAILURE;
+-}
+-
+-void
+-ssh_usage_stats_close(int disable_usage_stats)
+-{
+-    globus_list_t *list;
+-
+-    if (disable_usage_stats)
+-	return;
+-
+-    list = usage_handle_list;
+-    
+-    while(!globus_list_empty(list))
+-    {
+-        ssh_usage_ent_t *usage_ent;
+-        
+-        usage_ent = (ssh_usage_ent_t *) 
+-            globus_list_remove(&list, list);
+-    
+-        if(usage_ent)
+-        {
+-            if(usage_ent->handle)
+-            {
+-                globus_usage_stats_handle_destroy(usage_ent->handle);
+-            }
+-            if(usage_ent->target)
+-            {
+-                free(usage_ent->target);
+-            }
+-            if(usage_ent->taglist)
+-            {
+-                free(usage_ent->taglist);
+-            }
+-            free(usage_ent);
+-        }
+-    }
+-    usage_handle_list = NULL;
+-}
+-
+-static void
+-log_usage_stats(const char *ssh_release, const char *ssl_release,
+-                const char *method, const char *mechanism,
+-                const char *clientip,
+-                const char *username, const char *userdn)
+-{
+-    globus_result_t                     result;
+-    globus_list_t *                     list;
+-    ssh_usage_ent_t *                   usage_ent;
+-    char *                              keys[SSH_GLOBUS_TAGCOUNT];
+-    char *                              values[SSH_GLOBUS_TAGCOUNT];
+-    char *                              ptr;
+-    char *                              key;
+-    char *                              value;
+-    int                                 i = 0;
+-    char *                              save_taglist = NULL;
+-
+-    for(list = usage_handle_list;
+-        !globus_list_empty(list);
+-        list = globus_list_rest(list))
+-    {
+-        usage_ent = (ssh_usage_ent_t *) globus_list_first(list);
+-
+-        if(!usage_ent || usage_ent->handle == NULL)
+-            continue;
+-        
+-        if(save_taglist == NULL || 
+-            strcmp(save_taglist, usage_ent->taglist) != 0)
+-        {
+-            save_taglist = usage_ent->taglist;
+-            
+-            ptr = usage_ent->taglist;
+-            i = 0;
+-            while(ptr && *ptr)
+-            {
+-                switch(*ptr)
+-                {
+-                  case SSH_GLOBUS_USAGE_SSH_VER:
+-                    key = "SSH_VER";
+-                    value = (char *) ssh_release;
+-                    break;
+-    
+-                  case SSH_GLOBUS_USAGE_SSL_VER:
+-                    key = "SSL_VER";
+-                    value = (char *) ssl_release;
+-                    break;
+-    
+-                  case SSH_GLOBUS_USAGE_METHOD:
+-                    key = "METHOD";
+-                    value = (char *) method;
+-                    break;
+-    
+-                  case SSH_GLOBUS_USAGE_MECHANISM:
+-                    key = "MECH";
+-                    value = (char *) mechanism?:"";
+-                    break;
+-    
+-                  case SSH_GLOBUS_USAGE_CLIENTIP:
+-                    key = "CLIENTIP";
+-                    value = (char *) clientip?:"";
+-                    break;
+-    
+-                  case SSH_GLOBUS_USAGE_USERNAME:
+-                    key = "USER";
+-                    value = (char *) username?:"";
+-                    break;
+-    
+-                  case SSH_GLOBUS_USAGE_USERDN:
+-                    key = "USERDN";
+-                    value = (char *) userdn?:"";
+-                    break;
+-    
+-                  default:
+-                    key = NULL;
+-                    value = NULL;
+-                    break;
+-                }
+-                
+-                if(key != NULL && value != NULL)
+-                {
+-                    keys[i] = key;
+-                    values[i] = value;
+-                    i++;
+-                }
+-                
+-                ptr++;
+-            }
+-        }
+-
+-#ifdef HAVE_GLOBUS_USAGE_SEND_ARRAY
+-        result = globus_usage_stats_send_array(
+-            usage_ent->handle, i, keys, values);
+-#else
+-        if (i)
+-            result = globus_usage_stats_send(
+-                usage_ent->handle, i,
+-                i>0?keys[0]:NULL, i>0?values[0]:NULL,
+-                i>1?keys[1]:NULL, i>1?values[1]:NULL,
+-                i>2?keys[2]:NULL, i>2?values[2]:NULL,
+-                i>3?keys[3]:NULL, i>3?values[3]:NULL,
+-                i>4?keys[4]:NULL, i>4?values[4]:NULL,
+-                i>5?keys[5]:NULL, i>5?values[5]:NULL,
+-                i>6?keys[6]:NULL, i>6?values[6]:NULL);
+-#endif /* HAVE_GLOBUS_USAGE_SEND_ARRAY */
+-    }
+-    
+-    return;
+-}
+-#endif /* HAVE_GLOBUS_USAGE */
+-
+-void
+-ssh_globus_send_usage_metrics(const char *ssh_release,
+-                              const char *ssl_release,
+-                              const char *method, 
+-                              const char *mechanism,
+-                              const char *client_ip,
+-                              const char *username,
+-                              const char *userdn)
+-{
+-#ifdef HAVE_GLOBUS_USAGE
+-
+-    log_usage_stats(ssh_release, ssl_release, method, mechanism,
+-                    client_ip, username, userdn);
+-
+-#endif /* HAVE_GLOBUS_USAGE */
+-}
+diff --git a/ssh-globus-usage.h b/ssh-globus-usage.h
+deleted file mode 100644
+index 34b3148..0000000
+--- a/ssh-globus-usage.h
++++ /dev/null
+@@ -1,48 +0,0 @@
+-/*
+- * Copyright 2009 The Board of Trustees of the University
+- * of Illinois.  See the LICENSE file for detailed license information.
+- *
+- * Portions, specifically ssh_usage_stats_init(), ssh_usage_stats_close()
+- * were based on those from: gridftp/server/source/globus_i_gfs_log.h
+- * Copyright 1999-2006 University of Chicago
+- * 
+- * Licensed under the Apache License, Version 2.0 (the "License");
+- * you may not use this file except in compliance with the License.
+- * You may obtain a copy of the License at
+- * 
+- * http://www.apache.org/licenses/LICENSE-2.0
+- * 
+- * Unless required by applicable law or agreed to in writing, software
+- * distributed under the License is distributed on an "AS IS" BASIS,
+- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+- * See the License for the specific language governing permissions and
+- * limitations under the License.
+- */
+-
+-#ifndef __SSH_GLOBUS_USAGE_H
+-#define __SSH_GLOBUS_USAGE_H
+-
+-#include "includes.h"
+-
+-#ifdef HAVE_GLOBUS_USAGE
+-
+-#include "globus_usage.h"
+-
+-globus_result_t
+-ssh_usage_stats_init(int disable_usage_stats, char *usage_stats_targets);
+-
+-void
+-ssh_usage_stats_close(int disable_usage_stats);
+-
+-#endif /* HAVE_GLOBUS_USAGE */
+-
+-void
+-ssh_globus_send_usage_metrics(const char *ssh_release, 
+-                              const char *ssl_release,
+-                              const char *method,
+-                              const char *mechanism,
+-                              const char *client_ip,
+-                              const char *username,
+-                              const char *userdn);
+-
+-#endif /* __SSH_GLOBUS_USAGE_H */
+diff --git a/ssh-gss.h b/ssh-gss.h
+index 522a33c..b93af15 100644
+--- a/ssh-gss.h
++++ b/ssh-gss.h
+@@ -180,7 +180,6 @@ char *ssh_gssapi_server_mechanisms(void);
+ int ssh_gssapi_oid_table_ok();
+ 
+ int ssh_gssapi_update_creds(ssh_gssapi_ccache *store);
+-void ssh_gssapi_get_client_info(char **userdn, char **mech);
+ #endif /* GSSAPI */
+ 
+ #endif /* _SSH_GSS_H */
+diff --git a/ssh.c b/ssh.c
+index 63ddea8..5018226 100644
+--- a/ssh.c
++++ b/ssh.c
+@@ -485,18 +485,24 @@ process_config_files(const char *host_arg, struct passwd *pw, int post_canon)
+ 		r = snprintf(buf, sizeof buf, "%s/%s.gssapi", pw->pw_dir,
+ 		    _PATH_SSH_USER_CONFFILE);
+ 		if (r > 0 && (size_t)r < sizeof(buf))
+-			(void)read_config_file(buf, pw, host, host_arg, &options, 1);
++			(void)read_config_file(buf, pw, host, host_arg,
++			    &options, SSHCONF_CHECKPERM | SSHCONF_USERCONF |
++			    (post_canon ? SSHCONF_POSTCANON : 0));
+ #ifdef GSI
+ 		r = snprintf(buf, sizeof buf, "%s/%s.gsi", pw->pw_dir,
+ 		    _PATH_SSH_USER_CONFFILE);
+ 		if (r > 0 && (size_t)r < sizeof(buf))
+-			(void)read_config_file(buf, pw, host, host_arg, &options, 1);
++			(void)read_config_file(buf, pw, host, host_arg,
++			    &options, SSHCONF_CHECKPERM | SSHCONF_USERCONF |
++			    (post_canon ? SSHCONF_POSTCANON : 0));
+ #endif
+ #if defined(KRB5)
+ 		r = snprintf(buf, sizeof buf, "%s/%s.krb", pw->pw_dir,
+ 		    _PATH_SSH_USER_CONFFILE);
+ 		if (r > 0 && (size_t)r < sizeof(buf))
+-			(void)read_config_file(buf, pw, host, host_arg, &options, 1);
++			(void)read_config_file(buf, pw, host, host_arg,
++			    &options, SSHCONF_CHECKPERM | SSHCONF_USERCONF |
++			    (post_canon ? SSHCONF_POSTCANON : 0));
+ #endif
+ #endif
+ 		r = snprintf(buf, sizeof buf, "%s/%s", pw->pw_dir,
+diff --git a/sshd.8 b/sshd.8
+index 1391f68..7a41e73 100644
+--- a/sshd.8
++++ b/sshd.8
+@@ -798,21 +798,6 @@ AAAA1234.....=
+ .Nm
+ will normally set the following environment variables:
+ .Bl -tag -width "SSH_ORIGINAL_COMMAND"
+-.It Ev GLOBUS_USAGE_OPTOUT
+-Setting this environment variable to "1" will disable the reporting
+-of usage metrics. Usage metrics can also be disabled using the
+-.Cm DisableUsageStats
+-setting in
+-.Xr sshd_config 5 .
+-.It Ev GLOBUS_USAGE_TARGETS
+-If
+-.Cm UsageStatsTargets
+-is not specified in
+-.Xr sshd_config 5 ,
+-a comma-separated list of targets (without any tags specified) if
+-specified in the environment variable
+-.Ev GLOBUS_USAGE_TARGETS
+-will be used.
+ .It Ev GRIDMAP
+ Applies to GSI authentication/authorization. Specifies the location of the
+ gridmapfile. If not specified, the gridmap file is assumed to be available at
+diff --git a/sshd.c b/sshd.c
+index 24d7ad3..802527c 100644
+--- a/sshd.c
++++ b/sshd.c
+@@ -123,7 +123,6 @@
+ #include "monitor_wrap.h"
+ #include "ssh-sandbox.h"
+ #include "version.h"
+-#include "ssh-globus-usage.h"
+ 
+ #ifdef USE_SECURITY_SESSION_API
+ #include <Security/AuthSession.h>
+@@ -1863,13 +1862,6 @@ main(int ac, char **av)
+ 	/* Fill in default values for those options not explicitly set. */
+ 	fill_default_server_options(&options);
+ 
+-#ifdef HAVE_GLOBUS_USAGE
+-	if (ssh_usage_stats_init(options.disable_usage_stats,
+-			options.usage_stats_targets) != GLOBUS_SUCCESS) {
+-		error("Error initializing Globus Usage Metrics, but continuing ...");
+-	}
+-#endif /* HAVE_GLOBUS_USAGE */
+-
+ 	if (options.none_enabled == 1) {
+ 		char *old_ciphers = options.ciphers;
+ 
+diff --git a/sshd_config b/sshd_config
+index 9c3658e..d45a301 100644
+--- a/sshd_config
++++ b/sshd_config
+@@ -153,10 +153,6 @@ Subsystem	sftp	/usr/libexec/sftp-server
+ # Disable sshd auditing
+ #AuditDisabled yes
+ 
+-# Usage Metrics
+-#UsageStatsTargets usage-stats.example.edu:4810
+-#DisableUsageStats Yes
+-
+ # Example of overriding settings on a per-user basis
+ #Match User anoncvs
+ #	X11Forwarding no
+diff --git a/sshd_config.5 b/sshd_config.5
+index 316d588..76f3b96 100644
+--- a/sshd_config.5
++++ b/sshd_config.5
+@@ -579,15 +579,6 @@ and finally
+ See PATTERNS in
+ .Xr ssh_config 5
+ for more information on patterns.
+-.It Cm DisableUsageStats
+-This keyword can be followed by one of the keywords "true", "enabled", "yes",
+-"on" or "1" to disable reporting of usage metrics. Or it can be set to "false",
+-"disabled", "no", "off", "0" to enable reporting of usage metrics. Setting the
+-.Cm GLOBUS_USAGE_OPTOUT
+-environment variable to "1" will also disable the reporting of usage metrics.
+-Disabling reporting of usage metrics will cause the
+-.Cm UsageStatsTargets
+-setting to be ignored.
+ .It Cm FingerprintHash
+ Specifies the hash algorithm used when logging key fingerprints.
+ Valid options are:
+@@ -1564,103 +1555,6 @@ This avoids infinitely hanging sessions.
+ .Pp
+ To disable TCP keepalive messages, the value should be set to
+ .Dq no .
+-.It Cm UsageStatsTargets
+-This option can be used to specify the target collector hosts to which usage
+-metrics should be reported. This setting will be ignored if
+-.Cm DisableUsageStats
+-is enabled. Multiple targets can be specified separated by comma(s), but no
+-space(s). Each target specification is of the format
+-.Pa host:port[!tags].
+-Tags control what data elements are reported. The following list specifies
+-the tags for the corresponding data elements.
+-.Pp
+-.Bl -item -offset indent -compact
+-.It
+-.Cm V
+-.Sm off
+-- OpenSSH version, reported by default.
+-.Sm on
+-.It
+-.Cm v
+-.Sm off
+-- SSL version, reported by default.
+-.Sm on
+-.It
+-.Cm M
+-.Sm off
+-- User authentication method used such as "gssapi-keyex", "gssapi-with-mic", etc. Reported by default.
+-.Sm on
+-.It
+-.Cm m
+-.Sm off
+-- User authentication mechanism used such as "GSI", "Kerberos", etc. Reported by default.
+-.Sm on
+-.It
+-.Cm I
+-.Sm off
+-- Client IP address. Not reported by default.
+-.Sm on
+-.It
+-.Cm u
+-.Sm off
+-- User name. Not reported by default.
+-.Sm on
+-.It
+-.Cm U
+-.Sm off
+-- User DN. Not reported by default.
+-.Sm on
+-.Pp
+-In addition to the above selected information, the following data are
+-reported to ALL the specified/default target collectors. There's no way to
+-exclude these from being reported other than by disabling the reporting of
+-usage metrics altogether:
+-.Pp
+-.It
+-.Cm Component code
+-.Sm off
+-- 12 for GSI OpenSSH
+-.Sm on
+-.It
+-.Cm Component Data Format version
+-.Sm off
+-- 0 currently
+-.Sm on
+-.It
+-.Cm IP Address
+-.Sm off
+-- IP address of reporting server
+-.Sm on
+-.It
+-.Cm Timestamp
+-.It
+-.Cm Hostname
+-.Sm off
+-- Host name of reporting server
+-.Sm on
+-.Pp
+-If no tags are specified in a host spec, or the special string
+-.Dq default
+-is specified, the tags
+-.Dq VvMm
+-are assumed. A site could choose to allow a
+-different set of data to be reported by specifying a different tag set. The
+-last 3 tags
+-.Dq I ,
+-.Dq u
+-and
+-.Dq U
+-above are more meant for a local collector that a
+-site might like to deploy since they could be construed as private information.
+-The special string
+-.Dq all
+-denotes all tags.
+-.El
+-.Pp
+-Usage Metrics reporting is disabled unless
+-.Cm UsageStatsTargets
+-is specified.
+-.Pp
+ .It Cm TrustedUserCAKeys
+ Specifies a file containing public keys of certificate authorities that are
+ trusted to sign user certificates for authentication, or
