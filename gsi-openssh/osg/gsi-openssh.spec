@@ -424,9 +424,6 @@ fi
 * Fri Jun 30 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 7.3p1c-1.1
 - Merge OSG changes (SOFTWARE-2779)
 
-* Fri Feb 24 2017 Mattias Ellert <mattias.ellert@physics.uu.se> - 6.6.1p1-7
-- Based on openssh-6.6.1p1-33.el7_3
-
 * Mon Apr 17 2017 Globus Toolkit <support@globus.org> - 7.3p1c-1
 - Update to GSI-OpenSSH 7.3p1c
 
@@ -435,6 +432,9 @@ fi
 
 * Fri Mar 24 2017 Globus Toolkit <support@globus.org> - 7.3p1a-1
 - Update to GSI-OpenSSH 7.3p1a
+
+* Fri Feb 24 2017 Mattias Ellert <mattias.ellert@physics.uu.se> - 6.6.1p1-7
+- Based on openssh-6.6.1p1-33.el7_3
 
 * Tue Dec 13 2016 Globus Toolkit <support@globus.org> - 7.1p2g-2
 - Only create /var/empty for SLES
