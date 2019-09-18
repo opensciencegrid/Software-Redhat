@@ -12,7 +12,7 @@
 # ------------------------------------------------------------------------------
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
-%define version 3.5
+%define version 3.5.1
 %define release 1
 
 %define frontend_xml frontend.xml
@@ -667,6 +667,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/find_StartdLogs
 %attr(755,root,root) %{_bindir}/find_logs
 %attr(755,root,root) %{_bindir}/fact_chown
+%attr(755,root,root) %{_bindir}/fact_chown_check
 %attr(755,root,root) %{_bindir}/gwms-logcat.sh
 %attr(755,root,root) %{_bindir}/manual_glidein_submit
 %attr(755,root,root) %{_sbindir}/checkFactory.py
@@ -843,10 +844,23 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/condor/certs/condor_mapfile
 
 %changelog
+* Wed Sep 18 2019 Marco Mambelli <marcom@fnal.gov> - 3.5.1-1
+- GlideinWMS v3.5.1
+- Release Notes: http://glideinwms.fnal.gov/doc.v3_5_1/history.html
+- Release candidates: 3.5.1-0.1.rc1
+
+* Wed Aug 14 2019 Marco Mambelli <marcom@fnal.gov> - 3.4.6-1
+- GlideinWMS v3.4.6
+- Release Notes: http://glideinwms.fnal.gov/doc.v3_4_6/history.html
+- Release candidates: 3.4.6-0.1.rc1
+
 * Fri Jun 7 2019 Marco Mambelli <marcom@fnal.gov> - 3.5
 - GlideinWMS v3.5
 - Release Notes: http://glideinwms.fnal.gov/doc.v3_5/history.html
 - Release candidates: 3.5-0.1.rc1 to 3.5-0.1.rc2
+
+* Tue Jun 4 2019 Diego Davila <didavila@ucsd.edu> - 3.4.5-2
+- patch (sw3689.proxy-renewal-bugfix.patch) to fix bug on proxy renewal
 
 * Fri Apr 19 2019  Marco Mambelli <marcom@fnal.gov> - 3.4.5-1
 - GlideinWMS v3.4.5
@@ -996,7 +1010,7 @@ rm -rf $RPM_BUILD_ROOT
 - Release Notes: http://glideinwms.fnal.gov/doc.v3_2_12/history.html
 - Release candidates: 3.2.12-0.1.rc1 to 3.2.12-0.5.rc5
 
-* Thu Oct 08 2015 Matyas Selmeci <matyas@cs.wisc.edu> - 3.2.11.2-4
+* Thu Oct 08 2015 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.2.11.2-4
 - Don't put collectors behind shared port (needed for HTCondor 8.4.0) (SOFTWARE-2015)
 
 * Mon Oct 05 2015 Carl Edquist <edquist@cs.wisc.edu> - 3.2.11.2-2
@@ -1014,7 +1028,7 @@ rm -rf $RPM_BUILD_ROOT
 - Glideinwms v3.2.11 release
 - Release Notes: http://glideinwms.fnal.gov/doc.v3_2_11/history.html
 
-* Thu Jul 16 2015 M??ty??s Selmeci <matyas@cs.wisc.edu> - 3.2.10-1.1.osg
+* Thu Jul 16 2015 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.2.10-1.1.osg
 - vofrontend-standalone: Replace osg-client dep with most of osg-client's
   contents (except the networking stuff), since osg-client has been dropped in
   OSG 3.3
