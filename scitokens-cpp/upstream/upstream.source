@@ -1,4 +1,3 @@
-scitokens-cpp/0.3.3/scitokens-cpp-0.3.3.tar.gz sha1sum=274663b71d85d7a2e19e956ba0729789261ab42e
+scitokens-cpp/0.3.4/scitokens-cpp-0.3.4.tar.gz sha1sum=f1fc3d57b00089047ac241dbdc663bbe753512ee
 # from https://github.com/scitokens/scitokens-cpp
-# generated with `git_archive_all.py --prefix=scitokens-cpp-VERSION --force-submodules -9 scitokens-cpp-VERSION.tar.gz`
-# where git_archive_all.py is from https://github.com/Kentzo/git-archive-all
+# see spec file for archive creation instructions
