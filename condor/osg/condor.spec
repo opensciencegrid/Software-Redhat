@@ -119,7 +119,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.2
+%define condor_base_release 1.4
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -221,6 +221,7 @@ Source123: zlib-1.2.3.tar.gz
 Patch8: osg_sysconfig_in_init_script.patch
 Patch16: bosco_https.patch
 Patch17: bosco_override.patch
+Patch18: bosco-add-o-override-to-getopt.patch
 #% endif
 
 # HCC patches
@@ -831,6 +832,7 @@ exit 0
 %patch8 -p1
 %patch16 -p1
 %patch17 -p1
+%patch18 -p1
 %endif
 
 %if 0%{?hcc}
@@ -2070,13 +2072,16 @@ fi
 %endif
 
 %changelog
-* Mon Sep 16 2019 Diego Davila <didavila@ucsd.edu> - 8.5.5-1.2
+* Mon Sep 23 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 8.8.5-1.4
+- Add patch to fix bosco_cluster --override arg processing
+
+* Mon Sep 16 2019 Diego Davila <didavila@ucsd.edu> - 8.8.5-1.2
 - Add support for bosco_cluster override dir (SOFTWARE-3816)
 
-* Mon Sep 09 2019 Diego Davila <didavila@ucsd.edu> - 8.5.5-1.1
--Add patch bosco_https (SOFTWARE-3809)
+* Mon Sep 09 2019 Diego Davila <didavila@ucsd.edu> - 8.8.5-1.1
+- Add patch bosco_https (SOFTWARE-3809)
 
-* Thu Aug 29 2019 Brian Lin <blin@cs.wisc.edu> - 8.4.4-1.1
+* Thu Aug 29 2019 Brian Lin <blin@cs.wisc.edu> - 8.8.4-1.1
 - Set DAEMON_LIST and CONDOR_HOST (SOFTWARE-3794)
 
 * Tue Jul 09 2019 Tim Theisen <tim@cs.wisc.edu> - 8.8.4-1
