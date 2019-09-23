@@ -2097,16 +2097,16 @@ fi
 * Mon Sep 23 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 8.8.5-1.4
 - Add patch to fix bosco_cluster --override arg processing
 
-* Fri Sep 13 2019 Brian Lin <blin@cs.wisc.edu> - 8.5.5-1.3
+* Fri Sep 13 2019 Brian Lin <blin@cs.wisc.edu> - 8.8.5-1.3
 - Add support for bosco_cluster override dir (SOFTWARE-3677)
 
-* Wed Sep 11 2019 Brian Lin <blin@cs.wisc.edu> - 8.5.5-1.2
+* Wed Sep 11 2019 Brian Lin <blin@cs.wisc.edu> - 8.8.5-1.2
 - Use the HTCondor-provided patch for obtaining Bosco over HTTPS (SOFTWARE-3809)
 
-* Fri Sep 06 2019 Diego Davila <didavila@ucsd.edu> - 8.5.5-1.1
+* Fri Sep 06 2019 Diego Davila <didavila@ucsd.edu> - 8.8.5-1.1
 - Add patch bosco_https (SOFTWARE-3809)
 
-* Thu Aug 29 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 8.4.4-1.8
+* Thu Aug 29 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 8.8.4-1.8
 - Add DAEMON_LIST and FS/Password auth configuration;
   autogenerate pool password on install (SOFTWARE-3795)
 - Add version to the Obsoletes for condor-cream-gahp
