@@ -1,6 +1,6 @@
 Name:           cctools
 Summary:        Cooperative Computing Tools
-Version:        7.0.17
+Version:        7.0.18
 Release:        1%{?dist}
 License:        GPLv2
 URL:            http://ccl.cse.nd.edu/software/
@@ -119,6 +119,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Sep 24 2019 Diego Davila <didavila@ucsd.edu> - 7.0.18-1
+- Update to 7.0.18 (SOFTWARE-3832)
+
 * Mon Sep 23 2019 Diego Davila <didavila@ucsd.edu> - 7.0.17-1
 - Update to 7.0.17 (SOFTWARE-3832)
 
