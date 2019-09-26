@@ -13,7 +13,7 @@
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
 %define version 3.6
-%define release 1
+%define release 2
 
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
@@ -844,6 +844,9 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/condor/certs/condor_mapfile
 
 %changelog
+* Thu Sep 26 2019 Marco Mambelli <marcom@fnal.gov> - 3.6-2
+- Rebuild using new osg-build, same as 3.6-1
+
 * Wed Sep 25 2019 Marco Mambelli <marcom@fnal.gov> - 3.6-1
 - GlideinWMS v3.6
 - Release Notes: http://glideinwms.fnal.gov/doc.v3_6/history.html
