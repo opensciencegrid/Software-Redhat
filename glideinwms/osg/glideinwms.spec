@@ -12,7 +12,7 @@
 # ------------------------------------------------------------------------------
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
-%define version 3.5.1
+%define version 3.6
 %define release 1
 
 %define frontend_xml frontend.xml
@@ -844,6 +844,11 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/condor/certs/condor_mapfile
 
 %changelog
+* Wed Sep 25 2019 Marco Mambelli <marcom@fnal.gov> - 3.6-1
+- GlideinWMS v3.6
+- Release Notes: http://glideinwms.fnal.gov/doc.v3_6/history.html
+- This is a rename of 3.5.1, to respect the odd-even numbering
+
 * Wed Sep 18 2019 Marco Mambelli <marcom@fnal.gov> - 3.5.1-1
 - GlideinWMS v3.5.1
 - Release Notes: http://glideinwms.fnal.gov/doc.v3_5_1/history.html
