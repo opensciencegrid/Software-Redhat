@@ -1,5 +1,5 @@
 Name:           vo-client
-Version:        94
+Version:        95
 Release:        1%{?dist}
 Summary:        Contains vomses file for use with user authentication
 
@@ -70,6 +70,9 @@ find $RPM_BUILD_ROOT/%{_sysconfdir}/grid-security/vomsdir -type d -exec chmod 75
 %config(noreplace) %{_datadir}/osg/grid-vorolemap
 
 %changelog
+* Mon Sep 30 2019 Carl Edquist <edquist@cs.wisc.edu> - 95-1
+- Add lhcb VO (SOFTWARE-3823)
+
 * Tue Jul 23 2019 Diego Davila <didavila@ucsd.edu> - 94-1
 - Updating DN for lsst and supercdms (SOFTWARE-3770)
 
