@@ -123,7 +123,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.4
+%define condor_base_release 1.5
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -2094,6 +2094,9 @@ fi
 %endif
 
 %changelog
+* Tue Oct 08 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 8.8.5-1.5
+- Tweak auth configuration per review from developers
+
 * Mon Sep 23 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 8.8.5-1.4
 - Add patch to fix bosco_cluster --override arg processing
 
