@@ -1,0 +1,45 @@
+From 62d85324fd4d7ea89365fd56cb60fbc6c0ae6688 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Wed, 9 Oct 2019 11:05:00 -0500
+Subject: [PATCH] 1635-os_path_join
+
+hub: check if path is absolute in get_upload_path
+
+Original by Yuming Zhu <yzhu@redhat.com>
+from https://pagure.io/koji/pull-request/1635
+---
+ hub/kojihub.py                         | 2 +-
+ tests/test_hub/test_get_upload_path.py | 4 ++++
+ 2 files changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/hub/kojihub.py b/hub/kojihub.py
+index 9ef470b..e1f5104 100644
+--- a/hub/kojihub.py
++++ b/hub/kojihub.py
+@@ -12139,7 +12139,7 @@ def get_upload_path(reldir, name, create=False):
+     if d or name.startswith('.'):
+         raise koji.GenericError, "Invalid upload filename: %s" % orig_name
+     reldir = os.path.normpath(reldir)
+-    if not reldir or reldir.startswith('..'):
++    if not reldir or reldir.startswith('..') or os.path.isabs(reldir):
+         raise koji.GenericError, "Invalid upload directory: %s" % orig_reldir
+     parts = reldir.split('/')
+     check_user = True
+diff --git a/tests/test_hub/test_get_upload_path.py b/tests/test_hub/test_get_upload_path.py
+index f789192..2ab6bb7 100644
+--- a/tests/test_hub/test_get_upload_path.py
++++ b/tests/test_hub/test_get_upload_path.py
+@@ -25,6 +25,10 @@ def test_get_upload_path_invalid_upload_dir_3(self):
+         with self.assertRaises(GenericError):
+             kojihub.get_upload_path(reldir='tasks/1/should_be_number', name='error', create=True)
+ 
++    def test_get_upload_path_invalid_upload_dir_4(self):
++        with self.assertRaises(GenericError):
++            kojihub.get_upload_path(reldir='/absdir', name='error')
++
+     @mock.patch('kojihub.context')
+     @mock.patch('koji.pathinfo.work')
+     @mock.patch('kojihub.Host')
+-- 
+2.6.3
+
