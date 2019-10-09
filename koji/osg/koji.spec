@@ -7,7 +7,7 @@
 
 Name: koji
 Version: 1.11.1
-Release: 1.1%{?dist}
+Release: 1.2%{?dist}
 License: LGPLv2 and GPLv2+
 # koji.ssl libs (from plague) are GPLv2+
 Summary: Build system tools
@@ -22,6 +22,7 @@ Patch110: kojiweb_getfile_nontext_fix.patch
 Patch111: db-upgrade-1.10-to-1.11.patch
 Patch112: Fix-type-in-add-group-pkg.patch
 Patch113: kojira-accept-sleeptime-option.patch
+Patch114: 1635-os_path_join.patch
 
 Source: koji-%{version}.tar.bz2
 
@@ -165,6 +166,7 @@ koji-web is a web UI to the Koji system.
 %patch111 -p1
 %patch112 -p1
 %patch113 -p1
+%patch114 -p1
 
 %build
 
@@ -320,6 +322,9 @@ fi
 %endif
 
 %changelog
+* Wed Oct 09 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.11.1-1.2.osg
+- Add patch for https://pagure.io/koji/pull-request/1635
+
 * Thu Mar 14 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.11.1-1.1.osg
 - Drop python-libcomps requirement
 
@@ -355,7 +360,7 @@ fi
 - update to 1.11.0
 - setup fedora config for kerberos and flag day
 
-* Thu Oct 04 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.10.1-10.1
+* Tue Oct 04 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.10.1-10.1
 - Merge OSG changes
     - Drop koji_no_sslv3.patch
     - Drop pkgorigins_filename.patch
