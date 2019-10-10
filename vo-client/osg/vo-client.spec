@@ -1,5 +1,5 @@
 Name:           vo-client
-Version:        96
+Version:        97
 Release:        1%{?dist}
 Summary:        Contains vomses file for use with user authentication
 
@@ -70,6 +70,9 @@ find $RPM_BUILD_ROOT/%{_sysconfdir}/grid-security/vomsdir -type d -exec chmod 75
 %config(noreplace) %{_datadir}/osg/grid-vorolemap
 
 %changelog
+* Thu Oct 10 2019 Edgar Fajardo <emfajard@ucsd.edu> - 97-1
+- Add mappings and lsc files for CLAS12 experiment (SOFTWARE-3852)
+
 * Tue Oct 01 2019 Carl Edquist <edquist@cs.wisc.edu> - 96-1
 - Add default LHCb mappings (SOFTWARE-3823)
 
