@@ -1,7 +1,7 @@
 Summary: StashCache client tools
 Name: stashcache-client
 Version: 5.5.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: Apache 2.0
 Url: https://github.com/opensciencegrid/StashCache
 BuildArch: noarch
