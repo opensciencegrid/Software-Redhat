@@ -8,6 +8,7 @@ BuildArch: noarch
 Source0: StashCache-%{version}.tar.gz
 Source1: README-caches
 BuildRequires: python2-setuptools
+Requires: python2-setuptools
 Requires: curl
 Requires: xrootd-client
 Provides: stashcp = %{version}-%{release}
@@ -32,6 +33,9 @@ install -D -m 0644 %{SOURCE1} %{buildroot}%{_datarootdir}/stashcache/README-cach
 %{_datarootdir}/stashcache/README-caches
 
 %changelog
+* Fri Oct 11 2019 Diego Davila <didavila@ucsd.edu> - 5.5.0-2
+- Adding "Requires: python2-setuptools" (software-3799)
+
 * Wed Oct 2 2019 Diego Davila <didavila@ucsd.edu> - 5.5.0-1
 - Update to 5.5.0
 - Use python macros to install
