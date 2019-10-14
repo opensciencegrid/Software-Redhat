@@ -1,6 +1,6 @@
 Name:           osg-release
 Version:        3.4
-Release:        8%{?dist}
+Release:        9%{?dist}
 Summary:        OSG Software for Enterprise Linux repository configuration
 
 License:        GPL
@@ -59,6 +59,10 @@ sed -i -e 's/gpgcheck=1/gpgcheck=0/' $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d/*
 
 
 %changelog
+* Mon Oct 14 2019 Diego Davila <didavila@ucsd.edu> - 3.4-9
+- Changing "koji.chtc.wisc.edu" for "koji.opensciencegrid.org" (SOFTWARE-3863)
+- Fixing date issue on changelog Fri Feb 08 2018 -> Thu
+
 * Tue May 14 2019 Carl Edquist <edquist@cs.wisc.edu> - 3.4-8
 - Use https for koji repos (SOFTWARE-3653)
 
@@ -74,7 +78,7 @@ sed -i -e 's/gpgcheck=1/gpgcheck=0/' $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d/*
 * Wed Mar 07 2018 Brian Lin <blin@cs.wisc.edu> - 3.4-4
 - Revert HTTP -> HTTPS testing for Koji repositories due to certificate verification failures
 
-* Fri Feb 08 2018 Brian Lin <blin@cs.wisc.edu> - 3.4-3
+* Thu Feb 08 2018 Brian Lin <blin@cs.wisc.edu> - 3.4-3
 - Change references from repo.grid.iu.edu to repo.opensciencegrid.org
 
 * Wed Sep 13 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.4-2
