@@ -392,7 +392,7 @@ Requires(post): selinux-policy-targeted >= 3.13.1-102
 #Provides: group(condor) = 43
 
 Obsoletes: condor-static < 7.2.0
-Obsoletes: condor-cream-gahp < 8.9.2
+Obsoletes: condor-cream-gahp <= %{version}
 
 %description
 HTCondor is a specialized workload management system for
@@ -1906,6 +1906,9 @@ fi
 %endif
 
 %changelog
+* Fri Oct 18 2019 Carl Edquist <edquist@cs.wisc.edu> - 8.9.3-1.2
+- Obsolete same-versioned cream-gahp for upgrade from OSG 3.4 (SOFTWARE-3869)
+
 * Tue Sep 17 2019 Tim Theisen <tim@cs.wisc.edu> - 8.9.3-1
 - TOKEN and SSL authentication methods are now enabled by default
 - The job and global event logs use ISO 8601 formatted dates by default
