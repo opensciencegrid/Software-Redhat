@@ -123,7 +123,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.6
+%define condor_base_release 1.7
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -413,7 +413,7 @@ Requires(post): selinux-policy-targeted >= 3.13.1-102
 #Provides: group(condor) = 43
 
 Obsoletes: condor-static < 7.2.0
-Obsoletes: condor-cream-gahp < 8.8.4
+Obsoletes: condor-cream-gahp <= %{version}
 
 %description
 HTCondor is a specialized workload management system for
@@ -2094,6 +2094,9 @@ fi
 %endif
 
 %changelog
+* Fri Oct 18 2019 Carl Edquist <edquist@cs.wisc.edu> - 8.8.5-1.7
+- Obsolete same-versioned cream-gahp for upgrade from OSG 3.4 (SOFTWARE-3869)
+
 * Fri Oct 11 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 8.8.5-1.6
 - Only allow root on the CM or the local host to run admin commands
 
