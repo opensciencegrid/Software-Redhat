@@ -1,7 +1,7 @@
 Summary: OSG configuration files for XRootD
 Name: osg-xrootd
 Version: 3.5
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: ASL 2.0
 BuildArch: noarch
 
@@ -63,6 +63,9 @@ install -m 644 %{SOURCE7} $RPM_BUILD_ROOT/etc/xrootd/config.d
 %config(noreplace) /etc/xrootd/config.d/90-osg-standalone-paths.cfg
 
 %changelog
+* Mon Oct 21 2019 Carl Edquist <edquist@cs.wisc.edu> - 3.5-4
+- Add 'all.role server' to standalone xrootd config (SOFTWARE-3857)
+
 * Wed Aug 21 2019 Brian Lin <blin@cs.wisc.edu> - 3.5-3
 - Restore osg-configure requirement for standalone installations
   since they'll be using /etc/lcmaps.db instead of the LCMAPS configuration
