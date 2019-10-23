@@ -9,10 +9,17 @@ URL: https://github.com/scitokens/xrootd-scitokens
 # git archive v%{version} --prefix=xrootd-scitokens-%{version}/ | gzip -7 > ~/rpmbuild/SOURCES/xrootd-scitokens-%{version}.tar.gz
 Source0: %{name}-%{version}.tar.gz
 
+%define xrootd_current 4.11
+%define xrootd_next %(echo %xrootd_current | awk '{print $1,$2+1}' FS=. OFS=.)
+
 BuildRequires: gcc-c++
 BuildRequires: cmake
-BuildRequires: xrootd-server-devel
+BuildRequires: xrootd-server-devel >= 1:%{xrootd_current}.0-1
+BuildRequires: xrootd-server-devel <  1:%{xrootd_next}.0-1
 BuildRequires: scitokens-cpp-devel
+
+Requires: xrootd-server >= 1:%{xrootd_current}.0-1
+Requires: xrootd-server <  1:%{xrootd_next}.0-1
 
 %description
 SciTokens authentication plugin for XRootD
@@ -48,6 +55,9 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 
 %changelog
+* Wed Oct 23 2019 Carl Edquist <edquist@cs.wisc.edu> - 1.0.0-1.2
+- Rebuild against xrootd 4.11; add version range requirement (SOFTWARE-3830)
+
 * Thu Jul 18 2019 Carl Edquist <edquist@cs.wisc.edu> - 1.0.0-1.1
 - Rebuild against xrootd 4.10.0 (SOFTWARE-3697)
 
