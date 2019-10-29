@@ -1,1 +1,2 @@
-type=github repo=htcondor/scitokens-credmon tag=v0.4.0 hash=880ef3d6b26ab12378bf9c2a8d35bbf2eec65606 tarball=scitokens-credmon-0.4.tar.gz
+#type=github repo=htcondor/scitokens-credmon tag=c6738f2dc12a580da8c75effc7f329f9efd34e42 hash=c6738f2dc12a580da8c75effc7f329f9efd34e42  tarball=scitokens-credmon-0.4.tar.gz
+type=github repo=matyasselmeci/scitokens-credmon tag=wip/v0.4-2 hash=796c4afc33030ae6a659d2d63adf32e3af307f0b tarball=scitokens-credmon-0.4.tar.gz
