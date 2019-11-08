@@ -231,8 +231,6 @@ Patch2: python-shebang.patch
 #% if 0%osg
 Patch8: osg_sysconfig_in_init_script.patch
 Patch16: bosco_https.patch
-Patch17: bosco_override.patch
-Patch18: bosco-add-o-override-to-getopt.patch
 #% endif
 
 # HCC patches
@@ -898,8 +896,6 @@ exit 0
 %if 0%{?osg} || 0%{?hcc}
 %patch8 -p1
 %patch16 -p1
-%patch17 -p1
-%patch18 -p1
 %endif
 
 %if 0%{?hcc}
