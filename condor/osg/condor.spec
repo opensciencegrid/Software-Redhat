@@ -1,4 +1,4 @@
-%define tarball_version 8.8.5
+%define tarball_version 8.8.6
 
 # optionally define any of these, here or externally
 # % define fedora   16
@@ -28,6 +28,11 @@
 %endif
 %endif
 
+# Not supporting std universe in RHEL/CentOS 8
+%if 0%{?rhel} >= 8
+%define std_univ 0
+%endif
+
 # enable std universe by default 
 %if %undefined std_univ
 %define std_univ 1
@@ -42,7 +47,6 @@
 
 %if %uw_build
 %define debug 1
-%define verbose 1
 %endif
 
 # define these to 1 if you want to include externals in source rpm
@@ -94,6 +98,11 @@
 %endif
 %endif
 
+# cream support is going away, skip for EL8
+%if 0%{?rhel} >= 8
+%define cream 0
+%endif
+
 %if 0%{?osg} && 0%{?rhel} == 7
 %define aviary 0
 %define std_univ 0
@@ -123,7 +132,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.7
+%define condor_base_release 0.488405
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -222,6 +231,8 @@ Source122: glibc-2.5-20061008T1257-x86_64-p0.tar.gz
 Source123: zlib-1.2.3.tar.gz
 %endif
 
+Patch1: old-sphinx.patch
+Patch2: python-shebang.patch
 
 #% if 0%osg
 Patch8: osg_sysconfig_in_init_script.patch
@@ -251,7 +262,11 @@ BuildRequires: libXScrnSaver-devel
 BuildRequires: /usr/include/curl/curl.h
 BuildRequires: /usr/include/expat.h
 BuildRequires: openldap-devel
+%if 0%{?rhel} >= 8
+BuildRequires: platform-python-devel
+%else
 BuildRequires: python-devel
+%endif
 BuildRequires: boost-devel
 BuildRequires: redhat-rpm-config
 BuildRequires: sqlite-devel
@@ -286,7 +301,11 @@ BuildRequires: expat-devel
 BuildRequires: perl(Archive::Tar)
 BuildRequires: perl(XML::Parser)
 BuildRequires: perl(Digest::MD5)
+%if 0%{?rhel} >= 8
+BuildRequires: platform-python-devel
+%else
 BuildRequires: python-devel
+%endif
 BuildRequires: libcurl-devel
 %endif
 
@@ -328,10 +347,19 @@ BuildRequires: wso2-axis2-devel >= 2.1.0-4
 BuildRequires: mongodb-devel >= 1.6.4-3
 %endif
 
-# libcgroup < 0.37 has a bug that invalidates our accounting.
 %if %cgroups
+%if 0%{?rhel} >= 8
+BuildRequires: libcgroup
+Requires: libcgroup
+%else
+# libcgroup < 0.37 has a bug that invalidates our accounting.
 BuildRequires: libcgroup-devel >= 0.37
 Requires: libcgroup >= 0.37
+%endif
+%endif
+
+%if %cream && %uw_build
+BuildRequires: c-ares-devel
 %endif
 
 %if %cream && ! %uw_build
@@ -341,7 +369,7 @@ BuildRequires: log4cpp-devel
 BuildRequires: gridsite-devel
 %endif
 
-%if 0%{?rhel} >= 7
+%if 0%{?rhel} == 7
 %ifarch x86_64
 BuildRequires: python36-devel
 BuildRequires: boost169-devel
@@ -349,8 +377,16 @@ BuildRequires: boost169-static
 %endif
 %endif
 
+%if 0%{?rhel} >= 8
+BuildRequires: boost-static
+%endif
+
 %if 0%{?rhel} >= 6 || 0%{?fedora}
+%if 0%{?rhel} >= 8
+BuildRequires: boost-python3-devel
+%else
 BuildRequires: boost-python
+%endif
 BuildRequires: libuuid-devel
 Requires: libuuid
 %endif
@@ -365,10 +401,21 @@ BuildRequires: systemd-units
 Requires: systemd
 %endif
 
-BuildRequires: transfig
-BuildRequires: latex2html
-# We don't build the manual (yet)
-#BuildRequires: texlive-epstopdf
+%if 0%{?rhel} == 6
+BuildRequires: python-sphinx10 python-sphinx_rtd_theme
+%endif
+
+%if 0%{?rhel} == 7
+%ifarch %{ix86}
+BuildRequires: python-sphinx
+%else
+BuildRequires: python-sphinx python-sphinx_rtd_theme
+%endif
+%endif
+
+%if 0%{?rhel} >= 8
+BuildRequires: python3-sphinx python3-sphinx_rtd_theme
+%endif
 
 Requires: /usr/sbin/sendmail
 Requires: condor-classads = %{version}-%{release}
@@ -620,6 +667,7 @@ host as the DedicatedScheduler.
 
 #######################
 %if %python
+%if 0%{?rhel} <= 7
 %package -n python2-condor
 Summary: Python bindings for HTCondor.
 Group: Applications/System
@@ -650,6 +698,7 @@ Provides: htcondor.so
 %description -n python2-condor
 The python bindings allow one to directly invoke the C++ implementations of
 the ClassAd library and HTCondor from python
+%endif
 
 
 %if 0%{?rhel} >= 7
@@ -658,9 +707,14 @@ the ClassAd library and HTCondor from python
 %package -n python3-condor
 Summary: Python bindings for HTCondor.
 Group: Applications/System
-Requires: python36
 Requires: %name = %version-%release
+%if 0%{?rhel} == 7
 Requires: boost169-python3
+Requires: python36
+%else
+Requires: boost-python3
+Requires: platform-python3
+%endif
 
 %if 0%{?rhel} >= 7 && ! %uw_build
 # auto provides generator does not pick these up for some reason
@@ -714,7 +768,12 @@ Includes all the files necessary to support running standard universe jobs.
 Summary: Configuration for a single-node HTCondor
 Group: Applications/System
 Requires: %name = %version-%release
+%if 0%{?rhel} <= 7
 Requires: python2-condor = %version-%release
+%endif
+%if 0%{?rhel} >= 7
+Requires: python3-condor = %version-%release
+%endif
 
 %description -n minicondor
 This example configuration is good for trying out HTCondor for the first time.
@@ -806,7 +865,12 @@ Requires: %name-classads = %version-%release
 %if %cream
 Requires: %name-cream-gahp = %version-%release
 %endif
+%if 0%{?rhel} <= 7
 Requires: python2-condor = %version-%release
+%endif
+%if 0%{?rhel} >= 7
+Requires: python3-condor = %version-%release
+%endif
 Requires: %name-bosco = %version-%release
 %if %std_univ
 Requires: %name-std-universe = %version-%release
@@ -835,6 +899,9 @@ exit 0
 %setup -q -n %{name}-%{tarball_version}
 %endif
 
+%patch1 -p1
+%patch2 -p1
+
 %if 0%{?osg} || 0%{?hcc}
 %patch8 -p1
 %patch16 -p1
@@ -853,7 +920,11 @@ find src -perm /a+x -type f -name "*.[Cch]" -exec chmod a-x {} \;
 %build
 
 # build man files
-make -C doc just-man-pages
+%if 0%{?rhel} == 6
+make -C docs SPHINXBUILD=sphinx-1.0-build man
+%else
+make -C docs man
+%endif
 
 export CMAKE_PREFIX_PATH=/usr
 
@@ -861,7 +932,7 @@ export CMAKE_PREFIX_PATH=/usr
 # causes build issues with EL5, don't even bother building the tests.
 
 %if %uw_build
-%define condor_build_id 479699
+%define condor_build_id 488405
 
 cmake \
        -DBUILDID:STRING=%condor_build_id \
@@ -1022,7 +1093,7 @@ populate %_libexecdir/condor %{buildroot}/usr/libexec/*
 
 # man pages go under %{_mandir}
 mkdir -p %{buildroot}/%{_mandir}
-mv %{buildroot}/usr/man/man1 %{buildroot}/%{_mandir}
+mv %{buildroot}/usr/man %{buildroot}/%{_mandir}/man1
 
 mkdir -p %{buildroot}/%{_sysconfdir}/condor
 # the default condor_config file is not architecture aware and thus
@@ -1811,6 +1882,7 @@ install -p -m 0755 %{SOURCE11} %{buildroot}%{_libexecdir}/condor/create_pool_pas
 %endif
 
 %if %python
+%if 0%{?rhel} <= 7
 %files -n python2-condor
 %defattr(-,root,root,-)
 %_bindir/condor_top
@@ -1819,6 +1891,7 @@ install -p -m 0755 %{SOURCE11} %{buildroot}%{_libexecdir}/condor/create_pool_pas
 %_libexecdir/condor/libcollector_python_plugin.so
 %{python_sitearch}/classad.so
 %{python_sitearch}/htcondor.so
+%endif
 
 %if 0%{?rhel} >= 7
 %ifarch x86_64
@@ -2114,6 +2187,13 @@ fi
 
 * Fri Sep 06 2019 Diego Davila <didavila@ucsd.edu> - 8.8.5-1.1
 - Add patch bosco_https (SOFTWARE-3809)
+
+* Thu Sep 05 2019 Tim Theisen <tim@cs.wisc.edu> - 8.8.5-1
+- Fixed two performance problems on Windows
+- Fixed Java universe on Debian and Ubuntu systems
+- Added two knobs to improve performance on large scale pools
+- Fixed a bug where requesting zero GPUs would require a machine with GPUs
+- HTCondor can now recognize nVidia Volta and Turing GPUs
 
 * Thu Aug 29 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 8.8.4-1.8
 - Add DAEMON_LIST and FS/Password auth configuration;
