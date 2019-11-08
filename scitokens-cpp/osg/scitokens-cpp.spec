@@ -1,6 +1,6 @@
 Name: scitokens-cpp
 Version: 0.3.4
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: C++ Implementation of the SciTokens Library
 License: ASL 2.0
 URL: https://github.com/scitokens/scitokens-cpp
@@ -11,6 +11,8 @@ URL: https://github.com/scitokens/scitokens-cpp
 # git submodule foreach --recursive "git archive --prefix=scitokens-cpp-0.3.3/\$path/ --output=\$sha1.tar HEAD && tar --concatenate --file=$(pwd)/scitokens-cpp-0.3.3.tar \$sha1.tar && rm \$sha1.tar"
 # gzip "scitokens-cpp-0.3.3.tar"
 Source0: https://github.com/scitokens/scitokens-cpp/releases/download/v%{version}/%{name}-%{version}.tar.gz
+
+Patch17: PR-17-Fix-EC-curve-detection.patch
 
 # Scitokens-cpp bundles jwt-cpp, a header only dependency
 # Since it doesn't create a library that can be used by others, it seems
@@ -43,6 +45,7 @@ Requires: %{name}%{?_isa} = %{version}
 
 %prep
 %setup -q
+%patch17 -p1
 
 %build
 do_build () {
@@ -76,6 +79,9 @@ do_build
 %dir %{_includedir}/scitokens
 
 %changelog
+* Fri Nov 08 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 0.3.4-2
+- Add patch to fix EC curve detection #17
+
 * Thu Sep 18 2019 Derek Weitzel <dweitzel@unl.edu> - 0.3.4-1
 - Fix bugs for support with IAM
 
