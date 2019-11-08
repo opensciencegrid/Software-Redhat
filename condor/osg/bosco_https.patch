@@ -1,8 +1,14 @@
+commit 6e22f57c7c455f2eb1ccae3ca2e5dac715b39436
+Author: Carl Edquist <edquist@cs.wisc.edu>
+Date:   Fri Nov 8 12:39:58 2019 -0600
+
+    osg/bosco_https.patch
+
 diff --git a/src/condor_contrib/bosco/bosco_cluster b/src/condor_contrib/bosco/bosco_cluster
-index 53510e5..ff66f6a 100755
+index e2d2e7ae00..82a040132e 100755
 --- a/src/condor_contrib/bosco/bosco_cluster
 +++ b/src/condor_contrib/bosco/bosco_cluster
-@@ -962,6 +962,9 @@ else
+@@ -965,6 +965,9 @@ else
  fi
  rsync -aq  $archive_dir/$libdir/libclassad.so* $remote_glite_dir/lib/ 2>/dev/null
  rsync -aq  $archive_dir/$libdir/libcondor_utils* $remote_glite_dir/lib/ 2>/dev/null
@@ -13,21 +19,22 @@ index 53510e5..ff66f6a 100755
  rsync -aq  $archive_dir/sbin/condor_ft-gahp $remote_glite_dir/bin 2>/dev/null
  
 diff --git a/src/condor_contrib/bosco/bosco_findplatform b/src/condor_contrib/bosco/bosco_findplatform
-index e9e6264..65a1b66 100755
+index bf6267819e..c8f64f1bc4 100755
 --- a/src/condor_contrib/bosco/bosco_findplatform
 +++ b/src/condor_contrib/bosco/bosco_findplatform
-@@ -23,14 +23,14 @@ SUPPORTED_PLATFORMS = [ RH6, RH7, OSX, DEB8, DEB9, UBUNTU14, UBUNTU16, UBUNTU18
+@@ -26,15 +26,14 @@ SUPPORTED_PLATFORMS = [ RH6, RH7, RH8, OSX, DEB8, DEB9, DEB10, UBUNTU16, UBUNTU1
  
  # download URLs for the different platforms
  URL_DICT={
--  DEB8: "ftp://ftp.cs.wisc.edu/condor/bosco/1.2/bosco-1.2-x86_64_Debian8.tar.gz",
--  DEB9: "ftp://ftp.cs.wisc.edu/condor/bosco/1.2/bosco-1.2-x86_64_Debian9.tar.gz",
--  OSX: "ftp://ftp.cs.wisc.edu/condor/bosco/1.2/bosco-1.2-x86_64_MacOSX.tar.gz",
--  RH6: "ftp://ftp.cs.wisc.edu/condor/bosco/1.2/bosco-1.2-x86_64_RedHat6.tar.gz",
--  RH7: "ftp://ftp.cs.wisc.edu/condor/bosco/1.2/bosco-1.2-x86_64_RedHat7.tar.gz",
--  UBUNTU14: "ftp://ftp.cs.wisc.edu/condor/bosco/1.2/bosco-1.2-x86_64_Ubuntu14.tar.gz",
--  UBUNTU16: "ftp://ftp.cs.wisc.edu/condor/bosco/1.2/bosco-1.2-x86_64_Ubuntu16.tar.gz",
--  UBUNTU18: "ftp://ftp.cs.wisc.edu/condor/bosco/1.2/bosco-1.2-x86_64_Ubuntu18.tar.gz",
+-  DEB8: "https://research.cs.wisc.edu/htcondor/bosco/1.2/bosco-1.2-x86_64_Debian8.tar.gz",
+-  DEB9: "https://research.cs.wisc.edu/htcondor/bosco/1.2/bosco-1.2-x86_64_Debian9.tar.gz",
+-  DEB10: "https://research.cs.wisc.edu/htcondor/bosco/1.2/bosco-1.2-x86_64_Debian10.tar.gz",
+-  OSX: "https://research.cs.wisc.edu/htcondor/bosco/1.2/bosco-1.2-x86_64_MacOSX.tar.gz",
+-  RH6: "https://research.cs.wisc.edu/htcondor/bosco/1.2/bosco-1.2-x86_64_RedHat6.tar.gz",
+-  RH7: "https://research.cs.wisc.edu/htcondor/bosco/1.2/bosco-1.2-x86_64_RedHat7.tar.gz",
+-  RH8: "https://research.cs.wisc.edu/htcondor/bosco/1.2/bosco-1.2-x86_64_RedHat8.tar.gz",
+-  UBUNTU16: "https://research.cs.wisc.edu/htcondor/bosco/1.2/bosco-1.2-x86_64_Ubuntu16.tar.gz",
+-  UBUNTU18: "https://research.cs.wisc.edu/htcondor/bosco/1.2/bosco-1.2-x86_64_Ubuntu18.tar.gz",
 +  DEB8: "https://research.cs.wisc.edu/htcondor/bosco/1.3/bosco-1.3-x86_64_Debian8.tar.gz",
 +  DEB9: "https://research.cs.wisc.edu/htcondor/bosco/1.3/bosco-1.3-x86_64_Debian9.tar.gz",
 +  OSX: "https://research.cs.wisc.edu/htcondor/bosco/1.3/bosco-1.3-x86_64_MacOSX.tar.gz",
