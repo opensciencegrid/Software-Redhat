@@ -12,8 +12,8 @@
 # ------------------------------------------------------------------------------
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
-%define version 3.6
-%define release 1
+%define version 3.6.1
+%define release 0.1.rc1
 
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
@@ -24,7 +24,7 @@
 %define factory_web_base %{_localstatedir}/lib/gwms-factory/web-base
 %define factory_dir %{_localstatedir}/lib/gwms-factory/work-dir
 %define condor_dir %{_localstatedir}/lib/gwms-factory/condor
-%define systemddir %{_prefix}/lib/systemd/system
+%define systemddir %{_libdir}/systemd/system
 
 Name:           glideinwms
 Version:        %{version}
@@ -412,31 +412,32 @@ install -m 0644 install/templates/11_gwms_secondary_collectors.config $RPM_BUILD
 install -m 0644 install/templates/90_gwms_dns.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/
 install -m 0644 install/templates/01_gwms_metrics.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/ganglia.d/
 install -m 0644 install/templates/condor_mapfile $RPM_BUILD_ROOT%{_sysconfdir}/condor/certs/
+install -m 0644 install/templates/gwms_q_format.cpf $RPM_BUILD_ROOT%{_sysconfdir}/condor/gwms_q_format.cpf
 
 # Install condor schedd dirs
 # This should be consistent with 02_gwms_factory_schedds.config and 02_gwms_schedds.config
 for schedd in "schedd_glideins2" "schedd_glideins3" "schedd_glideins4" "schedd_glideins5" "schedd_jobs2"; do
-	install -d $RPM_BUILD_ROOT/var/lib/condor/$schedd
-	install -d $RPM_BUILD_ROOT/var/lib/condor/$schedd/execute
-	install -d $RPM_BUILD_ROOT/var/lib/condor/$schedd/lock
-	install -d $RPM_BUILD_ROOT/var/lib/condor/$schedd/procd_pipe
-	install -d $RPM_BUILD_ROOT/var/lib/condor/$schedd/spool
+    install -d $RPM_BUILD_ROOT/var/lib/condor/$schedd
+    install -d $RPM_BUILD_ROOT/var/lib/condor/$schedd/execute
+    install -d $RPM_BUILD_ROOT/var/lib/condor/$schedd/lock
+    install -d $RPM_BUILD_ROOT/var/lib/condor/$schedd/procd_pipe
+    install -d $RPM_BUILD_ROOT/var/lib/condor/$schedd/spool
 done
 
 
 # Install tools
 install -d $RPM_BUILD_ROOT%{_bindir}
 # Install the tools as the non-*.py filenames
-for file in tools/[!_]*.py; do
-   newname=`echo $file | sed -e 's/.*\/\(.*\)\.py/\1/'`
-   cp $file $RPM_BUILD_ROOT%{_bindir}/$newname
+for file in tools/[^_]*.py; do
+    newname=`echo $file | sed -e 's/.*\/\(.*\)\.py/\1/'`
+    cp $file $RPM_BUILD_ROOT%{_bindir}/$newname
 done
-for file in factory/tools/[!_]*; do
-   if [ -f "$file" ]; then
-       newname=`echo $file | sed -e 's/\(.*\)\.py/\1/'`
-       newname=`echo $newname | sed -e 's/.*\/\(.*\)/\1/'`
-       cp $file $RPM_BUILD_ROOT%{_bindir}/$newname
-   fi
+for file in factory/tools/[^_]*; do
+    if [ -f "$file" ]; then
+        newname=`echo $file | sed -e 's/\(.*\)\.py/\1/'`
+        newname=`echo $newname | sed -e 's/.*\/\(.*\)/\1/'`
+        cp $file $RPM_BUILD_ROOT%{_bindir}/$newname
+    fi
 done
 cp creation/create_condor_tarball $RPM_BUILD_ROOT%{_bindir}
 
@@ -809,6 +810,7 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/condor/config.d/00_gwms_factory_general.config
 %config(noreplace) %{_sysconfdir}/condor/config.d/01_gwms_factory_collectors.config
 %config(noreplace) %{_sysconfdir}/condor/config.d/02_gwms_factory_schedds.config
+%config(noreplace) %{_sysconfdir}/condor/gwms_q_format.cpf
 %attr(-, condor, condor) %{_localstatedir}/lib/condor/schedd_glideins2
 %attr(-, condor, condor) %{_localstatedir}/lib/condor/schedd_glideins3
 %attr(-, condor, condor) %{_localstatedir}/lib/condor/schedd_glideins4
@@ -844,6 +846,11 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/condor/certs/condor_mapfile
 
 %changelog
+* Mon Nov 11 2019 Marco Mambelli <marcom@fnal.gov> - 3.6.1-0.1.rc1
+- GlideinWMS v3.6.1
+- Release Notes: http://glideinwms.fnal.gov/doc.v3_6_1/history.html
+- Release candidates: 3.6.1-0.1.rc1
+
 * Wed Sep 25 2019 Marco Mambelli <marcom@fnal.gov> - 3.6-1
 - GlideinWMS v3.6
 - Release Notes: http://glideinwms.fnal.gov/doc.v3_6/history.html
@@ -929,7 +936,7 @@ rm -rf $RPM_BUILD_ROOT
 - Glideinwms v3.2.22
 - Release Notes: http://glideinwms.fnal.gov/doc.v3_2_22/history.html
 - Release candidates: 3.2.22-0.1.rc1 to 3.2.22-0.2.rc2
- 
+
 * Tue Feb 27 2018 Marco Mambelli <marcom@fnal.gov> - 3.2.21-2
 - Fixed a problem with proxy outo-renewal, see [19147]
 
