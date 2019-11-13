@@ -132,7 +132,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 0.488405
+%define condor_base_release 0.488990
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -261,7 +261,7 @@ BuildRequires: /usr/include/curl/curl.h
 BuildRequires: /usr/include/expat.h
 BuildRequires: openldap-devel
 %if 0%{?rhel} >= 8
-BuildRequires: platform-python-devel
+BuildRequires: python3-devel
 %else
 BuildRequires: python-devel
 %endif
@@ -300,7 +300,7 @@ BuildRequires: perl(Archive::Tar)
 BuildRequires: perl(XML::Parser)
 BuildRequires: perl(Digest::MD5)
 %if 0%{?rhel} >= 8
-BuildRequires: platform-python-devel
+BuildRequires: python3-devel
 %else
 BuildRequires: python-devel
 %endif
@@ -449,9 +449,14 @@ Requires(preun):/sbin/service
 Requires(postun):/sbin/service
 %endif
 
-%if 0%{?rhel} >= 7
+%if 0%{?rhel} == 7
 Requires(post): policycoreutils-python
 Requires(post): selinux-policy-targeted >= 3.13.1-102
+%endif
+
+%if 0%{?rhel} >= 8
+Requires(post): python3-policycoreutils
+Requires(post): selinux-policy-targeted
 %endif
 
 #Provides: user(condor) = 43
@@ -711,7 +716,7 @@ Requires: boost169-python3
 Requires: python36
 %else
 Requires: boost-python3
-Requires: platform-python3
+Requires: python3
 %endif
 
 %if 0%{?rhel} >= 7 && ! %uw_build
@@ -898,7 +903,9 @@ exit 0
 %endif
 
 %patch1 -p1
+%if 0%{?rhel} >= 8
 %patch2 -p1
+%endif
 
 %if 0%{?osg} || 0%{?hcc}
 %patch8 -p1
@@ -928,7 +935,7 @@ export CMAKE_PREFIX_PATH=/usr
 # causes build issues with EL5, don't even bother building the tests.
 
 %if %uw_build
-%define condor_build_id 488405
+%define condor_build_id 488990
 
 cmake \
        -DBUILDID:STRING=%condor_build_id \
