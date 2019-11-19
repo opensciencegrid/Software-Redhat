@@ -132,7 +132,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 0.488990
+%define condor_base_release 1
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -400,7 +400,11 @@ Requires: systemd
 %endif
 
 %if 0%{?rhel} == 6
+%ifarch %{ix86}
+BuildRequires: python-sphinx10
+%else
 BuildRequires: python-sphinx10 python-sphinx_rtd_theme
+%endif
 %endif
 
 %if 0%{?rhel} == 7
@@ -935,7 +939,7 @@ export CMAKE_PREFIX_PATH=/usr
 # causes build issues with EL5, don't even bother building the tests.
 
 %if %uw_build
-%define condor_build_id 488990
+%define condor_build_id 489199
 
 cmake \
        -DBUILDID:STRING=%condor_build_id \
@@ -2170,6 +2174,14 @@ fi
 %endif
 
 %changelog
+* Wed Nov 13 2019 Tim Theisen <tim@cs.wisc.edu> - 8.8.6-1
+- Initial support for CentOS 8
+- Fixed a memory leak in SSL authentication
+- Fixed a bug where "condor_submit -spool" would only submit the first job
+- Reduced encrypted file transfer CPU usage by a factor of six
+- "condor_config_val -summary" displays changes from a default configuration
+- Improved the ClassAd documentation, added many functions that were omitted
+
 * Fri Oct 18 2019 Carl Edquist <edquist@cs.wisc.edu> - 8.8.5-1.7
 - Obsolete same-versioned cream-gahp for upgrade from OSG 3.4 (SOFTWARE-3869)
 
