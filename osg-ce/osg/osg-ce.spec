@@ -5,10 +5,11 @@
 Name:      osg-ce
 Summary:   OSG Compute Element
 Version:   3.4
-Release:   4%{?dist}
+Release:   5%{?dist}
 License:   Apache 2.0
 URL:       http://www.opensciencegrid.org
 
+Source1: 51-gratia.conf
 
 Requires: grid-certificates >= 7
 
@@ -164,7 +165,8 @@ Requires: htcondor-ce-bosco
 exit 0
 
 %install
-exit 0
+install -m 755         -d $RPM_BUILD_ROOT/%{_datadir}/condor-ce/config.d
+install -m 644 %{SOURCE1} $RPM_BUILD_ROOT/%{_datadir}/condor-ce/config.d
 
 %files
 %files condor
@@ -175,6 +177,9 @@ exit 0
 %files bosco
 
 %changelog
+* Wed Nov 20 2019 Carl Edquist <edquist@cs.wisc.edu> - 3.4-5
+- Add schedd cron config for gratia probe (SOFTWARE-3841)
+
 * Mon Jan 8 2018 Edgar Fajardo <emfajard@ucsd.edu> - 3.4-4
 - Removing osg-version requirements (SOFTWARE-2917)
 
