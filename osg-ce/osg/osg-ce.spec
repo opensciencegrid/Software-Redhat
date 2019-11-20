@@ -5,12 +5,13 @@
 Name:      osg-ce
 Summary:   OSG Compute Element
 Version:   3.5
-Release:   2%{?dist}
+Release:   3%{?dist}
 License:   Apache 2.0
 URL:       http://www.opensciencegrid.org
 
 Source0: 01-blahp-location.conf
 Source1: 03-gratia-cleanup.conf
+Source2: 51-gratia.conf
 
 Requires: grid-certificates >= 7
 
@@ -166,6 +167,8 @@ exit 0
 install -m 755         -d $RPM_BUILD_ROOT/%{_datadir}/condor-ce/config.d
 install -m 644 %{SOURCE0} $RPM_BUILD_ROOT/%{_datadir}/condor-ce/config.d
 install -m 644 %{SOURCE1} $RPM_BUILD_ROOT/%{_datadir}/condor-ce/config.d
+install -m 644 %{SOURCE2} $RPM_BUILD_ROOT/%{_datadir}/condor-ce/config.d
+
 
 %files
 # TODO: Drop the OSG-blahp config when the OSG and HTCondor blahps are merged
@@ -181,6 +184,9 @@ install -m 644 %{SOURCE1} $RPM_BUILD_ROOT/%{_datadir}/condor-ce/config.d
 %files bosco
 
 %changelog
+* Wed Nov 20 2019 Carl Edquist <edquist@cs.wisc.edu> - 3.5-3
+- Add schedd cron config for gratia probe (SOFTWARE-3841)
+
 * Fri Sep 06 2019 Brian Lin <blin@cs.wisc.edu> - 3.5-2
 - Add Blahp location and Gratia cleanup configuration (SOFTWARE-3813)
 - Remove deprecated and 32-bit requirements
