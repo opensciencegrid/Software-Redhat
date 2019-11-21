@@ -143,8 +143,6 @@ Summary: Bosco meta-package for the HTCondor-CE OSG-CE
 Requires: %{osgce} = %{version}-%{release}
 Requires: gratia-probe-htcondor-ce
 Requires: osg-configure-bosco
-# Added for config management of Hosted CEs (SOFTWARE-3814)
-Requires: ansible
 # Added for scripts to manage remote WN tarball, CA, and CRL
 # installations (SOFTWARE-3582)
 Requires: hosted-ce-tools
@@ -186,6 +184,7 @@ install -m 644 %{SOURCE2} $RPM_BUILD_ROOT/%{_datadir}/condor-ce/config.d
 %changelog
 * Wed Nov 20 2019 Carl Edquist <edquist@cs.wisc.edu> - 3.5-3
 - Add schedd cron config for gratia probe (SOFTWARE-3841)
+- Drop ansible requirement (SOFTWARE-3920)
 
 * Fri Sep 06 2019 Brian Lin <blin@cs.wisc.edu> - 3.5-2
 - Add Blahp location and Gratia cleanup configuration (SOFTWARE-3813)
