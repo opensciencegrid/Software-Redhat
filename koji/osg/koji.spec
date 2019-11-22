@@ -6,8 +6,8 @@
 %endif
 
 Name: koji
-Version: 1.11.1
-Release: 1.2%{?dist}
+Version: 1.12.2
+Release: 1%{?dist}
 License: LGPLv2 and GPLv2+
 # koji.ssl libs (from plague) are GPLv2+
 Summary: Build system tools
@@ -18,13 +18,11 @@ Patch103: kojid_scmbuild_check_spec_after_running_sourcecmd.patch
 Patch104: koji_passwd_retry.patch
 Patch105: koji_proxy_cert.patch
 Patch106: kojicli_setup_dns.patch
-Patch110: kojiweb_getfile_nontext_fix.patch
-Patch111: db-upgrade-1.10-to-1.11.patch
 Patch112: Fix-type-in-add-group-pkg.patch
 Patch113: kojira-accept-sleeptime-option.patch
 Patch114: 1635-os_path_join.patch
 
-Source: koji-%{version}.tar.bz2
+Source: koji-%{name}-%{version}.tar.gz
 
 BuildArch: noarch
 Requires: python-krbV >= 1.0.13
@@ -155,15 +153,13 @@ Requires: python-krbV >= 1.0.13
 koji-web is a web UI to the Koji system.
 
 %prep
-%setup -q
+%setup -q -n koji-%{name}-%{version}
 %patch101 -p1
 %patch102 -p1
 %patch103 -p1
 %patch104 -p1
 %patch105 -p1
 %patch106 -p1
-%patch110 -p1
-%patch111 -p1
 %patch112 -p1
 %patch113 -p1
 %patch114 -p1
@@ -235,6 +231,7 @@ make DESTDIR=$RPM_BUILD_ROOT %{?install_opt} install
 %dir %{_sysconfdir}/kojid/plugins
 %config(noreplace) %{_sysconfdir}/kojid/kojid.conf
 %config(noreplace) %{_sysconfdir}/kojid/plugins/runroot.conf
+%config(noreplace) %{_sysconfdir}/kojid/plugins/save_failed_tree.conf
 %attr(-,kojibuilder,kojibuilder) %{_sysconfdir}/mock/koji
 
 %pre builder
@@ -322,6 +319,9 @@ fi
 %endif
 
 %changelog
+* Fri Nov 15 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.12.2-1.osg
+- Update to 1.12.2
+
 * Wed Oct 09 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.11.1-1.2.osg
 - Add patch for https://pagure.io/koji/pull-request/1635
 
