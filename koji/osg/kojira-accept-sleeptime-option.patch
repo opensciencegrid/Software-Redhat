@@ -1,37 +1,41 @@
-From 0cf2cf89634f29f4a0be217b4513e72796ad00ba Mon Sep 17 00:00:00 2001
+From e50d295d7cddb9d6ed9353ce8027218c1ca54380 Mon Sep 17 00:00:00 2001
 From: Matyas Selmeci <matyas@cs.wisc.edu>
 Date: Tue, 30 Oct 2018 16:23:34 -0500
 Subject: [PATCH] kojira: accept 'sleeptime' option
 
 ---
- util/kojira      | 2 +-
+ util/kojira      | 3 ++-
  util/kojira.conf | 3 +++
- 2 files changed, 4 insertions(+), 1 deletion(-)
+ 2 files changed, 5 insertions(+), 1 deletion(-)
 
 diff --git a/util/kojira b/util/kojira
-index 905fec4..9a6c3f5 100755
+index 4a21332..462c846 100755
 --- a/util/kojira
 +++ b/util/kojira
-@@ -736,7 +736,7 @@ def get_options():
-     if config.has_section(section):
+@@ -755,7 +755,8 @@ def get_options():
          int_opts = ('deleted_repo_lifetime', 'max_repo_tasks', 'repo_tasks_limit',
                      'retry_interval', 'max_retries', 'offline_retry_interval',
--                    'max_delete_processes', 'max_repo_tasks_maven', 'delete_batch_size', )
-+                    'max_delete_processes', 'max_repo_tasks_maven', 'delete_batch_size', 'sleeptime', )
+                     'max_delete_processes', 'max_repo_tasks_maven',
+-                    'delete_batch_size', 'dist_repo_lifetime')
++                    'delete_batch_size', 'dist_repo_lifetime',
++                    'sleeptime',)
          str_opts = ('topdir', 'server', 'user', 'password', 'logfile', 'principal', 'keytab', 'krbservice',
                      'cert', 'ca', 'serverca', 'debuginfo_tags', 'source_tags')  # FIXME: remove ca here
          bool_opts = ('with_src','verbose','debug','ignore_stray_repos', 'offline_retry',
 diff --git a/util/kojira.conf b/util/kojira.conf
-index def5370..e7527e7 100644
+index fc8f4c0..dd35dd0 100644
 --- a/util/kojira.conf
 +++ b/util/kojira.conf
-@@ -39,3 +39,6 @@ with_src=no
+@@ -39,6 +39,9 @@ with_src=no
  
  ;certificate of the CA that issued the HTTP server certificate
  ;serverca = /etc/kojira/serverca.crt
-+
-+;time to wait between repo checks (in seconds)
-+;sleeptime = 15
+++
+++;time to wait between repo checks (in seconds)
+++;sleeptime = 15
+ 
+ ;how soon (in seconds) to clean up expired repositories. 1 week default
+ ;deleted_repo_lifetime = 604800
 -- 
 2.6.3
 
