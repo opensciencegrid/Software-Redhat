@@ -33,6 +33,7 @@ Requires: python-requests-kerberos
 Requires: python-urlgrabber
 Requires: python-dateutil
 Requires: python-multilib
+Requires: python-psycopg2
 BuildRequires: python
 BuildRequires: python-sphinx
 %if %{use_systemd}
@@ -321,7 +322,7 @@ fi
 
 %changelog
 * Fri Nov 22 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.12.2-1.1.osg
-- Add missing python-multilib dependency
+- Add missing python-multilib and python-psycopg2 dependencies
 
 * Fri Nov 15 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.12.2-1.osg
 - Update to 1.12.2
