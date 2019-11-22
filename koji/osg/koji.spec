@@ -7,7 +7,7 @@
 
 Name: koji
 Version: 1.12.2
-Release: 1%{?dist}
+Release: 1.1%{?dist}
 License: LGPLv2 and GPLv2+
 # koji.ssl libs (from plague) are GPLv2+
 Summary: Build system tools
@@ -32,6 +32,7 @@ Requires: python-requests >= 2.6.0
 Requires: python-requests-kerberos
 Requires: python-urlgrabber
 Requires: python-dateutil
+Requires: python-multilib
 BuildRequires: python
 BuildRequires: python-sphinx
 %if %{use_systemd}
@@ -319,6 +320,9 @@ fi
 %endif
 
 %changelog
+* Fri Nov 22 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.12.2-1.1.osg
+- Add missing python-multilib dependency
+
 * Fri Nov 15 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.12.2-1.osg
 - Update to 1.12.2
 
