@@ -26,7 +26,7 @@
 
 Name: koji
 Version: 1.14.3
-Release: 1.1%{?dist}
+Release: 1.2%{?dist}
 # koji.ssl libs (from plague) are GPLv2+
 License: LGPLv2 and GPLv2+
 Summary: Build system tools
@@ -65,7 +65,7 @@ Requires: python2-pycurl
 %if 0%{?rhel}
 Requires: python-pycurl
 %endif
-%if 0%{?rhel} >= 7
+%if ! 0%{?osg} && 0%{?rhel} >= 7
 Requires: python-libcomps
 %endif
 %endif
@@ -453,7 +453,7 @@ fi
 %endif
 
 %changelog
-* Fri Nov 22 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.14.3-1.1.osg
+* Fri Nov 22 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.14.3-1.2.osg
 - Update based on Fedora's 1.14.0-4 spec file and upstream's 1.14.3 tarball.
   Fedora's changelog:
     * Mon Jan 22 2018 Troy Dawson <tdawson@redhat.com> - 1.14.0-4
