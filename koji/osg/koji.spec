@@ -1,4 +1,23 @@
-%if 0%{?fedora} >= 23 || 0%{?rhel} >= 7
+# Enable Python 3 builds for Fedora + EPEL >5
+# NOTE: do **NOT** change 'epel' to 'rhel' here, as this spec is also
+%if 0%{?fedora}
+%bcond_without python3
+# If the definition isn't available for python3_pkgversion, define it
+%{?!python3_pkgversion:%global python3_pkgversion 3}
+%else
+%bcond_with python3
+%endif
+
+# Compatibility with RHEL. These macros have been added to EPEL but
+# not yet to RHEL proper.
+# https://bugzilla.redhat.com/show_bug.cgi?id=1307190
+%{!?__python2: %global __python2 /usr/bin/python2}
+%{!?python2_sitelib: %global python2_sitelib %(%{__python2} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
+%{!?python2_sitearch: %global python2_sitearch %(%{__python2} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
+%{!?py2_build: %global py2_build %{expand: CFLAGS="%{optflags}" %{__python2} setup.py %{?py_setup_args} build --executable="%{__python2} -s"}}
+%{!?py2_install: %global py2_install %{expand: CFLAGS="%{optflags}" %{__python2} setup.py %{?py_setup_args} install -O1 --skip-build --root %{buildroot}}}
+
+%if 0%{?fedora} || 0%{?rhel} >= 7
 %global use_systemd 1
 %else
 %global use_systemd 0
@@ -6,12 +25,13 @@
 %endif
 
 Name: koji
-Version: 1.12.2
-Release: 1.1%{?dist}
-License: LGPLv2 and GPLv2+
+Version: 1.13.2
+Release: 1.2%{?dist}
 # koji.ssl libs (from plague) are GPLv2+
+License: LGPLv2 and GPLv2+
 Summary: Build system tools
 URL: https://pagure.io/koji/releases
+Source0: koji-%{name}-%{version}.tar.gz
 Patch101: koji_passwd_cache.patch
 Patch102: kojid_setup_dns.patch
 Patch103: kojid_scmbuild_check_spec_after_running_sourcecmd.patch
@@ -22,31 +42,94 @@ Patch112: Fix-type-in-add-group-pkg.patch
 Patch113: kojira-accept-sleeptime-option.patch
 Patch114: 1635-os_path_join.patch
 
-Source: koji-%{name}-%{version}.tar.gz
 
 BuildArch: noarch
-Requires: python-krbV >= 1.0.13
-Requires: rpm-python
-Requires: pyOpenSSL
-Requires: python-requests >= 2.6.0
-Requires: python-requests-kerberos
-Requires: python-urlgrabber
-Requires: python-dateutil
-Requires: python-multilib
-Requires: python-psycopg2
+%if 0%{with python3}
+Requires: python3-%{name} = %{version}-%{release}
+Requires: python3-pycurl
+Requires: python3-libcomps
+%else
+Requires: python2-%{name} = %{version}-%{release}
+%if 0%{?fedora}
+Requires: python2-libcomps
+Requires: python2-pycurl
+%endif
+%if 0%{?rhel}
+Requires: python-pycurl
+%endif
+%if 0%{?rhel} >= 7
+Requires: python-libcomps
+%endif
+%endif
 BuildRequires: python
 BuildRequires: python-sphinx
 %if %{use_systemd}
 BuildRequires: systemd
 BuildRequires: pkgconfig
 %endif
-%if ! 0%{?osg} && (0%{?fedora} || 0%{?rhel} >= 7)
-Requires: python-libcomps
+
+# For backwards compatibility, we want to Require: python2-koji for Fedora <= 26 so dependent
+# packages have some time to switch their Requires lines to python2-koji instead of Koji.
+%if 0%{?fedora} && 0%{?fedora} <= 26
+Requires: python2-%{name} = %{version}-%{release}
+Requires: python2-pycurl
+Requires: python2-libcomps
 %endif
 
 %description
 Koji is a system for building and tracking RPMS.  The base package
 contains shared libraries and the command-line interface.
+
+%package -n python2-%{name}
+Summary: Build system tools python library
+%{?python_provide:%python_provide python2-%{name}}
+BuildRequires: python2-devel
+Requires: python-krbV >= 1.0.13
+Requires: rpm-python
+Requires: pyOpenSSL
+Requires: python-requests
+Requires: python-requests-kerberos
+Requires: python-dateutil
+Requires: python-six
+
+%description -n python2-%{name}
+Koji is a system for building and tracking RPMS.  The base package
+contains shared libraries and the command-line interface.
+
+%if 0%{with python3}
+%package -n python3-%{name}
+Summary: Build system tools python library
+%{?python_provide:%python_provide python3-%{name}}
+BuildRequires: python3-devel
+Requires: python3-rpm
+Requires: python3-pyOpenSSL
+Requires: python3-requests
+Requires: python3-requests-kerberos
+Requires: python3-dateutil
+Requires: python3-six
+
+%description -n python3-%{name}
+Koji is a system for building and tracking RPMS.  The base package
+contains shared libraries and the command-line interface.
+%endif
+
+%package -n python2-%{name}-cli-plugins
+Summary: Koji client plugins
+License: LGPLv2
+Requires: %{name} = %{version}-%{release}
+
+%description -n python2-%{name}-cli-plugins
+Plugins to the koji command-line interface
+
+%if 0%{with python3}
+%package -n python3-%{name}-cli-plugins
+Summary: Koji client plugins
+License: LGPLv2
+Requires: %{name} = %{version}-%{release}
+
+%description -n python3-%{name}-cli-plugins
+Plugins to the koji command-line interface
+%endif
 
 %package hub
 Summary: Koji XMLRPC interface
@@ -54,7 +137,7 @@ License: LGPLv2 and GPLv2
 # rpmdiff lib (from rpmlint) is GPLv2 (only)
 Requires: httpd
 Requires: mod_wsgi
-Requires: postgresql-python
+Requires: python-psycopg2
 Requires: %{name} = %{version}-%{release}
 
 %description hub
@@ -80,6 +163,7 @@ Requires: %{name} = %{version}-%{release}
 Requires: mock >= 0.9.14
 Requires(pre): /usr/sbin/useradd
 Requires: squashfs-tools
+Requires: python2-multilib
 %if %{use_systemd}
 Requires(post): systemd
 Requires(preun): systemd
@@ -116,11 +200,8 @@ Requires(preun): /sbin/service
 %endif
 Requires: libvirt-python
 Requires: libxml2-python
-%if 0%{?fedora}
-#Red Hat only ships on x86_64
 Requires: /usr/bin/virt-clone
 Requires: qemu-img
-%endif
 
 %description vm
 koji-vm contains a supplemental build daemon that executes certain tasks in a
@@ -129,7 +210,7 @@ virtual machine. This package is not required for most installations.
 %package utils
 Summary: Koji Utilities
 License: LGPLv2
-Requires: postgresql-python
+Requires: python-psycopg2
 Requires: %{name} = %{version}-%{release}
 %if %{use_systemd}
 Requires(post): systemd
@@ -145,8 +226,13 @@ Summary: Koji Web UI
 License: LGPLv2
 Requires: httpd
 Requires: mod_wsgi
+# https://bugzilla.redhat.com/show_bug.cgi?id=1497923 - "koji-web requires mod_auth_gssapi but that is not available in RHEL6 or EPEL6"
+%if 0%{?fedora} >= 21 || 0%{?rhel} >= 7
+Requires: mod_auth_gssapi
+%else
 Requires: mod_auth_kerb
-Requires: postgresql-python
+%endif
+Requires: python-psycopg2
 Requires: python-cheetah
 Requires: %{name} = %{version}-%{release}
 Requires: python-krbV >= 1.0.13
@@ -170,28 +256,62 @@ koji-web is a web UI to the Koji system.
 
 %install
 make DESTDIR=$RPM_BUILD_ROOT %{?install_opt} install
+%if 0%{with python3}
+cd koji
+make DESTDIR=$RPM_BUILD_ROOT PYTHON=python3 %{?install_opt} install
+cd ../cli
+make DESTDIR=$RPM_BUILD_ROOT PYTHON=python3 %{?install_opt} install
+cd ../plugins
+make DESTDIR=$RPM_BUILD_ROOT PYTHON=python3 %{?install_opt} install
+# alter python interpreter in koji CLI
+sed -i 's/\#\!\/usr\/bin\/python/\#\!\/usr\/bin\/python3/' $RPM_BUILD_ROOT/usr/bin/koji
+%endif
+
 
 %files
 %{_bindir}/*
-%{python_sitelib}/%{name}
-%config(noreplace) %{_sysconfdir}/koji.conf
-%dir %{_sysconfdir}/koji.conf.d
+%config(noreplace) /etc/koji.conf
+%dir /etc/koji.conf.d
 %doc docs Authors COPYING LGPL
+
+%files -n python2-%{name}
+%{python2_sitelib}/%{name}
+%{python2_sitelib}/koji_cli
+
+%if 0%{with python3}
+%files -n python%{python3_pkgversion}-koji
+%{python3_sitelib}/%{name}
+%{python3_sitelib}/koji_cli
+%endif
+
+%files -n python2-%{name}-cli-plugins
+%{python2_sitelib}/koji_cli_plugins
+# we don't have config files for default plugins yet
+#%%dir %{_sysconfdir}/koji/plugins
+#%%config(noreplace) %{_sysconfdir}/koji/plugins/*.conf
+
+%if 0%{with python3}
+%files -n python%{python3_pkgversion}-%{name}-cli-plugins
+%{python3_sitelib}/koji_cli_plugins
+# we don't have config files for default plugins yet
+#%%dir %{_sysconfdir}/koji/plugins
+#%%config(noreplace) %{_sysconfdir}/koji/plugins/*.conf
+%endif
 
 %files hub
 %{_datadir}/koji-hub
 %dir %{_libexecdir}/koji-hub
 %{_libexecdir}/koji-hub/rpmdiff
-%config(noreplace) %{_sysconfdir}/httpd/conf.d/kojihub.conf
-%dir %{_sysconfdir}/koji-hub
-%config(noreplace) %{_sysconfdir}/koji-hub/hub.conf
-%dir %{_sysconfdir}/koji-hub/hub.conf.d
+%config(noreplace) /etc/httpd/conf.d/kojihub.conf
+%dir /etc/koji-hub
+%config(noreplace) /etc/koji-hub/hub.conf
+%dir /etc/koji-hub/hub.conf.d
 
 %files hub-plugins
 %dir %{_prefix}/lib/koji-hub-plugins
 %{_prefix}/lib/koji-hub-plugins/*.py*
-%dir %{_sysconfdir}/koji-hub/plugins
-%{_sysconfdir}/koji-hub/plugins/*.conf
+%dir /etc/koji-hub/plugins
+/etc/koji-hub/plugins/*.conf
 
 %files utils
 %{_sbindir}/kojira
@@ -199,23 +319,23 @@ make DESTDIR=$RPM_BUILD_ROOT %{?install_opt} install
 %{_unitdir}/kojira.service
 %else
 %{_initrddir}/kojira
-%config(noreplace) %{_sysconfdir}/sysconfig/kojira
+%config(noreplace) /etc/sysconfig/kojira
 %endif
-%dir %{_sysconfdir}/kojira
-%config(noreplace) %{_sysconfdir}/kojira/kojira.conf
+%dir /etc/kojira
+%config(noreplace) /etc/kojira/kojira.conf
 %{_sbindir}/koji-gc
-%dir %{_sysconfdir}/koji-gc
-%config(noreplace) %{_sysconfdir}/koji-gc/koji-gc.conf
+%dir /etc/koji-gc
+%config(noreplace) /etc/koji-gc/koji-gc.conf
 %{_sbindir}/koji-shadow
-%dir %{_sysconfdir}/koji-shadow
-%config(noreplace) %{_sysconfdir}/koji-shadow/koji-shadow.conf
+%dir /etc/koji-shadow
+%config(noreplace) /etc/koji-shadow/koji-shadow.conf
 
 %files web
 %{_datadir}/koji-web
-%dir %{_sysconfdir}/kojiweb
-%config(noreplace) %{_sysconfdir}/kojiweb/web.conf
-%config(noreplace) %{_sysconfdir}/httpd/conf.d/kojiweb.conf
-%dir %{_sysconfdir}/kojiweb/web.conf.d
+%dir /etc/kojiweb
+%config(noreplace) /etc/kojiweb/web.conf
+%config(noreplace) /etc/httpd/conf.d/kojiweb.conf
+%dir /etc/kojiweb/web.conf.d
 
 %files builder
 %{_sbindir}/kojid
@@ -227,14 +347,14 @@ make DESTDIR=$RPM_BUILD_ROOT %{?install_opt} install
 %{_unitdir}/kojid.service
 %else
 %{_initrddir}/kojid
-%config(noreplace) %{_sysconfdir}/sysconfig/kojid
+%config(noreplace) /etc/sysconfig/kojid
 %endif
-%dir %{_sysconfdir}/kojid
-%dir %{_sysconfdir}/kojid/plugins
-%config(noreplace) %{_sysconfdir}/kojid/kojid.conf
-%config(noreplace) %{_sysconfdir}/kojid/plugins/runroot.conf
-%config(noreplace) %{_sysconfdir}/kojid/plugins/save_failed_tree.conf
-%attr(-,kojibuilder,kojibuilder) %{_sysconfdir}/mock/koji
+%dir /etc/kojid
+%dir /etc/kojid/plugins
+%config(noreplace) /etc/kojid/kojid.conf
+%config(noreplace) /etc/kojid/plugins/runroot.conf
+%config(noreplace) /etc/kojid/plugins/save_failed_tree.conf
+%attr(-,kojibuilder,kojibuilder) /etc/mock/koji
 
 %pre builder
 /usr/sbin/useradd -r -s /bin/bash -G mock -d /builddir -M kojibuilder 2>/dev/null ||:
@@ -270,10 +390,10 @@ fi
 %{_unitdir}/kojivmd.service
 %else
 %{_initrddir}/kojivmd
-%config(noreplace) %{_sysconfdir}/sysconfig/kojivmd
+%config(noreplace) /etc/sysconfig/kojivmd
 %endif
-%dir %{_sysconfdir}/kojivmd
-%config(noreplace) %{_sysconfdir}/kojivmd/kojivmd.conf
+%dir /etc/kojivmd
+%config(noreplace) /etc/kojivmd/kojivmd.conf
 
 %if %{use_systemd}
 
@@ -321,6 +441,18 @@ fi
 %endif
 
 %changelog
+* Fri Nov 22 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.13.2-1.1.osg
+- Update based on Fedora's spec file and upstream's 1.13.2 tarball.
+  Fedora's changelog:
+    * Wed Jul 26 2017 Fedora Release Engineering <releng@fedoraproject.org> - 1.13.0-4
+    - Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Mass_Rebuild
+
+    * Wed Jul 12 2017 Patrick Uiterwijk <puiterwijk@redhat.com> - 1.13.0-3
+    - Remove the 2 postfix for pycurl and libcomps on RHEL
+
+    * Tue Jul 11 2017 Randy Barlow <bowlofeggs@fedoraproject.org> - 1.13.0-2
+    - Require python2-koji on Fedora <= 26.
+
 * Fri Nov 22 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.12.2-1.1.osg
 - Add missing python-multilib and python-psycopg2 dependencies
 
@@ -347,6 +479,22 @@ fi
 * Wed Aug 23 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.11.0-1.6
 - Fix `koji add-group-pkg` to set the correct type (SOFTWARE-2870)
 
+* Sat Jun 03 2017 Patrick Uiterwijk <puiterwijk@redhat.com> - 1.12.0-5
+- Add patch for completing #349 fix
+
+* Sat Jun 03 2017 Patrick Uiterwijk <puiterwijk@redhat.com> - 1.12.0-4
+- Add upstreamed patch for #349
+
+* Tue May 23 2017 Dennis Gilmore <dennis@ausil.us> - 1.12.0-3
+- add some upstreamed patches needed to fix some things in fedora
+
+* Wed Apr 19 2017 Dennis Gilmore <dennis@ausil.us> - 1.12.0-2
+- add patch so that kojid starts without ssl auth configured
+
+* Tue Apr 18 2017 Dennis Gilmore <dennis@ausil.us> - 1.12.0-1
+- update to upstream 1.12.0
+- remove rhel 5 conditionals as its no longer supported in epel
+
 * Thu Jan 19 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.11.0-1.5
 - Require python-requests-2.6.0 (fixes "call 8 (rawUpload) failed: syntax error: line 1, column 49" error in kojid)
 
@@ -357,6 +505,23 @@ fi
 * Wed Jan 11 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.11.0-1.2
 - Add kojiweb_getfile_nontext_fix.patch to fix an error with 'getfile' kojiweb
   URLs
+
+* Sun Jan 08 2017 Till Maas <opensource@till.name> - 1.11.0-5
+- Do not apply faulty CheckClientIP patch
+
+* Sun Jan 08 2017 Till Maas <opensource@till.name> - 1.11.0-4
+- Add patch for keytab kerberos client config
+- Move non upstreamable Fedora patch to the end to ease rebasing to future
+  upstream release
+- Move license comment before license tag
+
+* Sat Jan 07 2017 Till Maas <opensource@till.name> - 1.11.0-3
+- Add patches for proxy IP forwarding
+
+* Fri Jan 06 2017 Till Maas <opensource@till.name> - 1.11.0-2
+- Update upstream URLs
+- Add upstream koji-gc kerberos patches
+- Use Source0
 
 * Tue Jan 03 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.11.0-1.1
 - Merge OSG changes
@@ -540,156 +705,3 @@ fi
 * Fri Dec 17 2010 Dennis Gilmore <dennis@ausil.us> - 1.6.0-1
 - update to 1.6.0
 
-* Wed Dec 01 2010 Dennis Gilmore <dennis@ausil.us> - 1.5.0-1
-- update to 1.5.0
-
-* Tue Aug  3 2010 David Malcolm <dmalcolm@redhat.com> - 1.4.0-4
-- fix python 2.7 incompatibilities (rhbz 619276)
-
-* Wed Jul 21 2010 David Malcolm <dmalcolm@redhat.com> - 1.4.0-3
-- Rebuilt for https://fedoraproject.org/wiki/Features/Python_2.7/MassRebuild
-
-* Sat Jul 10 2010 Dennis Gilmore <dennis@ausil.us> - 1.4.0-2
-- add missing Requires: python-cheetah from koji-builder
-
-* Fri Jul 09 2010 Dennis Gilmore <dennis@ausil.us> - 1.4.0-1
-- update to 1.4.0
-- Merge mead branch: support for building jars with Maven *
-- support for building appliance images *
-- soft dependencies for LiveCD/Appliance features
-- smarter prioritization of repo regenerations
-- package list policy to determine if package list changes are allowed
-- channel policy to determine which channel a task is placed in
-- edit host data via webui
-- description and comment fields for hosts *
-- cleaner log entries for kojihub
-- track user data in versioned tables *
-- allow setting retry parameters for the cli
-- track start time for tasks *
-- allow packages built from the same srpm to span multiple external repos
-- make the command used to fetch sources configuable per repo
-- kojira: remove unexpected directories
-- let kojid to decide if it can handle a noarch task
-- avoid extraneous ssl handshakes
-- schema changes to support starred items
-
-* Fri Nov 20 2009 Dennis Gilmore <dennis@ausil.us> - 1.3.2-1
-- update to 1.3.2
-
-* Fri Jul 24 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.3.1-3
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_12_Mass_Rebuild
-
-* Wed Feb 25 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.3.1-2
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_11_Mass_Rebuild
-
-* Fri Feb 20 2009 Dennis Gilmore <dennis@ausil.us> - 1.3.1-1
-- update to 1.3.1
-
-* Wed Feb 18 2009 Dennis Gilmore <dennis@ausil.us> - 1.3.0-1
-- update to 1.3.0
-
-* Sat Nov 29 2008 Ignacio Vazquez-Abrams <ivazqueznet+rpm@gmail.com> - 1.2.6-2
-- Rebuild for Python 2.6
-
-* Mon Aug 25 2008 Dennis Gilmore <dennis@ausil.us> - 1.2.6-1
-- update to 1.2.6
-- make sure we have to correct version of createrepo on Fedora 8 
-
-* Tue Aug  5 2008 Tom "spot" Callaway <tcallawa@redhat.com> 1.2.5-2
-- fix conditional (line 5)
-- fix license tag
-
-* Fri Jan 25 2008 jkeating <jkeating@redhat.com> 1.2.5-1
-- Put createrepo arguments in correct order
-
-* Thu Jan 24 2008 jkeating <jkeating@redhat.com> 1.2.4-1
-- Use the --skip-stat flag in createrepo calls.
-- canonicalize tag arches before using them (dgilmore)
-- fix return value of delete_build
-- Revert to getfile urls if the task is not successful in emails
-- Pass --target instead of --arch to mock.
-- ignore trashcan tag in prune-signed-copies command
-- add the "allowed_scms" kojid parameter
-- allow filtering builds by the person who built them
-
-* Fri Dec 14 2007 jkeating <jkeating@redhat.com> 1.2.3-1
-- New upstream release with lots of updates, bugfixes, and enhancements.
-
-* Tue Jun  5 2007 Mike Bonnet <mikeb@redhat.com> - 1.2.2-1
-- only allow admins to perform non-scratch builds from srpm
-- bug fixes to the cmd-line and web UIs
-
-* Thu May 31 2007 Mike Bonnet <mikeb@redhat.com> - 1.2.1-1
-- don't allow ExclusiveArch to expand the archlist (bz#239359)
-- add a summary line stating whether the task succeeded or failed to the end of the "watch-task" output
-- add a search box to the header of every page in the web UI
-- new koji download-build command (patch provided by Dan Berrange)
-
-* Tue May 15 2007 Mike Bonnet <mikeb@redhat.com> - 1.2.0-1
-- change version numbering to a 3-token scheme
-- install the koji favicon
-
-* Mon May 14 2007 Mike Bonnet <mikeb@redhat.com> - 1.1-5
-- cleanup koji-utils Requires
-- fix encoding and formatting in email notifications
-- expand archlist based on ExclusiveArch/BuildArchs
-- allow import of rpms without srpms
-- commit before linking in prepRepo to release db locks
-- remove exec bit from kojid logs and uploaded files (patch by Enrico Scholz)
-
-* Tue May  1 2007 Mike Bonnet <mikeb@redhat.com> - 1.1-4
-- remove spurious Requires: from the koji-utils package
-
-* Tue May  1 2007 Mike Bonnet <mikeb@redhat.com> - 1.1-3
-- fix typo in BuildNotificationTask (patch provided by Michael Schwendt)
-- add the --changelog param to the buildinfo command
-- always send email notifications to the package builder and package owner
-- improvements to the web UI
-
-* Tue Apr 17 2007 Mike Bonnet <mikeb@redhat.com> - 1.1-2
-- re-enable use of the --update flag to createrepo
-
-* Mon Apr 09 2007 Jesse Keating <jkeating@redhat.com> 1.1-1
-- make the output listPackages() consistent regardless of with_dups
-- prevent large batches of repo deletes from holding up regens
-- allow sorting the host list by arches
-
-* Mon Apr 02 2007 Jesse Keating <jkeating@redhat.com> 1.0-1
-- Release 1.0!
-
-* Wed Mar 28 2007 Mike Bonnet <mikeb@redhat.com> - 0.9.7-4
-- set SSL connection timeout to 12 hours
-
-* Wed Mar 28 2007 Mike Bonnet <mikeb@redhat.com> - 0.9.7-3
-- avoid SSL renegotiation
-- improve log file handling in kojid
-- bug fixes in command-line and web UI
-
-* Sun Mar 25 2007 Mike Bonnet <mikeb@redhat.com> - 0.9.7-2
-- enable http access to packages in kojid
-- add Requires: pyOpenSSL
-- building srpms from CVS now works with the Extras CVS structure
-- fixes to the chain-build command
-- bug fixes in the XML-RPC and web interfaces
-
-* Tue Mar 20 2007 Jesse Keating <jkeating@redhat.com> - 0.9.7-1
-- Package up the needed ssl files
-
-* Tue Mar 20 2007 Jesse Keating <jkeating@redhat.com> - 0.9.6-1
-- 0.9.6 release, mostly ssl auth stuff
-- use named directories for config stuff
-- remove -3 requires on creatrepo, don't need that specific anymore
-
-* Tue Feb 20 2007 Jesse Keating <jkeating@redhat.com> - 0.9.5-8
-- Add Authors COPYING LGPL to the docs of the main package
-
-* Tue Feb 20 2007 Jesse Keating <jkeating@redhat.com> - 0.9.5-7
-- Move web files from /var/www to /usr/share
-- Use -p in install calls
-- Add rpm-python to requires for koji
-
-* Mon Feb 19 2007 Jesse Keating <jkeating@redhat.com> - 0.9.5-6
-- Clean up spec for package review
-
-* Sun Feb 04 2007 Mike McLean <mikem@redhat.com> - 0.9.5-1
-- project renamed to koji
