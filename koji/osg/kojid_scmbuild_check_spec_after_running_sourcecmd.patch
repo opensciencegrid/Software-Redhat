@@ -1,4 +1,4 @@
-From 138f7df6b17e3eae74b6770b2e9bc63e92ab270b Mon Sep 17 00:00:00 2001
+From 8821d166ace60f6c4802f440d65550ef517ee669 Mon Sep 17 00:00:00 2001
 From: Matyas Selmeci <matyas@cs.wisc.edu>
 Date: Fri, 15 Nov 2019 21:52:03 -0600
 Subject: [PATCH] kojid_scmbuild_check_spec_after_running_sourcecmd
@@ -9,10 +9,10 @@ Check that the spec file is present and valid _after_ using the source_cmd to fe
  1 file changed, 16 insertions(+), 10 deletions(-)
 
 diff --git a/builder/kojid b/builder/kojid
-index a2f509e..09af82b 100755
+index 3286250..b4c2104 100755
 --- a/builder/kojid
 +++ b/builder/kojid
-@@ -483,6 +483,17 @@ class BuildRoot(object):
+@@ -488,6 +488,17 @@ class BuildRoot(object):
          msg = '; see %s for more information' % logfile
          return parseStatus(rv, 'mock') + msg
  
@@ -30,7 +30,7 @@ index a2f509e..09af82b 100755
      def build_srpm(self, specfile, sourcedir, source_cmd):
          self.session.host.setBuildRootState(self.id,'BUILDING')
          alt_sources_dir = "%s/SOURCES" % sourcedir
-@@ -491,15 +502,7 @@ class BuildRoot(object):
+@@ -496,15 +507,7 @@ class BuildRoot(object):
          else:
              sources_dir = sourcedir
          if source_cmd:
@@ -47,7 +47,7 @@ index a2f509e..09af82b 100755
  
          args = ['--no-clean', '--buildsrpm', '--spec', specfile, '--sources', sources_dir,
                  '--target', 'noarch']
-@@ -4415,6 +4418,9 @@ class BuildSRPMFromSCMTask(BaseBuildTask):
+@@ -4460,6 +4463,9 @@ class BuildSRPMFromSCMTask(BaseBuildTask):
          # Hook for patching spec file in place
          self.patch_scm_source(sourcedir, logfile, opts)
  
@@ -57,7 +57,7 @@ index a2f509e..09af82b 100755
          # Find and verify that there is only one spec file.
          spec_files = glob.glob("%s/*.spec" % sourcedir)
          if not spec_files and self.options.support_rpm_source_layout:
-@@ -4431,7 +4437,7 @@ class BuildSRPMFromSCMTask(BaseBuildTask):
+@@ -4476,7 +4482,7 @@ class BuildSRPMFromSCMTask(BaseBuildTask):
  
          #build srpm
          self.logger.debug("Running srpm build")
