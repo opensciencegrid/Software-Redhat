@@ -1,4 +1,4 @@
-From e50d295d7cddb9d6ed9353ce8027218c1ca54380 Mon Sep 17 00:00:00 2001
+From 694cf254c5f747d9b7e6ec837235c106f169bbcd Mon Sep 17 00:00:00 2001
 From: Matyas Selmeci <matyas@cs.wisc.edu>
 Date: Tue, 30 Oct 2018 16:23:34 -0500
 Subject: [PATCH] kojira: accept 'sleeptime' option
