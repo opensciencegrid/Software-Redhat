@@ -1,4 +1,4 @@
-From 8821d166ace60f6c4802f440d65550ef517ee669 Mon Sep 17 00:00:00 2001
+From edf26772d450b7868a9b8a77de7bab7f47d9a2bf Mon Sep 17 00:00:00 2001
 From: Matyas Selmeci <matyas@cs.wisc.edu>
 Date: Fri, 15 Nov 2019 21:52:03 -0600
 Subject: [PATCH] kojid_scmbuild_check_spec_after_running_sourcecmd
@@ -9,7 +9,7 @@ Check that the spec file is present and valid _after_ using the source_cmd to fe
  1 file changed, 16 insertions(+), 10 deletions(-)
 
 diff --git a/builder/kojid b/builder/kojid
-index 3286250..b4c2104 100755
+index 890e6d6..781db75 100755
 --- a/builder/kojid
 +++ b/builder/kojid
 @@ -488,6 +488,17 @@ class BuildRoot(object):
@@ -47,7 +47,7 @@ index 3286250..b4c2104 100755
  
          args = ['--no-clean', '--buildsrpm', '--spec', specfile, '--sources', sources_dir,
                  '--target', 'noarch']
-@@ -4460,6 +4463,9 @@ class BuildSRPMFromSCMTask(BaseBuildTask):
+@@ -4519,6 +4522,9 @@ class BuildSRPMFromSCMTask(BaseBuildTask):
          # Hook for patching spec file in place
          self.patch_scm_source(sourcedir, logfile, opts)
  
@@ -57,7 +57,7 @@ index 3286250..b4c2104 100755
          # Find and verify that there is only one spec file.
          spec_files = glob.glob("%s/*.spec" % sourcedir)
          if not spec_files and self.options.support_rpm_source_layout:
-@@ -4476,7 +4482,7 @@ class BuildSRPMFromSCMTask(BaseBuildTask):
+@@ -4535,7 +4541,7 @@ class BuildSRPMFromSCMTask(BaseBuildTask):
  
          #build srpm
          self.logger.debug("Running srpm build")

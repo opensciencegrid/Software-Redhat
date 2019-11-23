@@ -1,4 +1,4 @@
-From e50d295d7cddb9d6ed9353ce8027218c1ca54380 Mon Sep 17 00:00:00 2001
+From c1b95586e7ed18c29fac1d6c0c46a837c62c54e3 Mon Sep 17 00:00:00 2001
 From: Matyas Selmeci <matyas@cs.wisc.edu>
 Date: Tue, 30 Oct 2018 16:23:34 -0500
 Subject: [PATCH] kojira: accept 'sleeptime' option
@@ -23,19 +23,19 @@ index 4a21332..462c846 100755
                      'cert', 'ca', 'serverca', 'debuginfo_tags', 'source_tags')  # FIXME: remove ca here
          bool_opts = ('with_src','verbose','debug','ignore_stray_repos', 'offline_retry',
 diff --git a/util/kojira.conf b/util/kojira.conf
-index fc8f4c0..dd35dd0 100644
+index fc8f4c0..7c00c3e 100644
 --- a/util/kojira.conf
 +++ b/util/kojira.conf
-@@ -39,6 +39,9 @@ with_src=no
- 
+@@ -40,6 +40,9 @@ with_src=no
  ;certificate of the CA that issued the HTTP server certificate
  ;serverca = /etc/kojira/serverca.crt
-++
-++;time to wait between repo checks (in seconds)
-++;sleeptime = 15
  
++;time to wait between repo checks (in seconds)
++;sleeptime = 15
++
  ;how soon (in seconds) to clean up expired repositories. 1 week default
  ;deleted_repo_lifetime = 604800
+ 
 -- 
 2.6.3
 

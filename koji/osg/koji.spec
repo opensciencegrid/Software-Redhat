@@ -1,6 +1,6 @@
 # Enable Python 3 builds for Fedora + EPEL >5
 # NOTE: do **NOT** change 'epel' to 'rhel' here, as this spec is also
-%if 0%{?fedora}
+%if 0%{?fedora} || 0%{?rhel} > 7
 %bcond_without python3
 # If the definition isn't available for python3_pkgversion, define it
 %{?!python3_pkgversion:%global python3_pkgversion 3}
@@ -25,13 +25,21 @@
 %endif
 
 Name: koji
-Version: 1.13.2
-Release: 1.2%{?dist}
+Version: 1.14.3
+Release: 1.1%{?dist}
 # koji.ssl libs (from plague) are GPLv2+
 License: LGPLv2 and GPLv2+
 Summary: Build system tools
-URL: https://pagure.io/koji/releases
-Source0: koji-%{name}-%{version}.tar.gz
+URL: https://pagure.io/koji/
+Source0: https://releases.pagure.org/koji/koji-%{version}.tar.bz2
+
+# Backported patches
+Patch0:   https://pagure.io/koji/pull-request/708.patch
+Patch1:   https://pagure.io/koji/c/5574ad7.patch
+Patch2:   https://pagure.io/koji/c/73ebc0c.patch
+Patch3:   https://pagure.io/koji/pull-request/735.patch
+
+# OSG patches
 Patch101: koji_passwd_cache.patch
 Patch102: kojid_setup_dns.patch
 Patch103: kojid_scmbuild_check_spec_after_running_sourcecmd.patch
@@ -241,7 +249,11 @@ Requires: python-krbV >= 1.0.13
 koji-web is a web UI to the Koji system.
 
 %prep
-%setup -q -n koji-%{name}-%{version}
+%setup -q
+%patch0 -p1
+%patch1 -p1
+%patch2 -p1
+%patch3 -p1
 %patch101 -p1
 %patch102 -p1
 %patch103 -p1
@@ -441,6 +453,22 @@ fi
 %endif
 
 %changelog
+* Fri Nov 22 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.14.3-1.1.osg
+- Update based on Fedora's 1.14.0-4 spec file and upstream's 1.14.3 tarball.
+  Fedora's changelog:
+    * Mon Jan 22 2018 Troy Dawson <tdawson@redhat.com> - 1.14.0-4
+    - Update conditional
+
+    * Thu Dec 07 2017 Patrick Uiterwijk <patrick@puiterwijk.org> - 1.14.0-3
+    - Backport py3 runroot encoding patch (PR#735)
+
+    * Mon Dec 04 2017 Patrick Uiterwijk <patrick@puiterwijk.org> - 1.14.0-2
+    - Backport py3 keytab patch (PR#708)
+    - Backport patches for exit code (issue#696)
+
+    * Tue Sep 26 2017 Dennis Gilmore <dennis@ausil.us> - 1.14.0-1
+    - update to upstream 1.14.0
+
 * Fri Nov 22 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.13.2-1.1.osg
 - Update based on Fedora's spec file and upstream's 1.13.2 tarball.
   Fedora's changelog:

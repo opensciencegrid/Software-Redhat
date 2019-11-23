@@ -1,4 +1,4 @@
-From 5f565a0cec5355e7983c761e7cb5411de025cf68 Mon Sep 17 00:00:00 2001
+From db872e9c26c5d31935d62547963c417fb67ff0b9 Mon Sep 17 00:00:00 2001
 From: Matyas Selmeci <matyas@cs.wisc.edu>
 Date: Fri, 15 Nov 2019 21:16:33 -0600
 Subject: [PATCH] koji_passwd_retry
