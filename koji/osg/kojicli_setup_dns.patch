@@ -1,22 +1,22 @@
-From ed6f92f0577ab4a43a62a0ca46860e4800cc9620 Mon Sep 17 00:00:00 2001
+From ae559912b6a880f4abaff3928d313f4abd812b9b Mon Sep 17 00:00:00 2001
 From: Matyas Selmeci <matyas@cs.wisc.edu>
-Date: Thu, 8 Sep 2016 11:21:10 -0500
+Date: Fri, 22 Nov 2019 16:12:24 -0600
 Subject: [PATCH] kojicli_setup_dns
 
 Request that DNS be set up in the mock config requested by the koji cli.
 ---
- cli/koji | 1 +
+ cli/koji_cli/commands.py | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/cli/koji b/cli/koji
-index 7a906fe..54d6b89 100755
---- a/cli/koji
-+++ b/cli/koji
-@@ -1402,6 +1402,7 @@ def anon_handle_mock_config(options, session, args):
+diff --git a/cli/koji_cli/commands.py b/cli/koji_cli/commands.py
+index 02d7684..b712b42 100644
+--- a/cli/koji_cli/commands.py
++++ b/cli/koji_cli/commands.py
+@@ -872,6 +872,7 @@ def anon_handle_mock_config(goptions, session, args):
              parser.error(_("Name already specified via option"))
      arch = None
      opts = {}
-+    opts['use_host_resolv'] = True # for OSG
++    opts['use_host_resolv'] = True  # for OSG
      for k in ('topdir', 'topurl', 'distribution', 'mockdir', 'yum_proxy'):
          if hasattr(options, k):
              opts[k] = getattr(options, k)
