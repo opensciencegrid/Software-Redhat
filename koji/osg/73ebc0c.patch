@@ -1,0 +1,27 @@
+From 73ebc0c98fb7766f2ddddc41f0a2ab662ba5c467 Mon Sep 17 00:00:00 2001
+From: Yuming Zhu <yzhu@redhat.com>
+Date: Nov 22 2017 05:24:24 +0000
+Subject: cli: make return code of watch_task to always ignore sub-task failure
+
+
+fixes: #696
+
+---
+
+diff --git a/cli/koji_cli/lib.py b/cli/koji_cli/lib.py
+index 4135308..e7aa686 100644
+--- a/cli/koji_cli/lib.py
++++ b/cli/koji_cli/lib.py
+@@ -218,9 +218,11 @@ class TaskWatcher(object):
+         state = koji.TASK_STATES[self.info['state']]
+         return (state in ['CLOSED','CANCELED','FAILED'])
+ 
+-    def is_success(self):
++    def is_success(self, ignore_child=True):
+         if self.info is None:
+             return False
++        if ignore_child and self.level != 0:
++            return True
+         state = koji.TASK_STATES[self.info['state']]
+         return (state == 'CLOSED')
+ 

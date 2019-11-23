@@ -1,0 +1,38 @@
+From 5574ad78171c9e9e56f9c565aeb95bd8c6f2d107 Mon Sep 17 00:00:00 2001
+From: Mike McLean <mikem@redhat.com>
+Date: Nov 22 2017 05:24:28 +0000
+Subject: PR#703: cli: make return code of watch_task to always ignore sub-task failure
+
+
+Merges #703
+https://pagure.io/koji/pull-request/703
+
+Fixes: #696
+https://pagure.io/koji/issue/696
+koji 1.14.0 returns exit status 1 on jobs with only optional failures
+
+---
+
+diff --git a/cli/koji_cli/lib.py b/cli/koji_cli/lib.py
+index 4135308..761dff2 100644
+--- a/cli/koji_cli/lib.py
++++ b/cli/koji_cli/lib.py
+@@ -285,7 +285,7 @@ def watch_tasks(session, tasklist, quiet=False, poll_interval=60):
+     try:
+         tasks = {}
+         for task_id in tasklist:
+-            tasks[task_id] = TaskWatcher(task_id,session,quiet=quiet)
++            tasks[task_id] = TaskWatcher(task_id, session, quiet=quiet)
+         while True:
+             all_done = True
+             for task_id, task in list(tasks.items()):
+@@ -297,7 +297,7 @@ def watch_tasks(session, tasklist, quiet=False, poll_interval=60):
+                         # task is done and state just changed
+                         if not quiet:
+                             display_tasklist_status(tasks)
+-                    if not task.is_success():
++                    if task.level == 0 and not task.is_success():
+                         rv = 1
+                 for child in session.getTaskChildren(task_id):
+                     child_id = child['id']
+
