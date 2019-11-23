@@ -1,4 +1,4 @@
-From 0ab5ccc559fa3b04b6136d3f2be56060ce410a95 Mon Sep 17 00:00:00 2001
+From e55d9f886497b133d04128cb166731c94d1603a1 Mon Sep 17 00:00:00 2001
 From: Matyas Selmeci <matyas@cs.wisc.edu>
 Date: Thu, 8 Sep 2016 11:28:33 -0500
 Subject: [PATCH] kojid_setup_dns
@@ -8,10 +8,10 @@ Subject: [PATCH] kojid_setup_dns
  1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/builder/kojid b/builder/kojid
-index 6f3837a..a2f509e 100755
+index f34bff6..3286250 100755
 --- a/builder/kojid
 +++ b/builder/kojid
-@@ -1165,7 +1165,8 @@ class BuildArchTask(BaseBuildTask):
+@@ -1170,7 +1170,8 @@ class BuildArchTask(BaseBuildTask):
          self.updateWeight(name)
  
          rootopts = {
