@@ -1,6 +1,6 @@
 Name:      osg-version
 Summary:   OSG Version
-Version:   3.4.39
+Version:   3.4.40
 Release:   1%{?dist}
 License:   Apache 2.0
 URL:       http://www.opensciencegrid.org
@@ -29,6 +29,9 @@ install -pm 755 %{SOURCE0}  $RPM_BUILD_ROOT%{_bindir}/
 %{_bindir}/osg-version
 
 %changelog
+* Mon Nov 25 2019 Tim Theisen <tim@cs.wisc.edu> 3.4.40-1
+- Updated to 3.4.40-1
+
 * Thu Nov 14 2019 Tim Theisen <tim@cs.wisc.edu> 3.4.39-1
 - Updated to 3.4.39-1
 
