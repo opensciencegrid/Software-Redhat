@@ -70,13 +70,13 @@ bad         = "lcmaps_dummy_bad.mod"
 authorize_only:
 
 ## Policy 1: grid-mapfile
-gridmapfile -> good | bad
+#gridmapfile -> good | bad
 
 ## Policy 2: voms-mapfiles with banfiles, proxy verification and grid-mapfile
-#verifyproxynokey -> banfile
-#banfile -> banvomsfile | bad
-#banvomsfile -> gridmapfile | bad
-#gridmapfile -> good | vomsmapfile
-#vomsmapfile -> good | defaultmapfile
-#defaultmapfile -> good | bad
+verifyproxynokey -> banfile
+banfile -> banvomsfile | bad
+banvomsfile -> gridmapfile | bad
+gridmapfile -> good | vomsmapfile
+vomsmapfile -> good | defaultmapfile
+defaultmapfile -> good | bad
 
