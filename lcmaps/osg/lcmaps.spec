@@ -18,7 +18,7 @@
 Summary: Grid (X.509) and VOMS credentials to local account mapping service
 Name: lcmaps
 Version: 1.6.6
-Release: 1.9%{?dist}
+Release: 1.11%{?dist}
 License: ASL 2.0
 URL: http://wiki.nikhef.nl/grid/LCMAPS
 Source0: http://software.nikhef.nl/security/lcmaps/lcmaps-%{version}.tar.gz
@@ -316,6 +316,9 @@ cp %{SOURCE4} %{SOURCE5} %{SOURCE6} %{SOURCE7} ${RPM_BUILD_ROOT}%{_datadir}/lcma
 
 
 %changelog
+* Wed Nov 27 2019 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6.6-1.11
+- Use vomsmap auth as default
+
 * Thu Dec 07 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6.6-1.9
 - Drop EL5 support
 
