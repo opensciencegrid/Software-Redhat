@@ -315,7 +315,7 @@ cp %{SOURCE4} %{SOURCE6} %{SOURCE7} ${RPM_BUILD_ROOT}%{_datadir}/lcmaps/template
 
 %changelog
 * Wed Nov 27 2019 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6.6-1.11
-- Use vomsmap auth as default
+- Use vomsmap auth as default (SOFTWARE-3927)
 
 * Mon Aug 12 2019 Diego Davila <didavila@ucsd.edu> 1.6.6-1.10
 - Drop GUMS/gLexec support (SOFTWARE-3776)
