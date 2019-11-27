@@ -317,7 +317,7 @@ cp %{SOURCE4} %{SOURCE5} %{SOURCE6} %{SOURCE7} ${RPM_BUILD_ROOT}%{_datadir}/lcma
 
 %changelog
 * Wed Nov 27 2019 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6.6-1.11
-- Use vomsmap auth as default
+- Use vomsmap auth as default (SOFTWARE-3927)
 
 * Thu Dec 07 2017 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6.6-1.9
 - Drop EL5 support
