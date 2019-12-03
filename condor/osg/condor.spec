@@ -128,7 +128,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1
+%define condor_base_release 1.1
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -2152,6 +2152,9 @@ fi
 %endif
 
 %changelog
+* Tue Dec 03 2019 Carl Edquist <edquist@cs.wisc.edu> - 8.8.6-1.1
+- Remove UBUNTU14 from bosco patch (SOFTWARE-3890)
+
 * Wed Nov 13 2019 Tim Theisen <tim@cs.wisc.edu> - 8.8.6-1
 - Initial support for CentOS 8
 - Fixed a memory leak in SSL authentication
