@@ -40,7 +40,7 @@ index bf6267819e..c8f64f1bc4 100755
 +  OSX: "https://research.cs.wisc.edu/htcondor/bosco/1.3/bosco-1.3-x86_64_MacOSX.tar.gz",
 +  RH6: "https://research.cs.wisc.edu/htcondor/bosco/1.3/bosco-1.3-x86_64_RedHat6.tar.gz",
 +  RH7: "https://research.cs.wisc.edu/htcondor/bosco/1.3/bosco-1.3-x86_64_RedHat7.tar.gz",
-+  UBUNTU14: "https://research.cs.wisc.edu/htcondor/bosco/1.3/bosco-1.3-x86_64_Ubuntu14.tar.gz",
++  # UBUNTU14: "https://research.cs.wisc.edu/htcondor/bosco/1.3/bosco-1.3-x86_64_Ubuntu14.tar.gz",
 +  UBUNTU16: "https://research.cs.wisc.edu/htcondor/bosco/1.3/bosco-1.3-x86_64_Ubuntu16.tar.gz",
 +  UBUNTU18: "https://research.cs.wisc.edu/htcondor/bosco/1.3/bosco-1.3-x86_64_Ubuntu18.tar.gz",
  }
