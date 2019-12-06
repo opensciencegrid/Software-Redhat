@@ -834,7 +834,6 @@ cmake \
        -DPACKAGEID:STRING=%{version}-%{condor_release} \
        -DUW_BUILD:BOOL=TRUE \
        -DCONDOR_RPMBUILD:BOOL=TRUE \
-       -DWITH_SCITOKENS:BOOL=TRUE \
 %if %bundle_uw_externals
        -DEXTERNALS_SOURCE_URL:STRING="$RPM_SOURCE_DIR" \
 %endif
@@ -871,7 +870,6 @@ cmake \
 %else
 
 %cmake -DBUILD_TESTING:BOOL=FALSE \
-       -DWITH_SCITOKENS:BOOL=TRUE \
 %if %bundle_uw_externals
        -DEXTERNALS_SOURCE_URL:STRING="$RPM_SOURCE_DIR" \
 %endif
@@ -1338,7 +1336,6 @@ rm -rf %{buildroot}
 %_libexecdir/condor/condor_gangliad
 %_libexecdir/condor/panda-plugin.so
 %_libexecdir/condor/pandad
-%_libexecdir/condor/libcollector_python_plugin.so
 %_mandir/man1/condor_advertise.1.gz
 %_mandir/man1/condor_annex.1.gz
 %_mandir/man1/condor_check_userlogs.1.gz
