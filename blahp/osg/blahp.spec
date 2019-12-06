@@ -5,7 +5,7 @@
 
 Name:		blahp
 Version:	1.18.45
-Release:	1%{?gitrev:.%{gitrev}}%{?dist}
+Release:	1.1%{?gitrev:.%{gitrev}}%{?dist}
 Summary:	gLite BLAHP daemon
 
 Group:		System/Libraries
@@ -111,6 +111,9 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Fri Dec 06 2019 Carl Edquist <edquist@cs.wisc.edu> - 1.18.45-1.1
+- Rebuild against condor 8.9.5 (SOFTWARE-3929)
+
 * Tue Oct 15 2019 Carl Edquist <edquist@cs.wisc.edu> - 1.18.45
 - Fix cherry-picking error from htcondor patch in 1.18.44 (SOFTWARE-3824)
 
