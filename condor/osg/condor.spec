@@ -1,4 +1,4 @@
-%define tarball_version 8.9.4
+%define tarball_version 8.9.5
 
 # optionally define any of these, here or externally
 # % define fedora   16
@@ -93,7 +93,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1
+%define condor_base_release 0.491068
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -823,7 +823,7 @@ export CMAKE_PREFIX_PATH=/usr
 # causes build issues with EL5, don't even bother building the tests.
 
 %if %uw_build
-%define condor_build_id 489751
+%define condor_build_id 491068
 
 cmake \
        -DBUILDID:STRING=%condor_build_id \
@@ -1060,6 +1060,7 @@ rm -f %{buildroot}/%{_mandir}/man1/condor_glidein.1
 # Remove condor_top with no python bindings
 %if ! %python
 rm -f %{buildroot}/%{_bindir}/condor_top
+rm -f %{buildroot}/%{_bindir}/classad_eval
 %endif
 
 # Remove junk
@@ -1205,11 +1206,13 @@ install -p -m 0644 %{SOURCE7} %{buildroot}%{_sysconfdir}/condor/config.d/00-rest
 populate %{_libdir}/condor %{buildroot}/%{_libdir}/libdrmaa.so
 populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/condor/libglobus*.so*
 populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/condor/libvomsapi*.so*
+populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/condor/libSciTokens.so*
 populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/libcondordrmaa.a
 # these probably belong elsewhere
 populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/ugahp.jar
 %endif
 
+populate %{_libdir}/condor %{buildroot}/%{_libdir}/libgetpwnam.so
 
 %clean
 rm -rf %{buildroot}
@@ -1259,7 +1262,7 @@ rm -rf %{buildroot}
 %_libdir/libchirp_client.so
 %_libdir/libcondor_utils_%{version_}.so
 %_libdir/libcondorapi.so
-%_libdir/libgetpwnam.so
+%_libdir/condor/libgetpwnam.so
 %dir %_libexecdir/condor/
 %_libexecdir/condor/linux_kernel_tuning
 %_libexecdir/condor/accountant_log_fixer
@@ -1591,7 +1594,7 @@ rm -rf %{buildroot}
 %_includedir/classad/classad.h
 %_includedir/classad/classadItor.h
 %_includedir/classad/classadCache.h
-%_includedir/classad/classad_stl.h
+%_includedir/classad/classad_containers.h
 %_includedir/classad/collectionBase.h
 %_includedir/classad/collection.h
 %_includedir/classad/common.h
@@ -1643,6 +1646,7 @@ rm -rf %{buildroot}
 %files -n python2-condor
 %defattr(-,root,root,-)
 %_bindir/condor_top
+%_bindir/classad_eval
 %_libdir/libpyclassad2*.so
 %_libexecdir/condor/libclassad_python_user.so
 %_libexecdir/condor/libcollector_python_plugin.so
@@ -1656,6 +1660,7 @@ rm -rf %{buildroot}
 %files -n python3-condor
 %defattr(-,root,root,-)
 %_bindir/condor_top
+%_bindir/classad_eval
 %_libdir/libpyclassad3*.so
 %_libexecdir/condor/libclassad_python_user.cpython-3*.so
 %_libexecdir/condor/libcollector_python_plugin.cpython-3*.so
@@ -1718,6 +1723,7 @@ rm -rf %{buildroot}
 %_libdir/condor/libdrmaa.so
 %_libdir/condor/libglobus*.so*
 %_libdir/condor/libvomsapi*.so*
+%_libdir/condor/libSciTokens.so*
 %_libdir/condor/ugahp.jar
 
 %files externals
