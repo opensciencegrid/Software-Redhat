@@ -64,6 +64,10 @@
 %endif
 %endif
 
+%if 0%{?osg} && 0%{?rhel} == 7
+%define cream 0
+%endif
+
 # cream support is going away, skip for EL8
 %if 0%{?rhel} >= 8
 %define cream 0
