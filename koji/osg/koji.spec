@@ -26,7 +26,7 @@
 
 Name: koji
 Version: 1.15.3
-Release: 1.1%{?dist}
+Release: 1.2%{?dist}
 # koji.ssl libs (from plague) are GPLv2+
 License: LGPLv2 and GPLv2+
 Summary: Build system tools
@@ -50,6 +50,7 @@ Patch112: Fix-type-in-add-group-pkg.patch
 Patch113: kojira-accept-sleeptime-option.patch
 Patch114: 1635-os_path_join.patch
 Patch115: Don-t-warn-on-use_old_ssl-OSG-still-relies-on-it.patch
+Patch116: Don-t-warn-on-compatrequests.patch
 
 
 BuildArch: noarch
@@ -266,6 +267,7 @@ koji-web is a web UI to the Koji system.
 %patch113 -p1
 %patch114 -p1
 %patch115 -p1
+%patch116 -p1
 
 %build
 
@@ -455,7 +457,7 @@ fi
 %endif
 
 %changelog
-* Fri Dec 06 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.15.3-1.1.osg
+* Fri Dec 06 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.15.3-1.2.osg
 - Update based on Fedora's 1.15.1-3 spec file and upstream's 1.15.3 tarball.
   Fedora's changelog:
     * Fri Jul 13 2018 Fedora Release Engineering <releng@fedoraproject.org> - 1.15.1-3
