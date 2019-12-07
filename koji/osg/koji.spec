@@ -49,6 +49,7 @@ Patch106: kojicli_setup_dns.patch
 Patch112: Fix-type-in-add-group-pkg.patch
 Patch113: kojira-accept-sleeptime-option.patch
 Patch114: 1635-os_path_join.patch
+Patch115: Don-t-warn-on-use_old_ssl-OSG-still-relies-on-it.patch
 
 
 BuildArch: noarch
@@ -264,6 +265,7 @@ koji-web is a web UI to the Koji system.
 %patch112 -p1
 %patch113 -p1
 %patch114 -p1
+%patch115 -p1
 
 %build
 
