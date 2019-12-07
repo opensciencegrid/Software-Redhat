@@ -25,8 +25,8 @@
 %endif
 
 Name: koji
-Version: 1.14.3
-Release: 1.2%{?dist}
+Version: 1.15.3
+Release: 1.1%{?dist}
 # koji.ssl libs (from plague) are GPLv2+
 License: LGPLv2 and GPLv2+
 Summary: Build system tools
@@ -34,10 +34,10 @@ URL: https://pagure.io/koji/
 Source0: https://releases.pagure.org/koji/koji-%{version}.tar.bz2
 
 # Backported patches
-Patch0:   https://pagure.io/koji/pull-request/708.patch
-Patch1:   https://pagure.io/koji/c/5574ad7.patch
-Patch2:   https://pagure.io/koji/c/73ebc0c.patch
-Patch3:   https://pagure.io/koji/pull-request/735.patch
+Patch0:   https://pagure.io/koji/c/73ebc0c.patch
+Patch1:   https://pagure.io/koji/pull-request/735.patch
+Patch2:   https://pagure.io/koji/pull-request/794.patch
+Patch3:   https://pagure.io/koji/pull-request/841.patch
 
 # OSG patches
 Patch101: koji_passwd_cache.patch
@@ -146,7 +146,7 @@ License: LGPLv2 and GPLv2
 Requires: httpd
 Requires: mod_wsgi
 Requires: python-psycopg2
-Requires: %{name} = %{version}-%{release}
+Requires: python2-%{name} = %{version}-%{release}
 
 %description hub
 koji-hub is the XMLRPC interface to the koji database
@@ -154,7 +154,6 @@ koji-hub is the XMLRPC interface to the koji database
 %package hub-plugins
 Summary: Koji hub plugins
 License: LGPLv2
-Requires: %{name} = %{version}-%{release}
 Requires: %{name}-hub = %{version}-%{release}
 Requires: python-qpid >= 0.7
 Requires: python-qpid-proton
@@ -167,7 +166,7 @@ Plugins to the koji XMLRPC interface
 Summary: Koji RPM builder daemon
 License: LGPLv2 and GPLv2+
 #mergerepos (from createrepo) is GPLv2+
-Requires: %{name} = %{version}-%{release}
+Requires: python2-%{name} = %{version}-%{release}
 Requires: mock >= 0.9.14
 Requires(pre): /usr/sbin/useradd
 Requires: squashfs-tools
@@ -195,7 +194,7 @@ tasks that come through the Koji system.
 %package vm
 Summary: Koji virtual machine management daemon
 License: LGPLv2
-Requires: %{name} = %{version}-%{release}
+Requires: python2-%{name} = %{version}-%{release}
 %if %{use_systemd}
 Requires(post): systemd
 Requires(preun): systemd
@@ -219,7 +218,7 @@ virtual machine. This package is not required for most installations.
 Summary: Koji Utilities
 License: LGPLv2
 Requires: python-psycopg2
-Requires: %{name} = %{version}-%{release}
+Requires: python2-%{name} = %{version}-%{release}
 %if %{use_systemd}
 Requires(post): systemd
 Requires(preun): systemd
@@ -242,7 +241,7 @@ Requires: mod_auth_kerb
 %endif
 Requires: python-psycopg2
 Requires: python-cheetah
-Requires: %{name} = %{version}-%{release}
+Requires: python2-%{name} = %{version}-%{release}
 Requires: python-krbV >= 1.0.13
 
 %description web
@@ -254,6 +253,8 @@ koji-web is a web UI to the Koji system.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+
+# OSG patches
 %patch101 -p1
 %patch102 -p1
 %patch103 -p1
@@ -279,7 +280,6 @@ make DESTDIR=$RPM_BUILD_ROOT PYTHON=python3 %{?install_opt} install
 sed -i 's/\#\!\/usr\/bin\/python/\#\!\/usr\/bin\/python3/' $RPM_BUILD_ROOT/usr/bin/koji
 %endif
 
-
 %files
 %{_bindir}/*
 %config(noreplace) /etc/koji.conf
@@ -299,15 +299,15 @@ sed -i 's/\#\!\/usr\/bin\/python/\#\!\/usr\/bin\/python3/' $RPM_BUILD_ROOT/usr/b
 %files -n python2-%{name}-cli-plugins
 %{python2_sitelib}/koji_cli_plugins
 # we don't have config files for default plugins yet
-#%%dir %{_sysconfdir}/koji/plugins
-#%%config(noreplace) %{_sysconfdir}/koji/plugins/*.conf
+#%%dir %%{_sysconfdir}/koji/plugins
+#%%config(noreplace) %%{_sysconfdir}/koji/plugins/*.conf
 
 %if 0%{with python3}
 %files -n python%{python3_pkgversion}-%{name}-cli-plugins
 %{python3_sitelib}/koji_cli_plugins
 # we don't have config files for default plugins yet
-#%%dir %{_sysconfdir}/koji/plugins
-#%%config(noreplace) %{_sysconfdir}/koji/plugins/*.conf
+#%%dir %%{_sysconfdir}/koji/plugins
+#%%config(noreplace) %%{_sysconfdir}/koji/plugins/*.conf
 %endif
 
 %files hub
@@ -396,7 +396,7 @@ fi
 
 %files vm
 %{_sbindir}/kojivmd
-#dir %{_datadir}/kojivmd
+#dir %%{_datadir}/kojivmd
 %{_datadir}/kojivmd/kojikamid
 %if %{use_systemd}
 %{_unitdir}/kojivmd.service
@@ -453,6 +453,41 @@ fi
 %endif
 
 %changelog
+* Fri Dec 06 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.15.3-1.1.osg
+- Update based on Fedora's 1.15.1-3 spec file and upstream's 1.15.3 tarball.
+  Fedora's changelog:
+    * Fri Jul 13 2018 Fedora Release Engineering <releng@fedoraproject.org> - 1.15.1-3
+    - Rebuilt for https://fedoraproject.org/wiki/Fedora_29_Mass_Rebuild
+
+    * Mon Jun 18 2018 Miro Hrončok <mhroncok@redhat.com> - 1.15.1-2
+    - Rebuilt for Python 3.7
+
+    * Tue Apr 03 2018 Patrick Uiterwijk <puiterwijk@redhat.com> - 1.15.1-1
+    - Rebase to 1.15.1
+    - Fixes CVE-2018-1002150
+
+    * Fri Mar 16 2018 Kevin Fenzi <kevin@scrye.com> - 1.15.0-7
+    - Backport PR #841 to allow configurable timeout for oz
+
+    * Tue Feb 20 2018 Patrick Uiterwijk <patrick@puiterwijk.org> - 1.15.0-6
+    - Backport PR #796
+
+    * Sun Feb 18 2018 Patrick Uiterwijk <patrick@puiterwijk.org> - 1.15.0-5
+    - Add  workaround patch for bug #808
+
+    * Fri Feb 16 2018 Patrick Uiterwijk <patrick@puiterwijk.org> - 1.15.0-4
+    - Backport patch from PR#794
+    - Fix macro escaping in comments
+
+    * Mon Feb 12 2018 Owen Taylor <otaylor@redhat.com> - 1.15.0-3
+    - Make hub, builder, etc, require python2-koji not koji
+
+    * Wed Feb 07 2018 Fedora Release Engineering <releng@fedoraproject.org> - 1.15.0-2
+    - Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
+
+    * Sat Jan 27 2018 Patrick Uiterwijk <patrick@puiterwijk.org> - 1.15.0-1
+    - Rebase to koji 1.15.0
+
 * Fri Nov 22 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.14.3-1.2.osg
 - Update based on Fedora's 1.14.0-4 spec file and upstream's 1.14.3 tarball.
   Fedora's changelog:
