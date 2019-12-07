@@ -1,0 +1,25 @@
+From ba0c7df6ab59e1aff5556998515e3354fbe8fa76 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Fri, 6 Dec 2019 20:54:00 -0600
+Subject: [PATCH] Don't warn on compatrequests
+
+---
+ koji/compatrequests.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/koji/compatrequests.py b/koji/compatrequests.py
+index 2bd89ac..e298b56 100644
+--- a/koji/compatrequests.py
++++ b/koji/compatrequests.py
+@@ -23,7 +23,7 @@ class Session(object):
+ 
+     def __init__(self):
+         self.connection = None
+-        warn('koji: compatrequests is deprecated', DeprecationWarning)
++        #warn('koji: compatrequests is deprecated', DeprecationWarning)
+ 
+     def post(self, url, data=None, headers=None, stream=None, verify=None,
+                 cert=None, timeout=None):
+-- 
+2.6.3
+

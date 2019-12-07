@@ -1,4 +1,4 @@
-From 49c1871e9d5e235254b951411f36f143c55098e8 Mon Sep 17 00:00:00 2001
+From 60df8f5645a4330e66e13c17e1dedf3e19299d7d Mon Sep 17 00:00:00 2001
 From: Matyas Selmeci <matyas@cs.wisc.edu>
 Date: Fri, 15 Nov 2019 21:19:10 -0600
 Subject: [PATCH] koji_proxy_cert
