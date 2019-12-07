@@ -1,4 +1,4 @@
-From a8bc96c010a5826329b8dffd4acfa5afccdcef3a Mon Sep 17 00:00:00 2001
+From b109e91c65393a2634efd05782374973bcdcad22 Mon Sep 17 00:00:00 2001
 From: Matyas Selmeci <matyas@cs.wisc.edu>
 Date: Wed, 23 Aug 2017 10:58:17 -0500
 Subject: [PATCH] Fix 'type' in 'add-group-pkg'
@@ -8,10 +8,10 @@ Subject: [PATCH] Fix 'type' in 'add-group-pkg'
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/hub/kojihub.py b/hub/kojihub.py
-index cc4b534..0b222c9 100644
+index 0cb2258..284acb6 100644
 --- a/hub/kojihub.py
 +++ b/hub/kojihub.py
-@@ -1738,7 +1738,7 @@ def _grp_pkg_add(taginfo, grpinfo, pkg_name, block, force, **opts):
+@@ -1739,7 +1739,7 @@ def _grp_pkg_add(taginfo, grpinfo, pkg_name, block, force, **opts):
          if not changed and not force:
              #no point in adding it again with the same data (unless force is on)
              return

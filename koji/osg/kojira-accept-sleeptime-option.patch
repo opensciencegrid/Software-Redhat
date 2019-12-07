@@ -1,4 +1,4 @@
-From c1b95586e7ed18c29fac1d6c0c46a837c62c54e3 Mon Sep 17 00:00:00 2001
+From 75ed47546005472dfb70d880d78f3f6898dda0ee Mon Sep 17 00:00:00 2001
 From: Matyas Selmeci <matyas@cs.wisc.edu>
 Date: Tue, 30 Oct 2018 16:23:34 -0500
 Subject: [PATCH] kojira: accept 'sleeptime' option
@@ -9,10 +9,10 @@ Subject: [PATCH] kojira: accept 'sleeptime' option
  2 files changed, 5 insertions(+), 1 deletion(-)
 
 diff --git a/util/kojira b/util/kojira
-index 4a21332..462c846 100755
+index ba8d6fd..3ebe9c0 100755
 --- a/util/kojira
 +++ b/util/kojira
-@@ -755,7 +755,8 @@ def get_options():
+@@ -763,7 +763,8 @@ def get_options():
          int_opts = ('deleted_repo_lifetime', 'max_repo_tasks', 'repo_tasks_limit',
                      'retry_interval', 'max_retries', 'offline_retry_interval',
                      'max_delete_processes', 'max_repo_tasks_maven',
