@@ -1,15 +1,19 @@
 Name:      osg-gridftp
 Summary:   Standalone OSG GridFTP with LCMAPS VOMS support
 Version:   3.5
-Release:   3%{?dist}
+Release:   4%{?dist}
 License:   Apache 2.0
 URL:       http://www.opensciencegrid.org
 
 
 Source1: udt-%{name}.conf
+Source2: ipv6.conf
+Source3: logging.conf
+Source4: timeout.conf
+Source5: globus-gridftp-server.logrotate
 
 Requires: osg-system-profiler
-Requires: globus-gridftp-server-progs
+Requires: globus-gridftp-server-progs >= 13.20
 Requires: vo-client
 Requires: vo-client-lcmaps-voms
 Requires: grid-certificates >= 7
@@ -18,6 +22,7 @@ Requires: fetch-crl
 Requires: osg-configure-misc
 Requires: osg-configure-gratia
 Requires: globus-xio-udt-driver
+%{systemd_requires}
 
 Requires: liblcas_lcmaps_gt4_mapping.so.0()(64bit)
 
@@ -59,9 +64,18 @@ HDFS and GUMS support.
 %install
 mkdir -p %{buildroot}%{_sysconfdir}/gridftp.d
 install -m 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/gridftp.d/
+install -m 644 %{SOURCE2} %{buildroot}%{_sysconfdir}/gridftp.d/
+install -m 644 %{SOURCE3} %{buildroot}%{_sysconfdir}/gridftp.d/
+install -m 644 %{SOURCE4} %{buildroot}%{_sysconfdir}/gridftp.d/
+mkdir -p %{buildroot}%{_sysconfdir}/logrotate.d/
+install -m 644 %{SOURCE5} %{buildroot}%{_sysconfdir}/logrotate.d/
 
 %files
 %config(noreplace) %{_sysconfdir}/gridftp.d/udt-%{name}.conf
+%config(noreplace) %{_sysconfdir}/gridftp.d/ipv6.conf
+%config(noreplace) %{_sysconfdir}/gridftp.d/logging.conf
+%config(noreplace) %{_sysconfdir}/gridftp.d/timeout.conf
+%config(noreplace) %{_sysconfdir}/logrotate.d/globus-gridftp-server.logrotate
 
 %files xrootd
 # This section intentionally left blank
@@ -70,6 +84,9 @@ install -m 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/gridftp.d/
 # This section intentionally left blank
 
 %changelog
+* Mon Dec 09 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.5-4
+- Add configs from OSG modifications of globus-gridftp-server (SOFTWARE-2996)
+
 * Fri Aug 16 2019 Brian Lin <blin@cs.wisc.edu> - 3.5-3
 - Add HDFS sub-package
 
