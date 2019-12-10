@@ -6,7 +6,7 @@ License:   Apache 2.0
 URL:       http://www.opensciencegrid.org
 
 
-Source1: udt-%{name}.conf
+Source1: udt-osg-gridftp.conf
 # Add IPv6 enabled by default (SOFTWARE-2920)
 Source2: ipv6.conf
 Source3: logging.conf
@@ -116,7 +116,7 @@ fi
 
 
 %files
-%config(noreplace) %{_sysconfdir}/gridftp.d/udt-%{name}.conf
+%config(noreplace) %{_sysconfdir}/gridftp.d/udt-osg-gridftp.conf
 %config(noreplace) %{_sysconfdir}/gridftp.d/ipv6.conf
 %config(noreplace) %{_sysconfdir}/gridftp.d/logging.conf
 %config(noreplace) %{_sysconfdir}/gridftp.d/timeout.conf
