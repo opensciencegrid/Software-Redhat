@@ -1,7 +1,7 @@
 Summary: OSG configuration files for XRootD
 Name: osg-xrootd
 Version: 3.4
-Release: 5%{?dist}
+Release: 6%{?dist}
 License: ASL 2.0
 BuildArch: noarch
 
@@ -72,7 +72,7 @@ if [ ! -e /etc/xrootd/macaroon-secret ]; then
 fi
 
 %changelog
-* Mon Dec 10 2019 Edgar Fajardo <emfajard@ucsd.edu> 3.4-5
+* Mon Dec 10 2019 Edgar Fajardo <emfajard@ucsd.edu> 3.4-6
 - Create a macaroon secret if non existent (SOFTWARE-3931)
 
 * Mon Oct 21 2019 Carl Edquist <edquist@cs.wisc.edu> - 3.4-4
