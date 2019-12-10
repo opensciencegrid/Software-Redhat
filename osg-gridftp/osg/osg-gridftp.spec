@@ -74,25 +74,25 @@ HDFS and GUMS support.
 
 %install
 mkdir -p %{buildroot}%{_sysconfdir}/gridftp.d
-install -m 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/gridftp.d/
-install -m 644 %{SOURCE2} %{buildroot}%{_sysconfdir}/gridftp.d/
-install -m 644 %{SOURCE3} %{buildroot}%{_sysconfdir}/gridftp.d/
-install -m 644 %{SOURCE4} %{buildroot}%{_sysconfdir}/gridftp.d/
+install -m 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/gridftp.d/udt-osg-gridftp.conf
+install -m 644 %{SOURCE2} %{buildroot}%{_sysconfdir}/gridftp.d/ipv6.conf
+install -m 644 %{SOURCE3} %{buildroot}%{_sysconfdir}/gridftp.d/logging.conf
+install -m 644 %{SOURCE4} %{buildroot}%{_sysconfdir}/gridftp.d/timeout.conf
 mkdir -p %{buildroot}%{_sysconfdir}/logrotate.d/
-install -m 644 %{SOURCE5} %{buildroot}%{_sysconfdir}/logrotate.d/
+install -m 644 %{SOURCE5} %{buildroot}%{_sysconfdir}/logrotate.d/globus-gridftp-server.logrotate
 # systemd service files
 mkdir -p %{buildroot}%{_unitdir}
-install -m 644 %{SOURCE6} %{buildroot}%{_unitdir}
-install -m 644 %{SOURCE7} %{buildroot}%{_unitdir}
+install -m 644 %{SOURCE6} %{buildroot}%{_unitdir}/globus-gridftp-server.service
+install -m 644 %{SOURCE7} %{buildroot}%{_unitdir}/globus-gridftp-sshftp.service
 # OSG sysconfig
 mkdir -p %{buildroot}%{_datarootdir}/osg/sysconfig
-install -m 644 %{SOURCE8} %{buildroot}%{_datarootdir}/osg/sysconfig
+install -m 644 %{SOURCE8} %{buildroot}%{_datarootdir}/osg/sysconfig/globus-gridftp-server
 # systemd startup helper scripts
 mkdir -p %{buildroot}%{_libexecdir}
-install -m 755 %{SOURCE10} %{buildroot}%{_libexecdir}
-install -m 755 %{SOURCE11} %{buildroot}%{_libexecdir}
-install -m 755 %{SOURCE12} %{buildroot}%{_libexecdir}
-install -m 755 %{SOURCE13} %{buildroot}%{_libexecdir}
+install -m 755 %{SOURCE10} %{buildroot}%{_libexecdir}/globus-gridftp-server-start
+install -m 755 %{SOURCE11} %{buildroot}%{_libexecdir}/globus-gridftp-sshftp-reconfigure
+install -m 755 %{SOURCE12} %{buildroot}%{_libexecdir}/globus-gridftp-sshftp-start
+install -m 755 %{SOURCE13} %{buildroot}%{_libexecdir}/globus-gridftp-sshftp-stop
 
 
 %pre
