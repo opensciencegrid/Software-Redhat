@@ -1,0 +1,10 @@
+[Unit]
+Description=SSHFTP access to the globus-gridftp-server
+After=network.target remote-fs.target syslog.service
+
+[Service]
+ExecStart=/usr/libexec/globus-gridftp-sshftp-start
+ExecStop=/usr/libexec/globus-gridftp-sshftp-stop
+ExecReload=/usr/libexec/globus-gridftp-sshftp-reconfigure
+Type=oneshot
+RemainAfterExit=yes

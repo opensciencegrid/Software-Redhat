@@ -7,10 +7,21 @@ URL:       http://www.opensciencegrid.org
 
 
 Source1: udt-%{name}.conf
+# Add IPv6 enabled by default (SOFTWARE-2920)
 Source2: ipv6.conf
 Source3: logging.conf
+# Increase transfer timeout (SOFTWARE-3241)
 Source4: timeout.conf
 Source5: globus-gridftp-server.logrotate
+Source6: globus-gridftp-server.service
+Source7: globus-gridftp-sshftp.service
+Source8: globus-gridftp-server.osg-sysconfig
+#Source9: globus-gridftp-server.sysconfig
+# SystemD helpers
+Source10: globus-gridftp-server-start
+Source11: globus-gridftp-sshftp-reconfigure
+Source12: globus-gridftp-sshftp-start
+Source13: globus-gridftp-sshftp-stop
 
 Requires: osg-system-profiler
 Requires: globus-gridftp-server-progs >= 13.20
@@ -69,6 +80,40 @@ install -m 644 %{SOURCE3} %{buildroot}%{_sysconfdir}/gridftp.d/
 install -m 644 %{SOURCE4} %{buildroot}%{_sysconfdir}/gridftp.d/
 mkdir -p %{buildroot}%{_sysconfdir}/logrotate.d/
 install -m 644 %{SOURCE5} %{buildroot}%{_sysconfdir}/logrotate.d/
+# systemd service files
+mkdir -p %{buildroot}%{_unitdir}
+install -m 644 %{SOURCE6} %{buildroot}%{_unitdir}
+install -m 644 %{SOURCE7} %{buildroot}%{_unitdir}
+# OSG sysconfig
+mkdir -p %{buildroot}%{_datarootdir}/osg/sysconfig
+install -m 644 %{SOURCE8} %{buildroot}%{_datarootdir}/osg/sysconfig
+# systemd startup helper scripts
+mkdir -p %{buildroot}%{_libexecdir}
+install -m 755 %{SOURCE10} %{buildroot}%{_libexecdir}
+install -m 755 %{SOURCE11} %{buildroot}%{_libexecdir}
+install -m 755 %{SOURCE12} %{buildroot}%{_libexecdir}
+install -m 755 %{SOURCE13} %{buildroot}%{_libexecdir}
+
+
+%pre
+# Remove old init config when systemd is used
+/sbin/chkconfig --del globus-gridftp-server > /dev/null 2>&1 || :
+/sbin/chkconfig --del globus-gridftp-sshftp > /dev/null 2>&1 || :
+
+%post
+%systemd_post globus-gridftp-server.service globus-gridftp-sshftp.service
+systemctl daemon-reload >/dev/null 2>&1 || :
+
+%preun
+%systemd_preun globus-gridftp-server.service globus-gridftp-sshftp.service
+
+%postun
+%systemd_postun_with_restart globus-gridftp-server.service globus-gridftp-sshftp.service
+if [ $1 -eq 0 ]; then
+    systemctl daemon-reload >/dev/null 2>&1 || :
+fi
+
+
 
 %files
 %config(noreplace) %{_sysconfdir}/gridftp.d/udt-%{name}.conf
@@ -76,6 +121,14 @@ install -m 644 %{SOURCE5} %{buildroot}%{_sysconfdir}/logrotate.d/
 %config(noreplace) %{_sysconfdir}/gridftp.d/logging.conf
 %config(noreplace) %{_sysconfdir}/gridftp.d/timeout.conf
 %config(noreplace) %{_sysconfdir}/logrotate.d/globus-gridftp-server.logrotate
+%{_unitdir}/globus-gridftp-server.service
+%{_unitdir}/globus-gridftp-sshftp.service
+%{_datarootdir}/osg/sysconfig/globus-gridftp-server
+%{_libexecdir}/globus-gridftp-server-start
+%{_libexecdir}/globus-gridftp-sshftp-reconfigure
+%{_libexecdir}/globus-gridftp-sshftp-start
+%{_libexecdir}/globus-gridftp-sshftp-stop
+
 
 %files xrootd
 # This section intentionally left blank
@@ -83,9 +136,10 @@ install -m 644 %{SOURCE5} %{buildroot}%{_sysconfdir}/logrotate.d/
 %files hdfs
 # This section intentionally left blank
 
+
 %changelog
 * Mon Dec 09 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.5-4
-- Add configs from OSG modifications of globus-gridftp-server (SOFTWARE-2996)
+- Add configs and systemd files from OSG modifications of globus-gridftp-server (SOFTWARE-2996)
 
 * Fri Aug 16 2019 Brian Lin <blin@cs.wisc.edu> - 3.5-3
 - Add HDFS sub-package
