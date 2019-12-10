@@ -143,6 +143,7 @@ fi
 %changelog
 * Tue Dec 10 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.5-4
 - Add configs and systemd files from OSG modifications of globus-gridftp-server (SOFTWARE-2996)
+- Drop env var to disable SSLv3 (no longer needed)
 
 * Fri Aug 16 2019 Brian Lin <blin@cs.wisc.edu> - 3.5-3
 - Add HDFS sub-package

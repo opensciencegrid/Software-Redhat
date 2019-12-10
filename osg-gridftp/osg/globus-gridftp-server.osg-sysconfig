@@ -15,9 +15,6 @@ export LCMAPS_DEBUG_LEVEL=2
 # Allow plugins to override the config location (SOFTWARE-2645)
 export conf=/etc/gridftp.conf
 
-# Disable SSLv3
-export GLOBUS_GSSAPI_FORCE_TLS=true
-
 # Source OSG firewall information if it exists
 if [ -e /var/lib/osg/globus-firewall ]; then
     . /var/lib/osg/globus-firewall
