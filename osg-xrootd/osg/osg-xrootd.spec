@@ -1,7 +1,7 @@
 Summary: OSG configuration files for XRootD
 Name: osg-xrootd
 Version: 3.4
-Release: 4%{?dist}
+Release: 5%{?dist}
 License: ASL 2.0
 BuildArch: noarch
 
