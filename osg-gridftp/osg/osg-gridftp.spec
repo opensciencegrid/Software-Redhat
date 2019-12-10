@@ -16,7 +16,7 @@ Source5: globus-gridftp-server.logrotate
 Source6: globus-gridftp-server.service
 Source7: globus-gridftp-sshftp.service
 Source8: globus-gridftp-server.osg-sysconfig
-#Source9: globus-gridftp-server.sysconfig
+Source9: globus-gridftp-server.sysconfig
 # SystemD helpers
 Source10: globus-gridftp-server-start
 Source11: globus-gridftp-sshftp-reconfigure
@@ -87,6 +87,8 @@ install -m 644 %{SOURCE7} %{buildroot}%{_unitdir}/globus-gridftp-sshftp.service
 # OSG sysconfig
 mkdir -p %{buildroot}%{_datarootdir}/osg/sysconfig
 install -m 644 %{SOURCE8} %{buildroot}%{_datarootdir}/osg/sysconfig/globus-gridftp-server
+mkdir -p %{buildroot}%{_sysconfdir}/sysconfig
+install -m 644 %{SOURCE9} %{buildroot}%{_sysconfdir}/sysconfig/globus-gridftp-server
 # systemd startup helper scripts
 mkdir -p %{buildroot}%{_libexecdir}
 install -m 755 %{SOURCE10} %{buildroot}%{_libexecdir}/globus-gridftp-server-start
@@ -121,6 +123,7 @@ fi
 %config(noreplace) %{_sysconfdir}/gridftp.d/logging.conf
 %config(noreplace) %{_sysconfdir}/gridftp.d/timeout.conf
 %config(noreplace) %{_sysconfdir}/logrotate.d/globus-gridftp-server.logrotate
+%config(noreplace) %{_sysconfdir}/sysconfig/globus-gridftp-server
 %{_unitdir}/globus-gridftp-server.service
 %{_unitdir}/globus-gridftp-sshftp.service
 %{_datarootdir}/osg/sysconfig/globus-gridftp-server
@@ -138,7 +141,7 @@ fi
 
 
 %changelog
-* Mon Dec 09 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.5-4
+* Tue Dec 10 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.5-4
 - Add configs and systemd files from OSG modifications of globus-gridftp-server (SOFTWARE-2996)
 
 * Fri Aug 16 2019 Brian Lin <blin@cs.wisc.edu> - 3.5-3
