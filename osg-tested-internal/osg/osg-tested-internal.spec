@@ -1,7 +1,7 @@
 Name:      osg-tested-internal
 Summary:   All OSG packages we test (internal use only)
 Version:   3.5
-Release:   1%{?dist}
+Release:   2%{?dist}
 License:   Apache 2.0
 URL:       http://www.opensciencegrid.org
 
@@ -55,6 +55,8 @@ Requires: voms-server
 Requires: voms-clients-cpp
 Requires: voms-mysql-plugin
 
+Requires: globus-gass-copy-progs
+Requires: uberftp
 
 
 
@@ -73,6 +75,9 @@ Requires: mysql-server
 %files
 
 %changelog
+* Tue Dec 10 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.5-2
+- Add globus-gass-copy-progs and uberftp (SOFTWARE-3945)
+
 * Fri Aug 02 2019 Carl Edquist <edquist@cs.wisc.edu> - 3.5-1
 - Drop rsv for OSG 3.5 (SOFTWARE-3761)
 
