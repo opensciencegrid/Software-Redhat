@@ -1,7 +1,7 @@
 Summary: OSG configuration files for XRootD
 Name: osg-xrootd
 Version: 3.5
-Release: 6%{?dist}
+Release: 7%{?dist}
 License: ASL 2.0
 BuildArch: noarch
 
@@ -13,6 +13,7 @@ Source5: 50-osg-paths.cfg
 Source6: 40-osg-standalone.cfg
 Source7: 90-osg-standalone-paths.cfg
 Source8: create_macaroon_secret
+Source9: 50-osg-tpc.cfg
 # We utilize a configuration directive (`continue`) introduced in XRootD 4.9.
 Requires: xrootd >= 1:4.9.0
 
@@ -50,6 +51,7 @@ install -m 644 %{SOURCE4} $RPM_BUILD_ROOT/etc/xrootd/config.d
 install -m 644 %{SOURCE5} $RPM_BUILD_ROOT/etc/xrootd/config.d
 install -m 644 %{SOURCE6} $RPM_BUILD_ROOT/etc/xrootd/config.d
 install -m 644 %{SOURCE7} $RPM_BUILD_ROOT/etc/xrootd/config.d
+install -m 644 %{SOURCE9} $RPM_BUILD_ROOT/etc/xrootd/config.d
 mkdir -p $RPM_BUILD_ROOT/%{_libexecdir}/xrootd/
 install -p -m 0755 %{SOURCE8} $RPM_BUILD_ROOT/%{_libexecdir}/xrootd/create_macaroon_secret
 
@@ -58,6 +60,7 @@ install -p -m 0755 %{SOURCE8} $RPM_BUILD_ROOT/%{_libexecdir}/xrootd/create_macar
 %config /etc/xrootd/config.d/50-osg-http.cfg
 %config /etc/xrootd/config.d/50-osg-monitoring.cfg
 %config /etc/xrootd/config.d/50-osg-paths.cfg
+%config /etc/xrootd/config.d/50-osg-tpc.cfg 
 %config /etc/xrootd/ban-robots.txt
 %dir %_libexecdir/xrootd
 %_libexecdir/xrootd/create_macaroon_secret
@@ -72,6 +75,9 @@ if [ ! -e /etc/xrootd/macaroon-secret ]; then
 fi
 
 %changelog
+* Mon Dec 10 2019 Edgar Fajardo <emfajard@ucsd.edu> 3.5-7
+- Enable Third party copy by default (SOFTWARE-3935)
+
 * Mon Dec 10 2019 Edgar Fajardo <emfajard@ucsd.edu> 3.5-6
 - Create a macaroon secret if non existent (SOFTWARE-3931)
 
