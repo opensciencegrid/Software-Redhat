@@ -14,7 +14,6 @@ URL:       http://www.opensciencegrid.org
 ################################################################################
 Requires: /usr/sbin/condor_master
 Requires: yum-utils
-# https://twiki.grid.iu.edu/bin/view/Documentation/Release3/InstallCvmfs
 Requires: osg-oasis
 Requires: osg-configure-tests
 
