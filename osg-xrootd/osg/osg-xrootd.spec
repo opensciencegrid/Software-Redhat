@@ -1,7 +1,7 @@
 Summary: OSG configuration files for XRootD
 Name: osg-xrootd
 Version: 3.5
-Release: 7%{?dist}
+Release: 8%{?dist}
 License: ASL 2.0
 BuildArch: noarch
 
@@ -60,7 +60,6 @@ install -p -m 0755 %{SOURCE8} $RPM_BUILD_ROOT/%{_libexecdir}/xrootd/create_macar
 %config /etc/xrootd/config.d/50-osg-http.cfg
 %config /etc/xrootd/config.d/50-osg-monitoring.cfg
 %config /etc/xrootd/config.d/50-osg-paths.cfg
-%config /etc/xrootd/config.d/50-osg-tpc.cfg 
 %config /etc/xrootd/ban-robots.txt
 %dir %_libexecdir/xrootd
 %_libexecdir/xrootd/create_macaroon_secret
@@ -68,6 +67,7 @@ install -p -m 0755 %{SOURCE8} $RPM_BUILD_ROOT/%{_libexecdir}/xrootd/create_macar
 %files standalone
 %config /etc/xrootd/config.d/40-osg-standalone.cfg
 %config(noreplace) /etc/xrootd/config.d/90-osg-standalone-paths.cfg
+%config /etc/xrootd/config.d/50-osg-tpc.cfg
 
 %post
 if [ ! -e /etc/xrootd/macaroon-secret ]; then
@@ -75,7 +75,7 @@ if [ ! -e /etc/xrootd/macaroon-secret ]; then
 fi
 
 %changelog
-* Mon Dec 10 2019 Edgar Fajardo <emfajard@ucsd.edu> 3.5-7
+* Mon Dec 10 2019 Edgar Fajardo <emfajard@ucsd.edu> 3.5-8
 - Enable Third party copy by default (SOFTWARE-3935)
 
 * Mon Dec 10 2019 Edgar Fajardo <emfajard@ucsd.edu> 3.5-6
