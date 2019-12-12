@@ -1,7 +1,7 @@
 Summary: OSG configuration files for XRootD
 Name: osg-xrootd
 Version: 3.4
-Release: 8%{?dist}
+Release: 9%{?dist}
 License: ASL 2.0
 BuildArch: noarch
 
@@ -75,7 +75,7 @@ if [ ! -e /etc/xrootd/macaroon-secret ]; then
 fi
 
 %changelog
-* Mon Dec 10 2019 Edgar Fajardo <emfajard@ucsd.edu> 3.4-8
+* Mon Dec 10 2019 Edgar Fajardo <emfajard@ucsd.edu> 3.4-9
 - Enable Third party copy by default (SOFTWARE-3935)
 
 * Mon Dec 10 2019 Edgar Fajardo <emfajard@ucsd.edu> 3.4-7
