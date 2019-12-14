@@ -34,7 +34,7 @@
 Summary: An implementation of the SSH protocol with GSI authentication
 Name: gsi-openssh
 Version: %{openssh_ver}
-Release: %{openssh_rel}.3%{?dist}
+Release: %{openssh_rel}.4%{?dist}
 Provides: gsissh = %{version}-%{release}
 Obsoletes: gsissh < 5.8p2-2
 URL: http://www.openssh.com/portable.html
@@ -47,7 +47,6 @@ Source11: gsisshd.service
 Source12: gsisshd-keygen.service
 Source13: gsisshd-keygen
 Source99: README.sshd-and-gsisshd
-Source100: gsisshd.osg-sysconfig
 
 #?
 Patch100: openssh-7.4p1-coverity.patch
@@ -252,6 +251,7 @@ Requires: fipscheck-lib%{_isa} >= 1.3.0
 Requires(post): systemd-units
 Requires(preun): systemd-units
 Requires(postun): systemd-units
+Requires: osg-gsi-openssh-addons
 
 %description
 SSH (Secure SHell) is a program for logging into and executing
@@ -508,9 +508,6 @@ ln -sf gsissh.1 $RPM_BUILD_ROOT%{_mandir}/man1/gsislogin.1
 
 perl -pi -e "s|$RPM_BUILD_ROOT||g" $RPM_BUILD_ROOT%{_mandir}/man*/*
 
-install -d -m755 $RPM_BUILD_ROOT/usr/share/osg/sysconfig
-install -m644 %{SOURCE100} $RPM_BUILD_ROOT/usr/share/osg/sysconfig/gsisshd
-
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -524,7 +521,6 @@ getent passwd sshd >/dev/null || \
   -s /sbin/nologin -r -d /var/empty/sshd sshd 2> /dev/null || :
 
 %post server
-systemctl daemon-reload >/dev/null 2>&1 || :
 %systemd_post gsisshd.service gsisshd.socket
 
 %preun server
@@ -578,9 +574,11 @@ systemctl daemon-reload >/dev/null 2>&1 || :
 %attr(0644,root,root) %{_unitdir}/gsisshd@.service
 %attr(0644,root,root) %{_unitdir}/gsisshd.socket
 %attr(0644,root,root) %{_unitdir}/gsisshd-keygen.service
-%attr(0644,root,root) /usr/share/osg/sysconfig/gsisshd
 
 %changelog
+* Fri Dec 13 2019 Carl Edquist <edquist@cs.wisc.edu> - 7.4p1-4.4
+- Move OSG-specific items to osg-gsi-openssh-addons (SOFTWARE-3915)
+
 * Mon Sep 16 2019 Carl Edquist <edquist@cs.wisc.edu> - 7.4p1-4.1
 - Merge OSG changes (SOFTWARE-3828)
 
