@@ -34,7 +34,7 @@
 Summary: An implementation of the SSH protocol with GSI authentication
 Name: gsi-openssh
 Version: %{openssh_ver}
-Release: %{openssh_rel}.4%{?dist}
+Release: %{openssh_rel}.5%{?dist}
 Provides: gsissh = %{version}-%{release}
 Obsoletes: gsissh < 5.8p2-2
 URL: http://www.openssh.com/portable.html
@@ -576,6 +576,9 @@ getent passwd sshd >/dev/null || \
 %attr(0644,root,root) %{_unitdir}/gsisshd-keygen.service
 
 %changelog
+* Mon Dec 16 2019 Carl Edquist <edquist@cs.wisc.edu> - 7.4p1-4.5
+- Move gsisshd.sysconfig changes to osg-gsi-openssh-addons (SOFTWARE-3915)
+
 * Fri Dec 13 2019 Carl Edquist <edquist@cs.wisc.edu> - 7.4p1-4.4
 - Move OSG-specific items to osg-gsi-openssh-addons (SOFTWARE-3915)
 
