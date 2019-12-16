@@ -11,7 +11,7 @@
 
 Name:		voms
 Version:	2.0.14
-Release:	1.4%{?dist}
+Release:	1.5%{?dist}
 Summary:	Virtual Organization Membership Service
 
 License:	ASL 2.0
@@ -41,7 +41,9 @@ Patch0: mariadb-innodb.patch
 Patch1:         Make-RFC-proxies-by-default-SOFTWARE-2381.patch
 Patch2:         Validate-top-level-group-of-VOMS-attribute.patch
 Patch3:         sw3123-voms-proxy-direct.patch
-
+Patch4:         Disable-TLS-1.1-and-older-openssl-1.0.2.patch
+Patch5:         Disable-weak-ciphers.patch
+  
 %description
 The Virtual Organization Membership Service (VOMS) is an attribute authority
 which serves as central repository for VO user authorization information,
@@ -131,6 +133,8 @@ This package provides the VOMS service.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
+%patch5 -p1
 
 install -m 644 -p %{SOURCE1} README.Fedora
 
@@ -367,6 +371,10 @@ fi
 %doc README.Fedora
 
 %changelog
+* Mon Dec 16 2019 Diego Davila <didavila@ucsd.edu> - 2.0.14-1.5
+- Add patches to disable TLSv1 and TLSv1.1 connections and
+- insecure ciphers (SOFTWARE-3879)
+
 * Tue Feb 13 2018 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.0.14-1.4
 - Add voms-proxy-direct (SOFTWARE-3123)
 
