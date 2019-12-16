@@ -1,5 +1,5 @@
 Name: scitokens-cpp
-Version: 0.3.5
+Version: 0.4.0
 Release: 1%{?dist}
 Summary: C++ Implementation of the SciTokens Library
 License: ASL 2.0
@@ -9,7 +9,7 @@ URL: https://github.com/scitokens/scitokens-cpp
 # git archive --prefix "scitokens-cpp-0.3.3/" -o "scitokens-cpp-0.3.3.tar" v0.3.3
 # git submodule update --init
 # git submodule foreach --recursive "git archive --prefix=scitokens-cpp-0.3.3/\$path/ --output=\$sha1.tar HEAD && tar --concatenate --file=$(pwd)/scitokens-cpp-0.3.3.tar \$sha1.tar && rm \$sha1.tar"
-# gzip "scitokens-cpp-0.3.3.tar"
+# gzip -n9 "scitokens-cpp-0.3.3.tar"
 Source0: https://github.com/scitokens/scitokens-cpp/releases/download/v%{version}/%{name}-%{version}.tar.gz
 
 # Scitokens-cpp bundles jwt-cpp, a header only dependency
@@ -18,6 +18,7 @@ Source0: https://github.com/scitokens/scitokens-cpp/releases/download/v%{version
 # by this package.
 
 BuildRequires: gcc-c++
+BuildRequires: make
 BuildRequires: cmake
 BuildRequires: sqlite-devel
 BuildRequires: openssl-devel
@@ -76,10 +77,16 @@ do_build
 %dir %{_includedir}/scitokens
 
 %changelog
+* Mon Dec 16 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 0.4.0-1.osg
+- Build for OSG (SOFTWARE-3932)
+
+* Fri Nov 08 2019 Derek Weitzel <dweitzel@unl.edu> - 0.4.0-1
+- Add support for WLCG profile
+
 * Fri Nov 08 2019 Derek Weitzel <dweitzel@unl.edu> - 0.3.5-1
 - Fix EC public key handling
 
-* Thu Sep 18 2019 Derek Weitzel <dweitzel@unl.edu> - 0.3.4-1
+* Wed Sep 18 2019 Derek Weitzel <dweitzel@unl.edu> - 0.3.4-1
 - Fix bugs for support with IAM
 
 * Thu Aug 01 2019 Derek Weitzel <dweitzel@unl.edu> - 0.3.3-3
