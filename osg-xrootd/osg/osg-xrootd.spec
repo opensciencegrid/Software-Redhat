@@ -1,7 +1,7 @@
 Summary: OSG configuration files for XRootD
 Name: osg-xrootd
 Version: 3.4
-Release: 9%{?dist}
+Release: 10%{?dist}
 License: ASL 2.0
 BuildArch: noarch
 
@@ -75,6 +75,9 @@ if [ ! -e /etc/xrootd/macaroon-secret ]; then
 fi
 
 %changelog
+* Mon Dec 16 2019 Edgar Fajardo <emfajard@ucsd.edu> 3.4-10
+- Should only enable macaroon by default and not scitokens (SOFTWARE-3931)
+
 * Mon Dec 10 2019 Edgar Fajardo <emfajard@ucsd.edu> 3.4-9
 - Enable Third party copy by default (SOFTWARE-3935)
 
