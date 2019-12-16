@@ -1,6 +1,6 @@
 Summary: OSG additions for gsi-openssh
 Name: osg-gsi-openssh-addons
-Version: 0.0.1
+Version: 1.0.0
 Release: 1%{?dist}
 
 Source100: gsisshd.osg-sysconfig
@@ -34,6 +34,6 @@ rm -rf $RPM_BUILD_ROOT
 systemctl daemon-reload >/dev/null 2>&1 || :
 
 %changelog
-* Fri Dec 13 2019 Carl Edquist <edquist@cs.wisc.edu> - 0.0.1-1
+* Mon Dec 16 2019 Carl Edquist <edquist@cs.wisc.edu> - 1.0.0-1
 - Break out OSG addons to separate package (SOFTWARE-3915)
 
