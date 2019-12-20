@@ -1,4 +1,4 @@
-%define tarball_version 8.8.6
+%define tarball_version 8.8.7
 
 # optionally define any of these, here or externally
 # % define fedora   16
@@ -132,7 +132,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.1
+%define condor_base_release 0.492805
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -747,7 +747,11 @@ the ClassAd library and HTCondor from python
 Summary: BOSCO, a HTCondor overlay system for managing jobs at remote clusters
 Url: https://osg-bosco.github.io/docs/
 Group: Applications/System
+%if 0%{?rhel} >= 8
+Requires: python3
+%else
 Requires: python >= 2.2
+%endif
 Requires: %name = %version-%release
 Requires: rsync
 
@@ -939,7 +943,7 @@ export CMAKE_PREFIX_PATH=/usr
 # causes build issues with EL5, don't even bother building the tests.
 
 %if %uw_build
-%define condor_build_id 489199
+%define condor_build_id 492805
 
 cmake \
        -DBUILDID:STRING=%condor_build_id \
@@ -1329,9 +1333,15 @@ rm -rf %{buildroot}%{_datadir}/condor/python/{py3htcondor,py3classad}.so
 rm -rf %{buildroot}%{_datadir}/condor/{libpy3classad*,py3htcondor,py3classad}.so
 
 # Install BOSCO
+%if 0%{?rhel} >= 8
+mkdir -p %{buildroot}%{python3_sitelib}
+mv %{buildroot}%{_libexecdir}/condor/campus_factory/python-lib/GlideinWMS %{buildroot}%{python3_sitelib}
+mv %{buildroot}%{_libexecdir}/condor/campus_factory/python-lib/campus_factory %{buildroot}%{python3_sitelib}
+%else
 mkdir -p %{buildroot}%{python_sitelib}
 mv %{buildroot}%{_libexecdir}/condor/campus_factory/python-lib/GlideinWMS %{buildroot}%{python_sitelib}
 mv %{buildroot}%{_libexecdir}/condor/campus_factory/python-lib/campus_factory %{buildroot}%{python_sitelib}
+%endif
 %if 0%{?hcc}
 mv %{buildroot}%{_libexecdir}/condor/campus_factory/share/condor/condor_config.factory %{buildroot}%{_sysconfdir}/condor/config.d/60-campus_factory.config
 %endif
@@ -1938,8 +1948,13 @@ install -p -m 0755 %{SOURCE11} %{buildroot}%{_libexecdir}/condor/create_pool_pas
 %_bindir/htsub
 %_sbindir/glidein_creation
 %_datadir/condor/campus_factory
+%if 0%{?rhel} >= 8
+%{python3_sitelib}/GlideinWMS
+%{python3_sitelib}/campus_factory
+%else
 %{python_sitelib}/GlideinWMS
 %{python_sitelib}/campus_factory
+%endif
 %_mandir/man1/bosco_cluster.1.gz
 %_mandir/man1/bosco_findplatform.1.gz
 %_mandir/man1/bosco_install.1.gz
