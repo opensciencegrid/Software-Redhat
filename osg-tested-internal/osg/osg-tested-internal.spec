@@ -1,7 +1,7 @@
 Name:      osg-tested-internal
 Summary:   All OSG packages we test (internal use only)
 Version:   3.4
-Release:   7%{?dist}
+Release:   8%{?dist}
 License:   Apache 2.0
 URL:       http://www.opensciencegrid.org
 
@@ -14,7 +14,6 @@ URL:       http://www.opensciencegrid.org
 ################################################################################
 Requires: /usr/sbin/condor_master
 Requires: yum-utils
-# https://twiki.grid.iu.edu/bin/view/Documentation/Release3/InstallCvmfs
 Requires: osg-oasis
 Requires: osg-configure-tests
 
@@ -57,6 +56,8 @@ Requires: voms-server
 Requires: voms-clients-cpp
 Requires: voms-mysql-plugin
 
+Requires: globus-gass-copy-progs
+Requires: uberftp
 
 
 
@@ -75,6 +76,9 @@ Requires: mysql-server
 %files
 
 %changelog
+* Thu Dec 26 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.4-8
+- Add globus-gass-copy-progs and uberftp (SOFTWARE-3945)
+
 * Tue Jan 22 2019 Carl Edquist <edquist@cs.wisc.edu> - 3.4-7
 - Rename singularity-runtime requirement to singularity (SOFTWARE-3532)
 
