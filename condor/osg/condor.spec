@@ -128,7 +128,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 0.492805
+%define condor_base_release 1
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -936,7 +936,7 @@ export CMAKE_PREFIX_PATH=/usr
 # causes build issues with EL5, don't even bother building the tests.
 
 %if %uw_build
-%define condor_build_id 492805
+%define condor_build_id 493225
 
 cmake \
        -DBUILDID:STRING=%condor_build_id \
@@ -2167,6 +2167,14 @@ fi
 %endif
 
 %changelog
+* Thu Dec 26 2019 Tim Theisen <tim@cs.wisc.edu> - 8.8.7-1
+- Updated condor_annex to work with upcoming AWS Lambda function changes
+- Added the ability to specify the order that job routes are applied
+- Fixed a bug that could cause remote condor submits to fail
+- Fixed condor_wait to work when the job event log is on AFS
+- Fixed RPM packaging to be able to install condor-all on CentOS 8
+- Period ('.') is allowed again in DAGMan node names
+
 * Tue Dec 03 2019 Carl Edquist <edquist@cs.wisc.edu> - 8.8.6-1.1
 - Remove UBUNTU14 from bosco patch (SOFTWARE-3890)
 
