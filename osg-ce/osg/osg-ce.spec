@@ -173,6 +173,7 @@ install -m 644 %{SOURCE2} $RPM_BUILD_ROOT/%{_datadir}/condor-ce/config.d
 # https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=5102,86
 %{_datadir}/condor-ce/config.d/01-blahp-location.conf
 %{_datadir}/condor-ce/config.d/03-gratia-cleanup.conf
+%{_datadir}/condor-ce/config.d/51-gratia.conf
 
 %files condor
 %files pbs
