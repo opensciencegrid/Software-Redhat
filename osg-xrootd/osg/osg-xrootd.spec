@@ -1,7 +1,7 @@
 Summary: OSG configuration files for XRootD
 Name: osg-xrootd
 Version: 3.4
-Release: 10%{?dist}
+Release: 11%{?dist}
 License: ASL 2.0
 BuildArch: noarch
 
@@ -14,6 +14,7 @@ Source6: 40-osg-standalone.cfg
 Source7: 90-osg-standalone-paths.cfg
 Source8: create_macaroon_secret
 Source9: 50-osg-tpc.cfg
+Source10: Authfile.example
 # We utilize a configuration directive (`continue`) introduced in XRootD 4.9.
 Requires: xrootd >= 1:4.9.0
 
@@ -54,6 +55,7 @@ install -m 644 %{SOURCE7} $RPM_BUILD_ROOT/etc/xrootd/config.d
 install -m 644 %{SOURCE9} $RPM_BUILD_ROOT/etc/xrootd/config.d
 mkdir -p $RPM_BUILD_ROOT/%{_libexecdir}/xrootd/
 install -p -m 0755 %{SOURCE8} $RPM_BUILD_ROOT/%{_libexecdir}/xrootd/create_macaroon_secret
+install -m 644 %{SOURCE10} $RPM_BUILD_ROOT/etc/xrootd/Authfile
 
 %files
 %config(noreplace) /etc/xrootd/config.d/10-common-site-local.cfg
@@ -68,6 +70,7 @@ install -p -m 0755 %{SOURCE8} $RPM_BUILD_ROOT/%{_libexecdir}/xrootd/create_macar
 %files standalone
 %config /etc/xrootd/config.d/40-osg-standalone.cfg
 %config(noreplace) /etc/xrootd/config.d/90-osg-standalone-paths.cfg
+%config(noreplace) /etc/xrootd/Authfile
 
 %post
 if [ ! -e /etc/xrootd/macaroon-secret ]; then
@@ -75,6 +78,9 @@ if [ ! -e /etc/xrootd/macaroon-secret ]; then
 fi
 
 %changelog
+* Mon Jan 06 2020 Mátyás Selmeci <matyas@cs.wisc.edu> 3.4-11
+- Add default Authfile to osg-xrootd-standalone (SOFTWARE-3951)
+
 * Mon Dec 16 2019 Edgar Fajardo <emfajard@ucsd.edu> 3.4-10
 - Should only enable macaroon by default and not scitokens (SOFTWARE-3931)
 
