@@ -169,6 +169,8 @@ install -m 755         -d $RPM_BUILD_ROOT/%{_datadir}/condor-ce/config.d
 install -m 644 %{SOURCE1} $RPM_BUILD_ROOT/%{_datadir}/condor-ce/config.d
 
 %files
+%{_datadir}/condor-ce/config.d/51-gratia.conf
+
 %files condor
 %files pbs
 %files lsf
