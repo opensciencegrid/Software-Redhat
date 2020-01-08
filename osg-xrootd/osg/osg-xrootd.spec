@@ -1,7 +1,7 @@
 Summary: OSG configuration files for XRootD
 Name: osg-xrootd
 Version: 3.4
-Release: 11%{?dist}
+Release: 12%{?dist}
 License: ASL 2.0
 BuildArch: noarch
 
@@ -15,6 +15,7 @@ Source7: 90-osg-standalone-paths.cfg
 Source8: create_macaroon_secret
 Source9: 50-osg-tpc.cfg
 Source10: Authfile.example
+Source11: 50-osg-http.el6.cfg
 # We utilize a configuration directive (`continue`) introduced in XRootD 4.9.
 Requires: xrootd >= 1:4.9.0
 
@@ -47,14 +48,20 @@ Requires: xrootd-lcmaps
 install -m 755         -d $RPM_BUILD_ROOT/etc/xrootd/config.d
 install -m 644 %{SOURCE1} $RPM_BUILD_ROOT/etc/xrootd
 install -m 644 %{SOURCE2} $RPM_BUILD_ROOT/etc/xrootd/config.d
+%if 0%{?rhel} >= 7
 install -m 644 %{SOURCE3} $RPM_BUILD_ROOT/etc/xrootd/config.d
+%else
+install -m 644 %{SOURCE11} $RPM_BUILD_ROOT/etc/xrootd/config.d/50-osg-http.cfg
+%endif
 install -m 644 %{SOURCE4} $RPM_BUILD_ROOT/etc/xrootd/config.d
 install -m 644 %{SOURCE5} $RPM_BUILD_ROOT/etc/xrootd/config.d
 install -m 644 %{SOURCE6} $RPM_BUILD_ROOT/etc/xrootd/config.d
 install -m 644 %{SOURCE7} $RPM_BUILD_ROOT/etc/xrootd/config.d
 install -m 644 %{SOURCE9} $RPM_BUILD_ROOT/etc/xrootd/config.d
 mkdir -p $RPM_BUILD_ROOT/%{_libexecdir}/xrootd/
+%if 0%{?rhel} >= 7
 install -p -m 0755 %{SOURCE8} $RPM_BUILD_ROOT/%{_libexecdir}/xrootd/create_macaroon_secret
+%endif
 install -m 644 %{SOURCE10} $RPM_BUILD_ROOT/etc/xrootd/Authfile
 
 %files
@@ -65,7 +72,9 @@ install -m 644 %{SOURCE10} $RPM_BUILD_ROOT/etc/xrootd/Authfile
 %config /etc/xrootd/config.d/50-osg-tpc.cfg 
 %config /etc/xrootd/ban-robots.txt
 %dir %_libexecdir/xrootd
+%if 0%{?rhel} >= 7
 %_libexecdir/xrootd/create_macaroon_secret
+%endif
 
 %files standalone
 %config /etc/xrootd/config.d/40-osg-standalone.cfg
@@ -73,11 +82,16 @@ install -m 644 %{SOURCE10} $RPM_BUILD_ROOT/etc/xrootd/Authfile
 %config(noreplace) /etc/xrootd/Authfile
 
 %post
+%if 0%{?rhel} >= 7
 if [ ! -e /etc/xrootd/macaroon-secret ]; then
     %_libexecdir/xrootd/create_macaroon_secret >/dev/null 2>&1 || :
 fi
+%endif
 
 %changelog
+* Wed Jan 08 2020 Mátyás Selmeci <matyas@cs.wisc.edu> 3.4-12
+- Don't install macaroons on EL6 (SOFTWARE-3931)
+
 * Mon Jan 06 2020 Mátyás Selmeci <matyas@cs.wisc.edu> 3.4-11
 - Add default Authfile to osg-xrootd-standalone (SOFTWARE-3951)
 
