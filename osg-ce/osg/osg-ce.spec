@@ -5,13 +5,14 @@
 Name:      osg-ce
 Summary:   OSG Compute Element
 Version:   3.5
-Release:   3%{?dist}
+Release:   4%{?dist}
 License:   Apache 2.0
 URL:       http://www.opensciencegrid.org
 
 Source0: 01-blahp-location.conf
 Source1: 03-gratia-cleanup.conf
 Source2: 51-gratia.conf
+Source3: 03-osg-ce-collector.conf
 
 Requires: grid-certificates >= 7
 
@@ -166,6 +167,7 @@ install -m 755         -d $RPM_BUILD_ROOT/%{_datadir}/condor-ce/config.d
 install -m 644 %{SOURCE0} $RPM_BUILD_ROOT/%{_datadir}/condor-ce/config.d
 install -m 644 %{SOURCE1} $RPM_BUILD_ROOT/%{_datadir}/condor-ce/config.d
 install -m 644 %{SOURCE2} $RPM_BUILD_ROOT/%{_datadir}/condor-ce/config.d
+install -m 644 %{SOURCE3} $RPM_BUILD_ROOT/%{_datadir}/condor-ce/config.d
 
 
 %files
@@ -174,6 +176,7 @@ install -m 644 %{SOURCE2} $RPM_BUILD_ROOT/%{_datadir}/condor-ce/config.d
 %{_datadir}/condor-ce/config.d/01-blahp-location.conf
 %{_datadir}/condor-ce/config.d/03-gratia-cleanup.conf
 %{_datadir}/condor-ce/config.d/51-gratia.conf
+%{_datadir}/condor-ce/config.d/03-osg-ce-collector.conf
 
 %files condor
 %files pbs
@@ -183,6 +186,9 @@ install -m 644 %{SOURCE2} $RPM_BUILD_ROOT/%{_datadir}/condor-ce/config.d
 %files bosco
 
 %changelog
+* Wed Jan 08 2020 Brian Lin <blin@cs.wisc.edu> - 3.5-4
+- Set the central collector in the default osg-ce configuration (SOFTWARE-3382)
+
 * Wed Nov 20 2019 Carl Edquist <edquist@cs.wisc.edu> - 3.5-3
 - Add schedd cron config for gratia probe (SOFTWARE-3841)
 - Drop ansible requirement (SOFTWARE-3920)
