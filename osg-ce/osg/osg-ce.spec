@@ -5,11 +5,12 @@
 Name:      osg-ce
 Summary:   OSG Compute Element
 Version:   3.4
-Release:   5%{?dist}
+Release:   6%{?dist}
 License:   Apache 2.0
 URL:       http://www.opensciencegrid.org
 
 Source1: 51-gratia.conf
+Source3: 03-osg-ce-collector.conf
 
 Requires: grid-certificates >= 7
 
@@ -167,9 +168,11 @@ exit 0
 %install
 install -m 755         -d $RPM_BUILD_ROOT/%{_datadir}/condor-ce/config.d
 install -m 644 %{SOURCE1} $RPM_BUILD_ROOT/%{_datadir}/condor-ce/config.d
+install -m 644 %{SOURCE3} $RPM_BUILD_ROOT/%{_datadir}/condor-ce/config.d
 
 %files
 %{_datadir}/condor-ce/config.d/51-gratia.conf
+%{_datadir}/condor-ce/config.d/03-osg-ce-collector.conf
 
 %files condor
 %files pbs
@@ -179,6 +182,9 @@ install -m 644 %{SOURCE1} $RPM_BUILD_ROOT/%{_datadir}/condor-ce/config.d
 %files bosco
 
 %changelog
+* Wed Jan 08 2020 Brian Lin <blin@cs.wisc.edu> - 3.4-6
+- Set the central collector in the default osg-ce configuration (SOFTWARE-3382)
+
 * Wed Nov 20 2019 Carl Edquist <edquist@cs.wisc.edu> - 3.4-5
 - Add schedd cron config for gratia probe (SOFTWARE-3841)
 
