@@ -1,7 +1,7 @@
 Name:      osg-tested-internal
 Summary:   All OSG packages we test (internal use only)
 Version:   3.5
-Release:   2%{?dist}
+Release:   3%{?dist}
 License:   Apache 2.0
 URL:       http://www.opensciencegrid.org
 
@@ -46,9 +46,8 @@ Requires: osg-ce-pbs
 
 Requires: singularity
 
-Requires: xrootd
 Requires: xrootd-client
-Requires: xrootd-lcmaps
+Requires: osg-xrootd-standalone
 
 Requires: voms-server
 Requires: voms-clients-cpp
@@ -74,6 +73,9 @@ Requires: mysql-server
 %files
 
 %changelog
+* Mon Jan 13 2020 Diego Davila <didavila@ucsd.edu> - 3.5-3
+- Changing Requires: xrootd and xrootd-lcmaps for osg-xrootd-standalone (SOFTWARE-3964)
+
 * Tue Dec 10 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.5-2
 - Add globus-gass-copy-progs and uberftp (SOFTWARE-3945)
 
