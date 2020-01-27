@@ -1,6 +1,6 @@
 Summary:   Profiles your system for debugging
 Name:      osg-system-profiler
-Version:   1.4.3
+Version:   1.5.0
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Source0:   %{name}-%{version}.tar.gz
@@ -36,6 +36,10 @@ make install DESTDIR=$RPM_BUILD_ROOT
 %{_bindir}/%{name}-viewer
 
 %changelog
+* Mon Jan 27 2020 Diego Davila <didavila@ucsd.edu> - 1.5.0-1
+- Include xrootd configuration (SOFTWARE-3876)
+- don't verify kernel-devel packages (SOFTWARE-3804)
+
 * Fri Aug 02 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.4.3-1
 - Drop unused files:
     - httpcert.pem
