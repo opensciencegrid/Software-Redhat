@@ -1,6 +1,6 @@
 Summary: Package for OSG-Configure and associated scripts
 Name: osg-configure
-Version: 2.5.0
+Version: 2.5.1
 Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
@@ -245,6 +245,9 @@ touch $RPM_BUILD_ROOT/var/lib/osg/osg-job-environment.conf
 
 
 %changelog
+* Wed Jan 29 2020 Mátyás Selmeci <matyas@cs.wisc.edu> 2.5.1-1
+- Relax hostname validation in 40-siteinfo.ini (failing to resolve is now a warning) (SOFTWARE-3953)
+
 * Mon Sep 16 2019 Mátyás Selmeci <matyas@cs.wisc.edu> 2.5.0-1
 - Add support for bosco_cluster overrides (SOFTWARE-3818)
 
