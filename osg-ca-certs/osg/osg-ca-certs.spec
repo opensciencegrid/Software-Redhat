@@ -1,5 +1,5 @@
 Name:           osg-ca-certs
-Version:        1.85
+Version:        1.86
 Release:        1%{?dist}
 Summary:        OSG Packaging of the IGTF CA Certs and OSG-specific CAs, in the OpenSSL 1.0.* format. 
 
@@ -9,7 +9,7 @@ URL:            http://repo.opensciencegrid.org/pacman/cadist/
 
 # Note: currently, one needs a valid client certificate to access the source tarball
 # https://osg-svn.rtinfo.indiana.edu/cadist/release/osg-certificates-1.20NEW.tar.gz
-Source0:        osg-certificates-1.85NEW.tar.gz
+Source0:        osg-certificates-1.86NEW.tar.gz
 
 BuildArch:      noarch
 
@@ -48,6 +48,10 @@ mv * $RPM_BUILD_ROOT/etc/grid-security/certificates/
 %doc
 
 %changelog
+* Wed Jan 29 2020 Carl Edquist <edquist@cs.wisc.edu> - 1.86-1
+- CA release corresponding to IGTF 1.104 (SOFTWARE-3985)
+- Add back AddTrust-External-CA-Root
+
 * Mon Jan 27 2020 Zalak Shah <zsshah@iu.edu> 1.85-1
 - CA release corresponding to IGTF 1.103 release.
 
