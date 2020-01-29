@@ -1,12 +1,12 @@
 Name:           igtf-ca-certs
-Version:        1.103
+Version:        1.104
 Release:        1%{?dist}
 Summary:        OSG Packaging of the IGTF CA Certs, in the OpenSSL 1.0.* format. 
 
 License:        Unknown
 URL:            http://repo.opensciencegrid.org/pacman/cadist/
 
-Source0:        osg-certificates-1.85IGTFNEW.tar.gz
+Source0:        osg-certificates-1.104IGTFNEW.tar.gz
 
 BuildArch:      noarch
 
@@ -46,6 +46,9 @@ sha256sum -c cacerts_sha256sum.txt
 %doc
 
 %changelog
+* Wed Jan 29 2020 Carl Edquist <edquist@cs.wisc.edu> - 1.104-1
+- CA release corresponding to IGTF 1.104 release (SOFTWARE-3985)
+
 * Mon Jan 27 2020 Zalak Shah <zsshah@iu.edu> 1.103-1
 - CA release corresponding to IGTF 1.103 release.
 
