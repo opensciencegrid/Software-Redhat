@@ -1,6 +1,6 @@
 Summary: Configuration tool for the OSG Software Stack
 Name: osg-configure
-Version: 3.1.0
+Version: 3.1.1
 Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
@@ -241,6 +241,10 @@ touch $RPM_BUILD_ROOT/var/lib/osg/osg-job-environment.conf
 
 
 %changelog
+* Wed Jan 29 2020 Mátyás Selmeci <matyas@cs.wisc.edu> 3.1.1-1
+- Relax hostname validation in 40-siteinfo.ini (failing to resolve is now a warning) (SOFTWARE-3953)
+- No longer make resource_group mandatory for CEs in 40-siteinfo.ini (SOFTWARE-3949)
+
 * Fri Sep 13 2019 Brian Lin <blin@cs.wisc.edu> 3.1.0-1
 - Add support for bosco_cluster overrides (SOFTWARE-3818)
 
