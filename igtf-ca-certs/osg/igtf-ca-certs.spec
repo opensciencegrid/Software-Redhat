@@ -1,6 +1,6 @@
 Name:           igtf-ca-certs
 Version:        1.104
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        OSG Packaging of the IGTF CA Certs, in the OpenSSL 1.0.* format. 
 
 License:        Unknown
@@ -46,6 +46,9 @@ sha256sum -c cacerts_sha256sum.txt
 %doc
 
 %changelog
+* Thu Jan 30 2020 Carl Edquist <edquist@cs.wisc.edu> - 1.104-2
+- Add missing CHANGES file
+
 * Wed Jan 29 2020 Carl Edquist <edquist@cs.wisc.edu> - 1.104-1
 - CA release corresponding to IGTF 1.104 release (SOFTWARE-3985)
 
