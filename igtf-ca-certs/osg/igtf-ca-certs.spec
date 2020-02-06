@@ -1,14 +1,20 @@
+%define igtf_version 1.104
+%define osg_version  1.86
+
 Name:           igtf-ca-certs
-Version:        1.104
-Release:        2%{?dist}
+Version:        %{igtf_version}
+Release:        3%{?dist}
 Summary:        OSG Packaging of the IGTF CA Certs, in the OpenSSL 1.0.* format. 
 
 License:        Unknown
-URL:            http://repo.opensciencegrid.org/pacman/cadist/
+URL:            http://repo.opensciencegrid.org/cadist/
 
-Source0:        osg-certificates-1.104IGTFNEW.tar.gz
+Source0:        https://github.com/opensciencegrid/osg-certificates/archive/v%{osg_version}/osg-certificates-%{osg_version}.tar.gz
+Source1:        https://dist.eugridpma.info/distribution/igtf/current/igtf-policy-installation-bundle-%{igtf_version}.tar.gz
 
 BuildArch:      noarch
+
+BuildRequires:  openssl
 
 Provides:       grid-certificates = 7
 
@@ -22,21 +28,24 @@ Obsoletes:      igtf-ca-certs-compat <= 1.55
 For details about the current certificate release, see https://repo.opensciencegrid.org/cadist/ and change log at https://repo.opensciencegrid.org/cadist/CHANGES.
 
 %prep
-%setup -q -n certificates
+%setup -n osg-certificates-%{osg_version}
+%setup -D -n osg-certificates-%{osg_version} -a 1
 
 %build
+export IGTF_CERTS_VERSION=%{igtf_version}
+export OSG_CERTS_VERSION=%{osg_version}
+export OUR_CERTS_VERSION=${IGTF_CERTS_VERSION}IGTFNEW
+export CADIST=$PWD/certificates
+export PKG_NAME=%{name}
+
+./build-certificates-dir.sh
 
 %install
 mkdir -p $RPM_BUILD_ROOT/etc/grid-security/certificates
-chmod 0644 *
-mv * $RPM_BUILD_ROOT/etc/grid-security/certificates/
+mv certificates/* $RPM_BUILD_ROOT/etc/grid-security/certificates/
 
-#[10/30/18] commenting out to remove MD5 sum
-#[11/06/18] uncommenting the following code to include MD5 checksum again 
 %check
 cd $RPM_BUILD_ROOT/etc/grid-security/certificates
-#[10/22/19] commenting out to remove MD5 sum [SOFTWARE-3005]
-#md5sum -c cacerts_md5sum.txt
 sha256sum -c cacerts_sha256sum.txt
 
 %files
@@ -46,6 +55,9 @@ sha256sum -c cacerts_sha256sum.txt
 %doc
 
 %changelog
+* Thu Feb 06 2020 Carl Edquist <edquist@cs.wisc.edu> - 1.104-3
+- Revamp build process (SOFTWARE-3977)
+
 * Thu Jan 30 2020 Carl Edquist <edquist@cs.wisc.edu> - 1.104-2
 - Add missing CHANGES file
 
