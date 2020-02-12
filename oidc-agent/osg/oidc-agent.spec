@@ -1,11 +1,11 @@
 Name: oidc-agent
-Version: 3.2.6
-Release: 1%{?dist}
+Version: 3.3.1
+Release: 1.1%{?dist}
 Summary: Commandline tool for obtaining OpenID Connect access tokens on the commandline
 Group: Misc
 License: MIT-License
 URL: https://github.com/indigo-dc/oidc-agent
-Source0: v%{version}.tar.gz
+Source0: %{name}-%{version}.tar.gz
 
 BuildRequires: libcurl-devel >= 7.29
 BuildRequires: libsodium-devel >= 1.0.14
@@ -70,10 +70,12 @@ make install BIN_PATH=${RPM_BUILD_ROOT}/usr BIN_AFTER_INST_PATH=/usr MAN_PATH=${
 %doc /usr/share/man/man1/oidc-add.1.gz
 %doc /usr/share/man/man1/oidc-agent.1.gz
 %doc /usr/share/man/man1/oidc-gen.1.gz
+%doc /usr/share/man/man1/oidc-keychain.1.gz
 %doc /usr/share/man/man1/oidc-token.1.gz
 %doc /usr/share/bash-completion/completions/oidc-add
 %doc /usr/share/bash-completion/completions/oidc-agent
 %doc /usr/share/bash-completion/completions/oidc-gen
+%doc /usr/share/bash-completion/completions/oidc-keychain
 %doc /usr/share/bash-completion/completions/oidc-token
 %doc /usr/share/applications/oidc-gen.desktop
 /usr/lib64/liboidc-agent.so.3
@@ -83,7 +85,9 @@ make install BIN_PATH=${RPM_BUILD_ROOT}/usr BIN_AFTER_INST_PATH=/usr MAN_PATH=${
 #%doc
 
 %changelog
-* Tue Oct 9 2019 Diego Davila <didavila@ucsd.edu> - 2.3.6 
-- Hardcoding the version (SOFTWARE-3820) 
-- Changing Source0 to match the downloaded tarball name from github
+* Wed Feb 10 2029 Dave Dykstra <dwd@fnal.gov> - 3.3.1-1.1
+- Hardcode the version number
+- Changed Source0 to end in .gz
 
+* Fri Oct 11 2019 Diego Davila <didavila@ucsd.edu> - 3.2.7
+- Changed the Source0, Version and Release tags to accommodate the osg build process
