@@ -1,5 +1,5 @@
 Name:           vo-client
-Version:        98
+Version:        99
 Release:        1%{?dist}
 Summary:        Contains vomses file for use with user authentication
 
@@ -70,6 +70,9 @@ find $RPM_BUILD_ROOT/%{_sysconfdir}/grid-security/vomsdir -type d -exec chmod 75
 %config(noreplace) %{_datadir}/osg/grid-vorolemap
 
 %changelog
+* Wed Feb 19 2020 Carl Edquist <edquist@cs.wisc.edu> - 99-1
+- Update HCC voms cert, bring back support for old HCC VO (SOFTWARE-3990)
+
 * Tue Feb 11 2020 Carl Edquist <edquist@cs.wisc.edu> - 98-1
 - Update HCC voms cert (SOFTWARE-3990)
 
