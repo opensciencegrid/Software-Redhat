@@ -1,5 +1,5 @@
 Name:           vo-client
-Version:        99
+Version:        100
 Release:        1%{?dist}
 Summary:        Contains vomses file for use with user authentication
 
@@ -70,6 +70,16 @@ find $RPM_BUILD_ROOT/%{_sysconfdir}/grid-security/vomsdir -type d -exec chmod 75
 %config(noreplace) %{_datadir}/osg/grid-vorolemap
 
 %changelog
+* Thu Feb 27 2020 Carl Edquist <edquist@cs.wisc.edu> - 100-1
+- Drop MIS VO (SOFTWARE-3575)
+- Map FNAL VO subgroups to the VO-wide target (SOFTWARE-4005)
+- New cert for GLOW (SOFTWARE-4006)
+- Replace one of the certs for OSG (SOFTWARE-4007)
+- Update Gluex cert for gryphn.phys.uconn.edu (SOFTWARE-4008)
+- Update voms2.fnal.gov DN for DES, DUNE, Fermilab (SOFTWARE-4012)
+- Drop CDF (SOFTWARE-4012)
+- Crosscheck script improvements
+
 * Wed Feb 19 2020 Carl Edquist <edquist@cs.wisc.edu> - 99-1
 - Update HCC voms cert, bring back support for old HCC VO (SOFTWARE-3990)
 
