@@ -29,12 +29,12 @@
 %global ldap 1
 
 %global openssh_ver 7.4p1
-%global openssh_rel 4
+%global openssh_rel 5
 
 Summary: An implementation of the SSH protocol with GSI authentication
 Name: gsi-openssh
 Version: %{openssh_ver}
-Release: %{openssh_rel}.5%{?dist}
+Release: %{openssh_rel}.1%{?dist}
 Provides: gsissh = %{version}-%{release}
 Obsoletes: gsissh < 5.8p2-2
 URL: http://www.openssh.com/portable.html
@@ -189,6 +189,10 @@ Patch958: openssh-7.4p1-winscp-compat.patch
 Patch959: openssh-7.4p1-authorized_keys_command.patch
 # Fix for CVE-2017-15906 (#1517226)
 Patch960: openssh-7.5p1-sftp-empty-files.patch
+# Fix for CVE-2018-15473 (#1619079)
+Patch961: openssh-7.4p1-CVE-2018-15473.patch
+# invalidate supplemental group cache used by temporarily_use_uid() (#1619079)
+Patch962: openssh-7.4p1-uidswap.patch
 
 # This is the patch that adds GSI support
 # Based on http://grid.ncsa.illinois.edu/ssh/dl/patch/openssh-6.6p1.patch
@@ -360,6 +364,8 @@ This version of OpenSSH has been modified to support GSI authentication.
 %patch958 -p1 -b .winscp
 %patch959 -p1 -b .large-command
 %patch960 -p1 -b .sftp-empty
+%patch961 -p1 -b .CVE-2018-15473
+%patch962 -p1 -b .uidswap
 
 %patch200 -p1 -b .audit
 %patch202 -p1 -b .audit-race
@@ -576,14 +582,19 @@ getent passwd sshd >/dev/null || \
 %attr(0644,root,root) %{_unitdir}/gsisshd-keygen.service
 
 %changelog
-* Mon Dec 16 2019 Carl Edquist <edquist@cs.wisc.edu> - 7.4p1-4.5
-- Move gsisshd.sysconfig changes to osg-gsi-openssh-addons (SOFTWARE-3915)
+* Mon Mar 02 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 7.4p1-5.1
+- Merge OSG changes:
+    * Mon Dec 16 2019 Carl Edquist <edquist@cs.wisc.edu> - 7.4p1-4.5
+    - Move gsisshd.sysconfig changes to osg-gsi-openssh-addons (SOFTWARE-3915)
 
-* Fri Dec 13 2019 Carl Edquist <edquist@cs.wisc.edu> - 7.4p1-4.4
-- Move OSG-specific items to osg-gsi-openssh-addons (SOFTWARE-3915)
+    * Fri Dec 13 2019 Carl Edquist <edquist@cs.wisc.edu> - 7.4p1-4.4
+    - Move OSG-specific items to osg-gsi-openssh-addons (SOFTWARE-3915)
 
-* Mon Sep 16 2019 Carl Edquist <edquist@cs.wisc.edu> - 7.4p1-4.1
-- Merge OSG changes (SOFTWARE-3828)
+    * Mon Sep 16 2019 Carl Edquist <edquist@cs.wisc.edu> - 7.4p1-4.1
+    - Merge OSG changes (SOFTWARE-3828)
+
+* Wed Aug 07 2019 Mattias Ellert <mattias.ellert@physics.uu.se> - 7.4p1-5
+- Based on openssh-7.4p1-21.el7
 
 * Tue May 28 2019 Mattias Ellert <mattias.ellert@physics.uu.se> - 7.4p1-4
 - Change GSSAPITrustDNS default to no
