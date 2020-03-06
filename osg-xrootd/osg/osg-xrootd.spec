@@ -1,7 +1,7 @@
 Summary: OSG configuration files for XRootD
 Name: osg-xrootd
 Version: 3.5
-Release: 10%{?dist}
+Release: 11%{?dist}
 License: ASL 2.0
 BuildArch: noarch
 
@@ -78,6 +78,9 @@ if [ ! -e /etc/xrootd/macaroon-secret ]; then
 fi
 
 %changelog
+* Fri Mar 06 2020 Edgar Fajardo <emfajard@ucsd.edu> 3.5-11
+- The configuration on the standalone file shoudl be only for standalone
+
 * Mon Jan 06 2020 Mátyás Selmeci <matyas@cs.wisc.edu> 3.5-10
 - Add default Authfile to osg-xrootd-standalone (SOFTWARE-3951)
 
