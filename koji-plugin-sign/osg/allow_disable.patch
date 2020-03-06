@@ -1,0 +1,45 @@
+Index: _build_results/sign.conf
+===================================================================
+--- _build_results.orig/sign.conf	2011-09-22 13:36:40.000000000 -0500
++++ _build_results/sign.conf	2011-09-22 13:53:34.000000000 -0500
+@@ -6,6 +6,7 @@
+ gpg_path = /etc/koji-sign-plugin/gnupg
+ gpg_name = My Company, Inc. <support@mycompany.com>
+ gpg_pass = my_passphrase
++enabled = 1
+ 
+ # Defaults can be overridden on a per tag basis
+ [dist-foo-build]
+Index: _build_results/sign.py
+===================================================================
+--- _build_results.orig/sign.py	2011-09-22 13:36:40.000000000 -0500
++++ _build_results/sign.py	2011-09-22 17:17:22.000000000 -0500
+@@ -22,8 +22,10 @@
+     br = get_buildroot(br_id)
+     tag_name = br['tag_name']
+ 
++    logging.getLogger('koji.plugin.sign').info("Got package with tag_name %s", tag_name)
++
+     # Get GPG info using the config for the tag name
+-    from ConfigParser import ConfigParser
++    from ConfigParser import ConfigParser, NoOptionError
+     config = ConfigParser()
+     config.read(config_file)
+     if not config.has_section(tag_name):
+@@ -33,6 +35,16 @@
+     gpg_path = config.get(tag_name, 'gpg_path')
+     gpg_name = config.get(tag_name, 'gpg_name')
+     gpg_pass = config.get(tag_name, 'gpg_pass')
++    try:
++        enabled = config.getboolean(tag_name, 'enabled')
++    except NoOptionError:
++        # Note that signing is _enabled_ by default
++        enabled = True
++
++    
++    if not enabled:
++        logging.getLogger('koji.plugin.sign').info('Signing not enabled for this tag.')
++        return
+ 
+     # Get the package paths set up
+     from koji import pathinfo
