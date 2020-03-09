@@ -1,5 +1,5 @@
 Name:           vo-client
-Version:        100
+Version:        101
 Release:        1%{?dist}
 Summary:        Contains vomses file for use with user authentication
 
@@ -70,6 +70,13 @@ find $RPM_BUILD_ROOT/%{_sysconfdir}/grid-security/vomsdir -type d -exec chmod 75
 %config(noreplace) %{_datadir}/osg/grid-vorolemap
 
 %changelog
+* Mon Mar 09 2020 Carl Edquist <edquist@cs.wisc.edu> - 101-1
+- Second round of InCommon subject DN changes (SOFTWARE-4018)
+- Add new GlueX DN (SOFTWARE-4008)
+- Drop obsolete GLOW cert
+- Update LZ DN for voms.hep.wisc.edu (SOFTWARE-4021)
+- Retire DOSAR (SOFTWARE-4019)
+
 * Thu Feb 27 2020 Carl Edquist <edquist@cs.wisc.edu> - 100-1
 - Drop MIS VO (SOFTWARE-3575)
 - Map FNAL VO subgroups to the VO-wide target (SOFTWARE-4005)
