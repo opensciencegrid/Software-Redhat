@@ -1,6 +1,6 @@
 Name:           pegasus
 Version:        4.9.3
-Release:        1.1%{?dist}
+Release:        1.2%{?dist}
 Summary:        Workflow management system for HTCondor, grids, and clouds
 Group:          Applications/System
 License:        ASL 2.0
@@ -18,7 +18,7 @@ BuildRequires:  ant-nodeps, java-1.8.0-openjdk-devel, /usr/share/java-1.8.0
 %if 0%{?rhel} >= 7
 BuildRequires:  java-devel = 1:1.8.0, /usr/share/java-1.8.0
 %endif
-Requires:       java >= 1:1.8.0, python >= 2.6, condor >= 8.6, graphviz, pyOpenSSL, python-amqplib
+Requires:       java >= 1:1.8.0, python >= 2.6, condor >= 8.6, graphviz, pyOpenSSL, python-amqplib, python-six
 
 %define sourcedir %{name}-%{version}
 
@@ -82,6 +82,9 @@ rm -f %{buildroot}/%{_datadir}/%{name}/java/NOTICE.*
 
 
 %changelog
+* Tue Mar 10 2020 Mátyás Selmeci <matyas@cs.wisc.edu> 4.9.3-1.2
+- Add python-six dependency (SOFTWARE-4014)
+
 * Thu Mar 05 2020 Mátyás Selmeci <matyas@cs.wisc.edu> 4.9.3-1.1
 - Revert OS detection changes in pegasus-lite-common.sh that were breaking EL6 builds (SOFTWARE-4014)
 
