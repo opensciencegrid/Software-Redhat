@@ -1,0 +1,31 @@
+From 67c8cb0f1bd30c00fa6b0134ef35c89bfda8ac93 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Wed, 11 Mar 2020 21:03:19 -0500
+Subject: [PATCH] Add Apache 2.4 support
+
+---
+ www/httpd.conf | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/www/httpd.conf b/www/httpd.conf
+index 60caeda..ecb87a6 100644
+--- a/www/httpd.conf
++++ b/www/httpd.conf
+@@ -21,7 +21,12 @@ Alias /koji-static/images/open.png "/usr/share/koji-themes/fedora-koji/images/ar
+ <Directory "/usr/share/koji-themes/fedora-koji">
+     Options None
+     AllowOverride None
+-    Order allow,deny
+-    Allow from all
++    <IfVersion < 2.4>
++        Order allow,deny
++        Allow from all
++    </IfVersion>
++    <IfVersion >= 2.4>
++        Require all granted
++    </IfVersion>
+ </Directory>
+ 
+-- 
+2.6.3
+

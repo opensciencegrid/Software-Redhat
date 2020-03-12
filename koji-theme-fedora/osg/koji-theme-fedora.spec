@@ -7,11 +7,12 @@
 %endif
 Name: koji-theme-fedora
 Version: 2.0
-Release: %{release}%{?dist}
+Release: %{release}.1%{?dist}
 License: GPLv2
 Summary: Fedora koji theme
 Group: Applications/Internet
 Source: %{name}-%{version}.tar.bz2
+Patch0: Add-Apache-2.4-support.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch: noarch
 Requires: koji-web
@@ -21,6 +22,7 @@ Makes the fedora koji web ui unique
 
 %prep
 %setup -q
+%patch0 -p1
 
 %build
 
@@ -39,6 +41,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Mar 11 2020 Mátyás Selmeci <matyas@cs.wisc.edu> 2.0-1.1.osg
+- Add Apache 2.4 support
+
 * Fri Feb 03 2012 Dennis Gilmore <dennis@ausil.us> 2.0-1
 - pull in theme from ryan
 
