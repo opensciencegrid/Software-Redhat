@@ -13,7 +13,7 @@
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
 %define version 3.6.2
-%define release 0.2.rc2
+%define release 0.3.rc3
 
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
@@ -846,10 +846,10 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/condor/certs/condor_mapfile
 
 %changelog
-* Tue Mar 3 2020 Marco Mambelli <marcom@fnal.gov> - 3.6.2-0.2
+* Sun Mar 15 2020 Marco Mambelli <marcom@fnal.gov> - 3.6.2-0.3
 - GlideinWMS v3.6.2
 - Release Notes: http://glideinwms.fnal.gov/doc.v3_6_2/history.html
-- Release candidates: 3.6.2-0.2.rc2
+- Release candidates: 3.6.2-0.3.rc3
 
 * Mon Nov 21 2019 Marco Mambelli <marcom@fnal.gov> - 3.6.1-1
 - GlideinWMS v3.6.1
