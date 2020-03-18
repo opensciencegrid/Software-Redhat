@@ -1,6 +1,6 @@
 Name: xrootd-scitokens
-Version: 1.0.0
-Release: 1.2%{?dist}
+Version: 1.2.0
+Release: 2%{?dist}
 Summary: SciTokens authentication plugin for XRootD
 License: Apache 2.0
 URL: https://github.com/scitokens/xrootd-scitokens
@@ -55,6 +55,16 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 
 %changelog
+* Thu Mar 18 2020 Diego Davila <didavila@ucsd.edu> - 1.2.0-2
+- Rebuild against xrootd 4.11; add version range requirement (SOFTWARE-3923)
+
+* Thu Mar 10 2020 Derek Weitzel <dweitzel@cse.unl.edu> - 1.2.0-1
+- Add issuer for latter mapping decisions by issuer
+- Correct access control when allowing only reads
+
+* Thu Jan 16 2020 Derek Weitzel <dweitzel@cse.unl.edu> - 1.1.0-1
+- Allow passthrough of the scitokens to other authz
+
 * Wed Oct 23 2019 Carl Edquist <edquist@cs.wisc.edu> - 1.0.0-1.2
 - Rebuild against xrootd 4.11; add version range requirement (SOFTWARE-3830)
 
