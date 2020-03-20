@@ -13,7 +13,7 @@
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
 %define version 3.6.2
-%define release 0.2.rc2
+%define release 0.3.rc3
 
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
@@ -282,6 +282,7 @@ rm -Rf $RPM_BUILD_ROOT%{python_sitelib}/glideinwms/unittests
 rm -f $RPM_BUILD_ROOT%{python_sitelib}/glideinwms/chksum.sh
 rm -f $RPM_BUILD_ROOT%{python_sitelib}/glideinwms/LICENSE
 rm -f $RPM_BUILD_ROOT%{python_sitelib}/glideinwms/ACKNOWLEDGMENTS.txt
+rm -f $RPM_BUILD_ROOT%{python_sitelib}/glideinwms/README.md
 
 # Following files are Put in other places. Remove them from python_sitelib
 rm -Rf $RPM_BUILD_ROOT%{python_sitelib}/glideinwms/creation/web_base
@@ -846,12 +847,12 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/condor/certs/condor_mapfile
 
 %changelog
-* Tue Mar 3 2020 Marco Mambelli <marcom@fnal.gov> - 3.6.2-0.2
+* Sun Mar 15 2020 Marco Mambelli <marcom@fnal.gov> - 3.6.2-0.3
 - GlideinWMS v3.6.2
 - Release Notes: http://glideinwms.fnal.gov/doc.v3_6_2/history.html
-- Release candidates: 3.6.2-0.2.rc2
+- Release candidates: 3.6.2-0.3.rc3
 
-* Mon Nov 21 2019 Marco Mambelli <marcom@fnal.gov> - 3.6.1-1
+* Mon Nov 25 2019 Marco Mambelli <marcom@fnal.gov> - 3.6.1-1
 - GlideinWMS v3.6.1
 - Release Notes: http://glideinwms.fnal.gov/doc.v3_6_1/history.html
 - Release candidates: 3.6.1-0.1.rc1
