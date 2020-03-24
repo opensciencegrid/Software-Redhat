@@ -30,7 +30,7 @@
 
 Name: koji
 Version: 1.16.2
-Release: 1.1%{?dist}
+Release: 1.2%{?dist}
 # koji.ssl libs (from plague) are GPLv2+
 License: LGPLv2 and GPLv2+
 Summary: Build system tools
@@ -50,6 +50,8 @@ Patch106: kojicli_setup_dns.patch
 Patch112: Fix-type-in-add-group-pkg.patch
 Patch113: kojira-add-sleeptime-to-conf.patch
 Patch114: 1635-os_path_join.patch
+Patch115: CVE-2019-17109.patch
+Patch116: Fix-1.15-1.16-schema-upgrade-script.patch
 
 
 BuildArch: noarch
@@ -259,6 +261,8 @@ koji-web is a web UI to the Koji system.
 %patch112 -p1
 %patch113 -p1
 %patch114 -p1
+%patch115 -p1
+%patch116 -p1
 
 %build
 
@@ -449,6 +453,10 @@ fi
 %endif
 
 %changelog
+* Tue Mar 24 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.16.2-1.2.osg
+- Backport CVE-2019-17109 patch from 1.16.3
+- Fix 1.15->1.16 schema upgrade script
+
 * Mon Mar 23 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.16.2-1.1.osg
 - Update to 1.16.2-1 from Fedora/EPEL
   Fedora's changelog since 1.15.3:
