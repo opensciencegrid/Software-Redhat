@@ -1,3 +1,7 @@
+# This package depends on automagic byte compilation
+# https://fedoraproject.org/wiki/Changes/No_more_automagic_Python_bytecompilation_phase_2
+%global _python_bytecompile_extra 1
+
 # Enable Python 3 builds for Fedora + EPEL >5
 # NOTE: do **NOT** change 'epel' to 'rhel' here, as this spec is also
 %if 0%{?fedora} || 0%{?rhel} > 7
@@ -25,32 +29,27 @@
 %endif
 
 Name: koji
-Version: 1.15.3
-Release: 1.2%{?dist}
+Version: 1.16.2
+Release: 1.1%{?dist}
 # koji.ssl libs (from plague) are GPLv2+
 License: LGPLv2 and GPLv2+
 Summary: Build system tools
 URL: https://pagure.io/koji/
 Source0: https://releases.pagure.org/koji/koji-%{version}.tar.bz2
 
-# Backported patches
-Patch0:   https://pagure.io/koji/c/73ebc0c.patch
-Patch1:   https://pagure.io/koji/pull-request/735.patch
-Patch2:   https://pagure.io/koji/pull-request/794.patch
-Patch3:   https://pagure.io/koji/pull-request/841.patch
+# Fix is_conn_error bug which commonly caused operations that wait a
+# long time to fail out prematurely on Python 3
+# https://pagure.io/koji/issue/1192
+# https://pagure.io/koji/pull-request/1203
+Patch0: 0001-Fix-is_conn_error-for-Python-3.3-change-to-socket.er.patch
 
 # OSG patches
-Patch101: koji_passwd_cache.patch
 Patch102: kojid_setup_dns.patch
 Patch103: kojid_scmbuild_check_spec_after_running_sourcecmd.patch
-Patch104: koji_passwd_retry.patch
-Patch105: koji_proxy_cert.patch
 Patch106: kojicli_setup_dns.patch
 Patch112: Fix-type-in-add-group-pkg.patch
-Patch113: kojira-accept-sleeptime-option.patch
+Patch113: kojira-add-sleeptime-to-conf.patch
 Patch114: 1635-os_path_join.patch
-Patch115: Don-t-warn-on-use_old_ssl-OSG-still-relies-on-it.patch
-Patch116: Don-t-warn-on-compatrequests.patch
 
 
 BuildArch: noarch
@@ -251,27 +250,20 @@ koji-web is a web UI to the Koji system.
 
 %prep
 %setup -q
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
+%patch0 -p1 -b .connerror
 
 # OSG patches
-%patch101 -p1
 %patch102 -p1
 %patch103 -p1
-%patch104 -p1
-%patch105 -p1
 %patch106 -p1
 %patch112 -p1
 %patch113 -p1
 %patch114 -p1
-%patch115 -p1
-%patch116 -p1
 
 %build
 
 %install
+rm -rf $RPM_BUILD_ROOT
 make DESTDIR=$RPM_BUILD_ROOT %{?install_opt} install
 %if 0%{with python3}
 cd koji
@@ -281,7 +273,7 @@ make DESTDIR=$RPM_BUILD_ROOT PYTHON=python3 %{?install_opt} install
 cd ../plugins
 make DESTDIR=$RPM_BUILD_ROOT PYTHON=python3 %{?install_opt} install
 # alter python interpreter in koji CLI
-sed -i 's/\#\!\/usr\/bin\/python/\#\!\/usr\/bin\/python3/' $RPM_BUILD_ROOT/usr/bin/koji
+sed -i 's/\#\!\/usr\/bin\/python2/\#\!\/usr\/bin\/python3/' $RPM_BUILD_ROOT/usr/bin/koji
 %endif
 
 %files
@@ -317,7 +309,6 @@ sed -i 's/\#\!\/usr\/bin\/python/\#\!\/usr\/bin\/python3/' $RPM_BUILD_ROOT/usr/b
 %files hub
 %{_datadir}/koji-hub
 %dir %{_libexecdir}/koji-hub
-%{_libexecdir}/koji-hub/rpmdiff
 %config(noreplace) /etc/httpd/conf.d/kojihub.conf
 %dir /etc/koji-hub
 %config(noreplace) /etc/koji-hub/hub.conf
@@ -357,6 +348,7 @@ sed -i 's/\#\!\/usr\/bin\/python/\#\!\/usr\/bin\/python3/' $RPM_BUILD_ROOT/usr/b
 %{_sbindir}/kojid
 %dir %{_libexecdir}/kojid
 %{_libexecdir}/kojid/mergerepos
+%defattr(-,root,root)
 %dir %{_prefix}/lib/koji-builder-plugins
 %{_prefix}/lib/koji-builder-plugins/*.py*
 %if %{use_systemd}
@@ -457,6 +449,34 @@ fi
 %endif
 
 %changelog
+* Mon Mar 23 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.16.2-1.1.osg
+- Update to 1.16.2-1 from Fedora/EPEL
+  Fedora's changelog since 1.15.3:
+    * Thu Feb 21 2019 Patrick Uiterwijk <puiterwijk@redhat.com> - 1.16.2-1
+    - Rebase to 1.16.2 for CVE-2018-1002161
+
+    * Fri Feb 01 2019 Fedora Release Engineering <releng@fedoraproject.org> - 1.16.1-4
+    - Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
+
+    * Wed Jan 09 2019 Adam Williamson <awilliam@redhat.com> - 1.16.1-3
+    - Backport fix for Python 3 connection failure bug (#1192, PR #1203)
+
+    * Fri Sep 14 2018 Kevin Fenzi <kevin@scrye.com> - 1.16.1-2
+    - Fix bad sed that caused python32 dep.
+
+    * Thu Sep 13 2018 Kevin Fenzi <kevin@scrye.com> - 1.16.1-1
+    - Update to 1.16.1
+
+    * Tue Jul 31 2018 Kevin Fenzi <kevin@scrye.com> - 1.16.0-1
+    - Update to 1.16.0
+
+  Drop OSG patches that no longer apply:
+  - Don-t-warn-on-compatrequests.patch
+  - Don-t-warn-on-use_old_ssl-OSG-still-relies-on-it.patch
+  - koji_passwd_cache.patch
+  - koji_passwd_retry.patch
+  - koji_proxy_cert.patch
+
 * Fri Dec 06 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.15.3-1.2.osg
 - Update based on Fedora's 1.15.1-3 spec file and upstream's 1.15.3 tarball.
   Fedora's changelog:

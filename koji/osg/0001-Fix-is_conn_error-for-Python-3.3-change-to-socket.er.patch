@@ -1,0 +1,87 @@
+From d20928c9d90e95147c6627c0dc3de31920e658b7 Mon Sep 17 00:00:00 2001
+From: Adam Williamson <awilliam@redhat.com>
+Date: Tue, 8 Jan 2019 11:20:26 -0800
+Subject: [PATCH] Fix `is_conn_error()` for Python 3.3+ change to
+ `socket.error`
+
+In Python 3.3+, `socket.error` is no longer a distinct exception.
+It is - as the docs say - "A deprecated alias of OSError". This
+means that this check:
+
+`isinstance(e, socket.error)`
+
+is effectively equivalent to:
+
+`isinstance(e, OSError)`
+
+This is a problem, because `requests.exceptions.ConnectionError`
+(another exception type we handle later in `is_conn_error()`) is
+a subclass of `OSError` - so on Python 3 we never actually reach
+the block that's intended to handle that exception type. We hit
+the `isinstance(e, socket.error)` block at the start instead, and
+of course the exception doesn't have an `errno` attribute, so we
+just return `False` at that point.
+
+There are a few different ways we could fix this; this commit
+does it by ditching the `isinstance` checks, and dropping the
+shortcut `return False` bailout from the early block. We'll still
+ultimately return `False` unless the error is actually one of the
+other types we handle; it just costs a couple more `isinstance`
+checks.
+
+I don't think replacing the `isinstance socket.error` checks is
+really necessary at all. We can just check for an `errno` attr,
+and if there is one and it's one of the values we check for...
+that seems safe enough to treat as a connection error.
+
+This also changes the second check to be a check of `e2`, not
+`e` - I'm *fairly* sure this is what's actually intended, and
+the current code was a copy-paste error.
+
+Fixes: #1192
+
+Signed-off-by: Adam Williamson <awilliam@redhat.com>
+---
+ koji/__init__.py | 19 ++++++++++---------
+ 1 file changed, 10 insertions(+), 9 deletions(-)
+
+diff --git a/koji/__init__.py b/koji/__init__.py
+index aba10ec1..c4fd4756 100644
+--- a/koji/__init__.py
++++ b/koji/__init__.py
+@@ -1978,11 +1978,13 @@ def is_cert_error(e):
+ 
+ def is_conn_error(e):
+     """Determine if an error seems to be from a dropped connection"""
+-    if isinstance(e, socket.error):
+-        if getattr(e, 'errno', None) in (errno.ECONNRESET, errno.ECONNABORTED, errno.EPIPE):
+-            return True
+-        # else
+-        return False
++    # This is intended for the case where e is a socket error.
++    # as `socket.error` is just an alias for `OSError` in Python 3
++    # there is no value to an `isinstance` check here; let's just
++    # assume that if the exception has an 'errno' and it's one of
++    # these values, this is a connection error.
++    if getattr(e, 'errno', None) in (errno.ECONNRESET, errno.ECONNABORTED, errno.EPIPE):
++        return True
+     if isinstance(e, six.moves.http_client.BadStatusLine):
+         return True
+     try:
+@@ -1994,10 +1996,9 @@ def is_conn_error(e):
+                 e3 = getattr(e2, 'args', [None, None])[1]
+                 if isinstance(e3, six.moves.http_client.BadStatusLine):
+                     return True
+-            if isinstance(e2, socket.error):
+-                # same check as unwrapped socket error
+-                if getattr(e, 'errno', None) in (errno.ECONNRESET, errno.ECONNABORTED, errno.EPIPE):
+-                    return True
++            # same check as unwrapped socket error
++            if getattr(e2, 'errno', None) in (errno.ECONNRESET, errno.ECONNABORTED, errno.EPIPE):
++                return True
+     except (TypeError, AttributeError):
+         pass
+     # otherwise
+-- 
+2.20.1
+
