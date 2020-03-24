@@ -44,17 +44,12 @@ Source0: https://releases.pagure.org/koji/koji-%{version}.tar.bz2
 Patch0: 0001-Fix-is_conn_error-for-Python-3.3-change-to-socket.er.patch
 
 # OSG patches
-Patch101: koji_passwd_cache.patch
 Patch102: kojid_setup_dns.patch
 Patch103: kojid_scmbuild_check_spec_after_running_sourcecmd.patch
-Patch104: koji_passwd_retry.patch
-Patch105: koji_proxy_cert.patch
 Patch106: kojicli_setup_dns.patch
 Patch112: Fix-type-in-add-group-pkg.patch
 Patch113: kojira-accept-sleeptime-option.patch
 Patch114: 1635-os_path_join.patch
-Patch115: Don-t-warn-on-use_old_ssl-OSG-still-relies-on-it.patch
-Patch116: Don-t-warn-on-compatrequests.patch
 
 
 BuildArch: noarch
@@ -258,17 +253,12 @@ koji-web is a web UI to the Koji system.
 %patch0 -p1 -b .connerror
 
 # OSG patches
-%patch101 -p1
 %patch102 -p1
 %patch103 -p1
-%patch104 -p1
-%patch105 -p1
 %patch106 -p1
 %patch112 -p1
 %patch113 -p1
 %patch114 -p1
-%patch115 -p1
-%patch116 -p1
 
 %build
 
@@ -479,6 +469,13 @@ fi
 
     * Tue Jul 31 2018 Kevin Fenzi <kevin@scrye.com> - 1.16.0-1
     - Update to 1.16.0
+
+  Drop OSG patches that no longer apply:
+  - Don-t-warn-on-compatrequests.patch
+  - Don-t-warn-on-use_old_ssl-OSG-still-relies-on-it.patch
+  - koji_passwd_cache.patch
+  - koji_passwd_retry.patch
+  - koji_proxy_cert.patch
 
 * Fri Dec 06 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.15.3-1.2.osg
 - Update based on Fedora's 1.15.1-3 spec file and upstream's 1.15.3 tarball.
