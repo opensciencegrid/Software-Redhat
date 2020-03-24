@@ -48,7 +48,7 @@ Patch102: kojid_setup_dns.patch
 Patch103: kojid_scmbuild_check_spec_after_running_sourcecmd.patch
 Patch106: kojicli_setup_dns.patch
 Patch112: Fix-type-in-add-group-pkg.patch
-Patch113: kojira-accept-sleeptime-option.patch
+Patch113: kojira-add-sleeptime-to-conf.patch
 Patch114: 1635-os_path_join.patch
 
 
