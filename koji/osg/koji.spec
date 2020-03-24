@@ -49,7 +49,6 @@ Patch103: kojid_scmbuild_check_spec_after_running_sourcecmd.patch
 Patch106: kojicli_setup_dns.patch
 Patch112: Fix-type-in-add-group-pkg.patch
 Patch113: kojira-add-sleeptime-to-conf.patch
-Patch114: 1635-os_path_join.patch
 Patch115: CVE-2019-17109.patch
 Patch116: Fix-1.15-1.16-schema-upgrade-script.patch
 
@@ -260,7 +259,6 @@ koji-web is a web UI to the Koji system.
 %patch106 -p1
 %patch112 -p1
 %patch113 -p1
-%patch114 -p1
 %patch115 -p1
 %patch116 -p1
 
@@ -454,7 +452,7 @@ fi
 
 %changelog
 * Tue Mar 24 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.16.2-1.3.osg
-- Backport CVE-2019-17109 patch from 1.16.3
+- Backport CVE-2019-17109 patch from 1.16.3; this replaces the 1635-os_path_join.patch
 - Fix 1.15->1.16 schema upgrade script
 
 * Mon Mar 23 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.16.2-1.1.osg
