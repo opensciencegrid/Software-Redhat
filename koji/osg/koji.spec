@@ -30,7 +30,7 @@
 
 Name: koji
 Version: 1.16.2
-Release: 1.2%{?dist}
+Release: 1.3%{?dist}
 # koji.ssl libs (from plague) are GPLv2+
 License: LGPLv2 and GPLv2+
 Summary: Build system tools
@@ -453,7 +453,7 @@ fi
 %endif
 
 %changelog
-* Tue Mar 24 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.16.2-1.2.osg
+* Tue Mar 24 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.16.2-1.3.osg
 - Backport CVE-2019-17109 patch from 1.16.3
 - Fix 1.15->1.16 schema upgrade script
 
