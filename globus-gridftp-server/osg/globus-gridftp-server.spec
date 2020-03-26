@@ -9,7 +9,7 @@
 Name:		globus-gridftp-server
 %global _name %(tr - _ <<< %{name})
 Version:	13.20
-Release:	1%{?dist}
+Release:	1.1%{?dist}
 Summary:	Grid Community Toolkit - Globus GridFTP Server
 
 License:	ASL 2.0
@@ -20,6 +20,7 @@ Source2:	globus-gridftp-sshftp.service
 Source3:	%{name}
 Source4:	globus-gridftp-sshftp
 Source8:	README
+Patch0:         GCT-117-Restore-log-transfer-functionality-that-was-.patch
 
 BuildRequires:	gcc
 BuildRequires:	globus-common-devel >= 17
@@ -102,6 +103,7 @@ Globus GridFTP Server Development Files
 
 %prep
 %setup -q -n %{_name}-%{version}
+%patch0 -p1
 
 %build
 # Reduce overlinking
@@ -234,6 +236,9 @@ fi
 %{_libdir}/pkgconfig/%{name}.pc
 
 %changelog
+* Thu Mar 26 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 13.20-1.1.osg
+- Add patch for gridcf/gct#117 "Restore log transfer functionality that was accidentally removed" (SOFTWARE-4041)
+
 * Fri Aug 30 2019 Mattias Ellert <mattias.ellert@physics.uu.se> - 13.20-1
 - Fake stat responses when slow listings enabled (13.12)
 - Send markers in stream mode when requested by 'OPTS RETR Markers=n;'
