@@ -52,7 +52,7 @@
 Name:      xrootd
 Epoch:     1
 Version:   4.11.3
-Release:   2%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:   1.2%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -69,6 +69,7 @@ Source1:   xrootd-3.3.6.tar.gz
 
 Patch0: avoid_segv.patch 
 Patch1: mkcol.patch
+Patch2: error_code.patch
  
 BuildRoot: %{_tmppath}/%{name}-root
 
@@ -426,6 +427,7 @@ This package contains compatibility binaries for xrootd 3 servers.
 
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %build
 cd xrootd
@@ -978,6 +980,9 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Mon Mar 30 2020 Diego Davila <didavila@ucsd.edu> - 4.11.3-1.2
+- adding patch: erro_code.patch (software-4017)
+
 * Fri Mar 27 2020 Diego Davila <didavila@ucsd.edu> - 4.11.3-2
 - adding patches: avoid_segv.patch and mkcol.patch (software-4017)
 
