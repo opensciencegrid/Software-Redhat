@@ -5,7 +5,7 @@
 Name:      osg-ce
 Summary:   OSG Compute Element
 Version:   3.5
-Release:   4%{?dist}
+Release:   5%{?dist}
 License:   Apache 2.0
 URL:       http://www.opensciencegrid.org
 
@@ -175,7 +175,6 @@ install -m 644 %{SOURCE3} $RPM_BUILD_ROOT/%{_datadir}/condor-ce/config.d
 # https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=5102,86
 %{_datadir}/condor-ce/config.d/01-blahp-location.conf
 %{_datadir}/condor-ce/config.d/03-gratia-cleanup.conf
-%{_datadir}/condor-ce/config.d/51-gratia.conf
 %{_datadir}/condor-ce/config.d/03-osg-ce-collector.conf
 
 %files condor
@@ -183,9 +182,15 @@ install -m 644 %{SOURCE3} $RPM_BUILD_ROOT/%{_datadir}/condor-ce/config.d
 %files lsf
 %files sge
 %files slurm
+
 %files bosco
+%{_datadir}/condor-ce/config.d/51-gratia.conf
 
 %changelog
+* Wed Apr 01 2020 Carl Edquist <edquist@cs.wisc.edu> - 3.5-5
+- Add SCHEDD_CRON_GRATIA_ARGS to 51-gratia.conf (SOFTWARE-3973)
+- Move 51-gratia.conf to bosco subpackage
+
 * Wed Jan 08 2020 Brian Lin <blin@cs.wisc.edu> - 3.5-4
 - Set the central collector in the default osg-ce configuration (SOFTWARE-3382)
 
