@@ -1,6 +1,6 @@
 Name: xrootd-hdfs
 Version: 2.1.7
-Release: 3%{?dist}
+Release: 3.1%{?dist}
 Summary: HDFS plugin for xrootd
 
 Group: System Environment/Development
@@ -79,6 +79,7 @@ rm $RPM_BUILD_ROOT%{_bindir}/xrootd_hdfs_envcheck
 
 * Tue Mar 31 2020 Diego Davila <didavila@ucsd.edu> - 2.1.7-3
 - Rebuild for xrootd 5.0.0-rc2 (SOFTWARE-3923)
+- adding patch: link2serverlib to link with the right library
 
 * Mon Oct 21 2019 Carl Edquist <edquist@cs.wisc.edu> - 2.1.7-2
 - Rebuild for xrootd 4.11 (SOFTWARE-3830)
