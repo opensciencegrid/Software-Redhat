@@ -13,7 +13,7 @@
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
 %define version 3.7
-%define release 0.2.rc2
+%define release 0.3.rc3
 
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
@@ -78,7 +78,7 @@ vofrontend install (userschedd, submit, vofrontend).
 Summary:        The VOFrontend for glideinWMS submission host
 Group:          System Environment/Daemons
 Requires: httpd
-Requires: condor >= 8.4.0
+Requires: condor >= 8.9.5
 Requires: python >= 2.7
 Requires: python-rrdtool
 Requires: m2crypto
@@ -105,7 +105,7 @@ This package is for a standalone vofrontend install
 %package usercollector
 Summary:        The VOFrontend glideinWMS collector host
 Group:          System Environment/Daemons
-Requires: condor >= 8.4.0
+Requires: condor >= 8.9.5
 Requires: ganglia
 Requires: glideinwms-minimal-condor = %{version}-%{release}
 Requires: glideinwms-glidecondor-tools = %{version}-%{release}
@@ -117,7 +117,7 @@ It can be installed independently.
 %package userschedd
 Summary:        The VOFrontend glideinWMS submission host
 Group:          System Environment/Daemons
-Requires: condor >= 8.4.0
+Requires: condor >= 8.9.5
 Requires: glideinwms-minimal-condor = %{version}-%{release}
 Requires: glideinwms-common-tools = %{version}-%{release}
 Requires: glideinwms-glidecondor-tools = %{version}-%{release}
@@ -861,10 +861,10 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/condor/certs/condor_mapfile
 
 %changelog
-* Fri Mar 31 2020 Marco Mambelli <marcom@fnal.gov> - 3.7-0.2.rc2
+* Wed Apr 1 2020 Marco Mambelli <marcom@fnal.gov> - 3.7-0.3.rc3
 - GlideinWMS v3.7
 - Release Notes: http://glideinwms.fnal.gov/doc.v3_7/history.html
-- Release candidates: 3.7-0.1.rc1 to 3.7-0.2.rc2
+- Release candidates: 3.7-0.1.rc1 to 3.7-0.3.rc3
 
 * Thu Mar 26 2020 Marco Mambelli <marcom@fnal.gov> - 3.6.2-1
 - GlideinWMS v3.6.2
