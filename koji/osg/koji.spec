@@ -79,7 +79,7 @@
 
 Name: koji
 Version: 1.17.0
-Release: 10%{?dist}
+Release: 10.2%{?dist}
 # the included arch lib from yum's rpmUtils is GPLv2+
 License: LGPLv2 and GPLv2+
 Summary: Build system tools
@@ -135,7 +135,7 @@ Patch106: kojicli_setup_dns.patch
 Patch112: Fix-type-in-add-group-pkg.patch
 Patch113: kojira-add-sleeptime-to-conf.patch
 Patch116: Fix-1.15-1.16-schema-upgrade-script.patch
-
+Patch117: Restore-Python-2.6-compatibility-to-kojid.patch
 
 BuildArch: noarch
 %if 0%{py3_support}
@@ -740,11 +740,14 @@ fi
 %endif
 
 %changelog
-* Fri Mar 27 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.17.0-10.1.osg
+* Sat Apr 04 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.17.0-10.2.osg
 
 - **** OSG CHANGELOG ****
+    * Sat Apr 04 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.17.0-10.2.osg
+    - Fix kojid to use Python 2.6-compatible gzip (gzip.GzipFile did not support the 'with' statement)
+      (Restore-Python-2.6-compatibility-to-kojid.patch)
 
-    * Fri Mar 27 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.17.0-10.1.osg
+    * Fri Mar 27 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.17.0-10.osg
     - Update to 1.17.0-10 from Fedora
     - Drop CVE-2019-17109.patch (upstream)
 
