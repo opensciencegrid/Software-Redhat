@@ -741,164 +741,232 @@ fi
 
 %changelog
 * Fri Mar 27 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.17.0-10.1.osg
-- Update to 1.17.0-10 from Fedora
-  Fedora's changelog since 1.16.2:
-    * Tue Jul 09 2019 Kevin Fenzi <kevin@scrye.com> - 1.17.0-9
-    - Add backport for user sidetags: https://src.fedoraproject.org/rpms/koji/pull-request/7
-    - Add patch to use --all for merging bare repos: https://pagure.io/koji/pull-request/1516
 
-    * Wed Jun 19 2019 Kevin Fenzi <kevin@scrye.com> - 1.17.0-8
-    - Add https://pagure.io/koji/pull-request/1502.patch
+- **** OSG CHANGELOG ****
 
-    * Thu May 30 2019 Kevin Fenzi <kevin@scrye.com> - 1.17.0-7
-    - Add patch to fix koji kerberos auth with python3.
-    - Drop internal mergerepos so we can go all python3. Fixes bug #1715257
+    * Fri Mar 27 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.17.0-10.1.osg
+    - Update to 1.17.0-10 from Fedora
+    - Drop CVE-2019-17109.patch (upstream)
 
-    * Wed May 29 2019 Igor Gnatenko <ignatenkobrain@fedoraproject.org> - 1.17.0-7
-    - Expose dynamic_buildrequires mock setting
+    * Tue Mar 24 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.16.2-1.3.osg
+    - Backport CVE-2019-17109 patch from 1.16.3; this replaces the 1635-os_path_join.patch
+    - Fix 1.15->1.16 schema upgrade script
+      (Fix-1.15-1.16-schema-upgrade-script.patch)
+    - Replace kojira-accept-sleeptime-option.patch with kojira-add-sleeptime-to-conf.patch
+      (partially upstreamed)
 
-    * Tue May 28 2019 Kevin Fenzi <kevin@scrye.com> - 1.17.0-6
-    - Switch kojid back to python3 as imagefactory and oz have moved.
-    - Backport patch to download only repomd.xml instead of all repodata.
-    - Backport patch to allow 'bare' repo merging for modularity.
-    - Backport patch to allow for seperate srpm repos in buildroot repos.
+    * Mon Mar 23 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.16.2-1.1.osg
+    - Update to 1.16.2-1 from Fedora/EPEL
 
-    * Mon Mar 11 2019 Neal Gompa <ngompa13@gmail.com> - 1.17.0-5
-    - Switch kojid back to Python 2 so that imgfac doesn't get disabled
+      Drop OSG patches that no longer apply:
+      - Don-t-warn-on-compatrequests.patch
+      - Don-t-warn-on-use_old_ssl-OSG-still-relies-on-it.patch
+      - koji_passwd_cache.patch
+      - koji_passwd_retry.patch
+      - koji_proxy_cert.patch
 
-    * Sun Mar 10 2019 Neal Gompa <ngompa13@gmail.com> - 1.17.0-4
-    - Add patch proposed upstream to use createrepo_c by default to drop yum dependency
+    * Fri Dec 06 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.15.3-1.2.osg
+    - Update based on Fedora's 1.15.1-3 spec file and upstream's 1.15.3 tarball.
 
-    * Sun Mar 10 2019 Neal Gompa <ngompa13@gmail.com> - 1.17.0-3
-    - Remove remnants of unused /usr/libexec/koji-hub
+    * Fri Nov 22 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.14.3-1.2.osg
+    - Update based on Fedora's 1.14.0-4 spec file and upstream's 1.14.3 tarball.
 
-    * Thu Mar 07 2019 Neal Gompa <ngompa13@gmail.com> - 1.17.0-2
-    - Enable Python 3 for Fedora 30+ and EL8+
-    - Sync packaging changes from upstream
+    * Fri Nov 22 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.13.2-1.1.osg
+    - Update based on Fedora's spec file and upstream's 1.13.2 tarball.
 
-    * Thu Mar 07 2019 Patrick Uiterwijk <puiterwijk@redhat.com> - 1.17.0-1
-    - Rebase to 1.17.0
+    * Fri Nov 22 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.12.2-1.1.osg
+    - Add missing python-multilib and python-psycopg2 dependencies
 
-* Tue Mar 24 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.16.2-1.3.osg
-- Backport CVE-2019-17109 patch from 1.16.3; this replaces the 1635-os_path_join.patch
-- Fix 1.15->1.16 schema upgrade script
+    * Fri Nov 15 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.12.2-1.osg
+    - Update to 1.12.2
 
-* Mon Mar 23 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.16.2-1.1.osg
-- Update to 1.16.2-1 from Fedora/EPEL
-  Fedora's changelog since 1.15.3:
-    * Thu Feb 21 2019 Patrick Uiterwijk <puiterwijk@redhat.com> - 1.16.2-1
-    - Rebase to 1.16.2 for CVE-2018-1002161
+    * Wed Oct 09 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.11.1-1.2.osg
+    - Add patch for https://pagure.io/koji/pull-request/1635
+      (1635-os_path_join.patch)
 
-    * Fri Feb 01 2019 Fedora Release Engineering <releng@fedoraproject.org> - 1.16.1-4
-    - Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
+    * Thu Mar 14 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.11.1-1.1.osg
+    - Drop python-libcomps requirement
 
-    * Wed Jan 09 2019 Adam Williamson <awilliam@redhat.com> - 1.16.1-3
-    - Backport fix for Python 3 connection failure bug (#1192, PR #1203)
+    * Thu Feb 21 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.11.1-1.osg
+    - Update to 1.11.1 (SOFTWARE-3595)
+    - Build from developer tarball
 
-    * Fri Sep 14 2018 Kevin Fenzi <kevin@scrye.com> - 1.16.1-2
-    - Fix bad sed that caused python32 dep.
+    * Tue Oct 30 2018 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.11.0-1.7
+    - Add kojira-accept-sleeptime-option.patch
 
-    * Thu Sep 13 2018 Kevin Fenzi <kevin@scrye.com> - 1.16.1-1
-    - Update to 1.16.1
+    * Fri Dec 22 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - (no build)
+    - Drop el5-isms (SOFTWARE-3050)
+    - Drop createrepo_sha1.patch -- was only required for el5
 
-    * Tue Jul 31 2018 Kevin Fenzi <kevin@scrye.com> - 1.16.0-1
-    - Update to 1.16.0
+    * Wed Aug 23 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.11.0-1.6
+    - Fix `koji add-group-pkg` to set the correct type (SOFTWARE-2870)
+      (Fix-type-in-add-group-pkg.patch)
 
-  Drop OSG patches that no longer apply:
-  - Don-t-warn-on-compatrequests.patch
-  - Don-t-warn-on-use_old_ssl-OSG-still-relies-on-it.patch
-  - koji_passwd_cache.patch
-  - koji_passwd_retry.patch
-  - koji_proxy_cert.patch
+    * Thu Jan 19 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.11.0-1.5
+    - Require python-requests-2.6.0 (fixes "call 8 (rawUpload) failed: syntax error: line 1, column 49" error in kojid)
 
-* Fri Dec 06 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.15.3-1.2.osg
-- Update based on Fedora's 1.15.1-3 spec file and upstream's 1.15.3 tarball.
-  Fedora's changelog:
-    * Fri Jul 13 2018 Fedora Release Engineering <releng@fedoraproject.org> - 1.15.1-3
-    - Rebuilt for https://fedoraproject.org/wiki/Fedora_29_Mass_Rebuild
+    * Thu Jan 12 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.11.0-1.4
+    - Add db-upgrade-1.10-to-1.11.patch to fix a failing constraint in DB upgrade
+      script from 1.10 to 1.11
 
-    * Mon Jun 18 2018 Miro Hrončok <mhroncok@redhat.com> - 1.15.1-2
-    - Rebuilt for Python 3.7
+    * Wed Jan 11 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.11.0-1.2
+    - Add kojiweb_getfile_nontext_fix.patch to fix an error with 'getfile' kojiweb
+      URLs
 
-    * Tue Apr 03 2018 Patrick Uiterwijk <puiterwijk@redhat.com> - 1.15.1-1
-    - Rebase to 1.15.1
-    - Fixes CVE-2018-1002150
+    * Tue Jan 03 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.11.0-1.1
+    - Merge OSG changes
 
-    * Fri Mar 16 2018 Kevin Fenzi <kevin@scrye.com> - 1.15.0-7
-    - Backport PR #841 to allow configurable timeout for oz
+    * Tue Oct 04 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.10.1-10.1
+    - Merge OSG changes
+        - Drop koji_no_sslv3.patch
+        - Drop pkgorigins_filename.patch
+        - Update other OSG patches
 
-    * Tue Feb 20 2018 Patrick Uiterwijk <patrick@puiterwijk.org> - 1.15.0-6
-    - Backport PR #796
+    * Fri Jan 30 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6.0-10
+    - Patch kojid to request sha1 when running createrepo, for el5 compatibility
+      (SOFTWARE-1442)
 
-    * Sun Feb 18 2018 Patrick Uiterwijk <patrick@puiterwijk.org> - 1.15.0-5
-    - Add  workaround patch for bug #808
+    * Thu Jan 29 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.6.0-9
+    - Bring in upstream fix to parse repomd.xml for pkgorigins filename,
+      required for el6 koji upgrade (SOFTWARE-1442)
+      (pkgorigins_filename.patch)
 
-    * Fri Feb 16 2018 Patrick Uiterwijk <patrick@puiterwijk.org> - 1.15.0-4
-    - Backport patch from PR#794
-    - Fix macro escaping in comments
+    * Thu Oct 16 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.6.0-8
+    - Add patch to allow using TLSv1 instead of SSLv3 (SOFTWARE-1637)
+      (koji_no_sslv3.patch)
 
-    * Mon Feb 12 2018 Owen Taylor <otaylor@redhat.com> - 1.15.0-3
-    - Make hub, builder, etc, require python2-koji not koji
+    * Wed May 22 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.6.0-7
+    - Add use_host_resolv to opts in koji cli so koji --mock-config makes configs with DNS set up
+      (kojicli_setup_dns.patch)
 
-    * Wed Feb 07 2018 Fedora Release Engineering <releng@fedoraproject.org> - 1.15.0-2
-    - Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
+    * Wed Oct 31 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.6.0-6
+    - Add Brian Bockelman's patch to allow using proxy certs
+      (koji_proxy_cert.patch)
 
-    * Sat Jan 27 2018 Patrick Uiterwijk <patrick@puiterwijk.org> - 1.15.0-1
-    - Rebase to koji 1.15.0
+    * Wed Jun 13 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.6.0-5
+    - Allow user to retry entering SSL key password
+      (koji_passwd_retry.patch)
 
-* Fri Nov 22 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.14.3-1.2.osg
-- Update based on Fedora's 1.14.0-4 spec file and upstream's 1.14.3 tarball.
-  Fedora's changelog:
-    * Mon Jan 22 2018 Troy Dawson <tdawson@redhat.com> - 1.14.0-4
-    - Update conditional
+    * Fri Oct 28 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.6.0-4
+    - add patch to check for spec file only after running source_cmd in a build from an scm
+      (kojid_scmbuild_check_spec_after_running_sourcecmd.patch)
 
-    * Thu Dec 07 2017 Patrick Uiterwijk <patrick@puiterwijk.org> - 1.14.0-3
-    - Backport py3 runroot encoding patch (PR#735)
+    * Tue Oct 11 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.6.0-3
+    - add setup_dns to rootopts in kojid
+      (kojid_setup_dns.patch)
 
-    * Mon Dec 04 2017 Patrick Uiterwijk <patrick@puiterwijk.org> - 1.14.0-2
-    - Backport py3 keytab patch (PR#708)
-    - Backport patches for exit code (issue#696)
+    * Mon Aug 08 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.6.0-2
+    - Cache passwords to decrypt SSL key in memory.
+      (koji_passwd_cache.patch)
 
-    * Tue Sep 26 2017 Dennis Gilmore <dennis@ausil.us> - 1.14.0-1
-    - update to upstream 1.14.0
 
-* Fri Nov 22 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.13.2-1.1.osg
-- Update based on Fedora's spec file and upstream's 1.13.2 tarball.
-  Fedora's changelog:
-    * Wed Jul 26 2017 Fedora Release Engineering <releng@fedoraproject.org> - 1.13.0-4
-    - Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Mass_Rebuild
+* Tue Jul 09 2019 Kevin Fenzi <kevin@scrye.com> - 1.17.0-9
+- Add backport for user sidetags: https://src.fedoraproject.org/rpms/koji/pull-request/7
+- Add patch to use --all for merging bare repos: https://pagure.io/koji/pull-request/1516
 
-    * Wed Jul 12 2017 Patrick Uiterwijk <puiterwijk@redhat.com> - 1.13.0-3
-    - Remove the 2 postfix for pycurl and libcomps on RHEL
+* Wed Jun 19 2019 Kevin Fenzi <kevin@scrye.com> - 1.17.0-8
+- Add https://pagure.io/koji/pull-request/1502.patch
 
-    * Tue Jul 11 2017 Randy Barlow <bowlofeggs@fedoraproject.org> - 1.13.0-2
-    - Require python2-koji on Fedora <= 26.
+* Thu May 30 2019 Kevin Fenzi <kevin@scrye.com> - 1.17.0-7
+- Add patch to fix koji kerberos auth with python3.
+- Drop internal mergerepos so we can go all python3. Fixes bug #1715257
 
-* Fri Nov 22 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.12.2-1.1.osg
-- Add missing python-multilib and python-psycopg2 dependencies
+* Wed May 29 2019 Igor Gnatenko <ignatenkobrain@fedoraproject.org> - 1.17.0-7
+- Expose dynamic_buildrequires mock setting
 
-* Fri Nov 15 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.12.2-1.osg
-- Update to 1.12.2
+* Tue May 28 2019 Kevin Fenzi <kevin@scrye.com> - 1.17.0-6
+- Switch kojid back to python3 as imagefactory and oz have moved.
+- Backport patch to download only repomd.xml instead of all repodata.
+- Backport patch to allow 'bare' repo merging for modularity.
+- Backport patch to allow for seperate srpm repos in buildroot repos.
 
-* Wed Oct 09 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.11.1-1.2.osg
-- Add patch for https://pagure.io/koji/pull-request/1635
+* Mon Mar 11 2019 Neal Gompa <ngompa13@gmail.com> - 1.17.0-5
+- Switch kojid back to Python 2 so that imgfac doesn't get disabled
 
-* Thu Mar 14 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.11.1-1.1.osg
-- Drop python-libcomps requirement
+* Sun Mar 10 2019 Neal Gompa <ngompa13@gmail.com> - 1.17.0-4
+- Add patch proposed upstream to use createrepo_c by default to drop yum dependency
 
-* Thu Feb 21 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.11.1-1.osg
-- Update to 1.11.1 (SOFTWARE-3595)
-- Build from developer tarball
+* Sun Mar 10 2019 Neal Gompa <ngompa13@gmail.com> - 1.17.0-3
+- Remove remnants of unused /usr/libexec/koji-hub
 
-* Tue Oct 30 2018 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.11.0-1.7
-- Add kojira-accept-sleeptime-option.patch
+* Thu Mar 07 2019 Neal Gompa <ngompa13@gmail.com> - 1.17.0-2
+- Enable Python 3 for Fedora 30+ and EL8+
+- Sync packaging changes from upstream
 
-* Fri Dec 22 2017 Mátyás Selmeci <matyas@cs.wisc.edu>
-- Drop el5-isms (SOFTWARE-3050)
-- Drop createrepo_sha1.patch -- was only required for el5
+* Thu Mar 07 2019 Patrick Uiterwijk <puiterwijk@redhat.com> - 1.17.0-1
+- Rebase to 1.17.0
 
-* Wed Aug 23 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.11.0-1.6
-- Fix `koji add-group-pkg` to set the correct type (SOFTWARE-2870)
+* Thu Feb 21 2019 Patrick Uiterwijk <puiterwijk@redhat.com> - 1.16.2-1
+- Rebase to 1.16.2 for CVE-2018-1002161
+
+* Fri Feb 01 2019 Fedora Release Engineering <releng@fedoraproject.org> - 1.16.1-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
+
+* Wed Jan 09 2019 Adam Williamson <awilliam@redhat.com> - 1.16.1-3
+- Backport fix for Python 3 connection failure bug (#1192, PR #1203)
+
+* Fri Sep 14 2018 Kevin Fenzi <kevin@scrye.com> - 1.16.1-2
+- Fix bad sed that caused python32 dep.
+
+* Thu Sep 13 2018 Kevin Fenzi <kevin@scrye.com> - 1.16.1-1
+- Update to 1.16.1
+
+* Tue Jul 31 2018 Kevin Fenzi <kevin@scrye.com> - 1.16.0-1
+- Update to 1.16.0
+
+* Fri Jul 13 2018 Fedora Release Engineering <releng@fedoraproject.org> - 1.15.1-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_29_Mass_Rebuild
+
+* Mon Jun 18 2018 Miro Hrončok <mhroncok@redhat.com> - 1.15.1-2
+- Rebuilt for Python 3.7
+
+* Tue Apr 03 2018 Patrick Uiterwijk <puiterwijk@redhat.com> - 1.15.1-1
+- Rebase to 1.15.1
+- Fixes CVE-2018-1002150
+
+* Fri Mar 16 2018 Kevin Fenzi <kevin@scrye.com> - 1.15.0-7
+- Backport PR #841 to allow configurable timeout for oz
+
+* Tue Feb 20 2018 Patrick Uiterwijk <patrick@puiterwijk.org> - 1.15.0-6
+- Backport PR #796
+
+* Sun Feb 18 2018 Patrick Uiterwijk <patrick@puiterwijk.org> - 1.15.0-5
+- Add  workaround patch for bug #808
+
+* Fri Feb 16 2018 Patrick Uiterwijk <patrick@puiterwijk.org> - 1.15.0-4
+- Backport patch from PR#794
+- Fix macro escaping in comments
+
+* Mon Feb 12 2018 Owen Taylor <otaylor@redhat.com> - 1.15.0-3
+- Make hub, builder, etc, require python2-koji not koji
+
+* Wed Feb 07 2018 Fedora Release Engineering <releng@fedoraproject.org> - 1.15.0-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
+
+* Sat Jan 27 2018 Patrick Uiterwijk <patrick@puiterwijk.org> - 1.15.0-1
+- Rebase to koji 1.15.0
+
+* Mon Jan 22 2018 Troy Dawson <tdawson@redhat.com> - 1.14.0-4
+- Update conditional
+
+* Thu Dec 07 2017 Patrick Uiterwijk <patrick@puiterwijk.org> - 1.14.0-3
+- Backport py3 runroot encoding patch (PR#735)
+
+* Mon Dec 04 2017 Patrick Uiterwijk <patrick@puiterwijk.org> - 1.14.0-2
+- Backport py3 keytab patch (PR#708)
+- Backport patches for exit code (issue#696)
+
+* Tue Sep 26 2017 Dennis Gilmore <dennis@ausil.us> - 1.14.0-1
+- update to upstream 1.14.0
+
+* Wed Jul 26 2017 Fedora Release Engineering <releng@fedoraproject.org> - 1.13.0-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Mass_Rebuild
+
+* Wed Jul 12 2017 Patrick Uiterwijk <puiterwijk@redhat.com> - 1.13.0-3
+- Remove the 2 postfix for pycurl and libcomps on RHEL
+
+* Tue Jul 11 2017 Randy Barlow <bowlofeggs@fedoraproject.org> - 1.13.0-2
+- Require python2-koji on Fedora <= 26.
 
 * Sat Jun 03 2017 Patrick Uiterwijk <puiterwijk@redhat.com> - 1.12.0-5
 - Add patch for completing #349 fix
@@ -915,17 +983,6 @@ fi
 * Tue Apr 18 2017 Dennis Gilmore <dennis@ausil.us> - 1.12.0-1
 - update to upstream 1.12.0
 - remove rhel 5 conditionals as its no longer supported in epel
-
-* Thu Jan 19 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.11.0-1.5
-- Require python-requests-2.6.0 (fixes "call 8 (rawUpload) failed: syntax error: line 1, column 49" error in kojid)
-
-* Thu Jan 12 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.11.0-1.4
-- Add db-upgrade-1.10-to-1.11.patch to fix a failing constraint in DB upgrade
-  script from 1.10 to 1.11
-
-* Wed Jan 11 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.11.0-1.2
-- Add kojiweb_getfile_nontext_fix.patch to fix an error with 'getfile' kojiweb
-  URLs
 
 * Sun Jan 08 2017 Till Maas <opensource@till.name> - 1.11.0-5
 - Do not apply faulty CheckClientIP patch
@@ -944,18 +1001,9 @@ fi
 - Add upstream koji-gc kerberos patches
 - Use Source0
 
-* Tue Jan 03 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.11.0-1.1
-- Merge OSG changes
-
 * Fri Dec 09 2016 Dennis Gilmore <dennis@ausil.us> - 1.11.0-1
 - update to 1.11.0
 - setup fedora config for kerberos and flag day
-
-* Tue Oct 04 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.10.1-10.1
-- Merge OSG changes
-    - Drop koji_no_sslv3.patch
-    - Drop pkgorigins_filename.patch
-    - Update other OSG patches
 
 * Wed Sep 28 2016 Adam Miller <maxamillion@fedoraproject.org> - 1.10.1-13
 - Patch new-chroot functionality into runroot plugin
@@ -1019,22 +1067,11 @@ fi
 * Thu Apr 23 2015 Dennis Gilmore <dennis@ausil.us> - 1.9.0-11.20150423git52a0188
 - update to latest git
 
-* Fri Jan 30 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6.0-10
-- Patch kojid to request sha1 when running createrepo, for el5 compatibility
-  (SOFTWARE-1442)
-
-* Thu Jan 29 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.6.0-9
-- Bring in upstream fix to parse repomd.xml for pkgorigins filename,
-  required for el6 koji upgrade (SOFTWARE-1442)
-
 * Tue Jan 27 2015 Dennis Gilmore <dennis@ausil.us> - 1.9.0-10.gitcd45e886
 - update to git tarball
 
 * Thu Dec 11 2014 Dennis Gilmore <dennis@ausil.us> - 1.9.0-9
 - add upstream patch switching to TLS1 from sslv3
-
-* Thu Oct 16 2014 Carl Edquist <edquist@cs.wisc.edu> - 1.6.0-8
-- Add patch to allow using TLSv1 instead of SSLv3 (SOFTWARE-1637)
 
 * Tue Sep 30 2014 Dennis Gilmore <dennis@ausil.us> - 1.9.0-8
 - don't exclude koji-vm from ppc and ppc64
@@ -1065,9 +1102,6 @@ fi
 * Wed Jul 31 2013 Dennis Gilmore <dennis@ausil.us> - 1.8.0-2
 - update from git snapshot
 
-* Wed May 22 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.6.0-7
-- Add use_host_resolv to opts in koji cli so koji --mock-config makes configs with DNS set up
-
 * Mon Apr 01 2013 Dennis Gilmore <dennis@ausil.us> - 1.8.0-1
 - update to upstream 1.8.0
 
@@ -1080,9 +1114,6 @@ fi
 
 * Wed Nov 21 2012 Dennis Gilmore <dennis@ausil.us> - 1.7.1-1
 - update to upstream 1.7.1 release
-
-* Wed Oct 31 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.6.0-6
-- Add Brian Bockelman's patch to allow using proxy certs
 
 * Sat Sep 01 2012 Dennis Gilmore <dennis@ausil.us> - 1.7.0-7
 - add the patch that we had previously had hotapplied in fedora infra
@@ -1100,24 +1131,12 @@ fi
 * Thu Jul 19 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.7.0-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
 
-* Wed Jun 13 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 1.6.0-5
-- Allow user to retry entering SSL key password
-
 * Tue Jun 05 2012 Dennis Gilmore <dennis@ausil.us> - 1.7.0-2
 - use topurl not pkgurl in the fedora config
 
 * Fri Jun 01 2012 Dennis Gilmore <dennis@ausil.us> - 1.7.0-1
 - update to 1.7.0 many bugfixes and improvements
 - now uses mod_wsgi
-
-* Fri Oct 28 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.6.0-4
-- add patch to check for spec file only after running source_cmd in a build from an scm
-
-* Tue Oct 11 2011 Matyas Selmeci <matyas@cs.wisc.edu> - 1.6.0-3
-- add setup_dns to rootopts in kojid
-
-* Mon Aug 08 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.6.0-2
-- Cache passwords to decrypt SSL key in memory.
 
 * Mon Jan 03 2011 Dennis Gilmore <dennis@ausil.us> - 1.6.0-1.1
 - drop Requires on qemu-img on epel for koji-vm
