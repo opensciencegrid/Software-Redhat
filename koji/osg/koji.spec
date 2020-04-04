@@ -458,15 +458,7 @@ koji-web is a web UI to the Koji system.
 %endif
 
 %prep
-%setup -q
-
-# OSG patches
-%patch102 -p1
-%patch103 -p1
-%patch106 -p1
-%patch112 -p1
-%patch113 -p1
-%patch116 -p1
+%autosetup -p1
 
 %build
 # Nothing to build
