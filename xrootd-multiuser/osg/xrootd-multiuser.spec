@@ -1,7 +1,7 @@
 
 Name: xrootd-multiuser
 Version: 0.4.2
-Release: 7%{?dist}
+Release: 8.1%{?dist}
 Summary: Multiuser filesystem writing plugin for xrootd
 
 License: BSD
@@ -9,6 +9,7 @@ URL: https://github.com/bbockelm/xrootd-multiuser
 # Generated from:
 # git archive v%{version} --prefix=xrootd-multiuser-%{version}/ | gzip -7 > ~/rpmbuild/SOURCES/xrootd-multiuser-%{version}.tar.gz
 Source0: %{name}-%{version}.tar.gz
+Patch0: build_against_5.patch
 
 %define xrootd_current 4.11
 %define xrootd_next 5.0
@@ -32,6 +33,7 @@ Requires: xrootd-server <  1:%{xrootd_next}.0-1
 
 %prep
 %setup -q
+%patch0 -p1
 
 %build
 %cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo .
@@ -55,10 +57,13 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)
-%{_libdir}/libXrdMultiuser-4.so
+%{_libdir}/libXrdMultiuser-5.so
 %{_unitdir}/xrootd-privileged@.service
 
 %changelog
+* Mon Apr 06 2020 Diego Davila <didavila@ucsd.edu> - 0.4.2-7.1
+- Adding patch: 'build_against_5.patch'  to build libXrdMultiuser-5.so instead of libXrdMultiuser-4.so (SOFTWARE-3923)
+
 * Tue Mar 31 2020 Diego Davila <didavila@ucsd.edu> - 0.4.2-7
 - Rebuild against xrootd 5.0.0-rc2; changed version range dependency (SOFTWARE-3923)
 
