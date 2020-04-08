@@ -1,5 +1,5 @@
 Name:           vo-client
-Version:        103
+Version:        104
 Release:        1%{?dist}
 Summary:        Contains vomses file for use with user authentication
 
@@ -70,6 +70,9 @@ find $RPM_BUILD_ROOT/%{_sysconfdir}/grid-security/vomsdir -type d -exec chmod 75
 %config(noreplace) %{_datadir}/osg/grid-vorolemap
 
 %changelog
+* Tue Apr 07 2020 Edgar Fajardo <emfajard@ucsd.edu> - 104-1
+- Updating gluex VOMS (SOFTWARE-4053)
+
 * Wed Apr 01 2020 Edgar Fajardo <emfajard@ucsd.edu> - 103-1
 - Adding wclg vo (SOFTWARE-4048)
 - Changing the DN of voms1.fnal.gov (SOFTWARE-4048)
