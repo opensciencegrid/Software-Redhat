@@ -227,7 +227,7 @@ Summary: Koji XMLRPC interface
 License: LGPLv2
 Requires: %{name} = %{version}-%{release}
 Requires: %{name}-hub-code
-%if 0%{?fedora} || 0%{?rhel} > 7
+%if ! 0%{?osg} && (0%{?fedora} || 0%{?rhel} > 7)
 Suggests: python%{python3_pkgversion}-%{name}-hub
 Suggests: python%{python3_pkgversion}-%{name}-hub-plugins
 %endif
@@ -277,7 +277,7 @@ koji-hub is the XMLRPC interface to the koji database
 Summary: Koji hub plugins
 License: LGPLv2
 Requires: %{name}-hub-plugins-code = %{version}-%{release}
-%if 0%{?fedora} || 0%{?rhel} > 7
+%if ! 0%{?osg} && (0%{?fedora} || 0%{?rhel} > 7)
 Suggests: python%{python3_pkgversion}-%{name}-hub-plugins
 %endif
 
@@ -410,7 +410,7 @@ Summary: Koji Web UI
 License: LGPLv2
 Requires: %{name} = %{version}-%{release}
 Requires: %{name}-web-code = %{version}-%{release}
-%if 0%{?fedora} || 0%{?rhel} > 7
+%if ! 0%{?osg} && (0%{?fedora} || 0%{?rhel} > 7)
 Suggests: python%{python3_pkgversion}-%{name}-web
 %endif
 
