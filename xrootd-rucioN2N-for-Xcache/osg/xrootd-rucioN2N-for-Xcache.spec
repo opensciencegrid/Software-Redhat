@@ -1,6 +1,6 @@
 Name:      xrootd-rucioN2N-for-Xcache
 Version:   1.2
-Release:   2.1%{?dist}
+Release:   3.1%{?dist}
 Summary:   Xrootd Name-to-Name plugin for Disk Caching Proxy (Xcache) to utilize RUCIO metalink
 Group:     System Environment/Libraries
 License:   BSD 
@@ -9,7 +9,8 @@ URL:       https://github.com/wyang007/rucioN2N-for-Xcache
 
 
 Source0:   rucioN2N-for-Xcache-%{version}.tar.gz
-Patch1: link_to_lXrdPfc5.patch 
+Patch0: dont_link.patch 
+
 BuildArch: x86_64
 
 %define xrootd_current 5.0
@@ -35,7 +36,7 @@ rucioN2N-for-Xcache is a xrootd plugin module that will identify multiple copies
 %prep
 #%setup -q -c -D -T %{name} 
 %setup -q -c %{name} 
-%patch1 -p0
+%patch0 -p1
 
 %build
 pwd
@@ -58,6 +59,10 @@ cp rucioN2N-for-Xcache-%{version}/XrdName2NameDCP4RUCIO.so %{buildroot}/usr/lib6
 %post -p /sbin/ldconfig
 
 %changelog 
+* Fri Apr 10 2020 Diego Davila <didavila@ucsd.edu> - v1.2-3.1
+- Removing patch: link_to_lXrdPfc5.patch 
+- Adding patch: dont_link.patch that removes the linking against libXrdFileCache-4 
+
 * Wed Apr 1 2020 Diego Davila <didavila@ucsd.edu> - v1.2-2.1
 - Building against Xrootd 5.0.0-rc2 (SOFTWARE-3923)
 
