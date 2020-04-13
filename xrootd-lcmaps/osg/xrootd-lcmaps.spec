@@ -1,7 +1,7 @@
 
 Name: xrootd-lcmaps
 Version: 1.7.5
-Release: 3%{?dist}
+Release: 4.1%{?dist}
 Summary: LCMAPS plugin for xrootd
 
 Group: System Environment/Daemons
@@ -10,6 +10,8 @@ URL: https://github.com/opensciencegrid/xrootd-lcmaps
 # Generated from:
 # git archive v${VERSION} --prefix=xrootd-lcmaps-$VERSION/ | gzip -7 > ~/rpmbuild/SOURCES/xrootd-lcmaps-$VERSION.tar.gz
 Source0: %{name}-%{version}.tar.gz
+
+Patch0: dont_link.patch
 
 %define xrootd_current 4.11
 %define xrootd_next 5.0
@@ -37,7 +39,6 @@ BuildRequires: globus-gsi-callback-devel
 
 Requires: xrootd-server >= 1:%{xrootd_current}.0-1
 Requires: xrootd-server <  1:%{xrootd_next}.0-1
-Patch0: link_to5.patch
 
 %description
 %{summary}
@@ -77,7 +78,7 @@ make install DESTDIR=$RPM_BUILD_ROOT
 
 %changelog
 * Tue Mar 31 2020 Diego Davila <didavila@ucad.edu> - 1.7.5-3
-- Rebuild against xrootd 5.0.0-rc2 (SOFTWARE-3923)
+- Removing patch: link_to5 and adding patch dont_link (SOFTWARE-3923)
 
 * Mon Feb 24 2020 Diego Davila <didavila@ucad.edu> - 1.7.5-2
 - Adding patch0 so that we can rebuild against xrootd 5.0 (SOFTWARE-3923)

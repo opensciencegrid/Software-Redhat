@@ -1,0 +1,54 @@
+From 0380bb811cc5fa05cd1edc3940ac90ac32975961 Mon Sep 17 00:00:00 2001
+From: Diego Davila <davila.foyo@gmail.com>
+Date: Fri, 10 Apr 2020 13:47:07 -0500
+Subject: [PATCH] don't link with xrootd plugins XROOTD_SECGSI and
+ XROOTD_CRYPTOSSL (software-3923)
+
+---
+ CMakeLists.txt         |  2 +-
+ cmake/FindXrootd.cmake | 20 +-------------------
+ 2 files changed, 2 insertions(+), 20 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 537aa86..bc0c739 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -26,7 +26,7 @@ set (INCLUDE_DIRECTORIES ${INCLUDE_DIRECTORIES} ${GLOBUS_INCLUDE_DIRS})
+ include_directories( "${PROJECT_SOURCE_DIR}" "${XROOTD_INCLUDES}" "${LCMAPS_INCLUDES}" "${VOMS_INCLUDES}")
+ 
+ add_library(XrdLcmaps MODULE src/XrdLcmaps.cc src/XrdHttpLcmaps.cc src/XrdLcmapsConfig.cc src/XrdLcmapsKey.cc src/GlobusSupport.cc src/GlobusError.cc)
+-target_link_libraries(XrdLcmaps ${XROOTD_SECGSI} ${XROOTD_CRYPTOSSL} ${LCMAPS_LIB} ${DL_LIB} ${VOMS_LIB})
++target_link_libraries(XrdLcmaps ${LCMAPS_LIB} ${DL_LIB} ${VOMS_LIB})
+ set_target_properties(XrdLcmaps PROPERTIES LINK_FLAGS "-Wl,--version-script=${PROJECT_SOURCE_DIR}/configs/export-symbols")
+ 
+ if (NOT DEFINED LIB_INSTALL_DIR)
+diff --git a/cmake/FindXrootd.cmake b/cmake/FindXrootd.cmake
+index 032705d..6398c54 100644
+--- a/cmake/FindXrootd.cmake
++++ b/cmake/FindXrootd.cmake
+@@ -19,24 +19,6 @@ FIND_PATH(XROOTD_SERVER_INCLUDES XrdHttp/XrdHttpSecXtractor.hh
+   PATHS /opt/xrootd
+ )
+ 
+-FIND_LIBRARY(XROOTD_SECGSI XrdSecgsi-4
+-  HINTS
+-  ${XROOTD_DIR}
+-  $ENV{XROOTD_DIR}
+-  /usr
+-  /opt/xrootd/
+-  PATH_SUFFIXES lib
+-)
+-
+-FIND_LIBRARY(XROOTD_CRYPTOSSL XrdCryptossl-4
+-  HINTS
+-  ${XROOTD_DIR}
+-  $ENV{XROOTD_DIR}
+-  /usr
+-  /opt/xrootd/
+-  PATH_SUFFIXES lib
+-)
+-
+ INCLUDE(FindPackageHandleStandardArgs)
+-FIND_PACKAGE_HANDLE_STANDARD_ARGS(Xrootd DEFAULT_MSG XROOTD_SECGSI XROOTD_CRYPTOSSL XROOTD_INCLUDES XROOTD_SERVER_INCLUDES)
++FIND_PACKAGE_HANDLE_STANDARD_ARGS(Xrootd DEFAULT_MSG XROOTD_INCLUDES XROOTD_SERVER_INCLUDES)
+ 
