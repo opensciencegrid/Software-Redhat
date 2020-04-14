@@ -61,7 +61,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_unitdir}/xrootd-privileged@.service
 
 %changelog
-* Mon Apr 06 2020 Diego Davila <didavila@ucsd.edu> - 0.4.2-7.1
+* Mon Apr 06 2020 Diego Davila <didavila@ucsd.edu> - 0.4.2-8.1
 - Adding patch: 'build_against_5.patch'  to build libXrdMultiuser-5.so instead of libXrdMultiuser-4.so (SOFTWARE-3923)
 
 * Tue Mar 31 2020 Diego Davila <didavila@ucsd.edu> - 0.4.2-7

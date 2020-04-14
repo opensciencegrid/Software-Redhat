@@ -77,7 +77,7 @@ rm $RPM_BUILD_ROOT%{_bindir}/xrootd_hdfs_envcheck
 
 %changelog
 
-* Tue Mar 31 2020 Diego Davila <didavila@ucsd.edu> - 2.1.7-3
+* Tue Mar 31 2020 Diego Davila <didavila@ucsd.edu> - 2.1.7-3.1
 - Rebuild for xrootd 5.0.0-rc2 (SOFTWARE-3923)
 - adding patch: link2serverlib to link with the right library
 
