@@ -10,12 +10,16 @@
 Summary:   Fetch sources from upstream (internal use)
 Name:      fetch-sources
 Version:   1.14.1
-Release:   1%{?dist}
+Release:   2%{?dist}
 License:   Apache License, 2.0
 Source0:   %{name}
 BuildArch: noarch
 BuildRequires: osg-build-base >= %{version}
+%if 0%{?rhel} >= 8
+Requires: git-core
+%else
 Requires: git
+%endif
 Requires: python-six
 Requires: subversion
 
@@ -42,6 +46,9 @@ sed -i -e "s|@OSGBUILDVERSION@|${osgbuild_version}|" $RPM_BUILD_ROOT/%{_bindir}/
 /usr/share/fetch-sources
 
 %changelog
+* Fri Apr 17 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.14.1-2
+- Use git-core on RHEL8+
+
 * Mon Feb 25 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.14.1-1
 - Rebuild against osg-build 1.14.1
 
