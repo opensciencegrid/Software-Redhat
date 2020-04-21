@@ -19,8 +19,8 @@ BuildRequires: osg-build-base >= %{version}
 Requires: git-core
 %else
 Requires: git
-%endif
 Requires: python-six
+%endif
 Requires: subversion
 
 %description
@@ -47,7 +47,8 @@ sed -i -e "s|@OSGBUILDVERSION@|${osgbuild_version}|" $RPM_BUILD_ROOT/%{_bindir}/
 
 %changelog
 * Fri Apr 17 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.14.1-2
-- Use git-core on RHEL8+
+- Use git-core on RHEL8
+- Don't pull in python-six on RHEL8
 
 * Mon Feb 25 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.14.1-1
 - Rebuild against osg-build 1.14.1
