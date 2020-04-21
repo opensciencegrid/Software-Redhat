@@ -63,7 +63,7 @@
 Name:      xrootd
 Epoch:     1
 Version:   5.0.0
-Release:   0.rc2.1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:   0.rc2.2%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -74,6 +74,7 @@ URL:       http://xrootd.org/
 # git-archive master | gzip -9 > ~/rpmbuild/SOURCES/xrootd.tgz
 Source0:   xrootd.tar.gz
 Patch0:    pss_origin.patch
+Patch1:    httpRole.patch
 
 BuildRoot: %{_tmppath}/%{name}-root
 
@@ -405,6 +406,7 @@ This package contains a set of CPPUnit tests for xrootd.
 %prep
 %setup -c -n xrootd
 %patch0 -p1
+%patch1 -p1
 
 %build
 cd xrootd
@@ -878,6 +880,9 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Mon Apr 13 2020 Diego Davila <didavila@ucsd.edu> - 5.0.0-rc2.2
+- Adding patch: httpRole.patch
+
 * Mon Apr 13 2020 Diego Davila <didavila@ucsd.edu> - 5.0.0-rc2.1
 - Adding patch: pss_origin.patch
 
