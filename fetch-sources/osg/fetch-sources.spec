@@ -7,14 +7,16 @@
 # development tag from overriding a newer fetch-sources in the dist-$el-build
 # tag.
 
+%define osg_build_version 1.15.1
+
 Summary:   Fetch sources from upstream (internal use)
 Name:      fetch-sources
-Version:   1.14.1
-Release:   2%{?dist}
+Version:   %{osg_build_version}
+Release:   1%{?dist}
 License:   Apache License, 2.0
-Source0:   %{name}
+Source0:   osg-build-%{osg_build_version}.tar.gz
+Source1:   %{name}
 BuildArch: noarch
-BuildRequires: osg-build-base >= %{version}
 %if 0%{?rhel} >= 8
 Requires: git-core
 %else
@@ -23,29 +25,48 @@ Requires: python-six
 %endif
 Requires: subversion
 
+%if 0%{?rhel} >= 8
+  %define __python /usr/libexec/platform-python
+%else
+  %if 0%{?fedora} >= 31
+    %define __python /usr/bin/python3
+  %else
+    %define __python /usr/bin/python2
+  %endif
+%endif
+
 %description
 Fetches sources from upstream directory
 For OSG internal use only.
 
 %prep
-exit 0
+%setup -qn osg-build-%{osg_build_version}
 
 %install
 mkdir -p $RPM_BUILD_ROOT/usr/share/fetch-sources/osgbuild
-cp %{python_sitelib}/osgbuild/*.py $RPM_BUILD_ROOT/usr/share/fetch-sources/osgbuild/
+cp osgbuild/*.py $RPM_BUILD_ROOT/usr/share/fetch-sources/osgbuild/
 
 mkdir -p $RPM_BUILD_ROOT/%{_bindir}
-install -m 755 %{SOURCE0} $RPM_BUILD_ROOT/%{_bindir}/%{name}
+install -m 755 %{SOURCE1} $RPM_BUILD_ROOT/%{_bindir}/%{name}
 
 # Put the build version into the script
-osgbuild_version=$(osg-build --version)
+osgbuild_version=$(%{__python} -c "import sys; sys.path.append('.'); from osgbuild import version; print(version.__version__)")
 sed -i -e "s|@OSGBUILDVERSION@|${osgbuild_version}|" $RPM_BUILD_ROOT/%{_bindir}/%{name}
+
+# fix shebang lines
+find $RPM_BUILD_ROOT -type f -exec sed -ri '1s,^#!/usr/bin/(env )?python$,#!%{__python},' '{}' +
 
 %files
 %{_bindir}/%{name}
 /usr/share/fetch-sources
 
 %changelog
+* Tue Apr 21 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.15.1-1
+- Build using the osg-build tarball to avoid the bootstrapping issue of already
+  needing an OSG dependency in the build repository before you are able to do
+  builds
+- Build against osg-build 1.15.1
+
 * Fri Apr 17 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.14.1-2
 - Use git-core on RHEL8
 - Don't pull in python-six on RHEL8
