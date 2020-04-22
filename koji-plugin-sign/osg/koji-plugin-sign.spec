@@ -1,6 +1,6 @@
 Name:           koji-plugin-sign
 Version:        1.4.0
-Release:        7%{?dist}
+Release:        8%{?dist}
 Summary:        GPG signing plugin for koji-hub
 
 Group:          Applications/System
@@ -9,9 +9,9 @@ URL:            https://fedorahosted.org/koji/ticket/203
 Source0:        sign.conf
 Source1:        sign.py
 Patch0:         allow_disable.patch
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 Requires:       koji-hub, pexpect
+Requires:       /usr/bin/rpmsign
 
 %description
 GPG signing plugin for koji-hub
@@ -27,24 +27,21 @@ exit 0
 
 
 %install
-rm -rf $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT
 install -D sign.conf -m 0600 $RPM_BUILD_ROOT/etc/koji-hub/plugins/sign.conf
 install -D sign.py -m 0755 $RPM_BUILD_ROOT/usr/lib/koji-hub-plugins/sign.py
 
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
-
 %files
-%defattr(-,root,root,-)
 %config(noreplace) %attr(0600,apache,apache) /etc/koji-hub/plugins/sign.conf
 %attr(0755,root,root) /usr/lib/koji-hub-plugins/sign.py*
 
 
 
 %changelog
+* Wed Apr 22 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.4.0-8
+- Add /usr/bin/rpmsign dependency
+
 * Thu Oct 17 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 1.4.0-7
 - Rebuild with dist tag
 
