@@ -128,11 +128,8 @@ Patch20: no-noarch-in-src-repos.patch
 # Adjust xz params to favor speed
 Patch21: https://pagure.io/koji/pull-request/1576.patch
 
-# set module_hotfixes=1 in yum.conf via tag config (https://pagure.io/koji/pull-request/1524)
-Patch22: 1524-set-module_hotfixes-1.patch
-
-# cli:fix typo in mock-config (https://pagure.io/koji/pull-request/1578)
-Patch23: 1579-cli-fix-typo-in-mock-config.patch
+# set module_hotfixes=1 in yum.conf via tag config (https://pagure.io/koji/pull-request/1524, 1st commit)
+Patch22: 1524-1-set-module_hotfixes-1.patch
 
 # OSG patches
 Patch102: kojid_setup_dns.patch
@@ -750,8 +747,7 @@ fi
 - **** OSG CHANGELOG ****
     * Thu Apr 23 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.17.0-10.3.osg
     - Apply patches from Koji 1.18.0 to avoid "missing module metadata" error for EL8 builds
-        - https://pagure.io/koji/pull-request/1524
-        - https://pagure.io/koji/pull-request/1578
+        - https://pagure.io/koji/pull-request/1524 (1st commit)
 
     * Sat Apr 04 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.17.0-10.2.osg
     - Fix kojid to use Python 2.6-compatible gzip (gzip.GzipFile did not support the 'with' statement)

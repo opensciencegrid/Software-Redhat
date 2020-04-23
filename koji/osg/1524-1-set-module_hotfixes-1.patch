@@ -38,25 +38,3 @@ index 6a9005b..e9a3662 100644
  
      plugin_conf = {
 
-From f1c840900f8b39093e89b21e4a664f2ee0023292 Mon Sep 17 00:00:00 2001
-From: Tomas Kopecek <tkopecek@redhat.com>
-Date: Jul 09 2019 12:20:51 +0000
-Subject: [PATCH 2/2] reflect module_hotfixes also in CLI
-
-
----
-
-diff --git a/cli/koji_cli/commands.py b/cli/koji_cli/commands.py
-index 7a67f80..3f0ca21 100644
---- a/cli/koji_cli/commands.py
-+++ b/cli/koji_cli/commands.py
-@@ -999,6 +999,8 @@ def anon_handle_mock_config(goptions, session, args):
-     buildcfg = session.getBuildConfig(opts['tag_name'], event=event)
-     if 'mock.package_manager' in buildcfg['extra']:
-         opts['package_manager'] = buildcfg['extra']['mock.package_manager']
-+    if 'mock.yum.module_hotfixes' in buildcfg['extra']:
-+        opts['module_hotfixes'] = self.config['extra']['mock.yum.module_hotfixes']
- 
-     output = koji.genMockConfig(name, arch, **opts)
-     if options.ofile:
-
