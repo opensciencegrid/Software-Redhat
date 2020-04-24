@@ -1,7 +1,7 @@
 Name:      osg-wn-client
 Summary:   OSG Worker-Node Client
 Version:   3.5
-Release:   1%{?dist}
+Release:   2%{?dist}
 License:   Apache 2.0
 URL:       http://www.opensciencegrid.org
 BuildArch: noarch
@@ -9,7 +9,9 @@ BuildArch: noarch
 
 Requires: /usr/bin/xrdcp
 Requires: /usr/bin/curl
+%if 0%{?rhel} < 8
 Requires: fts-client
+%endif
 Requires: myproxy
 Requires: voms-clients-cpp
 Requires: /usr/bin/ldapsearch
@@ -59,6 +61,9 @@ EOF
 %config(noreplace) %{_prefix}/etc/globus-user-env.sh
 
 %changelog
+* Thu Apr 23 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.5-2
+- Don't require fts-client on EL8, it's not available (SOFTWARE-4050)
+
 * Fri Aug 02 2019 Carl Edquist <edquist@cs.wisc.edu> - 3.5-1
 - Bump version to 3.5 (SOFTWARE-3761)
 
