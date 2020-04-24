@@ -4,6 +4,7 @@ Version:   1.5.0
 Release:   2%{?dist}
 License:   Apache License, 2.0
 Source0:   %{name}-%{version}.tar.gz
+Patch0: viewer-require-python-2.patch
 BuildArch: noarch
 
 Requires: setroubleshoot-server
@@ -27,6 +28,9 @@ A GUI for viewing the output of %{name} in a structured manner.
 
 %prep
 %setup -q
+%if 0%{?rhel} >= 8
+%patch0 -p1
+%endif
 
 %install
 make install DESTDIR=$RPM_BUILD_ROOT
