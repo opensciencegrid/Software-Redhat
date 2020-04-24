@@ -1,7 +1,7 @@
 Summary:   Profiles your system for debugging
 Name:      osg-system-profiler
 Version:   1.5.0
-Release:   1%{?dist}
+Release:   2%{?dist}
 License:   Apache License, 2.0
 Source0:   %{name}-%{version}.tar.gz
 BuildArch: noarch
@@ -16,7 +16,11 @@ you will ask for the output of the profiler.
 
 %package viewer
 Summary:   Views the output of %{name}
+%if 0%{?rhel} >= 8
+Requires:  python2-tkinter
+%else
 Requires:  tkinter
+%endif
 
 %description viewer
 A GUI for viewing the output of %{name} in a structured manner.
@@ -36,6 +40,9 @@ make install DESTDIR=$RPM_BUILD_ROOT
 %{_bindir}/%{name}-viewer
 
 %changelog
+* Thu Apr 23 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.5.0-2
+- Build for EL8 (SOFTWARE-4050)
+
 * Mon Jan 27 2020 Diego Davila <didavila@ucsd.edu> - 1.5.0-1
 - Include xrootd configuration (SOFTWARE-3876)
 - don't verify kernel-devel packages (SOFTWARE-3804)
