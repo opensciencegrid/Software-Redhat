@@ -1,4 +1,4 @@
-%define tarball_version 8.8.7
+%define tarball_version 8.8.9
 
 # optionally define any of these, here or externally
 # % define fedora   16
@@ -132,7 +132,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1
+%define condor_base_release 0.501875
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -236,7 +236,6 @@ Patch2: python-shebang.patch
 
 #% if 0%osg
 Patch8: osg_sysconfig_in_init_script.patch
-Patch16: bosco_https.patch
 #% endif
 
 # HCC patches
@@ -418,6 +417,9 @@ BuildRequires: python-sphinx python-sphinx_rtd_theme
 %if 0%{?rhel} >= 8
 BuildRequires: python3-sphinx python3-sphinx_rtd_theme
 %endif
+
+# openssh-server needed for condor_ssh_to_job
+Requires: openssh-server
 
 Requires: /usr/sbin/sendmail
 Requires: condor-classads = %{version}-%{release}
@@ -917,7 +919,6 @@ exit 0
 
 %if 0%{?osg} || 0%{?hcc}
 %patch8 -p1
-%patch16 -p1
 %endif
 
 %if 0%{?hcc}
@@ -943,7 +944,7 @@ export CMAKE_PREFIX_PATH=/usr
 # causes build issues with EL5, don't even bother building the tests.
 
 %if %uw_build
-%define condor_build_id 493225
+%define condor_build_id 501875
 
 cmake \
        -DBUILDID:STRING=%condor_build_id \
@@ -2189,6 +2190,17 @@ fi
 %endif
 
 %changelog
+* Tue Apr 28 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 8.8.9-0.501875
+- 8.8.9 prerelease
+- Drop bosco_https.patch, upstream
+
+* Mon Apr 06 2020 Tim Theisen <tim@cs.wisc.edu> - 8.8.8-1
+- Fixes addressing CVE-2019-18823
+- https://research.cs.wisc.edu/htcondor/security/vulnerabilities/HTCONDOR-2020-0001.html
+- https://research.cs.wisc.edu/htcondor/security/vulnerabilities/HTCONDOR-2020-0002.html
+- https://research.cs.wisc.edu/htcondor/security/vulnerabilities/HTCONDOR-2020-0003.html
+- https://research.cs.wisc.edu/htcondor/security/vulnerabilities/HTCONDOR-2020-0004.html
+
 * Thu Dec 26 2019 Tim Theisen <tim@cs.wisc.edu> - 8.8.7-1
 - Updated condor_annex to work with upcoming AWS Lambda function changes
 - Added the ability to specify the order that job routes are applied
