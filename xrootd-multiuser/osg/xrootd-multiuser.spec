@@ -1,7 +1,7 @@
 
 Name: xrootd-multiuser
 Version: 0.4.2
-Release: 6%{?dist}
+Release: 7%{?dist}
 Summary: Multiuser filesystem writing plugin for xrootd
 
 License: BSD
@@ -10,13 +10,13 @@ URL: https://github.com/bbockelm/xrootd-multiuser
 # git archive v%{version} --prefix=xrootd-multiuser-%{version}/ | gzip -7 > ~/rpmbuild/SOURCES/xrootd-multiuser-%{version}.tar.gz
 Source0: %{name}-%{version}.tar.gz
 
-%define xrootd_current 4.11
+%define xrootd_current 4.12
 %define xrootd_next %(echo %xrootd_current | awk '{print $1,$2+1}' FS=. OFS=.)
 
-BuildRequires: xrootd-server-libs >= 1:%{xrootd_current}.0-1
-BuildRequires: xrootd-server-libs <  1:%{xrootd_next}.0-1
-BuildRequires: xrootd-server-devel >= 1:%{xrootd_current}.0-1
-BuildRequires: xrootd-server-devel <  1:%{xrootd_next}.0-1
+BuildRequires: xrootd-server-libs >= 1:%{xrootd_current}.0-0
+BuildRequires: xrootd-server-libs <  1:%{xrootd_next}.0-0
+BuildRequires: xrootd-server-devel >= 1:%{xrootd_current}.0-0
+BuildRequires: xrootd-server-devel <  1:%{xrootd_next}.0-0
 BuildRequires: cmake
 BuildRequires: gcc-c++
 BuildRequires: libcap-devel
@@ -24,8 +24,8 @@ BuildRequires: libcap-devel
 # For %{_unitdir} macro
 BuildRequires: systemd
 
-Requires: xrootd-server >= 1:%{xrootd_current}.0-1
-Requires: xrootd-server <  1:%{xrootd_next}.0-1
+Requires: xrootd-server >= 1:%{xrootd_current}.0-0
+Requires: xrootd-server <  1:%{xrootd_next}.0-0
 
 %description
 %{summary}
@@ -59,7 +59,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_unitdir}/xrootd-privileged@.service
 
 %changelog
-* Fri Apr 24 2020 Edgar Fajardo <emfajard@ucsd.edu> - 0.4.2-6
+* Fri Apr 24 2020 Edgar Fajardo <emfajard@ucsd.edu> - 0.4.2-7
 - Rebuild against xrootd 4.12; (SOFTWARE-4063)
 
 * Wed Oct 23 2019 Carl Edquist <edquist@cs.wisc.edu> - 0.4.2-5
