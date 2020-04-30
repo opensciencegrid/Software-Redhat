@@ -1,6 +1,6 @@
 Name: xrootd-scitokens
 Version: 1.2.0
-Release: 2%{?dist}
+Release: 3.1%{?dist}
 Summary: SciTokens authentication plugin for XRootD
 License: Apache 2.0
 URL: https://github.com/scitokens/xrootd-scitokens
@@ -8,6 +8,7 @@ URL: https://github.com/scitokens/xrootd-scitokens
 # Generated from:
 # git archive v%{version} --prefix=xrootd-scitokens-%{version}/ | gzip -7 > ~/rpmbuild/SOURCES/xrootd-scitokens-%{version}.tar.gz
 Source0: %{name}-%{version}.tar.gz
+Patch0: link_to5.patch
 
 %define xrootd_current 4.11
 %define xrootd_next 5.0
@@ -26,6 +27,7 @@ SciTokens authentication plugin for XRootD
 
 %prep
 %setup -q
+%patch0 -p1
 
 %build
 mkdir build
@@ -50,11 +52,14 @@ rm -rf $RPM_BUILD_ROOT
 /sbin/ldconfig
 
 %files
-%{_libdir}/libXrdAccSciTokens-4.so
+%{_libdir}/libXrdAccSciTokens-5.so
 
 %defattr(-,root,root,-)
 
 %changelog
+* Thu Apr 30 2020 Diego Davila <didavila@ucsd.edu> - 1.2.0-3.1
+- Adding patch link_to5.patch to build libXrdAccSciTokens-5 instead of -4 (SOFTWARE-3923)
+
 * Tue Mar 31 2020 Diego Davila <didavila@ucsd.edu> - 1.2.0-2
 - Rebuild against xrootd 5.0.0-rc2; fixing value for xrootd_next (SOFTWARE-3923)
 
