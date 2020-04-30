@@ -5,7 +5,7 @@
 
 Name:		blahp
 Version:	1.18.46
-Release:	1%{?gitrev:.%{gitrev}}%{?dist}
+Release:	2%{?gitrev:.%{gitrev}}%{?dist}
 Summary:	gLite BLAHP daemon
 
 Group:		System/Libraries
@@ -111,7 +111,10 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
-* Tue Apr 21 2020 Carl Edquist <edquist@cs.wisc.edu> - 1.18.45
+* Thu Apr 30 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.18.46-2
+- Bump to rebuild with condor 8.9.7 prerelease (SOFTWARE-4080)
+
+* Tue Apr 21 2020 Carl Edquist <edquist@cs.wisc.edu> - 1.18.46-1
 - Fix an issue where the slurm binpath always returned scontrol (SOFTWARE-3986)
 - Python 3 compatibility (#7)
 - Handle extra-quoted arguments to condor_submit.sh (SOFTWARE-3993)
