@@ -78,8 +78,8 @@
 %endif
 
 Name: koji
-Version: 1.19.1
-Release: 4.1%{?dist}
+Version: 1.20.1
+Release: 2.1%{?dist}
 # the included arch lib from yum's rpmUtils is GPLv2+
 License: LGPLv2 and GPLv2+
 Summary: Build system tools
@@ -87,8 +87,7 @@ URL: https://pagure.io/koji/
 Source0: https://releases.pagure.org/koji/koji-%{version}.tar.bz2
 
 # Patches already upstream
-Patch0: https://pagure.io/koji/pull-request/1781.patch
-Patch1: https://pagure.io/koji/c/a64cbdc.patch
+Patch1: https://pagure.io/koji/pull-request/2075.patch
 
 # Adjust xz params to favor speed
 Patch15: https://pagure.io/koji/pull-request/1576.patch
@@ -98,7 +97,6 @@ Patch103: kojid_scmbuild_check_spec_after_running_sourcecmd.patch
 Patch106: kojicli_setup_dns.patch
 Patch112: Fix-type-in-add-group-pkg.patch
 Patch113: kojira-add-sleeptime-to-conf.patch
-Patch116: Fix-1.15-1.16-schema-upgrade-script.patch
 
 BuildArch: noarch
 %if 0%{py3_support}
@@ -714,8 +712,12 @@ fi
 %endif
 
 %changelog
-* Fri May 01 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.19.1-4.1.osg
+* Fri May 01 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.20.1-2.1.osg
 - **** OSG CHANGELOG ****
+    * Fri May 01 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.20.1-2.1.osg
+    - Update to 1.20.1-2 from Fedora
+    - Drop Fix-1.15-1.16-schema-upgrade-script.patch (upstream)
+
     * Fri May 01 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.19.1-4.1.osg
     - Update to 1.19.1-4 from Fedora
     - Drop kojid_setup_dns.patch (no longer applies; can do the same thing with editing /etc/mock/site-defaults.cfg instead of a patch)
@@ -848,11 +850,17 @@ fi
     - Cache passwords to decrypt SSL key in memory.
       (koji_passwd_cache.patch)
 
-* Thu Jan 02 2020 Kevin Fenzi <kevin@scrye.com> - 1.19.1-4
-- Add patch for kojid failing instead of continuing
+* Tue Mar 10 2020 Kevin Fenzi <kevin@scrye.com> - 1.20.1-2
+- Add patch to fix date issue. 
 
-* Thu Jan 02 2020 Kevin Fenzi <kevin@scrye.com> - 1.19.1-3
-- Patch for livecd title no longer needed to be passed to livemedia-creator
+* Fri Mar 06 2020 Kevin Fenzi <kevin@scrye.com> - 1.20.1-1
+- Update to 1.20.1
+
+* Wed Jan 29 2020 Fedora Release Engineering <releng@fedoraproject.org> - 1.20.0-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
+
+* Mon Jan 20 2020 Kevin Fenzi <kevin@scrye.com> - 1.20.0-1
+- Update to 1.20.0.
 
 * Wed Nov 27 2019 Kevin Fenzi <kevin@scrye.com> - 1.19.1-2
 - Add Requires to koji builder on python3-pycdio/pycdio. Fixes bug #1775536
