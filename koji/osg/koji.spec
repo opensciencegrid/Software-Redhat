@@ -78,8 +78,8 @@
 %endif
 
 Name: koji
-Version: 1.18.1
-Release: 1.1%{?dist}
+Version: 1.19.1
+Release: 4.1%{?dist}
 # the included arch lib from yum's rpmUtils is GPLv2+
 License: LGPLv2 and GPLv2+
 Summary: Build system tools
@@ -87,14 +87,13 @@ URL: https://pagure.io/koji/
 Source0: https://releases.pagure.org/koji/koji-%{version}.tar.bz2
 
 # Patches already upstream
-# Already merged patch to fix kojid kerberos auth
-Patch1: https://pagure.io/koji/pull-request/1613.patch
+Patch0: https://pagure.io/koji/pull-request/1781.patch
+Patch1: https://pagure.io/koji/c/a64cbdc.patch
 
 # Adjust xz params to favor speed
 Patch15: https://pagure.io/koji/pull-request/1576.patch
 
 # OSG patches
-Patch102: kojid_setup_dns.patch
 Patch103: kojid_scmbuild_check_spec_after_running_sourcecmd.patch
 Patch106: kojicli_setup_dns.patch
 Patch112: Fix-type-in-add-group-pkg.patch
@@ -160,6 +159,9 @@ Requires: python%{python3_pkgversion}-requests
 Requires: python%{python3_pkgversion}-requests-kerberos
 Requires: python%{python3_pkgversion}-dateutil
 Requires: python%{python3_pkgversion}-six
+# Since we don't have metadata here, provide the 'normal' python provides manually.
+Provides: python%{python3_version}dist(%{name}) = %{version}
+Provides: python%{python3_pkgversion}dist(%{name}) = %{version}
 
 %description -n python%{python3_pkgversion}-%{name}
 Koji is a system for building and tracking RPMS.  The base package
@@ -313,10 +315,12 @@ Requires: python%{python3_pkgversion}-%{name} = %{version}-%{release}
 Requires: python%{python3_pkgversion}-librepo
 Requires: python%{python3_pkgversion}-multilib
 Requires: python%{python3_pkgversion}-cheetah
+Requires: python%{python3_pkgversion}-pycdio
 %else
 Requires: python2-%{name} = %{version}-%{release}
 Requires: python2-multilib
 Requires: python-cheetah
+Requires: pycdio
 %endif
 
 %description builder
@@ -453,7 +457,7 @@ done
 make DESTDIR=$RPM_BUILD_ROOT PYTHON=%{__python3} %{?install_opt} install
 # alter python interpreter in koji CLI
 scripts='%{_bindir}/koji %{_sbindir}/kojid %{_sbindir}/kojira %{_sbindir}/koji-shadow
-         %{_sbindir}/koji-gc %{_sbindir}/kojivmd'
+         %{_sbindir}/koji-gc %{_sbindir}/kojivmd %{_sbindir}/koji-sweep-db'
 for fn in $scripts ; do
     sed -i 's|#!/usr/bin/python2|#!/usr/bin/python3|' $RPM_BUILD_ROOT$fn
 done
@@ -534,6 +538,11 @@ rm -f %{buildroot}/%{_libexecdir}/kojid/mergerepos
 %dir /etc/koji-hub
 %config(noreplace) /etc/koji-hub/hub.conf
 %dir /etc/koji-hub/hub.conf.d
+%{_sbindir}/koji-sweep-db
+%if %{use_systemd}
+%{_unitdir}/koji-sweep-db.service
+%{_unitdir}/koji-sweep-db.timer
+%endif
 
 %if 0%{py2_support} > 1
 %files -n python2-%{name}-hub
@@ -583,6 +592,7 @@ rm -f %{buildroot}/%{_libexecdir}/kojid/mergerepos
 %{_sbindir}/koji-gc
 %dir /etc/koji-gc
 %config(noreplace) /etc/koji-gc/koji-gc.conf
+%config(noreplace) /etc/koji-gc/email.tpl
 %{_sbindir}/koji-shadow
 %dir /etc/koji-shadow
 %config(noreplace) /etc/koji-shadow/koji-shadow.conf
@@ -704,8 +714,12 @@ fi
 %endif
 
 %changelog
-* Thu Apr 30 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.18.1-1.1.osg
+* Fri May 01 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.19.1-4.1.osg
 - **** OSG CHANGELOG ****
+    * Fri May 01 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.19.1-4.1.osg
+    - Update to 1.19.1-4 from Fedora
+    - Drop kojid_setup_dns.patch (no longer applies; can do the same thing with editing /etc/mock/site-defaults.cfg instead of a patch)
+
     * Thu Apr 30 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.18.1-1.1.osg
     - Update to 1.18.1-1 from Fedora
     - Drop 1524-1-set-module_hotfixes-1.patch (upstream)
@@ -834,8 +848,33 @@ fi
     - Cache passwords to decrypt SSL key in memory.
       (koji_passwd_cache.patch)
 
+* Thu Jan 02 2020 Kevin Fenzi <kevin@scrye.com> - 1.19.1-4
+- Add patch for kojid failing instead of continuing
+
+* Thu Jan 02 2020 Kevin Fenzi <kevin@scrye.com> - 1.19.1-3
+- Patch for livecd title no longer needed to be passed to livemedia-creator
+
+* Wed Nov 27 2019 Kevin Fenzi <kevin@scrye.com> - 1.19.1-2
+- Add Requires to koji builder on python3-pycdio/pycdio. Fixes bug #1775536
+
+* Fri Nov 08 2019 Kevin Fenzi <kevin@scrye.com> - 1.19.1-1
+- Update to 1.19.1
+
+* Fri Nov 01 2019 Mohan Boddu <mboddu@bhujji.com> - 1.19.0-1
+- Rebase to 1.19.0
+- Removing downstream patch 1613
+
 * Wed Oct 09 2019 Patrick Uiterwijk <patrick@puiterwijk.org> - 1.18.1-1
 - Rebase to 1.18.1 for CVE-2019-17109
+
+* Wed Sep 18 2019 Jiri Popelka <jpopelka@redhat.com> - 1.18.0-6
+- Fix macro added in previous change.
+
+* Tue Sep 17 2019 Kevin Fenzi <kevin@scrye.com> - 1.18.0-5
+- Add provides for python3 subpackage. Fixes bug #1750391
+
+* Sat Aug 17 2019 Miro Hrončok <mhroncok@redhat.com> - 1.18.0-4
+- Rebuilt for Python 3.8
 
 * Fri Aug 16 2019 Kevin Fenzi <kevin@scrye.com> - 1.18.0-3
 - Fix pkgsurl/topurl default mistake.
