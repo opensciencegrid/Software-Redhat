@@ -27,13 +27,13 @@
 %endif
 %endif
 
-%if 0%{?fedora} > 28
+%if 0%{?fedora} > 30
 # no py2 after F31
 %define py2_support 0
 %define py3_support 2
 %else
 # Keep some minimal python2 in f30 for now
-%if 0%{?fedora} == 28
+%if 0%{?fedora} == 30
 %define py2_support 1
 %define py3_support 2
 %else
@@ -78,58 +78,20 @@
 %endif
 
 Name: koji
-Version: 1.17.0
-Release: 10.3%{?dist}
+Version: 1.18.1
+Release: 1.1%{?dist}
 # the included arch lib from yum's rpmUtils is GPLv2+
 License: LGPLv2 and GPLv2+
 Summary: Build system tools
 URL: https://pagure.io/koji/
 Source0: https://releases.pagure.org/koji/koji-%{version}.tar.bz2
 
-# Patches proposed upstream
-## Use createrepo_c by default now (we already do this in Fedora infra anyway)
-## From: https://pagure.io/koji/pull-request/1278
-Patch10: koji-PR1278-use-createrepo_c-by-default.patch
-
-# Download only the repomd.xml instead of all the repodata
-Patch11: https://pagure.io/koji/pull-request/1398.patch
-
-# Allow generating seperate srpm repos in buildroot repos
-Patch12: https://pagure.io/koji/pull-request/1273.patch
-
-# Handle 'bare' merge mode for repos
-Patch13: https://pagure.io/koji/pull-request/1411.patch
-
-# Expose dynamic_buildrequires mock setting
-# Upstream: https://pagure.io/koji/pull-request/1466.patch
-# Rebased for 1.17.0 in https://src.fedoraproject.org/rpms/koji/pull-request/6
-Patch14: https://src.fedoraproject.org/rpms/koji/c/9828bc3dd8ed0679159aceb902409600b21f803c.patch
-
-# Patch to fix kerberos auth in kojid with python3
-Patch15: https://pagure.io/koji/pull-request/1468.patch
-
-# Path to provide lower level versions of build_target functions
-# Required for side tags
-Patch16: https://pagure.io/koji/pull-request/1331.patch
-
-# Fix bare repo gen blocklist usage
-Patch17: https://pagure.io/koji/pull-request/1502.patch
-
-# Fix bare mode to use --all for mergeing repos
-Patch18: https://pagure.io/koji/pull-request/1516.patch
-
-# use _writeInheritanceData in _create_tag
-Patch19: https://pagure.io/koji/pull-request/1555.patch
-
-# don't add noarch rpms to src-only repos
-# rebased from https://pagure.io/koji/c/3aba7412500cfdf048c742c474620b8ba60489dc.patch
-Patch20: no-noarch-in-src-repos.patch
+# Patches already upstream
+# Already merged patch to fix kojid kerberos auth
+Patch1: https://pagure.io/koji/pull-request/1613.patch
 
 # Adjust xz params to favor speed
-Patch21: https://pagure.io/koji/pull-request/1576.patch
-
-# set module_hotfixes=1 in yum.conf via tag config (https://pagure.io/koji/pull-request/1524, 1st commit)
-Patch22: 1524-1-set-module_hotfixes-1.patch
+Patch15: https://pagure.io/koji/pull-request/1576.patch
 
 # OSG patches
 Patch102: kojid_setup_dns.patch
@@ -138,7 +100,6 @@ Patch106: kojicli_setup_dns.patch
 Patch112: Fix-type-in-add-group-pkg.patch
 Patch113: kojira-add-sleeptime-to-conf.patch
 Patch116: Fix-1.15-1.16-schema-upgrade-script.patch
-Patch117: Restore-Python-2.6-compatibility-to-kojid.patch
 
 BuildArch: noarch
 %if 0%{py3_support}
@@ -427,7 +388,6 @@ License: LGPLv2
 %{?python_provide:%python_provide python2-%{name}-web}
 Requires: httpd
 Requires: mod_wsgi
-# https://bugzilla.redhat.com/show_bug.cgi?id=1497923 - "koji-web requires mod_auth_gssapi but that is not available in RHEL6 or EPEL6"
 %if 0%{?fedora} >= 21 || 0%{?rhel} >= 7
 Requires: mod_auth_gssapi
 %else
@@ -462,6 +422,7 @@ koji-web is a web UI to the Koji system.
 
 %prep
 %autosetup -p1
+
 
 %build
 # Nothing to build
@@ -529,7 +490,7 @@ done
 %endif
 %endif
 
-%if 0%{py2_support} < 1
+%if 0%{py2_support} < 2
 # With no python2 support, remove/do not ship internal mergerepos
 rm -f %{buildroot}/%{_libexecdir}/kojid/mergerepos
 %endif
@@ -743,8 +704,13 @@ fi
 %endif
 
 %changelog
-* Thu Apr 23 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.17.0-10.3.osg
+* Thu Apr 30 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.18.1-1.1.osg
 - **** OSG CHANGELOG ****
+    * Thu Apr 30 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.18.1-1.1.osg
+    - Update to 1.18.1-1 from Fedora
+    - Drop 1524-1-set-module_hotfixes-1.patch (upstream)
+    - Drop Restore-Python-2.6-compatibility-to-kojid.patch (no longer applies; not needed for EL7, EL8)
+
     * Thu Apr 23 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.17.0-10.3.osg
     - Apply patches from Koji 1.18.0 to avoid "missing module metadata" error for EL8 builds
         - https://pagure.io/koji/pull-request/1524 (1st commit)
@@ -868,13 +834,20 @@ fi
     - Cache passwords to decrypt SSL key in memory.
       (koji_passwd_cache.patch)
 
+* Wed Oct 09 2019 Patrick Uiterwijk <patrick@puiterwijk.org> - 1.18.1-1
+- Rebase to 1.18.1 for CVE-2019-17109
 
-* Tue Jul 09 2019 Kevin Fenzi <kevin@scrye.com> - 1.17.0-9
-- Add backport for user sidetags: https://src.fedoraproject.org/rpms/koji/pull-request/7
-- Add patch to use --all for merging bare repos: https://pagure.io/koji/pull-request/1516
+* Fri Aug 16 2019 Kevin Fenzi <kevin@scrye.com> - 1.18.0-3
+- Fix pkgsurl/topurl default mistake.
 
-* Wed Jun 19 2019 Kevin Fenzi <kevin@scrye.com> - 1.17.0-8
-- Add https://pagure.io/koji/pull-request/1502.patch
+* Fri Aug 16 2019 Kevin Fenzi <kevin@scrye.com> - 1.18.0-2
+- Fix mergerepos conditional for f30.
+
+* Fri Aug 16 2019 Kevin Fenzi <kevin@scrye.com> - 1.18.0-1
+- Update to 1.18.0.
+
+* Thu Jul 25 2019 Fedora Release Engineering <releng@fedoraproject.org> - 1.17.0-8
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
 
 * Thu May 30 2019 Kevin Fenzi <kevin@scrye.com> - 1.17.0-7
 - Add patch to fix koji kerberos auth with python3.
@@ -977,180 +950,6 @@ fi
 * Tue Jul 11 2017 Randy Barlow <bowlofeggs@fedoraproject.org> - 1.13.0-2
 - Require python2-koji on Fedora <= 26.
 
-* Sat Jun 03 2017 Patrick Uiterwijk <puiterwijk@redhat.com> - 1.12.0-5
-- Add patch for completing #349 fix
-
-* Sat Jun 03 2017 Patrick Uiterwijk <puiterwijk@redhat.com> - 1.12.0-4
-- Add upstreamed patch for #349
-
-* Tue May 23 2017 Dennis Gilmore <dennis@ausil.us> - 1.12.0-3
-- add some upstreamed patches needed to fix some things in fedora
-
-* Wed Apr 19 2017 Dennis Gilmore <dennis@ausil.us> - 1.12.0-2
-- add patch so that kojid starts without ssl auth configured
-
-* Tue Apr 18 2017 Dennis Gilmore <dennis@ausil.us> - 1.12.0-1
-- update to upstream 1.12.0
-- remove rhel 5 conditionals as its no longer supported in epel
-
-* Sun Jan 08 2017 Till Maas <opensource@till.name> - 1.11.0-5
-- Do not apply faulty CheckClientIP patch
-
-* Sun Jan 08 2017 Till Maas <opensource@till.name> - 1.11.0-4
-- Add patch for keytab kerberos client config
-- Move non upstreamable Fedora patch to the end to ease rebasing to future
-  upstream release
-- Move license comment before license tag
-
-* Sat Jan 07 2017 Till Maas <opensource@till.name> - 1.11.0-3
-- Add patches for proxy IP forwarding
-
-* Fri Jan 06 2017 Till Maas <opensource@till.name> - 1.11.0-2
-- Update upstream URLs
-- Add upstream koji-gc kerberos patches
-- Use Source0
-
-* Fri Dec 09 2016 Dennis Gilmore <dennis@ausil.us> - 1.11.0-1
-- update to 1.11.0
-- setup fedora config for kerberos and flag day
-
-* Wed Sep 28 2016 Adam Miller <maxamillion@fedoraproject.org> - 1.10.1-13
-- Patch new-chroot functionality into runroot plugin
-
-* Tue Aug 23 2016 Dennis Gilmore <dennis@ausil.us> - 1.10.1-12
-- add patch to disable bind mounting into image tasks chroots
-
-* Tue Jul 19 2016 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.10.1-11
-- https://fedoraproject.org/wiki/Changes/Automatic_Provides_for_Python_RPM_Packages
-
-* Thu May 26 2016 Dennis Gilmore <dennis@ausil.us> - 1.10.1-10
-- add patch to enable dns in runroot chroots
-
-* Tue May 24 2016 Dennis Gilmore <dennis@ausil.us> - 1.10.1-9
-- update to git master upstream, add lmc cosmetic fixes
-- add patch to disable login in koji-web
-
-* Fri Apr 08 2016 Dennis Gilmore <dennis@ausil.us> - 1.10.1-8
-- do not remove the - for project on livemedia
-- fix the sending of messages on image completion
-
-* Thu Apr 07 2016 Dennis Gilmore <dennis@ausil.us> - 1.10.1-7
-- --product had to be --project
-- add missing Requires for koji-builder on python2-multilib
-
-* Wed Apr 06 2016 Dennis Gilmore <dennis@ausil.us> - 1.10.1-6
-- add --product to livemedia-creator calls rhbz#1315110
-
-* Wed Apr 06 2016 Dennis Gilmore <dennis@ausil.us> - 1.10.1-5
-- enable dns in runroots
-- add koji signed repo support
-- Run plugin callbacks when image builds finish
-
-* Thu Mar 03 2016 Dennis Gilmore <dennis@ausil.us> - 1.10.1-4
-- add a patch to install the runroot builder plugin in the correct place
-
-* Tue Mar 01 2016 Dennis Gilmore <dennis@ausil.us> - 1.10.1-3
-- update to git e8201aac8294e6125a73504886b0800041b58868
-- https://pagure.io/fork/ausil/koji/branch/fedora-infra
-
-* Thu Feb 04 2016 Fedora Release Engineering <releng@fedoraproject.org> - 1.10.1-2
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
-
-* Tue Nov 17 2015 Dennis Gilmore <dennis@ausil.us> - 1.10.1-1
-- update to 1.10.1
-- Requires yum in the cli rhbz#1230888
-
-* Thu Sep 24 2015 Kalev Lember <klember@redhat.com> - 1.10.0-2
-- Backport two patches to fix ClientSession SSL errors
-
-* Thu Jul 16 2015 Dennis Gilmore <dennis@ausil.us> - 1.10.0=1
-- update to 1.10.0 release
-
-* Mon Jul 06 2015 Dennis Gilmore <dennis@ausil.us> - 1.9.0-13.20150607gitf426fdb
-- update the git snapshot to latest head
-- enable systemd units for f23 up
-
-* Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.9.0-12.20150423git52a0188
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
-
-* Thu Apr 23 2015 Dennis Gilmore <dennis@ausil.us> - 1.9.0-11.20150423git52a0188
-- update to latest git
-
-* Tue Jan 27 2015 Dennis Gilmore <dennis@ausil.us> - 1.9.0-10.gitcd45e886
-- update to git tarball
-
-* Thu Dec 11 2014 Dennis Gilmore <dennis@ausil.us> - 1.9.0-9
-- add upstream patch switching to TLS1 from sslv3
-
-* Tue Sep 30 2014 Dennis Gilmore <dennis@ausil.us> - 1.9.0-8
-- don't exclude koji-vm from ppc and ppc64
-
-* Fri Sep 26 2014 Till Maas <opensource@till.name> - 1.9.0-7
-- Use https for kojipkgs
-- Update URL
-
-* Mon Aug 04 2014 Dennis Gilmore <dennis@ausil.us> - 1.9.0-6
-- add patch to fix kickstart parsing
-
-* Mon Aug 04 2014 Dennis Gilmore <dennis@ausil.us> - 1.9.0-5
-- add upstream patches for better docker support
-
-* Tue Jul 29 2014 Dennis Gilmore <dennis@ausil.us> - 1.9.0-4
-- add upstream patch to compress docker images
-
-* Thu Jun 12 2014 Dennis Gilmore <dennis@ausil.us> - 1.9.0-3
-- add patch to move builder workdir to /var/tmp
-- add support for making raw.xz images
-
-* Sun Jun 08 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.9.0-2
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
-
-* Mon Mar 24 2014 Dennis Gilmore <dennis@ausil.us> - 1.9.0-1
-- update to upstream 1.9.0
-
-* Wed Jul 31 2013 Dennis Gilmore <dennis@ausil.us> - 1.8.0-2
-- update from git snapshot
-
-* Mon Apr 01 2013 Dennis Gilmore <dennis@ausil.us> - 1.8.0-1
-- update to upstream 1.8.0
-
-* Thu Feb 14 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.7.1-3
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
-
-* Sun Jan 20 2013 Dennis Gilmore <dennis@ausil.us> - 1.7.1-2
-- revert "avoid baseurl option in createrepo" patch
-- fix integer overflow issue in checkUpload handler
-
-* Wed Nov 21 2012 Dennis Gilmore <dennis@ausil.us> - 1.7.1-1
-- update to upstream 1.7.1 release
-
-* Sat Sep 01 2012 Dennis Gilmore <dennis@ausil.us> - 1.7.0-7
-- add the patch that we had previously had hotapplied in fedora infra
-
-* Sat Sep 01 2012 Dennis Gilmore <dennis@ausil.us> - 1.7.0-6
-- remove even trying to make devices i the chroots
-
-* Sat Sep 01 2012 Dennis Gilmore <dennis@ausil.us> - 1.7.0-5
-- add patch to check for /dev/loopX before making them
-
-* Fri Aug 31 2012 Dennis Gilmore <dennis@ausil.us> - 1.7.0-4
-- add patch to only make /dev/urandom if it doesnt exist
-- add upstream patch for taginfo fixes with older servers
-
-* Thu Jul 19 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.7.0-3
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
-
-* Tue Jun 05 2012 Dennis Gilmore <dennis@ausil.us> - 1.7.0-2
-- use topurl not pkgurl in the fedora config
-
-* Fri Jun 01 2012 Dennis Gilmore <dennis@ausil.us> - 1.7.0-1
-- update to 1.7.0 many bugfixes and improvements
-- now uses mod_wsgi
-
-* Mon Jan 03 2011 Dennis Gilmore <dennis@ausil.us> - 1.6.0-1.1
-- drop Requires on qemu-img on epel for koji-vm
-- add readme note on epel
-
-* Fri Dec 17 2010 Dennis Gilmore <dennis@ausil.us> - 1.6.0-1
-- update to 1.6.0
-
+* Mon Jul 03 2017 Dennis Gilmore <dennis@ausil.us> - 1.13.0-1
+- update to upstream 1.13.0
+- remove old  changelog entries
