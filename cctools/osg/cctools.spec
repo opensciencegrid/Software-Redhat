@@ -1,6 +1,6 @@
 Name:           cctools
 Summary:        Cooperative Computing Tools
-Version:        7.0.22
+Version:        7.1.5
 Release:        1%{?dist}
 License:        GPLv2
 URL:            http://ccl.cse.nd.edu/software/
@@ -68,7 +68,7 @@ Summary: CCTools package development libraries
 The CCTools package static libraries and header files
 
 %prep
-%setup -n cctools-release-%{version} -q
+%setup -n cctools-%{version}-source -q
 
 %build
 ./configure --prefix /usr \
@@ -119,7 +119,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Wed Feb 06 2020 Edgar Fajardo <emfajard@ucsd.edu> - 7.0.22-1
+* Mon May 04 2020 Edgar Fajardo <emfajard@ucsd.edu> - 7.1.5-1
+- Update to 7.1.5 (SOFTWARE-4031)
+
+* Thu Feb 06 2020 Edgar Fajardo <emfajard@ucsd.edu> - 7.0.22-1
 - Update to 7.0.22 (SOFTWARE-3988)
 
 * Fri Nov 08 2019 Diego Davila <didavila@ucsd.edu> - 7.0.21-1
