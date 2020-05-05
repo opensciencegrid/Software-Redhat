@@ -1,8 +1,8 @@
 Name:               gratia-probe
 Summary:            Gratia OSG accounting system probes
 Group:              Applications/System
-Version:            1.20.12
-Release:            2%{?dist}
+Version:            1.20.13
+Release:            0.pre1%{?dist}
 
 License:            GPL
 Group:              Applications/System
@@ -897,6 +897,9 @@ The dCache storagegroup probe for the Gratia OSG accounting system.
 
 
 %changelog
+* Wed Apr 08 2020 Carl Edquist <edquist@cs.wisc.edu> - 1.20.13-0.pre1
+- Fix for slurm version < 18 (SOFTWARE-4055)
+
 * Wed Jan 22 2020 Carl Edquist <edquist@cs.wisc.edu> - 1.20.12-2
 - Set /var/lib/gratia/tmp permissions to 1777 (SOFTWARE-3975)
 
