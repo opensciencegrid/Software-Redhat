@@ -1,1 +1,1 @@
-type=github repo=opensciencegrid/gratia-probe tag=v1.20.12-1 hash=878e29891a6b6dff6c423b5992a9696bf781f194
+type=github repo=opensciencegrid/gratia-probe tag=master tarball=gratia-probe-1.20.13.tar.gz hash=857bffdc275c23774335842061910ff1d3c43a06
