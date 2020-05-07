@@ -12,7 +12,7 @@
 Name:		buildsys-macros
 Summary:	Macros for the OSG Buildsystem
 Version:        %{dver}
-Release:	1%{dist}
+Release:	2%{dist}
 License:	GPL
 BuildArch:      noarch
 Requires:	rpmdevtools
@@ -41,6 +41,9 @@ printf %s%b "%" "__arch_install_post /usr/lib/rpm/check-buildroot\n" >> $RPM_BUI
 /etc/rpm/macros.checkbuild
 
 %changelog
+* Wed May 06 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 8-2
+- bump to rebuild for upcoming
+
 * Wed Oct 02 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 8-1
 - el8 version
 
