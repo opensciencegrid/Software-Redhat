@@ -35,8 +35,8 @@
 
 Summary:        Creates a common metadata repository
 Name:           createrepo_c
-Version:        0.15.5
-Release:        2%{?dist}
+Version:        0.14.2
+Release:        1%{?dist}
 License:        GPLv2+
 URL:            https://github.com/rpm-software-management/createrepo_c
 Source0:        %{url}/archive/%{version}/%{name}-%{version}.tar.gz
@@ -72,7 +72,7 @@ BuildRequires:  bash-completion
 Requires: rpm >= 4.9.0
 %endif
 %if %{with drpm}
-BuildRequires:  drpm-devel >= 0.4.0
+BuildRequires:  drpm-devel >= 0.1.3
 %endif
 
 %if 0%{?fedora} || 0%{?rhel} > 7
@@ -251,51 +251,24 @@ ln -sr %{buildroot}%{_bindir}/modifyrepo_c %{buildroot}%{_bindir}/modifyrepo
 %if %{with python2}
 %files -n python2-%{name}
 %{python2_sitearch}/%{name}/
-%{python2_sitearch}/%{name}-%{version}-py%{python2_version}.egg-info
 %endif
 
 %if %{with python3}
 %files -n python3-%{name}
 %{python3_sitearch}/%{name}/
-%{python3_sitearch}/%{name}-%{version}-py%{python3_version}.egg-info
 %endif
 
 %changelog
-* Tue Jan 28 2020 Fedora Release Engineering <releng@fedoraproject.org> - 0.15.5-2
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
-
-* Wed Jan 08 2020 Pavel Raiskup <praiskup@redhat.com> - 0.15.5-1
-- update to upstream 0.15.5 release, per
-  https://github.com/rpm-software-management/createrepo_c/compare/0.15.4...0.15.5
-- new option --recycle-pkglist for --update mode
-- a bit more optimal --update caching
-
-* Wed Dec 11 2019 Mohan Boddu <mboddu@bhujji.com> - 0.15.4-1
-- Update to upstream 0.15.4 release
-
-* Tue Sep 17 2019 Ales Matej <amatej@redhat.com> - 0.15.1-1
-- Update to 0.15.1
-- Allow pip to see installation of python3-createrepo_c
-- Imporove documentation
-- Switch off timestamping of documentation to avoid file conflics for createrepo_c-devel i686/x86_64 parallel installation
-- Remove dependency on deltarpm in favour of drpm
-
-* Sat Aug 17 2019 Miro Hrončok <mhroncok@redhat.com> - 0.14.2-3
-- Rebuilt for Python 3.8
-
-* Wed Jul 24 2019 Fedora Release Engineering <releng@fedoraproject.org> - 0.14.2-2
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
-
 * Thu Jun 27 2019 Pavla Kratochvilova <pkratoch@redhat.com> - 0.14.2-1
 - Update to 0.14.2
 - Obsolete createrepo on all Fedoras again (RhBug:1702771)
 - Fix issue with createrepo_c hanging at the end (RhBug:1714666)
 - Don't include packages with forbidden control chars in repodata
 
-* Mon Jun 10 22:13:18 CET 2019 Igor Gnatenko <ignatenkobrain@fedoraproject.org> - 0.14.1-4
+* Mon Jun 10 2019 Igor Gnatenko <ignatenkobrain@fedoraproject.org> - 0.14.1-4
 - Rebuild for RPM 4.15
 
-* Mon Jun 10 15:42:00 CET 2019 Igor Gnatenko <ignatenkobrain@fedoraproject.org> - 0.14.1-3
+* Mon Jun 10 2019 Igor Gnatenko <ignatenkobrain@fedoraproject.org> - 0.14.1-3
 - Rebuild for RPM 4.15
 
 * Tue May 28 2019 Stephen Gallagher <sgallagh@redhat.com> - 0.14.1-2
