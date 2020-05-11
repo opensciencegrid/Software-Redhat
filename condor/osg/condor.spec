@@ -944,7 +944,7 @@ export CMAKE_PREFIX_PATH=/usr
 # causes build issues with EL5, don't even bother building the tests.
 
 %if %uw_build
-%define condor_build_id 501875
+%define condor_build_id 503068
 
 cmake \
        -DBUILDID:STRING=%condor_build_id \
@@ -2190,9 +2190,19 @@ fi
 %endif
 
 %changelog
-* Tue Apr 28 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 8.8.9-0.501875
-- 8.8.9 prerelease
+* Mon May 11 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 8.8.9-1.osg
 - Drop bosco_https.patch, upstream
+
+* Thu May 07 2020 Tim Theisen <tim@cs.wisc.edu> - 8.8.9-1
+- Proper tracking of maximum memory used by Docker universe jobs
+- Fixed preempting a GPU slot for a GPU job when all GPUs are in use
+- Fixed a Python crash when queue_item_data iterator raises an exception
+- Fixed a bug where slot attribute overrides were ignored
+- Calculates accounting group quota correctly when more than 1 CPU requested
+- Updated HTCondor Annex to accommodate API change for AWS Spot Fleet
+- Fixed a problem where HTCondor would not start on AWS Fargate
+- Fixed where the collector could wait forever for a partial message
+- Fixed streaming output to large files (>2Gb) when using the 32-bit shadow
 
 * Mon Apr 06 2020 Tim Theisen <tim@cs.wisc.edu> - 8.8.8-1
 - Fixes addressing CVE-2019-18823
