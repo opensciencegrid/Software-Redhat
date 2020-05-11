@@ -1,6 +1,6 @@
 Name:      xrootd-rucioN2N-for-Xcache
 Version:   1.2
-Release:   1%{?dist}
+Release:   2%{?dist}
 Summary:   Xrootd Name-to-Name plugin for Disk Caching Proxy (Xcache) to utilize RUCIO metalink
 Group:     System Environment/Libraries
 License:   BSD 
@@ -41,7 +41,7 @@ cp rucioN2N-for-Xcache-%{version}/XrdName2NameDCP4RUCIO.so %{buildroot}/usr/lib6
 %post -p /sbin/ldconfig
 
 %changelog 
-* Fri Apr 24 2020 Edgar Fajardo <emfajard@ucsd.edu> - v1.2-1
+* Fri Apr 24 2020 Edgar Fajardo <emfajard@ucsd.edu> - v1.2-2
 - Rebuild against xrootd 4.12 (SOFTWARE-4063)
 
 * Mon Aug 5 2019 Edgar Fajardo <emfajard@ucsd.edu> - v1.2-0
