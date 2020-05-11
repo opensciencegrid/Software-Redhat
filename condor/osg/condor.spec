@@ -132,7 +132,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1
+%define condor_base_release 1.1
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -234,9 +234,9 @@ Source123: zlib-1.2.3.tar.gz
 Patch1: old-sphinx.patch
 Patch2: python-shebang.patch
 
-#% if 0%osg
+# OSG patches
 Patch8: osg_sysconfig_in_init_script.patch
-#% endif
+Patch9: Use-bosco-1.3-on-RHEL.patch
 
 # HCC patches
 # See gt3158
@@ -919,6 +919,7 @@ exit 0
 
 %if 0%{?osg} || 0%{?hcc}
 %patch8 -p1
+%patch9 -p1
 %endif
 
 %if 0%{?hcc}
@@ -2190,8 +2191,9 @@ fi
 %endif
 
 %changelog
-* Mon May 11 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 8.8.9-1.osg
+* Mon May 11 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 8.8.9-1.1.osg
 - Drop bosco_https.patch, upstream
+- Add Use-bosco-1.3-on-RHEL.patch  (SOFTWARE-4079)
 
 * Thu May 07 2020 Tim Theisen <tim@cs.wisc.edu> - 8.8.9-1
 - Proper tracking of maximum memory used by Docker universe jobs
