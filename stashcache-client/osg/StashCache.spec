@@ -34,7 +34,7 @@ stashcp allows users to copy files out of the OSG StashCache data federation.
 %{_datarootdir}/stashcache/opensciencegrid.org.pub
 
 %changelog
-* Wed May 13 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.6.0-1
+* Wed May 13 2020 Dave Dykstra <dwd@fnal.gov> - 5.6.0-1
 - Update to 5.6.0.  Downloads lists of caches instead of having them
   included in the package.
 
