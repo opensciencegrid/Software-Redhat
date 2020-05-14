@@ -1,6 +1,6 @@
 Summary: StashCache client tools
 Name: stashcache-client
-Version: 5.6.0
+Version: 5.6.1
 Release: 1%{?dist}
 License: Apache 2.0
 Url: https://github.com/opensciencegrid/StashCache
@@ -34,6 +34,10 @@ stashcp allows users to copy files out of the OSG StashCache data federation.
 %{_datarootdir}/stashcache/opensciencegrid.org.pub
 
 %changelog
+* Thu May 14 2020 Dave Dykstra <dwd@fnal.gov> - 5.6.1-1
+- Update to 5.6.1.  Add back support for /etc/stashcache/caches.json to
+  override default list.
+
 * Wed May 13 2020 Dave Dykstra <dwd@fnal.gov> - 5.6.0-1
 - Update to 5.6.0.  Downloads lists of caches instead of having them
   included in the package.
