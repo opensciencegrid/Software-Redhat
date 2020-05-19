@@ -1,7 +1,7 @@
 
 Name: xrootd-lcmaps
-Version: 1.7.5
-Release: 3.2%{?dist}
+Version: 1.7.7
+Release: 3%{?dist}
 Summary: LCMAPS plugin for xrootd
 
 Group: System Environment/Daemons
@@ -10,9 +10,6 @@ URL: https://github.com/opensciencegrid/xrootd-lcmaps
 # Generated from:
 # git archive v${VERSION} --prefix=xrootd-lcmaps-$VERSION/ | gzip -7 > ~/rpmbuild/SOURCES/xrootd-lcmaps-$VERSION.tar.gz
 Source0: %{name}-%{version}.tar.gz
-
-Patch0: dont_link.patch
-Patch1: find_libXrdSec.patch
 
 %define xrootd_current 4.11
 %define xrootd_next 5.0
@@ -47,8 +44,6 @@ Requires: xrootd-server <  1:%{xrootd_next}.0-1
 %prep
 
 %setup -q
-%patch0 -p1
-%patch1 -p1
 
 %build
 
@@ -79,6 +74,14 @@ make install DESTDIR=$RPM_BUILD_ROOT
 %config %{_sysconfdir}/xrootd/config.d/40-xrootd-lcmaps.cfg
 
 %changelog
+* Tue May 19 2020 Diego Davila <didavila@ucsd.edu> - 1.7.7-3
+- Removig patches: dont_link and find_libXrdSec
+- Making sure upcoming version is higher than testing
+
+* Tue Apr 28 2020 Edgar Fajardo <emfajard@ucsd.edu> - 1.7.7-2
+- Adding some warning for when no-authz is used
+- Builing against Xrootd 4.12 (SOFTWARE-4063)
+
 * Mon Apr 27 2020 Diego Davila <didavila@ucad.edu> - 1.7.5-3.2
 - Adding patch: find_libXrdSec to let xrootd to find the right version (SOFTWARE-3923)
 
