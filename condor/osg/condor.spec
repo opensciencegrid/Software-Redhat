@@ -190,6 +190,7 @@ Patch2: python-shebang.patch
 
 #% if 0%osg
 Patch8: osg_sysconfig_in_init_script.patch
+Patch9: bosco-1.3.patch
 #% endif
 
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
@@ -823,6 +824,7 @@ exit 0
 
 %if 0%{?osg} || 0%{?hcc}
 %patch8 -p1
+%patch9 -p1
 %endif
 
 # fix errant execute permissions
