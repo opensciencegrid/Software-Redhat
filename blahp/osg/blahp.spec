@@ -5,7 +5,7 @@
 
 Name:		blahp
 Version:	1.18.46
-Release:	2%{?gitrev:.%{gitrev}}%{?dist}
+Release:	3%{?gitrev:.%{gitrev}}%{?dist}
 Summary:	gLite BLAHP daemon
 
 Group:		System/Libraries
@@ -111,6 +111,9 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Fri May 22 2020 Carl Edquist <edquist@cs.wisc.edu> - 1.18.46-3
+- Rebuild against condor 8.9.7 (SOFTWARE-4080)
+
 * Thu Apr 30 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.18.46-2
 - Bump to rebuild with condor 8.9.7 prerelease (SOFTWARE-4080)
 
