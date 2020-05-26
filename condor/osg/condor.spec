@@ -97,7 +97,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1
+%define condor_base_release 1.1
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -1950,6 +1950,9 @@ fi
 %endif
 
 %changelog
+* Tue May 26 2020 Carl Edquist <edquist@cs.wisc.edu> - 8.9.7-1.1
+- Add patch to use bosco 1.3 in bosco_findplatform (SOFTWARE-4080)
+
 * Wed May 20 2020 Tim Theisen <tim@cs.wisc.edu> - 8.9.7-1
 - Multiple enhancements in the file transfer code
 - Support for more regions in s3:// URLs
