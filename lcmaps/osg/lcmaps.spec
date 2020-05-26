@@ -18,7 +18,7 @@
 Summary: Grid (X.509) and VOMS credentials to local account mapping service
 Name: lcmaps
 Version: 1.6.6
-Release: 1.13%{?dist}
+Release: 1.14%{?dist}
 License: ASL 2.0
 URL: http://wiki.nikhef.nl/grid/LCMAPS
 Source0: http://software.nikhef.nl/security/lcmaps/lcmaps-%{version}.tar.gz
@@ -37,9 +37,9 @@ BuildRequires: voms-devel
 BuildRequires: flex, bison
 
 # these should be in a metapackage instead of here
-#Requires: lcmaps-plugins-basic
-#Requires: lcmaps-plugins-verify-proxy >= 1.5.9-1.1
-#Requires: lcmaps-plugins-voms >= 1.7.1-1.1
+Requires: lcmaps-plugins-basic
+Requires: lcmaps-plugins-verify-proxy >= 1.5.9-1.1
+Requires: lcmaps-plugins-voms >= 1.7.1-1.1
 
 %description
 The Local Centre MAPping Service (LCMAPS) is a security middleware
@@ -314,6 +314,9 @@ cp %{SOURCE4} %{SOURCE6} %{SOURCE7} ${RPM_BUILD_ROOT}%{_datadir}/lcmaps/template
 
 
 %changelog
+* Mon May 26 2020 Edgar Fajardo <emfajard@ucsd.edu> 1.6.6-1.14
+- Undo the removal
+
 * Mon May 26 2020 Edgar Fajardo <emfajard@ucsd.edu> 1.6.6-1.13
 - Remove the dependency on lcmaps-plugins
 
