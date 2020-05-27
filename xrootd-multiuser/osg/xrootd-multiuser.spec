@@ -59,7 +59,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_unitdir}/xrootd-privileged@.service
 
 %changelog
-* Fri Apr 24 2020 Edgar Fajardo <emfajard@ucsd.edu> - 0.4.2-8
+* Wed May 27 2020 Diego Davila <didavila@ucsd.edu> - 0.4.2-8
 - Rebuild against xrootd 4.12; (SOFTWARE-4063)
 
 * Wed Oct 23 2019 Carl Edquist <edquist@cs.wisc.edu> - 0.4.2-5
