@@ -1,5 +1,3 @@
-%{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
-
 %global _hardened_build 1
 
 %if %{?rhel}%{!?rhel:0} >= 7
@@ -10,18 +8,53 @@
 %endif
 
 Name:		voms
-Version:	2.0.14
-Release:	1.5%{?dist}
+Version:	2.1.0
+Release:	0.14.rc0.1%{?dist}
 Summary:	Virtual Organization Membership Service
 
 License:	ASL 2.0
 URL:		https://wiki.italiangrid.it/VOMS
-Source0:	https://github.com/italiangrid/%{name}/archive/v%{version}.tar.gz
+Source0:	https://github.com/italiangrid/%{name}/archive/v%{version}-rc0.tar.gz
 #		Post-install setup instructions:
 Source1:	%{name}.INSTALL
 #		systemd unit file:
 Source2:	%{name}@.service
 
+#		Check if NID is defined
+#		https://github.com/italiangrid/voms/issues/60
+#		https://github.com/italiangrid/voms/pull/61
+Patch0:		%{name}-nid-defined.patch
+#		Fix for GCC 7
+#		https://github.com/italiangrid/voms/pull/56
+Patch1:		%{name}-gcc7.patch
+#		Create RFC proxies as default
+#		https://github.com/italiangrid/voms/pull/57
+Patch2:		%{name}-default-proxyver.patch
+#		Don't use macros in AC_CHECK_LIB
+#		https://github.com/italiangrid/voms/pull/58
+Patch3:		%{name}-lib-check-no-macro.patch
+#		VOMS API compilation fails against kerberos gss API header
+#		https://github.com/italiangrid/voms/issues/54
+#		https://github.com/italiangrid/voms/pull/62
+Patch4:		%{name}-gssapi-header.patch
+#		Fix wsdl version detection
+#		https://github.com/italiangrid/voms/pull/72
+Patch5:		%{name}-wsdl2h.patch
+#		Change default proxy cert key length to 2048 bits
+#		https://github.com/italiangrid/voms/pull/75
+Patch6:		%{name}-change-default-proxy-cert-key-length-to-2048-bits.patch
+
+# for el7/mariadb
+Patch7:          mariadb-innodb.patch
+
+# for all
+Patch8:          Make-RFC-proxies-by-default-SOFTWARE-2381.patch
+Patch9:          Validate-top-level-group-of-VOMS-attribute.patch
+Patch10:         sw3123-voms-proxy-direct.patch
+Patch11:         Disable-TLS-1.1-and-older-openssl-1.0.2.patch
+Patch12:         Disable-weak-ciphers.patch
+
+BuildRequires:	gcc-c++
 BuildRequires:	openssl-devel
 BuildRequires:	expat-devel
 BuildRequires:	gsoap-devel
@@ -31,18 +64,8 @@ BuildRequires:	libxslt
 BuildRequires:	docbook-style-xsl
 BuildRequires:	doxygen
 %if %{use_systemd}
-BuildRequires:	systemd-units
+BuildRequires:	systemd
 %endif
-
-# for el7/mariadb
-Patch0: mariadb-innodb.patch
-
-# for all
-Patch1:         Make-RFC-proxies-by-default-SOFTWARE-2381.patch
-Patch2:         Validate-top-level-group-of-VOMS-attribute.patch
-Patch3:         sw3123-voms-proxy-direct.patch
-Patch4:         Disable-TLS-1.1-and-older-openssl-1.0.2.patch
-Patch5:         Disable-weak-ciphers.patch
   
 %description
 The Virtual Organization Membership Service (VOMS) is an attribute authority
@@ -103,9 +126,7 @@ Requires:	%{name}%{?_isa} = %{version}-%{release}
 
 Requires(pre):		shadow-utils
 %if %{use_systemd}
-Requires(post):		systemd-units
-Requires(preun):	systemd-units
-Requires(postun):	systemd-units
+%{?systemd_requires}
 %else
 Requires(post):		chkconfig
 Requires(preun):	chkconfig
@@ -124,17 +145,24 @@ authorization purposes.
 This package provides the VOMS service.
 
 %prep
-%setup -q
-
-%if %{?rhel}%{!?rhel:0} >= 7
+%setup -q -n %{name}-%{version}-rc0
 %patch0 -p1
-%endif
-
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
+%patch6 -p1
+
+%if %{?rhel}%{!?rhel:0} >= 7
+%patch7 -p1
+%endif
+
+%patch8 -p1
+%patch9 -p1
+%patch10 -p1
+%patch11 -p1
+%patch12 -p1
 
 install -m 644 -p %{SOURCE1} README.Fedora
 
@@ -146,7 +174,6 @@ install -m 644 -p %{SOURCE1} README.Fedora
 make %{?_smp_mflags}
 
 %install
-
 make install DESTDIR=%{buildroot}
 
 rm %{buildroot}%{_libdir}/*.la
@@ -186,9 +213,7 @@ for b in voms-proxy-init voms-proxy-info voms-proxy-destroy; do
   touch %{buildroot}%{_mandir}/man1/${b}.1
 done
 
-%post -p /sbin/ldconfig
-
-%postun -p /sbin/ldconfig
+%ldconfig_scriptlets
 
 %posttrans
 # Recover /etc/vomses...
@@ -371,21 +396,76 @@ fi
 %doc README.Fedora
 
 %changelog
+* Fri May 29 2020 Brian Lin <blin@cs.wisc.edu> - 2.1.0-0.14.rc0.1
+- Merge in OSG changes
+
 * Mon Dec 16 2019 Diego Davila <didavila@ucsd.edu> - 2.0.14-1.5
 - Add patches to disable TLSv1 and TLSv1.1 connections and
 - insecure ciphers (SOFTWARE-3879)
 
+* Sat Aug 17 2019 Mattias Ellert <mattias.ellert@physics.uu.se> - 2.1.0-0.14.rc0
+- Rebuild for gsoap 2.8.91 (Fedora 32)
+
+* Sat Jul 27 2019 Fedora Release Engineering <releng@fedoraproject.org> - 2.1.0-0.13.rc0
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
+
+* Sun Feb 03 2019 Fedora Release Engineering <releng@fedoraproject.org> - 2.1.0-0.12.rc0
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
+
+* Wed Oct 31 2018 Mattias Ellert <mattias.ellert@physics.uu.se> - 2.1.0-0.11.rc0
+- Change default proxy cert key length to 2048 bits
+
+* Sat Jul 14 2018 Fedora Release Engineering <releng@fedoraproject.org> - 2.1.0-0.10.rc0
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_29_Mass_Rebuild
+
 * Tue Feb 13 2018 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.0.14-1.4
 - Add voms-proxy-direct (SOFTWARE-3123)
 
+* Fri Feb 09 2018 Fedora Release Engineering <releng@fedoraproject.org> - 2.1.0-0.9.rc0
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
+
+* Fri Feb 02 2018 Mattias Ellert <mattias.ellert@physics.uu.se> - 2.1.0-0.8.rc0
+- Fix wsdl version detection
+
+* Thu Aug 03 2017 Fedora Release Engineering <releng@fedoraproject.org> - 2.1.0-0.7.rc0
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Binutils_Mass_Rebuild
+
+* Sun Jul 30 2017 Florian Weimer <fweimer@redhat.com> - 2.1.0-0.6.rc0
+- Rebuild with binutils fix for ppc64le (#1475636)
+
+* Thu Jul 27 2017 Fedora Release Engineering <releng@fedoraproject.org> - 2.1.0-0.5.rc0
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Mass_Rebuild
+
+* Tue Jul 25 2017 Kalev Lember <klember@redhat.com> - 2.1.0-0.4.rc0
+- Rebuilt for libgsoapssl++ soname bump
+
+* Tue Jun 27 2017 Mattias Ellert <mattias.ellert@physics.uu.se> - 2.1.0-0.3.rc0
+- Update the "check if NID is defined" patch
+- Improve compatibility with the kerberos gssapi header file
+- Rebuild for gsoap 2.8.48 (Fedora 27)
+
 * Mon Feb 20 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.0.14-1.3
 - Add Validate-top-level-group-of-VOMS-attribute.patch (SOFTWARE-2593)
+
+* Tue Feb 07 2017 Kalev Lember <klember@redhat.com> - 2.1.0-0.2.rc0
+- Rebuilt for libgsoapssl++ soname bump
+
+* Wed Feb 01 2017 Mattias Ellert <mattias.ellert@physics.uu.se> - 2.1.0-0.1.rc0
+- Fix a few remaining OpenSSL 1.1 issues
+- Fix a GCC 7 compiler error
+- Create RFC proxies as default
+
+* Wed Jan 25 2017 Mattias Ellert <mattias.ellert@physics.uu.se> - 2.1.0-0.rc0
+- Update to version 2.1.0-rc0 (Port to OpenSSL 1.1)
 
 * Thu Dec 22 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.0.14-1.2
 - Use upstream .service file
 
 * Wed Dec 21 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.0.14-1.1
 - Merge OSG changes (SOFTWARE-2557)
+
+* Mon Sep 19 2016 Mattias Ellert <mattias.ellert@physics.uu.se> - 2.0.14-2
+- Rebuild for gsoap 2.8.35 (Fedora 26)
 
 * Sun Sep 11 2016 Mattias Ellert <mattias.ellert@physics.uu.se> - 2.0.14-1
 - Update to version 2.0.14
