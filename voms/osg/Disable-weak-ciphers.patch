@@ -1,0 +1,26 @@
+From d683ec6360b6dffafcd01a30ce389b0ce7fb68d6 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Fri, 1 Nov 2019 16:56:18 -0500
+Subject: [PATCH] Disable weak ciphers
+
+RC4 is known to be broken; 3DES and IDEA are vulnerable to the SWEET32 attack
+---
+ src/socklib/Server.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/socklib/Server.cpp b/src/socklib/Server.cpp
+index e893612..ce580ea 100644
+--- a/src/socklib/Server.cpp
++++ b/src/socklib/Server.cpp
+@@ -321,7 +321,7 @@ GSISocketServer::AcceptGSIAuthentication()
+   SSL_CTX_load_verify_locations(ctx, NULL, cacertdir);
+   SSL_CTX_use_certificate(ctx, ucert);
+   SSL_CTX_use_PrivateKey(ctx,upkey);
+-  SSL_CTX_set_cipher_list(ctx, "ALL:!LOW:!EXP:!MD5:!MD2");    
++  SSL_CTX_set_cipher_list(ctx, "ALL:!LOW:!EXP:!MD5:!MD2:!3DES:!RC4:!IDEA");
+   SSL_CTX_set_purpose(ctx, X509_PURPOSE_ANY);
+   SSL_CTX_set_mode(ctx, SSL_MODE_AUTO_RETRY);
+   SSL_CTX_set_verify(ctx, SSL_VERIFY_PEER | SSL_VERIFY_FAIL_IF_NO_PEER_CERT, proxy_verify_callback);
+-- 
+2.6.3
+

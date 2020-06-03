@@ -1,0 +1,56 @@
+From fdb155ea303c8b7cca1689759def43d6a5e48146 Mon Sep 17 00:00:00 2001
+From: Brian Bockelman <bbockelm@cse.unl.edu>
+Date: Mon, 20 Feb 2017 14:44:21 -0600
+Subject: [PATCH] Validate top-level group of VOMS attribute
+
+---
+ src/ac/validate.cc | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/src/ac/validate.cc b/src/ac/validate.cc
+index fb2aff3..d5e0ae8 100644
+--- a/src/ac/validate.cc
++++ b/src/ac/validate.cc
+@@ -148,11 +148,11 @@ std::string get_error(int e)
+     break;
+   case AC_ERR_ATTRIB_URI:
+     return "VOMS Server contact data missing from AC.";
+     break;
+   case AC_ERR_ATTRIB_FQAN:
+-    return "VOMS Attributes absent or misformed.";
++    return "VOMS Attributes absent or malformed.";
+     break;
+   case AC_ERR_EXTS_ABSENT:
+     return "Required AC extensions missing (NoRevAvail and AuthorityKeyIdentifier)";
+     break;
+   case AC_ERR_MEMORY:
+@@ -428,19 +428,26 @@ static int checkAttributes(STACK_OF(AC_ATTR) *atts, voms &v)
+       return AC_ERR_ATTRIB_URI;
+   }
+   else
+     return AC_ERR_ATTRIB_URI;
+ 
++  std::string top_group = "/" + v.voname + "/";
++
+   /* scan the stack of IETFATTRVAL to put attribute in voms struct */
+   for (int i=0; i<sk_AC_IETFATTRVAL_num(values); i++) {
+     capname = sk_AC_IETFATTRVAL_value(values, i);
+ 
+     if (!(capname->type == V_ASN1_OCTET_STRING))
+       return AC_ERR_ATTRIB_FQAN;
+ 
+     std::string str  = std::string((char*)capname->data, capname->length);
+ 
++    /* The top level group name must be identical to the VO name. */
++    if (str.compare(0, top_group.size(), top_group)) {
++      return AC_ERR_ATTRIB_FQAN;
++    }
++
+     v.fqan.push_back(str);
+ 
+     struct data d;
+ 
+     std::string::size_type rolestart = str.find("/Role=");
+-- 
+2.6.3
+
