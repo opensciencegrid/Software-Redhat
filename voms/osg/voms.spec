@@ -11,7 +11,7 @@
 
 Name:		voms
 Version:	2.0.14
-Release:	1.5%{?dist}
+Release:	1.6%{?dist}
 Summary:	Virtual Organization Membership Service
 
 License:	ASL 2.0
@@ -39,7 +39,7 @@ Patch0: mariadb-innodb.patch
 
 # for all
 Patch1:         Make-RFC-proxies-by-default-SOFTWARE-2381.patch
-Patch2:         Validate-top-level-group-of-VOMS-attribute.patch
+Patch2:         Validate-top-level-group-of-VOMS-attribute-also-acce.patch
 Patch3:         sw3123-voms-proxy-direct.patch
 Patch4:         Disable-TLS-1.1-and-older-openssl-1.0.2.patch
 Patch5:         Disable-weak-ciphers.patch
@@ -371,6 +371,11 @@ fi
 %doc README.Fedora
 
 %changelog
+* Tue Jun 02 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.0.14-1.6
+- Also accept VOMS attributes that only have a top-level group (SOFTWARE-4114)
+  - Drop Validate-top-level-group-of-VOMS-attribute.patch
+  - Add Validate-top-level-group-of-VOMS-attribute-also-acce.patch
+
 * Mon Dec 16 2019 Diego Davila <didavila@ucsd.edu> - 2.0.14-1.5
 - Add patches to disable TLSv1 and TLSv1.1 connections and
 - insecure ciphers (SOFTWARE-3879)
