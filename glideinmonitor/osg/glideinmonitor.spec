@@ -3,7 +3,7 @@
 # Wheels packaging is possible but not recommended
 # https://fedoraproject.org/wiki/PythonWheels
 
-# File must be processed to replace 1 and 0.1.rc1
+# File must be processed to replace 1.1 and 0.1.rc1
 # Replace them manually for manual use
 
 # Release Candidates NVR format
@@ -12,7 +12,7 @@
 #%define release 1
 
 %define name glideinmonitor
-%define version 1
+%define version 1.1
 %define unmangled_version %{version}
 %define release 0.1.rc1
 
