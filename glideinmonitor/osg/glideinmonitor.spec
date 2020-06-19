@@ -3,7 +3,7 @@
 # Wheels packaging is possible but not recommended
 # https://fedoraproject.org/wiki/PythonWheels
 
-# File must be processed to replace 1.1 and 0.1.rc1
+# File must be processed to replace 1.1 and 0.2.rc2
 # Replace them manually for manual use
 
 # Release Candidates NVR format
@@ -14,7 +14,7 @@
 %define name glideinmonitor
 %define version 1.1
 %define unmangled_version %{version}
-%define release 0.1.rc1
+%define release 0.2.rc2
 
 Summary: GlideinMonitor Web Server and Indexer
 Name: %{name}
@@ -152,6 +152,10 @@ getent passwd gmonitor >/dev/null || \
 usermod --append --groups gmonitor gmonitor >/dev/null
 
 
+%post common
+# this is optional, needed only if MySQL is used
+pip3 install mysql-connector-python
+
 %post indexer
 # $1 = 1 - Installation
 # $1 = 2 - Upgrade
@@ -160,6 +164,7 @@ systemctl daemon-reload
 
 %post webserver
 pip3 install flask
+pip3 install flask_httpauth
 systemctl daemon-reload
 # Protecting from failure in case it is not running/installed
 #/sbin/service httpd reload > /dev/null 2>&1 || true
