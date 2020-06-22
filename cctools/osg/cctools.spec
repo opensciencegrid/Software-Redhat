@@ -1,6 +1,6 @@
 Name:           cctools
 Summary:        Cooperative Computing Tools
-Version:        7.1.5
+Version:        7.1.6
 Release:        1%{?dist}
 License:        GPLv2
 URL:            http://ccl.cse.nd.edu/software/
@@ -119,6 +119,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Jun 22 2020 Carl Edquist <edquist@cs.wisc.edu> - 7.1.6-1
+- Update to 7.1.6 (SOFTWARE-4132)
+
 * Mon May 04 2020 Edgar Fajardo <emfajard@ucsd.edu> - 7.1.5-1
 - Update to 7.1.5 (SOFTWARE-4031)
 
