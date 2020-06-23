@@ -1,6 +1,6 @@
 Name:           osg-update-vos
 Version:        1.4.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        VO data updater for OSG
 
 License:        Apache 2.0
@@ -28,6 +28,9 @@ Data updater for OSG
 %setup -q
 
 %install
+%if 0%{?el8}
+sed -i -e '1s#/usr/bin/env.*#/usr/libexec/platform-python#' osg-update-vos
+%endif
 make install DESTDIR=%{buildroot}
 
 %files
@@ -39,6 +42,9 @@ make install DESTDIR=%{buildroot}
 %{_sbindir}/osg-update-data
 
 %changelog
+* Tue Jun 23 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.4.0-2
+- Use Python 3 on EL8 (SOFTWARE-4140)
+
 * Tue May 16 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.4.0-1
 - osg-update-vos: clean cache before downloading data (SOFTWARE-2731)
 
