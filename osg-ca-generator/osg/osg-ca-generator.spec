@@ -1,6 +1,6 @@
 Summary:   Generate CAs and certificates for testing an OSG installation
 Name:      osg-ca-generator
-Version:   1.3.2
+Version:   1.3.3
 Release:   1%{?dist}
 License:   Apache License, 2.0
 Packager:  VDT <vdt-support@opensciencegrid.org>
@@ -8,6 +8,17 @@ Source0:   %{name}-%{version}.tar.gz
 AutoReq:   yes
 AutoProv:  yes
 BuildArch: noarch
+
+%if 0%{?rhel} >= 8
+  %define __python /usr/libexec/platform-python
+%else
+  %if 0%{?fedora} >= 31
+    %define __python /usr/bin/python3
+  %else
+    %define __python /usr/bin/python2
+  %endif
+%endif
+
 
 Requires: openssl
 
@@ -18,13 +29,20 @@ Create DigiCert-like CAs and certificates for testing an OSG Software installati
 %setup -q
 
 %install
-make install DESTDIR=$RPM_BUILD_ROOT
+find . -type f -exec sed -ri '1s,^#!/usr/bin/env python,#!%{__python},' '{}' +
+make install DESTDIR=$RPM_BUILD_ROOT PYTHON=%{__python}
 
 %files
 %{_sbindir}/%{name}
 %{python_sitelib}/cagen.py*
+%if 0%{?rhel} >= 8 || 00%{?fedora} >= 30
+%{python_sitelib}/__pycache__/*.pyc
+%endif
 
 %changelog
+* Wed Jun 24 2020 Mátyás Selmeci <matyas@cs.wisc.edu> 1.3.3-1
+- Python 3/EL 8 support (SOFTWARE-4073)
+
 * Tue Jan 23 2018 Brian Lin <blin@cs.wisc.edu> 1.3.2-1
 - Use hostname for the fake VOMS URI
 
