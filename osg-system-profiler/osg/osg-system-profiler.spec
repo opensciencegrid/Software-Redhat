@@ -1,10 +1,9 @@
 Summary:   Profiles your system for debugging
 Name:      osg-system-profiler
-Version:   1.5.0
-Release:   2%{?dist}
+Version:   1.6.0
+Release:   1%{?dist}
 License:   Apache License, 2.0
 Source0:   %{name}-%{version}.tar.gz
-Patch0: viewer-require-python-2.patch
 BuildArch: noarch
 
 Requires: setroubleshoot-server
@@ -28,9 +27,6 @@ A GUI for viewing the output of %{name} in a structured manner.
 
 %prep
 %setup -q
-%if 0%{?rhel} >= 8
-%patch0 -p1
-%endif
 
 %install
 make install DESTDIR=$RPM_BUILD_ROOT
@@ -44,6 +40,9 @@ make install DESTDIR=$RPM_BUILD_ROOT
 %{_bindir}/%{name}-viewer
 
 %changelog
+* Wed Jun 24 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.6.0-1
+- Query multiple python executables, not just `which python` (which may not exist on EL8) (SOFTWARE-4146)
+
 * Thu Apr 23 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.5.0-2
 - Build for EL8 (SOFTWARE-4050)
 
