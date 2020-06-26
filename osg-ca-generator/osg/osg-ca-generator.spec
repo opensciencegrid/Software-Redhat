@@ -1,7 +1,7 @@
 Summary:   Generate CAs and certificates for testing an OSG installation
 Name:      osg-ca-generator
 Version:   1.3.99
-Release:   0.1%{?dist}
+Release:   0.2%{?dist}
 License:   Apache License, 2.0
 Packager:  VDT <vdt-support@opensciencegrid.org>
 Source0:   %{name}-%{version}.tar.gz
