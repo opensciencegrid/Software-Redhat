@@ -1,7 +1,7 @@
 Summary: OSG configuration files for XRootD
 Name: osg-xrootd
 Version: 3.5
-Release: 12%{?dist}
+Release: 13%{?dist}
 License: ASL 2.0
 BuildArch: noarch
 
@@ -15,6 +15,7 @@ Source7: 90-osg-standalone-paths.cfg
 Source8: create_macaroon_secret
 Source9: 50-osg-tpc.cfg
 Source10: Authfile.example
+Source11: 90-xrootd-logging.cfg
 # We utilize a configuration directive (`continue`) introduced in XRootD 4.9.
 Requires: xrootd >= 1:4.9.0
 
@@ -53,6 +54,7 @@ install -m 644 %{SOURCE5} $RPM_BUILD_ROOT/etc/xrootd/config.d
 install -m 644 %{SOURCE6} $RPM_BUILD_ROOT/etc/xrootd/config.d
 install -m 644 %{SOURCE7} $RPM_BUILD_ROOT/etc/xrootd/config.d
 install -m 644 %{SOURCE9} $RPM_BUILD_ROOT/etc/xrootd/config.d
+install -m 644 %{SOURCE11} $RPM_BUILD_ROOT/etc/xrootd/config.d
 mkdir -p $RPM_BUILD_ROOT/%{_libexecdir}/xrootd/
 install -p -m 0755 %{SOURCE8} $RPM_BUILD_ROOT/%{_libexecdir}/xrootd/create_macaroon_secret
 install -m 644 %{SOURCE10} $RPM_BUILD_ROOT/etc/xrootd/Authfile
@@ -69,6 +71,7 @@ install -m 644 %{SOURCE10} $RPM_BUILD_ROOT/etc/xrootd/Authfile
 %files standalone
 %config /etc/xrootd/config.d/40-osg-standalone.cfg
 %config(noreplace) /etc/xrootd/config.d/90-osg-standalone-paths.cfg
+%config(noreplace) /etc/xrootd/config.d/90-xrootd-logging.cfg
 %config /etc/xrootd/config.d/50-osg-tpc.cfg
 %config(noreplace) /etc/xrootd/Authfile
 
@@ -78,6 +81,9 @@ if [ ! -e /etc/xrootd/macaroon-secret ]; then
 fi
 
 %changelog
+* Mon Jun 29 2020 Edgar Fajardo <emfajard@ucsd.edu> 3.5-13
+- Adding logging information on its own file (SOFTWARE-4058)
+
 * Fri Mar 06 2020 Edgar Fajardo <emfajard@ucsd.edu> 3.5-12
 - The configuration on the standalone file shoudl be only for standalone (SOFTWARE-4027)
 
