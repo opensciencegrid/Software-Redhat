@@ -1,3 +1,3 @@
-type=github repo=opensciencegrid/osg-build tag=v1.16.1 hash=896923e94c6bb66e42508d225b2c0bd3a5f38ac1
+type=github repo=opensciencegrid/osg-build tag=v1.16.2 hash=0ecad01b44bc68c7d98ef446278c703fa3050d4e
 # Uncomment below to build a prerelease from matyas's repo
-#type=github repo=matyasselmeci/osg-build tarball=osg-build-1.16.0.tar.gz tag=v1.16.0 hash=6ecf8bfed03f6238379adac909392d7e2a8b209a
+#type=github repo=matyasselmeci/osg-build tarball=osg-build-1.16.2.tar.gz tag=wip/v1.16.2 hash=0ecad01b44bc68c7d98ef446278c703fa3050d4e
