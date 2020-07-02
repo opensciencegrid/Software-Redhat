@@ -1,6 +1,6 @@
 Name:      xrootd-rucioN2N-for-Xcache
 Version:   1.2
-Release:   3.1%{?dist}
+Release:   3.2%{?dist}
 Summary:   Xrootd Name-to-Name plugin for Disk Caching Proxy (Xcache) to utilize RUCIO metalink
 Group:     System Environment/Libraries
 License:   BSD 
@@ -13,21 +13,21 @@ Patch0: dont_link.patch
 
 BuildArch: x86_64
 
-%define xrootd_current 5.0
-%define xrootd_next %(echo %xrootd_current | awk '{print $1,$2+1}' FS=. OFS=.)
+%define xrootd_current_major 4.0
+%define xrootd_next_major 5.0
 
-BuildRequires: xrootd-server-devel >= 1:%{xrootd_current}.0-0
-BuildRequires: xrootd-server-devel <  1:%{xrootd_next}.0-0
-BuildRequires: xrootd-client-devel >= 1:%{xrootd_current}.0-0
-BuildRequires: xrootd-client-devel <  1:%{xrootd_next}.0-0
-BuildRequires: xrootd-devel >= 1:%{xrootd_current}.0-0
-BuildRequires: xrootd-devel <  1:%{xrootd_next}.0-0
+BuildRequires: xrootd-server-devel >= 1:%{xrootd_current_major}.0-1
+BuildRequires: xrootd-server-devel <  1:%{xrootd_next_major}.0-1
+BuildRequires: xrootd-client-devel >= 1:%{xrootd_current_major}.0-1
+BuildRequires: xrootd-client-devel <  1:%{xrootd_next_major}.0-1
+BuildRequires: xrootd-devel >= 1:%{xrootd_current_major}.0-1
+BuildRequires: xrootd-devel <  1:%{xrootd_next_major}.0-1
 BuildRequires: libcurl-devel openssl-devel
 
-Requires: xrootd >= 1:%{xrootd_current}.0-0
-Requires: xrootd <  1:%{xrootd_next}.0-0
-Requires: xrootd-client >= 1:%{xrootd_current}.0-0
-Requires: xrootd-client <  1:%{xrootd_next}.0-0
+Requires: xrootd >= 1:%{xrootd_current_major}.0-1
+Requires: xrootd <  1:%{xrootd_next_major}.0-1
+Requires: xrootd-client >= 1:%{xrootd_current_major}.0-1
+Requires: xrootd-client <  1:%{xrootd_next_major}.0-1
 Requires: libcurl openssl
 
 %description
@@ -59,6 +59,9 @@ cp rucioN2N-for-Xcache-%{version}/XrdName2NameDCP4RUCIO.so %{buildroot}/usr/lib6
 %post -p /sbin/ldconfig
 
 %changelog 
+* Fri Jul 2 2020 Diego Davila <didavila@ucsd.edu> - v1.2-3.2
+- Building against XRootD-5.0.0-rc5 
+
 * Fri Apr 10 2020 Diego Davila <didavila@ucsd.edu> - v1.2-3.1
 - Removing patch: link_to_lXrdPfc5.patch 
 - Adding patch: dont_link.patch that removes the linking against libXrdFileCache-4 
