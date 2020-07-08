@@ -1,6 +1,6 @@
 Name:      osg-flock
 Version:   1.1
-Release:   1%{?dist}
+Release:   2%{?dist}
 Summary:   OSG configurations for a flocking host
 
 License:   Apache 2.0
@@ -8,7 +8,7 @@ URL:       https://support.opensciencegrid.org/support/solutions/articles/120000
 
 BuildArch: noarch
 
-Requires: osg-ca-certs
+Requires: grid-certificates >= 7
 Requires: gratia-probe-glideinwms
 Requires: fetch-crl
 Requires: condor
@@ -47,6 +47,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Jun 8 2020 Brian Lin <blin@cs.wisc.edu> 1.1-2
+- Fix CA requirements to work with osg-ca-scripts or certificate bundles
+
 * Wed Apr 10 2019 Brian Lin <blin@cs.wisc.edu> 1.1-1
 - Add new OSG flock host certificate DN (SOFTWARE-3603)
 
