@@ -1,7 +1,7 @@
 
 Name: xrootd-multiuser
 Version: 0.4.3
-Release: 3%{?dist}
+Release: 4%{?dist}
 Summary: Multiuser filesystem writing plugin for xrootd
 
 Group: System Environment/Daemons
@@ -61,9 +61,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_unitdir}/xrootd-privileged@.service
 
 %changelog
-* Thu Jul 09 2020 Diego Davila <didavila@ucsd.edu> - 0.4.3-3
+* Thu Jul 9 2020 Diego Davila <didavila@ucsd.edu> - 0.4.3-4
 - building against xrootd-5.0.0-1 (SOFTWARE-3923)
 - updating xrootd_current_major and xrootd_next_major to 5 and 6 respectively
+
+* Fri Jul 2 2020 Diego Davila <didavila@ucsd.edu> - 0.4.3-3
+- updating XRootD requirements (0.0-0 by 0.0-1) to accept RCs
 
 * Fri Jun 26 2020 Diego Davila <didavila@ucsd.edu> - 0.4.3-2
 - updating XRootD requirements to only the major version (SOFTWARE-4137)
