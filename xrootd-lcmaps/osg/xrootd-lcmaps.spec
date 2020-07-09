@@ -1,7 +1,7 @@
 
 Name: xrootd-lcmaps
-Version: 1.7.7
-Release: 5%{?dist}
+Version: 1.7.8
+Release: 2%{?dist}
 Summary: LCMAPS plugin for xrootd
 
 Group: System Environment/Daemons
@@ -11,11 +11,11 @@ URL: https://github.com/opensciencegrid/xrootd-lcmaps
 # git archive v${VERSION} --prefix=xrootd-lcmaps-$VERSION/ | gzip -7 > ~/rpmbuild/SOURCES/xrootd-lcmaps-$VERSION.tar.gz
 Source0: %{name}-%{version}.tar.gz
 
-%define xrootd_current 4.11
-%define xrootd_next 5.0
+%define xrootd_current_major 5
+%define xrootd_next_major 6
 
-BuildRequires: xrootd-server-devel >= 1:%{xrootd_current}.0-1
-BuildRequires: xrootd-server-devel <  1:%{xrootd_next}.0-1
+BuildRequires: xrootd-server-devel >= 1:%{xrootd_current_major}.0.0-1
+BuildRequires: xrootd-server-devel <  1:%{xrootd_next_major}.0.0-1
 BuildRequires: lcmaps-interface
 BuildRequires: lcmaps
 BuildRequires: cmake
@@ -35,8 +35,8 @@ BuildRequires: globus-common-devel
 BuildRequires: globus-gsi-sysconfig-devel
 BuildRequires: globus-gsi-callback-devel
 
-Requires: xrootd-server >= 1:%{xrootd_current}.0-1
-Requires: xrootd-server <  1:%{xrootd_next}.0-1
+Requires: xrootd-server >= 1:%{xrootd_current_major}.0.0-1
+Requires: xrootd-server <  1:%{xrootd_next_major}.0.0-1
 
 %description
 %{summary}
@@ -66,19 +66,30 @@ make install DESTDIR=$RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 # We keep the .so here (and not in a -devel subpackage) because it is actually
 # a shared library.
-%{_libdir}/libXrdLcmaps.so
-%{_libdir}/libXrdLcmaps.so.0
-%{_libdir}/libXrdLcmaps.so.0.0.2
+%{_libdir}/libXrdLcmaps-*.so
+%{_libdir}/libXrdLcmaps-*.so.0
+%{_libdir}/libXrdLcmaps-*.so.0.0.2
 %config(noreplace) %{_sysconfdir}/xrootd/lcmaps.cfg
 %config(noreplace) %{_sysconfdir}/xrootd/config.d/10-xrootd-lcmaps.cfg
 %config %{_sysconfdir}/xrootd/config.d/40-xrootd-lcmaps.cfg
 
 %changelog
-* Wed Jul 8 2020 Diego Davila <didavila@ucsd.edu> - 1.7.7-5
-- Building against xrootd-5.0.0-rc5 (software-3923)
+* Thu Jul 09 2020 Diego Davila <didavila@ucsd.edu> - 1.7.8-2
+- building against xrootd-5.0.0-1 (SOFTWARE-3923)
+- updating xrootd_current_major and xrootd_next_major to 5 and 6 respectively
+
+* Mon Jun 29 2020 Edgar Fajardo <emfajard@ucsd.edu> 1.7.8-1
+- Added support for EL8
+
+* Fri Jun 26 2020 Diego Davila <didavila@ucsd.edu> - 1.7.7-5
+- updating XRootD requirements to only the major version (SOFTWARE-4137)
 
 * Mon Jun 22 2020 Diego Davila <didavila@ucsd.edu> - 1.7.7-4
 - Building against xrootd-5.0.0-rc4 (software-3923)
+
+* Wed Jun 10 2020 Diego Davila <didavila@ucsd.edu> - 1.7.7-3
+- Adding XrootD major version to the shared file name
+- building against XrootD-4.12.2 (software-4093)
 
 * Tue May 19 2020 Diego Davila <didavila@ucsd.edu> - 1.7.7-3
 - Removig patches: dont_link and find_libXrdSec
@@ -88,16 +99,16 @@ make install DESTDIR=$RPM_BUILD_ROOT
 - Adding some warning for when no-authz is used
 - Builing against Xrootd 4.12 (SOFTWARE-4063)
 
-* Mon Apr 27 2020 Diego Davila <didavila@ucad.edu> - 1.7.5-3.2
-- Adding patch: find_libXrdSec to let xrootd to find the right version (SOFTWARE-3923)
+* Fri Apr 17 2020 Diego Davila <didavila@ucsd.edu> - 1.7.6-1
+- Changing config to make xrootd to find the proper libXrdSec shared library
 
-* Tue Mar 31 2020 Diego Davila <didavila@ucad.edu> - 1.7.5-3
+* Tue Mar 31 2020 Diego Davila <didavila@ucsd.edu> - 1.7.5-3
 - Removing patch: link_to5 and adding patch dont_link (SOFTWARE-3923)
 
-* Mon Feb 24 2020 Diego Davila <didavila@ucad.edu> - 1.7.5-2
+* Mon Feb 24 2020 Diego Davila <didavila@ucsd.edu> - 1.7.5-2
 - Adding patch0 so that we can rebuild against xrootd 5.0 (SOFTWARE-3923)
 
-* Fri Jan 10 2020 Diego Davila <didavila@ucad.edu> - 1.7.5-1
+* Fri Jan 10 2020 Diego Davila <didavila@ucsd.edu> - 1.7.5-1
 - Allow lcmaps policy to be read from config file for http
 
 * Mon Oct 21 2019 Carl Edquist <edquist@cs.wisc.edu> - 1.7.4-4
