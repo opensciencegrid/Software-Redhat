@@ -11,8 +11,8 @@ URL: https://github.com/bbockelm/xrootd-multiuser
 # git archive v%{version} --prefix=xrootd-multiuser-%{version}/ | gzip -7 > ~/rpmbuild/SOURCES/xrootd-multiuser-%{version}.tar.gz
 Source0: %{name}-%{version}.tar.gz
 
-%define xrootd_current_major 4
-%define xrootd_next_major 5
+%define xrootd_current_major 5
+%define xrootd_next_major 6
 
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildRequires: xrootd-server-libs >= 1:%{xrootd_current_major}.0.0-1
@@ -61,8 +61,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_unitdir}/xrootd-privileged@.service
 
 %changelog
-* Fri Jul 2 2020 Diego Davila <didavila@ucsd.edu> - 0.4.3-3
-- updating XRootD requirements (0.0-0 by 0.0-1) to accept RCs
+* Thu Jul 09 2020 Diego Davila <didavila@ucsd.edu> - 0.4.3-3
+- building against xrootd-5.0.0-1 (SOFTWARE-3923)
+- updating xrootd_current_major and xrootd_next_major to 5 and 6 respectively
 
 * Fri Jun 26 2020 Diego Davila <didavila@ucsd.edu> - 0.4.3-2
 - updating XRootD requirements to only the major version (SOFTWARE-4137)
