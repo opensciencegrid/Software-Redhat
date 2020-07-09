@@ -1,7 +1,7 @@
 
 Name: xrootd-lcmaps
 Version: 1.7.7
-Release: 4%{?dist}
+Release: 5%{?dist}
 Summary: LCMAPS plugin for xrootd
 
 Group: System Environment/Daemons
@@ -74,6 +74,9 @@ make install DESTDIR=$RPM_BUILD_ROOT
 %config %{_sysconfdir}/xrootd/config.d/40-xrootd-lcmaps.cfg
 
 %changelog
+* Wed Jul 8 2020 Diego Davila <didavila@ucsd.edu> - 1.7.7-5
+- Building against xrootd-5.0.0-rc5 (software-3923)
+
 * Mon Jun 22 2020 Diego Davila <didavila@ucsd.edu> - 1.7.7-4
 - Building against xrootd-5.0.0-rc4 (software-3923)
 
