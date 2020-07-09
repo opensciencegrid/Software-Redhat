@@ -1,6 +1,6 @@
 Name: xrootd-hdfs
 Version: 2.1.7
-Release: 3.1%{?dist}
+Release: 9%{?dist}
 Summary: HDFS plugin for xrootd
 
 Group: System Environment/Development
@@ -9,13 +9,13 @@ URL: https://github.com/bbockelm/xrootd-hdfs
 Source0: %{name}-%{version}.tar.gz
 Patch0: link2serverlib.patch
 
-%define xrootd_current 4.11
-%define xrootd_next 5.0
+%define xrootd_current_major 5
+%define xrootd_next_major 6
 
-BuildRequires: xrootd-server-devel >= 1:%{xrootd_current}.0-1
-BuildRequires: xrootd-server-devel <  1:%{xrootd_next}.0-1
-BuildRequires: xrootd-devel >= 1:%{xrootd_current}.0-1
-BuildRequires: xrootd-devel <  1:%{xrootd_next}.0-1
+BuildRequires: xrootd-server-devel >= 1:%{xrootd_current_major}.0.0-1
+BuildRequires: xrootd-server-devel <  1:%{xrootd_next_major}.0.0-1
+BuildRequires: xrootd-devel >= 1:%{xrootd_current_major}.0.0-1
+BuildRequires: xrootd-devel <  1:%{xrootd_next_major}.0.0-1
 BuildRequires: cmake
 BuildRequires: /usr/include/hdfs.h
 BuildRequires: java-devel = 1:1.7.0
@@ -23,8 +23,8 @@ BuildRequires: jpackage-utils
 BuildRequires: openssl-devel
 BuildRequires: zlib-devel
 Requires: hadoop-client >= 2.0.0+545-1.cdh4.1.1
-Requires: xrootd-server >= 1:%{xrootd_current}.0-1
-Requires: xrootd-server <  1:%{xrootd_next}.0-1
+Requires: xrootd-server >= 1:%{xrootd_current_major}.0.0-1
+Requires: xrootd-server <  1:%{xrootd_next_major}.0.0-1
 
 %package devel
 Summary: Development headers for Xrootd HDFS plugin
@@ -64,9 +64,9 @@ rm $RPM_BUILD_ROOT%{_bindir}/xrootd_hdfs_envcheck
 
 %files
 %defattr(-,root,root,-)
-%{_libdir}/libXrdHdfs.so
-%{_libdir}/libXrdHdfs.so.*
-%{_libdir}/libXrdHdfsReal.so
+%{_libdir}/libXrdHdfs-*.so
+%{_libdir}/libXrdHdfs-*.so.*
+%{_libdir}/libXrdHdfsReal-*.so
 %{_sysconfdir}/xrootd/xrootd.sample.hdfs.cfg
 %{_libexecdir}/xrootd-hdfs/xrootd_hdfs_envcheck
 %config(noreplace) %{_sysconfdir}/sysconfig/xrootd-hdfs
@@ -76,6 +76,19 @@ rm $RPM_BUILD_ROOT%{_bindir}/xrootd_hdfs_envcheck
 %{_includedir}/XrdHdfs.hh
 
 %changelog
+* Thu Jul 09 2020 Diego Davila <didavila@ucsd.edu> - 2.1.7-9
+- building against xrootd-5.0.0-1 (SOFTWARE-3923)
+- updating xrootd_current_major and xrootd_next_major to 5 and 6 respectively
+
+* Fri Jun 26 2020 Diego Davila <didavila@ucsd.edu> - 2.1.7-8
+- updating XRootD requirements to only the major version (SOFTWARE-4137)
+
+* Wed Jun 10 2020 Diego Davila <didavila@ucsd.edu> - 2.1.7-7
+- Adding XrootD major version to the shared file name
+- building against XrootD-4.12.2 (software-4093)
+
+* Fri Apr 24 2020 Edgar Fajardo <emfajard@ucsd.edu> - 2.1.7-6
+- Rebuild for xrootd 4.12 (SOFTWARE-4063)
 
 * Tue Mar 31 2020 Diego Davila <didavila@ucsd.edu> - 2.1.7-3.1
 - Rebuild for xrootd 5.0.0-rc2 (SOFTWARE-3923)
