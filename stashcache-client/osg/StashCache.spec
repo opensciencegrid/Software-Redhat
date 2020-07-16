@@ -1,19 +1,24 @@
 Summary: StashCache client tools
 Name: stashcache-client
-Version: 5.6.1
+Version: 6.0.0
 Release: 1%{?dist}
 License: Apache 2.0
 Url: https://github.com/opensciencegrid/StashCache
 BuildArch: noarch
 Source0: StashCache-%{version}.tar.gz
+%if 0%{?rhel} < 8
 BuildRequires: python2-setuptools
 Requires: python2-setuptools
+%else
+BuildRequires: python3-setuptools
+Requires: python3-setuptools
+%endif
 Requires: curl
 Requires: xrootd-client
 Provides: stashcp = %{version}-%{release}
 
 %if 0%{?rhel} >= 8
-%define __python /usr/bin/python2
+%define __python /usr/bin/python3
 %endif
 
 %description
@@ -23,17 +28,33 @@ stashcp allows users to copy files out of the OSG StashCache data federation.
 %autosetup -n StashCache-%{version}
 
 %build
+%if 0%{?rhel} < 8
 %py2_build
+%else
+%py3_build
+%endif
 
 %install
+%if 0%{?rhel} < 8
 %py2_install
+%else
+%py3_install
+%endif
 
 %files
+%if 0%{?rhel} < 8
 %{python2_sitelib}/*
+%else
+%{python3_sitelib}/*
+%endif
 %{_bindir}/stashcp
 %{_datarootdir}/stashcache/opensciencegrid.org.pub
 
 %changelog
+* Thu Jul 16 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 6.0.0-1
+- Update to 6.0.0.  This release adds Python 3 support and changes the
+  statistics collector to collector.atlas-ml.org
+
 * Thu May 14 2020 Dave Dykstra <dwd@fnal.gov> - 5.6.1-1
 - Update to 5.6.1.  Add back support for /etc/stashcache/caches.json to
   override default list.
