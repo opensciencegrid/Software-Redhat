@@ -1,7 +1,7 @@
 Summary:   Generate CAs and certificates for testing an OSG installation
 Name:      osg-ca-generator
-Version:   1.3.99
-Release:   0.6%{?dist}
+Version:   1.4.0
+Release:   1%{?dist}
 License:   Apache License, 2.0
 Packager:  VDT <vdt-support@opensciencegrid.org>
 Source0:   %{name}-%{version}.tar.gz
@@ -40,9 +40,8 @@ make install DESTDIR=$RPM_BUILD_ROOT PYTHON=%{__python}
 %endif
 
 %changelog
-* Fri Jun 26 2020 Matyas Selmeci - 1.3.99-0.6
+* Tue Jul 21 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.4.0-1
 - Working Python 3/EL 8 support (SOFTWARE-4073)
-    (prerelease build)
 
 * Tue Jan 23 2018 Brian Lin <blin@cs.wisc.edu> 1.3.2-1
 - Use hostname for the fake VOMS URI
