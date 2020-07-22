@@ -1,5 +1,11 @@
-%define tarball_version 8.8.9
+# DEBUGGING:
+%if 0%{?el8} && 0%{?osg}
+%global _smp_mflags -j1
+%endif
 
+
+
+%define tarball_version 8.8.9
 # optionally define any of these, here or externally
 # % define fedora   16
 # % define osg      0
