@@ -1,1 +1,1 @@
-type=github repo=matyasselmeci/vmu-packer tag=wip/v1.0.0 tarball=vmu-packer-1.0.0.tar.gz hash=4f46b1423dcb2e1fb42deda7eccde603b0117f51
+type=github repo=opensciencegrid/vmu-packer tag=v1.0.0 hash=e6d8ecc4a28d7e92a5b944fcdaf2fe0c63e68caf
