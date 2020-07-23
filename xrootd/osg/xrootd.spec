@@ -63,7 +63,7 @@
 Name:      xrootd
 Epoch:     1
 Version:   5.0.0
-Release:   1.1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:   1.2%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -75,7 +75,8 @@ URL:       http://xrootd.org/
 Source0:   xrootd.tar.gz
 
 Patch0:   xrootd500nullPointerFix.patch
-
+Patch1:	  adminpath_unix_socket.patch
+ 
 BuildRoot: %{_tmppath}/%{name}-root
 
 %if %{use_cmake3}
@@ -422,6 +423,7 @@ This package contains a set of CPPUnit tests for xrootd.
 %prep
 %setup -c -n xrootd
 %patch0 -p 1
+%patch1 -p 0
 
 %build
 cd xrootd
@@ -911,6 +913,9 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Thu Jul 23 2020 Diego Davila <didavila@ucsd.edu> - 5.0.0-1.2
+- Adding patch: adminpath_unix_socket.patch 
+
 * Wed May 27 2020 Michal Simon <michal.simon@cern.ch> - 4.12.2-1
 - Remove xrootd-voms-devel
 
