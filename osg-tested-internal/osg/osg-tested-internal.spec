@@ -1,7 +1,7 @@
 Name:      osg-tested-internal
 Summary:   All OSG packages we test (internal use only)
 Version:   3.5
-Release:   3%{?dist}
+Release:   4%{?dist}
 License:   Apache 2.0
 URL:       http://www.opensciencegrid.org
 
@@ -12,9 +12,14 @@ URL:       http://www.opensciencegrid.org
 # Common
 #
 ################################################################################
+Requires: osg-oasis
+%if 0%{?el8}
+Requires: osg-wn-client
+%endif
+
+%if 0%{?rhel} < 8
 Requires: /usr/sbin/condor_master
 Requires: yum-utils
-Requires: osg-oasis
 Requires: osg-configure-tests
 
 Requires: gratia-probe-condor
@@ -65,6 +70,8 @@ Requires: mariadb-server
 Requires: mysql-server
 %endif
 
+%endif  # %%if 0%%{?rhel} < 8
+
 %description
 %{summary}
 
@@ -73,6 +80,9 @@ Requires: mysql-server
 %files
 
 %changelog
+* Fri Jul 24 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.5-4
+- Add EL8 packages (SOFTWARE-3308)
+
 * Mon Jan 13 2020 Diego Davila <didavila@ucsd.edu> - 3.5-3
 - Changing Requires: xrootd and xrootd-lcmaps for osg-xrootd-standalone (SOFTWARE-3964)
 
