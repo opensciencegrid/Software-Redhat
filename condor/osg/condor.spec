@@ -1016,7 +1016,11 @@ cmake \
        -DHAVE_HIBERNATION:BOOL=TRUE \
        -DWANT_HDFS:BOOL=FALSE \
        -DWITH_ZLIB:BOOL=FALSE \
+%if 0%{?osg} && 0%{?rhel} >= 8
+       -DWANT_CONTRIB:BOOL=OFF \
+%else
        -DWANT_CONTRIB:BOOL=ON \
+%endif
        -DWITH_PIGEON:BOOL=FALSE \
 %if %plumage
        -DWITH_PLUMAGE:BOOL=TRUE \
