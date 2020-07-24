@@ -1,5 +1,5 @@
 Name: oidc-agent
-Version: 3.3.1
+Version: 3.3.3
 Release: 1.1%{?dist}
 Summary: Commandline tool for obtaining OpenID Connect access tokens on the commandline
 Group: Misc
@@ -85,7 +85,11 @@ make install BIN_PATH=${RPM_BUILD_ROOT}/usr BIN_AFTER_INST_PATH=/usr MAN_PATH=${
 #%doc
 
 %changelog
-* Wed Feb 10 2029 Dave Dykstra <dwd@fnal.gov> - 3.3.1-1.1
+* Fri Jul 24 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.3.3-1.1
+- Update to 3.3.3-1 from upstream and merge OSG changes
+  (SOFTWARE-4190)
+
+* Wed Feb 10 2020 Dave Dykstra <dwd@fnal.gov> - 3.3.1-1.1
 - Hardcode the version number
 - Changed Source0 to end in .gz
 
