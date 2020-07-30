@@ -1,7 +1,7 @@
 Name:		slurm
 Version:	17.11.7
 %global rel	6
-Release:	%{rel}%{?dist}
+Release:	%{rel}.1%{?dist}
 Summary:	Slurm Workload Manager
 
 Group:		System Environment/Base
@@ -70,7 +70,8 @@ Requires: munge
 BuildRequires: systemd
 %endif
 BuildRequires: munge-devel munge-libs
-BuildRequires: python
+%define __python /usr/bin/python2
+BuildRequires: python2
 BuildRequires: readline-devel
 Obsoletes: slurm-lua slurm-munge slurm-plugins
 
@@ -304,6 +305,7 @@ notifies slurm about failed nodes.
 %setup -n %{slurm_source_dir}
 
 %build
+find . -type f -exec sed -ri '1s,^#!/usr/bin/(env )?python.*,#!%{__python},' '{}' +
 %configure \
 	%{?_without_debug:--disable-debug} \
 	%{?_with_pam_dir} \
