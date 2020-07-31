@@ -1,4 +1,4 @@
-%define tarball_version 8.9.7
+%define tarball_version 8.9.8
 
 # optionally define any of these, here or externally
 # % define fedora   16
@@ -10,10 +10,10 @@
 %define cgroups 0
 %define python 0
 
-%if 0%{?rhel} >= 6
+%if 0%{?rhel} >= 6 || 0%{?fedora}
 %define cgroups 1
 %endif
-%if 0%{?rhel} >= 7
+%if 0%{?rhel} >= 7 || 0%{?fedora}
 %define systemd 1
 %endif
 
@@ -37,11 +37,13 @@
 %define qmf 0
 
 %if 0%{?fedora}
-%define blahp 1
+%define blahp 0
 %define cream 0
+%define drmaa 0
 %else
 %define blahp 1
 %define cream 1
+%define drmaa 1
 %endif
 
 %if 0%{?hcc}
@@ -69,7 +71,7 @@
 %endif
 
 # cream support is going away, skip for EL8
-%if 0%{?rhel} >= 8
+%if 0%{?rhel} >= 8 || 0%{?amzn}
 %define cream 0
 %endif
 
@@ -97,7 +99,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.1
+%define condor_base_release 0.512835
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -146,7 +148,7 @@ Source0: %{name}-%{tarball_version}.tar.gz
 Source1: generate-tarball.sh
 %endif
 
-# % if %systemd
+# % if % systemd
 Source3: osg-env.conf
 # % else
 Source4: condor.osg-sysconfig
@@ -186,11 +188,10 @@ Source118: voms-2.0.6.tar.gz
 %endif
 
 Patch1: old-sphinx.patch
-Patch2: python-shebang.patch
+Patch2: el7-python2.patch
 
 #% if 0%osg
 Patch8: osg_sysconfig_in_init_script.patch
-Patch9: bosco-1.3.patch
 #% endif
 
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
@@ -250,7 +251,7 @@ BuildRequires: expat-devel
 BuildRequires: perl(Archive::Tar)
 BuildRequires: perl(XML::Parser)
 BuildRequires: perl(Digest::MD5)
-%if 0%{?rhel} >= 8
+%if 0%{?rhel} >= 8 || 0%{?fedora}
 BuildRequires: python3-devel
 %else
 BuildRequires: python-devel
@@ -294,7 +295,7 @@ BuildRequires: mongodb-devel >= 1.6.4-3
 
 %if %cgroups
 %if 0%{?rhel} >= 8
-BuildRequires: libcgroup
+BuildRequires: libcgroup-devel
 Requires: libcgroup
 %else
 # libcgroup < 0.37 has a bug that invalidates our accounting.
@@ -314,7 +315,7 @@ BuildRequires: log4cpp-devel
 BuildRequires: gridsite-devel
 %endif
 
-%if 0%{?rhel} == 7
+%if 0%{?rhel} == 7 && ! 0%{?amzn}
 %ifarch x86_64
 BuildRequires: python36-devel
 BuildRequires: boost169-devel
@@ -327,10 +328,20 @@ BuildRequires: boost-static
 %endif
 
 %if 0%{?rhel} >= 6 || 0%{?fedora}
-%if 0%{?rhel} >= 8
+%if 0%{?rhel} >= 8 || 0%{?fedora}
 BuildRequires: boost-python3-devel
 %else
+%if 0%{?fedora} >= 30
+BuildRequires: boost-python2-devel
+%else
+%if ! 0%{?amzn}
 BuildRequires: boost-python
+%else
+BuildRequires: python3-devel
+BuildRequires: boost169-python2-devel
+BuildRequires: boost169-python3-devel
+%endif
+%endif
 %endif
 BuildRequires: libuuid-devel
 Requires: libuuid
@@ -386,12 +397,16 @@ Requires: blahp >= 1.16.1
 Requires: %name-external-libs%{?_isa} = %version-%release
 %endif
 
-%if 0%{?rhel} <= 7
+%if 0%{?rhel} <= 7 && 0%{?fedora} <= 31
 Requires: python-requests
+Requires: python2-condor
 %endif
-%if 0%{?rhel} >= 8
+%if 0%{?rhel} >= 8 || 0%{?fedora}
 Requires: python3-requests
 %endif
+
+# Useful tools are using the Python bindings
+Requires: python3-condor
 
 Requires: initscripts
 
@@ -414,7 +429,7 @@ Requires(post): policycoreutils-python
 Requires(post): selinux-policy-targeted >= 3.13.1-102
 %endif
 
-%if 0%{?rhel} >= 8
+%if 0%{?rhel} >= 8 || 0%{?fedora}
 Requires(post): python3-policycoreutils
 Requires(post): selinux-policy-targeted
 %endif
@@ -425,7 +440,7 @@ Requires(post): selinux-policy-targeted
 Obsoletes: condor-static < 7.2.0
 
 # Standard Universe discontinued as of 8.9.0
-Obsoletes: condor-std-universe
+Obsoletes: condor-std-universe < 8.9.0
 
 %if ! %cream
 Obsoletes: condor-cream-gahp <= %{version}
@@ -594,7 +609,7 @@ host as the DedicatedScheduler.
 
 #######################
 %if %python
-%if 0%{?rhel} <= 7
+%if 0%{?rhel} <= 7 && 0%{?fedora} <= 31
 %package -n python2-condor
 Summary: Python bindings for HTCondor.
 Group: Applications/System
@@ -628,7 +643,7 @@ the ClassAd library and HTCondor from python
 %endif
 
 
-%if 0%{?rhel} >= 7
+%if 0%{?rhel} >= 7 || 0%{?fedora}
 %ifarch x86_64
 #######################
 %package -n python3-condor
@@ -643,17 +658,6 @@ Requires: boost-python3
 Requires: python3
 %endif
 
-#%if 0%{?rhel} >= 7 && ! %uw_build
-# auto provides generator does not pick these up for some reason
-#    %ifarch x86_64
-#Provides: classad.so()(64bit)
-#Provides: htcondor.so()(64bit)
-#    %else
-#Provides: classad.so
-#Provides: htcondor.so
-#    %endif
-#%endif
-
 %description -n python3-condor
 The python bindings allow one to directly invoke the C++ implementations of
 the ClassAd library and HTCondor from python
@@ -667,7 +671,7 @@ the ClassAd library and HTCondor from python
 Summary: BOSCO, a HTCondor overlay system for managing jobs at remote clusters
 Url: https://osg-bosco.github.io/docs/
 Group: Applications/System
-%if 0%{?rhel} >= 8
+%if 0%{?rhel} >= 8 || 0%{?fedora}
 Requires: python3
 %else
 Requires: python >= 2.2
@@ -689,10 +693,7 @@ multiple clusters.
 Summary: Configuration for a single-node HTCondor
 Group: Applications/System
 Requires: %name = %version-%release
-%if 0%{?rhel} <= 7
-Requires: python2-condor = %version-%release
-%endif
-%if 0%{?rhel} >= 7
+%if 0%{?rhel} >= 7 || 0%{?fedora}
 Requires: python3-condor = %version-%release
 %endif
 
@@ -786,10 +787,7 @@ Requires: %name-classads = %version-%release
 %if %cream
 Requires: %name-cream-gahp = %version-%release
 %endif
-%if 0%{?rhel} <= 7
-Requires: python2-condor = %version-%release
-%endif
-%if 0%{?rhel} >= 7
+%if 0%{?rhel} >= 7 || 0%{?fedora}
 Requires: python3-condor = %version-%release
 %endif
 Requires: %name-bosco = %version-%release
@@ -818,13 +816,13 @@ exit 0
 %endif
 
 %patch1 -p1
-%if 0%{?rhel} >= 8
+
+%if 0%{?rhel} <= 7 && 0%{?fedora} <= 31
 %patch2 -p1
 %endif
 
 %if 0%{?osg} || 0%{?hcc}
 %patch8 -p1
-%patch9 -p1
 %endif
 
 # fix errant execute permissions
@@ -860,10 +858,20 @@ cmake \
        -DBUILD_TESTING:BOOL=FALSE \
        -DHAVE_BACKFILL:BOOL=FALSE \
        -DHAVE_BOINC:BOOL=FALSE \
+%if %blahp
+       -DWITH_BLAHP:BOOL=TRUE \
+%else
+       -DWITH_BLAHP:BOOL=FALSE \
+%endif
 %if %cream
        -DWITH_CREAM:BOOL=TRUE \
 %else
        -DWITH_CREAM:BOOL=FALSE \
+%endif
+%if %drmaa
+       -DWITH_DRMAA:BOOL=TRUE \
+%else
+       -DWITH_DRMAA:BOOL=FALSE \
 %endif
 %ifarch %{ix86}
 %if 0%{?rhel} >= 7
@@ -903,7 +911,7 @@ cmake \
        -DHAVE_HIBERNATION:BOOL=TRUE \
        -DWANT_HDFS:BOOL=FALSE \
        -DWITH_ZLIB:BOOL=FALSE \
-       -DWANT_CONTRIB:BOOL=ON \
+       -DWANT_CONTRIB:BOOL=FALSE \
        -DWITH_PIGEON:BOOL=FALSE \
 %if %plumage
        -DWITH_PLUMAGE:BOOL=TRUE \
@@ -979,12 +987,12 @@ mv %{buildroot}%{_datadir}/condor/lib*.so %{buildroot}%{_libdir}/
 populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/condor_ssh_to_job_sshd_config_template
 # And the Python bindings
 %if %python
-%if 0%{?rhel} <= 7
+%if 0%{?rhel} <= 7 && 0%{?fedora} <= 31
 populate %{python_sitearch}/ %{buildroot}%{_datadir}/condor/python/*
 %endif
-%if 0%{?rhel} >= 7
+%if ( 0%{?rhel} >= 7 || 0%{?fedora} ) && ! 0%{?amzn}
 %ifarch x86_64
-populate /usr/lib64/python3.6/site-packages/ %{buildroot}%{_datadir}/condor/python3/*
+populate /usr/lib64/python%{python3_version}/site-packages/ %{buildroot}%{_datadir}/condor/python3/*
 %endif
 %endif
 %endif
@@ -1083,10 +1091,11 @@ rm -f %{buildroot}/%{_mandir}/man1/condor_reconfig_schedd.1
 # this one got removed but the manpage was left around
 rm -f %{buildroot}/%{_mandir}/man1/condor_glidein.1
 
-# Remove condor_top with no python bindings
+# Remove python-based tools when no python bindings
 %if ! %python
 rm -f %{buildroot}/%{_bindir}/condor_top
 rm -f %{buildroot}/%{_bindir}/classad_eval
+rm -f %{buildroot}/%{_bindir}/condor_watch_q
 %endif
 
 # Remove junk
@@ -1235,16 +1244,21 @@ install -p -m 0644 %{SOURCE7} %{buildroot}%{_sysconfdir}/condor/config.d/00-rest
 %endif
 
 %if %uw_build
+%if %drmaa
 populate %{_libdir}/condor %{buildroot}/%{_libdir}/libdrmaa.so
+populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/libcondordrmaa.a
+%endif
 populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/condor/libglobus*.so*
 populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/condor/libvomsapi*.so*
 populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/condor/libSciTokens.so*
-populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/libcondordrmaa.a
 # these probably belong elsewhere
 populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/ugahp.jar
 %endif
 
 populate %{_libdir}/condor %{buildroot}/%{_libdir}/libgetpwnam.so
+
+# htcondor/dags only works with Python3
+rm -rf %{buildroot}/usr/lib64/python2.7/site-packages/htcondor/dags
 
 %clean
 rm -rf %{buildroot}
@@ -1271,7 +1285,7 @@ rm -rf %{buildroot}
 %{_unitdir}/condor.service.d/osg-env.conf
 %endif
 # Disabled until HTCondor security fixed.
-# %{_unitdir}/condor.socket
+# % {_unitdir}/condor.socket
 %else
 %_initrddir/condor
 %if 0%{?osg} || 0%{?hcc}
@@ -1354,7 +1368,7 @@ rm -rf %{buildroot}
 %_libexecdir/condor/onedrive_plugin.py
 # TODO: get rid of these
 # Not sure where these are getting built
-%if 0%{?rhel} <= 7
+%if 0%{?rhel} <= 7 && ! 0%{?fedora}
 %_libexecdir/condor/box_plugin.pyc
 %_libexecdir/condor/box_plugin.pyo
 %_libexecdir/condor/gdrive_plugin.pyc
@@ -1499,6 +1513,7 @@ rm -rf %{buildroot}
 %_bindir/condor_transform_ads
 %_bindir/condor_update_machine_ad
 %_bindir/condor_annex
+%_bindir/condor_nsenter
 %_bindir/condor_evicted_files
 # sbin/condor is a link for master_off, off, on, reconfig,
 # reconfig_schedd, restart
@@ -1691,11 +1706,12 @@ rm -rf %{buildroot}
 %endif
 
 %if %python
-%if 0%{?rhel} <= 7
+%if 0%{?rhel} <= 7 && 0%{?fedora} <= 31
 %files -n python2-condor
 %defattr(-,root,root,-)
 %_bindir/condor_top
 %_bindir/classad_eval
+%_bindir/condor_watch_q
 %_libdir/libpyclassad2*.so
 %_libexecdir/condor/libclassad_python_user.so
 %_libexecdir/condor/libcollector_python_plugin.so
@@ -1704,18 +1720,19 @@ rm -rf %{buildroot}
 %{python_sitearch}/htcondor-*.egg-info/
 %endif
 
-%if 0%{?rhel} >= 7
+%if 0%{?rhel} >= 7 || 0%{?fedora}
 %ifarch x86_64
 %files -n python3-condor
 %defattr(-,root,root,-)
 %_bindir/condor_top
 %_bindir/classad_eval
+%_bindir/condor_watch_q
 %_libdir/libpyclassad3*.so
 %_libexecdir/condor/libclassad_python_user.cpython-3*.so
 %_libexecdir/condor/libcollector_python_plugin.cpython-3*.so
-/usr/lib64/python3.6/site-packages/classad/
-/usr/lib64/python3.6/site-packages/htcondor/
-/usr/lib64/python3.6/site-packages/htcondor-*.egg-info/
+/usr/lib64/python%{python3_version}/site-packages/classad/
+/usr/lib64/python%{python3_version}/site-packages/htcondor/
+/usr/lib64/python%{python3_version}/site-packages/htcondor-*.egg-info/
 %endif
 %endif
 %endif
@@ -1773,8 +1790,10 @@ rm -rf %{buildroot}
 
 %files external-libs
 %dir %_libdir/condor
+%if %drmaa
 %_libdir/condor/libcondordrmaa.a
 %_libdir/condor/libdrmaa.so
+%endif
 %_libdir/condor/libglobus*.so*
 %_libdir/condor/libvomsapi*.so*
 %_libdir/condor/libSciTokens.so*
