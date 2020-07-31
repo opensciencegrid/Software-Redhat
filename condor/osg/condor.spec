@@ -1,4 +1,4 @@
-%define tarball_version 8.8.9
+%define tarball_version 8.8.10
 
 # optionally define any of these, here or externally
 # % define fedora   16
@@ -29,7 +29,7 @@
 %endif
 
 # Not supporting std universe in RHEL/CentOS 8
-%if 0%{?rhel} >= 8
+%if 0%{?rhel} >= 8 || 0%{?amzn}
 %define std_univ 0
 %endif
 
@@ -99,7 +99,7 @@
 %endif
 
 # cream support is going away, skip for EL8
-%if 0%{?rhel} >= 8
+%if 0%{?rhel} >= 8 || 0%{?amzn}
 %define cream 0
 %endif
 
@@ -132,7 +132,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.2
+%define condor_base_release 0.512291
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -366,7 +366,7 @@ BuildRequires: log4cpp-devel
 BuildRequires: gridsite-devel
 %endif
 
-%if 0%{?rhel} == 7
+%if 0%{?rhel} == 7 && ! 0%{?amzn}
 %ifarch x86_64
 BuildRequires: python36-devel
 BuildRequires: boost169-devel
@@ -382,7 +382,13 @@ BuildRequires: boost-static
 %if 0%{?rhel} >= 8
 BuildRequires: boost-python3-devel
 %else
+%if ! 0%{?amzn}
 BuildRequires: boost-python
+%else
+BuildRequires: python3-devel
+BuildRequires: boost169-python2-devel
+BuildRequires: boost169-python3-devel
+%endif
 %endif
 BuildRequires: libuuid-devel
 Requires: libuuid
@@ -1010,11 +1016,7 @@ cmake \
        -DHAVE_HIBERNATION:BOOL=TRUE \
        -DWANT_HDFS:BOOL=FALSE \
        -DWITH_ZLIB:BOOL=FALSE \
-%if 0%{?osg} && 0%{?rhel} >= 8
-       -DWANT_CONTRIB:BOOL=OFF \
-%else
-       -DWANT_CONTRIB:BOOL=ON \
-%endif
+       -DWANT_CONTRIB:BOOL=FALSE \
        -DWITH_PIGEON:BOOL=FALSE \
 %if %plumage
        -DWITH_PLUMAGE:BOOL=TRUE \
@@ -1248,8 +1250,13 @@ install -m 0755 src/condor_scripts/CondorUtils.pm %{buildroot}%{_datadir}/condor
 # Install python-binding libs
 %if 0%{?rhel} >= 7
 %ifarch x86_64
+%if ! 0%{?amzn}
 mv %{buildroot}/usr/lib64/python3.6/site-packages/py3classad.so %{buildroot}/usr/lib64/python3.6/site-packages/classad.so
 mv %{buildroot}/usr/lib64/python3.6/site-packages/py3htcondor.so %{buildroot}/usr/lib64/python3.6/site-packages/htcondor.so
+%else
+mv %{buildroot}/usr/lib64/python3.7/site-packages/py3classad.so %{buildroot}/usr/lib64/python3.7/site-packages/classad.so
+mv %{buildroot}/usr/lib64/python3.7/site-packages/py3htcondor.so %{buildroot}/usr/lib64/python3.7/site-packages/htcondor.so
+%endif
 %endif
 %endif
 
@@ -1631,6 +1638,7 @@ install -p -m 0755 %{SOURCE11} %{buildroot}%{_libexecdir}/condor/create_pool_pas
 %_bindir/condor_transform_ads
 %_bindir/condor_update_machine_ad
 %_bindir/condor_annex
+%_bindir/condor_nsenter
 # sbin/condor is a link for master_off, off, on, reconfig,
 # reconfig_schedd, restart
 %_sbindir/condor_advertise
@@ -1924,8 +1932,13 @@ install -p -m 0755 %{SOURCE11} %{buildroot}%{_libexecdir}/condor/create_pool_pas
 %_libdir/libpy3classad*.so
 %_libexecdir/condor/libclassad_python3_user.so
 %_libexecdir/condor/libcollector_python3_plugin.so
+%if ! 0%{?amzn}
 /usr/lib64/python3.6/site-packages/classad.so
 /usr/lib64/python3.6/site-packages/htcondor.so
+%else
+/usr/lib64/python3.7/site-packages/classad.so
+/usr/lib64/python3.7/site-packages/htcondor.so
+%endif
 %endif
 %endif
 %endif
