@@ -1,7 +1,7 @@
 Name:      osg-tested-internal
 Summary:   All OSG packages we test (internal use only)
 Version:   3.5
-Release:   4%{?dist}
+Release:   5%{?dist}
 License:   Apache 2.0
 URL:       http://www.opensciencegrid.org
 
@@ -63,14 +63,15 @@ Requires: uberftp
 
 
 
-%if 0%{?rhel} == 7
+%endif  # %%if 0%%{?rhel} < 8
+
+%if 0%{?rhel} >= 7
 # osg-tested-internal packages in el7 don't currently pull in mysql/mariadb
 Requires: mariadb-server
 %else
 Requires: mysql-server
 %endif
 
-%endif  # %%if 0%%{?rhel} < 8
 
 %description
 %{summary}
@@ -80,6 +81,9 @@ Requires: mysql-server
 %files
 
 %changelog
+* Tue Aug 04 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.5-5
+- Add mysql/mariadb for EL8 (needed by slurmdbd) (SOFTWARE-4204)
+
 * Fri Jul 24 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.5-4
 - Add EL8 packages (SOFTWARE-3308)
 
