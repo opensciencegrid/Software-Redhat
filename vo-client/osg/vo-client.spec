@@ -1,5 +1,5 @@
 Name:           vo-client
-Version:        106
+Version:        107
 Release:        1%{?dist}
 Summary:        Contains vomses file for use with user authentication
 
@@ -70,6 +70,9 @@ find $RPM_BUILD_ROOT/%{_sysconfdir}/grid-security/vomsdir -type d -exec chmod 75
 %config(noreplace) %{_datadir}/osg/grid-vorolemap
 
 %changelog
+* Thu Jun 30 2020 Diego Davila <didavils@ucsd.edu> - 107-1
+- Update SLAC VOMS server DN (SOFTWARE-4194)
+
 * Tue Jun 02 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 106-1
 - Fix CN typo for WLCG (SOFTWARE-4114)
 
