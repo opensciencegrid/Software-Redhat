@@ -2,7 +2,7 @@
 %global pypi_name scitokens
 
 Name:           python-%{pypi_name}
-Version:        1.2.1
+Version:        1.2.2
 Release:        2%{?dist}
 Summary:        SciToken reference implementation library
 
@@ -11,20 +11,44 @@ URL:            https://scitokens.org
 Source0:        https://files.pythonhosted.org/packages/source/s/%{pypi_name}/%{pypi_name}-%{version}.tar.gz
 BuildArch:      noarch
  
+%if 0%{?rhel} >= 8
+BuildRequires:  python3-devel
+BuildRequires:  python3-setuptools
+%else
 BuildRequires:  python2-devel
 BuildRequires:  python-setuptools
+%endif
+
 
 %description
 SciToken reference implementation library
 
+%if 0%{?rhel} >= 8
+%package -n     python3-%{pypi_name}
+%else
 %package -n     python2-%{pypi_name}
+%endif
+
 Summary:        %{summary}
 Provides:       python-%{pypi_name}
  
+%if 0%{?rhel} >= 8
+Requires:       python3-jwt >= 1.6.1
+Requires:       python3-cryptography
+Requires:       python3-setuptools
+%else
 Requires:       python-jwt >= 1.6.1
 Requires:       python2-cryptography
 Requires:       python-setuptools
+%endif
+
+
+%if 0%{?rhel} >= 8
+%description -n python3-%{pypi_name}
+%else
 %description -n python2-%{pypi_name}
+%endif
+
 SciToken reference implementation library
 
 %prep
@@ -33,23 +57,44 @@ SciToken reference implementation library
 rm -rf %{pypi_name}.egg-info
 
 %build
+%if 0%{?rhel} >= 8
+%py3_build
+%else
 %py2_build
+%endif
 
 %install
 # Must do the subpackages' install first because the scripts in /usr/bin are
 # overwritten with every setup.py install.
+%if 0%{?rhel} >= 8
+%py3_install
+%else
 %py2_install
+%endif
 
+%if 0%{?rhel} >= 8
+%files -n python3-%{pypi_name}
+%else
 %files -n python2-%{pypi_name}
+%endif
+
 %doc README.rst
 %{_bindir}/scitokens-admin-create-key
 %{_bindir}/scitokens-admin-create-token
+%if 0%{?rhel} >= 8
+%{python3_sitelib}/%{pypi_name}
+%{python3_sitelib}/%{pypi_name}-%{version}-py?.?.egg-info
+%else
 %{python2_sitelib}/%{pypi_name}
 %{python2_sitelib}/%{pypi_name}-%{version}-py?.?.egg-info
+%endif
 
 %changelog
-* Tue Oct 23 2018 Derek Weitzel <dweitzel@cse.unl.edu> - 1.2.1-2
-- Add python-jwt requirement
+* Mon Aug 10 2020 Diego Davila <didavila@ucsd.edu> - 1.2.2-2
+- Add conditions to build for el8 (software-4126)
+
+* Fri Feb 22 2019 Derek Weitzel <dweitzel@cse.unl.edu> - 1.2.2-1
+- Add EC support to the admin tools
 
 * Sun Oct 21 2018 Derek Weitzel <dweitzel@cse.unl.edu> - 1.2.1-1
 - Support multiple audiences in verifier
