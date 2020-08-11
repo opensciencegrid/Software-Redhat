@@ -132,7 +132,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.1
+%define condor_base_release 1.2
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -1170,9 +1170,9 @@ rm -f %{buildroot}/%{_sbindir}/ods_job_etl_server
 mkdir -p -m0755 %{buildroot}/%{_var}/lib/condor/ViewHist
 %endif
 
-mkdir -p -m0755 %{buildroot}/%{_var}/run/condor
+mkdir -p -m0775 %{buildroot}/%{_var}/run/condor
 mkdir -p -m0755 %{buildroot}/%{_var}/log/condor
-mkdir -p -m0755 %{buildroot}/%{_var}/lock/condor
+mkdir -p -m0775 %{buildroot}/%{_var}/lock/condor
 mkdir -p -m1777 %{buildroot}/%{_var}/lock/condor/local
 # Note we use %{_var}/lib instead of %{_sharedstatedir} for RHEL5 compatibility
 mkdir -p -m0755 %{buildroot}/%{_var}/lib/condor/spool
