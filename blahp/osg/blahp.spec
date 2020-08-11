@@ -4,13 +4,13 @@
 %define bl_libexecdir %{_libexecdir}/%{name}
 
 Name:		blahp
-Version:	1.18.46
-Release:	3%{?gitrev:.%{gitrev}}%{?dist}
+Version:	1.18.47
+Release:	2%{?gitrev:.%{gitrev}}%{?dist}
 Summary:	gLite BLAHP daemon
 
 Group:		System/Libraries
 License:	Apache 2.0
-URL:		https://github.com/osg-bosco/BLAH
+URL:		https://github.com/htcondor/BLAH
 
 # Pre-release build tarballs should be generated with:
 # git archive %{gitrev} | gzip -9 > %{name}-%{version}-%{gitrev}.tar.gz
@@ -18,18 +18,15 @@ Source0:        %{name}-%{version}%{?gitrev:-%{gitrev}}.tar.gz
 
 BuildRequires:  automake
 BuildRequires:  autoconf
+BuildRequires:  gcc-c++
 BuildRequires:  libtool
+BuildRequires:  make
 BuildRequires:  condor-classads-devel
 BuildRequires:  globus-gss-assist-devel
 BuildRequires:  globus-gsi-credential-devel
 BuildRequires:  globus-gsi-proxy-core-devel
 BuildRequires:  globus-gsi-cert-utils-devel
 BuildRequires:  docbook-style-xsl, libxslt
-
-#Requires(post):         chkconfig
-#Requires(preun):        chkconfig
-#Requires(preun):        initscripts
-#Requires(postun):       initscripts
 
 %description
 %{summary}
@@ -38,14 +35,13 @@ BuildRequires:  docbook-style-xsl, libxslt
 %setup
 
 %build
-./bootstrap
-%if 0%{?rhel} >= 7
-export CPPFLAGS="-I/usr/include/classad -std=c++11"
-export LDFLAGS="-lclassad -lglobus_gsi_credential -lglobus_common -lglobus_gsi_proxy_core"
-%else
-export CPPFLAGS="-I/usr/include/classad"
-export LDFLAGS="-lclassad"
+%if 0%{?rhel} == 7
+# Python 3 may not be installed on EL7
+sed -i 's;/usr/bin/python3;/usr/bin/python2;' src/scripts/*status.py
 %endif
+./bootstrap
+export CPPFLAGS="-I/usr/include/classad -std=c++11 -fcommon"
+export LDFLAGS="-lclassad -lglobus_gsi_credential -lglobus_common -lglobus_gsi_proxy_core"
 %configure --with-classads-prefix=/usr --with-globus-prefix=/usr --with-glite-location=/usr
 unset CPPFLAGS
 unset LDFLAGS
@@ -111,13 +107,14 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
-* Fri May 22 2020 Carl Edquist <edquist@cs.wisc.edu> - 1.18.46-3
-- Rebuild against condor 8.9.7 (SOFTWARE-4080)
+* Tue Aug 11 2020 Edgar Fajardo <emfajard@ucsd.edu> - 1.18.47-2
+- Build against HTCondor 8.9
 
-* Thu Apr 30 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.18.46-2
-- Bump to rebuild with condor 8.9.7 prerelease (SOFTWARE-4080)
+* Mon Aug 03 2020 Carl Edquist <edquist@cs.wisc.edu> - 1.18.47
+- EL8 build fixes
+- Add submit debugging support to condor_submit.sh (SOFTWARE-3994)
 
-* Tue Apr 21 2020 Carl Edquist <edquist@cs.wisc.edu> - 1.18.46-1
+* Tue Apr 21 2020 Carl Edquist <edquist@cs.wisc.edu> - 1.18.46
 - Fix an issue where the slurm binpath always returned scontrol (SOFTWARE-3986)
 - Python 3 compatibility (#7)
 - Handle extra-quoted arguments to condor_submit.sh (SOFTWARE-3993)
