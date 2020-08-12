@@ -99,7 +99,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1
+%define condor_base_release 1.1
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -990,7 +990,7 @@ populate %{_libdir}/condor %{buildroot}/%{_datadir}/condor/condor_ssh_to_job_ssh
 %if 0%{?rhel} <= 7 && 0%{?fedora} <= 31
 populate %{python_sitearch}/ %{buildroot}%{_datadir}/condor/python/*
 %endif
-%if ( 0%{?rhel} >= 7 || 0%{?fedora} ) && ! 0%{?amzn}
+%if 0%{?rhel} >= 7 || 0%{?fedora}
 %ifarch x86_64
 populate /usr/lib64/python%{python3_version}/site-packages/ %{buildroot}%{_datadir}/condor/python3/*
 %endif
@@ -1059,9 +1059,9 @@ rm -f %{buildroot}/%{_sbindir}/ods_job_etl_server
 mkdir -p -m0755 %{buildroot}/%{_var}/lib/condor/ViewHist
 %endif
 
-mkdir -p -m0755 %{buildroot}/%{_var}/run/condor
+mkdir -p -m0775 %{buildroot}/%{_var}/run/condor
 mkdir -p -m0755 %{buildroot}/%{_var}/log/condor
-mkdir -p -m0755 %{buildroot}/%{_var}/lock/condor
+mkdir -p -m0775 %{buildroot}/%{_var}/lock/condor
 mkdir -p -m1777 %{buildroot}/%{_var}/lock/condor/local
 # Note we use %{_var}/lib instead of %{_sharedstatedir} for RHEL5 compatibility
 mkdir -p -m0755 %{buildroot}/%{_var}/lib/condor/spool
@@ -1969,6 +1969,25 @@ fi
 %endif
 
 %changelog
+* Wed Aug 12 2020 Tim Theisen <tim@cs.wisc.edu> - 8.9.8-1.1
+- Add libcgroup-devel requirement for EL8
+- Drop bosco_findplaform patch
+- Update permissions on /var/{lock,run}/condor so rpm verify works on EL8
+- Don't try to build contrib code (fails on EL8)
+
+* Thu Aug 06 2020 Tim Theisen <tim@cs.wisc.edu> - 8.9.8-1
+- Added htcondor.dags and htcondor.htchirp to the HTCondor Python bindings
+- New condor_watch_q tool that efficiently provides live job status updates
+- Added support for marking a GPU offline while other jobs continue
+- The condor_master command does not return until it is fully started
+- Deprecated several Python interfaces in the Python bindings
+
+* Thu Aug 06 2020 Tim Theisen <tim@cs.wisc.edu> - 8.8.10-1
+- condor_qedit can no longer be used to disrupt the condor_schedd
+- Fixed a bug where the SHARED_PORT_PORT configuration setting was ignored
+- Ubuntu 20.04 and Amazon Linux 2 are now supported
+
+- In MacOSX, HTCondor now requires LibreSSL, available since MacOSX 10.13
 * Tue May 26 2020 Carl Edquist <edquist@cs.wisc.edu> - 8.9.7-1.1
 - Add patch to use bosco 1.3 in bosco_findplatform (SOFTWARE-4080)
 
