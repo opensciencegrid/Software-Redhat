@@ -132,7 +132,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.2
+%define condor_base_release 1.3
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -2208,6 +2208,16 @@ fi
 %endif
 
 %changelog
+* Wed Aug 12 2020 Tim Theisen <tim@cs.wisc.edu> - 8.8.10-1.3.osg
+- Fix Bosco patch to match upstream source
+- Change permissions on /var/{lock,run}/condor to make rpm verify work
+
+* Thu Aug 06 2020 Tim Theisen <tim@cs.wisc.edu> - 8.8.10-1
+- condor_qedit can no longer be used to disrupt the condor_schedd
+- Fixed a bug where the SHARED_PORT_PORT configuration setting was ignored
+- Ubuntu 20.04 and Amazon Linux 2 are now supported
+- In MacOSX, HTCondor now requires LibreSSL, available since MacOSX 10.13
+
 * Mon May 11 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 8.8.9-1.1.osg
 - Drop bosco_https.patch, upstream
 - Add Use-bosco-1.3-on-RHEL.patch  (SOFTWARE-4079)
