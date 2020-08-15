@@ -1,3 +1,7 @@
+%if 0%{?osg}
+%define _with_compat 1
+%endif
+
 #-------------------------------------------------------------------------------
 # Helper macros
 #-------------------------------------------------------------------------------
@@ -63,16 +67,22 @@
 Name:      xrootd
 Epoch:     1
 Version:   5.0.0
-Release:   1.2%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:   1.3%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
 URL:       http://xrootd.org/
 
+%define compat_version 4.12.3
+
 # git clone http://xrootd.org/repo/xrootd.git xrootd
 # cd xrootd
 # git-archive master | gzip -9 > ~/rpmbuild/SOURCES/xrootd.tgz
 Source0:   xrootd.tar.gz
+
+%if 0%{?_with_compat}
+Source1:   xrootd-%{compat_version}.tar.gz
+%endif
 
 Patch0:   xrootd500nullPointerFix.patch
 Patch1:	  adminpath_unix_socket.patch
@@ -417,6 +427,30 @@ Requires: %{name}-client = %{epoch}:%{version}-%{release}
 This package contains a set of CPPUnit tests for xrootd.
 %endif
 
+%if 0%{?_with_compat}
+#-------------------------------------------------------------------------------
+# client-compat
+#-------------------------------------------------------------------------------
+%package client-compat
+Summary:	XRootD 4 compatibility client libraries
+Group:		System Environment/Libraries
+
+%description client-compat
+This package contains compatibility libraries for xrootd 4 clients.
+
+#-------------------------------------------------------------------------------
+# server-compat
+#-------------------------------------------------------------------------------
+%package server-compat
+Summary:	XRootD 4 compatibility server binaries
+Group:		System Environment/Daemons
+Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
+
+%description server-compat
+This package contains compatibility binaries for xrootd 4 servers.
+
+%endif
+
 #-------------------------------------------------------------------------------
 # Build instructions
 #-------------------------------------------------------------------------------
@@ -424,6 +458,13 @@ This package contains a set of CPPUnit tests for xrootd.
 %setup -c -n xrootd
 %patch0 -p 1
 %patch1 -p 0
+
+%if 0%{?_with_compat}
+mkdir -p ../xrootd-compat
+cd ../xrootd-compat
+tar xvvzf %{SOURCE1}
+find $RPM_BUILD_DIR -ls
+%endif
 
 %build
 cd xrootd
@@ -469,6 +510,35 @@ popd
 
 doxygen Doxyfile
 
+%if 0%{?_with_compat}
+pushd $RPM_BUILD_DIR/xrootd-compat/xrootd
+mkdir build
+pushd build
+%if %{use_cmake3}
+cmake3 \
+%else
+cmake  \
+%endif
+      -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+      -DFORCE_WERROR=TRUE \
+%if %{?_with_tests:1}%{!?_with_tests:0}
+      -DENABLE_TESTS=TRUE \
+%else
+      -DENABLE_TESTS=FALSE \
+%endif
+%if %{?_with_ceph:1}%{!?_with_ceph:0}
+      -DXRDCEPH_SUBMODULE=TRUE \
+%endif
+%if %{?_with_xrdclhttp:1}%{!?_with_xrdclhttp:0}
+      -DXRDCLHTTP_SUBMODULE=TRUE \
+%endif
+      -DUSE_LIBC_SEMAPHORE=%{use_libc_semaphore} ../
+
+make -i VERBOSE=1 %{?_smp_mflags}
+popd
+popd
+%endif
+
 %if %{?_with_python3:1}%{!?_with_python3:0}
 # build python3 bindings
 pushd build/bindings/python
@@ -483,7 +553,33 @@ popd
 rm -rf $RPM_BUILD_ROOT
 
 #-------------------------------------------------------------------------------
-# Install 4.x.y
+# Install compat
+#-------------------------------------------------------------------------------
+%if 0%{?_with_compat}
+pushd $RPM_BUILD_DIR/xrootd-compat/xrootd/build
+make install DESTDIR=$RPM_BUILD_ROOT
+rm -rf $RPM_BUILD_ROOT%{_includedir}
+rm -rf $RPM_BUILD_ROOT%{_datadir}
+rm -f $RPM_BUILD_ROOT%{_bindir}/{cconfig,cns_ssi,frm_admin,frm_xfragent,mpxstats}
+rm -f $RPM_BUILD_ROOT%{_bindir}/{wait41,xprep,xrd,xrdadler32,XrdCnsd,xrdcopy}
+rm -f $RPM_BUILD_ROOT%{_bindir}/{xrdcp,xrdcp-old,xrdfs,xrdgsiproxy,xrdpwdadmin}
+rm -f $RPM_BUILD_ROOT%{_bindir}/{xrdqstats,xrdsssadmin,xrdstagetool,xrootdfs}
+rm -f $RPM_BUILD_ROOT%{_libdir}/libXrdAppUtils.so
+rm -f $RPM_BUILD_ROOT%{_libdir}/{libXrdClient.so,libXrdCl.so,libXrdCryptoLite.so}
+rm -f $RPM_BUILD_ROOT%{_libdir}/{libXrdCrypto.so,libXrdFfs.so,libXrdMain.so}
+rm -f $RPM_BUILD_ROOT%{_libdir}/{libXrdOfs.so,libXrdPosixPreload.so,libXrdPosix.so}
+rm -f $RPM_BUILD_ROOT%{_libdir}/{libXrdServer.so,libXrdUtils.so}
+
+for i in cmsd frm_purged frm_xfrd xrootd; do
+  mv $RPM_BUILD_ROOT%{_bindir}/$i $RPM_BUILD_ROOT%{_bindir}/${i}-4
+done
+
+rm -f $RPM_BUILD_ROOT%{python2_sitearch}/xrootd-v%{compat_version}*.egg-info
+popd
+%endif
+
+#-------------------------------------------------------------------------------
+# Install 5.x.y
 #-------------------------------------------------------------------------------
 pushd xrootd
 pushd  build
@@ -809,7 +905,7 @@ fi
 %endif
 %{_libdir}/libXrdN2No2p-5.so
 %{_libdir}/libXrdOssSIgpfsT-5.so
-%{_libdir}/libXrdServer.so.*
+%{_libdir}/libXrdServer.so.3*
 %{_libdir}/libXrdSsi-5.so
 %{_libdir}/libXrdSsiLog-5.so
 %{_libdir}/libXrdThrottle-5.so
@@ -909,10 +1005,65 @@ fi
 %defattr(-,root,root)
 %{_datadir}/selinux/packages/%{name}/%{name}.pp
 
+%if 0%{?_with_compat}
+%files client-compat
+# from xrootd-libs:
+%{_libdir}/libXrdAppUtils.so.1*
+%{_libdir}/libXrdCks*-4.so
+%{_libdir}/libXrdClProxyPlugin-4.so
+%{_libdir}/libXrdCrypto.so.1*
+%{_libdir}/libXrdCryptoLite.so.1*
+%{_libdir}/libXrdCryptossl-4.so
+%{_libdir}/libXrdSec*-4.so
+%{_libdir}/libXrdUtils.so.2*
+%{_libdir}/libXrdXml.so.2*
+
+# from xrootd-client-libs
+%{_libdir}/libXrdCl.so.2*
+%{_libdir}/libXrdClient.so.2*
+%{_libdir}/libXrdFfs.so.2*
+%{_libdir}/libXrdPosix.so.2*
+%{_libdir}/libXrdPosixPreload.so.1*
+%{_libdir}/libXrdSsiLib.so.1*
+%{_libdir}/libXrdSsiShMap.so.1*
+
+%files server-compat
+# from server (renamed)
+%{_bindir}/cmsd-4
+%{_bindir}/frm_purged-4
+%{_bindir}/frm_xfrd-4
+%{_bindir}/xrootd-4
+# from server-libs
+%{_libdir}/libXrdBwm-4.so
+%{_libdir}/libXrdPss-4.so
+%{_libdir}/libXrdXrootd-4.so
+%{_libdir}/libXrdFileCache-4.so
+%{_libdir}/libXrdBlacklistDecision-4.so
+%{_libdir}/libXrdHttp-4.so
+%{_libdir}/libXrdHttpTPC-4.so
+%{_libdir}/libXrdHttpUtils.so.1*
+%if %{have_macaroons}
+%{_libdir}/libXrdMacaroons-4.so
+%endif
+%{_libdir}/libXrdN2No2p-4.so
+%{_libdir}/libXrdOssSIgpfsT-4.so
+%{_libdir}/libXrdServer.so.2*
+%{_libdir}/libXrdSsi-4.so
+%{_libdir}/libXrdSsiLog-4.so
+%{_libdir}/libXrdThrottle-4.so
+%{_libdir}/libXrdCmsRedirectLocal-4.so
+%{_libdir}/libXrdVoms-4.so
+
+%endif
+# end _with_compat
+
 #-------------------------------------------------------------------------------
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Fri Aug 14 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.0.0-1.3
+- Add XRootD 4 compat packages compat-client and compat-server (SOFTWARE-4210)
+
 * Thu Jul 23 2020 Diego Davila <didavila@ucsd.edu> - 5.0.0-1.2
 - Adding patch: adminpath_unix_socket.patch 
 
