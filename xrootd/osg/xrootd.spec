@@ -455,16 +455,14 @@ This package contains compatibility binaries for xrootd 4 servers.
 # Build instructions
 #-------------------------------------------------------------------------------
 %prep
+%if 0%{?_with_compat}
+%setup -c -n xrootd-compat -a 1 -T
+%endif
+
 %setup -c -n xrootd
 %patch0 -p 1
 %patch1 -p 0
 
-%if 0%{?_with_compat}
-mkdir -p ../xrootd-compat
-cd ../xrootd-compat
-tar xvvzf %{SOURCE1}
-find $RPM_BUILD_DIR -ls
-%endif
 
 %build
 cd xrootd
