@@ -66,8 +66,8 @@
 #-------------------------------------------------------------------------------
 Name:      xrootd
 Epoch:     1
-Version:   5.0.0
-Release:   1.3%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Version:   5.0.1
+Release:   1.1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -84,9 +84,6 @@ Source0:   xrootd.tar.gz
 Source1:   xrootd-%{compat_version}.tar.gz
 %endif
 
-Patch0:   xrootd500nullPointerFix.patch
-Patch1:	  adminpath_unix_socket.patch
- 
 BuildRoot: %{_tmppath}/%{name}-root
 
 %if %{use_cmake3}
@@ -460,9 +457,6 @@ This package contains compatibility binaries for xrootd 4 servers.
 %endif
 
 %setup -c -n xrootd
-%patch0 -p 1
-%patch1 -p 0
-
 
 %build
 cd xrootd
@@ -1059,6 +1053,9 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Tue Aug 18 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.0.1-1.1
+- Merge 5.0.1 update (SOFTWARE-4212)
+
 * Fri Aug 14 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.0.0-1.3
 - Add XRootD 4 compat packages compat-client and compat-server (SOFTWARE-4210)
 
