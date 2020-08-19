@@ -1,6 +1,6 @@
 Name:           x509-scitokens-issuer
 Version:        0.5.3
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        SciTokens issuer based on X509 authentication.
 
 License:        Apache 2.0
@@ -65,17 +65,13 @@ A client library for the x509-scitokens-issuer.
 %setup
 
 %build
-%if 0%{?rhel} >= 8
-%{py3_build}
-%else
-%{py2_build}
-%endif
+%{py_build}
 %cmake .
 
 %install
-%if 0%{?rhel} >= 8
-find . -type f -exec sed -ri '1s,^#!\s*(/usr)?/bin/(env )?python,#!%{__python},' '{}' +                                                                                                               
-%endif
+#%if 0%{?rhel} >= 8
+#find . -type f -exec sed -ri '1s,^#!\s*(/usr)?/bin/(env )?python,#!%{__python},' '{}' +
+#%endif
 make install DESTDIR=%{buildroot}
 %{py_install}
 rm %{buildroot}%{_bindir}/cms-scitokens-init
