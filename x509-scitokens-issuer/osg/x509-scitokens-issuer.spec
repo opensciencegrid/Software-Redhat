@@ -1,6 +1,6 @@
 Name:           x509-scitokens-issuer
 Version:        0.5.3
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        SciTokens issuer based on X509 authentication.
 
 License:        Apache 2.0
@@ -53,9 +53,9 @@ Requires:       gridsite
 Summary:        Client for X509-based token issuer
 
 %if 0%{?rhel} >= 8
-Requires:       python-requests
-%else
 Requires:       python3-requests
+%else
+Requires:       python-requests
 %endif
 
 %description client
@@ -140,7 +140,7 @@ fi
 %{_bindir}/macaroon-init
 
 %changelog
-* Tue Aug 18 2020 Edgar Fajardo <emfajard@ucsd.edu> - 0.5.3-2
+* Tue Aug 18 2020 Edgar Fajardo <emfajard@ucsd.edu> - 0.5.3-4
 - Adding support for EL8
 
 * Tue Sep 4 2018 Edgar Fajardo <emfajard@ucsd.edu> - 0.5.3-1
