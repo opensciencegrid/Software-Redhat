@@ -67,7 +67,7 @@
 Name:      xrootd
 Epoch:     1
 Version:   5.0.1
-Release:   1.1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:   1.2%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -820,11 +820,11 @@ fi
 
 %files libs
 %defattr(-,root,root,-)
-%{_libdir}/libXrdAppUtils.so.*
+%{_libdir}/libXrdAppUtils.so.2*
 %{_libdir}/libXrdClProxyPlugin-5.so
 %{_libdir}/libXrdCks*-5.so
-%{_libdir}/libXrdCrypto.so.*
-%{_libdir}/libXrdCryptoLite.so.*
+%{_libdir}/libXrdCrypto.so.2*
+%{_libdir}/libXrdCryptoLite.so.2*
 %{_libdir}/libXrdCryptossl-5.so
 %{_libdir}/libXrdSec-5.so
 %{_libdir}/libXrdSecProt-5.so
@@ -835,8 +835,8 @@ fi
 %{_libdir}/libXrdSecpwd-5.so
 %{_libdir}/libXrdSecsss-5.so
 %{_libdir}/libXrdSecunix-5.so
-%{_libdir}/libXrdUtils.so.*
-%{_libdir}/libXrdXml.so.*
+%{_libdir}/libXrdUtils.so.3*
+%{_libdir}/libXrdXml.so.3*
 
 %files devel
 %defattr(-,root,root,-)
@@ -860,12 +860,12 @@ fi
 
 %files client-libs
 %defattr(-,root,root,-)
-%{_libdir}/libXrdCl.so.*
-%{_libdir}/libXrdFfs.so.*
-%{_libdir}/libXrdPosix.so.*
-%{_libdir}/libXrdPosixPreload.so.*
-%{_libdir}/libXrdSsiLib.so.*
-%{_libdir}/libXrdSsiShMap.so.*
+%{_libdir}/libXrdCl.so.3*
+%{_libdir}/libXrdFfs.so.3*
+%{_libdir}/libXrdPosix.so.3*
+%{_libdir}/libXrdPosixPreload.so.2*
+%{_libdir}/libXrdSsiLib.so.2*
+%{_libdir}/libXrdSsiShMap.so.2*
 %{_sysconfdir}/xrootd/client.plugins.d/client-plugin.conf.example
 %config(noreplace) %{_sysconfdir}/xrootd/client.conf
 # This lib may be used for LD_PRELOAD so the .so link needs to be included
@@ -891,7 +891,7 @@ fi
 %{_libdir}/libXrdBlacklistDecision-5.so
 %{_libdir}/libXrdHttp-5.so
 %{_libdir}/libXrdHttpTPC-5.so
-%{_libdir}/libXrdHttpUtils.so.*
+%{_libdir}/libXrdHttpUtils.so.2*
 %if %{have_macaroons}
 %{_libdir}/libXrdMacaroons-5.so
 %endif
@@ -1053,6 +1053,9 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Fri Aug 21 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.0.1-1.2
+- Tighten patterns to avoid putting compat libraries in non-compat *-libs RPMs (SOFTWARE-4210)
+
 * Tue Aug 18 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.0.1-1.1
 - Merge 5.0.1 update (SOFTWARE-4212)
 
