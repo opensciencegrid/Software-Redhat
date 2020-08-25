@@ -13,13 +13,14 @@
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
 %define version 3.7.1
-%define release 0.2.rc2
+%define release 0.3.rc3
 
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
 %define web_dir %{_localstatedir}/lib/gwms-frontend/web-area
 %define web_base %{_localstatedir}/lib/gwms-frontend/web-base
 %define frontend_dir %{_localstatedir}/lib/gwms-frontend/vofrontend
+%define frontend_token_dir %{_localstatedir}/lib/gwms-frontend/tokens.d
 %define factory_web_dir %{_localstatedir}/lib/gwms-factory/web-area
 %define factory_web_base %{_localstatedir}/lib/gwms-factory/web-base
 %define factory_dir %{_localstatedir}/lib/gwms-factory/work-dir
@@ -334,6 +335,7 @@ install -m 0644 creation/templates/gwms-renew-proxies.cron $RPM_BUILD_ROOT%{_sys
 
 # Install the web directory
 install -d $RPM_BUILD_ROOT%{frontend_dir}
+install -d $RPM_BUILD_ROOT%{frontend_token_dir}
 install -d $RPM_BUILD_ROOT%{web_base}
 install -d $RPM_BUILD_ROOT%{web_dir}
 install -d $RPM_BUILD_ROOT%{web_dir}/monitor/
@@ -787,6 +789,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(-, frontend, frontend) %{web_dir}
 %attr(-, frontend, frontend) %{web_base}
 %attr(-, frontend, frontend) %{frontend_dir}
+%attr(700, frontend, frontend) %{frontend_token_dir}
 %attr(-, frontend, frontend) %{_localstatedir}/log/gwms-frontend
 %{python_sitelib}/glideinwms/frontend
 %{python_sitelib}/glideinwms/creation/lib/cvWConsts.py
@@ -877,10 +880,11 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/condor/certs/condor_mapfile
 
 %changelog
-* Mon Aug 24 2020 Dennis Box <dbox@fnal.gov> 3.7.1-1
+
+* Tue Aug 25 2020 Dennis Box <dbox@fnal.gov> - 3.7.1-1
 - GlideinWMS v3.7.1
 - Release Notes: http://glideinwms.fnal.gov/doc.v3_7_1/history.html
-- Release candidates: 3.7.1-0.1.rc1 to 3.7.1-0.2.rc2
+- Release candidates: 3.7.1-0.1.rc1 to 3.7.1-0.3.rc3
 
 * Mon Aug 17 2020 Marco Mambelli <marcom@fnal.gov> - 3.6.3-1
 - GlideinWMS v3.6.3
