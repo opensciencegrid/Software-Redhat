@@ -13,7 +13,7 @@
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
 %define version 3.7.1
-%define release 0.1.rc1
+%define release 0.2.rc2
 
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
@@ -397,6 +397,8 @@ install -d $RPM_BUILD_ROOT/%{_sysconfdir}/gwms-frontend/hooks.reconfig.post
 install -m 0644 %{SOURCE2} $RPM_BUILD_ROOT/%{_sysconfdir}/gwms-frontend/frontend.xml
 install -m 0644 creation/templates/proxies.ini $RPM_BUILD_ROOT/%{_sysconfdir}/gwms-frontend/proxies.ini
 install -m 0644 %{SOURCE8} $RPM_BUILD_ROOT/%{_sysconfdir}/sysconfig/gwms-frontend
+install -d $RPM_BUILD_ROOT%{_sysconfdir}/sudoers.d
+install -m 0440 creation/templates/99_frontend_sudoers $RPM_BUILD_ROOT/%{_sysconfdir}/sudoers.d/99_frontend_sudoers
 
 # Install the factory config dir
 install -d $RPM_BUILD_ROOT/%{_sysconfdir}/gwms-factory
@@ -809,6 +811,7 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/glideinwms/creation/lib/check_config_frontend.pyc
 %{python_sitelib}/glideinwms/creation/lib/check_config_frontend.pyo
 %{python_sitelib}/glideinwms/creation/templates/frontend_initd_startup_template
+%{python_sitelib}/glideinwms/creation/templates/99_frontend_sudoers
 %{python_sitelib}/glideinwms/creation/reconfig_frontend
 %{python_sitelib}/glideinwms/creation/frontend_condortoken
 %if 0%{?rhel} >= 7
@@ -822,6 +825,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(0644, root, root) %{_sysconfdir}/cron.d/gwms-renew-proxies
 %endif
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/gwms-frontend.conf
+%config(noreplace) %{_sysconfdir}/sudoers.d/99_frontend_sudoers
+%attr(-, root, root) %{_sysconfdir}/sudoers.d/99_frontend_sudoers
 %attr(-, frontend, frontend) %dir %{_sysconfdir}/gwms-frontend
 %attr(-, frontend, frontend) %dir %{_sysconfdir}/gwms-frontend/plugin.d
 %attr(-, frontend, frontend) %dir %{_sysconfdir}/gwms-frontend/hooks.reconfig.pre
@@ -872,10 +877,10 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/condor/certs/condor_mapfile
 
 %changelog
-* Fri Aug 21  2020 Dennis Box <dbox@fnal.gov> - 3.7.1-1
+* Mon Aug 24 2020 Dennis Box <dbox@fnal.gov> 3.7.1-1
 - GlideinWMS v3.7.1
 - Release Notes: http://glideinwms.fnal.gov/doc.v3_7_1/history.html
-- Release candidates: 3.7.1-0.1.rc1
+- Release candidates: 3.7.1-0.1.rc1 to 3.7.1-0.2.rc2
 
 * Mon Aug 17 2020 Marco Mambelli <marcom@fnal.gov> - 3.6.3-1
 - GlideinWMS v3.6.3
