@@ -1,5 +1,6 @@
 %if 0%{?osg}
 %define _with_compat 1
+%define _with_python3 1
 %endif
 
 #-------------------------------------------------------------------------------
@@ -67,7 +68,7 @@
 Name:      xrootd
 Epoch:     1
 Version:   5.0.1
-Release:   1.2%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:   1.3%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -1053,6 +1054,9 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Wed Aug 26 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.0.1-1.3
+- Build python3-xrootd for OSG
+
 * Fri Aug 21 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.0.1-1.2
 - Tighten patterns to avoid putting compat libraries in non-compat *-libs RPMs (SOFTWARE-4210)
 
