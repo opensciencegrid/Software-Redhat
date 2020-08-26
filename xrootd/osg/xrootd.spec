@@ -1055,7 +1055,7 @@ fi
 #-------------------------------------------------------------------------------
 %changelog
 * Wed Aug 26 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.0.1-1.3
-- Build python3-xrootd for OSG
+- Build python3-xrootd for OSG (SOFTWARE-4212)
 
 * Fri Aug 21 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.0.1-1.2
 - Tighten patterns to avoid putting compat libraries in non-compat *-libs RPMs (SOFTWARE-4210)
