@@ -2,7 +2,6 @@
 name=OSG Software for Enterprise Linux {EL} {TITLE} $basearch
 baseurl=https://repo.opensciencegrid.org/osg/{SERIES}/el{EL}/{REPO}/$basearch
 #mirrorlist=https://repo.opensciencegrid.org/mirror/osg/{SERIES}/el{EL}/{REPO}/$basearch
-failovermethod=priority
 priority=98
 enabled={ENABLED}
 gpgcheck=1
@@ -11,7 +10,6 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-OSG
 [{YUMREPO}-source]
 name=OSG Software for Enterprise Linux {EL} {TITLE} $basearch - Source
 baseurl=https://repo.opensciencegrid.org/osg/{SERIES}/el{EL}/{REPO}/source/SRPMS
-failovermethod=priority
 priority=98
 enabled=0
 gpgcheck=1
@@ -20,7 +18,6 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-OSG
 [{YUMREPO}-debuginfo]
 name=OSG Software for Enterprise Linux {EL} {TITLE} $basearch - Debug
 baseurl=https://repo.opensciencegrid.org/osg/{SERIES}/el{EL}/{REPO}/$basearch/debug
-failovermethod=priority
 priority=98
 enabled=0
 gpgcheck=1

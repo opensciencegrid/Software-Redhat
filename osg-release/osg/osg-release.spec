@@ -1,6 +1,6 @@
 Name:           osg-release
 Version:        3.5
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        OSG Software for Enterprise Linux repository configuration
 
 License:        GPL
@@ -59,6 +59,9 @@ sed -i -e 's/gpgcheck=1/gpgcheck=0/' $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d/*
 
 
 %changelog
+* Thu Aug 27 2020 Carl Edquist <edquist@cs.wisc.edu> - 3.5-4
+- Drop failovermethod=priority from repo configs (SOFTWARE-4069)
+
 * Mon Oct 14 2019 Diego Davila <didavila@ucsd.edu> - 3.5-3
 - Changing "koji.chtc.wisc.edu" for "koji.opensciencegrid.org" (SOFTWARE-3863)
 - Fixing date issue on changelog Fri Feb 08 2018 -> Thu
