@@ -70,8 +70,10 @@ make install DESTDIR=$RPM_BUILD_ROOT
 # We keep the .so here (and not in a -devel subpackage) because it is actually
 # a shared library.
 %{_libdir}/libXrdLcmaps-*.so
+%if 0%{?rhel} < 8
 %{_libdir}/libXrdLcmaps-*.so.0
 %{_libdir}/libXrdLcmaps-*.so.0.0.2
+%endif
 %config(noreplace) %{_sysconfdir}/xrootd/lcmaps.cfg
 %config(noreplace) %{_sysconfdir}/xrootd/config.d/10-xrootd-lcmaps.cfg
 %config %{_sysconfdir}/xrootd/config.d/40-xrootd-lcmaps.cfg
