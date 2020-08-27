@@ -1,7 +1,7 @@
 
 Name: xrootd-lcmaps
 Version: 1.7.8
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: LCMAPS plugin for xrootd
 
 Group: System Environment/Daemons
@@ -10,6 +10,8 @@ URL: https://github.com/opensciencegrid/xrootd-lcmaps
 # Generated from:
 # git archive v${VERSION} --prefix=xrootd-lcmaps-$VERSION/ | gzip -7 > ~/rpmbuild/SOURCES/xrootd-lcmaps-$VERSION.tar.gz
 Source0: %{name}-%{version}.tar.gz
+
+Patch0: Add-missing-include-string.h.patch
 
 %define xrootd_current_major 5
 %define xrootd_next_major 6
@@ -44,6 +46,7 @@ Requires: xrootd-server <  1:%{xrootd_next_major}.0.0-1
 %prep
 
 %setup -q
+%patch0 -p1
 
 %build
 
@@ -74,6 +77,9 @@ make install DESTDIR=$RPM_BUILD_ROOT
 %config %{_sysconfdir}/xrootd/config.d/40-xrootd-lcmaps.cfg
 
 %changelog
+* Wed Aug 26 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.7.8-3
+- Add Add-missing-include-string.h.patch
+
 * Thu Jul 09 2020 Diego Davila <didavila@ucsd.edu> - 1.7.8-2
 - building against xrootd-5.0.0-1 (SOFTWARE-3923)
 - updating xrootd_current_major and xrootd_next_major to 5 and 6 respectively

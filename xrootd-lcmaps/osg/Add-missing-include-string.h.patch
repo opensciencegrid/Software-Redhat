@@ -1,0 +1,24 @@
+From a9fedf5355057f0951ef61eded9aca4daade6924 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Wed, 26 Aug 2020 21:53:56 -0500
+Subject: [PATCH] Add missing #include <string.h>
+
+---
+ src/XrdHttpLcmaps.cc | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/XrdHttpLcmaps.cc b/src/XrdHttpLcmaps.cc
+index e113cff..348bfbc 100644
+--- a/src/XrdHttpLcmaps.cc
++++ b/src/XrdHttpLcmaps.cc
+@@ -3,6 +3,7 @@
+ #include <map>
+ #include <mutex>
+ 
++#include <string.h>
+ #include <time.h>
+ #include <openssl/ssl.h>
+ 
+-- 
+2.6.3
+
