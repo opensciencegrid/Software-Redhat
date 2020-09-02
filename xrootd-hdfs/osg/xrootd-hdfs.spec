@@ -12,10 +12,10 @@ Patch0: link2serverlib.patch
 %define xrootd_current_major 5
 %define xrootd_next_major 6
 
-BuildRequires: xrootd-server-devel >= 1:%{xrootd_current_major}.0.0-1
-BuildRequires: xrootd-server-devel <  1:%{xrootd_next_major}.0.0-1
-BuildRequires: xrootd-devel >= 1:%{xrootd_current_major}.0.0-1
-BuildRequires: xrootd-devel <  1:%{xrootd_next_major}.0.0-1
+BuildRequires: xrootd-server-devel >= 1:%{xrootd_current_major}.0.0-0
+BuildRequires: xrootd-server-devel <  1:%{xrootd_next_major}.0.0-0
+BuildRequires: xrootd-devel >= 1:%{xrootd_current_major}.0.0-0
+BuildRequires: xrootd-devel <  1:%{xrootd_next_major}.0.0-0
 BuildRequires: cmake
 BuildRequires: /usr/include/hdfs.h
 BuildRequires: java-devel = 1:1.7.0
@@ -23,8 +23,8 @@ BuildRequires: jpackage-utils
 BuildRequires: openssl-devel
 BuildRequires: zlib-devel
 Requires: hadoop-client >= 2.0.0+545-1.cdh4.1.1
-Requires: xrootd-server >= 1:%{xrootd_current_major}.0.0-1
-Requires: xrootd-server <  1:%{xrootd_next_major}.0.0-1
+Requires: xrootd-server >= 1:%{xrootd_current_major}.0.0-0
+Requires: xrootd-server <  1:%{xrootd_next_major}.0.0-0
 
 %package devel
 Summary: Development headers for Xrootd HDFS plugin
