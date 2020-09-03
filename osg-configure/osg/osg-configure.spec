@@ -1,6 +1,6 @@
 Summary: Configuration tool for the OSG Software Stack
 Name: osg-configure
-Version: 3.1.1
+Version: 3.1.2
 Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
@@ -129,15 +129,26 @@ Requires: %name = %version-%release
 This package includes the ini file for configuring the job gateway
 (htcondor-ce) using osg-configure
 
+%if 0%{?rhel} >= 8
+  %define __python /usr/libexec/platform-python
+%else
+  %if 0%{?fedora} >= 31
+    %define __python /usr/bin/python3
+  %else
+    %define __python /usr/bin/python2
+  %endif
+%endif
+
 
 %prep
 %setup -q
 
 %build
-%{__python2} setup.py build
+%{__python} setup.py build
 
 %install
-make install DESTDIR=$RPM_BUILD_ROOT
+find . -type f -exec sed -ri '1s,^#!\s*(/usr)?/bin/(env *)?python.*,#!%{__python},' '{}' +
+make install DESTDIR=$RPM_BUILD_ROOT PYTHON=%{__python}
 
 mkdir -p $RPM_BUILD_ROOT/etc/condor-ce/config.d
 echo 'OSG_CONFIGURE_PRESENT=true' > $RPM_BUILD_ROOT/etc/condor-ce/config.d/50-osg-configure-present.conf  # SOFTWARE-2805
@@ -151,31 +162,31 @@ touch $RPM_BUILD_ROOT/var/lib/osg/osg-job-environment.conf
 
 
 %files
-%{python2_sitelib}/osg_configure-%{version}-*.egg-info
-%{python2_sitelib}/osg_configure/__init__.py*
-%{python2_sitelib}/osg_configure/configure_modules/__init__.py*
-%{python2_sitelib}/osg_configure/configure_modules/bosco.py*
-%{python2_sitelib}/osg_configure/configure_modules/condor.py*
-%{python2_sitelib}/osg_configure/configure_modules/gateway.py*
-%{python2_sitelib}/osg_configure/configure_modules/gratia.py*
-%{python2_sitelib}/osg_configure/configure_modules/localsettings.py*
-%{python2_sitelib}/osg_configure/configure_modules/lsf.py*
-%{python2_sitelib}/osg_configure/configure_modules/misc.py*
-%{python2_sitelib}/osg_configure/configure_modules/pbs.py*
-%{python2_sitelib}/osg_configure/configure_modules/rsv.py*
-%{python2_sitelib}/osg_configure/configure_modules/sge.py*
-%{python2_sitelib}/osg_configure/configure_modules/siteinformation.py*
-%{python2_sitelib}/osg_configure/configure_modules/slurm.py*
-%{python2_sitelib}/osg_configure/configure_modules/squid.py*
-%{python2_sitelib}/osg_configure/configure_modules/storage.py*
-%{python2_sitelib}/osg_configure/modules/__init__.py*
-%{python2_sitelib}/osg_configure/modules/baseconfiguration.py*
-%{python2_sitelib}/osg_configure/modules/configfile.py*
-%{python2_sitelib}/osg_configure/modules/exceptions.py*
-%{python2_sitelib}/osg_configure/modules/jobmanagerconfiguration.py*
-%{python2_sitelib}/osg_configure/modules/utilities.py*
-%{python2_sitelib}/osg_configure/modules/validation.py*
-%{python2_sitelib}/osg_configure/version.py*
+%{python_sitelib}/osg_configure-%{version}-*.egg-info
+%{python_sitelib}/osg_configure/__init__.py*
+%{python_sitelib}/osg_configure/configure_modules/__init__.py*
+%{python_sitelib}/osg_configure/configure_modules/bosco.py*
+%{python_sitelib}/osg_configure/configure_modules/condor.py*
+%{python_sitelib}/osg_configure/configure_modules/gateway.py*
+%{python_sitelib}/osg_configure/configure_modules/gratia.py*
+%{python_sitelib}/osg_configure/configure_modules/localsettings.py*
+%{python_sitelib}/osg_configure/configure_modules/lsf.py*
+%{python_sitelib}/osg_configure/configure_modules/misc.py*
+%{python_sitelib}/osg_configure/configure_modules/pbs.py*
+%{python_sitelib}/osg_configure/configure_modules/rsv.py*
+%{python_sitelib}/osg_configure/configure_modules/sge.py*
+%{python_sitelib}/osg_configure/configure_modules/siteinformation.py*
+%{python_sitelib}/osg_configure/configure_modules/slurm.py*
+%{python_sitelib}/osg_configure/configure_modules/squid.py*
+%{python_sitelib}/osg_configure/configure_modules/storage.py*
+%{python_sitelib}/osg_configure/modules/__init__.py*
+%{python_sitelib}/osg_configure/modules/baseconfiguration.py*
+%{python_sitelib}/osg_configure/modules/configfile.py*
+%{python_sitelib}/osg_configure/modules/exceptions.py*
+%{python_sitelib}/osg_configure/modules/jobmanagerconfiguration.py*
+%{python_sitelib}/osg_configure/modules/utilities.py*
+%{python_sitelib}/osg_configure/modules/validation.py*
+%{python_sitelib}/osg_configure/version.py*
 /usr/sbin/*
 %ghost /var/log/osg/osg-configure.log
 %ghost /var/lib/osg/osg-attributes.conf
@@ -223,10 +234,10 @@ touch $RPM_BUILD_ROOT/var/lib/osg/osg-job-environment.conf
 
 %files infoservices
 %config(noreplace) %{_sysconfdir}/osg/config.d/30-infoservices.ini
-%{python2_sitelib}/osg_configure/configure_modules/infoservices.py*
-%{python2_sitelib}/osg_configure/modules/resourcecatalog.py*
-%{python2_sitelib}/osg_configure/modules/reversevomap.py*
-%{python2_sitelib}/osg_configure/modules/subcluster.py*
+%{python_sitelib}/osg_configure/configure_modules/infoservices.py*
+%{python_sitelib}/osg_configure/modules/resourcecatalog.py*
+%{python_sitelib}/osg_configure/modules/reversevomap.py*
+%{python_sitelib}/osg_configure/modules/subcluster.py*
 
 %files tests
 /usr/share/osg-configure/*
@@ -241,6 +252,9 @@ touch $RPM_BUILD_ROOT/var/lib/osg/osg-job-environment.conf
 
 
 %changelog
+* Thu Sep 03 2020 Mátyás Selmeci <matyas@cs.wisc.edu> 3.1.2-1
+- Python 3 / RHEL 8 support (SOFTWARE-4191)
+
 * Wed Jan 29 2020 Mátyás Selmeci <matyas@cs.wisc.edu> 3.1.1-1
 - Relax hostname validation in 40-siteinfo.ini (failing to resolve is now a warning) (SOFTWARE-3953)
 - No longer make resource_group mandatory for CEs in 40-siteinfo.ini (SOFTWARE-3949)
