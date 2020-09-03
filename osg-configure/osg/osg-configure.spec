@@ -6,6 +6,14 @@ Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
 BuildArch: noarch
 Url: https://github.com/opensciencegrid/osg-configure
+%if 0%{?rhel} >= 8
+BuildRequires: python3
+Requires: python3
+%else
+BuildRequires: python2
+Requires: python2
+%endif
+
 
 Obsoletes: %{name}-managedfork < 2.2.2-2
 Obsoletes: %{name}-network < 2.2.2-2
@@ -118,7 +126,11 @@ This package includes the ini file for configuring bosco using osg-configure
 Summary: OSG configuration file for the osg info services
 Requires: %name = %version-%release
 Requires: %name-gip
-Requires: condor-python
+%if 0%{?rhel} >= 8
+Requires: python3-condor
+%else
+Requires: python2-condor
+%endif
 %description infoservices
 This package includes the ini file for configuring the osg info services using osg-configure
 
@@ -130,13 +142,9 @@ This package includes the ini file for configuring the job gateway
 (htcondor-ce) using osg-configure
 
 %if 0%{?rhel} >= 8
-  %define __python /usr/libexec/platform-python
+  %define __python /usr/bin/python3
 %else
-  %if 0%{?fedora} >= 31
-    %define __python /usr/bin/python3
-  %else
-    %define __python /usr/bin/python2
-  %endif
+  %define __python /usr/bin/python2
 %endif
 
 
@@ -187,6 +195,32 @@ touch $RPM_BUILD_ROOT/var/lib/osg/osg-job-environment.conf
 %{python_sitelib}/osg_configure/modules/utilities.py*
 %{python_sitelib}/osg_configure/modules/validation.py*
 %{python_sitelib}/osg_configure/version.py*
+%if 0%{?rhel} >= 8
+%{python_sitelib}/osg_configure/__pycache__/__init__*
+%{python_sitelib}/osg_configure/configure_modules/__pycache__/__init__*
+%{python_sitelib}/osg_configure/configure_modules/__pycache__/bosco*
+%{python_sitelib}/osg_configure/configure_modules/__pycache__/condor*
+%{python_sitelib}/osg_configure/configure_modules/__pycache__/gateway*
+%{python_sitelib}/osg_configure/configure_modules/__pycache__/gratia*
+%{python_sitelib}/osg_configure/configure_modules/__pycache__/localsettings*
+%{python_sitelib}/osg_configure/configure_modules/__pycache__/lsf*
+%{python_sitelib}/osg_configure/configure_modules/__pycache__/misc*
+%{python_sitelib}/osg_configure/configure_modules/__pycache__/pbs*
+%{python_sitelib}/osg_configure/configure_modules/__pycache__/rsv*
+%{python_sitelib}/osg_configure/configure_modules/__pycache__/sge*
+%{python_sitelib}/osg_configure/configure_modules/__pycache__/siteinformation*
+%{python_sitelib}/osg_configure/configure_modules/__pycache__/slurm*
+%{python_sitelib}/osg_configure/configure_modules/__pycache__/squid*
+%{python_sitelib}/osg_configure/configure_modules/__pycache__/storage*
+%{python_sitelib}/osg_configure/modules/__pycache__/__init__*
+%{python_sitelib}/osg_configure/modules/__pycache__/baseconfiguration*
+%{python_sitelib}/osg_configure/modules/__pycache__/configfile*
+%{python_sitelib}/osg_configure/modules/__pycache__/exceptions*
+%{python_sitelib}/osg_configure/modules/__pycache__/jobmanagerconfiguration*
+%{python_sitelib}/osg_configure/modules/__pycache__/utilities*
+%{python_sitelib}/osg_configure/modules/__pycache__/validation*
+%{python_sitelib}/osg_configure/__pycache__/version*
+%endif
 /usr/sbin/*
 %ghost /var/log/osg/osg-configure.log
 %ghost /var/lib/osg/osg-attributes.conf
@@ -238,6 +272,13 @@ touch $RPM_BUILD_ROOT/var/lib/osg/osg-job-environment.conf
 %{python_sitelib}/osg_configure/modules/resourcecatalog.py*
 %{python_sitelib}/osg_configure/modules/reversevomap.py*
 %{python_sitelib}/osg_configure/modules/subcluster.py*
+%if 0%{?rhel} >= 8
+%{python_sitelib}/osg_configure/configure_modules/__pycache__/infoservices*
+%{python_sitelib}/osg_configure/modules/__pycache__/resourcecatalog*
+%{python_sitelib}/osg_configure/modules/__pycache__/reversevomap*
+%{python_sitelib}/osg_configure/modules/__pycache__/subcluster*
+%endif
+
 
 %files tests
 /usr/share/osg-configure/*
