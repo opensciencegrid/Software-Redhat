@@ -1,1 +1,3 @@
-xrootd/4.12.3/xrootd-4.12.3.tar.gz sha1sum=ad9fd83f182054b0ca581c1a4e63470669e8f688
+xrootd/4.12.4/xrootd-4.12.4.tar.gz sha1sum=0cc15f3b477bdeb67c665080a0708718b2277ee7
+# downloaded from http://xrootd.org/download/v4.12.4/xrootd-4.12.4.tar.gz
+# Update the "%define compat_version" line in the spec file when upgrading versions.

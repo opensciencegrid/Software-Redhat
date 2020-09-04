@@ -68,13 +68,13 @@
 Name:      xrootd
 Epoch:     1
 Version:   5.0.1
-Release:   1.3%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:   1.4%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
 URL:       http://xrootd.org/
 
-%define compat_version 4.12.3
+%define compat_version 4.12.4
 
 # git clone http://xrootd.org/repo/xrootd.git xrootd
 # cd xrootd
@@ -82,7 +82,7 @@ URL:       http://xrootd.org/
 Source0:   xrootd.tar.gz
 
 %if 0%{?_with_compat}
-Source1:   xrootd-%{compat_version}.tar.gz
+Source1:   http://xrootd.org/download/v%{compat_version}/xrootd-%{compat_version}.tar.gz
 %endif
 
 BuildRoot: %{_tmppath}/%{name}-root
@@ -504,7 +504,7 @@ popd
 doxygen Doxyfile
 
 %if 0%{?_with_compat}
-pushd $RPM_BUILD_DIR/xrootd-compat/xrootd
+pushd $RPM_BUILD_DIR/xrootd-compat/xrootd-%{compat_version}
 mkdir build
 pushd build
 %if %{use_cmake3}
@@ -549,7 +549,7 @@ rm -rf $RPM_BUILD_ROOT
 # Install compat
 #-------------------------------------------------------------------------------
 %if 0%{?_with_compat}
-pushd $RPM_BUILD_DIR/xrootd-compat/xrootd/build
+pushd $RPM_BUILD_DIR/xrootd-compat/xrootd-%{compat_version}/build
 make install DESTDIR=$RPM_BUILD_ROOT
 rm -rf $RPM_BUILD_ROOT%{_includedir}
 rm -rf $RPM_BUILD_ROOT%{_datadir}
@@ -1054,6 +1054,9 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Fri Sep 04 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.0.1-1.4
+- Update compat to 4.12.4 (SOFTWARE-4247)
+
 * Wed Aug 26 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.0.1-1.3
 - Build python3-xrootd for OSG (SOFTWARE-4212)
 
