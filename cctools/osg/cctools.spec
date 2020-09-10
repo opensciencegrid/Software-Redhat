@@ -1,6 +1,6 @@
 Name:           cctools
 Summary:        Cooperative Computing Tools
-Version:        7.1.6
+Version:        7.1.7
 Release:        1%{?dist}
 License:        GPLv2
 URL:            http://ccl.cse.nd.edu/software/
@@ -13,7 +13,11 @@ BuildRequires:  m4
 
 #cctools package dependencies
 BuildRequires:  fuse-devel
+%if 0%{?rhel} >= 8
+BuildRequires:  python3-devel
+%else
 BuildRequires:  python-devel
+%endif
 BuildRequires:  swig
 BuildRequires:  libuuid-devel
 BuildRequires:  readline-devel
@@ -119,6 +123,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Sep 10 2020 Brian Lin <blin@cs.wisc.edu> - 7.1.7-1
+- Update to 7.1.7 (SOFTWARE-4237)
+- Add Python3 to the packaging for EL8 even though it's not yet supported upstream
+
 * Mon Jun 22 2020 Carl Edquist <edquist@cs.wisc.edu> - 7.1.6-1
 - Update to 7.1.6 (SOFTWARE-4132)
 
