@@ -1,6 +1,6 @@
 Summary: StashCache client tools
 Name: stashcache-client
-Version: 6.0.0
+Version: 6.1.0
 Release: 1%{?dist}
 License: Apache 2.0
 Url: https://github.com/opensciencegrid/StashCache
@@ -51,6 +51,10 @@ stashcp allows users to copy files out of the OSG StashCache data federation.
 %{_datarootdir}/stashcache/opensciencegrid.org.pub
 
 %changelog
+* Fri Sep 11 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 6.1.0-1
+- Update to 6.1.0.  This release changes the behavior of stashcp to use
+  multiple caches and never go back to the origin.  (SOFTWARE-4255)
+
 * Thu Jul 16 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 6.0.0-1
 - Update to 6.0.0.  This release adds Python 3 support and changes the
   statistics collector to collector.atlas-ml.org
