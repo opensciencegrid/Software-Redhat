@@ -13,7 +13,7 @@
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
 %define version 3.9.0
-%define release 0.2.rc2
+%define release 0.3.rc3
 
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
@@ -663,6 +663,7 @@ rm -rf $RPM_BUILD_ROOT
 %{python3_sitelib}/glideinwms/creation/lib/cWParamDict.py
 %{python3_sitelib}/glideinwms/creation/lib/xslt.py
 %{python3_sitelib}/glideinwms/creation/lib/__init__.py
+# without %dir it includes all files and sub-directories. Some modules are in different packages
 %dir %{python3_sitelib}/glideinwms/creation/lib/__pycache__
 %{python3_sitelib}/glideinwms/creation/lib/__pycache__/cWConsts.*
 %{python3_sitelib}/glideinwms/creation/lib/__pycache__/cWDictFile.*
@@ -742,8 +743,6 @@ rm -rf $RPM_BUILD_ROOT
 %{python3_sitelib}/glideinwms/creation/lib/factoryXmlConfig.py
 %{python3_sitelib}/glideinwms/creation/lib/factory_defaults.xml
 %{python3_sitelib}/glideinwms/creation/lib/xmlConfig.py
-# without %dir it includes all files and sub-directories. Some modules are in different packages
-%dir %{python3_sitelib}/glideinwms/creation/lib/__pycache__
 %{python3_sitelib}/glideinwms/creation/lib/__pycache__/cgWConsts.*
 %{python3_sitelib}/glideinwms/creation/lib/__pycache__/cgWCreate.*
 %{python3_sitelib}/glideinwms/creation/lib/__pycache__/cgWDictFile.*
@@ -799,7 +798,6 @@ rm -rf $RPM_BUILD_ROOT
 %{python3_sitelib}/glideinwms/creation/lib/cvWParams.py
 %{python3_sitelib}/glideinwms/creation/lib/matchPolicy.py
 %{python3_sitelib}/glideinwms/creation/lib/check_config_frontend.py
-%dir %{python3_sitelib}/glideinwms/creation/lib/__pycache__
 %{python3_sitelib}/glideinwms/creation/lib/__pycache__/cvWConsts.*
 %{python3_sitelib}/glideinwms/creation/lib/__pycache__/cvWCreate.*
 %{python3_sitelib}/glideinwms/creation/lib/__pycache__/cvWDictFile.*
@@ -874,10 +872,10 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 
-* Tue Sep 8 2020 Marco Mmabelli <marcom@fnal.gov> - 3.9-0.1.rc1
+* Tue Sep 11 2020 Marco Mmabelli <marcom@fnal.gov> - 3.9-0.1.rc1
 - GlideinWMS v3.9
 - Release Notes: http://glideinwms.fnal.gov/doc.v3_9/history.html
-- Release candidates: 3.9-0.1.rc1 to 
+- Release candidates: 3.9-0.1.rc1 to 3.9-0.1.rc3
 
 * Thu Aug 27 2020 Dennis Box <dbox@fnal.gov> - 3.7.1-1
 - GlideinWMS v3.7.1
