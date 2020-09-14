@@ -1,5 +1,5 @@
 Name:           vo-client
-Version:        107
+Version:        108
 Release:        1%{?dist}
 Summary:        Contains vomses file for use with user authentication
 
@@ -70,6 +70,10 @@ find $RPM_BUILD_ROOT/%{_sysconfdir}/grid-security/vomsdir -type d -exec chmod 75
 %config(noreplace) %{_datadir}/osg/grid-vorolemap
 
 %changelog
+* Mon Sep 14 2020 Edgar Fjardo <emfajard@ucsd.edu> - 108-1
+- Update the VIRGO VOMS (SOFTWARE-4256)
+- Add the KAGRA VO information (SOFTWARE-4256)
+
 * Thu Jun 30 2020 Diego Davila <didavils@ucsd.edu> - 107-1
 - Update SLAC VOMS server DN (SOFTWARE-4194)
 
