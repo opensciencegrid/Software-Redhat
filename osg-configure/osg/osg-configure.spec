@@ -1,18 +1,13 @@
 Summary: Configuration tool for the OSG Software Stack
 Name: osg-configure
-Version: 3.1.2
+Version: 3.10.0
 Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
 BuildArch: noarch
 Url: https://github.com/opensciencegrid/osg-configure
-%if 0%{?rhel} >= 8
 BuildRequires: python3
 Requires: python3
-%else
-BuildRequires: python2
-Requires: python2
-%endif
 
 
 Obsoletes: %{name}-managedfork < 2.2.2-2
@@ -126,11 +121,7 @@ This package includes the ini file for configuring bosco using osg-configure
 Summary: OSG configuration file for the osg info services
 Requires: %name = %version-%release
 Requires: %name-gip
-%if 0%{?rhel} >= 8
 Requires: python3-condor
-%else
-Requires: python2-condor
-%endif
 %description infoservices
 This package includes the ini file for configuring the osg info services using osg-configure
 
@@ -141,11 +132,7 @@ Requires: %name = %version-%release
 This package includes the ini file for configuring the job gateway
 (htcondor-ce) using osg-configure
 
-%if 0%{?rhel} >= 8
-  %define __python /usr/bin/python3
-%else
-  %define __python /usr/bin/python2
-%endif
+%define __python /usr/bin/python3
 
 
 %prep
@@ -195,7 +182,7 @@ touch $RPM_BUILD_ROOT/var/lib/osg/osg-job-environment.conf
 %{python_sitelib}/osg_configure/modules/utilities.py*
 %{python_sitelib}/osg_configure/modules/validation.py*
 %{python_sitelib}/osg_configure/version.py*
-%if 0%{?rhel} >= 8
+
 %{python_sitelib}/osg_configure/__pycache__/__init__*
 %{python_sitelib}/osg_configure/configure_modules/__pycache__/__init__*
 %{python_sitelib}/osg_configure/configure_modules/__pycache__/bosco*
@@ -220,7 +207,7 @@ touch $RPM_BUILD_ROOT/var/lib/osg/osg-job-environment.conf
 %{python_sitelib}/osg_configure/modules/__pycache__/utilities*
 %{python_sitelib}/osg_configure/modules/__pycache__/validation*
 %{python_sitelib}/osg_configure/__pycache__/version*
-%endif
+
 /usr/sbin/*
 %ghost /var/log/osg/osg-configure.log
 %ghost /var/lib/osg/osg-attributes.conf
@@ -272,12 +259,12 @@ touch $RPM_BUILD_ROOT/var/lib/osg/osg-job-environment.conf
 %{python_sitelib}/osg_configure/modules/resourcecatalog.py*
 %{python_sitelib}/osg_configure/modules/reversevomap.py*
 %{python_sitelib}/osg_configure/modules/subcluster.py*
-%if 0%{?rhel} >= 8
+
 %{python_sitelib}/osg_configure/configure_modules/__pycache__/infoservices*
 %{python_sitelib}/osg_configure/modules/__pycache__/resourcecatalog*
 %{python_sitelib}/osg_configure/modules/__pycache__/reversevomap*
 %{python_sitelib}/osg_configure/modules/__pycache__/subcluster*
-%endif
+
 
 
 %files tests
@@ -293,7 +280,10 @@ touch $RPM_BUILD_ROOT/var/lib/osg/osg-job-environment.conf
 
 
 %changelog
-* Thu Sep 03 2020 Mátyás Selmeci <matyas@cs.wisc.edu> 3.1.2-1
+* Mon Sep 14 2020 Mátyás Selmeci <matyas@cs.wisc.edu> 3.10.0-1
+- Convert entirely to Python 3 and drop Python 2 support  (SOFTWARE-4191)
+
+* Thu Sep 03 2020 Mátyás Selmeci <matyas@cs.wisc.edu> 3.1.2.1-1
 - Python 3 / RHEL 8 support (SOFTWARE-4191)
 
 * Wed Jan 29 2020 Mátyás Selmeci <matyas@cs.wisc.edu> 3.1.1-1
