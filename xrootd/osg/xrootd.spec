@@ -67,8 +67,8 @@
 #-------------------------------------------------------------------------------
 Name:      xrootd
 Epoch:     1
-Version:   5.0.1
-Release:   1.4%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Version:   5.0.2
+Release:   0.rc1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -952,6 +952,7 @@ fi
 %defattr(-,root,root,-)
 %{_libdir}/libXrdVoms-5.so
 %{_libdir}/libXrdSecgsiVOMS-5.so
+%{_libdir}/libXrdHttpVOMS-5.so
 %doc %{_mandir}/man1/libXrdVoms.1.gz
 %doc %{_mandir}/man1/libXrdSecgsiVOMS.1.gz
 
@@ -1054,8 +1055,8 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
-* Fri Sep 04 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.0.1-1.4
-- Update compat to 4.12.4 (SOFTWARE-4247)
+* Tue Sep 15 2020 Diego Davila <didavila@ucsd.edu> - 5.0.2-0.rc1
+- update to 5.0.2-0.rc1 (SOFTWARE-4258)
 
 * Wed Aug 26 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.0.1-1.3
 - Build python3-xrootd for OSG (SOFTWARE-4212)
