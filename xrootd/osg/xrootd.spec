@@ -68,7 +68,7 @@
 Name:      xrootd
 Epoch:     1
 Version:   5.0.2
-Release:   0.rc1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:   1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -1055,6 +1055,9 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Mon Sep 21 2020 Diego Davila <didavila@ucsd.edu> - 5.0.2-1.1
+- bump to version 5.0.2-1.1 (SOFTWARE-4258)
+
 * Tue Sep 15 2020 Diego Davila <didavila@ucsd.edu> - 5.0.2-0.rc1
 - update to 5.0.2-0.rc1 (SOFTWARE-4258)
 
