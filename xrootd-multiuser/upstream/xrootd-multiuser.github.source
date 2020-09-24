@@ -1,1 +1,1 @@
-type=git url=https://github.com/opensciencegrid/xrootd-multiuser.git name=xrootd-multiuser tag=v0.4.3 hash=143ae2c73ce4cf28ad83bc277a6ca5363d86aea0
+type=git url=https://github.com/opensciencegrid/xrootd-multiuser.git name=xrootd-multiuser tag=v0.4.4 hash=8773f28de78e70119b7a8633f076d2c7c87afd2f
