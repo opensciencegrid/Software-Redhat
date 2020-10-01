@@ -2,12 +2,13 @@
 
 Name:           %{pypi_name}
 Version:        0.8.1
-Release:        1.1%{?dist}
+Release:        1.2%{?dist}
 Summary:        SciTokens credential monitor for use with HTCondor
 
 License:        MIT
 URL:            https://github.com/htcondor/scitokens-credmon
 Source0:        %{pypi_name}-%{version}.tar.gz
+Patch0:         Open-temp-file-as-bytes-for-atomic_output-to-fix-str.patch
 BuildArch:      noarch
 
 %if 0%{?rhel} < 8 && 0%{?fedora} < 31
@@ -55,7 +56,7 @@ Requires:       httpd
 
 
 %prep
-%autosetup -n %{pypi_name}-%{version}
+%autosetup -n %{pypi_name}-%{version} -p 1
 # Remove pre-built egg-info
 rm -rf %{pypi_name}.egg-info
 
@@ -85,6 +86,10 @@ rmdir examples/wsgi
 %{_var}/www/wsgi-scripts/scitokens-credmon
 
 %changelog
+* Thu Oct 01 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 0.8.1-1.2
+- Fix Python 3 bytes/str issue
+  Added patch Open-temp-file-as-bytes-for-atomic_output-to-fix-str.patch
+
 * Wed Sep 30 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 0.8.1-1.1
 - Build for OSG; change version to match Git tag (SOFTWARE-4274)
 - Use Python 3 for RHEL 8
