@@ -257,16 +257,19 @@ Requires: condor-boinc
 Requires: blahp >= 1.16.1
 %endif
 
+# Useful tools are using the Python bindings
+Requires: python3-condor
 %if 0%{?rhel} == 7
 Requires: python36-requests
-Requires: python2-condor
-%endif
-%if 0%{?rhel} >= 8 || 0%{?fedora}
+%else
 Requires: python3-requests
 %endif
 
-# Useful tools are using the Python bindings
-Requires: python3-condor
+%if 0%{?rhel} == 7
+Requires: python2-condor
+# For some reason OSG VMU tests need python-request
+Requires: python-requests
+%endif
 
 Requires(pre): shadow-utils
 
@@ -318,7 +321,7 @@ Obsoletes: condor-std-universe < 8.9.0
 Obsoletes: condor-cream-gahp < 8.9.9
 
 # 32-bit shadow discontinued as of 8.9.9
-Obsoletes: condor-small-shadow < 8.9.9
+#Obsoletes: condor-small-shadow < 8.9.9
 
 # external packages discontinued as of 8.9.9
 #Obsoletes: condor-externals < 8.9.9
@@ -548,6 +551,17 @@ shortens many timers to be more responsive.
 %if %uw_build
 
 #######################
+%if 0%{?rhel} == 7 && ! 0%{?amzn}
+%package small-shadow
+Summary: Compatibility package to deal with the absence of the 32-bit shadow
+Group: Applications/System
+Requires: %name-external-libs = %version-%release
+
+%description small-shadow
+Provides a symbolic link to the standard condor_shadow.
+
+%endif
+#######################
 %package externals
 Summary: Empty package to ensure yum gets the blahp from its own package
 Group: Applications/System
@@ -744,8 +758,15 @@ rm -rf %{buildroot}
 echo ---------------------------- makefile ---------------------------------
 make install DESTDIR=%{buildroot}
 
-# Drop in a symbolic link for backward compatability
+# Drop in a symbolic link for backward compatibility
 ln -s ../..%{_libdir}/condor/condor_ssh_to_job_sshd_config_template %{buildroot}/%_sysconfdir/condor/condor_ssh_to_job_sshd_config_template
+
+%if %uw_build
+%if 0%{?rhel} == 7 && ! 0%{?amzn}
+# Drop in a link for backward compatibility for small shadow
+ln -s condor_shadow %{buildroot}/%{_sbindir}/condor_shadow_s
+%endif
+%endif
 
 populate /usr/share/doc/condor-%{version}/examples %{buildroot}/usr/share/doc/condor-%{version}/etc/examples/*
 rm -rf %{buildroot}/usr/share/doc/condor-%{version}/etc
@@ -1078,6 +1099,11 @@ rm -rf %{buildroot}
 %endif
 %if %blahp
 %dir %_libexecdir/condor/glite/bin
+%_libexecdir/condor/glite/bin/kubernetes_cancel.sh
+%_libexecdir/condor/glite/bin/kubernetes_hold.sh
+%_libexecdir/condor/glite/bin/kubernetes_resume.sh
+%_libexecdir/condor/glite/bin/kubernetes_status.sh
+%_libexecdir/condor/glite/bin/kubernetes_submit.sh
 %_libexecdir/condor/glite/bin/nqs_cancel.sh
 %_libexecdir/condor/glite/bin/nqs_hold.sh
 %_libexecdir/condor/glite/bin/nqs_resume.sh
@@ -1305,9 +1331,7 @@ rm -rf %{buildroot}
 %dir %_var/lib/condor/execute/
 %dir %_var/lib/condor/spool/
 %dir %_var/log/condor/
-%dir %_var/lock/condor
 %dir %_var/lock/condor/local
-%dir %_var/run/condor
 %defattr(-,root,condor,-)
 %dir %_var/lib/condor/oauth_credentials
 %defattr(-,root,root,-)
@@ -1492,6 +1516,12 @@ rm -rf %{buildroot}
 %files -n minicondor
 %config(noreplace) %_sysconfdir/condor/config.d/00-minicondor
 
+%if %uw_build
+%if 0%{?rhel} == 7 && ! 0%{?amzn}
+%files small-shadow
+%{_sbindir}/condor_shadow_s
+%endif
+%endif
 
 %post
 %if 0%{?fedora}
