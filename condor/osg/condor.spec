@@ -1,4 +1,4 @@
-%define tarball_version 8.8.10
+%define tarball_version 8.8.11
 
 # optionally define any of these, here or externally
 # % define fedora   16
@@ -132,7 +132,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.3
+%define condor_base_release 0.520949
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
