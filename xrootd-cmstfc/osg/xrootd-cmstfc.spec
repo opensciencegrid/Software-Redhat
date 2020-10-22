@@ -9,13 +9,15 @@ URL: https://github.com/bbockelm/xrootd-cmstfc
 # Generated from:
 # git-archive master | gzip -7 > ~/rpmbuild/SOURCES/xrootd-lcmaps.tar.gz
 Source0: %{name}.tar.gz
+Patch0: buff_size.patch
+
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
-%define xrootd_current 4.11
-%define xrootd_next 5.0
+%define xrootd_current_major 4
+%define xrootd_next_major 5
 
-BuildRequires: xrootd-devel >= 1:%{xrootd_current}.0-1
-BuildRequires: xrootd-devel <  1:%{xrootd_next}.0-1
+BuildRequires: xrootd-devel >= 1:%{xrootd_current_major}.0.0-1
+BuildRequires: xrootd-devel <  1:%{xrootd_next_major}.0.0-1
 BuildRequires: pcre-devel
 
 BuildRequires: xerces-c-devel
@@ -29,8 +31,8 @@ Requires: /usr/bin/xrootd pcre xerces-c
 #%if 0%{?rhel} < 7
 #Requires: xrootd4 >= 1:4.1.0
 #%else
-Requires: xrootd >= 1:%{xrootd_current}.0-1
-Requires: xrootd <  1:%{xrootd_next}.0-1
+Requires: xrootd >= 1:%{xrootd_current_major}.0.0-1
+Requires: xrootd <  1:%{xrootd_next_major}.0.0-1
 #%endif
 
 %package devel
@@ -45,7 +47,8 @@ Group: System Environment/Development
 
 %prep
 %setup -q -c -n %{name}-%{version}
-
+%patch0 -p1
+ 
 %build
 cd %{name}-%{version}
 %cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_LIBDIR=%{_lib} .
@@ -61,14 +64,20 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)
-%{_libdir}/libXrdCmsTfc.so.*
 %{_libdir}/libXrdCmsTfc.so
-
+%if 0%{?rhel} < 8
+%{_libdir}/libXrdCmsTfc.so.*
+%endif
 %files devel
 %defattr(-,root,root,-)
 %{_includedir}/XrdCmsTfc.hh
 
 %changelog
+* Thu Oct 22 2020 Diego Davila <didavila@ucsd.edu> - 1.5.2-6
+- Build for el8 (software-4257)
+- Adding patch: buff_size.patch to avoid compiling error
+- Adding if around libXrdCmsTfc.so.* in the 'files' section
+
 * Mon Apr 13 2020 Diego Davila <didavila@ucsd.edu> - 1.5.2-5
 - Rebuild against xrootd 5.0.0-rc2 (SOFTWARE-3923)
 
