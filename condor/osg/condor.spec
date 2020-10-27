@@ -51,7 +51,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 0.519626
+%define condor_base_release 1
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -288,7 +288,8 @@ Requires(post): python3-policycoreutils
 Requires(post): selinux-policy-targeted
 %endif
 
-# Require libraries that are dlopened
+# Require libraries that we dlopen
+# Ganglia is optional as well as nVidia and cuda libraries
 Requires: globus-callout
 Requires: globus-common
 Requires: globus-gsi-callback
@@ -298,15 +299,17 @@ Requires: globus-gsi-openssl-error
 Requires: globus-gsi-proxy-core
 Requires: globus-gsi-proxy-ssl
 Requires: globus-gsi-sysconfig
-Requires: globus-gssapi-gsi
 Requires: globus-gss-assist
+Requires: globus-gssapi-gsi
 Requires: globus-openssl-module
 Requires: globus-xio-gsi-driver
 Requires: krb5-libs
 Requires: libcom_err
+Requires: libtool-ltdl
 Requires: munge-libs
 Requires: openssl-libs
 Requires: scitokens-cpp
+Requires: systemd-libs
 Requires: voms
 
 #Provides: user(condor) = 43
@@ -642,7 +645,7 @@ export CMAKE_PREFIX_PATH=/usr
 # causes build issues with EL5, don't even bother building the tests.
 
 %if %uw_build
-%define condor_build_id 518623
+%define condor_build_id 521769
 
 %cmake3 \
        -DBUILDID:STRING=%condor_build_id \
@@ -1540,6 +1543,26 @@ fi
 /bin/systemctl try-restart condor.service >/dev/null 2>&1 || :
 
 %changelog
+* Mon Oct 26 2020 Tim Theisen <tim@cs.wisc.edu> - 8.9.9-1
+- The RPM packages requires globus, munge, scitokens, and voms from EPEL
+- Improved cgroup memory policy settings that set both hard and soft limit
+- Cgroup memory usage reporting no longer includes the kernel buffer cache
+- Numerous Python binding improvements, see version history
+- Can create a manifest of files on the execute node at job start and finish
+- Added provisioner nodes to DAGMan, allowing users to provision resources
+- DAGMan can now produce .dot graphs without running the workflow
+
+* Wed Oct 21 2020 Tim Theisen <tim@cs.wisc.edu> - 8.8.11-1
+- HTCondor now properly tracks usage over vanilla universe checkpoints
+- New ClassAd equality and inequality operators in the Python bindings
+- Fixed a bug where removing in-use routes could crash the job router
+- Fixed a bug where condor_chirp would abort after success on Windows
+- Fixed a bug where using MACHINE_RESOURCE_NAMES could crash the startd
+- Improved condor c-gahp to prioritize commands over file transfers
+- Fixed a rare crash in the schedd when running many local universe jobs
+- With GSI, avoid unnecessary reverse DNS lookup when HOST_ALIAS is set
+- Fix a bug that could cause grid universe jobs to fail upon proxy refresh
+
 * Wed Aug 12 2020 Tim Theisen <tim@cs.wisc.edu> - 8.9.8-1.1
 - Add libcgroup-devel requirement for EL8
 - Drop bosco_findplaform patch
