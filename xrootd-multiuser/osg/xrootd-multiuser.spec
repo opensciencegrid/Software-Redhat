@@ -1,7 +1,7 @@
 
 Name: xrootd-multiuser
 Version: 0.4.4
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: Multiuser filesystem writing plugin for xrootd
 
 Group: System Environment/Daemons
@@ -10,7 +10,7 @@ URL: https://github.com/bbockelm/xrootd-multiuser
 # Generated from:
 # git archive v%{version} --prefix=xrootd-multiuser-%{version}/ | gzip -7 > ~/rpmbuild/SOURCES/xrootd-multiuser-%{version}.tar.gz
 Source0: %{name}-%{version}.tar.gz
-
+Patch0: reserve_on_new.patch 
 %define xrootd_current_major 5
 %define xrootd_current_minor 0
 %define xrootd_next_major 6
@@ -35,6 +35,7 @@ Requires: xrootd-server <  1:%{xrootd_next_major}.0.0-1
 
 %prep
 %setup -q
+%patch0 -p1 
 
 %build
 %cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo .
