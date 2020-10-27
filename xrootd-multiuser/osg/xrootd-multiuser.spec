@@ -63,6 +63,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_unitdir}/xrootd-privileged@.service
 
 %changelog
+* Tue Oct 27 2020 Diego Davila <didavila@ucsd.edu> - 0.4.4-3
+- adding patch: reserve_on_new.patch to prevent crash on start when ofs.authlib is defined (SOFTWARE-4257)
+
 * Thu Sep 24 2020 Diego Davila <didavila@ucsd.edu> - 0.4.4-2
 - set xrootd_current_major = 5 (SOTFWARE-4257)
 
