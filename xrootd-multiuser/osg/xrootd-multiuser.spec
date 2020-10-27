@@ -1,7 +1,7 @@
 
 Name: xrootd-multiuser
 Version: 0.4.4
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: Multiuser filesystem writing plugin for xrootd
 
 Group: System Environment/Daemons
@@ -64,6 +64,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_unitdir}/xrootd-privileged@.service
 
 %changelog
+* Tue Oct 27 2020 Diego Davila <didavila@ucsd.edu> - 0.4.4-2
+- adding patch: reserve_on_new.patch to prevent crash on start when ofs.authlib is defined (SOFTWARE-4106)
+
 * Thu Sep 24 2020 Diego Davila <didavila@ucsd.edu> - 0.4.4-1
 - use vector resize instead of vector reserve to make it work in el8 (SOFTWARE-4257)
 
