@@ -73,7 +73,7 @@ find $RPM_BUILD_ROOT/%{_sysconfdir}/grid-security/vomsdir -type d -exec chmod 75
 * Wed Oct 28 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 109-1
 - Update DN and issuer for WLCG VOMS VO (SOFTWARE-4331)
 
-* Mon Sep 14 2020 Edgar Fjardo <emfajard@ucsd.edu> - 108-1
+* Mon Sep 14 2020 Edgar Fajardo <emfajard@ucsd.edu> - 108-1
 - Update the VIRGO VOMS (SOFTWARE-4256)
 - Add the KAGRA VO information (SOFTWARE-4256)
 
