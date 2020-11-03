@@ -13,7 +13,7 @@
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
 %define version 3.7.1
-%define release 0.9.rc9
+%define release 0.10.rc10
 
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
