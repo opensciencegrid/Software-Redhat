@@ -52,7 +52,7 @@
 Name:      xrootd
 Epoch:     1
 Version:   4.12.5
-Release:   1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:   1.1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -87,8 +87,9 @@ BuildRequires: libmacaroons-devel
 BuildRequires: json-c-devel
 
 BuildRequires: python2-devel
-%if %{?fedora}%{!?fedora:0} >= 13
+%if %{?fedora}%{!?fedora:0} >= 13 || %{?rhel}%{!?rhel:0} >= 8
 BuildRequires: python3-devel
+%define _with_python3 1
 %else
 BuildRequires: python%{python3_pkgversion}-devel
 %endif
@@ -1001,6 +1002,9 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Wed Nov 04 2020 Carl Edquist <edquist@cs.wisc.edu> - 4.12.2-1.1
+- Build python3 sub-package for el8 (SOFTWARE-4106)
+
 * Wed May 27 2020 Michal Simon <michal.simon@cern.ch> - 4.12.2-1
 - Remove xrootd-voms-devel
 
