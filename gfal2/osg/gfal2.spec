@@ -5,7 +5,7 @@
 
 Name:               gfal2
 Version:            2.18.1
-Release:            1%{?dist}
+Release:            1.1%{?dist}
 Summary:            Grid file access library 2.0
 License:            ASL 2.0
 URL:                http://dmc.web.cern.ch/projects/gfal-2/home
@@ -172,6 +172,7 @@ supports it.
 %package plugin-xrootd
 Summary:            Provide xrootd support for GFAL2
 Requires:           %{name}%{?_isa} = %{version}-%{release}
+Requires:           xrootd-libs%{?_isa}
 
 %description plugin-xrootd
 The Grid File Access Library, GFAL2, provides a simple POSIX-like API for file
@@ -374,6 +375,9 @@ make DESTDIR=%{buildroot} install
 
 
 %changelog
+* Tue Nov 10 2020 Carl Edquist <edquist@cs.wisc.edu> - 2.18.0-1.1
+- Explicitly require xrootd-libs package for xrootd plugin (SOFTWARE-4354)
+
 * Tue Jun 16 2020 Michal Simon <michal.simon@cern.ch> - 2.18.0-1
 - Upgrade to upstream release 2.18.0
 
