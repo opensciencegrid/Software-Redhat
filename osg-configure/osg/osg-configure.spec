@@ -1,7 +1,7 @@
 Summary: Configuration tool for the OSG Software Stack
 Name: osg-configure
-Version: 3.10.0
-Release: 1%{?dist}
+Version: 3.10.99
+Release: 0.1%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
 BuildArch: noarch
@@ -223,6 +223,7 @@ touch $RPM_BUILD_ROOT/var/lib/osg/osg-job-environment.conf
 
 %files gip
 %config(noreplace) %{_sysconfdir}/osg/config.d/30-gip.ini
+%config(noreplace) %{_sysconfdir}/osg/config.d/35-pilot.ini
 
 %files lsf
 %config(noreplace) %{_sysconfdir}/osg/config.d/20-lsf.ini
@@ -280,6 +281,11 @@ touch $RPM_BUILD_ROOT/var/lib/osg/osg-job-environment.conf
 
 
 %changelog
+* Tue Nov 24 2020 Mátyás Selmeci <matyas@cs.wisc.edu> 3.11.0-1
+- Add Pilot entries (SOFTWARE-4177)
+- Don't try to resolve Squid on the CE (SOFTWARE-4362)
+- Ignore all fetch-crl errors, but warn if no CRLs exist (SOFTWARE-4364)
+
 * Mon Sep 14 2020 Mátyás Selmeci <matyas@cs.wisc.edu> 3.10.0-1
 - Convert entirely to Python 3 and drop Python 2 support  (SOFTWARE-4191)
 
