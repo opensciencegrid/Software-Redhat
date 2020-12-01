@@ -1,4 +1,4 @@
-%define tarball_version 8.8.11
+%define tarball_version 8.8.12
 
 # optionally define any of these, here or externally
 # % define fedora   16
@@ -132,7 +132,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1
+%define condor_base_release 1.1
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -725,11 +725,10 @@ Group: Applications/System
 Requires: %name = %version-%release
 %if 0%{?rhel} == 7
 Requires: boost169-python3
-Requires: python36
 %else
 Requires: boost-python3
-Requires: python3
 %endif
+Requires: python3
 
 %if 0%{?rhel} >= 7 && ! %uw_build
 # auto provides generator does not pick these up for some reason
@@ -2208,6 +2207,24 @@ fi
 %endif
 
 %changelog
+* Tue Dec 01 2020 Tim Theisen <tim@cs.wisc.edu> - 8.8.12-1.1
+- Carry OSG local changes
+
+* Mon Nov 23 2020 Tim Theisen <tim@cs.wisc.edu> - 8.8.12-1
+- Added a family of version comparison functions to ClassAds
+- Increased default Globus proxy key length to meet current NIST guidance
+
+* Wed Oct 21 2020 Tim Theisen <tim@cs.wisc.edu> - 8.8.11-1
+- HTCondor now properly tracks usage over vanilla universe checkpoints
+- New ClassAd equality and inequality operators in the Python bindings
+- Fixed a bug where removing in-use routes could crash the job router
+- Fixed a bug where condor_chirp would abort after success on Windows
+- Fixed a bug where using MACHINE_RESOURCE_NAMES could crash the startd
+- Improved condor c-gahp to prioritize commands over file transfers
+- Fixed a rare crash in the schedd when running many local universe jobs
+- With GSI, avoid unnecessary reverse DNS lookup when HOST_ALIAS is set
+- Fix a bug that could cause grid universe jobs to fail upon proxy refresh
+
 * Wed Aug 12 2020 Tim Theisen <tim@cs.wisc.edu> - 8.8.10-1.3.osg
 - Fix Bosco patch to match upstream source
 - Change permissions on /var/{lock,run}/condor to make rpm verify work
