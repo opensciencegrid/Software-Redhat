@@ -5,7 +5,7 @@
 
 Name:		blahp
 Version:	1.18.48
-Release:	2%{?gitrev:.%{gitrev}}%{?dist}
+Release:	2.1%{?gitrev:.%{gitrev}}%{?dist}
 Summary:	gLite BLAHP daemon
 
 Group:		System/Libraries
@@ -107,6 +107,9 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Wed Dec 02 2020 Carl Edquist <edquist@cs.wisc.edu> - 1.18.48-2.1
+- Rebuild against condor 8.8.12
+
 * Tue Sep 15 2020 Brian Lin <blin@cs.wisc.edu> - 1.18.48-2
 - Update RPM packaging
 
