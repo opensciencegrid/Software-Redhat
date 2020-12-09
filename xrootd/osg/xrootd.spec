@@ -95,7 +95,7 @@ Group:     System Environment/Daemons
 License:   LGPLv3+
 URL:       http://xrootd.org/
 
-%define compat_version 4.12.4
+%define compat_version 4.12.5
 
 # git clone http://xrootd.org/repo/xrootd.git xrootd
 # cd xrootd
@@ -1145,6 +1145,7 @@ fi
 %changelog
 * Wed Dec 09 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.1.0-0.1.1rc1.osg
 - Build xrootd-scitokens and xrootd-compat again  (SOFTWARE-4356)
+- Use 4.12.5 for the compat package  (SOFTWARE-4247)
 
 * Thu Oct 15 2020 Michal Simon <michal.simon@cern.ch> - 5.0.2-1
 - Introduce xrootd-scitokens package
