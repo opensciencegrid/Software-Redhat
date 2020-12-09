@@ -576,7 +576,7 @@ popd
 doxygen Doxyfile
 
 %if 0%{?_with_compat}
-pushd $RPM_BUILD_DIR/xrootd-compat/xrootd
+pushd $RPM_BUILD_DIR/xrootd-compat/xrootd*
 mkdir build
 pushd build
 %if %{use_cmake3}
@@ -621,7 +621,7 @@ rm -rf $RPM_BUILD_ROOT
 # Install compat
 #-------------------------------------------------------------------------------
 %if 0%{?_with_compat}
-pushd $RPM_BUILD_DIR/xrootd-compat/xrootd/build
+pushd $RPM_BUILD_DIR/xrootd-compat/xrootd*/build
 make install DESTDIR=$RPM_BUILD_ROOT
 rm -rf $RPM_BUILD_ROOT%{_includedir}
 rm -rf $RPM_BUILD_ROOT%{_datadir}
