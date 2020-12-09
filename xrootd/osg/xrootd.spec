@@ -95,7 +95,7 @@ Group:     System Environment/Daemons
 License:   LGPLv3+
 URL:       http://xrootd.org/
 
-%define compat_version 4.12.3
+%define compat_version 4.12.4
 
 # git clone http://xrootd.org/repo/xrootd.git xrootd
 # cd xrootd
