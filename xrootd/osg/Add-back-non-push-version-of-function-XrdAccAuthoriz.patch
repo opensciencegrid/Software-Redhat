@@ -1,0 +1,38 @@
+From 55afec03d4d2891cfb529631c1b93b401c7b3139 Mon Sep 17 00:00:00 2001
+From: Derek Weitzel <djw8605@gmail.com>
+Date: Tue, 24 Nov 2020 10:15:27 -0600
+Subject: [PATCH] Add back non-push version of function XrdAccAuthorizeObject
+
+(from https://github.com/xrootd/xrootd-scitokens/commit/f141002c90c4aba3b0d06751c15cfd4357d99c22)
+---
+ xrootd/src/XrdSciTokens/XrdSciTokens/src/XrdAccSciTokens.cc | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/xrootd/src/XrdSciTokens/XrdSciTokens/src/XrdAccSciTokens.cc b/xrootd/src/XrdSciTokens/XrdSciTokens/src/XrdAccSciTokens.cc
+index 31adeb6..d57ec36 100644
+--- a/xrootd/src/XrdSciTokens/XrdSciTokens/src/XrdAccSciTokens.cc
++++ b/xrootd/src/XrdSciTokens/XrdSciTokens/src/XrdAccSciTokens.cc
+@@ -23,6 +23,7 @@
+ 
+ // The status-quo to retrieve the default object is to copy/paste the
+ // linker definition and invoke directly.
++XrdVERSIONINFO(XrdAccAuthorizeObject, XrdAccSciTokens);
+ extern XrdAccAuthorize *XrdAccDefaultAuthorizeObject(XrdSysLogger   *lp,
+                                                      const char     *cfn,
+                                                      const char     *parm,
+@@ -1003,6 +1004,12 @@ XrdAccAuthorize *XrdAccAuthorizeObjectAdd(XrdSysLogger *lp,
+     return (accSciTokens ? accSciTokens : nullptr);
+ }
+ 
++XrdAccAuthorize *XrdAccAuthorizeObject(XrdSysLogger *lp,
++                                       const char   *cfn,
++                                       const char   *parm)
++{
++    return XrdAccAuthorizeObjectAdd(lp, cfn, parm, 0);
++}
+ 
+ 
+ }
+-- 
+2.6.3
+

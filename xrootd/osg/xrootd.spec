@@ -106,6 +106,8 @@ Source0:   xrootd.tar.gz
 Source1:   xrootd-%{compat_version}.tar.gz
 %endif
 
+Patch0:    Add-back-non-push-version-of-function-XrdAccAuthoriz.patch
+
 BuildRoot: %{_tmppath}/%{name}-root
 
 %if %{use_cmake3}
@@ -526,6 +528,7 @@ This package contains compatibility binaries for xrootd 4 servers.
 %endif
 
 %setup -c -n xrootd
+%patch0 -p1
 
 %build
 cd xrootd
