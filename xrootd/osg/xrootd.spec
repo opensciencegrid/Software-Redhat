@@ -89,7 +89,7 @@
 Name:      xrootd
 Epoch:     1
 Version:   5.1.0
-Release:   0.rc1.2%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:   0.rc3.1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -180,6 +180,13 @@ Requires: libasan
 
 %if %{?_with_scitokens:1}%{!?_with_scitokens:0}
 BuildRequires: scitokens-cpp-devel
+%endif
+
+%if %{?_with_isal:1}%{!?_with_isal:0}
+BuildRequires: autoconf
+BuildRequires: automake
+BuildRequires: libtool
+BuildRequires: yasm
 %endif
 
 Requires:	%{name}-server%{?_isa} = %{epoch}:%{version}-%{release}
@@ -562,6 +569,9 @@ cmake  \
 %endif
 %if %{?_with_xrdclhttp:1}%{!?_with_xrdclhttp:0}
       -DXRDCLHTTP_SUBMODULE=TRUE \
+%endif
+%if %{?_with_isal:1}%{!?_with_isal:0}
+      -DENABLE_XRDEC=TRUE \
 %endif
 %if %{python3only}
       -DXRD_PYTHON_REQ_VERSION=%{python3_pkgversion} \
@@ -1146,7 +1156,10 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
-* Wed Dec 09 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.1.0-0.1.1rc2.osg
+* Mon Dec 14 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.1.0-0.rc3.1.osg
+- Update to upstream rc3  (SOFTWARE-4356)
+
+* Wed Dec 09 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.1.0-0.rc1.2.osg
 - Build xrootd-scitokens and xrootd-compat again  (SOFTWARE-4356)
 - Use 4.12.5 for the compat package  (SOFTWARE-4247)
 
