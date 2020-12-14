@@ -95,7 +95,7 @@ Group:     System Environment/Daemons
 License:   LGPLv3+
 URL:       http://xrootd.org/
 
-%define compat_version 4.12.5
+%define compat_version 4.12.6
 
 # git clone http://xrootd.org/repo/xrootd.git xrootd
 # cd xrootd
@@ -1158,6 +1158,7 @@ fi
 %changelog
 * Mon Dec 14 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.1.0-0.rc3.1.osg
 - Update to upstream rc3  (SOFTWARE-4356)
+- Use 4.12.6 for the compat package  (SOFTWARE-4247)
 
 * Wed Dec 09 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.1.0-0.rc1.2.osg
 - Build xrootd-scitokens and xrootd-compat again  (SOFTWARE-4356)
