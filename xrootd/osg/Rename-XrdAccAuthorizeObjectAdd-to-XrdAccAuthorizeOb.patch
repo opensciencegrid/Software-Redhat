@@ -1,0 +1,27 @@
+From 12140eb1e78800fa6f208a25052d7d7ecee29d61 Mon Sep 17 00:00:00 2001
+From: Derek Weitzel <djw8605@gmail.com>
+Date: Mon, 14 Dec 2020 17:22:38 -0600
+Subject: [PATCH] Rename XrdAccAuthorizeObjectAdd to XrdAccAuthorizeObjAdd
+
+The plugin interface expect XrdAccAuthorizeObjAdd function to
+exist.
+---
+ xrootd/src/XrdSciTokens/src/XrdAccSciTokens.cc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/xrootd/src/XrdSciTokens/src/XrdAccSciTokens.cc b/xrootd/src/XrdSciTokens/src/XrdAccSciTokens.cc
+index e75a55f..6caec83 100644
+--- a/xrootd/src/XrdSciTokens/src/XrdAccSciTokens.cc
++++ b/xrootd/src/XrdSciTokens/src/XrdAccSciTokens.cc
+@@ -966,7 +966,7 @@ std::string      cfgSciTokens;
+ 
+ extern "C" {
+ 
+-XrdAccAuthorize *XrdAccAuthorizeObjectAdd(XrdSysLogger *lp,
++XrdAccAuthorize *XrdAccAuthorizeObjAdd(XrdSysLogger *lp,
+                                           const char   *cfn,
+                                           const char   *parm,
+                                        XrdAccAuthorize *accP)
+-- 
+2.6.3
+
