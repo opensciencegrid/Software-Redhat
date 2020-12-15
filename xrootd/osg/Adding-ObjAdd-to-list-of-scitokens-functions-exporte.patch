@@ -1,0 +1,24 @@
+From 1dad08a3a802459ef8a8cb8a23e5912efb197ce5 Mon Sep 17 00:00:00 2001
+From: Derek Weitzel <djw8605@gmail.com>
+Date: Tue, 15 Dec 2020 15:32:08 -0600
+Subject: [PATCH] Adding ObjAdd to list of scitokens functions exported
+
+---
+ xrootd/src/XrdSciTokens/configs/export-lib-symbols | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/xrootd/src/XrdSciTokens/configs/export-lib-symbols b/xrootd/src/XrdSciTokens/configs/export-lib-symbols
+index c915303..63914c6 100644
+--- a/xrootd/src/XrdSciTokens/configs/export-lib-symbols
++++ b/xrootd/src/XrdSciTokens/configs/export-lib-symbols
+@@ -1,6 +1,7 @@
+ {
+ global:
+   XrdAccAuthorizeObject*;
++  XrdAccAuthorizeObjAdd*;
+ 
+ local:
+   *;
+-- 
+2.6.3
+
