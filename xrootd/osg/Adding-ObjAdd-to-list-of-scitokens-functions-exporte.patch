@@ -1,14 +1,14 @@
-From 1dad08a3a802459ef8a8cb8a23e5912efb197ce5 Mon Sep 17 00:00:00 2001
+From e34f07ba69768d6fbb9aed26b33f3013f9f4807a Mon Sep 17 00:00:00 2001
 From: Derek Weitzel <djw8605@gmail.com>
 Date: Tue, 15 Dec 2020 15:32:08 -0600
-Subject: [PATCH] Adding ObjAdd to list of scitokens functions exported
+Subject: [PATCH 1/2] Adding ObjAdd to list of scitokens functions exported
 
 ---
- xrootd/src/XrdSciTokens/configs/export-lib-symbols | 1 +
+ src/XrdSciTokens/configs/export-lib-symbols | 1 +
  1 file changed, 1 insertion(+)
 
 diff --git a/xrootd/src/XrdSciTokens/configs/export-lib-symbols b/xrootd/src/XrdSciTokens/configs/export-lib-symbols
-index c915303..63914c6 100644
+index c9153035e94..63914c654f5 100644
 --- a/xrootd/src/XrdSciTokens/configs/export-lib-symbols
 +++ b/xrootd/src/XrdSciTokens/configs/export-lib-symbols
 @@ -1,6 +1,7 @@
@@ -19,6 +19,26 @@ index c915303..63914c6 100644
  
  local:
    *;
--- 
-2.6.3
 
+From defe0ac572e3b259bfc594c8a881a510d9e43250 Mon Sep 17 00:00:00 2001
+From: Derek Weitzel <djw8605@gmail.com>
+Date: Tue, 15 Dec 2020 16:59:03 -0600
+Subject: [PATCH 2/2] Adding version information to XrdAccAuthorizeObjAdd
+ function
+
+---
+ src/XrdSciTokens/src/XrdAccSciTokens.cc | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/xrootd/src/XrdSciTokens/src/XrdAccSciTokens.cc b/xrootd/src/XrdSciTokens/src/XrdAccSciTokens.cc
+index 4b361655ff3..b99a967c8cf 100644
+--- a/xrootd/src/XrdSciTokens/src/XrdAccSciTokens.cc
++++ b/xrootd/src/XrdSciTokens/src/XrdAccSciTokens.cc
+@@ -24,6 +24,7 @@
+ // The status-quo to retrieve the default object is to copy/paste the
+ // linker definition and invoke directly.
+ XrdVERSIONINFO(XrdAccAuthorizeObject, XrdAccSciTokens);
++XrdVERSIONINFO(XrdAccAuthorizeObjAdd, XrdAccSciTokens);
+ 
+ namespace {
+ 
