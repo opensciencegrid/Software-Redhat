@@ -89,7 +89,7 @@
 Name:      xrootd
 Epoch:     1
 Version:   5.1.0
-Release:   0.rc3.2%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:   0.rc3.3%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -102,6 +102,7 @@ URL:       http://xrootd.org/
 # git-archive master | gzip -9 > ~/rpmbuild/SOURCES/xrootd.tgz
 Source0:   xrootd.tar.gz
 Patch0:    Rename-XrdAccAuthorizeObjectAdd-to-XrdAccAuthorizeOb.patch
+Patch1:    Fix-typo-XrdAccAuthorizeObjectAdd-XrdAccAuthorizeObj.patch
 
 %if 0%{?_with_compat}
 Source1:   xrootd-%{compat_version}.tar.gz
@@ -535,6 +536,7 @@ This package contains compatibility binaries for xrootd 4 servers.
 
 %setup -c -n xrootd
 %patch0 -p1
+%patch1 -p1
 
 %build
 cd xrootd
@@ -1155,6 +1157,9 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Tue Dec 15 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.1.0-0.rc3.3.osg
+- Add Fix-typo-XrdAccAuthorizeObjectAdd-XrdAccAuthorizeObj.patch from https://github.com/xrootd/xrootd/commit/bf5aa963185c62228b93312dd0517ba1b1f43e52
+
 * Mon Dec 14 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.1.0-0.rc3.2.osg
 - Update to upstream rc3  (SOFTWARE-4356)
 - Use 4.12.6 for the compat package  (SOFTWARE-4247)

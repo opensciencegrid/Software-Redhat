@@ -1,0 +1,34 @@
+From bc665d4ace9d8c60564ee0b2b25dd124acade80c Mon Sep 17 00:00:00 2001
+From: Michal Simon <michal.simon@cern.ch>
+Date: Tue, 15 Dec 2020 10:21:50 +0100
+Subject: [PATCH] Fix typo: XrdAccAuthorizeObjectAdd -> XrdAccAuthorizeObjAdd.
+
+---
+ xrootd/src/XrdSciTokens/src/XrdAccSciTokens.cc | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/xrootd/src/XrdSciTokens/src/XrdAccSciTokens.cc b/xrootd/src/XrdSciTokens/src/XrdAccSciTokens.cc
+index 6caec83..4023fa1 100644
+--- a/xrootd/src/XrdSciTokens/src/XrdAccSciTokens.cc
++++ b/xrootd/src/XrdSciTokens/src/XrdAccSciTokens.cc
+@@ -987,7 +987,7 @@ XrdAccAuthorize *XrdAccAuthorizeObjAdd(XrdSysLogger *lp,
+         if (accSciTokens->GetConfigFile() == cfn) {
+             return accSciTokens;
+         } else {
+-            xrootdLog.Emsg("XrdAccAuthorizeObjectAdd", "SciTokens configuration is different now from the scitokens configuration when initialized");
++            xrootdLog.Emsg("XrdAccAuthorizeObjAdd", "SciTokens configuration is different now from the scitokens configuration when initialized");
+             return nullptr;
+         }
+     }
+@@ -1003,7 +1003,7 @@ XrdAccAuthorize *XrdAccAuthorizeObject(XrdSysLogger *lp,
+                                        const char   *cfn,
+                                        const char   *parm)
+ {
+-    return XrdAccAuthorizeObjectAdd(lp, cfn, parm, 0);
++    return XrdAccAuthorizeObjAdd(lp, cfn, parm, 0);
+ }
+ 
+ 
+-- 
+2.6.3
+
