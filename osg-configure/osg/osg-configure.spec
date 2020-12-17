@@ -1,6 +1,6 @@
 Summary: Configuration tool for the OSG Software Stack
 Name: osg-configure
-Version: 3.10.99
+Version: 3.10.99.1
 Release: 0.1%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
