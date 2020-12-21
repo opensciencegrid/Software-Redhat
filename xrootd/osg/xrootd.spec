@@ -89,7 +89,7 @@
 Name:      xrootd
 Epoch:     1
 Version:   5.1.0
-Release:   0.rc3.5%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:   0.rc4.1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -101,9 +101,7 @@ URL:       http://xrootd.org/
 # cd xrootd
 # git-archive master | gzip -9 > ~/rpmbuild/SOURCES/xrootd.tgz
 Source0:   xrootd.tar.gz
-Patch0:    Rename-XrdAccAuthorizeObjectAdd-to-XrdAccAuthorizeOb.patch
-Patch1:    Fix-typo-XrdAccAuthorizeObjectAdd-XrdAccAuthorizeObj.patch
-Patch2:    Adding-ObjAdd-to-list-of-scitokens-functions-exporte.patch
+
 
 %if 0%{?_with_compat}
 Source1:   xrootd-%{compat_version}.tar.gz
@@ -536,9 +534,6 @@ This package contains compatibility binaries for xrootd 4 servers.
 %endif
 
 %setup -c -n xrootd
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
 
 %build
 cd xrootd
@@ -1159,6 +1154,12 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Mon Dec 21 2020 Edgar Fajardo <emfajard@ucsd.edu> - 5.1.0-0.rc4.1.osg
+- Rebuild to RC4
+- Remove patch Fix-typo-XrdAccAuthorizeObjectAdd-XrdAccAuthorizeObj.paatch
+- Remove patch Adding-ObjAdd-to-list-of-scitokens-functions-exporte.patch
+- Remove patch Rename-XrdAccAuthorizeObjectAdd-to-XrdAccAuthorizeOb.patch
+
 * Tue Dec 15 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.1.0-0.rc3.5.osg
 - Add Fix-typo-XrdAccAuthorizeObjectAdd-XrdAccAuthorizeObj.patch from https://github.com/xrootd/xrootd/commit/bf5aa963185c62228b93312dd0517ba1b1f43e52
 - Add Adding-ObjAdd-to-list-of-scitokens-functions-exporte.patch  from https://github.com/xrootd/xrootd/pull/1363
