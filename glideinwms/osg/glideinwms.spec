@@ -13,7 +13,7 @@
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
 %define version 3.9.1
-%define release 0.1.rc1
+%define release 0.2.rc2
 
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
@@ -75,12 +75,24 @@ access the Grid, Cloud and HPC resources. GlideinWMS is a Glidein Based
 WMS (Workload Management System) that works on top of Condor.
 For those familiar with the Condor system, it is used for
 scheduling and job control. This package is for a one-node
-vofrontend install (userschedd, submit, vofrontend).
+vofrontend install (userschedd, usercollector, vofrontend).
 
 
 %package vofrontend-standalone
 Summary:        The VOFrontend for glideinWMS submission host
-Requires: httpd
+Requires: glideinwms-vofrontend-core =%{version}-%{release}
+Requires: glideinwms-vofrontend-httpd =%{version}-%{release}
+%description vofrontend-standalone
+The purpose of the glideinWMS is to provide a simple way
+to access the Grid, Cloud and HPC resources. GlideinWMS is a Glidein
+Based WMS (Workload Management System) that works on top of
+Condor. For those familiar with the Condor system, it is used
+for scheduling and job control.
+This package is for a standalone vofrontend install
+
+
+%package vofrontend-core
+Summary:        The intelligence logic for GWMS Frontend.
 Requires: condor >= 8.9.5
 Requires: python3 >= 3.6
 Requires: python-rrdtool
@@ -96,13 +108,17 @@ Requires: glideinwms-common-tools = %{version}-%{release}
 Requires(post): /sbin/service
 Requires(post): /usr/sbin/useradd
 Requires(post): /sbin/chkconfig
-%description vofrontend-standalone
-The purpose of the glideinWMS is to provide a simple way
-to access the Grid, Cloud and HPC resources. GlideinWMS is a Glidein
-Based WMS (Workload Management System) that works on top of
-Condor. For those familiar with the Condor system, it is used
-for scheduling and job control.
-This package is for a standalone vofrontend install
+%description vofrontend-core
+This subpackage includes all the scripts needed to run a
+frontend. Created to separate out the httpd server.
+
+
+%package vofrontend-httpd
+Summary:        The Apache http configuration for GWMS Frontend.
+Requires: httpd
+%description vofrontend-httpd
+This subpackage includes the minimal configuration to start Apache to
+serve the Frontend files to the pilot and the monitoring pages.
 
 
 %package usercollector
@@ -128,9 +144,9 @@ This is a package for a glideinwms submit host.
 
 %package libs
 Summary:        The glideinWMS common libraries.
+Requires: python3 >= 3.6
 Requires: python3-condor
 # was condor-python for python2
-Requires: python3 >= 3.6
 Requires: python-rrdtool
 Requires: python36-ldap3
 Requires: python36-jwt
@@ -173,7 +189,18 @@ standalone packages.
 %package factory
 Summary:        The Factory for glideinWMS
 Provides:       GlideinWMSFactory = %{version}-%{release}
-Requires: httpd
+Requires: glideinwms-factory-httpd =%{version}-%{release}
+Requires: glideinwms-factory-core =%{version}-%{release}
+%description factory
+The purpose of the glideinWMS is to provide a simple way
+to access the Grid, Cloud and HPC resources. GlideinWMS is a Glidein
+Based WMS (Workload Management System) that works on top of
+HTCondor. For those familiar with the Condor system, it is used
+for scheduling and job control.
+
+
+%package factory-core
+Summary:        The scripts for the GlideinWMS Factory
 Requires: glideinwms-factory-condor = %{version}-%{release}
 Requires: glideinwms-libs = %{version}-%{release}
 Requires: glideinwms-glidecondor-tools = %{version}-%{release}
@@ -192,12 +219,17 @@ Requires: javascriptrrd >= 1.1.0
 Requires(post): /sbin/service
 Requires(post): /usr/sbin/useradd
 Requires(post): /sbin/chkconfig
-%description factory
-The purpose of the glideinWMS is to provide a simple way
-to access the Grid, Cloud and HPC resources. GlideinWMS is a Glidein
-Based WMS (Workload Management System) that works on top of
-HTCondor. For those familiar with the Condor system, it is used
-for scheduling and job control.
+%description factory-core
+This subpackage includes all the scripts needed to run a
+Factory. Created to separate out the httpd server.
+
+
+%package factory-httpd
+Summary:        The Apache httpd configuration for the GWMS Factory
+Requires: httpd
+%description factory-httpd
+This subpackage includes the minimal configuration to start Apache to
+serve the Factory files to the pilot and the monitoring pages.
 
 
 %package factory-condor
@@ -218,8 +250,8 @@ install of wmscollector + wms factory
 %build
 cp %{SOURCE7} .
 chmod 700 chksum.sh
-./chksum.sh v%{version}-%{release}.osg etc/checksum.frontend "CVS config_examples doc .git .gitattributes poolwatcher factory/check* factory/glideFactory* factory/test* factory/manage* factory/stop* factory/tools creation/create_glidein creation/reconfig_glidein creation/info_glidein creation/lib/cgW* creation/web_base/factory*html creation/web_base/collector_setup.sh creation/web_base/condor_platform_select.sh creation/web_base/condor_startup.sh creation/web_base/create_mapfile.sh creation/web_base/gcb_setup.sh creation/web_base/glexec_setup.sh creation/web_base/singularity_setup.sh  creation/web_base/singularity_lib.sh creation/web_base/glidein_startup.sh creation/web_base/job_submit.sh creation/web_base/local_start.sh creation/web_base/setup_x509.sh creation/web_base/update_proxy.py creation/web_base/validate_node.sh chksum.sh etc/checksum* unittests build"
-./chksum.sh v%{version}-%{release}.osg etc/checksum.factory "CVS config_examples doc .git .gitattributes poolwatcher frontend/* creation/reconfig_glidein creation/clone_glidein creation/lib/cgW* creation/web_base/factory*html creation/web_base/collector_setup.sh creation/web_base/condor_platform_select.sh creation/web_base/condor_startup.sh creation/web_base/create_mapfile.sh creation/web_base/gcb_setup.sh creation/web_base/glexec_setup.sh creation/web_base/singularity_setup.sh  creation/web_base/singularity_lib.sh creation/web_base/glidein_startup.sh creation/web_base/job_submit.sh creation/web_base/local_start.sh creation/web_base/setup_x509.sh creation/web_base/update_proxy.py creation/web_base/validate_node.sh chksum.sh etc/checksum* unittests build creation/lib/matchPolicy*"
+./chksum.sh v%{version}-%{release}.osg etc/checksum.frontend "CVS config_examples doc .git .gitattributes poolwatcher factory/check* factory/glideFactory* factory/test* factory/manage* factory/stop* factory/tools creation/create_glidein creation/reconfig_glidein creation/info_glidein creation/lib/cgW* creation/web_base/factory*html creation/web_base/collector_setup.sh creation/web_base/condor_platform_select.sh creation/web_base/condor_startup.sh creation/web_base/create_mapfile.sh creation/web_base/gcb_setup.sh creation/web_base/singularity_setup.sh creation/web_base/singularity_wrapper.sh creation/web_base/singularity_lib.sh creation/web_base/glidein_startup.sh creation/web_base/job_submit.sh creation/web_base/local_start.sh creation/web_base/setup_x509.sh creation/web_base/update_proxy.py creation/web_base/validate_node.sh chksum.sh etc/checksum* unittests build"
+./chksum.sh v%{version}-%{release}.osg etc/checksum.factory "CVS config_examples doc .git .gitattributes poolwatcher frontend/* creation/reconfig_glidein creation/clone_glidein creation/lib/cgW* creation/web_base/factory*html creation/web_base/collector_setup.sh creation/web_base/condor_platform_select.sh creation/web_base/condor_startup.sh creation/web_base/create_mapfile.sh creation/web_base/gcb_setup.sh creation/web_base/singularity_setup.sh creation/web_base/singularity_wrapper.sh creation/web_base/singularity_lib.sh creation/web_base/glidein_startup.sh creation/web_base/job_submit.sh creation/web_base/local_start.sh creation/web_base/setup_x509.sh creation/web_base/update_proxy.py creation/web_base/validate_node.sh chksum.sh etc/checksum* unittests build creation/lib/matchPolicy*"
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -288,6 +320,7 @@ rm -Rf $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/creation/config_examples
 rm -f $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/creation/create_rpm_startup
 rm -f $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/.editorconfig
 rm -f $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/.gitattributes
+rm -Rf $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/.github
 rm -f $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/.gitignore
 rm -f $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/.gitmodules
 rm -f $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/.mailmap
@@ -759,7 +792,6 @@ rm -rf $RPM_BUILD_ROOT
 %else
 %{_initrddir}/gwms-factory
 %endif
-%config(noreplace) %{_sysconfdir}/httpd/conf.d/gwms-factory.conf
 %attr(-, gfactory, gfactory) %dir %{_sysconfdir}/gwms-factory
 %attr(-, gfactory, gfactory) %dir %{_sysconfdir}/gwms-factory/plugin.d
 %attr(-, gfactory, gfactory) %dir %{_sysconfdir}/gwms-factory/hooks.reconfig.pre
@@ -767,7 +799,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(-, gfactory, gfactory) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/gwms-factory/glideinWMS.xml
 %config(noreplace) %{_sysconfdir}/sysconfig/gwms-factory
 
-%files vofrontend-standalone
+%files vofrontend-core
 %defattr(-,frontend,frontend,-)
 %doc LICENSE
 %doc ACKNOWLEDGMENTS.txt
@@ -819,7 +851,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_initrddir}/gwms-renew-proxies
 %attr(0644, root, root) %{_sysconfdir}/cron.d/gwms-renew-proxies
 %endif
-%config(noreplace) %{_sysconfdir}/httpd/conf.d/gwms-frontend.conf
 %attr(-, root, root) %config(noreplace) %{_sysconfdir}/sudoers.d/99_frontend_sudoers
 %attr(-, frontend, frontend) %dir %{_sysconfdir}/gwms-frontend
 %attr(-, frontend, frontend) %dir %{_sysconfdir}/gwms-frontend/plugin.d
@@ -830,6 +861,11 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/sysconfig/gwms-frontend
 %attr(-, frontend, frontend) %{web_base}/../creation
 
+%files factory-httpd
+%config(noreplace) %{_sysconfdir}/httpd/conf.d/gwms-factory.conf
+
+%files vofrontend-httpd
+%config(noreplace) %{_sysconfdir}/httpd/conf.d/gwms-frontend.conf
 
 %files factory-condor
 %config(noreplace) %{_sysconfdir}/condor/config.d/00_gwms_factory_general.config
@@ -871,7 +907,7 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/condor/certs/condor_mapfile
 
 %changelog
-* Fri Dec 23 2020 Bruno Coimbra <coimbra@fnal.gov> - 3.9.1-1
+* Thu Dec 24 2020 Bruno Coimbra <coimbra@fnal.gov> - 3.9.1-1
 - GlideinWMS v3.9.1
 - Release Notes: http://glideinwms.fnal.gov/doc.v3_9/history.html
 - Release candidates: 3.9-0.1.rc1 to 3.9.1-0.1.rc1
@@ -895,11 +931,6 @@ rm -rf $RPM_BUILD_ROOT
 - GlideinWMS v3.9
 - Release Notes: http://glideinwms.fnal.gov/doc.v3_9/history.html
 - Release candidates: 3.9-0.1.rc1 to 3.9-0.1.rc4
-
-* Fri Sep 18 2020 Dennis Box <dbox@fnal.gov> - 3.7.1-1
-- GlideinWMS v3.7.1
-- Release Notes: http://glideinwms.fnal.gov/doc.v3_7_1/history.html
-- Release candidates: 3.7.1-0.1.rc1 to 3.7.1-0.4.rc4
 
 * Thu Sep 17 2020 Marco Mambelli <marcom@fnal.gov> - 3.6.4-1
 - GlideinWMS v3.6.4
@@ -1359,4 +1390,3 @@ rm -rf $RPM_BUILD_ROOT
   configuration variables.
 - Removed the rm's to delete the frontend-temp and log directories at uninstall,
   they removed files when updating, not wanted.  Let RPM handle those.
-
