@@ -9,12 +9,12 @@ osg-empty                 3.5       empty        basic     Empty_Packages
 osg-minefield             3.5       development  koji      Build_Repository
 osg-prerelease            3.5       prerelease   koji      Prerelease_Repository_for_Internal_Use
 
-osg-upcoming              upcoming  release      standard  Upcoming
-osg-upcoming-rolling      upcoming  rolling      standard  Upcoming_Rolling_Release
-osg-upcoming-development  upcoming  development  standard  Upcoming_Development
-osg-upcoming-testing      upcoming  testing      standard  Upcoming_Testing
-osg-upcoming-minefield    upcoming  development  koji      Upcoming_Build_Repository
-osg-upcoming-prerelease   upcoming  prerelease   koji      Upcoming_Prerelease_Repository_for_Internal_Use
+osg-upcoming              3.5-upcoming  release      standard  Upcoming
+osg-upcoming-rolling      3.5-upcoming  rolling      standard  Upcoming_Rolling_Release
+osg-upcoming-development  3.5-upcoming  development  standard  Upcoming_Development
+osg-upcoming-testing      3.5-upcoming  testing      standard  Upcoming_Testing
+osg-upcoming-minefield    3.5-upcoming  development  koji      Upcoming_Build_Repository
+osg-upcoming-prerelease   3.5-upcoming  prerelease   koji      Upcoming_Prerelease_Repository_for_Internal_Use
 
 devops-itb                devops    itb          direct    Developer_and_Operations_ITB
 devops                    devops    production   direct    Developer_and_Operations_Production
