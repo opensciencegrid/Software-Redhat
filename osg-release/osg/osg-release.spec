@@ -1,6 +1,6 @@
 Name:           osg-release
 Version:        3.5
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        OSG Software for Enterprise Linux repository configuration
 
 License:        GPL
@@ -59,6 +59,9 @@ sed -i -e 's/gpgcheck=1/gpgcheck=0/' $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d/*
 
 
 %changelog
+* Thu Jan 14 2021 Carl Edquist <edquist@cs.wisc.edu> - 3.5-5
+- Use upcoming series to 3.5-upcoming (SOFTWARE-4420)
+
 * Thu Aug 27 2020 Carl Edquist <edquist@cs.wisc.edu> - 3.5-4
 - Drop failovermethod=priority from repo configs (SOFTWARE-4069)
 
