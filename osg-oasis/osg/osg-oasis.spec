@@ -25,7 +25,7 @@ exit 0
 %files
 
 %changelog
-* Tue Jan 19 2020 Dave Dykstra <dwd@fnal.gov> 17-1
+* Tue Jan 19 2021 Dave Dykstra <dwd@fnal.gov> 17-1
 - Update to cvmfs-2.8.0
 
 * Wed Oct 14 2020 Dave Dykstra <dwd@fnal.gov> 16-7
