@@ -13,7 +13,7 @@
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
 %define version 3.9.1
-%define release 0.4.rc4
+%define release 0.5.rc5
 
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
@@ -598,7 +598,7 @@ systemctl daemon-reload
 /sbin/service condor condrestart > /dev/null 2>&1 || true
 
 
-%pre vofrontend-standalone
+%pre vofrontend-core
 # Add the "frontend" user and group if they do not exist
 getent group frontend >/dev/null || groupadd -r frontend
 getent passwd frontend >/dev/null || \
@@ -674,11 +674,11 @@ fi
 %clean
 rm -rf $RPM_BUILD_ROOT
 
+%files factory
+
 %files vofrontend
 
 %files vofrontend-standalone
-
-%files factory-core
 
 %files common-tools
 %defattr(-,root,root,-)
@@ -709,7 +709,7 @@ rm -rf $RPM_BUILD_ROOT
 %{python3_sitelib}/glideinwms/creation/lib/__pycache__/xslt.*
 %{python3_sitelib}/glideinwms/creation/lib/__pycache__/__init__.*
 
-%files factory
+%files factory-core
 %defattr(-,gfactory,gfactory,-)
 %doc LICENSE
 %doc ACKNOWLEDGMENTS.txt
@@ -911,10 +911,10 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/condor/certs/condor_mapfile
 
 %changelog
-* Fri Jan 8 2021 Bruno Coimbra <coimbra@fnal.gov> - 3.9.1-4
+* Wed Jan 20 2021 Bruno Coimbra <coimbra@fnal.gov> - 3.9.1-5
 - GlideinWMS v3.9.1
 - Release Notes: http://glideinwms.fnal.gov/doc.v3_9/history.html
-- Release candidates: 3.9-0.1.rc1 to 3.9.1-0.4.rc4
+- Release candidates: 3.9-0.1.rc1 to 3.9.1-0.5.rc5
 
 * Mon Dec 21  2020 Dennis Box <dbox@fnal.gov> - 3.7.2-1
 - GlideinWMS v3.7.2
