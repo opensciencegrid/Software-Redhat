@@ -79,7 +79,7 @@
 
 Name: koji
 Version: 1.20.1
-Release: 2.1%{?dist}
+Release: 2.2%{?dist}
 # the included arch lib from yum's rpmUtils is GPLv2+
 License: LGPLv2 and GPLv2+
 Summary: Build system tools
@@ -91,6 +91,9 @@ Patch1: https://pagure.io/koji/pull-request/2075.patch
 
 # Adjust xz params to favor speed
 Patch15: https://pagure.io/koji/pull-request/1576.patch
+
+# Upstreamed in newer versions
+Patch16: 2652-web-input-validation.patch
 
 # OSG patches
 Patch103: kojid_scmbuild_check_spec_after_running_sourcecmd.patch
@@ -712,8 +715,12 @@ fi
 %endif
 
 %changelog
-* Fri May 01 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.20.1-2.1.osg
+* Thu Jan 21 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.20.1-2.2.osg
 - **** OSG CHANGELOG ****
+    * Thu Jan 21 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.20.1-2.2.osg
+    - Add 2652-web-input-validation.patch to fix XSS vulnerability
+        - https://pagure.io/koji/pull-request/2652
+
     * Fri May 01 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.20.1-2.1.osg
     - Update to 1.20.1-2 from Fedora
     - Drop Fix-1.15-1.16-schema-upgrade-script.patch (upstream)
