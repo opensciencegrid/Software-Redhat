@@ -1,23 +1,27 @@
-From 6d4831a6dc3ccfee668145c893ff6a25d188035f Mon Sep 17 00:00:00 2001
+From e1e9080de3e722b138e04878d9813af8db8c8b09 Mon Sep 17 00:00:00 2001
 From: Tomas Kopecek <tkopecek@redhat.com>
-Date: Jan 18 2021 10:06:35 +0000
-Subject: web: input validation
-
+Date: Thu, 21 Jan 2021 14:01:39 -0600
+Subject: [PATCH] 2652-web-input-validation
 
 Fix for CVE-2020-15856
 
 Fixes: https://pagure.io/koji/issue/2645
 
+(original patch from https://pagure.io/koji/pull-request/2652 -- conflicts fixed by Matyas)
 ---
+ www/kojiweb/index.py    | 124 ++++++++++++++++++++++++++++++------------------
+ www/lib/kojiweb/util.py |  13 ++++-
+ 2 files changed, 89 insertions(+), 48 deletions(-)
 
 diff --git a/www/kojiweb/index.py b/www/kojiweb/index.py
-index efb403d..a85f18c 100644
+index 07f911e..761d310 100644
 --- a/www/kojiweb/index.py
 +++ b/www/kojiweb/index.py
-@@ -42,6 +42,34 @@ def _sortbyname(x):
-     return x['name']
+@@ -45,6 +45,35 @@
+ # Convenience definition of a commonly-used sort function
+ _sortbyname = lambda x: x['name']
  
- 
++
 +# regexps for input checking
 +_VALID_SEARCH_CHARS = r"""a-zA-Z0-9"""
 +_VALID_SEARCH_SYMS = r""" @.,_/\()%+-~*?|[]^$"""
@@ -46,10 +50,10 @@ index efb403d..a85f18c 100644
 +        raise koji.GenericError("Invalid int/label value: %r" % value)
 +
 +
- # loggers
+ #loggers
  authlogger = logging.getLogger('koji.auth')
  
-@@ -496,10 +524,12 @@ def tasks(environ, owner=None, state='active', view='tree', method='all', hostID
+@@ -467,10 +496,12 @@ def tasks(environ, owner=None, state='active', view='tree', method='all', hostID
      values = _initValues(environ, 'Tasks', 'tasks')
      server = _getServer(environ)
  
@@ -64,7 +68,7 @@ index efb403d..a85f18c 100644
          ownerObj = server.getUser(owner, strict=True)
          opts['owner'] = ownerObj['id']
          values['owner'] = ownerObj['name']
-@@ -567,10 +597,7 @@ def tasks(environ, owner=None, state='active', view='tree', method='all', hostID
+@@ -536,10 +567,7 @@ def tasks(environ, owner=None, state='active', view='tree', method='all', hostID
          values['hostID'] = None
  
      if channelID:
@@ -76,7 +80,7 @@ index efb403d..a85f18c 100644
          channel = server.getChannel(channelID, strict=True)
          opts['channel_id'] = channel['id']
          values['channel'] = channel
-@@ -857,7 +884,10 @@ def tags(environ, start=None, order=None, childID=None):
+@@ -826,7 +854,10 @@ def tags(environ, start=None, order=None, childID=None):
      else:
          values['perms'] = []
  
@@ -88,25 +92,28 @@ index efb403d..a85f18c 100644
  
      return _genHTML(environ, 'tags.chtml')
  
-@@ -871,15 +901,13 @@ def packages(environ, tagID=None, userID=None, order='package_name', start=None,
+@@ -836,16 +867,14 @@ def packages(environ, tagID=None, userID=None, order='package_name', start=None,
+     values = _initValues(environ, 'Packages', 'packages')
      server = _getServer(environ)
      tag = None
-     if tagID is not None:
+-    if tagID != None:
 -        if tagID.isdigit():
 -            tagID = int(tagID)
++    if tagID is not None:
 +        tagID = _validate_name_or_id(tagID)
          tag = server.getTag(tagID, strict=True)
      values['tagID'] = tagID
      values['tag'] = tag
      user = None
-     if userID is not None:
+-    if userID != None:
 -        if userID.isdigit():
 -            userID = int(userID)
++    if userID is not None:
 +        userID = _validate_name_or_id(userID)
          user = server.getUser(userID, strict=True)
      values['userID'] = userID
      values['user'] = user
-@@ -909,8 +937,7 @@ def packageinfo(environ, packageID, tagOrder='name', tagStart=None, buildOrder='
+@@ -870,8 +899,7 @@ def packageinfo(environ, packageID, tagOrder='name', tagStart=None, buildOrder='
      values = _initValues(environ, 'Package Info', 'packages')
      server = _getServer(environ)
  
@@ -114,9 +121,9 @@ index efb403d..a85f18c 100644
 -        packageID = int(packageID)
 +    packageID = _validate_name_or_id(packageID)
      package = server.getPackage(packageID)
-     if package is None:
+     if package == None:
          raise koji.GenericError('invalid package ID: %s' % packageID)
-@@ -934,8 +961,7 @@ def taginfo(environ, tagID, all='0', packageOrder='package_name', packageStart=N
+@@ -892,8 +920,7 @@ def taginfo(environ, tagID, all='0', packageOrder='package_name', packageStart=N
      values = _initValues(environ, 'Tag Info', 'tags')
      server = _getServer(environ)
  
@@ -126,7 +133,7 @@ index efb403d..a85f18c 100644
      tag = server.getTag(tagID, strict=True)
  
      values['title'] = tag['name'] + ' | Tag Info'
-@@ -1149,8 +1175,7 @@ def externalrepoinfo(environ, extrepoID):
+@@ -1100,8 +1127,7 @@ def externalrepoinfo(environ, extrepoID):
      values = _initValues(environ, 'External Repo Info', 'tags')
      server = _getServer(environ)
  
@@ -136,7 +143,7 @@ index efb403d..a85f18c 100644
      extRepo = server.getExternalRepo(extrepoID, strict=True)
      repoTags = server.getTagExternalRepos(repo_info=extRepo['id'])
  
-@@ -1301,8 +1326,7 @@ def builds(environ, userID=None, tagID=None, packageID=None, state=None, order='
+@@ -1242,8 +1268,7 @@ def builds(environ, userID=None, tagID=None, packageID=None, state=None, order='
  
      user = None
      if userID:
@@ -146,7 +153,7 @@ index efb403d..a85f18c 100644
          user = server.getUser(userID, strict=True)
      values['userID'] = userID
      values['user'] = user
-@@ -1314,16 +1338,14 @@ def builds(environ, userID=None, tagID=None, packageID=None, state=None, order='
+@@ -1255,16 +1280,14 @@ def builds(environ, userID=None, tagID=None, packageID=None, state=None, order='
  
      tag = None
      if tagID:
@@ -165,7 +172,7 @@ index efb403d..a85f18c 100644
          package = server.getPackage(packageID, strict=True)
      values['packageID'] = packageID
      values['package'] = package
-@@ -1409,8 +1431,7 @@ def userinfo(environ, userID, packageOrder='package_name', packageStart=None,
+@@ -1342,8 +1365,7 @@ def userinfo(environ, userID, packageOrder='package_name', packageStart=None, bu
      values = _initValues(environ, 'User Info', 'users')
      server = _getServer(environ)
  
@@ -175,7 +182,7 @@ index efb403d..a85f18c 100644
      user = server.getUser(userID, strict=True)
  
      values['title'] = user['name'] + ' | User Info'
-@@ -1438,7 +1459,10 @@ def rpminfo(environ, rpmID, fileOrder='name', fileStart=None, buildrootOrder='-i
+@@ -1365,7 +1387,10 @@ def rpminfo(environ, rpmID, fileOrder='name', fileStart=None, buildrootOrder='-i
      server = _getServer(environ)
  
      rpmID = int(rpmID)
@@ -187,7 +194,7 @@ index efb403d..a85f18c 100644
  
      values['title'] = '%(name)s-%%s%(version)s-%(release)s.%(arch)s.rpm' % rpm + ' | RPM Info'
      epochStr = ''
-@@ -1621,8 +1645,7 @@ def hostinfo(environ, hostID=None, userID=None):
+@@ -1535,8 +1560,7 @@ def hostinfo(environ, hostID=None, userID=None):
      server = _getServer(environ)
  
      if hostID:
@@ -195,19 +202,18 @@ index efb403d..a85f18c 100644
 -            hostID = int(hostID)
 +        hostID = _validate_name_or_id(hostID)
          host = server.getHost(hostID)
-         if host is None:
+         if host == None:
              raise koji.GenericError('invalid host ID: %s' % hostID)
-@@ -1757,8 +1780,7 @@ def channelinfo(environ, channelID):
+@@ -1665,7 +1689,7 @@ def channelinfo(environ, channelID):
+ 
      return _genHTML(environ, 'channelinfo.chtml')
  
- 
--def buildrootinfo(environ, buildrootID, builtStart=None, builtOrder=None, componentStart=None,
--                  componentOrder=None):
+-def buildrootinfo(environ, buildrootID, builtStart=None, builtOrder=None, componentStart=None, componentOrder=None):
 +def buildrootinfo(environ, buildrootID):
      values = _initValues(environ, 'Buildroot Info', 'hosts')
      server = _getServer(environ)
  
-@@ -2052,6 +2074,9 @@ def rpmsbyhost(environ, start=None, order=None, hostArch=None, rpmArch=None):
+@@ -1944,6 +1968,9 @@ def rpmsbyhost(environ, start=None, order=None, hostArch=None, rpmArch=None):
      values = _initValues(environ, 'RPMs by Host', 'reports')
      server = _getServer(environ)
  
@@ -217,7 +223,7 @@ index efb403d..a85f18c 100644
      maxRPMs = 1
      hostArchFilter = hostArch
      if hostArchFilter == 'ix86':
-@@ -2126,6 +2151,7 @@ def tasksbyhost(environ, start=None, order='-tasks', hostArch=None):
+@@ -2016,6 +2043,7 @@ def tasksbyhost(environ, start=None, order='-tasks', hostArch=None):
  
      maxTasks = 1
  
@@ -225,29 +231,32 @@ index efb403d..a85f18c 100644
      hostArchFilter = hostArch
      if hostArchFilter == 'ix86':
          hostArchFilter = ['i386', 'i486', 'i586', 'i686']
-@@ -2273,6 +2299,7 @@ def _filter_hosts_by_arch(hosts, arch):
- 
+@@ -2155,6 +2183,7 @@ def _filter_hosts_by_arch(hosts, arch):
+         return [h for h in hosts if arch in h['arches'].split()]
  
  def clusterhealth(environ, arch='__all__'):
 +    arch = _validate_arch(arch)
      values = _initValues(environ, 'Cluster health', 'reports')
      server = _getServer(environ)
      channels = server.listChannels()
-@@ -2329,21 +2356,18 @@ def recentbuilds(environ, user=None, tag=None, package=None):
+@@ -2209,22 +2238,19 @@ def recentbuilds(environ, user=None, tag=None, package=None):
+     server = _getServer(environ)
  
      tagObj = None
-     if tag is not None:
+-    if tag != None:
 -        if tag.isdigit():
 -            tag = int(tag)
 -        tagObj = server.getTag(tag)
++    if tag is not None:
 +        tag = _validate_name_or_id(tag)
 +        tagObj = server.getTag(tag, strict=True)
  
      userObj = None
-     if user is not None:
+-    if user != None:
 -        if user.isdigit():
 -            user = int(user)
 -        userObj = server.getUser(user)
++    if user is not None:
 +        user = _validate_name_or_id(user)
 +        userObj = server.getUser(user, strict=True)
  
@@ -259,9 +268,9 @@ index efb403d..a85f18c 100644
 +        package = _validate_name_or_id(package)
 +        packageObj = server.getPackage(package, strict=True)
  
-     if tagObj is not None:
-         builds = server.listTagged(tagObj['id'], inherit=True,
-@@ -2404,9 +2428,6 @@ _infoURLs = {'package': 'packageinfo?packageID=%(id)i',
+     if tagObj != None:
+         builds = server.listTagged(tagObj['id'], inherit=True, package=(packageObj and packageObj['name'] or None),
+@@ -2283,9 +2309,6 @@ def recentbuilds(environ, user=None, tag=None, package=None):
               'maven': 'archiveinfo?archiveID=%(id)i',
               'win': 'archiveinfo?archiveID=%(id)i'}
  
@@ -271,8 +280,8 @@ index efb403d..a85f18c 100644
  _DEFAULT_SEARCH_ORDER = {
      # For searches against large tables, use '-id' to show most recent first
      'build': '-id',
-@@ -2422,6 +2443,8 @@ _DEFAULT_SEARCH_ORDER = {
- 
+@@ -2300,6 +2323,8 @@ def recentbuilds(environ, user=None, tag=None, package=None):
+ }
  
  def search(environ, start=None, order=None):
 +    if start is not None:
@@ -280,7 +289,7 @@ index efb403d..a85f18c 100644
      values = _initValues(environ, 'Search', 'search')
      server = _getServer(environ)
      values['error'] = None
-@@ -2436,10 +2459,14 @@ def search(environ, start=None, order=None):
+@@ -2314,10 +2339,14 @@ def search(environ, start=None, order=None):
          values['type'] = type
          values['match'] = match
  
@@ -295,15 +304,15 @@ index efb403d..a85f18c 100644
              return _genHTML(environ, 'search.chtml')
  
          if match == 'regexp':
-@@ -2447,6 +2474,7 @@ def search(environ, start=None, order=None):
+@@ -2325,6 +2354,7 @@ def search(environ, start=None, order=None):
                  re.compile(terms)
-             except Exception:
+             except:
                  values['error'] = 'Invalid regular expression'
 +                values['terms'] = ''
                  return _genHTML(environ, 'search.chtml')
  
          infoURL = _infoURLs.get(type)
-@@ -2492,9 +2520,9 @@ def api(environ):
+@@ -2365,9 +2395,9 @@ def api(environ):
  def watchlogs(environ, taskID):
      values = _initValues(environ)
      if isinstance(taskID, list):
@@ -315,46 +324,41 @@ index efb403d..a85f18c 100644
  
      html = """
  <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-@@ -2518,6 +2546,7 @@ def repoinfo(environ, repoID):
-     values = _initValues(environ, 'Repo Info', 'tags')
-     server = _getServer(environ)
- 
-+    repoID = _validate_name_or_id(repoID)
-     values['repo_id'] = repoID
-     repo_info = server.repoInfo(repoID, strict=False)
-     values['repo'] = repo_info
 diff --git a/www/lib/kojiweb/util.py b/www/lib/kojiweb/util.py
-index 548f23a..301fd92 100644
+index 3e8a08c..a4ced60 100644
 --- a/www/lib/kojiweb/util.py
 +++ b/www/lib/kojiweb/util.py
-@@ -22,6 +22,7 @@
+@@ -25,6 +25,7 @@
  import datetime
  import hashlib
  import os
 +import re
  import ssl
  import stat
- import xmlrpc.client
-@@ -49,6 +50,9 @@ except Exception:
+ #a bunch of exception classes that explainError needs
+@@ -52,6 +53,10 @@ class NoSuchException(Exception):
  themeInfo = {}
  themeCache = {}
  
 +# allowed values for SQL ordering (e.g. -id, package_name, etc.)
 +RE_ORDER = re.compile(r'^-?\w+$')
 +
- 
++
  def _initValues(environ, title='Build System Info', pageID='summary'):
      global themeInfo
-@@ -290,6 +294,8 @@ def paginateList(values, data, start, dataName, prefix=None, order=None, noneGre
+     global themeCache
+@@ -275,7 +280,9 @@ def paginateList(values, data, start, dataName, prefix=None, order=None, noneGre
+     under which a number of list-related metadata variables will
      be added to the value map.
      """
-     if order is not None:
+-    if order != None:
++    if order is not None:
 +        if not RE_ORDER.match(order):
 +            raise ValueError("Ordering is not alphanumeric: %r" % order)
          if order.startswith('-'):
              order = order[1:]
              reverse = True
-@@ -327,6 +333,8 @@ def paginateMethod(server, values, methodName, args=None, kw=None,
+@@ -311,6 +318,8 @@ def paginateMethod(server, values, methodName, args=None, kw=None,
          start = 0
      if not dataName:
          raise Exception('dataName must be specified')
@@ -363,7 +367,7 @@ index 548f23a..301fd92 100644
  
      kw['queryOpts'] = {'countOnly': True}
      totalRows = getattr(server, methodName)(*args, **kw)
-@@ -358,6 +366,8 @@ def paginateResults(server, values, methodName, args=None, kw=None,
+@@ -341,6 +350,8 @@ def paginateResults(server, values, methodName, args=None, kw=None,
          start = 0
      if not dataName:
          raise Exception('dataName must be specified')
@@ -372,4 +376,6 @@ index 548f23a..301fd92 100644
  
      kw['filterOpts'] = {'order': order,
                          'offset': start,
+-- 
+2.6.3
 
