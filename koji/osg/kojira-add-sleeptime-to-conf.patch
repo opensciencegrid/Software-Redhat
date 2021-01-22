@@ -13,7 +13,7 @@ diff --git a/util/kojira.conf b/util/kojira.conf
 index 6cf509e..2588b86 100644
 --- a/util/kojira.conf
 +++ b/util/kojira.conf
-@@ -40,6 +40,9 @@ with_src=no
+@@ -43,6 +43,9 @@ with_src=no
  ;certificate of the CA that issued the HTTP server certificate
  ;serverca = /etc/kojira/serverca.crt
  
