@@ -12,6 +12,7 @@ URL: https://github.com/bbockelm/xrootd-multiuser
 Source0: %{name}-%{version}.tar.gz
 
 Patch0: 17-xrootd-5.1-determining-username.patch
+Patch1: 17b-fix-pass-by-reference.patch
 
 %define xrootd_current_major 5
 %define xrootd_current_minor 0
@@ -38,6 +39,7 @@ Requires: xrootd-server <  1:%{xrootd_next_major}.0.0-1
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
 
 %build
 %cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo .
