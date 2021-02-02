@@ -89,7 +89,7 @@
 Name:      xrootd
 Epoch:     1
 Version:   5.1.0
-Release:   0.rc5.1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:   0.rc6.1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -1157,6 +1157,9 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Mon Feb 01 2021 Edgar Fajardo <emfajard@ucsd.edu> - 5.1.0-0.rc6.1.osg
+- Rebuild for rc6 (SOFTWARE-4356)
+
 * Mon Jan 19 2021 Edgar Fajardo <emfajard@ucsd.edu> - 5.1.0-0.rc5.1.osg
 - Rebuild to rc5
 
