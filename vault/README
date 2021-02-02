@@ -1,0 +1,7 @@
+The source rpm for this comes from
+    https://copr.fedorainfracloud.org/coprs/boeroboy/hashicorp/
+The actual download location varies but if you install the yum repo
+    https://copr.fedorainfracloud.org/coprs/boeroboy/hashicorp/repo/epel-7/boeroboy-hashicorp-epel-7.repo
+and run
+    yumdownloader --enablerepo=copr:copr.fedorainfracloud.org:boeroboy:hashicorp --source vault
+then you'll download the latest source rpm.
