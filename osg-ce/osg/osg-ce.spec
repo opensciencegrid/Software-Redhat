@@ -5,7 +5,7 @@
 Name:      osg-ce
 Summary:   OSG Compute Element
 Version:   3.5
-Release:   5%{?dist}
+Release:   6%{?dist}
 License:   Apache 2.0
 URL:       http://www.opensciencegrid.org
 
@@ -60,6 +60,8 @@ Obsoletes: %{basece}-condor < 3.4-3
 Provides: %{basece}-condor = %{version}-%{release}
 Obsoletes: %{htcce}-condor < 3.4-3
 Provides: %{htcce}-condor = %{version}-%{release}
+
+Requires: htcondor-ce
 Requires: htcondor-ce-condor
 
 
@@ -80,6 +82,8 @@ Obsoletes: %{basece}-pbs < 3.4-3
 Provides: %{basece}-pbs = %{version}-%{release}
 Obsoletes: %{htcce}-pbs < 3.4-3
 Provides: %{htcce}-pbs = %{version}-%{release}
+
+Requires: htcondor-ce
 Requires: htcondor-ce-pbs
 
 %description pbs
@@ -98,6 +102,8 @@ Obsoletes: %{basece}-lsf < 3.4-3
 Provides: %{basece}-lsf = %{version}-%{release}
 Obsoletes: %{htcce}-lsf < 3.4-3
 Provides: %{htcce}-lsf = %{version}-%{release}
+
+Requires: htcondor-ce
 Requires: htcondor-ce-lsf
 
 %description lsf
@@ -116,6 +122,8 @@ Obsoletes: %{basece}-sge < 3.4-3
 Provides: %{basece}-sge = %{version}-%{release}
 Obsoletes: %{htcce}-sge < 3.4-3
 Provides: %{htcce}-sge = %{version}-%{release}
+
+Requires: htcondor-ce
 Requires: htcondor-ce-sge
 
 %description sge
@@ -133,6 +141,8 @@ Obsoletes: %{basece}-slurm < 3.4-3
 Provides: %{basece}-slurm = %{version}-%{release}
 Obsoletes: %{htcce}-slurm < 3.4-3
 Provides: %{htcce}-slurm = %{version}-%{release}
+
+Requires: htcondor-ce
 Requires: htcondor-ce-slurm
 
 %description slurm
@@ -153,6 +163,8 @@ Obsoletes: %{basece}-bosco < 3.4-3
 Provides: %{basece}-bosco = %{version}-%{release}
 Obsoletes: %{htcce}-bosco < 3.4-3
 Provides: %{htcce}-bosco = %{version}-%{release}
+
+Requires: htcondor-ce
 Requires: htcondor-ce-bosco
 
 %description bosco
@@ -187,6 +199,9 @@ install -m 644 %{SOURCE3} $RPM_BUILD_ROOT/%{_datadir}/condor-ce/config.d
 %{_datadir}/condor-ce/config.d/51-gratia.conf
 
 %changelog
+* Tue Feb 02 2021 Brian Lin <blin@cs.wisc.edu> - 3.5-6
+- Add explicit htcondor-ce requirement to sub-packages (SOFTWARE-4456)
+
 * Wed Apr 01 2020 Carl Edquist <edquist@cs.wisc.edu> - 3.5-5
 - Add SCHEDD_CRON_GRATIA_ARGS to 51-gratia.conf (SOFTWARE-3973)
 - Move 51-gratia.conf to bosco subpackage
