@@ -1,6 +1,6 @@
 Name:           empty-condor
 Version:        1.1
-Release:        9%{?dist}
+Release:        10%{?dist}
 Summary:        An empty Condor package
 
 License:        Unknown
@@ -32,6 +32,7 @@ Provides:       condor-static-shadow = 99
 Provides:       condor-std-universe = 99
 Provides:       condor-test = 99
 Provides:       condor-vm-gahp = 99
+Provides:       python3-condor = 99
 
 Conflicts:      /usr/sbin/condor_master
 
@@ -68,6 +69,9 @@ believes that Condor has been installed via RPM.
 %doc
 
 %changelog
+* Fri Jan 29 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.1-10
+- Provide python3-condor (SOFTWARE-4451)
+
 * Fri Jan 19 2018 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.1-9
 - Bump provides versions to 99 to allow versioned requires to work without
   having to update the versions
