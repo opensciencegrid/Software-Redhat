@@ -1,0 +1,5 @@
+This package defines a set of macros required for building RPMs in the OSG environment.
+It should be considered a build prerequisite for every package, including itself.
+
+A separate version of this package should be made for each OSG major version
+(e.g. 3.1, 3.2) with the %osg_version macro set appropriately in the spec file.
