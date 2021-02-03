@@ -1,11 +1,19 @@
-%define dver %{?rhel}%{?!rhel:5}
-%define osgver up
+# Instructions:
+# Just define osg_version and dver here, use osg-build rpmbuild, then
+# "osg-koji import" the resulting rpm and osg-koji tag-pkg the build into the
+# appropriate osg-*-development tag
+# This will require koji admin permissions.
+%define osg_version 3.5up
+%define dver   7
+
+%define osgver %(tr -d . <<< %{osg_version})
+%define dist .osg%{osgver}.el%{dver}
+
 Name:		buildsys-macros
 Summary:	Macros for the OSG Buildsystem
-Version:        7
-Release:	5.osgup.el7
+Version:        %{dver}
+Release:	6%{dist}
 License:	GPL
-Group:		Development/Buildsystem
 BuildArch:      noarch
 Requires:	rpmdevtools
 
@@ -20,28 +28,22 @@ Macros for the OSG Buildsystem
 mkdir -p $RPM_BUILD_ROOT/etc/rpm/
 DVER=%{dver}
 OSGVER=%{osgver}
+DIST=%{dist}
 printf %s%b "%" "rhel $DVER\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.disttag
-printf %s%b "%" "dist .osg$OSGVER.el$DVER\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.disttag
+printf %s%b "%" "dist $DIST\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.disttag
 printf %s%b "%" "el$DVER 1\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.disttag
 printf %s%b "%" "osg 1\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.disttag
 printf %s%b "%" "__arch_install_post /usr/lib/rpm/check-buildroot\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.checkbuild
-if [[ $DVER -eq 5 ]]; then
-    printf %s%b "%" "_source_filedigest_algorithm 1\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.digest
-    printf %s%b "%" "_binary_filedigest_algorithm 1\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.digest
-    printf %s%b "%" "_binary_payload w9.gzdio\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.digest
-    printf %s%b "%" "_source_payload w9.gzdio\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.digest
-    printf %s%b "%" "_default_patch_fuzz 2\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.digest
-fi
 
 
 %files
-%if %{dver} == 5
-/etc/rpm/macros.digest
-%endif
 /etc/rpm/macros.disttag
 /etc/rpm/macros.checkbuild
 
 %changelog
+* Tue Feb 02 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 7-6
+- split upcoming repo
+
 * Wed Oct 30 2013 Matyas Selmeci <matyas@cs.wisc.edu> - 7-5
 - Bump to rebuild with buildsys-macros 7-4
 
