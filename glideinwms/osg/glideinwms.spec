@@ -13,7 +13,7 @@
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
 %define version 3.9.1
-%define release 0.5.rc5
+%define release 0.6.rc6
 
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
@@ -543,7 +543,7 @@ install -m 0644 creation/templates/frontend_initd_startup_template $RPM_BUILD_RO
 /sbin/service condor condrestart > /dev/null 2>&1 || true
 
 
-%post vofrontend-standalone
+%post vofrontend-core
 # $1 = 1 - Installation
 # $1 = 2 - Upgrade
 # Source: http://www.ibm.com/developerworks/library/l-rpm2/
@@ -570,11 +570,12 @@ if [ ! -e %{frontend_dir}/monitor ]; then
     ln -s %{web_dir}/monitor %{frontend_dir}/monitor
 fi
 
+%post vofrontend-httpd
 # Protecting from failure in case it is not running/installed
 /sbin/service httpd reload > /dev/null 2>&1 || true
 
 
-%post factory
+%post factory-core
 
 fqdn_hostname=`hostname -f`
 sed -i "s/FACTORY_HOSTNAME/$fqdn_hostname/g" %{_sysconfdir}/gwms-factory/glideinWMS.xml
@@ -594,9 +595,11 @@ systemctl daemon-reload
 %endif
 
 # Protecting from failure in case it is not running/installed
-/sbin/service httpd reload > /dev/null 2>&1 || true
 /sbin/service condor condrestart > /dev/null 2>&1 || true
 
+%post factory-httpd
+# Protecting from failure in case it is not running/installed
+/sbin/service httpd reload > /dev/null 2>&1 || true
 
 %pre vofrontend-core
 # Add the "frontend" user and group if they do not exist
@@ -607,7 +610,7 @@ getent passwd frontend >/dev/null || \
 # If the frontend user already exists make sure it is part of frontend group
 usermod --append --groups frontend frontend >/dev/null
 
-%pre factory
+%pre factory-core
 # Add the "gfactory" user and group if they do not exist
 getent group gfactory >/dev/null || groupadd -r gfactory
 getent passwd gfactory >/dev/null || \
@@ -624,7 +627,7 @@ getent passwd frontend >/dev/null || \
 # If the frontend user already exists make sure it is part of frontend group
 usermod --append --groups frontend frontend >/dev/null
 
-%preun vofrontend-standalone
+%preun vofrontend-core
 # $1 = 0 - Action is uninstall
 # $1 = 1 - Action is upgrade
 
@@ -647,7 +650,7 @@ if [ "$1" = "0" ]; then
 #    rm -rf %{_localstatedir}/log/gwms-frontend/*
 fi
 
-%preun factory
+%preun factory-core
 if [ "$1" = "0" ] ; then
     %if 0%{?rhel} >= 7
     systemctl daemon-reload
@@ -661,13 +664,16 @@ if [ "$1" = "0" ]; then
 fi
 
 
-%postun vofrontend-standalone
+%postun vofrontend-httpd
 # Protecting from failure in case it is not running/installed
 /sbin/service httpd reload > /dev/null 2>&1 || true
 
-%postun factory
+%postun factory-httpd
 # Protecting from failure in case it is not running/installed
 /sbin/service httpd reload > /dev/null 2>&1 || true
+
+%postun factory-core
+# Protecting from failure in case it is not running/installed
 /sbin/service condor condrestart > /dev/null 2>&1 || true
 
 
@@ -723,6 +729,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/cat_StarterLog
 %attr(755,root,root) %{_bindir}/cat_XMLResult
 %attr(755,root,root) %{_bindir}/cat_logs
+%attr(755,root,root) %{_bindir}/cat_named_log
 %attr(755,root,root) %{_bindir}/create_condor_tarball
 %attr(755,root,root) %{_bindir}/entry_ls
 %attr(755,root,root) %{_bindir}/entry_q
@@ -911,10 +918,10 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/condor/certs/condor_mapfile
 
 %changelog
-* Wed Jan 20 2021 Bruno Coimbra <coimbra@fnal.gov> - 3.9.1-5
+* Tue Feb 9 2021 Bruno Coimbra <coimbra@fnal.gov> - 3.9.1-6
 - GlideinWMS v3.9.1
 - Release Notes: http://glideinwms.fnal.gov/doc.v3_9/history.html
-- Release candidates: 3.9-0.1.rc1 to 3.9.1-0.5.rc5
+- Release candidates: 3.9-0.1.rc1 to 3.9.1-0.6.rc6
 
 * Mon Dec 21  2020 Dennis Box <dbox@fnal.gov> - 3.7.2-1
 - GlideinWMS v3.7.2
@@ -1394,3 +1401,4 @@ rm -rf $RPM_BUILD_ROOT
   configuration variables.
 - Removed the rm's to delete the frontend-temp and log directories at uninstall,
   they removed files when updating, not wanted.  Let RPM handle those.
+
