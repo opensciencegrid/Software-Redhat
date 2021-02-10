@@ -2,7 +2,6 @@
 %if 0%{?osg:1}%{!?osg:0}
     %global _with_compat 1
     %global _with_scitokens 1
-    %global _with_isal 1
 %endif
 
 #-------------------------------------------------------------------------------
