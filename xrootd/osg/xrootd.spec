@@ -2,6 +2,7 @@
 %if 0%{?osg:1}%{!?osg:0}
     %global _with_compat 1
     %global _with_scitokens 1
+    %global _with_isal 1
 %endif
 
 #-------------------------------------------------------------------------------
@@ -89,7 +90,7 @@
 Name:      xrootd
 Epoch:     1
 Version:   5.1.0
-Release:   0.rc6.1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:   0.rc7.1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -101,7 +102,6 @@ URL:       http://xrootd.org/
 # cd xrootd
 # git-archive master | gzip -9 > ~/rpmbuild/SOURCES/xrootd.tgz
 Source0:   xrootd.tar.gz
-
 
 %if 0%{?_with_compat}
 Source1:   xrootd-%{compat_version}.tar.gz
@@ -953,6 +953,9 @@ fi
 %{_libdir}/libXrdPosixPreload.so.2*
 %{_libdir}/libXrdSsiLib.so.2*
 %{_libdir}/libXrdSsiShMap.so.2*
+%if %{?_with_isal:1}%{!?_with_isal:0}
+%{_libdir}/libXrdEc.so.1*
+%endif
 %{_sysconfdir}/xrootd/client.plugins.d/client-plugin.conf.example
 %config(noreplace) %{_sysconfdir}/xrootd/client.conf
 # This lib may be used for LD_PRELOAD so the .so link needs to be included
@@ -1008,6 +1011,9 @@ fi
 %{_includedir}/xrootd/private
 %{_libdir}/libXrdSsiLib.so
 %{_libdir}/libXrdSsiShMap.so
+%if %{?_with_isal:1}%{!?_with_isal:0}
+%{_libdir}/libXrdEc.so
+%endif
 
 %files client
 %defattr(-,root,root,-)
@@ -1086,12 +1092,14 @@ fi
 %if %{?_with_tests:1}%{!?_with_tests:0}
 %files tests
 %defattr(-,root,root,-)
-%{_bindir}/text-runner
+%{_bindir}/test-runner
 %{_bindir}/xrdshmap
 %{_libdir}/libXrdClTests.so
 %{_libdir}/libXrdClTestsHelper.so
 %{_libdir}/libXrdClTestMonitor*.so
-
+%if %{?_with_isal:1}%{!?_with_isal:0}
+%{_libdir}/libXrdEcTests.so
+%endif
 %if %{?_with_ceph:1}%{!?_with_ceph:0}
 %{_libdir}/libXrdCephTests*.so
 %endif
@@ -1157,6 +1165,9 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Wed Feb 10 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.1.0-0.rc7.1.osg
+- Rebuild for rc7 (SOFTWARE-4356)
+
 * Mon Feb 01 2021 Edgar Fajardo <emfajard@ucsd.edu> - 5.1.0-0.rc6.1.osg
 - Rebuild for rc6 (SOFTWARE-4356)
 
