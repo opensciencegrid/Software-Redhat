@@ -32,7 +32,7 @@
 
 %define python 1
 
-%define glexec 1
+%define glexec 0
 
 # Temporarily turn parallel_setup off
 %define parallel_setup 0
