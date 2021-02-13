@@ -51,7 +51,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 0.2
+%define condor_base_release 0.1
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -177,6 +177,29 @@ BuildRequires: python-devel
 BuildRequires: libcurl-devel
 %endif
 
+# Globus GSI build requirements
+BuildRequires: globus-gssapi-gsi-devel
+BuildRequires: globus-gass-server-ez-devel
+BuildRequires: globus-gass-transfer-devel
+BuildRequires: globus-gram-client-devel
+BuildRequires: globus-rsl-devel
+BuildRequires: globus-gram-protocol
+BuildRequires: globus-io-devel
+BuildRequires: globus-xio-devel
+BuildRequires: globus-gssapi-error-devel
+BuildRequires: globus-gss-assist-devel
+BuildRequires: globus-gsi-proxy-core-devel
+BuildRequires: globus-gsi-credential-devel
+BuildRequires: globus-gsi-callback-devel
+BuildRequires: globus-gsi-sysconfig-devel
+BuildRequires: globus-gsi-cert-utils-devel
+BuildRequires: globus-openssl-module-devel
+BuildRequires: globus-gsi-openssl-error-devel
+BuildRequires: globus-gsi-proxy-ssl-devel
+BuildRequires: globus-callout-devel
+BuildRequires: globus-common-devel
+BuildRequires: globus-ftp-client-devel
+BuildRequires: globus-ftp-control-devel
 BuildRequires: munge-devel
 BuildRequires: scitokens-cpp-devel
 BuildRequires: voms-devel
@@ -282,8 +305,17 @@ Requires(post): selinux-policy-targeted
 # Ganglia is optional as well as nVidia and cuda libraries
 Requires: globus-callout
 Requires: globus-common
+Requires: globus-gsi-callback
+Requires: globus-gsi-cert-utils
+Requires: globus-gsi-credential
+Requires: globus-gsi-openssl-error
+Requires: globus-gsi-proxy-core
+Requires: globus-gsi-proxy-ssl
+Requires: globus-gsi-sysconfig
 Requires: globus-gss-assist
+Requires: globus-gssapi-gsi
 Requires: globus-openssl-module
+Requires: globus-xio-gsi-driver
 Requires: krb5-libs
 Requires: libcom_err
 Requires: libtool-ltdl
