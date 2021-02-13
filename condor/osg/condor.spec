@@ -33,6 +33,7 @@
 %define python 1
 
 %define glexec 0
+%define globus 0
 
 # Temporarily turn parallel_setup off
 %define parallel_setup 0
@@ -51,7 +52,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 0.1
+%define condor_base_release 0.2
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -177,6 +178,7 @@ BuildRequires: python-devel
 BuildRequires: libcurl-devel
 %endif
 
+%if %globus
 # Globus GSI build requirements
 BuildRequires: globus-gssapi-gsi-devel
 BuildRequires: globus-gass-server-ez-devel
@@ -200,6 +202,7 @@ BuildRequires: globus-callout-devel
 BuildRequires: globus-common-devel
 BuildRequires: globus-ftp-client-devel
 BuildRequires: globus-ftp-control-devel
+%endif
 BuildRequires: munge-devel
 BuildRequires: scitokens-cpp-devel
 BuildRequires: voms-devel
@@ -303,6 +306,7 @@ Requires(post): selinux-policy-targeted
 
 # Require libraries that we dlopen
 # Ganglia is optional as well as nVidia and cuda libraries
+%if %globus
 Requires: globus-callout
 Requires: globus-common
 Requires: globus-gsi-callback
@@ -316,6 +320,7 @@ Requires: globus-gss-assist
 Requires: globus-gssapi-gsi
 Requires: globus-openssl-module
 Requires: globus-xio-gsi-driver
+%endif
 Requires: krb5-libs
 Requires: libcom_err
 Requires: libtool-ltdl
@@ -738,7 +743,11 @@ export CMAKE_PREFIX_PATH=/usr
 %else
        -DWANT_GLEXEC:BOOL=FALSE \
 %endif
+%if %globus
        -DWITH_GLOBUS:BOOL=TRUE \
+%else
+       -DWITH_GLOBUS:BOOL=FALSE \
+%endif
        -DWITH_PYTHON_BINDINGS:BOOL=TRUE \
        -DWITH_LIBCGROUP:BOOL=TRUE \
        -DLIBCGROUP_FOUND_SEARCH_cgroup=/%{_lib}/libcgroup.so.1
