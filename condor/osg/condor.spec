@@ -795,8 +795,8 @@ export CMAKE_PREFIX_PATH=/usr
        -DLIBCGROUP_FOUND_SEARCH_cgroup=/%{_lib}/libcgroup.so.1
 %endif
 
-#make %{?_smp_mflags}
-make
+make %{?_smp_mflags}
+#make
 %if %uw_build
 make %{?_smp_mflags} tests
 %endif
