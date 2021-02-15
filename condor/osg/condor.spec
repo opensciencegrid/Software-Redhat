@@ -1162,6 +1162,12 @@ rm -rf %{buildroot}
 %_libexecdir/condor/condor_glexec_update_proxy
 %_libexecdir/condor/condor_glexec_cleanup
 %_libexecdir/condor/condor_glexec_kill
+%_libexecdir/condor/condor_glexec_wrapper
+%_libexecdir/condor/glexec_starter_setup.sh
+%_sbindir/condor_gridshell
+%_sbindir/gahp_server
+%_sbindir/grid_monitor
+%_sbindir/nordugrid_gahp
 %endif
 %if %blahp
 %dir %_libexecdir/condor/glite/bin
@@ -1213,8 +1219,6 @@ rm -rf %{buildroot}
 %_libexecdir/condor/curl_plugin
 %_libexecdir/condor/legacy_curl_plugin
 %_libexecdir/condor/condor_shared_port
-%_libexecdir/condor/condor_glexec_wrapper
-%_libexecdir/condor/glexec_starter_setup.sh
 %_libexecdir/condor/condor_defrag
 %_libexecdir/condor/interactive.sub
 %_libexecdir/condor/condor_gangliad
@@ -1392,11 +1396,7 @@ rm -rf %{buildroot}
 %_sbindir/condor_updates_stats
 %_sbindir/ec2_gahp
 %_sbindir/condor_gridmanager
-%_sbindir/condor_gridshell
-%_sbindir/gahp_server
-%_sbindir/grid_monitor
 %_sbindir/remote_gahp
-%_sbindir/nordugrid_gahp
 %_sbindir/AzureGAHPServer
 %_sbindir/gce_gahp
 %_libexecdir/condor/condor_gpu_discovery
