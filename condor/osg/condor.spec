@@ -187,6 +187,7 @@ BuildRequires: libcurl-devel
 %endif
 
 # Globus GSI build requirements
+%if %glexec
 BuildRequires: globus-gssapi-gsi-devel
 BuildRequires: globus-gass-server-ez-devel
 BuildRequires: globus-gass-transfer-devel
@@ -209,6 +210,7 @@ BuildRequires: globus-callout-devel
 BuildRequires: globus-common-devel
 BuildRequires: globus-ftp-client-devel
 BuildRequires: globus-ftp-control-devel
+%endif
 BuildRequires: munge-devel
 BuildRequires: scitokens-cpp-devel
 BuildRequires: voms-devel
@@ -312,6 +314,7 @@ Requires(post): selinux-policy-targeted
 
 # Require libraries that we dlopen
 # Ganglia is optional as well as nVidia and cuda libraries
+%if %glexec
 Requires: globus-callout
 Requires: globus-common
 Requires: globus-gsi-callback
@@ -325,6 +328,7 @@ Requires: globus-gss-assist
 Requires: globus-gssapi-gsi
 Requires: globus-openssl-module
 Requires: globus-xio-gsi-driver
+%endif
 Requires: krb5-libs
 Requires: libcom_err
 Requires: libtool-ltdl
