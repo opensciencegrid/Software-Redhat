@@ -210,10 +210,10 @@ BuildRequires: globus-callout-devel
 BuildRequires: globus-common-devel
 BuildRequires: globus-ftp-client-devel
 BuildRequires: globus-ftp-control-devel
+BuildRequires: voms-devel
 %endif
 BuildRequires: munge-devel
 BuildRequires: scitokens-cpp-devel
-BuildRequires: voms-devel
 BuildRequires: libtool-ltdl-devel
 
 BuildRequires: libcgroup-devel
@@ -328,6 +328,7 @@ Requires: globus-gss-assist
 Requires: globus-gssapi-gsi
 Requires: globus-openssl-module
 Requires: globus-xio-gsi-driver
+Requires: voms
 %endif
 Requires: krb5-libs
 Requires: libcom_err
@@ -336,7 +337,6 @@ Requires: munge-libs
 Requires: openssl-libs
 Requires: scitokens-cpp
 Requires: systemd-libs
-Requires: voms
 
 #Provides: user(condor) = 43
 #Provides: group(condor) = 43
