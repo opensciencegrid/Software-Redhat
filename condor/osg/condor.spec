@@ -45,7 +45,13 @@
 
 %define python 1
 
+%if 0%{?osg}
 %define glexec 0
+%define globus 0
+%else
+%define glexec 1
+%define globus 1
+%endif
 
 # Temporarily turn parallel_setup off
 %define parallel_setup 0
@@ -187,7 +193,7 @@ BuildRequires: libcurl-devel
 %endif
 
 # Globus GSI build requirements
-%if %glexec
+%if %globus
 BuildRequires: globus-gssapi-gsi-devel
 BuildRequires: globus-gass-server-ez-devel
 BuildRequires: globus-gass-transfer-devel
@@ -314,7 +320,7 @@ Requires(post): selinux-policy-targeted
 
 # Require libraries that we dlopen
 # Ganglia is optional as well as nVidia and cuda libraries
-%if %glexec
+%if %globus
 Requires: globus-callout
 Requires: globus-common
 Requires: globus-gsi-callback
@@ -785,9 +791,12 @@ export CMAKE_PREFIX_PATH=/usr
        -DWITH_CREAM:BOOL=FALSE \
 %if %glexec
        -DWANT_GLEXEC:BOOL=TRUE \
-       -DWITH_GLOBUS:BOOL=TRUE \
 %else
        -DWANT_GLEXEC:BOOL=FALSE \
+%endif
+%if %globus
+       -DWITH_GLOBUS:BOOL=TRUE \
+%else
        -DWITH_GLOBUS:BOOL=FALSE \
 %endif
        -DWITH_PYTHON_BINDINGS:BOOL=TRUE \
@@ -1168,6 +1177,8 @@ rm -rf %{buildroot}
 %_libexecdir/condor/condor_glexec_kill
 %_libexecdir/condor/condor_glexec_wrapper
 %_libexecdir/condor/glexec_starter_setup.sh
+%endif
+%if %globus
 %_sbindir/condor_gridshell
 %_sbindir/gahp_server
 %_sbindir/grid_monitor
