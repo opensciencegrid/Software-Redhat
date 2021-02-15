@@ -45,7 +45,7 @@
 
 %define python 1
 
-%define glexec 1
+%define glexec 0
 
 # Temporarily turn parallel_setup off
 %define parallel_setup 0
@@ -781,10 +781,11 @@ export CMAKE_PREFIX_PATH=/usr
        -DWITH_CREAM:BOOL=FALSE \
 %if %glexec
        -DWANT_GLEXEC:BOOL=TRUE \
+       -DWITH_GLOBUS:BOOL=TRUE \
 %else
        -DWANT_GLEXEC:BOOL=FALSE \
+       -DWITH_GLOBUS:BOOL=FALSE \
 %endif
-       -DWITH_GLOBUS:BOOL=TRUE \
        -DWITH_PYTHON_BINDINGS:BOOL=TRUE \
        -DWITH_LIBCGROUP:BOOL=TRUE \
        -DLIBCGROUP_FOUND_SEARCH_cgroup=/%{_lib}/libcgroup.so.1
