@@ -1,0 +1,5 @@
+We have packages that depend on "gridengine" (particularly the Globus
+SGE job manager), but some sites install in other ways, such as via
+tarballs. They don't want to install EPEL's gridengine RPMs just to
+satisfy the dependncy. Therefore this RPM claims to provide
+gridengine, while in fact providing nothing at all.
