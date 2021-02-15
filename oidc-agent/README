@@ -1,0 +1,6 @@
+oidc-agent provides a way to manage OAuth2-based tokens from the command line (specifically if the remote identity
+provider supports the device code flow).
+
+Repository:
+https://github.com/indigo-dc/oidc-agent/
+
