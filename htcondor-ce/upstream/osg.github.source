@@ -1,1 +1,1 @@
-type=github repo=htcondor/htcondor-ce tag=V5-branch tarball=htcondor-ce-5.0.0.tar.gz hash=30715813c59c1bfbf60789683913b946f92b4dbb
+type=github repo=htcondor/htcondor-ce tag=v5.0.0 hash=78f5c31a8eeaf151320a7b6731a7b18f06d85910
