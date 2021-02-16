@@ -32,7 +32,13 @@
 
 %define python 1
 
+%if 0%{?osg}
+%define glexec 0
+%define globus 0
+%else
 %define glexec 1
+%define globus 1
+%endif
 
 # Temporarily turn parallel_setup off
 %define parallel_setup 0
@@ -178,6 +184,7 @@ BuildRequires: libcurl-devel
 %endif
 
 # Globus GSI build requirements
+%if %globus
 BuildRequires: globus-gssapi-gsi-devel
 BuildRequires: globus-gass-server-ez-devel
 BuildRequires: globus-gass-transfer-devel
@@ -200,9 +207,10 @@ BuildRequires: globus-callout-devel
 BuildRequires: globus-common-devel
 BuildRequires: globus-ftp-client-devel
 BuildRequires: globus-ftp-control-devel
+BuildRequires: voms-devel
+%endif
 BuildRequires: munge-devel
 BuildRequires: scitokens-cpp-devel
-BuildRequires: voms-devel
 BuildRequires: libtool-ltdl-devel
 
 BuildRequires: libcgroup-devel
@@ -303,6 +311,7 @@ Requires(post): selinux-policy-targeted
 
 # Require libraries that we dlopen
 # Ganglia is optional as well as nVidia and cuda libraries
+%if %globus
 Requires: globus-callout
 Requires: globus-common
 Requires: globus-gsi-callback
@@ -316,6 +325,8 @@ Requires: globus-gss-assist
 Requires: globus-gssapi-gsi
 Requires: globus-openssl-module
 Requires: globus-xio-gsi-driver
+Requires: voms
+%endif
 Requires: krb5-libs
 Requires: libcom_err
 Requires: libtool-ltdl
@@ -323,7 +334,6 @@ Requires: munge-libs
 Requires: openssl-libs
 Requires: scitokens-cpp
 Requires: systemd-libs
-Requires: voms
 
 #Provides: user(condor) = 43
 #Provides: group(condor) = 43
@@ -738,7 +748,11 @@ export CMAKE_PREFIX_PATH=/usr
 %else
        -DWANT_GLEXEC:BOOL=FALSE \
 %endif
+%if %globus
        -DWITH_GLOBUS:BOOL=TRUE \
+%else
+       -DWITH_GLOBUS:BOOL=FALSE \
+%endif
        -DWITH_PYTHON_BINDINGS:BOOL=TRUE \
        -DWITH_LIBCGROUP:BOOL=TRUE \
        -DLIBCGROUP_FOUND_SEARCH_cgroup=/%{_lib}/libcgroup.so.1
@@ -1097,6 +1111,15 @@ install -p -m 0755 %{SOURCE11} %{buildroot}%{_libexecdir}/condor/create_pool_pas
 %_libexecdir/condor/condor_glexec_update_proxy
 %_libexecdir/condor/condor_glexec_cleanup
 %_libexecdir/condor/condor_glexec_kill
+%_libexecdir/condor/condor_glexec_wrapper
+%_libexecdir/condor/glexec_starter_setup.sh
+%endif
+%if %globus
+%_sbindir/condor_gridshell
+%_sbindir/gahp_server
+%_sbindir/grid_monitor
+%_sbindir/grid_monitor.sh
+%_sbindir/nordugrid_gahp
 %endif
 %if %blahp
 %dir %_libexecdir/condor/glite/bin
@@ -1151,8 +1174,6 @@ install -p -m 0755 %{SOURCE11} %{buildroot}%{_libexecdir}/condor/create_pool_pas
 %_libexecdir/condor/curl_plugin
 %_libexecdir/condor/legacy_curl_plugin
 %_libexecdir/condor/condor_shared_port
-%_libexecdir/condor/condor_glexec_wrapper
-%_libexecdir/condor/glexec_starter_setup.sh
 %_libexecdir/condor/condor_defrag
 %_libexecdir/condor/interactive.sub
 %_libexecdir/condor/condor_gangliad
@@ -1327,12 +1348,7 @@ install -p -m 0755 %{SOURCE11} %{buildroot}%{_libexecdir}/condor/create_pool_pas
 %_sbindir/condor_updates_stats
 %_sbindir/ec2_gahp
 %_sbindir/condor_gridmanager
-%_sbindir/condor_gridshell
-%_sbindir/gahp_server
-%_sbindir/grid_monitor
-%_sbindir/grid_monitor.sh
 %_sbindir/remote_gahp
-%_sbindir/nordugrid_gahp
 %_sbindir/AzureGAHPServer
 %_sbindir/gce_gahp
 %_libexecdir/condor/condor_gpu_discovery
