@@ -1,28 +1,23 @@
-%global htcce osg-htcondor-ce
-%global basece osg-base-ce
-%global osgce osg-ce
-
 Name:      osg-ce
 Summary:   OSG Compute Element
-Version:   3.5
-Release:   6%{?dist}
+Version:   3.6
+Release:   1%{?dist}
 License:   Apache 2.0
 URL:       http://www.opensciencegrid.org
 
 Source0: 01-blahp-location.conf
-Source1: 03-gratia-cleanup.conf
-Source2: 51-gratia.conf
-Source3: 03-osg-ce-collector.conf
+Source1: 03-osg-ce-collector.conf
 
 Requires: grid-certificates >= 7
+Requires: osg-scitokens-mapfile
+Requires: vo-client
 
 Requires: fetch-crl
 Requires: osg-system-profiler
-Requires: vo-client
 
-Requires: vo-client-lcmaps-voms
+Requires: gratia-probe-htcondor-ce
 
-Requires: osg-configure >= 1.0.57
+Requires: osg-configure
 Requires: osg-configure-ce
 Requires: osg-configure-gip
 Requires: osg-configure-gratia
@@ -32,14 +27,6 @@ Requires: frontier-squid
 
 Requires: osg-configure-infoservices
 
-# Require the Globus-LCMAPS plugin for authZ
-Requires: liblcas_lcmaps_gt4_mapping.so.0()(64bit)
-
-# Added provides version for 3.4 (SOFTWARE-2768) can probably be removed in 3.5
-Obsoletes: %{basece} < 3.4-3
-Provides: %{basece} = %{version}-%{release}
-Obsoletes: %{htcce} < 3.4-3
-Provides: %{htcce} = %{version}-%{release}
 Requires: htcondor-ce
 
 
@@ -51,15 +38,8 @@ Requires: htcondor-ce
 %package condor
 Summary: Condor meta-package for the OSG-CE
 
-Requires: %{osgce} = %{version}-%{release}
-Requires: gratia-probe-condor
+Requires: %{name} = %{version}-%{release}
 Requires: osg-configure-condor
-
-# Added provides version for 3.4 (SOFTWARE-2768)                                                                                                            
-Obsoletes: %{basece}-condor < 3.4-3
-Provides: %{basece}-condor = %{version}-%{release}
-Obsoletes: %{htcce}-condor < 3.4-3
-Provides: %{htcce}-condor = %{version}-%{release}
 
 Requires: htcondor-ce
 Requires: htcondor-ce-condor
@@ -73,15 +53,8 @@ Requires: htcondor-ce-condor
 %package pbs
 Summary: PBS meta-package for the OSG-CE
 
-Requires: %{osgce} = %{version}-%{release}
-Requires: gratia-probe-pbs-lsf
+Requires: %{name} = %{version}-%{release}
 Requires: osg-configure-pbs
-
-# Added provides version for 3.4 (SOFTWARE-2768)                                                                        
-Obsoletes: %{basece}-pbs < 3.4-3
-Provides: %{basece}-pbs = %{version}-%{release}
-Obsoletes: %{htcce}-pbs < 3.4-3
-Provides: %{htcce}-pbs = %{version}-%{release}
 
 Requires: htcondor-ce
 Requires: htcondor-ce-pbs
@@ -93,15 +66,8 @@ Requires: htcondor-ce-pbs
 %package lsf
 Summary: LSF meta-package for the OSG-CE
 
-Requires: %{osgce} = %{version}-%{release}
-Requires: gratia-probe-pbs-lsf
+Requires: %{name} = %{version}-%{release}
 Requires: osg-configure-lsf
-
-# Added provides version for 3.4 (SOFTWARE-2768)                                                                                                            
-Obsoletes: %{basece}-lsf < 3.4-3
-Provides: %{basece}-lsf = %{version}-%{release}
-Obsoletes: %{htcce}-lsf < 3.4-3
-Provides: %{htcce}-lsf = %{version}-%{release}
 
 Requires: htcondor-ce
 Requires: htcondor-ce-lsf
@@ -113,15 +79,8 @@ Requires: htcondor-ce-lsf
 %package sge
 Summary: SGE meta-package for the OSG-CE
 
-Requires: %{osgce} = %{version}-%{release}
-Requires: gratia-probe-sge
+Requires: %{name} = %{version}-%{release}
 Requires: osg-configure-sge
-
-# Added provides version for 3.4 (SOFTWARE-2768)                                                                                                             
-Obsoletes: %{basece}-sge < 3.4-3
-Provides: %{basece}-sge = %{version}-%{release}
-Obsoletes: %{htcce}-sge < 3.4-3
-Provides: %{htcce}-sge = %{version}-%{release}
 
 Requires: htcondor-ce
 Requires: htcondor-ce-sge
@@ -132,15 +91,8 @@ Requires: htcondor-ce-sge
 %package slurm
 Summary: SLURM meta-package for the OSG-CE
 
-Requires: %{osgce} = %{version}-%{release}
-Requires: gratia-probe-slurm
+Requires: %{name} = %{version}-%{release}
 Requires: osg-configure-slurm
-
-# Added provides version for 3.4 (SOFTWARE-2768)                                                                                                            
-Obsoletes: %{basece}-slurm < 3.4-3
-Provides: %{basece}-slurm = %{version}-%{release}
-Obsoletes: %{htcce}-slurm < 3.4-3
-Provides: %{htcce}-slurm = %{version}-%{release}
 
 Requires: htcondor-ce
 Requires: htcondor-ce-slurm
@@ -151,18 +103,11 @@ Requires: htcondor-ce-slurm
 %package bosco
 Summary: Bosco meta-package for the HTCondor-CE OSG-CE
 
-Requires: %{osgce} = %{version}-%{release}
-Requires: gratia-probe-htcondor-ce
+Requires: %{name} = %{version}-%{release}
 Requires: osg-configure-bosco
 # Added for scripts to manage remote WN tarball, CA, and CRL
 # installations (SOFTWARE-3582)
 Requires: hosted-ce-tools
-
-# Added provides version for 3.4 (SOFTWARE-2768)                                                                                                            
-Obsoletes: %{basece}-bosco < 3.4-3
-Provides: %{basece}-bosco = %{version}-%{release}
-Obsoletes: %{htcce}-bosco < 3.4-3
-Provides: %{htcce}-bosco = %{version}-%{release}
 
 Requires: htcondor-ce
 Requires: htcondor-ce-bosco
@@ -178,15 +123,12 @@ exit 0
 install -m 755         -d $RPM_BUILD_ROOT/%{_datadir}/condor-ce/config.d
 install -m 644 %{SOURCE0} $RPM_BUILD_ROOT/%{_datadir}/condor-ce/config.d
 install -m 644 %{SOURCE1} $RPM_BUILD_ROOT/%{_datadir}/condor-ce/config.d
-install -m 644 %{SOURCE2} $RPM_BUILD_ROOT/%{_datadir}/condor-ce/config.d
-install -m 644 %{SOURCE3} $RPM_BUILD_ROOT/%{_datadir}/condor-ce/config.d
 
 
 %files
-# TODO: Drop the OSG-blahp config when the OSG and HTCondor blahps are merged
-# https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=5102,86
+# TODO: Drop 01-blahp-location.conf if/when upstreamed into HTCondor
+# https://opensciencegrid.atlassian.net/browse/HTCONDOR-274
 %{_datadir}/condor-ce/config.d/01-blahp-location.conf
-%{_datadir}/condor-ce/config.d/03-gratia-cleanup.conf
 %{_datadir}/condor-ce/config.d/03-osg-ce-collector.conf
 
 %files condor
@@ -195,10 +137,13 @@ install -m 644 %{SOURCE3} $RPM_BUILD_ROOT/%{_datadir}/condor-ce/config.d
 %files sge
 %files slurm
 
-%files bosco
-%{_datadir}/condor-ce/config.d/51-gratia.conf
-
 %changelog
+* Tue Feb 16 2021 Brian Lin <blin@cs.wisc.edu> - 3.6-1
+- Remove stale provides/obsoletes (SOFTWARE-4469)
+- Use gratia-probe-htcondor-ce across all batch systems (SOFTWARE-3819, SOFTWARE-4469)
+- Drop LCMAPS requirements (SOFTWARE-4469)
+- Remove Gratia-specific configurations (SOFTWARE-4490)
+
 * Tue Feb 02 2021 Brian Lin <blin@cs.wisc.edu> - 3.5-6
 - Add explicit htcondor-ce requirement to sub-packages (SOFTWARE-4456)
 
