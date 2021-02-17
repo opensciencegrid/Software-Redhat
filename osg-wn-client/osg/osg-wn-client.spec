@@ -1,7 +1,7 @@
 Name:      osg-wn-client
 Summary:   OSG Worker-Node Client
-Version:   3.5
-Release:   4%{?dist}
+Version:   3.6
+Release:   1%{?dist}
 License:   Apache 2.0
 URL:       http://www.opensciencegrid.org
 BuildArch: noarch
@@ -13,17 +13,12 @@ Requires: /usr/bin/curl
 # fts-client is not available on EL8
 Requires: fts-client
 %endif
-Requires: myproxy
-Requires: voms-clients-cpp
 Requires: /usr/bin/ldapsearch
-Requires: /usr/bin/uberftp
 Requires: /usr/bin/wget
 Requires: grid-certificates >= 7
 Requires: fetch-crl
 Requires: osg-system-profiler
 Requires: vo-client
-Requires: globus-gass-copy-progs
-Requires: globus-xio-udt-driver
 Requires: stashcache-client
 
 Requires: gfal2
@@ -31,16 +26,12 @@ Requires: gfal2-util
 Requires: gfal2-plugin-http
 Requires: gfal2-plugin-file
 Requires: gfal2-plugin-srm
-Requires: gfal2-plugin-gridftp
 Requires: gfal2-plugin-xrootd
 
 
 # the previous OSG version of CGSI-gSOAP (1.3.4.2) did not provide the symbol
 # cgsi_plugin_set_credentials, needed at runtime for gfal2-plugin-srm
 Requires: CGSI-gSOAP >= 1.3.6
-
-# Added per request on SOFTWARE-2657
-Requires: gsi-openssh-clients
 
 %description
 %{summary}
@@ -62,6 +53,9 @@ EOF
 %config(noreplace) %{_prefix}/etc/globus-user-env.sh
 
 %changelog
+* Wed Feb 17 2021 Carl Edquist <edquist@cs.wisc.edu> - 3.6-1
+- Drop GSI/GridFTP requirements for OSG 3.6 (SOFTWARE-4487)
+
 * Thu Apr 23 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.5-4
 - Don't require fts-client on EL8, it's not available (SOFTWARE-4050)
 
