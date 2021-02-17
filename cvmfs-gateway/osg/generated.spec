@@ -41,6 +41,8 @@ Requires: cvmfs-server >= 2.5.2
 # obsoleting the cvmfs-notify package
 Obsoletes: cvmfs-notify
 
+BuildRequires: rsync
+
 # A more verbose description of your package
 %description
 CernVM-FS Repository Gateway
