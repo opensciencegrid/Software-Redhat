@@ -39,15 +39,22 @@ def tag2dict(tag):
     return dict(map(rpm_dent, list_tag_bin_rpms(tag)))
 
 
+def nvrname(nvr):
+    return nvr.rsplit('-', 2)[0]
+
+def epel_pkg_names(elX):
+    return set(map(nvrname, open("epel%s.rpms" % elX)))
+
+
 def main(args):
     elX, = args
-    tag1 = 'osg-3.5-%s-release' % elX
-    tag2 = 'osg-3.6-%s-development' % elX
+    tag1 = 'osg-3.5-el%s-release' % elX
+    tag2 = 'osg-3.6-el%s-development' % elX
 
     rpms35 = tag2dict(tag1)
     rpms36 = tag2dict(tag2)
 
-    rpms35_only = set(rpms35) - set(rpms36)
+    rpms35_only = set(rpms35) - set(rpms36) - epel_pkg_names(elX)
 
     for name in sorted(rpms35_only):
         print(obsoletes_line(rpms35[name]))

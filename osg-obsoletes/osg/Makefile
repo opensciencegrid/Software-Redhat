@@ -1,7 +1,10 @@
 
 all: osg-obsoletes.spec
 
-%.obs:
+epel%.rpms:
+	epel-srpms -b$* % > $@
+
+el%.obs:
 	./list-obsoletes.py $* > $@
 
 osg-obsoletes.spec: osg-obsoletes.spec.in el7.obs el8.obs
