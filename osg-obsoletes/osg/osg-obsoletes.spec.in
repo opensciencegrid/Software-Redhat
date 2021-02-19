@@ -1,0 +1,28 @@
+Name:      osg-obsoletes
+Summary:   Obsoletes packages from previous OSG Release series
+Version:   3.6
+Release:   0.1%{?dist}
+License:   Apache 2.0
+URL:       http://www.opensciencegrid.org
+
+
+%if 0%{?rhel} == 7
+# EL7 OBSOLETES
+%endif
+
+%if 0%{?rhel} == 8
+# EL8 OBSOLETES
+%endif
+
+
+%description
+%{summary}
+
+%install
+
+%files
+
+%changelog
+* Fri Feb 19 2021 Carl Edquist <edquist@cs.wisc.edu> - 3.6-1
+- Initial version (SOFTWARE-4316)
+
