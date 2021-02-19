@@ -1,0 +1,3 @@
+Meta-package for obsoleting binary package names from previous
+OSG release series that are no-longer provided in the current
+release series, nor in EPEL.
