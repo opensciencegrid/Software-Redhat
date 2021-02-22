@@ -4299,6 +4299,11 @@ lbzip2-utils-1.0-2.el7.x86_64.rpm
 lcg-infosites-3.1.0-9.el7.noarch.rpm
 lcgdm-devel-1.13.0-1.el7.x86_64.rpm
 lcgdm-libs-1.13.0-1.el7.x86_64.rpm
+lcmaps-1.6.5-2.el7.x86_64.rpm
+lcmaps-common-devel-1.6.5-2.el7.x86_64.rpm
+lcmaps-devel-1.6.5-2.el7.x86_64.rpm
+lcmaps-without-gsi-1.6.5-2.el7.x86_64.rpm
+lcmaps-without-gsi-devel-1.6.5-2.el7.x86_64.rpm
 lcov-1.13-1.el7.noarch.rpm
 ldapdiff-1.4.1-4.el7.x86_64.rpm
 ldapvi-1.7-29.el7.x86_64.rpm
