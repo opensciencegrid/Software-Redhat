@@ -1,7 +1,7 @@
 Name:      osg-obsoletes
 Summary:   Obsoletes packages from previous OSG Release series
 Version:   3.6
-Release:   0.1%{?dist}
+Release:   0.3%{?dist}
 License:   Apache 2.0
 URL:       http://www.opensciencegrid.org
 
@@ -85,15 +85,6 @@ Obsoletes: hadoop-mapreduce <= 2.6.0+cdh5.12.1+2540
 Obsoletes: hadoop-yarn <= 2.6.0+cdh5.12.1+2540
 Obsoletes: lcas-lcmaps-gt4-interface <= 0.3.1
 Obsoletes: lcas-lcmaps-gt4-interface-debuginfo <= 0.3.1
-Obsoletes: lcmaps-db-templates <= 1.6.6
-Obsoletes: lcmaps-debuginfo <= 1.6.6
-Obsoletes: lcmaps-plugins-basic <= 1.7.0
-Obsoletes: lcmaps-plugins-basic-debuginfo <= 1.7.0
-Obsoletes: lcmaps-plugins-basic-ldap <= 1.7.0
-Obsoletes: lcmaps-plugins-verify-proxy <= 1.5.11
-Obsoletes: lcmaps-plugins-verify-proxy-debuginfo <= 1.5.11
-Obsoletes: lcmaps-plugins-voms <= 1.7.1
-Obsoletes: lcmaps-plugins-voms-debuginfo <= 1.7.1
 Obsoletes: llrun <= 0.1.3
 Obsoletes: llrun-debuginfo <= 0.1.3
 Obsoletes: myproxy-debuginfo <= 6.2.6
