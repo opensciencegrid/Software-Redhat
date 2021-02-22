@@ -1,3 +1,6 @@
+# Cap make to -j12 to avoid race conditions on EL8
+%global _smp_ncpus_max 12
+
 %define tarball_version 8.9.11
 
 # optionally define any of these, here or externally
