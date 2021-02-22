@@ -1,6 +1,6 @@
 Summary: Configuration tool for the OSG Software Stack
 Name: osg-configure
-Version: 3.11.0
+Version: 4.0.0
 Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
@@ -84,7 +84,6 @@ needs to be installed for the CE configuration.
 %package misc
 Summary: OSG configuration file for misc software
 Requires: %name = %version-%release
-Requires: lcmaps-db-templates >= 1.6.6-1.8
 %description misc
 This package includes the ini files for various osg software including
 certificates setup, and auth.
@@ -281,6 +280,9 @@ touch $RPM_BUILD_ROOT/var/lib/osg/osg-job-environment.conf
 
 
 %changelog
+* ??? Feb ?? 2021 Mátyás Selmeci <matyas@cs.wisc.edu> 4.0.0-1
+- Drop lcmaps-db-templates dependency (SOFTWARE-4503)
+
 * Thu Jan 07 2021 Mátyás Selmeci <matyas@cs.wisc.edu> 3.11.0-1
 - Add Pilot entries (SOFTWARE-4177)
 - Don't try to resolve Squid on the CE (SOFTWARE-4362)
