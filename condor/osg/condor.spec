@@ -57,13 +57,13 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.1
+%define condor_base_release 1
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
         %define condor_release %condor_base_release
 %endif
-Release: %condor_release%{?dist}
+Release: %{condor_release}.2%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -109,14 +109,7 @@ Source1: generate-tarball.sh
 Source3: osg-env.conf
 Source5: condor_config.local.dedicated.resource
 
-Source6: 00-batch_gahp_blahp.config
-Source7: 00-restart_peaceful.config
-
 Source8: htcondor.pp
-
-Source9: 00-osg_default_security.config
-Source10: 00-osg_default_daemons.config
-Source11: create_pool_password
 
 # Patch to use Python 2 for file transfer plugins
 # The use the python-requests library and the one in EPEL is based Python 3.6
@@ -1024,28 +1017,11 @@ mv %{buildroot}%{_libexecdir}/condor/campus_factory/etc/campus_factory.conf %{bu
 %endif
 mv %{buildroot}%{_libexecdir}/condor/campus_factory/share %{buildroot}%{_datadir}/condor/campus_factory
 
-%if %blahp
-install -p -m 0644 %{SOURCE6} %{buildroot}%{_sysconfdir}/condor/config.d/00-batch_gahp_blahp.config
-%endif
-
-%if 0%{?osg} || 0%{?hcc}
-install -p -m 0644 %{SOURCE7} %{buildroot}%{_sysconfdir}/condor/config.d/00-restart_peaceful.config
-%endif
-
 # htcondor/dags only works with Python3
 rm -rf %{buildroot}/usr/lib64/python2.7/site-packages/htcondor/dags
 
 # htcondor/personal.py only works with Python3
 rm -f %{buildroot}/usr/lib64/python2.7/site-packages/htcondor/personal.py
-
-%if 0%{?osg}
-# Pool password config and single node config, SOFTWARE-3795
-install -d -m 0755 %{buildroot}%{_sysconfdir}/condor/passwords.d
-install -p -m 0644 %{SOURCE9} %{buildroot}%{_sysconfdir}/condor/config.d/00-osg_default_security.config
-install -p -m 0644 %{SOURCE10} %{buildroot}%{_sysconfdir}/condor/config.d/00-osg_default_daemons.config
-install -p -m 0755 %{SOURCE11} %{buildroot}%{_libexecdir}/condor/create_pool_password
-%endif
-
 
 %check
 # This currently takes hours and can kill your machine...
@@ -1139,15 +1115,6 @@ install -p -m 0755 %{SOURCE11} %{buildroot}%{_libexecdir}/condor/create_pool_pas
 %_libexecdir/condor/glite/bin/slurm_status.py
 %_libexecdir/condor/glite/bin/slurm_status.sh
 %_libexecdir/condor/glite/bin/slurm_submit.sh
-%config(noreplace) %{_sysconfdir}/condor/config.d/00-batch_gahp_blahp.config
-%endif
-%if 0%{?osg} || 0%{?hcc}
-%config(noreplace) %{_sysconfdir}/condor/config.d/00-restart_peaceful.config
-%endif
-%if 0%{?osg}
-%config(noreplace) %{_sysconfdir}/condor/config.d/00-osg_default_security.config
-%config(noreplace) %{_sysconfdir}/condor/config.d/00-osg_default_daemons.config
-%dir %{_sysconfdir}/condor/passwords.d
 %endif
 %_libexecdir/condor/condor_limits_wrapper.sh
 %_libexecdir/condor/condor_rooster
@@ -1179,9 +1146,6 @@ install -p -m 0755 %{SOURCE11} %{buildroot}%{_libexecdir}/condor/create_pool_pas
 %_libexecdir/condor/condor_gangliad
 %_libexecdir/condor/panda-plugin.so
 %_libexecdir/condor/pandad
-%if 0%{?osg}
-%_libexecdir/condor/create_pool_password
-%endif
 %_mandir/man1/condor_advertise.1.gz
 %_mandir/man1/condor_annex.1.gz
 %_mandir/man1/condor_check_userlogs.1.gz
@@ -1570,12 +1534,6 @@ if [ $1 -eq 1 ] ; then
     /bin/systemctl daemon-reload >/dev/null 2>&1 || :
 fi
 
-%if 0%{?osg}
-if [ ! -e /etc/condor/passwords.d/POOL ]; then
-    %_libexecdir/condor/create_pool_password >/dev/null 2>&1 || :
-fi
-%endif
-
 %preun
 if [ $1 -eq 0 ] ; then
     # Package removal, not upgrade
@@ -1597,6 +1555,9 @@ fi
 /bin/systemctl try-restart condor.service >/dev/null 2>&1 || :
 
 %changelog
+* Mon Feb 22 2021 Brian Lin <blin@cs.wisc.edu> - 8.9.11-1.2
+- Remove OSG-specific configurations (SOFTWARE-4470)
+
 * Tue Feb 16 2021 Carl Edquist <edquist@cs.wisc.edu> - 8.9.11-1.1
 - Turn off glexec & globus for OSG (SOFTWARE-4470)
 
