@@ -66,7 +66,7 @@ Version: %{tarball_version}
 %else
         %define condor_release %condor_base_release
 %endif
-Release: %{condor_release}.2%{?dist}
+Release: %{condor_release}.3%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -1565,6 +1565,9 @@ fi
 /bin/systemctl try-restart condor.service >/dev/null 2>&1 || :
 
 %changelog
+* Mon Feb 22 2021 Brian Lin <blin@cs.wisc.edu> - 8.9.11-1.3
+- Restore BATCH_GAHP and GLITE_LCOATION config (SOFTWARE-4470)
+
 * Mon Feb 22 2021 Brian Lin <blin@cs.wisc.edu> - 8.9.11-1.2
 - Remove OSG-specific configurations (SOFTWARE-4470)
 
