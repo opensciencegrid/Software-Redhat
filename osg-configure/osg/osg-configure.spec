@@ -1,7 +1,7 @@
 Summary: Configuration tool for the OSG Software Stack
 Name: osg-configure
-Version: 4.0.0
-Release: 1%{?dist}
+Version: 3.99
+Release: 0.1%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
 BuildArch: noarch
@@ -83,10 +83,8 @@ needs to be installed for the CE configuration.
 
 %package misc
 Summary: OSG configuration file for misc software
-Requires: %name = %version-%release
 %description misc
-This package includes the ini files for various osg software including
-certificates setup, and auth.
+This is a dummy package to help upgrades
 
 %package squid
 Summary: OSG configuration file for squid
@@ -165,7 +163,6 @@ touch $RPM_BUILD_ROOT/var/lib/osg/osg-job-environment.conf
 %{python_sitelib}/osg_configure/configure_modules/gratia.py*
 %{python_sitelib}/osg_configure/configure_modules/localsettings.py*
 %{python_sitelib}/osg_configure/configure_modules/lsf.py*
-%{python_sitelib}/osg_configure/configure_modules/misc.py*
 %{python_sitelib}/osg_configure/configure_modules/pbs.py*
 %{python_sitelib}/osg_configure/configure_modules/rsv.py*
 %{python_sitelib}/osg_configure/configure_modules/sge.py*
@@ -190,7 +187,6 @@ touch $RPM_BUILD_ROOT/var/lib/osg/osg-job-environment.conf
 %{python_sitelib}/osg_configure/configure_modules/__pycache__/gratia*
 %{python_sitelib}/osg_configure/configure_modules/__pycache__/localsettings*
 %{python_sitelib}/osg_configure/configure_modules/__pycache__/lsf*
-%{python_sitelib}/osg_configure/configure_modules/__pycache__/misc*
 %{python_sitelib}/osg_configure/configure_modules/__pycache__/pbs*
 %{python_sitelib}/osg_configure/configure_modules/__pycache__/rsv*
 %{python_sitelib}/osg_configure/configure_modules/__pycache__/sge*
@@ -248,7 +244,6 @@ touch $RPM_BUILD_ROOT/var/lib/osg/osg-job-environment.conf
 %config(noreplace) %{_sysconfdir}/osg/grid3-locations.txt
 
 %files misc
-%config(noreplace) %{_sysconfdir}/osg/config.d/10-misc.ini
 
 %files squid
 %config(noreplace) %{_sysconfdir}/osg/config.d/01-squid.ini
@@ -280,8 +275,9 @@ touch $RPM_BUILD_ROOT/var/lib/osg/osg-job-environment.conf
 
 
 %changelog
-* ??? Feb ?? 2021 Mátyás Selmeci <matyas@cs.wisc.edu> 4.0.0-1
+* Tue Feb 23 2021 Mátyás Selmeci <matyas@cs.wisc.edu> 3.99-0.1
 - Drop lcmaps-db-templates dependency (SOFTWARE-4503)
+- Turn osg-configure-misc into a dummy package (SOFTWARE-4507)
 
 * Thu Jan 07 2021 Mátyás Selmeci <matyas@cs.wisc.edu> 3.11.0-1
 - Add Pilot entries (SOFTWARE-4177)
