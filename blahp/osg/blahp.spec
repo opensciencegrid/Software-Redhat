@@ -5,16 +5,55 @@
 
 Name:		blahp
 Version:	1.18.48
-Release:	2.3%{?gitrev:.%{gitrev}}%{?dist}
+Release:	2.4%{?gitrev:.%{gitrev}}%{?dist}
 Summary:	gLite BLAHP daemon
 
 Group:		System/Libraries
 License:	Apache 2.0
 URL:		https://github.com/htcondor/BLAH
 
+# Disable auto-requirement detection from binaries and specify them manually.
+# This allows us to remove Globus libs from just the blahp server and avoid
+# pulling in Globus packages through the other binaries (SOFTWARE-4504)
+AutoReqProv: no
+Provides: config(%name) = %{version}-%{release}
+Requires: /bin/bash
+Requires: /usr/bin/perl
+Requires: /usr/bin/python2
+Requires: config(%name) = %{version}-%{release}
+Requires: libc.so.6()(64bit)
+Requires: libc.so.6(GLIBC_2.14)(64bit)
+Requires: libc.so.6(GLIBC_2.2.5)(64bit)
+Requires: libc.so.6(GLIBC_2.3.4)(64bit)
+Requires: libc.so.6(GLIBC_2.7)(64bit)
+Requires: libclassad.so.13()(64bit)
+Requires: libdl.so.2()(64bit)
+Requires: libgcc_s.so.1()(64bit)
+Requires: libgcc_s.so.1(GCC_3.0)(64bit)
+Requires: libm.so.6()(64bit)
+Requires: libm.so.6(GLIBC_2.2.5)(64bit)
+Requires: libpthread.so.0()(64bit)
+Requires: libpthread.so.0(GLIBC_2.2.5)(64bit)
+Requires: libstdc++.so.6()(64bit)
+Requires: libstdc++.so.6(CXXABI_1.3)(64bit)
+Requires: libstdc++.so.6(GLIBCXX_3.4)(64bit)
+Requires: libstdc++.so.6(GLIBCXX_3.4.14)(64bit)
+Requires: perl(Data::Dumper)
+Requires: perl(Getopt::Long)
+Requires: perl(IO::File)
+Requires: perl(IO::Pipe)
+Requires: perl(POSIX)
+Requires: perl(Time::Local)
+Requires: perl(XML::Simple)
+Requires: perl(constant)
+Requires: perl(strict)
+Requires: rtld(GNU_HASH)
+
 # Pre-release build tarballs should be generated with:
 # git archive %{gitrev} | gzip -9 > %{name}-%{version}-%{gitrev}.tar.gz
 Source0:        %{name}-%{version}%{?gitrev:-%{gitrev}}.tar.gz
+
+Patch0: SOFTWARE-4504.blahpd-disable-globus.patch
 
 BuildRequires:  automake
 BuildRequires:  autoconf
@@ -33,6 +72,7 @@ BuildRequires:  docbook-style-xsl, libxslt
 
 %prep
 %setup
+%patch0 -p1
 
 %build
 %if 0%{?rhel} == 7
@@ -107,6 +147,9 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Mon Feb 22 2021 Brian Lin <blin@cs.wisc.edu> - 1.18.48-2.4
+- Build blahp server without Globus (SOFTWARE-4504)
+
 * Tue Feb 16 2021 Carl Edquist <edquist@cs.wisc.edu> - 1.18.48-2.3
 - Rebuild against condor 8.9.11
 
