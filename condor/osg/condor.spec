@@ -112,6 +112,8 @@ Source1: generate-tarball.sh
 Source3: osg-env.conf
 Source5: condor_config.local.dedicated.resource
 
+Source6: 00-batch_gahp_blahp.config
+
 Source8: htcondor.pp
 
 # Patch to use Python 2 for file transfer plugins
@@ -1020,6 +1022,10 @@ mv %{buildroot}%{_libexecdir}/condor/campus_factory/etc/campus_factory.conf %{bu
 %endif
 mv %{buildroot}%{_libexecdir}/condor/campus_factory/share %{buildroot}%{_datadir}/condor/campus_factory
 
+%if %blahp
+install -p -m 0644 %{SOURCE6} %{buildroot}%{_sysconfdir}/condor/config.d/00-batch_gahp_blahp.config
+%endif
+
 # htcondor/dags only works with Python3
 rm -rf %{buildroot}/usr/lib64/python2.7/site-packages/htcondor/dags
 
@@ -1118,6 +1124,7 @@ rm -f %{buildroot}/usr/lib64/python2.7/site-packages/htcondor/personal.py
 %_libexecdir/condor/glite/bin/slurm_status.py
 %_libexecdir/condor/glite/bin/slurm_status.sh
 %_libexecdir/condor/glite/bin/slurm_submit.sh
+%config(noreplace) %{_sysconfdir}/condor/config.d/00-batch_gahp_blahp.config
 %endif
 %_libexecdir/condor/condor_limits_wrapper.sh
 %_libexecdir/condor/condor_rooster
