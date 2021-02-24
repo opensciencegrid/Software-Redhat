@@ -1,6 +1,6 @@
 Summary: Configuration tool for the OSG Software Stack
 Name: osg-configure
-Version: 3.99
+Version: 3.99.2
 Release: 0.1%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
@@ -38,10 +38,18 @@ Requires: %name-siteinfo
 This package includes the ini file for configuring gratia using osg-configure
 
 %package gip
-Summary: OSG configuration file for gip
-Requires: %name = %version-%release
+Summary: Transitional package for osg-configure 4
+Requires: %name-cluster
 %description gip
-This package includes the ini file for configuring gip using osg-configure
+This is an empty package to make upgrades to osg-configure 4 easier.
+It may be removed.
+
+%package cluster
+Summary: OSG configuration files for describing cluster
+Requires: %name = %version-%release
+%description cluster
+This package contains 31-cluster.ini for Subcluster and Resource Entry sections,
+and 35-pilots.ini for Pilot sections.
 
 %package lsf
 Summary: OSG configuration file for lsf
@@ -217,7 +225,9 @@ touch $RPM_BUILD_ROOT/var/lib/osg/osg-job-environment.conf
 %config(noreplace) %{_sysconfdir}/osg/config.d/30-gratia.ini
 
 %files gip
-%config(noreplace) %{_sysconfdir}/osg/config.d/30-gip.ini
+
+%files cluster
+%config(noreplace) %{_sysconfdir}/osg/config.d/31-cluster.ini
 %config(noreplace) %{_sysconfdir}/osg/config.d/35-pilot.ini
 
 %files lsf
@@ -275,9 +285,10 @@ touch $RPM_BUILD_ROOT/var/lib/osg/osg-job-environment.conf
 
 
 %changelog
-* Tue Feb 23 2021 Mátyás Selmeci <matyas@cs.wisc.edu> 3.99-0.1
+* Tue Feb 23 2021 Mátyás Selmeci <matyas@cs.wisc.edu> 4.0.0-1
 - Drop lcmaps-db-templates dependency (SOFTWARE-4503)
 - Turn osg-configure-misc into a dummy package (SOFTWARE-4507)
+- Rename 30-gip.ini to 31-cluster.ini and osg-configure-gip to osg-configure-cluster (SOFTWARE-4485)
 
 * Thu Jan 07 2021 Mátyás Selmeci <matyas@cs.wisc.edu> 3.11.0-1
 - Add Pilot entries (SOFTWARE-4177)
