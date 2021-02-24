@@ -1,7 +1,7 @@
 Name:      osg-ce
 Summary:   OSG Compute Element
 Version:   3.6
-Release:   1%{?dist}
+Release:   2%{?dist}
 License:   Apache 2.0
 URL:       http://www.opensciencegrid.org
 
@@ -19,9 +19,8 @@ Requires: gratia-probe-htcondor-ce
 
 Requires: osg-configure
 Requires: osg-configure-ce
-Requires: osg-configure-gip
+Requires: osg-configure-cluster
 Requires: osg-configure-gratia
-Requires: osg-configure-misc
 Requires: osg-configure-squid
 Requires: frontier-squid
 
@@ -138,6 +137,9 @@ install -m 644 %{SOURCE1} $RPM_BUILD_ROOT/%{_datadir}/condor-ce/config.d
 %files slurm
 
 %changelog
+* Wed Feb 24 2021 Brian Lin <blin@cs.wisc.edu> - 3.6-2
+- Update requirements for osg-configure-4.0.0
+
 * Tue Feb 16 2021 Brian Lin <blin@cs.wisc.edu> - 3.6-1
 - Remove stale provides/obsoletes (SOFTWARE-4469)
 - Use gratia-probe-htcondor-ce across all batch systems (SOFTWARE-3819, SOFTWARE-4469)
