@@ -1,7 +1,7 @@
 Summary: Configuration tool for the OSG Software Stack
 Name: osg-configure
-Version: 3.99.2
-Release: 0.1%{?dist}
+Version: 4.0.0
+Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
 BuildArch: noarch
@@ -125,7 +125,7 @@ This package includes the ini file for configuring bosco using osg-configure
 %package infoservices
 Summary: OSG configuration file for the osg info services
 Requires: %name = %version-%release
-Requires: %name-gip
+Requires: %name-cluster
 Requires: python3-condor
 %description infoservices
 This package includes the ini file for configuring the osg info services using osg-configure
@@ -285,10 +285,11 @@ touch $RPM_BUILD_ROOT/var/lib/osg/osg-job-environment.conf
 
 
 %changelog
-* Tue Feb 23 2021 Mátyás Selmeci <matyas@cs.wisc.edu> 4.0.0-1
+* Thu Feb 25 2021 Mátyás Selmeci <matyas@cs.wisc.edu> 4.0.0-1
 - Drop lcmaps-db-templates dependency (SOFTWARE-4503)
 - Turn osg-configure-misc into a dummy package (SOFTWARE-4507)
 - Rename 30-gip.ini to 31-cluster.ini and osg-configure-gip to osg-configure-cluster (SOFTWARE-4485)
+- Deprecate RSV  (SOFTWARE-4511)
 
 * Thu Jan 07 2021 Mátyás Selmeci <matyas@cs.wisc.edu> 3.11.0-1
 - Add Pilot entries (SOFTWARE-4177)
