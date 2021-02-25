@@ -6,6 +6,7 @@ priority=98
 enabled={ENABLED}
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-OSG
+       file:///etc/pki/rpm-gpg/RPM-GPG-KEY-OSG-2
 
 [{YUMREPO}-source]
 name=OSG Software for Enterprise Linux {EL} {TITLE} $basearch - Source
@@ -14,6 +15,7 @@ priority=98
 enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-OSG
+       file:///etc/pki/rpm-gpg/RPM-GPG-KEY-OSG-2
 
 [{YUMREPO}-debuginfo]
 name=OSG Software for Enterprise Linux {EL} {TITLE} $basearch - Debug
@@ -22,4 +24,5 @@ priority=98
 enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-OSG
+       file:///etc/pki/rpm-gpg/RPM-GPG-KEY-OSG-2
 

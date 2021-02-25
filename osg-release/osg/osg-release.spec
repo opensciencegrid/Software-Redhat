@@ -1,6 +1,6 @@
 Name:           osg-release
 Version:        3.6
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        OSG Software for Enterprise Linux repository configuration
 
 License:        GPL
@@ -63,6 +63,9 @@ sed -i -e 's/gpgcheck=1/gpgcheck=0/' $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d/*
 
 
 %changelog
+* Thu Feb 25 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.6-3
+- Fix repo files to accept new signing key (SOFTWARE-3275)
+
 * Wed Feb 24 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.6-2
 - Add new signing key RPM-GPG-KEY-OSG-2 (SOFTWARE-3275)
 
