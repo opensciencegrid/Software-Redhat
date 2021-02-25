@@ -1,6 +1,6 @@
 Name:           osg-release
 Version:        3.6
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        OSG Software for Enterprise Linux repository configuration
 
 License:        GPL
@@ -19,6 +19,7 @@ Source4:        template.repo.koji
 Source5:        template.repo.direct
 
 Source40:       RPM-GPG-KEY-OSG
+Source41:       RPM-GPG-KEY-OSG-2
 
 
 BuildArch:      noarch
@@ -45,6 +46,8 @@ exit 0
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/pki/rpm-gpg
 install -pm 644 %{SOURCE40} \
     $RPM_BUILD_ROOT%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-OSG
+install -pm 644 %{SOURCE41} \
+    $RPM_BUILD_ROOT%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-OSG-2
 
 # yum
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d
@@ -56,9 +59,13 @@ sed -i -e 's/gpgcheck=1/gpgcheck=0/' $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d/*
 %defattr(-,root,root,-)
 %config(noreplace) /etc/yum.repos.d/*
 /etc/pki/rpm-gpg/RPM-GPG-KEY-OSG
+/etc/pki/rpm-gpg/RPM-GPG-KEY-OSG-2
 
 
 %changelog
+* Wed Feb 24 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.6-2
+- Add new signing key RPM-GPG-KEY-OSG-2 (SOFTWARE-3275)
+
 * Thu Feb 04 2021 Brian Lin <blin@cs.wisc.edu> - 3.6-1
 - Initial OSG 3.6 release (SOFTWARE-4465)
 
