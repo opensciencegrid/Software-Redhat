@@ -1,7 +1,7 @@
 Name:      osg-wn-client
 Summary:   OSG Worker-Node Client
 Version:   3.6
-Release:   1%{?dist}
+Release:   2%{?dist}
 License:   Apache 2.0
 URL:       http://www.opensciencegrid.org
 BuildArch: noarch
@@ -19,7 +19,6 @@ Requires: grid-certificates >= 7
 Requires: fetch-crl
 Requires: osg-system-profiler
 Requires: vo-client
-Requires: stashcache-client
 
 Requires: gfal2
 Requires: gfal2-util
@@ -27,11 +26,6 @@ Requires: gfal2-plugin-http
 Requires: gfal2-plugin-file
 Requires: gfal2-plugin-srm
 Requires: gfal2-plugin-xrootd
-
-
-# the previous OSG version of CGSI-gSOAP (1.3.4.2) did not provide the symbol
-# cgsi_plugin_set_credentials, needed at runtime for gfal2-plugin-srm
-Requires: CGSI-gSOAP >= 1.3.6
 
 %description
 %{summary}
@@ -53,6 +47,9 @@ EOF
 %config(noreplace) %{_prefix}/etc/globus-user-env.sh
 
 %changelog
+* Fri Feb 26 2021 Brian Lin <blin@cs.wisc.edu> - 3.6-2
+- Remove old CGSI-gSOAP requirement (SOFTWARE-4487)
+
 * Wed Feb 17 2021 Carl Edquist <edquist@cs.wisc.edu> - 3.6-1
 - Drop GSI/GridFTP requirements for OSG 3.6 (SOFTWARE-4487)
 
