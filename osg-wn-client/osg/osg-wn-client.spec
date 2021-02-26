@@ -1,7 +1,7 @@
 Name:      osg-wn-client
 Summary:   OSG Worker-Node Client
 Version:   3.6
-Release:   2%{?dist}
+Release:   3%{?dist}
 License:   Apache 2.0
 URL:       http://www.opensciencegrid.org
 BuildArch: noarch
@@ -9,10 +9,6 @@ BuildArch: noarch
 
 Requires: /usr/bin/xrdcp
 Requires: /usr/bin/curl
-%if 0%{?rhel} < 8
-# fts-client is not available on EL8
-Requires: fts-client
-%endif
 Requires: /usr/bin/ldapsearch
 Requires: /usr/bin/wget
 Requires: grid-certificates >= 7
@@ -24,7 +20,6 @@ Requires: gfal2
 Requires: gfal2-util
 Requires: gfal2-plugin-http
 Requires: gfal2-plugin-file
-Requires: gfal2-plugin-srm
 Requires: gfal2-plugin-xrootd
 
 %description
@@ -47,6 +42,9 @@ EOF
 %config(noreplace) %{_prefix}/etc/globus-user-env.sh
 
 %changelog
+* Fri Feb 26 2021 Brian Lin <blin@cs.wisc.edu> - 3.6-3
+- Remove remaining packages bringing in Globus dependencies (SOFTWARE-4487)
+
 * Fri Feb 26 2021 Brian Lin <blin@cs.wisc.edu> - 3.6-2
 - Remove old CGSI-gSOAP requirement (SOFTWARE-4487)
 
