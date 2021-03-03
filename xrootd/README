@@ -1,0 +1,18 @@
+This build includes "compat" packages that are built from the XRootD 4 sources.
+To update the compat packages:
+
+**Steps:**
+- Download the source from xrootd.org: follow the link in the announcement email, then click the "Source" link.
+  Or use http://xrootd.org/download/v${VERSION}/xrootd-${VERSION}.tar.gz
+  (where ${VERSION} is the new version of XRootD 4)
+
+  If you can't use that URL for some reason (e.g. permission denied), download the archive from GitHub
+  by finding the appropriate tag: https://github.com/xrootd/xrootd/tags
+
+- Put the tarball in the usual upstream area and update "xrootd-compat.tarball.source"
+
+- Edit "osg/xrootd.spec" and update the "%define compat_version" line
+
+- Bump the release and add %changelog entry
+
+- Build
