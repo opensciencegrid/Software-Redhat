@@ -1,6 +1,6 @@
 Name: xrootd-hdfs
 Version: 2.1.8
-Release: 1.1%{?dist}
+Release: 1.2%{?dist}
 Summary: HDFS plugin for xrootd
 
 Group: System Environment/Development
@@ -8,6 +8,9 @@ License: BSD
 URL: https://github.com/bbockelm/xrootd-hdfs
 Source0: %{name}-%{version}.tar.gz
 Patch0: link2serverlib.patch
+Patch1: checksum.patch
+Patch2: xattr-api.patch
+
 
 %define xrootd_current_major 5
 %define xrootd_current_minor 0
@@ -40,6 +43,8 @@ Group: System Environment/Development
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
+%patch2 -p1
 
 %build
 sed -i 's|@devel@|%{version}|' src/XrdHdfs.cc
@@ -77,6 +82,9 @@ rm $RPM_BUILD_ROOT%{_bindir}/xrootd_hdfs_envcheck
 %{_includedir}/XrdHdfs.hh
 
 %changelog
+* Tue Mar 09 2021 Carl Edquist <edquist@cs.wisc.edu> - 2.1.8-1.2
+- Add additional PR patches (SOFTWARE-4356)
+
 * Wed Sep 02 2020 Carl Edquist <edquist@cs.wisc.edu> - 2.1.8-1
 - Load versioned libXrdHdfsReal .so name (SOFTWARE-4245)
 

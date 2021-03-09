@@ -1,0 +1,24 @@
+commit 42c44938cd25ab0832a35d6529f489552a181a59
+Author: John Thiltges <jthiltges2@unl.edu>
+Date:   Wed Dec 2 13:20:08 2020 -0600
+
+    Only write checksum file if hdfsCloseFile() was successful
+
+diff --git a/src/XrdHdfs.cc b/src/XrdHdfs.cc
+index 05ee855..9626e2c 100644
+--- a/src/XrdHdfs.cc
++++ b/src/XrdHdfs.cc
+@@ -548,8 +548,11 @@ int XrdHdfsFile::Close(long long int *)
+    if (m_state)
+    {
+        m_state->Finalize();
+-       XrdHdfs::ChecksumManager manager(HdfsEroute);
+-       manager.Set(fname, *m_state);
++       if (ret == XrdOssOK) {
++           // Only write checksum file if close() was successful
++           XrdHdfs::ChecksumManager manager(HdfsEroute);
++           manager.Set(fname, *m_state);
++       }
+        delete m_state;
+        m_state = NULL;
+    }
