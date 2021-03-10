@@ -1,7 +1,7 @@
 
 Name: xrootd-multiuser
 Version: 0.4.5
-Release: 1.1%{?dist}
+Release: 1.2%{?dist}
 Summary: Multiuser filesystem writing plugin for xrootd
 
 Group: System Environment/Daemons
@@ -15,7 +15,7 @@ Patch0: 17-xrootd-5.1-determining-username.patch
 Patch1: 17b-fix-pass-by-reference.patch
 
 %define xrootd_current_major 5
-%define xrootd_current_minor 0
+%define xrootd_current_minor 1
 %define xrootd_next_major 6
 
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
@@ -68,6 +68,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/xrootd/config.d/60-osg-multiuser.cfg
 
 %changelog
+* Wed Mar 10 2021 Carl Edquist <edquist@cs.wisc.edu> - 0.4.5-1.2
+- Build against xrootd 5.1 (SOFTWARE-4356)
+
 * Wed Jan 27 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 0.4.5-1.1
 - Add patch for determining username in xrootd 5.1 (SOFTWARE-4426)
   https://github.com/opensciencegrid/xrootd-multiuser/pull/17
