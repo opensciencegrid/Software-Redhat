@@ -7,9 +7,6 @@ Group: System Environment/Development
 License: BSD
 URL: https://github.com/bbockelm/xrootd-hdfs
 Source0: %{name}-%{version}.tar.gz
-Patch0: link2serverlib.patch
-Patch1: checksum.patch
-Patch2: xattr-api.patch
 
 
 %define xrootd_current_major 5
@@ -42,9 +39,6 @@ Group: System Environment/Development
 
 %prep
 %setup -q
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
 
 %build
 sed -i 's|@devel@|%{version}|' src/XrdHdfs.cc
