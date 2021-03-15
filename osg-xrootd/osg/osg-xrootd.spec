@@ -1,7 +1,7 @@
 Summary: OSG configuration files for XRootD
 Name: osg-xrootd
-Version: 3.5
-Release: 13%{?dist}
+Version: 3.6
+Release: 1%{?dist}
 License: ASL 2.0
 BuildArch: noarch
 
@@ -17,7 +17,7 @@ Source9: 50-osg-tpc.cfg
 Source10: Authfile.example
 Source11: 90-xrootd-logging.cfg
 # We utilize a configuration directive (`continue`) introduced in XRootD 4.9.
-Requires: xrootd >= 1:4.9.0
+Requires: xrootd >= 1:5.1.1
 
 # Necessary for authentication
 Requires: grid-certificates >= 7
@@ -34,8 +34,6 @@ Requires: %{name} = %{version}-%release
 
 # For LCMAPS VOMS authentication
 Requires: osg-configure-misc
-Requires: vo-client-lcmaps-voms
-Requires: xrootd-lcmaps
 
 %description standalone
 %summary
@@ -81,6 +79,10 @@ if [ ! -e /etc/xrootd/macaroon-secret ]; then
 fi
 
 %changelog
+* Mon Mar 15 2021 Carl Edquist <edquist@cs.wisc.edu> - 3.6-1
+- Release for OSG 3.6 / XRootD 5 (SOFTWARE-4495)
+- Drop xrootd-lcmaps & vo-client-lcmaps-voms requirements
+
 * Mon Jun 29 2020 Edgar Fajardo <emfajard@ucsd.edu> 3.5-13
 - Adding logging information on its own file (SOFTWARE-4058)
 
