@@ -57,7 +57,7 @@ Version: %{tarball_version}
 %else
         %define condor_release %condor_base_release
 %endif
-Release: %condor_release%{?dist}
+Release: %{condor_release}.1%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
