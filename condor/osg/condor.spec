@@ -66,7 +66,7 @@ Version: %{tarball_version}
 %else
         %define condor_release %condor_base_release
 %endif
-Release: %{condor_release}.3%{?dist}
+Release: %{condor_release}.4%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -124,6 +124,9 @@ Patch2: amzn2-python2.patch
 #% if 0% osg
 Patch8: osg_sysconfig_in_init_script.patch
 #% endif
+
+Patch100: SOFTWARE-4525-condor_watch_q_crash.patch
+Patch101: HTCONDOR-315-Always-handle-exceptions-when-decoding-.patch
 
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
@@ -656,6 +659,9 @@ exit 0
 %if 0%{?osg} || 0%{?hcc}
 %patch8 -p1
 %endif
+
+%patch100 -p1
+%patch101 -p1
 
 # fix errant execute permissions
 find src -perm /a+x -type f -name "*.[Cch]" -exec chmod a-x {} \;
@@ -1565,6 +1571,10 @@ fi
 /bin/systemctl try-restart condor.service >/dev/null 2>&1 || :
 
 %changelog
+* Tue Mar 16 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 8.9.11-1.4
+- Add SOFTWARE-4525-condor_watch_q_crash.patch to fix a condor_watch_q crash when watching DAGs (SOFTWARE-4525)
+- Add HTCONDOR-315-Always-handle-exceptions-when-decoding-.patch to fix a schedd crash caused by malformed SciTokens (SOFTWARE-4533)
+
 * Mon Feb 22 2021 Brian Lin <blin@cs.wisc.edu> - 8.9.11-1.3
 - Restore BATCH_GAHP and GLITE_LCOATION config (SOFTWARE-4470)
 
