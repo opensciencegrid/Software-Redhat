@@ -117,6 +117,8 @@ Patch2: amzn2-python2.patch
 Patch8: osg_sysconfig_in_init_script.patch
 #% endif
 
+Patch100: SOFTWARE-4525-condor_watch_q_crash.patch
+
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
 BuildRequires: cmake
@@ -644,6 +646,8 @@ exit 0
 %if 0%{?osg} || 0%{?hcc}
 %patch8 -p1
 %endif
+
+%patch100 -p1
 
 # fix errant execute permissions
 find src -perm /a+x -type f -name "*.[Cch]" -exec chmod a-x {} \;
@@ -1558,6 +1562,9 @@ fi
 /bin/systemctl try-restart condor.service >/dev/null 2>&1 || :
 
 %changelog
+* Tue Mar 16 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 8.9.11-1.1
+- Add SOFTWARE-4525-condor_watch_q_crash.patch to fix a condor_watch_q crash when watching DAGs (SOFTWARE-4525)
+
 * Wed Jan 27 2021 Tim Theisen <tim@cs.wisc.edu> - 8.9.11-1
 - This release of HTCondor fixes security-related bugs described at
 - https://research.cs.wisc.edu/htcondor/security/vulnerabilities/HTCONDOR-2021-0001.html
