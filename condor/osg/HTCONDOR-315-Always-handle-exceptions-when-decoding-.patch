@@ -1,22 +1,23 @@
-From e0e658f0c27e4cfec8dd71f371d574bf15f831c7 Mon Sep 17 00:00:00 2001
+From f3fe2f990bbafae88206c31885f5d4d8f168b19f Mon Sep 17 00:00:00 2001
 From: Todd Tannenbaum <tannenba@cs.wisc.edu>
 Date: Thu, 4 Mar 2021 07:55:53 -0600
 Subject: [PATCH] (HTCONDOR-315) Always handle exceptions when decoding JWT
  tokens.
 
+(modified by Matyas Selmeci <matyas@cs.wisc.edu> to fix rejects)
 ---
  src/condor_io/condor_auth_passwd.cpp  | 12 ++++++++----
  src/condor_utils/condor_scitokens.cpp | 11 +++++++++--
  2 files changed, 17 insertions(+), 6 deletions(-)
 
 diff --git a/src/condor_io/condor_auth_passwd.cpp b/src/condor_io/condor_auth_passwd.cpp
-index 9c6be59f96..4f31976f2f 100644
+index e456ed2..6be0780 100644
 --- a/src/condor_io/condor_auth_passwd.cpp
 +++ b/src/condor_io/condor_auth_passwd.cpp
-@@ -530,10 +530,14 @@ Condor_Auth_Passwd::fetchLogin()
- 							err.getFullText().c_str());
+@@ -583,10 +583,14 @@ Condor_Auth_Passwd::fetchLogin()
  					}
  					else {
+ 						username = identity;
 -						auto decoded_jwt = jwt::decode(local_token);
 -						signature = decoded_jwt.get_signature();
 -						token = decoded_jwt.get_header_base64() + "." + decoded_jwt.get_payload_base64();
@@ -33,10 +34,10 @@ index 9c6be59f96..4f31976f2f 100644
  				} else {
  					dprintf(D_SECURITY, "No compatible security key found.\n");
 diff --git a/src/condor_utils/condor_scitokens.cpp b/src/condor_utils/condor_scitokens.cpp
-index 7cd18b89dd..3b825419db 100644
+index c6a71ca..e95db38 100644
 --- a/src/condor_utils/condor_scitokens.cpp
 +++ b/src/condor_utils/condor_scitokens.cpp
-@@ -211,8 +211,15 @@ htcondor::validate_scitoken(const std::string &scitoken_str, std::string &issuer
+@@ -90,8 +90,15 @@ htcondor::validate_scitoken(const std::string &scitoken_str, std::string &issuer
  	}
  
  	if (ident && IsDebugCategory(D_AUDIT)) {
@@ -54,3 +55,6 @@ index 7cd18b89dd..3b825419db 100644
  	}
  
  	SciToken token = nullptr;
+-- 
+2.6.3
+
