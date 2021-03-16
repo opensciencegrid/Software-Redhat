@@ -1,0 +1,56 @@
+From e0e658f0c27e4cfec8dd71f371d574bf15f831c7 Mon Sep 17 00:00:00 2001
+From: Todd Tannenbaum <tannenba@cs.wisc.edu>
+Date: Thu, 4 Mar 2021 07:55:53 -0600
+Subject: [PATCH] (HTCONDOR-315) Always handle exceptions when decoding JWT
+ tokens.
+
+---
+ src/condor_io/condor_auth_passwd.cpp  | 12 ++++++++----
+ src/condor_utils/condor_scitokens.cpp | 11 +++++++++--
+ 2 files changed, 17 insertions(+), 6 deletions(-)
+
+diff --git a/src/condor_io/condor_auth_passwd.cpp b/src/condor_io/condor_auth_passwd.cpp
+index 9c6be59f96..4f31976f2f 100644
+--- a/src/condor_io/condor_auth_passwd.cpp
++++ b/src/condor_io/condor_auth_passwd.cpp
+@@ -530,10 +530,14 @@ Condor_Auth_Passwd::fetchLogin()
+ 							err.getFullText().c_str());
+ 					}
+ 					else {
+-						auto decoded_jwt = jwt::decode(local_token);
+-						signature = decoded_jwt.get_signature();
+-						token = decoded_jwt.get_header_base64() + "." + decoded_jwt.get_payload_base64();
+-						found_token = true;
++						try {
++							auto decoded_jwt = jwt::decode(local_token);
++							signature = decoded_jwt.get_signature();
++							token = decoded_jwt.get_header_base64() + "." + decoded_jwt.get_payload_base64();
++							found_token = true;
++						} catch (...) {
++							dprintf(D_SECURITY, "Generated pool_password token is malformed\n");
++						}
+ 					}
+ 				} else {
+ 					dprintf(D_SECURITY, "No compatible security key found.\n");
+diff --git a/src/condor_utils/condor_scitokens.cpp b/src/condor_utils/condor_scitokens.cpp
+index 7cd18b89dd..3b825419db 100644
+--- a/src/condor_utils/condor_scitokens.cpp
++++ b/src/condor_utils/condor_scitokens.cpp
+@@ -211,8 +211,15 @@ htcondor::validate_scitoken(const std::string &scitoken_str, std::string &issuer
+ 	}
+ 
+ 	if (ident && IsDebugCategory(D_AUDIT)) {
+-		auto jwt = jwt::decode(scitoken_str);
+-		dprintf(D_AUDIT, ident, "Examining SciToken with payload %s.\n", jwt.get_payload().c_str());
++		try {
++			auto jwt = jwt::decode(scitoken_str);
++			dprintf(D_AUDIT, ident, "Examining SciToken with payload %s.\n", jwt.get_payload().c_str());
++		} catch (...) {
++			err.pushf("SCITOKENS", 2, "Failed to decode scitoken for audit log.");
++			dprintf(D_AUDIT, ident, "Failed to decode a SciToken in order to examine it - rejecting.\n");
++			return false;
++
++		}
+ 	}
+ 
+ 	SciToken token = nullptr;
