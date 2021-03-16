@@ -5,7 +5,7 @@
 
 Name:		blahp
 Version:	1.18.48
-Release:	2.3%{?gitrev:.%{gitrev}}%{?dist}
+Release:	2.4%{?gitrev:.%{gitrev}}%{?dist}
 Summary:	gLite BLAHP daemon
 
 Group:		System/Libraries
@@ -107,6 +107,9 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Tue Mar 16 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.18.48-2.4
+- Rebuild against condor 8.9.11 (SOFTWARE-4533, SOFTWARE-4525)
+
 * Tue Feb 16 2021 Tim Theisen <tim@cs.wisc.edu> - 1.18.48-2.3
 - Rebuild against condor 8.9.12
 
