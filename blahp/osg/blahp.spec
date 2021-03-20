@@ -5,7 +5,7 @@
 
 Name:		blahp
 Version:	1.18.48
-Release:	2.1%{?gitrev:.%{gitrev}}%{?dist}
+Release:	2.2%{?gitrev:.%{gitrev}}%{?dist}
 Summary:	gLite BLAHP daemon
 
 Group:		System/Libraries
