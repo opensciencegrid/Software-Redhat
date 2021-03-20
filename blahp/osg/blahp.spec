@@ -107,6 +107,9 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Fri Mar 19 2021 Tim Theisen <tim@cs.wisc.edu> - 1.18.48-2.2
+- Rebuild against condor 8.8.13
+
 * Wed Dec 02 2020 Carl Edquist <edquist@cs.wisc.edu> - 1.18.48-2.1
 - Rebuild against condor 8.8.12
 
