@@ -1,4 +1,4 @@
-%define tarball_version 8.9.12
+%define tarball_version 8.9.13
 
 # On EL7 don't terminate the build because of bad bytecompiling
 %if 0%{?rhel} == 7
@@ -64,7 +64,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 0.533977
+%define condor_base_release 1
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -718,7 +718,7 @@ make -C docs man
 export CMAKE_PREFIX_PATH=/usr
 
 %if %uw_build
-%define condor_build_id UW_development
+%define condor_build_id 535058
 
 %cmake3 \
        -DBUILDID:STRING=%condor_build_id \
@@ -903,6 +903,7 @@ rm -f %{buildroot}/%{_mandir}/man1/condor_install.1
 rm -f %{buildroot}/%{_bindir}/condor_top
 rm -f %{buildroot}/%{_bindir}/classad_eval
 rm -f %{buildroot}/%{_bindir}/condor_watch_q
+rm -f %{buildroot}/%{_bindir}/condor_check_password
 %endif
 
 # For EL7, move oauth credmon WSGI script out of libexec to /var/www
@@ -1303,6 +1304,7 @@ rm -rf %{buildroot}
 %_bindir/condor_config_val
 %_bindir/condor_reschedule
 %_bindir/condor_userprio
+%_bindir/condor_check_password
 %_bindir/condor_dagman
 %_bindir/condor_rm
 %_bindir/condor_vacate
@@ -1677,9 +1679,27 @@ fi
 /bin/systemctl try-restart condor.service >/dev/null 2>&1 || :
 
 %changelog
-* Tue Mar 16 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 8.9.11-1.1
-- Add SOFTWARE-4525-condor_watch_q_crash.patch to fix a condor_watch_q crash when watching DAGs (SOFTWARE-4525)
-- Add HTCONDOR-315-Always-handle-exceptions-when-decoding-.patch to fix a schedd crash caused by malformed SciTokens (SOFTWARE-4533)
+* Tue Mar 30 2021 Tim Theisen <tim@cs.wisc.edu> - 8.9.13-1
+- Host based security is no longer the default security model
+- Hardware accelerated integrity and AES encryption used by default
+- Normally, AES encryption is used for all communication and file transfers
+- Fallback to Triple-DES or Blowfish when interoperating with older versions
+- Simplified and automated new HTCondor installations
+- HTCondor now detects instances of multi-instance GPUs
+- Fixed memory leaks (collector updates in 8.9 could leak a few MB per day)
+- Many other enhancements and bug fixes, see version history for details
+
+* Thu Mar 25 2021 Tim Theisen <tim@cs.wisc.edu> - 8.9.12-1
+- Withdrawn due to compatibility issues with prior releases
+
+* Tue Mar 23 2021 Tim Theisen <tim@cs.wisc.edu> - 8.8.13-1
+- condor_ssh_to_job now maps CR and NL to work with editors like nano
+- Improved the performance of data transfer in condor_ssh_to_job
+- HA replication now accepts SHA-2 checksums to prepare for MD5 removal
+- Submission to NorduGrid ARC CE works with newer ARC CE versions
+- Fixed condor_annex crashes on platforms with newer compilers
+- Fixed "use feature: GPUsMonitor" to locate the monitor binary on Windows
+- Fixed a bug that prevented using the '@' character in an event log path
 
 * Wed Jan 27 2021 Tim Theisen <tim@cs.wisc.edu> - 8.9.11-1
 - This release of HTCondor fixes security-related bugs described at
