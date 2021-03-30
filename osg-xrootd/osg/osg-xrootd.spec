@@ -1,7 +1,7 @@
 Summary: OSG configuration files for XRootD
 Name: osg-xrootd
 Version: 3.6
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: ASL 2.0
 BuildArch: noarch
 
@@ -79,6 +79,9 @@ if [ ! -e /etc/xrootd/macaroon-secret ]; then
 fi
 
 %changelog
+* Tue Mar 30 2021 Brian Lin <blin@cs.wisc.edu> 3.6-2
+- Update ofs.authlib directive to use new '++' append syntax (SOFTWARE-4544)
+
 * Mon Mar 15 2021 Carl Edquist <edquist@cs.wisc.edu> - 3.6-1
 - Release for OSG 3.6 / XRootD 5 (SOFTWARE-4495)
 - Drop xrootd-lcmaps & vo-client-lcmaps-voms requirements
