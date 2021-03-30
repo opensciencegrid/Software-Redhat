@@ -132,7 +132,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 0.533839
+%define condor_base_release 1
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -950,7 +950,7 @@ export CMAKE_PREFIX_PATH=/usr
 # causes build issues with EL5, don't even bother building the tests.
 
 %if %uw_build
-%define condor_build_id 503068
+%define condor_build_id 534541
 
 cmake \
        -DBUILDID:STRING=%condor_build_id \
@@ -2207,8 +2207,14 @@ fi
 %endif
 
 %changelog
-* Tue Dec 01 2020 Tim Theisen <tim@cs.wisc.edu> - 8.8.12-1.1
-- Carry OSG local changes
+* Tue Mar 23 2021 Tim Theisen <tim@cs.wisc.edu> - 8.8.13-1
+- condor_ssh_to_job now maps CR and NL to work with editors like nano
+- Improved the performance of data transfer in condor_ssh_to_job
+- HA replication now accepts SHA-2 checksums to prepare for MD5 removal
+- Submission to NorduGrid ARC CE works with newer ARC CE versions
+- Fixed condor_annex crashes on platforms with newer compilers
+- Fixed "use feature: GPUsMonitor" to locate the monitor binary on Windows
+- Fixed a bug that prevented using the '@' character in an event log path
 
 * Mon Nov 23 2020 Tim Theisen <tim@cs.wisc.edu> - 8.8.12-1
 - Added a family of version comparison functions to ClassAds
