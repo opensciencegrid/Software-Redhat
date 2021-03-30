@@ -136,9 +136,6 @@ Patch2: amzn2-python2.patch
 Patch8: osg_sysconfig_in_init_script.patch
 #% endif
 
-Patch100: SOFTWARE-4525-condor_watch_q_crash.patch
-Patch101: HTCONDOR-315-Always-handle-exceptions-when-decoding-.patch
-
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
 BuildRequires: cmake
