@@ -1,0 +1,33 @@
+# This is a template authorization file containing examples of how to
+# control access to the data served by xrootd.
+
+# Each authorization line has the format
+# `<idtype> <id> <path1> <privs1> [<path2> <privs2>] ...`
+# You can specify multiple path, privs pairs in a line, but each
+# idtype, id pair can only be specified once.
+
+# All paths are relative to the "rootdir" defined in the xrootd configuration
+# files in /etc/xrootd/config.d.  We will use "/mnt/xrootd" in the examples.
+
+## The following gives all users read access to all files under /mnt/xrootd.
+#u * / rl
+
+## The following gives all users read access to all files under /mnt/xrootd,
+## _except_ under /mnt/xrootd/private.
+## Paths _must_ be specified from most specific to least specific.
+#u * /private -rl \
+#    / rl
+
+## The following gives all users full access to their own directories under
+## /mnt/xrootd/home/<USERNAME>.
+#u = /home/@=/ a
+
+## The following gives the user named "xrootd" full access to all the files
+## under /mnt/xrootd.
+## There must be at least one such user in order to create the
+## private dirs for users willing to store their data in the facility
+#u xrootd / a
+
+## The following gives users in the Unix group "biology" full access to
+## all the files under /mnt/xrootd/genomics.
+#g biology /genomics a
