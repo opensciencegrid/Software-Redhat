@@ -713,8 +713,6 @@ exit 0
 %patch8 -p1
 %endif
 
-%patch100 -p1
-%patch101 -p1
 
 # fix errant execute permissions
 find src -perm /a+x -type f -name "*.[Cch]" -exec chmod a-x {} \;
