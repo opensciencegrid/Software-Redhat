@@ -89,7 +89,7 @@
 Name:      xrootd
 Epoch:     1
 Version:   5.1.1
-Release:   1.1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:   1.2%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -330,6 +330,10 @@ Requires:  %{name}-libs        = %{epoch}:%{version}-%{release}
 Requires:  %{name}-client-libs = %{epoch}:%{version}-%{release}
 Requires:  %{name}-server-libs = %{epoch}:%{version}-%{release}
 Requires:  expect
+%if 0%{?osg}
+# SOFTWARE-4557
+Conflicts: xrootd-multiuser < 0.5
+%endif
 
 %description server
 XRootD server binaries
@@ -1164,6 +1168,9 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Wed Mar 31 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.1.1-1.2.osg
+- Conflict with xrootd-multiuser < 0.5.0 (known to be broken) (SOFTWARE-4557)
+
 * Wed Mar 03 2021 Carl Edquist <edquist@cs.wisc.edu> - 5.1.0-1.1.osg
 - Final 5.1.0 + OSG additions (SOFTWARE-4356)
 
