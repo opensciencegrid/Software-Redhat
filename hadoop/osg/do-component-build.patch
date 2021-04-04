@@ -53,7 +53,7 @@ index c8981ef..745335f 100755
      fi
  
 -    IVY_MIRROR_PROP=${IVY_MIRROR_PROP:-http://repo1.maven.org/maven2/}
-+    IVY_MIRROR_PROP=${IVY_MIRROR_PROP:-http://repo1.maven.org/maven2}
++    IVY_MIRROR_PROP=${IVY_MIRROR_PROP:-https://repo1.maven.org/maven2}
 +
      IVY_EXTRA_ARGS="-Dmvnrepo=$IVY_MIRROR_PROP -Drepo.maven.org=$IVY_MIRROR_PROP ${IVYSETTINGS_OVERRIDE}"
  # Copy them into the main build directory to be included in the tarball
