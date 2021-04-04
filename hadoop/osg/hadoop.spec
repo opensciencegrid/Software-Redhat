@@ -1,7 +1,7 @@
 %define hadoop_version 2.6.0+cdh5.12.1+2540 
 %define hadoop_patched_version 2.6.0-cdh5.12.1 
 %define hadoop_base_version 2.6.0 
-%define osg_patchlevel 8
+%define osg_patchlevel 9
 %define hadoop_release 1.cdh5.12.1.p0.3.%{osg_patchlevel}%{?dist} 
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
@@ -1163,6 +1163,7 @@ fi
 %changelog
 * Mon Mar 22 2021 Carl Edquist <edquist@cs.wisc.edu> - 2.6.0+cdh5.12.1+2540-1.cdh5.12.1.p0.3.9
 - Add hdfs-client tcp keepalive patch (SOFTWARE-4540)
+- Bundle extra build deps to avoid build-time downloads
 
 * Tue Oct 30 2018 Carl Edquist <edquist@cs.wisc.edu> - 2.6.0+cdh5.12.1+2540-1.cdh5.12.1.p0.3.8
 - Add BuildRequires ant-trax for EL6 build (SOFTWARE-3423)
