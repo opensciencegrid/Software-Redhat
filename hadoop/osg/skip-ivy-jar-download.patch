@@ -1,0 +1,28 @@
+diff --git a/hadoop-mapreduce1-project/build.xml b/hadoop-mapreduce1-project/build.xml
+index cda2c9a..0936d07 100644
+--- a/hadoop-mapreduce1-project/build.xml
++++ b/hadoop-mapreduce1-project/build.xml
+@@ -1898,7 +1898,9 @@
+   </target>
+ 
+   <target name="ivy-download" description="To download ivy" unless="offline">
++  <!--
+     <get src="${ivy_repo_url}" dest="${ivy.jar}" usetimestamp="true"/>
++  -->
+   </target>
+ 
+   <!--
+diff --git a/hadoop-mapreduce1-project/src/contrib/build-contrib.xml b/hadoop-mapreduce1-project/src/contrib/build-contrib.xml
+index 8f025bc..189a6e3 100644
+--- a/hadoop-mapreduce1-project/src/contrib/build-contrib.xml
++++ b/hadoop-mapreduce1-project/src/contrib/build-contrib.xml
+@@ -426,7 +426,9 @@
+ 
+ 
+   <target name="ivy-download" description="To download ivy " unless="offline">
++  <!--
+     <get src="${ivy_repo_url}" dest="${ivy.jar}" usetimestamp="true"/>
++  -->
+   </target>
+ 
+   <target name="ivy-init-antlib" depends="ivy-download,ivy-probe-antlib" unless="ivy.found">
