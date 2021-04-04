@@ -705,13 +705,14 @@ popd
 %patch17 -p1
 %patch18 -p1
 
+# drop some build time downloads into place
 mkdir hadoop-common-project/hadoop-kms/downloads
 mkdir hadoop-hdfs-project/hadoop-hdfs-httpfs/downloads
 cp %{SOURCE110} hadoop-common-project/hadoop-kms/downloads
 cp %{SOURCE110} hadoop-hdfs-project/hadoop-hdfs-httpfs/downloads
-
 cp %{SOURCE111} hadoop-mapreduce1-project/ivy
 
+# pull in local maven m2 and ivy2 caches to avoid build time downloads
 mkdir -p ~/.m2 ~/.ivy2
 tar Cxf ~/.m2 %{SOURCE112}
 tar Cxf ~/.ivy2 %{SOURCE113}
