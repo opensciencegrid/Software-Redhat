@@ -206,6 +206,7 @@ Source100: apache-forrest-0.8.tar.gz
 Source110: apache-tomcat-6.0.53.tar.gz
 Source111: ivy-2.2.0.jar
 Source112: hadoop-m2-cache-%{hadoop_version}.tar
+Source113: hadoop-ivy2-cache-%{hadoop_version}.tar
 
 Source101: hadoop-0.20-mapreduce.tmpfiles.conf
 Source102: hadoop-hdfs.tmpfiles.conf
@@ -711,8 +712,9 @@ cp %{SOURCE110} hadoop-hdfs-project/hadoop-hdfs-httpfs/downloads
 
 cp %{SOURCE111} hadoop-mapreduce1-project/ivy
 
-mkdir -p ~/.m2
+mkdir -p ~/.m2 ~/.ivy2
 tar Cxf ~/.m2 %{SOURCE112}
+tar Cxf ~/.ivy2 %{SOURCE113}
 
 %build
 export COMPONENT_HASH=520d8b072e666e9f21d645ca6a5219fc37535a52
