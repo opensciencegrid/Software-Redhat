@@ -1,0 +1,29 @@
+diff --git a/hadoop-common-project/hadoop-kms/pom.xml b/hadoop-common-project/hadoop-kms/pom.xml
+index fbd5193..02dfbee 100644
+--- a/hadoop-common-project/hadoop-kms/pom.xml
++++ b/hadoop-common-project/hadoop-kms/pom.xml
+@@ -369,10 +369,6 @@
+                 <configuration>
+                   <target>
+                     <mkdir dir="downloads"/>
+-                    <get
+-                      src="${tomcat.download.url}"
+-                      dest="downloads/apache-tomcat-${tomcat.version}.tar.gz"
+-                      verbose="true" skipexisting="true"/>
+                     <delete dir="${project.build.directory}/tomcat.exp"/>
+                     <mkdir dir="${project.build.directory}/tomcat.exp"/>
+ 
+diff --git a/hadoop-hdfs-project/hadoop-hdfs-httpfs/pom.xml b/hadoop-hdfs-project/hadoop-hdfs-httpfs/pom.xml
+index e315dce..cfb4d9f 100644
+--- a/hadoop-hdfs-project/hadoop-hdfs-httpfs/pom.xml
++++ b/hadoop-hdfs-project/hadoop-hdfs-httpfs/pom.xml
+@@ -555,9 +555,6 @@
+                 <configuration>
+                   <target>
+                     <mkdir dir="downloads"/>
+-                    <get
+-                        src="${tomcat.download.url}"
+-                        dest="downloads/apache-tomcat-${tomcat.version}.tar.gz" verbose="true" skipexisting="true"/>
+                     <delete dir="${project.build.directory}/tomcat.exp"/>
+                     <mkdir dir="${project.build.directory}/tomcat.exp"/>
+ 

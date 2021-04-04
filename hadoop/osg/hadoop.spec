@@ -203,6 +203,7 @@ Source39: kms-tomcat-deployment.sh
 Source40: filter-provides.sh
 
 Source100: apache-forrest-0.8.tar.gz
+Source110: apache-tomcat-6.0.53.tar.gz
 
 Source101: hadoop-0.20-mapreduce.tmpfiles.conf
 Source102: hadoop-hdfs.tmpfiles.conf
@@ -226,6 +227,7 @@ Patch15: sw4540-hdfs-client-tcp-keepalive.patch
 # not needed anymore?
 Patch16: ivy-maven-repo.patch
 
+Patch17: skip-apache-tomcat-download.patch
 Buildroot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id} -u -n)
 BuildRequires: python >= 2.4
 BuildRequires: git
@@ -695,6 +697,12 @@ popd
 %patch14 -p1
 %patch15 -p1
 %patch16 -p1
+%patch17 -p1
+
+mkdir hadoop-common-project/hadoop-kms/downloads
+mkdir hadoop-hdfs-project/hadoop-hdfs-httpfs/downloads
+cp %{SOURCE110} hadoop-common-project/hadoop-kms/downloads
+cp %{SOURCE110} hadoop-hdfs-project/hadoop-hdfs-httpfs/downloads
 
 %build
 export COMPONENT_HASH=520d8b072e666e9f21d645ca6a5219fc37535a52
