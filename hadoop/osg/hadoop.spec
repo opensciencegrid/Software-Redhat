@@ -704,6 +704,13 @@ export COMPONENT_HASH=520d8b072e666e9f21d645ca6a5219fc37535a52
 
 export JAVA_HOME=%{java_home}
 export FORREST_HOME=$PWD/apache-forrest-0.8
+
+# repo2.maven.org is no more, and repo1 is https-only
+
+find \( -name \*.xml -o -name 0002-MR1-KITCHEN-BUILD\*.patch \) \
+     -exec grep -l 'http://repo[12].maven.org/maven2' {} + |
+xargs sed -i s,http://repo[12].maven.org,https://repo1.maven.org,g
+
 env FULL_VERSION=%{hadoop_patched_version} HADOOP_VERSION=%{hadoop_version} HADOOP_ARCH=%{hadoop_arch} bash %{SOURCE1}
 
 #########################
