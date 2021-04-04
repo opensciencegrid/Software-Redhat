@@ -1,0 +1,24 @@
+diff --git a/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/DFSClient.java b/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/DFSClient.java
+index 9953754fdc..e94113d7d7 100644
+--- a/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/DFSClient.java
++++ b/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/DFSClient.java
+@@ -2410,6 +2410,7 @@ private IOStreamPair connectToDN(DatanodeInfo dn, int timeout,
+       }
+       NetUtils.connect(sock, NetUtils.createSocketAddr(dnAddr), timeout);
+       sock.setTcpNoDelay(getConf().getDataTransferTcpNoDelay());
++      sock.setKeepAlive(true);
+       sock.setSoTimeout(timeout);
+   
+       OutputStream unbufOut = NetUtils.getOutputStream(sock);
+diff --git a/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/DFSOutputStream.java b/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/DFSOutputStream.java
+index 138af98d9d..a9ac97febb 100644
+--- a/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/DFSOutputStream.java
++++ b/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/DFSOutputStream.java
+@@ -1961,6 +1961,7 @@ static Socket createSocketForPipeline(final DatanodeInfo first,
+     final int timeout = client.getDatanodeReadTimeout(length);
+     NetUtils.connect(sock, isa, client.getRandomLocalInterfaceAddr(), client.getConf().socketTimeout);
+     sock.setTcpNoDelay(client.getConf().getDataTransferTcpNoDelay());
++    sock.setKeepAlive(true);
+     sock.setSoTimeout(timeout);
+     if (client.getConf().socketSendBufferSize > 0) {
+       sock.setSendBufferSize(client.getConf().socketSendBufferSize);

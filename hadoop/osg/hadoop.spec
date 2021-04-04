@@ -221,9 +221,10 @@ Patch11: pom.xml.patch
 Patch12: 1184-extendable-client.patch
 Patch13: HDFS-10193.patch
 Patch14: 2588-out-of-quota-msg.patch
+Patch15: sw4540-hdfs-client-tcp-keepalive.patch
 
 # not needed anymore?
-Patch15: ivy-maven-repo.patch
+Patch16: ivy-maven-repo.patch
 
 Buildroot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id} -u -n)
 BuildRequires: python >= 2.4
@@ -693,6 +694,7 @@ popd
 %patch13 -p1
 %patch14 -p1
 %patch15 -p1
+%patch16 -p1
 
 %build
 export COMPONENT_HASH=520d8b072e666e9f21d645ca6a5219fc37535a52
@@ -1134,6 +1136,9 @@ fi
 %endif
 
 %changelog
+* Mon Mar 22 2021 Carl Edquist <edquist@cs.wisc.edu> - 2.6.0+cdh5.12.1+2540-1.cdh5.12.1.p0.3.9
+- Add hdfs-client tcp keepalive patch (SOFTWARE-4540)
+
 * Tue Oct 30 2018 Carl Edquist <edquist@cs.wisc.edu> - 2.6.0+cdh5.12.1+2540-1.cdh5.12.1.p0.3.8
 - Add BuildRequires ant-trax for EL6 build (SOFTWARE-3423)
 
