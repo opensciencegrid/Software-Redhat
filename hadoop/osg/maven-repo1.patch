@@ -1,0 +1,74 @@
+commit 6a405bc1858b2ded492148f9b82abf4134c819cb
+Author: Carl Edquist <edquist@cs.wisc.edu>
+Date:   Mon Apr 5 07:17:40 2021 +0000
+
+    replace obsolete maven repo references with https://repo1.maven.org
+    
+    repo2 no longer exists, and repo1 is https-only
+
+diff --git a/cloudera/patches/0002-MR1-KITCHEN-BUILD.-Grafting-MR1-code-base-on-top-of-.patch b/cloudera/patches/0002-MR1-KITCHEN-BUILD.-Grafting-MR1-code-base-on-top-of-.patch
+index d221ae1..f000264 100644
+--- a/cloudera/patches/0002-MR1-KITCHEN-BUILD.-Grafting-MR1-code-base-on-top-of-.patch
++++ b/cloudera/patches/0002-MR1-KITCHEN-BUILD.-Grafting-MR1-code-base-on-top-of-.patch
+@@ -16160,7 +16160,7 @@ index 0000000..fc16c6f
+ +  <!-- IVY properteis set here -->
+ +  <property name="ivy.dir" location="ivy" />
+ +  <loadproperties srcfile="${ivy.dir}/libraries.properties"/>
+-+  <property name="mvnrepo" value="http://repo2.maven.org/maven2"/>
+++  <property name="mvnrepo" value="https://repo1.maven.org/maven2"/>
+ +  <property name="asfrepo" value="https://repository.apache.org"/> 
+ +  <property name="ivy.jar" location="${ivy.dir}/ivy-${ivy.version}.jar"/>
+ +  <property name="ivy_repo_url" 
+@@ -22857,7 +22857,7 @@ index 0000000..e8c2fa0
+ +  see http://www.jayasoft.org/ivy/doc/configuration
+ +  -->
+ +  <!-- you can override this property to use mirrors
+-+          http://repo1.maven.org/maven2/
+++          https://repo1.maven.org/maven2/
+ +          http://mirrors.dotsrc.org/maven2
+ +          http://ftp.ggi-project.org/pub/packages/maven2
+ +          http://mirrors.sunsite.dk/maven2
+@@ -22866,7 +22866,7 @@ index 0000000..e8c2fa0
+ +          http://www.ibiblio.net/pub/packages/maven2
+ +  -->
+ +  <property name="repo.maven.org"
+-+    value="http://repo1.maven.org/maven2/"
+++    value="https://repo1.maven.org/maven2/"
+ +    override="false"/>
+ +  <property name="snapshot.apache.org"
+ +    value="http://people.apache.org/repo/m2-snapshot-repository/"
+@@ -439961,7 +439961,7 @@ index 0000000..68bd9d5
+ +  <loadproperties srcfile="${hadoop.root}/ivy/libraries.properties"/>
+ +  <property name="ivy.jar" location="${hadoop.root}/ivy/ivy-${ivy.version}.jar"/>
+ +  <property name="ivy_repo_url" 
+-+	value="http://repo2.maven.org/maven2/org/apache/ivy/ivy/${ivy.version}/ivy-${ivy.version}.jar" />
+++	value="https://repo1.maven.org/maven2/org/apache/ivy/ivy/${ivy.version}/ivy-${ivy.version}.jar" />
+ +  <property name="build.dir" location="build" />
+ +  <property name="build.ivy.dir" location="${build.dir}/ivy" />
+ +  <property name="build.ivy.lib.dir" location="${build.ivy.dir}/lib" />
+diff --git a/hadoop-mapreduce1-project/build.xml b/hadoop-mapreduce1-project/build.xml
+index 3f4107d..0936d07 100644
+--- a/hadoop-mapreduce1-project/build.xml
++++ b/hadoop-mapreduce1-project/build.xml
+@@ -212,7 +212,7 @@
+   <!-- IVY properteis set here -->
+   <property name="ivy.dir" location="ivy" />
+   <loadproperties srcfile="${ivy.dir}/libraries.properties"/>
+-  <property name="mvnrepo" value="http://repo2.maven.org/maven2"/>
++  <property name="mvnrepo" value="https://repo1.maven.org/maven2"/>
+   <property name="asfrepo" value="https://repository.apache.org"/> 
+   <property name="ivy.jar" location="${ivy.dir}/ivy-${ivy.version}.jar"/>
+   <property name="ivy_repo_url" 
+diff --git a/hadoop-mapreduce1-project/src/contrib/build-contrib.xml b/hadoop-mapreduce1-project/src/contrib/build-contrib.xml
+index 3e4758f..189a6e3 100644
+--- a/hadoop-mapreduce1-project/src/contrib/build-contrib.xml
++++ b/hadoop-mapreduce1-project/src/contrib/build-contrib.xml
+@@ -81,7 +81,7 @@
+   <loadproperties srcfile="${hadoop.root}/ivy/libraries.properties"/>
+   <property name="ivy.jar" location="${hadoop.root}/ivy/ivy-${ivy.version}.jar"/>
+   <property name="ivy_repo_url" 
+-	value="http://repo2.maven.org/maven2/org/apache/ivy/ivy/${ivy.version}/ivy-${ivy.version}.jar" />
++	value="https://repo1.maven.org/maven2/org/apache/ivy/ivy/${ivy.version}/ivy-${ivy.version}.jar" />
+   <property name="build.dir" location="build" />
+   <property name="build.ivy.dir" location="${build.dir}/ivy" />
+   <property name="build.ivy.lib.dir" location="${build.ivy.dir}/lib" />

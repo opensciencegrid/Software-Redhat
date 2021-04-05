@@ -227,11 +227,11 @@ Patch13: HDFS-10193.patch
 Patch14: 2588-out-of-quota-msg.patch
 Patch15: sw4540-hdfs-client-tcp-keepalive.patch
 
-# not needed anymore?
+# patches for build-time downloads
 Patch16: ivy-maven-repo.patch
-
-Patch17: skip-apache-tomcat-download.patch
-Patch18: skip-ivy-jar-download.patch
+Patch17: maven-repo1.patch
+Patch18: skip-apache-tomcat-download.patch
+Patch19: skip-ivy-jar-download.patch
 
 Buildroot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id} -u -n)
 BuildRequires: python >= 2.4
@@ -705,6 +705,7 @@ popd
 %patch16 -p1
 %patch17 -p1
 %patch18 -p1
+%patch19 -p1
 
 # drop some build time downloads into place
 mkdir hadoop-common-project/hadoop-kms/downloads
@@ -726,13 +727,6 @@ export COMPONENT_HASH=520d8b072e666e9f21d645ca6a5219fc37535a52
 
 export JAVA_HOME=%{java_home}
 export FORREST_HOME=$PWD/apache-forrest-0.8
-
-# repo2.maven.org is no more, and repo1 is https-only
-
-find \( -name \*.xml -o -name 0002-MR1-KITCHEN-BUILD\*.patch \) \
-     -exec grep -l 'http://repo[12].maven.org/maven2' {} + |
-xargs sed -i s,http://repo[12].maven.org,https://repo1.maven.org,g
-
 env FULL_VERSION=%{hadoop_patched_version} HADOOP_VERSION=%{hadoop_version} HADOOP_ARCH=%{hadoop_arch} bash %{SOURCE1}
 
 #########################
