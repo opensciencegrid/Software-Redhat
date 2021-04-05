@@ -247,6 +247,7 @@ BuildRequires: maven3
 %endif
 BuildRequires: protobuf-compiler
 BuildRequires: cmake
+BuildRequires: gcc-c++
 BuildRequires: ant
 %if 0%{?rhel} == 6
 BuildRequires: ant-trax
