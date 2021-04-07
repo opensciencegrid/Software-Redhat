@@ -1,7 +1,12 @@
+%if 0%{?el8}
+%global __debug_install_post %{nil}
+%global debug_package %{nil}
+%endif
+
 Name:           gridftp-dsi-posix
 Epoch:          1
 Version:        1.4
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        DSI library and POSIX preload
 License:        Stanford (modified BSD with advert clause)
 URL:            https://github.com/wyang007/gridftp_dsi_posix
@@ -14,7 +19,6 @@ Source3:        gridftp-xrootd.osg-extensions.conf
 BuildRequires:  globus-common-devel globus-gridftp-server-devel zlib-devel
 
 Obsoletes: xrootd-dsi < 3.0.5
-Obsoletes: xrootd-dsi%{_isa} < 3.0.5
 Provides: xrootd-dsi = %{epoch}:%{version}
 Provides: xrootd-dsi%{_isa} = %{epoch}:%{version}
 
@@ -61,6 +65,11 @@ install -m 644 libglobus_gridftp_server_posix.so $RPM_BUILD_ROOT%{_libdir}
 %{_libdir}/libglobus_gridftp_server_posix.so
 
 %changelog
+* Wed Apr 07 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 1:1.4-3
+- Packaging changes for EL8 (SOFTWARE-4231):
+    - Apparently %{_isa} is not allowed in Obsoletes clauses on EL8; package names only
+    - Disable debuginfo package generator since it doesn't find any files
+
 * Thu Jun 22 2017 Brian Lin <blin@cs.wisc.edu> - 1:1.4-2
 - Added architecture-specific provides for xrootd-dsi
 - Refer to gridftp-dsi-posix paths in globus-gridftp-server-plugin
