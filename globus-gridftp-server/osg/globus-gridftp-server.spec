@@ -9,7 +9,7 @@
 Name:		globus-gridftp-server
 %global _name %(tr - _ <<< %{name})
 Version:	13.20
-Release:	1.1%{?dist}
+Release:	1.2%{?dist}
 Summary:	Grid Community Toolkit - Globus GridFTP Server
 
 License:	ASL 2.0
@@ -220,8 +220,11 @@ fi
 %config(noreplace) %{_sysconfdir}/gridftp.gfork
 %config(noreplace) %{_sysconfdir}/xinetd.d/gridftp
 %if %{use_systemd}
+# OSG supplies their own service files in the osg-gridftp metapackage
+%if ! 0%{?osg}
 %{_unitdir}/%{name}.service
 %{_unitdir}/globus-gridftp-sshftp.service
+%endif
 %else
 %{_initddir}/%{name}
 %{_initddir}/globus-gridftp-sshftp
@@ -236,6 +239,9 @@ fi
 %{_libdir}/pkgconfig/%{name}.pc
 
 %changelog
+* Thu Apr 08 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 13.20-1.2.osg
+- OSG: don't ship systemd service files; they conflict with osg-gridftp (SOFTWARE-4231)
+
 * Thu Mar 26 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 13.20-1.1.osg
 - Add patch for gridcf/gct#117 "Restore log transfer functionality that was accidentally removed" (SOFTWARE-4041)
 
