@@ -9,7 +9,7 @@
 Name:		globus-gridftp-server
 %global _name %(tr - _ <<< %{name})
 Version:	13.20
-Release:	1.2%{?dist}
+Release:	1.3%{?dist}
 Summary:	Grid Community Toolkit - Globus GridFTP Server
 
 License:	ASL 2.0
@@ -144,8 +144,10 @@ rm -rf %{buildroot}%{_sysconfdir}/init.d
 
 # Install start-up scripts
 %if %{use_systemd}
+%if ! 0%{?osg}
 mkdir -p %{buildroot}%{_unitdir}
 install -m 644 -p %{SOURCE1} %{SOURCE2} %{buildroot}%{_unitdir}
+%endif
 %else
 mkdir -p %{buildroot}%{_initddir}
 install -p %{SOURCE3} %{SOURCE4} %{buildroot}%{_initddir}
@@ -163,6 +165,7 @@ make %{?_smp_mflags} check VERBOSE=1
 %ldconfig_scriptlets
 
 %if %{use_systemd}
+%if ! 0%{?osg}
 
 %pre progs
 # Remove old init config when systemd is used
@@ -178,6 +181,7 @@ make %{?_smp_mflags} check VERBOSE=1
 %postun progs
 %systemd_postun_with_restart %{name}.service globus-gridftp-sshftp.service
 
+%endif
 %else
 
 %post progs
@@ -220,7 +224,6 @@ fi
 %config(noreplace) %{_sysconfdir}/gridftp.gfork
 %config(noreplace) %{_sysconfdir}/xinetd.d/gridftp
 %if %{use_systemd}
-# OSG supplies their own service files in the osg-gridftp metapackage
 %if ! 0%{?osg}
 %{_unitdir}/%{name}.service
 %{_unitdir}/globus-gridftp-sshftp.service
@@ -239,7 +242,7 @@ fi
 %{_libdir}/pkgconfig/%{name}.pc
 
 %changelog
-* Thu Apr 08 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 13.20-1.2.osg
+* Thu Apr 08 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 13.20-1.3.osg
 - OSG: don't ship systemd service files; they conflict with osg-gridftp (SOFTWARE-4231)
 
 * Thu Mar 26 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 13.20-1.1.osg
