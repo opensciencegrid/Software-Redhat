@@ -3,9 +3,12 @@
 %define bl_sysconfdir %{_sysconfdir}/%{name}
 %define bl_libexecdir %{_libexecdir}/%{name}
 
+# Force brp-python-bytecompile to use Python 3
+%global __python /usr/bin/python3
+
 Name:		blahp
-Version:	1.18.48
-Release:	2.4%{?gitrev:.%{gitrev}}%{?dist}
+Version:	2.0.1
+Release:	1.1%{?gitrev:.%{gitrev}}%{?dist}
 Summary:	gLite BLAHP daemon
 
 Group:		System/Libraries
@@ -67,6 +70,8 @@ BuildRequires:  globus-gsi-proxy-core-devel
 BuildRequires:  globus-gsi-cert-utils-devel
 BuildRequires:  docbook-style-xsl, libxslt
 
+Requires:       python3
+
 %description
 %{summary}
 
@@ -75,10 +80,6 @@ BuildRequires:  docbook-style-xsl, libxslt
 %patch0 -p1
 
 %build
-%if 0%{?rhel} == 7
-# Python 3 may not be installed on EL7
-sed -i 's;/usr/bin/python3;/usr/bin/python2;' src/scripts/*status.py
-%endif
 ./bootstrap
 export CPPFLAGS="-I/usr/include/classad -std=c++11 -fcommon"
 export LDFLAGS="-lclassad -lglobus_gsi_credential -lglobus_common -lglobus_gsi_proxy_core"
@@ -114,7 +115,7 @@ done
 
 # Create local_submit_attributes.sh symlinks in /etc/blahp
 for batch_system in pbs sge slurm lsf condor; do
-    ln -s %{bl_sysconfdir}/${batch_system}_local_submit_attributes.sh \
+    ln -s ../../../%{bl_sysconfdir}/${batch_system}_local_submit_attributes.sh \
        $RPM_BUILD_ROOT%{bl_libexecdir}/${batch_system}_local_submit_attributes.sh
 done
 
@@ -147,6 +148,20 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Thu Apr 08 2021 Tim Theisen <tim@cs.wisc.edu> 2.0.1-1
+- Convert to pure Python 3 (no Python 2 compatibility)
+- Restore blah_libexec_directory to the blah.config file
+
+* Tue Mar 30 2021 Brian Lin <blin@cs.wisc.edu> 2.0.0-1
+- Add GPU support (#12)
+- Improve multi-node support for Slurm (HTCONDOR-166)
+- More efficient status queries for Slurm (HTCONDOR-104)
+- More robust job ID extraction from SLurm (HTCONDOR-259)
+- Better interfacing with PBS and Slurm
+- More Python 3 fixes for PBS and Slurm scripts
+- Convert LSF script to Python 3 (HTCONDOR-333, #34)
+- Add Debian build files
+
 * Mon Feb 22 2021 Brian Lin <blin@cs.wisc.edu> - 1.18.48-2.4
 - Build blahp server without Globus (SOFTWARE-4504)
 
