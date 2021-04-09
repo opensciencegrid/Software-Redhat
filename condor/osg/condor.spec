@@ -1,7 +1,4 @@
-# Cap make to -j12 to avoid race conditions on EL8
-%global _smp_ncpus_max 12
-
-%define tarball_version 8.9.13
+%define tarball_version 9.0.0
 
 # On EL7 don't terminate the build because of bad bytecompiling
 %if 0%{?rhel} == 7
@@ -13,6 +10,7 @@
 # % define osg      0
 # % define uw_build 1
 # % define vaultcred 1
+# % define devtoolset 0
 
 %define python 0
 
@@ -49,10 +47,8 @@
 %define python 1
 
 %if 0%{?osg}
-%define glexec 0
 %define globus 0
 %else
-%define glexec 1
 %define globus 1
 %endif
 
@@ -73,7 +69,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1
+%define condor_base_release 0.535950
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -225,7 +221,7 @@ BuildRequires: libtool-ltdl-devel
 BuildRequires: libcgroup-devel
 Requires: libcgroup
 
-%if 0%{?rhel} == 7 && ! 0%{?amzn}
+%if 0%{?rhel} == 7 && ! 0%{?amzn} && 0%{?devtoolset}
 BuildRequires: which
 BuildRequires: devtoolset-9-toolchain
 %endif
@@ -720,7 +716,7 @@ find src -perm /a+x -type f -name "*.[Cch]" -exec chmod a-x {} \;
 
 %build
 
-%if 0%{?rhel} == 7 && ! 0%{?amzn}
+%if 0%{?rhel} == 7 && ! 0%{?amzn} && 0%{?devtoolset}
 . /opt/rh/devtoolset-9/enable
 export CC=$(which cc)
 export CXX=$(which c++)
@@ -801,11 +797,6 @@ export CMAKE_PREFIX_PATH=/usr
        -DWITH_BLAHP:BOOL=FALSE \
 %endif
        -DWITH_CREAM:BOOL=FALSE \
-%if %glexec
-       -DWANT_GLEXEC:BOOL=TRUE \
-%else
-       -DWANT_GLEXEC:BOOL=FALSE \
-%endif
 %if %globus
        -DWITH_GLOBUS:BOOL=TRUE \
 %else
@@ -922,6 +913,7 @@ rm -f %{buildroot}/%{_bindir}/condor_top
 rm -f %{buildroot}/%{_bindir}/classad_eval
 rm -f %{buildroot}/%{_bindir}/condor_watch_q
 rm -f %{buildroot}/%{_bindir}/condor_check_password
+rm -f %{buildroot}/%{_bindir}/condor_check_config
 %endif
 
 # For EL7, move oauth credmon WSGI script out of libexec to /var/www
@@ -1172,16 +1164,6 @@ rm -f %{buildroot}/usr/lib64/python2.7/site-packages/htcondor/personal.py
 %_libexecdir/condor/condor_job_router
 %_libexecdir/condor/condor_pid_ns_init
 %_libexecdir/condor/condor_urlfetch
-%if %glexec
-%_libexecdir/condor/condor_glexec_setup
-%_libexecdir/condor/condor_glexec_run
-%_libexecdir/condor/condor_glexec_job_wrapper
-%_libexecdir/condor/condor_glexec_update_proxy
-%_libexecdir/condor/condor_glexec_cleanup
-%_libexecdir/condor/condor_glexec_kill
-%_libexecdir/condor/condor_glexec_wrapper
-%_libexecdir/condor/glexec_starter_setup.sh
-%endif
 %if %globus
 %_sbindir/condor_gridshell
 %_sbindir/gahp_server
@@ -1326,6 +1308,7 @@ rm -f %{buildroot}/usr/lib64/python2.7/site-packages/htcondor/personal.py
 %_bindir/condor_reschedule
 %_bindir/condor_userprio
 %_bindir/condor_check_password
+%_bindir/condor_check_config
 %_bindir/condor_dagman
 %_bindir/condor_rm
 %_bindir/condor_vacate
