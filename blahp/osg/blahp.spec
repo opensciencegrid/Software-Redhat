@@ -8,7 +8,7 @@
 
 Name:		blahp
 Version:	2.0.1
-Release:	1.1%{?gitrev:.%{gitrev}}%{?dist}
+Release:	1.2%{?gitrev:.%{gitrev}}%{?dist}
 Summary:	gLite BLAHP daemon
 
 Group:		System/Libraries
@@ -29,7 +29,7 @@ Requires: libc.so.6(GLIBC_2.14)(64bit)
 Requires: libc.so.6(GLIBC_2.2.5)(64bit)
 Requires: libc.so.6(GLIBC_2.3.4)(64bit)
 Requires: libc.so.6(GLIBC_2.7)(64bit)
-Requires: libclassad.so.13()(64bit)
+Requires: libclassad.so.15()(64bit)
 Requires: libdl.so.2()(64bit)
 Requires: libgcc_s.so.1()(64bit)
 Requires: libgcc_s.so.1(GCC_3.0)(64bit)
@@ -148,6 +148,9 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Tue Apr 13 2021 Carl Edquist <edquist@cs.wisc.edu> - 2.0.1-1.2
+- Bump libclassad requirement to .so.15 (SOFTWARE-4555)
+
 * Thu Apr 08 2021 Tim Theisen <tim@cs.wisc.edu> 2.0.1-1
 - Convert to pure Python 3 (no Python 2 compatibility)
 - Restore blah_libexec_directory to the blah.config file
