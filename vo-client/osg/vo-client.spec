@@ -1,5 +1,5 @@
 Name:           vo-client
-Version:        110
+Version:        111
 Release:        1%{?dist}
 Summary:        Contains vomses file for use with user authentication
 
@@ -70,6 +70,9 @@ find $RPM_BUILD_ROOT/%{_sysconfdir}/grid-security/vomsdir -type d -exec chmod 75
 %config(noreplace) %{_datadir}/osg/grid-vorolemap
 
 %changelog
+* Thu Apr 15 2021 Carl Edquist <edquist@cs.wisc.edu> - 111-1
+- Add new CMS IAM endpoint (SOFTWARE-4576)
+
 * Fri Mar 12 2021 Carl Edquist <edquist@cs.wisc.edu> - 110-1
 - Update VOMS info for enmr.eu (SOFTWARE-4527)
 
