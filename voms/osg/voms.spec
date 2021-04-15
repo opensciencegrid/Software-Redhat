@@ -36,8 +36,7 @@ BuildRequires:	systemd
 %endif
 
 # OSG patches
-Patch100:       mariadb-innodb.patch
-Patch101:       Make-RFC-proxies-by-default-SOFTWARE-2381.patch
+Patch101:       mariadb-innodb.patch
 Patch102:       Validate-top-level-group-of-VOMS-attribute-also-acce.patch
 Patch103:       sw3123-voms-proxy-direct.patch
 Patch104:       Disable-TLS-1.1-and-older-openssl-1.0.2.patch
@@ -125,7 +124,6 @@ This package provides the VOMS service.
 %patch0 -p1
 
 # OSG patches
-%patch100 -p1
 %patch101 -p1
 %patch102 -p1
 %patch103 -p1
