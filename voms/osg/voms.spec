@@ -1,5 +1,3 @@
-%{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
-
 %global _hardened_build 1
 
 %if %{?rhel}%{!?rhel:0} >= 7
@@ -10,18 +8,21 @@
 %endif
 
 Name:		voms
-Version:	2.0.14
-Release:	1.6%{?dist}
+Version:	2.0.16
+Release:	1.1%{?dist}
 Summary:	Virtual Organization Membership Service
 
 License:	ASL 2.0
-URL:		https://wiki.italiangrid.it/VOMS
-Source0:	https://github.com/italiangrid/%{name}/archive/v%{version}.tar.gz
+URL:		https://italiangrid.github.io/voms/
+Source0:	https://github.com/italiangrid/%{name}/archive/v%{version}/%{name}-%{version}.tar.gz
 #		Post-install setup instructions:
 Source1:	%{name}.INSTALL
-#		systemd unit file:
-Source2:	%{name}@.service
+#		Fix for GCC 7
+#		https://github.com/italiangrid/voms/pull/56
+Patch0:		%{name}-gcc7.patch
 
+BuildRequires:	make
+BuildRequires:	gcc-c++
 BuildRequires:	openssl-devel
 BuildRequires:	expat-devel
 BuildRequires:	gsoap-devel
@@ -31,19 +32,13 @@ BuildRequires:	libxslt
 BuildRequires:	docbook-style-xsl
 BuildRequires:	doxygen
 %if %{use_systemd}
-BuildRequires:	systemd-units
+BuildRequires:	systemd
 %endif
 
-# for el7/mariadb
-Patch0: mariadb-innodb.patch
+# OSG patches
+Patch100:       mariadb-innodb.patch
+Patch101:       sw3123-voms-proxy-direct.patch
 
-# for all
-Patch1:         Make-RFC-proxies-by-default-SOFTWARE-2381.patch
-Patch2:         Validate-top-level-group-of-VOMS-attribute-also-acce.patch
-Patch3:         sw3123-voms-proxy-direct.patch
-Patch4:         Disable-TLS-1.1-and-older-openssl-1.0.2.patch
-Patch5:         Disable-weak-ciphers.patch
-  
 %description
 The Virtual Organization Membership Service (VOMS) is an attribute authority
 which serves as central repository for VO user authorization information,
@@ -103,9 +98,7 @@ Requires:	%{name}%{?_isa} = %{version}-%{release}
 
 Requires(pre):		shadow-utils
 %if %{use_systemd}
-Requires(post):		systemd-units
-Requires(preun):	systemd-units
-Requires(postun):	systemd-units
+%{?systemd_requires}
 %else
 Requires(post):		chkconfig
 Requires(preun):	chkconfig
@@ -125,16 +118,11 @@ This package provides the VOMS service.
 
 %prep
 %setup -q
-
-%if %{?rhel}%{!?rhel:0} >= 7
 %patch0 -p1
-%endif
 
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
+# OSG patches
+%patch100 -p1
+%patch101 -p1
 
 install -m 644 -p %{SOURCE1} README.Fedora
 
@@ -143,17 +131,16 @@ install -m 644 -p %{SOURCE1} README.Fedora
 
 %configure --disable-static --enable-docs --disable-parser-gen
 
-make %{?_smp_mflags}
+%make_build
 
 %install
-
-make install DESTDIR=%{buildroot}
+%make_install
 
 rm %{buildroot}%{_libdir}/*.la
 
 %if %{use_systemd}
 mkdir -p %{buildroot}%{_unitdir}
-install -m 644 -p %SOURCE2 %{buildroot}%{_unitdir}
+install -m 644 -p systemd/voms@.service %{buildroot}%{_unitdir}
 rm %{buildroot}%{_initrddir}/%{name}
 rm %{buildroot}%{_sysconfdir}/sysconfig/%{name}
 %else
@@ -186,9 +173,7 @@ for b in voms-proxy-init voms-proxy-info voms-proxy-destroy; do
   touch %{buildroot}%{_mandir}/man1/${b}.1
 done
 
-%post -p /sbin/ldconfig
-
-%postun -p /sbin/ldconfig
+%ldconfig_scriptlets
 
 %posttrans
 # Recover /etc/vomses...
@@ -371,6 +356,16 @@ fi
 %doc README.Fedora
 
 %changelog
+* Fri Apr 09 2021 Mattias Ellert <mattias.ellert@physics.uu.se> - 2.0.16-1
+- Update to version 2.0.16
+
+* Sat Dec 19 2020 Mattias Ellert <mattias.ellert@physics.uu.se> - 2.0.15-2
+- Fix systemd unit for VO names with special characters
+- Add BuildRequires on make
+
+* Sun Oct 25 2020 Mattias Ellert <mattias.ellert@physics.uu.se> - 2.0.15-1
+- Update to version 2.0.15
+
 * Tue Jun 02 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.0.14-1.6
 - Also accept VOMS attributes that only have a top-level group (SOFTWARE-4114)
   - Drop Validate-top-level-group-of-VOMS-attribute.patch
