@@ -17,8 +17,6 @@ URL:		https://italiangrid.github.io/voms/
 Source0:	https://github.com/italiangrid/%{name}/archive/v%{version}/%{name}-%{version}.tar.gz
 #		Post-install setup instructions:
 Source1:	%{name}.INSTALL
-#		systemd unit file:
-Source2:	%{name}@.service
 #		Fix for GCC 7
 #		https://github.com/italiangrid/voms/pull/56
 Patch0:		%{name}-gcc7.patch
@@ -37,16 +35,14 @@ BuildRequires:	doxygen
 BuildRequires:	systemd
 %endif
 
-# for el7/mariadb
-Patch0: mariadb-innodb.patch
+# OSG patches
+Patch100:       mariadb-innodb.patch
+Patch101:       Make-RFC-proxies-by-default-SOFTWARE-2381.patch
+Patch102:       Validate-top-level-group-of-VOMS-attribute-also-acce.patch
+Patch103:       sw3123-voms-proxy-direct.patch
+Patch104:       Disable-TLS-1.1-and-older-openssl-1.0.2.patch
+Patch105:       Disable-weak-ciphers.patch
 
-# for all
-Patch1:         Make-RFC-proxies-by-default-SOFTWARE-2381.patch
-Patch2:         Validate-top-level-group-of-VOMS-attribute-also-acce.patch
-Patch3:         sw3123-voms-proxy-direct.patch
-Patch4:         Disable-TLS-1.1-and-older-openssl-1.0.2.patch
-Patch5:         Disable-weak-ciphers.patch
-  
 %description
 The Virtual Organization Membership Service (VOMS) is an attribute authority
 which serves as central repository for VO user authorization information,
@@ -128,15 +124,13 @@ This package provides the VOMS service.
 %setup -q
 %patch0 -p1
 
-%if %{?rhel}%{!?rhel:0} >= 7
-%patch0 -p1
-%endif
-
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
+# OSG patches
+%patch100 -p1
+%patch101 -p1
+%patch102 -p1
+%patch103 -p1
+%patch104 -p1
+%patch105 -p1
 
 install -m 644 -p %{SOURCE1} README.Fedora
 
