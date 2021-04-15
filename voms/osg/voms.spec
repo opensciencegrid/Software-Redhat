@@ -37,10 +37,7 @@ BuildRequires:	systemd
 
 # OSG patches
 Patch101:       mariadb-innodb.patch
-Patch102:       Validate-top-level-group-of-VOMS-attribute-also-acce.patch
 Patch103:       sw3123-voms-proxy-direct.patch
-Patch104:       Disable-TLS-1.1-and-older-openssl-1.0.2.patch
-Patch105:       Disable-weak-ciphers.patch
 
 %description
 The Virtual Organization Membership Service (VOMS) is an attribute authority
@@ -125,10 +122,7 @@ This package provides the VOMS service.
 
 # OSG patches
 %patch101 -p1
-%patch102 -p1
 %patch103 -p1
-%patch104 -p1
-%patch105 -p1
 
 install -m 644 -p %{SOURCE1} README.Fedora
 
