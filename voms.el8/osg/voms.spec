@@ -7,15 +7,16 @@
 %global use_systemd 0
 %endif
 
+%global _rc rc1
+
 Name:		voms
 Version:	2.1.0
-Release:	0.14.rc1.1%{?dist}
+Release:	0.14.%{_rc}.1%{?dist}
 Summary:	Virtual Organization Membership Service
 
 License:	ASL 2.0
 URL:		https://wiki.italiangrid.it/VOMS
-#Source0:	https://github.com/italiangrid/%{name}/archive/v%{version}-rc0.tar.gz
-Source0:	%{name}-%{version}-rc1.tar.gz
+Source0:	https://github.com/italiangrid/%{name}/archive/v%{version}-%{_rc}/%{name}-%{version}-%{_rc}.tar.gz
 #		Post-install setup instructions:
 Source1:	%{name}.INSTALL
 #		systemd unit file:
@@ -36,6 +37,9 @@ Patch6:		%{name}-change-default-proxy-cert-key-length-to-2048-bits.patch
 
 Patch7:          mariadb-innodb.patch
 Patch10:         sw3123-voms-proxy-direct.patch
+
+# apparently upstream stopped building voms-clients in 2.1.0-rc1
+Patch11:         keep-building-clients.patch
 
 BuildRequires:	gcc-c++
 BuildRequires:	openssl-devel
@@ -128,7 +132,7 @@ authorization purposes.
 This package provides the VOMS service.
 
 %prep
-%setup -q -n %{name}-%{version}-rc1
+%setup -q -n %{name}-%{version}-%{_rc}
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
