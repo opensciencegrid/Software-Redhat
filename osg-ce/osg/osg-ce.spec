@@ -5,7 +5,7 @@
 Name:      osg-ce
 Summary:   OSG Compute Element
 Version:   3.5
-Release:   6%{?dist}
+Release:   7%{?dist}
 License:   Apache 2.0
 URL:       http://www.opensciencegrid.org
 
@@ -29,6 +29,7 @@ Requires: osg-configure-gratia
 Requires: osg-configure-misc
 Requires: osg-configure-squid
 Requires: frontier-squid
+Requires: osg-scitokens-mapfile
 
 Requires: osg-configure-infoservices
 
@@ -199,6 +200,9 @@ install -m 644 %{SOURCE3} $RPM_BUILD_ROOT/%{_datadir}/condor-ce/config.d
 %{_datadir}/condor-ce/config.d/51-gratia.conf
 
 %changelog
+* Mon Apr 19 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.5-7
+- Require osg-scitokens-mapfile (SOFTWARE-4574)
+
 * Tue Feb 02 2021 Brian Lin <blin@cs.wisc.edu> - 3.5-6
 - Add explicit htcondor-ce requirement to sub-packages (SOFTWARE-4456)
 
