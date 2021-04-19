@@ -9,21 +9,18 @@
 
 Name:		voms
 Version:	2.1.0
-Release:	0.14.rc0.1%{?dist}
+Release:	0.14.rc1.1%{?dist}
 Summary:	Virtual Organization Membership Service
 
 License:	ASL 2.0
 URL:		https://wiki.italiangrid.it/VOMS
-Source0:	https://github.com/italiangrid/%{name}/archive/v%{version}-rc0.tar.gz
+#Source0:	https://github.com/italiangrid/%{name}/archive/v%{version}-rc0.tar.gz
+Source0:	%{name}-%{version}-rc1.tar.gz
 #		Post-install setup instructions:
 Source1:	%{name}.INSTALL
 #		systemd unit file:
 Source2:	%{name}@.service
 
-#		Check if NID is defined
-#		https://github.com/italiangrid/voms/issues/60
-#		https://github.com/italiangrid/voms/pull/61
-Patch0:		%{name}-nid-defined.patch
 #		Fix for GCC 7
 #		https://github.com/italiangrid/voms/pull/56
 Patch1:		%{name}-gcc7.patch
@@ -33,26 +30,12 @@ Patch2:		%{name}-default-proxyver.patch
 #		Don't use macros in AC_CHECK_LIB
 #		https://github.com/italiangrid/voms/pull/58
 Patch3:		%{name}-lib-check-no-macro.patch
-#		VOMS API compilation fails against kerberos gss API header
-#		https://github.com/italiangrid/voms/issues/54
-#		https://github.com/italiangrid/voms/pull/62
-Patch4:		%{name}-gssapi-header.patch
-#		Fix wsdl version detection
-#		https://github.com/italiangrid/voms/pull/72
-Patch5:		%{name}-wsdl2h.patch
 #		Change default proxy cert key length to 2048 bits
 #		https://github.com/italiangrid/voms/pull/75
 Patch6:		%{name}-change-default-proxy-cert-key-length-to-2048-bits.patch
 
-# for el7/mariadb
 Patch7:          mariadb-innodb.patch
-
-# for all
-Patch8:          Make-RFC-proxies-by-default-SOFTWARE-2381.patch
-Patch9:          Validate-top-level-group-of-VOMS-attribute.patch
 Patch10:         sw3123-voms-proxy-direct.patch
-Patch11:         Disable-TLS-1.1-and-older-openssl-1.0.2.patch
-Patch12:         Disable-weak-ciphers.patch
 
 BuildRequires:	gcc-c++
 BuildRequires:	openssl-devel
@@ -145,24 +128,17 @@ authorization purposes.
 This package provides the VOMS service.
 
 %prep
-%setup -q -n %{name}-%{version}-rc0
-%patch0 -p1
+%setup -q -n %{name}-%{version}-rc1
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
-%patch4 -p1
-%patch5 -p1
 %patch6 -p1
 
 %if %{?rhel}%{!?rhel:0} >= 7
 %patch7 -p1
 %endif
 
-%patch8 -p1
-%patch9 -p1
 %patch10 -p1
-%patch11 -p1
-%patch12 -p1
 
 install -m 644 -p %{SOURCE1} README.Fedora
 
