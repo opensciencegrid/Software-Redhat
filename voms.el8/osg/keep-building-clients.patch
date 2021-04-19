@@ -1,0 +1,33 @@
+commit 8232125c9d0aff92500b8cfe11d6dfd3366c4079
+Author: Carl Edquist <edquist@cs.wisc.edu>
+Date:   Mon Apr 19 17:09:44 2021 -0500
+
+    Revert "Stop building clients"
+    
+    This reverts commit e825be8611fab5a5ec87e9caf0c821bba328f863.
+
+diff --git a/Makefile.am b/Makefile.am
+index de892c2..4c52062 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -10,7 +10,7 @@ APIDOC_FILES = $(top_srcdir)/AUTHORS $(top_srcdir)/INSTALL $(top_srcdir)/LICENSE
+ USERDOC_FILES = $(APIDOC_FILES)
+ 
+ spec=spec/voms-all.spec
+-deb_comp="libvomsapi1 voms-dev voms-server"
++deb_comp="libvomsapi1 voms-dev voms-clients voms-server"
+ 
+ rpmbuild_dir=@WORKDIR@/rpmbuild
+ debbuild_dir=@WORKDIR@/debbuild
+diff --git a/src/Makefile.am b/src/Makefile.am
+index 03da581..08c878a 100644
+--- a/src/Makefile.am
++++ b/src/Makefile.am
+@@ -9,6 +9,7 @@ SUBDIRS = \
+ 	ac \
+ 	api \
+ 	utils \
++	client \
+ 	server \
+ 	install \
+ 	replica
