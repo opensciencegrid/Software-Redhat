@@ -143,6 +143,7 @@ This package provides the VOMS service.
 %endif
 
 %patch10 -p1
+%patch11 -p1
 
 install -m 644 -p %{SOURCE1} README.Fedora
 
@@ -376,6 +377,10 @@ fi
 %doc README.Fedora
 
 %changelog
+* Mon Apr 19 2021 Carl Edquist <edquist@cs.wisc.edu> - 2.1.0-0.14.rc1.1
+- Merge out upstreamed OSG changes
+- Bring voms-clients back into build (SOFTWARE-4577)
+
 * Fri May 29 2020 Brian Lin <blin@cs.wisc.edu> - 2.1.0-0.14.rc0.1
 - Merge in OSG changes
 
