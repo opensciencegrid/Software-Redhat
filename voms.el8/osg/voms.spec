@@ -7,7 +7,7 @@
 %global use_systemd 0
 %endif
 
-%global _rc rc1
+%global _rc rc2
 
 Name:		voms
 Version:	2.1.0
@@ -37,9 +37,6 @@ Patch6:		%{name}-change-default-proxy-cert-key-length-to-2048-bits.patch
 
 Patch7:          mariadb-innodb.patch
 Patch10:         sw3123-voms-proxy-direct.patch
-
-# apparently upstream stopped building voms-clients in 2.1.0-rc1
-Patch11:         keep-building-clients.patch
 
 BuildRequires:	gcc-c++
 BuildRequires:	openssl-devel
@@ -143,7 +140,6 @@ This package provides the VOMS service.
 %endif
 
 %patch10 -p1
-%patch11 -p1
 
 install -m 644 -p %{SOURCE1} README.Fedora
 
@@ -377,6 +373,9 @@ fi
 %doc README.Fedora
 
 %changelog
+* Tue Apr 20 2021 Carl Edquist <edquist@cs.wisc.edu> - 2.1.0-0.14.rc2.1
+- Update to 2.1.0-rc2
+
 * Mon Apr 19 2021 Carl Edquist <edquist@cs.wisc.edu> - 2.1.0-0.14.rc1.1
 - Merge out upstreamed OSG changes
 - Bring voms-clients back into build (SOFTWARE-4577)
