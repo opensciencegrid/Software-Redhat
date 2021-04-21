@@ -75,7 +75,7 @@ Version: %{tarball_version}
 %else
         %define condor_release %condor_base_release
 %endif
-Release: %{condor_release}.1%{?dist}
+Release: %{condor_release}.2%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -122,6 +122,10 @@ Source3: osg-env.conf
 Source5: condor_config.local.dedicated.resource
 
 Source8: htcondor.pp
+
+# FIXME: This can be dropped after HTCONDOR-433 is released, targeted
+# for 9.0.1
+Patch0: HTCONDOR-433.bosco_cluster.patch
 
 # Patch to use Python 2 for file transfer plugins
 # The use the python-requests library and the one in EPEL is based Python 3.6
@@ -698,6 +702,10 @@ exit 0
 %setup -q -n %{name}-%{tarball_version}
 %endif
 
+# FIXME: This can be dropped after HTCONDOR-433 is released, targeted
+# for 9.0.1
+%patch0 -p1
+
 # Patch to use Python 2 for file transfer plugins
 # The use the python-requests library and the one in EPEL is based Python 3.6
 # However, Amazon Linux 2 has Python 3.7
@@ -728,7 +736,7 @@ make -C docs man
 export CMAKE_PREFIX_PATH=/usr
 
 %if %uw_build
-%define condor_build_id 535058
+%define condor_build_id 536780
 
 %cmake3 \
        -DBUILDID:STRING=%condor_build_id \
@@ -1679,6 +1687,9 @@ fi
 /bin/systemctl try-restart condor.service >/dev/null 2>&1 || :
 
 %changelog
+* Tue Apr 20 2021 Brian Lin <blin@cs.wisc.edu> - 9.0.0-1.1
+- Fix malformed default Bosco tarball URL format (HTCONDOR-433)
+
 * Wed Apr 14 2021 Tim Theisen <tim@cs.wisc.edu> - 9.0.0-1
 - Absent any configuration, HTCondor denies authorization to all users
 - AES encryption is used for all communication and file transfers by default
