@@ -1,6 +1,6 @@
 Summary: Scitokens mapfile for OSG
 Name: osg-scitokens-mapfile
-Version: 1
+Version: 2
 Release: 1%{?dist}
 License: ASL 2.0
 Source0: https://github.com/opensciencegrid/topology/archive/data-%{version}.tar.gz
@@ -38,19 +38,23 @@ for whl in %{SOURCE1} %{SOURCE2}; do
 done
 PYTHONPATH=$PYTHONPATH:$(echo "$PWD"/lib/python3*/site-packages)
 export PYTHONPATH
-./bin/get-scitokens-mapfile --outfile osg-scitokens-mapfile
+./bin/get-scitokens-mapfile --regex --outfile osg-scitokens-mapfile.conf
 
 
 %install
 mkdir -p %{buildroot}/usr/share/condor-ce/mapfiles.d/
-mv osg-scitokens-mapfile %{buildroot}/usr/share/condor-ce/mapfiles.d/
+mv osg-scitokens-mapfile.conf %{buildroot}/usr/share/condor-ce/mapfiles.d/
 
 
 %files
-/usr/share/condor-ce/mapfiles.d/osg-scitokens-mapfile
+/usr/share/condor-ce/mapfiles.d/osg-scitokens-mapfile.conf
 
 
 %changelog
+* Wed Apr 21 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 2-1
+- Update to data-2 tag
+- Use regex format and add .conf extension (SOFTWARE-4572)
+
 * Thu Feb 11 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 1-1
 - First version (SOFTWARE-4453)
 
