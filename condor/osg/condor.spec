@@ -75,7 +75,7 @@ Version: %{tarball_version}
 %else
         %define condor_release %condor_base_release
 %endif
-Release: %{condor_release}.2%{?dist}
+Release: %{condor_release}.3%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -123,9 +123,11 @@ Source5: condor_config.local.dedicated.resource
 
 Source8: htcondor.pp
 
-# FIXME: This can be dropped after HTCONDOR-433 is released, targeted
-# for 9.0.1
+# FIXME: These can be dropped after 9.0.1 is released
 Patch0: HTCONDOR-433.bosco_cluster.patch
+Patch4: HTCONDOR-414.autocluster.patch
+Patch5: HTCONDOR-434.shadow-start.patch
+Patch6: HTCONDOR-438.bosco-tarball.patch
 
 # Patch to use Python 2 for file transfer plugins
 # The use the python-requests library and the one in EPEL is based Python 3.6
@@ -702,9 +704,10 @@ exit 0
 %setup -q -n %{name}-%{tarball_version}
 %endif
 
-# FIXME: This can be dropped after HTCONDOR-433 is released, targeted
-# for 9.0.1
 %patch0 -p1
+%patch4 -p1
+%patch5 -p1
+%patch6 -p1
 
 # Patch to use Python 2 for file transfer plugins
 # The use the python-requests library and the one in EPEL is based Python 3.6
@@ -1687,6 +1690,12 @@ fi
 /bin/systemctl try-restart condor.service >/dev/null 2>&1 || :
 
 %changelog
+* Fri Apr 23 2021 Tim Theisen <tim@cs.wisc.edu> - 9.0.0-1.3
+- Fix malformed default Bosco tarball URL format (HTCONDOR-433)
+- Fix autocluster problem (HTCONDOR-414)
+- Fix claim activation faiure (HTCONDOR-434)
+- Fix Bosco tarball extraction (HTCONDOR-438)
+
 * Tue Apr 20 2021 Brian Lin <blin@cs.wisc.edu> - 9.0.0-1.1
 - Fix malformed default Bosco tarball URL format (HTCONDOR-433)
 
