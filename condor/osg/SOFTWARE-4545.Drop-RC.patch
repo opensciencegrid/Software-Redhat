@@ -1,0 +1,15 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 4d95c00..74efb2a 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -50,8 +50,8 @@ set(VERSION "9.0.0")
+ #   ship test binaries to a user, change this to identify your work.
+ #   Avoid whitespace.
+ #set(PRE_RELEASE "PRE-RELEASE-UWCS")
+-set(PRE_RELEASE "RC")
+-#set(PRE_RELEASE OFF)
++#set(PRE_RELEASE "RC")
++set(PRE_RELEASE OFF)
+ 
+ # If set via the cmake command line, FORCE_PRE_RELEASE allows for
+ #   PRE_RELEASE to be forced into a build.

@@ -1,0 +1,99 @@
+diff --git a/src/condor_credd/condor_credmon_oauth/credmon/CredentialMonitors/LocalCredmon.py b/src/condor_credd/condor_credmon_oauth/credmon/CredentialMonitors/LocalCredmon.py
+index 2f447da..dc9d57b 100644
+--- a/src/condor_credd/condor_credmon_oauth/credmon/CredentialMonitors/LocalCredmon.py
++++ b/src/condor_credd/condor_credmon_oauth/credmon/CredentialMonitors/LocalCredmon.py
+@@ -23,6 +23,8 @@ class LocalCredmon(OAuthCredmon):
+         self.token_issuer = None
+         self.authz_template = "read:/user/{username} write:/user/{username}"
+         self.token_lifetime = 60*20
++        self.token_aud = ""
++        self.token_ver = "scitokens:2.0"
+         if htcondor != None:
+             self._private_key_location = htcondor.param.get('LOCAL_CREDMON_PRIVATE_KEY', "/etc/condor/scitokens-private.pem")
+             if self._private_key_location != None and os.path.exists(self._private_key_location):
+@@ -35,6 +37,8 @@ class LocalCredmon(OAuthCredmon):
+             self.token_issuer = htcondor.param.get("LOCAL_CREDMON_ISSUER", self.token_issuer)
+             self.authz_template = htcondor.param.get("LOCAL_CREDMON_AUTHZ_TEMPLATE", self.authz_template)
+             self.token_lifetime = htcondor.param.get("LOCAL_CREDMON_TOKEN_LIFETIME", self.token_lifetime)
++            self.token_aud = htcondor.param.get("LOCAL_CREDMON_TOKEN_AUDIENCE", self.token_aud)
++            self.token_ver = htcondor.param.get("LOCAL_CREDMON_TOKEN_VERSION", self.token_ver)
+         else:
+             self._private_key_location = None
+         if not self.token_issuer:
+@@ -54,7 +58,16 @@ class LocalCredmon(OAuthCredmon):
+         token.update_claims({'sub': username})
+         user_authz = self.authz_template.format(username=username)
+         token.update_claims({'scope': user_authz})
+-        token.update_claims({'ver': 'scitokens:2.0'})
++
++        # Only set the version if we have one.  No version is valid, and implies scitokens:1.0
++        if self.token_ver:
++            token.update_claims({'ver': self.token_ver})
++
++        # Convert the space separated list of audiences to a proper list
++        # No aud is valid for scitokens:1.0 tokens.  Also, no resonable default.
++        aud_list = self.token_aud.strip().split()
++        if aud_list:
++            token.update_claims({'aud': aud_list})
+ 
+         # Serialize the token and write it to a file
+         try:
+diff --git a/src/condor_credd/condor_credmon_oauth/examples/config/condor/40-oauth-credmon.conf b/src/condor_credd/condor_credmon_oauth/examples/config/condor/40-oauth-credmon.conf
+index 6cd2215..94020b0 100644
+--- a/src/condor_credd/condor_credmon_oauth/examples/config/condor/40-oauth-credmon.conf
++++ b/src/condor_credd/condor_credmon_oauth/examples/config/condor/40-oauth-credmon.conf
+@@ -1,7 +1,6 @@
+ 
+ #####################################################################################
+-# MANDATORY: To setup the credmon, you must uncomment these lines:
+-#
++# MANDATORY: To setup the credmon, you must uncomment this line:
+ use feature : OAUTH
+ 
+ # MANDATORY for local credmon: Uncomment these lines to have submitters always
+@@ -15,6 +14,14 @@ use feature : OAUTH
+ # LOCAL_CREDMON_PROVIDER_NAME = scitokens
+ # SEC_PROCESS_SUBMIT_TOKENS = false
+ 
++# MANDATORY for local credmon if using scitokens:2.0 tokens (the default version
++# as of HTCondor 8.9.13, see LOCAL_CREDMON_TOKEN_VERSION below)
++# Audience (aud) claim that should be set in a locally issued token.
++# The audience is a shared value between the token issuer and the service
++# verifying the token. It is a space-separated list, will be converted to a JSON
++# list object in the token.
++# LOCAL_CREDMON_TOKEN_AUDIENCE = https://example.com https://anotherserver.edu
++
+ # MANDATORY for enabling the transfer of credentials from submit host
+ # to execute hosts, if encryption is not already enabled.
+ # SEC_DEFAULT_ENCRYPTION = REQUIRED
+@@ -52,6 +59,10 @@ use feature : OAUTH
+ # Each key must have a name that relying parties can look up; defaults to "local"
+ # LOCAL_CREDMON_KEY_ID = local
+ 
++# Version (ver) claim that should be set in a locally issued token
++# Default: scitokens:2.0
++# LOCAL_CREDMON_TOKEN_VERSION = scitokens:2.0
++
+ # Override the location of the credential directory, credmon daemon, or credmon log
+ # SEC_CREDENTIAL_DIRECTORY_OAUTH = /var/lib/condor/oauth_credentials
+ # CREDMON_OAUTH_LOG = $(LOG)/CredMonOAuthLog
+diff --git a/src/condor_utils/param_info.in b/src/condor_utils/param_info.in
+index 23a5b35..2a22b1b 100644
+--- a/src/condor_utils/param_info.in
++++ b/src/condor_utils/param_info.in
+@@ -5522,6 +5522,15 @@ default=$(SBIN)/condor_credmon_oauth
+ win32_default=
+ type=path
+ 
++[LOCAL_CREDMON_TOKEN_AUDIENCE]
++default=
++type=string
++
++[LOCAL_CREDMON_TOKEN_VERSION]
++default=scitokens:2.0
++type=string
++
++
+ # standard API endpoints for common OAuth token providers
+ [BOX_AUTHORIZATION_URL]
+ default=https://account.box.com/api/oauth2/authorize
