@@ -75,7 +75,7 @@ Version: %{tarball_version}
 %else
         %define condor_release %condor_base_release
 %endif
-Release: %{condor_release}.3%{?dist}
+Release: %{condor_release}.4%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -125,9 +125,11 @@ Source8: htcondor.pp
 
 # FIXME: These can be dropped after 9.0.1 is released
 Patch0: HTCONDOR-433.bosco_cluster.patch
+Patch1: SOFTWARE-4545.Drop-RC.patch
 Patch4: HTCONDOR-414.autocluster.patch
 Patch5: HTCONDOR-434.shadow-start.patch
 Patch6: HTCONDOR-438.bosco-tarball.patch
+Patch7: HTCONDOR-445.SciToken-local-issuer.patch
 
 # Patch to use Python 2 for file transfer plugins
 # The use the python-requests library and the one in EPEL is based Python 3.6
@@ -705,9 +707,11 @@ exit 0
 %endif
 
 %patch0 -p1
+%patch1 -p1
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
+%patch7 -p1
 
 # Patch to use Python 2 for file transfer plugins
 # The use the python-requests library and the one in EPEL is based Python 3.6
@@ -1690,6 +1694,10 @@ fi
 /bin/systemctl try-restart condor.service >/dev/null 2>&1 || :
 
 %changelog
+* Mon Apr 26 2021 Tim Theisen <tim@cs.wisc.edu> - 9.0.0-1.4
+- Fix SciTokens local issuer problem (HTCONDOR-445)
+- Drop RC in version string (SOFTWARE-4545)
+
 * Fri Apr 23 2021 Tim Theisen <tim@cs.wisc.edu> - 9.0.0-1.3
 - Fix malformed default Bosco tarball URL format (HTCONDOR-433)
 - Fix autocluster problem (HTCONDOR-414)
