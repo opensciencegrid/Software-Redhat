@@ -75,7 +75,7 @@ Version: %{tarball_version}
 %else
         %define condor_release %condor_base_release
 %endif
-Release: %{condor_release}.4%{?dist}
+Release: %{condor_release}.5%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -126,9 +126,10 @@ Source8: htcondor.pp
 # FIXME: These can be dropped after 9.0.1 is released
 Patch0: HTCONDOR-433.bosco_cluster.patch
 Patch1: SOFTWARE-4545.Drop-RC.patch
-Patch4: HTCONDOR-414.autocluster.patch
-Patch5: HTCONDOR-434.shadow-start.patch
-Patch6: HTCONDOR-438.bosco-tarball.patch
+Patch3: HTCONDOR-414.autocluster.patch
+Patch4: HTCONDOR-434.shadow-start.patch
+Patch5: HTCONDOR-438.bosco-tarball.patch
+Patch6: HTCONDOR-367.remove_json_from_local_issuer.patch
 Patch7: HTCONDOR-445.SciToken-local-issuer.patch
 
 # Patch to use Python 2 for file transfer plugins
@@ -708,6 +709,7 @@ exit 0
 
 %patch0 -p1
 %patch1 -p1
+%patch3 -p1
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
@@ -1694,6 +1696,9 @@ fi
 /bin/systemctl try-restart condor.service >/dev/null 2>&1 || :
 
 %changelog
+* Tue Apr 27 2021 Tim Theisen <tim@cs.wisc.edu> - 9.0.0-1.5
+- Remove JSON from local issuer (HTCONDOR-367)
+
 * Mon Apr 26 2021 Tim Theisen <tim@cs.wisc.edu> - 9.0.0-1.4
 - Fix SciTokens local issuer problem (HTCONDOR-445)
 - Drop RC in version string (SOFTWARE-4545)
