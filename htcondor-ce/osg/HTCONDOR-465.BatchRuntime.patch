@@ -1,0 +1,25 @@
+From 4a6b98845f0f7fa0ca1c1d938a83535e3b3f07a0 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Fri, 30 Apr 2021 17:36:51 -0500
+Subject: [PATCH] HTCONDOR-465.BatchRuntime
+
+---
+ config/01-ce-router-defaults.conf.in | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/config/01-ce-router-defaults.conf.in b/config/01-ce-router-defaults.conf.in
+index bd6c239..627074d 100644
+--- a/config/01-ce-router-defaults.conf.in
++++ b/config/01-ce-router-defaults.conf.in
+@@ -263,7 +263,7 @@ JOB_ROUTER_TRANSFORM_BatchRuntime @=jrt
+     # 4. 'ROUTED_JOB_MAX_TIME' (minutes) from the config
+     if defined MY.maxWallTime
+         SET BatchRuntime 60*maxWallTime
+-    elif defined MY.org_BatchRuntime
++    elif defined MY.orig_BatchRuntime
+         # do nothing, BatchRuntime already set
+     elif defined default_maxWallTime
+         # default_maxWallTime can be an attribute reference here
+-- 
+2.6.3
+
