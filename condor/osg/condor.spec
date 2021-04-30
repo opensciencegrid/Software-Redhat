@@ -1,4 +1,4 @@
-%define tarball_version 9.0.0
+%define tarball_version 9.0.1
 
 # On EL7 don't terminate the build because of bad bytecompiling
 %if 0%{?rhel} == 7
@@ -63,7 +63,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.5
+%define condor_base_release 0.538719
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -117,14 +117,6 @@ Source5: condor_config.local.dedicated.resource
 
 Source8: htcondor.pp
 
-# FIXME: These can be dropped after 9.0.1 is released
-Patch0: HTCONDOR-433.bosco_cluster.patch
-Patch1: SOFTWARE-4545.Drop-RC.patch
-Patch3: HTCONDOR-414.autocluster.patch
-Patch4: HTCONDOR-434.shadow-start.patch
-Patch5: HTCONDOR-438.bosco-tarball.patch
-Patch6: HTCONDOR-367.remove_json_from_local_issuer.patch
-Patch7: HTCONDOR-445.SciToken-local-issuer.patch
 
 # Patch to use Python 2 for file transfer plugins
 # The use the python-requests library and the one in EPEL is based Python 3.6
@@ -697,13 +689,6 @@ exit 0
 %setup -q -n %{name}-%{tarball_version}
 %endif
 
-%patch0 -p1
-%patch1 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
-%patch6 -p1
-%patch7 -p1
 
 # Patch to use Python 2 for file transfer plugins
 # The use the python-requests library and the one in EPEL is based Python 3.6
@@ -1682,6 +1667,9 @@ fi
 /bin/systemctl try-restart condor.service >/dev/null 2>&1 || :
 
 %changelog
+* Fri Apr 30 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 9.0.1-0.538719
+- Prerelease
+
 * Tue Apr 27 2021 Tim Theisen <tim@cs.wisc.edu> - 9.0.0-1.5
 - Remove JSON from local issuer (HTCONDOR-367)
 
