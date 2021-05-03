@@ -88,8 +88,8 @@
 #-------------------------------------------------------------------------------
 Name:      xrootd
 Epoch:     1
-Version:   5.1.1
-Release:   1.3%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Version:   5.2.0
+Release:   0.rc1.1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -204,6 +204,10 @@ Requires(post):		chkconfig
 Requires(preun):	chkconfig
 Requires(preun):	initscripts
 Requires(postun):	initscripts
+%endif
+
+%if %{?rhel}%{!?rhel:0} == 7
+BuildRequires: devtoolset-7
 %endif
 
 %description
@@ -539,6 +543,11 @@ This package contains compatibility binaries for xrootd 4 servers.
 %setup -c -n xrootd
 
 %build
+
+%if %{?rhel}%{!?rhel:0} == 7
+. /opt/rh/devtoolset-7/enable
+%endif
+
 cd xrootd
 
 %if %{?_with_clang:1}%{!?_with_clang:0}
@@ -922,6 +931,7 @@ fi
 %{_libdir}/libXrdSecpwd-5.so
 %{_libdir}/libXrdSecsss-5.so
 %{_libdir}/libXrdSecunix-5.so
+%{_libdir}/libXrdOssCsi-5.so
 %if %{?_with_scitokens:1}%{!?_with_scitokens:0}
 %{_libdir}/libXrdSecztn-5.so
 %endif
