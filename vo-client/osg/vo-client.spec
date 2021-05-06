@@ -1,5 +1,5 @@
 Name:           vo-client
-Version:        111
+Version:        112
 Release:        1%{?dist}
 Summary:        Contains vomses file for use with user authentication
 
@@ -70,6 +70,9 @@ find $RPM_BUILD_ROOT/%{_sysconfdir}/grid-security/vomsdir -type d -exec chmod 75
 %config(noreplace) %{_datadir}/osg/grid-vorolemap
 
 %changelog
+* Thu May 06 2021 Carl Edquist <edquist@cs.wisc.edu> - 112-1
+- Add new ATLAS IAM endpoint (SOFTWARE-4595)
+
 * Thu Apr 15 2021 Carl Edquist <edquist@cs.wisc.edu> - 111-1
 - Add new CMS IAM endpoint (SOFTWARE-4576)
 
