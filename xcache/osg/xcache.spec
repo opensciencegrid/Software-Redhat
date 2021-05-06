@@ -84,7 +84,8 @@ Summary: The OSG Data Federation origin server
 
 Requires: %{name} = %{version}
 Requires: wget
-Requires: xrootd-lcmaps >= 1.5.1
+# drop xrootd-lcmaps requirement for OSG 3.6
+#Requires: xrootd-lcmaps >= 1.5.1
 Requires: xrootd-client
 
 Provides: stashcache-origin-server = %{name}-%{version}
@@ -107,7 +108,8 @@ Summary: The OSG data federation cache server
 
 Requires: %{name} = %{version}
 Requires: wget
-Requires: xrootd-lcmaps >= 1.5.1
+# drop xrootd-lcmaps requirement for OSG 3.6
+#Requires: xrootd-lcmaps >= 1.5.1
 
 Provides: stashcache-cache-server = %{name}-%{version}
 Provides: stashcache-cache-server-auth = %{name}-%{version}
@@ -150,7 +152,8 @@ Summary: The CMS data federation cache server
 
 Requires: %{name} = %{version}
 Requires: wget
-Requires: xrootd-lcmaps >= 1.5.1
+# drop xrootd-lcmaps requirement for OSG 3.6
+#Requires: xrootd-lcmaps >= 1.5.1
 %description -n cms-xcache
 %{summary}
 %post -n cms-xcache
@@ -284,6 +287,7 @@ mkdir -p %{buildroot}%{_sysconfdir}/grid-security/xrd
 %changelog
 * Wed May 05 2021 Carl Edquist <edquist@cs.wisc.edu> - 2.0.1-2
 - Packaging fixes for el8 (SOFTWARE-4476)
+- Drop xrootd-lcmaps requirement for OSG 3.6 (SOFTWARE-4476)
 
 * Tue May 04 2021 Carl Edquist <edquist@cs.wisc.edu> - 2.0.1-1
 - Add Python3 support for scripts (SOFTWARE-4476)
