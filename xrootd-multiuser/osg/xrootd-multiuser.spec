@@ -1,7 +1,7 @@
 
 Name: xrootd-multiuser
 Version: 1.0.0
-Release: 0.1.rc.1%{?dist}
+Release: 0.2.rc.2%{?dist}
 Summary: Multiuser filesystem writing plugin for xrootd
 
 Group: System Environment/Daemons
@@ -63,6 +63,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/xrootd/config.d/60-osg-multiuser.cfg
 
 %changelog
+* Thu May 06 2021 Carl Edquist <edquist@cs.wisc.edu> - 1.0.0-0.2.rc.2
+- Update to 1.0.0 rc2 (SOFTWARE-4599)
+
 * Tue May 04 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.0.0-0.1.rc.1
 - Update to 1.0.0 rc1 (SOFTWARE-4599)
 
