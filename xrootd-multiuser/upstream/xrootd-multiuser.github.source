@@ -1,2 +1,2 @@
 #type=github repo=opensciencegrid/xrootd-multiuser name=xrootd-multiuser tag=v0.5.0 hash=dce5b8ffe7dca9770677320164c54656de126145
-type=github repo=opensciencegrid/xrootd-multiuser name=xrootd-multiuser tag=v1.0.0-rc.1 tarball=xrootd-multiuser-1.0.0.tar.gz hash=abd78651c7c9ec73fcece3f23b07be7eaec8a05c
+type=github repo=opensciencegrid/xrootd-multiuser name=xrootd-multiuser tag=v1.0.0-rc.2 tarball=xrootd-multiuser-1.0.0.tar.gz hash=a9ac59377eebda403882bf00ed2b9f64055f53af
