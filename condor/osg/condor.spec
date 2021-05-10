@@ -1,4 +1,4 @@
-%define tarball_version 9.0.0
+%define tarball_version 9.0.1
 
 # On EL7 don't terminate the build because of bad bytecompiling
 %if 0%{?rhel} == 7
@@ -69,13 +69,13 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1
+%define condor_base_release 0.540274
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
         %define condor_release %condor_base_release
 %endif
-Release: %{condor_release}.5%{?dist}
+Release: %{condor_release}%{?dist}
 
 License: ASL 2.0
 Group: Applications/System
@@ -122,15 +122,6 @@ Source3: osg-env.conf
 Source5: condor_config.local.dedicated.resource
 
 Source8: htcondor.pp
-
-# FIXME: These can be dropped after 9.0.1 is released
-Patch0: HTCONDOR-433.bosco_cluster.patch
-Patch1: SOFTWARE-4545.Drop-RC.patch
-Patch3: HTCONDOR-414.autocluster.patch
-Patch4: HTCONDOR-434.shadow-start.patch
-Patch5: HTCONDOR-438.bosco-tarball.patch
-Patch6: HTCONDOR-367.remove_json_from_local_issuer.patch
-Patch7: HTCONDOR-445.SciToken-local-issuer.patch
 
 # Patch to use Python 2 for file transfer plugins
 # The use the python-requests library and the one in EPEL is based Python 3.6
@@ -707,14 +698,6 @@ exit 0
 %setup -q -n %{name}-%{tarball_version}
 %endif
 
-%patch0 -p1
-%patch1 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
-%patch6 -p1
-%patch7 -p1
-
 # Patch to use Python 2 for file transfer plugins
 # The use the python-requests library and the one in EPEL is based Python 3.6
 # However, Amazon Linux 2 has Python 3.7
@@ -725,7 +708,6 @@ exit 0
 %if 0%{?osg} || 0%{?hcc}
 %patch8 -p1
 %endif
-
 
 # fix errant execute permissions
 find src -perm /a+x -type f -name "*.[Cch]" -exec chmod a-x {} \;
@@ -886,6 +868,10 @@ populate %_sysconfdir/condor/config.d %{buildroot}/usr/share/doc/condor-%{versio
 populate %_sysconfdir/condor/config.d %{buildroot}/usr/share/doc/condor-%{version}/examples/00-minicondor
 populate %_sysconfdir/condor/config.d %{buildroot}/usr/share/doc/condor-%{version}/examples/50ec2.config
 
+# Install a second config.d directory under /usr/share, used for the
+# convenience of software built on top of Condor such as GlideinWMS.
+mkdir -p -m0755 %{buildroot}/usr/share/condor/config.d
+
 mkdir -p -m0755 %{buildroot}/%{_var}/log/condor
 # Note we use %{_var}/lib instead of %{_sharedstatedir} for RHEL5 compatibility
 mkdir -p -m0755 %{buildroot}/%{_var}/lib/condor/spool
@@ -996,7 +982,7 @@ install -Dp -m 0644 %{SOURCE3} %{buildroot}%{_unitdir}/condor.service.d/osg-env.
 %endif
 
 %if 0%{?rhel} >= 7
-mkdir %{buildroot}%{_datadir}/condor/
+mkdir -p %{buildroot}%{_datadir}/condor/
 cp %{SOURCE8} %{buildroot}%{_datadir}/condor/
 %endif
 
@@ -1161,6 +1147,7 @@ rm -f %{buildroot}/usr/lib64/python2.7/site-packages/htcondor/personal.py
 %dir %_sysconfdir/condor/tokens.d/
 %dir %_sysconfdir/condor/config.d/
 %config(noreplace) %{_sysconfdir}/condor/config.d/00-htcondor-9.0.config
+%dir /usr/share/condor/config.d/
 %_libdir/condor/condor_ssh_to_job_sshd_config_template
 %_sysconfdir/condor/condor_ssh_to_job_sshd_config_template
 %_sysconfdir/bash_completion.d/condor
@@ -1233,6 +1220,7 @@ rm -f %{buildroot}/usr/lib64/python2.7/site-packages/htcondor/personal.py
 %_libexecdir/condor/condor_gangliad
 %_libexecdir/condor/panda-plugin.so
 %_libexecdir/condor/pandad
+%_libexecdir/condor/ce-audit.so
 %_libexecdir/condor/adstash/__init__.py
 %_libexecdir/condor/adstash/config.py
 %_libexecdir/condor/adstash/convert.py
@@ -1568,7 +1556,9 @@ rm -f %{buildroot}/usr/lib64/python2.7/site-packages/htcondor/personal.py
 %_bindir/condor_watch_q
 %_libdir/libpyclassad3*.so
 %_libexecdir/condor/libclassad_python_user.cpython-3*.so
+%_libexecdir/condor/libclassad_python3_user.so
 %_libexecdir/condor/libcollector_python_plugin.cpython-3*.so
+%_libexecdir/condor/libcollector_python3_plugin.so
 /usr/lib64/python%{python3_version}/site-packages/classad/
 /usr/lib64/python%{python3_version}/site-packages/htcondor/
 /usr/lib64/python%{python3_version}/site-packages/htcondor-*.egg-info/
