@@ -12,8 +12,8 @@
 # ------------------------------------------------------------------------------
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
-%define version 3.7.3
-%define release 1
+%define version 3.7.4
+%define release 01.rc1
 
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
@@ -940,6 +940,11 @@ rm -rf $RPM_BUILD_ROOT
 #%config(noreplace) %{_sysconfdir}/condor/scripts/frontend_condortoken
 
 %changelog
+* Mon May 10  2021 Dennis Box <dbox@fnal.gov> - 3.7.4-1
+- GlideinWMS v3.7.4
+- Release Notes: http://glideinwms.fnal.gov/doc.v3_7_4/history.html
+- Release candidates: 3.7.4-01.rc1 to 
+
 * Mon Apr 26  2021 Dennis Box <dbox@fnal.gov> - 3.7.3-1
 - GlideinWMS v3.7.3
 - Release Notes: http://glideinwms.fnal.gov/doc.v3_7_3/history.html
