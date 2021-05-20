@@ -9,11 +9,8 @@
 #-------------------------------------------------------------------------------
 %if %{?rhel:1}%{!?rhel:0}
     # starting with rhel 7 we have systemd and macaroons,
-    # also glibc semaphores are fixed
-    %if %{rhel} >= 7
         %define use_systemd 1
         %define have_macaroons 1
-		%define use_libc_semaphore 1
 
         %if %{rhel} == 7
 			# we build both python2 and python3 bindings for EPEL7
@@ -26,15 +23,6 @@
 			%define python3only 1
 			%define python2and3 0
         %endif
-    %else
-        %define use_systemd 0
-        %define have_macaroons 0
- 		%define use_libc_semaphore 0
-		# we only build python2 bindings for EPEL<=6
-		%define python2only 1
-		%define python3only 0
-		%define python2and3 0
-    %endif
 %else
     # do we have macaroons ?
     %if %{?fedora}%{!?fedora:0} >= 28
@@ -48,12 +36,6 @@
     %else
         %define use_systemd 0
     %endif
-	# can we use glibc semaphores ?
-	%if %{?fedora}%{!?fedora:0} >= 22
-	    %define use_libc_semaphore 1
-	%else
-	    %define use_libc_semaphore 0
-	%endif
     # we only build python3 bindings for fedora
 	%define python2only 0
 	%define python3only 1
@@ -89,7 +71,7 @@
 Name:      xrootd
 Epoch:     1
 Version:   5.2.0
-Release:   0.rc1.1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:   1.1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -587,7 +569,7 @@ cmake  \
       -DXRD_PYTHON_REQ_VERSION=%{python3_pkgversion} \
 %endif
       -DUSER_VERSION=v%{version} \
-      -DUSE_LIBC_SEMAPHORE=%{use_libc_semaphore} ../
+      ../
 
 make -i VERBOSE=1 %{?_smp_mflags}
 popd
@@ -620,7 +602,7 @@ cmake  \
 %if %{?_with_xrdclhttp:1}%{!?_with_xrdclhttp:0}
       -DXRDCLHTTP_SUBMODULE=TRUE \
 %endif
-      -DUSE_LIBC_SEMAPHORE=%{use_libc_semaphore} ../
+      ../
 
 make -i VERBOSE=1 %{?_smp_mflags}
 popd
@@ -1178,6 +1160,12 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Thu May 20 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.2.0-1.1.osg
+- Final 5.2.0 + OSG additions (SOFTWARE-4593)
+
+* Wed May 19 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.2.0-0.2.1.osg
+- Update to 5.2.0rc2 and merge OSG changes (SOFTWARE-4593)
+
 * Wed Mar 31 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.1.1-1.3.osg
 - Conflict with xrootd-multiuser < 0.6 (known to be broken) (SOFTWARE-4557)
 
