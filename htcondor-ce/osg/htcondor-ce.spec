@@ -3,7 +3,7 @@
 
 Name: htcondor-ce
 Version: 5.1.0
-Release: 1.1%{?gitrev:.%{gitrev}git}%{?dist}
+Release: 1.2%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
 
@@ -20,6 +20,7 @@ URL: http://github.com/opensciencegrid/htcondor-ce
 Source0: %{name}-%{version}%{?gitrev:-%{gitrev}}.tar.gz
 
 Patch0: HTCONDOR-465.BatchRuntime.patch
+Patch1: HTCONDOR-512.var-lock-condor-ce-user.patch
 
 BuildRequires: autoconf
 BuildRequires: automake
@@ -229,6 +230,7 @@ Conflicts: %{name}
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
 
 %build
 %cmake -DHTCONDORCE_VERSION=%{version} -DSTATE_INSTALL_DIR=%{_localstatedir} -DPYTHON_SITELIB=%{python3_sitelib}
@@ -568,6 +570,9 @@ fi
 %{_localstatedir}/www/wsgi-scripts/htcondor-ce/htcondor-ce-registry.wsgi
 
 %changelog
+* Thu May 20 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.1.0-1.2
+- Fix tmpfiles.d permissions on /var/lock/condor-ce/user (HTCONDOR-512)
+
 * Fri Apr 30 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.1.0-1.1
 - Fix an issue setting BatchRuntime (HTCONDOR-465)
 
