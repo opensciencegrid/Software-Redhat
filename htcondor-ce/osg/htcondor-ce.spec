@@ -2,8 +2,8 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 5.1.0
-Release: 1.2%{?gitrev:.%{gitrev}git}%{?dist}
+Version: 5.1.1
+Release: 1.1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
 
@@ -19,8 +19,7 @@ URL: http://github.com/opensciencegrid/htcondor-ce
 #
 Source0: %{name}-%{version}%{?gitrev:-%{gitrev}}.tar.gz
 
-Patch0: HTCONDOR-465.BatchRuntime.patch
-Patch1: HTCONDOR-512.var-lock-condor-ce-user.patch
+Patch0: HTCONDOR-512.var-lock-condor-ce-user.patch
 
 BuildRequires: autoconf
 BuildRequires: automake
@@ -112,12 +111,7 @@ Requires: %{name} = %{version}-%{release}
 Group: Applications/System
 Summary: Default routes for submission to PBS
 Requires: %{name} = %{version}-%{release}
-
-%if 0%{?uw_build}
-Requires: /usr/libexec/condor/glite/bin/batch_gahp
-%else
 Requires: blahp
-%endif
 
 %description pbs
 %{summary}
@@ -126,12 +120,7 @@ Requires: blahp
 Group: Applications/System
 Summary: Default routes for submission to LSF
 Requires: %{name} = %{version}-%{release}
-
-%if 0%{?uw_build}
-Requires: /usr/libexec/condor/glite/bin/batch_gahp
-%else
 Requires: blahp
-%endif
 
 %description lsf
 %{summary}
@@ -140,12 +129,7 @@ Requires: blahp
 Group: Applications/System
 Summary: Default routes for submission to SGE
 Requires: %{name} = %{version}-%{release}
-
-%if 0%{?uw_build}
-Requires: /usr/libexec/condor/glite/bin/batch_gahp
-%else
 Requires: blahp
-%endif
 
 %description sge
 %{summary}
@@ -154,12 +138,7 @@ Requires: blahp
 Group: Applications/System
 Summary: Default routes for submission to Slurm
 Requires: %{name} = %{version}-%{release}
-
-%if 0%{?uw_build}
-Requires: /usr/libexec/condor/glite/bin/batch_gahp
-%else
 Requires: blahp
-%endif
 
 %description slurm
 %{summary}
@@ -230,7 +209,6 @@ Conflicts: %{name}
 %prep
 %setup -q
 %patch0 -p1
-%patch1 -p1
 
 %build
 %cmake -DHTCONDORCE_VERSION=%{version} -DSTATE_INSTALL_DIR=%{_localstatedir} -DPYTHON_SITELIB=%{python3_sitelib}
@@ -570,6 +548,11 @@ fi
 %{_localstatedir}/www/wsgi-scripts/htcondor-ce/htcondor-ce-registry.wsgi
 
 %changelog
+* Tue May 25 2021 Brian Lin <blin@cs.wisc.edu> - 5.1.1-1.1
+- Improve restart time of HTCondor-CE View (HTCONDOR-420)
+- Fix bug that caused HTCondor-CE to ignore incoming BatchRuntime requests (#480)
+- Fix blahp packaging requirement (HTCONDOR-504)
+    
 * Thu May 20 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.1.0-1.2
 - Fix tmpfiles.d permissions on /var/lock/condor-ce/user (HTCONDOR-512)
 
