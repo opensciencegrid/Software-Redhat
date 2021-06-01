@@ -1,0 +1,25 @@
+From d62e5d083aaff923eac16bfcf7a5da018b24ed91 Mon Sep 17 00:00:00 2001
+From: Diego Davila <davila.foyo@gmail.com>
+Date: Thu, 27 May 2021 16:38:50 -0700
+Subject: [PATCH] this allows to find the right username when a token is used
+
+(https://github.com/opensciencegrid/xrootd-hdfs/pull/36)
+
+---
+ src/XrdHdfs.cc | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/src/XrdHdfs.cc b/src/XrdHdfs.cc
+index 78ed678..1ca352b 100644
+--- a/src/XrdHdfs.cc
++++ b/src/XrdHdfs.cc
+@@ -373,8 +373,7 @@ bool XrdHdfsFile::Connect(const XrdOucEnv &client)
+     {
+         hadoop_disconnect(m_fs);
+     }
+-    const XrdSecEntity *sec = const_cast<XrdOucEnv&>(client).secEnv();
+-    m_fs = hadoop_connect("default", 0, (sec && sec->name) ? sec->name : "nobody");
++    m_fs = hadoop_connect(&client);
+     return m_fs;
+ }
+ 

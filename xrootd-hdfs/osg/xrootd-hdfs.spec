@@ -1,12 +1,13 @@
 Name: xrootd-hdfs
 Version: 2.2.0
-Release: 1%{?dist}
+Release: 1.1%{?dist}
 Summary: HDFS plugin for xrootd
 
 Group: System Environment/Development
 License: BSD
 URL: https://github.com/bbockelm/xrootd-hdfs
 Source0: %{name}-%{version}.tar.gz
+Patch0: SOFTWARE-4645-usernames-with-tokens.patch
 
 %define xrootd_current_major 5
 %define xrootd_current_minor 1
@@ -38,6 +39,7 @@ Group: System Environment/Development
 
 %prep
 %setup -q
+%patch0 -p1
 
 %build
 sed -i 's|@devel@|%{version}|' src/XrdHdfs.cc
@@ -75,6 +77,10 @@ rm $RPM_BUILD_ROOT%{_bindir}/xrootd_hdfs_envcheck
 %{_includedir}/XrdHdfs.hh
 
 %changelog
+* Tue Jun 01 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.2.0-1.1
+- Add SOFTWARE-4645-usernames-with-tokens.patch to fix finding the right
+  username with token auth (SOFTWARE-4645, #36)
+
 * Thu Mar 11 2021 Carl Edquist <edquist@cs.wisc.edu> - 2.2.0-1
 - Build against xrootd 5 (SOFTWARE-3923, #32)
 - Only write checksum file if hdfsCloseFile() was successful (#34)
