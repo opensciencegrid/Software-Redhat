@@ -70,7 +70,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.1
+%define condor_base_release 1.2
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -131,6 +131,7 @@ Patch2: amzn2-python2.patch
 
 #% if 0% osg
 Patch8: osg_sysconfig_in_init_script.patch
+Patch9: HTCONDOR-534.GridJobId.patch
 #% endif
 
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
@@ -708,6 +709,7 @@ exit 0
 
 %if 0%{?osg} || 0%{?hcc}
 %patch8 -p1
+%patch9 -p1
 %endif
 
 # fix errant execute permissions
@@ -1687,6 +1689,9 @@ fi
 /bin/systemctl try-restart condor.service >/dev/null 2>&1 || :
 
 %changelog
+* Thu Jun 03 2021 Carl Edquist <edquist@cs.wisc.edu> - 9.1.0-1.2
+- Don't clear GridJobId for completed grid batch jobs (HTCONDOR-534)
+
 * Tue Apr 27 2021 Tim Theisen <tim@cs.wisc.edu> - 9.0.0-1.5
 - Remove JSON from local issuer (HTCONDOR-367)
 
