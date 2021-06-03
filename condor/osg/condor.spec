@@ -1688,7 +1688,7 @@ fi
 /bin/systemctl try-restart condor.service >/dev/null 2>&1 || :
 
 %changelog
-* Thu Jun 03 2021 Carl Edquist <edquist@cs.wisc.edu> - 9.0.1-2
+* Thu Jun 03 2021 Carl Edquist <edquist@cs.wisc.edu> - 9.0.1-1.1
 - Don't clear GridJobId for completed grid batch jobs (HTCONDOR-534)
 
 * Mon May 17 2021 Tim Theisen <tim@cs.wisc.edu> - 9.0.1-1
