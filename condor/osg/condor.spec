@@ -69,7 +69,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.1
+%define condor_base_release 1.2
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -1688,7 +1688,7 @@ fi
 /bin/systemctl try-restart condor.service >/dev/null 2>&1 || :
 
 %changelog
-* Thu Jun 03 2021 Carl Edquist <edquist@cs.wisc.edu> - 9.0.1-1.1
+* Thu Jun 03 2021 Carl Edquist <edquist@cs.wisc.edu> - 9.0.1-1.2
 - Don't clear GridJobId for completed grid batch jobs (HTCONDOR-534)
 
 * Mon May 17 2021 Tim Theisen <tim@cs.wisc.edu> - 9.0.1-1
