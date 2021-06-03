@@ -124,6 +124,7 @@ Patch2: amzn2-python2.patch
 
 #% if 0% osg
 Patch8: osg_sysconfig_in_init_script.patch
+Patch9: HTCONDOR-534.GridJobId.patch
 #% endif
 
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
@@ -697,6 +698,7 @@ exit 0
 
 %if 0%{?osg} || 0%{?hcc}
 %patch8 -p1
+%patch9 -p1
 %endif
 
 # fix errant execute permissions
@@ -1673,6 +1675,9 @@ fi
 /bin/systemctl try-restart condor.service >/dev/null 2>&1 || :
 
 %changelog
+* Thu Jun 03 2021 Carl Edquist <edquist@cs.wisc.edu> - 9.0.1-2
+- Don't clear GridJobId for completed grid batch jobs (HTCONDOR-534)
+
 * Mon May 17 2021 Tim Theisen <tim@cs.wisc.edu> - 9.0.1-1
 - Fix problem where X.509 proxy refresh kills job when using AES encryption
 - Fix problem when jobs require a different machine after a failure
