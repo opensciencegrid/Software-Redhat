@@ -132,7 +132,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1
+%define condor_base_release 1.1
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -237,6 +237,7 @@ Patch2: python-shebang.patch
 # OSG patches
 Patch8: osg_sysconfig_in_init_script.patch
 Patch9: Use-bosco-1.3-on-RHEL.patch
+Patch10: HTCONDOR-534.GridJobId.patch
 
 # HCC patches
 # See gt3158
@@ -925,6 +926,7 @@ exit 0
 %if 0%{?osg} || 0%{?hcc}
 %patch8 -p1
 %patch9 -p1
+%patch10 -p1
 %endif
 
 %if 0%{?hcc}
@@ -2207,6 +2209,9 @@ fi
 %endif
 
 %changelog
+* Thu Jun 03 2021 Carl Edquist <edquist@cs.wisc.edu> - 8.8.13-1.1
+- Don't clear GridJobId for completed grid batch jobs (HTCONDOR-534)
+
 * Tue Mar 23 2021 Tim Theisen <tim@cs.wisc.edu> - 8.8.13-1
 - condor_ssh_to_job now maps CR and NL to work with editors like nano
 - Improved the performance of data transfer in condor_ssh_to_job
