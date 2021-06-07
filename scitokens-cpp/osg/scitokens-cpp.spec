@@ -1,6 +1,6 @@
 Name: scitokens-cpp
-Version: 0.6.1
-Release: 1.1%{?dist}
+Version: 0.6.2
+Release: 1%{?dist}
 Summary: C++ Implementation of the SciTokens Library
 License: ASL 2.0
 URL: https://github.com/scitokens/scitokens-cpp
@@ -11,8 +11,6 @@ URL: https://github.com/scitokens/scitokens-cpp
 # git submodule foreach --recursive "git archive --prefix=scitokens-cpp-0.3.3/\$path/ --output=\$sha1.tar HEAD && tar --concatenate --file=$(pwd)/scitokens-cpp-0.3.3.tar \$sha1.tar && rm \$sha1.tar"
 # gzip "scitokens-cpp-0.3.3.tar"
 Source0: https://github.com/scitokens/scitokens-cpp/releases/download/v%{version}/%{name}-%{version}.tar.gz
-
-Patch0: fixup-condor-read.patch
 
 # Scitokens-cpp bundles jwt-cpp, a header only dependency
 # Since it doesn't create a library that can be used by others, it seems
@@ -31,12 +29,6 @@ BuildRequires: openssl-devel
 BuildRequires: libcurl-devel
 BuildRequires: libuuid-devel
 
-# Needed for C++11
-%if 0%{?el6}
-BuildRequires: devtoolset-8-toolchain
-BuildRequires: scl-utils
-%endif
-
 %description
 %{summary}
 
@@ -50,7 +42,6 @@ Requires: %{name}%{?_isa} = %{version}
 
 %prep
 %setup -q
-%patch0 -p1
 
 %build
 %cmake3
@@ -73,8 +64,8 @@ Requires: %{name}%{?_isa} = %{version}
 %dir %{_includedir}/scitokens
 
 %changelog
-* Wed Jun 02 2021 Brian Lin <blin@cs.wisc.edu> - 0.6.1-1.1
-- Fix HTCondor READ WLCG compatibility 
+* Thu Jun 03 2021 Derek Weitzel <dweitzel@unl.edu> - 0.6.2-1
+- Correct WLCG compat for condor read permissions
 
 * Thu May 20 2021 Derek Weitzel <dweitzel@unl.edu> - 0.6.1-1
 - Fix vector resize for el8+ builds
