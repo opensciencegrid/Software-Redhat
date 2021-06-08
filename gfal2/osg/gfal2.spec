@@ -5,7 +5,7 @@
 
 Name:               gfal2
 Version:            2.18.1
-Release:            1.1%{?dist}
+Release:            1.2%{?dist}
 Summary:            Grid file access library 2.0
 License:            ASL 2.0
 URL:                http://dmc.web.cern.ch/projects/gfal-2/home
@@ -57,7 +57,9 @@ BuildRequires:      globus-gass-copy-devel
 #http plugin dependencies
 BuildRequires:      davix-devel >= 0.6.8
 #xrootd plugin dependencies
-BuildRequires:      xrootd-client-devel >= 1:4.1.1
+# OSG 3.5: build against xrootd 4
+# The explicit dependency is needed for EL8, where "priorities" don't seem to work in the Koji build env.
+BuildRequires:      xrootd-client-devel >= 1:4.1.1, xrootd-client-devel < 1:5.0.0
 # sftp plugin dependencies
 BuildRequires:      libssh2-devel
 #tests dependencies
@@ -375,6 +377,9 @@ make DESTDIR=%{buildroot} install
 
 
 %changelog
+* Tue Jun 08 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.18.0-1.2
+- Explicitly BuildRequire xrootd 4 (SOFTWARE-4656)
+
 * Tue Nov 10 2020 Carl Edquist <edquist@cs.wisc.edu> - 2.18.0-1.1
 - Explicitly require xrootd-libs package for xrootd plugin (SOFTWARE-4354)
 
