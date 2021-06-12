@@ -1,7 +1,7 @@
 Name:           empty-condor
 Version:        1.1
-Release:        10%{?dist}
-Summary:        An empty Condor package
+Release:        11%{?dist}
+Summary:        An empty HTCondor package
 
 License:        Unknown
 URL:            http://vdt.cs.wisc.edu
@@ -32,6 +32,7 @@ Provides:       condor-static-shadow = 99
 Provides:       condor-std-universe = 99
 Provides:       condor-test = 99
 Provides:       condor-vm-gahp = 99
+Provides:       python2-condor = 99
 Provides:       python3-condor = 99
 
 Conflicts:      /usr/sbin/condor_master
@@ -69,6 +70,9 @@ believes that Condor has been installed via RPM.
 %doc
 
 %changelog
+* Fri Jun 11 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.1-11
+- Provide python2-condor (SOFTWARE-4661)
+
 * Fri Jan 29 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.1-10
 - Provide python3-condor (SOFTWARE-4451)
 
