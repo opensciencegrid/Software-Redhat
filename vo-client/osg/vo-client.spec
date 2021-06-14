@@ -1,3 +1,7 @@
+# Set to 1 to enable IAM-based VOMS endpoints
+# (SOFTWARE-4666, SOFTWARE-4576, SOFTWARE-4595)
+%define iam 0
+
 Name:           vo-client
 Version:        112
 Release:        1%{?dist}
@@ -39,6 +43,12 @@ Requires:       %{name} = %{version}-%{release}
 
 %build
 make
+
+%if ! 0%{iam}
+rm -f vomsdir/atlas/voms-atlas-auth.app.cern.ch.lsc
+rm -f vomsdir/cms/voms-cms-auth.app.cern.ch.lsc
+sed -Ei '/.*voms-(atlas|cms)-auth.app.cern.ch.*/d' vomses
+%endif
 
 %install
 install -d $RPM_BUILD_ROOT/%{_sysconfdir}
