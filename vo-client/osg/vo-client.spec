@@ -3,7 +3,7 @@
 %define iam 0
 
 Name:           vo-client
-Version:        112
+Version:        113
 Release:        1%{?dist}
 Summary:        Contains vomses file for use with user authentication
 
@@ -80,6 +80,11 @@ find $RPM_BUILD_ROOT/%{_sysconfdir}/grid-security/vomsdir -type d -exec chmod 75
 %config(noreplace) %{_datadir}/osg/grid-vorolemap
 
 %changelog
+* Wed Jun 16 2021 Brian Lin <blin@cs.wisc.edu> - 113-1
+- Add new CLAS12/EIC VO certificates (SOFTWARE-4666)
+- Retire old CLAS12/EIC VO certificates (SOFTWARE-4666)
+- Disable new ATLAS/CMS IAM endpoints (SOFTWARE-4666)
+
 * Thu May 06 2021 Carl Edquist <edquist@cs.wisc.edu> - 112-1
 - Add new ATLAS IAM endpoint (SOFTWARE-4595)
 
