@@ -7,56 +7,17 @@
 %global __python /usr/bin/python3
 
 Name:		blahp
-Version:	2.0.2
-Release:	1.1%{?gitrev:.%{gitrev}}%{?dist}
+Version:	2.1.0
+Release:	0.rc1.1%{?gitrev:.%{gitrev}}%{?dist}
 Summary:	gLite BLAHP daemon
 
 Group:		System/Libraries
 License:	Apache 2.0
 URL:		https://github.com/htcondor/BLAH
 
-# Disable auto-requirement detection from binaries and specify them manually.
-# This allows us to remove Globus libs from just the blahp server and avoid
-# pulling in Globus packages through the other binaries (SOFTWARE-4504)
-AutoReqProv: no
-Provides: config(%name) = %{version}-%{release}
-Requires: /bin/bash
-Requires: /usr/bin/perl
-Requires: /usr/bin/python2
-Requires: config(%name) = %{version}-%{release}
-Requires: libc.so.6()(64bit)
-Requires: libc.so.6(GLIBC_2.14)(64bit)
-Requires: libc.so.6(GLIBC_2.2.5)(64bit)
-Requires: libc.so.6(GLIBC_2.3.4)(64bit)
-Requires: libc.so.6(GLIBC_2.7)(64bit)
-Requires: libclassad.so.15()(64bit)
-Requires: libdl.so.2()(64bit)
-Requires: libgcc_s.so.1()(64bit)
-Requires: libgcc_s.so.1(GCC_3.0)(64bit)
-Requires: libm.so.6()(64bit)
-Requires: libm.so.6(GLIBC_2.2.5)(64bit)
-Requires: libpthread.so.0()(64bit)
-Requires: libpthread.so.0(GLIBC_2.2.5)(64bit)
-Requires: libstdc++.so.6()(64bit)
-Requires: libstdc++.so.6(CXXABI_1.3)(64bit)
-Requires: libstdc++.so.6(GLIBCXX_3.4)(64bit)
-Requires: libstdc++.so.6(GLIBCXX_3.4.14)(64bit)
-Requires: perl(Data::Dumper)
-Requires: perl(Getopt::Long)
-Requires: perl(IO::File)
-Requires: perl(IO::Pipe)
-Requires: perl(POSIX)
-Requires: perl(Time::Local)
-Requires: perl(XML::Simple)
-Requires: perl(constant)
-Requires: perl(strict)
-Requires: rtld(GNU_HASH)
-
 # Pre-release build tarballs should be generated with:
 # git archive %{gitrev} | gzip -9 > %{name}-%{version}-%{gitrev}.tar.gz
 Source0:        %{name}-%{version}%{?gitrev:-%{gitrev}}.tar.gz
-
-Patch0: SOFTWARE-4504.blahpd-disable-globus.patch
 
 BuildRequires:  automake
 BuildRequires:  autoconf
@@ -77,13 +38,12 @@ Requires:       python3
 
 %prep
 %setup
-%patch0 -p1
 
 %build
 ./bootstrap
 export CPPFLAGS="-I/usr/include/classad -std=c++11 -fcommon"
 export LDFLAGS="-lclassad -lglobus_gsi_credential -lglobus_common -lglobus_gsi_proxy_core"
-%configure --with-classads-prefix=/usr --with-globus-prefix=/usr --with-glite-location=/usr
+%configure --with-classads-prefix=/usr --without-globus --with-glite-location=/usr
 unset CPPFLAGS
 unset LDFLAGS
 make %{?_smp_mflags}
@@ -148,6 +108,10 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Wed Jun 16 2021 Carl Edquist <edquist@cs.wisc.edu> - 2.1.0-0.rc1.1
+- Update to v2.1.0-0.rc1
+- Disable globus via configure option (SOFTWARE-4536)
+
 * Wed Apr 28 2021 Tim Theisen <tim@cs.wisc.edu> 2.0.2-1.1
 - Fix periodic remove expression, otherwise jobs go on hold
 
