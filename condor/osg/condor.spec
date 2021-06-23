@@ -48,7 +48,7 @@
 %define python 1
 
 %if 0%{?osg}
-%define globus 0
+%define globus 1
 %else
 %define globus 1
 %endif
@@ -70,7 +70,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.4
+%define condor_base_release 1.5
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -1178,7 +1178,6 @@ rm -f %{buildroot}/usr/lib64/python2.7/site-packages/htcondor/personal.py
 %_sbindir/condor_gridshell
 %_sbindir/gahp_server
 %_sbindir/grid_monitor
-%_sbindir/grid_monitor.sh
 %_sbindir/nordugrid_gahp
 %endif
 %if %blahp
@@ -1691,6 +1690,9 @@ fi
 /bin/systemctl try-restart condor.service >/dev/null 2>&1 || :
 
 %changelog
+* Tue Jun 22 2021 Tim Theisen <tim@cs.wisc.edu> - 9.1.0-1.5
+- Compile with Globus
+
 * Tue Jun 22 2021 Tim Theisen <tim@cs.wisc.edu> - 9.1.0-1.4
 - Track number of holds and reasons in job ad (HTCONDOR-554)
 
