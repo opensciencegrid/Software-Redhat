@@ -70,7 +70,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.5
+%define condor_base_release 1.6
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -133,6 +133,7 @@ Patch2: amzn2-python2.patch
 Patch8: osg_sysconfig_in_init_script.patch
 Patch9: HTCONDOR-534.GridJobId.patch
 Patch10: HTCONDOR-554.HoldReasons.patch
+Patch11: HTCONDOR-554.HoldReasons.patch2
 #% endif
 
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
@@ -712,6 +713,7 @@ exit 0
 %patch8 -p1
 %patch9 -p1
 %patch10 -p1
+%patch11 -p1
 %endif
 
 # fix errant execute permissions
@@ -1690,6 +1692,9 @@ fi
 /bin/systemctl try-restart condor.service >/dev/null 2>&1 || :
 
 %changelog
+* Thu Jun 24 2021 Tim Theisen <tim@cs.wisc.edu> - 9.1.0-1.6
+- Additional patch for HTCondor-554
+
 * Tue Jun 22 2021 Tim Theisen <tim@cs.wisc.edu> - 9.1.0-1.5
 - Compile with Globus
 
