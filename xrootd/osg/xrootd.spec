@@ -70,8 +70,8 @@
 #-------------------------------------------------------------------------------
 Name:      xrootd
 Epoch:     1
-Version:   5.2.0
-Release:   1.1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Version:   5.3.0
+Release:   0.rc1.1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -913,7 +913,6 @@ fi
 %{_libdir}/libXrdSecpwd-5.so
 %{_libdir}/libXrdSecsss-5.so
 %{_libdir}/libXrdSecunix-5.so
-%{_libdir}/libXrdOssCsi-5.so
 %if %{?_with_scitokens:1}%{!?_with_scitokens:0}
 %{_libdir}/libXrdSecztn-5.so
 %endif
@@ -981,6 +980,7 @@ fi
 %{_libdir}/libXrdMacaroons-5.so
 %endif
 %{_libdir}/libXrdN2No2p-5.so
+%{_libdir}/libXrdOssCsi-5.so
 %{_libdir}/libXrdOssSIgpfsT-5.so
 %{_libdir}/libXrdServer.so.3*
 %{_libdir}/libXrdSsi-5.so
