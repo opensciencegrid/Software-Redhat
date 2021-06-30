@@ -9,7 +9,7 @@
 
 Name:		voms
 Version:	2.0.16
-Release:	1.1%{?dist}
+Release:	1.2%{?dist}
 Summary:	Virtual Organization Membership Service
 
 License:	ASL 2.0
@@ -142,7 +142,6 @@ rm %{buildroot}%{_libdir}/*.la
 mkdir -p %{buildroot}%{_unitdir}
 install -m 644 -p systemd/voms@.service %{buildroot}%{_unitdir}
 rm %{buildroot}%{_initrddir}/%{name}
-rm %{buildroot}%{_sysconfdir}/sysconfig/%{name}
 %else
 # Turn off default enabling of the service
 sed -e 's/\(chkconfig: \)\w*/\1-/' \
@@ -340,8 +339,8 @@ fi
 %{_unitdir}/%{name}@.service
 %else
 %{_initrddir}/%{name}
-%config(noreplace) %{_sysconfdir}/sysconfig/%{name}
 %endif
+%config(noreplace) %{_sysconfdir}/sysconfig/%{name}
 %attr(-,voms,voms) %dir %{_sysconfdir}/%{name}
 %dir %{_sysconfdir}/grid-security/%{name}
 %attr(-,voms,voms) %dir %{_localstatedir}/log/%{name}
@@ -356,6 +355,9 @@ fi
 %doc README.Fedora
 
 %changelog
+* Tue Jun 29 2021 Carl Edquist <edquist@cs.wisc.edu> - 2.0.16-1.2
+- Reinstate /etc/sysconfig/voms (SOFTWARE-4577)
+
 * Fri Apr 09 2021 Mattias Ellert <mattias.ellert@physics.uu.se> - 2.0.16-1
 - Update to version 2.0.16
 
