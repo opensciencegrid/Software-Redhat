@@ -1,10 +1,10 @@
 # Set to 1 to enable IAM-based VOMS endpoints
 # (SOFTWARE-4666, SOFTWARE-4576, SOFTWARE-4595)
-%define iam 0
+%define iam 1
 
 Name:           vo-client
 Version:        113
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Contains vomses file for use with user authentication
 
 License:        Apache 2.0
@@ -47,8 +47,12 @@ make
 %if ! 0%{iam}
 rm -f vomsdir/atlas/voms-atlas-auth.app.cern.ch.lsc
 rm -f vomsdir/cms/voms-cms-auth.app.cern.ch.lsc
-sed -Ei '/.*voms-(atlas|cms)-auth.app.cern.ch.*/d' vomses
 %endif
+
+# FIXME: Remove IAM vomses entries to avoid use by VOMS clients until
+# IAM LSC files are more widely distributed across the world
+# (SOFTWARE-4576, SOFTWARE-4595)
+sed -Ei '/.*voms-(atlas|cms)-auth.app.cern.ch.*/d' vomses
 
 %install
 install -d $RPM_BUILD_ROOT/%{_sysconfdir}
@@ -80,6 +84,9 @@ find $RPM_BUILD_ROOT/%{_sysconfdir}/grid-security/vomsdir -type d -exec chmod 75
 %config(noreplace) %{_datadir}/osg/grid-vorolemap
 
 %changelog
+* Wed Jun 16 2021 Brian Lin <blin@cs.wisc.edu> - 113-2
+- Add ATLAS/CMS IAM endpoint LSC files (SOFTWARE-4576, SOFTWARE-4595)
+
 * Wed Jun 16 2021 Brian Lin <blin@cs.wisc.edu> - 113-1
 - Add new CLAS12/EIC VO certificates (SOFTWARE-4666)
 - Retire old CLAS12/EIC VO certificates (SOFTWARE-4666)
