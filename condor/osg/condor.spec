@@ -1,4 +1,4 @@
-%define tarball_version 9.0.1
+%define tarball_version 9.0.2
 
 # On EL7 don't terminate the build because of bad bytecompiling
 %if 0%{?rhel} == 7
@@ -63,7 +63,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.1
+%define condor_base_release 0.549408
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -124,7 +124,6 @@ Patch2: amzn2-python2.patch
 
 #% if 0% osg
 Patch8: osg_sysconfig_in_init_script.patch
-Patch9: HTCONDOR-534.GridJobId.patch
 #% endif
 
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
@@ -263,6 +262,9 @@ BuildRequires: python3-sphinx python3-sphinx_rtd_theme
 
 # openssh-server needed for condor_ssh_to_job
 Requires: openssh-server
+
+# net-tools needed to provide netstat for condor_who
+Requires: net-tools
 
 Requires: /usr/sbin/sendmail
 Requires: condor-classads = %{version}-%{release}
@@ -698,7 +700,6 @@ exit 0
 
 %if 0%{?osg} || 0%{?hcc}
 %patch8 -p1
-%patch9 -p1
 %endif
 
 # fix errant execute permissions
@@ -719,7 +720,7 @@ make -C docs man
 export CMAKE_PREFIX_PATH=/usr
 
 %if %uw_build
-%define condor_build_id 541356
+%define condor_build_id 549408
 
 %cmake3 \
        -DBUILDID:STRING=%condor_build_id \
@@ -1280,6 +1281,12 @@ rm -rf %{buildroot}
 %_mandir/man1/condor_tail.1.gz
 %_mandir/man1/condor_who.1.gz
 %_mandir/man1/condor_now.1.gz
+%_mandir/man1/classad_eval.1.gz
+%_mandir/man1/classads.1.gz
+%_mandir/man1/condor_adstash.1.gz
+%_mandir/man1/condor_evicted_files.1.gz
+%_mandir/man1/condor_watch_q.1.gz
+%_mandir/man1/get_htcondor.1.gz
 # bin/condor is a link for checkpoint, reschedule, vacate
 %_bindir/condor_submit_dag
 %_bindir/condor_who
@@ -1379,7 +1386,7 @@ rm -rf %{buildroot}
 %_sbindir/ec2_gahp
 %_sbindir/condor_gridmanager
 %_sbindir/condor_gridshell
-%_sbindir/gahp_server
+# % _sbindir/gahp_server
 %_sbindir/grid_monitor
 %_sbindir/remote_gahp
 %_sbindir/nordugrid_gahp
@@ -1675,9 +1682,6 @@ fi
 /bin/systemctl try-restart condor.service >/dev/null 2>&1 || :
 
 %changelog
-* Thu Jun 03 2021 Carl Edquist <edquist@cs.wisc.edu> - 9.0.1-1.1
-- Don't clear GridJobId for completed grid batch jobs (HTCONDOR-534)
-
 * Mon May 17 2021 Tim Theisen <tim@cs.wisc.edu> - 9.0.1-1
 - Fix problem where X.509 proxy refresh kills job when using AES encryption
 - Fix problem when jobs require a different machine after a failure
