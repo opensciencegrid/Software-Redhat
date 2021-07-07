@@ -1,4 +1,4 @@
-%define tarball_version 9.0.1
+%define tarball_version 9.0.2
 
 # On EL7 don't terminate the build because of bad bytecompiling
 %if 0%{?rhel} == 7
@@ -69,7 +69,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.2
+%define condor_base_release 0.549408
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -130,7 +130,6 @@ Patch2: amzn2-python2.patch
 
 #% if 0% osg
 Patch8: osg_sysconfig_in_init_script.patch
-Patch9: HTCONDOR-534.GridJobId.patch
 #% endif
 
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
@@ -271,6 +270,9 @@ BuildRequires: python3-sphinx python3-sphinx_rtd_theme
 
 # openssh-server needed for condor_ssh_to_job
 Requires: openssh-server
+
+# net-tools needed to provide netstat for condor_who
+Requires: net-tools
 
 Requires: /usr/sbin/sendmail
 Requires: condor-classads = %{version}-%{release}
@@ -708,7 +710,6 @@ exit 0
 
 %if 0%{?osg} || 0%{?hcc}
 %patch8 -p1
-%patch9 -p1
 %endif
 
 # fix errant execute permissions
@@ -1172,7 +1173,7 @@ rm -f %{buildroot}/usr/lib64/python2.7/site-packages/htcondor/personal.py
 %_libexecdir/condor/condor_urlfetch
 %if %globus
 %_sbindir/condor_gridshell
-%_sbindir/gahp_server
+# % _sbindir/gahp_server
 %_sbindir/grid_monitor
 %_sbindir/grid_monitor.sh
 %_sbindir/nordugrid_gahp
@@ -1297,6 +1298,12 @@ rm -f %{buildroot}/usr/lib64/python2.7/site-packages/htcondor/personal.py
 %_mandir/man1/condor_tail.1.gz
 %_mandir/man1/condor_who.1.gz
 %_mandir/man1/condor_now.1.gz
+%_mandir/man1/classad_eval.1.gz
+%_mandir/man1/classads.1.gz
+%_mandir/man1/condor_adstash.1.gz
+%_mandir/man1/condor_evicted_files.1.gz
+%_mandir/man1/condor_watch_q.1.gz
+%_mandir/man1/get_htcondor.1.gz
 # bin/condor is a link for checkpoint, reschedule, vacate
 %_bindir/condor_submit_dag
 %_bindir/condor_who
