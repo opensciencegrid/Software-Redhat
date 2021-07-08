@@ -8,7 +8,7 @@
 
 Name:		blahp
 Version:	2.1.0
-Release:	0.rc1.1%{?gitrev:.%{gitrev}}%{?dist}
+Release:	1.1%{?gitrev:.%{gitrev}}%{?dist}
 Summary:	gLite BLAHP daemon
 
 Group:		System/Libraries
@@ -69,12 +69,12 @@ echo "blah_libexec_directory=/usr/libexec/blahp" >> $RPM_BUILD_ROOT%{_sysconfdir
 # Insert appropriate templates for LSF, SGE, Slurm, and HTCondor; admins will need to change these
 install -m 0755 -d -p $RPM_BUILD_ROOT%{bl_sysconfdir}
 
-for batch_system in pbs sge slurm lsf condor; do
+for batch_system in condor kubernetes lsf nqs pbs sge slurm; do
     mv $RPM_BUILD_ROOT%{bl_libexecdir}/${batch_system}_local_submit_attributes.sh $RPM_BUILD_ROOT%{bl_sysconfdir}/
 done
 
 # Create local_submit_attributes.sh symlinks in /etc/blahp
-for batch_system in pbs sge slurm lsf condor; do
+for batch_system in condor kubernetes lsf nqs pbs sge slurm; do
     ln -s %{bl_sysconfdir}/${batch_system}_local_submit_attributes.sh \
        $RPM_BUILD_ROOT%{bl_libexecdir}/${batch_system}_local_submit_attributes.sh
 done
@@ -108,6 +108,12 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Tue Jul 06 2021 Tim Theisen <tim@cs.wisc.edu> 2.1.0-1
+- Fix bug where GPU request was not passed onto the batch script
+- Fix problem where proxy symlinks were not cleaned up by not creating them
+- Fix bug where output files are overwritten if no transfer output remap
+- Added support for passing in extra submit arguments from the job ad
+
 * Wed Jun 16 2021 Carl Edquist <edquist@cs.wisc.edu> - 2.1.0-0.rc1.1
 - Update to v2.1.0-0.rc1
 - Disable globus via configure option (SOFTWARE-4536)
