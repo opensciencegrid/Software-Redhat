@@ -69,7 +69,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 0.549408
+%define condor_base_release 1.1
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -1695,6 +1695,15 @@ fi
 /bin/systemctl try-restart condor.service >/dev/null 2>&1 || :
 
 %changelog
+* Thu Jul 08 2021 Tim Theisen <tim@cs.wisc.edu> - 9.0.2-1
+- HTCondor can be set up to use only FIPS 140-2 approved security functions
+- If the Singularity test fails, the job goes idle rather than getting held
+- Can divide GPU memory, when making multiple GPU entries for a single GPU
+- Startd and Schedd cron job maximum line length increased to 64k bytes
+- Added first class submit keywords for SciTokens
+- Fixed MUNGE authentication
+- Fixed Windows installer to work when the install location isn't C:\Condor
+
 * Thu Jun 03 2021 Carl Edquist <edquist@cs.wisc.edu> - 9.0.1-1.2
 - Don't clear GridJobId for completed grid batch jobs (HTCONDOR-534)
 
