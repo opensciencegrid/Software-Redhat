@@ -3,8 +3,8 @@
 %define iam 1
 
 Name:           vo-client
-Version:        113
-Release:        2%{?dist}
+Version:        114
+Release:        1%{?dist}
 Summary:        Contains vomses file for use with user authentication
 
 License:        Apache 2.0
@@ -84,6 +84,10 @@ find $RPM_BUILD_ROOT/%{_sysconfdir}/grid-security/vomsdir -type d -exec chmod 75
 %config(noreplace) %{_datadir}/osg/grid-vorolemap
 
 %changelog
+* Tue Jul 13 2021 Brian Lin <blin@cs.wisc.edu> - 114-1
+- Fix typo in CLAS12 and EIC VOMS certificate issuers (SOFTWARE-4701)
+- Add LSC files for CERN VO IAM endpoints (SOFTWARE-4595, SOFTWARE-4576, SOFTWARE-4695)
+
 * Wed Jun 16 2021 Brian Lin <blin@cs.wisc.edu> - 113-2
 - Add ATLAS/CMS IAM endpoint LSC files (SOFTWARE-4576, SOFTWARE-4595)
 
