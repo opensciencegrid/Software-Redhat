@@ -132,7 +132,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.1
+%define condor_base_release 1.2
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -2209,7 +2209,7 @@ fi
 %endif
 
 %changelog
-* Thu Jul 29 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 8.8.15-1.1
+* Thu Jul 29 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 8.8.15-1.2
 - Build for OSG (SOFTWARE-4727)
 
 * Thu Jul 29 2021 Tim Theisen <tim@cs.wisc.edu> - 8.8.15-1
