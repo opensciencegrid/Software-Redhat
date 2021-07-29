@@ -1171,9 +1171,9 @@ rm -f %{buildroot}/%{_sbindir}/ods_job_etl_server
 mkdir -p -m0755 %{buildroot}/%{_var}/lib/condor/ViewHist
 %endif
 
-mkdir -p -m0755 %{buildroot}/%{_var}/run/condor
+mkdir -p -m0775 %{buildroot}/%{_var}/run/condor
 mkdir -p -m0755 %{buildroot}/%{_var}/log/condor
-mkdir -p -m0755 %{buildroot}/%{_var}/lock/condor
+mkdir -p -m0775 %{buildroot}/%{_var}/lock/condor
 mkdir -p -m1777 %{buildroot}/%{_var}/lock/condor/local
 # Note we use %{_var}/lib instead of %{_sharedstatedir} for RHEL5 compatibility
 mkdir -p -m0755 %{buildroot}/%{_var}/lib/condor/spool
@@ -2209,6 +2209,9 @@ fi
 %endif
 
 %changelog
+* Thu Jul 29 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 8.8.15-1.1
+- Build for OSG (SOFTWARE-4727)
+
 * Thu Jul 29 2021 Tim Theisen <tim@cs.wisc.edu> - 8.8.15-1
 - Fix for security issue
 - https://research.cs.wisc.edu/htcondor/security/vulnerabilities/HTCONDOR-2021-0003.html
