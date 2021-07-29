@@ -1,4 +1,4 @@
-%define tarball_version 8.8.13
+%define tarball_version 8.8.15
 
 # optionally define any of these, here or externally
 # % define fedora   16
@@ -952,7 +952,7 @@ export CMAKE_PREFIX_PATH=/usr
 # causes build issues with EL5, don't even bother building the tests.
 
 %if %uw_build
-%define condor_build_id 534541
+%define condor_build_id 552034
 
 cmake \
        -DBUILDID:STRING=%condor_build_id \
@@ -1017,7 +1017,7 @@ cmake \
        -DHAVE_HIBERNATION:BOOL=TRUE \
        -DWANT_HDFS:BOOL=FALSE \
        -DWITH_ZLIB:BOOL=FALSE \
-       -DWANT_CONTRIB:BOOL=FALSE \
+       -DWANT_CONTRIB:BOOL=ON \
        -DWITH_PIGEON:BOOL=FALSE \
 %if %plumage
        -DWITH_PLUMAGE:BOOL=TRUE \
@@ -1171,9 +1171,9 @@ rm -f %{buildroot}/%{_sbindir}/ods_job_etl_server
 mkdir -p -m0755 %{buildroot}/%{_var}/lib/condor/ViewHist
 %endif
 
-mkdir -p -m0775 %{buildroot}/%{_var}/run/condor
+mkdir -p -m0755 %{buildroot}/%{_var}/run/condor
 mkdir -p -m0755 %{buildroot}/%{_var}/log/condor
-mkdir -p -m0775 %{buildroot}/%{_var}/lock/condor
+mkdir -p -m0755 %{buildroot}/%{_var}/lock/condor
 mkdir -p -m1777 %{buildroot}/%{_var}/lock/condor/local
 # Note we use %{_var}/lib instead of %{_sharedstatedir} for RHEL5 compatibility
 mkdir -p -m0755 %{buildroot}/%{_var}/lib/condor/spool
@@ -2209,6 +2209,14 @@ fi
 %endif
 
 %changelog
+* Thu Jul 29 2021 Tim Theisen <tim@cs.wisc.edu> - 8.8.15-1
+- Fix for security issue
+- https://research.cs.wisc.edu/htcondor/security/vulnerabilities/HTCONDOR-2021-0003.html
+
+* Tue Jul 27 2021 Tim Theisen <tim@cs.wisc.edu> - 8.8.14-1
+- Fix for security issue
+- https://research.cs.wisc.edu/htcondor/security/vulnerabilities/HTCONDOR-2021-0003.html
+
 * Thu Jun 03 2021 Carl Edquist <edquist@cs.wisc.edu> - 8.8.13-1.1
 - Don't clear GridJobId for completed grid batch jobs (HTCONDOR-534)
 
