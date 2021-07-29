@@ -1,4 +1,4 @@
-%define tarball_version 9.0.2
+%define tarball_version 9.0.4
 
 # On EL7 don't terminate the build because of bad bytecompiling
 %if 0%{?rhel} == 7
@@ -730,7 +730,7 @@ make -C docs man
 export CMAKE_PREFIX_PATH=/usr
 
 %if %uw_build
-%define condor_build_id 536780
+%define condor_build_id 552036
 
 %cmake3 \
        -DBUILDID:STRING=%condor_build_id \
@@ -1695,6 +1695,16 @@ fi
 /bin/systemctl try-restart condor.service >/dev/null 2>&1 || :
 
 %changelog
+* Thu Jul 29 2021 Tim Theisen <tim@cs.wisc.edu> - 9.0.4-1
+- Fixes for security issues
+- https://research.cs.wisc.edu/htcondor/security/vulnerabilities/HTCONDOR-2021-0003.html
+- https://research.cs.wisc.edu/htcondor/security/vulnerabilities/HTCONDOR-2021-0004.html
+
+* Tue Jul 27 2021 Tim Theisen <tim@cs.wisc.edu> - 9.0.3-1
+- Fixes for security issues
+- https://research.cs.wisc.edu/htcondor/security/vulnerabilities/HTCONDOR-2021-0003.html
+- https://research.cs.wisc.edu/htcondor/security/vulnerabilities/HTCONDOR-2021-0004.html
+
 * Thu Jul 08 2021 Tim Theisen <tim@cs.wisc.edu> - 9.0.2-1
 - HTCondor can be set up to use only FIPS 140-2 approved security functions
 - If the Singularity test fails, the job goes idle rather than getting held
