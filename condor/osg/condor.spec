@@ -70,7 +70,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.3
+%define condor_base_release 1.1
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -1689,6 +1689,9 @@ fi
 /bin/systemctl try-restart condor.service >/dev/null 2>&1 || :
 
 %changelog
+* Thu Jul 29 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 9.1.2-1.1
+- Build for OSG (SOFTWARE-4727)
+
 * Tue Jul 29 2021 Tim Theisen <tim@cs.wisc.edu> - 9.1.2-1
 - Fixes for security issues
 - https://research.cs.wisc.edu/htcondor/security/vulnerabilities/HTCONDOR-2021-0003.html
