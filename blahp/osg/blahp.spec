@@ -4,11 +4,13 @@
 %define bl_libexecdir %{_libexecdir}/%{name}
 
 # Force brp-python-bytecompile to use Python 3
+%if ! 0%{?rhel} == 7
 %global __python /usr/bin/python3
+%endif
 
 Name:		blahp
-Version:	2.1.0
-Release:	1.1%{?gitrev:.%{gitrev}}%{?dist}
+Version:	2.1.1
+Release:	0.1%{?gitrev:.%{gitrev}}%{?dist}
 Summary:	gLite BLAHP daemon
 
 Group:		System/Libraries
@@ -31,7 +33,9 @@ BuildRequires:  globus-gsi-proxy-core-devel
 BuildRequires:  globus-gsi-cert-utils-devel
 BuildRequires:  docbook-style-xsl, libxslt
 
+%if ! 0%{?rhel} == 7
 Requires:       python3
+%endif
 
 %description
 %{summary}
@@ -40,6 +44,10 @@ Requires:       python3
 %setup
 
 %build
+%if 0%{?rhel} == 7
+# Don't rely on Python 3 on EL7 (not installed by default)
+sed -i 's;/usr/bin/python3;/usr/bin/python2;' src/scripts/*status.py
+%endif
 ./bootstrap
 export CPPFLAGS="-I/usr/include/classad -std=c++11 -fcommon"
 export LDFLAGS="-lclassad -lglobus_gsi_credential -lglobus_common -lglobus_gsi_proxy_core"
@@ -108,6 +116,12 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Fri Aug 06 2021 Tim Theisen <tim@cs.wisc.edu> 2.1.1-0.1
+- Add Python 2 support back for Enterprise Linux 7
+- Allow the user to override system configuration files
+- Enable flexible configuration via a configuration directory
+- Fix Slurm resource usage reporting
+
 * Tue Jul 06 2021 Tim Theisen <tim@cs.wisc.edu> 2.1.0-1
 - Fix bug where GPU request was not passed onto the batch script
 - Fix problem where proxy symlinks were not cleaned up by not creating them
