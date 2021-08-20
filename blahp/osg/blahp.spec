@@ -10,7 +10,7 @@
 
 Name:		blahp
 Version:	2.1.1
-Release:	0.1%{?gitrev:.%{gitrev}}%{?dist}
+Release:	1%{?gitrev:.%{gitrev}}%{?dist}
 Summary:	gLite BLAHP daemon
 
 Group:		System/Libraries
@@ -116,7 +116,7 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
-* Fri Aug 06 2021 Tim Theisen <tim@cs.wisc.edu> 2.1.1-0.1
+* Tue Aug 17 2021 Tim Theisen <tim@cs.wisc.edu> 2.1.1-1
 - Add Python 2 support back for Enterprise Linux 7
 - Allow the user to override system configuration files
 - Enable flexible configuration via a configuration directory
