@@ -1,4 +1,4 @@
-%define tarball_version 9.1.2
+%define tarball_version 9.1.3
 
 # On EL7 don't terminate the build because of bad bytecompiling
 %if 0%{?rhel} == 7
@@ -131,9 +131,6 @@ Patch2: amzn2-python2.patch
 
 #% if 0% osg
 Patch8: osg_sysconfig_in_init_script.patch
-Patch9: HTCONDOR-534.GridJobId.patch
-Patch10: HTCONDOR-554.HoldReasons.patch
-Patch11: HTCONDOR-554.HoldReasons.patch2
 #% endif
 
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
@@ -275,17 +272,19 @@ BuildRequires: python3-sphinx python3-sphinx_rtd_theme
 # openssh-server needed for condor_ssh_to_job
 Requires: openssh-server
 
+# net-tools needed to provide netstat for condor_who
+Requires: net-tools
+
 Requires: /usr/sbin/sendmail
 Requires: condor-classads = %{version}-%{release}
 Requires: condor-procd = %{version}-%{release}
 
 %if %uw_build
 Requires: %name-externals = %version-%release
-Requires: condor-boinc
 %endif
 
 %if %blahp
-Requires: blahp >= 2.0.1
+Requires: blahp >= 2.1.1
 %endif
 
 # Useful tools are using the Python bindings
@@ -711,9 +710,6 @@ exit 0
 
 %if 0%{?osg} || 0%{?hcc}
 %patch8 -p1
-%patch9 -p1
-%patch10 -p1
-%patch11 -p1
 %endif
 
 # fix errant execute permissions
@@ -734,13 +730,14 @@ make -C docs man
 export CMAKE_PREFIX_PATH=/usr
 
 %if %uw_build
-%define condor_build_id 536780
+%define condor_build_id UW_development
 
 %cmake3 \
        -DBUILDID:STRING=%condor_build_id \
        -DPACKAGEID:STRING=%{version}-%{condor_release} \
        -DUW_BUILD:BOOL=FALSE \
        -DPROPER:BOOL=TRUE \
+       -DCMAKE_SKIP_RPATH:BOOL=TRUE \
        -DCONDOR_PACKAGE_BUILD:BOOL=TRUE \
        -DCONDOR_RPMBUILD:BOOL=TRUE \
        -D_VERBOSE:BOOL=TRUE \
@@ -782,6 +779,7 @@ export CMAKE_PREFIX_PATH=/usr
 %endif
        -DUW_BUILD:BOOL=FALSE \
        -DPROPER:BOOL=TRUE \
+       -DCMAKE_SKIP_RPATH:BOOL=TRUE \
        -DCONDOR_PACKAGE_BUILD:BOOL=TRUE \
        -DPACKAGEID:STRING=%{version}-%{condor_release} \
        -DCONDOR_RPMBUILD:BOOL=TRUE \
@@ -1118,6 +1116,10 @@ rm -rf %{buildroot}/usr/lib64/python2.7/site-packages/htcondor/dags
 # htcondor/personal.py only works with Python3
 rm -f %{buildroot}/usr/lib64/python2.7/site-packages/htcondor/personal.py
 
+%clean
+rm -rf %{buildroot}
+
+
 %check
 # This currently takes hours and can kill your machine...
 #cd condor_tests
@@ -1178,22 +1180,8 @@ rm -f %{buildroot}/usr/lib64/python2.7/site-packages/htcondor/personal.py
 %_libexecdir/condor/htcondor_docker_test
 %if %globus
 %_sbindir/condor_gridshell
-%_sbindir/gahp_server
 %_sbindir/grid_monitor
 %_sbindir/nordugrid_gahp
-%endif
-%if %blahp
-%dir %_libexecdir/condor/glite/bin
-%_libexecdir/condor/glite/bin/kubernetes_cancel.sh
-%_libexecdir/condor/glite/bin/kubernetes_hold.sh
-%_libexecdir/condor/glite/bin/kubernetes_resume.sh
-%_libexecdir/condor/glite/bin/kubernetes_status.sh
-%_libexecdir/condor/glite/bin/kubernetes_submit.sh
-%_libexecdir/condor/glite/bin/nqs_cancel.sh
-%_libexecdir/condor/glite/bin/nqs_hold.sh
-%_libexecdir/condor/glite/bin/nqs_resume.sh
-%_libexecdir/condor/glite/bin/nqs_status.sh
-%_libexecdir/condor/glite/bin/nqs_submit.sh
 %endif
 %_libexecdir/condor/condor_limits_wrapper.sh
 %_libexecdir/condor/condor_rooster
@@ -1236,6 +1224,7 @@ rm -f %{buildroot}/usr/lib64/python2.7/site-packages/htcondor/personal.py
 %_libexecdir/condor/adstash/utils.py
 %_mandir/man1/condor_advertise.1.gz
 %_mandir/man1/condor_annex.1.gz
+%_mandir/man1/condor_check_password.1.gz
 %_mandir/man1/condor_check_userlogs.1.gz
 %_mandir/man1/condor_chirp.1.gz
 %_mandir/man1/condor_config_val.1.gz
@@ -1301,6 +1290,13 @@ rm -f %{buildroot}/usr/lib64/python2.7/site-packages/htcondor/personal.py
 %_mandir/man1/condor_tail.1.gz
 %_mandir/man1/condor_who.1.gz
 %_mandir/man1/condor_now.1.gz
+%_mandir/man1/classad_eval.1.gz
+%_mandir/man1/classads.1.gz
+%_mandir/man1/condor_adstash.1.gz
+%_mandir/man1/condor_evicted_files.1.gz
+%_mandir/man1/condor_watch_q.1.gz
+%_mandir/man1/get_htcondor.1.gz
+%_mandir/man1/htcondor.1.gz
 # bin/condor is a link for checkpoint, reschedule, vacate
 %_bindir/condor_submit_dag
 %_bindir/condor_who
@@ -1560,6 +1556,7 @@ rm -f %{buildroot}/usr/lib64/python2.7/site-packages/htcondor/personal.py
 %_bindir/condor_top
 %_bindir/classad_eval
 %_bindir/condor_watch_q
+%_bindir/htcondor
 %_libdir/libpyclassad3*.so
 %_libexecdir/condor/libclassad_python_user.cpython-3*.so
 %_libexecdir/condor/libclassad_python3_user.so
@@ -1568,6 +1565,7 @@ rm -f %{buildroot}/usr/lib64/python2.7/site-packages/htcondor/personal.py
 /usr/lib64/python%{python3_version}/site-packages/classad/
 /usr/lib64/python%{python3_version}/site-packages/htcondor/
 /usr/lib64/python%{python3_version}/site-packages/htcondor-*.egg-info/
+/usr/lib64/python%{python3_version}/site-packages/htcondor_cli/
 %endif
 %endif
 %endif
@@ -1692,41 +1690,73 @@ fi
 /bin/systemctl try-restart condor.service >/dev/null 2>&1 || :
 
 %changelog
-* Thu Jul 29 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 9.1.2-1.1
-- Build for OSG (SOFTWARE-4727)
+* Thu Aug 19 2021 Tim Theisen <tim@cs.wisc.edu> - 9.1.3-1
+- Globus GSI is no longer needed for X.509 proxy delegation
+- Globus GSI authentication is disabled by default
+- The job ad now contains a history of job holds and hold reasons
+- If a user job policy expression evaluates to undefined, it is ignored
 
-* Tue Jul 29 2021 Tim Theisen <tim@cs.wisc.edu> - 9.1.2-1
+* Wed Aug 18 2021 Tim Theisen <tim@cs.wisc.edu> - 9.0.5-1
+- Other authentication methods are tried if mapping fails using SciTokens
+- Fix rare crashes from successful condor_submit, which caused DAGMan issues
+- Fix bug where ExitCode attribute would be suppressed when OnExitHold fired
+- condor_who now suppresses spurious warnings coming from netstat
+- The online manual now has detailed instructions for installing on MacOS
+- Fix bug where misconfigured MIG devices confused condor_gpu_discovery
+- The transfer_checkpoint_file list may now include input files
+
+* Thu Jul 29 2021 Tim Theisen <tim@cs.wisc.edu> - 9.1.2-1
 - Fixes for security issues
 - https://research.cs.wisc.edu/htcondor/security/vulnerabilities/HTCONDOR-2021-0003.html
 - https://research.cs.wisc.edu/htcondor/security/vulnerabilities/HTCONDOR-2021-0004.html
 
-* Thu Jun 24 2021 Tim Theisen <tim@cs.wisc.edu> - 9.1.0-1.6
-- Additional patch for HTCondor-554
+* Thu Jul 29 2021 Tim Theisen <tim@cs.wisc.edu> - 9.0.4-1
+- Fixes for security issues
+- https://research.cs.wisc.edu/htcondor/security/vulnerabilities/HTCONDOR-2021-0003.html
+- https://research.cs.wisc.edu/htcondor/security/vulnerabilities/HTCONDOR-2021-0004.html
 
-* Tue Jun 22 2021 Tim Theisen <tim@cs.wisc.edu> - 9.1.0-1.5
-- Compile with Globus
+* Thu Jul 29 2021 Tim Theisen <tim@cs.wisc.edu> - 8.8.15-1
+- Fix for security issue
+- https://research.cs.wisc.edu/htcondor/security/vulnerabilities/HTCONDOR-2021-0003.html
 
-* Tue Jun 22 2021 Tim Theisen <tim@cs.wisc.edu> - 9.1.0-1.4
-- Track number of holds and reasons in job ad (HTCONDOR-554)
+* Tue Jul 27 2021 Tim Theisen <tim@cs.wisc.edu> - 9.1.1-1
+- Fixes for security issues
+- https://research.cs.wisc.edu/htcondor/security/vulnerabilities/HTCONDOR-2021-0003.html
+- https://research.cs.wisc.edu/htcondor/security/vulnerabilities/HTCONDOR-2021-0004.html
 
-* Thu Jun 03 2021 Carl Edquist <edquist@cs.wisc.edu> - 9.1.0-1.3
-- Don't clear GridJobId for completed grid batch jobs (HTCONDOR-534)
+* Tue Jul 27 2021 Tim Theisen <tim@cs.wisc.edu> - 9.0.3-1
+- Fixes for security issues
+- https://research.cs.wisc.edu/htcondor/security/vulnerabilities/HTCONDOR-2021-0003.html
+- https://research.cs.wisc.edu/htcondor/security/vulnerabilities/HTCONDOR-2021-0004.html
 
-* Tue Apr 27 2021 Tim Theisen <tim@cs.wisc.edu> - 9.0.0-1.5
-- Remove JSON from local issuer (HTCONDOR-367)
+* Tue Jul 27 2021 Tim Theisen <tim@cs.wisc.edu> - 8.8.14-1
+- Fix for security issue
+- https://research.cs.wisc.edu/htcondor/security/vulnerabilities/HTCONDOR-2021-0003.html
 
-* Mon Apr 26 2021 Tim Theisen <tim@cs.wisc.edu> - 9.0.0-1.4
-- Fix SciTokens local issuer problem (HTCONDOR-445)
-- Drop RC in version string (SOFTWARE-4545)
+* Thu Jul 08 2021 Tim Theisen <tim@cs.wisc.edu> - 9.0.2-1
+- HTCondor can be set up to use only FIPS 140-2 approved security functions
+- If the Singularity test fails, the job goes idle rather than getting held
+- Can divide GPU memory, when making multiple GPU entries for a single GPU
+- Startd and Schedd cron job maximum line length increased to 64k bytes
+- Added first class submit keywords for SciTokens
+- Fixed MUNGE authentication
+- Fixed Windows installer to work when the install location isn't C:\Condor
 
-* Fri Apr 23 2021 Tim Theisen <tim@cs.wisc.edu> - 9.0.0-1.3
-- Fix malformed default Bosco tarball URL format (HTCONDOR-433)
-- Fix autocluster problem (HTCONDOR-414)
-- Fix claim activation faiure (HTCONDOR-434)
-- Fix Bosco tarball extraction (HTCONDOR-438)
+* Thu May 20 2021 Tim Theisen <tim@cs.wisc.edu> - 9.1.0-1
+- Support for submitting to ARC-CE via the REST interface
+- DAGMan can put failed jobs on hold (user can correct problems and release)
+- Can run gdb and ptrace within Docker containers
+- A small Docker test job is run on the execute node to verify functionality
+- The number of instructions executed is reported in the job Ad on Linux
 
-* Tue Apr 20 2021 Brian Lin <blin@cs.wisc.edu> - 9.0.0-1.1
-- Fix malformed default Bosco tarball URL format (HTCONDOR-433)
+* Mon May 17 2021 Tim Theisen <tim@cs.wisc.edu> - 9.0.1-1
+- Fix problem where X.509 proxy refresh kills job when using AES encryption
+- Fix problem when jobs require a different machine after a failure
+- Fix problem where a job matched a machine it can't use, delaying job start
+- Fix exit code and retry checking when a job exits because of a signal
+- Fix a memory leak in the job router when a job is removed via job policy
+- Fixed the back-end support for the 'bosco_cluster --add' command
+- An updated Windows installer that supports IDTOKEN authentication
 
 * Wed Apr 14 2021 Tim Theisen <tim@cs.wisc.edu> - 9.0.0-1
 - Absent any configuration, HTCondor denies authorization to all users
@@ -1764,19 +1794,6 @@ fi
 - Fixed condor_annex crashes on platforms with newer compilers
 - Fixed "use feature: GPUsMonitor" to locate the monitor binary on Windows
 - Fixed a bug that prevented using the '@' character in an event log path
-
-* Tue Mar 16 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 8.9.11-1.4
-- Add SOFTWARE-4525-condor_watch_q_crash.patch to fix a condor_watch_q crash when watching DAGs (SOFTWARE-4525)
-- Add HTCONDOR-315-Always-handle-exceptions-when-decoding-.patch to fix a schedd crash caused by malformed SciTokens (SOFTWARE-4533)
-
-* Mon Feb 22 2021 Brian Lin <blin@cs.wisc.edu> - 8.9.11-1.3
-- Restore BATCH_GAHP and GLITE_LCOATION config (SOFTWARE-4470)
-
-* Mon Feb 22 2021 Brian Lin <blin@cs.wisc.edu> - 8.9.11-1.2
-- Remove OSG-specific configurations (SOFTWARE-4470)
-
-* Tue Feb 16 2021 Carl Edquist <edquist@cs.wisc.edu> - 8.9.11-1.1
-- Turn off glexec & globus for OSG (SOFTWARE-4470)
 
 * Wed Jan 27 2021 Tim Theisen <tim@cs.wisc.edu> - 8.9.11-1
 - This release of HTCondor fixes security-related bugs described at
