@@ -69,7 +69,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 0.553749
+%define condor_base_release 1
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -1697,6 +1697,15 @@ fi
 /bin/systemctl try-restart condor.service >/dev/null 2>&1 || :
 
 %changelog
+* Wed Aug 18 2021 Tim Theisen <tim@cs.wisc.edu> - 9.0.5-1
+- Other authentication methods are tried if mapping fails using SciTokens
+- Fix rare crashes from successful condor_submit, which caused DAGMan issues
+- Fix bug where ExitCode attribute would be suppressed when OnExitHold fired
+- condor_who now suppresses spurious warnings coming from netstat
+- The online manual now has detailed instructions for installing on MacOS
+- Fix bug where misconfigured MIG devices confused condor_gpu_discovery
+- The transfer_checkpoint_file list may now include input files
+
 * Thu Jul 29 2021 Tim Theisen <tim@cs.wisc.edu> - 9.0.4-1
 - Fixes for security issues
 - https://research.cs.wisc.edu/htcondor/security/vulnerabilities/HTCONDOR-2021-0003.html
