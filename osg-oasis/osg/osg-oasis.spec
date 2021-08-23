@@ -1,13 +1,14 @@
 Summary: OSG metapackage for OASIS and CVMFS
 Name: osg-oasis
 Version: 17
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: ASL 2.0
 BuildArch: noarch
 # Note: cannot require an exact release number (after a dash) unless 
 #   including the dist as well, e.g. -2%{?dist}
 Requires: cvmfs = 2.8.1
 Requires: cvmfs-config-osg = 2.5
+Requires: scitokens-cpp >= 0.6.2
 Requires: cvmfs-x509-helper >= 2.2
 
 %description
@@ -25,6 +26,9 @@ exit 0
 %files
 
 %changelog
+* Mon Aug 23 2021 Dave Dykstra <dwd@fnal.gov> 17-4
+- Add requirement for scitokens-cpp >= 0.6.2
+
 * Mon Aug 23 2021 Dave Dykstra <dwd@fnal.gov> 17-3
 - Update to cvmfs-x509-helper-2.2
 
