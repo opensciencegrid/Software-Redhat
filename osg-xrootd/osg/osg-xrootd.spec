@@ -18,7 +18,8 @@ Source10: Authfile.example
 Source11: 90-xrootd-logging.cfg
 Source12: 10-osg-vomsxrd.cfg
 Source13: 50-osg-vomsxrd.cfg
-# We utilize a configuration directive (`continue`) introduced in XRootD 4.9.
+Source14: 50-osg-scitokens.cfg
+
 Requires: xrootd >= 1:5.1.1
 
 # Necessary for authentication
@@ -56,6 +57,7 @@ install -m 644 %{SOURCE9} $RPM_BUILD_ROOT/etc/xrootd/config.d
 install -m 644 %{SOURCE11} $RPM_BUILD_ROOT/etc/xrootd/config.d
 install -m 644 %{SOURCE12} $RPM_BUILD_ROOT/etc/xrootd/config.d
 install -m 644 %{SOURCE13} $RPM_BUILD_ROOT/etc/xrootd/config.d
+install -m 644 %{SOURCE14} $RPM_BUILD_ROOT/etc/xrootd/config.d
 mkdir -p $RPM_BUILD_ROOT/%{_libexecdir}/xrootd/
 install -p -m 0755 %{SOURCE8} $RPM_BUILD_ROOT/%{_libexecdir}/xrootd/create_macaroon_secret
 install -m 644 %{SOURCE10} $RPM_BUILD_ROOT/etc/xrootd/Authfile
@@ -67,6 +69,7 @@ install -m 644 %{SOURCE10} $RPM_BUILD_ROOT/etc/xrootd/Authfile
 %config /etc/xrootd/config.d/50-osg-monitoring.cfg
 %config /etc/xrootd/config.d/50-osg-paths.cfg
 %config /etc/xrootd/config.d/50-osg-vomsxrd.cfg
+%config /etc/xrootd/config.d/50-osg-scitokens.cfg
 %config /etc/xrootd/ban-robots.txt
 %dir %_libexecdir/xrootd
 %_libexecdir/xrootd/create_macaroon_secret
@@ -87,6 +90,7 @@ fi
 * Fri Aug 27 2021 Mátyás Selmeci <matyas@cs.wisc.edu> 3.6-4
 - Fix vomsxrd in http (SOFTWARE-4495)
 - Add missing authentication plugin packages
+- Add SciTokens config
 
 * Tue Jul 20 2021 Brian Lin <blin@cs.wisc.edu> 3.6-3
 - Add vomsxrd configuration (SOFTWARE-4495)
