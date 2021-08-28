@@ -1,7 +1,7 @@
 Summary: OSG configuration files for XRootD
 Name: osg-xrootd
 Version: 3.6
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: ASL 2.0
 BuildArch: noarch
 
@@ -25,6 +25,8 @@ Requires: xrootd >= 1:5.1.1
 Requires: grid-certificates >= 7
 Requires: vo-client
 Requires: fetch-crl
+Requires: xrootd-voms
+Requires: xrootd-scitokens
 
 %description
 %{summary}
@@ -82,6 +84,10 @@ if [ ! -e /etc/xrootd/macaroon-secret ]; then
 fi
 
 %changelog
+* Fri Aug 27 2021 Mátyás Selmeci <matyas@cs.wisc.edu> 3.6-4
+- Fix vomsxrd in http (SOFTWARE-4495)
+- Add missing authentication plugin packages
+
 * Tue Jul 20 2021 Brian Lin <blin@cs.wisc.edu> 3.6-3
 - Add vomsxrd configuration (SOFTWARE-4495)
 
