@@ -1,5 +1,0 @@
-Bigtop packaging utilities (needed by Hadoop 2.6.0)
-
-Upstream srpm obtained from:
-
-  http://archive.cloudera.com/cdh5/redhat/7/x86_64/cdh/5/SRPMS/bigtop-utils-0.7.0+cdh5.13.0+0-1.cdh5.13.0.p0.34.src.rpm

@@ -1,9 +1,0 @@
-Passthrough SRPM from:
-
-http://frontier.cern.ch/dist/rpms/SRPMS/
-
-Since the SRPMs aren't served over HTTPS, verify them using the PGP key:
-
-# rpm --import "https://svnweb.cern.ch/world/wsvn/frontier/rpms/frontier-release/trunk/SOURCES/RPM-GPG-KEY-cern-frontier?op=dl"
-# rpm -K <PATH TO SRPM>
-
