@@ -9,7 +9,7 @@
 %endif
 
 Name:		blahp
-Version:	2.1.1
+Version:	2.1.2
 Release:	1%{?gitrev:.%{gitrev}}%{?dist}
 Summary:	gLite BLAHP daemon
 
@@ -116,6 +116,9 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Mon Sep 20 2021 Tim Theisen <tim@cs.wisc.edu> 2.1.2-1
+- Include the more efficient LSF status script
+
 * Tue Aug 17 2021 Tim Theisen <tim@cs.wisc.edu> 2.1.1-1
 - Add Python 2 support back for Enterprise Linux 7
 - Allow the user to override system configuration files
