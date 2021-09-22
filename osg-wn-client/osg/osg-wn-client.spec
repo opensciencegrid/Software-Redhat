@@ -1,7 +1,7 @@
 Name:      osg-wn-client
 Summary:   OSG Worker-Node Client
 Version:   3.6
-Release:   3%{?dist}
+Release:   4%{?dist}
 License:   Apache 2.0
 URL:       http://www.opensciencegrid.org
 BuildArch: noarch
