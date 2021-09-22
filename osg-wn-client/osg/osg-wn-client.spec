@@ -17,7 +17,7 @@ Requires: osg-system-profiler
 Requires: vo-client
 
 Requires: gfal2
-Requires: gfal2-util
+Requires: python3-gfal2-util
 Requires: gfal2-plugin-http
 Requires: gfal2-plugin-file
 Requires: gfal2-plugin-xrootd
@@ -42,6 +42,9 @@ EOF
 %config(noreplace) %{_prefix}/etc/globus-user-env.sh
 
 %changelog
+* Wed Sep 22 2021 Carl Edquist <edquist@cs.wisc.edu> - 3.6-4
+- Change gfal2-util requirement to python3-gfal2-util (SOFTWARE-4826)
+
 * Fri Feb 26 2021 Brian Lin <blin@cs.wisc.edu> - 3.6-3
 - Remove remaining packages bringing in Globus dependencies (SOFTWARE-4487)
 
