@@ -1,7 +1,7 @@
 Name:      osg-wn-client
 Summary:   OSG Worker-Node Client
 Version:   3.5
-Release:   4%{?dist}
+Release:   5%{?dist}
 License:   Apache 2.0
 URL:       http://www.opensciencegrid.org
 BuildArch: noarch
@@ -27,7 +27,7 @@ Requires: globus-xio-udt-driver
 Requires: stashcache-client
 
 Requires: gfal2
-Requires: gfal2-util
+Requires: python3-gfal2-util
 Requires: gfal2-plugin-http
 Requires: gfal2-plugin-file
 Requires: gfal2-plugin-srm
@@ -62,6 +62,9 @@ EOF
 %config(noreplace) %{_prefix}/etc/globus-user-env.sh
 
 %changelog
+* Wed Sep 22 2021 Carl Edquist <edquist@cs.wisc.edu> - 3.5-5
+- Change gfal2-util requirement to python3-gfal2-util (SOFTWARE-4826)
+
 * Thu Apr 23 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.5-4
 - Don't require fts-client on EL8, it's not available (SOFTWARE-4050)
 
