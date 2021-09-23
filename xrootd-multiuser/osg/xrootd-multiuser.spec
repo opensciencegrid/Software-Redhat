@@ -1,7 +1,7 @@
 
 Name: xrootd-multiuser
-Version: 2.0.1
-Release: 2%{?dist}
+Version: 2.0.2
+Release: 1%{?dist}
 Summary: Multiuser filesystem writing plugin for xrootd
 
 Group: System Environment/Daemons
@@ -65,6 +65,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/xrootd/config.d/60-osg-multiuser.cfg
 
 %changelog
+* Thu Sep 23 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.0.2-1
+- Allows the xrootd.chksum attribute to be overwritten in subsequent commands (SOFTWARE-4818)
+
 * Tue Sep 21 2021 Carl Edquist <edquist@cs.wisc.edu> - 2.0.1-2
 - Add missing build deps: openssl-devel, zlib-devel
 
