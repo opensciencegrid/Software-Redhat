@@ -9,8 +9,8 @@
 %endif
 
 Name:		blahp
-Version:	2.1.2
-Release:	1%{?gitrev:.%{gitrev}}%{?dist}
+Version:	2.1.3
+Release:	0.1%{?gitrev:.%{gitrev}}%{?dist}
 Summary:	gLite BLAHP daemon
 
 Group:		System/Libraries
@@ -116,6 +116,9 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
+* Mon Oct 05 2021 Tim Theisen <tim@cs.wisc.edu> 2.1.3-0.1
+- Fix status caching on EL7 for PBS, Slurm, and LSF
+
 * Mon Sep 20 2021 Tim Theisen <tim@cs.wisc.edu> 2.1.2-1
 - Include the more efficient LSF status script
 
@@ -131,15 +134,8 @@ fi
 - Fix bug where output files are overwritten if no transfer output remap
 - Added support for passing in extra submit arguments from the job ad
 
-* Wed Jun 16 2021 Carl Edquist <edquist@cs.wisc.edu> - 2.1.0-0.rc1.1
-- Update to v2.1.0-0.rc1
-- Disable globus via configure option (SOFTWARE-4536)
-
-* Wed Apr 28 2021 Tim Theisen <tim@cs.wisc.edu> 2.0.2-1.1
+* Wed Apr 28 2021 Tim Theisen <tim@cs.wisc.edu> 2.0.2-1
 - Fix periodic remove expression, otherwise jobs go on hold
-
-* Tue Apr 13 2021 Carl Edquist <edquist@cs.wisc.edu> - 2.0.1-1.2
-- Bump libclassad requirement to .so.15 (SOFTWARE-4555)
 
 * Thu Apr 08 2021 Tim Theisen <tim@cs.wisc.edu> 2.0.1-1
 - Convert to pure Python 3 (no Python 2 compatibility)
@@ -154,15 +150,6 @@ fi
 - More Python 3 fixes for PBS and Slurm scripts
 - Convert LSF script to Python 3 (HTCONDOR-333, #34)
 - Add Debian build files
-
-* Mon Feb 22 2021 Brian Lin <blin@cs.wisc.edu> - 1.18.48-2.4
-- Build blahp server without Globus (SOFTWARE-4504)
-
-* Tue Feb 16 2021 Carl Edquist <edquist@cs.wisc.edu> - 1.18.48-2.3
-- Rebuild against condor 8.9.11
-
-* Tue Nov 17 2020 Carl Edquist <edquist@cs.wisc.edu> - 1.18.48-2.1
-- Rebuild against condor 8.9.10
 
 * Tue Sep 15 2020 Brian Lin <blin@cs.wisc.edu> - 1.18.48-2
 - Update RPM packaging
