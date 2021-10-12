@@ -10,7 +10,7 @@
 
 Name:		blahp
 Version:	2.1.3
-Release:	0.1%{?gitrev:.%{gitrev}}%{?dist}
+Release:	1.1%{?gitrev:.%{gitrev}}%{?dist}
 Summary:	gLite BLAHP daemon
 
 Group:		System/Libraries
@@ -116,7 +116,7 @@ fi
 %{_initrddir}/glite-ce-*
 
 %changelog
-* Mon Oct 05 2021 Tim Theisen <tim@cs.wisc.edu> 2.1.3-0.1
+* Tue Oct 12 2021 Tim Theisen <tim@cs.wisc.edu> 2.1.3-1
 - Fix status caching on EL7 for PBS, Slurm, and LSF
 
 * Mon Sep 20 2021 Tim Theisen <tim@cs.wisc.edu> 2.1.2-1
