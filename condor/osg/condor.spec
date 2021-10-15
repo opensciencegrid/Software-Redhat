@@ -1,4 +1,4 @@
-%define tarball_version 9.2.0
+%define tarball_version 9.3.0
 
 # On EL7 don't terminate the build because of bad bytecompiling
 %if 0%{?rhel} == 7
@@ -39,11 +39,8 @@
 
 %define python 1
 
-%if 0%{?osg}
+# Unconditionally turn on globus
 %define globus 1
-%else
-%define globus 1
-%endif
 
 # Temporarily turn parallel_setup off
 %define parallel_setup 0
@@ -62,7 +59,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.1
+%define condor_base_release 0.559431
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -164,7 +161,6 @@ BuildRequires: byacc
 BuildRequires: flex
 BuildRequires: patch
 BuildRequires: libtool
-BuildRequires: libtool-ltdl-devel
 BuildRequires: pam-devel
 BuildRequires: nss-devel
 BuildRequires: openssl-devel
@@ -205,11 +201,11 @@ BuildRequires: globus-callout-devel
 BuildRequires: globus-common-devel
 BuildRequires: globus-ftp-client-devel
 BuildRequires: globus-ftp-control-devel
-BuildRequires: voms-devel
+BuildRequires: libtool-ltdl-devel
 %endif
+BuildRequires: voms-devel
 BuildRequires: munge-devel
 BuildRequires: scitokens-cpp-devel
-BuildRequires: libtool-ltdl-devel
 
 BuildRequires: libcgroup-devel
 Requires: libcgroup
@@ -330,11 +326,11 @@ Requires: globus-gss-assist
 Requires: globus-gssapi-gsi
 Requires: globus-openssl-module
 Requires: globus-xio-gsi-driver
-Requires: voms
+Requires: libtool-ltdl
 %endif
+Requires: voms
 Requires: krb5-libs
 Requires: libcom_err
-Requires: libtool-ltdl
 Requires: munge-libs
 Requires: openssl-libs
 Requires: scitokens-cpp
