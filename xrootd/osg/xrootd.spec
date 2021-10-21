@@ -37,9 +37,9 @@
         %define use_systemd 0
     %endif
     # we only build python3 bindings for fedora
-	%define python2only 0
-	%define python3only 1
-	%define python2and3 0
+    %define python2only 0
+    %define python3only 1
+    %define python2and3 0
 %endif
 
 
@@ -70,8 +70,8 @@
 #-------------------------------------------------------------------------------
 Name:      xrootd
 Epoch:     1
-Version:   5.3.1
-Release:   1.1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Version:   5.3.2
+Release:   0.1.rc1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -564,6 +564,9 @@ cmake  \
 %endif
 %if %{?_with_isal:1}%{!?_with_isal:0}
       -DENABLE_XRDEC=TRUE \
+%endif
+%if %{?_with_openssl3:1}%{!?_with_openssl3:0}
+      -DWITH_OPENSSL3=TRUE \
 %endif
 %if %{python3only}
       -DXRD_PYTHON_REQ_VERSION=%{python3_pkgversion} \
@@ -1160,6 +1163,9 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Thu Oct 21 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.3.2-0.1.rc1
+- Update to 5.3.2rc1 and merge OSG changes (SOFTWARE-4871)
+
 * Mon Aug 02 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.3.1-1.1
 - Update to 5.3.1 and merge OSG changes (SOFTWARE-4714)
 
