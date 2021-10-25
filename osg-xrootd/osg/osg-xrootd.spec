@@ -1,7 +1,7 @@
 Summary: OSG configuration files for XRootD
 Name: osg-xrootd
 Version: 3.6
-Release: 5%{?dist}
+Release: 6%{?dist}
 License: ASL 2.0
 BuildArch: noarch
 
@@ -90,8 +90,9 @@ if [ ! -e /etc/xrootd/macaroon-secret ]; then
 fi
 
 %changelog
-* Mon Oct 25 2021 Mátyás Selmeci <matyas@cs.wisc.edu> 3.6-5
+* Mon Oct 25 2021 Mátyás Selmeci <matyas@cs.wisc.edu> 3.6-6
 - Add sample scitokens.conf file (SOFTWARE-4790)
+  based on https://github.com/xrootd/xrootd/blob/95e74004ffcb35067dd9c459aa377d7131e5fc3d/src/XrdSciTokens/configs/scitokens.cfg
 
 * Fri Aug 27 2021 Mátyás Selmeci <matyas@cs.wisc.edu> 3.6-4
 - Fix vomsxrd in http (SOFTWARE-4495)
