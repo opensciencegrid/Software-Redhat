@@ -16,8 +16,8 @@ Source8: create_macaroon_secret
 Source9: 50-osg-tpc.cfg
 Source10: Authfile.example
 Source11: 90-xrootd-logging.cfg
-Source12: 10-osg-vomsxrd.cfg
-Source13: 50-osg-vomsxrd.cfg
+Source12: 10-osg-xrdvoms.cfg
+Source13: 50-osg-xrdvoms.cfg
 Source14: 50-osg-scitokens.cfg
 Source15: scitokens.conf
 
@@ -66,11 +66,11 @@ install -m 644 %{SOURCE15} $RPM_BUILD_ROOT/etc/xrootd/scitokens.conf
 
 %files
 %config(noreplace) /etc/xrootd/config.d/10-common-site-local.cfg
-%config(noreplace) /etc/xrootd/config.d/10-osg-vomsxrd.cfg
+%config(noreplace) /etc/xrootd/config.d/10-osg-xrdvoms.cfg
 %config /etc/xrootd/config.d/50-osg-http.cfg
 %config /etc/xrootd/config.d/50-osg-monitoring.cfg
 %config /etc/xrootd/config.d/50-osg-paths.cfg
-%config /etc/xrootd/config.d/50-osg-vomsxrd.cfg
+%config /etc/xrootd/config.d/50-osg-xrdvoms.cfg
 %config /etc/xrootd/config.d/50-osg-scitokens.cfg
 %config /etc/xrootd/ban-robots.txt
 %config /etc/xrootd/scitokens.conf
@@ -93,6 +93,9 @@ fi
 * Mon Oct 25 2021 Mátyás Selmeci <matyas@cs.wisc.edu> 3.6-6
 - Add sample scitokens.conf file (SOFTWARE-4790)
   based on https://github.com/xrootd/xrootd/blob/95e74004ffcb35067dd9c459aa377d7131e5fc3d/src/XrdSciTokens/configs/scitokens.cfg
+- Rename *-osg-vomsxrd.cfg to *-osg-xrdvoms.cfg (SOFTWARE-4495)
+- Change XrdVoms config to fall back to using a hash of the user's DN as the username if the DN can't be found in the mapfile (SOFTWARE-4495)
+- Replace deprecated http.* config with tls.* (SOFTWARE-4495)
 
 * Fri Aug 27 2021 Mátyás Selmeci <matyas@cs.wisc.edu> 3.6-4
 - Fix vomsxrd in http (SOFTWARE-4495)
