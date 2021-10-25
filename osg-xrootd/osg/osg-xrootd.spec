@@ -1,7 +1,7 @@
 Summary: OSG configuration files for XRootD
 Name: osg-xrootd
 Version: 3.6
-Release: 4%{?dist}
+Release: 5%{?dist}
 License: ASL 2.0
 BuildArch: noarch
 
@@ -19,6 +19,7 @@ Source11: 90-xrootd-logging.cfg
 Source12: 10-osg-vomsxrd.cfg
 Source13: 50-osg-vomsxrd.cfg
 Source14: 50-osg-scitokens.cfg
+Source15: scitokens.conf
 
 Requires: xrootd >= 1:5.1.1
 
@@ -61,6 +62,7 @@ install -m 644 %{SOURCE14} $RPM_BUILD_ROOT/etc/xrootd/config.d
 mkdir -p $RPM_BUILD_ROOT/%{_libexecdir}/xrootd/
 install -p -m 0755 %{SOURCE8} $RPM_BUILD_ROOT/%{_libexecdir}/xrootd/create_macaroon_secret
 install -m 644 %{SOURCE10} $RPM_BUILD_ROOT/etc/xrootd/Authfile
+install -m 644 %{SOURCE15} $RPM_BUILD_ROOT/etc/xrootd/scitokens.conf
 
 %files
 %config(noreplace) /etc/xrootd/config.d/10-common-site-local.cfg
@@ -71,6 +73,7 @@ install -m 644 %{SOURCE10} $RPM_BUILD_ROOT/etc/xrootd/Authfile
 %config /etc/xrootd/config.d/50-osg-vomsxrd.cfg
 %config /etc/xrootd/config.d/50-osg-scitokens.cfg
 %config /etc/xrootd/ban-robots.txt
+%config /etc/xrootd/scitokens.conf
 %dir %_libexecdir/xrootd
 %_libexecdir/xrootd/create_macaroon_secret
 
@@ -87,6 +90,9 @@ if [ ! -e /etc/xrootd/macaroon-secret ]; then
 fi
 
 %changelog
+* Mon Oct 25 2021 Mátyás Selmeci <matyas@cs.wisc.edu> 3.6-5
+- Add sample scitokens.conf file (SOFTWARE-4790)
+
 * Fri Aug 27 2021 Mátyás Selmeci <matyas@cs.wisc.edu> 3.6-4
 - Fix vomsxrd in http (SOFTWARE-4495)
 - Add missing authentication plugin packages
