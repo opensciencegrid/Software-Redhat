@@ -120,10 +120,10 @@ fi
 * Mon Dec 16 2019 Edgar Fajardo <emfajard@ucsd.edu> 3.5-9
 - Should only enable macaroon by default and not scitokens (SOFTWARE-3931)
 
-* Mon Dec 10 2019 Edgar Fajardo <emfajard@ucsd.edu> 3.5-8
+* Mon Dec 9 2019 Edgar Fajardo <emfajard@ucsd.edu> 3.5-8
 - Enable Third party copy by default (SOFTWARE-3935)
 
-* Mon Dec 10 2019 Edgar Fajardo <emfajard@ucsd.edu> 3.5-6
+* Mon Dec 9 2019 Edgar Fajardo <emfajard@ucsd.edu> 3.5-6
 - Create a macaroon secret if non existent (SOFTWARE-3931)
 
 * Mon Oct 21 2019 Carl Edquist <edquist@cs.wisc.edu> - 3.5-4
