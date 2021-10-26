@@ -92,10 +92,11 @@ fi
 %changelog
 * Mon Oct 25 2021 Mátyás Selmeci <matyas@cs.wisc.edu> 3.6-6
 - Add sample scitokens.conf file (SOFTWARE-4790)
-  based on https://github.com/xrootd/xrootd/blob/95e74004ffcb35067dd9c459aa377d7131e5fc3d/src/XrdSciTokens/configs/scitokens.cfg
+  based on https://github.com/xrootd/xrootd/blob/v5.3.2/src/XrdSciTokens/configs/scitokens.cfg
 - Rename *-osg-vomsxrd.cfg to *-osg-xrdvoms.cfg (SOFTWARE-4495)
 - Change XrdVoms config to fall back to using a hash of the user's DN as the username if the DN can't be found in the mapfile (SOFTWARE-4495)
 - Replace deprecated http.* config with tls.* (SOFTWARE-4495)
+- Require TLS when using SciTokens
 
 * Fri Aug 27 2021 Mátyás Selmeci <matyas@cs.wisc.edu> 3.6-4
 - Fix vomsxrd in http (SOFTWARE-4495)
