@@ -1,7 +1,7 @@
 Summary: OSG configuration files for XRootD
 Name: osg-xrootd
 Version: 3.6
-Release: 7%{?dist}
+Release: 8%{?dist}
 License: ASL 2.0
 BuildArch: noarch
 
@@ -28,7 +28,6 @@ Requires: grid-certificates >= 7
 Requires: vo-client
 Requires: fetch-crl
 Requires: xrootd-voms
-Requires: xrootd-scitokens
 
 %description
 %{summary}
@@ -37,6 +36,7 @@ Requires: xrootd-scitokens
 %package standalone
 Summary: OSG configuration files for XRootD standalone installations
 Requires: %{name} = %{version}-%release
+Requires: xrootd-scitokens
 
 %description standalone
 %summary
@@ -90,7 +90,7 @@ if [ ! -e /etc/xrootd/macaroon-secret ]; then
 fi
 
 %changelog
-* Tue Oct 26 2021 Mátyás Selmeci <matyas@cs.wisc.edu> 3.6-7
+* Tue Oct 26 2021 Mátyás Selmeci <matyas@cs.wisc.edu> 3.6-8
 - Add sample scitokens.conf file (SOFTWARE-4790)
   based on https://github.com/xrootd/xrootd/blob/v5.3.2/src/XrdSciTokens/configs/scitokens.cfg
 - Rename *-osg-vomsxrd.cfg to *-osg-xrdvoms.cfg (SOFTWARE-4495)
@@ -99,6 +99,7 @@ fi
 - Require TLS when using SciTokens
 - Move 50-osg-scitokens.cfg to osg-xrootd-standalone to avoid conflict with xcache packaging
 - Move scitokens.conf to osg-xrootd-standalone and mark it %config(noreplace)
+- Move xrootd-scitokens requirement to osg-xrootd-standalone since we don't distribute config for it in the base package
 
 * Fri Aug 27 2021 Mátyás Selmeci <matyas@cs.wisc.edu> 3.6-4
 - Fix vomsxrd in http (SOFTWARE-4495)
