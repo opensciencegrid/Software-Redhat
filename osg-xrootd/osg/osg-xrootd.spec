@@ -1,7 +1,7 @@
 Summary: OSG configuration files for XRootD
 Name: osg-xrootd
 Version: 3.6
-Release: 6%{?dist}
+Release: 7%{?dist}
 License: ASL 2.0
 BuildArch: noarch
 
@@ -71,18 +71,18 @@ install -m 644 %{SOURCE15} $RPM_BUILD_ROOT/etc/xrootd/scitokens.conf
 %config /etc/xrootd/config.d/50-osg-monitoring.cfg
 %config /etc/xrootd/config.d/50-osg-paths.cfg
 %config /etc/xrootd/config.d/50-osg-xrdvoms.cfg
-%config /etc/xrootd/config.d/50-osg-scitokens.cfg
 %config /etc/xrootd/ban-robots.txt
-%config /etc/xrootd/scitokens.conf
 %dir %_libexecdir/xrootd
 %_libexecdir/xrootd/create_macaroon_secret
 
 %files standalone
 %config /etc/xrootd/config.d/40-osg-standalone.cfg
+%config /etc/xrootd/config.d/50-osg-scitokens.cfg
 %config(noreplace) /etc/xrootd/config.d/90-osg-standalone-paths.cfg
 %config(noreplace) /etc/xrootd/config.d/90-xrootd-logging.cfg
 %config /etc/xrootd/config.d/50-osg-tpc.cfg
 %config(noreplace) /etc/xrootd/Authfile
+%config(noreplace) /etc/xrootd/scitokens.conf
 
 %post
 if [ ! -e /etc/xrootd/macaroon-secret ]; then
@@ -90,13 +90,15 @@ if [ ! -e /etc/xrootd/macaroon-secret ]; then
 fi
 
 %changelog
-* Mon Oct 25 2021 Mátyás Selmeci <matyas@cs.wisc.edu> 3.6-6
+* Tue Oct 26 2021 Mátyás Selmeci <matyas@cs.wisc.edu> 3.6-7
 - Add sample scitokens.conf file (SOFTWARE-4790)
   based on https://github.com/xrootd/xrootd/blob/v5.3.2/src/XrdSciTokens/configs/scitokens.cfg
 - Rename *-osg-vomsxrd.cfg to *-osg-xrdvoms.cfg (SOFTWARE-4495)
 - Change XrdVoms config to fall back to using a hash of the user's DN as the username if the DN can't be found in the mapfile (SOFTWARE-4495)
 - Replace deprecated http.* config with tls.* (SOFTWARE-4495)
 - Require TLS when using SciTokens
+- Move 50-osg-scitokens.cfg to osg-xrootd-standalone to avoid conflict with xcache packaging
+- Move scitokens.conf to osg-xrootd-standalone and mark it %config(noreplace)
 
 * Fri Aug 27 2021 Mátyás Selmeci <matyas@cs.wisc.edu> 3.6-4
 - Fix vomsxrd in http (SOFTWARE-4495)
