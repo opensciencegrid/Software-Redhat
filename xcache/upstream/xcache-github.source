@@ -1,1 +1,2 @@
-type=github repo=opensciencegrid/xcache tag=v2.0.1-2 hash=06fceff6f44fc4c58b49ba5e9d8bcbdc357a91a3
+#type=github repo=opensciencegrid/xcache tag=v2.0.1-2 hash=06fceff6f44fc4c58b49ba5e9d8bcbdc357a91a3
+type=github repo=matyasselmeci/xcache tag=v3.0.0rc1 tarball=xcache-3.0.0.tar.gz hash=add811e8136cbf8fe5a6888f4926bb0af1c4c930
