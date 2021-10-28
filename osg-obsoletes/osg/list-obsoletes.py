@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 # usage: ./list-obsoletes.py elX
+# where elX is a number
 
 import os
 import sys
@@ -43,13 +44,17 @@ def nvrname(nvr):
     return nvr.rsplit('-', 2)[0]
 
 def epel_pkg_names(elX):
-    return set(map(nvrname, open("epel%s.rpms" % elX)))
+    return set(map(nvrname, open("epel%d.rpms" % elX)))
 
 
 def main(args):
-    elX, = args
-    tag1 = 'osg-3.5-el%s-release' % elX
-    tag2 = 'osg-3.6-el%s-development' % elX
+    try:
+        elX = int(args[0])
+    except (IndexError, ValueError):
+        print("Usage: %s elX  (where elX is a number)" % os.path.basename(sys.argv[0]), file=sys.stderr)
+        sys.exit(2)
+    tag1 = 'osg-3.5-el%d-release' % elX
+    tag2 = 'osg-3.6-el%d-development' % elX
 
     rpms35 = tag2dict(tag1)
     rpms36 = tag2dict(tag2)
