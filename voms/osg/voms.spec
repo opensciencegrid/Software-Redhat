@@ -9,7 +9,7 @@
 
 Name:		voms
 Version:	2.0.16
-Release:	1.2%{?dist}
+Release:	1.3%{?dist}
 Summary:	Virtual Organization Membership Service
 
 License:	ASL 2.0
@@ -38,6 +38,7 @@ BuildRequires:	systemd
 # OSG patches
 Patch100:       mariadb-innodb.patch
 Patch101:       sw3123-voms-proxy-direct.patch
+Patch102:       4882-voms_install_db-cert-parsing.patch
 
 %description
 The Virtual Organization Membership Service (VOMS) is an attribute authority
@@ -123,6 +124,7 @@ This package provides the VOMS service.
 # OSG patches
 %patch100 -p1
 %patch101 -p1
+%patch102 -p1
 
 install -m 644 -p %{SOURCE1} README.Fedora
 
@@ -355,6 +357,10 @@ fi
 %doc README.Fedora
 
 %changelog
+* Mon Nov 01 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.0.16-1.3
+- Fix voms_install_db cert parsing to deal with OpenSSL 1.1+ format and "Let's Encrypt" (SOFTWARE-4882)
+  - Add 4882-voms_install_db-cert-parsing.patch
+
 * Tue Jun 29 2021 Carl Edquist <edquist@cs.wisc.edu> - 2.0.16-1.2
 - Reinstate /etc/sysconfig/voms (SOFTWARE-4577)
 
