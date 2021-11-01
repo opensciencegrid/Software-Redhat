@@ -11,7 +11,7 @@
 
 Name:		voms
 Version:	2.1.0
-Release:	0.14.%{_rc}.2%{?dist}
+Release:	0.14.%{_rc}.3%{?dist}
 Summary:	Virtual Organization Membership Service
 
 License:	ASL 2.0
@@ -37,6 +37,7 @@ Patch6:		%{name}-change-default-proxy-cert-key-length-to-2048-bits.patch
 
 Patch7:          mariadb-innodb.patch
 Patch10:         sw3123-voms-proxy-direct.patch
+Patch11:         4882-voms_install_db-cert-parsing.patch
 
 BuildRequires:	gcc-c++
 BuildRequires:	openssl-devel
@@ -140,6 +141,7 @@ This package provides the VOMS service.
 %endif
 
 %patch10 -p1
+%patch11 -p1
 
 install -m 644 -p %{SOURCE1} README.Fedora
 
@@ -372,6 +374,10 @@ fi
 %doc README.Fedora
 
 %changelog
+* Mon Nov 01 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.1.0-0.14.rc2.3
+- Fix voms_install_db cert parsing to deal with OpenSSL 1.1+ format and "Let's Encrypt" (SOFTWARE-4882)
+  - Add 4882-voms_install_db-cert-parsing.patch
+
 * Tue Jun 29 2021 Carl Edquist <edquist@cs.wisc.edu> - 2.1.0-0.14.rc2.2
 - Reinstate /etc/sysconfig/voms (SOFTWARE-4577)
 
