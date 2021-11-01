@@ -1,4 +1,4 @@
-From 57ad5ca321049cfc173e338f9fa3f306bc936e14 Mon Sep 17 00:00:00 2001
+From bf41b0dfb61391363ee4cff24e6bdfc35d7dc9c2 Mon Sep 17 00:00:00 2001
 From: Matyas Selmeci <matyas@cs.wisc.edu>
 Date: Mon, 1 Nov 2021 10:54:49 -0500
 Subject: [PATCH] 4882-voms_install_db cert parsing
@@ -15,7 +15,7 @@ Subject: [PATCH] 4882-voms_install_db cert parsing
 diff --git a/src/install/voms_install_db.in b/src/install/voms_install_db.in
 old mode 100644
 new mode 100755
-index 8ca0fe4..ddbcd1f
+index 8ca0fe4..e8ca1fa
 --- a/src/install/voms_install_db.in
 +++ b/src/install/voms_install_db.in
 @@ -252,7 +252,20 @@ i=5
@@ -33,7 +33,7 @@ index 8ca0fe4..ddbcd1f
 +   # From: C = US, O = Let''s Encrypt, CN = R3
 +   # To:   /C=US/O=Let''s Encrypt/CN=R3
 +   subject=`$ECHO "$subject" | sed -e 's| = |=|g' \
-+                                   -e 's|/|\/|g'
++                                   -e 's|/|\/|g' \
 +                                   -e 's|, |/|g'`
 +   subject=/$subject
 +   # Extract the CN:
