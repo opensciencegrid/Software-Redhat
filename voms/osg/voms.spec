@@ -9,7 +9,7 @@
 
 Name:		voms
 Version:	2.0.16
-Release:	1.3%{?dist}
+Release:	1.4%{?dist}
 Summary:	Virtual Organization Membership Service
 
 License:	ASL 2.0
@@ -357,7 +357,7 @@ fi
 %doc README.Fedora
 
 %changelog
-* Mon Nov 01 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.0.16-1.3
+* Mon Nov 01 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.0.16-1.4
 - Fix voms_install_db cert parsing to deal with OpenSSL 1.1+ format and "Let's Encrypt" (SOFTWARE-4882)
   - Add 4882-voms_install_db-cert-parsing.patch
 
