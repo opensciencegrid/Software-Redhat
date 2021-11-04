@@ -1,1 +1,1 @@
-type=git url=https://github.com/scitokens/scitokens.git tag=v1.6.0 hash=6c4f507cbd6e593e586c49c143e0c5b8b8ea4350
+type=github repo=scitokens/scitokens tag=v1.6.2 hash=e57ec66864832892941420ea6d974b9d1dcda68a
