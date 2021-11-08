@@ -9,7 +9,7 @@
 
 Name:		voms
 Version:	2.0.16
-Release:	1.4%{?dist}
+Release:	1.5%{?dist}
 Summary:	Virtual Organization Membership Service
 
 License:	ASL 2.0
@@ -39,6 +39,7 @@ BuildRequires:	systemd
 Patch100:       mariadb-innodb.patch
 Patch101:       sw3123-voms-proxy-direct.patch
 Patch102:       4882-voms_install_db-cert-parsing.patch
+Patch103:       Set-default-key-size-to-2048-bits-in-voms-proxy-init.patch
 
 %description
 The Virtual Organization Membership Service (VOMS) is an attribute authority
@@ -125,6 +126,7 @@ This package provides the VOMS service.
 %patch100 -p1
 %patch101 -p1
 %patch102 -p1
+%patch103 -p1
 
 install -m 644 -p %{SOURCE1} README.Fedora
 
@@ -357,6 +359,10 @@ fi
 %doc README.Fedora
 
 %changelog
+* Mon Nov 08 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.0.16-1.5
+- Increase default key size to 2048 bits (SOFTWARE-4889)
+  - Add Set-default-key-size-to-2048-bits-in-voms-proxy-init.patch
+
 * Mon Nov 01 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.0.16-1.4
 - Fix voms_install_db cert parsing to deal with OpenSSL 1.1+ format and "Let's Encrypt" (SOFTWARE-4882)
   - Add 4882-voms_install_db-cert-parsing.patch
