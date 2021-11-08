@@ -1,4 +1,4 @@
-%define tarball_version 9.3.0
+%define tarball_version 9.3.1
 
 # On EL7 don't terminate the build because of bad bytecompiling
 %if 0%{?rhel} == 7
@@ -59,7 +59,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 0.559431
+%define condor_base_release 0.562573
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -272,7 +272,11 @@ Requires: %name-externals = %version-%release
 %endif
 
 %if %blahp
+%if %globus
 Requires: blahp >= 2.1.1
+%else
+Requires: blahp >= 2.2.0
+%endif
 %endif
 
 # Useful tools are using the Python bindings
@@ -333,7 +337,7 @@ Requires: krb5-libs
 Requires: libcom_err
 Requires: munge-libs
 Requires: openssl-libs
-Requires: scitokens-cpp
+Requires: scitokens-cpp >= 0.6.2
 Requires: systemd-libs
 
 #Provides: user(condor) = 43
@@ -1660,6 +1664,20 @@ fi
 /bin/systemctl try-restart condor.service >/dev/null 2>&1 || :
 
 %changelog
+* Wed Nov 03 2021 Tim Theisen <tim@cs.wisc.edu> - 9.3.0-1
+- Discontinue support for Globus GSI
+- Discontinue support for grid type 'nordugrid', use 'arc' instead
+- MacOS version strings now include the major version number (10 or 11)
+- File transfer plugin sample code to aid in developing new plugins
+- Add generic knob to set the slot user for all slots
+
+* Tue Nov 02 2021 Tim Theisen <tim@cs.wisc.edu> - 9.0.7-1
+- Fix bug where condor_gpu_discovery could crash with older CUDA libraries
+- Fix bug where condor_watch_q would fail on machines with older kernels
+- condor_watch_q no longer has a limit on the number of job event log files
+- Fix bug where a startd could crash claiming a slot with p-slot preemption
+- Fix bug where a job start would not be recorded when a shadow reconnects
+
 * Thu Sep 23 2021 Tim Theisen <tim@cs.wisc.edu> - 9.2.0-1
 - Add SERVICE node that runs alongside the DAG for the duration of the DAG
 - Fix problem where proxy delegation to older HTCondor versions failed
