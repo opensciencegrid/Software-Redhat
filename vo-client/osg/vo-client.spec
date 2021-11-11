@@ -4,7 +4,7 @@
 
 Name:           vo-client
 Version:        114
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Contains vomses file for use with user authentication
 
 License:        Apache 2.0
@@ -51,8 +51,8 @@ rm -f vomsdir/cms/voms-cms-auth.app.cern.ch.lsc
 
 # FIXME: Remove IAM vomses entries to avoid use by VOMS clients until
 # IAM LSC files are more widely distributed across the world
-# (SOFTWARE-4576, SOFTWARE-4595)
-sed -Ei '/.*voms-(atlas|cms)-auth.app.cern.ch.*/d' vomses
+# (SOFTWARE-4595)
+sed -Ei '/.*voms-atlas-auth.app.cern.ch.*/d' vomses
 
 %install
 install -d $RPM_BUILD_ROOT/%{_sysconfdir}
@@ -84,6 +84,9 @@ find $RPM_BUILD_ROOT/%{_sysconfdir}/grid-security/vomsdir -type d -exec chmod 75
 %config(noreplace) %{_datadir}/osg/grid-vorolemap
 
 %changelog
+* Thu Nov 11 2021 Brian  Lin <blin@cs.wisc.edu> - 114-2
+- Add CMS IAM vomses entry (SOFTWARE-4897)
+
 * Tue Jul 13 2021 Brian Lin <blin@cs.wisc.edu> - 114-1
 - Fix typo in CLAS12 and EIC VOMS certificate issuers (SOFTWARE-4701)
 - Add LSC files for CERN VO IAM endpoints (SOFTWARE-4595, SOFTWARE-4576, SOFTWARE-4695)
