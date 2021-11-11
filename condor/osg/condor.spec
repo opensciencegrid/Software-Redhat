@@ -61,7 +61,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 0.558974
+%define condor_base_release 1.1
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -336,7 +336,7 @@ Requires: libcom_err
 Requires: libtool-ltdl
 Requires: munge-libs
 Requires: openssl-libs
-Requires: scitokens-cpp
+Requires: scitokens-cpp >= 0.6.2
 Requires: systemd-libs
 
 #Provides: user(condor) = 43
@@ -1674,6 +1674,13 @@ fi
 /bin/systemctl try-restart condor.service >/dev/null 2>&1 || :
 
 %changelog
+* Tue Nov 02 2021 Tim Theisen <tim@cs.wisc.edu> - 9.0.7-1
+- Fix bug where condor_gpu_discovery could crash with older CUDA libraries
+- Fix bug where condor_watch_q would fail on machines with older kernels
+- condor_watch_q no longer has a limit on the number of job event log files
+- Fix bug where a startd could crash claiming a slot with p-slot preemption
+- Fix bug where a job start would not be recorded when a shadow reconnects
+
 * Thu Sep 23 2021 Tim Theisen <tim@cs.wisc.edu> - 9.0.6-1
 - CUDA_VISIBLE_DEVICES can now contain GPU-<uuid> formatted values
 - Fixed a bug that caused jobs to fail when using newer Singularity versions
