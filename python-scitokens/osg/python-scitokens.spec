@@ -3,7 +3,7 @@
 
 Name:           python-%{pypi_name}
 Version:        1.6.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        SciToken reference implementation library
 
 License:        Apache 2.0
@@ -21,6 +21,7 @@ SciToken reference implementation library
 %package -n     python%{python3_pkgversion}-%{pypi_name}
 Requires:       python%{python3_pkgversion}-jwt >= 1.6.1
 Requires:       python%{python3_pkgversion}-cryptography
+Obsoletes:      python3-scitokens < 1.6.2-2
 Summary:        %{summary}
 %{?python_provide:%python_provide python%{python3_pkgversion}-%{pypi_name}}
 
@@ -50,6 +51,10 @@ rm -rf %{pypi_name}.egg-info
 
 
 %changelog
+* Thu Nov 11 2021 Brian Lin < blin@cs.wisc.edu> - 1.6-2-2
+- Add python3-scitokens obsoletes for older versions for smoother
+  upgrades (SOFTWARE-4879)
+
 * Wed Nov 3 2021 Brian Lin <blin@cs.wisc.edu> - 1.6.2-1
 - Fix Python library version (SOFTWARE-4879)
 
