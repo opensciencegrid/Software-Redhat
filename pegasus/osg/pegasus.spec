@@ -20,6 +20,9 @@ Requires:       java >= 1:1.8.0, python3, condor >= 8.8, graphviz, perl-Getopt-L
 # byte compile errors
 %global __python %{python3}
 
+# Ignore byte compile errors -- they fail on Python 2 code in the examples
+%global _python_bytecompile_errors_terminate_build 0
+
 BuildRequires:  java-devel = 1:1.8.0, python36-pyOpenSSL, python36-PyYAML, python36-GitPython, python3-devel, python3-setuptools, python36-setuptools_scm
 Requires:       java >= 1:1.8.0, python3, condor >= 8.8, graphviz, python36-pika, python36-PyYAML, python36-GitPython, perl-Getopt-Long
 %endif
@@ -87,6 +90,7 @@ rm -f %{buildroot}/%{_datadir}/%{name}/java/NOTICE.*
 %changelog
 * Fri Nov 12 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.0.1-1.1
 - Build for OSG; add setuptools_scm build dependency (SOFTWARE-4877)
+  Ignore byte-compile errors: they fail on Python 2 code in the examples
 
 * Thu Oct 07 2021 Pegasus Development Team <pegasus-support@isi.edu> 5.0.1
 - 5.0.1 automatic build
