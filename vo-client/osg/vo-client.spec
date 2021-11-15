@@ -4,7 +4,7 @@
 
 Name:           vo-client
 Version:        114
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Contains vomses file for use with user authentication
 
 License:        Apache 2.0
@@ -52,7 +52,7 @@ rm -f vomsdir/cms/voms-cms-auth.app.cern.ch.lsc
 # FIXME: Remove IAM vomses entries to avoid use by VOMS clients until
 # IAM LSC files are more widely distributed across the world
 # (SOFTWARE-4595)
-sed -Ei '/.*voms-atlas-auth.app.cern.ch.*/d' vomses
+sed -Ei '/.*voms-(alice|atlas|lhcb|ops)-auth.app.cern.ch.*/d' vomses 
 
 %install
 install -d $RPM_BUILD_ROOT/%{_sysconfdir}
@@ -84,6 +84,9 @@ find $RPM_BUILD_ROOT/%{_sysconfdir}/grid-security/vomsdir -type d -exec chmod 75
 %config(noreplace) %{_datadir}/osg/grid-vorolemap
 
 %changelog
+* Mon Nov 15 2021 Brian  Lin <blin@cs.wisc.edu> - 114-3
+- Remove WLCG Ops, ALICE, and LHCb IAM hosts from vomses (SOFTWARE-4897)
+
 * Thu Nov 11 2021 Brian  Lin <blin@cs.wisc.edu> - 114-2
 - Add CMS IAM vomses entry (SOFTWARE-4897)
 
