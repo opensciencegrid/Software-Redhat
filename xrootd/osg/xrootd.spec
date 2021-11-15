@@ -70,8 +70,8 @@
 #-------------------------------------------------------------------------------
 Name:      xrootd
 Epoch:     1
-Version:   5.3.2
-Release:   1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Version:   5.3.3
+Release:   1.1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -1163,6 +1163,9 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Mon Nov 15 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.3.3-1.1
+- Update to 5.3.3 and merge OSG changes (SOFTWARE-4903, SOFTWARE-4904)
+
 * Thu Oct 28 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.3.2-1.1
 - Update to 5.3.2 and merge OSG changes (SOFTWARE-4871, SOFTWARE-4872)
 
