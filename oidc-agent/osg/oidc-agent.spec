@@ -92,7 +92,7 @@ make install BIN_PATH=${RPM_BUILD_ROOT}/usr BIN_AFTER_INST_PATH=/usr MAN_PATH=${
 - Update to 3.3.3-1 from upstream and merge OSG changes
   (SOFTWARE-4190)
 
-* Wed Feb 10 2020 Dave Dykstra <dwd@fnal.gov> - 3.3.1-1.1
+* Wed Feb 12 2020 Dave Dykstra <dwd@fnal.gov> - 3.3.1-1.1
 - Hardcode the version number
 - Changed Source0 to end in .gz
 
