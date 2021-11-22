@@ -3,8 +3,8 @@
 %define iam 1
 
 Name:           vo-client
-Version:        114
-Release:        3%{?dist}
+Version:        115
+Release:        1%{?dist}
 Summary:        Contains vomses file for use with user authentication
 
 License:        Apache 2.0
@@ -84,6 +84,9 @@ find $RPM_BUILD_ROOT/%{_sysconfdir}/grid-security/vomsdir -type d -exec chmod 75
 %config(noreplace) %{_datadir}/osg/grid-vorolemap
 
 %changelog
+* Mon Nov 22 2021 Brian Lin <blin@cs.wisc.edu> - 115-1
+- Updated WLCG VO certificate (SOFTWARE-4912)
+
 * Mon Nov 15 2021 Brian  Lin <blin@cs.wisc.edu> - 114-3
 - Remove WLCG Ops, ALICE, and LHCb IAM hosts from vomses (SOFTWARE-4897)
 
