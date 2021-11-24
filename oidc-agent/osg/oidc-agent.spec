@@ -1,5 +1,5 @@
 Name: oidc-agent
-Version: 4.2.3
+Version: 4.2.4
 Release: 1.1%{?dist}
 
 Summary: Command-line tool for obtaining OpenID Connect access tokens
@@ -12,7 +12,7 @@ URL: https://github.com/indigo-dc/oidc-agent
 # use `make rpmsource` to generate the required tarball
 #Source0: https://github.com/indigo-dc/oidc-agent/archive/refs/heads/master.zip
 #Source0: https://github.com/indigo-dc/oidc-agent/archive/refs/heads/docker-builds.zip
-Source0: oidc-agent-4.2.3.tar.gz
+Source0: oidc-agent-4.2.4.tar.gz
 
 # OSG:
 Patch0: Check-for-DT_REG-macro.patch
@@ -215,6 +215,9 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/oidc-gen.desktop
 
 
 %changelog
+* Wed Nov 24 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 4.2.4-1.1
+- Update to 4.2.4-1 and merge OSG changes (SOFTWARE-4885)
+
 * Mon Nov 22 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 4.2.3-1.1
 - Update to 4.2.3-1 from upstream (SOFTWARE-4885)
 - Add Check-for-DT_REG-macro.patch to avoid compile error on EL7 due to missing DT_REG macro
