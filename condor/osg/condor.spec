@@ -59,7 +59,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 0.563862
+%define condor_base_release 1.1
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -1664,6 +1664,10 @@ fi
 /bin/systemctl try-restart condor.service >/dev/null 2>&1 || :
 
 %changelog
+* Tue Nov 30 2021 Tim Theisen <tim@cs.wisc.edu> - 9.3.2-1
+- Add allowed_execute_duration condor_submit command to cap job run time
+- Fix bug where self check-pointing jobs may be erroneously held
+
 * Tue Nov 09 2021 Tim Theisen <tim@cs.wisc.edu> - 9.3.1-1
 - Add allowed_job_duration condor_submit command to cap job run time
 
