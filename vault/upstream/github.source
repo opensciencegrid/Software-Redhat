@@ -1,1 +1,1 @@
-type=git url=https://github.com/opensciencegrid/vault-rpm.git tag=v1.8.4 spec=vault.spec hash=669553874c5998179334ac5c90da7fae4207a015
+type=git url=https://github.com/opensciencegrid/vault-rpm.git tag=v1.9.0 spec=vault.spec hash=c92b7485325a4862cef2912f3405c59edfc50395
