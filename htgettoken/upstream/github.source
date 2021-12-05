@@ -1,1 +1,1 @@
-type=git url=https://github.com/fermitools/htgettoken.git tag=v1.8 spec=htgettoken.spec hash=026f9aedeabf81517641d1b166d0aed9a2083bb9
+type=git url=https://github.com/fermitools/htgettoken.git tag=v1.9 spec=htgettoken.spec hash=7cea97d66c68ffe2d92db60b698a1c69f7dc3582
