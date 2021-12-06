@@ -1,4 +1,4 @@
-%define tarball_version 9.3.2
+%define tarball_version 9.4.0
 
 # On EL7 don't terminate the build because of bad bytecompiling
 %if 0%{?rhel} == 7
@@ -1170,6 +1170,9 @@ rm -rf %{buildroot}
 %_libexecdir/condor/data_plugin
 %_libexecdir/condor/box_plugin.py
 %_libexecdir/condor/gdrive_plugin.py
+%_libexecdir/condor/common-cloud-attributes-google.py
+%_libexecdir/condor/common-cloud-attributes-aws.py
+%_libexecdir/condor/common-cloud-attributes-aws.sh
 %_libexecdir/condor/onedrive_plugin.py
 # TODO: get rid of these
 # Not sure where these are getting built
@@ -1664,6 +1667,20 @@ fi
 /bin/systemctl try-restart condor.service >/dev/null 2>&1 || :
 
 %changelog
+* Thu Dec 02 2021 Tim Theisen <tim@cs.wisc.edu> - 9.4.0-1
+- Initial implementation of Job Sets in the htcondor CLI tool
+- The access point administrator can add keywords to the submit language
+- Add submit commands that limit job run time
+- Fix bug where self check-pointing jobs may be erroneously held
+
+* Thu Dec 02 2021 Tim Theisen <tim@cs.wisc.edu> - 9.0.8-1
+- Fix bug where huge values of ImageSize and others would end up negative
+- Fix bug in how MAX_JOBS_PER_OWNER applied to late materialization jobs
+- Fix bug where the schedd could choose a slot with insufficient disk space
+- Fix crash in ClassAd substr() function when the offset is out of range
+- Fix bug in Kerberos code that can crash on macOS and could leak memory
+- Fix bug where a job is ignored for 20 minutes if the startd claim fails
+
 * Tue Nov 30 2021 Tim Theisen <tim@cs.wisc.edu> - 9.3.2-1
 - Add allowed_execute_duration condor_submit command to cap job run time
 - Fix bug where self check-pointing jobs may be erroneously held
