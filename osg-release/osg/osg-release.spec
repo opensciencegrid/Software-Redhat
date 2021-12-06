@@ -1,6 +1,6 @@
 Name:           osg-release
 Version:        3.6
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        OSG Software for Enterprise Linux repository configuration
 
 License:        GPL
@@ -63,6 +63,9 @@ sed -i -e 's/gpgcheck=1/gpgcheck=0/' $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d/*
 
 
 %changelog
+* Mon Dec 06 2021 Tim Theisen <tim@cs.wisc.edu> - 3.6-4
+- Add devops-minefield repository (SOFTWARE-4681)
+
 * Thu Feb 25 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.6-3
 - Fix repo files to accept new signing key (SOFTWARE-3275)
 

@@ -16,4 +16,5 @@ osg-upcoming-prerelease   3.6-upcoming  prerelease   koji      Upcoming_Prerelea
 
 devops-itb                devops        itb          direct    Developer_and_Operations_ITB
 devops                    devops        production   direct    Developer_and_Operations_Production
+devops-minefield          devops        itb          koji      Developer_and_Operations_Build_Repository
 
