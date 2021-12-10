@@ -70,7 +70,7 @@
 #-------------------------------------------------------------------------------
 Name:      xrootd
 Epoch:     1
-Version:   5.3.4
+Version:   5.4.0
 Release:   1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
@@ -155,7 +155,9 @@ BuildRequires: clang
 
 %if %{?_with_asan:1}%{!?_with_asan:0}
 BuildRequires: libasan
+BuildRequires: devtoolset-7-libasan-devel
 Requires: libasan
+Requires: devtoolset-7-libasan
 %endif
 
 %if %{?_with_scitokens:1}%{!?_with_scitokens:0}
@@ -537,10 +539,6 @@ export CC=clang
 export CXX=clang++
 %endif
 
-%if %{?_with_asan:1}%{!?_with_asan:0}
-export CXXFLAGS='-fsanitize=address'
-%endif
-
 mkdir build
 pushd build
 
@@ -555,6 +553,9 @@ cmake  \
       -DENABLE_TESTS=TRUE \
 %else
       -DENABLE_TESTS=FALSE \
+%endif
+%if %{?_with_asan:1}%{!?_with_asan:0}
+      -DENABLE_ASAN=TRUE \
 %endif
 %if %{?_with_ceph:1}%{!?_with_ceph:0}
       -DXRDCEPH_SUBMODULE=TRUE \
@@ -634,7 +635,7 @@ make install DESTDIR=$RPM_BUILD_ROOT
 rm -rf $RPM_BUILD_ROOT%{_includedir}
 rm -rf $RPM_BUILD_ROOT%{_datadir}
 rm -f $RPM_BUILD_ROOT%{_bindir}/{cconfig,cns_ssi,frm_admin,frm_xfragent,mpxstats}
-rm -f $RPM_BUILD_ROOT%{_bindir}/{wait41,xprep,xrd,xrdadler32,XrdCnsd,xrdcopy}
+rm -f $RPM_BUILD_ROOT%{_bindir}/{wait41,xprep,xrd,xrdadler32,xrdcrc32c,XrdCnsd,xrdcopy}
 rm -f $RPM_BUILD_ROOT%{_bindir}/{xrdcp,xrdcp-old,xrdfs,xrdgsiproxy,xrdpwdadmin}
 rm -f $RPM_BUILD_ROOT%{_bindir}/{xrdqstats,xrdsssadmin,xrdstagetool,xrootdfs}
 rm -f $RPM_BUILD_ROOT%{_libdir}/libXrdAppUtils.so
@@ -1018,6 +1019,7 @@ fi
 %{_bindir}/xrdadler32
 %{_bindir}/xrdcopy
 %{_bindir}/xrdcp
+%{_bindir}/xrdcrc32c
 %{_bindir}/xrdfs
 %{_bindir}/xrdgsiproxy
 %{_bindir}/xrdmapc
@@ -1163,6 +1165,9 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Fri Dec 10 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.4.0-1
+- Update to 5.4.0 and merge OSG changes (SOFTWARE-4898, SOFTWARE-4899)
+
 * Tue Nov 30 2021 Brian Lin <blin@cs.wisc.edu> - 5.3.4-1
 - Update to 5.3.4 and merge OSG changes (SOFTWARE-4903, SOFTWARE-4904)
 
