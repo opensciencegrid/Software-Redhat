@@ -1,4 +1,8 @@
 # How to build tar file
+
+# SPDX-FileCopyrightText: 2009 Fermi Research Alliance, LLC
+# SPDX-License-Identifier: Apache-2.0
+
 # git clone http://cdcvs.fnal.gov/projects/glideinwms
 # cd glideinwms
 # git archive v3_0_rc3 --prefix='glideinwms/' | gzip > ../glideinwms.tar.gz
@@ -12,8 +16,8 @@
 # ------------------------------------------------------------------------------
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
-%define version 3.9.3
-%define release 1
+%define version 3.9.4
+%define release 0.1.rc1
 
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
@@ -26,7 +30,7 @@
 %define factory_web_base %{_localstatedir}/lib/gwms-factory/web-base
 %define factory_dir %{_localstatedir}/lib/gwms-factory/work-dir
 %define condor_dir %{_localstatedir}/lib/gwms-factory/condor
-%define systemddir %{_libdir}/systemd/system
+%define systemddir %{_prefix}/lib/systemd/system
 
 Name:           glideinwms
 Version:        %{version}
@@ -52,7 +56,6 @@ Source9:        gwms-factory.sysconfig
 Source11:       creation/templates/frontend_startup_sl7
 Source12:       creation/templates/factory_startup_sl7
 
-BuildRequires:  python
 BuildRequires:  python3
 BuildRequires:  python3-devel
 
@@ -96,8 +99,6 @@ This package is for a standalone vofrontend install
 Summary:        The intelligence logic for GWMS Frontend.
 Requires: condor >= 8.9.5
 Requires: python3 >= 3.6
-Requires: python-rrdtool
-Requires: python36-m2crypto
 Requires: javascriptrrd >= 1.1.0
 Requires: osg-wn-client
 Requires: vo-client
@@ -106,12 +107,40 @@ Requires: glideinwms-minimal-condor = %{version}-%{release}
 Requires: glideinwms-libs = %{version}-%{release}
 Requires: glideinwms-glidecondor-tools = %{version}-%{release}
 Requires: glideinwms-common-tools = %{version}-%{release}
+Requires: vofrontend-libs
+Requires: vofrontend-glidein
+%if 0%{?rhel} >= 8
+Requires: python3-rrdtool
+Requires: python3-m2crypto
+%else
+Requires: python-rrdtool
+Requires: python36-m2crypto
+%endif
 Requires(post): /sbin/service
 Requires(post): /usr/sbin/useradd
 Requires(post): /sbin/chkconfig
 %description vofrontend-core
 This subpackage includes all the scripts needed to run a
 frontend. Created to separate out the httpd server.
+
+
+%package vofrontend-libs
+Summary:        The Python creation library for GWMS Frontend.
+Requires: python3 >= 3.6
+Requires: javascriptrrd >= 1.1.0
+Requires: glideinwms-libs = %{version}-%{release}
+Requires: glideinwms-common-tools = %{version}-%{release}
+%description vofrontend-libs
+This subpackage includes libraries for Frontend-like programs.
+
+
+%package vofrontend-glidein
+Summary:        The Glidein components for GWMS Frontend.
+Requires: python3 >= 3.6
+Requires: glideinwms-libs = %{version}-%{release}
+Requires: glideinwms-common-tools = %{version}-%{release}
+%description vofrontend-glidein
+This subpackage includes the Glidein components for the Frontend.
 
 
 %package vofrontend-httpd
@@ -148,11 +177,19 @@ Summary:        The glideinWMS common libraries.
 Requires: python3 >= 3.6
 Requires: python3-condor
 # was condor-python for python2
+%if 0%{?rhel} >= 8
+Requires: python3-pyyaml
+Requires: python3-rrdtool
+Requires: python3-jwt
+Requires: python3-cryptography
+Requires: python3-m2crypto
+%else
+Requires: PyYAML
 Requires: python-rrdtool
 Requires: python36-jwt
 Requires: python36-cryptography
 Requires: python36-m2crypto
-Requires: PyYAML
+%endif
 %description libs
 This package provides common libraries used by glideinwms.
 
@@ -209,13 +246,20 @@ Requires: glideinwms-common-tools = %{version}-%{release}
 Requires: condor >= 8.4.0
 Requires: fetch-crl
 Requires: python3 >= 3.6
-Requires: python-rrdtool
 # This is in py3 std library - Requires: python-argparse
 # Is this the same? Requires: python36-configargparse
+Requires: javascriptrrd >= 1.1.0
+%if 0%{?rhel} >= 8
+Requires: python3-rrdtool
+Requires: python3-m2crypto
+Requires: python3-requests
+Requires: python3-jwt
+%else
+Requires: python-rrdtool
 Requires: python36-m2crypto
 Requires: python36-requests
 Requires: python36-jwt
-Requires: javascriptrrd >= 1.1.0
+%endif
 Requires(post): /sbin/service
 Requires(post): /usr/sbin/useradd
 Requires(post): /sbin/chkconfig
@@ -250,8 +294,8 @@ install of wmscollector + wms factory
 %build
 cp %{SOURCE7} .
 chmod 700 chksum.sh
-./chksum.sh v%{version}-%{release}.osg etc/checksum.frontend "CVS config_examples doc .git .gitattributes poolwatcher factory/check* factory/glideFactory* factory/test* factory/manage* factory/stop* factory/tools creation/create_glidein creation/reconfig_glidein creation/info_glidein creation/lib/cgW* creation/web_base/factory*html creation/web_base/collector_setup.sh creation/web_base/condor_platform_select.sh creation/web_base/condor_startup.sh creation/web_base/create_mapfile.sh creation/web_base/gcb_setup.sh creation/web_base/singularity_setup.sh creation/web_base/singularity_wrapper.sh creation/web_base/singularity_lib.sh creation/web_base/glidein_startup.sh creation/web_base/job_submit.sh creation/web_base/local_start.sh creation/web_base/setup_x509.sh creation/web_base/update_proxy.py creation/web_base/validate_node.sh chksum.sh etc/checksum* unittests build"
-./chksum.sh v%{version}-%{release}.osg etc/checksum.factory "CVS config_examples doc .git .gitattributes poolwatcher frontend/* creation/reconfig_glidein creation/clone_glidein creation/lib/cgW* creation/web_base/factory*html creation/web_base/collector_setup.sh creation/web_base/condor_platform_select.sh creation/web_base/condor_startup.sh creation/web_base/create_mapfile.sh creation/web_base/gcb_setup.sh creation/web_base/singularity_setup.sh creation/web_base/singularity_wrapper.sh creation/web_base/singularity_lib.sh creation/web_base/glidein_startup.sh creation/web_base/job_submit.sh creation/web_base/local_start.sh creation/web_base/setup_x509.sh creation/web_base/update_proxy.py creation/web_base/validate_node.sh chksum.sh etc/checksum* unittests build creation/lib/matchPolicy*"
+./chksum.sh v%{version}-%{release}.osg etc/checksum.frontend "CVS doc .git .gitattributes poolwatcher factory/check* factory/glideFactory* factory/test* factory/manage* factory/stop* factory/tools creation/create_glidein creation/reconfig_glidein creation/info_glidein creation/lib/cgW* creation/web_base/factory*html creation/web_base/collector_setup.sh creation/web_base/condor_platform_select.sh creation/web_base/condor_startup.sh creation/web_base/create_mapfile.sh creation/web_base/singularity_setup.sh creation/web_base/singularity_wrapper.sh creation/web_base/singularity_lib.sh creation/web_base/glidein_startup.sh creation/web_base/job_submit.sh creation/web_base/local_start.sh creation/web_base/setup_x509.sh creation/web_base/update_proxy.py creation/web_base/validate_node.sh chksum.sh etc/checksum* unittests build"
+./chksum.sh v%{version}-%{release}.osg etc/checksum.factory "CVS doc .git .gitattributes poolwatcher frontend/* creation/reconfig_glidein creation/clone_glidein creation/lib/cgW* creation/web_base/factory*html creation/web_base/collector_setup.sh creation/web_base/condor_platform_select.sh creation/web_base/condor_startup.sh creation/web_base/create_mapfile.sh creation/web_base/singularity_setup.sh creation/web_base/singularity_wrapper.sh creation/web_base/singularity_lib.sh creation/web_base/glidein_startup.sh creation/web_base/job_submit.sh creation/web_base/local_start.sh creation/web_base/setup_x509.sh creation/web_base/update_proxy.py creation/web_base/validate_node.sh chksum.sh etc/checksum* unittests build creation/lib/matchPolicy*"
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -314,7 +358,6 @@ rm -Rf $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/doc
 rm -Rf $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/etc
 rm -Rf $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/build
 rm -Rf $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/config
-rm -Rf $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/creation/config_examples
 rm -f $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/creation/create_rpm_startup
 rm -f $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/.editorconfig
 rm -f $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/.gitattributes
@@ -328,9 +371,11 @@ rm -Rf $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/test
 rm -Rf $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/unittests
 rm -f $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/chksum.sh
 rm -f $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/requirements.txt
+rm -Rf $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/.reuse
 rm -f $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/tox.ini
 rm -f $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/LICENSE
-rm -f $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/ACKNOWLEDGMENTS.txt
+rm -Rf $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/LICENSES
+rm -f $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/ACKNOWLEDGMENTS.md
 rm -f $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/README.md
 
 # Following files are Put in other places. Remove them from python3_sitelib
@@ -511,8 +556,8 @@ cp frontend/tools/enter_frontend_env $RPM_BUILD_ROOT%{_bindir}/enter_frontend_en
 cp frontend/tools/fetch_glidein_log $RPM_BUILD_ROOT%{_bindir}/fetch_glidein_log
 cp frontend/tools/glidein_off $RPM_BUILD_ROOT%{_bindir}/glidein_off
 cp frontend/tools/remove_requested_glideins $RPM_BUILD_ROOT%{_bindir}/remove_requested_glideins
-cp install/templates/frontend_condortoken $RPM_BUILD_ROOT%{_sysconfdir}/condor/scripts/
-cp install/templates/04_gwms_frontend_scripts.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d
+#cp install/templates/frontend_condortoken $RPM_BUILD_ROOT%{_sysconfdir}/condor/scripts/
+cp install/templates/04_gwms_frontend_idtokens.config $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d
 
 # Install glidecondor
 install -m 0755 install/glidecondor_addDN $RPM_BUILD_ROOT%{_sbindir}/glidecondor_addDN
@@ -619,7 +664,10 @@ getent passwd frontend >/dev/null || \
        useradd -r -g frontend -d /var/lib/gwms-frontend \
 	-c "VO Frontend user" -s /sbin/nologin frontend
 # If the frontend user already exists make sure it is part of frontend group
-usermod --append --groups frontend frontend >/dev/null
+usermod --append --groups frontend,glidein frontend >/dev/null
+
+%pre vofrontend-glidein
+getent group glidein >/dev/null || groupadd -r glidein
 
 %pre factory-core
 # Add the "gfactory" user and group if they do not exist
@@ -710,10 +758,12 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/wmsTxtView
 %attr(755,root,root) %{_bindir}/wmsXMLView
 %{python3_sitelib}/glideinwms/tools
+%dir %{python3_sitelib}/glideinwms/creation/
 %{python3_sitelib}/glideinwms/creation/__init__.py
 %{python3_sitelib}/glideinwms/creation/__pycache__
 %{python3_sitelib}/glideinwms/creation/lib/cWConsts.py
 %{python3_sitelib}/glideinwms/creation/lib/cWDictFile.py
+%{python3_sitelib}/glideinwms/creation/lib/cWExpand.py
 %{python3_sitelib}/glideinwms/creation/lib/cWParams.py
 %{python3_sitelib}/glideinwms/creation/lib/cWParamDict.py
 %{python3_sitelib}/glideinwms/creation/lib/xslt.py
@@ -722,6 +772,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{python3_sitelib}/glideinwms/creation/lib/__pycache__
 %{python3_sitelib}/glideinwms/creation/lib/__pycache__/cWConsts.*
 %{python3_sitelib}/glideinwms/creation/lib/__pycache__/cWDictFile.*
+%{python3_sitelib}/glideinwms/creation/lib/__pycache__/cWExpand.*
 %{python3_sitelib}/glideinwms/creation/lib/__pycache__/cWParams.*
 %{python3_sitelib}/glideinwms/creation/lib/__pycache__/cWParamDict.*
 %{python3_sitelib}/glideinwms/creation/lib/__pycache__/xslt.*
@@ -730,7 +781,7 @@ rm -rf $RPM_BUILD_ROOT
 %files factory-core
 %defattr(-,gfactory,gfactory,-)
 %doc LICENSE
-%doc ACKNOWLEDGMENTS.txt
+%doc ACKNOWLEDGMENTS.md
 %doc doc
 %attr(755,root,root) %{_bindir}/analyze_entries
 %attr(755,root,root) %{_bindir}/analyze_frontends
@@ -825,10 +876,10 @@ rm -rf $RPM_BUILD_ROOT
 %files vofrontend-core
 %defattr(-,frontend,frontend,-)
 %doc LICENSE
-%doc ACKNOWLEDGMENTS.txt
+%doc ACKNOWLEDGMENTS.md
 %doc doc
-%attr(755,root,root) %{_sysconfdir}/condor/scripts/frontend_condortoken
-%attr(644,root,root) %{_sysconfdir}/condor/config.d/04_gwms_frontend_scripts.config
+#%attr(755,root,root) %{_sysconfdir}/condor/scripts/frontend_condortoken
+%attr(644,root,root) %{_sysconfdir}/condor/config.d/04_gwms_frontend_idtokens.config
 %attr(755,root,root) %{_bindir}/glidein_off
 %attr(755,root,root) %{_bindir}/remove_requested_glideins
 %attr(755,root,root) %{_bindir}/fetch_glidein_log
@@ -841,31 +892,38 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_sbindir}/stopFrontend
 %attr(755,root,root) %{_libexecdir}/gwms_renew_proxies
 %attr(-, frontend, frontend) %dir %{_localstatedir}/lib/gwms-frontend
-%attr(-, frontend, frontend) %{web_dir}
-%attr(-, frontend, frontend) %{web_base}
-%attr(-, frontend, frontend) %{frontend_dir}
 %attr(700, frontend, frontend) %{frontend_token_dir}
 %attr(700, frontend, frontend) %{frontend_passwd_dir}
 %attr(-, frontend, frontend) %{_localstatedir}/log/gwms-frontend
-%{python3_sitelib}/glideinwms/frontend
-%{python3_sitelib}/glideinwms/creation/lib/cvWConsts.py
-%{python3_sitelib}/glideinwms/creation/lib/cvWCreate.py
-%{python3_sitelib}/glideinwms/creation/lib/cvWDictFile.py
-%{python3_sitelib}/glideinwms/creation/lib/cvWParamDict.py
-%{python3_sitelib}/glideinwms/creation/lib/cvWParams.py
-%{python3_sitelib}/glideinwms/creation/lib/matchPolicy.py
+%defattr(-,root,root,-)
+%{python3_sitelib}/glideinwms/frontend/glideinFrontendDowntimeLib.py
+%{python3_sitelib}/glideinwms/frontend/glideinFrontendMonitorAggregator.py
+%{python3_sitelib}/glideinwms/frontend/glideinFrontendMonitoring.py
+%{python3_sitelib}/glideinwms/frontend/glideinFrontendPidLib.py
+%{python3_sitelib}/glideinwms/frontend/glideinFrontend.py
+%{python3_sitelib}/glideinwms/frontend/glideinFrontendElement.py
+%{python3_sitelib}/glideinwms/frontend/checkFrontend.py
+%{python3_sitelib}/glideinwms/frontend/stopFrontend.py
+%{python3_sitelib}/glideinwms/frontend/manageFrontendDowntimes.py
+%{python3_sitelib}/glideinwms/frontend/gwms_renew_proxies.py
+%{python3_sitelib}/glideinwms/frontend/__pycache__/glideinFrontendDowntimeLib.*
+%{python3_sitelib}/glideinwms/frontend/__pycache__/glideinFrontendMonitorAggregator.*
+%{python3_sitelib}/glideinwms/frontend/__pycache__/glideinFrontendMonitoring.*
+%{python3_sitelib}/glideinwms/frontend/__pycache__/glideinFrontendPidLib.*
+%{python3_sitelib}/glideinwms/frontend/__pycache__/glideinFrontend.*
+%{python3_sitelib}/glideinwms/frontend/__pycache__/glideinFrontendElement.*
+%{python3_sitelib}/glideinwms/frontend/__pycache__/checkFrontend.*
+%{python3_sitelib}/glideinwms/frontend/__pycache__/stopFrontend.*
+%{python3_sitelib}/glideinwms/frontend/__pycache__/manageFrontendDowntimes.*
+%{python3_sitelib}/glideinwms/frontend/__pycache__/gwms_renew_proxies.*
+%{python3_sitelib}/glideinwms/frontend/tools
 %{python3_sitelib}/glideinwms/creation/lib/check_config_frontend.py
 %{python3_sitelib}/glideinwms/creation/lib/check_python3_expr.py
-%{python3_sitelib}/glideinwms/creation/lib/__pycache__/cvWConsts.*
-%{python3_sitelib}/glideinwms/creation/lib/__pycache__/cvWCreate.*
-%{python3_sitelib}/glideinwms/creation/lib/__pycache__/cvWDictFile.*
-%{python3_sitelib}/glideinwms/creation/lib/__pycache__/cvWParamDict.*
-%{python3_sitelib}/glideinwms/creation/lib/__pycache__/cvWParams.*
-%{python3_sitelib}/glideinwms/creation/lib/__pycache__/matchPolicy.*
 %{python3_sitelib}/glideinwms/creation/lib/__pycache__/check_config_frontend.*
 %{python3_sitelib}/glideinwms/creation/lib/__pycache__/check_python3_expr.*
 %{python3_sitelib}/glideinwms/creation/templates/frontend_initd_startup_template
 %{python3_sitelib}/glideinwms/creation/reconfig_frontend
+%defattr(-,frontend,frontend,-)
 %if 0%{?rhel} >= 7
 %{_sbindir}/gwms-frontend
 %attr(0644, root, root) %{systemddir}/gwms-frontend.service
@@ -884,6 +942,43 @@ rm -rf $RPM_BUILD_ROOT
 %attr(-, frontend, frontend) %config(noreplace) %{_sysconfdir}/gwms-frontend/proxies.ini
 %config(noreplace) %{_sysconfdir}/sysconfig/gwms-frontend
 %attr(-, frontend, frontend) %{web_base}/../creation
+
+%files vofrontend-libs
+%defattr(-,root,root,-)
+%dir %{python3_sitelib}/glideinwms/frontend/
+%{python3_sitelib}/glideinwms/frontend/__init__.py
+%{python3_sitelib}/glideinwms/frontend/glideinFrontendConfig.py
+%{python3_sitelib}/glideinwms/frontend/glideinFrontendInterface.py
+%{python3_sitelib}/glideinwms/frontend/glideinFrontendPlugins.py
+%{python3_sitelib}/glideinwms/frontend/glideinFrontendLib.py
+%{python3_sitelib}/glideinwms/frontend/__pycache__/__init__.*
+%{python3_sitelib}/glideinwms/frontend/__pycache__/glideinFrontendConfig.*
+%{python3_sitelib}/glideinwms/frontend/__pycache__/glideinFrontendInterface.*
+%{python3_sitelib}/glideinwms/frontend/__pycache__/glideinFrontendPlugins.*
+%{python3_sitelib}/glideinwms/frontend/__pycache__/glideinFrontendLib.*
+
+%files vofrontend-glidein
+%defattr(-,root,root,-)
+%{python3_sitelib}/glideinwms/creation/lib/cvWConsts.py
+%{python3_sitelib}/glideinwms/creation/lib/cvWCreate.py
+%{python3_sitelib}/glideinwms/creation/lib/cvWDictFile.py
+%{python3_sitelib}/glideinwms/creation/lib/cvWParamDict.py
+%{python3_sitelib}/glideinwms/creation/lib/cvWParams.py
+%{python3_sitelib}/glideinwms/creation/lib/matchPolicy.py
+%{python3_sitelib}/glideinwms/creation/lib/__pycache__/cvWConsts.*
+%{python3_sitelib}/glideinwms/creation/lib/__pycache__/cvWCreate.*
+%{python3_sitelib}/glideinwms/creation/lib/__pycache__/cvWDictFile.*
+%{python3_sitelib}/glideinwms/creation/lib/__pycache__/cvWParamDict.*
+%{python3_sitelib}/glideinwms/creation/lib/__pycache__/cvWParams.*
+%{python3_sitelib}/glideinwms/creation/lib/__pycache__/matchPolicy.*
+%defattr(-,root,glidein,775)
+%{web_dir}
+%{web_base}
+%{frontend_dir}
+%defattr(664,root,glidein,775)
+%{web_dir}/monitor
+%{web_dir}/stage
+%{web_base}/factoryRRDBrowse.html
 
 %files factory-httpd
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/gwms-factory.conf
@@ -932,6 +1027,11 @@ rm -rf $RPM_BUILD_ROOT
 #%config(noreplace) %{_sysconfdir}/condor/scripts/frontend_condortoken
 
 %changelog
+* Tue Dec 14 2021 Bruno Coimbra <coimbra@fnal.gov> - 3.9.4
+- Glideinwms v3.9.4
+- Release Notes: http://glideinwms.fnal.gov/doc.v3_9_4/history.html
+- Release candidates 3.9.4-01.rc1
+
 * Tue Sep 21 2021 Bruno Coimbra <coimbra@fnal.gov> - 3.9.3
 - Glideinwms v3.9.3
 - Release Notes: http://glideinwms.fnal.gov/doc.v3_9_3/history.html
