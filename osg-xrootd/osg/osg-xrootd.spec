@@ -1,7 +1,7 @@
 Summary: OSG configuration files for XRootD
 Name: osg-xrootd
 Version: 3.5.upcoming
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: ASL 2.0
 BuildArch: noarch
 
@@ -81,6 +81,9 @@ if [ ! -e /etc/xrootd/macaroon-secret ]; then
 fi
 
 %changelog
+* Tue Dec 14 2021 Brian Lin <blin@cs.wisc.edu> 3.5.upcoming-2
+- Add files to the messages sent to xrd-mon (SOFTWARE-4931)
+
 * Tue Mar 30 2021 Brian Lin <blin@cs.wisc.edu> 3.5.upcoming-1
 - Update ofs.authlib directive to use new '++' append syntax (SOFTWARE-4544)
 
