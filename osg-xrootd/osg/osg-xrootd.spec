@@ -1,7 +1,7 @@
 Summary: OSG configuration files for XRootD
 Name: osg-xrootd
 Version: 3.6
-Release: 10%{?dist}
+Release: 11%{?dist}
 License: ASL 2.0
 BuildArch: noarch
 
@@ -90,6 +90,9 @@ if [ ! -e /etc/xrootd/macaroon-secret ]; then
 fi
 
 %changelog
+* Tue Dec 14 2021 Brian Lin <blin@cs.wisc.edu> 3.5.upcoming-2
+- Add files to the messages sent to xrd-mon (SOFTWARE-4931)
+
 * Thu Oct 28 2021 Mátyás Selmeci <matyas@cs.wisc.edu> 3.6-10
 - Load libXrdSec.so when doing Voms auth; load the ztn seclib so bearer tokens still work
 
