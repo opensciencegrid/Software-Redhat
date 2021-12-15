@@ -71,7 +71,7 @@
 Name:      xrootd
 Epoch:     1
 Version:   5.4.0
-Release:   1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:   1.1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -87,6 +87,8 @@ Source0:   xrootd.tar.gz
 %if 0%{?_with_compat}
 Source1:   xrootd-%{compat_version}.tar.gz
 %endif
+
+Patch0:    SOFTWARE-4870.voms-mapfile.patch
 
 BuildRoot: %{_tmppath}/%{name}-root
 
@@ -525,6 +527,8 @@ This package contains compatibility binaries for xrootd 4 servers.
 %endif
 
 %setup -c -n xrootd
+
+%patch0 -p1
 
 %build
 
@@ -1165,6 +1169,9 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Tue Dec 14 2021 Brian Lin <blin@cs.wisc.edu> - 5.4.0-1.1
+- Add the ability to read from a voms-mapfile (SOFTWARE-4870)
+
 * Fri Dec 10 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.4.0-1
 - Update to 5.4.0 and merge OSG changes (SOFTWARE-4898, SOFTWARE-4899)
 
