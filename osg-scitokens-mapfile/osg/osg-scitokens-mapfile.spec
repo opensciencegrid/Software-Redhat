@@ -8,6 +8,7 @@ Source1: https://vdt.cs.wisc.edu/upstream/osg-scitokens-mapfile/pydeps/icalendar
 Source2: https://vdt.cs.wisc.edu/upstream/osg-scitokens-mapfile/pydeps/xmltodict-0.12.0-py2.py3-none-any.whl
 BuildRequires: python3
 BuildRequires: python3-pip
+BuildRequires: python3-ldap3
 %if 0%{?el7}
 BuildRequires: python36-pytz
 BuildRequires: python36-dateutil
@@ -53,6 +54,7 @@ mv osg-scitokens-mapfile.conf %{buildroot}/usr/share/condor-ce/mapfiles.d/
 %changelog
 * Thu Dec 16 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 4-1
 - Update to data-4 tag (SOFTWARE-4854)
+- Add ldap3 build requirement
 
 * Wed Apr 28 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 3-1
 - Update to data-3 tag (SOFTWARE-4572)
