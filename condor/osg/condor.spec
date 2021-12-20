@@ -1,4 +1,4 @@
-%define tarball_version 9.4.0
+%define tarball_version 9.4.1
 
 # On EL7 don't terminate the build because of bad bytecompiling
 %if 0%{?rhel} == 7
@@ -1667,6 +1667,10 @@ fi
 /bin/systemctl try-restart condor.service >/dev/null 2>&1 || :
 
 %changelog
+* Tue Dec 21 2021 Tim Theisen <tim@cs.wisc.edu> - 9.4.1-1
+- Add the ability to track slot activation metrics
+- Fix bug where a file transfer plugin failure code may not be reported
+
 * Thu Dec 02 2021 Tim Theisen <tim@cs.wisc.edu> - 9.4.0-1
 - Initial implementation of Job Sets in the htcondor CLI tool
 - The access point administrator can add keywords to the submit language
