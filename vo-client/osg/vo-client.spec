@@ -3,7 +3,7 @@
 %define iam 1
 
 Name:           vo-client
-Version:        115
+Version:        116
 Release:        1%{?dist}
 Summary:        Contains vomses file for use with user authentication
 
@@ -84,6 +84,9 @@ find $RPM_BUILD_ROOT/%{_sysconfdir}/grid-security/vomsdir -type d -exec chmod 75
 %config(noreplace) %{_datadir}/osg/grid-vorolemap
 
 %changelog
+* Tue Dec 21 2021 Brian Lin <blin@cs.wisc.edu> - 116-1
+- Add second Belle2 VOMS server (SOFTWARE-4947)
+
 * Mon Nov 22 2021 Brian Lin <blin@cs.wisc.edu> - 115-1
 - Updated WLCG VO certificate (SOFTWARE-4912)
 
