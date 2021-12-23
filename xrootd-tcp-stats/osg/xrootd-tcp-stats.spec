@@ -1,8 +1,8 @@
-Summary: xrootd-tcp-stats
+Summary: XRootD plugin to collect TCP stats for xrootd.monitor
 Name: xrootd-tcp-stats
 Version: 1.0.0
 Release: 1%{?dist}
-License: Unknown
+License: Apache 2.0
 Url: https://github.com/sand-ci/xrootd-tcp-stats
 Source0: %{name}-%{version}.tar.gz
 # to create:
@@ -27,18 +27,10 @@ BuildRequires: xrootd-server-devel >= 1:5, xrootd-server-devel < 1:6
 
 
 %description
-xrootd-tcp-stats
+%{summary}
 
 
 %prep
-# %%setup quick reference:
-#   -a N        Unpack source N after cd
-#   -b N        Unpack source N before cd
-#   -c          Create and cd to dir before unpacking
-#   -D          Do not delete dir before unpacking
-#   -n DIR      Name of extract dir (instead of NAME-VERSION)
-#   -T          Do not autounpack Source0
-
 %setup
 
 
