@@ -59,7 +59,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 0.566694
+%define condor_base_release 0.566695
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -275,6 +275,8 @@ Requires: condor-procd = %{version}-%{release}
 Requires: %name-externals = %version-%release
 %endif
 
+Requires: %name-blahp = %version-%release
+
 # Useful tools are using the Python bindings
 Requires: python3-condor
 # The use the python-requests library in EPEL is based Python 3.6
@@ -353,6 +355,9 @@ Obsoletes: condor-small-shadow < 8.9.9
 
 # external-libs package discontinued as of 8.9.9
 Obsoletes: condor-external-libs < 8.9.9
+
+# Bosco package discontinued as of 9.5.0
+Obsoletes: condor-bosco < 9.5.0
 
 %description
 HTCondor is a specialized workload management system for
