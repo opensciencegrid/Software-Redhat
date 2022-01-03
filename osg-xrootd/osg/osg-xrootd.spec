@@ -1,7 +1,7 @@
 Summary: OSG configuration files for XRootD
 Name: osg-xrootd
 Version: 3.6
-Release: 11%{?dist}
+Release: 12%{?dist}
 License: ASL 2.0
 BuildArch: noarch
 
@@ -90,6 +90,10 @@ if [ ! -e /etc/xrootd/macaroon-secret ]; then
 fi
 
 %changelog
+* Mon Jan 03 2022 Mátyás Selmeci <matyas@cs.wisc.edu> 3.6-12
+- Set grid-mapfile location (http.gridmap and -gridmap in sec.protocol gsi)
+  to the standard location (SOFTWARE-4937)
+
 * Tue Dec 14 2021 Brian Lin <blin@cs.wisc.edu> 3.5.upcoming-2
 - Add files to the messages sent to xrd-mon (SOFTWARE-4931)
 
