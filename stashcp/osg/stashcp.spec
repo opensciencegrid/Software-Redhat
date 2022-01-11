@@ -1,6 +1,6 @@
 Summary: stashcp
 Name: stashcp
-Version: 6.5.1
+Version: 6.5.3
 Release: 1%{?dist}
 License: ASL 2.0
 Url: https://github.com/opensciencegrid/stashcp
@@ -55,6 +55,9 @@ install -m 0644 %{SOURCE1} %{buildroot}/etc/condor/config.d/10-stash-plugin.conf
 %doc README.md
 
 %changelog
+* Mon Jan 10 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 6.5.3-1
+- Update to 6.5.3 (SOFTWARE-4887)
+
 * Fri Jan 07 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 6.5.1-1
 - Initial, binary-only packaging (SOFTWARE-4887)
 
