@@ -38,8 +38,8 @@ exit 0
 %install
 mkdir -p %{buildroot}%{_bindir}
 install -m 0755 stashcp %{buildroot}%{_bindir}/stashcp
-mkdir -p %{buildroot}%{_libexecdir}/condor
-install -m 0755 stashcp %{buildroot}%{_libexecdir}/condor/stash_plugin
+mkdir -p %{buildroot}/usr/libexec/condor
+install -m 0755 stashcp %{buildroot}/usr/libexec/condor/stash_plugin
 mkdir -p %{buildroot}/etc/condor/config.d
 install -m 0644 %{SOURCE1} %{buildroot}/etc/condor/config.d/10-stash-plugin.config
 
@@ -49,7 +49,7 @@ install -m 0644 %{SOURCE1} %{buildroot}/etc/condor/config.d/10-stash-plugin.conf
 %doc README.md
 
 %files -n condor-stash-plugin
-%{_libexecdir}/condor/stash_plugin
+/usr/libexec/condor/stash_plugin
 %config(noreplace) /etc/condor/config.d/10-stash-plugin.config
 %doc LICENSE.txt
 %doc README.md
