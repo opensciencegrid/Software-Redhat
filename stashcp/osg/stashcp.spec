@@ -5,7 +5,7 @@ Release: 1%{?dist}
 License: ASL 2.0
 Url: https://github.com/opensciencegrid/stashcp
 # Pre-compiled binary
-Source0: %{name}_%{version}_Linux_%{_arch}.tar.gz
+Source0: %{name}_%{version}_Linux_x86_64.tar.gz
 Source1: 10-stash-plugin.config
 ExclusiveArch: x86_64
 Obsoletes: stashcache-client < 6.4.0
