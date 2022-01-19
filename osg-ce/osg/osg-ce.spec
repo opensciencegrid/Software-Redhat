@@ -1,7 +1,7 @@
 Name:      osg-ce
 Summary:   OSG Compute Element
 Version:   3.6
-Release:   3%{?dist}
+Release:   4%{?dist}
 License:   Apache 2.0
 URL:       http://www.opensciencegrid.org
 
@@ -131,6 +131,7 @@ install -m 644 %{SOURCE1} $RPM_BUILD_ROOT/%{_datadir}/condor-ce/config.d
 %{_datadir}/condor-ce/config.d/01-blahp-location.conf
 %{_datadir}/condor-ce/config.d/03-osg-ce-collector.conf
 
+%files bosco
 %files condor
 %files pbs
 %files lsf
@@ -138,6 +139,9 @@ install -m 644 %{SOURCE1} $RPM_BUILD_ROOT/%{_datadir}/condor-ce/config.d
 %files slurm
 
 %changelog
+* Wed Jan 19 2022 Brian Lin <blin@cs.wisc.edu> - 3.6-4
+- Release missing osg-ce-bosco sub-package
+
 * Mon Apr 19 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.6-3
 - Require osg-scitokens-mapfile (SOFTWARE-4574)
 
