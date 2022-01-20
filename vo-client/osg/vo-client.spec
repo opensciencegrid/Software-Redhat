@@ -4,7 +4,7 @@
 
 Name:           vo-client
 Version:        116
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Contains vomses file for use with user authentication
 
 License:        Apache 2.0
@@ -52,7 +52,7 @@ rm -f vomsdir/cms/voms-cms-auth.app.cern.ch.lsc
 # FIXME: Remove IAM vomses entries to avoid use by VOMS clients until
 # IAM LSC files are more widely distributed across the world
 # (SOFTWARE-4595)
-sed -Ei '/.*voms-(alice|atlas|lhcb|ops)-auth.app.cern.ch.*/d' vomses 
+sed -Ei '/.*voms-(alice|lhcb|ops)-auth.app.cern.ch.*/d' vomses
 
 %install
 install -d $RPM_BUILD_ROOT/%{_sysconfdir}
@@ -84,6 +84,9 @@ find $RPM_BUILD_ROOT/%{_sysconfdir}/grid-security/vomsdir -type d -exec chmod 75
 %config(noreplace) %{_datadir}/osg/grid-vorolemap
 
 %changelog
+* Wed Jan 19 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 116-2
+- Add new ATLAS IAM endpoint to vomses (SOFTWARE-4961)
+
 * Tue Dec 21 2021 Brian Lin <blin@cs.wisc.edu> - 116-1
 - Add second Belle2 VOMS server (SOFTWARE-4947)
 
