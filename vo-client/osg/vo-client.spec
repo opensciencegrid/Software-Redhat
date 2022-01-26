@@ -3,8 +3,8 @@
 %define iam 1
 
 Name:           vo-client
-Version:        116
-Release:        2%{?dist}
+Version:        117
+Release:        1%{?dist}
 Summary:        Contains vomses file for use with user authentication
 
 License:        Apache 2.0
@@ -84,6 +84,9 @@ find $RPM_BUILD_ROOT/%{_sysconfdir}/grid-security/vomsdir -type d -exec chmod 75
 %config(noreplace) %{_datadir}/osg/grid-vorolemap
 
 %changelog
+* Wed Jan 25 2022 Brian Lin <blin@cs.wisc.edu> - 117-1
+- Update GlueX DNs (SOFTWARE-4982)
+
 * Wed Jan 19 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 116-2
 - Add new ATLAS IAM endpoint to vomses (SOFTWARE-4961)
 
