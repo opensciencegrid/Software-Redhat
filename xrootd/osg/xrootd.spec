@@ -70,8 +70,8 @@
 #-------------------------------------------------------------------------------
 Name:      xrootd
 Epoch:     1
-Version:   5.4.0
-Release:   1.1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Version:   5.4.1
+Release:   0.rc1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -115,13 +115,17 @@ BuildRequires: json-c-devel
 
 %if %{python2only}
 BuildRequires: python2-devel
+BuildRequires: python2-setuptools
 %endif
 %if %{python2and3}
 BuildRequires: python2-devel
+BuildRequires: python2-setuptools
 BuildRequires: python%{python3_pkgversion}-devel
+BuildRequires: python%{python3_pkgversion}-setuptools
 %endif
 %if %{python3only}
 BuildRequires: python%{python3_pkgversion}-devel
+BuildRequires: python%{python3_pkgversion}-setuptools
 %endif
 
 BuildRequires: openssl-devel
