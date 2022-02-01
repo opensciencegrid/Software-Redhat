@@ -1,13 +1,16 @@
 Summary: Configuration tool for the OSG Software Stack
 Name: osg-configure
-Version: 4.0.0
-Release: 1%{?dist}
+Version: 4.1.0
+Release: 0.15%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
 BuildArch: noarch
 Url: https://github.com/opensciencegrid/osg-configure
-BuildRequires: python3
+BuildRequires: python3-devel
+BuildRequires: python3-condor >= 9.0.9
 Requires: python3
+%global __python /usr/bin/python3
+Requires: %{name}-libs = %{version}-%{release}
 
 
 Obsoletes: %{name}-managedfork < 2.2.2-2
@@ -17,11 +20,26 @@ Obsoletes: %{name}-network < 2.2.2-2
 %description
 %{summary}
 
+%package -n osg-ce-attributes-generator
+Summary: Generates CE attributes that will be uploaded to the central collector
+Requires: python3-condor
+Requires: %name-libs = %version-%release
+Requires: %name-siteinfo
+Requires: %name-cluster
+%description -n osg-ce-attributes-generator
+Generates CE attributes that will be uploaded to the central collector
+
+%package libs
+Summary: OSG Configure libraries
+Requires: python3
+%description libs
+This package containers the Python libraries used by osg-configure
+
 %package siteinfo
 Summary: OSG configuration file for site information
-Requires: %name = %version-%release
 %description siteinfo
 This package includes the ini file for configuring site information using osg-configure
+and resource/resource_group information with osg-ce-attributes-generator.
 
 %package rsv
 Summary: OSG configuration file for RSV
@@ -46,10 +64,10 @@ It may be removed.
 
 %package cluster
 Summary: OSG configuration files for describing cluster
-Requires: %name = %version-%release
 %description cluster
 This package contains 31-cluster.ini for Subcluster and Resource Entry sections,
-and 35-pilots.ini for Pilot sections.
+and 35-pilots.ini for Pilot sections, for use with osg-configure and
+osg-ce-attributes-generator.
 
 %package lsf
 Summary: OSG configuration file for lsf
@@ -118,7 +136,7 @@ This package includes the ini file for configuring slurm using osg-configure
 Summary: OSG configuration file for bosco
 Requires: %name = %version-%release
 Requires: %name-gateway
-Requires: condor-bosco
+Requires: /usr/bin/condor_remote_cluster
 %description bosco
 This package includes the ini file for configuring bosco using osg-configure
 
@@ -126,7 +144,7 @@ This package includes the ini file for configuring bosco using osg-configure
 Summary: OSG configuration file for the osg info services
 Requires: %name = %version-%release
 Requires: %name-cluster
-Requires: python3-condor
+Requires: osg-ce-attributes-generator
 %description infoservices
 This package includes the ini file for configuring the osg info services using osg-configure
 
@@ -136,8 +154,6 @@ Requires: %name = %version-%release
 %description gateway
 This package includes the ini file for configuring the job gateway
 (htcondor-ce) using osg-configure
-
-%define __python /usr/bin/python3
 
 
 %prep
@@ -160,10 +176,17 @@ touch $RPM_BUILD_ROOT/var/lib/osg/osg-attributes.conf
 touch $RPM_BUILD_ROOT/var/lib/osg/osg-local-job-environment.conf
 touch $RPM_BUILD_ROOT/var/lib/osg/osg-job-environment.conf
 
+%check
+for module in $RPM_BUILD_ROOT/%{python_sitelib}/osg_configure/configure_modules/[a-z]*.py; do
+    %{__python} -c "import osg_configure.configure_modules.$(basename "$module" .py)"
+done
+for module in $RPM_BUILD_ROOT/%{python_sitelib}/osg_configure/modules/[a-z]*.py; do
+    %{__python} -c "import osg_configure.modules.$(basename "$module" .py)"
+done
+PYTHONPATH=$RPM_BUILD_ROOT/%{python_sitelib}:$PYTHONPATH %{__python} $RPM_BUILD_ROOT/usr/sbin/osg-configure --version
+PYTHONPATH=$RPM_BUILD_ROOT/%{python_sitelib}:$PYTHONPATH %{__python} $RPM_BUILD_ROOT/usr/bin/osg-ce-attributes-generator --version
 
 %files
-%{python_sitelib}/osg_configure-%{version}-*.egg-info
-%{python_sitelib}/osg_configure/__init__.py*
 %{python_sitelib}/osg_configure/configure_modules/__init__.py*
 %{python_sitelib}/osg_configure/configure_modules/bosco.py*
 %{python_sitelib}/osg_configure/configure_modules/condor.py*
@@ -178,16 +201,7 @@ touch $RPM_BUILD_ROOT/var/lib/osg/osg-job-environment.conf
 %{python_sitelib}/osg_configure/configure_modules/slurm.py*
 %{python_sitelib}/osg_configure/configure_modules/squid.py*
 %{python_sitelib}/osg_configure/configure_modules/storage.py*
-%{python_sitelib}/osg_configure/modules/__init__.py*
-%{python_sitelib}/osg_configure/modules/baseconfiguration.py*
-%{python_sitelib}/osg_configure/modules/configfile.py*
-%{python_sitelib}/osg_configure/modules/exceptions.py*
-%{python_sitelib}/osg_configure/modules/jobmanagerconfiguration.py*
-%{python_sitelib}/osg_configure/modules/utilities.py*
-%{python_sitelib}/osg_configure/modules/validation.py*
-%{python_sitelib}/osg_configure/version.py*
 
-%{python_sitelib}/osg_configure/__pycache__/__init__*
 %{python_sitelib}/osg_configure/configure_modules/__pycache__/__init__*
 %{python_sitelib}/osg_configure/configure_modules/__pycache__/bosco*
 %{python_sitelib}/osg_configure/configure_modules/__pycache__/condor*
@@ -202,6 +216,27 @@ touch $RPM_BUILD_ROOT/var/lib/osg/osg-job-environment.conf
 %{python_sitelib}/osg_configure/configure_modules/__pycache__/slurm*
 %{python_sitelib}/osg_configure/configure_modules/__pycache__/squid*
 %{python_sitelib}/osg_configure/configure_modules/__pycache__/storage*
+
+/usr/sbin/osg-configure
+%ghost /var/log/osg/osg-configure.log
+%ghost /var/lib/osg/osg-attributes.conf
+%ghost /var/lib/osg/osg-local-job-environment.conf
+%ghost /var/lib/osg/osg-job-environment.conf
+%ghost /etc/condor-ce/config.d/50-osg-configure.conf
+
+%files libs
+%{python_sitelib}/osg_configure-%{version}-*.egg-info
+%{python_sitelib}/osg_configure/__init__.py*
+%{python_sitelib}/osg_configure/modules/__init__.py*
+%{python_sitelib}/osg_configure/modules/baseconfiguration.py*
+%{python_sitelib}/osg_configure/modules/configfile.py*
+%{python_sitelib}/osg_configure/modules/exceptions.py*
+%{python_sitelib}/osg_configure/modules/jobmanagerconfiguration.py*
+%{python_sitelib}/osg_configure/modules/utilities.py*
+%{python_sitelib}/osg_configure/modules/validation.py*
+%{python_sitelib}/osg_configure/version.py*
+
+%{python_sitelib}/osg_configure/__pycache__/__init__*
 %{python_sitelib}/osg_configure/modules/__pycache__/__init__*
 %{python_sitelib}/osg_configure/modules/__pycache__/baseconfiguration*
 %{python_sitelib}/osg_configure/modules/__pycache__/configfile*
@@ -210,13 +245,6 @@ touch $RPM_BUILD_ROOT/var/lib/osg/osg-job-environment.conf
 %{python_sitelib}/osg_configure/modules/__pycache__/utilities*
 %{python_sitelib}/osg_configure/modules/__pycache__/validation*
 %{python_sitelib}/osg_configure/__pycache__/version*
-
-/usr/sbin/*
-%ghost /var/log/osg/osg-configure.log
-%ghost /var/lib/osg/osg-attributes.conf
-%ghost /var/lib/osg/osg-local-job-environment.conf
-%ghost /var/lib/osg/osg-job-environment.conf
-%ghost /etc/condor-ce/config.d/50-osg-configure.conf
 
 %files rsv
 %config(noreplace) %{_sysconfdir}/osg/config.d/30-rsv.ini
@@ -261,16 +289,18 @@ touch $RPM_BUILD_ROOT/var/lib/osg/osg-job-environment.conf
 %files infoservices
 %config(noreplace) %{_sysconfdir}/osg/config.d/30-infoservices.ini
 %{python_sitelib}/osg_configure/configure_modules/infoservices.py*
+%{python_sitelib}/osg_configure/configure_modules/__pycache__/infoservices*
+
+%files -n osg-ce-attributes-generator
+/usr/bin/osg-ce-attributes-generator
+%{python_sitelib}/osg_configure/modules/ce_attributes.py*
 %{python_sitelib}/osg_configure/modules/resourcecatalog.py*
 %{python_sitelib}/osg_configure/modules/reversevomap.py*
 %{python_sitelib}/osg_configure/modules/subcluster.py*
-
-%{python_sitelib}/osg_configure/configure_modules/__pycache__/infoservices*
+%{python_sitelib}/osg_configure/modules/__pycache__/ce_attributes*
 %{python_sitelib}/osg_configure/modules/__pycache__/resourcecatalog*
 %{python_sitelib}/osg_configure/modules/__pycache__/reversevomap*
 %{python_sitelib}/osg_configure/modules/__pycache__/subcluster*
-
-
 
 %files tests
 /usr/share/osg-configure/*
@@ -285,6 +315,14 @@ touch $RPM_BUILD_ROOT/var/lib/osg/osg-job-environment.conf
 
 
 %changelog
+* Sun Jan 30 2022 Mátyás Selmeci <matyas@cs.wisc.edu> 4.1.0-0.15
+- Depend on /usr/bin/condor_remote_cluster instead of condor-bosco (SOFTWARE-4973)
+- Split libs into separate RPM
+- Add osg-ce-attributes-generator (SOFTWARE-4895)
+- Don't require base osg-configure package in osg-configure-siteinfo and osg-configure-cluster
+  because they can also be used by osg-ce-attributes-generator
+- Advertise batch system used by bosco (SOFTWARE-3720)
+
 * Thu Feb 25 2021 Mátyás Selmeci <matyas@cs.wisc.edu> 4.0.0-1
 - Drop lcmaps-db-templates dependency (SOFTWARE-4503)
 - Turn osg-configure-misc into a dummy package (SOFTWARE-4507)
