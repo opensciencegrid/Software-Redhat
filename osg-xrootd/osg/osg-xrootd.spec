@@ -1,7 +1,7 @@
 Summary: OSG configuration files for XRootD
 Name: osg-xrootd
 Version: 3.6
-Release: 12%{?dist}
+Release: 13%{?dist}
 License: ASL 2.0
 BuildArch: noarch
 
@@ -88,8 +88,13 @@ install -m 644 %{SOURCE15} $RPM_BUILD_ROOT/etc/xrootd/scitokens.conf
 if [ ! -e /etc/xrootd/macaroon-secret ]; then
     %_libexecdir/xrootd/create_macaroon_secret >/dev/null 2>&1 || :
 fi
+mkdir -p /etc/grid-security >/dev/null 2>&1 || :
+[ -e /etc/grid-security/grid-mapfile ] || touch /etc/grid-security/grid-mapfile
 
 %changelog
+* Tue Feb 08 2022 Mátyás Selmeci <matyas@cs.wisc.edu> 3.6-13
+- Ensure /etc/grid-security/grid-mapfile exists (SOFTWARE-5023)
+
 * Mon Jan 03 2022 Mátyás Selmeci <matyas@cs.wisc.edu> 3.6-12
 - Set grid-mapfile location (http.gridmap and -gridmap in sec.protocol gsi)
   to the standard location (SOFTWARE-4937)
