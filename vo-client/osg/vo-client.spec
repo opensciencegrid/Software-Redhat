@@ -3,7 +3,7 @@
 %define iam 1
 
 Name:           vo-client
-Version:        118
+Version:        119
 Release:        1%{?dist}
 Summary:        Contains vomses file for use with user authentication
 
@@ -84,6 +84,9 @@ find $RPM_BUILD_ROOT/%{_sysconfdir}/grid-security/vomsdir -type d -exec chmod 75
 %config(noreplace) %{_datadir}/osg/grid-vorolemap
 
 %changelog
+* Wed Feb 09 2022 Brian Lin <blin@cs.wisc.edu> - 119-1
+- Updated GLOW and OSG DNs (SOFTWARE-5015, SOFTWARE-5016)
+
 * Wed Feb 02 2022 Brian Lin <blin@cs.wisc.edu> - 118-1
 - Updated FNAL voms2 DN (SOFTWARE-4995)
 
