@@ -83,7 +83,7 @@ fi
 %changelog
 * Thu Feb 10 2022 Diego Davila <didavila@ucsd.edu> 3.5-14
 - Configure Xrootd to send caching monitoring data (SOFTWARE-5026)
-- Make the Dest (monitoring collector) variable in case there is a shoveler
+- Make the ShovelerHostPort variable to use as the monitoring collector if there is a shoveler
 
 * Mon Jun 29 2020 Edgar Fajardo <emfajard@ucsd.edu> 3.5-13
 - Adding logging information on its own file (SOFTWARE-4058)
