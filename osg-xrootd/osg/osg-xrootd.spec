@@ -1,7 +1,7 @@
 Summary: OSG configuration files for XRootD
 Name: osg-xrootd
 Version: 3.5
-Release: 13%{?dist}
+Release: 14%{?dist}
 License: ASL 2.0
 BuildArch: noarch
 
@@ -81,6 +81,10 @@ if [ ! -e /etc/xrootd/macaroon-secret ]; then
 fi
 
 %changelog
+* Thu Feb 10 2022 Diego Davila <didavila@ucsd.edu> 3.5-14
+- Configure Xrootd to send caching monitoring data (SOFTWARE-5026)
+- Make the Dest (monitoring collector) variable in case there is a shoveler
+
 * Mon Jun 29 2020 Edgar Fajardo <emfajard@ucsd.edu> 3.5-13
 - Adding logging information on its own file (SOFTWARE-4058)
 
