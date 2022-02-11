@@ -1,7 +1,7 @@
 Summary: OSG configuration files for XRootD
 Name: osg-xrootd
 Version: 3.6
-Release: 14%{?dist}
+Release: 15%{?dist}
 License: ASL 2.0
 BuildArch: noarch
 
@@ -92,6 +92,9 @@ mkdir -p /etc/grid-security >/dev/null 2>&1 || :
 [ -e /etc/grid-security/grid-mapfile ] || touch /etc/grid-security/grid-mapfile
 
 %changelog
+* Thu Feb 10 2022 Mátyás Selmeci <matyas@cs.wisc.edu> 3.6-15
+- Remove nested if from config (SOFTWARE-5026)
+
 * Thu Feb 10 2022 Diego Davila <didavila@ucsd.edu> 3.6-14
 - Configure Xrootd to send caching monitoring data (SOFTWARE-5026)
 - Make the ShovelerHostPort variable to use as the monitoring collector if there is a shoveler
