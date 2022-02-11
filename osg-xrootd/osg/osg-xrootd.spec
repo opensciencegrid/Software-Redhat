@@ -1,7 +1,7 @@
 Summary: OSG configuration files for XRootD
 Name: osg-xrootd
 Version: 3.5.upcoming
-Release: 4%{?dist}
+Release: 5%{?dist}
 License: ASL 2.0
 BuildArch: noarch
 
@@ -81,6 +81,9 @@ if [ ! -e /etc/xrootd/macaroon-secret ]; then
 fi
 
 %changelog
+* Thu Feb 10 2022 Mátyás Selmeci <matyas@cs.wisc.edu> 3.5.upcoming-5
+- Remove nested if from config (SOFTWARE-5026)
+
 * Thu Feb 10 2022 Diego Davila <didavila@ucsd.edu> 3.5.upcoming-4
 - Configure Xrootd to send caching monitoring data (SOFTWARE-5026)
 - Make the ShovelerHostPort variable to use as the monitoring collector if there is a shoveler
