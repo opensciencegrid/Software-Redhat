@@ -1,7 +1,7 @@
 Summary: OSG configuration files for XRootD
 Name: osg-xrootd
 Version: 3.5.upcoming
-Release: 5%{?dist}
+Release: 6%{?dist}
 License: ASL 2.0
 BuildArch: noarch
 
@@ -79,8 +79,13 @@ install -m 644 %{SOURCE10} $RPM_BUILD_ROOT/etc/xrootd/Authfile
 if [ ! -e /etc/xrootd/macaroon-secret ]; then
     %_libexecdir/xrootd/create_macaroon_secret >/dev/null 2>&1 || :
 fi
+mkdir -p /etc/grid-security >/dev/null 2>&1 || :
+[ -e /etc/grid-security/grid-mapfile ] || touch /etc/grid-security/grid-mapfile
 
 %changelog
+* Fri Feb 11 2022 Mátyás Selmeci <matyas@cs.wisc.edu> 3.5.upcoming-6
+- Ensure /etc/grid-security/grid-mapfile exists (SOFTWARE-5023)
+
 * Thu Feb 10 2022 Mátyás Selmeci <matyas@cs.wisc.edu> 3.5.upcoming-5
 - Remove nested if from config (SOFTWARE-5026)
 
