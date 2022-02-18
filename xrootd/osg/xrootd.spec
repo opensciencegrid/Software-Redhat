@@ -71,7 +71,7 @@
 Name:      xrootd
 Epoch:     1
 Version:   5.4.1
-Release:   0.rc1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:   0.rc2%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -114,6 +114,7 @@ BuildRequires: libmacaroons-devel
 BuildRequires: json-c-devel
 
 %if %{python2only}
+BuildRequires: python2-pip
 BuildRequires: python2-devel
 BuildRequires: python2-setuptools
 %endif
@@ -531,8 +532,9 @@ This package contains compatibility binaries for xrootd 4 servers.
 %endif
 
 %setup -c -n xrootd
-
+cd xrootd
 %patch0 -p1
+cd ..
 
 %build
 
@@ -666,7 +668,6 @@ popd
 pushd xrootd
 pushd  build
 make install DESTDIR=$RPM_BUILD_ROOT
-cat PYTHON_INSTALLED | sed -e "s|$RPM_BUILD_ROOT||g" > PYTHON_INSTALLED_FILES
 popd
 
 # configuration stuff
@@ -1046,13 +1047,15 @@ fi
 %dir %{_sysconfdir}/xrootd
 
 %if %{python2only}
-%files -n python2-%{name} -f xrootd/build/PYTHON_INSTALLED_FILES
+%files -n python2-%{name}
 %defattr(-,root,root,-)
+%{python2_sitearch}/*
 %endif
 
 %if %{python2and3}
-%files -n python2-%{name} -f xrootd/build/PYTHON_INSTALLED_FILES
+%files -n python2-%{name}
 %defattr(-,root,root,-)
+%{python2_sitearch}/*
 
 %files -n python%{python3_pkgversion}-%{name}
 %defattr(-,root,root,-)
@@ -1060,8 +1063,9 @@ fi
 %endif
 
 %if %{python3only}
-%files -n python%{python3_pkgversion}-%{name} -f xrootd/build/PYTHON_INSTALLED_FILES
+%files -n python%{python3_pkgversion}-%{name}
 %defattr(-,root,root,-)
+%{python3_sitearch}/*
 %endif
 
 %files voms
@@ -1173,6 +1177,10 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Fri Feb 18 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.4.1-0.rc2.osg
+- Update to 5.4.1rc2 and merge OSG changes (SOFTWARE-4998, SOFTWARE-4999)
+- Update SOFTWARE-4870.voms-mapfile.patch
+
 * Tue Dec 14 2021 Brian Lin <blin@cs.wisc.edu> - 5.4.0-1.1
 - Add the ability to read from a voms-mapfile (SOFTWARE-4870)
 

@@ -1,147 +1,7 @@
-From 77bf1eaeb4202c3cc96f2ea55c7602314c8bea21 Mon Sep 17 00:00:00 2001
-From: Brian Bockelman <bbockelman@morgridge.org>
-Date: Sat, 11 Dec 2021 20:39:24 -0600
-Subject: [PATCH 1/2] Fixup const'ness of a few `XrdOucString` methods.
-
----
- src/XrdOuc/XrdOucString.cc | 18 +++++++++---------
- src/XrdOuc/XrdOucString.hh | 29 +++++++++++++++--------------
- 2 files changed, 24 insertions(+), 23 deletions(-)
-
-diff --git a/src/XrdOuc/XrdOucString.cc b/src/XrdOuc/XrdOucString.cc
-index c9f69e51e6c..8b9e7c32ed5 100644
---- a/xrootd/src/XrdOuc/XrdOucString.cc
-+++ b/xrootd/src/XrdOuc/XrdOucString.cc
-@@ -257,7 +257,7 @@ int XrdOucString::form(XrdOucString &str, const char *fmt, ...)
- #endif
- 
- //______________________________________________________________________________
--int XrdOucString::find(const char c, int start, bool forward)
-+int XrdOucString::find(const char c, int start, bool forward) const
- {
-    // Find index of first occurence of char c starting from position start
-    // Return index if found, STR_NPOS if not.
-@@ -293,7 +293,7 @@ int XrdOucString::find(const char c, int start, bool forward)
- }
- 
- //______________________________________________________________________________
--int XrdOucString::find(XrdOucString s, int start)
-+int XrdOucString::find(XrdOucString s, int start) const
- {
-    // Find index of first occurence of string s, starting
-    // from position start.
-@@ -303,7 +303,7 @@ int XrdOucString::find(XrdOucString s, int start)
- }
- 
- //______________________________________________________________________________
--int XrdOucString::find(const char *s, int start)
-+int XrdOucString::find(const char *s, int start) const
- {
-    // Find index of first occurence of null-terminated string s, starting
-    // from position start.
-@@ -343,7 +343,7 @@ int XrdOucString::find(const char *s, int start)
- }
- 
- //______________________________________________________________________________
--int XrdOucString::rfind(XrdOucString s, int start)
-+int XrdOucString::rfind(XrdOucString s, int start) const
- {
-    // Find index of first occurence of string s in backward
-    // direction starting from position start.
-@@ -354,7 +354,7 @@ int XrdOucString::rfind(XrdOucString s, int start)
- }
- 
- //______________________________________________________________________________
--int XrdOucString::rfind(const char *s, int start)
-+int XrdOucString::rfind(const char *s, int start) const
- {
-    // Find index of first occurence of null-terminated string s in 
-    // backwards direction starting from position start.
-@@ -403,7 +403,7 @@ int XrdOucString::rfind(const char *s, int start)
- }
- 
- //______________________________________________________________________________
--bool XrdOucString::endswith(char c) 
-+bool XrdOucString::endswith(char c) const
- {
-    // returns 1 if the stored string ends with string s
- 
-@@ -411,7 +411,7 @@ bool XrdOucString::endswith(char c)
- }
- 
- //______________________________________________________________________________
--bool XrdOucString::endswith(const char *s) 
-+bool XrdOucString::endswith(const char *s) const
- {
-    // returns 1 if the stored string ends with string s
- 
-@@ -423,7 +423,7 @@ bool XrdOucString::endswith(const char *s)
- }
- 
- //___________________________________________________________________________
--int XrdOucString::matches(const char *s, char wch)
-+int XrdOucString::matches(const char *s, char wch) const
- {
-    // Check if local string is compatible with 's' which may
-    // contain wild char wch (default: '*'). For example, if local string
-@@ -1219,7 +1219,7 @@ void XrdOucString::setblksize(int bs)
- }
- 
- //______________________________________________________________________________
--int XrdOucString::tokenize(XrdOucString &tok, int from, char del)
-+int XrdOucString::tokenize(XrdOucString &tok, int from, char del) const
- {
-    // Search for tokens delimited by 'del' (def ':') in string s; search starts
-    // from 'from' and the token is returned in 'tok'.
-diff --git a/src/XrdOuc/XrdOucString.hh b/src/XrdOuc/XrdOucString.hh
-index e2dbe20730d..6ca5993c789 100644
---- a/xrootd/src/XrdOuc/XrdOucString.hh
-+++ b/xrootd/src/XrdOuc/XrdOucString.hh
-@@ -280,24 +280,25 @@ public:
-    const char   *c_str() const { return (const char *)str; }
-    int           length() const { return len; }
-    int           capacity() const { return siz; }
-+   bool          empty() const { return length() == 0; }
-    char         &operator[](int j);
--   int           find(const char c, int start = 0, bool forward = 1);
--   int           find(const char *s, int start = 0);
--   int           find(XrdOucString s, int start = 0);
--   int           rfind(const char c, int start = STR_NPOS)
-+   int           find(const char c, int start = 0, bool forward = 1) const;
-+   int           find(const char *s, int start = 0) const;
-+   int           find(XrdOucString s, int start = 0) const;
-+   int           rfind(const char c, int start = STR_NPOS) const
-                                              { return find(c, start, 0); }
--   int           rfind(const char *s, int start = STR_NPOS);
--   int           rfind(XrdOucString s, int start = STR_NPOS);
--   bool          beginswith(char c) { return (find(c) == 0); }
--   bool          beginswith(const char *s) { return (find(s) == 0); }
--   bool          beginswith(XrdOucString s) { return (find(s) == 0); }
--   bool          endswith(char c);
--   bool          endswith(const char *s);
--   bool          endswith(XrdOucString s) { return (endswith(s.c_str())); }
--   int           matches(const char *s, char wch = '*');
-+   int           rfind(const char *s, int start = STR_NPOS) const;
-+   int           rfind(XrdOucString s, int start = STR_NPOS) const;
-+   bool          beginswith(char c) const { return (find(c) == 0); }
-+   bool          beginswith(const char *s) const { return (find(s) == 0); }
-+   bool          beginswith(XrdOucString s) const { return (find(s) == 0); }
-+   bool          endswith(char c) const;
-+   bool          endswith(const char *s) const;
-+   bool          endswith(XrdOucString s) const { return (endswith(s.c_str())); }
-+   int           matches(const char *s, char wch = '*') const;
- 
-    // Tokenizer
--   int           tokenize(XrdOucString &tok, int from, char del = ':');
-+   int           tokenize(XrdOucString &tok, int from, char del = ':') const;
- 
-    // Modifiers
-    void          resize(int lmx = 0) { int ns = (lmx > 0) ? lmx + 1 : 0;
-
-From e951df018a597471ec857266d31f7ec962366903 Mon Sep 17 00:00:00 2001
+From 62fa23c017d4e623086fa7682eaec6caa40bf0c5 Mon Sep 17 00:00:00 2001
 From: Brian Bockelman <bbockelman@morgridge.org>
 Date: Sat, 11 Dec 2021 21:12:39 -0600
-Subject: [PATCH 2/2] Add mapfile support as a separate class to the XrdVoms
+Subject: [PATCH 1/9] Add mapfile support as a separate class to the XrdVoms
  code.
 
 ---
@@ -156,8 +16,8 @@ Subject: [PATCH 2/2] Add mapfile support as a separate class to the XrdVoms
 
 diff --git a/src/XrdVoms.cmake b/src/XrdVoms.cmake
 index bc4a4229c7d..1951a376eb0 100644
---- a/xrootd/src/XrdVoms.cmake
-+++ b/xrootd/src/XrdVoms.cmake
+--- a/src/XrdVoms.cmake
++++ b/src/XrdVoms.cmake
 @@ -13,6 +13,7 @@ add_library(
     ${LIB_XRD_VOMS}
     MODULE
@@ -168,8 +28,8 @@ index bc4a4229c7d..1951a376eb0 100644
  
 diff --git a/src/XrdVoms/XrdVomsHttp.cc b/src/XrdVoms/XrdVomsHttp.cc
 index 4e7131bc363..5c2532707df 100644
---- a/xrootd/src/XrdVoms/XrdVomsHttp.cc
-+++ b/xrootd/src/XrdVoms/XrdVomsHttp.cc
+--- a/src/XrdVoms/XrdVomsHttp.cc
++++ b/src/XrdVoms/XrdVomsHttp.cc
 @@ -29,6 +29,7 @@
  
  // This code is based on
@@ -193,7 +53,7 @@ diff --git a/src/XrdVoms/XrdVomsMapfile.cc b/src/XrdVoms/XrdVomsMapfile.cc
 new file mode 100644
 index 00000000000..f118dee63c5
 --- /dev/null
-+++ b/xrootd/src/XrdVoms/XrdVomsMapfile.cc
++++ b/src/XrdVoms/XrdVomsMapfile.cc
 @@ -0,0 +1,359 @@
 +/******************************************************************************/
 +/*                                                                            */
@@ -558,7 +418,7 @@ diff --git a/src/XrdVoms/XrdVomsMapfile.hh b/src/XrdVoms/XrdVomsMapfile.hh
 new file mode 100644
 index 00000000000..7273f0b3376
 --- /dev/null
-+++ b/xrootd/src/XrdVoms/XrdVomsMapfile.hh
++++ b/src/XrdVoms/XrdVomsMapfile.hh
 @@ -0,0 +1,86 @@
 +/******************************************************************************/
 +/*                                                                            */
@@ -648,8 +508,8 @@ index 00000000000..7273f0b3376
 +};
 diff --git a/src/XrdVoms/XrdVomsgsi.cc b/src/XrdVoms/XrdVomsgsi.cc
 index 293f9363d3b..b054004a9dc 100644
---- a/xrootd/src/XrdVoms/XrdVomsgsi.cc
-+++ b/xrootd/src/XrdVoms/XrdVomsgsi.cc
+--- a/src/XrdVoms/XrdVomsgsi.cc
++++ b/src/XrdVoms/XrdVomsgsi.cc
 @@ -30,6 +30,8 @@
  #include "XrdSys/XrdSysError.hh"
  #include "XrdSys/XrdSysLogger.hh"
@@ -681,3 +541,1074 @@ index 293f9363d3b..b054004a9dc 100644
  // Allocate a new Voms object
  //
     vomsFun = new XrdVomsFun(gDest);
+
+From 7b59dc126d969f83fd50faf87bdc278482b3926e Mon Sep 17 00:00:00 2001
+From: Brian Bockelman <bbockelman@morgridge.org>
+Date: Mon, 17 Jan 2022 10:40:50 -0600
+Subject: [PATCH 2/9] Fixup: Add const fixes due to ABI change revert.
+
+---
+ src/XrdVoms/XrdVomsMapfile.cc | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/src/XrdVoms/XrdVomsMapfile.cc b/src/XrdVoms/XrdVomsMapfile.cc
+index f118dee63c5..d49dc361261 100644
+--- a/src/XrdVoms/XrdVomsMapfile.cc
++++ b/src/XrdVoms/XrdVomsMapfile.cc
+@@ -228,8 +228,11 @@ XrdVomsMapfile::MakePath(const XrdOucString &group)
+     XrdOucString entry;
+     std::vector<std::string> path;
+     path.reserve(4);
+-    while ((from = group.tokenize(entry, from, '/')) != -1) {
+-        if (entry.empty()) continue;
++        // The const'ness of the tokenize method as declared is incorrect; we use
++        // const_cast here to avoid fixing the XrdOucString header (which would break
++        // the ABI).
++    while ((from = const_cast<XrdOucString&>(group).tokenize(entry, from, '/')) != -1) {
++        if (entry.length() == 0) continue;
+         path.emplace_back(entry.c_str());
+     }
+     return path;
+
+From 156baf3e7c61bb05e9b8ef49ba403498f7f5c1dc Mon Sep 17 00:00:00 2001
+From: Brian Bockelman <bbockelman@morgridge.org>
+Date: Mon, 17 Jan 2022 08:58:11 -0600
+Subject: [PATCH 3/9] Allow explicit grid-mapfile entries to override
+ voms-mapfile.
+
+If there's an entry found in the corresponding grid-mapfile, then
+that is considered "more specific" and overrides the "less specific"
+voms-mapfile entry.  E.g., a mapping to `bbockelm` should be picked
+over a generic `cms`.
+
+To differentiate between an explicit mapping and the fallbacks
+generated for the plugins, we use the entity's extended attribute
+mechanism.
+---
+ src/XrdHttp/XrdHttpSecurity.cc     |  2 ++
+ src/XrdSecgsi/XrdSecProtocolgsi.cc |  2 ++
+ src/XrdVoms/XrdVomsMapfile.cc      | 12 ++++++++++++
+ 3 files changed, 16 insertions(+)
+
+diff --git a/src/XrdHttp/XrdHttpSecurity.cc b/src/XrdHttp/XrdHttpSecurity.cc
+index af1c04c1530..e187851c089 100644
+--- a/src/XrdHttp/XrdHttpSecurity.cc
++++ b/src/XrdHttp/XrdHttpSecurity.cc
+@@ -26,6 +26,7 @@
+ #include "XrdCrypto/XrdCryptoX509Chain.hh"
+ #include "XrdCrypto/XrdCryptosslAux.hh"
+ #include "XrdCrypto/XrdCryptoFactory.hh"
++#include "XrdSec/XrdSecEntityAttr.hh"
+ #include "XrdTls/XrdTlsPeerCerts.hh"
+ #include "XrdTls/XrdTlsContext.hh"
+ #include "XrdOuc/XrdOucGMap.hh"
+@@ -164,6 +165,7 @@ XrdHttpProtocol::HandleGridMap(XrdLink* lp)
+       TRACEI(DEBUG, " Mapping name: '" << SecEntity.moninfo << "' --> " << bufname);
+       if (SecEntity.name) free(SecEntity.name);
+       SecEntity.name = strdup(bufname);
++      SecEntity.eaAPI->Add("gridmap.name", bufname, true);
+     }
+     else {
+       TRACEI(ALL, " Mapping name: " << SecEntity.moninfo << " Failed. err: " << mape);
+diff --git a/src/XrdSecgsi/XrdSecProtocolgsi.cc b/src/XrdSecgsi/XrdSecProtocolgsi.cc
+index b4b704b4505..e93deb91223 100644
+--- a/src/XrdSecgsi/XrdSecProtocolgsi.cc
++++ b/src/XrdSecgsi/XrdSecProtocolgsi.cc
+@@ -43,6 +43,7 @@
+ #include "XrdVersion.hh"
+ 
+ #include "XrdNet/XrdNetAddr.hh"
++#include "XrdSec/XrdSecEntityAttr.hh"
+ #include "XrdSys/XrdSysHeaders.hh"
+ #include "XrdSys/XrdSysLogger.hh"
+ #include "XrdSys/XrdSysError.hh"
+@@ -1953,6 +1954,7 @@ int XrdSecProtocolgsi::Authenticate(XrdSecCredentials *cred,
+                DEBUG("user mapping lookup successful: name is '"<<name<<"'");
+             }
+             Entity.name = strdup(name.c_str());
++            Entity.eaAPI->Add("gridmap.name", name.c_str(), true);
+          }
+       }
+       // If not set, use DN
+diff --git a/src/XrdVoms/XrdVomsMapfile.cc b/src/XrdVoms/XrdVomsMapfile.cc
+index d49dc361261..98849fa48f9 100644
+--- a/src/XrdVoms/XrdVomsMapfile.cc
++++ b/src/XrdVoms/XrdVomsMapfile.cc
+@@ -29,6 +29,7 @@
+ #include "XrdOuc/XrdOucString.hh"
+ #include "XrdOuc/XrdOucStream.hh"
+ #include "XrdSec/XrdSecEntity.hh"
++#include "XrdSec/XrdSecEntityAttr.hh"
+ #include "XrdSys/XrdSysError.hh"
+ 
+ #include <memory>
+@@ -256,6 +257,17 @@ XrdVomsMapfile::Apply(XrdSecEntity &entity)
+ {
+     Reconfigure();
+ 
++    // In current use cases, the gridmap results take precedence over the voms-mapfile
++    // results.  However, the grid mapfile plugins often will populate the name attribute
++    // with a reasonable default (DN or DN hash) if the mapping fails, meaning we can't
++    // simply look at entity.name; instead, we look at an extended attribute that is only
++    // set when the mapfile is used to generate the name.
++    std::string gridmap_name;
++    auto gridmap_success = entity.eaAPI->Get("gridmap.name", gridmap_name);
++    if (gridmap_success) {
++        return 0;
++    }
++
+     int from_vorg = 0, from_role = 0, from_grps = 0;
+     XrdOucString vorg = entity.vorg, entry_vorg;
+     XrdOucString role = entity.role, entry_role;
+
+From fb22ea315fd12641565cc04bcc08d86bf8e5b615 Mon Sep 17 00:00:00 2001
+From: Brian Bockelman <bbockelman@morgridge.org>
+Date: Mon, 17 Jan 2022 09:27:05 -0600
+Subject: [PATCH 4/9] Add initial README file covering the syntax and behavior
+ of the mapfile.
+
+---
+ src/XrdVoms/README.md | 91 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 91 insertions(+)
+ create mode 100644 src/XrdVoms/README.md
+
+diff --git a/src/XrdVoms/README.md b/src/XrdVoms/README.md
+new file mode 100644
+index 00000000000..e4a15d77240
+--- /dev/null
++++ b/src/XrdVoms/README.md
+@@ -0,0 +1,91 @@
++
++VOMS Mapping
++============
++
++The VOMS plugin can now populate the XRootD session's `name` attribute from a
++mapping file (the "voms-mapfile").  Filesystems which rely on the username
++in addition to the XRootD authorization can utilize this name to make authorization
++and file ownership decisions.
++
++Note the plugins have the following precedence for the `name` attribute:
++
++- Explicit entry in the grid-mapfile.
++- Entry in the voms-mapfile.
++- Default auto-generated name for the grid mapfile.
++
++Administrators may desire to disable the auto-generated name as it likely does
++not match any Unix username on the system.
++
++Configuration
++-------------
++
++There are two configuration options that control the plugin:
++
++```
++voms.mapfile FILENAME
++```
++
++Enables the mapping functionality and uses the file at FILENAME as the voms-mapfile.
++The mapfile is reloaded every 30 seconds; the daemon does not need to be restarted
++to pick up changes.
++
++```
++voms.trace [none|all|debug|info|warning|error]+
++```
++
++Enable debugging of the VOMS mapfile logic.  Options are additive and multiple can be
++given.
++
++Format and Matching Details
++---------------------------
++
++The file format ignores empty lines; a line beginning with the hash (`#`) are considered
++comments and ignored.
++
++Otherwise, each line specifies a mapping from an expression to a Unix username in the
++following form:
++
++```
++"EXPRESSION" USERNAME
++```
++
++If the session has a VOMS FQAN matching EXPRESSION then the session's name will be set
++to USERNAME.
++
++Examples of the EXPRESSION include:
++
++```
++/cms/Role=production/Capability=NULL
++/atlas/usatlas/Role=pilot/Capability=NULL
++```
++
++Expressions may also have wildcards (`*`) present.  The wildcard can serve as
++two roles:
++
++- If the expression ends with `/*`, then any remaining portion of the attribute
++  is matched.  For example, `/cms/*` matches `/cms/Role=NULL/Capability=NULL` and
++  `/cms/uscms/Role=pilot/Capability=NULL`.
++- If the wildcard is inside a path hierarchy, it allows any character inisde the
++  path.  For example, `/fermilab/*/Role=pilot/Capability=NULL` matches both
++  `/fermilab/dune/Role=pilot/Capability=NULL` and `/fermilab/des/Role=pilot/Capability=NULL`
++  but not `/fermilab/Role=pilot/Capability=NULL`.
++
++Several escape sequences are supported within the expression:
++
++- `\'`: a single quote character (`'`).
++- `\"`: a double quote character (`"`).
++- `\\`: a backwards slash (`\`).
++- `\/`: a forward slash that is not a path separator (`/`)
++- `\f`: a formfeed
++- `\n`: a newline
++- `\r`: a carriage return
++- `\t`: a tab character.
++
++The use of these escape sequences are discouraged as it's unclear whether other software
++is able to safely handle them.  Unicode and extended 8-bit ASCII are not supported at this
++time.
++
++Note, as is tradition, the name of the VO in the VOMS FQAN must match the first group name.
++That is, if the `cms` VO issues a FQAN of the form `/atlas/Role=pilot/Capability=NULL` then
++the FQAN is ignored.
++
+
+From 29fa30a2271a45b4a4cead5ba78686c767ede3d2 Mon Sep 17 00:00:00 2001
+From: Brian Bockelman <bbockelman@morgridge.org>
+Date: Mon, 17 Jan 2022 10:18:03 -0600
+Subject: [PATCH 5/9] Overhaul reload strategy to use a maintenance thread.
+
+Instead of doing the reload of the mapfile in-line, add a new maintenance
+thread that will periodically reload the mapfile (if and only if a change
+is detected in the modification time of the mapfile).
+---
+ src/XrdVoms/XrdVomsMapfile.cc | 150 +++++++++++++++++++++++++++++-----
+ src/XrdVoms/XrdVomsMapfile.hh |  27 +++++-
+ 2 files changed, 155 insertions(+), 22 deletions(-)
+
+diff --git a/src/XrdVoms/XrdVomsMapfile.cc b/src/XrdVoms/XrdVomsMapfile.cc
+index 98849fa48f9..aa4fef6d913 100644
+--- a/src/XrdVoms/XrdVomsMapfile.cc
++++ b/src/XrdVoms/XrdVomsMapfile.cc
+@@ -31,6 +31,8 @@
+ #include "XrdSec/XrdSecEntity.hh"
+ #include "XrdSec/XrdSecEntityAttr.hh"
+ #include "XrdSys/XrdSysError.hh"
++#include "XrdSys/XrdSysFD.hh"
++#include "XrdSys/XrdSysPthread.hh"
+ 
+ #include <memory>
+ #include <fstream>
+@@ -38,7 +40,7 @@
+ #include <vector>
+ #include <string>
+ #include <fcntl.h>
+-
++#include <sys/poll.h>
+ 
+ bool XrdVomsMapfile::tried_configure = false;
+ std::unique_ptr<XrdVomsMapfile> XrdVomsMapfile::mapper;
+@@ -57,6 +59,12 @@ PathToString(const std::vector<std::string> &path)
+     return ss.str();
+ }
+ 
++uint64_t monotonic_time_s() {
++  struct timespec tp;
++  clock_gettime(CLOCK_MONOTONIC, &tp);
++  return tp.tv_sec + (tp.tv_nsec >= 500000000);
++}
++
+ }
+ 
+ 
+@@ -64,7 +72,62 @@ XrdVomsMapfile::XrdVomsMapfile(XrdSysError *erp, XrdHttpSecXtractor *xrdvoms,
+     const std::string &mapfile)
+     : m_mapfile(mapfile), m_xrdvoms(xrdvoms), m_edest(erp)
+ {
+-    m_last_update.store(0, std::memory_order_relaxed);
++    // Setup communication pipes; we write one byte to the child to tell it to shutdown;
++    // it'll write one byte back to acknowledge before our destructor exits.
++    int pipes[2];
++    if (-1 == XrdSysFD_Pipe(pipes)) {
++        m_edest->Emsg("XrdVomsMapfile", "Failed to create communication pipes", strerror(errno));
++        return;
++    }
++    if (-1 == XrdSysFD_Pipe(pipes)) {
++        m_edest->Emsg("XrdVomsMapfile", "Failed to create communication pipes", strerror(errno));
++        return;
++    }
++
++    struct stat statbuf;
++    if (-1 == stat(m_mapfile.c_str(), &statbuf)) {
++        m_edest->Emsg("XrdVomsMapfile", errno, "Error checking the mapfile", m_mapfile.c_str());
++        return;
++    }
++    memcpy(&m_mapfile_ctime, &statbuf.st_ctim, sizeof(decltype(m_mapfile_ctime)));
++
++    if (!ParseMapfile(m_mapfile)) {return;}
++
++    m_maintenance_pipe_r = pipes[0];
++    m_maintenance_pipe_w = pipes[1];
++    m_maintenance_thread_pipe_r = pipes[0];
++    m_maintenance_thread_pipe_w = pipes[1];
++
++    pthread_t tid;
++    auto rc = XrdSysThread::Run(&tid, XrdVomsMapfile::MaintenanceThread,
++                                static_cast<void*>(this), 0, "VOMS Mapfile refresh");
++    if (rc) {
++        m_edest->Emsg("XrdVomsMapfile", "Failed to launch VOMS mapfile monitoring thread");
++        close(m_maintenance_pipe_r); m_maintenance_pipe_r = -1;
++        close(m_maintenance_pipe_w); m_maintenance_pipe_w = -1;
++        close(m_maintenance_thread_pipe_r); m_maintenance_thread_pipe_r = -1;
++        close(m_maintenance_thread_pipe_w); m_maintenance_thread_pipe_w = -1;
++        return;
++    }
++    m_is_valid = true;
++}
++
++
++XrdVomsMapfile::~XrdVomsMapfile()
++{
++    char indicator[1];
++    if (m_maintenance_pipe_w >= 0) {
++        indicator[0] = '1';
++        int rval;
++        do {rval = write(m_maintenance_pipe_w, indicator, 1);} while (rval != -1 || errno == EINTR);
++        if (m_maintenance_thread_pipe_r >= 0) {
++            do {rval = read(m_maintenance_thread_pipe_r, indicator, 1);} while (rval != -1 || errno == EINTR);
++            close(m_maintenance_thread_pipe_r);
++            close(m_maintenance_thread_pipe_w);
++        }
++        close(m_maintenance_pipe_r);
++        close(m_maintenance_pipe_w);
++    }
+ }
+ 
+ 
+@@ -91,21 +154,6 @@ XrdVomsMapfile::ParseMapfile(const std::string &mapfile)
+ }
+ 
+ 
+-bool
+-XrdVomsMapfile::Reconfigure() {
+-    auto now = time(NULL);
+-    auto retval = true;
+-    std::stringstream ss;
+-    ss << "Last update " << m_last_update.load(std::memory_order_relaxed) << ", " << now;
+-    m_edest->Log(LogMask::Debug, "VOMS Mapfile", ss.str().c_str());
+-    if (now > m_last_update.load(std::memory_order_relaxed) + 30) {
+-        retval = ParseMapfile(m_mapfile);
+-        m_last_update.store(now, std::memory_order_relaxed);
+-    }
+-    return retval;
+-}
+-
+-
+ bool
+ XrdVomsMapfile::ParseLine(const std::string &line, std::vector<std::string> &entry, std::string &target)
+ {
+@@ -255,8 +303,6 @@ XrdVomsMapfile::GetSecData(XrdLink * lnk, XrdSecEntity &entity, SSL *ssl)
+ int
+ XrdVomsMapfile::Apply(XrdSecEntity &entity)
+ {
+-    Reconfigure();
+-
+     // In current use cases, the gridmap results take precedence over the voms-mapfile
+     // results.  However, the grid mapfile plugins often will populate the name attribute
+     // with a reasonable default (DN or DN hash) if the mapping fails, meaning we can't
+@@ -367,8 +413,70 @@ XrdVomsMapfile::Configure(XrdSysError *erp, XrdHttpSecXtractor *xtractor)
+     if (!map_filename.empty()) {
+         if (erp) erp->Emsg("Config", "Will initialize VOMS mapfile", map_filename.c_str());
+         mapper.reset(new XrdVomsMapfile(erp, xtractor, map_filename));
+-        mapper->Reconfigure();
+     }
+ 
+-    return mapper.get();
++    return mapper->IsValid() ? mapper.get() : nullptr;
++}
++
++
++void *
++XrdVomsMapfile::MaintenanceThread(void *myself_raw)
++{
++    auto myself = static_cast<XrdVomsMapfile*>(myself_raw);
++
++   auto now = monotonic_time_s();
++   auto next_update = now + m_update_interval;
++   while (true) {
++       now = monotonic_time_s();
++       auto remaining = next_update - now;
++       struct pollfd fds;
++       fds.fd = myself->m_maintenance_pipe_r;
++       fds.events = POLLIN;
++       auto rval = poll(&fds, 1, remaining*1000);
++       if (rval == -1) {
++           if (rval == EINTR) continue;
++           else break;
++       } else if (rval == 0) { // timeout!  Let's run maintenance.
++           struct stat statbuf;
++           if (-1 == stat(myself->m_mapfile.c_str(), &statbuf)) {
++               myself->m_edest->Emsg("XrdVomsMapfile", errno, "Error checking the mapfile",
++                   myself->m_mapfile.c_str());
++               next_update = monotonic_time_s() + m_update_interval_failure;
++               myself->m_mapfile_ctime.tv_sec = 0;
++               myself->m_mapfile_ctime.tv_nsec = 0;
++               myself->m_is_valid = false;
++               continue;
++           }
++           if ((myself->m_mapfile_ctime.tv_sec == statbuf.st_ctim.tv_sec) &&
++               (myself->m_mapfile_ctime.tv_nsec == statbuf.st_ctim.tv_nsec))
++           {
++               myself->m_edest->Log(LogMask::Debug, "Maintenance", "Not reloading VOMS mapfile; "
++                   "no changes detected.");
++               next_update = monotonic_time_s() + m_update_interval;
++               continue;
++           }
++           memcpy(&myself->m_mapfile_ctime, &statbuf.st_ctim, sizeof(decltype(statbuf.st_ctim)));
++
++           myself->m_edest->Log(LogMask::Debug, "Maintenance", "Reloading VOMS mapfile now");
++           if ( (myself->m_is_valid = myself->ParseMapfile(myself->m_mapfile)) ) {
++               next_update = monotonic_time_s() + m_update_interval;
++           } else {
++               next_update = monotonic_time_s() + m_update_interval_failure;
++           }
++       } else { // FD ready; let's shutdown
++           if (fds.revents & POLLIN) {
++               char indicator[1];
++               do {rval = read(myself->m_maintenance_pipe_r, indicator, 1);} while (rval != -1 || errno == EINTR);
++           }
++       }
++   }
++   if (errno) {
++       myself->m_edest->Emsg("Maintenance", "Failed to poll for events from parent object");
++   }
++   char indicator = '1';
++   int rval;
++   do {rval = write(myself->m_maintenance_thread_pipe_w, &indicator, 1);} while (rval != -1 || errno == EINTR);
++
++
++   return nullptr;
+ }
+diff --git a/src/XrdVoms/XrdVomsMapfile.hh b/src/XrdVoms/XrdVomsMapfile.hh
+index 7273f0b3376..61c47cbfeb7 100644
+--- a/src/XrdVoms/XrdVomsMapfile.hh
++++ b/src/XrdVoms/XrdVomsMapfile.hh
+@@ -35,12 +35,16 @@
+ class XrdVomsMapfile : public XrdHttpSecXtractor {
+ 
+ public:
++    virtual ~XrdVomsMapfile();
++
+     static XrdVomsMapfile *Configure(XrdSysError *, XrdHttpSecXtractor *);
+     static XrdVomsMapfile *Get();
+ 
+     virtual int GetSecData(XrdLink *, XrdSecEntity &, SSL *);
+     int Apply(XrdSecEntity &);
+ 
++    bool IsValid() const {return m_is_valid;}
++
+     /* Base class returns an error if these aren't overridden */
+     virtual int Init(SSL_CTX *, int) {return 0;}
+     virtual int InitSSL(SSL *ssl, char *cadir) {return 0;}
+@@ -73,14 +77,35 @@ private:
+     bool Compare(const MapfileEntry &entry, const std::vector<std::string> &fqan);
+     std::vector<std::string> MakePath(const XrdOucString &group);
+ 
++    // A continuously-running thread for maintenance tasks (reloading the mapfile)
++    static void *MaintenanceThread(void *myself_raw);
++
++    // Set to true if the last maintenance attempt succeeded.
++    bool m_is_valid = false;
++    // Time of the last observed status change of file.
++    struct timespec m_mapfile_ctime{0, 0};
++
+     std::string m_mapfile;
+     std::shared_ptr<const std::vector<MapfileEntry>> m_entries;
+     XrdHttpSecXtractor *m_xrdvoms{nullptr};
+     XrdSysError *m_edest{nullptr};
+ 
+-    std::atomic<time_t> m_last_update;
++    // Pipes to allow the main thread to communicate shutdown events to the maintenance
++    // thread, allowing for a clean shutdown.
++    int m_maintenance_pipe_r{-1};
++    int m_maintenance_pipe_w{-1};
++    int m_maintenance_thread_pipe_r{-1};
++    int m_maintenance_thread_pipe_w{-1};
++
++        // After success, how long to wait until the next mapfile check.
++    static constexpr unsigned m_update_interval = 30;
++        // After failure, how long to wait until the next mapfile check.
++    static constexpr unsigned m_update_interval_failure = 3;
+ 
+     // Singleton
+     static std::unique_ptr<XrdVomsMapfile> mapper;
++    // There are multiple protocol objects that may need the mapfile object;
++    // if we already tried-and-failed configuration once, this singleton will
++    // help us avoid failing again.
+     static bool tried_configure;
+ };
+
+From f9931b4c62687d142839f865933d2ae7c89181fc Mon Sep 17 00:00:00 2001
+From: Brian Bockelman <bbockelman@morgridge.org>
+Date: Mon, 17 Jan 2022 11:23:48 -0600
+Subject: [PATCH 6/9] Refactor the mapfile class to be core within XrdVoms.
+
+This moves the mapfile invocation from being a "wrapper" around the
+existing XrdVoms plugins to be a core part of the functionality.
+
+Note this also changes the failure semantics from "fail quietly"
+to "fail process startup if misconfigured."
+---
+ src/XrdVoms/XrdVomsFun.cc     | 16 +++++++++++++++-
+ src/XrdVoms/XrdVomsFun.hh     |  3 +++
+ src/XrdVoms/XrdVomsHttp.cc    |  5 +----
+ src/XrdVoms/XrdVomsMapfile.cc | 35 +++++++++++++----------------------
+ src/XrdVoms/XrdVomsMapfile.hh | 23 ++++++++++-------------
+ src/XrdVoms/XrdVomsgsi.cc     | 10 +---------
+ 6 files changed, 43 insertions(+), 49 deletions(-)
+
+diff --git a/src/XrdVoms/XrdVomsFun.cc b/src/XrdVoms/XrdVomsFun.cc
+index 1c7fd5417c7..a4ced43ba5c 100644
+--- a/src/XrdVoms/XrdVomsFun.cc
++++ b/src/XrdVoms/XrdVomsFun.cc
+@@ -41,6 +41,7 @@
+ #include "XrdVoms.hh"
+ #include "XrdVomsFun.hh"
+ #include "XrdVomsTrace.hh"
++#include "XrdVomsMapfile.hh"
+ 
+ #ifdef HAVE_XRDCRYPTO
+ #include "XrdCrypto/XrdCryptoX509.hh"
+@@ -380,7 +381,13 @@ int XrdVomsFun::VOMSFun(XrdSecEntity &ent)
+    // Success or failure?
+    int rc = !ent.vorg ? -1 : 0;
+    if (rc == 0 && gGrps.Num() && !ent.grps) rc = -1;
+-   
++
++   // If we have a mapfile object, apply the mapping now.
++   if (m_mapfile) {
++       auto mapfile_rc = m_mapfile->Apply(ent);
++       rc = rc ? rc : mapfile_rc;
++   }
++
+    // Done
+    return rc;
+ }
+@@ -592,6 +599,13 @@ int XrdVomsFun::VOMSInit(const char *cfg)
+    if (gVOs.Num() > 0) {PRINT("+++ VO(s):        "<< voss);}
+       else             {PRINT("+++ VO(s):         all");}
+    PRINT("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
++
++   m_mapfile = XrdVomsMapfile::Configure(&gDest);
++   if (m_mapfile == VOMS_MAP_FAILED) {
++      aOK = false;
++      PRINT("VOMS mapfile requested but initialization failed; failing VOMS plugin config.");
++   }
++
+    // Done
+    return (aOK ? gCertFmt : -1);
+ }
+diff --git a/src/XrdVoms/XrdVomsFun.hh b/src/XrdVoms/XrdVomsFun.hh
+index 41a9251c9fd..ff5df58efc8 100644
+--- a/src/XrdVoms/XrdVomsFun.hh
++++ b/src/XrdVoms/XrdVomsFun.hh
+@@ -38,6 +38,7 @@
+ class XrdSecEntity;
+ class XrdSysError;
+ class XrdSysLogger;
++class XrdVomsMapfile;
+ 
+ class XrdVomsFun
+ {
+@@ -82,5 +83,7 @@ XrdOucString    gVoFmt;           // format contents of XrdSecEntity::vorg
+ 
+ XrdSysError    &gDest;
+ XrdSysLogger   *gLogger;
++
++XrdVomsMapfile *m_mapfile{nullptr};
+ };
+ #endif
+diff --git a/src/XrdVoms/XrdVomsHttp.cc b/src/XrdVoms/XrdVomsHttp.cc
+index 5c2532707df..4e7131bc363 100644
+--- a/src/XrdVoms/XrdVomsHttp.cc
++++ b/src/XrdVoms/XrdVomsHttp.cc
+@@ -29,7 +29,6 @@
+ 
+ // This code is based on
+ 
+-#include "XrdVomsMapfile.hh"
+ #include "XrdVomsFun.hh"
+ 
+ /** @brief This code is based on the basic architecture shown in
+@@ -143,9 +142,7 @@ XrdHttpSecXtractor *XrdHttpGetSecXtractor(XrdHttpSecXtractorArgs)
+ 
+ // Now return the interface object
+ //
+-   auto base = static_cast<XrdHttpSecXtractor *>(new XrdVomsHttp(eDest, *vomsFun));
+-   auto wrapper = static_cast<XrdHttpSecXtractor *>(XrdVomsMapfile::Configure(eDest, base));
+-   return wrapper ? wrapper : base;
++   return (XrdHttpSecXtractor *)new XrdVomsHttp(eDest, *vomsFun);
+ }
+ 
+ /******************************************************************************/
+diff --git a/src/XrdVoms/XrdVomsMapfile.cc b/src/XrdVoms/XrdVomsMapfile.cc
+index aa4fef6d913..24d23d28172 100644
+--- a/src/XrdVoms/XrdVomsMapfile.cc
++++ b/src/XrdVoms/XrdVomsMapfile.cc
+@@ -68,9 +68,9 @@ uint64_t monotonic_time_s() {
+ }
+ 
+ 
+-XrdVomsMapfile::XrdVomsMapfile(XrdSysError *erp, XrdHttpSecXtractor *xrdvoms,
++XrdVomsMapfile::XrdVomsMapfile(XrdSysError *erp,
+     const std::string &mapfile)
+-    : m_mapfile(mapfile), m_xrdvoms(xrdvoms), m_edest(erp)
++    : m_mapfile(mapfile), m_edest(erp)
+ {
+     // Setup communication pipes; we write one byte to the child to tell it to shutdown;
+     // it'll write one byte back to acknowledge before our destructor exits.
+@@ -288,18 +288,6 @@ XrdVomsMapfile::MakePath(const XrdOucString &group)
+ }
+ 
+ 
+-int
+-XrdVomsMapfile::GetSecData(XrdLink * lnk, XrdSecEntity &entity, SSL *ssl)
+-{
+-    if (!m_xrdvoms) return -1;
+-
+-    auto retval = m_xrdvoms->GetSecData(lnk, entity, ssl);
+-    if (retval) return retval;
+-
+-    return Apply(entity);
+-}
+-
+-
+ int
+ XrdVomsMapfile::Apply(XrdSecEntity &entity)
+ {
+@@ -352,12 +340,11 @@ XrdVomsMapfile::Get()
+ 
+ 
+ XrdVomsMapfile *
+-XrdVomsMapfile::Configure(XrdSysError *erp, XrdHttpSecXtractor *xtractor)
++XrdVomsMapfile::Configure(XrdSysError *erp)
+ {
+     if (tried_configure) {
+         auto result = mapper.get();
+         if (result) {
+-            result->SetExtractor(xtractor);
+             result->SetErrorStream(erp);
+         }
+         return result;
+@@ -370,14 +357,14 @@ XrdVomsMapfile::Configure(XrdSysError *erp, XrdHttpSecXtractor *xtractor)
+ 
+     char *config_filename = nullptr;
+     if (!XrdOucEnv::Import("XRDCONFIGFN", config_filename)) {
+-        return nullptr;
++        return VOMS_MAP_FAILED;
+     }
+     XrdOucStream stream(erp, getenv("XRDINSTANCE"));
+ 
+     int cfg_fd;
+     if ((cfg_fd = open(config_filename, O_RDONLY, 0)) < 0) {
+         if (erp) erp->Emsg("Config", errno, "open config file", config_filename);
+-        return nullptr;
++        return VOMS_MAP_FAILED;
+     }
+     stream.Attach(cfg_fd);
+     char *var;
+@@ -387,14 +374,14 @@ XrdVomsMapfile::Configure(XrdSysError *erp, XrdHttpSecXtractor *xtractor)
+             auto val = stream.GetWord();
+             if (!val || !val[0]) {
+                 if (erp) erp->Emsg("Config", "VOMS mapfile not specified");
+-                return nullptr;
++                return VOMS_MAP_FAILED;
+             }
+             map_filename = val;
+         } else if (!strcmp(var, "voms.trace")) {
+             auto val = stream.GetWord();
+             if (!val || !val[0]) {
+                 if (erp) erp->Emsg("Config", "VOMS logging level not specified");
+-                return nullptr;
++                return VOMS_MAP_FAILED;
+             }
+             if (erp) erp->setMsgMask(0);
+             if (erp) do {
+@@ -412,10 +399,14 @@ XrdVomsMapfile::Configure(XrdSysError *erp, XrdHttpSecXtractor *xtractor)
+ 
+     if (!map_filename.empty()) {
+         if (erp) erp->Emsg("Config", "Will initialize VOMS mapfile", map_filename.c_str());
+-        mapper.reset(new XrdVomsMapfile(erp, xtractor, map_filename));
++        mapper.reset(new XrdVomsMapfile(erp, map_filename));
++        if (!mapper->IsValid()) {
++            mapper.reset(nullptr);
++            return VOMS_MAP_FAILED;
++        }
+     }
+ 
+-    return mapper->IsValid() ? mapper.get() : nullptr;
++    return mapper.get();
+ }
+ 
+ 
+diff --git a/src/XrdVoms/XrdVomsMapfile.hh b/src/XrdVoms/XrdVomsMapfile.hh
+index 61c47cbfeb7..e859c8fbe7d 100644
+--- a/src/XrdVoms/XrdVomsMapfile.hh
++++ b/src/XrdVoms/XrdVomsMapfile.hh
+@@ -23,39 +23,37 @@
+ /* specific prior written permission of the institution or contributor.       */
+ /******************************************************************************/
+ 
+-#include "XrdHttp/XrdHttpSecXtractor.hh"
+-
+ #include "XrdOuc/XrdOucString.hh"
++#include "XrdSys/XrdSysError.hh"
++#include "XrdSec/XrdSecEntity.hh"
+ 
+ #include <atomic>
+ #include <memory>
+ #include <string>
+ #include <vector>
+ 
+-class XrdVomsMapfile : public XrdHttpSecXtractor {
++#define VOMS_MAP_FAILED ((XrdVomsMapfile *)-1)
++
++class XrdVomsMapfile {
+ 
+ public:
+     virtual ~XrdVomsMapfile();
+ 
+-    static XrdVomsMapfile *Configure(XrdSysError *, XrdHttpSecXtractor *);
++    // Returns `nullptr` if the mapfile was not configured; returns
++    // VOMS_MAP_FAILED (`(void*)-1`) if the mapfile was configured but it
++    // was unable to be parsed (or other error occurred).
++    static XrdVomsMapfile *Configure(XrdSysError *);
+     static XrdVomsMapfile *Get();
+ 
+-    virtual int GetSecData(XrdLink *, XrdSecEntity &, SSL *);
+     int Apply(XrdSecEntity &);
+ 
+     bool IsValid() const {return m_is_valid;}
+ 
+-    /* Base class returns an error if these aren't overridden */
+-    virtual int Init(SSL_CTX *, int) {return 0;}
+-    virtual int InitSSL(SSL *ssl, char *cadir) {return 0;}
+-    virtual int FreeSSL(SSL *) {return 0;}
+-
+ private:
+     bool Reconfigure();
+     void SetErrorStream(XrdSysError *erp) {if (erp) {m_edest = erp;}}
+-    void SetExtractor(XrdHttpSecXtractor *xtractor) {if (xtractor) {m_xrdvoms = xtractor;}}
+ 
+-    XrdVomsMapfile(XrdSysError *erp, XrdHttpSecXtractor *xrdvoms, const std::string &mapfile);
++    XrdVomsMapfile(XrdSysError *erp, const std::string &mapfile);
+ 
+     enum LogMask {
+         Debug = 0x01,
+@@ -87,7 +85,6 @@ private:
+ 
+     std::string m_mapfile;
+     std::shared_ptr<const std::vector<MapfileEntry>> m_entries;
+-    XrdHttpSecXtractor *m_xrdvoms{nullptr};
+     XrdSysError *m_edest{nullptr};
+ 
+     // Pipes to allow the main thread to communicate shutdown events to the maintenance
+diff --git a/src/XrdVoms/XrdVomsgsi.cc b/src/XrdVoms/XrdVomsgsi.cc
+index b054004a9dc..293f9363d3b 100644
+--- a/src/XrdVoms/XrdVomsgsi.cc
++++ b/src/XrdVoms/XrdVomsgsi.cc
+@@ -30,8 +30,6 @@
+ #include "XrdSys/XrdSysError.hh"
+ #include "XrdSys/XrdSysLogger.hh"
+ 
+-#include "XrdVomsMapfile.hh"
+-
+ #include "XrdVomsFun.hh"
+ 
+ /******************************************************************************/
+@@ -59,11 +57,7 @@ int XrdSecgsiVOMSFun(XrdSecEntity &ent)
+ {
+ // Make sure we were initialized. If so, invoke the function and return result.
+ //
+-   int retval = (vomsFun ? vomsFun->VOMSFun(ent) : -1);
+-   if (retval == -1) {return retval;}
+-
+-   auto mapfile = XrdVomsMapfile::Get();
+-   return mapfile ? mapfile->Apply(ent) : retval;
++   return (vomsFun ? vomsFun->VOMSFun(ent) : -1);
+ }
+ }
+ 
+@@ -80,8 +74,6 @@ int XrdSecgsiVOMSInit(const char *cfg)
+    static XrdSysLogger gLogger;
+    static XrdSysError gDest(&gLogger, "XrdVoms");
+ 
+-   XrdVomsMapfile::Configure(&gDest, nullptr);
+-
+ // Allocate a new Voms object
+ //
+    vomsFun = new XrdVomsFun(gDest);
+
+From b324a1adbe08daa5babbdd49ac4f0d2ab1904174 Mon Sep 17 00:00:00 2001
+From: Brian Bockelman <bbockelman@morgridge.org>
+Date: Sat, 29 Jan 2022 13:09:56 -0600
+Subject: [PATCH 7/9] Remove faster polling interval for failures.
+
+Reduces some of the logical complexity; prevents log files filling
+up quicker on failure.
+---
+ src/XrdVoms/XrdVomsMapfile.cc | 9 +++------
+ src/XrdVoms/XrdVomsMapfile.hh | 2 --
+ 2 files changed, 3 insertions(+), 8 deletions(-)
+
+diff --git a/src/XrdVoms/XrdVomsMapfile.cc b/src/XrdVoms/XrdVomsMapfile.cc
+index 24d23d28172..98f226c68e4 100644
+--- a/src/XrdVoms/XrdVomsMapfile.cc
++++ b/src/XrdVoms/XrdVomsMapfile.cc
+@@ -428,11 +428,11 @@ XrdVomsMapfile::MaintenanceThread(void *myself_raw)
+            if (rval == EINTR) continue;
+            else break;
+        } else if (rval == 0) { // timeout!  Let's run maintenance.
++           next_update = monotonic_time_s() + m_update_interval;
+            struct stat statbuf;
+            if (-1 == stat(myself->m_mapfile.c_str(), &statbuf)) {
+                myself->m_edest->Emsg("XrdVomsMapfile", errno, "Error checking the mapfile",
+                    myself->m_mapfile.c_str());
+-               next_update = monotonic_time_s() + m_update_interval_failure;
+                myself->m_mapfile_ctime.tv_sec = 0;
+                myself->m_mapfile_ctime.tv_nsec = 0;
+                myself->m_is_valid = false;
+@@ -443,16 +443,13 @@ XrdVomsMapfile::MaintenanceThread(void *myself_raw)
+            {
+                myself->m_edest->Log(LogMask::Debug, "Maintenance", "Not reloading VOMS mapfile; "
+                    "no changes detected.");
+-               next_update = monotonic_time_s() + m_update_interval;
+                continue;
+            }
+            memcpy(&myself->m_mapfile_ctime, &statbuf.st_ctim, sizeof(decltype(statbuf.st_ctim)));
+ 
+            myself->m_edest->Log(LogMask::Debug, "Maintenance", "Reloading VOMS mapfile now");
+-           if ( (myself->m_is_valid = myself->ParseMapfile(myself->m_mapfile)) ) {
+-               next_update = monotonic_time_s() + m_update_interval;
+-           } else {
+-               next_update = monotonic_time_s() + m_update_interval_failure;
++           if ( !(myself->m_is_valid = myself->ParseMapfile(myself->m_mapfile)) ) {
++               myself->m_edest->Log(LogMask::Error, "Maintenance", "Failed to reload VOMS mapfile");
+            }
+        } else { // FD ready; let's shutdown
+            if (fds.revents & POLLIN) {
+diff --git a/src/XrdVoms/XrdVomsMapfile.hh b/src/XrdVoms/XrdVomsMapfile.hh
+index e859c8fbe7d..ae665c6e5df 100644
+--- a/src/XrdVoms/XrdVomsMapfile.hh
++++ b/src/XrdVoms/XrdVomsMapfile.hh
+@@ -96,8 +96,6 @@ private:
+ 
+         // After success, how long to wait until the next mapfile check.
+     static constexpr unsigned m_update_interval = 30;
+-        // After failure, how long to wait until the next mapfile check.
+-    static constexpr unsigned m_update_interval_failure = 3;
+ 
+     // Singleton
+     static std::unique_ptr<XrdVomsMapfile> mapper;
+
+From 52a960007d3494d0f13746d4dae12fdd3c796bd0 Mon Sep 17 00:00:00 2001
+From: Brian Bockelman <bbockelman@morgridge.org>
+Date: Sat, 29 Jan 2022 13:20:26 -0600
+Subject: [PATCH 8/9] Remove shutdown capabilities for maintenance thread.
+
+Decision was that this would be sufficiently infrequently used that
+we can just let the OS cleanup the maintenance thread.
+---
+ src/XrdVoms/XrdVomsMapfile.cc | 109 +++++++++-------------------------
+ src/XrdVoms/XrdVomsMapfile.hh |   7 ---
+ 2 files changed, 28 insertions(+), 88 deletions(-)
+
+diff --git a/src/XrdVoms/XrdVomsMapfile.cc b/src/XrdVoms/XrdVomsMapfile.cc
+index 98f226c68e4..e5313343379 100644
+--- a/src/XrdVoms/XrdVomsMapfile.cc
++++ b/src/XrdVoms/XrdVomsMapfile.cc
+@@ -72,18 +72,6 @@ XrdVomsMapfile::XrdVomsMapfile(XrdSysError *erp,
+     const std::string &mapfile)
+     : m_mapfile(mapfile), m_edest(erp)
+ {
+-    // Setup communication pipes; we write one byte to the child to tell it to shutdown;
+-    // it'll write one byte back to acknowledge before our destructor exits.
+-    int pipes[2];
+-    if (-1 == XrdSysFD_Pipe(pipes)) {
+-        m_edest->Emsg("XrdVomsMapfile", "Failed to create communication pipes", strerror(errno));
+-        return;
+-    }
+-    if (-1 == XrdSysFD_Pipe(pipes)) {
+-        m_edest->Emsg("XrdVomsMapfile", "Failed to create communication pipes", strerror(errno));
+-        return;
+-    }
+-
+     struct stat statbuf;
+     if (-1 == stat(m_mapfile.c_str(), &statbuf)) {
+         m_edest->Emsg("XrdVomsMapfile", errno, "Error checking the mapfile", m_mapfile.c_str());
+@@ -93,20 +81,11 @@ XrdVomsMapfile::XrdVomsMapfile(XrdSysError *erp,
+ 
+     if (!ParseMapfile(m_mapfile)) {return;}
+ 
+-    m_maintenance_pipe_r = pipes[0];
+-    m_maintenance_pipe_w = pipes[1];
+-    m_maintenance_thread_pipe_r = pipes[0];
+-    m_maintenance_thread_pipe_w = pipes[1];
+-
+     pthread_t tid;
+     auto rc = XrdSysThread::Run(&tid, XrdVomsMapfile::MaintenanceThread,
+                                 static_cast<void*>(this), 0, "VOMS Mapfile refresh");
+     if (rc) {
+         m_edest->Emsg("XrdVomsMapfile", "Failed to launch VOMS mapfile monitoring thread");
+-        close(m_maintenance_pipe_r); m_maintenance_pipe_r = -1;
+-        close(m_maintenance_pipe_w); m_maintenance_pipe_w = -1;
+-        close(m_maintenance_thread_pipe_r); m_maintenance_thread_pipe_r = -1;
+-        close(m_maintenance_thread_pipe_w); m_maintenance_thread_pipe_w = -1;
+         return;
+     }
+     m_is_valid = true;
+@@ -114,21 +93,7 @@ XrdVomsMapfile::XrdVomsMapfile(XrdSysError *erp,
+ 
+ 
+ XrdVomsMapfile::~XrdVomsMapfile()
+-{
+-    char indicator[1];
+-    if (m_maintenance_pipe_w >= 0) {
+-        indicator[0] = '1';
+-        int rval;
+-        do {rval = write(m_maintenance_pipe_w, indicator, 1);} while (rval != -1 || errno == EINTR);
+-        if (m_maintenance_thread_pipe_r >= 0) {
+-            do {rval = read(m_maintenance_thread_pipe_r, indicator, 1);} while (rval != -1 || errno == EINTR);
+-            close(m_maintenance_thread_pipe_r);
+-            close(m_maintenance_thread_pipe_w);
+-        }
+-        close(m_maintenance_pipe_r);
+-        close(m_maintenance_pipe_w);
+-    }
+-}
++{}
+ 
+ 
+ bool
+@@ -420,51 +385,33 @@ XrdVomsMapfile::MaintenanceThread(void *myself_raw)
+    while (true) {
+        now = monotonic_time_s();
+        auto remaining = next_update - now;
+-       struct pollfd fds;
+-       fds.fd = myself->m_maintenance_pipe_r;
+-       fds.events = POLLIN;
+-       auto rval = poll(&fds, 1, remaining*1000);
+-       if (rval == -1) {
+-           if (rval == EINTR) continue;
+-           else break;
+-       } else if (rval == 0) { // timeout!  Let's run maintenance.
+-           next_update = monotonic_time_s() + m_update_interval;
+-           struct stat statbuf;
+-           if (-1 == stat(myself->m_mapfile.c_str(), &statbuf)) {
+-               myself->m_edest->Emsg("XrdVomsMapfile", errno, "Error checking the mapfile",
+-                   myself->m_mapfile.c_str());
+-               myself->m_mapfile_ctime.tv_sec = 0;
+-               myself->m_mapfile_ctime.tv_nsec = 0;
+-               myself->m_is_valid = false;
+-               continue;
+-           }
+-           if ((myself->m_mapfile_ctime.tv_sec == statbuf.st_ctim.tv_sec) &&
+-               (myself->m_mapfile_ctime.tv_nsec == statbuf.st_ctim.tv_nsec))
+-           {
+-               myself->m_edest->Log(LogMask::Debug, "Maintenance", "Not reloading VOMS mapfile; "
+-                   "no changes detected.");
+-               continue;
+-           }
+-           memcpy(&myself->m_mapfile_ctime, &statbuf.st_ctim, sizeof(decltype(statbuf.st_ctim)));
+-
+-           myself->m_edest->Log(LogMask::Debug, "Maintenance", "Reloading VOMS mapfile now");
+-           if ( !(myself->m_is_valid = myself->ParseMapfile(myself->m_mapfile)) ) {
+-               myself->m_edest->Log(LogMask::Error, "Maintenance", "Failed to reload VOMS mapfile");
+-           }
+-       } else { // FD ready; let's shutdown
+-           if (fds.revents & POLLIN) {
+-               char indicator[1];
+-               do {rval = read(myself->m_maintenance_pipe_r, indicator, 1);} while (rval != -1 || errno == EINTR);
+-           }
++       auto rval = sleep(remaining);
++       if (rval > 0) {
++           // Woke up early due to a signal; re-run prior logic.
++           continue;
+        }
+-   }
+-   if (errno) {
+-       myself->m_edest->Emsg("Maintenance", "Failed to poll for events from parent object");
+-   }
+-   char indicator = '1';
+-   int rval;
+-   do {rval = write(myself->m_maintenance_thread_pipe_w, &indicator, 1);} while (rval != -1 || errno == EINTR);
+-
++       next_update = monotonic_time_s() + m_update_interval;
++       struct stat statbuf;
++       if (-1 == stat(myself->m_mapfile.c_str(), &statbuf)) {
++           myself->m_edest->Emsg("XrdVomsMapfile", errno, "Error checking the mapfile",
++               myself->m_mapfile.c_str());
++           myself->m_mapfile_ctime.tv_sec = 0;
++           myself->m_mapfile_ctime.tv_nsec = 0;
++           myself->m_is_valid = false;
++           continue;
++       }
++       if ((myself->m_mapfile_ctime.tv_sec == statbuf.st_ctim.tv_sec) &&
++           (myself->m_mapfile_ctime.tv_nsec == statbuf.st_ctim.tv_nsec))
++       {
++           myself->m_edest->Log(LogMask::Debug, "Maintenance", "Not reloading VOMS mapfile; "
++               "no changes detected.");
++           continue;
++       }
++       memcpy(&myself->m_mapfile_ctime, &statbuf.st_ctim, sizeof(decltype(statbuf.st_ctim)));
+ 
+-   return nullptr;
++       myself->m_edest->Log(LogMask::Debug, "Maintenance", "Reloading VOMS mapfile now");
++       if ( !(myself->m_is_valid = myself->ParseMapfile(myself->m_mapfile)) ) {
++           myself->m_edest->Log(LogMask::Error, "Maintenance", "Failed to reload VOMS mapfile");
++       }
++   }
+ }
+diff --git a/src/XrdVoms/XrdVomsMapfile.hh b/src/XrdVoms/XrdVomsMapfile.hh
+index ae665c6e5df..8119411cb6d 100644
+--- a/src/XrdVoms/XrdVomsMapfile.hh
++++ b/src/XrdVoms/XrdVomsMapfile.hh
+@@ -87,13 +87,6 @@ private:
+     std::shared_ptr<const std::vector<MapfileEntry>> m_entries;
+     XrdSysError *m_edest{nullptr};
+ 
+-    // Pipes to allow the main thread to communicate shutdown events to the maintenance
+-    // thread, allowing for a clean shutdown.
+-    int m_maintenance_pipe_r{-1};
+-    int m_maintenance_pipe_w{-1};
+-    int m_maintenance_thread_pipe_r{-1};
+-    int m_maintenance_thread_pipe_w{-1};
+-
+         // After success, how long to wait until the next mapfile check.
+     static constexpr unsigned m_update_interval = 30;
+ 
+
+From 5f0a255a58c01c49dc2aa7f67e760ca42deb7a21 Mon Sep 17 00:00:00 2001
+From: Brian Bockelman <bbockelman@morgridge.org>
+Date: Tue, 8 Feb 2022 07:44:57 -0600
+Subject: [PATCH 9/9] XrdVomsMapfile: Add a comment on why we use ctime over
+ mtime for detecting file changes.
+
+---
+ src/XrdVoms/XrdVomsMapfile.cc | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/src/XrdVoms/XrdVomsMapfile.cc b/src/XrdVoms/XrdVomsMapfile.cc
+index e5313343379..30bdb88c9a0 100644
+--- a/src/XrdVoms/XrdVomsMapfile.cc
++++ b/src/XrdVoms/XrdVomsMapfile.cc
+@@ -400,6 +400,12 @@ XrdVomsMapfile::MaintenanceThread(void *myself_raw)
+            myself->m_is_valid = false;
+            continue;
+        }
++       // Use ctime here as it is solely controlled by the OS (unlike mtime,
++       // which can be manipulated by userspace and potentially not change
++       // when updated - rsync, tar, and rpm, for example, all preserve mtime).
++       // ctime also will also be updated appropriately for overwrites/renames,
++       // allowing us to detect those changes as well.
++       //
+        if ((myself->m_mapfile_ctime.tv_sec == statbuf.st_ctim.tv_sec) &&
+            (myself->m_mapfile_ctime.tv_nsec == statbuf.st_ctim.tv_nsec))
+        {
