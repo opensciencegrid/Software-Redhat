@@ -1,6 +1,6 @@
 Summary: Scitokens mapfile for OSG
 Name: osg-scitokens-mapfile
-Version: 5
+Version: 6
 Release: 1%{?dist}
 License: ASL 2.0
 Source0: https://github.com/opensciencegrid/topology/archive/data-%{version}.tar.gz
@@ -8,13 +8,15 @@ Source1: https://vdt.cs.wisc.edu/upstream/osg-scitokens-mapfile/pydeps/icalendar
 Source2: https://vdt.cs.wisc.edu/upstream/osg-scitokens-mapfile/pydeps/xmltodict-0.12.0-py2.py3-none-any.whl
 BuildRequires: python3
 BuildRequires: python3-pip
-BuildRequires: python3-ldap3
 %if 0%{?el7}
+BuildRequires: python36-ldap3
 BuildRequires: python36-pytz
 BuildRequires: python36-dateutil
 BuildRequires: python36-PyYAML
 BuildRequires: python36-six
 %else
+BuildRequires: python3-ldap3
+BuildRequires: python3-pip-wheel
 BuildRequires: python3-pytz
 BuildRequires: python3-dateutil
 BuildRequires: python3-pyyaml
@@ -52,6 +54,9 @@ mv osg-scitokens-mapfile.conf %{buildroot}/usr/share/condor-ce/mapfiles.d/
 
 
 %changelog
+* Wed Feb 23 2022 Brian Lin <blin@cs.wisc.edu> 6-1
+- Update to data-6 tag (SOFTWARE-5049)
+
 * Wed Jan 26 2022 Brian Lin <blin@cs.wisc.edu> 5-1
 - Update to data-5 tag (SOFTWARE-4969)
 
