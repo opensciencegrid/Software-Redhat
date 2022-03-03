@@ -2,8 +2,8 @@
 %global pypi_name scitokens
 
 Name:           python-%{pypi_name}
-Version:        1.6.2
-Release:        2%{?dist}
+Version:        1.7.0
+Release:        1%{?dist}
 Summary:        SciToken reference implementation library
 
 License:        Apache 2.0
@@ -51,7 +51,23 @@ rm -rf %{pypi_name}.egg-info
 
 
 %changelog
-* Thu Nov 11 2021 Brian Lin < blin@cs.wisc.edu> - 1.6-2-2
+* Wed Mar 2 2022 Brian Lin <blin@cs.wisc.edu> - 1.7.0-1
+- Reference test files using relative paths
+- Use shutil.move instead of os.rename
+- Add error message for when SciToken.discover doesn't find a token
+- SciToken.serialize: fix str/bytes mismatch
+- Add rpmbuild github actions workflow
+- Update the bogus url used in the tests
+- Fix bug decoding a token with no audience
+- Use unittest.mock to check UnableToCreateCache
+- Add obsoletes for smoother Yum updates on EL7
+- Update algorithm used to test UnsupportedKeyException
+- Run test suite using pytest during rpmbuild
+- Update pyjwt version in requirements.txt
+- small typo fix in readme
+- Default cached public keys set to 4 days
+
+* Thu Nov 11 2021 Brian Lin <blin@cs.wisc.edu> - 1.6-2-2
 - Add python3-scitokens obsoletes for older versions for smoother
   upgrades (SOFTWARE-4879)
 
