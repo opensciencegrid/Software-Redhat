@@ -1,7 +1,7 @@
 Summary: Configuration tool for the OSG Software Stack
 Name: osg-configure
 Version: 4.1.0
-Release: 0.15%{?dist}
+Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
 BuildArch: noarch
@@ -315,6 +315,9 @@ PYTHONPATH=$RPM_BUILD_ROOT/%{python_sitelib}:$PYTHONPATH %{__python} $RPM_BUILD_
 
 
 %changelog
+* Thu Mar 03 2022 Mátyás Selmeci <matyas@cs.wisc.edu> 4.1.0-1
+- Version 4.1.0 (SOFTWARE-4972)
+
 * Sun Jan 30 2022 Mátyás Selmeci <matyas@cs.wisc.edu> 4.1.0-0.15
 - Depend on /usr/bin/condor_remote_cluster instead of condor-bosco (SOFTWARE-4973)
 - Split libs into separate RPM
