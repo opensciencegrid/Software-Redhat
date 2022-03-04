@@ -1,7 +1,7 @@
 From 62fa23c017d4e623086fa7682eaec6caa40bf0c5 Mon Sep 17 00:00:00 2001
 From: Brian Bockelman <bbockelman@morgridge.org>
 Date: Sat, 11 Dec 2021 21:12:39 -0600
-Subject: [PATCH 1/9] Add mapfile support as a separate class to the XrdVoms
+Subject: [PATCH 01/11] Add mapfile support as a separate class to the XrdVoms
  code.
 
 ---
@@ -545,7 +545,7 @@ index 293f9363d3b..b054004a9dc 100644
 From 7b59dc126d969f83fd50faf87bdc278482b3926e Mon Sep 17 00:00:00 2001
 From: Brian Bockelman <bbockelman@morgridge.org>
 Date: Mon, 17 Jan 2022 10:40:50 -0600
-Subject: [PATCH 2/9] Fixup: Add const fixes due to ABI change revert.
+Subject: [PATCH 02/11] Fixup: Add const fixes due to ABI change revert.
 
 ---
  src/XrdVoms/XrdVomsMapfile.cc | 7 +++++--
@@ -573,7 +573,7 @@ index f118dee63c5..d49dc361261 100644
 From 156baf3e7c61bb05e9b8ef49ba403498f7f5c1dc Mon Sep 17 00:00:00 2001
 From: Brian Bockelman <bbockelman@morgridge.org>
 Date: Mon, 17 Jan 2022 08:58:11 -0600
-Subject: [PATCH 3/9] Allow explicit grid-mapfile entries to override
+Subject: [PATCH 03/11] Allow explicit grid-mapfile entries to override
  voms-mapfile.
 
 If there's an entry found in the corresponding grid-mapfile, then
@@ -664,8 +664,8 @@ index d49dc361261..98849fa48f9 100644
 From fb22ea315fd12641565cc04bcc08d86bf8e5b615 Mon Sep 17 00:00:00 2001
 From: Brian Bockelman <bbockelman@morgridge.org>
 Date: Mon, 17 Jan 2022 09:27:05 -0600
-Subject: [PATCH 4/9] Add initial README file covering the syntax and behavior
- of the mapfile.
+Subject: [PATCH 04/11] Add initial README file covering the syntax and
+ behavior of the mapfile.
 
 ---
  src/XrdVoms/README.md | 91 +++++++++++++++++++++++++++++++++++++++++++
@@ -773,7 +773,7 @@ index 00000000000..e4a15d77240
 From 29fa30a2271a45b4a4cead5ba78686c767ede3d2 Mon Sep 17 00:00:00 2001
 From: Brian Bockelman <bbockelman@morgridge.org>
 Date: Mon, 17 Jan 2022 10:18:03 -0600
-Subject: [PATCH 5/9] Overhaul reload strategy to use a maintenance thread.
+Subject: [PATCH 05/11] Overhaul reload strategy to use a maintenance thread.
 
 Instead of doing the reload of the mapfile in-line, add a new maintenance
 thread that will periodically reload the mapfile (if and only if a change
@@ -1048,7 +1048,7 @@ index 7273f0b3376..61c47cbfeb7 100644
 From f9931b4c62687d142839f865933d2ae7c89181fc Mon Sep 17 00:00:00 2001
 From: Brian Bockelman <bbockelman@morgridge.org>
 Date: Mon, 17 Jan 2022 11:23:48 -0600
-Subject: [PATCH 6/9] Refactor the mapfile class to be core within XrdVoms.
+Subject: [PATCH 06/11] Refactor the mapfile class to be core within XrdVoms.
 
 This moves the mapfile invocation from being a "wrapper" around the
 existing XrdVoms plugins to be a core part of the functionality.
@@ -1349,7 +1349,7 @@ index b054004a9dc..293f9363d3b 100644
 From b324a1adbe08daa5babbdd49ac4f0d2ab1904174 Mon Sep 17 00:00:00 2001
 From: Brian Bockelman <bbockelman@morgridge.org>
 Date: Sat, 29 Jan 2022 13:09:56 -0600
-Subject: [PATCH 7/9] Remove faster polling interval for failures.
+Subject: [PATCH 07/11] Remove faster polling interval for failures.
 
 Reduces some of the logical complexity; prevents log files filling
 up quicker on failure.
@@ -1411,7 +1411,7 @@ index e859c8fbe7d..ae665c6e5df 100644
 From 52a960007d3494d0f13746d4dae12fdd3c796bd0 Mon Sep 17 00:00:00 2001
 From: Brian Bockelman <bbockelman@morgridge.org>
 Date: Sat, 29 Jan 2022 13:20:26 -0600
-Subject: [PATCH 8/9] Remove shutdown capabilities for maintenance thread.
+Subject: [PATCH 08/11] Remove shutdown capabilities for maintenance thread.
 
 Decision was that this would be sufficiently infrequently used that
 we can just let the OS cleanup the maintenance thread.
@@ -1588,7 +1588,7 @@ index ae665c6e5df..8119411cb6d 100644
 From 5f0a255a58c01c49dc2aa7f67e760ca42deb7a21 Mon Sep 17 00:00:00 2001
 From: Brian Bockelman <bbockelman@morgridge.org>
 Date: Tue, 8 Feb 2022 07:44:57 -0600
-Subject: [PATCH 9/9] XrdVomsMapfile: Add a comment on why we use ctime over
+Subject: [PATCH 09/11] XrdVomsMapfile: Add a comment on why we use ctime over
  mtime for detecting file changes.
 
 ---
@@ -1612,3 +1612,76 @@ index e5313343379..30bdb88c9a0 100644
         if ((myself->m_mapfile_ctime.tv_sec == statbuf.st_ctim.tv_sec) &&
             (myself->m_mapfile_ctime.tv_nsec == statbuf.st_ctim.tv_nsec))
         {
+
+From 67d047b422bb6f5f1e697dccdd9c128c36711730 Mon Sep 17 00:00:00 2001
+From: Brian Bockelman <bbockelman@morgridge.org>
+Date: Mon, 28 Feb 2022 22:46:46 -0600
+Subject: [PATCH 10/11] Return nullptr from function that won't ever hit return
+ statement.
+
+---
+ src/XrdVoms/XrdVomsMapfile.cc | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/XrdVoms/XrdVomsMapfile.cc b/src/XrdVoms/XrdVomsMapfile.cc
+index 30bdb88c9a0..254ac3d98d7 100644
+--- a/src/XrdVoms/XrdVomsMapfile.cc
++++ b/src/XrdVoms/XrdVomsMapfile.cc
+@@ -420,4 +420,5 @@ XrdVomsMapfile::MaintenanceThread(void *myself_raw)
+            myself->m_edest->Log(LogMask::Error, "Maintenance", "Failed to reload VOMS mapfile");
+        }
+    }
++   return nullptr;
+ }
+
+From 4ede2baf8e9e6af9131caa4cfd3987bd0dcad264 Mon Sep 17 00:00:00 2001
+From: Brian Bockelman <bbockelman@morgridge.org>
+Date: Mon, 28 Feb 2022 22:51:59 -0600
+Subject: [PATCH 11/11] Use gridmap.name as a flag - no need to preserve the
+ actual name (as this is also in the Entity name).
+
+---
+ src/XrdHttp/XrdHttpSecurity.cc     | 2 +-
+ src/XrdSecgsi/XrdSecProtocolgsi.cc | 2 +-
+ src/XrdVoms/XrdVomsMapfile.cc      | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/src/XrdHttp/XrdHttpSecurity.cc b/src/XrdHttp/XrdHttpSecurity.cc
+index e187851c089..638045eb659 100644
+--- a/src/XrdHttp/XrdHttpSecurity.cc
++++ b/src/XrdHttp/XrdHttpSecurity.cc
+@@ -165,7 +165,7 @@ XrdHttpProtocol::HandleGridMap(XrdLink* lp)
+       TRACEI(DEBUG, " Mapping name: '" << SecEntity.moninfo << "' --> " << bufname);
+       if (SecEntity.name) free(SecEntity.name);
+       SecEntity.name = strdup(bufname);
+-      SecEntity.eaAPI->Add("gridmap.name", bufname, true);
++      SecEntity.eaAPI->Add("gridmap.name", "1", true);
+     }
+     else {
+       TRACEI(ALL, " Mapping name: " << SecEntity.moninfo << " Failed. err: " << mape);
+diff --git a/src/XrdSecgsi/XrdSecProtocolgsi.cc b/src/XrdSecgsi/XrdSecProtocolgsi.cc
+index e93deb91223..c7bcb1d7e98 100644
+--- a/src/XrdSecgsi/XrdSecProtocolgsi.cc
++++ b/src/XrdSecgsi/XrdSecProtocolgsi.cc
+@@ -1954,7 +1954,7 @@ int XrdSecProtocolgsi::Authenticate(XrdSecCredentials *cred,
+                DEBUG("user mapping lookup successful: name is '"<<name<<"'");
+             }
+             Entity.name = strdup(name.c_str());
+-            Entity.eaAPI->Add("gridmap.name", name.c_str(), true);
++            Entity.eaAPI->Add("gridmap.name", "1", true);
+          }
+       }
+       // If not set, use DN
+diff --git a/src/XrdVoms/XrdVomsMapfile.cc b/src/XrdVoms/XrdVomsMapfile.cc
+index 254ac3d98d7..824edd94a49 100644
+--- a/src/XrdVoms/XrdVomsMapfile.cc
++++ b/src/XrdVoms/XrdVomsMapfile.cc
+@@ -263,7 +263,7 @@ XrdVomsMapfile::Apply(XrdSecEntity &entity)
+     // set when the mapfile is used to generate the name.
+     std::string gridmap_name;
+     auto gridmap_success = entity.eaAPI->Get("gridmap.name", gridmap_name);
+-    if (gridmap_success) {
++    if (gridmap_success && gridmap_name == "1") {
+         return 0;
+     }
+ 

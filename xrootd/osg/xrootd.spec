@@ -70,7 +70,7 @@
 #-------------------------------------------------------------------------------
 Name:      xrootd
 Epoch:     1
-Version:   5.4.1
+Version:   5.4.2
 Release:   1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
@@ -1177,6 +1177,10 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Thu Mar 03 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.4.2-1
+- Update to 5.4.2 and merge OSG changes (SOFTWARE-5072, SOFTWARE-5073)
+- Update SOFTWARE-4870.voms-mapfile.patch
+
 * Wed Feb 23 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.4.1-1
 - Update to 5.4.1 and merge OSG changes (SOFTWARE-4998, SOFTWARE-4999)
 
