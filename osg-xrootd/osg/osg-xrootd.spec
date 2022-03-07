@@ -92,7 +92,7 @@ mkdir -p /etc/grid-security >/dev/null 2>&1 || :
 [ -e /etc/grid-security/grid-mapfile ] || touch /etc/grid-security/grid-mapfile
 
 %changelog
-* Mon Mar 07 2022 Mátyás Selmeci <matyas@cs.wisc.edu>
+* Mon Mar 07 2022 Mátyás Selmeci <matyas@cs.wisc.edu> 3.6-16
 - Don't turn on `http.secxtractor` for unauth caches/origins (SOFTWARE-5066)
 
 * Thu Feb 10 2022 Mátyás Selmeci <matyas@cs.wisc.edu> 3.6-15
