@@ -1,7 +1,7 @@
 Summary: OSG configuration files for XRootD
 Name: osg-xrootd
 Version: 3.5.upcoming
-Release: 7%{?dist}
+Release: 8%{?dist}
 License: ASL 2.0
 BuildArch: noarch
 
@@ -83,7 +83,7 @@ mkdir -p /etc/grid-security >/dev/null 2>&1 || :
 [ -e /etc/grid-security/grid-mapfile ] || touch /etc/grid-security/grid-mapfile
 
 %changelog
-* Mon Mar 07 2022 Mátyás Selmeci <matyas@cs.wisc.edu> 3.5.upcoming-7
+* Wed Mar 09 2022 Mátyás Selmeci <matyas@cs.wisc.edu> 3.5.upcoming-8
 - Don't turn on `http.secxtractor` for unauth caches/origins (SOFTWARE-5066)
 
 * Fri Feb 11 2022 Mátyás Selmeci <matyas@cs.wisc.edu> 3.5.upcoming-6
