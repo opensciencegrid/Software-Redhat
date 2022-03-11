@@ -1,2 +1,3 @@
-xrootd/5.4.2/xrootd-5.4.2-1.el7.src.rpm sha1sum=f31b1f5f19851077802defedf3ccddbb870d9c8b
-# Downloaded from https://xrootd.web.cern.ch/sw/releases/5.4.2/rpms/source/xrootd-5.4.2-1.el7.src.rpm
+xrootd/5.4.2/xrootd-5.4.2-1.el7.src.rpm sha1sum=3f6cf46087d832b4759b7ad3dc3f880b83bf4a20
+# Built from https://github.com/brianhlin/xrootd/releases/tag/v5.4.2-1.1
+# cd packaging; ./makesrpm.sh --version 5.4.2

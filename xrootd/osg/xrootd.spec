@@ -71,7 +71,7 @@
 Name:      xrootd
 Epoch:     1
 Version:   5.4.2
-Release:   1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:   1.1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -87,8 +87,6 @@ Source0:   xrootd.tar.gz
 %if 0%{?_with_compat}
 Source1:   xrootd-%{compat_version}.tar.gz
 %endif
-
-Patch0:    SOFTWARE-4870.voms-mapfile.patch
 
 BuildRoot: %{_tmppath}/%{name}-root
 
@@ -532,9 +530,6 @@ This package contains compatibility binaries for xrootd 4 servers.
 %endif
 
 %setup -c -n xrootd
-cd xrootd
-%patch0 -p1
-cd ..
 
 %build
 
@@ -926,7 +921,6 @@ fi
 %{_libdir}/libXrdSecpwd-5.so
 %{_libdir}/libXrdSecsss-5.so
 %{_libdir}/libXrdSecunix-5.so
-%{_libdir}/libXrdOssCsi-5.so
 %if %{?_with_scitokens:1}%{!?_with_scitokens:0}
 %{_libdir}/libXrdSecztn-5.so
 %endif
@@ -994,6 +988,7 @@ fi
 %{_libdir}/libXrdMacaroons-5.so
 %endif
 %{_libdir}/libXrdN2No2p-5.so
+%{_libdir}/libXrdOssCsi-5.so
 %{_libdir}/libXrdOssSIgpfsT-5.so
 %{_libdir}/libXrdServer.so.3*
 %{_libdir}/libXrdSsi-5.so
@@ -1177,6 +1172,11 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Fri Mar 11 2022 Brian Lin <blin@cs.wisc.edu> - 5.4.2-1.1
+- Move VOMS mapfile support to the source (SOFTWARE-4870)
+- Fix HTTP DN hashing
+- Add new throttling config for max open files and active connections
+
 * Thu Mar 03 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.4.2-1
 - Update to 5.4.2 and merge OSG changes (SOFTWARE-5072, SOFTWARE-5073)
 - Update SOFTWARE-4870.voms-mapfile.patch
