@@ -1,4 +1,4 @@
-%define tarball_version 9.0.9
+%define tarball_version 9.0.10
 
 # On EL7 don't terminate the build because of bad bytecompiling
 %if 0%{?rhel} == 7
@@ -1680,6 +1680,16 @@ fi
 /bin/systemctl try-restart condor.service >/dev/null 2>&1 || :
 
 %changelog
+* Tue Mar 15 2022 Tim Theisen <tim@cs.wisc.edu> - 9.0.10-1
+- Fixes for security issues
+- https://research.cs.wisc.edu/htcondor/security/vulnerabilities/HTCONDOR-2022-0001
+- https://research.cs.wisc.edu/htcondor/security/vulnerabilities/HTCONDOR-2022-0002
+- https://research.cs.wisc.edu/htcondor/security/vulnerabilities/HTCONDOR-2022-0003
+
+* Tue Mar 15 2022 Tim Theisen <tim@cs.wisc.edu> - 8.8.16-1
+- Fix for security issue
+- https://research.cs.wisc.edu/htcondor/security/vulnerabilities/HTCONDOR-2022-0003
+
 * Thu Jan 13 2022 Tim Theisen <tim@cs.wisc.edu> - 9.0.9-1
 - Added Debian 11 (bullseye) as a supported platform
 - Since CentOS 8 has reached end of life, we build and test on Rocky Linux 8
