@@ -1,4 +1,4 @@
-%define tarball_version 8.8.15
+%define tarball_version 8.8.16
 
 # optionally define any of these, here or externally
 # % define fedora   16
@@ -132,7 +132,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.2
+%define condor_base_release 1.1
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -2209,6 +2209,13 @@ fi
 %endif
 
 %changelog
+* Tue Mar 15 2022 Tim Theisen <tim@cs.wisc.edu> - 8.8.16-1.1
+- Build for OSG (SOFTWARE-5087)
+
+* Tue Mar 15 2022 Tim Theisen <tim@cs.wisc.edu> - 8.8.16-1
+- Fix for security issue
+- https://research.cs.wisc.edu/htcondor/security/vulnerabilities/HTCONDOR-2022-0003.html
+
 * Thu Jul 29 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 8.8.15-1.2
 - Build for OSG (SOFTWARE-4727)
 
