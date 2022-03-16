@@ -1,4 +1,4 @@
-%define tarball_version 8.8.16
+%define tarball_version 8.8.17
 
 # optionally define any of these, here or externally
 # % define fedora   16
@@ -2209,6 +2209,12 @@ fi
 %endif
 
 %changelog
+* Wed Mar 16 2022 Tim Theisen <tim@cs.wisc.edu> - 8.8.17-1.1
+- Build with OSG patches (SOFTWARE-5089)
+
+* Tue Mar 15 2022 Tim Theisen <tim@cs.wisc.edu> - 8.8.17-1
+- Fixed a memory leak in the Job Router
+
 * Tue Mar 15 2022 Tim Theisen <tim@cs.wisc.edu> - 8.8.16-1.1
 - Build for OSG (SOFTWARE-5087)
 
