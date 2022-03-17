@@ -7,13 +7,19 @@ Source: topology-%{version}.tar.gz
 License: Apache 2.0
 BuildArch: noarch
 Url: https://github.com/opensciencegrid/topology/
-BuildRequires: python3-gnupg
 BuildRequires: python3-requests
+%if 0%{?el8}
+BuildRequires: python3-gnupg
 Requires: python3-gnupg
+%endif
+Source1: https://vdt.cs.wisc.edu/upstream/topology-client/python-deps/python_gnupg-0.4.8-py2.py3-none-any.whl
+Patch0: Find-local-install-of-python-gnupg.patch
+
 Requires: python3-requests
 
 %define __python /usr/bin/python3
 BuildRequires: python3-devel
+BuildRequires: %__python
 
 %description
 Client tools that interact with OSG Topology data
@@ -28,6 +34,9 @@ A utility for periodically downloading OSG Topology data.
 
 %prep
 %setup -q -n topology-%{version}
+%if 0%{?el7}
+%patch0 -p1
+%endif
 
 %install
 install -D -m 0755 bin/osg-notify %{buildroot}/%{_bindir}/osg-notify
@@ -35,6 +44,9 @@ install -D -m 0644 src/net_name_addr_utils.py  %{buildroot}/%{python_sitelib}/ne
 install -D -m 0644 src/topology_utils.py %{buildroot}/%{python_sitelib}/topology_utils.py
 install -D -m 0755 src/topology_cacher.py %{buildroot}/%{python_sitelib}/topology_cacher.py
 install -D -m 0644 topology-cacher.cron %{buildroot}/etc/cron.d/topology-cacher.cron
+%if 0%{?el7}
+    %{__python} -m pip install -I --no-deps "%{SOURCE1}" --root %{buildroot}/usr/lib/topology-client
+%endif
 
 %files
 %{_bindir}/osg-notify
@@ -42,6 +54,9 @@ install -D -m 0644 topology-cacher.cron %{buildroot}/etc/cron.d/topology-cacher.
 %{python_sitelib}/topology_utils.py*
 %{python_sitelib}/__pycache__/net_name_addr_utils*
 %{python_sitelib}/__pycache__/topology_utils*
+%if 0%{?el7}
+    /usr/lib/topology-client/*
+%endif
 
 %files -n topology-cacher
 %{python_sitelib}/topology_cacher.py*

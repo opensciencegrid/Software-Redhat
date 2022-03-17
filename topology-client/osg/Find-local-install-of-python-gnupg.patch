@@ -1,0 +1,24 @@
+From c65ef0ed5d67459ce4bf0dbf88b40f2864193ffb Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Wed, 16 Mar 2022 19:01:45 -0500
+Subject: [PATCH] Find local install of python-gnupg
+
+---
+ bin/osg-notify | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/bin/osg-notify b/bin/osg-notify
+index 76b00dfb..eaf315c0 100755
+--- a/bin/osg-notify
++++ b/bin/osg-notify
+@@ -13,6 +13,7 @@ import email.message
+ import email.mime.text
+ import email.mime.multipart
+ 
++sys.path.append("/usr/lib/topology-client")
+ import gnupg
+ 
+ 
+-- 
+2.25.1
+
