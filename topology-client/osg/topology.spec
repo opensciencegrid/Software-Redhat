@@ -2,11 +2,12 @@
 Summary: Client tools for OSG Topology
 Name: topology-client
 Version: 1.8.0
-Release: 0.2%{?dist}
+Release: 0.3%{?dist}
 Source: topology-%{version}.tar.gz
 License: Apache 2.0
 BuildArch: noarch
 Url: https://github.com/opensciencegrid/topology/
+BuildRequires: unzip
 BuildRequires: python3-requests
 %if 0%{?el8}
 BuildRequires: python3-gnupg
@@ -45,7 +46,8 @@ install -D -m 0644 src/topology_utils.py %{buildroot}/%{python_sitelib}/topology
 install -D -m 0755 src/topology_cacher.py %{buildroot}/%{python_sitelib}/topology_cacher.py
 install -D -m 0644 topology-cacher.cron %{buildroot}/etc/cron.d/topology-cacher.cron
 %if 0%{?el7}
-    %{__python} -m pip install -I --no-deps "%{SOURCE1}" --root %{buildroot}/usr/lib/topology-client
+    unzip %{SOURCE1}
+    install -D -m 0644 gnupg.py %{buildroot}/usr/lib/topology-client/gnupg.py
 %endif
 
 %files
@@ -65,6 +67,9 @@ install -D -m 0644 topology-cacher.cron %{buildroot}/etc/cron.d/topology-cacher.
 
 
 %changelog
+* Wed Mar 16 2022 Mátyás Selmeci <matyas@cs.wisc.edu> 1.8.0-0.3
+- Fix path for python3-gnupg on EL7 (SOFTWARE-5079)
+
 * Mon Mar 07 2022 Mátyás Selmeci <matyas@cs.wisc.edu> 1.8.0-0.2
 - Update Python dependencies
 
