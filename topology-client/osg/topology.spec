@@ -1,16 +1,19 @@
-%define __python /usr/bin/python3
 
 Summary: Client tools for OSG Topology
 Name: topology-client
 Version: 1.8.0
-Release: 0.1%{?dist}
+Release: 0.2%{?dist}
 Source: topology-%{version}.tar.gz
 License: Apache 2.0
 BuildArch: noarch
 Url: https://github.com/opensciencegrid/topology/
-Requires: python-gnupg
-Requires: python-requests
+BuildRequires: python3-gnupg
+BuildRequires: python3-requests
+Requires: python3-gnupg
+Requires: python3-requests
 
+%define __python /usr/bin/python3
+BuildRequires: python3-devel
 
 %description
 Client tools that interact with OSG Topology data
@@ -47,6 +50,9 @@ install -D -m 0644 topology-cacher.cron %{buildroot}/etc/cron.d/topology-cacher.
 
 
 %changelog
+* Mon Mar 07 2022 Mátyás Selmeci <matyas@cs.wisc.edu> 1.8.0-0.2
+- Update Python dependencies
+
 * Mon Aug 16 2021 Mátyás Selmeci <matyas@cs.wisc.edu> 1.8.0-0.1
 - Add topology-cacher (SOFTWARE-4704)
 
