@@ -13,6 +13,7 @@ BuildRequires: python3-requests
 BuildRequires: python3-gnupg
 Requires: python3-gnupg
 %endif
+# obtained via `python3 -m pip download python-gnupg`
 Source1: https://vdt.cs.wisc.edu/upstream/topology-client/python-deps/python_gnupg-0.4.8-py2.py3-none-any.whl
 Patch0: Find-local-install-of-python-gnupg.patch
 
