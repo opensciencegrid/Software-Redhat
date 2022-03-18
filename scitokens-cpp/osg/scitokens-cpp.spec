@@ -1,15 +1,16 @@
 Name: scitokens-cpp
-Version: 0.6.2
+Version: 0.7.0
 Release: 1%{?dist}
 Summary: C++ Implementation of the SciTokens Library
 License: ASL 2.0
 URL: https://github.com/scitokens/scitokens-cpp
 
 # Directions to generate a proper release:
-# git archive --prefix "scitokens-cpp-0.3.3/" -o "scitokens-cpp-0.3.3.tar" v0.3.3
+# VER=0.3.3 # for example
+# git archive --prefix "scitokens-cpp-$VER/" -o "scitokens-cpp-$VER.tar" v$VER
 # git submodule update --init
-# git submodule foreach --recursive "git archive --prefix=scitokens-cpp-0.3.3/\$path/ --output=\$sha1.tar HEAD && tar --concatenate --file=$(pwd)/scitokens-cpp-0.3.3.tar \$sha1.tar && rm \$sha1.tar"
-# gzip "scitokens-cpp-0.3.3.tar"
+# git submodule foreach --recursive "git archive --prefix=scitokens-cpp-$VER/\$path/ --output=\$sha1.tar HEAD && tar --concatenate --file=$(pwd)/scitokens-cpp-$VER.tar \$sha1.tar && rm \$sha1.tar"
+# gzip "scitokens-cpp-$VER.tar"
 Source0: https://github.com/scitokens/scitokens-cpp/releases/download/v%{version}/%{name}-%{version}.tar.gz
 
 # Scitokens-cpp bundles jwt-cpp, a header only dependency
@@ -19,15 +20,15 @@ Source0: https://github.com/scitokens/scitokens-cpp/releases/download/v%{version
 
 BuildRequires: gcc-c++
 BuildRequires: make
-%if 0%{?rhel} < 8
 BuildRequires: cmake3
-%else
-BuildRequires: cmake
-%endif
 BuildRequires: sqlite-devel
 BuildRequires: openssl-devel
 BuildRequires: libcurl-devel
 BuildRequires: libuuid-devel
+%if 0%{?el7}
+# needed for ldconfig_scriptlets
+BuildRequires: epel-rpm-macros
+%endif
 
 %description
 %{summary}
@@ -55,6 +56,7 @@ Requires: %{name}%{?_isa} = %{version}
 
 %files
 %{_libdir}/libSciTokens.so.0*
+%{_bindir}/scitokens-*
 %license LICENSE
 %doc README.md
 
@@ -64,6 +66,22 @@ Requires: %{name}%{?_isa} = %{version}
 %dir %{_includedir}/scitokens
 
 %changelog
+#- Add scitokens-* binaries to the package
+
+* Fri Feb 18 2022 Derek Weitzel <dweitzel@unl.edu> - 0.7.0-1
+- Changes from static analysis
+- If only one key is available, do not error on no kid
+- Support at+jwt profile
+
+* Fri Sep 03 2021 Dave Dykstra <dwd@fnal.gov> - 0.6.3-1
+- Add support for building Debian packages on the OpenSUSE Build System
+- Add patch to jwt-cpp to update its picojson dependency in order to
+  enable it to compile on Debian 11 and Ubuntu 21.04
+- Fix el7 build by requiring epel-rpm-macros
+
+* Thu Aug 26 2021 Dave Dykstra <dwd@fnal.gov> - 0.6.2-2
+- Make the build require cmake3 instead of cmake
+
 * Thu Jun 03 2021 Derek Weitzel <dweitzel@unl.edu> - 0.6.2-1
 - Correct WLCG compat for condor read permissions
 
