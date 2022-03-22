@@ -1,7 +1,7 @@
 Name:      xcache
 Summary:   XCache scripts and configurations
 Version:   3.0.0
-Release:   1%{?dist}
+Release:   2%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       https://opensciencegrid.org/docs/
@@ -277,6 +277,11 @@ mkdir -p %{buildroot}%{_sysconfdir}/grid-security/xrd
 %config %{_sysconfdir}/xrootd/config.d/03-redir-tuning.cfg
 
 %changelog
+* Tue Mar 01 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.0.0-2
+- Fix Python 3 bytes/str conversion errors (SOFTWARE-5019)
+- Always use Python 3 scripts; update dependencies for xcache-consistency-check
+- Fix xrootd_cache_stats.py library location issues (SOFTWARE-5019)
+
 * Wed Oct 27 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.0.0-1
 - Drop lcmaps config; use XrdVoms instead (from osg-xrootd 3.6)
 - Add overrides for xrootd-privileged@stash-origin-auth, and add
@@ -314,7 +319,7 @@ mkdir -p %{buildroot}%{_sysconfdir}/grid-security/xrd
 * Tue Nov 10 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.5.2-2
 - Include xrootd-client in stash-origin since it's used for validation (SOFTWARE-4353)
 
-* Fri Jul 30 2020 Edgar Fajardo <emfajard@ucsd.edu> - 1.5.2-1
+* Fri Jul 31 2020 Edgar Fajardo <emfajard@ucsd.edu> - 1.5.2-1
 - Fixing some bugs for el8 suppport (SOFTWARE-4158)
 
 * Mon Jul 27 2020 Edgar Fajardo <emfajard@ucsd.edu> - 1.5.0-1
