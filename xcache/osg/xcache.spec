@@ -6,14 +6,13 @@ License:   Apache 2.0
 Group:     Grid
 URL:       https://opensciencegrid.org/docs/
 Source0:   %{name}-%{version}.tar.gz
-Source1:   https://vdt.cs.wisc.edu/upstream/xcache/1.3.0/python-deps/numpy-1.16.6-cp27-cp27mu-manylinux1_x86_64.whl
-Source2:   https://vdt.cs.wisc.edu/upstream/xcache/1.3.0/python-deps/cachetools-3.1.1-py2.py3-none-any.whl
-Source3:   https://vdt.cs.wisc.edu/upstream/xcache/1.3.0/python-deps/awkward-0.12.20-py2.py3-none-any.whl
-Source4:   https://vdt.cs.wisc.edu/upstream/xcache/1.3.0/python-deps/uproot_methods-0.7.3-py2.py3-none-any.whl
-Source5:   https://vdt.cs.wisc.edu/upstream/xcache/1.3.0/python-deps/uproot-3.11.2-py2.py3-none-any.whl
-Source6:   https://vdt.cs.wisc.edu/upstream/xcache/1.3.0/python-deps/xxhash-1.4.3-cp27-cp27mu-manylinux1_x86_64.whl
-Source7:   https://vdt.cs.wisc.edu/upstream/xcache/1.3.0/python-deps/lz4-2.2.1-cp27-cp27mu-manylinux1_x86_64.whl
-Source8:   https://vdt.cs.wisc.edu/upstream/xcache/1.3.0/python-deps/pyliblzma-0.5.3.tar.bz2
+Source1:   https://vdt.cs.wisc.edu/upstream/xcache/3.0.0/python-deps/numpy-1.16.6-cp36-cp36m-manylinux1_x86_64.whl
+Source2:   https://vdt.cs.wisc.edu/upstream/xcache/3.0.0/python-deps/cachetools-3.1.1-py2.py3-none-any.whl
+Source3:   https://vdt.cs.wisc.edu/upstream/xcache/3.0.0/python-deps/awkward-0.12.22-py2.py3-none-any.whl
+Source4:   https://vdt.cs.wisc.edu/upstream/xcache/3.0.0/python-deps/uproot_methods-0.7.4-py2.py3-none-any.whl
+Source5:   https://vdt.cs.wisc.edu/upstream/xcache/3.0.0/python-deps/uproot-3.11.7-py2.py3-none-any.whl
+Source6:   https://vdt.cs.wisc.edu/upstream/xcache/3.0.0/python-deps/xxhash-1.4.4-cp36-cp36m-manylinux1_x86_64.whl
+Source7:   https://vdt.cs.wisc.edu/upstream/xcache/3.0.0/python-deps/lz4-2.2.1-cp36-cp36m-manylinux1_x86_64.whl
 
 
 BuildRequires: systemd
@@ -55,16 +54,13 @@ Obsoletes: stashcache-daemon < 1.0.0
 
 ########################################
 %package -n xcache-consistency-check
-BuildRequires: python2-pip
-BuildRequires: python2-devel
-BuildRequires: xz-devel
 Summary: Consistency check for root files
 AutoReq: no
 %global __provides_exclude ^libgfortran.*\\.so.*$|^libopenblasp.*\\.so.*$
 
 Requires: xz
 Requires: xrootd-server
-Requires: python2
+Requires: python3
 
 %description -n xcache-consistency-check
 %{summary}
@@ -180,9 +176,9 @@ Requires: %{name} = %{version}
 
 mkdir -p %{buildroot}%{_sysconfdir}/xrootd
 mkdir -p %{buildroot}/usr/lib/xcache-consistency-check
-for whl in %{SOURCE1} %{SOURCE2} %{SOURCE3} %{SOURCE4} %{SOURCE5} %{SOURCE6} %{SOURCE7} %{SOURCE8} 
+for whl in %{SOURCE1} %{SOURCE2} %{SOURCE3} %{SOURCE4} %{SOURCE5} %{SOURCE6} %{SOURCE7}
 do
-    pip2 install -I --no-deps "$whl" --root %{buildroot}/usr/lib/xcache-consistency-check
+    %{__python} -m pip install -I --no-deps "$whl" --root %{buildroot}/usr/lib/xcache-consistency-check
 done
 
 make install DESTDIR=%{buildroot} PYTHON=%{__python}
