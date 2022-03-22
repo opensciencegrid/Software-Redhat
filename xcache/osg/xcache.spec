@@ -19,6 +19,9 @@ Source8:   https://vdt.cs.wisc.edu/upstream/xcache/1.3.0/python-deps/pyliblzma-0
 BuildRequires: systemd
 %{?systemd_requires}
 
+%define __python /usr/bin/python3
+BuildRequires: python3-devel
+
 # Necessary for daemon to report back to the OSG Collector.
 Requires: python3-condor
 Requires: python%{python3_pkgversion}-xrootd
@@ -38,10 +41,6 @@ Requires: xrootd-scitokens
 
 Provides: stashcache-daemon = %{name}-%{version}
 Obsoletes: stashcache-daemon < 1.0.0
-
-%if 0%{?rhel} >= 8
-%define __python /usr/bin/python3
-%endif
 
 %description
 %{summary}
@@ -65,6 +64,7 @@ AutoReq: no
 
 Requires: xz
 Requires: xrootd-server
+Requires: python2
 
 %description -n xcache-consistency-check
 %{summary}
@@ -176,9 +176,7 @@ Requires: %{name} = %{version}
 %setup -n %{name}-%{version} -q
 
 %install
-%if 0%{?rhel} >= 8
-find . -type f -exec sed -ri '1s,^#!\s*(/usr)?/bin/(env )?python.*,#!%{__python},' '{}' +
-%endif
+#find . -type f -exec sed -ri '1s,^#!\s*(/usr)?/bin/(env )?python.*,#!%{__python},' '{}' +
 
 mkdir -p %{buildroot}%{_sysconfdir}/xrootd
 mkdir -p %{buildroot}/usr/lib/xcache-consistency-check
@@ -195,7 +193,8 @@ mkdir -p %{buildroot}%{_sysconfdir}/grid-security/xrd
 %files
 %{_libexecdir}/%{name}/xcache-reporter
 %{_libexecdir}/%{name}/renew-proxy
-%{python_sitelib}/xrootd_cache_stats.py*
+%{python3_sitelib}/xrootd_cache_stats.py*
+%{python3_sitelib}/__pycache__/xrootd_cache_stats.*
 %{_unitdir}/xcache-reporter.service
 %{_unitdir}/xcache-reporter.timer
 %{_unitdir}/xrootd-renew-proxy.service
