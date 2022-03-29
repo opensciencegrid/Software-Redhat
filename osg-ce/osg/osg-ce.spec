@@ -129,7 +129,7 @@ install -m 644 %{SOURCE1} $RPM_BUILD_ROOT/%{_datadir}/condor-ce/config.d
 # TODO: Drop 01-blahp-location.conf if/when upstreamed into HTCondor
 # https://opensciencegrid.atlassian.net/browse/HTCONDOR-274
 %{_datadir}/condor-ce/config.d/01-blahp-location.conf
-%{_datadir}/condor-ce/config.d/03-osg-ce-collector.conf
+%config %{_datadir}/condor-ce/config.d/01-osg-ce.conf
 
 %files bosco
 %files condor
