@@ -1,12 +1,11 @@
 Name:      osg-ce
 Summary:   OSG Compute Element
 Version:   3.6
-Release:   4%{?dist}
+Release:   5%{?dist}
 License:   Apache 2.0
 URL:       http://www.opensciencegrid.org
 
-Source0: 01-blahp-location.conf
-Source1: 03-osg-ce-collector.conf
+Source0: 01-osg-ce.conf
 
 Requires: grid-certificates >= 7
 Requires: osg-scitokens-mapfile
@@ -122,7 +121,6 @@ exit 0
 %install
 install -m 755         -d $RPM_BUILD_ROOT/%{_datadir}/condor-ce/config.d
 install -m 644 %{SOURCE0} $RPM_BUILD_ROOT/%{_datadir}/condor-ce/config.d
-install -m 644 %{SOURCE1} $RPM_BUILD_ROOT/%{_datadir}/condor-ce/config.d
 
 
 %files
@@ -136,6 +134,10 @@ install -m 644 %{SOURCE1} $RPM_BUILD_ROOT/%{_datadir}/condor-ce/config.d
 %files slurm
 
 %changelog
+* Tue Mar 29 2022 Brian Lin <blin@cs.wisc.edu> - 3.6-5
+- Add OSG release series SchedD attribute (SOFTWARE-4984)
+- Remove upstreamed blahpd location configuration (SOFTWARE-4984)
+
 * Wed Jan 19 2022 Brian Lin <blin@cs.wisc.edu> - 3.6-4
 - Release missing osg-ce-bosco sub-package
 
