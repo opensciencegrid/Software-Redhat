@@ -1,6 +1,6 @@
 Summary: Configuration tool for the OSG Software Stack
 Name: osg-configure
-Version: 4.1.0
+Version: 4.1.1
 Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
@@ -315,6 +315,9 @@ PYTHONPATH=$RPM_BUILD_ROOT/%{python_sitelib}:$PYTHONPATH %{__python} $RPM_BUILD_
 
 
 %changelog
+* Sat Apr 09 2022 Mátyás Selmeci <matyas@cs.wisc.edu> 4.1.1-1
+- Version 4.1.1 (SOFTWARE-5122)
+
 * Thu Mar 03 2022 Mátyás Selmeci <matyas@cs.wisc.edu> 4.1.0-1
 - Version 4.1.0 (SOFTWARE-4972)
 
