@@ -3,7 +3,7 @@
 
 Name: htcondor-ce
 Version: 5.1.4
-Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
+Release: 1.1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
 
@@ -82,13 +82,13 @@ Requires: ganglia-gmond
 Requires: python3-flask
 Requires: python3-gunicorn
 Requires: python3-rpm
-Requires: python3-rrdtool
 %else
 Requires: python36-flask
 Requires: python36-gunicorn
 Requires: python36-rpm
-Requires: rrdtool
 %endif
+
+Requires: python3-rrdtool
 
 %description view
 %{summary}
@@ -551,6 +551,9 @@ fi
 %{_localstatedir}/www/wsgi-scripts/htcondor-ce/htcondor-ce-registry.wsgi
 
 %changelog
+* Wed Apr 20 2022 Carl Edquist <edquist@cs.wisc.edu> - 5.1.4-1.1
+- Always require python3-rrdtool for view subpackage (SOFTWARE-5135)
+
 * Thu Mar 24 2022 Tim Theisen <tim@cs.wisc.edu> - 5.1.4-1
 - Fix whole node job glidein CPUs and GPUs expressions that caused held jobs
 - Fix bug where default CERequirements were being ignored
