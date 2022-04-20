@@ -17,7 +17,7 @@
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
 %define version 3.9.4
-%define release 1
+%define release 2
 
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
@@ -1030,6 +1030,9 @@ rm -rf $RPM_BUILD_ROOT
 #%config(noreplace) %{_sysconfdir}/condor/scripts/frontend_condortoken
 
 %changelog
+* Wed Apr 20 2022 Carl Edquist <edquist@cs.wisc.edu> - 3.9.4-2
+- Fix python3-rrdtool dependency (SOFTWARE-5134)
+
 * Tue Jan 25 2022 Bruno Coimbra <coimbra@fnal.gov> - 3.9.4
 - Glideinwms v3.9.4
 - Release Notes: http://glideinwms.fnal.gov/doc.v3_9_4/history.html
