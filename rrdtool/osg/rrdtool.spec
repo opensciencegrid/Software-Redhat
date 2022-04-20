@@ -23,7 +23,7 @@
 Summary: Round Robin Database Tool to store and display time-series data
 Name: rrdtool
 Version: 1.8.0
-Release: 1.1%{?dist}
+Release: 1.2%{?dist}
 License: GPLv2+ with exceptions
 URL: https://oss.oetiker.ch/rrdtool/
 Source0: https://github.com/oetiker/rrdtool-1.x/releases/download/v%{version}/%{name}-%{version}.tar.gz
@@ -106,6 +106,7 @@ Summary: Python RRDtool bindings
 BuildRequires: python3-devel, python3-setuptools
 %{?__python3:Requires: %{__python3}}
 Requires: %{name} = %{version}-%{release}
+Obsoletes: rrdtool-python < 1.8.0
 
 %description -n python3-rrdtool
 Python RRDtool bindings.
@@ -410,6 +411,9 @@ LD_LIBRARY_PATH=%{buildroot}%{_libdir} php -n \
 %endif
 
 %changelog
+* Wed Apr 20 2022 Carl Edquist <edquist@cs.wisc.edu> - 1.8.0-1.2
+- Add python3-rrdtool Obsoletes for rrdtool-python (SOFTWARE-5080)
+
 * Tue Mar 29 2022 Brian Lin <blin@cs.wisc.edu - 1.8.0-1.1
 - Build without docs, lua, php, ruby, or tcl
 - Remove unused perl-Pod-html requirement
