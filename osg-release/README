@@ -13,6 +13,10 @@ This release includes:
  - Contrib
  - Devops
  - Devops ITB
+ - Next (Future release series, possibly not yet existing)
+ - Next Testing
+ - Next Development
+ - Next Minefield (Directly off koji)
 
 The osg-release is designed for both el7 and el8.  It only installs the
 appropriate repo files for the platform.
