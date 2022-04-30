@@ -12,8 +12,8 @@
 # ------------------------------------------------------------------------------
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
-%define version 3.7.6
-%define release 1
+%define version 3.7.7
+%define release 0.1.rc1
 
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
@@ -322,6 +322,7 @@ rm -Rf $RPM_BUILD_ROOT%{python_sitelib}/glideinwms/test
 rm -Rf $RPM_BUILD_ROOT%{python_sitelib}/glideinwms/unittests
 rm -f $RPM_BUILD_ROOT%{python_sitelib}/glideinwms/chksum.sh
 rm -f $RPM_BUILD_ROOT%{python_sitelib}/glideinwms/requirements.txt
+rm -f $RPM_BUILD_ROOT%{python_sitelib}/glideinwms/CHANGELOG.md
 rm -f $RPM_BUILD_ROOT%{python_sitelib}/glideinwms/tox.ini
 rm -f $RPM_BUILD_ROOT%{python_sitelib}/glideinwms/LICENSE
 rm -f $RPM_BUILD_ROOT%{python_sitelib}/glideinwms/ACKNOWLEDGMENTS.txt
@@ -444,6 +445,9 @@ install -d $RPM_BUILD_ROOT/%{_sysconfdir}/gwms-factory/hooks.reconfig.pre
 install -d $RPM_BUILD_ROOT/%{_sysconfdir}/gwms-factory/hooks.reconfig.post
 install -m 0644 %{SOURCE4} $RPM_BUILD_ROOT/%{_sysconfdir}/gwms-factory/glideinWMS.xml
 install -m 0644 %{SOURCE9} $RPM_BUILD_ROOT/%{_sysconfdir}/sysconfig/gwms-factory
+install -m 0755 creation/create_cvmfsexec_distros.sh $RPM_BUILD_ROOT/%{_sysconfdir}/gwms-factory/hooks.reconfig.pre/create_cvmfsexec_distros.sh
+# remove the file from python_sitelib as it is put elsewhere; similar to clone_glidein and info_glidein files
+rm -f $RPM_BUILD_ROOT%{python_sitelib}/glideinwms/creation/create_cvmfsexec_distros.sh
 
 # Install the web base
 cp -r creation/web_base/* $RPM_BUILD_ROOT%{web_base}/
@@ -828,6 +832,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(-, gfactory, gfactory) %dir %{_sysconfdir}/gwms-factory/hooks.reconfig.pre
 %attr(-, gfactory, gfactory) %dir %{_sysconfdir}/gwms-factory/hooks.reconfig.post
 %attr(-, gfactory, gfactory) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/gwms-factory/glideinWMS.xml
+%attr(755, gfactory, gfactory) %{_sysconfdir}/gwms-factory/hooks.reconfig.pre/create_cvmfsexec_distros.sh
 %config(noreplace) %{_sysconfdir}/sysconfig/gwms-factory
 
 %files vofrontend-core
@@ -945,10 +950,10 @@ rm -rf $RPM_BUILD_ROOT
 #%config(noreplace) %{_sysconfdir}/condor/scripts/frontend_condortoken
 
 %changelog
-* Mon Jan 24 2022 Dennis Box <dbox@fnal.gov> - 3.7.6-1
-- GlideinWMS v3.7.6
-- Release Notes http://glideinwms.fnal.gov/doc.v3_7_6/history.html
-- Release candidates  3.7.6-01.rc1 to 3.7.6-01.rc2
+* Mon Jan 24 2022  Dennis Box <dbox@fnal.gov> - 3.7.6
+- Glideinwms v3.7.5
+- Release Notes: http://glideinwms.fnal.gov/doc.v3_7_6/history.html
+- Release candidates 3.7.5-01.rc1 to  3.7.5-01.rc2
 
 * Thu Sep  2 2021 Dennis Box <dbox@fnal.gov> - 3.7.5
 - Glideinwms v3.7.5
