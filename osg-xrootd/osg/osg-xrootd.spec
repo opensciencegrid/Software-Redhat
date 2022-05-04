@@ -1,7 +1,7 @@
 Summary: OSG configuration files for XRootD
 Name: osg-xrootd
 Version: 3.6
-Release: 16%{?dist}
+Release: 17%{?dist}
 License: ASL 2.0
 BuildArch: noarch
 
@@ -37,6 +37,8 @@ Requires: xrootd-voms
 Summary: OSG configuration files for XRootD standalone installations
 Requires: %{name} = %{version}-%release
 Requires: xrootd-scitokens
+Conflicts: stash-cache
+Conflicts: stash-origin
 
 %description standalone
 %summary
@@ -92,6 +94,9 @@ mkdir -p /etc/grid-security >/dev/null 2>&1 || :
 [ -e /etc/grid-security/grid-mapfile ] || touch /etc/grid-security/grid-mapfile
 
 %changelog
+* Wed May 04 2022 Carl Edquist <edquist@cs.wisc.edu> - 3.6-17
+- Have standalone Conflict with stash-cache and -origin (SOFTWARE-4668)
+
 * Mon Mar 07 2022 Mátyás Selmeci <matyas@cs.wisc.edu> 3.6-16
 - Don't turn on `http.secxtractor` for unauth caches/origins (SOFTWARE-5066)
 
