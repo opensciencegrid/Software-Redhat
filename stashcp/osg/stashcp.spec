@@ -1,6 +1,6 @@
-Summary: stashcp
+Summary: StashCache/OSDF client
 Name: stashcp
-Version: 6.6.0
+Version: 6.7.5
 Release: 1%{?dist}
 License: ASL 2.0
 Url: https://github.com/opensciencegrid/stashcp
@@ -39,7 +39,7 @@ exit 0
 mkdir -p %{buildroot}%{_bindir}
 install -m 0755 stashcp %{buildroot}%{_bindir}/stashcp
 mkdir -p %{buildroot}/usr/libexec/condor
-install -m 0755 stashcp %{buildroot}/usr/libexec/condor/stash_plugin
+install -m 0755 stash_plugin %{buildroot}/usr/libexec/condor/stash_plugin
 mkdir -p %{buildroot}/etc/condor/config.d
 install -m 0644 %{SOURCE1} %{buildroot}/etc/condor/config.d/10-stash-plugin.config
 
@@ -55,6 +55,9 @@ install -m 0644 %{SOURCE1} %{buildroot}/etc/condor/config.d/10-stash-plugin.conf
 %doc README.md
 
 %changelog
+* Fri May 06 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 6.7.5-1
+- Update to 6.7.5 (SOFTWARE-5101)
+
 * Mon Mar 07 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 6.6.0-1
 - Update to 6.6.0 (SOFTWARE-4887)
 
