@@ -1,7 +1,7 @@
 Name:      osg-wn-client
 Summary:   OSG Worker-Node Client
 Version:   3.6
-Release:   4%{?dist}
+Release:   5%{?dist}
 License:   Apache 2.0
 URL:       http://www.opensciencegrid.org
 BuildArch: noarch
@@ -14,7 +14,9 @@ Requires: /usr/bin/wget
 Requires: grid-certificates >= 7
 Requires: fetch-crl
 Requires: osg-system-profiler
+Requires: stashcp
 Requires: vo-client
+Requires: voms-clients-cpp
 
 Requires: gfal2
 Requires: python3-gfal2-util
@@ -42,6 +44,9 @@ EOF
 %config(noreplace) %{_prefix}/etc/globus-user-env.sh
 
 %changelog
+* Fri May 06 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.6-5
+- Add stashcp and voms-clients-cpp (SOFTWARE-5171)
+
 * Wed Sep 22 2021 Carl Edquist <edquist@cs.wisc.edu> - 3.6-4
 - Change gfal2-util requirement to python3-gfal2-util (SOFTWARE-4826)
 
