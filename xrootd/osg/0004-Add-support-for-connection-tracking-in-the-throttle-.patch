@@ -1,0 +1,443 @@
+From 53fe2b1c9c46787c11eb9f5105d0a46ed97fd427 Mon Sep 17 00:00:00 2001
+From: Brian Bockelman <bbockelman@morgridge.org>
+Date: Tue, 4 Jan 2022 10:40:35 -0600
+Subject: [PATCH 04/17] Add support for connection tracking in the throttle
+ plugin.
+
+This adds a limit for "max active connections" where we define the
+'active connection' to be a thread associated with a unique entity
+with at least one file open.
+
+Admins would like to track & limit the number of open connections
+because each connection incurs the cost of one OS thread and users
+can overwhelm the server by having a large number of connections.
+
+I consider the "active connections" a good enough approximation of
+"open connections" because the admin can set the idle connections to
+be reaped and we really only care about the resource in the coarse
+grain: threads become expensive when measured in the thousands, not
+in the dozens.
+
+I also consider this a "good enough" approximation because it keeps
+all the cost of tracking in the throttling plugin and not the framework
+itself.  When not in use, there's effectively zero cost.
+
+(cherry picked from commit 442a02a019b847d0e1807851796b32155cfa7cd6)
+---
+ src/XrdThrottle/XrdThrottle.hh                |   4 +
+ src/XrdThrottle/XrdThrottleFile.cc            |  20 +-
+ .../XrdThrottleFileSystemConfig.cc            |  28 +++
+ src/XrdThrottle/XrdThrottleManager.cc         | 181 +++++++++++++++---
+ src/XrdThrottle/XrdThrottleManager.hh         |   8 +-
+ src/XrdThrottle/XrdThrottleTrace.hh           |   1 +
+ 6 files changed, 214 insertions(+), 28 deletions(-)
+
+diff --git a/xrootd/src/XrdThrottle/XrdThrottle.hh b/xrootd/src/XrdThrottle/XrdThrottle.hh
+index 258d84983..9ddc890f3 100644
+--- a/xrootd/src/XrdThrottle/XrdThrottle.hh
++++ b/xrootd/src/XrdThrottle/XrdThrottle.hh
+@@ -122,6 +122,7 @@ friend class FileSystem;
+    virtual
+    ~File();
+ 
++   bool m_is_open{false};
+    unique_sfs_ptr m_sfs;
+    int m_uid; // A unique identifier for this user; has no meaning except for the fairshare.
+    std::string m_loadshed;
+@@ -285,6 +286,9 @@ friend XrdSfsFileSystem * XrdSfsGetFileSystem_Internal(XrdSfsFileSystem *, XrdSy
+    int
+    xmaxopen(XrdOucStream &Config);
+ 
++   int
++   xmaxconn(XrdOucStream &Config);
++
+    static FileSystem  *m_instance;
+    XrdSysError         m_eroute;
+    XrdOucTrace         m_trace;
+diff --git a/xrootd/src/XrdThrottle/XrdThrottleFile.cc b/xrootd/src/XrdThrottle/XrdThrottleFile.cc
+index 35e8e0997..8128e2afc 100644
+--- a/xrootd/src/XrdThrottle/XrdThrottleFile.cc
++++ b/xrootd/src/XrdThrottle/XrdThrottleFile.cc
+@@ -39,7 +39,11 @@ File::File(const char                     *user,
+ {}
+ 
+ File::~File()
+-{}
++{
++   if (m_is_open) {
++      m_throttle.CloseFile(m_user);
++   }
++}
+ 
+ int
+ File::open(const char                *fileName,
+@@ -58,16 +62,24 @@ File::open(const char                *fileName,
+    if (m_user.empty()) {m_user = client->name ? client->name : "nobody";}
+    m_uid = XrdThrottleManager::GetUid(m_user.c_str());
+    m_throttle.PrepLoadShed(opaque, m_loadshed);
+-   if (!m_throttle.OpenFile(m_user)) {
+-       error.setErrInfo(EMFILE, "User has hit their maximum file limit at the server.");
++   std::string open_error_message;
++   if (!m_throttle.OpenFile(m_user, open_error_message)) {
++       error.setErrInfo(EMFILE, open_error_message.c_str());
+        return SFS_ERROR;
+    }
+-   return m_sfs->open(fileName, openMode, createMode, client, opaque);
++   auto retval = m_sfs->open(fileName, openMode, createMode, client, opaque);
++   if (retval != SFS_ERROR) {
++      m_is_open = true;
++   } else {
++      m_throttle.CloseFile(m_user);
++   }
++   return retval;
+ }
+ 
+ int
+ File::close()
+ {
++   m_is_open = false;
+    m_throttle.CloseFile(m_user);
+    return m_sfs->close();
+ }
+diff --git a/xrootd/src/XrdThrottle/XrdThrottleFileSystemConfig.cc b/xrootd/src/XrdThrottle/XrdThrottleFileSystemConfig.cc
+index 3eea8a9ba..5d1ef9f3b 100644
+--- a/xrootd/src/XrdThrottle/XrdThrottleFileSystemConfig.cc
++++ b/xrootd/src/XrdThrottle/XrdThrottleFileSystemConfig.cc
+@@ -148,6 +148,7 @@ FileSystem::Configure(XrdSysError & log, XrdSfsFileSystem *native_fs)
+          fslib = val;
+       }
+       TS_Xeq("throttle.max_open_files", xmaxopen);
++      TS_Xeq("throttle.max_active_connections", xmaxconn);
+       TS_Xeq("throttle.throttle", xthrottle);
+       TS_Xeq("throttle.loadshed", xloadshed);
+       TS_Xeq("throttle.trace", xtrace);
+@@ -193,6 +194,32 @@ FileSystem::xmaxopen(XrdOucStream &Config)
+ }
+ 
+ 
++/******************************************************************************/
++/*                            x m a x c o n n                                 */
++/******************************************************************************/
++
++/* Function: xmaxconn
++
++   Purpose:  Parse the directive: throttle.max_active_connections <limit>
++
++             <limit>   maximum number of connections with at least one open file for a given entity
++
++  Output: 0 upon success or !0 upon failure.
++*/
++int
++FileSystem::xmaxconn(XrdOucStream &Config)
++{
++    auto val = Config.GetWord();
++    if (!val || val[0] == '\0')
++       {m_eroute.Emsg("Config", "Max active cconnections not specified!  Example usage: throttle.max_active_connections 4000");}
++    long long max_conn = -1;
++    if (XrdOuca2x::a2sz(m_eroute, "max active connections value", val, &max_conn, 1)) return 1;
++
++    m_throttle.SetMaxConns(max_conn);
++    return 0;
++}
++
++
+ /******************************************************************************/
+ /*                            x t h r o t t l e                               */
+ /******************************************************************************/
+@@ -334,6 +361,7 @@ int FileSystem::xtrace(XrdOucStream &Config)
+       {"bandwidth", TRACE_BANDWIDTH},
+       {"ioload",    TRACE_IOLOAD},
+       {"files",     TRACE_FILES},
++      {"connections",TRACE_CONNS},
+    };
+    int i, neg, trval = 0, numopts = sizeof(tropts)/sizeof(struct traceopts);
+ 
+diff --git a/xrootd/src/XrdThrottle/XrdThrottleManager.cc b/xrootd/src/XrdThrottle/XrdThrottleManager.cc
+index 14635b885..ad255f88a 100644
+--- a/xrootd/src/XrdThrottle/XrdThrottleManager.cc
++++ b/xrootd/src/XrdThrottle/XrdThrottleManager.cc
+@@ -3,12 +3,15 @@
+ 
+ #include "XrdSys/XrdSysAtomics.hh"
+ #include "XrdSys/XrdSysTimer.hh"
++#include "XrdSys/XrdSysPthread.hh"
+ 
+ #include "XrdOuc/XrdOucEnv.hh"
+ 
+ #define XRD_TRACE m_trace->
+ #include "XrdThrottle/XrdThrottleTrace.hh"
+ 
++#include <sstream>
++
+ const char *
+ XrdThrottleManager::TraceID = "ThrottleManager";
+ 
+@@ -110,50 +113,141 @@ XrdThrottleManager::StealShares(int uid, int &reqsize, int &reqops)
+  * incremented.
+  */
+ bool
+-XrdThrottleManager::OpenFile(const std::string &entity)
++XrdThrottleManager::OpenFile(const std::string &entity, std::string &error_message)
+ {
+-    if (m_max_open == 0) return true;
++    if (m_max_open == 0 && m_max_conns == 0) return true;
+ 
+     const std::lock_guard<std::mutex> lock(m_file_mutex);
+     auto iter = m_file_counters.find(entity);
+-    if (iter == m_file_counters.end()) {
+-        m_file_counters[entity] = 1;
+-        TRACE(FILES, "User " << entity << " has opened their first file");
+-    } else if (iter->second < m_max_open) {
+-        iter->second++;
+-        TRACE(FILES, "User " << entity << " has " << iter->second << " open files");
+-    } else {
+-        TRACE(FILES, "User " << entity << " has hit the limit of " << iter->second << " open files");
+-        return false;
++    unsigned long cur_open_files, cur_open_conns;
++    if (m_max_open) {
++        if (iter == m_file_counters.end()) {
++            m_file_counters[entity] = 1;
++            TRACE(FILES, "User " << entity << " has opened their first file");
++            cur_open_files = 1;
++        } else if (iter->second < m_max_open) {
++            iter->second++;
++            cur_open_files = iter->second;
++        } else {
++            std::stringstream ss;
++            ss <<  "User " << entity << " has hit the limit of " << m_max_open << " open files";
++            TRACE(FILES, ss.str());
++            error_message = ss.str();
++            return false;
++        }
+     }
++
++    if (m_max_conns) {
++        auto pid = XrdSysThread::Num();
++        auto conn_iter = m_active_conns.find(entity);
++        auto conn_count_iter = m_conn_counters.find(entity);
++        if ((conn_count_iter != m_conn_counters.end()) && (conn_count_iter->second == m_max_conns) &&
++            (conn_iter == m_active_conns.end() || ((*(conn_iter->second))[pid] == 0)))
++        {
++            // note: we are rolling back the increment in open files
++            if (m_max_open) iter->second--;
++            std::stringstream ss;
++            ss << "User " << entity << " has hit the limit of " << m_max_conns <<
++                " open connections";
++            TRACE(CONNS, ss.str());
++            error_message = ss.str();
++            return false;
++        }
++        if (conn_iter == m_active_conns.end()) {
++            std::unique_ptr<std::unordered_map<pid_t, unsigned long>> conn_map(
++                new std::unordered_map<pid_t, unsigned long>());
++            (*conn_map)[pid] = 1;
++            m_active_conns[entity] = std::move(conn_map);
++            if (conn_count_iter == m_conn_counters.end()) {
++                m_conn_counters[entity] = 1;
++                cur_open_conns = 1;
++            } else {
++                m_conn_counters[entity] ++;
++                cur_open_conns = m_conn_counters[entity];
++            }
++        } else {
++            auto pid_iter = conn_iter->second->find(pid);
++            if (pid_iter == conn_iter->second->end() || pid_iter->second == 0) {
++                (*(conn_iter->second))[pid] = 1;
++                conn_count_iter->second++;
++                cur_open_conns = conn_count_iter->second;
++            } else {
++                (*(conn_iter->second))[pid] ++;
++                cur_open_conns = conn_count_iter->second;
++           }
++        }
++        TRACE(CONNS, "User " << entity << " has " << cur_open_conns << " open connections");
++    }
++    if (m_max_open) TRACE(FILES, "User " << entity << " has " << cur_open_files << " open files");
+     return true;
+ }
+ 
+ 
+ /*
+  * Decrement the number of files held open by a given entity.
+  *
+  * Returns false if the value would have fallen below zero or
+  * if the entity isn't tracked.
+  */
+ bool
+ XrdThrottleManager::CloseFile(const std::string &entity)
+ {
+-    if (m_max_open == 0) return true;
++    if (m_max_open == 0 && m_max_conns == 0) return true;
+ 
++    bool result = true;
+     const std::lock_guard<std::mutex> lock(m_file_mutex);
+-    auto iter = m_file_counters.find(entity);
+-    if (iter == m_file_counters.end()) {
+-        TRACE(FILES, "WARNING: User " << entity << " closed a file but throttle plugin never saw an open file");
+-        return false;
+-    } else if (iter->second == 0) {
+-        TRACE(FILES, "WARNING: User " << entity << " closed a file but throttle plugin thinks all files were already closed");
+-        return false;
+-    } else {
+-        iter->second--;
++    if (m_max_open) {
++        auto iter = m_file_counters.find(entity);
++        if (iter == m_file_counters.end()) {
++            TRACE(FILES, "WARNING: User " << entity << " closed a file but throttle plugin never saw an open file");
++            result = false;
++        } else if (iter->second == 0) {
++            TRACE(FILES, "WARNING: User " << entity << " closed a file but throttle plugin thinks all files were already closed");
++            result = false;
++        } else {
++            iter->second--;
++        }
++        if (result) TRACE(FILES, "User " << entity << " closed a file; " << iter->second <<
++                                 " remain open");
+     }
+-    TRACE(FILES, "User " << entity << " closed a file; " << iter->second << " remain open");
+-    return true;
++
++    if (m_max_conns) {
++        auto pid = XrdSysThread::Num();
++        auto conn_iter = m_active_conns.find(entity);
++        auto conn_count_iter = m_conn_counters.find(entity);
++        if (conn_iter == m_active_conns.end() || !(conn_iter->second)) {
++            TRACE(CONNS, "WARNING: User " << entity << " closed a file on a connection we are not"
++                " tracking");
++            return false;
++        }
++        auto pid_iter = conn_iter->second->find(pid);
++        if (pid_iter == conn_iter->second->end()) {
++            TRACE(CONNS, "WARNING: User " << entity << " closed a file on a connection we are not"
++                " tracking");
++            return false;
++        }
++        if (pid_iter->second == 0) {
++            TRACE(CONNS, "WARNING: User " << entity << " closed a file on connection the throttle"
++                " plugin thinks was idle");
++        } else {
++            pid_iter->second--;
++        }
++        if (conn_count_iter == m_conn_counters.end()) {
++            TRACE(CONNS, "WARNING: User " << entity << " closed a file but the throttle plugin never"
++                " observed an open file");
++        } else if (pid_iter->second == 0) {
++            if (conn_count_iter->second == 0) {
++                TRACE(CONNS, "WARNING: User " << entity << " had a connection go idle but the "
++                    " throttle plugin already thought all connections were idle");
++            } else {
++                conn_count_iter->second--;
++                TRACE(CONNS, "User " << entity << " had connection on thread " << pid << " go idle; "
++                    << conn_count_iter->second << " active connections remain");
++            }
++        }
++    }
++
++    return result;
+ }
+ 
+ 
+@@ -217,6 +311,47 @@ XrdThrottleManager::Recompute()
+ {
+    while (1)
+    {
++      // The connection counter can accumulate a number of known-idle connections.
++      // We only need to keep long-term memory of idle ones.  Take this chance to garbage
++      // collect old connection counters.
++      if (m_max_open || m_max_conns) {
++          const std::lock_guard<std::mutex> lock(m_file_mutex);
++          for (auto iter = m_active_conns.begin(); iter != m_active_conns.end();)
++          {
++              auto & conn_count = *iter;
++              if (!conn_count.second) {
++                  iter = m_active_conns.erase(iter);
++                  continue;
++              }
++              for (auto iter2 = conn_count.second->begin(); iter2 != conn_count.second->end();) {
++                  if (iter2->second == 0) {
++                      iter2 = conn_count.second->erase(iter2);
++                  } else {
++                      iter2++;
++                  }
++              }
++              if (!conn_count.second->size()) {
++                  iter = m_active_conns.erase(iter);
++              } else {
++                  iter++;
++              }
++          }
++          for (auto iter = m_conn_counters.begin(); iter != m_conn_counters.end();) {
++              if (!iter->second) {
++                  iter = m_conn_counters.erase(iter);
++              } else {
++                  iter++;
++              }
++          }
++          for (auto iter = m_file_counters.begin(); iter != m_file_counters.end();) {
++              if (!iter->second) {
++                  iter = m_file_counters.erase(iter);
++              } else {
++                  iter++;
++              }
++          }
++      }
++
+       TRACE(DEBUG, "Recomputing fairshares for throttle.");
+       RecomputeInternal();
+       TRACE(DEBUG, "Finished recomputing fairshares for throttle; sleeping for " << m_interval_length_seconds << " seconds.");
+diff --git a/xrootd/src/XrdThrottle/XrdThrottleManager.hh b/xrootd/src/XrdThrottle/XrdThrottleManager.hh
+index 8e82e2203..dd1dc2e7a 100644
+--- a/xrootd/src/XrdThrottle/XrdThrottleManager.hh
++++ b/xrootd/src/XrdThrottle/XrdThrottleManager.hh
+@@ -33,6 +33,7 @@
+ #include <ctime>
+ #include <mutex>
+ #include <unordered_map>
++#include <memory>
+ 
+ #include "XrdSys/XrdSysPthread.hh"
+ 
+@@ -49,7 +50,7 @@ friend class XrdThrottleTimer;
+ 
+ void        Init();
+ 
+-bool        OpenFile(const std::string &entity);
++bool        OpenFile(const std::string &entity, std::string &open_error_message);
+ bool        CloseFile(const std::string &entity);
+ 
+ void        Apply(int reqsize, int reqops, int uid);
+@@ -65,6 +66,8 @@ void        SetLoadShed(std::string &hostname, unsigned port, unsigned frequency
+ 
+ void        SetMaxOpen(unsigned long max_open) {m_max_open = max_open;}
+ 
++void        SetMaxConns(unsigned long max_conns) {m_max_conns = max_conns;}
++
+ //int         Stats(char *buff, int blen, int do_sync=0) {return m_pool.Stats(buff, blen, do_sync);}
+ 
+ static
+@@ -136,7 +139,10 @@ int m_loadshed_limit_hit;
+ 
+ // Maximum number of open files
+ unsigned long m_max_open{0};
++unsigned long m_max_conns{0};
+ std::unordered_map<std::string, unsigned long> m_file_counters;
++std::unordered_map<std::string, unsigned long> m_conn_counters;
++std::unordered_map<std::string, std::unique_ptr<std::unordered_map<pid_t, unsigned long>>> m_active_conns;
+ std::mutex m_file_mutex;
+ 
+ static const char *TraceID;
+diff --git a/xrootd/src/XrdThrottle/XrdThrottleTrace.hh b/xrootd/src/XrdThrottle/XrdThrottleTrace.hh
+index 71e465088..b41565478 100644
+--- a/xrootd/src/XrdThrottle/XrdThrottleTrace.hh
++++ b/xrootd/src/XrdThrottle/XrdThrottleTrace.hh
+@@ -11,6 +11,7 @@
+ #define TRACE_IOLOAD    0x0004
+ #define TRACE_DEBUG     0x0008
+ #define TRACE_FILES     0x0010
++#define TRACE_CONNS     0x0020
+ 
+ #ifndef NODEBUG
+ 
+-- 
+2.25.1
+

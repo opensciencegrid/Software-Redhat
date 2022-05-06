@@ -1,0 +1,180 @@
+From 7955768a396add7c343147e76e551b185161b3d8 Mon Sep 17 00:00:00 2001
+From: Brian Bockelman <bbockelman@morgridge.org>
+Date: Thu, 10 Mar 2022 07:48:33 -0600
+Subject: [PATCH 16/17] Have the XrdHttp extraction logic match GSI.
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+The GSI security protocol defaults to the "trymap" logic which,
+according to documentation, is "try to map the DN but if unsuccessful
+use the hash of the client’s DN as the user identifier (username)".
+With this change, the XrdHttpSecurity interface will follow the same
+logic.
+
+Since some sites may have special setups which rely on the old mechanism,
+one can get the old behavior by setting the optional new `compatNameGeneration`
+configuration in the `http.gridmap` setting.  For example:
+
+```
+http.gridmap compatNameGeneration /etc/xrootd/grid-mapfile
+```
+
+Would restore the old behavior.
+
+With this change, a user can effectively match the `nomap`, `trymap`,
+and `usemap` settings between the XRootD and HTTP protocols and the
+two protocols have the same default.  Without the change, only the
+`usemap` setting could be matched with HTTP.  Having the defaults the
+same greatly decreases the "surprise" factor of using both protocols;
+the prior HTTP default of guessing a name from the DN is undocumented.
+
+(cherry picked from commit ec0754f28fc3cffa551f5cdc42ecdb959b3a0830)
+---
+ src/XrdHttp/XrdHttpProtocol.cc | 16 +++++++++++++++-
+ src/XrdHttp/XrdHttpProtocol.hh |  7 +++++--
+ src/XrdHttp/XrdHttpSecurity.cc | 19 ++++++++++++++-----
+ 3 files changed, 34 insertions(+), 8 deletions(-)
+
+diff --git a/xrootd/src/XrdHttp/XrdHttpProtocol.cc b/xrootd/src/XrdHttp/XrdHttpProtocol.cc
+index af965db45..d171b4c84 100644
+--- a/xrootd/src/XrdHttp/XrdHttpProtocol.cc
++++ b/xrootd/src/XrdHttp/XrdHttpProtocol.cc
+@@ -90,6 +90,7 @@ char *XrdHttpProtocol::secretkey = 0;
+ 
+ char *XrdHttpProtocol::gridmap = 0;
+ bool XrdHttpProtocol::isRequiredGridmap = false;
++bool XrdHttpProtocol::compatNameGeneration = false;
+ int XrdHttpProtocol::sslverifydepth = 9;
+ BIO *XrdHttpProtocol::sslbio_err = 0;
+ XrdHttpSecXtractor *XrdHttpProtocol::secxtractor = 0;
+@@ -1953,7 +1954,7 @@ int XrdHttpProtocol::xsslkey(XrdOucStream & Config) {
+ 
+ /* Function: xgmap
+ 
+-   Purpose:  To parse the directive: gridmap [required] <path>
++   Purpose:  To parse the directive: gridmap [required] [compatNameGeneration] <path>
+ 
+      required   optional parameter which if present treats any grimap errors
+                 as fatal.
+@@ -1988,6 +1989,19 @@ int XrdHttpProtocol::xgmap(XrdOucStream & Config) {
+     }
+   }
+ 
++  // Handle optional parameter "compatNameGeneration"
++  //
++  if (!strcmp(val, "compatNameGeneration")) {
++    compatNameGeneration = true;
++    val = Config.GetWord();
++    if (!val || !val[0]) {
++      eDest.Emsg("Config", "HTTP X509 gridmap file missing after "
++                 "[compatNameGeneration] parameter");
++      return 1;
++    }
++  }
++
++
+   // Record the path
+   //
+   if (gridmap) free(gridmap);
+diff --git a/xrootd/src/XrdHttp/XrdHttpProtocol.hh b/xrootd/src/XrdHttp/XrdHttpProtocol.hh
+index 7ce21db68..e62fca7c6 100644
+--- a/xrootd/src/XrdHttp/XrdHttpProtocol.hh
++++ b/xrootd/src/XrdHttp/XrdHttpProtocol.hh
+@@ -161,9 +161,11 @@ class XrdHttpProtocol : public XrdProtocol {
+   int GetVOMSData(XrdLink *lp);
+ 
+   // Handle gridmap file mapping if present
++  // Second argument is the OpenSSL hash of the EEC, if present; this allows
++  // a consistent fallback if the user is not in the mapfile.
+   //
+   // @return 0 if successful, otherwise !0
+-  int HandleGridMap(XrdLink* lp);
++  int HandleGridMap(XrdLink* lp, const char * eechash);
+ 
+   /// Get up to blen bytes from the connection. Put them into mybuff.
+   /// This primitive, for the way it is used, is not supposed to block
+@@ -365,7 +367,8 @@ class XrdHttpProtocol : public XrdProtocol {
+   /// Gridmap file location. The same used by XrdSecGsi
+   static char *gridmap;// [s] gridmap file [/etc/grid-security/gridmap]
+   static bool isRequiredGridmap; // If true treat gridmap errors as fatal
+-   
++  static bool compatNameGeneration; // If true, utilize the old algorithm for username generation for unknown users.
++
+   /// The key used to calculate the url hashes
+   static char *secretkey;
+ 
+diff --git a/xrootd/src/XrdHttp/XrdHttpSecurity.cc b/xrootd/src/XrdHttp/XrdHttpSecurity.cc
+index 638045eb6..3670feac0 100644
+--- a/xrootd/src/XrdHttp/XrdHttpSecurity.cc
++++ b/xrootd/src/XrdHttp/XrdHttpSecurity.cc
+@@ -116,45 +116,48 @@ XrdHttpProtocol::HandleAuthentication(XrdLink* lp)
+   // Extract the DN for the current connection that will be used later on when
+   // handling the gridmap file
+   const char * dn = chain.EECname();
++  const char * eechash = chain.EEChash();
+ 
+-  if (!dn) {
++  if (!dn || !eechash) {
+     // X509Chain doesn't assume it owns the underlying certs unless
+     // you explicitly invoke the Cleanup method
+     TRACEI(DEBUG, "Failed to extract DN information.");
+     chain.Cleanup();
+     return 1;
+   }
+ 
+   if (SecEntity.moninfo) {
+     free(SecEntity.moninfo);
+   }
+ 
+   SecEntity.moninfo = strdup(dn);
+-  TRACEI(DEBUG, " Subject name is : '" << SecEntity.moninfo << "'");
++  TRACEI(DEBUG, " Subject name is : '" << SecEntity.moninfo << "'; hash is " << eechash);
+   // X509Chain doesn't assume it owns the underlying certs unless
+   // you explicitly invoke the Cleanup method
+-  chain.Cleanup();
+ 
+   if (GetVOMSData(lp)) {
+     TRACEI(DEBUG, " No VOMS information for DN: " << SecEntity.moninfo);
+ 
+     if (isRequiredXtractor) {
+       eDest.Emsg(epname, "Failed extracting required VOMS info for DN: ",
+                  SecEntity.moninfo);
++      chain.Cleanup();
+       return 1;
+     }
+   }
+ 
+-  return HandleGridMap(lp);
++  auto retval = HandleGridMap(lp, eechash);
++  chain.Cleanup();
++  return retval;
+ }
+ 
+ 
+ /******************************************************************************/
+ /*                          H a n d l e G r i d M a p                         */
+ /******************************************************************************/
+ 
+ int
+-XrdHttpProtocol::HandleGridMap(XrdLink* lp)
++XrdHttpProtocol::HandleGridMap(XrdLink* lp, const char * eechash)
+ {
+   EPNAME("HandleGridMap");
+   char bufname[256];
+@@ -178,6 +181,12 @@ XrdHttpProtocol::HandleGridMap(XrdLink* lp)
+     }
+   }
+ 
++  if (!SecEntity.name && !compatNameGeneration) {
++    TRACEI(DEBUG, " Will fallback name to subject hash: " << eechash);
++    SecEntity.name = strdup(eechash);
++    return 0;
++  }
++
+   if (!SecEntity.name) {
+     // Here we have the user DN, and try to extract an useful user name from it
+     if (SecEntity.name) free(SecEntity.name);
+-- 
+2.25.1
+

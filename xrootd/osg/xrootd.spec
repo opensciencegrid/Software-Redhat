@@ -70,8 +70,8 @@
 #-------------------------------------------------------------------------------
 Name:      xrootd
 Epoch:     1
-Version:   5.4.2
-Release:   1.1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Version:   5.4.3
+Release:   0.1.rc1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -87,6 +87,26 @@ Source0:   xrootd.tar.gz
 %if 0%{?_with_compat}
 Source1:   xrootd-%{compat_version}.tar.gz
 %endif
+
+# OSG backports from 5.5 to 5.4.2:
+Patch1: 0001-Make-token-subject-available-to-the-security-entity.patch
+Patch2: 0002-Provide-an-example-use-of-the-token-subject.patch
+Patch3: 0003-Add-max-file-open-tracking.patch
+Patch4: 0004-Add-support-for-connection-tracking-in-the-throttle-.patch
+Patch5: 0005-Add-mapfile-support-as-a-separate-class-to-the-XrdVo.patch
+Patch6: 0006-Fixup-Add-const-fixes-due-to-ABI-change-revert.patch
+Patch7: 0007-Allow-explicit-grid-mapfile-entries-to-override-voms.patch
+Patch8: 0008-Add-initial-README-file-covering-the-syntax-and-beha.patch
+Patch9: 0009-Overhaul-reload-strategy-to-use-a-maintenance-thread.patch
+Patch10: 0010-Refactor-the-mapfile-class-to-be-core-within-XrdVoms.patch
+Patch11: 0011-Remove-faster-polling-interval-for-failures.patch
+Patch12: 0012-Remove-shutdown-capabilities-for-maintenance-thread.patch
+Patch13: 0013-XrdVomsMapfile-Add-a-comment-on-why-we-use-ctime-ove.patch
+Patch14: 0014-Return-nullptr-from-function-that-won-t-ever-hit-ret.patch
+Patch15: 0015-Use-gridmap.name-as-a-flag-no-need-to-preserve-the-a.patch
+Patch16: 0016-Have-the-XrdHttp-extraction-logic-match-GSI.patch
+Patch17: 0017-Bump-the-release-number-SOFTWARE-5085.patch
+
 
 BuildRoot: %{_tmppath}/%{name}-root
 
@@ -106,6 +126,7 @@ BuildRequires: libcurl-devel
 BuildRequires: libuuid-devel
 BuildRequires: voms-devel >= 2.0.6
 BuildRequires: git
+BuildRequires: pkgconfig
 %if %{have_macaroons}
 BuildRequires: libmacaroons-devel
 %endif
@@ -531,6 +552,26 @@ This package contains compatibility binaries for xrootd 4 servers.
 
 %setup -c -n xrootd
 
+# OSG backports from 5.5 to 5.4.2
+%patch1 -p1
+%patch2 -p1
+%patch3 -p1
+%patch4 -p1
+%patch5 -p1
+%patch6 -p1
+%patch7 -p1
+%patch8 -p1
+%patch9 -p1
+%patch10 -p1
+%patch11 -p1
+%patch12 -p1
+%patch13 -p1
+%patch14 -p1
+%patch15 -p1
+%patch16 -p1
+%patch17 -p1
+
+
 %build
 
 %if %{?rhel}%{!?rhel:0} == 7
@@ -570,9 +611,6 @@ cmake  \
 %endif
 %if %{?_with_isal:1}%{!?_with_isal:0}
       -DENABLE_XRDEC=TRUE \
-%endif
-%if %{?_with_openssl3:1}%{!?_with_openssl3:0}
-      -DWITH_OPENSSL3=TRUE \
 %endif
 %if %{python3only}
       -DXRD_PYTHON_REQ_VERSION=%{python3_pkgversion} \
@@ -1172,6 +1210,9 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Fri May 06 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.4.3-0.1.rc1
+- Update to 5.4.3rc1 and merge OSG changes (SOFTWARE-5160)
+
 * Fri Mar 11 2022 Brian Lin <blin@cs.wisc.edu> - 5.4.2-1.1
 - Move VOMS mapfile support to the source (SOFTWARE-4870)
 - Fix HTTP DN hashing

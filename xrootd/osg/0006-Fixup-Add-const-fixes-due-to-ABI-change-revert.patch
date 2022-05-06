@@ -1,0 +1,31 @@
+From fecfe16132198286eafafc67e568ef242c84adc9 Mon Sep 17 00:00:00 2001
+From: Brian Bockelman <bbockelman@morgridge.org>
+Date: Mon, 17 Jan 2022 10:40:50 -0600
+Subject: [PATCH 06/17] Fixup: Add const fixes due to ABI change revert.
+
+(cherry picked from commit 7b59dc126d969f83fd50faf87bdc278482b3926e)
+---
+ src/XrdVoms/XrdVomsMapfile.cc | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/xrootd/src/XrdVoms/XrdVomsMapfile.cc b/xrootd/src/XrdVoms/XrdVomsMapfile.cc
+index f118dee63..d49dc3612 100644
+--- a/xrootd/src/XrdVoms/XrdVomsMapfile.cc
++++ b/xrootd/src/XrdVoms/XrdVomsMapfile.cc
+@@ -228,8 +228,11 @@ XrdVomsMapfile::MakePath(const XrdOucString &group)
+     XrdOucString entry;
+     std::vector<std::string> path;
+     path.reserve(4);
+-    while ((from = group.tokenize(entry, from, '/')) != -1) {
+-        if (entry.empty()) continue;
++        // The const'ness of the tokenize method as declared is incorrect; we use
++        // const_cast here to avoid fixing the XrdOucString header (which would break
++        // the ABI).
++    while ((from = const_cast<XrdOucString&>(group).tokenize(entry, from, '/')) != -1) {
++        if (entry.length() == 0) continue;
+         path.emplace_back(entry.c_str());
+     }
+     return path;
+-- 
+2.25.1
+

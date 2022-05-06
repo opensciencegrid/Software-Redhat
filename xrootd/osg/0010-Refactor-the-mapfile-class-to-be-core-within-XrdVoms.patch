@@ -1,0 +1,312 @@
+From 4c617d35f579322269212a8fd57f0b12f5af564c Mon Sep 17 00:00:00 2001
+From: Brian Bockelman <bbockelman@morgridge.org>
+Date: Mon, 17 Jan 2022 11:23:48 -0600
+Subject: [PATCH 10/17] Refactor the mapfile class to be core within XrdVoms.
+
+This moves the mapfile invocation from being a "wrapper" around the
+existing XrdVoms plugins to be a core part of the functionality.
+
+Note this also changes the failure semantics from "fail quietly"
+to "fail process startup if misconfigured."
+
+(cherry picked from commit f9931b4c62687d142839f865933d2ae7c89181fc)
+---
+ src/XrdVoms/XrdVomsFun.cc     | 16 +++++++++++++++-
+ src/XrdVoms/XrdVomsFun.hh     |  3 +++
+ src/XrdVoms/XrdVomsHttp.cc    |  5 +----
+ src/XrdVoms/XrdVomsMapfile.cc | 35 +++++++++++++----------------------
+ src/XrdVoms/XrdVomsMapfile.hh | 23 ++++++++++-------------
+ src/XrdVoms/XrdVomsgsi.cc     | 10 +---------
+ 6 files changed, 43 insertions(+), 49 deletions(-)
+
+diff --git a/xrootd/src/XrdVoms/XrdVomsFun.cc b/xrootd/src/XrdVoms/XrdVomsFun.cc
+index 1c7fd5417..a4ced43ba 100644
+--- a/xrootd/src/XrdVoms/XrdVomsFun.cc
++++ b/xrootd/src/XrdVoms/XrdVomsFun.cc
+@@ -41,6 +41,7 @@
+ #include "XrdVoms.hh"
+ #include "XrdVomsFun.hh"
+ #include "XrdVomsTrace.hh"
++#include "XrdVomsMapfile.hh"
+ 
+ #ifdef HAVE_XRDCRYPTO
+ #include "XrdCrypto/XrdCryptoX509.hh"
+@@ -380,7 +381,13 @@ int XrdVomsFun::VOMSFun(XrdSecEntity &ent)
+    // Success or failure?
+    int rc = !ent.vorg ? -1 : 0;
+    if (rc == 0 && gGrps.Num() && !ent.grps) rc = -1;
+-   
++
++   // If we have a mapfile object, apply the mapping now.
++   if (m_mapfile) {
++       auto mapfile_rc = m_mapfile->Apply(ent);
++       rc = rc ? rc : mapfile_rc;
++   }
++
+    // Done
+    return rc;
+ }
+@@ -592,6 +599,13 @@ int XrdVomsFun::VOMSInit(const char *cfg)
+    if (gVOs.Num() > 0) {PRINT("+++ VO(s):        "<< voss);}
+       else             {PRINT("+++ VO(s):         all");}
+    PRINT("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
++
++   m_mapfile = XrdVomsMapfile::Configure(&gDest);
++   if (m_mapfile == VOMS_MAP_FAILED) {
++      aOK = false;
++      PRINT("VOMS mapfile requested but initialization failed; failing VOMS plugin config.");
++   }
++
+    // Done
+    return (aOK ? gCertFmt : -1);
+ }
+diff --git a/xrootd/src/XrdVoms/XrdVomsFun.hh b/xrootd/src/XrdVoms/XrdVomsFun.hh
+index 41a9251c9..ff5df58ef 100644
+--- a/xrootd/src/XrdVoms/XrdVomsFun.hh
++++ b/xrootd/src/XrdVoms/XrdVomsFun.hh
+@@ -38,6 +38,7 @@
+ class XrdSecEntity;
+ class XrdSysError;
+ class XrdSysLogger;
++class XrdVomsMapfile;
+ 
+ class XrdVomsFun
+ {
+@@ -82,5 +83,7 @@ XrdOucString    gVoFmt;           // format contents of XrdSecEntity::vorg
+ 
+ XrdSysError    &gDest;
+ XrdSysLogger   *gLogger;
++
++XrdVomsMapfile *m_mapfile{nullptr};
+ };
+ #endif
+diff --git a/xrootd/src/XrdVoms/XrdVomsHttp.cc b/xrootd/src/XrdVoms/XrdVomsHttp.cc
+index 5c2532707..4e7131bc3 100644
+--- a/xrootd/src/XrdVoms/XrdVomsHttp.cc
++++ b/xrootd/src/XrdVoms/XrdVomsHttp.cc
+@@ -29,7 +29,6 @@
+ 
+ // This code is based on
+ 
+-#include "XrdVomsMapfile.hh"
+ #include "XrdVomsFun.hh"
+ 
+ /** @brief This code is based on the basic architecture shown in
+@@ -143,9 +142,7 @@ XrdHttpSecXtractor *XrdHttpGetSecXtractor(XrdHttpSecXtractorArgs)
+ 
+ // Now return the interface object
+ //
+-   auto base = static_cast<XrdHttpSecXtractor *>(new XrdVomsHttp(eDest, *vomsFun));
+-   auto wrapper = static_cast<XrdHttpSecXtractor *>(XrdVomsMapfile::Configure(eDest, base));
+-   return wrapper ? wrapper : base;
++   return (XrdHttpSecXtractor *)new XrdVomsHttp(eDest, *vomsFun);
+ }
+ 
+ /******************************************************************************/
+diff --git a/xrootd/src/XrdVoms/XrdVomsMapfile.cc b/xrootd/src/XrdVoms/XrdVomsMapfile.cc
+index aa4fef6d9..24d23d281 100644
+--- a/xrootd/src/XrdVoms/XrdVomsMapfile.cc
++++ b/xrootd/src/XrdVoms/XrdVomsMapfile.cc
+@@ -68,9 +68,9 @@ uint64_t monotonic_time_s() {
+ }
+ 
+ 
+-XrdVomsMapfile::XrdVomsMapfile(XrdSysError *erp, XrdHttpSecXtractor *xrdvoms,
++XrdVomsMapfile::XrdVomsMapfile(XrdSysError *erp,
+     const std::string &mapfile)
+-    : m_mapfile(mapfile), m_xrdvoms(xrdvoms), m_edest(erp)
++    : m_mapfile(mapfile), m_edest(erp)
+ {
+     // Setup communication pipes; we write one byte to the child to tell it to shutdown;
+     // it'll write one byte back to acknowledge before our destructor exits.
+@@ -288,18 +288,6 @@ XrdVomsMapfile::MakePath(const XrdOucString &group)
+ }
+ 
+ 
+-int
+-XrdVomsMapfile::GetSecData(XrdLink * lnk, XrdSecEntity &entity, SSL *ssl)
+-{
+-    if (!m_xrdvoms) return -1;
+-
+-    auto retval = m_xrdvoms->GetSecData(lnk, entity, ssl);
+-    if (retval) return retval;
+-
+-    return Apply(entity);
+-}
+-
+-
+ int
+ XrdVomsMapfile::Apply(XrdSecEntity &entity)
+ {
+@@ -352,49 +340,48 @@ XrdVomsMapfile::Get()
+ 
+ 
+ XrdVomsMapfile *
+-XrdVomsMapfile::Configure(XrdSysError *erp, XrdHttpSecXtractor *xtractor)
++XrdVomsMapfile::Configure(XrdSysError *erp)
+ {
+     if (tried_configure) {
+         auto result = mapper.get();
+         if (result) {
+-            result->SetExtractor(xtractor);
+             result->SetErrorStream(erp);
+         }
+         return result;
+     }
+ 
+     tried_configure = true;
+ 
+     // Set default mask for logging.
+     if (erp) erp->setMsgMask(LogMask::Error | LogMask::Warning);
+ 
+     char *config_filename = nullptr;
+     if (!XrdOucEnv::Import("XRDCONFIGFN", config_filename)) {
+-        return nullptr;
++        return VOMS_MAP_FAILED;
+     }
+     XrdOucStream stream(erp, getenv("XRDINSTANCE"));
+ 
+     int cfg_fd;
+     if ((cfg_fd = open(config_filename, O_RDONLY, 0)) < 0) {
+         if (erp) erp->Emsg("Config", errno, "open config file", config_filename);
+-        return nullptr;
++        return VOMS_MAP_FAILED;
+     }
+     stream.Attach(cfg_fd);
+     char *var;
+     std::string map_filename;
+     while ((var = stream.GetMyFirstWord())) {
+         if (!strcmp(var, "voms.mapfile")) {
+             auto val = stream.GetWord();
+             if (!val || !val[0]) {
+                 if (erp) erp->Emsg("Config", "VOMS mapfile not specified");
+-                return nullptr;
++                return VOMS_MAP_FAILED;
+             }
+             map_filename = val;
+         } else if (!strcmp(var, "voms.trace")) {
+             auto val = stream.GetWord();
+             if (!val || !val[0]) {
+                 if (erp) erp->Emsg("Config", "VOMS logging level not specified");
+-                return nullptr;
++                return VOMS_MAP_FAILED;
+             }
+             if (erp) erp->setMsgMask(0);
+             if (erp) do {
+@@ -412,10 +399,14 @@ XrdVomsMapfile::Configure(XrdSysError *erp, XrdHttpSecXtractor *xtractor)
+ 
+     if (!map_filename.empty()) {
+         if (erp) erp->Emsg("Config", "Will initialize VOMS mapfile", map_filename.c_str());
+-        mapper.reset(new XrdVomsMapfile(erp, xtractor, map_filename));
++        mapper.reset(new XrdVomsMapfile(erp, map_filename));
++        if (!mapper->IsValid()) {
++            mapper.reset(nullptr);
++            return VOMS_MAP_FAILED;
++        }
+     }
+ 
+-    return mapper->IsValid() ? mapper.get() : nullptr;
++    return mapper.get();
+ }
+ 
+ 
+diff --git a/xrootd/src/XrdVoms/XrdVomsMapfile.hh b/xrootd/src/XrdVoms/XrdVomsMapfile.hh
+index 61c47cbfe..e859c8fbe 100644
+--- a/xrootd/src/XrdVoms/XrdVomsMapfile.hh
++++ b/xrootd/src/XrdVoms/XrdVomsMapfile.hh
+@@ -23,39 +23,37 @@
+ /* specific prior written permission of the institution or contributor.       */
+ /******************************************************************************/
+ 
+-#include "XrdHttp/XrdHttpSecXtractor.hh"
+-
+ #include "XrdOuc/XrdOucString.hh"
++#include "XrdSys/XrdSysError.hh"
++#include "XrdSec/XrdSecEntity.hh"
+ 
+ #include <atomic>
+ #include <memory>
+ #include <string>
+ #include <vector>
+ 
+-class XrdVomsMapfile : public XrdHttpSecXtractor {
++#define VOMS_MAP_FAILED ((XrdVomsMapfile *)-1)
++
++class XrdVomsMapfile {
+ 
+ public:
+     virtual ~XrdVomsMapfile();
+ 
+-    static XrdVomsMapfile *Configure(XrdSysError *, XrdHttpSecXtractor *);
++    // Returns `nullptr` if the mapfile was not configured; returns
++    // VOMS_MAP_FAILED (`(void*)-1`) if the mapfile was configured but it
++    // was unable to be parsed (or other error occurred).
++    static XrdVomsMapfile *Configure(XrdSysError *);
+     static XrdVomsMapfile *Get();
+ 
+-    virtual int GetSecData(XrdLink *, XrdSecEntity &, SSL *);
+     int Apply(XrdSecEntity &);
+ 
+     bool IsValid() const {return m_is_valid;}
+ 
+-    /* Base class returns an error if these aren't overridden */
+-    virtual int Init(SSL_CTX *, int) {return 0;}
+-    virtual int InitSSL(SSL *ssl, char *cadir) {return 0;}
+-    virtual int FreeSSL(SSL *) {return 0;}
+-
+ private:
+     bool Reconfigure();
+     void SetErrorStream(XrdSysError *erp) {if (erp) {m_edest = erp;}}
+-    void SetExtractor(XrdHttpSecXtractor *xtractor) {if (xtractor) {m_xrdvoms = xtractor;}}
+ 
+-    XrdVomsMapfile(XrdSysError *erp, XrdHttpSecXtractor *xrdvoms, const std::string &mapfile);
++    XrdVomsMapfile(XrdSysError *erp, const std::string &mapfile);
+ 
+     enum LogMask {
+         Debug = 0x01,
+@@ -87,7 +85,6 @@ class XrdVomsMapfile : public XrdHttpSecXtractor {
+ 
+     std::string m_mapfile;
+     std::shared_ptr<const std::vector<MapfileEntry>> m_entries;
+-    XrdHttpSecXtractor *m_xrdvoms{nullptr};
+     XrdSysError *m_edest{nullptr};
+ 
+     // Pipes to allow the main thread to communicate shutdown events to the maintenance
+diff --git a/xrootd/src/XrdVoms/XrdVomsgsi.cc b/xrootd/src/XrdVoms/XrdVomsgsi.cc
+index b054004a9..293f9363d 100644
+--- a/xrootd/src/XrdVoms/XrdVomsgsi.cc
++++ b/xrootd/src/XrdVoms/XrdVomsgsi.cc
+@@ -30,8 +30,6 @@
+ #include "XrdSys/XrdSysError.hh"
+ #include "XrdSys/XrdSysLogger.hh"
+ 
+-#include "XrdVomsMapfile.hh"
+-
+ #include "XrdVomsFun.hh"
+ 
+ /******************************************************************************/
+@@ -59,11 +57,7 @@ int XrdSecgsiVOMSFun(XrdSecEntity &ent)
+ {
+ // Make sure we were initialized. If so, invoke the function and return result.
+ //
+-   int retval = (vomsFun ? vomsFun->VOMSFun(ent) : -1);
+-   if (retval == -1) {return retval;}
+-
+-   auto mapfile = XrdVomsMapfile::Get();
+-   return mapfile ? mapfile->Apply(ent) : retval;
++   return (vomsFun ? vomsFun->VOMSFun(ent) : -1);
+ }
+ }
+ 
+@@ -80,8 +74,6 @@ int XrdSecgsiVOMSInit(const char *cfg)
+    static XrdSysLogger gLogger;
+    static XrdSysError gDest(&gLogger, "XrdVoms");
+ 
+-   XrdVomsMapfile::Configure(&gDest, nullptr);
+-
+ // Allocate a new Voms object
+ //
+    vomsFun = new XrdVomsFun(gDest);
+-- 
+2.25.1
+

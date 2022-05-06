@@ -1,0 +1,124 @@
+From 7c0e27ef717ff32a0e75660857d94208e8016ee6 Mon Sep 17 00:00:00 2001
+From: Brian Bockelman <bbockelman@morgridge.org>
+Date: Thu, 16 Dec 2021 11:12:00 -0600
+Subject: [PATCH 01/17] Make token subject available to the security entity.
+
+The token subject - even when it's not used for authorization as
+part of XrdSecEntity's credential name - is potentially useful as
+it indicates a unique entity.  Record this as part of the extended
+attribute API in the security credential.
+
+(cherry picked from commit 3eacd634950cdd4e349393b1a5a7a8f8c78caa10)
+---
+ src/XrdSciTokens/XrdSciTokensAccess.cc | 34 ++++++++++++++++++--------
+ 1 file changed, 24 insertions(+), 10 deletions(-)
+
+diff --git a/xrootd/src/XrdSciTokens/XrdSciTokensAccess.cc b/xrootd/src/XrdSciTokens/XrdSciTokensAccess.cc
+index 1e220724a..6ee18e407 100644
+--- a/xrootd/src/XrdSciTokens/XrdSciTokensAccess.cc
++++ b/xrootd/src/XrdSciTokens/XrdSciTokensAccess.cc
+@@ -211,11 +211,11 @@ struct IssuerConfig
+ class XrdAccRules
+ {
+ public:
+-    XrdAccRules(uint64_t expiry_time, const std::string &username, const std::string &token_username,
++    XrdAccRules(uint64_t expiry_time, const std::string &username, const std::string &token_subject,
+         const std::string &issuer, const std::vector<MapRule> &rules, const std::vector<std::string> &groups) :
+         m_expiry_time(expiry_time),
+         m_username(username),
+-        m_token_username(token_username),
++        m_token_subject(token_subject),
+         m_issuer(issuer),
+         m_map_rules(rules),
+         m_groups(groups)
+@@ -244,25 +244,29 @@ class XrdAccRules
+     std::string get_username(const std::string &req_path)
+     {
+         for (const auto &rule : m_map_rules) {
+-            std::string name = rule.match(m_token_username, req_path, m_groups);
++            std::string name = rule.match(m_token_subject, req_path, m_groups);
+             if (!name.empty()) {
+                 return name;
+             }
+         }
+         return "";
+     }
+ 
++        // Return the token's subject, an opaque unique string within the issuer's
++        // namespace.  It may or may not be related to the username one should
++        // use within the authorization framework.
++    const std::string & get_token_subject() const {return m_token_subject;}
+     const std::string & get_default_username() const {return m_username;}
+     const std::string & get_issuer() const {return m_issuer;}
+ 
+     size_t size() const {return m_rules.size();}
+     const std::vector<std::string> &groups() const {return m_groups;}
+ 
+ private:
+     AccessRulesRaw m_rules;
+     uint64_t m_expiry_time{0};
+     const std::string m_username;
+-    const std::string m_token_username;
++    const std::string m_token_subject;
+     const std::string m_issuer;
+     const std::vector<MapRule> m_map_rules;
+     const std::vector<std::string> m_groups;
+@@ -327,12 +331,12 @@ class XrdAccSciTokens : public XrdAccAuthorize, public XrdSciTokensHelper
+ 		uint64_t cache_expiry;
+ 		AccessRulesRaw rules;
+                 std::string username;
+-                std::string token_username;
++                std::string token_subject;
+                 std::string issuer;
+                 std::vector<MapRule> map_rules;
+                 std::vector<std::string> groups;
+-                if (GenerateAcls(authz, cache_expiry, rules, username, token_username, issuer, map_rules, groups)) {
+-                    access_rules.reset(new XrdAccRules(now + cache_expiry, username, token_username, issuer, map_rules, groups));
++                if (GenerateAcls(authz, cache_expiry, rules, username, token_subject, issuer, map_rules, groups)) {
++                    access_rules.reset(new XrdAccRules(now + cache_expiry, username, token_subject, issuer, map_rules, groups));
+                     access_rules->parse(rules);
+                 } else {
+                     return OnMissing(Entity, path, oper, env);
+@@ -404,6 +408,16 @@ class XrdAccSciTokens : public XrdAccAuthorize, public XrdSciTokensHelper
+             Entity->eaAPI->Add("request.name", username, true);
+         }
+ 
++            // Make the token subject available.  Even though it's a reasonably bad idea
++            // to use for *authorization* for file access, there may be other use cases.
++            // For example, the combination of (vorg, token.subject) is a reasonable
++            // approximation of a unique 'entity' (either person or a robot) and is
++            // more reasonable to use for resource fairshare in XrdThrottle.
++        const auto &token_subject = access_rules->get_token_subject();
++        if (!token_subject.empty()) {
++            Entity->eaAPI->Add("token.subject", token_subject, true);
++        }
++
+         // When the scope authorized this access, allow immediately.  Otherwise, chain
+         XrdAccPrivs returned_op = scope_success ? AddPriv(oper, XrdAccPriv_None) : OnMissing(&new_secentity, path, oper, env);
+ 
+@@ -517,7 +531,7 @@ class XrdAccSciTokens : public XrdAccAuthorize, public XrdSciTokensHelper
+         return XrdAccPriv_None;
+     }
+ 
+-    bool GenerateAcls(const std::string &authz, uint64_t &cache_expiry, AccessRulesRaw &rules, std::string &username, std::string &token_username, std::string &issuer, std::vector<MapRule> &map_rules, std::vector<std::string> &groups) {
++    bool GenerateAcls(const std::string &authz, uint64_t &cache_expiry, AccessRulesRaw &rules, std::string &username, std::string &token_subject, std::string &issuer, std::vector<MapRule> &map_rules, std::vector<std::string> &groups) {
+         if (strncmp(authz.c_str(), "Bearer%20", 9)) {
+             return false;
+         }
+@@ -634,11 +648,11 @@ class XrdAccSciTokens : public XrdAccAuthorize, public XrdSciTokensHelper
+             scitoken_destroy(token);
+             return false;
+         }
+-        token_username = std::string(value);
++        token_subject = std::string(value);
+         free(value);
+ 
+         if (config.m_map_subject) {
+-            username = token_username;
++            username = token_subject;
+         } else {
+             username = config.m_default_user;
+         }
+-- 
+2.25.1
+

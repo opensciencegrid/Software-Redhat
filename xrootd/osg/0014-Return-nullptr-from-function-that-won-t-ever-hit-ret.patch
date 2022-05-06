@@ -1,0 +1,24 @@
+From b950a3d735906015ac6ca5a2cea118f812b02d3f Mon Sep 17 00:00:00 2001
+From: Brian Bockelman <bbockelman@morgridge.org>
+Date: Mon, 28 Feb 2022 22:46:46 -0600
+Subject: [PATCH 14/17] Return nullptr from function that won't ever hit return
+ statement.
+
+(cherry picked from commit 67d047b422bb6f5f1e697dccdd9c128c36711730)
+---
+ src/XrdVoms/XrdVomsMapfile.cc | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/xrootd/src/XrdVoms/XrdVomsMapfile.cc b/xrootd/src/XrdVoms/XrdVomsMapfile.cc
+index 30bdb88c9..254ac3d98 100644
+--- a/xrootd/src/XrdVoms/XrdVomsMapfile.cc
++++ b/xrootd/src/XrdVoms/XrdVomsMapfile.cc
+@@ -420,4 +420,5 @@ XrdVomsMapfile::MaintenanceThread(void *myself_raw)
+            myself->m_edest->Log(LogMask::Error, "Maintenance", "Failed to reload VOMS mapfile");
+        }
+    }
++   return nullptr;
+ }
+-- 
+2.25.1
+
