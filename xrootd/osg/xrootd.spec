@@ -70,8 +70,8 @@
 #-------------------------------------------------------------------------------
 Name:      xrootd
 Epoch:     1
-Version:   5.4.2
-Release:   1.1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Version:   5.4.3
+Release:   0.rc1.1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -106,6 +106,7 @@ BuildRequires: libcurl-devel
 BuildRequires: libuuid-devel
 BuildRequires: voms-devel >= 2.0.6
 BuildRequires: git
+BuildRequires: pkgconfig
 %if %{have_macaroons}
 BuildRequires: libmacaroons-devel
 %endif
@@ -323,10 +324,6 @@ Requires:  %{name}-libs        = %{epoch}:%{version}-%{release}
 Requires:  %{name}-client-libs = %{epoch}:%{version}-%{release}
 Requires:  %{name}-server-libs = %{epoch}:%{version}-%{release}
 Requires:  expect
-%if 0%{?osg}
-# SOFTWARE-4557
-Conflicts: xrootd-multiuser < 0.6
-%endif
 
 %description server
 XRootD server binaries
@@ -570,9 +567,6 @@ cmake  \
 %endif
 %if %{?_with_isal:1}%{!?_with_isal:0}
       -DENABLE_XRDEC=TRUE \
-%endif
-%if %{?_with_openssl3:1}%{!?_with_openssl3:0}
-      -DWITH_OPENSSL3=TRUE \
 %endif
 %if %{python3only}
       -DXRD_PYTHON_REQ_VERSION=%{python3_pkgversion} \
@@ -1172,6 +1166,9 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Mon May 09 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.4.3-0.rc1.1
+- Build from 5.4.3-rc1 and add OSG changes (SOFTWARE-5160)
+
 * Fri Mar 11 2022 Brian Lin <blin@cs.wisc.edu> - 5.4.2-1.1
 - Move VOMS mapfile support to the source (SOFTWARE-4870)
 - Fix HTTP DN hashing
