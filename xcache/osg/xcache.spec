@@ -1,7 +1,7 @@
 Name:      xcache
 Summary:   XCache scripts and configurations
 Version:   3.0.1
-Release:   1.1%{?dist}
+Release:   1.2%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       https://opensciencegrid.org/docs/
@@ -84,6 +84,7 @@ Requires: xrootd-client
 
 Provides: stashcache-origin-server = %{name}-%{version}
 Obsoletes: stashcache-origin-server < 1.0.0
+Conflicts: osg-xrootd-standalone
 
 %description -n stash-origin
 %{summary}
@@ -107,6 +108,7 @@ Provides: stashcache-cache-server = %{name}-%{version}
 Provides: stashcache-cache-server-auth = %{name}-%{version}
 Obsoletes: stashcache-cache-server < 1.0.0
 Obsoletes: stashcache-cache-server-auth < 1.0.0
+Conflicts: osg-xrootd-standalone
 
 %description -n stash-cache
 %{summary}
@@ -277,6 +279,9 @@ mkdir -p %{buildroot}%{_sysconfdir}/grid-security/xrd
 %config %{_sysconfdir}/xrootd/config.d/03-redir-tuning.cfg
 
 %changelog
+* Mon May 09 2022 Carl Edquist <edquist@cs.wisc.edu> - 3.0.1-1.2
+- Add Conflicts for osg-xrootd-standalone (SOFTWARE-4668)
+
 * Wed Apr 20 2022 Carl Edquist <edquist@cs.wisc.edu> - 3.0.1-1.1
 - Fix python and python-xrootd requirements (SOFTWARE-5126)
 
