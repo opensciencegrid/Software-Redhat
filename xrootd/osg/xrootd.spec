@@ -1277,7 +1277,7 @@ fi
 * Mon Feb 01 2021 Edgar Fajardo <emfajard@ucsd.edu> - 5.1.0-0.rc6.1.osg
 - Rebuild for rc6 (SOFTWARE-4356)
 
-* Mon Jan 19 2021 Edgar Fajardo <emfajard@ucsd.edu> - 5.1.0-0.rc5.1.osg
+* Mon Jan 18 2021 Edgar Fajardo <emfajard@ucsd.edu> - 5.1.0-0.rc5.1.osg
 - Rebuild to rc5
 
 * Mon Dec 21 2020 Edgar Fajardo <emfajard@ucsd.edu> - 5.1.0-0.rc4.1.osg
