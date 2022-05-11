@@ -1,5 +1,5 @@
-xrootd/5.4.3/xrootd-5.4.3-0.rc1.2.el7.src.rpm sha1sum=cab1768cf6806ebd9734c848ddb8ac951f5dca20
-# Built from https://github.com/matyasselmeci/xrootd/releases/tag/v5.4.3-rc1.2
+xrootd/5.4.3/xrootd-5.4.3-0.rc2.1.el7.src.rpm sha1sum=c3968f9299873c17f4f4160be346af9650d5a7ec
+# Built from https://github.com/matyasselmeci/xrootd/releases/tag/v5.4.3-rc2.1
 # podman run -i -t --rm -v $PWD:/xrootd centos:7 bash
 #       yum-config-manager --enablerepo powertools >/dev/null
 #       yum install -y epel-release
