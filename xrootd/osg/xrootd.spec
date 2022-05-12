@@ -71,7 +71,7 @@
 Name:      xrootd
 Epoch:     1
 Version:   5.4.3
-Release:   0.rc2.1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:   0.rc3.1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -118,6 +118,7 @@ BuildRequires: python2-devel
 BuildRequires: python2-setuptools
 %endif
 %if %{python2and3}
+BuildRequires: python2-pip
 BuildRequires: python2-devel
 BuildRequires: python2-setuptools
 BuildRequires: python%{python3_pkgversion}-devel
@@ -1167,6 +1168,9 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Thu May 12 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.4.3-0.rc3.1
+- Build from 5.4.3-rc3 and add OSG changes (SOFTWARE-5160)
+
 * Wed May 11 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.4.3-0.rc2.1
 - Build from 5.4.3-rc2 and add OSG changes (SOFTWARE-5160)
 
