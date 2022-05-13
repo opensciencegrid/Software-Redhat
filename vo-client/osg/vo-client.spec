@@ -3,7 +3,7 @@
 %define iam 1
 
 Name:           vo-client
-Version:        120
+Version:        121
 Release:        1%{?dist}
 Summary:        Contains vomses file for use with user authentication
 
@@ -84,6 +84,9 @@ find $RPM_BUILD_ROOT/%{_sysconfdir}/grid-security/vomsdir -type d -exec chmod 75
 %config(noreplace) %{_datadir}/osg/grid-vorolemap
 
 %changelog
+* Fri May 13 2022 Carl Edquist <edquist@cs.wisc.edu> - 121-1
+- Add new hosts for eic/clas12 (SOFTWARE-5176)
+
 * Mon Feb 14 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 120-1
 - Update voms1.fnal.gov DN to remove Locality field (SOFTWARE-4996)
 
