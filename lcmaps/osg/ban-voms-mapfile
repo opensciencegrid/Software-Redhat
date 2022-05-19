@@ -1,0 +1,10 @@
+# Warning: deleting this file may cause everyone to be banned.
+# Leaving it empty is OK.
+#
+# This file is for VOs to be banned from this site
+# Add shell-style (i.e. fnmatch(3)) patterns, in quotes, one per line, based on
+# proxy FQANs.
+#
+# Examples:
+# "/fermilab/*"
+# "/cms/Role=cmsuser/*"

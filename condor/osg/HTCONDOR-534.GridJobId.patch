@@ -1,0 +1,21 @@
+commit 54f31f31a5311bf91a6c6c8df3c69b652482e4ad
+Author: Jaime Frey <jfrey@cs.wisc.edu>
+Date:   Wed Jun 2 13:58:12 2021 -0500
+
+    Keep GridJobId for completed and removed grid batch jobs. HTCONDOR-534
+    
+    Type 'batch' was missed when we made this change for all grid universe
+    jobs.
+
+diff --git a/src/condor_gridmanager/infnbatchjob.cpp b/src/condor_gridmanager/infnbatchjob.cpp
+index 0b2e3ea..4f22d12 100644
+--- a/src/condor_gridmanager/infnbatchjob.cpp
++++ b/src/condor_gridmanager/infnbatchjob.cpp
+@@ -1096,7 +1096,6 @@ void INFNBatchJob::doEvaluateState()
+ 			}
+ #endif
+ 
+-			SetRemoteIds( NULL, NULL );
+ 			if ( condorState == COMPLETED || condorState == REMOVED ) {
+ 				gmState = GM_DELETE;
+ 			} else {

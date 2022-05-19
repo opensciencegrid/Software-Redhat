@@ -1,0 +1,213 @@
+commit 82a9bde9f1231b18642970277c1f557be9a6062e
+Author: Carl Edquist <edquist@cs.wisc.edu>
+Date:   Fri Oct 16 20:10:24 2015 -0500
+
+    fix SQL syntax for el7/mariadb (SOFTWARE-1604)
+    
+    TYPE=InnoDB doesn't work; we can either drop this altogether or use the
+    correct keyword, ENGINE=...
+
+diff --git a/src/install/voms.data b/src/install/voms.data
+index bcc99df..a0ef074 100644
+--- a/src/install/voms.data
++++ b/src/install/voms.data
+@@ -44,7 +44,7 @@ CREATE TABLE acl (
+   -- Keys and indices.
+   INDEX (aid),  -- not primary key!
+   INDEX (aid, adminid, operation)
+-) TYPE=InnoDB;
++) ENGINE=InnoDB;
+ 
+ CREATE TABLE acld (
+   aid bigint unsigned NOT NULL,
+@@ -58,7 +58,7 @@ CREATE TABLE acld (
+   -- Keys and indices.
+   INDEX (aid),
+   INDEX (aid, adminid, operation)
+-) TYPE=InnoDB;
++) ENGINE=InnoDB;
+ 
+ #
+ # List of the administrator users (to be referenced in acls)
+@@ -76,7 +76,7 @@ CREATE TABLE admins (
+   -- Keys and indices.
+   PRIMARY KEY (adminid),
+   UNIQUE KEY admin (dn,ca)
+-) TYPE=InnoDB;
++) ENGINE=InnoDB;
+ 
+ #
+ # Known Certificate Authorities
+@@ -94,7 +94,7 @@ CREATE TABLE ca (
+   UNIQUE KEY ca (ca)
+   -- No createdBy/createdSerial, the rows in this table, because 
+   -- they should be never changed by the administrative interface.
+-) TYPE=InnoDB;
++) ENGINE=InnoDB;
+ 
+ #
+ # Holds all groups in a VO
+@@ -119,7 +119,7 @@ CREATE TABLE groups (
+   PRIMARY KEY  (gid),
+   KEY parentg (parent),
+   KEY groupname (dn)
+-) TYPE=InnoDB;
++) ENGINE=InnoDB;
+ 
+ -- archive table for groups
+ CREATE TABLE groupsd (
+@@ -136,7 +136,7 @@ CREATE TABLE groupsd (
+   PRIMARY KEY  (gid),
+   KEY parentg (parent),
+   KEY groupname (dn)
+-) TYPE=InnoDB;
++) ENGINE=InnoDB;
+ 
+ #
+ # Link table between usr and (roles/groups/capabilities)
+@@ -162,7 +162,7 @@ CREATE TABLE m (
+   KEY rid (rid),
+   KEY cid (cid),
+   KEY container (gid,rid,cid)
+-) TYPE=InnoDB;
++) ENGINE=InnoDB;
+ 
+ -- archives for membership
+ CREATE TABLE md (
+@@ -181,7 +181,7 @@ CREATE TABLE md (
+   KEY rid (rid),
+   KEY cid (cid),
+   KEY container (gid,rid,cid)
+-) TYPE=InnoDB;
++) ENGINE=InnoDB;
+ 
+ #
+ # Table structure for table 'validity'
+@@ -192,7 +192,7 @@ CREATE TABLE validity (
+   begin TIMESTAMP NOT NULL,
+   end TIMESTAMP NOT NULL,
+   PRIMARY KEY(vid)
+-) TYPE=InnoDB;
++) ENGINE=InnoDB;
+  
+ #
+ # Table structure for table 'periodicity'
+@@ -207,7 +207,7 @@ CREATE TABLE periodicity (
+   year TINYINT NOT NULL, 
+   hduration INTEGER NOT NULL,
+   PRIMARY KEY(pid)
+-) TYPE=InnoDB;
++) ENGINE=InnoDB;
+ 
+ #
+ # Support for special queries
+@@ -217,7 +217,7 @@ CREATE TABLE queries (
+   qid bigint unsigned NOT NULL auto_increment,
+   query varchar(255) NOT NULL,
+   PRIMARY KEY  (qid)
+-) TYPE=InnoDB;
++) ENGINE=InnoDB;
+ 
+ #
+ # Holds all roles in a VO
+@@ -235,7 +235,7 @@ CREATE TABLE roles (
+   createdSerial bigint unsigned NOT NULL,
+   PRIMARY KEY  (rid),
+   KEY role (role)
+-) TYPE=InnoDB;
++) ENGINE=InnoDB;
+ 
+ -- archive table for roles
+ CREATE TABLE rolesd (
+@@ -248,7 +248,7 @@ CREATE TABLE rolesd (
+   deletedSerial bigint unsigned NOT NULL,
+   PRIMARY KEY  (rid),
+   KEY role (role)
+-) TYPE=InnoDB;
++) ENGINE=InnoDB;
+ 
+ #
+ # Holds all capabilities in the VO.
+@@ -267,7 +267,7 @@ CREATE TABLE capabilities (
+   -- Keys and indices.
+   PRIMARY KEY  (cid),
+   KEY capability (capability)
+-) TYPE=InnoDB;
++) ENGINE=InnoDB;
+ 
+ -- archive table for capabilities
+ CREATE TABLE capabilitiesd (
+@@ -280,7 +280,7 @@ CREATE TABLE capabilitiesd (
+   deletedSerial bigint unsigned NOT NULL,
+   PRIMARY KEY  (cid),
+   KEY capability (capability)
+-) TYPE=InnoDB;
++) ENGINE=InnoDB;
+ 
+ #
+ # Lists all users administered by the VOMS.
+@@ -306,7 +306,7 @@ CREATE TABLE usr (
+   KEY  (uid),
+   UNIQUE KEY dnca (dn,ca),
+   KEY dn (dn)
+-) TYPE=InnoDB;
++) ENGINE=InnoDB;
+ 
+ -- The archive records for usr.
+ CREATE TABLE usrd (
+@@ -323,7 +323,7 @@ CREATE TABLE usrd (
+   KEY (uid),			-- This is not unique!
+   KEY dnca (dn,ca),		-- This is not unique!
+   KEY dn (dn)
+-) TYPE=InnoDB;
++) ENGINE=InnoDB;
+ 
+ #
+ # Changelog tables.
+@@ -334,13 +334,13 @@ CREATE TABLE realtime (
+   time timestamp NOT NULL,
+   PRIMARY KEY(transaction),
+   INDEX (time)
+-) TYPE=InnoDB;
++) ENGINE=InnoDB;
+ 
+ CREATE TABLE sequences (
+   name varchar(32) NOT NULL,
+   value	bigint,
+   INDEX (name)
+-) TYPE=InnoDB;
++) ENGINE=InnoDB;
+ 
+ CREATE TABLE createuser_queue (
+   -- Request id.
+@@ -365,7 +365,7 @@ CREATE TABLE createuser_queue (
+   status        BIGINT NOT NULL,
+   PRIMARY KEY (reqid),
+   INDEX (dn, cid)
+-) TYPE=InnoDB;
++) ENGINE=InnoDB;
+ 
+ -- Database version number.
+ --
+@@ -376,13 +376,13 @@ CREATE TABLE createuser_queue (
+ --
+ CREATE TABLE version (
+    version INT
+-) TYPE = InnoDB;
++) ENGINE = InnoDB;
+ 
+ 
+ -- Sequence number of the issued attribute certificates in bigint format.
+ CREATE TABLE seqnumber (
+    seq VARCHAR(50) NOT NULL
+-) TYPE = InnoDB;
++) ENGINE = InnoDB;
+ 
+ -- Persistent storage of serialized Java request objects.  It would be
+ -- a nightmare to define and maintain a detailed database mapping for
+@@ -417,4 +417,4 @@ CREATE TABLE requests (
+   INDEX (container),
+   INDEX (requester),
+   INDEX (lastchange)
+-) TYPE=InnoDB;
++) ENGINE=InnoDB;

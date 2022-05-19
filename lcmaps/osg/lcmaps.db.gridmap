@@ -1,0 +1,14 @@
+##############################################################################
+#
+# lcmaps.db (grid-mapfile authorization without glExec)
+#
+##############################################################################
+
+gridmapfile = "lcmaps_localaccount.mod"
+              "-gridmap /etc/grid-security/grid-mapfile"
+
+good        = "lcmaps_dummy_good.mod"
+bad         = "lcmaps_dummy_bad.mod"
+
+authorize_only:
+gridmapfile -> good | bad

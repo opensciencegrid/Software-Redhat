@@ -1,0 +1,82 @@
+##############################################################################
+#
+# lcmaps.db
+# 
+# This file is used to configure lcmaps  
+#
+# In general, you do not need to modify this file unless you want to modify the
+# Mapping policy, in which case you need to change the default policy on Section 2
+# 
+##############################################################################
+
+#-----------------------------------------------------------------------------
+#
+# Section 1: Module definitions
+# 
+# These generally should not be modified
+#-----------------------------------------------------------------------------
+
+gridmapfile = "lcmaps_localaccount.mod"
+              "-gridmap /etc/grid-security/grid-mapfile"
+banfile = "lcmaps_ban_dn.mod"
+          "-banmapfile /etc/grid-security/ban-mapfile"
+banvomsfile = "lcmaps_ban_fqan.mod"
+              "-banmapfile /etc/grid-security/ban-voms-mapfile"
+vomsmapfile = "lcmaps_voms_localaccount.mod"
+              "-gridmap /etc/grid-security/voms-mapfile"
+# Uncomment to consider all VOMS FQANs of a proxy instead of just the first
+#              "-all-fqans"
+defaultmapfile = "lcmaps_voms_localaccount2.mod"
+                 "-gridmap /usr/share/osg/voms-mapfile-default"
+# Uncomment to consider all VOMS FQANs of a proxy instead of just the first
+#                 "-all-fqans"
+
+verifyproxy = "lcmaps_verify_proxy.mod"
+          "--allow-limited-proxy"
+          " -certdir /etc/grid-security/certificates"
+
+verifyproxynokey = "lcmaps_verify_proxy2.mod"
+          "--allow-limited-proxy"
+          "--discard_private_key_absence"
+          " -certdir /etc/grid-security/certificates"
+
+# lcmaps policies require at least two modules, so these are here to
+#   fill in if only one module is needed.  "good | bad" has no effect.
+good        = "lcmaps_dummy_good.mod"
+bad         = "lcmaps_dummy_bad.mod"
+
+#-----------------------------------------------------------------------------
+#
+# Section 2: Mapping policies
+#
+# The default policy is generally good but we have supplied another option in
+# the comments.
+#
+#-----------------------------------------------------------------------------
+
+#
+# Mapping policy: authorize_only
+# Purpose: Used for the programs that only want authorization and don't
+# 	want lcmaps to do anything else for them.  This is good for most
+#	applications that use globus as their interface to lcmaps.
+#
+
+## If the default policy isn't what you want, pick another one.  Make
+## sure that only one authorize_only policy is uncommented--the other
+## policies should be commented out. For example, if you want policy #2,
+## put a hash mark before the "gridmapfile" line and remove the hash
+## mark on the six lines: just below the "Policy 2" line
+
+authorize_only:
+
+## Policy 1: grid-mapfile
+#gridmapfile -> good | bad
+
+## Policy 2: voms-mapfiles with banfiles, proxy verification and grid-mapfile
+verifyproxynokey -> banfile
+banfile -> banvomsfile | bad
+banvomsfile -> gridmapfile | bad
+gridmapfile -> good | vomsmapfile
+vomsmapfile -> good | defaultmapfile
+defaultmapfile -> good | bad
+

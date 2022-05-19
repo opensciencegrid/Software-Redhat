@@ -1,0 +1,36 @@
+#!/bin/bash
+
+sbindir=/usr/sbin
+sysconfdir=/etc
+
+rc=0
+defaultconf=${sysconfdir}/gridftp-sshftp
+enabledconf=/etc/grid-security/sshftp
+
+# OSG addition: source our sysconfig file
+. /usr/share/osg/sysconfig/globus-gridftp-server
+
+echo -n "Enabling sshftp access to globus-gridftp-server: "
+
+if [ ! -f $defaultconf ]; then
+  ${sbindir}/globus-gridftp-server-enable-sshftp -out $defaultconf
+  rc=$?
+fi
+
+if [ $rc -eq 0 -a ! -d /etc/grid-security ] ; then
+  mkdir /etc/grid-security
+  rc=$?
+fi
+
+if [ $rc -eq 0 -a ! -f $enabledconf ]; then
+  ln -s $defaultconf $enabledconf
+  rc=$?
+fi
+
+if [ $rc -eq 0 ]; then
+    echo '[  OK  ]'
+else
+    echo '[FAILED]'
+fi
+
+exit $rc

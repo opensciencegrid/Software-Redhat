@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# Read environment variables from sysconfig file
+# This can't be done as an EnvironmentFile setting in systemd, because
+# /etc/sysconfig/myproxy-server has code in it to source /etc/myproxy.d/*
+# files.
+[ -r /etc/sysconfig/myproxy-server ] && . /etc/sysconfig/myproxy-server
+
+exec /usr/sbin/myproxy-server "$@"
+

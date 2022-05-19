@@ -1,0 +1,3 @@
+
+Bigtop jsvc is for java services to execute as a daemon.
+It is needed for Hadoop 2.0.0

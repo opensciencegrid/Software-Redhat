@@ -1,0 +1,45 @@
+From bf41b0dfb61391363ee4cff24e6bdfc35d7dc9c2 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Mon, 1 Nov 2021 10:54:49 -0500
+Subject: [PATCH] 4882-voms_install_db cert parsing
+
+- Handle openssl 1.1+ output format change by converting output back to openssl 1.0 format
+- Escape single quotes in subjects
+
+(SOFTWARE-4882)
+---
+ src/install/voms_install_db.in | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
+ mode change 100644 => 100755 src/install/voms_install_db.in
+
+diff --git a/src/install/voms_install_db.in b/src/install/voms_install_db.in
+old mode 100644
+new mode 100755
+index 8ca0fe4..e8ca1fa
+--- a/src/install/voms_install_db.in
++++ b/src/install/voms_install_db.in
+@@ -252,7 +252,20 @@ i=5
+ for cert in $CERTDIR/*.0
+ do
+    i=$(($i + 1))
+-   subject=`$SSLPROG x509 -noout -subject -in $cert|sed 's/^subject=[ ]*//'`
++   subject=`$SSLPROG x509 -noout -subject -in $cert -nameopt oneline |sed 's/^subject=[ ]*//'`
++   # ^^ `-nameopt oneline` produces consistent results between openssl versions;
++   #    `-nameopt compat` does the opposite on EL7; `-nameopt RFC2253` puts the CN first, not last
++
++   # Escape single quotes by doubling them up
++   subject=`$ECHO "$subject" | sed "s/'/''/g"`
++   # Convert -nameopt oneline format to openssl 1.0 format
++   # From: C = US, O = Let''s Encrypt, CN = R3
++   # To:   /C=US/O=Let''s Encrypt/CN=R3
++   subject=`$ECHO "$subject" | sed -e 's| = |=|g' \
++                                   -e 's|/|\/|g' \
++                                   -e 's|, |/|g'`
++   subject=/$subject
++   # Extract the CN:
+    cn=`$ECHO $subject|sed -n '/.*\/CN=\([^\/]*\).*/s//\1/p'`
+    $CLIENT <<EOF 
+ INSERT INTO ca VALUES ($i, '$subject', '$cn');
+-- 
+2.6.3
+

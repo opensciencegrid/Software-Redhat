@@ -1,0 +1,38 @@
+From c0fc31349fb61c51227d7a4672e56428ef7069a1 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Tue, 5 Jul 2016 18:29:41 -0500
+Subject: [PATCH] Make RFC proxies by default (SOFTWARE-2381)
+
+---
+ src/client/vomsclient.cc | 10 ++--------
+ 1 file changed, 2 insertions(+), 8 deletions(-)
+
+diff --git a/src/client/vomsclient.cc b/src/client/vomsclient.cc
+index b850379..3b21b86 100644
+--- a/src/client/vomsclient.cc
++++ b/src/client/vomsclient.cc
+@@ -436,19 +436,13 @@ Client::Client(int argc, char ** argv) :
+   if (proxyver!=2 && proxyver!=3 && proxyver != 4 && proxyver!=0) {
+     Print(ERROR) << "Error: proxyver must be 2, 3 or 4" << std::endl;
+     exit(1);
+   }
+   else if (proxyver==0) {
+-    if (version<30)
+-      proxyver = 2;
+-    else if (version < 40)
+-      proxyver = 3;
+-    else
+-      proxyver = 4;
++    proxyver = 4;
+ 
+-    Print(DEBUG) << "Unspecified proxy version, settling on Globus version: " 
+-                 << proxyver << std::endl;
++    Print(DEBUG) << "Unspecified proxy version, settling on version 4 (RFC)" << std::endl;
+   }
+   
+   /* PCI extension option */ 
+   
+   if (proxyver >= 3) {
+-- 
+2.6.3
+

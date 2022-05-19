@@ -1,0 +1,29 @@
+From 0d12b2a9cd3d47fc0bb900fb6331c40b78cf3e77 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Thu, 20 Oct 2016 14:17:48 -0500
+Subject: [PATCH] EL7: Use myproxy-server-start script
+
+---
+ systemd/myproxy-server.service | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/systemd/myproxy-server.service b/systemd/myproxy-server.service
+index 930f181..114ce81 100644
+--- a/systemd/myproxy-server.service
++++ b/systemd/myproxy-server.service
+@@ -9,11 +9,11 @@ ConditionPathExists=/etc/grid-security/myproxy/hostkey.pem
+ [Service]
+ Type=forking
+ User=myproxy
+ Environment=X509_USER_CERT=/etc/grid-security/myproxy/hostcert.pem
+ Environment=X509_USER_KEY=/etc/grid-security/myproxy/hostkey.pem
+-ExecStart=/usr/sbin/myproxy-server --pidfile /var/run/myproxy-server/myproxy.pid
++ExecStart=/usr/libexec/myproxy-server-start --pidfile /var/run/myproxy-server/myproxy.pid
+ ExecReload=/bin/kill -HUP $MAINPID
+ PIDFile=/var/run/myproxy-server/myproxy.pid
+ 
+ [Install]
+ WantedBy=multi-user.target
+-- 
+2.6.3
+

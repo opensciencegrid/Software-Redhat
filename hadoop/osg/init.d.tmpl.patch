@@ -1,0 +1,15 @@
+diff --git a/init.d.tmpl b/init.d.tmpl
+index cd5e592..a313994 100644
+--- a/init.d.tmpl
++++ b/init.d.tmpl
+@@ -61,8 +61,8 @@ case "$2" in
+     ;;
+   "rpm" )
+     # On RedHat, SuSE and Mageia run-level 2 is networkless, hence excluding it
+-    CHKCONFIG="345 85 15"
+-    INIT_DEFAULT_START="3 4 5"
++    CHKCONFIG="- 85 15"
++    INIT_DEFAULT_START=""
+     INIT_DEFAULT_STOP="0 1 2 6"
+     ;;
+   "*" )

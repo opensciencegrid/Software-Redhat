@@ -1,0 +1,8 @@
+We are using the following fork - 
+
+https://github.com/opensciencegrid/BLAH
+
+Particularly the v1_18_bosco branch, and tags of the form v1.18.39.bosco
+
+The "official" upstream still lives at https://github.com/prelz/BLAH
+

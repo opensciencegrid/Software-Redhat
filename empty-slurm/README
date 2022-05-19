@@ -1,0 +1,7 @@
+The gratia-probe-slurm package requires slurm, but slurm itself is not
+available from any of the standard osg repos, and it appears you can't get it
+at all anywhere for el5.
+
+So for now, empty-slurm exists solely for the sake of testing installs of
+gratia-probe-slurm with just the standard repos, OS + EPEL + OSG.
+

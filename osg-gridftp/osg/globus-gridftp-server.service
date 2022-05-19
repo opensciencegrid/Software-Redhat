@@ -1,0 +1,11 @@
+[Unit]
+Description=Globus GridFTP Server
+After=network.target remote-fs.target syslog.service
+
+[Service]
+Type=simple
+ExecStart=/usr/libexec/globus-gridftp-server-start
+ExecReload=/bin/kill -HUP $MAINPID
+
+[Install]
+WantedBy=multi-user.target

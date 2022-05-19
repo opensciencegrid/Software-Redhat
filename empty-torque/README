@@ -1,0 +1,5 @@
+We have packages that depend on "torque-server" and "torque-client"
+(particularly the Globus PBS job manager), but some sites install in
+other ways, such as PBSPro. They don't want to install EPEL's torque
+RPMs just to satisfy the dependncy. Therefore this RPM claims to
+provide PBS, while in fact providing nothing at all.

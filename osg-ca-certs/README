@@ -1,0 +1,10 @@
+
+This package currently includes all OSG CA certificates, in the new OpenSSL 
+0.9.8/1.0.0 format.
+
+The packages satisfy the virtual dependency of "grid-certificates" and purposely
+conflict with osg-ca-certs and osg-ca-manage
+
+For more information, see:
+
+http://twiki.grid.iu.edu/bin/view/Security/CreatingCADistributions
