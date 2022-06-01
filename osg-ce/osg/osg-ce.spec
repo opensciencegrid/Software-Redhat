@@ -1,7 +1,7 @@
 Name:      osg-ce
 Summary:   OSG Compute Element
 Version:   3.6
-Release:   5%{?dist}
+Release:   6%{?dist}
 License:   Apache 2.0
 URL:       http://www.opensciencegrid.org
 
@@ -134,6 +134,9 @@ install -m 644 %{SOURCE0} $RPM_BUILD_ROOT/%{_datadir}/condor-ce/config.d
 %files slurm
 
 %changelog
+* Wed Jun 01 2022 Brian Lin <blin@cs.wisc.edu> - 3.6-6
+- Disable GSI warnings (SOFTWARE-5159)
+
 * Tue Mar 29 2022 Brian Lin <blin@cs.wisc.edu> - 3.6-5
 - Add OSG release series SchedD attribute (SOFTWARE-4984)
 - Remove upstreamed blahpd location configuration (SOFTWARE-4984)
