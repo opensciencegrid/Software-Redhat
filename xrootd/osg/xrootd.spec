@@ -1179,6 +1179,7 @@ fi
 
 * Mon May 09 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.4.3-0.rc1.1
 - Build from 5.4.3-rc1 and add OSG changes (SOFTWARE-5160)
+- Remove xrootd-multiuser < 0.6.0 conflict (SOFTWARE-5170)
 
 * Fri Mar 11 2022 Brian Lin <blin@cs.wisc.edu> - 5.4.2-1.1
 - Move VOMS mapfile support to the source (SOFTWARE-4870)
