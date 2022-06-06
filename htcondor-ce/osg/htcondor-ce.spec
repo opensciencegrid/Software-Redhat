@@ -2,7 +2,7 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 5.1.4
+Version: 5.1.5
 Release: 1.1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
@@ -551,6 +551,14 @@ fi
 %{_localstatedir}/www/wsgi-scripts/htcondor-ce/htcondor-ce-registry.wsgi
 
 %changelog
+* Mon Jun 06 2022 Tim Theisen <tim@cs.wisc.edu> - 5.1.5-1.1
+- Always require python3-rrdtool for view subpackage (SOFTWARE-5135)
+
+* Fri Jun 03 2022 Tim Theisen <tim@cs.wisc.edu> - 5.1.5-1
+- Rename AuthToken attributes in the routed job to better support accounting
+- Prevent GSI environment from pointing the job to the wrong certificates
+- Fix issue where HTCondor-CE would need port 9618 open to start up
+
 * Wed Apr 20 2022 Carl Edquist <edquist@cs.wisc.edu> - 5.1.4-1.1
 - Always require python3-rrdtool for view subpackage (SOFTWARE-5135)
 
