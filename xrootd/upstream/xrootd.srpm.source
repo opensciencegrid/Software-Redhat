@@ -1,4 +1,4 @@
-xrootd/5.4.3/xrootd-5.4.3-0.rc4.1.el7.src.rpm sha1sum=3542ddf5475243f14a23977b4482c7cd1fa8447b
+xrootd/5.4.3/xrootd-5.4.3-1.1.el7.src.rpm sha1sum=23f1286392b83eb1592897bfce53f9de673cd3f2
 # Built from https://github.com/matyasselmeci/xrootd/releases/tag/v5.4.3-rc4.1
 # podman run -i -t --rm -v $PWD:/xrootd centos:7 bash
 #       yum-config-manager --enablerepo powertools >/dev/null

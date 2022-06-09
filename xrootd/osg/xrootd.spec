@@ -71,7 +71,7 @@
 Name:      xrootd
 Epoch:     1
 Version:   5.4.3
-Release:   0.rc4.1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:   1.1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -164,7 +164,6 @@ BuildRequires: clang
 BuildRequires: libasan
 BuildRequires: devtoolset-7-libasan-devel
 Requires: libasan
-Requires: devtoolset-7-libasan
 %endif
 
 %if %{?_with_scitokens:1}%{!?_with_scitokens:0}
@@ -991,6 +990,7 @@ fi
 %{_libdir}/libXrdSsiLog-5.so
 %{_libdir}/libXrdThrottle-5.so
 %{_libdir}/libXrdCmsRedirectLocal-5.so
+%{_libdir}/libXrdOfsPrepGPI-5.so
 
 %files server-devel
 %defattr(-,root,root,-)
@@ -1168,6 +1168,9 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Thu Jun 09 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.4.3-1.1
+- Build from 5.4.3 and add OSG changes (SOFTWARE-5160)
+
 * Thu Jun 02 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.4.3-0.rc4.1
 - Build from 5.4.3-rc4 and add OSG changes (SOFTWARE-5160)
 
