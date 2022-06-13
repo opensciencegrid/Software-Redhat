@@ -1,57 +1,11 @@
-From cd3a53b7ceb6a5c340a4ec1bd05636c66359a4bd Mon Sep 17 00:00:00 2001
-From: Jakob Blomer <jblomer@cern.ch>
-Date: Sat, 11 Jun 2022 18:05:12 +0200
-Subject: [PATCH 1/7] add class InterruptCue
+commit ff5381f28f95cfe8fa53fcea21152820cf1a042e
+Author: Carl Edquist <edquist@cs.wisc.edu>
+Date:   Mon Jun 13 11:42:35 2022 -0500
 
----
- cvmfs/interrupt.h | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
- create mode 100644 cvmfs/interrupt.h
-
-diff --git a/cvmfs/interrupt.h b/cvmfs/interrupt.h
-new file mode 100644
-index 0000000000..14e0620d63
---- /dev/null
-+++ b/cvmfs/interrupt.h
-@@ -0,0 +1,19 @@
-+/**
-+ * This file is part of the CernVM File System.
-+ */
-+
-+#ifndef CVMFS_INTERRUPT_H_
-+#define CVMFS_INTERRUPT_H_
-+
-+/**
-+ * Allows to query for interrupts of active file system requests.  Used
-+ * to hande canceled fuse requests.
-+ */
-+class InterruptCue {
-+ public:
-+  InterruptCue() { }
-+  virtual ~InterruptCue() { }
-+  virtual bool IsCanceled() { return false; }
-+};
-+
-+#endif  // CVMFS_INTERRUPT_H_
-
-From e7e0f1996cf11ad8d435c6ae2c385a24c8d9c6b2 Mon Sep 17 00:00:00 2001
-From: Jakob Blomer <jblomer@cern.ch>
-Date: Sat, 11 Jun 2022 19:18:16 +0200
-Subject: [PATCH 2/7] store InterruptCue in ClientCtx
-
----
- cvmfs/clientctx.cc            | 11 ++++++--
- cvmfs/clientctx.h             | 33 ++++++++++++++--------
- cvmfs/cvmfs.cc                | 35 +++++++++++++++++------
- cvmfs/fetch.cc                |  5 +++-
- cvmfs/interrupt.h             |  2 +-
- cvmfs/libcvmfs_int.cc         | 20 +++++++------
- cvmfs/libcvmfs_int.h          |  7 +++++
- test/unittests/t_clientctx.cc | 53 +++++++++++++++++++++++++----------
- 8 files changed, 117 insertions(+), 49 deletions(-)
+    2983.patch
 
 diff --git a/cvmfs/clientctx.cc b/cvmfs/clientctx.cc
-index f6b270325f..44e30fd095 100644
+index f6b2703..44e30fd 100644
 --- a/cvmfs/clientctx.cc
 +++ b/cvmfs/clientctx.cc
 @@ -6,6 +6,7 @@
@@ -114,7 +68,7 @@ index f6b270325f..44e30fd095 100644
    }
  }
 diff --git a/cvmfs/clientctx.h b/cvmfs/clientctx.h
-index 91cf02b0db..d547e41f2f 100644
+index 91cf02b..d547e41 100644
 --- a/cvmfs/clientctx.h
 +++ b/cvmfs/clientctx.h
 @@ -11,12 +11,18 @@
@@ -208,7 +162,7 @@ index 91cf02b0db..d547e41f2f 100644
  
  #endif  // CVMFS_CLIENTCTX_H_
 diff --git a/cvmfs/cvmfs.cc b/cvmfs/cvmfs.cc
-index 3cffa6a489..a1cd7dd6f9 100644
+index c215000..803373f 100644
 --- a/cvmfs/cvmfs.cc
 +++ b/cvmfs/cvmfs.cc
 @@ -86,6 +86,7 @@
@@ -219,7 +173,7 @@ index 3cffa6a489..a1cd7dd6f9 100644
  #include "loader.h"
  #include "logging.h"
  #include "lru_md.h"
-@@ -163,6 +164,16 @@ unsigned max_open_files_; /**< maximum allowed number of open files */
+@@ -162,6 +163,16 @@ unsigned max_open_files_; /**< maximum allowed number of open files */
  const int kNumReservedFd = 512;
  
  
@@ -236,7 +190,7 @@ index 3cffa6a489..a1cd7dd6f9 100644
  static inline double GetKcacheTimeout() {
    if (!fuse_remounter_->IsCaching())
      return 0.0;
-@@ -375,7 +386,8 @@ static void cvmfs_lookup(fuse_req_t req, fuse_ino_t parent, const char *name) {
+@@ -374,7 +385,8 @@ static void cvmfs_lookup(fuse_req_t req, fuse_ino_t parent, const char *name) {
  
    perf::Inc(file_system_->n_fs_lookup());
    const struct fuse_ctx *fuse_ctx = fuse_req_ctx(req);
@@ -246,7 +200,7 @@ index 3cffa6a489..a1cd7dd6f9 100644
    fuse_remounter_->TryFinish();
  
    fuse_remounter_->fence()->Enter();
-@@ -573,7 +585,8 @@ static void cvmfs_getattr(fuse_req_t req, fuse_ino_t ino,
+@@ -560,7 +572,8 @@ static void cvmfs_getattr(fuse_req_t req, fuse_ino_t ino,
  
    perf::Inc(file_system_->n_fs_stat());
    const struct fuse_ctx *fuse_ctx = fuse_req_ctx(req);
@@ -256,7 +210,7 @@ index 3cffa6a489..a1cd7dd6f9 100644
    fuse_remounter_->TryFinish();
  
    fuse_remounter_->fence()->Enter();
-@@ -610,7 +623,8 @@ static void cvmfs_readlink(fuse_req_t req, fuse_ino_t ino) {
+@@ -597,7 +610,8 @@ static void cvmfs_readlink(fuse_req_t req, fuse_ino_t ino) {
  
    perf::Inc(file_system_->n_fs_readlink());
    const struct fuse_ctx *fuse_ctx = fuse_req_ctx(req);
@@ -266,7 +220,7 @@ index 3cffa6a489..a1cd7dd6f9 100644
  
    fuse_remounter_->fence()->Enter();
    ino = mount_point_->catalog_mgr()->MangleInode(ino);
-@@ -669,7 +683,8 @@ static void cvmfs_opendir(fuse_req_t req, fuse_ino_t ino,
+@@ -656,7 +670,8 @@ static void cvmfs_opendir(fuse_req_t req, fuse_ino_t ino,
    HighPrecisionTimer guard_timer(file_system_->hist_fs_opendir());
  
    const struct fuse_ctx *fuse_ctx = fuse_req_ctx(req);
@@ -276,7 +230,7 @@ index 3cffa6a489..a1cd7dd6f9 100644
    fuse_remounter_->TryFinish();
  
    fuse_remounter_->fence()->Enter();
-@@ -889,7 +904,8 @@ static void cvmfs_open(fuse_req_t req, fuse_ino_t ino,
+@@ -866,7 +881,8 @@ static void cvmfs_open(fuse_req_t req, fuse_ino_t ino,
    HighPrecisionTimer guard_timer(file_system_->hist_fs_open());
  
    const struct fuse_ctx *fuse_ctx = fuse_req_ctx(req);
@@ -286,17 +240,17 @@ index 3cffa6a489..a1cd7dd6f9 100644
    fuse_remounter_->fence()->Enter();
    catalog::ClientCatalogManager *catalog_mgr = mount_point_->catalog_mgr();
    ino = catalog_mgr->MangleInode(ino);
-@@ -1122,7 +1138,8 @@ static void cvmfs_read(fuse_req_t req, fuse_ino_t ino, size_t size, off_t off,
+@@ -1077,7 +1093,8 @@ static void cvmfs_read(fuse_req_t req, fuse_ino_t ino, size_t size, off_t off,
    // Do we have a a chunked file?
-   if (fd < 0) {
+   if (static_cast<int64_t>(fi->fh) < 0) {
      const struct fuse_ctx *fuse_ctx = fuse_req_ctx(req);
 -    ClientCtxGuard ctx_guard(fuse_ctx->uid, fuse_ctx->gid, fuse_ctx->pid);
 +    FuseInterruptCue ic(&req);
 +    ClientCtxGuard ctx_guard(fuse_ctx->uid, fuse_ctx->gid, fuse_ctx->pid, &ic);
  
-     const uint64_t chunk_handle = abs_fd;
-     uint64_t unique_inode;
-@@ -1370,7 +1387,8 @@ static void cvmfs_getxattr(fuse_req_t req, fuse_ino_t ino, const char *name,
+     const uint64_t chunk_handle =
+       static_cast<uint64_t>(-static_cast<int64_t>(fi->fh));
+@@ -1324,7 +1341,8 @@ static void cvmfs_getxattr(fuse_req_t req, fuse_ino_t ino, const char *name,
  #endif
  {
    const struct fuse_ctx *fuse_ctx = fuse_req_ctx(req);
@@ -306,7 +260,7 @@ index 3cffa6a489..a1cd7dd6f9 100644
  
    fuse_remounter_->fence()->Enter();
    catalog::ClientCatalogManager *catalog_mgr = mount_point_->catalog_mgr();
-@@ -1449,7 +1467,8 @@ static void cvmfs_getxattr(fuse_req_t req, fuse_ino_t ino, const char *name,
+@@ -1403,7 +1421,8 @@ static void cvmfs_getxattr(fuse_req_t req, fuse_ino_t ino, const char *name,
  
  static void cvmfs_listxattr(fuse_req_t req, fuse_ino_t ino, size_t size) {
    const struct fuse_ctx *fuse_ctx = fuse_req_ctx(req);
@@ -316,8 +270,77 @@ index 3cffa6a489..a1cd7dd6f9 100644
  
    fuse_remounter_->fence()->Enter();
    catalog::ClientCatalogManager *catalog_mgr = mount_point_->catalog_mgr();
+diff --git a/cvmfs/download.cc b/cvmfs/download.cc
+index cf9dbd8..7928c7a 100644
+--- a/cvmfs/download.cc
++++ b/cvmfs/download.cc
+@@ -52,6 +52,7 @@
+ #include "compression.h"
+ #include "duplex_curl.h"
+ #include "hash.h"
++#include "interrupt.h"
+ #include "logging.h"
+ #include "prng.h"
+ #include "sanitizer.h"
+@@ -1423,6 +1424,10 @@ bool DownloadManager::VerifyAndFinalize(const int curl_error, JobInfo *info) {
+       info->destination_mem.size = 0;
+       info->destination_mem.pos = 0;
+     }
++    if (info->interrupt_cue && info->interrupt_cue->IsCanceled()) {
++      info->error_code = kFailCanceled;
++      goto verify_and_finalize_stop;
++    }
+     if ((info->destination == kDestinationFile) ||
+         (info->destination == kDestinationPath))
+     {
+diff --git a/cvmfs/download.h b/cvmfs/download.h
+index 7d7478d..7336f0b 100644
+--- a/cvmfs/download.h
++++ b/cvmfs/download.h
+@@ -27,6 +27,7 @@
+ #include "ssl.h"
+ #include "statistics.h"
+ 
++class InterruptCue;
+ 
+ namespace download {
+ 
+@@ -55,6 +56,7 @@ enum Failures {
+   kFailHostTooSlow,
+   kFailProxyShortTransfer,
+   kFailHostShortTransfer,
++  kFailCanceled,
+ 
+   kFailNumEntries
+ };  // Failures
+@@ -104,7 +106,8 @@ inline const char *Code2Ascii(const Failures error) {
+   texts[15] = "host serving data too slowly";
+   texts[16] = "proxy data transfer cut short";
+   texts[17] = "host data transfer cut short";
+-  texts[18] = "no text";
++  texts[18] = "request canceled";
++  texts[19] = "no text";
+   return texts[error];
+ }
+ 
+@@ -158,6 +161,7 @@ struct JobInfo {
+   uid_t uid;
+   gid_t gid;
+   void *cred_data;  // Per-transfer credential data
++  InterruptCue *interrupt_cue;
+   Destination destination;
+   struct {
+     size_t size;
+@@ -186,6 +190,7 @@ struct JobInfo {
+     uid = -1;
+     gid = -1;
+     cred_data = NULL;
++    interrupt_cue = NULL;
+     destination = kDestinationNone;
+     destination_mem.size = destination_mem.pos = 0;
+     destination_mem.data = NULL;
 diff --git a/cvmfs/fetch.cc b/cvmfs/fetch.cc
-index d16238fc41..e25a79071d 100644
+index d16238f..d038234 100644
 --- a/cvmfs/fetch.cc
 +++ b/cvmfs/fetch.cc
 @@ -11,6 +11,7 @@
@@ -328,34 +351,43 @@ index d16238fc41..e25a79071d 100644
  #include "logging.h"
  #include "quota.h"
  #include "statistics.h"
-@@ -155,9 +156,11 @@ int Fetcher::Fetch(
-   tls->download_job.extra_info = &name;
-   ClientCtx *ctx = ClientCtx::GetInstance();
+@@ -157,7 +158,8 @@ int Fetcher::Fetch(
    if (ctx->IsSet()) {
-+    InterruptCue *ic;
      ctx->Get(&tls->download_job.uid,
               &tls->download_job.gid,
 -             &tls->download_job.pid);
 +             &tls->download_job.pid,
-+             &ic);
++             &tls->download_job.interrupt_cue);
    }
    tls->download_job.compressed = (compression_algorithm == zlib::kZlibDefault);
    tls->download_job.range_offset = range_offset;
 diff --git a/cvmfs/interrupt.h b/cvmfs/interrupt.h
-index 14e0620d63..45c13fa737 100644
---- a/cvmfs/interrupt.h
+new file mode 100644
+index 0000000..45c13fa
+--- /dev/null
 +++ b/cvmfs/interrupt.h
-@@ -7,7 +7,7 @@
- 
- /**
-  * Allows to query for interrupts of active file system requests.  Used
-- * to hande canceled fuse requests.
+@@ -0,0 +1,19 @@
++/**
++ * This file is part of the CernVM File System.
++ */
++
++#ifndef CVMFS_INTERRUPT_H_
++#define CVMFS_INTERRUPT_H_
++
++/**
++ * Allows to query for interrupts of active file system requests.  Used
 + * to hande canceled fuse requests with the inherited class FuseInterruptCue.
-  */
- class InterruptCue {
-  public:
++ */
++class InterruptCue {
++ public:
++  InterruptCue() { }
++  virtual ~InterruptCue() { }
++  virtual bool IsCanceled() { return false; }
++};
++
++#endif  // CVMFS_INTERRUPT_H_
 diff --git a/cvmfs/libcvmfs_int.cc b/cvmfs/libcvmfs_int.cc
-index c2e6f389af..c46b844d50 100644
+index c2e6f38..c46b844 100644
 --- a/cvmfs/libcvmfs_int.cc
 +++ b/cvmfs/libcvmfs_int.cc
 @@ -58,6 +58,7 @@
@@ -449,7 +481,7 @@ index c2e6f389af..c46b844d50 100644
      SimpleChunkTables::OpenChunks open_chunks =
        mount_point_->simple_chunk_tables()->Get(chunk_handle);
 diff --git a/cvmfs/libcvmfs_int.h b/cvmfs/libcvmfs_int.h
-index 24649e2e0d..e78e7302c3 100644
+index 24649e2..e78e730 100644
 --- a/cvmfs/libcvmfs_int.h
 +++ b/cvmfs/libcvmfs_int.h
 @@ -23,6 +23,7 @@
@@ -473,8 +505,102 @@ index 24649e2e0d..e78e7302c3 100644
  };
  
  #endif  // CVMFS_LIBCVMFS_INT_H_
+diff --git a/test/src/096-cancelreq/main b/test/src/096-cancelreq/main
+new file mode 100644
+index 0000000..7fd4cb1
+--- /dev/null
++++ b/test/src/096-cancelreq/main
+@@ -0,0 +1,76 @@
++
++cvmfs_test_name="Cancel file system request"
++cvmfs_test_suites="quick"
++
++CVMFS_TEST_096_SILENT_PID=
++cleanup() {
++  echo "*** running cleanup()"
++  [ -z $CVMFS_TEST_096_SILENT_PID ] || sudo kill $CVMFS_TEST_096_SILENT_PID
++}
++
++cvmfs_run_test() {
++  local logfile=$1
++  local script_location=$2
++
++  local http_port=8019
++
++  echo "*** install a desaster cleanup"
++  trap cleanup EXIT HUP INT TERM || return $?
++
++  echo "*** mount repository"
++  cvmfs_mount cvmfs-config.cern.ch \
++    "CVMFS_TIMEOUT=5" \
++    "CVMFS_TIMEOUT_DIRECT=5" \
++    "CVMFS_MAX_RETRIES=0" || return 2
++
++  get_xattr logbuffer /cvmfs/cvmfs-config.cern.ch | grep "request canceled" && return 40
++
++  echo "*** run a silent HTTP server"
++  CVMFS_TEST_096_SILENT_PID=$(open_silent_port TCP $http_port $logfile)
++  [ $? -eq 0 ] || return 3
++  echo "silent server started with PID $CVMFS_TEST_096_SILENT_PID"
++
++  echo "*** prefix host list with unresponsive server"
++  sudo cvmfs_talk -i cvmfs-config.cern.ch proxy set DIRECT
++  sudo cvmfs_talk -i cvmfs-config.cern.ch host set \
++    "http://127.0.0.1:${http_port}/cvmfs/@fqrn@;http://cvmfs-stratum-one.cern.ch/fqrn/@fqrn@" || retval=10
++  sudo cvmfs_talk -i cvmfs-config.cern.ch proxy info
++  sudo cvmfs_talk -i cvmfs-config.cern.ch host info
++
++  local afile=$(find /cvmfs/cvmfs-config.cern.ch -type f | head -n1)
++  echo "*** read $afile, should block"
++  local nchunks=$(get_xattr chunks $afile)
++  [ $nchunks -eq 1 ] || return 5
++  local nfsopen_before=$(sudo cvmfs_talk -i cvmfs-config.cern.ch internal affairs \
++    | grep "^cvmfs.n_fs_open" | cut -d\| -f2)
++  echo "*** Number of file system open calls before opening $afile: $nfsopen_before"
++  local nioerr_before=$(get_xattr nioerr /cvmfs/cvmfs-config.cern.ch)
++  echo "*** Number of I/O errors before opening $afile: $nioerr_before"
++  cat $afile > /dev/null &
++  local pid=$!
++
++  echo "*** wait for the open call to reach cvmfs"
++  local nfsopen_after=$nfsopen_before
++  while [ $nfsopen_after -eq $nfsopen_before ]; do
++    local nfsopen_after=$(sudo cvmfs_talk -i cvmfs-config.cern.ch internal affairs \
++    | grep "^cvmfs.n_fs_open" | cut -d\| -f2)
++    sleep 1
++  done
++  echo "*** Number of file system open calls before opening $afile: $nfsopen_after"
++
++  echo "*** Killing $pid"
++  kill $pid
++
++  echo "*** wait for error to be registered"
++  local nioerr_after=$nioerr_before
++  while [ $nioerr_after -eq $nioerr_before ]; do
++    local nioerr_after=$(get_xattr nioerr /cvmfs/cvmfs-config.cern.ch)
++    sleep 1
++  done
++  echo "*** Number of I/O errors after opening $afile: $nioerr_after"
++
++  get_xattr logbuffer /cvmfs/cvmfs-config.cern.ch | grep "request canceled" || return 20
++
++  return 0
++}
++
+diff --git a/test/test_functions b/test/test_functions
+index 66c003c..0ce73b9 100644
+--- a/test/test_functions
++++ b/test/test_functions
+@@ -1086,6 +1086,7 @@ open_silent_port() {
+   local mock
+ 
+   mock="${CVMFS_PYTHON2} ${TEST_ROOT}/common/mock_services/silent_socket.py $protocol $port"
++  echo "Calling $mock" >> $logfile
+ 
+   # Do similar fifo-trick as in run_background_service() to get the PID of the
+   # actual silent_socket.py process rather than just the `sudo` around it.
 diff --git a/test/unittests/t_clientctx.cc b/test/unittests/t_clientctx.cc
-index 13f8ab8d42..009884e76f 100644
+index 13f8ab8..009884e 100644
 --- a/test/unittests/t_clientctx.cc
 +++ b/test/unittests/t_clientctx.cc
 @@ -5,13 +5,22 @@
@@ -601,130 +727,8 @@ index 13f8ab8d42..009884e76f 100644
  
    ClientCtx::CleanupInstance();
  }
-
-From a1701f039c34cf6d70a97edce6b6c38c1f7dea5a Mon Sep 17 00:00:00 2001
-From: Jakob Blomer <jblomer@cern.ch>
-Date: Sat, 11 Jun 2022 19:23:38 +0200
-Subject: [PATCH 3/7] pass interrupt cue to download manager
-
----
- cvmfs/download.h | 3 +++
- cvmfs/fetch.cc   | 3 +--
- 2 files changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/cvmfs/download.h b/cvmfs/download.h
-index ffc2215af2..bddb4c7bfe 100644
---- a/cvmfs/download.h
-+++ b/cvmfs/download.h
-@@ -28,6 +28,7 @@
- #include "ssl.h"
- #include "statistics.h"
- 
-+class InterruptCue;
- 
- namespace download {
- 
-@@ -159,6 +160,7 @@ struct JobInfo {
-   uid_t uid;
-   gid_t gid;
-   void *cred_data;  // Per-transfer credential data
-+  InterruptCue *interrupt_cue;
-   Destination destination;
-   struct {
-     size_t size;
-@@ -187,6 +189,7 @@ struct JobInfo {
-     uid = -1;
-     gid = -1;
-     cred_data = NULL;
-+    interrupt_cue = NULL;
-     destination = kDestinationNone;
-     destination_mem.size = destination_mem.pos = 0;
-     destination_mem.data = NULL;
-diff --git a/cvmfs/fetch.cc b/cvmfs/fetch.cc
-index e25a79071d..d0382344ae 100644
---- a/cvmfs/fetch.cc
-+++ b/cvmfs/fetch.cc
-@@ -156,11 +156,10 @@ int Fetcher::Fetch(
-   tls->download_job.extra_info = &name;
-   ClientCtx *ctx = ClientCtx::GetInstance();
-   if (ctx->IsSet()) {
--    InterruptCue *ic;
-     ctx->Get(&tls->download_job.uid,
-              &tls->download_job.gid,
-              &tls->download_job.pid,
--             &ic);
-+             &tls->download_job.interrupt_cue);
-   }
-   tls->download_job.compressed = (compression_algorithm == zlib::kZlibDefault);
-   tls->download_job.range_offset = range_offset;
-
-From 60ad1d2a0210cf4e532b6fa2aa075adb57b9053b Mon Sep 17 00:00:00 2001
-From: Jakob Blomer <jblomer@cern.ch>
-Date: Sat, 11 Jun 2022 22:44:29 +0200
-Subject: [PATCH 4/7] stop failover if fs request is canceled
-
----
- cvmfs/download.cc | 5 +++++
- cvmfs/download.h  | 4 +++-
- 2 files changed, 8 insertions(+), 1 deletion(-)
-
-diff --git a/cvmfs/download.cc b/cvmfs/download.cc
-index 1c016b490f..f275330b41 100644
---- a/cvmfs/download.cc
-+++ b/cvmfs/download.cc
-@@ -54,6 +54,7 @@
- #include "compression.h"
- #include "duplex_curl.h"
- #include "hash.h"
-+#include "interrupt.h"
- #include "logging.h"
- #include "prng.h"
- #include "sanitizer.h"
-@@ -1404,6 +1405,10 @@ bool DownloadManager::VerifyAndFinalize(const int curl_error, JobInfo *info) {
-       info->destination_mem.size = 0;
-       info->destination_mem.pos = 0;
-     }
-+    if (info->interrupt_cue && info->interrupt_cue->IsCanceled()) {
-+      info->error_code = kFailCanceled;
-+      goto verify_and_finalize_stop;
-+    }
-     if ((info->destination == kDestinationFile) ||
-         (info->destination == kDestinationPath))
-     {
-diff --git a/cvmfs/download.h b/cvmfs/download.h
-index bddb4c7bfe..54ef0a955f 100644
---- a/cvmfs/download.h
-+++ b/cvmfs/download.h
-@@ -57,6 +57,7 @@ enum Failures {
-   kFailHostTooSlow,
-   kFailProxyShortTransfer,
-   kFailHostShortTransfer,
-+  kFailCanceled,
- 
-   kFailNumEntries
- };  // Failures
-@@ -106,7 +107,8 @@ inline const char *Code2Ascii(const Failures error) {
-   texts[15] = "host serving data too slowly";
-   texts[16] = "proxy data transfer cut short";
-   texts[17] = "host data transfer cut short";
--  texts[18] = "no text";
-+  texts[18] = "request canceled";
-+  texts[19] = "no text";
-   return texts[error];
- }
- 
-
-From fc18234a35e86c9bbc96ee444fe5f8b25ddebc1e Mon Sep 17 00:00:00 2001
-From: Jakob Blomer <jblomer@cern.ch>
-Date: Sat, 11 Jun 2022 22:56:53 +0200
-Subject: [PATCH 5/7] add unit test for failover cancelation
-
----
- test/unittests/t_download.cc | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
-
 diff --git a/test/unittests/t_download.cc b/test/unittests/t_download.cc
-index 77d74b0c71..9bd4bbd56a 100644
+index 77d74b0..9bd4bbd 100644
 --- a/test/unittests/t_download.cc
 +++ b/test/unittests/t_download.cc
 @@ -14,6 +14,7 @@
@@ -774,172 +778,3 @@ index 77d74b0c71..9bd4bbd56a 100644
  TEST_F(T_Download, RemoteFileSwitchHostsAfterRedirect) {
    string src_path = GetSmallFile();
    string src_content = GetFileContents(src_path);
-
-From ae4a0f5efd130127d6e986111c93e58aa29336f6 Mon Sep 17 00:00:00 2001
-From: Jakob Blomer <jblomer@cern.ch>
-Date: Sat, 11 Jun 2022 23:35:41 +0200
-Subject: [PATCH 6/7] add integration test draft for cancled requests
-
----
- test/src/096-cancelreq/main | 49 +++++++++++++++++++++++++++++++++++++
- test/test_functions         |  1 +
- 2 files changed, 50 insertions(+)
- create mode 100644 test/src/096-cancelreq/main
-
-diff --git a/test/src/096-cancelreq/main b/test/src/096-cancelreq/main
-new file mode 100644
-index 0000000000..fcf0c8524e
---- /dev/null
-+++ b/test/src/096-cancelreq/main
-@@ -0,0 +1,49 @@
-+
-+cvmfs_test_name="Cancel file system request"
-+cvmfs_test_suites="quick"
-+
-+CVMFS_TEST_096_SILENT_PID=
-+cleanup() {
-+  echo "*** running cleanup()"
-+  [ -z $CVMFS_TEST_096_SILENT_PID ] || sudo kill $CVMFS_TEST_096_SILENT_PID
-+}
-+
-+cvmfs_run_test() {
-+  logfile=$1
-+
-+  local http_port=8019
-+
-+  echo "*** install a desaster cleanup"
-+  trap cleanup EXIT HUP INT TERM || return $?
-+
-+  echo "*** mount repository"
-+  cvmfs_mount cvmfs-config.cern.ch \
-+    "CVMFS_TIMEOUT=10" \
-+    "CVMFS_TIMEOUT_DIRECT=10" \
-+    "CVMFS_MAX_RETRIES=0" || return 2
-+
-+  echo "*** run a silent HTTP server"
-+  CVMFS_TEST_096_SILENT_PID=$(open_silent_port TCP $http_port $logfile)
-+  [ $? -eq 0 ] || return 3
-+  echo "silent server started with PID $CVMFS_TEST_096_SILENT_PID"
-+
-+  echo "*** prefix host list with unresponsive server"
-+  sudo cvmfs_talk -i cvmfs-config.cern.ch host set \
-+    "http://127.0.0.1:${http_port}/cvmfs/@fqrn@;http://cvmfs-stratum-one.cern.ch/fqrn/@fqrn@" || retval=10
-+
-+  # TODO(jblomer): fix this brittle test
-+  local afile=$(find /cvmfs/cvmfs-config.cern.ch -type f | head -n1)
-+  echo "*** read $afile, should block"
-+  md5sum $afile &
-+  local pid=$!
-+
-+  echo "*** killing $pid after 5 seconds"
-+  sleep 5
-+  kill $pid
-+
-+  sleep 10
-+  cat_syslog | grep cvmfs-config.cern.ch | grep "request canceled" || return 20
-+
-+  return 0
-+}
-+
-diff --git a/test/test_functions b/test/test_functions
-index 66c003cd30..0ce73b9bb3 100644
---- a/test/test_functions
-+++ b/test/test_functions
-@@ -1086,6 +1086,7 @@ open_silent_port() {
-   local mock
- 
-   mock="${CVMFS_PYTHON2} ${TEST_ROOT}/common/mock_services/silent_socket.py $protocol $port"
-+  echo "Calling $mock" >> $logfile
- 
-   # Do similar fifo-trick as in run_background_service() to get the PID of the
-   # actual silent_socket.py process rather than just the `sudo` around it.
-
-From 5a0a9f24418669eaef67ec4cc8a926155f30a690 Mon Sep 17 00:00:00 2001
-From: Jakob Blomer <jblomer@cern.ch>
-Date: Mon, 13 Jun 2022 16:18:30 +0200
-Subject: [PATCH 7/7] Fix-up integration test for canceled fs requests
-
----
- test/src/096-cancelreq/main | 45 +++++++++++++++++++++++++++++--------
- 1 file changed, 36 insertions(+), 9 deletions(-)
-
-diff --git a/test/src/096-cancelreq/main b/test/src/096-cancelreq/main
-index fcf0c8524e..7fd4cb1076 100644
---- a/test/src/096-cancelreq/main
-+++ b/test/src/096-cancelreq/main
-@@ -9,7 +9,8 @@ cleanup() {
- }
- 
- cvmfs_run_test() {
--  logfile=$1
-+  local logfile=$1
-+  local script_location=$2
- 
-   local http_port=8019
- 
-@@ -18,31 +19,57 @@ cvmfs_run_test() {
- 
-   echo "*** mount repository"
-   cvmfs_mount cvmfs-config.cern.ch \
--    "CVMFS_TIMEOUT=10" \
--    "CVMFS_TIMEOUT_DIRECT=10" \
-+    "CVMFS_TIMEOUT=5" \
-+    "CVMFS_TIMEOUT_DIRECT=5" \
-     "CVMFS_MAX_RETRIES=0" || return 2
- 
-+  get_xattr logbuffer /cvmfs/cvmfs-config.cern.ch | grep "request canceled" && return 40
-+
-   echo "*** run a silent HTTP server"
-   CVMFS_TEST_096_SILENT_PID=$(open_silent_port TCP $http_port $logfile)
-   [ $? -eq 0 ] || return 3
-   echo "silent server started with PID $CVMFS_TEST_096_SILENT_PID"
- 
-   echo "*** prefix host list with unresponsive server"
-+  sudo cvmfs_talk -i cvmfs-config.cern.ch proxy set DIRECT
-   sudo cvmfs_talk -i cvmfs-config.cern.ch host set \
-     "http://127.0.0.1:${http_port}/cvmfs/@fqrn@;http://cvmfs-stratum-one.cern.ch/fqrn/@fqrn@" || retval=10
-+  sudo cvmfs_talk -i cvmfs-config.cern.ch proxy info
-+  sudo cvmfs_talk -i cvmfs-config.cern.ch host info
- 
--  # TODO(jblomer): fix this brittle test
-   local afile=$(find /cvmfs/cvmfs-config.cern.ch -type f | head -n1)
-   echo "*** read $afile, should block"
--  md5sum $afile &
-+  local nchunks=$(get_xattr chunks $afile)
-+  [ $nchunks -eq 1 ] || return 5
-+  local nfsopen_before=$(sudo cvmfs_talk -i cvmfs-config.cern.ch internal affairs \
-+    | grep "^cvmfs.n_fs_open" | cut -d\| -f2)
-+  echo "*** Number of file system open calls before opening $afile: $nfsopen_before"
-+  local nioerr_before=$(get_xattr nioerr /cvmfs/cvmfs-config.cern.ch)
-+  echo "*** Number of I/O errors before opening $afile: $nioerr_before"
-+  cat $afile > /dev/null &
-   local pid=$!
- 
--  echo "*** killing $pid after 5 seconds"
--  sleep 5
-+  echo "*** wait for the open call to reach cvmfs"
-+  local nfsopen_after=$nfsopen_before
-+  while [ $nfsopen_after -eq $nfsopen_before ]; do
-+    local nfsopen_after=$(sudo cvmfs_talk -i cvmfs-config.cern.ch internal affairs \
-+    | grep "^cvmfs.n_fs_open" | cut -d\| -f2)
-+    sleep 1
-+  done
-+  echo "*** Number of file system open calls before opening $afile: $nfsopen_after"
-+
-+  echo "*** Killing $pid"
-   kill $pid
- 
--  sleep 10
--  cat_syslog | grep cvmfs-config.cern.ch | grep "request canceled" || return 20
-+  echo "*** wait for error to be registered"
-+  local nioerr_after=$nioerr_before
-+  while [ $nioerr_after -eq $nioerr_before ]; do
-+    local nioerr_after=$(get_xattr nioerr /cvmfs/cvmfs-config.cern.ch)
-+    sleep 1
-+  done
-+  echo "*** Number of I/O errors after opening $afile: $nioerr_after"
-+
-+  get_xattr logbuffer /cvmfs/cvmfs-config.cern.ch | grep "request canceled" || return 20
- 
-   return 0
- }
