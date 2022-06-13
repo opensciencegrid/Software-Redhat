@@ -77,7 +77,7 @@
 Summary: CernVM File System
 Name: cvmfs
 Version: 2.9.3
-Release: 1%{?dist}
+Release: 1.1%{?dist}
 URL: https://cernvm.cern.ch/fs/
 Source0: https://ecsft.cern.ch/dist/cvmfs/%{name}-%{version}/%{name}-%{version}.tar.gz
 %if 0%{?selinux_cvmfs}
@@ -87,6 +87,8 @@ Source2: cvmfs.fc
 Group: Applications/System
 License: BSD
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+
+Patch0: https://github.com/cvmfs/cvmfs/pull/2983.patch
 
 BuildRequires: bzip2
 %if 0%{?el5}
@@ -292,6 +294,7 @@ Daemon to automatically unpack and expose containers images into CernVM-FS
 
 %prep
 %setup -q
+%patch0 -p1
 
 %if 0%{?selinux_cvmfs}
 mkdir SELinux
@@ -681,6 +684,8 @@ systemctl daemon-reload
 %endif
 
 %changelog
+* Mon Jun 13 2022 Carl Edquist <edquist@cs.wisc.edu> - 2.9.3-1.1
+- Cancel network fail-over cycle when fuse request is canceled (SOFTWARE-5229)
 * Thu Sep 30 2021 Jakob Blomer <jblomer@cern.ch> - 2.9.0
 - Remove version requirement from selinux-policy dependency
 * Wed Sep 29 2021 Andrea Valenzuela <andrea.valenzuela.ramirez@cern.ch> - 2.9.0
