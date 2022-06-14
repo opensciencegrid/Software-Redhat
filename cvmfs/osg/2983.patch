@@ -1,0 +1,780 @@
+commit ff5381f28f95cfe8fa53fcea21152820cf1a042e
+Author: Carl Edquist <edquist@cs.wisc.edu>
+Date:   Mon Jun 13 11:42:35 2022 -0500
+
+    2983.patch
+
+diff --git a/cvmfs/clientctx.cc b/cvmfs/clientctx.cc
+index f6b2703..44e30fd 100644
+--- a/cvmfs/clientctx.cc
++++ b/cvmfs/clientctx.cc
+@@ -6,6 +6,7 @@
+ 
+ #include <cassert>
+ 
++#include "interrupt.h"
+ #include "smalloc.h"
+ #include "util_concurrency.h"
+ 
+@@ -53,17 +54,19 @@ ClientCtx *ClientCtx::GetInstance() {
+ }
+ 
+ 
+-void ClientCtx::Get(uid_t *uid, gid_t *gid, pid_t *pid) {
++void ClientCtx::Get(uid_t *uid, gid_t *gid, pid_t *pid, InterruptCue **ic) {
+   ThreadLocalStorage *tls = static_cast<ThreadLocalStorage *>(
+     pthread_getspecific(thread_local_storage_));
+   if ((tls == NULL) || !tls->is_set) {
+     *uid = -1;
+     *gid = -1;
+     *pid = -1;
++    *ic = NULL;
+   } else {
+     *uid = tls->uid;
+     *gid = tls->gid;
+     *pid = tls->pid;
++    *ic = tls->interrupt_cue;
+   }
+ }
+ 
+@@ -78,12 +81,12 @@ bool ClientCtx::IsSet() {
+ }
+ 
+ 
+-void ClientCtx::Set(uid_t uid, gid_t gid, pid_t pid) {
++void ClientCtx::Set(uid_t uid, gid_t gid, pid_t pid, InterruptCue *ic) {
+   ThreadLocalStorage *tls = static_cast<ThreadLocalStorage *>(
+     pthread_getspecific(thread_local_storage_));
+ 
+   if (tls == NULL) {
+-    tls = new ThreadLocalStorage(uid, gid, pid);
++    tls = new ThreadLocalStorage(uid, gid, pid, ic);
+     int retval = pthread_setspecific(thread_local_storage_, tls);
+     assert(retval == 0);
+     MutexLockGuard lock_guard(lock_tls_blocks_);
+@@ -92,6 +95,7 @@ void ClientCtx::Set(uid_t uid, gid_t gid, pid_t pid) {
+     tls->uid = uid;
+     tls->gid = gid;
+     tls->pid = pid;
++    tls->interrupt_cue = ic;
+     tls->is_set = true;
+   }
+ }
+@@ -123,5 +127,6 @@ void ClientCtx::Unset() {
+     tls->uid = -1;
+     tls->gid = -1;
+     tls->pid = -1;
++    tls->interrupt_cue = NULL;
+   }
+ }
+diff --git a/cvmfs/clientctx.h b/cvmfs/clientctx.h
+index 91cf02b..d547e41 100644
+--- a/cvmfs/clientctx.h
++++ b/cvmfs/clientctx.h
+@@ -11,12 +11,18 @@
+ #include <cassert>
+ #include <vector>
+ 
++class InterruptCue;
++
+ /**
+  * A client context associates a file system call with the uid, gid, and pid
+- * of the calling process.  For the library, that's the current process and
+- * user.  For the Fuse module, the uid and gid are provided by fuse, the pid
+- * can be figured out from the system. A client context is used to download
+- * files with the credentials of the caller.
++ * of the calling process and an InterruptCue of the file system request.
++ * For the library, the calling process is just the current process and
++ * user, the InterruptCue is the default one.
++ * For the Fuse module, the uid and gid are provided by fuse, the pid
++ * can be figured out from the system. The InterruptCue is the FuseInterruptCue
++ * defined in cvmfs.cc.  A client context is used to download files with the
++ * credentials of the caller and to interrupt a download if the file system
++ * request got canceled.
+  *
+  * A ClientCtx encapulates thread-local storage.  It can be set somewhere at the
+  * beginning of a file system call and used anywhere during the processing of
+@@ -25,11 +31,12 @@
+ class ClientCtx {
+  public:
+   struct ThreadLocalStorage {
+-    ThreadLocalStorage(uid_t u, gid_t g, pid_t p)
+-      : uid(u), gid(g), pid(p), is_set(true) { }
++    ThreadLocalStorage(uid_t u, gid_t g, pid_t p, InterruptCue *ic)
++      : uid(u), gid(g), pid(p), interrupt_cue(ic), is_set(true) { }
+     uid_t uid;
+     gid_t gid;
+     pid_t pid;
++    InterruptCue *interrupt_cue;  ///< A non-owning pointer
+     bool is_set;  ///< either not yet set or deliberately unset
+   };
+ 
+@@ -37,9 +44,9 @@ class ClientCtx {
+   static void CleanupInstance();
+   ~ClientCtx();
+ 
+-  void Set(uid_t uid, gid_t gid, pid_t pid);
++  void Set(uid_t uid, gid_t gid, pid_t pid, InterruptCue *ic);
+   void Unset();
+-  void Get(uid_t *uid, gid_t *gid, pid_t *pid);
++  void Get(uid_t *uid, gid_t *gid, pid_t *pid, InterruptCue **ic);
+   bool IsSet();
+ 
+  private:
+@@ -61,26 +68,27 @@ class ClientCtx {
+  */
+ class ClientCtxGuard {
+  public:
+-  ClientCtxGuard(uid_t uid, gid_t gid, pid_t pid)
++  ClientCtxGuard(uid_t uid, gid_t gid, pid_t pid, InterruptCue *ic)
+     : set_on_construction_(false)
+     , old_uid_(-1)
+     , old_gid_(-1)
+     , old_pid_(-1)
++    , old_interrupt_cue_(NULL)
+   {
+     // Implementation guarantees old_ctx is not null.
+     ClientCtx *old_ctx = ClientCtx::GetInstance();
+     assert(old_ctx);
+     if (old_ctx->IsSet()) {
+       set_on_construction_ = true;
+-      old_ctx->Get(&old_uid_, &old_gid_, &old_pid_);
++      old_ctx->Get(&old_uid_, &old_gid_, &old_pid_, &old_interrupt_cue_);
+     }
+-    old_ctx->Set(uid, gid, pid);
++    old_ctx->Set(uid, gid, pid, ic);
+   }
+ 
+   ~ClientCtxGuard() {
+     ClientCtx *ctx = ClientCtx::GetInstance();
+     if (set_on_construction_) {
+-      ctx->Set(old_uid_, old_gid_, old_pid_);
++      ctx->Set(old_uid_, old_gid_, old_pid_, old_interrupt_cue_);
+     } else {
+       ctx->Unset();
+     }
+@@ -91,6 +99,7 @@ class ClientCtxGuard {
+   uid_t old_uid_;
+   gid_t old_gid_;
+   pid_t old_pid_;
++  InterruptCue *old_interrupt_cue_;
+ };
+ 
+ #endif  // CVMFS_CLIENTCTX_H_
+diff --git a/cvmfs/cvmfs.cc b/cvmfs/cvmfs.cc
+index c215000..803373f 100644
+--- a/cvmfs/cvmfs.cc
++++ b/cvmfs/cvmfs.cc
+@@ -86,6 +86,7 @@
+ #include "glue_buffer.h"
+ #include "hash.h"
+ #include "history_sqlite.h"
++#include "interrupt.h"
+ #include "loader.h"
+ #include "logging.h"
+ #include "lru_md.h"
+@@ -162,6 +163,16 @@ unsigned max_open_files_; /**< maximum allowed number of open files */
+ const int kNumReservedFd = 512;
+ 
+ 
++class FuseInterruptCue : public InterruptCue {
++ public:
++  explicit FuseInterruptCue(fuse_req_t *r) : req_ptr_(r) { }
++  virtual ~FuseInterruptCue() { }
++  virtual bool IsCanceled() { return fuse_req_interrupted(*req_ptr_); }
++ private:
++  fuse_req_t *req_ptr_;
++};
++
++
+ static inline double GetKcacheTimeout() {
+   if (!fuse_remounter_->IsCaching())
+     return 0.0;
+@@ -374,7 +385,8 @@ static void cvmfs_lookup(fuse_req_t req, fuse_ino_t parent, const char *name) {
+ 
+   perf::Inc(file_system_->n_fs_lookup());
+   const struct fuse_ctx *fuse_ctx = fuse_req_ctx(req);
+-  ClientCtxGuard ctx_guard(fuse_ctx->uid, fuse_ctx->gid, fuse_ctx->pid);
++  FuseInterruptCue ic(&req);
++  ClientCtxGuard ctx_guard(fuse_ctx->uid, fuse_ctx->gid, fuse_ctx->pid, &ic);
+   fuse_remounter_->TryFinish();
+ 
+   fuse_remounter_->fence()->Enter();
+@@ -560,7 +572,8 @@ static void cvmfs_getattr(fuse_req_t req, fuse_ino_t ino,
+ 
+   perf::Inc(file_system_->n_fs_stat());
+   const struct fuse_ctx *fuse_ctx = fuse_req_ctx(req);
+-  ClientCtxGuard ctx_guard(fuse_ctx->uid, fuse_ctx->gid, fuse_ctx->pid);
++  FuseInterruptCue ic(&req);
++  ClientCtxGuard ctx_guard(fuse_ctx->uid, fuse_ctx->gid, fuse_ctx->pid, &ic);
+   fuse_remounter_->TryFinish();
+ 
+   fuse_remounter_->fence()->Enter();
+@@ -597,7 +610,8 @@ static void cvmfs_readlink(fuse_req_t req, fuse_ino_t ino) {
+ 
+   perf::Inc(file_system_->n_fs_readlink());
+   const struct fuse_ctx *fuse_ctx = fuse_req_ctx(req);
+-  ClientCtxGuard ctx_guard(fuse_ctx->uid, fuse_ctx->gid, fuse_ctx->pid);
++  FuseInterruptCue ic(&req);
++  ClientCtxGuard ctx_guard(fuse_ctx->uid, fuse_ctx->gid, fuse_ctx->pid, &ic);
+ 
+   fuse_remounter_->fence()->Enter();
+   ino = mount_point_->catalog_mgr()->MangleInode(ino);
+@@ -656,7 +670,8 @@ static void cvmfs_opendir(fuse_req_t req, fuse_ino_t ino,
+   HighPrecisionTimer guard_timer(file_system_->hist_fs_opendir());
+ 
+   const struct fuse_ctx *fuse_ctx = fuse_req_ctx(req);
+-  ClientCtxGuard ctx_guard(fuse_ctx->uid, fuse_ctx->gid, fuse_ctx->pid);
++  FuseInterruptCue ic(&req);
++  ClientCtxGuard ctx_guard(fuse_ctx->uid, fuse_ctx->gid, fuse_ctx->pid, &ic);
+   fuse_remounter_->TryFinish();
+ 
+   fuse_remounter_->fence()->Enter();
+@@ -866,7 +881,8 @@ static void cvmfs_open(fuse_req_t req, fuse_ino_t ino,
+   HighPrecisionTimer guard_timer(file_system_->hist_fs_open());
+ 
+   const struct fuse_ctx *fuse_ctx = fuse_req_ctx(req);
+-  ClientCtxGuard ctx_guard(fuse_ctx->uid, fuse_ctx->gid, fuse_ctx->pid);
++  FuseInterruptCue ic(&req);
++  ClientCtxGuard ctx_guard(fuse_ctx->uid, fuse_ctx->gid, fuse_ctx->pid, &ic);
+   fuse_remounter_->fence()->Enter();
+   catalog::ClientCatalogManager *catalog_mgr = mount_point_->catalog_mgr();
+   ino = catalog_mgr->MangleInode(ino);
+@@ -1077,7 +1093,8 @@ static void cvmfs_read(fuse_req_t req, fuse_ino_t ino, size_t size, off_t off,
+   // Do we have a a chunked file?
+   if (static_cast<int64_t>(fi->fh) < 0) {
+     const struct fuse_ctx *fuse_ctx = fuse_req_ctx(req);
+-    ClientCtxGuard ctx_guard(fuse_ctx->uid, fuse_ctx->gid, fuse_ctx->pid);
++    FuseInterruptCue ic(&req);
++    ClientCtxGuard ctx_guard(fuse_ctx->uid, fuse_ctx->gid, fuse_ctx->pid, &ic);
+ 
+     const uint64_t chunk_handle =
+       static_cast<uint64_t>(-static_cast<int64_t>(fi->fh));
+@@ -1324,7 +1341,8 @@ static void cvmfs_getxattr(fuse_req_t req, fuse_ino_t ino, const char *name,
+ #endif
+ {
+   const struct fuse_ctx *fuse_ctx = fuse_req_ctx(req);
+-  ClientCtxGuard ctx_guard(fuse_ctx->uid, fuse_ctx->gid, fuse_ctx->pid);
++  FuseInterruptCue ic(&req);
++  ClientCtxGuard ctx_guard(fuse_ctx->uid, fuse_ctx->gid, fuse_ctx->pid, &ic);
+ 
+   fuse_remounter_->fence()->Enter();
+   catalog::ClientCatalogManager *catalog_mgr = mount_point_->catalog_mgr();
+@@ -1403,7 +1421,8 @@ static void cvmfs_getxattr(fuse_req_t req, fuse_ino_t ino, const char *name,
+ 
+ static void cvmfs_listxattr(fuse_req_t req, fuse_ino_t ino, size_t size) {
+   const struct fuse_ctx *fuse_ctx = fuse_req_ctx(req);
+-  ClientCtxGuard ctx_guard(fuse_ctx->uid, fuse_ctx->gid, fuse_ctx->pid);
++  FuseInterruptCue ic(&req);
++  ClientCtxGuard ctx_guard(fuse_ctx->uid, fuse_ctx->gid, fuse_ctx->pid, &ic);
+ 
+   fuse_remounter_->fence()->Enter();
+   catalog::ClientCatalogManager *catalog_mgr = mount_point_->catalog_mgr();
+diff --git a/cvmfs/download.cc b/cvmfs/download.cc
+index cf9dbd8..7928c7a 100644
+--- a/cvmfs/download.cc
++++ b/cvmfs/download.cc
+@@ -52,6 +52,7 @@
+ #include "compression.h"
+ #include "duplex_curl.h"
+ #include "hash.h"
++#include "interrupt.h"
+ #include "logging.h"
+ #include "prng.h"
+ #include "sanitizer.h"
+@@ -1423,6 +1424,10 @@ bool DownloadManager::VerifyAndFinalize(const int curl_error, JobInfo *info) {
+       info->destination_mem.size = 0;
+       info->destination_mem.pos = 0;
+     }
++    if (info->interrupt_cue && info->interrupt_cue->IsCanceled()) {
++      info->error_code = kFailCanceled;
++      goto verify_and_finalize_stop;
++    }
+     if ((info->destination == kDestinationFile) ||
+         (info->destination == kDestinationPath))
+     {
+diff --git a/cvmfs/download.h b/cvmfs/download.h
+index 7d7478d..7336f0b 100644
+--- a/cvmfs/download.h
++++ b/cvmfs/download.h
+@@ -27,6 +27,7 @@
+ #include "ssl.h"
+ #include "statistics.h"
+ 
++class InterruptCue;
+ 
+ namespace download {
+ 
+@@ -55,6 +56,7 @@ enum Failures {
+   kFailHostTooSlow,
+   kFailProxyShortTransfer,
+   kFailHostShortTransfer,
++  kFailCanceled,
+ 
+   kFailNumEntries
+ };  // Failures
+@@ -104,7 +106,8 @@ inline const char *Code2Ascii(const Failures error) {
+   texts[15] = "host serving data too slowly";
+   texts[16] = "proxy data transfer cut short";
+   texts[17] = "host data transfer cut short";
+-  texts[18] = "no text";
++  texts[18] = "request canceled";
++  texts[19] = "no text";
+   return texts[error];
+ }
+ 
+@@ -158,6 +161,7 @@ struct JobInfo {
+   uid_t uid;
+   gid_t gid;
+   void *cred_data;  // Per-transfer credential data
++  InterruptCue *interrupt_cue;
+   Destination destination;
+   struct {
+     size_t size;
+@@ -186,6 +190,7 @@ struct JobInfo {
+     uid = -1;
+     gid = -1;
+     cred_data = NULL;
++    interrupt_cue = NULL;
+     destination = kDestinationNone;
+     destination_mem.size = destination_mem.pos = 0;
+     destination_mem.data = NULL;
+diff --git a/cvmfs/fetch.cc b/cvmfs/fetch.cc
+index d16238f..d038234 100644
+--- a/cvmfs/fetch.cc
++++ b/cvmfs/fetch.cc
+@@ -11,6 +11,7 @@
+ #include "cache.h"
+ #include "clientctx.h"
+ #include "download.h"
++#include "interrupt.h"
+ #include "logging.h"
+ #include "quota.h"
+ #include "statistics.h"
+@@ -157,7 +158,8 @@ int Fetcher::Fetch(
+   if (ctx->IsSet()) {
+     ctx->Get(&tls->download_job.uid,
+              &tls->download_job.gid,
+-             &tls->download_job.pid);
++             &tls->download_job.pid,
++             &tls->download_job.interrupt_cue);
+   }
+   tls->download_job.compressed = (compression_algorithm == zlib::kZlibDefault);
+   tls->download_job.range_offset = range_offset;
+diff --git a/cvmfs/interrupt.h b/cvmfs/interrupt.h
+new file mode 100644
+index 0000000..45c13fa
+--- /dev/null
++++ b/cvmfs/interrupt.h
+@@ -0,0 +1,19 @@
++/**
++ * This file is part of the CernVM File System.
++ */
++
++#ifndef CVMFS_INTERRUPT_H_
++#define CVMFS_INTERRUPT_H_
++
++/**
++ * Allows to query for interrupts of active file system requests.  Used
++ * to hande canceled fuse requests with the inherited class FuseInterruptCue.
++ */
++class InterruptCue {
++ public:
++  InterruptCue() { }
++  virtual ~InterruptCue() { }
++  virtual bool IsCanceled() { return false; }
++};
++
++#endif  // CVMFS_INTERRUPT_H_
+diff --git a/cvmfs/libcvmfs_int.cc b/cvmfs/libcvmfs_int.cc
+index c2e6f38..c46b844 100644
+--- a/cvmfs/libcvmfs_int.cc
++++ b/cvmfs/libcvmfs_int.cc
+@@ -58,6 +58,7 @@
+ #include "fetch.h"
+ #include "globals.h"
+ #include "hash.h"
++#include "interrupt.h"
+ #include "libcvmfs.h"
+ #include "logging.h"
+ #include "lru_md.h"
+@@ -295,7 +296,7 @@ void LibContext::AppendStatToList(const cvmfs_stat_t   st,
+ 
+ int LibContext::GetAttr(const char *c_path, struct stat *info) {
+   perf::Inc(file_system()->n_fs_stat());
+-  ClientCtxGuard ctxg(geteuid(), getegid(), getpid());
++  ClientCtxGuard ctxg(geteuid(), getegid(), getpid(), &default_interrupt_cue_);
+ 
+   LogCvmfs(kLogCvmfs, kLogDebug, "cvmfs_getattr (stat) for path: %s", c_path);
+ 
+@@ -333,7 +334,7 @@ void LibContext::CvmfsAttrFromDirent(
+ 
+ 
+ int LibContext::GetExtAttr(const char *c_path, struct cvmfs_attr *info) {
+-  ClientCtxGuard ctxg(geteuid(), getegid(), getpid());
++  ClientCtxGuard ctxg(geteuid(), getegid(), getpid(), &default_interrupt_cue_);
+ 
+   LogCvmfs(kLogCvmfs, kLogDebug, "cvmfs_getattr (stat) for path: %s", c_path);
+ 
+@@ -384,7 +385,7 @@ int LibContext::GetExtAttr(const char *c_path, struct cvmfs_attr *info) {
+ int LibContext::Readlink(const char *c_path, char *buf, size_t size) {
+   perf::Inc(file_system()->n_fs_readlink());
+   LogCvmfs(kLogCvmfs, kLogDebug, "cvmfs_readlink on path: %s", c_path);
+-  ClientCtxGuard ctxg(geteuid(), getegid(), getpid());
++  ClientCtxGuard ctxg(geteuid(), getegid(), getpid(), &default_interrupt_cue_);
+ 
+   PathString p;
+   p.Assign(c_path, strlen(c_path));
+@@ -416,7 +417,7 @@ int LibContext::ListDirectory(
+   bool self_reference
+ ) {
+   LogCvmfs(kLogCvmfs, kLogDebug, "cvmfs_listdir on path: %s", c_path);
+-  ClientCtxGuard ctxg(geteuid(), getegid(), getpid());
++  ClientCtxGuard ctxg(geteuid(), getegid(), getpid(), &default_interrupt_cue_);
+ 
+   if (c_path[0] == '/' && c_path[1] == '\0') {
+     // root path is expected to be "", not "/"
+@@ -471,7 +472,7 @@ int LibContext::ListDirectoryStat(
+   size_t *listlen,
+   size_t *buflen) {
+   LogCvmfs(kLogCvmfs, kLogDebug, "cvmfs_listdir_stat on path: %s", c_path);
+-  ClientCtxGuard ctxg(geteuid(), getegid(), getpid());
++  ClientCtxGuard ctxg(geteuid(), getegid(), getpid(), &default_interrupt_cue_);
+ 
+   if (c_path[0] == '/' && c_path[1] == '\0') {
+     // root path is expected to be "", not "/"
+@@ -511,7 +512,7 @@ int LibContext::GetNestedCatalogAttr(
+   const char *c_path,
+   struct cvmfs_nc_attr *nc_attr
+ ) {
+-  ClientCtxGuard ctxg(geteuid(), getegid(), getpid());
++  ClientCtxGuard ctxg(geteuid(), getegid(), getpid(), &default_interrupt_cue_);
+   LogCvmfs(kLogCvmfs, kLogDebug,
+     "cvmfs_stat_nc (cvmfs_nc_attr) : %s", c_path);
+ 
+@@ -559,7 +560,7 @@ int LibContext::ListNestedCatalogs(
+   char ***buf,
+   size_t *buflen
+ ) {
+-  ClientCtxGuard ctxg(geteuid(), getegid(), getpid());
++  ClientCtxGuard ctxg(geteuid(), getegid(), getpid(), &default_interrupt_cue_);
+   LogCvmfs(kLogCvmfs, kLogDebug,
+     "cvmfs_list_nc on path: %s", c_path);
+ 
+@@ -592,7 +593,7 @@ int LibContext::ListNestedCatalogs(
+ 
+ int LibContext::Open(const char *c_path) {
+   LogCvmfs(kLogCvmfs, kLogDebug, "cvmfs_open on path: %s", c_path);
+-  ClientCtxGuard ctxg(geteuid(), getegid(), getpid());
++  ClientCtxGuard ctxg(geteuid(), getegid(), getpid(), &default_interrupt_cue_);
+ 
+   int fd = -1;
+   catalog::DirectoryEntry dirent;
+@@ -664,7 +665,8 @@ int64_t LibContext::Pread(
+   uint64_t off)
+ {
+   if (fd & kFdChunked) {
+-    ClientCtxGuard ctxg(geteuid(), getegid(), getpid());
++    ClientCtxGuard ctxg(geteuid(), getegid(), getpid(),
++                        &default_interrupt_cue_);
+     const int chunk_handle = fd & ~kFdChunked;
+     SimpleChunkTables::OpenChunks open_chunks =
+       mount_point_->simple_chunk_tables()->Get(chunk_handle);
+diff --git a/cvmfs/libcvmfs_int.h b/cvmfs/libcvmfs_int.h
+index 24649e2..e78e730 100644
+--- a/cvmfs/libcvmfs_int.h
++++ b/cvmfs/libcvmfs_int.h
+@@ -23,6 +23,7 @@
+ #include "backoff.h"
+ #include "catalog_mgr.h"
+ #include "file_chunk.h"
++#include "interrupt.h"
+ #include "loader.h"
+ #include "lru.h"
+ #include "mountpoint.h"
+@@ -155,6 +156,12 @@ class LibContext : SingleCopy {
+    */
+   OptionsManager *options_mgr_;
+   MountPoint *mount_point_;
++
++  /**
++   * Used to prevent construction/destruction of an InterruptCue object in every
++   * file system operation.
++   */
++  InterruptCue default_interrupt_cue_;
+ };
+ 
+ #endif  // CVMFS_LIBCVMFS_INT_H_
+diff --git a/test/src/096-cancelreq/main b/test/src/096-cancelreq/main
+new file mode 100644
+index 0000000..7fd4cb1
+--- /dev/null
++++ b/test/src/096-cancelreq/main
+@@ -0,0 +1,76 @@
++
++cvmfs_test_name="Cancel file system request"
++cvmfs_test_suites="quick"
++
++CVMFS_TEST_096_SILENT_PID=
++cleanup() {
++  echo "*** running cleanup()"
++  [ -z $CVMFS_TEST_096_SILENT_PID ] || sudo kill $CVMFS_TEST_096_SILENT_PID
++}
++
++cvmfs_run_test() {
++  local logfile=$1
++  local script_location=$2
++
++  local http_port=8019
++
++  echo "*** install a desaster cleanup"
++  trap cleanup EXIT HUP INT TERM || return $?
++
++  echo "*** mount repository"
++  cvmfs_mount cvmfs-config.cern.ch \
++    "CVMFS_TIMEOUT=5" \
++    "CVMFS_TIMEOUT_DIRECT=5" \
++    "CVMFS_MAX_RETRIES=0" || return 2
++
++  get_xattr logbuffer /cvmfs/cvmfs-config.cern.ch | grep "request canceled" && return 40
++
++  echo "*** run a silent HTTP server"
++  CVMFS_TEST_096_SILENT_PID=$(open_silent_port TCP $http_port $logfile)
++  [ $? -eq 0 ] || return 3
++  echo "silent server started with PID $CVMFS_TEST_096_SILENT_PID"
++
++  echo "*** prefix host list with unresponsive server"
++  sudo cvmfs_talk -i cvmfs-config.cern.ch proxy set DIRECT
++  sudo cvmfs_talk -i cvmfs-config.cern.ch host set \
++    "http://127.0.0.1:${http_port}/cvmfs/@fqrn@;http://cvmfs-stratum-one.cern.ch/fqrn/@fqrn@" || retval=10
++  sudo cvmfs_talk -i cvmfs-config.cern.ch proxy info
++  sudo cvmfs_talk -i cvmfs-config.cern.ch host info
++
++  local afile=$(find /cvmfs/cvmfs-config.cern.ch -type f | head -n1)
++  echo "*** read $afile, should block"
++  local nchunks=$(get_xattr chunks $afile)
++  [ $nchunks -eq 1 ] || return 5
++  local nfsopen_before=$(sudo cvmfs_talk -i cvmfs-config.cern.ch internal affairs \
++    | grep "^cvmfs.n_fs_open" | cut -d\| -f2)
++  echo "*** Number of file system open calls before opening $afile: $nfsopen_before"
++  local nioerr_before=$(get_xattr nioerr /cvmfs/cvmfs-config.cern.ch)
++  echo "*** Number of I/O errors before opening $afile: $nioerr_before"
++  cat $afile > /dev/null &
++  local pid=$!
++
++  echo "*** wait for the open call to reach cvmfs"
++  local nfsopen_after=$nfsopen_before
++  while [ $nfsopen_after -eq $nfsopen_before ]; do
++    local nfsopen_after=$(sudo cvmfs_talk -i cvmfs-config.cern.ch internal affairs \
++    | grep "^cvmfs.n_fs_open" | cut -d\| -f2)
++    sleep 1
++  done
++  echo "*** Number of file system open calls before opening $afile: $nfsopen_after"
++
++  echo "*** Killing $pid"
++  kill $pid
++
++  echo "*** wait for error to be registered"
++  local nioerr_after=$nioerr_before
++  while [ $nioerr_after -eq $nioerr_before ]; do
++    local nioerr_after=$(get_xattr nioerr /cvmfs/cvmfs-config.cern.ch)
++    sleep 1
++  done
++  echo "*** Number of I/O errors after opening $afile: $nioerr_after"
++
++  get_xattr logbuffer /cvmfs/cvmfs-config.cern.ch | grep "request canceled" || return 20
++
++  return 0
++}
++
+diff --git a/test/test_functions b/test/test_functions
+index 66c003c..0ce73b9 100644
+--- a/test/test_functions
++++ b/test/test_functions
+@@ -1086,6 +1086,7 @@ open_silent_port() {
+   local mock
+ 
+   mock="${CVMFS_PYTHON2} ${TEST_ROOT}/common/mock_services/silent_socket.py $protocol $port"
++  echo "Calling $mock" >> $logfile
+ 
+   # Do similar fifo-trick as in run_background_service() to get the PID of the
+   # actual silent_socket.py process rather than just the `sudo` around it.
+diff --git a/test/unittests/t_clientctx.cc b/test/unittests/t_clientctx.cc
+index 13f8ab8..009884e 100644
+--- a/test/unittests/t_clientctx.cc
++++ b/test/unittests/t_clientctx.cc
+@@ -5,13 +5,22 @@
+ #include <gtest/gtest.h>
+ 
+ #include "clientctx.h"
++#include "interrupt.h"
++
++namespace {
++class TestInterruptCue : public InterruptCue {
++ public:
++  virtual bool IsCanceled() { return true; }
++};
++}  // anonymous namespace
+ 
+ TEST(T_ClientCtx, GetInstance) {
+   // Noop, don't crash
+   ClientCtx::CleanupInstance();
+ 
++  TestInterruptCue tic;
+   EXPECT_FALSE(ClientCtx::GetInstance()->IsSet());
+-  ClientCtx::GetInstance()->Set(1, 2, 3);
++  ClientCtx::GetInstance()->Set(1, 2, 3, &tic);
+   EXPECT_TRUE(ClientCtx::GetInstance()->IsSet());
+   ClientCtx::CleanupInstance();
+   EXPECT_FALSE(ClientCtx::GetInstance()->IsSet());
+@@ -22,39 +31,46 @@ TEST(T_ClientCtx, GetSet) {
+   uid_t uid;
+   gid_t gid;
+   pid_t pid;
+-  ClientCtx::GetInstance()->Get(&uid, &gid, &pid);
++  InterruptCue *ic;
++  ClientCtx::GetInstance()->Get(&uid, &gid, &pid, &ic);
+   EXPECT_FALSE(ClientCtx::GetInstance()->IsSet());
+   EXPECT_EQ(uid_t(-1), uid);
+   EXPECT_EQ(gid_t(-1), gid);
+   EXPECT_EQ(pid_t(-1), pid);
++  EXPECT_EQ(NULL, ic);
+ 
+-  ClientCtx::GetInstance()->Set(1, 2, 3);
++  TestInterruptCue tic;
++  ClientCtx::GetInstance()->Set(1, 2, 3, &tic);
+   EXPECT_TRUE(ClientCtx::GetInstance()->IsSet());
+-  ClientCtx::GetInstance()->Get(&uid, &gid, &pid);
++  ClientCtx::GetInstance()->Get(&uid, &gid, &pid, &ic);
+   EXPECT_EQ(1U, uid);
+   EXPECT_EQ(2U, gid);
+   EXPECT_EQ(3, pid);
++  EXPECT_TRUE(ic->IsCanceled());
+ 
+-  ClientCtx::GetInstance()->Set(5, 6, 7);
++  ClientCtx::GetInstance()->Set(5, 6, 7, &tic);
+   EXPECT_TRUE(ClientCtx::GetInstance()->IsSet());
+-  ClientCtx::GetInstance()->Get(&uid, &gid, &pid);
++  ClientCtx::GetInstance()->Get(&uid, &gid, &pid, &ic);
+   EXPECT_EQ(5U, uid);
+   EXPECT_EQ(6U, gid);
+   EXPECT_EQ(7, pid);
++  EXPECT_TRUE(ic->IsCanceled());
+ 
+   ClientCtx::GetInstance()->Unset();
+   EXPECT_FALSE(ClientCtx::GetInstance()->IsSet());
+-  ClientCtx::GetInstance()->Get(&uid, &gid, &pid);
++  ClientCtx::GetInstance()->Get(&uid, &gid, &pid, &ic);
+   EXPECT_EQ(uid_t(-1), uid);
+   EXPECT_EQ(gid_t(-1), gid);
+   EXPECT_EQ(pid_t(-1), pid);
++  EXPECT_EQ(NULL, ic);
+ 
+-  ClientCtx::GetInstance()->Set(10, 11, 12);
++  ClientCtx::GetInstance()->Set(10, 11, 12, &tic);
+   EXPECT_TRUE(ClientCtx::GetInstance()->IsSet());
+-  ClientCtx::GetInstance()->Get(&uid, &gid, &pid);
++  ClientCtx::GetInstance()->Get(&uid, &gid, &pid, &ic);
+   EXPECT_EQ(10U, uid);
+   EXPECT_EQ(11U, gid);
+   EXPECT_EQ(12, pid);
++  EXPECT_TRUE(ic->IsCanceled());
+ 
+   ClientCtx::CleanupInstance();
+ }
+@@ -63,31 +79,38 @@ TEST(T_ClientCtx, Guard) {
+   uid_t uid;
+   gid_t gid;
+   pid_t pid;
++  InterruptCue *ic;
+ 
+   {
+-    ClientCtxGuard guard(1, 2, 3);
++    TestInterruptCue tic;
++    ClientCtxGuard guard(1, 2, 3, &tic);
+     EXPECT_TRUE(ClientCtx::GetInstance()->IsSet());
+-    ClientCtx::GetInstance()->Get(&uid, &gid, &pid);
++    ClientCtx::GetInstance()->Get(&uid, &gid, &pid, &ic);
+     EXPECT_EQ(1U, uid);
+     EXPECT_EQ(2U, gid);
+     EXPECT_EQ(3, pid);
++    EXPECT_TRUE(ic->IsCanceled());
+   }
+   EXPECT_FALSE(ClientCtx::GetInstance()->IsSet());
+ 
+-  ClientCtx::GetInstance()->Set(4, 5, 6);
++  InterruptCue default_ic;
++  ClientCtx::GetInstance()->Set(4, 5, 6, &default_ic);
+   {
+-    ClientCtxGuard guard(7, 8, 9);
++    TestInterruptCue tic;
++    ClientCtxGuard guard(7, 8, 9, &tic);
+     EXPECT_TRUE(ClientCtx::GetInstance()->IsSet());
+-    ClientCtx::GetInstance()->Get(&uid, &gid, &pid);
++    ClientCtx::GetInstance()->Get(&uid, &gid, &pid, &ic);
+     EXPECT_EQ(7U, uid);
+     EXPECT_EQ(8U, gid);
+     EXPECT_EQ(9, pid);
++    EXPECT_TRUE(ic->IsCanceled());
+   }
+   EXPECT_TRUE(ClientCtx::GetInstance()->IsSet());
+-  ClientCtx::GetInstance()->Get(&uid, &gid, &pid);
++  ClientCtx::GetInstance()->Get(&uid, &gid, &pid, &ic);
+   EXPECT_EQ(4U, uid);
+   EXPECT_EQ(5U, gid);
+   EXPECT_EQ(6, pid);
++  EXPECT_FALSE(ic->IsCanceled());
+ 
+   ClientCtx::CleanupInstance();
+ }
+diff --git a/test/unittests/t_download.cc b/test/unittests/t_download.cc
+index 77d74b0..9bd4bbd 100644
+--- a/test/unittests/t_download.cc
++++ b/test/unittests/t_download.cc
+@@ -14,6 +14,7 @@
+ #include "compression.h"
+ #include "download.h"
+ #include "hash.h"
++#include "interrupt.h"
+ #include "prng.h"
+ #include "sink.h"
+ #include "statistics.h"
+@@ -22,6 +23,15 @@
+ 
+ using namespace std;  // NOLINT
+ 
++namespace {
++
++class TestInterruptCue : public InterruptCue {
++ public:
++  virtual bool IsCanceled() { return true; }
++};
++
++}  // anonymous namespace
++
+ namespace download {
+ 
+ class T_Download : public FileSandbox {
+@@ -285,6 +295,22 @@ TEST_F(T_Download, RemoteFileSwitchHosts) {
+   EXPECT_STREQ(info.destination_mem.data, src_content.c_str());
+ }
+ 
++TEST_F(T_Download, CancelRequest) {
++  string src_path = GetSmallFile();
++  string src_content = GetFileContents(src_path);
++
++  MockFileServer file_server(8082, sandbox_path_);
++  download_mgr.SetHostChain("http://127.0.0.1:8083;http://127.0.0.1:8082");
++  string url = "/" + GetFileName(src_path);
++  JobInfo info(&url, false /* compressed */, true /* probe hosts */, NULL);
++  TestInterruptCue tci;
++  info.interrupt_cue = &tci;
++  download_mgr.Fetch(&info);
++  ASSERT_EQ(info.num_used_hosts, 1);
++  ASSERT_EQ(info.error_code, kFailCanceled);
++  EXPECT_EQ(NULL, info.destination_mem.data);
++}
++
+ TEST_F(T_Download, RemoteFileSwitchHostsAfterRedirect) {
+   string src_path = GetSmallFile();
+   string src_content = GetFileContents(src_path);
