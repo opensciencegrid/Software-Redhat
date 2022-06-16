@@ -16,6 +16,11 @@ osg-upcoming-testing      3.5-upcoming  testing      standard  Upcoming_Testing
 osg-upcoming-minefield    3.5-upcoming  development  koji      Upcoming_Build_Repository
 osg-upcoming-prerelease   3.5-upcoming  prerelease   koji      Upcoming_Prerelease_Repository_for_Internal_Use
 
+osg-next                  3.6           release      standard  Next_Release_Series
+osg-next-development      3.6           development  standard  Next_Development_Series
+osg-next-testing          3.6           testing      standard  Next_Testing_Series
+osg-next-minefield        3.6           development  koji      Next_Build_Repository_Series
+
 devops-itb                devops        itb          direct    Developer_and_Operations_ITB
 devops                    devops        production   direct    Developer_and_Operations_Production
 devops-minefield          devops        itb          koji      Developer_and_Operations_Build_Repository
