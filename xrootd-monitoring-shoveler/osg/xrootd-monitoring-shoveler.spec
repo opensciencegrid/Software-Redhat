@@ -1,6 +1,6 @@
 Summary: XRootD Monitoring Shoveler
 Name: xrootd-monitoring-shoveler
-Version: 1.0.0
+Version: 1.1.2
 Release: 1%{?dist}
 License: ASL 2.0
 URL: https://github.com/opensciencegrid/xrootd-monitoring-shoveler
@@ -52,6 +52,9 @@ install -m 755 -d $RPM_BUILD_ROOT/%_localstatedir/spool/shoveler-queue
 %doc dependency-licenses.txt
 
 %changelog
+* Wed Jun 22 2022 Carl Edquist <edquist@cs.wisc.edu> - 1.1.2-1
+- Update to v1.1.2 (SOFTWARE-5235)
+
 * Fri Mar 11 2022 Carl Edquist <edquist@cs.wisc.edu> - 1.0.0-1
 - Initial version
 
