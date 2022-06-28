@@ -1,7 +1,7 @@
 Summary: OSG configuration files for XRootD
 Name: osg-xrootd
 Version: 3.6
-Release: 17%{?dist}
+Release: 18%{?dist}
 License: ASL 2.0
 BuildArch: noarch
 
@@ -94,6 +94,9 @@ mkdir -p /etc/grid-security >/dev/null 2>&1 || :
 [ -e /etc/grid-security/grid-mapfile ] || touch /etc/grid-security/grid-mapfile
 
 %changelog
+* Tue Jun 28 2022 Carl Edquist <edquist@cs.wisc.edu> - 3.6-18
+- Disable voms via XRD_DISABLE_VOMS env var (SOFTWARE-5106)
+
 * Wed May 04 2022 Carl Edquist <edquist@cs.wisc.edu> - 3.6-17
 - Have standalone Conflict with stash-cache and -origin (SOFTWARE-4668)
 
