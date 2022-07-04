@@ -1,4 +1,4 @@
-%define tarball_version 9.0.13
+%define tarball_version 9.0.14
 
 # On EL7 don't terminate the build because of bad bytecompiling
 %if 0%{?rhel} == 7
@@ -57,7 +57,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.1
+%define condor_base_release 0.593907
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -270,7 +270,7 @@ Requires: condor-classads = %{version}-%{release}
 Requires: condor-procd = %{version}-%{release}
 
 %if %uw_build
-Requires: %name-externals = %version-%release
+Requires: %name-externals >= 8.9.9
 %endif
 
 %if %blahp
@@ -278,7 +278,7 @@ Requires: blahp >= 2.1.1
 %endif
 
 # Useful tools are using the Python bindings
-Requires: python3-condor
+Requires: python3-condor = %{version}-%{release}
 # The use the python-requests library in EPEL is based Python 3.6
 # However, Amazon Linux 2 has Python 3.7
 %if ! 0%{?amzn}
@@ -290,7 +290,7 @@ Requires: python3-requests
 %endif
 
 %if 0%{?rhel} == 7
-Requires: python2-condor
+Requires: python2-condor = %{version}-%{release}
 # For some reason OSG VMU tests need python-request
 Requires: python-requests
 %endif
@@ -542,14 +542,14 @@ Summary: OAuth2 credmon for HTCondor.
 Group: Applications/System
 Requires: %name = %version-%release
 %if 0%{?rhel} == 7
-Requires: python2-condor
+Requires: python2-condor = %{version}-%{release}
 Requires: python2-requests-oauthlib
 Requires: python-six
 Requires: python-flask
 Requires: python2-cryptography
 Requires: python2-scitokens
 %else
-Requires: python3-condor
+Requires: python3-condor = %{version}-%{release}
 Requires: python3-requests-oauthlib
 Requires: python3-six
 Requires: python3-flask
@@ -569,7 +569,7 @@ OAuth2 endpoints and to use those credentials securely inside running jobs.
 Summary: Vault credmon for HTCondor.
 Group: Applications/System
 Requires: %name = %version-%release
-Requires: python3-condor
+Requires: python3-condor = %{version}-%{release}
 Requires: python3-six
 %if 0%{?osg}
 # Although htgettoken is only needed on the submit machine and
@@ -626,7 +626,6 @@ shortens many timers to be more responsive.
 %package externals
 Summary: Empty package to ensure yum gets the blahp from its own package
 Group: Applications/System
-Requires: %name = %version-%release
 
 %description externals
 Dummy package to help yum out
@@ -673,7 +672,7 @@ Requires: python3-condor = %version-%release
 %endif
 Requires: %name-bosco = %version-%release
 %if %uw_build
-Requires: %name-externals = %version-%release
+Requires: %name-externals >= 8.9.9
 %endif
 
 
