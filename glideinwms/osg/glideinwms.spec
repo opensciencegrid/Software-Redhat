@@ -1,7 +1,7 @@
-# How to build tar file
-
 # SPDX-FileCopyrightText: 2009 Fermi Research Alliance, LLC
 # SPDX-License-Identifier: Apache-2.0
+
+# How to build tar file
 
 # git clone http://cdcvs.fnal.gov/projects/glideinwms
 # cd glideinwms
@@ -11,13 +11,13 @@
 # Release Candidates NVR format
 #%define release 0.1.rc1
 # Official Release NVR format
-#%define release 1
+#%define release 2
 
 # ------------------------------------------------------------------------------
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
-%define version 3.9.4
-%define release 1
+%define version 3.9.6
+%define release 0.1.rc1
 
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
@@ -109,11 +109,14 @@ Requires: glideinwms-glidecondor-tools = %{version}-%{release}
 Requires: glideinwms-common-tools = %{version}-%{release}
 Requires: glideinwms-vofrontend-libs
 Requires: glideinwms-vofrontend-glidein
-%if 0%{?rhel} >= 8
+# Added rrdtool to make sure that at least the client tools are there
+Requires: rrdtool
+# Recommends: python3-rrdtool - this would be ideal but is supported only in Fedora>=24 and not RHEL
+# Remove the line below for the OSG 3.5 build (no python3-rrdtool there)
 Requires: python3-rrdtool
+%if 0%{?rhel} >= 8
 Requires: python3-m2crypto
 %else
-Requires: python-rrdtool
 Requires: python36-m2crypto
 %endif
 Requires(post): /sbin/service
@@ -179,17 +182,16 @@ Requires: python3-condor
 # was condor-python for python2
 %if 0%{?rhel} >= 8
 Requires: python3-pyyaml
-Requires: python3-rrdtool
 Requires: python3-jwt
 Requires: python3-cryptography
 Requires: python3-m2crypto
 %else
 Requires: PyYAML
-Requires: python-rrdtool
 Requires: python36-jwt
 Requires: python36-cryptography
 Requires: python36-m2crypto
 %endif
+Requires: python3-rrdtool
 %description libs
 This package provides common libraries used by glideinwms.
 
@@ -250,16 +252,15 @@ Requires: python3 >= 3.6
 # Is this the same? Requires: python36-configargparse
 Requires: javascriptrrd >= 1.1.0
 %if 0%{?rhel} >= 8
-Requires: python3-rrdtool
 Requires: python3-m2crypto
 Requires: python3-requests
 Requires: python3-jwt
 %else
-Requires: python-rrdtool
 Requires: python36-m2crypto
 Requires: python36-requests
 Requires: python36-jwt
 %endif
+Requires: python3-rrdtool
 Requires(post): /sbin/service
 Requires(post): /usr/sbin/useradd
 Requires(post): /sbin/chkconfig
@@ -301,6 +302,9 @@ chmod 700 chksum.sh
 rm -rf $RPM_BUILD_ROOT
 
 # Set the Python version
+%global __python %{__python3}
+
+# TODO: Check if some of the following are needed
 # seems never used
 # %define py_ver %(python -c "import sys; v=sys.version_info[:2]; print '%d.%d'%v")
 
@@ -366,7 +370,10 @@ rm -f $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/.gitignore
 rm -f $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/.gitmodules
 rm -f $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/.mailmap
 rm -f $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/.pep8speaks.yml
+rm -f $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/.pre-commit-config.yaml
+rm -f $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/.prettierignore
 rm -f $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/.travis.yml
+rm -f $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/pyproject.toml
 rm -Rf $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/test
 rm -Rf $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/unittests
 rm -f $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/chksum.sh
@@ -376,7 +383,9 @@ rm -f $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/tox.ini
 rm -f $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/LICENSE
 rm -Rf $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/LICENSES
 rm -f $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/ACKNOWLEDGMENTS.md
+rm -f $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/DEVELOPMENT.md
 rm -f $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/README.md
+rm -f $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/CHANGELOG.md
 
 # Following files are Put in other places. Remove them from python3_sitelib
 rm -Rf $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/creation/web_base
@@ -386,6 +395,7 @@ rm -f $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/creation/create_condor_tarbal
 rm -f $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/creation/create_frontend
 rm -f $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/creation/create_glidein
 rm -f $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/creation/info_glidein
+rm -rf $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/plugins
 
 # For sl7 sighup to work, we need reconfig_frontend and reconfig_glidein
 # under this directory
@@ -488,6 +498,7 @@ install -d $RPM_BUILD_ROOT/%{_sysconfdir}/gwms-frontend/hooks.reconfig.post
 install -m 0644 %{SOURCE2} $RPM_BUILD_ROOT/%{_sysconfdir}/gwms-frontend/frontend.xml
 install -m 0644 creation/templates/proxies.ini $RPM_BUILD_ROOT/%{_sysconfdir}/gwms-frontend/proxies.ini
 install -m 0644 %{SOURCE8} $RPM_BUILD_ROOT/%{_sysconfdir}/sysconfig/gwms-frontend
+cp -arp plugins/* $RPM_BUILD_ROOT/%{_sysconfdir}/gwms-frontend/plugin.d
 
 # Install the factory config dir
 install -d $RPM_BUILD_ROOT/%{_sysconfdir}/gwms-factory
@@ -496,6 +507,9 @@ install -d $RPM_BUILD_ROOT/%{_sysconfdir}/gwms-factory/hooks.reconfig.pre
 install -d $RPM_BUILD_ROOT/%{_sysconfdir}/gwms-factory/hooks.reconfig.post
 install -m 0644 %{SOURCE4} $RPM_BUILD_ROOT/%{_sysconfdir}/gwms-factory/glideinWMS.xml
 install -m 0644 %{SOURCE9} $RPM_BUILD_ROOT/%{_sysconfdir}/sysconfig/gwms-factory
+install -m 0755 creation/create_cvmfsexec_distros.sh $RPM_BUILD_ROOT/%{_sysconfdir}/gwms-factory/hooks.reconfig.pre/create_cvmfsexec_distros.sh
+# remove the file from python_sitelib as it is put elsewhere; similar to clone_glidein and info_glidein files
+rm -f $RPM_BUILD_ROOT%{python_sitelib}/glideinwms/creation/create_cvmfsexec_distros.sh
 
 # Install the web base
 cp -r creation/web_base/* $RPM_BUILD_ROOT%{web_base}/
@@ -871,6 +885,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(-, gfactory, gfactory) %dir %{_sysconfdir}/gwms-factory/hooks.reconfig.pre
 %attr(-, gfactory, gfactory) %dir %{_sysconfdir}/gwms-factory/hooks.reconfig.post
 %attr(-, gfactory, gfactory) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/gwms-factory/glideinWMS.xml
+%attr(755, gfactory, gfactory) %{_sysconfdir}/gwms-factory/hooks.reconfig.pre/create_cvmfsexec_distros.sh
 %config(noreplace) %{_sysconfdir}/sysconfig/gwms-factory
 
 %files vofrontend-core
@@ -935,9 +950,9 @@ rm -rf $RPM_BUILD_ROOT
 %attr(0644, root, root) %{_sysconfdir}/cron.d/gwms-renew-proxies
 %endif
 %attr(-, frontend, frontend) %dir %{_sysconfdir}/gwms-frontend
-%attr(-, frontend, frontend) %dir %{_sysconfdir}/gwms-frontend/plugin.d
 %attr(-, frontend, frontend) %dir %{_sysconfdir}/gwms-frontend/hooks.reconfig.pre
 %attr(-, frontend, frontend) %dir %{_sysconfdir}/gwms-frontend/hooks.reconfig.post
+%attr(-, frontend, frontend) %config(noreplace) %{_sysconfdir}/gwms-frontend/plugin.d
 %attr(-, frontend, frontend) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/gwms-frontend/frontend.xml
 %attr(-, frontend, frontend) %config(noreplace) %{_sysconfdir}/gwms-frontend/proxies.ini
 %config(noreplace) %{_sysconfdir}/sysconfig/gwms-frontend
@@ -1027,6 +1042,19 @@ rm -rf $RPM_BUILD_ROOT
 #%config(noreplace) %{_sysconfdir}/condor/scripts/frontend_condortoken
 
 %changelog
+* Tue Jul 5 2022 Marco Mambelli <marcom@fnal.gov> - 3.9.6
+- Glideinwms v3.9.6
+- Release Notes: http://glideinwms.fnal.gov/doc.v3_9_6/history.html
+- Release candidates 3.9.6-01.rc1 to 3.9.6-01.rc1
+
+* Tue May 17 2022 Bruno Coimbra <coimbra@fnal.gov> - 3.9.5
+- Glideinwms v3.9.5
+- Release Notes: http://glideinwms.fnal.gov/doc.v3_9_5/history.html
+- Release candidates 3.9.5-01.rc1 to 3.9.5-03.rc3
+
+* Wed Apr 20 2022 Carl Edquist <edquist@cs.wisc.edu> - 3.9.4-2
+- Fix python3-rrdtool dependencies (SOFTWARE-5134)
+
 * Tue Jan 25 2022 Bruno Coimbra <coimbra@fnal.gov> - 3.9.4
 - Glideinwms v3.9.4
 - Release Notes: http://glideinwms.fnal.gov/doc.v3_9_4/history.html
@@ -1055,7 +1083,7 @@ rm -rf $RPM_BUILD_ROOT
 * Fri Mar 26 2021 Dennis Box <dbox@fnal.gov> - 3.7.3-1
 - GlideinWMS v3.7.3
 - Release Notes: http://glideinwms.fnal.gov/doc.v3_7_3/history.html
-- Release candidates: 3.7.3-01.rc1 .rc1 to 
+- Release candidates: 3.7.3-01.rc1 .rc1 to
 
 * Thu Feb 11 2021 Bruno Coimbra <coimbra@fnal.gov> - 3.9.1-1
 - GlideinWMS v3.9.1
