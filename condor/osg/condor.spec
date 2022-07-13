@@ -57,7 +57,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 0.593907
+%define condor_base_release 1.1
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -1675,6 +1675,21 @@ fi
 /bin/systemctl try-restart condor.service >/dev/null 2>&1 || :
 
 %changelog
+* Tue Jul 12 2022 Tim Theisen <tim@cs.wisc.edu> - 9.0.14-1
+- SciToken mapping failures are now recorded in the daemon logs
+- Fix bug that stopped file transfers when output and error are the same
+- Ensure that the Python bindings version matches the installed HTCondor
+- $(OPSYSANDVER) now expand properly in job transforms
+- Fix bug where context managed Python htcondor.SecMan sessions would crash
+- Fix bug where remote CPU times would rarely be set to zero
+
+* Thu May 26 2022 Tim Theisen <tim@cs.wisc.edu> - 9.0.13-1
+- Schedd and startd cron jobs can now log output upon non-zero exit
+- condor_config_val now produces correct syntax for multi-line values
+- The condor_run tool now reports submit errors and warnings to the terminal
+- Fix issue where Kerberos authentication would fail within DAGMan
+- Fix HTCondor startup failure with certain complex network configurations
+
 * Tue Apr 19 2022 Tim Theisen <tim@cs.wisc.edu> - 9.0.12-1
 - Fix bug in parallel universe that could cause the schedd to crash
 - Fix rare crash where a daemon tries to use a discarded security session
