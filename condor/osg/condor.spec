@@ -1,4 +1,4 @@
-%define tarball_version 9.0.14
+%define tarball_version 9.0.15
 
 # On EL7 don't terminate the build because of bad bytecompiling
 %if 0%{?rhel} == 7
@@ -1675,6 +1675,9 @@ fi
 /bin/systemctl try-restart condor.service >/dev/null 2>&1 || :
 
 %changelog
+* Thu Jul 21 2022 Tim Theisen <tim@cs.wisc.edu> - 9.0.15-1
+- Report resources provisioned by the Slurm batch scheduler when available
+
 * Tue Jul 12 2022 Tim Theisen <tim@cs.wisc.edu> - 9.0.14-1
 - SciToken mapping failures are now recorded in the daemon logs
 - Fix bug that stopped file transfers when output and error are the same
