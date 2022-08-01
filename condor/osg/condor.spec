@@ -1,4 +1,4 @@
-%define tarball_version 9.0.15
+%define tarball_version 9.0.16
 
 # On EL7 don't terminate the build because of bad bytecompiling
 %if 0%{?rhel} == 7
@@ -57,7 +57,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.1
+%define condor_base_release 0.599206
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -548,6 +548,7 @@ Requires: python-six
 Requires: python-flask
 Requires: python2-cryptography
 Requires: python2-scitokens
+Requires: mod_wsgi
 %else
 Requires: python3-condor = %{version}-%{release}
 Requires: python3-requests-oauthlib
@@ -555,9 +556,9 @@ Requires: python3-six
 Requires: python3-flask
 Requires: python3-cryptography
 Requires: python3-scitokens
+Requires: python3-mod_wsgi
 %endif
 Requires: httpd
-Requires: mod_wsgi
 
 %description credmon-oauth
 The OAuth2 credmon allows users to obtain credentials from configured
