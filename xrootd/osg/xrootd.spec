@@ -14,14 +14,12 @@
 
         %if %{rhel} == 7
 			# we build both python2 and python3 bindings for EPEL7
-			%define python2only 0
-			%define python3only 0
-			%define python2and3 1
+                        %define _with_python2 1
+                        %define _with_python3 1
         %else
 			# we only build both python3 bindings for EPEL>7
-			%define python2only 0
-			%define python3only 1
-			%define python2and3 0
+			%define _with_python2 0
+			%define _with_python3 1
         %endif
 %else
     # do we have macaroons ?
@@ -37,9 +35,8 @@
         %define use_systemd 0
     %endif
     # we only build python3 bindings for fedora
-    %define python2only 0
-    %define python3only 1
-    %define python2and3 0
+    %define _with_python2 0
+    %define _with_python3 1
 %endif
 
 
@@ -70,8 +67,8 @@
 #-------------------------------------------------------------------------------
 Name:      xrootd
 Epoch:     1
-Version:   5.4.3
-Release:   1.2%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Version:   5.5.0
+Release:   0.rc1.1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -83,7 +80,6 @@ URL:       http://xrootd.org/
 # cd xrootd
 # git-archive master | gzip -9 > ~/rpmbuild/SOURCES/xrootd.tgz
 Source0:   xrootd.tar.gz
-Patch0:    PR-1644-scitokens_logging.patch
 
 %if 0%{?_with_compat}
 Source1:   xrootd-%{compat_version}.tar.gz
@@ -113,19 +109,12 @@ BuildRequires: libmacaroons-devel
 %endif
 BuildRequires: json-c-devel
 
-%if %{python2only}
+%if %{_with_python2}
 BuildRequires: python2-pip
 BuildRequires: python2-devel
 BuildRequires: python2-setuptools
 %endif
-%if %{python2and3}
-BuildRequires: python2-pip
-BuildRequires: python2-devel
-BuildRequires: python2-setuptools
-BuildRequires: python%{python3_pkgversion}-devel
-BuildRequires: python%{python3_pkgversion}-setuptools
-%endif
-%if %{python3only}
+%if %{_with_python3}
 BuildRequires: python%{python3_pkgversion}-devel
 BuildRequires: python%{python3_pkgversion}-setuptools
 %endif
@@ -347,9 +336,9 @@ tool.
 # Python bindings
 #-------------------------------------------------------------------------------
 
-%if %{python2only}
+%if %{_with_python2}
 #-------------------------------------------------------------------------------
-# python2 only (EPEL6)
+# python2
 #-------------------------------------------------------------------------------
 %package -n python2-%{name}
 Summary:       Python 2 bindings for XRootD
@@ -363,37 +352,9 @@ Requires:      %{name}-client-libs%{?_isa} = %{epoch}:%{version}-%{release}
 Python 2 bindings for XRootD
 %endif
 
-%if %{python2and3}
+%if %{_with_python3}
 #-------------------------------------------------------------------------------
-# python2 (EPEL7)
-#-------------------------------------------------------------------------------
-%package -n python2-%{name}
-Summary:       Python 2 bindings for XRootD
-Group:         Development/Libraries
-Provides:      python-%{name}
-Provides:      %{name}-python = %{epoch}:%{version}-%{release}
-Obsoletes:     %{name}-python < 1:4.8.0-1
-Requires:      %{name}-client-libs%{?_isa} = %{epoch}:%{version}-%{release}
-
-%description -n python2-xrootd
-Python 2 bindings for XRootD
-
-#-------------------------------------------------------------------------------
-# python3 (EPEL7)
-#-------------------------------------------------------------------------------
-%package -n python%{python3_pkgversion}-%{name}
-Summary:       Python 3 bindings for XRootD
-Group:         Development/Libraries
-%{?python_provide:%python_provide python%{python3_pkgversion}-%{name}}
-Requires:      %{name}-client-libs%{?_isa} = %{epoch}:%{version}-%{release}
-
-%description -n python%{python3_pkgversion}-%{name}
-Python 3 bindings for XRootD
-%endif
-
-%if %{python3only}
-#-------------------------------------------------------------------------------
-# python3 only (Fedora and EPEL8)
+# python3
 #-------------------------------------------------------------------------------
 %package -n python%{python3_pkgversion}-%{name}
 Summary:       Python 3 bindings for XRootD
@@ -529,7 +490,6 @@ This package contains compatibility binaries for xrootd 4 servers.
 %endif
 
 %setup -c -n xrootd
-%patch0 -p1
 
 %build
 
@@ -566,13 +526,10 @@ cmake  \
       -DXRDCEPH_SUBMODULE=TRUE \
 %endif
 %if %{?_with_xrdclhttp:1}%{!?_with_xrdclhttp:0}
-      -DXRDCLHTTP_SUBMODULE=TRUE \
+      -DENABLE_XRDCLHTTP=TRUE \
 %endif
 %if %{?_with_isal:1}%{!?_with_isal:0}
       -DENABLE_XRDEC=TRUE \
-%endif
-%if %{python3only}
-      -DXRD_PYTHON_REQ_VERSION=%{python3_pkgversion} \
 %endif
       -DUSER_VERSION=v%{version} \
       ../
@@ -606,7 +563,7 @@ cmake  \
       -DXRDCEPH_SUBMODULE=TRUE \
 %endif
 %if %{?_with_xrdclhttp:1}%{!?_with_xrdclhttp:0}
-      -DXRDCLHTTP_SUBMODULE=TRUE \
+      -DENABLE_XRDEC=TRUE \
 %endif
       ../
 
@@ -615,12 +572,16 @@ popd
 popd
 %endif
 
-%if %{python2and3}
-# build python3 bindings
 pushd build/bindings/python
-%py3_build
-popd
+# build python2 bindings
+%if %{_with_python2}
+%py2_build
 %endif
+# build python3 bindings
+%if %{_with_python3}
+%py3_build
+%endif
+popd
 
 #-------------------------------------------------------------------------------
 # Installation
@@ -638,7 +599,7 @@ rm -rf $RPM_BUILD_ROOT%{_includedir}
 rm -rf $RPM_BUILD_ROOT%{_datadir}
 rm -f $RPM_BUILD_ROOT%{_bindir}/{cconfig,cns_ssi,frm_admin,frm_xfragent,mpxstats}
 rm -f $RPM_BUILD_ROOT%{_bindir}/{wait41,xprep,xrd,xrdadler32,xrdcrc32c,XrdCnsd,xrdcopy}
-rm -f $RPM_BUILD_ROOT%{_bindir}/{xrdcp,xrdcp-old,xrdfs,xrdgsiproxy,xrdpwdadmin}
+rm -f $RPM_BUILD_ROOT%{_bindir}/{xrdcks,xrdcp,xrdcp-old,xrdfs,xrdgsiproxy,xrdpwdadmin}
 rm -f $RPM_BUILD_ROOT%{_bindir}/{xrdqstats,xrdsssadmin,xrdstagetool,xrootdfs}
 rm -f $RPM_BUILD_ROOT%{_libdir}/libXrdAppUtils.so
 rm -f $RPM_BUILD_ROOT%{_libdir}/{libXrdClient.so,libXrdCl.so,libXrdCryptoLite.so}
@@ -722,8 +683,10 @@ install -m 644 packaging/common/xrootd-http.cfg $RPM_BUILD_ROOT%{_sysconfdir}/xr
 # client plug-in config
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/xrootd/client.plugins.d
 install -m 644 packaging/common/client-plugin.conf.example $RPM_BUILD_ROOT%{_sysconfdir}/xrootd/client.plugins.d/client-plugin.conf.example
+install -m 644 packaging/common/recorder.conf              $RPM_BUILD_ROOT%{_sysconfdir}/xrootd/client.plugins.d/recorder.conf
+
 %if %{?_with_xrdclhttp:1}%{!?_with_xrdclhttp:0}
-install -m 644 src/XrdClHttp/config/http.client.conf.example $RPM_BUILD_ROOT%{_sysconfdir}/xrootd/client.plugins.d/xrdcl-http-plugin.conf
+install -m 644 packaging/common/http.client.conf.example $RPM_BUILD_ROOT%{_sysconfdir}/xrootd/client.plugins.d/xrdcl-http-plugin.conf
 %endif
 
 # client config
@@ -738,12 +701,16 @@ mkdir -p %{buildroot}%{_datadir}/selinux/packages/%{name}
 install -m 644 -p packaging/common/xrootd.pp \
     %{buildroot}%{_datadir}/selinux/packages/%{name}/%{name}.pp
 
-%if %{python2and3}
-# install python3 bindings
 pushd build/bindings/python
-%py3_install
-popd
+# install python2 bindings
+%if %{_with_python2}
+%py2_install
 %endif
+# install python3 bindings
+%if %{_with_python3}
+%py3_install
+%endif
+popd
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -952,10 +919,12 @@ fi
 %{_libdir}/libXrdPosixPreload.so.2*
 %{_libdir}/libXrdSsiLib.so.2*
 %{_libdir}/libXrdSsiShMap.so.2*
+%{_libdir}/libXrdClRecorder-5.so
 %if %{?_with_isal:1}%{!?_with_isal:0}
 %{_libdir}/libXrdEc.so.1*
 %endif
 %{_sysconfdir}/xrootd/client.plugins.d/client-plugin.conf.example
+%{_sysconfdir}/xrootd/client.plugins.d/recorder.conf
 %config(noreplace) %{_sysconfdir}/xrootd/client.conf
 # This lib may be used for LD_PRELOAD so the .so link needs to be included
 %{_libdir}/libXrdPosixPreload.so
@@ -1019,6 +988,7 @@ fi
 %files client
 %defattr(-,root,root,-)
 %{_bindir}/xrdadler32
+%{_bindir}/xrdcks
 %{_bindir}/xrdcopy
 %{_bindir}/xrdcp
 %{_bindir}/xrdcrc32c
@@ -1026,6 +996,7 @@ fi
 %{_bindir}/xrdgsiproxy
 %{_bindir}/xrdmapc
 %{_bindir}/xrdpinls
+%{_bindir}/xrdreplay
 %{_mandir}/man1/xrdadler32.1*
 %{_mandir}/man1/xrdcopy.1*
 %{_mandir}/man1/xrdcp.1*
@@ -1039,23 +1010,13 @@ fi
 %{_mandir}/man1/xrootdfs.1*
 %dir %{_sysconfdir}/xrootd
 
-%if %{python2only}
+%if %{_with_python2}
 %files -n python2-%{name}
 %defattr(-,root,root,-)
 %{python2_sitearch}/*
 %endif
 
-%if %{python2and3}
-%files -n python2-%{name}
-%defattr(-,root,root,-)
-%{python2_sitearch}/*
-
-%files -n python%{python3_pkgversion}-%{name}
-%defattr(-,root,root,-)
-%{python3_sitearch}/*
-%endif
-
-%if %{python3only}
+%if %{_with_python3}
 %files -n python%{python3_pkgversion}-%{name}
 %defattr(-,root,root,-)
 %{python3_sitearch}/*
@@ -1170,6 +1131,10 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Tue Aug 02 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.5.0-0.rc1.1
+- Build from 5.5.0-rc1 (SOFTWARE-5275)
+  - Remove upstreamed patch PR-1644-scitokens_logging.patch
+
 * Mon Jun 20 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.4.3-1.2
 - Add patch to backport https://github.com/xrootd/xrootd/pull/1644 ("Populate XrdSciTokens with more detailed log messages")
 
