@@ -1,5 +1,5 @@
-xrootd/5.5.0/xrootd-5.5.0-0.rc1.el7.src.rpm sha1sum=eb1221c3e087ba1bd454335a43967068aebed520
-# Downloaded from https://xrootd.web.cern.ch/sw/releases/5.5.0-rc1/rpms/source/xrootd-5.5.0-0.rc1.el7.src.rpm
+xrootd/5.5.0/xrootd-5.5.0-0.rc2.el7.src.rpm sha1sum=9ad6af79e72edb1e1e1f6ea2bd5627b7eb0f6cd1
+# Downloaded from https://xrootd.web.cern.ch/sw/releases/5.5.0-rc2/rpms/source/xrootd-5.5.0-0.rc2.el7.src.rpm
 
 #xrootd/5.4.3/xrootd-5.4.3-1.1.el7.src.rpm sha1sum=23f1286392b83eb1592897bfce53f9de673cd3f2
 ## Built from https://github.com/matyasselmeci/xrootd/releases/tag/v5.4.3-rc4.1

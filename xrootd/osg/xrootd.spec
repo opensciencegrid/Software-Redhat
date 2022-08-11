@@ -68,7 +68,7 @@
 Name:      xrootd
 Epoch:     1
 Version:   5.5.0
-Release:   0.rc1.1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:   0.rc2.1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -152,7 +152,9 @@ BuildRequires: clang
 
 %if %{?_with_asan:1}%{!?_with_asan:0}
 BuildRequires: libasan
+%if %{?rhel}%{!?rhel:0} == 7
 BuildRequires: devtoolset-7-libasan-devel
+%endif
 Requires: libasan
 %endif
 
@@ -1131,6 +1133,9 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Thu Aug 11 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.5.0-0.rc2.1
+- Build from 5.5.0-rc2 (SOFTWARE-5275)
+
 * Tue Aug 02 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.5.0-0.rc1.1
 - Build from 5.5.0-rc1 (SOFTWARE-5275)
   - Remove upstreamed patch PR-1644-scitokens_logging.patch
