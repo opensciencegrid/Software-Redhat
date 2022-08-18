@@ -1,12 +1,2 @@
-xrootd/5.5.0/xrootd-5.5.0-0.rc2.el7.src.rpm sha1sum=9ad6af79e72edb1e1e1f6ea2bd5627b7eb0f6cd1
-# Downloaded from https://xrootd.web.cern.ch/sw/releases/5.5.0-rc2/rpms/source/xrootd-5.5.0-0.rc2.el7.src.rpm
-
-#xrootd/5.4.3/xrootd-5.4.3-1.1.el7.src.rpm sha1sum=23f1286392b83eb1592897bfce53f9de673cd3f2
-## Built from https://github.com/matyasselmeci/xrootd/releases/tag/v5.4.3-rc4.1
-## podman run -i -t --rm -v $PWD:/xrootd centos:7 bash
-##       yum-config-manager --enablerepo powertools >/dev/null
-##       yum install -y epel-release
-##       yum install -y rpm-build python-srpm-macros epel-srpm-macros which git
-##       cd /xrootd/packaging
-##       ./makesrpm.sh --version 5.4.3
-## (note: make tags with the same name in the submodules src/XrdClHttp and src/XrdCeph before doing this)
+xrootd/5.5.0/xrootd-5.5.0-0.rc3.el7.src.rpm sha1sum=f14817fe66bc8bdea7bb405f8f2a572aa7014a19
+# Downloaded from https://xrootd.web.cern.ch/sw/releases/5.5.0-rc3/rpms/source/xrootd-5.5.0-0.rc3.el7.src.rpm

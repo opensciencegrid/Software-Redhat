@@ -16,3 +16,17 @@ To update the compat packages:
 - Bump the release and add %changelog entry
 
 - Build
+
+
+We sometimes fork their repo and apply commits.  In that case, here's how to build the SRPM:
+
+**Steps:** (for an example v5.4.3-rc4.1 tag)
+# clone the repo, including submodules, and switch to the tag
+# make tags with the same name in submodules src/XrdClHttp and src/XrdCeph
+
+podman run -i -t --rm -v $PWD:/xrootd centos:7 bash
+      yum-config-manager --enablerepo powertools >/dev/null
+      yum install -y epel-release
+      yum install -y rpm-build python-srpm-macros epel-srpm-macros which git
+      cd /xrootd/packaging
+      ./makesrpm.sh --version 5.4.3
