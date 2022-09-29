@@ -1,4 +1,4 @@
-%define tarball_version 9.0.16
+%define tarball_version 9.0.17
 
 # On EL7 don't terminate the build because of bad bytecompiling
 %if 0%{?rhel} == 7
@@ -57,7 +57,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 1.1
+%define condor_base_release 0.607801
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
@@ -572,6 +572,12 @@ Group: Applications/System
 Requires: %name = %version-%release
 Requires: python3-condor = %{version}-%{release}
 Requires: python3-six
+%if 0%{?rhel} == 7 && ! 0%{?amzn}
+Requires: python36-cryptography
+%endif
+%if 0%{?rhel} >= 8
+Requires: python3-cryptography
+%endif
 %if 0%{?osg}
 # Although htgettoken is only needed on the submit machine and
 #  condor-credmon-vault is needed on both the submit and credd machines,
@@ -742,7 +748,7 @@ export CMAKE_PREFIX_PATH=/usr
        -D_VERBOSE:BOOL=TRUE \
        -DBUILD_TESTING:BOOL=TRUE \
        -DHAVE_BACKFILL:BOOL=TRUE \
-       -DHAVE_BOINC:BOOL=FALSE \
+       -DHAVE_BOINC:BOOL=TRUE \
 %if %blahp
        -DWITH_BLAHP:BOOL=TRUE \
        -DBLAHP_FOUND=/usr/libexec/blahp/BLClient \
@@ -781,7 +787,7 @@ export CMAKE_PREFIX_PATH=/usr
        -DPACKAGEID:STRING=%{version}-%{condor_release} \
        -DCONDOR_RPMBUILD:BOOL=TRUE \
        -DHAVE_BACKFILL:BOOL=TRUE \
-       -DHAVE_BOINC:BOOL=FALSE \
+       -DHAVE_BOINC:BOOL=TRUE \
        -DHAVE_KBDD:BOOL=TRUE \
        -DHAVE_HIBERNATION:BOOL=TRUE \
        -DWANT_HDFS:BOOL=FALSE \
