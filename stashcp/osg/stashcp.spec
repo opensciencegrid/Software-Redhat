@@ -1,11 +1,12 @@
 Summary: StashCache/OSDF client
 Name: stashcp
-Version: 6.8.1
+%global newname osdf-client
+Version: 6.9.2
 Release: 1%{?dist}
 License: ASL 2.0
-Url: https://github.com/opensciencegrid/stashcp
+Url: https://github.com/htcondor/osdf-client
 # Pre-compiled binary
-Source0: %{name}_%{version}_Linux_x86_64.tar.gz
+Source0: %{newname}_%{version}_Linux_x86_64.tar.gz
 Source1: 10-stash-plugin.config
 ExclusiveArch: x86_64
 Obsoletes: stashcache-client < 6.4.0
@@ -55,6 +56,9 @@ install -m 0644 %{SOURCE1} %{buildroot}/etc/condor/config.d/10-stash-plugin.conf
 %doc README.md
 
 %changelog
+* Mon Oct 10 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 6.9.2-1
+- Update to 6.9.2, change upstream to htcondor/osdf-client (SOFTWARE-5350)
+
 * Mon Aug 15 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 6.8.1-1
 - Update to 6.8.1 (SOFTWARE-5284)
 
