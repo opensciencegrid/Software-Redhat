@@ -1,12 +1,12 @@
 Summary: OSDF client programs
 Name: osdf-client
 Version: 6.9.2
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: ASL 2.0
 Url: https://github.com/htcondor/osdf-client
 # Pre-compiled binary
-Source0: %{name}_%{version}_Linux_x86_64.tar.gz
-Source1: 10-stash-plugin.config
+Source0: https://github.com/htcondor/%{name}/releases/download/v%{version}/%{name}_%{version}_Linux_x86_64.tar.gz
+Source1: https://github.com/htcondor/%{name}/blob/v%{version}/resources/10-stash-plugin.conf
 ExclusiveArch: x86_64
 
 # go compiler doesn't generate build id files by default.  We also don't have them
@@ -47,7 +47,7 @@ install -m 0755 stashcp %{buildroot}%{_bindir}/stashcp
 mkdir -p %{buildroot}/usr/libexec/condor
 install -m 0755 stash_plugin %{buildroot}/usr/libexec/condor/stash_plugin
 mkdir -p %{buildroot}/etc/condor/config.d
-install -m 0644 %{SOURCE1} %{buildroot}/etc/condor/config.d/10-stash-plugin.config
+install -m 0644 %{SOURCE1} %{buildroot}/etc/condor/config.d/10-stash-plugin.conf
 
 %files -n stashcp
 %{_bindir}/stashcp
@@ -56,11 +56,15 @@ install -m 0644 %{SOURCE1} %{buildroot}/etc/condor/config.d/10-stash-plugin.conf
 
 %files -n condor-stash-plugin
 /usr/libexec/condor/stash_plugin
-%config(noreplace) /etc/condor/config.d/10-stash-plugin.config
+%config(noreplace) /etc/condor/config.d/10-stash-plugin.conf
 %doc LICENSE.txt
 %doc README.md
 
 %changelog
+* Mon Oct 10 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 6.9.2-2
+- Take new 10-stash-plugin.conf file from upstream (SOFTWARE-5350)
+  (replace 10-stash-plugin.config with it, for consistency with upstream)
+
 * Mon Oct 10 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 6.9.2-1
 - Update to 6.9.2, rename to osdf-client, change upstream to htcondor/osdf-client (SOFTWARE-5350)
 
