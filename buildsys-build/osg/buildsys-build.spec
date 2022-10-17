@@ -50,6 +50,7 @@ Requires: systemd
 
 
 %package -n buildsys-srpm-build
+Summary:   Minimal set of packages required to build srpms in a chroot
 
 Requires: bash
 Requires: buildsys-macros = %{version}
@@ -71,7 +72,7 @@ Requires: rocky-release
 %endif
 
 %description -n buildsys-srpm-build
-Minimal set of packages required to build srpms in a chroot
+%{summary}
 
 
 %install
