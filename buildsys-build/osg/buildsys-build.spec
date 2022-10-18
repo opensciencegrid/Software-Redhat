@@ -1,6 +1,6 @@
 Name:      buildsys-build
 Summary:   Minimal set of packages required to build in a chroot
-Version:   %{rhel}
+Version:   8
 Release:   1%{?dist}
 License:   Apache 2.0
 Group:     Development
@@ -24,25 +24,15 @@ Requires: info
 Requires: make
 Requires: patch
 Requires: redhat-rpm-config
+Requires: rocky-release
 Requires: rpm-build
 Requires: sed
 Requires: shadow-utils
+Requires: systemd
 Requires: tar
 Requires: unzip
 Requires: util-linux
 Requires: which
-
-%if 0%{?rhel} <= 7
-Requires: centos-release
-Requires: python3
-%else
-Requires: rocky-release
-Requires: systemd
-%endif
-
-# leftover from el6:
-#Requires: util-linux-ng
-#Requires: xz
 
 
 %description
@@ -60,16 +50,9 @@ Requires: git
 Requires: gnupg
 Requires: make
 Requires: redhat-rpm-config
+Requires: rocky-release
 Requires: rpm-build
 Requires: subversion
-
-%if 0%{?rhel} <= 7
-Requires: centos-release
-Requires: cvs
-Requires: python3
-%else
-Requires: rocky-release
-%endif
 
 %description -n buildsys-srpm-build
 %{summary}
@@ -87,7 +70,7 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Mon Oct 17 2022 Carl Edquist <edquist@cs.wisc.edu> - 7-1 / 8-1
+* Mon Oct 17 2022 Carl Edquist <edquist@cs.wisc.edu> - 8-1
 - Encore! Encore!  This time with buildsys-srpm-build, too. (SOFTWARE-4849)
 
 * Wed Jul 11 2012 Matyas Selmeci <matyas@cs.wisc.edu> - 5-3 / 6-3
