@@ -68,7 +68,7 @@
 Name:      xrootd
 Epoch:     1
 Version:   5.5.1
-Release:   1.2%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:   0.rc2.1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -1133,6 +1133,9 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Tue Oct 25 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.5.1-0.rc2.1
+- Build 5.5.1rc2 for testing
+
 * Thu Oct 20 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.5.1-1.2
 - Build from 5.5.1 full release (SOFTWARE-5328)
 
