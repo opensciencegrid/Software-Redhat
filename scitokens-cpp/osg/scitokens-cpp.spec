@@ -3,7 +3,7 @@
 
 Name: scitokens-cpp
 Version: 0.7.2
-Release: 1%{?dist}
+Release: 1.1%{?dist}
 Summary: C++ Implementation of the SciTokens Library
 License: ASL 2.0
 URL: https://github.com/scitokens/scitokens-cpp
@@ -17,6 +17,8 @@ Source0: https://github.com/scitokens/scitokens-cpp/releases/download/v%{version
 # Fix build failure with GCC10.1 and Werror (upstream pull request)
 # https://github.com/kazuho/picojson/pull/131
 #Patch0: %{name}-paren.patch
+
+Patch100: Avoid-retrying-for-5-minutes-after-failed-key-retrieval-backport.patch
 
 # Scitokens-cpp bundles jwt-cpp, a header only dependency
 # Since it doesn't create a library that can be used by others, it seems
@@ -51,6 +53,7 @@ Requires: %{name}%{?_isa} = %{version}
 %prep
 %setup -q
 #sed 's/ -Werror//' -i CMakeLists.txt
+%patch100 -p1
 
 %build
 %cmake3
@@ -74,6 +77,10 @@ Requires: %{name}%{?_isa} = %{version}
 %dir %{_includedir}/scitokens
 
 %changelog
+* Mon Oct 31 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 0.7.2-1.1
+- Add Avoid-retrying-for-5-minutes-after-failed-key-retrieval-backport.patch
+  https://github.com/scitokens/scitokens-cpp/commit/71875937ffad50719433b0089d9c5d3ae46bca12.patch
+
 * Mon Oct 31 2022 Derek Weitzel <dweitzel@unl.edu> - 0.7.2-1
 - Add curl timeout of 4 seconds for update, and 30 for expired keys
 
