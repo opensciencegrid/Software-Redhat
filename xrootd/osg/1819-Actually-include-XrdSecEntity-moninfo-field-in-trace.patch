@@ -9,8 +9,8 @@ Subject: [PATCH] Actually include XrdSecEntity moninfo field in trace.
 
 diff --git a/src/XrdSec/XrdSecEntity.cc b/src/XrdSec/XrdSecEntity.cc
 index c938027b12e..9fe83d3e73a 100644
---- a/xrootd/src/XrdSec/XrdSecEntity.cc
-+++ b/xrootd/src/XrdSec/XrdSecEntity.cc
+--- a/src/XrdSec/XrdSecEntity.cc
++++ b/src/XrdSec/XrdSecEntity.cc
 @@ -60,7 +60,7 @@ void XrdSecEntity::Display(XrdSysError &mDest)
     class AttrCB : public XrdSecEntityAttrCB
          {public:
