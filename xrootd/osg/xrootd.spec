@@ -68,7 +68,7 @@
 Name:      xrootd
 Epoch:     1
 Version:   5.5.1
-Release:   0.rc2.1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:   0.rc2.2%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -84,6 +84,9 @@ Source0:   xrootd.tar.gz
 %if 0%{?_with_compat}
 Source1:   xrootd-%{compat_version}.tar.gz
 %endif
+
+# https://github.com/xrootd/xrootd/pull/1819
+Patch0: 1819-Actually-include-XrdSecEntity-moninfo-field-in-trace.patch
 
 BuildRoot: %{_tmppath}/%{name}-root
 
@@ -492,6 +495,7 @@ This package contains compatibility binaries for xrootd 4 servers.
 %endif
 
 %setup -c -n xrootd
+%patch0 -p1
 
 %build
 
@@ -1133,6 +1137,9 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Thu Nov 03 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.5.1-0.rc2.2
+- Add logging patch (https://github.com/xrootd/xrootd/pull/1819)
+
 * Tue Oct 25 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.5.1-0.rc2.1
 - Build 5.5.1rc2 for testing
 
