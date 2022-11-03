@@ -87,6 +87,7 @@ Source1:   xrootd-%{compat_version}.tar.gz
 
 # https://github.com/xrootd/xrootd/pull/1819
 Patch0: 1819-Actually-include-XrdSecEntity-moninfo-field-in-trace.patch
+Patch1: Revert-XrdHttpTPC-TPC-Pull-passing-the-source-file-s.patch
 
 BuildRoot: %{_tmppath}/%{name}-root
 
@@ -495,7 +496,10 @@ This package contains compatibility binaries for xrootd 4 servers.
 %endif
 
 %setup -c -n xrootd
+cd xrootd
 %patch0 -p1
+%patch1 -p1
+cd ..
 
 %build
 
@@ -1139,6 +1143,7 @@ fi
 %changelog
 * Thu Nov 03 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.5.1-1.3
 - Add logging patch (https://github.com/xrootd/xrootd/pull/1819)
+- Add patch reverting https://github.com/xrootd/xrootd/pull/1801
 
 * Thu Oct 20 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.5.1-1.2
 - Build from 5.5.1 full release (SOFTWARE-5328)
