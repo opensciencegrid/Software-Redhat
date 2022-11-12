@@ -68,7 +68,7 @@
 Name:      xrootd
 Epoch:     1
 Version:   5.5.1
-Release:   1.3%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:   1.4%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -87,7 +87,7 @@ Source1:   xrootd-%{compat_version}.tar.gz
 
 # https://github.com/xrootd/xrootd/pull/1819
 Patch0: 1819-Actually-include-XrdSecEntity-moninfo-field-in-trace.patch
-Patch1: Revert-XrdHttpTPC-TPC-Pull-passing-the-source-file-s.patch
+Patch1: 1826-HTTP-TPC-PULL.patch
 
 BuildRoot: %{_tmppath}/%{name}-root
 
@@ -1141,6 +1141,10 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Fri Nov 11 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.5.1-1.4
+- Drop patch reverting https://github.com/xrootd/xrootd/pull/1801;
+  instead add 1826-HTTP-TPC-PULL.patch which should fix the issue
+
 * Thu Nov 03 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.5.1-1.3
 - Add logging patch (https://github.com/xrootd/xrootd/pull/1819)
 - Add patch reverting https://github.com/xrootd/xrootd/pull/1801
