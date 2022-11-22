@@ -1,4 +1,4 @@
-%define tarball_version 10.1.2
+%define tarball_version 10.1.3
 
 # On EL7 don't terminate the build because of bad bytecompiling
 %if 0%{?rhel} == 7
@@ -59,7 +59,7 @@ Version: %{tarball_version}
 
 # Only edit the %condor_base_release to bump the rev number
 %define condor_git_base_release 0.1
-%define condor_base_release 0.613556
+%define condor_base_release 0.614850
 %if %git_build
         %define condor_release %condor_git_base_release.%{git_rev}.git
 %else
