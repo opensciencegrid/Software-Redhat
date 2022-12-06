@@ -1,6 +1,6 @@
 Name:      buildsys-build
 Summary:   Minimal set of packages required to build in a chroot
-Version:   8
+Version:   9
 Release:   1%{?dist}
 License:   Apache 2.0
 Group:     Development
@@ -70,6 +70,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Dec 06 2022 Carl Edquist <edquist@cs.wisc.edu> - 9-1
+- EL9 here we come (SOFTWARE-5391)
+
 * Mon Oct 17 2022 Carl Edquist <edquist@cs.wisc.edu> - 8-1
 - Encore! Encore!  This time with buildsys-srpm-build, too. (SOFTWARE-4849)
 
