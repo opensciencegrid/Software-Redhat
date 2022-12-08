@@ -4,7 +4,7 @@
 # appropriate osg-*-development tag
 # This will require koji admin permissions.
 %define osg_version 3.6up
-%define dver   8
+%define dver   9
 
 %define osgver %(tr -d . <<< %{osg_version})
 %define dist .osg%{osgver}.el%{dver}
@@ -12,7 +12,7 @@
 Name:		buildsys-macros
 Summary:	Macros for the OSG Buildsystem
 Version:        %{dver}
-Release:	6%{dist}
+Release:	1%{dist}
 License:	GPL
 BuildArch:      noarch
 Requires:	rpmdevtools
@@ -41,6 +41,9 @@ printf %s%b "%" "__arch_install_post /usr/lib/rpm/check-buildroot\n" >> $RPM_BUI
 /etc/rpm/macros.checkbuild
 
 %changelog
+* Thu Dec 08 2022 Carl Edquist <edquist@cs.wisc.edu> - 9-1
+- build for el9 (SOFTWARE-5395)
+
 * Tue Feb 02 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 8-6
 - split upcoming repo
 
