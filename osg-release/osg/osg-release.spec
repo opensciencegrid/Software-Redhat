@@ -20,6 +20,7 @@ Source5:        template.repo.direct
 
 Source40:       RPM-GPG-KEY-OSG
 Source41:       RPM-GPG-KEY-OSG-2
+Source42:       RPM-GPG-KEY-OSG-3
 
 
 BuildArch:      noarch
@@ -48,6 +49,8 @@ install -pm 644 %{SOURCE40} \
     $RPM_BUILD_ROOT%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-OSG
 install -pm 644 %{SOURCE41} \
     $RPM_BUILD_ROOT%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-OSG-2
+install -pm 644 %{SOURCE42} \
+    $RPM_BUILD_ROOT%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-OSG-3
 
 # yum
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d
@@ -60,9 +63,13 @@ sed -i -e 's/gpgcheck=1/gpgcheck=0/' $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d/*
 %config(noreplace) /etc/yum.repos.d/*
 /etc/pki/rpm-gpg/RPM-GPG-KEY-OSG
 /etc/pki/rpm-gpg/RPM-GPG-KEY-OSG-2
+/etc/pki/rpm-gpg/RPM-GPG-KEY-OSG-3
 
 
 %changelog
+* Fri Dec 09 2022 Carl Edquist <edquist@cs.wisc.edu> - 3.6-6
+- Provide RPM-GPG-KEY-OSG-3 for .osg36.el9 (SOFTWARE-5408)
+
 * Thu Apr 21 2022 Carl Edquist <edquist@cs.wisc.edu> - 3.6-5
 - Introduce osg-next repos (SOFTWARE-4509)
 
