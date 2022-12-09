@@ -1,6 +1,6 @@
 Name:           osg-release
 Version:        3.6
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        OSG Software for Enterprise Linux repository configuration
 
 License:        GPL
@@ -67,6 +67,9 @@ sed -i -e 's/gpgcheck=1/gpgcheck=0/' $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d/*
 
 
 %changelog
+* Fri Dec 09 2022 Carl Edquist <edquist@cs.wisc.edu> - 3.6-7
+- Bump for rpm signing (SOFTWARE-5408)
+
 * Fri Dec 09 2022 Carl Edquist <edquist@cs.wisc.edu> - 3.6-6
 - Provide RPM-GPG-KEY-OSG-3 for .osg36.el9 (SOFTWARE-5408)
 
