@@ -1,6 +1,6 @@
 Name:           osg-release
 Version:        3.6
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        OSG Software for Enterprise Linux repository configuration
 
 License:        GPL
