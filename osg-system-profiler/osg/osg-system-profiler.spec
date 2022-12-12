@@ -1,7 +1,7 @@
 Summary:   Profiles your system for debugging
 Name:      osg-system-profiler
 Version:   1.6.0
-Release:   1%{?dist}
+Release:   2%{?dist}
 License:   Apache License, 2.0
 Source0:   %{name}-%{version}.tar.gz
 BuildArch: noarch
@@ -40,6 +40,9 @@ make install DESTDIR=$RPM_BUILD_ROOT
 %{_bindir}/%{name}-viewer
 
 %changelog
+* Mon Dec 12 2022 Carl Edquist <edquist@cs.wisc.edu> - 1.6.0-2
+- Bump to rebuild (SOFTWARE-5384)
+
 * Wed Jun 24 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.6.0-1
 - Query multiple python executables, not just `which python` (which may not exist on EL8) (SOFTWARE-4146)
 
