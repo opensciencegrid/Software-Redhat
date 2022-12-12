@@ -1,7 +1,7 @@
 
 Name: javascriptrrd
 Version: 1.1.1
-Release: 1%{?dist}
+Release: 1.1%{?dist}
 Summary: A package to render RRD databases in javascript using Flot
 
 License: MIT
@@ -47,6 +47,9 @@ install -m 644 flot/*.txt $RPM_BUILD_ROOT/%{_defaultdocdir}/javascriptrrd/flot
 %{_defaultdocdir}/javascriptrrd/flot
 
 %changelog
+* Mon Dec 12 2022 Carl Edquist <edquist@cs.wisc.edu> - 1.1.1-1.1
+- Bump to rebuild (SOFTWARE-5384)
+
 * Tue Apr 29 2014 Edgar Fajardo <efajardo@phsics.ucsd.edu> 1.1.1-1
 Updated to the 1.1.1 release.
 
