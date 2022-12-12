@@ -1,6 +1,6 @@
 Name:           osg-update-vos
 Version:        1.4.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        VO data updater for OSG
 
 License:        Apache 2.0
@@ -42,6 +42,9 @@ make install DESTDIR=%{buildroot}
 %{_sbindir}/osg-update-data
 
 %changelog
+* Mon Dec 12 2022 Carl Edquist <edquist@cs.wisc.edu> - 1.4.0-3
+- Bump to rebuild (SOFTWARE-5384)
+
 * Tue Jun 23 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.4.0-2
 - Use Python 3 on EL8 (SOFTWARE-4140)
 
