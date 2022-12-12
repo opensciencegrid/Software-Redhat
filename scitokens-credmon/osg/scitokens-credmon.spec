@@ -2,7 +2,7 @@
 
 Name:           %{pypi_name}
 Version:        0.8.1
-Release:        1.2%{?dist}
+Release:        1.3%{?dist}
 Summary:        SciTokens credential monitor for use with HTCondor
 
 License:        MIT
@@ -86,6 +86,9 @@ rmdir examples/wsgi
 %{_var}/www/wsgi-scripts/scitokens-credmon
 
 %changelog
+* Mon Dec 12 2022 Carl Edquist <edquist@cs.wisc.edu> - 0.8.1-1.3
+- Bump to release (SOFTWARE-5384)
+
 * Thu Oct 01 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 0.8.1-1.2
 - Fix Python 3 bytes/str issue
   Added patch Open-temp-file-as-bytes-for-atomic_output-to-fix-str.patch
