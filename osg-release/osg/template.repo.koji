@@ -4,7 +4,5 @@ baseurl=https://koji.opensciencegrid.org/mnt/koji/repos/osg-{SERIES}-el{EL}-{REP
 priority=98
 enabled=0
 gpgcheck=1
-gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-OSG
-       file:///etc/pki/rpm-gpg/RPM-GPG-KEY-OSG-2
-       file:///etc/pki/rpm-gpg/RPM-GPG-KEY-OSG-3
+gpgkey=file:///etc/pki/rpm-gpg/{GPGKEY}
 

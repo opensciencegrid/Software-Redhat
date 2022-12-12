@@ -25,11 +25,12 @@ mkrepofile () {
     return
   fi
 
-  # XXX: all el6 .repo files start with osg-el6
   case $EL in
-    6 ) REPOFILE=${YUMREPO/#osg/osg-el$EL}.repo ;;
-    * ) REPOFILE=$YUMREPO.repo ;;
+    9 ) GPGKEY=RPM-GPG-KEY-OSG-3 ;;
+    * ) GPGKEY=RPM-GPG-KEY-OSG-2 ;;
   esac
+
+  REPOFILE=$YUMREPO.repo
 
   case $YUMREPO in
     osg ) ENABLED=1 ;;
@@ -48,6 +49,7 @@ mkrepofile () {
     s/{SERIES}/$SERIES/
     s/{REPO}/$REPO/
     s/{TITLE}/$TITLE/
+    s/{GPGKEY}/$GPGKEY/
   " "$TEMPLATEDIR/template.repo.$TEMPLATE" > "$REPOFILE"
 
   echo "Wrote: $REPOFILE"
