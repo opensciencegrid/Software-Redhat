@@ -3,7 +3,7 @@
 
 Name:               python-jwt
 Version:            1.6.1
-Release:            1%{?dist}
+Release:            1.1%{?dist}
 Summary:            JSON Web Token implementation in Python
 License:            MIT
 URL:                https://github.com/jpadilla/pyjwt
@@ -74,6 +74,9 @@ py.test-%{python3_version} --verbose
 %{_bindir}/pyjwt
 
 %changelog
+* Tue Dec 13 2022 Carl Edquist <edquist@cs.wisc.edu> - 1.6.1-1.1
+- Bump to rebuild (SOFTWARE-5384)
+
 * Thu Apr 05 2018 Carl George <carl@george.computer> - 1.6.1-1
 - Latest upstream
 - Add patch0 to remove pytest-{cov,runner} deps
