@@ -1,6 +1,6 @@
 Name:           osg-ca-certs-updater
 Version:        2.0
-Release:        1%{?dist}
+Release:        1.1%{?dist}
 Summary:        Automatic CA certs updates for OSG
 
 Group:          System Environment/Tools
@@ -48,6 +48,9 @@ fi
 %doc %{_defaultdocdir}/%{name}-%{version}/README*
 
 %changelog
+* Tue Dec 13 2022 Carl Edquist <edquist@cs.wisc.edu> - 2.0-1.1
+- Bump to rebuild (SOFTWARE-5384)
+
 * Mon Feb 15 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.0-1
 - Python 3/EL8 support
 
