@@ -1,6 +1,6 @@
 Name:      osg-ca-scripts
 Version:   1.2.4
-Release:   1%{?dist}
+Release:   1.1%{?dist}
 Summary:   CA Certificate helper scripts
 
 Group:     System Environment/Base
@@ -77,6 +77,9 @@ install -d $RPM_BUILD_ROOT%{_localstatedir}/lib/osg-ca-certs
 %dir %attr(0755,root,root) %{_localstatedir}/lib/osg-ca-certs
 
 %changelog
+* Tue Dec 13 2022 Carl Edquist <edquist@cs.wisc.edu> - 1.2.4-1.1
+- Bump to rebuild (SOFTWARE-5384)
+
 * Tue Nov 06 2018 Mátyás Selmeci <matyas@cs.wisc.edu>  1.2.4-1
 - Fix error when md5 tarball checksums are missing (SOFTWARE-3463)
 
