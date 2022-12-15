@@ -68,7 +68,7 @@
 Name:      xrootd
 Epoch:     1
 Version:   5.5.1
-Release:   1.5%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:   1.6%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -89,6 +89,10 @@ Source1:   xrootd-%{compat_version}.tar.gz
 Patch0: 1819-Actually-include-XrdSecEntity-moninfo-field-in-trace.patch
 Patch1: 1826-HTTP-TPC-PULL.patch
 Patch2: voms-mapfile-handle-missing-role.patch
+
+# https://opensciencegrid.atlassian.net/browse/SOFTWARE-5414
+# https://github.com/xrootd/xrootd/pull/1868
+Patch3: 1868-env-hostname-override.patch
 
 BuildRoot: %{_tmppath}/%{name}-root
 
@@ -501,6 +505,7 @@ cd xrootd
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 cd ..
 
 %build
@@ -1143,6 +1148,9 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Thu Dec 15 2022 Carl Edquist <edquist@cs.wisc.edu> - 5.5.1-1.6
+- Add 1868-env-hostname-override.patch (SOFTWARE-5414)
+
 * Wed Nov 16 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.5.1-1.5
 - Add voms-mapfile-handle-missing-role.patch
 
