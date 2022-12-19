@@ -4,7 +4,7 @@
     %global _with_scitokens 1
 %endif
 
-#global _with_debug 1
+%global _with_debug 1
 
 #-------------------------------------------------------------------------------
 # Helper macros
