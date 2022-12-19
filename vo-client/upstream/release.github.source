@@ -1,1 +1,1 @@
-type=github repo=opensciencegrid/osg-vo-config tag=release-127-1 name=vo-client tarball=vo-client-127.tar.gz hash=c56712119f0ee1128ea28efc2a9d9a85c32036cf
+type=github repo=opensciencegrid/osg-vo-config tag=release-127 name=vo-client tarball=vo-client-127.tar.gz hash=c56712119f0ee1128ea28efc2a9d9a85c32036cf
