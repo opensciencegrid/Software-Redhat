@@ -4,6 +4,8 @@
     %global _with_scitokens 1
 %endif
 
+#global _with_debug 1
+
 #-------------------------------------------------------------------------------
 # Helper macros
 #-------------------------------------------------------------------------------
@@ -68,7 +70,7 @@
 Name:      xrootd
 Epoch:     1
 Version:   5.5.1
-Release:   1.6%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:   1.6%{?_with_debug:.dbg}%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -529,7 +531,7 @@ cmake3 \
 %else
 cmake  \
 %endif
-      -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+      -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=%{?_with_debug:Debug}%{!?_with_debug:RelWithDebInfo} \
       -DFORCE_WERROR=TRUE \
 %if %{?_with_tests:1}%{!?_with_tests:0}
       -DENABLE_TESTS=TRUE \
