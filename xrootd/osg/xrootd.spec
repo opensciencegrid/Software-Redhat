@@ -70,7 +70,7 @@
 Name:      xrootd
 Epoch:     1
 Version:   5.5.1
-Release:   1.7%{?_with_debug:.dbg}%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:   1.8%{?_with_debug:.dbg}%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -95,6 +95,9 @@ Patch2: voms-mapfile-handle-missing-role.patch
 # https://opensciencegrid.atlassian.net/browse/SOFTWARE-5414
 # https://github.com/xrootd/xrootd/pull/1868
 Patch3: 1868-env-hostname-override.patch
+
+# OSDF S3 demo work: needs to be applied to the central OSG redirector
+Patch4: redirector-hostname-override.patch
 
 Patch100: DEBUG-Add-some-debug-lines-to-XrdVomsMapfile.patch
 
@@ -510,6 +513,7 @@ cd xrootd
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
 %patch100 -p1
 cd ..
 
@@ -1153,6 +1157,10 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Mon Dec 19 2022 Brian Lin <blin@cs.wisc.edu> - 5.5.1-1.8
+- Add patch to override the IP address with the hostname at the
+  redirector
+
 * Sun Dec 18 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.5.1-1.7.dbg
 - Add DEBUG-Add-some-debug-lines-to-XrdVomsMapfile.patch
 
