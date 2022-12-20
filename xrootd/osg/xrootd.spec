@@ -70,7 +70,7 @@
 Name:      xrootd
 Epoch:     1
 Version:   5.5.1
-Release:   1.8%{?_with_debug:.dbg}%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:   1.9%{?_with_debug:.dbg}%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -1157,6 +1157,10 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Mon Dec 20 2022 Brian Lin <blin@cs.wisc.edu> - 5.5.1-1.8
+- Update patch to override the IP address with the hostname at the
+  redirector (SOFTWARE-5418)
+
 * Mon Dec 19 2022 Brian Lin <blin@cs.wisc.edu> - 5.5.1-1.8
 - Add patch to override the IP address with the hostname at the
   redirector
