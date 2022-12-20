@@ -83,3 +83,16 @@ index 226c3eb317e..870a2cc938b 100644
  
  // Handle Redirectors here (minimal stuff to do)
  //
+--- a/src/Xrd/XrdLinkXeq.cc
++++ b/src/Xrd/XrdLinkXeq.cc
+@@ -589,10 +589,6 @@ int XrdLinkXeq::RecvIOV(const struct iovec *iov, int iocnt)
+ bool XrdLinkXeq::Register(const char *hName)
+ {
+ 
+-// First see if we can register this name with the address object
+-//
+-   if (!Addr.Register(hName)) return false;
+-
+ // Make appropriate changes here
+ //
+    if (HostName) free(HostName);
