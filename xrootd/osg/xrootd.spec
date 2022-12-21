@@ -101,7 +101,8 @@ Patch3: 1868-env-hostname-override.patch
 # OSDF S3 demo work: needs to be applied to the central OSG redirector
 Patch4: redirector-hostname-override.patch
 
-Patch100: DEBUG-Add-some-debug-lines-to-XrdVomsMapfile.patch
+Patch101: 0001-DEBUG-Add-some-debug-lines-to-XrdVomsMapfile.patch
+Patch102: 0002-DEBUG-Catch-and-log-exception-launching-voms-mapfile.patch
 
 BuildRoot: %{_tmppath}/%{name}-root
 
@@ -516,7 +517,8 @@ cd xrootd
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
-%patch100 -p1
+%patch101 -p1
+%patch102 -p1
 cd ..
 
 %build
@@ -1161,6 +1163,7 @@ fi
 %changelog
 * Wed Dec 21 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.5.1-1.10
 - Turn off the debug build.
+- Add 0002-DEBUG-Catch-and-log-exception-launching-voms-mapfile.patch
 
 * Mon Dec 20 2022 Brian Lin <blin@cs.wisc.edu> - 5.5.1-1.9.dbg
 - Update patch to override the IP address with the hostname at the
