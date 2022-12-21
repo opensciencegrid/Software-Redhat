@@ -1165,7 +1165,7 @@ fi
 - Turn off the debug build.
 - Add 0002-DEBUG-Catch-and-log-exception-launching-voms-mapfile.patch
 
-* Mon Dec 20 2022 Brian Lin <blin@cs.wisc.edu> - 5.5.1-1.9.dbg
+* Tue Dec 20 2022 Brian Lin <blin@cs.wisc.edu> - 5.5.1-1.9.dbg
 - Update patch to override the IP address with the hostname at the
   redirector (SOFTWARE-5418)
 
