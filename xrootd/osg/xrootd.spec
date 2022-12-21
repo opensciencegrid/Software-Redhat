@@ -4,7 +4,9 @@
     %global _with_scitokens 1
 %endif
 
-%global _with_debug 1
+# Set _with_debug to build with debug messages and asserts.  The build will have a .dbg in the Release field.
+# Note! The debug build puts sensitive stuff in the logs -- do not give .dbg builds to external users or promote them to testing.
+#%%global _with_debug 1
 
 #-------------------------------------------------------------------------------
 # Helper macros
@@ -70,7 +72,7 @@
 Name:      xrootd
 Epoch:     1
 Version:   5.5.1
-Release:   1.9%{?_with_debug:.dbg}%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:   1.10%{?_with_debug:.dbg}%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -1157,16 +1159,19 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
-* Mon Dec 20 2022 Brian Lin <blin@cs.wisc.edu> - 5.5.1-1.8
+* Wed Dec 21 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.5.1-1.10
+- Turn off the debug build.
+
+* Mon Dec 20 2022 Brian Lin <blin@cs.wisc.edu> - 5.5.1-1.9.dbg
 - Update patch to override the IP address with the hostname at the
   redirector (SOFTWARE-5418)
 
-* Mon Dec 19 2022 Brian Lin <blin@cs.wisc.edu> - 5.5.1-1.8
+* Mon Dec 19 2022 Brian Lin <blin@cs.wisc.edu> - 5.5.1-1.8.dbg
 - Add patch to override the IP address with the hostname at the
   redirector
 
 * Sun Dec 18 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.5.1-1.7.dbg
-- Add DEBUG-Add-some-debug-lines-to-XrdVomsMapfile.patch
+- Add DEBUG-Add-some-debug-lines-to-XrdVomsMapfile.patch and do a debug build.
 
 * Thu Dec 15 2022 Carl Edquist <edquist@cs.wisc.edu> - 5.5.1-1.6
 - Add 1868-env-hostname-override.patch (SOFTWARE-5414)
