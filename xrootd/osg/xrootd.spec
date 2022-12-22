@@ -99,7 +99,8 @@ Patch2: voms-mapfile-handle-missing-role.patch
 Patch3: 1868-env-hostname-override.patch
 
 # OSDF S3 demo work: needs to be applied to the central OSG redirector
-Patch4: redirector-hostname-override.patch
+# (SOFTWARE_5418)
+Patch4: SOFTWARE-5418.redirector-hostnames.patch
 
 Patch101: 0001-DEBUG-Add-some-debug-lines-to-XrdVomsMapfile.patch
 Patch102: 0002-DEBUG-Catch-and-log-exception-launching-voms-mapfile.patch
