@@ -3,16 +3,15 @@
 # "osg-koji import" the resulting rpm and osg-koji tag-pkg the build into the
 # appropriate osg-*-development tag
 # This will require koji admin permissions.
-%define osg_version 3.6
 %define dver   7
 
-%define osgver %(tr -d . <<< %{osg_version})
+%define osgver devops
 %define dist .osg%{osgver}.el%{dver}
 
 Name:		buildsys-macros
 Summary:	Macros for the OSG Buildsystem
 Version:        %{dver}
-Release:	7%{dist}
+Release:	1%{dist}
 License:	GPL
 BuildArch:      noarch
 Requires:	rpmdevtools
@@ -27,7 +26,6 @@ Macros for the OSG Buildsystem
 %install
 mkdir -p $RPM_BUILD_ROOT/etc/rpm/
 DVER=%{dver}
-OSGVER=%{osgver}
 DIST=%{dist}
 printf %s%b "%" "rhel $DVER\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.disttag
 printf %s%b "%" "dist $DIST\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.disttag
@@ -41,5 +39,5 @@ printf %s%b "%" "__arch_install_post /usr/lib/rpm/check-buildroot\n" >> $RPM_BUI
 /etc/rpm/macros.checkbuild
 
 %changelog
-* Wed Feb 03 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 7-7.osg36.el7
-- 3.6 el7 version
+* Fri Dec 23 2022 Carl Edquist <edquist@cs.wisc.edu> - 7-1.osgdevops.el7
+- devops el7 version (SOFTWARE-4736)
