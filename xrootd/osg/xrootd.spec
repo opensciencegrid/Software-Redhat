@@ -72,7 +72,7 @@
 Name:      xrootd
 Epoch:     1
 Version:   5.5.1
-Release:   1.11%{?_with_debug:.dbg}%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:   1.12%{?_with_debug:.dbg}%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}.nersc
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -94,9 +94,9 @@ Patch0: 1819-Actually-include-XrdSecEntity-moninfo-field-in-trace.patch
 Patch1: 1826-HTTP-TPC-PULL.patch
 Patch2: voms-mapfile-handle-missing-role.patch
 
-# OSDF S3 demo work: needs to be applied to the central OSG redirector
-# (SOFTWARE-5418)
-Patch3: SOFTWARE-5418.redirector-hostnames.patch
+# # OSDF S3 demo work: needs to be applied to the central OSG redirector
+# # (SOFTWARE-5418)
+# Patch3: SOFTWARE-5418.redirector-hostnames.patch
 
 Patch101: 0001-DEBUG-Add-some-debug-lines-to-XrdVomsMapfile.patch
 Patch102: 0002-DEBUG-Catch-and-log-exception-launching-voms-mapfile.patch
@@ -512,7 +512,7 @@ cd xrootd
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
-%patch3 -p1
+#%%patch3 -p1
 %patch101 -p1
 %patch102 -p1
 cd ..
@@ -1157,6 +1157,9 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Sun Dec 25 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.5.1-1.12.nersc
+- Build without OSDF demo changes (i.e. SOFTWARE-5418.redirector-hostnames.patch)
+
 * Thu Dec 22 2022 Brian Lin <blin@cs.wisc.edu> - 5.5.1-1.11
 - Further updates to the redirector hostname patch (SOFTWARE-5418.redirector-hostnames.patch) (SOFTWARE-5418)
 - Drop 1868-env-hostname-override.patch, it is included in the above patch.
