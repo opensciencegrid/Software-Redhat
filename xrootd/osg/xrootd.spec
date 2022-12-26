@@ -1,22 +1,30 @@
-%if 0%{?osg}
-%define _with_compat 1
+# OSG additions
+%if 0%{?osg:1}%{!?osg:0}
+    %global _with_compat 1
+    %global _with_scitokens 1
 %endif
+
+# Set _with_debug to build with debug messages and asserts.  The build will have a .dbg in the Release field.
+# Note! The debug build puts sensitive stuff in the logs -- do not give .dbg builds to external users or promote them to testing.
+#%%global _with_debug 1
 
 #-------------------------------------------------------------------------------
 # Helper macros
 #-------------------------------------------------------------------------------
 %if %{?rhel:1}%{!?rhel:0}
     # starting with rhel 7 we have systemd and macaroons,
-    # also glibc semaphores are fixed
-    %if %{rhel} >= 7
         %define use_systemd 1
         %define have_macaroons 1
-		%define use_libc_semaphore 1
-    %else
-        %define use_systemd 0
-        %define have_macaroons 0
- 		%define use_libc_semaphore 0
-    %endif
+
+        %if %{rhel} == 7
+			# we build both python2 and python3 bindings for EPEL7
+                        %define _with_python2 1
+                        %define _with_python3 1
+        %else
+			# we only build both python3 bindings for EPEL>7
+			%define _with_python2 0
+			%define _with_python3 1
+        %endif
 %else
     # do we have macaroons ?
     %if %{?fedora}%{!?fedora:0} >= 28
@@ -30,12 +38,9 @@
     %else
         %define use_systemd 0
     %endif
-	# can we use glibc semaphores ?
-	%if %{?fedora}%{!?fedora:0} >= 22
-	    %define use_libc_semaphore 1
-	%else
-	    %define use_libc_semaphore 0
-	%endif
+    # we only build python3 bindings for fedora
+    %define _with_python2 0
+    %define _with_python3 1
 %endif
 
 
@@ -66,14 +71,14 @@
 #-------------------------------------------------------------------------------
 Name:      xrootd
 Epoch:     1
-Version:   5.0.0
-Release:   1.3%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Version:   5.5.1
+Release:   1.11%{?_with_debug:.dbg}%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
 URL:       http://xrootd.org/
 
-%define compat_version 4.12.3
+%define compat_version 4.12.6
 
 # git clone http://xrootd.org/repo/xrootd.git xrootd
 # cd xrootd
@@ -84,9 +89,18 @@ Source0:   xrootd.tar.gz
 Source1:   xrootd-%{compat_version}.tar.gz
 %endif
 
-Patch0:   xrootd500nullPointerFix.patch
-Patch1:	  adminpath_unix_socket.patch
- 
+# https://github.com/xrootd/xrootd/pull/1819
+Patch0: 1819-Actually-include-XrdSecEntity-moninfo-field-in-trace.patch
+Patch1: 1826-HTTP-TPC-PULL.patch
+Patch2: voms-mapfile-handle-missing-role.patch
+
+# OSDF S3 demo work: needs to be applied to the central OSG redirector
+# (SOFTWARE-5418)
+Patch3: SOFTWARE-5418.redirector-hostnames.patch
+
+Patch101: 0001-DEBUG-Add-some-debug-lines-to-XrdVomsMapfile.patch
+Patch102: 0002-DEBUG-Catch-and-log-exception-launching-voms-mapfile.patch
+
 BuildRoot: %{_tmppath}/%{name}-root
 
 %if %{use_cmake3}
@@ -105,16 +119,20 @@ BuildRequires: libcurl-devel
 BuildRequires: libuuid-devel
 BuildRequires: voms-devel >= 2.0.6
 BuildRequires: git
+BuildRequires: pkgconfig
 %if %{have_macaroons}
 BuildRequires: libmacaroons-devel
 %endif
 BuildRequires: json-c-devel
 
+%if %{_with_python2}
+BuildRequires: python2-pip
 BuildRequires: python2-devel
-%if %{?fedora}%{!?fedora:0} >= 13
-BuildRequires: python3-devel
-%else
+BuildRequires: python2-setuptools
+%endif
+%if %{_with_python3}
 BuildRequires: python%{python3_pkgversion}-devel
+BuildRequires: python%{python3_pkgversion}-setuptools
 %endif
 
 BuildRequires: openssl-devel
@@ -150,7 +168,21 @@ BuildRequires: clang
 
 %if %{?_with_asan:1}%{!?_with_asan:0}
 BuildRequires: libasan
+%if %{?rhel}%{!?rhel:0} == 7
+BuildRequires: devtoolset-7-libasan-devel
+%endif
 Requires: libasan
+%endif
+
+%if %{?_with_scitokens:1}%{!?_with_scitokens:0}
+BuildRequires: scitokens-cpp-devel
+%endif
+
+%if %{?_with_isal:1}%{!?_with_isal:0}
+BuildRequires: autoconf
+BuildRequires: automake
+BuildRequires: libtool
+BuildRequires: yasm
 %endif
 
 Requires:	%{name}-server%{?_isa} = %{epoch}:%{version}-%{release}
@@ -170,6 +202,10 @@ Requires(post):		chkconfig
 Requires(preun):	chkconfig
 Requires(preun):	initscripts
 Requires(postun):	initscripts
+%endif
+
+%if %{?rhel}%{!?rhel:0} == 7
+BuildRequires: devtoolset-7
 %endif
 
 %description
@@ -315,36 +351,36 @@ This package contains the FUSE (file system in user space) xrootd mount
 tool.
 
 #-------------------------------------------------------------------------------
+# Python bindings
+#-------------------------------------------------------------------------------
+
+%if %{_with_python2}
+#-------------------------------------------------------------------------------
 # python2
 #-------------------------------------------------------------------------------
 %package -n python2-%{name}
 Summary:       Python 2 bindings for XRootD
 Group:         Development/Libraries
-%if %{?fedora}%{!?fedora:0} >= 13
-%{?python_provide:%python_provide python2-%{name}}
-%else
 Provides:      python-%{name}
-%endif
 Provides:      %{name}-python = %{epoch}:%{version}-%{release}
 Obsoletes:     %{name}-python < 1:4.8.0-1
 Requires:      %{name}-client-libs%{?_isa} = %{epoch}:%{version}-%{release}
 
 %description -n python2-xrootd
 Python 2 bindings for XRootD
+%endif
 
-%if %{?_with_python3:1}%{!?_with_python3:0}
+%if %{_with_python3}
 #-------------------------------------------------------------------------------
 # python3
 #-------------------------------------------------------------------------------
-%package -n python3-%{name}
+%package -n python%{python3_pkgversion}-%{name}
 Summary:       Python 3 bindings for XRootD
 Group:         Development/Libraries
-%if %{?fedora}%{!?fedora:0} >= 13
-%{?python_provide:%python_provide python3-%{name}}
-%endif
+%{?python_provide:%python_provide python%{python3_pkgversion}-%{name}}
 Requires:      %{name}-client-libs%{?_isa} = %{epoch}:%{version}-%{release}
 
-%description -n python3-xrootd
+%description -n python%{python3_pkgversion}-%{name}
 Python 3 bindings for XRootD
 %endif
 
@@ -416,6 +452,18 @@ Obsoletes: xrootd-voms-plugin
 The VOMS attribute extractor plug-in for XRootD.
 
 #-------------------------------------------------------------------------------
+# xrootd-scitokens
+#-------------------------------------------------------------------------------
+%if %{?_with_scitokens:1}%{!?_with_scitokens:0}
+%package scitokens
+Summary: SciTokens authentication plugin for XRootD
+Group:   Development/Tools
+Requires: %{name}-server = %{epoch}:%{version}-%{release}
+%description scitokens
+SciToken athorization plug-in for XRootD.
+%endif
+
+#-------------------------------------------------------------------------------
 # tests
 #-------------------------------------------------------------------------------
 %if %{?_with_tests:1}%{!?_with_tests:0}
@@ -460,20 +508,26 @@ This package contains compatibility binaries for xrootd 4 servers.
 %endif
 
 %setup -c -n xrootd
-%patch0 -p 1
-%patch1 -p 0
-
+cd xrootd
+%patch0 -p1
+%patch1 -p1
+%patch2 -p1
+%patch3 -p1
+%patch101 -p1
+%patch102 -p1
+cd ..
 
 %build
+
+%if %{?rhel}%{!?rhel:0} == 7
+. /opt/rh/devtoolset-7/enable
+%endif
+
 cd xrootd
 
 %if %{?_with_clang:1}%{!?_with_clang:0}
 export CC=clang
 export CXX=clang++
-%endif
-
-%if %{?_with_asan:1}%{!?_with_asan:0}
-export CXXFLAGS='-fsanitize=address'
 %endif
 
 mkdir build
@@ -484,20 +538,27 @@ cmake3 \
 %else
 cmake  \
 %endif
-      -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+      -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=%{?_with_debug:Debug}%{!?_with_debug:RelWithDebInfo} \
       -DFORCE_WERROR=TRUE \
 %if %{?_with_tests:1}%{!?_with_tests:0}
       -DENABLE_TESTS=TRUE \
 %else
       -DENABLE_TESTS=FALSE \
 %endif
+%if %{?_with_asan:1}%{!?_with_asan:0}
+      -DENABLE_ASAN=TRUE \
+%endif
 %if %{?_with_ceph:1}%{!?_with_ceph:0}
       -DXRDCEPH_SUBMODULE=TRUE \
 %endif
 %if %{?_with_xrdclhttp:1}%{!?_with_xrdclhttp:0}
-      -DXRDCLHTTP_SUBMODULE=TRUE \
+      -DENABLE_XRDCLHTTP=TRUE \
 %endif
-      -DUSE_LIBC_SEMAPHORE=%{use_libc_semaphore} ../
+%if %{?_with_isal:1}%{!?_with_isal:0}
+      -DENABLE_XRDEC=TRUE \
+%endif
+      -DUSER_VERSION=v%{version} \
+      ../
 
 make -i VERBOSE=1 %{?_smp_mflags}
 popd
@@ -509,7 +570,7 @@ popd
 doxygen Doxyfile
 
 %if 0%{?_with_compat}
-pushd $RPM_BUILD_DIR/xrootd-compat/xrootd
+pushd $RPM_BUILD_DIR/xrootd-compat/xrootd*
 mkdir build
 pushd build
 %if %{use_cmake3}
@@ -528,21 +589,25 @@ cmake  \
       -DXRDCEPH_SUBMODULE=TRUE \
 %endif
 %if %{?_with_xrdclhttp:1}%{!?_with_xrdclhttp:0}
-      -DXRDCLHTTP_SUBMODULE=TRUE \
+      -DENABLE_XRDEC=TRUE \
 %endif
-      -DUSE_LIBC_SEMAPHORE=%{use_libc_semaphore} ../
+      ../
 
 make -i VERBOSE=1 %{?_smp_mflags}
 popd
 popd
 %endif
 
-%if %{?_with_python3:1}%{!?_with_python3:0}
-# build python3 bindings
 pushd build/bindings/python
-%py3_build
-popd
+# build python2 bindings
+%if %{_with_python2}
+%py2_build
 %endif
+# build python3 bindings
+%if %{_with_python3}
+%py3_build
+%endif
+popd
 
 #-------------------------------------------------------------------------------
 # Installation
@@ -554,13 +619,13 @@ rm -rf $RPM_BUILD_ROOT
 # Install compat
 #-------------------------------------------------------------------------------
 %if 0%{?_with_compat}
-pushd $RPM_BUILD_DIR/xrootd-compat/xrootd/build
+pushd $RPM_BUILD_DIR/xrootd-compat/xrootd*/build
 make install DESTDIR=$RPM_BUILD_ROOT
 rm -rf $RPM_BUILD_ROOT%{_includedir}
 rm -rf $RPM_BUILD_ROOT%{_datadir}
 rm -f $RPM_BUILD_ROOT%{_bindir}/{cconfig,cns_ssi,frm_admin,frm_xfragent,mpxstats}
-rm -f $RPM_BUILD_ROOT%{_bindir}/{wait41,xprep,xrd,xrdadler32,XrdCnsd,xrdcopy}
-rm -f $RPM_BUILD_ROOT%{_bindir}/{xrdcp,xrdcp-old,xrdfs,xrdgsiproxy,xrdpwdadmin}
+rm -f $RPM_BUILD_ROOT%{_bindir}/{wait41,xprep,xrd,xrdadler32,xrdcrc32c,XrdCnsd,xrdcopy}
+rm -f $RPM_BUILD_ROOT%{_bindir}/{xrdcks,xrdcp,xrdcp-old,xrdfs,xrdgsiproxy,xrdpwdadmin}
 rm -f $RPM_BUILD_ROOT%{_bindir}/{xrdqstats,xrdsssadmin,xrdstagetool,xrootdfs}
 rm -f $RPM_BUILD_ROOT%{_libdir}/libXrdAppUtils.so
 rm -f $RPM_BUILD_ROOT%{_libdir}/{libXrdClient.so,libXrdCl.so,libXrdCryptoLite.so}
@@ -582,7 +647,6 @@ popd
 pushd xrootd
 pushd  build
 make install DESTDIR=$RPM_BUILD_ROOT
-cat PYTHON_INSTALLED | sed -e "s|$RPM_BUILD_ROOT||g" > PYTHON_INSTALLED_FILES
 popd
 
 # configuration stuff
@@ -645,8 +709,10 @@ install -m 644 packaging/common/xrootd-http.cfg $RPM_BUILD_ROOT%{_sysconfdir}/xr
 # client plug-in config
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/xrootd/client.plugins.d
 install -m 644 packaging/common/client-plugin.conf.example $RPM_BUILD_ROOT%{_sysconfdir}/xrootd/client.plugins.d/client-plugin.conf.example
+install -m 644 packaging/common/recorder.conf              $RPM_BUILD_ROOT%{_sysconfdir}/xrootd/client.plugins.d/recorder.conf
+
 %if %{?_with_xrdclhttp:1}%{!?_with_xrdclhttp:0}
-install -m 644 src/XrdClHttp/config/http.client.conf.example $RPM_BUILD_ROOT%{_sysconfdir}/xrootd/client.plugins.d/xrdcl-http-plugin.conf
+install -m 644 packaging/common/http.client.conf.example $RPM_BUILD_ROOT%{_sysconfdir}/xrootd/client.plugins.d/xrdcl-http-plugin.conf
 %endif
 
 # client config
@@ -661,12 +727,16 @@ mkdir -p %{buildroot}%{_datadir}/selinux/packages/%{name}
 install -m 644 -p packaging/common/xrootd.pp \
     %{buildroot}%{_datadir}/selinux/packages/%{name}/%{name}.pp
 
-%if %{?_with_python3:1}%{!?_with_python3:0}
-# install python3 bindings
 pushd build/bindings/python
-%py3_install
-popd
+# install python2 bindings
+%if %{_with_python2}
+%py2_install
 %endif
+# install python3 bindings
+%if %{_with_python3}
+%py3_install
+%endif
+popd
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -700,7 +770,7 @@ fi
 
 %preun server
 if [ $1 -eq 0 ] ; then
-    for DAEMON in xrootd cmsd frm_purged frm xfrd; do
+    for DAEMON in xrootd cmsd frm_purged frm_xfrd; do
         for INSTANCE in `/usr/bin/systemctl | grep $DAEMON@ | awk '{print $1;}'`; do
             /usr/bin/systemctl --no-reload disable $INSTANCE > /dev/null 2>&1 || :
             /usr/bin/systemctl stop $INSTANCE > /dev/null 2>&1 || :
@@ -711,7 +781,7 @@ fi
 %postun server
 if [ $1 -ge 1 ] ; then
     /usr/bin/systemctl daemon-reload >/dev/null 2>&1 || :
-    for DAEMON in xrootd cmsd frm_purged frm xfrd; do
+    for DAEMON in xrootd cmsd frm_purged frm_xfrd; do
         for INSTANCE in `/usr/bin/systemctl | grep $DAEMON@ | awk '{print $1;}'`; do
             /usr/bin/systemctl try-restart $INSTANCE >/dev/null 2>&1 || :
         done
@@ -826,11 +896,11 @@ fi
 
 %files libs
 %defattr(-,root,root,-)
-%{_libdir}/libXrdAppUtils.so.*
+%{_libdir}/libXrdAppUtils.so.2*
 %{_libdir}/libXrdClProxyPlugin-5.so
 %{_libdir}/libXrdCks*-5.so
-%{_libdir}/libXrdCrypto.so.*
-%{_libdir}/libXrdCryptoLite.so.*
+%{_libdir}/libXrdCrypto.so.2*
+%{_libdir}/libXrdCryptoLite.so.2*
 %{_libdir}/libXrdCryptossl-5.so
 %{_libdir}/libXrdSec-5.so
 %{_libdir}/libXrdSecProt-5.so
@@ -841,8 +911,11 @@ fi
 %{_libdir}/libXrdSecpwd-5.so
 %{_libdir}/libXrdSecsss-5.so
 %{_libdir}/libXrdSecunix-5.so
-%{_libdir}/libXrdUtils.so.*
-%{_libdir}/libXrdXml.so.*
+%if %{?_with_scitokens:1}%{!?_with_scitokens:0}
+%{_libdir}/libXrdSecztn-5.so
+%endif
+%{_libdir}/libXrdUtils.so.3*
+%{_libdir}/libXrdXml.so.3*
 
 %files devel
 %defattr(-,root,root,-)
@@ -866,13 +939,18 @@ fi
 
 %files client-libs
 %defattr(-,root,root,-)
-%{_libdir}/libXrdCl.so.*
-%{_libdir}/libXrdFfs.so.*
-%{_libdir}/libXrdPosix.so.*
-%{_libdir}/libXrdPosixPreload.so.*
-%{_libdir}/libXrdSsiLib.so.*
-%{_libdir}/libXrdSsiShMap.so.*
+%{_libdir}/libXrdCl.so.3*
+%{_libdir}/libXrdFfs.so.3*
+%{_libdir}/libXrdPosix.so.3*
+%{_libdir}/libXrdPosixPreload.so.2*
+%{_libdir}/libXrdSsiLib.so.2*
+%{_libdir}/libXrdSsiShMap.so.2*
+%{_libdir}/libXrdClRecorder-5.so
+%if %{?_with_isal:1}%{!?_with_isal:0}
+%{_libdir}/libXrdEc.so.1*
+%endif
 %{_sysconfdir}/xrootd/client.plugins.d/client-plugin.conf.example
+%{_sysconfdir}/xrootd/client.plugins.d/recorder.conf
 %config(noreplace) %{_sysconfdir}/xrootd/client.conf
 # This lib may be used for LD_PRELOAD so the .so link needs to be included
 %{_libdir}/libXrdPosixPreload.so
@@ -897,17 +975,19 @@ fi
 %{_libdir}/libXrdBlacklistDecision-5.so
 %{_libdir}/libXrdHttp-5.so
 %{_libdir}/libXrdHttpTPC-5.so
-%{_libdir}/libXrdHttpUtils.so.*
+%{_libdir}/libXrdHttpUtils.so.2*
 %if %{have_macaroons}
 %{_libdir}/libXrdMacaroons-5.so
 %endif
 %{_libdir}/libXrdN2No2p-5.so
+%{_libdir}/libXrdOssCsi-5.so
 %{_libdir}/libXrdOssSIgpfsT-5.so
 %{_libdir}/libXrdServer.so.3*
 %{_libdir}/libXrdSsi-5.so
 %{_libdir}/libXrdSsiLog-5.so
 %{_libdir}/libXrdThrottle-5.so
 %{_libdir}/libXrdCmsRedirectLocal-5.so
+%{_libdir}/libXrdOfsPrepGPI-5.so
 
 %files server-devel
 %defattr(-,root,root,-)
@@ -927,16 +1007,22 @@ fi
 %{_includedir}/xrootd/private
 %{_libdir}/libXrdSsiLib.so
 %{_libdir}/libXrdSsiShMap.so
+%if %{?_with_isal:1}%{!?_with_isal:0}
+%{_libdir}/libXrdEc.so
+%endif
 
 %files client
 %defattr(-,root,root,-)
 %{_bindir}/xrdadler32
+%{_bindir}/xrdcks
 %{_bindir}/xrdcopy
 %{_bindir}/xrdcp
+%{_bindir}/xrdcrc32c
 %{_bindir}/xrdfs
 %{_bindir}/xrdgsiproxy
 %{_bindir}/xrdmapc
 %{_bindir}/xrdpinls
+%{_bindir}/xrdreplay
 %{_mandir}/man1/xrdadler32.1*
 %{_mandir}/man1/xrdcopy.1*
 %{_mandir}/man1/xrdcp.1*
@@ -950,21 +1036,25 @@ fi
 %{_mandir}/man1/xrootdfs.1*
 %dir %{_sysconfdir}/xrootd
 
-%files -n python2-%{name} -f xrootd/build/PYTHON_INSTALLED_FILES
+%if %{_with_python2}
+%files -n python2-%{name}
 %defattr(-,root,root,-)
+%{python2_sitearch}/*
+%endif
+
+%if %{_with_python3}
+%files -n python%{python3_pkgversion}-%{name}
+%defattr(-,root,root,-)
+%{python3_sitearch}/*
+%endif
 
 %files voms
 %defattr(-,root,root,-)
 %{_libdir}/libXrdVoms-5.so
 %{_libdir}/libXrdSecgsiVOMS-5.so
+%{_libdir}/libXrdHttpVOMS-5.so
 %doc %{_mandir}/man1/libXrdVoms.1.gz
 %doc %{_mandir}/man1/libXrdSecgsiVOMS.1.gz
-
-%if %{?_with_python3:1}%{!?_with_python3:0}
-%files -n python3-%{name}
-%defattr(-,root,root,-)
-%{python3_sitearch}/*
-%endif
 
 %files doc
 %defattr(-,root,root,-)
@@ -985,15 +1075,23 @@ fi
 %{_sysconfdir}/xrootd/client.plugins.d/xrdcl-http-plugin.conf
 %endif
 
+%if %{?_with_scitokens:1}%{!?_with_scitokens:0}
+%files scitokens
+%defattr(-,root,root,-)
+%{_libdir}/libXrdAccSciTokens-5.so
+%endif
+
 %if %{?_with_tests:1}%{!?_with_tests:0}
 %files tests
 %defattr(-,root,root,-)
-%{_bindir}/text-runner
+%{_bindir}/test-runner
 %{_bindir}/xrdshmap
 %{_libdir}/libXrdClTests.so
 %{_libdir}/libXrdClTestsHelper.so
 %{_libdir}/libXrdClTestMonitor*.so
-
+%if %{?_with_isal:1}%{!?_with_isal:0}
+%{_libdir}/libXrdEcTests.so
+%endif
 %if %{?_with_ceph:1}%{!?_with_ceph:0}
 %{_libdir}/libXrdCephTests*.so
 %endif
@@ -1059,11 +1157,165 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
-* Fri Aug 14 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.0.0-1.3
-- Add XRootD 4 compat packages compat-client and compat-server (SOFTWARE-4210)
+* Thu Dec 22 2022 Brian Lin <blin@cs.wisc.edu> - 5.5.1-1.11
+- Further updates to the redirector hostname patch (SOFTWARE-5418.redirector-hostnames.patch) (SOFTWARE-5418)
+- Drop 1868-env-hostname-override.patch, it is included in the above patch.
 
-* Thu Jul 23 2020 Diego Davila <didavila@ucsd.edu> - 5.0.0-1.2
-- Adding patch: adminpath_unix_socket.patch 
+* Wed Dec 21 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.5.1-1.10
+- Turn off the debug build.
+- Add 0002-DEBUG-Catch-and-log-exception-launching-voms-mapfile.patch
+
+* Tue Dec 20 2022 Brian Lin <blin@cs.wisc.edu> - 5.5.1-1.9.dbg
+- Update patch to override the IP address with the hostname at the
+  redirector (SOFTWARE-5418)
+
+* Mon Dec 19 2022 Brian Lin <blin@cs.wisc.edu> - 5.5.1-1.8.dbg
+- Add patch to override the IP address with the hostname at the
+  redirector
+
+* Sun Dec 18 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.5.1-1.7.dbg
+- Add DEBUG-Add-some-debug-lines-to-XrdVomsMapfile.patch and do a debug build.
+
+* Thu Dec 15 2022 Carl Edquist <edquist@cs.wisc.edu> - 5.5.1-1.6
+- Add 1868-env-hostname-override.patch (SOFTWARE-5414)
+
+* Wed Nov 16 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.5.1-1.5
+- Add voms-mapfile-handle-missing-role.patch
+
+* Fri Nov 11 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.5.1-1.4
+- Drop patch reverting https://github.com/xrootd/xrootd/pull/1801;
+  instead add 1826-HTTP-TPC-PULL.patch which should fix the issue
+
+* Thu Nov 03 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.5.1-1.3
+- Add logging patch (https://github.com/xrootd/xrootd/pull/1819)
+- Add patch reverting https://github.com/xrootd/xrootd/pull/1801
+
+* Thu Oct 20 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.5.1-1.2
+- Build from 5.5.1 full release (SOFTWARE-5328)
+
+* Tue Aug 30 2022 Carl Edquist <edquist@cs.wisc.edu> - 5.5.1-1.1
+- Build from 5.5.0 (SOFTWARE-5275)
+
+* Thu Aug 18 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.5.0-0.rc3.1
+- Build from 5.5.0-rc3 (SOFTWARE-5275)
+
+* Thu Aug 11 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.5.0-0.rc2.1
+- Build from 5.5.0-rc2 (SOFTWARE-5275)
+
+* Tue Aug 02 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.5.0-0.rc1.1
+- Build from 5.5.0-rc1 (SOFTWARE-5275)
+  - Remove upstreamed patch PR-1644-scitokens_logging.patch
+
+* Mon Jun 20 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.4.3-1.2
+- Add patch to backport https://github.com/xrootd/xrootd/pull/1644 ("Populate XrdSciTokens with more detailed log messages")
+
+* Thu Jun 09 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.4.3-1.1
+- Build from 5.4.3 and add OSG changes (SOFTWARE-5160)
+
+* Thu Jun 02 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.4.3-0.rc4.1
+- Build from 5.4.3-rc4 and add OSG changes (SOFTWARE-5160)
+
+* Thu May 12 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.4.3-0.rc3.1
+- Build from 5.4.3-rc3 and add OSG changes (SOFTWARE-5160)
+
+* Wed May 11 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.4.3-0.rc2.1
+- Build from 5.4.3-rc2 and add OSG changes (SOFTWARE-5160)
+
+* Tue May 10 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.4.3-0.rc1.2
+- Provide python3-xrootd on EL7
+
+* Mon May 09 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.4.3-0.rc1.1
+- Build from 5.4.3-rc1 and add OSG changes (SOFTWARE-5160)
+- Remove xrootd-multiuser < 0.6.0 conflict (SOFTWARE-5170)
+
+* Fri Mar 11 2022 Brian Lin <blin@cs.wisc.edu> - 5.4.2-1.1
+- Move VOMS mapfile support to the source (SOFTWARE-4870)
+- Fix HTTP DN hashing
+- Add new throttling config for max open files and active connections
+
+* Thu Mar 03 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.4.2-1
+- Update to 5.4.2 and merge OSG changes (SOFTWARE-5072, SOFTWARE-5073)
+- Update SOFTWARE-4870.voms-mapfile.patch
+
+* Wed Feb 23 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.4.1-1
+- Update to 5.4.1 and merge OSG changes (SOFTWARE-4998, SOFTWARE-4999)
+
+* Fri Feb 18 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.4.1-0.rc2.osg
+- Update to 5.4.1rc2 and merge OSG changes (SOFTWARE-4998, SOFTWARE-4999)
+- Update SOFTWARE-4870.voms-mapfile.patch
+
+* Tue Dec 14 2021 Brian Lin <blin@cs.wisc.edu> - 5.4.0-1.1
+- Add the ability to read from a voms-mapfile (SOFTWARE-4870)
+
+* Fri Dec 10 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.4.0-1
+- Update to 5.4.0 and merge OSG changes (SOFTWARE-4898, SOFTWARE-4899)
+
+* Tue Nov 30 2021 Brian Lin <blin@cs.wisc.edu> - 5.3.4-1
+- Update to 5.3.4 and merge OSG changes (SOFTWARE-4903, SOFTWARE-4904)
+
+* Wed Nov 24 2021 Matyas Selmeci <matyas@cs.wisc.edu> - 5.3.4-0.rc2
+- Update to 5.3.4 RC2 and merge OSG changes (SOFTWARE-4903, SOFTWARE-4904)
+
+* Wed Nov 17 2021 Brian Lin <blin@cs.wisc.edu> - 5.3.4-0.rc1
+- Update to 5.3.4 RC1 and merge OSG changes (SOFTWARE-4903, SOFTWARE-4904)
+
+* Mon Nov 15 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.3.3-1.1
+- Update to 5.3.3 and merge OSG changes (SOFTWARE-4903, SOFTWARE-4904)
+
+* Thu Oct 28 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.3.2-1.1
+- Update to 5.3.2 and merge OSG changes (SOFTWARE-4871, SOFTWARE-4872)
+
+* Mon Aug 02 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.3.1-1.1
+- Update to 5.3.1 and merge OSG changes (SOFTWARE-4714)
+
+* Fri Jul 09 2021 Carl Edquist <edquist@cs.wisc.edu> - 5.3.0-1.1
+- Update to 5.3.0 and merge OSG changes (SOFTWARE-4688)
+
+* Tue Jul 06 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.3.0-0.rc4.1.osg
+- Update to 5.3.0rc4 and merge OSG changes (SOFTWARE-4688)
+
+* Thu May 20 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.2.0-1.1.osg
+- Final 5.2.0 + OSG additions (SOFTWARE-4593)
+
+* Wed May 19 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.2.0-0.2.1.osg
+- Update to 5.2.0rc2 and merge OSG changes (SOFTWARE-4593)
+
+* Wed Mar 31 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.1.1-1.3.osg
+- Conflict with xrootd-multiuser < 0.6 (known to be broken) (SOFTWARE-4557)
+
+* Wed Mar 03 2021 Carl Edquist <edquist@cs.wisc.edu> - 5.1.0-1.1.osg
+- Final 5.1.0 + OSG additions (SOFTWARE-4356)
+
+* Wed Feb 10 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.1.0-0.rc7.1.osg
+- Rebuild for rc7 (SOFTWARE-4356)
+
+* Mon Feb 01 2021 Edgar Fajardo <emfajard@ucsd.edu> - 5.1.0-0.rc6.1.osg
+- Rebuild for rc6 (SOFTWARE-4356)
+
+* Mon Jan 18 2021 Edgar Fajardo <emfajard@ucsd.edu> - 5.1.0-0.rc5.1.osg
+- Rebuild to rc5
+
+* Mon Dec 21 2020 Edgar Fajardo <emfajard@ucsd.edu> - 5.1.0-0.rc4.1.osg
+- Rebuild to RC4
+- Remove patch Fix-typo-XrdAccAuthorizeObjectAdd-XrdAccAuthorizeObj.paatch
+- Remove patch Adding-ObjAdd-to-list-of-scitokens-functions-exporte.patch
+- Remove patch Rename-XrdAccAuthorizeObjectAdd-to-XrdAccAuthorizeOb.patch
+
+* Tue Dec 15 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.1.0-0.rc3.5.osg
+- Add Fix-typo-XrdAccAuthorizeObjectAdd-XrdAccAuthorizeObj.patch from https://github.com/xrootd/xrootd/commit/bf5aa963185c62228b93312dd0517ba1b1f43e52
+- Add Adding-ObjAdd-to-list-of-scitokens-functions-exporte.patch  from https://github.com/xrootd/xrootd/pull/1363
+
+* Mon Dec 14 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.1.0-0.rc3.2.osg
+- Update to upstream rc3  (SOFTWARE-4356)
+- Use 4.12.6 for the compat package  (SOFTWARE-4247)
+- Add Rename-XrdAccAuthorizeObjectAdd-to-XrdAccAuthorizeOb.patch from https://github.com/xrootd/xrootd/pull/1361
+
+* Wed Dec 09 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.1.0-0.rc1.2.osg
+- Build xrootd-scitokens and xrootd-compat again  (SOFTWARE-4356)
+- Use 4.12.5 for the compat package  (SOFTWARE-4247)
+
+* Thu Oct 15 2020 Michal Simon <michal.simon@cern.ch> - 5.0.2-1
+- Introduce xrootd-scitokens package
 
 * Wed May 27 2020 Michal Simon <michal.simon@cern.ch> - 4.12.2-1
 - Remove xrootd-voms-devel

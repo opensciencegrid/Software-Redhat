@@ -1,0 +1,47 @@
+From 4fb56e2103811a612e8d4c3507fb54e4034d8d68 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Wed, 21 Dec 2022 13:51:57 -0600
+Subject: [PATCH] DEBUG: Catch and log exception launching voms mapfile
+ monitoring thread
+
+---
+ src/XrdVoms/XrdVomsMapfile.cc | 19 ++++++++++++-------
+ 1 file changed, 12 insertions(+), 7 deletions(-)
+
+diff --git a/src/XrdVoms/XrdVomsMapfile.cc b/src/XrdVoms/XrdVomsMapfile.cc
+index ededb473a..384bb59fa 100644
+--- a/src/XrdVoms/XrdVomsMapfile.cc
++++ b/src/XrdVoms/XrdVomsMapfile.cc
+@@ -85,17 +85,22 @@ XrdVomsMapfile::XrdVomsMapfile(XrdSysError *erp,
+     } else {
+         m_edest->Log(LogMask::Debug, "XrdVomsMapfile", "Parsing voms mapfile succeeded");
+     }
+ 
+     pthread_t tid;
+-    auto rc = XrdSysThread::Run(&tid, XrdVomsMapfile::MaintenanceThread,
+-                                static_cast<void*>(this), 0, "VOMS Mapfile refresh");
+-    if (rc) {
+-        m_edest->Emsg("XrdVomsMapfile", "Failed to launch VOMS mapfile monitoring thread");
+-        return;
+-    } else {
+-        m_edest->Log(LogMask::Debug, "XrdVomsMapfile", "VOMS mapfile monitoring thread launched");
++    try {
++        auto rc = XrdSysThread::Run(&tid, XrdVomsMapfile::MaintenanceThread,
++                                    static_cast<void*>(this), 0, "VOMS Mapfile refresh");
++        if (rc) {
++            m_edest->Emsg("XrdVomsMapfile", "Failed to launch VOMS mapfile monitoring thread");
++            return;
++        } else {
++            m_edest->Log(LogMask::Debug, "XrdVomsMapfile", "VOMS mapfile monitoring thread launched");
++        }
++    } catch (const std::exception& e) {
++        m_edest->Emsg("XrdVomsMapfile", "Launch of VOMS mapfile monitoring thread died with exception", e.what());
++        throw;
+     }
+     m_is_valid = true;
+ }
+ 
+ 
+-- 
+2.39.0
+
