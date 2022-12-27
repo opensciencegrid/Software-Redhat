@@ -72,7 +72,7 @@
 Name:      xrootd
 Epoch:     1
 Version:   5.5.1
-Release:   1.11%{?_with_debug:.dbg}%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:   1.12%{?_with_debug:.dbg}%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -1157,6 +1157,9 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Tue Dec 27 2022 Carl Edquist <edquist@cs.wisc.edu> - 5.5.1-1.12
+- Another patch update from Brian B (SOFTWARE-5414)
+
 * Thu Dec 22 2022 Brian Lin <blin@cs.wisc.edu> - 5.5.1-1.11
 - Further updates to the redirector hostname patch (SOFTWARE-5418.redirector-hostnames.patch) (SOFTWARE-5418)
 - Drop 1868-env-hostname-override.patch, it is included in the above patch.
