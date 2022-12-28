@@ -72,7 +72,7 @@
 Name:      xrootd
 Epoch:     1
 Version:   5.5.1
-Release:   1.12%{?_with_debug:.dbg}%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:   1.13%{?_with_debug:.dbg}%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -95,7 +95,7 @@ Patch1: 1826-HTTP-TPC-PULL.patch
 Patch2: voms-mapfile-handle-missing-role.patch
 
 # OSDF S3 demo work: needs to be applied to the central OSG redirector
-# (SOFTWARE-5418)
+# (SOFTWARE-5414/SOFTWARE-5418)
 Patch3: 1868-env-hostname-override.patch
 
 Patch101: 0001-DEBUG-Add-some-debug-lines-to-XrdVomsMapfile.patch
@@ -1158,7 +1158,7 @@ fi
 #-------------------------------------------------------------------------------
 %changelog
 * Wed Dec 28 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.5.1-1.13
-- Replace SOFTWARE-5418.redirector-hostnames.patch with an updated 1868-env-hostname-override.patch (SOFTWARE-5418)
+- Replace SOFTWARE-5418.redirector-hostnames.patch with an updated 1868-env-hostname-override.patch (SOFTWARE-5414/SOFTWARE-5418)
 
 * Tue Dec 27 2022 Carl Edquist <edquist@cs.wisc.edu> - 5.5.1-1.12
 - Another patch update from Brian B (SOFTWARE-5414)
