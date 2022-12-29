@@ -1,6 +1,6 @@
 Name:           koji-plugin-sign
 Version:        1.4.0
-Release:        8%{?dist}
+Release:        9%{?dist}
 Summary:        GPG signing plugin for koji-hub
 
 Group:          Applications/System
@@ -9,8 +9,19 @@ URL:            https://fedorahosted.org/koji/ticket/203
 Source0:        sign.conf
 Source1:        sign.py
 Patch0:         allow_disable.patch
+Patch1:         SOFTWARE-5425-add-gpg_digest_algo.patch
+Patch2:         SOFTWARE-5410-Improve-error-detection.patch
+Patch3:         Python-3-compat.patch
 BuildArch:      noarch
-Requires:       koji-hub, pexpect
+BuildRequires:  koji-hub
+Requires:       koji-hub
+%if 0%{?el7}
+BuildRequires:  pexpect
+Requires:       pexpect
+%else
+BuildRequires:  python3-pexpect
+Requires:       python3-pexpect
+%endif
 Requires:       /usr/bin/rpmsign
 
 %description
@@ -20,6 +31,9 @@ GPG signing plugin for koji-hub
 cp $RPM_SOURCE_DIR/sign.conf .
 cp $RPM_SOURCE_DIR/sign.py .
 %patch0 -p1
+%patch1 -p1
+%patch2 -p1
+%patch3 -p1
 exit 0
 
 %build
@@ -39,6 +53,11 @@ install -D sign.py -m 0755 $RPM_BUILD_ROOT/usr/lib/koji-hub-plugins/sign.py
 
 
 %changelog
+* Wed Dec 28 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.4.0-9
+- Patch to add gpg_digest_algo option (SOFTWARE-5425)
+- Patches to improve error detection (SOFTWARE-5410)
+- Patch for Python 3 compat
+
 * Wed Apr 22 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.4.0-8
 - Add /usr/bin/rpmsign dependency
 
