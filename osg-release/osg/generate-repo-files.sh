@@ -26,7 +26,7 @@ mkrepofile () {
   fi
 
   case $EL in
-    9 ) GPGKEY=RPM-GPG-KEY-OSG-3 ;;
+    9 ) GPGKEY=RPM-GPG-KEY-OSG-4 ;;
     * ) GPGKEY=RPM-GPG-KEY-OSG-2 ;;
   esac
 

@@ -1,6 +1,6 @@
 Name:           osg-release
 Version:        3.6
-Release:        11%{?dist}
+Release:        12%{?dist}
 Summary:        OSG Software for Enterprise Linux repository configuration
 
 License:        GPL
@@ -19,7 +19,7 @@ Source4:        template.repo.koji
 Source5:        template.repo.direct
 
 Source41:       RPM-GPG-KEY-OSG-2
-Source42:       RPM-GPG-KEY-OSG-3
+Source42:       RPM-GPG-KEY-OSG-4
 
 
 BuildArch:      noarch
@@ -49,7 +49,7 @@ install -pm 644 %{SOURCE41} \
     $RPM_BUILD_ROOT%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-OSG-2
 %else
 install -pm 644 %{SOURCE42} \
-    $RPM_BUILD_ROOT%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-OSG-3
+    $RPM_BUILD_ROOT%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-OSG-4
 %endif
 
 # yum
@@ -64,11 +64,14 @@ sed -i -e 's/gpgcheck=1/gpgcheck=0/' $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d/*
 %if 0%{?rhel} < 9
 /etc/pki/rpm-gpg/RPM-GPG-KEY-OSG-2
 %else
-/etc/pki/rpm-gpg/RPM-GPG-KEY-OSG-3
+/etc/pki/rpm-gpg/RPM-GPG-KEY-OSG-4
 %endif
 
 
 %changelog
+* Wed Dec 28 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.6-12
+- Replace RPM-GPG-KEY-OSG-3 with RPM-GPG-KEY-OSG-4 (SOFTWARE-5424)
+
 * Fri Dec 16 2022 Carl Edquist <edquist@cs.wisc.edu> - 3.6-11
 - Only distribute the relevant GPGKEY for each platform (SOFTWARE-5408)
 
