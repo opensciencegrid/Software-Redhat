@@ -7,7 +7,7 @@
 %endif
 Name: koji-theme-fedora
 Version: 2.0
-Release: %{release}.1%{?dist}
+Release: %{release}.2%{?dist}
 License: GPLv2
 Summary: Fedora koji theme
 Group: Applications/Internet
@@ -41,6 +41,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Dec 30 2022 Carl Edquist <edquist@cs.wisc.edu> - 2.0-1.2.osg
+- Bump and rebuild for new gpg key (SOFTWARE-5422)
+
 * Wed Mar 11 2020 Mátyás Selmeci <matyas@cs.wisc.edu> 2.0-1.1.osg
 - Add Apache 2.4 support
 
