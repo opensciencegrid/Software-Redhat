@@ -1,7 +1,7 @@
 Summary: OASIS server package
 Name: oasis-server
 Version: 3.6
-Release: 1%{?dist} 
+Release: 2%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
 Group: Development/Libraries
@@ -133,6 +133,9 @@ This package contains files for oasis-login.opensciencegrid.org
 
 
 %changelog
+* Fri Dec 30 2022 Carl Edquist <edquist@cs.wisc.edu> - 3.6-2
+- Bump and rebuild for new gpg key (SOFTWARE-5422)
+
 * Wed Apr  6 2022 Dave Dykstra <dwd@fnal.gov> - 3.6-1
 - Require cvmfs 2.9.2
 - Add cvmfs_server check -a on oasis-replica and oasis-replica-itb
