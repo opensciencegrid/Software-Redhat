@@ -1,6 +1,6 @@
 Name:           koji-plugin-sign
 Version:        1.4.0
-Release:        9%{?dist}
+Release:        10%{?dist}
 Summary:        GPG signing plugin for koji-hub
 
 Group:          Applications/System
@@ -53,6 +53,9 @@ install -D sign.py -m 0755 $RPM_BUILD_ROOT/usr/lib/koji-hub-plugins/sign.py
 
 
 %changelog
+* Fri Dec 30 2022 Carl Edquist <edquist@cs.wisc.edu> - 1.4.0-10
+- Bump and rebuild for new gpg key (SOFTWARE-5422)
+
 * Wed Dec 28 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.4.0-9
 - Patch to add gpg_digest_algo option (SOFTWARE-5425)
 - Patches to improve error detection (SOFTWARE-5410)
