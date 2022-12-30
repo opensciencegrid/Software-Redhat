@@ -1,6 +1,6 @@
 Name:           gracc-archive
 Version:        1.6.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        GRACC Archive
 
 License:        ASL 2.0
@@ -69,6 +69,9 @@ install -d -m 0755 $RPM_BUILD_ROOT/%{_sharedstatedir}/graccarchive/output
 
 
 %changelog
+* Fri Dec 30 2022 Carl Edquist <edquist@cs.wisc.edu> - 1.6.0-2
+- Bump and rebuild for new gpg key (SOFTWARE-5422)
+
 * Tue Jan 30 2018 Derek Weitzel <dweitzel@cse.unl.edu> - 1.6.0-1
 - Place hostname in archive file name
 
