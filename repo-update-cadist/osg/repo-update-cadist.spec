@@ -1,7 +1,7 @@
 Name:      repo-update-cadist
 Summary:   repo-update-cadist
 Version:   1.1.4
-Release:   1%{?dist}
+Release:   1.1%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       https://github.com/opensciencegrid/repo-update-cadist
@@ -40,6 +40,9 @@ install -pm 644 %{name}.cron  $RPM_BUILD_ROOT%{_sysconfdir}/cron.d/
 %endif
 
 %changelog
+* Fri Dec 30 2022 Carl Edquist <edquist@cs.wisc.edu> - 1.1.4-1.1
+- Bump and rebuild for new gpg key (SOFTWARE-5422)
+
 * Tue Feb 02 2021 Carl Edquist <edquist@cs.wisc.edu> - 1.1.4-1
 - Fix path to OSG tarball in IGTF INDEX.html (SOFTWARE-4394)
 
