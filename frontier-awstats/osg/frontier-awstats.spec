@@ -7,7 +7,7 @@
 Summary: Awstats config files for Frontier Servers
 Name: frontier-awstats
 Version: 7.7
-%define releasenum 9
+%define releasenum 9.1
 Release: %{?releasenum}%{?dist}
 License: GPL
 Group: System/Server
@@ -148,6 +148,9 @@ fi
 %verify(not user group) /etc/logrotate.d/%{name}
 
 %changelog
+* Fri Dec 30 2022 Carl Edquist <edquist@cs.wisc.edu> - 7.7-9.1
+- Bump and rebuild for new gpg key (SOFTWARE-5422)
+
 * Wed Sep 15 2021 Edita Kizinevic <edita.kizinevic@cern.ch> 7.7-9
 - Rename DNS last update cache file to another file instead of deleting
   it.
