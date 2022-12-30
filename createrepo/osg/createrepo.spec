@@ -3,7 +3,7 @@
 Summary: Creates a common metadata repository
 Name: createrepo
 Version: 0.9.9
-Release: 24%{?dist}
+Release: 24.1%{?dist}
 License: GPLv2
 Group: System Environment/Base
 Source: %{name}-%{version}.tar.gz
@@ -94,6 +94,9 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/createrepo
 
 %changelog
+* Fri Dec 30 2022 Carl Edquist <edquist@cs.wisc.edu> - 0.9.9-24.1
+- Bump and rebuild for new gpg key (SOFTWARE-5422)
+
 * Tue Jan 05 2016 Valentina Mukhamedzhanova <vmukhame@redhat.com> - 0.9.9-24
 - Make sure filename doesn't already contain a checksum.
 - Resolves: bug#1104840
