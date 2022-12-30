@@ -1,6 +1,6 @@
 Name:           gracc-summary
 Version:        4.2.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        GRACC Summary Agents
 
 License:        ASL 2.0
@@ -68,6 +68,9 @@ install -m 0744 config/graccsumperiodicyearly.timer $RPM_BUILD_ROOT/%{_unitdir}/
 
 
 %changelog
+* Fri Dec 30 2022 Carl Edquist <edquist@cs.wisc.edu> - 4.2.0-2
+- Bump and rebuild for new gpg key (SOFTWARE-5422)
+
 * Tue May 16 2017 Derek Weitzel <dweitzel@cse.unl.edu> 4.2.0
 - Fix bug in summarizer that leads to infinite loop, again
 
