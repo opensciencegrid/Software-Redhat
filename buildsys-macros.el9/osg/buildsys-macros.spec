@@ -12,7 +12,7 @@
 Name:		buildsys-macros
 Summary:	Macros for the OSG Buildsystem
 Version:        %{dver}
-Release:	1%{dist}
+Release:	7%{dist}
 License:	GPL
 BuildArch:      noarch
 Requires:	rpmdevtools
@@ -34,13 +34,18 @@ printf %s%b "%" "dist $DIST\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.disttag
 printf %s%b "%" "el$DVER 1\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.disttag
 printf %s%b "%" "osg 1\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.disttag
 printf %s%b "%" "__arch_install_post /usr/lib/rpm/check-buildroot\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.checkbuild
+printf %s%b "%" "_smp_ncpus_max 12\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.kojibuilder
 
 
 %files
 /etc/rpm/macros.disttag
 /etc/rpm/macros.checkbuild
+/etc/rpm/macros.kojibuilder
 
 %changelog
+* Fri Dec 30 2022 Carl Edquist <edquist@cs.wisc.edu> - 9-7
+- Cap _smp_ncpus_max to 12 (SOFTWARE-4728)
+
 * Thu Dec 08 2022 Carl Edquist <edquist@cs.wisc.edu> - 9-1
 - build for el9 (SOFTWARE-5395)
 
