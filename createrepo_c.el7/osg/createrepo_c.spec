@@ -36,7 +36,7 @@
 Summary:        Creates a common metadata repository
 Name:           createrepo_c
 Version:        0.14.2
-Release:        1%{?dist}
+Release:        1.1%{?dist}
 License:        GPLv2+
 URL:            https://github.com/rpm-software-management/createrepo_c
 Source0:        %{url}/archive/%{version}/%{name}-%{version}.tar.gz
@@ -259,6 +259,9 @@ ln -sr %{buildroot}%{_bindir}/modifyrepo_c %{buildroot}%{_bindir}/modifyrepo
 %endif
 
 %changelog
+* Fri Dec 30 2022 Carl Edquist <edquist@cs.wisc.edu> - 0.14.2-1.1
+- Bump and rebuild for new gpg key (SOFTWARE-5422)
+
 * Thu Jun 27 2019 Pavla Kratochvilova <pkratoch@redhat.com> - 0.14.2-1
 - Update to 0.14.2
 - Obsolete createrepo on all Fedoras again (RhBug:1702771)
