@@ -2,7 +2,7 @@
 Summary: Client tools for OSG Topology
 Name: topology-client
 Version: 1.22.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 Source: topology-%{version}.tar.gz
 License: Apache 2.0
 BuildArch: noarch
@@ -68,6 +68,9 @@ install -D -m 0644 topology-cacher.cron %{buildroot}/etc/cron.d/topology-cacher.
 
 
 %changelog
+* Fri Dec 30 2022 Carl Edquist <edquist@cs.wisc.edu> - 1.22.0-2
+- Bump and rebuild for new gpg key (SOFTWARE-5422)
+
 * Wed Oct 5 2022 Brian Lin <blin@cs.wisc.ed> 1.22.0-1
 - Fix UnboundLocalError when sending unsigned messages (SOFTWARE-4538)
 - Replace opensciencegridrid references with osg-htc in osg-notify (SOFTWARE-5305)
