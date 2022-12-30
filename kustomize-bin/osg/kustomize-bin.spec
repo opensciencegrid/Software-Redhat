@@ -4,7 +4,7 @@
 Summary: Kubernetes Kustomize (binary install)
 Name: kustomize-bin
 Version: 3.7.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: ASL-2.0
 Url: https://kustomize.io
 Source0: kustomize_v%{version}_linux_amd64.tar.gz
@@ -36,6 +36,9 @@ install -D kustomize %{buildroot}/usr/bin/kustomize
 /usr/bin/kustomize
 
 %changelog
+* Fri Dec 30 2022 Carl Edquist <edquist@cs.wisc.edu> - 3.7.0-2
+- Bump and rebuild for new gpg key (SOFTWARE-5422)
+
 * Tue Mar 23 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.7.0-1
 - Created (SOFTWARE-4543)
 
