@@ -40,6 +40,7 @@ printf %s%b "%" "_smp_ncpus_max 12\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.kojibuil
 %files
 /etc/rpm/macros.disttag
 /etc/rpm/macros.checkbuild
+/etc/rpm/macros.kojibuilder
 
 %changelog
 * Fri Dec 30 2022 Carl Edquist <edquist@cs.wisc.edu> - 9-8.osg36.el7
