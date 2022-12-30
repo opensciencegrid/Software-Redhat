@@ -1,7 +1,7 @@
 Summary: OSG VMU test scripts
 Name: vm-test-runs
 Version: 1.1
-Release: 1%{?dist}
+Release: 1.1%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
 BuildArch: noarch
@@ -66,6 +66,9 @@ install -D vmu.css %{buildroot}/%{_localstatedir}/www/html/vmu.css
 %{_localstatedir}/www/html/vmu.css
 
 %changelog
+* Fri Dec 30 2022 Carl Edquist <edquist@cs.wisc.edu> - 1.1-1.1
+- Bump and rebuild for new gpg key (SOFTWARE-5422)
+
 * Fri Mar 27 2020 Brian Lin <blin@cs.wisc.edu> 1.1-1
 - VM test run service cleanup fixes
 
