@@ -79,7 +79,7 @@
 
 Name: koji
 Version: 1.20.1
-Release: 2.3%{?dist}
+Release: 2.4%{?dist}
 # the included arch lib from yum's rpmUtils is GPLv2+
 License: LGPLv2 and GPLv2+
 Summary: Build system tools
@@ -716,8 +716,11 @@ fi
 %endif
 
 %changelog
-* Thu Jan 21 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.20.1-2.3.osg
+* Fri Dec 30 2022 Carl Edquist <edquist@cs.wisc.edu> - 1.20.1-2.4.osg
 - **** OSG CHANGELOG ****
+    * Fri Dec 30 2022 Carl Edquist <edquist@cs.wisc.edu> - 1.20.1-2.4.osg
+    - Bump and rebuild for new gpg key (SOFTWARE-5422)
+
     * Thu Jan 21 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.20.1-2.3.osg
     - Add 2652-web-input-validation.patch and 2652a-python2.patch to fix XSS vulnerability
         - https://pagure.io/koji/pull-request/2652
