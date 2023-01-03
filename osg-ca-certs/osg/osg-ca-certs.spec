@@ -4,7 +4,7 @@
 
 Name:           osg-ca-certs
 Version:        %{osg_version}
-Release:        1.1%{?dist}
+Release:        1.2%{?dist}
 Summary:        OSG Packaging of the IGTF CA Certs and OSG-specific CAs, in the OpenSSL 1.0.* format. 
 
 License:        Unknown
@@ -64,6 +64,9 @@ sha256sum -c cacerts_sha256sum.txt
 %doc
 
 %changelog
+* Tue Jan 03 2023 Carl Edquist <edquist@cs.wisc.edu> - 1.117-1.2
+- Rebuild again for el9 rpm signing (SOFTWARE-5396)
+
 * Mon Dec 19 2022 Carl Edquist <edquist@cs.wisc.edu> - 1.117-1.1
 - Rebuild for el9 rpm signing (SOFTWARE-5396)
 
