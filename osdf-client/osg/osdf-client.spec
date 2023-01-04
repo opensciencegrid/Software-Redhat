@@ -1,7 +1,7 @@
 Summary: OSDF client programs
 Name: osdf-client
-Version: 6.9.2
-Release: 2%{?dist}
+Version: 6.9.4
+Release: 1%{?dist}
 License: ASL 2.0
 Url: https://github.com/htcondor/osdf-client
 # Pre-compiled binary
@@ -61,6 +61,9 @@ install -m 0644 %{SOURCE1} %{buildroot}/etc/condor/config.d/10-stash-plugin.conf
 %doc README.md
 
 %changelog
+* Wed Jan 04 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 6.9.4-1
+- Update to 6.9.4 (SOFTWARE-5372)
+
 * Mon Oct 10 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 6.9.2-2
 - Take new 10-stash-plugin.conf file from upstream (SOFTWARE-5350)
   (replace 10-stash-plugin.config with it, for consistency with upstream)

@@ -1,2 +1,2 @@
-osdf-client/6.9.2/10-stash-plugin.conf sha1sum=2e3041f84654a890659bdeec6c2400c50ebb0690
-# from https://github.com/htcondor/osdf-client/blob/v6.9.2/resources/10-stash-plugin.conf
+osdf-client/6.9.4/10-stash-plugin.conf sha1sum=e53983584b899fb104b5e3048b5c9a7bc71c8971
+# from https://github.com/htcondor/osdf-client/blob/v6.9.4/resources/10-stash-plugin.conf
