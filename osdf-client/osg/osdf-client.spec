@@ -5,7 +5,7 @@ Release: 1%{?dist}
 License: ASL 2.0
 Url: https://github.com/htcondor/osdf-client
 # Pre-compiled binary
-Source0: https://github.com/htcondor/%{name}/releases/download/v%{version}/%{name}_%{version}_Linux_x86_64.tar.gz
+Source0: https://github.com/htcondor/%{name}/releases/download/v%{version}/%{name}_Linux_x86_64.tar.gz
 Source1: https://github.com/htcondor/%{name}/blob/v%{version}/resources/10-stash-plugin.conf
 ExclusiveArch: x86_64
 
