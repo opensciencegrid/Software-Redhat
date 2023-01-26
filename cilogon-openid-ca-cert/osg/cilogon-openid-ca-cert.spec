@@ -1,6 +1,6 @@
 Name:           cilogon-openid-ca-cert
 Version:        1.1
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        OSG Packaging of the CILogon CA Certs, in new OpenSSL 0.9.8/1.0.0 format
 
 License:        Unknown
@@ -36,6 +36,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc
 
 %changelog
+* Thu Jan 26 2023 Carl Edquist <edquist@cs.wisc.edu> - 1.1-6
+- Bump to rebuild (SOFTWARE-5457)
+
 * Mon Dec 12 2022 Carl Edquist <edquist@cs.wisc.edu> - 1.1-5
 - Bump to rebuild (SOFTWARE-5384)
 
