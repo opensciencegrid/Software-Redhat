@@ -70,7 +70,7 @@
 Summary: CernVM File System
 Name: cvmfs
 Version: 2.10.0
-Release: 1.1%{?dist}
+Release: 1.2%{?dist}
 URL: https://cernvm.cern.ch/fs/
 Source0: https://ecsft.cern.ch/dist/cvmfs/%{name}-%{version}/%{name}-%{version}.tar.gz
 %if 0%{?selinux_cvmfs}
@@ -701,6 +701,8 @@ systemctl daemon-reload
 %endif
 
 %changelog
+* Thu Jan 26 2023 Carl Edquist <edquist@cs.wisc.edu> - 2.10.0-1.2
+- Bump to rebuild (SOFTWARE-5457)
 * Tue Oct 11 2022 Dave Dykstra <dwd@fnal.gov> - 2.10.0-1.1
 - Re-apply fix for el8 pacparser build error by requiring python3, from
   https://github.com/cvmfs/cvmfs/pull/2986
