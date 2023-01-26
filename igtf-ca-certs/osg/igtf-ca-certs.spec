@@ -4,7 +4,7 @@
 
 Name:           igtf-ca-certs
 Version:        %{igtf_version}
-Release:        1%{?dist}
+Release:        1.1%{?dist}
 Summary:        OSG Packaging of the IGTF CA Certs, in the OpenSSL 1.0.* format. 
 
 License:        Unknown
@@ -60,6 +60,9 @@ sha256sum -c cacerts_sha256sum.txt
 %doc
 
 %changelog
+* Thu Jan 26 2023 Carl Edquist <edquist@cs.wisc.edu> - 1.117-1.1
+- Bump to rebuild (SOFTWARE-5457)
+
 * Mon Aug 29 2022 Tim Theisen <tim@cs.wisc.edu> - 1.117-1
 - Update to IGTF 1.117 (SOFTWARE-5309)
 
