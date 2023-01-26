@@ -3,7 +3,7 @@
 Summary: Get OIDC bearer tokens by interacting with Hashicorp vault
 Name: htgettoken
 Version: 1.16
-Release: 1%{?dist}
+Release: 1.1%{?dist}
 License: BSD
 Group: Applications/System
 URL: https://github.com/fermitools/htgettoken
@@ -124,6 +124,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Jan 26 2023 Carl Edquist <edquist@cs.wisc.edu> - 1.16-1.1
+- Bump to rebuild (SOFTWARE-5457)
+
 * Wed Oct 12 2022 Dave Dykstra <dwd@fnal.gov> 1.16-1
 - Fix httokendecode -H functionality to only attempt to convert a parsed word
   if it is entirely numeric, not if it just contains one digit.  At the same
