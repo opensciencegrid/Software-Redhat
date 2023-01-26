@@ -10,7 +10,7 @@ Summary: The Frontier distribution of the Squid proxy caching server
 Name: frontier-squid%{?squidsuffix}
 Version: 4.15
 %define release4source 2
-%define releasenum 1%{?dist}
+%define releasenum 1.1%{?dist}
 Release: %{?release4source}.%{?releasenum}
 Epoch: 11
 License: GPL
@@ -466,6 +466,9 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+* Thu Jan 26 2023 Carl Edquist <edquist@cs.wisc.edu> - 4.15-2.1.1
+- Bump to rebuild (SOFTWARE-5457)
+
 * Fri Jun  4 2021 Dave Dykstra <dwd@fnal.gov> 4.15-2.1
 - Upgrade to 4.15-2 tarball with the following release notes:
  - Fix SQUID_COMPRESS_LOGS=false, which was broken since 4.13-3.  Change
