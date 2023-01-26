@@ -1,7 +1,7 @@
 Summary: Get an X.509 certificate with SAML ECP and store proxies
 Name: cigetcert
 Version: 1.20
-Release: 1.1%{?dist}
+Release: 1.2%{?dist}
 License: BSD
 Group: Applications/System
 URL: http://redmine.fnal.gov/projects/fermitools/wiki/cigetcert
@@ -60,6 +60,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Jan 26 2023 Carl Edquist <edquist@cs.wisc.edu> - 1.20-1.2
+- Bump to rebuild (SOFTWARE-5457)
+
 * Tue Dec 13 2022 Carl Edquist <edquist@cs.wisc.edu> - 1.20-1.1
 - Bump to rebuild (SOFTWARE-5384)
 
