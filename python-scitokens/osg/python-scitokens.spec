@@ -2,7 +2,7 @@
 %global pypi_name scitokens
 
 Name:           python-%{pypi_name}
-Version:        1.7.0
+Version:        1.7.4
 Release:        1%{?dist}
 Summary:        SciToken reference implementation library
 
@@ -51,6 +51,16 @@ rm -rf %{pypi_name}.egg-info
 
 
 %changelog
+* Mon Jan 30 2023 Carl Edquist <edquist@cs.wisc.edu> - 1.7.4-1
+- bugfix release v1.7.4 (SOFTWARE-5446)
+- Attempt to fix codacy in github actions #159
+- Add pyproject.toml file for PEP 517 builds #162
+- Install requires setuptools #163
+- Add configuration for readthedocs #165
+- Add links to readthedocs in some places #166
+- Run pip list installed to show packages #168
+- Remove aud enforcement from deserialize function #167
+
 * Wed Mar 2 2022 Brian Lin <blin@cs.wisc.edu> - 1.7.0-1
 - Reference test files using relative paths
 - Use shutil.move instead of os.rename
