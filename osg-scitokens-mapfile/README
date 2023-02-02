@@ -1,0 +1,14 @@
+osg-scitokens-mapfile
+=====================
+
+Instructions for updating:
+
+1.  Create a tag in topology named `data-N` where N is a number.
+2.  Go to the tags page (https://github.com/opensciencegrid/topology/tags)
+    and download the tar.gz for the tag you just created.
+3.  Put the downloaded tarball into
+    `/p/vdt/public/html/upstream/osg-scitokens-mapfile/topology/`
+    and get its sha1sum.
+4.  Update `upstream/topology.source` with the new tag.
+5.  Update the spec file, set the version to N.
+6.  Commit and build!
