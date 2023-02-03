@@ -1,7 +1,7 @@
 Name:      xcache
 Summary:   XCache scripts and configurations
 Version:   3.3.0
-Release:   1%{?dist}
+Release:   1.1%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       https://opensciencegrid.org/docs/
@@ -20,6 +20,7 @@ BuildRequires: systemd
 
 %define __python /usr/bin/python3
 BuildRequires: python3-devel
+BuildRequires: python3-pip
 
 # Necessary for daemon to report back to the OSG Collector.
 Requires: python3-condor
@@ -279,6 +280,9 @@ mkdir -p %{buildroot}%{_sysconfdir}/grid-security/xrd
 %config %{_sysconfdir}/xrootd/config.d/03-redir-tuning.cfg
 
 %changelog
+* Fri Feb 03 2023 Carl Edquist <edquist@cs.wisc.edu> - 3.3.0-1.1
+- Add python3-pip build requirement for el9 (SOFTWARE-5416)
+
 * Fri Dec 02 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.3.0-1
 - Remove X.509 proxy requirement for stash-cache xrootd instance (SOFTWARE-5366)
 
