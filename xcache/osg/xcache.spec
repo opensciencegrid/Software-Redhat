@@ -14,6 +14,18 @@ Source5:   https://vdt.cs.wisc.edu/upstream/xcache/3.0.0/python-deps/uproot-3.11
 Source6:   https://vdt.cs.wisc.edu/upstream/xcache/3.0.0/python-deps/xxhash-1.4.4-cp36-cp36m-manylinux1_x86_64.whl
 Source7:   https://vdt.cs.wisc.edu/upstream/xcache/3.0.0/python-deps/lz4-2.2.1-cp36-cp36m-manylinux1_x86_64.whl
 
+Source11:  https://vdt.cs.wisc.edu/upstream/xcache/3.0.0/python-deps/el9/awkward-0.14.0-py2.py3-none-any.whl
+Source12:  https://vdt.cs.wisc.edu/upstream/xcache/3.0.0/python-deps/el9/awkward-2.0.7-py3-none-any.whl
+Source13:  https://vdt.cs.wisc.edu/upstream/xcache/3.0.0/python-deps/el9/awkward_cpp-8-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+Source14:  https://vdt.cs.wisc.edu/upstream/xcache/3.0.0/python-deps/el9/cachetools-5.3.0-py3-none-any.whl
+Source15:  https://vdt.cs.wisc.edu/upstream/xcache/3.0.0/python-deps/el9/lz4-4.3.2-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+Source16:  https://vdt.cs.wisc.edu/upstream/xcache/3.0.0/python-deps/el9/numpy-1.24.2-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+Source17:  https://vdt.cs.wisc.edu/upstream/xcache/3.0.0/python-deps/el9/packaging-23.0-py3-none-any.whl
+Source18:  https://vdt.cs.wisc.edu/upstream/xcache/3.0.0/python-deps/el9/typing_extensions-4.4.0-py3-none-any.whl
+Source19:  https://vdt.cs.wisc.edu/upstream/xcache/3.0.0/python-deps/el9/uproot-5.0.2-py3-none-any.whl
+Source20:  https://vdt.cs.wisc.edu/upstream/xcache/3.0.0/python-deps/el9/uproot_methods-0.9.2-py3-none-any.whl
+Source21:  https://vdt.cs.wisc.edu/upstream/xcache/3.0.0/python-deps/el9/xxhash-3.2.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+
 
 BuildRequires: systemd
 %{?systemd_requires}
@@ -183,7 +195,14 @@ Requires: %{name} = %{version}
 
 mkdir -p %{buildroot}%{_sysconfdir}/xrootd
 mkdir -p %{buildroot}/usr/lib/xcache-consistency-check
-for whl in %{SOURCE1} %{SOURCE2} %{SOURCE3} %{SOURCE4} %{SOURCE5} %{SOURCE6} %{SOURCE7}
+%if 0%{?el9}
+for whl in %{SOURCE11} %{SOURCE12} %{SOURCE13} %{SOURCE14} %{SOURCE15} \
+           %{SOURCE16} %{SOURCE17} %{SOURCE18} %{SOURCE19} %{SOURCE20} \
+           %{SOURCE21}
+%else
+for whl in %{SOURCE1} %{SOURCE2} %{SOURCE3} %{SOURCE4} %{SOURCE5} %{SOURCE6} \
+           %{SOURCE7}
+%endif
 do
     %{__python} -m pip install -I --no-deps "$whl" --root %{buildroot}/usr/lib/xcache-consistency-check
 done
