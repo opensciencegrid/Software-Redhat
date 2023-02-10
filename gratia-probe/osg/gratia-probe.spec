@@ -2,12 +2,13 @@ Name:               gratia-probe
 Summary:            Gratia OSG accounting system probes
 Group:              Applications/System
 Version:            2.7.1
-Release:            1%{?dist}
+Release:            1.1%{?dist}
 License:            GPL
 URL:                https://github.com/opensciencegrid/gratia-probe
 Vendor:             The Open Science Grid <http://www.opensciencegrid.org/>
 
 BuildRequires:      python3
+BuildRequires:      python3-devel
 
 %if 0%{?rhel} < 8
 BuildRequires:      git
@@ -30,7 +31,7 @@ BuildArch: noarch
 
 %define customize_probeconfig(d:) sed -i "s#@PROBE_HOST@#%{meter_name}#" %{_sysconfdir}/gratia/%{-d*}/ProbeConfig
 
-%global __python /usr/bin/python3
+%global __python        %{__python3}
 %global condor_python   python3-condor
 %global python_psycopg2 python3-psycopg2
 
@@ -103,8 +104,8 @@ git_commit_id=$(gzip -d < %{SOURCE0} | git get-tar-commit-id)
   cp -pRL ${packs[@]} $RPM_BUILD_ROOT%{_datadir}/gratia
 
   install -d $RPM_BUILD_ROOT%{_sysconfdir}/cron.d
-  install -d $RPM_BUILD_ROOT%{python_sitelib}
-  mv common/gratia $RPM_BUILD_ROOT%{python_sitelib}
+  install -d $RPM_BUILD_ROOT%{python3_sitelib}
+  mv common/gratia $RPM_BUILD_ROOT%{python3_sitelib}
   rm -rf $RPM_BUILD_ROOT%{_datadir}/gratia/common/gratia
 
   for probe in ${packs[@]}
@@ -116,7 +117,7 @@ git_commit_id=$(gzip -d < %{SOURCE0} | git get-tar-commit-id)
 
     # Install the python modules
     if [ -e $probe/gratia ]; then
-      mv $probe/gratia/* $RPM_BUILD_ROOT%{python_sitelib}/gratia
+      mv $probe/gratia/* $RPM_BUILD_ROOT%{python3_sitelib}/gratia
     fi
 
     # Common template customizations (same for all probes)
@@ -216,7 +217,7 @@ git_commit_id=$(gzip -d < %{SOURCE0} | git get-tar-commit-id)
 
 # Burn in the RPM version into the python files.
 rpmver=%{version}-%{release}.${git_commit_id:0:7}
-find $RPM_BUILD_ROOT%{_datadir}/gratia $RPM_BUILD_ROOT%{python_sitelib} \
+find $RPM_BUILD_ROOT%{_datadir}/gratia $RPM_BUILD_ROOT%{python3_sitelib} \
   -type f -exec fgrep -ZIle '%%%%%%RPMVERSION%%%%%%' {} + | xargs -0 \
   sed -i "s&%%%%%%RPMVERSION%%%%%%&$rpmver&g"
 
@@ -265,9 +266,9 @@ fi
 %attr(-,gratia,gratia) %{_localstatedir}/log/gratia/
 %dir %{_sysconfdir}/gratia
 %{_localstatedir}/lock/gratia/
-%{python_sitelib}/gratia/__pycache__/
-%{python_sitelib}/gratia/__init__.py*
-%{python_sitelib}/gratia/common
+%{python3_sitelib}/gratia/__pycache__/
+%{python3_sitelib}/gratia/__init__.py*
+%{python3_sitelib}/gratia/common
 %dir %{_datadir}/gratia/common
 %{_datadir}/gratia/common/GratiaPing
 %{_datadir}/gratia/common/DebugPrint
@@ -282,8 +283,8 @@ fi
 # %defattr(-,root,root,-)
 #%doc common2/README
 %doc %{_datadir}/gratia/common2/README
-# this is in common: %%{python_sitelib}/gratia/__init__.py*
-%{python_sitelib}/gratia/common2
+# this is in common: %%{python3_sitelib}/gratia/__init__.py*
+%{python3_sitelib}/gratia/common2
 # executables:
 %dir %{_datadir}/gratia/common2
 # %%{_datadir}/gratia/common2/alarm.py
@@ -345,7 +346,7 @@ Contributed by Greg Sharp and the dCache project.
 %doc %{_datadir}/gratia/dCache-transfer/README
 %{_datadir}/gratia/dCache-transfer/ProbeConfig
 %{_datadir}/gratia/dCache-transfer/gratia-dcache-transfer
-%{python_sitelib}/gratia/dcache_transfer
+%{python3_sitelib}/gratia/dcache_transfer
 %dir %{_datadir}/gratia/dCache-transfer
 %config(noreplace) %verify(not md5 size mtime) %{_sysconfdir}/gratia/dCache-transfer/ProbeConfig
 
@@ -365,7 +366,7 @@ Contributed by University of Nebraska Lincoln.
 
 %files services
 %defattr(-,root,root,-)
-%{python_sitelib}/gratia/services
+%{python3_sitelib}/gratia/services
 %{_datadir}/gratia/services/storageReport
 %dir %{_datadir}/gratia/services
 %config(noreplace) %verify(not md5 size mtime) %{_sysconfdir}/gratia/services/ProbeConfig
@@ -385,7 +386,7 @@ Gratia OSG accounting system probe for providing VM accounting.
 
 %files onevm
 %defattr(-,root,root,-)
-%{python_sitelib}/gratia/onevm
+%{python3_sitelib}/gratia/onevm
 %{_datadir}/gratia/onevm/onevm_probe.cron.sh
 %dir %{_datadir}/gratia/onevm
 %{_datadir}/gratia/onevm/ProbeConfig
@@ -593,6 +594,9 @@ This is a transitional dummy package for gratia-probe-slurm; it may safely be re
 %files slurm
 
 %changelog
+* Fri Feb 10 2023 Carl Edquist <edquist@cs.wisc.edu> - 2.7.1-1.1
+- Use %python3_sitelib to fix EL9 build (SOFTWARE-5416)
+
 * Mon Aug 08 2022 Carl Edquist <edquist@cs.wisc.edu> - 2.7.1-1
 - Fix condor-ap probe bug(s) in resource name detection (SOFTWARE-5285)
 
