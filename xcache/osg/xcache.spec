@@ -61,7 +61,11 @@ AutoReq: no
 
 Requires: xz
 Requires: xrootd-server
+%if 0%{?el9}
+Requires: python39(x86-64)
+%else
 Requires: python36(x86-64)
+%endif
 
 %description -n xcache-consistency-check
 %{summary}
