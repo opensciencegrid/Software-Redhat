@@ -1,7 +1,7 @@
 Summary: OSG configuration files for XRootD
 Name: osg-xrootd
 Version: 3.6
-Release: 18%{?dist}
+Release: 19%{?dist}
 License: ASL 2.0
 BuildArch: noarch
 
@@ -94,6 +94,9 @@ mkdir -p /etc/grid-security >/dev/null 2>&1 || :
 [ -e /etc/grid-security/grid-mapfile ] || touch /etc/grid-security/grid-mapfile
 
 %changelog
+* Thu Feb 16 2023 Carl Edquist <edquist@cs.wisc.edu> - 3.6-19
+- Bump to rebuild for RPM GPG key (SOFTWARE-5457)
+
 * Tue Jun 28 2022 Carl Edquist <edquist@cs.wisc.edu> - 3.6-18
 - Disable voms via XRD_DISABLE_VOMS env var (SOFTWARE-5106)
 
