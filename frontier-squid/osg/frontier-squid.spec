@@ -8,9 +8,9 @@
 
 Summary: The Frontier distribution of the Squid proxy caching server
 Name: frontier-squid%{?squidsuffix}
-Version: 4.15
+Version: 5.7
 %define release4source 2
-%define releasenum 1.1%{?dist}
+%define releasenum 1%{?dist}
 Release: %{?release4source}.%{?releasenum}
 Epoch: 11
 License: GPL
@@ -92,27 +92,36 @@ tar zxf %{SOURCE1}
 %build
 # starts out in the shoal-downloads directory
 
+set -ex
+PYDIR=$PWD/.local
+PATH=$PYDIR/bin:$PATH
+export PYTHONPATH="`echo $PYDIR/lib*/python*/site-packages|sed 's/ /:/g'`"
+
 # install pyinstaller and required python packages to build shoal-agent
 
 # install in reverse order of their download (because dependency downloads
 #   come after requested packages)
 PKGS="$(tar tf %{SOURCE3} | sed 's,^shoal-downloads/,,' | grep -v "^\.local" | tac)"
-
-set -ex
-PYDIR=$PWD/.local
-PATH=$PYDIR/bin:$PATH
+PKGS="$(echo "$PKGS"|paste -sd ' ')"
 
 # --no-build-isolation is needed for offline build of pyinstaller as per
 #  https://github.com/pyinstaller/pyinstaller/issues/4557
-(HOME=$PWD
-export PYTHONPATH="$(echo $PYDIR/lib*/python*/site-packages)"
-for PKG in $(echo $PKGS); do
-  pip3 install --no-cache-dir --no-build-isolation --user $PKG
-done)
+HOME=$PWD pip3 install --no-cache-dir --no-build-isolation --user $PKGS
 
 cd ../shoal-%{shoalname}
 cd shoal-agent
-PYTHONPATH="`echo $PYDIR/lib*/python*/site-packages|sed "s/ /:/g"`" $PYDIR/bin/pyinstaller --noconfirm --noconsole --clean --log-level=WARN shoal-agent
+
+PYIOPTS="--noconsole --log-level=WARN"
+$PYDIR/bin/pyi-makespec $PYIOPTS --specpath=dist shoal-agent
+
+# Exclude system libraries from the bundle as documented at
+#  https://pyinstaller.readthedocs.io/en/stable/spec-files.html#posix-specific-options
+awk '
+    {if ($1 == "pyz") print "a.exclude_system_libraries()"}
+    {print}
+' dist/shoal-agent.spec >dist/shoal-agent-lesslibs.spec
+$PYDIR/bin/pyinstaller $PYIOPTS --noconfirm --clean dist/shoal-agent-lesslibs.spec
+
 chmod -x dist/shoal-agent/*.*
 
 # shoal-agent looks first in its own install dir for shoal_agent.conf so
@@ -284,6 +293,15 @@ touch ${RPM_BUILD_ROOT}%{etcdirsquid}/shoal_agent.conf
 mkdir ${RPM_BUILD_ROOT}/etc/shoal
 ln -s ../squid/shoal_agent.conf ${RPM_BUILD_ROOT}/etc/shoal
 
+# In the squid4 to squid5 update, there is a problem in yum (not rpm) where
+# files in the "es" directory cause conflict errors in the transaction test.
+# As a work-around, we change "es" to a link. See the pretrans section
+# for more.
+cd ${RPM_BUILD_ROOT}/usr/share/squid/errors/
+mv es es-default
+ln -s es-default es
+cd -
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -329,12 +347,37 @@ rm -rf $RPM_BUILD_ROOT
 /usr/share/man/man1
 /usr/share/man/man8
 
-# The %pre step uses a temporary file to tell the %post step if 
+# In the squid4 to squid5 update, rpm/yum cannot handle the change of the "es-mx"
+# link to a directory. To fix this, the old "es-mx" link is deleted here.
+# Also, the contents of the "es" directory cause transaction errors in yum, which
+# are fixed by changing it to a link. In this pretrans step, we move the old "es"
+# directory to make way for the new link.
+
+%pretrans -p <lua>
+path = "/usr/share/squid/errors/es-mx"
+st = posix.stat(path)
+if st and st.type == "link" then
+  os.remove(path)
+end
+path = "/usr/share/squid/errors/es"
+st = posix.stat(path)
+if st and st.type == "directory" then
+  status = os.rename(path, path .. ".rpmmoved")
+  if not status then
+    suffix = 0
+    while not status do
+      suffix = suffix + 1
+      status = os.rename(path .. ".rpmmoved", path .. ".rpmmoved." .. suffix)
+    end
+    os.rename(path, path .. ".rpmmoved")
+  end
+end
+
+%pre
+# The %%pre step uses a temporary file to tell the %post step if 
 #  the service was running.  It can't be in world-writable /tmp
 #  because of the risk of race conditions.
 %define wasrunningfile %{etcdirsquid}/.%{name}-wasrunning
-
-%pre
 mkdir -p %{etcdirsquid}
 rm -f %{wasrunningfile}
 if [ $1 -gt 1 ]; then
@@ -349,6 +392,8 @@ if [ $1 -gt 1 ]; then
 fi
 
 %post
+# Delete the old "es.rpmmoved" directory that was created in pretrans.
+rm -rf /usr/share/squid/errors/es.rpmmoved*
 if [ -f %{wasrunningfile} ]; then
   rm -f %{wasrunningfile}
   STARTSERVICE=true
@@ -466,8 +511,45 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
-* Thu Jan 26 2023 Carl Edquist <edquist@cs.wisc.edu> - 4.15-2.1.1
-- Bump to rebuild (SOFTWARE-5457)
+* Tue Jan 31 2023 Carl Vuosalo <carl.vuosalo@cern.ch> 5.7-2.1
+- Fix bug where old caches were not always cleaned up.
+
+* Fri Jan 13 2023 Carl Vuosalo <carl.vuosalo@cern.ch> 5.7-1.3
+- Complete the fix from 5.7-1.2. An additional work-around was needed
+   for the squid-4 to squid-5 upgrade to change a directory that was generating
+   yum transaction errors into a link, which silenced the errors.
+
+* Fri Dec 09 2022 Carl Vuosalo <carl.vuosalo@cern.ch> 5.7-1.2
+- Add pretrans scriplet to this spec file to fix problem with squid-4 to
+   squid-5 upgrade where a link becomes a directory.
+
+* Thu Dec 08 2022 Carl Vuosalo <carl.vuosalo@cern.ch> 5.7-1.1
+- Upgrade to 5.7-1 tarball with the following release notes:
+ - Update to squid-5.7 with release notes at https://wiki.squid-cache.org/Squid-5 and
+    http://www.squid-cache.org/Versions/v5/RELEASENOTES.html.
+    Most important new feature in 5.7:
+    - "Happy Eyeballs" feature uses the first destination IP address that responds
+       from DNS, whether it is IPv4 (A records) or IPv6 (AAAA records). A consequence
+       of this feature is that the dns_v4_first directive is no longer supported.
+ - Add sites cvmfs-stratum-one.cc.kek.jp and cvmfs*.sdcc.bnl.gov
+    to MAJOR_CVMFS in squid/files/postinstall/squid.conf.proto.
+ - Remove obsolete frontier*.racf.bnl.gov from ATLAS_FRONTIER
+    in squid/files/postinstall/squid.conf.proto.
+
+* Wed Sep 21 2022 Carl Vuosalo <carl.vuosalo@cern.ch> 4.17-2.1
+- Upgrade to 4.17-2 tarball with the following release notes:
+ - Add sites sampacs*.if.usp.br and cvmfs-*.hpc.swin.edu.au to MAJOR_CVMFS in
+     squid/files/postinstall/squid.conf.proto.
+
+* Tue Oct 12 2021 Edita Kizinevic <edita.kizinevic@cern.ch> 4.17-1.1
+- Upgrade to 4.17-1 tarball with the following release notes:
+ - Update to squid-4.17.  Includes squid-4.16 with release announcement at
+     http://lists.squid-cache.org/pipermail/squid-announce/2021-July/000134.html
+    and squid-4.17 with release announcement at
+     http://lists.squid-cache.org/pipermail/squid-announce/2021-October/000137.html
+    The latter includes a security fix, but it is to code disabled in
+    frontier-squid.
+- Avoid including standard system libraries with pyinstaller.
 
 * Fri Jun  4 2021 Dave Dykstra <dwd@fnal.gov> 4.15-2.1
 - Upgrade to 4.15-2 tarball with the following release notes:
