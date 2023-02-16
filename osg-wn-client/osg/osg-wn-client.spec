@@ -1,7 +1,7 @@
 Name:      osg-wn-client
 Summary:   OSG Worker-Node Client
 Version:   3.6
-Release:   5%{?dist}
+Release:   6%{?dist}
 License:   Apache 2.0
 URL:       http://www.opensciencegrid.org
 BuildArch: noarch
@@ -44,6 +44,9 @@ EOF
 %config(noreplace) %{_prefix}/etc/globus-user-env.sh
 
 %changelog
+* Thu Feb 16 2023 Carl Edquist <edquist@cs.wisc.edu> - 3.6-6
+- Bump to rebuild for RPM GPG key (SOFTWARE-5457)
+
 * Fri May 06 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.6-5
 - Add stashcp and voms-clients-cpp (SOFTWARE-5171)
 
