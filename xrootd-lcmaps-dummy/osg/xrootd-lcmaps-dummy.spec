@@ -1,6 +1,6 @@
 Name:		xrootd-lcmaps-dummy
 Version:	99
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Transitional dummy package to ease upgrades from OSG 3.5
 
 License:	ASL 2.0
@@ -32,6 +32,9 @@ exit 0
 
 
 %changelog
+* Thu Feb 16 2023 Carl Edquist <edquist@cs.wisc.edu> - 99-2
+- Bump to rebuild for RPM GPG key (SOFTWARE-5457)
+
 * Thu Oct 28 2021 Mátyás Selmeci <matyas@cs.wisc.edu>
 - Created (SOFTWARE-4881)
 
