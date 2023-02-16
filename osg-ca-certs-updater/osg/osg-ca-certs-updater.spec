@@ -1,6 +1,6 @@
 Name:           osg-ca-certs-updater
 Version:        2.0
-Release:        1.1%{?dist}
+Release:        1.2%{?dist}
 Summary:        Automatic CA certs updates for OSG
 
 Group:          System Environment/Tools
@@ -48,6 +48,9 @@ fi
 %doc %{_defaultdocdir}/%{name}-%{version}/README*
 
 %changelog
+* Thu Feb 16 2023 Carl Edquist <edquist@cs.wisc.edu> - 2.0-1.2
+- Bump to rebuild for RPM GPG key (SOFTWARE-5457)
+
 * Tue Dec 13 2022 Carl Edquist <edquist@cs.wisc.edu> - 2.0-1.1
 - Bump to rebuild (SOFTWARE-5384)
 
