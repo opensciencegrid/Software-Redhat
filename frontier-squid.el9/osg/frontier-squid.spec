@@ -10,7 +10,7 @@ Summary: The Frontier distribution of the Squid proxy caching server
 Name: frontier-squid%{?squidsuffix}
 Version: 5.7
 %define release4source 2
-%define releasenum 1%{?dist}
+%define releasenum 2%{?dist}
 Release: %{?release4source}.%{?releasenum}
 Epoch: 11
 License: GPL
@@ -50,6 +50,7 @@ Source0: http://frontier.cern.ch/dist/%{frontiersquidtarball}.tar.gz
 Source1: frontier-squid.tar.gz
 Source2: https://github.com/hep-gc/shoal/archive/%{shoalname}.tar.gz
 Source3: shoal-downloads.tar.gz
+Source4: shoal-downloads-el9.tar.gz
 Conflicts: squid
 Conflicts: frontier-awstats < 6.9-4
 Requires: logrotate
@@ -86,7 +87,11 @@ tar zxf %{SOURCE1}
 %global _build_id_links none
 # extra shoal- prefix because github adds the repository name to the tag
 %setup -b 2 -n shoal-%{shoalname} -q
+%if 0%{?rhel} == 9
+%setup -b 4 -n shoal-downloads-el9 -q
+%else
 %setup -b 3 -n shoal-downloads -q
+%endif
 
 
 %build
@@ -99,9 +104,13 @@ export PYTHONPATH="`echo $PYDIR/lib*/python*/site-packages|sed 's/ /:/g'`"
 
 # install pyinstaller and required python packages to build shoal-agent
 
+%if 0%{?rhel} == 9
+PKGS="$(tar tf %{SOURCE4} | sed 's,^shoal-downloads-el9/,,' | grep -v "^\.local" | tac)"
+%else
 # install in reverse order of their download (because dependency downloads
 #   come after requested packages)
 PKGS="$(tar tf %{SOURCE3} | sed 's,^shoal-downloads/,,' | grep -v "^\.local" | tac)"
+%endif
 PKGS="$(echo "$PKGS"|paste -sd ' ')"
 
 # --no-build-isolation is needed for offline build of pyinstaller as per
@@ -511,6 +520,9 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+* Fri Feb 17 2023 Carl Edquist <edquist@cs.wisc.edu> - 5.7-2.2
+- Bundle el9 whl files (shoal-downloads-el9 (SOFTWARE-5416)
+
 * Tue Jan 31 2023 Carl Vuosalo <carl.vuosalo@cern.ch> 5.7-2.1
 - Fix bug where old caches were not always cleaned up.
 
