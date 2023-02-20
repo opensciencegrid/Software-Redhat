@@ -1,25 +1,16 @@
-From 85e20a15cdcd2548fc22c823f887d18cde8354a7 Mon Sep 17 00:00:00 2001
+From 1ea7575f323796db4250b435ae9aea02cfdc0721 Mon Sep 17 00:00:00 2001
 From: Brian Bockelman <bbockelman@morgridge.org>
 Date: Thu, 3 Nov 2022 09:30:19 -0500
-Subject: [PATCH] Actually include XrdSecEntity moninfo field in trace.
+Subject: [PATCH] Actually include XrdSecEntity moninfo field in trace
 
 ---
- src/XrdSec/XrdSecEntity.cc | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ xrootd/src/XrdSec/XrdSecEntity.cc | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/src/XrdSec/XrdSecEntity.cc b/src/XrdSec/XrdSecEntity.cc
-index c938027b12e..9fe83d3e73a 100644
---- a/src/XrdSec/XrdSecEntity.cc
-+++ b/src/XrdSec/XrdSecEntity.cc
-@@ -60,7 +60,7 @@ void XrdSecEntity::Display(XrdSysError &mDest)
-    class AttrCB : public XrdSecEntityAttrCB
-         {public:
-          XrdSecEntityAttrCB::Action Attr(const char *key, const char *val)
--                           {mDest.Say(Tid, "Attr  ",key," = '", val, "'");
-+                           {mDest.Say(Tid, " Attr ",key," = '", val, "'");
-                             return XrdSecEntityAttrCB::Next;
-                            }
-          AttrCB(XrdSysError &erp, const char *tid) : mDest(erp), Tid(tid) {}
+diff --git a/xrootd/src/XrdSec/XrdSecEntity.cc b/xrootd/src/XrdSec/XrdSecEntity.cc
+index 8262e54..d26aa30 100644
+--- a/xrootd/src/XrdSec/XrdSecEntity.cc
++++ b/xrootd/src/XrdSec/XrdSecEntity.cc
 @@ -92,6 +92,7 @@ void XrdSecEntity::Display(XrdSysError &mDest)
     mDest.Say(tident, " Grps '", (grps ? grps : ""), "'");
     mDest.Say(tident, " Caps '", (caps ? caps : ""), "'");
@@ -28,3 +19,6 @@ index c938027b12e..9fe83d3e73a 100644
  
     mDest.Say(tident, " Crlen ", std::to_string((LLint)credslen).c_str());
     mDest.Say(tident, " ueid  ", std::to_string((ULint)ueid).c_str());
+-- 
+2.6.3
+
