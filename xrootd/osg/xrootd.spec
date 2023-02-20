@@ -71,8 +71,8 @@
 #-------------------------------------------------------------------------------
 Name:      xrootd
 Epoch:     1
-Version:   5.5.1
-Release:   1.13%{?_with_debug:.dbg}%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Version:   5.5.3
+Release:   1.1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -206,6 +206,8 @@ Requires(postun):	initscripts
 
 %if %{?rhel}%{!?rhel:0} == 7
 BuildRequires: devtoolset-7
+%else
+BuildRequires: gcc-c++
 %endif
 
 %description
