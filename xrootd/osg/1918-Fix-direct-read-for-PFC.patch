@@ -1,0 +1,32 @@
+From 0d3e34a66d1cac8b9eb68f0dd984af4ddd6ffe15 Mon Sep 17 00:00:00 2001
+From: Brian Bockelman <bbockelman@morgridge.org>
+Date: Sat, 18 Feb 2023 13:18:07 -0600
+Subject: [PATCH] Fix direct read for PFC
+
+When direct reads ("bypass mode") are in use, the code was failing
+to increment the number of bytes serviced in the read request.  When
+there were no errors, that means the overall read operation returned
+0 instead of the bytes read.
+
+This resulted in 100% failure rate for HTTP requests when direct
+read mode was activated.
+---
+ src/XrdPfc/XrdPfcFile.cc | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/src/XrdPfc/XrdPfcFile.cc b/src/XrdPfc/XrdPfcFile.cc
+index d438c56b43e..c684ec27ce0 100644
+--- a/src/XrdPfc/XrdPfcFile.cc
++++ b/src/XrdPfc/XrdPfcFile.cc
+@@ -1171,8 +1171,10 @@ void File::ProcessDirectReadFinished(ReadRequest *rreq, int bytes_read, int erro
+ 
+    if (error_cond)
+       rreq->update_error_cond(error_cond);
+-   else
++   else {
+       rreq->m_stats.m_BytesBypassed += bytes_read;
++      rreq->m_bytes_read += bytes_read;
++   }
+ 
+    rreq->m_direct_done = true;
+ 

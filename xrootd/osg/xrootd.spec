@@ -91,6 +91,9 @@ Source1:   xrootd-%{compat_version}.tar.gz
 
 # https://github.com/xrootd/xrootd/pull/1819
 Patch0: 1819-Actually-include-XrdSecEntity-moninfo-field-in-trace.patch
+# https://github.com/xrootd/xrootd/pull/1918
+Patch1: 1918-Fix-direct-read-for-PFC.patch
+Patch2: 1920-XrdHttp-Fix-byte-range-requests.patch
 
 # OSDF S3 demo work: needs to be applied to the central OSG redirector
 # (SOFTWARE-5414/SOFTWARE-5418)
@@ -510,6 +513,8 @@ This package contains compatibility binaries for xrootd 4 servers.
 %setup -c -n xrootd
 cd xrootd
 %patch0 -p2
+%patch1 -p1
+%patch2 -p1
 %patch3 -p1
 %patch101 -p1
 %patch102 -p1
@@ -1159,6 +1164,8 @@ fi
 - Update to 5.5.3-1 from upstream and merge OSG patches (SOFTWARE-5436):
   - Drop 1826-HTTP-TPC-PULL.patch (upstreamed)
   - Drop voms-mapfile-handle-missing-role.patch (upstreamed)
+- Add 1918-Fix-direct-read-for-PFC.patch
+- Add 1920-XrdHttp-Fix-byte-range-requests.patch
 
 * Wed Dec 28 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.5.1-1.13
 - Replace SOFTWARE-5418.redirector-hostnames.patch with an updated 1868-env-hostname-override.patch (SOFTWARE-5414/SOFTWARE-5418)
