@@ -1,6 +1,8 @@
 # OSG additions
 %if 0%{?osg:1}%{!?osg:0}
-    %global _with_compat 1
+    %if 0%{?rhel} < 9
+        %global _with_compat 1
+    %endif
     %global _with_scitokens 1
 %endif
 
@@ -72,7 +74,7 @@
 Name:      xrootd
 Epoch:     1
 Version:   5.5.3
-Release:   1.1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:   1.2%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -85,9 +87,9 @@ URL:       http://xrootd.org/
 # git-archive master | gzip -9 > ~/rpmbuild/SOURCES/xrootd.tgz
 Source0:   xrootd.tar.gz
 
-%if 0%{?_with_compat}
+# always include the tarball in the SRPM even if we don't build it because the
+# SRPM build may have a different build environment than the RPM build
 Source1:   xrootd-%{compat_version}.tar.gz
-%endif
 
 # https://github.com/xrootd/xrootd/pull/1819
 Patch0: 1819-Actually-include-XrdSecEntity-moninfo-field-in-trace.patch
@@ -1160,12 +1162,13 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
-* Mon Feb 20 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.5.3-1.1
+* Tue Feb 21 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.5.3-1.2
 - Update to 5.5.3-1 from upstream and merge OSG patches (SOFTWARE-5436):
   - Drop 1826-HTTP-TPC-PULL.patch (upstreamed)
   - Drop voms-mapfile-handle-missing-role.patch (upstreamed)
 - Add 1918-Fix-direct-read-for-PFC.patch
 - Add 1920-XrdHttp-Fix-byte-range-requests.patch
+- Disable compat build on EL9
 
 * Wed Dec 28 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.5.1-1.13
 - Replace SOFTWARE-5418.redirector-hostnames.patch with an updated 1868-env-hostname-override.patch (SOFTWARE-5414/SOFTWARE-5418)
