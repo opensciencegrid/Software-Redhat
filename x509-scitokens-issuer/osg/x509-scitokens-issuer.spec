@@ -1,6 +1,6 @@
 Name:           x509-scitokens-issuer
 Version:        0.8.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        SciTokens issuer based on X509 authentication.
 
 License:        Apache 2.0
@@ -149,6 +149,9 @@ fi
 %{_bindir}/macaroon-init
 
 %changelog
+* Tue Feb 21 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 0.8.2-2
+- Bump to rebuild (SOFTWARE-5495)
+
 * Wed Oct 28 2020 Diego Davila <didavila@ucsd.edu> - 0.8.2-1
 - Fix a syntax error for py3 that prevented to build with el8 (software-4257)
 
