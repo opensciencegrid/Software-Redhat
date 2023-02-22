@@ -69,7 +69,7 @@
 
 Summary: CernVM File System
 Name: cvmfs
-Version: 2.10.0
+Version: 2.10.1
 Release: 1.2%{?dist}
 URL: https://cernvm.cern.ch/fs/
 Source0: https://ecsft.cern.ch/dist/cvmfs/%{name}-%{version}/%{name}-%{version}.tar.gz
@@ -701,6 +701,8 @@ systemctl daemon-reload
 %endif
 
 %changelog
+* Wed Feb 22 2023 Carl Vuosalo <covuosalo@wisc.edu> - 2.10.1
+- Minor bug fixes and improvements
 * Thu Jan 26 2023 Carl Edquist <edquist@cs.wisc.edu> - 2.10.0-1.2
 - Bump to rebuild (SOFTWARE-5457)
 * Tue Oct 11 2022 Dave Dykstra <dwd@fnal.gov> - 2.10.0-1.1
