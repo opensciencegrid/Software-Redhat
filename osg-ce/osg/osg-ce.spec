@@ -1,11 +1,15 @@
 Name:      osg-ce
 Summary:   OSG Compute Element
 Version:   3.6
-Release:   7%{?dist}
+Release:   8%{?dist}
 License:   Apache 2.0
 URL:       http://www.opensciencegrid.org
 
 Source0: 01-osg-ce.conf
+
+# Fail the build if condor and htcondor-ce are not available on this branch
+BuildRequires: condor
+BuildRequires: htcondor-ce
 
 Requires: grid-certificates >= 7
 Requires: osg-scitokens-mapfile
@@ -21,9 +25,7 @@ Requires: osg-configure-ce
 Requires: osg-configure-cluster
 Requires: osg-configure-gratia
 Requires: osg-configure-squid
-%if 0%{?rhel} < 9
 Requires: frontier-squid
-%endif
 Requires: osg-scitokens-mapfile
 
 Requires: osg-configure-infoservices
@@ -136,9 +138,6 @@ install -m 644 %{SOURCE0} $RPM_BUILD_ROOT/%{_datadir}/condor-ce/config.d
 %files slurm
 
 %changelog
-* Wed Feb 22 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.6-7
-- Drop frontier-squid dependency on EL9 (SOFTWARE-5498)
-
 * Wed Jun 01 2022 Brian Lin <blin@cs.wisc.edu> - 3.6-6
 - Disable GSI warnings (SOFTWARE-5159)
 
