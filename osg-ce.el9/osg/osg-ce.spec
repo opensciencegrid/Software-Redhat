@@ -123,6 +123,10 @@ Requires: htcondor-ce-bosco
 
 
 %build
+%if 0%{?rhel} < 9
+echo >&2 "osg-ce is not to be built from 3.6-upcoming except for EL9; build from the osg-3.6 branch instead."
+exit 1
+%endif
 exit 0
 
 %install
@@ -143,6 +147,7 @@ install -m 644 %{SOURCE0} $RPM_BUILD_ROOT/%{_datadir}/condor-ce/config.d
 %changelog
 * Wed Feb 22 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.6-7.upcoming
 - Don't require frontier-squid on EL9 (SOFTWARE-5498)
+- Build 3.6-upcoming version on EL9 only
 
 * Wed Jun 01 2022 Brian Lin <blin@cs.wisc.edu> - 3.6-6
 - Disable GSI warnings (SOFTWARE-5159)
