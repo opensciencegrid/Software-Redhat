@@ -1,12 +1,12 @@
 Summary: OSG metapackage for OASIS and CVMFS
 Name: osg-oasis
 Version: 19
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: ASL 2.0
 BuildArch: noarch
 # Note: cannot require an exact release number (after a dash) unless 
 #   including the dist as well, e.g. -2%{?dist}
-Requires: cvmfs = 2.10.0
+Requires: cvmfs = 2.10.1
 Requires: cvmfs-config-osg = 2.5
 Requires: scitokens-cpp >= 0.6.2
 Requires: cvmfs-x509-helper >= 2.2
@@ -26,6 +26,9 @@ exit 0
 %files
 
 %changelog
+* Mon Feb 27 2023 Carl Vuosalo <covuosalo@wisc.edu> 19-3
+- Update to cvmfs-2.10.1
+
 * Thu Feb 16 2023 Carl Edquist <edquist@cs.wisc.edu> - 19-2
 - Bump to rebuild for RPM GPG key (SOFTWARE-5457)
 
