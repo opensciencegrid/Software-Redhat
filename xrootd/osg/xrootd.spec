@@ -4,6 +4,7 @@
         %global _with_compat 1
     %endif
     %global _with_scitokens 1
+    %global _with_xrdclhttp 1
 %endif
 
 # Set _with_debug to build with debug messages and asserts.  The build will have a .dbg in the Release field.
@@ -74,7 +75,7 @@
 Name:      xrootd
 Epoch:     1
 Version:   5.5.3
-Release:   1.2%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:   1.3%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -1162,6 +1163,9 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Thu Mar 09 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.5.3-1.3
+- Build xrdcl-http (SOFTWARE-5518)
+
 * Tue Feb 21 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.5.3-1.2
 - Update to 5.5.3-1 from upstream and merge OSG patches (SOFTWARE-5436):
   - Drop 1826-HTTP-TPC-PULL.patch (upstreamed)
