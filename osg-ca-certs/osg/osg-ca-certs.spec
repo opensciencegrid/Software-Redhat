@@ -1,5 +1,5 @@
-%define igtf_version 1.117
-%define osg_version  1.109
+%define igtf_version 1.119
+%define osg_version  1.110
 %define vtag         %{osg_version}.igtf.%{igtf_version}
 
 Name:           osg-ca-certs
@@ -64,16 +64,19 @@ sha256sum -c cacerts_sha256sum.txt
 %doc
 
 %changelog
-* Tue Jan 03 2023 Carl Edquist <edquist@cs.wisc.edu> - 1.117-1.2
+* Mon Mar 13 2023 Tim Theisen <tim@cs.wisc.edu> - 1.110-1
+- Update to IGTF 1.119 (SOFTWARE-5524)
+
+* Tue Jan 03 2023 Carl Edquist <edquist@cs.wisc.edu> - 1.109-1.2
 - Rebuild again for el9 rpm signing (SOFTWARE-5396)
 
-* Mon Dec 19 2022 Carl Edquist <edquist@cs.wisc.edu> - 1.117-1.1
+* Mon Dec 19 2022 Carl Edquist <edquist@cs.wisc.edu> - 1.109-1.1
 - Rebuild for el9 rpm signing (SOFTWARE-5396)
 
-* Mon Aug 29 2022 Tim Theisen <tim@cs.wisc.edu> - 1.117-1
+* Mon Aug 29 2022 Tim Theisen <tim@cs.wisc.edu> - 1.109-1
 - Update to IGTF 1.117 (SOFTWARE-5309)
 
-* Mon Apr 25 2022 Tim Theisen <tim@cs.wisc.edu> - 1.116-1
+* Mon Apr 25 2022 Tim Theisen <tim@cs.wisc.edu> - 1.106-1
 - Update to IGTF 1.116 (SOFTWARE-5142)
 
 * Wed Mar 30 2022 Tim Theisen <tim@cs.wisc.edu> - 1.105-1
