@@ -1,7 +1,7 @@
 Name:      buildsys-build
 Summary:   Minimal set of packages required to build in a chroot
 Version:   9
-Release:   1%{?dist}
+Release:   2%{?dist}
 License:   Apache 2.0
 Group:     Development
 URL:       http://www.opensciencegrid.org
@@ -23,6 +23,7 @@ Requires: gzip
 Requires: info
 Requires: make
 Requires: patch
+Requires: perl-macros
 Requires: redhat-rpm-config
 Requires: rocky-release
 Requires: rpm-build
@@ -70,6 +71,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Mar 14 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 9-2
+- Add perl-macros, for e.g. %%{perl_vendorlib} (SOFTWARE-5529)
+
 * Tue Dec 06 2022 Carl Edquist <edquist@cs.wisc.edu> - 9-1
 - EL9 here we come (SOFTWARE-5391)
 
