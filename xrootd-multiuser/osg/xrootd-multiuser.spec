@@ -1,7 +1,7 @@
 
 Name: xrootd-multiuser
 Version: 2.1.2
-Release: 1%{?dist}
+Release: 1.1%{?dist}
 Summary: Multiuser filesystem writing plugin for xrootd
 
 Group: System Environment/Daemons
@@ -15,6 +15,10 @@ Source0: %{name}-%{version}.tar.gz
 %define xrootd_current_minor 2
 %define xrootd_next_major 6
 
+%if 0%{?rhel} > 8
+%global __cmake_in_source_build 1
+%endif
+
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildRequires: xrootd-server-libs >= 1:%{xrootd_current_major}
 BuildRequires: xrootd-server-libs <  1:%{xrootd_next_major}
@@ -26,7 +30,7 @@ BuildRequires: libcap-devel
 BuildRequires: openssl-devel
 BuildRequires: zlib-devel
 %{?systemd_requires}
-# For %{_unitdir} macro
+# For %%{_unitdir} macro
 BuildRequires: systemd
 
 Requires: xrootd-server >= 1:%{xrootd_current_major}.%{xrootd_current_minor}
@@ -69,6 +73,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/xrootd/config.d/60-osg-multiuser.cfg
 
 %changelog
+* Fri Mar 17 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.1.2-1.1
+- Fix cmake error on el9
+
 * Wed Oct 19 2022 Derek Weitzel <dweitzel@unl.edu> - 2.1.2-1
 - Fix user sentry check for anonymous access
 
