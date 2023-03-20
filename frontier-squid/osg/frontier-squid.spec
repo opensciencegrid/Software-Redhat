@@ -8,8 +8,8 @@
 
 Summary: The Frontier distribution of the Squid proxy caching server
 Name: frontier-squid%{?squidsuffix}
-Version: 5.7
-%define release4source 2
+Version: 5.8
+%define release4source 1
 %define releasenum 1%{?dist}
 Release: %{?release4source}.%{?releasenum}
 Epoch: 11
@@ -55,6 +55,9 @@ Conflicts: frontier-awstats < 6.9-4
 Requires: logrotate
 BuildRequires: pam-devel
 BuildRequires: systemd-devel
+%if 0%{?rhel} >= 9
+BuildRequires: g++
+%endif
 
 #shoal build requirements
 BuildRequires: python3-devel
@@ -93,26 +96,34 @@ tar zxf %{SOURCE1}
 # starts out in the shoal-downloads directory
 
 set -ex
-PYDIR=$PWD/.local
+PYVERS="python3$(python3 -V|cut -d. -f2)"
+PYDIR=$PWD/$PYVERS/.local
 PATH=$PYDIR/bin:$PATH
-export PYTHONPATH="`echo $PYDIR/lib*/python*/site-packages|sed 's/ /:/g'`"
 
 # install pyinstaller and required python packages to build shoal-agent
 
 # install in reverse order of their download (because dependency downloads
 #   come after requested packages)
-PKGS="$(tar tf %{SOURCE3} | sed 's,^shoal-downloads/,,' | grep -v "^\.local" | tac)"
+PKGS="$(tar tf %{SOURCE3} | grep "/$PYVERS/." | sed 's,^shoal-downloads/,,' | grep -v "^$PYVERS/\.local" | tac)"
 PKGS="$(echo "$PKGS"|paste -sd ' ')"
+
+if [ -d $PYDIR ]; then
+    # for the sake of a newer version of pip3
+    export PYTHONPATH="`echo $PYDIR/lib*/python*/site-packages|sed 's/ /:/g'`"
+fi
 
 # --no-build-isolation is needed for offline build of pyinstaller as per
 #  https://github.com/pyinstaller/pyinstaller/issues/4557
-HOME=$PWD pip3 install --no-cache-dir --no-build-isolation --user $PKGS
+HOME=$PWD/$PYVERS pip3 install --no-cache-dir --no-build-isolation --user $PKGS
+
+# in case it wasn't set above
+export PYTHONPATH="`echo $PYDIR/lib*/python*/site-packages|sed 's/ /:/g'`"
 
 cd ../shoal-%{shoalname}
 cd shoal-agent
 
-PYIOPTS="--noconsole --log-level=WARN"
-$PYDIR/bin/pyi-makespec $PYIOPTS --specpath=dist shoal-agent
+PYIOPTS="--log-level=WARN"
+$PYDIR/bin/pyi-makespec $PYIOPTS --noconsole --specpath=dist shoal-agent
 
 # Exclude system libraries from the bundle as documented at
 #  https://pyinstaller.readthedocs.io/en/stable/spec-files.html#posix-specific-options
@@ -511,6 +522,21 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+
+* Fri Mar 17 2023 Carl Vuosalo <carl.vuosalo@cern.ch> 5.8-1.1
+ - Update to squid-5.8 with release notes at
+    https://www.squid-cache.org/Versions/v5/squid-5.8-RELEASENOTES.html and announcement at
+    http://lists.squid-cache.org/pipermail/squid-announce/2023-February/000145.html
+    Most important new features in 5.8:
+    - A predefined ACL named "to_linklocal" which matches traffic attempting to access
+     link-local network services has been added. It is set to "deny" in
+     squid/files/postinstall/squid.conf.proto.
+    - Bug fixed where cache manager API erroneously returns "mgr_index" instead of requested
+     data.
+ - Add support for rpmbuild on el9
+ - Add object-*.cloud to the computecanada portion of MAJOR_CVMFS in
+    squid/files/postinstall/squid.conf.proto.
+
 * Tue Jan 31 2023 Carl Vuosalo <carl.vuosalo@cern.ch> 5.7-2.1
 - Fix bug where old caches were not always cleaned up.
 
