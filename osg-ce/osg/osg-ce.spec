@@ -1,7 +1,7 @@
 Name:      osg-ce
 Summary:   OSG Compute Element
 Version:   3.6
-Release:   9%{?dist}
+Release:   10%{?dist}
 License:   Apache 2.0
 URL:       http://www.opensciencegrid.org
 
@@ -25,11 +25,8 @@ Requires: osg-configure-ce
 Requires: osg-configure-cluster
 Requires: osg-configure-gratia
 
-# Squid isn't ready for EL9 just yet (SOFTWARE-5498)
-%if 0%{?rhel} != 9
 Requires: osg-configure-squid
 Requires: frontier-squid
-%endif
 
 Requires: osg-scitokens-mapfile
 
@@ -143,6 +140,9 @@ install -m 644 %{SOURCE0} $RPM_BUILD_ROOT/%{_datadir}/condor-ce/config.d
 %files slurm
 
 %changelog
+* Fri Mar 24 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.6-10
+- Add Squid dependency back for EL9 (SOFTWARE-5498)
+
 * Tue Mar 14 2023 Brian Lin <blin@cs.wisc.edu> - 3.6-9
 - Temporarily drop Squid dependency for EL9 (SOFTWARE-5498)
 
