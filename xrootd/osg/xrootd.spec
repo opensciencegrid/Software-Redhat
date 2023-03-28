@@ -9,6 +9,7 @@
 
 # Set _with_debug to build with debug messages and asserts.  The build will have a .dbg in the Release field.
 # Note! The debug build puts sensitive stuff in the logs -- do not give .dbg builds to external users or promote them to testing.
+# (also keep both % when this is commented out -- rpm still interprets macros in comments)
 #%%global _with_debug 1
 
 #-------------------------------------------------------------------------------
@@ -74,8 +75,8 @@
 #-------------------------------------------------------------------------------
 Name:      xrootd
 Epoch:     1
-Version:   5.5.3
-Release:   1.3%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Version:   5.5.4
+Release:   1.1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -94,9 +95,6 @@ Source1:   xrootd-%{compat_version}.tar.gz
 
 # https://github.com/xrootd/xrootd/pull/1819
 Patch0: 1819-Actually-include-XrdSecEntity-moninfo-field-in-trace.patch
-# https://github.com/xrootd/xrootd/pull/1918
-Patch1: 1918-Fix-direct-read-for-PFC.patch
-Patch2: 1920-XrdHttp-Fix-byte-range-requests.patch
 
 # OSDF S3 demo work: needs to be applied to the central OSG redirector
 # (SOFTWARE-5414/SOFTWARE-5418)
@@ -516,8 +514,6 @@ This package contains compatibility binaries for xrootd 4 servers.
 %setup -c -n xrootd
 cd xrootd
 %patch0 -p2
-%patch1 -p1
-%patch2 -p1
 %patch3 -p1
 %patch101 -p1
 %patch102 -p1
@@ -917,9 +913,7 @@ fi
 %{_libdir}/libXrdSecpwd-5.so
 %{_libdir}/libXrdSecsss-5.so
 %{_libdir}/libXrdSecunix-5.so
-%if %{?_with_scitokens:1}%{!?_with_scitokens:0}
 %{_libdir}/libXrdSecztn-5.so
-%endif
 %{_libdir}/libXrdUtils.so.3*
 %{_libdir}/libXrdXml.so.3*
 
@@ -1163,6 +1157,11 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Tue Mar 28 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.5.4-1.1
+- Update to 5.5.4-1 from upstream and merge OSG changes (SOFTWARE-5539)
+  - Drop 1918-Fix-direct-read-for-PFC.patch (upstreamed)
+  - Drop 1920-XrdHttp-Fix-byte-range-requests.patch (upstreamed)
+
 * Thu Mar 09 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.5.3-1.3
 - Build xrdcl-http (SOFTWARE-5518)
 
