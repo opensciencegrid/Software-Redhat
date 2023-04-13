@@ -1,6 +1,6 @@
 Summary: OSDF client programs
 Name: osdf-client
-Version: 6.10.0
+Version: 6.10.1
 Release: 1%{?dist}
 License: ASL 2.0
 Url: https://github.com/htcondor/osdf-client
@@ -61,6 +61,10 @@ install -m 0644 %{SOURCE1} %{buildroot}/etc/condor/config.d/10-stash-plugin.conf
 %doc README.md
 
 %changelog
+* Thu Apr 13 2023 Brian Lin <blin@cs.wisc.edu> - 6.10.1-1
+- Cache keys in memory outside Linux
+- Fix token find
+
 * Thu Mar 09 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 6.10.0-1
 - Update to 6.10.0 (SOFTWARE-5517)
 
