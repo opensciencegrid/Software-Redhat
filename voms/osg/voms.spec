@@ -9,7 +9,7 @@
 
 Name:		voms
 Version:	2.0.16
-Release:	1.5%{?dist}
+Release:	1.6%{?dist}
 Summary:	Virtual Organization Membership Service
 
 License:	ASL 2.0
@@ -20,6 +20,7 @@ Source1:	%{name}.INSTALL
 #		Fix for GCC 7
 #		https://github.com/italiangrid/voms/pull/56
 Patch0:		%{name}-gcc7.patch
+
 
 BuildRequires:	make
 BuildRequires:	gcc-c++
@@ -40,6 +41,7 @@ Patch100:       mariadb-innodb.patch
 Patch101:       sw3123-voms-proxy-direct.patch
 Patch102:       4882-voms_install_db-cert-parsing.patch
 Patch103:       Set-default-key-size-to-2048-bits-in-voms-proxy-init.patch
+Patch104:       116-better-ac-signature-error-message.patch
 
 %description
 The Virtual Organization Membership Service (VOMS) is an attribute authority
@@ -127,6 +129,7 @@ This package provides the VOMS service.
 %patch101 -p1
 %patch102 -p1
 %patch103 -p1
+%patch104 -p1
 
 install -m 644 -p %{SOURCE1} README.Fedora
 
@@ -359,6 +362,9 @@ fi
 %doc README.Fedora
 
 %changelog
+* Thu Apr 27 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.0.16-1.6
+- Add 116-better-ac-signature-error-message.patch (SOFTWARE-5560)
+
 * Mon Nov 08 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.0.16-1.5
 - Increase default key size to 2048 bits (SOFTWARE-4889)
   - Add Set-default-key-size-to-2048-bits-in-voms-proxy-init.patch
