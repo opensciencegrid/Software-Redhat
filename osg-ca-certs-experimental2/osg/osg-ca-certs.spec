@@ -19,7 +19,7 @@ Source3:        certs-to-transform.txt
 
 BuildArch:      noarch
 
-BuildRequires:  openssl
+BuildRequires:  openssl >= 3
 
 BuildRequires:  perl(File::Basename)
 BuildRequires:  perl(File::Find)
