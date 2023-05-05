@@ -2,17 +2,18 @@
 %define osg_version  1.110
 %define vtag         %{osg_version}.igtf.%{igtf_version}
 
-Name:           osg-ca-certs
+Name:           osg-ca-certs-experimental2
 Version:        %{osg_version}
 Release:        1%{?dist}
-Summary:        OSG Packaging of the IGTF CA Certs and OSG-specific CAs, in the OpenSSL 1.0.* format. 
+Summary:        OSG Packaging of the IGTF CA Certs and OSG-specific CAs, in the OpenSSL 1.0.* format, with SHA-1 certs patched for EL9.
 
 License:        Unknown
-URL:            http://repo.opensciencegrid.org/cadist/
+URL:            https://repo.opensciencegrid.org/cadist/
 
 Source0:        https://github.com/opensciencegrid/osg-certificates/archive/v%{vtag}/osg-certificates-%{vtag}.tar.gz
 Source1:        https://dist.eugridpma.info/distribution/igtf/current/igtf-policy-installation-bundle-%{igtf_version}.tar.gz
 Source2:        https://github.com/opensciencegrid/letsencrypt-certificates/archive/v0.3.2/letsencrypt-certificates.tar.gz
+Source3:        certs-to-transform.txt
 # can obtain latest letsencrypt-certificates.tar.gz with a github.source line:
 # type=github repo=cilogon/letsencrypt-certificates tarball=letsencrypt-certificates.tar.gz tag=master hash=...
 
@@ -27,9 +28,9 @@ BuildRequires:  perl(Getopt::Long)
 Provides:       grid-certificates = 7
 
 Conflicts:      osg-ca-scripts
+Conflicts:      osg-ca-certs
+Conflicts:      igtf-ca-certs
 
-Obsoletes:      vdt-ca-certs
-Obsoletes:      osg-ca-certs-experimental
 Obsoletes:      osg-ca-certs-compat <= 1:1.37
 
 %description
@@ -49,6 +50,10 @@ export PKG_NAME=%{name}
 
 ./build-certificates-dir.sh
 
+pushd certificates
+xargs -a %{SOURCE3} sed -r -i -e 's/(BEGIN|END) CERTIFICATE/\1 TRUSTED CERTIFICATE/'
+popd
+
 %install
 mkdir -p $RPM_BUILD_ROOT/etc/grid-security/certificates
 mv certificates/* $RPM_BUILD_ROOT/etc/grid-security/certificates/
@@ -64,6 +69,9 @@ sha256sum -c cacerts_sha256sum.txt
 %doc
 
 %changelog
+* Fri May 05 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.110-1
+- Forked from osg-ca-certs 1.110-1 (SOFTWARE-5365)
+
 * Mon Mar 13 2023 Tim Theisen <tim@cs.wisc.edu> - 1.110-1
 - Update to IGTF 1.119 (SOFTWARE-5524)
 
