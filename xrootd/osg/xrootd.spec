@@ -75,7 +75,7 @@
 #-------------------------------------------------------------------------------
 Name:      xrootd
 Epoch:     1
-Version:   5.5.4
+Version:   5.5.5
 Release:   1.1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
@@ -1157,6 +1157,9 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Wed May 10 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.5.5-1.1
+- Update to 5.5.5-1 from upstream and merge OSG changes (SOFTWARE-5567)
+
 * Tue Mar 28 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.5.4-1.1
 - Update to 5.5.4-1 from upstream and merge OSG changes (SOFTWARE-5539)
   - Drop 1918-Fix-direct-read-for-PFC.patch (upstreamed)
