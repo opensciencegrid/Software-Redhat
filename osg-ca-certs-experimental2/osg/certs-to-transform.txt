@@ -6,9 +6,7 @@ CNIC.pem
 DFN-GridGermany-Root.pem
 DZeScience.pem
 DigiCertAssuredIDRootCA-Root.pem
-DigiCertGridCA-1-Classic.pem
 DigiCertGridRootCA-Root.pem
-DigiCertGridTrustCA-Classic.pem
 GermanGrid.pem
 GridCanada.pem
 IHEP-2013.pem
