@@ -46,7 +46,7 @@ export IGTF_CERTS_VERSION=%{igtf_version}
 export OSG_CERTS_VERSION=%{osg_version}
 export OUR_CERTS_VERSION=${OSG_CERTS_VERSION}NEW
 export CADIST=$PWD/certificates
-export PKG_NAME=%{name}
+export PKG_NAME=osg-ca-certs
 
 ./build-certificates-dir.sh
 
