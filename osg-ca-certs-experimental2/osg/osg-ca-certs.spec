@@ -4,7 +4,7 @@
 
 Name:           osg-ca-certs-experimental2
 Version:        %{osg_version}
-Release:        1%{?dist}
+Release:        1.1%{?dist}
 Summary:        OSG Packaging of the IGTF CA Certs and OSG-specific CAs, in the OpenSSL 1.0.* format, with SHA-1 certs patched for EL9.
 
 License:        Unknown
@@ -14,6 +14,7 @@ Source0:        https://github.com/opensciencegrid/osg-certificates/archive/v%{v
 Source1:        https://dist.eugridpma.info/distribution/igtf/current/igtf-policy-installation-bundle-%{igtf_version}.tar.gz
 Source2:        https://github.com/opensciencegrid/letsencrypt-certificates/archive/v0.3.2/letsencrypt-certificates.tar.gz
 Source3:        certs-to-transform.txt
+Patch1:         Replace-openssl-version-check-with-an-existence-chec.patch
 # can obtain latest letsencrypt-certificates.tar.gz with a github.source line:
 # type=github repo=cilogon/letsencrypt-certificates tarball=letsencrypt-certificates.tar.gz tag=master hash=...
 
@@ -40,6 +41,7 @@ For details about the current certificate release, see https://repo.openscienceg
 %setup    -n osg-certificates-%{vtag}
 %setup -D -n osg-certificates-%{vtag} -a 1
 %setup -D -n osg-certificates-%{vtag} -a 2
+%patch1 -p1
 
 %build
 export IGTF_CERTS_VERSION=%{igtf_version}
@@ -69,6 +71,9 @@ sha256sum -c cacerts_sha256sum.txt
 %doc
 
 %changelog
+* Tue May 23 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.110-1.1
+- Add mk-index.pl patch
+
 * Fri May 05 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.110-1
 - Forked from osg-ca-certs 1.110-1 (SOFTWARE-5365)
 

@@ -1,0 +1,27 @@
+From cc4c45cf57c337b00dc1ece3eb8b35434fd3b8a9 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Mon, 22 May 2023 12:00:46 -0500
+Subject: [PATCH] Replace openssl version check with an existence check
+
+Requiring "1" broke support for openssl 3+. All platforms with openssl 0 are dead so we don't need the check anymore -- just make sure the binary runs.
+---
+ mk-index.pl | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/mk-index.pl b/mk-index.pl
+index 8def837..a551a5c 100755
+--- a/mk-index.pl
++++ b/mk-index.pl
+@@ -59,8 +59,7 @@
+ if ( $args{ssl1} ) {
+   $ssl1bin = $args{ssl1};
+ }
+-my @sslcheck = split(' ',`$ssl1bin version`);
+-if ( index($sslcheck[1],'1') != 0 ) { print "missing openssl 1.x\n"; usage(); exit; }
++system("$ssl1bin version >/dev/null") == 0 or die "openssl binary not found at $ssl1bin";
+ 
+ ######################################################################
+ ###### declare functions ############################################
+-- 
+2.6.3
+
