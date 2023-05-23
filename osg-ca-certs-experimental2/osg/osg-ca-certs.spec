@@ -54,6 +54,7 @@ export PKG_NAME=osg-ca-certs
 
 pushd certificates
 xargs -a %{SOURCE3} sed -r -i -e 's/(BEGIN|END) CERTIFICATE/\1 TRUSTED CERTIFICATE/'
+sha256sum *.0 *.pem > cacerts_sha256sum.txt  # recompute checksums since we sed'ed a bunch of files
 popd
 
 %install
