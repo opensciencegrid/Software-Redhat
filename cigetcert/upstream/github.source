@@ -1,1 +1,1 @@
-type=git url=https://github.com/fermitools/cigetcert.git tag=1.20 spec=cigetcert.spec hash=c517780e9133ee027a9865bcd69266536129e01f
+type=git url=https://github.com/fermitools/cigetcert.git tag=1.21 spec=cigetcert.spec hash=364fd6086ee791e2f34f4f2f27e65b4cbfcfd058
