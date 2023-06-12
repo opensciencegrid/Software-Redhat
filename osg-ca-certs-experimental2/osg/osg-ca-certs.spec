@@ -4,7 +4,7 @@
 
 Name:           osg-ca-certs-experimental2
 Version:        %{osg_version}
-Release:        1.1%{?dist}
+Release:        1.2%{?dist}
 Summary:        OSG Packaging of the IGTF CA Certs and OSG-specific CAs, in the OpenSSL 1.0.* format, with SHA-1 certs patched for EL9.
 
 License:        Unknown
@@ -53,7 +53,13 @@ export PKG_NAME=osg-ca-certs
 ./build-certificates-dir.sh
 
 pushd certificates
-xargs -a %{SOURCE3} sed -r -i -e 's/(BEGIN|END) CERTIFICATE/\1 TRUSTED CERTIFICATE/'
+# change the certificate header/footer of SHA1-signed certificates to mark them as trusted
+xargs -a %{SOURCE3} sed -r -i.orig -e 's/(BEGIN|END) CERTIFICATE/\1 TRUSTED CERTIFICATE/'
+# then append the originals to the certificate files so the files will contain both
+for orig in *.orig; do
+    new=${orig%.orig}
+    (echo; cat "$orig") >> "$new" && rm "$orig"
+done
 sha256sum *.0 *.pem > cacerts_sha256sum.txt  # recompute checksums since we sed'ed a bunch of files
 popd
 
@@ -72,6 +78,9 @@ sha256sum -c cacerts_sha256sum.txt
 %doc
 
 %changelog
+* Sun Jun 11 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.110-1.2
+- Make the transformed cert files have _both_ the old block and the new block (SOFTWARE-5365)
+
 * Tue May 23 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.110-1.1
 - Add mk-index.pl patch
 
