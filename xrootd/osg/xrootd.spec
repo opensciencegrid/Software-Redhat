@@ -76,7 +76,7 @@
 Name:      xrootd
 Epoch:     1
 Version:   5.5.5
-Release:   1.1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:   1.2%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -99,6 +99,8 @@ Patch0: 1819-Actually-include-XrdSecEntity-moninfo-field-in-trace.patch
 # OSDF S3 demo work: needs to be applied to the central OSG redirector
 # (SOFTWARE-5414/SOFTWARE-5418)
 Patch3: 1868-env-hostname-override.patch
+# Patch to fix EL7<->EL9 compatibility (SOFTWARE-5594)
+Patch4: 2026-Switch-to-a-fixed-set-of-DH-parameters-compatible-with-older-OpenSSL.patch
 
 Patch101: 0001-DEBUG-Add-some-debug-lines-to-XrdVomsMapfile.patch
 Patch102: 0002-DEBUG-Catch-and-log-exception-launching-voms-mapfile.patch
@@ -515,6 +517,7 @@ This package contains compatibility binaries for xrootd 4 servers.
 cd xrootd
 %patch0 -p2
 %patch3 -p1
+%patch4 -p1
 %patch101 -p1
 %patch102 -p1
 cd ..
@@ -1157,6 +1160,10 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Mon Jun 12 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.5.5-1.2
+- Add 2026-Switch-to-a-fixed-set-of-DH-parameters-compatible-with-older-OpenSSL.patch (SOFTWARE-5594)
+  for compatibility between EL7 clients and EL9 servers
+
 * Wed May 10 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.5.5-1.1
 - Update to 5.5.5-1 from upstream and merge OSG changes (SOFTWARE-5567)
 
