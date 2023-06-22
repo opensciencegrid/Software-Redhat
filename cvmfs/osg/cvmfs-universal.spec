@@ -70,13 +70,14 @@
 Summary: CernVM File System
 Name: cvmfs
 Version: 2.10.1
-Release: 1.2%{?dist}
+Release: 1.3%{?dist}
 URL: https://cernvm.cern.ch/fs/
 Source0: https://ecsft.cern.ch/dist/cvmfs/%{name}-%{version}/%{name}-%{version}.tar.gz
 %if 0%{?selinux_cvmfs}
 Source1: cvmfs.te
 Source2: cvmfs.fc
 %endif
+Patch0: https://github.com/cvmfs/cvmfs/pull/3291.patch
 Group: Applications/System
 License: BSD
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -291,6 +292,7 @@ Daemon to automatically unpack and expose containers images into CernVM-FS
 
 %prep
 %setup -q
+%patch0 -p1
 
 %if 0%{?selinux_cvmfs}
 mkdir SELinux
@@ -701,7 +703,9 @@ systemctl daemon-reload
 %endif
 
 %changelog
-* Wed Feb 22 2023 Carl Vuosalo <covuosalo@wisc.edu> - 2.10.1
+* Thu Jun 22 2023 Dave Dykstra <dwd@fnal.gov> - 2.10.1-1.3
+- Apply patch from cvmfs PR #3291 to fix stuck garbage collections.
+* Wed Feb 22 2023 Carl Vuosalo <covuosalo@wisc.edu> - 2.10.1-1.2
 - Minor bug fixes and improvements
 * Thu Jan 26 2023 Carl Edquist <edquist@cs.wisc.edu> - 2.10.0-1.2
 - Bump to rebuild (SOFTWARE-5457)
