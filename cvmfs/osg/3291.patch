@@ -1,0 +1,67 @@
+From c12647442df808dcdfc65191b7423f1a9065eaae Mon Sep 17 00:00:00 2001
+From: Jakob Blomer <jblomer@cern.ch>
+Date: Wed, 14 Jun 2023 10:18:30 +0200
+Subject: [PATCH] fix race in parallel catalog traversal
+
+---
+ cvmfs/catalog_traversal_parallel.h |  4 ++--
+ cvmfs/ingestion/tube.h             | 15 +++++++++++++++
+ test/unittests/t_tube.cc           |  4 ++++
+ 3 files changed, 21 insertions(+), 2 deletions(-)
+
+diff --git a/cvmfs/catalog_traversal_parallel.h b/cvmfs/catalog_traversal_parallel.h
+index fe248f7168..27c10e9d7a 100644
+--- a/cvmfs/catalog_traversal_parallel.h
++++ b/cvmfs/catalog_traversal_parallel.h
+@@ -205,8 +205,8 @@ class CatalogTraversalParallel : public CatalogTraversalBase<ObjectFetcherT> {
+       reinterpret_cast<CatalogTraversalParallel<ObjectFetcherT> *>(data);
+     CatalogJob *current_job;
+     while (true) {
+-      if (!traversal->post_job_queue_.IsEmpty()) {
+-        current_job = traversal->post_job_queue_.PopFront();
++      current_job = traversal->post_job_queue_.TryPopFront();
++      if (current_job != NULL) {
+         traversal->ProcessJobPost(current_job);
+       } else {
+         current_job = traversal->pre_job_queue_.PopFront();
+diff --git a/cvmfs/ingestion/tube.h b/cvmfs/ingestion/tube.h
+index 4bf59bebee..cdaec5b15a 100644
+--- a/cvmfs/ingestion/tube.h
++++ b/cvmfs/ingestion/tube.h
+@@ -127,6 +127,21 @@ class Tube : SingleCopy {
+     return SliceUnlocked(head_->prev_);
+   }
+ 
++  /**
++   * Remove and return the first element from the queue if there is any.
++   * Equivalent to an antomic
++   *   ItemT item = NULL;
++   *   if (!IsEmpty())
++   *     item = PopFront();
++   */
++  ItemT *TryPopFront() {
++    MutexLockGuard lock_guard(&lock_);
++    // Note that we don't need to wait for a signal to arrive
++    if (size_ == 0)
++      return NULL;
++    return SliceUnlocked(head_->prev_);
++  }
++
+   /**
+    * Remove and return the last element from the queue.  Block if tube is
+    * empty.
+diff --git a/test/unittests/t_tube.cc b/test/unittests/t_tube.cc
+index 82c35de430..c119c0f409 100644
+--- a/test/unittests/t_tube.cc
++++ b/test/unittests/t_tube.cc
+@@ -51,6 +51,10 @@ TEST_F(T_Tube, Fifo) {
+   x = tube_.PopFront();
+   EXPECT_EQ(&c, x);
+   EXPECT_TRUE(tube_.IsEmpty());
++
++  EXPECT_EQ(NULL, tube_.TryPopFront());
++  tube_.EnqueueBack(&a);
++  EXPECT_EQ(&a, tube_.TryPopFront());
+ }
+ 
+ 
