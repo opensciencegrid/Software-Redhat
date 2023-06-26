@@ -1,7 +1,7 @@
 
 Name: xrootd-multiuser
 Version: 2.1.2
-Release: 1.1%{?dist}
+Release: 1.2%{?dist}
 Summary: Multiuser filesystem writing plugin for xrootd
 
 Group: System Environment/Daemons
@@ -10,6 +10,8 @@ URL: https://github.com/opensciencegrid/xrootd-multiuser
 # Generated from:
 # git archive v%{version} --prefix=xrootd-multiuser-%{version}/ | gzip -7 > ~/rpmbuild/SOURCES/xrootd-multiuser-%{version}.tar.gz
 Source0: %{name}-%{version}.tar.gz
+
+Patch0: 47-thread-specific-supplementary-groups.patch
 
 %define xrootd_current_major 5
 %define xrootd_current_minor 2
@@ -41,6 +43,7 @@ Requires: xrootd-server <  1:%{xrootd_next_major}.0.0-1
 
 %prep
 %setup -q
+%patch0 -p1
 
 %build
 %cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo .
@@ -73,6 +76,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/xrootd/config.d/60-osg-multiuser.cfg
 
 %changelog
+* Mon Jun 26 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.1.2-1.2
+- Add 47-thread-specific-supplementary-groups.patch
+  (https://github.com/opensciencegrid/xrootd-multiuser/pull/47)
+
 * Fri Mar 17 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.1.2-1.1
 - Fix cmake error on el9
 

@@ -1,0 +1,119 @@
+From 64de6e5a7743881b1fd2d3b951cc45e28ac94b88 Mon Sep 17 00:00:00 2001
+From: John Thiltges <jthiltges2@unl.edu>
+Date: Wed, 21 Jun 2023 17:21:36 -0500
+Subject: [PATCH 1/2] Use setgroups syscall to set supplementary groups on
+ individual threads
+
+When the operation is finished, we clear the supplementary groups. We don't
+save and restore the original groups, as the *-privileged processes have none
+defined.
+---
+ src/UserSentry.hh | 34 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 34 insertions(+)
+
+diff --git a/src/UserSentry.hh b/src/UserSentry.hh
+index 7332932..abdbae1 100644
+--- a/src/UserSentry.hh
++++ b/src/UserSentry.hh
+@@ -14,11 +14,13 @@
+ 
+ #include <dlfcn.h>
+ #include <fcntl.h>
++#include <grp.h>
+ #include <pwd.h>
+ #include <sys/capability.h>
+ #include <sys/fsuid.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
++#include <sys/syscall.h>
+ #include <unistd.h>
+ 
+ // TODO: set this via library parameters.
+@@ -119,6 +121,13 @@ public:
+         return false;
+     }
+ 
++    // Use syscall to set supplementary groups instead of through glibc so
++    // changes are applied to individual threads only. See nptl(7).
++    static int ThreadSetgroups(size_t size, const gid_t *list)
++    {
++        return syscall(SYS_setgroups, size, list);
++    }
++
+     void Init(const std::string username, XrdSysError &log)
+     {
+         struct passwd pwd, *result = nullptr;
+@@ -156,6 +165,24 @@ public:
+             return;
+         }
+ 
++        // Get supplementary groups for user
++        int ngroups = 16;
++        std::vector<gid_t> groups(ngroups);
++        do {
++            int old_ngroups = ngroups;
++            retval = getgrouplist(username.c_str(), pwd.pw_gid, groups.data(), &ngroups);
++            if (-1 == retval && ngroups > old_ngroups) {
++                // Too many groups. Resize buffer and try again.
++                groups.resize(ngroups);
++                continue;
++            }
++            break;
++        } while (1);
++        if (-1 == retval) {
++            m_log.Emsg("UserSentry", "Failure when looking up supplementary groups for username", username.c_str());
++            return;
++        }
++
+         // Note: Capabilities need to be set per thread, so we need to do this
+         ConfigCaps(m_log, nullptr);
+ 
+@@ -167,6 +194,7 @@ public:
+             return;
+         }
+         m_orig_gid = setfsgid(result->pw_gid);
++        ThreadSetgroups(ngroups, groups.data());
+     }
+ 
+     ~UserSentry() {
+@@ -176,6 +204,12 @@ public:
+         if ((m_orig_gid != -1) && (-1 == setfsgid(m_orig_gid))) {
+             m_log.Emsg("UserSentry", "Failed to return fsgid to original state", strerror(errno));
+         }
++        // Clear supplementary groups
++        // We don't need to restore the daemon's original groups, as the
++        // *-privileged processes run without supplementary groups defined.
++        if ((0 != ThreadSetgroups(0, nullptr))) {
++            m_log.Emsg("UserSentry", "Failed to clear supplementary groups", strerror(errno));
++        }
+     }
+ 
+     bool IsValid() const {return ((m_orig_gid != -1) && (m_orig_uid != -1)) || m_is_anonymous;}
+
+From c851fb1f09b9e2879969e9516d13f2e15e0672d7 Mon Sep 17 00:00:00 2001
+From: John Thiltges <jthiltges2@unl.edu>
+Date: Fri, 23 Jun 2023 11:41:10 -0500
+Subject: [PATCH 2/2] Ignore return code when clearing supplementary groups
+
+If we're an anonymous client, we won't be allowed to clear the groups,
+logging an error. Rather than keeping a state variable, just try and
+ignore the result.
+---
+ src/UserSentry.hh | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/src/UserSentry.hh b/src/UserSentry.hh
+index abdbae1..5dab3ab 100644
+--- a/src/UserSentry.hh
++++ b/src/UserSentry.hh
+@@ -207,9 +207,7 @@ public:
+         // Clear supplementary groups
+         // We don't need to restore the daemon's original groups, as the
+         // *-privileged processes run without supplementary groups defined.
+-        if ((0 != ThreadSetgroups(0, nullptr))) {
+-            m_log.Emsg("UserSentry", "Failed to clear supplementary groups", strerror(errno));
+-        }
++        ThreadSetgroups(0, nullptr);
+     }
+ 
+     bool IsValid() const {return ((m_orig_gid != -1) && (m_orig_uid != -1)) || m_is_anonymous;}
