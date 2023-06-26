@@ -1,7 +1,7 @@
 
 Name: xrootd-multiuser
-Version: 2.1.2
-Release: 1.2%{?dist}
+Version: 2.1.3
+Release: 1.1%{?dist}
 Summary: Multiuser filesystem writing plugin for xrootd
 
 Group: System Environment/Daemons
@@ -76,12 +76,17 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/xrootd/config.d/60-osg-multiuser.cfg
 
 %changelog
-* Mon Jun 26 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.1.2-1.2
+* Mon Jun 26 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.1.3-1.1
 - Add 47-thread-specific-supplementary-groups.patch
   (https://github.com/opensciencegrid/xrootd-multiuser/pull/47)
 
-* Fri Mar 17 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.1.2-1.1
-- Fix cmake error on el9
+* Mon Jun 26 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.1.3-1
+- Fail plugin initialization if we can't get the OSS (SOFTWARE-5388)
+- If user cannot be mapped to uid, continue as anonymous
+- Change from named daemon to exec
+
+* Fri Mar 17 2023 Matyas Selmeci <matyas@cs.wisc.edu> - 2.1.2-2
+- Do an in-source build on el9
 
 * Wed Oct 19 2022 Derek Weitzel <dweitzel@unl.edu> - 2.1.2-1
 - Fix user sentry check for anonymous access
