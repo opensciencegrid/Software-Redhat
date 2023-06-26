@@ -10,35 +10,34 @@ License:        MIT
 URL:            https://github.com/pboettch/json-schema-validator
 
 Source0:        %{pkgname}-%{version}.tar.gz
+Source1:        json.hpp
 
 BuildRequires:  cmake
 BuildRequires:  gcc-c++
+BuildRequires:  cmake-rpm-macros
 
 %description
 JSON Schema Validator is a library for validating JSON data against JSON Schema.
 
 %prep
 %autosetup -n %{srcname}-%{version}
+cp %{SOURCE1} .
 
 %build
 mkdir -p build
 cd build
 %cmake ..
-%cmake_build
+%make_build
 
 %install
 cd build
-%cmake_install
-
-# Copy nlohmann/json headers
-mkdir -p %{buildroot}/%{_includedir}/nlohmann
-cp -r %{_builddir}/%{pkgname}-%{version}/third_party/nlohmann_json/single_include/nlohmann/* %{buildroot}/%{_includedir}/nlohmann/
+%make_install
 
 %files
-%license LICENSE
+#%license LICENSE
 %{_includedir}/%{pkgname}/
 %{_includedir}/nlohmann/
 
 %changelog
-* Sun Jun 21 2023 Your Name <your.email@example.com> - %{version}-%{release}
+* Mon Jun 26 2023 Justin Hiemstra <jhiemstra@morgridge.org> - %{version}-%{release}
 - Initial RPM release
