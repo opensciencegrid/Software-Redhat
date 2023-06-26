@@ -1,4 +1,4 @@
-%global srcname json
+%global srcname nlohmann-json-devel
 %global pkgname %{srcname}
 
 Name:           %{pkgname}
