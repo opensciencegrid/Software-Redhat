@@ -9,7 +9,7 @@ Summary:        JSON Library for C++
 License:        MIT
 URL:            https://github.com/nlohmann/json
 
-Source0:        %{pkgname}-%{version}.tar.gz
+Source0:        json-%{version}.tar.gz
 
 BuildRequires:  cmake
 BuildRequires:  gcc-c++
@@ -24,7 +24,7 @@ A JSON library for C++ that attempts to make JSON a first-class type
 %endif
 
 %prep
-%autosetup -n %{srcname}-%{version}
+%autosetup -n json-%{version}
 
 %build
 mkdir -p build
