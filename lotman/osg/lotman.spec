@@ -1,7 +1,7 @@
 #############################################
 # Global macros that can be used throughout #
 #############################################
-%global srcname lotman-cpp
+%global srcname lotman
 
 Name: %srcname
 Version: 0.0.1
@@ -18,6 +18,7 @@ Source0: https://github.com/PelicanPlatform/lotman/releases/download/v%{version}
 BuildRequires: gcc-c++
 BuildRequires: make
 BuildRequires: cmake3 >= 3.18.4
+BuildRequires: cmake-rpm-macros
 BuildRequires: sqlite-devel
 BuildRequires: libuuid-devel
 BuildRequires: nlohmann-json-devel
@@ -58,9 +59,9 @@ cd build
 %files
 %license LICENSE
 %doc README.md
-%{_libdir}/libLotMan.so.0*
+#%{_libdir}/libLotMan.so.0*
 %{_libdir}/libLotMan.so
-%{_bindir}/lotman-*
+#%{_bindir}/lotman-*
 %{_includedir}/lotman/lotman.h
 %dir %{_includedir}/lotman
 
