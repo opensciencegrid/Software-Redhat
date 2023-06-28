@@ -1,7 +1,7 @@
 Summary: OSG configuration files for XRootD
 Name: osg-xrootd
 Version: 3.6
-Release: 19%{?dist}
+Release: 20%{?dist}
 License: ASL 2.0
 BuildArch: noarch
 
@@ -94,6 +94,9 @@ mkdir -p /etc/grid-security >/dev/null 2>&1 || :
 [ -e /etc/grid-security/grid-mapfile ] || touch /etc/grid-security/grid-mapfile
 
 %changelog
+* Tue Jun 27 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.6-20
+- Allow create_macaroon_secret to be run as non-root user (SOFTWARE-5610)
+
 * Thu Feb 16 2023 Carl Edquist <edquist@cs.wisc.edu> - 3.6-19
 - Bump to rebuild for RPM GPG key (SOFTWARE-5457)
 
