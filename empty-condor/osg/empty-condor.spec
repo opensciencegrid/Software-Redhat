@@ -1,6 +1,6 @@
 Name:           empty-condor
 Version:        1.1
-Release:        11%{?dist}
+Release:        12%{?dist}
 Summary:        An empty HTCondor package
 
 License:        Unknown
@@ -43,6 +43,12 @@ Provides:       /usr/sbin/condor_procd
 Provides:       /usr/sbin/gidd_alloc
 Provides:       /usr/sbin/procd_ctl
 
+# EL9 osg-ce-* depend on condor-blahp rather than blahp
+%if 0%{?rhel} > 8
+Provides: condor-blahp = 99
+Provides: blahp = 99
+%endif
+
 # For htcondor-ce-client (htcondor.so) and blahp (libclassad.so.8)
 %ifarch x86_64
 Provides: htcondor.so()(64bit)
@@ -70,6 +76,9 @@ believes that Condor has been installed via RPM.
 %doc
 
 %changelog
+* Wed Jun 27 2023 Matt Westphall <westphall@wisc.edu> - 1.1-12
+- Provide condor-blahp (SOFTWARE-5599)
+
 * Fri Jun 11 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.1-11
 - Provide python2-condor (SOFTWARE-4661)
 
