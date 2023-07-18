@@ -14,6 +14,7 @@ BuildArch: noarch
 Requires: /usr/bin/openssl
 Requires: logrotate
 Requires: wget
+Requires: perl(filetest)
 
 Provides: grid-certificates = 7
 Conflicts: osg-ca-certs
