@@ -1,6 +1,6 @@
 Name:      osg-ca-scripts
 Version:   1.2.4
-Release:   1.1%{?dist}
+Release:   2%{?dist}
 Summary:   CA Certificate helper scripts
 
 Group:     System Environment/Base
@@ -14,6 +14,7 @@ BuildArch: noarch
 Requires: /usr/bin/openssl
 Requires: logrotate
 Requires: wget
+Requires: perl(filetest)
 
 Provides: grid-certificates = 7
 Conflicts: osg-ca-certs
@@ -77,6 +78,9 @@ install -d $RPM_BUILD_ROOT%{_localstatedir}/lib/osg-ca-certs
 %dir %attr(0755,root,root) %{_localstatedir}/lib/osg-ca-certs
 
 %changelog
+* Tue Jul 18 2023 Matt Westphall <westphall@wisc.edu> - 1.2.4-2
+- Add explicit perl(filetest) dependency (SOFTWARE-5616)
+
 * Tue Dec 13 2022 Carl Edquist <edquist@cs.wisc.edu> - 1.2.4-1.1
 - Bump to rebuild (SOFTWARE-5384)
 
