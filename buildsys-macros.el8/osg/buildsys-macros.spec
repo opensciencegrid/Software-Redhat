@@ -12,7 +12,7 @@
 Name:		buildsys-macros
 Summary:	Macros for the OSG Buildsystem
 Version:        %{dver}
-Release:	8%{dist}
+Release:	9%{dist}
 License:	GPL
 BuildArch:      noarch
 Requires:	rpmdevtools
