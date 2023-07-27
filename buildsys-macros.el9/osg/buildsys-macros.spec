@@ -3,16 +3,16 @@
 # "osg-koji import" the resulting rpm and osg-koji tag-pkg the build into the
 # appropriate osg-*-development tag
 # This will require koji admin permissions.
-%define osg_version 3.6up
+%define osg_version 23up
 %define dver   9
 
-%define osgver %(tr -d . <<< %{osg_version})
+%define osgver 23up
 %define dist .osg%{osgver}.el%{dver}
 
 Name:		buildsys-macros
 Summary:	Macros for the OSG Buildsystem
 Version:        %{dver}
-Release:	7%{dist}
+Release:	8%{dist}
 License:	GPL
 BuildArch:      noarch
 Requires:	rpmdevtools
@@ -43,6 +43,9 @@ printf %s%b "%" "_smp_ncpus_max 12\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.kojibuil
 /etc/rpm/macros.kojibuilder
 
 %changelog
+* Thu Jul 27 2023 Matt Westphall <westphall@wisc.edu>
+- osg 23 el9 version
+
 * Fri Dec 30 2022 Carl Edquist <edquist@cs.wisc.edu> - 9-7
 - Cap _smp_ncpus_max to 12 (SOFTWARE-4728)
 
