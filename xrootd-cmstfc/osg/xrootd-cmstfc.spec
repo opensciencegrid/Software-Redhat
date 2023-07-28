@@ -1,6 +1,6 @@
 Name: xrootd-cmstfc
 Version: 1.5.2
-Release: 6%{?dist}
+Release: 7%{?dist}
 Summary: CMS TFC plugin for xrootd
 
 Group: System Environment/Daemons
@@ -12,6 +12,14 @@ Source0: %{name}.tar.gz
 Patch0: buff_size.patch
 
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
+
+%if 0%{?rhel} > 8
+# EL 9 switched the default cmake invocation to do out-of-source builds;
+# this causes the build to "cd" into a "redhat-linux-build" directory
+# and then not find the Makefile.
+# Go back to in-source builds.
+%global __cmake_in_source_build 1
+%endif
 
 %define xrootd_current_major 5
 %define xrootd_next_major 6
@@ -28,7 +36,7 @@ BuildRequires: cmake
 Requires: /usr/bin/xrootd pcre xerces-c
 #Requires: xrootd-compat-libs
 
-#%if 0%{?rhel} < 7
+#%if 0%%{?rhel} < 7
 #Requires: xrootd4 >= 1:4.1.0
 #%else
 Requires: xrootd >= 1:%{xrootd_current_major}.0.0-1
@@ -73,6 +81,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/XrdCmsTfc.hh
 
 %changelog
+* Fri Jul 28 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.5.2-7
+- Fix cmake build fail on EL9
+
 * Thu Oct 22 2020 Diego Davila <didavila@ucsd.edu> - 1.5.2-6
 - Build for el8 (software-4257)
 - Adding patch: buff_size.patch to avoid compiling error
