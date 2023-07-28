@@ -82,7 +82,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 * Fri Jul 28 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.5.2-7
-- Fix cmake build fail on EL9
+- Fix cmake build fail on EL9 (SOFTWARE-5631)
 
 * Thu Oct 22 2020 Diego Davila <didavila@ucsd.edu> - 1.5.2-6
 - Build for el8 (software-4257)
