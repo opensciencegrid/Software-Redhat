@@ -1,7 +1,7 @@
 Name:      buildsys-build
 Summary:   Minimal set of packages required to build in a chroot
 Version:   7
-Release:   1%{?dist}
+Release:   2%{?dist}
 License:   Apache 2.0
 Group:     Development
 URL:       http://www.opensciencegrid.org
@@ -10,7 +10,7 @@ URL:       http://www.opensciencegrid.org
 Requires: bash
 Requires: buildsys-macros = %{version}
 Requires: bzip2
-Requires: centos-release
+Requires: /etc/redhat-release
 Requires: coreutils
 Requires: cpio
 Requires: diffutils
@@ -44,7 +44,7 @@ Summary:   Minimal set of packages required to build srpms in a chroot
 
 Requires: bash
 Requires: buildsys-macros = %{version}
-Requires: centos-release
+Requires: /etc/redhat-release
 Requires: cvs
 Requires: epel-rpm-macros
 Requires: fetch-sources
@@ -72,6 +72,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Jul 30 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 7-2
+- Ask for /etc/redhat-release instead of a variant-specific package
+
 * Mon Oct 17 2022 Carl Edquist <edquist@cs.wisc.edu> - 7-1
 - Encore! Encore!  This time with buildsys-srpm-build, too. (SOFTWARE-4849)
 
