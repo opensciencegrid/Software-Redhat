@@ -1,5 +1,5 @@
 Name:           osg-build-deps
-Version:        2
+Version:        3
 Release:        1%{?dist}
 Summary:        Dependencies for build tools for the OSG
 
@@ -8,6 +8,7 @@ URL:            https://github.com/opensciencegrid/osg-build
 
 BuildArch:      noarch
 
+Source1:        install-osg-build.sh
 Requires:       %{name}-base = %{version}
 Requires:       %{name}-mock = %{version}
 Requires:       %{name}-koji = %{version}
@@ -77,10 +78,24 @@ and the following tools:
 
 
 
+%install
+install -d %{buildroot}/usr/sbin
+install -m 0755 %{SOURCE1} %{buildroot}/usr/sbin/install-osg-build.sh
+
+
+
 %files
+%files base
+/usr/sbin/install-osg-build.sh
+%files mock
+%files koji
 
 
 %changelog
+* Sun Jul 30 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 3-1
+- Fix creation of subpackages
+- Add an install script
+
 * Thu Jun 10 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 2-1
 - Initial release, based on osg-build 1.18.0  (SOFTWARE-4659)
 
