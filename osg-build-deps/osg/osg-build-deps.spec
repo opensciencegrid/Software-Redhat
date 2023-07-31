@@ -1,6 +1,6 @@
 Name:           osg-build-deps
 Version:        3
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Dependencies for build tools for the OSG
 
 License:        Apache 2.0
@@ -37,6 +37,7 @@ Requires:       rpmlint
 Requires:       subversion
 Requires:       wget
 Requires:       epel-rpm-macros
+Requires:       make
 %if 0%{?rhel} < 8
 Requires:       python >= 2.6
 Requires:       python-six
@@ -93,8 +94,9 @@ install -m 0755 %{SOURCE1} %{buildroot}/usr/sbin/install-osg-build.sh
 
 
 %changelog
-* Sun Jul 30 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 3-2
+* Sun Jul 30 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 3-3
 - voms-proxy-init needs grid certificates
+- install script needs make
 
 * Sun Jul 30 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 3-1
 - Fix creation of subpackages
