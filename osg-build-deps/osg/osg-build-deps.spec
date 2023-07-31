@@ -1,6 +1,6 @@
 Name:           osg-build-deps
 Version:        3
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Dependencies for build tools for the OSG
 
 License:        Apache 2.0
@@ -65,6 +65,7 @@ Requires:       %{name}-base = %{version}
 Requires:       openssl
 Requires:       koji >= 1.13.0
 Requires:       voms-clients-cpp
+Requires:       grid-certificates
 Summary:        osg-build-deps for the Koji plugin and Koji-based tools
 
 %description koji
@@ -92,6 +93,9 @@ install -m 0755 %{SOURCE1} %{buildroot}/usr/sbin/install-osg-build.sh
 
 
 %changelog
+* Sun Jul 30 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 3-2
+- voms-proxy-init needs grid certificates
+
 * Sun Jul 30 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 3-1
 - Fix creation of subpackages
 - Add an install script
