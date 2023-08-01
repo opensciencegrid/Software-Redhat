@@ -14,7 +14,6 @@ Source0:        https://github.com/opensciencegrid/osg-certificates/archive/v%{v
 Source1:        https://dist.eugridpma.info/distribution/igtf/current/igtf-policy-installation-bundle-%{igtf_version}.tar.gz
 Source2:        https://github.com/opensciencegrid/letsencrypt-certificates/archive/v0.3.2/letsencrypt-certificates.tar.gz
 Source3:        certs-to-transform.txt
-Patch1:         Replace-openssl-version-check-with-an-existence-chec.patch
 # can obtain latest letsencrypt-certificates.tar.gz with a github.source line:
 # type=github repo=cilogon/letsencrypt-certificates tarball=letsencrypt-certificates.tar.gz tag=master hash=...
 
@@ -41,7 +40,6 @@ For details about the current certificate release, see https://repo.openscienceg
 %setup    -n osg-certificates-%{vtag}
 %setup -D -n osg-certificates-%{vtag} -a 1
 %setup -D -n osg-certificates-%{vtag} -a 2
-%patch1 -p1
 
 %build
 export IGTF_CERTS_VERSION=%{igtf_version}
@@ -81,6 +79,7 @@ sha256sum -c cacerts_sha256sum.txt
 * Tue Aug 01 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.112-1.1
 - Require lower openssl so we can build on EL8 (SOFTWARE-5365)
 - Update to osg-ca-certs 1.112-1
+- Drop Replace-openssl-version-check-with-an-existence-chec.patch (upstreamed)
 
 * Sun Jun 11 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.110-1.2
 - Make the transformed cert files have _both_ the old block and the new block (SOFTWARE-5365)
