@@ -1,7 +1,7 @@
 
 Name: xrootd-multiuser
 Version: 2.1.3
-Release: 1.2%{?dist}
+Release: 1.3%{?dist}
 Summary: Multiuser filesystem writing plugin for xrootd
 
 Group: System Environment/Daemons
@@ -21,6 +21,8 @@ Patch1: 48-gsi-clients-may-use-tokens.patch
 %if 0%{?rhel} > 8
 %global __cmake_in_source_build 1
 %endif
+
+BuildRequires: xrootd-server-devel < 1:5.6.0
 
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildRequires: xrootd-server-libs >= 1:%{xrootd_current_major}
@@ -78,6 +80,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/xrootd/config.d/60-osg-multiuser.cfg
 
 %changelog
+* Thu Aug 03 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.1.3-1.3
+- BuildRequire xrootd < 5.6
+
 * Fri Jul 28 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.1.3-1.2
 - Add 48-gsi-clients-may-use-tokens.patch
   (https://github.com/opensciencegrid/xrootd-multiuser/pull/48)
