@@ -1,7 +1,7 @@
 
 Name: xrootd-multiuser
 Version: 2.1.3
-Release: 1.1%{?dist}
+Release: 1.3%{?dist}
 Summary: Multiuser filesystem writing plugin for xrootd
 
 Group: System Environment/Daemons
@@ -12,6 +12,7 @@ URL: https://github.com/opensciencegrid/xrootd-multiuser
 Source0: %{name}-%{version}.tar.gz
 
 Patch0: 47-thread-specific-supplementary-groups.patch
+Patch1: 48-gsi-clients-may-use-tokens.patch
 
 %define xrootd_current_major 5
 %define xrootd_current_minor 2
@@ -20,6 +21,8 @@ Patch0: 47-thread-specific-supplementary-groups.patch
 %if 0%{?rhel} > 8
 %global __cmake_in_source_build 1
 %endif
+
+BuildRequires: xrootd-server-devel < 1:5.6.0
 
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildRequires: xrootd-server-libs >= 1:%{xrootd_current_major}
@@ -44,6 +47,7 @@ Requires: xrootd-server <  1:%{xrootd_next_major}.0.0-1
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
 
 %build
 %cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo .
@@ -76,6 +80,13 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/xrootd/config.d/60-osg-multiuser.cfg
 
 %changelog
+* Thu Aug 03 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.1.3-1.3
+- BuildRequire xrootd < 5.6
+
+* Fri Jul 28 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.1.3-1.2
+- Add 48-gsi-clients-may-use-tokens.patch
+  (https://github.com/opensciencegrid/xrootd-multiuser/pull/48)
+
 * Mon Jun 26 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.1.3-1.1
 - Add 47-thread-specific-supplementary-groups.patch
   (https://github.com/opensciencegrid/xrootd-multiuser/pull/47)

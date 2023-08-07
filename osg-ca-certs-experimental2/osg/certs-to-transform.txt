@@ -7,7 +7,6 @@ DFN-GridGermany-Root.pem
 DZeScience.pem
 DigiCertAssuredIDRootCA-Root.pem
 DigiCertGridRootCA-Root.pem
-GermanGrid.pem
 GridCanada.pem
 IHEP-2013.pem
 KEK.pem
