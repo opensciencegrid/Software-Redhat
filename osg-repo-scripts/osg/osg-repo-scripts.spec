@@ -1,6 +1,6 @@
 Name:		osg-repo-scripts
 Version:	1.9.1
-Release:	1.1%{?dist}
+Release:	1.2%{?dist}
 Summary:	rpm repo update scripts for osg repo servers
 
 Group:		System Environment/Tools
