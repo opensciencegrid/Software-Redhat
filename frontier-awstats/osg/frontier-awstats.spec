@@ -7,7 +7,7 @@
 Summary: Awstats config files for Frontier Servers
 Name: frontier-awstats
 Version: 7.7
-%define releasenum 9.1
+%define releasenum 9.2
 Release: %{?releasenum}%{?dist}
 License: GPL
 Group: System/Server
